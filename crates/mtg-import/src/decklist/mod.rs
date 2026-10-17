@@ -1,5 +1,7 @@
 //! Deck-list parsing (plain text, Arena, MTGO text and `.dek`, Moxfield, Archidekt) and plain-text export.
 
+mod affix;
+mod blocks;
 mod commander;
 mod dek;
 mod detect;
@@ -13,7 +15,10 @@ mod types;
 pub use commander::promote_implied_commander;
 pub use detect::detect;
 pub use export::{ExportError, export};
-pub use types::{DeckEntry, DeckFormat, LineError, MAX_COUNT, MAX_NAME_CHARS, ParsedDeck, Section};
+pub use types::{
+    DeckEntry, DeckFormat, IgnoredSection, LineError, MAX_COUNT, MAX_NAME_CHARS, ParsedDeck,
+    Section,
+};
 
 /// Parses `input` as `format`; bad lines become entries in [`ParsedDeck::errors`].
 pub fn parse_as(format: DeckFormat, input: &str) -> ParsedDeck {

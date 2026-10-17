@@ -2,7 +2,8 @@
 
 use thiserror::Error;
 
-use super::line::{LineOptions, is_collector_number, is_set_code, parse_entry};
+use super::affix::{is_collector_number, is_set_code};
+use super::line::{LineOptions, parse_entry};
 use super::parse;
 use super::section::header_word;
 use super::types::{DeckEntry, MAX_COUNT, ParsedDeck, Section};
@@ -53,9 +54,11 @@ fn entry_line(entry: &DeckEntry) -> Result<String, String> {
             }
         }
     }
+    // The strictest dialect: a name that survives hash-tag stripping also survives the laxer ones.
     let options = LineOptions {
         bracket_sets: true,
         categories: false,
+        hash_tags: true,
     };
     let read = parse_entry(&line, options).map_err(|e| e.to_string())?;
     let same = read.count == entry.count
@@ -119,6 +122,7 @@ mod tests {
         ParsedDeck {
             entries,
             errors: Vec::new(),
+            ..ParsedDeck::default()
         }
     }
 

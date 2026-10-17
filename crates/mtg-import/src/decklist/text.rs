@@ -1,7 +1,8 @@
-//! Line-oriented text deck parsing shared by the plain, Arena, Moxfield and Archidekt dialects.
+//! Line-oriented text deck parsing shared by the plain, Arena, MTGO text, Moxfield and Archidekt dialects.
 
-use super::line::{LineOptions, parse_entry};
-use super::section::{header_section, section_from_category, strip_sideboard_prefix};
+use super::blocks::{BlankLines, Blocks, Place};
+use super::line::{EntryError, LineOptions, parse_entry};
+use super::section::{Header, header, section_from_category, strip_sideboard_prefix};
 use super::types::{DeckEntry, LineError, ParsedDeck, Section};
 
 /// Per-dialect switches for text parsing.
@@ -9,12 +10,12 @@ use super::types::{DeckEntry, LineError, ParsedDeck, Section};
 pub struct TextOptions {
     /// Entry-line grammar switches.
     pub line: LineOptions,
-    /// Whether a blank line after the main deck starts the sideboard when no headers exist.
-    pub blank_line_sideboard: bool,
+    /// What a blank line means.
+    pub blank_lines: BlankLines,
     /// Whether Arena's `About` / `Name` preamble is skipped.
     pub about_block: bool,
-    /// Whether the headerless block after a sideboard block is the command zone (MTGO text lists commanders last).
-    pub commander_after_sideboard: bool,
+    /// Whether a line that cannot be an entry, alone above a block of entries, is a category or card-type header (Archidekt).
+    pub category_headers: bool,
 }
 
 /// Splits on `\n`, `\r\n` and lone `\r`, yielding one-based line numbers.
@@ -43,7 +44,8 @@ enum Line<'a> {
     Blank,
     Comment,
     Preamble,
-    Header(Section),
+    Header(Header),
+    Label,
     Entry(&'a str),
 }
 
@@ -63,42 +65,29 @@ fn classify<'a>(raw: &'a str, in_preamble: &mut bool, options: TextOptions) -> L
         *in_preamble = true;
         return Line::Preamble;
     }
-    match header_section(text) {
-        Some(section) => Line::Header(section),
+    match header(text) {
+        Some(header) => Line::Header(header),
         None => Line::Entry(text),
     }
 }
 
-/// Tracks which section the next entry belongs to.
-struct Sections {
-    current: Section,
-    entries_in_block: usize,
-    file_has_headers: bool,
-    blank_line_sideboard: bool,
-    commander_after_sideboard: bool,
-}
-
-impl Sections {
-    fn on_header(&mut self, section: Section) {
-        self.current = section;
-        self.entries_in_block = 0;
-    }
-
-    /// A blank line ends a command-zone block, the main deck when the file has no headers, or a sideboard that the commander follows.
-    fn on_blank(&mut self) {
-        if self.entries_in_block == 0 {
-            return;
-        }
-        let next = match self.current {
-            Section::Commander | Section::Companion => Section::Main,
-            Section::Main if self.blank_line_sideboard && !self.file_has_headers => {
-                Section::Sideboard
-            }
-            Section::Sideboard if self.commander_after_sideboard => Section::Commander,
-            _ => return,
+/// Finds the category and card-type headers: lines no entry could be, standing alone above a block of entries.
+fn mark_labels(lines: &mut [(usize, Line<'_>)], options: LineOptions) {
+    for at in 0..lines.len() {
+        let Line::Entry(text) = lines[at].1 else {
+            continue;
         };
-        self.current = next;
-        self.entries_in_block = 0;
+        let after_gap = at == 0 || matches!(lines[at - 1].1, Line::Blank);
+        let above_entries = matches!(lines.get(at + 1), Some((_, Line::Entry(_))));
+        if after_gap
+            && above_entries
+            && matches!(
+                parse_entry(text, options),
+                Err(EntryError::MissingCount | EntryError::NoSpaceAfterCount)
+            )
+        {
+            lines[at].1 = Line::Label;
+        }
     }
 }
 
@@ -106,7 +95,7 @@ fn parse_entry_line(
     text: &str,
     number: usize,
     options: TextOptions,
-    sections: &mut Sections,
+    blocks: &mut Blocks,
     deck: &mut ParsedDeck,
 ) {
     let (text, prefixed) = match strip_sideboard_prefix(text) {
@@ -114,20 +103,28 @@ fn parse_entry_line(
         None => (text, None),
     };
     match parse_entry(text, options.line) {
-        Ok(raw) => {
-            let from_category = raw.category.as_deref().and_then(section_from_category);
-            let explicit = prefixed.or(from_category);
-            if explicit.is_none() {
-                sections.entries_in_block += 1;
+        Ok(raw) => match blocks.place {
+            Place::Ignored(at) => {
+                if let Some(ignored) = deck.ignored.get_mut(at) {
+                    ignored.count += u64::from(raw.count);
+                }
+                blocks.counted();
             }
-            deck.entries.push(DeckEntry {
-                count: raw.count,
-                name: raw.name,
-                set: raw.set,
-                collector_number: raw.collector_number,
-                section: explicit.unwrap_or(sections.current),
-            });
-        }
+            Place::In(current) => {
+                let from_category = raw.category.as_deref().and_then(section_from_category);
+                let explicit = prefixed.or(from_category);
+                if explicit.is_none() {
+                    blocks.counted();
+                }
+                deck.entries.push(DeckEntry {
+                    count: raw.count,
+                    name: raw.name,
+                    set: raw.set,
+                    collector_number: raw.collector_number,
+                    section: explicit.unwrap_or(current),
+                });
+            }
+        },
         Err(error) => deck.errors.push(LineError {
             line: number,
             message: error.to_string(),
@@ -138,72 +135,61 @@ fn parse_entry_line(
 /// Parses a text deck list under `options`; bad lines become [`LineError`]s.
 pub fn parse_text(input: &str, options: TextOptions) -> ParsedDeck {
     let mut in_preamble = false;
-    let lines: Vec<(usize, Line<'_>)> = numbered_lines(input.trim_start_matches('\u{feff}'))
+    let mut lines: Vec<(usize, Line<'_>)> = numbered_lines(input.trim_start_matches('\u{feff}'))
         .map(|(number, raw)| (number, classify(raw, &mut in_preamble, options)))
         .collect();
-    let mut sections = Sections {
-        current: Section::Main,
-        entries_in_block: 0,
-        file_has_headers: lines.iter().any(|(_, l)| matches!(l, Line::Header(_))),
-        blank_line_sideboard: options.blank_line_sideboard,
-        commander_after_sideboard: options.commander_after_sideboard,
-    };
+    if options.category_headers {
+        mark_labels(&mut lines, options.line);
+    }
+    let mut blocks = Blocks::new(
+        lines
+            .iter()
+            .any(|(_, l)| matches!(l, Line::Header(_) | Line::Label)),
+        options.blank_lines,
+    );
 
     let mut deck = ParsedDeck::default();
     for (number, line) in lines {
         match line {
-            Line::Blank => sections.on_blank(),
+            Line::Blank => blocks.on_blank(),
             Line::Comment | Line::Preamble => {}
-            Line::Header(section) => sections.on_header(section),
-            Line::Entry(text) => parse_entry_line(text, number, options, &mut sections, &mut deck),
+            Line::Header(header) => blocks.on_header(header, &mut deck),
+            Line::Label => blocks.on_label(),
+            Line::Entry(text) => parse_entry_line(text, number, options, &mut blocks, &mut deck),
         }
     }
+    deck.ignored.retain(|section| section.count > 0);
     deck
 }
 
 #[cfg(test)]
 mod tests {
     //! Goal: text parsing assigns every entry to the right section and reports bad lines without losing good ones, whatever the line endings.
+    use super::super::dialect::text_options;
+    use super::super::types::DeckFormat;
     use super::*;
     use proptest::prelude::*;
     use rstest::rstest;
 
-    const PLAIN: TextOptions = TextOptions {
-        line: LineOptions {
-            bracket_sets: true,
-            categories: false,
-        },
-        blank_line_sideboard: true,
-        about_block: false,
-        commander_after_sideboard: false,
-    };
-    const ARENA: TextOptions = TextOptions {
-        line: LineOptions {
-            bracket_sets: false,
-            categories: false,
-        },
-        blank_line_sideboard: false,
-        about_block: true,
-        commander_after_sideboard: false,
-    };
-    const ARCHIDEKT: TextOptions = TextOptions {
-        line: LineOptions {
-            bracket_sets: false,
-            categories: true,
-        },
-        blank_line_sideboard: false,
-        about_block: false,
-        commander_after_sideboard: false,
-    };
-    const MTGO_TEXT: TextOptions = TextOptions {
-        line: LineOptions {
-            bracket_sets: false,
-            categories: false,
-        },
-        blank_line_sideboard: false,
-        about_block: false,
-        commander_after_sideboard: true,
-    };
+    fn options(format: DeckFormat) -> TextOptions {
+        text_options(format).unwrap()
+    }
+
+    fn plain() -> TextOptions {
+        options(DeckFormat::PlainText)
+    }
+
+    fn arena() -> TextOptions {
+        options(DeckFormat::Arena)
+    }
+
+    fn archidekt() -> TextOptions {
+        options(DeckFormat::Archidekt)
+    }
+
+    fn mtgo_text() -> TextOptions {
+        options(DeckFormat::MtgoText)
+    }
 
     fn sections(deck: &ParsedDeck) -> Vec<(u32, &str, Section)> {
         deck.entries
@@ -240,7 +226,7 @@ mod tests {
         #[case] input: &str,
         #[case] expected: &[(u32, &str, Section)],
     ) {
-        let deck = parse_text(input, PLAIN);
+        let deck = parse_text(input, plain());
         assert!(deck.errors.is_empty(), "{:?}", deck.errors);
         assert_eq!(sections(&deck), expected);
     }
@@ -252,13 +238,17 @@ mod tests {
     #[case::crlf("1 A\r\n\r\nSIDEBOARD:\r\n1 B\r\n\r\n1 C\r\n", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander)])]
     #[case::command_zone_ends_at_the_next_blank("1 A\n\nSIDEBOARD:\n1 B\n\n1 C\n\n1 D", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander), (1, "D", Main)])]
     #[case::no_trailing_block("1 A\n\nSIDEBOARD:\n1 B\n\n", &[(1, "A", Main), (1, "B", Sideboard)])]
-    #[case::no_sideboard_no_command_zone("1 A\n\n1 B", &[(1, "A", Main), (1, "B", Main)])]
-    #[case::sb_prefix_opens_nothing("1 A\nSB: 1 B\n\n1 C", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Main)])]
+    #[case::no_sideboard_the_block_after_the_main_deck("1 A\n\n1 B", &[(1, "A", Main), (1, "B", Commander)])]
+    #[case::no_sideboard_partners("1 A\n1 A2\n\n1 B\n1 C", &[(1, "A", Main), (1, "A2", Main), (1, "B", Commander), (1, "C", Commander)])]
+    #[case::no_blank_no_command_zone("1 A\n1 B", &[(1, "A", Main), (1, "B", Main)])]
+    #[case::sb_prefix_lines_are_no_block("1 A\nSB: 1 B\n\n1 C", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander)])]
+    #[case::stickers_then_commander("1 A\n\nSTICKERS:\n1 S\n\n1 C", &[(1, "A", Main), (1, "C", Commander)])]
+    #[case::sideboard_stickers_then_commander("1 A\n\nSIDEBOARD:\n1 B\n\nSTICKERS:\n1 S\n2 T\n\n1 C\n1 D", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander), (1, "D", Commander)])]
     fn mtgo_text_lists_the_commander_after_the_sideboard(
         #[case] input: &str,
         #[case] expected: &[(u32, &str, Section)],
     ) {
-        let deck = parse_text(input, MTGO_TEXT);
+        let deck = parse_text(input, mtgo_text());
         assert!(deck.errors.is_empty(), "{:?}", deck.errors);
         assert_eq!(sections(&deck), expected);
     }
@@ -272,7 +262,7 @@ mod tests {
     #[case::trailing_spaces("4 Bolt  \n  \n2 Shock  ")]
     #[case::no_trailing_newline("4 Bolt\n\n2 Shock")]
     fn line_ending_variants_parse_identically(#[case] input: &str) {
-        let deck = parse_text(input, PLAIN);
+        let deck = parse_text(input, plain());
         assert!(deck.errors.is_empty(), "{:?}", deck.errors);
         assert_eq!(
             sections(&deck),
@@ -283,7 +273,7 @@ mod tests {
     #[test]
     fn arena_export_with_about_block() {
         let input = "About\nName Mono Red\n\nDeck\n4 Lightning Bolt (M10) 146\n\nSideboard\n2 Pyroblast (ICE) 213\n";
-        let deck = parse_text(input, ARENA);
+        let deck = parse_text(input, arena());
         assert!(deck.errors.is_empty(), "{:?}", deck.errors);
         assert_eq!(
             sections(&deck),
@@ -292,26 +282,147 @@ mod tests {
         assert_eq!(deck.entries[0].set.as_deref(), Some("M10"));
     }
 
-    #[test]
-    fn archidekt_categories_override_sections() {
-        let input = "1x Atraxa (c16) 28 [Commander{top}]\n1x Sol Ring (cmm) 400 [Ramp]\n1x Fury (mh2) 126 [Sideboard]\n1x Foo (abc) 1 [Maybeboard{noDeck}]\n";
-        let deck = parse_text(input, ARCHIDEKT);
+    #[rstest]
+    #[case::top_flag("1x A (abc) 1 [Commander{top}]", Commander)]
+    #[case::top_flag_on_a_custom_category("1x A (abc) 1 [Partners{top},Ramp]", Commander)]
+    #[case::plain_category("1x A (abc) 1 [Ramp]", Main)]
+    #[case::first_category_wins("1x A (abc) 1 [Ramp,Maybeboard{noDeck}{noPrice}]", Main)]
+    #[case::a_later_top_flag_changes_nothing("1x A (abc) 1 [Ramp,Commander{top}]", Main)]
+    #[case::sideboard("1x A (abc) 1 [Sideboard,Instant]", Sideboard)]
+    #[case::sideboard_even_when_excluded("1x A (abc) 1 [Sideboard{noDeck}{noPrice}]", Sideboard)]
+    #[case::sideboard_before_a_top_flag("1x A (abc) 1 [Sideboard,Commander{top}]", Sideboard)]
+    #[case::sideboard_in_a_longer_name_is_just_excluded(
+        "1x A (abc) 1 [1v1 Sideboard{noDeck}{noPrice},Creature]",
+        Maybeboard
+    )]
+    #[case::excluded_custom_category(
+        "1x A (abc) 1 [Last Minute Cuts{noDeck}{noPrice}]",
+        Maybeboard
+    )]
+    #[case::maybeboard("1x A (abc) 1 [Maybeboard{noDeck}{noPrice},Creature]", Maybeboard)]
+    #[case::tag_label_with_spaces_and_commas(
+        "1x A (abc) 1 [Ramp] ^Don't Have, really,#f47373^",
+        Main
+    )]
+    #[case::flag_category_tag("1x A (abc) 1 *E* [Maybeboard{noDeck}] ^Have,#37d67a^", Maybeboard)]
+    fn archidekt_decides_the_board_by_the_first_category(
+        #[case] line: &str,
+        #[case] expected: Section,
+    ) {
+        let deck = parse_text(line, archidekt());
         assert!(deck.errors.is_empty(), "{:?}", deck.errors);
+        assert_eq!(sections(&deck), [(1, "A", expected)]);
+        assert_eq!(deck.entries[0].set.as_deref(), Some("ABC"));
+        assert_eq!(deck.entries[0].collector_number.as_deref(), Some("1"));
+    }
+
+    #[rstest]
+    #[case::generic_roles(
+        "Commander\n1x A\n\nMainboard\n1x B\n\nSideboard\n1x C\n\nMaybeboard\n1x D",
+        &[(1, "A", Commander), (1, "B", Main), (1, "C", Sideboard), (1, "D", Maybeboard)]
+    )]
+    #[case::category_headers_leave_the_board_to_the_brackets(
+        "Commander\n1x A [Commander{top}]\n\nBig Stick\n1x B [Big Stick]\n\nLast Cuts\n1x C [Last Cuts{noDeck}]",
+        &[(1, "A", Commander), (1, "B", Main), (1, "C", Maybeboard)]
+    )]
+    #[case::card_types("Land\n1x A [Land]\n\nCreature\n1x B [Ramp,Creature]", &[(1, "A", Main), (1, "B", Main)])]
+    #[case::numbers_and_emoji_in_headers(
+        "5: Lands\n1x A\n\n1v1 Sideboard\n1x B\n\n🟢 Main Deck\n1x C\n\n- Removed 2019 to 2026\n1x D",
+        &[(1, "A", Main), (1, "B", Main), (1, "C", Main), (1, "D", Main)]
+    )]
+    #[case::a_category_header_ends_a_known_section("Sideboard\n1x A\n\nRamp\n1x B", &[(1, "A", Sideboard), (1, "B", Main)])]
+    #[case::a_bracket_beats_the_header("Mainboard\n1x A [Sideboard]\n1x B", &[(1, "A", Sideboard), (1, "B", Main)])]
+    fn archidekt_reads_category_and_type_headers(
+        #[case] input: &str,
+        #[case] expected: &[(u32, &str, Section)],
+    ) {
+        let deck = parse_text(input, archidekt());
+        assert!(deck.errors.is_empty(), "{:?}", deck.errors);
+        assert_eq!(sections(&deck), expected);
+    }
+
+    #[test]
+    fn a_stray_line_inside_a_block_is_still_an_error() {
+        let deck = parse_text("1x A\nRamp\n1x B\n\nLightning Bolt\n", archidekt());
+        assert_eq!(sections(&deck), [(1, "A", Main), (1, "B", Main)]);
+        let lines: Vec<usize> = deck.errors.iter().map(|e| e.line).collect();
+        assert_eq!(lines, [2, 5]);
+    }
+
+    #[rstest]
+    #[case::moxfield(
+        DeckFormat::Moxfield,
+        "1 A (ABC) 1\n\nSIDEBOARD:\n1 B (ABC) 2\n\nSTICKERS:\n1 S (SUNF) 1\n3 T (SUNF) 2\n",
+        &[(1, "A", Main), (1, "B", Sideboard)],
+        &[("STICKERS", 4)]
+    )]
+    #[case::mtgo_text(
+        DeckFormat::MtgoText,
+        "1 A\n\nSTICKERS:\n1 S\n\n1 C",
+        &[(1, "A", Main), (1, "C", Commander)],
+        &[("STICKERS", 1)]
+    )]
+    #[case::plain_text_any_case(DeckFormat::PlainText, "4 A\nStickers (2)\n1 S\n1 T", &[(4, "A", Main)], &[("Stickers", 2)])]
+    #[case::an_empty_section_is_not_reported(DeckFormat::Moxfield, "1 A (ABC) 1\n\nSTICKERS:\n", &[(1, "A", Main)], &[])]
+    #[case::a_recurring_section_is_one_section(
+        DeckFormat::Moxfield,
+        "1 A (ABC) 1\nSTICKERS:\n1 S\nSIDEBOARD:\n1 B (ABC) 2\nSTICKERS:\n2 T",
+        &[(1, "A", Main), (1, "B", Sideboard)],
+        &[("STICKERS", 3)]
+    )]
+    fn sections_that_are_no_deck_cards_are_counted_and_kept_out(
+        #[case] format: DeckFormat,
+        #[case] input: &str,
+        #[case] expected: &[(u32, &str, Section)],
+        #[case] ignored: &[(&str, u64)],
+    ) {
+        let deck = parse_text(input, options(format));
+        assert!(deck.errors.is_empty(), "{:?}", deck.errors);
+        assert_eq!(sections(&deck), expected);
+        let reported: Vec<(&str, u64)> = deck
+            .ignored
+            .iter()
+            .map(|s| (s.name.as_str(), s.count))
+            .collect();
+        assert_eq!(reported, ignored);
+    }
+
+    #[rstest]
+    #[case::moxfield_printing_flag_tags(DeckFormat::Moxfield, "1 Ancient Tomb (V12) 1 *F* #!Lands", "Ancient Tomb", Some(("V12", "1")))]
+    #[case::moxfield_spaces_and_several_tags(DeckFormat::Moxfield, "3 Beseech the Mirror (WOE) 82 #Card Advantage #Payoff #!Wheel", "Beseech the Mirror", Some(("WOE", "82")))]
+    #[case::moxfield_parentheses_in_a_tag(DeckFormat::Moxfield, "1 Sol Ring (BRC) 160 #Mana (LOCKED)", "Sol Ring", Some(("BRC", "160")))]
+    #[case::moxfield_custom_card(
+        DeckFormat::Moxfield,
+        "1 My Homebrew #CustomCard",
+        "My Homebrew",
+        None
+    )]
+    #[case::arena_tags_without_printing(
+        DeckFormat::Arena,
+        "Deck\n1 Ancient Tomb #!Lands",
+        "Ancient Tomb",
+        None
+    )]
+    fn hash_tags_never_reach_names_or_printings(
+        #[case] format: DeckFormat,
+        #[case] input: &str,
+        #[case] name: &str,
+        #[case] printing: Option<(&str, &str)>,
+    ) {
+        let deck = parse_text(input, options(format));
+        assert!(deck.errors.is_empty(), "{:?}", deck.errors);
+        let entry = &deck.entries[0];
+        assert_eq!(entry.name, name);
         assert_eq!(
-            sections(&deck),
-            [
-                (1, "Atraxa", Commander),
-                (1, "Sol Ring", Main),
-                (1, "Fury", Sideboard),
-                (1, "Foo", Maybeboard)
-            ]
+            entry.set.as_deref().zip(entry.collector_number.as_deref()),
+            printing
         );
     }
 
     #[test]
     fn bad_lines_are_reported_with_line_numbers_and_do_not_stop_parsing() {
         let input = "4 Bolt\nShock\n0 Fury\n\n2 Duress\n99999999999 Foo\n3\n";
-        let deck = parse_text(input, PLAIN);
+        let deck = parse_text(input, plain());
         assert_eq!(
             sections(&deck),
             [(4, "Bolt", Main), (2, "Duress", Sideboard)]
@@ -323,7 +434,7 @@ mod tests {
 
     #[test]
     fn error_line_numbers_survive_crlf_and_blank_lines() {
-        let deck = parse_text("4 Bolt\r\n\r\nnope\r\n", PLAIN);
+        let deck = parse_text("4 Bolt\r\n\r\nnope\r\n", plain());
         assert_eq!(deck.errors.len(), 1);
         assert_eq!(deck.errors[0].line, 3);
     }
@@ -342,7 +453,7 @@ mod tests {
     proptest! {
         #[test]
         fn arbitrary_text_never_panics_and_accounts_for_every_line(input in "\\PC{0,200}|[0-9a-zA-Z \\n\\r:()\\[\\]*/#,'-]{0,200}") {
-            for options in [PLAIN, ARENA, ARCHIDEKT, MTGO_TEXT] {
+            for options in [plain(), arena(), archidekt(), mtgo_text()] {
                 let deck = parse_text(&input, options);
                 let content_lines = numbered_lines(input.trim_start_matches('\u{feff}'))
                     .filter(|(_, l)| !l.trim().is_empty())

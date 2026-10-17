@@ -31,9 +31,11 @@ impl Evidence {
             self.shouting_header = true;
             return;
         }
+        // Tags are read so that tagged lines still count, but they prove no format on their own.
         let options = LineOptions {
             bracket_sets: false,
             categories: true,
+            hash_tags: true,
         };
         if let Ok(entry) = parse_entry(line, options) {
             // A bare `[M10]` is a plain-text set code; categories only count after a `(SET)` printing.

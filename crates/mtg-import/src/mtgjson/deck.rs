@@ -105,6 +105,7 @@ impl PreconDeck {
         ParsedDeck {
             entries,
             errors: Vec::new(),
+            ..ParsedDeck::default()
         }
     }
 }

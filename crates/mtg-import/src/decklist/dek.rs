@@ -110,6 +110,7 @@ pub fn parse_dek(input: &str) -> ParsedDeck {
                 line: 1,
                 message: format!("XML is nested more than {MAX_XML_DEPTH} levels deep"),
             }],
+            ..ParsedDeck::default()
         };
     }
     let options = ParsingOptions {
@@ -125,6 +126,7 @@ pub fn parse_dek(input: &str) -> ParsedDeck {
                     line: error.pos().row as usize,
                     message: format!("invalid XML: {error}"),
                 }],
+                ..ParsedDeck::default()
             };
         }
     };

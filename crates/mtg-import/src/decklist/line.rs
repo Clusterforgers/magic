@@ -2,6 +2,7 @@
 
 use thiserror::Error;
 
+use super::affix::{hash_tags_start, split_printing, split_trailing_group, strip_foil_marker};
 use super::types::{MAX_COUNT, MAX_NAME_CHARS};
 
 /// Dialect switches for entry-line parsing.
@@ -11,6 +12,8 @@ pub struct LineOptions {
     pub bracket_sets: bool,
     /// Read Archidekt `[Category]` and `^tag^` suffixes.
     pub categories: bool,
+    /// Drop Moxfield `#tag` suffixes: the first `#` after whitespace opens tags, which may hold spaces, parentheses and `!`.
+    pub hash_tags: bool,
 }
 
 /// A card line split into its parts.
@@ -56,61 +59,6 @@ pub enum EntryError {
     /// The line contains a control character.
     #[error("line contains a control character")]
     ControlCharacter,
-}
-
-pub(super) fn is_set_code(text: &str) -> bool {
-    (2..=6).contains(&text.len()) && text.bytes().all(|b| b.is_ascii_alphanumeric())
-}
-
-pub(super) fn is_collector_number(text: &str) -> bool {
-    text.bytes().any(|b| b.is_ascii_digit()) && !text.starts_with(['(', '[', '*'])
-}
-
-/// Splits a trailing `open ... close` group off `text` when it is separated from the rest by whitespace.
-fn split_trailing_group(text: &str, open: char, close: char) -> Option<(&str, &str)> {
-    let without_close = text.strip_suffix(close)?;
-    let start = without_close.rfind(open)?;
-    let head = &without_close[..start];
-    if !head.is_empty() && !head.ends_with(char::is_whitespace) {
-        return None;
-    }
-    Some((head.trim_end(), &without_close[start + open.len_utf8()..]))
-}
-
-fn strip_foil_marker(text: &str) -> Option<&str> {
-    let body = text.strip_suffix('*')?;
-    let (head, marker) = body.rsplit_once('*')?;
-    let single_letter = marker.len() == 1 && marker.bytes().all(|b| b.is_ascii_alphabetic());
-    (single_letter && (head.is_empty() || head.ends_with(char::is_whitespace)))
-        .then_some(head.trim_end())
-}
-
-/// Splits `NAME (SET) NUMBER`, `NAME (SET)` and (optionally) `NAME [SET]` suffixes.
-fn split_printing(body: &str, bracket_sets: bool) -> (&str, Option<String>, Option<String>) {
-    if let Some((head, number)) = body.rsplit_once(char::is_whitespace)
-        && is_collector_number(number)
-        && let Some((name, set)) = split_trailing_group(head.trim_end(), '(', ')')
-        && is_set_code(set)
-    {
-        return (
-            name,
-            Some(set.to_ascii_uppercase()),
-            Some(number.to_owned()),
-        );
-    }
-    let groups: &[(char, char)] = if bracket_sets {
-        &[('(', ')'), ('[', ']')]
-    } else {
-        &[('(', ')')]
-    };
-    for &(open, close) in groups {
-        if let Some((name, set)) = split_trailing_group(body, open, close)
-            && is_set_code(set)
-        {
-            return (name, Some(set.to_ascii_uppercase()), None);
-        }
-    }
-    (body, None, None)
 }
 
 /// Validates a copy count written as ASCII digits.
@@ -167,6 +115,11 @@ pub fn parse_entry(text: &str, options: LineOptions) -> Result<RawEntry, EntryEr
     }
 
     let mut body = rest.trim();
+    if options.hash_tags
+        && let Some(at) = hash_tags_start(body)
+    {
+        body = body[..at].trim_end();
+    }
     let (mut foil, mut tagged, mut category) = (false, false, None);
     loop {
         if let Some(head) = strip_foil_marker(body) {
@@ -210,10 +163,17 @@ mod tests {
     const PLAIN: LineOptions = LineOptions {
         bracket_sets: true,
         categories: false,
+        hash_tags: false,
     };
     const ARCHIDEKT: LineOptions = LineOptions {
         bracket_sets: false,
         categories: true,
+        hash_tags: false,
+    };
+    const MOXFIELD: LineOptions = LineOptions {
+        bracket_sets: false,
+        categories: false,
+        hash_tags: true,
     };
 
     type Parsed<'a> = (u32, &'a str, Option<&'a str>, Option<&'a str>);
@@ -256,6 +216,30 @@ mod tests {
     fn parses_plain_entries(#[case] line: &str, #[case] expected: Parsed<'_>) {
         let raw = parse_entry(line, PLAIN).unwrap();
         assert_eq!(summary(&raw), expected);
+    }
+
+    #[rstest]
+    #[case::tag("1 Ancient Tomb (V12) 1 #Lands", (1, "Ancient Tomb", Some("V12"), Some("1")))]
+    #[case::bang_tag("1 Ancient Tomb (V12) 1 *F* #!Lands", (1, "Ancient Tomb", Some("V12"), Some("1")))]
+    #[case::tag_with_spaces_and_parentheses("1 Sol Ring (BRC) 160 #Mana (LOCKED)", (1, "Sol Ring", Some("BRC"), Some("160")))]
+    #[case::several_tags("3 Beseech the Mirror (WOE) 82 #Card Advantage #Payoff #!Wheel", (3, "Beseech the Mirror", Some("WOE"), Some("82")))]
+    #[case::tag_without_printing("1 Ancient Tomb #!Lands", (1, "Ancient Tomb", None, None))]
+    #[case::custom_card("1 My Homebrew #CustomCard", (1, "My Homebrew", None, None))]
+    #[case::tag_after_etched_flag("1 Talisman of Indulgence (SLD) 1054 *E* #Mana", (1, "Talisman of Indulgence", Some("SLD"), Some("1054")))]
+    #[case::hash_inside_a_word_stays("1 Mountain#2 (ABC) 3", (1, "Mountain#2", Some("ABC"), Some("3")))]
+    fn moxfield_hash_tags_are_dropped(#[case] line: &str, #[case] expected: Parsed<'_>) {
+        let raw = parse_entry(line, MOXFIELD).unwrap();
+        assert_eq!(summary(&raw), expected);
+    }
+
+    #[test]
+    fn hash_tags_are_part_of_the_name_unless_the_dialect_reads_them() {
+        let raw = parse_entry("1 Mountain #2", PLAIN).unwrap();
+        assert_eq!(raw.name, "Mountain #2");
+        assert_eq!(
+            parse_entry("1 #Lands", MOXFIELD).unwrap_err(),
+            EntryError::MissingName
+        );
     }
 
     #[test]
