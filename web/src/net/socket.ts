@@ -4,8 +4,11 @@
  */
 import { PROTOCOL_VERSION } from '@/protocol/generated'
 import type { ClientMessage, ErrorCode, ServerMessage } from '@/protocol/generated'
+import { Pacer } from './pacer'
 import { parseFrame } from './parse'
 import type { FrameError } from './parse'
+import { browserTimers } from './timers'
+import type { Timers } from './timers'
 
 /** Where the connection stands: `open` means the server answered `Join` with `Welcome`. */
 export type ConnectionStatus = 'idle' | 'connecting' | 'open' | 'reconnecting' | 'replaced' | 'stopped'
@@ -39,12 +42,6 @@ export interface RawSocket {
 /** Opens a socket to `url`; tests pass a fake. */
 export type SocketFactory = (url: string, handlers: RawSocketHandlers) => RawSocket
 
-/** The timer functions retries are scheduled with; tests pass a manual clock. */
-export interface Timers {
-  setTimeout(callback: () => void, ms: number): number
-  clearTimeout(id: number): void
-}
-
 /** A browser WebSocket. */
 export const browserSocket: SocketFactory = (url, handlers) => {
   const ws = new WebSocket(url)
@@ -52,12 +49,6 @@ export const browserSocket: SocketFactory = (url, handlers) => {
   ws.onmessage = (event) => handlers.message(event.data)
   ws.onclose = (event) => handlers.close(event.code, event.reason)
   return { send: (text) => ws.send(text), close: (code, reason) => ws.close(code, reason) }
-}
-
-/** The browser's timers. */
-export const browserTimers: Timers = {
-  setTimeout: (callback, ms) => window.setTimeout(callback, ms),
-  clearTimeout: (id) => window.clearTimeout(id),
 }
 
 /** Options for a `GameSocket`; only the first four have no default. */
@@ -120,6 +111,7 @@ export class GameSocket {
   private readonly createSocket: SocketFactory
   private readonly timers: Timers
   private readonly random: () => number
+  private readonly pacer: Pacer
   private state: ConnectionStatus = 'idle'
   private raw: RawSocket | null = null
   private opened = false
@@ -134,6 +126,7 @@ export class GameSocket {
     this.createSocket = options.createSocket ?? browserSocket
     this.timers = options.timers ?? browserTimers
     this.random = options.random ?? Math.random
+    this.pacer = new Pacer(this.timers, (message) => this.write(message))
   }
 
   /** The current status. */
@@ -158,9 +151,12 @@ export class GameSocket {
     if (this.state !== 'idle') this.setStatus('idle', null)
   }
 
-  /** Sends one message; false when the socket is not open, in which case nothing was sent. */
+  /**
+   * Sends one message; false when the socket is not open (or 200 messages already wait), in which case nothing
+   * will be sent. A message over the server's rate limit is held back briefly rather than refused.
+   */
   send(message: ClientMessage): boolean {
-    return this.opened && this.write(message)
+    return this.opened && this.pacer.push(message)
   }
 
   /** Tells the socket nothing more is needed (the game is over): a lost connection is no longer retried. */
@@ -170,6 +166,7 @@ export class GameSocket {
 
   private openSocket(): void {
     this.generation += 1
+    this.pacer.reset()
     const generation = this.generation
     const live = (): boolean => generation === this.generation
     try {
@@ -196,7 +193,7 @@ export class GameSocket {
   private onOpen(): void {
     if (this.opened) return
     this.opened = true
-    this.write({
+    this.pacer.push({
       type: 'Join',
       protocol_version: PROTOCOL_VERSION,
       game: this.options.game,
@@ -227,6 +224,7 @@ export class GameSocket {
   private onClose(code: number, reason: string): void {
     this.raw = null
     this.opened = false
+    this.pacer.reset()
     this.generation += 1
     if (code === REPLACED_CODE) {
       this.halt('replaced', REPLACED_TEXT)
@@ -265,6 +263,7 @@ export class GameSocket {
     const raw = this.raw
     this.raw = null
     this.opened = false
+    this.pacer.reset()
     if (raw === null) return
     try {
       raw.close(NORMAL_CLOSE, 'client closing')

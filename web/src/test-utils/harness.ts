@@ -39,8 +39,8 @@ export const pass: Answer = { Priority: 'Pass' }
 
 /** Builds a session with no jitter in its retries; `overrides` replace any dependency. */
 export function startSession(overrides: Partial<SessionDeps> = {}): Harness {
-  const net = new FakeNetwork()
   const timers = new FakeTimers()
+  const net = new FakeNetwork(() => timers.now())
   const session = createSession({
     game: GAME,
     token: TOKEN,

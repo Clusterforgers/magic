@@ -20,8 +20,8 @@ export const join = { type: 'Join', protocol_version: PROTOCOL_VERSION, game: GA
 
 /** A `GameSocket` on fake sockets and a manual clock, with every event it emits recorded; no jitter by default. */
 export function setup(overrides: Partial<GameSocketOptions> = {}) {
-  const net = new FakeNetwork()
   const timers = new FakeTimers()
+  const net = new FakeNetwork(() => timers.now())
   const events: SocketEvent[] = []
   const socket = new GameSocket({
     game: GAME,

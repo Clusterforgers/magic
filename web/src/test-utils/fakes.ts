@@ -1,16 +1,17 @@
 import { isRecord } from '@/net/check'
-import type { RawSocket, RawSocketHandlers, SocketFactory, Timers } from '@/net/socket'
+import type { RawSocket, RawSocketHandlers, SocketFactory } from '@/net/socket'
+import type { Timers } from '@/net/timers'
 
 /** A manual clock: a timer fires only when `advance` moves time past it. */
 export class FakeTimers implements Timers {
-  private now = 0
+  private time = 0
   private nextId = 1
   private readonly queue = new Map<number, { at: number; callback: () => void }>()
 
   setTimeout(callback: () => void, ms: number): number {
     const id = this.nextId
     this.nextId += 1
-    this.queue.set(id, { at: this.now + ms, callback })
+    this.queue.set(id, { at: this.time + ms, callback })
     return id
   }
 
@@ -18,14 +19,19 @@ export class FakeTimers implements Timers {
     this.queue.delete(id)
   }
 
+  /** Milliseconds since the clock started. */
+  now(): number {
+    return this.time
+  }
+
   /** Milliseconds until each waiting timer fires, soonest first. */
   pending(): number[] {
-    return [...this.queue.values()].map((timer) => timer.at - this.now).sort((a, b) => a - b)
+    return [...this.queue.values()].map((timer) => timer.at - this.time).sort((a, b) => a - b)
   }
 
   /** Moves time forward and fires every timer that comes due on the way, including ones those timers set. */
   advance(ms: number): void {
-    const target = this.now + ms
+    const target = this.time + ms
     for (;;) {
       const due = [...this.queue.entries()]
         .filter(([, timer]) => timer.at <= target)
@@ -33,10 +39,10 @@ export class FakeTimers implements Timers {
       if (due === undefined) break
       const [id, timer] = due
       this.queue.delete(id)
-      this.now = Math.max(this.now, timer.at)
+      this.time = Math.max(this.time, timer.at)
       timer.callback()
     }
-    this.now = target
+    this.time = target
   }
 }
 
@@ -45,20 +51,27 @@ export class FakeSocket implements RawSocket {
   readonly url: string
   /** Frames the client wrote, as text, in order. */
   readonly frames: string[] = []
+  /** The clock reading at each frame in `frames`. */
+  readonly times: number[] = []
   /** The code and reason of the client's own close call, if it made one. */
   closedByClient: { code: number; reason: string } | null = null
   private readonly handlers: RawSocketHandlers
+  private readonly clock: () => number
   private phase: 'connecting' | 'open' | 'closed' = 'connecting'
 
-  constructor(url: string, handlers: RawSocketHandlers) {
+  constructor(url: string, handlers: RawSocketHandlers, clock: () => number = () => 0) {
     this.url = url
     this.handlers = handlers
+    this.clock = clock
   }
 
   send(text: string): void {
     // A browser throws when a socket is written before it opened and drops writes after a close.
     if (this.phase === 'connecting') throw new Error('InvalidStateError: the socket is still connecting')
-    if (this.phase === 'open') this.frames.push(text)
+    if (this.phase === 'open') {
+      this.frames.push(text)
+      this.times.push(this.clock())
+    }
   }
 
   close(code: number, reason: string): void {
@@ -107,9 +120,15 @@ export class FakeSocket implements RawSocket {
 /** The factory the client opens sockets with, remembering every one it made. */
 export class FakeNetwork {
   readonly sockets: FakeSocket[] = []
+  private readonly clock: () => number
+
+  /** `clock` timestamps the frames the sockets receive; pass `() => timers.now()` to see how a client paces them. */
+  constructor(clock: () => number = () => 0) {
+    this.clock = clock
+  }
 
   readonly factory: SocketFactory = (url, handlers) => {
-    const socket = new FakeSocket(url, handlers)
+    const socket = new FakeSocket(url, handlers, this.clock)
     this.sockets.push(socket)
     return socket
   }
