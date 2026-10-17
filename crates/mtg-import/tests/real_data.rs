@@ -4,6 +4,8 @@
 //! `oracle-cards-*.jsonl.gz`, `rulings-*.jsonl.gz`, `DeckList.json` and one or more MTGJSON deck files named
 //! `*_<SET>.json`, then run `cargo test -p mtg-import --test real_data -- --ignored`.
 
+#![allow(clippy::unwrap_used, clippy::expect_used)]
+
 use std::fs::{self, File};
 use std::io::BufReader;
 use std::path::PathBuf;
@@ -79,9 +81,11 @@ fn every_real_ruling_parses() {
         .pop()
         .expect("rulings file");
     let reader = GzDecoder::new(BufReader::new(File::open(path).unwrap()));
-    let count = rulings_jsonl(reader)
-        .map(|ruling| ruling.unwrap_or_else(|e| panic!("real ruling failed to parse: {e}")))
-        .count();
+    let mut count = 0;
+    for ruling in rulings_jsonl(reader) {
+        ruling.unwrap_or_else(|e| panic!("real ruling failed to parse: {e}"));
+        count += 1;
+    }
     assert!(count > 40_000, "only {count} rulings");
 }
 

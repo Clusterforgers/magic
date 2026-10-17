@@ -122,7 +122,7 @@ mod tests {
             crlf in any::<bool>(),
         ) {
             let sep = if crlf { "\r\n" } else { "\n" };
-            let input = lines.iter().map(|l| format!("{l}{sep}")).collect::<String>();
+            let input: String = lines.iter().flat_map(|l| [l.as_str(), sep]).collect();
             let expected: Vec<Vec<u8>> = lines
                 .iter()
                 .map(|l| l.trim().as_bytes().to_vec())

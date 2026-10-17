@@ -397,10 +397,13 @@ fn rulings_fixture_streams_and_groups_by_card() {
 }
 
 fn as_jsonl(array_json: &str, terminator: &str) -> String {
-    let items: Vec<serde_json::Value> = serde_json::from_str(array_json).unwrap();
+    let items = match serde_json::from_str::<Vec<serde_json::Value>>(array_json) {
+        Ok(items) => items,
+        Err(e) => panic!("fixture is not a JSON array: {e}"),
+    };
     items
         .iter()
-        .map(|item| format!("{item}{terminator}"))
+        .flat_map(|item| [item.to_string(), terminator.to_owned()])
         .collect()
 }
 
