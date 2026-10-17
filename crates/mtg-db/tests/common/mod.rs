@@ -91,6 +91,20 @@ pub fn in_search_order(names: &[&str]) -> Vec<String> {
     sorted
 }
 
+/// Scryfall-style JSON for the `n`th synthetic card (ids derive from `n`).
+pub fn synthetic_card_json(n: u128) -> String {
+    format!(
+        r#"{{"id":"{}","oracle_id":"{}","name":"Synthetic {n}","cmc":1.0,"type_line":"Instant","colors":["R"],"color_identity":["R"]}}"#,
+        Uuid::from_u128(n + 1_000_000),
+        Uuid::from_u128(n),
+    )
+}
+
+/// Oracle id of the `n`th synthetic card.
+pub fn synthetic_oracle(n: u128) -> OracleId {
+    OracleId(Uuid::from_u128(n).to_string())
+}
+
 /// A copy of `base` standing for another card: new oracle id, printing id and name.
 pub fn another_card(base: &CardRecord, n: u128, name: &str) -> CardRecord {
     let mut card = base.clone();
