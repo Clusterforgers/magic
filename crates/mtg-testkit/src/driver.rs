@@ -330,6 +330,12 @@ impl Driver {
         }
     }
 
+    /// Answers the pending decision passively (pass, keep, no attackers, no blockers).
+    pub fn answer_passively(&mut self) -> Result<Vec<Event>, ScriptError> {
+        let decision = self.decision()?.clone();
+        self.answer(Driver::passive_answer(&decision))
+    }
+
     /// Answers passively until the game reaches `step` of turn `turn` (a decision is pending there).
     pub fn idle_until(&mut self, turn: u32, step: Step) -> Result<(), ScriptError> {
         for _ in 0..MAX_WAIT_ANSWERS {
