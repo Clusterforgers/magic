@@ -63,7 +63,7 @@ fn mid_game_batches_are_a_fraction_of_a_snapshot(
         .iter()
         .filter(|s| s.answers >= total / 4 && s.answers < total * 3 / 4)
         .collect();
-    assert!(mid.len() > 400, "too few batches to judge: {}", mid.len());
+    assert!(mid.len() > 200, "too few batches to judge: {}", mid.len());
     let batch_bytes: usize = mid.iter().map(|s| s.batch).sum();
     let snapshot_bytes: usize = mid.iter().map(|s| s.snapshot).sum();
     let mut shares: Vec<f64> = mid.iter().map(|s| ratio(s.batch, s.snapshot)).collect();

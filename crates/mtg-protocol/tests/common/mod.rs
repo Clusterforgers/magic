@@ -2,6 +2,8 @@
 
 #![allow(dead_code, clippy::unwrap_used, clippy::expect_used)]
 
+pub mod table;
+
 use std::collections::BTreeSet;
 
 use mtg_core::ids::{ObjectId, PlayerId};
