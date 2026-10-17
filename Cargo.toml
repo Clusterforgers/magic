@@ -38,3 +38,11 @@ expect_used = "deny"
 module_name_repetitions = "allow"
 must_use_candidate = "allow"
 missing_errors_doc = "allow"
+
+# Fuzz games play thousands of full games; optimising only the crates involved keeps debug test runs fast.
+[profile.dev.package.mtg-core]
+opt-level = 3
+[profile.dev.package.mtg-engine]
+opt-level = 3
+[profile.dev.package.mtg-testkit]
+opt-level = 3

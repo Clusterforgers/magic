@@ -9,6 +9,9 @@ use thiserror::Error;
 use crate::bot::RandomBot;
 use crate::invariants::{InvariantChecker, Violation};
 
+/// Whole-state invariants run every this many answers; per-event checks run on every event.
+const FULL_CHECK_EVERY: usize = 25;
+
 /// Limits and switches for [`play_game_with`].
 #[derive(Debug, Clone, Copy)]
 pub struct PlayOptions {
@@ -104,7 +107,9 @@ pub fn play_game_with(
         events: events.to_vec(),
     };
     let mut checker = if options.check_invariants {
-        Some(InvariantChecker::new(&setup).map_err(|v| fail(v.into(), &[]))?)
+        Some(InvariantChecker::new(&setup)
+                .map_err(|v| fail(v.into(), &[]))?
+                .with_full_check_every(FULL_CHECK_EVERY))
     } else {
         None
     };
@@ -131,7 +136,7 @@ pub fn play_game_with(
         answers += 1;
         observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
     }
-    finish(&engine, checker.as_ref(), answers).map_err(|kind| fail(kind, engine.events()))
+    finish(&engine, checker.as_mut(), answers).map_err(|kind| fail(kind, engine.events()))
 }
 
 fn observe(checker: &mut Option<InvariantChecker>, engine: &Engine) -> Result<(), Violation> {
@@ -144,7 +149,7 @@ fn observe(checker: &mut Option<InvariantChecker>, engine: &Engine) -> Result<()
 /// Terminal checks: one `GameEnded`, a consistent winner, and replay equality for the whole log.
 fn finish(
     engine: &Engine,
-    checker: Option<&InvariantChecker>,
+    checker: Option<&mut InvariantChecker>,
     answers: usize,
 ) -> Result<GameOutcome, FailureKind> {
     let state = engine.state();
@@ -170,6 +175,7 @@ fn finish(
         _ => return Err(bad("result does not match the players still in the game")),
     }
     if let Some(checker) = checker {
+        checker.full_check(state)?;
         checker.check_full_replay(state, engine.events())?;
     }
     Ok(GameOutcome {

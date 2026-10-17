@@ -162,6 +162,8 @@ pub struct InvariantChecker {
     expected_pool: Vec<[i64; 6]>,
     expected_damage: BTreeMap<ObjectId, u32>,
     events_seen: usize,
+    full_every: usize,
+    since_full: usize,
 }
 
 impl InvariantChecker {
@@ -181,15 +183,34 @@ impl InvariantChecker {
             expected_damage,
             shadow,
             events_seen: 0,
+            full_every: 1,
+            since_full: 0,
         })
     }
 
-    /// Consumes every event of `log` not yet seen, then runs the full checks against `live`.
+    /// Runs the whole-state checks only every `n` calls to [`observe`](Self::observe); per-event checks always run.
+    #[must_use]
+    pub fn with_full_check_every(mut self, n: usize) -> Self {
+        self.full_every = n.max(1);
+        self
+    }
+
+    /// Consumes every event of `log` not yet seen, then (on schedule) runs the whole-state checks against `live`.
     pub fn observe(&mut self, live: &GameState, log: &[Event]) -> Result<(), Violation> {
         for event in log.get(self.events_seen..).unwrap_or_default() {
             self.observe_event(event)?;
             self.events_seen += 1;
         }
+        self.since_full += 1;
+        if self.since_full < self.full_every {
+            return Ok(());
+        }
+        self.full_check(live)
+    }
+
+    /// Runs the whole-state checks now: zone index, bookkeeping, damage totals and live-vs-shadow hash.
+    pub fn full_check(&mut self, live: &GameState) -> Result<(), Violation> {
+        self.since_full = 0;
         check_state(live)?;
         let (live_hash, shadow_hash) = (live.state_hash(), self.shadow.state_hash());
         if live_hash != shadow_hash {
