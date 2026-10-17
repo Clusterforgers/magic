@@ -129,7 +129,9 @@ pub struct CardPage {
 
 /// The trimmed text of a filter, or `None` when it is absent or blank.
 fn present(value: Option<&String>) -> Option<&str> {
-    value.map(|text| text.trim()).filter(|text| !text.is_empty())
+    value
+        .map(|text| text.trim())
+        .filter(|text| !text.is_empty())
 }
 
 /// A `LIKE` pattern matching any text that contains `term` literally.
@@ -154,7 +156,9 @@ impl CardSearch {
         }
         if let Some(name) = present(self.name.as_ref()) {
             let key = normalize_name(name);
-            query.push(" AND name_normalized LIKE ").push_bind(like_contains(&key));
+            query
+                .push(" AND name_normalized LIKE ")
+                .push_bind(like_contains(&key));
         }
         if let Some(text) = present(self.oracle_text.as_ref()) {
             query
@@ -163,7 +167,9 @@ impl CardSearch {
                 .push(")");
         }
         for term in self.type_terms.iter().filter_map(|t| present(Some(t))) {
-            query.push(" AND type_line ILIKE ").push_bind(like_contains(term));
+            query
+                .push(" AND type_line ILIKE ")
+                .push_bind(like_contains(term));
         }
         if let Some(filter) = self.colors {
             let mask = to_mask(filter.colors);
@@ -175,10 +181,9 @@ impl CardSearch {
                     .push(") = ")
                     .push_bind(mask),
                 ColorMatch::Within => query.push(" AND (colors & ~").push_bind(mask).push(") = 0"),
-                ColorMatch::Overlaps => query
-                    .push(" AND (colors & ")
-                    .push_bind(mask)
-                    .push(") <> 0"),
+                ColorMatch::Overlaps => {
+                    query.push(" AND (colors & ").push_bind(mask).push(") <> 0")
+                }
             };
         }
         if let Some(allowed) = self.color_identity_within {
@@ -218,10 +223,7 @@ impl CardRepo {
     pub async fn search(&self, criteria: &CardSearch, page: Page) -> Result<CardPage, DbError> {
         let mut count = QueryBuilder::<Postgres>::new("SELECT count(*) FROM cards");
         criteria.push_filters(&mut count);
-        let total: i64 = count
-            .build_query_scalar()
-            .fetch_one(&self.pool)
-            .await?;
+        let total: i64 = count.build_query_scalar().fetch_one(&self.pool).await?;
 
         let mut select = QueryBuilder::<Postgres>::new(format!("SELECT {CARD_COLUMNS} FROM cards"));
         criteria.push_filters(&mut select);
@@ -305,6 +307,10 @@ mod tests {
         let mut query = QueryBuilder::<Postgres>::new("SELECT 1");
         criteria.push_filters(&mut query);
         let sql = query.sql();
-        assert!(!sql.as_str().contains("DROP") && !sql.as_str().contains("1=1"), "{}", sql.as_str());
+        assert!(
+            !sql.as_str().contains("DROP") && !sql.as_str().contains("1=1"),
+            "{}",
+            sql.as_str()
+        );
     }
 }

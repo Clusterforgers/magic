@@ -79,7 +79,9 @@ pub(crate) struct PrintingPayload {
 }
 
 /// Splits a record into its oracle-level and printing-level rows.
-pub(crate) fn split_record(record: &CardRecord) -> Result<(CardPayload, PrintingPayload), Rejection> {
+pub(crate) fn split_record(
+    record: &CardRecord,
+) -> Result<(CardPayload, PrintingPayload), Rejection> {
     let oracle_id = Uuid::parse_str(record.oracle_id.as_str())
         .map_err(|_| Rejection::OracleId(record.oracle_id.to_string()))?;
     let printing_id = Uuid::parse_str(record.printing_id.as_str())
@@ -161,7 +163,10 @@ pub(crate) fn iso_date(text: &str) -> Result<String, Rejection> {
 
 /// Rules text of every face, separated by a `//` line; empty when no face has text.
 fn joined_oracle_text(record: &CardRecord) -> String {
-    let texts: Vec<&str> = record.faces().map(|face| face.oracle_text.as_str()).collect();
+    let texts: Vec<&str> = record
+        .faces()
+        .map(|face| face.oracle_text.as_str())
+        .collect();
     if texts.iter().all(|text| text.is_empty()) {
         String::new()
     } else {
@@ -178,7 +183,8 @@ mod tests {
 
     use super::*;
 
-    const FIXTURE: &str = include_str!("../../../mtg-import/tests/fixtures/scryfall_oracle_cards.json");
+    const FIXTURE: &str =
+        include_str!("../../../mtg-import/tests/fixtures/scryfall_oracle_cards.json");
 
     fn record(name: &str) -> CardRecord {
         cards(FIXTURE.as_bytes())
@@ -215,7 +221,11 @@ mod tests {
     #[case("Lightning Bolt", "lightning bolt", "lightning bolt")]
     #[case("Fire // Ice", "fire // ice", "fire")]
     #[case("Æther Vial", "aether vial", "aether vial")]
-    #[case("Atraxa, Praetors' Voice", "atraxa, praetors' voice", "atraxa, praetors' voice")]
+    #[case(
+        "Atraxa, Praetors' Voice",
+        "atraxa, praetors' voice",
+        "atraxa, praetors' voice"
+    )]
     fn names_are_normalized_like_the_card_index(
         #[case] name: &str,
         #[case] full: &str,
@@ -228,7 +238,10 @@ mod tests {
 
     #[rstest]
     #[case("Lightning Bolt", "Lightning Bolt deals 3 damage to any target.")]
-    #[case("Fire // Ice", "Fire deals 2 damage divided as you choose among one or two targets.\n//\nTap target permanent.\nDraw a card.")]
+    #[case(
+        "Fire // Ice",
+        "Fire deals 2 damage divided as you choose among one or two targets.\n//\nTap target permanent.\nDraw a card."
+    )]
     #[case("Mountain", "({T}: Add {R}.)")]
     #[case("Mystery Card", "")]
     fn oracle_text_joins_faces_with_a_slash_line(#[case] name: &str, #[case] expected: &str) {
@@ -238,7 +251,8 @@ mod tests {
 
     #[test]
     fn printing_images_keep_card_level_and_per_face_art_apart() {
-        let (_, printing) = split_record(&record("Delver of Secrets // Insectile Aberration")).unwrap();
+        let (_, printing) =
+            split_record(&record("Delver of Secrets // Insectile Aberration")).unwrap();
         assert!(printing.images.card.is_none());
         assert_eq!(printing.images.faces.len(), 2);
         assert!(printing.images.faces.iter().all(Option::is_some));

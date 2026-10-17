@@ -41,7 +41,11 @@ impl CardLookups {
         };
         for (oracle_id, full, front) in names {
             lookups.by_name.entry(full).or_default().push(oracle_id);
-            lookups.by_front_name.entry(front).or_default().push(oracle_id);
+            lookups
+                .by_front_name
+                .entry(front)
+                .or_default()
+                .push(oracle_id);
         }
         lookups
     }
@@ -61,7 +65,10 @@ impl CardLookups {
             .filter_map(|card| card.scryfall_id.as_ref())
             .filter_map(|id| Uuid::parse_str(id.as_str()).ok())
             .collect();
-        let wanted_names: Vec<String> = cards.iter().map(|card| normalize_name(&card.name)).collect();
+        let wanted_names: Vec<String> = cards
+            .iter()
+            .map(|card| normalize_name(&card.name))
+            .collect();
 
         let known = sqlx::query_scalar!(
             "SELECT oracle_id FROM cards WHERE oracle_id = ANY($1)",
@@ -176,7 +183,10 @@ mod tests {
     #[case::split_by_slash_variant(entry("Fire/Ice", None, None), Ok(id(2)))]
     #[case::front_face_fallback(entry("Fire", None, None), Ok(id(2)))]
     #[case::unknown_name(entry("Nonexistent Card", None, None), Err(UnresolvedReason::NotFound))]
-    #[case::unknown_ids_and_name(entry("Nope", Some(99), Some(98)), Err(UnresolvedReason::NotFound))]
+    #[case::unknown_ids_and_name(
+        entry("Nope", Some(99), Some(98)),
+        Err(UnresolvedReason::NotFound)
+    )]
     #[case::same_name_twice(entry("Twin", None, None), Err(UnresolvedReason::Ambiguous))]
     #[case::shared_front_face(entry("Dusk", None, None), Err(UnresolvedReason::Ambiguous))]
     #[case::full_name_beats_ambiguous_front(entry("Dusk // Dawn", None, None), Ok(id(5)))]

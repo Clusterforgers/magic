@@ -17,9 +17,7 @@ pub use cards::{
 pub use database::Database;
 pub use error::DbError;
 pub use import::{ImportError, Importer};
-pub use model::{
-    Card, CardDetail, ImplStatus, Printing, PrintingImages, Ruling, StoredFace,
-};
+pub use model::{Card, CardDetail, ImplStatus, Printing, PrintingImages, Ruling, StoredFace};
 pub use precons::{
     DeckBoard, PreconDeckDetail, PreconDeckId, PreconDeckSummary, PreconEntry, PreconRepo,
 };

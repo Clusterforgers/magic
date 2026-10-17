@@ -246,6 +246,9 @@ mod tests {
             (counts.inserted, counts.updated, counts.unchanged),
             expected
         );
-        assert_eq!(counts.inserted + counts.updated + counts.unchanged, submitted as u64);
+        assert_eq!(
+            counts.inserted + counts.updated + counts.unchanged,
+            submitted as u64
+        );
     }
 }

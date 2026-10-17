@@ -202,7 +202,10 @@ async fn deleting_a_card_cascades_and_unlinks_deck_entries(pool: PgPool) {
     .execute(&pool)
     .await
     .unwrap();
-    sqlx::raw_sql("DELETE FROM cards").execute(&pool).await.unwrap();
+    sqlx::raw_sql("DELETE FROM cards")
+        .execute(&pool)
+        .await
+        .unwrap();
 
     assert_eq!(count(&pool, "SELECT count(*) FROM printings").await, 0);
     assert_eq!(count(&pool, "SELECT count(*) FROM rulings").await, 0);
@@ -230,7 +233,10 @@ async fn deleting_a_deck_removes_its_entries(pool: PgPool) {
         .execute(&pool)
         .await
         .unwrap();
-    assert_eq!(count(&pool, "SELECT count(*) FROM precon_deck_cards").await, 0);
+    assert_eq!(
+        count(&pool, "SELECT count(*) FROM precon_deck_cards").await,
+        0
+    );
 }
 
 #[sqlx::test]

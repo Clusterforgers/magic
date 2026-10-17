@@ -116,7 +116,10 @@ mod tests {
     fn out_of_range_masks_are_corrupt(#[case] mask: i16) {
         assert!(matches!(
             from_mask("colors", mask),
-            Err(DbError::Corrupt { column: "colors", .. })
+            Err(DbError::Corrupt {
+                column: "colors",
+                ..
+            })
         ));
     }
 

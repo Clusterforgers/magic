@@ -115,7 +115,10 @@ impl Importer {
     }
 
     /// Stores one deck in its own transaction; unusable data is a rejection, not an error.
-    async fn write_deck(&self, deck: &PreconDeck) -> Result<Result<DeckIngest, Rejection>, DbError> {
+    async fn write_deck(
+        &self,
+        deck: &PreconDeck,
+    ) -> Result<Result<DeckIngest, Rejection>, DbError> {
         let release_date = match deck.release_date.as_deref().map(iso_date).transpose() {
             Ok(date) => date,
             Err(rejection) => return Ok(Err(rejection)),

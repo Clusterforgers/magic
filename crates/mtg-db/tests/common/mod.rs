@@ -102,7 +102,12 @@ pub fn another_card(base: &CardRecord, n: u128, name: &str) -> CardRecord {
 }
 
 /// A copy of `base` standing for another printing of the same card.
-pub fn another_printing(base: &CardRecord, n: u128, set: &str, released: Option<&str>) -> CardRecord {
+pub fn another_printing(
+    base: &CardRecord,
+    n: u128,
+    set: &str,
+    released: Option<&str>,
+) -> CardRecord {
     let mut card = base.clone();
     card.printing_id = PrintingId(Uuid::from_u128(n + 2_000_000).to_string());
     card.set = set.to_owned();

@@ -107,7 +107,10 @@ const POPULATE: &str = "
 async fn indexes_can_serve_the_repository_queries(pool: PgPool) {
     sqlx::raw_sql(POPULATE).execute(&pool).await.unwrap();
     // VACUUM flushes GIN pending lists, which otherwise inflate the planner's GIN cost estimates.
-    sqlx::raw_sql("VACUUM ANALYZE").execute(&pool).await.unwrap();
+    sqlx::raw_sql("VACUUM ANALYZE")
+        .execute(&pool)
+        .await
+        .unwrap();
 
     let mut connection = pool.acquire().await.unwrap();
     sqlx::raw_sql("SET enable_seqscan = off")

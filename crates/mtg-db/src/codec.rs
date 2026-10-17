@@ -149,6 +149,9 @@ mod tests {
 
     #[test]
     fn unrecognized_ruling_sources_read_as_unknown() {
-        assert_eq!(ruling_source_from_keyword("from-the-future"), RulingSource::Unknown);
+        assert_eq!(
+            ruling_source_from_keyword("from-the-future"),
+            RulingSource::Unknown
+        );
     }
 }
