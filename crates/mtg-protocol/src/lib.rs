@@ -2,7 +2,12 @@
 //!
 //! [`ClientMessage`] and [`ServerMessage`] are the two message families. The server never sends
 //! raw engine state: [`StateView::for_player`] and [`project_events`] strip everything the viewer
-//! may not know. TypeScript bindings for all of it come from [`bindings`].
+//! may not know. Each [`EventBatch`] carries the table and an object diff, so a client holds a
+//! [`StateView`] and advances it with [`StateView::apply`] instead of folding engine events.
+//! TypeScript bindings for all of it come from [`bindings`].
+
+mod apply;
+mod diff;
 
 pub mod bindings;
 pub mod error;
@@ -17,5 +22,5 @@ pub use message::{ClientMessage, DecisionId, ErrorCode, PROTOCOL_VERSION, Server
 pub use project::zone_is_visible;
 pub use view::{
     AttackerView, CombatView, ObjectView, PermanentView, PlayerView, PriorityView, StateView,
-    TurnView, ZoneView,
+    TableView, TurnView, ZoneView,
 };

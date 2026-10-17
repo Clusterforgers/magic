@@ -10,9 +10,15 @@ import type { TurnView } from "./TurnView";
 import type { ZoneView } from "./ZoneView";
 
 /**
- * Everything one viewer may know about the game right now.
+ * Everything one viewer may know about the game right now: the table plus every object they may identify.
+ *
+ * On the wire the table fields and `objects` form one flat JSON object.
  */
 export type StateView = { 
+/**
+ * Every object the viewer may identify, in id order.
+ */
+objects: Array<ObjectView>, 
 /**
  * The seat this view was built for.
  */
@@ -53,10 +59,6 @@ stack: ZoneView,
  * The shared exile zone.
  */
 exile: ZoneView, 
-/**
- * Every object the viewer may identify, in id order.
- */
-objects: Array<ObjectView>, 
 /**
  * Combat in progress.
  */

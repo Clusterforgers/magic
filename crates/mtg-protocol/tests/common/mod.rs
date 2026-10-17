@@ -2,8 +2,34 @@
 
 #![allow(dead_code, clippy::unwrap_used, clippy::expect_used)]
 
-use mtg_engine::{Engine, Event, GameSetup, GameState};
+pub mod table;
+
+use std::collections::BTreeSet;
+
+use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::zones::Zone;
+use mtg_engine::{Decision, Engine, Event, GameSetup, GameState};
 use mtg_testkit::{RandomBot, fuzz_setup};
+
+/// Whether `viewer` may not know which card is in `zone`: any library, or another seat's hand.
+///
+/// Stated here on its own so tests judge the crate's visibility rule against a second opinion.
+pub fn is_hidden(zone: Zone, viewer: PlayerId) -> bool {
+    match zone {
+        Zone::Library(_) => true,
+        Zone::Hand(owner) => owner != viewer,
+        _ => false,
+    }
+}
+
+/// Ids of the objects `viewer` may identify in `state`.
+pub fn visible_ids(state: &GameState, viewer: PlayerId) -> BTreeSet<ObjectId> {
+    state
+        .objects()
+        .filter(|o| !is_hidden(o.zone(), viewer))
+        .map(mtg_engine::object::GameObject::id)
+        .collect()
+}
 
 /// One answer's worth of progress: the state around it and the events it produced.
 pub struct Step<'a> {
@@ -17,6 +43,8 @@ pub struct Step<'a> {
     pub from_seq: u64,
     /// How many answers have been applied (0 for the setup events).
     pub answers: usize,
+    /// The decision waiting after the events, or `None` once the game is over.
+    pub decision: Option<&'a Decision>,
 }
 
 /// A fuzz setup whose every card has a distinct name, so a leak of any card can be searched for.
@@ -53,6 +81,7 @@ pub fn run_game(setup: GameSetup, seed: u64, mut observe: impl FnMut(&Step)) -> 
         after: engine.state(),
         from_seq: 0,
         answers: 0,
+        decision: engine.decision(),
     });
     let mut answers = 0;
     while let Some(decision) = engine.decision().cloned() {
@@ -67,6 +96,7 @@ pub fn run_game(setup: GameSetup, seed: u64, mut observe: impl FnMut(&Step)) -> 
             after: engine.state(),
             from_seq,
             answers,
+            decision: engine.decision(),
         });
     }
     engine

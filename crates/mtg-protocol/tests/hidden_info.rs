@@ -9,12 +9,12 @@ mod common;
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use common::{Step, run_game, unique_setup};
+use common::{Step, is_hidden, run_game, unique_setup};
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_engine::GameState;
 use mtg_engine::object::GameObject;
 use mtg_engine::zones::Zone;
-use mtg_protocol::{StateView, project_events};
+use mtg_engine::{Engine, GameState};
+use mtg_protocol::{EventBatch, StateView, project_events};
 use rstest::rstest;
 use serde_json::Value;
 
@@ -57,14 +57,6 @@ const SCALAR_KEYS: &[&str] = &[
 
 /// How often (in answers) a full snapshot is checked; events are checked after every answer.
 const SNAPSHOT_EVERY: usize = 20;
-
-fn is_hidden(zone: Zone, viewer: PlayerId) -> bool {
-    match zone {
-        Zone::Library(_) => true,
-        Zone::Hand(owner) => owner != viewer,
-        _ => false,
-    }
-}
 
 fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectId, String> {
     state
@@ -124,6 +116,16 @@ fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<String> {
     out
 }
 
+/// The parts of a batch that can mention an object, named so a failure says where the leak is.
+fn batch_parts(batch: &EventBatch) -> [(&'static str, Value); 4] {
+    [
+        ("events", serde_json::to_value(&batch.events).unwrap()),
+        ("table", serde_json::to_value(&batch.table).unwrap()),
+        ("objects", serde_json::to_value(&batch.objects).unwrap()),
+        ("gone", serde_json::to_value(&batch.gone).unwrap()),
+    ]
+}
+
 #[rstest]
 #[case(2, 1)]
 #[case(2, 2)]
@@ -139,12 +141,14 @@ fn no_hidden_object_reaches_any_viewer(#[case] players: usize, #[case] seed: u64
         for (viewer, batch) in viewers.iter().zip(&batches) {
             let hidden = hidden_across(step.before, step.after, *viewer);
             checked += hidden.len();
-            let found = leaks(&serde_json::to_value(batch).unwrap(), &hidden);
-            assert!(
-                found.is_empty(),
-                "seed {seed} answer {} viewer {viewer:?}: event batch leaks {found:?}",
-                step.answers
-            );
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&value, &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
         }
         if step.answers.is_multiple_of(SNAPSHOT_EVERY) {
             snapshots += 1;
@@ -186,7 +190,7 @@ fn snapshots_show_exactly_what_the_viewer_may_know(#[case] players: usize, #[cas
                 visible, expected,
                 "viewer {viewer:?} sees the wrong objects"
             );
-            for seat in &view.players {
+            for seat in &view.table.players {
                 let hand = step.after.zone(Zone::Hand(seat.seat));
                 assert_eq!(seat.hand.count as usize, hand.len());
                 assert_eq!(
@@ -202,4 +206,48 @@ fn snapshots_show_exactly_what_the_viewer_may_know(#[case] players: usize, #[cas
             }
         }
     });
+}
+
+#[test]
+fn the_scan_flags_a_hidden_card_in_each_part_of_a_batch() {
+    let setup = unique_setup(2, 7);
+    let before = GameState::from_setup(&setup).unwrap();
+    let engine = Engine::new(setup).unwrap();
+    let viewer = PlayerId(0);
+    let clean = project_events(&before, engine.events(), &[viewer], 0)
+        .unwrap()
+        .remove(0);
+    let hidden = hidden_in(engine.state(), viewer);
+    assert!(hidden.len() > 40, "most of the game is hidden at the start");
+    for (part, value) in batch_parts(&clean) {
+        assert!(
+            leaks(&value, &hidden).is_empty(),
+            "control: {part} is clean"
+        );
+    }
+
+    let (id, name) = hidden
+        .iter()
+        .next()
+        .map(|(id, name)| (*id, name.clone()))
+        .unwrap();
+    let mut in_gone = clean.clone();
+    in_gone.gone.push(id);
+    let mut in_table = clean.clone();
+    in_table.table.players[1].hand.cards = Some(vec![id]);
+    let mut in_objects = clean.clone();
+    let mut card = clean.objects[0].clone();
+    card.id = id;
+    card.name = name;
+    in_objects.objects.push(card);
+    for (part, batch) in [
+        ("gone", in_gone),
+        ("table", in_table),
+        ("objects", in_objects),
+    ] {
+        let flagged = batch_parts(&batch)
+            .into_iter()
+            .any(|(name, value)| name == part && !leaks(&value, &hidden).is_empty());
+        assert!(flagged, "a hidden card in {part} went unnoticed");
+    }
 }

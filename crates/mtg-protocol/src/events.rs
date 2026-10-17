@@ -1,7 +1,5 @@
 //! Projecting the engine's event log for one viewer without leaking hidden cards.
 
-use std::collections::BTreeSet;
-
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::apply_event;
 use mtg_engine::events::Event;
@@ -9,9 +7,10 @@ use mtg_engine::state::GameState;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
+use crate::diff::{ObjectDiff, diff};
 use crate::error::ProtocolError;
-use crate::project::zone_is_visible;
-use crate::view::ObjectView;
+use crate::project::{visible_objects, zone_is_visible};
+use crate::view::{ObjectView, TableView};
 
 /// What a viewer learns about an event that moved or revealed hidden cards: who and how many, never which.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
@@ -58,15 +57,25 @@ pub enum EventView {
     Hidden(HiddenEvent),
 }
 
-/// A run of consecutive events for one viewer plus the cards they reveal.
+/// A run of consecutive events for one viewer and the state they leave behind.
+///
+/// The batch is self-sufficient: replacing the table, upserting `objects` and dropping `gone` turns
+/// the viewer's view before it into their view after it, with no need to interpret `events`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct EventBatch {
     /// Log position of the first event.
     pub from_seq: u64,
     /// The events in log order.
     pub events: Vec<EventView>,
-    /// Views (as of the end of the batch) of visible objects the events touched.
+    /// The whole table after the last event; replaces the client's copy.
+    // Boxed so that `ServerMessage::Events` does not make every message that large.
+    pub table: Box<TableView>,
+    /// Visible objects after the batch that are new to the viewer or differ from how they saw them before.
+    ///
+    /// The batch at `from_seq` 0 lists every visible object, because no view precedes it.
     pub objects: Vec<ObjectView>,
+    /// Objects the viewer could see before the batch and cannot see now.
+    pub gone: Vec<ObjectId>,
 }
 
 fn count(len: usize) -> u32 {
@@ -142,6 +151,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
 ///
 /// `from_seq` is the log position of the first event. The events are folded over a copy of
 /// `before` once, so hidden-ness is judged against the zone each object was in at that moment.
+/// What changed is read off each viewer's view of `before` and of the folded state, never guessed
+/// from the events: a continuous effect can change an object that no event names.
 pub fn project_events(
     before: &GameState,
     events: &[Event],
@@ -150,7 +161,6 @@ pub fn project_events(
 ) -> Result<Vec<EventBatch>, ProtocolError> {
     let mut state = before.clone();
     let mut views: Vec<Vec<EventView>> = viewers.iter().map(|_| Vec::new()).collect();
-    let mut touched = BTreeSet::<ObjectId>::new();
     for event in events {
         for (list, viewer) in views.iter_mut().zip(viewers) {
             list.push(match redact(&state, event, *viewer) {
@@ -158,19 +168,23 @@ pub fn project_events(
                 None => EventView::Public(event.clone()),
             });
         }
-        touched.extend(event.touched_objects());
         apply_event(&mut state, event)?;
     }
     Ok(viewers
         .iter()
         .zip(views)
-        .map(|(viewer, events)| EventBatch {
-            from_seq,
-            events,
-            objects: touched
-                .iter()
-                .filter_map(|id| ObjectView::of(&state, *viewer, *id))
-                .collect(),
+        .map(|(viewer, events)| {
+            let seen = visible_objects(before, *viewer);
+            let now = visible_objects(&state, *viewer);
+            // Nothing precedes the first batch, so a client that joined before the game starts needs every object.
+            let ObjectDiff { objects, gone } = diff(&seen, &now, from_seq == 0);
+            EventBatch {
+                from_seq,
+                events,
+                table: Box::new(TableView::of(&state, *viewer)),
+                objects,
+                gone,
+            }
         })
         .collect())
 }

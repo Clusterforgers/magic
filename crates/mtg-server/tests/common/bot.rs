@@ -87,7 +87,7 @@ impl Bot {
         match message {
             ServerMessage::Welcome { player, .. } => assert_eq!(player, self.seat),
             ServerMessage::Snapshot { seq, state } => {
-                assert_eq!(state.viewer, self.seat);
+                assert_eq!(state.table.viewer, self.seat);
                 self.next_seq = seq;
                 self.snapshots += 1;
             }

@@ -61,6 +61,7 @@ export type { StateView } from "./StateView";
 export type { Step } from "./Step";
 export type { Subtype } from "./Subtype";
 export type { Supertype } from "./Supertype";
+export type { TableView } from "./TableView";
 export type { TurnView } from "./TurnView";
 export type { Zone } from "./Zone";
 export type { ZoneView } from "./ZoneView";

@@ -324,6 +324,39 @@ fn event_batches_are_flattened_into_the_tagged_object() {
     let value = serde_json::to_value(ServerMessage::Events(batch)).unwrap();
     assert_eq!(value["type"], "Events");
     assert!(value["from_seq"].is_number() && value["events"].is_array());
+    assert!(value["objects"].is_array() && value["gone"].is_array());
+    assert!(
+        value["table"]["players"].is_array(),
+        "the batch carries the table"
+    );
+    assert!(
+        value["table"].get("objects").is_none(),
+        "objects sit beside the table"
+    );
+}
+
+#[test]
+fn snapshots_stay_one_flat_object_with_the_same_table_fields_as_a_batch() {
+    let (view, batch) = sample_view_and_batch();
+    let snapshot = ServerMessage::Snapshot {
+        seq: 3,
+        state: Box::new(view),
+    };
+    let value = serde_json::to_value(snapshot).unwrap();
+    let state = value["state"].as_object().unwrap();
+    assert!(
+        !state.contains_key("table"),
+        "the table is flattened into the state"
+    );
+    let mut expected: BTreeSet<String> = serde_json::to_value(&batch.table)
+        .unwrap()
+        .as_object()
+        .unwrap()
+        .keys()
+        .cloned()
+        .collect();
+    expected.insert("objects".into());
+    assert_eq!(state.keys().cloned().collect::<BTreeSet<_>>(), expected);
 }
 
 proptest! {

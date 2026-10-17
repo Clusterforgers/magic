@@ -147,7 +147,7 @@ async fn a_joining_seat_gets_welcome_then_snapshot_then_its_pending_decision() {
             panic!("the snapshot comes right after the welcome");
         };
         assert_eq!(seq, status.events);
-        assert_eq!(state.viewer, seat(n));
+        assert_eq!(state.table.viewer, seat(n));
         if n == holder {
             assert_eq!(
                 back.next().await,
@@ -182,7 +182,7 @@ async fn resync_repeats_the_snapshot_and_the_pending_decision() {
             panic!("seat {n} got no snapshot: {messages:?}");
         };
         assert_eq!(*seq, status.events);
-        assert_eq!(state.viewer, seat(n));
+        assert_eq!(state.table.viewer, seat(n));
         if n == holder {
             assert_eq!(
                 messages[1..],

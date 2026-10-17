@@ -140,9 +140,11 @@ pub struct CombatView {
     pub blockers_declared: Vec<PlayerId>,
 }
 
-/// Everything one viewer may know about the game right now.
+/// The table as a viewer sees it: everything but the objects themselves.
+///
+/// Every event batch carries a fresh one, so a client never derives any of it from events.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-pub struct StateView {
+pub struct TableView {
     /// The seat this view was built for.
     pub viewer: PlayerId,
     /// Name of the format being played.
@@ -163,10 +165,20 @@ pub struct StateView {
     pub stack: ZoneView,
     /// The shared exile zone.
     pub exile: ZoneView,
-    /// Every object the viewer may identify, in id order.
-    pub objects: Vec<ObjectView>,
     /// Combat in progress.
     pub combat: CombatView,
     /// The result once the game is over.
     pub result: Option<GameResult>,
+}
+
+/// Everything one viewer may know about the game right now: the table plus every object they may identify.
+///
+/// On the wire the table fields and `objects` form one flat JSON object.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct StateView {
+    /// Everything but the objects.
+    #[serde(flatten)]
+    pub table: TableView,
+    /// Every object the viewer may identify, in id order.
+    pub objects: Vec<ObjectView>,
 }
