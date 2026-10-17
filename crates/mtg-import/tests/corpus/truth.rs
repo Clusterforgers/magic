@@ -1,4 +1,4 @@
-//! Ground truth (`truth.json`) of the export corpus and the loader for decks and their export files.
+//! Goal: model the ground truth (`truth.json`) of the export corpus and load decks and their export files.
 
 use std::collections::BTreeMap;
 use std::fmt;

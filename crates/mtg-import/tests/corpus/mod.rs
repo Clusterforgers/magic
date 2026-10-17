@@ -1,4 +1,4 @@
-//! Shared helpers of the export-corpus tests: the truth model and loader, name aliases, and the comparison of a parse with the truth.
+//! Goal: one place that knows how the export corpus is laid out and how to compare a parse with the truth, so each test file only says what it checks.
 
 // Each test crate that includes this module uses only part of it.
 #![allow(dead_code, unused_imports)]

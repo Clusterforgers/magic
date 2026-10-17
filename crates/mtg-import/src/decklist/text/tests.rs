@@ -160,6 +160,33 @@ fn splits_lines_like_every_platform(#[case] input: &str, #[case] expected: &[(us
 
 proptest! {
     #[test]
+    fn mtgo_text_reads_main_sideboard_stickers_and_the_trailing_commander_block(
+        main in 1usize..6,
+        side in 0usize..4,
+        stickers in 0usize..3,
+        commanders in 1usize..4,
+    ) {
+        let block = |name: &str, n: usize| {
+            (0..n).map(|i| format!("1 {name}{i}")).collect::<Vec<_>>().join("\n")
+        };
+        let mut parts = vec![block("Main", main)];
+        if side > 0 {
+            parts.push(format!("SIDEBOARD:\n{}", block("Side", side)));
+        }
+        if stickers > 0 {
+            parts.push(format!("STICKERS:\n{}", block("Sticker", stickers)));
+        }
+        parts.push(block("Commander", commanders));
+        let deck = parse_text(&parts.join("\n\n"), mtgo_text());
+        let count = |n: usize| u64::try_from(n).unwrap();
+        prop_assert!(deck.errors.is_empty());
+        prop_assert_eq!(deck.card_count(Main), count(main));
+        prop_assert_eq!(deck.card_count(Sideboard), count(side));
+        prop_assert_eq!(deck.card_count(Commander), count(commanders));
+        prop_assert_eq!(deck.ignored.iter().map(|s| s.count).sum::<u64>(), count(stickers));
+    }
+
+    #[test]
     fn arbitrary_text_never_panics_and_accounts_for_every_line(input in "\\PC{0,200}|[0-9a-zA-Z \\n\\r:()\\[\\]*/#,'-]{0,200}") {
         for options in [plain(), arena(), archidekt(), mtgo_text()] {
             let deck = parse_text(&input, options);

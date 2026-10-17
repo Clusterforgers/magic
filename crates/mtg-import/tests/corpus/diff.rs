@@ -1,4 +1,4 @@
-//! Card multisets and their comparison: names the first difference and excuses the few cards Arena and MTGO rename.
+//! Goal: compare card multisets, name the first difference, and excuse only the few cards Arena and MTGO rename.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;

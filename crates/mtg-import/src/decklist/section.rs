@@ -106,6 +106,7 @@ pub fn section_from_category(category: &str) -> Option<Section> {
 mod tests {
     //! Goal: section vocabulary is recognized in every spelling exporters use, without mistaking card names for headers.
     use super::*;
+    use proptest::prelude::*;
     use rstest::rstest;
 
     #[rstest]
@@ -218,5 +219,18 @@ mod tests {
     #[case(":", false)]
     fn detects_shouting_headers(#[case] line: &str, #[case] expected: bool) {
         assert_eq!(is_shouting_header(line), expected);
+    }
+
+    proptest! {
+        #[test]
+        fn later_categories_never_change_the_board(
+            first in "[A-Za-z0-9 :.-]{0,12}(\\{(top|noDeck|noPrice)\\}){0,2}",
+            rest in "[A-Za-z{}, ]{0,30}",
+        ) {
+            prop_assert_eq!(
+                section_from_category(&format!("{first},{rest}")),
+                section_from_category(&first)
+            );
+        }
     }
 }

@@ -358,6 +358,16 @@ mod tests {
         fn arbitrary_text_never_panics(line in "\\PC{0,80}") {
             let _ = parse_entry(&line, PLAIN);
             let _ = parse_entry(&line, ARCHIDEKT);
+            let _ = parse_entry(&line, MOXFIELD);
+        }
+
+        #[test]
+        fn hash_tags_never_change_what_precedes_them(tags in "[A-Za-z0-9 !()#-]{0,30}", foil in any::<bool>()) {
+            let head = if foil { "2 Sol Ring (CMM) 400 *F*" } else { "2 Sol Ring (CMM) 400" };
+            let bare = parse_entry(head, MOXFIELD).unwrap();
+            let tagged = parse_entry(&format!("{head} #{tags}"), MOXFIELD).unwrap();
+            prop_assert_eq!(summary(&tagged), summary(&bare));
+            prop_assert_eq!(tagged.foil, bare.foil);
         }
 
         #[test]

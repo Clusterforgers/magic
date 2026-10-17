@@ -1,4 +1,4 @@
-//! Builds both sides of the comparison, the site's truth and the parsed export, and checks one export against the other.
+//! Goal: build both sides of the comparison, the site's truth and the parsed export, and check one export against the other.
 
 use std::collections::BTreeSet;
 

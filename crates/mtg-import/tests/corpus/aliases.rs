@@ -1,4 +1,4 @@
-//! Names a text may use for a card instead of its oracle name, all learned from the deck's own data.
+//! Goal: learn, from a deck's own data, the names its texts use instead of oracle names (flavor names, front faces) so the comparison stays strict about everything else.
 
 use std::collections::BTreeMap;
 

@@ -1,6 +1,7 @@
 //! Goal: the dialect rules the corpus exposed hold for every notation: Archidekt's first category decides the board and its headers never become cards, sections that are no deck cards are counted and kept out, and Moxfield tags never reach names or printings.
 use super::tests::{options, sections};
 use super::*;
+use proptest::prelude::*;
 use rstest::rstest;
 
 use super::super::types::DeckFormat;
@@ -139,4 +140,26 @@ fn hash_tags_never_reach_names_or_printings(
         entry.set.as_deref().zip(entry.collector_number.as_deref()),
         printing
     );
+}
+
+proptest! {
+    #[test]
+    fn a_sticker_section_takes_every_card_after_it_and_no_others(
+        copies in prop::collection::vec(1u32..=4, 1..12),
+        cut in 0usize..12,
+    ) {
+        let cut = cut.min(copies.len());
+        let mut lines: Vec<String> = copies
+            .iter()
+            .enumerate()
+            .map(|(i, n)| format!("{n} Card {i} (SET) {i}"))
+            .collect();
+        lines.insert(cut, "STICKERS:".to_owned());
+        let deck = parse_text(&lines.join("\n"), options(DeckFormat::Moxfield));
+        let kept: u64 = copies[..cut].iter().map(|&n| u64::from(n)).sum();
+        let left_out: u64 = copies[cut..].iter().map(|&n| u64::from(n)).sum();
+        prop_assert!(deck.errors.is_empty());
+        prop_assert_eq!(deck.card_count(Main), kept);
+        prop_assert_eq!(deck.ignored.iter().map(|s| s.count).sum::<u64>(), left_out);
+    }
 }
