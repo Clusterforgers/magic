@@ -1,6 +1,6 @@
 # Magic web platform
 
-Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/TypeScript client, Postgres. Design: `docs/PLAN.md`. Progress: `docs/ROADMAP.md` (continue with the next unchecked item). Agent briefs: `docs/agents.md`. Design notes: `docs/engine.md`, `docs/protocol.md`, `docs/server.md`.
+Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/TypeScript client, Postgres. Design: `docs/PLAN.md`. Progress: `docs/ROADMAP.md` (continue with the next unchecked item). Agent briefs: `docs/agents.md`. Design notes: `docs/engine.md`, `docs/protocol.md`, `docs/server.md`, `docs/web.md`.
 
 ## Layout
 - `crates/mtg-core` shared value types · `mtg-engine` rules engine (no IO) · `mtg-cards` card DSL · `mtg-import` Scryfall/MTGJSON/deck parsing · `mtg-db` Postgres schema + repositories · `mtg-protocol` wire types · `mtg-server` axum + sqlx · `mtg-testkit` scenarios/invariants
