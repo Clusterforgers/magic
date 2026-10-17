@@ -6,6 +6,7 @@ use mtg_engine::decision::{
     Answer, DecisionKind, MulliganChoice, PayChoice, PriorityAction, PriorityOptions,
 };
 use mtg_engine::mana::{ManaSource, Payment};
+use mtg_engine::player::Player;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, Engine, EngineError, Event, GameState};
@@ -343,7 +344,7 @@ impl Driver {
         let actual = self
             .state()
             .player(PlayerId::from_index(player))
-            .map(|p| p.life());
+            .map(Player::life);
         expectation(actual == Some(life), || {
             format!("player {player} life is {actual:?}, expected {life}")
         })

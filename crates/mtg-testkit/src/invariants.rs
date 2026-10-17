@@ -5,6 +5,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use mtg_engine::combat::{AttackTarget, DamageTarget};
+use mtg_engine::object::PermanentState;
+use mtg_engine::player::Player;
 use mtg_engine::state::Stage;
 use mtg_engine::zones::{Zone, Zones};
 use mtg_engine::{Event, GameSetup, GameState, apply_event, replay};
@@ -174,7 +176,7 @@ impl InvariantChecker {
         Ok(InvariantChecker {
             setup: setup.clone(),
             expected_objects: shadow.object_count(),
-            expected_life: shadow.players().iter().map(|p| p.life()).collect(),
+            expected_life: shadow.players().iter().map(Player::life).collect(),
             expected_pool: vec![[0; 6]; shadow.players().len()],
             expected_damage,
             shadow,
@@ -293,7 +295,7 @@ impl InvariantChecker {
                             .get_mut(p.index())
                             .ok_or_else(|| Violation::Damage(format!("unknown {p:?}")))?;
                         *life -= i32::try_from(*amount).unwrap_or(i32::MAX);
-                        let actual = self.shadow.player(*p).map(|p| p.life());
+                        let actual = self.shadow.player(*p).map(Player::life);
                         if actual != Some(*life) {
                             return Err(Violation::Damage(format!(
                                 "{p:?} life is {actual:?}, damage history says {life}"
@@ -330,7 +332,7 @@ impl InvariantChecker {
 
     fn check_pool(&self, player: PlayerId) -> Result<(), Violation> {
         let expected = self.expected_pool.get(player.index());
-        let actual = self.shadow.player(player).map(|p| p.mana());
+        let actual = self.shadow.player(player).map(Player::mana);
         match (expected, actual) {
             (Some(expected), Some(pool)) => {
                 for mana in ManaType::ALL {
@@ -360,7 +362,7 @@ impl InvariantChecker {
                 .shadow
                 .object(id)
                 .and_then(|o| o.permanent())
-                .map_or(0, |p| p.damage());
+                .map_or(0, PermanentState::damage);
             let expected = self.expected_damage.get(&id).copied().unwrap_or(0);
             if marked != expected {
                 return Err(Violation::Damage(format!(
