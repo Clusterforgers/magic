@@ -24,4 +24,6 @@ Design record for `mtg-protocol`. Rules of the house are in `CLAUDE.md`; engine 
 ## Revisit
 - `EffectCreated` is passed through as public; revisit when effects can reference hidden objects.
 - No face-down cards, no spectator seat and no "waiting on player X" message yet.
+- No lobby message: before the start a client only sees `Welcome`, so it cannot show who has pressed ready (the actor in `mtg-server` keeps readiness per seat and ignores late `Ready`).
+- Decision ids are a per-actor counter that restarts at 1 after a resume; clients must not carry one across a reconnect to a restarted server (a fresh `Decision` always follows the snapshot).
 - A 4-player board with 175 visible objects serializes to about 53 KB (bounded at 64 KiB in a test); snapshots do not grow with libraries or opponents' hands.

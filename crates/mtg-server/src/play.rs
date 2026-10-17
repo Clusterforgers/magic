@@ -105,6 +105,9 @@ impl<S: EventStore> GameActor<S> {
         events: &[Event],
         from_seq: u64,
     ) -> Result<Vec<(PlayerId, EventBatch)>, CommitError> {
+        if events.is_empty() {
+            return Ok(Vec::new()); // a cast in progress changes nothing worth saving or showing
+        }
         let viewers = self.seats.connected();
         let batches = if viewers.is_empty() {
             Vec::new()

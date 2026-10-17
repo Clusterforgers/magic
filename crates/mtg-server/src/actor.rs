@@ -13,7 +13,7 @@ use tokio::sync::{mpsc, oneshot};
 use crate::game_id::GameId;
 use crate::handle::{Command, GameHandle, GameStatus, JoinError};
 use crate::running::{Rejection, Running, count};
-use crate::seats::{MIN_QUEUE, Seats};
+use crate::seats::Seats;
 use crate::store::{EventStore, StoreError};
 
 /// Longest chat line, in characters.
@@ -22,7 +22,7 @@ pub const MAX_CHAT_CHARS: usize = 500;
 /// Tunables of one game actor.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct GameConfig {
-    /// Messages a seat's queue holds before that client is dropped (never less than [`MIN_QUEUE`]).
+    /// Messages a seat's queue holds before that client is dropped (never less than [`crate::MIN_QUEUE`]).
     pub seat_queue: usize,
     /// Client messages that may wait for the actor before senders have to wait.
     pub command_queue: usize,
@@ -36,8 +36,6 @@ impl Default for GameConfig {
         }
     }
 }
-
-const _: () = assert!(MIN_QUEUE >= 4, "a join sends up to four messages");
 
 /// Why a game could not be started or resumed.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
