@@ -1,0 +1,300 @@
+/**
+ * One seat's WebSocket to `mtg-server`: sends `Join` first, parses every frame at the boundary and reconnects with
+ * exponential backoff. It knows nothing of the game; `play/session.ts` listens to its events.
+ */
+import { PROTOCOL_VERSION } from '@/protocol/generated'
+import type { ClientMessage, ErrorCode, ServerMessage } from '@/protocol/generated'
+import { parseFrame } from './parse'
+import type { FrameError } from './parse'
+
+/** Where the connection stands: `open` means the server answered `Join` with `Welcome`. */
+export type ConnectionStatus = 'idle' | 'connecting' | 'open' | 'reconnecting' | 'replaced' | 'stopped'
+
+/** What a `GameSocket` reports to its owner. */
+export type SocketEvent =
+  | {
+      type: 'status'
+      status: ConnectionStatus
+      /** Failed attempts in a row since the last `Welcome`; 0 while open. */
+      attempt: number
+      /** Why the socket stopped, in words for a player; null when it did not stop for a reason. */
+      reason: string | null
+    }
+  | { type: 'message'; message: ServerMessage }
+  | { type: 'frame_error'; error: FrameError }
+
+/** The callbacks a raw socket calls; they are never called before the factory returns. */
+export interface RawSocketHandlers {
+  open(): void
+  message(data: unknown): void
+  close(code: number, reason: string): void
+}
+
+/** The part of a WebSocket the client uses. */
+export interface RawSocket {
+  send(text: string): void
+  close(code: number, reason: string): void
+}
+
+/** Opens a socket to `url`; tests pass a fake. */
+export type SocketFactory = (url: string, handlers: RawSocketHandlers) => RawSocket
+
+/** The timer functions retries are scheduled with; tests pass a manual clock. */
+export interface Timers {
+  setTimeout(callback: () => void, ms: number): number
+  clearTimeout(id: number): void
+}
+
+/** A browser WebSocket. */
+export const browserSocket: SocketFactory = (url, handlers) => {
+  const ws = new WebSocket(url)
+  ws.onopen = () => handlers.open()
+  ws.onmessage = (event) => handlers.message(event.data)
+  ws.onclose = (event) => handlers.close(event.code, event.reason)
+  return { send: (text) => ws.send(text), close: (code, reason) => ws.close(code, reason) }
+}
+
+/** The browser's timers. */
+export const browserTimers: Timers = {
+  setTimeout: (callback, ms) => window.setTimeout(callback, ms),
+  clearTimeout: (id) => window.clearTimeout(id),
+}
+
+/** Options for a `GameSocket`; only the first four have no default. */
+export interface GameSocketOptions {
+  game: string
+  token: string
+  /** The display name sent in `Join`. */
+  name: string
+  onEvent(event: SocketEvent): void
+  createSocket?: SocketFactory
+  timers?: Timers
+  /** Jitter source in [0, 1); defaults to `Math.random`. */
+  random?: () => number
+  /** Origin of the page, such as `https://play.example`; defaults to `window.location.origin`. */
+  origin?: string
+}
+
+/** The first retry waits this long, in milliseconds, and each failure doubles it. */
+export const FIRST_RETRY_MS = 250
+/** No retry waits longer than this, in milliseconds. */
+export const LONGEST_RETRY_MS = 15_000
+const JITTER = 0.5
+const NORMAL_CLOSE = 1000
+const REPLACED_CODE = 4000
+
+/** The wait before retry number `failures` (1 is the first): 250 ms doubling to 15 s, minus up to half as jitter. */
+export function retryDelay(failures: number, random: number): number {
+  const ceiling = Math.min(LONGEST_RETRY_MS, FIRST_RETRY_MS * 2 ** (failures - 1))
+  const spread = Number.isFinite(random) ? Math.min(1, Math.max(0, random)) : 0
+  return Math.round(ceiling * (1 - JITTER * spread))
+}
+
+/** The WebSocket address of a seat: `/ws/{game}/{token}` on `origin`, with ws or wss to match its scheme. */
+export function socketUrl(game: string, token: string, origin: string): string {
+  const url = new URL(`/ws/${encodeURIComponent(game)}/${encodeURIComponent(token)}`, origin)
+  url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
+  return url.href
+}
+
+const REPLACED_TEXT = 'This seat was opened in another window or tab, which took it over.'
+
+// Close codes after which retrying cannot help; any other code is treated as a lost connection.
+const STOP_REASONS: Readonly<Record<number, string>> = {
+  1000: 'The server ended the connection.',
+  1002: 'The server refused the connection (protocol error).',
+  1007: 'The server could not read a message this page sent.',
+  1008: 'The server closed the connection because of a policy violation',
+  1009: 'A message was too big for the server.',
+}
+
+const FATAL_ERRORS: Readonly<Partial<Record<ErrorCode, string>>> = {
+  UnsupportedVersion:
+    'This page and the server speak different protocol versions. Reload the page; if that does not help, the app needs an update.',
+  UnknownGame: 'This game does not exist any more.',
+}
+
+/** A seat's connection to its game. */
+export class GameSocket {
+  private readonly options: GameSocketOptions
+  private readonly createSocket: SocketFactory
+  private readonly timers: Timers
+  private readonly random: () => number
+  private state: ConnectionStatus = 'idle'
+  private raw: RawSocket | null = null
+  private opened = false
+  // Bumped whenever a socket is replaced or abandoned, so its late events can be told apart and ignored.
+  private generation = 0
+  private failures = 0
+  private retryTimer: number | null = null
+  private retired = false
+
+  constructor(options: GameSocketOptions) {
+    this.options = options
+    this.createSocket = options.createSocket ?? browserSocket
+    this.timers = options.timers ?? browserTimers
+    this.random = options.random ?? Math.random
+  }
+
+  /** The current status. */
+  get status(): ConnectionStatus {
+    return this.state
+  }
+
+  /** Starts connecting; does nothing while a connection or a retry is already under way. */
+  connect(): void {
+    if (this.state === 'connecting' || this.state === 'open' || this.state === 'reconnecting') return
+    this.failures = 0
+    this.retired = false
+    this.setStatus('connecting', null)
+    this.openSocket()
+  }
+
+  /** Closes with code 1000, cancels any retry and goes back to `idle`. Safe to call at any time. */
+  disconnect(): void {
+    this.cancelRetry()
+    this.generation += 1
+    this.closeRaw()
+    if (this.state !== 'idle') this.setStatus('idle', null)
+  }
+
+  /** Sends one message; false when the socket is not open, in which case nothing was sent. */
+  send(message: ClientMessage): boolean {
+    return this.opened && this.write(message)
+  }
+
+  /** Tells the socket nothing more is needed (the game is over): a lost connection is no longer retried. */
+  retire(): void {
+    this.retired = true
+  }
+
+  private openSocket(): void {
+    this.generation += 1
+    const generation = this.generation
+    const live = (): boolean => generation === this.generation
+    try {
+      this.raw = this.createSocket(socketUrl(this.options.game, this.options.token, this.pageOrigin()), {
+        open: () => {
+          if (live()) this.onOpen()
+        },
+        message: (data) => {
+          if (live()) this.onFrame(data)
+        },
+        close: (code, reason) => {
+          if (live()) this.onClose(code, reason)
+        },
+      })
+    } catch {
+      this.halt('stopped', 'The browser refused to open the connection.')
+    }
+  }
+
+  private pageOrigin(): string {
+    return this.options.origin ?? window.location.origin
+  }
+
+  private onOpen(): void {
+    if (this.opened) return
+    this.opened = true
+    this.write({
+      type: 'Join',
+      protocol_version: PROTOCOL_VERSION,
+      game: this.options.game,
+      name: this.options.name,
+    })
+  }
+
+  private onFrame(data: unknown): void {
+    const frame = parseFrame(data)
+    if (!frame.ok) {
+      this.emit({ type: 'frame_error', error: frame.error })
+      return
+    }
+    const { message } = frame
+    const generation = this.generation
+    if (message.type === 'Welcome') this.failures = 0
+    this.emit({ type: 'message', message })
+    // The owner may have closed the socket while handling the message.
+    if (generation !== this.generation) return
+    if (message.type === 'Welcome') {
+      this.setStatus('open', null)
+    } else if (message.type === 'Error') {
+      const reason = FATAL_ERRORS[message.code]
+      if (reason !== undefined) this.halt('stopped', reason)
+    }
+  }
+
+  private onClose(code: number, reason: string): void {
+    this.raw = null
+    this.opened = false
+    this.generation += 1
+    if (code === REPLACED_CODE) {
+      this.halt('replaced', REPLACED_TEXT)
+      return
+    }
+    const stopped = STOP_REASONS[code]
+    if (stopped !== undefined) {
+      this.halt('stopped', reason === '' ? stopped : `${stopped} (${reason})`)
+    } else if (this.retired) {
+      this.halt('stopped', null)
+    } else {
+      this.scheduleRetry()
+    }
+  }
+
+  private scheduleRetry(): void {
+    this.failures += 1
+    const wait = retryDelay(this.failures, this.random())
+    this.retryTimer = this.timers.setTimeout(() => {
+      this.retryTimer = null
+      if (this.state === 'reconnecting') this.openSocket()
+    }, wait)
+    this.setStatus('reconnecting', null)
+  }
+
+  // Ends the connection for good (until `connect` is called again) and says why.
+  private halt(status: 'stopped' | 'replaced', reason: string | null): void {
+    if (this.state === 'idle') return
+    this.cancelRetry()
+    this.generation += 1
+    this.closeRaw()
+    this.setStatus(status, reason)
+  }
+
+  private closeRaw(): void {
+    const raw = this.raw
+    this.raw = null
+    this.opened = false
+    if (raw === null) return
+    try {
+      raw.close(NORMAL_CLOSE, 'client closing')
+    } catch {
+      // The socket was already closing; nothing is left to do for it.
+    }
+  }
+
+  private cancelRetry(): void {
+    if (this.retryTimer === null) return
+    this.timers.clearTimeout(this.retryTimer)
+    this.retryTimer = null
+  }
+
+  private write(message: ClientMessage): boolean {
+    if (this.raw === null) return false
+    try {
+      this.raw.send(JSON.stringify(message))
+    } catch {
+      return false
+    }
+    return true
+  }
+
+  private setStatus(status: ConnectionStatus, reason: string | null): void {
+    this.state = status
+    this.emit({ type: 'status', status, attempt: this.failures, reason })
+  }
+
+  private emit(event: SocketEvent): void {
+    this.options.onEvent(event)
+  }
+}
