@@ -10,7 +10,7 @@ use mtg_db::model::Card;
 use mtg_db::{CardRepo, Database};
 use mtg_import::ids::{OracleId, PrintingId};
 use mtg_import::mtgjson::{PreconDeck, parse_deck};
-use mtg_import::resolve::normalize_name;
+use mtg_import::resolve::{CardIndex, normalize_name};
 use mtg_import::scryfall::{CardRecord, RulingRecord, ScryfallError, cards, rulings};
 use serde_json::Value;
 use sqlx::PgPool;
@@ -159,6 +159,12 @@ pub async fn snapshot(pool: &PgPool, table: &str, order: &str, with_timestamps: 
         .fetch_one(pool)
         .await
         .expect("snapshot query runs")
+}
+
+/// The name index built from the database and the one built from the fixture records in memory.
+pub async fn card_index_pair(database: &Database) -> (CardIndex, CardIndex) {
+    let stored = database.cards().card_index().await.expect("index loads");
+    (stored, CardIndex::from_records(&fixture_records()))
 }
 
 /// A card repository over a pool, for tests that read only.
