@@ -22,7 +22,8 @@ pub(crate) enum Progress {
 pub(crate) fn next(state: &GameState) -> Progress {
     match state.stage() {
         Stage::PreGame => Progress::Events(mulligan::pregame(state)),
-        Stage::Mulligan => mulligan::next(state),
+        // A player can concede during the opening, so it needs the same end-of-game handling as turns.
+        Stage::Mulligan => settle(state).unwrap_or_else(|| mulligan::next(state)),
         Stage::Finished => Progress::Done,
         Stage::Turns => next_in_turns(state),
     }
@@ -34,12 +35,14 @@ fn next_in_turns(state: &GameState) -> Progress {
     if !actions.is_empty() {
         return Progress::Events(actions);
     }
+    settle(state).unwrap_or_else(|| steps::next(state))
+}
+
+/// The game-end check, then the removal of eliminated players' objects and ended effects.
+fn settle(state: &GameState) -> Option<Progress> {
     if let Some(result) = state.format().game_result(state) {
-        return Progress::Events(vec![Event::GameEnded { result }]);
+        return Some(Progress::Events(vec![Event::GameEnded { result }]));
     }
     let housekeeping = sba::housekeeping(state);
-    if !housekeeping.is_empty() {
-        return Progress::Events(housekeeping);
-    }
-    steps::next(state)
+    (!housekeeping.is_empty()).then_some(Progress::Events(housekeeping))
 }

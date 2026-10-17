@@ -932,6 +932,11 @@ dependencies = [
  "mtg-core",
  "mtg-engine",
  "mtg-protocol",
+ "mtg-testkit",
+ "rstest",
+ "thiserror",
+ "tokio",
+ "uuid",
 ]
 
 [[package]]

@@ -13,6 +13,8 @@ pub enum LossReason {
     ZeroLife,
     /// Attempted to draw from an empty library (CR 704.5b).
     EmptyLibrary,
+    /// The player gave up (CR 104.3a).
+    Conceded,
     /// A format-specific condition, such as commander damage.
     Format(String),
 }

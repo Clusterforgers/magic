@@ -1,0 +1,210 @@
+//! Goal: shared helpers for the integration tests: bot and manual clients that talk to a game only through its handle, a failing store double and reference games.
+#![allow(dead_code, unused_imports, clippy::unwrap_used, clippy::expect_used)]
+
+pub mod bot;
+pub mod store;
+
+use std::future::Future;
+use std::time::Duration;
+
+use mtg_core::ids::PlayerId;
+use mtg_engine::state::GameResult;
+use mtg_engine::{Event, GameSetup};
+use mtg_protocol::{ClientMessage, DecisionId, ServerMessage};
+use mtg_server::{GameConfig, GameHandle, GameId};
+use mtg_testkit::{fuzz_setup, play_game};
+use tokio::sync::mpsc::Receiver;
+use uuid::Uuid;
+
+pub use bot::{Bot, BotReport, Progress, drive, play_bots, play_table};
+pub use store::FlakyStore;
+
+/// A game id derived from a number, so tests stay readable.
+pub fn game_id(n: u128) -> GameId {
+    GameId(Uuid::from_u128(n))
+}
+
+/// Seat `n`.
+pub fn seat(n: usize) -> PlayerId {
+    PlayerId::from_index(n)
+}
+
+/// Every wait in a test is bounded, so a bug shows up as a failure instead of a hang.
+pub async fn timed<T>(future: impl Future<Output = T>) -> T {
+    tokio::time::timeout(Duration::from_secs(120), future)
+        .await
+        .expect("timed out waiting for the game")
+}
+
+/// Queues roomy enough that bulk bot games never lose a client by accident.
+pub fn roomy() -> GameConfig {
+    GameConfig {
+        seat_queue: 8192,
+        command_queue: 64,
+    }
+}
+
+/// The setup every table test uses: random 60-card decks derived from `seed`.
+pub fn table_setup(players: usize, seed: u64) -> GameSetup {
+    fuzz_setup(players, seed)
+}
+
+/// The same game played straight on an engine with the same bots, as the yardstick for actor games.
+pub struct Reference {
+    pub events: Vec<Event>,
+    pub final_hash: u64,
+    pub result: GameResult,
+    pub answers: usize,
+}
+
+pub fn reference(players: usize, seed: u64) -> Reference {
+    let outcome = play_game(fuzz_setup(players, seed), seed).unwrap_or_else(|f| panic!("{f}"));
+    Reference {
+        events: outcome.events,
+        final_hash: outcome.final_hash,
+        result: outcome.result,
+        answers: outcome.answers,
+    }
+}
+
+/// A hand-driven client: it reads what the server sends and sends whatever the test wants.
+pub struct Client {
+    pub seat: PlayerId,
+    pub inbox: Receiver<ServerMessage>,
+}
+
+impl Client {
+    pub async fn join(handle: &GameHandle, seat: usize) -> Client {
+        let seat = PlayerId::from_index(seat);
+        let inbox = handle.join(seat).await.unwrap();
+        Client { seat, inbox }
+    }
+
+    /// Everything queued for this client right now.
+    pub fn drain(&mut self) -> Vec<ServerMessage> {
+        let mut messages = Vec::new();
+        while let Ok(message) = self.inbox.try_recv() {
+            messages.push(message);
+        }
+        messages
+    }
+
+    /// Waits for the next message.
+    pub async fn next(&mut self) -> ServerMessage {
+        timed(self.inbox.recv())
+            .await
+            .expect("the server closed this client's queue")
+    }
+
+    /// Waits for the first message `pick` accepts, skipping the others.
+    pub async fn until<T>(&mut self, pick: impl Fn(&ServerMessage) -> Option<T>) -> T {
+        loop {
+            let message = self.next().await;
+            if let Some(found) = pick(&message) {
+                return found;
+            }
+        }
+    }
+
+    /// Waits for a decision and returns its id and content.
+    pub async fn decision(&mut self) -> (DecisionId, mtg_engine::Decision) {
+        self.until(|m| match m {
+            ServerMessage::Decision { id, decision } => Some((*id, decision.clone())),
+            _ => None,
+        })
+        .await
+    }
+
+    pub async fn say(&self, handle: &GameHandle, message: ClientMessage) {
+        handle.send(self.seat, message).await.unwrap();
+    }
+}
+
+/// Joins `seats` clients, readies them all and returns them with the seat that moves first.
+pub async fn start_table(handle: &GameHandle, seats: usize) -> (Vec<Client>, usize) {
+    let mut clients = Vec::new();
+    for n in 0..seats {
+        clients.push(Client::join(handle, n).await);
+    }
+    for client in &clients {
+        client.say(handle, ClientMessage::Ready).await;
+    }
+    let first = handle
+        .status()
+        .await
+        .unwrap()
+        .waiting_on
+        .expect("a started game waits for someone");
+    (clients, first.index())
+}
+
+/// Sends `message` as seat `from`, waits until the actor has dealt with it, and returns what each client received.
+pub async fn poke(
+    handle: &GameHandle,
+    clients: &mut [Client],
+    from: usize,
+    message: ClientMessage,
+) -> Vec<Vec<ServerMessage>> {
+    for client in clients.iter_mut() {
+        client.drain();
+    }
+    handle.send(seat(from), message).await.unwrap();
+    // The actor handles commands in order, so after this everything it will send for `message` is queued.
+    handle.status().await.unwrap();
+    clients.iter_mut().map(Client::drain).collect()
+}
+
+/// Asserts that a client received nothing.
+pub fn silent(messages: &[ServerMessage]) {
+    assert_eq!(messages.len(), 0, "unexpected messages: {messages:?}");
+}
+
+/// A harmless legal answer to any decision: keep, pass, attack with nothing, block nothing.
+pub fn passive(decision: &mtg_engine::Decision) -> mtg_engine::Answer {
+    use mtg_engine::Answer;
+    use mtg_engine::decision::{DecisionKind, MulliganChoice, PayChoice, PriorityAction};
+    match &decision.kind {
+        DecisionKind::Mulligan(_) => Answer::Mulligan(MulliganChoice::Keep),
+        DecisionKind::BottomCards(o) => {
+            Answer::BottomCards(o.hand.iter().copied().take(o.count).collect())
+        }
+        DecisionKind::Priority(_) => Answer::Priority(PriorityAction::Pass),
+        DecisionKind::PayMana(_) => Answer::PayMana(PayChoice::Cancel),
+        DecisionKind::DeclareAttackers(_) => Answer::DeclareAttackers(Vec::new()),
+        DecisionKind::DeclareBlockers(_) => Answer::DeclareBlockers(Vec::new()),
+        DecisionKind::AssignDamage(o) => Answer::AssignDamage(
+            o.blockers
+                .iter()
+                .enumerate()
+                .map(|(i, b)| (*b, if i == 0 { o.power } else { 0 }))
+                .collect(),
+        ),
+        DecisionKind::Discard(o) => Answer::Discard(o.hand.iter().copied().take(o.count).collect()),
+    }
+}
+
+/// Answers passively, one decision at a time, until a priority decision comes up; returns its seat, id and content.
+pub async fn passive_until_priority(
+    handle: &GameHandle,
+    clients: &mut [Client],
+) -> (usize, DecisionId, mtg_engine::Decision) {
+    for _ in 0..200 {
+        let waiting = handle.status().await.unwrap().waiting_on.unwrap().index();
+        let (id, decision) = clients[waiting].decision().await;
+        if matches!(decision.kind, mtg_engine::DecisionKind::Priority(_)) {
+            return (waiting, id, decision);
+        }
+        let answer = passive(&decision);
+        clients[waiting]
+            .say(
+                handle,
+                ClientMessage::Answer {
+                    decision: id,
+                    answer,
+                },
+            )
+            .await;
+        handle.status().await.unwrap();
+    }
+    panic!("no priority decision came up");
+}
