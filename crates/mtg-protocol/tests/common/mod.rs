@@ -1,4 +1,4 @@
-//! Shared helpers: seeded bot games with one uniquely named card per object.
+//! Goal: shared helpers that play seeded bot games where every card has a distinct name.
 
 #![allow(dead_code, clippy::unwrap_used, clippy::expect_used)]
 
