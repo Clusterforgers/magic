@@ -7,10 +7,10 @@ Rules: one item = one focused piece of work (about 15 minutes for an agent). Tic
 - [x] M0 Workspace, lint rules, CI, `CLAUDE.md`, local Postgres compose
 - [x] M0 Frontend spike: React stack locked in (`docs/spike-react.md`)
 - [x] M1a `mtg-import`: Scryfall (array + JSONL), MTGJSON decks and index, deck-list parsers, name resolution; validated on real data (`docs/data-sources.md`)
+- [x] M1b `mtg-db`: schema, upserts, card search, precon storage
+- [x] M2a Engine core + `mtg-testkit`: zones, turns, priority, stack, combat, layers skeleton, bots
 
-## In flight (check `git worktree list` and `git log` before touching)
-- [x] M1b `mtg-db`: schema, upserts, card search, precon storage (merged)
-- [x] M2a Engine core + `mtg-testkit`: zones, turns, priority, stack, combat, layers skeleton, bots (merged)
+After a restart, run `git worktree list` and read each worktree's status before touching anything in flight.
 
 ## M1 Card data (rest)
 - [ ] `mtg-db` follow-ups: reap stale `running` import runs, skip NUL-containing records instead of failing the batch, give `mtg-server` its own migration table (`mtg-db` owns `_sqlx_migrations`)
@@ -23,7 +23,9 @@ Rules: one item = one focused piece of work (about 15 minutes for an agent). Tic
 - [x] `mtg-protocol`: Decision/Event/State-view wire types, generated TypeScript bindings, drift test
 - [x] `mtg-server` actor (no network): `GameActor` owns an `Engine`, per-seat channels, projected events and decisions, stale-answer and reconnect handling, `EventStore` trait with an in-memory store; bot clients play full games in tests
 - [x] `mtg-server` transport: axum binary, create-game REST with per-seat tokens, one WebSocket per seat, built-in demo decks, graceful shutdown; tests with real sockets (in-memory store)
-- [ ] Web: replace spike simulator with live game state; Arena-style priority/attack/block prompts and "nothing to do" banners
+- [ ] Protocol sync: every `Events` batch carries the whole table state plus a before/after object diff, so the client never folds engine events; reference `StateView::apply`, per-seat property tests, transcript fixture for the web
+- [ ] Web core: typed REST + WebSocket client (reconnect, close codes, gap in `from_seq` sends `Resync`), zustand store applying snapshots and batches, tested against the transcript fixture and a fake socket
+- [ ] Web game UI: create-game page, N-seat board, hand, stack, log; Arena-style prompts for all eight decision kinds, legal-option highlights, "nothing to do" banners; replaces the spike simulator
 - [ ] Playwright e2e: full 2-player vanilla game in the browser
 - [ ] `mtg-server` persistence: Postgres `EventStore` with its own migration table, game and seat records (store a serializable setup recipe), resume running games on boot; `sqlx::test` tests
 
