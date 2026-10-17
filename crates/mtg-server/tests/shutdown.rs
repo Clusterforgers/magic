@@ -7,6 +7,7 @@ mod net;
 use std::time::{Duration, Instant};
 
 use mtg_protocol::{ClientMessage, ServerMessage};
+use mtg_server::ServerConfig;
 use net::{TestServer, bot_config};
 use serde_json::json;
 
@@ -76,6 +77,28 @@ async fn a_server_with_no_sockets_stops_at_once() {
     server.finished().await.unwrap();
     assert!(
         started.elapsed() < Duration::from_secs(2),
+        "{:?}",
+        started.elapsed()
+    );
+}
+
+#[tokio::test]
+async fn a_stalled_request_cannot_keep_a_stopping_server_alive() {
+    use tokio::io::AsyncWriteExt;
+    let config = ServerConfig {
+        shutdown_grace: Duration::from_millis(300),
+        ..bot_config()
+    };
+    let mut server = TestServer::start(config).await;
+    // Half a request line: the server is told to stop while it waits for the rest.
+    let mut stalled = tokio::net::TcpStream::connect(server.addr).await.unwrap();
+    stalled.write_all(b"POST /api/games HTT").await.unwrap();
+    tokio::time::sleep(Duration::from_millis(50)).await;
+    let started = Instant::now();
+    server.shutdown();
+    server.finished().await.unwrap();
+    assert!(
+        started.elapsed() < Duration::from_secs(5),
         "{:?}",
         started.elapsed()
     );

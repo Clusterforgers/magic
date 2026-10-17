@@ -22,7 +22,7 @@ Rules: one item = one focused piece of work (about 15 minutes for an agent). Tic
 - [x] Merge M2a; review against `CLAUDE.md`; engine design notes in `docs/engine.md`
 - [x] `mtg-protocol`: Decision/Event/State-view wire types, generated TypeScript bindings, drift test
 - [x] `mtg-server` actor (no network): `GameActor` owns an `Engine`, per-seat channels, projected events and decisions, stale-answer and reconnect handling, `EventStore` trait with an in-memory store; bot clients play full games in tests
-- [ ] `mtg-server` transport: axum binary, create-game REST with per-seat tokens, one WebSocket per seat, built-in demo decks, graceful shutdown; tests with real sockets (in-memory store)
+- [x] `mtg-server` transport: axum binary, create-game REST with per-seat tokens, one WebSocket per seat, built-in demo decks, graceful shutdown; tests with real sockets (in-memory store)
 - [ ] Web: replace spike simulator with live game state; Arena-style priority/attack/block prompts and "nothing to do" banners
 - [ ] Playwright e2e: full 2-player vanilla game in the browser
 - [ ] `mtg-server` persistence: Postgres `EventStore` with its own migration table, game and seat records (store a serializable setup recipe), resume running games on boot; `sqlx::test` tests

@@ -1,4 +1,6 @@
 //! Built-in decks for games without a deck builder: mono-colour basics plus vanilla creatures.
+//!
+//! Every creature is a real card without rules text; names, costs and stats were checked against Scryfall.
 
 use std::sync::Arc;
 
@@ -43,9 +45,9 @@ const RED: &[Line] = &[
     ("Goblin Piker", 1, 1, 2, 1),
     ("Goblin Bully", 1, 1, 2, 1),
     ("Gray Ogre", 2, 1, 2, 2),
-    ("Viashino Warrior", 2, 1, 3, 2),
+    ("Viashino Warrior", 3, 1, 4, 2),
     ("Hill Giant", 3, 1, 3, 3),
-    ("Cyclops of One-Eyed Pass", 4, 1, 5, 2),
+    ("Cyclops of One-Eyed Pass", 2, 2, 5, 2),
     ("Earth Elemental", 3, 2, 4, 5),
     ("Fire Elemental", 3, 2, 5, 4),
 ];

@@ -108,6 +108,7 @@ impl Server {
             mut drained,
         } = self;
         let grace = state.config().shutdown_grace;
+        let mut stopping = state.stop();
         let janitor = state.registry().spawn_janitor(state.stop());
         // Small request/answer messages should not wait for Nagle's algorithm.
         let listener = listener.tap_io(|tcp| {
@@ -115,18 +116,31 @@ impl Server {
                 tracing::debug!(%error, "could not set TCP_NODELAY");
             }
         });
-        let served = axum::serve(listener, router(state))
-            .with_graceful_shutdown(async move {
-                shutdown.await;
-                // Upgraded sockets outlive axum's own graceful shutdown, so each one is told to leave.
-                let _ = stop.send(true);
-            })
-            .await;
-        // Every session and the router's state hold a sender; the channel closes when all are gone.
-        if tokio::time::timeout(grace, drained.recv()).await.is_err() {
-            tracing::warn!("sockets were still open when the shutdown grace period ended");
-        }
-        let _ = janitor.await;
+        let serving = axum::serve(listener, router(state)).with_graceful_shutdown(async move {
+            shutdown.await;
+            // Upgraded sockets outlive axum's own graceful shutdown, so each one is told to leave.
+            let _ = stop.send(true);
+        });
+        let finish = async {
+            let served = serving.await;
+            // Every session and the router's state hold a sender; the channel closes when all are gone.
+            let _ = drained.recv().await;
+            served
+        };
+        // Whatever is still open when the grace period after the signal ends (a stalled request, a
+        // peer that never answers the close frame) is abandoned, so a stop signal always stops.
+        let deadline = async {
+            let _ = stopping.wait_for(|stopping| *stopping).await;
+            tokio::time::sleep(grace).await;
+        };
+        let served = tokio::select! {
+            served = finish => served,
+            () = deadline => {
+                tracing::warn!("connections were still open when the shutdown grace period ended");
+                Ok(())
+            }
+        };
+        janitor.abort();
         served
     }
 }

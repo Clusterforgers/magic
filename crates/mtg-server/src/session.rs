@@ -164,8 +164,8 @@ async fn pump(
     let mut last_pong = Instant::now();
     let mut bad_in_a_row = 0u32;
     loop {
+        // Unbiased on purpose: a long burst from the game must not starve the client's messages.
         tokio::select! {
-            biased;
             () = stopped(stop) => return Exit::Say(SHUTTING_DOWN),
             _ = access.removed.changed() => return Exit::Say(GAME_ENDED),
             outgoing = queue.recv() => match outgoing {
