@@ -17,11 +17,11 @@ Design record for `mtg-engine` and `mtg-testkit`. Rules of the house are in `CLA
 - Invariants: per-event checks run on every event; whole-state checks and the replay hash comparison run every 25 answers and at game end.
 - Fuzz: 500 bot games each for 2, 3, 4 and 6 players (`MTG_FUZZ_GAMES` overrides the count). The dev profile builds core, engine and testkit at opt-level 3 to keep this near 17 s.
 
-## Rules to verify (agent was unsure)
-- Active player eliminated mid-turn: the turn ends at once. If the first player concedes during the mulligans, turn 1 is abandoned and the next living seat takes turn 2.
-- Attacker divides damage freely among several blockers (damage assignment order is not modelled).
-- Damage to a planeswalker is only marked; loyalty counters do not exist yet.
-- A mana ability resets the passes in a priority round.
+## Rules checked against the Comprehensive Rules (2026-10-18)
+- **Active player leaves mid-turn: engine is wrong.** The rules (multiplayer rule 800.4, the subrule about leaving during one's own turn) let the turn continue to completion without an active player: priority goes to the next player in turn order, or the top object resolves, or the step ends. The engine ends the turn at once. Fix before multiplayer Commander (see ROADMAP M5).
+- Attacker divides damage freely among several blockers: correct. The Foundations update removed damage assignment order (509.2, 510.1c); lethal damage only matters for trample, which is not implemented yet.
+- Damage to a planeswalker is only marked: a gap. Rule 120.3c turns it into removed loyalty counters, which need loyalty counters first.
+- A mana ability resets the passes in a priority round: consistent with a literal reading of 117.4 (all players pass "without taking any actions in between"). No official ruling found; low impact, keep.
 
 ## Gaps (roadmap M3 onwards)
 - No keywords, triggers, targeting or Commander.
