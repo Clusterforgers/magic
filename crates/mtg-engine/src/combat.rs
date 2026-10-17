@@ -14,6 +14,7 @@ use crate::zones::Zone;
 
 /// What an attacking creature is attacking.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum AttackTarget {
     /// A player.
     Player(PlayerId),
@@ -23,6 +24,7 @@ pub enum AttackTarget {
 
 /// Who or what receives damage.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum DamageTarget {
     /// A player's life total.
     Player(PlayerId),

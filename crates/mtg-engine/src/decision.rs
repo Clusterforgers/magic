@@ -11,6 +11,7 @@ use crate::mana::{ManaOption, ManaPool, ManaSource, Payment};
 
 /// A question for one player together with all of their legal options.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Decision {
     /// Who must answer.
     pub player: PlayerId,
@@ -20,6 +21,7 @@ pub struct Decision {
 
 /// The kind of decision, each variant carrying its exhaustive options.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum DecisionKind {
     /// Keep the opening hand or take a mulligan.
     Mulligan(MulliganOptions),
@@ -57,6 +59,7 @@ impl DecisionKind {
 
 /// Options for the keep-or-mulligan decision.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct MulliganOptions {
     /// The hand being judged.
     pub hand: Vec<ObjectId>,
@@ -68,6 +71,7 @@ pub struct MulliganOptions {
 
 /// Options for choosing cards to bottom.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct BottomOptions {
     /// Cards in hand to choose from.
     pub hand: Vec<ObjectId>,
@@ -77,6 +81,7 @@ pub struct BottomOptions {
 
 /// Everything a player can do while holding priority.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct PriorityOptions {
     /// Lands that can be played now.
     pub playable_lands: Vec<ObjectId>,
@@ -90,6 +95,7 @@ pub struct PriorityOptions {
 
 /// Options while paying for a spell.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct PayOptions {
     /// The spell being cast.
     pub spell: ObjectId,
@@ -105,6 +111,7 @@ pub struct PayOptions {
 
 /// One creature that may attack and the defenders it may attack.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct AttackerOption {
     /// The creature.
     pub object: ObjectId,
@@ -114,6 +121,7 @@ pub struct AttackerOption {
 
 /// Legal attackers.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct AttackOptions {
     /// Every creature that may attack; choosing none is always legal.
     pub attackers: Vec<AttackerOption>,
@@ -121,6 +129,7 @@ pub struct AttackOptions {
 
 /// One creature that may block and the attackers it may block.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct BlockerOption {
     /// The potential blocker.
     pub object: ObjectId,
@@ -130,6 +139,7 @@ pub struct BlockerOption {
 
 /// Legal blockers.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct BlockOptions {
     /// Every creature that may block; choosing none is always legal.
     pub blockers: Vec<BlockerOption>,
@@ -137,6 +147,7 @@ pub struct BlockOptions {
 
 /// An attacker that must divide its damage among blockers.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct DamageOptions {
     /// The attacking creature.
     pub attacker: ObjectId,
@@ -148,6 +159,7 @@ pub struct DamageOptions {
 
 /// Options for the cleanup discard.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct DiscardOptions {
     /// Cards in hand to choose from.
     pub hand: Vec<ObjectId>,
@@ -157,6 +169,7 @@ pub struct DiscardOptions {
 
 /// Keep or mulligan.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum MulliganChoice {
     /// Keep this hand.
     Keep,
@@ -166,6 +179,7 @@ pub enum MulliganChoice {
 
 /// What a player does with priority.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum PriorityAction {
     /// Pass priority.
     Pass,
@@ -179,6 +193,7 @@ pub enum PriorityAction {
 
 /// How to pay for a spell.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum PayChoice {
     /// Let the engine pick a valid payment.
     Auto,
@@ -190,6 +205,7 @@ pub enum PayChoice {
 
 /// A player's answer to the pending decision.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Answer {
     /// Keep or mulligan.
     Mulligan(MulliganChoice),

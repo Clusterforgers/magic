@@ -12,6 +12,11 @@ rand_chacha.workspace = true
 rand_core.workspace = true
 serde.workspace = true
 thiserror.workspace = true
+ts-rs = { workspace = true, optional = true }
+
+[features]
+# Derives TypeScript bindings for the wire types.
+ts = ["dep:ts-rs", "mtg-core/ts"]
 
 [lints]
 workspace = true

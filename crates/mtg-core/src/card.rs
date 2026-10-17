@@ -9,6 +9,7 @@ use crate::mana::{ManaCost, ManaType};
 
 /// A card type (CR 205.2).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum CardType {
     /// Artifact.
     Artifact,
@@ -72,6 +73,7 @@ impl FromIterator<CardType> for CardTypes {
 
 /// A supertype (CR 205.4).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Supertype {
     /// Basic.
     Basic,
@@ -85,11 +87,13 @@ pub enum Supertype {
 
 /// A subtype such as `Elf` or `Forest` (CR 205.3).
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 #[serde(transparent)]
 pub struct Subtype(pub String);
 
 /// `{T}: Add one mana of a fixed type`; shaped so costs and choices can extend it.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct ManaAbility {
     /// The mana produced.
     pub produces: ManaType,
@@ -97,6 +101,7 @@ pub struct ManaAbility {
 
 /// An ability printed on a card; the card DSL will add variants.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum AbilityDef {
     /// A tap-for-mana ability.
     Mana(ManaAbility),

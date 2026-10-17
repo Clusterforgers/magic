@@ -7,6 +7,7 @@ use crate::mana::ManaPool;
 
 /// Why a player lost the game.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum LossReason {
     /// Life total of 0 or less (CR 704.5a).
     ZeroLife,
@@ -27,6 +28,7 @@ pub enum PlayerStatus {
 
 /// Progress of one player through the opening-hand procedure.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum MulliganStatus {
     /// A new hand must be dealt.
     NeedsHand,
