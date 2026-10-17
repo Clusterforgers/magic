@@ -77,3 +77,5 @@ pub fn on_battlefield(state: &GameState, name: &str) -> Option<mtg_core::ids::Ob
         .copied()
         .find(|id| state.object(*id).is_some_and(|o| o.card().name == name))
 }
+
+pub mod combat;

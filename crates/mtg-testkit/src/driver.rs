@@ -7,58 +7,21 @@ use mtg_engine::decision::{
 };
 use mtg_engine::effects::{Duration, Modification, Selector};
 use mtg_engine::mana::{ManaSource, Payment};
-use mtg_engine::player::Player;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, Engine, EngineError, Event, GameState};
-use thiserror::Error;
 
-use crate::invariants::{InvariantChecker, Violation};
-use crate::scenario::{Scenario, ScenarioError};
+use crate::invariants::InvariantChecker;
+use crate::scenario::Scenario;
+use crate::script_error::ScriptError;
 
 /// Safety valve for loops that wait for a step to arrive.
 const MAX_WAIT_ANSWERS: usize = 20_000;
 
-/// A scripted step failed.
-#[derive(Debug, Clone, PartialEq, Eq, Error)]
-pub enum ScriptError {
-    /// The engine rejected an answer.
-    #[error("engine: {0}")]
-    Engine(#[from] EngineError),
-    /// An invariant broke after an answer.
-    #[error("invariant: {0}")]
-    Invariant(#[from] Violation),
-    /// The scenario could not be built.
-    #[error("scenario: {0}")]
-    Scenario(#[from] ScenarioError),
-    /// The script named a card that is not among the options.
-    #[error("no option named {name:?} among {place}")]
-    NoSuchCard {
-        /// The requested card name.
-        name: String,
-        /// Where it was looked for.
-        place: &'static str,
-    },
-    /// The pending decision is not the kind the script step needs.
-    #[error("expected a {wanted} decision but the engine asked for {got}")]
-    UnexpectedDecision {
-        /// What the step needed.
-        wanted: &'static str,
-        /// What is pending.
-        got: String,
-    },
-    /// An `expect_*` assertion did not hold.
-    #[error("expectation failed: {0}")]
-    Expectation(String),
-    /// The script waited too long for a step.
-    #[error("gave up waiting for {0}")]
-    Stuck(String),
-}
-
 /// Drives an [`Engine`] with scripted answers and checks invariants after every answer.
 #[derive(Debug)]
 pub struct Driver {
-    engine: Engine,
+    pub(crate) engine: Engine,
     checker: InvariantChecker,
 }
 
@@ -111,7 +74,7 @@ impl Driver {
         Ok(())
     }
 
-    fn name_of(&self, id: ObjectId) -> &str {
+    pub(crate) fn name_of(&self, id: ObjectId) -> &str {
         self.state()
             .object(id)
             .map_or("?", |o| o.card().name.as_str())
@@ -368,85 +331,5 @@ impl Driver {
             self.pass()?;
         }
         Err(ScriptError::Stuck(format!("{step:?}")))
-    }
-
-    /// Asserts a player's life total.
-    pub fn expect_life(&self, player: usize, life: i32) -> Result<(), ScriptError> {
-        let actual = self
-            .state()
-            .player(PlayerId::from_index(player))
-            .map(Player::life);
-        expectation(actual == Some(life), || {
-            format!("player {player} life is {actual:?}, expected {life}")
-        })
-    }
-
-    /// Asserts the names in a zone, ignoring order.
-    pub fn expect_zone(&self, zone: Zone, names: &[&str]) -> Result<(), ScriptError> {
-        let mut actual: Vec<&str> = self
-            .state()
-            .zone(zone)
-            .iter()
-            .map(|id| self.name_of(*id))
-            .collect();
-        let mut expected = names.to_vec();
-        actual.sort_unstable();
-        expected.sort_unstable();
-        expectation(actual == expected, || {
-            format!("{zone:?} holds {actual:?}, expected {expected:?}")
-        })
-    }
-
-    /// Asserts the current step.
-    pub fn expect_step(&self, step: Step) -> Result<(), ScriptError> {
-        let actual = self.state().turn().step();
-        expectation(actual == step, || {
-            format!("step is {actual:?}, expected {step:?}")
-        })
-    }
-
-    /// Asserts a decision of `kind` is pending for `player`.
-    pub fn expect_decision(&self, player: usize, kind: &str) -> Result<(), ScriptError> {
-        let decision = self.decision()?;
-        expectation(
-            decision.player == PlayerId::from_index(player) && decision.kind.name() == kind,
-            || {
-                format!(
-                    "pending {} for {:?}, expected {kind} for player {player}",
-                    decision.kind.name(),
-                    decision.player
-                )
-            },
-        )
-    }
-
-    /// Asserts some event in the whole log satisfies `matches`.
-    pub fn expect_event(
-        &self,
-        what: &str,
-        matches: impl Fn(&Event) -> bool,
-    ) -> Result<(), ScriptError> {
-        expectation(self.engine.events().iter().any(matches), || {
-            format!("no event matching {what}")
-        })
-    }
-
-    /// Asserts no event in the whole log satisfies `matches`.
-    pub fn expect_no_event(
-        &self,
-        what: &str,
-        matches: impl Fn(&Event) -> bool,
-    ) -> Result<(), ScriptError> {
-        expectation(!self.engine.events().iter().any(matches), || {
-            format!("unexpected event matching {what}")
-        })
-    }
-}
-
-fn expectation(holds: bool, message: impl FnOnce() -> String) -> Result<(), ScriptError> {
-    if holds {
-        Ok(())
-    } else {
-        Err(ScriptError::Expectation(message()))
     }
 }
