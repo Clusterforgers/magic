@@ -25,6 +25,7 @@ rand_chacha = "0.10"
 rand_core = "0.10"
 roxmltree = "0.21"
 unicode-normalization = "0.1"
+flate2 = "1"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

@@ -15,6 +15,7 @@ thiserror.workspace = true
 unicode-normalization.workspace = true
 
 [dev-dependencies]
+flate2.workspace = true
 proptest.workspace = true
 rstest.workspace = true
 

@@ -47,6 +47,7 @@ fn normalize_slashes(text: &str) -> String {
         // A dangling slash is probably a truncated name; leave it visible instead of repairing it.
         collapse_spaces(text)
     } else {
+        halves.dedup();
         halves.join(" // ")
     }
 }
@@ -69,6 +70,8 @@ mod tests {
 
     #[rstest]
     #[case::identity("lightning bolt", "lightning bolt")]
+    #[case::reversible_card_repeats_its_name("Krark's Thumb // Krark's Thumb", "krark's thumb")]
+    #[case::repeated_name_ignores_case_and_spacing("Propaganda//PROPAGANDA", "propaganda")]
     #[case::case("Lightning BOLT", "lightning bolt")]
     #[case::trim_and_collapse("  Lightning \t  Bolt\n", "lightning bolt")]
     #[case::nbsp("Lightning\u{a0}Bolt", "lightning bolt")]
