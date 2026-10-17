@@ -1,0 +1,70 @@
+//! Goal: shared helpers for the integration test files (this is not a test module itself).
+#![allow(dead_code)]
+
+use mtg_core::ids::PlayerId;
+use mtg_engine::turn::Step;
+use mtg_engine::zones::Zone;
+use mtg_engine::{Event, GameState};
+
+/// Player id from a seat index.
+pub fn pid(seat: usize) -> PlayerId {
+    PlayerId::from_index(seat)
+}
+
+/// Names of the cards in `zone`, in zone order.
+pub fn names(state: &GameState, zone: Zone) -> Vec<String> {
+    state
+        .zone(zone)
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .map(|o| o.card().name.clone())
+        .collect()
+}
+
+/// The card name of an object that still exists.
+pub fn name_of(state: &GameState, id: mtg_core::ids::ObjectId) -> String {
+    state
+        .object(id)
+        .map_or_else(|| "?".to_owned(), |o| o.card().name.clone())
+}
+
+/// One turn as seen in the log: who was active and which steps began.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TurnLog {
+    pub active: PlayerId,
+    pub steps: Vec<Step>,
+}
+
+/// Splits the log into turns; the opening turn is seeded with the step the scenario started in.
+pub fn turn_logs(events: &[Event], start_active: PlayerId, start_step: Step) -> Vec<TurnLog> {
+    let mut turns = vec![TurnLog {
+        active: start_active,
+        steps: vec![start_step],
+    }];
+    for event in events {
+        match event {
+            Event::TurnBegan { active, .. } => turns.push(TurnLog {
+                active: *active,
+                steps: Vec::new(),
+            }),
+            Event::StepBegan { step } => {
+                if let Some(turn) = turns.last_mut() {
+                    turn.steps.push(*step);
+                }
+            }
+            _ => {}
+        }
+    }
+    turns
+}
+
+/// Names of spells that resolved, in order.
+pub fn resolved(state: &GameState, events: &[Event]) -> Vec<String> {
+    events
+        .iter()
+        .filter_map(|e| match e {
+            Event::SpellResolved { object } => Some(name_of(state, *object)),
+            _ => None,
+        })
+        .collect()
+}
