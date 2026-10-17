@@ -9,7 +9,7 @@ Rules: one item = one focused piece of work (about 15 minutes for an agent). Tic
 - [x] M1a `mtg-import`: Scryfall (array + JSONL), MTGJSON decks and index, deck-list parsers, name resolution; validated on real data (`docs/data-sources.md`)
 
 ## In flight (check `git worktree list` and `git log` before touching)
-- [ ] M1b `mtg-db`: schema, upserts, card search, precon storage (agent worktree `agent-a99ffef1c2b67f61b`)
+- [x] M1b `mtg-db`: schema, upserts, card search, precon storage (merged from agent worktree `agent-a99ffef1c2b67f61b`)
 - [ ] M2a Engine core + `mtg-testkit`: zones, turns, priority, stack, combat, layers skeleton, bots (agent worktree `agent-ace78012199202104`)
 
 ## M1 Card data (rest)
