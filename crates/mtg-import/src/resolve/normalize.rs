@@ -15,7 +15,7 @@ fn fold_char(c: char, out: &mut String) {
         '\u{201C}' | '\u{201D}' => out.push('"'),
         '\u{E6}' | '\u{C6}' => out.push_str("ae"),
         '\u{153}' | '\u{152}' => out.push_str("oe"),
-        '\u{DF}' => out.push_str("ss"),
+        '\u{DF}' | '\u{1E9E}' => out.push_str("ss"),
         '\u{F8}' | '\u{D8}' => out.push('o'),
         '\u{111}' | '\u{110}' => out.push('d'),
         '\u{142}' | '\u{141}' => out.push('l'),
@@ -78,6 +78,7 @@ mod tests {
     #[case::accents("Lim-Dûl's Vault", "lim-dul's vault")]
     #[case::accents_decomposed("Lim-Du\u{302}l's Vault", "lim-dul's vault")]
     #[case::jotun("Jötun Grunt", "jotun grunt")]
+    #[case::capital_sharp_s("STRAẞE", "strasse")]
     #[case::seance("Séance", "seance")]
     #[case::ae_ligature("Æther Vial", "aether vial")]
     #[case::ae_spelled_out("Aether Vial", "aether vial")]

@@ -12,7 +12,8 @@ if [[ "$mode" != web ]]; then
 fi
 
 if [[ "$mode" == rust || "$mode" == all ]]; then
-  if command -v docker >/dev/null && [[ -f docker-compose.yml ]]; then
+  # Reuse a Postgres that is already listening (e.g. another worktree started one).
+  if command -v docker >/dev/null && [[ -f docker-compose.yml ]] && ! (exec 3<>/dev/tcp/127.0.0.1/5432) 2>/dev/null; then
     docker compose up -d --wait db >/dev/null
   fi
   export DATABASE_URL="${DATABASE_URL:-postgres://magic:magic@localhost:5432/magic}"
