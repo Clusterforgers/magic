@@ -1,0 +1,13 @@
+[package]
+name = "mtg-engine"
+description = "Deterministic rules engine (no IO)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+mtg-core.workspace = true
+
+[lints]
+workspace = true

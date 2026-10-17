@@ -1,0 +1,16 @@
+[package]
+name = "mtg-server"
+description = "HTTP/WebSocket server and persistence"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+mtg-core.workspace = true
+mtg-engine.workspace = true
+mtg-cards.workspace = true
+mtg-protocol.workspace = true
+
+[lints]
+workspace = true

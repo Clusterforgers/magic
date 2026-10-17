@@ -1,0 +1,13 @@
+[package]
+name = "mtg-import"
+description = "Scryfall/MTGJSON ingestion and deck-list parsing"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+mtg-core.workspace = true
+
+[lints]
+workspace = true
