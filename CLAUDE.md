@@ -4,7 +4,7 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 
 ## Layout
 - `crates/mtg-core` shared value types · `mtg-engine` rules engine (no IO) · `mtg-cards` card DSL · `mtg-import` Scryfall/MTGJSON/deck parsing · `mtg-protocol` wire types · `mtg-server` axum + sqlx · `mtg-testkit` scenarios/invariants
-- `web/` React client (not yet created; pending M0 spike)
+- `web/` React + Vite + Tailwind + shadcn/ui + TanStack Router client; live game state in a zustand store keyed by object id
 
 ## Rules of the house
 - The engine never does IO and never imports server, DB or network crates.
@@ -18,6 +18,7 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 ## Commands
 - `cargo fmt --all` · `cargo clippy --workspace --all-targets -- -D warnings` · `cargo test --workspace`
 - `docker compose up -d db` starts local Postgres.
+- Web (in `web/`): `pnpm typecheck` · `pnpm lint` · `pnpm format` · `pnpm test` · `pnpm e2e`. On NixOS set `CHROMIUM_PATH` to a Nix-built chromium binary for e2e.
 
 ## Git
 Never add Claude as co-author or any attribution line to commits or PR descriptions.
