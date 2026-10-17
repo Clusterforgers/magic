@@ -122,7 +122,8 @@ function isAttacker(value: unknown): value is AttackerView {
   )
 }
 
-function isGameResult(value: unknown): value is GameResult {
+/** True for a game result: `"Draw"` or `{ Winner: seat }`. */
+export function isGameResult(value: unknown): value is GameResult {
   return value === 'Draw' || (isRecord(value) && isOneKey(value) && isCount(value.Winner))
 }
 
