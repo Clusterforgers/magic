@@ -30,6 +30,7 @@ pub fn layout_keyword(layout: &Layout) -> Cow<'_, str> {
         Layout::Augment => "augment",
         Layout::Host => "host",
         Layout::ArtSeries => "art_series",
+        Layout::FrontCard => "front_card",
         Layout::ReversibleCard => "reversible_card",
         Layout::Other(keyword) => return Cow::Borrowed(keyword),
     })
@@ -107,6 +108,7 @@ mod tests {
     #[case(Layout::Augment)]
     #[case(Layout::Host)]
     #[case(Layout::ArtSeries)]
+    #[case(Layout::FrontCard)]
     #[case(Layout::ReversibleCard)]
     #[case(Layout::Other("future_layout".into()))]
     fn layouts_round_trip(#[case] layout: Layout) {

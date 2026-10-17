@@ -6,6 +6,7 @@ use std::marker::PhantomData;
 use thiserror::Error;
 
 use super::array_stream::{ArrayStream, StreamError};
+use super::line_stream::LineStream;
 use super::normalize::InvalidRecord;
 use super::raw::{RawCard, RawRuling};
 use super::record::{CardRecord, RulingRecord};
@@ -72,30 +73,52 @@ impl BulkRecord for RulingRecord {
     }
 }
 
-/// Lazily yields records from a bulk array, holding one element in memory at a time.
-pub struct BulkStream<R: Read, T> {
-    elements: ArrayStream<R>,
+/// A framing of a bulk file into per-record JSON bytes.
+pub trait ElementSource {
+    /// Returns the next record's bytes, or `None` at the end or after any fatal error.
+    fn next_element(&mut self) -> Result<Option<Vec<u8>>, StreamError>;
+}
+
+impl<R: Read> ElementSource for ArrayStream<R> {
+    fn next_element(&mut self) -> Result<Option<Vec<u8>>, StreamError> {
+        ArrayStream::next_element(self)
+    }
+}
+
+impl<R: Read> ElementSource for LineStream<R> {
+    fn next_element(&mut self) -> Result<Option<Vec<u8>>, StreamError> {
+        self.next_line()
+    }
+}
+
+/// Lazily yields records from a framed bulk file, holding one element in memory at a time.
+pub struct BulkStream<S, T> {
+    elements: S,
     index: usize,
     record: PhantomData<fn() -> T>,
 }
 
-/// Stream of cards from Oracle Cards or Default Cards bulk data.
-pub type CardStream<R> = BulkStream<R, CardRecord>;
-/// Stream of rulings from the rulings bulk file.
-pub type RulingStream<R> = BulkStream<R, RulingRecord>;
+/// Stream of cards from a bulk JSON array.
+pub type CardStream<R> = BulkStream<ArrayStream<R>, CardRecord>;
+/// Stream of rulings from a bulk JSON array.
+pub type RulingStream<R> = BulkStream<ArrayStream<R>, RulingRecord>;
+/// Stream of cards from a bulk JSONL file.
+pub type JsonlCardStream<R> = BulkStream<LineStream<R>, CardRecord>;
+/// Stream of rulings from a bulk JSONL file.
+pub type JsonlRulingStream<R> = BulkStream<LineStream<R>, RulingRecord>;
 
-impl<R: Read, T: BulkRecord> BulkStream<R, T> {
-    /// Streams records from `reader`, which must yield a JSON array of objects.
-    pub fn new(reader: R) -> Self {
+impl<S: ElementSource, T: BulkRecord> BulkStream<S, T> {
+    /// Streams records from an already framed source.
+    pub fn from_source(elements: S) -> Self {
         Self {
-            elements: ArrayStream::new(reader),
+            elements,
             index: 0,
             record: PhantomData,
         }
     }
 }
 
-impl<R: Read, T: BulkRecord> Iterator for BulkStream<R, T> {
+impl<S: ElementSource, T: BulkRecord> Iterator for BulkStream<S, T> {
     type Item = Result<T, ScryfallError>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -113,14 +136,24 @@ impl<R: Read, T: BulkRecord> Iterator for BulkStream<R, T> {
     }
 }
 
-/// Streams cards from Oracle Cards or Default Cards bulk JSON.
+/// Streams cards from a bulk JSON array.
 pub fn cards<R: Read>(reader: R) -> CardStream<R> {
-    BulkStream::new(reader)
+    BulkStream::from_source(ArrayStream::new(reader))
 }
 
-/// Streams rulings from the rulings bulk JSON.
+/// Streams rulings from a bulk JSON array.
 pub fn rulings<R: Read>(reader: R) -> RulingStream<R> {
-    BulkStream::new(reader)
+    BulkStream::from_source(ArrayStream::new(reader))
+}
+
+/// Streams cards from a bulk JSONL file (the format Scryfall currently publishes).
+pub fn cards_jsonl<R: Read>(reader: R) -> JsonlCardStream<R> {
+    BulkStream::from_source(LineStream::new(reader))
+}
+
+/// Streams rulings from a bulk JSONL file.
+pub fn rulings_jsonl<R: Read>(reader: R) -> JsonlRulingStream<R> {
+    BulkStream::from_source(LineStream::new(reader))
 }
 
 #[cfg(test)]

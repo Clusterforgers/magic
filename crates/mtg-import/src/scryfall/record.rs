@@ -73,6 +73,8 @@ pub enum Layout {
     Host,
     /// Art series card.
     ArtSeries,
+    /// Memorabilia placeholder whose type line is just "Card".
+    FrontCard,
     /// Reversible card with two independent fronts.
     ReversibleCard,
     /// A layout keyword this crate does not know yet.
@@ -106,6 +108,7 @@ impl Layout {
             "augment" => Layout::Augment,
             "host" => Layout::Host,
             "art_series" => Layout::ArtSeries,
+            "front_card" => Layout::FrontCard,
             "reversible_card" => Layout::ReversibleCard,
             other => Layout::Other(other.to_owned()),
         }
@@ -122,6 +125,7 @@ impl Layout {
                 | Layout::DoubleFacedToken
                 | Layout::Emblem
                 | Layout::ArtSeries
+                | Layout::FrontCard
         )
     }
 }

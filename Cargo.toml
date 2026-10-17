@@ -24,7 +24,7 @@ serde_json = "1"
 proptest = "1"
 roxmltree = "0.21"
 unicode-normalization = "0.1"
-chrono = { version = "0.4", default-features = false, features = ["std", "clock"] }
+chrono ={ version = "0.4", default-features = false, features = ["std", "clock"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 uuid = { version = "1", features = ["serde"] }
 sqlx = { version = "0.9", default-features = false, features = [
@@ -36,6 +36,7 @@ sqlx = { version = "0.9", default-features = false, features = [
     "uuid",
     "chrono",
 ] }
+flate2 = "1"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

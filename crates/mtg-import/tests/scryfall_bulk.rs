@@ -7,7 +7,7 @@ use mtg_core::color::{Color, ColorSet};
 use mtg_import::ids::OracleId;
 use mtg_import::scryfall::{
     CardRecord, InvalidRecord, Layout, Legality, RulingRecord, RulingSource, ScryfallError, cards,
-    rulings,
+    cards_jsonl, rulings, rulings_jsonl,
 };
 use rstest::rstest;
 
@@ -394,4 +394,53 @@ fn rulings_fixture_streams_and_groups_by_card() {
         .find(|r| r.source == RulingSource::Unknown)
         .unwrap();
     assert!(unknown_source.comment.contains("never heard of"));
+}
+
+fn as_jsonl(array_json: &str, terminator: &str) -> String {
+    let items = match serde_json::from_str::<Vec<serde_json::Value>>(array_json) {
+        Ok(items) => items,
+        Err(e) => panic!("fixture is not a JSON array: {e}"),
+    };
+    items
+        .iter()
+        .flat_map(|item| [item.to_string(), terminator.to_owned()])
+        .collect()
+}
+
+#[rstest]
+#[case::lf("\n")]
+#[case::crlf("\r\n")]
+fn jsonl_and_array_bulk_files_yield_identical_records(#[case] terminator: &str) {
+    let from_array: Vec<_> = cards(CARDS_JSON.as_bytes()).collect();
+    let from_jsonl: Vec<_> = cards_jsonl(as_jsonl(CARDS_JSON, terminator).as_bytes()).collect();
+    assert_eq!(from_array.len(), from_jsonl.len());
+    for (a, b) in from_array.iter().zip(&from_jsonl) {
+        match (a, b) {
+            (Ok(a), Ok(b)) => assert_eq!(a, b),
+            (Err(a), Err(b)) => assert_eq!(a.to_string(), b.to_string()),
+            other => panic!("array and jsonl disagree: {other:?}"),
+        }
+    }
+}
+
+#[test]
+fn jsonl_rulings_match_array_rulings() {
+    let from_array: Vec<_> = rulings(RULINGS_JSON.as_bytes()).collect();
+    let from_jsonl: Vec<_> = rulings_jsonl(as_jsonl(RULINGS_JSON, "\n").as_bytes()).collect();
+    assert_eq!(from_array.len(), from_jsonl.len());
+    assert!(
+        from_array
+            .iter()
+            .zip(&from_jsonl)
+            .all(|(a, b)| a.as_ref().ok() == b.as_ref().ok())
+    );
+}
+
+#[test]
+fn a_bad_jsonl_line_is_isolated_like_a_bad_array_element() {
+    let input = "{\"id\":\"p1\",\"oracle_id\":\"o1\",\"name\":\"A\",\"type_line\":\"Instant\"}\nnot json\n{\"id\":\"p2\",\"oracle_id\":\"o2\",\"name\":\"B\",\"type_line\":\"Instant\"}\n";
+    let results: Vec<_> = cards_jsonl(input.as_bytes()).collect();
+    assert_eq!(results.len(), 3);
+    assert!(results[0].is_ok() && results[2].is_ok());
+    assert!(matches!(&results[1], Err(e) if !e.is_fatal()));
 }

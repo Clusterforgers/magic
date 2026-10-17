@@ -496,6 +496,7 @@ mod tests {
     #[case("double_faced_token", Layout::DoubleFacedToken, false)]
     #[case("emblem", Layout::Emblem, false)]
     #[case("art_series", Layout::ArtSeries, false)]
+    #[case("front_card", Layout::FrontCard, false)]
     #[case("brand_new_layout", Layout::Other("brand_new_layout".into()), true)]
     fn layouts_and_deck_eligibility(
         #[case] keyword: &str,

@@ -1,11 +1,13 @@
 //! MTGJSON precon deck files: raw serde models and a normalized `PreconDeck`.
 
 mod deck;
+mod deck_list;
 pub mod raw;
 
 use std::io::Read;
 
 pub use deck::{MtgjsonError, PreconCard, PreconDeck};
+pub use deck_list::{DeckListEntry, parse_deck_list};
 
 /// Parses one MTGJSON deck file, either `{"meta":..,"data":{deck}}` or a bare deck object.
 pub fn parse_deck<R: Read>(reader: R) -> Result<PreconDeck, MtgjsonError> {
