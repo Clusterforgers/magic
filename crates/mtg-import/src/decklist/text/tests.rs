@@ -188,7 +188,7 @@ proptest! {
 
     #[test]
     fn arbitrary_text_never_panics_and_accounts_for_every_line(input in "\\PC{0,200}|[0-9a-zA-Z \\n\\r:()\\[\\]*/#,'-]{0,200}") {
-        for options in [plain(), arena(), archidekt(), mtgo_text()] {
+        for options in [plain(), arena(), archidekt(), mtgo_text(), options(DeckFormat::Moxfield)] {
             let deck = parse_text(&input, options);
             let content_lines = numbered_lines(input.trim_start_matches('\u{feff}'))
                 .filter(|(_, l)| !l.trim().is_empty())
