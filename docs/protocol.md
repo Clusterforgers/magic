@@ -11,7 +11,7 @@ Design record for `mtg-protocol`. Rules of the house are in `CLAUDE.md`; engine 
   - `objects`: every object visible after the batch that is new to the viewer or whose `ObjectView` differs from how they saw it before.
   - `gone`: ids the viewer could see before the batch and cannot see after it.
 - The diff compares the viewer's objects for `before` and for the folded state; it is never read off the events. Several changes name no object: a lord leaving changes every creature's power and toughness, `DamageCleared` resets damage on all of them, a new turn lifts summoning sickness. The batch at `from_seq` 0 lists every visible object because no view precedes it.
-- `StateView::apply(&mut self, &EventBatch)` is the reference client fold: replace the table, upsert `objects`, remove `gone`, keep `objects` sorted by id. `StateView::from_first_batch` starts a view from the batch at `from_seq` 0. The web ports `apply` to TypeScript (`web/src/protocol/transcript.test.ts` holds a small one).
+- `StateView::apply(&mut self, &EventBatch)` is the reference client fold: replace the table, upsert `objects`, remove `gone`, keep `objects` sorted by id. `StateView::from_first_batch` starts a view from the batch at `from_seq` 0. The web ports `apply` to TypeScript in `web/src/play/view.ts` (see `web.md`).
 - Bindings come from ts-rs: 66 files in `web/src/protocol/generated/`. Regenerate with `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test bindings`; the drift test fails when the committed files are stale. `mtg-core` and `mtg-engine` derive `TS` behind an optional `ts` feature that only this crate enables. ts-rs inlines the flattened table, so the TypeScript `StateView` is `TableView`'s fields plus `objects`.
 
 ## Visibility
