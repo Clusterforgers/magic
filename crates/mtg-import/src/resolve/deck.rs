@@ -153,6 +153,7 @@ mod tests {
         ParsedDeck {
             entries,
             errors: Vec::new(),
+            ..ParsedDeck::default()
         }
     }
 

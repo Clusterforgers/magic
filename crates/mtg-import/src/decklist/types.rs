@@ -70,6 +70,15 @@ pub struct LineError {
     pub message: String,
 }
 
+/// A section the format carries that is not part of the deck, such as Moxfield's `STICKERS:`.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct IgnoredSection {
+    /// Section name as written in the list, without the colon.
+    pub name: String,
+    /// Number of cards (sum of copy counts) that were left out.
+    pub count: u64,
+}
+
 /// A parsed deck list: the entries that were readable plus per-line errors.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ParsedDeck {
@@ -77,6 +86,9 @@ pub struct ParsedDeck {
     pub entries: Vec<DeckEntry>,
     /// Lines that were skipped, in input order.
     pub errors: Vec<LineError>,
+    /// Sections that were recognized but kept out of the deck, in input order.
+    #[serde(default)]
+    pub ignored: Vec<IgnoredSection>,
 }
 
 impl ParsedDeck {

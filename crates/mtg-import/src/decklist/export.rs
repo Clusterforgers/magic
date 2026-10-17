@@ -2,7 +2,8 @@
 
 use thiserror::Error;
 
-use super::line::{LineOptions, is_collector_number, is_set_code, parse_entry};
+use super::affix::{is_collector_number, is_set_code};
+use super::line::{LineOptions, parse_entry};
 use super::parse;
 use super::section::header_word;
 use super::types::{DeckEntry, MAX_COUNT, ParsedDeck, Section};
@@ -53,9 +54,11 @@ fn entry_line(entry: &DeckEntry) -> Result<String, String> {
             }
         }
     }
+    // The strictest dialect: a name that survives hash-tag stripping also survives the laxer ones.
     let options = LineOptions {
         bracket_sets: true,
         categories: false,
+        hash_tags: true,
     };
     let read = parse_entry(&line, options).map_err(|e| e.to_string())?;
     let same = read.count == entry.count
@@ -72,6 +75,8 @@ fn entry_line(entry: &DeckEntry) -> Result<String, String> {
 }
 
 /// Writes `deck` as plain text with a header at each section change, or fails if it would not parse back.
+///
+/// Sections the source listed apart from the deck ([`ParsedDeck::ignored`]) are not written.
 pub fn export(deck: &ParsedDeck) -> Result<String, ExportError> {
     if !deck.errors.is_empty() {
         return Err(ExportError::HasLineErrors {
@@ -100,7 +105,8 @@ pub fn export(deck: &ParsedDeck) -> Result<String, ExportError> {
         text.push_str(&line);
         text.push('\n');
     }
-    if parse(&text) == *deck {
+    let again = parse(&text);
+    if again.entries == deck.entries && again.errors.is_empty() {
         Ok(text)
     } else {
         Err(ExportError::NotRoundTrippable)
@@ -111,7 +117,7 @@ pub fn export(deck: &ParsedDeck) -> Result<String, ExportError> {
 mod tests {
     //! Goal: for every deck the exporter accepts, parse(export(d)) == d, and anything that could not survive the trip is refused instead of corrupted.
     use super::*;
-    use crate::decklist::{DeckFormat, LineError, detect};
+    use crate::decklist::{DeckFormat, IgnoredSection, LineError, detect};
     use proptest::prelude::*;
     use rstest::rstest;
 
@@ -119,6 +125,7 @@ mod tests {
         ParsedDeck {
             entries,
             errors: Vec::new(),
+            ..ParsedDeck::default()
         }
     }
 
@@ -186,6 +193,21 @@ mod tests {
             "{message}"
         );
         assert!(message.contains(fragment), "{message}");
+    }
+
+    #[test]
+    fn sections_listed_apart_from_the_deck_are_not_written() {
+        let mut stickered = deck(vec![
+            e(1, "A", Section::Main),
+            e(2, "B", Section::Sideboard),
+        ]);
+        stickered.ignored.push(IgnoredSection {
+            name: "STICKERS".to_owned(),
+            count: 3,
+        });
+        let text = export(&stickered).unwrap();
+        assert_eq!(text, "1 A\n\nSideboard\n2 B\n");
+        assert_eq!(crate::decklist::parse(&text).entries, stickered.entries);
     }
 
     #[test]

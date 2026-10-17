@@ -26,8 +26,20 @@ pub fn header_word(section: Section) -> &'static str {
     }
 }
 
-/// Reads a header line such as `Sideboard`, `SIDEBOARD:` or `Sideboard (15)`.
-pub fn header_section(line: &str) -> Option<Section> {
+/// What a header line stands for: a part of the deck, or cards the format lists apart from it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Header {
+    /// A part of the deck.
+    Section(Section),
+    /// Listed cards that are no deck cards, such as Moxfield's stickers; holds the name as written.
+    Ignored(String),
+}
+
+/// Sections some formats list next to the deck that hold no deck cards (case-insensitive).
+const IGNORED_WORDS: [&str; 1] = ["stickers"];
+
+/// The words of a header line without its colon and `(15)` count.
+fn header_text(line: &str) -> &str {
     let mut text = line.trim().trim_end_matches(':').trim_end();
     if let Some(open) = text.rfind('(')
         && let Some(inner) = text[open + 1..].strip_suffix(')')
@@ -36,7 +48,24 @@ pub fn header_section(line: &str) -> Option<Section> {
     {
         text = text[..open].trim_end().trim_end_matches(':').trim_end();
     }
-    section_from_word(text)
+    text
+}
+
+/// Reads a header line such as `Sideboard`, `SIDEBOARD:`, `Sideboard (15)` or `STICKERS:`.
+pub fn header(line: &str) -> Option<Header> {
+    let text = header_text(line);
+    if let Some(section) = section_from_word(text) {
+        return Some(Header::Section(section));
+    }
+    IGNORED_WORDS
+        .iter()
+        .any(|word| text.eq_ignore_ascii_case(word))
+        .then(|| Header::Ignored(text.to_owned()))
+}
+
+/// Reads a header line that names a part of the deck.
+pub fn header_section(line: &str) -> Option<Section> {
+    section_from_word(header_text(line))
 }
 
 /// Whether a header uses Moxfield's all-caps `NAME:` style.
@@ -45,7 +74,7 @@ pub fn is_shouting_header(line: &str) -> bool {
     text.ends_with(':')
         && text.chars().any(char::is_alphabetic)
         && !text.chars().any(char::is_lowercase)
-        && header_section(text).is_some()
+        && header(text).is_some()
 }
 
 /// Splits an `SB:` prefix (any case, optional space) off an entry line.
@@ -56,21 +85,28 @@ pub fn strip_sideboard_prefix(line: &str) -> Option<&str> {
         .then(|| line[3..].trim_start())
 }
 
-/// Maps an Archidekt category list such as `Commander{top},Ramp` to a section, if any item names one.
+/// Maps an Archidekt category list such as `Ramp,Maybeboard{noDeck}` to a section; only the first category counts.
+///
+/// The `{top}` flag makes the command zone, a category named Sideboard the sideboard (even when it is excluded
+/// from the deck), any other `{noDeck}` category the maybeboard; anything else says nothing about the board.
 pub fn section_from_category(category: &str) -> Option<Section> {
-    category.split(',').find_map(|item| {
-        let name = item.split('{').next().unwrap_or(item).trim();
-        match section_from_word(name) {
-            Some(Section::Main) | None => None,
-            other => other,
-        }
-    })
+    let first = category.split(',').next().unwrap_or_default();
+    let has_flag = |flag: &str| first.contains(&format!("{{{flag}}}"));
+    if has_flag("top") {
+        return Some(Section::Commander);
+    }
+    let name = first.split('{').next().unwrap_or(first).trim();
+    match section_from_word(name) {
+        Some(Section::Main) | None => has_flag("noDeck").then_some(Section::Maybeboard),
+        other => other,
+    }
 }
 
 #[cfg(test)]
 mod tests {
     //! Goal: section vocabulary is recognized in every spelling exporters use, without mistaking card names for headers.
     use super::*;
+    use proptest::prelude::*;
     use rstest::rstest;
 
     #[rstest]
@@ -102,6 +138,24 @@ mod tests {
     }
 
     #[rstest]
+    #[case::moxfield("STICKERS:", Some(Header::Ignored("STICKERS".to_owned())))]
+    #[case::any_case("Stickers", Some(Header::Ignored("Stickers".to_owned())))]
+    #[case::with_count("Stickers (10)", Some(Header::Ignored("Stickers".to_owned())))]
+    #[case::a_deck_section("SIDEBOARD:", Some(Header::Section(Section::Sideboard)))]
+    #[case::a_card_named_so("Stickers of Doom", None)]
+    #[case::unknown_shouting_header("LANDS:", None)]
+    fn headers_name_a_deck_section_or_one_to_leave_out(
+        #[case] line: &str,
+        #[case] expected: Option<Header>,
+    ) {
+        assert_eq!(header(line), expected);
+        assert_eq!(
+            header_section(line).is_some(),
+            matches!(expected, Some(Header::Section(_)))
+        );
+    }
+
+    #[rstest]
     #[case(Section::Main)]
     #[case(Section::Sideboard)]
     #[case(Section::Commander)]
@@ -125,13 +179,31 @@ mod tests {
     }
 
     #[rstest]
-    #[case("Commander{top}", Some(Section::Commander))]
-    #[case("Ramp,Commander", Some(Section::Commander))]
-    #[case("Sideboard", Some(Section::Sideboard))]
-    #[case("Maybeboard{noDeck}{noPrice}", Some(Section::Maybeboard))]
-    #[case("Ramp", None)]
-    #[case("Deck", None)]
-    #[case("", None)]
+    #[case::top_flag("Commander{top}", Some(Section::Commander))]
+    #[case::top_flag_on_any_name("Partners{top},Ramp", Some(Section::Commander))]
+    #[case::later_categories_never_change_it("Ramp,Commander", None)]
+    #[case::later_top_flag("Ramp,Commander{top}", None)]
+    #[case::later_exclusion("Ramp,Maybeboard{noDeck}{noPrice}", None)]
+    #[case::sideboard("Sideboard", Some(Section::Sideboard))]
+    #[case::sideboard_then_top_flag("Sideboard,Commander{top}", Some(Section::Sideboard))]
+    #[case::sideboard_even_when_excluded("Sideboard{noDeck}{noPrice}", Some(Section::Sideboard))]
+    #[case::maybeboard("Maybeboard{noDeck}{noPrice}", Some(Section::Maybeboard))]
+    #[case::maybeboard_with_a_second_category(
+        "Maybeboard{noDeck}{noPrice},Creature",
+        Some(Section::Maybeboard)
+    )]
+    #[case::excluded_custom_category(
+        "Last Minute Cuts{noDeck}{noPrice}",
+        Some(Section::Maybeboard)
+    )]
+    #[case::name_holding_sideboard_is_just_excluded(
+        "1v1 Sideboard{noDeck}{noPrice}",
+        Some(Section::Maybeboard)
+    )]
+    #[case::ordinary_category("Ramp", None)]
+    #[case::price_flag_alone("Ramp{noPrice}", None)]
+    #[case::deck_word("Deck", None)]
+    #[case::empty("", None)]
     fn maps_archidekt_categories(#[case] category: &str, #[case] expected: Option<Section>) {
         assert_eq!(section_from_category(category), expected);
     }
@@ -139,11 +211,26 @@ mod tests {
     #[rstest]
     #[case("SIDEBOARD:", true)]
     #[case("COMMANDER:", true)]
+    #[case("STICKERS:", true)]
+    #[case("STICKERS", false)]
     #[case("Sideboard:", false)]
     #[case("SIDEBOARD", false)]
     #[case("RAMP:", false)]
     #[case(":", false)]
     fn detects_shouting_headers(#[case] line: &str, #[case] expected: bool) {
         assert_eq!(is_shouting_header(line), expected);
+    }
+
+    proptest! {
+        #[test]
+        fn later_categories_never_change_the_board(
+            first in "[A-Za-z0-9 :.-]{0,12}(\\{(top|noDeck|noPrice)\\}){0,2}",
+            rest in "[A-Za-z{}, ]{0,30}",
+        ) {
+            prop_assert_eq!(
+                section_from_category(&format!("{first},{rest}")),
+                section_from_category(&first)
+            );
+        }
     }
 }

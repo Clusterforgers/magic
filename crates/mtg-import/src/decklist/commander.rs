@@ -94,6 +94,7 @@ mod tests {
         prop::collection::vec(entry, 0..12).prop_map(|entries| ParsedDeck {
             entries,
             errors: Vec::new(),
+            ..ParsedDeck::default()
         })
     }
 

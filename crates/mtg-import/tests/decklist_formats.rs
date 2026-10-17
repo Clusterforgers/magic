@@ -262,6 +262,7 @@ fn entries_can_be_built_by_hand_and_exported() {
             DeckEntry::new(99, "Forest", Section::Main),
         ],
         errors: vec![],
+        ..ParsedDeck::default()
     };
     assert_eq!(
         export(&deck).unwrap(),

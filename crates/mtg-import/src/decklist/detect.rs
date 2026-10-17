@@ -31,9 +31,11 @@ impl Evidence {
             self.shouting_header = true;
             return;
         }
+        // Tags are read so that tagged lines still count, but they prove no format on their own.
         let options = LineOptions {
             bracket_sets: false,
             categories: true,
+            hash_tags: true,
         };
         if let Ok(entry) = parse_entry(line, options) {
             // A bare `[M10]` is a plain-text set code; categories only count after a `(SET)` printing.
@@ -131,6 +133,24 @@ mod tests {
         MtgoText
     )]
     #[case::mtgo_text_without_commander("4 Sol Ring\n\nSIDEBOARD:\n2 Fury\n", MtgoText)]
+    #[case::mtgo_text_stickers_alone_prove_it(
+        "1 Sol Ring\n\nSTICKERS:\n1 Ancestral Hot Dog Minotaur\n\n1 Atraxa, Praetors' Voice\n",
+        MtgoText
+    )]
+    #[case::moxfield_stickers_next_to_printings(
+        "1 Sol Ring (CMM) 400\n\nSTICKERS:\n1 Ancestral Hot Dog Minotaur (SUNF) 23\n",
+        Moxfield
+    )]
+    #[case::moxfield_hash_tags_prove_nothing("1 Sol Ring (CMM) 400 #Mana (LOCKED)\n", PlainText)]
+    #[case::moxfield_hash_tags_next_to_a_flag("1 Sol Ring (CMM) 400 *F* #Mana\n", Moxfield)]
+    #[case::arena_with_hash_tags(
+        "About\nName Storm\n\nDeck\n1 Sol Ring #Mana\n1 Arcane Signet #Mana\n",
+        Arena
+    )]
+    #[case::bare_names_after_a_commander_block(
+        "1 Sol Ring\n1 Arcane Signet\n\n1 Atraxa\n",
+        PlainText
+    )]
     #[case::mtgo_text_crlf("1 Sol Ring\r\n\r\nSIDEBOARD:\r\n1 Fury\r\n", MtgoText)]
     #[case::mtgo_text_bom("\u{feff}1 Sol Ring\n\nSIDEBOARD:\n1 Fury\n", MtgoText)]
     #[case::archidekt_category("1x Sol Ring (cmm) 400 [Ramp]\n", Archidekt)]
