@@ -38,6 +38,8 @@ struct Goodbye {
 const SHUTTING_DOWN: Goodbye = Goodbye::new(1001, "server shutting down");
 const GAME_ENDED: Goodbye = Goodbye::new(1001, "game closed");
 const PROTOCOL_ERROR: Goodbye = Goodbye::new(1002, "protocol error");
+const BAD_PAYLOAD: Goodbye = Goodbye::new(1007, "text frames must be UTF-8");
+const TOO_BIG: Goodbye = Goodbye::new(1009, "message too big");
 const RATE_LIMITED: Goodbye = Goodbye::new(1008, "rate limit exceeded");
 const TOO_MANY_BAD: Goodbye = Goodbye::new(1008, "too many malformed messages");
 const JOIN_TIMEOUT: Goodbye = Goodbye::new(1008, "no join in time");
@@ -137,7 +139,8 @@ async fn first_message(socket: &mut WebSocket) -> Result<Option<String>, Exit> {
             Some(Ok(Message::Binary(_))) => return Ok(None),
             Some(Ok(Message::Ping(_) | Message::Pong(_))) => {}
             Some(Ok(Message::Close(_))) => return Err(Exit::PeerClosed),
-            Some(Err(_)) | None => return Err(Exit::Gone),
+            Some(Err(error)) => return Err(Exit::Say(read_failure(&error))),
+            None => return Err(Exit::Gone),
         }
     }
 }
@@ -174,7 +177,11 @@ async fn pump(
                 None => return Exit::Say(why_queue_closed(access).await),
             },
             incoming = socket.recv() => {
-                let Some(Ok(frame)) = incoming else { return Exit::Gone };
+                let frame = match incoming {
+                    Some(Ok(frame)) => frame,
+                    Some(Err(error)) => return Exit::Say(read_failure(&error)),
+                    None => return Exit::Gone,
+                };
                 if !limiter.allow(Instant::now()) {
                     return Exit::Say(RATE_LIMITED);
                 }
@@ -218,6 +225,19 @@ async fn pump(
                 }
             }
         }
+    }
+}
+
+/// The close code that best fits a failed read. The websocket layer reports its own limits and
+/// protocol errors only as text, so this matches on it; a wrong guess only changes the code.
+fn read_failure(error: &axum::Error) -> Goodbye {
+    let text = error.to_string();
+    if text.contains("Space limit exceeded") {
+        TOO_BIG
+    } else if text.contains("UTF-8") {
+        BAD_PAYLOAD
+    } else {
+        PROTOCOL_ERROR
     }
 }
 

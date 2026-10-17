@@ -1,5 +1,6 @@
 //! Goal: a tiny HTTP/1.1 client over a raw TCP stream, so tests control every byte of a request, hostile ones included.
 
+use std::fmt::Write as _;
 use std::net::SocketAddr;
 use std::time::Duration;
 
@@ -71,10 +72,10 @@ pub async fn request(
 ) -> Reply {
     let mut head = format!("{method} {path} HTTP/1.1\r\nHost: {addr}\r\nConnection: close\r\n");
     for (name, value) in headers {
-        head.push_str(&format!("{name}: {value}\r\n"));
+        write!(head, "{name}: {value}\r\n").unwrap();
     }
     if !body.is_empty() {
-        head.push_str(&format!("Content-Length: {}\r\n", body.len()));
+        write!(head, "Content-Length: {}\r\n", body.len()).unwrap();
     }
     head.push_str("\r\n");
     let mut bytes = head.into_bytes();
@@ -134,14 +135,19 @@ fn parse(raw: &[u8]) -> Reply {
     Reply {
         status,
         headers,
-        body: if chunked { dechunk(body) } else { body.to_vec() },
+        body: if chunked {
+            dechunk(body)
+        } else {
+            body.to_vec()
+        },
     }
 }
 
 fn dechunk(mut rest: &[u8]) -> Vec<u8> {
     let mut out = Vec::new();
     while let Some(eol) = rest.windows(2).position(|w| w == b"\r\n") {
-        let size = usize::from_str_radix(String::from_utf8_lossy(&rest[..eol]).trim(), 16).unwrap_or(0);
+        let size =
+            usize::from_str_radix(String::from_utf8_lossy(&rest[..eol]).trim(), 16).unwrap_or(0);
         rest = &rest[eol + 2..];
         if size == 0 || rest.len() < size {
             break;

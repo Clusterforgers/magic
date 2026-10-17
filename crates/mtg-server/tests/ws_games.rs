@@ -57,7 +57,9 @@ async fn seat_bots(server: &TestServer, game: &str, tokens: &[String], seed: u64
 }
 
 /// Readies the bot and plays it to the end on its own task.
-fn spawn_to_the_end(mut bot: WsBot) -> tokio::task::JoinHandle<(common::bot::BotReport, Vec<String>)> {
+fn spawn_to_the_end(
+    mut bot: WsBot,
+) -> tokio::task::JoinHandle<(common::bot::BotReport, Vec<String>)> {
     tokio::spawn(async move {
         bot.ready().await;
         bot.finish_recorded().await
@@ -153,7 +155,11 @@ async fn a_seat_that_returns_with_its_token_is_resynced_and_the_game_ends_the_sa
 
     let mut previous = victim.reconnect(server.addr, &game, &tokens[0]).await;
     if comeback == Comeback::Replace {
-        assert_eq!(previous.closed().await, Some(4000), "the old socket is told");
+        assert_eq!(
+            previous.closed().await,
+            Some(4000),
+            "the old socket is told"
+        );
     }
     // The new socket gets Welcome, a snapshot and the pending decision, in that order.
     let first = [
@@ -163,7 +169,9 @@ async fn a_seat_that_returns_with_its_token_is_resynced_and_the_game_ends_the_sa
     ];
     assert!(matches!(&first[0], ServerMessage::Welcome { player, .. } if *player == seat0));
     assert!(matches!(&first[1], ServerMessage::Snapshot { state, .. } if state.viewer == seat0));
-    assert!(matches!(&first[2], ServerMessage::Decision { decision, .. } if decision.player == seat0));
+    assert!(
+        matches!(&first[2], ServerMessage::Decision { decision, .. } if decision.player == seat0)
+    );
     for message in first {
         assert_eq!(victim.feed(message).await, None);
     }
@@ -275,6 +283,10 @@ async fn a_seats_sockets_never_carry_the_names_of_cards_hidden_from_it(
         // cards on the table.
         assert!(hidden.len() > 20, "only {} hidden cards", hidden.len());
         assert!(heard.iter().any(|name| owner(name) == Some(me)));
-        assert!(heard.iter().any(|name| owner(name).is_some_and(|seat| seat != me)));
+        assert!(
+            heard
+                .iter()
+                .any(|name| owner(name).is_some_and(|seat| seat != me))
+        );
     }
 }

@@ -137,6 +137,8 @@ impl WsClient {
                 Some(Ok(Message::Close(frame))) => {
                     self.ended = true;
                     let code = frame.map_or(1005, |CloseFrame { code, .. }| u16::from(code));
+                    // One more poll sends our half of the closing handshake, as a real client would.
+                    let _ = tokio::time::timeout(Duration::from_secs(1), socket.next()).await;
                     return Frame::Closed(code);
                 }
                 Some(Ok(_)) => {}

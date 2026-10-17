@@ -1,6 +1,7 @@
 //! The REST endpoints: create a game, look one up, list the demo decks, health.
 
 use axum::Json;
+use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
 use axum::http::header::CONTENT_TYPE;
 use axum::http::{HeaderMap, StatusCode};
@@ -192,8 +193,9 @@ fn deck_body(deck: &DemoDeck) -> DeckBody {
 /// `GET /api/games/{id}`: public facts, never secrets. A bad id and an unknown game look alike.
 pub(crate) async fn game(
     State(app): State<AppState>,
-    Path(id): Path<String>,
+    path: Result<Path<String>, PathRejection>,
 ) -> Result<Json<GameBody>, ApiError> {
+    let Path(id) = path.map_err(|_| ApiError::not_found())?;
     let id: GameId = id.parse().map_err(|_| ApiError::not_found())?;
     let game = app
         .registry()
@@ -304,7 +306,7 @@ fn validate(body: &NewGame) -> Result<Vec<SeatRequest>, ApiError> {
         .map(|(index, seat)| {
             let name = seat.name.trim();
             let length = name.chars().count();
-            if length == 0 || length > MAX_NAME_CHARS || name.chars().any(char::is_control) {
+            if length == 0 || length > MAX_NAME_CHARS || name.chars().any(is_unsafe_in_names) {
                 return Err(ApiError::invalid(format!(
                     "seat {index}: the name must be 1 to {MAX_NAME_CHARS} characters without control characters"
                 )));
@@ -322,4 +324,18 @@ fn validate(body: &NewGame) -> Result<Vec<SeatRequest>, ApiError> {
             })
         })
         .collect()
+}
+
+/// Control characters and invisible or direction-changing marks, which could make a name
+/// pose as other text in the game log.
+fn is_unsafe_in_names(c: char) -> bool {
+    c.is_control()
+        || matches!(
+            c,
+            '\u{200b}'..='\u{200f}'
+                | '\u{202a}'..='\u{202e}'
+                | '\u{2060}'..='\u{2064}'
+                | '\u{2066}'..='\u{2069}'
+                | '\u{feff}'
+        )
 }
