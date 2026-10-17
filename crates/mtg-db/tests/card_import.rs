@@ -9,6 +9,7 @@ use common::{card_stream, db, fixture_records, reset, row_counts, snapshot};
 
 const FIXTURE_ENTRIES: usize = 24;
 const FIXTURE_USABLE: u64 = 23;
+const FIXTURE_ROWS: i64 = 23;
 
 #[sqlx::test]
 async fn the_fixture_pipeline_loads_every_usable_record_and_reports_the_bad_one(pool: PgPool) {
@@ -25,10 +26,7 @@ async fn the_fixture_pipeline_loads_every_usable_record_and_reports_the_bad_one(
     assert_eq!(report.skipped.count, 1);
     assert_eq!(report.skipped.samples[0].position, 16);
     assert!(report.skipped.samples[0].reason.contains("name"));
-    assert_eq!(
-        row_counts(&pool).await,
-        (FIXTURE_USABLE as i64, FIXTURE_USABLE as i64, 0)
-    );
+    assert_eq!(row_counts(&pool).await, (FIXTURE_ROWS, FIXTURE_ROWS, 0));
     assert_eq!(card_stream().count(), FIXTURE_ENTRIES);
 
     let run = database

@@ -15,7 +15,7 @@ async fn applied_migrations(pool: &PgPool) -> i64 {
     sqlx::query_scalar("SELECT count(*) FROM _sqlx_migrations WHERE success")
         .fetch_one(pool)
         .await
-        .unwrap()
+        .unwrap_or_else(|e| panic!("migration count failed: {e}"))
 }
 
 #[sqlx::test(migrations = false)]

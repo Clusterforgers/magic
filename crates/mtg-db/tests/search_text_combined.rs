@@ -87,6 +87,12 @@ fn text_cases() -> Vec<Case> {
                 "Valakut Awakening // Valakut Stoneforge",
             ],
         ),
+    ]
+}
+
+/// Queries that match nothing, are ignored, or try to break out of the query.
+fn text_edge_cases() -> Vec<Case> {
+    vec![
         found("only stop words matches nothing", text("the"), &[]),
         found("blank query is ignored", text("  "), &ALL_DECK_CARDS),
         found(
@@ -256,7 +262,9 @@ fn sort_cases() -> Vec<Case> {
 #[sqlx::test]
 async fn oracle_text_filters(pool: PgPool) {
     seeded(pool.clone()).await;
-    run(&repo(&pool), text_cases()).await;
+    let mut cases = text_cases();
+    cases.extend(text_edge_cases());
+    run(&repo(&pool), cases).await;
 }
 
 #[sqlx::test]

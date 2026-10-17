@@ -127,7 +127,11 @@ async fn a_fatal_stream_error_fails_the_run_and_keeps_only_complete_batches(pool
             panic!("{case}: expected a stream error, got {error}");
         };
         assert!(source.is_fatal(), "{case}");
-        assert_eq!(row_counts(&pool).await.0, committed as i64, "{case}");
+        assert_eq!(
+            row_counts(&pool).await.0,
+            i64::try_from(committed).unwrap(),
+            "{case}"
+        );
         let run = database.import_runs().get(run_id).await.unwrap().unwrap();
         assert_eq!(run.status, RunStatus::Failed, "{case}");
         assert!(run.finished_at.is_some(), "{case}");
@@ -135,7 +139,11 @@ async fn a_fatal_stream_error_fails_the_run_and_keeps_only_complete_batches(pool
             run.error.as_deref().unwrap().contains("malformed"),
             "{case}"
         );
-        assert_eq!(run.counts["cards"]["inserted"], committed as u64, "{case}");
+        assert_eq!(
+            run.counts["cards"]["inserted"],
+            u64::try_from(committed).unwrap(),
+            "{case}"
+        );
     }
 }
 

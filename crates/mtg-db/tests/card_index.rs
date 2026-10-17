@@ -74,7 +74,7 @@ async fn an_empty_database_gives_an_empty_index(pool: PgPool) {
 
     assert!(index.is_empty());
     assert_eq!(index.find("Lightning Bolt"), Lookup::Missing);
-    assert!(index.suggest("lightning bolt", 5).is_empty());
+    assert_eq!(index.suggest("lightning bolt", 5).len(), 0);
 }
 
 #[sqlx::test]

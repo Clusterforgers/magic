@@ -37,5 +37,5 @@ pub async fn ingest(
         .importer()
         .import_precons(decks.into_iter().map(Ok))
         .await
-        .unwrap()
+        .unwrap_or_else(|e| panic!("precon import failed: {e}"))
 }

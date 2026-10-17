@@ -91,7 +91,7 @@ async fn unknown_runs_are_absent(pool: PgPool) {
         runs.latest(ImportSource::ScryfallCards).await.unwrap(),
         None
     );
-    assert!(runs.recent(10).await.unwrap().is_empty());
+    assert_eq!(runs.recent(10).await.unwrap().len(), 0);
 }
 
 #[sqlx::test]

@@ -193,7 +193,7 @@ fn card_from(base: &CardRecord, n: usize, spec: &Spec) -> CardRecord {
     card.mana_value = spec.mana_value;
     card.colors = set_of(spec.colors);
     card.color_identity = set_of(spec.colors | spec.extra_identity);
-    card.type_line = spec.type_line.to_owned();
+    spec.type_line.clone_into(&mut card.type_line);
     card.front.oracle_text = spec.words.join(" ");
     card.layout = if spec.token {
         Layout::Token
@@ -295,7 +295,10 @@ fn expected_order(cards: &[CardRecord], criteria: &Criteria) -> Vec<OracleId> {
 }
 
 fn generated<T: std::fmt::Debug>(runner: &mut TestRunner, strategy: impl Strategy<Value = T>) -> T {
-    strategy.new_tree(runner).unwrap().current()
+    strategy
+        .new_tree(runner)
+        .unwrap_or_else(|e| panic!("strategy failed: {e}"))
+        .current()
 }
 
 #[sqlx::test]

@@ -4,6 +4,7 @@ mod common;
 
 use std::collections::BTreeMap;
 
+use mtg_db::import::UpsertCounts;
 use mtg_db::{CardSearch, Database, ImplStatus, Page};
 use mtg_import::scryfall::{Legality, Rarity};
 use serde_json::Value;
@@ -21,7 +22,7 @@ async fn updated_at_by_card(pool: &PgPool) -> BTreeMap<String, String> {
         sqlx::query_as("SELECT oracle_id::text, updated_at::text FROM cards ORDER BY oracle_id")
             .fetch_all(pool)
             .await
-            .unwrap();
+            .unwrap_or_else(|e| panic!("updated_at query failed: {e}"));
     rows.into_iter().collect()
 }
 
@@ -237,7 +238,7 @@ async fn other_cards_are_untouched_by_an_empty_or_tiny_import(pool: PgPool) {
     let extra = another_card(&record("Shock"), 77, "Brand New Card");
     let one = database.importer().import_cards([Ok(extra)]).await.unwrap();
 
-    assert_eq!(empty.cards, Default::default());
+    assert_eq!(empty.cards, UpsertCounts::default());
     assert_eq!(one.cards.inserted, 1);
     let after = snapshot(&pool, "cards", "oracle_id", true).await;
     let (Value::Array(before), Value::Array(after)) = (before, after) else {

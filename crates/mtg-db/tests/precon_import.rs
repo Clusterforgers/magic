@@ -24,7 +24,7 @@ async fn the_fixture_deck_resolves_completely_and_loads_in_deck_order(pool: PgPo
         ("C16", "Breed Lethality")
     );
     assert_eq!(ingested.entries, 5);
-    assert!(ingested.unresolved.is_empty());
+    assert_eq!(ingested.unresolved.len(), 0);
 
     let loaded = database
         .precons()
@@ -271,6 +271,6 @@ async fn a_failing_write_rolls_the_whole_deck_back(pool: PgPool) {
 #[sqlx::test]
 async fn absent_decks_are_none_and_an_empty_database_lists_nothing(pool: PgPool) {
     let precons = db(pool).precons();
-    assert!(precons.list().await.unwrap().is_empty());
+    assert_eq!(precons.list().await.unwrap().len(), 0);
     assert_eq!(precons.get(PreconDeckId(1)).await.unwrap(), None);
 }

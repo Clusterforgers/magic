@@ -121,7 +121,7 @@ async fn a_full_name_match_beats_a_front_face_match(pool: PgPool) {
         names(&repo.find_by_name("Dusk // Dawn").await.unwrap()),
         ["Dusk // Dawn"]
     );
-    assert!(repo.find_by_name("Dawn").await.unwrap().is_empty());
+    assert_eq!(repo.find_by_name("Dawn").await.unwrap().len(), 0);
 }
 
 /// `(query, the card that must rank first)`.
@@ -226,7 +226,11 @@ async fn with_lightning_family(pool: PgPool) -> mtg_db::CardRepo {
         .iter()
         .enumerate()
         .map(|(n, name)| Ok(another_card(&base, 300 + n as u128, name)));
-    database.importer().import_cards(cards).await.unwrap();
+    database
+        .importer()
+        .import_cards(cards)
+        .await
+        .unwrap_or_else(|e| panic!("family import failed: {e}"));
     database.cards()
 }
 

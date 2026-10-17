@@ -147,7 +147,7 @@ mod tests {
         let bad = MAX_SAMPLES + 5;
         let entries: Vec<String> = (0..bad).map(|n| format!(r#"{{"id":"x{n}"}}"#)).collect();
         let (batches, skips) = drain(10, &entries);
-        assert!(batches.is_empty());
+        assert_eq!(batches.len(), 0);
         assert_eq!(skips.count, bad as u64);
         assert_eq!(skips.samples.len(), MAX_SAMPLES);
     }
@@ -158,11 +158,7 @@ mod tests {
         let mut batches = Batches::new(cards(json.as_bytes()), 10);
         let error = batches.next_batch(&mut SkipLog::default()).unwrap_err();
         assert!(error.is_fatal());
-        assert!(
-            batches
-                .next_batch(&mut SkipLog::default())
-                .unwrap()
-                .is_empty()
-        );
+        let after = batches.next_batch(&mut SkipLog::default()).unwrap();
+        assert_eq!(after.len(), 0);
     }
 }

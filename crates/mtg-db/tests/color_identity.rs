@@ -190,7 +190,7 @@ async fn one_card_per_identity(pool: &PgPool) -> Vec<(String, ColorSet)> {
         .importer()
         .import_cards(records.into_iter().map(Ok))
         .await
-        .unwrap();
+        .unwrap_or_else(|e| panic!("identity cards failed to import: {e}"));
     identities
         .into_iter()
         .map(|symbols| (format!("Identity {symbols:?}"), colors(&symbols)))

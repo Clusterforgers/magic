@@ -19,14 +19,9 @@ async fn unknown_and_malformed_ids_are_simply_absent(pool: PgPool) {
         assert_eq!(cards.get(id).await.unwrap(), None, "{id}");
         assert_eq!(cards.detail(id).await.unwrap(), None, "{id}");
     }
-    assert!(cards.get_many(&[]).await.unwrap().is_empty());
-    assert!(
-        cards
-            .get_many(&[unknown, malformed])
-            .await
-            .unwrap()
-            .is_empty()
-    );
+    assert_eq!(cards.get_many(&[]).await.unwrap().len(), 0);
+    let unusable = cards.get_many(&[unknown, malformed]).await.unwrap();
+    assert_eq!(unusable.len(), 0);
 }
 
 #[sqlx::test]
@@ -112,7 +107,7 @@ async fn detail_bundles_only_the_cards_own_printings_and_rulings(pool: PgPool) {
         .unwrap()
         .unwrap();
     assert_eq!(shock.printings.len(), 2);
-    assert!(shock.rulings.is_empty());
+    assert_eq!(shock.rulings.len(), 0);
 }
 
 #[sqlx::test]

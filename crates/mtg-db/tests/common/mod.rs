@@ -28,13 +28,15 @@ pub fn fixture_path(name: &str) -> PathBuf {
 
 /// The recorded Scryfall card file, streamed from disk.
 pub fn card_stream() -> impl Iterator<Item = Result<CardRecord, ScryfallError>> + Send {
-    let file = File::open(fixture_path("scryfall_oracle_cards.json")).expect("card fixture opens");
+    let file = File::open(fixture_path("scryfall_oracle_cards.json"))
+        .unwrap_or_else(|e| panic!("card fixture opens: {e}"));
     cards(file)
 }
 
 /// The recorded Scryfall rulings file, streamed from disk.
 pub fn ruling_stream() -> impl Iterator<Item = Result<RulingRecord, ScryfallError>> + Send {
-    let file = File::open(fixture_path("scryfall_rulings.json")).expect("ruling fixture opens");
+    let file = File::open(fixture_path("scryfall_rulings.json"))
+        .unwrap_or_else(|e| panic!("ruling fixture opens: {e}"));
     rulings(file)
 }
 
@@ -53,8 +55,9 @@ pub fn record(name: &str) -> CardRecord {
 
 /// The recorded MTGJSON Commander deck.
 pub fn precon_deck() -> PreconDeck {
-    let file = File::open(fixture_path("mtgjson_deck_commander.json")).expect("deck fixture opens");
-    parse_deck(file).expect("deck fixture parses")
+    let file = File::open(fixture_path("mtgjson_deck_commander.json"))
+        .unwrap_or_else(|e| panic!("deck fixture opens: {e}"));
+    parse_deck(file).unwrap_or_else(|e| panic!("deck fixture parses: {e}"))
 }
 
 /// A database over the per-test pool, whose schema `sqlx::test` already migrated.
@@ -68,7 +71,7 @@ pub async fn seeded(pool: PgPool) -> Database {
     db.importer()
         .import_cards(card_stream())
         .await
-        .expect("fixture cards import");
+        .unwrap_or_else(|e| panic!("fixture cards import: {e}"));
     db
 }
 
@@ -113,8 +116,8 @@ pub fn another_card(base: &CardRecord, n: u128, name: &str) -> CardRecord {
     let mut card = base.clone();
     card.oracle_id = OracleId(Uuid::from_u128(n).to_string());
     card.printing_id = PrintingId(Uuid::from_u128(n + 1_000_000).to_string());
-    card.name = name.to_owned();
-    card.front.name = name.to_owned();
+    name.clone_into(&mut card.name);
+    name.clone_into(&mut card.front.name);
     card
 }
 
@@ -127,7 +130,7 @@ pub fn another_printing(
 ) -> CardRecord {
     let mut card = base.clone();
     card.printing_id = PrintingId(Uuid::from_u128(n + 2_000_000).to_string());
-    card.set = set.to_owned();
+    set.clone_into(&mut card.set);
     card.collector_number = n.to_string();
     card.released_at = released.map(str::to_owned);
     card
@@ -139,7 +142,7 @@ pub async fn row_counts(pool: &PgPool) -> (i64, i64, i64) {
         sqlx::query_scalar::<_, i64>(sqlx::AssertSqlSafe(format!("SELECT count(*) FROM {table}")))
             .fetch_one(pool)
             .await
-            .expect("count query runs")
+            .unwrap_or_else(|e| panic!("count query runs: {e}"))
     };
     (
         count("cards").await,
@@ -161,7 +164,7 @@ pub async fn snapshot(pool: &PgPool, table: &str, order: &str, with_timestamps: 
     sqlx::query_scalar::<_, Value>(sqlx::AssertSqlSafe(sql))
         .fetch_one(pool)
         .await
-        .expect("snapshot query runs")
+        .unwrap_or_else(|e| panic!("snapshot query runs: {e}"))
 }
 
 /// Empties the card tables (and everything that references them) between cases of one test.
@@ -174,7 +177,11 @@ pub async fn reset(pool: &PgPool) {
 
 /// The name index built from the database and the one built from the fixture records in memory.
 pub async fn card_index_pair(database: &Database) -> (CardIndex, CardIndex) {
-    let stored = database.cards().card_index().await.expect("index loads");
+    let stored = database
+        .cards()
+        .card_index()
+        .await
+        .unwrap_or_else(|e| panic!("index loads: {e}"));
     (stored, CardIndex::from_records(&fixture_records()))
 }
 

@@ -158,13 +158,16 @@ async fn sqlstate(pool: &PgPool, sql: &str) -> Option<String> {
         .await
     {
         Ok(_) => None,
-        Err(sqlx::Error::Database(error)) => error.code().map(|code| code.into_owned()),
+        Err(sqlx::Error::Database(error)) => error.code().map(std::borrow::Cow::into_owned),
         Err(other) => panic!("unexpected error: {other}"),
     }
 }
 
 async fn count(pool: &PgPool, sql: &'static str) -> i64 {
-    sqlx::query_scalar(sql).fetch_one(pool).await.unwrap()
+    sqlx::query_scalar(sql)
+        .fetch_one(pool)
+        .await
+        .unwrap_or_else(|e| panic!("{sql}: {e}"))
 }
 
 #[sqlx::test]
