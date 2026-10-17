@@ -106,6 +106,9 @@ pub fn play_game_with(
         kind,
         events: events.to_vec(),
     };
+    setup
+        .validate()
+        .map_err(|e| fail(EngineError::from(e).into(), &[]))?;
     let mut checker = if options.check_invariants {
         Some(InvariantChecker::new(&setup)
                 .map_err(|v| fail(v.into(), &[]))?

@@ -1,0 +1,114 @@
+//! Goal: the invariant checkers and the game harness catch the corruption they exist to catch and report failures with the seed and event log.
+
+use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaType;
+use mtg_engine::combat::DamageTarget;
+use mtg_engine::{Engine, Event};
+use mtg_testkit::cards::{forest, free_creature};
+use mtg_testkit::{
+    check_state, fuzz_setup, play_game, play_game_with, ready, FailureKind, InvariantChecker, PlayOptions,
+    RandomBot, Scenario, Violation,
+};
+use rstest::rstest;
+
+fn engine_for(seed: u64) -> Result<Engine, mtg_engine::EngineError> {
+    Engine::new(fuzz_setup(2, seed))
+}
+
+#[rstest]
+#[case::fresh_scenario(Scenario::new(3))]
+#[case::busy_board(Scenario::new(4).battlefield(1, [ready(forest()), ready(free_creature("X", 2, 2))]).hand(0, [forest()]))]
+fn well_formed_states_pass_the_stateless_checks(#[case] scenario: Scenario) {
+    let engine = scenario.build().map_err(|e| e.to_string());
+    assert!(engine.is_ok());
+    assert_eq!(engine.map(|e| check_state(e.state())), Ok(Ok(())));
+}
+
+#[test]
+fn the_checker_follows_a_clean_log_event_by_event() -> Result<(), String> {
+    let engine = engine_for(3).map_err(|e| e.to_string())?;
+    let mut checker = InvariantChecker::new(engine.setup()).map_err(|e| e.to_string())?;
+    checker.observe(engine.state(), engine.events()).map_err(|e| e.to_string())?;
+    checker.check_full_replay(engine.state(), engine.events()).map_err(|e| e.to_string())
+}
+
+#[test]
+fn a_live_state_that_differs_from_the_log_is_a_replay_violation() -> Result<(), String> {
+    let (a, b) = (engine_for(1), engine_for(2));
+    let (a, b) = (a.map_err(|e| e.to_string())?, b.map_err(|e| e.to_string())?);
+    let mut checker = InvariantChecker::new(a.setup()).map_err(|e| e.to_string())?;
+    let result = checker.observe(b.state(), a.events());
+    assert!(matches!(result, Err(Violation::Replay { .. })), "{result:?}");
+    Ok(())
+}
+
+#[rstest]
+#[case::draw_from_the_middle(Event::CardDrawn { player: PlayerId(0), object: ObjectId(3) })]
+#[case::spend_mana_that_is_not_there(Event::ManaSpent { player: PlayerId(0), mana: vec![ManaType::Green] })]
+#[case::unknown_object(Event::PermanentTapped { object: ObjectId(10_000) })]
+#[case::damage_to_a_card_in_a_library(Event::DamageDealt { source: ObjectId(0), target: DamageTarget::Object(ObjectId(1)), amount: 1 })]
+fn events_that_cannot_follow_from_the_state_are_violations(#[case] event: Event) -> Result<(), String> {
+    let engine = engine_for(4).map_err(|e| e.to_string())?;
+    let mut checker = InvariantChecker::new(engine.setup()).map_err(|e| e.to_string())?;
+    let mut log = engine.events().to_vec();
+    log.push(event);
+    let result = checker.observe(engine.state(), &log);
+    assert!(matches!(result, Err(Violation::Fold(_))), "{result:?}");
+    Ok(())
+}
+
+#[test]
+fn a_dropped_event_is_noticed_by_the_hash_comparison() -> Result<(), String> {
+    let engine = engine_for(6).map_err(|e| e.to_string())?;
+    let mut checker = InvariantChecker::new(engine.setup()).map_err(|e| e.to_string())?;
+    let mut log = engine.events().to_vec();
+    let dropped = log.iter().rposition(|e| matches!(e, Event::PermanentTapped { .. } | Event::HandDealt { .. }));
+    let dropped = dropped.ok_or("no event to drop")?;
+    log.remove(dropped);
+    let result = checker.observe(engine.state(), &log);
+    assert!(matches!(result, Err(Violation::Replay { .. }) | Err(Violation::Fold(_))), "{result:?}");
+    Ok(())
+}
+
+#[test]
+fn failures_carry_the_seed_and_the_event_log() {
+    let failure = play_game_with(
+        fuzz_setup(2, 77),
+        77,
+        PlayOptions { max_answers: 5, ..PlayOptions::default() },
+    )
+    .expect_err("five answers cannot finish a game");
+    assert!(matches!(failure.kind, FailureKind::StepLimit(5)));
+    let report = failure.to_string();
+    assert!(report.contains("seed 77"), "{report}");
+    assert!(report.contains("FirstPlayerChosen"), "the log is printed");
+    assert_eq!(failure.events.len(), report.lines().count() - 2);
+}
+
+#[test]
+fn finished_games_report_how_they_ended() -> Result<(), String> {
+    let outcome = play_game(fuzz_setup(3, 12), 12).map_err(|f| f.to_string())?;
+    assert!(outcome.answers > 0 && outcome.turns >= 1);
+    assert!(matches!(outcome.events.last(), Some(Event::GameEnded { .. })));
+    Ok(())
+}
+
+#[test]
+fn invalid_setups_fail_before_any_play() {
+    let mut setup = fuzz_setup(2, 1);
+    setup.players[0].library.truncate(10);
+    let failure = play_game(setup, 1).expect_err("deck too small");
+    assert!(matches!(failure.kind, FailureKind::Engine(_)));
+    assert!(failure.events.is_empty());
+}
+
+#[test]
+fn bots_are_reproducible_and_seed_sensitive() -> Result<(), String> {
+    let engine = engine_for(9).map_err(|e| e.to_string())?;
+    let decision = engine.decision().cloned().ok_or("no decision")?;
+    let answer = |seed, stream| RandomBot::new(seed, stream).choose(&decision);
+    assert_eq!(answer(1, 0), answer(1, 0));
+    let varied = (0..40).map(|s| answer(s, 0)).collect::<Vec<_>>();
+    assert!(varied.iter().any(|a| a != &varied[0]), "different seeds make different keep/mulligan choices");
+    Ok(())
+}
