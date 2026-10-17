@@ -3,11 +3,11 @@
 mod common;
 
 use common::{names, pid, turn_logs};
+use mtg_engine::Event;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_engine::Event;
 use mtg_testkit::cards::{bear, forest};
-use mtg_testkit::{ready, tapped, Driver, Scenario, ScriptError};
+use mtg_testkit::{Driver, Scenario, ScriptError, ready, tapped};
 use rstest::rstest;
 
 const QUIET_TURN: [Step; 10] = [
@@ -50,7 +50,12 @@ fn combat_steps_are_skipped_but_reported_when_nobody_can_attack(
         matches!(e, Event::NothingToDo { player, kind: mtg_engine::events::NothingToDo::Attack } if *player == pid(1))
     })?;
     driver.expect_no_event("any declare-blockers step", |e| {
-        matches!(e, Event::StepBegan { step: Step::DeclareBlockers | Step::CombatDamage | Step::FirstStrikeDamage })
+        matches!(
+            e,
+            Event::StepBegan {
+                step: Step::DeclareBlockers | Step::CombatDamage | Step::FirstStrikeDamage
+            }
+        )
     })
 }
 
@@ -95,12 +100,19 @@ fn cleanup_discards_down_to_seven(
     #[case] discards: usize,
 ) -> Result<(), ScriptError> {
     let cards = (0..hand).map(|_| forest());
-    let mut driver = Driver::from_scenario(Scenario::new(2).at(1, 0, Step::Cleanup).hand(0, cards))?;
+    let mut driver =
+        Driver::from_scenario(Scenario::new(2).at(1, 0, Step::Cleanup).hand(0, cards))?;
     if discards == 0 {
         driver.expect_step(Step::Upkeep)?;
     } else {
         driver.expect_decision(0, "discard")?;
-        let first_cards: Vec<_> = driver.state().zone(Zone::Hand(pid(0))).iter().copied().take(discards).collect();
+        let first_cards: Vec<_> = driver
+            .state()
+            .zone(Zone::Hand(pid(0)))
+            .iter()
+            .copied()
+            .take(discards)
+            .collect();
         driver.answer(mtg_engine::Answer::Discard(first_cards))?;
     }
     assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), hand.min(7));
@@ -122,13 +134,24 @@ fn unspent_mana_vanishes_when_the_step_ends(
     #[case] next: Step,
 ) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
-        Scenario::new(3).at(2, 0, start).battlefield(0, [ready(forest())]),
+        Scenario::new(3)
+            .at(2, 0, start)
+            .battlefield(0, [ready(forest())]),
     )?;
     driver.tap_for_mana("Forest")?;
-    assert_eq!(driver.state().player(pid(0)).map(|p| p.mana().total()), Some(1));
+    assert_eq!(
+        driver.state().player(pid(0)).map(|p| p.mana().total()),
+        Some(1)
+    );
     driver.pass_until(next)?;
-    assert_eq!(driver.state().player(pid(0)).map(|p| p.mana().total()), Some(0));
-    driver.expect_event("ManaPoolEmptied", |e| matches!(e, Event::ManaPoolEmptied { player } if *player == pid(0)))
+    assert_eq!(
+        driver.state().player(pid(0)).map(|p| p.mana().total()),
+        Some(0)
+    );
+    driver.expect_event(
+        "ManaPoolEmptied",
+        |e| matches!(e, Event::ManaPoolEmptied { player } if *player == pid(0)),
+    )
 }
 
 #[test]
@@ -147,10 +170,16 @@ fn untap_step_untaps_only_the_active_players_permanents() -> Result<(), ScriptEr
             .iter()
             .filter_map(|id| state.object(*id))
             .filter(|o| o.controller() == pid(seat))
-            .filter(|o| o.permanent().is_some_and(|p| p.tapped()))
+            .filter(|o| {
+                o.permanent()
+                    .is_some_and(mtg_engine::object::PermanentState::tapped)
+            })
             .count()
     };
-    assert_eq!((tapped_by_owner(0), tapped_by_owner(1), tapped_by_owner(2)), (2, 0, 1));
+    assert_eq!(
+        (tapped_by_owner(0), tapped_by_owner(1), tapped_by_owner(2)),
+        (2, 0, 1)
+    );
     assert_eq!(names(state, Zone::Battlefield).len(), 6);
     Ok(())
 }

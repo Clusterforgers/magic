@@ -10,7 +10,7 @@ use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, GameResult};
 use mtg_testkit::cards::{forest, free_creature};
-use mtg_testkit::{damaged, ready, Driver, Scenario, ScriptError};
+use mtg_testkit::{Driver, Scenario, ScriptError, damaged, ready};
 use rstest::rstest;
 
 fn deaths(driver: &Driver) -> Vec<(String, DeathCause)> {
@@ -19,7 +19,9 @@ fn deaths(driver: &Driver) -> Vec<(String, DeathCause)> {
         .events()
         .iter()
         .filter_map(|e| match e {
-            Event::CreatureDied { object, cause } => Some((common::name_of(driver.state(), *object), *cause)),
+            Event::CreatureDied { object, cause } => {
+                Some((common::name_of(driver.state(), *object), *cause))
+            }
             _ => None,
         })
         .collect()
@@ -39,13 +41,21 @@ fn creatures_die_when_damage_reaches_toughness(
     #[case] damage: u32,
     #[case] survives: bool,
 ) -> Result<(), ScriptError> {
-    let driver = Driver::from_scenario(
-        Scenario::new(2).battlefield(0, [damaged(free_creature("Subject", power, toughness), damage)]),
-    )?;
-    assert_eq!(names(driver.state(), Zone::Battlefield) == ["Subject"], survives);
+    let driver = Driver::from_scenario(Scenario::new(2).battlefield(
+        0,
+        [damaged(free_creature("Subject", power, toughness), damage)],
+    ))?;
+    assert_eq!(
+        names(driver.state(), Zone::Battlefield) == ["Subject"],
+        survives
+    );
     if !survives {
         driver.expect_zone(Zone::Graveyard(pid(0)), &["Subject"])?;
-        let cause = if toughness <= 0 { DeathCause::ZeroToughness } else { DeathCause::LethalDamage };
+        let cause = if toughness <= 0 {
+            DeathCause::ZeroToughness
+        } else {
+            DeathCause::LethalDamage
+        };
         assert_eq!(deaths(&driver), [("Subject".to_owned(), cause)]);
     }
     Ok(())
@@ -69,12 +79,21 @@ fn debuffs_that_zero_toughness_kill_without_damage(
     let subject = driver.id_of("Subject")?;
     driver.add_effect(
         Selector::Object(subject),
-        Modification::ModifyPowerToughness { power: delta, toughness: delta },
+        Modification::ModifyPowerToughness {
+            power: delta,
+            toughness: delta,
+        },
         Duration::UntilEndOfTurn,
     )?;
-    assert_eq!(names(driver.state(), Zone::Battlefield) == ["Subject"], survives);
+    assert_eq!(
+        names(driver.state(), Zone::Battlefield) == ["Subject"],
+        survives
+    );
     if !survives {
-        assert_eq!(deaths(&driver), [("Subject".to_owned(), DeathCause::ZeroToughness)]);
+        assert_eq!(
+            deaths(&driver),
+            [("Subject".to_owned(), DeathCause::ZeroToughness)]
+        );
     }
     Ok(())
 }
@@ -87,13 +106,28 @@ fn a_death_can_cause_another_death_in_the_next_pass() -> Result<(), ScriptError>
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .at(2, 0, Step::DeclareAttackers)
-            .battlefield(0, [ready(free_creature("Source", 1, 1)), ready(free_creature("T", 2, 2))])
-            .battlefield(1, [ready(free_creature("Kills Source", 2, 2)), ready(free_creature("Hits T", 3, 3))]),
+            .battlefield(
+                0,
+                [
+                    ready(free_creature("Source", 1, 1)),
+                    ready(free_creature("T", 2, 2)),
+                ],
+            )
+            .battlefield(
+                1,
+                [
+                    ready(free_creature("Kills Source", 2, 2)),
+                    ready(free_creature("Hits T", 3, 3)),
+                ],
+            ),
     )?;
     let (source, t) = (driver.id_of("Source")?, driver.id_of("T")?);
     driver.add_effect(
         Selector::Object(t),
-        Modification::ModifyPowerToughness { power: 0, toughness: 2 },
+        Modification::ModifyPowerToughness {
+            power: 0,
+            toughness: 2,
+        },
         Duration::WhileSourceOnBattlefield(source),
     )?;
     driver.attack(&[("Source", 1), ("T", 1)])?;
@@ -105,14 +139,26 @@ fn a_death_can_cause_another_death_in_the_next_pass() -> Result<(), ScriptError>
     let story: Vec<String> = events
         .iter()
         .filter_map(|e| match e {
-            Event::CreatureDied { object, .. } => Some(format!("{} died", common::name_of(driver.state(), *object))),
+            Event::CreatureDied { object, .. } => {
+                Some(format!("{} died", common::name_of(driver.state(), *object)))
+            }
             Event::EffectExpired { .. } => Some("buff lapsed".to_owned()),
             _ => None,
         })
         .collect();
-    assert_eq!(story, ["Source died", "T died", "buff lapsed"], "T dies in the second pass; the lapsed effect is only pruned afterwards");
-    assert_eq!(names(driver.state(), Zone::Battlefield), ["Kills Source", "Hits T"]);
-    assert!(driver.state().effects().is_empty(), "the lapsed effect was cleaned up");
+    assert_eq!(
+        story,
+        ["Source died", "T died", "buff lapsed"],
+        "T dies in the second pass; the lapsed effect is only pruned afterwards"
+    );
+    assert_eq!(
+        names(driver.state(), Zone::Battlefield),
+        ["Kills Source", "Hits T"]
+    );
+    assert!(
+        driver.state().effects().is_empty(),
+        "the lapsed effect was cleaned up"
+    );
     Ok(())
 }
 
@@ -142,7 +188,9 @@ fn drawing_from_an_empty_library_loses(
     #[case] loses: bool,
 ) -> Result<(), ScriptError> {
     // Turn 2 is player 1's, so they draw in the draw step.
-    let scenario = Scenario::new(2).at(2, 1, Step::Untap).library(1, (0..library).map(|_| forest()));
+    let scenario = Scenario::new(2)
+        .at(2, 1, Step::Untap)
+        .library(1, (0..library).map(|_| forest()));
     let mut driver = Driver::from_scenario(scenario)?;
     driver.idle_until(2, Step::Draw).ok();
     assert_eq!(driver.engine().result().is_some(), loses);
@@ -157,8 +205,16 @@ fn drawing_from_an_empty_library_loses(
 
 #[test]
 fn the_empty_library_loss_comes_one_draw_late() -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(Scenario::new(2).at(2, 1, Step::Untap).library(1, [forest()]))?;
-    assert_eq!(driver.engine().result(), None, "the last card was drawn without losing");
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .at(2, 1, Step::Untap)
+            .library(1, [forest()]),
+    )?;
+    assert_eq!(
+        driver.engine().result(),
+        None,
+        "the last card was drawn without losing"
+    );
     driver.idle_until(4, Step::Main1).ok();
     assert_eq!(driver.engine().result(), Some(GameResult::Winner(pid(0))));
     Ok(())
@@ -179,7 +235,11 @@ fn simultaneous_losses_are_resolved_in_one_pass() -> Result<(), ScriptError> {
         .take_while(|e| !matches!(e, Event::ObjectLeftGame { .. }))
         .filter(|e| matches!(e, Event::PlayerLost { .. } | Event::CreatureDied { .. }))
         .collect();
-    assert_eq!(first_pass.len(), 3, "both players and the creature are handled together: {first_pass:?}");
+    assert_eq!(
+        first_pass.len(),
+        3,
+        "both players and the creature are handled together: {first_pass:?}"
+    );
     assert_eq!(driver.engine().result(), None, "players 0 and 3 remain");
     Ok(())
 }

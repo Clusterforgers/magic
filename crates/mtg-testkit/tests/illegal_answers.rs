@@ -6,7 +6,7 @@ use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{Answer, MulliganChoice, PayChoice, PriorityAction};
 use mtg_engine::mana::{ManaSource, Payment};
 use mtg_engine::{Engine, EngineError, Event};
-use mtg_testkit::{fuzz_setup, RandomBot};
+use mtg_testkit::{RandomBot, fuzz_setup};
 use proptest::prelude::*;
 use rstest::rstest;
 
@@ -31,7 +31,8 @@ fn source() -> impl Strategy<Value = ManaSource> {
 
 fn any_answer() -> impl Strategy<Value = Answer> {
     prop_oneof![
-        prop_oneof![Just(MulliganChoice::Keep), Just(MulliganChoice::Mulligan)].prop_map(Answer::Mulligan),
+        prop_oneof![Just(MulliganChoice::Keep), Just(MulliganChoice::Mulligan)]
+            .prop_map(Answer::Mulligan),
         prop::collection::vec(object(), 0..4).prop_map(Answer::BottomCards),
         prop::collection::vec(object(), 0..4).prop_map(Answer::Discard),
         prop_oneof![
@@ -44,7 +45,10 @@ fn any_answer() -> impl Strategy<Value = Answer> {
         prop_oneof![
             Just(PayChoice::Auto),
             Just(PayChoice::Cancel),
-            (prop::collection::vec(mana(), 0..3), prop::collection::vec(source(), 0..4))
+            (
+                prop::collection::vec(mana(), 0..3),
+                prop::collection::vec(source(), 0..4)
+            )
                 .prop_map(|(pool, taps)| PayChoice::Manual(Payment { pool, taps })),
         ]
         .prop_map(Answer::PayMana),
@@ -55,15 +59,17 @@ fn any_answer() -> impl Strategy<Value = Answer> {
 }
 
 /// Plays `steps` bot answers into a three-player game so the pending decision varies widely.
-fn game_after(seed: u64, steps: usize) -> Engine {
-    let mut engine = Engine::new(fuzz_setup(3, seed)).expect("valid setup");
+fn game_after(seed: u64, steps: usize) -> Result<Engine, EngineError> {
+    let mut engine = Engine::new(fuzz_setup(3, seed))?;
     let mut bots: Vec<RandomBot> = (0..3).map(|i| RandomBot::new(seed, i)).collect();
     for _ in 0..steps {
-        let Some(decision) = engine.decision().cloned() else { break };
+        let Some(decision) = engine.decision().cloned() else {
+            break;
+        };
         let answer = bots[decision.player.index()].choose(&decision);
-        engine.apply(answer).expect("bots answer legally");
+        engine.apply(answer)?;
     }
-    engine
+    Ok(engine)
 }
 
 proptest! {
@@ -75,7 +81,7 @@ proptest! {
         steps in 0usize..400,
         answers in prop::collection::vec(any_answer(), 1..8),
     ) {
-        let mut engine = game_after(seed, steps);
+        let mut engine = game_after(seed, steps).map_err(|e| TestCaseError::fail(e.to_string()))?;
         for answer in answers {
             let (hash, log_len, decision) = (engine.state_hash(), engine.events().len(), engine.decision().cloned());
             match engine.apply(answer) {
@@ -92,7 +98,7 @@ proptest! {
 
     #[test]
     fn accepted_answers_always_extend_the_log_consistently(seed in 0u64..40, steps in 0usize..300) {
-        let mut engine = game_after(seed, steps);
+        let mut engine = game_after(seed, steps).map_err(|e| TestCaseError::fail(e.to_string()))?;
         let before = engine.events().len();
         if let Some(decision) = engine.decision().cloned() {
             let answer = RandomBot::new(seed, 99).choose(&decision);
@@ -107,24 +113,35 @@ proptest! {
 #[case::mulligan_wants_keep_or_mulligan(0, Answer::Priority(PriorityAction::Pass))]
 #[case::mulligan_rejects_attackers(0, Answer::DeclareAttackers(vec![]))]
 #[case::mulligan_rejects_discards(0, Answer::Discard(vec![]))]
-fn wrong_kinds_of_answer_are_rejected_at_the_opening(
-    #[case] steps: usize,
-    #[case] answer: Answer,
-) {
-    let mut engine = game_after(1, steps);
+fn wrong_kinds_of_answer_are_rejected_at_the_opening(#[case] steps: usize, #[case] answer: Answer) {
+    let mut engine = game_after(1, steps).expect("legal bot play");
     let (hash, log_len) = (engine.state_hash(), engine.events().len());
     assert!(matches!(engine.apply(answer), Err(EngineError::Illegal(_))));
-    assert_eq!((engine.state_hash(), engine.events().len()), (hash, log_len));
+    assert_eq!(
+        (engine.state_hash(), engine.events().len()),
+        (hash, log_len)
+    );
 }
 
 #[test]
 fn no_decision_means_no_answers_and_no_effects() {
     let mut engine = Engine::new(
-        mtg_testkit::Scenario::new(2).life(0, 0).setup().expect("setup"),
+        mtg_testkit::Scenario::new(2)
+            .life(0, 0)
+            .setup()
+            .expect("setup"),
     )
     .expect("engine");
     let hash = engine.state_hash();
-    assert_eq!(engine.apply(Answer::Priority(PriorityAction::Pass)), Err(EngineError::NoDecision));
+    assert_eq!(
+        engine.apply(Answer::Priority(PriorityAction::Pass)),
+        Err(EngineError::NoDecision)
+    );
     assert_eq!(engine.state_hash(), hash);
-    assert!(engine.events().iter().any(|e| matches!(e, Event::GameEnded { .. })));
+    assert!(
+        engine
+            .events()
+            .iter()
+            .any(|e| matches!(e, Event::GameEnded { .. }))
+    );
 }

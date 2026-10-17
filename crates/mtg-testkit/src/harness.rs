@@ -110,9 +110,11 @@ pub fn play_game_with(
         .validate()
         .map_err(|e| fail(EngineError::from(e).into(), &[]))?;
     let mut checker = if options.check_invariants {
-        Some(InvariantChecker::new(&setup)
+        Some(
+            InvariantChecker::new(&setup)
                 .map_err(|v| fail(v.into(), &[]))?
-                .with_full_check_every(FULL_CHECK_EVERY))
+                .with_full_check_every(FULL_CHECK_EVERY),
+        )
     } else {
         None
     };

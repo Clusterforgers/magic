@@ -1,4 +1,4 @@
-//! Goal: every FormatRules hook (life, deck validation, mulligan, zones, loss and result) really drives the engine, so Commander can plug in without engine changes.
+//! Goal: every `FormatRules` hook (life, deck validation, mulligan, zones, loss and result) really drives the engine, so Commander can plug in without engine changes.
 
 mod common;
 
@@ -8,14 +8,14 @@ use common::pid;
 use mtg_core::card::CardDefinition;
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{Answer, DecisionKind, MulliganChoice};
+use mtg_engine::error::SetupError;
 use mtg_engine::format::{DeckError, ExtraZone, FormatRules, MulliganRule, Normal};
 use mtg_engine::player::LossReason;
 use mtg_engine::state::GameResult;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, EngineError, Event, GameSetup, GameState};
-use mtg_engine::error::SetupError;
 use mtg_testkit::cards::{forest, free_creature};
-use mtg_testkit::{fuzz_setup, Driver, Scenario, ScriptError};
+use mtg_testkit::{Driver, Scenario, ScriptError, fuzz_setup};
 use rstest::rstest;
 
 /// A deliberately odd format: 40 life, 5-card hands with one free mulligan, tiny decks, a
@@ -34,13 +34,19 @@ impl FormatRules for Quirky {
 
     fn validate_deck(&self, deck: &[Arc<CardDefinition>]) -> Result<(), DeckError> {
         if deck.len() < 10 {
-            return Err(DeckError::TooFewCards { min: 10, got: deck.len() });
+            return Err(DeckError::TooFewCards {
+                min: 10,
+                got: deck.len(),
+            });
         }
         Ok(())
     }
 
     fn mulligan_rule(&self) -> MulliganRule {
-        MulliganRule { hand_size: 5, free_mulligans: 1 }
+        MulliganRule {
+            hand_size: 5,
+            free_mulligans: 1,
+        }
     }
 
     fn extra_zones(&self) -> &'static [ExtraZone] {
@@ -61,15 +67,21 @@ impl FormatRules for Quirky {
 }
 
 fn quirky_decks(players: usize, size: usize) -> Vec<Vec<Arc<CardDefinition>>> {
-    (0..players).map(|_| (0..size).map(|_| forest()).collect()).collect()
+    (0..players)
+        .map(|_| (0..size).map(|_| forest()).collect())
+        .collect()
 }
 
 #[test]
 fn starting_life_and_hand_size_come_from_the_format() -> Result<(), ScriptError> {
     let engine = Engine::new(GameSetup::new(Arc::new(Quirky), 3, quirky_decks(3, 12)))?;
     assert!(engine.state().players().iter().all(|p| p.life() == 40));
-    let DecisionKind::Mulligan(options) = &engine.decision().ok_or(EngineError::NoDecision)?.kind else {
-        return Err(ScriptError::UnexpectedDecision { wanted: "mulligan", got: "other".into() });
+    let DecisionKind::Mulligan(options) = &engine.decision().ok_or(EngineError::NoDecision)?.kind
+    else {
+        return Err(ScriptError::UnexpectedDecision {
+            wanted: "mulligan",
+            got: "other".into(),
+        });
     };
     assert_eq!(options.hand.len(), 5);
     assert_eq!(engine.state().format().name(), "quirky");
@@ -89,8 +101,15 @@ fn normal_is_twenty_life_and_seven_cards() -> Result<(), ScriptError> {
 #[case::free_first_mulligan(1, 0)]
 #[case::second_costs_one(2, 1)]
 #[case::third_costs_two(3, 2)]
-fn free_mulligans_reduce_the_cards_bottomed(#[case] mulligans: u32, #[case] bottom: usize) -> Result<(), ScriptError> {
-    let mut driver = Driver::new(Engine::new(GameSetup::new(Arc::new(Quirky), 5, quirky_decks(3, 20)))?)?;
+fn free_mulligans_reduce_the_cards_bottomed(
+    #[case] mulligans: u32,
+    #[case] bottom: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::new(Engine::new(GameSetup::new(
+        Arc::new(Quirky),
+        5,
+        quirky_decks(3, 20),
+    ))?)?;
     let first = driver.state().first_player();
     for round in 0..mulligans {
         driver.answer(Answer::Mulligan(MulliganChoice::Mulligan))?;
@@ -104,7 +123,10 @@ fn free_mulligans_reduce_the_cards_bottomed(#[case] mulligans: u32, #[case] bott
         DecisionKind::BottomCards(options) => {
             assert_eq!((options.count, driver.decision()?.player), (bottom, first));
         }
-        _ => assert_eq!(bottom, 0, "no bottom decision only when nothing needs bottoming"),
+        _ => assert_eq!(
+            bottom, 0,
+            "no bottom decision only when nothing needs bottoming"
+        ),
     }
     Ok(())
 }
@@ -118,7 +140,10 @@ fn deck_validation_is_the_formats(#[case] size: usize, #[case] legal: bool) {
     if !legal {
         assert!(matches!(
             result.err(),
-            Some(EngineError::Setup(SetupError::InvalidDeck { source: DeckError::TooFewCards { min: 10, got: 9 }, .. }))
+            Some(EngineError::Setup(SetupError::InvalidDeck {
+                source: DeckError::TooFewCards { min: 10, got: 9 },
+                ..
+            }))
         ));
     }
 }
@@ -127,7 +152,10 @@ fn deck_validation_is_the_formats(#[case] size: usize, #[case] legal: bool) {
 #[case::normal_too_few(vec![59, 60], "TooFewCards")]
 #[case::normal_second_deck_bad(vec![60, 12], "TooFewCards")]
 fn normal_rejects_bad_decks_at_setup(#[case] sizes: Vec<usize>, #[case] error: &str) {
-    let decks = sizes.iter().map(|n| (0..*n).map(|_| forest()).collect()).collect();
+    let decks = sizes
+        .iter()
+        .map(|n| (0..*n).map(|_| forest()).collect())
+        .collect();
     let result = Engine::new(GameSetup::new(Arc::new(Normal), 1, decks));
     assert!(format!("{:?}", result.err()).contains(error));
 }
@@ -140,20 +168,33 @@ fn normal_enforces_the_copy_limit_but_not_for_basic_lands() {
     let result = Engine::new(GameSetup::new(Arc::new(Normal), 1, decks));
     assert!(matches!(
         result.err(),
-        Some(EngineError::Setup(SetupError::InvalidDeck { source: DeckError::TooManyCopies { got: 5, max: 4, .. }, .. }))
+        Some(EngineError::Setup(SetupError::InvalidDeck {
+            source: DeckError::TooManyCopies { got: 5, max: 4, .. },
+            ..
+        }))
     ));
 }
 
 #[test]
 fn games_need_at_least_two_players() {
-    let result = Engine::new(GameSetup::new(Arc::new(Normal), 1, vec![quirky_decks(1, 60).remove(0)]));
-    assert_eq!(result.err(), Some(EngineError::Setup(SetupError::TooFewPlayers(1))));
+    let result = Engine::new(GameSetup::new(
+        Arc::new(Normal),
+        1,
+        vec![quirky_decks(1, 60).remove(0)],
+    ));
+    assert_eq!(
+        result.err(),
+        Some(EngineError::Setup(SetupError::TooFewPlayers(1)))
+    );
 }
 
 #[test]
 fn a_format_loss_condition_eliminates_players() -> Result<(), ScriptError> {
     let driver = Driver::from_scenario(
-        Scenario::new(4).format(Arc::new(Quirky)).life(2, 13).life(0, 12),
+        Scenario::new(4)
+            .format(Arc::new(Quirky))
+            .life(2, 13)
+            .life(0, 12),
     )?;
     assert!(!driver.state().is_alive(pid(2)));
     assert!(driver.state().is_alive(pid(0)));
@@ -164,7 +205,16 @@ fn a_format_loss_condition_eliminates_players() -> Result<(), ScriptError> {
 
 #[test]
 fn a_format_can_decide_the_game_result_itself() -> Result<(), ScriptError> {
-    let driver = Driver::from_scenario(Scenario::new(4).format(Arc::new(Quirky)).life(2, 0).life(3, 0))?;
-    assert_eq!(driver.engine().result(), Some(GameResult::Draw), "two players left is a draw in this format");
+    let driver = Driver::from_scenario(
+        Scenario::new(4)
+            .format(Arc::new(Quirky))
+            .life(2, 0)
+            .life(3, 0),
+    )?;
+    assert_eq!(
+        driver.engine().result(),
+        Some(GameResult::Draw),
+        "two players left is a draw in this format"
+    );
     Ok(())
 }

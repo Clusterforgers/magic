@@ -2,10 +2,10 @@
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::combat::AttackTarget;
-use mtg_engine::effects::{Duration, Modification, Selector};
 use mtg_engine::decision::{
     Answer, DecisionKind, MulliganChoice, PayChoice, PriorityAction, PriorityOptions,
 };
+use mtg_engine::effects::{Duration, Modification, Selector};
 use mtg_engine::mana::{ManaSource, Payment};
 use mtg_engine::player::Player;
 use mtg_engine::turn::Step;
@@ -144,7 +144,11 @@ impl Driver {
 
     /// The id of the first battlefield permanent with this name.
     pub fn id_of(&self, name: &str) -> Result<ObjectId, ScriptError> {
-        self.find(self.state().zone(Zone::Battlefield).iter().copied(), name, "the battlefield")
+        self.find(
+            self.state().zone(Zone::Battlefield).iter().copied(),
+            name,
+            "the battlefield",
+        )
     }
 
     /// Registers a continuous effect through the engine's hook and checks invariants.
@@ -154,8 +158,11 @@ impl Driver {
         modification: Modification,
         duration: Duration,
     ) -> Result<Vec<Event>, ScriptError> {
-        let events = self.engine.add_continuous_effect(selector, modification, duration)?;
-        self.checker.observe(self.engine.state(), self.engine.events())?;
+        let events = self
+            .engine
+            .add_continuous_effect(selector, modification, duration)?;
+        self.checker
+            .observe(self.engine.state(), self.engine.events())?;
         Ok(events)
     }
 

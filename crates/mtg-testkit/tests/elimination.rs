@@ -8,13 +8,14 @@ use mtg_engine::decision::Answer;
 use mtg_engine::player::LossReason;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_engine::{apply_event, Engine, EngineError, Event, GameResult};
+use mtg_engine::{Engine, EngineError, Event, GameResult, apply_event};
 use mtg_testkit::cards::{forest, free_creature, instant};
-use mtg_testkit::{ready, Driver, Scenario, ScriptError};
+use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
 fn scenario_with_dead(players: usize, dead: &[usize]) -> Scenario {
-    dead.iter().fold(Scenario::new(players), |s, seat| s.life(*seat, 0))
+    dead.iter()
+        .fold(Scenario::new(players), |s, seat| s.life(*seat, 0))
 }
 
 #[rstest]
@@ -36,10 +37,18 @@ fn winner_or_draw_is_decided_when_players_lose_together(
     let driver = Driver::from_scenario(scenario_with_dead(players, dead))?;
     assert_eq!(driver.engine().result(), expected);
     assert_eq!(driver.engine().decision().is_none(), expected.is_some());
-    let ended = driver.engine().events().iter().filter(|e| matches!(e, Event::GameEnded { .. })).count();
+    let ended = driver
+        .engine()
+        .events()
+        .iter()
+        .filter(|e| matches!(e, Event::GameEnded { .. }))
+        .count();
     assert_eq!(ended, usize::from(expected.is_some()));
     if expected.is_some() {
-        assert!(matches!(driver.engine().events().last(), Some(Event::GameEnded { .. })));
+        assert!(matches!(
+            driver.engine().events().last(),
+            Some(Event::GameEnded { .. })
+        ));
     }
     Ok(())
 }
@@ -65,13 +74,32 @@ fn an_eliminated_players_objects_all_leave_the_game(
             .battlefield(0, [ready(free_creature("Survivor", 1, 1))]),
     )?;
     let state = driver.state();
-    assert!(state.objects().all(|o| o.owner() != pid(1)), "no object owned by the loser remains");
-    let left = driver.engine().events().iter().filter(|e| matches!(e, Event::ObjectLeftGame { .. })).count();
-    assert_eq!(left, 30 + 2 + 2 + 1, "library, hand, battlefield and graveyard all left");
+    assert!(
+        state.objects().all(|o| o.owner() != pid(1)),
+        "no object owned by the loser remains"
+    );
+    let left = driver
+        .engine()
+        .events()
+        .iter()
+        .filter(|e| matches!(e, Event::ObjectLeftGame { .. }))
+        .count();
+    assert_eq!(
+        left,
+        30 + 2 + 2 + 1,
+        "library, hand, battlefield and graveyard all left"
+    );
     assert_eq!(common::names(state, Zone::Battlefield), ["Survivor"]);
     assert!(matches!(
-        driver.engine().events().iter().find(|e| matches!(e, Event::PlayerLost { .. })),
-        Some(Event::PlayerLost { reason: LossReason::ZeroLife, .. })
+        driver
+            .engine()
+            .events()
+            .iter()
+            .find(|e| matches!(e, Event::PlayerLost { .. })),
+        Some(Event::PlayerLost {
+            reason: LossReason::ZeroLife,
+            ..
+        })
     ));
     assert_eq!(driver.engine().result(), None);
     Ok(())
@@ -88,7 +116,8 @@ fn turns_and_priority_skip_eliminated_players(
 ) -> Result<(), ScriptError> {
     let alive: Vec<usize> = (0..players).filter(|s| !dead.contains(s)).collect();
     let first = alive[0];
-    let mut driver = Driver::from_scenario(scenario_with_dead(players, dead).at(1, first, Step::Upkeep))?;
+    let mut driver =
+        Driver::from_scenario(scenario_with_dead(players, dead).at(1, first, Step::Upkeep))?;
     // One priority round involves exactly the living players, in turn order.
     let mut holders = Vec::new();
     for _ in 0..alive.len() {
@@ -100,7 +129,11 @@ fn turns_and_priority_skip_eliminated_players(
     let mut actives = vec![first];
     for _ in 0..(alive.len() * 40) {
         let decision = driver.decision()?;
-        assert!(alive.contains(&decision.player.index()), "{:?} is eliminated", decision.player);
+        assert!(
+            alive.contains(&decision.player.index()),
+            "{:?} is eliminated",
+            decision.player
+        );
         driver.answer_passively()?;
         let active = driver.state().turn().active().index();
         if actives.last() != Some(&active) {
@@ -119,7 +152,9 @@ fn turns_and_priority_skip_eliminated_players(
 fn losing_in_your_own_turn_ends_that_turn() -> Result<(), ScriptError> {
     // Turn 4 of a three-player game belongs to seat 0, who has nothing left to draw.
     let mut driver = Driver::from_scenario(
-        Scenario::new(3).at(4, 0, Step::Untap).library(0, std::iter::empty()),
+        Scenario::new(3)
+            .at(4, 0, Step::Untap)
+            .library(0, std::iter::empty()),
     )?;
     driver.idle_until(5, Step::Upkeep)?;
     assert_eq!(driver.state().turn().active(), pid(1));
@@ -138,16 +173,33 @@ fn an_attacker_aimed_at_an_eliminated_player_leaves_combat() -> Result<(), Scrip
     let mut driver = Driver::from_scenario(
         Scenario::new(3)
             .at(2, 0, Step::DeclareAttackers)
-            .battlefield(0, [ready(free_creature("A1", 2, 2)), ready(free_creature("A2", 2, 2))])
+            .battlefield(
+                0,
+                [
+                    ready(free_creature("A1", 2, 2)),
+                    ready(free_creature("A2", 2, 2)),
+                ],
+            )
             .battlefield(1, [ready(free_creature("D1", 1, 1))])
             .battlefield(2, [ready(free_creature("D2", 1, 1))]),
     )?;
     driver.attack(&[("A1", 1), ("A2", 2)])?;
     assert_eq!(driver.state().combat().attackers().len(), 2);
     let mut state = driver.state().clone();
-    apply_event(&mut state, &Event::PlayerLost { player: pid(1), reason: LossReason::ZeroLife })
-        .map_err(ScriptError::Engine)?;
-    let remaining: Vec<AttackTarget> = state.combat().attackers().iter().map(|a| a.target()).collect();
+    apply_event(
+        &mut state,
+        &Event::PlayerLost {
+            player: pid(1),
+            reason: LossReason::ZeroLife,
+        },
+    )
+    .map_err(ScriptError::Engine)?;
+    let remaining: Vec<AttackTarget> = state
+        .combat()
+        .attackers()
+        .iter()
+        .map(mtg_engine::combat::Attacker::target)
+        .collect();
     assert_eq!(remaining, [AttackTarget::Player(pid(2))]);
     Ok(())
 }
@@ -158,10 +210,22 @@ fn priority_moves_on_when_its_holder_is_eliminated() -> Result<(), ScriptError> 
     driver.pass()?;
     assert_eq!(driver.decision()?.player, pid(1));
     let mut state = driver.state().clone();
-    apply_event(&mut state, &Event::PlayerLost { player: pid(1), reason: LossReason::ZeroLife })
-        .map_err(ScriptError::Engine)?;
-    let priority = state.priority().ok_or_else(|| ScriptError::Expectation("no priority round".into()))?;
-    assert_eq!(priority.holder(), pid(2), "priority passes to the next living player");
+    apply_event(
+        &mut state,
+        &Event::PlayerLost {
+            player: pid(1),
+            reason: LossReason::ZeroLife,
+        },
+    )
+    .map_err(ScriptError::Engine)?;
+    let priority = state
+        .priority()
+        .ok_or_else(|| ScriptError::Expectation("no priority round".into()))?;
+    assert_eq!(
+        priority.holder(),
+        pid(2),
+        "priority passes to the next living player"
+    );
     assert!(!priority.passed().contains(&pid(1)));
     Ok(())
 }
@@ -179,14 +243,21 @@ fn a_losing_players_spells_leave_the_stack_with_them() -> Result<(), ScriptError
     // The spell is on the stack when lethal damage arrives; resuming from the crafted log runs the SBAs.
     let crafted = vec![
         Event::PriorityGranted { player: pid(1) },
-        Event::SpellCast { player: pid(1), object: spell },
-        Event::DamageDealt { source: striker, target: DamageTarget::Player(pid(1)), amount: 3 },
+        Event::SpellCast {
+            player: pid(1),
+            object: spell,
+        },
+        Event::DamageDealt {
+            source: striker,
+            target: DamageTarget::Player(pid(1)),
+            amount: 3,
+        },
     ];
     let mut log: Vec<Event> = probe.events().to_vec();
     log.extend(crafted);
     let resumed = Engine::resume(setup, log)?;
-    assert!(resumed.state().stack().is_empty());
+    assert_eq!(resumed.state().stack().len(), 0);
     assert!(resumed.state().objects().all(|o| o.owner() != pid(1)));
-    assert_eq!(resumed.state().is_alive(pid(1)), false);
+    assert!(!resumed.state().is_alive(pid(1)));
     Ok(())
 }

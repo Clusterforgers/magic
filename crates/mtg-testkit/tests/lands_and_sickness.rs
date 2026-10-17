@@ -12,13 +12,16 @@ use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{EngineError, Event};
 use mtg_testkit::cards::{forest, free_creature, instant};
-use mtg_testkit::{ready, sick, tapped, Driver, Scenario, ScriptError};
+use mtg_testkit::{Driver, Scenario, ScriptError, ready, sick, tapped};
 use rstest::rstest;
 
 fn may_play_a_land(driver: &Driver) -> Result<bool, ScriptError> {
     match &driver.decision()?.kind {
         DecisionKind::Priority(o) => Ok(!o.playable_lands.is_empty()),
-        other => Err(ScriptError::UnexpectedDecision { wanted: "priority", got: other.name().to_owned() }),
+        other => Err(ScriptError::UnexpectedDecision {
+            wanted: "priority",
+            got: other.name().to_owned(),
+        }),
     }
 }
 
@@ -27,7 +30,9 @@ fn mana_elf() -> Arc<CardDefinition> {
         CardDefinition::new("Mana Elf")
             .with_type(CardType::Creature)
             .with_power_toughness(1, 1)
-            .with_ability(AbilityDef::Mana(ManaAbility { produces: ManaType::Green })),
+            .with_ability(AbilityDef::Mana(ManaAbility {
+                produces: ManaType::Green,
+            })),
     )
 }
 
@@ -49,7 +54,9 @@ fn land_play_timing_table(
     #[case] offered: bool,
 ) -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
-        Scenario::new(2).at(2, 0, step).hand(0, [forest(), forest(), instant("Trick", 0, &[])]),
+        Scenario::new(2)
+            .at(2, 0, step)
+            .hand(0, [forest(), forest(), instant("Trick", 0, &[])]),
     )?;
     if already_played {
         driver.play_land("Forest")?;
@@ -72,7 +79,10 @@ fn a_second_land_drop_is_rejected_without_changing_anything() -> Result<(), Scri
     let hand = driver.state().zone(Zone::Hand(pid(0))).to_vec();
     let before = driver.engine().state_hash();
     let result = driver.answer(Answer::Priority(PriorityAction::PlayLand(hand[0])));
-    assert!(matches!(result, Err(ScriptError::Engine(EngineError::Illegal(_)))));
+    assert!(matches!(
+        result,
+        Err(ScriptError::Engine(EngineError::Illegal(_)))
+    ));
     assert_eq!(driver.engine().state_hash(), before);
     assert_eq!(driver.state().zone(Zone::Hand(pid(0))), hand.as_slice());
     Ok(())
@@ -80,7 +90,8 @@ fn a_second_land_drop_is_rejected_without_changing_anything() -> Result<(), Scri
 
 #[test]
 fn land_drops_come_back_every_turn() -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(Scenario::new(2).hand(0, [forest(), forest(), forest()]))?;
+    let mut driver =
+        Driver::from_scenario(Scenario::new(2).hand(0, [forest(), forest(), forest()]))?;
     for turn in [1, 3, 5] {
         driver.idle_until(turn, Step::Main1)?;
         assert!(may_play_a_land(&driver)?, "turn {turn}");
@@ -95,7 +106,13 @@ fn a_new_land_taps_for_mana_immediately() -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(Scenario::new(2).hand(0, [forest()]))?;
     driver.play_land("Forest")?;
     driver.tap_for_mana("Forest")?;
-    assert_eq!(driver.state().player(pid(0)).map(|p| p.mana().get(ManaType::Green)), Some(1));
+    assert_eq!(
+        driver
+            .state()
+            .player(pid(0))
+            .map(|p| p.mana().get(ManaType::Green)),
+        Some(1)
+    );
     Ok(())
 }
 
@@ -108,23 +125,31 @@ fn only_ready_untapped_creatures_may_attack(
     #[case] may_attack: bool,
 ) -> Result<(), ScriptError> {
     let driver = Driver::from_scenario(
-        Scenario::new(2).at(2, 0, Step::DeclareAttackers).battlefield(0, [creature]),
+        Scenario::new(2)
+            .at(2, 0, Step::DeclareAttackers)
+            .battlefield(0, [creature]),
     )?;
     if may_attack {
         driver.expect_decision(0, "declare-attackers")
     } else {
-        driver.expect_event("NothingToDo(Attack)", |e| matches!(e, Event::NothingToDo { .. }))
+        driver.expect_event("NothingToDo(Attack)", |e| {
+            matches!(e, Event::NothingToDo { .. })
+        })
     }
 }
 
 #[test]
 fn a_creature_cast_this_turn_cannot_attack_until_next_turn() -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(Scenario::new(2).hand(0, [free_creature("Ghoul", 1, 1)]))?;
+    let mut driver =
+        Driver::from_scenario(Scenario::new(2).hand(0, [free_creature("Ghoul", 1, 1)]))?;
     driver.cast("Ghoul")?;
     driver.pass()?;
     driver.pass()?;
     driver.idle_until(1, Step::Main2)?;
-    driver.expect_event("no attack possible this turn", |e| matches!(e, Event::NothingToDo { player, .. } if *player == pid(0)))?;
+    driver.expect_event(
+        "no attack possible this turn",
+        |e| matches!(e, Event::NothingToDo { player, .. } if *player == pid(0)),
+    )?;
     driver.idle_until(3, Step::DeclareAttackers)?;
     driver.expect_decision(0, "declare-attackers")
 }
@@ -161,10 +186,17 @@ fn sickness_ends_at_the_start_of_the_controllers_own_turn() -> Result<(), Script
         .zone(Zone::Battlefield)
         .iter()
         .filter_map(|id| state.object(*id))
-        .filter(|o| o.permanent().is_some_and(|p| p.summoning_sick()))
+        .filter(|o| {
+            o.permanent()
+                .is_some_and(mtg_engine::object::PermanentState::summoning_sick)
+        })
         .map(|o| o.card().name.clone())
         .collect();
     assert_eq!(state.turn().active(), pid(1));
-    assert_eq!(sick_names, ["Mine", "Other"], "only the new active player's creature lost its sickness");
+    assert_eq!(
+        sick_names,
+        ["Mine", "Other"],
+        "only the new active player's creature lost its sickness"
+    );
     Ok(())
 }

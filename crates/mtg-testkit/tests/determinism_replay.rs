@@ -7,8 +7,8 @@ use mtg_core::ids::ObjectId;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::format::Normal;
 use mtg_engine::zones::Zone;
-use mtg_engine::{replay, Engine, EngineError, Event, GameSetup};
-use mtg_testkit::{fuzz_setup, play_game, GameFailure, RandomBot};
+use mtg_engine::{Engine, EngineError, Event, GameSetup, replay};
+use mtg_testkit::{GameFailure, RandomBot, fuzz_setup, play_game};
 use rstest::rstest;
 
 fn numbered_decks(players: usize) -> Vec<Vec<Arc<CardDefinition>>> {
@@ -103,20 +103,30 @@ fn the_rng_counter_counts_exactly_the_random_events() -> Result<(), EngineError>
         .filter(|e| {
             matches!(
                 e,
-                Event::FirstPlayerChosen { .. } | Event::LibraryShuffled { .. } | Event::MulliganTaken { .. }
+                Event::FirstPlayerChosen { .. }
+                    | Event::LibraryShuffled { .. }
+                    | Event::MulliganTaken { .. }
             )
         })
         .count();
-    assert_eq!(engine.state().rng_index(), u64::try_from(random_events).unwrap_or(0));
+    assert_eq!(
+        engine.state().rng_index(),
+        u64::try_from(random_events).unwrap_or(0)
+    );
     assert_eq!(random_events, 5, "the first player and four shuffles");
     Ok(())
 }
 
+/// A finished game: its setup, event log and (log length, state hash) after every answer.
+type Recording = (GameSetup, Vec<Event>, Vec<(usize, u64)>);
+
 /// Plays a game and records (log length, state hash, pending decision) after every answer.
-fn record_game(players: usize, seed: u64) -> Result<(GameSetup, Vec<Event>, Vec<(usize, u64)>), EngineError> {
+fn record_game(players: usize, seed: u64) -> Result<Recording, EngineError> {
     let setup = fuzz_setup(players, seed);
     let mut engine = Engine::new(setup.clone())?;
-    let mut bots: Vec<RandomBot> = (0..players as u64).map(|i| RandomBot::new(seed, i)).collect();
+    let mut bots: Vec<RandomBot> = (0..players as u64)
+        .map(|i| RandomBot::new(seed, i))
+        .collect();
     let mut marks = vec![(engine.events().len(), engine.state_hash())];
     while let Some(decision) = engine.decision().cloned() {
         let answer = bots[decision.player.index()].choose(&decision);
@@ -147,7 +157,9 @@ fn resuming_from_a_prefix_reaches_the_same_pending_decision(
     let mut engine = Engine::new(setup.clone())?;
     let mut bots: Vec<RandomBot> = (0..players as u64).map(|i| RandomBot::new(8, i)).collect();
     for step in 0..400 {
-        let Some(decision) = engine.decision().cloned() else { break };
+        let Some(decision) = engine.decision().cloned() else {
+            break;
+        };
         if step % 41 == 0 {
             let resumed = Engine::resume(setup.clone(), engine.events().to_vec())?;
             assert_eq!(resumed.state_hash(), engine.state_hash());
@@ -168,8 +180,14 @@ fn resuming_from_a_prefix_reaches_the_same_pending_decision(
 #[test]
 fn replay_rejects_logs_that_do_not_follow_from_the_setup() {
     let setup = fuzz_setup(2, 1);
-    let bogus = [Event::CardDrawn { player: mtg_core::ids::PlayerId(0), object: ObjectId(0) }];
-    assert!(matches!(replay(&setup, &bogus), Err(EngineError::InvalidEvent(_))));
+    let bogus = [Event::CardDrawn {
+        player: mtg_core::ids::PlayerId(0),
+        object: ObjectId(0),
+    }];
+    assert!(matches!(
+        replay(&setup, &bogus),
+        Err(EngineError::InvalidEvent(_))
+    ));
 }
 
 #[test]
