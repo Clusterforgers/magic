@@ -2,6 +2,9 @@
 // Every test binary uses a different subset of these helpers.
 #![allow(dead_code)]
 
+pub mod precon;
+pub mod search;
+
 use std::fs::File;
 use std::path::{Path, PathBuf};
 
@@ -159,6 +162,14 @@ pub async fn snapshot(pool: &PgPool, table: &str, order: &str, with_timestamps: 
         .fetch_one(pool)
         .await
         .expect("snapshot query runs")
+}
+
+/// Empties the card tables (and everything that references them) between cases of one test.
+pub async fn reset(pool: &PgPool) {
+    sqlx::raw_sql("TRUNCATE cards CASCADE")
+        .execute(pool)
+        .await
+        .unwrap_or_else(|e| panic!("truncate failed: {e}"));
 }
 
 /// The name index built from the database and the one built from the fixture records in memory.
