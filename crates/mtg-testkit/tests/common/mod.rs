@@ -68,3 +68,12 @@ pub fn resolved(state: &GameState, events: &[Event]) -> Vec<String> {
         })
         .collect()
 }
+
+/// The first battlefield object with this name.
+pub fn on_battlefield(state: &GameState, name: &str) -> Option<mtg_core::ids::ObjectId> {
+    state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .find(|id| state.object(*id).is_some_and(|o| o.card().name == name))
+}
