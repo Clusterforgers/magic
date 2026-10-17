@@ -15,7 +15,7 @@ export const MAX_CHAT_CHARS = 500
 /** What a session needs: which game and seat to join, and optionally fakes for sockets and timers in tests. */
 export type SessionDeps = Omit<GameSocketOptions, 'onEvent'>
 
-/** A seat's connection and live state. Every action returns whether it sent anything. */
+/** A seat's connection and live state. An action returns true when its message went out or was queued under the rate limit. */
 export interface Session {
   /** The live state; in React read it with `useStore(session.store, selector)`. */
   readonly store: PlayStore
@@ -148,8 +148,8 @@ export function createSession(deps: SessionDeps): Session {
           ? applyBatch(state.view, batch)
           : null
     if (view === null) {
-      awaitingSnapshot = true
-      socket.send({ type: 'Resync' })
+      // Wait for the Snapshot only if the Resync really went out.
+      awaitingSnapshot = socket.send({ type: 'Resync' })
       return
     }
     setState({

@@ -92,11 +92,11 @@ const REPLACED_TEXT = 'This seat was opened in another window or tab, which took
 
 // Close codes after which retrying cannot help; any other code is treated as a lost connection.
 const STOP_REASONS: Readonly<Record<number, string>> = {
-  1000: 'The server ended the connection.',
-  1002: 'The server refused the connection (protocol error).',
-  1007: 'The server could not read a message this page sent.',
+  1000: 'The server ended the connection',
+  1002: 'The server refused the connection as a protocol error',
+  1007: 'The server could not read a message this page sent',
   1008: 'The server closed the connection because of a policy violation',
-  1009: 'A message was too big for the server.',
+  1009: 'A message was too big for the server',
 }
 
 const FATAL_ERRORS: Readonly<Partial<Record<ErrorCode, string>>> = {
@@ -232,7 +232,7 @@ export class GameSocket {
     }
     const stopped = STOP_REASONS[code]
     if (stopped !== undefined) {
-      this.halt('stopped', reason === '' ? stopped : `${stopped} (${reason})`)
+      this.halt('stopped', `${stopped}${reason === '' ? '' : ` (${reason})`}.`)
     } else if (this.retired) {
       this.halt('stopped', null)
     } else {
