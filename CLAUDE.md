@@ -1,6 +1,6 @@
 # Magic web platform
 
-Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/TypeScript client, Postgres. Design: `docs/PLAN.md`. Progress: `docs/ROADMAP.md` (continue with the next unchecked item). Agent briefs: `docs/agents.md`.
+Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/TypeScript client, Postgres. Design: `docs/PLAN.md`. Progress: `docs/ROADMAP.md` (continue with the next unchecked item). Agent briefs: `docs/agents.md`. Design notes: `docs/engine.md`, `docs/protocol.md`.
 
 ## Layout
 - `crates/mtg-core` shared value types · `mtg-engine` rules engine (no IO) · `mtg-cards` card DSL · `mtg-import` Scryfall/MTGJSON/deck parsing · `mtg-db` Postgres schema + repositories · `mtg-protocol` wire types · `mtg-server` axum + sqlx · `mtg-testkit` scenarios/invariants
@@ -19,6 +19,7 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 - `scripts/check.sh [fast|rust|web|all]` runs fmt, clippy, tests (fail-fast); `scripts/setup.sh` enables the git hooks once.
 - Raw: `cargo fmt --all` · `cargo clippy --workspace --all-targets -- -D warnings` · `cargo test --workspace`
 - `docker compose up -d db` starts local Postgres; DB tests use `sqlx::test`, and `sqlx::query!` is checked offline against committed `.sqlx/` (refresh steps in `.cargo/config.toml`).
+- Wire types: `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test bindings` regenerates `web/src/protocol/generated/`; the drift test fails while they are stale.
 - Web (in `web/`): `pnpm typecheck` · `pnpm lint` · `pnpm format` · `pnpm test` · `pnpm e2e`. On NixOS set `CHROMIUM_PATH` to a Nix-built chromium binary for e2e.
 
 ## Workflow
