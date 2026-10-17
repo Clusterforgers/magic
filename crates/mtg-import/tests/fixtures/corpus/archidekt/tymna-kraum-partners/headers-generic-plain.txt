@@ -1,0 +1,137 @@
+Commander
+1x Kraum, Ludevic's Opus
+1x Tymna the Weaver
+
+Mainboard
+1x Auton Soldier
+1x Blade of Selves
+1x Calamity, Galloping Inferno
+1x Corporeal Projection
+1x Duke Ulder Ravengard
+1x Flamehold Grappler
+1x Ironwill Forger
+1x Legion Loyalty
+1x Mardu Siegebreaker
+1x Mirror Room // Fractured Realm
+1x Saw in Half
+1x Tomb of Horrors Adventurer
+1x Midnight Pathlighter
+1x Seasoned Dungeoneer
+1x Sundering Eruption // Volcanic Fissure
+1x Gray Merchant of Asphodel
+1x Massacre Wurm
+1x Pyrogoyf
+1x Terror of the Peaks
+1x Blasphemous Act
+1x Bronzebeak Foragers
+1x Curtains' Call
+1x Demonic Junker
+1x Elesh Norn, Grand Cenobite
+1x Hostage Taker
+1x Inferno Titan
+1x Kefka, Court Mage // Kefka, Ruler of Ruin
+1x Make an Example
+1x Overlord of the Boilerbilges
+1x Riptide Gearhulk
+1x Ruinous Ultimatum
+1x Soul Shatter
+1x Swords to Plowshares
+1x Thieving Skydiver
+1x Voice of Victory
+1x Will of the Abzan
+1x Witch Enchanter // Witch-Blessed Meadow
+1x Adarkar Wastes
+1x Battlefield Forge
+1x Boros Garrison
+1x Caves of Koilos
+1x City of Brass
+1x Command Tower
+1x Deserted Beach
+1x Dimir Aqueduct
+1x Exotic Orchard
+1x Fetid Heath
+1x Graven Cairns
+1x Haunted Ridge
+1x Island
+1x Izzet Boilerworks
+1x Luxury Suite
+1x Morphic Pool
+1x Mountain
+1x Orzhov Basilica
+1x Path of Ancestry
+1x Plains
+1x Rakdos Carnarium
+1x Reflecting Pool
+1x Rugged Prairie
+1x Sea of Clouds
+1x Shattered Sanctum
+1x Shipwreck Marsh
+1x Shivan Reef
+1x Spectator Seating
+1x Spire of Industry
+1x Starting Town
+1x Stormcarved Coast
+1x Sulfurous Springs
+1x Sundown Pass
+1x Swamp
+1x Training Center
+1x Underground River
+1x Vault of Champions
+1x Vault of the Archangel
+1x Arcane Signet
+1x Azorius Signet
+1x Boros Signet
+1x Cursed Mirror
+1x Dimir Signet
+1x Dowsing Dagger // Lost Vale
+1x Fellwar Stone
+1x Grim Hireling
+1x Izzet Signet
+1x Orzhov Signet
+1x Professional Face-Breaker
+1x Rakdos Signet
+1x Relic of Sauron
+1x Talisman of Conviction
+1x Talisman of Creativity
+1x Talisman of Dominance
+1x Talisman of Hierarchy
+1x Talisman of Indulgence
+1x Talisman of Progress
+1x Thran Dynamo
+1x Afterlife from the Loam
+1x Breach the Multiverse
+1x Coiling Rebirth
+
+Maybeboard
+1x Akroma's Will
+1x Araumi of the Dead Tide
+1x Azorius Chancery
+1x Cyclonic Rift
+1x Diluvian Primordial
+1x Disciple of Bolas
+1x Enduring Curiosity
+1x Feldon of the Third Path
+1x Firbolg Flutist
+1x Flameshadow Conjuring
+1x Frostcliff Siege
+1x Grand Coliseum
+1x Jaxis, the Troublemaker
+1x Kiki-Jiki, Mirror Breaker
+1x Magmatic Hellkite
+1x Mirage Phalanx
+1x Orochi Soul-Reaver
+1x Orthion, Hero of Lavabrink
+1x Peter Parker's Camera
+1x Rite of Replication
+1x Rottenmouth Viper
+1x Sepulchral Primordial
+1x Sol Ring
+1x Strionic Resonator
+1x Teferi's Protection
+1x The Jolly Balloon Man
+1x Twinflame
+1x Virtue of Knowledge // Vantress Visions
+1x Worn Powerstone
+
+Sideboard
+1x Radiant Performer

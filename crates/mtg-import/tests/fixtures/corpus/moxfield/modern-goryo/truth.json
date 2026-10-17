@@ -1,0 +1,309 @@
+{
+  "source": {
+    "site": "moxfield",
+    "id": "YB8wVesOBEaCs_trx9ZGiw",
+    "url": "https://moxfield.com/decks/YB8wVesOBEaCs_trx9ZGiw",
+    "format": "modern",
+    "name": "Esper Goryo's V2",
+    "why": "60-card Modern deck with 15 sideboard cards",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "mainboard": [
+      {
+        "name": "Atraxa, Grand Unifier",
+        "qty": 4,
+        "set": "one",
+        "cn": "196",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ephemerate",
+        "qty": 4,
+        "set": "plst",
+        "cn": "MH1-7",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faithful Mending",
+        "qty": 3,
+        "set": "mid",
+        "cn": "221",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fallaji Archaeologist",
+        "qty": 4,
+        "set": "bro",
+        "cn": "48",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flooded Strand",
+        "qty": 3,
+        "set": "mh3",
+        "cn": "220",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Godless Shrine",
+        "qty": 1,
+        "set": "gtc",
+        "cn": "242",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goryo's Vengeance",
+        "qty": 4,
+        "set": "uma",
+        "cn": "99",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Grief",
+        "qty": 4,
+        "set": "mh2",
+        "cn": "87",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Griselbrand",
+        "qty": 2,
+        "set": "sld",
+        "cn": "160",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hallowed Fountain",
+        "qty": 1,
+        "set": "sld",
+        "cn": "123",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Island",
+        "qty": 1,
+        "set": "und",
+        "cn": "89",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Marsh Flats",
+        "qty": 3,
+        "set": "mm3",
+        "cn": "239",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Meticulous Archive",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "264",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Otawara, Soaring City",
+        "qty": 1,
+        "set": "neo",
+        "cn": "271",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Overgrown Tomb",
+        "qty": 1,
+        "set": "rvr",
+        "cn": "283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Plains",
+        "qty": 1,
+        "set": "und",
+        "cn": "87",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Polluted Delta",
+        "qty": 3,
+        "set": "mh3",
+        "cn": "224",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Priest of Fell Rites",
+        "qty": 2,
+        "set": "mh2",
+        "cn": "208",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Prismatic Ending",
+        "qty": 3,
+        "set": "mh2",
+        "cn": "25",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shadowy Backstreet",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "268",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Solitude",
+        "qty": 2,
+        "set": "mh2",
+        "cn": "32",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 1,
+        "set": "und",
+        "cn": "91",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tainted Indulgence",
+        "qty": 4,
+        "set": "snc",
+        "cn": "227",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thoughtseize",
+        "qty": 4,
+        "set": "2xm",
+        "cn": "109",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Undercity Sewers",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "270",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Watery Grave",
+        "qty": 1,
+        "set": "gtc",
+        "cn": "249",
+        "finish": "nonFoil"
+      }
+    ],
+    "sideboard": [
+      {
+        "name": "Celestial Purge",
+        "qty": 3,
+        "set": "con",
+        "cn": "5",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cursed Totem",
+        "qty": 2,
+        "set": "mh2",
+        "cn": "295",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Force of Negation",
+        "qty": 2,
+        "set": "mh1",
+        "cn": "52",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "March of Otherworldly Light",
+        "qty": 1,
+        "set": "neo",
+        "cn": "28",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Solitude",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "32",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Subtlety",
+        "qty": 2,
+        "set": "mh2",
+        "cn": "67",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Supreme Verdict",
+        "qty": 2,
+        "set": "ima",
+        "cn": "210",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Teferi, Time Raveler",
+        "qty": 2,
+        "set": "war",
+        "cn": "221",
+        "finish": "nonFoil"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "0",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "1",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "2",
+        "set": null,
+        "cn": null,
+        "finish": null
+      }
+    ]
+  },
+  "variants": {
+    "full": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "mtgo": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "last-block",
+      "lossy": false
+    },
+    "arena": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    }
+  }
+}

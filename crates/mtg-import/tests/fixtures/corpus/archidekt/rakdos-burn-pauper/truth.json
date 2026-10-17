@@ -1,0 +1,275 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "3695835",
+    "url": "https://archidekt.com/decks/3695835",
+    "format": "pauper",
+    "name": "Rakdos Burn",
+    "why": "pauper 60 plus 15, many older printings",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "mainboard": [
+      {
+        "name": "Alms of the Vein",
+        "qty": 4,
+        "set": "soi",
+        "cn": "98",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodfell Caves",
+        "qty": 1,
+        "set": "m21",
+        "cn": "243",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bump in the Night",
+        "qty": 2,
+        "set": "ddk",
+        "cn": "57",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Deadly Dispute",
+        "qty": 3,
+        "set": "afr",
+        "cn": "94",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Drossforge Bridge",
+        "qty": 4,
+        "set": "mh2",
+        "cn": "246",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faithless Looting",
+        "qty": 4,
+        "set": "c21",
+        "cn": "168",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fiery Temper",
+        "qty": 4,
+        "set": "plst",
+        "cn": "SOI-156",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Galvanic Blast",
+        "qty": 4,
+        "set": "plst",
+        "cn": "DDU-45",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Great Furnace",
+        "qty": 3,
+        "set": "plst",
+        "cn": "C18-250",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kitchen Imp",
+        "qty": 4,
+        "set": "mh2",
+        "cn": "89",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lightning Bolt",
+        "qty": 4,
+        "set": "plst",
+        "cn": "E01-54",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 3,
+        "set": "eld",
+        "cn": "262",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rakdos Carnarium",
+        "qty": 3,
+        "set": "c13",
+        "cn": "313",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Searing Blaze",
+        "qty": 3,
+        "set": "wwk",
+        "cn": "90",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Snow-Covered Mountain",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "253",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Snow-Covered Swamp",
+        "qty": 2,
+        "set": "mh1",
+        "cn": "252",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vampire's Kiss",
+        "qty": 4,
+        "set": "vow",
+        "cn": "136",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vault of Whispers",
+        "qty": 3,
+        "set": "mrd",
+        "cn": "286",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Voldaren Epicure",
+        "qty": 4,
+        "set": "vow",
+        "cn": "182",
+        "finish": "nonFoil"
+      }
+    ],
+    "sideboard": [
+      {
+        "name": "Chainer's Edict",
+        "qty": 2,
+        "set": "uma",
+        "cn": "89",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Duress",
+        "qty": 3,
+        "set": "plst",
+        "cn": "EMA-86",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fiery Cannonade",
+        "qty": 2,
+        "set": "xln",
+        "cn": "143",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nihil Spellbomb",
+        "qty": 2,
+        "set": "som",
+        "cn": "187",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Psychotic Haze",
+        "qty": 2,
+        "set": "tor",
+        "cn": "76",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyroblast",
+        "qty": 1,
+        "set": "ice",
+        "cn": "213",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Smash to Smithereens",
+        "qty": 3,
+        "set": "plst",
+        "cn": "MM2-124",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-type": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

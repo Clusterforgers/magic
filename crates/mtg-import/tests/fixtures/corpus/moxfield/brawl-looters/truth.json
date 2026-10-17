@@ -1,0 +1,1576 @@
+{
+  "source": {
+    "site": "moxfield",
+    "id": "uFLHIWuow0uCJminr19cVw",
+    "url": "https://moxfield.com/decks/uFLHIWuow0uCJminr19cVw",
+    "format": "brawl",
+    "name": "Brawl Looters",
+    "why": "60-card Brawl deck with a commander and one sideboard card",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "The Ancient One",
+        "qty": 1,
+        "set": "lci",
+        "cn": "222",
+        "finish": "nonFoil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Agna Qel'a",
+        "qty": 1,
+        "set": "tla",
+        "cn": "264",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bitter Triumph",
+        "qty": 1,
+        "set": "lci",
+        "cn": "91",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bringer of the Last Gift",
+        "qty": 1,
+        "set": "lci",
+        "cn": "337",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Collector's Vault",
+        "qty": 1,
+        "set": "woe",
+        "cn": "244",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "clb",
+        "cn": "351",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Corpses of the Lost",
+        "qty": 1,
+        "set": "lci",
+        "cn": "98",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cruel Somnophage // Can't Wake Up",
+        "qty": 1,
+        "set": "woe",
+        "cn": "222",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dark Matter Manipulator",
+        "qty": 1,
+        "set": "fra",
+        "cn": "52",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dawnsire, Sunstar Dreadnought",
+        "qty": 1,
+        "set": "eoe",
+        "cn": "238",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Demolition Field",
+        "qty": 1,
+        "set": "bro",
+        "cn": "260",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fabled Passage",
+        "qty": 1,
+        "set": "blb",
+        "cn": "252",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Firdoch Core",
+        "qty": 1,
+        "set": "ecl",
+        "cn": "255",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Floodpits Drowner",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gloomlake Verge",
+        "qty": 1,
+        "set": "pdsk",
+        "cn": "260p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Island",
+        "qty": 5,
+        "set": "mom",
+        "cn": "284",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Jace Reawakened",
+        "qty": 1,
+        "set": "otj",
+        "cn": "271",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Jidoor, Aristocratic Capital // Overture",
+        "qty": 1,
+        "set": "fin",
+        "cn": "284",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kiora, the Rising Tide",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "45",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kitesail Larcenist",
+        "qty": 1,
+        "set": "lci",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kitsune's Technique",
+        "qty": 1,
+        "set": "tmt",
+        "cn": "42",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Likeness Looter",
+        "qty": 1,
+        "set": "woe",
+        "cn": "208",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Malcolm, Alluring Scoundrel",
+        "qty": 1,
+        "set": "lci",
+        "cn": "293",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Marauding Brinefang",
+        "qty": 1,
+        "set": "lci",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Matzalantli, the Great Door // The Core",
+        "qty": 1,
+        "set": "lci",
+        "cn": "256",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nameless Inversion",
+        "qty": 1,
+        "set": "ecl",
+        "cn": "113",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nowhere to Run",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "111",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Omni-Changeling",
+        "qty": 1,
+        "set": "ecl",
+        "cn": "62",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Picklock Prankster // Free the Fae",
+        "qty": 1,
+        "set": "woe",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Preacher of the Schism",
+        "qty": 1,
+        "set": "lci",
+        "cn": "113",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Proft's Eidetic Memory",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "67",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Qarsi Revenant",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "338",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ral Zarek, Guest Lecturer",
+        "qty": 1,
+        "set": "sos",
+        "cn": "97",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rampaging Spiketail",
+        "qty": 1,
+        "set": "lci",
+        "cn": "116",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Realm of Koh",
+        "qty": 1,
+        "set": "tla",
+        "cn": "276",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Restless Reef",
+        "qty": 1,
+        "set": "lci",
+        "cn": "282",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Riverchurn Monument",
+        "qty": 1,
+        "set": "dft",
+        "cn": "381",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rogue's Passage",
+        "qty": 1,
+        "set": "clb",
+        "cn": "913",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Scrounging Skyray",
+        "qty": 1,
+        "set": "dft",
+        "cn": "60",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Singularity Rupture",
+        "qty": 1,
+        "set": "eoe",
+        "cn": "398",
+        "finish": "foil"
+      },
+      {
+        "name": "Stalactite Stalker",
+        "qty": 1,
+        "set": "lci",
+        "cn": "122",
+        "finish": "foil"
+      },
+      {
+        "name": "Superior Spider-Man",
+        "qty": 1,
+        "set": "spm",
+        "cn": "155",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Susur Secundi, Void Altar",
+        "qty": 1,
+        "set": "eoe",
+        "cn": "259",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 5,
+        "set": "mom",
+        "cn": "286",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Enigma Jewel // Locus of Enlightenment",
+        "qty": 1,
+        "set": "lci",
+        "cn": "55",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Throne of the Grim Captain // The Grim Captain",
+        "qty": 1,
+        "set": "lci",
+        "cn": "266",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tishana's Tidebinder",
+        "qty": 1,
+        "set": "lci",
+        "cn": "335",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unauthorized Exit",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "74",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Undercity Sewers",
+        "qty": 1,
+        "set": "pmkm",
+        "cn": "270p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wail of the Forgotten",
+        "qty": 1,
+        "set": "lci",
+        "cn": "244",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Watery Grave",
+        "qty": 1,
+        "set": "eoe",
+        "cn": "261",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Winternight Stories",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "336",
+        "finish": "nonFoil"
+      }
+    ],
+    "sideboard": [
+      {
+        "name": "The Theorist, Jace Beleren",
+        "qty": 1,
+        "set": "fra",
+        "cn": "43",
+        "finish": "nonFoil"
+      }
+    ],
+    "maybeboard": [
+      {
+        "name": "Abhorrent Oculus",
+        "qty": 1,
+        "set": "pdsk",
+        "cn": "42p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Aclazotz, Deepest Betrayal // Temple of the Dead",
+        "qty": 1,
+        "set": "lci",
+        "cn": "88",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Agatha's Soul Cauldron",
+        "qty": 1,
+        "set": "woe",
+        "cn": "242",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Anoint with Affliction",
+        "qty": 1,
+        "set": "one",
+        "cn": "81",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "dmc",
+        "cn": "177",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Archpriest of Shadows",
+        "qty": 1,
+        "set": "mom",
+        "cn": "89",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Artistic Refusal",
+        "qty": 1,
+        "set": "mom",
+        "cn": "46",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Assimilate Essence",
+        "qty": 1,
+        "set": "mom",
+        "cn": "47",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Banishing Betrayal",
+        "qty": 1,
+        "set": "sos",
+        "cn": "38",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blade of Shared Souls",
+        "qty": 1,
+        "set": "one",
+        "cn": "42",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blast Zone",
+        "qty": 1,
+        "set": "m3c",
+        "cn": "322",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodletter of Aclazotz",
+        "qty": 1,
+        "set": "plci",
+        "cn": "92p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blue Sun's Twilight",
+        "qty": 1,
+        "set": "one",
+        "cn": "43",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Breach the Multiverse",
+        "qty": 1,
+        "set": "mom",
+        "cn": "94",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chrome Host Seedshark",
+        "qty": 1,
+        "set": "mom",
+        "cn": "51",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Collective Nightmare",
+        "qty": 1,
+        "set": "mom",
+        "cn": "95",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Combat Research",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "44",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Confounding Riddle",
+        "qty": 1,
+        "set": "lci",
+        "cn": "50",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Deadly Derision",
+        "qty": 1,
+        "set": "mom",
+        "cn": "99",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Deathcap Marionette",
+        "qty": 1,
+        "set": "lci",
+        "cn": "100",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Demonic Counsel",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "92",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dismal Backwater",
+        "qty": 1,
+        "set": "mom",
+        "cn": "269",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Disturbing Conversion",
+        "qty": 1,
+        "set": "mom",
+        "cn": "54",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Doomsday Excruciator",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "94",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dread Summons",
+        "qty": 1,
+        "set": "mic",
+        "cn": "113",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Emeritus of Woe // Demonic Tutor",
+        "qty": 1,
+        "set": "sos",
+        "cn": "80",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Emet-Selch, Unsundered // Hades, Sorcerer of Eld",
+        "qty": 1,
+        "set": "fin",
+        "cn": "218",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ephara's Dispersal",
+        "qty": 1,
+        "set": "mom",
+        "cn": "55",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ertai Resurrected",
+        "qty": 1,
+        "set": "pdmu",
+        "cn": "199p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Escape Tunnel",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "261",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Evolving Wilds",
+        "qty": 1,
+        "set": "vow",
+        "cn": "263",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Expedition Lookout",
+        "qty": 1,
+        "set": "mom",
+        "cn": "56",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Experimental Augury",
+        "qty": 1,
+        "set": "one",
+        "cn": "49",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faerie Dreamthief",
+        "qty": 1,
+        "set": "woe",
+        "cn": "89",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faerie Mastermind",
+        "qty": 1,
+        "set": "mom",
+        "cn": "58",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fear of Lost Teeth",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "97",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Final Flourish",
+        "qty": 1,
+        "set": "mom",
+        "cn": "104",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flitting Guerrilla",
+        "qty": 1,
+        "set": "mom",
+        "cn": "105",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Font of Progress",
+        "qty": 1,
+        "set": "one",
+        "cn": "51",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Founding the Third Path",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "50",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Glistening Deluge",
+        "qty": 1,
+        "set": "mom",
+        "cn": "107",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gloomfang Mauler",
+        "qty": 1,
+        "set": "mom",
+        "cn": "108",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gnawing Vermin",
+        "qty": 1,
+        "set": "bro",
+        "cn": "101",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Grafted Butcher",
+        "qty": 1,
+        "set": "mom",
+        "cn": "109",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Grave Researcher // Reanimate",
+        "qty": 1,
+        "set": "sos",
+        "cn": "85",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Halo Forager",
+        "qty": 1,
+        "set": "mom",
+        "cn": "227",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Haughty Djinn",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "52",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hidden Lair",
+        "qty": 1,
+        "set": "msh",
+        "cn": "383",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hidetsugu and Kairi",
+        "qty": 1,
+        "set": "mom",
+        "cn": "228",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hoarding Broodlord",
+        "qty": 1,
+        "set": "mom",
+        "cn": "110",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hopeless Nightmare",
+        "qty": 1,
+        "set": "woe",
+        "cn": "95",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Horned Loch-Whale // Lagoon Breach",
+        "qty": 1,
+        "set": "woe",
+        "cn": "53",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ichor Drinker",
+        "qty": 1,
+        "set": "mom",
+        "cn": "111",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ichor Shade",
+        "qty": 1,
+        "set": "mom",
+        "cn": "112",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Invasion of Amonkhet // Lazotep Convert",
+        "qty": 1,
+        "set": "mom",
+        "cn": "231",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Invasion of Fiora // Marchesa, Resolute Monarch",
+        "qty": 1,
+        "set": "mom",
+        "cn": "114",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Invasion of Innistrad // Deluge of the Dead",
+        "qty": 1,
+        "set": "mom",
+        "cn": "115",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Invasion of Segovia // Caetus, Sea Tyrant of Segovia",
+        "qty": 1,
+        "set": "mom",
+        "cn": "63",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Jace, the Perfected Mind",
+        "qty": 1,
+        "set": "one",
+        "cn": "325",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kaito, Bane of Nightmares",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "220",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kaito, Dancing Shadow",
+        "qty": 1,
+        "set": "one",
+        "cn": "204",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lazav, Wearer of Faces",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "216",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Meeting of Minds",
+        "qty": 1,
+        "set": "mom",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mesmerizing Dose",
+        "qty": 1,
+        "set": "one",
+        "cn": "62",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mindsplice Apparatus",
+        "qty": 1,
+        "set": "one",
+        "cn": "63",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mirrex",
+        "qty": 1,
+        "set": "one",
+        "cn": "254",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mischievous Sneakling",
+        "qty": 1,
+        "set": "ecl",
+        "cn": "235",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mockingbird",
+        "qty": 1,
+        "set": "blb",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Moment of Truth",
+        "qty": 1,
+        "set": "mom",
+        "cn": "67",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Momentum Breaker",
+        "qty": 1,
+        "set": "dft",
+        "cn": "97",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Morlun, Devourer of Spiders",
+        "qty": 1,
+        "set": "spm",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Multiversal Passage",
+        "qty": 1,
+        "set": "spm",
+        "cn": "180",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nashi, Searcher in the Dark",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "223",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Negate",
+        "qty": 1,
+        "set": "mom",
+        "cn": "68",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nezumi Informant",
+        "qty": 1,
+        "set": "mom",
+        "cn": "120",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "No One Left Behind",
+        "qty": 1,
+        "set": "bro",
+        "cn": "109",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nullpriest of Oblivion",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "611",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Oaken Siren",
+        "qty": 1,
+        "set": "lci",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Omen Hawker",
+        "qty": 1,
+        "set": "mom",
+        "cn": "70",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Orysa, Tide Choreographer",
+        "qty": 1,
+        "set": "sos",
+        "cn": "62",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Overlord of the Balemurk",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "113",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Overlord of the Floodpits",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "68",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pile On",
+        "qty": 1,
+        "set": "mom",
+        "cn": "122",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rankle's Prank",
+        "qty": 1,
+        "set": "woe",
+        "cn": "102",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Realmbreaker, the Invasion Tree",
+        "qty": 1,
+        "set": "mom",
+        "cn": "263",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reenact the Crime",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "297",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reject Imperfection",
+        "qty": 1,
+        "set": "one",
+        "cn": "67",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Render Inert",
+        "qty": 1,
+        "set": "mom",
+        "cn": "123",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rona, Herald of Invasion // Rona, Tolarian Obliterator",
+        "qty": 1,
+        "set": "mom",
+        "cn": "75",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rona, Sheoldred's Faithful",
+        "qty": 1,
+        "set": "mul",
+        "cn": "58",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rona's Vortex",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "63",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Saiba Cryptomancer",
+        "qty": 1,
+        "set": "mom",
+        "cn": "76",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "See Double",
+        "qty": 1,
+        "set": "mom",
+        "cn": "77",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Serum Snare",
+        "qty": 1,
+        "set": "one",
+        "cn": "68",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sheoldred // The True Scriptures",
+        "qty": 1,
+        "set": "mom",
+        "cn": "125",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shore Up",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sire of Seven Deaths",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "1",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sleep-Cursed Faerie",
+        "qty": 1,
+        "set": "woe",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Souls of the Lost",
+        "qty": 1,
+        "set": "lci",
+        "cn": "121",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spectral Sailor",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "164",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spell Stutter",
+        "qty": 1,
+        "set": "woe",
+        "cn": "69",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spellscorn Coven // Take It Back",
+        "qty": 1,
+        "set": "woe",
+        "cn": "237",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Splinter's Technique",
+        "qty": 1,
+        "set": "tmt",
+        "cn": "80",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Stalactite Dagger",
+        "qty": 1,
+        "set": "ecl",
+        "cn": "261",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Stasis Field",
+        "qty": 1,
+        "set": "mom",
+        "cn": "79",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Steamcore Scholar",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "71",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Stillness in Motion",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Subterranean Schooner",
+        "qty": 1,
+        "set": "lci",
+        "cn": "80",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sword of Once and Future",
+        "qty": 1,
+        "set": "mom",
+        "cn": "265",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Symbiote Spider-Man",
+        "qty": 1,
+        "set": "spm",
+        "cn": "156",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Taigam, Master Opportunist",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "60",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Talion, the Kindly Lord",
+        "qty": 1,
+        "set": "woe",
+        "cn": "215",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Talion's Messenger",
+        "qty": 1,
+        "set": "woe",
+        "cn": "73",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tarrian's Journal // The Tomb of Aclazotz",
+        "qty": 1,
+        "set": "lci",
+        "cn": "371",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Terramorphic Expanse",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "428",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Terror of Towashi",
+        "qty": 1,
+        "set": "mom",
+        "cn": "331",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Terror Tide",
+        "qty": 1,
+        "set": "lci",
+        "cn": "127",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Everflowing Well // The Myriad Pools",
+        "qty": 1,
+        "set": "lci",
+        "cn": "56",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Filigree Sylex",
+        "qty": 1,
+        "set": "one",
+        "cn": "227",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Mindskinner",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Three Bowls of Porridge",
+        "qty": 1,
+        "set": "woe",
+        "cn": "253",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Three Steps Ahead",
+        "qty": 1,
+        "set": "otj",
+        "cn": "75",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thrummingbird",
+        "qty": 1,
+        "set": "one",
+        "cn": "72",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tidal Terror",
+        "qty": 1,
+        "set": "mom",
+        "cn": "82",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tinybones Joins Up",
+        "qty": 1,
+        "set": "otj",
+        "cn": "108",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tinybones, Bauble Burglar",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "72",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tinybones, the Pickpocket",
+        "qty": 1,
+        "set": "otj",
+        "cn": "109",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Training Grounds",
+        "qty": 1,
+        "set": "mat",
+        "cn": "155",
+        "finish": "foil"
+      },
+      {
+        "name": "Treasure Map // Treasure Cove",
+        "qty": 1,
+        "set": "lci",
+        "cn": "267",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Twilight Diviner",
+        "qty": 1,
+        "set": "ecl",
+        "cn": "122",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Uchbenbak, the Great Mistake",
+        "qty": 1,
+        "set": "lci",
+        "cn": "310",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unable to Scream",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "78",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unctus, Grand Metatect",
+        "qty": 1,
+        "set": "one",
+        "cn": "75",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unseal the Necropolis",
+        "qty": 1,
+        "set": "mom",
+        "cn": "128",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Urborg Scavengers",
+        "qty": 1,
+        "set": "mat",
+        "cn": "15",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Valgavoth, Terror Eater",
+        "qty": 1,
+        "set": "pdsk",
+        "cn": "120p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Valgavoth's Faithful",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "121",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Valgavoth's Lair",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "271",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vat Emergence",
+        "qty": 1,
+        "set": "one",
+        "cn": "112",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Venser, Corpse Puppet",
+        "qty": 1,
+        "set": "one",
+        "cn": "219",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Virtue of Persistence // Locthwain Scorn",
+        "qty": 1,
+        "set": "woe",
+        "cn": "115",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Voidwing Hybrid",
+        "qty": 1,
+        "set": "one",
+        "cn": "221",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Whisper of the Dross",
+        "qty": 1,
+        "set": "one",
+        "cn": "117",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Winter's Intervention",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "123",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Witness Protection",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "168",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Zhalfirin Shapecraft",
+        "qty": 1,
+        "set": "mom",
+        "cn": "87",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Zombify",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "187",
+        "finish": "nonFoil"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "0",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "10",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "11",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "12",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "13",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "14",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "15",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "16",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "17",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "1",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "2",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "3",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "4",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "5",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "6",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "7",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "8",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "9",
+        "set": null,
+        "cn": null,
+        "finish": null
+      }
+    ]
+  },
+  "variants": {
+    "full": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "full-nofinish": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "mtgo": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "last-block",
+      "lossy": false
+    },
+    "arena": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    }
+  }
+}

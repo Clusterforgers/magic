@@ -1,0 +1,36 @@
+1 Badlands (FBB) 282
+3 Beseech the Mirror (WOE) 82
+1 Bloodstained Mire (ONS) 313
+4 Burning Wish (JUD) 83
+4 Chrome Mox (MRD) 152
+4 Dark Ritual (MMQ) 129
+3 Echo of Eons (MH1) 46
+1 Gaea's Will (MH2) 162
+4 Gamble (USG) 188
+4 Giant's Boulder (HOB) 173
+4 Hexing Squelcher (ECL) 145
+4 Lion's Eye Diamond (MIR) 307
+4 Lotus Petal (TMP) 294
+4 Mox Opal (SOM) 179
+1 Raucous Theater (MKM) 266
+1 Runehorn Hellkite (C16) 20
+1 Scalding Tarn (ZEN) 223
+1 Song of Creation (IKO) 210
+1 Taiga (FBB) 287
+1 Tendrils of Agony (SCG) 75
+1 Underground Sea (FBB) 290
+4 Urza's Saga (PLST) MH2-259
+2 Veil of Summer (M20) 198
+2 Verdant Catacombs (ZEN) 229
+
+SIDEBOARD:
+1 Beseech the Mirror (WOE) 82
+4 Boomerang Basics (TLA) 46
+2 Boseiju, Who Endures (NEO) 266
+1 Echo of Eons (MH1) 46
+1 Empty the Warrens (TSP) 152
+1 Haywire Mite (BRO) 199
+1 Peer into the Abyss (M21) 117
+1 Tendrils of Agony (SCG) 75
+1 Thoughtseize (LRW) 145
+2 Veil of Summer (M20) 198

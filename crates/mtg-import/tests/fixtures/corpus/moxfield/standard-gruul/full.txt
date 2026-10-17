@@ -1,0 +1,32 @@
+3 Animist's Might (MAT) 20
+3 Audacity (BRO) 169
+1 Boseiju, Who Endures (NEO) 266
+4 Copperline Gorge (ONE) 249
+1 Forest (ELD) 266
+3 Goddric, Cloaked Reveler (WOE) 132
+3 Hajar, Loyal Bodyguard (BRO) 211
+1 Halana and Alena, Partners (VOW) 239
+4 Karplusan Forest (DMU) 379
+4 Kumano Faces Kakkazan / Etching of Kumano (NEO) 152
+2 Migloz, Maze Crusher (ONE) 210
+4 Monastery Swiftspear (2X2) 362
+3 Monstrous Rage (WOE) 142
+3 Mountain (ELD) 262
+4 Picnic Ruiner / Stolen Goodies (WOE) 232
+4 Plaza of Heroes (DMU) 252
+3 Questing Druid / Seek the Beast (WOE) 234
+2 Rockfall Vale (WHO) 298
+2 Ruby, Daring Tracker (WOE) 212
+2 Samut, Vizier of Naktamun (MAT) 45
+2 Sokenzan, Crucible of Defiance (NEO) 276
+2 Witchstalker Frenzy (WOE) 159
+
+SIDEBOARD:
+1 Abrade (2XM) 114
+1 End the Festivities (VOW) 155
+2 Lithomantic Barrage (MOM) 152
+3 Outland Liberator / Frenzied Trapbreaker (MID) 190
+2 Strangle (SNC) 125
+2 Syr Ginger, the Meal Ender (WOE) 252
+2 Twisted Fealty (WOE) 154
+2 Wrenn and Realmbreaker (MOM) 217

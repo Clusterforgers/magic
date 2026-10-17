@@ -1,0 +1,37 @@
+About
+Name Esper Goryo's V2
+
+Deck
+4 Atraxa, Grand Unifier
+4 Ephemerate
+3 Faithful Mending
+4 Fallaji Archaeologist
+3 Flooded Strand
+1 Godless Shrine
+4 Grief
+2 Griselbrand
+1 Hallowed Fountain
+1 Island
+3 Marsh Flats
+1 Meticulous Archive
+1 Otawara, Soaring City
+1 Overgrown Tomb
+1 Plains
+3 Polluted Delta
+2 Priest of Fell Rites
+3 Prismatic Ending
+1 Shadowy Backstreet
+2 Solitude
+1 Swamp
+4 Tainted Indulgence
+4 Thoughtseize
+1 Undercity Sewers
+1 Watery Grave
+
+Sideboard
+2 Force of Negation
+1 March of Otherworldly Light
+1 Solitude
+2 Subtlety
+2 Supreme Verdict
+2 Teferi, Time Raveler

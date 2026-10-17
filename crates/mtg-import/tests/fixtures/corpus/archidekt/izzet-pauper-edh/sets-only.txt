@@ -1,0 +1,139 @@
+1x "Name Sticker" Goblin (unf) 107m
+1x Abrade (scd) 122
+1x Ancestors' Aid (lci) 132
+1x Arcane Signet (onc) 125
+1x Archaeomancer (plst) C17-81
+1x Artificer's Epiphany (j22) 272
+1x Ashnod's Altar (plst) EMA-218
+1x Augur of Bolas (plst) MM3-30
+1x Barbed Batterfist (one) 121
+1x Battle Hymn (avr) 128
+1x Bitter Reunion (bro) 127
+1x Blink of an Eye (dom) 46
+1x Blood Aspirant (cmm) 208
+1x Bloodwater Entity (2x2) 185
+1x Blue Elemental Blast (plst) A25-43
+1x Brackish Blunder (lci) 46
+1x Brainstorm (c15) 90
+1x Breath Weapon (clb) 165
+1x Capsize (tmp) 55
+1x Chain Lightning (dmr) 113
+1x Clout of the Dominus (eve) 99
+1x Command Tower (onc) 151
+1x Consider (mid) 44
+1x Counterspell (dmr) 45
+1x Cryptic Serpent (cmm) 83
+1x Cyclops Electromancer (cmm) 212
+1x Dark-Dweller Oracle (2x2) 106
+1x Decanter of Endless Water (clb) 309
+1x Delver of Secrets // Insectile Aberration (isd) 51
+1x Desperate Ritual (uma) 127
+1x Destructive Digger (m20) 134
+1x Disdainful Stroke (snc) 39
+1x Dispel (plst) BFZ-76
+1x Distant Melody (scd) 48
+1x Dynacharge (plst) MM3-94
+1x Electrickery (rtr) 93
+1x Electrostatic Field (grn) 97
+1x Embraal Gear-Smasher (aer) 79
+1x End the Festivities (vow) 155
+1x Erebor Flamesmith (ltr) 122
+1x Evolving Wilds (j22) 813
+1x Excavation Explosion (bro) 132
+1x Experimental Synthesizer (neo) 138
+1x Faithless Looting (dka) 87
+1x Fallaji Archaeologist (bro) 48
+1x Festival Crasher (mid) 140
+1x Fiery Cannonade (cmr) 178
+1x Filigree Attendant (cmm) 95
+1x Fire // Ice (dmr) 215
+1x Firebolt (j22) 532
+1x Firebrand Archer (plst) HOU-92
+1x Firemind Vessel (cmm) 383
+1x First Day of Class (stx) 102
+1x Flood of Recollection (cmr) 61
+1x Frantic Search (dmr) 51
+1x Galvanic Blast (som) 91
+1x Ghostly Flicker (khc) 39
+1x Gingerbrute (woe) 246
+1x Gitaxian Probe (plst) NPH-35
+1x Goblin Electromancer (rtr) 163
+1x Goblin Taskmaster (ons) 210
+1x Grapeshot (dmr) 125
+1x Great Furnace (mrd) 282
+1x Guttersnipe (cmm) 229
+1x High Tide (dmr) 54
+1x Impact Tremors (plst) DTK-140
+1x Improvised Club (ltr) 137
+1x Infernal Plunge (isd) 148
+1x Ingenious Artillerist (clb) 182
+16x Island (scd) 338
+1x Izzet Charm (2x2) 230
+1x Izzet Chronarch (c17) 175
+1x Izzet Signet (clb) 863
+1x Jhessian Thief (ima) 61
+1x Keep Watch (hop) 10
+1x Kessig Flamebreather (vow) 164
+1x Krark-Clan Shaman (mrd) 98
+1x Kruin Striker (2x2) 114
+1x Kuldotha Rebirth (som) 96
+1x Lightning Bolt (m11) 149
+1x Lightning Strike (dmu) 137
+1x Lórien Revealed (ltr) 60
+1x Magma Jet (jmp) 346
+1x Makeshift Munitions (cmr) 191
+1x Mana Geyser (scd) 151
+1x Meeting of Minds (mom) 66
+1x Mental Note (jud) 46
+1x Metallic Rebuke (2xm) 59
+1x Mnemonic Wall (plst) IMA-67
+1x Monastery Swiftspear (2x2) 119
+12x Mountain (scd) 348
+1x Mulldrifter (cmd) 52
+1x Murmuring Mystic (cmm) 107
+1x Myr Enforcer (mm2) 224
+1x Mystic Sanctuary (eld) 247
+1x Negate (scd) 58
+1x Opt (m21) 59
+1x Ornithopter (dmr) 233
+1x Override (mrd) 45
+1x Perilous Research (mma) 58
+1x Ponder (ncc) 229
+1x Preordain (m11) 70
+1x Promising Vein (lci) 279
+1x Prophetic Prism (woe) 249
+1x Pyretic Ritual (plst) M11-153 *F*
+1x Raid Bombardment (uma) 142
+1x Reckless Fireweaver (j22) 587
+1x Reckless Impulse (vow) 174
+1x Red Elemental Blast (a25) 147
+1x Relic of Progenitus (brc) 157
+1x Reverse Engineer (cmm) 116
+1x Rewind (m21) 63
+1x Salivating Gremlins (2xm) 143
+1x Seat of the Synod (mrd) 283
+1x Seething Song (c21) 179
+1x Shipwreck Dowser (cmm) 119
+1x Shock (m21) 159
+1x Silverbluff Bridge (mh2) 255
+1x Simian Spirit Guide (tsr) 190
+1x Snap (dmr) 66
+1x Spell Pierce (2x2) 63
+1x Stern Lesson (bro) 64
+1x Stoic Rebuttal (mm2) 59
+1x Strangle (snc) 125
+1x Sulfurous Blast (cmm) 262
+1x Sunshot Militia (lci) 168
+1x Tectonic Hazard (lci) 169
+1x Terramorphic Expanse (one) 261
+1x Thermo-Alchemist (j22) 613
+1x Think Twice (tsr) 92
+1x Third Path Iconoclast (bro) 223
+1x Thought Scour (2x2) 65
+1x Thought Vessel (scd) 285
+1x Thoughtcast (mrd) 54
+1x Thrill of Possibility (one) 151
+1x Tolarian Terror (dmu) 72
+1x Treasure Cruise (ktk) 59
+1x Wayfarer's Bauble (scd) 287
+1x Witty Roastmaster (snc) 131

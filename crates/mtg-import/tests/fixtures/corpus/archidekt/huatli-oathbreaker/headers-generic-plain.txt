@@ -1,0 +1,109 @@
+Commander
+1x Huatli, the Sun's Heart
+1x Tower Defense
+
+Mainboard
+1x Chrome Mox
+1x Arboreal Grazer
+1x Armored Armadillo
+1x Armored Scrapgorger
+1x Avacyn's Pilgrim
+1x Birds of Paradise
+1x Dauntless Dismantler
+1x Delighted Halfling
+1x Drannith Magistrate
+1x Gaddock Teeg
+1x Giant Ox
+1x Gilded Goose
+1x God-Pharaoh's Faithful
+1x Grizzled Leotau
+1x Hushbringer
+1x Lagonna-Band Trailblazer
+1x Llanowar Elves
+1x Maned Serval
+1x Nyx-Fleece Ram
+1x Onakke Oathkeeper
+1x Ornithopter
+1x Phyrexian Walker
+1x PuPu UFO
+1x Skinshifter
+1x Soulless Jailer
+1x Strict Proctor
+1x Tasseled Dromedary
+1x Tocatli Honor Guard
+1x Turtle-Duck
+1x Voice of Victory
+1x Yoked Ox
+1x Assault Formation
+1x Mirri's Guile
+1x Eladamri's Call
+1x Path to Exile
+1x Silence
+1x Arid Mesa
+1x Bountiful Promenade
+1x Brushland
+1x Canopy Vista
+1x Command Tower
+1x Flooded Strand
+4x Forest
+1x Gemstone Caverns
+1x Horizon Canopy
+1x Marsh Flats
+1x Misty Rainforest
+2x Plains
+1x Prismatic Vista
+1x Savannah
+1x Temple Garden
+1x Verdant Catacombs
+1x Windswept Heath
+1x Wooded Foothills
+
+Maybeboard
+1x Dusk // Dawn
+1x Ensnaring Bridge
+1x Gorm the Great
+1x Reconnaissance
+1x Rug of Smothering
+1x Sidar Kondo of Jamuraa
+1x Slaughter the Strong
+1x Torpor Orb
+1x Courser of Kruphix
+1x Runic Armasaur
+1x Thrashing Brontodon
+1x Arcane Signet
+1x Beloved Beggar // Generous Soul
+1x Branchloft Pathway // Boulderloft Pathway
+1x Forbidding Watchtower
+1x Nullmage Advocate
+1x Selvala, Explorer Returned
+1x Slagwurm Armor
+1x Song of the Dryads
+1x Suncleanser
+1x Sylvan Library
+1x Talisman of Unity
+1x Veteran Armorer
+1x Aura Shards
+1x Blessed Orator
+1x Brave the Sands
+1x Daybreak Chaplain
+1x Llanowar Augur
+1x Meekstone
+1x Oketra the True
+1x Rasaad yn Bashir
+1x Retribution of the Meek
+1x Selesnya Signet
+1x Shalai, Voice of Plenty
+1x War Screecher
+1x Yotian Soldier
+1x Biophagus
+1x Tadeas, Juniper Ascendant
+1x The Peregrine Dynamo
+1x Treebeard, Gracious Host
+1x Webspinner Cuff
+1x Adeline, Resplendent Cathar
+1x Daxos, Blessed by the Sun
+1x Elvish Herder
+1x Thijarian Witness
+1x Xantid Swarm
+1x Druid of the Cowl
+1x Llanowar Loamspeaker

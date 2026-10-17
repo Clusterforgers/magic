@@ -1,0 +1,853 @@
+{
+  "source": {
+    "site": "moxfield",
+    "id": "EwS7lyEQN0mLtomfKlwoMQ",
+    "url": "https://moxfield.com/decks/EwS7lyEQN0mLtomfKlwoMQ",
+    "format": "commander",
+    "name": "Medium Midrange",
+    "why": "twelve cards in the commander board, a messy real list",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Thrasios, Triton Hero",
+        "qty": 6,
+        "set": "c16",
+        "cn": "46",
+        "finish": "foil"
+      },
+      {
+        "name": "Tymna the Weaver",
+        "qty": 6,
+        "set": "c16",
+        "cn": "48",
+        "finish": "foil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Abrupt Decay",
+        "qty": 6,
+        "set": "wmc",
+        "cn": "2016",
+        "finish": "foil"
+      },
+      {
+        "name": "Ad Nauseam",
+        "qty": 6,
+        "set": "ala",
+        "cn": "63",
+        "finish": "foil"
+      },
+      {
+        "name": "An Offer You Can't Refuse",
+        "qty": 6,
+        "set": "snc",
+        "cn": "51",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arbor Elf",
+        "qty": 6,
+        "set": "a25",
+        "cn": "160",
+        "finish": "foil"
+      },
+      {
+        "name": "Assassin's Trophy",
+        "qty": 6,
+        "set": "pgrn",
+        "cn": "152p",
+        "finish": "foil"
+      },
+      {
+        "name": "Avacyn's Pilgrim",
+        "qty": 6,
+        "set": "mm3",
+        "cn": "119",
+        "finish": "foil"
+      },
+      {
+        "name": "Bayou",
+        "qty": 6,
+        "set": "3ed",
+        "cn": "283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Birds of Paradise",
+        "qty": 6,
+        "set": "pm11",
+        "cn": "165★",
+        "finish": "foil"
+      },
+      {
+        "name": "Bloodstained Mire",
+        "qty": 6,
+        "set": "ktk",
+        "cn": "230",
+        "finish": "foil"
+      },
+      {
+        "name": "Bloom Tender",
+        "qty": 6,
+        "set": "eve",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Brainstorm",
+        "qty": 6,
+        "set": "ema",
+        "cn": "40",
+        "finish": "foil"
+      },
+      {
+        "name": "Breeding Pool",
+        "qty": 6,
+        "set": "gtc",
+        "cn": "240",
+        "finish": "foil"
+      },
+      {
+        "name": "Carpet of Flowers",
+        "qty": 6,
+        "set": "usg",
+        "cn": "240",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chain of Vapor",
+        "qty": 6,
+        "set": "ons",
+        "cn": "73",
+        "finish": "foil"
+      },
+      {
+        "name": "Chrome Mox",
+        "qty": 6,
+        "set": "mps",
+        "cn": "9",
+        "finish": "foil"
+      },
+      {
+        "name": "City of Brass",
+        "qty": 6,
+        "set": "psus",
+        "cn": "6",
+        "finish": "foil"
+      },
+      {
+        "name": "Collector Ouphe",
+        "qty": 6,
+        "set": "mh1",
+        "cn": "158",
+        "finish": "foil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 6,
+        "set": "j12",
+        "cn": "8",
+        "finish": "foil"
+      },
+      {
+        "name": "Cyclonic Rift",
+        "qty": 6,
+        "set": "rtr",
+        "cn": "35",
+        "finish": "foil"
+      },
+      {
+        "name": "Dark Confidant",
+        "qty": 6,
+        "set": "g11",
+        "cn": "6",
+        "finish": "foil"
+      },
+      {
+        "name": "Dark Ritual",
+        "qty": 6,
+        "set": "mmq",
+        "cn": "129",
+        "finish": "foil"
+      },
+      {
+        "name": "Deathrite Shaman",
+        "qty": 6,
+        "set": "rtr",
+        "cn": "213",
+        "finish": "foil"
+      },
+      {
+        "name": "Delay",
+        "qty": 6,
+        "set": "plst",
+        "cn": "FUT-35",
+        "finish": "foil"
+      },
+      {
+        "name": "Demonic Consultation",
+        "qty": 6,
+        "set": "ice",
+        "cn": "121",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Demonic Tutor",
+        "qty": 6,
+        "set": "j20",
+        "cn": "4",
+        "finish": "foil"
+      },
+      {
+        "name": "Dispel",
+        "qty": 6,
+        "set": "bfz",
+        "cn": "76",
+        "finish": "foil"
+      },
+      {
+        "name": "Dovin's Veto",
+        "qty": 6,
+        "set": "pwar",
+        "cn": "193",
+        "finish": "foil"
+      },
+      {
+        "name": "Drannith Magistrate",
+        "qty": 6,
+        "set": "iko",
+        "cn": "314",
+        "finish": "foil"
+      },
+      {
+        "name": "Eldritch Evolution",
+        "qty": 6,
+        "set": "emn",
+        "cn": "155",
+        "finish": "foil"
+      },
+      {
+        "name": "Elves of Deep Shadow",
+        "qty": 6,
+        "set": "f06",
+        "cn": "1",
+        "finish": "foil"
+      },
+      {
+        "name": "Elvish Mystic",
+        "qty": 6,
+        "set": "f14",
+        "cn": "2",
+        "finish": "foil"
+      },
+      {
+        "name": "Enlightened Tutor",
+        "qty": 6,
+        "set": "j20",
+        "cn": "2",
+        "finish": "foil"
+      },
+      {
+        "name": "Exotic Orchard",
+        "qty": 6,
+        "set": "cn2",
+        "cn": "219",
+        "finish": "foil"
+      },
+      {
+        "name": "Fierce Guardianship",
+        "qty": 6,
+        "set": "c20",
+        "cn": "35",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flooded Strand",
+        "qty": 6,
+        "set": "pnat",
+        "cn": "2018",
+        "finish": "foil"
+      },
+      {
+        "name": "Flusterstorm",
+        "qty": 6,
+        "set": "ima",
+        "cn": "55",
+        "finish": "foil"
+      },
+      {
+        "name": "Forbidden Orchard",
+        "qty": 6,
+        "set": "v12",
+        "cn": "6",
+        "finish": "foil"
+      },
+      {
+        "name": "Force of Negation",
+        "qty": 6,
+        "set": "mh1",
+        "cn": "52",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Force of Will",
+        "qty": 6,
+        "set": "ema",
+        "cn": "49",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forest",
+        "qty": 6,
+        "set": "pal01",
+        "cn": "11",
+        "finish": "foil"
+      },
+      {
+        "name": "Fyndhorn Elves",
+        "qty": 6,
+        "set": "v13",
+        "cn": "4",
+        "finish": "foil"
+      },
+      {
+        "name": "Gaea's Cradle",
+        "qty": 6,
+        "set": "usg",
+        "cn": "321",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gemstone Caverns",
+        "qty": 6,
+        "set": "tsp",
+        "cn": "274",
+        "finish": "foil"
+      },
+      {
+        "name": "Gilded Drake",
+        "qty": 6,
+        "set": "usg",
+        "cn": "76",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gitaxian Probe",
+        "qty": 6,
+        "set": "f12",
+        "cn": "12",
+        "finish": "foil"
+      },
+      {
+        "name": "Imperial Seal",
+        "qty": 6,
+        "set": "j16",
+        "cn": "6",
+        "finish": "foil"
+      },
+      {
+        "name": "Laboratory Maniac",
+        "qty": 6,
+        "set": "uma",
+        "cn": "61",
+        "finish": "foil"
+      },
+      {
+        "name": "Lim-Dûl's Vault",
+        "qty": 6,
+        "set": "all",
+        "cn": "107",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Llanowar Elves",
+        "qty": 6,
+        "set": "dci",
+        "cn": "9",
+        "finish": "foil"
+      },
+      {
+        "name": "Mana Confluence",
+        "qty": 6,
+        "set": "jou",
+        "cn": "163",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mana Crypt",
+        "qty": 6,
+        "set": "g11",
+        "cn": "5",
+        "finish": "foil"
+      },
+      {
+        "name": "Mana Drain",
+        "qty": 6,
+        "set": "ima",
+        "cn": "65",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Marsh Flats",
+        "qty": 6,
+        "set": "mm3",
+        "cn": "239",
+        "finish": "foil"
+      },
+      {
+        "name": "Mental Misstep",
+        "qty": 6,
+        "set": "nph",
+        "cn": "38",
+        "finish": "foil"
+      },
+      {
+        "name": "Misty Rainforest",
+        "qty": 6,
+        "set": "mm3",
+        "cn": "240",
+        "finish": "foil"
+      },
+      {
+        "name": "Morphic Pool",
+        "qty": 6,
+        "set": "bbd",
+        "cn": "83",
+        "finish": "foil"
+      },
+      {
+        "name": "Mox Diamond",
+        "qty": 6,
+        "set": "v10",
+        "cn": "10",
+        "finish": "foil"
+      },
+      {
+        "name": "Mystic Remora",
+        "qty": 6,
+        "set": "ice",
+        "cn": "87",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mystical Tutor",
+        "qty": 6,
+        "set": "ema",
+        "cn": "62",
+        "finish": "foil"
+      },
+      {
+        "name": "Neoform",
+        "qty": 6,
+        "set": "war",
+        "cn": "206",
+        "finish": "foil"
+      },
+      {
+        "name": "Noble Hierarch",
+        "qty": 6,
+        "set": "j12",
+        "cn": "3",
+        "finish": "foil"
+      },
+      {
+        "name": "Notion Thief",
+        "qty": 6,
+        "set": "a25",
+        "cn": "211",
+        "finish": "foil"
+      },
+      {
+        "name": "Noxious Revival",
+        "qty": 6,
+        "set": "nph",
+        "cn": "118",
+        "finish": "foil"
+      },
+      {
+        "name": "Nurturing Peatland",
+        "qty": 6,
+        "set": "mh1",
+        "cn": "243",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Opposition Agent",
+        "qty": 6,
+        "set": "cmr",
+        "cn": "651",
+        "finish": "foil"
+      },
+      {
+        "name": "Overgrown Tomb",
+        "qty": 6,
+        "set": "grn",
+        "cn": "253",
+        "finish": "foil"
+      },
+      {
+        "name": "Pact of Negation",
+        "qty": 6,
+        "set": "mma",
+        "cn": "56",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Phantasmal Image",
+        "qty": 6,
+        "set": "mm3",
+        "cn": "46",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Polluted Delta",
+        "qty": 6,
+        "set": "ktk",
+        "cn": "239",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ponder",
+        "qty": 6,
+        "set": "m12",
+        "cn": "73",
+        "finish": "foil"
+      },
+      {
+        "name": "Rejuvenating Springs",
+        "qty": 6,
+        "set": "cmr",
+        "cn": "354",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rest in Peace",
+        "qty": 6,
+        "set": "rtr",
+        "cn": "18",
+        "finish": "foil"
+      },
+      {
+        "name": "Rhystic Study",
+        "qty": 6,
+        "set": "pcy",
+        "cn": "45",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Savannah",
+        "qty": 6,
+        "set": "3ed",
+        "cn": "285",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Scalding Tarn",
+        "qty": 6,
+        "set": "mm3",
+        "cn": "244",
+        "finish": "foil"
+      },
+      {
+        "name": "Seedborn Muse",
+        "qty": 6,
+        "set": "c19",
+        "cn": "179",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Silence",
+        "qty": 6,
+        "set": "m14",
+        "cn": "35",
+        "finish": "foil"
+      },
+      {
+        "name": "Sol Ring",
+        "qty": 6,
+        "set": "g05",
+        "cn": "3",
+        "finish": "foil"
+      },
+      {
+        "name": "Spell Snare",
+        "qty": 6,
+        "set": "bbd",
+        "cn": "132",
+        "finish": "foil"
+      },
+      {
+        "name": "Spellseeker",
+        "qty": 6,
+        "set": "j20",
+        "cn": "3",
+        "finish": "foil"
+      },
+      {
+        "name": "Stony Silence",
+        "qty": 6,
+        "set": "isd",
+        "cn": "36",
+        "finish": "foil"
+      },
+      {
+        "name": "Swan Song",
+        "qty": 6,
+        "set": "ths",
+        "cn": "65",
+        "finish": "foil"
+      },
+      {
+        "name": "Swords to Plowshares",
+        "qty": 6,
+        "set": "cmr",
+        "cn": "387",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sylvan Library",
+        "qty": 6,
+        "set": "ema",
+        "cn": "187",
+        "finish": "foil"
+      },
+      {
+        "name": "Tainted Pact",
+        "qty": 6,
+        "set": "ody",
+        "cn": "164",
+        "finish": "foil"
+      },
+      {
+        "name": "Thassa's Oracle",
+        "qty": 6,
+        "set": "thb",
+        "cn": "308",
+        "finish": "foil"
+      },
+      {
+        "name": "Timetwister",
+        "qty": 6,
+        "set": "2ed",
+        "cn": "85",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tropical Island",
+        "qty": 6,
+        "set": "3ed",
+        "cn": "288",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tundra",
+        "qty": 6,
+        "set": "3ed",
+        "cn": "289",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Underground Sea",
+        "qty": 6,
+        "set": "3ed",
+        "cn": "290",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Undergrowth Stadium",
+        "qty": 6,
+        "set": "cmr",
+        "cn": "359",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vampiric Tutor",
+        "qty": 6,
+        "set": "g00",
+        "cn": "2",
+        "finish": "foil"
+      },
+      {
+        "name": "Veil of Summer",
+        "qty": 6,
+        "set": "m20",
+        "cn": "198",
+        "finish": "foil"
+      },
+      {
+        "name": "Verdant Catacombs",
+        "qty": 6,
+        "set": "mm3",
+        "cn": "249",
+        "finish": "foil"
+      },
+      {
+        "name": "Waterlogged Grove",
+        "qty": 6,
+        "set": "mh1",
+        "cn": "249",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Watery Grave",
+        "qty": 6,
+        "set": "grn",
+        "cn": "259",
+        "finish": "foil"
+      },
+      {
+        "name": "Windswept Heath",
+        "qty": 6,
+        "set": "ktk",
+        "cn": "248",
+        "finish": "foil"
+      },
+      {
+        "name": "Wooded Foothills",
+        "qty": 6,
+        "set": "ktk",
+        "cn": "249",
+        "finish": "foil"
+      }
+    ],
+    "maybeboard": [
+      {
+        "name": "Finale of Devastation",
+        "qty": 6,
+        "set": "war",
+        "cn": "160",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Praetor's Grasp",
+        "qty": 6,
+        "set": "nph",
+        "cn": "71",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rapid Hybridization",
+        "qty": 6,
+        "set": "gtc",
+        "cn": "44",
+        "finish": "nonFoil"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "0",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "10",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "1",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "2",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "3",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "4",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "5",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "6",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "7",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "8",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "9",
+        "set": null,
+        "cn": null,
+        "finish": null
+      }
+    ]
+  },
+  "variants": {
+    "full": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "full-nofinish": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "mtgo": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "last-block",
+      "lossy": false
+    },
+    "arena": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    }
+  }
+}

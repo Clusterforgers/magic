@@ -1,0 +1,341 @@
+{
+  "source": {
+    "site": "moxfield",
+    "id": "CFeCQ5NOMESJOSSGLB8cPg",
+    "url": "https://moxfield.com/decks/CFeCQ5NOMESJOSSGLB8cPg",
+    "format": "standard",
+    "name": "(WOE) Gruul Legends",
+    "why": "Standard deck: recent sets, adventures and modal cards",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "mainboard": [
+      {
+        "name": "Animist's Might",
+        "qty": 3,
+        "set": "mat",
+        "cn": "20",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Audacity",
+        "qty": 3,
+        "set": "bro",
+        "cn": "169",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Boseiju, Who Endures",
+        "qty": 1,
+        "set": "neo",
+        "cn": "266",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Copperline Gorge",
+        "qty": 4,
+        "set": "one",
+        "cn": "249",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forest",
+        "qty": 1,
+        "set": "eld",
+        "cn": "266",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goddric, Cloaked Reveler",
+        "qty": 3,
+        "set": "woe",
+        "cn": "132",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hajar, Loyal Bodyguard",
+        "qty": 3,
+        "set": "bro",
+        "cn": "211",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Halana and Alena, Partners",
+        "qty": 1,
+        "set": "vow",
+        "cn": "239",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Karplusan Forest",
+        "qty": 4,
+        "set": "dmu",
+        "cn": "379",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kumano Faces Kakkazan // Etching of Kumano",
+        "qty": 4,
+        "set": "neo",
+        "cn": "152",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Migloz, Maze Crusher",
+        "qty": 2,
+        "set": "one",
+        "cn": "210",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Monastery Swiftspear",
+        "qty": 4,
+        "set": "2x2",
+        "cn": "362",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Monstrous Rage",
+        "qty": 3,
+        "set": "woe",
+        "cn": "142",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 3,
+        "set": "eld",
+        "cn": "262",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Picnic Ruiner // Stolen Goodies",
+        "qty": 4,
+        "set": "woe",
+        "cn": "232",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Plaza of Heroes",
+        "qty": 4,
+        "set": "dmu",
+        "cn": "252",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Questing Druid // Seek the Beast",
+        "qty": 3,
+        "set": "woe",
+        "cn": "234",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rockfall Vale",
+        "qty": 2,
+        "set": "who",
+        "cn": "298",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ruby, Daring Tracker",
+        "qty": 2,
+        "set": "woe",
+        "cn": "212",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Samut, Vizier of Naktamun",
+        "qty": 2,
+        "set": "mat",
+        "cn": "45",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sokenzan, Crucible of Defiance",
+        "qty": 2,
+        "set": "neo",
+        "cn": "276",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Witchstalker Frenzy",
+        "qty": 2,
+        "set": "woe",
+        "cn": "159",
+        "finish": "nonFoil"
+      }
+    ],
+    "sideboard": [
+      {
+        "name": "Abrade",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "114",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "End the Festivities",
+        "qty": 1,
+        "set": "vow",
+        "cn": "155",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lithomantic Barrage",
+        "qty": 2,
+        "set": "mom",
+        "cn": "152",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Outland Liberator // Frenzied Trapbreaker",
+        "qty": 3,
+        "set": "mid",
+        "cn": "190",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Strangle",
+        "qty": 2,
+        "set": "snc",
+        "cn": "125",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Syr Ginger, the Meal Ender",
+        "qty": 2,
+        "set": "woe",
+        "cn": "252",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Twisted Fealty",
+        "qty": 2,
+        "set": "woe",
+        "cn": "154",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wrenn and Realmbreaker",
+        "qty": 2,
+        "set": "mom",
+        "cn": "217",
+        "finish": "nonFoil"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "0",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "10",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "11",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "12",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "1",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "2",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "3",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "4",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "5",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "6",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "7",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "8",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "9",
+        "set": null,
+        "cn": null,
+        "finish": null
+      }
+    ]
+  },
+  "variants": {
+    "full": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "mtgo": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "last-block",
+      "lossy": false
+    },
+    "arena": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    }
+  }
+}

@@ -1,0 +1,61 @@
+About
+Name Brawl Looters
+
+Commander
+1 The Ancient One
+
+Deck
+1 Agna Qel'a
+1 Bitter Triumph
+1 Bringer of the Last Gift
+1 Collector's Vault
+1 Command Tower
+1 Corpses of the Lost
+1 Cruel Somnophage
+1 Dark Matter Manipulator
+1 Dawnsire, Sunstar Dreadnought
+1 Demolition Field
+1 Fabled Passage
+1 Firdoch Core
+1 Floodpits Drowner
+1 Gloomlake Verge
+5 Island
+1 Jace Reawakened
+1 Jidoor, Aristocratic Capital
+1 Kavaero, Mind-Bitten
+1 Kiora, the Rising Tide
+1 Kitesail Larcenist
+1 Kitsune's Technique
+1 Likeness Looter
+1 Malcolm, Alluring Scoundrel
+1 Marauding Brinefang
+1 Matzalantli, the Great Door
+1 Nameless Inversion
+1 Nowhere to Run
+1 Omni-Changeling
+1 Picklock Prankster
+1 Preacher of the Schism
+1 Proft's Eidetic Memory
+1 Qarsi Revenant
+1 Ral Zarek, Guest Lecturer
+1 Rampaging Spiketail
+1 Realm of Koh
+1 Restless Reef
+1 Riverchurn Monument
+1 Rogue's Passage
+1 Scrounging Skyray
+1 Singularity Rupture
+1 Stalactite Stalker
+1 Susur Secundi, Void Altar
+5 Swamp
+1 The Enigma Jewel
+1 Throne of the Grim Captain
+1 Tishana's Tidebinder
+1 Unauthorized Exit
+1 Undercity Sewers
+1 Wail of the Forgotten
+1 Watery Grave
+1 Winternight Stories
+
+Sideboard
+1 The Theorist, Jace Beleren

@@ -1,0 +1,144 @@
+Commander
+1x Third Path Iconoclast
+
+Mainboard
+1x Chain Lightning
+1x Electrickery
+1x End the Festivities
+1x Galvanic Blast
+1x Grapeshot
+1x Lightning Bolt
+1x Strangle
+1x Augur of Bolas
+1x Brainstorm
+1x Consider
+1x Distant Melody
+1x Experimental Synthesizer
+1x Faithless Looting
+1x Frantic Search
+1x Gitaxian Probe
+1x Keep Watch
+1x Opt
+1x Perilous Research
+1x Ponder
+1x Preordain
+1x Reverse Engineer
+1x Think Twice
+1x Thought Scour
+1x Thoughtcast
+1x Thrill of Possibility
+1x Treasure Cruise
+1x Counterspell
+1x Dispel
+1x Izzet Charm
+1x Negate
+1x Rewind
+1x Spell Pierce
+1x Stoic Rebuttal
+1x Command Tower
+1x Evolving Wilds
+1x Great Furnace
+16x Island
+12x Mountain
+1x Mystic Sanctuary
+1x Seat of the Synod
+1x Silverbluff Bridge
+1x Terramorphic Expanse
+1x Clout of the Dominus
+1x Embraal Gear-Smasher
+1x Filigree Attendant
+1x Firebrand Archer
+1x Guttersnipe
+1x Impact Tremors
+1x Ingenious Artillerist
+1x Kessig Flamebreather
+1x Kuldotha Rebirth
+1x Murmuring Mystic
+1x Reckless Fireweaver
+1x Thermo-Alchemist
+1x Tolarian Terror
+1x Witty Roastmaster
+1x Arcane Signet
+1x Ashnod's Altar
+1x Battle Hymn
+1x Decanter of Endless Water
+1x Goblin Electromancer
+1x High Tide
+1x Infernal Plunge
+1x Izzet Signet
+1x Mana Geyser
+1x Seething Song
+1x Thought Vessel
+1x Flood of Recollection
+1x Mnemonic Wall
+1x Shipwreck Dowser
+1x Abrade
+1x Blink of an Eye
+1x Snap
+
+Maybeboard
+1x "Name Sticker" Goblin
+1x Ancestors' Aid
+1x Archaeomancer
+1x Artificer's Epiphany
+1x Barbed Batterfist
+1x Bitter Reunion
+1x Blood Aspirant
+1x Bloodwater Entity
+1x Blue Elemental Blast
+1x Brackish Blunder
+1x Breath Weapon
+1x Capsize
+1x Cryptic Serpent
+1x Cyclops Electromancer
+1x Dark-Dweller Oracle
+1x Delver of Secrets // Insectile Aberration
+1x Desperate Ritual
+1x Destructive Digger
+1x Disdainful Stroke
+1x Dynacharge
+1x Electrostatic Field
+1x Erebor Flamesmith
+1x Excavation Explosion
+1x Fallaji Archaeologist
+1x Festival Crasher
+1x Fiery Cannonade
+1x Fire // Ice
+1x Firebolt
+1x Firemind Vessel
+1x First Day of Class
+1x Ghostly Flicker
+1x Gingerbrute
+1x Goblin Taskmaster
+1x Improvised Club
+1x Izzet Chronarch
+1x Jhessian Thief
+1x Krark-Clan Shaman
+1x Kruin Striker
+1x Lightning Strike
+1x Lórien Revealed
+1x Magma Jet
+1x Makeshift Munitions
+1x Meeting of Minds
+1x Mental Note
+1x Metallic Rebuke
+1x Monastery Swiftspear
+1x Mulldrifter
+1x Myr Enforcer
+1x Ornithopter
+1x Override
+1x Promising Vein
+1x Prophetic Prism
+1x Pyretic Ritual
+1x Raid Bombardment
+1x Reckless Impulse
+1x Red Elemental Blast
+1x Relic of Progenitus
+1x Salivating Gremlins
+1x Shock
+1x Simian Spirit Guide
+1x Stern Lesson
+1x Sulfurous Blast
+1x Sunshot Militia
+1x Tectonic Hazard
+1x Wayfarer's Bauble

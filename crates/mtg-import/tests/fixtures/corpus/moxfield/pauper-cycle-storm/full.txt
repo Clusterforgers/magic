@@ -1,0 +1,24 @@
+4 Cabal Ritual (TOR) 51
+4 Conduit Pylons (OTJ) 254
+4 Dark Ritual (MMQ) 129
+4 Drannith Healer (IKO) 10
+4 Drannith Stinger (IKO) 113
+4 Giant's Boulder (HOB) 173
+4 Hidden Grotto (BLB) 254
+4 Horror of the Broken Lands (AKH) 95
+4 Imposing Vantasaur (IKO) 17
+4 Page, Loose Leaf (SOS) 250
+4 Reaping the Graves (SCG) 72
+4 Rowan's Grim Search (WOE) 104
+4 Songs of the Damned (ICE) 160
+4 Street Wraith (FUT) 90
+4 Vault of Whispers (MRD) 286
+
+SIDEBOARD:
+1 Barkform Harvester (BLB) 243
+4 Chitin Gravestalker (DFT) 79
+2 Dispel (WWK) 26
+2 Faerie Macabre (SHM) 66
+3 Pyroblast (EMA) 142
+2 Siege Smash (MH3) 136
+1 Swamp (INV) 339

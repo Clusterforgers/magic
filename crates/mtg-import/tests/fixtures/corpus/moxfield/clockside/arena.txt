@@ -1,0 +1,91 @@
+About
+Name [CABLE] Clockside Outlawed
+
+Commander
+1 Magda, Brazen Outlaw
+
+Deck
+1 Abrade
+1 Ancient Tomb
+1 Barkform Harvester
+1 Cavern of Souls
+1 Chrome Mox
+1 Command Beacon
+1 Damping Sphere
+1 Deflecting Swat
+1 Dragon-Cursed Halls
+1 Dwarven Mauler
+1 Firdoch Core
+1 Flare of Duplication
+1 Flywheel Racer
+1 Galvanic Blast
+1 Gemstone Caverns
+1 Ghostfire Slice
+1 God-Pharaoh's Statue
+1 Grafdigger's Cage
+1 Great Furnace
+1 Jeska's Will
+1 Kavaron, Memorial World
+1 Legion Extruder
+1 Lifecraft Engine
+1 Lightning Bolt
+1 Magda, the Hoardmaster
+1 Maskwood Nexus
+1 Metallic Mimic
+1 Molten Duplication
+5 Mountain
+1 Mox Amber
+1 Mox Opal
+1 Mutavault
+1 Phenomena Recorder
+1 Pinnacle Monk
+1 Plundering Barbarian
+1 Portal to Phyrexia
+1 Professional Face-Breaker
+1 Pyrokinesis
+1 Ramunap Ruins
+1 Redirect Lightning
+1 Relic of Legends
+1 Return the Favor
+1 Rite of Flame
+1 Roaming Throne
+1 Sculpting Steel
+1 Shatterskull Smashing
+1 Smuggler's Copter
+1 Springleaf Drum
+1 Stalactite Dagger
+1 Sundering Eruption
+1 Tezzeret, Cruel Captain
+1 The One Ring
+1 Three Tree Mascot
+1 Tibalt's Trickery
+1 Treasure Vault
+1 Twinshot Sniper
+1 Universal Automaton
+1 Unlicensed Hearse
+1 Untimely Malfunction
+1 Urza's Cave
+1 Vexing Bauble
+1 Volatile Fault
+1 Xorn
+
+Sideboard
+1 Chalice of the Void
+1 Chaos Warp
+1 Chromatic Orrery
+1 Disruptor Flute
+1 Fíli and Kíli, Joyous
+1 Fomori Vault
+1 Fury
+1 Great Train Heist
+1 Óin the Brave
+1 Petrified Hamlet
+1 Plaza of Heroes
+1 Ragavan, Nimble Pilferer
+1 Roiling Vortex
+1 Soul-Guide Lantern
+1 Sting, the Glinting Dagger
+1 Thorn of Amethyst
+1 Torpor Orb
+1 Voltage Surge
+1 Zoyowa's Justice

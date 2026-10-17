@@ -1,0 +1,130 @@
+1x Adarkar Wastes (m3c) 316
+1x Afterlife from the Loam (tdc) 25
+1x Akroma's Will (m3c) 165
+1x Araumi of the Dead Tide (cmr) 267
+1x Arcane Signet (mkc) 223
+1x Auton Soldier (who) 36
+1x Azorius Chancery (mkc) 249
+1x Azorius Signet (nec) 145
+1x Battlefield Forge (m3c) 321
+1x Blade of Selves (clb) 301
+1x Blasphemous Act (clb) 780
+1x Boros Garrison (mkc) 251
+1x Boros Signet (onc) 126
+1x Breach the Multiverse (mom) 94
+1x Bronzebeak Foragers (lcc) 69
+1x Calamity, Galloping Inferno (otj) 116
+1x Caves of Koilos (otc) 277
+1x City of Brass (md1) 15
+1x Coiling Rebirth (blb) 86
+1x Command Tower (otc) 280
+1x Corporeal Projection (clu) 28
+1x Cursed Mirror (mh3) 279
+1x Curtains' Call (otc) 130
+1x Cyclonic Rift (mm3) 35
+1x Demonic Junker (dft) 83
+1x Deserted Beach (who) 270
+1x Diluvian Primordial (otc) 96
+1x Dimir Aqueduct (otc) 288
+1x Dimir Signet (lcc) 302
+1x Disciple of Bolas (tdc) 178
+1x Dowsing Dagger // Lost Vale (xln) 235
+1x Duke Ulder Ravengard (clb) 272
+1x Elesh Norn, Grand Cenobite (plst) IMA-18
+1x Enduring Curiosity (dsk) 51
+1x Exotic Orchard (afc) 236
+1x Feldon of the Third Path (c19) 141
+1x Fellwar Stone (onc) 130
+1x Fetid Heath (moc) 399
+1x Firbolg Flutist (clb) 174
+1x Flamehold Grappler (tdm) 185
+1x Flameshadow Conjuring (ori) 147
+1x Frostcliff Siege (tdm) 187
+1x Grand Coliseum (c16) 299
+1x Graven Cairns (dsc) 280
+1x Gray Merchant of Asphodel (ths) 89
+1x Grim Hireling (afc) 25
+1x Haunted Ridge (who) 286
+1x Hostage Taker (lcc) 271
+1x Inferno Titan (blc) 198
+1x Ironwill Forger (tdc) 13
+1x Island (znr) 270
+1x Izzet Boilerworks (otc) 302
+1x Izzet Signet (otc) 259
+1x Jaxis, the Troublemaker (snc) 112
+1x Kefka, Court Mage // Kefka, Ruler of Ruin (fin) 231
+1x Kiki-Jiki, Mirror Breaker (ima) 136
+1x Kraum, Ludevic's Opus (cmr) 523 *E*
+1x Legion Loyalty (m3c) 171
+1x Luxury Suite (clb) 355
+1x Magmatic Hellkite (tdm) 111
+1x Make an Example (ncc) 37
+1x Mardu Siegebreaker (tdm) 206
+1x Massacre Wurm (mkc) 130
+1x Midnight Pathlighter (afc) 52
+1x Mirage Phalanx (voc) 35
+1x Mirror Room // Fractured Realm (dsk) 67
+1x Morphic Pool (clb) 357
+1x Mountain (znr) 276
+1x Orochi Soul-Reaver (otc) 22
+1x Orthion, Hero of Lavabrink (mom) 334
+1x Orzhov Basilica (dmc) 224
+1x Orzhov Signet (rvr) 263
+1x Overlord of the Boilerbilges (dsk) 146
+1x Path of Ancestry (ncc) 419
+1x Peter Parker's Camera (spm) 171
+1x Plains (znr) 268
+1x Professional Face-Breaker (snc) 116
+1x Pyrogoyf (m3c) 111
+1x Radiant Performer (c21) 54
+1x Rakdos Carnarium (dmc) 226
+1x Rakdos Signet (otc) 265
+1x Reflecting Pool (clb) 358
+1x Relic of Sauron (ltc) 79
+1x Riptide Gearhulk (dft) 219
+1x Rite of Replication (fic) 270
+1x Rottenmouth Viper (blb) 107
+1x Rugged Prairie (otc) 314
+1x Ruinous Ultimatum (pip) 220
+1x Saw in Half (unf) 88
+1x Sea of Clouds (clb) 360
+1x Seasoned Dungeoneer (clb) 660
+1x Sepulchral Primordial (znc) 54
+1x Shattered Sanctum (inr) 283
+1x Shipwreck Marsh (who) 305
+1x Shivan Reef (m3c) 375
+1x Sol Ring (cmm) 410
+1x Soul Shatter (scd) 108
+1x Spectator Seating (cmm) 427
+1x Spire of Industry (mkc) 296
+1x Starting Town (fin) 289
+1x Stormcarved Coast (who) 308
+1x Strionic Resonator (c19) 224
+1x Sulfurous Springs (m3c) 381
+1x Sundering Eruption // Volcanic Fissure (mh3) 248
+1x Sundown Pass (who) 310
+1x Swamp (znr) 274
+1x Swords to Plowshares (m3c) 173
+1x Talisman of Conviction (mkc) 240
+1x Talisman of Creativity (m3c) 308
+1x Talisman of Dominance (clb) 877
+1x Talisman of Hierarchy (clb) 878
+1x Talisman of Indulgence (m3c) 312
+1x Talisman of Progress (mkc) 243
+1x Teferi's Protection (plst) C17-8
+1x Terror of the Peaks (m21) 164
+1x The Jolly Balloon Man (dsk) 219
+1x Thieving Skydiver (otc) 118
+1x Thran Dynamo (cmm) 415
+1x Tomb of Horrors Adventurer (clb) 100
+1x Training Center (cmr) 358
+1x Twinflame (jou) 115
+1x Tymna the Weaver (cmr) 539 *E*
+1x Underground River (otc) 338
+1x Vault of Champions (cmr) 360
+1x Vault of the Archangel (clb) 927
+1x Virtue of Knowledge // Vantress Visions (woe) 76
+1x Voice of Victory (tdm) 33
+1x Will of the Abzan (tdc) 31
+1x Witch Enchanter // Witch-Blessed Meadow (mh3) 239
+1x Worn Powerstone (mh3) 298

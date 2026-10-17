@@ -1,0 +1,536 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "2512946",
+    "url": "https://archidekt.com/decks/2512946",
+    "format": "oathbreaker",
+    "name": "Espernoyhbreamer",
+    "why": "oathbreaker with a split card as signature spell, cards without categories, numbers like 226p, 251a and mb283",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Dakkon, Shadow Slayer",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "192",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Revival // Revenge",
+        "qty": 1,
+        "set": "rvr",
+        "cn": "241",
+        "finish": "nonFoil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Adarkar Wastes",
+        "qty": 1,
+        "set": "eoc",
+        "cn": "147",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Aether Hub",
+        "qty": 1,
+        "set": "drc",
+        "cn": "145",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Aether Spellbomb",
+        "qty": 1,
+        "set": "j22",
+        "cn": "752",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ancient Den",
+        "qty": 1,
+        "set": "td2",
+        "cn": "36",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Sanctum",
+        "qty": 1,
+        "set": "drc",
+        "cn": "146",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "voc",
+        "cn": "159",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ash Barrens",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "339",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Baleful Strix",
+        "qty": 1,
+        "set": "otc",
+        "cn": "215",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Caves of Koilos",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "348",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chromatic Sphere",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "151",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chromatic Star",
+        "qty": 1,
+        "set": "tsr",
+        "cn": "263",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Codex Shredder",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "304",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "eoc",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cranial Plating",
+        "qty": 1,
+        "set": "brc",
+        "cn": "136",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Darksteel Citadel",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "107",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Emry, Lurker of the Loch",
+        "qty": 1,
+        "set": "eoc",
+        "cn": "71",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Etherium Sculptor",
+        "qty": 1,
+        "set": "eoc",
+        "cn": "72",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ethersworn Canonist",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "10",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Executioner's Capsule",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "92",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gemstone Mine",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "247",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Glaring Fleshraker",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "7",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goldmire Bridge",
+        "qty": 1,
+        "set": "moc",
+        "cn": "407",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Island",
+        "qty": 1,
+        "set": "tla",
+        "cn": "283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kappa Cannoneer",
+        "qty": 1,
+        "set": "eoc",
+        "cn": "74",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lurrus of the Dream-Den",
+        "qty": 1,
+        "set": "piko",
+        "cn": "226p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mind Stone",
+        "qty": 1,
+        "set": "dsc",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mishra's Bauble",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "97",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mistvault Bridge",
+        "qty": 1,
+        "set": "brc",
+        "cn": "189",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Myr Retriever",
+        "qty": 1,
+        "set": "td2",
+        "cn": "7",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mystic Forge",
+        "qty": 1,
+        "set": "pip",
+        "cn": "236",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nettlecyst",
+        "qty": 1,
+        "set": "mkc",
+        "cn": "233",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nihil Spellbomb",
+        "qty": 1,
+        "set": "som",
+        "cn": "187",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Oswald Fiddlebender",
+        "qty": 1,
+        "set": "afr",
+        "cn": "28",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Paradoxical Outcome",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "33",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Phyrexia's Core",
+        "qty": 1,
+        "set": "c21",
+        "cn": "309",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pithing Needle",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "312",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Plains",
+        "qty": 1,
+        "set": "bfz",
+        "cn": "251a",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Power Depot",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "251",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Razortide Bridge",
+        "qty": 1,
+        "set": "eoc",
+        "cn": "171",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Salvaging Station",
+        "qty": 1,
+        "set": "5dn",
+        "cn": "148",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Seat of the Synod",
+        "qty": 1,
+        "set": "wc04",
+        "cn": "mb283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sevinne's Reclamation",
+        "qty": 1,
+        "set": "c19",
+        "cn": "5",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spire of Industry",
+        "qty": 1,
+        "set": "eoc",
+        "cn": "183",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 1,
+        "set": "cma",
+        "cn": "303",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sword of the Meek",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "299",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thassa's Oracle",
+        "qty": 1,
+        "set": "thb",
+        "cn": "73",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thopter Foundry",
+        "qty": 1,
+        "set": "c13",
+        "cn": "234",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thoughtcast",
+        "qty": 1,
+        "set": "ddf",
+        "cn": "71",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Time Sieve",
+        "qty": 1,
+        "set": "plst",
+        "cn": "ARB-31",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Trading Post",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "288",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Treasure Mage",
+        "qty": 1,
+        "set": "plst",
+        "cn": "DDU-40",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tribute Mage",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "73",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Trinket Mage",
+        "qty": 1,
+        "set": "plst",
+        "cn": "DDU-41",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Underground River",
+        "qty": 1,
+        "set": "drc",
+        "cn": "181",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Voyage Home",
+        "qty": 1,
+        "set": "dft",
+        "cn": "227",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Welding Jar",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "307",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wishclaw Talisman",
+        "qty": 1,
+        "set": "eld",
+        "cn": "110",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wrath of God",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "70",
+        "finish": "nonFoil"
+      }
+    ],
+    "sideboard": [
+      {
+        "name": "Paradoxical Outcome",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "33",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Revival // Revenge",
+        "qty": 1,
+        "set": "rvr",
+        "cn": "241",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Voyage Home",
+        "qty": 1,
+        "set": "dft",
+        "cn": "227",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "front-name": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

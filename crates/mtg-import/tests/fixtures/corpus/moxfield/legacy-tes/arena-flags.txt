@@ -1,0 +1,31 @@
+About
+Name The EPIC Storm (TES)
+
+Deck
+3 Beseech the Mirror #Action #Tutors
+1 Bloodstained Mire
+4 Chrome Mox #Acceleration
+4 Dark Ritual #Acceleration
+3 Echo of Eons #Action
+4 Gamble #Action #Tutors
+4 Giant's Boulder
+4 Hexing Squelcher #Protection
+4 Mox Opal #Acceleration
+1 Raucous Theater
+1 Scalding Tarn
+1 Song of Creation #Action
+1 Tendrils of Agony #WinCons
+2 Veil of Summer #Protection
+2 Verdant Catacombs
+
+Sideboard
+1 Beseech the Mirror #Action #Tutors
+4 Boomerang Basics
+2 Boseiju, Who Endures
+1 Echo of Eons #Action
+1 Empty the Warrens #WinCons
+1 Haywire Mite #Removal
+1 Peer into the Abyss
+1 Tendrils of Agony #WinCons
+1 Thoughtseize #Protection
+2 Veil of Summer #Protection

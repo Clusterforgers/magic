@@ -1,0 +1,55 @@
+1 The Ancient One (LCI) 222
+1 Agna Qel'a (TLA) 264
+1 Bitter Triumph (LCI) 91
+1 Bringer of the Last Gift (LCI) 337
+1 Collector's Vault (WOE) 244
+1 Command Tower (CLB) 351
+1 Corpses of the Lost (LCI) 98
+1 Cruel Somnophage / Can't Wake Up (WOE) 222
+1 Dark Matter Manipulator (FRA) 52
+1 Dawnsire, Sunstar Dreadnought (EOE) 238
+1 Demolition Field (BRO) 260
+1 Fabled Passage (BLB) 252
+1 Firdoch Core (ECL) 255
+1 Floodpits Drowner (DSK) 59
+1 Gloomlake Verge (PDSK) 260p
+5 Island (MOM) 284
+1 Jace Reawakened (OTJ) 271
+1 Jidoor, Aristocratic Capital / Overture (FIN) 284
+1 Kiora, the Rising Tide (FDN) 45
+1 Kitesail Larcenist (LCI) 61
+1 Kitsune's Technique (TMT) 42
+1 Likeness Looter (WOE) 208
+1 Malcolm, Alluring Scoundrel (LCI) 293
+1 Marauding Brinefang (LCI) 64
+1 Matzalantli, the Great Door / The Core (LCI) 256
+1 Nameless Inversion (ECL) 113
+1 Nowhere to Run (DSK) 111
+1 Omni-Changeling (ECL) 62
+1 Picklock Prankster / Free the Fae (WOE) 64
+1 Preacher of the Schism (LCI) 113
+1 Proft's Eidetic Memory (MKM) 67
+1 Qarsi Revenant (TDM) 338
+1 Ral Zarek, Guest Lecturer (SOS) 97
+1 Rampaging Spiketail (LCI) 116
+1 Realm of Koh (TLA) 276
+1 Restless Reef (LCI) 282
+1 Riverchurn Monument (DFT) 381
+1 Rogue's Passage (CLB) 913
+1 Scrounging Skyray (DFT) 60
+1 Singularity Rupture (EOE) 398
+1 Stalactite Stalker (LCI) 122
+1 Superior Spider-Man (SPM) 155
+1 Susur Secundi, Void Altar (EOE) 259
+5 Swamp (MOM) 286
+1 The Enigma Jewel / Locus of Enlightenment (LCI) 55
+1 Throne of the Grim Captain / The Grim Captain (LCI) 266
+1 Tishana's Tidebinder (LCI) 335
+1 Unauthorized Exit (MKM) 74
+1 Undercity Sewers (PMKM) 270p
+1 Wail of the Forgotten (LCI) 244
+1 Watery Grave (EOE) 261
+1 Winternight Stories (TDM) 336
+
+SIDEBOARD:
+1 The Theorist, Jace Beleren (FRA) 43

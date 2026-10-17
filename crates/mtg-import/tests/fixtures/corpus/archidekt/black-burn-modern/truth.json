@@ -1,0 +1,292 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "3412871",
+    "url": "https://archidekt.com/decks/3412871",
+    "format": "modern",
+    "name": "Black Burn",
+    "why": "modern 60 plus 15 with double-faced cards",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "mainboard": [
+      {
+        "name": "Blood Crypt",
+        "qty": 1,
+        "set": "rvr",
+        "cn": "273",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodstained Mire",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "216",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Boggart Trawler // Boggart Bog",
+        "qty": 4,
+        "set": "mh3",
+        "cn": "243",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bump in the Night",
+        "qty": 4,
+        "set": "ddk",
+        "cn": "57",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cecil, Dark Knight // Cecil, Redeemed Paladin",
+        "qty": 2,
+        "set": "fin",
+        "cn": "380",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chancellor of the Dross",
+        "qty": 4,
+        "set": "nph",
+        "cn": "54",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Force of Despair",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "92",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gonti's Machinations",
+        "qty": 4,
+        "set": "aer",
+        "cn": "63",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Iridescent Vinelasher",
+        "qty": 4,
+        "set": "blb",
+        "cn": "99",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lightning Bolt",
+        "qty": 4,
+        "set": "clu",
+        "cn": "141",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "March of Wretched Sorrow",
+        "qty": 1,
+        "set": "neo",
+        "cn": "111",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Marsh Flats",
+        "qty": 4,
+        "set": "mh2",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Necrodominance",
+        "qty": 4,
+        "set": "mh3",
+        "cn": "102",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Orcish Bowmasters",
+        "qty": 2,
+        "set": "ltr",
+        "cn": "103",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Overgrown Tomb",
+        "qty": 1,
+        "set": "rvr",
+        "cn": "283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Raucous Theater",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "266",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sorin of House Markov // Sorin, Ravenous Neonate",
+        "qty": 4,
+        "set": "mh3",
+        "cn": "245",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Soul Spike",
+        "qty": 4,
+        "set": "csp",
+        "cn": "70",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 4,
+        "set": "otj",
+        "cn": "282",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Verdant Catacombs",
+        "qty": 4,
+        "set": "mh2",
+        "cn": "260",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Witherbloom Command",
+        "qty": 2,
+        "set": "stx",
+        "cn": "248",
+        "finish": "nonFoil"
+      }
+    ],
+    "sideboard": [
+      {
+        "name": "Force of Despair",
+        "qty": 3,
+        "set": "mh1",
+        "cn": "92",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Magebane Lizard",
+        "qty": 2,
+        "set": "otj",
+        "cn": "134",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyroclasm",
+        "qty": 2,
+        "set": "dsk",
+        "cn": "149",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Surgical Extraction",
+        "qty": 3,
+        "set": "2x2",
+        "cn": "94",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thoughtseize",
+        "qty": 3,
+        "set": "2xm",
+        "cn": "109",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Witherbloom Command",
+        "qty": 2,
+        "set": "stx",
+        "cn": "248",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "front-name": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-type": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

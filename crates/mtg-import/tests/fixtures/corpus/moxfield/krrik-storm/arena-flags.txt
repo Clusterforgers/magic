@@ -1,0 +1,55 @@
+About
+Name [Cabal] A Faster K'rrik Storm 😈⚡️ (cEDH w/ Primer)
+
+Commander
+1 K'rrik, Son of Yawgmoth
+
+Deck
+1 Agatha's Soul Cauldron
+1 Ancient Tomb #!Lands
+1 Arcane Signet
+1 Asmodeus the Archfiend
+1 Beseech the Mirror
+1 Bitter Triumph
+1 Buried Alive
+1 Chrome Mox #!Artifacts
+1 Culling the Weak #!Instants
+1 Cut Down
+1 Dark Petition
+1 Dark Ritual #!Instants
+1 Demonic Tutor #!Sorceries
+1 Dismember
+1 Doctor Doom, Unrivaled
+1 Emergence Zone
+1 Entomb #!Instants
+1 Final Parting
+1 Gemstone Caverns
+1 Gray Merchant of Asphodel
+1 Grim Servant
+1 Grim Tutor
+1 Hoarding Broodlord
+1 Insatiable Avarice
+1 Jet Medallion
+1 Malakir Rebirth
+1 Mausoleum Secrets
+1 Mox Amber
+1 Necromancy
+1 Necropotence #!Enchantments
+1 Nykthos, Shrine to Nyx
+1 Orcish Bowmasters
+1 Phyrexian Tower
+1 Razaketh, the Foulblooded
+1 Reanimate #!Sorceries
+1 Sacrifice
+1 Saw in Half
+1 Sidisi, Undead Vizier
+1 Sign in Blood
+1 Snuff Out
+14 Swamp
+1 Takenuma, Abandoned Mire
+1 The Master of Lake-town
+1 Unmarked Grave
+1 Urborg, Tomb of Yawgmoth
+1 Vampiric Tutor #!Instants
+1 Vile Entomber
+1 Wishclaw Talisman

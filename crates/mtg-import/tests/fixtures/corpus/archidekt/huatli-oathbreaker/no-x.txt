@@ -1,0 +1,104 @@
+1 Adeline, Resplendent Cathar (moc) 167 [Put Me in Coach{noDeck}{noPrice}]
+1 Arboreal Grazer (war) 149 *F* [Creature] ^Have,#37d67a^
+1 Arcane Signet (eld) 331 [Last Minute Cuts{noDeck}{noPrice}] ^Getting,#2ccce4^
+1 Arid Mesa (zen) 211 [Land] ^Have,#37d67a^
+1 Armored Armadillo (otj) 3 *F* [Creature] ^Have,#37d67a^
+1 Armored Scrapgorger (one) 158 *F* [Creature] ^Have,#37d67a^
+1 Assault Formation (dtk) 173 *F* [Enchantment] ^Have,#37d67a^
+1 Aura Shards (inv) 233 [Maybeboard{noDeck}{noPrice}]
+1 Avacyn's Pilgrim (isd) 170 *F* [Creature] ^Have,#37d67a^
+1 Beloved Beggar // Generous Soul (mid) 3 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1 Biophagus (40k) 87 [New Cards that Fit{noDeck}{noPrice}]
+1 Birds of Paradise (3ed) 187 [Creature] ^Have,#37d67a^
+1 Blessed Orator (ody) 12 [Maybeboard{noDeck}{noPrice}]
+1 Bountiful Promenade (bbd) 81 [Land] ^Have,#37d67a^
+1 Branchloft Pathway // Boulderloft Pathway (znr) 284 [Last Minute Cuts{noDeck}{noPrice}]
+1 Brave the Sands (ktk) 5 [Maybeboard{noDeck}{noPrice}]
+1 Brushland (ice) 352 [Land] ^Have,#37d67a^
+1 Canopy Vista (bfz) 234 [Land] ^Have,#37d67a^
+1 Chrome Mox (mrd) 152 [Artifact] ^Have,#37d67a^
+1 Command Tower (cmd) 269 [Land] ^Have,#37d67a^
+1 Courser of Kruphix (bng) 119 [Final Cut Pro{noDeck}{noPrice}] ^Have,#37d67a^
+1 Dauntless Dismantler (lci) 8 *F* [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1 Daxos, Blessed by the Sun (thb) 9 [Put Me in Coach{noDeck}{noPrice}]
+1 Daybreak Chaplain (m19) 10 [Maybeboard{noDeck}{noPrice}]
+1 Delighted Halfling (ltr) 158 [Creature] ^Have,#37d67a^
+1 Drannith Magistrate (iko) 11 *F* [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1 Druid of the Cowl (aer) 106 [Replace for strict upgrades{noDeck}{noPrice}]
+1 Dusk // Dawn (akh) 210 [1v1 Sideboard{noDeck}{noPrice}] ^Have,#37d67a^
+1 Eladamri's Call (pls) 106 [Instant] ^Have,#37d67a^
+1 Elvish Herder (usg) 247 [Put Me in Coach{noDeck}{noPrice}]
+1 Ensnaring Bridge (sth) 133 [1v1 Sideboard{noDeck}{noPrice}] ^Have,#37d67a^
+1 Flooded Strand (ons) 316 [Land] ^Have,#37d67a^
+1 Forbidding Watchtower (ulg) 140 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+4 Forest (thb) 254 [Land] ^Have,#37d67a^
+1 Gaddock Teeg (lrw) 248 [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1 Gemstone Caverns (tsp) 274 [Land] ^Have,#37d67a^
+1 Giant Ox (khm) 11 *F* [Creature] ^Have,#37d67a^
+1 Gilded Goose (sch) 5 *F* [Creature] ^Have,#37d67a^
+1 God-Pharaoh's Faithful (hou) 14 *F* [Creature] ^Have,#37d67a^
+1 Gorm the Great (bbd) 8 [1v1 Sideboard{noDeck}{noPrice}] ^Have,#37d67a^
+1 Grizzled Leotau (arb) 69 *F* [Creature] ^Have,#37d67a^
+1 Horizon Canopy (fut) 177 [Land] ^Have,#37d67a^
+1 Huatli, the Sun's Heart (war) 230 *F* [Commander{top}] ^Have,#37d67a^
+1 Hushbringer (eld) 18 [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1 Lagonna-Band Trailblazer (jou) 14 *F* [Creature] ^Have,#37d67a^
+1 Llanowar Augur (fut) 129 [Maybeboard{noDeck}{noPrice}]
+1 Llanowar Elves (4bb) 261 [Creature] ^Have,#37d67a^
+1 Llanowar Loamspeaker (dmu) 170 *F* [Replace for strict upgrades{noDeck}{noPrice}]
+1 Maned Serval (iko) 23 *F* [Creature] ^Have,#37d67a^
+1 Marsh Flats (zen) 219 [Land] ^Have,#37d67a^
+1 Meekstone (7ed) 307 [Maybeboard{noDeck}{noPrice}]
+1 Mirri's Guile (tmp) 236 [Enchantment] ^Have,#37d67a^
+1 Misty Rainforest (zen) 220 [Land] ^Have,#37d67a^
+1 Nullmage Advocate (jud) 126 [Last Minute Cuts{noDeck}{noPrice},Chopping Block] ^Have,#37d67a^
+1 Nyx-Fleece Ram (jou) 18 *F* [Creature] ^Have,#37d67a^
+1 Oketra the True (akh) 21 [Maybeboard{noDeck}{noPrice}]
+1 Onakke Oathkeeper (cmm) 722 [Creature]
+1 Ornithopter (atq) 60 [Creature] ^Have,#37d67a^
+1 Path to Exile (con) 15 [Instant] ^Have,#37d67a^
+1 Phyrexian Walker (vis) 152 [Creature] ^Have,#37d67a^
+2 Plains (unh) 136 [Land] ^Have,#37d67a^
+1 Prismatic Vista (mh1) 244 [Land] ^Have,#37d67a^
+1 PuPu UFO (fin) 266 *F* [Creature] ^Have,#37d67a^
+1 Rasaad yn Bashir (clb) 37 [Maybeboard{noDeck}{noPrice}]
+1 Reconnaissance (exo) 17 [1v1 Sideboard{noDeck}{noPrice}] ^Have,#37d67a^
+1 Retribution of the Meek (vis) 19 [Maybeboard{noDeck}{noPrice}]
+1 Rug of Smothering (clb) 336 *F* [1v1 Sideboard{noDeck}{noPrice},Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1 Runic Armasaur (m19) 200 [Final Cut Pro{noDeck}{noPrice}] ^Have,#37d67a^
+1 Savannah (3ed) 285 [Land] ^Don't Have,#f47373^
+1 Selesnya Signet (gk1) 123 [Maybeboard{noDeck}{noPrice}]
+1 Selvala, Explorer Returned (cns) 51 [Last Minute Cuts{noDeck}{noPrice}]
+1 Shalai, Voice of Plenty (dom) 35 [Maybeboard{noDeck}{noPrice}]
+1 Sidar Kondo of Jamuraa (c16) 42 *F* [1v1 Sideboard{noDeck}{noPrice},Chopping Block] ^Don't Have,#f47373^
+1 Silence (m10) 31 [Instant] ^Have,#37d67a^
+1 Skinshifter (m12) 195 *F* [Creature] ^Have,#37d67a^
+1 Slagwurm Armor (mrd) 243 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1 Slaughter the Strong (rix) 22 [1v1 Sideboard{noDeck}{noPrice}] ^Have,#37d67a^
+1 Song of the Dryads (c14) 47 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1 Soulless Jailer (one) 241 *F* [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1 Strict Proctor (stx) 33 [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1 Suncleanser (m19) 39 [Last Minute Cuts{noDeck}{noPrice}]
+1 Sylvan Library (5ed) 329 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1 Tadeas, Juniper Ascendant (sld) 433 [New Cards that Fit{noDeck}{noPrice}]
+1 Talisman of Unity (mrd) 257 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1 Tasseled Dromedary (kld) 30 *F* [Creature] ^Have,#37d67a^
+1 Temple Garden (rav) 284 [Land] ^Have,#37d67a^
+1 The Peregrine Dynamo (dmc) 19 [New Cards that Fit{noDeck}{noPrice}]
+1 Thijarian Witness (who) 111 [Put Me in Coach{noDeck}{noPrice}]
+1 Thrashing Brontodon (m21) 209 [Final Cut Pro{noDeck}{noPrice}] ^Have,#37d67a^
+1 Tocatli Honor Guard (xln) 42 [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1 Torpor Orb (nph) 162 [1v1 Sideboard{noDeck}{noPrice}]
+1 Tower Defense (gtc) 137 *F* [Commander{top}] ^Have,#37d67a^
+1 Treebeard, Gracious Host (ltc) 73 [New Cards that Fit{noDeck}{noPrice}]
+1 Turtle-Duck (tla) 200 *F* [Creature] ^Have,#37d67a^
+1 Verdant Catacombs (zen) 229 [Land] ^Have,#37d67a^
+1 Veteran Armorer (rav) 34 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1 Voice of Victory (tdm) 33 [Creature]
+1 War Screecher (war) 39 [Maybeboard{noDeck}{noPrice}]
+1 Webspinner Cuff (neo) 214 [New Cards that Fit{noDeck}{noPrice}]
+1 Windswept Heath (ons) 328 [Land] ^Have,#37d67a^
+1 Wooded Foothills (ons) 330 [Land] ^Have,#37d67a^
+1 Xantid Swarm (scg) 135 [Put Me in Coach{noDeck}{noPrice}]
+1 Yoked Ox (ths) 37 *F* [Creature] ^Have,#37d67a^
+1 Yotian Soldier (atq) 79 [Maybeboard{noDeck}{noPrice}]

@@ -1,0 +1,112 @@
+1 Yuriko, the Tiger's Shadow (J19) 6 *F*
+1 Agadeem's Awakening / Agadeem, the Undercrypt (ZNR) 336 *F* #Lands
+1 An Offer You Can't Refuse (SNC) 464 *F* #Counterspells
+1 Bloodchief Ascension (ZEN) 82 *F*
+1 Bloodstained Mire (MH3) 352 *F* #Lands
+1 Boggart Trawler / Boggart Bog (MH3) 243 *F*
+1 Brainstorm (STA) 76 *F* #Topdeck Filter
+1 Changeling Outcast (MH1) 82 *F* #Ninjas
+1 Chrome Mox (PGPX) 2009 *F* #Ramp
+1 City of Brass (2X2) 403 *F* #Lands
+1 Command Tower (CMM) 659 *F* #Lands
+1 Commandeer (CSP) 29 *F* #Counterspells
+1 Consign / Oblivion (HOU) 149 *F* #Utility Removal
+1 Contagion (ALL) 45 #Creature Removal
+1 Cursed Totem (MIR) 299 #Stax
+1 Dark Ritual (STA) 89 *F* #Ramp
+1 Dauthi Voidwalker (SCH) 23e *F* #Stax
+1 Deadly Rollick (CMM) 695 *F* #Creature Removal
+1 Demonic Consultation (SLD) 1127 *F* #Tutors
+1 Demonic Tutor (STA) 90 *F* #Tutors
+1 Dismember (NPH) 57 *F* #Creature Removal
+1 Faerie Seer (MH1) 51 *F* #Topdeck Filter
+1 Fell the Profane / Fell Mire (MH3) 244 *F*
+1 Fierce Guardianship (CMM) 694 *F* #Counterspells
+1 Flare of Denial (MH3) 326 *F*
+1 Flare of Malice (MH3) 331 *F*
+1 Flooded Strand (MH3) 353 *F* #Lands
+1 Flusterstorm (J12) 2 *F* #Counterspells
+1 Force of Despair (MH1) 92 *F* #Creature Removal
+1 Force of Negation (MH1) 52 *F* #Counterspells
+1 Force of Will (2XM) 340 *F* #Counterspells
+1 Fourth Bridge Prowler (AER) 60 *F* #Creature Removal
+1 Gemstone Caverns (TSR) 280 *F* #Lands
+1 Hydroelectric Specimen / Hydroelectric Laboratory (MH3) 240 *F*
+1 Imperial Seal (J16) 6 *F* #Topdeck Tutors
+1 Ingenious Infiltrator (MH1) 204 *F* #Ninjas
+1 Ingenious Prodigy (WOE) 333 *F*
+1 Island (NEO) 296 *F* #Lands
+1 Kaito, Bane of Nightmares (DSK) 409 *F*
+1 Lim-Dûl's Vault (SLC) 1996 *F* #Topdeck Tutors
+1 Lotus Petal (P30M) 2 *E* #Ramp
+1 Mana Confluence (JOU) 163 *F* #Lands
+1 Marsh Flats (MH2) 248 *F* #Lands
+1 Memnite (SOM) 174 *F* #Ramp
+1 Mental Misstep (NPH) 38 *F* #Counterspells
+1 Mindbreak Trap (ZEN) 57 *F* #Counterspells
+1 Misdirection (CNS) 102 *F* #Counterspells
+1 Mistblade Shinobi (BOK) 43 *F* #Ninjas
+1 Misty Rainforest (MH2) 477 *F* #Lands
+1 Mockingbird (BLB) 305 *F*
+1 Moon-Circuit Hacker (NEO) 334 *F* #Ninjas
+1 Morphic Pool (BBD) 83 *F* #Lands
+1 Mothdust Changeling (MOR) 42 *F* #Ninjas
+1 Mox Amber (DOM) 224 *F* #Ramp
+1 Mox Diamond (STH) 138 #Ramp
+1 Mystic Remora (SLD) 406 *F*
+1 Mystical Tutor (EMA) 62 *F* #Topdeck Tutors
+1 Ninja of the Deep Hours (BOK) 44 *F* #Ninjas
+1 Null Rod (WTH) 154 #Stax
+1 Opposition Agent (CMR) 651 *F* #Stax
+1 Orcish Bowmasters (LTR) 433 *F* #Creature Removal
+1 Ornithopter (SLD) 604 *F* #Ramp
+1 Otawara, Soaring City (PNEO) 271p *F* #Lands
+1 Phyrexian Walker (VIS) 152 #Ramp
+1 Polluted Delta (MH3) 356 *F* #Lands
+1 Prismatic Vista (H1R) 40 *E* #Lands
+1 Prosperous Thief (NEO) 336 *F* #Ninjas
+1 Rhystic Study (WOT) 91 *F* #Card Advantage
+1 Roaming Throne (LCI) 258 *F*
+1 Sakashima's Student (PCA) 24 #Ninjas
+1 Satoru, the Infiltrator (OTJ) 298 *F*
+1 Scalding Tarn (MH2) 478 *F* #Lands
+1 Sea Gate Restoration / Sea Gate, Reborn (ZNR) 333 *F* #Lands
+1 Shadow of Mortality (SNC) 287 *F* #Burn
+1 Sheoldred, the Apocalypse (DMU) 436 *F*
+1 Shizo, Death's Storehouse (CHK) 283 *F* #Lands
+1 Silver-Fur Master (NEO) 353 *F* #Ninjas
+1 Sink into Stupor / Soporific Springs (MH3) 241 *F*
+1 Skullsnatcher (BOK) 84 *F* #Ninjas
+1 Snow-Covered Island (SLD) 1474★ *F* #Lands
+1 Snow-Covered Swamp (SLD) 1475★ *F* #Lands
+1 Snuff Out (MMQ) 162 *F* #Creature Removal
+1 Sol Ring (SLD) 1494★ *F*
+1 Spectral Sailor (M20) 76 *F* #Card Advantage
+1 Submerge (NEM) 48 *F* #Creature Removal
+1 Swamp (NEO) 297 *F* #Lands
+1 Tainted Pact (STA) 33e *F* #Tutors
+1 Talion, the Kindly Lord (WOE) 301 *F*
+1 Temporal Trespass (FRF) 55 *F* #Burn
+1 Tetsuko Umezawa, Fugitive (DOM) 69 *F*
+1 Thassa's Oracle (THB) 308 *F* #Topdeck Filter
+1 Thousand-Faced Shadow (NEO) 337 *F* #Ninjas
+1 Underground River (PBRO) 267p *F* #Lands
+1 Underground Sea (3ED) 290 #Lands
+1 Universal Automaton (MH1) 235 *F* #Ninjas
+1 Vampiric Tutor (CMR) 656 *F* #Topdeck Tutors
+1 Verdant Catacombs (MH2) 479 *F* #Lands
+1 Watery Grave (RVR) 301 *F* #Lands
+1 Weathered Runestone (KHM) 247 *F*
+1 Wingcrafter (MM3) 58 *F* #Evasion
+
+SIDEBOARD:
+1 Chain of Vapor (ONS) 73
+1 Dispel (RTR) 36 #Counterspells
+1 Doomsday (PLST) WTH-66
+1 Dystopia (ALL) 47
+1 Hope of Ghirapur (PLST) AER-154
+1 Mausoleum Wanderer (EMN) 69
+1 Saiba Cryptomancer (MOM) 76 #Ninjas
+1 Sickening Shoal (BOK) 82 #Creature Removal
+1 Stern Scolding (LTR) 71
+1 Thieves' Guild Enforcer (M21) 125 #Stax

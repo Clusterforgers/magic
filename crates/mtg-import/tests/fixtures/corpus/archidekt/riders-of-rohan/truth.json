@@ -1,0 +1,671 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "4693939",
+    "url": "https://archidekt.com/decks/4693939",
+    "format": "commander",
+    "name": "Riders of Rohan - Tales of Middle-earth Commander",
+    "why": "precon-style commander deck with accents in four card names",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Éowyn, Shieldmaiden",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "1",
+        "finish": "nonFoil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Aragorn, King of Gondor",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "5",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "273",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Archivist of Gondor",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "18",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Banishing Light",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "161",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bastion Protector",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "162",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Battlefield Forge",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "296",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Beregond of the Guard",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "9",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Boromir, Gondor's Hope",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "49",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Call for Aid",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "30",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Champions of Minas Tirith",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "10",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Clifftop Retreat",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "300",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Combat Celebrant",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "212",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "301",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Commander's Sphere",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "276",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Court of Ire",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "213",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Crown of Gondor",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "75",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dearly Departed",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "165",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Denethor, Stone Seer",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "20",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Door of Destinies",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "277",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Earthquake",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "214",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Éomer, King of Rohan",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "52",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Erkenbrand, Lord of Westfold",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "123",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Evolving Wilds",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "306",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Exotic Orchard",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "307",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faramir, Steward of Gondor",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "54",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fealty to the Realm",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "21",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Field of Ruin",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "308",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fiend Hunter",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "168",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flamerush Rider",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "216",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forth Eorlingas!",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "56",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Frontier Warmonger",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "217",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Frontline Medic",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "169",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Furycalm Snarl",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "313",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gilraen, Dúnedain Protector",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "13",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gimli of the Glittering Caves",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "32",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Glacial Fortress",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "315",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Grey Host Reinforcements",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "14",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Harsh Mentor",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "221",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Heirloom Blade",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "279",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Herald's Horn",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "280",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Humble Defector",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "222",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Increasing Devotion",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "171",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Island",
+        "qty": 5,
+        "set": "ltr",
+        "cn": "265",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lossarnach Captain",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "16",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lost to Legend",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "22",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Marshal's Anthem",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "172",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 5,
+        "set": "ltr",
+        "cn": "269",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Oath of Eorl",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Palace Jailer",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "174",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Path of Ancestry",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "322",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Path to Exile",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "175",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Plains",
+        "qty": 9,
+        "set": "ltr",
+        "cn": "262",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Port Town",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "323",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Prairie Stream",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "324",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Prince Imrahil the Fair",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "219",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Riders of Rohan",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "67",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rogue's Passage",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "326",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Secluded Courtyard",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "330",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Selfless Squire",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "176",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shared Animosity",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "226",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sol Ring",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "284",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sulfur Falls",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "333",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sunset Revelry",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "177",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Supreme Verdict",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "272",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swords to Plowshares",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "178",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Talisman of Conviction",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "285",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Talisman of Progress",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "286",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Taunt from the Rampart",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "151",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Terramorphic Expanse",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "337",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Théoden, King of Rohan",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "233",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thought Vessel",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "287",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Throne of the High City",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "339",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tranquil Cove",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "340",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unbreakable Formation",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "179",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vanquisher's Banner",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "289",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Verge Rangers",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "180",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Village Bell-Ringer",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "181",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Visions of Glory",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "182",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wayfarer's Bauble",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "290",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Weathered Wayfarer",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "183",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wind-Scarred Crag",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "344",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Windbrisk Heights",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "345",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Zealous Conscripts",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "231",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

@@ -1,0 +1,36 @@
+4 Atraxa, Grand Unifier (ONE) 196
+4 Ephemerate (PLST) MH1-7
+3 Faithful Mending (MID) 221
+4 Fallaji Archaeologist (BRO) 48
+3 Flooded Strand (MH3) 220
+1 Godless Shrine (GTC) 242
+4 Goryo's Vengeance (UMA) 99
+4 Grief (MH2) 87
+2 Griselbrand (SLD) 160
+1 Hallowed Fountain (SLD) 123
+1 Island (UND) 89
+3 Marsh Flats (MM3) 239
+1 Meticulous Archive (MKM) 264
+1 Otawara, Soaring City (NEO) 271
+1 Overgrown Tomb (RVR) 283
+1 Plains (UND) 87
+3 Polluted Delta (MH3) 224
+2 Priest of Fell Rites (MH2) 208
+3 Prismatic Ending (MH2) 25
+1 Shadowy Backstreet (MKM) 268
+2 Solitude (MH2) 32
+1 Swamp (UND) 91
+4 Tainted Indulgence (SNC) 227
+4 Thoughtseize (2XM) 109
+1 Undercity Sewers (MKM) 270
+1 Watery Grave (GTC) 249
+
+SIDEBOARD:
+3 Celestial Purge (CON) 5
+2 Cursed Totem (MH2) 295
+2 Force of Negation (MH1) 52
+1 March of Otherworldly Light (NEO) 28
+1 Solitude (MH2) 32
+2 Subtlety (MH2) 67
+2 Supreme Verdict (IMA) 210
+2 Teferi, Time Raveler (WAR) 221

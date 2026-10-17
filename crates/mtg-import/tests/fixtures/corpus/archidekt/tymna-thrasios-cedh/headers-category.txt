@@ -1,0 +1,234 @@
+Commander
+1x Thrasios, Triton Hero (c16) 46 *F* [Commander{top},2: Creatures - Misc.,Combo Pieces - Win Cons]
+1x Tymna the Weaver (cmr) 539 *E* [Commander{top},Card Draw,2: Creatures - Misc.]
+
+2: Creatures - Misc.
+1x Delney, Streetwise Lookout (mkm) 12 [2: Creatures - Misc.]
+1x Drannith Magistrate (iko) 11 [2: Creatures - Misc.]
+1x Mockingbird (blb) 61 [2: Creatures - Misc.]
+1x Oboro Breezecaller (sok) 48 [2: Creatures - Misc.]
+
+5: Lands
+1x Boseiju, Who Endures (neo) 266 [5: Lands]
+1x Breeding Pool (rna) 246 *F* [5: Lands]
+1x Cephalid Coliseum (ody) 317 [5: Lands]
+1x Command Tower (cmr) 350 [5: Lands]
+1x Emergence Zone (war) 245 [5: Lands]
+1x Forest (one) 369 *F* [5: Lands]
+1x Gaea's Cradle (usg) 321 [5: Lands,Combo Pieces - Win Cons]
+1x Godless Shrine (rna) 248 [5: Lands]
+1x Hallowed Fountain (sld) 123 [5: Lands]
+1x Marsh Flats (mh2) 248 [5: Lands]
+1x Minamo, School at Water's Edge (chk) 279 [5: Lands]
+1x Misty Rainforest (zen) 220 [5: Lands]
+1x Morphic Pool (clb) 357 [5: Lands]
+1x Otawara, Soaring City (neo) 271 [5: Lands]
+1x Overgrown Tomb (rav) 279 [5: Lands]
+1x Rejuvenating Springs (cmr) 354 [5: Lands]
+1x Savannah (3ed) 285 [5: Lands]
+1x Scrubland (3ed) 286 [5: Lands]
+1x Sea of Clouds (zne) 16 [5: Lands]
+1x Talon Gates of Madara (m3c) 134 [5: Lands,Removal]
+1x Temple Garden (grn) 258 [5: Lands]
+1x Tundra (3ed) 289 [5: Lands]
+1x Underground Sea (3ed) 290 [5: Lands]
+1x Undergrowth Stadium (cmr) 359 *F* [5: Lands]
+1x Vault of Champions (cmr) 360 [5: Lands]
+1x Verdant Catacombs (mh2) 479 *F* [5: Lands]
+1x Watery Grave (gtc) 249 [5: Lands]
+1x Windswept Heath (ktk) 248 [5: Lands]
+
+Card Draw
+1x Esper Sentinel (mh2) 12 [Card Draw,2: Creatures - Misc.,1: Artifacts]
+1x Faerie Mastermind (mom) 58 [Card Draw,2: Creatures - Misc.,Combo Pieces - Win Cons]
+1x Mystic Remora (ice) 87 [Card Draw,3: Enchantments]
+1x Pollywog Prodigy (blc) 50 [Card Draw,2: Creatures - Misc.]
+1x Rhystic Study (pcy) 45 [Card Draw,3: Enchantments]
+1x The One Ring (ltr) 451 [Card Draw,1: Artifacts] ^Borrowed from my Blue Farm deck,#336dce^
+1x Wan Shi Tong, Librarian (tla) 78 [Card Draw,2: Creatures - Misc.,Just Added]
+
+Combo Pieces - Win Cons
+1x Basalt Monolith (3ed) 235 [Combo Pieces - Win Cons,1: Artifacts]
+1x Demonic Consultation (ice) 121 [Combo Pieces - Win Cons,Instants - Misc]
+1x Devoted Druid (plst) UMA-162 [Combo Pieces - Win Cons,2: Creatures - Misc.]
+1x Grim Monolith (ulg) 126 [Combo Pieces - Win Cons,1: Artifacts,Ramp]
+1x Hazel's Brewmaster (blc) 52 [Combo Pieces - Win Cons,2: Creatures - Misc.,Recursion]
+1x Kinnan, Bonder Prodigy (iko) 192 [Combo Pieces - Win Cons,2: Creatures - Misc.]
+1x Power Artifact (atq) 11 [Combo Pieces - Win Cons,3: Enchantments]
+1x Swift Reconfiguration (nec) 45 [Combo Pieces - Win Cons,3: Enchantments]
+1x Tainted Pact (ody) 164 [Combo Pieces - Win Cons,Instants - Misc]
+1x Thassa's Oracle (pthb) 73s *F* [Combo Pieces - Win Cons,2: Creatures - Misc.]
+1x Walking Ballista (2xm) 306 [Combo Pieces - Win Cons,2: Creatures - Misc.,1: Artifacts]
+
+Counters
+1x Dispel (rtr) 36 [Counters,4: Instants]
+1x Dress Down (mh2) 39 [Counters,3: Enchantments]
+1x Fierce Guardianship (c20) 35 [Counters,Instants - Misc]
+1x Flusterstorm (mh3) 496 *F* [Counters,4: Instants]
+1x Force of Negation (2x2) 50 [Counters,Instants - Misc]
+1x Force of Will (all) 28 [Counters,Instants - Misc]
+1x Mana Drain (2x2) 57 [Counters,Instants - Misc]
+1x Mindbreak Trap (zen) 57 [Counters,Instants - Misc]
+1x Swan Song (ths) 65 [Counters,4: Instants]
+1x Tishana's Tidebinder (lci) 335 *F* [Counters,2: Creatures - Misc.]
+1x Trickbind (tsp) 88 [Counters,Instants - Misc]
+
+Ramp
+1x Arcane Signet (eld) 331 [Ramp,1: Artifacts]
+1x Carpet of Flowers (usg) 240 [Ramp,3: Enchantments]
+1x Chrome Mox (ema) 219 [Ramp,1: Artifacts]
+1x Deathrite Shaman (rtr) 213 [Ramp,2: Creatures - Misc.]
+1x Delighted Halfling (ltr) 158 [Ramp,2: Creatures - Misc.]
+1x Gleaming Splendor (hob) 15 [Ramp,Card Draw,3: Enchantments,Just Added]
+1x Lotho, Corrupt Shirriff (ltr) 213 [Ramp,2: Creatures - Misc.]
+1x Mox Amber (brr) 98 [Ramp,1: Artifacts]
+1x Smothering Tithe (rna) 22 [Ramp,3: Enchantments]
+1x Sol Ring (3ed) 274 [Ramp,1: Artifacts]
+1x The Cabbage Merchant (tle) 134 *F* [Ramp,2: Creatures - Misc.]
+
+Recursion
+1x Eternal Witness (5dn) 86 [Recursion,2: Creatures - Misc.,Combo Pieces - Win Cons]
+1x Noxious Revival (onc) 110 [Recursion,Instants - Misc,4: Instants]
+1x Reanimate (uma) 110 [Recursion,6: Sorceries]
+
+Removal
+1x Abrupt Decay (plst) GK1-57 [Removal,4: Instants]
+1x Assassin's Trophy (2x2) 175 [Removal,4: Instants]
+1x Chain of Vapor (ons) 73 [Removal,4: Instants]
+1x Culling Ritual (cmm) 921 [Removal,Ramp,6: Sorceries]
+1x Cyclonic Rift (2xm) 47 [Removal,4: Instants]
+1x Nature's Claim (wwk) 108 [Removal,4: Instants]
+1x Orcish Bowmasters (ltr) 103 [Removal,2: Creatures - Misc.]
+1x Path to Exile (md1) 3 [Removal,4: Instants]
+1x Snap (ulg) 43 [Removal,Combo Pieces - Win Cons,Instants - Misc]
+
+Silence Effects
+1x Kutzil, Malamet Exemplar (lci) 304 [Silence Effects,2: Creatures - Misc.]
+1x Ranger-Captain of Eos (mh1) 21 [Silence Effects,2: Creatures - Misc.,Tutors] ^From Kenrith,#decab3^
+1x Silence (m10) 31 [Silence Effects,Instants - Misc,4: Instants]
+1x Voice of Victory (tdm) 331 [Silence Effects,2: Creatures - Misc.]
+
+Tutors
+1x Crop Rotation (2xm) 161 *F* [Tutors,4: Instants]
+1x Demonic Tutor (3ed) 105 [Tutors,6: Sorceries]
+1x Eladamri's Call (pls) 106 [Tutors,4: Instants]
+1x Enlightened Tutor (mir) 14 [Tutors,4: Instants]
+1x Finale of Devastation (war) 160 [Tutors,6: Sorceries]
+1x Gifts Ungiven (2x2) 51 [Tutors,4: Instants]
+1x Mystical Tutor (6ed) 83 [Tutors,4: Instants]
+1x Nature's Rhythm (tdm) 150 [Tutors,6: Sorceries]
+1x Survival of the Fittest (exo) 129 [Tutors,3: Enchantments]
+1x Vampiric Tutor (plst) EMA-112 [Tutors,4: Instants]
+
+- Removed 2019 to 2026
+1x Alchemist's Refuge (avr) 225 [- Removed 2019 to 2026{noDeck}{noPrice},5: Lands]
+1x Blind Obedience (gtc) 6 [- Removed 2019 to 2026{noDeck}{noPrice},3: Enchantments]
+1x Bloom Tender (2x2) 138 [- Removed 2019 to 2026{noDeck}{noPrice},Ramp,2: Creatures - Misc.]
+1x Borne Upon a Wind (ltr) 44 *F* [- Removed 2019 to 2026{noDeck}{noPrice},4: Instants]
+1x Copy Artifact (3ed) 53 [- Removed 2019 to 2026{noDeck}{noPrice}] ^Borrowed from my Blue Farm deck,#336dce^
+1x Dark Ritual (2ed) 99 [- Removed 2019 to 2026{noDeck}{noPrice},4: Instants]
+1x Dovin's Veto (war) 193 [- Removed 2019 to 2026{noDeck}{noPrice},4: Instants,Counters]
+1x Fracture (stx) 188 [- Removed 2019 to 2026{noDeck}{noPrice},4: Instants,Removal]
+1x Grand Abolisher (cmm) 27 *F* [- Removed 2019 to 2026{noDeck}{noPrice},Creature]
+1x Island (one) 366 *F* [- Removed 2019 to 2026{noDeck}{noPrice}]
+1x Mox Opal (2xm) 275 [- Removed 2019 to 2026{noDeck}{noPrice},Ramp,1: Artifacts]
+1x Neoform (war) 206 [- Removed 2019 to 2026{noDeck}{noPrice}]
+1x Noble Hierarch (mm2) 151 [- Removed 2019 to 2026{noDeck}{noPrice},2: Creatures - Misc.]
+1x Opposition Agent (cmr) 141 [- Removed 2019 to 2026{noDeck}{noPrice}]
+1x Peacekeeper (wth) 22 [- Removed 2019 to 2026{noDeck}{noPrice},2: Creatures - Misc.]
+1x Phyrexian Metamorph (nph) 42 [- Removed 2019 to 2026{noDeck}{noPrice},2: Creatures - Misc.]
+1x Plains (one) 365 *F* [- Removed 2019 to 2026{noDeck}{noPrice},5: Lands]
+1x Praetor's Grasp (nph) 71 [- Removed 2019 to 2026{noDeck}{noPrice},6: Sorceries,Tutors]
+1x Rath's Edge (nem) 142 [- Removed 2019 to 2026{noDeck}{noPrice},5: Lands]
+1x Recruiter of the Guard (plst) CN2-22 [- Removed 2019 to 2026{noDeck}{noPrice},2: Creatures - Misc.,Tutors]
+1x Seedborn Muse (lgn) 138 [- Removed 2019 to 2026{noDeck}{noPrice},2: Creatures - Misc.]
+1x Shred Memory (rav) 105 [- Removed 2019 to 2026{noDeck}{noPrice},4: Instants,Tutors,Removal]
+1x Swords to Plowshares (ice) 54 [- Removed 2019 to 2026{noDeck}{noPrice},Removal,4: Instants]
+1x Talisman of Dominance (mrd) 253 [- Removed 2019 to 2026{noDeck}{noPrice},Ramp,1: Artifacts]
+1x Transmute Artifact (atq) 14 [- Removed 2019 to 2026{noDeck}{noPrice}]
+1x Urborg, Tomb of Yawgmoth (tsr) 287 [- Removed 2019 to 2026{noDeck}{noPrice}]
+1x Yavimaya, Cradle of Growth (mh2) 441 *E* [- Removed 2019 to 2026{noDeck}{noPrice}]
+
+-Cuts (Recent)
+1x Archivist of Oghma (clb) 4 *F* [-Cuts (Recent){noDeck}{noPrice}]
+1x Birds of Paradise (m10) 168 [-Cuts (Recent){noDeck}{noPrice}]
+
+-Might Add
+1x King T'Challa // Black Panther, Hope Enduring (msh) 219 [-Might Add{noDeck}{noPrice},Creature]
+1x Lapis Lazuli Talisman (ice) 327 [-Might Add{noDeck}{noPrice},Artifact]
+1x Samut, Tyrant of Naktamun (fra) 220 [-Might Add{noDeck}{noPrice},Creature]
+1x Shang-Chi, Master of Kung Fu (msh) 187 [-Might Add{noDeck}{noPrice},Creature]
+1x Urban Burgeoning (rtr) 138 [-Might Add{noDeck}{noPrice},Enchantment]
+1x Winding Canyons (wth) 167 [-Might Add{noDeck}{noPrice},Land]
+
+Alt Combo Pack 1
+1x Banishing Knack (eve) 17 [Alt Combo Pack 1{noDeck}{noPrice},Adding back? Maybe{noDeck}{noPrice},4: Instants]
+1x Retraction Helix (bng) 49 [Alt Combo Pack 1{noDeck}{noPrice},4: Instants] ^Don't Have,#f47373^
+1x Valley Floodcaller (blb) 308 *F* [Alt Combo Pack 1{noDeck}{noPrice},2: Creatures - Misc.]
+
+Alt Combo Pack 2
+1x Derevi, Empyrial Tactician (cma) 176 *F* [Alt Combo Pack 2{noDeck}{noPrice},2: Creatures - Misc.]
+1x Emiel the Blessed (j22) 180 [Alt Combo Pack 2{noDeck}{noPrice},Maybeboard{noDeck}{noPrice},2: Creatures - Misc.]
+1x Faeburrow Elder (eld) 190 [Alt Combo Pack 2{noDeck}{noPrice},Maybeboard{noDeck}{noPrice},2: Creatures - Misc.,Ramp]
+
+Maybeboard
+1x Armageddon (3ed) 2 [Maybeboard{noDeck}{noPrice}]
+1x Armored Scrapgorger (one) 158 [Maybeboard{noDeck}{noPrice},Adding back? Maybe{noDeck}{noPrice},2: Creatures - Misc.]
+1x Autumn's Veil (m12) 164 [Maybeboard{noDeck}{noPrice},Instants - Misc]
+1x Chord of Calling (2xm) 158 [Maybeboard{noDeck}{noPrice},4: Instants]
+1x Deserted Temple (ody) 320 [Maybeboard{noDeck}{noPrice},5: Lands] ^Don't Have,#f47373^
+1x Diabolic Intent (bro) 324 [Maybeboard{noDeck}{noPrice},Adding back? Maybe{noDeck}{noPrice},Tutors,6: Sorceries,Removed From Deck{noDeck}{noPrice}]
+1x Divining Witch (nem) 57 [Maybeboard{noDeck}{noPrice},2: Creatures - Misc.]
+1x Eldritch Evolution (plst) EMN-155 [Maybeboard{noDeck}{noPrice},6: Sorceries]
+1x Enduring Vitality (dsk) 176 [Maybeboard{noDeck}{noPrice},Creature]
+1x Force of Vigor (plst) MH1-164 [Maybeboard{noDeck}{noPrice},Instants - Misc,Removal]
+1x Green Slime (clb) 680 [Maybeboard{noDeck}{noPrice}]
+1x Hermit Druid (plst) STH-108 [Maybeboard{noDeck}{noPrice}]
+1x Laboratory Maniac (isd) 61 [Maybeboard{noDeck}{noPrice},2: Creatures - Misc.]
+1x Machine God's Effigy (brc) 16 [Maybeboard{noDeck}{noPrice},1: Artifacts] ^Don't Have,#f47373^
+1x Matoya, Archon Elder (fin) 62 [Maybeboard{noDeck}{noPrice},Creature] ^Don't Have,#f47373^
+1x Mistrise Village (tdm) 261 [Maybeboard{noDeck}{noPrice},5: Lands] ^Don't Have,#f47373^
+1x Muddle the Mixture (rav) 60 [Maybeboard{noDeck}{noPrice},4: Instants,Counters]
+1x Ninja Pizza (tmc) 32 [Maybeboard{noDeck}{noPrice}]
+1x Pact of Negation (a25) 68 [Maybeboard{noDeck}{noPrice},Instants - Misc,Counters]
+1x Permission Denied (rex) 17 [Maybeboard{noDeck}{noPrice},4: Instants] ^Don't Have,#f47373^
+1x Prophet of Distortion (ogw) 46 [Maybeboard{noDeck}{noPrice},Creature]
+1x Savage Summoning (m14) 194 [Maybeboard{noDeck}{noPrice}] ^Don't Have,#f47373^
+1x Soulless Jailer (one) 241 [Maybeboard{noDeck}{noPrice},2: Creatures - Misc.]
+1x Sowing Mycospawn (mh3) 170 [Maybeboard{noDeck}{noPrice},Creature] ^Don't Have,#f47373^
+1x Springheart Nantuko (mh3) 171 [Maybeboard{noDeck}{noPrice},Creature] ^Don't Have,#f47373^
+1x Steal Enchantment (tmp) 90 [Maybeboard{noDeck}{noPrice},3: Enchantments]
+1x Stonework Packbeast (znr) 255 [Maybeboard{noDeck}{noPrice},Don't Own{noDeck}{noPrice},2: Creatures - Misc.]
+1x Time of Need (chk) 247 [Maybeboard{noDeck}{noPrice},6: Sorceries]
+1x Urza's Saga (mh2) 259 *F* [Maybeboard{noDeck}{noPrice},5: Lands]
+1x Veil of Summer (m20) 198 [Maybeboard{noDeck}{noPrice},4: Instants]
+1x Wishclaw Talisman (eld) 110 [Maybeboard{noDeck}{noPrice},1: Artifacts]
+1x Worldly Tutor (mir) 255 [Maybeboard{noDeck}{noPrice},Instants - Misc]
+
+Removed From Deck
+1x Ad Nauseam (2xm) 76 [Removed From Deck{noDeck}{noPrice},Instants - Misc]
+1x Adarkar Wastes (dmu) 243 [Removed From Deck{noDeck}{noPrice},5: Lands]
+1x An Offer You Can't Refuse (snc) 51 [Removed From Deck{noDeck}{noPrice},4: Instants]
+1x Avacyn's Pilgrim (isd) 170 [Removed From Deck{noDeck}{noPrice},2: Creatures - Misc.]
+1x Blue Elemental Blast (3ed) 49 [Removed From Deck{noDeck}{noPrice},Instants - Misc,Counters]
+1x Capsize (tmp) 55 [Removed From Deck{noDeck}{noPrice},Instants - Misc]
+1x Collector Ouphe (mh1) 158 [Removed From Deck{noDeck}{noPrice},2: Creatures - Misc.]
+1x Containment Priest (m21) 13 *F* [Removed From Deck{noDeck}{noPrice},2: Creatures - Misc.]
+1x Eiganjo, Seat of the Empire (neo) 268 [Removed From Deck{noDeck}{noPrice},5: Lands]
+1x Elves of Deep Shadow (drk) 76 [Removed From Deck{noDeck}{noPrice},2: Creatures - Misc.]
+1x Elvish Spirit Guide (all) 89 [Removed From Deck{noDeck}{noPrice},2: Creatures - Misc.]
+1x Faerie Artisans (c16) 8 [Removed From Deck{noDeck}{noPrice},2: Creatures - Misc.]
+1x Freed from the Real (sok) 38 [Removed From Deck{noDeck}{noPrice},3: Enchantments]
+1x Mana Crypt (2xm) 361 [Removed From Deck{noDeck}{noPrice}]
+1x March of Swirling Mist (neo) 61 [Removed From Deck{noDeck}{noPrice},Instants - Misc]
+1x Open the Armory (cmr) 34 [Removed From Deck{noDeck}{noPrice},6: Sorceries,Tutors]
+1x Paradise Druid (war) 171 [Removed From Deck{noDeck}{noPrice},2: Creatures - Misc.]
+1x Pemmin's Aura (scg) 45 [Removed From Deck{noDeck}{noPrice},3: Enchantments]
+1x Strip Mine (4ed) 363 [Removed From Deck{noDeck}{noPrice},5: Lands]
+1x Swamp (one) 367 *F* [Removed From Deck{noDeck}{noPrice},5: Lands]
+1x Sylvan Scrying (mrd) 130 [Removed From Deck{noDeck}{noPrice},6: Sorceries]
+1x Talisman of Progress (mrd) 256 [Removed From Deck{noDeck}{noPrice},1: Artifacts,Ramp]
+1x Treva's Ruins (pls) 143 [Removed From Deck{noDeck}{noPrice},5: Lands]
+1x Tyvar, Jubilant Brawler (one) 218 [Removed From Deck{noDeck}{noPrice},Planeswalker]
+1x Yavimaya Hollow (uds) 143 [Removed From Deck{noDeck}{noPrice},5: Lands]
+1x Yawgmoth's Will (usg) 171 [Removed From Deck{noDeck}{noPrice},6: Sorceries]

@@ -1,0 +1,77 @@
+About
+Name Medium Midrange
+
+Commander
+6 Thrasios, Triton Hero
+6 Tymna the Weaver
+
+Deck
+6 Abrupt Decay
+6 Ad Nauseam
+6 An Offer You Can't Refuse
+6 Assassin's Trophy
+6 Avacyn's Pilgrim
+6 Birds of Paradise
+6 Bloodstained Mire
+6 Bloom Tender
+6 Brainstorm
+6 Breeding Pool
+6 Carpet of Flowers
+6 Chrome Mox
+6 Command Tower
+6 Cyclonic Rift
+6 Dark Confidant
+6 Dark Ritual
+6 Deathrite Shaman
+6 Demonic Tutor
+6 Dispel
+6 Dovin's Veto
+6 Drannith Magistrate
+6 Eldritch Evolution
+6 Elvish Mystic
+6 Enlightened Tutor
+6 Fierce Guardianship
+6 Flooded Strand
+6 Flusterstorm
+6 Force of Negation
+6 Force of Will
+6 Forest
+6 Gemstone Caverns
+6 Laboratory Maniac
+6 Llanowar Elves
+6 Mana Confluence
+6 Mana Drain
+6 Marsh Flats
+6 Misty Rainforest
+6 Mystic Remora
+6 Mystical Tutor
+6 Neoform
+6 Noble Hierarch
+6 Notion Thief
+6 Noxious Revival
+6 Nurturing Peatland
+6 Opposition Agent
+6 Overgrown Tomb
+6 Pact of Negation
+6 Phantasmal Image
+6 Polluted Delta
+6 Ponder
+6 Rest in Peace
+6 Rhystic Study
+6 Scalding Tarn
+6 Silence
+6 Spell Snare
+6 Swan Song
+6 Swords to Plowshares
+6 Sylvan Library
+6 Tainted Pact
+6 Thassa's Oracle
+6 Timetwister
+6 Tropical Island
+6 Vampiric Tutor
+6 Veil of Summer
+6 Verdant Catacombs
+6 Waterlogged Grove
+6 Watery Grave
+6 Windswept Heath
+6 Wooded Foothills

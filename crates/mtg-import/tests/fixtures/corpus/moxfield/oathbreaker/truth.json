@@ -1,0 +1,415 @@
+{
+  "source": {
+    "site": "moxfield",
+    "id": "y_OD0wB-k0KlFPJnPMVgTw",
+    "url": "https://moxfield.com/decks/y_OD0wB-k0KlFPJnPMVgTw",
+    "format": "oathbreaker",
+    "name": "Tibalt's Tumultuous Turn Three",
+    "why": "Oathbreaker: oathbreaker plus signature spell",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Tibalt, the Fiend-Blooded",
+        "qty": 1,
+        "set": "ddk",
+        "cn": "41",
+        "finish": "foil"
+      }
+    ],
+    "signatureSpells": [
+      {
+        "name": "Jeska's Will",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "187",
+        "finish": "nonFoil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Akki Rockspeaker",
+        "qty": 1,
+        "set": "chk",
+        "cn": "154",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Battle Hymn",
+        "qty": 1,
+        "set": "avr",
+        "cn": "128",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Beetleback Chief",
+        "qty": 1,
+        "set": "pc2",
+        "cn": "40",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bonus Round",
+        "qty": 1,
+        "set": "bbd",
+        "cn": "56",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Brightstone Ritual",
+        "qty": 1,
+        "set": "ons",
+        "cn": "191",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chandra, Acolyte of Flame",
+        "qty": 1,
+        "set": "m20",
+        "cn": "126",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Desperate Ritual",
+        "qty": 1,
+        "set": "mma",
+        "cn": "110",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Doublecast",
+        "qty": 1,
+        "set": "m19",
+        "cn": "137",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dualcaster Mage",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "124",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Empty the Warrens",
+        "qty": 1,
+        "set": "mma",
+        "cn": "112",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fiery Confluence",
+        "qty": 1,
+        "set": "ss3",
+        "cn": "3",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flame Fusillade",
+        "qty": 1,
+        "set": "rav",
+        "cn": "123",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Geosurge",
+        "qty": 1,
+        "set": "nph",
+        "cn": "85",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goblin Bushwhacker",
+        "qty": 1,
+        "set": "plst",
+        "cn": "ZEN-125",
+        "finish": "foil"
+      },
+      {
+        "name": "Goblin Dark-Dwellers",
+        "qty": 1,
+        "set": "c20",
+        "cn": "153",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goblin Matron",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "129",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goblin Warchief",
+        "qty": 1,
+        "set": "ddn",
+        "cn": "9",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Guttersnipe",
+        "qty": 1,
+        "set": "rtr",
+        "cn": "98",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hellraiser Goblin",
+        "qty": 1,
+        "set": "ddn",
+        "cn": "7",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hordeling Outburst",
+        "qty": 1,
+        "set": "a25",
+        "cn": "134",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Howl of the Horde",
+        "qty": 1,
+        "set": "ktk",
+        "cn": "112",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Impact Tremors",
+        "qty": 1,
+        "set": "dtk",
+        "cn": "140",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Increasing Vengeance",
+        "qty": 1,
+        "set": "c19",
+        "cn": "147",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Infernal Plunge",
+        "qty": 1,
+        "set": "isd",
+        "cn": "148",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Inner Fire",
+        "qty": 1,
+        "set": "sok",
+        "cn": "105",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Insult // Injury",
+        "qty": 1,
+        "set": "akh",
+        "cn": "213",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Jaya's Immolating Inferno",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "415",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Krenko, Mob Boss",
+        "qty": 1,
+        "set": "m13",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mana Seism",
+        "qty": 1,
+        "set": "chk",
+        "cn": "179",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 18,
+        "set": "m21",
+        "cn": "270",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pashalik Mons",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyretic Ritual",
+        "qty": 1,
+        "set": "plst",
+        "cn": "M11-153",
+        "finish": "foil"
+      },
+      {
+        "name": "Quest for Pure Flame",
+        "qty": 1,
+        "set": "zen",
+        "cn": "144",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reverberate",
+        "qty": 1,
+        "set": "m13",
+        "cn": "145",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rite of Flame",
+        "qty": 1,
+        "set": "ss3",
+        "cn": "7",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Runaway Steam-Kin",
+        "qty": 1,
+        "set": "grn",
+        "cn": "115",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Seething Song",
+        "qty": 1,
+        "set": "9ed",
+        "cn": "216",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Siege-Gang Commander",
+        "qty": 1,
+        "set": "dom",
+        "cn": "143",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Skirk Prospector",
+        "qty": 1,
+        "set": "dom",
+        "cn": "144",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Torbran, Thane of Red Fell",
+        "qty": 1,
+        "set": "eld",
+        "cn": "147",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Torch Courier",
+        "qty": 1,
+        "set": "grn",
+        "cn": "119",
+        "finish": "nonFoil"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "0",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "1",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "2",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "3",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "4",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "5",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "6",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "7",
+        "set": null,
+        "cn": null,
+        "finish": null
+      }
+    ]
+  },
+  "variants": {
+    "full": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "full-nofinish": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "mtgo": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "last-block",
+      "lossy": false
+    },
+    "arena": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    }
+  }
+}

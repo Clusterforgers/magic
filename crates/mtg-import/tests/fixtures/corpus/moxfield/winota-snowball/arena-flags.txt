@@ -1,0 +1,90 @@
+About
+Name Winota: Snowball Stax
+
+Commander
+1 Winota, Joiner of Forces
+
+Deck
+1 Ancient Tomb
+1 Angrath's Marauders
+1 Archivist of Oghma #non-human
+1 Archon of Emeria #non-human
+1 Arid Mesa
+1 Aven Interrupter
+1 Aven Mindcensor #non-human
+1 Battlefield Forge
+1 Blade Historian #human
+1 Bloodstained Mire
+1 Boromir, Warden of the Tower
+1 Cavern of Souls
+1 Chrome Mox
+1 Clarion Conqueror
+1 Combat Celebrant #human
+1 Command Beacon
+1 Command Tower
+1 Deafening Silence
+1 Deflecting Swat
+1 Drannith Magistrate #human
+1 Eidolon of Rhetoric #non-human
+1 Eiganjo, Seat of the Empire
+1 Enlightened Tutor
+1 Esper Sentinel #human
+1 Flooded Strand
+1 Gemstone Caverns
+1 Gingerbrute #non-human
+1 Giver of Runes #non-human
+1 Grand Abolisher #human
+1 Hexing Squelcher
+1 High Noon
+1 Hope of Ghirapur #non-human
+1 Lena, Selfless Champion
+1 Lightning, Army of One
+1 Magus of the Moon #human
+1 Mana Confluence
+1 Marsh Flats
+1 Mountain
+1 Needleverge Pathway
+1 Ocelot Pride
+1 Orim's Chant
+1 Ornithopter #non-human
+1 Ornithopter of Paradise #non-human
+1 Path to Exile
+1 Phelia, Exuberant Shepherd
+1 Phyrexian Revoker #non-human
+3 Plains
+1 Powerbalance
+1 Prismatic Vista
+1 Professional Face-Breaker #human
+1 Ragavan, Nimble Pilferer #non-human
+1 Ranger-Captain of Eos #human
+1 Redirect Lightning
+1 Rionya, Fire Dancer #human
+1 Sacred Foundry
+1 Scalding Tarn
+1 Serra Ascendant #human
+1 Shatterskull Smashing
+1 Silence
+1 Skrelv, Defector Mite
+1 Skyclave Apparition #non-human
+1 Sokenzan, Crucible of Defiance
+1 Solitude #non-human
+1 Soulless Jailer
+1 Spirit of the Labyrinth #non-human
+1 Sunbaked Canyon
+1 Swords to Plowshares
+1 Tataru Taru
+1 Thalia, Guardian of Thraben #human
+1 Touch the Spirit Realm
+1 Voice of Victory
+1 Windswept Heath
+1 Witch Enchanter
+1 Wooded Foothills
+1 Zurzoth, Chaos Rider
+
+Sideboard
+1 Delney, Streetwise Lookout
+1 Flare of Fortitude
+1 Mother of Runes #human
+1 Oltec Matterweaver
+1 Seasoned Pyromancer
+1 Suki, Courageous Rescuer

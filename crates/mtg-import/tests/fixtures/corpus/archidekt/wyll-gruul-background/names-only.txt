@@ -1,0 +1,83 @@
+1 Ancient Bronze Dragon
+1 Ancient Copper Dragon
+1 Anger
+1 Arcane Signet
+1 Bag of Tricks
+1 Barbarian Class
+1 Beast Within
+1 Berserker's Frenzy
+1 Birds of Paradise
+1 Blasphemous Act
+1 Boseiju, Who Endures
+1 Brazen Dwarf
+1 Bucknard's Everfull Purse
+1 Chandra's Ignition
+1 Chaos Channeler
+1 Chaos Dragon
+1 Chaos Warp
+1 Cinder Glade
+1 Command Tower
+1 Critical Hit
+1 Cultivate
+1 Delina, Wild Mage
+1 Druid of the Emerald Grove
+1 Earth-Cult Elemental
+1 Ebony Fly
+1 Elvish Mystic
+1 Farideh's Fireball
+10 Forest
+1 Game Trail
+1 Ghost Quarter
+1 Goblin Anarchomancer
+1 Goblin Morningstar
+1 Gruul Signet
+1 Hardy Outlander
+1 Heroic Intervention
+1 Hoarding Ogre
+1 Humble Defector
+1 Hunter's Insight
+1 Ignite the Future
+1 Iron Mastiff
+1 Journey to the Lost City
+1 Kami of Celebration
+1 Kediss, Emberclaw Familiar
+1 Kodama of the West Tree
+1 Kodama's Reach
+1 Laelia, the Blade Reforged
+1 Lightning Greaves
+1 Loathsome Troll
+1 Maddening Hex
+1 March of Reckless Joy
+16 Mountain
+1 Neverwinter Hydra
+1 Overwhelming Encounter
+1 Platinum Emperion
+1 Reckless Endeavor
+1 Reforge the Soul
+1 Rhythm of the Wild
+1 Rishkar's Expertise
+1 Rockfall Vale
+1 Rogue's Passage
+1 Rootbound Crag
+1 Sol Ring
+1 Song of Inspiration
+1 Soul's Majesty
+1 Spire Garden
+1 Stomping Ground
+1 Stonehoof Chieftain
+1 Swarming Goblins
+1 Swiftfoot Boots
+1 Sword of Hours
+1 Tectonic Edge
+1 Terastodon
+1 The Deck of Many Things
+1 Thunderwave
+1 Treasure Chest
+1 Underdark Rift
+1 Vexing Puzzlebox
+1 Vrondiss, Rage of Ancients
+1 Wand of Wonder
+1 Wheel of Misfortune
+1 Wild Endeavor
+1 Wyll, Blade of Frontiers
+1 Wyll's Reversal

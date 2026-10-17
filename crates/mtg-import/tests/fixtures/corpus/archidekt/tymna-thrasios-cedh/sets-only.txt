@@ -1,0 +1,199 @@
+1x Abrupt Decay (plst) GK1-57
+1x Ad Nauseam (2xm) 76
+1x Adarkar Wastes (dmu) 243
+1x Alchemist's Refuge (avr) 225
+1x An Offer You Can't Refuse (snc) 51
+1x Arcane Signet (eld) 331
+1x Archivist of Oghma (clb) 4 *F*
+1x Armageddon (3ed) 2
+1x Armored Scrapgorger (one) 158
+1x Assassin's Trophy (2x2) 175
+1x Autumn's Veil (m12) 164
+1x Avacyn's Pilgrim (isd) 170
+1x Banishing Knack (eve) 17
+1x Basalt Monolith (3ed) 235
+1x Birds of Paradise (m10) 168
+1x Blind Obedience (gtc) 6
+1x Bloom Tender (2x2) 138
+1x Blue Elemental Blast (3ed) 49
+1x Borne Upon a Wind (ltr) 44 *F*
+1x Boseiju, Who Endures (neo) 266
+1x Breeding Pool (rna) 246 *F*
+1x Capsize (tmp) 55
+1x Carpet of Flowers (usg) 240
+1x Cephalid Coliseum (ody) 317
+1x Chain of Vapor (ons) 73
+1x Chord of Calling (2xm) 158
+1x Chrome Mox (ema) 219
+1x Collector Ouphe (mh1) 158
+1x Command Tower (cmr) 350
+1x Containment Priest (m21) 13 *F*
+1x Copy Artifact (3ed) 53
+1x Crop Rotation (2xm) 161 *F*
+1x Culling Ritual (cmm) 921
+1x Cyclonic Rift (2xm) 47
+1x Dark Ritual (2ed) 99
+1x Deathrite Shaman (rtr) 213
+1x Delighted Halfling (ltr) 158
+1x Delney, Streetwise Lookout (mkm) 12
+1x Demonic Consultation (ice) 121
+1x Demonic Tutor (3ed) 105
+1x Derevi, Empyrial Tactician (cma) 176 *F*
+1x Deserted Temple (ody) 320
+1x Devoted Druid (plst) UMA-162
+1x Diabolic Intent (bro) 324
+1x Dispel (rtr) 36
+1x Divining Witch (nem) 57
+1x Dovin's Veto (war) 193
+1x Drannith Magistrate (iko) 11
+1x Dress Down (mh2) 39
+1x Eiganjo, Seat of the Empire (neo) 268
+1x Eladamri's Call (pls) 106
+1x Eldritch Evolution (plst) EMN-155
+1x Elves of Deep Shadow (drk) 76
+1x Elvish Spirit Guide (all) 89
+1x Emergence Zone (war) 245
+1x Emiel the Blessed (j22) 180
+1x Enduring Vitality (dsk) 176
+1x Enlightened Tutor (mir) 14
+1x Esper Sentinel (mh2) 12
+1x Eternal Witness (5dn) 86
+1x Faeburrow Elder (eld) 190
+1x Faerie Artisans (c16) 8
+1x Faerie Mastermind (mom) 58
+1x Fierce Guardianship (c20) 35
+1x Finale of Devastation (war) 160
+1x Flusterstorm (mh3) 496 *F*
+1x Force of Negation (2x2) 50
+1x Force of Vigor (plst) MH1-164
+1x Force of Will (all) 28
+1x Forest (one) 369 *F*
+1x Fracture (stx) 188
+1x Freed from the Real (sok) 38
+1x Gaea's Cradle (usg) 321
+1x Gifts Ungiven (2x2) 51
+1x Gleaming Splendor (hob) 15
+1x Godless Shrine (rna) 248
+1x Grand Abolisher (cmm) 27 *F*
+1x Green Slime (clb) 680
+1x Grim Monolith (ulg) 126
+1x Hallowed Fountain (sld) 123
+1x Hazel's Brewmaster (blc) 52
+1x Hermit Druid (plst) STH-108
+1x Island (one) 366 *F*
+1x King T'Challa // Black Panther, Hope Enduring (msh) 219
+1x Kinnan, Bonder Prodigy (iko) 192
+1x Kutzil, Malamet Exemplar (lci) 304
+1x Laboratory Maniac (isd) 61
+1x Lapis Lazuli Talisman (ice) 327
+1x Lotho, Corrupt Shirriff (ltr) 213
+1x Machine God's Effigy (brc) 16
+1x Mana Crypt (2xm) 361
+1x Mana Drain (2x2) 57
+1x March of Swirling Mist (neo) 61
+1x Marsh Flats (mh2) 248
+1x Matoya, Archon Elder (fin) 62
+1x Minamo, School at Water's Edge (chk) 279
+1x Mindbreak Trap (zen) 57
+1x Mistrise Village (tdm) 261
+1x Misty Rainforest (zen) 220
+1x Mockingbird (blb) 61
+1x Morphic Pool (clb) 357
+1x Mox Amber (brr) 98
+1x Mox Opal (2xm) 275
+1x Muddle the Mixture (rav) 60
+1x Mystic Remora (ice) 87
+1x Mystical Tutor (6ed) 83
+1x Nature's Claim (wwk) 108
+1x Nature's Rhythm (tdm) 150
+1x Neoform (war) 206
+1x Ninja Pizza (tmc) 32
+1x Noble Hierarch (mm2) 151
+1x Noxious Revival (onc) 110
+1x Oboro Breezecaller (sok) 48
+1x Open the Armory (cmr) 34
+1x Opposition Agent (cmr) 141
+1x Orcish Bowmasters (ltr) 103
+1x Otawara, Soaring City (neo) 271
+1x Overgrown Tomb (rav) 279
+1x Pact of Negation (a25) 68
+1x Paradise Druid (war) 171
+1x Path to Exile (md1) 3
+1x Peacekeeper (wth) 22
+1x Pemmin's Aura (scg) 45
+1x Permission Denied (rex) 17
+1x Phyrexian Metamorph (nph) 42
+1x Plains (one) 365 *F*
+1x Pollywog Prodigy (blc) 50
+1x Power Artifact (atq) 11
+1x Praetor's Grasp (nph) 71
+1x Prophet of Distortion (ogw) 46
+1x Ranger-Captain of Eos (mh1) 21
+1x Rath's Edge (nem) 142
+1x Reanimate (uma) 110
+1x Recruiter of the Guard (plst) CN2-22
+1x Rejuvenating Springs (cmr) 354
+1x Retraction Helix (bng) 49
+1x Rhystic Study (pcy) 45
+1x Samut, Tyrant of Naktamun (fra) 220
+1x Savage Summoning (m14) 194
+1x Savannah (3ed) 285
+1x Scrubland (3ed) 286
+1x Sea of Clouds (zne) 16
+1x Seedborn Muse (lgn) 138
+1x Shang-Chi, Master of Kung Fu (msh) 187
+1x Shred Memory (rav) 105
+1x Silence (m10) 31
+1x Smothering Tithe (rna) 22
+1x Snap (ulg) 43
+1x Sol Ring (3ed) 274
+1x Soulless Jailer (one) 241
+1x Sowing Mycospawn (mh3) 170
+1x Springheart Nantuko (mh3) 171
+1x Steal Enchantment (tmp) 90
+1x Stonework Packbeast (znr) 255
+1x Strip Mine (4ed) 363
+1x Survival of the Fittest (exo) 129
+1x Swamp (one) 367 *F*
+1x Swan Song (ths) 65
+1x Swift Reconfiguration (nec) 45
+1x Swords to Plowshares (ice) 54
+1x Sylvan Scrying (mrd) 130
+1x Tainted Pact (ody) 164
+1x Talisman of Dominance (mrd) 253
+1x Talisman of Progress (mrd) 256
+1x Talon Gates of Madara (m3c) 134
+1x Temple Garden (grn) 258
+1x Thassa's Oracle (pthb) 73s *F*
+1x The Cabbage Merchant (tle) 134 *F*
+1x The One Ring (ltr) 451
+1x Thrasios, Triton Hero (c16) 46 *F*
+1x Time of Need (chk) 247
+1x Tishana's Tidebinder (lci) 335 *F*
+1x Transmute Artifact (atq) 14
+1x Treva's Ruins (pls) 143
+1x Trickbind (tsp) 88
+1x Tundra (3ed) 289
+1x Tymna the Weaver (cmr) 539 *E*
+1x Tyvar, Jubilant Brawler (one) 218
+1x Underground Sea (3ed) 290
+1x Undergrowth Stadium (cmr) 359 *F*
+1x Urban Burgeoning (rtr) 138
+1x Urborg, Tomb of Yawgmoth (tsr) 287
+1x Urza's Saga (mh2) 259 *F*
+1x Valley Floodcaller (blb) 308 *F*
+1x Vampiric Tutor (plst) EMA-112
+1x Vault of Champions (cmr) 360
+1x Veil of Summer (m20) 198
+1x Verdant Catacombs (mh2) 479 *F*
+1x Voice of Victory (tdm) 331
+1x Walking Ballista (2xm) 306
+1x Wan Shi Tong, Librarian (tla) 78
+1x Watery Grave (gtc) 249
+1x Winding Canyons (wth) 167
+1x Windswept Heath (ktk) 248
+1x Wishclaw Talisman (eld) 110
+1x Worldly Tutor (mir) 255
+1x Yavimaya Hollow (uds) 143
+1x Yavimaya, Cradle of Growth (mh2) 441 *E*
+1x Yawgmoth's Will (usg) 171

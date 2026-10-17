@@ -1,0 +1,104 @@
+1 Adeline, Resplendent Cathar
+1 Arboreal Grazer
+1 Arcane Signet
+1 Arid Mesa
+1 Armored Armadillo
+1 Armored Scrapgorger
+1 Assault Formation
+1 Aura Shards
+1 Avacyn's Pilgrim
+1 Beloved Beggar // Generous Soul
+1 Biophagus
+1 Birds of Paradise
+1 Blessed Orator
+1 Bountiful Promenade
+1 Branchloft Pathway // Boulderloft Pathway
+1 Brave the Sands
+1 Brushland
+1 Canopy Vista
+1 Chrome Mox
+1 Command Tower
+1 Courser of Kruphix
+1 Dauntless Dismantler
+1 Daxos, Blessed by the Sun
+1 Daybreak Chaplain
+1 Delighted Halfling
+1 Drannith Magistrate
+1 Druid of the Cowl
+1 Dusk // Dawn
+1 Eladamri's Call
+1 Elvish Herder
+1 Ensnaring Bridge
+1 Flooded Strand
+1 Forbidding Watchtower
+4 Forest
+1 Gaddock Teeg
+1 Gemstone Caverns
+1 Giant Ox
+1 Gilded Goose
+1 God-Pharaoh's Faithful
+1 Gorm the Great
+1 Grizzled Leotau
+1 Horizon Canopy
+1 Huatli, the Sun's Heart
+1 Hushbringer
+1 Lagonna-Band Trailblazer
+1 Llanowar Augur
+1 Llanowar Elves
+1 Llanowar Loamspeaker
+1 Maned Serval
+1 Marsh Flats
+1 Meekstone
+1 Mirri's Guile
+1 Misty Rainforest
+1 Nullmage Advocate
+1 Nyx-Fleece Ram
+1 Oketra the True
+1 Onakke Oathkeeper
+1 Ornithopter
+1 Path to Exile
+1 Phyrexian Walker
+2 Plains
+1 Prismatic Vista
+1 PuPu UFO
+1 Rasaad yn Bashir
+1 Reconnaissance
+1 Retribution of the Meek
+1 Rug of Smothering
+1 Runic Armasaur
+1 Savannah
+1 Selesnya Signet
+1 Selvala, Explorer Returned
+1 Shalai, Voice of Plenty
+1 Sidar Kondo of Jamuraa
+1 Silence
+1 Skinshifter
+1 Slagwurm Armor
+1 Slaughter the Strong
+1 Song of the Dryads
+1 Soulless Jailer
+1 Strict Proctor
+1 Suncleanser
+1 Sylvan Library
+1 Tadeas, Juniper Ascendant
+1 Talisman of Unity
+1 Tasseled Dromedary
+1 Temple Garden
+1 The Peregrine Dynamo
+1 Thijarian Witness
+1 Thrashing Brontodon
+1 Tocatli Honor Guard
+1 Torpor Orb
+1 Tower Defense
+1 Treebeard, Gracious Host
+1 Turtle-Duck
+1 Verdant Catacombs
+1 Veteran Armorer
+1 Voice of Victory
+1 War Screecher
+1 Webspinner Cuff
+1 Windswept Heath
+1 Wooded Foothills
+1 Xantid Swarm
+1 Yoked Ox
+1 Yotian Soldier

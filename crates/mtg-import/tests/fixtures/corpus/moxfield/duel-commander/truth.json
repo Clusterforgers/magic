@@ -1,0 +1,902 @@
+{
+  "source": {
+    "site": "moxfield",
+    "id": "HUTy8_hBsUSYyf9E2bLfag",
+    "url": "https://moxfield.com/decks/HUTy8_hBsUSYyf9E2bLfag",
+    "format": "duelCommander",
+    "name": "[DC] Bowl of Miscellaneous Lukewarm Slop 🍔🌮🍔",
+    "why": "Duel Commander list",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Asmoranomardicadaistinaculdacar",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "186",
+        "finish": "nonFoil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Anger",
+        "qty": 1,
+        "set": "uma",
+        "cn": "122",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Anje's Ravager",
+        "qty": 1,
+        "set": "voc",
+        "cn": "141",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arena of Glory",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "351",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arid Mesa",
+        "qty": 1,
+        "set": "mm3",
+        "cn": "229",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ash Barrens",
+        "qty": 1,
+        "set": "mkc",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Badlands",
+        "qty": 1,
+        "set": "30a",
+        "cn": "570",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Barbarian Ring",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "299",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Barren Moor",
+        "qty": 1,
+        "set": "c14",
+        "cn": "284",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Barrowgoyf",
+        "qty": 1,
+        "set": "m3c",
+        "cn": "102",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bitter Triumph",
+        "qty": 1,
+        "set": "sch",
+        "cn": "42",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blackcleave Cliffs",
+        "qty": 1,
+        "set": "one",
+        "cn": "370",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blazemire Verge",
+        "qty": 1,
+        "set": "pdsk",
+        "cn": "256p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blazing Rootwalla",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "404",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blightstep Pathway // Searstep Pathway",
+        "qty": 1,
+        "set": "khm",
+        "cn": "291",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blood Crypt",
+        "qty": 1,
+        "set": "unf",
+        "cn": "279",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodghast",
+        "qty": 1,
+        "set": "pdft",
+        "cn": "77p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodstained Mire",
+        "qty": 1,
+        "set": "ktk",
+        "cn": "230",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodtithe Harvester",
+        "qty": 1,
+        "set": "vow",
+        "cn": "232",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Boggart Trawler // Boggart Bog",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "243",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bone Shards",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "76",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Broadside Bombardiers",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "54",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Carnage, Crimson Chaos",
+        "qty": 1,
+        "set": "spm",
+        "cn": "227",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chain Lightning",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "316",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Circling Vultures",
+        "qty": 1,
+        "set": "wth",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "City of Brass",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "403",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Claim // Fame",
+        "qty": 1,
+        "set": "plst",
+        "cn": "HOU-150",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "325",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Currency Converter",
+        "qty": 1,
+        "set": "ncc",
+        "cn": "81",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dauthi Voidwalker",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "397",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Deadpool, Trading Card",
+        "qty": 1,
+        "set": "sld",
+        "cn": "1753",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Detective's Phoenix",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "116",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dragonskull Summit",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "357",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faerie Macabre",
+        "qty": 1,
+        "set": "mma",
+        "cn": "86",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faithless Looting",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "220",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fatal Push",
+        "qty": 1,
+        "set": "acr",
+        "cn": "90",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fear of Missing Out",
+        "qty": 1,
+        "set": "pdsk",
+        "cn": "136p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fiery Temper",
+        "qty": 1,
+        "set": "plst",
+        "cn": "SOI-156",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forgotten Cave",
+        "qty": 1,
+        "set": "j22",
+        "cn": "814",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fury",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "313",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Galvanic Blast",
+        "qty": 1,
+        "set": "som",
+        "cn": "91",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gamble",
+        "qty": 1,
+        "set": "uma",
+        "cn": "132",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Great Furnace",
+        "qty": 1,
+        "set": "sld",
+        "cn": "303",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gut, True Soul Zealot",
+        "qty": 1,
+        "set": "clb",
+        "cn": "399",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Haunted Ridge",
+        "qty": 1,
+        "set": "inr",
+        "cn": "280",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Insolent Neonate",
+        "qty": 1,
+        "set": "soi",
+        "cn": "168",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Inti, Seneschal of the Sun",
+        "qty": 1,
+        "set": "plci",
+        "cn": "156p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ivora, Insatiable Heir",
+        "qty": 1,
+        "set": "j25",
+        "cn": "50",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kitchen Imp",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "343",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lightning Axe",
+        "qty": 1,
+        "set": "inr",
+        "cn": "162",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lightning Bolt",
+        "qty": 1,
+        "set": "pf19",
+        "cn": "1",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Locust Spray",
+        "qty": 1,
+        "set": "dft",
+        "cn": "95",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Loyal Apprentice",
+        "qty": 1,
+        "set": "pip",
+        "cn": "718",
+        "finish": "foil"
+      },
+      {
+        "name": "Mana Confluence",
+        "qty": 1,
+        "set": "exp",
+        "cn": "42",
+        "finish": "foil"
+      },
+      {
+        "name": "Marauding Mako",
+        "qty": 1,
+        "set": "dft",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Marsh Flats",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Masked Meower",
+        "qty": 1,
+        "set": "om1",
+        "cn": "96",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Molten Collapse",
+        "qty": 1,
+        "set": "lci",
+        "cn": "342",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Monument to Endurance",
+        "qty": 1,
+        "set": "pdft",
+        "cn": "237p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mount Doom",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "750",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 1,
+        "set": "sld",
+        "cn": "1471",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nethergoyf",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "103",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Oliphaunt",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "426",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Orcish Bowmasters",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "103",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ovalchase Daredevil",
+        "qty": 1,
+        "set": "kld",
+        "cn": "97",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ox of Agonas",
+        "qty": 1,
+        "set": "thb",
+        "cn": "147",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Polluted Delta",
+        "qty": 1,
+        "set": "ktk",
+        "cn": "239",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Poxwalkers",
+        "qty": 1,
+        "set": "40k",
+        "cn": "49",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Prismatic Vista",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "244",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Putrid Imp",
+        "qty": 1,
+        "set": "tor",
+        "cn": "77",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyrokinesis",
+        "qty": 1,
+        "set": "ddl",
+        "cn": "32",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Raucous Theater",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "329",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Scalding Tarn",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "254",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Scarab Feast",
+        "qty": 1,
+        "set": "akh",
+        "cn": "106",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Scarlet Spider, Kaine",
+        "qty": 1,
+        "set": "spm",
+        "cn": "143",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Screaming Nemesis",
+        "qty": 1,
+        "set": "pdsk",
+        "cn": "157p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shadowspear",
+        "qty": 1,
+        "set": "thb",
+        "cn": "345",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Skullclamp",
+        "qty": 1,
+        "set": "40k",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Skyfire Phoenix",
+        "qty": 1,
+        "set": "c19",
+        "cn": "28",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Snow-Covered Mountain",
+        "qty": 1,
+        "set": "sld",
+        "cn": "328",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Snow-Covered Swamp",
+        "qty": 1,
+        "set": "khm",
+        "cn": "280",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sokenzan, Crucible of Defiance",
+        "qty": 1,
+        "set": "neo",
+        "cn": "415",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spark Spray",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "141",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Street Wraith",
+        "qty": 1,
+        "set": "plst",
+        "cn": "A25-108",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sulfurous Springs",
+        "qty": 1,
+        "set": "prm",
+        "cn": "103478",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sundering Eruption // Volcanic Fissure",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 1,
+        "set": "sld",
+        "cn": "1470",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tainted Pact",
+        "qty": 1,
+        "set": "sta",
+        "cn": "33",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Takenuma, Abandoned Mire",
+        "qty": 1,
+        "set": "neo",
+        "cn": "416",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Underworld Cookbook",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "240",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tinybones Joins Up",
+        "qty": 1,
+        "set": "potj",
+        "cn": "108p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Troll of Khazad-dûm",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "111",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unearth",
+        "qty": 1,
+        "set": "a25",
+        "cn": "113",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Urborg, Tomb of Yawgmoth",
+        "qty": 1,
+        "set": "tsr",
+        "cn": "287",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Urza's Saga",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "380",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vault of Whispers",
+        "qty": 1,
+        "set": "sld",
+        "cn": "302",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Verdant Catacombs",
+        "qty": 1,
+        "set": "zen",
+        "cn": "229",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Viashino Sandsprinter",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "153",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Voldaren Epicure",
+        "qty": 1,
+        "set": "vow",
+        "cn": "308",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wooded Foothills",
+        "qty": 1,
+        "set": "exp",
+        "cn": "19",
+        "finish": "foil"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "0",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "10",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "11",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "12",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "13",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "14",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "15",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "16",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "17",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "18",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "19",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "1",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "20",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "21",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "22",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "2",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "3",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "4",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "5",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "6",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "7",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "8",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "9",
+        "set": null,
+        "cn": null,
+        "finish": null
+      }
+    ]
+  },
+  "variants": {
+    "full": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "full-nofinish": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "mtgo": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "last-block",
+      "lossy": false
+    },
+    "arena": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    }
+  }
+}

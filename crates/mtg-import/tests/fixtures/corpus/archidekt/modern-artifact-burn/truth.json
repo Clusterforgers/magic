@@ -1,0 +1,261 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "3045150",
+    "url": "https://archidekt.com/decks/3045150",
+    "format": "modern",
+    "name": "Modern Artifact Burn",
+    "why": "60 plus 15 modern list with no commander, numbers like we313 and tvdl345",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "mainboard": [
+      {
+        "name": "Blood Crypt",
+        "qty": 4,
+        "set": "sld",
+        "cn": "125",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodstained Mire",
+        "qty": 2,
+        "set": "wc03",
+        "cn": "we313",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chromatic Star",
+        "qty": 4,
+        "set": "tsr",
+        "cn": "263",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Den of the Bugbear",
+        "qty": 1,
+        "set": "afr",
+        "cn": "254",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Experimental Synthesizer",
+        "qty": 4,
+        "set": "neo",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Galvanic Blast",
+        "qty": 4,
+        "set": "som",
+        "cn": "91",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Legion Extruder",
+        "qty": 4,
+        "set": "big",
+        "cn": "12",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lightning Bolt",
+        "qty": 4,
+        "set": "m10",
+        "cn": "146",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Marionette Apprentice",
+        "qty": 3,
+        "set": "mh3",
+        "cn": "100",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mishra's Bauble",
+        "qty": 4,
+        "set": "plst",
+        "cn": "IMA-221",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 7,
+        "set": "bro",
+        "cn": "285",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ravenous Robots",
+        "qty": 3,
+        "set": "tmt",
+        "cn": "106",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shrapnel Blast",
+        "qty": 4,
+        "set": "m15",
+        "cn": "161",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sokenzan, Crucible of Defiance",
+        "qty": 1,
+        "set": "neo",
+        "cn": "276",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sulfurous Springs",
+        "qty": 4,
+        "set": "wc01",
+        "cn": "tvdl345",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 1,
+        "set": "bro",
+        "cn": "282",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Voldaren Epicure",
+        "qty": 4,
+        "set": "vow",
+        "cn": "308",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Weapons Manufacturing",
+        "qty": 2,
+        "set": "eoe",
+        "cn": "168",
+        "finish": "nonFoil"
+      }
+    ],
+    "sideboard": [
+      {
+        "name": "Dragon's Claw",
+        "qty": 1,
+        "set": "m12",
+        "cn": "206",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyrite Spellbomb",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Roiling Vortex",
+        "qty": 3,
+        "set": "znr",
+        "cn": "156",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Smash to Smithereens",
+        "qty": 4,
+        "set": "ori",
+        "cn": "163",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tormod's Crypt",
+        "qty": 4,
+        "set": "dmr",
+        "cn": "235",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unlicensed Disintegration",
+        "qty": 2,
+        "set": "f17",
+        "cn": "5",
+        "finish": "foil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-type": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

@@ -1,0 +1,676 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "3090343",
+    "url": "https://archidekt.com/decks/3090343",
+    "format": "commander",
+    "name": "Wyll, Blade of Frontiers | A Gruul Background Check",
+    "why": "commander plus a Background, seven maybeboard cards, multi-category cards",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Hardy Outlander",
+        "qty": 1,
+        "set": "clb",
+        "cn": "235",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wyll, Blade of Frontiers",
+        "qty": 1,
+        "set": "clb",
+        "cn": "208",
+        "finish": "nonFoil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Ancient Bronze Dragon",
+        "qty": 1,
+        "set": "clb",
+        "cn": "214",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ancient Copper Dragon",
+        "qty": 1,
+        "set": "clb",
+        "cn": "161",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Anger",
+        "qty": 1,
+        "set": "uma",
+        "cn": "122",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "clb",
+        "cn": "298",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bag of Tricks",
+        "qty": 1,
+        "set": "afc",
+        "cn": "37",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Barbarian Class",
+        "qty": 1,
+        "set": "afr",
+        "cn": "131",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Beast Within",
+        "qty": 1,
+        "set": "clb",
+        "cn": "820",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Berserker's Frenzy",
+        "qty": 1,
+        "set": "afc",
+        "cn": "29",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Birds of Paradise",
+        "qty": 1,
+        "set": "gk2",
+        "cn": "82",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blasphemous Act",
+        "qty": 1,
+        "set": "clb",
+        "cn": "780",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Boseiju, Who Endures",
+        "qty": 1,
+        "set": "neo",
+        "cn": "266",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Brazen Dwarf",
+        "qty": 1,
+        "set": "afr",
+        "cn": "134",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bucknard's Everfull Purse",
+        "qty": 1,
+        "set": "afc",
+        "cn": "57",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chaos Channeler",
+        "qty": 1,
+        "set": "afr",
+        "cn": "136",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chaos Dragon",
+        "qty": 1,
+        "set": "clb",
+        "cn": "784",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chaos Warp",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "105",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cinder Glade",
+        "qty": 1,
+        "set": "clb",
+        "cn": "887",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "clb",
+        "cn": "351",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Critical Hit",
+        "qty": 1,
+        "set": "afr",
+        "cn": "137",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cultivate",
+        "qty": 1,
+        "set": "clb",
+        "cn": "821",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Delina, Wild Mage",
+        "qty": 1,
+        "set": "afr",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Druid of the Emerald Grove",
+        "qty": 1,
+        "set": "clb",
+        "cn": "226",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ebony Fly",
+        "qty": 1,
+        "set": "afc",
+        "cn": "60",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Elvish Mystic",
+        "qty": 1,
+        "set": "khc",
+        "cn": "58",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Farideh's Fireball",
+        "qty": 1,
+        "set": "afr",
+        "cn": "142",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forest",
+        "qty": 10,
+        "set": "clb",
+        "cn": "469",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Game Trail",
+        "qty": 1,
+        "set": "clb",
+        "cn": "894",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ghost Quarter",
+        "qty": 1,
+        "set": "plst",
+        "cn": "CM2-253",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goblin Anarchomancer",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "200",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goblin Morningstar",
+        "qty": 1,
+        "set": "afr",
+        "cn": "145",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gruul Signet",
+        "qty": 1,
+        "set": "gk2",
+        "cn": "103",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hoarding Ogre",
+        "qty": 1,
+        "set": "clb",
+        "cn": "181",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Humble Defector",
+        "qty": 1,
+        "set": "c21",
+        "cn": "174",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hunter's Insight",
+        "qty": 1,
+        "set": "nec",
+        "cn": "119",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ignite the Future",
+        "qty": 1,
+        "set": "clb",
+        "cn": "797",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Iron Mastiff",
+        "qty": 1,
+        "set": "clb",
+        "cn": "317",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Journey to the Lost City",
+        "qty": 1,
+        "set": "clb",
+        "cn": "681",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kami of Celebration",
+        "qty": 1,
+        "set": "nec",
+        "cn": "20",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kediss, Emberclaw Familiar",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "188",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kodama of the West Tree",
+        "qty": 1,
+        "set": "neo",
+        "cn": "199",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kodama's Reach",
+        "qty": 1,
+        "set": "uma",
+        "cn": "171",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Laelia, the Blade Reforged",
+        "qty": 1,
+        "set": "clb",
+        "cn": "801",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lightning Greaves",
+        "qty": 1,
+        "set": "clb",
+        "cn": "864",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Maddening Hex",
+        "qty": 1,
+        "set": "afc",
+        "cn": "32",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "March of Reckless Joy",
+        "qty": 1,
+        "set": "neo",
+        "cn": "154",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 16,
+        "set": "clb",
+        "cn": "463",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Neverwinter Hydra",
+        "qty": 1,
+        "set": "afc",
+        "cn": "41",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Overwhelming Encounter",
+        "qty": 1,
+        "set": "clb",
+        "cn": "245",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Platinum Emperion",
+        "qty": 1,
+        "set": "uma",
+        "cn": "233",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reckless Endeavor",
+        "qty": 1,
+        "set": "afc",
+        "cn": "33",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reforge the Soul",
+        "qty": 1,
+        "set": "c16",
+        "cn": "132",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rhythm of the Wild",
+        "qty": 1,
+        "set": "rna",
+        "cn": "201",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rishkar's Expertise",
+        "qty": 1,
+        "set": "aer",
+        "cn": "123",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rockfall Vale",
+        "qty": 1,
+        "set": "mid",
+        "cn": "266",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rogue's Passage",
+        "qty": 1,
+        "set": "clb",
+        "cn": "913",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rootbound Crag",
+        "qty": 1,
+        "set": "xln",
+        "cn": "256",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sol Ring",
+        "qty": 1,
+        "set": "clb",
+        "cn": "871",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Song of Inspiration",
+        "qty": 1,
+        "set": "afc",
+        "cn": "42",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Soul's Majesty",
+        "qty": 1,
+        "set": "con",
+        "cn": "92",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spire Garden",
+        "qty": 1,
+        "set": "clb",
+        "cn": "361",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Stomping Ground",
+        "qty": 1,
+        "set": "rna",
+        "cn": "259",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Stonehoof Chieftain",
+        "qty": 1,
+        "set": "c16",
+        "cn": "25",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swiftfoot Boots",
+        "qty": 1,
+        "set": "c13",
+        "cn": "263",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sword of Hours",
+        "qty": 1,
+        "set": "afc",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tectonic Edge",
+        "qty": 1,
+        "set": "plst",
+        "cn": "C14-313",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Deck of Many Things",
+        "qty": 1,
+        "set": "afr",
+        "cn": "241",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thunderwave",
+        "qty": 1,
+        "set": "clb",
+        "cn": "201",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Underdark Rift",
+        "qty": 1,
+        "set": "afc",
+        "cn": "62",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vexing Puzzlebox",
+        "qty": 1,
+        "set": "clb",
+        "cn": "343",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vrondiss, Rage of Ancients",
+        "qty": 1,
+        "set": "afc",
+        "cn": "328",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wand of Wonder",
+        "qty": 1,
+        "set": "clb",
+        "cn": "204",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wheel of Misfortune",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "211",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wild Endeavor",
+        "qty": 1,
+        "set": "afc",
+        "cn": "43",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wyll's Reversal",
+        "qty": 1,
+        "set": "clb",
+        "cn": "209",
+        "finish": "nonFoil"
+      }
+    ],
+    "maybeboard": [
+      {
+        "name": "Chandra's Ignition",
+        "qty": 1,
+        "set": "plst",
+        "cn": "ORI-137",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Earth-Cult Elemental",
+        "qty": 1,
+        "set": "afr",
+        "cn": "141",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Heroic Intervention",
+        "qty": 1,
+        "set": "afc",
+        "cn": "161",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Loathsome Troll",
+        "qty": 1,
+        "set": "afr",
+        "cn": "192",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swarming Goblins",
+        "qty": 1,
+        "set": "afr",
+        "cn": "162",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Terastodon",
+        "qty": 1,
+        "set": "c21",
+        "cn": "207",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Treasure Chest",
+        "qty": 1,
+        "set": "afr",
+        "cn": "252",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-type": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

@@ -1,0 +1,64 @@
+Commander
+1x Korvold, Fae-Cursed King (eld) 329 *F* [Commander{top}]
+
+Artifact
+1x Arcane Signet (eld) 331 [Artifact]
+1x Bloodsoaked Altar (m20) 90 [Artifact]
+1x Golden Egg (eld) 220 [Artifact]
+1x Witch's Oven (eld) 237 [Artifact]
+
+Creature
+1x Chittering Witch (eld) 319 [Creature]
+1x Evolution Sage (war) 159 [Creature]
+1x Gluttonous Troll (eld) 327 [Creature]
+1x Goblin Cratermaker (grn) 103 [Creature]
+1x Golgari Findbroker (grn) 175 [Creature]
+1x Judith, the Scourge Diva (rna) 185 [Creature]
+1x Keeper of Fables (eld) 163 [Creature]
+1x Krenko, Tin Street Kingpin (war) 137 [Creature]
+1x Leyline Prowler (war) 202 [Creature]
+1x Mayhem Devil (war) 204 [Creature]
+1x Orzhov Enforcer (rna) 79 [Creature]
+1x Paradise Druid (war) 171 [Creature]
+1x Plaguecrafter (grn) 82 [Creature]
+1x Pollenbright Druid (war) 173 [Creature]
+1x Priest of Forgotten Gods (rna) 83 [Creature]
+1x Rapacious Dragon (m20) 153 [Creature]
+1x Savvy Hunter (eld) 200 [Creature]
+1x Syr Konrad, the Grim (eld) 107 [Creature]
+1x Thorn Mammoth (eld) 323 [Creature]
+1x Thrashing Brontodon (m20) 197 [Creature]
+1x Vindictive Vampire (rna) 90 [Creature]
+1x Woodland Champion (m20) 205 [Creature]
+
+Enchantment
+1x Dreadhorde Invasion (war) 86 [Enchantment]
+1x Moldervine Reclamation (m20) 214 [Enchantment]
+1x Rhythm of the Wild (rna) 201 [Enchantment]
+
+Instant
+1x Bake into a Pie (eld) 76 [Instant]
+1x Deathsprout (war) 189 [Instant]
+
+Land
+1x Bloodfell Caves (m20) 242 [Land]
+1x Command Tower (eld) 333 [Land]
+1x Cryptic Caves (m20) 244 [Land]
+1x Evolving Wilds (m20) 246 [Land]
+6x Forest (eld) 269 [Land]
+1x Golgari Guildgate (grn) 248 [Land]
+1x Gruul Guildgate (rna) 250 [Land]
+1x Jungle Hollow (m20) 248 [Land]
+2x Mountain (eld) 262 [Land]
+1x Rakdos Guildgate (rna) 255 [Land]
+1x Rugged Highlands (m20) 250 [Land]
+1x Stomping Ground (rna) 259 [Land]
+6x Swamp (eld) 258 [Land]
+1x Temple of Malady (m20) 254 [Land]
+
+Planeswalker
+1x Angrath, Captain of Chaos (plst) WAR-227 [Planeswalker]
+
+Sorcery
+1x Find // Finality (grn) 225 [Sorcery]
+1x Taste of Death (eld) 320 [Sorcery]

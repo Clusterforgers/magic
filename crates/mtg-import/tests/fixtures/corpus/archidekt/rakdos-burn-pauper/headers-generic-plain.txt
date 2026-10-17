@@ -1,0 +1,29 @@
+Mainboard
+4x Kitchen Imp
+4x Voldaren Epicure
+3x Deadly Dispute
+4x Fiery Temper
+4x Galvanic Blast
+4x Lightning Bolt
+3x Searing Blaze
+1x Bloodfell Caves
+4x Drossforge Bridge
+3x Great Furnace
+3x Mountain
+3x Rakdos Carnarium
+1x Snow-Covered Mountain
+2x Snow-Covered Swamp
+3x Vault of Whispers
+4x Alms of the Vein
+2x Bump in the Night
+4x Faithless Looting
+4x Vampire's Kiss
+
+Sideboard
+2x Chainer's Edict
+3x Duress
+2x Fiery Cannonade
+2x Nihil Spellbomb
+2x Psychotic Haze
+1x Pyroblast
+3x Smash to Smithereens

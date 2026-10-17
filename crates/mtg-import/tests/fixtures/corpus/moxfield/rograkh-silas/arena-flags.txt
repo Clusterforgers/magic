@@ -1,0 +1,72 @@
+About
+Name [cEDH] Rograkh Silas Storm Combo
+
+Deck
+1 Ad Nauseam #Payoff
+1 Ancient Tomb #!Lands (Two Mana)
+1 Arcane Signet #Mana
+1 Arid Mesa #Lands (Fetch)
+1 Beseech the Mirror
+1 Birgi, God of Storytelling #Mana #Payoff
+1 Blood Crypt #Lands (Dual)
+1 Bloodstained Mire #Lands (Fetch)
+1 Borne Upon a Wind
+1 Brain Freeze #Win Conditions
+1 Chrome Mox #!Mana
+1 Command Tower #Lands (Five Color)
+1 Culling the Weak #Mana
+1 Dark Ritual #Mana
+1 Daze #Counterspell #Interaction
+1 Deadly Rollick #Interaction #Removal
+1 Defense Grid #Mana
+1 Deflecting Swat #!Interaction
+1 Demonic Counsel
+1 Demonic Tutor #Tutor
+1 Diabolic Intent #Tutor
+1 Fierce Guardianship #Counterspell #Interaction
+1 Flare of Duplication
+1 Flooded Strand #Lands (Fetch)
+1 Flusterstorm #Counterspell #Interaction
+1 Force of Negation #Counterspell #Interaction
+1 Force of Will #Counterspell #Interaction
+1 Gamble #Tutor
+1 Gemstone Caverns #Lands (Five Color)
+1 Hexing Squelcher
+1 Jeska's Will #Card Advantage #Mana
+1 Kraza, the Swarm as One
+1 Marsh Flats #Lands (Fetch)
+1 Mindbreak Trap #Counterspell #Interaction
+1 Misty Rainforest #Lands (Fetch)
+1 Mnemonic Betrayal #Payoff #!Win Conditions
+1 Mox Amber #!Mana
+1 Mox Opal #!Mana
+1 Mystic Remora #Card Advantage
+1 Mystical Tutor #Tutor
+1 Necrodominance
+1 Necropotence #Payoff
+1 Otawara, Soaring City #Removal
+1 Pact of Negation #Counterspell #Interaction
+1 Phyrexian Tower #Lands (Two Mana)
+1 Polluted Delta #Lands (Fetch)
+1 Ragavan, Nimble Pilferer #Card Advantage #Mana
+1 Rhystic Study #Card Advantage
+1 Rite of Flame #Mana
+1 Samut, Tyrant of Naktamun
+1 Scalding Tarn #Lands (Fetch)
+1 Springleaf Drum #Mana
+1 Starting Town
+1 Steam Vents #Lands (Dual)
+1 Tainted Pact #Tutor
+1 Talisman of Creativity #Mana
+1 Talisman of Dominance #Mana
+1 Talisman of Indulgence #!Mana
+1 Thassa's Oracle #!Win Conditions
+1 Timetwister #Card Advantage #Payoff #!Wheel
+1 Undercity Sewers
+1 Underworld Breach #Payoff
+1 Valley Floodcaller
+1 Vampiric Tutor #Tutor
+1 Verdant Catacombs #Lands (Fetch)
+1 Watery Grave #Lands (Dual)
+1 Wishclaw Talisman #!Tutor
+1 Wooded Foothills #Lands (Fetch)

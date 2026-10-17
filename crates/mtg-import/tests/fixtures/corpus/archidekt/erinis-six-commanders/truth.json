@@ -1,0 +1,1524 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "8986116",
+    "url": "https://archidekt.com/decks/8986116",
+    "format": "commander",
+    "name": "Erinis: Choose your Background",
+    "why": "six cards in the Commander category, 252 cards of which 95 are lands, etched and foil finishes",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Erinis, Gloom Stalker",
+        "qty": 1,
+        "set": "clb",
+        "cn": "407",
+        "finish": "foil"
+      },
+      {
+        "name": "Master Chef",
+        "qty": 1,
+        "set": "clb",
+        "cn": "519",
+        "finish": "etched"
+      },
+      {
+        "name": "Scion of Halaster",
+        "qty": 1,
+        "set": "clb",
+        "cn": "498",
+        "finish": "etched"
+      },
+      {
+        "name": "Street Urchin",
+        "qty": 1,
+        "set": "clb",
+        "cn": "510",
+        "finish": "etched"
+      },
+      {
+        "name": "Sword Coast Sailor",
+        "qty": 1,
+        "set": "clb",
+        "cn": "489",
+        "finish": "etched"
+      },
+      {
+        "name": "Veteran Soldier",
+        "qty": 1,
+        "set": "clb",
+        "cn": "480",
+        "finish": "etched"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Aftermath Analyst",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "148",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Anger",
+        "qty": 1,
+        "set": "jud",
+        "cn": "77",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Armorcraft Judge",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "273",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ash Barrens",
+        "qty": 1,
+        "set": "mkc",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Austere Command",
+        "qty": 1,
+        "set": "mkc",
+        "cn": "56",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Avenger of Zendikar",
+        "qty": 1,
+        "set": "otc",
+        "cn": "187",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Back to Nature",
+        "qty": 1,
+        "set": "m15",
+        "cn": "169",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bant Panorama",
+        "qty": 1,
+        "set": "ncc",
+        "cn": "387",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bant Panorama",
+        "qty": 1,
+        "set": "ncc",
+        "cn": "387",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bant Panorama",
+        "qty": 1,
+        "set": "ncc",
+        "cn": "387",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Beacon of Unrest",
+        "qty": 1,
+        "set": "40k",
+        "cn": "194",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Beast Whisperer",
+        "qty": 1,
+        "set": "clu",
+        "cn": "158",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Beast Within",
+        "qty": 1,
+        "set": "c19",
+        "cn": "157",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bellowing Tanglewurm",
+        "qty": 1,
+        "set": "plst",
+        "cn": "SOM-111",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Big Score",
+        "qty": 1,
+        "set": "blc",
+        "cn": "193",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bilbo's Ring",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "397",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blasphemous Act",
+        "qty": 1,
+        "set": "blc",
+        "cn": "114",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloody Betrayal",
+        "qty": 1,
+        "set": "vow",
+        "cn": "147",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Brawn",
+        "qty": 1,
+        "set": "jud",
+        "cn": "107",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Brokers Hideout",
+        "qty": 1,
+        "set": "snc",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cabaretti Courtyard",
+        "qty": 1,
+        "set": "snc",
+        "cn": "249",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cankerbloom",
+        "qty": 1,
+        "set": "one",
+        "cn": "161",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Canopy Vista",
+        "qty": 1,
+        "set": "blc",
+        "cn": "296",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Case of the Locked Hothouse",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "155",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cast into the Fire",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "118",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cavern Whisperer",
+        "qty": 1,
+        "set": "iko",
+        "cn": "79",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cinder Glade",
+        "qty": 1,
+        "set": "blc",
+        "cn": "299",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Claws of Gix",
+        "qty": 1,
+        "set": "usg",
+        "cn": "290",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Clone",
+        "qty": 1,
+        "set": "m14",
+        "cn": "47",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Collective Resistance",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "147",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Commercial District",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "259",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Contest of Claws",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "12",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Counterspell",
+        "qty": 1,
+        "set": "6ed",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Craterhoof Behemoth",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "280",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Curse of the Swine",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "149",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cut a Deal",
+        "qty": 1,
+        "set": "clb",
+        "cn": "14",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Darksteel Citadel",
+        "qty": 1,
+        "set": "c21",
+        "cn": "285",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Deathrite Shaman",
+        "qty": 1,
+        "set": "gk1",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Decree of Pain",
+        "qty": 1,
+        "set": "40k",
+        "cn": "198",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Defiler of Vigor",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "160",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Delighted Halfling",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "158",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Demolition Field",
+        "qty": 1,
+        "set": "otc",
+        "cn": "283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Desert of the Indomitable",
+        "qty": 1,
+        "set": "otc",
+        "cn": "285",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dirge Bat",
+        "qty": 1,
+        "set": "iko",
+        "cn": "84",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Disciple of Freyalise // Garden of Freyalise",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "250",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dread Presence",
+        "qty": 1,
+        "set": "j22",
+        "cn": "403",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dreamscape Artist",
+        "qty": 1,
+        "set": "tsr",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dreamtail Heron",
+        "qty": 1,
+        "set": "plst",
+        "cn": "IKO-47",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Duskwatch Recruiter // Krallenhorde Howler",
+        "qty": 1,
+        "set": "soi",
+        "cn": "203",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Embodiment of Insight",
+        "qty": 1,
+        "set": "znc",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Emeria Angel",
+        "qty": 1,
+        "set": "moc",
+        "cn": "183",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Emeria Shepherd",
+        "qty": 1,
+        "set": "plst",
+        "cn": "BFZ-22",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Etali, Primal Conqueror // Etali, Primal Sickness",
+        "qty": 1,
+        "set": "mom",
+        "cn": "298",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Eternal Witness",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "286",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Evolution Witness",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "151",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Evolving Wilds",
+        "qty": 1,
+        "set": "blc",
+        "cn": "302",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Excavation",
+        "qty": 1,
+        "set": "pcy",
+        "cn": "33",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Exsanguinate",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "173",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ezuri's Predation",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "287",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fabled Passage",
+        "qty": 1,
+        "set": "pw21",
+        "cn": "4",
+        "finish": "foil"
+      },
+      {
+        "name": "Faith's Reward",
+        "qty": 1,
+        "set": "cn2",
+        "cn": "84",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Farmer Cotton",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "55",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Felidar Retreat",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "821",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fertilid",
+        "qty": 1,
+        "set": "moc",
+        "cn": "296",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Filth",
+        "qty": 1,
+        "set": "plst",
+        "cn": "JUD-66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Firemane Commando",
+        "qty": 1,
+        "set": "moc",
+        "cn": "73",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fog",
+        "qty": 1,
+        "set": "6ed",
+        "cn": "230",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forest",
+        "qty": 13,
+        "set": "s99",
+        "cn": "173",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forest",
+        "qty": 9,
+        "set": "7ed",
+        "cn": "331",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Garruk's Uprising",
+        "qty": 1,
+        "set": "blc",
+        "cn": "219",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gemrazer",
+        "qty": 1,
+        "set": "iko",
+        "cn": "155",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Generous Gift",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "26",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Geyserfield Stalker",
+        "qty": 1,
+        "set": "bfz",
+        "cn": "111",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Glorious Sunrise",
+        "qty": 1,
+        "set": "dbl",
+        "cn": "467",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Go for the Throat",
+        "qty": 1,
+        "set": "moc",
+        "cn": "250",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "God-Eternal Oketra",
+        "qty": 1,
+        "set": "drc",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Greed",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "274",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gretchen Titchwillow",
+        "qty": 1,
+        "set": "afr",
+        "cn": "223",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Guardian Project",
+        "qty": 1,
+        "set": "rvr",
+        "cn": "349",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Guul Draz Overseer",
+        "qty": 1,
+        "set": "bfz",
+        "cn": "112",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hardened Scales",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "243",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Haunted Library",
+        "qty": 1,
+        "set": "voc",
+        "cn": "6",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hedge Maze",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "262",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hickory Woodlot",
+        "qty": 1,
+        "set": "mmq",
+        "cn": "319",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hijack",
+        "qty": 1,
+        "set": "plst",
+        "cn": "XLN-148",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hunter's Insight",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "296",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "In Garruk's Wake",
+        "qty": 1,
+        "set": "clb",
+        "cn": "759",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Inga and Esika",
+        "qty": 1,
+        "set": "mom",
+        "cn": "229",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Insight",
+        "qty": 1,
+        "set": "tmp",
+        "cn": "68",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Inspiring Call",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "244",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Inspiring Leader",
+        "qty": 1,
+        "set": "clb",
+        "cn": "475",
+        "finish": "etched"
+      },
+      {
+        "name": "Intangible Virtue",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "31",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Iridescent Vinelasher",
+        "qty": 1,
+        "set": "blb",
+        "cn": "99",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Island",
+        "qty": 9,
+        "set": "s99",
+        "cn": "161",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Jund Panorama",
+        "qty": 1,
+        "set": "ncc",
+        "cn": "408",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Jund Panorama",
+        "qty": 1,
+        "set": "ncc",
+        "cn": "408",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Keep Watch",
+        "qty": 1,
+        "set": "jud",
+        "cn": "43",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kishla Skimmer",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "201",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Krosan Grip",
+        "qty": 1,
+        "set": "c21",
+        "cn": "198",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Life // Death",
+        "qty": 1,
+        "set": "apc",
+        "cn": "130",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Loot, Exuberant Explorer",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "106",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Loran of the Third Path",
+        "qty": 1,
+        "set": "blc",
+        "cn": "143",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Maestros Theater",
+        "qty": 1,
+        "set": "snc",
+        "cn": "251",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Maestros Theater",
+        "qty": 1,
+        "set": "snc",
+        "cn": "251",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Meriadoc Brandybuck",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "314",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mindleecher",
+        "qty": 1,
+        "set": "c20",
+        "cn": "44",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Moraug, Fury of Akoum",
+        "qty": 1,
+        "set": "znr",
+        "cn": "300",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 7,
+        "set": "7ed",
+        "cn": "340",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Negate",
+        "qty": 1,
+        "set": "mom",
+        "cn": "68",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ob Nixilis, the Fallen",
+        "qty": 1,
+        "set": "plst",
+        "cn": "IMA-101",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Obscura Storefront",
+        "qty": 1,
+        "set": "snc",
+        "cn": "252",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Obscura Storefront",
+        "qty": 1,
+        "set": "dsc",
+        "cn": "291",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Obscura Storefront",
+        "qty": 1,
+        "set": "dsc",
+        "cn": "291",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ohran Frostfang",
+        "qty": 1,
+        "set": "c19",
+        "cn": "33",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Oran-Rief Hydra",
+        "qty": 1,
+        "set": "e01",
+        "cn": "69",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Overprotect",
+        "qty": 1,
+        "set": "blb",
+        "cn": "185",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Path to Exile",
+        "qty": 1,
+        "set": "blc",
+        "cn": "147",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Peat Bog",
+        "qty": 1,
+        "set": "plst",
+        "cn": "MMQ-322",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Peregrin Took",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "181",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pirate's Pillage",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "120",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Plains",
+        "qty": 9,
+        "set": "ptk",
+        "cn": "166",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Preacher of the Schism",
+        "qty": 1,
+        "set": "lci",
+        "cn": "113",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pridemalkin",
+        "qty": 1,
+        "set": "moc",
+        "cn": "308",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Progenitor Mimic",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "212",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Promising Vein",
+        "qty": 1,
+        "set": "lci",
+        "cn": "279",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Putrid Imp",
+        "qty": 1,
+        "set": "tor",
+        "cn": "77",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Quarrel's End",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "141",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Quasiduplicate",
+        "qty": 1,
+        "set": "rvr",
+        "cn": "55",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rabble Rousing",
+        "qty": 1,
+        "set": "snc",
+        "cn": "24",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ram Through",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "314",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rampaging Baloths",
+        "qty": 1,
+        "set": "blc",
+        "cn": "233",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reality Shift",
+        "qty": 1,
+        "set": "woc",
+        "cn": "104",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reanimate",
+        "qty": 1,
+        "set": "jmp",
+        "cn": "270",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reconnaissance Mission",
+        "qty": 1,
+        "set": "woc",
+        "cn": "105",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Remote Farm",
+        "qty": 1,
+        "set": "mmq",
+        "cn": "323",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Retreat to Hagra",
+        "qty": 1,
+        "set": "c18",
+        "cn": "116",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Retreat to Kazandu",
+        "qty": 1,
+        "set": "j25",
+        "cn": "707",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Retreat to Valakut",
+        "qty": 1,
+        "set": "bfz",
+        "cn": "153",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Return to Dust",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "136",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rhys the Redeemed",
+        "qty": 1,
+        "set": "plst",
+        "cn": "SHM-237",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rishkar, Peema Renegade",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "317",
+        "finish": "foil"
+      },
+      {
+        "name": "Rishkar's Expertise",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "254",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Riveteers Overlook",
+        "qty": 1,
+        "set": "snc",
+        "cn": "255",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rose Room Treasurer",
+        "qty": 1,
+        "set": "blc",
+        "cn": "201",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rydia, Summoner of Mist",
+        "qty": 1,
+        "set": "fin",
+        "cn": "239",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sandstone Needle",
+        "qty": 1,
+        "set": "mmq",
+        "cn": "326",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Saprazzan Skerry",
+        "qty": 1,
+        "set": "mmq",
+        "cn": "328",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sarinth Greatwurm",
+        "qty": 1,
+        "set": "bro",
+        "cn": "220",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sawtusk Demolisher",
+        "qty": 1,
+        "set": "c20",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Scattered Groves",
+        "qty": 1,
+        "set": "akh",
+        "cn": "247",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Scavenger Grounds",
+        "qty": 1,
+        "set": "otc",
+        "cn": "316",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Scute Swarm",
+        "qty": 1,
+        "set": "otc",
+        "cn": "205",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Seize the Spotlight",
+        "qty": 1,
+        "set": "otc",
+        "cn": "179",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sheltered Thicket",
+        "qty": 1,
+        "set": "akh",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shire Terrace",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "261",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Silverglade Pathfinder",
+        "qty": 1,
+        "set": "plst",
+        "cn": "MMQ-270",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Six",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "169",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Slagwoods Bridge",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "256",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Slippery Karst",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "256",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Souvenir Snatcher",
+        "qty": 1,
+        "set": "c20",
+        "cn": "38",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spelunking",
+        "qty": 1,
+        "set": "lci",
+        "cn": "213",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spitfire Lagac",
+        "qty": 1,
+        "set": "znr",
+        "cn": "167",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spitting Image",
+        "qty": 1,
+        "set": "c21",
+        "cn": "229",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Splendid Reclamation",
+        "qty": 1,
+        "set": "vow",
+        "cn": "221",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sporemound",
+        "qty": 1,
+        "set": "scd",
+        "cn": "212",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Springheart Nantuko",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "171",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Stolen Identity",
+        "qty": 1,
+        "set": "ncc",
+        "cn": "233",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Surrak and Goreclaw",
+        "qty": 1,
+        "set": "mom",
+        "cn": "337",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 8,
+        "set": "unf",
+        "cn": "237",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sylvan Safekeeper",
+        "qty": 1,
+        "set": "jud",
+        "cn": "133",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tatyova, Benthic Druid",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "290",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Terramorphic Expanse",
+        "qty": 1,
+        "set": "blc",
+        "cn": "345",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Territorial Scythecat",
+        "qty": 1,
+        "set": "znr",
+        "cn": "213",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Territory Culler",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "173",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Gitrog Monster",
+        "qty": 1,
+        "set": "plst",
+        "cn": "SOI-245",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Timeless Witness",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "179",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tireless Provisioner",
+        "qty": 1,
+        "set": "blc",
+        "cn": "243",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Titania, Protector of Argoth",
+        "qty": 1,
+        "set": "otc",
+        "cn": "210",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Toggo, Goblin Weaponsmith",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "204",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tormod, the Desecrator",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "155",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Toski, Bearer of Secrets",
+        "qty": 1,
+        "set": "blc",
+        "cn": "244",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tunneling Geopede",
+        "qty": 1,
+        "set": "bfz",
+        "cn": "158",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Undercover Operative",
+        "qty": 1,
+        "set": "snc",
+        "cn": "63",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Underground Mortuary",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "271",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unexpected Windfall",
+        "qty": 1,
+        "set": "afr",
+        "cn": "164",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Urborg, Tomb of Yawgmoth",
+        "qty": 1,
+        "set": "plc",
+        "cn": "165",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Urza's Cave",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "234",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Valor",
+        "qty": 1,
+        "set": "jud",
+        "cn": "32",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Viridian Revel",
+        "qty": 1,
+        "set": "som",
+        "cn": "132",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "White Sun's Zenith",
+        "qty": 1,
+        "set": "onc",
+        "cn": "90",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Will of the Sultai",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "49",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Will of the Temur",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "24",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wonder",
+        "qty": 1,
+        "set": "jud",
+        "cn": "54",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wood Elves",
+        "qty": 1,
+        "set": "7ed",
+        "cn": "284",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "World Shaper",
+        "qty": 1,
+        "set": "otc",
+        "cn": "214",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Yavimaya, Cradle of Growth",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "441",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Your Temple Is Under Attack",
+        "qty": 1,
+        "set": "clb",
+        "cn": "52",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "front-name": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-type": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

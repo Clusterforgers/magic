@@ -1,0 +1,751 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "12737348",
+    "url": "https://archidekt.com/decks/12737348",
+    "format": "commander",
+    "name": "Shameless Burakos (background deckbuilding contest)",
+    "why": "commander plus a Background as second commander, basic-land stacks, foils, 'STH-134' style collector numbers",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Burakos, Party Leader",
+        "qty": 1,
+        "set": "clb",
+        "cn": "653",
+        "finish": "foil"
+      },
+      {
+        "name": "Shameless Charlatan",
+        "qty": 1,
+        "set": "clb",
+        "cn": "96",
+        "finish": "nonFoil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Aetherling",
+        "qty": 1,
+        "set": "dgm",
+        "cn": "11",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Amonkhet Raceway",
+        "qty": 1,
+        "set": "dft",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Apprentice Wizard",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "40",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Lighthouse",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "985",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "105",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Auton Soldier",
+        "qty": 1,
+        "set": "who",
+        "cn": "36",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Awakened Amalgam",
+        "qty": 1,
+        "set": "rix",
+        "cn": "175",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bident of Thassa",
+        "qty": 1,
+        "set": "blc",
+        "cn": "162",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Black Market Connections",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "181",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blinkmoth Nexus",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "311",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bojuka Bog",
+        "qty": 1,
+        "set": "pz1",
+        "cn": "135",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Broodbirth Viper",
+        "qty": 1,
+        "set": "c15",
+        "cn": "10",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cactus Preserve",
+        "qty": 1,
+        "set": "otc",
+        "cn": "40",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cephalid Facetaker",
+        "qty": 1,
+        "set": "ncc",
+        "cn": "23",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Changeling Outcast",
+        "qty": 1,
+        "set": "otc",
+        "cn": "128",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "pip",
+        "cn": "259",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Consuming Aberration",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Crawling Barrens",
+        "qty": 1,
+        "set": "znr",
+        "cn": "262",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Creeping Tar Pit",
+        "qty": 1,
+        "set": "clb",
+        "cn": "888",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dalek Squadron",
+        "qty": 1,
+        "set": "who",
+        "cn": "65",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Decree of Pain",
+        "qty": 1,
+        "set": "dsc",
+        "cn": "136",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Demolition Field",
+        "qty": 1,
+        "set": "bro",
+        "cn": "260",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Demon of Wailing Agonies",
+        "qty": 1,
+        "set": "c14",
+        "cn": "21",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dimir Aqueduct",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "322",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dimir Infiltrator",
+        "qty": 1,
+        "set": "pca",
+        "cn": "86",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dimir Signet",
+        "qty": 1,
+        "set": "drc",
+        "cn": "129",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Disallow",
+        "qty": 1,
+        "set": "aer",
+        "cn": "31",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Drowned Catacomb",
+        "qty": 1,
+        "set": "pip",
+        "cn": "262",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Eagle Vision",
+        "qty": 1,
+        "set": "acr",
+        "cn": "17",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Enduring Curiosity",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "51",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Escape Artist",
+        "qty": 1,
+        "set": "ody",
+        "cn": "84",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fallen Shinobi",
+        "qty": 1,
+        "set": "otc",
+        "cn": "226",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Feign Death",
+        "qty": 1,
+        "set": "afr",
+        "cn": "103",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fellwar Stone",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "318",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ghostly Pilferer",
+        "qty": 1,
+        "set": "otc",
+        "cn": "98",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gingerbrute",
+        "qty": 1,
+        "set": "woe",
+        "cn": "246",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gix, Yawgmoth Praetor",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "181",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Grim Hireling",
+        "qty": 1,
+        "set": "clb",
+        "cn": "755",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hall of Storm Giants",
+        "qty": 1,
+        "set": "afr",
+        "cn": "257",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Heartstone",
+        "qty": 1,
+        "set": "plst",
+        "cn": "STH-134",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Helm of the Host",
+        "qty": 1,
+        "set": "blc",
+        "cn": "276",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Inkmoth Nexus",
+        "qty": 1,
+        "set": "mbs",
+        "cn": "145",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Invisible Stalker",
+        "qty": 1,
+        "set": "znc",
+        "cn": "27",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Island",
+        "qty": 5,
+        "set": "mh2",
+        "cn": "483",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lord of the Void",
+        "qty": 1,
+        "set": "rvr",
+        "cn": "81",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Marang River Prowler",
+        "qty": 1,
+        "set": "znc",
+        "cn": "29",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mind Stone",
+        "qty": 1,
+        "set": "dsc",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mirage Mirror",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "962",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mishra's Factory",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "251",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mist-Cloaked Herald",
+        "qty": 1,
+        "set": "m19",
+        "cn": "310",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mist-Syndicate Naga",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "58",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mistwalker",
+        "qty": 1,
+        "set": "khm",
+        "cn": "68",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Morphic Pool",
+        "qty": 1,
+        "set": "clb",
+        "cn": "357",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Muraganda Raceway",
+        "qty": 1,
+        "set": "dft",
+        "cn": "257",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mutavault",
+        "qty": 1,
+        "set": "clb",
+        "cn": "903",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Otawara, Soaring City",
+        "qty": 1,
+        "set": "neo",
+        "cn": "271",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Path of Ancestry",
+        "qty": 1,
+        "set": "pip",
+        "cn": "279",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Primaris Eliminator",
+        "qty": 1,
+        "set": "40k",
+        "cn": "50",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Quicksilver Gargantuan",
+        "qty": 1,
+        "set": "som",
+        "cn": "39",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reconnaissance Mission",
+        "qty": 1,
+        "set": "woc",
+        "cn": "105",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Restless Reef",
+        "qty": 1,
+        "set": "lci",
+        "cn": "282",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Robe of the Archmagi",
+        "qty": 1,
+        "set": "clb",
+        "cn": "91",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rogue's Passage",
+        "qty": 1,
+        "set": "pip",
+        "cn": "283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Senator Peacock",
+        "qty": 1,
+        "set": "clu",
+        "cn": "2",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shipwreck Marsh",
+        "qty": 1,
+        "set": "inr",
+        "cn": "284",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shoreline Looter",
+        "qty": 1,
+        "set": "blb",
+        "cn": "70",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Silent Hallcreeper",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "72",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Slip Out the Back",
+        "qty": 1,
+        "set": "clu",
+        "cn": "99",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Slippery Scoundrel",
+        "qty": 1,
+        "set": "rix",
+        "cn": "55",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Slither Blade",
+        "qty": 1,
+        "set": "otc",
+        "cn": "114",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sol Ring",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "106",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spawning Kraken",
+        "qty": 1,
+        "set": "c21",
+        "cn": "33",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spawning Pool",
+        "qty": 1,
+        "set": "10e",
+        "cn": "358",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spell Swindle",
+        "qty": 1,
+        "set": "moc",
+        "cn": "237",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sphinx Ambassador",
+        "qty": 1,
+        "set": "m10",
+        "cn": "73",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spymaster's Vault",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "230",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Starting Column",
+        "qty": 1,
+        "set": "dft",
+        "cn": "244",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sublime Epiphany",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "167",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sunken Ruins",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "326",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 3,
+        "set": "mh2",
+        "cn": "485",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Takenuma, Abandoned Mire",
+        "qty": 1,
+        "set": "neo",
+        "cn": "278",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Talisman of Dominance",
+        "qty": 1,
+        "set": "drc",
+        "cn": "141",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Black Gate",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "490",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Speed Demon",
+        "qty": 1,
+        "set": "dft",
+        "cn": "105",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tormented Soul",
+        "qty": 1,
+        "set": "pca",
+        "cn": "38",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Training Grounds",
+        "qty": 1,
+        "set": "mat",
+        "cn": "9",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Undercity Sewers",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "270",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Underground River",
+        "qty": 1,
+        "set": "bro",
+        "cn": "267",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Universal Automaton",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "235",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Watery Grave",
+        "qty": 1,
+        "set": "rvr",
+        "cn": "291",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Withering Torment",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "124",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Worn Powerstone",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "298",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-type": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

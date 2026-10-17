@@ -1,0 +1,30 @@
+Mainboard
+4x Boggart Trawler // Boggart Bog
+2x Cecil, Dark Knight // Cecil, Redeemed Paladin
+4x Chancellor of the Dross
+4x Iridescent Vinelasher
+2x Orcish Bowmasters
+4x Sorin of House Markov // Sorin, Ravenous Neonate
+4x Gonti's Machinations
+4x Necrodominance
+1x Force of Despair
+4x Lightning Bolt
+1x March of Wretched Sorrow
+4x Soul Spike
+1x Blood Crypt
+1x Bloodstained Mire
+4x Marsh Flats
+1x Overgrown Tomb
+1x Raucous Theater
+4x Swamp
+4x Verdant Catacombs
+4x Bump in the Night
+2x Witherbloom Command
+
+Sideboard
+3x Force of Despair
+2x Magebane Lizard
+2x Pyroclasm
+3x Surgical Extraction
+3x Thoughtseize
+2x Witherbloom Command

@@ -1,0 +1,27 @@
+Mainboard
+4x Chromatic Star
+4x Experimental Synthesizer
+4x Legion Extruder
+4x Mishra's Bauble
+3x Marionette Apprentice
+3x Ravenous Robots
+4x Voldaren Epicure
+2x Weapons Manufacturing
+4x Galvanic Blast
+4x Lightning Bolt
+4x Shrapnel Blast
+4x Blood Crypt
+2x Bloodstained Mire
+1x Den of the Bugbear
+7x Mountain
+1x Sokenzan, Crucible of Defiance
+4x Sulfurous Springs
+1x Swamp
+
+Sideboard
+1x Dragon's Claw
+1x Pyrite Spellbomb
+3x Roiling Vortex
+4x Smash to Smithereens
+4x Tormod's Crypt
+2x Unlicensed Disintegration

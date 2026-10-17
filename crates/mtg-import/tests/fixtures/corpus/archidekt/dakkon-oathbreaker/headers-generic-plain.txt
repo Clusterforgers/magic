@@ -1,0 +1,68 @@
+Commander
+1x Dakkon, Shadow Slayer
+1x Revival // Revenge
+
+Mainboard
+1x Aether Spellbomb
+1x Arcane Signet
+1x Chromatic Sphere
+1x Chromatic Star
+1x Codex Shredder
+1x Cranial Plating
+1x Executioner's Capsule
+1x Mind Stone
+1x Mishra's Bauble
+1x Mystic Forge
+1x Nettlecyst
+1x Nihil Spellbomb
+1x Pithing Needle
+1x Salvaging Station
+1x Sword of the Meek
+1x Thopter Foundry
+1x Time Sieve
+1x Trading Post
+1x Welding Jar
+1x Wishclaw Talisman
+1x Baleful Strix
+1x Emry, Lurker of the Loch
+1x Etherium Sculptor
+1x Ethersworn Canonist
+1x Glaring Fleshraker
+1x Kappa Cannoneer
+1x Lurrus of the Dream-Den
+1x Myr Retriever
+1x Oswald Fiddlebender
+1x Thassa's Oracle
+1x Treasure Mage
+1x Tribute Mage
+1x Trinket Mage
+1x Paradoxical Outcome
+1x Adarkar Wastes
+1x Aether Hub
+1x Ancient Den
+1x Arcane Sanctum
+1x Ash Barrens
+1x Caves of Koilos
+1x Command Tower
+1x Darksteel Citadel
+1x Gemstone Mine
+1x Goldmire Bridge
+1x Island
+1x Mistvault Bridge
+1x Phyrexia's Core
+1x Plains
+1x Power Depot
+1x Razortide Bridge
+1x Seat of the Synod
+1x Spire of Industry
+1x Swamp
+1x Underground River
+1x Sevinne's Reclamation
+1x Thoughtcast
+1x Voyage Home
+1x Wrath of God
+
+Sideboard
+1x Paradoxical Outcome
+1x Revival // Revenge
+1x Voyage Home

@@ -1,0 +1,87 @@
+1 K'rrik, Son of Yawgmoth (PJ21) 2
+1 Agatha's Soul Cauldron (PWOE) 242s
+1 Ancient Tomb (V12) 1
+1 Animate Dead (CED) 93
+1 Arcane Signet (SLD) 201
+1 Asmodeus the Archfiend (PAFR) 88s
+1 Balthor the Defiled (JUD) 61
+1 Beseech the Mirror (WOE) 82
+1 Beseech the Queen (V16) 1
+1 Bitter Triumph (LCI) 91
+1 Blood Celebrant (LGN) 61
+1 Blood Pet (7ED) 121★
+1 Buried Alive (ODY) 118
+1 Cabal Ritual (V16) 2
+1 Chainer, Dementia Master (TOR) 56
+1 Chrome Mox (PGPX) 2009
+1 City of Traitors (EXO) 143
+1 Corpse Dance (TMP) 116
+1 Crystal Vein (PD3) 24
+1 Culling the Weak (EXO) 55
+1 Cut Down (DMU) 432
+1 Dark Petition (PORI) 90s
+1 Dark Ritual (G09) 1
+1 Demonic Consultation (ICE) 121
+1 Demonic Tutor (CED) 105
+1 Diabolic Tutor (ODY) 129
+1 Dimir House Guard (RAV) 83
+1 Dismember (F12) 4
+1 Doctor Doom, Unrivaled (MSC) 654
+1 Emergence Zone (WAR) 245
+1 Entomb (G11) 4
+1 Exhume (PD3) 17
+1 Final Parting (DOM) 93
+1 Fleshwrither (FUT) 84
+1 Gemstone Caverns (TSR) 280
+1 Gray Merchant of Asphodel (THB) 355
+1 Grim Monolith (ULG) 126
+1 Grim Servant (MH3) 409
+1 Grim Tutor (PM21) 103s
+1 Heartless Summoning (ISD) 104
+1 Hoarding Broodlord (PMOM) 110s
+1 Homeward Path (J17) 4
+1 Imperial Seal (J16) 6
+1 Insatiable Avarice (POTJ) 91s
+1 Jet Medallion (TMP) 292
+1 Jeweled Amulet (ICE) 326
+1 Lake of the Dead (ALL) 140
+1 Lion's Eye Diamond (MIR) 307
+1 Lotus Petal (TMP) 294
+1 Malakir Rebirth / Malakir Mire (ZNR) 111
+1 Mana Vault (CED) 260
+1 Mausoleum Secrets (PGRN) 75s
+1 Mox Amber (PDOM) 224s
+1 Mox Diamond (STH) 138
+1 Necromancy (VIS) 64
+1 Necropotence (DKM) 7
+1 Necrotic Ooze (SOM) 72
+1 Nykthos, Shrine to Nyx (THS) 223
+1 Orcish Bowmasters (PLTR) 103s
+1 Overeager Apprentice (ODY) 154
+1 Peat Bog (MMQ) 322
+1 Phyrexian Tower (UMA) 248
+1 Praetor's Grasp (NPH) 71
+1 Rain of Filth (USG) 151
+1 Razaketh, the Foulblooded (PHOU) 73s
+1 Reanimate (F04) 10
+1 Sacrifice (CED) 125
+1 Saw in Half (UNF) 374
+1 Shallow Grave (MIR) 141
+1 Shrouded Lore (PLC) 91
+1 Sidisi, Undead Vizier (PDTK) 120s
+1 Sign in Blood (M11) 117
+1 Skirge Familiar (USG) 157
+1 Snuff Out (MMQ) 162
+1 Sol Ring (CC2) 7
+14 Swamp (PAL01) 9
+1 Takenuma, Abandoned Mire (PNEO) 278s
+1 Talon Gates of Madara (M3C) 134
+1 The Master of Lake-town (HOB) 77
+1 Unmarked Grave (PMH2) 106s
+1 Urborg, Tomb of Yawgmoth (V12) 13
+1 Urza's Saga (MH2) 380
+1 Vampiric Tutor (G00) 2
+1 Vile Entomber (MH2) 403
+1 Wishclaw Talisman (PELD) 110s
+1 Xiahou Dun, the One-Eyed (J12) 1
+1 Yawgmoth's Will (G07) 3

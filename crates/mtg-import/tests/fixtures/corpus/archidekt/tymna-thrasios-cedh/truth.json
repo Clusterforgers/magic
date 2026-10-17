@@ -1,0 +1,1498 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "1727139",
+    "url": "https://archidekt.com/decks/1727139",
+    "format": "commander",
+    "name": "TnT cEDH 2026 | Tymna Thrasios v4.24 | cEDH Midrange | Thrasios Tymna Primer | Infinite Mana Self-Mill (No Proxies)",
+    "why": "partner pair, 12 categories of which 7 are excluded from the deck, 154 multi-category cards, a very long title, 73s-style numbers",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Thrasios, Triton Hero",
+        "qty": 1,
+        "set": "c16",
+        "cn": "46",
+        "finish": "foil"
+      },
+      {
+        "name": "Tymna the Weaver",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "539",
+        "finish": "etched"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Abrupt Decay",
+        "qty": 1,
+        "set": "plst",
+        "cn": "GK1-57",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "eld",
+        "cn": "331",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Assassin's Trophy",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "175",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Basalt Monolith",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "235",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Boseiju, Who Endures",
+        "qty": 1,
+        "set": "neo",
+        "cn": "266",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Breeding Pool",
+        "qty": 1,
+        "set": "rna",
+        "cn": "246",
+        "finish": "foil"
+      },
+      {
+        "name": "Carpet of Flowers",
+        "qty": 1,
+        "set": "usg",
+        "cn": "240",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cephalid Coliseum",
+        "qty": 1,
+        "set": "ody",
+        "cn": "317",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chain of Vapor",
+        "qty": 1,
+        "set": "ons",
+        "cn": "73",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chrome Mox",
+        "qty": 1,
+        "set": "ema",
+        "cn": "219",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "350",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Crop Rotation",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "161",
+        "finish": "foil"
+      },
+      {
+        "name": "Culling Ritual",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "921",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cyclonic Rift",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "47",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Deathrite Shaman",
+        "qty": 1,
+        "set": "rtr",
+        "cn": "213",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Delighted Halfling",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "158",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Delney, Streetwise Lookout",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "12",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Demonic Consultation",
+        "qty": 1,
+        "set": "ice",
+        "cn": "121",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Demonic Tutor",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "105",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Devoted Druid",
+        "qty": 1,
+        "set": "plst",
+        "cn": "UMA-162",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dispel",
+        "qty": 1,
+        "set": "rtr",
+        "cn": "36",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Drannith Magistrate",
+        "qty": 1,
+        "set": "iko",
+        "cn": "11",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dress Down",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "39",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Eladamri's Call",
+        "qty": 1,
+        "set": "pls",
+        "cn": "106",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Emergence Zone",
+        "qty": 1,
+        "set": "war",
+        "cn": "245",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Enlightened Tutor",
+        "qty": 1,
+        "set": "mir",
+        "cn": "14",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Esper Sentinel",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "12",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Eternal Witness",
+        "qty": 1,
+        "set": "5dn",
+        "cn": "86",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faerie Mastermind",
+        "qty": 1,
+        "set": "mom",
+        "cn": "58",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fierce Guardianship",
+        "qty": 1,
+        "set": "c20",
+        "cn": "35",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Finale of Devastation",
+        "qty": 1,
+        "set": "war",
+        "cn": "160",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flusterstorm",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "496",
+        "finish": "foil"
+      },
+      {
+        "name": "Force of Negation",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "50",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Force of Will",
+        "qty": 1,
+        "set": "all",
+        "cn": "28",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forest",
+        "qty": 1,
+        "set": "one",
+        "cn": "369",
+        "finish": "foil"
+      },
+      {
+        "name": "Gaea's Cradle",
+        "qty": 1,
+        "set": "usg",
+        "cn": "321",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gifts Ungiven",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "51",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gleaming Splendor",
+        "qty": 1,
+        "set": "hob",
+        "cn": "15",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Godless Shrine",
+        "qty": 1,
+        "set": "rna",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Grim Monolith",
+        "qty": 1,
+        "set": "ulg",
+        "cn": "126",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hallowed Fountain",
+        "qty": 1,
+        "set": "sld",
+        "cn": "123",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hazel's Brewmaster",
+        "qty": 1,
+        "set": "blc",
+        "cn": "52",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kinnan, Bonder Prodigy",
+        "qty": 1,
+        "set": "iko",
+        "cn": "192",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kutzil, Malamet Exemplar",
+        "qty": 1,
+        "set": "lci",
+        "cn": "304",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lotho, Corrupt Shirriff",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "213",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mana Drain",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "57",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Marsh Flats",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Minamo, School at Water's Edge",
+        "qty": 1,
+        "set": "chk",
+        "cn": "279",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mindbreak Trap",
+        "qty": 1,
+        "set": "zen",
+        "cn": "57",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Misty Rainforest",
+        "qty": 1,
+        "set": "zen",
+        "cn": "220",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mockingbird",
+        "qty": 1,
+        "set": "blb",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Morphic Pool",
+        "qty": 1,
+        "set": "clb",
+        "cn": "357",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mox Amber",
+        "qty": 1,
+        "set": "brr",
+        "cn": "98",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mystic Remora",
+        "qty": 1,
+        "set": "ice",
+        "cn": "87",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mystical Tutor",
+        "qty": 1,
+        "set": "6ed",
+        "cn": "83",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nature's Claim",
+        "qty": 1,
+        "set": "wwk",
+        "cn": "108",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nature's Rhythm",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "150",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Noxious Revival",
+        "qty": 1,
+        "set": "onc",
+        "cn": "110",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Oboro Breezecaller",
+        "qty": 1,
+        "set": "sok",
+        "cn": "48",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Orcish Bowmasters",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "103",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Otawara, Soaring City",
+        "qty": 1,
+        "set": "neo",
+        "cn": "271",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Overgrown Tomb",
+        "qty": 1,
+        "set": "rav",
+        "cn": "279",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Path to Exile",
+        "qty": 1,
+        "set": "md1",
+        "cn": "3",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pollywog Prodigy",
+        "qty": 1,
+        "set": "blc",
+        "cn": "50",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Power Artifact",
+        "qty": 1,
+        "set": "atq",
+        "cn": "11",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ranger-Captain of Eos",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "21",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reanimate",
+        "qty": 1,
+        "set": "uma",
+        "cn": "110",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rejuvenating Springs",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "354",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rhystic Study",
+        "qty": 1,
+        "set": "pcy",
+        "cn": "45",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Savannah",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "285",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Scrubland",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "286",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sea of Clouds",
+        "qty": 1,
+        "set": "zne",
+        "cn": "16",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Silence",
+        "qty": 1,
+        "set": "m10",
+        "cn": "31",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Smothering Tithe",
+        "qty": 1,
+        "set": "rna",
+        "cn": "22",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Snap",
+        "qty": 1,
+        "set": "ulg",
+        "cn": "43",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sol Ring",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "274",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Survival of the Fittest",
+        "qty": 1,
+        "set": "exo",
+        "cn": "129",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swan Song",
+        "qty": 1,
+        "set": "ths",
+        "cn": "65",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swift Reconfiguration",
+        "qty": 1,
+        "set": "nec",
+        "cn": "45",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tainted Pact",
+        "qty": 1,
+        "set": "ody",
+        "cn": "164",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Talon Gates of Madara",
+        "qty": 1,
+        "set": "m3c",
+        "cn": "134",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Temple Garden",
+        "qty": 1,
+        "set": "grn",
+        "cn": "258",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thassa's Oracle",
+        "qty": 1,
+        "set": "pthb",
+        "cn": "73s",
+        "finish": "foil"
+      },
+      {
+        "name": "The Cabbage Merchant",
+        "qty": 1,
+        "set": "tle",
+        "cn": "134",
+        "finish": "foil"
+      },
+      {
+        "name": "The One Ring",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "451",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tishana's Tidebinder",
+        "qty": 1,
+        "set": "lci",
+        "cn": "335",
+        "finish": "foil"
+      },
+      {
+        "name": "Trickbind",
+        "qty": 1,
+        "set": "tsp",
+        "cn": "88",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tundra",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "289",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Underground Sea",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "290",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Undergrowth Stadium",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "359",
+        "finish": "foil"
+      },
+      {
+        "name": "Vampiric Tutor",
+        "qty": 1,
+        "set": "plst",
+        "cn": "EMA-112",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vault of Champions",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "360",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Verdant Catacombs",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "479",
+        "finish": "foil"
+      },
+      {
+        "name": "Voice of Victory",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "331",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Walking Ballista",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "306",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wan Shi Tong, Librarian",
+        "qty": 1,
+        "set": "tla",
+        "cn": "78",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Watery Grave",
+        "qty": 1,
+        "set": "gtc",
+        "cn": "249",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Windswept Heath",
+        "qty": 1,
+        "set": "ktk",
+        "cn": "248",
+        "finish": "nonFoil"
+      }
+    ],
+    "maybeboard": [
+      {
+        "name": "Ad Nauseam",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "76",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Adarkar Wastes",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "243",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Alchemist's Refuge",
+        "qty": 1,
+        "set": "avr",
+        "cn": "225",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "An Offer You Can't Refuse",
+        "qty": 1,
+        "set": "snc",
+        "cn": "51",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Archivist of Oghma",
+        "qty": 1,
+        "set": "clb",
+        "cn": "4",
+        "finish": "foil"
+      },
+      {
+        "name": "Armageddon",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "2",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Armored Scrapgorger",
+        "qty": 1,
+        "set": "one",
+        "cn": "158",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Autumn's Veil",
+        "qty": 1,
+        "set": "m12",
+        "cn": "164",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Avacyn's Pilgrim",
+        "qty": 1,
+        "set": "isd",
+        "cn": "170",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Banishing Knack",
+        "qty": 1,
+        "set": "eve",
+        "cn": "17",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Birds of Paradise",
+        "qty": 1,
+        "set": "m10",
+        "cn": "168",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blind Obedience",
+        "qty": 1,
+        "set": "gtc",
+        "cn": "6",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloom Tender",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blue Elemental Blast",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "49",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Borne Upon a Wind",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "44",
+        "finish": "foil"
+      },
+      {
+        "name": "Capsize",
+        "qty": 1,
+        "set": "tmp",
+        "cn": "55",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chord of Calling",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "158",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Collector Ouphe",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "158",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Containment Priest",
+        "qty": 1,
+        "set": "m21",
+        "cn": "13",
+        "finish": "foil"
+      },
+      {
+        "name": "Copy Artifact",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "53",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dark Ritual",
+        "qty": 1,
+        "set": "2ed",
+        "cn": "99",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Derevi, Empyrial Tactician",
+        "qty": 1,
+        "set": "cma",
+        "cn": "176",
+        "finish": "foil"
+      },
+      {
+        "name": "Deserted Temple",
+        "qty": 1,
+        "set": "ody",
+        "cn": "320",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Diabolic Intent",
+        "qty": 1,
+        "set": "bro",
+        "cn": "324",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Divining Witch",
+        "qty": 1,
+        "set": "nem",
+        "cn": "57",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dovin's Veto",
+        "qty": 1,
+        "set": "war",
+        "cn": "193",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Eiganjo, Seat of the Empire",
+        "qty": 1,
+        "set": "neo",
+        "cn": "268",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Eldritch Evolution",
+        "qty": 1,
+        "set": "plst",
+        "cn": "EMN-155",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Elves of Deep Shadow",
+        "qty": 1,
+        "set": "drk",
+        "cn": "76",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Elvish Spirit Guide",
+        "qty": 1,
+        "set": "all",
+        "cn": "89",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Emiel the Blessed",
+        "qty": 1,
+        "set": "j22",
+        "cn": "180",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Enduring Vitality",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "176",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faeburrow Elder",
+        "qty": 1,
+        "set": "eld",
+        "cn": "190",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faerie Artisans",
+        "qty": 1,
+        "set": "c16",
+        "cn": "8",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Force of Vigor",
+        "qty": 1,
+        "set": "plst",
+        "cn": "MH1-164",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fracture",
+        "qty": 1,
+        "set": "stx",
+        "cn": "188",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Freed from the Real",
+        "qty": 1,
+        "set": "sok",
+        "cn": "38",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Grand Abolisher",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "27",
+        "finish": "foil"
+      },
+      {
+        "name": "Green Slime",
+        "qty": 1,
+        "set": "clb",
+        "cn": "680",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hermit Druid",
+        "qty": 1,
+        "set": "plst",
+        "cn": "STH-108",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Island",
+        "qty": 1,
+        "set": "one",
+        "cn": "366",
+        "finish": "foil"
+      },
+      {
+        "name": "King T'Challa // Black Panther, Hope Enduring",
+        "qty": 1,
+        "set": "msh",
+        "cn": "219",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Laboratory Maniac",
+        "qty": 1,
+        "set": "isd",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lapis Lazuli Talisman",
+        "qty": 1,
+        "set": "ice",
+        "cn": "327",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Machine God's Effigy",
+        "qty": 1,
+        "set": "brc",
+        "cn": "16",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mana Crypt",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "361",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "March of Swirling Mist",
+        "qty": 1,
+        "set": "neo",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Matoya, Archon Elder",
+        "qty": 1,
+        "set": "fin",
+        "cn": "62",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mistrise Village",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "261",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mox Opal",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "275",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Muddle the Mixture",
+        "qty": 1,
+        "set": "rav",
+        "cn": "60",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Neoform",
+        "qty": 1,
+        "set": "war",
+        "cn": "206",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ninja Pizza",
+        "qty": 1,
+        "set": "tmc",
+        "cn": "32",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Noble Hierarch",
+        "qty": 1,
+        "set": "mm2",
+        "cn": "151",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Open the Armory",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "34",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Opposition Agent",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "141",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pact of Negation",
+        "qty": 1,
+        "set": "a25",
+        "cn": "68",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Paradise Druid",
+        "qty": 1,
+        "set": "war",
+        "cn": "171",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Peacekeeper",
+        "qty": 1,
+        "set": "wth",
+        "cn": "22",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pemmin's Aura",
+        "qty": 1,
+        "set": "scg",
+        "cn": "45",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Permission Denied",
+        "qty": 1,
+        "set": "rex",
+        "cn": "17",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Phyrexian Metamorph",
+        "qty": 1,
+        "set": "nph",
+        "cn": "42",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Plains",
+        "qty": 1,
+        "set": "one",
+        "cn": "365",
+        "finish": "foil"
+      },
+      {
+        "name": "Praetor's Grasp",
+        "qty": 1,
+        "set": "nph",
+        "cn": "71",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Prophet of Distortion",
+        "qty": 1,
+        "set": "ogw",
+        "cn": "46",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rath's Edge",
+        "qty": 1,
+        "set": "nem",
+        "cn": "142",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Recruiter of the Guard",
+        "qty": 1,
+        "set": "plst",
+        "cn": "CN2-22",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Retraction Helix",
+        "qty": 1,
+        "set": "bng",
+        "cn": "49",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Samut, Tyrant of Naktamun",
+        "qty": 1,
+        "set": "fra",
+        "cn": "220",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Savage Summoning",
+        "qty": 1,
+        "set": "m14",
+        "cn": "194",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Seedborn Muse",
+        "qty": 1,
+        "set": "lgn",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shang-Chi, Master of Kung Fu",
+        "qty": 1,
+        "set": "msh",
+        "cn": "187",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shred Memory",
+        "qty": 1,
+        "set": "rav",
+        "cn": "105",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Soulless Jailer",
+        "qty": 1,
+        "set": "one",
+        "cn": "241",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sowing Mycospawn",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "170",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Springheart Nantuko",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "171",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Steal Enchantment",
+        "qty": 1,
+        "set": "tmp",
+        "cn": "90",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Stonework Packbeast",
+        "qty": 1,
+        "set": "znr",
+        "cn": "255",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Strip Mine",
+        "qty": 1,
+        "set": "4ed",
+        "cn": "363",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 1,
+        "set": "one",
+        "cn": "367",
+        "finish": "foil"
+      },
+      {
+        "name": "Swords to Plowshares",
+        "qty": 1,
+        "set": "ice",
+        "cn": "54",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sylvan Scrying",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "130",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Talisman of Dominance",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "253",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Talisman of Progress",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "256",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Time of Need",
+        "qty": 1,
+        "set": "chk",
+        "cn": "247",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Transmute Artifact",
+        "qty": 1,
+        "set": "atq",
+        "cn": "14",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Treva's Ruins",
+        "qty": 1,
+        "set": "pls",
+        "cn": "143",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tyvar, Jubilant Brawler",
+        "qty": 1,
+        "set": "one",
+        "cn": "218",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Urban Burgeoning",
+        "qty": 1,
+        "set": "rtr",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Urborg, Tomb of Yawgmoth",
+        "qty": 1,
+        "set": "tsr",
+        "cn": "287",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Urza's Saga",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "259",
+        "finish": "foil"
+      },
+      {
+        "name": "Valley Floodcaller",
+        "qty": 1,
+        "set": "blb",
+        "cn": "308",
+        "finish": "foil"
+      },
+      {
+        "name": "Veil of Summer",
+        "qty": 1,
+        "set": "m20",
+        "cn": "198",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Winding Canyons",
+        "qty": 1,
+        "set": "wth",
+        "cn": "167",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wishclaw Talisman",
+        "qty": 1,
+        "set": "eld",
+        "cn": "110",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Worldly Tutor",
+        "qty": 1,
+        "set": "mir",
+        "cn": "255",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Yavimaya Hollow",
+        "qty": 1,
+        "set": "uds",
+        "cn": "143",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Yavimaya, Cradle of Growth",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "441",
+        "finish": "etched"
+      },
+      {
+        "name": "Yawgmoth's Will",
+        "qty": 1,
+        "set": "usg",
+        "cn": "171",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "front-name": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-type": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

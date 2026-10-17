@@ -1,0 +1,92 @@
+About
+Name Yuriko Tempo (OUTDATED PLEASE DO NOT USE)
+
+Commander
+1 Yuriko, the Tiger's Shadow
+
+Deck
+1 Agadeem's Awakening #Lands
+1 An Offer You Can't Refuse #Counterspells
+1 Bloodchief Ascension
+1 Bloodstained Mire #Lands
+1 Boggart Trawler
+1 Brainstorm #Topdeck Filter
+1 Changeling Outcast #Ninjas
+1 Chrome Mox #Ramp
+1 Command Tower #Lands
+1 Commandeer #Counterspells
+1 Consign /// Oblivion #Utility Removal
+1 Dark Ritual #Ramp
+1 Dauthi Voidwalker #Stax
+1 Deadly Rollick #Creature Removal
+1 Demonic Tutor #Tutors
+1 Dismember #Creature Removal
+1 Faerie Seer #Topdeck Filter
+1 Fell the Profane
+1 Fierce Guardianship #Counterspells
+1 Flare of Denial
+1 Flare of Malice
+1 Flooded Strand #Lands
+1 Flusterstorm #Counterspells
+1 Force of Negation #Counterspells
+1 Force of Will #Counterspells
+1 Fourth Bridge Prowler #Creature Removal
+1 Gemstone Caverns #Lands
+1 Hydroelectric Specimen
+1 Ingenious Infiltrator #Ninjas
+1 Ingenious Prodigy
+1 Island #Lands
+1 Kaito, Bane of Nightmares
+1 Mana Confluence #Lands
+1 Marsh Flats #Lands
+1 Mindbreak Trap #Counterspells
+1 Misty Rainforest #Lands
+1 Mockingbird
+1 Moon-Circuit Hacker #Ninjas
+1 Mox Amber #Ramp
+1 Mystic Remora
+1 Mystical Tutor #Topdeck Tutors
+1 Ninja of the Deep Hours #Ninjas
+1 Opposition Agent #Stax
+1 Orcish Bowmasters #Creature Removal
+1 Ornithopter #Ramp
+1 Otawara, Soaring City #Lands
+1 Polluted Delta #Lands
+1 Prismatic Vista #Lands
+1 Prosperous Thief #Ninjas
+1 Rhystic Study #Card Advantage
+1 Roaming Throne
+1 Satoru, the Infiltrator
+1 Scalding Tarn #Lands
+1 Sea Gate Restoration #Lands
+1 Shadow of Mortality #Burn
+1 Sheoldred, the Apocalypse
+1 Silver-Fur Master #Ninjas
+1 Sink into Stupor
+1 Skullsnatcher #Ninjas
+1 Snow-Covered Island #Lands
+1 Snow-Covered Swamp #Lands
+1 Snuff Out #Creature Removal
+1 Spectral Sailor #Card Advantage
+1 Swamp #Lands
+1 Tainted Pact #Tutors
+1 Talion, the Kindly Lord
+1 Temporal Trespass #Burn
+1 Tetsuko Umezawa, Fugitive
+1 Thassa's Oracle #Topdeck Filter
+1 Thousand-Faced Shadow #Ninjas
+1 Underground River #Lands
+1 Universal Automaton #Ninjas
+1 Vampiric Tutor #Topdeck Tutors
+1 Verdant Catacombs #Lands
+1 Watery Grave #Lands
+1 Weathered Runestone
+
+Sideboard
+1 Dispel #Counterspells
+1 Doomsday
+1 Hope of Ghirapur
+1 Mausoleum Wanderer
+1 Saiba Cryptomancer #Ninjas
+1 Stern Scolding
+1 Thieves' Guild Enforcer #Stax

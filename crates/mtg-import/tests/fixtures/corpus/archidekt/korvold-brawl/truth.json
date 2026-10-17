@@ -1,0 +1,436 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "2209103",
+    "url": "https://archidekt.com/decks/2209103",
+    "format": "brawl",
+    "name": "Savage Hunter - Throne of Eldraine",
+    "why": "brawl precon: 24 cards without categories (exported with their type as category), one commander",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Korvold, Fae-Cursed King",
+        "qty": 1,
+        "set": "eld",
+        "cn": "329",
+        "finish": "foil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Angrath, Captain of Chaos",
+        "qty": 1,
+        "set": "plst",
+        "cn": "WAR-227",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "eld",
+        "cn": "331",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bake into a Pie",
+        "qty": 1,
+        "set": "eld",
+        "cn": "76",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodfell Caves",
+        "qty": 1,
+        "set": "m20",
+        "cn": "242",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodsoaked Altar",
+        "qty": 1,
+        "set": "m20",
+        "cn": "90",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chittering Witch",
+        "qty": 1,
+        "set": "eld",
+        "cn": "319",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "eld",
+        "cn": "333",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cryptic Caves",
+        "qty": 1,
+        "set": "m20",
+        "cn": "244",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Deathsprout",
+        "qty": 1,
+        "set": "war",
+        "cn": "189",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dreadhorde Invasion",
+        "qty": 1,
+        "set": "war",
+        "cn": "86",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Evolution Sage",
+        "qty": 1,
+        "set": "war",
+        "cn": "159",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Evolving Wilds",
+        "qty": 1,
+        "set": "m20",
+        "cn": "246",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Find // Finality",
+        "qty": 1,
+        "set": "grn",
+        "cn": "225",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forest",
+        "qty": 6,
+        "set": "eld",
+        "cn": "269",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gluttonous Troll",
+        "qty": 1,
+        "set": "eld",
+        "cn": "327",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goblin Cratermaker",
+        "qty": 1,
+        "set": "grn",
+        "cn": "103",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Golden Egg",
+        "qty": 1,
+        "set": "eld",
+        "cn": "220",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Golgari Findbroker",
+        "qty": 1,
+        "set": "grn",
+        "cn": "175",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Golgari Guildgate",
+        "qty": 1,
+        "set": "grn",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gruul Guildgate",
+        "qty": 1,
+        "set": "rna",
+        "cn": "250",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Judith, the Scourge Diva",
+        "qty": 1,
+        "set": "rna",
+        "cn": "185",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Jungle Hollow",
+        "qty": 1,
+        "set": "m20",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Keeper of Fables",
+        "qty": 1,
+        "set": "eld",
+        "cn": "163",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Krenko, Tin Street Kingpin",
+        "qty": 1,
+        "set": "war",
+        "cn": "137",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Leyline Prowler",
+        "qty": 1,
+        "set": "war",
+        "cn": "202",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mayhem Devil",
+        "qty": 1,
+        "set": "war",
+        "cn": "204",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Moldervine Reclamation",
+        "qty": 1,
+        "set": "m20",
+        "cn": "214",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 2,
+        "set": "eld",
+        "cn": "262",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Orzhov Enforcer",
+        "qty": 1,
+        "set": "rna",
+        "cn": "79",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Paradise Druid",
+        "qty": 1,
+        "set": "war",
+        "cn": "171",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Plaguecrafter",
+        "qty": 1,
+        "set": "grn",
+        "cn": "82",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pollenbright Druid",
+        "qty": 1,
+        "set": "war",
+        "cn": "173",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Priest of Forgotten Gods",
+        "qty": 1,
+        "set": "rna",
+        "cn": "83",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rakdos Guildgate",
+        "qty": 1,
+        "set": "rna",
+        "cn": "255",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rapacious Dragon",
+        "qty": 1,
+        "set": "m20",
+        "cn": "153",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rhythm of the Wild",
+        "qty": 1,
+        "set": "rna",
+        "cn": "201",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rugged Highlands",
+        "qty": 1,
+        "set": "m20",
+        "cn": "250",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Savvy Hunter",
+        "qty": 1,
+        "set": "eld",
+        "cn": "200",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Stomping Ground",
+        "qty": 1,
+        "set": "rna",
+        "cn": "259",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 6,
+        "set": "eld",
+        "cn": "258",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Syr Konrad, the Grim",
+        "qty": 1,
+        "set": "eld",
+        "cn": "107",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Taste of Death",
+        "qty": 1,
+        "set": "eld",
+        "cn": "320",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Temple of Malady",
+        "qty": 1,
+        "set": "m20",
+        "cn": "254",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thorn Mammoth",
+        "qty": 1,
+        "set": "eld",
+        "cn": "323",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thrashing Brontodon",
+        "qty": 1,
+        "set": "m20",
+        "cn": "197",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vindictive Vampire",
+        "qty": 1,
+        "set": "rna",
+        "cn": "90",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Witch's Oven",
+        "qty": 1,
+        "set": "eld",
+        "cn": "237",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Woodland Champion",
+        "qty": 1,
+        "set": "m20",
+        "cn": "205",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "front-name": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

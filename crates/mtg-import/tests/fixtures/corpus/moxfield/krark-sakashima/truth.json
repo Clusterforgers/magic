@@ -1,0 +1,1045 @@
+{
+  "source": {
+    "site": "moxfield",
+    "id": "G-RUVy_CMUWzXlhJknIzZg",
+    "url": "https://moxfield.com/decks/G-RUVy_CMUWzXlhJknIzZg",
+    "format": "commander",
+    "name": "Krark Sakashima Storm [TOODEEP]",
+    "why": "two commanders; transform and modal double-faced cards",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Krark, the Thumbless",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "189",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sakashima of a Thousand Faces",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "89",
+        "finish": "nonFoil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "_____ Goblin",
+        "qty": 1,
+        "set": "unf",
+        "cn": "107",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "An Offer You Can't Refuse",
+        "qty": 1,
+        "set": "fic",
+        "cn": "267",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ancient Tomb",
+        "qty": 1,
+        "set": "eos",
+        "cn": "1",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "fic",
+        "cn": "335",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Archmage Emeritus",
+        "qty": 1,
+        "set": "soc",
+        "cn": "188",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arid Mesa",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "244",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Artifist Acumen",
+        "qty": 1,
+        "set": "fra",
+        "cn": "73",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ashling, Flame Dancer",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "115",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Birgi, God of Storytelling // Harnfel, Horn of Bounty",
+        "qty": 1,
+        "set": "khm",
+        "cn": "311",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodstained Mire",
+        "qty": 1,
+        "set": "ktk",
+        "cn": "230",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Borne Upon a Wind",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "44",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Brain Freeze",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "24",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chrome Mox",
+        "qty": 1,
+        "set": "ema",
+        "cn": "219",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "City of Brass",
+        "qty": 1,
+        "set": "tmc",
+        "cn": "62",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "City of Traitors",
+        "qty": 1,
+        "set": "exo",
+        "cn": "143",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "msc",
+        "cn": "234",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Crash Through",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "620",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Crimson Wisps",
+        "qty": 1,
+        "set": "plst",
+        "cn": "J25-533",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Deflecting Swat",
+        "qty": 1,
+        "set": "c20",
+        "cn": "50",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Desperate Ritual",
+        "qty": 1,
+        "set": "chk",
+        "cn": "163",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Electro, Assaulting Battery",
+        "qty": 1,
+        "set": "spm",
+        "cn": "76",
+        "finish": "foil"
+      },
+      {
+        "name": "Emergence Zone",
+        "qty": 1,
+        "set": "war",
+        "cn": "245",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Expedite",
+        "qty": 1,
+        "set": "ogw",
+        "cn": "108",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faerie Mastermind",
+        "qty": 1,
+        "set": "soc",
+        "cn": "114",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fierce Guardianship",
+        "qty": 1,
+        "set": "c20",
+        "cn": "35",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fiery Islet",
+        "qty": 1,
+        "set": "who",
+        "cn": "278",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flooded Strand",
+        "qty": 1,
+        "set": "ktk",
+        "cn": "233",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flusterstorm",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "496",
+        "finish": "foil"
+      },
+      {
+        "name": "Force of Will",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "418",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gamble",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "321",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gemstone Caverns",
+        "qty": 1,
+        "set": "tsp",
+        "cn": "274",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gitaxian Probe",
+        "qty": 1,
+        "set": "nph",
+        "cn": "35",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gut Shot",
+        "qty": 1,
+        "set": "nph",
+        "cn": "86",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Harmonic Prodigy",
+        "qty": 1,
+        "set": "soc",
+        "cn": "123",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Heroes' Hangout",
+        "qty": 1,
+        "set": "spm",
+        "cn": "79",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hex Magic",
+        "qty": 1,
+        "set": "msh",
+        "cn": "133",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hexing Squelcher",
+        "qty": 1,
+        "set": "ecl",
+        "cn": "145",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "High Fae Trickster",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "40",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Impolite Entrance",
+        "qty": 1,
+        "set": "ecl",
+        "cn": "146",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Into the Flood Maw",
+        "qty": 1,
+        "set": "blb",
+        "cn": "52",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Irma, Part-Time Mutant",
+        "qty": 1,
+        "set": "tmc",
+        "cn": "12",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Jeska's Will",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "187",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Light Up the Stage",
+        "qty": 1,
+        "set": "clu",
+        "cn": "140",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lightning Bolt",
+        "qty": 1,
+        "set": "m10",
+        "cn": "146",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lion's Eye Diamond",
+        "qty": 1,
+        "set": "mir",
+        "cn": "307",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lotus Petal",
+        "qty": 1,
+        "set": "tmp",
+        "cn": "294",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mana Confluence",
+        "qty": 1,
+        "set": "jou",
+        "cn": "163",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mana Vault",
+        "qty": 1,
+        "set": "4ed",
+        "cn": "334",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mental Misstep",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "30",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Might of the Meek",
+        "qty": 1,
+        "set": "blb",
+        "cn": "144",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mindbreak Trap",
+        "qty": 1,
+        "set": "mar",
+        "cn": "11",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Misty Rainforest",
+        "qty": 1,
+        "set": "mm3",
+        "cn": "240",
+        "finish": "foil"
+      },
+      {
+        "name": "Mogg Salvage",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "282",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Molten Duplication",
+        "qty": 1,
+        "set": "pbig",
+        "cn": "14p",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mox Amber",
+        "qty": 1,
+        "set": "dom",
+        "cn": "224",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mox Diamond",
+        "qty": 1,
+        "set": "sth",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Muse Seeker",
+        "qty": 1,
+        "set": "sos",
+        "cn": "60",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mystic Remora",
+        "qty": 1,
+        "set": "ice",
+        "cn": "87",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mystical Tutor",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "421",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Otawara, Soaring City",
+        "qty": 1,
+        "set": "neo",
+        "cn": "271",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Overmaster",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "327",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pact of Negation",
+        "qty": 1,
+        "set": "tsr",
+        "cn": "77",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Phyrexian Metamorph",
+        "qty": 1,
+        "set": "eoc",
+        "cn": "75",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pinnacle Monk // Mystic Peak",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "246",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Polluted Delta",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "224",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pollywog Prodigy",
+        "qty": 1,
+        "set": "blc",
+        "cn": "15",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyretic Ritual",
+        "qty": 1,
+        "set": "m11",
+        "cn": "153",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyroblast",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "198",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyrokinesis",
+        "qty": 1,
+        "set": "plst",
+        "cn": "DDL-32",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Redirect Lightning",
+        "qty": 1,
+        "set": "tla",
+        "cn": "151",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Relic of Legends",
+        "qty": 1,
+        "set": "msc",
+        "cn": "209",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rite of Flame",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Samut, Tyrant of Naktamun",
+        "qty": 1,
+        "set": "fra",
+        "cn": "220",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Scalding Tarn",
+        "qty": 1,
+        "set": "mm3",
+        "cn": "244",
+        "finish": "foil"
+      },
+      {
+        "name": "Shivan Reef",
+        "qty": 1,
+        "set": "soc",
+        "cn": "404",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Simian Spirit Guide",
+        "qty": 1,
+        "set": "a25",
+        "cn": "148",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sink into Stupor // Soporific Springs",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "241",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Snow-Covered Mountain",
+        "qty": 1,
+        "set": "khm",
+        "cn": "283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sol Ring",
+        "qty": 1,
+        "set": "msc",
+        "cn": "213",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Springleaf Drum",
+        "qty": 1,
+        "set": "ecl",
+        "cn": "260",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Steam Vents",
+        "qty": 1,
+        "set": "rtr",
+        "cn": "247",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Step Through",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Storm-Kiln Artist",
+        "qty": 1,
+        "set": "plst",
+        "cn": "OTC-181",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Strike It Rich",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "143",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Submerge",
+        "qty": 1,
+        "set": "plst",
+        "cn": "NEM-48",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tarnished Citadel",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "112",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tavern Scoundrel",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "144",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Vision and Scarlet Witch",
+        "qty": 1,
+        "set": "msc",
+        "cn": "707",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thundering Falls",
+        "qty": 1,
+        "set": "mkm",
+        "cn": "269",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Training Center",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "358",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Treasonous Ogre",
+        "qty": 1,
+        "set": "cns",
+        "cn": "36",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Underworld Breach",
+        "qty": 1,
+        "set": "pza",
+        "cn": "10",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Urabrask // The Great Work",
+        "qty": 1,
+        "set": "mom",
+        "cn": "169",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Veyran, Voice of Duality",
+        "qty": 1,
+        "set": "tdc",
+        "cn": "310",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Volcanic Island",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "291",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Warlord's Fury",
+        "qty": 1,
+        "set": "dom",
+        "cn": "151",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wizard's Staff",
+        "qty": 1,
+        "set": "hob",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wooded Foothills",
+        "qty": 1,
+        "set": "ktk",
+        "cn": "249",
+        "finish": "nonFoil"
+      }
+    ],
+    "maybeboard": [
+      {
+        "name": "Ancestral Anger",
+        "qty": 1,
+        "set": "vow",
+        "cn": "142",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dragon's Rage Channeler",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "56",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dualcaster Mage",
+        "qty": 1,
+        "set": "c20",
+        "cn": "150",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faithless Looting",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "225",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Final Fortune",
+        "qty": 1,
+        "set": "mb2",
+        "cn": "190",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flare of Duplication",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "119",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Geist of Saint Thalia",
+        "qty": 1,
+        "set": "fra",
+        "cn": "214",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ragavan, Nimble Pilferer",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Red Elemental Blast",
+        "qty": 1,
+        "set": "sum",
+        "cn": "171",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Riverpyre Verge",
+        "qty": 1,
+        "set": "dft",
+        "cn": "372",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ruby Medallion",
+        "qty": 1,
+        "set": "plst",
+        "cn": "MH3-295",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Talisman of Creativity",
+        "qty": 1,
+        "set": "msc",
+        "cn": "218",
+        "finish": "nonFoil"
+      }
+    ],
+    "stickers": [
+      {
+        "name": "Ancestral Hot Dog Minotaur",
+        "qty": 1,
+        "set": "sunf",
+        "cn": "23",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Eldrazi Guacamole Tightrope",
+        "qty": 1,
+        "set": "sunf",
+        "cn": "1",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Misunderstood Trapeze Elf",
+        "qty": 1,
+        "set": "sunf",
+        "cn": "5",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Narrow-Minded Baloney Fireworks",
+        "qty": 1,
+        "set": "sunf",
+        "cn": "12",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Phyrexian Midway Bamboozle",
+        "qty": 1,
+        "set": "sunf",
+        "cn": "18",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Playable Delusionary Hydra",
+        "qty": 1,
+        "set": "sunf",
+        "cn": "30",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Trained Blessed Mind",
+        "qty": 1,
+        "set": "sunf",
+        "cn": "44",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unassuming Gelatinous Serpent",
+        "qty": 1,
+        "set": "sunf",
+        "cn": "36",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unglued Pea-Brained Dinosaur",
+        "qty": 1,
+        "set": "sunf",
+        "cn": "45",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Unsanctioned Ancient Juggler",
+        "qty": 1,
+        "set": "sunf",
+        "cn": "13",
+        "finish": "nonFoil"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "0",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "10",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "11",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "12",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "13",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "14",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "15",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "16",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "1",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "2",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "3",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "4",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "5",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "6",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "7",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "8",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "9",
+        "set": null,
+        "cn": null,
+        "finish": null
+      }
+    ]
+  },
+  "variants": {
+    "full": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "full-nofinish": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "full-tags": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "mtgo": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "last-block",
+      "lossy": false
+    },
+    "arena": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    },
+    "arena-flags": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    }
+  }
+}

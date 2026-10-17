@@ -1,0 +1,833 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "101109",
+    "url": "https://archidekt.com/decks/101109",
+    "format": "oathbreaker",
+    "name": "Hautli Aggro",
+    "why": "oathbreaker: planeswalker and signature spell both in the Commander category, 48-card maybeboard, many excluded categories",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Huatli, the Sun's Heart",
+        "qty": 1,
+        "set": "war",
+        "cn": "230",
+        "finish": "foil"
+      },
+      {
+        "name": "Tower Defense",
+        "qty": 1,
+        "set": "gtc",
+        "cn": "137",
+        "finish": "foil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Arboreal Grazer",
+        "qty": 1,
+        "set": "war",
+        "cn": "149",
+        "finish": "foil"
+      },
+      {
+        "name": "Arid Mesa",
+        "qty": 1,
+        "set": "zen",
+        "cn": "211",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Armored Armadillo",
+        "qty": 1,
+        "set": "otj",
+        "cn": "3",
+        "finish": "foil"
+      },
+      {
+        "name": "Armored Scrapgorger",
+        "qty": 1,
+        "set": "one",
+        "cn": "158",
+        "finish": "foil"
+      },
+      {
+        "name": "Assault Formation",
+        "qty": 1,
+        "set": "dtk",
+        "cn": "173",
+        "finish": "foil"
+      },
+      {
+        "name": "Avacyn's Pilgrim",
+        "qty": 1,
+        "set": "isd",
+        "cn": "170",
+        "finish": "foil"
+      },
+      {
+        "name": "Birds of Paradise",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "187",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bountiful Promenade",
+        "qty": 1,
+        "set": "bbd",
+        "cn": "81",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Brushland",
+        "qty": 1,
+        "set": "ice",
+        "cn": "352",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Canopy Vista",
+        "qty": 1,
+        "set": "bfz",
+        "cn": "234",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chrome Mox",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "152",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "cmd",
+        "cn": "269",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dauntless Dismantler",
+        "qty": 1,
+        "set": "lci",
+        "cn": "8",
+        "finish": "foil"
+      },
+      {
+        "name": "Delighted Halfling",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "158",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Drannith Magistrate",
+        "qty": 1,
+        "set": "iko",
+        "cn": "11",
+        "finish": "foil"
+      },
+      {
+        "name": "Eladamri's Call",
+        "qty": 1,
+        "set": "pls",
+        "cn": "106",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flooded Strand",
+        "qty": 1,
+        "set": "ons",
+        "cn": "316",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forest",
+        "qty": 4,
+        "set": "thb",
+        "cn": "254",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gaddock Teeg",
+        "qty": 1,
+        "set": "lrw",
+        "cn": "248",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gemstone Caverns",
+        "qty": 1,
+        "set": "tsp",
+        "cn": "274",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Giant Ox",
+        "qty": 1,
+        "set": "khm",
+        "cn": "11",
+        "finish": "foil"
+      },
+      {
+        "name": "Gilded Goose",
+        "qty": 1,
+        "set": "sch",
+        "cn": "5",
+        "finish": "foil"
+      },
+      {
+        "name": "God-Pharaoh's Faithful",
+        "qty": 1,
+        "set": "hou",
+        "cn": "14",
+        "finish": "foil"
+      },
+      {
+        "name": "Grizzled Leotau",
+        "qty": 1,
+        "set": "arb",
+        "cn": "69",
+        "finish": "foil"
+      },
+      {
+        "name": "Horizon Canopy",
+        "qty": 1,
+        "set": "fut",
+        "cn": "177",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hushbringer",
+        "qty": 1,
+        "set": "eld",
+        "cn": "18",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lagonna-Band Trailblazer",
+        "qty": 1,
+        "set": "jou",
+        "cn": "14",
+        "finish": "foil"
+      },
+      {
+        "name": "Llanowar Elves",
+        "qty": 1,
+        "set": "4bb",
+        "cn": "261",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Maned Serval",
+        "qty": 1,
+        "set": "iko",
+        "cn": "23",
+        "finish": "foil"
+      },
+      {
+        "name": "Marsh Flats",
+        "qty": 1,
+        "set": "zen",
+        "cn": "219",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mirri's Guile",
+        "qty": 1,
+        "set": "tmp",
+        "cn": "236",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Misty Rainforest",
+        "qty": 1,
+        "set": "zen",
+        "cn": "220",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nyx-Fleece Ram",
+        "qty": 1,
+        "set": "jou",
+        "cn": "18",
+        "finish": "foil"
+      },
+      {
+        "name": "Onakke Oathkeeper",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "722",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ornithopter",
+        "qty": 1,
+        "set": "atq",
+        "cn": "60",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Path to Exile",
+        "qty": 1,
+        "set": "con",
+        "cn": "15",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Phyrexian Walker",
+        "qty": 1,
+        "set": "vis",
+        "cn": "152",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Plains",
+        "qty": 2,
+        "set": "unh",
+        "cn": "136",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Prismatic Vista",
+        "qty": 1,
+        "set": "mh1",
+        "cn": "244",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "PuPu UFO",
+        "qty": 1,
+        "set": "fin",
+        "cn": "266",
+        "finish": "foil"
+      },
+      {
+        "name": "Savannah",
+        "qty": 1,
+        "set": "3ed",
+        "cn": "285",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Silence",
+        "qty": 1,
+        "set": "m10",
+        "cn": "31",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Skinshifter",
+        "qty": 1,
+        "set": "m12",
+        "cn": "195",
+        "finish": "foil"
+      },
+      {
+        "name": "Soulless Jailer",
+        "qty": 1,
+        "set": "one",
+        "cn": "241",
+        "finish": "foil"
+      },
+      {
+        "name": "Strict Proctor",
+        "qty": 1,
+        "set": "stx",
+        "cn": "33",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tasseled Dromedary",
+        "qty": 1,
+        "set": "kld",
+        "cn": "30",
+        "finish": "foil"
+      },
+      {
+        "name": "Temple Garden",
+        "qty": 1,
+        "set": "rav",
+        "cn": "284",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tocatli Honor Guard",
+        "qty": 1,
+        "set": "xln",
+        "cn": "42",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Turtle-Duck",
+        "qty": 1,
+        "set": "tla",
+        "cn": "200",
+        "finish": "foil"
+      },
+      {
+        "name": "Verdant Catacombs",
+        "qty": 1,
+        "set": "zen",
+        "cn": "229",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Voice of Victory",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "33",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Windswept Heath",
+        "qty": 1,
+        "set": "ons",
+        "cn": "328",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wooded Foothills",
+        "qty": 1,
+        "set": "ons",
+        "cn": "330",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Yoked Ox",
+        "qty": 1,
+        "set": "ths",
+        "cn": "37",
+        "finish": "foil"
+      }
+    ],
+    "maybeboard": [
+      {
+        "name": "Adeline, Resplendent Cathar",
+        "qty": 1,
+        "set": "moc",
+        "cn": "167",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "eld",
+        "cn": "331",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Aura Shards",
+        "qty": 1,
+        "set": "inv",
+        "cn": "233",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Beloved Beggar // Generous Soul",
+        "qty": 1,
+        "set": "mid",
+        "cn": "3",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Biophagus",
+        "qty": 1,
+        "set": "40k",
+        "cn": "87",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blessed Orator",
+        "qty": 1,
+        "set": "ody",
+        "cn": "12",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Branchloft Pathway // Boulderloft Pathway",
+        "qty": 1,
+        "set": "znr",
+        "cn": "284",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Brave the Sands",
+        "qty": 1,
+        "set": "ktk",
+        "cn": "5",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Courser of Kruphix",
+        "qty": 1,
+        "set": "bng",
+        "cn": "119",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Daxos, Blessed by the Sun",
+        "qty": 1,
+        "set": "thb",
+        "cn": "9",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Daybreak Chaplain",
+        "qty": 1,
+        "set": "m19",
+        "cn": "10",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Druid of the Cowl",
+        "qty": 1,
+        "set": "aer",
+        "cn": "106",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dusk // Dawn",
+        "qty": 1,
+        "set": "akh",
+        "cn": "210",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Elvish Herder",
+        "qty": 1,
+        "set": "usg",
+        "cn": "247",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ensnaring Bridge",
+        "qty": 1,
+        "set": "sth",
+        "cn": "133",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Forbidding Watchtower",
+        "qty": 1,
+        "set": "ulg",
+        "cn": "140",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gorm the Great",
+        "qty": 1,
+        "set": "bbd",
+        "cn": "8",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Llanowar Augur",
+        "qty": 1,
+        "set": "fut",
+        "cn": "129",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Llanowar Loamspeaker",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "170",
+        "finish": "foil"
+      },
+      {
+        "name": "Meekstone",
+        "qty": 1,
+        "set": "7ed",
+        "cn": "307",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Nullmage Advocate",
+        "qty": 1,
+        "set": "jud",
+        "cn": "126",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Oketra the True",
+        "qty": 1,
+        "set": "akh",
+        "cn": "21",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rasaad yn Bashir",
+        "qty": 1,
+        "set": "clb",
+        "cn": "37",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reconnaissance",
+        "qty": 1,
+        "set": "exo",
+        "cn": "17",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Retribution of the Meek",
+        "qty": 1,
+        "set": "vis",
+        "cn": "19",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rug of Smothering",
+        "qty": 1,
+        "set": "clb",
+        "cn": "336",
+        "finish": "foil"
+      },
+      {
+        "name": "Runic Armasaur",
+        "qty": 1,
+        "set": "m19",
+        "cn": "200",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Selesnya Signet",
+        "qty": 1,
+        "set": "gk1",
+        "cn": "123",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Selvala, Explorer Returned",
+        "qty": 1,
+        "set": "cns",
+        "cn": "51",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shalai, Voice of Plenty",
+        "qty": 1,
+        "set": "dom",
+        "cn": "35",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sidar Kondo of Jamuraa",
+        "qty": 1,
+        "set": "c16",
+        "cn": "42",
+        "finish": "foil"
+      },
+      {
+        "name": "Slagwurm Armor",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "243",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Slaughter the Strong",
+        "qty": 1,
+        "set": "rix",
+        "cn": "22",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Song of the Dryads",
+        "qty": 1,
+        "set": "c14",
+        "cn": "47",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Suncleanser",
+        "qty": 1,
+        "set": "m19",
+        "cn": "39",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sylvan Library",
+        "qty": 1,
+        "set": "5ed",
+        "cn": "329",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tadeas, Juniper Ascendant",
+        "qty": 1,
+        "set": "sld",
+        "cn": "433",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Talisman of Unity",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "257",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Peregrine Dynamo",
+        "qty": 1,
+        "set": "dmc",
+        "cn": "19",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thijarian Witness",
+        "qty": 1,
+        "set": "who",
+        "cn": "111",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thrashing Brontodon",
+        "qty": 1,
+        "set": "m21",
+        "cn": "209",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Torpor Orb",
+        "qty": 1,
+        "set": "nph",
+        "cn": "162",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Treebeard, Gracious Host",
+        "qty": 1,
+        "set": "ltc",
+        "cn": "73",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Veteran Armorer",
+        "qty": 1,
+        "set": "rav",
+        "cn": "34",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "War Screecher",
+        "qty": 1,
+        "set": "war",
+        "cn": "39",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Webspinner Cuff",
+        "qty": 1,
+        "set": "neo",
+        "cn": "214",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Xantid Swarm",
+        "qty": 1,
+        "set": "scg",
+        "cn": "135",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Yotian Soldier",
+        "qty": 1,
+        "set": "atq",
+        "cn": "79",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "front-name": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-type": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}

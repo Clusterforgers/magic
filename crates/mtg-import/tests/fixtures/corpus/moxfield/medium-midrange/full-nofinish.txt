@@ -1,0 +1,100 @@
+6 Thrasios, Triton Hero (C16) 46
+6 Tymna the Weaver (C16) 48
+6 Abrupt Decay (WMC) 2016
+6 Ad Nauseam (ALA) 63
+6 An Offer You Can't Refuse (SNC) 51
+6 Arbor Elf (A25) 160
+6 Assassin's Trophy (PGRN) 152p
+6 Avacyn's Pilgrim (MM3) 119
+6 Bayou (3ED) 283
+6 Birds of Paradise (PM11) 165★
+6 Bloodstained Mire (KTK) 230
+6 Bloom Tender (EVE) 66
+6 Brainstorm (EMA) 40
+6 Breeding Pool (GTC) 240
+6 Carpet of Flowers (USG) 240
+6 Chain of Vapor (ONS) 73
+6 Chrome Mox (MPS) 9
+6 City of Brass (PSUS) 6
+6 Collector Ouphe (MH1) 158
+6 Command Tower (J12) 8
+6 Cyclonic Rift (RTR) 35
+6 Dark Confidant (G11) 6
+6 Dark Ritual (MMQ) 129
+6 Deathrite Shaman (RTR) 213
+6 Delay (PLST) FUT-35
+6 Demonic Consultation (ICE) 121
+6 Demonic Tutor (J20) 4
+6 Dispel (BFZ) 76
+6 Dovin's Veto (PWAR) 193
+6 Drannith Magistrate (IKO) 314
+6 Eldritch Evolution (EMN) 155
+6 Elves of Deep Shadow (F06) 1
+6 Elvish Mystic (F14) 2
+6 Enlightened Tutor (J20) 2
+6 Exotic Orchard (CN2) 219
+6 Fierce Guardianship (C20) 35
+6 Flooded Strand (PNAT) 2018
+6 Flusterstorm (IMA) 55
+6 Forbidden Orchard (V12) 6
+6 Force of Negation (MH1) 52
+6 Force of Will (EMA) 49
+6 Forest (PAL01) 11
+6 Fyndhorn Elves (V13) 4
+6 Gaea's Cradle (USG) 321
+6 Gemstone Caverns (TSP) 274
+6 Gilded Drake (USG) 76
+6 Gitaxian Probe (F12) 12
+6 Imperial Seal (J16) 6
+6 Laboratory Maniac (UMA) 61
+6 Lim-Dûl's Vault (ALL) 107
+6 Llanowar Elves (DCI) 9
+6 Mana Confluence (JOU) 163
+6 Mana Crypt (G11) 5
+6 Mana Drain (IMA) 65
+6 Marsh Flats (MM3) 239
+6 Mental Misstep (NPH) 38
+6 Misty Rainforest (MM3) 240
+6 Morphic Pool (BBD) 83
+6 Mox Diamond (V10) 10
+6 Mystic Remora (ICE) 87
+6 Mystical Tutor (EMA) 62
+6 Neoform (WAR) 206
+6 Noble Hierarch (J12) 3
+6 Notion Thief (A25) 211
+6 Noxious Revival (NPH) 118
+6 Nurturing Peatland (MH1) 243
+6 Opposition Agent (CMR) 651
+6 Overgrown Tomb (GRN) 253
+6 Pact of Negation (MMA) 56
+6 Phantasmal Image (MM3) 46
+6 Polluted Delta (KTK) 239
+6 Ponder (M12) 73
+6 Rejuvenating Springs (CMR) 354
+6 Rest in Peace (RTR) 18
+6 Rhystic Study (PCY) 45
+6 Savannah (3ED) 285
+6 Scalding Tarn (MM3) 244
+6 Seedborn Muse (C19) 179
+6 Silence (M14) 35
+6 Sol Ring (G05) 3
+6 Spell Snare (BBD) 132
+6 Spellseeker (J20) 3
+6 Stony Silence (ISD) 36
+6 Swan Song (THS) 65
+6 Swords to Plowshares (CMR) 387
+6 Sylvan Library (EMA) 187
+6 Tainted Pact (ODY) 164
+6 Thassa's Oracle (THB) 308
+6 Timetwister (2ED) 85
+6 Tropical Island (3ED) 288
+6 Tundra (3ED) 289
+6 Underground Sea (3ED) 290
+6 Undergrowth Stadium (CMR) 359
+6 Vampiric Tutor (G00) 2
+6 Veil of Summer (M20) 198
+6 Verdant Catacombs (MM3) 249
+6 Waterlogged Grove (MH1) 249
+6 Watery Grave (GRN) 259
+6 Windswept Heath (KTK) 248
+6 Wooded Foothills (KTK) 249

@@ -1,0 +1,109 @@
+Commander
+1x Huatli, the Sun's Heart (war) 230 *F* [Commander{top}] ^Have,#37d67a^
+1x Tower Defense (gtc) 137 *F* [Commander{top}] ^Have,#37d67a^
+
+Mainboard
+1x Chrome Mox (mrd) 152 [Artifact] ^Have,#37d67a^
+1x Arboreal Grazer (war) 149 *F* [Creature] ^Have,#37d67a^
+1x Armored Armadillo (otj) 3 *F* [Creature] ^Have,#37d67a^
+1x Armored Scrapgorger (one) 158 *F* [Creature] ^Have,#37d67a^
+1x Avacyn's Pilgrim (isd) 170 *F* [Creature] ^Have,#37d67a^
+1x Birds of Paradise (3ed) 187 [Creature] ^Have,#37d67a^
+1x Dauntless Dismantler (lci) 8 *F* [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1x Delighted Halfling (ltr) 158 [Creature] ^Have,#37d67a^
+1x Drannith Magistrate (iko) 11 *F* [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1x Gaddock Teeg (lrw) 248 [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1x Giant Ox (khm) 11 *F* [Creature] ^Have,#37d67a^
+1x Gilded Goose (sch) 5 *F* [Creature] ^Have,#37d67a^
+1x God-Pharaoh's Faithful (hou) 14 *F* [Creature] ^Have,#37d67a^
+1x Grizzled Leotau (arb) 69 *F* [Creature] ^Have,#37d67a^
+1x Hushbringer (eld) 18 [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1x Lagonna-Band Trailblazer (jou) 14 *F* [Creature] ^Have,#37d67a^
+1x Llanowar Elves (4bb) 261 [Creature] ^Have,#37d67a^
+1x Maned Serval (iko) 23 *F* [Creature] ^Have,#37d67a^
+1x Nyx-Fleece Ram (jou) 18 *F* [Creature] ^Have,#37d67a^
+1x Onakke Oathkeeper (cmm) 722 [Creature]
+1x Ornithopter (atq) 60 [Creature] ^Have,#37d67a^
+1x Phyrexian Walker (vis) 152 [Creature] ^Have,#37d67a^
+1x PuPu UFO (fin) 266 *F* [Creature] ^Have,#37d67a^
+1x Skinshifter (m12) 195 *F* [Creature] ^Have,#37d67a^
+1x Soulless Jailer (one) 241 *F* [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1x Strict Proctor (stx) 33 [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1x Tasseled Dromedary (kld) 30 *F* [Creature] ^Have,#37d67a^
+1x Tocatli Honor Guard (xln) 42 [Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1x Turtle-Duck (tla) 200 *F* [Creature] ^Have,#37d67a^
+1x Voice of Victory (tdm) 33 [Creature]
+1x Yoked Ox (ths) 37 *F* [Creature] ^Have,#37d67a^
+1x Assault Formation (dtk) 173 *F* [Enchantment] ^Have,#37d67a^
+1x Mirri's Guile (tmp) 236 [Enchantment] ^Have,#37d67a^
+1x Eladamri's Call (pls) 106 [Instant] ^Have,#37d67a^
+1x Path to Exile (con) 15 [Instant] ^Have,#37d67a^
+1x Silence (m10) 31 [Instant] ^Have,#37d67a^
+1x Arid Mesa (zen) 211 [Land] ^Have,#37d67a^
+1x Bountiful Promenade (bbd) 81 [Land] ^Have,#37d67a^
+1x Brushland (ice) 352 [Land] ^Have,#37d67a^
+1x Canopy Vista (bfz) 234 [Land] ^Have,#37d67a^
+1x Command Tower (cmd) 269 [Land] ^Have,#37d67a^
+1x Flooded Strand (ons) 316 [Land] ^Have,#37d67a^
+4x Forest (thb) 254 [Land] ^Have,#37d67a^
+1x Gemstone Caverns (tsp) 274 [Land] ^Have,#37d67a^
+1x Horizon Canopy (fut) 177 [Land] ^Have,#37d67a^
+1x Marsh Flats (zen) 219 [Land] ^Have,#37d67a^
+1x Misty Rainforest (zen) 220 [Land] ^Have,#37d67a^
+2x Plains (unh) 136 [Land] ^Have,#37d67a^
+1x Prismatic Vista (mh1) 244 [Land] ^Have,#37d67a^
+1x Savannah (3ed) 285 [Land] ^Don't Have,#f47373^
+1x Temple Garden (rav) 284 [Land] ^Have,#37d67a^
+1x Verdant Catacombs (zen) 229 [Land] ^Have,#37d67a^
+1x Windswept Heath (ons) 328 [Land] ^Have,#37d67a^
+1x Wooded Foothills (ons) 330 [Land] ^Have,#37d67a^
+
+Maybeboard
+1x Dusk // Dawn (akh) 210 [1v1 Sideboard{noDeck}{noPrice}] ^Have,#37d67a^
+1x Ensnaring Bridge (sth) 133 [1v1 Sideboard{noDeck}{noPrice}] ^Have,#37d67a^
+1x Gorm the Great (bbd) 8 [1v1 Sideboard{noDeck}{noPrice}] ^Have,#37d67a^
+1x Reconnaissance (exo) 17 [1v1 Sideboard{noDeck}{noPrice}] ^Have,#37d67a^
+1x Rug of Smothering (clb) 336 *F* [1v1 Sideboard{noDeck}{noPrice},Creature,Stax{noDeck}{noPrice}] ^Have,#37d67a^
+1x Sidar Kondo of Jamuraa (c16) 42 *F* [1v1 Sideboard{noDeck}{noPrice},Chopping Block] ^Don't Have,#f47373^
+1x Slaughter the Strong (rix) 22 [1v1 Sideboard{noDeck}{noPrice}] ^Have,#37d67a^
+1x Torpor Orb (nph) 162 [1v1 Sideboard{noDeck}{noPrice}]
+1x Courser of Kruphix (bng) 119 [Final Cut Pro{noDeck}{noPrice}] ^Have,#37d67a^
+1x Runic Armasaur (m19) 200 [Final Cut Pro{noDeck}{noPrice}] ^Have,#37d67a^
+1x Thrashing Brontodon (m21) 209 [Final Cut Pro{noDeck}{noPrice}] ^Have,#37d67a^
+1x Arcane Signet (eld) 331 [Last Minute Cuts{noDeck}{noPrice}] ^Getting,#2ccce4^
+1x Beloved Beggar // Generous Soul (mid) 3 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1x Branchloft Pathway // Boulderloft Pathway (znr) 284 [Last Minute Cuts{noDeck}{noPrice}]
+1x Forbidding Watchtower (ulg) 140 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1x Nullmage Advocate (jud) 126 [Last Minute Cuts{noDeck}{noPrice},Chopping Block] ^Have,#37d67a^
+1x Selvala, Explorer Returned (cns) 51 [Last Minute Cuts{noDeck}{noPrice}]
+1x Slagwurm Armor (mrd) 243 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1x Song of the Dryads (c14) 47 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1x Suncleanser (m19) 39 [Last Minute Cuts{noDeck}{noPrice}]
+1x Sylvan Library (5ed) 329 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1x Talisman of Unity (mrd) 257 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1x Veteran Armorer (rav) 34 [Last Minute Cuts{noDeck}{noPrice}] ^Have,#37d67a^
+1x Aura Shards (inv) 233 [Maybeboard{noDeck}{noPrice}]
+1x Blessed Orator (ody) 12 [Maybeboard{noDeck}{noPrice}]
+1x Brave the Sands (ktk) 5 [Maybeboard{noDeck}{noPrice}]
+1x Daybreak Chaplain (m19) 10 [Maybeboard{noDeck}{noPrice}]
+1x Llanowar Augur (fut) 129 [Maybeboard{noDeck}{noPrice}]
+1x Meekstone (7ed) 307 [Maybeboard{noDeck}{noPrice}]
+1x Oketra the True (akh) 21 [Maybeboard{noDeck}{noPrice}]
+1x Rasaad yn Bashir (clb) 37 [Maybeboard{noDeck}{noPrice}]
+1x Retribution of the Meek (vis) 19 [Maybeboard{noDeck}{noPrice}]
+1x Selesnya Signet (gk1) 123 [Maybeboard{noDeck}{noPrice}]
+1x Shalai, Voice of Plenty (dom) 35 [Maybeboard{noDeck}{noPrice}]
+1x War Screecher (war) 39 [Maybeboard{noDeck}{noPrice}]
+1x Yotian Soldier (atq) 79 [Maybeboard{noDeck}{noPrice}]
+1x Biophagus (40k) 87 [New Cards that Fit{noDeck}{noPrice}]
+1x Tadeas, Juniper Ascendant (sld) 433 [New Cards that Fit{noDeck}{noPrice}]
+1x The Peregrine Dynamo (dmc) 19 [New Cards that Fit{noDeck}{noPrice}]
+1x Treebeard, Gracious Host (ltc) 73 [New Cards that Fit{noDeck}{noPrice}]
+1x Webspinner Cuff (neo) 214 [New Cards that Fit{noDeck}{noPrice}]
+1x Adeline, Resplendent Cathar (moc) 167 [Put Me in Coach{noDeck}{noPrice}]
+1x Daxos, Blessed by the Sun (thb) 9 [Put Me in Coach{noDeck}{noPrice}]
+1x Elvish Herder (usg) 247 [Put Me in Coach{noDeck}{noPrice}]
+1x Thijarian Witness (who) 111 [Put Me in Coach{noDeck}{noPrice}]
+1x Xantid Swarm (scg) 135 [Put Me in Coach{noDeck}{noPrice}]
+1x Druid of the Cowl (aer) 106 [Replace for strict upgrades{noDeck}{noPrice}]
+1x Llanowar Loamspeaker (dmu) 170 *F* [Replace for strict upgrades{noDeck}{noPrice}]

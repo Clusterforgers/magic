@@ -1,0 +1,488 @@
+{
+  "source": {
+    "site": "moxfield",
+    "id": "aUq4djohF0S3PWPOwrVGhQ",
+    "url": "https://moxfield.com/decks/aUq4djohF0S3PWPOwrVGhQ",
+    "format": "pauper",
+    "name": "Cycle Storm",
+    "why": "Pauper deck with a 107-card maybeboard that exports must skip",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "mainboard": [
+      {
+        "name": "Cabal Ritual",
+        "qty": 4,
+        "set": "tor",
+        "cn": "51",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Conduit Pylons",
+        "qty": 4,
+        "set": "otj",
+        "cn": "254",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dark Ritual",
+        "qty": 4,
+        "set": "mmq",
+        "cn": "129",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Drannith Healer",
+        "qty": 4,
+        "set": "iko",
+        "cn": "10",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Drannith Stinger",
+        "qty": 4,
+        "set": "iko",
+        "cn": "113",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Giant's Boulder",
+        "qty": 4,
+        "set": "hob",
+        "cn": "173",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Hidden Grotto",
+        "qty": 4,
+        "set": "blb",
+        "cn": "254",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Horror of the Broken Lands",
+        "qty": 4,
+        "set": "akh",
+        "cn": "95",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Imposing Vantasaur",
+        "qty": 4,
+        "set": "iko",
+        "cn": "17",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Page, Loose Leaf",
+        "qty": 4,
+        "set": "sos",
+        "cn": "250",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reaping the Graves",
+        "qty": 4,
+        "set": "scg",
+        "cn": "72",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rowan's Grim Search",
+        "qty": 4,
+        "set": "woe",
+        "cn": "104",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Songs of the Damned",
+        "qty": 4,
+        "set": "ice",
+        "cn": "160",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Street Wraith",
+        "qty": 4,
+        "set": "fut",
+        "cn": "90",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vault of Whispers",
+        "qty": 4,
+        "set": "mrd",
+        "cn": "286",
+        "finish": "nonFoil"
+      }
+    ],
+    "sideboard": [
+      {
+        "name": "Barkform Harvester",
+        "qty": 1,
+        "set": "blb",
+        "cn": "243",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chitin Gravestalker",
+        "qty": 4,
+        "set": "dft",
+        "cn": "79",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dispel",
+        "qty": 2,
+        "set": "wwk",
+        "cn": "26",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faerie Macabre",
+        "qty": 2,
+        "set": "shm",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyroblast",
+        "qty": 3,
+        "set": "ema",
+        "cn": "142",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Siege Smash",
+        "qty": 2,
+        "set": "mh3",
+        "cn": "136",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 1,
+        "set": "inv",
+        "cn": "339",
+        "finish": "nonFoil"
+      }
+    ],
+    "maybeboard": [
+      {
+        "name": "Ardent Elementalist",
+        "qty": 1,
+        "set": "mid",
+        "cn": "128",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Barren Moor",
+        "qty": 4,
+        "set": "ons",
+        "cn": "312",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blood Celebrant",
+        "qty": 1,
+        "set": "lgn",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Burnt Offering",
+        "qty": 1,
+        "set": "ice",
+        "cn": "116",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Darkness",
+        "qty": 3,
+        "set": "tsb",
+        "cn": "40",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Deadly Dispute",
+        "qty": 4,
+        "set": "afr",
+        "cn": "94",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dihada's Ploy",
+        "qty": 2,
+        "set": "mh2",
+        "cn": "193",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dispel",
+        "qty": 1,
+        "set": "wwk",
+        "cn": "26",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Duress",
+        "qty": 3,
+        "set": "usg",
+        "cn": "132",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faerie Macabre",
+        "qty": 2,
+        "set": "shm",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faithless Looting",
+        "qty": 3,
+        "set": "dka",
+        "cn": "87",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flaring Pain",
+        "qty": 2,
+        "set": "jud",
+        "cn": "89",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gilded Light",
+        "qty": 3,
+        "set": "scg",
+        "cn": "16",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Great Furnace",
+        "qty": 4,
+        "set": "mrd",
+        "cn": "282",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Grisly Survivor",
+        "qty": 4,
+        "set": "hou",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ingot Chewer",
+        "qty": 4,
+        "set": "lrw",
+        "cn": "180",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Island",
+        "qty": 1,
+        "set": "inv",
+        "cn": "337",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lórien Revealed",
+        "qty": 2,
+        "set": "ltr",
+        "cn": "60",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lotus Petal",
+        "qty": 4,
+        "set": "tmp",
+        "cn": "294",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Maestros Theater",
+        "qty": 4,
+        "set": "snc",
+        "cn": "251",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Magmakin Artillerist",
+        "qty": 1,
+        "set": "dft",
+        "cn": "137",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mirrorshell Crab",
+        "qty": 2,
+        "set": "neo",
+        "cn": "63",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Monstrous Carabid",
+        "qty": 4,
+        "set": "arb",
+        "cn": "43",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 8,
+        "set": "inv",
+        "cn": "344",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mystical Teachings",
+        "qty": 1,
+        "set": "tsp",
+        "cn": "69",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Otherworldly Gaze",
+        "qty": 4,
+        "set": "mid",
+        "cn": "67",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyroblast",
+        "qty": 1,
+        "set": "ema",
+        "cn": "142",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Repeal",
+        "qty": 1,
+        "set": "gpt",
+        "cn": "32",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Repository Skaab",
+        "qty": 2,
+        "set": "vow",
+        "cn": "73",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shredded Sails",
+        "qty": 4,
+        "set": "iko",
+        "cn": "136",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Siege Smash",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "136",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Snuff Out",
+        "qty": 3,
+        "set": "mmq",
+        "cn": "162",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spell Pierce",
+        "qty": 3,
+        "set": "zen",
+        "cn": "67",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Steel Sabotage",
+        "qty": 3,
+        "set": "mbs",
+        "cn": "33",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tolarian Winds",
+        "qty": 3,
+        "set": "usg",
+        "cn": "104",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Troll of Khazad-dûm",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "111",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Vision Charm",
+        "qty": 4,
+        "set": "vis",
+        "cn": "49",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Weather the Storm",
+        "qty": 4,
+        "set": "mh1",
+        "cn": "191",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Writhing Necromass",
+        "qty": 4,
+        "set": "dmu",
+        "cn": "115",
+        "finish": "nonFoil"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "0",
+        "set": null,
+        "cn": null,
+        "finish": null
+      }
+    ]
+  },
+  "variants": {
+    "full": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "mtgo": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "last-block",
+      "lossy": false
+    },
+    "arena": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    }
+  }
+}

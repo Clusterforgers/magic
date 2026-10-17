@@ -1,0 +1,84 @@
+1x Aragorn, King of Gondor (ltc) 5
+1x Arcane Signet (ltc) 273
+1x Archivist of Gondor (ltc) 18
+1x Banishing Light (ltc) 161
+1x Bastion Protector (ltc) 162
+1x Battlefield Forge (ltc) 296
+1x Beregond of the Guard (ltc) 9
+1x Boromir, Gondor's Hope (ltc) 49
+1x Call for Aid (ltc) 30
+1x Champions of Minas Tirith (ltc) 10
+1x Clifftop Retreat (ltc) 300
+1x Combat Celebrant (ltc) 212
+1x Command Tower (ltc) 301
+1x Commander's Sphere (ltc) 276
+1x Court of Ire (ltc) 213
+1x Crown of Gondor (ltc) 75
+1x Dearly Departed (ltc) 165
+1x Denethor, Stone Seer (ltc) 20
+1x Door of Destinies (ltc) 277
+1x Earthquake (ltc) 214
+1x Éomer, King of Rohan (ltc) 52
+1x Éowyn, Shieldmaiden (ltc) 1
+1x Erkenbrand, Lord of Westfold (ltr) 123
+1x Evolving Wilds (ltc) 306
+1x Exotic Orchard (ltc) 307
+1x Faramir, Steward of Gondor (ltc) 54
+1x Fealty to the Realm (ltc) 21
+1x Field of Ruin (ltc) 308
+1x Fiend Hunter (ltc) 168
+1x Flamerush Rider (ltc) 216
+1x Forth Eorlingas! (ltc) 56
+1x Frontier Warmonger (ltc) 217
+1x Frontline Medic (ltc) 169
+1x Furycalm Snarl (ltc) 313
+1x Gilraen, Dúnedain Protector (ltc) 13
+1x Gimli of the Glittering Caves (ltc) 32
+1x Glacial Fortress (ltc) 315
+1x Grey Host Reinforcements (ltc) 14
+1x Harsh Mentor (ltc) 221
+1x Heirloom Blade (ltc) 279
+1x Herald's Horn (ltc) 280
+1x Humble Defector (ltc) 222
+1x Increasing Devotion (ltc) 171
+5x Island (ltr) 265
+1x Lossarnach Captain (ltc) 16
+1x Lost to Legend (ltr) 22
+1x Marshal's Anthem (ltc) 172
+5x Mountain (ltr) 269
+1x Oath of Eorl (ltc) 64
+1x Palace Jailer (ltc) 174
+1x Path of Ancestry (ltc) 322
+1x Path to Exile (ltc) 175
+9x Plains (ltr) 262
+1x Port Town (ltc) 323
+1x Prairie Stream (ltc) 324
+1x Prince Imrahil the Fair (ltr) 219
+1x Riders of Rohan (ltc) 67
+1x Rogue's Passage (ltc) 326
+1x Secluded Courtyard (ltc) 330
+1x Selfless Squire (ltc) 176
+1x Shared Animosity (ltc) 226
+1x Sol Ring (ltc) 284
+1x Sulfur Falls (ltc) 333
+1x Sunset Revelry (ltc) 177
+1x Supreme Verdict (ltc) 272
+1x Swords to Plowshares (ltc) 178
+1x Talisman of Conviction (ltc) 285
+1x Talisman of Progress (ltc) 286
+1x Taunt from the Rampart (ltc) 151
+1x Terramorphic Expanse (ltc) 337
+1x Théoden, King of Rohan (ltr) 233
+1x Thought Vessel (ltc) 287
+1x Throne of the High City (ltc) 339
+1x Tranquil Cove (ltc) 340
+1x Unbreakable Formation (ltc) 179
+1x Vanquisher's Banner (ltc) 289
+1x Verge Rangers (ltc) 180
+1x Village Bell-Ringer (ltc) 181
+1x Visions of Glory (ltc) 182
+1x Wayfarer's Bauble (ltc) 290
+1x Weathered Wayfarer (ltc) 183
+1x Wind-Scarred Crag (ltc) 344
+1x Windbrisk Heights (ltc) 345
+1x Zealous Conscripts (ltc) 231

@@ -1,0 +1,1505 @@
+{
+  "source": {
+    "site": "moxfield",
+    "id": "HYT9YcG0bEK1UMvmEEXtTA",
+    "url": "https://moxfield.com/decks/HYT9YcG0bEK1UMvmEEXtTA",
+    "format": "commander",
+    "name": "[Cabal] A Faster K'rrik Storm 😈⚡️ (cEDH w/ Primer)",
+    "why": "deck name with brackets, quotes and emoji (shows in the Arena Name line)",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "K'rrik, Son of Yawgmoth",
+        "qty": 1,
+        "set": "pj21",
+        "cn": "2",
+        "finish": "foil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Agatha's Soul Cauldron",
+        "qty": 1,
+        "set": "pwoe",
+        "cn": "242s",
+        "finish": "foil"
+      },
+      {
+        "name": "Ancient Tomb",
+        "qty": 1,
+        "set": "v12",
+        "cn": "1",
+        "finish": "foil"
+      },
+      {
+        "name": "Animate Dead",
+        "qty": 1,
+        "set": "ced",
+        "cn": "93",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "sld",
+        "cn": "201",
+        "finish": "foil"
+      },
+      {
+        "name": "Asmodeus the Archfiend",
+        "qty": 1,
+        "set": "pafr",
+        "cn": "88s",
+        "finish": "foil"
+      },
+      {
+        "name": "Balthor the Defiled",
+        "qty": 1,
+        "set": "jud",
+        "cn": "61",
+        "finish": "foil"
+      },
+      {
+        "name": "Beseech the Mirror",
+        "qty": 1,
+        "set": "woe",
+        "cn": "82",
+        "finish": "foil"
+      },
+      {
+        "name": "Beseech the Queen",
+        "qty": 1,
+        "set": "v16",
+        "cn": "1",
+        "finish": "foil"
+      },
+      {
+        "name": "Bitter Triumph",
+        "qty": 1,
+        "set": "lci",
+        "cn": "91",
+        "finish": "foil"
+      },
+      {
+        "name": "Blood Celebrant",
+        "qty": 1,
+        "set": "lgn",
+        "cn": "61",
+        "finish": "foil"
+      },
+      {
+        "name": "Blood Pet",
+        "qty": 1,
+        "set": "7ed",
+        "cn": "121★",
+        "finish": "foil"
+      },
+      {
+        "name": "Buried Alive",
+        "qty": 1,
+        "set": "ody",
+        "cn": "118",
+        "finish": "foil"
+      },
+      {
+        "name": "Cabal Ritual",
+        "qty": 1,
+        "set": "v16",
+        "cn": "2",
+        "finish": "foil"
+      },
+      {
+        "name": "Chainer, Dementia Master",
+        "qty": 1,
+        "set": "tor",
+        "cn": "56",
+        "finish": "foil"
+      },
+      {
+        "name": "Chrome Mox",
+        "qty": 1,
+        "set": "pgpx",
+        "cn": "2009",
+        "finish": "foil"
+      },
+      {
+        "name": "City of Traitors",
+        "qty": 1,
+        "set": "exo",
+        "cn": "143",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Corpse Dance",
+        "qty": 1,
+        "set": "tmp",
+        "cn": "116",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Crystal Vein",
+        "qty": 1,
+        "set": "pd3",
+        "cn": "24",
+        "finish": "foil"
+      },
+      {
+        "name": "Culling the Weak",
+        "qty": 1,
+        "set": "exo",
+        "cn": "55",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cut Down",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "432",
+        "finish": "foil"
+      },
+      {
+        "name": "Dark Petition",
+        "qty": 1,
+        "set": "pori",
+        "cn": "90s",
+        "finish": "foil"
+      },
+      {
+        "name": "Dark Ritual",
+        "qty": 1,
+        "set": "g09",
+        "cn": "1",
+        "finish": "foil"
+      },
+      {
+        "name": "Demonic Consultation",
+        "qty": 1,
+        "set": "ice",
+        "cn": "121",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Demonic Tutor",
+        "qty": 1,
+        "set": "ced",
+        "cn": "105",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Diabolic Tutor",
+        "qty": 1,
+        "set": "ody",
+        "cn": "129",
+        "finish": "foil"
+      },
+      {
+        "name": "Dimir House Guard",
+        "qty": 1,
+        "set": "rav",
+        "cn": "83",
+        "finish": "foil"
+      },
+      {
+        "name": "Dismember",
+        "qty": 1,
+        "set": "f12",
+        "cn": "4",
+        "finish": "foil"
+      },
+      {
+        "name": "Doctor Doom, Unrivaled",
+        "qty": 1,
+        "set": "msc",
+        "cn": "654",
+        "finish": "foil"
+      },
+      {
+        "name": "Emergence Zone",
+        "qty": 1,
+        "set": "war",
+        "cn": "245",
+        "finish": "foil"
+      },
+      {
+        "name": "Entomb",
+        "qty": 1,
+        "set": "g11",
+        "cn": "4",
+        "finish": "foil"
+      },
+      {
+        "name": "Exhume",
+        "qty": 1,
+        "set": "pd3",
+        "cn": "17",
+        "finish": "foil"
+      },
+      {
+        "name": "Final Parting",
+        "qty": 1,
+        "set": "dom",
+        "cn": "93",
+        "finish": "foil"
+      },
+      {
+        "name": "Fleshwrither",
+        "qty": 1,
+        "set": "fut",
+        "cn": "84",
+        "finish": "foil"
+      },
+      {
+        "name": "Gemstone Caverns",
+        "qty": 1,
+        "set": "tsr",
+        "cn": "280",
+        "finish": "foil"
+      },
+      {
+        "name": "Gray Merchant of Asphodel",
+        "qty": 1,
+        "set": "thb",
+        "cn": "355",
+        "finish": "foil"
+      },
+      {
+        "name": "Grim Monolith",
+        "qty": 1,
+        "set": "ulg",
+        "cn": "126",
+        "finish": "foil"
+      },
+      {
+        "name": "Grim Servant",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "409",
+        "finish": "foil"
+      },
+      {
+        "name": "Grim Tutor",
+        "qty": 1,
+        "set": "pm21",
+        "cn": "103s",
+        "finish": "foil"
+      },
+      {
+        "name": "Heartless Summoning",
+        "qty": 1,
+        "set": "isd",
+        "cn": "104",
+        "finish": "foil"
+      },
+      {
+        "name": "Hoarding Broodlord",
+        "qty": 1,
+        "set": "pmom",
+        "cn": "110s",
+        "finish": "foil"
+      },
+      {
+        "name": "Homeward Path",
+        "qty": 1,
+        "set": "j17",
+        "cn": "4",
+        "finish": "foil"
+      },
+      {
+        "name": "Imperial Seal",
+        "qty": 1,
+        "set": "j16",
+        "cn": "6",
+        "finish": "foil"
+      },
+      {
+        "name": "Insatiable Avarice",
+        "qty": 1,
+        "set": "potj",
+        "cn": "91s",
+        "finish": "foil"
+      },
+      {
+        "name": "Jet Medallion",
+        "qty": 1,
+        "set": "tmp",
+        "cn": "292",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Jeweled Amulet",
+        "qty": 1,
+        "set": "ice",
+        "cn": "326",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lake of the Dead",
+        "qty": 1,
+        "set": "all",
+        "cn": "140",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lion's Eye Diamond",
+        "qty": 1,
+        "set": "mir",
+        "cn": "307",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lotus Petal",
+        "qty": 1,
+        "set": "tmp",
+        "cn": "294",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Malakir Rebirth // Malakir Mire",
+        "qty": 1,
+        "set": "znr",
+        "cn": "111",
+        "finish": "foil"
+      },
+      {
+        "name": "Mana Vault",
+        "qty": 1,
+        "set": "ced",
+        "cn": "260",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mausoleum Secrets",
+        "qty": 1,
+        "set": "pgrn",
+        "cn": "75s",
+        "finish": "foil"
+      },
+      {
+        "name": "Mox Amber",
+        "qty": 1,
+        "set": "pdom",
+        "cn": "224s",
+        "finish": "foil"
+      },
+      {
+        "name": "Mox Diamond",
+        "qty": 1,
+        "set": "sth",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Necromancy",
+        "qty": 1,
+        "set": "vis",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Necropotence",
+        "qty": 1,
+        "set": "dkm",
+        "cn": "7",
+        "finish": "foil"
+      },
+      {
+        "name": "Necrotic Ooze",
+        "qty": 1,
+        "set": "som",
+        "cn": "72",
+        "finish": "foil"
+      },
+      {
+        "name": "Nykthos, Shrine to Nyx",
+        "qty": 1,
+        "set": "ths",
+        "cn": "223",
+        "finish": "foil"
+      },
+      {
+        "name": "Orcish Bowmasters",
+        "qty": 1,
+        "set": "pltr",
+        "cn": "103s",
+        "finish": "foil"
+      },
+      {
+        "name": "Overeager Apprentice",
+        "qty": 1,
+        "set": "ody",
+        "cn": "154",
+        "finish": "foil"
+      },
+      {
+        "name": "Peat Bog",
+        "qty": 1,
+        "set": "mmq",
+        "cn": "322",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Phyrexian Tower",
+        "qty": 1,
+        "set": "uma",
+        "cn": "248",
+        "finish": "foil"
+      },
+      {
+        "name": "Praetor's Grasp",
+        "qty": 1,
+        "set": "nph",
+        "cn": "71",
+        "finish": "foil"
+      },
+      {
+        "name": "Rain of Filth",
+        "qty": 1,
+        "set": "usg",
+        "cn": "151",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Razaketh, the Foulblooded",
+        "qty": 1,
+        "set": "phou",
+        "cn": "73s",
+        "finish": "foil"
+      },
+      {
+        "name": "Reanimate",
+        "qty": 1,
+        "set": "f04",
+        "cn": "10",
+        "finish": "foil"
+      },
+      {
+        "name": "Sacrifice",
+        "qty": 1,
+        "set": "ced",
+        "cn": "125",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Saw in Half",
+        "qty": 1,
+        "set": "unf",
+        "cn": "374",
+        "finish": "foil"
+      },
+      {
+        "name": "Shallow Grave",
+        "qty": 1,
+        "set": "mir",
+        "cn": "141",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shrouded Lore",
+        "qty": 1,
+        "set": "plc",
+        "cn": "91",
+        "finish": "foil"
+      },
+      {
+        "name": "Sidisi, Undead Vizier",
+        "qty": 1,
+        "set": "pdtk",
+        "cn": "120s",
+        "finish": "foil"
+      },
+      {
+        "name": "Sign in Blood",
+        "qty": 1,
+        "set": "m11",
+        "cn": "117",
+        "finish": "foil"
+      },
+      {
+        "name": "Skirge Familiar",
+        "qty": 1,
+        "set": "usg",
+        "cn": "157",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Snuff Out",
+        "qty": 1,
+        "set": "mmq",
+        "cn": "162",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sol Ring",
+        "qty": 1,
+        "set": "cc2",
+        "cn": "7",
+        "finish": "foil"
+      },
+      {
+        "name": "Swamp",
+        "qty": 14,
+        "set": "pal01",
+        "cn": "9",
+        "finish": "foil"
+      },
+      {
+        "name": "Takenuma, Abandoned Mire",
+        "qty": 1,
+        "set": "pneo",
+        "cn": "278s",
+        "finish": "foil"
+      },
+      {
+        "name": "Talon Gates of Madara",
+        "qty": 1,
+        "set": "m3c",
+        "cn": "134",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "The Master of Lake-town",
+        "qty": 1,
+        "set": "hob",
+        "cn": "77",
+        "finish": "foil"
+      },
+      {
+        "name": "Unmarked Grave",
+        "qty": 1,
+        "set": "pmh2",
+        "cn": "106s",
+        "finish": "foil"
+      },
+      {
+        "name": "Urborg, Tomb of Yawgmoth",
+        "qty": 1,
+        "set": "v12",
+        "cn": "13",
+        "finish": "foil"
+      },
+      {
+        "name": "Urza's Saga",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "380",
+        "finish": "foil"
+      },
+      {
+        "name": "Vampiric Tutor",
+        "qty": 1,
+        "set": "g00",
+        "cn": "2",
+        "finish": "foil"
+      },
+      {
+        "name": "Vile Entomber",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "403",
+        "finish": "foil"
+      },
+      {
+        "name": "Wishclaw Talisman",
+        "qty": 1,
+        "set": "peld",
+        "cn": "110s",
+        "finish": "foil"
+      },
+      {
+        "name": "Xiahou Dun, the One-Eyed",
+        "qty": 1,
+        "set": "j12",
+        "cn": "1",
+        "finish": "foil"
+      },
+      {
+        "name": "Yawgmoth's Will",
+        "qty": 1,
+        "set": "g07",
+        "cn": "3",
+        "finish": "foil"
+      }
+    ],
+    "maybeboard": [
+      {
+        "name": "Acererak the Archlich",
+        "qty": 1,
+        "set": "pafr",
+        "cn": "87s",
+        "finish": "foil"
+      },
+      {
+        "name": "Aetherflux Reservoir",
+        "qty": 1,
+        "set": "pkld",
+        "cn": "192s",
+        "finish": "foil"
+      },
+      {
+        "name": "Ayara, First of Locthwain",
+        "qty": 1,
+        "set": "peld",
+        "cn": "75s",
+        "finish": "foil"
+      },
+      {
+        "name": "Baleful Mastery",
+        "qty": 1,
+        "set": "pstx",
+        "cn": "64s",
+        "finish": "foil"
+      },
+      {
+        "name": "Baron Helmut Zemo",
+        "qty": 1,
+        "set": "msh",
+        "cn": "87",
+        "finish": "foil"
+      },
+      {
+        "name": "Basilica Screecher",
+        "qty": 1,
+        "set": "gtc",
+        "cn": "58",
+        "finish": "foil"
+      },
+      {
+        "name": "Bazaar of Baghdad",
+        "qty": 1,
+        "set": "arn",
+        "cn": "70",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bile Blight",
+        "qty": 1,
+        "set": "f14",
+        "cn": "8",
+        "finish": "foil"
+      },
+      {
+        "name": "Black Market Connections",
+        "qty": 1,
+        "set": "lcc",
+        "cn": "181",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blast Zone",
+        "qty": 1,
+        "set": "slu",
+        "cn": "504",
+        "finish": "foil"
+      },
+      {
+        "name": "Blood Artist",
+        "qty": 1,
+        "set": "inr",
+        "cn": "372",
+        "finish": "foil"
+      },
+      {
+        "name": "Bolas's Citadel",
+        "qty": 1,
+        "set": "pwar",
+        "cn": "79s",
+        "finish": "foil"
+      },
+      {
+        "name": "Boseiju, Who Shelters All",
+        "qty": 1,
+        "set": "v12",
+        "cn": "2",
+        "finish": "foil"
+      },
+      {
+        "name": "Braids, Arisen Nightmare",
+        "qty": 1,
+        "set": "gdy",
+        "cn": "8",
+        "finish": "foil"
+      },
+      {
+        "name": "Cabal Therapy",
+        "qty": 1,
+        "set": "f05",
+        "cn": "5",
+        "finish": "foil"
+      },
+      {
+        "name": "Cavern of Souls",
+        "qty": 1,
+        "set": "puma",
+        "cn": "U32",
+        "finish": "foil"
+      },
+      {
+        "name": "Chain of Smog",
+        "qty": 1,
+        "set": "ons",
+        "cn": "132",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Collective Brutality",
+        "qty": 1,
+        "set": "pemn",
+        "cn": "85s",
+        "finish": "foil"
+      },
+      {
+        "name": "Come Back Wrong",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "292",
+        "finish": "foil"
+      },
+      {
+        "name": "Command Beacon",
+        "qty": 1,
+        "set": "j16",
+        "cn": "4",
+        "finish": "foil"
+      },
+      {
+        "name": "Conqueror's Flail",
+        "qty": 1,
+        "set": "c16",
+        "cn": "53",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cruelclaw's Heist",
+        "qty": 1,
+        "set": "pblb",
+        "cn": "88s",
+        "finish": "foil"
+      },
+      {
+        "name": "Crypt Ghast",
+        "qty": 1,
+        "set": "rvr",
+        "cn": "322",
+        "finish": "foil"
+      },
+      {
+        "name": "Cynical Loner",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "89",
+        "finish": "foil"
+      },
+      {
+        "name": "Dance of the Dead",
+        "qty": 1,
+        "set": "ice",
+        "cn": "118",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dark Confidant",
+        "qty": 1,
+        "set": "g11",
+        "cn": "6",
+        "finish": "foil"
+      },
+      {
+        "name": "Darkstar Augur",
+        "qty": 1,
+        "set": "pblb",
+        "cn": "90s",
+        "finish": "foil"
+      },
+      {
+        "name": "Dauthi Voidwalker",
+        "qty": 1,
+        "set": "pmh2",
+        "cn": "81s",
+        "finish": "foil"
+      },
+      {
+        "name": "Deadly Dispute",
+        "qty": 1,
+        "set": "afr",
+        "cn": "94",
+        "finish": "foil"
+      },
+      {
+        "name": "Deadly Rollick",
+        "qty": 1,
+        "set": "c20",
+        "cn": "42",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Defense Grid",
+        "qty": 1,
+        "set": "ulg",
+        "cn": "125",
+        "finish": "foil"
+      },
+      {
+        "name": "Diabolic Intent",
+        "qty": 1,
+        "set": "pls",
+        "cn": "42",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dimir Machinations",
+        "qty": 1,
+        "set": "rav",
+        "cn": "84",
+        "finish": "foil"
+      },
+      {
+        "name": "Duress",
+        "qty": 1,
+        "set": "f05",
+        "cn": "10",
+        "finish": "foil"
+      },
+      {
+        "name": "Everflowing Chalice",
+        "qty": 1,
+        "set": "f11",
+        "cn": "1",
+        "finish": "foil"
+      },
+      {
+        "name": "Feed the Swarm",
+        "qty": 1,
+        "set": "znr",
+        "cn": "102",
+        "finish": "foil"
+      },
+      {
+        "name": "Feign Death",
+        "qty": 1,
+        "set": "afr",
+        "cn": "103",
+        "finish": "foil"
+      },
+      {
+        "name": "Fellwar Stone",
+        "qty": 1,
+        "set": "drk",
+        "cn": "102",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Font of Agonies",
+        "qty": 1,
+        "set": "prna",
+        "cn": "74s",
+        "finish": "foil"
+      },
+      {
+        "name": "Forsaken Miner",
+        "qty": 1,
+        "set": "otj",
+        "cn": "88",
+        "finish": "foil"
+      },
+      {
+        "name": "Funeral Charm",
+        "qty": 1,
+        "set": "vis",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Geier Reach Sanitarium",
+        "qty": 1,
+        "set": "pemn",
+        "cn": "203s",
+        "finish": "foil"
+      },
+      {
+        "name": "Go for the Throat",
+        "qty": 1,
+        "set": "f11",
+        "cn": "11",
+        "finish": "foil"
+      },
+      {
+        "name": "Grasp of Darkness",
+        "qty": 1,
+        "set": "som",
+        "cn": "65",
+        "finish": "foil"
+      },
+      {
+        "name": "Gravecrawler",
+        "qty": 1,
+        "set": "pdka",
+        "cn": "64★",
+        "finish": "foil"
+      },
+      {
+        "name": "Grief",
+        "qty": 1,
+        "set": "pmh2",
+        "cn": "87s",
+        "finish": "foil"
+      },
+      {
+        "name": "Helm of Awakening",
+        "qty": 1,
+        "set": "vis",
+        "cn": "145",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "High Market",
+        "qty": 1,
+        "set": "v12",
+        "cn": "9",
+        "finish": "foil"
+      },
+      {
+        "name": "Imp's Mischief",
+        "qty": 1,
+        "set": "plc",
+        "cn": "72",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Infernal Darkness",
+        "qty": 1,
+        "set": "ice",
+        "cn": "135",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Infernal Grasp",
+        "qty": 1,
+        "set": "mid",
+        "cn": "389",
+        "finish": "foil"
+      },
+      {
+        "name": "Inquisition of Kozilek",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "80",
+        "finish": "foil"
+      },
+      {
+        "name": "Jeweled Lotus",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "695",
+        "finish": "foil"
+      },
+      {
+        "name": "Kaervek, the Punisher",
+        "qty": 1,
+        "set": "potj",
+        "cn": "92s",
+        "finish": "foil"
+      },
+      {
+        "name": "Leyline of the Void",
+        "qty": 1,
+        "set": "pm20",
+        "cn": "107s",
+        "finish": "foil"
+      },
+      {
+        "name": "Lightning Greaves",
+        "qty": 1,
+        "set": "f09",
+        "cn": "8",
+        "finish": "foil"
+      },
+      {
+        "name": "Lively Dirge",
+        "qty": 1,
+        "set": "otj",
+        "cn": "93",
+        "finish": "foil"
+      },
+      {
+        "name": "Mana Crypt",
+        "qty": 1,
+        "set": "g11",
+        "cn": "5",
+        "finish": "foil"
+      },
+      {
+        "name": "Manifold Key",
+        "qty": 1,
+        "set": "tsr",
+        "cn": "398",
+        "finish": "foil"
+      },
+      {
+        "name": "Massacre",
+        "qty": 1,
+        "set": "nem",
+        "cn": "58",
+        "finish": "foil"
+      },
+      {
+        "name": "Mastermind's Acquisition",
+        "qty": 1,
+        "set": "prix",
+        "cn": "77s",
+        "finish": "foil"
+      },
+      {
+        "name": "Mishra's Factory",
+        "qty": 1,
+        "set": "g05",
+        "cn": "4",
+        "finish": "foil"
+      },
+      {
+        "name": "Mox Opal",
+        "qty": 1,
+        "set": "j19",
+        "cn": "3",
+        "finish": "foil"
+      },
+      {
+        "name": "Mutavault",
+        "qty": 1,
+        "set": "pgpx",
+        "cn": "2018",
+        "finish": "foil"
+      },
+      {
+        "name": "Nashi, Moon Sage's Scion",
+        "qty": 1,
+        "set": "pneo",
+        "cn": "114s",
+        "finish": "foil"
+      },
+      {
+        "name": "Night's Whisper",
+        "qty": 1,
+        "set": "ema",
+        "cn": "100",
+        "finish": "foil"
+      },
+      {
+        "name": "Not Dead After All",
+        "qty": 1,
+        "set": "woe",
+        "cn": "101",
+        "finish": "foil"
+      },
+      {
+        "name": "Opposition Agent",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "141",
+        "finish": "foil"
+      },
+      {
+        "name": "Oriq Loremage",
+        "qty": 1,
+        "set": "pstx",
+        "cn": "80s",
+        "finish": "foil"
+      },
+      {
+        "name": "Peer into the Abyss",
+        "qty": 1,
+        "set": "pm21",
+        "cn": "117s",
+        "finish": "foil"
+      },
+      {
+        "name": "Persist",
+        "qty": 1,
+        "set": "pmh2",
+        "cn": "96s",
+        "finish": "foil"
+      },
+      {
+        "name": "Pestilence",
+        "qty": 1,
+        "set": "ced",
+        "cn": "121",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Phyrexian Altar",
+        "qty": 1,
+        "set": "inv",
+        "cn": "306",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pontiff of Blight",
+        "qty": 1,
+        "set": "sld",
+        "cn": "848",
+        "finish": "foil"
+      },
+      {
+        "name": "Popular Egotist",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "114",
+        "finish": "foil"
+      },
+      {
+        "name": "Priest of Gix",
+        "qty": 1,
+        "set": "usg",
+        "cn": "150",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Professor Onyx",
+        "qty": 1,
+        "set": "pstx",
+        "cn": "83s",
+        "finish": "foil"
+      },
+      {
+        "name": "Putrid Imp",
+        "qty": 1,
+        "set": "pd3",
+        "cn": "1",
+        "finish": "foil"
+      },
+      {
+        "name": "Razaketh's Rite",
+        "qty": 1,
+        "set": "hou",
+        "cn": "74",
+        "finish": "foil"
+      },
+      {
+        "name": "Relic of Legends",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "236",
+        "finish": "foil"
+      },
+      {
+        "name": "Ripples of Undeath",
+        "qty": 1,
+        "set": "pmh3",
+        "cn": "107s",
+        "finish": "foil"
+      },
+      {
+        "name": "Sensei's Divining Top",
+        "qty": 1,
+        "set": "v09",
+        "cn": "10",
+        "finish": "foil"
+      },
+      {
+        "name": "Sheoldred, the Apocalypse",
+        "qty": 1,
+        "set": "pdmu",
+        "cn": "107s",
+        "finish": "foil"
+      },
+      {
+        "name": "Shred Memory",
+        "qty": 1,
+        "set": "rav",
+        "cn": "105",
+        "finish": "foil"
+      },
+      {
+        "name": "Sidisi, Regent of the Mire",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "92",
+        "finish": "foil"
+      },
+      {
+        "name": "Slaughter Pact",
+        "qty": 1,
+        "set": "tsr",
+        "cn": "138",
+        "finish": "foil"
+      },
+      {
+        "name": "Soldevi Adnate",
+        "qty": 1,
+        "set": "all",
+        "cn": "60a",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Springleaf Drum",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "291",
+        "finish": "foil"
+      },
+      {
+        "name": "Surgical Extraction",
+        "qty": 1,
+        "set": "pnph",
+        "cn": "74★",
+        "finish": "foil"
+      },
+      {
+        "name": "Tezzeret, Cruel Captain",
+        "qty": 1,
+        "set": "peoe",
+        "cn": "2s",
+        "finish": "foil"
+      },
+      {
+        "name": "The Darkness Crystal",
+        "qty": 1,
+        "set": "fin",
+        "cn": "96",
+        "finish": "foil"
+      },
+      {
+        "name": "The Meathook Massacre",
+        "qty": 1,
+        "set": "pmid",
+        "cn": "112s",
+        "finish": "foil"
+      },
+      {
+        "name": "The One Ring",
+        "qty": 1,
+        "set": "pltr",
+        "cn": "246s",
+        "finish": "foil"
+      },
+      {
+        "name": "The Sibsig Ceremony",
+        "qty": 1,
+        "set": "tdm",
+        "cn": "91",
+        "finish": "foil"
+      },
+      {
+        "name": "The Speed Demon",
+        "qty": 1,
+        "set": "dft",
+        "cn": "105",
+        "finish": "foil"
+      },
+      {
+        "name": "Thoughtseize",
+        "qty": 1,
+        "set": "lrw",
+        "cn": "145",
+        "finish": "foil"
+      },
+      {
+        "name": "Thrull Parasite",
+        "qty": 1,
+        "set": "gtc",
+        "cn": "81",
+        "finish": "foil"
+      },
+      {
+        "name": "Toxic Deluge",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "110",
+        "finish": "foil"
+      },
+      {
+        "name": "Ulcerate",
+        "qty": 1,
+        "set": "m15",
+        "cn": "119",
+        "finish": "foil"
+      },
+      {
+        "name": "Undying Malice",
+        "qty": 1,
+        "set": "vow",
+        "cn": "134",
+        "finish": "foil"
+      },
+      {
+        "name": "Unmask",
+        "qty": 1,
+        "set": "plst",
+        "cn": "MMQ-168",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "V.A.T.S.",
+        "qty": 1,
+        "set": "pip",
+        "cn": "50",
+        "finish": "foil"
+      },
+      {
+        "name": "Vault of Whispers",
+        "qty": 1,
+        "set": "40k",
+        "cn": "305★",
+        "finish": "foil"
+      },
+      {
+        "name": "Vengeful Bloodwitch",
+        "qty": 1,
+        "set": "fdn",
+        "cn": "76",
+        "finish": "foil"
+      },
+      {
+        "name": "Vexing Bauble",
+        "qty": 1,
+        "set": "mh3",
+        "cn": "212",
+        "finish": "foil"
+      },
+      {
+        "name": "Victim of Night",
+        "qty": 1,
+        "set": "isd",
+        "cn": "124",
+        "finish": "foil"
+      },
+      {
+        "name": "Vilis, Broker of Blood",
+        "qty": 1,
+        "set": "pm20",
+        "cn": "122s",
+        "finish": "foil"
+      },
+      {
+        "name": "Voltaic Key",
+        "qty": 1,
+        "set": "usg",
+        "cn": "314",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Warren Soultrader",
+        "qty": 1,
+        "set": "pmh3",
+        "cn": "110s",
+        "finish": "foil"
+      },
+      {
+        "name": "Winding Canyons",
+        "qty": 1,
+        "set": "wth",
+        "cn": "167",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Withering Torment",
+        "qty": 1,
+        "set": "dsk",
+        "cn": "124",
+        "finish": "foil"
+      },
+      {
+        "name": "Word of Command",
+        "qty": 1,
+        "set": "ced",
+        "cn": "137",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Yahenni's Expertise",
+        "qty": 1,
+        "set": "paer",
+        "cn": "75s",
+        "finish": "foil"
+      }
+    ],
+    "tokens": [
+      {
+        "name": "0",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "1",
+        "set": null,
+        "cn": null,
+        "finish": null
+      },
+      {
+        "name": "2",
+        "set": null,
+        "cn": null,
+        "finish": null
+      }
+    ]
+  },
+  "variants": {
+    "full": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "full-nofinish": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "full-tags": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "first-lines",
+      "lossy": false
+    },
+    "mtgo": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard",
+        "stickers"
+      ],
+      "commanders": "last-block",
+      "lossy": false
+    },
+    "arena": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    },
+    "arena-flags": {
+      "boards": [
+        "commanders",
+        "signatureSpells",
+        "mainboard",
+        "sideboard"
+      ],
+      "commanders": "section",
+      "lossy": true
+    }
+  }
+}

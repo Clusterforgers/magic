@@ -1,0 +1,1078 @@
+{
+  "source": {
+    "site": "archidekt",
+    "id": "4148554",
+    "url": "https://archidekt.com/decks/4148554",
+    "format": "paupercommander",
+    "name": "Izzet Affinity Spellslinger PDH",
+    "why": "pauper commander, 65 maybeboard cards, an excluded 'Alt. Commanders' category, accent in a card name, 107m number",
+    "fetched": "2026-10-17"
+  },
+  "boards": {
+    "commanders": [
+      {
+        "name": "Third Path Iconoclast",
+        "qty": 1,
+        "set": "bro",
+        "cn": "223",
+        "finish": "nonFoil"
+      }
+    ],
+    "mainboard": [
+      {
+        "name": "Abrade",
+        "qty": 1,
+        "set": "scd",
+        "cn": "122",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Arcane Signet",
+        "qty": 1,
+        "set": "onc",
+        "cn": "125",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ashnod's Altar",
+        "qty": 1,
+        "set": "plst",
+        "cn": "EMA-218",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Augur of Bolas",
+        "qty": 1,
+        "set": "plst",
+        "cn": "MM3-30",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Battle Hymn",
+        "qty": 1,
+        "set": "avr",
+        "cn": "128",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blink of an Eye",
+        "qty": 1,
+        "set": "dom",
+        "cn": "46",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Brainstorm",
+        "qty": 1,
+        "set": "c15",
+        "cn": "90",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Chain Lightning",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "113",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Clout of the Dominus",
+        "qty": 1,
+        "set": "eve",
+        "cn": "99",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Command Tower",
+        "qty": 1,
+        "set": "onc",
+        "cn": "151",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Consider",
+        "qty": 1,
+        "set": "mid",
+        "cn": "44",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Counterspell",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "45",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Decanter of Endless Water",
+        "qty": 1,
+        "set": "clb",
+        "cn": "309",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dispel",
+        "qty": 1,
+        "set": "plst",
+        "cn": "BFZ-76",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Distant Melody",
+        "qty": 1,
+        "set": "scd",
+        "cn": "48",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Electrickery",
+        "qty": 1,
+        "set": "rtr",
+        "cn": "93",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Embraal Gear-Smasher",
+        "qty": 1,
+        "set": "aer",
+        "cn": "79",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "End the Festivities",
+        "qty": 1,
+        "set": "vow",
+        "cn": "155",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Evolving Wilds",
+        "qty": 1,
+        "set": "j22",
+        "cn": "813",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Experimental Synthesizer",
+        "qty": 1,
+        "set": "neo",
+        "cn": "138",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Faithless Looting",
+        "qty": 1,
+        "set": "dka",
+        "cn": "87",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Filigree Attendant",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "95",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Firebrand Archer",
+        "qty": 1,
+        "set": "plst",
+        "cn": "HOU-92",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Flood of Recollection",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Frantic Search",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "51",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Galvanic Blast",
+        "qty": 1,
+        "set": "som",
+        "cn": "91",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gitaxian Probe",
+        "qty": 1,
+        "set": "plst",
+        "cn": "NPH-35",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goblin Electromancer",
+        "qty": 1,
+        "set": "rtr",
+        "cn": "163",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Grapeshot",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "125",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Great Furnace",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "282",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Guttersnipe",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "229",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "High Tide",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "54",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Impact Tremors",
+        "qty": 1,
+        "set": "plst",
+        "cn": "DTK-140",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Infernal Plunge",
+        "qty": 1,
+        "set": "isd",
+        "cn": "148",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ingenious Artillerist",
+        "qty": 1,
+        "set": "clb",
+        "cn": "182",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Island",
+        "qty": 16,
+        "set": "scd",
+        "cn": "338",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Izzet Charm",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "230",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Izzet Signet",
+        "qty": 1,
+        "set": "clb",
+        "cn": "863",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Keep Watch",
+        "qty": 1,
+        "set": "hop",
+        "cn": "10",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kessig Flamebreather",
+        "qty": 1,
+        "set": "vow",
+        "cn": "164",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kuldotha Rebirth",
+        "qty": 1,
+        "set": "som",
+        "cn": "96",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lightning Bolt",
+        "qty": 1,
+        "set": "m11",
+        "cn": "149",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mana Geyser",
+        "qty": 1,
+        "set": "scd",
+        "cn": "151",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mnemonic Wall",
+        "qty": 1,
+        "set": "plst",
+        "cn": "IMA-67",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mountain",
+        "qty": 12,
+        "set": "scd",
+        "cn": "348",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Murmuring Mystic",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "107",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mystic Sanctuary",
+        "qty": 1,
+        "set": "eld",
+        "cn": "247",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Negate",
+        "qty": 1,
+        "set": "scd",
+        "cn": "58",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Opt",
+        "qty": 1,
+        "set": "m21",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Perilous Research",
+        "qty": 1,
+        "set": "mma",
+        "cn": "58",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ponder",
+        "qty": 1,
+        "set": "ncc",
+        "cn": "229",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Preordain",
+        "qty": 1,
+        "set": "m11",
+        "cn": "70",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reckless Fireweaver",
+        "qty": 1,
+        "set": "j22",
+        "cn": "587",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reverse Engineer",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "116",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Rewind",
+        "qty": 1,
+        "set": "m21",
+        "cn": "63",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Seat of the Synod",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "283",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Seething Song",
+        "qty": 1,
+        "set": "c21",
+        "cn": "179",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shipwreck Dowser",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "119",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Silverbluff Bridge",
+        "qty": 1,
+        "set": "mh2",
+        "cn": "255",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Snap",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Spell Pierce",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "63",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Stoic Rebuttal",
+        "qty": 1,
+        "set": "mm2",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Strangle",
+        "qty": 1,
+        "set": "snc",
+        "cn": "125",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Terramorphic Expanse",
+        "qty": 1,
+        "set": "one",
+        "cn": "261",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thermo-Alchemist",
+        "qty": 1,
+        "set": "j22",
+        "cn": "613",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Think Twice",
+        "qty": 1,
+        "set": "tsr",
+        "cn": "92",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thought Scour",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "65",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thought Vessel",
+        "qty": 1,
+        "set": "scd",
+        "cn": "285",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thoughtcast",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "54",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Thrill of Possibility",
+        "qty": 1,
+        "set": "one",
+        "cn": "151",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tolarian Terror",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "72",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Treasure Cruise",
+        "qty": 1,
+        "set": "ktk",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Witty Roastmaster",
+        "qty": 1,
+        "set": "snc",
+        "cn": "131",
+        "finish": "nonFoil"
+      }
+    ],
+    "maybeboard": [
+      {
+        "name": "\"Name Sticker\" Goblin",
+        "qty": 1,
+        "set": "unf",
+        "cn": "107m",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ancestors' Aid",
+        "qty": 1,
+        "set": "lci",
+        "cn": "132",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Archaeomancer",
+        "qty": 1,
+        "set": "plst",
+        "cn": "C17-81",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Artificer's Epiphany",
+        "qty": 1,
+        "set": "j22",
+        "cn": "272",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Barbed Batterfist",
+        "qty": 1,
+        "set": "one",
+        "cn": "121",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bitter Reunion",
+        "qty": 1,
+        "set": "bro",
+        "cn": "127",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blood Aspirant",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "208",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Bloodwater Entity",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "185",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Blue Elemental Blast",
+        "qty": 1,
+        "set": "plst",
+        "cn": "A25-43",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Brackish Blunder",
+        "qty": 1,
+        "set": "lci",
+        "cn": "46",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Breath Weapon",
+        "qty": 1,
+        "set": "clb",
+        "cn": "165",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Capsize",
+        "qty": 1,
+        "set": "tmp",
+        "cn": "55",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cryptic Serpent",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "83",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Cyclops Electromancer",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "212",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dark-Dweller Oracle",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "106",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Delver of Secrets // Insectile Aberration",
+        "qty": 1,
+        "set": "isd",
+        "cn": "51",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Desperate Ritual",
+        "qty": 1,
+        "set": "uma",
+        "cn": "127",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Destructive Digger",
+        "qty": 1,
+        "set": "m20",
+        "cn": "134",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Disdainful Stroke",
+        "qty": 1,
+        "set": "snc",
+        "cn": "39",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Dynacharge",
+        "qty": 1,
+        "set": "plst",
+        "cn": "MM3-94",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Electrostatic Field",
+        "qty": 1,
+        "set": "grn",
+        "cn": "97",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Erebor Flamesmith",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "122",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Excavation Explosion",
+        "qty": 1,
+        "set": "bro",
+        "cn": "132",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fallaji Archaeologist",
+        "qty": 1,
+        "set": "bro",
+        "cn": "48",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Festival Crasher",
+        "qty": 1,
+        "set": "mid",
+        "cn": "140",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fiery Cannonade",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "178",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Fire // Ice",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "215",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Firebolt",
+        "qty": 1,
+        "set": "j22",
+        "cn": "532",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Firemind Vessel",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "383",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "First Day of Class",
+        "qty": 1,
+        "set": "stx",
+        "cn": "102",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ghostly Flicker",
+        "qty": 1,
+        "set": "khc",
+        "cn": "39",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Gingerbrute",
+        "qty": 1,
+        "set": "woe",
+        "cn": "246",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Goblin Taskmaster",
+        "qty": 1,
+        "set": "ons",
+        "cn": "210",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Improvised Club",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "137",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Izzet Chronarch",
+        "qty": 1,
+        "set": "c17",
+        "cn": "175",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Jhessian Thief",
+        "qty": 1,
+        "set": "ima",
+        "cn": "61",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Krark-Clan Shaman",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "98",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Kruin Striker",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "114",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lightning Strike",
+        "qty": 1,
+        "set": "dmu",
+        "cn": "137",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Lórien Revealed",
+        "qty": 1,
+        "set": "ltr",
+        "cn": "60",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Magma Jet",
+        "qty": 1,
+        "set": "jmp",
+        "cn": "346",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Makeshift Munitions",
+        "qty": 1,
+        "set": "cmr",
+        "cn": "191",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Meeting of Minds",
+        "qty": 1,
+        "set": "mom",
+        "cn": "66",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mental Note",
+        "qty": 1,
+        "set": "jud",
+        "cn": "46",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Metallic Rebuke",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "59",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Monastery Swiftspear",
+        "qty": 1,
+        "set": "2x2",
+        "cn": "119",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Mulldrifter",
+        "qty": 1,
+        "set": "cmd",
+        "cn": "52",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Myr Enforcer",
+        "qty": 1,
+        "set": "mm2",
+        "cn": "224",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Ornithopter",
+        "qty": 1,
+        "set": "dmr",
+        "cn": "233",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Override",
+        "qty": 1,
+        "set": "mrd",
+        "cn": "45",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Promising Vein",
+        "qty": 1,
+        "set": "lci",
+        "cn": "279",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Prophetic Prism",
+        "qty": 1,
+        "set": "woe",
+        "cn": "249",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Pyretic Ritual",
+        "qty": 1,
+        "set": "plst",
+        "cn": "M11-153",
+        "finish": "foil"
+      },
+      {
+        "name": "Raid Bombardment",
+        "qty": 1,
+        "set": "uma",
+        "cn": "142",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Reckless Impulse",
+        "qty": 1,
+        "set": "vow",
+        "cn": "174",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Red Elemental Blast",
+        "qty": 1,
+        "set": "a25",
+        "cn": "147",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Relic of Progenitus",
+        "qty": 1,
+        "set": "brc",
+        "cn": "157",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Salivating Gremlins",
+        "qty": 1,
+        "set": "2xm",
+        "cn": "143",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Shock",
+        "qty": 1,
+        "set": "m21",
+        "cn": "159",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Simian Spirit Guide",
+        "qty": 1,
+        "set": "tsr",
+        "cn": "190",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Stern Lesson",
+        "qty": 1,
+        "set": "bro",
+        "cn": "64",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sulfurous Blast",
+        "qty": 1,
+        "set": "cmm",
+        "cn": "262",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Sunshot Militia",
+        "qty": 1,
+        "set": "lci",
+        "cn": "168",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Tectonic Hazard",
+        "qty": 1,
+        "set": "lci",
+        "cn": "169",
+        "finish": "nonFoil"
+      },
+      {
+        "name": "Wayfarer's Bauble",
+        "qty": 1,
+        "set": "scd",
+        "cn": "287",
+        "finish": "nonFoil"
+      }
+    ]
+  },
+  "variants": {
+    "default": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "no-x": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "front-name": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "sets-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "names-only": {
+      "boards": [
+        "mainboard"
+      ],
+      "commanders": "none",
+      "lossy": false
+    },
+    "headers-generic": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-category": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-type": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    },
+    "headers-generic-plain": {
+      "boards": [
+        "commanders",
+        "mainboard",
+        "sideboard",
+        "maybeboard"
+      ],
+      "commanders": "marked",
+      "lossy": false
+    }
+  }
+}
