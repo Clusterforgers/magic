@@ -9,6 +9,7 @@ use axum::Router;
 use axum::http::header::{CACHE_CONTROL, CONTENT_TYPE, X_CONTENT_TYPE_OPTIONS};
 use axum::http::{HeaderValue, Method};
 use axum::routing::{get, post};
+use axum::serve::ListenerExt;
 use tokio::net::TcpListener;
 use tokio::sync::{mpsc, watch};
 use tower_http::cors::{AllowOrigin, CorsLayer};
@@ -108,6 +109,12 @@ impl Server {
         } = self;
         let grace = state.config().shutdown_grace;
         let janitor = state.registry().spawn_janitor(state.stop());
+        // Small request/answer messages should not wait for Nagle's algorithm.
+        let listener = listener.tap_io(|tcp| {
+            if let Err(error) = tcp.set_nodelay(true) {
+                tracing::debug!(%error, "could not set TCP_NODELAY");
+            }
+        });
         let served = axum::serve(listener, router(state))
             .with_graceful_shutdown(async move {
                 shutdown.await;
