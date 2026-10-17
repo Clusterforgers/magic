@@ -1,7 +1,5 @@
 //! Goal: the opening procedure deals seven, lets every player keep or London-mulligan in turn order, and starts turn one only when all have kept.
 
-mod common;
-
 use mtg_core::ids::ObjectId;
 use mtg_engine::decision::{Answer, DecisionKind, MulliganChoice};
 use mtg_engine::player::MulliganStatus;
