@@ -11,13 +11,24 @@ mtg-core.workspace = true
 mtg-engine.workspace = true
 mtg-cards.workspace = true
 mtg-protocol.workspace = true
+axum.workspace = true
+getrandom.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
 thiserror.workspace = true
-tokio.workspace = true
-uuid.workspace = true
+tokio = { workspace = true, features = ["net", "signal"] }
+tower-http.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+uuid = { workspace = true, features = ["v4"] }
 
 [lints]
 workspace = true
 
 [dev-dependencies]
 mtg-testkit.workspace = true
+futures-util.workspace = true
 rstest.workspace = true
+tokio = { workspace = true, features = ["io-util"] }
+tokio-tungstenite.workspace = true
