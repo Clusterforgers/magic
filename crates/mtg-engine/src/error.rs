@@ -13,6 +13,9 @@ pub enum EngineError {
     /// The game is over, so no answer is expected.
     #[error("the game is over; no decision is pending")]
     NoDecision,
+    /// The seat does not exist or has already left the game.
+    #[error("{0:?} is not in the game")]
+    NotInGame(PlayerId),
     /// The game setup is not playable.
     #[error("invalid game setup: {0}")]
     Setup(#[from] SetupError),

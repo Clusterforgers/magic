@@ -10,6 +10,7 @@ use crate::error::EngineError;
 use crate::events::Event;
 use crate::flow::{Progress, next};
 use crate::fold::apply_event;
+use crate::player::LossReason;
 use crate::setup::GameSetup;
 use crate::state::{GameResult, GameState};
 
@@ -21,6 +22,14 @@ const MAX_INTERNAL_STEPS: usize = 10_000;
 struct PendingCast {
     player: PlayerId,
     spell: ObjectId,
+}
+
+/// Where an engine stood before a step; [`Engine::restore`] returns it to that point.
+#[derive(Debug, Clone)]
+pub struct Checkpoint {
+    mark: usize,
+    decision: Option<Decision>,
+    pending: Option<PendingCast>,
 }
 
 /// Replays `events` over the initial state of `setup`.
@@ -97,20 +106,64 @@ impl Engine {
     /// Illegal answers return an error and leave the engine untouched. On success returns every
     /// event produced, including the automatic steps that followed the answer.
     pub fn apply(&mut self, answer: Answer) -> Result<Vec<Event>, EngineError> {
-        let decision = self.decision.clone().ok_or(EngineError::NoDecision)?;
-        let outcome = handle(&decision, answer)?;
-        let mark = self.events.len();
-        let previous = self.pending;
-        let result = self
-            .run(outcome, decision.player)
-            .and_then(|()| self.advance());
-        match result {
-            Ok(()) => Ok(self.events[mark..].to_vec()),
-            Err(error) => {
-                self.rollback(mark, decision, previous);
-                Err(error)
-            }
+        let decision = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
+        let outcome = handle(decision, answer)?;
+        let player = decision.player;
+        let checkpoint = self.checkpoint();
+        let result = self.run(outcome, player).and_then(|()| self.advance());
+        self.finish(checkpoint, result)
+    }
+
+    /// Removes `player` from the game at once (CR 104.3a); a player may concede at any time.
+    ///
+    /// Returns the events produced: the loss, what follows from it (their objects leaving, the end
+    /// of the turn if it was theirs, the end of the game if one player remains) and the advance to
+    /// the next decision. A cast the engine was waiting to see paid for is abandoned. On error the
+    /// engine is untouched.
+    pub fn concede(&mut self, player: PlayerId) -> Result<Vec<Event>, EngineError> {
+        if self.decision.is_none() {
+            return Err(EngineError::NoDecision);
         }
+        if !self.state.is_alive(player) {
+            return Err(EngineError::NotInGame(player));
+        }
+        let checkpoint = self.checkpoint();
+        self.pending = None;
+        let lost = Event::PlayerLost {
+            player,
+            reason: LossReason::Conceded,
+        };
+        let result = self.commit(vec![lost]).and_then(|()| self.advance());
+        self.finish(checkpoint, result)
+    }
+
+    /// Notes the current position so that the steps taken after it can be undone with [`restore`](Engine::restore).
+    pub fn checkpoint(&self) -> Checkpoint {
+        Checkpoint {
+            mark: self.events.len(),
+            decision: self.decision.clone(),
+            pending: self.pending,
+        }
+    }
+
+    /// Undoes every step taken since `checkpoint`: the log is cut back and the state rebuilt from it.
+    ///
+    /// The checkpoint must come from this engine and not lie beyond the current log. Callers use
+    /// this when persisting a step fails, so the in-memory game never runs ahead of the store.
+    pub fn restore(&mut self, checkpoint: Checkpoint) -> Result<(), EngineError> {
+        if checkpoint.mark > self.events.len() {
+            return Err(EngineError::InvalidEvent(format!(
+                "checkpoint at event {} lies beyond the log of {} events",
+                checkpoint.mark,
+                self.events.len()
+            )));
+        }
+        let state = replay(&self.setup, &self.events[..checkpoint.mark])?;
+        self.events.truncate(checkpoint.mark);
+        self.state = state;
+        self.decision = checkpoint.decision;
+        self.pending = checkpoint.pending;
+        Ok(())
     }
 
     /// Registers a continuous effect and logs it.
@@ -133,22 +186,12 @@ impl Engine {
             duration,
             self.state.next_timestamp,
         );
-        let mark = self.events.len();
-        let decision = self.decision.clone();
-        let previous = self.pending;
+        let checkpoint = self.checkpoint();
         self.pending = None;
         let result = self
             .commit(vec![Event::EffectCreated { effect }])
             .and_then(|()| self.advance());
-        match result {
-            Ok(()) => Ok(self.events[mark..].to_vec()),
-            Err(error) => {
-                if let Some(decision) = decision {
-                    self.rollback(mark, decision, previous);
-                }
-                Err(error)
-            }
-        }
+        self.finish(checkpoint, result)
     }
 
     fn run(&mut self, outcome: Outcome, player: PlayerId) -> Result<(), EngineError> {
@@ -206,13 +249,20 @@ impl Engine {
         Err(EngineError::Stalled(MAX_INTERNAL_STEPS))
     }
 
-    /// Restores the state as of event `mark` after a failed step so a failure never half-applies.
-    fn rollback(&mut self, mark: usize, decision: Decision, pending: Option<PendingCast>) {
-        self.events.truncate(mark);
-        if let Ok(state) = replay(&self.setup, &self.events) {
-            self.state = state;
+    /// The events since `checkpoint` on success; on failure the step is undone so it never half-applies.
+    fn finish(
+        &mut self,
+        checkpoint: Checkpoint,
+        result: Result<(), EngineError>,
+    ) -> Result<Vec<Event>, EngineError> {
+        let mark = checkpoint.mark;
+        match result {
+            Ok(()) => Ok(self.events[mark..].to_vec()),
+            Err(error) => {
+                // A prefix that already folded once cannot fail to replay; if it somehow does, the original error is the useful one.
+                let _ = self.restore(checkpoint);
+                Err(error)
+            }
         }
-        self.decision = Some(decision);
-        self.pending = pending;
     }
 }

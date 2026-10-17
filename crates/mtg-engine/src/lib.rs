@@ -36,7 +36,7 @@ pub mod zones;
 
 pub use characteristics::{Characteristics, characteristics};
 pub use decision::{Answer, Decision, DecisionKind};
-pub use engine::{Engine, replay};
+pub use engine::{Checkpoint, Engine, replay};
 pub use error::EngineError;
 pub use events::Event;
 pub use fold::apply_event;

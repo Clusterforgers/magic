@@ -63,6 +63,14 @@ impl Driver {
         Ok(events)
     }
 
+    /// A player concedes and the invariants are checked; returns the events it produced.
+    pub fn concede(&mut self, player: PlayerId) -> Result<Vec<Event>, ScriptError> {
+        let events = self.engine.concede(player)?;
+        self.checker
+            .observe(self.engine.state(), self.engine.events())?;
+        Ok(events)
+    }
+
     /// Applies several raw answers in order.
     pub fn answers(
         &mut self,
