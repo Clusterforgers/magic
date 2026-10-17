@@ -9,6 +9,11 @@ publish.workspace = true
 [dependencies]
 mtg-core.workspace = true
 mtg-engine.workspace = true
+thiserror.workspace = true
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+rstest.workspace = true
