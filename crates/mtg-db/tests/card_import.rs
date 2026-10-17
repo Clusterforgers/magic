@@ -55,13 +55,21 @@ async fn the_fixture_pipeline_loads_every_usable_record_and_reports_the_bad_one(
 async fn every_stored_card_equals_the_record_it_came_from(pool: PgPool) {
     let database = common::seeded(pool).await;
     for record in fixture_records() {
-        let card = database.cards().get(&record.oracle_id).await.unwrap().unwrap();
+        let card = database
+            .cards()
+            .get(&record.oracle_id)
+            .await
+            .unwrap()
+            .unwrap();
         let context = &record.name;
         assert_eq!(card.name, record.name, "{context}");
         assert_eq!(card.layout, record.layout, "{context}");
         assert_eq!(card.is_deck_card, record.layout.is_deck_card(), "{context}");
         assert_eq!(card.mana_cost, record.mana_cost, "{context}");
-        assert!((card.mana_value - record.mana_value).abs() < f64::EPSILON, "{context}");
+        assert!(
+            (card.mana_value - record.mana_value).abs() < f64::EPSILON,
+            "{context}"
+        );
         assert_eq!(card.type_line, record.type_line, "{context}");
         assert_eq!(card.keywords, record.keywords, "{context}");
         assert_eq!(card.colors, record.colors, "{context}");
@@ -88,7 +96,12 @@ async fn every_stored_card_equals_the_record_it_came_from(pool: PgPool) {
 async fn printings_keep_their_metadata_and_images_apart_from_the_card(pool: PgPool) {
     let database = common::seeded(pool).await;
     for record in fixture_records() {
-        let detail = database.cards().detail(&record.oracle_id).await.unwrap().unwrap();
+        let detail = database
+            .cards()
+            .detail(&record.oracle_id)
+            .await
+            .unwrap()
+            .unwrap();
         let [printing] = detail.printings.as_slice() else {
             panic!("{} should have one printing", record.name);
         };
@@ -129,13 +142,21 @@ async fn reimporting_changes_nothing_at_any_batch_size(pool: PgPool) {
 
         let again = importer.import_cards(card_stream()).await.unwrap();
 
-        assert_eq!(snapshot(&pool, "cards", "oracle_id", true).await, cards, "{batch_size}");
+        assert_eq!(
+            snapshot(&pool, "cards", "oracle_id", true).await,
+            cards,
+            "{batch_size}"
+        );
         assert_eq!(
             snapshot(&pool, "printings", "printing_id", true).await,
             printings,
             "{batch_size}"
         );
-        assert_eq!(again.cards.inserted + again.cards.updated, 0, "{batch_size}");
+        assert_eq!(
+            again.cards.inserted + again.cards.updated,
+            0,
+            "{batch_size}"
+        );
         assert_eq!(again.cards.unchanged, FIXTURE_USABLE, "{batch_size}");
         assert_eq!(again.printings.unchanged, FIXTURE_USABLE, "{batch_size}");
     }
@@ -144,14 +165,28 @@ async fn reimporting_changes_nothing_at_any_batch_size(pool: PgPool) {
 #[sqlx::test]
 async fn batch_size_does_not_change_what_is_stored(pool: PgPool) {
     let importer = db(pool.clone()).importer();
-    importer.clone().with_batch_size(500).import_cards(card_stream()).await.unwrap();
+    importer
+        .clone()
+        .with_batch_size(500)
+        .import_cards(card_stream())
+        .await
+        .unwrap();
     let reference = snapshot(&pool, "cards", "oracle_id", false).await;
     let reference_printings = snapshot(&pool, "printings", "printing_id", false).await;
 
     for batch_size in BATCH_SIZES {
         reset(&pool).await;
-        importer.clone().with_batch_size(batch_size).import_cards(card_stream()).await.unwrap();
-        assert_eq!(snapshot(&pool, "cards", "oracle_id", false).await, reference, "{batch_size}");
+        importer
+            .clone()
+            .with_batch_size(batch_size)
+            .import_cards(card_stream())
+            .await
+            .unwrap();
+        assert_eq!(
+            snapshot(&pool, "cards", "oracle_id", false).await,
+            reference,
+            "{batch_size}"
+        );
         assert_eq!(
             snapshot(&pool, "printings", "printing_id", false).await,
             reference_printings,
@@ -161,12 +196,11 @@ async fn batch_size_does_not_change_what_is_stored(pool: PgPool) {
 }
 
 async fn updated_at_by_card(pool: &PgPool) -> BTreeMap<String, String> {
-    let rows: Vec<(String, String)> = sqlx::query_as(
-        "SELECT oracle_id::text, updated_at::text FROM cards ORDER BY oracle_id",
-    )
-    .fetch_all(pool)
-    .await
-    .unwrap();
+    let rows: Vec<(String, String)> =
+        sqlx::query_as("SELECT oracle_id::text, updated_at::text FROM cards ORDER BY oracle_id")
+            .fetch_all(pool)
+            .await
+            .unwrap();
     rows.into_iter().collect()
 }
 
@@ -175,7 +209,10 @@ async fn changed_card_data_replaces_the_old_data(pool: PgPool) {
     let database = common::seeded(pool.clone()).await;
     let before = updated_at_by_card(&pool).await;
     let mut records = fixture_records();
-    let bolt = records.iter_mut().find(|r| r.name == "Lightning Bolt").unwrap();
+    let bolt = records
+        .iter_mut()
+        .find(|r| r.name == "Lightning Bolt")
+        .unwrap();
     bolt.front.oracle_text = "Lightning Bolt deals 4 damage to any target.".into();
     bolt.mana_value = 2.0;
     bolt.mana_cost = "{1}{R}".into();
@@ -193,27 +230,74 @@ async fn changed_card_data_replaces_the_old_data(pool: PgPool) {
 
     assert_eq!((report.cards.inserted, report.cards.updated), (0, 1));
     assert_eq!(report.cards.unchanged, FIXTURE_USABLE - 1);
-    assert_eq!((report.printings.updated, report.printings.unchanged), (1, FIXTURE_USABLE - 1));
-    let card = database.cards().get(&oracle_of("Lightning Bolt")).await.unwrap().unwrap();
-    assert_eq!(card.faces[0].oracle_text, "Lightning Bolt deals 4 damage to any target.");
-    assert_eq!(card.oracle_text, "Lightning Bolt deals 4 damage to any target.");
+    assert_eq!(
+        (report.printings.updated, report.printings.unchanged),
+        (1, FIXTURE_USABLE - 1)
+    );
+    let card = database
+        .cards()
+        .get(&oracle_of("Lightning Bolt"))
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        card.faces[0].oracle_text,
+        "Lightning Bolt deals 4 damage to any target."
+    );
+    assert_eq!(
+        card.oracle_text,
+        "Lightning Bolt deals 4 damage to any target."
+    );
     assert_eq!(card.mana_cost, "{1}{R}");
     assert!((card.mana_value - 2.0).abs() < f64::EPSILON);
     assert_eq!(card.keywords, ["Haste"]);
     assert_eq!(card.legalities["modern"], Legality::Banned);
-    assert_eq!((card.colors, card.color_identity), (colors("RU"), colors("RU")));
-    let detail = database.cards().detail(&card.oracle_id).await.unwrap().unwrap();
+    assert_eq!(
+        (card.colors, card.color_identity),
+        (colors("RU"), colors("RU"))
+    );
+    let detail = database
+        .cards()
+        .detail(&card.oracle_id)
+        .await
+        .unwrap()
+        .unwrap();
     assert_eq!(detail.printings[0].rarity, Some(Rarity::Mythic));
 
     // Only the changed card was rewritten, and the search vector followed its text.
     let after = updated_at_by_card(&pool).await;
-    let changed: Vec<_> = after.iter().filter(|(id, at)| before[*id] != **at).collect();
+    let changed: Vec<_> = after
+        .iter()
+        .filter(|(id, at)| before[*id] != **at)
+        .collect();
     assert_eq!(changed.len(), 1);
     assert_eq!(changed[0].0, &card.oracle_id.to_string());
-    let old_text = CardSearch { oracle_text: Some("\"3 damage\"".into()), ..CardSearch::default() };
-    assert_eq!(database.cards().search(&old_text, Page::default()).await.unwrap().total, 0);
-    let new_text = CardSearch { oracle_text: Some("\"4 damage\"".into()), ..CardSearch::default() };
-    assert_eq!(database.cards().search(&new_text, Page::default()).await.unwrap().total, 1);
+    let old_text = CardSearch {
+        oracle_text: Some("\"3 damage\"".into()),
+        ..CardSearch::default()
+    };
+    assert_eq!(
+        database
+            .cards()
+            .search(&old_text, Page::default())
+            .await
+            .unwrap()
+            .total,
+        0
+    );
+    let new_text = CardSearch {
+        oracle_text: Some("\"4 damage\"".into()),
+        ..CardSearch::default()
+    };
+    assert_eq!(
+        database
+            .cards()
+            .search(&new_text, Page::default())
+            .await
+            .unwrap()
+            .total,
+        1
+    );
 }
 
 #[sqlx::test]
@@ -231,18 +315,33 @@ async fn engine_coverage_survives_reimports_of_changed_cards(pool: PgPool) {
         card.front.oracle_text = "Shock deals 3 damage to any target.".into();
     }
 
-    database.importer().import_cards(records.into_iter().map(Ok)).await.unwrap();
+    database
+        .importer()
+        .import_cards(records.into_iter().map(Ok))
+        .await
+        .unwrap();
 
     let status = |name: &'static str| {
         let database = database.clone();
         async move {
-            database.cards().get(&oracle_of(name)).await.unwrap().unwrap().impl_status
+            database
+                .cards()
+                .get(&oracle_of(name))
+                .await
+                .unwrap()
+                .unwrap()
+                .impl_status
         }
     };
     assert_eq!(status("Shock").await, ImplStatus::Full);
     assert_eq!(status("Lightning Bolt").await, ImplStatus::Partial);
     assert_eq!(status("Sol Ring").await, ImplStatus::Manual);
-    let shock = database.cards().get(&oracle_of("Shock")).await.unwrap().unwrap();
+    let shock = database
+        .cards()
+        .get(&oracle_of("Shock"))
+        .await
+        .unwrap()
+        .unwrap();
     assert_eq!(shock.oracle_text, "Shock deals 3 damage to any target.");
 }
 
@@ -271,9 +370,18 @@ async fn many_printings_of_one_card_share_a_single_card_row(pool: PgPool) {
         assert_eq!(report.printings.inserted, 5, "{batch_size}");
         assert_eq!(report.cards.inserted, inserted, "{batch_size}");
         assert_eq!(report.cards.unchanged, unchanged, "{batch_size}");
-        let detail = db(pool.clone()).cards().detail(&bolt.oracle_id).await.unwrap().unwrap();
+        let detail = db(pool.clone())
+            .cards()
+            .detail(&bolt.oracle_id)
+            .await
+            .unwrap()
+            .unwrap();
         let sets: Vec<_> = detail.printings.iter().map(|p| p.set.as_str()).collect();
-        assert_eq!(sets, ["m11", "m10", "lea", "xxx"], "newest first, undated last");
+        assert_eq!(
+            sets,
+            ["m11", "m10", "lea", "xxx"],
+            "newest first, undated last"
+        );
     }
 }
 
@@ -290,7 +398,12 @@ async fn the_last_record_of_a_batch_wins_for_shared_card_data(pool: PgPool) {
         .await
         .unwrap();
 
-    let card = database.cards().get(&bolt.oracle_id).await.unwrap().unwrap();
+    let card = database
+        .cards()
+        .get(&bolt.oracle_id)
+        .await
+        .unwrap()
+        .unwrap();
     assert_eq!(card.oracle_text, "Corrected text.");
 }
 
@@ -315,7 +428,8 @@ async fn other_cards_are_untouched_by_an_empty_or_tiny_import(pool: PgPool) {
 
 #[sqlx::test]
 async fn jsonl_bulk_files_import_like_array_files(pool: PgPool) {
-    let array = std::fs::read_to_string(common::fixture_path("scryfall_oracle_cards.json")).unwrap();
+    let array =
+        std::fs::read_to_string(common::fixture_path("scryfall_oracle_cards.json")).unwrap();
     let entries: Vec<Value> = serde_json::from_str(&array).unwrap();
     let lines: Vec<String> = entries.iter().map(Value::to_string).collect();
     let jsonl = lines.join("\n");

@@ -42,7 +42,9 @@ async fn failing_stores_the_message_and_the_progress_so_far(pool: PgPool) {
     let runs = db(pool).import_runs();
     let id = runs.start(ImportSource::ScryfallRulings).await.unwrap();
 
-    runs.fail(id, "bulk file truncated", &json!({"inserted": 12})).await.unwrap();
+    runs.fail(id, "bulk file truncated", &json!({"inserted": 12}))
+        .await
+        .unwrap();
 
     let run = runs.get(id).await.unwrap().unwrap();
     assert_eq!(run.status, RunStatus::Failed);
@@ -68,18 +70,27 @@ async fn a_run_ends_only_once(pool: PgPool) {
     ];
 
     for attempt in attempts {
-        assert!(matches!(attempt, Err(DbError::RunNotRunning(_))), "{attempt:?}");
+        assert!(
+            matches!(attempt, Err(DbError::RunNotRunning(_))),
+            "{attempt:?}"
+        );
     }
     let run = runs.get(finished).await.unwrap().unwrap();
     assert_eq!((run.status, run.counts), (RunStatus::Succeeded, json!({})));
-    assert_eq!(runs.get(failed).await.unwrap().unwrap().error.as_deref(), Some("boom"));
+    assert_eq!(
+        runs.get(failed).await.unwrap().unwrap().error.as_deref(),
+        Some("boom")
+    );
 }
 
 #[sqlx::test]
 async fn unknown_runs_are_absent(pool: PgPool) {
     let runs = db(pool).import_runs();
     assert_eq!(runs.get(RunId(1)).await.unwrap(), None);
-    assert_eq!(runs.latest(ImportSource::ScryfallCards).await.unwrap(), None);
+    assert_eq!(
+        runs.latest(ImportSource::ScryfallCards).await.unwrap(),
+        None
+    );
     assert!(runs.recent(10).await.unwrap().is_empty());
 }
 
@@ -97,16 +108,34 @@ async fn history_lists_newest_first_per_source_and_overall(pool: PgPool) {
         started.push((runs.start(source).await.unwrap(), source));
     }
 
-    let recent: Vec<RunId> = runs.recent(100).await.unwrap().iter().map(|r| r.id).collect();
+    let recent: Vec<RunId> = runs
+        .recent(100)
+        .await
+        .unwrap()
+        .iter()
+        .map(|r| r.id)
+        .collect();
     let expected: Vec<RunId> = started.iter().rev().map(|(id, _)| *id).collect();
     assert_eq!(recent, expected);
     assert_eq!(runs.recent(2).await.unwrap().len(), 2);
     assert_eq!(runs.recent(0).await.unwrap().len(), 0);
 
-    let latest_cards = runs.latest(ImportSource::ScryfallCards).await.unwrap().unwrap();
+    let latest_cards = runs
+        .latest(ImportSource::ScryfallCards)
+        .await
+        .unwrap()
+        .unwrap();
     assert_eq!(latest_cards.id, started[4].0);
-    let latest_rulings = runs.latest(ImportSource::ScryfallRulings).await.unwrap().unwrap();
+    let latest_rulings = runs
+        .latest(ImportSource::ScryfallRulings)
+        .await
+        .unwrap()
+        .unwrap();
     assert_eq!(latest_rulings.id, started[1].0);
-    let latest_decks = runs.latest(ImportSource::MtgjsonDecks).await.unwrap().unwrap();
+    let latest_decks = runs
+        .latest(ImportSource::MtgjsonDecks)
+        .await
+        .unwrap()
+        .unwrap();
     assert_eq!(latest_decks.id, started[3].0);
 }

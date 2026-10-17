@@ -45,14 +45,30 @@ async fn the_fixture_pipeline_attaches_rulings_to_their_cards(pool: PgPool) {
     let sources: Vec<_> = detail.rulings.iter().map(|r| r.source).collect();
     assert_eq!(sources, [RulingSource::Wotc, RulingSource::Scryfall]);
     assert_eq!(
-        detail.rulings[0].published_at.map(|d| d.to_string()).as_deref(),
+        detail.rulings[0]
+            .published_at
+            .map(|d| d.to_string())
+            .as_deref(),
         Some("2004-10-04")
     );
-    assert!(detail.rulings[1].comment.contains('—'), "non-ASCII text survives");
-    let bolt = database.cards().detail(&oracle_of("Lightning Bolt")).await.unwrap().unwrap();
+    assert!(
+        detail.rulings[1].comment.contains('—'),
+        "non-ASCII text survives"
+    );
+    let bolt = database
+        .cards()
+        .detail(&oracle_of("Lightning Bolt"))
+        .await
+        .unwrap()
+        .unwrap();
     assert_eq!(bolt.rulings[0].source, RulingSource::Unknown);
 
-    let run = database.import_runs().get(report.run_id).await.unwrap().unwrap();
+    let run = database
+        .import_runs()
+        .get(report.run_id)
+        .await
+        .unwrap()
+        .unwrap();
     assert_eq!(run.status, RunStatus::Succeeded);
     assert_eq!(run.counts["inserted"], 5);
 }
@@ -60,7 +76,11 @@ async fn the_fixture_pipeline_attaches_rulings_to_their_cards(pool: PgPool) {
 #[sqlx::test]
 async fn reimporting_rulings_changes_nothing(pool: PgPool) {
     let database = seeded(pool.clone()).await;
-    database.importer().import_rulings(ruling_stream()).await.unwrap();
+    database
+        .importer()
+        .import_rulings(ruling_stream())
+        .await
+        .unwrap();
     let before = snapshot(&pool, "rulings", "id", true).await;
 
     for batch_size in [1, 2, 500] {
@@ -71,7 +91,11 @@ async fn reimporting_rulings_changes_nothing(pool: PgPool) {
             .await
             .unwrap();
         assert_eq!((again.inserted, again.unchanged), (0, 5), "{batch_size}");
-        assert_eq!(snapshot(&pool, "rulings", "id", true).await, before, "{batch_size}");
+        assert_eq!(
+            snapshot(&pool, "rulings", "id", true).await,
+            before,
+            "{batch_size}"
+        );
     }
 }
 
@@ -79,12 +103,24 @@ async fn reimporting_rulings_changes_nothing(pool: PgPool) {
 async fn rulings_for_unknown_cards_are_counted_not_stored(pool: PgPool) {
     let database = db(pool.clone());
 
-    let early = database.importer().import_rulings(ruling_stream()).await.unwrap();
+    let early = database
+        .importer()
+        .import_rulings(ruling_stream())
+        .await
+        .unwrap();
     assert_eq!((early.inserted, early.orphaned), (0, 5));
     assert_eq!(row_counts(&pool).await.2, 0);
 
-    database.importer().import_cards(common::card_stream()).await.unwrap();
-    let late = database.importer().import_rulings(ruling_stream()).await.unwrap();
+    database
+        .importer()
+        .import_cards(common::card_stream())
+        .await
+        .unwrap();
+    let late = database
+        .importer()
+        .import_rulings(ruling_stream())
+        .await
+        .unwrap();
     assert_eq!((late.inserted, late.orphaned), (5, 0));
 }
 
@@ -110,7 +146,12 @@ async fn identical_rulings_collapse_and_near_identical_ones_do_not(pool: PgPool)
         .unwrap();
 
     assert_eq!((report.inserted, report.unchanged), (6, 2));
-    let detail = database.cards().detail(&oracle_of("Shock")).await.unwrap().unwrap();
+    let detail = database
+        .cards()
+        .detail(&oracle_of("Shock"))
+        .await
+        .unwrap()
+        .unwrap();
     assert_eq!(detail.rulings.len(), 5);
 }
 
@@ -125,11 +166,23 @@ async fn rulings_come_back_oldest_first_with_undated_last_and_ties_in_stream_ord
         ruling("Shock", Some("2010-10-10"), "second"),
     ];
 
-    database.importer().import_rulings(records.into_iter().map(Ok)).await.unwrap();
+    database
+        .importer()
+        .import_rulings(records.into_iter().map(Ok))
+        .await
+        .unwrap();
 
-    let detail = database.cards().detail(&oracle_of("Shock")).await.unwrap().unwrap();
+    let detail = database
+        .cards()
+        .detail(&oracle_of("Shock"))
+        .await
+        .unwrap()
+        .unwrap();
     let comments: Vec<_> = detail.rulings.iter().map(|r| r.comment.as_str()).collect();
-    assert_eq!(comments, ["first", "second", "third", "fourth, same day", "undated"]);
+    assert_eq!(
+        comments,
+        ["first", "second", "third", "fourth, same day", "undated"]
+    );
 }
 
 #[sqlx::test]
