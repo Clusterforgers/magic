@@ -10,7 +10,7 @@ Rules: one item = one focused piece of work (about 15 minutes for an agent). Tic
 
 ## In flight (check `git worktree list` and `git log` before touching)
 - [ ] M1b `mtg-db`: schema, upserts, card search, precon storage (agent worktree `agent-a99ffef1c2b67f61b`)
-- [ ] M2a Engine core + `mtg-testkit`: zones, turns, priority, stack, combat, layers skeleton, bots (agent worktree `agent-ace78012199202104`)
+- [x] M2a Engine core + `mtg-testkit`: zones, turns, priority, stack, combat, layers skeleton, bots (agent worktree `agent-ace78012199202104`)
 
 ## M1 Card data (rest)
 - [ ] CLI binary `mtg-cli`: download Scryfall bulk + MTGJSON deck index/decks, ingest into Postgres (resumable, polite rate limit)
