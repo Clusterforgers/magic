@@ -2,6 +2,7 @@
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::combat::AttackTarget;
+use mtg_engine::effects::{Duration, Modification, Selector};
 use mtg_engine::decision::{
     Answer, DecisionKind, MulliganChoice, PayChoice, PriorityAction, PriorityOptions,
 };
@@ -139,6 +140,23 @@ impl Driver {
                 name: name.to_owned(),
                 place,
             })
+    }
+
+    /// The id of the first battlefield permanent with this name.
+    pub fn id_of(&self, name: &str) -> Result<ObjectId, ScriptError> {
+        self.find(self.state().zone(Zone::Battlefield).iter().copied(), name, "the battlefield")
+    }
+
+    /// Registers a continuous effect through the engine's hook and checks invariants.
+    pub fn add_effect(
+        &mut self,
+        selector: Selector,
+        modification: Modification,
+        duration: Duration,
+    ) -> Result<Vec<Event>, ScriptError> {
+        let events = self.engine.add_continuous_effect(selector, modification, duration)?;
+        self.checker.observe(self.engine.state(), self.engine.events())?;
+        Ok(events)
     }
 
     /// The player holding priority passes.
