@@ -27,6 +27,11 @@ impl Color {
         Color::Green,
     ];
 
+    /// Position in WUBRG order.
+    pub const fn index(self) -> usize {
+        self as usize
+    }
+
     const fn bit(self) -> u8 {
         1 << self as u8
     }
@@ -77,6 +82,11 @@ impl ColorSet {
     /// Whether the set is empty.
     pub const fn is_empty(self) -> bool {
         self.0 == 0
+    }
+
+    /// Colors in the set in WUBRG order.
+    pub fn iter(self) -> impl Iterator<Item = Color> {
+        Color::ALL.into_iter().filter(move |c| self.contains(*c))
     }
 }
 

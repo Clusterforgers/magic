@@ -26,6 +26,22 @@ id_type!(
     /// A game object (card, token, spell, ability on the stack).
     ObjectId
 );
+id_type!(
+    /// A continuous effect registered with the engine.
+    EffectId
+);
+
+impl PlayerId {
+    /// Seat index for indexing per-player vectors.
+    pub fn index(self) -> usize {
+        usize::try_from(self.0).unwrap_or(usize::MAX)
+    }
+
+    /// The seat with this index.
+    pub fn from_index(index: usize) -> Self {
+        PlayerId(u64::try_from(index).unwrap_or(u64::MAX))
+    }
+}
 
 #[cfg(test)]
 mod tests {
