@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 /// One of the five Magic colors.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Color {
     /// White.
     White,
@@ -51,6 +52,7 @@ impl Color {
 
 /// A set of colors (colorless is the empty set).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 #[serde(transparent)]
 pub struct ColorSet(u8);
 

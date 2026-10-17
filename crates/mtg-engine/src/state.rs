@@ -19,6 +19,7 @@ use crate::zones::{Zone, Zones};
 
 /// How the game ended.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum GameResult {
     /// One player is left standing.
     Winner(PlayerId),
@@ -28,6 +29,7 @@ pub enum GameResult {
 
 /// The coarse phase of the whole game.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Stage {
     /// Nothing has happened yet; the first player and shuffles come next.
     PreGame,

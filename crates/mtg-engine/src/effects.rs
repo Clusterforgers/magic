@@ -12,6 +12,7 @@ use crate::zones::Zone;
 
 /// A layer of the continuous-effect system (CR 613.1); effects apply in this order.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Layer {
     /// Layer 1: copy effects.
     Copy,
@@ -37,6 +38,7 @@ pub enum Layer {
 
 /// Which objects an effect applies to.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Selector {
     /// Exactly this object.
     Object(ObjectId),
@@ -61,6 +63,7 @@ impl Selector {
 
 /// What an effect changes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Modification {
     /// Adds a card type (layer 4).
     AddType(CardType),
@@ -111,6 +114,7 @@ impl Modification {
 
 /// How long an effect lasts.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Duration {
     /// Until the cleanup step of the current turn (CR 514.2).
     UntilEndOfTurn,
@@ -120,6 +124,7 @@ pub enum Duration {
 
 /// A registered continuous effect; characteristics are always derived from these.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct ContinuousEffect {
     /// Unique id.
     pub id: EffectId,

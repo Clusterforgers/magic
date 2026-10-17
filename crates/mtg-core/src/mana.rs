@@ -9,6 +9,7 @@ use crate::color::{Color, ColorSet};
 
 /// A kind of mana that can sit in a mana pool.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum ManaType {
     /// White mana.
     White,
@@ -101,6 +102,7 @@ pub enum ParseManaCostError {
 
 /// A hybrid-free mana cost, stored as requirement counts.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct ManaCost {
     generic: u32,
     colorless: u32,

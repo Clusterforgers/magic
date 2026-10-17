@@ -20,6 +20,7 @@ pub enum Phase {
 
 /// A step or main phase of a turn, in turn order.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Step {
     /// Untap step.
     Untap,

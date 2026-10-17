@@ -9,6 +9,11 @@ publish.workspace = true
 [dependencies]
 serde.workspace = true
 thiserror.workspace = true
+ts-rs = { workspace = true, optional = true }
+
+[features]
+# Derives TypeScript bindings for the wire types.
+ts = ["dep:ts-rs"]
 
 [lints]
 workspace = true

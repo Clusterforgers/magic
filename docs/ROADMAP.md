@@ -20,7 +20,7 @@ Rules: one item = one focused piece of work (about 15 minutes for an agent). Tic
 
 ## M2 Engine and first playable
 - [x] Merge M2a; review against `CLAUDE.md`; engine design notes in `docs/engine.md`
-- [ ] `mtg-protocol`: Decision/Event/State-view wire types, generated TypeScript bindings, drift test
+- [x] `mtg-protocol`: Decision/Event/State-view wire types, generated TypeScript bindings, drift test
 - [ ] `mtg-server`: game actor, WebSocket, event log persisted, reconnect
 - [ ] Web: replace spike simulator with live game state; Arena-style priority/attack/block prompts and "nothing to do" banners
 - [ ] Playwright e2e: full 2-player vanilla game in the browser

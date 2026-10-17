@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 
 /// A game zone; per-player zones carry their owner.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Zone {
     /// A player's library; the last id is the top card.
     Library(PlayerId),

@@ -39,6 +39,8 @@ sqlx = { version = "0.9", default-features = false, features = [
     "chrono",
 ] }
 flate2 = "1"
+ts-rs = { version = "12", features = ["no-serde-warnings"] }
+tempfile = "3"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

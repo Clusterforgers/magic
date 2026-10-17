@@ -12,6 +12,7 @@ use crate::turn::Step;
 
 /// Why a player was not asked to decide something optional.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum NothingToDo {
     /// The player has no creature able to attack.
     Attack,
@@ -21,6 +22,7 @@ pub enum NothingToDo {
 
 /// Why a creature was put into its owner's graveyard by state-based actions.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum DeathCause {
     /// Damage marked on it was at least its toughness (CR 704.5g).
     LethalDamage,
@@ -30,6 +32,7 @@ pub enum DeathCause {
 
 /// A fact about the game; folding the full list over the initial setup yields the game state.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Event {
     /// The starting player was picked at random.
     FirstPlayerChosen {

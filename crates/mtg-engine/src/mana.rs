@@ -8,6 +8,7 @@ use crate::error::PaymentError;
 
 /// Mana currently floating for a player.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct ManaPool {
     counts: [u32; 6],
 }
@@ -50,6 +51,7 @@ impl ManaPool {
 
 /// Identifies one mana ability: the permanent and the index into its abilities.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct ManaSource {
     /// The permanent with the ability.
     pub object: ObjectId,
@@ -59,6 +61,7 @@ pub struct ManaSource {
 
 /// A legal mana ability and what it produces.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct ManaOption {
     /// The ability.
     pub source: ManaSource,
@@ -68,6 +71,7 @@ pub struct ManaOption {
 
 /// A complete, explicit payment: floating mana to spend and sources to tap.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Payment {
     /// Floating mana to spend (a multiset).
     pub pool: Vec<ManaType>,
