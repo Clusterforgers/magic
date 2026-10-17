@@ -1,8 +1,9 @@
-//! Game server core: one actor per game, fed through cheap-clone handles (no network yet).
+//! Game server: one actor per game, fed through cheap-clone handles, behind an axum transport.
 //!
 //! [`spawn_game`] starts a game in its lobby and [`resume_game`] rebuilds a running one from an
-//! [`EventStore`]. Either returns a [`GameHandle`]; a transport joins a seat, forwards the client's
-//! [`ClientMessage`](mtg_protocol::ClientMessage)s and relays what arrives on the seat's queue.
+//! [`EventStore`]. Either returns a [`GameHandle`]; the transport ([`Server`]) joins a seat,
+//! forwards the client's [`ClientMessage`](mtg_protocol::ClientMessage)s and relays what arrives on
+//! the seat's queue. The [`Registry`] owns the live games and the per-seat tokens.
 //!
 //! How a game behaves:
 //! - **Lobby.** Until every seat has sent `Ready` there is no engine; joins, readiness and chat
@@ -24,19 +25,34 @@
 //! - **Chat** is broadcast to connected seats and never stored.
 
 mod actor;
+mod api;
+pub mod config;
+pub mod demo;
 mod game_id;
 mod handle;
+mod limit;
 mod lobby;
+mod origin;
 mod play;
+pub mod registry;
 mod running;
 mod seats;
+mod secret;
+mod server;
+mod session;
 mod store;
+mod ws;
 
 pub use actor::{
     GameConfig, MAX_CHAT_CHARS, StartError, resume_game, resume_game_with, spawn_game,
     spawn_game_with,
 };
+pub use api::{BODY_LIMIT, MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS};
+pub use config::{ConfigError, ServerConfig};
 pub use game_id::GameId;
 pub use handle::{GameClosed, GameHandle, GameStatus, JoinError};
+pub use registry::Registry;
 pub use seats::MIN_QUEUE;
+pub use secret::{RandomError, SeatToken};
+pub use server::Server;
 pub use store::{EventStore, MemoryStore, StoreError};

@@ -11,3 +11,6 @@ mtg-core.workspace = true
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+rstest.workspace = true

@@ -10,6 +10,11 @@ use uuid::Uuid;
 pub struct GameId(pub Uuid);
 
 impl GameId {
+    /// A fresh random id (uuid v4, drawn from the operating system's CSPRNG).
+    pub fn random() -> GameId {
+        GameId(Uuid::new_v4())
+    }
+
     /// The underlying uuid.
     pub const fn uuid(self) -> Uuid {
         self.0
@@ -51,6 +56,16 @@ mod tests {
         let id = GameId(Uuid::from_u128(raw));
         assert_eq!(id.to_string().parse::<GameId>(), Ok(id));
         assert_eq!(GameId::from(id.uuid()), id);
+    }
+
+    #[test]
+    fn random_ids_are_distinct_and_survive_the_text_form() {
+        let ids: Vec<GameId> = (0..64).map(|_| GameId::random()).collect();
+        for id in &ids {
+            assert_eq!(id.to_string().parse::<GameId>(), Ok(*id));
+        }
+        let distinct: std::collections::HashSet<_> = ids.iter().collect();
+        assert_eq!(distinct.len(), ids.len());
     }
 
     #[rstest]
