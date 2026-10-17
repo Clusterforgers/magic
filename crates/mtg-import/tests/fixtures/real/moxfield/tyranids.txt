@@ -1,0 +1,119 @@
+1 The Swarmlord (40K) 4 *F*
+1 Aberrant (40K) 86
+1 Aetherize (40K) 191
+1 An Offer You Can't Refuse (SNC) 51
+1 Arcane Signet (40K) 227
+1 Atalan Jackal (40K) 105
+1 Biophagus (40K) 87
+1 Breeding Pool (RNA) 246
+1 Broodlord (40K) 89
+1 Burgeoning (SLD) 408 *F*
+1 Chart a Course (JMP) 142
+1 Cinder Glade (AFC) 229
+1 Clamavus (40K) 90
+1 Command Tower (40K) 270
+1 Cultivate (40K) 211
+1 Deathleaper, Terror Weapon (40K) 115
+1 Exocrine (40K) 76
+1 Exotic Orchard (40K) 278
+1 Exploration (CNS) 164
+1 Farseek (40K) 214
+1 Fiery Islet (MH1) 238
+7 Forest (ELD) 267
+1 Game Trail (40K) 282
+1 Gargoyle Flock (40K) 123
+1 Garruk's Uprising (AFC) 159
+1 Hardened Scales (40K) 215
+1 Haruspex (40K) 91
+1 Herald's Horn (40K) 241
+1 Heroic Intervention (M21) 188
+1 Hierophant Bio-Titan (40K) 92
+1 Hormagaunt Horde (40K) 93
+1 Hull Breach (40K) 224
+1 Imposing Grandeur (VOC) 24
+1 Inspiring Call (40K) 217
+1 Invigorating Hot Spring (NEO) 223
+5 Island (40K) 309
+1 Karplusan Forest (DMU) 379
+1 Kindred Discovery (CLB) 81
+1 Life's Legacy (NCC) 300
+1 Magus Lucea Kane (40K) 7 *F*
+1 Malanthrope (40K) 132
+1 Mana Geyser (C21) 176
+1 Mawloc (40K) 133
+1 Misty Rainforest (MH2) 438 *F*
+4 Mountain (ELD) 262
+1 Nature's Lore (CLB) 244
+1 Old One Eye (40K) 96
+1 Path of Ancestry (40K) 287
+1 Purestrain Genestealer (40K) 97
+1 Rampant Growth (40K) 220
+1 Ravener (40K) 138
+1 Reconnaissance Mission (IKO) 65
+1 Rejuvenating Springs (CMR) 354
+1 Return of the Wildspeaker (C21) 205
+1 Rhythm of the Wild (RNA) 201
+1 Screamer-Killer (40K) 84
+1 Shadow in the Warp (40K) 140
+1 Shivan Reef (DMU) 380
+1 Sol Ring (40K) 249
+1 Spire Garden (CLB) 361
+1 Sporocyst (40K) 98
+1 Steam Vents (RTR) 247
+1 Stomping Ground (GTC) 247
+1 Stubborn Denial (KTK) 56
+1 Temple of Epiphany (40K) 298
+1 Temple of Mystery (40K) 299
+1 Temur Ascendancy (PKTK) 207p
+1 Termagant Swarm (40K) 99
+1 Tervigon (40K) 100
+1 The First Tyrannic War (40K) 121
+1 The Ozolith (IKO) 237
+1 The Red Terror (40K) 83
+1 Toxicrene (40K) 101
+1 Training Center (CMR) 358
+1 Triumph of the Hordes (PLST) NPH-123
+1 Trygon Prime (40K) 143
+1 Tyranid Harridan (40K) 144
+1 Tyranid Invasion (40K) 102
+1 Tyranid Prime (40K) 145
+1 Tyrant Guard (40K) 103
+1 Unclaimed Territory (40K) 304
+1 Venomthrope (40K) 147
+1 Waterlogged Grove (MH1) 249
+1 Windfall (C16) 104
+1 Winged Hive Tyrant (40K) 148
+1 Yavimaya Coast (DMU) 382
+1 Zoanthrope (40K) 149
+
+SIDEBOARD:
+1 Abundance (40K) 210
+1 Acolyte Hybrid (40K) 70
+1 Ash Barrens (40K) 265
+1 Bone Sabres (40K) 88
+1 Bred for the Hunt (40K) 222
+1 Cave of Temptation (40K) 267
+1 Death's Presence (MIC) 137
+1 Evolving Wilds (40K) 277
+1 Explore (40K) 213
+1 Forest (ELD) 267
+1 Frontier Bivouac (DMC) 212
+1 Genestealer Locus (40K) 21
+1 Genestealer Patriarch (40K) 22
+1 Ghyrson Starn, Kelermorph (40K) 124
+1 Goliath Truck (40K) 158
+1 Icon of Ancestry (40K) 242
+2 Island (40K) 309
+1 Lictor (40K) 94
+3 Mountain (ELD) 262
+1 New Horizons (PLST) XLN-198
+1 Nexos (40K) 95
+1 Opal Palace (CMR) 352
+1 Overgrowth (STH) 111
+1 Rugged Highlands (M21) 249
+1 Starstorm (40K) 208
+1 Temple of Abandon (THS) 224
+1 Terramorphic Expanse (40K) 301
+1 Thornwood Falls (M21) 257
+
+

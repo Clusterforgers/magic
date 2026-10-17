@@ -1,0 +1,118 @@
+1 Aberrant
+1 Aetherize
+1 An Offer You Can't Refuse
+1 Arcane Signet
+1 Atalan Jackal
+1 Biophagus
+1 Breeding Pool
+1 Broodlord
+1 Burgeoning
+1 Chart a Course
+1 Cinder Glade
+1 Clamavus
+1 Command Tower
+1 Cultivate
+1 Deathleaper, Terror Weapon
+1 Exocrine
+1 Exotic Orchard
+1 Exploration
+1 Farseek
+1 Fiery Islet
+7 Forest
+1 Game Trail
+1 Gargoyle Flock
+1 Garruk's Uprising
+1 Hardened Scales
+1 Haruspex
+1 Herald's Horn
+1 Heroic Intervention
+1 Hierophant Bio-Titan
+1 Hormagaunt Horde
+1 Hull Breach
+1 Imposing Grandeur
+1 Inspiring Call
+1 Invigorating Hot Spring
+5 Island
+1 Karplusan Forest
+1 Kindred Discovery
+1 Life's Legacy
+1 Magus Lucea Kane
+1 Malanthrope
+1 Mana Geyser
+1 Mawloc
+1 Misty Rainforest
+4 Mountain
+1 Nature's Lore
+1 Old One Eye
+1 Path of Ancestry
+1 Purestrain Genestealer
+1 Rampant Growth
+1 Ravener
+1 Reconnaissance Mission
+1 Rejuvenating Springs
+1 Return of the Wildspeaker
+1 Rhythm of the Wild
+1 Screamer-Killer
+1 Shadow in the Warp
+1 Shivan Reef
+1 Sol Ring
+1 Spire Garden
+1 Sporocyst
+1 Steam Vents
+1 Stomping Ground
+1 Stubborn Denial
+1 Temple of Epiphany
+1 Temple of Mystery
+1 Temur Ascendancy
+1 Termagant Swarm
+1 Tervigon
+1 The First Tyrannic War
+1 The Ozolith
+1 The Red Terror
+1 Toxicrene
+1 Training Center
+1 Triumph of the Hordes
+1 Trygon Prime
+1 Tyranid Harridan
+1 Tyranid Invasion
+1 Tyranid Prime
+1 Tyrant Guard
+1 Unclaimed Territory
+1 Venomthrope
+1 Waterlogged Grove
+1 Windfall
+1 Winged Hive Tyrant
+1 Yavimaya Coast
+1 Zoanthrope
+
+SIDEBOARD:
+1 Abundance
+1 Acolyte Hybrid
+1 Ash Barrens
+1 Bone Sabres
+1 Bred for the Hunt
+1 Cave of Temptation
+1 Death's Presence
+1 Evolving Wilds
+1 Explore
+1 Forest
+1 Frontier Bivouac
+1 Genestealer Locus
+1 Genestealer Patriarch
+1 Ghyrson Starn, Kelermorph
+1 Goliath Truck
+1 Icon of Ancestry
+2 Island
+1 Lictor
+3 Mountain
+1 New Horizons
+1 Nexos
+1 Opal Palace
+1 Overgrowth
+1 Rugged Highlands
+1 Starstorm
+1 Temple of Abandon
+1 Terramorphic Expanse
+1 Thornwood Falls
+
+1 The Swarmlord
