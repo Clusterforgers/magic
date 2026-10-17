@@ -1,0 +1,7 @@
+4x Lightning Bolt (m10) 146 [Burn]
+4x Shock (m19) 156 [Burn]
+2x Fire // Ice (mh2) 290 [Burn]
+1x Sol Ring (c16) 266 [Ramp] ^Have,#37d67a^
+20x Mountain (mid) 274 [Land]
+2x Pyroblast (ice) 213 [Sideboard]
+1x Æther Vial (dst) 91 [Sideboard]

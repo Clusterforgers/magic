@@ -1,0 +1,9 @@
+4 Lightning Bolt (M10) 146
+4 Shock (M19) 156
+2 Fire // Ice (MH2) 290
+1 Sol Ring (C16) 266 *F*
+20 Mountain (MID) 274
+
+SIDEBOARD:
+2 Pyroblast (ICE) 213
+1 Æther Vial (DST) 91

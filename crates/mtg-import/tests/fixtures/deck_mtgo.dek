@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Deck xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NetDeckID>0</NetDeckID>
+  <PreconstructedDeckID>0</PreconstructedDeckID>
+  <Cards CatID="21382" Quantity="4" Sideboard="false" Name="Lightning Bolt" Annotation="0" />
+  <Cards CatID="71349" Quantity="4" Sideboard="false" Name="Shock" Annotation="0" />
+  <Cards CatID="38002" Quantity="2" Sideboard="false" Name="Fire/Ice" Annotation="0" />
+  <Cards CatID="62251" Quantity="1" Sideboard="false" Name="Sol Ring" Annotation="0" />
+  <Cards CatID="99999" Quantity="20" Sideboard="false" Name="Mountain" Annotation="0" />
+  <Cards CatID="12004" Quantity="2" Sideboard="true" Name="Pyroblast" Annotation="0" />
+  <Cards CatID="26733" Quantity="1" Sideboard="true" Name="Aether Vial" Annotation="0" />
+</Deck>

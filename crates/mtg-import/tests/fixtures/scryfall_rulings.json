@@ -1,0 +1,50 @@
+[
+  {
+    "object": "ruling",
+    "oracle_id": "ab0f93cc-80ef-4f9c-baf9-f77695a8850b",
+    "source": "wotc",
+    "published_at": "2004-10-04",
+    "comment": "You can cast Fire, Ice, or both halves with fuse from your hand."
+  },
+  {
+    "object": "ruling",
+    "oracle_id": "ab0f93cc-80ef-4f9c-baf9-f77695a8850b",
+    "source": "scryfall",
+    "published_at": "2022-12-08",
+    "comment": "A split card has two sets of characteristics only while it isn't on the stack or the battlefield — e.g. in your hand."
+  },
+  {
+    "object": "ruling",
+    "oracle_id": "603b9556-2fc5-4781-8bcb-b46616daa503",
+    "source": "wotc",
+    "published_at": "2011-09-22",
+    "comment": "If you reveal an instant or sorcery card, Delver of Secrets transforms even if you chose not to look at the card."
+  },
+  {
+    "object": "ruling",
+    "oracle_id": "87cb255f-bd43-4f84-a854-4ba57dabe7bc",
+    "source": "wotc",
+    "published_at": "2019-10-04",
+    "comment": "Bonecrusher Giant's first ability triggers when it becomes the target of a spell, including its own Stomp.",
+    "future_field": true
+  },
+  {
+    "object": "ruling",
+    "oracle_id": "4457ed35-7c10-48c8-9776-456485fdf070",
+    "source": "from-the-future",
+    "published_at": "2024-01-01",
+    "comment": "A ruling from a source this crate has never heard of."
+  },
+  {
+    "object": "ruling",
+    "oracle_id": "4457ed35-7c10-48c8-9776-456485fdf070",
+    "source": "wotc",
+    "published_at": "2009-10-01"
+  },
+  {
+    "object": "ruling",
+    "source": "wotc",
+    "published_at": "2009-10-01",
+    "comment": "This ruling belongs to nobody."
+  }
+]
