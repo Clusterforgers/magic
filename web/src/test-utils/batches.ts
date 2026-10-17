@@ -1,3 +1,4 @@
+import { isRecord } from '@/net/check'
 import type { EventBatch, ObjectView, StateView, TableView } from '@/protocol/generated'
 
 /** The table part of a view: everything but the objects. */
@@ -16,6 +17,12 @@ export function tableOf(view: StateView): TableView {
     combat: view.combat,
     result: view.result,
   }
+}
+
+/** The value as a JSON object, or a failed test when it is not one. */
+export function asRecord(value: unknown, what = 'value'): Record<string, unknown> {
+  if (!isRecord(value)) throw new Error(`the test expected ${what} to be an object`)
+  return value
 }
 
 /** The value itself, or a failed test when it is missing; saves a null check on data the test knows is there. */
