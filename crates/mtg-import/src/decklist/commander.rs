@@ -2,7 +2,7 @@
 
 use super::types::{DeckFormat, ParsedDeck, Section};
 
-/// Commander imports only: when no commander is marked, moves the one `format` implies (Moxfield text: the unmarked first line) into the command zone; partner pairs are left to the deck-builder UI.
+/// Commander imports: with no commander marked, promotes the one `format` implies (Moxfield: the first line); partner pairs are left to the deck-builder UI.
 pub fn promote_implied_commander(format: DeckFormat, mut deck: ParsedDeck) -> ParsedDeck {
     let marked = deck.entries.iter().any(|e| e.section == Section::Commander);
     if format == DeckFormat::Moxfield
