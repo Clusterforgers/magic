@@ -1,6 +1,6 @@
 # Magic web platform
 
-Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/TypeScript client, Postgres. Full plan: `docs/PLAN.md`.
+Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/TypeScript client, Postgres. Design: `docs/PLAN.md`. Progress: `docs/ROADMAP.md` (continue with the next unchecked item). Agent briefs: `docs/agents.md`.
 
 ## Layout
 - `crates/mtg-core` shared value types · `mtg-engine` rules engine (no IO) · `mtg-cards` card DSL · `mtg-import` Scryfall/MTGJSON/deck parsing · `mtg-protocol` wire types · `mtg-server` axum + sqlx · `mtg-testkit` scenarios/invariants
@@ -16,9 +16,17 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 - Every change ships with tests that justify it.
 
 ## Commands
-- `cargo fmt --all` · `cargo clippy --workspace --all-targets -- -D warnings` · `cargo test --workspace`
+- `scripts/check.sh [fast|rust|web|all]` runs fmt, clippy, tests (fail-fast); `scripts/setup.sh` enables the git hooks once.
+- Raw: `cargo fmt --all` · `cargo clippy --workspace --all-targets -- -D warnings` · `cargo test --workspace`
 - `docker compose up -d db` starts local Postgres.
 - Web (in `web/`): `pnpm typecheck` · `pnpm lint` · `pnpm format` · `pnpm test` · `pnpm e2e`. On NixOS set `CHROMIUM_PATH` to a Nix-built chromium binary for e2e.
 
+## Workflow
+- Keep context small: short tool output (`-q`, `tail`, `grep`), never re-read files already seen, delegate big work to agents with short briefs (`docs/agents.md`), suggest `/compact` between roadmap items.
+- Delegate in pieces of about 15 minutes; agents commit after every finished module (`wip:` prefix for unfinished checkpoints).
+- Tick the roadmap item in the commit that finishes it. After a restart, run `git worktree list` and read each worktree's status before resuming work.
+- Review agent output against these rules and run `scripts/check.sh` on the merged result before accepting it.
+
 ## Git
 Never add Claude as co-author or any attribution line to commits or PR descriptions.
+The `commit-msg` hook rejects attribution lines and runs fmt + clippy unless the message starts with `wip:`.
