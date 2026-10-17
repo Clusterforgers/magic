@@ -1,8 +1,9 @@
-// Goal: the transcript fixture parses as server messages of the documented shape, and a TypeScript port of the client fold turns it into the view the server says is true.
+// Goal: the transcript fixture parses as server messages of the documented shape, and the real session turns it into the view the server says is true.
 import { describe, expect, it } from 'vitest'
+import { startSession } from '@/test-utils/harness'
 import fixtureJson from './fixtures/two-player-seat0.json'
 import { PROTOCOL_VERSION } from './generated'
-import type { EventBatch, ObjectView, ServerMessage, StateView } from './generated'
+import type { ServerMessage, StateView } from './generated'
 
 interface Transcript {
   seed: number
@@ -39,34 +40,14 @@ const TABLE_KEYS = [
 
 const keysOf = (value: object): string[] => Object.keys(value).sort()
 
-/** The client fold: replace the table, upsert `objects`, drop `gone`, keep objects in id order. */
-const applyBatch = (state: StateView | null, batch: EventBatch): StateView => {
-  const byId = new Map<number, ObjectView>((state?.objects ?? []).map((o) => [o.id, o]))
-  for (const object of batch.objects) byId.set(object.id, object)
-  for (const id of batch.gone) byId.delete(id)
-  const objects = [...byId.values()].sort((a, b) => a.id - b.id)
-  return { ...batch.table, objects }
-}
-
-/** The client rule: start from a snapshot (or the batch at seq 0); a batch that does not follow means resync. */
+/** The client rule, played by the real session on a fake socket: the view it ends with and how often it asked for a resync. */
 const replay = (messages: ServerMessage[]) => {
-  let state: StateView | null = null
-  let nextSeq = 0
-  let resyncs = 0
-  for (const message of messages) {
-    if (message.type === 'Snapshot') {
-      state = message.state
-      nextSeq = message.seq
-    } else if (message.type === 'Events') {
-      if (message.from_seq !== nextSeq) {
-        resyncs += 1
-        continue
-      }
-      state = applyBatch(state, message)
-      nextSeq += message.events.length
-    }
-  }
-  return { state, nextSeq, resyncs }
+  const h = startSession()
+  h.session.connect()
+  h.open()
+  h.deliver(...messages)
+  const { view, seq } = h.state()
+  return { state: view, nextSeq: seq, resyncs: h.sentOf('Resync').length }
 }
 
 describe('transcript fixture', () => {
@@ -166,6 +147,6 @@ describe('transcript fixture', () => {
     const second = fixture.messages.findIndex((m, i) => i > 1 && m.type === 'Events')
     const dropped = fixture.messages.filter((_m, i) => i !== second)
     expect(dropped).toHaveLength(fixture.messages.length - 1)
-    expect(replay(dropped).resyncs).toBeGreaterThan(0)
+    expect(replay(dropped).resyncs).toBe(1)
   })
 })
