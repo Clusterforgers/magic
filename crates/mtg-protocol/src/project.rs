@@ -10,7 +10,7 @@ use mtg_engine::zones::Zone;
 
 use crate::view::{
     AttackerView, CombatView, ObjectView, PermanentView, PlayerView, PriorityView, StateView,
-    TurnView, ZoneView,
+    TableView, TurnView, ZoneView,
 };
 
 /// Every card type, for expanding a [`CardTypes`] set into a list.
@@ -136,12 +136,12 @@ fn attacker_view(attacker: &Attacker) -> AttackerView {
     }
 }
 
-impl StateView {
-    /// Builds what `viewer` may know: their own hand, every public zone, and counts for the rest.
-    pub fn for_player(state: &GameState, viewer: PlayerId) -> StateView {
+impl TableView {
+    /// The table as `viewer` may see it: public zones listed, their own hand listed, counts for the rest.
+    pub fn of(state: &GameState, viewer: PlayerId) -> TableView {
         let turn = state.turn();
         let combat = state.combat();
-        StateView {
+        TableView {
             viewer,
             format: state.format().name().to_owned(),
             stage: state.stage(),
@@ -164,16 +164,30 @@ impl StateView {
             battlefield: zone_view(state, viewer, Zone::Battlefield),
             stack: zone_view(state, viewer, Zone::Stack),
             exile: zone_view(state, viewer, Zone::Exile),
-            objects: state
-                .objects()
-                .filter_map(|o| ObjectView::of(state, viewer, o.id()))
-                .collect(),
             combat: CombatView {
                 attackers: combat.attackers().iter().map(attacker_view).collect(),
                 attackers_declared: combat.attackers_declared(),
                 blockers_declared: combat.blockers_declared().to_vec(),
             },
             result: state.result(),
+        }
+    }
+}
+
+/// Every object `viewer` may identify, in id order.
+pub(crate) fn visible_objects(state: &GameState, viewer: PlayerId) -> Vec<ObjectView> {
+    state
+        .objects()
+        .filter_map(|o| ObjectView::of(state, viewer, o.id()))
+        .collect()
+}
+
+impl StateView {
+    /// Builds what `viewer` may know: their own hand, every public zone, and counts for the rest.
+    pub fn for_player(state: &GameState, viewer: PlayerId) -> StateView {
+        StateView {
+            table: TableView::of(state, viewer),
+            objects: visible_objects(state, viewer),
         }
     }
 }

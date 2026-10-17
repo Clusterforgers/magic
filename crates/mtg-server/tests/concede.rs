@@ -260,7 +260,7 @@ async fn a_player_who_conceded_can_come_back_and_watch_the_game_end() {
     let ServerMessage::Snapshot { state, .. } = back.next().await else {
         panic!("expected a snapshot");
     };
-    assert_eq!(state.players[2].lost, Some(LossReason::Conceded));
+    assert_eq!(state.table.players[2].lost, Some(LossReason::Conceded));
 
     poke(&handle, &mut clients, 1, ClientMessage::Concede).await;
     let ended = back

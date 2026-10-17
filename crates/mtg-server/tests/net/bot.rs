@@ -120,7 +120,7 @@ impl WsBot {
         match message {
             ServerMessage::Welcome { player, .. } => assert_eq!(player, me),
             ServerMessage::Snapshot { seq, state } => {
-                assert_eq!(state.viewer, me, "a snapshot for another seat");
+                assert_eq!(state.table.viewer, me, "a snapshot for another seat");
                 self.next_seq = seq;
                 self.snapshots += 1;
             }

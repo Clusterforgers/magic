@@ -168,7 +168,9 @@ async fn a_seat_that_returns_with_its_token_is_resynced_and_the_game_ends_the_sa
         victim.client.message().await,
     ];
     assert!(matches!(&first[0], ServerMessage::Welcome { player, .. } if *player == seat0));
-    assert!(matches!(&first[1], ServerMessage::Snapshot { state, .. } if state.viewer == seat0));
+    assert!(
+        matches!(&first[1], ServerMessage::Snapshot { state, .. } if state.table.viewer == seat0)
+    );
     assert!(
         matches!(&first[2], ServerMessage::Decision { decision, .. } if decision.player == seat0)
     );

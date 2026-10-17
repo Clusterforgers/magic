@@ -186,26 +186,27 @@ fn snapshot_mirrors_the_public_table_and_derives_characteristics() {
 
     for viewer in [PlayerId(0), PlayerId(1)] {
         let view = StateView::for_player(state, viewer);
-        assert_eq!(view.viewer, viewer);
-        assert_eq!(view.turn.active, PlayerId(0));
-        assert_eq!(view.turn.step, TurnStep::Main1);
-        assert_eq!(view.players[1].life, 13);
+        let table = &view.table;
+        assert_eq!(table.viewer, viewer);
+        assert_eq!(table.turn.active, PlayerId(0));
+        assert_eq!(table.turn.step, TurnStep::Main1);
+        assert_eq!(table.players[1].life, 13);
         assert_eq!(
-            view.battlefield.cards.as_deref(),
+            table.battlefield.cards.as_deref(),
             Some(state.zone(Zone::Battlefield))
         );
-        assert_eq!(view.stack.cards.as_deref(), Some(state.stack()));
-        assert_eq!(view.stack.count, 1, "the cast bear is on the stack");
+        assert_eq!(table.stack.cards.as_deref(), Some(state.stack()));
+        assert_eq!(table.stack.count, 1, "the cast bear is on the stack");
         assert_eq!(
-            view.players[1].graveyard.cards.as_deref(),
+            table.players[1].graveyard.cards.as_deref(),
             Some(state.zone(Zone::Graveyard(PlayerId(1)))),
             "graveyards are public"
         );
         // Hands: owner sees cards, everyone sees sizes.
-        assert_eq!(view.players[0].hand.count, 1);
-        assert_eq!(view.players[1].hand.count, 3);
-        assert_eq!(view.players[0].hand.cards.is_some(), viewer == PlayerId(0));
-        assert_eq!(view.players[1].hand.cards.is_some(), viewer == PlayerId(1));
+        assert_eq!(table.players[0].hand.count, 1);
+        assert_eq!(table.players[1].hand.count, 3);
+        assert_eq!(table.players[0].hand.cards.is_some(), viewer == PlayerId(0));
+        assert_eq!(table.players[1].hand.cards.is_some(), viewer == PlayerId(1));
 
         let shown: BTreeSet<ObjectId> = view.objects.iter().map(|o| o.id).collect();
         for object in state.objects() {
