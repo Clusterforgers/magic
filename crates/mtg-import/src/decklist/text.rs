@@ -5,7 +5,7 @@ use super::section::{header_section, section_from_category, strip_sideboard_pref
 use super::types::{DeckEntry, LineError, ParsedDeck, Section};
 
 /// Per-dialect switches for text parsing.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub struct TextOptions {
     /// Entry-line grammar switches.
     pub line: LineOptions,
@@ -13,6 +13,8 @@ pub struct TextOptions {
     pub blank_line_sideboard: bool,
     /// Whether Arena's `About` / `Name` preamble is skipped.
     pub about_block: bool,
+    /// Whether the headerless block after a sideboard block is the command zone (MTGO text lists commanders last).
+    pub commander_after_sideboard: bool,
 }
 
 /// Splits on `\n`, `\r\n` and lone `\r`, yielding one-based line numbers.
@@ -73,6 +75,7 @@ struct Sections {
     entries_in_block: usize,
     file_has_headers: bool,
     blank_line_sideboard: bool,
+    commander_after_sideboard: bool,
 }
 
 impl Sections {
@@ -81,7 +84,7 @@ impl Sections {
         self.entries_in_block = 0;
     }
 
-    /// A blank line ends a command-zone block, or the main deck when the file has no headers.
+    /// A blank line ends a command-zone block, the main deck when the file has no headers, or a sideboard that the commander follows.
     fn on_blank(&mut self) {
         if self.entries_in_block == 0 {
             return;
@@ -91,6 +94,7 @@ impl Sections {
             Section::Main if self.blank_line_sideboard && !self.file_has_headers => {
                 Section::Sideboard
             }
+            Section::Sideboard if self.commander_after_sideboard => Section::Commander,
             _ => return,
         };
         self.current = next;
@@ -142,6 +146,7 @@ pub fn parse_text(input: &str, options: TextOptions) -> ParsedDeck {
         entries_in_block: 0,
         file_has_headers: lines.iter().any(|(_, l)| matches!(l, Line::Header(_))),
         blank_line_sideboard: options.blank_line_sideboard,
+        commander_after_sideboard: options.commander_after_sideboard,
     };
 
     let mut deck = ParsedDeck::default();
@@ -170,6 +175,7 @@ mod tests {
         },
         blank_line_sideboard: true,
         about_block: false,
+        commander_after_sideboard: false,
     };
     const ARENA: TextOptions = TextOptions {
         line: LineOptions {
@@ -178,6 +184,7 @@ mod tests {
         },
         blank_line_sideboard: false,
         about_block: true,
+        commander_after_sideboard: false,
     };
     const ARCHIDEKT: TextOptions = TextOptions {
         line: LineOptions {
@@ -186,6 +193,16 @@ mod tests {
         },
         blank_line_sideboard: false,
         about_block: false,
+        commander_after_sideboard: false,
+    };
+    const MTGO_TEXT: TextOptions = TextOptions {
+        line: LineOptions {
+            bracket_sets: false,
+            categories: false,
+        },
+        blank_line_sideboard: false,
+        about_block: false,
+        commander_after_sideboard: true,
     };
 
     fn sections(deck: &ParsedDeck) -> Vec<(u32, &str, Section)> {
@@ -216,6 +233,7 @@ mod tests {
     #[case::comments_ignored("// my deck\n# notes\n4 Bolt\n//2 Shock", &[(4, "Bolt", Main)])]
     #[case::comment_does_not_end_block("4 Bolt\n// c\n2 Shock", &[(4, "Bolt", Main), (2, "Shock", Main)])]
     #[case::colon_headers("4 Bolt\nSIDEBOARD:\n1 Fury", &[(4, "Bolt", Main), (1, "Fury", Sideboard)])]
+    #[case::block_after_sideboard_stays_sideboard("4 Bolt\n\nSideboard\n1 Fury\n\n1 Duress", &[(4, "Bolt", Main), (1, "Fury", Sideboard), (1, "Duress", Sideboard)])]
     #[case::empty("", &[])]
     #[case::whitespace_only("  \n\t\n", &[])]
     fn assigns_sections_in_plain_text(
@@ -223,6 +241,24 @@ mod tests {
         #[case] expected: &[(u32, &str, Section)],
     ) {
         let deck = parse_text(input, PLAIN);
+        assert!(deck.errors.is_empty(), "{:?}", deck.errors);
+        assert_eq!(sections(&deck), expected);
+    }
+
+    #[rstest]
+    #[case::trailing_block("1 A\n\nSIDEBOARD:\n1 B\n\n1 C", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander)])]
+    #[case::partners_share_the_block("1 A\n\nSIDEBOARD:\n1 B\n\n1 C\n1 D", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander), (1, "D", Commander)])]
+    #[case::several_blank_lines("1 A\n\nSIDEBOARD:\n1 B\n\n\n\n1 C\n\n\n", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander)])]
+    #[case::crlf("1 A\r\n\r\nSIDEBOARD:\r\n1 B\r\n\r\n1 C\r\n", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander)])]
+    #[case::command_zone_ends_at_the_next_blank("1 A\n\nSIDEBOARD:\n1 B\n\n1 C\n\n1 D", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Commander), (1, "D", Main)])]
+    #[case::no_trailing_block("1 A\n\nSIDEBOARD:\n1 B\n\n", &[(1, "A", Main), (1, "B", Sideboard)])]
+    #[case::no_sideboard_no_command_zone("1 A\n\n1 B", &[(1, "A", Main), (1, "B", Main)])]
+    #[case::sb_prefix_opens_nothing("1 A\nSB: 1 B\n\n1 C", &[(1, "A", Main), (1, "B", Sideboard), (1, "C", Main)])]
+    fn mtgo_text_lists_the_commander_after_the_sideboard(
+        #[case] input: &str,
+        #[case] expected: &[(u32, &str, Section)],
+    ) {
+        let deck = parse_text(input, MTGO_TEXT);
         assert!(deck.errors.is_empty(), "{:?}", deck.errors);
         assert_eq!(sections(&deck), expected);
     }
@@ -306,7 +342,7 @@ mod tests {
     proptest! {
         #[test]
         fn arbitrary_text_never_panics_and_accounts_for_every_line(input in "\\PC{0,200}|[0-9a-zA-Z \\n\\r:()\\[\\]*/#,'-]{0,200}") {
-            for options in [PLAIN, ARENA, ARCHIDEKT] {
+            for options in [PLAIN, ARENA, ARCHIDEKT, MTGO_TEXT] {
                 let deck = parse_text(&input, options);
                 let content_lines = numbered_lines(input.trim_start_matches('\u{feff}'))
                     .filter(|(_, l)| !l.trim().is_empty())

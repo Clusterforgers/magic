@@ -1,4 +1,4 @@
-//! Deck-list parsing (plain text, Arena, MTGO `.dek`, Moxfield, Archidekt) and plain-text export.
+//! Deck-list parsing (plain text, Arena, MTGO text and `.dek`, Moxfield, Archidekt) and plain-text export.
 
 mod dek;
 mod detect;
