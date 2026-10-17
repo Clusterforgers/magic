@@ -87,6 +87,7 @@ pub struct ParsedDeck {
     /// Lines that were skipped, in input order.
     pub errors: Vec<LineError>,
     /// Sections that were recognized but kept out of the deck, in input order.
+    #[serde(default)]
     pub ignored: Vec<IgnoredSection>,
 }
 
