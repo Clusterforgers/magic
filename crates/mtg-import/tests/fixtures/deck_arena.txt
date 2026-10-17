@@ -1,0 +1,13 @@
+About
+Name Mono Red Mini
+
+Deck
+4 Lightning Bolt (M10) 146
+4 Shock (M19) 156
+2 Fire // Ice (MH2) 290
+1 Sol Ring (C16) 266
+20 Mountain (MID) 274
+
+Sideboard
+2 Pyroblast (ICE) 213
+1 Aether Vial (DST) 91

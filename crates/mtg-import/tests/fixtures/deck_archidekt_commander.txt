@@ -1,0 +1,5 @@
+1x Atraxa, Praetors' Voice (c16) 28 [Commander{top}]
+1x Sol Ring (c16) 266 [Ramp]
+1x Arcane Signet (c16) 1 [Ramp]
+36x Forest (c16) 345 [Land]
+1x Jace, the Mind Sculptor (uma) 56 [Maybeboard{noDeck}{noPrice}]

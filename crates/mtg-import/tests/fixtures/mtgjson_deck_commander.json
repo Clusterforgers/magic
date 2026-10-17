@@ -1,0 +1,98 @@
+{
+  "meta": {
+    "date": "2024-06-01",
+    "version": "5.2.2+20240601"
+  },
+  "data": {
+    "code": "C16",
+    "commander": [
+      {
+        "count": 1,
+        "isFoil": false,
+        "uuid": "0b5b9ba3-0f2d-5a38-8a3a-3f1c0a4a1c01",
+        "name": "Atraxa, Praetors' Voice",
+        "setCode": "C16",
+        "number": "28",
+        "rarity": "mythic",
+        "manaCost": "{G}{W}{U}{B}",
+        "colorIdentity": ["B", "G", "U", "W"],
+        "identifiers": {
+          "scryfallId": "f4d1e53e-2aea-4216-a37d-13628cb976d7",
+          "scryfallOracleId": "4f3049a1-2b9f-40e2-bbd5-b506480bccd9",
+          "mtgoId": "62220"
+        }
+      }
+    ],
+    "displayCommander": [
+      {
+        "count": 1,
+        "isFoil": false,
+        "uuid": "0b5b9ba3-0f2d-5a38-8a3a-3f1c0a4a1c01",
+        "name": "Atraxa, Praetors' Voice",
+        "setCode": "C16",
+        "number": "28"
+      }
+    ],
+    "mainBoard": [
+      {
+        "count": 1,
+        "isFoil": true,
+        "uuid": "1c6cab14-1a3e-5b49-9b4b-4a2d1b5b2d02",
+        "name": "Sol Ring",
+        "setCode": "C16",
+        "number": "266",
+        "finishes": ["foil"],
+        "identifiers": {
+          "scryfallId": "7a0bc8ee-d092-431e-88fa-f60f951a23e5",
+          "scryfallOracleId": "bd10c9cd-d103-45d9-8d3a-07f5ceb67495"
+        }
+      },
+      {
+        "count": 1,
+        "isFoil": false,
+        "uuid": "2d7dbc25-2b4f-5c5a-8c5c-5b3e2c6c3e03",
+        "name": "Arcane Signet",
+        "setCode": "C16",
+        "number": "1",
+        "identifiers": {
+          "scryfallId": "a14a8cec-d9f8-4020-a7dc-0cd14ccf643d",
+          "scryfallOracleId": "b45c1d2b-ca98-4466-ab66-d4ec0037edc4"
+        }
+      },
+      {
+        "count": 36,
+        "uuid": "3e8ecd36-3c5a-5d6b-9d6d-6c4f3d7d4f04",
+        "name": "Forest",
+        "setCode": "C16",
+        "number": "345",
+        "identifiers": {
+          "scryfallId": "85ff7dbe-bf14-4568-82ea-f11d9c20f316",
+          "scryfallOracleId": "8f8664b6-fcb5-476d-b57c-9f376350d2fe"
+        }
+      },
+      {
+        "count": 1,
+        "uuid": "4f9fde47-4d6b-5e7c-ae7e-7d5a4e8e5a05",
+        "name": "Fire // Ice",
+        "faceName": "Fire",
+        "setCode": "C16",
+        "number": "290"
+      }
+    ],
+    "name": "Breed Lethality",
+    "planes": [],
+    "releaseDate": "2016-11-11",
+    "schemes": [],
+    "sealedProductUuids": ["5a0a0f58-5e7c-5f8d-bf8f-8e6b5f9f6b06"],
+    "sideBoard": [],
+    "tokens": [
+      {
+        "uuid": "6b1b1a69-6f8d-5a9e-8a9a-9f7c6a0a7c07",
+        "name": "Soldier",
+        "setCode": "TC16",
+        "number": "3"
+      }
+    ],
+    "type": "Commander Deck"
+  }
+}
