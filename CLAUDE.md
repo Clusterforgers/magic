@@ -3,7 +3,7 @@
 Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/TypeScript client, Postgres. Design: `docs/PLAN.md`. Progress: `docs/ROADMAP.md` (continue with the next unchecked item). Agent briefs: `docs/agents.md`.
 
 ## Layout
-- `crates/mtg-core` shared value types · `mtg-engine` rules engine (no IO) · `mtg-cards` card DSL · `mtg-import` Scryfall/MTGJSON/deck parsing · `mtg-protocol` wire types · `mtg-server` axum + sqlx · `mtg-testkit` scenarios/invariants
+- `crates/mtg-core` shared value types · `mtg-engine` rules engine (no IO) · `mtg-cards` card DSL · `mtg-import` Scryfall/MTGJSON/deck parsing · `mtg-db` Postgres schema + repositories · `mtg-protocol` wire types · `mtg-server` axum + sqlx · `mtg-testkit` scenarios/invariants
 - `web/` React + Vite + Tailwind + shadcn/ui + TanStack Router client; live game state in a zustand store keyed by object id
 
 ## Rules of the house
@@ -18,7 +18,7 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 ## Commands
 - `scripts/check.sh [fast|rust|web|all]` runs fmt, clippy, tests (fail-fast); `scripts/setup.sh` enables the git hooks once.
 - Raw: `cargo fmt --all` · `cargo clippy --workspace --all-targets -- -D warnings` · `cargo test --workspace`
-- `docker compose up -d db` starts local Postgres.
+- `docker compose up -d db` starts local Postgres; DB tests use `sqlx::test`, and `sqlx::query!` is checked offline against committed `.sqlx/` (refresh steps in `.cargo/config.toml`).
 - Web (in `web/`): `pnpm typecheck` · `pnpm lint` · `pnpm format` · `pnpm test` · `pnpm e2e`. On NixOS set `CHROMIUM_PATH` to a Nix-built chromium binary for e2e.
 
 ## Workflow
