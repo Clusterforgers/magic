@@ -9,10 +9,11 @@ Rules: one item = one focused piece of work (about 15 minutes for an agent). Tic
 - [x] M1a `mtg-import`: Scryfall (array + JSONL), MTGJSON decks and index, deck-list parsers, name resolution; validated on real data (`docs/data-sources.md`)
 
 ## In flight (check `git worktree list` and `git log` before touching)
-- [ ] M1b `mtg-db`: schema, upserts, card search, precon storage (agent worktree `agent-a99ffef1c2b67f61b`)
-- [x] M2a Engine core + `mtg-testkit`: zones, turns, priority, stack, combat, layers skeleton, bots (agent worktree `agent-ace78012199202104`)
+- [x] M1b `mtg-db`: schema, upserts, card search, precon storage (merged)
+- [x] M2a Engine core + `mtg-testkit`: zones, turns, priority, stack, combat, layers skeleton, bots (merged)
 
 ## M1 Card data (rest)
+- [ ] `mtg-db` follow-ups: reap stale `running` import runs, skip NUL-containing records instead of failing the batch, give `mtg-server` its own migration table (`mtg-db` owns `_sqlx_migrations`)
 - [ ] CLI binary `mtg-cli`: download Scryfall bulk + MTGJSON deck index/decks, ingest into Postgres (resumable, polite rate limit)
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports (needs samples from the user)
 - [ ] Card search HTTP endpoints in `mtg-server` (name, filters, color identity, pagination)

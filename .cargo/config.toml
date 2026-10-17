@@ -1,0 +1,8 @@
+# Defaults only: variables already set in the shell win.
+[env]
+# `sqlx::query!` reads the committed `.sqlx/` metadata, so builds need no database.
+# To refresh it after changing a query, migrate a scratch database and run
+#   SQLX_OFFLINE=false DATABASE_URL=<scratch db> SQLX_OFFLINE_DIR=<repo>/.sqlx cargo check -p mtg-db
+SQLX_OFFLINE = "true"
+# Local Postgres from `docker compose up -d db`, used by the `sqlx::test` suites.
+DATABASE_URL = "postgres://magic:magic@localhost:5432/magic"

@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT oracle_id, name_normalized, front_name_normalized FROM cards\n             WHERE is_deck_card AND (name_normalized = ANY($1) OR front_name_normalized = ANY($1))\n             ORDER BY oracle_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "oracle_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "cards",
+            "name": "oracle_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "name_normalized",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "cards",
+            "name": "name_normalized"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "front_name_normalized",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "cards",
+            "name": "front_name_normalized"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "TextArray"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "66ece5a46a5dff2e89e8b6522dbb9d335b89b22ce4e315633e7a372422a91b43"
+}

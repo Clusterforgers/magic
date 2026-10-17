@@ -13,6 +13,7 @@ mtg-core = { path = "crates/mtg-core" }
 mtg-engine = { path = "crates/mtg-engine" }
 mtg-cards = { path = "crates/mtg-cards" }
 mtg-import = { path = "crates/mtg-import" }
+mtg-db = { path = "crates/mtg-db" }
 mtg-protocol = { path = "crates/mtg-protocol" }
 mtg-testkit = { path = "crates/mtg-testkit" }
 
@@ -25,6 +26,18 @@ rand_chacha = "0.10"
 rand_core = "0.10"
 roxmltree = "0.21"
 unicode-normalization = "0.1"
+chrono ={ version = "0.4", default-features = false, features = ["std", "clock"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+uuid = { version = "1", features = ["serde"] }
+sqlx = { version = "0.9", default-features = false, features = [
+    "runtime-tokio",
+    "postgres",
+    "macros",
+    "migrate",
+    "json",
+    "uuid",
+    "chrono",
+] }
 flate2 = "1"
 
 [workspace.lints.rust]

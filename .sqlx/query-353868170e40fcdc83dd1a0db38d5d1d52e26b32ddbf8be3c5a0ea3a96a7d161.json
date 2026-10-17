@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO printings AS p (\n               printing_id, oracle_id, set_code, collector_number, rarity, released_at, lang,\n               digital, images)\n           SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at, lang,\n               digital, images\n           FROM jsonb_to_recordset($1) AS r(\n               printing_id uuid, oracle_id uuid, set_code text, collector_number text,\n               rarity text, released_at date, lang text, digital boolean, images jsonb)\n           ORDER BY printing_id\n           ON CONFLICT (printing_id) DO UPDATE SET\n               oracle_id = EXCLUDED.oracle_id,\n               set_code = EXCLUDED.set_code,\n               collector_number = EXCLUDED.collector_number,\n               rarity = EXCLUDED.rarity,\n               released_at = EXCLUDED.released_at,\n               lang = EXCLUDED.lang,\n               digital = EXCLUDED.digital,\n               images = EXCLUDED.images,\n               updated_at = now()\n           WHERE (p.oracle_id, p.set_code, p.collector_number, p.rarity, p.released_at, p.lang,\n                  p.digital, p.images)\n               IS DISTINCT FROM\n                 (EXCLUDED.oracle_id, EXCLUDED.set_code, EXCLUDED.collector_number,\n                  EXCLUDED.rarity, EXCLUDED.released_at, EXCLUDED.lang, EXCLUDED.digital,\n                  EXCLUDED.images)\n           RETURNING (xmax = 0) AS \"inserted!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "inserted!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Jsonb"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "353868170e40fcdc83dd1a0db38d5d1d52e26b32ddbf8be3c5a0ea3a96a7d161"
+}

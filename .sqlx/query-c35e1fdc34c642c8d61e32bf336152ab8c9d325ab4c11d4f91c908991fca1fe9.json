@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE import_runs\n             SET status = 'failed', finished_at = now(), error = $2, counts = $3\n             WHERE id = $1 AND status = 'running'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text",
+        "Jsonb"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c35e1fdc34c642c8d61e32bf336152ab8c9d325ab4c11d4f91c908991fca1fe9"
+}
