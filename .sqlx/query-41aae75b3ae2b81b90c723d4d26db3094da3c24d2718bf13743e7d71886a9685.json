@@ -1,0 +1,37 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "WITH incoming AS (\n                   SELECT seq, oracle_id, source, published_at, comment\n                   FROM jsonb_to_recordset($1) AS r(\n                       seq bigint, oracle_id uuid, source text, published_at date, comment text)\n               ), known AS (\n                   SELECT i.* FROM incoming i JOIN cards c ON c.oracle_id = i.oracle_id\n               ), inserted AS (\n                   INSERT INTO rulings (oracle_id, source, published_at, comment)\n                   SELECT oracle_id, source, published_at, comment FROM known ORDER BY seq\n                   ON CONFLICT ON CONSTRAINT rulings_natural_key DO NOTHING\n                   RETURNING id\n               )\n               SELECT (SELECT count(*) FROM incoming) AS \"received!\",\n                      (SELECT count(*) FROM known) AS \"known!\",\n                      (SELECT count(*) FROM inserted) AS \"inserted!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "received!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "known!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "inserted!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Jsonb"
+      ]
+    },
+    "nullable": [
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "41aae75b3ae2b81b90c723d4d26db3094da3c24d2718bf13743e7d71886a9685"
+}

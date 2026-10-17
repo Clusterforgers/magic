@@ -1,0 +1,31 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO precon_decks (code, name, deck_type, release_date)\n           VALUES ($1, $2, $3, $4::text::date)\n           ON CONFLICT ON CONSTRAINT precon_decks_natural_key DO UPDATE SET\n               deck_type = EXCLUDED.deck_type, release_date = EXCLUDED.release_date\n           RETURNING id AS \"id: PreconDeckId\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id: PreconDeckId",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "precon_decks",
+            "name": "id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "278a81e2a010abe2f8e5ca7ba0f3fc36bbfbe588b8f0457438cafe7805d6e624"
+}

@@ -1,0 +1,39 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO import_runs (source) VALUES ($1) RETURNING id AS \"id: RunId\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id: RunId",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "import_runs",
+            "name": "id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        {
+          "Custom": {
+            "name": "import_source",
+            "kind": {
+              "Enum": [
+                "scryfall_cards",
+                "scryfall_rulings",
+                "mtgjson_decks"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "ac14a27f88f401a773ad307b0bded786acebbff7ac21e24a5cfbd449de259489"
+}

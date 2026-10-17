@@ -1,0 +1,48 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT oracle_id, name,\n                      GREATEST(similarity(name_normalized, $1), word_similarity($1, name_normalized))\n                          AS \"similarity!\"\n               FROM cards\n               WHERE is_deck_card AND (name_normalized % $1 OR $1 <% name_normalized)\n               ORDER BY (name_normalized = $1) DESC,\n                        starts_with(name_normalized, $1) DESC,\n                        \"similarity!\" DESC,\n                        name_normalized,\n                        oracle_id\n               LIMIT $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "oracle_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "cards",
+            "name": "oracle_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "cards",
+            "name": "name"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "similarity!",
+        "type_info": "Float4",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "2cf6ac636e06bd1b6843e20ce5ac74143c5a04414e86b48e5a95fe893a111150"
+}

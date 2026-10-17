@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM precon_deck_cards WHERE deck_id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8eb2241b2ba66f7e0fc70de478c049adadcb7372bc2de75d4eb30461fcc2ef6b"
+}

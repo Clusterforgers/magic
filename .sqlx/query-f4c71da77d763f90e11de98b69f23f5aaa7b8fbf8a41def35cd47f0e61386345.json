@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT printing_id, oracle_id FROM printings WHERE printing_id = ANY($1)",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "printing_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "printing_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "oracle_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "oracle_id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "UuidArray"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "f4c71da77d763f90e11de98b69f23f5aaa7b8fbf8a41def35cd47f0e61386345"
+}
