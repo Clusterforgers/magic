@@ -17,5 +17,6 @@ Rules for the orchestrator:
 - Isolate in a git worktree; merge only after running `scripts/check.sh` on the merged result.
 - Never chain checks through pipes without `set -o pipefail`; a lint failure must stop the commit.
 - Validate parsers and importers against real data before calling them done.
+- Keep the root Postgres running (`docker compose up -d db`) while agents work; their `check.sh` reuses it instead of starting a compose project of its own. Remove a stray `agent-*` project with `docker compose -p <name> down -v`.
 - Never `cd` into an agent worktree from the orchestrator shell: the harness then makes it the primary directory and forbids returning to the root. Use `git -C <path>` and absolute paths, and merge with `--no-stat` to keep output short.
 - After a restart, run `git worktree list` and read each worktree's `git status` before resuming or redoing anything.
