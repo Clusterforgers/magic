@@ -6,21 +6,34 @@ use super::types::DeckFormat;
 
 /// Text parsing switches for `format`, or `None` for formats that are not line-oriented text.
 pub fn text_options(format: DeckFormat) -> Option<TextOptions> {
-    let text = |bracket_sets, categories, blank_line_sideboard, about_block| TextOptions {
-        line: LineOptions {
-            bracket_sets,
-            categories,
+    let options = match format {
+        DeckFormat::PlainText => TextOptions {
+            line: LineOptions {
+                bracket_sets: true,
+                categories: false,
+            },
+            blank_line_sideboard: true,
+            ..TextOptions::default()
         },
-        blank_line_sideboard,
-        about_block,
+        DeckFormat::Arena => TextOptions {
+            about_block: true,
+            ..TextOptions::default()
+        },
+        DeckFormat::Moxfield => TextOptions::default(),
+        DeckFormat::MtgoText => TextOptions {
+            commander_after_sideboard: true,
+            ..TextOptions::default()
+        },
+        DeckFormat::Archidekt => TextOptions {
+            line: LineOptions {
+                bracket_sets: false,
+                categories: true,
+            },
+            ..TextOptions::default()
+        },
+        DeckFormat::MtgoDek => return None,
     };
-    match format {
-        DeckFormat::PlainText => Some(text(true, false, true, false)),
-        DeckFormat::Arena => Some(text(false, false, false, true)),
-        DeckFormat::Moxfield => Some(text(false, false, false, false)),
-        DeckFormat::Archidekt => Some(text(false, true, false, false)),
-        DeckFormat::MtgoDek => None,
-    }
+    Some(options)
 }
 
 #[cfg(test)]
@@ -30,22 +43,29 @@ mod tests {
     use rstest::rstest;
 
     #[rstest]
-    #[case(DeckFormat::PlainText, true, false, true, false)]
-    #[case(DeckFormat::Arena, false, false, false, true)]
-    #[case(DeckFormat::Moxfield, false, false, false, false)]
-    #[case(DeckFormat::Archidekt, false, true, false, false)]
-    fn dialect_switches(
-        #[case] format: DeckFormat,
-        #[case] bracket_sets: bool,
-        #[case] categories: bool,
-        #[case] blank_line_sideboard: bool,
-        #[case] about_block: bool,
-    ) {
+    #[case(DeckFormat::PlainText, "bracket_sets blank_line_sideboard")]
+    #[case(DeckFormat::Arena, "about_block")]
+    #[case(DeckFormat::Moxfield, "")]
+    #[case(DeckFormat::MtgoText, "commander_after_sideboard")]
+    #[case(DeckFormat::Archidekt, "categories")]
+    fn dialect_switches(#[case] format: DeckFormat, #[case] enabled: &str) {
         let options = text_options(format).unwrap();
-        assert_eq!(options.line.bracket_sets, bracket_sets);
-        assert_eq!(options.line.categories, categories);
-        assert_eq!(options.blank_line_sideboard, blank_line_sideboard);
-        assert_eq!(options.about_block, about_block);
+        let switches = [
+            ("bracket_sets", options.line.bracket_sets),
+            ("categories", options.line.categories),
+            ("blank_line_sideboard", options.blank_line_sideboard),
+            ("about_block", options.about_block),
+            (
+                "commander_after_sideboard",
+                options.commander_after_sideboard,
+            ),
+        ];
+        let on: Vec<&str> = switches
+            .iter()
+            .filter(|(_, value)| *value)
+            .map(|(name, _)| *name)
+            .collect();
+        assert_eq!(on.join(" "), enabled);
     }
 
     #[test]

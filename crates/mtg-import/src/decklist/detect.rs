@@ -8,8 +8,12 @@ use super::types::{DeckFormat, Section};
 /// Dialect markers collected from one pass over the text.
 #[derive(Default)]
 struct Evidence {
-    archidekt: bool,
-    moxfield: bool,
+    /// Format named by a marker on an entry line: Archidekt tags and categories outrank Moxfield foil flags.
+    entry_marker: Option<DeckFormat>,
+    /// An all-caps `NAME:` header, written by Moxfield and by the MTGO text export.
+    shouting_header: bool,
+    /// Whether some line names a set; the MTGO text export strips every printing.
+    printing: bool,
     /// Whether the first meaningful line opens like an Arena export; unset until a line is seen.
     arena_start: Option<bool>,
 }
@@ -24,7 +28,7 @@ impl Evidence {
             arena_header || line.eq_ignore_ascii_case("about")
         });
         if is_shouting_header(line) {
-            self.moxfield = true;
+            self.shouting_header = true;
             return;
         }
         let options = LineOptions {
@@ -33,8 +37,22 @@ impl Evidence {
         };
         if let Ok(entry) = parse_entry(line, options) {
             // A bare `[M10]` is a plain-text set code; categories only count after a `(SET)` printing.
-            self.archidekt |= entry.tagged || (entry.category.is_some() && entry.set.is_some());
-            self.moxfield |= entry.foil;
+            if entry.tagged || (entry.category.is_some() && entry.set.is_some()) {
+                self.entry_marker = Some(DeckFormat::Archidekt);
+            } else if entry.foil {
+                self.entry_marker.get_or_insert(DeckFormat::Moxfield);
+            }
+            self.printing |= entry.set.is_some();
+        }
+    }
+
+    fn format(&self) -> DeckFormat {
+        match (self.entry_marker, self.shouting_header, self.printing) {
+            (Some(format), _, _) => format,
+            (None, true, true) => DeckFormat::Moxfield,
+            (None, true, false) => DeckFormat::MtgoText,
+            (None, false, _) if self.arena_start == Some(true) => DeckFormat::Arena,
+            (None, false, _) => DeckFormat::PlainText,
         }
     }
 }
@@ -53,15 +71,7 @@ pub fn detect(input: &str) -> DeckFormat {
         }
         evidence.observe(line);
     }
-    if evidence.archidekt {
-        DeckFormat::Archidekt
-    } else if evidence.moxfield {
-        DeckFormat::Moxfield
-    } else if evidence.arena_start == Some(true) {
-        DeckFormat::Arena
-    } else {
-        DeckFormat::PlainText
-    }
+    evidence.format()
 }
 
 #[cfg(test)]
@@ -71,7 +81,7 @@ mod tests {
     use proptest::prelude::*;
     use rstest::rstest;
 
-    use DeckFormat::{Archidekt, Arena, Moxfield, MtgoDek, PlainText};
+    use DeckFormat::{Archidekt, Arena, Moxfield, MtgoDek, MtgoText, PlainText};
 
     #[rstest]
     #[case::plain_simple("4 Lightning Bolt\n2 Shock\n", PlainText)]
@@ -111,6 +121,18 @@ mod tests {
         "COMMANDER:\n1 Atraxa (C16) 28\n\n1 Sol Ring (CMM) 400\n",
         Moxfield
     )]
+    #[case::moxfield_one_printing_is_enough(
+        "1 Sol Ring\n\nSIDEBOARD:\n1 Fury (MH2) 126\n",
+        Moxfield
+    )]
+    #[case::moxfield_foil_without_printings("1 Sol Ring *F*\n\nSIDEBOARD:\n1 Fury\n", Moxfield)]
+    #[case::mtgo_text_commander_last(
+        "1 Sol Ring\n\nSIDEBOARD:\n1 Fury\n\n1 Atraxa, Praetors' Voice\n",
+        MtgoText
+    )]
+    #[case::mtgo_text_without_commander("4 Sol Ring\n\nSIDEBOARD:\n2 Fury\n", MtgoText)]
+    #[case::mtgo_text_crlf("1 Sol Ring\r\n\r\nSIDEBOARD:\r\n1 Fury\r\n", MtgoText)]
+    #[case::mtgo_text_bom("\u{feff}1 Sol Ring\n\nSIDEBOARD:\n1 Fury\n", MtgoText)]
     #[case::archidekt_category("1x Sol Ring (cmm) 400 [Ramp]\n", Archidekt)]
     #[case::archidekt_commander(
         "1x Atraxa (c16) 28 [Commander{top}]\n1x Sol Ring (cmm) 400 [Ramp]\n",

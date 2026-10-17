@@ -15,7 +15,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 ## M1 Card data (rest)
 - [ ] `mtg-db` follow-ups: reap stale `running` import runs, skip NUL-containing records instead of failing the batch, give `mtg-server` its own migration table (`mtg-db` owns `_sqlx_migrations`)
 - [ ] CLI binary `mtg-cli`: download Scryfall bulk + MTGJSON deck index/decks, ingest into Postgres (resumable, polite rate limit)
-- [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports (needs samples from the user)
+- [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports. Verified on real Moxfield, Archidekt, Arena and MTGO text exports of two Commander decks (`real_exports.rs`, `docs/data-sources.md`): MTGO text is its own `DeckFormat` and Moxfield's commander is promoted by `promote_implied_commander`. Still open: a real MTGO `.dek`, MTGO text without sideboard cards, partner/background commanders, double-faced and split names, accented names, flavor names (Moxfield's `The Ball` is Fellwar Stone), Archidekt sideboard/maybeboard markers, a real Arena client export, 60-card decks with sideboards
 - [ ] Card search HTTP endpoints in `mtg-server` (name, filters, color identity, pagination)
 
 ## M2 Engine and first playable

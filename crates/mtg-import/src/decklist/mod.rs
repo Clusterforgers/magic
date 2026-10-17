@@ -1,5 +1,6 @@
-//! Deck-list parsing (plain text, Arena, MTGO `.dek`, Moxfield, Archidekt) and plain-text export.
+//! Deck-list parsing (plain text, Arena, MTGO text and `.dek`, Moxfield, Archidekt) and plain-text export.
 
+mod commander;
 mod dek;
 mod detect;
 mod dialect;
@@ -9,6 +10,7 @@ mod section;
 mod text;
 mod types;
 
+pub use commander::promote_implied_commander;
 pub use detect::detect;
 pub use export::{ExportError, export};
 pub use types::{DeckEntry, DeckFormat, LineError, MAX_COUNT, MAX_NAME_CHARS, ParsedDeck, Section};

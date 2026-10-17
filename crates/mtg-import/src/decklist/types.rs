@@ -99,7 +99,9 @@ pub enum DeckFormat {
     Arena,
     /// Magic Online `.dek` XML.
     MtgoDek,
-    /// Moxfield text export.
+    /// Magic Online text export: no printings, a `SIDEBOARD:` header, the commander in a trailing headerless block.
+    MtgoText,
+    /// Moxfield text export: printings and foil flags, the commander as the unmarked first line.
     Moxfield,
     /// Archidekt text export with `[Category]` suffixes.
     Archidekt,
