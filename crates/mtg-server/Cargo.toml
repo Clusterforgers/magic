@@ -11,6 +11,13 @@ mtg-core.workspace = true
 mtg-engine.workspace = true
 mtg-cards.workspace = true
 mtg-protocol.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+uuid.workspace = true
 
 [lints]
 workspace = true
+
+[dev-dependencies]
+mtg-testkit.workspace = true
+rstest.workspace = true

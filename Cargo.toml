@@ -27,7 +27,7 @@ rand_core = "0.10"
 roxmltree = "0.21"
 unicode-normalization = "0.1"
 chrono ={ version = "0.4", default-features = false, features = ["std", "clock"] }
-tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
 uuid = { version = "1", features = ["serde"] }
 sqlx = { version = "0.9", default-features = false, features = [
     "runtime-tokio",
