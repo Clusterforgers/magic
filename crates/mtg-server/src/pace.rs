@@ -1,16 +1,16 @@
-//! Pace of play: passing for a seat that has nothing to do or that yields, and the clocks that keep one player from
+//! Pace of play: passing for a seat the windows pass for or that yields, and the clocks that keep one player from
 //! holding the table.
 //!
 //! All of them work through the same path as a seat's own answer ([`crate::running::Running::answer`]), so what a
 //! pass or a timeout does to the log, the store and every projection is exactly what the seat's click would have done.
-//! When a yield stops is decided in [`crate::yields`] alone.
+//! When a seat is asked is decided in [`crate::windows`] and when a yield stops in [`crate::yields`], alone.
 
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::PriorityAction;
-use mtg_engine::{Answer, Decision, DecisionKind, GameState};
-use mtg_protocol::{ErrorCode, ServerMessage, YieldUntil};
+use mtg_engine::{Answer, Decision, DecisionKind};
+use mtg_protocol::{ErrorCode, FullControlMode, ServerMessage, YieldUntil};
 use tokio::time::Instant;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
@@ -24,10 +24,11 @@ pub const MAX_CLOCK_SECS: u64 = 86_400;
 /// How long after a failed save the server tries again to answer for a seat whose clock ran out.
 const RETRY_AFTER: Duration = Duration::from_secs(1);
 
-/// How a game moves: whether a seat with nothing to do is passed for, and how long a seat may take to respond.
+/// How a game moves: how seats start out (auto-pass on, or in Full Control), and how long a seat may take to respond.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Pace {
-    /// Whether each seat starts with auto-pass on (`MTG_AUTO_PASS`); a seat can change its own with `AutoPass`.
+    /// Whether each seat starts with auto-pass on (`MTG_AUTO_PASS`): in Full Control mode `Off`, or `Held` when off.
+    /// A seat can change its own with `AutoPass` and `FullControl`.
     pub auto_pass: bool,
     /// Time a seat that is not the active player has to answer a priority decision, whether it can act or not
     /// (`MTG_RESPONSE_SECS`); `None` is no clock.
@@ -44,12 +45,21 @@ impl Pace {
         blocks: None,
     };
 
+    /// The Full Control mode every seat starts in: `Off` with auto-pass on, `Held` with it off.
+    pub(crate) const fn mode(&self) -> FullControlMode {
+        if self.auto_pass {
+            FullControlMode::Off
+        } else {
+            FullControlMode::Held
+        }
+    }
+
     /// The clock `decision` runs on, if any.
     ///
     /// Only a seat that is not the active player is hurried, and only for a priority decision or for
     /// declaring blockers; every other decision (mulligans, discards, damage division, the active
     /// player's own turn) waits for as long as it takes. A priority window the seat has nothing to do in
-    /// is hurried too (it is only delivered with auto-pass off): it would hold the table for no reason.
+    /// is hurried too (it is only delivered at a stop or in Full Control): it would hold the table for no reason.
     pub(crate) fn clock_for(&self, decision: &Decision, active: PlayerId) -> Option<Duration> {
         if decision.player == active {
             return None;
@@ -77,35 +87,9 @@ pub(crate) fn pass() -> Answer {
     Answer::Priority(PriorityAction::Pass)
 }
 
-/// A priority decision whose holder can do nothing useful: only tapping mana is left.
-pub(crate) fn idle(decision: &Decision) -> bool {
-    matches!(&decision.kind, DecisionKind::Priority(options) if !options.can_act)
-}
-
 /// Whether the decision is a priority decision, whatever its options.
 pub(crate) fn is_priority(decision: &Decision) -> bool {
     matches!(&decision.kind, DecisionKind::Priority(_))
-}
-
-/// Whether the server passes for the decision's seat without asking: it is idle and the seat has auto-pass on.
-pub(crate) fn skippable(decision: &Decision, auto_pass: &[bool]) -> bool {
-    idle(decision)
-        && auto_pass
-            .get(decision.player.index())
-            .copied()
-            .unwrap_or(false)
-}
-
-/// Whether the server passes for the decision's seat without asking: the seat yields, or it is idle with
-/// auto-pass on. A yield that this decision ends is dropped from `yields` and the auto-pass rule decides.
-pub(crate) fn passes_for(
-    decision: &Decision,
-    auto_pass: &[bool],
-    yields: &mut Yields,
-    state: &GameState,
-) -> bool {
-    is_priority(decision)
-        && (yields.passes(decision.player, state) || skippable(decision, auto_pass))
 }
 
 /// What the table answers for a seat whose clock ran out: a pass, or no blockers.
@@ -143,27 +127,12 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Records the seat's auto-pass setting; turning it on passes at once if the seat is facing a decision it cannot use.
-    pub(crate) async fn set_auto_pass(
-        &mut self,
-        seat: PlayerId,
-        enabled: bool,
-    ) -> Result<(), Fatal> {
-        if let Some(flag) = self.auto_pass.get_mut(seat.index()) {
-            *flag = enabled;
-        }
-        if enabled {
-            self.pass_if_idle(seat).await
-        } else {
-            Ok(())
-        }
-    }
-
     /// Starts `seat`'s yield; if the seat faces a priority decision it is passed at once.
     ///
     /// The yield, the passes it makes and their save are one unit, like an answer and the auto-passes after it: a
-    /// failed save keeps no yield. A yield that ends at once (the stack it waits on is empty) passes nothing and the
-    /// decision is sent again with a new id, so the seat is never left without the prompt it owes an answer to.
+    /// failed save keeps no yield. A yield that ends at once (the stack it waits on is empty, or the seat holds a
+    /// stop here) passes nothing and the decision is sent again with a new id, so the seat is never left without the
+    /// prompt it owes an answer to. A seat in Full Control cannot yield: it is asked at every window.
     pub(crate) async fn set_yield(
         &mut self,
         seat: PlayerId,
@@ -179,6 +148,12 @@ impl<S: EventStore> GameActor<S> {
             self.refuse(seat, Rejection::new(ErrorCode::BadMessage, reason));
             return Ok(());
         }
+        if self.stops.full_control(seat) != FullControlMode::Off {
+            let reason =
+                "full control is on, so the server cannot pass for you; turn it off to yield";
+            self.refuse(seat, Rejection::new(ErrorCode::BadMessage, reason));
+            return Ok(());
+        }
         let mut yields = self.yields.clone();
         yields.start(seat, until, state);
         if !running.asks_priority_of(seat) {
@@ -186,7 +161,10 @@ impl<S: EventStore> GameActor<S> {
             return Ok(());
         }
         match running.restart_decision(seat) {
-            Ok(step) => self.publish_with(step, yields).await,
+            Ok(step) => {
+                let stops = self.stops.clone();
+                self.publish_with(step, yields, stops).await
+            }
             Err(rejection) => {
                 self.refuse(seat, rejection);
                 Ok(())
@@ -203,18 +181,22 @@ impl<S: EventStore> GameActor<S> {
     }
 
     /// Takes `yields` as the seats' yields and tells each seat whose yield changed.
-    fn commit_yields(&mut self, yields: Yields) {
+    pub(crate) fn commit_yields(&mut self, yields: Yields) {
         for (seat, until) in self.yields.replace(yields) {
             self.seats.send(seat, ServerMessage::Yielding { until });
         }
     }
 
-    /// Passes for `seat` if the decision pending for it cannot be used and the seat has auto-pass on.
-    async fn pass_if_idle(&mut self, seat: PlayerId) -> Result<(), Fatal> {
+    /// Settles what a game that is starting or resumed from its log left pending: if the windows pass for the seat
+    /// it waits on, it is passed for before any client connects.
+    pub(crate) async fn start_up(&mut self) -> Result<(), Fatal> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
         };
-        if !running.idle_for(seat, &self.auto_pass) {
+        let Some(seat) = running.waiting_on() else {
+            return Ok(());
+        };
+        if !running.passes_pending(seat, &self.stops, &self.yields) {
             return Ok(());
         }
         match running.fall_back() {
@@ -225,23 +207,11 @@ impl<S: EventStore> GameActor<S> {
             }
         }
     }
-
-    /// Settles what a game resumed from its log left pending: a seat that can do nothing is passed for.
-    pub(crate) async fn start_up(&mut self) -> Result<(), Fatal> {
-        let waiting = match &self.phase {
-            Phase::Running(running) => running.waiting_on(),
-            Phase::Lobby { .. } => None,
-        };
-        match waiting {
-            Some(seat) => self.pass_if_idle(seat).await,
-            None => Ok(()),
-        }
-    }
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the pace rules give the clock, the safe default and the idle test exactly to the decisions they are meant for, whatever the settings.
+    //! Goal: the pace rules give the clock, the safe default and the priority test exactly to the decisions they are meant for, whatever the settings, and a seat starts in the mode its auto-pass default names.
     use super::*;
     use mtg_core::ids::ObjectId;
     use mtg_engine::decision::{
@@ -385,19 +355,29 @@ mod tests {
     }
 
     #[rstest]
-    #[case::idle_and_on(priority(false), &[true, true], true)]
-    #[case::idle_but_off(priority(false), &[true, false], false)]
-    #[case::can_act(priority(true), &[true, true], false)]
-    #[case::blockers_are_never_skipped(blockers(), &[true, true], false)]
-    #[case::unknown_seat_counts_as_off(priority(false), &[true], false)]
-    fn skipping(#[case] kind: DecisionKind, #[case] flags: &[bool], #[case] skipped: bool) {
-        assert_eq!(skippable(&decision(OTHER, kind), flags), skipped);
+    #[case::auto_pass_on(true, FullControlMode::Off)]
+    #[case::auto_pass_off(false, FullControlMode::Held)]
+    fn a_seat_starts_in_the_mode_the_auto_pass_default_names(
+        #[case] auto_pass: bool,
+        #[case] mode: FullControlMode,
+    ) {
+        assert_eq!(
+            Pace {
+                auto_pass,
+                ..pace()
+            }
+            .mode(),
+            mode
+        );
     }
 
     #[test]
-    fn other_kinds_are_never_idle() {
+    fn only_priority_is_a_priority_decision() {
+        assert!(is_priority(&decision(OTHER, priority(true))));
+        assert!(is_priority(&decision(OTHER, priority(false))));
+        assert!(!is_priority(&decision(OTHER, blockers())));
         for kind in other_kinds() {
-            assert!(!idle(&decision(OTHER, kind)));
+            assert!(!is_priority(&decision(OTHER, kind)));
         }
     }
 }

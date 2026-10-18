@@ -33,6 +33,22 @@ pub fn bot_config() -> ServerConfig {
     }
 }
 
+/// [`bot_config`] with the default windows (every seat starts in Full Control `Off`) and no clocks.
+pub fn windowed_config() -> ServerConfig {
+    let config = bot_config();
+    ServerConfig {
+        game: GameConfig {
+            pace: Pace {
+                auto_pass: true,
+                response: None,
+                blocks: None,
+            },
+            ..config.game
+        },
+        ..config
+    }
+}
+
 /// A running server plus the means to stop it.
 pub struct TestServer {
     pub addr: SocketAddr,

@@ -6,7 +6,7 @@ mod net;
 
 use mtg_protocol::{ClientMessage, ErrorCode, FullControlMode, ServerMessage};
 use mtg_server::ServerConfig;
-use net::{Frame, TestServer, WsClient, bot_config, connect, create_game, two_seats};
+use net::{Frame, TestServer, WsClient, connect, create_game, two_seats, windowed_config};
 use serde_json::{Value, json};
 
 /// Joins on a fresh socket and returns it with the verbatim text of the `Welcome`.
@@ -46,7 +46,7 @@ async fn next_error(socket: &mut WsClient) -> ErrorCode {
 }
 
 fn config() -> ServerConfig {
-    bot_config()
+    windowed_config()
 }
 
 #[tokio::test]

@@ -26,15 +26,18 @@
 //!   the game is over;
 //!   `Resync` repeats the last two. Queues are bounded: a client that stops reading is dropped and
 //!   must join again. The game waits for absent seats, with the exceptions of the next bullet.
-//! - **Pace.** A seat with nothing to do is passed for ([`Pace`], `ClientMessage::AutoPass`) through
-//!   the same path as an answer, and its client is never sent that decision. So is a seat that yields
+//! - **Pace.** A seat is asked for priority only at its windows (`windows.rs`): its own main phases, the
+//!   declare attackers and declare blockers steps and any moment an object of another seat is on the stack
+//!   (each when the seat can act), and the steps where it holds a stop (`ClientMessage::SetStop`). Anywhere
+//!   else it is passed for ([`Pace`], `ClientMessage::AutoPass`) through the same path as an answer, and its
+//!   client is never sent that decision. A seat in Full Control (`ClientMessage::FullControl`; turning
+//!   auto-pass off is the same as `Held`) is asked at every window. A seat that yields is passed for as well
 //!   (`ClientMessage::Yield`: until the stack is empty, the turn ends or its own turn begins; an
-//!   opponent's new object, whatever the seat could do about it, ends it; it is held in memory only).
+//!   opponent's new object, whatever the seat could do about it, or a stop of its own ends it). Stops, modes
+//!   and yields are held in memory per seat and reported back.
 //!   A seat that is not the active player has a clock on every priority decision (10 s) and on declaring
 //!   blockers (45 s); at the deadline the server answers for the seat (a pass, or no blocks) the same
-//!   way, so a late answer is stale. Every other decision waits as long as it takes. A seat can also set
-//!   stops and Full Control (`ClientMessage::SetStop`, `ClientMessage::FullControl`); they are held in
-//!   memory per seat and reported back, and nothing decides when a seat is asked from them yet.
+//!   way, so a late answer is stale. Every other decision waits as long as it takes.
 //! - **Chat** is broadcast to connected seats and never stored.
 //! - **Previews** (`ClientMessage::Preview`) are advice about a pending attack or block: the actor answers
 //!   each with one `Forecast` (empty when there is none or the seat is over its rate limit), never an
@@ -89,6 +92,7 @@ mod stops;
 mod store;
 mod throttle;
 mod user_id;
+mod windows;
 mod ws;
 mod yields;
 

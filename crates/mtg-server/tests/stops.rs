@@ -3,7 +3,9 @@
 
 mod common;
 
-use common::{Bot, Client, FlakyStore, game_id, passive, poke, roomy, seat, silent, table_setup};
+use common::{
+    Bot, Client, FlakyStore, game_id, passive, poke, roomy, seat, silent, table_setup, windowed,
+};
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_engine::turn::Step;
@@ -35,7 +37,7 @@ async fn table(
     started: bool,
 ) -> (GameHandle, FlakyStore, Vec<Client>) {
     let store = FlakyStore::new();
-    let handle = spawn_game_with(game_id(1), setup, store.clone(), roomy()).unwrap();
+    let handle = spawn_game_with(game_id(1), setup, store.clone(), windowed()).unwrap();
     let mut clients = Vec::new();
     for n in 0..seats {
         clients.push(Client::join(&handle, n).await);
@@ -418,7 +420,7 @@ async fn stops_set_in_the_lobby_are_held_for_the_game() {
 async fn a_game_resumed_from_its_log_starts_without_stops() {
     let setup = instant_duel();
     let store = MemoryStore::new();
-    let first = spawn_game_with(game_id(1), setup.clone(), store.clone(), roomy()).unwrap();
+    let first = spawn_game_with(game_id(1), setup.clone(), store.clone(), windowed()).unwrap();
     let mut clients = vec![
         Client::join(&first, FOE).await,
         Client::join(&first, ME).await,
@@ -440,7 +442,7 @@ async fn a_game_resumed_from_its_log_starts_without_stops() {
     drop(clients);
     drop(first);
 
-    let second = resume_game_with(store, game_id(1), setup, roomy())
+    let second = resume_game_with(store, game_id(1), setup, windowed())
         .await
         .unwrap();
     let mut me = Client::join(&second, ME).await;

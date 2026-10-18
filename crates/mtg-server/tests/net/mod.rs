@@ -11,6 +11,6 @@ pub mod ws;
 pub use accounts::{Browser, PASSWORD, credentials, login, me, register, session_cookie};
 pub use bot::WsBot;
 pub use http::{Reply, create_game, get, post_json, request, send_raw};
-pub use server::{TestServer, bot_config};
+pub use server::{TestServer, bot_config, windowed_config};
 pub use table::{Table, table_config, two_seats};
 pub use ws::{Frame, WsClient, connect, open, refused, refused_at, try_connect, try_open};

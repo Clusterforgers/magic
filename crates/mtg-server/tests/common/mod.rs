@@ -46,6 +46,19 @@ pub fn roomy() -> GameConfig {
     }
 }
 
+/// Roomy queues, the default windows (every seat starts in Full Control `Off`) and no clocks, so only the windows,
+/// stops, modes and yields under test decide when a seat is asked.
+pub fn windowed() -> GameConfig {
+    GameConfig {
+        pace: Pace {
+            auto_pass: true,
+            response: None,
+            blocks: None,
+        },
+        ..roomy()
+    }
+}
+
 /// The setup every table test uses: random 60-card decks derived from `seed`.
 pub fn table_setup(players: usize, seed: u64) -> GameSetup {
     fuzz_setup(players, seed)
