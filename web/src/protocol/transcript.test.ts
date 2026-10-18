@@ -69,6 +69,7 @@ describe('transcript fixture', () => {
       player: 0,
       seats: 2,
       auto_pass: false,
+      yielding: null,
     })
     expect(snapshot?.type).toBe('Snapshot')
     expect(rest.at(-1)?.type).toBe('GameOver')
@@ -95,6 +96,7 @@ describe('transcript fixture', () => {
             'protocol_version',
             'seats',
             'type',
+            'yielding',
           ])
           break
         case 'Snapshot':

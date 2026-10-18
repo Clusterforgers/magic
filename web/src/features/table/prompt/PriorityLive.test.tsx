@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import type { ObjectId, PriorityOptions, ServerMessage } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { startSession } from '@/test-utils/harness'
+import { primaryButton } from '@/test-utils/passControls'
 import { renderLiveTable } from '@/test-utils/tableHarness'
 import { fixtureLookup } from '../dev/devGame'
 import { buildFixture } from '../dev/fixture'
@@ -89,7 +90,7 @@ describe('a decision from the server', () => {
   it('sends one answer for a double click on Pass', async () => {
     const { h, send, user } = mount()
     send(decision(13, options()))
-    await user.dblClick(screen.getByRole('button', { name: 'Pass priority' }))
+    await user.dblClick(primaryButton())
     expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 13, answer: { Priority: 'Pass' } }])
   })
 

@@ -20,6 +20,7 @@ import {
   pub,
 } from '@/test-utils/miniTable'
 import type { Draft } from '@/test-utils/miniTable'
+import { primaryButton } from '@/test-utils/passControls'
 import { renderTable } from '@/test-utils/tableHarness'
 import { FX_MS } from './model'
 import { EFFECTS_BY_DEFAULT } from './useTableFx'
@@ -523,7 +524,7 @@ describe('never in the way of a decision', () => {
       pub(hit(FOE_GOLEM, MY_BEAR, 4), died(MY_BEAR)),
     )
     expect(ghosts(container)).toHaveLength(1)
-    fireEvent.click(screen.getByRole('button', { name: 'Pass priority' }))
+    fireEvent.click(primaryButton())
     expect(answer).toHaveBeenCalledTimes(1)
     expect(answer).toHaveBeenCalledWith({ Priority: 'Pass' })
   })

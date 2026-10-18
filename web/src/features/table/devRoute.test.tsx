@@ -2,6 +2,7 @@
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { maybePrimaryButton, primaryButton } from '@/test-utils/passControls'
 import { FIXTURE_MARKER } from './dev/fixture'
 
 /** The real route tree, loaded fresh so the route sees the `import.meta.env.DEV` the test has set. */
@@ -66,12 +67,14 @@ describe('/dev/table in development', () => {
   })
 })
 
+const findPrimary = (): Promise<HTMLElement> => waitFor(() => primaryButton())
+
 describe('/dev/table with a prompt', () => {
   it('shows no decision by default', async () => {
     await visit('/dev/table?seats=2')
     await screen.findByRole('region', { name: 'Game table' })
     expect(document.querySelector('[data-decision]')).toBeNull()
-    expect(screen.queryByRole('button', { name: 'Pass priority' })).toBeNull()
+    expect(maybePrimaryButton()).toBeNull()
   })
 
   it.each(['?seats=2&prompt=priority', '?seats=4&mode=grid&prompt=priority'])(
@@ -80,7 +83,7 @@ describe('/dev/table with a prompt', () => {
       await visit(`/dev/table${search}`)
       await screen.findByRole('region', { name: 'Game table' })
       expect(document.querySelector('[data-decision="Priority"]')).not.toBeNull()
-      expect(screen.getByRole('button', { name: 'Pass priority' })).toBeEnabled()
+      expect(primaryButton()).toBeEnabled()
       expect(document.querySelectorAll('[data-highlight="legal"]').length).toBeGreaterThan(3)
       expect(document.querySelectorAll('[data-highlight="dimmed"]').length).toBeGreaterThan(3)
     },
@@ -88,7 +91,7 @@ describe('/dev/table with a prompt', () => {
 
   it('lets the prompt be answered, which clears it', async () => {
     await visit('/dev/table?seats=2&prompt=priority')
-    const pass = await screen.findByRole('button', { name: 'Pass priority' })
+    const pass = await findPrimary()
     await act(async () => pass.click())
     expect(document.querySelector('[data-decision]')).toBeNull()
     expect(document.querySelectorAll('[data-highlight]')).toHaveLength(0)

@@ -67,6 +67,19 @@ export function fixtureSession(store: PlayStore): Session {
       store.setState({ autoPass: enabled })
       return true
     },
+    // As the server answers a yield: it starts, and the priority decision on screen is passed.
+    yieldUntil(until) {
+      store.setState((state) => ({
+        yielding: until,
+        pending: state.pending !== null && 'Priority' in state.pending.decision.kind ? null : state.pending,
+        clock: null,
+      }))
+      return true
+    },
+    cancelYield() {
+      store.setState({ yielding: null })
+      return true
+    },
     chat(text) {
       const line = text.trim()
       if (line === '') return false

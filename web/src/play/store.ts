@@ -11,6 +11,7 @@ import type {
   ObjectView,
   PlayerId,
   StateView,
+  YieldUntil,
 } from '@/protocol/generated'
 
 /** How many of the most recent events `log` keeps. */
@@ -90,6 +91,11 @@ export interface PlayState {
    * switch). The server's word: set by every Welcome and by a switch that went out; on until told otherwise.
    */
   autoPass: boolean
+  /**
+   * What the server is passing priority for this seat until (a yield), or null. The server's word: set by every
+   * Welcome and every `Yielding` message, never by the page. While it is set the server sends no priority decision.
+   */
+  yielding: YieldUntil | null
 }
 
 /** The store type: a vanilla zustand store; in React read it with `useStore(store, selector)` from `zustand`. */
@@ -113,6 +119,7 @@ export function initialPlayState(): PlayState {
     result: null,
     notice: null,
     autoPass: true,
+    yielding: null,
   }
 }
 
