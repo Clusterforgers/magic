@@ -18,7 +18,7 @@ export function SeatLinkMissing() {
         short when it was copied.
       </p>
       <div>
-        <Link to="/" className={buttonVariants({ variant: 'outline' })}>
+        <Link to="/" className={buttonVariants()}>
           Create a new game
         </Link>
       </div>

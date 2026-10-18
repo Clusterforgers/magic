@@ -129,10 +129,10 @@ describe('after the game is made', () => {
     expect(order).toEqual([
       'Open my seat (Player 1)',
       'Copy all links',
-      'a seat link',
       'Copy link for seat 1 (Player 1)',
       'a seat link',
       'Copy link for seat 2 (Player 2)',
+      'a seat link',
       'Create another game',
     ])
   })

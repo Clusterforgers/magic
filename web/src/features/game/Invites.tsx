@@ -9,10 +9,7 @@ interface InvitesProps {
   mine: number | null
 }
 
-/**
- * The links of the other seats, when this tab is the one that created the game. A link is a key to its seat, so
- * this is the only place besides the create page where a token is written out, and each link is marked as such.
- */
+/** The links of the other seats, when this tab created the game; a token is printed only in these share links. */
 export function Invites({ game, mine }: InvitesProps) {
   // Read once: sessionStorage may be blocked, and the answer cannot change while the lobby is open.
   const [invites] = useState(() => loadInvites(game))

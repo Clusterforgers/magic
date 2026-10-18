@@ -14,10 +14,8 @@ interface SeatLinkRowProps {
   copyLabel: string
 }
 
-/**
- * One seat's share link with its copy button. This is the only element that may print a seat token, so it carries the
- * `data-share-link` mark that tests (and any future scanner) use to tell it from a leak.
- */
+// The one element that may print a seat token, so the `data-share-link` mark lets tests tell it from a leak.
+/** One seat's share link with its copy button. */
 export function SeatLinkRow({ title, note, path, url, copyLabel }: SeatLinkRowProps) {
   return (
     <li className="grid gap-2 rounded-xl bg-card p-3 ring-1 ring-foreground/10 sm:p-4">

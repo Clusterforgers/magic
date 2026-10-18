@@ -1,9 +1,7 @@
 import type { PlayState } from '@/play/store'
 
-/**
- * Failed attempts in a row after which the page stops saying "reconnecting" and says the game cannot be reached. The
- * socket keeps retrying anyway (a wrong token looks like a lost connection), so a later success still moves on.
- */
+// The socket keeps retrying past this (a wrong token looks like a lost connection), so a later Welcome still moves on.
+/** Failed attempts in a row after which the page says it cannot reach the game instead of "reconnecting". */
 export const UNREACHABLE_AFTER = 5
 
 /** The connection as a screen needs it. */

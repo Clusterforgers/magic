@@ -1,10 +1,7 @@
 /** Marks the one kind of element that may carry a seat token: a link meant to be handed to a player. */
 export const SHARE_LINK = '[data-share-link]'
 
-/**
- * Everything on screen that could show a secret, share links excepted: the markup with all its attributes, the
- * text, the value of every form control, and the tab title. A test asserts a token is nowhere in the result.
- */
+/** Everything that could show a secret, share links excepted: markup, text, form values and the tab title. */
 export function visibleOutsideShareLinks(root: Element): string {
   const copy = root.cloneNode(true)
   if (!(copy instanceof Element)) throw new Error('the test expected an element')

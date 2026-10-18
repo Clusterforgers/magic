@@ -41,6 +41,7 @@ describe('connecting', () => {
     const h = await renderGame()
     expect(screen.getByRole('heading', { name: 'Connecting to the game…' })).toBeInTheDocument()
     expect(status()).toHaveTextContent('Connecting to the game…')
+    expect(document.title).toBe('Connecting · Magic')
     expect(h.net.sockets).toHaveLength(1)
     expect(h.socket().url).toBe(`ws://localhost:5173/ws/${GAME_ID}/${tokenOf(0)}`)
     h.socket().open()
@@ -62,6 +63,7 @@ describe('connecting', () => {
     h.join()
     expect(screen.getByRole('heading', { name: 'Waiting for players' })).toBeInTheDocument()
     expect(screen.queryByText('Connecting to the game…')).toBeNull()
+    expect(document.title).toBe('Lobby · Magic')
   })
 })
 
@@ -150,6 +152,7 @@ describe('a connection that ended for good', () => {
     h.join()
     h.close(1008, 'too many messages')
     expect(screen.getByRole('heading', { name: 'The connection ended' })).toBeInTheDocument()
+    expect(document.title).toBe('Disconnected · Magic')
     expect(alert()).toHaveTextContent(/policy violation \(too many messages\)/)
     expect(screen.queryByRole('heading', { name: 'Waiting for players' })).toBeNull()
     await h.user.click(screen.getByRole('button', { name: 'Connect again' }))

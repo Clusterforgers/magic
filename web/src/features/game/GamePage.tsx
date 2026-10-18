@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import type { ReactElement } from 'react'
 import { useStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
 import { usePageTitle } from '@/hooks/usePageTitle'
@@ -99,22 +100,29 @@ function SeatedGame({ gameId, link, api, deps }: SeatedGameProps) {
   const context = useMemo(() => ({ game: gameId, session, lookup }), [gameId, session, lookup])
 
   const connection = connectionOf(state)
-  const welcomed = state.seat !== null
+  const over = state.phase === 'over' && state.result !== null
   const ended = connection.kind === 'replaced' || connection.kind === 'stopped'
+
+  // The screen is the game itself: the result, or what the seat sees once welcomed. Without one (still connecting,
+  // or the seat was lost), the connection notice is the whole page.
+  let screen: ReactElement | null = null
+  let title = ended ? 'Disconnected' : 'Connecting'
+  if (over) {
+    screen = <GameOver />
+    title = 'Game over'
+  } else if (state.seat !== null && !ended) {
+    screen = state.phase === 'playing' ? <GameTable /> : <Lobby />
+    title = state.phase === 'playing' ? 'Game' : 'Lobby'
+  }
+  usePageTitle(title)
+
   const retry = (): void => {
     session.disconnect()
     session.connect()
   }
-  usePageTitle(state.phase === 'over' ? 'Game over' : state.phase === 'playing' ? 'Game' : 'Lobby')
-
-  let screen = null
-  if (state.phase === 'over' && state.result !== null) screen = <GameOver />
-  else if (welcomed && !ended) screen = state.phase === 'playing' ? <GameTable /> : <Lobby />
-
-  const showNotice = state.notice !== null && !ended && screen !== null
   return (
     <GameContext value={context}>
-      {connection.kind !== 'open' && !(screen !== null && state.phase === 'over') ? (
+      {connection.kind !== 'open' && !over ? (
         <div className="mx-auto w-full max-w-2xl px-4 pt-6 sm:px-6">
           <ConnectionNotice
             connection={connection}
@@ -124,9 +132,9 @@ function SeatedGame({ gameId, link, api, deps }: SeatedGameProps) {
           />
         </div>
       ) : null}
-      {showNotice ? (
+      {state.notice !== null && screen !== null && !over ? (
         <div className="mx-auto w-full max-w-2xl px-4 pt-6 sm:px-6">
-          <ServerNotice message={state.notice ?? ''} onDismiss={session.dismissNotice} />
+          <ServerNotice message={state.notice} onDismiss={session.dismissNotice} />
         </div>
       ) : null}
       {screen}

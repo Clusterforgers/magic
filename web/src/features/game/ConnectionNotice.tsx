@@ -1,10 +1,11 @@
+import { Link } from '@tanstack/react-router'
 import { LoaderCircle } from 'lucide-react'
 import type { ElementType, ReactNode } from 'react'
-import { Link } from '@tanstack/react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
-import type { Connection } from './connection'
+import { cn } from '@/lib/utils'
 import { UNREACHABLE_AFTER } from './connection'
+import type { Connection } from './connection'
 
 interface ConnectionNoticeProps {
   connection: Exclude<Connection, { kind: 'open' }>
@@ -21,7 +22,9 @@ interface Words {
   body: ReactNode
   /** The label of the button that tries again, if there is one. */
   retry?: string
+  /** Waiting will not help: announce it as an alert, with the title in the warning colour when `bad`. */
   alert: boolean
+  bad?: boolean
 }
 
 function wordsFor(connection: ConnectionNoticeProps['connection'], missing: boolean): Words {
@@ -40,7 +43,9 @@ function wordsFor(connection: ConnectionNoticeProps['connection'], missing: bool
         body: (
           <>
             <p>
-              {`The page tried ${UNREACHABLE_AFTER} times and is still trying in the background. The server may be down or restarting, your network may be offline, or this seat link may be wrong or out of date.`}
+              The page tried {UNREACHABLE_AFTER} times and is still trying in the background. The server may
+              be down or restarting, your network may be offline, or this seat link may be wrong or out of
+              date.
             </p>
             {missing ? (
               <p className="mt-2">
@@ -52,6 +57,7 @@ function wordsFor(connection: ConnectionNoticeProps['connection'], missing: bool
         ),
         retry: 'Try again now',
         alert: true,
+        bad: true,
       }
     case 'replaced':
       return {
@@ -66,21 +72,32 @@ function wordsFor(connection: ConnectionNoticeProps['connection'], missing: bool
         body: connection.reason ?? 'The server closed the connection.',
         retry: 'Connect again',
         alert: true,
+        bad: true,
       }
   }
 }
 
 /** Says where the connection stands when it is not open, and offers a way forward when waiting will not help. */
 export function ConnectionNotice({ connection, standalone, missing, onRetry }: ConnectionNoticeProps) {
-  const { title, body, retry, alert } = wordsFor(connection, missing)
+  const { title, body, retry, alert, bad } = wordsFor(connection, missing)
   const Heading: ElementType = standalone ? 'h1' : 'h2'
   const heading = (
-    <Heading className={standalone ? 'text-xl font-semibold tracking-tight' : 'font-medium'}>{title}</Heading>
+    <Heading
+      className={cn(
+        standalone ? 'text-xl font-semibold tracking-tight' : 'font-medium',
+        bad === true && 'text-destructive',
+      )}
+    >
+      {title}
+    </Heading>
   )
   if (!alert) {
     return (
       <div role="status" className="flex items-start gap-3 rounded-xl bg-muted p-4 text-sm">
-        <LoaderCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0 animate-spin" />
+        <LoaderCircle
+          aria-hidden="true"
+          className="mt-0.5 size-4 shrink-0 animate-spin motion-reduce:animate-none"
+        />
         <div className="grid gap-1">
           {heading}
           {body === null ? null : <p className="text-muted-foreground">{body}</p>}
@@ -89,7 +106,7 @@ export function ConnectionNotice({ connection, standalone, missing, onRetry }: C
     )
   }
   return (
-    <Alert variant="destructive" className="gap-2 p-4">
+    <Alert className="gap-2 p-4">
       {heading}
       <AlertDescription className="text-foreground">{body}</AlertDescription>
       <div className="mt-2 flex flex-wrap gap-2">

@@ -18,10 +18,7 @@ export interface RouterOptions {
   strict?: boolean
 }
 
-/**
- * Renders `ui` as the page at `/`, inside a real router on a memory history, so `Link`, `useNavigate` and friends
- * work; `/game/$gameId` is a stub that shows where it was reached. Resolves once the first navigation has settled.
- */
+/** Renders `ui` at `/` in a real router on a memory history; `/game/$gameId` is a stub that shows where it was reached. */
 export async function renderInRouter(ui: ReactElement, options: RouterOptions = {}) {
   const root = createRootRoute()
   const home = createRoute({ getParentRoute: () => root, path: '/', component: () => ui })
