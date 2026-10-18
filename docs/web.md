@@ -1,6 +1,6 @@
-# Web core notes (M2f)
+# Web notes (M2f core, M2g UI)
 
-The client layer without UI, in `web/src/net` and `web/src/play`. Wire contract: `protocol.md`; transport: `server.md`.
+The client layer in `web/src/net` and `web/src/play`, and the first screens in `web/src/features` (see UI at the end). Wire contract: `protocol.md`; transport: `server.md`.
 
 ## Modules
 - `net/api.ts`: `api.createGame/getGame/listDecks` over `fetch`; bodies are checked at runtime and a failure is an `ApiError {code, status, message}`. Codes: those of `crates/mtg-server/src/api.rs` (`invalid_request`, `unsupported_format`, `unknown_deck`, `forbidden_origin`, `not_found`, `method_not_allowed`, `payload_too_large`, `unsupported_media_type`, `internal`, `server_full`, `unavailable`) plus local `unknown`, `network`, `bad_response`.
@@ -23,3 +23,30 @@ StaleDecision and IllegalAnswer give a notice and a Resync; BadMessage and Inter
 
 ## Tests
 `scripts/check.sh web`, or `pnpm test` in `web/`. Fakes in `web/src/test-utils`: `FakeNetwork`, `FakeTimers`, `startSession()`, the Rust-generated `transcripts`. `vite` proxies `/api` and `/ws` to 127.0.0.1:8080 and keeps `Host`, which the server's Origin check compares with the page's `Origin`.
+
+## UI (M2g part 1a)
+Routes are file-based in `web/src/routes` and only pick a page; `routeTree.gen.ts` is rewritten by the Vite plugin on `pnpm dev` or `pnpm build`, so commit it with the route change. Pages are in `web/src/features/{create,game,table}`, shared parts in `components/` (`ui/` is shadcn: `pnpm exec shadcn add <name>`), pure helpers in `lib/`. The M0 spike (simulator, store, `e2e/spike.spec.ts`) is gone; `spike-react.md` keeps its numbers, and `pnpm e2e` has no specs until the table task adds some.
+
+- `/` is `create/CreateGamePage`: decks from `api.listDecks()`, 2 to 12 seats (name and deck each, a preview of the deck), format fixed to Normal with Commander shown disabled. `create/form.ts` repeats the server's checks, `create/apiErrors.ts` puts every `ApiError` code in plain words. On success it lists one link per seat with copy buttons, copy all and "Open my seat" (seat 1).
+- `/game/$gameId#seat=<n>&token=<token>` is `game/GameRoute`, which reads the fragment from the router's raw `location.href` (its `hash` is percent-decoded) and renders `game/GamePage`.
+- Seat links (`lib/seatLink.ts`): the token lives only in the fragment, which a browser never sends, and is printed only inside a `data-share-link` anchor (`components/SeatLinkRow`); tests scan the page for tokens outside those (`test-utils/leaks.ts`). `lib/invites.ts` keeps the host's links in `sessionStorage` (every access in try/catch, the app works without it) so the lobby can hand them out after the create page is gone, and it supplies the `Join` name.
+
+| Store | Screen (`game/GamePage`, `connectionOf` in `game/connection.ts`) |
+|---|---|
+| no readable seat and token in the address | `SeatLinkMissing`; no session, no socket |
+| `phase` over | `GameOver`: winner, draw or concession (from `view.players[].lost`), each seat's finish, link to `/`; no connection notice afterwards |
+| `status` replaced or stopped | `ConnectionNotice` alone: the reason from `notice` and one button to connect again |
+| idle or connecting, never welcomed | "Connecting to the game…" |
+| `reconnecting`, `attempt` below 5 | "Connection lost. Reconnecting… (attempt N)" |
+| `reconnecting`, `attempt` 5 or more | "Cannot reach the game", "Try again now" (`disconnect()` then `connect()`, counting from 1); the socket keeps retrying meanwhile and a Welcome moves the page on |
+| welcomed, `phase` lobby / playing | `Lobby` / `GameTable` |
+
+After a Welcome the lobby or table stays under the reconnect notice. A `notice` shows above any screen as a dismissible alert, except on `GameOver` and where a connection notice already prints it.
+
+`GamePage` makes one session per (game, seat, token), connects one microtask after mount and disconnects on unmount, so StrictMode's mount-unmount-mount opens one socket. `game/gameContext` gives every screen `useGame()` (`game`, `session`, `lookup`) and `usePlay(selector)`; `lookup` is REST (`GET /api/games/{id}`): seat names and who is connected, fetched once and polled every 3 s in the lobby.
+
+The table plugs in at `features/table/GameTable.tsx`, rendered with no props while `phase` is `playing` (now a placeholder that prints seat count and phase). Replace its body and keep the name; `GamePage` puts notices and the reconnect banner in a narrow column above it, so the table may use the full width.
+
+Lobby gaps (no Rust changed): no message says who has pressed Ready, so the lobby shows only this seat's own Ready (kept in the page, lost on reload, where a repeat Ready is harmless), and the protocol cannot take Ready back. "Here" comes from REST `connected`, hence the polling.
+
+Tests: `test-utils/gameHarness.tsx` `renderGame()` mounts the game page on fake sockets, a manual clock and an in-memory REST server (`fakeServer.ts`); `router.tsx` gives pages a real router on a memory history; `@testing-library/user-event` drives the keyboard; `src/routing.test.tsx` runs the real route tree. Screenshots: headless Firefox's `--screenshot` fires at `load`, before this app has rendered, and gives a blank page; start Firefox with `--remote-debugging-port` and drive it through WebDriver BiDi (`script.evaluate` to wait and click, `browsingContext.captureScreenshot`, `browsingContext.setViewport` for 390 wide).
