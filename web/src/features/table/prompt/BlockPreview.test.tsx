@@ -1,5 +1,5 @@
 // Goal: while blocks are being chosen the prompt and the table agree on what is pending and what is known: each block made is a dashed line from the blocker to its attacker and a sentence "Your X blocks Bo's Y" with a way to undo it; the table's forecast, which knows nothing of those blocks, is shown only while none is made (as the outcome "if you do not block", the marks on cards and the seat's life) and gives way to "outcome shown after you confirm"; undoing a block, cancelling, confirming or answering brings it back or takes the lines away; and chosen attacks are muted dashed lines to the seat or planeswalker each one goes at.
-import { screen, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, AttackTarget, BlockOptions, ObjectId } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
@@ -31,7 +31,11 @@ function block({ forecast = true, seats = SEATS } = {}) {
     await table.user.click(table.card(attacker))
   }
   const name = (id: ObjectId): string => must(table.store.getState().objectsById[id]).name
-  return { ...table, answer, blockers, attackers, pairs, outcome, pending, legend, make, name }
+  // This table has no server to preview with, so after the debounce the prompt falls back to the old words.
+  const fellBack = async (): Promise<void> => {
+    await waitFor(() => expect(must(outcome())).toHaveTextContent('Outcome shown after you confirm.'))
+  }
+  return { ...table, answer, blockers, attackers, pairs, outcome, pending, legend, make, name, fellBack }
 }
 
 /** The names the sentences use at the dev fixture: seat 0 is the viewer, the others are called by their seat names. */
@@ -106,7 +110,7 @@ describe('a block being made', () => {
         outcome: null,
       }),
     ])
-    expect(must(t.outcome())).toHaveTextContent('Outcome shown after you confirm.')
+    await t.fellBack()
     expect(within(must(t.outcome())).queryAllByRole('listitem')).toHaveLength(0)
     // What the table knew was about combat without this block, so none of it is on screen now.
     expect(t.life(0)).toBeNull()
@@ -151,7 +155,7 @@ describe('a block being made', () => {
     expect(t.pairs()[1]).toHaveTextContent(`Your ${t.name(second)} blocks Bo's ${t.name(attacker)}`)
     await t.user.click(screen.getByRole('button', { name: `Remove the block of ${t.name(first)}` }))
     expect(t.pending().map((line) => line.key)).toEqual([`pending-block:${second}`])
-    expect(must(t.outcome())).toHaveTextContent('Outcome shown after you confirm.')
+    await t.fellBack()
     await t.user.click(screen.getByRole('button', { name: `Remove the block of ${t.name(second)}` }))
     expect(t.pending()).toEqual([])
     expect(must(t.outcome())).toHaveTextContent('If you do not block')
@@ -223,7 +227,7 @@ describe('a block being made', () => {
     const [blocker] = t.blockers as [ObjectId]
     const [attacker] = t.attackers as [ObjectId]
     await t.make(blocker, attacker)
-    expect(must(t.outcome())).toHaveTextContent('Outcome shown after you confirm.')
+    await t.fellBack()
     await t.user.click(screen.getByRole('button', { name: `Remove the block of ${t.name(blocker)}` }))
     expect(t.outcome()).toBeNull()
   })

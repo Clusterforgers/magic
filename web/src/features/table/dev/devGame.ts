@@ -1,10 +1,12 @@
 /** A game around a fixture, with no server: a store holding the fixture state and a session that only chats locally. */
 import type { GameContextValue } from '@/features/game/gameContext'
 import type { GameLookup } from '@/features/game/useGameInfo'
+import { previewKey } from '@/play/preview'
 import type { Session } from '@/play/session'
 import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById } from '@/play/view'
+import { devPreview } from './devForecast'
 import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
 import { DEV_PROMPTS, DEV_TABLES } from './prompts'
@@ -47,11 +49,25 @@ export function fixtureLookup(fixture: Fixture): GameLookup {
   return { game: { started: true, seats, connected, result: null }, missing: false, failed: false }
 }
 
+/** How long the dev table takes to answer a preview, standing in for the network and the engine. */
+const PREVIEW_LATENCY_MS = 120
+
+/** How a fixture session treats previews. */
+export interface FixtureSessionOptions {
+  /**
+   * Milliseconds before a preview is answered, with the forecast `devPreview` works out. Left out, previews are
+   * refused the way a socket that is not open refuses them.
+   */
+  previewAfter?: number
+}
+
 /**
  * A session over `store`: nothing connects, a chat line is added to the store, and an answer is taken as the real
  * session takes it (the pending decision is cleared) but goes nowhere; with no decision pending it is refused.
  */
-export function fixtureSession(store: PlayStore): Session {
+export function fixtureSession(store: PlayStore, options: FixtureSessionOptions = {}): Session {
+  // As in the real session, only the newest preview is answered, and only while its decision is the pending one.
+  let newest = 0
   return {
     store,
     connect: () => undefined,
@@ -59,7 +75,20 @@ export function fixtureSession(store: PlayStore): Session {
     ready: () => false,
     answer() {
       if (store.getState().pending === null) return false
-      store.setState({ pending: null, clock: null })
+      store.setState({ pending: null, preview: null, clock: null })
+      return true
+    },
+    preview(decision, answer) {
+      const { previewAfter } = options
+      const { pending, view } = store.getState()
+      if (previewAfter === undefined || view === null || pending?.id !== decision) return false
+      newest += 1
+      const mine = newest
+      const forecast = devPreview(view, answer)
+      window.setTimeout(() => {
+        if (mine !== newest || store.getState().pending?.id !== decision) return
+        store.setState({ preview: { decision, key: previewKey(answer), forecast } })
+      }, previewAfter)
       return true
     },
     concede: () => false,
@@ -85,6 +114,8 @@ export function fixtureSession(store: PlayStore): Session {
 export interface FixtureGameOptions extends FixtureOptions {
   prompt?: string
   turn?: 'you'
+  /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
+  previewMs?: number
 }
 
 /** A game context holding a fresh fixture table. */
@@ -97,5 +128,7 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const table = prompt !== undefined && Object.hasOwn(DEV_TABLES, name) ? DEV_TABLES[name] : undefined
   const fixture = table === undefined ? built : table(built)
   store.setState(fixtureState(fixture, prompt === undefined ? null : prompt(fixture)))
-  return { game: 'dev-fixture', session: fixtureSession(store), lookup: fixtureLookup(fixture) }
+  // The dev table answers a preview after a moment, so the "checking outcome" state can be looked at too.
+  const session = fixtureSession(store, { previewAfter: options.previewMs ?? PREVIEW_LATENCY_MS })
+  return { game: 'dev-fixture', session, lookup: fixtureLookup(fixture) }
 }

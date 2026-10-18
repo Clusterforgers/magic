@@ -1,10 +1,14 @@
 /**
  * The forecast the table draws, and the one seam where it is decided. The client never works out a combat result: it
- * shows what the engine put in `combat_forecast`, and hides it when it can no longer be right.
+ * shows what the engine said, in `combat_forecast` of the table view or in the reply to a preview, and hides it when it
+ * can no longer be right.
  */
 import { usePlay } from '@/features/game/gameContext'
-import type { CombatForecast, ObjectId } from '@/protocol/generated'
+import { previewKey } from '@/play/preview'
+import type { PreviewState } from '@/play/preview'
+import type { Answer, AttackTarget, CombatForecast, DecisionId, ObjectId } from '@/protocol/generated'
 import { usePendingCombat } from './pending'
+import type { PendingCombat } from './pending'
 
 /** What the forecast says will happen to one creature, when there is something to show. */
 export interface CreatureOutlook {
@@ -14,32 +18,52 @@ export interface CreatureOutlook {
   dies: boolean
 }
 
-/**
- * Whether blocks being chosen have overtaken the table's forecast. The forecast describes combat as the table
- * stands, so it fits the answer only while no block is pending. The open roadmap item "Block preview" replaces this
- * with the engine's forecast of the pending answer (`ClientMessage::Preview`).
- */
-export function isOutdated(blocks: ReadonlyMap<ObjectId, ObjectId>): boolean {
-  return blocks.size > 0
+/** The answer that makes these blocks (blocker to attacker, in the order they were made); null when there are none. */
+export function blocksAnswer(blocks: ReadonlyMap<ObjectId, ObjectId>): Answer | null {
+  return blocks.size === 0 ? null : { DeclareBlockers: [...blocks] }
 }
 
-/** The forecast to draw for the blocks being chosen: the table's own, or none when blocks make it out of date. */
+/** The answer that makes these attacks (attacker to what it attacks, in the order chosen); null when there are none. */
+export function attacksAnswer(attacks: ReadonlyMap<ObjectId, AttackTarget>): Answer | null {
+  return attacks.size === 0 ? null : { DeclareAttackers: [...attacks] }
+}
+
+/**
+ * The answer a prompt would send for the choices it has made and not sent, or null when it has made none. A prompt
+ * confirms with exactly this answer, which is what makes the engine's preview of it the forecast of the confirm.
+ */
+export function pendingAnswer(pending: PendingCombat): Answer | null {
+  return blocksAnswer(pending.blocks) ?? attacksAnswer(pending.attacks)
+}
+
+/**
+ * Which forecast to draw. While nothing is being chosen (`choice` is null) it is the table's own, which describes the
+ * combat as it stands. While something is, the table's forecast knows nothing of it, so it is the engine's preview of
+ * exactly that choice (`choice` is its `previewKey`) for the decision now pending, and nothing until that arrives.
+ */
 export function previewFor(
   table: CombatForecast | null,
-  blocks: ReadonlyMap<ObjectId, ObjectId>,
+  choice: string | null,
+  preview: PreviewState | null,
+  pending: DecisionId | null,
 ): CombatForecast | null {
-  return isOutdated(blocks) ? null : table
+  if (choice === null) return table
+  if (preview === null || preview.decision !== pending || preview.key !== choice) return null
+  return preview.forecast
 }
 
 /**
  * THE SEAM: the forecast to draw. Every forecast on screen (the overlay's colours, the marks on cards and panels, the
- * key, the sentences and the outcome in the DeclareBlockers prompt) comes from here. Today it is `previewFor` the
- * table's `combat_forecast` and the blocks being chosen; the "Block preview" item replaces the body with the engine's
- * forecast of the pending answer.
+ * key, the sentences and the outcome in the DeclareBlockers and DeclareAttackers prompts) comes from here: the table's
+ * `combat_forecast` while no choice is pending, the engine's preview of the choice being made otherwise.
  */
 export function useBlockPreview(): CombatForecast | null {
   const table = usePlay((state) => state.view?.combat_forecast ?? null)
-  return previewFor(table, usePendingCombat().blocks)
+  const answer = pendingAnswer(usePendingCombat())
+  const choice = answer === null ? null : previewKey(answer)
+  // Selecting the forecast itself keeps the same object until the store holds another one.
+  const previewed = usePlay((state) => previewFor(null, choice, state.preview, state.pending?.id ?? null))
+  return choice === null ? table : previewed
 }
 
 /** The outlook of one creature in `forecast`, or null when nothing would happen to it. */

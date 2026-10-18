@@ -5,10 +5,9 @@ import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView } from '@/protocol/generated'
 import { powerToughness } from '../../cardModel'
-import { useBlockPreview } from '../../combat/forecast'
-import { forecastSentences } from '../../combat/forecastText'
+import { blocksAnswer, useBlockPreview } from '../../combat/forecast'
 import { usePublishPending } from '../../combat/pending'
-import { useForecastNames } from '../../combat/useForecastNames'
+import { usePreviewRequest } from '../../combat/usePreviewRequest'
 import { useSeatNamer } from '../../names'
 import { NO_IDS } from '../../selectors'
 import { blockersByAttacker, blockSummary, uniqueNames } from '../combatText'
@@ -17,6 +16,7 @@ import type { CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
+import { PreviewOutcome } from '../PreviewOutcome'
 import type { PromptComponent } from '../types'
 import { useObjects } from '../useCombatNames'
 
@@ -92,7 +92,7 @@ function AttackerPicker({ blocker, choices, paired, focusKey, onPick, onRemove, 
  * blocks an empty answer.
  */
 export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ options }) => {
-  const { answer, selection } = usePrompt()
+  const { id, answer, selection } = usePrompt()
   const own = useOwnCardIds()
   const seatName = useSeatNamer()
 
@@ -129,12 +129,10 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
   const [pairs, setPairs] = useState<ReadonlyMap<ObjectId, ObjectId>>(new Map())
   // The blocks are drawn as lines while they are only a choice, and they put the table's forecast out of date.
   usePublishPending({ blocks: pairs })
+  // The engine is asked what the blocks would do each time they change; its forecast comes back through the seam.
+  const blocksMade = useMemo(() => blocksAnswer(pairs), [pairs])
+  const previewStatus = usePreviewRequest(id, blocksMade)
   const preview = useBlockPreview()
-  const previewNames = useForecastNames(preview)
-  const outcome = useMemo(
-    () => (preview === null ? [] : forecastSentences(preview, previewNames)),
-    [preview, previewNames],
-  )
   const [picked] = selection.ids
   const choosing = picked !== undefined && offered.has(picked) ? picked : undefined
   const choices = useMemo(
@@ -287,22 +285,12 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
         </ul>
       )}
       {preview === null && pairs.size === 0 ? null : (
-        <div data-slot="block-outcome" className="grid basis-full gap-0.5 text-sm">
-          {preview === null ? (
-            <p className="text-muted-foreground">Outcome shown after you confirm.</p>
-          ) : (
-            <>
-              <p className="font-medium">
-                {pairs.size === 0 ? 'If you do not block' : 'If you block like this'}
-              </p>
-              <ul className="max-h-32 list-disc overflow-y-auto pl-5 text-muted-foreground">
-                {outcome.map((sentence, index) => (
-                  <li key={`${index}:${sentence}`}>{sentence}</li>
-                ))}
-              </ul>
-            </>
-          )}
-        </div>
+        <PreviewOutcome
+          slot="block-outcome"
+          heading={pairs.size === 0 ? 'If you do not block' : 'If you block like this'}
+          forecast={preview}
+          status={previewStatus}
+        />
       )}
     </PromptLayout>
   )

@@ -30,6 +30,29 @@ pub enum EngineError {
     Stalled(usize),
 }
 
+/// Why an answer could not be previewed with [`Engine::preview_forecast`](crate::engine::Engine::preview_forecast).
+#[derive(Debug, Clone, PartialEq, Eq, Error)]
+pub enum PreviewError {
+    /// The game is over, so no decision is pending.
+    #[error("the game is over; no decision is pending")]
+    NoDecision,
+    /// The pending decision belongs to another seat.
+    #[error("the pending decision is not {0:?}'s")]
+    NotYourDecision(PlayerId),
+    /// The pending decision (named here) has no combat outcome to forecast.
+    #[error("a {0} decision has no combat outcome to preview")]
+    NotPreviewable(&'static str),
+    /// The real answer would be refused for this reason, so there is nothing to forecast.
+    #[error("illegal answer: {0}")]
+    Illegal(#[from] IllegalAnswer),
+    /// The answer declares no attacker, so there is no combat to forecast.
+    #[error("no attacker would be declared, so there is no combat to forecast")]
+    NoCombat,
+    /// The scratch copy of the game would not take the answer's events (a bug or a corrupt state).
+    #[error("the answer could not be tried on a copy of the game: {0}")]
+    Engine(EngineError),
+}
+
 /// Why a [`GameSetup`](crate::setup::GameSetup) was rejected.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 pub enum SetupError {

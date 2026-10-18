@@ -2,13 +2,16 @@ import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import type { AttackerOption, AttackTarget, ObjectId } from '@/protocol/generated'
+import { attacksAnswer, useBlockPreview } from '../../combat/forecast'
 import { usePublishPending } from '../../combat/pending'
+import { usePreviewRequest } from '../../combat/usePreviewRequest'
 import { attackSummary, distinctTargets, sameTarget, targetKey, uniqueNames } from '../combatText'
 import { markCards, useCardMarks, useCardNotes } from '../marks'
 import type { CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
+import { PreviewOutcome } from '../PreviewOutcome'
 import type { PromptComponent } from '../types'
 import { useObjects, useTargetNames } from '../useCombatNames'
 
@@ -25,7 +28,7 @@ function aimedAt(option: AttackerOption, aim: AttackTarget | undefined): AttackT
  * says and can be re-aimed in the list under the buttons. Confirm sends the attack, No attack an empty one.
  */
 export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ options }) => {
-  const { answer, selection } = usePrompt()
+  const { id, answer, selection } = usePrompt()
   const own = useOwnCardIds()
   // An attacker with no defender cannot attack; a creature listed twice counts once.
   const offered = useMemo(() => {
@@ -58,6 +61,11 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   // The attack as chosen so far is drawn as lines from each attacker to what it attacks, before anything is sent.
   const drawn = useMemo(() => new Map(declared.map(({ object, target }) => [object, target])), [declared])
   usePublishPending({ attacks: drawn })
+  // The engine is asked what the attack would do each time it changes (nobody is blocking yet); its forecast comes
+  // back through the seam and is drawn on the seats it would hit.
+  const attackMade = useMemo(() => attacksAnswer(drawn), [drawn])
+  const previewStatus = usePreviewRequest(id, attackMade)
+  const preview = useBlockPreview()
   const creatures = useObjects(declaredIds)
   const labels = useMemo(
     () => uniqueNames(declaredIds.map((id, index) => ({ id, name: creatures[index]?.name ?? 'a creature' }))),
@@ -191,6 +199,14 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
           })}
         </ul>
       ) : null}
+      {declared.length === 0 ? null : (
+        <PreviewOutcome
+          slot="attack-outcome"
+          heading="If you attack like this"
+          forecast={preview}
+          status={previewStatus}
+        />
+      )}
     </PromptLayout>
   )
 }

@@ -125,6 +125,9 @@ impl Bot {
             ServerMessage::Error { code, message } => self.errors.push((code, message)),
             ServerMessage::Chat { .. } => {}
             ServerMessage::GameOver { result } => return Progress::Over(result),
+            ServerMessage::Forecast { .. } => {
+                panic!("a bot never previews, so it is sent no forecast")
+            }
         }
         Progress::Continue
     }
