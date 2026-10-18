@@ -232,7 +232,14 @@ describe('the socket with the pacer in front', () => {
     t.net.last.serverClose(1001)
     t.timers.advance(250)
     t.net.last.open()
-    t.net.last.receive({ type: 'Welcome', protocol_version: 1, game: 'g', player: 0, seats: 2 })
+    t.net.last.receive({
+      type: 'Welcome',
+      protocol_version: 1,
+      game: 'g',
+      player: 0,
+      seats: 2,
+      auto_pass: true,
+    })
     sendMany(t, 100)
     expect(t.net.last.frames).toHaveLength(SEND_BURST)
   })

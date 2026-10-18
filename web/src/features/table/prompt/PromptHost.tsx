@@ -8,6 +8,7 @@ import { ownDecision } from './ownDecision'
 import { PromptContext } from './PromptContext'
 import type { PromptApi, Selection } from './PromptContext'
 import { PROMPTS } from './registry'
+import { ResponseClock } from './ResponseClock'
 
 const NOTHING: ReadonlySet<ObjectId> = new Set()
 
@@ -67,6 +68,7 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
         className="grid max-w-full min-w-0 gap-1.5 rounded-md bg-muted px-3 py-2 sm:max-w-xl"
       >
         <PromptFor kind={decision.kind} />
+        <ResponseClock id={id} kind={name} />
       </div>
     </PromptContext>
   )

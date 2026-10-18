@@ -35,7 +35,9 @@ const decision = (id: number): ServerMessage => ({
   id,
   decision: {
     player: 0,
-    kind: { Priority: { playable_lands: [], castable: [], mana_abilities: [], can_pass: true } },
+    kind: {
+      Priority: { playable_lands: [], castable: [], mana_abilities: [], can_act: false, can_pass: true },
+    },
   },
 })
 

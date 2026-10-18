@@ -68,6 +68,7 @@ describe('transcript fixture', () => {
       game: expect.any(String),
       player: 0,
       seats: 2,
+      auto_pass: false,
     })
     expect(snapshot?.type).toBe('Snapshot')
     expect(rest.at(-1)?.type).toBe('GameOver')
@@ -87,7 +88,14 @@ describe('transcript fixture', () => {
       seen.add(message.type)
       switch (message.type) {
         case 'Welcome':
-          expect(keysOf(message)).toEqual(['game', 'player', 'protocol_version', 'seats', 'type'])
+          expect(keysOf(message)).toEqual([
+            'auto_pass',
+            'game',
+            'player',
+            'protocol_version',
+            'seats',
+            'type',
+          ])
           break
         case 'Snapshot':
           expect(keysOf(message)).toEqual(['seq', 'state', 'type'])

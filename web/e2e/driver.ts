@@ -78,6 +78,8 @@ export class Run {
   steps = 0
   /** Decisions answered, by kind. */
   readonly kinds = new Map<string, number>()
+  /** Priority windows each seat (by name) was asked about with no land and no spell to offer; auto-pass leaves none. */
+  readonly idle = new Map<string, number>()
   readonly trail: string[] = []
   /** Set by the first loop that fails, so the other stops instead of waiting out the stall limit. */
   failure: Error | null = null
@@ -112,10 +114,11 @@ export class Run {
     }
   }
 
-  /** "364 decisions (Priority 280, PayMana 30, ...)". */
+  /** "364 decisions (Priority 280, PayMana 30, ...), idle windows: Ada 0, Bo 31". */
   summary(): string {
     const kinds = [...this.kinds].map(([kind, count]) => `${kind} ${count}`).join(', ')
-    return `${this.steps} decisions (${kinds})`
+    const idle = [...this.idle].map(([name, count]) => `${name} ${count}`).join(', ')
+    return `${this.steps} decisions (${kinds})${idle === '' ? '' : `, idle windows: ${idle}`}`
   }
 
   private tail(): string {
@@ -263,6 +266,10 @@ async function drive(player: Player, style: Style, run: Run): Promise<void> {
   for (;;) {
     const seen = await nextDecision(player, answered, run)
     if (seen.over) return
+    // A priority window that offers no land and no spell can be passed and nothing else; auto-pass keeps it from being asked.
+    if (seen.kind === 'Priority' && seen.hand.length === 0) {
+      run.idle.set(player.name, (run.idle.get(player.name) ?? 0) + 1)
+    }
     const answer = ANSWERS[seen.kind]
     if (answer === undefined)
       throw new Error(`${player.name} faces ${seen.kind}, which the driver cannot answer`)

@@ -95,6 +95,9 @@ pub struct PriorityOptions {
     pub castable: Vec<ObjectId>,
     /// Mana abilities that can be activated now.
     pub mana_abilities: Vec<ManaOption>,
+    /// Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
+    /// mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.
+    pub can_act: bool,
     /// Passing is always legal.
     pub can_pass: bool,
 }

@@ -34,7 +34,9 @@ const KINDS: Record<DecisionName, DecisionKind> = {
     },
   },
   BottomCards: { BottomCards: { hand: [], count: 1 } },
-  Priority: { Priority: { playable_lands: [], castable: [], mana_abilities: [], can_pass: true } },
+  Priority: {
+    Priority: { playable_lands: [], castable: [], mana_abilities: [], can_act: false, can_pass: true },
+  },
   PayMana: {
     PayMana: {
       spell: 1,

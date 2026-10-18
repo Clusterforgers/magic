@@ -54,6 +54,7 @@ const priority: DevPrompt = ({ view }) => {
     playable_lands: hand.filter(isLand).map((object) => object.id),
     castable: spells.slice(0, -1).map((object) => object.id),
     mana_abilities,
+    can_act: true,
     can_pass: true,
   }
   return { id: 1, decision: { player: viewer, kind: { Priority: options } } }
@@ -255,10 +256,13 @@ const aboutHand =
 /** The prompts by their `?prompt=` name. */
 export const DEV_PROMPTS: Record<string, DevPrompt> = {
   priority,
+  // The same decisions on a response clock (`devGame` starts the countdown; nothing ticks it in the dev route).
+  'priority-clock': (fixture) => ({ ...priority(fixture), deadlineMs: 10_000 }),
   // The viewer holds priority in a declare-blockers step whose blocks are made: the forecast is all there is to read.
   forecast: priority,
   attack,
   block,
+  'block-clock': (fixture) => ({ ...block(fixture), deadlineMs: 45_000 }),
   mulligan: aboutHand((hand) => ({
     Mulligan: {
       hand,
@@ -294,5 +298,6 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
 export const DEV_TABLES: Record<string, DevTable> = {
   attack: attackTable,
   block: blockTable,
+  'block-clock': blockTable,
   forecast: forecastScene,
 }

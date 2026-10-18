@@ -9,7 +9,7 @@ use common::{
 };
 use mtg_engine::replay;
 use mtg_protocol::{ClientMessage, ServerMessage};
-use mtg_server::{EventStore, GameConfig, MIN_QUEUE, MemoryStore, spawn_game_with};
+use mtg_server::{EventStore, GameConfig, MIN_QUEUE, MemoryStore, Pace, spawn_game_with};
 use rstest::rstest;
 use tokio::sync::mpsc::error::TryRecvError;
 
@@ -153,7 +153,8 @@ async fn a_joining_seat_gets_welcome_then_snapshot_then_its_pending_decision() {
                 back.next().await,
                 ServerMessage::Decision {
                     id,
-                    decision: decision.clone()
+                    decision: decision.clone(),
+                    deadline_ms: None,
                 }
             );
         }
@@ -188,7 +189,8 @@ async fn resync_repeats_the_snapshot_and_the_pending_decision() {
                 messages[1..],
                 [ServerMessage::Decision {
                     id,
-                    decision: decision.clone()
+                    decision: decision.clone(),
+                    deadline_ms: None,
                 }],
                 "the pending decision keeps its id"
             );
@@ -205,6 +207,7 @@ async fn a_client_that_stops_reading_is_dropped_and_the_game_never_waits_for_it(
     let config = GameConfig {
         seat_queue: MIN_QUEUE,
         command_queue: 64,
+        pace: Pace::MANUAL,
     };
     let handle = spawn_game_with(game_id(1), table_setup(2, 3), store, config).unwrap();
     let mut idle = Client::join(&handle, 0).await;
