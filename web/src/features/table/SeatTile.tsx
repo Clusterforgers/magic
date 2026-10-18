@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
+import { LifeFx } from './fx/LifeFx'
 import { useSeatNamer } from './names'
 import { battlefieldCounts, playerOf } from './selectors'
 import { useKeepInView } from './useKeepInView'
@@ -53,7 +54,9 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
     >
       <span className="flex items-baseline justify-between gap-2">
         <span className="truncate text-sm font-semibold">{name}</span>
-        <span className="text-xl leading-none font-bold tabular-nums">{player.life}</span>
+        <LifeFx seat={seat} className="text-xl leading-none font-bold tabular-nums">
+          {player.life}
+        </LifeFx>
       </span>
       {/* Each figure keeps together, so a narrow tile wraps between them and never in the middle of one. */}
       <span className="flex flex-wrap gap-x-2 text-muted-foreground">
