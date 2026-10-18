@@ -230,6 +230,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
     stack: zoneView(stack),
     exile: zoneView(exile),
     combat,
+    combat_forecast: null,
     result: null,
   }
   const names = NAMES.slice(0, seats)

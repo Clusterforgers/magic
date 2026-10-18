@@ -4,6 +4,7 @@ use mtg_core::card::{CardType, CardTypes};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::combat::Attacker;
+use mtg_engine::forecast::pending_combat_forecast;
 use mtg_engine::player::{Player, PlayerStatus};
 use mtg_engine::state::GameState;
 use mtg_engine::zones::Zone;
@@ -169,6 +170,7 @@ impl TableView {
                 attackers_declared: combat.attackers_declared(),
                 blockers_declared: combat.blockers_declared().to_vec(),
             },
+            combat_forecast: pending_combat_forecast(state),
             result: state.result(),
         }
     }
