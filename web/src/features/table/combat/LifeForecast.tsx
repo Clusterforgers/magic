@@ -1,7 +1,7 @@
 import { Skull, Swords } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
-import { usePlayerOutlook } from './forecast'
+import { usePlayerOutlook } from './drawn'
 import { lifeWords } from './forecastText'
 import './combat.css'
 

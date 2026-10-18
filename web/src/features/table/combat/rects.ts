@@ -16,6 +16,8 @@ export type RectMap = ReadonlyMap<string, Rect>
 /** Measures anchors: the box of each one that is on screen, relative to the top left corner of `origin`. */
 export interface RectProvider {
   measure(anchors: readonly Anchor[], origin: Element): RectMap
+  /** Where to ask for animation frames when the table moves; the window's when left out. A test supplies its own. */
+  frames?: Frames
 }
 
 /** Where to look for an anchor, best first. A card that is not drawn is stood in for by its controller's panel or tile. */
@@ -158,7 +160,7 @@ export function useAnchorRects(
   origin: RefObject<Element | null>,
   anchors: readonly Anchor[],
   provider: RectProvider,
-  frames: Frames = windowFrames,
+  frames: Frames = provider.frames ?? windowFrames,
 ): RectMap {
   const [rects, setRects] = useState<RectMap>(NO_RECTS)
   const shown = useRef<RectMap>(NO_RECTS)

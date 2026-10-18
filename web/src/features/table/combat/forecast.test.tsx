@@ -1,19 +1,15 @@
-// Goal: what the table draws of a forecast is decided in one place: the table's own forecast while no block is pending and nothing while blocks are being chosen, per creature (only when there is damage to show or a death) and per player, through hooks that redraw only what changed, and that leave the many cards and panels the forecast does not mention alone when the first block is chosen.
+// Goal: what the table draws of a forecast is decided in one place: the table's own forecast while no block is pending and nothing while blocks are being chosen, per creature (only when there is damage to show or a death) and per player, delivered to each card and seat panel by itself, so that the many cards and panels the forecast does not mention are not redrawn when the forecast changes or the first block is chosen.
 import { act, screen } from '@testing-library/react'
+import { useEffect } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import type { CombatForecast, ObjectId } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
-import {
-  creatureOutlook,
-  isOutdated,
-  playerOutlook,
-  previewFor,
-  useBlockPreview,
-  useCreatureOutlook,
-  usePlayerOutlook,
-} from './forecast'
-import { PendingCombatContext, createPendingCombatStore } from './pending'
+import { CombatProviders } from './CombatProviders'
+import { createDrawnForecastStore, useCreatureOutlook, usePlayerOutlook } from './drawn'
+import { creatureOutlook, isOutdated, previewFor, useBlockPreview } from './forecast'
+import { usePendingStore } from './pending'
+import type { PendingCombatStore } from './pending'
 
 const FORECAST: CombatForecast = {
   attackers: [],
@@ -61,18 +57,65 @@ describe('creatureOutlook', () => {
   })
 })
 
-describe('playerOutlook', () => {
-  it.each<[string, CombatForecast | null, number, number | undefined]>([
-    ['a lethal attack', FORECAST, 0, -2],
-    ['an attack that was all blocked', FORECAST, 2, 40],
-    ['a seat nobody attacks', FORECAST, 1, undefined],
-    ['no forecast', null, 0, undefined],
-  ])('for %s', (_name, forecast, seat, lifeAfter) => {
-    expect(playerOutlook(forecast, seat)?.life_after).toBe(lifeAfter)
+describe('the drawn forecast store', () => {
+  it('holds the outlook of each creature and the forecast of each player the forecast mentions', () => {
+    const store = createDrawnForecastStore()
+    store.publish(FORECAST)
+    expect(store.creature(1)).toEqual({ damage: 4, dies: true })
+    expect(store.creature(3)).toBeNull()
+    expect(store.creature(99)).toBeNull()
+    expect(store.player(0)).toEqual(FORECAST.players[0])
+    expect(store.player(1)).toBeNull()
+    store.publish(null)
+    expect(store.creature(1)).toBeNull()
+    expect(store.player(0)).toBeNull()
+  })
+
+  it('tells only the listeners of an entry that changed, once, and none when the same forecast is published again', () => {
+    const store = createDrawnForecastStore()
+    const one = vi.fn()
+    const two = vi.fn()
+    const seat = vi.fn()
+    const other = vi.fn()
+    store.subscribeCreature(1, one)
+    store.subscribeCreature(2, two)
+    store.subscribePlayer(0, seat)
+    store.subscribePlayer(1, other)
+    const told = (): number[] => [one, two, seat, other].map((spy) => spy.mock.calls.length)
+    store.publish(FORECAST)
+    expect(told()).toEqual([1, 1, 1, 0])
+    store.publish({ ...FORECAST, creatures: [...FORECAST.creatures] })
+    expect(told()).toEqual([1, 1, 1, 0])
+    store.publish({
+      ...FORECAST,
+      creatures: [
+        { object: 1, damage: 4, dies: true },
+        { object: 2, damage: 3, dies: false },
+      ],
+    })
+    expect(told()).toEqual([1, 2, 1, 0])
+    store.publish(null)
+    expect(told()).toEqual([2, 3, 2, 0])
+  })
+
+  it('keeps the very same entry while it does not change, and stops telling a listener that left', () => {
+    const store = createDrawnForecastStore()
+    store.publish(FORECAST)
+    const before = store.creature(1)
+    const player = store.player(0)
+    const listener = vi.fn()
+    const stop = store.subscribeCreature(1, listener)
+    store.publish({ ...FORECAST, creatures: FORECAST.creatures.map((creature) => ({ ...creature })) })
+    expect(store.creature(1)).toBe(before)
+    expect(store.player(0)).toBe(player)
+    expect(listener).not.toHaveBeenCalled()
+    stop()
+    store.publish(null)
+    expect(listener).not.toHaveBeenCalled()
   })
 })
 
-/** What the hooks give, printed, with a counter of how often each reader was drawn. */
+/** How often each reader was drawn. */
 const drawn = { readers: vi.fn(), quiet: vi.fn() }
 
 function Readers() {
@@ -100,23 +143,31 @@ function Quiet({ id, seat }: { id: ObjectId; seat: number }) {
   return null
 }
 
+/** Hands the table's pending store to the test. */
+function Grab({ onStore }: { onStore: (store: PendingCombatStore) => void }) {
+  const store = usePendingStore()
+  useEffect(() => {
+    onStore(store)
+  }, [store, onStore])
+  return null
+}
+
 function mount() {
-  const pending = createPendingCombatStore()
+  let pending: PendingCombatStore | null = null
   drawn.readers.mockClear()
   drawn.quiet.mockClear()
   const table = renderTable({
     ui: (
-      <PendingCombatContext value={pending}>
+      <CombatProviders>
+        <Grab onStore={(store) => (pending = store)} />
         <Readers />
         <Quiet id={77} seat={1} />
-      </PendingCombatContext>
+      </CombatProviders>
     ),
   })
   const setForecast = (forecast: CombatForecast | null): void =>
-    table.update((state) => ({
-      view: { ...must(state.view), combat_forecast: forecast },
-    }))
-  return { ...table, pending, setForecast }
+    table.update((state) => ({ view: { ...must(state.view), combat_forecast: forecast } }))
+  return { ...table, pending: () => must(pending), setForecast }
 }
 
 const text = (id: string): string | null => screen.getByTestId(id).textContent
@@ -153,16 +204,16 @@ describe('the hooks over a table', () => {
   it('hide the forecast while blocks are being chosen, and bring it back when they are undone', () => {
     const { setForecast, pending } = mount()
     setForecast(FORECAST)
-    act(() => pending.set({ blocks: new Map([[5, 1]]) }))
+    act(() => pending().set({ blocks: new Map([[5, 1]]) }))
     expect(['one', 'seat', 'preview'].map(text)).toEqual(['nothing', 'nothing', 'none'])
-    act(() => pending.clear())
+    act(() => pending().clear())
     expect(['one', 'seat', 'preview'].map(text)).toEqual(['4/true', '5>-2', '4 creatures'])
   })
 
   it('are not hidden by pending attacks: those are not blocks', () => {
     const { setForecast, pending } = mount()
     setForecast(FORECAST)
-    act(() => pending.set({ attacks: new Map([[5, { Player: 1 }]]) }))
+    act(() => pending().set({ attacks: new Map([[5, { Player: 1 }]]) }))
     expect(text('one')).toBe('4/true')
   })
 
@@ -170,16 +221,16 @@ describe('the hooks over a table', () => {
     const { setForecast, pending } = mount()
     setForecast(FORECAST)
     const before = drawn.quiet.mock.calls.length
-    act(() => pending.set({ blocks: new Map([[5, 1]]) }))
+    act(() => pending().set({ blocks: new Map([[5, 1]]) }))
     act(() =>
-      pending.set({
+      pending().set({
         blocks: new Map([
           [5, 1],
           [6, 1],
         ]),
       }),
     )
-    act(() => pending.clear())
+    act(() => pending().clear())
     expect(drawn.quiet.mock.calls.length).toBe(before)
   })
 

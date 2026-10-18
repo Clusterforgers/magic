@@ -170,7 +170,7 @@ describe('forecastSentences', () => {
       ],
     ],
     [
-      'a whole combat: attackers in declared order, then the players',
+      'a whole combat: the players first, then the attackers in declared order',
       forecast(
         [
           attack({ attacker: 1, blocked: true, blockers: [2] }),
@@ -184,9 +184,9 @@ describe('forecastSentences', () => {
         [hit(1, 40, false, 1)],
       ),
       [
+        'Bo would take 1 damage, from 40 to 39 life.',
         "Bo's Hill Giant is blocked by your Grizzly Bears: Bo's Hill Giant would survive, your Grizzly Bears would die.",
         "Cy's Wall is unblocked and would deal 1 damage to Bo.",
-        'Bo would take 1 damage, from 40 to 39 life.',
       ],
     ],
   ])('says %s', (_name, given, expected) => {

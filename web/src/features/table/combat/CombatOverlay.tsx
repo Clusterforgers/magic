@@ -1,6 +1,6 @@
 import { useContext, useMemo, useRef } from 'react'
 import { cn } from '@/lib/utils'
-import { anchorsOf } from './plan'
+import { anchorKey, anchorsOf } from './plan'
 import type { LineSpec } from './plan'
 import { RectProviderContext, shapesOf, useAnchorRects } from './rects'
 import type { DrawnLine } from './rects'
@@ -25,12 +25,16 @@ function Layer({ drawn, layer, className }: LayerProps) {
           key={line.key}
           className="combat-group"
           data-line={line.key}
+          data-from={anchorKey(line.from)}
+          data-to={anchorKey(line.to)}
           data-kind={line.kind}
           data-pending={line.pending || undefined}
           data-outcome={line.outcome}
         >
-          <path className="combat-halo" d={shape.d} pathLength={1} />
-          <path className="combat-line" d={shape.d} pathLength={1} />
+          {/* One unit is the whole line, which is what lets the draw-in work on any length; a dashed line keeps its
+              pixels, so it is left alone. */}
+          <path className="combat-halo" d={shape.d} pathLength={line.pending ? undefined : 1} />
+          <path className="combat-line" d={shape.d} pathLength={line.pending ? undefined : 1} />
           <path className="combat-head" d={shape.head} />
         </g>
       ))}

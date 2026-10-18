@@ -6,7 +6,7 @@ import type { PlayerId } from '@/protocol/generated'
 import type { CardSize } from './cardSize'
 import { CardPreview } from './CardPreview'
 import { CombatOverlay } from './combat/CombatOverlay'
-import { createPendingCombatStore, PendingCombatContext } from './combat/pending'
+import { CombatProviders } from './combat/CombatProviders'
 import { ConcedeButton } from './ConcedeButton'
 import { CentreStrip } from './CentreStrip'
 import { Drawer } from './Drawer'
@@ -82,7 +82,6 @@ export const GameTable = memo(function GameTable() {
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
   const [previews] = useState(createPreviewStore)
   const [marks] = useState(createMarksStore)
-  const [pendingCombat] = useState(createPendingCombatStore)
   const plan = useMemo(
     () => arrangeSeats({ seatCount, viewer: seat ?? 0, mode, focus: chosen ?? followed }),
     [seatCount, seat, mode, chosen, followed],
@@ -92,7 +91,7 @@ export const GameTable = memo(function GameTable() {
   return (
     <PreviewContext value={previews}>
       <MarksContext value={marks}>
-        <PendingCombatContext value={pendingCombat}>
+        <CombatProviders>
           <section aria-label="Game table" className="flex w-full items-start">
             <div className="relative grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
               <h1 className="sr-only">Game table</h1>
@@ -123,7 +122,7 @@ export const GameTable = memo(function GameTable() {
             <Drawer />
           </section>
           <CardPreview />
-        </PendingCombatContext>
+        </CombatProviders>
       </MarksContext>
     </PreviewContext>
   )

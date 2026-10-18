@@ -2,11 +2,9 @@
  * The forecast the table draws, and the one seam where it is decided. The client never works out a combat result: it
  * shows what the engine put in `combat_forecast`, and hides it when it can no longer be right.
  */
-import { useSyncExternalStore } from 'react'
-import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
-import type { CombatForecast, ObjectId, PlayerForecast, PlayerId } from '@/protocol/generated'
-import { usePendingCombat, usePendingStore } from './pending'
+import type { CombatForecast, ObjectId } from '@/protocol/generated'
+import { usePendingCombat } from './pending'
 
 /** What the forecast says will happen to one creature, when there is something to show. */
 export interface CreatureOutlook {
@@ -25,7 +23,7 @@ export function isOutdated(blocks: ReadonlyMap<ObjectId, ObjectId>): boolean {
   return blocks.size > 0
 }
 
-/** THE SEAM: the forecast to draw for the blocks being chosen. Every forecast on screen is decided here. */
+/** The forecast to draw for the blocks being chosen: the table's own, or none when blocks make it out of date. */
 export function previewFor(
   table: CombatForecast | null,
   blocks: ReadonlyMap<ObjectId, ObjectId>,
@@ -33,7 +31,12 @@ export function previewFor(
   return isOutdated(blocks) ? null : table
 }
 
-/** The forecast to draw: the table's own, or none while blocks are being chosen that it cannot hold for. */
+/**
+ * THE SEAM: the forecast to draw. Every forecast on screen (the overlay's colours, the marks on cards and panels, the
+ * key, the sentences and the outcome in the DeclareBlockers prompt) comes from here. Today it is `previewFor` the
+ * table's `combat_forecast` and the blocks being chosen; the "Block preview" item replaces the body with the engine's
+ * forecast of the pending answer.
+ */
 export function useBlockPreview(): CombatForecast | null {
   const table = usePlay((state) => state.view?.combat_forecast ?? null)
   return previewFor(table, usePendingCombat().blocks)
@@ -45,33 +48,4 @@ export function creatureOutlook(forecast: CombatForecast | null, id: ObjectId): 
   return entry === undefined || (entry.damage === 0 && !entry.dies)
     ? null
     : { damage: entry.damage, dies: entry.dies }
-}
-
-/** The forecast entry of one player, or null when no attacker is aimed at them. */
-export function playerOutlook(forecast: CombatForecast | null, seat: PlayerId): PlayerForecast | null {
-  return forecast?.players.find((player) => player.player === seat) ?? null
-}
-
-const unsubscribed = (): (() => void) => () => undefined
-
-// Listens to the pending store only for a caller the forecast mentions, so the many cards and panels it says
-// nothing of are not redrawn when the first block is chosen.
-function useOutdated(listen: boolean): boolean {
-  const store = usePendingStore()
-  return useSyncExternalStore(
-    listen ? store.subscribe : unsubscribed,
-    () => listen && isOutdated(store.get().blocks),
-  )
-}
-
-/** What the drawn forecast says of one card (a "-N" badge, a doomed look); null for the many it says nothing of. */
-export function useCreatureOutlook(id: ObjectId): CreatureOutlook | null {
-  const entry = usePlay(useShallow((state) => creatureOutlook(state.view?.combat_forecast ?? null, id)))
-  return useOutdated(entry !== null) ? null : entry
-}
-
-/** What the drawn forecast says of one seat's life, for its panel; null when nobody attacks that seat. */
-export function usePlayerOutlook(seat: PlayerId): PlayerForecast | null {
-  const entry = usePlay(useShallow((state) => playerOutlook(state.view?.combat_forecast ?? null, seat)))
-  return useOutdated(entry !== null) ? null : entry
 }

@@ -25,12 +25,20 @@ export function listOf(items: readonly string[]): string {
 const damageOf = (amount: number): string => `${amount} damage`
 
 /**
- * What the forecast says, one sentence per attacker and per attacked player: who is blocked by whom, who would die,
- * how much an unblocked attacker would deal and how each attacked player's life would change.
+ * What the forecast says, one sentence per attacked player (how their life would change, the bottom line, so first)
+ * and per attacker (who is blocked by whom, who would die, how much an unblocked attacker would deal).
  */
 export function forecastSentences(forecast: CombatForecast, names: ForecastNames): string[] {
   const dies = new Map(forecast.creatures.map((creature) => [creature.object, creature.dies]))
   const sentences: string[] = []
+  for (const player of forecast.players) {
+    const who = capital(names.player(player.player))
+    sentences.push(
+      player.damage === 0
+        ? `${who} would take no damage.`
+        : `${who} would take ${damageOf(player.damage)}, from ${player.life} to ${player.life_after} life${player.lethal ? ', which is lethal' : ''}.`,
+    )
+  }
   for (const attack of forecast.attackers) {
     // A sentence starts with a capital, so "your Elf" becomes "Your Elf" there and stays lower case elsewhere.
     const attacker = capital(names.creature(attack.attacker))
@@ -53,22 +61,18 @@ export function forecastSentences(forecast: CombatForecast, names: ForecastNames
       `${attacker} is blocked by ${blockers}${fates.length === 0 ? '' : `: ${fates.join(', ')}`}.`,
     )
   }
-  for (const player of forecast.players) {
-    const who = capital(names.player(player.player))
-    sentences.push(
-      player.damage === 0
-        ? `${who} would take no damage.`
-        : `${who} would take ${damageOf(player.damage)}, from ${player.life} to ${player.life_after} life${player.lethal ? ', which is lethal' : ''}.`,
-    )
-  }
   return sentences
+}
+
+/** What a creature's outlook says: "would take 3 damage and die", "would take 1 damage", "would die". */
+export function outlookText(outlook: CreatureOutlook): string {
+  if (outlook.damage === 0) return 'would die'
+  return `would take ${damageOf(outlook.damage)}${outlook.dies ? ' and die' : ''}`
 }
 
 /** What a card's spoken name gains from its outlook: ", would take 3 damage and die". Nothing without one. */
 export function outlookWords(outlook: CreatureOutlook | null): string {
-  if (outlook === null) return ''
-  if (outlook.damage === 0) return ', would die'
-  return `, would take ${damageOf(outlook.damage)}${outlook.dies ? ' and die' : ''}`
+  return outlook === null ? '' : `, ${outlookText(outlook)}`
 }
 
 /** A seat's life under the forecast in words, for its panel: "Life would go from 20 to 16, which is lethal". */
