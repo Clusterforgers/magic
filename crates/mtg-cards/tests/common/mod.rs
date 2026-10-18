@@ -4,6 +4,7 @@
 use std::path::{Path, PathBuf};
 
 use mtg_cards::support::{PrintedCard, PrintedFace};
+use mtg_core::mana::ManaType;
 use mtg_import::scryfall::{CardRecord, cards};
 
 /// Scryfall objects (trimmed) of every card in the corpus, from the 2026-10-18 Oracle Cards bulk file.
@@ -31,9 +32,21 @@ pub fn printed_of(record: &CardRecord) -> PrintedCard {
                 toughness: face.toughness.clone(),
                 loyalty: face.loyalty.clone(),
                 defense: face.defense.clone(),
+                colors: face
+                    .colors
+                    .iter()
+                    .map(|color| ManaType::from(color).symbol().to_string())
+                    .collect(),
             })
             .collect(),
     }
+}
+
+/// The imported records of the corpus, as the importer reads them.
+pub fn records() -> Vec<CardRecord> {
+    cards(FIXTURE.as_bytes())
+        .map(|record| record.expect("the fixture holds only valid records"))
+        .collect()
 }
 
 /// The imported cards of the corpus.

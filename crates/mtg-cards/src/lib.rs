@@ -4,6 +4,8 @@
 //! files in `cards/` hold only rules, keyed by oracle id.
 
 pub mod ability;
+pub mod assemble;
+pub mod builtin;
 pub mod card;
 pub mod cost;
 pub mod definition;
@@ -20,5 +22,6 @@ pub mod validate;
 pub mod value;
 pub mod vanilla;
 
+pub use assemble::{Assembled, assemble};
 pub use definition::{AbilityDef, CardDefinition, ManaAbility};
 pub use support::{Caps, PrintedCard, PrintedFace};

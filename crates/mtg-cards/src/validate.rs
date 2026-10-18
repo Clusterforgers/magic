@@ -8,6 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::Serialize;
 
 use crate::ability::Ability;
+use crate::assemble::{PLAIN_MANA_ABILITY, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Produce, TokenRef};
@@ -865,7 +866,13 @@ impl<'a> Walker<'a> {
 
 /// Every primitive an ability uses, named `Effect.DealDamage`, `Keyword.Flying`, `Trigger.ZoneChange`,
 /// `Cost.Tap`, `Mod.ModifyPT`, `ReplaceWhen.TokenCreation`, `ReplaceBy.Multiply` or `Ability.Loyalty`.
+///
+/// A plain `{T}: Add {X}` is one primitive, [`PLAIN_MANA_ABILITY`]: the engine runs that exact shape
+/// and not the general ability, cost and effect it is made of.
 pub fn used_primitives(ability: &Ability) -> BTreeSet<String> {
+    if plain_mana_ability(ability).is_some() {
+        return BTreeSet::from([PLAIN_MANA_ABILITY.to_owned()]);
+    }
     let tokens = BTreeSet::new();
     let mut walker = Walker::new(&tokens);
     walker.ability(ability);

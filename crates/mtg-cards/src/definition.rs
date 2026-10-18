@@ -26,13 +26,26 @@ pub enum AbilityDef {
     Mana(ManaAbility),
 }
 
+/// Whether a count is zero, so serialization can leave it out (serde hands over a reference).
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(count: &u8) -> bool {
+    *count == 0
+}
+
 /// The static, printed side of a card.
+///
+/// A field added after the first fingerprints were stored is left out of the serialized form while it
+/// holds its default (`docs/server.md`, deck check), so older decks keep their fingerprints.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct CardDefinition {
     /// Card name.
     pub name: String,
-    /// Mana cost; `None` for cards without one (lands).
+    /// Mana cost without its `{X}` symbols; `None` for cards without a cost (lands).
     pub mana_cost: Option<ManaCost>,
+    /// How many `{X}` symbols the printed cost holds. The engine cannot pay them yet, so such a card
+    /// is not offered as castable.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub x_in_cost: u8,
     /// Supertypes.
     pub supertypes: BTreeSet<Supertype>,
     /// Card types.
@@ -43,6 +56,15 @@ pub struct CardDefinition {
     pub power: Option<i32>,
     /// Printed toughness (creatures).
     pub toughness: Option<i32>,
+    /// Starting loyalty (planeswalkers).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loyalty: Option<u32>,
+    /// Starting defense (battles).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub defense: Option<u32>,
+    /// The colors a color indicator gives (CR 204), when the mana cost does not.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub color_indicator: Option<ColorSet>,
     /// Printed abilities.
     pub abilities: Vec<AbilityDef>,
 }
@@ -53,11 +75,15 @@ impl CardDefinition {
         CardDefinition {
             name: name.into(),
             mana_cost: None,
+            x_in_cost: 0,
             supertypes: BTreeSet::new(),
             types: BTreeSet::new(),
             subtypes: Vec::new(),
             power: None,
             toughness: None,
+            loyalty: None,
+            defense: None,
+            color_indicator: None,
             abilities: Vec::new(),
         }
     }
@@ -66,6 +92,34 @@ impl CardDefinition {
     #[must_use]
     pub fn with_mana_cost(mut self, cost: ManaCost) -> Self {
         self.mana_cost = Some(cost);
+        self
+    }
+
+    /// Sets the number of `{X}` symbols in the printed cost.
+    #[must_use]
+    pub fn with_x_in_cost(mut self, x: u8) -> Self {
+        self.x_in_cost = x;
+        self
+    }
+
+    /// Sets the starting loyalty.
+    #[must_use]
+    pub fn with_loyalty(mut self, loyalty: u32) -> Self {
+        self.loyalty = Some(loyalty);
+        self
+    }
+
+    /// Sets the starting defense.
+    #[must_use]
+    pub fn with_defense(mut self, defense: u32) -> Self {
+        self.defense = Some(defense);
+        self
+    }
+
+    /// Sets the colors of a color indicator.
+    #[must_use]
+    pub fn with_color_indicator(mut self, colors: ColorSet) -> Self {
+        self.color_indicator = Some(colors);
         self
     }
 
@@ -135,12 +189,15 @@ impl CardDefinition {
         self.types.iter().copied().collect()
     }
 
-    /// Printed colors, derived from the mana cost (CR 105.2).
+    /// Printed colors: those of the color indicator if it has one (CR 204), otherwise those of the
+    /// mana cost (CR 105.2).
     pub fn colors(&self) -> ColorSet {
-        self.mana_cost
-            .as_ref()
-            .map(ManaCost::colors)
-            .unwrap_or_default()
+        self.color_indicator.unwrap_or_else(|| {
+            self.mana_cost
+                .as_ref()
+                .map(ManaCost::colors)
+                .unwrap_or_default()
+        })
     }
 
     /// Mana value of the card (0 without a cost).
@@ -209,5 +266,68 @@ mod tests {
         let set = card.type_set();
         assert!(set.contains(CardType::Artifact) && set.contains(CardType::Creature));
         assert!(!set.contains(CardType::Land));
+    }
+
+    #[rstest]
+    #[case::indicator_beats_the_cost("{2}{G}", Some("U"), "U")]
+    #[case::indicator_without_a_cost("", Some("WB"), "WB")]
+    #[case::indicator_of_nothing("{1}{R}", Some(""), "")]
+    #[case::cost_when_there_is_no_indicator("{1}{R}", None, "R")]
+    fn a_color_indicator_replaces_the_colors_of_the_cost(
+        #[case] cost: &str,
+        #[case] indicator: Option<&str>,
+        #[case] expected: &str,
+    ) {
+        let letters =
+            |text: &str| -> ColorSet { text.chars().filter_map(Color::from_symbol).collect() };
+        let mut card = CardDefinition::new("X").with_type(CardType::Creature);
+        if !cost.is_empty() {
+            card = card.with_mana_cost(ManaCost::parse(cost).unwrap());
+        }
+        if let Some(indicator) = indicator {
+            card = card.with_color_indicator(letters(indicator));
+        }
+        assert_eq!(card.colors(), letters(expected));
+    }
+
+    #[test]
+    fn fields_added_later_stay_out_of_the_stored_form_until_they_are_used() {
+        let plain = CardDefinition::basic_land(Some(Color::Green));
+        let json = serde_json::to_value(&plain).unwrap();
+        let keys: BTreeSet<&str> = json
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect();
+        let expected = [
+            "abilities",
+            "mana_cost",
+            "name",
+            "power",
+            "subtypes",
+            "supertypes",
+            "toughness",
+            "types",
+        ];
+        assert_eq!(keys, expected.into_iter().collect());
+        assert_eq!(
+            serde_json::from_value::<CardDefinition>(json).unwrap(),
+            plain
+        );
+
+        let used = CardDefinition::new("Y")
+            .with_x_in_cost(2)
+            .with_loyalty(3)
+            .with_defense(4)
+            .with_color_indicator(ColorSet::EMPTY.with(Color::Blue));
+        let json = serde_json::to_value(&used).unwrap();
+        for key in ["x_in_cost", "loyalty", "defense", "color_indicator"] {
+            assert!(json.get(key).is_some(), "{key} is stored once it is used");
+        }
+        assert_eq!(
+            serde_json::from_value::<CardDefinition>(json).unwrap(),
+            used
+        );
     }
 }
