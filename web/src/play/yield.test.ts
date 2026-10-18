@@ -1,9 +1,11 @@
-// Goal: the session asks for a yield and for its end with one flat message each and changes nothing itself; what the table shows follows the server's word (every Welcome and every Yielding), a yield that starts takes the priority decision on screen with it and leaves every other decision, one that ends leaves the pending decision alone, the game ending clears it, and a notice the page cannot read changes nothing.
+// Goal: the session asks for a yield and for its end with one flat message each and changes nothing itself; what the table shows follows the server's word (every Welcome and every Yielding), a yield that starts takes the priority decision on screen with it and leaves every other decision, one that ends leaves the pending decision alone, the game ending clears it, and a notice the page cannot read changes nothing, and a yield that began and ended inside one step, which the server never tells, still takes the priority decision it was asked in off the screen as soon as the game moves on.
 import { describe, expect, it } from 'vitest'
 import type { ServerMessage, YieldUntil } from '@/protocol/generated'
+import { batchOf, must } from '@/test-utils/batches'
 import { decisionFor } from '@/test-utils/decisions'
 import { priorityDecision, startSession } from '@/test-utils/harness'
 import { welcome } from '@/test-utils/socketSetup'
+import { lateJoin } from '@/test-utils/transcripts'
 
 const UNTIL: YieldUntil[] = ['Resolve', 'EndOfTurn', 'MyTurn']
 
@@ -178,5 +180,135 @@ describe('the end of the game and notices it cannot read', () => {
     h.deliver({ ...welcome, yielding: 'Soon' })
     expect(h.state().seat).toBeNull()
     expect(h.state().yielding).toBeNull()
+  })
+})
+
+describe('a yield the server never tells', () => {
+  const snapshot = must(
+    lateJoin.messages.find((message) => message.type === 'Snapshot'),
+    'snapshot',
+  )
+  /** The batch that follows the snapshot, whatever it holds, as the passes of a yield arrive. */
+  const batch = (count = 1) => ({
+    type: 'Events',
+    ...batchOf(snapshot.state, {
+      from_seq: snapshot.seq,
+      events: Array.from({ length: count }, (_, i) => ({ Public: { PriorityPassed: { player: i } } })),
+    }),
+  })
+
+  function started() {
+    const h = startSession()
+    h.join()
+    h.deliver(snapshot)
+    return h
+  }
+
+  it('takes the priority decision off the screen when the game moves on, the yield having passed for it', () => {
+    const h = started()
+    h.deliver({ ...priorityDecision(7), deadline_ms: 10_000 })
+    h.session.yieldUntil('EndOfTurn')
+    expect(h.state().pending).toMatchObject({ id: 7 })
+    h.deliver(batch())
+    expect(h.state().pending).toBeNull()
+    expect(h.state().clock).toBeNull()
+    expect(h.state().yielding, 'nothing told the page it was passing').toBeNull()
+    expect(h.state().seq).toBe(snapshot.seq + 1)
+  })
+
+  it.each(UNTIL)('does so for a request to pass until %s', (until) => {
+    const h = started()
+    h.deliver(priorityDecision(7))
+    h.session.yieldUntil(until)
+    h.deliver(batch(3))
+    expect(h.state().pending).toBeNull()
+  })
+
+  it('leaves the new decision of the same step alone: the batch comes first, then the decision', () => {
+    const h = started()
+    h.deliver(priorityDecision(7))
+    h.session.yieldUntil('EndOfTurn')
+    h.deliver(batch(2), priorityDecision(8))
+    expect(h.state().pending).toMatchObject({ id: 8 })
+  })
+
+  it('goes with the batch before the notice that tells the yield, which then finds nothing to take', () => {
+    const h = started()
+    h.deliver(priorityDecision(7))
+    h.session.yieldUntil('EndOfTurn')
+    h.deliver(batch(2), yielding('EndOfTurn'))
+    expect(h.state().pending).toBeNull()
+    expect(h.state().yielding).toBe('EndOfTurn')
+  })
+
+  it('leaves a decision alone when no yield was asked for, as when another seat concedes', () => {
+    const h = started()
+    h.deliver(priorityDecision(7))
+    h.deliver(batch())
+    expect(h.state().pending).toMatchObject({ id: 7 })
+  })
+
+  it('leaves every other kind of decision alone: the seat still has to answer it', () => {
+    const h = started()
+    h.deliver(attackDecision(5))
+    h.session.yieldUntil('EndOfTurn')
+    h.deliver(batch())
+    expect(h.state().pending).toMatchObject({ id: 5 })
+  })
+
+  it('does not take a later decision, which the request was not made in', () => {
+    const h = started()
+    h.deliver(priorityDecision(7))
+    h.session.yieldUntil('EndOfTurn')
+    h.deliver(priorityDecision(8))
+    h.deliver(batch())
+    expect(h.state().pending).toMatchObject({ id: 8 })
+  })
+
+  it('forgets the request once a batch has come, so the next batch is no sign for it', () => {
+    const h = started()
+    h.deliver(priorityDecision(7))
+    h.session.yieldUntil('EndOfTurn')
+    h.deliver(batch(1))
+    // The same id sent again behind a resync would be the server's repeat of a decision it never passed for.
+    h.deliver(priorityDecision(7))
+    h.deliver({ type: 'Events', ...batchOf(snapshot.state, { from_seq: snapshot.seq + 1 }) })
+    expect(h.state().pending).toMatchObject({ id: 7 })
+  })
+
+  it('forgets the request when the server refuses it, so a later batch is not taken for its answer', () => {
+    const h = started()
+    h.deliver(priorityDecision(7))
+    h.session.yieldUntil('EndOfTurn')
+    h.deliver({ type: 'Error', code: 'BadMessage', message: 'not now' })
+    h.deliver(batch())
+    expect(h.state().pending).toMatchObject({ id: 7 })
+  })
+
+  it('forgets the request with a Welcome, a Snapshot and a lost connection', () => {
+    for (const forget of ['welcome', 'snapshot', 'lost'] as const) {
+      const h = started()
+      h.deliver(priorityDecision(7))
+      h.session.yieldUntil('EndOfTurn')
+      if (forget === 'welcome') h.deliver({ ...welcome })
+      if (forget === 'snapshot') h.deliver(snapshot)
+      if (forget === 'lost') {
+        h.net.last.fail()
+        h.timers.advance(250)
+        h.open()
+        h.deliver({ ...welcome }, snapshot)
+      }
+      h.deliver(priorityDecision(7))
+      h.deliver(batch())
+      expect(h.state().pending, forget).toMatchObject({ id: 7 })
+    }
+  })
+
+  it('sends nothing of its own: no resync, no answer', () => {
+    const h = started()
+    h.deliver(priorityDecision(7))
+    h.session.yieldUntil('EndOfTurn')
+    h.deliver(batch())
+    expect(h.sentTypes()).toEqual(['Join', 'Yield'])
   })
 })

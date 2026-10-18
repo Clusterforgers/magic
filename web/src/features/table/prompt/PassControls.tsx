@@ -11,18 +11,26 @@ import {
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { YieldUntil } from '@/protocol/generated'
 import { usePrompt } from './PromptContext'
-import { passSituation, primaryDescription, primaryEndsTurn, primaryLabel, YIELD_WORDS } from './passWords'
+import {
+  enterYields,
+  KEY_LEGEND,
+  passSituation,
+  primaryDescription,
+  primaryLabel,
+  YIELD_WORDS,
+} from './passWords'
 import { usePrimaryKey } from './usePrimaryKey'
 
-/** What the keyboard hint on the primary button promises, spoken and shown. */
-const SHORTCUT_HINT = 'Space or Enter'
+/** A key as a small cap on a button; hidden on a narrow screen, which has no keyboard, and from a screen reader. */
+const KEY_CAP = 'ml-1 hidden rounded border px-1 text-[0.65rem] leading-4 font-normal sm:inline-block'
 
 /**
  * The ways to pass priority, for a Priority prompt: a primary button that says what passing does now ("Next: Combat",
  * "Resolve Lightning Bolt", "End turn", "Continue"), "End turn" beside it to pass until the turn ends, and a small menu
  * with "Resolve everything on the stack" and "Pass until my next turn". The yields are the server's: it passes for the
- * seat and says so, and the prompt goes with its first pass. Space or Enter presses the primary button when nothing
- * has the keyboard.
+ * seat and says so, and the prompt goes with its first pass. With nothing holding the keyboard Space passes once and
+ * Enter ends the turn (the "End turn" button), or passes once where there is no such button: under Full Control, which
+ * the server does not let a yield run beside, and in the last window of the turn, where the primary button ends it.
  */
 export function PassControls({ canPass }: { canPass: boolean }) {
   const { session } = useGame()
@@ -42,7 +50,8 @@ export function PassControls({ canPass }: { canPass: boolean }) {
     if (!free) return
     if (session.yieldUntil(until)) setAsked(true)
   }
-  usePrimaryKey(pass, free)
+  const yieldKey = enterYields(situation, !canYield)
+  usePrimaryKey({ space: pass, enter: yieldKey ? () => yieldTo('EndOfTurn') : pass }, free)
 
   const label = primaryLabel(situation)
   return (
@@ -51,31 +60,33 @@ export function PassControls({ canPass }: { canPass: boolean }) {
         data-slot="primary-action"
         className="h-10 px-4 max-sm:basis-full"
         disabled={!free}
-        title={SHORTCUT_HINT}
-        aria-keyshortcuts="Space Enter"
+        title={yieldKey ? 'Space' : 'Space or Enter'}
+        aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}
         aria-description={primaryDescription(situation)}
         onClick={pass}
       >
         <span className="truncate">{label}</span>
-        <kbd
-          aria-hidden="true"
-          className="ml-1 hidden rounded border border-primary-foreground/40 px-1 text-[0.65rem] leading-4 font-normal sm:inline-block"
-        >
-          Space
+        <kbd aria-hidden="true" className={`${KEY_CAP} border-primary-foreground/40`}>
+          {yieldKey ? 'Space' : 'Space · Enter'}
         </kbd>
       </Button>
-      {primaryEndsTurn(situation) || !canYield ? null : (
+      {yieldKey ? (
         <Button
           data-slot="secondary-action"
           variant="outline"
           className="h-10 px-4"
           disabled={!free}
+          title="Enter"
+          aria-keyshortcuts="Enter"
           aria-description={YIELD_WORDS.EndOfTurn.description}
           onClick={() => yieldTo('EndOfTurn')}
         >
           {YIELD_WORDS.EndOfTurn.action}
+          <kbd aria-hidden="true" className={`${KEY_CAP} border-foreground/30`}>
+            Enter
+          </kbd>
         </Button>
-      )}
+      ) : null}
       {canYield ? (
         <DropdownMenu>
           <DropdownMenuTrigger
@@ -103,6 +114,13 @@ export function PassControls({ canPass }: { canPass: boolean }) {
             >
               {YIELD_WORDS.MyTurn.action}
             </DropdownMenuItem>
+            <p
+              data-slot="key-legend"
+              aria-hidden="true"
+              className="mt-1 border-t px-2 pt-1.5 pb-1 text-xs text-muted-foreground max-sm:hidden"
+            >
+              {KEY_LEGEND}
+            </p>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : null}

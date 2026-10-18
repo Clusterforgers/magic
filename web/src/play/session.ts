@@ -94,6 +94,9 @@ export function createSession(deps: SessionDeps): Session {
   // Bookkeeping of the current connection, not state a screen needs.
   let awaitingSnapshot = false
   let lastAnswered: number | null = null
+  // The Priority decision this seat asked to yield in. The server passes for it at once, but says so (`Yielding`) only
+  // when the yield lasts past the step; the game moving on while it waits is the other sign, since nothing happens then.
+  let yieldedFor: DecisionId | null = null
   // The previews asked for and not yet answered, oldest first: the server answers each one, in order.
   let asked: { decision: DecisionId; key: string }[] = []
   // False once an older server has refused a Preview as a message it does not know.
@@ -152,6 +155,7 @@ export function createSession(deps: SessionDeps): Session {
       // A decision, its id and a pending resync belong to one connection; the next Snapshot starts fresh.
       awaitingSnapshot = false
       lastAnswered = null
+      yieldedFor = null
       asked = []
     }
     setState((state) => ({
@@ -170,6 +174,7 @@ export function createSession(deps: SessionDeps): Session {
       case 'Welcome':
         awaitingSnapshot = false
         lastAnswered = null
+        yieldedFor = null
         asked = []
         previewsKnown = true
         setState({
@@ -227,6 +232,7 @@ export function createSession(deps: SessionDeps): Session {
   function onSnapshot(message: Of<'Snapshot'>): void {
     awaitingSnapshot = false
     lastAnswered = null
+    yieldedFor = null
     setState((state) => {
       const view = fromSnapshot(state.view, message.state)
       return {
@@ -256,6 +262,9 @@ export function createSession(deps: SessionDeps): Session {
       awaitingSnapshot = socket.send({ type: 'Resync' })
       return
     }
+    // The game has moved on past the decision this seat yielded in, so the server has passed for it.
+    const passed = yieldedFor !== null && state.pending?.id === yieldedFor
+    yieldedFor = null
     setState({
       view,
       objectsById: view.objects === state.view?.objects ? state.objectsById : indexById(view.objects),
@@ -263,6 +272,7 @@ export function createSession(deps: SessionDeps): Session {
       log: appendLog(state.log, batch.from_seq, batch.events),
       phase: state.result === null ? 'playing' : 'over',
       lobby: null,
+      ...(passed ? { pending: null, preview: null } : {}),
     })
   }
 
@@ -309,6 +319,7 @@ export function createSession(deps: SessionDeps): Session {
         resyncUnlessWaiting()
         return
       case 'BadMessage':
+        yieldedFor = null
         // A server that predates previews refuses each Preview as a message it does not know. That is no news for
         // the player: stop asking and let the prompts say the outcome shows after confirming.
         if (asked.shift() !== undefined) {
@@ -354,7 +365,12 @@ export function createSession(deps: SessionDeps): Session {
     setStop: (side, step, on, keep) =>
       canHoldStop(step) && socket.send({ type: 'SetStop', side, step, on, keep }),
     setFullControl: (mode) => socket.send({ type: 'FullControl', mode }),
-    yieldUntil: (until) => getState().fullControl === 'Off' && socket.send({ type: 'Yield', until }),
+    yieldUntil(until) {
+      if (getState().fullControl !== 'Off' || !socket.send({ type: 'Yield', until })) return false
+      const { pending } = getState()
+      yieldedFor = pending !== null && 'Priority' in pending.decision.kind ? pending.id : null
+      return true
+    },
     cancelYield: () => socket.send({ type: 'CancelYield' }),
     chat(text) {
       const line = text.trim()

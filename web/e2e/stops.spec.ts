@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { createAndJoin, everyoneReady } from './lobby'
+import type { Player } from './lobby'
 
 /** A stop button of the ladder by the start of its spoken name, such as "Your upkeep stop: off". */
 const stop = (page: Page, name: string) => page.getByRole('button', { name: new RegExp(`^${name}`) })
@@ -81,6 +82,77 @@ test('stops and Full Control are set in the browser, shown as the server holds t
     await expect(fullControl(ada.page, 'off')).toHaveAttribute('aria-pressed', 'false')
 
     for (const player of players) expect(player.errors, `${player.name}'s page errors`).toEqual([])
+  } finally {
+    await Promise.all(players.map(({ context }) => context.close()))
+  }
+})
+
+/**
+ * Starts a game, has both seats keep their hands and waits for the first priority window the game asks of anybody: the
+ * seat that has a land to play first. Returns the page of that seat with the id of its decision.
+ */
+async function firstWindow(players: Player[]): Promise<{ page: Page; id: string }> {
+  await everyoneReady(players)
+  // The first player decides first and the other's Keep appears when that one has pressed it, so both are waited for.
+  await Promise.all(
+    players.map(({ page }) => page.getByRole('button', { name: 'Keep', exact: true }).click()),
+  )
+  const prompts = players.map(({ page }) => page.locator('[data-decision="Priority"]'))
+  let seat = -1
+  await expect
+    .poll(
+      async () => {
+        for (const [index, prompt] of prompts.entries()) {
+          if ((await prompt.count()) > 0) seat = index
+        }
+        return seat
+      },
+      { timeout: 45_000 },
+    )
+    .toBeGreaterThanOrEqual(0)
+  const player = players[seat]
+  const prompt = prompts[seat]
+  if (player === undefined || prompt === undefined) throw new Error('nobody was asked')
+  const id = await prompt.getAttribute('data-decision-id')
+  if (id === null) throw new Error('the prompt has no decision id')
+  await releaseFocus(player.page)
+  return { page: player.page, id }
+}
+
+const decisionWindow = (page: Page, id: string) =>
+  page.locator(`[data-decision="Priority"][data-decision-id="${id}"]`)
+
+test('Enter ends the turn from the keyboard of a real page', async ({ browser }) => {
+  test.setTimeout(2 * 60_000)
+  const players = await createAndJoin(browser, [
+    { name: 'Ada', deck: 'mono-green' },
+    { name: 'Bo', deck: 'mono-red' },
+  ])
+  try {
+    const { page, id } = await firstWindow(players)
+    // Enter asks the server to pass until the end of the turn. With nothing for anyone to do the yield can be over
+    // within the one step the server takes, so the page may never say it is passing; the window is gone either way.
+    await page.keyboard.press('Enter')
+    await expect(decisionWindow(page, id)).toHaveCount(0)
+    for (const each of players) expect(each.errors, `${each.name}'s page errors`).toEqual([])
+  } finally {
+    await Promise.all(players.map(({ context }) => context.close()))
+  }
+})
+
+test('Space passes once from the keyboard of a real page', async ({ browser }) => {
+  test.setTimeout(2 * 60_000)
+  const players = await createAndJoin(browser, [
+    { name: 'Ada', deck: 'mono-green' },
+    { name: 'Bo', deck: 'mono-red' },
+  ])
+  try {
+    const { page, id } = await firstWindow(players)
+    // Space answers the decision on screen with a pass, and it gives way to what comes next; no yield starts.
+    await page.keyboard.press('Space')
+    await expect(decisionWindow(page, id)).toHaveCount(0)
+    await expect(page.getByText('Passing until the end of turn')).toHaveCount(0)
+    for (const each of players) expect(each.errors, `${each.name}'s page errors`).toEqual([])
   } finally {
     await Promise.all(players.map(({ context }) => context.close()))
   }
