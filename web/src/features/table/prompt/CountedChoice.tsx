@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import type { Answer, ObjectId } from '@/protocol/generated'
 import { countedText, refusalText } from './countedText'
@@ -39,14 +39,21 @@ export function CountedChoice({ offered, count, what, intro, answerWith }: Count
   const [refusal, setRefusal] = useState({ shown: false, times: 0 })
 
   const marks = useMemo(() => markCards(own, need > 0 ? offered : [], chosen), [own, need, offered, chosen])
+  // What has been chosen including clicks the next render has not shown yet, so two quick clicks cannot pass the count.
+  const latest = useRef(chosen)
+  useLayoutEffect(() => {
+    latest.current = chosen
+  })
   const choose = (id: ObjectId): void => {
     if (!offeredSet.has(id)) return
-    if (!selection.has(id) && chosen.length >= need) {
+    const now = latest.current
+    if (!now.includes(id) && now.length >= need) {
       setRefusal(({ times }) => ({ shown: true, times: times + 1 }))
       return
     }
     setRefusal((current) => (current.shown ? { ...current, shown: false } : current))
-    selection.toggle(id)
+    latest.current = now.includes(id) ? now.filter((card) => card !== id) : [...now, id]
+    selection.set(latest.current)
   }
   useCardMarks(marks, choose, { toggles: true })
 

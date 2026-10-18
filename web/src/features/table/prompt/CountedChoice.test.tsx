@@ -187,6 +187,25 @@ describe.each(KINDS)('%s', (_name, kind) => {
       },
     )
 
+    it('holds the count against clicks that come before the table has redrawn', () => {
+      const { card, pressed, text } = renderChoice(kind, hand, 2)
+      act(() => {
+        for (const id of hand.slice(0, 4)) card(id).click()
+      })
+      expect(pressed()).toEqual(hand.slice(0, 2))
+      expect(text()).toContain('2 of 2 chosen.')
+      expect(text()).toContain('Only 2 cards can be chosen.')
+    })
+
+    it('puts a card back and takes another within one redraw', () => {
+      const [first, second, third] = hand as [ObjectId, ObjectId, ObjectId]
+      const { card, pressed } = renderChoice(kind, hand, 1)
+      act(() => {
+        for (const id of [first, first, second, third]) card(id).click()
+      })
+      expect(pressed()).toEqual([second])
+    })
+
     it('is refused again each time, with a fresh hint element so it is spoken again', async () => {
       const [first, second, third] = hand as [ObjectId, ObjectId, ObjectId]
       const { card, live, user } = renderChoice(kind, hand, 2)

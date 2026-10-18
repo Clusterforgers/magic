@@ -75,7 +75,7 @@ Tests: `test-utils/gameHarness.tsx` `renderGame()` mounts the game page on fake 
 - Dev: `/dev/table?prompt=priority` faces a priority decision of real fixture cards (`dev/prompts.ts`, one `DEV_PROMPTS` line per prompt); the fixture session takes an answer by clearing the decision. Without `prompt` the table has no decision.
 - Tests: `test-utils/decisions.ts` (`KINDS`, `decisionFor`), `Priority.test.tsx` (table-driven, model for a new prompt) and `PriorityLive.test.tsx` (real session, one Answer per decision).
 
-- Mulligan, BottomCards, Discard: part 2b
+- Mulligan, BottomCards, Discard (part 2b): Mulligan marks no card and leaves the hand strip as it is; its sentence (`mulliganText.ts`) says the hand size, the mulligans taken and that another mulligan draws a new hand and then bottoms `mulligans_taken + 1` cards, "Keep" and "Mulligan" answer `MulliganChoice` (Mulligan is disabled when `can_mulligan` is false), and a line under the buttons names the other seats whose `mulligan` is `Deciding` or `Bottoming`. BottomCards and Discard are one component, `CountedChoice` (`countedText.ts` has the words): the offered cards are legal toggles and the rest of the viewer's cards dimmed, the sentence counts "2 of 3 chosen" and says what is left, a card past the count is refused with a hint in the same live sentence (nothing is dropped), Confirm waits for exactly N (N is cut to the offered cards) and answers in the order chosen. Dev: `?prompt=mulligan|bottom|discard`.
 
 - PayMana: part 2c
 
