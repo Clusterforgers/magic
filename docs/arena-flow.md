@@ -59,14 +59,12 @@ One big orange button at the bottom right passes priority; its label follows the
 | Auto-Pay (was Pay) | paying a cost | Arena chooses the lands [official S3] |
 | Submit, Submit 0, Done | a selection prompt | confirms it; "Submit 0" skips an optional target, "Done" closes scry or surveil [community S27] |
 | No Blocks, All Attack | declare blockers, declare attackers | the bottom-right button is both pass and "No Blocks"; All Attack sends every creature [community S27, S28] |
-| End Turn, No Attack, Cancel, Opponent's Turn, Keep, Mulligan | ? | no source says when they show; the 2018 beta had separate pass and end-turn buttons [unverified; community S14] |
 
 Hotkeys [community S8, S11, S15, S17]:
 
 - Space passes once and confirms an OK. Enter is "Pass Until Response": through the turn until the opponent acts or you can answer something, with no priority back for triggers; pressed before combat it can skip your own combat.
 - Shift+Enter (left Shift) or Shift-click on the button is "Pass Turn", MTGO's F6: whatever the opponent does; priority comes back only to block.
-- Ctrl is Full Control, Ctrl+Shift holds it, and the same keys release it. Z undoes taps and other actions that did not use the stack. Q Q taps all mana.
-- The guides disagree on L (show phases, or stops for a turn) and on whether Ctrl lasts a phase or a turn.
+- Ctrl is Full Control, Ctrl+Shift holds it, and the same keys release it. Z undoes taps and other actions that did not use the stack.
 
 ### 2. Stops
 
@@ -82,7 +80,7 @@ Hotkeys [community S8, S11, S15, S17]:
 
 - Arena "only stops if you have an available play" [community S11], "will automatically pass priority through your opponent's turn if you have nothing to play" [community S17] and passes the turn after a land drop with nothing else to do [community S12]. That is our `can_act`.
 - It never skips a decision that needs an answer: blocks (Pass Turn hands priority back to block [community S8]) and targets ("New trigger that requires you to select a target will always stop" [community S19]). It never skips a stop you set (Pass Turn still stops there [community S9]) or Full Control.
-- Full Control: Ctrl holds priority for the phase and ends once you pass, Ctrl+Shift holds it until toggled, and on mobile you press and hold your avatar [community S8, S10, S24]. It answers your own abilities and triggers, spends pool mana by hand, and overrides Auto Tap, Auto Order Triggered Abilities, Auto Choose Replacement Effect and Auto Assign Combat Damage [community S10, S13, S24].
+- Full Control: Ctrl holds priority for the phase and ends once you pass, Ctrl+Shift holds it until toggled [community S8, S10, S24]. It answers your own abilities and triggers, spends pool mana by hand, and overrides Auto Tap, Auto Order Triggered Abilities, Auto Choose Replacement Effect and Auto Assign Combat Damage [community S10, S13, S24].
 - The price of windows: Arena sometimes hands priority to a player who cannot answer, who then loses time, or the game, by not clicking [community S21].
 
 ### 4. Yields
@@ -99,34 +97,34 @@ What an opponent can infer in Arena:
 - Pace. A player who plays a land, passes and still gets priority on your turn has an instant, and a pause after a cast hints at a counterspell, since "there will be a noticeable stutter compared to the smoothness that Arena passes if the opponent has nothing" [community S8]. Players say it too: "if the game auto passed more it would give away you have nothing to play"; "having a stop constantly is a decent way to leave your opponent wondering" [community S19].
 - Hover. A hand card you mouse over lights up on the opponent's screen, and no setting turns it off; players call it a flaw and a bluff tool. The protocol has `OnHover` and `OnSelect` messages [community S22, S25].
 - The timer rope is on the avatar, and players report each other's roping [community S14, S18].
-- The state names who holds priority and who is deciding; whether the other seat sees a player's `pendingMessageType` is [unverified] [community S25]. Actions have a `Visibility` of Public, Private, Hidden or Deceptive; the purpose is [unverified].
+- The state names who holds priority and who is deciding; whether the other seat sees a player's `pendingMessageType` is [unverified] [community S25].
 
 What mitigates it:
 
-- Arena mitigates nothing in the game. The player's tools are stops on every phase (a better bluff than constant Full Control, which is "very obvious" and can signal an empty hand), Full Control, tapping lands without casting, and Space quickly after plays that need no answer [community S8, S12]. No fixed delay, minimum think time or uniform animation was found; that is only absence of evidence [unverified].
-- Paper: shortcuts skip priority passes "to the mutual understanding of all players"; after "attacks?" the opponent is assumed to act in the beginning of combat, a player may interrupt a shortcut by saying so, and "a player may not request priority and take no action with it" [official S6]. Hesitation is a tell the rules do not equalise [unverified].
+- Arena mitigates nothing in the game. The player's tools are stops on every phase (a better bluff than constant Full Control, which is "very obvious" and can signal an empty hand), Full Control, tapping lands without casting, and Space quickly after plays that need no answer [community S8, S12]. No fixed delay, minimum think time or uniform animation was found [unverified].
+- Paper: shortcuts skip priority passes "to the mutual understanding of all players", and "a player may not request priority and take no action with it" [official S6]. Hesitation is a tell the rules do not equalise [unverified].
 
 ### 6. Timers
 
 - Official 2019: the non-active player's timer "no longer resets between phases" (anti-stall); "a delay before your timer starts whenever you are prompted for a response"; an inactivity timer of 120 s, after which a player who has not responded forfeits when the current timer expires [official S2].
 - Guides: a rope burns 30 s when one action takes too long; a timeout is earned after three turns without the rope; best of three has a 30-minute match clock; two automatic passes in a row lose the game [community S16]. Figures differ by era (the 2018 beta used a fuse of just over a minute, then 45 s [community S14]), so today's are [unverified].
-- The protocol has timer kinds Decision, Inactivity, ActivePlayer, NonActivePlayer, Prologue, Epilogue, Delay and MatchClock, a `TimeoutConfig` that counts timeouts, per-format packages, and eight versions (`Timers`, `TimersV2` to `TimersV8`) [community S25].
+- The protocol has timer kinds Decision, Inactivity, ActivePlayer, NonActivePlayer, Delay and MatchClock, a timeout count, per-format packages and eight versions [community S25].
 - At expiry the server answers for the player (a pass, the next phase) [community S14, S16, S25]. Complaints: long stacks run the clock of the player who cannot answer [community S21]; timers are too long [community S23].
 
 ### 7. Inputs for combat, triggers, payment and targets
 
-- Combat: the board is the picker and the server validates each click (`canSubmitAttackers`, legal recipients per attacker including planeswalkers, `mustAttack`, warnings such as CannotAttackAlone and MustBeBlocked), then a submit. Settings: Auto Assign Combat Damage and Gameplay Warnings. A damage-order message exists behind a flag [community S25, S13]. Block arrows: no source [unverified].
-- Triggers: Auto Order Triggered Abilities is a setting that Full Control overrides (guides say to turn it off to order them yourself) [community S8, S13].
+- Combat: the board is the picker and the server validates each click (legal recipients per attacker including planeswalkers, `mustAttack`, warnings such as CannotAttackAlone and MustBeBlocked), then a submit. Settings: Auto Assign Combat Damage and Gameplay Warnings [community S25, S13].
+- Triggers: Auto Order Triggered Abilities is a setting that Full Control overrides [community S8, S13].
 - Hold priority: none per spell; Full Control or stops instead. You keep priority when an effect you control is put on the stack by an opponent's action [official S3]. MTGO: hold Ctrl while casting [official S5].
 - Payment: Auto Tap is a setting, hovering a spell previews the lands it will tap, and manual mana needs Full Control [official S3; community S9, S10, S13, S17].
-- Targeting: a request and a "Submit N" confirmation [community S25, S27]. Undo: Z before anything resolves; `UndoReq` and `CancelActionReq` exist [community S8, S25].
+- Targeting: a request and a "Submit N" confirmation [community S25, S27]. Undo: Z before anything resolves [community S8, S25].
 
 ## Information leaks
 
 What ours leaks:
 
 - Pace. With auto-pass on (the default), a seat whose `can_act` is false is passed inside the actor's step: no wait, and its pass is in the batch of the answer that caused it. A seat that can act makes the table wait for a human, up to 10 s as a non-active seat, unbounded as the active one. On the opponent's turn `can_act` means an instant or flash card with mana up, so the pace is the secret itself.
-- A pass landing exactly at the 10 s deadline reads as "had something, dithered". With auto-pass on only a seat that can act is delivered a window, so only such a seat has the clock.
+- With auto-pass on, only a seat that can act is delivered a window and has the clock, so a pass landing exactly at the 10 s deadline reads as "had something, dithered".
 - A seat that can act is asked in its own upkeep and end step, where Arena's default gives no window [official S1]: more windows where a pause means something.
 - The log is uniform: `PriorityGranted` and `PriorityPassed` are public events for every window, skipped or not. Arrival time and batch shape leak; the text does not.
 - The only knob is the per-seat auto-pass switch. Off gives up to ten prompts a turn per seat, uniform but slow, and flipping it mid-game changes the pace the table sees. Stops are stored but do not change when a seat is asked, so a player can neither ask for a window nor bluff one.
@@ -161,16 +159,13 @@ The client never paces steps: the fx layer must not wait for a cadence, and P3 d
 | No window unless a play | `can_act`, per-seat switch, default on | keep; P2 makes the windows table-driven |
 | No window in own upkeep or end step by default | we ask when `can_act` | P2 default table |
 | Smart priority, card-specific stops | missing (no triggers) | P10 |
-| Blocks asked whenever possible, `NothingToDo` otherwise | done | none |
 | Timers: rope, bank, delayed start, inactivity | 10 s on a non-active seat's priority windows, 45 s for blocks, none for the active seat | P9 |
-| Expiry answers for the player | `fall_back` | none |
-| Combat choice validated while clicking | `Preview` | none |
-| All Attack, No Attack, No Blocks | in the prompts ("Attack with all", "No attack", "No blocks") | none |
 | Auto-tap, Auto-Pay, land preview | "Pay automatically", "Pay the rest for me", no hover preview | optional, with M3 |
 | Undo (Z) | payment Undo and Clear, Cancel casting | later |
 | Auto-order triggers, per-ability yield | missing (needs triggers) | P10 |
 | Hand hover relayed to opponents | absent | keep absent |
 | Hold priority | none in Arena either | Full Control and stops cover it |
+| Blocks asked whenever possible, `NothingToDo` otherwise; expiry answers for the player (`fall_back`); combat choices validated while clicking (`Preview`); All Attack, No Attack, No Blocks | in place | none |
 
 Constraints on the existing yields: a set stop interrupts a yield (P2); Enter is the `EndOfTurn` yield, not the primary button (P7); cancelling a `Resolve` yield is one click in the same place (Arena: press the button again).
 
