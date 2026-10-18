@@ -139,7 +139,15 @@ mana: Array<ManaType>, } } | { "ManaPoolEmptied": {
 /**
  * Whose pool.
  */
-player: PlayerId, } } | { "CardDrawn": { 
+player: PlayerId, } } | { "LifePaid": { 
+/**
+ * Who paid.
+ */
+player: PlayerId, 
+/**
+ * The life paid, at least 1.
+ */
+amount: number, } } | { "CardDrawn": { 
 /**
  * Who drew.
  */

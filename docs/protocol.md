@@ -40,6 +40,7 @@ Design record for `mtg-protocol`. Rules of the house are in `CLAUDE.md`; engine 
 - Never serialize `GameState` or a raw `Event` to a client.
 
 - `PayOptions.can_cancel` says whether `PayChoice::Cancel` is legal, and `PayChoice::Complete(Payment)` sends part of a payment (floating mana and taps) for the engine to finish; a rejected answer leaves the decision pending. A cancelled cast produces no events, so the server sends no `Events` batch and stores nothing, only the caster's `Priority` decision again with a fresh id; the log never records a cast that was not paid.
+- A mana cost is a list of symbols on the wire: `ManaCost` is `Array<ManaSymbol>` in canonical order, `ManaSymbol` one of `{ Generic: n }`, `{ Colored: color }`, `"Colorless"`, `{ Hybrid: [a, b] }`, `{ MonoHybrid: color }`, `{ Phyrexian: color }`, `{ HybridPhyrexian: [a, b] }`, `{ ColorlessHybrid: color }` and `"ColorlessPhyrexian"` (`engine.md`). Life pays Phyrexian symbols: `Payment.life` is the life paid (2 for each symbol, optional on input and read as 0), `PayOptions.life` the payer's life total and `PayOptions.max_life` the most this payment may take, so the prompt offers 2 life per symbol up to `max_life / 2` and shows the total left. `Complete` keeps the life it is sent and adds life only where mana cannot pay the rest. The cast's events start with `LifePaid { player, amount }` (one event for the whole payment, public like the mana events) before `SpellCast`; the client reads the new total from the batch's table, as for damage.
 
 
 ## Hidden-information test

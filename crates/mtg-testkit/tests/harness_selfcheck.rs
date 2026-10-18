@@ -52,6 +52,8 @@ fn a_live_state_that_differs_from_the_log_is_a_replay_violation() -> Result<(), 
 #[rstest]
 #[case::draw_from_the_middle(Event::CardDrawn { player: PlayerId(0), object: ObjectId(3) })]
 #[case::spend_mana_that_is_not_there(Event::ManaSpent { player: PlayerId(0), mana: vec![ManaType::Green] })]
+#[case::pay_more_life_than_there_is(Event::LifePaid { player: PlayerId(0), amount: 21 })]
+#[case::pay_no_life(Event::LifePaid { player: PlayerId(0), amount: 0 })]
 #[case::unknown_object(Event::PermanentTapped { object: ObjectId(10_000) })]
 #[case::damage_to_a_card_in_a_library(Event::DamageDealt { source: ObjectId(0), target: DamageTarget::Object(ObjectId(1)), amount: 1 })]
 fn events_that_cannot_follow_from_the_state_are_violations(

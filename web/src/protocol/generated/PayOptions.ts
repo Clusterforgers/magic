@@ -25,10 +25,18 @@ pool: ManaPool,
  */
 sources: Array<ManaOption>, 
 /**
- * Whether an automatic payment exists (it always does when the cast was offered).
+ * Whether an automatic payment exists (it does whenever the cast was offered, unless only a payment that takes the last life would do).
  */
 auto_available: boolean, 
 /**
  * Whether the cast may be backed out of; nothing has been paid yet, so it rolls back (CR 601.2).
  */
-can_cancel: boolean, };
+can_cancel: boolean, 
+/**
+ * The payer's life total.
+ */
+life: number, 
+/**
+ * The most life this payment may take: 2 for each Phyrexian symbol in the cost, within the life total (CR 119.4).
+ */
+max_life: number, };
