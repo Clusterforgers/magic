@@ -112,15 +112,30 @@ describe('the late-join transcript', () => {
 })
 
 describe('the lobby transcript', () => {
-  it('waits in the lobby until the batch at seq 0, then plays', () => {
+  it('waits in the lobby, following the rosters, until the batch at seq 0, then plays', () => {
     const h = startSession()
     h.session.connect()
     h.open()
+    const firstBatch = lobbyStart.messages.findIndex((m) => m.type === 'Events')
     h.deliver(lobbyStart.raw[0])
-    expect(h.state()).toMatchObject({ phase: 'lobby', view: null, seq: null, seat: 0 })
-    h.deliver(lobbyStart.raw[1])
+    expect(h.state()).toMatchObject({ phase: 'lobby', view: null, seq: null, seat: 0, lobby: null })
+    // Each roster replaces the one before; the last of them has both seats here and seat 1 ready.
+    const rosters = lobbyStart.messages.slice(1, firstBatch)
+    expect(rosters.length).toBeGreaterThan(1)
+    for (const [index, roster] of rosters.entries()) {
+      h.deliver(lobbyStart.raw[index + 1])
+      expect(h.state().lobby).toEqual(
+        roster.type === 'Lobby' ? { seats: roster.seats, needed: roster.needed } : null,
+      )
+      expect(h.state()).toMatchObject({ phase: 'lobby', view: null, seq: null })
+    }
+    expect(h.state().lobby?.seats.map((seat) => [seat.connected, seat.ready])).toEqual([
+      [true, false],
+      [true, true],
+    ])
+    h.deliver(lobbyStart.raw[firstBatch])
     const first = batches(lobbyStart)[0]
-    expect(h.state()).toMatchObject({ phase: 'playing', seq: first?.events.length })
+    expect(h.state()).toMatchObject({ phase: 'playing', seq: first?.events.length, lobby: null })
     expect(h.state().view).not.toBeNull()
   })
 

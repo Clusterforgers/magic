@@ -104,9 +104,14 @@ async fn joining_a_taken_seat_replaces_the_old_connection() {
     let mut old = Client::join(&handle, 0).await;
     let mut new = Client::join(&handle, 0).await;
 
+    // The old connection heard its own welcome and roster before it was replaced; the new one is told the same.
     assert!(matches!(
         old.inbox.try_recv(),
         Ok(ServerMessage::Welcome { .. })
+    ));
+    assert!(matches!(
+        old.inbox.try_recv(),
+        Ok(ServerMessage::Lobby { .. })
     ));
     assert_eq!(
         old.inbox.try_recv().unwrap_err(),
@@ -115,6 +120,10 @@ async fn joining_a_taken_seat_replaces_the_old_connection() {
     assert!(matches!(
         new.inbox.try_recv(),
         Ok(ServerMessage::Welcome { .. })
+    ));
+    assert!(matches!(
+        new.inbox.try_recv(),
+        Ok(ServerMessage::Lobby { .. })
     ));
 
     let line = ClientMessage::Chat {
@@ -213,7 +222,7 @@ async fn a_client_that_stops_reading_is_dropped_and_the_game_never_waits_for_it(
     let mut idle = Client::join(&handle, 0).await;
     let mut chatty = Client::join(&handle, 1).await;
 
-    // The idle client never reads; the queue holds MIN_QUEUE messages and the welcome is one of them.
+    // The idle client never reads; the queue holds MIN_QUEUE messages, and its welcome and the rosters of two joins are three.
     let lines = MIN_QUEUE as u64 + 6;
     for n in 0..lines {
         let text = format!("line {n}");
@@ -245,6 +254,7 @@ async fn a_client_that_stops_reading_is_dropped_and_the_game_never_waits_for_it(
     // It reconnects and is served again.
     let mut again = Client::join(&handle, 0).await;
     assert!(matches!(again.next().await, ServerMessage::Welcome { .. }));
+    assert!(matches!(again.next().await, ServerMessage::Lobby { .. }));
     handle
         .send(
             seat(1),

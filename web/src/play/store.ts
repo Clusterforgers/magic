@@ -7,6 +7,7 @@ import type {
   DecisionId,
   EventView,
   GameResult,
+  LobbySeat,
   ObjectId,
   ObjectView,
   PlayerId,
@@ -43,6 +44,14 @@ export interface DecisionClock {
   totalMs: number
   /** Milliseconds left at the last tick; the session ticks at every change of the whole seconds left. */
   leftMs: number
+}
+
+/** Who is at the table before the game starts, as the server last said it (`ServerMessage` `Lobby`). */
+export interface LobbyRoster {
+  /** Every seat in seat order: its name, whether a client is connected to it and whether it is ready. */
+  seats: LobbySeat[]
+  /** How many seats still have to press Ready. */
+  needed: number
 }
 
 /** One event of the game log with its position in the server's log. */
@@ -85,6 +94,8 @@ export interface PlayState {
   chat: readonly ChatLine[]
   /** Lobby, playing or over. */
   phase: Phase
+  /** The lobby roster the server pushed last; null before the first one, and again once the game has started. */
+  lobby: LobbyRoster | null
   /** How the game ended, once it has. */
   result: GameResult | null
   /** The latest thing worth telling the player (a refused action, a lost seat), or null; clear it with `dismissNotice`. */
@@ -120,6 +131,7 @@ export function initialPlayState(): PlayState {
     log: [],
     chat: [],
     phase: 'lobby',
+    lobby: null,
     result: null,
     notice: null,
     autoPass: true,

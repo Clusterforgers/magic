@@ -35,6 +35,8 @@ export interface GameInfo {
   started: boolean
   seats: { seat: PlayerId; name: string }[]
   connected: PlayerId[]
+  /** The seats that pressed Ready and did not take it back; every seat once the game runs. */
+  ready: PlayerId[]
   result: GameResult | null
 }
 
@@ -159,6 +161,9 @@ function readCreated(body: unknown): CreatedGame | null {
 function readGame(body: unknown): GameInfo | null {
   if (!isRecord(body) || !isFlag(body.started) || !Array.isArray(body.seats)) return null
   if (!isListOf(body.connected, isCount)) return null
+  // A server from before the lobby showed readiness sends no `ready`: nobody is known to be ready then.
+  const ready = body.ready === undefined ? [] : body.ready
+  if (!isListOf(ready, isCount)) return null
   const result = body.result === null || isGameResult(body.result) ? body.result : undefined
   if (result === undefined) return null
   const seats: GameInfo['seats'] = []
@@ -166,7 +171,7 @@ function readGame(body: unknown): GameInfo | null {
     if (!isRecord(item) || !isCount(item.seat) || !isText(item.name)) return null
     seats.push({ seat: item.seat, name: item.name })
   }
-  return { started: body.started, seats, connected: body.connected, result }
+  return { started: body.started, seats, connected: body.connected, ready, result }
 }
 
 function readDeck(item: unknown): DeckInfo | null {

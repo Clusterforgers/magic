@@ -39,6 +39,8 @@ pub struct GameStatus {
     pub result: Option<GameResult>,
     /// Seats with a live connection, in seat order.
     pub connected: Vec<PlayerId>,
+    /// Seats that pressed Ready and did not take it back, in seat order; every seat once the game runs.
+    pub ready: Vec<PlayerId>,
 }
 
 /// What a handle asks of the actor.

@@ -5,7 +5,7 @@ import type { GameResult, LossReason, StateView } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
 import { jsonResponse } from '@/test-utils/fakeFetch'
 import { renderGame } from '@/test-utils/gameHarness'
-import { lateJoin, lobbyStart } from '@/test-utils/transcripts'
+import { lateJoin, lobbyBatchAt, lobbyStart } from '@/test-utils/transcripts'
 
 const names = {
   started: true,
@@ -41,7 +41,10 @@ async function finishedGame(seat: number, loser: number, reason: LossReason, res
 describe('playing', () => {
   it.each([
     ['a snapshot, as a seat that joins a running game gets', lateJoin.raw.slice(1, 2)],
-    ['the first batch, as a seat that was in the lobby gets', lobbyStart.raw.slice(1, 2)],
+    [
+      'the first batch, as a seat that was in the lobby gets',
+      lobbyStart.raw.slice(lobbyBatchAt, lobbyBatchAt + 1),
+    ],
   ])('shows the table with a panel for each seat once %s arrives', (_how, messages) => {
     return renderGame().then((h) => {
       h.join()

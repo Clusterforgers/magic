@@ -18,7 +18,7 @@ game: string,
 /**
  * Display name for chat and the log.
  */
-name: string, } | { "type": "Ready" } | { "type": "Answer", 
+name: string, } | { "type": "Ready" } | { "type": "NotReady" } | { "type": "Answer", 
 /**
  * The decision being answered.
  */

@@ -37,6 +37,19 @@ pub enum ErrorCode {
     Internal,
 }
 
+/// One seat of the lobby, as [`ServerMessage::Lobby`] lists it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct LobbySeat {
+    /// The seat.
+    pub seat: PlayerId,
+    /// The name the seat was given when the game was made.
+    pub name: String,
+    /// Whether a client is connected to the seat right now.
+    pub connected: bool,
+    /// Whether the seat has pressed Ready and not taken it back. It stays set when the client goes away.
+    pub ready: bool,
+}
+
 /// How long a seat asks the server to pass priority for it (see [`ClientMessage::Yield`]).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
 pub enum YieldUntil {
@@ -63,6 +76,8 @@ pub enum ClientMessage {
     },
     /// The player is ready for the game to start.
     Ready,
+    /// The player takes [`ClientMessage::Ready`] back, until the game starts; harmless after that.
+    NotReady,
     /// Answers the pending decision with this id.
     Answer {
         /// The decision being answered.
@@ -130,6 +145,17 @@ pub enum ServerMessage {
         auto_pass: bool,
         /// The yield the server holds for this seat, if any (see [`ClientMessage::Yield`]).
         yielding: Option<YieldUntil>,
+    },
+    /// Who is at the table before the game starts.
+    ///
+    /// Sent to every connected seat right after its `Welcome` and again whenever a seat joins, leaves or
+    /// disconnects, presses [`ClientMessage::Ready`] or takes it back. Never sent once the game runs: the
+    /// opening events take over, and a client that joins a running game gets a snapshot instead.
+    Lobby {
+        /// Every seat in seat order.
+        seats: Vec<LobbySeat>,
+        /// How many seats still have to press Ready before the game starts.
+        needed: u32,
     },
     /// The client must answer; the engine's legal options are inside.
     Decision {

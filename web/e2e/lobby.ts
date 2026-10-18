@@ -66,13 +66,17 @@ export async function createAndJoin(browser: Browser, plans: readonly SeatPlan[]
   return players
 }
 
+/** The rows of the lobby's seat list, in seat order. */
+export const seatRows = (page: Page) => page.getByRole('list', { name: 'Seats' }).getByRole('listitem')
+
 /** Presses Ready on every page; the game starts when the last one has. */
 export async function everyoneReady(players: readonly Player[]): Promise<void> {
   for (const [index, { page }] of players.entries()) {
     await page.getByRole('button', { name: 'Ready', exact: true }).click()
-    // The last Ready starts the game, which can replace the lobby before this line looks at it.
+    // The last Ready starts the game, which can replace the lobby before this line looks at it. The button turns into
+    // "Not ready" once the server has said the seat is ready, which is what proves the press went through.
     if (index < players.length - 1) {
-      await expect(page.getByRole('button', { name: 'You are ready' })).toBeVisible()
+      await expect(page.getByRole('button', { name: 'Not ready', exact: true })).toBeVisible()
     }
   }
   for (const { page } of players) {

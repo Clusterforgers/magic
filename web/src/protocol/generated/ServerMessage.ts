@@ -5,6 +5,7 @@ import type { DecisionId } from "./DecisionId";
 import type { ErrorCode } from "./ErrorCode";
 import type { EventBatch } from "./EventBatch";
 import type { GameResult } from "./GameResult";
+import type { LobbySeat } from "./LobbySeat";
 import type { PlayerId } from "./PlayerId";
 import type { StateView } from "./StateView";
 import type { YieldUntil } from "./YieldUntil";
@@ -36,7 +37,15 @@ auto_pass: boolean,
 /**
  * The yield the server holds for this seat, if any (see [`ClientMessage::Yield`]).
  */
-yielding: YieldUntil | null, } | { "type": "Decision", 
+yielding: YieldUntil | null, } | { "type": "Lobby", 
+/**
+ * Every seat in seat order.
+ */
+seats: Array<LobbySeat>, 
+/**
+ * How many seats still have to press Ready before the game starts.
+ */
+needed: number, } | { "type": "Decision", 
 /**
  * Echo this id in the answer.
  */

@@ -181,6 +181,7 @@ pub(crate) struct GameBody {
     started: bool,
     seats: Vec<SeatBody>,
     connected: Vec<PlayerId>,
+    ready: Vec<PlayerId>,
     result: Option<GameResult>,
 }
 
@@ -260,6 +261,7 @@ pub(crate) async fn game(
             })
             .collect(),
         connected: game.connected,
+        ready: game.ready,
         result: game.result,
     }))
 }

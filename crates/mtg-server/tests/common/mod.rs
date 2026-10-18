@@ -180,6 +180,33 @@ pub fn silent(messages: &[ServerMessage]) {
     assert_eq!(messages.len(), 0, "unexpected messages: {messages:?}");
 }
 
+/// The roster a lobby whose seats are called "Seat 1", "Seat 2"... sends, from each seat's (connected, ready) flags.
+pub fn roster(flags: &[(bool, bool)]) -> ServerMessage {
+    let seats = flags
+        .iter()
+        .enumerate()
+        .map(|(index, (connected, ready))| mtg_protocol::LobbySeat {
+            seat: seat(index),
+            name: format!("Seat {}", index + 1),
+            connected: *connected,
+            ready: *ready,
+        })
+        .collect();
+    let needed = flags.iter().filter(|(_, ready)| !ready).count();
+    ServerMessage::Lobby {
+        seats,
+        needed: u32::try_from(needed).unwrap(),
+    }
+}
+
+/// `messages` without the lobby rosters, for tests about something else that happens before the start.
+pub fn without_rosters(messages: Vec<ServerMessage>) -> Vec<ServerMessage> {
+    messages
+        .into_iter()
+        .filter(|message| !matches!(message, ServerMessage::Lobby { .. }))
+        .collect()
+}
+
 /// A harmless legal answer to any decision: keep, pass, attack with nothing, block nothing.
 pub fn passive(decision: &mtg_engine::Decision) -> mtg_engine::Answer {
     use mtg_engine::Answer;

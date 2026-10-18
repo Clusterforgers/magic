@@ -183,7 +183,10 @@ impl WsBot {
                 return self.respond(id, decision).await;
             }
             ServerMessage::Error { code, message } => self.errors.push((code, message)),
-            ServerMessage::Chat { .. } | ServerMessage::Yielding { .. } => {}
+            // The roster of a lobby is for people; a bot only waits for its first decision.
+            ServerMessage::Chat { .. }
+            | ServerMessage::Lobby { .. }
+            | ServerMessage::Yielding { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

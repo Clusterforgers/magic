@@ -27,6 +27,8 @@ export interface Session {
   disconnect(): void
   /** Says this seat is ready to start; the game begins once every seat has. */
   ready(): boolean
+  /** Takes `ready()` back; the server ignores it once the game has started. */
+  notReady(): boolean
   /** Answers the pending decision, once; false when there is none or the socket is not open. */
   answer(answer: Answer): boolean
   /**
@@ -143,6 +145,8 @@ export function createSession(deps: SessionDeps): Session {
       attempt: event.attempt,
       notice: event.reason ?? (event.status === 'connecting' ? null : state.notice),
       pending: live ? state.pending : null,
+      // Only a live connection hears of the lobby; once it is gone the roster is no longer the server's latest word.
+      lobby: live ? state.lobby : null,
       preview: live ? state.preview : null,
     }))
   }
@@ -163,6 +167,10 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'Yielding':
         onYielding(message)
+        return
+      case 'Lobby':
+        // The server sends the whole roster each time, so the newest one simply replaces the last.
+        setState({ lobby: { seats: message.seats, needed: message.needed } })
         return
       case 'Snapshot':
         onSnapshot(message)
@@ -207,6 +215,7 @@ export function createSession(deps: SessionDeps): Session {
         preview: null,
         log: dropLogFrom(state.log, message.seq),
         phase: state.result === null ? 'playing' : 'over',
+        lobby: null, // the game is on, so the roster of the table before it is over
       }
     })
   }
@@ -231,6 +240,7 @@ export function createSession(deps: SessionDeps): Session {
       seq: batch.from_seq + batch.events.length,
       log: appendLog(state.log, batch.from_seq, batch.events),
       phase: state.result === null ? 'playing' : 'over',
+      lobby: null,
     })
   }
 
@@ -303,6 +313,7 @@ export function createSession(deps: SessionDeps): Session {
     connect: () => socket.connect(),
     disconnect: () => socket.disconnect(),
     ready: () => socket.send({ type: 'Ready' }),
+    notReady: () => socket.send({ type: 'NotReady' }),
     answer(answer) {
       const { pending } = getState()
       if (pending === null || !socket.send({ type: 'Answer', decision: pending.id, answer })) return false

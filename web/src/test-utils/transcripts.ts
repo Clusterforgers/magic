@@ -35,5 +35,7 @@ if (!isRecord(fixture)) throw new Error('fixture is malformed')
 export const lateJoin: Transcript = read('late join', fixture.seat, fixture)
 /** Seat 0 present at the start: Welcome, then every batch from seq 0 with no Snapshot. */
 export const lobbyStart: Transcript = read('lobby', fixture.seat, fixture.lobby)
+/** Where the batch at seq 0 stands in `lobbyStart`: after the welcome and the rosters the lobby sent. */
+export const lobbyBatchAt: number = lobbyStart.messages.findIndex((message) => message.type === 'Events')
 /** Both transcripts, for `it.each`. */
 export const transcripts: Transcript[] = [lateJoin, lobbyStart]

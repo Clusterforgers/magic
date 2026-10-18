@@ -144,6 +144,7 @@ async fn foe_passes_once(handle: &GameHandle, foe: &mut Client) {
 fn shape(message: &ServerMessage) -> String {
     match message {
         ServerMessage::Welcome { .. } => "welcome".into(),
+        ServerMessage::Lobby { .. } => "lobby".into(),
         ServerMessage::Decision { decision, .. } => format!("decision {}", decision.kind.name()),
         ServerMessage::Events(_) => "events".into(),
         ServerMessage::Snapshot { .. } => "snapshot".into(),
@@ -688,7 +689,9 @@ async fn a_seat_that_loses_the_game_is_told_its_yield_ended_before_the_game_over
 async fn a_yield_before_the_game_starts_is_refused() {
     let (handle, _) = spawn(instant_duel(), OFF);
     let mut client = Client::join(&handle, ME).await;
-    client.next().await;
+    // The welcome, and the roster that a lobby sends after it.
+    assert!(matches!(client.next().await, ServerMessage::Welcome { .. }));
+    assert!(matches!(client.next().await, ServerMessage::Lobby { .. }));
     send(
         &handle,
         &client,
