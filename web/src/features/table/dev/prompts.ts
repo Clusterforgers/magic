@@ -1,6 +1,6 @@
 /** Decisions the dev table can show: `/dev/table?prompt=<name>`. Add a line to `DEV_PROMPTS` for each new prompt. */
 import type { PendingDecision } from '@/play/store'
-import type { ManaOption, ObjectView, PriorityOptions } from '@/protocol/generated'
+import type { DecisionKind, ManaOption, ObjectId, ObjectView, PriorityOptions } from '@/protocol/generated'
 import { assignDamage } from './damagePrompt'
 import type { Fixture } from './fixture'
 
@@ -46,9 +46,20 @@ const priority: DevPrompt = ({ view }) => {
   return { id: 1, decision: { player: viewer, kind: { Priority: options } } }
 }
 
+/** A decision about the viewer's hand, such as an opening hand to judge or cards to discard. */
+const aboutHand =
+  (kind: (hand: ObjectId[]) => DecisionKind): DevPrompt =>
+  ({ view }) => ({
+    id: 1,
+    decision: { player: view.viewer, kind: kind(view.players[view.viewer]?.hand.cards ?? []) },
+  })
+
 /** The prompts by their `?prompt=` name. */
 export const DEV_PROMPTS: Record<string, DevPrompt> = {
   priority,
+  mulligan: aboutHand((hand) => ({ Mulligan: { hand, mulligans_taken: 1, can_mulligan: true } })),
+  bottom: aboutHand((hand) => ({ BottomCards: { hand, count: 2 } })),
+  discard: aboutHand((hand) => ({ Discard: { hand: hand.slice(0, -1), count: 2 } })),
   damage: assignDamage(2),
   damage3: assignDamage(3),
   damage1: assignDamage(1),
