@@ -290,6 +290,32 @@ describe('the cards', () => {
   })
 })
 
+describe('the card preview', () => {
+  it('says what the forecast holds for the creature under the pointer, in the same words as its name', async () => {
+    const { table, forecast } = scene()
+    const hurt = must(forecast.creatures.find((creature) => creature.damage > 0 && creature.dies))
+    await table.user.hover(table.card(hurt.object))
+    const preview = screen.getByTestId('card-preview')
+    expect(
+      within(preview).getByText(`Combat forecast: would take ${hurt.damage} damage and die.`),
+    ).toBeInTheDocument()
+    await table.user.unhover(table.card(hurt.object))
+    const survivor = must(forecast.creatures.find((creature) => creature.damage > 0 && !creature.dies))
+    await table.user.hover(table.card(survivor.object))
+    expect(screen.getByTestId('card-preview')).toHaveTextContent(
+      `Combat forecast: would take ${survivor.damage} damage.`,
+    )
+  })
+
+  it('says nothing of a forecast that is gone', async () => {
+    const { table, forecast } = scene()
+    const hurt = must(forecast.creatures.find((creature) => creature.damage > 0))
+    table.setView({ combat_forecast: null })
+    await table.user.hover(table.card(hurt.object))
+    expect(screen.getByTestId('card-preview')).not.toHaveTextContent('Combat forecast')
+  })
+})
+
 describe('the seat panels', () => {
   it('show the attacked seat life as "life -> life after" with a lethal mark when it would end the game', () => {
     const { table } = scene()
