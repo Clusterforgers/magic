@@ -1,12 +1,25 @@
 //! Goal: shared setup for the combat test files (this is not a test module itself).
 
+use mtg_engine::PresetPermanent;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::free_creature;
-use mtg_testkit::{Driver, Scenario, ScriptError, ready};
+use mtg_testkit::{Driver, Scenario, ScriptError, damaged, ready};
 
 use super::names;
+
+/// A creature of a combat table: name, power, toughness and damage already marked.
+pub type Fighter = (&'static str, i32, i32, u32);
+
+/// The fighters as permanents that start untapped and ready to act.
+pub fn creatures(list: &[Fighter]) -> Vec<PresetPermanent> {
+    list.iter()
+        .map(|&(name, power, toughness, marked)| {
+            damaged(free_creature(name, power, toughness), marked)
+        })
+        .collect()
+}
 
 /// Two players, P0 about to declare attackers with `A`, P1 holding `B`.
 pub fn duel(attacker: (i32, i32), blocker: (i32, i32)) -> Result<Driver, ScriptError> {
