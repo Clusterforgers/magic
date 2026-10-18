@@ -145,6 +145,14 @@ mod tests {
         assert!(!a.digest().matches(&b.digest()));
     }
 
+    #[test]
+    fn digests_survive_storage() {
+        let token = SeatToken::generate().unwrap();
+        let stored = *token.digest().as_bytes();
+        assert!(TokenDigest::from_bytes(stored).matches(&TokenDigest::of(token.expose())));
+        assert!(!TokenDigest::from_bytes([0; 32]).matches(&token.digest()));
+    }
+
     #[rstest]
     #[case("", false)]
     #[case("abc", false)]
