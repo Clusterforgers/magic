@@ -26,7 +26,11 @@ player: PlayerId,
 /**
  * Number of seats at the table.
  */
-seats: number, } | { "type": "Decision", 
+seats: number, 
+/**
+ * Whether the server passes for this seat when it cannot act (see [`ClientMessage::AutoPass`]).
+ */
+auto_pass: boolean, } | { "type": "Decision", 
 /**
  * Echo this id in the answer.
  */
@@ -34,7 +38,13 @@ id: DecisionId,
 /**
  * The question with every legal option.
  */
-decision: Decision, } | { "type": "Events" } & EventBatch | { "type": "Snapshot", 
+decision: Decision, 
+/**
+ * Milliseconds the seat has left when this is sent; absent for a decision without a clock.
+ * At the end the server answers for the seat (a pass, or no blocks) and this decision goes stale.
+ * A decision sent again after a reconnect carries the time that is left, not the time it started with.
+ */
+deadline_ms?: number, } | { "type": "Events" } & EventBatch | { "type": "Snapshot", 
 /**
  * Number of log events the snapshot already includes; the next batch starts here.
  */

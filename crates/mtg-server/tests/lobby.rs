@@ -30,6 +30,7 @@ async fn welcome_names_the_game_the_seat_and_the_table_size() {
             game: game_id(7).to_string(),
             player: seat(1),
             seats: 3,
+            auto_pass: false,
         }
     );
     silent(&client.drain());

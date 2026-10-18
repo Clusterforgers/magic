@@ -11,6 +11,7 @@ mtg-core.workspace = true
 mtg-engine.workspace = true
 mtg-cards.workspace = true
 mtg-protocol.workspace = true
+argon2.workspace = true
 axum.workspace = true
 getrandom.workspace = true
 serde.workspace = true
@@ -32,5 +33,5 @@ mtg-db.workspace = true
 mtg-testkit.workspace = true
 futures-util.workspace = true
 rstest.workspace = true
-tokio = { workspace = true, features = ["io-util"] }
+tokio = { workspace = true, features = ["io-util", "test-util"] }
 tokio-tungstenite.workspace = true

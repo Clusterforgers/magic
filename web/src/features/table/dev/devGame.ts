@@ -15,7 +15,11 @@ import { DEV_PROMPTS, DEV_TABLES } from './prompts'
  */
 export function fixtureState(fixture: Fixture, pending?: PendingDecision | null): PlayState {
   const { view, log, chat } = fixture
-  const options = { playable_lands: [], castable: [], mana_abilities: [], can_pass: true }
+  const options = { playable_lands: [], castable: [], mana_abilities: [], can_act: false, can_pass: true }
+  const shown =
+    pending === undefined
+      ? { id: 1, decision: { player: view.viewer, kind: { Priority: options } } }
+      : pending
   return {
     ...initialPlayState(),
     status: 'open',
@@ -24,10 +28,12 @@ export function fixtureState(fixture: Fixture, pending?: PendingDecision | null)
     view,
     objectsById: indexById(view.objects),
     seq: log.length,
-    pending:
-      pending === undefined
-        ? { id: 1, decision: { player: view.viewer, kind: { Priority: options } } }
-        : pending,
+    pending: shown,
+    // A decision on a clock shows its full time; nothing ticks it here, the bar's own animation is all that moves.
+    clock:
+      shown?.deadlineMs === undefined
+        ? null
+        : { id: shown.id, totalMs: shown.deadlineMs, leftMs: shown.deadlineMs },
     log,
     chat,
     phase: 'playing',
@@ -53,10 +59,14 @@ export function fixtureSession(store: PlayStore): Session {
     ready: () => false,
     answer() {
       if (store.getState().pending === null) return false
-      store.setState({ pending: null })
+      store.setState({ pending: null, clock: null })
       return true
     },
     concede: () => false,
+    setAutoPass(enabled) {
+      store.setState({ autoPass: enabled })
+      return true
+    },
     chat(text) {
       const line = text.trim()
       if (line === '') return false

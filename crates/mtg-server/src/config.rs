@@ -1,4 +1,4 @@
-//! Server settings: three come from the environment, the rest are limits that tests may tune.
+//! Server settings: six come from the environment, the rest are limits that tests may tune.
 
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::time::Duration;
@@ -6,6 +6,8 @@ use std::time::Duration;
 use thiserror::Error;
 
 use crate::actor::GameConfig;
+use crate::pace::MAX_CLOCK_SECS;
+use crate::passwords::HashCost;
 
 /// Listen address when `MTG_BIND` is unset.
 pub const DEFAULT_BIND: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 8080);
@@ -24,6 +26,102 @@ pub enum ConfigError {
     /// An `MTG_ALLOWED_ORIGINS` entry is not `http(s)://host[:port]`.
     #[error("MTG_ALLOWED_ORIGINS entry {0:?} is not an origin such as https://host[:port]")]
     BadOrigin(String),
+    /// `MTG_AUTO_PASS` is not a switch.
+    #[error("MTG_AUTO_PASS must be 1 or 0 (also on, off, true, false), got {0:?}")]
+    BadAutoPass(String),
+    /// `MTG_RESPONSE_SECS` is not a number of seconds.
+    #[error(
+        "MTG_RESPONSE_SECS must be a whole number of seconds, 0 for no clock, at most 86400, got {0:?}"
+    )]
+    BadResponseSecs(String),
+    /// `MTG_BLOCK_SECS` is not a number of seconds.
+    #[error(
+        "MTG_BLOCK_SECS must be a whole number of seconds, 0 for no clock, at most 86400, got {0:?}"
+    )]
+    BadBlockSecs(String),
+    /// `MTG_REGISTRATION` is neither `open` nor `closed`.
+    #[error("MTG_REGISTRATION must be open or closed, got {0:?}")]
+    BadRegistration(String),
+    /// `MTG_COOKIE_SECURE` is not `1`, `0`, `true` or `false`.
+    #[error("MTG_COOKIE_SECURE must be 1 or 0, got {0:?}")]
+    BadCookieSecure(String),
+    /// `MTG_TRUSTED_PROXIES` is not a whole number from 0 to 16.
+    #[error("MTG_TRUSTED_PROXIES must be a whole number from 0 to 16, got {0:?}")]
+    BadTrustedProxies(String),
+}
+
+/// Most reverse proxies `MTG_TRUSTED_PROXIES` may name.
+const MAX_TRUSTED_PROXIES: usize = 16;
+
+/// Whether anybody may make a new account.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Registration {
+    /// Anyone who can reach the server.
+    Open,
+    /// Nobody; existing accounts keep working.
+    Closed,
+}
+
+/// How many tries the account endpoints allow inside one window.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct AttemptLimits {
+    /// Length of one counting window; a counter starts at the first try and ends a window later.
+    pub window: Duration,
+    /// Logins from one address that fail before it is turned away (successes do not count).
+    pub login_per_ip: u32,
+    /// Logins for one username that fail before it is turned away, whoever sends them.
+    pub login_per_username: u32,
+    /// Registrations one address may try.
+    pub register_per_ip: u32,
+}
+
+impl Default for AttemptLimits {
+    fn default() -> Self {
+        AttemptLimits {
+            window: Duration::from_mins(15),
+            login_per_ip: 30,
+            login_per_username: 10,
+            register_per_ip: 10,
+        }
+    }
+}
+
+/// Accounts and sessions.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AuthConfig {
+    /// Whether new accounts may be made (`MTG_REGISTRATION=open|closed`).
+    pub registration: Registration,
+    /// Whether the session cookie is marked `Secure` (`MTG_COOKIE_SECURE=1`); set it behind TLS.
+    pub cookie_secure: bool,
+    /// How long a session lasts after sign-in.
+    pub session_lifetime: Duration,
+    /// How much work one password hash takes.
+    pub hash_cost: HashCost,
+    /// Password hashes that may run at once; the rest wait for a slot.
+    pub hash_jobs: usize,
+    /// Limits on failed logins and on registrations.
+    pub limits: AttemptLimits,
+    /// Reverse proxies in front of the server (`MTG_TRUSTED_PROXIES`). With `n > 0` the client
+    /// address is the `n`-th entry from the right of `X-Forwarded-For`; with 0 that header is
+    /// ignored, because anybody can send it.
+    pub trusted_proxies: usize,
+    /// Time between purges of expired sessions.
+    pub purge_every: Duration,
+}
+
+impl Default for AuthConfig {
+    fn default() -> Self {
+        AuthConfig {
+            registration: Registration::Open,
+            cookie_secure: false,
+            session_lifetime: Duration::from_hours(24 * 30),
+            hash_cost: HashCost::default(),
+            hash_jobs: 4,
+            limits: AttemptLimits::default(),
+            trusted_proxies: 0,
+            purge_every: Duration::from_hours(1),
+        }
+    }
 }
 
 /// Timers and size limits of one WebSocket connection.
@@ -105,6 +203,8 @@ pub struct ServerConfig {
     pub retention: Retention,
     /// How long shutdown waits for sockets to finish closing.
     pub shutdown_grace: Duration,
+    /// Accounts, sessions and the limits around them.
+    pub auth: AuthConfig,
 }
 
 impl Default for ServerConfig {
@@ -118,12 +218,15 @@ impl Default for ServerConfig {
             socket: SocketLimits::default(),
             retention: Retention::default(),
             shutdown_grace: Duration::from_secs(5),
+            auth: AuthConfig::default(),
         }
     }
 }
 
 impl ServerConfig {
-    /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS` and `MTG_MAX_GAMES` from the process environment.
+    /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
+    /// `MTG_BLOCK_SECS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE` and `MTG_TRUSTED_PROXIES` from the process
+    /// environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
             std::env::var_os(key).map(|value| value.to_string_lossy().into_owned())
@@ -157,8 +260,62 @@ impl ServerConfig {
                 }
             }
         }
+        if let Some(text) = get("MTG_AUTO_PASS") {
+            config.game.pace.auto_pass =
+                parse_switch(&text).ok_or(ConfigError::BadAutoPass(text))?;
+        }
+        if let Some(text) = get("MTG_RESPONSE_SECS") {
+            let seconds = parse_seconds(&text).ok_or(ConfigError::BadResponseSecs(text))?;
+            config.game.pace.response = clock_of(seconds);
+        }
+        if let Some(text) = get("MTG_BLOCK_SECS") {
+            let seconds = parse_seconds(&text).ok_or(ConfigError::BadBlockSecs(text))?;
+            config.game.pace.blocks = clock_of(seconds);
+        }
+        if let Some(text) = get("MTG_REGISTRATION") {
+            config.auth.registration = match text.trim().to_ascii_lowercase().as_str() {
+                "open" => Registration::Open,
+                "closed" => Registration::Closed,
+                _ => return Err(ConfigError::BadRegistration(text)),
+            };
+        }
+        if let Some(text) = get("MTG_COOKIE_SECURE") {
+            config.auth.cookie_secure = match text.trim().to_ascii_lowercase().as_str() {
+                "1" | "true" => true,
+                "0" | "false" => false,
+                _ => return Err(ConfigError::BadCookieSecure(text)),
+            };
+        }
+        if let Some(text) = get("MTG_TRUSTED_PROXIES") {
+            config.auth.trusted_proxies = match text.trim().parse::<usize>() {
+                Ok(n) if n <= MAX_TRUSTED_PROXIES => n,
+                _ => return Err(ConfigError::BadTrustedProxies(text)),
+            };
+        }
         Ok(config)
     }
+}
+
+/// A switch written as 1/0, on/off or true/false, in any case.
+fn parse_switch(raw: &str) -> Option<bool> {
+    match raw.trim().to_ascii_lowercase().as_str() {
+        "1" | "on" | "true" => Some(true),
+        "0" | "off" | "false" => Some(false),
+        _ => None,
+    }
+}
+
+/// A clock in whole seconds; nothing above a day is accepted.
+fn parse_seconds(raw: &str) -> Option<u64> {
+    raw.trim()
+        .parse::<u64>()
+        .ok()
+        .filter(|s| *s <= MAX_CLOCK_SECS)
+}
+
+/// The clock for a number of seconds; 0 is no clock at all.
+fn clock_of(seconds: u64) -> Option<Duration> {
+    (seconds > 0).then(|| Duration::from_secs(seconds))
 }
 
 /// The lowercase `scheme://host[:port]` form of an origin, or `None` if `raw` is not one.
@@ -294,10 +451,191 @@ mod tests {
             ("MTG_BIND", "0.0.0.0:80"),
             ("MTG_MAX_GAMES", "5"),
             ("MTG_ALLOWED_ORIGINS", "https://x.example"),
+            ("MTG_REGISTRATION", "closed"),
+            ("MTG_COOKIE_SECURE", "1"),
+            ("MTG_TRUSTED_PROXIES", "2"),
         ])
         .unwrap();
         assert_eq!(config.bind.port(), 80);
         assert_eq!(config.max_games, 5);
         assert_eq!(config.allowed_origins, ["https://x.example"]);
+        assert_eq!(config.auth.registration, Registration::Closed);
+        assert!(config.auth.cookie_secure);
+        assert_eq!(config.auth.trusted_proxies, 2);
+    }
+
+    #[test]
+    fn accounts_default_to_open_registration_a_plain_cookie_and_no_proxy() {
+        let auth = load(&[]).unwrap().auth;
+        assert_eq!(auth, AuthConfig::default());
+        assert_eq!(auth.registration, Registration::Open);
+        assert!(!auth.cookie_secure);
+        assert_eq!(auth.trusted_proxies, 0);
+        assert_eq!(auth.session_lifetime, Duration::from_hours(30 * 24));
+        assert_eq!(auth.hash_cost, HashCost::default());
+        assert!(auth.hash_jobs >= 1);
+        // Blank values are unset.
+        let blank = load(&[
+            ("MTG_REGISTRATION", " "),
+            ("MTG_COOKIE_SECURE", ""),
+            ("MTG_TRUSTED_PROXIES", "  "),
+        ])
+        .unwrap();
+        assert_eq!(blank.auth, auth);
+    }
+
+    #[rstest]
+    #[case("open", Registration::Open)]
+    #[case("OPEN", Registration::Open)]
+    #[case(" Open ", Registration::Open)]
+    #[case("closed", Registration::Closed)]
+    #[case("CLOSED", Registration::Closed)]
+    fn registration_modes(#[case] text: &str, #[case] expected: Registration) {
+        let config = load(&[("MTG_REGISTRATION", text)]).unwrap();
+        assert_eq!(config.auth.registration, expected);
+    }
+
+    #[rstest]
+    #[case("yes")]
+    #[case("invite")]
+    #[case("1")]
+    #[case("close")]
+    fn bad_registration_modes(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_REGISTRATION", text)]),
+            Err(ConfigError::BadRegistration(text.to_owned()))
+        );
+    }
+
+    #[rstest]
+    #[case("1", true)]
+    #[case("true", true)]
+    #[case("TRUE", true)]
+    #[case(" 1 ", true)]
+    #[case("0", false)]
+    #[case("false", false)]
+    fn cookie_secure_switch(#[case] text: &str, #[case] expected: bool) {
+        let config = load(&[("MTG_COOKIE_SECURE", text)]).unwrap();
+        assert_eq!(config.auth.cookie_secure, expected);
+    }
+
+    #[rstest]
+    #[case("yes")]
+    #[case("2")]
+    #[case("on")]
+    #[case("-1")]
+    fn bad_cookie_secure_switch(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_COOKIE_SECURE", text)]),
+            Err(ConfigError::BadCookieSecure(text.to_owned()))
+        );
+    }
+
+    #[rstest]
+    #[case("0", 0)]
+    #[case("1", 1)]
+    #[case(" 3 ", 3)]
+    #[case("16", 16)]
+    fn proxy_counts(#[case] text: &str, #[case] expected: usize) {
+        let config = load(&[("MTG_TRUSTED_PROXIES", text)]).unwrap();
+        assert_eq!(config.auth.trusted_proxies, expected);
+    }
+
+    #[rstest]
+    #[case("17")]
+    #[case("-1")]
+    #[case("one")]
+    #[case("1.5")]
+    #[case("99999999999999999999999")]
+    fn bad_proxy_counts(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_TRUSTED_PROXIES", text)]),
+            Err(ConfigError::BadTrustedProxies(text.to_owned()))
+        );
+    }
+
+    #[test]
+    fn the_pace_defaults_skip_idle_seats_and_run_the_clocks() {
+        let pace = load(&[]).unwrap().game.pace;
+        assert!(pace.auto_pass);
+        assert_eq!(pace.response, Some(Duration::from_secs(10)));
+        assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
+    }
+
+    #[rstest]
+    #[case("1", true)]
+    #[case("0", false)]
+    #[case(" 0 ", false)]
+    #[case("off", false)]
+    #[case("OFF", false)]
+    #[case("false", false)]
+    #[case("on", true)]
+    #[case("True", true)]
+    #[case("", true)]
+    #[case("  ", true)]
+    fn auto_pass_switch(#[case] text: &str, #[case] expected: bool) {
+        let config = load(&[("MTG_AUTO_PASS", text)]).unwrap();
+        assert_eq!(config.game.pace.auto_pass, expected);
+    }
+
+    #[rstest]
+    #[case("2")]
+    #[case("yes")]
+    #[case("-1")]
+    #[case("0.5")]
+    #[case("disabled")]
+    fn bad_auto_pass_switch(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_AUTO_PASS", text)]),
+            Err(ConfigError::BadAutoPass(text.to_owned()))
+        );
+    }
+
+    #[rstest]
+    #[case("1", Some(1))]
+    #[case("30", Some(30))]
+    #[case(" 7 ", Some(7))]
+    #[case("86400", Some(86_400))]
+    #[case("0", None)]
+    #[case("", Some(10))]
+    fn response_clock(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let pace = load(&[("MTG_RESPONSE_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.response, seconds.map(Duration::from_secs));
+        assert_eq!(
+            pace.blocks,
+            Some(Duration::from_secs(45)),
+            "the other clock is untouched"
+        );
+    }
+
+    #[rstest]
+    #[case("120", Some(120))]
+    #[case("0", None)]
+    #[case("", Some(45))]
+    fn block_clock(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let pace = load(&[("MTG_BLOCK_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.blocks, seconds.map(Duration::from_secs));
+        assert_eq!(
+            pace.response,
+            Some(Duration::from_secs(10)),
+            "the other clock is untouched"
+        );
+    }
+
+    #[rstest]
+    #[case("-1")]
+    #[case("ten")]
+    #[case("1.5")]
+    #[case("86401")]
+    #[case("99999999999999999999999")]
+    fn bad_clocks(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_RESPONSE_SECS", text)]),
+            Err(ConfigError::BadResponseSecs(text.to_owned()))
+        );
+        assert_eq!(
+            load(&[("MTG_BLOCK_SECS", text)]),
+            Err(ConfigError::BadBlockSecs(text.to_owned()))
+        );
     }
 }

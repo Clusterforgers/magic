@@ -2,6 +2,7 @@
 
 use std::fmt;
 
+use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_engine::state::Stage;
 use mtg_engine::{Engine, EngineError, Event, GameResult, GameSetup};
 use thiserror::Error;
@@ -13,6 +14,8 @@ use crate::invariants::{InvariantChecker, Violation};
 const FULL_CHECK_EVERY: usize = 25;
 
 /// Limits and switches for [`play_game_with`].
+// Independent switches that tests set by name, not states of one machine.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Copy)]
 pub struct PlayOptions {
     /// Give up after this many answers.
@@ -23,6 +26,8 @@ pub struct PlayOptions {
     pub partial_payments: bool,
     /// Let the bots choose how to pay hybrid and Phyrexian symbols, life included (see [`RandomBot::with_symbol_choices`]).
     pub symbol_choices: bool,
+    /// Pass for a priority holder who cannot act without asking its bot, as a server with auto-pass on does.
+    pub auto_pass: bool,
 }
 
 impl Default for PlayOptions {
@@ -32,6 +37,7 @@ impl Default for PlayOptions {
             check_invariants: true,
             partial_payments: false,
             symbol_choices: false,
+            auto_pass: false,
         }
     }
 }
@@ -43,6 +49,8 @@ pub struct GameOutcome {
     pub result: GameResult,
     /// Answers given.
     pub answers: usize,
+    /// Passes made for seats that could not act (0 unless [`PlayOptions::auto_pass`] is set); they count in `answers` too.
+    pub auto_passes: usize,
     /// The turn it ended on.
     pub turns: u32,
     /// Hash of the final state.
@@ -141,6 +149,7 @@ pub fn play_game_with(
     observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
 
     let mut answers = 0;
+    let mut auto_passes = 0;
     while let Some(decision) = engine.decision().cloned() {
         if answers >= options.max_answers {
             return Err(fail(FailureKind::StepLimit(answers), engine.events()));
@@ -149,14 +158,21 @@ pub fn play_game_with(
             let message = format!("decision for unknown {:?}", decision.player);
             return Err(fail(FailureKind::BadEnding(message), engine.events()));
         };
-        let answer = bot.choose(&decision);
+        let idle = matches!(&decision.kind, DecisionKind::Priority(o) if !o.can_act);
+        let answer = if options.auto_pass && idle {
+            auto_passes += 1;
+            Answer::Priority(PriorityAction::Pass)
+        } else {
+            bot.choose(&decision)
+        };
         engine
             .apply(answer)
             .map_err(|e| fail(e.into(), engine.events()))?;
         answers += 1;
         observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
     }
-    finish(&engine, checker.as_mut(), answers).map_err(|kind| fail(kind, engine.events()))
+    finish(&engine, checker.as_mut(), answers, auto_passes)
+        .map_err(|kind| fail(kind, engine.events()))
 }
 
 fn observe(checker: &mut Option<InvariantChecker>, engine: &Engine) -> Result<(), Violation> {
@@ -171,6 +187,7 @@ fn finish(
     engine: &Engine,
     checker: Option<&mut InvariantChecker>,
     answers: usize,
+    auto_passes: usize,
 ) -> Result<GameOutcome, FailureKind> {
     let state = engine.state();
     let bad = |message: &str| FailureKind::BadEnding(message.to_owned());
@@ -201,6 +218,7 @@ fn finish(
     Ok(GameOutcome {
         result: *result,
         answers,
+        auto_passes,
         turns: state.turn().number(),
         final_hash: state.state_hash(),
         events: engine.events().to_vec(),

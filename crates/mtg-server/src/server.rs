@@ -2,12 +2,14 @@
 
 use std::future::Future;
 use std::io;
+use std::net::SocketAddr;
 use std::sync::Arc;
 use std::time::Duration;
 
 use axum::Router;
 use axum::http::header::{CACHE_CONTROL, CONTENT_TYPE, X_CONTENT_TYPE_OPTIONS};
 use axum::http::{HeaderValue, Method};
+use axum::middleware;
 use axum::routing::{get, post};
 use axum::serve::ListenerExt;
 use sqlx::PgPool;
@@ -16,14 +18,16 @@ use tokio::sync::{mpsc, watch};
 use tower_http::cors::{AllowOrigin, CorsLayer};
 use tower_http::set_header::SetResponseHeaderLayer;
 
+use crate::auth::{self, Auth};
 use crate::config::ServerConfig;
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
-use crate::{api, ws};
+use crate::{api, my_games, ws};
 
 struct Inner {
     config: ServerConfig,
     registry: Registry,
+    auth: Auth,
     stop: watch::Receiver<bool>,
     sessions: mpsc::Sender<()>,
 }
@@ -41,6 +45,11 @@ impl AppState {
 
     pub(crate) fn registry(&self) -> &Registry {
         &self.inner.registry
+    }
+
+    /// The accounts: sign-in, sessions and the limits around them.
+    pub(crate) fn auth(&self) -> &Auth {
+        &self.inner.auth
     }
 
     /// Whether shutdown has begun.
@@ -69,18 +78,21 @@ pub struct Server {
 
 impl Server {
     /// Builds a server that follows `config` and keeps its games in memory; nothing listens until
-    /// [`Server::serve`].
+    /// [`Server::serve`]. Without a database there are no accounts: every account endpoint
+    /// answers 503 and games are guest-only.
     pub fn new(config: ServerConfig) -> Server {
         let registry = Registry::new(&config);
-        Server::with_registry(config, registry, ResumeReport::default())
+        let auth = Auth::new(&config.auth, None);
+        Server::with_registry(config, registry, auth, ResumeReport::default())
     }
 
-    /// Builds a server that records its games in `pool` (already migrated by [`crate::migrate`])
-    /// and first brings back the games an earlier process left unfinished.
+    /// Builds a server that records its games and accounts in `pool` (already migrated by
+    /// [`crate::migrate`]) and first brings back the games an earlier process left unfinished.
     ///
     /// A game that cannot be loaded is marked failed and skipped; only an unreachable database
     /// is an error.
     pub async fn open(config: ServerConfig, pool: PgPool) -> Result<Server, RecordError> {
+        let auth = Auth::new(&config.auth, Some(pool.clone()));
         let registry = Registry::with_database(&config, pool);
         let resumed = registry.resume().await?;
         tracing::info!(
@@ -91,7 +103,7 @@ impl Server {
             failed = resumed.failed.len(),
             "stored games loaded"
         );
-        Ok(Server::with_registry(config, registry, resumed))
+        Ok(Server::with_registry(config, registry, auth, resumed))
     }
 
     /// What loading the stored games did; empty for a server without a database.
@@ -99,13 +111,19 @@ impl Server {
         &self.resumed
     }
 
-    fn with_registry(config: ServerConfig, registry: Registry, resumed: ResumeReport) -> Server {
+    fn with_registry(
+        config: ServerConfig,
+        registry: Registry,
+        auth: Auth,
+        resumed: ResumeReport,
+    ) -> Server {
         let (stop, stop_receiver) = watch::channel(false);
         let (sessions, drained) = mpsc::channel(1);
         let state = AppState {
             inner: Arc::new(Inner {
                 config,
                 registry,
+                auth,
                 stop: stop_receiver,
                 sessions,
             }),
@@ -144,13 +162,16 @@ impl Server {
         let grace = state.config().shutdown_grace;
         let mut stopping = state.stop();
         let janitor = state.registry().spawn_janitor(state.stop());
+        let upkeep = state.auth().spawn_upkeep(state.stop());
         // Small request/answer messages should not wait for Nagle's algorithm.
         let listener = listener.tap_io(|tcp| {
             if let Err(error) = tcp.set_nodelay(true) {
                 tracing::debug!(%error, "could not set TCP_NODELAY");
             }
         });
-        let serving = axum::serve(listener, router(state)).with_graceful_shutdown(async move {
+        // The peer address is what the login limits count when no proxy is trusted.
+        let app = router(state).into_make_service_with_connect_info::<SocketAddr>();
+        let serving = axum::serve(listener, app).with_graceful_shutdown(async move {
             shutdown.await;
             // Upgraded sockets outlive axum's own graceful shutdown, so each one is told to leave.
             let _ = stop.send(true);
@@ -175,6 +196,9 @@ impl Server {
             }
         };
         janitor.abort();
+        if let Some(upkeep) = upkeep {
+            upkeep.abort();
+        }
         served
     }
 }
@@ -186,19 +210,31 @@ pub(crate) fn router(state: AppState) -> Router {
         .allowed_origins
         .iter()
         .filter_map(|origin| HeaderValue::from_str(origin).ok());
+    // Listed origins are trusted front ends, so they may send the session cookie along.
     let cors = CorsLayer::new()
         .allow_origin(AllowOrigin::list(origins))
         .allow_methods([Method::GET, Method::POST])
         .allow_headers([CONTENT_TYPE])
+        .allow_credentials(true)
         .max_age(Duration::from_secs(600));
     Router::new()
         .route("/healthz", get(api::healthz))
         .route("/api/decks", get(api::decks))
         .route("/api/games", post(api::create_game))
         .route("/api/games/{id}", get(api::game))
+        .route("/api/auth/register", post(auth::register))
+        .route("/api/auth/login", post(auth::login))
+        .route("/api/auth/logout", post(auth::logout))
+        .route("/api/auth/me", get(auth::me))
+        .route("/api/me/games", get(my_games::list))
         .route("/ws/{game}/{token}", get(ws::upgrade))
+        .route("/ws/{game}", get(ws::upgrade_as_user))
         .fallback(api::not_found)
         .method_not_allowed_fallback(api::method_not_allowed)
+        .layer(middleware::from_fn_with_state(
+            state.clone(),
+            api::same_site_only,
+        ))
         .layer(cors)
         // Responses carry tokens and live state: never cache them, never sniff them.
         .layer(SetResponseHeaderLayer::overriding(

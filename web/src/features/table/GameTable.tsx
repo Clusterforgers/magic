@@ -4,8 +4,11 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
+import { AutoPassSwitch } from './AutoPassSwitch'
 import type { CardSize } from './cardSize'
 import { CardPreview } from './CardPreview'
+import { CombatOverlay } from './combat/CombatOverlay'
+import { CombatProviders } from './combat/CombatProviders'
 import { ConcedeButton } from './ConcedeButton'
 import { CentreStrip } from './CentreStrip'
 import { Drawer } from './Drawer'
@@ -73,7 +76,7 @@ function Opponents({ plan, size, onFocusSeat }: OpponentsProps) {
  * middle, and the log and chat in a drawer. Up to 4 seats it opens in grid mode, from 5 in focus mode, and the
  * toolbar switches either. It reads the game with `usePlay` and acts through `useGame().session`.
  */
-export const GameTable = memo(function GameTable() {
+const Table = memo(function Table() {
   const options = useContext(TableOptionsContext)
   const { seat, seatCount, ready } = usePlay(
     useShallow((state) => ({ seat: state.seat, seatCount: seatCountOf(state), ready: state.view !== null })),
@@ -99,7 +102,7 @@ export const GameTable = memo(function GameTable() {
             className="flex w-full items-start"
             style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
           >
-            <div className="grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
+            <div className="relative grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
               <h1 className="sr-only">Game table</h1>
               {!ready || seat === null ? (
                 <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
@@ -112,14 +115,19 @@ export const GameTable = memo(function GameTable() {
                       pinnedFocus={chosen !== null}
                       onFollow={() => setChosen(null)}
                     />
-                    <ConcedeButton />
+                    <div className="flex flex-wrap items-center gap-3">
+                      <AutoPassSwitch />
+                      <ConcedeButton />
+                    </div>
                   </div>
                   <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
-                  <div className="grid gap-3">
+                  {/* Above the combat lines, so they run behind the prompt and never over its words. */}
+                  <div className="relative z-20 grid gap-3">
                     <CentreStrip />
                     <StackPanel />
                   </div>
                   <OwnBoard seat={plan.viewer} size={size} />
+                  <CombatOverlay />
                 </>
               )}
             </div>
@@ -129,5 +137,14 @@ export const GameTable = memo(function GameTable() {
         </MarksContext>
       </PreviewContext>
     </FxContext>
+  )
+})
+
+/** The table inside the stores its combat marks share (`combat/CombatProviders`). */
+export const GameTable = memo(function GameTable() {
+  return (
+    <CombatProviders>
+      <Table />
+    </CombatProviders>
   )
 })

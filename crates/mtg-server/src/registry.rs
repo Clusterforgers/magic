@@ -3,6 +3,11 @@
 //! A registry made with [`Registry::with_database`] also records every game it creates (recipe,
 //! seats, status) and brings the unfinished ones back with [`Registry::resume`]; one made with
 //! [`Registry::new`] keeps everything in memory.
+//!
+//! A seat can belong to an account. The token still opens the seat; the account is a second way
+//! in ([`Registry::authenticate_user`]) and puts the game on the account's list
+//! ([`Registry::games_of`]). A seat is bound once, to the first account that claims it
+//! ([`Registry::bind_seat`]), and an account holds one seat per game.
 
 mod resume;
 
@@ -25,9 +30,13 @@ use crate::game_id::GameId;
 use crate::handle::{GameHandle, GameStatus};
 use crate::recipe::{DeckRef, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
-use crate::records::{GameRecords, NewSeat, RecordError};
+use crate::records::{Binding, GameRecords, NewSeat, RecordError, UserGame};
 use crate::secret::{RandomError, SeatToken, TokenDigest, looks_like_token, random_seed};
 use crate::store::MemoryStore;
+use crate::user_id::UserId;
+
+/// Most games `Registry::games_of` returns: the newest ones.
+pub const MAX_LISTED_GAMES: usize = 100;
 
 pub use resume::ResumeReport;
 
@@ -108,6 +117,8 @@ struct Entry {
     handle: GameHandle,
     names: Vec<String>,
     digests: Vec<TokenDigest>,
+    /// The account each seat is bound to, in seat order; guests' seats have none.
+    users: Vec<Option<UserId>>,
     created: Instant,
     /// When a sweep first saw the game finished.
     finished: Option<Instant>,
@@ -123,6 +134,7 @@ impl Entry {
         handle: GameHandle,
         names: Vec<String>,
         digests: Vec<TokenDigest>,
+        users: Vec<Option<UserId>>,
         created: Instant,
     ) -> Entry {
         let (alive, _) = watch::channel(());
@@ -130,6 +142,7 @@ impl Entry {
             handle,
             names,
             digests,
+            users,
             created,
             finished: None,
             last_connected: Instant::now(),
@@ -221,6 +234,16 @@ impl Registry {
     /// With a database the game is recorded (recipe, seats, token digests) before it exists, so a
     /// failed write creates nothing. Needs a tokio runtime.
     pub async fn create(&self, seats: &[SeatRequest]) -> Result<Created, CreateError> {
+        self.create_for(seats, None).await
+    }
+
+    /// Like [`Registry::create`] for a signed-in creator, who owns seat 0 from the start. A
+    /// registry without a database has no accounts, so `host` is ignored there.
+    pub async fn create_for(
+        &self,
+        seats: &[SeatRequest],
+        host: Option<UserId>,
+    ) -> Result<Created, CreateError> {
         let seed = match self.shared.fixed_seed {
             Some(seed) => seed,
             None => random_seed()?,
@@ -231,7 +254,7 @@ impl Registry {
         let recipe = GameRecipe::normal(seed, decks);
         let setup = recipe.build()?;
         let names = seats.iter().map(|s| s.name.clone()).collect();
-        self.admit(setup, names, Some(recipe)).await
+        self.admit(setup, names, Some(recipe), host).await
     }
 
     /// Registers a game built by the caller (a missing name becomes "Seat N"). Needs a tokio runtime.
@@ -243,15 +266,17 @@ impl Registry {
         setup: GameSetup,
         names: Vec<String>,
     ) -> Result<Created, CreateError> {
-        self.admit(setup, names, None).await
+        self.admit(setup, names, None, None).await
     }
 
     /// Gives a validated setup its tokens, records it when it has a recipe and starts its actor.
+    /// `host` owns seat 0 when the game is recorded.
     async fn admit(
         &self,
         setup: GameSetup,
         mut names: Vec<String>,
         recipe: Option<GameRecipe>,
+        host: Option<UserId>,
     ) -> Result<Created, CreateError> {
         let seats = setup.players.len();
         names.truncate(seats);
@@ -278,14 +303,21 @@ impl Registry {
                 }
             }
         };
+        // Bound only where it is recorded: a game without a database has no accounts to bind.
+        let persistent = self.shared.records.is_some() && recipe.is_some();
+        let users: Vec<Option<UserId>> = (0..seats)
+            .map(|seat| if seat == 0 && persistent { host } else { None })
+            .collect();
         let handle = match (&self.shared.records, &recipe) {
             (Some(records), Some(recipe)) => {
                 let rows: Vec<NewSeat> = names
                     .iter()
                     .zip(&digests)
-                    .map(|(name, digest)| NewSeat {
+                    .zip(&users)
+                    .map(|((name, digest), user)| NewSeat {
                         name: name.clone(),
                         digest: *digest.as_bytes(),
+                        user: *user,
                     })
                     .collect();
                 records.insert(id, recipe, &rows).await?;
@@ -303,8 +335,10 @@ impl Registry {
             }
             _ => spawn_game_with(id, setup, MemoryStore::new(), self.shared.game)?,
         };
-        self.games()
-            .insert(id, Entry::new(handle, names, digests, Instant::now()));
+        self.games().insert(
+            id,
+            Entry::new(handle, names, digests, users, Instant::now()),
+        );
         let seats = tokens
             .into_iter()
             .enumerate()
@@ -339,6 +373,70 @@ impl Registry {
             seat: PlayerId::from_index(found?),
             removed: entry.alive.subscribe(),
         })
+    }
+
+    /// Maps an account to its seat in a live game; `None` for an unknown game and for an account
+    /// that holds no seat there alike. The caller has already checked who the account is.
+    pub fn authenticate_user(&self, id: GameId, user: UserId) -> Option<SeatAccess> {
+        let games = self.games();
+        let entry = games.get(&id)?;
+        let seat = entry.users.iter().position(|bound| *bound == Some(user))?;
+        Some(SeatAccess {
+            game: id,
+            handle: entry.handle.clone(),
+            seat: PlayerId::from_index(seat),
+            removed: entry.alive.subscribe(),
+        })
+    }
+
+    /// Binds `seat` of a live game to `user` if the seat is nobody's and the user holds no other
+    /// seat of the game; a bound seat never changes hands. The database decides and memory
+    /// follows, so racing accounts get one winner.
+    pub async fn bind_seat(
+        &self,
+        game: GameId,
+        seat: PlayerId,
+        user: UserId,
+    ) -> Result<Binding, RecordError> {
+        let Some(records) = &self.shared.records else {
+            return Ok(Binding::Missing);
+        };
+        {
+            let games = self.games();
+            let Some(entry) = games.get(&game) else {
+                return Ok(Binding::Missing);
+            };
+            match entry.users.get(seat.index()) {
+                None => return Ok(Binding::Missing),
+                Some(Some(holder)) => {
+                    return Ok(if *holder == user {
+                        Binding::Already
+                    } else {
+                        Binding::Taken
+                    });
+                }
+                Some(None) if entry.users.contains(&Some(user)) => return Ok(Binding::Elsewhere),
+                Some(None) => {}
+            }
+        }
+        let outcome = records.bind_user(game, seat, user).await?;
+        if outcome == Binding::Bound
+            && let Some(entry) = self.games().get_mut(&game)
+            && let Some(slot) = entry.users.get_mut(seat.index())
+        {
+            *slot = Some(user);
+        }
+        Ok(outcome)
+    }
+
+    /// The games `user` has a seat in, newest first, at most [`MAX_LISTED_GAMES`]: those in their
+    /// lobby, running and finished, whether or not they are still in memory. Empty for a
+    /// registry without a database.
+    pub async fn games_of(&self, user: UserId) -> Result<Vec<UserGame>, RecordError> {
+        match &self.shared.records {
+            Some(records) => records.list_for_user(user, MAX_LISTED_GAMES).await,
+            None => Ok(Vec::new()),
+        }
     }
 
     /// The public facts of a game; `None` if there is no such game or its actor is gone.

@@ -42,7 +42,14 @@ async fn the_server_alone_creates_only_its_own_tables_and_can_rerun(pool: PgPool
         migrate(&pool).await.unwrap();
         assert_eq!(
             tables(&pool).await,
-            [MIGRATIONS_TABLE, "game_events", "games", "seats"]
+            [
+                MIGRATIONS_TABLE,
+                "game_events",
+                "games",
+                "seats",
+                "sessions",
+                "users"
+            ]
         );
         let rows = recorded(&pool, MIGRATIONS_TABLE).await;
         assert_eq!(rows.len(), shipped());
@@ -95,6 +102,8 @@ async fn both_in_order(pool: PgPool, server_first: bool) {
         "import_runs",
         "printings",
         "seats",
+        "sessions",
+        "users",
     ] {
         assert!(
             names.iter().any(|n| n == expected),

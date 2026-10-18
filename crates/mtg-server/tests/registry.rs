@@ -10,7 +10,7 @@ use mtg_engine::error::SetupError;
 use mtg_protocol::ClientMessage;
 use mtg_server::config::Retention;
 use mtg_server::registry::{CreateError, SeatRequest};
-use mtg_server::{GameHandle, RecipeError, Registry, ServerConfig, demo};
+use mtg_server::{Binding, GameHandle, RecipeError, Registry, ServerConfig, UserId, demo};
 
 fn requests(decks: &[&str]) -> Vec<SeatRequest> {
     decks
@@ -272,4 +272,27 @@ async fn the_janitor_task_sweeps_on_its_own_and_stops_on_request() {
         .await
         .unwrap()
         .unwrap();
+}
+
+#[tokio::test]
+async fn a_registry_without_a_database_has_no_accounts_to_bind() {
+    let registry = Registry::new(&ServerConfig::default());
+    let user = UserId::random();
+    // A creator is ignored: nothing here could ever check who they are.
+    let created = registry.create_for(&pair(), Some(user)).await.unwrap();
+    assert!(registry.authenticate_user(created.id, user).is_none());
+    for number in 0..3 {
+        let outcome = registry.bind_seat(created.id, seat(number), user).await;
+        assert_eq!(outcome.unwrap(), Binding::Missing, "seat {number}");
+    }
+    assert_eq!(registry.games_of(user).await.unwrap(), []);
+    // The seat tokens work as ever.
+    let (first, token) = &created.seats[0];
+    assert_eq!(
+        registry
+            .authenticate(created.id, token.expose())
+            .unwrap()
+            .seat,
+        *first
+    );
 }
