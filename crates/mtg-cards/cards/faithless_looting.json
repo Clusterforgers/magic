@@ -1,0 +1,15 @@
+{
+  "oracle_id": "3d6fa57a-aa53-4b5c-b8af-a7612c823117",
+  "name": "Faithless Looting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faithless Looting",
+      "oracle_fingerprint": "4defe25e5e7b93fc67c6dc2eda87811c",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }, { "Discard": { "count": 2 } }] } },
+        { "Keyword": { "Flashback": "{2}{R}" } }
+      ]
+    }
+  ]
+}

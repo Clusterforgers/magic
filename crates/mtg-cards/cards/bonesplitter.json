@@ -1,0 +1,20 @@
+{
+  "oracle_id": "452e3f5f-ce17-4682-966b-5cc100210aee",
+  "name": "Bonesplitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonesplitter",
+      "oracle_fingerprint": "4efd4203922f640716c9154ed71ca41c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

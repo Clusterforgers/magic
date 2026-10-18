@@ -1,0 +1,16 @@
+{
+  "id": "food",
+  "token": {
+    "name": "Food",
+    "types": ["Artifact"],
+    "subtypes": ["Food"],
+    "abilities": [
+      {
+        "Activated": {
+          "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+          "effects": [{ "GainLife": { "amount": 3 } }]
+        }
+      }
+    ]
+  }
+}

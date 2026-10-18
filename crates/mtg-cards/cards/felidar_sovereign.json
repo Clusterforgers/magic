@@ -1,0 +1,22 @@
+{
+  "oracle_id": "5ae3cbb9-9f0c-4077-ae7c-fba660d7fb4b",
+  "name": "Felidar Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Felidar Sovereign",
+      "oracle_fingerprint": "00d79595ac6e9c5ee3d98ab02705a49a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": { "Compare": { "left": { "Life": "You" }, "op": "Ge", "right": 40 } },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

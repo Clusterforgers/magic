@@ -1,0 +1,11 @@
+{
+  "id": "clue",
+  "token": {
+    "name": "Clue",
+    "types": ["Artifact"],
+    "subtypes": ["Clue"],
+    "abilities": [
+      { "Activated": { "cost": [{ "Mana": "{2}" }, "SacrificeSelf"], "effects": [{ "Draw": {} }] } }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "aa7714b0-2bfb-458a-8ebf-37ec2c53383e",
+  "name": "Fireball",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fireball",
+      "oracle_fingerprint": "2f19fa75606f52a9de16a44dfa62255b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Increase",
+            "mana": "{1}",
+            "per": { "Sum": [{ "TargetCount": 0 }, -1] }
+          }
+        },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": null } }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": { "EvenShare": "X" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

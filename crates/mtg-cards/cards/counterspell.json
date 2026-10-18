@@ -1,0 +1,19 @@
+{
+  "oracle_id": "cc187110-1148-4090-bbb8-e205694a39f5",
+  "name": "Counterspell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Counterspell",
+      "oracle_fingerprint": "6e7e3fa9bb231a1c1910cd956dc7e5c9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

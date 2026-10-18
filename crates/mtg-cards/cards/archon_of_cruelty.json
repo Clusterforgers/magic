@@ -1,0 +1,37 @@
+{
+  "oracle_id": "aa1a6646-c1e6-4bff-9092-43ee3e137914",
+  "name": "Archon of Cruelty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Archon of Cruelty",
+      "oracle_fingerprint": "b68d063ee3b4ff033c607c00f4b59695",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              },
+              { "Discard": { "who": { "Target": 0 } } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 3 } },
+              { "Draw": {} },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

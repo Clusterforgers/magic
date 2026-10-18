@@ -1,0 +1,26 @@
+{
+  "oracle_id": "8539f295-5d58-4436-a73a-b9277c4c7795",
+  "name": "Rampant Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampant Growth",
+      "oracle_fingerprint": "59e6972a275d4ffb6e1bcbb0c3196bf8",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

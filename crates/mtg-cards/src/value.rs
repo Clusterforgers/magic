@@ -1,0 +1,317 @@
+//! Values: amounts, conditions and the small enums they use. They are evaluated, never run.
+
+use std::fmt;
+
+use serde::de::{self, MapAccess, Visitor};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
+
+use crate::refs::{Ref, Selector};
+
+/// A characteristic of an object that has a number.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum StatKind {
+    /// Power.
+    Power,
+    /// Toughness.
+    Toughness,
+    /// Mana value.
+    ManaValue,
+    /// Loyalty.
+    Loyalty,
+}
+
+/// A comparison between two numbers.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum Cmp {
+    /// Equal.
+    Eq,
+    /// Not equal.
+    Ne,
+    /// Less than.
+    Lt,
+    /// Less than or equal.
+    Le,
+    /// Greater than.
+    Gt,
+    /// Greater than or equal.
+    Ge,
+}
+
+impl Cmp {
+    /// Whether `left` compares to `right` this way.
+    pub const fn holds(self, left: i64, right: i64) -> bool {
+        match self {
+            Cmp::Eq => left == right,
+            Cmp::Ne => left != right,
+            Cmp::Lt => left < right,
+            Cmp::Le => left <= right,
+            Cmp::Gt => left > right,
+            Cmp::Ge => left >= right,
+        }
+    }
+}
+
+/// A kind of counter.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum CounterKind {
+    /// A +1/+1 counter.
+    #[serde(rename = "+1/+1")]
+    PlusOnePlusOne,
+    /// A -1/-1 counter.
+    #[serde(rename = "-1/-1")]
+    MinusOneMinusOne,
+    /// A loyalty counter.
+    #[serde(rename = "loyalty")]
+    Loyalty,
+    /// A poison counter.
+    #[serde(rename = "poison")]
+    Poison,
+    /// A charge counter.
+    #[serde(rename = "charge")]
+    Charge,
+    /// Any other counter, by its lowercase name.
+    Other(String),
+}
+
+/// A number, fixed or worked out when the effect runs.
+///
+/// A fixed amount is a bare JSON number; the other forms are serde's usual tagged shape.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum Amount {
+    /// A fixed number.
+    Fixed(i32),
+    /// The X announced for the spell or ability (CR 107.3).
+    X,
+    /// How many objects match the selector when the effect runs.
+    Count(Selector),
+    /// A characteristic of the referenced object (its last known value if it left).
+    Stat {
+        /// The object.
+        of: Ref,
+        /// The characteristic.
+        stat: StatKind,
+    },
+    /// A player's life total.
+    Life(Ref),
+    /// How many counters of a kind are on the object or player.
+    Counters {
+        /// The object or player.
+        on: Ref,
+        /// The kind of counter.
+        counter: CounterKind,
+    },
+    /// The sum of the amounts (negative numbers subtract).
+    Sum(Vec<Amount>),
+    /// This target's share of the amount divided as the controller chose.
+    Divided,
+    /// The amount divided evenly, rounded down, among the targets the effect names.
+    EvenShare(Box<Amount>),
+    /// How many targets were chosen for the target specification with this index.
+    TargetCount(u8),
+}
+
+impl Amount {
+    /// The default amount: one.
+    pub const fn one() -> Amount {
+        Amount::Fixed(1)
+    }
+
+    /// Whether this is the fixed amount one, so serialization can leave it out.
+    pub const fn is_one(&self) -> bool {
+        matches!(self, Amount::Fixed(1))
+    }
+}
+
+/// The tagged forms of [`Amount`], read by serde so errors keep their path.
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+enum Tagged {
+    X,
+    Count(Selector),
+    Stat { of: Ref, stat: StatKind },
+    Life(Ref),
+    Counters { on: Ref, counter: CounterKind },
+    Sum(Vec<Amount>),
+    Divided,
+    EvenShare(Box<Amount>),
+    TargetCount(u8),
+}
+
+/// The tagged forms of [`Amount`] by reference, written by serde.
+#[derive(Serialize)]
+enum TaggedRef<'a> {
+    X,
+    Count(&'a Selector),
+    Stat {
+        of: &'a Ref,
+        stat: StatKind,
+    },
+    Life(&'a Ref),
+    Counters {
+        on: &'a Ref,
+        counter: &'a CounterKind,
+    },
+    Sum(&'a [Amount]),
+    Divided,
+    EvenShare(&'a Amount),
+    TargetCount(u8),
+}
+
+impl From<Tagged> for Amount {
+    fn from(tagged: Tagged) -> Amount {
+        match tagged {
+            Tagged::X => Amount::X,
+            Tagged::Count(selector) => Amount::Count(selector),
+            Tagged::Stat { of, stat } => Amount::Stat { of, stat },
+            Tagged::Life(who) => Amount::Life(who),
+            Tagged::Counters { on, counter } => Amount::Counters { on, counter },
+            Tagged::Sum(parts) => Amount::Sum(parts),
+            Tagged::Divided => Amount::Divided,
+            Tagged::EvenShare(total) => Amount::EvenShare(total),
+            Tagged::TargetCount(index) => Amount::TargetCount(index),
+        }
+    }
+}
+
+impl Serialize for Amount {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        match self {
+            Amount::Fixed(n) => serializer.serialize_i32(*n),
+            Amount::X => TaggedRef::X.serialize(serializer),
+            Amount::Count(selector) => TaggedRef::Count(selector).serialize(serializer),
+            Amount::Stat { of, stat } => TaggedRef::Stat { of, stat: *stat }.serialize(serializer),
+            Amount::Life(who) => TaggedRef::Life(who).serialize(serializer),
+            Amount::Counters { on, counter } => {
+                TaggedRef::Counters { on, counter }.serialize(serializer)
+            }
+            Amount::Sum(parts) => TaggedRef::Sum(parts).serialize(serializer),
+            Amount::Divided => TaggedRef::Divided.serialize(serializer),
+            Amount::EvenShare(total) => TaggedRef::EvenShare(total).serialize(serializer),
+            Amount::TargetCount(index) => TaggedRef::TargetCount(*index).serialize(serializer),
+        }
+    }
+}
+
+struct AmountVisitor;
+
+impl<'de> Visitor<'de> for AmountVisitor {
+    type Value = Amount;
+
+    fn expecting(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("a number, \"X\", \"Divided\", or a one-key map such as {\"Count\": [...]}")
+    }
+
+    fn visit_i64<E: de::Error>(self, value: i64) -> Result<Amount, E> {
+        i32::try_from(value)
+            .map(Amount::Fixed)
+            .map_err(|_| E::custom(format!("amount {value} is out of range")))
+    }
+
+    fn visit_u64<E: de::Error>(self, value: u64) -> Result<Amount, E> {
+        i32::try_from(value)
+            .map(Amount::Fixed)
+            .map_err(|_| E::custom(format!("amount {value} is out of range")))
+    }
+
+    fn visit_str<E: de::Error>(self, value: &str) -> Result<Amount, E> {
+        Tagged::deserialize(de::value::StrDeserializer::<E>::new(value)).map(Amount::from)
+    }
+
+    fn visit_map<A: MapAccess<'de>>(self, map: A) -> Result<Amount, A::Error> {
+        Tagged::deserialize(de::value::MapAccessDeserializer::new(map)).map(Amount::from)
+    }
+}
+
+impl<'de> Deserialize<'de> for Amount {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Amount, D::Error> {
+        deserializer.deserialize_any(AmountVisitor)
+    }
+}
+
+/// A fact about the game, true or false when it is checked.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub enum Condition {
+    /// The condition is false.
+    Not(Box<Condition>),
+    /// Every condition is true.
+    All(Vec<Condition>),
+    /// At least one condition is true.
+    Any(Vec<Condition>),
+    /// Two amounts compare this way.
+    Compare {
+        /// The left amount.
+        left: Amount,
+        /// The comparison.
+        op: Cmp,
+        /// The right amount.
+        right: Amount,
+    },
+    /// The referenced object has the selector's characteristics (its zone is ignored).
+    Matches {
+        /// The object tested.
+        subject: Ref,
+        /// The predicates it must satisfy.
+        selector: Selector,
+    },
+    /// The spell was kicked (any kicker cost was paid).
+    Kicked,
+    /// It is the controller's turn.
+    YourTurn,
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: amounts are bare numbers when fixed and keep serde's tagged shape otherwise, with errors that say what was expected.
+    use super::*;
+    use mtg_core::card::CardType;
+    use rstest::rstest;
+
+    use crate::refs::Pred;
+
+    #[rstest]
+    #[case::fixed(Amount::Fixed(3), "3")]
+    #[case::negative(Amount::Fixed(-1), "-1")]
+    #[case::x(Amount::X, r#""X""#)]
+    #[case::divided(Amount::Divided, r#""Divided""#)]
+    #[case::count(
+        Amount::Count(Selector(vec![Pred::Type(CardType::Creature)])),
+        r#"{"Count":[{"Type":"Creature"}]}"#
+    )]
+    #[case::stat(
+        Amount::Stat { of: Ref::Target(0), stat: StatKind::Power },
+        r#"{"Stat":{"of":{"Target":0},"stat":"Power"}}"#
+    )]
+    #[case::sum(
+        Amount::Sum(vec![Amount::TargetCount(0), Amount::Fixed(-1)]),
+        r#"{"Sum":[{"TargetCount":0},-1]}"#
+    )]
+    #[case::even(Amount::EvenShare(Box::new(Amount::X)), r#"{"EvenShare":"X"}"#)]
+    #[case::counters(
+        Amount::Counters { on: Ref::This, counter: CounterKind::PlusOnePlusOne },
+        r#"{"Counters":{"on":"This","counter":"+1/+1"}}"#
+    )]
+    fn amounts_have_stable_json(#[case] value: Amount, #[case] json: &str) {
+        assert_eq!(serde_json::to_string(&value).unwrap(), json);
+        assert_eq!(serde_json::from_str::<Amount>(json).unwrap(), value);
+    }
+
+    #[rstest]
+    #[case::float("1.5", "expected a number")]
+    #[case::unknown_word(r#""Y""#, "unknown variant `Y`")]
+    #[case::two_keys(r#"{"Life":"You","extra":1}"#, "line 1 column")]
+    #[case::too_big("99999999999", "out of range")]
+    fn bad_amounts_say_why(#[case] json: &str, #[case] expected: &str) {
+        let error = serde_json::from_str::<Amount>(json)
+            .unwrap_err()
+            .to_string();
+        assert!(error.contains(expected), "{error}");
+    }
+
+    #[test]
+    fn comparisons_hold_as_written() {
+        assert!(Cmp::Ge.holds(40, 40));
+        assert!(!Cmp::Lt.holds(2, 2));
+        assert!(Cmp::Ne.holds(1, 2));
+    }
+}

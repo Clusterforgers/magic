@@ -1,0 +1,21 @@
+{
+  "oracle_id": "59e7f2ae-4535-4191-98be-3e65b6b2befa",
+  "name": "Doom Blade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doom Blade",
+      "oracle_fingerprint": "40617ff36b22cc008888b92fb5328535",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
