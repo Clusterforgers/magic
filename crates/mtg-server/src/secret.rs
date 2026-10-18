@@ -59,6 +59,16 @@ impl TokenDigest {
         TokenDigest(Sha256::digest(presented.as_bytes()).into())
     }
 
+    /// A digest read back from storage.
+    pub fn from_bytes(bytes: [u8; 32]) -> TokenDigest {
+        TokenDigest(bytes)
+    }
+
+    /// The raw digest, for storage.
+    pub fn as_bytes(&self) -> &[u8; 32] {
+        &self.0
+    }
+
     /// Whether both digests are equal, without stopping at the first difference.
     pub fn matches(&self, other: &TokenDigest) -> bool {
         self.0
@@ -133,6 +143,14 @@ mod tests {
         let b = SeatToken::generate().unwrap();
         assert!(a.digest().matches(&TokenDigest::of(a.expose())));
         assert!(!a.digest().matches(&b.digest()));
+    }
+
+    #[test]
+    fn digests_survive_storage() {
+        let token = SeatToken::generate().unwrap();
+        let stored = *token.digest().as_bytes();
+        assert!(TokenDigest::from_bytes(stored).matches(&TokenDigest::of(token.expose())));
+        assert!(!TokenDigest::from_bytes([0; 32]).matches(&token.digest()));
     }
 
     #[rstest]
