@@ -3,11 +3,12 @@ import type { ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import type { ManaCost, ManaPool, ManaType, ObjectId } from '@/protocol/generated'
 import { costPips } from '../cardModel'
+import { LIFE_PER_SYMBOL } from '../manaSymbols'
 import { ManaDot } from '../ManaPool'
 import { ManaPips } from '../ManaPips'
 import { manaName, spendWords } from './payText'
 import { MANA_TYPES, manaOf, poolLeft } from './payment'
-import type { Spend } from './payment'
+import type { LifeChoice, Spend } from './payment'
 
 const PIP_SIZE = 'size-5 text-xs'
 
@@ -26,6 +27,19 @@ const Quiet = ({ children }: { children: ReactNode }) => (
   <span className="text-xs text-muted-foreground">{children}</span>
 )
 
+/** The life side of the summary: the life total, what paying would leave and a switch for each Phyrexian symbol. */
+export interface LifeSummary {
+  /** The payer's life total now. */
+  total: number
+  /** Life the payment pays so far. */
+  paid: number
+  /** One switch per symbol life can pay. */
+  choices: readonly LifeChoice[]
+  /** What the symbol can be paid with besides life, in words, for the switch's name: "white mana". */
+  words(index: number): string
+  onToggle(index: number): void
+}
+
 /** Props of `PaymentSummary`. */
 export interface PaymentSummaryProps {
   cost: ManaCost
@@ -43,6 +57,8 @@ export interface PaymentSummaryProps {
   /** Takes the piece at this place in the payment back; Undo takes the last. */
   onRemove(index: number): void
   onClear(): void
+  /** Present when the cost has a symbol that life can pay. */
+  life?: LifeSummary
 }
 
 /**
@@ -61,6 +77,7 @@ export function PaymentSummary({
   onSpendPool,
   onRemove,
   onClear,
+  life,
 }: PaymentSummaryProps) {
   const root = useRef<HTMLDivElement>(null)
   const refocus = useRef<number | null>(null)
@@ -119,6 +136,7 @@ export function PaymentSummary({
           })
         )}
       </Row>
+      {life === undefined ? null : <LifeRow life={life} cost={cost} />}
       <Row label="Paying with">
         {empty ? <Quiet>nothing yet</Quiet> : null}
         {spends.map((spend, index) => {
@@ -182,5 +200,55 @@ export function PaymentSummary({
         )}
       </Row>
     </div>
+  )
+}
+
+/** The Phyrexian symbols of the cost, each with a switch that pays 2 life for it instead of mana, and the life that leaves. */
+function LifeRow({ life, cost }: { life: LifeSummary; cost: ManaCost }) {
+  const pips = costPips(cost)
+  const total = life.choices.reduce<Map<string, number>>((counts, choice) => {
+    const symbol = pips[choice.index]?.symbol ?? ''
+    return counts.set(symbol, (counts.get(symbol) ?? 0) + 1)
+  }, new Map())
+  const seen = new Map<string, number>()
+  return (
+    <Row label="Life">
+      <Quiet>
+        {life.paid === 0
+          ? `You have ${life.total} life.`
+          : `You have ${life.total} life, ${life.total - life.paid} after paying ${life.paid}.`}
+      </Quiet>
+      {life.choices.map((choice) => {
+        const pip = pips[choice.index]
+        const symbol = pip?.symbol ?? ''
+        const nth = (seen.get(symbol) ?? 0) + 1
+        seen.set(symbol, nth)
+        // Equal symbols get a number, so their switches can be told apart.
+        const several = total.get(symbol) ?? 1
+        const which = several > 1 ? `, ${nth} of ${several}` : ''
+        return (
+          <Button
+            key={choice.index}
+            type="button"
+            variant="outline"
+            size="sm"
+            data-slot="pay-life"
+            // Not `disabled`: a button that goes dead under the keyboard would drop its focus.
+            aria-disabled={!choice.available}
+            aria-pressed={choice.paid}
+            aria-label={`Pay ${LIFE_PER_SYMBOL} life instead of ${life.words(choice.index)}${which}`}
+            className="h-9 gap-1.5 px-2 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+            onClick={() => {
+              if (choice.available) life.onToggle(choice.index)
+            }}
+          >
+            {pip === undefined ? null : <ManaPips pips={[pip]} sizeClass={PIP_SIZE} label="Symbol" />}
+            <span aria-hidden="true">
+              {choice.paid ? `Paying ${LIFE_PER_SYMBOL} life` : `Pay ${LIFE_PER_SYMBOL} life`}
+            </span>
+          </Button>
+        )
+      })}
+    </Row>
   )
 }

@@ -40,12 +40,15 @@ const payOptions = (text: string, given: Sources, over: Partial<PayOptions> = {}
   sources: sourcesOf(given),
   auto_available: true,
   can_cancel: true,
+  life: 20,
+  max_life: 0,
   ...over,
 })
 /** A payment: floating mana, and `[land, ability]` for each tap. */
 const payment = (floating: string[], taps: [number, number][]): Payment => ({
   pool: floating.map(manaOfLetter),
   taps: taps.map(([index, ability]) => ({ object: must(lands[index]), ability })),
+  life: 0,
 })
 
 /** The table of seat 0 facing the payment `given`, with an `answer` spy that accepts everything. */

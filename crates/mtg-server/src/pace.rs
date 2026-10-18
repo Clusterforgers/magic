@@ -218,6 +218,8 @@ mod tests {
                 sources: Vec::new(),
                 auto_available: true,
                 can_cancel: true,
+                life: 20,
+                max_life: 0,
             }),
             DecisionKind::DeclareAttackers(AttackOptions {
                 attackers: Vec::new(),

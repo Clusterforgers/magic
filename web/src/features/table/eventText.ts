@@ -140,6 +140,7 @@ function describePublic(event: Event, n: EventNames): LogLine {
     return quiet(`${n.seat(event.ManaSpent.player)} spends ${symbols}`)
   }
   if ('ManaPoolEmptied' in event) return quiet(`${n.seat(event.ManaPoolEmptied.player)}'s mana pool empties`)
+  if ('LifePaid' in event) return line(`${n.seat(event.LifePaid.player)} pays ${event.LifePaid.amount} life`)
   if ('CardDrawn' in event)
     return line(`${n.seat(event.CardDrawn.player)} draws ${n.card(event.CardDrawn.object)}`)
   if ('DrewFromEmptyLibrary' in event) {

@@ -47,6 +47,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ManaAdded: [{ ManaAdded: { player: 0, mana: 'Green', source: 3 } }, 'Ana adds {G} from Forest'],
   ManaSpent: [{ ManaSpent: { player: 0, mana: ['Green', 'Red', 'Colorless'] } }, 'Ana spends {G}{R}{C}'],
   ManaPoolEmptied: [{ ManaPoolEmptied: { player: 0 } }, "Ana's mana pool empties"],
+  LifePaid: [{ LifePaid: { player: 1, amount: 4 } }, 'Bo pays 4 life'],
   CardDrawn: [{ CardDrawn: { player: 0, object: 3 } }, 'Ana draws Forest'],
   DrewFromEmptyLibrary: [{ DrewFromEmptyLibrary: { player: 1 } }, 'Bo tries to draw from an empty library'],
   CardDiscarded: [{ CardDiscarded: { player: 0, object: 2 } }, 'Ana discards Hill Giant'],
