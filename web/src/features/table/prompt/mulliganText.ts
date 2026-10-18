@@ -16,7 +16,7 @@ export function mulliganText(options: MulliganOptions): string {
       ? 'You have not taken a mulligan yet.'
       : `You have taken ${taken} ${taken === 1 ? 'mulligan' : 'mulligans'} so far.`
   if (!can) return `Keep ${thisHand}? ${soFar} You cannot take another.`
-  const drawn = size === 0 ? 'a new hand' : `${cards(size)} new`
+  const drawn = size === 0 ? 'a new hand' : `${size} new ${size === 1 ? 'card' : 'cards'}`
   const cost = `${taken === 0 ? 'A' : 'Another'} mulligan draws ${drawn}, then puts ${cards(taken + 1)} on the bottom of your library.`
   return `Keep ${thisHand}, or take a mulligan? ${soFar} ${cost}`
 }
