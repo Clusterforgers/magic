@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e6555cca-e608-4c87-b835-9cd47fd1f543",
+  "name": "Tireless Tracker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tireless Tracker",
+      "oracle_fingerprint": "f79b05b72dfef471566e388b3efcc949",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Subtype": "Clue" }], "by": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

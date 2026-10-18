@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d6d72f5f-8f5d-4180-b514-f22ff5482902",
+  "name": "Bonecrusher Giant // Stomp",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonecrusher Giant",
+      "oracle_fingerprint": "3618b0f3ed700f6bd1a2add542921393",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesTarget": { "what": ["This"], "by": ["Spell"] } },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 2 } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Stomp",
+      "oracle_fingerprint": "a7c562eb1cf3b9072e684de88c0229bd",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              { "Rule": { "rule": "DamageCantBePrevented", "duration": "UntilEndOfTurn" } },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

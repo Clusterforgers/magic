@@ -1,0 +1,31 @@
+{
+  "oracle_id": "697bcfe1-ecbf-42a1-bfc7-0766d48ca56b",
+  "name": "Dockside Extortionist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dockside Extortionist",
+      "oracle_fingerprint": "1ead093b32aaae9dec095a2f5e256874",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": { "Named": "treasure" },
+                  "count": {
+                    "Count": [
+                      { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                      { "ControlledBy": "Opponents" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

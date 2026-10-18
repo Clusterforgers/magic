@@ -1,0 +1,49 @@
+{
+  "oracle_id": "a07698f6-5ad5-49a3-9da2-f82d407f5cd7",
+  "name": "Izzet Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Izzet Charm",
+      "oracle_fingerprint": "ee16d4591d7c349e7d5b6dac89def0ef",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Counter",
+                      "targets": [
+                        { "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }
+                      ],
+                      "effects": [
+                        {
+                          "Pay": {
+                            "who": { "ControllerOf": { "Target": 0 } },
+                            "cost": "{2}",
+                            "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Damage",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                    },
+                    {
+                      "label": "Loot",
+                      "effects": [{ "Draw": { "count": 2 } }, { "Discard": { "count": 2 } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

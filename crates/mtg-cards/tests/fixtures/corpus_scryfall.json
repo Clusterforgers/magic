@@ -1,0 +1,1039 @@
+[
+  {
+    "id": "9a52c265-6920-4929-ba0a-70da08df01f1",
+    "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+    "name": "Anointed Procession",
+    "lang": "en",
+    "layout": "normal",
+    "set": "akh",
+    "collector_number": "2",
+    "rarity": "rare",
+    "released_at": "2017-04-28",
+    "digital": false,
+    "mana_cost": "{3}{W}",
+    "cmc": 4.0,
+    "type_line": "Enchantment",
+    "oracle_text": "If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "95ff951b-a098-409c-86c8-373b6c9f8331",
+    "oracle_id": "aa1a6646-c1e6-4bff-9092-43ee3e137914",
+    "name": "Archon of Cruelty",
+    "lang": "en",
+    "layout": "normal",
+    "set": "frc",
+    "collector_number": "47",
+    "rarity": "mythic",
+    "released_at": "2026-10-02",
+    "digital": false,
+    "mana_cost": "{6}{B}{B}",
+    "cmc": 8.0,
+    "type_line": "Creature — Archon",
+    "oracle_text": "Flying\nWhenever this creature enters or attacks, target opponent sacrifices a creature or planeswalker of their choice, discards a card, and loses 3 life. You draw a card and gain 3 life.",
+    "power": "6",
+    "toughness": "6",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Flying"
+    ]
+  },
+  {
+    "id": "e2f12f6f-9383-47e6-a44f-2834ad130e51",
+    "oracle_id": "3f0c9466-5ab9-4205-a84f-b4b27b5a678e",
+    "name": "Bloodbraid Elf",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2x2",
+    "collector_number": "184",
+    "rarity": "uncommon",
+    "released_at": "2022-07-08",
+    "digital": false,
+    "mana_cost": "{2}{R}{G}",
+    "cmc": 4.0,
+    "type_line": "Creature — Elf Berserker",
+    "oracle_text": "Haste (This creature can attack and {T} as soon as it comes under your control.)\nCascade (When you cast this spell, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order.)",
+    "power": "3",
+    "toughness": "2",
+    "colors": [
+      "G",
+      "R"
+    ],
+    "color_identity": [
+      "G",
+      "R"
+    ],
+    "keywords": [
+      "Haste",
+      "Cascade"
+    ]
+  },
+  {
+    "id": "b5b71cd2-de35-451f-b16e-2e3936169407",
+    "oracle_id": "d6d72f5f-8f5d-4180-b514-f22ff5482902",
+    "name": "Bonecrusher Giant // Stomp",
+    "lang": "en",
+    "layout": "adventure",
+    "set": "clb",
+    "collector_number": "781",
+    "rarity": "rare",
+    "released_at": "2022-06-10",
+    "digital": false,
+    "mana_cost": "{2}{R} // {1}{R}",
+    "cmc": 3.0,
+    "type_line": "Creature — Giant // Instant — Adventure",
+    "power": "4",
+    "toughness": "3",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [],
+    "card_faces": [
+      {
+        "name": "Bonecrusher Giant",
+        "mana_cost": "{2}{R}",
+        "type_line": "Creature — Giant",
+        "oracle_text": "Whenever this creature becomes the target of a spell, this creature deals 2 damage to that spell's controller.",
+        "power": "4",
+        "toughness": "3"
+      },
+      {
+        "name": "Stomp",
+        "mana_cost": "{1}{R}",
+        "type_line": "Instant — Adventure",
+        "oracle_text": "Damage can't be prevented this turn. Stomp deals 2 damage to any target."
+      }
+    ]
+  },
+  {
+    "id": "690972a8-72df-4050-a353-16e45589167c",
+    "oracle_id": "452e3f5f-ce17-4682-966b-5cc100210aee",
+    "name": "Bonesplitter",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmr",
+    "collector_number": "458",
+    "rarity": "common",
+    "released_at": "2020-11-20",
+    "digital": false,
+    "mana_cost": "{1}",
+    "cmc": 1.0,
+    "type_line": "Artifact — Equipment",
+    "oracle_text": "Equipped creature gets +2/+0.\nEquip {1}",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Equip"
+    ]
+  },
+  {
+    "id": "ec7d6864-7b6b-4f74-8474-9b9ec96b1d33",
+    "oracle_id": "36cd2364-d113-47d1-b2c4-b088d9eb88dd",
+    "name": "Brainstorm",
+    "lang": "en",
+    "layout": "normal",
+    "set": "frc",
+    "collector_number": "39",
+    "rarity": "common",
+    "released_at": "2026-10-02",
+    "digital": false,
+    "mana_cost": "{U}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Draw three cards, then put two cards from your hand on top of your library in any order.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "aec5d380-d354-4750-931a-6c91853e2edc",
+    "oracle_id": "ac2086fe-98ee-4280-9c7c-c5c2d6548a8b",
+    "name": "Burst Lightning",
+    "lang": "en",
+    "layout": "normal",
+    "set": "fdn",
+    "collector_number": "192",
+    "rarity": "common",
+    "released_at": "2024-11-15",
+    "digital": false,
+    "mana_cost": "{R}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Kicker {4} (You may pay an additional {4} as you cast this spell.)\nBurst Lightning deals 2 damage to any target. If this spell was kicked, it deals 4 damage instead.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Kicker"
+    ]
+  },
+  {
+    "id": "4f616706-ec97-4923-bb1e-11a69fbaa1f8",
+    "oracle_id": "cc187110-1148-4090-bbb8-e205694a39f5",
+    "name": "Counterspell",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dsc",
+    "collector_number": "114",
+    "rarity": "uncommon",
+    "released_at": "2024-09-27",
+    "digital": false,
+    "mana_cost": "{U}{U}",
+    "cmc": 2.0,
+    "type_line": "Instant",
+    "oracle_text": "Counter target spell.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "e60deb92-f7dd-4f4e-9036-e47dd586f985",
+    "oracle_id": "8b755881-a72d-4e21-a369-d2924eb4585a",
+    "name": "Cultivate",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msc",
+    "collector_number": "172",
+    "rarity": "common",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{2}{G}",
+    "cmc": 3.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Search your library for up to two basic land cards, reveal those cards, put one onto the battlefield tapped and the other into your hand, then shuffle.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "6904ea20-e504-47da-95a0-08739fdde260",
+    "oracle_id": "edd531b9-f615-4399-8c8c-1c5e18c4acbf",
+    "name": "Delver of Secrets // Insectile Aberration",
+    "lang": "en",
+    "layout": "transform",
+    "set": "inr",
+    "collector_number": "60",
+    "rarity": "common",
+    "released_at": "2025-01-24",
+    "digital": false,
+    "cmc": 1.0,
+    "type_line": "Creature — Human Wizard // Creature — Human Insect",
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Flying",
+      "Transform"
+    ],
+    "card_faces": [
+      {
+        "name": "Delver of Secrets",
+        "mana_cost": "{U}",
+        "type_line": "Creature — Human Wizard",
+        "oracle_text": "At the beginning of your upkeep, look at the top card of your library. You may reveal that card. If an instant or sorcery card is revealed this way, transform this creature.",
+        "power": "1",
+        "toughness": "1",
+        "colors": [
+          "U"
+        ]
+      },
+      {
+        "name": "Insectile Aberration",
+        "mana_cost": "",
+        "type_line": "Creature — Human Insect",
+        "oracle_text": "Flying",
+        "power": "3",
+        "toughness": "2",
+        "colors": [
+          "U"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "9e2e3efb-75cb-430f-b9f4-cb58f3aeb91b",
+    "oracle_id": "697bcfe1-ecbf-42a1-bfc7-0766d48ca56b",
+    "name": "Dockside Extortionist",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2x2",
+    "collector_number": "107",
+    "rarity": "mythic",
+    "released_at": "2022-07-08",
+    "digital": false,
+    "mana_cost": "{1}{R}",
+    "cmc": 2.0,
+    "type_line": "Creature — Goblin Pirate",
+    "oracle_text": "When this creature enters, create X Treasure tokens, where X is the number of artifacts and enchantments your opponents control. (Treasure tokens are artifacts with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+    "power": "1",
+    "toughness": "2",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Treasure"
+    ],
+    "produced_mana": [
+      "B",
+      "G",
+      "R",
+      "U",
+      "W"
+    ]
+  },
+  {
+    "id": "5dcd0c4e-4047-47a2-8969-c62616d457c2",
+    "oracle_id": "59e7f2ae-4535-4191-98be-3e65b6b2befa",
+    "name": "Doom Blade",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msc",
+    "collector_number": "576",
+    "rarity": "uncommon",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{1}{B}",
+    "cmc": 2.0,
+    "type_line": "Instant",
+    "oracle_text": "Destroy target nonblack creature.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "39704000-65d3-4d39-849e-a3b617376bbc",
+    "oracle_id": "30b24e8e-3b0e-4d8e-90f3-f66eb7c1858c",
+    "name": "Eternal Witness",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmm",
+    "collector_number": "286",
+    "rarity": "uncommon",
+    "released_at": "2023-08-04",
+    "digital": false,
+    "mana_cost": "{1}{G}{G}",
+    "cmc": 3.0,
+    "type_line": "Creature — Human Shaman",
+    "oracle_text": "When this creature enters, you may return target card from your graveyard to your hand.",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "fc019ffa-4461-4f3d-ab8d-e4d20e77ca0c",
+    "oracle_id": "3d6fa57a-aa53-4b5c-b8af-a7612c823117",
+    "name": "Faithless Looting",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "244",
+    "rarity": "common",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{R}",
+    "cmc": 1.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Draw two cards, then discard two cards.\nFlashback {2}{R} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Flashback"
+    ]
+  },
+  {
+    "id": "039499c3-0b35-4e8e-b0c9-bdf0b4cd90d5",
+    "oracle_id": "5ae3cbb9-9f0c-4077-ae7c-fba660d7fb4b",
+    "name": "Felidar Sovereign",
+    "lang": "en",
+    "layout": "normal",
+    "set": "bfz",
+    "collector_number": "26",
+    "rarity": "rare",
+    "released_at": "2015-10-02",
+    "digital": false,
+    "mana_cost": "{4}{W}{W}",
+    "cmc": 6.0,
+    "type_line": "Creature — Cat Beast",
+    "oracle_text": "Vigilance (Attacking doesn't cause this creature to tap.)\nLifelink (Damage dealt by this creature also causes you to gain that much life.)\nAt the beginning of your upkeep, if you have 40 or more life, you win the game.",
+    "power": "4",
+    "toughness": "6",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Lifelink",
+      "Vigilance"
+    ]
+  },
+  {
+    "id": "18303862-4726-4136-814f-157aa7006579",
+    "oracle_id": "ae92942b-919c-4ea9-b693-85fcef765d5a",
+    "name": "Fire // Ice",
+    "lang": "en",
+    "layout": "split",
+    "set": "dmr",
+    "collector_number": "215",
+    "rarity": "uncommon",
+    "released_at": "2023-01-13",
+    "digital": false,
+    "mana_cost": "{1}{R} // {1}{U}",
+    "cmc": 4.0,
+    "type_line": "Instant // Instant",
+    "colors": [
+      "R",
+      "U"
+    ],
+    "color_identity": [
+      "R",
+      "U"
+    ],
+    "keywords": [],
+    "card_faces": [
+      {
+        "name": "Fire",
+        "mana_cost": "{1}{R}",
+        "type_line": "Instant",
+        "oracle_text": "Fire deals 2 damage divided as you choose among one or two targets."
+      },
+      {
+        "name": "Ice",
+        "mana_cost": "{1}{U}",
+        "type_line": "Instant",
+        "oracle_text": "Tap target permanent.\nDraw a card."
+      }
+    ]
+  },
+  {
+    "id": "df45a43e-a5b7-4fd4-873b-7b3c021be198",
+    "oracle_id": "aa7714b0-2bfb-458a-8ebf-37ec2c53383e",
+    "name": "Fireball",
+    "lang": "en",
+    "layout": "normal",
+    "set": "clb",
+    "collector_number": "175",
+    "rarity": "uncommon",
+    "released_at": "2022-06-10",
+    "digital": false,
+    "mana_cost": "{X}{R}",
+    "cmc": 1.0,
+    "type_line": "Sorcery",
+    "oracle_text": "This spell costs {1} more to cast for each target beyond the first.\nFireball deals X damage divided evenly, rounded down, among any number of targets.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "8f85e12c-196b-4459-b81f-0c9c854e9f57",
+    "oracle_id": "f3c7af78-a77d-4134-82a2-a5ce84285a84",
+    "name": "Flooded Strand",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mh3",
+    "collector_number": "220",
+    "rarity": "rare",
+    "released_at": "2024-06-14",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Land",
+    "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Plains or Island card, put it onto the battlefield, then shuffle.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": []
+  },
+  {
+    "id": "2e781bfd-f8cb-4d20-b977-4359f3a21311",
+    "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+    "name": "Forest",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mdd",
+    "collector_number": "301",
+    "rarity": "common",
+    "released_at": "2027-04-09",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Basic Land — Forest",
+    "oracle_text": "({T}: Add {G}.)",
+    "colors": [],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "G"
+    ]
+  },
+  {
+    "id": "25b0b816-0583-44aa-9dc5-f3ff48993a51",
+    "oracle_id": "7c427c3d-ecd8-45ef-bebd-8f10f4a311db",
+    "name": "Gaea's Cradle",
+    "lang": "en",
+    "layout": "normal",
+    "set": "usg",
+    "collector_number": "321",
+    "rarity": "rare",
+    "released_at": "1998-10-12",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Legendary Land",
+    "oracle_text": "{T}: Add {G} for each creature you control.",
+    "colors": [],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "G"
+    ]
+  },
+  {
+    "id": "fd1f95bf-48ea-455a-8a6c-0249b11c8900",
+    "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
+    "name": "Giant Growth",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msh",
+    "collector_number": "167",
+    "rarity": "common",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{G}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Target creature gets +3/+3 until end of turn.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "409f9b88-f03e-40b6-9883-68c14c37c0de",
+    "oracle_id": "14c8f55d-d177-4c25-a931-ebeb9e6062a0",
+    "name": "Grizzly Bears",
+    "lang": "en",
+    "layout": "normal",
+    "set": "10e",
+    "collector_number": "268",
+    "rarity": "common",
+    "released_at": "2007-07-13",
+    "digital": false,
+    "mana_cost": "{1}{G}",
+    "cmc": 2.0,
+    "type_line": "Creature — Bear",
+    "oracle_text": "",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "8ca58965-1dfa-40ac-b6c8-f957167ff066",
+    "oracle_id": "454a8902-8120-4373-96ee-bbf352b04e8d",
+    "name": "Hero of Bladehold",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tdc",
+    "collector_number": "119",
+    "rarity": "mythic",
+    "released_at": "2025-04-11",
+    "digital": false,
+    "mana_cost": "{2}{W}{W}",
+    "cmc": 4.0,
+    "type_line": "Creature — Human Knight",
+    "oracle_text": "Battle cry (Whenever this creature attacks, each other attacking creature gets +1/+0 until end of turn.)\nWhenever this creature attacks, create two 1/1 white Soldier creature tokens that are tapped and attacking.",
+    "power": "3",
+    "toughness": "4",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Battle Cry"
+    ]
+  },
+  {
+    "id": "15af0592-a1cb-4b1e-b051-dde978939706",
+    "oracle_id": "a07698f6-5ad5-49a3-9da2-f82d407f5cd7",
+    "name": "Izzet Charm",
+    "lang": "en",
+    "layout": "normal",
+    "set": "rvr",
+    "collector_number": "190",
+    "rarity": "uncommon",
+    "released_at": "2024-01-12",
+    "digital": false,
+    "mana_cost": "{U}{R}",
+    "cmc": 2.0,
+    "type_line": "Instant",
+    "oracle_text": "Choose one —\n• Counter target noncreature spell unless its controller pays {2}.\n• Izzet Charm deals 2 damage to target creature.\n• Draw two cards, then discard two cards.",
+    "colors": [
+      "R",
+      "U"
+    ],
+    "color_identity": [
+      "R",
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "c8817585-0d32-4d56-9142-0d29512e86a9",
+    "oracle_id": "7f77a84e-5a4b-4834-aefa-3cecc175ae8e",
+    "name": "Jace, the Mind Sculptor",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2xm",
+    "collector_number": "56",
+    "rarity": "mythic",
+    "released_at": "2020-08-07",
+    "digital": false,
+    "mana_cost": "{2}{U}{U}",
+    "cmc": 4.0,
+    "type_line": "Legendary Planeswalker — Jace",
+    "oracle_text": "+2: Look at the top card of target player's library. You may put that card on the bottom of that player's library.\n0: Draw three cards, then put two cards from your hand on top of your library in any order.\n−1: Return target creature to its owner's hand.\n−12: Exile all cards from target player's library, then that player shuffles their hand into their library.",
+    "loyalty": "3",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "7673784e-db4b-43a1-8d55-1bb9fc1e284f",
+    "oracle_id": "4457ed35-7c10-48c8-9776-456485fdf070",
+    "name": "Lightning Bolt",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msc",
+    "collector_number": "806",
+    "rarity": "uncommon",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{R}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Lightning Bolt deals 3 damage to any target.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "6a0b230b-d391-4998-a3f7-7b158a0ec2cd",
+    "oracle_id": "68954295-54e3-4303-a6bc-fc4547a4e3a3",
+    "name": "Llanowar Elves",
+    "lang": "en",
+    "layout": "normal",
+    "set": "fdn",
+    "collector_number": "227",
+    "rarity": "common",
+    "released_at": "2024-11-15",
+    "digital": false,
+    "mana_cost": "{G}",
+    "cmc": 1.0,
+    "type_line": "Creature — Elf Druid",
+    "oracle_text": "{T}: Add {G}.",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "G"
+    ]
+  },
+  {
+    "id": "3de308cc-14ac-407e-99e7-568572ecd0e7",
+    "oracle_id": "24d0f5e7-0d9e-4b76-900e-a7274e80312d",
+    "name": "Mulldrifter",
+    "lang": "en",
+    "layout": "normal",
+    "set": "ecc",
+    "collector_number": "67",
+    "rarity": "uncommon",
+    "released_at": "2026-01-23",
+    "digital": false,
+    "mana_cost": "{4}{U}",
+    "cmc": 5.0,
+    "type_line": "Creature — Elemental",
+    "oracle_text": "Flying\nWhen this creature enters, draw two cards.\nEvoke {2}{U} (You may cast this spell for its evoke cost. If you do, it's sacrificed when it enters.)",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Flying",
+      "Evoke"
+    ]
+  },
+  {
+    "id": "bbc99a51-1501-4525-a3cc-f48249b64bed",
+    "oracle_id": "713332c1-5bd8-400f-bfff-c1ca0697a043",
+    "name": "Opt",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tdc",
+    "collector_number": "158",
+    "rarity": "common",
+    "released_at": "2025-04-11",
+    "digital": false,
+    "mana_cost": "{U}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Scry 1. (Look at the top card of your library. You may put that card on the bottom.)\nDraw a card.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Scry"
+    ]
+  },
+  {
+    "id": "433eed50-81af-4a59-b624-57b6f5f1bb0f",
+    "oracle_id": "5f5e0b10-c8cf-450c-bfd3-bcb0528ec330",
+    "name": "Pacifism",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msc",
+    "collector_number": "575",
+    "rarity": "common",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{1}{W}",
+    "cmc": 2.0,
+    "type_line": "Enchantment — Aura",
+    "oracle_text": "Enchant creature\nEnchanted creature can't attack or block.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Enchant"
+    ]
+  },
+  {
+    "id": "998d0cc8-ca2a-41c3-ab65-d05c26ab8278",
+    "oracle_id": "76678885-3674-443d-b9a2-2a460cf6aac0",
+    "name": "Panharmonicon",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2x2",
+    "collector_number": "310",
+    "rarity": "rare",
+    "released_at": "2022-07-08",
+    "digital": false,
+    "mana_cost": "{4}",
+    "cmc": 4.0,
+    "type_line": "Artifact",
+    "oracle_text": "If an artifact or creature entering causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": []
+  },
+  {
+    "id": "e41cf82d-3213-47ce-a015-6e51a8b07e4f",
+    "oracle_id": "b685757b-521e-4353-a233-97052359723d",
+    "name": "Questing Beast",
+    "lang": "en",
+    "layout": "normal",
+    "set": "eld",
+    "collector_number": "171",
+    "rarity": "mythic",
+    "released_at": "2019-10-04",
+    "digital": false,
+    "mana_cost": "{2}{G}{G}",
+    "cmc": 4.0,
+    "type_line": "Legendary Creature — Beast",
+    "oracle_text": "Vigilance, deathtouch, haste\nQuesting Beast can't be blocked by creatures with power 2 or less.\nCombat damage that would be dealt by creatures you control can't be prevented.\nWhenever Questing Beast deals combat damage to an opponent, it deals that much damage to target planeswalker that player controls.",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Vigilance",
+      "Haste",
+      "Deathtouch"
+    ]
+  },
+  {
+    "id": "b7c47024-5e08-4b17-b41a-7647f8b814b9",
+    "oracle_id": "8539f295-5d58-4436-a73a-b9277c4c7795",
+    "name": "Rampant Growth",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tdc",
+    "collector_number": "265",
+    "rarity": "common",
+    "released_at": "2025-04-11",
+    "digital": false,
+    "mana_cost": "{1}{G}",
+    "cmc": 2.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "9f37c5b6-a59c-45cd-9a99-e9357fe9ea1b",
+    "oracle_id": "53236dd7-845a-444c-96d5-f41ed7325d8f",
+    "name": "Rhystic Study",
+    "lang": "en",
+    "layout": "normal",
+    "set": "j22",
+    "collector_number": "114",
+    "rarity": "rare",
+    "released_at": "2022-12-02",
+    "digital": false,
+    "mana_cost": "{2}{U}",
+    "cmc": 3.0,
+    "type_line": "Enchantment",
+    "oracle_text": "Whenever an opponent casts a spell, you may draw a card unless that player pays {1}.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "b8c5e74c-96e7-4a1f-93b7-14d776fe4b2d",
+    "oracle_id": "4b7ac066-e5c7-43e6-9e7e-2739b24a905d",
+    "name": "Serra Angel",
+    "lang": "en",
+    "layout": "normal",
+    "set": "fdn",
+    "collector_number": "740",
+    "rarity": "uncommon",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{3}{W}{W}",
+    "cmc": 5.0,
+    "type_line": "Creature — Angel",
+    "oracle_text": "Flying\nVigilance (Attacking doesn't cause this creature to tap.)",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Flying",
+      "Vigilance"
+    ]
+  },
+  {
+    "id": "a45b4ca9-4355-4690-84c3-a7d44c367dbf",
+    "oracle_id": "e7aee670-e6ac-4b3a-b3d1-7b7013db8f3d",
+    "name": "Sneak Attack",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dmr",
+    "collector_number": "139",
+    "rarity": "mythic",
+    "released_at": "2023-01-13",
+    "digital": false,
+    "mana_cost": "{3}{R}",
+    "cmc": 4.0,
+    "type_line": "Enchantment",
+    "oracle_text": "{R}: You may put a creature card from your hand onto the battlefield. That creature gains haste. Sacrifice the creature at the beginning of the next end step.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "8ee443cc-e17a-493b-9c93-1f9e141a30e4",
+    "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+    "name": "Sol Ring",
+    "lang": "en",
+    "layout": "normal",
+    "set": "frc",
+    "collector_number": "21",
+    "rarity": "uncommon",
+    "released_at": "2026-10-02",
+    "digital": false,
+    "mana_cost": "{1}",
+    "cmc": 1.0,
+    "type_line": "Artifact",
+    "oracle_text": "{T}: Add {C}{C}.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [],
+    "produced_mana": [
+      "C"
+    ]
+  },
+  {
+    "id": "f7e12477-d59f-442b-a678-1be746d0b7be",
+    "oracle_id": "b1544f21-7e98-461b-aed5-e748b0168c52",
+    "name": "Swords to Plowshares",
+    "lang": "en",
+    "layout": "normal",
+    "set": "frc",
+    "collector_number": "37",
+    "rarity": "uncommon",
+    "released_at": "2026-10-02",
+    "digital": false,
+    "mana_cost": "{W}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Exile target creature. Its controller gains life equal to its power.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "66444549-ad9b-49c6-a7c6-34e977c1085d",
+    "oracle_id": "e6555cca-e608-4c87-b835-9cd47fd1f543",
+    "name": "Tireless Tracker",
+    "lang": "en",
+    "layout": "normal",
+    "set": "eoc",
+    "collector_number": "110",
+    "rarity": "rare",
+    "released_at": "2025-08-01",
+    "digital": false,
+    "mana_cost": "{2}{G}",
+    "cmc": 3.0,
+    "type_line": "Creature — Human Scout",
+    "oracle_text": "Landfall — Whenever a land you control enters, investigate. (Create a Clue token. It's an artifact with \"{2}, Sacrifice this token: Draw a card.\")\nWhenever you sacrifice a Clue, put a +1/+1 counter on this creature.",
+    "power": "3",
+    "toughness": "2",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Investigate",
+      "Landfall"
+    ]
+  },
+  {
+    "id": "537d2b05-3f52-45d6-8fe3-26282085d0c6",
+    "oracle_id": "34515b16-c9a4-4f98-8c77-416a7a523407",
+    "name": "Wrath of God",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmm",
+    "collector_number": "70",
+    "rarity": "rare",
+    "released_at": "2023-08-04",
+    "digital": false,
+    "mana_cost": "{2}{W}{W}",
+    "cmc": 4.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Destroy all creatures. They can't be regenerated.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  }
+]

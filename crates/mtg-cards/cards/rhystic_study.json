@@ -1,0 +1,27 @@
+{
+  "oracle_id": "53236dd7-845a-444c-96d5-f41ed7325d8f",
+  "name": "Rhystic Study",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhystic Study",
+      "oracle_fingerprint": "b01edb4edf239cd0b4116ab58ea2fb90",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "by": "Opponents" } },
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Triggering",
+                  "cost": "{1}",
+                  "unpaid": [{ "May": { "effects": [{ "Draw": {} }] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

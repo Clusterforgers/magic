@@ -1,0 +1,16 @@
+{
+  "id": "treasure",
+  "token": {
+    "name": "Treasure",
+    "types": ["Artifact"],
+    "subtypes": ["Treasure"],
+    "abilities": [
+      {
+        "Activated": {
+          "cost": ["Tap", "SacrificeSelf"],
+          "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+        }
+      }
+    ]
+  }
+}

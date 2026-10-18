@@ -1,0 +1,12 @@
+{
+  "oracle_id": "3f0c9466-5ab9-4205-a84f-b4b27b5a678e",
+  "name": "Bloodbraid Elf",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodbraid Elf",
+      "oracle_fingerprint": "c7db9e2b7ca09f82688e4a0f302b2135",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": "Cascade" }]
+    }
+  ]
+}

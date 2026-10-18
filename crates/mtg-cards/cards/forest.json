@@ -1,0 +1,7 @@
+{
+  "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+  "name": "Forest",
+  "impl_status": "Full",
+  "faces": [{ "name": "Forest", "oracle_fingerprint": "6215eab3372e7128de713b41e7758fc9" }],
+  "notes": "The mana ability comes from the Forest subtype (CR 305.6), not from data."
+}

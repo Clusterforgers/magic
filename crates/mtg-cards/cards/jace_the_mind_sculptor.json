@@ -1,0 +1,81 @@
+{
+  "oracle_id": "7f77a84e-5a4b-4834-aefa-3cecc175ae8e",
+  "name": "Jace, the Mind Sculptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace, the Mind Sculptor",
+      "oracle_fingerprint": "cc266626ee19d856afeac7eef99fbe53",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LookAtTop": { "who": { "Target": 0 }, "as": "top" } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Bound": "top" },
+                        "to": { "Library": { "place": "Bottom" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "back"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "back" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 12 },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Each": [{ "In": "Hand" }, { "OwnedBy": { "Target": 0 } }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

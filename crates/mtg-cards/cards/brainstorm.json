@@ -1,0 +1,33 @@
+{
+  "oracle_id": "36cd2364-d113-47d1-b2c4-b088d9eb88dd",
+  "name": "Brainstorm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brainstorm",
+      "oracle_fingerprint": "565cea493e38fbb7cdec078181bf5d74",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 3 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "count": { "min": 2, "max": 2 },
+                  "as": "back"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "back" },
+                  "to": { "Library": { "place": "Top", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

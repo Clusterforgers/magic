@@ -1,0 +1,22 @@
+{
+  "oracle_id": "24d0f5e7-0d9e-4b76-900e-a7274e80312d",
+  "name": "Mulldrifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mulldrifter",
+      "oracle_fingerprint": "1a4287c1f096f3298eedade0142efdcc",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        },
+        { "Keyword": { "Evoke": "{2}{U}" } }
+      ]
+    }
+  ],
+  "notes": "The evoke sacrifice is part of the Evoke keyword; the engine adds that trigger."
+}

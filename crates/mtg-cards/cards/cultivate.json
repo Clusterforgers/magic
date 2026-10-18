@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8b755881-a72d-4e21-a369-d2924eb4585a",
+  "name": "Cultivate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cultivate",
+      "oracle_fingerprint": "f8952bf1d76fc6e53e288385c7844b5b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Choose": { "from": { "Bound": "found" }, "as": "battlefield", "rest_as": "hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "battlefield" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Move": { "what": { "Bound": "hand" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
