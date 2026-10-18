@@ -10,7 +10,9 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use common::{Step, run_game, unique_setup, visible_ids};
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::{Event, GameSetup};
 use mtg_protocol::{EventBatch, ObjectView, StateView, project_events};
+use mtg_testkit::symbol_fuzz_setup;
 use rstest::rstest;
 
 /// How often (in answers) a snapshot is also checked to survive its JSON form.
@@ -78,6 +80,7 @@ struct Tally {
     upserted: usize,
     gone: usize,
     snapshots: usize,
+    life_paid: usize,
 }
 
 #[rstest]
@@ -91,10 +94,47 @@ fn folding_batches_reproduces_the_true_view_for_every_seat(
     #[case] players: usize,
     #[case] seed: u64,
 ) {
+    let tally = check_the_fold(unique_setup(players, seed), players, seed);
+    assert!(
+        tally.batches > 500 && tally.upserted > 300 && tally.gone > 0 && tally.snapshots > 10,
+        "test must not be vacuous: {} batches, {} upserted, {} gone, {} snapshots",
+        tally.batches,
+        tally.upserted,
+        tally.gone,
+        tally.snapshots
+    );
+}
+
+/// Cards that cost hybrid and Phyrexian symbols and payments that take life: costs, life totals and the
+/// `LifePaid` event reach every seat's view the way everything else does.
+#[rstest]
+#[case(2, 71)]
+#[case(3, 72)]
+#[case(4, 73)]
+fn folding_batches_reproduces_the_true_view_in_games_of_hybrid_and_phyrexian_costs(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let tally = check_the_fold(symbol_fuzz_setup(players, seed), players, seed);
+    assert!(
+        tally.batches > 500 && tally.upserted > 300 && tally.life_paid > 0,
+        "test must not be vacuous: {} batches, {} upserted, {} payments of life",
+        tally.batches,
+        tally.upserted,
+        tally.life_paid
+    );
+}
+
+fn check_the_fold(setup: GameSetup, players: usize, seed: u64) -> Tally {
     let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
     let mut views: Vec<Option<StateView>> = vec![None; players];
     let mut tally = Tally::default();
-    let engine = run_game(unique_setup(players, seed), seed, |step: &Step| {
+    let engine = run_game(setup, seed, |step: &Step| {
+        tally.life_paid += step
+            .events
+            .iter()
+            .filter(|event| matches!(event, Event::LifePaid { .. }))
+            .count();
         let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
         for (viewer, batch) in viewers.iter().zip(&batches) {
             let context = format!("seed {seed} answer {} viewer {viewer:?}", step.answers);
@@ -132,12 +172,5 @@ fn folding_batches_reproduces_the_true_view_for_every_seat(
         }
     });
     assert!(engine.result().is_some(), "game should finish");
-    assert!(
-        tally.batches > 500 && tally.upserted > 300 && tally.gone > 0 && tally.snapshots > 10,
-        "test must not be vacuous: {} batches, {} upserted, {} gone, {} snapshots",
-        tally.batches,
-        tally.upserted,
-        tally.gone,
-        tally.snapshots
-    );
+    tally
 }

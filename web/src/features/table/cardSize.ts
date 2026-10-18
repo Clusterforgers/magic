@@ -62,6 +62,44 @@ export const PIP: Record<PipTone, string> = {
   generic: 'bg-muted text-foreground',
 }
 
+/** The ink that reads on a fill of this tone. */
+export const PIP_INK: Record<PipTone, string> = {
+  white: 'text-foreground',
+  blue: 'text-white',
+  black: 'text-white',
+  red: 'text-white',
+  green: 'text-white',
+  gold: 'text-foreground',
+  colorless: 'text-foreground',
+  generic: 'text-foreground',
+}
+
+// A split symbol (hybrid) is a diagonal gradient with a hard edge in the middle: `from` is the upper left half and
+// `to` the lower right one. Whole class names, so Tailwind can see them.
+/** The upper left half of a split mana symbol. */
+export const PIP_FROM: Record<PipTone, string> = {
+  white: 'from-mana-white',
+  blue: 'from-mana-blue',
+  black: 'from-mana-black',
+  red: 'from-mana-red',
+  green: 'from-mana-green',
+  gold: 'from-mana-gold',
+  colorless: 'from-mana-colorless',
+  generic: 'from-muted',
+}
+
+/** The lower right half of a split mana symbol. */
+export const PIP_TO: Record<PipTone, string> = {
+  white: 'to-mana-white',
+  blue: 'to-mana-blue',
+  black: 'to-mana-black',
+  red: 'to-mana-red',
+  green: 'to-mana-green',
+  gold: 'to-mana-gold',
+  colorless: 'to-mana-colorless',
+  generic: 'to-muted',
+}
+
 /** How the decision layer's marks look on a card. */
 export const HIGHLIGHT: Record<Highlight, string> = {
   legal: 'ring-2 ring-primary',

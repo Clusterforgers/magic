@@ -1,0 +1,1376 @@
+# Every distinct mana_cost string in Scryfall's oracle-cards bulk file of 2026-10-17 (38753 cards).
+# card: cost of a single-faced card, with its cmc and colors (- for none, ? when only devoid or color-indicator cards carry it).
+# face: cost of one face of a multi-faced card. faces: the card-level "A // B" text of a split or adventure card.
+# kind<TAB>mana_cost[<TAB>cmc<TAB>colors]
+card	{0}	0	-
+card	{1}	1	-
+card	{1}{2/U}{2/R}	5	RU
+card	{1}{B}	2	B
+card	{1}{B}{B}	3	B
+card	{1}{B}{B}{B}	4	B
+card	{1}{B}{B}{B}{B}	5	B
+card	{1}{B}{B}{B}{G}{G}{G}	7	BG
+card	{1}{B}{B}{G}	4	BG
+card	{1}{B}{B}{R}{R}	5	BR
+card	{1}{B}{B/G}{G}	4	BG
+card	{1}{B}{G}	3	BG
+card	{1}{B}{G}{G}	4	BG
+card	{1}{B}{G}{U}	4	BGU
+card	{1}{B}{R}	3	BR
+card	{1}{B}{R}{G}	4	BGR
+card	{1}{B}{R}{R}	4	BR
+card	{1}{B/G}	2	BG
+card	{1}{B/G}{B/G}	3	BG
+card	{1}{B/G}{B/G}{B/G}	4	BG
+card	{1}{B/G}{R}	3	BGR
+card	{1}{B/P}	2	B
+card	{1}{B/P}{B/P}	3	B
+card	{1}{B/R}	2	BR
+card	{1}{B/R}{B/R}	3	BR
+card	{1}{B/R}{B/R}{B/R}	4	BR
+card	{1}{B/R}{R}{R/G}	4	BGR
+card	{1}{C}	2	-
+card	{1}{C}{G}	3	?
+card	{1}{C}{R}	3	?
+card	{1}{G}	2	G
+card	{1}{G}{2/U}{2/R}	6	GRU
+card	{1}{G}{G}	3	G
+card	{1}{G}{G}{G}	4	G
+card	{1}{G}{G}{G}{G}	5	G
+card	{1}{G}{G}{U}	4	GU
+card	{1}{G}{G}{W}	4	GW
+card	{1}{G}{G}{W}{W}	5	GW
+card	{1}{G}{G/U}{U}	4	GU
+card	{1}{G}{G/W/P}{W}	4	GW
+card	{1}{G}{U}	3	GU
+card	{1}{G}{U}{R}	4	GRU
+card	{1}{G}{U}{U}	4	GU
+card	{1}{G}{W}	3	GW
+card	{1}{G}{W}{U}	4	GUW
+card	{1}{G}{W}{W}	4	GW
+card	{1}{G/U}	2	GU
+card	{1}{G/U}{G/U}	3	GU
+card	{1}{G/W}	2	GW
+card	{1}{G/W}{G/W}	3	GW
+card	{1}{G/W}{G/W}{G/W}	4	GW
+card	{1}{R}	2	R
+card	{1}{R}{G}	3	GR
+card	{1}{R}{G}{G}	4	GR
+card	{1}{R}{G}{W}	4	GRW
+card	{1}{R}{G}{W}{U}	5	GRUW
+card	{1}{R}{R}	3	R
+card	{1}{R}{R}{G}	4	GR
+card	{1}{R}{R}{R}	4	R
+card	{1}{R}{R}{R}{R}	5	R
+card	{1}{R}{R}{W}	4	RW
+card	{1}{R}{R/W/P}{W}	4	RW
+card	{1}{R}{W}	3	RW
+card	{1}{R}{W}{B}	4	BRW
+card	{1}{R}{W}{W}	4	RW
+card	{1}{R/G}	2	GR
+card	{1}{R/G}{R/G}	3	GR
+card	{1}{R/G}{R/G}{R/G}	4	GR
+card	{1}{R/W}	2	RW
+card	{1}{R/W}{R/W}	3	RW
+card	{1}{U}	2	U
+card	{1}{U}{B}	3	BU
+card	{1}{U}{B}{B}	4	BU
+card	{1}{U}{B}{R}	4	BRU
+card	{1}{U}{G}	3	GU
+card	{1}{U}{R}	3	RU
+card	{1}{U}{R}{W}	4	RUW
+card	{1}{U}{U}	3	U
+card	{1}{U}{U}{B}	4	BU
+card	{1}{U}{U}{R}	4	RU
+card	{1}{U}{U}{R}{R}	5	RU
+card	{1}{U}{U}{U}	4	U
+card	{1}{U}{U}{U}{U}	5	U
+card	{1}{U}{U/R}{R}	4	RU
+card	{1}{U/B}	2	BU
+card	{1}{U/B}{U/B}	3	BU
+card	{1}{U/B}{U/B}{G}{G}	5	BGU
+card	{1}{U/B}{U/B}{U/B}	4	BU
+card	{1}{U/R}	2	RU
+card	{1}{U/R}{U/R}	3	RU
+card	{1}{W}	2	W
+card	{1}{W}{B}	3	BW
+card	{1}{W}{B}{B}	4	BW
+card	{1}{W}{B}{G}	4	BGW
+card	{1}{W}{U}	3	UW
+card	{1}{W}{U}{B}	4	BUW
+card	{1}{W}{U}{B}{R}	5	BRUW
+card	{1}{W}{U}{B}{R}{G}	6	BGRUW
+card	{1}{W}{U}{G}	4	GUW
+card	{1}{W}{U}{U}	4	UW
+card	{1}{W}{W}	3	W
+card	{1}{W}{W}{B}	4	BW
+card	{1}{W}{W}{B}{B}	5	BW
+card	{1}{W}{W}{U}	4	UW
+card	{1}{W}{W}{U}{U}	5	UW
+card	{1}{W}{W}{W}	4	W
+card	{1}{W}{W}{W}{W}	5	W
+card	{1}{W/B}	2	BW
+card	{1}{W/B}{W/B}	3	BW
+card	{1}{W/B}{W/B}{W/B}	4	BW
+card	{1}{W/P}	2	W
+card	{1}{W/U}	2	UW
+card	{1}{W/U}{W/U}	3	UW
+card	{1}{W/U}{W/U}{W/U}	4	UW
+card	{10}	10	-
+card	{10}{B}	11	B
+card	{10}{B}{B}	12	B
+card	{10}{G}	11	G
+card	{10}{G}{G}	12	G
+card	{10}{G}{G}{G}{W}{W}	15	GW
+card	{10}{R}{R}	12	R
+card	{10}{U}{U}	12	U
+card	{1000000}	1000000	-
+card	{11}	11	-
+card	{12}	12	-
+card	{12}{U}{U}	14	U
+card	{13}	13	-
+card	{13}{B}{B}	15	B
+card	{14}{G}	15	G
+card	{15}	15	-
+card	{16}	16	-
+card	{2}	2	-
+card	{2}{B}	3	B
+card	{2}{B}{B}	4	B
+card	{2}{B}{B}{B}	5	B
+card	{2}{B}{B}{G}	5	BG
+card	{2}{B}{B}{G}{G}	6	BG
+card	{2}{B}{B}{R}	5	BR
+card	{2}{B}{B}{R}{R}	6	BR
+card	{2}{B}{B}{R}{R}{G}{G}	8	BGR
+card	{2}{B}{G}	4	BG
+card	{2}{B}{G}{G}	5	BG
+card	{2}{B}{G}{U}	5	BGU
+card	{2}{B}{R}	4	BR
+card	{2}{B}{R}{G}	5	BGR
+card	{2}{B}{R}{R}	5	BR
+card	{2}{B/G}	3	BG
+card	{2}{B/G}{B/G}	4	BG
+card	{2}{B/G}{B/G}{B/G}	5	BG
+card	{2}{B/P}{B/P}	4	B
+card	{2}{B/R}	3	BR
+card	{2}{B/R}{B/R}	4	BR
+card	{2}{C}	3	-
+card	{2}{C}{C}	4	-
+card	{2}{C}{C}{C}{2}	7	-
+card	{2}{G}	3	G
+card	{2}{G}{G}	4	G
+card	{2}{G}{G}{G}	5	G
+card	{2}{G}{G}{G}{G}	6	G
+card	{2}{G}{G}{U}	5	GU
+card	{2}{G}{G}{U}{U}	6	GU
+card	{2}{G}{G}{W}	5	GW
+card	{2}{G}{G}{W}{W}	6	GW
+card	{2}{G}{G}{W}{W}{U}{U}	8	GUW
+card	{2}{G}{G/U/P}{U}	5	GU
+card	{2}{G}{U}	4	GU
+card	{2}{G}{U}{R}	5	GRU
+card	{2}{G}{U}{U}	5	GU
+card	{2}{G}{W}	4	GW
+card	{2}{G}{W}{U}	5	GUW
+card	{2}{G}{W}{W}	5	GW
+card	{2}{G/U}	3	GU
+card	{2}{G/U}{G/U}	4	GU
+card	{2}{G/U}{G/U}{G/U}	5	GU
+card	{2}{G/U}{W}	4	GUW
+card	{2}{G/W}	3	GW
+card	{2}{G/W}{G/W}	4	GW
+card	{2}{G/W}{G/W}{G/W}	5	GW
+card	{2}{R}	3	R
+card	{2}{R}{D}	3	R
+card	{2}{R}{G}	4	GR
+card	{2}{R}{G}{W}	5	GRW
+card	{2}{R}{G/W}	4	GRW
+card	{2}{R}{R}	4	R
+card	{2}{R}{R}{G}	5	GR
+card	{2}{R}{R}{G}{G}	6	GR
+card	{2}{R}{R}{G}{G}{W}{W}	8	GRW
+card	{2}{R}{R}{R}	5	R
+card	{2}{R}{R}{R}{G}	6	GR
+card	{2}{R}{R}{R}{R}	6	R
+card	{2}{R}{R}{W}	5	RW
+card	{2}{R}{R}{W}{W}	6	RW
+card	{2}{R}{R}{W}{W}{B}{B}	8	BRW
+card	{2}{R}{R/G/P}{G}	5	GR
+card	{2}{R}{W}	4	RW
+card	{2}{R}{W}{B}	5	BRW
+card	{2}{R/G}	3	GR
+card	{2}{R/G}{R/G}	4	GR
+card	{2}{R/G}{U}	4	GRU
+card	{2}{R/W}	3	RW
+card	{2}{R/W}{G}	4	GRW
+card	{2}{R/W}{R/W}	4	RW
+card	{2}{R/W}{R/W}{R/W}	5	RW
+card	{2}{U}	3	U
+card	{2}{U}{B}	4	BU
+card	{2}{U}{B}{B}	5	BU
+card	{2}{U}{B}{R}	5	BRU
+card	{2}{U}{G}	4	GU
+card	{2}{U}{R}	4	RU
+card	{2}{U}{R}{W}	5	RUW
+card	{2}{U}{U}	4	U
+card	{2}{U}{U}{B}	5	BU
+card	{2}{U}{U}{B}{B}	6	BU
+card	{2}{U}{U}{B}{B}{R}{R}	8	BRU
+card	{2}{U}{U}{R}	5	RU
+card	{2}{U}{U}{R}{R}	6	RU
+card	{2}{U}{U}{U}	5	U
+card	{2}{U}{U}{U}{U}	6	U
+card	{2}{U}{U/P}	4	U
+card	{2}{U/B}	3	BU
+card	{2}{U/B}{B}{B/R}	5	BRU
+card	{2}{U/B}{U/B}	4	BU
+card	{2}{U/B}{U/B}{U/B}	5	BU
+card	{2}{U/P}	3	U
+card	{2}{U/R}	3	RU
+card	{2}{U/R}{B}	4	BRU
+card	{2}{U/R}{U/R}	4	RU
+card	{2}{W}	3	W
+card	{2}{W}{B}	4	BW
+card	{2}{W}{B}{B}	5	BW
+card	{2}{W}{B}{G}	5	BGW
+card	{2}{W}{R}{G}	5	GRW
+card	{2}{W}{U}	4	UW
+card	{2}{W}{U}{B}	5	BUW
+card	{2}{W}{U}{B}{R}{G}	7	BGRUW
+card	{2}{W}{U}{U}	5	UW
+card	{2}{W}{U}{U}{B}	6	BUW
+card	{2}{W}{W}	4	W
+card	{2}{W}{W}{B}	5	BW
+card	{2}{W}{W}{B}{B}	6	BW
+card	{2}{W}{W}{U}	5	UW
+card	{2}{W}{W}{U}{U}	6	UW
+card	{2}{W}{W}{U}{U}{B}{B}	8	BUW
+card	{2}{W}{W}{W}	5	W
+card	{2}{W}{W}{W}{W}	6	W
+card	{2}{W}{W/B}{B}	5	BW
+card	{2}{W/B}	3	BW
+card	{2}{W/B}{U}	4	BUW
+card	{2}{W/B}{W/B}	4	BW
+card	{2}{W/B}{W/B}{W/B}	5	BW
+card	{2}{W/P}	3	W
+card	{2}{W/U}	3	UW
+card	{2}{W/U}{W/U}	4	UW
+card	{2/B}{2/B}{2/B}	6	B
+card	{2/B}{2/G}{2/U}	6	BGU
+card	{2/B}{2/R}{2/G}	6	BGR
+card	{2/G}{2/G}	4	G
+card	{2/G}{2/G}{2/G}	6	G
+card	{2/G}{2/U}{2/R}	6	GRU
+card	{2/R}{2/R}{2/R}	6	R
+card	{2/R}{2/W}{2/B}	6	BRW
+card	{2/U}{2/R}{2/W}	6	RUW
+card	{2/U}{2/U}{2/U}	6	U
+card	{2/W}{2/B}{2/G}	6	BGW
+card	{2/W}{2/U}{2/B}{2/R}{2/G}	10	BGRUW
+card	{2/W}{2/W}{2/W}	6	W
+card	{3}	3	-
+card	{3}{B}	4	B
+card	{3}{B}{B}	5	B
+card	{3}{B}{B}{B}	6	B
+card	{3}{B}{B}{B}{B}	7	B
+card	{3}{B}{B}{G}	6	BG
+card	{3}{B}{B}{R}	6	BR
+card	{3}{B}{B}{R}{R}	7	BR
+card	{3}{B}{G}	5	BG
+card	{3}{B}{G}{U}	6	BGU
+card	{3}{B}{R}	5	BR
+card	{3}{B}{R}{G}	6	BGR
+card	{3}{B}{R}{R}	6	BR
+card	{3}{B/G}	4	BG
+card	{3}{B/G}{B/G}	5	BG
+card	{3}{B/G}{B/G}{B/G}	6	BG
+card	{3}{B/G}{R}	5	BGR
+card	{3}{B/R}{B/R}	5	BR
+card	{3}{C}	4	-
+card	{3}{C}{C}	5	-
+card	{3}{C}{C}{C}	6	-
+card	{3}{G}	4	G
+card	{3}{G}{G}	5	G
+card	{3}{G}{G}{G}	6	G
+card	{3}{G}{G}{G}{G}	7	G
+card	{3}{G}{G}{G/P}{G/P}	7	G
+card	{3}{G}{G}{U}{U}	7	GU
+card	{3}{G}{G}{W}	6	GW
+card	{3}{G}{G}{W}{W}	7	GW
+card	{3}{G}{U}	5	GU
+card	{3}{G}{U}{R}	6	GRU
+card	{3}{G}{U}{U}	6	GU
+card	{3}{G}{W}	5	GW
+card	{3}{G}{W}{U}	6	GUW
+card	{3}{G}{W}{U}{B}	7	BGUW
+card	{3}{G}{W}{W}	6	GW
+card	{3}{G/P}	4	G
+card	{3}{G/U}	4	GU
+card	{3}{G/U}{G/U}	5	GU
+card	{3}{G/U}{G/U}{G/U}	6	GU
+card	{3}{G/W}	4	GW
+card	{3}{G/W}{G/W}	5	GW
+card	{3}{R}	4	R
+card	{3}{R}{G}	5	GR
+card	{3}{R}{G}{G}	6	GR
+card	{3}{R}{G}{W}	6	GRW
+card	{3}{R}{R}	5	R
+card	{3}{R}{R}{G}	6	GR
+card	{3}{R}{R}{G}{G}	7	GR
+card	{3}{R}{R}{R}	6	R
+card	{3}{R}{R}{R}{R}	7	R
+card	{3}{R}{R}{W}	6	RW
+card	{3}{R}{R/W}{W}	6	RW
+card	{3}{R}{W}	5	RW
+card	{3}{R}{W}{B}	6	BRW
+card	{3}{R}{W}{W}	6	RW
+card	{3}{R/G}	4	GR
+card	{3}{R/G}{R/G}	5	GR
+card	{3}{R/P}	4	R
+card	{3}{R/P}{R/P}	5	R
+card	{3}{R/W}	4	RW
+card	{3}{R/W}{R/W}	5	RW
+card	{3}{U}	4	U
+card	{3}{U}{B}	5	BU
+card	{3}{U}{B}{B}	6	BU
+card	{3}{U}{B}{R}	6	BRU
+card	{3}{U}{R}	5	RU
+card	{3}{U}{R}{R}	6	RU
+card	{3}{U}{R}{W}	6	RUW
+card	{3}{U}{U}	5	U
+card	{3}{U}{U}{B}	6	BU
+card	{3}{U}{U}{B}{B}	7	BU
+card	{3}{U}{U}{R}{R}	7	RU
+card	{3}{U}{U}{U}	6	U
+card	{3}{U/B}	4	BU
+card	{3}{U/B}{U/B}	5	BU
+card	{3}{U/B}{U/B}{U/B}	6	BU
+card	{3}{U/P}	4	U
+card	{3}{U/R}	4	RU
+card	{3}{U/R}{B}	5	BRU
+card	{3}{U/R}{U/R}	5	RU
+card	{3}{U/R}{U/R}{U/R}	6	RU
+card	{3}{W}	4	W
+card	{3}{W}{B}	5	BW
+card	{3}{W}{B}{B}	6	BW
+card	{3}{W}{B}{G}	6	BGW
+card	{3}{W}{U}	5	UW
+card	{3}{W}{U}{B}	6	BUW
+card	{3}{W}{U}{B}{R}	7	BRUW
+card	{3}{W}{U}{B}{R}{G}	8	BGRUW
+card	{3}{W}{U}{U}	6	UW
+card	{3}{W}{W}	5	W
+card	{3}{W}{W}{B}{B}	7	BW
+card	{3}{W}{W}{U}	6	UW
+card	{3}{W}{W}{U}{U}	7	UW
+card	{3}{W}{W}{W}	6	W
+card	{3}{W}{W}{W}{W}	7	W
+card	{3}{W/B}	4	BW
+card	{3}{W/B}{W/B}	5	BW
+card	{3}{W/B}{W/B}{W/B}	6	BW
+card	{3}{W/P}{W/P}	5	W
+card	{3}{W/U}	4	UW
+card	{3}{W/U}{W/U}	5	UW
+card	{3}{W/U}{W/U}{W/U}	6	UW
+card	{4}	4	-
+card	{4}{B}	5	B
+card	{4}{B}{B}	6	B
+card	{4}{B}{B}{B}	7	B
+card	{4}{B}{B}{B}{B}	8	B
+card	{4}{B}{B}{G}{G}	8	BG
+card	{4}{B}{B}{R}	7	BR
+card	{4}{B}{B}{R}{R}	8	BR
+card	{4}{B}{B/P}	6	B
+card	{4}{B}{G}	6	BG
+card	{4}{B}{G}{U}	7	BGU
+card	{4}{B}{R}	6	BR
+card	{4}{B}{R}{G}	7	BGR
+card	{4}{B}{R}{R}	7	BR
+card	{4}{B}{R}{R}{G}	8	BGR
+card	{4}{B/G}	5	BG
+card	{4}{B/G}{B/G}	6	BG
+card	{4}{B/G}{B/G}{B/G}	7	BG
+card	{4}{B/P}	5	B
+card	{4}{B/P}{B/P}{B/P}	7	B
+card	{4}{B/R}	5	BR
+card	{4}{C}	5	-
+card	{4}{C}{C}	6	-
+card	{4}{G}	5	G
+card	{4}{G}{G}	6	G
+card	{4}{G}{G}{G}	7	G
+card	{4}{G}{G}{G}{G}	8	G
+card	{4}{G}{G}{U}	7	GU
+card	{4}{G}{G}{W}{W}	8	GW
+card	{4}{G}{U}	6	GU
+card	{4}{G}{U}{R}	7	GRU
+card	{4}{G}{W}	6	GW
+card	{4}{G}{W}{U}	7	GUW
+card	{4}{G}{W}{W}{U}	8	GUW
+card	{4}{G/P}{G/P}	6	G
+card	{4}{G/U}{G/U}	6	GU
+card	{4}{G/U}{G/U}{G/U}	7	GU
+card	{4}{G/W}	5	GW
+card	{4}{R}	5	R
+card	{4}{R}{G}	6	GR
+card	{4}{R}{G}{G}{W}	8	GRW
+card	{4}{R}{G}{W}	7	GRW
+card	{4}{R}{R}	6	R
+card	{4}{R}{R}{G}	7	GR
+card	{4}{R}{R}{G}{G}	8	GR
+card	{4}{R}{R}{R}	7	R
+card	{4}{R}{R}{R}{R}	8	R
+card	{4}{R}{R}{W}	7	RW
+card	{4}{R}{R}{W}{W}	8	RW
+card	{4}{R}{W}	6	RW
+card	{4}{R}{W}{B}	7	BRW
+card	{4}{R}{W}{W}	7	RW
+card	{4}{R/G}	5	GR
+card	{4}{R/G}{R/G}	6	GR
+card	{4}{R/G}{R/G}{R/G}	7	GR
+card	{4}{R/P}	5	R
+card	{4}{R/P}{R/P}	6	R
+card	{4}{R/W}{R/W}	6	RW
+card	{4}{U}	5	U
+card	{4}{U}{B}	6	BU
+card	{4}{U}{B}{B}{R}	8	BRU
+card	{4}{U}{B}{R}	7	BRU
+card	{4}{U}{R}	6	RU
+card	{4}{U}{R}{R}	7	RU
+card	{4}{U}{R}{W}	7	RUW
+card	{4}{U}{U}	6	U
+card	{4}{U}{U}{U}	7	U
+card	{4}{U}{U}{U}{U}	8	U
+card	{4}{U/B}	5	BU
+card	{4}{U/B}{U/B}	6	BU
+card	{4}{U/R}{U/R}	6	RU
+card	{4}{W}	5	W
+card	{4}{W}{B}	6	BW
+card	{4}{W}{B}{B}	7	BW
+card	{4}{W}{B}{G}	7	BGW
+card	{4}{W}{R}	6	RW
+card	{4}{W}{U}	6	UW
+card	{4}{W}{U}{B}	7	BUW
+card	{4}{W}{U}{B}{R}{G}	9	BGRUW
+card	{4}{W}{U}{U}{B}	8	BUW
+card	{4}{W}{W}	6	W
+card	{4}{W}{W}{B}{B}	8	BW
+card	{4}{W}{W}{U}	7	UW
+card	{4}{W}{W}{W}	7	W
+card	{4}{W/B}{W/B}	6	BW
+card	{4}{W/B}{W/B}{W/B}	7	BW
+card	{4}{W/U}	5	UW
+card	{4}{W/U}{W/U}	6	UW
+card	{4}{W/U}{W/U}{W/U}{W/U}	8	UW
+card	{5}	5	-
+card	{5}{B}	6	B
+card	{5}{B}{B}	7	B
+card	{5}{B}{B}{B}	8	B
+card	{5}{B}{G}	7	BG
+card	{5}{B}{G}{U}	8	BGU
+card	{5}{B}{R}	7	BR
+card	{5}{B}{R}{G}	8	BGR
+card	{5}{B/G}{B/G}	7	BG
+card	{5}{B/R}	6	BR
+card	{5}{B/R}{B/R}{B/R}	8	BR
+card	{5}{C}	6	-
+card	{5}{C}{C}	7	-
+card	{5}{G}	6	G
+card	{5}{G}{G}	7	G
+card	{5}{G}{G}{G}	8	G
+card	{5}{G}{U}	7	GU
+card	{5}{G}{U}{R}	8	GRU
+card	{5}{G}{U}{U}	8	GU
+card	{5}{G}{W}	7	GW
+card	{5}{R}	6	R
+card	{5}{R}{G}	7	GR
+card	{5}{R}{G}{W}	8	GRW
+card	{5}{R}{R}	7	R
+card	{5}{R}{R}{R}	8	R
+card	{5}{R}{W}	7	RW
+card	{5}{R}{W}{B}	8	BRW
+card	{5}{R/G}	6	GR
+card	{5}{R/G}{R/G}	7	GR
+card	{5}{U}	6	U
+card	{5}{U}{B}	7	BU
+card	{5}{U}{B}{B}	8	BU
+card	{5}{U}{B}{R}	8	BRU
+card	{5}{U}{G}	7	GU
+card	{5}{U}{R}	7	RU
+card	{5}{U}{U}	7	U
+card	{5}{U}{U}{U}	8	U
+card	{5}{U}{U}{U}{U}	9	U
+card	{5}{U/B}	6	BU
+card	{5}{U/B}{U/B}	7	BU
+card	{5}{U/R}{U/R}	7	RU
+card	{5}{W}	6	W
+card	{5}{W}{B}	7	BW
+card	{5}{W}{B}{G}	8	BGW
+card	{5}{W}{U}	7	UW
+card	{5}{W}{U}{B}	8	BUW
+card	{5}{W}{U}{B}{R}{G}	10	BGRUW
+card	{5}{W}{W}	7	W
+card	{5}{W}{W}{U}	8	UW
+card	{5}{W}{W}{W}	8	W
+card	{6}	6	-
+card	{6}{B}	7	B
+card	{6}{B}{B}	8	B
+card	{6}{B}{B}{B}	9	B
+card	{6}{B}{G}	8	BG
+card	{6}{B}{R}	8	BR
+card	{6}{C}	7	-
+card	{6}{C}{C}	8	-
+card	{6}{G}	7	G
+card	{6}{G}{G}	8	G
+card	{6}{G}{G}{G}	9	G
+card	{6}{G}{U}	8	GU
+card	{6}{G}{W}	8	GW
+card	{6}{R}	7	R
+card	{6}{R}{G}	8	GR
+card	{6}{R}{G}{W}	9	GRW
+card	{6}{R}{R}	8	R
+card	{6}{R}{R}{R}	9	R
+card	{6}{U}	7	U
+card	{6}{U}{B}	8	BU
+card	{6}{U}{G}	8	GU
+card	{6}{U}{R}	8	RU
+card	{6}{U}{U}	8	U
+card	{6}{U}{U}{U}	9	U
+card	{6}{W}	7	W
+card	{6}{W}{B}	8	BW
+card	{6}{W}{U}	8	UW
+card	{6}{W}{U}{B}	9	BUW
+card	{6}{W}{W}	8	W
+card	{6}{W}{W}{W}	9	W
+card	{7}	7	-
+card	{7}{B}	8	B
+card	{7}{B}{B}	9	B
+card	{7}{B}{B}{B}	10	B
+card	{7}{B}{G}	9	BG
+card	{7}{G}	8	G
+card	{7}{G}{G}	9	G
+card	{7}{G}{G}{G}	10	G
+card	{7}{R}	8	R
+card	{7}{R}{R}	9	R
+card	{7}{R}{R}{R}	10	R
+card	{7}{U}	8	U
+card	{7}{U}{U}	9	U
+card	{7}{U}{U}{U}	10	U
+card	{7}{W}	8	W
+card	{7}{W}{U}	9	UW
+card	{7}{W}{W}	9	W
+card	{7}{W}{W}{W}	10	W
+card	{8}	8	-
+card	{8}{B}	9	B
+card	{8}{B}{B}	10	B
+card	{8}{B}{B}{B}	11	B
+card	{8}{B}{B}{G}{G}	12	BG
+card	{8}{B}{B}{R}	11	BR
+card	{8}{C}{C}	10	-
+card	{8}{C/P}{C/P}	10	-
+card	{8}{G}	9	G
+card	{8}{G}{G}	10	G
+card	{8}{G}{G}{G}	11	G
+card	{8}{R}	9	R
+card	{8}{R}{R}	10	R
+card	{8}{U}{B}	10	BU
+card	{8}{U}{R}	10	RU
+card	{8}{U}{U}	10	U
+card	{8}{U}{U}{U}	11	U
+card	{8}{U}{U}{U}{U}	12	U
+card	{8}{W}	9	W
+card	{8}{W}{W}	10	W
+card	{9}	9	-
+card	{9}{B}	10	B
+card	{9}{C}{C}{C}	12	-
+card	{9}{R}	10	R
+card	{B}	1	B
+card	{B}{B}	2	B
+card	{B}{B}{B}	3	B
+card	{B}{B}{B}{B}	4	B
+card	{B}{B}{B}{B}{B}	5	B
+card	{B}{B}{B}{B}{B}{B}	6	B
+card	{B}{B}{B}{B}{B}{B}{B}{B}{B}{B}{B}{B}{B}{B}{B}	15	B
+card	{B}{B}{G}	3	BG
+card	{B}{B}{G}{G}	4	BG
+card	{B}{B}{G}{G}{G}{U}{U}	7	BGU
+card	{B}{B}{R}	3	BR
+card	{B}{B}{R}{R}	4	BR
+card	{B}{B}{R}{R}{R}{G}{G}	7	BGR
+card	{B}{B/G}{G}	3	BG
+card	{B}{G}	2	BG
+card	{B}{G}{G}	3	BG
+card	{B}{G}{U}	3	BGU
+card	{B}{R}	2	BR
+card	{B}{R}{G}	3	BGR
+card	{B}{R}{G}{W}	4	BGRW
+card	{B}{R}{R}	3	BR
+card	{B}{U}{G}	3	BGU
+card	{B/G}	1	BG
+card	{B/G}{B/G}	2	BG
+card	{B/G}{B/G}{B/G}	3	BG
+card	{B/G}{B/G}{B/G}{B/G}	4	BG
+card	{B/G}{B/G}{B/G}{B/G}{B/G}	5	BG
+card	{B/G}{R}	2	BGR
+card	{B/P}	1	B
+card	{B/R}	1	BR
+card	{B/R}{B/R}	2	BR
+card	{B/R}{B/R}{B/R}	3	BR
+card	{B/R}{B/R}{B/R}{B/R}	4	BR
+card	{B/R}{B/R}{B/R}{B/R}{B/R}	5	BR
+card	{B/R}{W/B}	2	BRW
+card	{C}	1	-
+card	{C}{W}{U}{B}{R}{G}	6	BGRUW
+card	{C}{W}{U}{B}{R}{G}{S}	7	BGRUW
+card	{C/W}{C/U}{C/B}{C/R}{C/G}	5	?
+card	{G}	1	G
+card	{G}{G}	2	G
+card	{G}{G}{G}	3	G
+card	{G}{G}{G}{G}	4	G
+card	{G}{G}{G}{G}{G}	5	G
+card	{G}{G}{G}{G}{G}{G}	6	G
+card	{G}{G}{G}{G}{G}{G}{G}{G}	8	G
+card	{G}{G}{G}{U}{U}{U}	6	GU
+card	{G}{G}{G}{W}{W}{W}	6	GW
+card	{G}{G}{U}	3	GU
+card	{G}{G}{U}{U}	4	GU
+card	{G}{G}{U}{U}{U}{R}{R}	7	GRU
+card	{G}{G}{W}	3	GW
+card	{G}{G}{W}{W}	4	GW
+card	{G}{G}{W}{W}{W}{U}{U}	7	GUW
+card	{G}{G/U}{U}	3	GU
+card	{G}{G/W}{W}	3	GW
+card	{G}{U}	2	GU
+card	{G}{U}{R}	3	GRU
+card	{G}{U}{U}	3	GU
+card	{G}{W}	2	GW
+card	{G}{W}{U}	3	GUW
+card	{G}{W}{U}{B}	4	BGUW
+card	{G}{W}{W}	3	GW
+card	{G/P}	1	G
+card	{G/U}	1	GU
+card	{G/U}{G/U}	2	GU
+card	{G/U}{G/U}{G/U}	3	GU
+card	{G/U}{G/U}{G/U}{G/U}	4	GU
+card	{G/U}{G/U}{G/U}{G/U}{G/U}	5	GU
+card	{G/U}{W}	2	GUW
+card	{G/W}	1	GW
+card	{G/W}{G/U}{B/G}{R/G}	4	BGRUW
+card	{G/W}{G/W}	2	GW
+card	{G/W}{G/W}{G/W}	3	GW
+card	{G/W}{G/W}{G/W}{G/W}{G/W}	5	GW
+card	{G/W}{W}{W/U}	3	GUW
+card	{HW}	0.5	W
+card	{R}	1	R
+card	{R}{G}	2	GR
+card	{R}{G}{U}{B}	4	BGRU
+card	{R}{G}{W}	3	GRW
+card	{R}{G}{W}{U}	4	GRUW
+card	{R}{R}	2	R
+card	{R}{R}{G}	3	GR
+card	{R}{R}{G}{G}	4	GR
+card	{R}{R}{G}{G}{G}{W}{W}	7	GRW
+card	{R}{R}{R}	3	R
+card	{R}{R}{R}{R}	4	R
+card	{R}{R}{W}{W}	4	RW
+card	{R}{R}{W}{W}{W}{B}{B}	7	BRW
+card	{R}{R/W}{W}	3	RW
+card	{R}{W}	2	RW
+card	{R}{W}{B}	3	BRW
+card	{R}{W}{U}	3	RUW
+card	{R}{W}{W}	3	RW
+card	{R/G}	1	GR
+card	{R/G}{G}{G/W}	3	GRW
+card	{R/G}{G/W}	2	GRW
+card	{R/G}{R/G}	2	GR
+card	{R/G}{R/G}{R/G}	3	GR
+card	{R/G}{R/G}{R/G}{R/G}	4	GR
+card	{R/G}{R/G}{R/G}{R/G}{R/G}	5	GR
+card	{R/G}{W}{U}	3	GRUW
+card	{R/P}	1	R
+card	{R/W}	1	RW
+card	{R/W}{G}	2	GRW
+card	{R/W}{R/W}	2	RW
+card	{R/W}{R/W}{R/W}	3	RW
+card	{R/W}{R/W}{R/W}{R/W}	4	RW
+card	{R/W}{R/W}{R/W}{R/W}{R/W}	5	RW
+card	{S}	1	-
+card	{U}	1	U
+card	{U}{B}	2	BU
+card	{U}{B}{B}	3	BU
+card	{U}{B}{B}{B}{R}	5	BRU
+card	{U}{B}{B}{R}	4	BRU
+card	{U}{B}{R}	3	BRU
+card	{U}{B}{R}{G}	4	BGRU
+card	{U}{R}	2	RU
+card	{U}{R}{R}	3	RU
+card	{U}{R}{W}	3	RUW
+card	{U}{U}	2	U
+card	{U}{U}{B}	3	BU
+card	{U}{U}{B}{B}	4	BU
+card	{U}{U}{B}{B}{B}{R}{R}	7	BRU
+card	{U}{U}{R}	3	RU
+card	{U}{U}{R}{R}	4	RU
+card	{U}{U}{R}{R}{R}{W}{W}	7	RUW
+card	{U}{U}{U}	3	U
+card	{U}{U}{U}{R}{R}{R}	6	RU
+card	{U}{U}{U}{U}	4	U
+card	{U}{U/R}{R}	3	RU
+card	{U/B}	1	BU
+card	{U/B}{U/B}	2	BU
+card	{U/B}{U/B}{U/B}	3	BU
+card	{U/B}{U/B}{U/B}{U/B}	4	BU
+card	{U/B}{U/B}{U/B}{U/B}{U/B}	5	BU
+card	{U/P}	1	U
+card	{U/R}	1	RU
+card	{U/R}{B}	2	BRU
+card	{U/R}{R/G}{G/W}{W/B}	4	BGRUW
+card	{U/R}{U/R}	2	RU
+card	{U/R}{U/R}{U/R}	3	RU
+card	{U/R}{U/R}{U/R}{U/R}	4	RU
+card	{U/R}{U/R}{U/R}{U/R}{U/R}	5	RU
+card	{W}	1	W
+card	{W}{B}	2	BW
+card	{W}{B}{B}	3	BW
+card	{W}{B}{G}	3	BGW
+card	{W}{U}	2	UW
+card	{W}{U}{B}	3	BUW
+card	{W}{U}{B}{R}	4	BRUW
+card	{W}{U}{B}{R}{G}	5	BGRUW
+card	{W}{U}{B/P}{R}{G}	5	BGRUW
+card	{W}{U}{U}	3	UW
+card	{W}{U}{U}{B}	4	BUW
+card	{W}{W}	2	W
+card	{W}{W}{B}	3	BW
+card	{W}{W}{B}{B}	4	BW
+card	{W}{W}{B}{B}{B}{G}{G}	7	BGW
+card	{W}{W}{U}{U}	4	UW
+card	{W}{W}{U}{U}{B}{B}{R}{R}{G}{G}	10	BGRUW
+card	{W}{W}{U}{U}{U}{B}{B}	7	BUW
+card	{W}{W}{W}	3	W
+card	{W}{W}{W}{W}	4	W
+card	{W}{W}{W}{W}{W}	5	W
+card	{W}{W/B}{B}	3	BW
+card	{W/B}	1	BW
+card	{W/B}{U}	2	BUW
+card	{W/B}{W/B}	2	BW
+card	{W/B}{W/B}{W/B}	3	BW
+card	{W/B}{W/B}{W/B}{W/B}	4	BW
+card	{W/B}{W/B}{W/B}{W/B}{W/B}	5	BW
+card	{W/P}	1	W
+card	{W/U}	1	UW
+card	{W/U}{U}{U/B}	3	BUW
+card	{W/U}{U/B}{B/R}{R/G}{G/W}	5	BGRUW
+card	{W/U}{W/U}	2	UW
+card	{W/U}{W/U}{W/U}	3	UW
+card	{W/U}{W/U}{W/U}{W/U}	4	UW
+card	{W/U}{W/U}{W/U}{W/U}{W/U}	5	UW
+card	{X}	0	-
+card	{X}{1}{B}	2	B
+card	{X}{1}{G}	2	G
+card	{X}{1}{R}{R}	3	R
+card	{X}{1}{R}{W}	3	RW
+card	{X}{1}{U}	2	U
+card	{X}{1}{U}{U}	3	U
+card	{X}{1}{W}	2	W
+card	{X}{2}{B}	3	B
+card	{X}{2}{B}{B}	4	B
+card	{X}{2}{B}{R}	4	BR
+card	{X}{2}{G}	3	G
+card	{X}{2}{G}{G}	4	G
+card	{X}{2}{G}{U}	4	GU
+card	{X}{2}{R}	3	R
+card	{X}{2}{R}{R}	4	R
+card	{X}{2}{U}	3	U
+card	{X}{2}{U}{B}	4	BU
+card	{X}{2}{W}	3	W
+card	{X}{3}{B}	4	B
+card	{X}{3}{B}{B}	5	B
+card	{X}{3}{G}	4	G
+card	{X}{3}{W}	4	W
+card	{X}{4}	4	-
+card	{X}{4}{B}	5	B
+card	{X}{4}{G}{G}	6	G
+card	{X}{5}{R}	6	R
+card	{X}{6}	6	-
+card	{X}{B}	1	B
+card	{X}{B}{B}	2	B
+card	{X}{B}{B}{B}	3	B
+card	{X}{B}{B}{B}{B}	4	B
+card	{X}{B}{B}{G}	3	BG
+card	{X}{B}{G}	2	BG
+card	{X}{B}{G}{U}	3	BGU
+card	{X}{B}{R}	2	BR
+card	{X}{B}{R}{G}	3	BGR
+card	{X}{B/P}	1	B
+card	{X}{C}{C}	2	-
+card	{X}{G}	1	G
+card	{X}{G}{G}	2	G
+card	{X}{G}{G}{G}	3	G
+card	{X}{G}{G}{U}	3	GU
+card	{X}{G}{G}{W}	3	GW
+card	{X}{G}{U}	2	GU
+card	{X}{G}{W}	2	GW
+card	{X}{G}{W}{U}	3	GUW
+card	{X}{G}{W}{W}	3	GW
+card	{X}{G/P}	1	G
+card	{X}{G/U}{G/U}	2	GU
+card	{X}{G/W}	1	GW
+card	{X}{R}	1	R
+card	{X}{R}{G}	2	GR
+card	{X}{R}{G}{W}	3	GRW
+card	{X}{R}{R}	2	R
+card	{X}{R}{R}{G}	3	GR
+card	{X}{R}{R}{G}{G}	4	GR
+card	{X}{R}{R}{R}	3	R
+card	{X}{R}{R}{W}{W}	4	RW
+card	{X}{R}{W}	2	RW
+card	{X}{U}	1	U
+card	{X}{U}{B}	2	BU
+card	{X}{U}{R}	2	RU
+card	{X}{U}{R}{W}	3	RUW
+card	{X}{U}{U}	2	U
+card	{X}{U}{U}{B}	3	BU
+card	{X}{U}{U}{R}	3	RU
+card	{X}{U}{U}{U}	3	U
+card	{X}{U}{U}{U}{U}	4	U
+card	{X}{W}	1	W
+card	{X}{W}{B}	2	BW
+card	{X}{W}{B}{G}	3	BGW
+card	{X}{W}{U}	2	UW
+card	{X}{W}{U}{B}	3	BUW
+card	{X}{W}{U}{B}{R}{G}	5	BGRUW
+card	{X}{W}{U}{U}	3	UW
+card	{X}{W}{W}	2	W
+card	{X}{W}{W}{B}{B}	4	BW
+card	{X}{W}{W}{W}	3	W
+card	{X}{W/B}{W/B}{W/B}	3	BW
+card	{X}{X}	0	-
+card	{X}{X}{2}{W}	3	W
+card	{X}{X}{2}{W}{W}	4	W
+card	{X}{X}{B}	1	B
+card	{X}{X}{B}{B}{B}	3	B
+card	{X}{X}{B}{B}{B}{B}	4	B
+card	{X}{X}{B}{R}{G}	3	BGR
+card	{X}{X}{G}	1	G
+card	{X}{X}{G}{G}	2	G
+card	{X}{X}{G}{U}	2	GU
+card	{X}{X}{R}	1	R
+card	{X}{X}{U}	1	U
+card	{X}{X}{U}{U}	2	U
+card	{X}{X}{U}{U}{U}	3	U
+card	{X}{X}{U}{U}{U}{U}	4	U
+card	{X}{X}{W}	1	W
+card	{X}{X}{W}{W}	2	W
+card	{X}{X}{W}{W}{W}	3	W
+card	{X}{X}{X}	0	-
+card	{X}{X}{X}{G}{U}	2	GU
+card	{X}{X}{X}{R}{R}	2	R
+card	{X}{Y}{Z}{R}{R}	2	R
+face	
+face	{1}
+face	{1}{B/G}
+face	{1}{B}
+face	{1}{B}{B}
+face	{1}{B}{G}
+face	{1}{B}{R}
+face	{1}{G/U}
+face	{1}{G/U}{G/U}
+face	{1}{G/W}
+face	{1}{G}
+face	{1}{G}{G}
+face	{1}{G}{U}
+face	{1}{G}{W}
+face	{1}{G}{W}{U}
+face	{1}{R/G}
+face	{1}{R/W}
+face	{1}{R}
+face	{1}{R}{G}
+face	{1}{R}{G}{W}
+face	{1}{R}{R}
+face	{1}{R}{W}
+face	{1}{U/B}
+face	{1}{U/R}{U/R}
+face	{1}{U}
+face	{1}{U}{B}
+face	{1}{U}{B}{R}
+face	{1}{U}{R}
+face	{1}{U}{U}
+face	{1}{W/B}
+face	{1}{W/U}
+face	{1}{W/U}{W/U}
+face	{1}{W}
+face	{1}{W}{B}
+face	{1}{W}{B}{B}
+face	{1}{W}{U}
+face	{1}{W}{U}{B}
+face	{1}{W}{U}{B}{R}{G}
+face	{1}{W}{W}
+face	{2}
+face	{2}{B}
+face	{2}{B}{B}
+face	{2}{B}{G}
+face	{2}{B}{R}
+face	{2}{G/U}{G/U}
+face	{2}{G/W}
+face	{2}{G}
+face	{2}{G}{G}
+face	{2}{G}{U}
+face	{2}{G}{U}{R}
+face	{2}{G}{W}
+face	{2}{G}{W}{U}
+face	{2}{L}
+face	{2}{R/G}
+face	{2}{R/W}
+face	{2}{R}
+face	{2}{R}{G}
+face	{2}{R}{R}
+face	{2}{R}{R}{G}{G}
+face	{2}{R}{W}
+face	{2}{R}{W}{W}
+face	{2}{U/B}
+face	{2}{U/B}{U/B}
+face	{2}{U}
+face	{2}{U}{B}
+face	{2}{U}{B}{R}
+face	{2}{U}{R}
+face	{2}{U}{R}{W}
+face	{2}{U}{U}
+face	{2}{W/U}
+face	{2}{W}
+face	{2}{W}{B}
+face	{2}{W}{U}
+face	{2}{W}{W}
+face	{2}{W}{W}{W}
+face	{3}
+face	{3}{B/R}
+face	{3}{B}
+face	{3}{B}{B}
+face	{3}{B}{G}
+face	{3}{B}{R}
+face	{3}{B}{R}{G}
+face	{3}{G}
+face	{3}{G}{G}
+face	{3}{G}{G}{G}
+face	{3}{G}{U}{R}
+face	{3}{G}{W}{W}
+face	{3}{R}
+face	{3}{R}{G}
+face	{3}{R}{G}{W}
+face	{3}{R}{R}
+face	{3}{R}{W}
+face	{3}{R}{W}{B}
+face	{3}{U/B}
+face	{3}{U}
+face	{3}{U}{B}
+face	{3}{U}{R}
+face	{3}{U}{R}{W}
+face	{3}{U}{U}
+face	{3}{W/B}{W/B}
+face	{3}{W/U}{W/U}
+face	{3}{W}
+face	{3}{W}{B}
+face	{3}{W}{U}
+face	{3}{W}{W}
+face	{4}
+face	{4}{B/R}{B/R}
+face	{4}{B}
+face	{4}{B}{B}
+face	{4}{B}{G}
+face	{4}{B}{R}
+face	{4}{G/W}{G/W}
+face	{4}{G}
+face	{4}{G}{G}
+face	{4}{G}{G}{G}
+face	{4}{G}{W}
+face	{4}{R/G}{R/G}
+face	{4}{R}
+face	{4}{R}{G}{W}
+face	{4}{R}{R}
+face	{4}{R}{W}
+face	{4}{U/B}{U/B}
+face	{4}{U}
+face	{4}{U}{R}
+face	{4}{U}{U}
+face	{4}{U}{U}{U}
+face	{4}{W/U}{W/U}
+face	{4}{W}
+face	{4}{W}{B}
+face	{4}{W}{U}
+face	{4}{W}{W}
+face	{4}{W}{W}{W}
+face	{5}
+face	{5}{B/R}{B/R}
+face	{5}{B}
+face	{5}{B}{B}
+face	{5}{B}{B}{B}
+face	{5}{B}{R}
+face	{5}{G/U}{G/U}
+face	{5}{G}
+face	{5}{G}{G}
+face	{5}{R}
+face	{5}{R}{R}
+face	{5}{U}
+face	{5}{U}{U}
+face	{5}{W}
+face	{5}{W}{W}
+face	{6}{B}{B}
+face	{6}{B}{R}
+face	{6}{G}
+face	{6}{U}{U}
+face	{6}{W}{W}
+face	{7}
+face	{8}{R}{R}
+face	{B/G}
+face	{B/G}{B/G}
+face	{B/R}
+face	{B/R}{B/R}
+face	{B}
+face	{B}{B}
+face	{B}{B}{B}
+face	{B}{G}
+face	{B}{R}
+face	{G/U}
+face	{G/U}{G/U}
+face	{G/W}
+face	{G/W}{G/W}
+face	{G/W}{G/W}{G/W}{G/W}
+face	{G}
+face	{G}{G}
+face	{G}{G}{G}
+face	{G}{U}
+face	{G}{U}{R}
+face	{R/G}{R/G}
+face	{R/W}
+face	{R/W}{R/W}
+face	{R}
+face	{R}{G}
+face	{R}{G}{W}{U}
+face	{R}{W}
+face	{U/B}
+face	{U/R}
+face	{U/R}{U/R}
+face	{U}
+face	{U}{B}
+face	{U}{R}
+face	{U}{R}{W}
+face	{U}{U}
+face	{W/B}{W/B}
+face	{W/U}{W/U}
+face	{W}
+face	{W}{B}
+face	{W}{U}
+face	{W}{U}{B}{R}{G}
+face	{W}{W}
+face	{X}{2}{W}
+face	{X}{B}{B}
+face	{X}{B}{B}{B}
+face	{X}{B}{G}
+face	{X}{G}
+face	{X}{G}{G}
+face	{X}{G}{U}
+face	{X}{G}{W}
+face	{X}{R}
+face	{X}{R}{R}
+face	{X}{U}{U}
+face	{X}{U}{U}{R}{R}
+face	{X}{W}
+face	{X}{W}{U}
+face	{X}{W}{W}
+face	{X}{X}{U}
+faces	{1}{B/G} // {4}{G/W}{G/W}
+faces	{1}{B} // {1}{B}
+faces	{1}{B} // {1}{U}
+faces	{1}{B} // {2}{B}
+faces	{1}{B} // {3}{G}
+faces	{1}{B} // {3}{W}
+faces	{1}{B} // {4}{B}
+faces	{1}{B} // {B}
+faces	{1}{B} // {B}{B}
+faces	{1}{B} // {R}
+faces	{1}{B} // {U/B}
+faces	{1}{B} // {X}{B}{B}
+faces	{1}{B}{B} // {1}{B}{B}
+faces	{1}{B}{B} // {1}{W}{W}
+faces	{1}{B}{B} // {3}{B}
+faces	{1}{B}{R} // {3}{R}{G}
+faces	{1}{G/U} // {4}{U/B}{U/B}
+faces	{1}{G/W} // {G/W}
+faces	{1}{G} // {1}{B}
+faces	{1}{G} // {1}{G}
+faces	{1}{G} // {1}{R}
+faces	{1}{G} // {1}{W}
+faces	{1}{G} // {5}{G}{G}
+faces	{1}{G} // {G}
+faces	{1}{G} // {X}{G}
+faces	{1}{G}{G} // {4}{G}
+faces	{1}{G}{U} // {G}{U}
+faces	{1}{G}{W} // {1}{W}{B}
+faces	{1}{R/G} // {2}{R/G}
+faces	{1}{R/G} // {R}{G}
+faces	{1}{R} // {1}{U}
+faces	{1}{R} // {2}{R}
+faces	{1}{R} // {2}{R}{R}
+faces	{1}{R} // {3}{G}
+faces	{1}{R} // {3}{U}{U}
+faces	{1}{R} // {5}{R}
+faces	{1}{R} // {R}
+faces	{1}{R} // {W}
+faces	{1}{R} // {X}{B}{B}
+faces	{1}{R}{G} // {1}{G}{W}
+faces	{1}{R}{R} // {1}{R}
+faces	{1}{R}{R} // {R}
+faces	{1}{R}{W} // {2}{R}{W}
+faces	{1}{U/B} // {3}{U}{B}
+faces	{1}{U/B} // {U/B}
+faces	{1}{U} // {1}{R}
+faces	{1}{U} // {1}{U}
+faces	{1}{U} // {2}{B}
+faces	{1}{U} // {2}{U}
+faces	{1}{U} // {3}{U}
+faces	{1}{U} // {4}{B}
+faces	{1}{U} // {4}{U}
+faces	{1}{U} // {W}
+faces	{1}{U}{R} // {4}{R}{W}
+faces	{1}{U}{U} // {1}{U}
+faces	{1}{W/B} // {2}{W}{B}
+faces	{1}{W/B} // {4}{B/R}{B/R}
+faces	{1}{W/U} // {2}{W/U}
+faces	{1}{W/U} // {2}{W}{U}
+faces	{1}{W/U}{W/U} // {2}{W/U}
+faces	{1}{W} // {1}{B}
+faces	{1}{W} // {1}{W}
+faces	{1}{W} // {1}{W}{W}
+faces	{1}{W} // {2}{B}
+faces	{1}{W} // {2}{R}
+faces	{1}{W} // {2}{W}
+faces	{1}{W} // {3}{G}
+faces	{1}{W} // {3}{R}
+faces	{1}{W} // {3}{W}
+faces	{1}{W} // {4}{W}{W}
+faces	{1}{W} // {G}
+faces	{1}{W} // {W}
+faces	{1}{W} // {X}{W}{W}
+faces	{1}{W}{B} // {1}{W/B}
+faces	{1}{W}{W} // {1}{W}
+faces	{1}{W}{W} // {W}
+faces	{2} // {3}{U}
+faces	{2}{B} // {1}{B}
+faces	{2}{B} // {2}{R}
+faces	{2}{B} // {3}{B}
+faces	{2}{B} // {3}{B}{B}
+faces	{2}{B} // {6}{B}{B}
+faces	{2}{B} // {B}
+faces	{2}{B}{B} // {1}{W}
+faces	{2}{B}{B} // {5}{U}{U}
+faces	{2}{B}{G} // {B/G}
+faces	{2}{B}{G} // {B}{G}
+faces	{2}{G/U}{G/U} // {1}{G/U}{G/U}
+faces	{2}{G} // {1}{G}
+faces	{2}{G} // {1}{R}{R}
+faces	{2}{G} // {2}{U}
+faces	{2}{G} // {3}{G}
+faces	{2}{G} // {3}{G}{G}
+faces	{2}{G} // {4}{U}{U}
+faces	{2}{G} // {5}{G}
+faces	{2}{G} // {G}
+faces	{2}{G} // {G}{G}
+faces	{2}{G}{U} // {G}{U}
+faces	{2}{L} // {2}{G}
+faces	{2}{R/G} // {2}{R/G}
+faces	{2}{R/W} // {4}{W/U}{W/U}
+faces	{2}{R} // {1}{G}
+faces	{2}{R} // {1}{R}
+faces	{2}{R} // {1}{W}
+faces	{2}{R} // {2}{R}
+faces	{2}{R} // {2}{W}
+faces	{2}{R} // {3}{R}{R}
+faces	{2}{R} // {3}{U}
+faces	{2}{R} // {4}{R}
+faces	{2}{R} // {4}{R}{R}
+faces	{2}{R} // {4}{W}
+faces	{2}{R} // {5}{R}
+faces	{2}{R} // {B/R}
+faces	{2}{R} // {R}
+faces	{2}{R}{R} // {2}{B}
+faces	{2}{U/B} // {U/B}
+faces	{2}{U/B}{U/B} // {3}{U}{B}
+faces	{2}{U} // {1}{B}
+faces	{2}{U} // {1}{R}
+faces	{2}{U} // {1}{U}
+faces	{2}{U} // {2}{R}
+faces	{2}{U} // {2}{U}
+faces	{2}{U} // {3}{U}
+faces	{2}{U} // {3}{U}{U}
+faces	{2}{U} // {5}{U}{U}
+faces	{2}{U} // {R}
+faces	{2}{U} // {U}
+faces	{2}{U} // {X}{U}{U}
+faces	{2}{U} // {X}{X}{U}
+faces	{2}{U}{U} // {1}{W}
+faces	{2}{W} // {1}{R}
+faces	{2}{W} // {1}{U}
+faces	{2}{W} // {1}{W}
+faces	{2}{W} // {2}{B}
+faces	{2}{W} // {2}{U}
+faces	{2}{W} // {3}{W}
+faces	{2}{W} // {G}
+faces	{2}{W}{B} // {W}{B}
+faces	{2}{W}{W} // {3}{W}{W}
+faces	{2}{W}{W} // {5}{U}{U}
+faces	{2}{W}{W} // {X}{2}{W}
+faces	{3} // {1}{B}
+faces	{3}{B/R} // {B/R}
+faces	{3}{B} // {1}{B}
+faces	{3}{B} // {2}{G}
+faces	{3}{B} // {2}{U}
+faces	{3}{B} // {5}{B}{B}
+faces	{3}{B} // {B}
+faces	{3}{B} // {X}{B}{B}
+faces	{3}{B}{G} // {G}{U}
+faces	{3}{B}{G} // {R}{G}
+faces	{3}{G} // {1}{G}
+faces	{3}{G} // {1}{U}
+faces	{3}{G} // {2}{G}
+faces	{3}{G} // {W}
+faces	{3}{G}{G} // {2}{G}
+faces	{3}{G}{U}{R} // {2}{R}
+faces	{3}{R} // {1}{R}
+faces	{3}{R} // {1}{U}
+faces	{3}{R} // {2}{R}
+faces	{3}{R} // {2}{U}
+faces	{3}{R} // {3}{R}
+faces	{3}{R} // {4}{R}{R}
+faces	{3}{R}{R} // {1}{R}
+faces	{3}{U} // {1}{U}
+faces	{3}{U} // {2}{G}
+faces	{3}{U} // {2}{U}
+faces	{3}{U} // {2}{W/U}
+faces	{3}{U} // {2}{W}
+faces	{3}{U} // {3}{B}
+faces	{3}{U} // {4}{U}
+faces	{3}{U} // {4}{U}{U}
+faces	{3}{U} // {5}{U}{U}
+faces	{3}{U} // {U}
+faces	{3}{U}{U} // {2}{R}
+faces	{3}{U}{U} // {U}
+faces	{3}{W} // {2}{B}
+faces	{3}{W} // {2}{R}
+faces	{3}{W} // {2}{W}
+faces	{3}{W} // {G/W}
+faces	{3}{W} // {W}
+faces	{3}{W}{B} // {X}{B}{G}
+faces	{3}{W}{W} // {1}{W}
+faces	{4}{B} // {1}{W}
+faces	{4}{B} // {B}
+faces	{4}{B}{B} // {1}{B}
+faces	{4}{B}{B} // {1}{B}{B}
+faces	{4}{G} // {1}{B}
+faces	{4}{G} // {1}{G}
+faces	{4}{G} // {2}{B}
+faces	{4}{G} // {2}{G}
+faces	{4}{G} // {G}
+faces	{4}{G} // {R}
+faces	{4}{G}{G} // {1}{G}
+faces	{4}{G}{G} // {2}{G}
+faces	{4}{R} // {1}{R}
+faces	{4}{R} // {2}{R}
+faces	{4}{R} // {R}
+faces	{4}{R}{R} // {2}{W}
+faces	{4}{R}{R} // {4}{R}
+faces	{4}{U} // {1}{U}
+faces	{4}{U} // {2}{G}
+faces	{4}{U} // {2}{U}
+faces	{4}{U} // {X}{U}{U}
+faces	{4}{U}{U} // {1}{U}
+faces	{4}{U}{U} // {2}{U}
+faces	{4}{U}{U} // {3}{U}
+faces	{4}{W} // {1}{W}
+faces	{4}{W} // {2}{W}
+faces	{4}{W}{W} // {1}{W}
+faces	{4}{W}{W} // {X}{U}{U}
+faces	{5} // {2}{W}
+faces	{5}{B} // {1}{B}
+faces	{5}{B}{B} // {1}{B}
+faces	{5}{B}{B} // {3}{B}
+faces	{5}{B}{B} // {B}
+faces	{5}{G} // {1}{G}
+faces	{5}{G} // {3}{G}
+faces	{5}{G}{G} // {1}{G}
+faces	{5}{G}{G} // {G}
+faces	{5}{R} // {1}{R}
+faces	{5}{R}{R} // {1}{R}
+faces	{5}{R}{R} // {4}{R}
+faces	{5}{U} // {1}{U}
+faces	{5}{U}{U} // {1}{U}
+faces	{5}{U}{U} // {2}{U}
+faces	{5}{W} // {1}{R}
+faces	{5}{W} // {1}{W}
+faces	{5}{W}{W} // {2}{W}
+faces	{5}{W}{W} // {3}{W}{W}
+faces	{6}{G} // {2}{G}
+faces	{6}{G} // {3}{G}
+faces	{8}{R}{R} // {3}{R}{R}
+faces	{B/G} // {2}{B}{G}
+faces	{B/G}{B/G} // {4}{B}{G}
+faces	{B/R} // {2}{B}{R}
+faces	{B/R} // {B/R}
+faces	{B/R}{B/R} // {4}{B}{R}
+faces	{B} // {1}{B}
+faces	{B} // {1}{R}
+faces	{B} // {2}{B}
+faces	{B} // {2}{W}
+faces	{B} // {3}{R}
+faces	{G/U} // {1}{G}{U}
+faces	{G/U}{G/U} // {1}{G}{U}
+faces	{G/W} // {4}{G}{W}
+faces	{G/W} // {G/W}
+faces	{G/W}{G/W} // {4}{G}{W}
+faces	{G/W}{G/W}{G/W}{G/W} // {G/W}{G/W}{G/W}{G/W}
+faces	{G} // {1}{B}
+faces	{G} // {1}{G}
+faces	{G} // {1}{W}
+faces	{G} // {2}{R/G}
+faces	{G} // {5}{G}{G}
+faces	{G} // {W}
+faces	{G}{U} // {3}{U}{R}
+faces	{G}{U} // {4}{W}{U}
+faces	{G}{U} // {X}{G}{U}
+faces	{G}{U}{R} // {2}{G}{U}{R}
+faces	{R/G}{R/G} // {2}{R}{G}
+faces	{R/W} // {2}{R}{W}
+faces	{R/W}{R/W} // {3}{R}{W}
+faces	{R} // {2}{R}
+faces	{R} // {3}{G}
+faces	{R} // {5}{G} // {1}{B}
+faces	{R} // {R}
+faces	{R}{G} // {X}{R}
+faces	{R}{W} // {1}{R}{W}
+faces	{R}{W} // {W}{B}
+faces	{U/R} // {4}{R/G}{R/G}
+faces	{U/R} // {4}{U}{R}
+faces	{U/R}{U/R} // {X}{U}{U}{R}{R}
+faces	{U} // {1}{U}
+faces	{U} // {1}{U} // {2}{U}
+faces	{U} // {2}{G}
+faces	{U} // {3}{U}
+faces	{U} // {4}{G}
+faces	{U} // {4}{U}
+faces	{U} // {U}
+faces	{U} // {X}{G}
+faces	{U}{B} // {1}{U}
+faces	{U}{B} // {4}{B}{R}
+faces	{U}{B} // {B}{R}
+faces	{U}{R} // {3}{R}{W}
+faces	{U}{R} // {3}{U}{R}
+faces	{U}{U} // {2}{U}
+faces	{W/B}{W/B} // {4}{W}{B}
+faces	{W/U}{W/U} // {3}{W}{U}
+faces	{W} // {1}{W}
+faces	{W} // {2}{U}
+faces	{W} // {2}{W}
+faces	{W} // {W}
+faces	{W}{B} // {1}{W}{B}
+faces	{W}{U} // {U}{B}
+faces	{X}{G} // {X}{R}{R}
+faces	{X}{G}{W} // {1}{W}{U}
+faces	{X}{W} // {2}{R} // {2}{U} // {3}{B} // {1}{G}

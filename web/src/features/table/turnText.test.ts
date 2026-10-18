@@ -20,7 +20,7 @@ import type { BannerInput, DecisionName } from './turnText'
 const NAMES = ['Alice', 'Bo', 'Cy', 'Dee', 'Eli']
 const name = (seat: number): string => NAMES[seat] ?? `Seat ${seat + 1}`
 
-const ZERO: ManaCost = { generic: 0, colorless: 0, colored: [0, 0, 0, 0, 0] }
+const ZERO: ManaCost = []
 // One of every decision kind; the type makes a new kind fail to compile here until it has a sample.
 const KINDS: Record<DecisionName, DecisionKind> = {
   Mulligan: {
@@ -45,6 +45,8 @@ const KINDS: Record<DecisionName, DecisionKind> = {
       sources: [],
       auto_available: false,
       can_cancel: true,
+      life: 20,
+      max_life: 0,
     },
   },
   DeclareAttackers: { DeclareAttackers: { attackers: [] } },

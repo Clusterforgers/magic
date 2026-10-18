@@ -165,6 +165,7 @@ fn manual_payments_must_be_exact(
     let result = driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
         pool: vec![],
         taps: chosen,
+        life: 0,
     })));
     match rejection {
         None => {
@@ -194,6 +195,7 @@ fn tapping_the_same_land_twice_or_an_unknown_source_is_rejected() -> Result<(), 
     let twice = Payment {
         pool: vec![],
         taps: vec![first, first],
+        life: 0,
     };
     assert!(matches!(
         driver.answer(Answer::PayMana(PayChoice::Manual(twice))),
@@ -206,6 +208,7 @@ fn tapping_the_same_land_twice_or_an_unknown_source_is_rejected() -> Result<(), 
     let unknown = Payment {
         pool: vec![],
         taps: vec![first, stranger],
+        life: 0,
     };
     assert!(
         driver
@@ -289,6 +292,7 @@ fn floating_mana_pays_first_and_may_be_chosen_explicitly() -> Result<(), ScriptE
     driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
         pool: vec![ManaType::Red],
         taps: vec![forest],
+        life: 0,
     })))?;
     driver.expect_event("ManaSpent of R and G", |e| {
         matches!(e, Event::ManaSpent { mana, .. } if mana.len() == 2 && mana.contains(&ManaType::Red) && mana.contains(&ManaType::Green))
@@ -303,6 +307,7 @@ fn spending_floating_mana_that_does_not_exist_is_rejected() -> Result<(), Script
     let result = driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
         pool: vec![ManaType::Green],
         taps: vec![],
+        life: 0,
     })));
     assert!(result.is_err());
     assert_eq!(driver.engine().state_hash(), before);
@@ -354,6 +359,7 @@ fn completing_a_partial_payment_keeps_the_chosen_land_and_pays_the_rest() -> Res
     let events = driver.answer(Answer::PayMana(PayChoice::Complete(Payment {
         pool: vec![],
         taps: vec![plains],
+        life: 0,
     })))?;
     let tapped: Vec<_> = events
         .iter()
@@ -391,6 +397,7 @@ fn a_partial_payment_that_cannot_be_finished_is_rejected_whole(
     let result = driver.answer(Answer::PayMana(PayChoice::Complete(Payment {
         pool: vec![],
         taps,
+        life: 0,
     })));
     assert!(matches!(
         result,

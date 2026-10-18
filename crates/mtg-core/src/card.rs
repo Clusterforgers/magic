@@ -218,12 +218,15 @@ impl CardDefinition {
 
     /// Printed colors, derived from the mana cost (CR 105.2).
     pub fn colors(&self) -> ColorSet {
-        self.mana_cost.map(|c| c.colors()).unwrap_or_default()
+        self.mana_cost
+            .as_ref()
+            .map(ManaCost::colors)
+            .unwrap_or_default()
     }
 
     /// Mana value of the card (0 without a cost).
     pub fn mana_value(&self) -> u32 {
-        self.mana_cost.map_or(0, |c| c.mana_value())
+        self.mana_cost.as_ref().map_or(0, ManaCost::mana_value)
     }
 }
 
@@ -261,6 +264,11 @@ mod tests {
     #[case("{1}{G}", 2, "G")]
     #[case("{W}{U}{B}", 3, "WUB")]
     #[case("{3}", 3, "")]
+    #[case::hybrid("{1}{R/W}{R/W}", 3, "WR")]
+    #[case::monocolored_hybrid("{2/G}", 2, "G")]
+    #[case::phyrexian("{2}{U/P}", 3, "U")]
+    #[case::colorless_hybrid("{C/B}", 1, "B")]
+    #[case::colorless_phyrexian("{8}{C/P}{C/P}", 10, "")]
     fn colors_and_value_come_from_the_cost(
         #[case] cost: &str,
         #[case] value: u32,

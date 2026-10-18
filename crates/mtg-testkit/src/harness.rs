@@ -14,6 +14,8 @@ use crate::invariants::{InvariantChecker, Violation};
 const FULL_CHECK_EVERY: usize = 25;
 
 /// Limits and switches for [`play_game_with`].
+// Independent switches that tests set by name, not states of one machine.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Copy)]
 pub struct PlayOptions {
     /// Give up after this many answers.
@@ -22,6 +24,8 @@ pub struct PlayOptions {
     pub check_invariants: bool,
     /// Let the bots pay with part of a payment for the engine to finish (see [`RandomBot::with_partial_payments`]).
     pub partial_payments: bool,
+    /// Let the bots choose how to pay hybrid and Phyrexian symbols, life included (see [`RandomBot::with_symbol_choices`]).
+    pub symbol_choices: bool,
     /// Pass for a priority holder who cannot act without asking its bot, as a server with auto-pass on does.
     pub auto_pass: bool,
 }
@@ -32,6 +36,7 @@ impl Default for PlayOptions {
             max_answers: 200_000,
             check_invariants: true,
             partial_payments: false,
+            symbol_choices: false,
             auto_pass: false,
         }
     }
@@ -130,12 +135,14 @@ pub fn play_game_with(
     let mut bots: Vec<RandomBot> = (0u64..)
         .take(setup.players.len())
         .map(|seat| {
-            let bot = RandomBot::new(seed, seat);
+            let mut bot = RandomBot::new(seed, seat);
             if options.partial_payments {
-                bot.with_partial_payments()
-            } else {
-                bot
+                bot = bot.with_partial_payments();
             }
+            if options.symbol_choices {
+                bot = bot.with_symbol_choices();
+            }
+            bot
         })
         .collect();
     let mut engine = Engine::new(setup).map_err(|e| fail(e.into(), &[]))?;

@@ -174,6 +174,13 @@ describe('parseFrame checks the fields of each message', () => {
     ['Events', 'an object name as a number', ['objects', '0', 'name'], 5],
     ['Events', 'object types as text', ['objects', '0', 'types'], 'Creature'],
     ['Events', 'object power as text', ['objects', '0', 'power'], '2'],
+    ['Events', 'an object cost as text', ['objects', '0', 'mana_cost'], '{1}{G}'],
+    [
+      'Events',
+      'an object cost in the shape from before hybrid symbols',
+      ['objects', '0', 'mana_cost'],
+      { generic: 1, colorless: 0, colored: [0, 0, 0, 0, 1] },
+    ],
     [
       'Events',
       'object permanent as junk',

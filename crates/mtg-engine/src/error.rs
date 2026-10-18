@@ -107,6 +107,24 @@ pub enum PaymentError {
     /// What is left cannot pay the rest of the cost.
     #[error("the rest of the cost cannot be paid from the remaining mana")]
     CannotComplete,
+    /// The life paid is not an amount the cost takes: 2 for each Phyrexian symbol, no more.
+    #[error(
+        "paying {paid} life does not fit the cost (2 for each Phyrexian symbol, {most} at most)"
+    )]
+    BadLife {
+        /// Life the payment pays.
+        paid: u32,
+        /// The most the cost could take.
+        most: u32,
+    },
+    /// The payer has less life than the payment takes (CR 119.4).
+    #[error("cannot pay {paid} life with a life total of {have}")]
+    NotEnoughLife {
+        /// Life the payment pays.
+        paid: u32,
+        /// The payer's life total.
+        have: i32,
+    },
 }
 
 /// Why an answer was rejected.

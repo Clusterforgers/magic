@@ -30,6 +30,8 @@ const pay = (text: string, over: Partial<PayOptions> = {}): PayOptions => ({
   sources: [source(greenLand, 'G'), source(blueLand, 'U'), source(redLand, 'R'), source(blackLand, 'B')],
   auto_available: true,
   can_cancel: true,
+  life: 20,
+  max_life: 0,
   ...over,
 })
 const decision = (id: number, given: PayOptions, player = 0): ServerMessage => ({
@@ -75,6 +77,7 @@ describe('a payment decision from the server', () => {
                 { object: blueLand, ability: 0 },
                 { object: greenLand, ability: 0 },
               ],
+              life: 0,
             },
           },
         },
@@ -104,7 +107,7 @@ describe('a payment decision from the server', () => {
       {
         type: 'Answer',
         decision: 30,
-        answer: { PayMana: { Complete: { pool: [], taps: [{ object: blueLand, ability: 0 }] } } },
+        answer: { PayMana: { Complete: { pool: [], taps: [{ object: blueLand, ability: 0 }], life: 0 } } },
       },
     ])
   })
