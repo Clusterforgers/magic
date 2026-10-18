@@ -10,8 +10,10 @@ const STALL_MS = 30_000
 
 const standings = (page: Page) => page.getByRole('list', { name: 'How each seat finished' })
 
-/** The name of the switch in the table's toolbar that asks the server to pass for a seat with nothing to do. */
-const SKIP = "Skip turns when I can't act"
+/** The Full Control button of a page, by the state it says ("off", "next window", "held"). */
+const stop = (page: Page, name: string) => page.getByRole('button', { name: new RegExp(`^${name}`) })
+const fullControl = (page: Page, state: string) =>
+  page.getByRole('button', { name: `Full Control: ${state}` })
 
 test('two seats play a vanilla game to the end in the browser', async ({ browser }, testInfo) => {
   test.setTimeout(5 * 60_000)
@@ -24,11 +26,23 @@ test('two seats play a vanilla game to the end in the browser', async ({ browser
   const run = new Run(MAX_DECISIONS, STALL_MS)
   try {
     await everyoneReady(players)
-    // Both seats start with the server's default: passing for a seat that has nothing to do is on. Bo turns it off, so
-    // the two settings meet in one game: Ada is never asked about a window she cannot use, Bo is asked about all.
-    for (const { page } of players) await expect(page.getByRole('switch', { name: SKIP })).toBeChecked()
-    await bo.page.getByRole('switch', { name: SKIP }).click()
-    await expect(bo.page.getByRole('switch', { name: SKIP })).not.toBeChecked()
+    // Both seats start with the server's defaults: Full Control is off.
+    for (const { page } of players)
+      await expect(fullControl(page, 'off')).toHaveAttribute('aria-pressed', 'false')
+    // Bo holds Full Control and lets it go again; each press shows only once the server has said so, and Ada's page
+    // hears nothing of it.
+    await fullControl(bo.page, 'off').click()
+    await expect(fullControl(bo.page, 'held')).toHaveAttribute('aria-pressed', 'true')
+    await expect(fullControl(ada.page, 'off')).toBeVisible()
+    await fullControl(bo.page, 'held').click()
+    await expect(fullControl(bo.page, 'off')).toHaveAttribute('aria-pressed', 'false')
+    // Bo stops at the end step of every opponent turn (shift for a lasting stop). A server that gives a stop its window
+    // asks Bo there with nothing to do, and he ends the turn; one that does not yet never asks.
+    await stop(bo.page, "Opponents' end step stop: off").click({ modifiers: ['Shift'] })
+    await expect(stop(bo.page, "Opponents' end step stop: on every turn")).toHaveAttribute(
+      'data-keep',
+      'lasting',
+    )
     // Ada taps her lands by hand and never blocks; Bo pays automatically and blocks, so each path is walked by a seat.
     await playToTheEnd(
       [
@@ -37,11 +51,14 @@ test('two seats play a vanilla game to the end in the browser', async ({ browser
       ],
       run,
     )
-    expect(run.idle.get('Ada') ?? 0, 'Ada was asked about windows she could do nothing in').toBe(0)
-    expect(run.idle.get('Bo') ?? 0, 'Bo asked to be stopped at every window').toBeGreaterThan(0)
-    // Bo hands the rest of a turn to the server when it has nothing to play, so the yield is walked in a real browser too.
-    expect(run.yields.get('Bo') ?? 0, 'Bo never pressed End turn').toBeGreaterThan(0)
+    // Ada set no stop and kept Full Control off, so she is never asked about a window there is nothing to do in.
+    expect(run.idle.get('Ada') ?? 0, 'Ada was asked about windows there was nothing to do in').toBe(0)
     expect(run.yields.get('Ada') ?? 0).toBe(0)
+    // Bo is asked about nothing but the stop he set, the end step of Ada's turn, and ends the turn in each of them.
+    for (const where of run.idleAt.get('Bo') ?? []) expect(where).toMatch(/ · Ada · End step$/)
+    expect(run.yields.get('Bo') ?? 0, 'Bo did not end the turn in every window he was asked about').toBe(
+      run.idle.get('Bo') ?? 0,
+    )
 
     // Both screens agree on the winner: one seat is told it won, the other that it lost, and each list names one Winner.
     const headlines = await Promise.all(

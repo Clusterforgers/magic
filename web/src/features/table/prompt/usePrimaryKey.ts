@@ -31,27 +31,37 @@ export function isFocusFree(target: EventTarget | null): boolean {
   return target.closest(TAKES_KEYS) === null
 }
 
-/** Whether a key press is a plain Space or Enter, once (a key held down repeats). */
-export function isPrimaryKey(event: KeyboardEvent): boolean {
-  if (event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return false
-  return event.key === ' ' || event.key === 'Enter'
+/** The two keys of the primary controls. */
+export type PrimaryKey = 'space' | 'enter'
+
+/** What each primary key does. */
+export type PrimaryKeys = Record<PrimaryKey, () => void>
+
+/** Which primary key a press is, or null: a plain Space or Enter, once (a key held down repeats), no modifier. */
+export function primaryKeyOf(event: KeyboardEvent): PrimaryKey | null {
+  if (event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return null
+  if (event.key === ' ') return 'space'
+  if (event.key === 'Enter') return 'enter'
+  return null
 }
 
 /**
- * Presses the primary button from the keyboard: while `enabled`, a plain Space or Enter that no control or field has
- * focus for calls `press`. The default action (scrolling for Space) is suppressed only when it does.
+ * The keys of the primary controls while `enabled`: a plain Space or Enter that no control or field has focus for
+ * calls its function in `keys`. The default action (scrolling for Space) is suppressed only when it does.
  */
-export function usePrimaryKey(press: () => void, enabled: boolean): void {
-  const latest = useRef(press)
+export function usePrimaryKey(keys: PrimaryKeys, enabled: boolean): void {
+  const latest = useRef(keys)
   useEffect(() => {
-    latest.current = press
+    latest.current = keys
   })
   useEffect(() => {
     if (!enabled) return
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.defaultPrevented || !isPrimaryKey(event) || !isFocusFree(event.target)) return
+      if (event.defaultPrevented || !isFocusFree(event.target)) return
+      const key = primaryKeyOf(event)
+      if (key === null) return
       event.preventDefault()
-      latest.current()
+      latest.current[key]()
     }
     document.addEventListener('keydown', onKeyDown)
     return () => document.removeEventListener('keydown', onKeyDown)

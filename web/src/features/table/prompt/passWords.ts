@@ -52,6 +52,18 @@ export function primaryEndsTurn(situation: PassSituation): boolean {
   return primaryLabel(situation) === 'End turn'
 }
 
+/**
+ * Whether Enter asks for the end-of-turn yield, as the "End turn" button beside the primary one does. It does not where
+ * that button is not drawn: under Full Control, which the server does not let a yield run beside, and in the last
+ * window of the turn, where the primary button already ends it. Enter then passes once, like Space.
+ */
+export function enterYields(situation: PassSituation, fullControl: boolean): boolean {
+  return !fullControl && !primaryEndsTurn(situation)
+}
+
+/** What the menu of ways to pass says about the two keys. */
+export const KEY_LEGEND = 'Space passes once, Enter ends the turn'
+
 /** What a screen reader is told about the primary button, which the label does not say. */
 export function primaryDescription({ top }: PassSituation): string {
   return top === null ? 'Passes priority.' : `Passes priority; if nobody responds, ${top} resolves.`

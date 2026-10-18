@@ -232,6 +232,75 @@ describe('/dev/table with table effects', () => {
   )
 })
 
+describe('/dev/table with stops', () => {
+  const lit = (): string[] =>
+    [...document.querySelectorAll<HTMLElement>('[data-slot="stop"][aria-pressed="true"]')].map(
+      (stop) => `${stop.dataset['side']}:${stop.dataset['step']}:${stop.dataset['keep']}`,
+    )
+  const stop = (side: string, step: string): HTMLElement => {
+    const found = document.querySelector<HTMLElement>(
+      `[data-slot="stop"][data-side="${side}"][data-step="${step}"]`,
+    )
+    if (found === null) throw new Error(`no stop at ${side} ${step}`)
+    return found
+  }
+
+  it('shows the ladder with nothing lit when the address says nothing', async () => {
+    await visit('/dev/table?seats=2')
+    await screen.findByRole('group', { name: 'Stops' })
+    expect(document.querySelectorAll('[data-slot="stop"]')).toHaveLength(20)
+    expect(lit()).toEqual([])
+    expect(screen.getByRole('button', { name: 'Full Control: off' })).toHaveAttribute('aria-pressed', 'false')
+  })
+
+  it('lights the stops of ?stops=, a lasting one with its pin', async () => {
+    await visit('/dev/table?seats=2&stops=own:main1,opp:end:keep,own:upkeep:keep')
+    await screen.findByRole('group', { name: 'Stops' })
+    expect(lit()).toEqual(['Own:Upkeep:lasting', 'Own:Main1:turn', 'Opponent:End:lasting'])
+    expect(stop('Own', 'Upkeep')).toHaveAccessibleName(
+      'Your upkeep stop: on every turn. Press to turn it off',
+    )
+    expect(stop('Own', 'Main1')).toHaveAccessibleName(
+      'Your precombat main stop: on for one turn. Press to turn it off',
+    )
+  })
+
+  it('lets a stop be set and cleared as the server would: the icon follows the answer', async () => {
+    await visit('/dev/table?seats=2&stops=own:main1')
+    await screen.findByRole('group', { name: 'Stops' })
+    await act(async () => stop('Own', 'Draw').click())
+    expect(lit()).toEqual(['Own:Draw:turn', 'Own:Main1:turn'])
+    await act(async () => stop('Own', 'Main1').click())
+    expect(lit()).toEqual(['Own:Draw:turn'])
+  })
+
+  it.each([
+    ['held', 'Full Control: held'],
+    ['next', 'Full Control: next window'],
+  ])('shows ?fc=%s as "%s"', async (fc, name) => {
+    await visit(`/dev/table?seats=2&fc=${fc}`)
+    expect(await screen.findByRole('button', { name })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('has no yield controls in the Priority prompt under ?fc=held', async () => {
+    await visit('/dev/table?seats=2&prompt=priority&fc=held')
+    await screen.findByRole('region', { name: 'Game table' })
+    await waitFor(() => primaryButton())
+    expect(document.querySelector('[data-slot="secondary-action"]')).toBeNull()
+    expect(document.querySelector('[data-slot="more-passing"]')).toBeNull()
+  })
+
+  it.each(['?seats=2&stops=', '?seats=2&stops=nonsense', '?seats=2&stops=own:untap', '?seats=2&fc=on'])(
+    'ignores the nonsense in %s',
+    async (search) => {
+      await visit(`/dev/table${search}`)
+      await screen.findByRole('group', { name: 'Stops' })
+      expect(lit()).toEqual([])
+      expect(screen.getByRole('button', { name: 'Full Control: off' })).toBeInTheDocument()
+    },
+  )
+})
+
 describe('/dev/table in a production build', () => {
   it('answers not found and draws no fixture', async () => {
     vi.stubEnv('DEV', false)

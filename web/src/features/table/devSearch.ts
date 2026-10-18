@@ -1,4 +1,5 @@
 import type { PlayerId } from '@/protocol/generated'
+import { parseStopSpec } from './dev/stopSpec'
 import type { TableMode } from './layout'
 
 /** The moves `?fx=` can play on the fixture table, to look at the table effects (`dev/fxScenarios.ts`). */
@@ -31,6 +32,10 @@ export interface DevSearch {
   slow?: number
   /** Milliseconds the dev table takes to answer a preview of blocks or attacks (0 to 10 000), to look at "Checking outcome…". */
   preview?: number
+  /** Stops the viewer already holds, as a spec such as `own:main1,opp:end:keep` (`dev/stopSpec.ts`); missing when it names none. */
+  stops?: string
+  /** The Full Control mode the viewer already holds, `next` or `held`; off when missing. */
+  fc?: 'next' | 'held'
 }
 
 const whole = (value: unknown): number | undefined =>
@@ -38,7 +43,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&mode=&focus=&prompt=&turn=&fx=&slow=&preview=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&mode=&focus=&prompt=&turn=&fx=&slow=&preview=&stops=&fc=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -55,6 +60,10 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     turn: search.turn === 'you' ? 'you' : undefined,
     fx: isDevFx(search.fx) ? search.fx : undefined,
     slow,
+    // The router validates an address again with what it made of it, so both keep the form the address has.
+    stops:
+      typeof search.stops === 'string' && parseStopSpec(search.stops).length > 0 ? search.stops : undefined,
+    fc: search.fc === 'next' || search.fc === 'held' ? search.fc : undefined,
     preview:
       typeof search.preview === 'number' &&
       Number.isInteger(search.preview) &&

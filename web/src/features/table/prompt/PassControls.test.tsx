@@ -1,7 +1,7 @@
 // Goal: the Priority prompt passes through one primary button whose words say what passing does now, an "End turn" beside it and a small menu, each asking the session for the right yield exactly once per prompt; Space or Enter presses the primary button only when nothing else has the keyboard; and nothing says "pass priority" except the description a screen reader gets.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import type { Answer, PriorityOptions, Step, YieldUntil } from '@/protocol/generated'
+import type { Answer, FullControlMode, PriorityOptions, Step, YieldUntil } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
 import { primaryButton } from '@/test-utils/passControls'
 import { renderTable } from '@/test-utils/tableHarness'
@@ -33,6 +33,8 @@ interface Situation {
   given?: PriorityOptions
   /** What the session answers to a request for a yield. */
   accepts?: boolean
+  /** The Full Control mode the server holds. */
+  fullControl?: FullControlMode
 }
 
 /** Seat 0 facing priority at `situation`, with spies for the session's answers and yields. */
@@ -42,6 +44,7 @@ function renderControls({
   stacked = true,
   given = options(),
   accepts = true,
+  fullControl = 'Off',
 }: Situation = {}) {
   const answer = vi.fn((_answer: Answer) => true)
   const yieldUntil = vi.fn((_until: YieldUntil) => accepts)
@@ -58,7 +61,12 @@ function renderControls({
       const view = clone(must(state.view))
       view.turn = { ...view.turn, step, active: own ? 0 : 1 }
       if (!stacked) view.stack = { count: 0, cards: [] }
-      return { ...state, view, pending: { id: 4, decision: { player: 0, kind: { Priority: given } } } }
+      return {
+        ...state,
+        view,
+        fullControl,
+        pending: { id: 4, decision: { player: 0, kind: { Priority: given } } },
+      }
     },
   })
   const primary = (): HTMLElement => primaryButton()
@@ -112,13 +120,40 @@ describe('the words on the buttons', () => {
     expect(empty.primary()).toHaveAttribute('aria-description', 'Passes priority.')
   })
 
-  it('documents the keyboard in a visible hint, a tooltip and the key shortcuts', () => {
-    const { primary } = renderControls()
-    const hint = must(primary().querySelector('kbd'))
-    expect(hint).toHaveTextContent('Space')
-    expect(hint).toHaveAttribute('aria-hidden', 'true')
+  it('documents Space on the primary button and Enter on "End turn", in a visible hint, a tooltip and the key shortcuts', () => {
+    const { primary, secondary } = renderControls()
+    const space = must(primary().querySelector('kbd'))
+    expect(space).toHaveTextContent('Space')
+    expect(space).not.toHaveTextContent('Enter')
+    expect(space).toHaveAttribute('aria-hidden', 'true')
+    expect(primary()).toHaveAttribute('title', 'Space')
+    expect(primary()).toHaveAttribute('aria-keyshortcuts', 'Space')
+    const enter = must(must(secondary()).querySelector('kbd'))
+    expect(enter).toHaveTextContent('Enter')
+    expect(enter).toHaveAttribute('aria-hidden', 'true')
+    expect(must(secondary())).toHaveAttribute('title', 'Enter')
+    expect(must(secondary())).toHaveAttribute('aria-keyshortcuts', 'Enter')
+    // The hint is no part of the name a screen reader hears.
+    expect(must(secondary())).toHaveAccessibleName('End turn')
+    expect(primary()).toHaveAccessibleName('Resolve Lightning Bolt')
+  })
+
+  it.each([
+    [
+      'in the last window of your turn, where the primary button ends it',
+      { own: true, stacked: false, step: 'End' },
+    ],
+    ['under Full Control', { fullControl: 'Held' }],
+    [
+      'under Full Control for the next window',
+      { fullControl: 'NextWindow', own: true, stacked: false, step: 'Main1' },
+    ],
+  ] satisfies [string, Situation][])('says Enter passes too %s', (_where, situation) => {
+    const { primary, secondary } = renderControls(situation)
+    expect(must(primary().querySelector('kbd'))).toHaveTextContent('Space · Enter')
     expect(primary()).toHaveAttribute('title', 'Space or Enter')
     expect(primary()).toHaveAttribute('aria-keyshortcuts', 'Space Enter')
+    expect(secondary()).toBeNull()
   })
 
   it('has "End turn" beside the primary button, except where the primary button already ends the turn', () => {
@@ -205,6 +240,52 @@ describe('"End turn"', () => {
   })
 })
 
+describe('under Full Control, which the server does not let a yield run beside', () => {
+  const yieldControls = (): number =>
+    document.querySelectorAll('[data-slot="secondary-action"], [data-slot="more-passing"]').length
+
+  it.each(['NextWindow', 'Held'] satisfies FullControlMode[])(
+    'offers only the primary button while the mode is %s',
+    (fullControl) => {
+      const { primary, secondary } = renderControls({ fullControl })
+      expect(primary()).toBeEnabled()
+      expect(secondary()).toBeNull()
+      expect(screen.queryByRole('button', { name: 'More ways to pass' })).toBeNull()
+      expect(yieldControls()).toBe(0)
+    },
+  )
+
+  it('offers the yields again when the mode is off', () => {
+    const { secondary, trigger } = renderControls({ fullControl: 'Off' })
+    expect(secondary()).toHaveTextContent('End turn')
+    expect(trigger()).toBeEnabled()
+  })
+
+  it('still passes once with the primary button', async () => {
+    const { primary, answer, yieldUntil, user } = renderControls({ fullControl: 'Held' })
+    await user.click(primary())
+    expect(answer.mock.calls).toEqual([[{ Priority: 'Pass' }]])
+    expect(yieldUntil).not.toHaveBeenCalled()
+  })
+
+  it('takes the yield buttons away when the server turns it on, and brings them back when it turns it off', () => {
+    const { secondary, update } = renderControls()
+    expect(yieldControls()).toBe(2)
+    update(() => ({ fullControl: 'Held' }))
+    expect(secondary()).toBeNull()
+    expect(yieldControls()).toBe(0)
+    update(() => ({ fullControl: 'Off' }))
+    expect(yieldControls()).toBe(2)
+  })
+
+  it('keeps the primary button free when the server turns it on', () => {
+    const { primary, update } = renderControls({ own: true, stacked: false, step: 'Main1' })
+    update(() => ({ fullControl: 'NextWindow' }))
+    expect(primary()).toBeEnabled()
+    expect(primary()).toHaveTextContent('Next: Combat')
+  })
+})
+
 describe('the menu', () => {
   const items = async (): Promise<string[]> =>
     (await screen.findAllByRole('menuitem')).map((item) => item.textContent ?? '')
@@ -270,29 +351,28 @@ describe('the menu', () => {
   })
 })
 
-describe('Space and Enter', () => {
-  it.each([
-    ['Space', ' '],
-    ['Enter', '{Enter}'],
-  ])('%s presses the primary button when nothing has the keyboard', async (_name, keys) => {
-    const { answer, user } = renderControls({ own: true, stacked: false, step: 'Main1' })
-    await user.keyboard(keys)
+describe('Space', () => {
+  it('presses the primary button when nothing has the keyboard', async () => {
+    const { answer, yieldUntil, user } = renderControls({ own: true, stacked: false, step: 'Main1' })
+    await user.keyboard(' ')
     expect(answer.mock.calls).toEqual([[{ Priority: 'Pass' }]])
+    expect(yieldUntil).not.toHaveBeenCalled()
   })
 
-  it('presses it once for a key held down, and again for none once it has answered', async () => {
+  it('passes once for a key held down', async () => {
     const { answer, user } = renderControls()
-    await user.keyboard('{Enter>4/}')
+    await user.keyboard('{ >4/}')
     expect(answer).toHaveBeenCalledTimes(1)
   })
 
   it('leaves the key to a text field, so a chat line can be typed', async () => {
-    const { answer, user } = renderControls()
+    const { answer, yieldUntil, user } = renderControls()
     const field = screen.getByRole('textbox', { name: 'A text field of the page' })
     await user.click(field)
-    await user.keyboard('good game{Enter}')
-    expect((field as HTMLInputElement).value).toBe('good game')
+    await user.keyboard('good game {Enter}')
+    expect((field as HTMLInputElement).value).toBe('good game ')
     expect(answer).not.toHaveBeenCalled()
+    expect(yieldUntil).not.toHaveBeenCalled()
   })
 
   it('leaves it to a card that has focus, which plays itself, and passes nothing', async () => {
@@ -303,7 +383,7 @@ describe('Space and Enter', () => {
       given: options({ playable_lands: [landInHand], can_act: true }),
     })
     act(() => card(landInHand).focus())
-    await user.keyboard('{Enter}')
+    await user.keyboard(' ')
     expect(answer.mock.calls).toEqual([[{ Priority: { PlayLand: landInHand } }]])
   })
 
@@ -317,27 +397,179 @@ describe('Space and Enter', () => {
 
   it('does nothing when passing is not allowed', async () => {
     const { answer, user } = renderControls({ given: options({ can_pass: false }) })
-    await user.keyboard(' {Enter}')
+    await user.keyboard(' ')
     expect(answer).not.toHaveBeenCalled()
   })
 
   it('does nothing once a yield was asked for, which the server is about to answer', async () => {
     const { secondary, answer, user } = renderControls()
     await user.click(must(secondary()))
-    await user.keyboard(' {Enter}')
+    await user.keyboard(' ')
     expect(answer).not.toHaveBeenCalled()
   })
 
   it('does nothing while a modifier is held', async () => {
     const { answer, user } = renderControls()
-    await user.keyboard('{Control>} {/Control}{Alt>}{Enter}{/Alt}{Shift>} {/Shift}')
+    await user.keyboard('{Control>} {/Control}{Alt>} {/Alt}{Meta>} {/Meta}{Shift>} {/Shift}')
     expect(answer).not.toHaveBeenCalled()
   })
 
   it('goes with the prompt: no decision, no shortcut', async () => {
     const { answer, update, user } = renderControls()
     update(() => ({ pending: null }))
-    await user.keyboard(' {Enter}')
+    await user.keyboard(' ')
     expect(answer).not.toHaveBeenCalled()
+  })
+})
+
+describe('Enter', () => {
+  it('asks the session to pass until the end of the turn, as "End turn" does, and answers nothing itself', async () => {
+    const { answer, yieldUntil, user } = renderControls({ own: true, stacked: false, step: 'Main1' })
+    await user.keyboard('{Enter}')
+    expect(yieldUntil.mock.calls).toEqual([['EndOfTurn']])
+    expect(answer).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['over the spells on the stack', { stacked: true }],
+    ['in the first main phase of your turn', { own: true, stacked: false, step: 'Main1' }],
+    ['at the declare blockers step', { stacked: false, step: 'DeclareBlockers' }],
+    ['on the opponent’s turn', { stacked: false, step: 'Upkeep' }],
+    ['in your own end step with a spell on the stack', { own: true, stacked: true, step: 'End' }],
+  ] satisfies [string, Situation][])('ends the turn %s', async (_where, situation) => {
+    const { answer, yieldUntil, user } = renderControls(situation)
+    await user.keyboard('{Enter}')
+    expect(yieldUntil.mock.calls).toEqual([['EndOfTurn']])
+    expect(answer).not.toHaveBeenCalled()
+  })
+
+  it('does what the "End turn" button does: the same request once, the buttons off until the server answers', async () => {
+    const { primary, secondary, trigger, yieldUntil, answer, user } = renderControls()
+    await user.keyboard('{Enter}{Enter}')
+    expect(yieldUntil).toHaveBeenCalledTimes(1)
+    expect(primary()).toBeDisabled()
+    expect(must(secondary())).toBeDisabled()
+    expect(trigger()).toBeDisabled()
+    await user.keyboard(' ')
+    expect(answer).not.toHaveBeenCalled()
+  })
+
+  it('may ask again after the session refused to send, since nothing went out', async () => {
+    const { yieldUntil, user } = renderControls({ accepts: false })
+    await user.keyboard('{Enter}')
+    await user.keyboard('{Enter}')
+    expect(yieldUntil).toHaveBeenCalledTimes(2)
+  })
+
+  it('asks once for a key held down', async () => {
+    const { yieldUntil, user } = renderControls()
+    await user.keyboard('{Enter>4/}')
+    expect(yieldUntil).toHaveBeenCalledTimes(1)
+  })
+
+  it.each([
+    [
+      'in the last window of your turn, where the primary button ends it',
+      { own: true, stacked: false, step: 'End' },
+    ],
+    ['under Full Control', { fullControl: 'Held' }],
+    ['under Full Control for the next window', { fullControl: 'NextWindow' }],
+  ] satisfies [string, Situation][])('passes once, like Space, %s', async (_where, situation) => {
+    const { answer, yieldUntil, user } = renderControls(situation)
+    await user.keyboard('{Enter}')
+    expect(answer.mock.calls).toEqual([[{ Priority: 'Pass' }]])
+    expect(yieldUntil).not.toHaveBeenCalled()
+  })
+
+  it('is a pass once the server turns Full Control on while the prompt is open', async () => {
+    const { answer, yieldUntil, update, user } = renderControls({ stacked: false, step: 'Upkeep' })
+    update(() => ({ fullControl: 'Held' }))
+    await user.keyboard('{Enter}')
+    expect(answer).toHaveBeenCalledTimes(1)
+    expect(yieldUntil).not.toHaveBeenCalled()
+  })
+
+  it('leaves the key to a text field, so a chat line can be sent', async () => {
+    const { answer, yieldUntil, user } = renderControls()
+    const field = screen.getByRole('textbox', { name: 'A text field of the page' })
+    await user.click(field)
+    await user.keyboard('good game{Enter}')
+    expect(answer).not.toHaveBeenCalled()
+    expect(yieldUntil).not.toHaveBeenCalled()
+  })
+
+  it('leaves it to a card that has focus, which plays itself, and asks for nothing', async () => {
+    const { card, answer, yieldUntil, user } = renderControls({
+      own: true,
+      stacked: false,
+      step: 'Main1',
+      given: options({ playable_lands: [landInHand], can_act: true }),
+    })
+    act(() => card(landInHand).focus())
+    await user.keyboard('{Enter}')
+    expect(answer.mock.calls).toEqual([[{ Priority: { PlayLand: landInHand } }]])
+    expect(yieldUntil).not.toHaveBeenCalled()
+  })
+
+  it('leaves it to the button that has focus, which is pressed instead', async () => {
+    const { secondary, answer, yieldUntil, user } = renderControls()
+    act(() => must(secondary()).focus())
+    await user.keyboard('{Enter}')
+    // The button was pressed by the browser's own Enter, once, and the table's key did not press it a second time.
+    expect(yieldUntil).toHaveBeenCalledTimes(1)
+    expect(answer).not.toHaveBeenCalled()
+  })
+
+  it('does nothing when passing is not allowed', async () => {
+    const { answer, yieldUntil, user } = renderControls({ given: options({ can_pass: false }) })
+    await user.keyboard('{Enter}')
+    expect(answer).not.toHaveBeenCalled()
+    expect(yieldUntil).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['Control', '{Control>}{Enter}{/Control}'],
+    ['Alt', '{Alt>}{Enter}{/Alt}'],
+    ['Meta', '{Meta>}{Enter}{/Meta}'],
+    ['Shift', '{Shift>}{Enter}{/Shift}'],
+  ])('does nothing with %s held, so there is no Shift+Enter', async (_name, keys) => {
+    const { answer, yieldUntil, user } = renderControls()
+    await user.keyboard(keys)
+    expect(answer).not.toHaveBeenCalled()
+    expect(yieldUntil).not.toHaveBeenCalled()
+  })
+
+  it('goes with the prompt: no decision, no shortcut', async () => {
+    const { yieldUntil, update, user } = renderControls()
+    update(() => ({ pending: null }))
+    await user.keyboard('{Enter}')
+    expect(yieldUntil).not.toHaveBeenCalled()
+  })
+
+  it('can ask again for a fresh prompt, which means the last request did not pass', async () => {
+    const { yieldUntil, update, store, user } = renderControls()
+    await user.keyboard('{Enter}')
+    const pending = must(store.getState().pending)
+    update(() => ({ pending: { ...pending, id: pending.id + 1 } }))
+    await waitFor(() => expect(screen.getByRole('button', { name: 'End turn' })).toBeEnabled())
+    await user.keyboard('{Enter}')
+    expect(yieldUntil).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('the key legend in the menu', () => {
+  it('names Space and Enter beside the other ways to pass, for the eye only', async () => {
+    const { trigger, user } = renderControls()
+    await user.click(trigger())
+    await screen.findByRole('menu')
+    const legend = must(document.querySelector('[data-slot="key-legend"]'))
+    expect(legend).toHaveTextContent('Space passes once, Enter ends the turn')
+    expect(legend).toHaveAttribute('aria-hidden', 'true')
+    expect(screen.getAllByRole('menuitem')).toHaveLength(2)
+  })
+
+  it('is not in the page while the menu is closed, nor under Full Control, which has no menu', async () => {
+    renderControls({ fullControl: 'Held' })
+    expect(document.querySelector('[data-slot="key-legend"]')).toBeNull()
   })
 })
