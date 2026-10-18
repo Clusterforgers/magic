@@ -4,6 +4,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
+import { AutoPassSwitch } from './AutoPassSwitch'
 import type { CardSize } from './cardSize'
 import { CardPreview } from './CardPreview'
 import { CombatOverlay } from './combat/CombatOverlay'
@@ -114,7 +115,10 @@ const Table = memo(function Table() {
                       pinnedFocus={chosen !== null}
                       onFollow={() => setChosen(null)}
                     />
-                    <ConcedeButton />
+                    <div className="flex flex-wrap items-center gap-3">
+                      <AutoPassSwitch />
+                      <ConcedeButton />
+                    </div>
                   </div>
                   <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
                   {/* Above the combat lines, so they run behind the prompt and never over its words. */}

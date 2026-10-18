@@ -37,4 +37,8 @@ answer: Answer, } | { "type": "Chat",
 /**
  * The text.
  */
-text: string, } | { "type": "Concede" } | { "type": "Resync" };
+text: string, } | { "type": "Concede" } | { "type": "Resync" } | { "type": "AutoPass", 
+/**
+ * The new setting.
+ */
+enabled: boolean, };

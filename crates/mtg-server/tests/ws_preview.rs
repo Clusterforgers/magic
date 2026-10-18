@@ -62,7 +62,7 @@ async fn forecast_of(client: &mut WsClient) -> (DecisionId, Option<CombatForecas
 /// The next decision for the client, skipping everything else.
 async fn next_decision(client: &mut WsClient) -> (DecisionId, mtg_engine::Decision) {
     loop {
-        if let ServerMessage::Decision { id, decision } = client.message().await {
+        if let ServerMessage::Decision { id, decision, .. } = client.message().await {
             return (id, decision);
         }
     }

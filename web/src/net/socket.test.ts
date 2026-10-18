@@ -20,6 +20,26 @@ describe('socketUrl', () => {
     socket.connect()
     expect(net.last.url).toBe(`wss://play.example/ws/${GAME}/${TOKEN}`)
   })
+
+  it.each([
+    ['http://localhost:5173', 'g', 'ws://localhost:5173/ws/g'],
+    ['https://play.example', GAME, `wss://play.example/ws/${GAME}`],
+    ['http://localhost:5173', 'a/b', 'ws://localhost:5173/ws/a%2Fb'],
+  ])('%s with game %s and no token is the session address %s', (origin, game, expected) => {
+    expect(socketUrl(game, undefined, origin)).toBe(expected)
+  })
+
+  it('joins by the session address when no token is given, and keeps it for every retry', () => {
+    const { socket, net, timers } = setup({ token: undefined, origin: 'https://play.example' })
+    socket.connect()
+    expect(net.last.url).toBe(`wss://play.example/ws/${GAME}`)
+    net.last.fail()
+    timers.advance(15_000)
+    expect(net.sockets.map((raw) => raw.url)).toEqual([
+      `wss://play.example/ws/${GAME}`,
+      `wss://play.example/ws/${GAME}`,
+    ])
+  })
 })
 
 describe('joining', () => {

@@ -14,6 +14,7 @@ use tokio::sync::{mpsc, oneshot};
 
 use crate::game_id::GameId;
 use crate::handle::{Command, GameHandle, GameStatus, JoinError};
+use crate::pace::Pace;
 use crate::preview::PreviewLimits;
 use crate::recorder::Recorder;
 use crate::running::{Rejection, Running, count};
@@ -30,6 +31,8 @@ pub struct GameConfig {
     pub seat_queue: usize,
     /// Client messages that may wait for the actor before senders have to wait.
     pub command_queue: usize,
+    /// Auto-pass and the response clocks.
+    pub pace: Pace,
 }
 
 impl Default for GameConfig {
@@ -37,6 +40,7 @@ impl Default for GameConfig {
         GameConfig {
             seat_queue: 256,
             command_queue: 64,
+            pace: Pace::default(),
         }
     }
 }
@@ -129,7 +133,7 @@ pub(crate) async fn resume_recorded<S: EventStore>(
     if !fresh.is_empty() {
         store.append(id, count(stored_len), fresh).await?;
     }
-    let mut running = Running::new(engine);
+    let mut running = Running::new(engine, config.pace);
     running.settle(false);
     Ok(launch(
         id,
@@ -155,6 +159,8 @@ fn launch<S: EventStore>(
         store,
         seats: Seats::new(setup.players.len(), config.seat_queue),
         previews: PreviewLimits::new(setup.players.len(), Instant::now()),
+        auto_pass: vec![config.pace.auto_pass; setup.players.len()],
+        pace: config.pace,
         setup,
         phase,
         recorder,
@@ -183,15 +189,39 @@ pub(crate) struct GameActor<S> {
     pub(crate) seats: Seats,
     /// How fast each seat may ask for previews.
     pub(crate) previews: PreviewLimits,
+    /// How fast the game moves (settings shared by every seat).
+    pub(crate) pace: Pace,
+    /// Per seat: whether a priority decision it cannot use is passed for it. Starts at the server default, resets on resume.
+    pub(crate) auto_pass: Vec<bool>,
     pub(crate) phase: Phase,
     /// Where a persistent game notes its milestones; `None` for a game that lives in memory only.
     pub(crate) recorder: Option<Recorder>,
 }
 
 impl<S: EventStore> GameActor<S> {
-    /// Handles commands one at a time until every handle is gone.
+    /// Handles commands one at a time until every handle is gone, and answers for a seat whose clock runs out.
     async fn run(mut self, mut inbox: mpsc::Receiver<Command>) {
-        while let Some(command) = inbox.recv().await {
+        if self.start_up().await.is_err() {
+            return;
+        }
+        loop {
+            let command = match self.due() {
+                None => inbox.recv().await,
+                // Biased: a command already waiting was sent before the clock ran out, so it goes first.
+                Some(due) => tokio::select! {
+                    biased;
+                    command = inbox.recv() => command,
+                    () = tokio::time::sleep_until(due) => {
+                        if self.expire().await.is_err() {
+                            return;
+                        }
+                        continue;
+                    }
+                },
+            };
+            let Some(command) = command else {
+                return;
+            };
             if self.handle(command).await.is_err() {
                 return;
             }
@@ -226,6 +256,7 @@ impl<S: EventStore> GameActor<S> {
             game: self.id.to_string(),
             player: seat,
             seats: u32::try_from(self.seats.len()).unwrap_or(u32::MAX),
+            auto_pass: self.auto_pass.get(seat.index()).copied().unwrap_or(false),
         };
         self.seats.send(seat, welcome);
         self.sync(seat);
@@ -261,6 +292,7 @@ impl<S: EventStore> GameActor<S> {
             }
             ClientMessage::Preview { decision, answer } => self.preview(seat, decision, &answer),
             ClientMessage::Concede => return self.concede(seat).await,
+            ClientMessage::AutoPass { enabled } => return self.set_auto_pass(seat, enabled).await,
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),
                 Phase::Lobby { .. } => self.refuse(seat, not_started()),

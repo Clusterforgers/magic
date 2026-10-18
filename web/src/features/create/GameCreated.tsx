@@ -1,7 +1,9 @@
+import { Link } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
 import { CopyButton } from '@/components/CopyButton'
 import { SeatLinkRow } from '@/components/SeatLinkRow'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/features/auth/context'
 import { seatLinkPath, seatLinkUrl } from '@/lib/seatLink'
 import type { CreatedGame, CreateGameRequest, DeckInfo } from '@/net/api'
 
@@ -18,6 +20,7 @@ interface GameCreatedProps {
 
 /** The result of creating a game: one link per seat, each with a copy button, and a way into the host's own seat. */
 export function GameCreated({ created, request, decks, origin, onOpenSeat, onAnother }: GameCreatedProps) {
+  const account = useAuth((state) => state.user?.username ?? null)
   const heading = useRef<HTMLHeadingElement>(null)
   useEffect(() => heading.current?.focus(), [])
 
@@ -50,6 +53,16 @@ export function GameCreated({ created, request, decks, origin, onOpenSeat, onAno
           Each link is the key to one seat: anyone who has it can play that seat. Send every player only their
           own link.
         </p>
+        {account === null || mine === undefined ? null : (
+          <p data-slot="saved-note" className="mt-2 text-sm break-words">
+            Seat 1 ({mine.name}) is yours and saved to your account,{' '}
+            <strong className="font-medium">{account}</strong>. Find this game under{' '}
+            <Link to="/games" className="font-medium underline underline-offset-3">
+              My games
+            </Link>{' '}
+            and rejoin it from there without a link. The other links are for your friends.
+          </p>
+        )}
       </div>
       <div className="flex flex-wrap gap-2">
         {mine === undefined ? null : (

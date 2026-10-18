@@ -85,6 +85,26 @@ fn hand_land(state: &GameState, id: ObjectId) -> bool {
         .is_some_and(|o| o.base_types().contains(CardType::Land))
 }
 
+/// Activated abilities of `player`'s permanents that are not mana abilities and could be used now.
+///
+/// No card has one yet (see [`AbilityDef`]); when one does, list it here and [`can_act`] counts it.
+fn other_abilities(_state: &GameState, _player: PlayerId) -> Vec<ObjectId> {
+    Vec::new()
+}
+
+/// Whether `player` can do anything worth stopping for: play a land, cast a spell or use an ability that is not a mana ability.
+///
+/// `castable` already holds only the spells the floating mana and the untapped sources can pay for. Mana
+/// abilities alone never count: tapping a land with nothing to spend the mana on is not an action.
+pub(crate) fn can_act(
+    state: &GameState,
+    player: PlayerId,
+    playable_lands: &[ObjectId],
+    castable: &[ObjectId],
+) -> bool {
+    !playable_lands.is_empty() || !castable.is_empty() || !other_abilities(state, player).is_empty()
+}
+
 /// Everything `player` may do while holding priority.
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
@@ -92,7 +112,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     let pool = state.player(player).map(|p| *p.mana()).unwrap_or_default();
     let may_play_land =
         sorcery_timing(state, player) && state.turn().lands_played() < LAND_DROPS_PER_TURN;
-    let playable_lands = if may_play_land {
+    let playable_lands: Vec<ObjectId> = if may_play_land {
         hand.iter()
             .copied()
             .filter(|id| hand_land(state, *id))
@@ -100,7 +120,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     } else {
         Vec::new()
     };
-    let castable = hand
+    let castable: Vec<ObjectId> = hand
         .iter()
         .copied()
         .filter(|id| {
@@ -119,6 +139,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         })
         .collect();
     PriorityOptions {
+        can_act: can_act(state, player, &playable_lands, &castable),
         playable_lands,
         castable,
         mana_abilities,

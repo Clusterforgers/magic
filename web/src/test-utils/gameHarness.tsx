@@ -1,5 +1,7 @@
 import { act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { AuthProvider } from '@/features/auth/AuthProvider'
+import type { AuthStore } from '@/features/auth/store'
 import { GamePage } from '@/features/game/GamePage'
 import type { SeatLink } from '@/lib/seatLink'
 import type { Api } from '@/net/api'
@@ -14,6 +16,10 @@ import { welcome } from './socketSetup'
 export interface GameOptions {
   /** The seat link from the address; the token of seat 0 by default. `null` is an address without one. */
   link?: SeatLink | null
+  /** The username of the signed-in account, which joins through the session when `link` is `null`. */
+  account?: string | null
+  /** The sign-in state of the page; without one the page is a guest's on a server with no accounts. */
+  auth?: AuthStore
   /** How the fake REST server answers. */
   script?: ServerScript
   strict?: boolean
@@ -54,9 +60,13 @@ export async function renderGame(options: GameOptions = {}): Promise<GameHarness
   const server = startServer(options.script)
   const link = options.link === undefined ? { seat: 0, token: tokenOf(0) } : options.link
   const deps = { createSocket: net.factory, timers, random: () => 0, origin: 'http://localhost:5173' }
-  const view = await renderInRouter(<GamePage gameId={GAME_ID} link={link} api={server.api} deps={deps} />, {
-    strict: options.strict,
-  })
+  const page = (
+    <GamePage gameId={GAME_ID} link={link} account={options.account ?? null} api={server.api} deps={deps} />
+  )
+  const view = await renderInRouter(
+    options.auth === undefined ? page : <AuthProvider store={options.auth}>{page}</AuthProvider>,
+    { strict: options.strict },
+  )
   const settle = async (): Promise<void> => {
     await act(async () => {
       await Promise.resolve()

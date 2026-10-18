@@ -30,7 +30,7 @@ export interface Harness {
 
 /** A `Decision` message asking seat 0 for priority, with the given id. */
 export function priorityDecision(id: number): ServerMessage {
-  const options = { playable_lands: [], castable: [], mana_abilities: [], can_pass: true }
+  const options = { playable_lands: [], castable: [], mana_abilities: [], can_act: false, can_pass: true }
   return { type: 'Decision', id, decision: { player: 0, kind: { Priority: options } } }
 }
 

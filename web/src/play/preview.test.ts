@@ -4,6 +4,7 @@ import type { Answer, CombatForecast } from '@/protocol/generated'
 import { attacksScene, blocksScene } from '@/test-utils/previewFixture'
 import type { Scene } from '@/test-utils/previewFixture'
 import { startSession } from '@/test-utils/harness'
+import { welcome } from '@/test-utils/socketSetup'
 import { lateJoin } from '@/test-utils/transcripts'
 import { previewKey } from './preview'
 
@@ -203,7 +204,7 @@ describe('the preview in the store', () => {
     expect(h.state().preview).toBeNull()
     h.timers.advance(1000)
     h.open()
-    h.deliver({ type: 'Welcome', protocol_version: 1, game: 'g', player: 0, seats: 2 }, decision(12))
+    h.deliver(welcome, decision(12))
     h.deliver(forecast(12, FORECAST))
     expect(h.state().preview).toBeNull()
     expect(h.session.preview(12, BLOCK)).toBe(true)
@@ -247,7 +248,7 @@ describe('a server that predates previews', () => {
     h.net.last.fail()
     h.timers.advance(1000)
     h.open()
-    h.deliver({ type: 'Welcome', protocol_version: 1, game: 'g', player: 0, seats: 2 }, decision(12))
+    h.deliver(welcome, decision(12))
     expect(h.session.preview(12, BLOCK)).toBe(true)
   })
 

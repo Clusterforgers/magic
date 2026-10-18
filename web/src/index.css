@@ -3,6 +3,7 @@
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/geist';
 @import './features/table/fx/fx.css';
+@import './features/table/prompt/responseClock.css';
 
 @custom-variant dark (&:is(.dark *));
 

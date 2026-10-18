@@ -24,6 +24,8 @@ const DESCRIPTION: &str = "What mtg-server answers a seat's Preview messages wit
     Regenerate: MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test preview_fixture";
 /// Player 1's life: low enough that some attacks and no-blocks are lethal.
 const LIFE: i32 = 6;
+/// The response clock of a blocker (`MTG_BLOCK_SECS`, 45 s), which the block decision carries.
+const BLOCK_CLOCK_MS: u64 = 45_000;
 
 #[derive(Debug, Deserialize)]
 struct Exchange {
@@ -54,6 +56,8 @@ fn json(value: &impl serde::Serialize) -> String {
 struct Script {
     seat: PlayerId,
     id: DecisionId,
+    /// The clock the decision carries, as the server sends it: blocking has one, declaring attackers has none.
+    deadline_ms: Option<u64>,
     answers: Vec<(&'static str, Answer)>,
 }
 
@@ -66,6 +70,7 @@ fn render_scene(engine: &Engine, script: Script) -> String {
     let opening = ServerMessage::Decision {
         id: script.id,
         decision: decision.clone(),
+        deadline_ms: script.deadline_ms,
     };
     let lines: Vec<String> = script
         .answers
@@ -166,6 +171,7 @@ fn attacks_scene(driver: &Driver) -> String {
     let script = Script {
         seat: PlayerId(0),
         id: DecisionId(11),
+        deadline_ms: None,
         answers,
     };
     render_scene(driver.engine(), script)
@@ -221,6 +227,7 @@ fn blocks_scene(driver: &mut Driver) -> String {
     let script = Script {
         seat: PlayerId(1),
         id: DecisionId(12),
+        deadline_ms: Some(BLOCK_CLOCK_MS),
         answers,
     };
     render_scene(driver.engine(), script)
@@ -277,7 +284,7 @@ fn the_fixture_holds_replies_of_every_kind_in_the_wire_shape() {
         ("blocks", &fixture.blocks, "DeclareBlockers"),
         ("attacks", &fixture.attacks, "DeclareAttackers"),
     ] {
-        let ServerMessage::Decision { id, decision } = &scene.decision else {
+        let ServerMessage::Decision { id, decision, .. } = &scene.decision else {
             panic!("{name}: the scene opens with a decision");
         };
         assert_eq!(decision.player, scene.seat, "{name}");

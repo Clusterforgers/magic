@@ -77,6 +77,15 @@ pub enum ClientMessage {
     Concede,
     /// Asks for a fresh snapshot, for example after a reconnect or a gap in the event stream.
     Resync,
+    /// Turns "pass for me when I cannot act" on or off for this seat.
+    ///
+    /// While it is on, a priority decision whose `can_act` is false is answered with a pass by the
+    /// server and never sent. Kept per seat for the life of the game (a resumed game starts every seat
+    /// at the server default); the next messages the seat receives show its effect.
+    AutoPass {
+        /// The new setting.
+        enabled: bool,
+    },
 }
 
 /// A message from the server to one client.
@@ -93,6 +102,8 @@ pub enum ServerMessage {
         player: PlayerId,
         /// Number of seats at the table.
         seats: u32,
+        /// Whether the server passes for this seat when it cannot act (see [`ClientMessage::AutoPass`]).
+        auto_pass: bool,
     },
     /// The client must answer; the engine's legal options are inside.
     Decision {
@@ -100,6 +111,12 @@ pub enum ServerMessage {
         id: DecisionId,
         /// The question with every legal option.
         decision: Decision,
+        /// Milliseconds the seat has left when this is sent; absent for a decision without a clock.
+        /// At the end the server answers for the seat (a pass, or no blocks) and this decision goes stale.
+        /// A decision sent again after a reconnect carries the time that is left, not the time it started with.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        deadline_ms: Option<u64>,
     },
     /// The reply to [`ClientMessage::Preview`]: what combat damage would do for the answer tried.
     Forecast {

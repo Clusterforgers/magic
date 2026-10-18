@@ -11,8 +11,8 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_engine::{Event, GameSetup};
 use mtg_protocol::{ClientMessage, DecisionId, ServerMessage};
-use mtg_server::{GameConfig, GameHandle, GameId};
-use mtg_testkit::{fuzz_setup, play_game};
+use mtg_server::{GameConfig, GameHandle, GameId, Pace};
+use mtg_testkit::{PlayOptions, fuzz_setup, play_game, play_game_with};
 use tokio::sync::mpsc::Receiver;
 use uuid::Uuid;
 
@@ -36,11 +36,13 @@ pub async fn timed<T>(future: impl Future<Output = T>) -> T {
         .expect("timed out waiting for the game")
 }
 
-/// Queues roomy enough that bulk bot games never lose a client by accident.
+/// Queues roomy enough that bulk bot games never lose a client by accident, and no auto-pass or clocks, so a game
+/// plays out exactly as the same bots do on a bare engine.
 pub fn roomy() -> GameConfig {
     GameConfig {
         seat_queue: 8192,
         command_queue: 64,
+        pace: Pace::MANUAL,
     }
 }
 
@@ -55,6 +57,8 @@ pub struct Reference {
     pub final_hash: u64,
     pub result: GameResult,
     pub answers: usize,
+    /// Passes the harness made for holders with nothing to do (0 unless the reference passes for them).
+    pub auto_passes: usize,
 }
 
 pub fn reference(players: usize, seed: u64) -> Reference {
@@ -64,6 +68,23 @@ pub fn reference(players: usize, seed: u64) -> Reference {
         final_hash: outcome.final_hash,
         result: outcome.result,
         answers: outcome.answers,
+        auto_passes: outcome.auto_passes,
+    }
+}
+
+/// The same game where the table passes for a holder with nothing to do, as a server with auto-pass on does.
+pub fn reference_auto_pass(setup: GameSetup, seed: u64) -> Reference {
+    let options = PlayOptions {
+        auto_pass: true,
+        ..PlayOptions::default()
+    };
+    let outcome = play_game_with(setup, seed, options).unwrap_or_else(|f| panic!("{f}"));
+    Reference {
+        events: outcome.events,
+        final_hash: outcome.final_hash,
+        result: outcome.result,
+        answers: outcome.answers,
+        auto_passes: outcome.auto_passes,
     }
 }
 
@@ -109,7 +130,7 @@ impl Client {
     /// Waits for a decision and returns its id and content.
     pub async fn decision(&mut self) -> (DecisionId, mtg_engine::Decision) {
         self.until(|m| match m {
-            ServerMessage::Decision { id, decision } => Some((*id, decision.clone())),
+            ServerMessage::Decision { id, decision, .. } => Some((*id, decision.clone())),
             _ => None,
         })
         .await

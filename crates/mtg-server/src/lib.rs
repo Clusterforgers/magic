@@ -21,7 +21,12 @@
 //! - **Connections.** `join` replaces whatever connection the seat had and sends `Welcome`, then
 //!   (once running) a snapshot, the seat's pending decision and the result if the game is over;
 //!   `Resync` repeats the last two. Queues are bounded: a client that stops reading is dropped and
-//!   must join again. The game waits for absent seats and never passes for them.
+//!   must join again. The game waits for absent seats, with the exceptions of the next bullet.
+//! - **Pace.** A seat with nothing to do is passed for ([`Pace`], `ClientMessage::AutoPass`) through
+//!   the same path as an answer, and its client is never sent that decision. A seat that is not the
+//!   active player has a clock on a priority decision it can act on (10 s) and on declaring blockers
+//!   (45 s); at the deadline the server answers for the seat (a pass, or no blocks) the same way, so
+//!   a late answer is stale. Every other decision waits as long as it takes.
 //! - **Chat** is broadcast to connected seats and never stored.
 //! - **Previews** (`ClientMessage::Preview`) are advice about a pending attack or block: the actor answers
 //!   each with one `Forecast` (empty when there is none or the seat is over its rate limit), never an
@@ -56,6 +61,7 @@ mod lobby;
 mod migrations;
 mod my_games;
 mod origin;
+mod pace;
 mod passwords;
 mod pg_store;
 mod play;
@@ -83,6 +89,7 @@ pub use config::{AuthConfig, ConfigError, ServerConfig};
 pub use game_id::GameId;
 pub use handle::{GameClosed, GameHandle, GameStatus, JoinError};
 pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};
+pub use pace::{MAX_CLOCK_SECS, Pace};
 pub use passwords::{HashCost, HashCostError};
 pub use pg_store::PgEventStore;
 pub use preview::{PREVIEW_BURST, PREVIEWS_PER_SECOND};

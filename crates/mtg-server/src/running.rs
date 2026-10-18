@@ -1,9 +1,20 @@
 //! A started game as a plain state machine: the engine plus the decision ids that tell stale answers from current ones.
 
+use std::time::Duration;
+
 use mtg_core::ids::PlayerId;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState};
 use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView};
+use tokio::time::Instant;
+
+use crate::pace::{self, Pace};
+
+/// Most priority passes made for idle seats in one go; past it the decision is sent as it is.
+///
+/// A real game needs a handful. The cap keeps one batch small and the actor responsive if a table
+/// ever offers nothing to do for dozens of turns.
+const MAX_IDLE_PASSES: usize = 500;
 
 /// A client message that was refused, as the `Error` it becomes.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -52,11 +63,22 @@ pub(crate) struct Step {
     pub(crate) keep_unchanged: bool,
 }
 
-/// The decision awaiting an answer and the id the client must echo.
+/// The decision awaiting an answer, the id the client must echo and when its clock runs out.
 #[derive(Debug)]
 struct Pending {
     id: DecisionId,
     decision: Decision,
+    /// When the server answers for the seat; `None` for a decision without a clock.
+    due: Option<Instant>,
+}
+
+/// A decision just issued: what its seat is sent.
+#[derive(Debug)]
+pub(crate) struct Issued {
+    pub(crate) id: DecisionId,
+    pub(crate) decision: Decision,
+    /// Milliseconds on its clock, if it has one.
+    pub(crate) deadline_ms: Option<u64>,
 }
 
 /// A started game.
@@ -65,19 +87,26 @@ pub(crate) struct Running {
     pub(crate) engine: Engine,
     pending: Option<Pending>,
     last_id: u64,
+    pace: Pace,
 }
 
 pub(crate) fn count(len: usize) -> u64 {
     u64::try_from(len).unwrap_or(u64::MAX)
 }
 
+/// Whole milliseconds, saturating.
+fn millis(span: Duration) -> u64 {
+    u64::try_from(span.as_millis()).unwrap_or(u64::MAX)
+}
+
 impl Running {
     /// Wraps `engine`; call [`settle`](Running::settle) to issue the first decision id.
-    pub(crate) fn new(engine: Engine) -> Running {
+    pub(crate) fn new(engine: Engine, pace: Pace) -> Running {
         Running {
             engine,
             pending: None,
             last_id: 0,
+            pace,
         }
     }
 
@@ -86,11 +115,38 @@ impl Running {
         self.pending.as_ref().map(|p| p.decision.player)
     }
 
+    /// When the pending decision's clock runs out, if it has one.
+    pub(crate) fn due(&self) -> Option<Instant> {
+        self.pending.as_ref().and_then(|p| p.due)
+    }
+
+    /// Moves the clock of the pending decision to `due` (nothing happens for a decision without one).
+    pub(crate) fn postpone(&mut self, due: Instant) {
+        if let Some(pending) = self.pending.as_mut().filter(|p| p.due.is_some()) {
+            pending.due = Some(due);
+        }
+    }
+
+    /// Drops the clock of the pending decision, so a decision the server cannot answer for is not retried forever.
+    pub(crate) fn stop_clock(&mut self) {
+        if let Some(pending) = self.pending.as_mut() {
+            pending.due = None;
+        }
+    }
+
+    /// Whether the pending decision is `seat`'s, cannot be used and `seat` has auto-pass on.
+    pub(crate) fn idle_for(&self, seat: PlayerId, auto_pass: &[bool]) -> bool {
+        self.pending
+            .as_ref()
+            .is_some_and(|p| p.decision.player == seat && pace::skippable(&p.decision, auto_pass))
+    }
+
     /// Aligns the pending decision with the engine's and returns what a client must be sent, if anything.
     ///
-    /// Every new decision gets a fresh id. With `keep_unchanged`, a decision that did not change keeps
-    /// its id and is not sent again, so a concession elsewhere does not invalidate a pending answer.
-    pub(crate) fn settle(&mut self, keep_unchanged: bool) -> Option<(DecisionId, Decision)> {
+    /// Every new decision gets a fresh id and, when [`Pace`] gives it one, a clock that starts now. With
+    /// `keep_unchanged`, a decision that did not change keeps its id and clock and is not sent again, so a
+    /// concession elsewhere does not invalidate a pending answer.
+    pub(crate) fn settle(&mut self, keep_unchanged: bool) -> Option<Issued> {
         let Some(decision) = self.engine.decision().cloned() else {
             self.pending = None;
             return None;
@@ -104,23 +160,38 @@ impl Running {
         }
         self.last_id += 1;
         let id = DecisionId(self.last_id);
+        let clock = self
+            .pace
+            .clock_for(&decision, self.engine.state().turn().active());
+        let due = clock.and_then(|span| Instant::now().checked_add(span));
         self.pending = Some(Pending {
             id,
             decision: decision.clone(),
+            due,
         });
-        Some((id, decision))
+        Some(Issued {
+            id,
+            decision,
+            deadline_ms: clock.map(millis),
+        })
     }
 
     /// What a client needs to catch up: a snapshot, its pending decision and the result if the game is over.
+    ///
+    /// The decision carries the time its clock has left, not the time it started with.
     pub(crate) fn sync_messages(&self, seat: PlayerId) -> Vec<ServerMessage> {
         let mut messages = vec![ServerMessage::Snapshot {
             seq: count(self.engine.events().len()),
             state: Box::new(StateView::for_player(self.engine.state(), seat)),
         }];
         if let Some(pending) = self.pending.as_ref().filter(|p| p.decision.player == seat) {
+            let now = Instant::now();
             messages.push(ServerMessage::Decision {
                 id: pending.id,
                 decision: pending.decision.clone(),
+                deadline_ms: pending
+                    .due
+                    .map(|due| millis(due.saturating_duration_since(now))),
             });
         }
         if let Some(result) = self.engine.result() {
@@ -174,6 +245,44 @@ impl Running {
             return None;
         }
         self.engine.preview_forecast(seat, answer).ok()
+    }
+
+    /// Answers the pending decision for its seat with the safe default: a pass, or no blocks.
+    ///
+    /// It goes through [`answer`](Running::answer), so it is checked and logged like the seat's own move.
+    pub(crate) fn fall_back(&mut self) -> Result<Step, Rejection> {
+        let pending = self.pending.as_ref();
+        let Some((id, seat, answer)) = pending.and_then(|p| {
+            pace::fallback(&p.decision).map(|answer| (p.id, p.decision.player, answer))
+        }) else {
+            return Err(Rejection::new(
+                ErrorCode::StaleDecision,
+                "no decision is pending that can be answered for its seat",
+            ));
+        };
+        self.answer(seat, id, answer)
+    }
+
+    /// Passes for every seat that has nothing to do and has auto-pass on, until some decision needs a player.
+    ///
+    /// The passes go through the engine like any answer; their events are added to `events`, so the
+    /// whole stretch is saved and shown as one batch. A seat that is asked anything else, or that can
+    /// act, stops the run, and so does the end of the game.
+    pub(crate) fn skip_idle(
+        &mut self,
+        events: &mut Vec<Event>,
+        auto_pass: &[bool],
+    ) -> Result<(), EngineError> {
+        for _ in 0..MAX_IDLE_PASSES {
+            let Some(decision) = self.engine.decision() else {
+                break;
+            };
+            if !pace::skippable(decision, auto_pass) {
+                break;
+            }
+            events.extend(self.engine.apply(pace::pass())?);
+        }
+        Ok(())
     }
 
     /// Removes `seat` from the game.
