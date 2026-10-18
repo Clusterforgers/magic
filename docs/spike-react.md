@@ -2,6 +2,8 @@
 
 Verdict: **React + Vite + Tailwind/shadcn + TanStack Router + zustand + dnd-kit + Motion is locked in.**
 
+The spike code was removed in M2g (last present in `446bdd0^`); this page keeps its results and findings. Test names below refer to that code.
+
 Setup: 4 players, 176 objects (148 permanents + 28 hand cards), 6 state patches per 100 ms tick, hand-to-battlefield move every 2 s. Production build, headless Chromium 155 (software rendering), run via `pnpm e2e`.
 
 | Criterion | Target | Result |
