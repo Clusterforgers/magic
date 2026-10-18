@@ -5,7 +5,8 @@ mod common;
 use std::sync::Arc;
 
 use common::pid;
-use mtg_core::card::{AbilityDef, CardDefinition, CardType, ManaAbility};
+use mtg_cards::{AbilityDef, CardDefinition, ManaAbility};
+use mtg_core::card::CardType;
 use mtg_core::mana::ManaType;
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_engine::turn::Step;

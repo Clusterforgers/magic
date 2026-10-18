@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use mtg_core::card::CardDefinition;
+use mtg_cards::CardDefinition;
 use mtg_core::color::Color;
 use mtg_core::mana::{ManaCost, ManaSymbol};
 use mtg_engine::GameSetup;

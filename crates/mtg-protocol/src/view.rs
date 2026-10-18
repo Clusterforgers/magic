@@ -3,7 +3,8 @@
 //! These are the only game-state types that cross the wire. They hold no seed, RNG position or
 //! library order, and an object appears only when its viewer may see which card it is.
 
-use mtg_core::card::{AbilityDef, CardType, Subtype, Supertype};
+use mtg_cards::AbilityDef;
+use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;

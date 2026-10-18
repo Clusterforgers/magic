@@ -14,6 +14,7 @@ mod preview;
 mod sba;
 mod steps;
 
+pub mod caps;
 pub mod characteristics;
 pub mod combat;
 pub mod decision;
@@ -36,6 +37,7 @@ pub mod state;
 pub mod turn;
 pub mod zones;
 
+pub use caps::caps;
 pub use characteristics::{Characteristics, characteristics};
 pub use decision::{Answer, Decision, DecisionKind};
 pub use engine::{Checkpoint, Engine, replay};

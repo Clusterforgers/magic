@@ -8,6 +8,7 @@ Design notes for `mtg-engine` (the rules engine) and `mtg-testkit` (scenarios, b
 - One `Event` enum and one `apply_event` fold: the state is the fold of the events.
 - Each `Decision` kind carries its own legal options: Mulligan, BottomCards, Priority, PayMana, DeclareAttackers, DeclareBlockers, AssignDamage, Discard. `Answer` mirrors them.
 - `FormatRules` is a trait. `Normal` is the only implementation; it skips the starting player's first draw only in two-player games.
+- `caps()` names the primitives the engine runs, in the vocabulary of the card support records (`cards-dsl.md`): today the plain tap-for-mana ability. A spell with `{X}` in its printed cost (`CardDefinition::x_in_cost`) is never castable until X costs land.
 - `MulliganOptions` states the mulligan costs from `FormatRules::mulligan_rule` (`MulliganRule { hand_size, free_mulligans }`): `free_mulligans`, `bottom_if_keep` (the count the `BottomCards` decision asks for) and `bottom_if_mulligan`. A format with a free mulligan (Commander, CR 103.5c) only sets `free_mulligans`. Clients repeat these counts and never work them out.
 
 ## Determinism and recovery

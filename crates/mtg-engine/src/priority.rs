@@ -2,7 +2,8 @@
 
 use std::collections::BTreeSet;
 
-use mtg_core::card::{AbilityDef, CardType};
+use mtg_cards::AbilityDef;
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::answers::Outcome;
@@ -134,6 +135,10 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
                 return false;
             };
             if types.contains(CardType::Land) {
+                return false;
+            }
+            // The cost the engine pays has no {X} in it, so paying it would be casting for less.
+            if object.card().x_in_cost > 0 {
                 return false;
             }
             let timing = types.contains(CardType::Instant) || sorcery_timing(state, player);

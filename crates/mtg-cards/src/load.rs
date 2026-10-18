@@ -7,6 +7,7 @@ use std::path::{Path, PathBuf};
 use serde::Serialize;
 use serde::de::DeserializeOwned;
 
+use crate::assemble::{Assembled, assemble};
 use crate::card::{Card, TokenFile};
 use crate::pretty::pretty;
 use crate::support::{Caps, PrintedCard, SupportRecord, support};
@@ -333,6 +334,11 @@ impl Library {
     /// The support of an imported card: its rules file if there is one, nothing otherwise.
     pub fn support(&self, printed: &PrintedCard, caps: &Caps) -> SupportRecord {
         support(self.card(&printed.oracle_id), printed, caps)
+    }
+
+    /// The definition of an imported card with the rules this library holds for it, if any.
+    pub fn assemble(&self, printed: &PrintedCard, caps: &Caps) -> Assembled {
+        assemble(printed, self.card(&printed.oracle_id), caps)
     }
 }
 

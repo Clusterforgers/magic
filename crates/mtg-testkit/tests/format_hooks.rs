@@ -5,7 +5,7 @@ mod common;
 use std::sync::Arc;
 
 use common::pid;
-use mtg_core::card::CardDefinition;
+use mtg_cards::CardDefinition;
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{Answer, DecisionKind, MulliganChoice, MulliganOptions};
 use mtg_engine::error::SetupError;

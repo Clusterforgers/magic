@@ -13,6 +13,11 @@ serde_json.workspace = true
 serde_path_to_error.workspace = true
 sha2.workspace = true
 thiserror.workspace = true
+ts-rs = { workspace = true, optional = true }
+
+[features]
+# Derives TypeScript bindings for the definition types that travel on the wire.
+ts = ["dep:ts-rs", "mtg-core/ts"]
 
 [lints]
 workspace = true

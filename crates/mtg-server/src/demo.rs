@@ -4,8 +4,8 @@
 
 use std::sync::Arc;
 
+use mtg_cards::CardDefinition;
 use mtg_cards::vanilla::{basic_land, creature};
-use mtg_core::card::CardDefinition;
 use mtg_core::color::Color;
 
 /// Basic lands in every demo deck.

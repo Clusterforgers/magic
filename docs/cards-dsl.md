@@ -2,7 +2,7 @@
 
 Rules data for cards (`mtg-cards`) and the pipeline that runs it (`mtg-engine`).
 
-Scope: the data model, loader, validation, support records and a 40-card corpus are implemented in `crates/mtg-cards`. "Execution", "Triggers, replacement and layers" and "Tasks" are the contract of the M3 engine tasks. Related: `engine.md`, `protocol.md`, `deck-check.md`, `arena-flow.md`.
+Scope: the data model, loader, validation, support records, a 40-card corpus and card assembly are implemented in `crates/mtg-cards`, with the engine's capabilities in `mtg-engine` and the card source in `mtg-server`. "Execution", "Triggers, replacement and layers" and "Tasks" are the contract of the M3 engine tasks. Related: `engine.md`, `protocol.md`, `deck-check.md`, `arena-flow.md`.
 
 ## Summary
 
@@ -45,23 +45,31 @@ Scope: the data model, loader, validation, support records and a 40-card corpus 
 | `crates/mtg-cards/cards/tokens/<id>.json` | A predefined token (Treasure, Clue, Food) |
 | `crates/mtg-cards/tests/fixtures/corpus_scryfall.json` | Imported Scryfall objects of the corpus |
 
+- `mtg_cards::builtin::library()` is the library of these files, embedded at build time (`build.rs`), so a server needs no directory and a deploy carries the rules it was tested with.
 - Canonical text: compact JSON in serde's field order, laid out by `mtg_cards::pretty` (a value stays on one line up to 100 columns, otherwise one entry per line).
 - `MTG_UPDATE_CARDS=1 cargo test -p mtg-cards --test corpus` rewrites the files and their fingerprints; the test fails on a file that is not canonical.
 - `MTG_REAL_DATA_DIR=<dir> cargo test -p mtg-cards --test corpus -- --ignored` compares the corpus with an `oracle-cards-*.jsonl.gz` download.
 
 ## Printed side and rules
 
-The printed side of every card comes from the import record (`mtg_import::CardRecord`, stored in the `cards` table). The rules file adds abilities. A deck of oracle ids becomes `CardDefinition`s in the server:
+The printed side of every card comes from the import record (`mtg_import::CardRecord`, stored in the `cards` table). The rules file adds abilities. A deck of oracle ids becomes `CardDefinition`s in the server (`CardSource`, `DeckRef::Oracle`):
 
 | Step | Action |
 |---|---|
-| 1 | `mtg-db` reads one `cards` row per distinct oracle id of the deck. |
-| 2 | The server adapts each `CardRecord` to `mtg_cards::PrintedCard` (strings only; `mtg-cards` does not depend on `mtg-import`). |
-| 3 | `assemble(&PrintedCard, Option<&Card>, &Caps) -> Assembled` builds the characteristics (cost via `ManaCostX`, type line, power, toughness, loyalty, defense, colours) and attaches the rules when the support record says they run; otherwise the card is `Manual`. |
-| 4 | `PlayerSetup.library` gets one `Arc<CardDefinition>` per deck line. `CardDefinition` and `AbilityDef` live in `mtg-cards`; `AbilityDef::Mana` is the lowered `{T}: Add {X}`. |
-| 5 | The recipe's deck fingerprint (`recipe/fingerprint.rs`) hashes the serde form of the definitions, so changed rules, capabilities or errata change it and a resumed game fails as a changed deck does. |
+| 1 | `mtg-db` reads one `cards` row per distinct oracle id of the deck (`CardRepo::get_many`); every id without a row is named in the error. |
+| 2 | The server adapts each stored row to `mtg_cards::PrintedCard` (`mtg_server::printed_card`; strings only, `mtg-cards` does not depend on `mtg-import`). The testkit does the same from the record itself. |
+| 3 | `assemble(&PrintedCard, Option<&Card>, &Caps) -> Assembled { definition, support }` reads the front face: cost (`mana_cost` without its `{X}` symbols, and `x_in_cost`), type line, power, toughness, loyalty, defense and colours (`color_indicator` only where the record's colours differ from the cost's). It gives a land the mana abilities of its basic land types (CR 305.6) and attaches the rules the support record says the engine runs; otherwise the card is `Manual`. |
+| 4 | `PlayerSetup.library` gets one `Arc<CardDefinition>` per deck line; copies share it. `CardDefinition`, `AbilityDef` and `ManaAbility` live in `mtg-cards`; `AbilityDef::Mana` is the lowered plain `{T}: Add {X}` (`lower`). |
+| 5 | The recipe's deck fingerprint (`recipe/fingerprint.rs`) hashes the serde form of the definitions, so a corrected record, changed rules or a change in what the engine runs changes it and a resumed game fails as a changed deck does. Fields added to `CardDefinition` are left out of that form while unused, so `FINGERPRINT_VERSION` stays 1. |
 
-A `*` power or toughness has no value until the layers task; `assemble` marks such a card `Manual`.
+A printed gap makes the card `Manual` and attaches no rules. `support` computes it, so the deck check and the game agree; a `Caps` name lifts it once the engine plays the value.
+
+| Printed value | In the definition | Lifted by |
+|---|---|---|
+| `*`, `1+*` or `X` as power, toughness, loyalty or defense | `None` | `Card.VariableStats` |
+| `{X}` in the cost | `x_in_cost`; the engine offers no such spell | `Card.XCost` |
+| A second face | Only the front face is the card | `Card.Faces` |
+| A mana symbol the engine does not know, an unreadable cost, a type word that is no card type | No cost, or the word dropped | Nothing |
 
 ## The type tree
 
@@ -155,7 +163,7 @@ Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector}
 | Declared and computed | The file declares `impl_status` (`Full` is the database enum `full`). `support(Option<&Card>, &PrintedCard, &Caps) -> SupportRecord` computes the state. A file says `Full` only with a scenario test or compiler golden; CI enforces it. |
 | Clause | An `Ability::Manual { reason, span }`. `reason` is plain language; `span` is `{start, end}` in Unicode scalar values of the face's imported oracle text, end exclusive. |
 | Status and abilities | `Full` has no clause; `Partial` has at least one clause and one modelled ability; `Manual` and `Unplayable` have no abilities. Clauses do not overlap and lie inside the text. |
-| `Caps` | The primitives the running engine implements, named by enum and variant: `Effect.DealDamage`, `Keyword.Flying`, `Trigger.ZoneChange`, `Cost.Tap`, `Mod.ModifyPT`, `ReplaceWhen.TokenCreation`, `ReplaceBy.Multiply`, `Ability.Loyalty`. The engine supplies it; each primitive task adds its entry. Value nodes (`Ref`, `Selector`, `Amount`, `Condition`) are not gated. |
+| `Caps` | The primitives the running engine implements, named by enum and variant: `Effect.DealDamage`, `Keyword.Flying`, `Trigger.ZoneChange`, `Cost.Tap`, `Mod.ModifyPT`, `ReplaceWhen.TokenCreation`, `ReplaceBy.Multiply`, `Ability.Loyalty`. A plain `{T}: Add {X}` (cost exactly `{T}`, one fixed mana, added once) is the one primitive `Ability.ManaAbility`, since the engine runs that shape and not the general ability. The printed gaps have names too (`Card.XCost`, `Card.Faces`, `Card.VariableStats`). `mtg_engine::caps()` supplies it; each primitive task adds its entry there and teaches `lower` to carry the ability into the definition (a test fails when only one is done). Value nodes (`Ref`, `Selector`, `Amount`, `Condition`) are not gated. |
 | Engine gap | `used_primitives(ability)` lists what an ability needs. A face with an uncovered primitive reports the clause "the engine does not run X yet" over the whole face text. A card moves from `Manual` to `Partial` to `Verified` as primitives land, with no file edit. |
 | `oracle_fingerprint(text)` | Lines trimmed, whitespace collapsed, blank lines dropped, joined by `\n`; SHA-256; first 16 bytes as 32 hex characters. |
 | `implementation_hash(card)` | The same digest of the compact JSON of every face's abilities. |
@@ -378,7 +386,7 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | Item | Delivers | Needs |
 |---|---|---|
 | (a) DSL | Data model, loader, validation, support records, corpus | |
-| (b) Card assembly | `PrintedCard` adapter, `assemble`, `CardDefinition` in `mtg-cards`, corpus cards in the testkit, deck fingerprint version | (a) |
+| (b) Card assembly | `PrintedCard` adapter, `assemble`, `CardDefinition` in `mtg-cards`, corpus cards in the testkit; the deck fingerprint keeps version 1 | (a) |
 | (c) Pipeline core | Ability objects, zone-change counter, `Snapshot`, journal and its events, interpreter with one stub file per `Effect` variant, value evaluator, replacement seam, `ChooseTargets` with recheck and fizzle, every new `DecisionKind`, `Answer`, `Event` and redaction arm as types, keyword stubs, engine `Caps` | (b) |
 | (d) Decision kinds | One task each: engine, protocol, web prompt, tests | (c) |
 | (e) Keywords | One task each with a table test | (c) |
