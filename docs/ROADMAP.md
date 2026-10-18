@@ -26,7 +26,8 @@ After a restart, run `git worktree list` and read each worktree's status before 
 - [x] `mtg-server` transport: axum binary, create-game REST with per-seat tokens, one WebSocket per seat, built-in demo decks, graceful shutdown; tests with real sockets (in-memory store)
 - [x] Protocol sync: every `Events` batch carries the whole table state plus a before/after object diff, so the client never folds engine events; reference `StateView::apply`, per-seat property tests, transcript fixture for the web
 - [x] Web core: typed REST + WebSocket client (reconnect, close codes, gap in `from_seq` sends `Resync`), zustand store applying snapshots and batches, tested against the transcript fixture and a fake socket
-- [ ] Web game UI: part 1a done (routes, create-game page, connection/lobby/game-over screens, spike removed); part 1b done (read-only N-seat table in `GameTable`: grid and focus layouts, seat panels, battlefields, hand, stack, log, chat, card preview, `/dev/table`); part 2 left: Arena-style prompts for all eight decision kinds, legal-option highlights, "nothing to do" banners, commander damage and tax once the views carry them
+- [x] Web game UI: routes, create-game page, connection/lobby/game-over screens; read-only N-seat table in `GameTable` (grid and focus layouts, seat panels, battlefields, hand, stack, log, chat, card preview, `/dev/table`); prompts for all eight decision kinds (`features/table/prompt/`, `?prompt=` on `/dev/table`), legal-option highlights and "nothing to do" notes (`docs/web.md`). Commander damage and tax in the table wait for M5
+- [ ] Protocol and engine gaps the prompts exposed (one task each, with tests): `MulliganOptions` should carry the free-mulligan rule (the UI assumes `mulligans_taken + 1` cards go to the bottom); `ManaCost` has no hybrid or X; `PayOptions` has no cancel flag and there is no "complete my partial payment" answer (`Auto` ignores what was chosen); `check_payment` accepts two abilities of one permanent, which would tap it twice; `DamageOptions` carries no player or trample targets and the views carry no keywords, so deathtouch is not in the lethal hint
 - [ ] Playwright e2e: full 2-player vanilla game in the browser
 - [ ] `mtg-server` persistence: Postgres `EventStore` with its own migration table, game and seat records (store a serializable setup recipe), resume running games on boot; `sqlx::test` tests
 
@@ -46,7 +47,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 - [ ] Spectators and reconnect polish
 
 ## M5 Commander
-- [ ] `Commander` format rules: 100-card singleton, color identity, 40 life, command zone, tax, 21 commander damage
+- [ ] `Commander` format rules: 100-card singleton, color identity, 40 life, command zone, tax, 21 commander damage; `PlayerView`/`ObjectView` carry commander damage and tax so the table's "not tracked yet" slot (`SeatPanel`) fills
 - [ ] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
 - [ ] Partner, companion, Commander-specific tests and fuzz games with 4-6 players
 
