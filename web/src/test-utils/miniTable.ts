@@ -19,23 +19,32 @@ import type {
 import { clone, must, tableOf } from './batches'
 import { card, forest } from './cards'
 
-/** The viewer's seat and the opponent's. */
+/** The viewer's seat. */
 export const ME = 0
+/** The opponent's seat. */
 export const FOE = 1
 
-/** The viewer's creatures, a 2/2, a 3/3 and a 1/4, and their Forest. */
+/** The viewer's 2/2 creature. */
 export const MY_BEAR = 1
+/** The viewer's 3/3 creature. */
 export const MY_GIANT = 2
+/** The viewer's 1/4 creature. */
 export const MY_WALL = 3
+/** The viewer's Forest. */
 export const MY_FOREST = 4
-/** The opponent's creatures, a 2/2, a 4/4 and a 1/1, their Forest and their artifact. */
-export const FOE_BEAR = 11
-export const FOE_GOLEM = 12
-export const FOE_IMP = 13
-export const FOE_FOREST = 14
-export const FOE_IDOL = 15
-/** A card in the viewer's hand, and a creature spell on the stack that the opponent cast. */
+/** A card in the viewer's hand. */
 export const MY_HAND_CARD = 5
+/** The opponent's 2/2 creature. */
+export const FOE_BEAR = 11
+/** The opponent's 4/4 artifact creature. */
+export const FOE_GOLEM = 12
+/** The opponent's 1/1 creature. */
+export const FOE_IMP = 13
+/** The opponent's Forest. */
+export const FOE_FOREST = 14
+/** The opponent's artifact, which is no creature. */
+export const FOE_IDOL = 15
+/** A creature spell the opponent has on the stack. */
 export const FOE_SPELL = 30
 
 const zone = (cards: ObjectId[]): ZoneView => ({ count: cards.length, cards })
