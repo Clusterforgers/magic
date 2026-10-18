@@ -12,6 +12,7 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 - Keywords and mechanics are implemented once in the engine; cards only reference them.
 - No `unwrap`/`expect` outside tests; no `unsafe`; errors via `thiserror`.
 - Docs: one short line on every public item. Inline comments only for a non-obvious why.
+- Design notes and the roadmap: short and professional. Present tense and facts only: no history, dates, who asked, hand-off notes or uncertainty lists (open issues become roadmap items). Each file opens with one line of purpose. One line per roadmap item (the outcome); the design lives in `docs/*.md`.
 - Tests: each test module opens with a `//! Goal:` line. Test mechanics across many cases (rstest tables, proptest), not single cards.
 - Every change ships with tests that justify it.
 
