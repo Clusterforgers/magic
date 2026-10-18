@@ -34,7 +34,11 @@ interface OpponentsProps {
 function Opponents({ plan, size, onFocusSeat }: OpponentsProps) {
   if (plan.mode === 'grid') {
     return (
-      <div className={cn('grid items-start gap-3', COLUMNS[plan.columns])}>
+      <div
+        data-layout="grid"
+        data-columns={plan.columns}
+        className={cn('grid items-start gap-3', COLUMNS[plan.columns])}
+      >
         {plan.boards.map((seat) => (
           <OpponentBoard key={seat} seat={seat} size={size} />
         ))}
@@ -42,7 +46,7 @@ function Opponents({ plan, size, onFocusSeat }: OpponentsProps) {
     )
   }
   return (
-    <div className="grid gap-3">
+    <div data-layout="focus" className="grid gap-3">
       <ul
         role="list"
         aria-label="Opponents"

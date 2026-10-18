@@ -45,6 +45,19 @@ export interface TableHarness {
   unmount(): void
 }
 
+/** A table over a real session, such as one from `startSession()`, with the names a lookup gives. */
+export function renderLiveTable(session: Session, lookup: GameLookup, options: TableOptions = {}) {
+  const value: GameContextValue = { game: 'test-game', session, lookup }
+  const view = render(
+    <GameContext value={value}>
+      <TableOptionsContext value={options}>
+        <GameTable />
+      </TableOptionsContext>
+    </GameContext>,
+  )
+  return { user: userEvent.setup(), container: view.container, unmount: view.unmount }
+}
+
 /** Renders `GameTable` (or `setup.ui`) inside a game context built from a fixture. */
 export function renderTable(setup: TableSetup = {}): TableHarness {
   const fixture = setup.fixture ?? buildFixture({ seats: setup.seats ?? 2 })

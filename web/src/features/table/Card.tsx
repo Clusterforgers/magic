@@ -44,6 +44,7 @@ export const Card = memo(function Card({
       type="button"
       data-object-id={id}
       data-highlight={highlight}
+      data-size={size}
       data-tapped={tapped || undefined}
       aria-label={cardLabel(object, role)}
       aria-pressed={highlight === undefined ? undefined : highlight === 'selected'}

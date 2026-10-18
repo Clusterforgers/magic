@@ -37,7 +37,9 @@ export function CardFace({ object, role, size, upright = false }: CardFaceProps)
       )}
     >
       <span className={cn('px-1 pt-0.5 leading-tight font-semibold', classes.name)}>
-        <span className={cn('block break-words hyphens-auto', full ? 'line-clamp-2' : 'line-clamp-3')}>{object.name}</span>
+        <span className={cn('block break-words hyphens-auto', full ? 'line-clamp-2' : 'line-clamp-3')}>
+          {object.name}
+        </span>
       </span>
       {full && object.mana_cost !== null ? (
         <ManaPips
