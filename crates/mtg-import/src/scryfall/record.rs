@@ -3,6 +3,7 @@
 use std::collections::BTreeMap;
 
 use mtg_core::color::ColorSet;
+use mtg_core::mana::{ManaCost, ParseManaCostError};
 use serde::{Deserialize, Serialize};
 
 use crate::ids::{OracleId, PrintingId};
@@ -224,6 +225,19 @@ pub struct CardFace {
     pub images: Option<ImageUris>,
 }
 
+impl CardFace {
+    /// The face's mana cost as a cost: `None` for a face that has no cost (a land, a back face), `Some` for the rest, `{0}` included.
+    ///
+    /// A symbol the engine does not model (`{X}`, snow) is an error that names it, so the card cannot be
+    /// loaded half-costed.
+    pub fn cost(&self) -> Result<Option<ManaCost>, ParseManaCostError> {
+        if self.mana_cost.is_empty() {
+            return Ok(None);
+        }
+        ManaCost::parse(&self.mana_cost).map(Some)
+    }
+}
+
 /// A printing of a card, normalized from a Scryfall card object.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct CardRecord {
@@ -321,4 +335,55 @@ pub struct RulingRecord {
     pub published_at: Option<String>,
     /// Ruling text.
     pub comment: String,
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a face's cost text becomes a cost, no cost stays no cost (not a free one), and a symbol the engine leaves out is an error that names it.
+    use super::*;
+    use rstest::rstest;
+
+    fn face(mana_cost: &str) -> CardFace {
+        CardFace {
+            name: "Face".into(),
+            mana_cost: mana_cost.into(),
+            type_line: String::new(),
+            oracle_text: String::new(),
+            power: None,
+            toughness: None,
+            loyalty: None,
+            defense: None,
+            colors: ColorSet::EMPTY,
+            images: None,
+        }
+    }
+
+    #[rstest]
+    #[case::none("", None)]
+    #[case::free("{0}", Some("{0}"))]
+    #[case::plain("{2}{G}", Some("{2}{G}"))]
+    #[case::hybrid("{R/W}{R/W}{R/W}", Some("{R/W}{R/W}{R/W}"))]
+    #[case::phyrexian("{1}{B/P}{B/P}", Some("{1}{B/P}{B/P}"))]
+    #[case::mixed("{2}{W/P}{G/U/P}", Some("{2}{W/P}{G/U/P}"))]
+    #[case::other_way_round("{W/G}", Some("{G/W}"))]
+    fn a_cost_is_read_or_absent(#[case] text: &str, #[case] shown: Option<&str>) {
+        let cost = face(text).cost().unwrap();
+        assert_eq!(cost.map(|c| c.to_string()).as_deref(), shown);
+    }
+
+    #[rstest]
+    #[case::x("{X}{R}", "X")]
+    #[case::snow("{S}", "S")]
+    #[case::after_a_good_symbol("{2}{HW}", "HW")]
+    fn a_symbol_that_is_left_out_is_named(#[case] text: &str, #[case] symbol: &str) {
+        assert_eq!(
+            face(text).cost(),
+            Err(ParseManaCostError::Unsupported(symbol.to_owned()))
+        );
+    }
+
+    #[test]
+    fn a_free_face_is_not_a_face_without_a_cost() {
+        assert_ne!(face("{0}").cost().unwrap(), face("").cost().unwrap());
+    }
 }

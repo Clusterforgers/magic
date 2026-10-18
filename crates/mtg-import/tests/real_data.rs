@@ -149,6 +149,11 @@ fn every_real_mana_cost_is_read_or_refused_by_name() {
                 Verdict::Refused(_) => refused += 1,
             }
         }
+        // The face accessor the card compiler will use refuses exactly what the string check refuses.
+        for face in card.faces().filter(|face| !face.mana_cost.is_empty()) {
+            let refused_by_verdict = matches!(verdict(&face.mana_cost), Verdict::Refused(_));
+            assert_eq!(face.cost().is_err(), refused_by_verdict, "{}", card.name);
+        }
         // A plain single-faced card must also agree with Scryfall on mana value.
         let devoid = card.keywords.iter().any(|k| k == "Devoid");
         if card.back_faces.is_empty()

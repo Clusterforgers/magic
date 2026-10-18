@@ -318,13 +318,18 @@ pub fn max_life_payment(cost: &ManaCost, life: i32) -> u32 {
         .min(have - have % PHYREXIAN_LIFE)
 }
 
+/// Whether a life total can pay `paid` life (CR 119.4): at least that much, and any total for no payment at all.
+fn can_pay_life(life: i32, paid: u32) -> bool {
+    paid == 0 || i64::from(paid) <= i64::from(life)
+}
+
 /// Checks that `paid` life is an amount the cost allows and the payer has: even, within the Phyrexian symbols, within the life total.
 fn check_life(cost: &ManaCost, life: i32, paid: u32) -> Result<(), PaymentError> {
     let most = cost.life_symbols().saturating_mul(PHYREXIAN_LIFE);
     if !paid.is_multiple_of(PHYREXIAN_LIFE) || paid > most {
         return Err(PaymentError::BadLife { paid, most });
     }
-    if i64::from(paid) > i64::from(life) {
+    if !can_pay_life(life, paid) {
         return Err(PaymentError::NotEnoughLife { paid, have: life });
     }
     Ok(())
@@ -336,7 +341,7 @@ fn check_life(cost: &ManaCost, life: i32, paid: u32) -> Result<(), PaymentError>
 pub fn can_afford(cost: &ManaCost, pool: &ManaPool, sources: &[ManaOption], life: i32) -> bool {
     cost.resolutions()
         .iter()
-        .any(|r| i64::from(r.life) <= i64::from(life) && plain_can_afford(&r.cost, pool, sources))
+        .any(|r| can_pay_life(life, r.life) && plain_can_afford(&r.cost, pool, sources))
 }
 
 /// How much a payment is wanted, lower first: less life, then fewer taps, then taps of the kinds the sources make most of.
@@ -423,8 +428,8 @@ pub fn check_payment(
 
 /// Whether a completion may pay `total` life when `kept` is already chosen: it never un-pays, and it only adds life that leaves some.
 fn may_pay_life(total: u32, kept: u32, life: i32) -> bool {
-    let (total, kept, life) = (i64::from(total), i64::from(kept), i64::from(life));
-    total >= kept && total <= life && (total == kept || life - total >= 1)
+    let leaves_some = i64::from(life) - i64::from(total) >= 1;
+    total >= kept && can_pay_life(life, total) && (total == kept || leaves_some)
 }
 
 /// Finishes a partial payment: keeps every part of `partial` and adds the rest automatically.
@@ -682,6 +687,25 @@ mod tests {
             afford(cost_text, lands_str, "", life),
             (affordable, automatic_life)
         );
+    }
+
+    #[rstest]
+    #[case::no_life_left(0)]
+    #[case::below_zero(-5)]
+    fn a_plain_cost_needs_no_life_total_to_be_paid(#[case] life: i32) {
+        let plain = cost("{1}{G}");
+        let pool = ManaPool::default();
+        let sources = lands("GG");
+        assert!(can_afford(&plain, &pool, &sources, life));
+        let payment = auto_payment(&plain, &pool, &sources, life).unwrap();
+        assert_eq!(
+            check_payment(&plain, &pool, &sources, &[], life, &payment).map(|_| ()),
+            Ok(())
+        );
+        let partial = taps(&[(0, 0)]);
+        assert!(complete_payment(&plain, &pool, &sources, &[], life, &partial).is_ok());
+        // Only paying life needs life.
+        assert!(!can_afford(&cost("{W/P}"), &pool, &[], life));
     }
 
     #[test]
@@ -1233,7 +1257,7 @@ mod tests {
     /// Whether `payment` pays for `cost` according to the independent check and the payer has the life.
     fn valid(cost: &ManaCost, payment: &Payment, sources: &[ManaOption], life: i32) -> bool {
         pays(cost.symbols(), &spent_types(payment, sources), payment.life)
-            && i64::from(payment.life) <= i64::from(life)
+            && (payment.life == 0 || i64::from(payment.life) <= i64::from(life))
     }
 
     /// Every payment from some floating mana, each permanent tapped for one of its abilities or left alone, and every even amount of life up to `most_life`.
@@ -1336,7 +1360,7 @@ mod tests {
             costs,
             prop::collection::vec(mana_strategy(), 0..3),
             prop::collection::vec(prop::collection::vec(mana_strategy(), 1..3), 0..5),
-            0i32..9,
+            -2i32..9,
         )
             .prop_map(|(cost, floating, permanents, life)| {
                 let mut sources = Vec::new();
