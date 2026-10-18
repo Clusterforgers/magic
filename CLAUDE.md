@@ -20,6 +20,7 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 - Raw: `cargo fmt --all` · `cargo clippy --workspace --all-targets -- -D warnings` · `cargo test --workspace`
 - `docker compose up -d db` starts local Postgres; DB tests use `sqlx::test`, and `sqlx::query!` is checked offline against committed `.sqlx/` (refresh steps in `.cargo/config.toml`).
 - Wire types: `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test bindings` regenerates `web/src/protocol/generated/`; the drift test fails while they are stale.
+- `node scripts/ui-shot.mjs <url> <out-prefix> [--widths 1400,390] [--wait <js>]` screenshots a rendered page with headless Firefox (no Chromium here); open the PNG with the Read tool.
 - Web (in `web/`): `pnpm typecheck` · `pnpm lint` · `pnpm format` · `pnpm test` · `pnpm e2e`. On NixOS set `CHROMIUM_PATH` to a Nix-built chromium binary for e2e.
 
 ## Workflow
