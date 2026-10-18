@@ -68,14 +68,18 @@ export function fixtureSession(store: PlayStore): Session {
   }
 }
 
-/** Options of a fixture game: the table, and the name in `DEV_PROMPTS` of the decision to face (none by default). */
+/**
+ * Options of a fixture game: the table, the name in `DEV_PROMPTS` of the decision to face (none by default) and
+ * `turn: 'you'` for the viewer's own turn (it overrides `active`).
+ */
 export interface FixtureGameOptions extends FixtureOptions {
   prompt?: string
+  turn?: 'you'
 }
 
 /** A game context holding a fresh fixture table. */
 export function fixtureGame(options: FixtureGameOptions): GameContextValue {
-  const built = buildFixture(options)
+  const built = buildFixture(options.turn === 'you' ? { ...options, active: options.viewer ?? 0 } : options)
   const store = createPlayStore()
   const name = options.prompt ?? ''
   const prompt = Object.hasOwn(DEV_PROMPTS, name) ? DEV_PROMPTS[name] : undefined

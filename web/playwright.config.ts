@@ -21,7 +21,8 @@ export default defineConfig({
     {
       command: 'cargo run --quiet -p mtg-server',
       cwd: '..',
-      env: { MTG_BIND: `127.0.0.1:${SERVER_PORT}`, RUST_LOG: 'warn' },
+      // An empty DATABASE_URL beats the default in .cargo/config.toml: the e2e server keeps its games in memory.
+      env: { MTG_BIND: `127.0.0.1:${SERVER_PORT}`, RUST_LOG: 'warn', DATABASE_URL: '' },
       url: `${SERVER_URL}/healthz`,
       reuseExistingServer,
       gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },

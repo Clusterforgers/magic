@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE games SET status = 'running', started_at = now()\n             WHERE id = $1 AND status = 'lobby'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "3c6789d9efe7878be83665436fa25c442bd63e759ad0a9d64301895c4f24ae0e"
+}

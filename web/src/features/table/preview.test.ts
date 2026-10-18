@@ -176,8 +176,16 @@ describe('parseDevSearch', () => {
       { seats: 2, prompt: 'priority' },
     ],
     [{ seats: 2, prompt: 7 }, { seats: 2 }],
+    [
+      { seats: 2, turn: 'you' },
+      { seats: 2, turn: 'you' },
+    ],
   ])('reads %j as %j', (search, parsed) => {
     expect(parseDevSearch(search)).toMatchObject(parsed)
+  })
+
+  it.each([undefined, 'them', 'YOU', 1, true])('leaves out the turn %j, which is not "you"', (turn) => {
+    expect(parseDevSearch({ seats: 2, turn }).turn).toBeUndefined()
   })
 
   it('leaves out a prompt that is not a word', () => {

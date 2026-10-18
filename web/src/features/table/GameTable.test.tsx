@@ -146,12 +146,14 @@ describe('choosing the opponent to focus', () => {
     expect(tile(container, 4)).toHaveAttribute('aria-current', 'true')
   })
 
-  it('reaches the tiles with Tab, after the layout buttons', async () => {
+  it('reaches the tiles with Tab, after the layout buttons and Concede', async () => {
     const { container, user } = renderTable({ fixture: buildFixture({ seats: 5, permanents: 2 }) })
     await user.tab()
     expect(screen.getByRole('button', { name: 'Grid' })).toHaveFocus()
     await user.tab()
     expect(screen.getByRole('button', { name: 'Focus' })).toHaveFocus()
+    await user.tab()
+    expect(screen.getByRole('button', { name: 'Concede' })).toHaveFocus()
     await user.tab()
     expect(tile(container, 1)).toHaveFocus()
     await user.tab()

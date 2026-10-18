@@ -84,8 +84,16 @@ impl From<CreateError> for ApiError {
                 "server_full",
                 "the server is running its maximum number of games; try again later",
             ),
+            CreateError::Record(_) => {
+                tracing::error!(%error, "game creation failed");
+                ApiError::new(
+                    StatusCode::SERVICE_UNAVAILABLE,
+                    "unavailable",
+                    "the game could not be saved; try again later",
+                )
+            }
             // Details stay in the log: they describe the server, not the request.
-            CreateError::Random(_) | CreateError::Start(_) => {
+            CreateError::Random(_) | CreateError::Start(_) | CreateError::Recipe(_) => {
                 tracing::error!(%error, "game creation failed");
                 ApiError::new(
                     StatusCode::INTERNAL_SERVER_ERROR,
@@ -227,7 +235,7 @@ pub(crate) async fn create_game(
     }
     let body = read_json::<NewGame>(request).await?;
     let seats = validate(&body)?;
-    let created = app.registry().create(&seats)?;
+    let created = app.registry().create(&seats).await?;
     tracing::info!(game = %created.id, seats = seats.len(), "game created");
     let seats = created
         .seats
