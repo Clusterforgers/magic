@@ -5,6 +5,7 @@
 //! those choices, and every function here tries them and defers the mana to the plain-cost code, so a plain cost
 //! takes exactly the path it always did.
 
+use std::cmp::Reverse;
 use std::collections::BTreeMap;
 
 use mtg_core::ids::ObjectId;
@@ -338,31 +339,53 @@ pub fn can_afford(cost: &ManaCost, pool: &ManaPool, sources: &[ManaOption], life
         .any(|r| i64::from(r.life) <= i64::from(life) && plain_can_afford(&r.cost, pool, sources))
 }
 
+/// How much a payment is wanted, lower first: less life, then fewer taps, then taps of the kinds the sources make most of.
+///
+/// The last part keeps a scarce color untapped when a hybrid symbol can be paid with either of two.
+fn preference(payment: &Payment, sources: &[ManaOption]) -> (u32, usize, Reverse<usize>) {
+    let plenty = |mana: ManaType| sources.iter().filter(|o| o.produces == mana).count();
+    let common = payment
+        .taps
+        .iter()
+        .filter_map(|tap| sources.iter().find(|o| o.source == *tap))
+        .map(|o| plenty(o.produces))
+        .sum();
+    (payment.life, payment.taps.len(), Reverse(common))
+}
+
+/// Replaces `best` with `payment` when it is wanted more, so among equals the first stays.
+fn keep_better(best: &mut Option<Payment>, payment: Payment, sources: &[ManaOption]) {
+    let wanted = preference(&payment, sources);
+    if best
+        .as_ref()
+        .is_none_or(|b| wanted < preference(b, sources))
+    {
+        *best = Some(payment);
+    }
+}
+
 /// Picks a valid payment if one exists: mana before life, floating mana first, then sources, keeping scarce colors untapped.
 ///
 /// Life is paid only when no way to pay the cost in mana exists, then as little as possible, and never down to
-/// 0 or less. Among payments that take the same life, the one that taps fewest sources wins.
+/// 0 or less. Among payments that take the same life, the one that taps fewest sources wins, then the one that
+/// taps the more common kinds of mana.
 pub fn auto_payment(
     cost: &ManaCost,
     pool: &ManaPool,
     sources: &[ManaOption],
     life: i32,
 ) -> Option<Payment> {
-    let mut best: Option<(u32, usize, Payment)> = None;
+    let mut best = None;
     for resolution in cost.resolutions() {
         if resolution.life > 0 && i64::from(life) <= i64::from(resolution.life) {
             continue;
         }
-        let Some(mut payment) = plain_auto(&resolution.cost, pool, sources) else {
-            continue;
-        };
-        payment.life = resolution.life;
-        let key = (resolution.life, payment.taps.len());
-        if best.as_ref().is_none_or(|(l, t, _)| key < (*l, *t)) {
-            best = Some((key.0, key.1, payment));
+        if let Some(mut payment) = plain_auto(&resolution.cost, pool, sources) {
+            payment.life = resolution.life;
+            keep_better(&mut best, payment, sources);
         }
     }
-    best.map(|(_, _, payment)| payment)
+    best
 }
 
 /// Validates an explicit payment and returns the mana it spends.
@@ -419,7 +442,7 @@ pub fn complete_payment(
 ) -> Result<Payment, PaymentError> {
     let spent = spent_by_parts(pool, sources, tapped, partial)?;
     check_life(cost, life, partial.life)?;
-    let mut best: Option<(u32, usize, Payment)> = None;
+    let mut best = None;
     let mut refusal: Option<PaymentError> = None;
     for resolution in cost.resolutions() {
         if !may_pay_life(resolution.life, partial.life, life) {
@@ -428,10 +451,7 @@ pub fn complete_payment(
         match plain_complete(&resolution.cost, pool, sources, partial, &spent) {
             Ok(mut whole) => {
                 whole.life = resolution.life;
-                let key = (resolution.life, whole.taps.len());
-                if best.as_ref().is_none_or(|(l, t, _)| key < (*l, *t)) {
-                    best = Some((key.0, key.1, whole));
-                }
+                keep_better(&mut best, whole, sources);
             }
             // Of the reasons, "could not be finished" says more than "does not fit".
             Err(error) => {
@@ -441,7 +461,7 @@ pub fn complete_payment(
             }
         }
     }
-    let (_, _, whole) = best.ok_or_else(|| refusal.unwrap_or(PaymentError::CannotComplete))?;
+    let whole = best.ok_or_else(|| refusal.unwrap_or(PaymentError::CannotComplete))?;
     check_payment(cost, pool, sources, tapped, life, &whole)?;
     Ok(whole)
 }
@@ -699,6 +719,34 @@ mod tests {
             (payment.pool.as_slice(), payment.taps.len()),
             (&[ManaType::Blue][..], 0)
         );
+    }
+
+    #[rstest]
+    #[case::more_plains_than_forests("{G/W}", "WWWG", ManaType::White)]
+    #[case::more_forests_than_plains("{G/W}", "GGGW", ManaType::Green)]
+    #[case::equal_numbers_keep_the_first_colour_listed("{G/W}", "WG", ManaType::Green)]
+    #[case::the_scarce_colour_of_three("{W/U}", "UUUWB", ManaType::Blue)]
+    #[case::colorless_hybrid_prefers_the_plentiful_kind("{C/G}", "CCCG", ManaType::Colorless)]
+    fn a_choice_is_paid_with_the_colour_the_player_has_most_of(
+        #[case] cost_text: &str,
+        #[case] lands_str: &str,
+        #[case] tapped_kind: ManaType,
+    ) {
+        let cost = cost(cost_text);
+        let sources = lands(lands_str);
+        let pool = ManaPool::default();
+        let kind_of = |payment: &Payment| {
+            let tap = payment.taps.first()?;
+            sources
+                .iter()
+                .find(|o| o.source == *tap)
+                .map(|o| o.produces)
+        };
+        let auto = auto_payment(&cost, &pool, &sources, LIFE).unwrap();
+        assert_eq!(kind_of(&auto), Some(tapped_kind), "automatic payment");
+        let done =
+            complete_payment(&cost, &pool, &sources, &[], LIFE, &Payment::default()).unwrap();
+        assert_eq!(kind_of(&done), Some(tapped_kind), "completion from nothing");
     }
 
     #[test]
