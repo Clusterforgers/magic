@@ -17,8 +17,8 @@ use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use mtg_engine::state::GameResult;
 use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
-    ClientMessage, DecisionId, ErrorCode, EventBatch, EventView, HiddenEvent, PROTOCOL_VERSION,
-    ServerMessage, StateView, project_events,
+    ClientMessage, DecisionId, ErrorCode, EventBatch, EventView, HiddenEvent, LobbySeat,
+    PROTOCOL_VERSION, ServerMessage, StateView, project_events,
 };
 use mtg_testkit::fuzz_setup;
 use proptest::prelude::*;
@@ -27,8 +27,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 7;
-const SERVER_VARIANTS: usize = 7;
+const CLIENT_VARIANTS: usize = 8;
+const SERVER_VARIANTS: usize = 8;
 
 /// Index of each client variant; adding a variant breaks this match until the table below grows.
 fn client_index(message: &ClientMessage) -> usize {
@@ -40,6 +40,7 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::Concede => 4,
         ClientMessage::Resync => 5,
         ClientMessage::AutoPass { .. } => 6,
+        ClientMessage::NotReady => 7,
     }
 }
 
@@ -53,6 +54,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::Chat { .. } => 4,
         ServerMessage::Error { .. } => 5,
         ServerMessage::GameOver { .. } => 6,
+        ServerMessage::Lobby { .. } => 7,
     }
 }
 
@@ -168,6 +170,21 @@ fn sample_view_and_batch() -> (StateView, EventBatch) {
     (StateView::for_player(engine.state(), PlayerId(0)), batch)
 }
 
+/// A lobby of three seats in every state a seat can be in: ready, here but not ready, away.
+fn lobby_seats() -> Vec<LobbySeat> {
+    let seat = |index: u64, name: &str, connected: bool, ready: bool| LobbySeat {
+        seat: PlayerId(index),
+        name: name.to_owned(),
+        connected,
+        ready,
+    };
+    vec![
+        seat(0, "Ana", true, true),
+        seat(1, "Bo \"the\" Ünïcode", true, false),
+        seat(2, "Cy", false, false),
+    ]
+}
+
 fn client_samples() -> Vec<ClientMessage> {
     let mut out = vec![
         ClientMessage::Join {
@@ -176,6 +193,7 @@ fn client_samples() -> Vec<ClientMessage> {
             name: "Ana".into(),
         },
         ClientMessage::Ready,
+        ClientMessage::NotReady,
         ClientMessage::Chat {
             text: "gg, \"quotes\" and ünïcode".into(),
         },
@@ -200,6 +218,10 @@ fn server_samples() -> Vec<ServerMessage> {
             player: PlayerId(1),
             seats: 4,
             auto_pass: true,
+        },
+        ServerMessage::Lobby {
+            seats: lobby_seats(),
+            needed: 2,
         },
         ServerMessage::Events(batch.clone()),
         ServerMessage::Snapshot {
@@ -294,6 +316,7 @@ fn every_event_view_variant_round_trips() {
 
 #[rstest]
 #[case(ClientMessage::Ready, json!({"type": "Ready"}))]
+#[case(ClientMessage::NotReady, json!({"type": "NotReady"}))]
 #[case(ClientMessage::Resync, json!({"type": "Resync"}))]
 #[case(ClientMessage::AutoPass { enabled: false }, json!({"type": "AutoPass", "enabled": false}))]
 #[case(
@@ -319,6 +342,16 @@ fn client_wire_shape_is_flat_and_tagged(
 #[case(
     ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true },
     json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true})
+)]
+#[case(
+    ServerMessage::Lobby {
+        seats: vec![LobbySeat { seat: PlayerId(0), name: "Ana".into(), connected: true, ready: false }],
+        needed: 1,
+    },
+    json!({
+        "type": "Lobby", "needed": 1,
+        "seats": [{"seat": 0, "name": "Ana", "connected": true, "ready": false}]
+    })
 )]
 #[case(
     ServerMessage::Decision {

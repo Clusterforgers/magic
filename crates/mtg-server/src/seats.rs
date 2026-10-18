@@ -1,5 +1,9 @@
 //! Per-seat outbound queues: bounded, so a slow client can never stall the game.
 
+use std::future::{Future, poll_fn};
+use std::pin::Pin;
+use std::task::Poll;
+
 use mtg_core::ids::PlayerId;
 use mtg_protocol::ServerMessage;
 use tokio::sync::mpsc::error::TrySendError;
@@ -57,6 +61,25 @@ impl Seats {
             .filter(|(_, slot)| slot.is_some())
             .map(|(seat, _)| PlayerId::from_index(seat))
             .collect()
+    }
+
+    /// Resolves once some seat's client has gone away without leaving (its queue is closed), at once if one already
+    /// has; never while every client listens. The closed queue stays in its slot until [`Seats::connected`] sweeps it.
+    pub(crate) async fn client_gone(&self) {
+        let mut closed: Vec<Pin<Box<dyn Future<Output = ()> + Send + '_>>> = self
+            .sinks
+            .iter()
+            .flatten()
+            .map(|sink| Box::pin(sink.closed()) as Pin<Box<dyn Future<Output = ()> + Send + '_>>)
+            .collect();
+        poll_fn(|cx| {
+            if closed.iter_mut().any(|wait| wait.as_mut().poll(cx).is_ready()) {
+                Poll::Ready(())
+            } else {
+                Poll::Pending
+            }
+        })
+        .await;
     }
 
     /// Queues `message` for `seat` without waiting; a full or abandoned queue drops that client.

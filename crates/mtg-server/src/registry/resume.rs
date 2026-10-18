@@ -5,7 +5,7 @@ use std::time::Instant;
 use mtg_engine::GameSetup;
 
 use super::{Entry, Registry};
-use crate::actor::resume_recorded;
+use crate::actor::resume_named;
 use crate::game_id::GameId;
 use crate::recipe::GameRecipe;
 use crate::recorder::Recorder;
@@ -88,12 +88,13 @@ impl Registry {
         let joined = record.seats.iter().map(|seat| seat.joined).collect();
         let recorder = Recorder::new(records.clone(), id, joined);
         // Replaying a log is where a bug would panic; that must cost one game, not the boot.
-        let resuming = tokio::spawn(resume_recorded(
+        let resuming = tokio::spawn(resume_named(
             records.store(),
             id,
             setup,
             self.shared.game,
             Some(recorder),
+            names.clone(),
         ));
         let handle = match resuming.await {
             Ok(Ok(handle)) => handle,

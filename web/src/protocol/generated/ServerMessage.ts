@@ -4,6 +4,7 @@ import type { DecisionId } from "./DecisionId";
 import type { ErrorCode } from "./ErrorCode";
 import type { EventBatch } from "./EventBatch";
 import type { GameResult } from "./GameResult";
+import type { LobbySeat } from "./LobbySeat";
 import type { PlayerId } from "./PlayerId";
 import type { StateView } from "./StateView";
 
@@ -30,7 +31,15 @@ seats: number,
 /**
  * Whether the server passes for this seat when it cannot act (see [`ClientMessage::AutoPass`]).
  */
-auto_pass: boolean, } | { "type": "Decision", 
+auto_pass: boolean, } | { "type": "Lobby", 
+/**
+ * Every seat in seat order.
+ */
+seats: Array<LobbySeat>, 
+/**
+ * How many seats still have to press Ready before the game starts.
+ */
+needed: number, } | { "type": "Decision", 
 /**
  * Echo this id in the answer.
  */

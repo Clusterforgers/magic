@@ -75,7 +75,7 @@ pub fn spawn_game_with<S: EventStore>(
     spawn_recorded(id, setup, store, config, None)
 }
 
-/// Starts a lobby whose milestones (joins, start, end) are written to `recorder`.
+/// Starts a lobby whose milestones (joins, start, end) are written to `recorder`; its seats are called "Seat N".
 pub(crate) fn spawn_recorded<S: EventStore>(
     id: GameId,
     setup: GameSetup,
@@ -83,11 +83,34 @@ pub(crate) fn spawn_recorded<S: EventStore>(
     config: GameConfig,
     recorder: Option<Recorder>,
 ) -> Result<GameHandle, StartError> {
+    spawn_named(id, setup, store, config, recorder, Vec::new())
+}
+
+/// Like [`spawn_recorded`] with the names the lobby lists for the seats (a missing one becomes "Seat N").
+pub(crate) fn spawn_named<S: EventStore>(
+    id: GameId,
+    setup: GameSetup,
+    store: S,
+    config: GameConfig,
+    recorder: Option<Recorder>,
+    names: Vec<String>,
+) -> Result<GameHandle, StartError> {
     setup.validate()?;
+    let seats = setup.players.len();
     let phase = Phase::Lobby {
-        ready: vec![false; setup.players.len()],
+        ready: vec![false; seats],
+        names: seat_names(names, seats),
     };
     Ok(launch(id, setup, store, config, phase, recorder))
+}
+
+/// `names` cut or filled up with "Seat N" to exactly `seats` entries.
+fn seat_names(mut names: Vec<String>, seats: usize) -> Vec<String> {
+    names.truncate(seats);
+    while names.len() < seats {
+        names.push(format!("Seat {}", names.len() + 1));
+    }
+    names
 }
 
 /// Rebuilds a game from its stored log and runs it, waiting for its players to reconnect.
@@ -119,9 +142,21 @@ pub(crate) async fn resume_recorded<S: EventStore>(
     config: GameConfig,
     recorder: Option<Recorder>,
 ) -> Result<GameHandle, StartError> {
+    resume_named(store, id, setup, config, recorder, Vec::new()).await
+}
+
+/// Like [`resume_recorded`]; a game with nothing stored returns to a lobby that lists `names` (nobody is ready in it).
+pub(crate) async fn resume_named<S: EventStore>(
+    store: S,
+    id: GameId,
+    setup: GameSetup,
+    config: GameConfig,
+    recorder: Option<Recorder>,
+    names: Vec<String>,
+) -> Result<GameHandle, StartError> {
     let stored = store.load(id).await?;
     if stored.is_empty() {
-        return spawn_recorded(id, setup, store, config, recorder);
+        return spawn_named(id, setup, store, config, recorder, names);
     }
     let stored_len = stored.len();
     let engine = Engine::resume(setup.clone(), stored)?;
@@ -168,8 +203,8 @@ fn launch<S: EventStore>(
 /// Where the game is in its life.
 #[derive(Debug)]
 pub(crate) enum Phase {
-    /// Collecting joins and readiness; the engine does not exist yet.
-    Lobby { ready: Vec<bool> },
+    /// Collecting joins and readiness; the engine does not exist yet. `names` and `ready` are per seat.
+    Lobby { ready: Vec<bool>, names: Vec<String> },
     /// The game is on (or over, once it has a result).
     Running(Box<Running>),
 }
@@ -200,6 +235,15 @@ impl<S: EventStore> GameActor<S> {
         }
         loop {
             let command = match self.due() {
+                None if self.in_lobby() => tokio::select! {
+                    biased;
+                    command = inbox.recv() => command,
+                    // A client that hung up without a word closed its queue; the table hears of it as of a `Leave`.
+                    () = self.seats.client_gone() => {
+                        self.push_roster();
+                        continue;
+                    }
+                },
                 None => inbox.recv().await,
                 // Biased: a command already waiting was sent before the clock ran out, so it goes first.
                 Some(due) => tokio::select! {
@@ -226,7 +270,10 @@ impl<S: EventStore> GameActor<S> {
         match command {
             Command::Join { seat, reply } => self.join(seat, reply).await,
             Command::Message { seat, message } => return self.message(seat, message).await,
-            Command::Leave { seat } => self.seats.detach(seat),
+            Command::Leave { seat } => {
+                self.seats.detach(seat);
+                self.push_roster();
+            }
             Command::Status { reply } => {
                 // A caller that stopped waiting needs no answer.
                 let _ = reply.send(self.status());
@@ -254,6 +301,7 @@ impl<S: EventStore> GameActor<S> {
         };
         self.seats.send(seat, welcome);
         self.sync(seat);
+        self.push_roster();
         let _ = reply.send(Ok(inbox));
         // After the reply, so the client never waits for the database.
         if let Some(recorder) = &mut self.recorder {
@@ -281,6 +329,7 @@ impl<S: EventStore> GameActor<S> {
             ),
             ClientMessage::Chat { text } => self.chat(seat, text),
             ClientMessage::Ready => return self.ready(seat).await,
+            ClientMessage::NotReady => self.not_ready(seat),
             ClientMessage::Answer { decision, answer } => {
                 return self.answer(seat, decision, answer).await;
             }
@@ -311,13 +360,19 @@ impl<S: EventStore> GameActor<S> {
     fn status(&mut self) -> GameStatus {
         let connected = self.seats.connected();
         match &self.phase {
-            Phase::Lobby { .. } => GameStatus {
+            Phase::Lobby { ready, .. } => GameStatus {
                 started: false,
                 events: 0,
                 state_hash: None,
                 waiting_on: None,
                 result: None,
                 connected,
+                ready: ready
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, ready)| **ready)
+                    .map(|(seat, _)| PlayerId::from_index(seat))
+                    .collect(),
             },
             Phase::Running(running) => GameStatus {
                 started: true,
@@ -326,6 +381,8 @@ impl<S: EventStore> GameActor<S> {
                 waiting_on: running.waiting_on(),
                 result: running.engine.result(),
                 connected,
+                // The game began because every seat was ready (a resumed one began the same way).
+                ready: (0..self.seats.len()).map(PlayerId::from_index).collect(),
             },
         }
     }

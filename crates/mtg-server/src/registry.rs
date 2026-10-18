@@ -23,7 +23,7 @@ use thiserror::Error;
 use tokio::sync::watch;
 use tokio::task::JoinHandle;
 
-use crate::actor::{GameConfig, StartError, spawn_game_with, spawn_recorded};
+use crate::actor::{GameConfig, StartError, spawn_named};
 use crate::config::{Retention, ServerConfig};
 use crate::demo::DemoDeck;
 use crate::game_id::GameId;
@@ -96,6 +96,8 @@ pub struct PublicGame {
     pub seats: Vec<SeatSummary>,
     /// Seats with a live connection.
     pub connected: Vec<PlayerId>,
+    /// Seats that pressed Ready and did not take it back; every seat once the game began.
+    pub ready: Vec<PlayerId>,
     /// How the game ended, once it did.
     pub result: Option<GameResult>,
 }
@@ -322,8 +324,15 @@ impl Registry {
                     .collect();
                 records.insert(id, recipe, &rows).await?;
                 let recorder = Recorder::new(records.clone(), id, vec![false; seats]);
-                let spawned =
-                    spawn_recorded(id, setup, records.store(), self.shared.game, Some(recorder));
+                let game = self.shared.game;
+                let spawned = spawn_named(
+                    id,
+                    setup,
+                    records.store(),
+                    game,
+                    Some(recorder),
+                    names.clone(),
+                );
                 match spawned {
                     Ok(handle) => handle,
                     Err(error) => {
@@ -333,7 +342,10 @@ impl Registry {
                     }
                 }
             }
-            _ => spawn_game_with(id, setup, MemoryStore::new(), self.shared.game)?,
+            _ => {
+                let game = self.shared.game;
+                spawn_named(id, setup, MemoryStore::new(), game, None, names.clone())?
+            }
         };
         self.games().insert(
             id,
@@ -458,6 +470,7 @@ impl Registry {
                 })
                 .collect(),
             connected: status.connected,
+            ready: status.ready,
             result: status.result,
         })
     }
