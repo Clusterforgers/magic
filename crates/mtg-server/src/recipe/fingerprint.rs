@@ -1,9 +1,11 @@
 //! The fingerprint of a deck: what a game's recipe remembers of the cards it was created with.
 //!
-//! A recipe names a built-in deck by its id, so a deploy that edits the deck would replay a stored
-//! event log under other cards and nothing would fail. The fingerprint is a SHA-256 over a canonical
-//! encoding of the ordered card definitions the engine is given; resume computes it again from the
-//! deck as it is now and refuses a game whose deck no longer hashes to what was stored.
+//! A recipe names a built-in deck by its id, or a deck of cards by their oracle ids, so a deploy that
+//! edits the deck, an import that corrects a card, a changed rules file or an engine that runs more
+//! would replay a stored event log under other cards and nothing would fail. The fingerprint is a
+//! SHA-256 over a canonical encoding of the ordered card definitions the engine is given; resume
+//! computes it again from the deck as it is now and refuses a game whose deck no longer hashes to
+//! what was stored.
 //!
 //! The encoding, version 1, is UTF-8 text: the line `mtg-deck/v1`, the number of cards, then one
 //! line per card in deck order holding the card's serde JSON with every object's keys sorted and no
@@ -173,7 +175,7 @@ mod tests {
     use mtg_cards::vanilla::{basic_land, creature};
     use mtg_cards::{AbilityDef, ManaAbility};
     use mtg_core::card::{CardType, Subtype, Supertype};
-    use mtg_core::color::Color;
+    use mtg_core::color::{Color, ColorSet};
     use mtg_core::mana::{ManaCost, ManaType};
     use rstest::rstest;
     use serde_json::json;
@@ -193,14 +195,43 @@ mod tests {
     fn full_card() -> CardDefinition {
         CardDefinition::new("Ember Elf")
             .with_mana_cost(ManaCost::parse("{1}{G}").unwrap())
+            .with_x_in_cost(1)
             .with_supertype(Supertype::Legendary)
             .with_type(CardType::Creature)
             .with_subtype("Elf")
             .with_subtype("Druid")
             .with_power_toughness(2, 3)
+            .with_loyalty(4)
+            .with_defense(5)
+            .with_color_indicator(ColorSet::EMPTY.with(Color::Green))
             .with_ability(AbilityDef::Mana(ManaAbility {
                 produces: ManaType::Green,
             }))
+    }
+
+    #[test]
+    fn a_card_that_uses_the_later_fields_has_them_in_its_text_and_the_others_do_not() {
+        let hydra = CardDefinition::new("Hydra")
+            .with_type(CardType::Creature)
+            .with_mana_cost(ManaCost::parse("{G}").unwrap())
+            .with_x_in_cost(1)
+            .with_loyalty(3);
+        let text = encode(&[Arc::new(hydra)]).unwrap();
+        assert_eq!(
+            text,
+            concat!(
+                "mtg-deck/v1\n1\n",
+                r#"{"abilities":[],"loyalty":3,"mana_cost":[{"Colored":"Green"}],"name":"Hydra","power":null,"subtypes":[],"supertypes":[],"toughness":null,"types":["Creature"],"x_in_cost":1}"#,
+                "\n"
+            )
+        );
+        let forest = encode(&[basic_land(Color::Green)]).unwrap();
+        for later in ["x_in_cost", "loyalty", "defense", "color_indicator"] {
+            assert!(
+                !forest.contains(later),
+                "{later} must not change older decks"
+            );
+        }
     }
 
     #[test]
@@ -306,6 +337,16 @@ mod tests {
                 c.mana_cost = Some(cost("{G}{G}"));
             }),
             ("mana_cost", |c: &mut Card| c.mana_cost = None),
+            ("x_in_cost", |c: &mut Card| c.x_in_cost = 0),
+            ("x_in_cost", |c: &mut Card| c.x_in_cost = 2),
+            ("loyalty", |c: &mut Card| c.loyalty = Some(5)),
+            ("loyalty", |c: &mut Card| c.loyalty = None),
+            ("defense", |c: &mut Card| c.defense = Some(4)),
+            ("defense", |c: &mut Card| c.defense = None),
+            ("color_indicator", |c: &mut Card| {
+                c.color_indicator = Some(ColorSet::EMPTY.with(Color::Red));
+            }),
+            ("color_indicator", |c: &mut Card| c.color_indicator = None),
             ("supertypes", |c: &mut Card| {
                 c.supertypes.insert(Supertype::Snow);
             }),

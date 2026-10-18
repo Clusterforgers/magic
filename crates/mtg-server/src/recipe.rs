@@ -5,12 +5,18 @@
 //! the only way the server builds a setup, for a new game and for a resumed one alike. Its JSON form
 //! is stored in `games.recipe`, so field and variant names are an on-disk contract.
 //!
-//! A deck reference names a deck by id, so the recipe also keeps a [`DeckFingerprint`] of every
-//! seat's cards as they were when the game was created, and building the setup again refuses a deck
-//! that no longer matches: a stored event log must never replay under other cards.
+//! A deck reference names a deck by id or by the oracle ids of its cards, so the recipe also keeps a
+//! [`DeckFingerprint`] of every seat's cards as they were when the game was created, and building the
+//! setup again refuses a deck that no longer matches: a stored event log must never replay under
+//! other cards. The fingerprint covers the definitions the engine is given, so an edited card
+//! record, a changed rules file and a change in what the engine runs all fail a resume.
+//!
+//! A deck of oracle ids is built from a [`Catalog`] of definitions that the caller assembled
+//! beforehand (`CardSource`), since assembling reads the card database and the recipe does no IO.
 
 mod fingerprint;
 
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::sync::Arc;
 
@@ -42,12 +48,68 @@ pub enum DeckRef {
         /// The id in [`demo::all`].
         id: String,
     },
+    /// A deck of cards named by their Scryfall oracle ids, one entry per card in the deck, in deck
+    /// order. The definitions come from the card database and the rules files.
+    Oracle {
+        /// The oracle id of every card, copies repeated.
+        cards: Vec<String>,
+    },
 }
 
 impl fmt::Display for DeckRef {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             DeckRef::Demo { id } => write!(f, "demo deck {id:?}"),
+            DeckRef::Oracle { cards } => write!(f, "deck of {} cards by oracle id", cards.len()),
+        }
+    }
+}
+
+/// Assembled card definitions by oracle id: what a deck of oracle ids is built from.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct Catalog {
+    cards: BTreeMap<String, Arc<CardDefinition>>,
+}
+
+impl Catalog {
+    /// A catalog of these cards.
+    pub fn new(cards: impl IntoIterator<Item = (String, Arc<CardDefinition>)>) -> Catalog {
+        Catalog {
+            cards: cards.into_iter().collect(),
+        }
+    }
+
+    /// The card with this oracle id.
+    pub fn get(&self, id: &str) -> Option<&Arc<CardDefinition>> {
+        self.cards.get(id)
+    }
+
+    /// How many cards the catalog holds.
+    pub fn len(&self) -> usize {
+        self.cards.len()
+    }
+
+    /// Whether the catalog holds no card.
+    pub fn is_empty(&self) -> bool {
+        self.cards.is_empty()
+    }
+
+    /// The cards of a deck in deck order, copies sharing one definition; when some are missing, the
+    /// ids of all of them, once each.
+    fn deck(&self, ids: &[String]) -> Result<Vec<Arc<CardDefinition>>, Vec<String>> {
+        let mut missing: Vec<String> = Vec::new();
+        let mut cards = Vec::with_capacity(ids.len());
+        for id in ids {
+            match self.cards.get(id) {
+                Some(card) => cards.push(Arc::clone(card)),
+                None if !missing.contains(id) => missing.push(id.clone()),
+                None => {}
+            }
+        }
+        if missing.is_empty() {
+            Ok(cards)
+        } else {
+            Err(missing)
         }
     }
 }
@@ -78,6 +140,14 @@ pub enum RecipeError {
         seat: usize,
         /// The id that matched nothing.
         id: String,
+    },
+    /// A seat's deck of oracle ids names cards the catalog does not hold.
+    #[error("seat {seat}: no card for the oracle id(s) {}", ids.join(", "))]
+    UnknownCards {
+        /// The seat.
+        seat: usize,
+        /// Every oracle id the catalog lacks, once each, in deck order.
+        ids: Vec<String>,
     },
     /// A seat's deck no longer holds the cards the game was created with.
     #[error(
@@ -122,14 +192,36 @@ impl GameRecipe {
     }
 
     /// The recipe with the fingerprint of every seat's deck as the server has it now, replacing any
-    /// it carried. A game takes them once, when it is created.
-    pub fn with_fingerprints(mut self) -> Result<GameRecipe, RecipeError> {
-        let decks = self.resolve()?;
+    /// it carried. A game takes them once, when it is created. A deck of oracle ids needs
+    /// [`GameRecipe::with_fingerprints_from`].
+    pub fn with_fingerprints(self) -> Result<GameRecipe, RecipeError> {
+        self.with_fingerprints_from(&Catalog::default())
+    }
+
+    /// Like [`GameRecipe::with_fingerprints`], with the definitions of the oracle ids the decks name.
+    pub fn with_fingerprints_from(mut self, catalog: &Catalog) -> Result<GameRecipe, RecipeError> {
+        let decks = self.resolve(catalog)?;
         self.fingerprints = decks
             .iter()
             .map(|cards| DeckFingerprint::of(cards))
             .collect::<Result<_, _>>()?;
         Ok(self)
+    }
+
+    /// The oracle ids that the decks of the recipe name, once each, in the order they first appear;
+    /// empty when no seat plays a deck of oracle ids, so no card database is needed.
+    pub fn oracle_ids(&self) -> Vec<String> {
+        let mut seen = BTreeSet::new();
+        self.decks
+            .iter()
+            .filter_map(|deck| match deck {
+                DeckRef::Oracle { cards } => Some(cards),
+                DeckRef::Demo { .. } => None,
+            })
+            .flatten()
+            .filter(|id| seen.insert(id.as_str()))
+            .cloned()
+            .collect()
     }
 
     /// Whether the recipe carries fingerprints, so that [`GameRecipe::build`] checks its decks.
@@ -142,10 +234,17 @@ impl GameRecipe {
     /// A fingerprinted recipe builds only while every deck still hashes to its fingerprint, since
     /// the events stored for the game were made under the cards it was created with.
     pub fn build(&self) -> Result<GameSetup, RecipeError> {
+        self.build_with(&Catalog::default())
+    }
+
+    /// Like [`GameRecipe::build`], with the definitions of the oracle ids the decks name; resume
+    /// builds a game with decks of oracle ids this way, from cards assembled out of the database as
+    /// it is now.
+    pub fn build_with(&self, catalog: &Catalog) -> Result<GameSetup, RecipeError> {
         let format: Arc<dyn FormatRules> = match self.format {
             FormatKind::Normal => Arc::new(Normal),
         };
-        let decks = self.resolve()?;
+        let decks = self.resolve(catalog)?;
         self.check(&decks)?;
         let setup = GameSetup::new(format, self.seed, decks);
         setup.validate()?;
@@ -153,7 +252,7 @@ impl GameRecipe {
     }
 
     /// The cards of every seat's deck, in deck order.
-    fn resolve(&self) -> Result<Vec<Vec<Arc<CardDefinition>>>, RecipeError> {
+    fn resolve(&self, catalog: &Catalog) -> Result<Vec<Vec<Arc<CardDefinition>>>, RecipeError> {
         let mut decks = Vec::with_capacity(self.decks.len());
         for (seat, deck) in self.decks.iter().enumerate() {
             decks.push(match deck {
@@ -163,6 +262,9 @@ impl GameRecipe {
                         id: id.clone(),
                     })?
                     .cards(),
+                DeckRef::Oracle { cards } => catalog
+                    .deck(cards)
+                    .map_err(|ids| RecipeError::UnknownCards { seat, ids })?,
             });
         }
         Ok(decks)
@@ -197,7 +299,8 @@ impl GameRecipe {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a recipe survives its JSON form for every seed and table size, keeps the on-disk shape stable, rebuilds the very game it describes, refuses what is not playable, and refuses a deck that no longer matches the fingerprint it was created with while a recipe stored before fingerprints still builds.
+    //! Goal: a recipe survives its JSON form for every seed and table size, keeps the on-disk shape stable, rebuilds the very game it describes, refuses what is not playable, and refuses a deck that no longer matches the fingerprint it was created with while a recipe stored before fingerprints still builds; a deck of oracle ids builds from a catalog, names every card the catalog lacks, and fails the game when a definition changes.
+    use mtg_core::color::Color;
     use mtg_engine::state::GameState;
     use rstest::rstest;
     use serde_json::json;
@@ -411,6 +514,181 @@ mod tests {
             recipe.with_fingerprints().unwrap_err(),
             RecipeError::UnknownDeck { seat: 1, .. }
         ));
+    }
+
+    /// Sixty cards named by id: forty `forest` lands, and twenty creatures of one id each.
+    fn ids() -> Vec<String> {
+        (0..60)
+            .map(|i| {
+                if i < 40 {
+                    "forest".into()
+                } else {
+                    format!("bear-{i}")
+                }
+            })
+            .collect()
+    }
+
+    fn oracle(ids: Vec<String>) -> DeckRef {
+        DeckRef::Oracle { cards: ids }
+    }
+
+    /// The definitions of `ids()`; a creature's power says which of two builds this is.
+    fn catalog(power: i32) -> Catalog {
+        let mut cards = vec![(
+            "forest".to_owned(),
+            mtg_cards::vanilla::basic_land(Color::Green),
+        )];
+        for i in 40..60 {
+            let bear =
+                mtg_cards::vanilla::creature(&format!("Bear {i}"), 1, &[Color::Green], power, 2);
+            cards.push((format!("bear-{i}"), bear));
+        }
+        Catalog::new(cards)
+    }
+
+    fn oracle_recipe(power: i32) -> GameRecipe {
+        GameRecipe::normal(8, [oracle(ids()), oracle(ids())])
+            .with_fingerprints_from(&catalog(power))
+            .unwrap()
+    }
+
+    #[test]
+    fn the_stored_shape_of_a_deck_of_oracle_ids_is_stable() {
+        let recipe = GameRecipe::normal(5, [oracle(vec!["a".into(), "b".into(), "a".into()])]);
+        assert_eq!(
+            serde_json::to_value(&recipe).unwrap(),
+            json!({
+                "format": "normal",
+                "seed": 5,
+                "decks": [{ "kind": "oracle", "cards": ["a", "b", "a"] }],
+            })
+        );
+        let back: GameRecipe =
+            serde_json::from_value(serde_json::to_value(&recipe).unwrap()).unwrap();
+        assert_eq!(back, recipe);
+    }
+
+    #[test]
+    fn the_oracle_ids_of_a_recipe_come_once_each_in_order_and_only_from_oracle_decks() {
+        let recipe = GameRecipe::normal(
+            1,
+            [
+                DeckRef::Demo {
+                    id: "mono-red".into(),
+                },
+                oracle(vec!["b".into(), "a".into(), "b".into()]),
+                oracle(vec!["c".into(), "a".into()]),
+            ],
+        );
+        assert_eq!(recipe.oracle_ids(), ["b", "a", "c"]);
+        assert!(
+            fingerprinted(1, &["mono-green"]).oracle_ids().is_empty(),
+            "demo decks need no cards"
+        );
+    }
+
+    #[test]
+    fn a_deck_of_oracle_ids_builds_from_a_catalog_and_copies_share_a_definition() {
+        let setup = oracle_recipe(2).build_with(&catalog(2)).unwrap();
+        assert_eq!(setup.players.len(), 2);
+        let library = &setup.players[0].library;
+        assert_eq!(library.len(), 60);
+        assert!(
+            Arc::ptr_eq(&library[0], &library[39]),
+            "forty copies of one card"
+        );
+        assert_eq!(names(library)[40], "Bear 40");
+        // The same recipe and catalog make the same game.
+        let hash = |setup: &GameSetup| GameState::from_setup(setup).unwrap().state_hash();
+        assert_eq!(
+            hash(&setup),
+            hash(&oracle_recipe(2).build_with(&catalog(2)).unwrap())
+        );
+    }
+
+    #[test]
+    fn without_its_catalog_a_deck_of_oracle_ids_does_not_build() {
+        let recipe = oracle_recipe(2);
+        assert!(matches!(
+            recipe.build().unwrap_err(),
+            RecipeError::UnknownCards { seat: 0, .. }
+        ));
+        assert!(matches!(
+            GameRecipe::normal(1, [oracle(ids())])
+                .with_fingerprints()
+                .unwrap_err(),
+            RecipeError::UnknownCards { seat: 0, .. }
+        ));
+    }
+
+    #[test]
+    fn every_missing_card_is_named_once_for_the_first_seat_that_lacks_any() {
+        let mut short = catalog(2);
+        short.cards.remove("bear-41");
+        short.cards.remove("bear-57");
+        let recipe = GameRecipe::normal(1, [oracle(vec!["forest".into(); 60]), oracle(ids())]);
+        let error = recipe.build_with(&short).unwrap_err();
+        assert_eq!(
+            error,
+            RecipeError::UnknownCards {
+                seat: 1,
+                ids: vec!["bear-41".into(), "bear-57".into()]
+            }
+        );
+        assert_eq!(
+            error.to_string(),
+            "seat 1: no card for the oracle id(s) bear-41, bear-57"
+        );
+        let twice = vec!["ghost".to_owned(); 5];
+        let error = GameRecipe::normal(1, [oracle(twice)])
+            .build_with(&Catalog::default())
+            .unwrap_err();
+        assert_eq!(
+            error,
+            RecipeError::UnknownCards {
+                seat: 0,
+                ids: vec!["ghost".into()]
+            }
+        );
+    }
+
+    #[test]
+    fn a_changed_definition_fails_the_deck_like_a_changed_demo_deck() {
+        let recipe = oracle_recipe(2);
+        assert!(recipe.is_fingerprinted());
+        assert!(recipe.build_with(&catalog(2)).is_ok());
+        let error = recipe.build_with(&catalog(3)).unwrap_err();
+        match error {
+            RecipeError::DeckChanged {
+                seat,
+                deck,
+                stored,
+                current,
+            } => {
+                assert_eq!((seat, deck.as_str()), (0, "deck of 60 cards by oracle id"));
+                assert_ne!(stored, current);
+                assert_eq!(current, oracle_recipe(3).fingerprints[0]);
+            }
+            other => panic!("{other}"),
+        }
+    }
+
+    #[test]
+    fn oracle_decks_need_no_fingerprints_to_build_and_do_not_disturb_demo_games() {
+        let mut recipe = oracle_recipe(2);
+        recipe.fingerprints.clear();
+        assert!(
+            recipe.build_with(&catalog(9)).is_ok(),
+            "unchecked like any recipe without them"
+        );
+        let plain = fingerprinted(2, &["mono-green", "mono-red"]);
+        let setup = plain.build_with(&catalog(2)).unwrap();
+        assert_eq!(
+            setup.players.len(),
+            2,
+            "a catalog nobody asked for is ignored"
+        );
     }
 
     #[rstest]

@@ -43,8 +43,8 @@ struct Entry {
     name: String,
 }
 
-/// An imported record as the strings assembly reads.
-fn printed_of(record: &CardRecord) -> PrintedCard {
+/// An imported record as the strings assembly reads: what the server makes of a stored card row, here from the record itself.
+pub fn printed_card(record: &CardRecord) -> PrintedCard {
     PrintedCard {
         oracle_id: record.oracle_id.to_string(),
         name: record.name.clone(),
@@ -80,7 +80,7 @@ impl Corpus {
         };
         for record in cards(SCRYFALL.as_bytes()) {
             let record = record.map_err(|error| CorpusError::Data(error.to_string()))?;
-            let assembled = rules.assemble(&printed_of(&record), caps);
+            let assembled = rules.assemble(&printed_card(&record), caps);
             let at = corpus.cards.len();
             for name in std::iter::once(&record.name).chain(record.faces().map(|f| &f.name)) {
                 corpus.by_name.entry(name.to_lowercase()).or_insert(at);
@@ -165,6 +165,27 @@ mod tests {
         assert_eq!(
             card("Black Lotus").unwrap_err(),
             CorpusError::UnknownCard("Black Lotus".into())
+        );
+    }
+
+    #[rstest]
+    #[case::an_engine_that_runs_nothing(Caps::none(), mtg_cards::support::Support::Manual, 0)]
+    #[case::this_engine(mtg_engine::caps(), mtg_cards::support::Support::Verified, 1)]
+    fn other_capabilities_change_what_a_card_becomes(
+        #[case] caps: Caps,
+        #[case] state: mtg_cards::support::Support,
+        #[case] abilities: usize,
+    ) {
+        let corpus = Corpus::new(&caps).unwrap();
+        assert_eq!(corpus.support("Llanowar Elves").unwrap().support, state);
+        assert_eq!(
+            corpus.card("Llanowar Elves").unwrap().abilities.len(),
+            abilities
+        );
+        assert_eq!(
+            corpus.card("Forest").unwrap().abilities.len(),
+            1,
+            "the land type needs no rules"
         );
     }
 

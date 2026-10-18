@@ -1,4 +1,5 @@
-//! Card rules data: the DSL types, their loader and validation, and support records.
+//! Card rules data: the DSL types, their loader and validation, support records, and the assembly
+//! of a card definition from an imported record and its rules.
 //!
 //! Design record: `docs/cards-dsl.md`. A card's printed side comes from the imported record; the
 //! files in `cards/` hold only rules, keyed by oracle id.

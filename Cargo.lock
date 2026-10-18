@@ -1168,6 +1168,7 @@ dependencies = [
  "mtg-core",
  "mtg-db",
  "mtg-engine",
+ "mtg-import",
  "mtg-protocol",
  "mtg-testkit",
  "rstest",

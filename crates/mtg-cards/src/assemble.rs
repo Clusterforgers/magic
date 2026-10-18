@@ -782,4 +782,58 @@ mod tests {
         assert_eq!(assembled.definition, CardDefinition::new("Nothing"));
         assert_eq!(assembled.support.support, Support::Manual);
     }
+
+    mod generated {
+        //! Goal: over generated faces, a card with rules the engine runs is Verified exactly when nothing printed on it is out of reach, and the definition keeps the X of a readable cost and the numbers of the stats.
+        use super::*;
+        use proptest::prelude::*;
+
+        proptest! {
+            #[test]
+            fn verified_exactly_when_nothing_printed_is_out_of_reach(
+                symbols in prop::collection::vec(
+                    prop::sample::select(vec!["{1}", "{G}", "{W/U}", "{2/R}", "{G/P}", "{C}", "{0}"]),
+                    0..5,
+                ),
+                x in 0usize..3,
+                unknown_symbol in prop::option::of(prop::sample::select(vec!["{S}", "{Z}", "{HW}"])),
+                power in prop::sample::select(vec![None, Some("0"), Some("7"), Some("-1"), Some("*"), Some("1+*")]),
+                toughness in prop::sample::select(vec![None, Some("1"), Some("12"), Some("X")]),
+                type_word in prop::sample::select(vec!["Creature", "Artifact", "Land", "Plane", "Scheme"]),
+            ) {
+                let cost = format!("{}{}{}", "{X}".repeat(x), symbols.concat(), unknown_symbol.unwrap_or(""));
+                let mut shown = elf();
+                shown.faces[0].mana_cost = cost;
+                shown.faces[0].type_line = format!("{type_word} \u{2014} Elf");
+                shown.faces[0].power = power.map(str::to_owned);
+                shown.faces[0].toughness = toughness.map(str::to_owned);
+                let rules = elf_rules(ImplStatus::Full, vec![ability(MANA_ABILITY)]);
+                let caps = Caps::from_names([PLAIN_MANA_ABILITY]);
+
+                let assembled = assemble(&shown, Some(&rules), &caps);
+
+                let reachable = x == 0
+                    && unknown_symbol.is_none()
+                    && matches!(type_word, "Creature" | "Artifact" | "Land")
+                    && matches!(power, None | Some("0" | "7" | "-1"))
+                    && matches!(toughness, None | Some("1" | "12"));
+                prop_assert_eq!(assembled.support.support == Support::Verified, reachable);
+                prop_assert_eq!(assembled.definition.abilities.is_empty(), !reachable);
+                if unknown_symbol.is_none() {
+                    prop_assert_eq!(usize::from(assembled.definition.x_in_cost), x);
+                    prop_assert_eq!(assembled.definition.mana_cost.is_some(), x > 0 || !symbols.is_empty());
+                } else {
+                    prop_assert_eq!(assembled.definition.mana_cost, None);
+                }
+                prop_assert_eq!(assembled.definition.power, power.and_then(|p| p.parse().ok()));
+                prop_assert_eq!(assembled.definition.toughness, toughness.and_then(|t| t.parse().ok()));
+            }
+
+            #[test]
+            fn a_number_reads_back_as_the_number(n in -100_000i64..100_000) {
+                let text = n.to_string();
+                prop_assert!(matches!(read_stat(Some(&text)), Stat::Number(m) if m == n));
+            }
+        }
+    }
 }

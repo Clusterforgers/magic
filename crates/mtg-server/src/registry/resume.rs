@@ -7,7 +7,7 @@ use mtg_engine::GameSetup;
 use super::{Entry, Registry};
 use crate::actor::resume_named;
 use crate::game_id::GameId;
-use crate::recipe::{GameRecipe, RecipeError};
+use crate::recipe::{Catalog, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
 use crate::records::{GameRecord, GameRecords, RecordError, RecordStatus};
 use crate::secret::TokenDigest;
@@ -94,13 +94,20 @@ impl Registry {
 
     async fn revive(&self, records: &GameRecords, record: GameRecord) -> Outcome {
         let id = record.id;
+        let unpacked = match decode(&record) {
+            Ok(recipe) => match self.catalog_of(&recipe).await {
+                Ok(catalog) => unpack(&record, &recipe, &catalog),
+                Err(unloadable) => Err(unloadable),
+            },
+            Err(unloadable) => Err(unloadable),
+        };
         let Unpacked {
             setup,
             names,
             digests,
             users,
             checked,
-        } = match unpack(&record) {
+        } = match unpacked {
             Ok(unpacked) => unpacked,
             Err(Unloadable { reason, seat }) => return give_up(records, id, seat, &reason).await,
         };
@@ -160,12 +167,37 @@ impl Registry {
     }
 }
 
-/// Decodes the recipe, rebuilds the setup (which refuses a deck that changed since the game was
-/// created) and checks the seat rows against it.
-fn unpack(record: &GameRecord) -> Result<Unpacked, Unloadable> {
-    let recipe: GameRecipe = serde_json::from_value(record.recipe.clone())
-        .map_err(|error| Unloadable::new(format!("the recipe does not decode: {error}")))?;
-    let setup = recipe.build().map_err(|error| match error {
+impl Registry {
+    /// The definitions of the cards a recipe names by oracle id, assembled from the database as it
+    /// is now; none (and no database access) for a recipe that names none.
+    async fn catalog_of(&self, recipe: &GameRecipe) -> Result<Catalog, Unloadable> {
+        let ids = recipe.oracle_ids();
+        match (&self.shared.cards, ids.is_empty()) {
+            (_, true) => Ok(Catalog::default()),
+            (Some(cards), false) => cards.catalog_for(recipe).await.map_err(|error| {
+                Unloadable::new(format!("the cards of its decks cannot be had: {error}"))
+            }),
+            (None, false) => Err(Unloadable::new(
+                "its decks name cards by oracle id and this server has no card database".to_owned(),
+            )),
+        }
+    }
+}
+
+/// Decodes the stored recipe.
+fn decode(record: &GameRecord) -> Result<GameRecipe, Unloadable> {
+    serde_json::from_value(record.recipe.clone())
+        .map_err(|error| Unloadable::new(format!("the recipe does not decode: {error}")))
+}
+
+/// Rebuilds the setup (which refuses a deck that changed since the game was created) and checks the
+/// seat rows against it.
+fn unpack(
+    record: &GameRecord,
+    recipe: &GameRecipe,
+    catalog: &Catalog,
+) -> Result<Unpacked, Unloadable> {
+    let setup = recipe.build_with(catalog).map_err(|error| match error {
         // The reason leads with what happened to the game, and the log names the seat.
         RecipeError::DeckChanged { seat, .. } => Unloadable {
             reason: error.to_string(),

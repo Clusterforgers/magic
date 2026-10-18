@@ -24,11 +24,12 @@ use tokio::sync::watch;
 use tokio::task::JoinHandle;
 
 use crate::actor::{GameConfig, StartError, spawn_named};
+use crate::cards::{CardSource, CatalogError};
 use crate::config::{Retention, ServerConfig};
 use crate::demo::DemoDeck;
 use crate::game_id::GameId;
 use crate::handle::{GameHandle, GameStatus};
-use crate::recipe::{DeckRef, GameRecipe, RecipeError};
+use crate::recipe::{Catalog, DeckRef, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
 use crate::records::{Binding, GameRecords, NewSeat, RecordError, UserGame};
 use crate::secret::{RandomError, SeatToken, TokenDigest, looks_like_token, random_seed};
@@ -58,6 +59,9 @@ pub enum CreateError {
     /// The game could not be recorded, so it was not started.
     #[error(transparent)]
     Record(#[from] RecordError),
+    /// The cards of a deck of oracle ids could not be had.
+    #[error(transparent)]
+    Cards(#[from] CatalogError),
 }
 
 /// One seat of a game to create.
@@ -179,6 +183,8 @@ struct Shared {
     retention: Retention,
     /// Where games are recorded; `None` keeps everything in memory.
     records: Option<GameRecords>,
+    /// Where the cards of a deck of oracle ids come from; present with a database.
+    cards: Option<CardSource>,
 }
 
 /// The games of one server, by id. Cheap to clone.
@@ -190,16 +196,28 @@ pub struct Registry {
 impl Registry {
     /// An empty registry following `config`; games live in memory and end with the process.
     pub fn new(config: &ServerConfig) -> Registry {
-        Registry::build(config, None)
+        Registry::build(config, None, None)
     }
 
     /// An empty registry that records its games in `pool` (already migrated). Call
-    /// [`Registry::resume`] to bring back the games an earlier process left unfinished.
+    /// [`Registry::resume`] to bring back the games an earlier process left unfinished. Decks of
+    /// oracle ids are built from the `cards` table of the same database.
     pub fn with_database(config: &ServerConfig, pool: PgPool) -> Registry {
-        Registry::build(config, Some(GameRecords::new(pool)))
+        let cards = CardSource::new(pool.clone());
+        Registry::with_card_source(config, pool, cards)
     }
 
-    fn build(config: &ServerConfig, records: Option<GameRecords>) -> Registry {
+    /// Like [`Registry::with_database`], with the cards of decks of oracle ids coming from `cards`
+    /// (other rules or capabilities than the ones of this build, for tests).
+    pub fn with_card_source(config: &ServerConfig, pool: PgPool, cards: CardSource) -> Registry {
+        Registry::build(config, Some(GameRecords::new(pool)), Some(cards))
+    }
+
+    fn build(
+        config: &ServerConfig,
+        records: Option<GameRecords>,
+        cards: Option<CardSource>,
+    ) -> Registry {
         Registry {
             shared: Arc::new(Shared {
                 games: Mutex::new(HashMap::new()),
@@ -209,6 +227,7 @@ impl Registry {
                 game: config.game,
                 retention: config.retention,
                 records,
+                cards,
             }),
         }
     }
@@ -257,6 +276,25 @@ impl Registry {
         let recipe = GameRecipe::normal(seed, decks).with_fingerprints()?;
         let setup = recipe.build()?;
         let names = seats.iter().map(|s| s.name.clone()).collect();
+        self.admit(setup, names, Some(recipe), host).await
+    }
+
+    /// Creates a game from a recipe the caller made, whose decks may name cards by oracle id: their
+    /// definitions are assembled from the card database first, the recipe takes the fingerprint of
+    /// every deck as assembled now, and the game is recorded with it. The seed is the recipe's own.
+    /// A registry without a database cannot have the cards of a deck of oracle ids.
+    pub async fn create_from_recipe(
+        &self,
+        recipe: GameRecipe,
+        names: Vec<String>,
+        host: Option<UserId>,
+    ) -> Result<Created, CreateError> {
+        let catalog = match &self.shared.cards {
+            Some(cards) => cards.catalog_for(&recipe).await?,
+            None => Catalog::default(),
+        };
+        let recipe = recipe.with_fingerprints_from(&catalog)?;
+        let setup = recipe.build_with(&catalog)?;
         self.admit(setup, names, Some(recipe), host).await
     }
 
