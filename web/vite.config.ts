@@ -4,7 +4,8 @@ import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import { defineConfig } from 'vitest/config'
 
-const gameServer = 'http://127.0.0.1:8080'
+// `pnpm e2e` points this at its own server (docs/web.md), so it never meets a dev server on the default port.
+const gameServer = process.env.MTG_SERVER_URL ?? 'http://127.0.0.1:8080'
 
 export default defineConfig({
   plugins: [tanstackRouter({ target: 'react', autoCodeSplitting: true }), react(), tailwindcss()],
