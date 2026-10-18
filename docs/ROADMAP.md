@@ -77,7 +77,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 
 ## M6 Coverage
 - [ ] Manual-resolve fallback mode for unimplemented cards
-- [ ] Oracle-text compiler for common templates with golden tests
+- [ ] Oracle-text compiler for common templates with golden tests Reference first: the phase.rs oracle parser (Rust, MIT or Apache-2.0, `crates/engine/src/parser`) and XMage (MIT); Forge and Magarena are GPL-3.0, so study only and copy nothing. Check each compiled card by rendering the data back to English and comparing it with the oracle text
 - [ ] Coverage dashboard ranked by frequency; target: 100% of a chosen set of Commander precons
 
 ## M7 Polish and deploy
