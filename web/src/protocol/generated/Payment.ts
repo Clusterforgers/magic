@@ -3,7 +3,7 @@ import type { ManaSource } from "./ManaSource";
 import type { ManaType } from "./ManaType";
 
 /**
- * A complete, explicit payment: floating mana to spend and sources to tap.
+ * A complete, explicit payment: floating mana to spend, sources to tap and life to pay.
  */
 export type Payment = { 
 /**
@@ -13,4 +13,8 @@ pool: Array<ManaType>,
 /**
  * Mana abilities to activate for the rest.
  */
-taps: Array<ManaSource>, };
+taps: Array<ManaSource>, 
+/**
+ * Life paid in place of Phyrexian symbols: 2 for each, within the life total (CR 119.4). Left out means none.
+ */
+life: number, };

@@ -11,6 +11,7 @@ use crate::decision::{PriorityAction, PriorityOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::mana::{ManaOption, ManaSource, can_afford};
+use crate::player::Player;
 use crate::state::GameState;
 use crate::turn::LAND_DROPS_PER_TURN;
 use crate::zones::Zone;
@@ -90,6 +91,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     let hand = state.zone(Zone::Hand(player));
     let mana_abilities = mana_options(state, player);
     let pool = state.player(player).map(|p| *p.mana()).unwrap_or_default();
+    let life = state.player(player).map_or(0, Player::life);
     let may_play_land =
         sorcery_timing(state, player) && state.turn().lands_played() < LAND_DROPS_PER_TURN;
     let playable_lands = if may_play_land {
@@ -108,14 +110,14 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
                 return false;
             };
             let types = object.base_types();
-            let Some(cost) = object.card().mana_cost else {
+            let Some(cost) = object.card().mana_cost.as_ref() else {
                 return false;
             };
             if types.contains(CardType::Land) {
                 return false;
             }
             let timing = types.contains(CardType::Instant) || sorcery_timing(state, player);
-            timing && can_afford(&cost, &pool, &mana_abilities)
+            timing && can_afford(cost, &pool, &mana_abilities, life)
         })
         .collect();
     PriorityOptions {

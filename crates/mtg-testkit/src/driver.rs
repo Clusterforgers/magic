@@ -3,7 +3,7 @@
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{
-    Answer, DecisionKind, MulliganChoice, PayChoice, PriorityAction, PriorityOptions,
+    Answer, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction, PriorityOptions,
 };
 use mtg_engine::effects::{Duration, Modification, Selector};
 use mtg_engine::mana::{ManaSource, Payment};
@@ -173,6 +173,16 @@ impl Driver {
 
     /// Starts casting the named spell and pays by tapping the named lands.
     pub fn cast_tapping(&mut self, name: &str, lands: &[&str]) -> Result<Vec<Event>, ScriptError> {
+        self.cast_paying(name, lands, 0)
+    }
+
+    /// Starts casting the named spell and pays by tapping the named lands and paying `life`.
+    pub fn cast_paying(
+        &mut self,
+        name: &str,
+        lands: &[&str],
+        life: u32,
+    ) -> Result<Vec<Event>, ScriptError> {
         self.begin_cast(name)?;
         let DecisionKind::PayMana(options) = &self.decision()?.kind else {
             return Err(self.unexpected("pay-mana"));
@@ -200,7 +210,16 @@ impl Driver {
         self.answer(Answer::PayMana(PayChoice::Manual(Payment {
             pool: Vec::new(),
             taps,
+            life,
         })))
+    }
+
+    /// The pending payment decision's options.
+    pub fn pay_options(&self) -> Result<&PayOptions, ScriptError> {
+        match &self.decision()?.kind {
+            DecisionKind::PayMana(options) => Ok(options),
+            _ => Err(self.unexpected("pay-mana")),
+        }
     }
 
     /// Chooses the spell to cast; the payment decision is then pending.

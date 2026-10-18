@@ -109,6 +109,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
         }
         Event::ManaPoolEmptied { player } => pool_mut(state, *player)?.clear(),
+        Event::LifePaid { player, amount } => pay_life(state, *player, *amount)?,
         Event::DrewFromEmptyLibrary { player } => {
             player_mut(state, *player)?.drew_from_empty = true;
         }
@@ -135,6 +136,21 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         other => return Err(invalid(format!("unhandled event {other:?}"))),
     }
     Ok(())
+}
+
+/// Takes `amount` off a life total as a cost; a player cannot pay more life than they have (CR 119.4).
+fn pay_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), EngineError> {
+    let player = player_mut(state, id)?;
+    match i32::try_from(amount) {
+        Ok(paid) if paid > 0 && paid <= player.life => {
+            player.life -= paid;
+            Ok(())
+        }
+        _ => Err(invalid(format!(
+            "{id:?} cannot pay {amount} life with {}",
+            player.life
+        ))),
+    }
 }
 
 pub(crate) fn reset_passes(state: &mut GameState) {

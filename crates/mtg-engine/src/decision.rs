@@ -111,10 +111,14 @@ pub struct PayOptions {
     pub pool: ManaPool,
     /// Mana abilities that may be tapped.
     pub sources: Vec<ManaOption>,
-    /// Whether an automatic payment exists (it always does when the cast was offered).
+    /// Whether an automatic payment exists (it does whenever the cast was offered, unless only a payment that takes the last life would do).
     pub auto_available: bool,
     /// Whether the cast may be backed out of; nothing has been paid yet, so it rolls back (CR 601.2).
     pub can_cancel: bool,
+    /// The payer's life total.
+    pub life: i32,
+    /// The most life this payment may take: 2 for each Phyrexian symbol in the cost, within the life total (CR 119.4).
+    pub max_life: u32,
 }
 
 /// One creature that may attack and the defenders it may attack.
@@ -203,11 +207,11 @@ pub enum PriorityAction {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum PayChoice {
-    /// Let the engine pick a valid payment.
+    /// Let the engine pick a valid payment: mana if it can, life only when it must.
     Auto,
-    /// Pay exactly this.
+    /// Pay exactly this, life included.
     Manual(Payment),
-    /// Pay these parts and let the engine pay the rest of the cost.
+    /// Pay these parts (mana and life) and let the engine pay the rest of the cost.
     Complete(Payment),
     /// Abandon the cast (when `can_cancel`): the spell stays where it was, nothing is logged.
     Cancel,

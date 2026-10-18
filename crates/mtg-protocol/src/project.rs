@@ -90,7 +90,7 @@ impl ObjectView {
             controller: object.controller(),
             zone: object.zone(),
             name: card.name.clone(),
-            mana_cost: card.mana_cost,
+            mana_cost: card.mana_cost.clone(),
             supertypes: card.supertypes.iter().copied().collect(),
             types: type_list(chars.types),
             subtypes: card.subtypes.clone(),

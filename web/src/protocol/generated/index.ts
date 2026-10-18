@@ -41,6 +41,7 @@ export type { ManaCost } from "./ManaCost";
 export type { ManaOption } from "./ManaOption";
 export type { ManaPool } from "./ManaPool";
 export type { ManaSource } from "./ManaSource";
+export type { ManaSymbol } from "./ManaSymbol";
 export type { ManaType } from "./ManaType";
 export type { Modification } from "./Modification";
 export type { MulliganChoice } from "./MulliganChoice";
