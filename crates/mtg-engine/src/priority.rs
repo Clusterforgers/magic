@@ -137,6 +137,10 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             if types.contains(CardType::Land) {
                 return false;
             }
+            // The cost the engine pays has no {X} in it, so paying it would be casting for less.
+            if object.card().x_in_cost > 0 {
+                return false;
+            }
             let timing = types.contains(CardType::Instant) || sorcery_timing(state, player);
             timing && can_afford(cost, &pool, &mana_abilities, life)
         })
