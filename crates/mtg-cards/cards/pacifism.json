@@ -1,0 +1,15 @@
+{
+  "oracle_id": "5f5e0b10-c8cf-450c-bfd3-bcb0528ec330",
+  "name": "Pacifism",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pacifism",
+      "oracle_fingerprint": "5ac7468dba932c764ecd3d6b1b05dce9",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": ["CantAttack", "CantBlock"] } }
+      ]
+    }
+  ]
+}

@@ -222,30 +222,41 @@ Oracle text (2026-10-18): `Flying` / `Whenever this creature enters or attacks, 
   "oracle_id": "aa1a6646-c1e6-4bff-9092-43ee3e137914",
   "name": "Archon of Cruelty",
   "impl_status": "Full",
-  "faces": [{
-    "name": "Archon of Cruelty",
-    "oracle_fingerprint": "b68d063ee3b4ff033c607c00f4b59695",
-    "abilities": [
-      { "Keyword": "Flying" },
-      { "Triggered": {
-        "when": { "AnyOf": [
-          { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-          { "Attacks": { "what": ["This"] } }
-        ] },
-        "targets": [{ "what": "Opponent" }],
-        "effects": [
-          { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }] } },
-          { "Discard": { "who": { "Target": 0 } } },
-          { "LoseLife": { "who": { "Target": 0 }, "amount": 3 } },
-          { "Draw": {} },
-          { "GainLife": { "amount": 3 } }
-        ]
-      } }
-    ]
-  }]
+  "faces": [
+    {
+      "name": "Archon of Cruelty",
+      "oracle_fingerprint": "b68d063ee3b4ff033c607c00f4b59695",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              },
+              { "Discard": { "who": { "Target": 0 } } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 3 } },
+              { "Draw": {} },
+              { "GainLife": { "amount": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }
 ```
-(Shown compact; the file in `crates/mtg-cards/cards/archon_of_cruelty.json` is the same data in canonical form.) What it shows: one triggered ability with two patterns (`AnyOf`); a `TargetSpec` "target opponent" (one of several in multiplayer); effects in sequence with different actors (`who: Target(0)` for the first three, the default `You` for the last two); a sacrifice whose filter is a creature-or-planeswalker predicate and whose choice belongs to the sacrificing player, not the controller.
+This is `crates/mtg-cards/cards/archon_of_cruelty.json` verbatim (a test keeps the two equal; the canonical layout keeps short values on a line and splits long ones). What it shows: one triggered ability with two patterns (`AnyOf`); a `TargetSpec` "target opponent" (one of several in multiplayer); effects in sequence with different actors (`who: Target(0)` for the first three, the default `You` for the last two); a sacrifice whose filter is a creature-or-planeswalker predicate and whose choice belongs to the sacrificing player, not the controller.
 
 What the engine does, in order:
 1. **Trigger detection.** Archon enters: the engine emits `SpellResolved` (today) or `ZoneChanged { to: Battlefield }`; `detect` matches `ZoneChange { what: This, to: Battlefield }` of the `AnyOf` against `post`, emits `AbilityTriggered { source: Archon, ability: 1, cause: ZoneChange }` with a snapshot of Archon. Attacking later matches `Attacks` on `AttackersDeclared` the same way. One event triggers once.

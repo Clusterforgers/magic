@@ -156,7 +156,7 @@ fn normalized(text: &str) -> String {
 
 /// The fingerprint of an oracle text: SHA-256 of the normalized text, first 16 bytes as hex.
 pub fn oracle_fingerprint(text: &str) -> String {
-    digest(&[normalized(text).as_bytes()])
+    hex(&Sha256::digest(normalized(text).as_bytes())[..16])
 }
 
 /// The hash of a card's implementation: the canonical JSON of every face's abilities.
@@ -357,7 +357,7 @@ mod tests {
 
     #[test]
     fn the_fingerprint_of_nothing_is_the_hash_of_the_empty_string() {
-        assert_eq!(oracle_fingerprint(""), "6e340b9cffb37a989ca544e6bb780a2c");
+        assert_eq!(oracle_fingerprint(""), "e3b0c44298fc1c149afbf4c8996fb924");
     }
 
     #[rstest]

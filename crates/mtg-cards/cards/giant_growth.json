@@ -1,0 +1,27 @@
+{
+  "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
+  "name": "Giant Growth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Growth",
+      "oracle_fingerprint": "94ca5acb80503f883be9d13a1c72ea46",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

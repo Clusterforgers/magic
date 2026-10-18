@@ -11,6 +11,7 @@ pub mod keyword;
 pub mod load;
 pub mod mana;
 pub mod modify;
+pub mod pretty;
 pub mod refs;
 pub mod support;
 pub mod trigger;

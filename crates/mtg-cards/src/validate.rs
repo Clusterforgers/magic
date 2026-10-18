@@ -236,6 +236,7 @@ impl<'a> Walker<'a> {
     fn pred(&mut self, pred: &Pred) {
         match pred {
             Pred::ControlledBy(r) | Pred::OwnedBy(r) => self.reference(r, Kind::Player),
+            Pred::Is(r) => self.reference(r, Kind::Object),
             Pred::HasKeyword(keyword) => self.keyword(keyword),
             Pred::Named(name) => self
                 .names
@@ -1114,7 +1115,7 @@ mod tests {
 
     fn card(abilities: &str) -> Card {
         let json = format!(
-            r#"{{"oracle_id":"4457ed35-7c10-48c8-9776-456485fdf070","name":"Test","impl_status":"Full","faces":[{{"name":"Test","oracle_fingerprint":"6e340b9cffb37a989ca544e6bb780a2c","abilities":[{abilities}]}}]}}"#
+            r#"{{"oracle_id":"4457ed35-7c10-48c8-9776-456485fdf070","name":"Test","impl_status":"Full","faces":[{{"name":"Test","oracle_fingerprint":"e3b0c44298fc1c149afbf4c8996fb924","abilities":[{abilities}]}}]}}"#
         );
         serde_json::from_str(&json).unwrap()
     }

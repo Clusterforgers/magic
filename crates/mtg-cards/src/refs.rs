@@ -102,6 +102,8 @@ pub enum Pred {
     This,
     /// Is not the source object.
     Other,
+    /// Is one of the objects the reference names (`{"Is": {"Bound": "creature"}}`).
+    Is(Ref),
     /// Has the card type.
     Type(CardType),
     /// Has the supertype.

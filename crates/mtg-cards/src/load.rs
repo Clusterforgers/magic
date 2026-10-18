@@ -8,6 +8,7 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 
 use crate::card::{Card, TokenFile};
+use crate::pretty::pretty;
 use crate::support::{Caps, PrintedCard, SupportRecord, support};
 use crate::validate::{Problem, check_card, check_printed, check_token};
 
@@ -117,11 +118,9 @@ pub fn parse_json<T: DeserializeOwned>(file: &str, text: &str) -> Result<T, Load
     })
 }
 
-/// The canonical text of a value: pretty JSON with a trailing newline.
+/// The canonical text of a value: JSON in serde's field order, short values on one line, and a trailing newline.
 pub fn canonical<T: Serialize>(value: &T) -> String {
-    let mut text = serde_json::to_string_pretty(value).unwrap_or_default();
-    text.push('\n');
-    text
+    pretty(&serde_json::to_string(value).unwrap_or_default())
 }
 
 fn errors_of(file: &str, problems: Vec<Problem>) -> impl Iterator<Item = LoadError> + '_ {
@@ -497,7 +496,7 @@ mod tests {
 
     #[test]
     fn a_named_token_must_exist() {
-        let card = r#"{"oracle_id":"4457ed35-7c10-48c8-9776-456485fdf070","name":"Maker","impl_status":"Full","faces":[{"name":"Maker","oracle_fingerprint":"6e340b9cffb37a989ca544e6bb780a2c","abilities":[{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}]}]}"#;
+        let card = r#"{"oracle_id":"4457ed35-7c10-48c8-9776-456485fdf070","name":"Maker","impl_status":"Full","faces":[{"name":"Maker","oracle_fingerprint":"e3b0c44298fc1c149afbf4c8996fb924","abilities":[{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}]}]}"#;
         let found = errors(&[source("cards/maker.json", card)]);
         assert!(
             found.iter().any(|e| e.contains(

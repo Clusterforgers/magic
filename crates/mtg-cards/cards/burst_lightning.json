@@ -1,0 +1,28 @@
+{
+  "oracle_id": "ac2086fe-98ee-4280-9c7c-c5c2d6548a8b",
+  "name": "Burst Lightning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burst Lightning",
+      "oracle_fingerprint": "17dac5bb4f99555906182912ad5a200b",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}" } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }],
+                  "otherwise": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
