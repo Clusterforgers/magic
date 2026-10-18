@@ -12,6 +12,20 @@ export type CardMarks = ReadonlyMap<ObjectId, Highlight>
 /** A map with no marks. */
 export const NO_MARKS: CardMarks = new Map()
 
+/** What a prompt says on a card in words: a short `label` drawn on the face and `words` for a screen reader. */
+export interface CardNote {
+  label: string
+  words: string
+}
+
+/** The note of every card a prompt writes on, such as "At Ana" on a declared attacker. */
+export type CardNotes = ReadonlyMap<ObjectId, CardNote>
+
+/** A map with no notes. */
+export const NO_NOTES: CardNotes = new Map()
+
+const sameNote = (a: CardNote, b: CardNote): boolean => a.label === b.label && a.words === b.words
+
 /** Every card of `own` dimmed, then the `legal` ones legal and the `selected` ones selected (they may lie outside `own`). */
 export function markCards(
   own: readonly ObjectId[],
@@ -37,6 +51,12 @@ export interface MarksStore {
   publish(marks: CardMarks, onSelect: ((id: ObjectId) => void) | undefined, toggles: boolean): void
   /** Removes every mark. */
   clear(): void
+  /** The note written on one card, or undefined. */
+  noteOf(id: ObjectId): CardNote | undefined
+  /** Replaces every note; only cards whose note changed are notified. */
+  publishNotes(notes: CardNotes): void
+  /** Removes every note. */
+  clearNotes(): void
   /** A click or key press on a marked card; goes to the published handler. */
   select(id: ObjectId): void
 }
@@ -46,6 +66,7 @@ export function createMarksStore(): MarksStore {
   let marks: CardMarks = NO_MARKS
   let handler: ((id: ObjectId) => void) | undefined
   let toggling = false
+  let notes: CardNotes = NO_NOTES
   const listeners = new Map<ObjectId, Set<() => void>>()
   const notify = (ids: Iterable<ObjectId>): void => {
     for (const id of ids) for (const listener of [...(listeners.get(id) ?? [])]) listener()
@@ -56,12 +77,30 @@ export function createMarksStore(): MarksStore {
     marks = next
     toggling = nextToggles
     if (flipped) {
-      notify([...listeners.keys()])
+      // Only a marked card reads differently as a toggle, so a table of hundreds of cards is not redrawn for it.
+      notify(new Set([...before.keys(), ...next.keys()]))
       return
     }
     const changed: ObjectId[] = []
     for (const [id, mark] of next) if (before.get(id) !== mark) changed.push(id)
     for (const id of before.keys()) if (!next.has(id)) changed.push(id)
+    notify(changed)
+  }
+  const replaceNotes = (next: CardNotes): void => {
+    const before = notes
+    // A note that reads the same keeps its object, so a card's snapshot stays the same value.
+    const kept = new Map<ObjectId, CardNote>()
+    const changed: ObjectId[] = []
+    for (const [id, note] of next) {
+      const old = before.get(id)
+      if (old !== undefined && sameNote(old, note)) kept.set(id, old)
+      else {
+        kept.set(id, note)
+        changed.push(id)
+      }
+    }
+    for (const id of before.keys()) if (!next.has(id)) changed.push(id)
+    notes = kept
     notify(changed)
   }
   return {
@@ -88,6 +127,9 @@ export function createMarksStore(): MarksStore {
       replace(NO_MARKS, false)
     },
     select: (id) => handler?.(id),
+    noteOf: (id) => notes.get(id),
+    publishNotes: replaceNotes,
+    clearNotes: () => replaceNotes(NO_NOTES),
   }
 }
 
@@ -99,13 +141,18 @@ export function useMarksStore(): MarksStore {
   return useContext(MarksContext)
 }
 
-/** What the active prompt says about one card: its mark, and whether marked cards are toggles. */
-export function useCardMark(id: ObjectId): { highlight: Highlight | undefined; toggles: boolean } {
+/** What the active prompt says about one card: its mark, whether marked cards are toggles, and its note. */
+export function useCardMark(id: ObjectId): {
+  highlight: Highlight | undefined
+  toggles: boolean
+  note: CardNote | undefined
+} {
   const store = useMarksStore()
   const subscribe = useCallback((listener: () => void) => store.subscribe(id, listener), [store, id])
   const highlight = useSyncExternalStore(subscribe, () => store.markOf(id))
   const toggles = useSyncExternalStore(subscribe, store.toggles)
-  return { highlight, toggles }
+  const note = useSyncExternalStore(subscribe, () => store.noteOf(id))
+  return { highlight, toggles, note }
 }
 
 /** Options of `useCardMarks`. */
@@ -135,4 +182,16 @@ export function useCardMarks(
     store.publish(marks, forward, toggles)
   }, [store, marks, forward, toggles])
   useLayoutEffect(() => () => store.clear(), [store])
+}
+
+/**
+ * Writes a note on cards for as long as the calling prompt is on screen (a declared attacker says whom it attacks,
+ * a blocker whom it blocks). Notes only inform: they are not clickable and do not change a card's mark.
+ */
+export function useCardNotes(notes: CardNotes): void {
+  const store = useMarksStore()
+  useLayoutEffect(() => {
+    store.publishNotes(notes)
+  }, [store, notes])
+  useLayoutEffect(() => () => store.clearNotes(), [store])
 }

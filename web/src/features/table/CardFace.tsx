@@ -5,6 +5,7 @@ import type { CombatRole } from './cardModel'
 import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { ManaPips } from './ManaPips'
+import type { CardNote } from './prompt/marks'
 
 interface CardFaceProps {
   object: ObjectView
@@ -12,13 +13,15 @@ interface CardFaceProps {
   size: CardSize
   /** Keep a tapped card upright, as the preview does: it says "tapped" in words instead. */
   upright?: boolean
+  /** What the active prompt writes on the card, such as "At Ana"; drawn after the status labels. */
+  note?: CardNote | undefined
 }
 
 /**
  * What a card looks like: name, cost, a place for art, type line and power/toughness, in its colour. Plain
  * `span`s so it can sit inside a button. Tapped is a quarter turn plus the word "Tapped", never colour alone.
  */
-export function CardFace({ object, role, size, upright = false }: CardFaceProps) {
+export function CardFace({ object, role, size, upright = false, note }: CardFaceProps) {
   const classes = SIZE[size]
   const tapped = object.permanent?.tapped === true
   const frame = frameOf(object)
@@ -65,6 +68,17 @@ export function CardFace({ object, role, size, upright = false }: CardFaceProps)
             {label}
           </span>
         ))}
+        {note === undefined ? null : (
+          <span
+            data-slot="card-note"
+            className={cn(
+              'h-fit max-w-full rounded-sm bg-primary px-1 leading-snug font-medium break-words text-primary-foreground',
+              classes.text,
+            )}
+          >
+            {note.label}
+          </span>
+        )}
       </span>
       {full ? (
         <span className={cn('line-clamp-2 px-1 leading-tight text-muted-foreground', classes.text)}>

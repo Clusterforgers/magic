@@ -1,12 +1,17 @@
 /** Decisions the dev table can show: `/dev/table?prompt=<name>`. Add a line to `DEV_PROMPTS` for each new prompt. */
 import type { PendingDecision } from '@/play/store'
 import type {
+  AttackOptions,
+  AttackTarget,
+  BlockOptions,
   DecisionKind,
   ManaOption,
   ObjectId,
   ObjectView,
   PayOptions,
+  PlayerId,
   PriorityOptions,
+  StateView,
 } from '@/protocol/generated'
 import { assignDamage } from './damagePrompt'
 import type { Fixture } from './fixture'
@@ -51,6 +56,126 @@ const priority: DevPrompt = ({ view }) => {
     can_pass: true,
   }
   return { id: 1, decision: { player: viewer, kind: { Priority: options } } }
+}
+
+const untappedCreatures = (view: StateView, seat: PlayerId): ObjectView[] =>
+  view.objects.filter(
+    (object) =>
+      object.zone === 'Battlefield' &&
+      object.controller === seat &&
+      object.types.includes('Creature') &&
+      object.permanent?.tapped === false,
+  )
+
+/** Every seat but `seat` that is still in, in turn order after it. */
+const othersAfter = (view: StateView, seat: PlayerId): PlayerId[] =>
+  view.players
+    .filter((player) => player.seat !== seat && player.lost === null)
+    .map((player) => player.seat)
+    .sort((a, b) => ((a - seat + 99) % 99) - ((b - seat + 99) % 99))
+
+/**
+ * The viewer declares attackers: every untapped creature that is not summoning sick may attack any other seat, or the
+ * planeswalker `attackTable` put in play.
+ */
+const attack: DevPrompt = ({ view }) => {
+  const viewer = view.viewer
+  const defenders: AttackTarget[] = [
+    ...othersAfter(view, viewer).map((seat): AttackTarget => ({ Player: seat })),
+    ...view.objects
+      .filter((object) => object.types.includes('Planeswalker') && object.controller !== viewer)
+      .map((object): AttackTarget => ({ Planeswalker: object.id })),
+  ]
+  const options: AttackOptions = {
+    attackers: untappedCreatures(view, viewer)
+      .filter((object) => object.permanent?.summoning_sick === false)
+      .map((object) => ({ object: object.id, defenders })),
+  }
+  return { id: 1, decision: { player: viewer, kind: { DeclareAttackers: options } } }
+}
+
+/** The viewer declares blockers: every untapped creature may block each attacker that is aimed at the viewer. */
+const block: DevPrompt = ({ view }) => {
+  const viewer = view.viewer
+  const can_block = view.combat.attackers
+    .filter((attacker) => 'Player' in attacker.target && attacker.target.Player === viewer)
+    .map((attacker) => attacker.object)
+  const options: BlockOptions = {
+    blockers: untappedCreatures(view, viewer).map((object) => ({ object: object.id, can_block })),
+  }
+  return { id: 1, decision: { player: viewer, kind: { DeclareBlockers: options } } }
+}
+
+/** A table for the moment a decision belongs to; the default fixture is in the middle of an attack. */
+export type DevTable = (fixture: Fixture) => Fixture
+
+const withView = (fixture: Fixture, change: Partial<StateView>): Fixture => ({
+  ...fixture,
+  view: { ...fixture.view, ...change },
+})
+
+/** The same objects with `ids` tapped, as attacking taps. */
+const tapped = (objects: readonly ObjectView[], ids: ReadonlySet<ObjectId>): ObjectView[] =>
+  objects.map((object) =>
+    ids.has(object.id) && object.permanent !== null
+      ? { ...object, permanent: { ...object.permanent, tapped: true } }
+      : object,
+  )
+
+/** The turn is the viewer's and nobody has attacked yet; one of the first opponent's permanents is a planeswalker. */
+const attackTable: DevTable = (fixture) => {
+  const { view } = fixture
+  const owner = othersAfter(view, view.viewer)[0] ?? view.viewer
+  const walker: ObjectView = {
+    id: Math.max(...view.objects.map((object) => object.id)) + 1,
+    owner,
+    controller: owner,
+    zone: 'Battlefield',
+    name: 'Jace, the Mind Sculptor',
+    mana_cost: { generic: 2, colorless: 0, colored: [0, 2, 0, 0, 0] },
+    supertypes: ['Legendary'],
+    types: ['Planeswalker'],
+    subtypes: [],
+    colors: ['Blue'],
+    power: null,
+    toughness: null,
+    abilities: [],
+    permanent: { tapped: false, damage: 0, summoning_sick: false },
+  }
+  const cards = [...(view.battlefield.cards ?? []), walker.id]
+  return withView(fixture, {
+    objects: [...view.objects, walker],
+    battlefield: { count: cards.length, cards },
+    turn: { ...view.turn, active: view.viewer, step: 'DeclareAttackers' },
+    priority: null,
+    combat: { attackers: [], attackers_declared: false, blockers_declared: [] },
+  })
+}
+
+/**
+ * The active seat has attacked with six creatures and nobody has blocked: four at the viewer and, when there is a
+ * third seat, two at another player (which the viewer may not block).
+ */
+const blockTable: DevTable = (fixture) => {
+  const { view } = fixture
+  const active = view.turn.active
+  const elsewhere = othersAfter(view, view.viewer).find((seat) => seat !== active)
+  const declared = new Set(view.combat.attackers.map((attacker) => attacker.object))
+  const more = untappedCreatures(view, active)
+    .filter((object) => object.permanent?.summoning_sick === false && !declared.has(object.id))
+    .map((object) => object.id)
+  const ids = [...declared, ...more].slice(0, 6)
+  const attackers = ids.map((object, index) => ({
+    object,
+    target: { Player: index < 4 || elsewhere === undefined ? view.viewer : elsewhere },
+    blocked: false,
+    blockers: [],
+  }))
+  return withView(fixture, {
+    objects: tapped(view.objects, new Set(ids)),
+    combat: { attackers, attackers_declared: true, blockers_declared: [] },
+    priority: null,
+  })
 }
 
 /**
@@ -114,6 +239,8 @@ const aboutHand =
 /** The prompts by their `?prompt=` name. */
 export const DEV_PROMPTS: Record<string, DevPrompt> = {
   priority,
+  attack,
+  block,
   mulligan: aboutHand((hand) => ({ Mulligan: { hand, mulligans_taken: 1, can_mulligan: true } })),
   bottom: aboutHand((hand) => ({ BottomCards: { hand, count: 2 } })),
   discard: aboutHand((hand) => ({ Discard: { hand: hand.slice(0, -1), count: 2 } })),
@@ -122,4 +249,10 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   damage1: assignDamage(1),
   pay,
   'pay-short': payShort,
+}
+
+/** Prompts that need another moment of the game than the default fixture shows, by `?prompt=` name. */
+export const DEV_TABLES: Record<string, DevTable> = {
+  attack: attackTable,
+  block: blockTable,
 }
