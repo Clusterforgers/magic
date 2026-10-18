@@ -16,4 +16,16 @@ mulligans_taken: number,
 /**
  * Whether another mulligan is allowed.
  */
-can_mulligan: boolean, };
+can_mulligan: boolean, 
+/**
+ * Mulligans this format does not charge a card for (CR 103.5c gives Commander one).
+ */
+free_mulligans: number, 
+/**
+ * Cards put on the bottom if the hand is kept now: the count the bottom decision will ask for.
+ */
+bottom_if_keep: number, 
+/**
+ * Cards put on the bottom if the hand drawn by one more mulligan is kept (equals `bottom_if_keep` when it is free).
+ */
+bottom_if_mulligan: number, };

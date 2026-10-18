@@ -67,6 +67,12 @@ pub struct MulliganOptions {
     pub mulligans_taken: u32,
     /// Whether another mulligan is allowed.
     pub can_mulligan: bool,
+    /// Mulligans this format does not charge a card for (CR 103.5c gives Commander one).
+    pub free_mulligans: u32,
+    /// Cards put on the bottom if the hand is kept now: the count the bottom decision will ask for.
+    pub bottom_if_keep: usize,
+    /// Cards put on the bottom if the hand drawn by one more mulligan is kept (equals `bottom_if_keep` when it is free).
+    pub bottom_if_mulligan: usize,
 }
 
 /// Options for choosing cards to bottom.

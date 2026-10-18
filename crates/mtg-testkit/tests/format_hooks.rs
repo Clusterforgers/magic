@@ -7,7 +7,7 @@ use std::sync::Arc;
 use common::pid;
 use mtg_core::card::CardDefinition;
 use mtg_core::ids::PlayerId;
-use mtg_engine::decision::{Answer, DecisionKind, MulliganChoice};
+use mtg_engine::decision::{Answer, DecisionKind, MulliganChoice, MulliganOptions};
 use mtg_engine::error::SetupError;
 use mtg_engine::format::{DeckError, ExtraZone, FormatRules, MulliganRule, Normal};
 use mtg_engine::player::LossReason;
@@ -97,6 +97,17 @@ fn normal_is_twenty_life_and_seven_cards() -> Result<(), ScriptError> {
     Ok(())
 }
 
+/// The keep-or-mulligan options the driver is waiting on.
+fn mulligan_options(driver: &Driver) -> Result<MulliganOptions, ScriptError> {
+    match &driver.decision()?.kind {
+        DecisionKind::Mulligan(options) => Ok(options.clone()),
+        _ => Err(ScriptError::UnexpectedDecision {
+            wanted: "mulligan",
+            got: "other".into(),
+        }),
+    }
+}
+
 #[rstest]
 #[case::free_first_mulligan(1, 0)]
 #[case::second_costs_one(2, 1)]
@@ -111,13 +122,16 @@ fn free_mulligans_reduce_the_cards_bottomed(
         quirky_decks(3, 20),
     ))?)?;
     let first = driver.state().first_player();
+    let mut offered = Vec::new();
     for round in 0..mulligans {
+        offered.push(mulligan_options(&driver)?);
         driver.answer(Answer::Mulligan(MulliganChoice::Mulligan))?;
         if round == 0 {
             driver.answer(Answer::Mulligan(MulliganChoice::Keep))?;
             driver.answer(Answer::Mulligan(MulliganChoice::Keep))?;
         }
     }
+    let last = mulligan_options(&driver)?;
     driver.answer(Answer::Mulligan(MulliganChoice::Keep))?;
     match &driver.decision()?.kind {
         DecisionKind::BottomCards(options) => {
@@ -128,6 +142,28 @@ fn free_mulligans_reduce_the_cards_bottomed(
             "no bottom decision only when nothing needs bottoming"
         ),
     }
+    // The options the player saw told the truth: keeping bottoms what the next decision asks
+    // for, and the price shown for a mulligan is what the next hand's options then show.
+    assert_eq!((last.free_mulligans, last.bottom_if_keep), (1, bottom));
+    offered.push(last);
+    for pair in offered.windows(2) {
+        assert_eq!(pair[0].bottom_if_mulligan, pair[1].bottom_if_keep);
+    }
+    Ok(())
+}
+
+#[test]
+fn normal_mulligans_are_never_free() -> Result<(), ScriptError> {
+    let driver = Driver::new(Engine::new(fuzz_setup(2, 1))?)?;
+    let options = mulligan_options(&driver)?;
+    assert_eq!(
+        (
+            options.free_mulligans,
+            options.bottom_if_keep,
+            options.bottom_if_mulligan
+        ),
+        (0, 0, 1)
+    );
     Ok(())
 }
 
