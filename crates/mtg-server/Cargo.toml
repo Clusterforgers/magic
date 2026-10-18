@@ -32,5 +32,5 @@ mtg-db.workspace = true
 mtg-testkit.workspace = true
 futures-util.workspace = true
 rstest.workspace = true
-tokio = { workspace = true, features = ["io-util"] }
+tokio = { workspace = true, features = ["io-util", "test-util"] }
 tokio-tungstenite.workspace = true

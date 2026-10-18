@@ -249,8 +249,11 @@ const aboutHand =
 /** The prompts by their `?prompt=` name. */
 export const DEV_PROMPTS: Record<string, DevPrompt> = {
   priority,
+  // The same decisions on a response clock (`devGame` starts the countdown; nothing ticks it in the dev route).
+  'priority-clock': (fixture) => ({ ...priority(fixture), deadlineMs: 10_000 }),
   attack,
   block,
+  'block-clock': (fixture) => ({ ...block(fixture), deadlineMs: 45_000 }),
   mulligan: aboutHand((hand) => ({
     Mulligan: {
       hand,
@@ -286,4 +289,5 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
 export const DEV_TABLES: Record<string, DevTable> = {
   attack: attackTable,
   block: blockTable,
+  'block-clock': blockTable,
 }

@@ -28,7 +28,7 @@ pub struct GameConfig {
     pub seat_queue: usize,
     /// Client messages that may wait for the actor before senders have to wait.
     pub command_queue: usize,
-    /// Whether a seat with nothing to do is passed for.
+    /// Auto-pass and the response clocks.
     pub pace: Pace,
 }
 
@@ -130,7 +130,7 @@ pub(crate) async fn resume_recorded<S: EventStore>(
     if !fresh.is_empty() {
         store.append(id, count(stored_len), fresh).await?;
     }
-    let mut running = Running::new(engine);
+    let mut running = Running::new(engine, config.pace);
     running.settle(false);
     Ok(launch(
         id,
@@ -156,6 +156,7 @@ fn launch<S: EventStore>(
         store,
         seats: Seats::new(setup.players.len(), config.seat_queue),
         auto_pass: vec![config.pace.auto_pass; setup.players.len()],
+        pace: config.pace,
         setup,
         phase,
         recorder,
@@ -182,6 +183,8 @@ pub(crate) struct GameActor<S> {
     pub(crate) store: S,
     pub(crate) setup: GameSetup,
     pub(crate) seats: Seats,
+    /// How fast the game moves (settings shared by every seat).
+    pub(crate) pace: Pace,
     /// Per seat: whether a priority decision it cannot use is passed for it. Starts at the server default, resets on resume.
     pub(crate) auto_pass: Vec<bool>,
     pub(crate) phase: Phase,
@@ -190,12 +193,29 @@ pub(crate) struct GameActor<S> {
 }
 
 impl<S: EventStore> GameActor<S> {
-    /// Handles commands one at a time until every handle is gone.
+    /// Handles commands one at a time until every handle is gone, and answers for a seat whose clock runs out.
     async fn run(mut self, mut inbox: mpsc::Receiver<Command>) {
         if self.start_up().await.is_err() {
             return;
         }
-        while let Some(command) = inbox.recv().await {
+        loop {
+            let command = match self.due() {
+                None => inbox.recv().await,
+                // Biased: a command already waiting was sent before the clock ran out, so it goes first.
+                Some(due) => tokio::select! {
+                    biased;
+                    command = inbox.recv() => command,
+                    () = tokio::time::sleep_until(due) => {
+                        if self.expire().await.is_err() {
+                            return;
+                        }
+                        continue;
+                    }
+                },
+            };
+            let Some(command) = command else {
+                return;
+            };
             if self.handle(command).await.is_err() {
                 return;
             }

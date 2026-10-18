@@ -4,9 +4,10 @@
  */
 import { GameSocket } from '@/net/socket'
 import type { GameSocketOptions, SocketEvent } from '@/net/socket'
+import { browserTimers } from '@/net/timers'
 import type { Answer, ServerMessage } from '@/protocol/generated'
 import { appendChat, appendLog, createPlayStore, dropLogFrom } from './store'
-import type { PlayStore } from './store'
+import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById } from './view'
 
 /** The longest chat line the server accepts, in characters (`MAX_CHAT_CHARS` in `crates/mtg-server/src/actor.rs`). */
@@ -63,6 +64,38 @@ export function createSession(deps: SessionDeps): Session {
   let awaitingSnapshot = false
   let lastAnswered: number | null = null
   const socket = new GameSocket({ ...deps, onEvent })
+  const timers = deps.timers ?? browserTimers
+  // The one timer that keeps `clock` in step with the pending decision; cancelled whenever that decision goes.
+  let clockTimer: number | null = null
+  store.subscribe((state, previous) => {
+    if (state.pending !== previous.pending) syncClock(state.pending)
+  })
+
+  /** Starts, restarts or stops the clock for `pending`, counting from now: the moment its message arrived. */
+  function syncClock(pending: PlayState['pending']): void {
+    if (clockTimer !== null) timers.clearTimeout(clockTimer)
+    clockTimer = null
+    if (pending === null || pending.deadlineMs === undefined) {
+      if (getState().clock !== null) setState({ clock: null })
+      return
+    }
+    const { id, deadlineMs: totalMs } = pending
+    const endsAt = timers.now() + totalMs
+    const tick = (): void => {
+      clockTimer = null
+      const leftMs = endsAt - timers.now()
+      if (leftMs <= 0) {
+        // The server has answered for this seat, or is about to; either way this prompt is over.
+        if (getState().pending?.id === id) setState({ pending: null })
+        return
+      }
+      setState({ clock: { id, totalMs, leftMs } })
+      // Wake when the whole seconds left change: for 9.5 s that is in half a second, for 9 s in a full one. A timer
+      // that fires a hair early finds itself just above the boundary and asks for the hair that is left.
+      clockTimer = timers.setTimeout(tick, leftMs - 1000 * (Math.ceil(leftMs / 1000) - 1))
+    }
+    tick()
+  }
 
   function onEvent(event: SocketEvent): void {
     switch (event.type) {
@@ -169,7 +202,12 @@ export function createSession(deps: SessionDeps): Session {
   function onDecision(message: Of<'Decision'>): void {
     // After a gap the server repeats the pending decision behind the snapshot it sends; before that the ids may be unknown.
     if (awaitingSnapshot || message.id === lastAnswered) return
-    setState({ pending: { id: message.id, decision: message.decision } })
+    setState({
+      pending:
+        message.deadline_ms === undefined
+          ? { id: message.id, decision: message.decision }
+          : { id: message.id, decision: message.decision, deadlineMs: message.deadline_ms },
+    })
   }
 
   function onError(message: Of<'Error'>): void {

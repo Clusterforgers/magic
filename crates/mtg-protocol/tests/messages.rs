@@ -230,15 +230,18 @@ fn server_samples() -> Vec<ServerMessage> {
             message: format!("{code:?}"),
         });
     }
+    // Every other decision runs on a clock, so both shapes are covered for several kinds.
     out.extend(
         decision_kinds()
             .into_iter()
-            .map(|kind| ServerMessage::Decision {
+            .zip([Some(10_000), None].into_iter().cycle())
+            .map(|(kind, deadline_ms)| ServerMessage::Decision {
                 id: DecisionId(8),
                 decision: Decision {
                     player: PlayerId(0),
                     kind,
                 },
+                deadline_ms,
             }),
     );
     out
@@ -316,6 +319,34 @@ fn client_wire_shape_is_flat_and_tagged(
 #[case(
     ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true },
     json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true})
+)]
+#[case(
+    ServerMessage::Decision {
+        id: DecisionId(3),
+        decision: Decision {
+            player: PlayerId(1),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![] }),
+        },
+        deadline_ms: Some(45_000),
+    },
+    json!({
+        "type": "Decision", "id": 3, "deadline_ms": 45_000,
+        "decision": {"player": 1, "kind": {"DeclareBlockers": {"blockers": []}}}
+    })
+)]
+#[case(
+    ServerMessage::Decision {
+        id: DecisionId(4),
+        decision: Decision {
+            player: PlayerId(0),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![] }),
+        },
+        deadline_ms: None,
+    },
+    json!({
+        "type": "Decision", "id": 4,
+        "decision": {"player": 0, "kind": {"DeclareBlockers": {"blockers": []}}}
+    })
 )]
 #[case(
     ServerMessage::Error { code: ErrorCode::StaleDecision, message: "late".into() },

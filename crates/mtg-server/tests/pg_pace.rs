@@ -1,4 +1,4 @@
-//! Goal: a server that restarts on the same database brings back a game that plays with auto-pass on exactly as an uninterrupted one does under the same rule, no client is ever sent a decision it could do nothing with, and a seat's auto-pass setting is forgotten with the process (the server default applies again).
+//! Goal: a server that restarts on the same database brings back a game that plays with auto-pass and clocks on exactly as an uninterrupted one does under the same rule, no client is ever sent a decision it could do nothing with, and a seat's auto-pass setting is forgotten with the process (the server default applies again).
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -34,7 +34,7 @@ fn recipe(players: usize, seed: u64) -> GameRecipe {
     GameRecipe::normal(seed, decks)
 }
 
-/// The server defaults for pace: auto-pass on.
+/// The server defaults for pace: auto-pass on, 10 s to respond, 45 s to block.
 fn config(seed: u64) -> ServerConfig {
     ServerConfig {
         fixed_seed: Some(seed),
@@ -61,7 +61,7 @@ fn tokens(created: &Created) -> Vec<String> {
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_game_with_auto_pass_resumes_and_ends_like_an_uninterrupted_one(pool: PgPool) {
+async fn a_game_with_auto_pass_and_clocks_resumes_and_ends_like_an_uninterrupted_one(pool: PgPool) {
     migrate(&pool).await.unwrap();
     for (players, seed, answers_before) in [(2, 1, 4), (3, 2, 60), (4, 3, 200)] {
         let config = config(seed);

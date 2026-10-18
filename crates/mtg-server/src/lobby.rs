@@ -39,12 +39,12 @@ impl<S: EventStore> GameActor<S> {
         let opening = engine.events().to_vec();
         match self.persist(&before, &opening, 0).await {
             Ok(batches) => {
-                let mut running = Running::new(engine);
+                let mut running = Running::new(engine, self.pace);
                 let first = running.settle(false);
                 // A game starts in the mulligans, but a scenario can open on a priority decision nobody can use.
                 let idle = first
                     .as_ref()
-                    .is_some_and(|(_, decision)| pace::skippable(decision, &self.auto_pass));
+                    .is_some_and(|issued| pace::skippable(&issued.decision, &self.auto_pass));
                 self.phase = Phase::Running(Box::new(running));
                 if let Some(recorder) = &self.recorder {
                     recorder.started().await;

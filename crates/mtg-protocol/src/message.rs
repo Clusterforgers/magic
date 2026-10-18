@@ -101,6 +101,12 @@ pub enum ServerMessage {
         id: DecisionId,
         /// The question with every legal option.
         decision: Decision,
+        /// Milliseconds the seat has left when this is sent; absent for a decision without a clock.
+        /// At the end the server answers for the seat (a pass, or no blocks) and this decision goes stale.
+        /// A decision sent again after a reconnect carries the time that is left, not the time it started with.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        deadline_ms: Option<u64>,
     },
     /// New events, projected for this client.
     Events(EventBatch),

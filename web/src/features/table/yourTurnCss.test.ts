@@ -37,7 +37,8 @@ describe('the your-turn cue stylesheet', () => {
   })
 
   it('has no other animation in the stylesheet that could slip out of the media query', () => {
-    expect([...css.matchAll(/animation\s*:/g)]).toHaveLength(1)
+    // One for this cue and one for the response clock's bar, which responseClockCss.test.ts holds to the same rule.
+    expect([...css.matchAll(/animation\s*:/g)]).toHaveLength(2)
   })
 
   it('pulses the same ring that stands still, so the ring never jumps', () => {

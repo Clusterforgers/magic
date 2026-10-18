@@ -31,6 +31,7 @@ pub struct WsBot {
     pub next_seq: u64,
     pub decisions: usize,
     pub idle_decisions: usize,
+    pub clocked: usize,
     pub answers: usize,
     pub snapshots: usize,
     pub errors: Vec<(ErrorCode, String)>,
@@ -57,6 +58,7 @@ impl WsBot {
             next_seq: 0,
             decisions: 0,
             idle_decisions: 0,
+            clocked: 0,
             answers: 0,
             snapshots: 0,
             errors: Vec::new(),
@@ -105,6 +107,7 @@ impl WsBot {
             result,
             decisions: self.decisions,
             idle_decisions: self.idle_decisions,
+            clocked: self.clocked,
             answers: self.answers,
             events_seen: self.next_seq,
             snapshots: self.snapshots,
@@ -135,11 +138,16 @@ impl WsBot {
                 );
                 self.next_seq += batch.events.len() as u64;
             }
-            ServerMessage::Decision { id, decision } => {
+            ServerMessage::Decision {
+                id,
+                decision,
+                deadline_ms,
+            } => {
                 assert_eq!(decision.player, me, "a decision for another seat");
                 self.decisions += 1;
                 self.idle_decisions +=
                     usize::from(matches!(&decision.kind, DecisionKind::Priority(o) if !o.can_act));
+                self.clocked += usize::from(deadline_ms.is_some());
                 return self.respond(id, decision).await;
             }
             ServerMessage::Error { code, message } => self.errors.push((code, message)),

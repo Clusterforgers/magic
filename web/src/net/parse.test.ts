@@ -127,6 +127,10 @@ describe('parseFrame checks the fields of each message', () => {
     ['Welcome', 'auto_pass as null', ['auto_pass'], null],
     ['Decision', 'id as text', ['id'], '7'],
     ['Decision', 'id as negative', ['id'], -3],
+    ['Decision', 'deadline_ms as text', ['deadline_ms'], '10000'],
+    ['Decision', 'deadline_ms as a fraction', ['deadline_ms'], 99.5],
+    ['Decision', 'deadline_ms as negative', ['deadline_ms'], -1],
+    ['Decision', 'deadline_ms as null', ['deadline_ms'], null],
     ['Decision', 'decision as text', ['decision'], 'Priority'],
     ['Decision', 'player as text', ['decision', 'player'], 'me'],
     ['Decision', 'kind as text', ['decision', 'kind'], 'Priority'],
@@ -196,6 +200,14 @@ describe('parseFrame checks the fields of each message', () => {
       ok: false,
       error: { kind: 'bad_shape', detail: expect.stringContaining(`${type}: `) },
     })
+  })
+
+  it('keeps the deadline of a decision on a clock and leaves the field out of one without', () => {
+    const clocked = { ...samples.Decision, deadline_ms: 10_000 }
+    expect(parseFrame(wire(clocked))).toEqual({ ok: true, message: clocked })
+    const plain = parseFrame(wire(samples.Decision))
+    expect(plain.ok && 'deadline_ms' in plain.message).toBe(false)
+    expect(parseFrame(wire({ ...samples.Decision, deadline_ms: 0 })).ok).toBe(true)
   })
 
   it('accepts a draw and a winner as results', () => {

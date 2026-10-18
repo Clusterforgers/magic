@@ -1,4 +1,4 @@
-//! Server settings: four come from the environment, the rest are limits that tests may tune.
+//! Server settings: six come from the environment, the rest are limits that tests may tune.
 
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::time::Duration;
@@ -6,6 +6,7 @@ use std::time::Duration;
 use thiserror::Error;
 
 use crate::actor::GameConfig;
+use crate::pace::MAX_CLOCK_SECS;
 
 /// Listen address when `MTG_BIND` is unset.
 pub const DEFAULT_BIND: SocketAddr = SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 8080);
@@ -27,6 +28,16 @@ pub enum ConfigError {
     /// `MTG_AUTO_PASS` is not a switch.
     #[error("MTG_AUTO_PASS must be 1 or 0 (also on, off, true, false), got {0:?}")]
     BadAutoPass(String),
+    /// `MTG_RESPONSE_SECS` is not a number of seconds.
+    #[error(
+        "MTG_RESPONSE_SECS must be a whole number of seconds, 0 for no clock, at most 86400, got {0:?}"
+    )]
+    BadResponseSecs(String),
+    /// `MTG_BLOCK_SECS` is not a number of seconds.
+    #[error(
+        "MTG_BLOCK_SECS must be a whole number of seconds, 0 for no clock, at most 86400, got {0:?}"
+    )]
+    BadBlockSecs(String),
 }
 
 /// Timers and size limits of one WebSocket connection.
@@ -126,7 +137,8 @@ impl Default for ServerConfig {
 }
 
 impl ServerConfig {
-    /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES` and `MTG_AUTO_PASS` from the process environment.
+    /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS` and
+    /// `MTG_BLOCK_SECS` from the process environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
             std::env::var_os(key).map(|value| value.to_string_lossy().into_owned())
@@ -164,6 +176,14 @@ impl ServerConfig {
             config.game.pace.auto_pass =
                 parse_switch(&text).ok_or(ConfigError::BadAutoPass(text))?;
         }
+        if let Some(text) = get("MTG_RESPONSE_SECS") {
+            let seconds = parse_seconds(&text).ok_or(ConfigError::BadResponseSecs(text))?;
+            config.game.pace.response = clock_of(seconds);
+        }
+        if let Some(text) = get("MTG_BLOCK_SECS") {
+            let seconds = parse_seconds(&text).ok_or(ConfigError::BadBlockSecs(text))?;
+            config.game.pace.blocks = clock_of(seconds);
+        }
         Ok(config)
     }
 }
@@ -175,6 +195,19 @@ fn parse_switch(raw: &str) -> Option<bool> {
         "0" | "off" | "false" => Some(false),
         _ => None,
     }
+}
+
+/// A clock in whole seconds; nothing above a day is accepted.
+fn parse_seconds(raw: &str) -> Option<u64> {
+    raw.trim()
+        .parse::<u64>()
+        .ok()
+        .filter(|s| *s <= MAX_CLOCK_SECS)
+}
+
+/// The clock for a number of seconds; 0 is no clock at all.
+fn clock_of(seconds: u64) -> Option<Duration> {
+    (seconds > 0).then(|| Duration::from_secs(seconds))
 }
 
 /// The lowercase `scheme://host[:port]` form of an origin, or `None` if `raw` is not one.
@@ -318,8 +351,11 @@ mod tests {
     }
 
     #[test]
-    fn idle_seats_are_passed_for_unless_the_environment_says_otherwise() {
-        assert!(load(&[]).unwrap().game.pace.auto_pass);
+    fn the_pace_defaults_skip_idle_seats_and_run_the_clocks() {
+        let pace = load(&[]).unwrap().game.pace;
+        assert!(pace.auto_pass);
+        assert_eq!(pace.response, Some(Duration::from_secs(10)));
+        assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
     }
 
     #[rstest]
@@ -348,6 +384,54 @@ mod tests {
         assert_eq!(
             load(&[("MTG_AUTO_PASS", text)]),
             Err(ConfigError::BadAutoPass(text.to_owned()))
+        );
+    }
+
+    #[rstest]
+    #[case("1", Some(1))]
+    #[case("30", Some(30))]
+    #[case(" 7 ", Some(7))]
+    #[case("86400", Some(86_400))]
+    #[case("0", None)]
+    #[case("", Some(10))]
+    fn response_clock(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let pace = load(&[("MTG_RESPONSE_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.response, seconds.map(Duration::from_secs));
+        assert_eq!(
+            pace.blocks,
+            Some(Duration::from_secs(45)),
+            "the other clock is untouched"
+        );
+    }
+
+    #[rstest]
+    #[case("120", Some(120))]
+    #[case("0", None)]
+    #[case("", Some(45))]
+    fn block_clock(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let pace = load(&[("MTG_BLOCK_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.blocks, seconds.map(Duration::from_secs));
+        assert_eq!(
+            pace.response,
+            Some(Duration::from_secs(10)),
+            "the other clock is untouched"
+        );
+    }
+
+    #[rstest]
+    #[case("-1")]
+    #[case("ten")]
+    #[case("1.5")]
+    #[case("86401")]
+    #[case("99999999999999999999999")]
+    fn bad_clocks(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_RESPONSE_SECS", text)]),
+            Err(ConfigError::BadResponseSecs(text.to_owned()))
+        );
+        assert_eq!(
+            load(&[("MTG_BLOCK_SECS", text)]),
+            Err(ConfigError::BadBlockSecs(text.to_owned()))
         );
     }
 }

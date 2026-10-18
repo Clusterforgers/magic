@@ -218,7 +218,13 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'Decision':
       if (!isCount(v.id)) return '"id" must be a whole number'
       if (!isDecision(v.decision)) return '"decision" must name a player and exactly one decision kind'
-      return { type, id: v.id, decision: v.decision }
+      // Absent means no clock; the server never sends null, so null is as wrong as text.
+      if (v.deadline_ms !== undefined && !isCount(v.deadline_ms)) {
+        return '"deadline_ms" must be a whole number of milliseconds'
+      }
+      return v.deadline_ms === undefined
+        ? { type, id: v.id, decision: v.decision }
+        : { type, id: v.id, decision: v.decision, deadline_ms: v.deadline_ms }
     case 'Events':
       if (!isCount(v.from_seq)) return '"from_seq" must be a whole number'
       if (!isListOf(v.events, isEventView)) return '"events" must be a list of Public or Hidden events'

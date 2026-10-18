@@ -19,8 +19,12 @@ use mtg_testkit::cards::{bear, forest, free_creature, giant};
 use mtg_testkit::{Scenario, ready};
 use rstest::rstest;
 
-/// Auto-pass on.
-const ON: Pace = Pace { auto_pass: true };
+/// Auto-pass on, no clocks, so only the passes are under test.
+const ON: Pace = Pace {
+    auto_pass: true,
+    response: None,
+    blocks: None,
+};
 
 fn config(pace: Pace) -> GameConfig {
     GameConfig { pace, ..roomy() }
@@ -98,8 +102,9 @@ async fn set(handle: &GameHandle, from: &Client, enabled: bool) {
     handle.status().await.unwrap();
 }
 
-/// Plays a bot game with the server defaults (auto-pass on) and checks it against the bare engine.
+/// Plays a bot game with the server defaults (auto-pass on, clocks running) and checks it against the bare engine.
 async fn bot_game_matches_the_bare_engine_under_the_same_rule(players: usize, seed: u64) {
+    // The bots answer at once, so no clock ever runs out.
     let (handle, store) = spawn(table_setup(players, seed), Pace::default());
     let reports = play_table(&handle, players, seed).await;
 
@@ -128,6 +133,16 @@ async fn bot_game_matches_the_bare_engine_under_the_same_rule(players: usize, se
 async fn bot_games_match_the_bare_engine_under_the_same_rule_and_no_client_is_asked_for_nothing(
     #[values(2, 3, 4)] players: usize,
     #[values(1, 2, 3)] seed: u64,
+) {
+    bot_game_matches_the_bare_engine_under_the_same_rule(players, seed).await;
+}
+
+// Paused time: a clock that fired when it should not would change the log, and the game cannot idle its way past one.
+#[rstest]
+#[tokio::test(start_paused = true)]
+async fn the_same_games_end_the_same_way_on_a_paused_clock(
+    #[values(2, 4)] players: usize,
+    #[values(1, 2)] seed: u64,
 ) {
     bot_game_matches_the_bare_engine_under_the_same_rule(players, seed).await;
 }

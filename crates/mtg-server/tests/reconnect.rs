@@ -153,7 +153,8 @@ async fn a_joining_seat_gets_welcome_then_snapshot_then_its_pending_decision() {
                 back.next().await,
                 ServerMessage::Decision {
                     id,
-                    decision: decision.clone()
+                    decision: decision.clone(),
+                    deadline_ms: None,
                 }
             );
         }
@@ -188,7 +189,8 @@ async fn resync_repeats_the_snapshot_and_the_pending_decision() {
                 messages[1..],
                 [ServerMessage::Decision {
                     id,
-                    decision: decision.clone()
+                    decision: decision.clone(),
+                    deadline_ms: None,
                 }],
                 "the pending decision keeps its id"
             );

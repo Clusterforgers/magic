@@ -1,14 +1,14 @@
 //! Playing: answers and concessions become persisted, projected batches for every connected seat.
 
 use mtg_core::ids::PlayerId;
-use mtg_engine::{Answer, Decision, EngineError, Event, GameState};
+use mtg_engine::{Answer, EngineError, Event, GameState};
 use mtg_protocol::{
     DecisionId, ErrorCode, EventBatch, ProtocolError, ServerMessage, project_events,
 };
 use thiserror::Error;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
-use crate::running::{Rejection, Step};
+use crate::running::{Issued, Rejection, Step};
 use crate::store::{EventStore, StoreError};
 
 /// Why a step could not be turned into something clients may see.
@@ -139,18 +139,25 @@ impl<S: EventStore> GameActor<S> {
     }
 
     /// Sends saved events to their seats, then the next decision to the seat it names, then the result.
-    pub(crate) fn announce(
-        &mut self,
-        batches: Vec<(PlayerId, EventBatch)>,
-        next: Option<(DecisionId, Decision)>,
-    ) {
+    pub(crate) fn announce(&mut self, batches: Vec<(PlayerId, EventBatch)>, next: Option<Issued>) {
         for (seat, batch) in batches {
             self.seats.send(seat, ServerMessage::Events(batch));
         }
-        if let Some((id, decision)) = next {
+        if let Some(Issued {
+            id,
+            decision,
+            deadline_ms,
+        }) = next
+        {
             let seat = decision.player;
-            self.seats
-                .send(seat, ServerMessage::Decision { id, decision });
+            self.seats.send(
+                seat,
+                ServerMessage::Decision {
+                    id,
+                    decision,
+                    deadline_ms,
+                },
+            );
         }
         let result = match &self.phase {
             Phase::Running(running) => running.engine.result(),
