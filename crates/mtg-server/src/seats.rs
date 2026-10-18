@@ -17,6 +17,8 @@ pub const MIN_QUEUE: usize = 4;
 pub(crate) struct Seats {
     sinks: Vec<Option<Sender<ServerMessage>>>,
     capacity: usize,
+    /// Set when a queue was dropped because its client hung up or fell behind; see [`Seats::take_gone`].
+    gone: bool,
 }
 
 impl Seats {
@@ -25,6 +27,7 @@ impl Seats {
         Seats {
             sinks: (0..seats).map(|_| None).collect(),
             capacity: capacity.max(MIN_QUEUE),
+            gone: false,
         }
     }
 
@@ -53,6 +56,7 @@ impl Seats {
         for slot in &mut self.sinks {
             if slot.as_ref().is_some_and(Sender::is_closed) {
                 *slot = None;
+                self.gone = true;
             }
         }
         self.sinks
@@ -61,6 +65,12 @@ impl Seats {
             .filter(|(_, slot)| slot.is_some())
             .map(|(seat, _)| PlayerId::from_index(seat))
             .collect()
+    }
+
+    /// Whether a client has been dropped since the last call (it hung up or could not keep up; not a `detach`), and
+    /// forgets it. The table that was told of the seats at that moment is told again.
+    pub(crate) fn take_gone(&mut self) -> bool {
+        std::mem::take(&mut self.gone)
     }
 
     /// Resolves once some seat's client has gone away without leaving (its queue is closed), at once if one already
@@ -73,7 +83,10 @@ impl Seats {
             .map(|sink| Box::pin(sink.closed()) as Pin<Box<dyn Future<Output = ()> + Send + '_>>)
             .collect();
         poll_fn(|cx| {
-            if closed.iter_mut().any(|wait| wait.as_mut().poll(cx).is_ready()) {
+            if closed
+                .iter_mut()
+                .any(|wait| wait.as_mut().poll(cx).is_ready())
+            {
                 Poll::Ready(())
             } else {
                 Poll::Pending
@@ -93,7 +106,10 @@ impl Seats {
         match sink.try_send(message) {
             Ok(()) => {}
             // The client must reconnect and resync; the game never waits for it.
-            Err(TrySendError::Full(_) | TrySendError::Closed(_)) => *slot = None,
+            Err(TrySendError::Full(_) | TrySendError::Closed(_)) => {
+                *slot = None;
+                self.gone = true;
+            }
         }
     }
 
@@ -187,5 +203,81 @@ mod tests {
         }
         assert_eq!(inbox.try_recv().unwrap(), line(0));
         assert_eq!(seats.connected(), [PlayerId(0)]);
+    }
+
+    #[test]
+    fn a_dropped_client_is_remembered_once_however_it_was_found() {
+        // Found by a sweep, by a send to a closed queue, and by a send to a full one.
+        let mut seats = Seats::new(3, MIN_QUEUE);
+        let (hung_up, too_slow, listening) = (
+            seats.attach(PlayerId(0)).unwrap(),
+            seats.attach(PlayerId(1)).unwrap(),
+            seats.attach(PlayerId(2)).unwrap(),
+        );
+        assert!(!seats.take_gone(), "nobody has gone yet");
+        drop(hung_up);
+        assert_eq!(seats.connected(), [PlayerId(1), PlayerId(2)]);
+        assert!(seats.take_gone());
+        assert!(!seats.take_gone(), "and it is told once");
+
+        let mut listening = listening;
+        for n in 0..=MIN_QUEUE as u64 {
+            seats.broadcast(&line(n));
+            while listening.try_recv().is_ok() {}
+        }
+        assert!(
+            seats.take_gone(),
+            "a queue that overflowed is a client gone"
+        );
+        assert_eq!(seats.connected(), [PlayerId(2)]);
+        drop(too_slow);
+    }
+
+    #[test]
+    fn leaving_and_taking_a_seat_over_are_not_a_client_gone() {
+        let mut seats = Seats::new(2, 8);
+        let _kept = seats.attach(PlayerId(0)).unwrap();
+        let _old = seats.attach(PlayerId(1)).unwrap();
+        let _new = seats.attach(PlayerId(1)).unwrap();
+        seats.detach(PlayerId(0));
+        assert_eq!(seats.connected(), [PlayerId(1)]);
+        assert!(!seats.take_gone());
+    }
+
+    #[tokio::test]
+    async fn the_wait_for_a_client_gone_ends_when_a_queue_closes_and_not_before() {
+        use std::time::Duration;
+        use tokio::time::timeout;
+
+        let mut seats = Seats::new(3, 8);
+        // No seat connected, and seats whose clients listen: nothing to wait for.
+        assert!(
+            timeout(Duration::from_millis(30), seats.client_gone())
+                .await
+                .is_err()
+        );
+        let first = seats.attach(PlayerId(0)).unwrap();
+        let second = seats.attach(PlayerId(2)).unwrap();
+        assert!(
+            timeout(Duration::from_millis(30), seats.client_gone())
+                .await
+                .is_err()
+        );
+
+        drop(second);
+        timeout(Duration::from_secs(5), seats.client_gone())
+            .await
+            .expect("a closed queue ends the wait");
+        // It stays ended until the closed queue is swept, so the caller must sweep.
+        timeout(Duration::from_secs(5), seats.client_gone())
+            .await
+            .expect("still closed");
+        assert_eq!(seats.connected(), [PlayerId(0)]);
+        assert!(
+            timeout(Duration::from_millis(30), seats.client_gone())
+                .await
+                .is_err()
+        );
+        drop(first);
     }
 }

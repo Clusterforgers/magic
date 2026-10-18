@@ -5,7 +5,7 @@ mod common;
 
 use common::{
     Client, FlakyStore, game_id, passive, passive_until_priority, poke, roomy, seat, silent,
-    start_table, table_setup,
+    start_table, table_setup, without_rosters,
 };
 use mtg_engine::decision::{DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::{Answer, Event, GameSetup, replay};
@@ -92,8 +92,9 @@ async fn a_failed_save_at_the_start_keeps_the_lobby_and_ready_tries_again() {
     handle.send(seat(1), ClientMessage::Ready).await.unwrap();
     handle.status().await.unwrap();
 
-    internal_error(&clients[1].drain());
-    silent(&clients[0].drain());
+    // Each Ready changed the roster, so both seats heard of it; the failure itself is the last seat's alone.
+    internal_error(&without_rosters(clients[1].drain()));
+    silent(&without_rosters(clients[0].drain()));
     let status = handle.status().await.unwrap();
     assert!(!status.started);
     assert_eq!(status.events, 0);

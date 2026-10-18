@@ -52,19 +52,44 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
+    /// Sends the roster to `seat` alone, for a connection that took the seat over from another.
+    pub(crate) fn send_roster(&mut self, seat: PlayerId) {
+        let connected = self.seats.connected();
+        if let Some(message) = self.roster(&connected) {
+            self.seats.send(seat, message);
+        }
+    }
+
     /// Tells every connected seat who is at the table and who is ready; nothing once the game runs.
     pub(crate) fn push_roster(&mut self) {
         // A client that cannot take the message is dropped by the send. Everybody else must hear of the gap it
         // leaves, and each further round means one more client went, so the loop ends.
         for _ in 0..=self.seats.len() {
             let connected = self.seats.connected();
+            // Whoever the sweep found gone is not in the roster below, so there is nothing left to tell about them.
+            self.seats.take_gone();
             let Some(message) = self.roster(&connected) else {
                 return;
             };
             self.seats.broadcast(&message);
-            if self.seats.connected() == connected {
+            if !self.seats.take_gone() {
                 return;
             }
+        }
+    }
+
+    /// Tells a lobby of the clients that went away without leaving: hung up, or fell too far behind.
+    ///
+    /// Nobody says so, so it is looked for after every command (any of them may be the one that finds a closed queue
+    /// first) and whenever a queue closes while the actor is idle.
+    pub(crate) fn announce_departures(&mut self) {
+        if !self.in_lobby() {
+            self.seats.take_gone();
+            return;
+        }
+        self.seats.connected();
+        if self.seats.take_gone() {
+            self.push_roster();
         }
     }
 

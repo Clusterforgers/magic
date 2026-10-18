@@ -204,7 +204,10 @@ fn launch<S: EventStore>(
 #[derive(Debug)]
 pub(crate) enum Phase {
     /// Collecting joins and readiness; the engine does not exist yet. `names` and `ready` are per seat.
-    Lobby { ready: Vec<bool>, names: Vec<String> },
+    Lobby {
+        ready: Vec<bool>,
+        names: Vec<String>,
+    },
     /// The game is on (or over, once it has a result).
     Running(Box<Running>),
 }
@@ -240,7 +243,7 @@ impl<S: EventStore> GameActor<S> {
                     command = inbox.recv() => command,
                     // A client that hung up without a word closed its queue; the table hears of it as of a `Leave`.
                     () = self.seats.client_gone() => {
-                        self.push_roster();
+                        self.announce_departures();
                         continue;
                     }
                 },
@@ -263,6 +266,7 @@ impl<S: EventStore> GameActor<S> {
             if self.handle(command).await.is_err() {
                 return;
             }
+            self.announce_departures();
         }
     }
 
@@ -271,8 +275,11 @@ impl<S: EventStore> GameActor<S> {
             Command::Join { seat, reply } => self.join(seat, reply).await,
             Command::Message { seat, message } => return self.message(seat, message).await,
             Command::Leave { seat } => {
+                let was_here = self.seats.connected().contains(&seat);
                 self.seats.detach(seat);
-                self.push_roster();
+                if was_here {
+                    self.push_roster();
+                }
             }
             Command::Status { reply } => {
                 // A caller that stopped waiting needs no answer.
@@ -287,6 +294,8 @@ impl<S: EventStore> GameActor<S> {
         seat: PlayerId,
         reply: oneshot::Sender<Result<mpsc::Receiver<ServerMessage>, JoinError>>,
     ) {
+        // A seat that is already connected is taken over by this connection: nobody else's view of the table changes.
+        let takeover = self.seats.connected().contains(&seat);
         let Some(inbox) = self.seats.attach(seat) else {
             // A caller that stopped waiting needs no answer.
             let _ = reply.send(Err(JoinError::NoSuchSeat(seat)));
@@ -301,7 +310,11 @@ impl<S: EventStore> GameActor<S> {
         };
         self.seats.send(seat, welcome);
         self.sync(seat);
-        self.push_roster();
+        if takeover {
+            self.send_roster(seat);
+        } else {
+            self.push_roster();
+        }
         let _ = reply.send(Ok(inbox));
         // After the reply, so the client never waits for the database.
         if let Some(recorder) = &mut self.recorder {

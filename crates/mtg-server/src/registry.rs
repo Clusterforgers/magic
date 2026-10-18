@@ -342,10 +342,14 @@ impl Registry {
                     }
                 }
             }
-            _ => {
-                let game = self.shared.game;
-                spawn_named(id, setup, MemoryStore::new(), game, None, names.clone())?
-            }
+            _ => spawn_named(
+                id,
+                setup,
+                MemoryStore::new(),
+                self.shared.game,
+                None,
+                names.clone(),
+            )?,
         };
         self.games().insert(
             id,

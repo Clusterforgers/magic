@@ -66,6 +66,11 @@ async fn a_malformed_auto_pass_is_a_bad_message_and_changes_nothing() {
     let server = TestServer::start(paced()).await;
     let (game, tokens) = create_game(server.addr, two_seats()).await;
     let (mut socket, _, _) = welcomed(&server, &game, &tokens[0]).await;
+    // A seat in the lobby is sent the roster right after its welcome.
+    assert!(matches!(
+        socket.message().await,
+        ServerMessage::Lobby { .. }
+    ));
 
     for bad in [
         r#"{"type":"AutoPass"}"#,

@@ -123,7 +123,8 @@ impl Bot {
                 self.respond(handle, id, decision, allow).await;
             }
             ServerMessage::Error { code, message } => self.errors.push((code, message)),
-            ServerMessage::Chat { .. } => {}
+            // The roster of a lobby is for people; a bot only waits for its first decision.
+            ServerMessage::Chat { .. } | ServerMessage::Lobby { .. } => {}
             ServerMessage::GameOver { result } => return Progress::Over(result),
         }
         Progress::Continue

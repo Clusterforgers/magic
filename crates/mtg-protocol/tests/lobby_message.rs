@@ -189,7 +189,10 @@ fn the_bindings_carry_the_roster_and_not_ready() {
         "connected: boolean",
         "ready: boolean",
     ] {
-        assert!(files["LobbySeat.ts"].contains(field), "LobbySeat lacks {field}");
+        assert!(
+            files["LobbySeat.ts"].contains(field),
+            "LobbySeat lacks {field}"
+        );
     }
     let server = &files["ServerMessage.ts"];
     assert!(server.contains("\"type\": \"Lobby\""));
