@@ -3,6 +3,7 @@
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
+use mtg_engine::forecast::CombatForecast;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState};
 use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView};
 use tokio::time::Instant;
@@ -227,6 +228,24 @@ impl Running {
                 }
                 _ => Rejection::engine_failed(),
             })
+    }
+
+    /// The forecast of `answer` to the decision `id`, only if that decision is pending for `seat` right now and the
+    /// engine can preview the answer; nothing is logged and the engine is not changed.
+    pub(crate) fn preview(
+        &self,
+        seat: PlayerId,
+        id: DecisionId,
+        answer: &Answer,
+    ) -> Option<CombatForecast> {
+        let current = self
+            .pending
+            .as_ref()
+            .is_some_and(|p| p.id == id && p.decision.player == seat);
+        if !current {
+            return None;
+        }
+        self.engine.preview_forecast(seat, answer).ok()
     }
 
     /// Answers the pending decision for its seat with the safe default: a pass, or no blocks.

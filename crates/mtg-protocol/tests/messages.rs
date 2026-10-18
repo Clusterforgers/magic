@@ -7,11 +7,14 @@ use std::fmt::Debug;
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaType};
-use mtg_engine::combat::AttackTarget;
+use mtg_engine::combat::{AttackTarget, DamageTarget};
 use mtg_engine::decision::{
     AttackOptions, AttackerOption, BlockOptions, BlockerOption, BottomOptions, DamageOptions,
     DecisionKind, DiscardOptions, MulliganChoice, MulliganOptions, PayChoice, PayOptions,
     PriorityAction, PriorityOptions,
+};
+use mtg_engine::forecast::{
+    AttackerForecast, CombatForecast, CreatureForecast, ForecastDamage, PlayerForecast,
 };
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use mtg_engine::state::GameResult;
@@ -27,8 +30,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 9;
-const SERVER_VARIANTS: usize = 8;
+const CLIENT_VARIANTS: usize = 10;
+const SERVER_VARIANTS: usize = 9;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -46,8 +49,9 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::Concede => 4,
         ClientMessage::Resync => 5,
         ClientMessage::AutoPass { .. } => 6,
-        ClientMessage::Yield { .. } => 7,
-        ClientMessage::CancelYield => 8,
+        ClientMessage::Preview { .. } => 7,
+        ClientMessage::Yield { .. } => 8,
+        ClientMessage::CancelYield => 9,
     }
 }
 
@@ -61,7 +65,8 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::Chat { .. } => 4,
         ServerMessage::Error { .. } => 5,
         ServerMessage::GameOver { .. } => 6,
-        ServerMessage::Yielding { .. } => 7,
+        ServerMessage::Forecast { .. } => 7,
+        ServerMessage::Yielding { .. } => 8,
     }
 }
 
@@ -196,6 +201,45 @@ fn sample_view_and_batch() -> (StateView, EventBatch) {
     (StateView::for_player(engine.state(), PlayerId(0)), batch)
 }
 
+/// A forecast with a block, so every field of it is exercised: creature 4 attacks player 1 and creature 3 blocks it.
+fn sample_forecast() -> CombatForecast {
+    let (blocker, attacker) = (ObjectId(3), ObjectId(4));
+    let hit = |source, target, amount| ForecastDamage {
+        source,
+        target,
+        amount,
+    };
+    CombatForecast {
+        attackers: vec![AttackerForecast {
+            attacker,
+            target: AttackTarget::Player(PlayerId(1)),
+            blocked: true,
+            blockers: vec![blocker],
+            deals: vec![hit(attacker, DamageTarget::Object(blocker), 3)],
+            receives: vec![hit(blocker, DamageTarget::Object(attacker), 1)],
+        }],
+        creatures: vec![
+            CreatureForecast {
+                object: blocker,
+                damage: 3,
+                dies: true,
+            },
+            CreatureForecast {
+                object: attacker,
+                damage: 1,
+                dies: false,
+            },
+        ],
+        players: vec![PlayerForecast {
+            player: PlayerId(1),
+            damage: 0,
+            life: 20,
+            life_after: 20,
+            lethal: false,
+        }],
+    }
+}
+
 fn client_samples() -> Vec<ClientMessage> {
     let mut out = vec![
         ClientMessage::Join {
@@ -215,6 +259,10 @@ fn client_samples() -> Vec<ClientMessage> {
     ];
     out.extend(YIELDS.map(|until| ClientMessage::Yield { until }));
     out.extend(answers().into_iter().map(|answer| ClientMessage::Answer {
+        decision: DecisionId(41),
+        answer,
+    }));
+    out.extend(answers().into_iter().map(|answer| ClientMessage::Preview {
         decision: DecisionId(41),
         answer,
     }));
@@ -246,6 +294,14 @@ fn server_samples() -> Vec<ServerMessage> {
         },
         ServerMessage::GameOver {
             result: GameResult::Draw,
+        },
+        ServerMessage::Forecast {
+            decision: DecisionId(41),
+            forecast: Some(sample_forecast()),
+        },
+        ServerMessage::Forecast {
+            decision: DecisionId(41),
+            forecast: None,
         },
     ];
     // A welcome states the yield the seat holds, and so does every change of it.
@@ -363,6 +419,10 @@ fn every_event_view_variant_round_trips() {
     ClientMessage::Chat { text: "hi".into() },
     json!({"type": "Chat", "text": "hi"})
 )]
+#[case(
+    ClientMessage::Preview { decision: DecisionId(7), answer: Answer::DeclareBlockers(vec![(ObjectId(3), ObjectId(4))]) },
+    json!({"type": "Preview", "decision": 7, "answer": {"DeclareBlockers": [[3, 4]]}})
+)]
 fn client_wire_shape_is_flat_and_tagged(
     #[case] message: ClientMessage,
     #[case] expected: serde_json::Value,
@@ -419,6 +479,25 @@ fn client_wire_shape_is_flat_and_tagged(
 #[case(
     ServerMessage::GameOver { result: GameResult::Draw },
     json!({"type": "GameOver", "result": "Draw"})
+)]
+#[case(
+    ServerMessage::Forecast { decision: DecisionId(7), forecast: None },
+    json!({"type": "Forecast", "decision": 7, "forecast": null})
+)]
+#[case(
+    ServerMessage::Forecast {
+        decision: DecisionId(7),
+        forecast: Some(CombatForecast {
+            attackers: Vec::new(),
+            creatures: vec![CreatureForecast { object: ObjectId(3), damage: 2, dies: true }],
+            players: Vec::new(),
+        }),
+    },
+    json!({"type": "Forecast", "decision": 7, "forecast": {
+        "attackers": [],
+        "creatures": [{"object": 3, "damage": 2, "dies": true}],
+        "players": [],
+    }})
 )]
 fn server_wire_shape_is_flat_and_tagged(
     #[case] message: ServerMessage,

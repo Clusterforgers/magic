@@ -10,6 +10,7 @@ mod cast;
 mod damage;
 mod flow;
 mod mulligan;
+mod preview;
 mod sba;
 mod steps;
 
@@ -38,7 +39,7 @@ pub mod zones;
 pub use characteristics::{Characteristics, characteristics};
 pub use decision::{Answer, Decision, DecisionKind};
 pub use engine::{Checkpoint, Engine, replay};
-pub use error::EngineError;
+pub use error::{EngineError, PreviewError};
 pub use events::Event;
 pub use fold::apply_event;
 pub use setup::{GameSetup, PlayerSetup, PresetPermanent, Start};

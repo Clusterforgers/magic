@@ -43,6 +43,7 @@ export type ParsedFrame = { ok: true; message: ServerMessage } | { ok: false; er
 const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   Welcome: true,
   Decision: true,
+  Forecast: true,
   Events: true,
   Snapshot: true,
   Chat: true,
@@ -295,6 +296,12 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       return v.deadline_ms === undefined
         ? { type, id: v.id, decision: v.decision }
         : { type, id: v.id, decision: v.decision, deadline_ms: v.deadline_ms }
+    case 'Forecast':
+      if (!isCount(v.decision)) return '"decision" must be a whole number'
+      if (v.forecast !== null && !isCombatForecast(v.forecast)) {
+        return '"forecast" must be null or a combat forecast'
+      }
+      return { type, decision: v.decision, forecast: v.forecast }
     case 'Events':
       if (!isCount(v.from_seq)) return '"from_seq" must be a whole number'
       if (!isListOf(v.events, isEventView)) return '"events" must be a list of Public or Hidden events'

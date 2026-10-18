@@ -5,7 +5,8 @@
 import { GameSocket } from '@/net/socket'
 import type { GameSocketOptions, SocketEvent } from '@/net/socket'
 import { browserTimers } from '@/net/timers'
-import type { Answer, ServerMessage, YieldUntil } from '@/protocol/generated'
+import type { Answer, DecisionId, ServerMessage, YieldUntil } from '@/protocol/generated'
+import { previewKey } from './preview'
 import { appendChat, appendLog, createPlayStore, dropLogFrom } from './store'
 import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById } from './view'
@@ -28,6 +29,12 @@ export interface Session {
   ready(): boolean
   /** Answers the pending decision, once; false when there is none or the socket is not open. */
   answer(answer: Answer): boolean
+  /**
+   * Asks the engine what combat damage would do if `answer` were given to the pending decision `decision`, without
+   * giving it; the reply lands in `store.preview` (docs/protocol.md, Preview). Advice only: false when `decision` is
+   * not the pending one, when the socket is not open and once the server has shown it does not know previews.
+   */
+  preview(decision: DecisionId, answer: Answer): boolean
   /** Gives up the game. */
   concede(): boolean
   /**
@@ -71,6 +78,10 @@ export function createSession(deps: SessionDeps): Session {
   // Bookkeeping of the current connection, not state a screen needs.
   let awaitingSnapshot = false
   let lastAnswered: number | null = null
+  // The previews asked for and not yet answered, oldest first: the server answers each one, in order.
+  let asked: { decision: DecisionId; key: string }[] = []
+  // False once an older server has refused a Preview as a message it does not know.
+  let previewsKnown = true
   const socket = new GameSocket({ ...deps, onEvent })
   const timers = deps.timers ?? browserTimers
   // The one timer that keeps `clock` in step with the pending decision; cancelled whenever that decision goes.
@@ -94,7 +105,7 @@ export function createSession(deps: SessionDeps): Session {
       const leftMs = endsAt - timers.now()
       if (leftMs <= 0) {
         // The server has answered for this seat, or is about to; either way this prompt is over.
-        if (getState().pending?.id === id) setState({ pending: null })
+        if (getState().pending?.id === id) setState({ pending: null, preview: null })
         return
       }
       setState({ clock: { id, totalMs, leftMs } })
@@ -125,12 +136,14 @@ export function createSession(deps: SessionDeps): Session {
       // A decision, its id and a pending resync belong to one connection; the next Snapshot starts fresh.
       awaitingSnapshot = false
       lastAnswered = null
+      asked = []
     }
     setState((state) => ({
       status: event.status,
       attempt: event.attempt,
       notice: event.reason ?? (event.status === 'connecting' ? null : state.notice),
       pending: live ? state.pending : null,
+      preview: live ? state.preview : null,
     }))
   }
 
@@ -139,6 +152,8 @@ export function createSession(deps: SessionDeps): Session {
       case 'Welcome':
         awaitingSnapshot = false
         lastAnswered = null
+        asked = []
+        previewsKnown = true
         setState({
           seat: message.player,
           seatCount: message.seats,
@@ -158,6 +173,9 @@ export function createSession(deps: SessionDeps): Session {
       case 'Decision':
         onDecision(message)
         return
+      case 'Forecast':
+        onForecast(message)
+        return
       case 'Chat':
         setState((state) => ({ chat: appendChat(state.chat, { from: message.from, text: message.text }) }))
         return
@@ -166,7 +184,7 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'GameOver':
         socket.retire()
-        setState({ result: message.result, phase: 'over', pending: null, yielding: null })
+        setState({ result: message.result, phase: 'over', pending: null, preview: null, yielding: null })
         return
       default: {
         // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
@@ -186,6 +204,7 @@ export function createSession(deps: SessionDeps): Session {
         objectsById: view.objects === state.view?.objects ? state.objectsById : indexById(view.objects),
         seq: message.seq,
         pending: null, // the server sends the current decision right after the snapshot
+        preview: null,
         log: dropLogFrom(state.log, message.seq),
         phase: state.result === null ? 'playing' : 'over',
       }
@@ -223,19 +242,28 @@ export function createSession(deps: SessionDeps): Session {
         message.deadline_ms === undefined
           ? { id: message.id, decision: message.decision }
           : { id: message.id, decision: message.decision, deadlineMs: message.deadline_ms },
+      preview: null,
     })
   }
 
   function onYielding(message: Of<'Yielding'>): void {
     // A yield that starts has passed for the priority decision on screen (or is about to), so that prompt is over.
     // Other decisions stay: the server still asks for attackers, blockers and the like.
-    setState((state) => ({
-      yielding: message.until,
-      pending:
+    setState((state) => {
+      const passed =
         message.until !== null && state.pending !== null && 'Priority' in state.pending.decision.kind
-          ? null
-          : state.pending,
-    }))
+      return passed ? { yielding: message.until, pending: null, preview: null } : { yielding: message.until }
+    })
+  }
+
+  function onForecast(message: Of<'Forecast'>): void {
+    const request = asked.shift()
+    // The server answers every preview, in order. Only the answer to the newest one says anything about the choice
+    // on screen, and only while its decision is the pending one.
+    if (request === undefined || asked.length > 0) return
+    const { pending } = getState()
+    if (pending === null || pending.id !== message.decision || request.decision !== message.decision) return
+    setState({ preview: { decision: message.decision, key: request.key, forecast: message.forecast } })
   }
 
   function onError(message: Of<'Error'>): void {
@@ -249,6 +277,12 @@ export function createSession(deps: SessionDeps): Session {
         resyncUnlessWaiting()
         return
       case 'BadMessage':
+        // A server that predates previews refuses each Preview as a message it does not know. That is no news for
+        // the player: stop asking and let the prompts say the outcome shows after confirming.
+        if (asked.shift() !== undefined) {
+          previewsKnown = false
+          return
+        }
         setState({ notice: NOTICES.refused(message.message) })
         return
       case 'Internal':
@@ -273,7 +307,14 @@ export function createSession(deps: SessionDeps): Session {
       const { pending } = getState()
       if (pending === null || !socket.send({ type: 'Answer', decision: pending.id, answer })) return false
       lastAnswered = pending.id
-      setState({ pending: null })
+      setState({ pending: null, preview: null })
+      return true
+    },
+    preview(decision, answer) {
+      const { pending } = getState()
+      if (!previewsKnown || pending === null || pending.id !== decision) return false
+      if (!socket.send({ type: 'Preview', decision, answer })) return false
+      asked.push({ decision, key: previewKey(answer) })
       return true
     },
     concede: () => socket.send({ type: 'Concede' }),

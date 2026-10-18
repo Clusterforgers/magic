@@ -5,6 +5,7 @@
  * when marked plus new damage reaches its toughness) so that a fixture's numbers agree with the cards it shows.
  */
 import type {
+  Answer,
   AttackerForecast,
   CombatForecast,
   CreatureForecast,
@@ -103,4 +104,35 @@ export function devForecast(view: StateView): CombatForecast {
       ]
     })
   return { attackers, creatures, players }
+}
+
+/**
+ * What the engine would say to a preview of `answer` at the dev table: the combat of `view` with those blocks, or those
+ * attackers, declared. Dev only, like `devForecast`. Null for what the engine gives no forecast for: any other kind
+ * of answer and an attack with nobody.
+ */
+export function devPreview(view: StateView, answer: Answer): CombatForecast | null {
+  if ('DeclareBlockers' in answer) {
+    const attackers = view.combat.attackers.map((attacker) => {
+      const added = answer.DeclareBlockers.filter(([, blocked]) => blocked === attacker.object).map(
+        ([blocker]) => blocker,
+      )
+      return {
+        ...attacker,
+        blocked: attacker.blocked || added.length > 0,
+        blockers: [...attacker.blockers, ...added],
+      }
+    })
+    return devForecast({ ...view, combat: { ...view.combat, attackers } })
+  }
+  if ('DeclareAttackers' in answer && answer.DeclareAttackers.length > 0) {
+    const attackers = answer.DeclareAttackers.map(([object, target]) => ({
+      object,
+      target,
+      blocked: false,
+      blockers: [],
+    }))
+    return devForecast({ ...view, combat: { attackers, attackers_declared: true, blockers_declared: [] } })
+  }
+  return null
 }

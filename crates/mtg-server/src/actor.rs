@@ -3,6 +3,8 @@
 //! Clients never touch the engine. They send [`ClientMessage`]s through a [`GameHandle`] and read
 //! [`ServerMessage`]s from a bounded queue, so a slow or vanished client can never stall a game.
 
+use std::time::Instant;
+
 use mtg_core::ids::PlayerId;
 use mtg_engine::error::SetupError;
 use mtg_engine::{Engine, EngineError, GameSetup};
@@ -13,6 +15,7 @@ use tokio::sync::{mpsc, oneshot};
 use crate::game_id::GameId;
 use crate::handle::{Command, GameHandle, GameStatus, JoinError};
 use crate::pace::Pace;
+use crate::preview::PreviewLimits;
 use crate::recorder::Recorder;
 use crate::running::{Rejection, Running, count};
 use crate::seats::Seats;
@@ -156,6 +159,7 @@ fn launch<S: EventStore>(
         id,
         store,
         seats: Seats::new(setup.players.len(), config.seat_queue),
+        previews: PreviewLimits::new(setup.players.len(), Instant::now()),
         auto_pass: vec![config.pace.auto_pass; setup.players.len()],
         yields: Yields::new(setup.players.len()),
         pace: config.pace,
@@ -185,6 +189,8 @@ pub(crate) struct GameActor<S> {
     pub(crate) store: S,
     pub(crate) setup: GameSetup,
     pub(crate) seats: Seats,
+    /// How fast each seat may ask for previews.
+    pub(crate) previews: PreviewLimits,
     /// How fast the game moves (settings shared by every seat).
     pub(crate) pace: Pace,
     /// Per seat: whether a priority decision it cannot use is passed for it. Starts at the server default, resets on resume.
@@ -289,6 +295,7 @@ impl<S: EventStore> GameActor<S> {
             ClientMessage::Answer { decision, answer } => {
                 return self.answer(seat, decision, answer).await;
             }
+            ClientMessage::Preview { decision, answer } => self.preview(seat, decision, &answer),
             ClientMessage::Concede => return self.concede(seat).await,
             ClientMessage::AutoPass { enabled } => return self.set_auto_pass(seat, enabled).await,
             ClientMessage::Yield { until } => return self.set_yield(seat, until).await,

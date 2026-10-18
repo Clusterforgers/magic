@@ -150,6 +150,7 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::Chat { .. } => "chat".into(),
         ServerMessage::Error { code, .. } => format!("error {code:?}"),
         ServerMessage::GameOver { .. } => "game over".into(),
+        ServerMessage::Forecast { .. } => "forecast".into(),
         ServerMessage::Yielding { until: Some(until) } => format!("yield {until:?}"),
         ServerMessage::Yielding { until: None } => "yield none".into(),
     }

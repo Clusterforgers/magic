@@ -26,6 +26,14 @@ decision: DecisionId,
 /**
  * The chosen answer, built from the decision's options.
  */
+answer: Answer, } | { "type": "Preview", 
+/**
+ * The decision the answer is for.
+ */
+decision: DecisionId, 
+/**
+ * The answer to try, built from the decision's options like a real one.
+ */
 answer: Answer, } | { "type": "Chat", 
 /**
  * The text.
