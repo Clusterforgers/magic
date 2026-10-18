@@ -61,6 +61,13 @@ async fn a_new_game_is_stored_with_its_recipe_its_seats_and_only_the_digests_of_
     let recipe = GameRecipe::normal(
         u64::MAX,
         ["mono-green", "mono-red"].map(|id| DeckRef::Demo { id: id.to_owned() }),
+    )
+    .with_fingerprints()
+    .unwrap();
+    assert_eq!(
+        recipe.fingerprints.len(),
+        2,
+        "a new game keeps its decks' fingerprints"
     );
     assert_eq!(record.recipe, serde_json::to_value(&recipe).unwrap());
     let rebuilt: GameRecipe = serde_json::from_value(record.recipe).unwrap();

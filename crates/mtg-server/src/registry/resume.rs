@@ -7,7 +7,7 @@ use mtg_engine::GameSetup;
 use super::{Entry, Registry};
 use crate::actor::resume_named;
 use crate::game_id::GameId;
-use crate::recipe::GameRecipe;
+use crate::recipe::{GameRecipe, RecipeError};
 use crate::recorder::Recorder;
 use crate::records::{GameRecord, GameRecords, RecordError, RecordStatus};
 use crate::secret::TokenDigest;
@@ -42,6 +42,21 @@ struct Unpacked {
     names: Vec<String>,
     digests: Vec<TokenDigest>,
     users: Vec<Option<UserId>>,
+    /// Whether the decks were compared with fingerprints stored in the recipe; false for a recipe
+    /// that predates them.
+    checked: bool,
+}
+
+/// Why a stored game cannot be loaded, and the seat the reason is about when it is about one.
+struct Unloadable {
+    reason: String,
+    seat: Option<usize>,
+}
+
+impl Unloadable {
+    fn new(reason: String) -> Self {
+        Unloadable { reason, seat: None }
+    }
 }
 
 impl Registry {
@@ -51,7 +66,10 @@ impl Registry {
     ///
     /// A lobby has no log: it returns to its lobby (everybody must send `Ready` again) and keeps
     /// its age, so a lobby older than the retention rule is dropped instead. A game whose recipe or
-    /// log does not load is marked failed and skipped. Only an unreachable database is an error.
+    /// log does not load is marked failed and skipped, and so is one whose deck no longer matches
+    /// the fingerprint stored at its creation (no event is replayed under other cards); a recipe
+    /// that predates the fingerprints resumes unchecked, with a warning. Only an unreachable
+    /// database is an error.
     /// Games already resumed count against the cap, which limits creation only. Without a database
     /// this does nothing.
     pub async fn resume(&self) -> Result<ResumeReport, RecordError> {
@@ -81,9 +99,10 @@ impl Registry {
             names,
             digests,
             users,
+            checked,
         } = match unpack(&record) {
             Ok(unpacked) => unpacked,
-            Err(reason) => return give_up(records, id, &reason).await,
+            Err(Unloadable { reason, seat }) => return give_up(records, id, seat, &reason).await,
         };
         let joined = record.seats.iter().map(|seat| seat.joined).collect();
         let recorder = Recorder::new(records.clone(), id, joined);
@@ -98,11 +117,14 @@ impl Registry {
         ));
         let handle = match resuming.await {
             Ok(Ok(handle)) => handle,
-            Ok(Err(error)) => return give_up(records, id, &error.to_string()).await,
-            Err(error) => return give_up(records, id, &format!("resuming failed: {error}")).await,
+            Ok(Err(error)) => return give_up(records, id, None, &error.to_string()).await,
+            Err(error) => {
+                let reason = format!("resuming failed: {error}");
+                return give_up(records, id, None, &reason).await;
+            }
         };
         let Ok(status) = handle.status().await else {
-            return give_up(records, id, "the game's task stopped while resuming").await;
+            return give_up(records, id, None, "the game's task stopped while resuming").await;
         };
 
         if let Some(result) = status.result {
@@ -122,20 +144,35 @@ impl Registry {
         let created = now.checked_sub(record.age).unwrap_or(now);
         self.games()
             .insert(id, Entry::new(handle, names, digests, users, created));
-        tracing::info!(game = %id, started = status.started, events = status.events, "game resumed");
+        if checked {
+            tracing::info!(game = %id, started = status.started, events = status.events, "game resumed");
+        } else {
+            tracing::warn!(
+                game = %id,
+                started = status.started,
+                events = status.events,
+                "game resumed without a deck check: its recipe has no deck fingerprints (stored before they existed)"
+            );
+        }
         Outcome::Live {
             lobby: !status.started,
         }
     }
 }
 
-/// Decodes the recipe and checks the seat rows against it.
-fn unpack(record: &GameRecord) -> Result<Unpacked, String> {
+/// Decodes the recipe, rebuilds the setup (which refuses a deck that changed since the game was
+/// created) and checks the seat rows against it.
+fn unpack(record: &GameRecord) -> Result<Unpacked, Unloadable> {
     let recipe: GameRecipe = serde_json::from_value(record.recipe.clone())
-        .map_err(|error| format!("the recipe does not decode: {error}"))?;
-    let setup = recipe
-        .build()
-        .map_err(|error| format!("the recipe does not build: {error}"))?;
+        .map_err(|error| Unloadable::new(format!("the recipe does not decode: {error}")))?;
+    let setup = recipe.build().map_err(|error| match error {
+        // The reason leads with what happened to the game, and the log names the seat.
+        RecipeError::DeckChanged { seat, .. } => Unloadable {
+            reason: error.to_string(),
+            seat: Some(seat),
+        },
+        _ => Unloadable::new(format!("the recipe does not build: {error}")),
+    })?;
     let seats = setup.players.len();
     let numbered = record
         .seats
@@ -144,11 +181,12 @@ fn unpack(record: &GameRecord) -> Result<Unpacked, String> {
         .all(|(index, seat)| seat.seat == index);
     if record.seats.len() != seats || !numbered {
         let found: Vec<usize> = record.seats.iter().map(|seat| seat.seat).collect();
-        return Err(format!(
+        return Err(Unloadable::new(format!(
             "the recipe has {seats} seats but the records hold seats {found:?}"
-        ));
+        )));
     }
     Ok(Unpacked {
+        checked: recipe.is_fingerprinted(),
         names: record.seats.iter().map(|seat| seat.name.clone()).collect(),
         digests: record
             .seats
@@ -160,9 +198,10 @@ fn unpack(record: &GameRecord) -> Result<Unpacked, String> {
     })
 }
 
-/// Logs why a game cannot come back and marks it failed so the next boot skips it.
-async fn give_up(records: &GameRecords, id: GameId, reason: &str) -> Outcome {
-    tracing::error!(game = %id, %reason, "game cannot be resumed; marked failed");
+/// Logs why a game cannot come back, with the seat when the reason is about one, and marks it
+/// failed so the next boot skips it.
+async fn give_up(records: &GameRecords, id: GameId, seat: Option<usize>, reason: &str) -> Outcome {
+    tracing::error!(game = %id, seat, %reason, "game cannot be resumed; marked failed");
     note(records.mark_failed(id, reason).await, id);
     Outcome::Failed
 }

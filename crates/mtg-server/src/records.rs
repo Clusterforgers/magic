@@ -53,7 +53,7 @@ pub enum RecordStatus {
     Finished,
     /// Nobody came back in time, so the server dropped it.
     Expired,
-    /// The recipe or the log could not be loaded on boot.
+    /// The recipe, a deck that changed since the game was created, or the log could not be loaded on boot.
     Failed,
 }
 
