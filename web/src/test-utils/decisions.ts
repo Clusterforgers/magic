@@ -4,7 +4,16 @@ import type { DecisionName } from '@/features/table/turnText'
 
 /** One minimal, valid decision kind of each name. */
 export const KINDS: Record<DecisionName, DecisionKind> = {
-  Mulligan: { Mulligan: { hand: [], mulligans_taken: 0, can_mulligan: true } },
+  Mulligan: {
+    Mulligan: {
+      hand: [],
+      mulligans_taken: 0,
+      can_mulligan: true,
+      free_mulligans: 0,
+      bottom_if_keep: 0,
+      bottom_if_mulligan: 1,
+    },
+  },
   BottomCards: { BottomCards: { hand: [], count: 1 } },
   Priority: { Priority: { playable_lands: [], castable: [], mana_abilities: [], can_pass: true } },
   PayMana: {

@@ -7,6 +7,7 @@ use crate::decision::{PayChoice, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::mana::{Payment, auto_payment, can_afford, check_payment, complete_payment};
+use crate::object::PermanentState;
 use crate::priority::mana_options;
 use crate::state::GameState;
 
@@ -40,7 +41,7 @@ fn unusable(state: &GameState, options: &PayOptions) -> Vec<ObjectId> {
             state
                 .object(*id)
                 .and_then(|o| o.permanent())
-                .is_none_or(|p| p.tapped())
+                .is_none_or(PermanentState::tapped)
         })
         .collect()
 }

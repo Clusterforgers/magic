@@ -4,4 +4,4 @@ import type { Payment } from "./Payment";
 /**
  * How to pay for a spell.
  */
-export type PayChoice = "Auto" | { "Manual": Payment } | "Cancel";
+export type PayChoice = "Auto" | { "Manual": Payment } | { "Complete": Payment } | "Cancel";

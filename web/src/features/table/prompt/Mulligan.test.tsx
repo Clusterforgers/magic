@@ -12,6 +12,9 @@ const options = (over: Partial<MulliganOptions> = {}): MulliganOptions => ({
   hand,
   mulligans_taken: 0,
   can_mulligan: true,
+  free_mulligans: 0,
+  bottom_if_keep: 0,
+  bottom_if_mulligan: 1,
   ...over,
 })
 
@@ -51,27 +54,110 @@ function renderMulligan(given: MulliganOptions, { status = [], lost = [], own = 
 }
 
 describe('the words', () => {
-  const TAKEN = [0, 1, 2, 3, 4, 5, 6]
+  const HEAD = 'Keep this hand of 7 cards, or take a mulligan?'
+  const FREE_NEXT = 'mulligan is free: it draws 7 new cards and adds no card to the bottom of your library.'
 
-  it.each(TAKEN)('after %i mulligans it says how many were taken and what the next one costs', (taken) => {
-    const { text } = renderMulligan(options({ mulligans_taken: taken }))
-    const next = taken + 1
-    expect(text()).toBe(
-      [
-        'Keep this hand of 7 cards, or take a mulligan?',
-        taken === 0
-          ? 'You have not taken a mulligan yet.'
-          : `You have taken ${taken} ${taken === 1 ? 'mulligan' : 'mulligans'} so far.`,
-        `${taken === 0 ? 'A' : 'Another'} mulligan draws 7 new cards, then puts ${next} ${next === 1 ? 'card' : 'cards'} on the bottom of your library.`,
-      ].join(' '),
+  // The counts are the engine's: each row is what a format sends, and the sentence repeats it.
+  it.each([
+    [
+      0,
+      0,
+      1,
+      `${HEAD} You have not taken a mulligan yet. A mulligan draws 7 new cards, then puts 1 card on the bottom of your library.`,
+    ],
+    [
+      1,
+      1,
+      2,
+      `${HEAD} You have taken 1 mulligan so far. Keeping it puts 1 card on the bottom of your library. Another mulligan draws 7 new cards, then puts 2 cards on the bottom of your library.`,
+    ],
+    [
+      2,
+      2,
+      3,
+      `${HEAD} You have taken 2 mulligans so far. Keeping it puts 2 cards on the bottom of your library. Another mulligan draws 7 new cards, then puts 3 cards on the bottom of your library.`,
+    ],
+    [
+      6,
+      6,
+      7,
+      `${HEAD} You have taken 6 mulligans so far. Keeping it puts 6 cards on the bottom of your library. Another mulligan draws 7 new cards, then puts 7 cards on the bottom of your library.`,
+    ],
+  ])(
+    'with no free mulligan, after %i taken, keeping bottoms %i and the next mulligan %i',
+    (taken, keep, next, words) => {
+      const { text } = renderMulligan(
+        options({
+          mulligans_taken: taken,
+          free_mulligans: 0,
+          bottom_if_keep: keep,
+          bottom_if_mulligan: next,
+        }),
+      )
+      expect(text()).toBe(words)
+    },
+  )
+
+  // A format whose first mulligan is free (Commander's, CR 103.5c).
+  it.each([
+    [0, 0, 0, `${HEAD} You have not taken a mulligan yet. A ${FREE_NEXT}`],
+    [
+      1,
+      0,
+      1,
+      `${HEAD} You have taken 1 mulligan so far (1 free). Another mulligan draws 7 new cards, then puts 1 card on the bottom of your library.`,
+    ],
+    [
+      2,
+      1,
+      2,
+      `${HEAD} You have taken 2 mulligans so far (1 free). Keeping it puts 1 card on the bottom of your library. Another mulligan draws 7 new cards, then puts 2 cards on the bottom of your library.`,
+    ],
+  ])(
+    'with one free mulligan, after %i taken, keeping bottoms %i and the next mulligan %i',
+    (taken, keep, next, words) => {
+      const { text } = renderMulligan(
+        options({
+          mulligans_taken: taken,
+          free_mulligans: 1,
+          bottom_if_keep: keep,
+          bottom_if_mulligan: next,
+        }),
+      )
+      expect(text()).toBe(words)
+    },
+  )
+
+  it('calls a mulligan free when it adds no card to the bottom, even after another free one', () => {
+    const { text } = renderMulligan(
+      options({ mulligans_taken: 1, free_mulligans: 2, bottom_if_keep: 0, bottom_if_mulligan: 0 }),
     )
+    expect(text()).toBe(`${HEAD} You have taken 1 mulligan so far (1 free). Another ${FREE_NEXT}`)
   })
 
-  it('says a mulligan is no longer possible when it is not', () => {
-    const { text } = renderMulligan(options({ mulligans_taken: 7, can_mulligan: false }))
-    expect(text()).toBe(
-      'Keep this hand of 7 cards? You have taken 7 mulligans so far. You cannot take another.',
+  it('never says more free mulligans were taken than the format allows', () => {
+    const { text } = renderMulligan(
+      options({ mulligans_taken: 3, free_mulligans: 1, bottom_if_keep: 2, bottom_if_mulligan: 3 }),
     )
+    expect(text()).toContain('You have taken 3 mulligans so far (1 free).')
+  })
+
+  it.each([
+    [0, 'Keep this hand of 7 cards? You have taken 7 mulligans so far. You cannot take another.'],
+    [
+      7,
+      'Keep this hand of 7 cards? You have taken 7 mulligans so far. Keeping it puts 7 cards on the bottom of your library. You cannot take another.',
+    ],
+  ])('says a mulligan is no longer possible when it is not (keeping bottoms %i)', (keep, words) => {
+    const { text } = renderMulligan(
+      options({
+        mulligans_taken: 7,
+        can_mulligan: false,
+        bottom_if_keep: keep,
+        bottom_if_mulligan: keep + 1,
+      }),
+    )
+    expect(text()).toBe(words)
   })
 
   it.each([
@@ -222,7 +308,13 @@ describe('a new decision', () => {
     const { text, update, answer } = renderMulligan(options())
     expect(text()).toContain('You have not taken a mulligan yet.')
     update(() => ({
-      pending: { id: 4, decision: { player: 0, kind: { Mulligan: options({ mulligans_taken: 1 }) } } },
+      pending: {
+        id: 4,
+        decision: {
+          player: 0,
+          kind: { Mulligan: options({ mulligans_taken: 1, bottom_if_keep: 1, bottom_if_mulligan: 2 }) },
+        },
+      },
     }))
     expect(text()).toContain('You have taken 1 mulligan so far.')
     expect(text()).toContain('puts 2 cards on the bottom')

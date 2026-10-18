@@ -27,4 +27,8 @@ sources: Array<ManaOption>,
 /**
  * Whether an automatic payment exists (it always does when the cast was offered).
  */
-auto_available: boolean, };
+auto_available: boolean, 
+/**
+ * Whether the cast may be backed out of; nothing has been paid yet, so it rolls back (CR 601.2).
+ */
+can_cancel: boolean, };
