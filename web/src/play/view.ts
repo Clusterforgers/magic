@@ -71,6 +71,7 @@ function shareTable(previous: TableView, next: TableView): TableView {
     stack: keep(previous.stack, next.stack),
     exile: keep(previous.exile, next.exile),
     combat: keep(previous.combat, next.combat),
+    combat_forecast: keep(previous.combat_forecast, next.combat_forecast),
     result: keep(previous.result, next.result),
   }
 }

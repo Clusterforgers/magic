@@ -113,6 +113,8 @@ pub struct PayOptions {
     pub sources: Vec<ManaOption>,
     /// Whether an automatic payment exists (it always does when the cast was offered).
     pub auto_available: bool,
+    /// Whether the cast may be backed out of; nothing has been paid yet, so it rolls back (CR 601.2).
+    pub can_cancel: bool,
 }
 
 /// One creature that may attack and the defenders it may attack.
@@ -205,7 +207,9 @@ pub enum PayChoice {
     Auto,
     /// Pay exactly this.
     Manual(Payment),
-    /// Abandon the cast; nothing happens.
+    /// Pay these parts and let the engine pay the rest of the cost.
+    Complete(Payment),
+    /// Abandon the cast (when `can_cancel`): the spell stays where it was, nothing is logged.
     Cancel,
 }
 

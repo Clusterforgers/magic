@@ -29,6 +29,7 @@ const pay = (text: string, over: Partial<PayOptions> = {}): PayOptions => ({
   pool: poolOf(''),
   sources: [source(greenLand, 'G'), source(blueLand, 'U'), source(redLand, 'R'), source(blackLand, 'B')],
   auto_available: true,
+  can_cancel: true,
   ...over,
 })
 const decision = (id: number, given: PayOptions, player = 0): ServerMessage => ({
@@ -92,6 +93,27 @@ describe('a payment decision from the server', () => {
     send(decision(22, pay('{2}')))
     await user.dblClick(button(name))
     expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 22, answer: expected }])
+  })
+
+  it('Pay the rest for me sends the picks as one Complete answer once, even on a double click', async () => {
+    const { h, card, send, user, button } = mount()
+    send(decision(30, pay('{2}{G}')))
+    await user.click(card(blueLand))
+    await user.dblClick(button('Pay the rest for me'))
+    expect(h.sentOf('Answer')).toEqual([
+      {
+        type: 'Answer',
+        decision: 30,
+        answer: { PayMana: { Complete: { pool: [], taps: [{ object: blueLand, ability: 0 }] } } },
+      },
+    ])
+  })
+
+  it('offers no Cancel when the decision does not allow it', () => {
+    const { send, container } = mount()
+    send(decision(31, pay('{2}', { can_cancel: false })))
+    expect(container.querySelector('[data-slot="pay-cancel"]')).toBeNull()
+    expect(screen.getByRole('button', { name: 'Pay automatically' })).toBeInTheDocument()
   })
 
   it.each([

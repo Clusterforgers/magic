@@ -26,6 +26,7 @@ const transcripts: [string, Transcript][] = [
 const TABLE_KEYS = [
   'battlefield',
   'combat',
+  'combat_forecast',
   'exile',
   'first_player',
   'format',

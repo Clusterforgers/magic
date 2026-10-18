@@ -39,6 +39,7 @@ const payOptions = (text: string, given: Sources, over: Partial<PayOptions> = {}
   pool: poolOf(''),
   sources: sourcesOf(given),
   auto_available: true,
+  can_cancel: true,
   ...over,
 })
 /** A payment: floating mana, and `[land, ability]` for each tap. */
@@ -714,14 +715,14 @@ describe('a land with several kinds of mana', () => {
 })
 
 describe('Pay automatically, Cancel and Confirm', () => {
-  it('Pay automatically answers Auto, whatever has been chosen', async () => {
-    const { answer, user, steps } = renderPay(
+  it('Pay automatically answers Auto while nothing is chosen', async () => {
+    const { answer, user } = renderPay(
       payOptions('{2}', [
         [0, 'G'],
         [1, 'U'],
       ]),
     )
-    await steps(['0'])
+    expect(screen.queryByRole('button', { name: 'Pay the rest for me' })).toBeNull()
     await user.click(screen.getByRole('button', { name: 'Pay automatically' }))
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Auto' }]])
   })
@@ -729,6 +730,81 @@ describe('Pay automatically, Cancel and Confirm', () => {
   it('has no Pay automatically when the game offers none', () => {
     renderPay(payOptions('{U}{U}', [[0, 'G']], { auto_available: false }))
     expect(screen.queryByRole('button', { name: 'Pay automatically' })).toBeNull()
+  })
+
+  it.each([
+    ['one land', ['0'], payment([], [[0, 0]])],
+    [
+      'two lands in the order chosen',
+      ['1', '0'],
+      payment(
+        [],
+        [
+          [1, 0],
+          [0, 0],
+        ],
+      ),
+    ],
+    ['a land and floating mana', ['0', 'pool:R'], payment(['R'], [[0, 0]])],
+    ['floating mana alone', ['pool:R'], payment(['R'], [])],
+  ])('Pay the rest for me keeps %s and answers Complete', async (_what, picks, expected) => {
+    const { answer, user, steps } = renderPay(
+      payOptions(
+        '{4}{G}',
+        [
+          [0, 'G'],
+          [1, 'U'],
+          [2, 'B'],
+          [3, 'W'],
+        ],
+        { pool: poolOf('R') },
+      ),
+    )
+    await steps(picks)
+    expect(screen.queryByRole('button', { name: 'Pay automatically' })).toBeNull()
+    await user.click(screen.getByRole('button', { name: 'Pay the rest for me' }))
+    expect(answer.mock.calls).toEqual([[{ PayMana: { Complete: expected } }]])
+  })
+
+  it.each([
+    [
+      'the game offers no automatic payment',
+      payOptions('{G}{G}', [[0, 'G']], { auto_available: false }),
+      ['0'],
+    ],
+    ['the payment already covers the cost', payOptions('{G}', [[0, 'G']]), ['0']],
+    [
+      'nothing has been chosen',
+      payOptions('{2}', [
+        [0, 'G'],
+        [1, 'U'],
+      ]),
+      [],
+    ],
+  ])('has no Pay the rest for me when %s', async (_what, given, picks) => {
+    const { steps } = renderPay(given)
+    await steps(picks)
+    expect(screen.queryByRole('button', { name: 'Pay the rest for me' })).toBeNull()
+  })
+
+  it('goes back to Pay automatically when the picks are taken back', async () => {
+    const { user, steps, chips } = renderPay(
+      payOptions('{2}', [
+        [0, 'G'],
+        [1, 'U'],
+      ]),
+    )
+    await steps(['0'])
+    await user.click(screen.getByRole('button', { name: /^Remove green/ }))
+    expect(chips()).toEqual([])
+    expect(screen.queryByRole('button', { name: 'Pay the rest for me' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Pay automatically' })).toBeInTheDocument()
+  })
+
+  it('has no Cancel when the options do not allow backing out, and says so in the sentence', () => {
+    const { text } = renderPay(payOptions('{U}{U}', [[0, 'G']], { auto_available: false, can_cancel: false }))
+    expect(screen.queryByRole('button', { name: 'Cancel casting' })).toBeNull()
+    expect(text()).toBe('You cannot pay 2 blue for Selesnya Evangel with the mana you have.')
   })
 
   it.each([
@@ -767,12 +843,32 @@ describe('Pay automatically, Cancel and Confirm', () => {
   })
 
   it.each([
-    ['Pay automatically', { PayMana: 'Auto' }],
-    ['Cancel casting', { PayMana: 'Cancel' }],
-    ['Confirm payment', { PayMana: { Manual: payment([], [[0, 0]]) } }],
-  ])('a double click on %s sends one answer', async (name, expected) => {
-    const { answer, user, steps } = renderPay(payOptions('{G}', [[0, 'G']]))
-    await steps(['0'])
+    ['Pay automatically', [], { PayMana: 'Auto' }],
+    ['Pay the rest for me', ['0'], { PayMana: { Complete: payment([], [[0, 0]]) } }],
+    ['Cancel casting', [], { PayMana: 'Cancel' }],
+    [
+      'Confirm payment',
+      ['0', '1'],
+      {
+        PayMana: {
+          Manual: payment(
+            [],
+            [
+              [0, 0],
+              [1, 0],
+            ],
+          ),
+        },
+      },
+    ],
+  ])('a double click on %s sends one answer', async (name, picks, expected) => {
+    const { answer, user, steps } = renderPay(
+      payOptions('{G}{U}', [
+        [0, 'G'],
+        [1, 'U'],
+      ]),
+    )
+    await steps(picks)
     await user.dblClick(screen.getByRole('button', { name }))
     expect(answer.mock.calls).toEqual([[expected]])
   })
@@ -946,11 +1042,15 @@ describe('what the player is told', () => {
       'Pay 2 generic and 1 green for Selesnya Evangel. Choose a land or other mana source to use its mana, or pay automatically.',
     )
     await steps(['1'])
-    expect(text()).toBe(`Added blue from ${nameOf(1)}. Still to pay: 1 generic and 1 green.`)
+    expect(text()).toBe(
+      `Added blue from ${nameOf(1)}. Still to pay: 1 generic and 1 green. Choose more, or pay the rest for me.`,
+    )
     await steps(['0', '2'])
     expect(text()).toBe(`Added red from ${nameOf(2)}. The cost is covered. Confirm to cast Selesnya Evangel.`)
     await steps(['2'])
-    expect(text()).toBe(`Removed red from ${nameOf(2)}. Still to pay: 1 generic.`)
+    expect(text()).toBe(
+      `Removed red from ${nameOf(2)}. Still to pay: 1 generic. Choose more, or pay the rest for me.`,
+    )
   })
 
   it('says when nothing left can pay', async () => {

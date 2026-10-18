@@ -206,6 +206,7 @@ const pay: DevPrompt = ({ view }) => {
       ),
     ),
     auto_available: true,
+    can_cancel: true,
   }
   if (rock !== undefined) {
     options.sources.push({ source: { object: rock.id, ability: rock.abilities.length }, produces: 'Red' })
@@ -226,6 +227,14 @@ const payShort: DevPrompt = (fixture) => {
     auto_available: false,
   }
   return { id, decision: { ...decision, kind: { PayMana: short } } }
+}
+
+/** The same payment when the cast may not be backed out of: no Cancel button, and the sentence does not mention it. */
+const payLocked: DevPrompt = (fixture) => {
+  const { id, decision } = pay(fixture)
+  if (!('PayMana' in decision.kind)) return { id, decision }
+  const locked: PayOptions = { ...decision.kind.PayMana, can_cancel: false }
+  return { id, decision: { ...decision, kind: { PayMana: locked } } }
 }
 
 /** A decision about the viewer's hand, such as an opening hand to judge or cards to discard. */
@@ -269,6 +278,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   damage1: assignDamage(1),
   pay,
   'pay-short': payShort,
+  'pay-locked': payLocked,
 }
 
 /** Prompts that need another moment of the game than the default fixture shows, by `?prompt=` name. */

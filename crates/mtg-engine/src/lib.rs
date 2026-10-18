@@ -21,6 +21,7 @@ pub mod engine;
 pub mod error;
 pub mod events;
 pub mod fold;
+pub mod forecast;
 pub mod format;
 pub mod hash;
 pub mod mana;

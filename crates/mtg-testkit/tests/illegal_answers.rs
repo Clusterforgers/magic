@@ -50,6 +50,11 @@ fn any_answer() -> impl Strategy<Value = Answer> {
                 prop::collection::vec(source(), 0..4)
             )
                 .prop_map(|(pool, taps)| PayChoice::Manual(Payment { pool, taps })),
+            (
+                prop::collection::vec(mana(), 0..3),
+                prop::collection::vec(source(), 0..4)
+            )
+                .prop_map(|(pool, taps)| PayChoice::Complete(Payment { pool, taps })),
         ]
         .prop_map(Answer::PayMana),
         prop::collection::vec((object(), target()), 0..4).prop_map(Answer::DeclareAttackers),

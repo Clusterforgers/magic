@@ -8,6 +8,7 @@ use crate::decision::{Answer, Decision, DecisionKind};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::mulligan::{bottom_answer, check_card_choice, mulligan_answer};
+use crate::state::GameState;
 use crate::{cast, priority};
 
 /// What a validated answer asks the engine to do.
@@ -22,7 +23,11 @@ pub(crate) enum Outcome {
 }
 
 /// Checks `answer` against `decision`; the result is only built from legal options.
-pub(crate) fn handle(decision: &Decision, answer: Answer) -> Result<Outcome, EngineError> {
+pub(crate) fn handle(
+    state: &GameState,
+    decision: &Decision,
+    answer: Answer,
+) -> Result<Outcome, EngineError> {
     let player = decision.player;
     match (&decision.kind, answer) {
         (DecisionKind::Mulligan(options), Answer::Mulligan(choice)) => {
@@ -35,7 +40,7 @@ pub(crate) fn handle(decision: &Decision, answer: Answer) -> Result<Outcome, Eng
             priority::answer(player, options, action)
         }
         (DecisionKind::PayMana(options), Answer::PayMana(choice)) => {
-            cast::pay_answer(player, options, choice)
+            cast::pay_answer(state, player, options, choice)
         }
         (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
             check_attackers(options, &attackers)?;
