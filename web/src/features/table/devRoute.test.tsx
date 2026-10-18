@@ -65,6 +65,41 @@ describe('/dev/table in development', () => {
   })
 })
 
+describe('/dev/table with a prompt', () => {
+  it('shows no decision by default', async () => {
+    await visit('/dev/table?seats=2')
+    await screen.findByRole('region', { name: 'Game table' })
+    expect(document.querySelector('[data-decision]')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Pass priority' })).toBeNull()
+  })
+
+  it.each(['?seats=2&prompt=priority', '?seats=4&mode=grid&prompt=priority'])(
+    'shows the priority prompt for %s, with legal cards marked',
+    async (search) => {
+      await visit(`/dev/table${search}`)
+      await screen.findByRole('region', { name: 'Game table' })
+      expect(document.querySelector('[data-decision="Priority"]')).not.toBeNull()
+      expect(screen.getByRole('button', { name: 'Pass priority' })).toBeEnabled()
+      expect(document.querySelectorAll('[data-highlight="legal"]').length).toBeGreaterThan(3)
+      expect(document.querySelectorAll('[data-highlight="dimmed"]').length).toBeGreaterThan(3)
+    },
+  )
+
+  it('lets the prompt be answered, which clears it', async () => {
+    await visit('/dev/table?seats=2&prompt=priority')
+    const pass = await screen.findByRole('button', { name: 'Pass priority' })
+    await act(async () => pass.click())
+    expect(document.querySelector('[data-decision]')).toBeNull()
+    expect(document.querySelectorAll('[data-highlight]')).toHaveLength(0)
+  })
+
+  it('ignores a prompt it does not know', async () => {
+    await visit('/dev/table?seats=2&prompt=nonsense')
+    await screen.findByRole('region', { name: 'Game table' })
+    expect(document.querySelector('[data-decision]')).toBeNull()
+  })
+})
+
 describe('/dev/table in a production build', () => {
   it('answers not found and draws no fixture', async () => {
     vi.stubEnv('DEV', false)

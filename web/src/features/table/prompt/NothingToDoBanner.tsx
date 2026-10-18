@@ -1,13 +1,14 @@
 import { NOTE_TEXT, useNothingToDo } from './nothingToDo'
 
 /**
- * Says in plain words that the player has no attackers or blockers. The status region is always in the page and
- * only its content comes and goes, so a screen reader announces the note.
+ * Says in plain words that the player has no attackers or blockers. The live region is always in the page and only
+ * its content comes and goes, so a screen reader announces the note. It has no `role="status"`: the connection
+ * notice is the page's one status.
  */
 export function NothingToDoBanner() {
   const note = useNothingToDo()
   return (
-    <div role="status" data-slot="nothing-to-do-region" className="basis-full empty:hidden">
+    <div aria-live="polite" data-slot="nothing-to-do-region" className="basis-full empty:hidden">
       {note === null ? null : (
         <p
           data-slot="nothing-to-do"
