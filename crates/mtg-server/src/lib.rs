@@ -28,7 +28,9 @@
 //!   opponent's new object, whatever the seat could do about it, ends it; it is held in memory only).
 //!   A seat that is not the active player has a clock on every priority decision (10 s) and on declaring
 //!   blockers (45 s); at the deadline the server answers for the seat (a pass, or no blocks) the same
-//!   way, so a late answer is stale. Every other decision waits as long as it takes.
+//!   way, so a late answer is stale. Every other decision waits as long as it takes. A seat can also set
+//!   stops and Full Control (`ClientMessage::SetStop`, `ClientMessage::FullControl`); they are held in
+//!   memory per seat and reported back, and nothing decides when a seat is asked from them yet.
 //! - **Chat** is broadcast to connected seats and never stored.
 //! - **Previews** (`ClientMessage::Preview`) are advice about a pending attack or block: the actor answers
 //!   each with one `Forecast` (empty when there is none or the seat is over its rate limit), never an
@@ -77,6 +79,7 @@ mod seats;
 mod secret;
 mod server;
 mod session;
+mod stops;
 mod store;
 mod throttle;
 mod user_id;
