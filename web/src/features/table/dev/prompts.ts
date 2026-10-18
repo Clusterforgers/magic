@@ -187,6 +187,15 @@ const blockAttack: DevTable = (fixture) => {
  */
 const blockTable: DevTable = (fixture) => withBlockForecast(blockAttack(fixture))
 
+/** The Selesnya Evangel the viewer pays for: the copy in their hand, else any they own. */
+const evangel = (view: StateView): ObjectView | undefined => {
+  const hand = view.players[view.viewer]?.hand.cards ?? []
+  const own = view.objects.filter(
+    (object) => object.name === 'Selesnya Evangel' && object.owner === view.viewer,
+  )
+  return own.find((object) => hand.includes(object.id)) ?? own[0]
+}
+
 /**
  * Paying for Selesnya Evangel ({2}{W}{G}) from the hand, with the viewer's floating mana (two red, a green, a
  * colourless), every untapped land and mana rock, and one invented second ability (red) on the first rock so the
@@ -194,7 +203,7 @@ const blockTable: DevTable = (fixture) => withBlockForecast(blockAttack(fixture)
  */
 const pay: DevPrompt = ({ view }) => {
   const viewer = view.viewer
-  const spell = view.objects.find((object) => object.name === 'Selesnya Evangel' && object.owner === viewer)
+  const spell = evangel(view)
   const sources = view.objects.filter(
     (object) =>
       object.zone === 'Battlefield' &&
@@ -262,8 +271,8 @@ const payHybrid: DevPrompt = (fixture) => {
 
 /** The spell being paid for gets the hybrid cost too, so its card in the hand draws the symbols. */
 const hybridTable: DevTable = (fixture) => {
-  const { objects, viewer } = fixture.view
-  const spell = objects.find((object) => object.name === 'Selesnya Evangel' && object.owner === viewer)
+  const { objects } = fixture.view
+  const spell = evangel(fixture.view)
   return withView(fixture, {
     objects: objects.map((object) =>
       object.id === spell?.id ? { ...object, mana_cost: HYBRID_COST } : object,

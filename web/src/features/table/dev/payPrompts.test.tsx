@@ -47,10 +47,12 @@ describe('?prompt=pay-hybrid', () => {
   it('gives the spell in the hand that cost too, so its card draws the symbols', () => {
     const game = fixtureGame({ seats: 2, prompt: 'pay-hybrid' })
     const view = must(game.session.store.getState().view)
+    const hand = must(view.players[0]?.hand.cards)
     const spell = must(
-      view.objects.find((object) => object.name === 'Selesnya Evangel' && object.owner === 0),
+      view.objects.find((object) => object.name === 'Selesnya Evangel' && hand.includes(object.id)),
     )
     expect(costText(must(spell.mana_cost))).toBe('{1}{G/W}{2/U}{W/P}{G/U/P}')
+    expect(options('pay-hybrid').spell).toBe(spell.id)
   })
 
   it('has 20 life and room for 4', () => {
