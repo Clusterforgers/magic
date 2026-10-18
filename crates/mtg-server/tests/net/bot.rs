@@ -8,7 +8,7 @@ use mtg_engine::{Answer, Decision};
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage};
 use mtg_testkit::RandomBot;
 
-use super::ws::{Frame, WsClient, connect};
+use super::ws::{Frame, WsClient, connect, open};
 use crate::common::bot::BotReport;
 
 /// How a call to [`WsBot::play`] ended.
@@ -47,6 +47,25 @@ impl WsBot {
         let mut client = connect(addr, game, token).await;
         let player = client.welcome(game).await;
         assert_eq!(player.index(), seat, "the token opened another seat");
+        WsBot::new(client, seat, seed)
+    }
+
+    /// Like [`WsBot::connect`] for a signed-in user, who gets in with the session cookie
+    /// (`mtg_session=<token>`) instead of a seat token.
+    pub async fn connect_as_user(
+        addr: SocketAddr,
+        game: &str,
+        cookie: &str,
+        seat: usize,
+        seed: u64,
+    ) -> WsBot {
+        let mut client = open(addr, &format!("/ws/{game}"), &[("Cookie", cookie)]).await;
+        let player = client.welcome(game).await;
+        assert_eq!(player.index(), seat, "the session opened another seat");
+        WsBot::new(client, seat, seed)
+    }
+
+    fn new(client: WsClient, seat: usize, seed: u64) -> WsBot {
         WsBot {
             seat,
             client,
@@ -65,6 +84,18 @@ impl WsBot {
     /// a snapshot and the pending decision.
     pub async fn reconnect(&mut self, addr: SocketAddr, game: &str, token: &str) -> WsClient {
         let mut fresh = connect(addr, game, token).await;
+        fresh.join(game).await;
+        std::mem::replace(&mut self.client, fresh)
+    }
+
+    /// Like [`WsBot::reconnect`], through the session cookie alone.
+    pub async fn reconnect_as_user(
+        &mut self,
+        addr: SocketAddr,
+        game: &str,
+        cookie: &str,
+    ) -> WsClient {
+        let mut fresh = open(addr, &format!("/ws/{game}"), &[("Cookie", cookie)]).await;
         fresh.join(game).await;
         std::mem::replace(&mut self.client, fresh)
     }
