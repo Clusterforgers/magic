@@ -85,7 +85,7 @@ The payment rules are in [engine.md](engine.md); the wire facts are:
 - It ends, and decisions come as usual, when:
   - an opponent puts an object on the stack that the seat has not passed on yet;
   - its target is reached: `Resolve` when the stack is empty, `EndOfTurn` when another turn has begun, `MyTurn` when another turn of the seat's own has begun;
-  - the seat holds a stop at the window;
+  - the seat holds a stop at a window (not in the step of the window it asked at);
   - the seat leaves the game or the game ends, or sends `CancelYield`.
 - Other decisions (attackers, blockers, a discard, a payment, damage division) are always sent and leave the yield as it is.
 - The end rules look at the table only, never at what the seat could do, so the pace reveals nothing about a hand. They live in `yields.rs` in `mtg-server`.

@@ -5,8 +5,8 @@
 //! mode: a seat that turned auto-pass off is in `Held`. The rules, in the order they are judged:
 //! 1. Full Control (`Held`, `NextWindow`) asks at every window, so a seat in it is never passed for by a yield or by
 //!    the default windows.
-//! 2. A running yield passes (its own end conditions are in [`crate::yields`]); a stop of the seat at the window
-//!    ends it, and the seat is asked.
+//! 2. A running yield passes (its own end conditions are in [`crate::yields`]); a stop of the seat at a window ends
+//!    it and the seat is asked, except in the step of the window the yield was asked at.
 //! 3. A stop of the seat at the window asks, whether the seat can act or not. `Own` stops are for the seat's own
 //!    turns, `Opponent` stops for the turn of any other seat.
 //! 4. The default windows (Arena's table) ask when the seat can act and pass otherwise: the seat's own precombat
@@ -330,6 +330,28 @@ mod tests {
             );
             assert_eq!(yields.get(ME).is_some(), !stop, "the stop ends the yield");
         }
+    }
+
+    #[test]
+    fn a_stop_does_not_end_a_yield_asked_at_that_very_window() {
+        let engine = duel(0);
+        let here = Window::at(engine.state(), ME);
+        let mut stops = Stops::new(2);
+        let held = mtg_protocol::Stop {
+            side: here.side(),
+            step: here.step,
+            keep: true,
+        };
+        stops.set(ME, held).unwrap();
+        let mut yields = Yields::new(2);
+        yields.start_facing(ME, YieldUntil::EndOfTurn, engine.state());
+        assert!(passes_for(
+            &priority(ME, true),
+            &stops,
+            &mut yields,
+            engine.state()
+        ));
+        assert_eq!(yields.get(ME), Some(YieldUntil::EndOfTurn));
     }
 
     #[test]

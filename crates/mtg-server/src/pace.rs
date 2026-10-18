@@ -155,11 +155,13 @@ impl<S: EventStore> GameActor<S> {
             return Ok(());
         }
         let mut yields = self.yields.clone();
-        yields.start(seat, until, state);
         if !running.asks_priority_of(seat) {
+            yields.start(seat, until, state);
             self.commit_yields(yields);
             return Ok(());
         }
+        // The seat asks while it looks at a window, which a stop of its own there does not take back.
+        yields.start_facing(seat, until, state);
         match running.restart_decision(seat) {
             Ok(step) => {
                 let stops = self.stops.clone();

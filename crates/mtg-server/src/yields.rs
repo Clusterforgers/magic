@@ -12,12 +12,14 @@
 //! - `EndOfTurn` stops when a turn other than the one it was asked in has begun.
 //! - `MyTurn` stops when such a turn is the seat's own.
 //! - Any yield stops when another seat has put an object on the stack that the seat has not passed on.
-//! - Any yield stops at a window where the seat holds a stop (see [`crate::windows`]).
+//! - Any yield stops at a window where the seat holds a stop (see [`crate::windows`]), except in the step of the window
+//!   it was asked at: the seat has seen that one.
 
 use std::collections::BTreeSet;
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::GameState;
+use mtg_engine::turn::Step;
 use mtg_protocol::YieldUntil;
 
 /// One seat's yield and what it needs to tell when to end.
@@ -28,14 +30,18 @@ struct Active {
     turn: u32,
     /// The stack as the seat last passed on it, so that only an object added since counts as new.
     seen: BTreeSet<ObjectId>,
+    /// The step of the window the seat was looking at when it asked, if it was looking at one: a stop there does not
+    /// end the yield.
+    here: Option<Step>,
 }
 
 impl Active {
-    fn new(until: YieldUntil, state: &GameState) -> Active {
+    fn new(until: YieldUntil, state: &GameState, facing: bool) -> Active {
         Active {
             until,
             turn: state.turn().number(),
             seen: state.stack().iter().copied().collect(),
+            here: facing.then(|| state.turn().step()),
         }
     }
 
@@ -49,7 +55,8 @@ impl Active {
             YieldUntil::EndOfTurn => turn.number() != self.turn,
             YieldUntil::MyTurn => turn.number() != self.turn && turn.active() == seat,
         };
-        reached || stopped || self.opponent_added(state, seat)
+        let seen_here = turn.number() == self.turn && self.here == Some(turn.step());
+        reached || (stopped && !seen_here) || self.opponent_added(state, seat)
     }
 
     /// Whether the stack holds an object of another seat that the seat has not passed on yet.
@@ -89,8 +96,18 @@ impl Yields {
     ///
     /// The stack as it stands counts as seen: the seat asks while looking at it.
     pub(crate) fn start(&mut self, seat: PlayerId, until: YieldUntil, state: &GameState) {
+        self.begin(seat, until, state, false);
+    }
+
+    /// Like [`start`](Yields::start) for a seat that asks while it is looking at a priority window: a stop of its
+    /// own in that window's step does not end the yield, since the seat has seen that window.
+    pub(crate) fn start_facing(&mut self, seat: PlayerId, until: YieldUntil, state: &GameState) {
+        self.begin(seat, until, state, true);
+    }
+
+    fn begin(&mut self, seat: PlayerId, until: YieldUntil, state: &GameState, facing: bool) {
         if let Some(slot) = self.seats.get_mut(seat.index()) {
-            *slot = Some(Active::new(until, state));
+            *slot = Some(Active::new(until, state, facing));
         }
     }
 
@@ -541,6 +558,32 @@ mod tests {
             Some(YieldUntil::Resolve),
             "even one that would have ended it at a priority window"
         );
+    }
+
+    #[rstest]
+    #[case::end_of_turn(YieldUntil::EndOfTurn)]
+    #[case::my_turn(YieldUntil::MyTurn)]
+    fn a_stop_in_the_step_of_the_window_the_yield_was_asked_at_does_not_end_it_but_one_in_a_later_step_does(
+        #[case] until: YieldUntil,
+    ) {
+        let mut engine = table(0);
+        let here = engine.state().turn().step();
+        let mut facing = Yields::new(2);
+        facing.start_facing(ME, until, engine.state());
+        let mut blind = Yields::new(2);
+        blind.start(ME, until, engine.state());
+
+        // Same step, a stop of the seat: the seat has seen this window, unless it asked while looking at none.
+        assert!(facing.passes(ME, engine.state(), true));
+        assert!(!blind.passes(ME, engine.state(), true));
+
+        // Both seats pass: the next step begins and a stop there ends the yield.
+        pass(&mut engine);
+        pass(&mut engine);
+        assert_ne!(engine.state().turn().step(), here);
+        assert!(facing.passes(ME, engine.state(), false), "no stop, no end");
+        assert!(!facing.passes(ME, engine.state(), true), "{until:?}");
+        assert_eq!(facing.get(ME), None);
     }
 
     #[rstest]

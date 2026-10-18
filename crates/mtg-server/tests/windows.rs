@@ -591,6 +591,50 @@ async fn a_stop_ends_a_yield_at_its_window_with_the_usual_notice_before_the_deci
     assert_eq!(table.welcome(ME).await.yielding, None);
 }
 
+#[tokio::test]
+async fn a_yield_asked_at_a_stop_passes_that_window_and_a_stop_of_a_later_step_ends_it() {
+    let setup = quiet().setup().unwrap();
+    let mut table = Table::join(setup, windowed(), 2).await;
+    table.send(FOE, mode(FullControlMode::Held)).await;
+    table.send(ME, set(opponent(Step::Main1, true))).await;
+    table.send(ME, set(opponent(Step::End, true))).await;
+    table.take(ME);
+    table.start().await;
+    let (_, first) = table.run(|ask| ask.seat == ME).await;
+    let at_main = first.expect("seat 1 is asked at its stop");
+    assert_eq!((at_main.ask.turn, at_main.ask.step), (1, Step::Main1));
+
+    // Ending the turn from the stop's own window passes that window instead of meeting the stop again.
+    table
+        .send(
+            ME,
+            ClientMessage::Yield {
+                until: YieldUntil::EndOfTurn,
+            },
+        )
+        .await;
+    let told = table.take(ME);
+    assert_eq!(yields_told(&told), [Some(YieldUntil::EndOfTurn)]);
+    assert!(
+        !told
+            .iter()
+            .any(|m| matches!(m, ServerMessage::Decision { .. })),
+        "the window was passed, not sent again: {told:?}"
+    );
+    let stale = ClientMessage::Answer {
+        decision: at_main.id,
+        answer: passive(&at_main.decision),
+    };
+    table.send(ME, stale).await;
+    assert!(is_error(&table.take(ME), ErrorCode::StaleDecision));
+
+    // The stop of a later step still takes the yield back.
+    let (_, later) = table.run(|ask| ask.seat == ME).await;
+    let at_end = later.expect("seat 1 is asked at its second stop");
+    assert_eq!((at_end.ask.turn, at_end.ask.step), (1, Step::End));
+    assert_eq!(yields_told(&at_end.told), [None]);
+}
+
 // ---------------------------------------------------------------------------------------------------------------
 // Full Control
 
