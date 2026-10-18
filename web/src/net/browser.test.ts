@@ -29,7 +29,14 @@ class StubWebSocket {
   }
 }
 
-const welcome = { type: 'Welcome', protocol_version: PROTOCOL_VERSION, game: 'g', player: 1, seats: 3 }
+const welcome = {
+  type: 'Welcome',
+  protocol_version: PROTOCOL_VERSION,
+  game: 'g',
+  player: 1,
+  seats: 3,
+  auto_pass: true,
+}
 
 beforeEach(() => {
   StubWebSocket.instances = []

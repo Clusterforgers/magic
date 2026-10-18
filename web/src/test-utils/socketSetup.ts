@@ -14,6 +14,7 @@ export const welcome = {
   game: GAME,
   player: 0,
   seats: 2,
+  auto_pass: true,
 }
 /** The `Join` the socket must open with. */
 export const join = { type: 'Join', protocol_version: PROTOCOL_VERSION, game: GAME, name: 'Ana' }

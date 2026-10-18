@@ -8,6 +8,7 @@ import type { PlayerId } from '@/protocol/generated'
 import { Card } from './Card'
 import type { CardSize } from './cardSize'
 import { CardRow } from './CardRow'
+import { LifeForecast } from './combat/LifeForecast'
 import { LifeFx } from './fx/LifeFx'
 import { Hand } from './Hand'
 import { ManaPool } from './ManaPool'
@@ -87,6 +88,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, size }: SeatPanelProps)
               </span>
             </LifeFx>
           </header>
+          <LifeForecast seat={seat} />
           {player.lost === null ? null : (
             <p className="rounded-md bg-destructive/10 px-2 py-1 text-sm font-medium text-destructive">
               Eliminated: {describeLoss(player.lost)}

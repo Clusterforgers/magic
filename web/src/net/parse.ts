@@ -6,12 +6,17 @@
  * come from the generated bindings, which a Rust test keeps in step with the server.
  */
 import type {
+  AttackerForecast,
   AttackerView,
+  CombatForecast,
+  CreatureForecast,
   Decision,
   ErrorCode,
   EventView,
+  ForecastDamage,
   GameResult,
   ObjectView,
+  PlayerForecast,
   PlayerView,
   ServerMessage,
   StateView,
@@ -127,6 +132,59 @@ export function isGameResult(value: unknown): value is GameResult {
   return value === 'Draw' || (isRecord(value) && isOneKey(value) && isCount(value.Winner))
 }
 
+// A one-key object such as `{ Player: 1 }`: the key is one of `tags` and the value an id or seat.
+function isTaggedId(value: unknown, tags: readonly string[]): boolean {
+  if (!isRecord(value) || !isOneKey(value)) return false
+  const [tag] = Object.keys(value)
+  return tag !== undefined && tags.includes(tag) && isCount(value[tag])
+}
+
+function isForecastDamage(value: unknown): value is ForecastDamage {
+  return (
+    isRecord(value) &&
+    isCount(value.source) &&
+    isTaggedId(value.target, ['Player', 'Object']) &&
+    isCount(value.amount)
+  )
+}
+
+function isAttackerForecast(value: unknown): value is AttackerForecast {
+  return (
+    isRecord(value) &&
+    isCount(value.attacker) &&
+    isTaggedId(value.target, ['Player', 'Planeswalker']) &&
+    isFlag(value.blocked) &&
+    isIdList(value.blockers) &&
+    isListOf(value.deals, isForecastDamage) &&
+    isListOf(value.receives, isForecastDamage)
+  )
+}
+
+function isCreatureForecast(value: unknown): value is CreatureForecast {
+  return isRecord(value) && isCount(value.object) && isCount(value.damage) && isFlag(value.dies)
+}
+
+function isPlayerForecast(value: unknown): value is PlayerForecast {
+  return (
+    isRecord(value) &&
+    isCount(value.player) &&
+    isCount(value.damage) &&
+    isInt(value.life) &&
+    isInt(value.life_after) &&
+    isFlag(value.lethal)
+  )
+}
+
+/** True for the combat forecast of a table view: attackers, creatures and players, each checked down to its leaves. */
+export function isCombatForecast(value: unknown): value is CombatForecast {
+  return (
+    isRecord(value) &&
+    isListOf(value.attackers, isAttackerForecast) &&
+    isListOf(value.creatures, isCreatureForecast) &&
+    isListOf(value.players, isPlayerForecast)
+  )
+}
+
 function isTableView(value: unknown): value is TableView {
   return (
     isRecord(value) &&
@@ -149,6 +207,7 @@ function isTableView(value: unknown): value is TableView {
     isListOf(value.combat.attackers, isAttacker) &&
     isFlag(value.combat.attackers_declared) &&
     isIdList(value.combat.blockers_declared) &&
+    (value.combat_forecast === null || isCombatForecast(value.combat_forecast)) &&
     (value.result === null || isGameResult(value.result))
   )
 }
@@ -206,11 +265,25 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isText(v.game)) return '"game" must be text'
       if (!isCount(v.player)) return '"player" must be a seat number'
       if (!isCount(v.seats)) return '"seats" must be a whole number'
-      return { type, protocol_version: v.protocol_version, game: v.game, player: v.player, seats: v.seats }
+      if (!isFlag(v.auto_pass)) return '"auto_pass" must be true or false'
+      return {
+        type,
+        protocol_version: v.protocol_version,
+        game: v.game,
+        player: v.player,
+        seats: v.seats,
+        auto_pass: v.auto_pass,
+      }
     case 'Decision':
       if (!isCount(v.id)) return '"id" must be a whole number'
       if (!isDecision(v.decision)) return '"decision" must name a player and exactly one decision kind'
-      return { type, id: v.id, decision: v.decision }
+      // Absent means no clock; the server never sends null, so null is as wrong as text.
+      if (v.deadline_ms !== undefined && !isCount(v.deadline_ms)) {
+        return '"deadline_ms" must be a whole number of milliseconds'
+      }
+      return v.deadline_ms === undefined
+        ? { type, id: v.id, decision: v.decision }
+        : { type, id: v.id, decision: v.decision, deadline_ms: v.deadline_ms }
     case 'Events':
       if (!isCount(v.from_seq)) return '"from_seq" must be a whole number'
       if (!isListOf(v.events, isEventView)) return '"events" must be a list of Public or Hidden events'

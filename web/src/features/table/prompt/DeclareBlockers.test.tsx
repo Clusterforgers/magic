@@ -222,7 +222,7 @@ describe('the first blocker of a table of two', () => {
     expect(card(a2)).toHaveAccessibleName(new RegExp(`, blocked by ${objectOf(2, b1).name}$`))
     expect(text()).toBe('1 blocker on 1 attacker. Confirm the blocks, or choose another creature.')
     expect(pairs()).toHaveLength(1)
-    expect(pairs()[0]).toHaveTextContent(`${objectOf(2, b1).name} blocks ${objectOf(2, a2).name} (Bo)`)
+    expect(pairs()[0]).toHaveTextContent(`Your ${objectOf(2, b1).name} blocks Bo's ${objectOf(2, a2).name}`)
   })
 
   it('blocks an attacker when its button in the list is pressed, and moves focus back to the blocker', async () => {
@@ -494,6 +494,6 @@ describe('the words', () => {
       'Goblin 2',
     ])
     await user.click(must(choices()[1]))
-    expect(pairs()[0]).toHaveTextContent(/blocks Goblin 2 \(Bo\)/)
+    expect(pairs()[0]).toHaveTextContent(/blocks Bo.s Goblin 2/)
   })
 })

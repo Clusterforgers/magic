@@ -1,14 +1,14 @@
 //! Playing: answers and concessions become persisted, projected batches for every connected seat.
 
 use mtg_core::ids::PlayerId;
-use mtg_engine::{Answer, Decision, Event, GameState};
+use mtg_engine::{Answer, EngineError, Event, GameState};
 use mtg_protocol::{
     DecisionId, ErrorCode, EventBatch, ProtocolError, ServerMessage, project_events,
 };
 use thiserror::Error;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
-use crate::running::{Rejection, Step};
+use crate::running::{Issued, Rejection, Step};
 use crate::store::{EventStore, StoreError};
 
 /// Why a step could not be turned into something clients may see.
@@ -20,13 +20,18 @@ pub(crate) enum CommitError {
     /// The store refused the events.
     #[error("store failed: {0}")]
     Store(#[from] StoreError),
+    /// The engine failed while passing for seats that had nothing to do.
+    #[error("engine failed: {0}")]
+    Engine(#[from] EngineError),
 }
 
 impl CommitError {
     /// What the client is told; the details stay on the server.
     pub(crate) fn into_rejection(self) -> Rejection {
         let reason = match self {
-            CommitError::Projection(_) => "the server failed to prepare the move; nothing happened",
+            CommitError::Projection(_) | CommitError::Engine(_) => {
+                "the server failed to prepare the move; nothing happened"
+            }
             CommitError::Store(_) => "the move could not be saved; nothing happened",
         };
         Rejection::new(ErrorCode::Internal, reason)
@@ -70,16 +75,26 @@ impl<S: EventStore> GameActor<S> {
     }
 
     /// Persists a step and shows it to the table, or takes it back if it cannot be saved.
-    async fn publish(&mut self, step: Step) -> Result<(), Fatal> {
+    ///
+    /// First the seats that have nothing to do and asked to be skipped are passed for, so the step, the
+    /// passes that follow it and the save are one unit: either the whole stretch is kept or none of it.
+    pub(crate) async fn publish(&mut self, step: Step) -> Result<(), Fatal> {
         let Step {
             before,
             checkpoint,
-            events,
+            mut events,
             from_seq,
             origin,
             keep_unchanged,
         } = step;
-        let committed = self.persist(&before, &events, from_seq).await;
+        let Phase::Running(running) = &mut self.phase else {
+            return Ok(());
+        };
+        let skipped = running.skip_idle(&mut events, &self.auto_pass);
+        let committed = match skipped {
+            Ok(()) => self.persist(&before, &events, from_seq).await,
+            Err(error) => Err(CommitError::from(error)),
+        };
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
         };
@@ -124,18 +139,25 @@ impl<S: EventStore> GameActor<S> {
     }
 
     /// Sends saved events to their seats, then the next decision to the seat it names, then the result.
-    pub(crate) fn announce(
-        &mut self,
-        batches: Vec<(PlayerId, EventBatch)>,
-        next: Option<(DecisionId, Decision)>,
-    ) {
+    pub(crate) fn announce(&mut self, batches: Vec<(PlayerId, EventBatch)>, next: Option<Issued>) {
         for (seat, batch) in batches {
             self.seats.send(seat, ServerMessage::Events(batch));
         }
-        if let Some((id, decision)) = next {
+        if let Some(Issued {
+            id,
+            decision,
+            deadline_ms,
+        }) = next
+        {
             let seat = decision.player;
-            self.seats
-                .send(seat, ServerMessage::Decision { id, decision });
+            self.seats.send(
+                seat,
+                ServerMessage::Decision {
+                    id,
+                    decision,
+                    deadline_ms,
+                },
+            );
         }
         let result = match &self.phase {
             Phase::Running(running) => running.engine.result(),
