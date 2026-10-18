@@ -10,8 +10,9 @@ use std::time::Duration;
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_engine::{Event, GameSetup};
-use mtg_protocol::{ClientMessage, DecisionId, ServerMessage};
+use mtg_protocol::{ClientMessage, DecisionId, FullControlMode, ServerMessage, StopSide};
 use mtg_server::{GameConfig, GameHandle, GameId, Pace};
+use mtg_testkit::windows::{Mode, SeatWindows, Side};
 use mtg_testkit::{PlayOptions, fuzz_setup, play_game, play_game_with};
 use tokio::sync::mpsc::Receiver;
 use uuid::Uuid;
@@ -99,6 +100,55 @@ pub fn reference_auto_pass(setup: GameSetup, seed: u64) -> Reference {
         answers: outcome.answers,
         auto_passes: outcome.auto_passes,
     }
+}
+
+/// The same game played on a bare engine under the reference windows ([`mtg_testkit::Windows`]): every seat starts in
+/// the mode the server default names (`auto_pass`), and with `bot_windows` each bot first chooses its own stops and
+/// mode, which [`Bot::choose_windows`] sends to the server.
+pub fn reference_windows(
+    setup: GameSetup,
+    seed: u64,
+    auto_pass: bool,
+    bot_windows: bool,
+) -> Reference {
+    let options = PlayOptions {
+        auto_pass,
+        bot_windows,
+        ..PlayOptions::default()
+    };
+    let outcome = play_game_with(setup, seed, options).unwrap_or_else(|f| panic!("{f}"));
+    Reference {
+        events: outcome.events,
+        final_hash: outcome.final_hash,
+        result: outcome.result,
+        answers: outcome.answers,
+        auto_passes: outcome.auto_passes,
+    }
+}
+
+/// Sends the stops and Full Control mode `windows` names as `seat`, the way a client does before the start.
+pub async fn send_windows(handle: &GameHandle, seat: PlayerId, windows: &SeatWindows) {
+    for stop in &windows.stops {
+        let message = ClientMessage::SetStop {
+            side: match stop.side {
+                Side::Own => StopSide::Own,
+                Side::Opponent => StopSide::Opponent,
+            },
+            step: stop.step,
+            on: true,
+            keep: stop.keep,
+        };
+        handle.send(seat, message).await.unwrap();
+    }
+    let mode = match windows.mode {
+        Mode::Off => FullControlMode::Off,
+        Mode::NextWindow => FullControlMode::NextWindow,
+        Mode::Held => FullControlMode::Held,
+    };
+    handle
+        .send(seat, ClientMessage::FullControl { mode })
+        .await
+        .unwrap();
 }
 
 /// A hand-driven client: it reads what the server sends and sends whatever the test wants.
