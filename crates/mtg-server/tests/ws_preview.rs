@@ -9,13 +9,15 @@ use std::time::{Duration, Instant};
 
 use common::{Client, game_id, roomy};
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::combat::DamageTarget;
 use mtg_engine::decision::{DecisionKind, PriorityAction};
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Event, GameSetup};
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, EventView, ServerMessage};
 use mtg_server::{
-    EventStore, GameHandle, MemoryStore, PREVIEW_BURST, PREVIEWS_PER_SECOND, spawn_game_with,
+    EventStore, GameConfig, GameHandle, MemoryStore, PREVIEW_BURST, PREVIEWS_PER_SECOND, Pace,
+    ServerConfig, spawn_game_with,
 };
 use mtg_testkit::cards::free_creature;
 use mtg_testkit::{Scenario, ready};
@@ -116,9 +118,15 @@ struct Blocks {
 }
 
 impl Duel {
-    /// Both seats connected and ready; player 0 faces the declare attackers decision.
+    /// Both seats connected and ready, with every decision waiting for its player and no clock; player 0 faces the
+    /// declare attackers decision.
     async fn start() -> Duel {
-        let server = TestServer::start(bot_config()).await;
+        Duel::start_with(bot_config()).await
+    }
+
+    /// Like [`Duel::start`] on a server with this configuration.
+    async fn start_with(config: ServerConfig) -> Duel {
+        let server = TestServer::start(config).await;
         let names = vec!["Ann".to_owned(), "Bo".to_owned()];
         let created = server.registry.register(duel(), names).await.unwrap();
         let game = created.id.to_string();
@@ -275,6 +283,90 @@ async fn the_forecast_is_what_every_seat_sees_after_the_same_answer_is_given() {
             "combat is public: everyone sees what the preview showed"
         );
     }
+}
+
+#[tokio::test]
+async fn at_the_default_pace_the_preview_is_still_the_damage_that_then_happens() {
+    // Auto-pass on and the response clocks running: nobody here can act, so after the blocks the server passes for
+    // both seats and the damage is dealt before the batch is cut.
+    let config = ServerConfig {
+        game: GameConfig {
+            pace: Pace::default(),
+            ..bot_config().game
+        },
+        ..bot_config()
+    };
+    let mut duel = Duel::start_with(config).await;
+    let (id, decision) = next_decision(&mut duel.a).await;
+    let DecisionKind::DeclareAttackers(options) = decision.kind else {
+        panic!("declare attackers expected");
+    };
+    let attacks = options
+        .attackers
+        .iter()
+        .map(|option| (option.object, option.defenders[0]))
+        .collect();
+    duel.a
+        .send(&ClientMessage::Answer {
+            decision: id,
+            answer: Answer::DeclareAttackers(attacks),
+        })
+        .await;
+
+    // The next decision is the block itself, with its clock, as the idle priority rounds were passed for them.
+    let (block_id, clock, decision) = loop {
+        if let ServerMessage::Decision {
+            id,
+            decision,
+            deadline_ms,
+        } = duel.b.message().await
+        {
+            break (id, deadline_ms, decision);
+        }
+    };
+    assert_eq!(clock, Some(45_000), "blocking has the longer clock");
+    let DecisionKind::DeclareBlockers(options) = decision.kind else {
+        panic!("declare blockers expected, got {:?}", decision.kind);
+    };
+    let (guard, imp) = (options.blockers[0].object, options.blockers[0].can_block[1]);
+
+    duel.b
+        .send(&preview(block_id, block(&[(guard, imp)])))
+        .await;
+    let (_, forecast) = forecast_of(&mut duel.b).await;
+    let forecast = forecast.expect("a forecast");
+    duel.b
+        .send(&ClientMessage::Answer {
+            decision: block_id,
+            answer: block(&[(guard, imp)]),
+        })
+        .await;
+
+    // What really happened, in one batch: the damage the forecast gave, and the deaths it named.
+    let batch = blocks_batch(&mut duel.b).await;
+    assert!(batch.table.combat_forecast.is_none(), "the damage is past");
+    let mut to_player = 0;
+    let mut died = BTreeSet::new();
+    for event in &batch.events {
+        match event {
+            EventView::Public(Event::DamageDealt {
+                target: DamageTarget::Player(PlayerId(1)),
+                amount,
+                ..
+            }) => to_player += amount,
+            EventView::Public(Event::CreatureDied { object, .. }) => {
+                died.insert(*object);
+            }
+            _ => {}
+        }
+    }
+    let [player] = forecast.players.as_slice() else {
+        panic!("one defender expected");
+    };
+    assert_eq!(to_player, player.damage);
+    assert_eq!(died, forecast.dying().collect::<BTreeSet<_>>());
+    assert_eq!(player.damage, 4, "the wolf got through");
+    assert_eq!(died.len(), 2, "the guard and the imp traded");
 }
 
 #[derive(Debug, Clone, Copy)]
