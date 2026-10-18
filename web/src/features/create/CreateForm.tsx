@@ -1,10 +1,11 @@
-import { useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { useAuth, useAuthStore } from '@/features/auth/context'
 import { saveInvites } from '@/lib/invites'
 import { MAX_SEATS } from '@/lib/limits'
 import { fragmentOf, seatLinkPath } from '@/lib/seatLink'
@@ -37,7 +38,10 @@ interface Made {
 /** The form for a new game, and, once the server has made it, the links to its seats. */
 export function CreateForm({ api, decks }: CreateFormProps) {
   const navigate = useNavigate()
-  const [draft, setDraft] = useState<Draft>(() => defaultDraft(decks))
+  const auth = useAuthStore()
+  const account = useAuth((state) => state.user?.username ?? null)
+  // A signed-in creator owns seat 1: it starts out named after the account, and the server saves it to the account.
+  const [draft, setDraft] = useState<Draft>(() => defaultDraft(decks, account ?? undefined))
   const [showProblems, setShowProblems] = useState(false)
   const [pending, setPending] = useState(false)
   const [failure, setFailure] = useState<string | null>(null)
@@ -104,6 +108,9 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         })),
       })
       setMade({ created, request })
+      // The new game is on the account's list now; asking also finds out if the session ended, which would have
+      // made this a guest's game.
+      if (account !== null) void auth.getState().loadGames()
     } catch (error) {
       setFailure(describeApiError(error))
     } finally {
@@ -146,6 +153,17 @@ export function CreateForm({ api, decks }: CreateFormProps) {
           Choose how many seats there are, then give each a name and a deck. You get one link per seat to send
           to your friends.
         </p>
+        {account === null ? null : (
+          <p data-slot="signed-in-note" className="mt-2 text-sm break-words">
+            Signed in as <strong className="font-medium">{account}</strong>. You will play as{' '}
+            <strong className="font-medium">{draft.seats[0]?.name.trim() || account}</strong> in seat 1; the
+            other links are for your friends. The game will be listed under{' '}
+            <Link to="/games" className="font-medium underline underline-offset-3">
+              My games
+            </Link>
+            .
+          </p>
+        )}
       </div>
 
       <fieldset className="grid gap-2">

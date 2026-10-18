@@ -51,10 +51,11 @@ export const browserSocket: SocketFactory = (url, handlers) => {
   return { send: (text) => ws.send(text), close: (code, reason) => ws.close(code, reason) }
 }
 
-/** Options for a `GameSocket`; only the first four have no default. */
+/** Options for a `GameSocket`; `game`, `name` and `onEvent` have no default. */
 export interface GameSocketOptions {
   game: string
-  token: string
+  /** The seat token of a seat link. Left out, the socket joins through the session cookie (a signed-in user's seat). */
+  token?: string
   /** The display name sent in `Join`. */
   name: string
   onEvent(event: SocketEvent): void
@@ -81,9 +82,13 @@ export function retryDelay(failures: number, random: number): number {
   return Math.round(ceiling * (1 - JITTER * spread))
 }
 
-/** The WebSocket address of a seat: `/ws/{game}/{token}` on `origin`, with ws or wss to match its scheme. */
-export function socketUrl(game: string, token: string, origin: string): string {
-  const url = new URL(`/ws/${encodeURIComponent(game)}/${encodeURIComponent(token)}`, origin)
+/**
+ * The WebSocket address of a seat on `origin`, with ws or wss to match its scheme: `/ws/{game}/{token}` for a seat
+ * link, `/ws/{game}` without a token, where the session cookie of the upgrade request picks the signed-in user's seat.
+ */
+export function socketUrl(game: string, token: string | undefined, origin: string): string {
+  const seat = token === undefined ? '' : `/${encodeURIComponent(token)}`
+  const url = new URL(`/ws/${encodeURIComponent(game)}${seat}`, origin)
   url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
   return url.href
 }
