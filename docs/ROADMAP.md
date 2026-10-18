@@ -66,6 +66,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 ## M4 Multiplayer product
 - [ ] Invite-link lobbies on top of users (accounts land in M2)
 - [ ] Deck builder UI with card search, import, validation, export
+- [ ] Deck check and the Verified marker (the player's request, 2026-10-18; design in `docs/deck-check.md`): choose or build a deck, run a check that reports legality and every card the game cannot play without manual steps, highlight those cards (icon, word, edge, reasons, unsupported clauses underlined), show a marker on a saved deck whose check is clean, derived from the deck's content hash and the cards' support records so any edit or engine change removes it until the next check; save runs the check; live issue counter while building; precon badges
 - [ ] Precon browser with one-click play
 - [ ] N-player layout, game log, stack panel, stop settings
 - [ ] Spectators and reconnect polish
@@ -79,6 +80,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 - [ ] Manual-resolve fallback mode for unimplemented cards
 - [ ] Oracle-text compiler for common templates with golden tests Reference first: the phase.rs oracle parser (Rust, MIT or Apache-2.0, `crates/engine/src/parser`) and XMage (MIT); Forge and Magarena are GPL-3.0, so study only and copy nothing. Check each compiled card by rendering the data back to English and comparing it with the oracle text
 - [ ] Coverage dashboard ranked by frequency; target: 100% of a chosen set of Commander precons
+- [ ] Card support records for the deck check (`docs/deck-check.md`): a coverage run (CLI or CI) writes per oracle id Verified, Partial, Manual, Stale or Unplayable with reasons, clause spans and a fingerprint; Stale comes from oracle-text drift after an import
 
 ## M7 Polish and deploy
 - [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain
