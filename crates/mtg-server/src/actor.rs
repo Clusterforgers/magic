@@ -3,6 +3,8 @@
 //! Clients never touch the engine. They send [`ClientMessage`]s through a [`GameHandle`] and read
 //! [`ServerMessage`]s from a bounded queue, so a slow or vanished client can never stall a game.
 
+use std::time::Instant;
+
 use mtg_core::ids::PlayerId;
 use mtg_engine::error::SetupError;
 use mtg_engine::{Engine, EngineError, GameSetup};
@@ -12,6 +14,7 @@ use tokio::sync::{mpsc, oneshot};
 
 use crate::game_id::GameId;
 use crate::handle::{Command, GameHandle, GameStatus, JoinError};
+use crate::preview::PreviewLimits;
 use crate::recorder::Recorder;
 use crate::running::{Rejection, Running, count};
 use crate::seats::Seats;
@@ -151,6 +154,7 @@ fn launch<S: EventStore>(
         id,
         store,
         seats: Seats::new(setup.players.len(), config.seat_queue),
+        previews: PreviewLimits::new(setup.players.len(), Instant::now()),
         setup,
         phase,
         recorder,
@@ -177,6 +181,8 @@ pub(crate) struct GameActor<S> {
     pub(crate) store: S,
     pub(crate) setup: GameSetup,
     pub(crate) seats: Seats,
+    /// How fast each seat may ask for previews.
+    pub(crate) previews: PreviewLimits,
     pub(crate) phase: Phase,
     /// Where a persistent game notes its milestones; `None` for a game that lives in memory only.
     pub(crate) recorder: Option<Recorder>,
@@ -253,6 +259,7 @@ impl<S: EventStore> GameActor<S> {
             ClientMessage::Answer { decision, answer } => {
                 return self.answer(seat, decision, answer).await;
             }
+            ClientMessage::Preview { decision, answer } => self.preview(seat, decision, &answer),
             ClientMessage::Concede => return self.concede(seat).await,
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),

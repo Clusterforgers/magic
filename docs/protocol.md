@@ -3,7 +3,7 @@
 Design record for `mtg-protocol`. Rules of the house are in `CLAUDE.md`; engine notes in `engine.md`.
 
 ## Shape
-- `ClientMessage`: Join, Ready, Answer, Chat, Concede, Resync. `ServerMessage`: Welcome, Decision, Events, Snapshot, Chat, Error, GameOver. Flat JSON tagged with `type`; `PROTOCOL_VERSION` rides in Join and Welcome and stays 1 (nothing is deployed, so the batch change broke no client).
+- `ClientMessage`: Join, Ready, Answer, Preview, Chat, Concede, Resync. `ServerMessage`: Welcome, Decision, Forecast, Events, Snapshot, Chat, Error, GameOver. Flat JSON tagged with `type`; `PROTOCOL_VERSION` rides in Join and Welcome and stays 1 (nothing is deployed, so the batch change broke no client).
 - `StateView` is what one seat may know: a `TableView` (turn, priority, every player's life, mana and zone lists, battlefield, stack and exile lists, combat, result; everything but the objects) plus `objects`. On the wire it is one flat JSON object. `StateView::for_player(&GameState, PlayerId)` builds it from the same `TableView::of` that batches use, and is the only way a whole state leaves the server.
 - `project_events(before, events, viewers, from_seq)` returns one `EventBatch` per viewer:
   - `events`: `EventView::Public | Hidden`, one per log event, for the log and animations. A client never folds them.
@@ -38,6 +38,12 @@ Design record for `mtg-protocol`. Rules of the house are in `CLAUDE.md`; engine 
 
 - `PayOptions.can_cancel` says whether `PayChoice::Cancel` is legal, and `PayChoice::Complete(Payment)` sends part of a payment (floating mana and taps) for the engine to finish; a rejected answer leaves the decision pending. A cancelled cast produces no events, so the server sends no `Events` batch and stores nothing, only the caster's `Priority` decision again with a fresh id; the log never records a cast that was not paid.
 
+
+## Preview (M2)
+- `ClientMessage::Preview { decision, answer }` asks what combat damage would do if `answer` were given to the pending DeclareAttackers or DeclareBlockers decision `decision`, without giving it; `ServerMessage::Forecast { decision, forecast }` is the reply, `forecast` a `CombatForecast` or null. The engine makes it (`Engine::preview_forecast`, `engine.md`), so it is the forecast every seat's table view carries once the same answer is really given.
+- Exactly one `Forecast` answers each `Preview`, to the seat that asked, in order, echoing the `decision` it was asked about. It is null when there is none to give: the decision is not that seat's pending one (an id never issued, an old one, one already answered, another seat's, no game yet), it is not an attack or a block, the engine would refuse the answer, an attack names nobody, or the seat is previewing faster than the server allows (`server.md`). The client cannot tell the reasons apart and does not need to. A preview **never** produces an `Error`: the stale-decision treatment of `Answer` (a notice and a `Resync`) would be wrong for advice that routinely races with the real answer or a new decision.
+- Hidden information: combat is public. A forecast names only battlefield objects every seat can see, a seat can preview only its own pending legal options, and a server test checks that the forecast it was told equals `combat_forecast` in the batch every seat gets after the same answer, so a seat learns nothing it could not learn by answering.
+- A client matches replies to requests by order (one reply per request), keeps the reply to its latest request and ignores one whose decision is no longer pending. The protocol version stays 1: a server that predates `Preview` answers it with `Error{BadMessage}`, which the web client takes to mean previews are not available. `web/src/protocol/fixtures/block-preview.json` holds real exchanges (blocks, attacks, refused answers) that `tests/preview_fixture.rs` generates from the engine and the web tests replay (`MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test preview_fixture`).
 
 ## Hidden-information test
 - `tests/hidden_info.rs` plays seeded 2, 3 and 4-player bot games with unique card names and searches every viewer's event batches (each answer; `events`, `table`, `objects` and `gone` one by one) and snapshots (every 20 answers) for hidden names and ids. A control test plants a hidden card in each part and checks the scan flags it.

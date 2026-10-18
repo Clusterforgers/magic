@@ -3,6 +3,7 @@
 //! Both enums are internally tagged with `type`, so each message is one flat JSON object.
 
 use mtg_core::ids::PlayerId;
+use mtg_engine::forecast::CombatForecast;
 use mtg_engine::state::GameResult;
 use mtg_engine::{Answer, Decision};
 use serde::{Deserialize, Serialize};
@@ -58,6 +59,15 @@ pub enum ClientMessage {
         /// The chosen answer, built from the decision's options.
         answer: Answer,
     },
+    /// Asks what combat damage would do if `answer` were given to the pending decision `decision`, without giving it.
+    ///
+    /// Advisory: the server replies with exactly one [`ServerMessage::Forecast`], never an error, and logs nothing.
+    Preview {
+        /// The decision the answer is for.
+        decision: DecisionId,
+        /// The answer to try, built from the decision's options like a real one.
+        answer: Answer,
+    },
     /// A chat line for the table.
     Chat {
         /// The text.
@@ -90,6 +100,14 @@ pub enum ServerMessage {
         id: DecisionId,
         /// The question with every legal option.
         decision: Decision,
+    },
+    /// The reply to [`ClientMessage::Preview`]: what combat damage would do for the answer tried.
+    Forecast {
+        /// The decision the preview named, echoed.
+        decision: DecisionId,
+        /// The engine's forecast, or null when there is none to give: the decision is not pending for this seat, the
+        /// answer is not a legal attack or block, or this seat is previewing faster than the server allows.
+        forecast: Option<CombatForecast>,
     },
     /// New events, projected for this client.
     Events(EventBatch),

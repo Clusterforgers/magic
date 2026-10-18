@@ -23,6 +23,9 @@
 //!   `Resync` repeats the last two. Queues are bounded: a client that stops reading is dropped and
 //!   must join again. The game waits for absent seats and never passes for them.
 //! - **Chat** is broadcast to connected seats and never stored.
+//! - **Previews** (`ClientMessage::Preview`) are advice about a pending attack or block: the actor answers
+//!   each with one `Forecast` (empty when there is none or the seat is over its rate limit), never an
+//!   error, and writes nothing.
 //!
 //! Event logs live in memory ([`MemoryStore`]) or in Postgres ([`PgEventStore`], whose schema
 //! [`migrate`] applies and tracks in its own table so `mtg-db` can share the database).
@@ -56,6 +59,7 @@ mod origin;
 mod passwords;
 mod pg_store;
 mod play;
+mod preview;
 mod recipe;
 mod recorder;
 mod records;
@@ -81,6 +85,7 @@ pub use handle::{GameClosed, GameHandle, GameStatus, JoinError};
 pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};
 pub use passwords::{HashCost, HashCostError};
 pub use pg_store::PgEventStore;
+pub use preview::{PREVIEW_BURST, PREVIEWS_PER_SECOND};
 pub use recipe::{DeckRef, FormatKind, GameRecipe, RecipeError};
 pub use records::{
     Binding, GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord, UserGame, UserGameSeat,

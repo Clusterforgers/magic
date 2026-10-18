@@ -12,6 +12,7 @@ import type {
   PlayerId,
   StateView,
 } from '@/protocol/generated'
+import type { PreviewState } from './preview'
 
 /** How many of the most recent events `log` keeps. */
 export const LOG_LIMIT = 500
@@ -57,6 +58,8 @@ export interface PlayState {
   seq: number | null
   /** The decision this seat must answer now, if any. */
   pending: PendingDecision | null
+  /** The engine's forecast for the answer this seat is choosing, as of its latest preview; gone with the decision. */
+  preview: PreviewState | null
   /** The most recent events (at most `LOG_LIMIT`), oldest first. */
   log: readonly LogEntry[]
   /** The most recent chat lines (at most `CHAT_LIMIT`), oldest first. */
@@ -83,6 +86,7 @@ export function initialPlayState(): PlayState {
     objectsById: {},
     seq: null,
     pending: null,
+    preview: null,
     log: [],
     chat: [],
     phase: 'lobby',

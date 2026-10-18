@@ -171,6 +171,9 @@ impl WsBot {
             ServerMessage::Error { code, message } => self.errors.push((code, message)),
             ServerMessage::Chat { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),
+            ServerMessage::Forecast { .. } => {
+                panic!("a bot never previews, so it is sent no forecast")
+            }
         }
         None
     }
