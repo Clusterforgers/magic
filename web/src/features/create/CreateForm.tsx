@@ -154,7 +154,7 @@ export function CreateForm({ api, decks }: CreateFormProps) {
           to your friends.
         </p>
         {account === null ? null : (
-          <p data-slot="signed-in-note" className="mt-2 text-sm">
+          <p data-slot="signed-in-note" className="mt-2 text-sm break-words">
             Signed in as <strong className="font-medium">{account}</strong>. You will play as{' '}
             <strong className="font-medium">{draft.seats[0]?.name.trim() || account}</strong> in seat 1; the
             other links are for your friends. The game will be listed under{' '}

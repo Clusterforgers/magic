@@ -54,7 +54,7 @@ export function GameCreated({ created, request, decks, origin, onOpenSeat, onAno
           own link.
         </p>
         {account === null || mine === undefined ? null : (
-          <p data-slot="saved-note" className="mt-2 text-sm">
+          <p data-slot="saved-note" className="mt-2 text-sm break-words">
             Seat 1 ({mine.name}) is yours and saved to your account,{' '}
             <strong className="font-medium">{account}</strong>. Find this game under{' '}
             <Link to="/games" className="font-medium underline underline-offset-3">

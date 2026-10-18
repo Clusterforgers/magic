@@ -32,7 +32,7 @@ export function GameRow({ game, now }: { game: MyGame; now: number }) {
           <span className="font-medium">{others}</span>
         </p>
         {result === null ? null : <p className="text-sm font-medium">{result}</p>}
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs break-words text-muted-foreground">
           You play {game.name} in seat {game.seat + 1}.
         </p>
       </div>

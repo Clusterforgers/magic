@@ -1,3 +1,4 @@
+// Goal: accounts work end to end in a browser on a real server and database: register, create a game, come back through My games and rejoin with no seat link, two accounts at one table, and signing out and in again.
 import { expect, test } from '@playwright/test'
 import type { Browser, BrowserContext, Page } from '@playwright/test'
 import { ACCOUNTS_DATABASE_URL, ACCOUNTS_WEB_URL } from './ports'

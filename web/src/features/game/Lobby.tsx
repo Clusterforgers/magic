@@ -35,8 +35,9 @@ export function Lobby() {
     setRefused(!sent)
   }
 
+  // `grid-cols-1` is `minmax(0, 1fr)`: a long unbroken name or username may not stretch the column past the screen.
   return (
-    <div className="mx-auto grid w-full max-w-2xl gap-6 px-4 py-6 sm:px-6">
+    <div className="mx-auto grid w-full max-w-2xl grid-cols-1 gap-6 px-4 py-6 sm:px-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Waiting for players</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -44,7 +45,7 @@ export function Lobby() {
         </p>
       </div>
 
-      <section aria-labelledby="seats-title" className="grid gap-2">
+      <section aria-labelledby="seats-title" className="grid grid-cols-1 gap-2">
         <div className="flex items-baseline justify-between gap-2">
           <h2 id="seats-title" className="text-sm font-medium">
             Seats
@@ -91,7 +92,7 @@ export function Lobby() {
           </p>
         ) : null}
         {accounts.saved ? (
-          <p data-slot="seat-saved" className="text-xs text-muted-foreground">
+          <p data-slot="seat-saved" className="text-xs break-words text-muted-foreground">
             You are signed in as {accounts.me}. This seat is saved to your account, so you can rejoin it from{' '}
             <Link to="/games" className="font-medium text-foreground underline underline-offset-3">
               My games
