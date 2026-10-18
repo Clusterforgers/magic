@@ -22,7 +22,7 @@
   top: 0.25rem;
   left: 50%;
   z-index: 20;
-  translate: -50% 0;
+  translate: var(--fx-float-x, -50%) 0;
   pointer-events: none;
   font-size: 1.25rem;
   font-weight: 800;
@@ -38,9 +38,21 @@
   color: var(--mana-green);
 }
 
+/* Over the figure, not on it, so the new total stays readable. */
 [data-slot='life'] > .fx-float {
-  top: 0.9rem;
+  top: auto;
+  bottom: 75%;
   font-size: 1.5rem;
+}
+
+/* A tile has no room above its figure, so the number sits beside it and hardly rises. */
+[data-tile-seat] [data-slot='life'] > .fx-float {
+  --fx-float-x: -110%;
+  --fx-rise: -0.4rem;
+  top: 0;
+  bottom: auto;
+  left: 0;
+  font-size: 1.1rem;
 }
 
 /* The crack across a dying card. */
@@ -133,22 +145,22 @@
   @keyframes fx-float {
     0% {
       opacity: 0;
-      translate: -50% 0.4rem;
+      translate: var(--fx-float-x, -50%) calc(var(--fx-rise, -1.6rem) * -0.25);
       scale: 0.7;
     }
     18% {
       opacity: 1;
-      translate: -50% 0;
+      translate: var(--fx-float-x, -50%) 0;
       scale: 1.2;
     }
     70% {
       opacity: 1;
-      translate: -50% -0.9rem;
+      translate: var(--fx-float-x, -50%) calc(var(--fx-rise, -1.6rem) * 0.55);
       scale: 1;
     }
     100% {
       opacity: 0;
-      translate: -50% -1.6rem;
+      translate: var(--fx-float-x, -50%) var(--fx-rise, -1.6rem);
       scale: 1;
     }
   }
@@ -166,7 +178,7 @@
   @keyframes fx-ghost {
     0% {
       opacity: 1;
-      filter: none;
+      filter: grayscale(0) saturate(1) brightness(1);
       translate: 0 0;
     }
     12% {
@@ -174,20 +186,20 @@
     }
     24% {
       translate: 2px 0;
-      filter: saturate(1.6) brightness(1.1);
+      filter: grayscale(0) saturate(1.6) brightness(1.1);
     }
     36% {
       translate: 0 0;
     }
     70% {
       opacity: 0.5;
-      filter: grayscale(1) brightness(0.85);
+      filter: grayscale(1) saturate(1) brightness(0.85);
       width: var(--ghost-w);
       margin-inline-end: 0;
     }
     100% {
       opacity: 0;
-      filter: grayscale(1) brightness(0.7);
+      filter: grayscale(1) saturate(1) brightness(0.7);
       width: 0;
       margin-inline-end: calc(-1 * var(--fx-row-gap));
     }

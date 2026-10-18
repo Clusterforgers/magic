@@ -1,6 +1,6 @@
 // Goal: /dev/table serves the real table over the fixture in development, reads seats, mode and focus from the address (and shrugs off nonsense), and answers "not found" with no fixture when the build is a production one.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
-import { act, cleanup, render, screen } from '@testing-library/react'
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { FIXTURE_MARKER } from './dev/fixture'
 
@@ -121,6 +121,69 @@ describe('/dev/table with the viewer’s own turn', () => {
     await screen.findByRole('region', { name: 'Game table' })
     expect(document.querySelector('[data-your-turn]')).toBeNull()
   })
+})
+
+describe('/dev/table with table effects', () => {
+  const buttons = (): string[] =>
+    [...screen.getByRole('group', { name: 'Table effects (development)' }).querySelectorAll('button')].map(
+      (button) => button.textContent ?? '',
+    )
+
+  it('offers a button for every move, with or without `fx`', async () => {
+    await visit('/dev/table?seats=2')
+    await screen.findByRole('region', { name: 'Game table' })
+    expect(buttons()).toEqual(['attack', 'block', 'damage', 'death', 'life', 'enter'])
+    expect(document.querySelector('[data-fx]')).toBeNull()
+  })
+
+  it('plays the move named by `fx` once the page has loaded, with the effect on', async () => {
+    await visit('/dev/table?seats=2&fx=damage&slow=4')
+    await screen.findByRole('region', { name: 'Game table' })
+    expect(document.querySelector('[data-fx]')).toBeNull()
+    await waitFor(() => expect(document.querySelector('[data-fx="damaged"]')).not.toBeNull(), {
+      timeout: 4000,
+    })
+    expect(document.querySelectorAll('[data-slot="fx-float"]').length).toBeGreaterThan(0)
+  })
+
+  it('plays a move when its button is pressed, which changes the table either way', async () => {
+    await visit('/dev/table?seats=2')
+    await screen.findByRole('region', { name: 'Game table' })
+    const bo = (): string =>
+      document.querySelector('section[data-seat="1"] [data-slot="life"]')?.textContent ?? ''
+    expect(bo()).toContain('38')
+    await act(async () => screen.getByRole('button', { name: 'life' }).click())
+    expect(bo()).toContain('33')
+    // Effects follow the build: off under vitest unless the address asks for one.
+    expect(document.querySelector('[data-fx]')).toBeNull()
+  })
+
+  it('draws the effect of a pressed button once the address has asked for effects', async () => {
+    await visit('/dev/table?seats=2&fx=enter')
+    await screen.findByRole('region', { name: 'Game table' })
+    await act(async () => screen.getByRole('button', { name: 'life' }).click())
+    expect(document.querySelector('[data-slot="life"][data-fx]')).not.toBeNull()
+  })
+
+  it('stretches the effects by `slow` and leaves the table alone without it', async () => {
+    await visit('/dev/table?seats=2&slow=4')
+    const table = await screen.findByRole('region', { name: 'Game table' })
+    expect(table.style.getPropertyValue('--fx-slow')).toBe('4')
+    cleanup()
+    await visit('/dev/table?seats=2')
+    expect((await screen.findByRole('region', { name: 'Game table' })).getAttribute('style')).toBeNull()
+  })
+
+  it.each(['?seats=2&fx=zap', '?seats=2&slow=500', '?seats=2&slow=0.5', '?seats=2&slow=fast'])(
+    'ignores the nonsense in %s',
+    async (search) => {
+      await visit(`/dev/table${search}`)
+      const table = await screen.findByRole('region', { name: 'Game table' })
+      expect(table.getAttribute('style')).toBeNull()
+      await new Promise((resolve) => setTimeout(resolve, 900))
+      expect(document.querySelector('[data-fx]')).toBeNull()
+    },
+  )
 })
 
 describe('/dev/table in a production build', () => {
