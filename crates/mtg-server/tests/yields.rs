@@ -153,6 +153,8 @@ fn shape(message: &ServerMessage) -> String {
         ServerMessage::Forecast { .. } => "forecast".into(),
         ServerMessage::Yielding { until: Some(until) } => format!("yield {until:?}"),
         ServerMessage::Yielding { until: None } => "yield none".into(),
+        ServerMessage::Stops { .. } => "stops".into(),
+        ServerMessage::FullControl { .. } => "full control".into(),
     }
 }
 

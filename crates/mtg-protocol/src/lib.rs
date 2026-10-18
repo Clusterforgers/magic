@@ -21,7 +21,8 @@ pub mod view;
 pub use error::ProtocolError;
 pub use events::{EventBatch, EventView, HiddenEvent, project_events};
 pub use message::{
-    ClientMessage, DecisionId, ErrorCode, PROTOCOL_VERSION, ServerMessage, YieldUntil,
+    ClientMessage, DecisionId, ErrorCode, FullControlMode, PROTOCOL_VERSION, ServerMessage, Stop,
+    StopSide, YieldUntil,
 };
 pub use project::zone_is_visible;
 pub use rest::{AuthErrorCode, Credentials, MyGame, MyGameSeat, MyGameStatus, MyGames, UserView};

@@ -4,9 +4,11 @@ import type { Decision } from "./Decision";
 import type { DecisionId } from "./DecisionId";
 import type { ErrorCode } from "./ErrorCode";
 import type { EventBatch } from "./EventBatch";
+import type { FullControlMode } from "./FullControlMode";
 import type { GameResult } from "./GameResult";
 import type { PlayerId } from "./PlayerId";
 import type { StateView } from "./StateView";
+import type { Stop } from "./Stop";
 import type { YieldUntil } from "./YieldUntil";
 
 /**
@@ -36,7 +38,15 @@ auto_pass: boolean,
 /**
  * The yield the server holds for this seat, if any (see [`ClientMessage::Yield`]).
  */
-yielding: YieldUntil | null, } | { "type": "Decision", 
+yielding: YieldUntil | null, 
+/**
+ * The stops the server holds for this seat, in the order of [`ServerMessage::Stops`].
+ */
+stops: Array<Stop>, 
+/**
+ * The Full Control mode the server holds for this seat (see [`ClientMessage::FullControl`]).
+ */
+full_control: FullControlMode, } | { "type": "Decision", 
 /**
  * Echo this id in the answer.
  */
@@ -91,4 +101,12 @@ result: GameResult, } | { "type": "Yielding",
 /**
  * The yield now in force, or `None` when the seat is not yielding.
  */
-until: YieldUntil | null, };
+until: YieldUntil | null, } | { "type": "Stops", 
+/**
+ * The stops now held; empty when there are none.
+ */
+stops: Array<Stop>, } | { "type": "FullControl", 
+/**
+ * The mode now in force.
+ */
+mode: FullControlMode, };

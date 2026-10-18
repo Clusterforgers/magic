@@ -151,7 +151,9 @@ impl Bot {
                 self.respond(handle, id, decision, allow).await;
             }
             ServerMessage::Error { code, message } => self.errors.push((code, message)),
-            ServerMessage::Chat { .. } => {}
+            ServerMessage::Chat { .. }
+            | ServerMessage::Stops { .. }
+            | ServerMessage::FullControl { .. } => {}
             ServerMessage::GameOver { result } => return Progress::Over(result),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

@@ -262,6 +262,8 @@ impl<S: EventStore> GameActor<S> {
             seats: u32::try_from(self.seats.len()).unwrap_or(u32::MAX),
             auto_pass: self.auto_pass.get(seat.index()).copied().unwrap_or(false),
             yielding: self.yields.get(seat),
+            stops: Vec::new(),
+            full_control: mtg_protocol::FullControlMode::Off,
         };
         self.seats.send(seat, welcome);
         self.sync(seat);
@@ -300,6 +302,8 @@ impl<S: EventStore> GameActor<S> {
             ClientMessage::AutoPass { enabled } => return self.set_auto_pass(seat, enabled).await,
             ClientMessage::Yield { until } => return self.set_yield(seat, until).await,
             ClientMessage::CancelYield => self.cancel_yield(seat),
+            // Stored by the next commit.
+            ClientMessage::SetStop { .. } | ClientMessage::FullControl { .. } => {}
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),
                 Phase::Lobby { .. } => self.refuse(seat, not_started()),
