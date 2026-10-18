@@ -43,6 +43,19 @@ describe('the starting form', () => {
   it('has no problems', () => {
     expect(problemCount(problemsOf(defaultDraft(DECKS), DECKS))).toBe(0)
   })
+
+  it('names the first seat after the signed-in creator and leaves the rest alone', () => {
+    const { seats } = defaultDraft(DECKS, 'Ada_L')
+    expect(seats.map((seat) => seat.name)).toEqual(['Ada_L', 'Player 2'])
+    expect(seats.map((seat) => seat.deck)).toEqual(['mono-green', 'mono-red'])
+  })
+
+  it('is valid with the longest username as a seat name, and a seat added later skips no number', () => {
+    const longest = 'a'.repeat(32)
+    const draft = defaultDraft(DECKS, longest)
+    expect(problemCount(problemsOf(draft, DECKS))).toBe(0)
+    expect(addSeat(draft, DECKS).seats.map((seat) => seat.name)).toEqual([longest, 'Player 2', 'Player 1'])
+  })
 })
 
 describe('adding and removing seats', () => {

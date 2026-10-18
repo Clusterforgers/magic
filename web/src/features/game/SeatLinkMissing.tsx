@@ -1,13 +1,20 @@
 import { Link } from '@tanstack/react-router'
 import { buttonVariants } from '@/components/ui/button'
+import { useAuth } from '@/features/auth/context'
 import { usePageTitle } from '@/hooks/usePageTitle'
 
-/** Shown when the address has no readable seat and token: nothing is connected until the player opens their link. */
-export function SeatLinkMissing() {
-  usePageTitle('Open your seat link')
+/**
+ * Shown when the address has no readable seat and token and nobody is signed in: nothing is connected until the
+ * player opens their link, or signs in to rejoin a seat that is saved to their account.
+ */
+export function SeatLinkMissing({ gameId }: { gameId?: string }) {
+  // Only a server with accounts can offer the second way in; a signed-in visitor never gets here.
+  const canSignIn = useAuth((state) => state.status === 'signed-out')
+  const title = canSignIn ? 'Open your seat link or sign in' : 'Open your seat link'
+  usePageTitle(title)
   return (
     <div className="mx-auto grid w-full max-w-2xl gap-4 px-4 py-8 sm:px-6">
-      <h1 className="text-2xl font-semibold tracking-tight">Open your seat link</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
       <p className="text-muted-foreground">
         This page needs the link made for your seat. It ends in something like{' '}
         <code className="rounded bg-muted px-1 py-0.5 text-sm">#seat=1&amp;token=…</code>, and the host gets
@@ -17,8 +24,23 @@ export function SeatLinkMissing() {
         Open that link, or ask the host to send it again. If you did open a seat link, it may have been cut
         short when it was copied.
       </p>
-      <div>
-        <Link to="/" className={buttonVariants()}>
+      {canSignIn ? (
+        <p className="text-muted-foreground">
+          If you played this game with an account, sign in instead: your seat is saved to the account and
+          needs no link.
+        </p>
+      ) : null}
+      <div className="flex flex-wrap gap-2">
+        {canSignIn ? (
+          <Link
+            to="/login"
+            search={gameId === undefined ? {} : { next: `/game/${encodeURIComponent(gameId)}` }}
+            className={buttonVariants()}
+          >
+            Sign in
+          </Link>
+        ) : null}
+        <Link to="/" className={buttonVariants({ variant: canSignIn ? 'outline' : 'default' })}>
           Create a new game
         </Link>
       </div>
