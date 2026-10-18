@@ -31,20 +31,38 @@ export interface GamePageProps {
   gameId: string
   /** The seat and token from the address fragment, or null when there was none or it could not be read. */
   link: SeatLink | null
+  /**
+   * The username of the signed-in account, used only when `link` is null: the page then joins through the session
+   * cookie (`/ws/{game}`), which the server maps to the account's own seat. Null for a guest.
+   */
+  account?: string | null
   api?: Api
   /** Fakes for the socket, timers and origin; leave out in the app. */
   deps?: SessionOverrides
 }
 
 /** `/game/$gameId`: connects this seat and shows whichever screen the connection and the game call for. */
-export function GamePage({ gameId, link, api = sharedApi, deps }: GamePageProps) {
-  if (link === null) return <SeatLinkMissing />
-  // A new game, seat or token is a new session, so the key makes it a new component rather than a stale one.
+export function GamePage({ gameId, link, account = null, api = sharedApi, deps }: GamePageProps) {
+  // A new game, seat, token or account is a new session, so the key makes it a new component rather than a stale one.
+  if (link !== null) {
+    return (
+      <SeatedGame
+        key={`${gameId}/${link.seat}/${link.token}`}
+        gameId={gameId}
+        token={link.token}
+        name={joinName(gameId, link.seat)}
+        api={api}
+        deps={deps}
+      />
+    )
+  }
+  if (account === null) return <SeatLinkMissing gameId={gameId} />
   return (
     <SeatedGame
-      key={`${gameId}/${link.seat}/${link.token}`}
+      key={`${gameId}/account/${account}`}
       gameId={gameId}
-      link={link}
+      token={undefined}
+      name={account}
       api={api}
       deps={deps}
     />
@@ -53,7 +71,10 @@ export function GamePage({ gameId, link, api = sharedApi, deps }: GamePageProps)
 
 interface SeatedGameProps {
   gameId: string
-  link: SeatLink
+  /** The seat token, or undefined to join through the session cookie. */
+  token: string | undefined
+  /** The name sent in `Join`. */
+  name: string
   api: Api
   deps: SessionOverrides | undefined
 }
@@ -88,10 +109,8 @@ function useConnected(session: Session): void {
   }, [session])
 }
 
-function SeatedGame({ gameId, link, api, deps }: SeatedGameProps) {
-  const [session] = useState(() =>
-    createSession({ ...deps, game: gameId, token: link.token, name: joinName(gameId, link.seat) }),
-  )
+function SeatedGame({ gameId, token, name, api, deps }: SeatedGameProps) {
+  const [session] = useState(() => createSession({ ...deps, game: gameId, token, name }))
   useConnected(session)
   const state = useStore(session.store, useShallow(screenState))
   const lookup = useGameInfo(api, gameId, {
@@ -129,6 +148,7 @@ function SeatedGame({ gameId, link, api, deps }: SeatedGameProps) {
             connection={connection}
             standalone={screen === null}
             missing={lookup.missing}
+            via={token === undefined ? 'session' : 'link'}
             onRetry={retry}
           />
         </div>

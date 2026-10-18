@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import { Circle, CircleCheck } from 'lucide-react'
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
@@ -7,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { useGame, usePlay } from './gameContext'
 import { Invites } from './Invites'
 import { seatName } from './useGameInfo'
+import { useSeatAccounts } from './useSeatAccounts'
 
 /** Who is at the table before the game starts: the seats, who is connected, and this seat's Ready. */
 export function Lobby() {
@@ -16,13 +18,14 @@ export function Lobby() {
   )
   const [ready, setReady] = useState(false)
   const [refused, setRefused] = useState(false)
+  const accounts = useSeatAccounts(game, seat, `${status}|${lookup.game?.connected.join(',') ?? ''}`)
 
   const seats = seatCount ?? lookup.game?.seats.length ?? 0
   const rows = Array.from({ length: seats }, (_, index) => {
     const you = index === seat
     // REST lists who is connected; this page's own socket is the better witness for itself.
     const here = you ? status === 'open' : (lookup.game?.connected.includes(index) ?? false)
-    return { index, you, here, name: seatName(lookup, index) }
+    return { index, you, here, name: seatName(lookup, index), account: accounts.bySeat.get(index) ?? null }
   })
   const present = rows.filter((row) => row.here).length
 
@@ -57,6 +60,11 @@ export function Lobby() {
                 <span className="shrink-0 text-muted-foreground">Seat {row.index + 1}</span>
                 <span className="truncate font-medium">{row.name}</span>
                 {row.you ? <Badge variant="secondary">you</Badge> : null}
+                {row.account === null ? null : (
+                  <span data-slot="seat-account" className="truncate text-xs text-muted-foreground">
+                    signed in as {row.account}
+                  </span>
+                )}
               </span>
               <span
                 className={cn(
@@ -77,6 +85,15 @@ export function Lobby() {
         {lookup.game === null && lookup.failed ? (
           <p className="text-xs text-muted-foreground">
             Could not load the names and who is here. This page keeps trying.
+          </p>
+        ) : null}
+        {accounts.saved ? (
+          <p data-slot="seat-saved" className="text-xs text-muted-foreground">
+            You are signed in as {accounts.me}. This seat is saved to your account, so you can rejoin it from{' '}
+            <Link to="/games" className="font-medium text-foreground underline underline-offset-3">
+              My games
+            </Link>{' '}
+            without the link.
           </p>
         ) : null}
       </section>

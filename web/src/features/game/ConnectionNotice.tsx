@@ -13,6 +13,8 @@ interface ConnectionNoticeProps {
   standalone: boolean
   /** REST says the game does not exist, which makes a stale link the likely culprit. */
   missing: boolean
+  /** What opened the socket: a seat link (the default) or the signed-in session, which has other ways to go wrong. */
+  via?: 'link' | 'session'
   /** Starts again from the first attempt. */
   onRetry(): void
 }
@@ -27,7 +29,44 @@ interface Words {
   bad?: boolean
 }
 
-function wordsFor(connection: ConnectionNoticeProps['connection'], missing: boolean): Words {
+function unreachableBody(via: 'link' | 'session', missing: boolean): ReactNode {
+  if (via === 'session') {
+    return (
+      <>
+        <p>
+          The page tried {UNREACHABLE_AFTER} times and is still trying in the background. The server may be
+          down or restarting, your network may be offline, you may have been signed out, or no seat in this
+          game is saved to your account.
+        </p>
+        <p className="mt-2">
+          {missing
+            ? 'The server also says this game does not exist. A game that has finished is only kept in My games as a record, and one that nobody has joined for a long time is removed.'
+            : 'If you have a seat link for this game, open it once while signed in and the seat is saved to your account.'}
+        </p>
+      </>
+    )
+  }
+  return (
+    <>
+      <p>
+        The page tried {UNREACHABLE_AFTER} times and is still trying in the background. The server may be down
+        or restarting, your network may be offline, or this seat link may be wrong or out of date.
+      </p>
+      {missing ? (
+        <p className="mt-2">
+          The server also says this game does not exist, so the link is probably out of date. Ask the host for
+          a new one.
+        </p>
+      ) : null}
+    </>
+  )
+}
+
+function wordsFor(
+  connection: ConnectionNoticeProps['connection'],
+  missing: boolean,
+  via: 'link' | 'session',
+): Words {
   switch (connection.kind) {
     case 'connecting':
       return { title: 'Connecting to the game…', body: null, alert: false }
@@ -40,21 +79,7 @@ function wordsFor(connection: ConnectionNoticeProps['connection'], missing: bool
     case 'unreachable':
       return {
         title: 'Cannot reach the game',
-        body: (
-          <>
-            <p>
-              The page tried {UNREACHABLE_AFTER} times and is still trying in the background. The server may
-              be down or restarting, your network may be offline, or this seat link may be wrong or out of
-              date.
-            </p>
-            {missing ? (
-              <p className="mt-2">
-                The server also says this game does not exist, so the link is probably out of date. Ask the
-                host for a new one.
-              </p>
-            ) : null}
-          </>
-        ),
+        body: unreachableBody(via, missing),
         retry: 'Try again now',
         alert: true,
         bad: true,
@@ -78,8 +103,14 @@ function wordsFor(connection: ConnectionNoticeProps['connection'], missing: bool
 }
 
 /** Says where the connection stands when it is not open, and offers a way forward when waiting will not help. */
-export function ConnectionNotice({ connection, standalone, missing, onRetry }: ConnectionNoticeProps) {
-  const { title, body, retry, alert, bad } = wordsFor(connection, missing)
+export function ConnectionNotice({
+  connection,
+  standalone,
+  missing,
+  via = 'link',
+  onRetry,
+}: ConnectionNoticeProps) {
+  const { title, body, retry, alert, bad } = wordsFor(connection, missing, via)
   const Heading: ElementType = standalone ? 'h1' : 'h2'
   const heading = (
     <Heading
@@ -115,6 +146,11 @@ export function ConnectionNotice({ connection, standalone, missing, onRetry }: C
             {retry}
           </Button>
         )}
+        {connection.kind === 'unreachable' && via === 'session' ? (
+          <Link to="/games" className={buttonVariants({ variant: 'outline' })}>
+            My games
+          </Link>
+        ) : null}
         {connection.kind === 'unreachable' ? (
           <Link to="/" className={buttonVariants({ variant: 'outline' })}>
             Create a new game

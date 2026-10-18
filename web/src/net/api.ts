@@ -218,6 +218,8 @@ export function createApi(options: ApiOptions = {}): Api {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify(request),
+        // The session cookie is what binds the creator's seat to their account.
+        credentials: 'include',
       }),
     getGame: (id) => call(`/api/games/${encodeURIComponent(id)}`, readGame),
     listDecks: () => call('/api/decks', readDecks),
