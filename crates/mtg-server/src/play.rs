@@ -10,7 +10,7 @@ use thiserror::Error;
 use crate::actor::{Fatal, GameActor, Phase, not_started};
 use crate::running::{Issued, Rejection, Step};
 use crate::store::{EventStore, StoreError};
-use crate::yields::{self, Yields};
+use crate::yields::Yields;
 
 /// Why a step could not be turned into something clients may see.
 #[derive(Debug, Error)]
@@ -167,7 +167,7 @@ impl<S: EventStore> GameActor<S> {
             self.seats.send(seat, ServerMessage::Events(batch));
         }
         for (seat, until) in notices {
-            self.seats.send(seat, yields::notice(until));
+            self.seats.send(seat, ServerMessage::Yielding { until });
         }
         if let Some(Issued {
             id,

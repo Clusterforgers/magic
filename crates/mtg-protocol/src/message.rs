@@ -91,9 +91,9 @@ pub enum ClientMessage {
     ///
     /// While it lasts the server answers each `Priority` decision of the seat with a pass and never sends it; the
     /// pending one is passed at once. It ends, and decisions come as usual, when an opponent puts a new object on
-    /// the stack that the seat could respond to, at `until`, when the seat leaves the game and on `CancelYield`.
-    /// Other decisions (attackers, blockers, a discard, a payment) are always sent and leave it as it is. A new
-    /// `Yield` replaces the old one. Kept in memory per seat: a resumed game starts with none.
+    /// the stack, at `until`, when the seat leaves the game and on `CancelYield`; what the seat could do about it
+    /// never matters. Other decisions (attackers, blockers, a discard, a payment) are always sent and leave it as
+    /// it is. A new `Yield` replaces the old one. Kept in memory per seat: a resumed game starts with none.
     Yield {
         /// How long to pass for.
         until: YieldUntil,

@@ -72,20 +72,18 @@ export const YIELD_WORDS: Record<YieldUntil, YieldWords> = {
   Resolve: {
     action: 'Resolve everything on the stack',
     passing: 'Passing until the stack is empty',
-    description:
-      'Passes priority until the stack is empty. You are asked again if an opponent adds to it and you can respond.',
+    description: 'Passes priority until the stack is empty. You are asked again if an opponent adds to it.',
   },
   EndOfTurn: {
     action: 'End turn',
     passing: 'Passing until the end of turn',
-    description:
-      'Passes priority until the turn ends. You are asked again if an opponent adds to the stack and you can respond.',
+    description: 'Passes priority until the turn ends. You are asked again if an opponent adds to the stack.',
   },
   MyTurn: {
     action: 'Pass until my next turn',
     passing: 'Passing until your next turn',
     description:
-      'Passes priority until your next turn begins. You are asked again if an opponent adds to the stack and you can respond.',
+      'Passes priority until your next turn begins. You are asked again if an opponent adds to the stack.',
   },
 }
 

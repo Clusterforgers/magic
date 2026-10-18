@@ -285,15 +285,24 @@ async fn setting_a_yield_passes_the_pending_decision_at_once_and_the_old_id_goes
     assert!(is_error(&clients[ME].drain(), ErrorCode::StaleDecision));
 }
 
+/// The duel in which seat 1 holds an instant to answer a spell with, or the one in which it holds nothing.
+fn duel_for(can_answer: bool) -> GameSetup {
+    if can_answer {
+        instant_duel()
+    } else {
+        creature_duel()
+    }
+}
+
 #[rstest]
-#[case::end_of_turn(YieldUntil::EndOfTurn)]
-#[case::my_turn(YieldUntil::MyTurn)]
 #[tokio::test(start_paused = true)]
-async fn an_opponents_new_spell_ends_the_yield_and_the_seat_may_answer_it(
-    #[case] until: YieldUntil,
+async fn an_opponents_new_spell_stops_a_yield_the_same_way_whether_or_not_the_seat_could_answer_it(
+    #[values(YieldUntil::EndOfTurn, YieldUntil::MyTurn)] until: YieldUntil,
+    #[values(true, false)] can_answer: bool,
 ) {
+    // The pace tells nothing about the hand: both seats are stopped, asked and hurried alike.
     let (handle, _) = spawn(
-        instant_duel(),
+        duel_for(can_answer),
         Pace {
             response: Some(Duration::from_secs(10)),
             ..OFF
@@ -317,7 +326,31 @@ async fn an_opponents_new_spell_ends_the_yield_and_the_seat_may_answer_it(
     let DecisionKind::Priority(options) = decision.kind else {
         panic!("expected priority");
     };
-    assert!(options.can_act && options.castable.len() == 1);
+    assert_eq!(options.can_act, can_answer);
+}
+
+#[tokio::test(start_paused = true)]
+async fn with_auto_pass_on_the_window_that_ended_the_yield_is_passed_by_auto_pass_as_ever() {
+    // Seat 1 holds nothing and has auto-pass on. The spell ends its yield and is announced; the idle window is then
+    // auto-pass's.
+    let (handle, _) = spawn(creature_duel(), OFF);
+    let mut clients = join_and_ready(&handle, 2).await;
+    send(
+        &handle,
+        &clients[ME],
+        ClientMessage::AutoPass { enabled: true },
+    )
+    .await;
+    yield_until(&handle, &clients[ME], YieldUntil::EndOfTurn).await;
+    clients[ME].drain();
+
+    foe_casts(&handle, &mut clients[FOE]).await;
+    foe_passes_once(&handle, &mut clients[FOE]).await;
+
+    let told = clients[ME].drain();
+    assert_eq!(notices(&told), [None]);
+    assert_eq!(priority_decisions(&told), 0);
+    assert_eq!(handle.status().await.unwrap().waiting_on, Some(seat(FOE)));
 }
 
 #[rstest]
@@ -325,11 +358,13 @@ async fn an_opponents_new_spell_ends_the_yield_and_the_seat_may_answer_it(
 #[case::my_turn(YieldUntil::MyTurn)]
 #[case::resolve(YieldUntil::Resolve)]
 #[tokio::test(start_paused = true)]
-async fn an_opponents_spell_the_seat_cannot_answer_does_not_end_it(#[case] until: YieldUntil) {
+async fn a_spell_the_seat_already_saw_does_not_end_the_yield_it_asks_over_it(
+    #[case] until: YieldUntil,
+) {
     let (handle, _) = spawn(creature_duel(), OFF);
     let mut clients = join_and_ready(&handle, 2).await;
     foe_casts(&handle, &mut clients[FOE]).await;
-    // The spell is on the stack; seat 1 sees it in its first window only if it has no yield.
+    // The spell is on the stack and seat 1 is shown it, as it would be without a yield.
     foe_passes_once(&handle, &mut clients[FOE]).await;
     let (_, decision) = clients[ME].decision().await;
     assert_eq!(decision.kind.name(), "priority");

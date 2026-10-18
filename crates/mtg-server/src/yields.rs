@@ -4,16 +4,20 @@
 //! the run of passes that serves auto-pass ([`crate::running::Running::skip_idle`]), so a pass, its rollback and its
 //! batch are those of the seat's own click. A yield lives in the actor's memory only: it is not stored and a resumed
 //! game starts without any.
+//!
+//! Everything that decides when a yield stops is in [`Active::ends_at`], judged at each priority decision of the seat
+//! and from the table alone: never from what the seat could do there, so a seat that can act and one that cannot are
+//! passed for, and stopped, at the same moments. The rules:
+//! - `Resolve` stops when the stack is empty.
+//! - `EndOfTurn` stops when a turn other than the one it was asked in has begun.
+//! - `MyTurn` stops when such a turn is the seat's own.
+//! - Any yield stops when another seat has put an object on the stack that the seat has not passed on.
 
 use std::collections::BTreeSet;
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::GameState;
-use mtg_protocol::{ErrorCode, ServerMessage, YieldUntil};
-
-use crate::actor::{Fatal, GameActor, Phase, not_started};
-use crate::running::Rejection;
-use crate::store::EventStore;
+use mtg_protocol::YieldUntil;
 
 /// One seat's yield and what it needs to tell when to end.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -34,16 +38,15 @@ impl Active {
         }
     }
 
-    /// Whether the yield is over at a priority decision of `seat`, which `can_act` says it could use.
-    fn ends_at(&self, state: &GameState, seat: PlayerId, can_act: bool) -> bool {
+    /// Whether the yield is over at a priority decision of `seat`: the stop rules of the module, in one place.
+    fn ends_at(&self, state: &GameState, seat: PlayerId) -> bool {
         let turn = state.turn();
         let reached = match self.until {
             YieldUntil::Resolve => state.stack().is_empty(),
             YieldUntil::EndOfTurn => turn.number() != self.turn,
             YieldUntil::MyTurn => turn.number() != self.turn && turn.active() == seat,
         };
-        // An opponent's new object stops the yield only if the seat could respond to it.
-        reached || (can_act && self.opponent_added(state, seat))
+        reached || self.opponent_added(state, seat)
     }
 
     /// Whether the stack holds an object of another seat that the seat has not passed on yet.
@@ -95,18 +98,18 @@ impl Yields {
             .is_some_and(|slot| slot.take().is_some())
     }
 
-    /// Whether the server passes for `seat` at a priority decision, which `can_act` says it could use.
+    /// Whether the server passes for `seat` at one of its priority decisions.
     ///
     /// A yield that has reached its end, or that a new opposing object stops, is over from here on and the
     /// answer is no: the decision goes to the seat. Otherwise the stack is noted as passed on.
-    pub(crate) fn passes(&mut self, seat: PlayerId, state: &GameState, can_act: bool) -> bool {
+    pub(crate) fn passes(&mut self, seat: PlayerId, state: &GameState) -> bool {
         let Some(slot) = self.seats.get_mut(seat.index()) else {
             return false;
         };
         let Some(mut active) = slot.take() else {
             return false;
         };
-        if active.ends_at(state, seat, can_act) {
+        if active.ends_at(state, seat) {
             return false;
         }
         active.seen = state.stack().iter().copied().collect();
@@ -135,64 +138,9 @@ impl Yields {
     }
 }
 
-/// What a seat is told when its yield changes.
-pub(crate) fn notice(until: Option<YieldUntil>) -> ServerMessage {
-    ServerMessage::Yielding { until }
-}
-
-impl<S: EventStore> GameActor<S> {
-    /// Starts `seat`'s yield; if the seat faces a priority decision it is passed at once.
-    pub(crate) async fn set_yield(
-        &mut self,
-        seat: PlayerId,
-        until: YieldUntil,
-    ) -> Result<(), Fatal> {
-        let Phase::Running(running) = &mut self.phase else {
-            self.refuse(seat, not_started());
-            return Ok(());
-        };
-        let state = running.engine.state();
-        if running.engine.result().is_some() || !state.is_alive(seat) {
-            let reason = "you are not in a game that is still being played";
-            self.refuse(seat, Rejection::new(ErrorCode::BadMessage, reason));
-            return Ok(());
-        }
-        let mut yields = self.yields.clone();
-        yields.start(seat, until, state);
-        if !running.asks_priority_of(seat) {
-            self.commit_yields(yields);
-            return Ok(());
-        }
-        // The decision is sent again with a new id if the yield ended before passing, so the seat is never left
-        // without a prompt it still owes an answer to.
-        match running.restart_decision(seat) {
-            Ok(step) => self.publish_with(step, yields).await,
-            Err(rejection) => {
-                self.refuse(seat, rejection);
-                Ok(())
-            }
-        }
-    }
-
-    /// Ends `seat`'s yield; the seat is told if it had one.
-    pub(crate) fn cancel_yield(&mut self, seat: PlayerId) {
-        let mut yields = self.yields.clone();
-        if yields.cancel(seat) {
-            self.commit_yields(yields);
-        }
-    }
-
-    /// Takes `yields` as the seats' yields and tells each seat whose yield changed.
-    fn commit_yields(&mut self, yields: Yields) {
-        for (seat, until) in self.yields.replace(yields) {
-            self.seats.send(seat, notice(until));
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
-    //! Goal: a yield passes at every priority window until the thing it waits for happens and ends at exactly that window; an opponent's new object ends it only when the seat can respond, objects the seat already passed on never do, other decisions leave it alone, and it never outlives the seat or the game.
+    //! Goal: a yield passes at every priority window until the thing it waits for happens and ends at exactly that window; an opponent's new object ends it whatever the seat could do about it, objects the seat already passed on never do, other decisions leave it alone, and it never outlives the seat or the game.
     use super::*;
     use crate::pace::passes_for;
     use mtg_engine::decision::{
@@ -211,16 +159,22 @@ mod tests {
         YieldUntil::MyTurn,
     ];
 
-    /// Turn 1, seat 0's first main phase: seat 0 holds `spells` free instants and seat 1 one, so either can cast
-    /// at any time, even over a spell on the stack.
-    fn table(spells: usize) -> Engine {
+    /// Turn 1, seat 0's first main phase: seat 0 holds `spells` free instants and seat 1 one if `instant_for_me`, so
+    /// either can cast at any time, even over a spell on the stack.
+    fn duel(spells: usize, instant_for_me: bool) -> Engine {
         let zaps = (0..spells).map(|n| instant(&format!("Foe Zap {n}"), 0, &[]));
+        let mine = instant_for_me.then(|| instant("My Zap", 0, &[]));
         let setup = Scenario::new(2)
             .hand(0, zaps)
-            .hand(1, [instant("My Zap", 0, &[])])
+            .hand(1, mine)
             .setup()
             .unwrap();
         Engine::new(setup).unwrap()
+    }
+
+    /// [`duel`] where seat 1 holds an instant too.
+    fn table(spells: usize) -> Engine {
+        duel(spells, true)
     }
 
     /// The holder of priority casts the first spell it can and pays for it.
@@ -258,7 +212,7 @@ mod tests {
             }
             if decision.player == seat {
                 assert!(
-                    yields.passes(seat, engine.state(), false),
+                    yields.passes(seat, engine.state()),
                     "the yield ended after {windows} windows, before the stop"
                 );
                 windows += 1;
@@ -285,15 +239,12 @@ mod tests {
         cast(&mut engine);
         let mut yields = Yields::new(2);
         assert_eq!(yields.get(ME), None);
-        assert!(
-            !yields.passes(ME, engine.state(), true),
-            "no yield, no pass"
-        );
+        assert!(!yields.passes(ME, engine.state()), "no yield, no pass");
 
         yields.start(ME, until, engine.state());
         assert_eq!(yields.get(ME), Some(until));
         assert!(
-            yields.passes(ME, engine.state(), true),
+            yields.passes(ME, engine.state()),
             "the spell on the stack was there when the seat asked"
         );
         assert_eq!(yields.get(FOE), None, "another seat is not affected");
@@ -305,13 +256,13 @@ mod tests {
         cast(&mut engine);
         let mut yields = Yields::new(2);
         yields.start(ME, YieldUntil::Resolve, engine.state());
-        assert!(yields.passes(ME, engine.state(), false));
+        assert!(yields.passes(ME, engine.state()));
 
         // Both pass: the spell resolves and seat 0 holds priority again with an empty stack.
         pass(&mut engine);
         pass(&mut engine);
         assert_eq!(engine.state().stack(), []);
-        assert!(!yields.passes(ME, engine.state(), false));
+        assert!(!yields.passes(ME, engine.state()));
         assert_eq!(yields.get(ME), None, "and the yield is over");
     }
 
@@ -320,7 +271,7 @@ mod tests {
         let engine = table(0);
         let mut yields = Yields::new(2);
         yields.start(ME, YieldUntil::Resolve, engine.state());
-        assert!(!yields.passes(ME, engine.state(), false));
+        assert!(!yields.passes(ME, engine.state()));
         assert_eq!(yields.get(ME), None);
     }
 
@@ -337,7 +288,7 @@ mod tests {
         assert!(windows >= 5, "seat 1 was passed for in {windows} windows");
         assert_eq!(engine.state().turn().number(), turn + 1);
         // The first window of the next turn is the seat's own, and it ends the yield.
-        assert!(!yields.passes(ME, engine.state(), false));
+        assert!(!yields.passes(ME, engine.state()));
         assert_eq!(yields.get(ME), None);
     }
 
@@ -362,20 +313,20 @@ mod tests {
         });
         assert!(windows > 0);
         assert_eq!(engine.state().turn().number(), ends_in_turn);
-        assert!(!yields.passes(ME, engine.state(), false));
+        assert!(!yields.passes(ME, engine.state()));
     }
 
     #[rstest]
-    #[case::could_respond_and_it_is_new(true, false, true)]
-    #[case::could_not_respond(false, false, false)]
+    #[case::new_to_a_seat_that_could_respond(true, false, true)]
+    #[case::new_to_a_seat_that_could_not(false, false, true)]
     #[case::already_passed_on(true, true, false)]
-    fn an_opponents_object_ends_the_yield_only_when_it_is_new_and_the_seat_can_respond(
-        #[case] can_act: bool,
+    fn an_opponents_object_ends_the_yield_when_it_is_new_whatever_the_seat_could_do_about_it(
+        #[case] seat_holds_an_instant: bool,
         #[case] passed_on_it: bool,
         #[case] ends: bool,
     ) {
         for until in ALL {
-            let mut engine = table(1);
+            let mut engine = duel(1, seat_holds_an_instant);
             let mut yields = Yields::new(2);
             yields.start(ME, until, engine.state());
             cast(&mut engine);
@@ -388,9 +339,9 @@ mod tests {
                 yields.start(ME, until, state);
             }
             assert_eq!(
-                !yields.passes(ME, state, can_act),
+                !yields.passes(ME, state),
                 ends,
-                "{until:?} can_act {can_act} passed_on_it {passed_on_it}"
+                "{until:?} instant {seat_holds_an_instant} passed_on_it {passed_on_it}"
             );
         }
     }
@@ -408,7 +359,7 @@ mod tests {
         yields.start(ME, YieldUntil::EndOfTurn, engine.state());
         cast(&mut engine);
         assert_eq!(engine.state().stack().len(), 1);
-        assert!(yields.passes(ME, engine.state(), true));
+        assert!(yields.passes(ME, engine.state()));
     }
 
     #[test]
@@ -419,7 +370,7 @@ mod tests {
         assert_eq!(engine.state().stack().len(), 2);
         let mut yields = Yields::new(2);
         yields.start(ME, YieldUntil::EndOfTurn, engine.state());
-        assert!(yields.passes(ME, engine.state(), true));
+        assert!(yields.passes(ME, engine.state()));
         assert_eq!(yields.seats[ME.index()].as_ref().unwrap().seen.len(), 2);
 
         // Both spells resolve; the next pass notes an empty stack.
@@ -427,7 +378,7 @@ mod tests {
             pass(&mut engine);
         }
         assert_eq!(engine.state().stack(), []);
-        assert!(yields.passes(ME, engine.state(), true));
+        assert!(yields.passes(ME, engine.state()));
         assert!(yields.seats[ME.index()].as_ref().unwrap().seen.is_empty());
     }
 
@@ -487,7 +438,7 @@ mod tests {
         yields.start(PlayerId(5), YieldUntil::Resolve, engine.state());
         assert_eq!(yields.get(PlayerId(5)), None);
         assert!(!yields.cancel(PlayerId(5)));
-        assert!(!yields.passes(PlayerId(5), engine.state(), true));
+        assert!(!yields.passes(PlayerId(5), engine.state()));
     }
 
     fn priority(player: PlayerId, can_act: bool) -> Decision {

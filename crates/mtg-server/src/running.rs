@@ -334,3 +334,72 @@ impl Running {
         })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a run of passes stops at its limit with the next priority decision still pending, and a yield that decision belongs to ends there, so the seat is never handed a prompt while the server still "passes for it"; every other seat is left alone.
+    use super::*;
+    use mtg_protocol::YieldUntil;
+    use mtg_testkit::Scenario;
+    use rstest::rstest;
+
+    const SEATS: [PlayerId; 2] = [PlayerId(0), PlayerId(1)];
+
+    fn running() -> Running {
+        let setup = Scenario::new(2).setup().unwrap();
+        let mut running = Running::new(Engine::new(setup).unwrap(), Pace::MANUAL);
+        running.settle(false);
+        running
+    }
+
+    fn yielding(running: &Running, seats: &[PlayerId]) -> Yields {
+        let mut yields = Yields::new(2);
+        for seat in seats {
+            yields.start(*seat, YieldUntil::EndOfTurn, running.engine.state());
+        }
+        yields
+    }
+
+    #[rstest]
+    #[case::the_cut_lands_on_a_seat_that_yields(2, &[SEATS[0], SEATS[1]], &[SEATS[1]])]
+    #[case::the_cut_lands_on_a_seat_that_does_not(1, &[SEATS[0]], &[SEATS[0]])]
+    fn the_cut_ends_the_yield_of_the_seat_whose_decision_is_next(
+        #[case] limit: usize,
+        #[case] before: &[PlayerId],
+        #[case] after: &[PlayerId],
+    ) {
+        let mut running = running();
+        let mut yields = yielding(&running, before);
+        let mut events = Vec::new();
+        running
+            .skip_up_to(limit, &mut events, &[false, false], &mut yields)
+            .unwrap();
+        let passes = events
+            .iter()
+            .filter(|event| matches!(event, Event::PriorityPassed { .. }))
+            .count();
+        assert_eq!(passes, limit, "one pass for each of the limit");
+        let held: Vec<PlayerId> = SEATS
+            .into_iter()
+            .filter(|seat| yields.get(*seat).is_some())
+            .collect();
+        assert_eq!(held, after);
+        assert!(
+            running.engine.decision().is_some(),
+            "the decision is still there to be sent"
+        );
+    }
+
+    #[test]
+    fn without_a_limit_in_the_way_the_run_goes_on_until_a_seat_must_decide() {
+        let mut running = running();
+        let mut yields = yielding(&running, &[SEATS[0]]);
+        let mut events = Vec::new();
+        running
+            .skip_idle(&mut events, &[false, false], &mut yields)
+            .unwrap();
+        assert_eq!(events.len(), 1, "seat 1 does not yield and is asked");
+        assert_eq!(running.engine.decision().map(|d| d.player), Some(SEATS[1]));
+        assert_eq!(yields.get(SEATS[0]), Some(YieldUntil::EndOfTurn));
+    }
+}

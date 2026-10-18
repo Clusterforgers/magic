@@ -7,7 +7,7 @@ import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById } from '@/play/view'
 import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
-import { DEV_PROMPTS, DEV_TABLES } from './prompts'
+import { DEV_PROMPTS, DEV_TABLES, DEV_YIELDS } from './prompts'
 
 /**
  * The play state of a seat that has just seen `fixture`. It faces `pending`, by default a priority decision with
@@ -106,9 +106,12 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const store = createPlayStore()
   const name = options.prompt ?? ''
   const prompt = Object.hasOwn(DEV_PROMPTS, name) ? DEV_PROMPTS[name] : undefined
-  // A prompt may need another moment of the game than the fixture shows (the viewer's own turn, an attack to block).
-  const table = prompt !== undefined && Object.hasOwn(DEV_TABLES, name) ? DEV_TABLES[name] : undefined
+  // A prompt may need another moment of the game than the fixture shows (the viewer's own turn, an attack to block),
+  // and so may a state without any prompt, such as a seat that is already passing.
+  const table = Object.hasOwn(DEV_TABLES, name) ? DEV_TABLES[name] : undefined
   const fixture = table === undefined ? built : table(built)
   store.setState(fixtureState(fixture, prompt === undefined ? null : prompt(fixture)))
+  // A seat that is already yielding faces no priority decision, only the line that says it is passing.
+  if (Object.hasOwn(DEV_YIELDS, name)) store.setState({ yielding: DEV_YIELDS[name] ?? null })
   return { game: 'dev-fixture', session: fixtureSession(store), lookup: fixtureLookup(fixture) }
 }

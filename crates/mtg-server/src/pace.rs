@@ -1,16 +1,20 @@
-//! Pace of play: passing for a seat that has nothing to do, and the clocks that keep one player from holding the table.
+//! Pace of play: passing for a seat that has nothing to do or that yields, and the clocks that keep one player from
+//! holding the table.
 //!
-//! Both work through the same path as a seat's own answer ([`crate::running::Running::answer`]), so what a pass or a
-//! timeout does to the log, the store and every projection is exactly what the seat's click would have done.
+//! All of them work through the same path as a seat's own answer ([`crate::running::Running::answer`]), so what a
+//! pass or a timeout does to the log, the store and every projection is exactly what the seat's click would have done.
+//! When a yield stops is decided in [`crate::yields`] alone.
 
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::PriorityAction;
 use mtg_engine::{Answer, Decision, DecisionKind, GameState};
+use mtg_protocol::{ErrorCode, ServerMessage, YieldUntil};
 use tokio::time::Instant;
 
-use crate::actor::{Fatal, GameActor, Phase};
+use crate::actor::{Fatal, GameActor, Phase, not_started};
+use crate::running::Rejection;
 use crate::store::EventStore;
 use crate::yields::Yields;
 
@@ -100,10 +104,8 @@ pub(crate) fn passes_for(
     yields: &mut Yields,
     state: &GameState,
 ) -> bool {
-    let DecisionKind::Priority(options) = &decision.kind else {
-        return false;
-    };
-    yields.passes(decision.player, state, options.can_act) || skippable(decision, auto_pass)
+    is_priority(decision)
+        && (yields.passes(decision.player, state) || skippable(decision, auto_pass))
 }
 
 /// What the table answers for a seat whose clock ran out: a pass, or no blockers.
@@ -154,6 +156,56 @@ impl<S: EventStore> GameActor<S> {
             self.pass_if_idle(seat).await
         } else {
             Ok(())
+        }
+    }
+
+    /// Starts `seat`'s yield; if the seat faces a priority decision it is passed at once.
+    ///
+    /// The yield, the passes it makes and their save are one unit, like an answer and the auto-passes after it: a
+    /// failed save keeps no yield. A yield that ends at once (the stack it waits on is empty) passes nothing and the
+    /// decision is sent again with a new id, so the seat is never left without the prompt it owes an answer to.
+    pub(crate) async fn set_yield(
+        &mut self,
+        seat: PlayerId,
+        until: YieldUntil,
+    ) -> Result<(), Fatal> {
+        let Phase::Running(running) = &mut self.phase else {
+            self.refuse(seat, not_started());
+            return Ok(());
+        };
+        let state = running.engine.state();
+        if running.engine.result().is_some() || !state.is_alive(seat) {
+            let reason = "you are not in a game that is still being played";
+            self.refuse(seat, Rejection::new(ErrorCode::BadMessage, reason));
+            return Ok(());
+        }
+        let mut yields = self.yields.clone();
+        yields.start(seat, until, state);
+        if !running.asks_priority_of(seat) {
+            self.commit_yields(yields);
+            return Ok(());
+        }
+        match running.restart_decision(seat) {
+            Ok(step) => self.publish_with(step, yields).await,
+            Err(rejection) => {
+                self.refuse(seat, rejection);
+                Ok(())
+            }
+        }
+    }
+
+    /// Ends `seat`'s yield; the seat is told if it had one.
+    pub(crate) fn cancel_yield(&mut self, seat: PlayerId) {
+        let mut yields = self.yields.clone();
+        if yields.cancel(seat) {
+            self.commit_yields(yields);
+        }
+    }
+
+    /// Takes `yields` as the seats' yields and tells each seat whose yield changed.
+    fn commit_yields(&mut self, yields: Yields) {
+        for (seat, until) in self.yields.replace(yields) {
+            self.seats.send(seat, ServerMessage::Yielding { until });
         }
     }
 

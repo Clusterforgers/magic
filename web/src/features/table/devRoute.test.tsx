@@ -104,6 +104,49 @@ describe('/dev/table with a prompt', () => {
   })
 })
 
+describe('/dev/table with the controls of the Priority prompt', () => {
+  it.each([
+    ['priority', 'Resolve Lightning Bolt', true],
+    ['priority-main', 'Next: Combat', true],
+    ['priority-end', 'End turn', false],
+    ['priority-wait', 'Continue', true],
+  ])('?prompt=%s reads "%s" (an End turn beside it: %s)', async (prompt, label, hasSecondary) => {
+    await visit(`/dev/table?seats=2&prompt=${prompt}`)
+    await screen.findByRole('region', { name: 'Game table' })
+    expect(await findPrimary()).toHaveTextContent(label)
+    expect(document.querySelector('[data-slot="secondary-action"]') !== null).toBe(hasSecondary)
+    expect(document.querySelector('[data-slot="yield-indicator"]')).toBeNull()
+  })
+
+  it('starts a yield from the prompt as the server would: the prompt gives way to the line, which can be stopped', async () => {
+    await visit('/dev/table?seats=2&prompt=priority')
+    await findPrimary()
+    await act(async () => document.querySelector<HTMLElement>('[data-slot="secondary-action"]')?.click())
+    expect(document.querySelector('[data-decision]')).toBeNull()
+    expect(await screen.findByText('Passing until the end of turn')).toBeInTheDocument()
+    expect(document.querySelectorAll('[data-highlight]')).toHaveLength(0)
+
+    await act(async () => screen.getByRole('button', { name: 'Stop passing' }).click())
+    expect(document.querySelector('[data-slot="yield-indicator"]')).toBeNull()
+  })
+
+  it.each([
+    ['yield', 'Passing until the end of turn'],
+    ['yield-resolve', 'Passing until the stack is empty'],
+    ['yield-turn', 'Passing until your next turn'],
+  ])(
+    '?prompt=%s starts passing: "%s", no decision and nothing to press but Stop passing',
+    async (prompt, words) => {
+      await visit(`/dev/table?seats=2&prompt=${prompt}`)
+      await screen.findByRole('region', { name: 'Game table' })
+      expect(await screen.findByText(words)).toBeInTheDocument()
+      expect(document.querySelector('[data-decision]')).toBeNull()
+      expect(maybePrimaryButton()).toBeNull()
+      expect(screen.getByRole('button', { name: 'Stop passing' })).toBeEnabled()
+    },
+  )
+})
+
 describe('/dev/table with the viewer’s own turn', () => {
   it.each(['?seats=2&turn=you', '?seats=4&turn=you&prompt=priority', '?seats=12&turn=you'])(
     'lights the your-turn cue for %s',
