@@ -1,6 +1,7 @@
 /** The PayMana prompt in plain words: what a cost asks for and what to do next. */
-import type { ManaCost, ManaType } from '@/protocol/generated'
-import { manaValue } from './payment'
+import type { ManaCost, ManaType, ObjectId } from '@/protocol/generated'
+import { manaOf, manaValue } from './payment'
+import type { Spend } from './payment'
 
 const NAME: Record<ManaType, string> = {
   White: 'white',
@@ -14,6 +15,14 @@ const NAME: Record<ManaType, string> = {
 /** The lower-case word for a kind of mana: "white", "colorless". */
 export function manaName(mana: ManaType): string {
   return NAME[mana]
+}
+
+/** What a piece of the payment is, in words: "green from Forest", "red from your pool". */
+export function spendWords(spend: Spend, nameOf: (id: ObjectId) => string): string {
+  const what = manaName(manaOf(spend))
+  return spend.kind === 'pool'
+    ? `${what} from your pool`
+    : `${what} from ${nameOf(spend.option.source.object)}`
 }
 
 /** "a", "a and b", "a, b and c". */

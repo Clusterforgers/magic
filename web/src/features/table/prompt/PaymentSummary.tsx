@@ -5,7 +5,7 @@ import type { ManaCost, ManaPool, ManaType, ObjectId } from '@/protocol/generate
 import { costPips } from '../cardModel'
 import { ManaDot } from '../ManaPool'
 import { ManaPips } from '../ManaPips'
-import { manaName } from './payText'
+import { manaName, spendWords } from './payText'
 import { MANA_TYPES, manaOf, poolLeft } from './payment'
 import type { Spend } from './payment'
 
@@ -43,14 +43,6 @@ export interface PaymentSummaryProps {
   /** Takes the piece at this place in the payment back; Undo takes the last. */
   onRemove(index: number): void
   onClear(): void
-}
-
-/** What a piece of the payment is, in words: "green from Forest", "red from your pool". */
-export function spendWords(spend: Spend, nameOf: (id: ObjectId) => string): string {
-  const what = manaName(manaOf(spend))
-  return spend.kind === 'pool'
-    ? `${what} from your pool`
-    : `${what} from ${nameOf(spend.option.source.object)}`
 }
 
 /**
