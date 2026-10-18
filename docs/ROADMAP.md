@@ -27,10 +27,16 @@ After a restart, run `git worktree list` and read each worktree's status before 
 - [x] Protocol sync: every `Events` batch carries the whole table state plus a before/after object diff, so the client never folds engine events; reference `StateView::apply`, per-seat property tests, transcript fixture for the web
 - [x] Web core: typed REST + WebSocket client (reconnect, close codes, gap in `from_seq` sends `Resync`), zustand store applying snapshots and batches, tested against the transcript fixture and a fake socket
 - [x] Web game UI: routes, create-game page, connection/lobby/game-over screens; read-only N-seat table in `GameTable` (grid and focus layouts, seat panels, battlefields, hand, stack, log, chat, card preview, `/dev/table`); prompts for all eight decision kinds (`features/table/prompt/`, `?prompt=` on `/dev/table`), legal-option highlights and "nothing to do" notes (`docs/web.md`). Commander damage and tax in the table wait for M5
-- [ ] Protocol and engine gaps the prompts exposed (one task each, with tests): `MulliganOptions` should carry the free-mulligan rule (the UI assumes `mulligans_taken + 1` cards go to the bottom); `ManaCost` has no hybrid or X; `PayOptions` has no cancel flag and there is no "complete my partial payment" answer (`Auto` ignores what was chosen); `check_payment` accepts two abilities of one permanent, which would tap it twice; `DamageOptions` carries no player or trample targets and the views carry no keywords, so deathtouch is not in the lethal hint
-- [ ] Playwright e2e: full 2-player vanilla game in the browser
+- [ ] Protocol and engine gaps the prompts exposed (one task each, with tests): (a) done: `MulliganOptions` carries `free_mulligans`, `bottom_if_keep` and `bottom_if_mulligan`, and the prompt reads them; (b) payment: `PayOptions` has no cancel flag and there is no "complete my partial payment" answer (`Auto` ignores what was chosen), and `check_payment` accepts two abilities of one permanent, which would tap it twice; (c) `ManaCost` has no hybrid or phyrexian symbols. Two more wait for their M3 features: X in `ManaCost` goes with "X costs", and `DamageOptions` player and trample targets plus keywords in the views (deathtouch in the lethal hint) go with "trample" and "deathtouch"
+- [x] Playwright e2e: full 2-player vanilla game in the browser (`web/e2e`, `pnpm e2e`; command and driver in `docs/web.md`)
 - [x] `mtg-server` persistence (a): Postgres `EventStore` and migration table
-- [ ] `mtg-server` persistence (b): game and seat records (store a serializable setup recipe), resume running games on boot; `sqlx::test` tests
+- [x] `mtg-server` persistence (b): game and seat records (store a serializable setup recipe), resume running games on boot; `sqlx::test` tests
+- [ ] Game flow, from the first hands-on test (one task each, with tests): (a) `PriorityOptions` says whether the player can do anything useful (a land to play, a castable spell, an ability that is not a mana ability; tapping a land for mana alone does not count, so after the last land with nothing affordable there is nothing to do) and the server passes for a seat that cannot act (per-seat setting, on by default), so nobody waits on a "nothing to play" prompt; (b) response clock: when a seat that is not the active player can act, its decision carries a deadline (default 10 s, `MTG_RESPONSE_SECS`), the server passes at the deadline and the web shows the countdown, so one player cannot hold the table; (c) replace the bare "Pass priority" button with contextual controls (Resolve with a spell on the stack, Next step, Attack, End turn) plus "pass until something happens" yields and per-step stops kept per seat on the server
+- [ ] Combat readability: (a) engine `combat_forecast` (who deals what to whom, which creatures die; keywords join it as they land) carried in the view during blocks; (b) web: lines from each attacker to its blockers, the forecast drawn on the cards (a doomed creature looks destroyed), declared-block state clear before confirming
+- [ ] Table feedback: animations for attacking, blocking, creatures dying and a player taking damage (driven by the event diff, off under `prefers-reduced-motion`); a pulsing "your turn" cue on the table and in the tab title so nobody misses their turn
+- [ ] Concede: a button with a confirm step wired to the existing `ClientMessage::Concede`, conceded seats marked in the seat panel and log
+- [ ] Lobby shows who has pressed Ready: the server tracks Ready per seat, lists it in the REST lookup and pushes changes, and the lobby shows every seat's state
+- [ ] Users (pulled forward from M4 Auth; needs persistence (b)): users table, username + argon2, session cookie, register/login/logout/me endpoints and pages; games and seats bound to a user; "My games" lists running and finished games and rejoins a seat by user, with the seat-token link kept for guests; `sqlx::test` tests
 
 ## M3 Rules depth
 - [ ] `mtg-cards` DSL: Cost, Selector, Condition, Effect, Duration, TargetSpec primitives with data files
@@ -44,7 +50,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 - [ ] Tokens, copy effects, X costs, alternative and additional costs, modal spells
 
 ## M4 Multiplayer product
-- [ ] Auth (username + argon2, session cookie), invite-link lobbies
+- [ ] Invite-link lobbies on top of users (accounts land in M2)
 - [ ] Deck builder UI with card search, import, validation, export
 - [ ] Precon browser with one-click play
 - [ ] N-player layout, game log, stack panel, stop settings

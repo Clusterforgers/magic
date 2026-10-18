@@ -1,4 +1,4 @@
-/** Goal: `?prompt=mulligan|bottom|discard` hands the viewer, at every seat count, a decision the wire parser accepts and whose cards are the viewer's real hand (discard leaves one card out so a dimmed card shows), and each can be rendered and answered on the dev table. */
+/** Goal: `?prompt=mulligan|mulligan-free|bottom|discard` hands the viewer, at every seat count, a decision the wire parser accepts and whose cards are the viewer's real hand (discard leaves one card out so a dimmed card shows), and each can be rendered and answered on the dev table. */
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -9,8 +9,13 @@ import { parseMessage } from '@/net/parse'
 import { must } from '@/test-utils/batches'
 import { fixtureGame } from './devGame'
 
-const NAMES = ['mulligan', 'bottom', 'discard'] as const
-const KIND = { mulligan: 'Mulligan', bottom: 'BottomCards', discard: 'Discard' } as const
+const NAMES = ['mulligan', 'mulligan-free', 'bottom', 'discard'] as const
+const KIND = {
+  mulligan: 'Mulligan',
+  'mulligan-free': 'Mulligan',
+  bottom: 'BottomCards',
+  discard: 'Discard',
+} as const
 
 describe.each(NAMES)('?prompt=%s', (prompt) => {
   it.each([2, 4, 12])('faces a decision of the viewer’s real hand at %i seats', (seats) => {
@@ -35,7 +40,7 @@ describe.each(NAMES)('?prompt=%s', (prompt) => {
     )
     const user = userEvent.setup()
     expect(document.querySelector(`[data-decision="${KIND[prompt]}"]`)).not.toBeNull()
-    if (prompt === 'mulligan') await user.click(screen.getByRole('button', { name: 'Keep' }))
+    if (KIND[prompt] === 'Mulligan') await user.click(screen.getByRole('button', { name: 'Keep' }))
     else {
       const [first, second] = [...document.querySelectorAll<HTMLElement>('[data-highlight="legal"]')]
       await user.click(must(first))

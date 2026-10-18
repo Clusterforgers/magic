@@ -4,6 +4,7 @@
 mod common;
 mod net;
 
+use std::fmt::Write as _;
 use std::time::{Duration, Instant};
 
 use common::{Bot, drive, roomy};
@@ -302,8 +303,8 @@ async fn lobbies_survive_a_restart_and_start_afterwards(pool: PgPool) {
     // The old tokens seat the players again and the game then runs to the end.
     let tokens = tokens(&lively);
     let mut bots = Vec::new();
-    for seat in 0..2 {
-        let access = registry.authenticate(lively.id, &tokens[seat]).unwrap();
+    for (seat, token) in tokens.iter().enumerate() {
+        let access = registry.authenticate(lively.id, token).unwrap();
         bots.push(Bot::join(&access.handle, seat, seed).await);
     }
     let handle = registry.handle(lively.id).unwrap();
@@ -580,10 +581,12 @@ async fn a_token_opens_only_its_own_seat_of_its_own_game_before_and_after_a_rest
         }
     }
     // A digest of a token is not a token.
-    let digest_hex: String = digest(&games[0].1[0])
+    let digest_hex = digest(&games[0].1[0])
         .iter()
-        .map(|b| format!("{b:02x}"))
-        .collect();
+        .fold(String::new(), |mut hex, byte| {
+            write!(hex, "{byte:02x}").unwrap();
+            hex
+        });
     assert!(registry.authenticate(a.id, &digest_hex).is_none());
 }
 

@@ -17,7 +17,15 @@ const decision = (id: number, kind: DecisionKind): ServerMessage => ({
   decision: { player: 0, kind },
 })
 const mulligan = (taken = 0): DecisionKind => ({
-  Mulligan: { hand, mulligans_taken: taken, can_mulligan: true },
+  // A Normal-format hand: no free mulligan, one card to the bottom per mulligan taken.
+  Mulligan: {
+    hand,
+    mulligans_taken: taken,
+    can_mulligan: true,
+    free_mulligans: 0,
+    bottom_if_keep: taken,
+    bottom_if_mulligan: taken + 1,
+  },
 })
 const bottom = (count: number): DecisionKind => ({ BottomCards: { hand, count } })
 const discard = (count: number): DecisionKind => ({ Discard: { hand, count } })
