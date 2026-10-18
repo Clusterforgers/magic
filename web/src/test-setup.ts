@@ -4,3 +4,6 @@ import { afterEach } from 'vitest'
 
 // Vitest runs without globals, so Testing Library cannot register its own cleanup.
 afterEach(cleanup)
+
+// jsdom logs "not implemented" for every scroll the router restores on navigation.
+window.scrollTo = () => undefined

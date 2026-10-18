@@ -4,12 +4,10 @@ import { Link, Outlet } from '@tanstack/react-router'
 export function AppShell() {
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
-      <header className="border-b">
-        <div className="mx-auto flex h-12 w-full max-w-5xl items-center px-4 sm:px-6">
-          <Link to="/" className="font-heading text-sm font-semibold tracking-tight">
-            Magic
-          </Link>
-        </div>
+      <header className="flex h-12 items-center border-b px-4 sm:px-6">
+        <Link to="/" className="font-heading text-sm font-semibold tracking-tight">
+          Magic
+        </Link>
       </header>
       <main className="flex-1">
         <Outlet />
