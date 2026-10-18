@@ -21,7 +21,9 @@
 //! - **Connections.** `join` replaces whatever connection the seat had and sends `Welcome`, then
 //!   (once running) a snapshot, the seat's pending decision and the result if the game is over;
 //!   `Resync` repeats the last two. Queues are bounded: a client that stops reading is dropped and
-//!   must join again. The game waits for absent seats and never passes for them.
+//!   must join again. The game waits for absent seats; the only pass it makes for a seat is the
+//!   auto-pass for one with nothing to do ([`Pace`], `ClientMessage::AutoPass`), which goes through the
+//!   same path as an answer and never sends that decision.
 //! - **Chat** is broadcast to connected seats and never stored.
 //!
 //! Event logs live in memory ([`MemoryStore`]) or in Postgres ([`PgEventStore`], whose schema
@@ -42,6 +44,7 @@ mod limit;
 mod lobby;
 mod migrations;
 mod origin;
+mod pace;
 mod pg_store;
 mod play;
 mod recipe;
@@ -65,6 +68,7 @@ pub use config::{ConfigError, ServerConfig};
 pub use game_id::GameId;
 pub use handle::{GameClosed, GameHandle, GameStatus, JoinError};
 pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};
+pub use pace::Pace;
 pub use pg_store::PgEventStore;
 pub use recipe::{DeckRef, FormatKind, GameRecipe, RecipeError};
 pub use records::{GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord};

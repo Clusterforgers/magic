@@ -9,7 +9,7 @@ use common::{
 };
 use mtg_engine::replay;
 use mtg_protocol::{ClientMessage, ServerMessage};
-use mtg_server::{EventStore, GameConfig, MIN_QUEUE, MemoryStore, spawn_game_with};
+use mtg_server::{EventStore, GameConfig, MIN_QUEUE, MemoryStore, Pace, spawn_game_with};
 use rstest::rstest;
 use tokio::sync::mpsc::error::TryRecvError;
 
@@ -205,6 +205,7 @@ async fn a_client_that_stops_reading_is_dropped_and_the_game_never_waits_for_it(
     let config = GameConfig {
         seat_queue: MIN_QUEUE,
         command_queue: 64,
+        pace: Pace::MANUAL,
     };
     let handle = spawn_game_with(game_id(1), table_setup(2, 3), store, config).unwrap();
     let mut idle = Client::join(&handle, 0).await;

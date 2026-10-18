@@ -4,7 +4,7 @@ use std::net::SocketAddr;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
-use mtg_engine::{Answer, Decision};
+use mtg_engine::{Answer, Decision, DecisionKind};
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage};
 use mtg_testkit::RandomBot;
 
@@ -30,6 +30,7 @@ pub struct WsBot {
     pub pause_at: Option<usize>,
     pub next_seq: u64,
     pub decisions: usize,
+    pub idle_decisions: usize,
     pub answers: usize,
     pub snapshots: usize,
     pub errors: Vec<(ErrorCode, String)>,
@@ -55,6 +56,7 @@ impl WsBot {
             pause_at: None,
             next_seq: 0,
             decisions: 0,
+            idle_decisions: 0,
             answers: 0,
             snapshots: 0,
             errors: Vec::new(),
@@ -102,6 +104,7 @@ impl WsBot {
             seat: PlayerId::from_index(self.seat),
             result,
             decisions: self.decisions,
+            idle_decisions: self.idle_decisions,
             answers: self.answers,
             events_seen: self.next_seq,
             snapshots: self.snapshots,
@@ -135,6 +138,8 @@ impl WsBot {
             ServerMessage::Decision { id, decision } => {
                 assert_eq!(decision.player, me, "a decision for another seat");
                 self.decisions += 1;
+                self.idle_decisions +=
+                    usize::from(matches!(&decision.kind, DecisionKind::Priority(o) if !o.can_act));
                 return self.respond(id, decision).await;
             }
             ServerMessage::Error { code, message } => self.errors.push((code, message)),

@@ -67,6 +67,11 @@ export interface PlayState {
   result: GameResult | null
   /** The latest thing worth telling the player (a refused action, a lost seat), or null; clear it with `dismissNotice`. */
   notice: string | null
+  /**
+   * Whether the server passes priority for this seat when it has nothing to do (the "Skip turns when I can't act"
+   * switch). The server's word: set by every Welcome and by a switch that went out; on until told otherwise.
+   */
+  autoPass: boolean
 }
 
 /** The store type: a vanilla zustand store; in React read it with `useStore(store, selector)` from `zustand`. */
@@ -88,6 +93,7 @@ export function initialPlayState(): PlayState {
     phase: 'lobby',
     result: null,
     notice: null,
+    autoPass: true,
   }
 }
 

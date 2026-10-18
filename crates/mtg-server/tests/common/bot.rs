@@ -2,7 +2,7 @@
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
-use mtg_engine::{Answer, Decision};
+use mtg_engine::{Answer, Decision, DecisionKind};
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage};
 use mtg_server::GameHandle;
 use mtg_testkit::RandomBot;
@@ -33,6 +33,8 @@ pub struct Bot {
     pub concede_at: Option<usize>,
     pub next_seq: u64,
     pub decisions: usize,
+    /// Priority decisions it was sent that it could do nothing with (a server that passes for idle seats never sends one).
+    pub idle_decisions: usize,
     pub answers: usize,
     pub snapshots: usize,
     pub errors: Vec<(ErrorCode, String)>,
@@ -44,6 +46,7 @@ pub struct BotReport {
     pub seat: PlayerId,
     pub result: GameResult,
     pub decisions: usize,
+    pub idle_decisions: usize,
     pub answers: usize,
     pub events_seen: u64,
     pub snapshots: usize,
@@ -62,6 +65,7 @@ impl Bot {
             concede_at: None,
             next_seq: 0,
             decisions: 0,
+            idle_decisions: 0,
             answers: 0,
             snapshots: 0,
             errors: Vec::new(),
@@ -105,6 +109,8 @@ impl Bot {
                     "a decision reached the wrong seat"
                 );
                 self.decisions += 1;
+                self.idle_decisions +=
+                    usize::from(matches!(&decision.kind, DecisionKind::Priority(o) if !o.can_act));
                 self.respond(handle, id, decision, allow).await;
             }
             ServerMessage::Error { code, message } => self.errors.push((code, message)),
@@ -161,6 +167,7 @@ impl Bot {
                     seat: self.seat,
                     result,
                     decisions: self.decisions,
+                    idle_decisions: self.idle_decisions,
                     answers: self.answers,
                     events_seen: self.next_seq,
                     snapshots: self.snapshots,

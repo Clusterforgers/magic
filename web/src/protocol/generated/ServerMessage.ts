@@ -26,7 +26,11 @@ player: PlayerId,
 /**
  * Number of seats at the table.
  */
-seats: number, } | { "type": "Decision", 
+seats: number, 
+/**
+ * Whether the server passes for this seat when it cannot act (see [`ClientMessage::AutoPass`]).
+ */
+auto_pass: boolean, } | { "type": "Decision", 
 /**
  * Echo this id in the answer.
  */

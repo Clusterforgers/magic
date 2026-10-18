@@ -3,6 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
+import { AutoPassSwitch } from './AutoPassSwitch'
 import type { CardSize } from './cardSize'
 import { CardPreview } from './CardPreview'
 import { ConcedeButton } from './ConcedeButton'
@@ -103,7 +104,10 @@ export const GameTable = memo(function GameTable() {
                     pinnedFocus={chosen !== null}
                     onFollow={() => setChosen(null)}
                   />
-                  <ConcedeButton />
+                  <div className="flex flex-wrap items-center gap-3">
+                    <AutoPassSwitch />
+                    <ConcedeButton />
+                  </div>
                 </div>
                 <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
                 <div className="grid gap-3">

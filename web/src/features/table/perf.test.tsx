@@ -205,7 +205,16 @@ const priority = (id: number, options: Partial<PriorityOptions> = {}, player = 0
   id,
   decision: {
     player,
-    kind: { Priority: { playable_lands: [], castable: [], mana_abilities: [], can_pass: true, ...options } },
+    kind: {
+      Priority: {
+        playable_lands: [],
+        castable: [],
+        mana_abilities: [],
+        can_act: false,
+        can_pass: true,
+        ...options,
+      },
+    },
   },
 })
 

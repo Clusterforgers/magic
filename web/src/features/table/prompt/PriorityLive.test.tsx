@@ -26,6 +26,7 @@ const options = (over: Partial<PriorityOptions> = {}): PriorityOptions => ({
   playable_lands: [],
   castable: [],
   mana_abilities: [],
+  can_act: false,
   can_pass: true,
   ...over,
 })

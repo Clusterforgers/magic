@@ -206,7 +206,15 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isText(v.game)) return '"game" must be text'
       if (!isCount(v.player)) return '"player" must be a seat number'
       if (!isCount(v.seats)) return '"seats" must be a whole number'
-      return { type, protocol_version: v.protocol_version, game: v.game, player: v.player, seats: v.seats }
+      if (!isFlag(v.auto_pass)) return '"auto_pass" must be true or false'
+      return {
+        type,
+        protocol_version: v.protocol_version,
+        game: v.game,
+        player: v.player,
+        seats: v.seats,
+        auto_pass: v.auto_pass,
+      }
     case 'Decision':
       if (!isCount(v.id)) return '"id" must be a whole number'
       if (!isDecision(v.decision)) return '"decision" must name a player and exactly one decision kind'

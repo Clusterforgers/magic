@@ -26,7 +26,8 @@ const LATE_JOIN_SEED: u64 = 20;
 /// A game in which seat 0 mulligans, so the transcript carries cards leaving and entering its view.
 const LOBBY_SEED: u64 = 58;
 const GAME: &str = "00000000-0000-4000-8000-000000000001";
-const DESCRIPTION: &str = "What seat 0 of a seeded two-player bot game is sent by mtg-server, in order. \
+const DESCRIPTION: &str = "What seat 0 of a seeded two-player bot game is sent by mtg-server, in order, with auto-pass off \
+    (a seat that is stopped at every priority window). \
     `messages` is a seat that joins a running game: Welcome, Snapshot, its pending Decision, then the last \
     batches of the game with their Decisions and GameOver. `lobby` is a seat that joined before the start: \
     Welcome, then the first batches from seq 0 with no Snapshot. `expected` is the seat's true StateView \
@@ -105,6 +106,7 @@ fn welcome() -> ServerMessage {
         game: GAME.to_owned(),
         player: SEAT,
         seats: 2,
+        auto_pass: false,
     }
 }
 

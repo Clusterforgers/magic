@@ -4,6 +4,14 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState};
 use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView};
 
+use crate::pace;
+
+/// Most priority passes made for idle seats in one go; past it the decision is sent as it is.
+///
+/// A real game needs a handful. The cap keeps one batch small and the actor responsive if a table
+/// ever offers nothing to do for dozens of turns.
+const MAX_IDLE_PASSES: usize = 500;
+
 /// A client message that was refused, as the `Error` it becomes.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct Rejection {
@@ -85,6 +93,13 @@ impl Running {
         self.pending.as_ref().map(|p| p.decision.player)
     }
 
+    /// Whether the pending decision is `seat`'s, cannot be used and `seat` has auto-pass on.
+    pub(crate) fn idle_for(&self, seat: PlayerId, auto_pass: &[bool]) -> bool {
+        self.pending
+            .as_ref()
+            .is_some_and(|p| p.decision.player == seat && pace::skippable(&p.decision, auto_pass))
+    }
+
     /// Aligns the pending decision with the engine's and returns what a client must be sent, if anything.
     ///
     /// Every new decision gets a fresh id. With `keep_unchanged`, a decision that did not change keeps
@@ -155,6 +170,41 @@ impl Running {
                 }
                 _ => Rejection::engine_failed(),
             })
+    }
+
+    /// Passes priority for the seat the pending decision belongs to.
+    ///
+    /// It goes through [`answer`](Running::answer), so it is checked and logged like the seat's own pass.
+    pub(crate) fn pass_for_pending(&mut self) -> Result<Step, Rejection> {
+        let Some((id, seat)) = self.pending.as_ref().map(|p| (p.id, p.decision.player)) else {
+            return Err(Rejection::new(
+                ErrorCode::StaleDecision,
+                "no decision is pending",
+            ));
+        };
+        self.answer(seat, id, pace::pass())
+    }
+
+    /// Passes for every seat that has nothing to do and has auto-pass on, until some decision needs a player.
+    ///
+    /// The passes go through the engine like any answer; their events are added to `events`, so the
+    /// whole stretch is saved and shown as one batch. A seat that is asked anything else, or that can
+    /// act, stops the run, and so does the end of the game.
+    pub(crate) fn skip_idle(
+        &mut self,
+        events: &mut Vec<Event>,
+        auto_pass: &[bool],
+    ) -> Result<(), EngineError> {
+        for _ in 0..MAX_IDLE_PASSES {
+            let Some(decision) = self.engine.decision() else {
+                break;
+            };
+            if !pace::skippable(decision, auto_pass) {
+                break;
+            }
+            events.extend(self.engine.apply(pace::pass())?);
+        }
+        Ok(())
     }
 
     /// Removes `seat` from the game.

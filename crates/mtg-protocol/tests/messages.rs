@@ -27,7 +27,7 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 6;
+const CLIENT_VARIANTS: usize = 7;
 const SERVER_VARIANTS: usize = 7;
 
 /// Index of each client variant; adding a variant breaks this match until the table below grows.
@@ -39,6 +39,7 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::Chat { .. } => 3,
         ClientMessage::Concede => 4,
         ClientMessage::Resync => 5,
+        ClientMessage::AutoPass { .. } => 6,
     }
 }
 
@@ -121,6 +122,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             playable_lands: vec![a],
             castable: vec![b],
             mana_abilities: vec![option],
+            can_act: true,
             can_pass: true,
         }),
         DecisionKind::PayMana(PayOptions {
@@ -179,6 +181,8 @@ fn client_samples() -> Vec<ClientMessage> {
         },
         ClientMessage::Concede,
         ClientMessage::Resync,
+        ClientMessage::AutoPass { enabled: true },
+        ClientMessage::AutoPass { enabled: false },
     ];
     out.extend(answers().into_iter().map(|answer| ClientMessage::Answer {
         decision: DecisionId(41),
@@ -195,6 +199,7 @@ fn server_samples() -> Vec<ServerMessage> {
             game: "table-1".into(),
             player: PlayerId(1),
             seats: 4,
+            auto_pass: true,
         },
         ServerMessage::Events(batch.clone()),
         ServerMessage::Snapshot {
@@ -287,6 +292,7 @@ fn every_event_view_variant_round_trips() {
 #[rstest]
 #[case(ClientMessage::Ready, json!({"type": "Ready"}))]
 #[case(ClientMessage::Resync, json!({"type": "Resync"}))]
+#[case(ClientMessage::AutoPass { enabled: false }, json!({"type": "AutoPass", "enabled": false}))]
 #[case(
     ClientMessage::Join { protocol_version: 1, game: "g".into(), name: "n".into() },
     json!({"type": "Join", "protocol_version": 1, "game": "g", "name": "n"})
@@ -308,8 +314,8 @@ fn client_wire_shape_is_flat_and_tagged(
 
 #[rstest]
 #[case(
-    ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4 },
-    json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4})
+    ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true },
+    json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true})
 )]
 #[case(
     ServerMessage::Error { code: ErrorCode::StaleDecision, message: "late".into() },

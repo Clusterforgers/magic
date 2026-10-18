@@ -12,6 +12,7 @@ use tokio::sync::{mpsc, oneshot};
 
 use crate::game_id::GameId;
 use crate::handle::{Command, GameHandle, GameStatus, JoinError};
+use crate::pace::Pace;
 use crate::recorder::Recorder;
 use crate::running::{Rejection, Running, count};
 use crate::seats::Seats;
@@ -27,6 +28,8 @@ pub struct GameConfig {
     pub seat_queue: usize,
     /// Client messages that may wait for the actor before senders have to wait.
     pub command_queue: usize,
+    /// Whether a seat with nothing to do is passed for.
+    pub pace: Pace,
 }
 
 impl Default for GameConfig {
@@ -34,6 +37,7 @@ impl Default for GameConfig {
         GameConfig {
             seat_queue: 256,
             command_queue: 64,
+            pace: Pace::default(),
         }
     }
 }
@@ -151,6 +155,7 @@ fn launch<S: EventStore>(
         id,
         store,
         seats: Seats::new(setup.players.len(), config.seat_queue),
+        auto_pass: vec![config.pace.auto_pass; setup.players.len()],
         setup,
         phase,
         recorder,
@@ -177,6 +182,8 @@ pub(crate) struct GameActor<S> {
     pub(crate) store: S,
     pub(crate) setup: GameSetup,
     pub(crate) seats: Seats,
+    /// Per seat: whether a priority decision it cannot use is passed for it. Starts at the server default, resets on resume.
+    pub(crate) auto_pass: Vec<bool>,
     pub(crate) phase: Phase,
     /// Where a persistent game notes its milestones; `None` for a game that lives in memory only.
     pub(crate) recorder: Option<Recorder>,
@@ -185,6 +192,9 @@ pub(crate) struct GameActor<S> {
 impl<S: EventStore> GameActor<S> {
     /// Handles commands one at a time until every handle is gone.
     async fn run(mut self, mut inbox: mpsc::Receiver<Command>) {
+        if self.start_up().await.is_err() {
+            return;
+        }
         while let Some(command) = inbox.recv().await {
             if self.handle(command).await.is_err() {
                 return;
@@ -220,6 +230,7 @@ impl<S: EventStore> GameActor<S> {
             game: self.id.to_string(),
             player: seat,
             seats: u32::try_from(self.seats.len()).unwrap_or(u32::MAX),
+            auto_pass: self.auto_pass.get(seat.index()).copied().unwrap_or(false),
         };
         self.seats.send(seat, welcome);
         self.sync(seat);
@@ -254,6 +265,7 @@ impl<S: EventStore> GameActor<S> {
                 return self.answer(seat, decision, answer).await;
             }
             ClientMessage::Concede => return self.concede(seat).await,
+            ClientMessage::AutoPass { enabled } => return self.set_auto_pass(seat, enabled).await,
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),
                 Phase::Lobby { .. } => self.refuse(seat, not_started()),

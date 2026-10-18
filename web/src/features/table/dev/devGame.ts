@@ -15,7 +15,7 @@ import { DEV_PROMPTS, DEV_TABLES } from './prompts'
  */
 export function fixtureState(fixture: Fixture, pending?: PendingDecision | null): PlayState {
   const { view, log, chat } = fixture
-  const options = { playable_lands: [], castable: [], mana_abilities: [], can_pass: true }
+  const options = { playable_lands: [], castable: [], mana_abilities: [], can_act: false, can_pass: true }
   return {
     ...initialPlayState(),
     status: 'open',
@@ -57,6 +57,10 @@ export function fixtureSession(store: PlayStore): Session {
       return true
     },
     concede: () => false,
+    setAutoPass(enabled) {
+      store.setState({ autoPass: enabled })
+      return true
+    },
     chat(text) {
       const line = text.trim()
       if (line === '') return false

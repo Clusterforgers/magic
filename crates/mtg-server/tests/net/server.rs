@@ -5,7 +5,7 @@ use std::net::SocketAddr;
 use std::time::Duration;
 
 use mtg_server::config::SocketLimits;
-use mtg_server::{GameConfig, Registry, Server, ServerConfig};
+use mtg_server::{GameConfig, Pace, Registry, Server, ServerConfig};
 use sqlx::PgPool;
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
@@ -17,6 +17,7 @@ pub fn bot_config() -> ServerConfig {
         game: GameConfig {
             seat_queue: 8192,
             command_queue: 64,
+            pace: Pace::MANUAL,
         },
         socket: SocketLimits {
             burst: 1_000_000,

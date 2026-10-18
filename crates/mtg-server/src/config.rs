@@ -1,4 +1,4 @@
-//! Server settings: three come from the environment, the rest are limits that tests may tune.
+//! Server settings: four come from the environment, the rest are limits that tests may tune.
 
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::time::Duration;
@@ -24,6 +24,9 @@ pub enum ConfigError {
     /// An `MTG_ALLOWED_ORIGINS` entry is not `http(s)://host[:port]`.
     #[error("MTG_ALLOWED_ORIGINS entry {0:?} is not an origin such as https://host[:port]")]
     BadOrigin(String),
+    /// `MTG_AUTO_PASS` is not a switch.
+    #[error("MTG_AUTO_PASS must be 1 or 0 (also on, off, true, false), got {0:?}")]
+    BadAutoPass(String),
 }
 
 /// Timers and size limits of one WebSocket connection.
@@ -123,7 +126,7 @@ impl Default for ServerConfig {
 }
 
 impl ServerConfig {
-    /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS` and `MTG_MAX_GAMES` from the process environment.
+    /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES` and `MTG_AUTO_PASS` from the process environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
             std::env::var_os(key).map(|value| value.to_string_lossy().into_owned())
@@ -157,7 +160,20 @@ impl ServerConfig {
                 }
             }
         }
+        if let Some(text) = get("MTG_AUTO_PASS") {
+            config.game.pace.auto_pass =
+                parse_switch(&text).ok_or(ConfigError::BadAutoPass(text))?;
+        }
         Ok(config)
+    }
+}
+
+/// A switch written as 1/0, on/off or true/false, in any case.
+fn parse_switch(raw: &str) -> Option<bool> {
+    match raw.trim().to_ascii_lowercase().as_str() {
+        "1" | "on" | "true" => Some(true),
+        "0" | "off" | "false" => Some(false),
+        _ => None,
     }
 }
 
@@ -299,5 +315,39 @@ mod tests {
         assert_eq!(config.bind.port(), 80);
         assert_eq!(config.max_games, 5);
         assert_eq!(config.allowed_origins, ["https://x.example"]);
+    }
+
+    #[test]
+    fn idle_seats_are_passed_for_unless_the_environment_says_otherwise() {
+        assert!(load(&[]).unwrap().game.pace.auto_pass);
+    }
+
+    #[rstest]
+    #[case("1", true)]
+    #[case("0", false)]
+    #[case(" 0 ", false)]
+    #[case("off", false)]
+    #[case("OFF", false)]
+    #[case("false", false)]
+    #[case("on", true)]
+    #[case("True", true)]
+    #[case("", true)]
+    #[case("  ", true)]
+    fn auto_pass_switch(#[case] text: &str, #[case] expected: bool) {
+        let config = load(&[("MTG_AUTO_PASS", text)]).unwrap();
+        assert_eq!(config.game.pace.auto_pass, expected);
+    }
+
+    #[rstest]
+    #[case("2")]
+    #[case("yes")]
+    #[case("-1")]
+    #[case("0.5")]
+    #[case("disabled")]
+    fn bad_auto_pass_switch(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_AUTO_PASS", text)]),
+            Err(ConfigError::BadAutoPass(text.to_owned()))
+        );
     }
 }

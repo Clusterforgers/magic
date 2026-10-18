@@ -29,6 +29,11 @@ export interface Session {
   answer(answer: Answer): boolean
   /** Gives up the game. */
   concede(): boolean
+  /**
+   * Asks the server to pass priority for this seat whenever it has nothing to do, or to stop doing so. The store's
+   * `autoPass` follows once the message is out; false (and no change) when the socket is not open.
+   */
+  setAutoPass(enabled: boolean): boolean
   /** Says `text` to the table (trimmed, at most `MAX_CHAT_CHARS` characters). */
   chat(text: string): boolean
   /** Asks the server for a fresh snapshot; the escape hatch when the game looks stuck. */
@@ -93,7 +98,7 @@ export function createSession(deps: SessionDeps): Session {
       case 'Welcome':
         awaitingSnapshot = false
         lastAnswered = null
-        setState({ seat: message.player, seatCount: message.seats })
+        setState({ seat: message.player, seatCount: message.seats, autoPass: message.auto_pass })
         return
       case 'Snapshot':
         onSnapshot(message)
@@ -206,6 +211,11 @@ export function createSession(deps: SessionDeps): Session {
       return true
     },
     concede: () => socket.send({ type: 'Concede' }),
+    setAutoPass(enabled) {
+      if (!socket.send({ type: 'AutoPass', enabled })) return false
+      setState({ autoPass: enabled })
+      return true
+    },
     chat(text) {
       const line = text.trim()
       if (line === '') return false

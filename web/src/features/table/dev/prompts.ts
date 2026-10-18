@@ -53,6 +53,7 @@ const priority: DevPrompt = ({ view }) => {
     playable_lands: hand.filter(isLand).map((object) => object.id),
     castable: spells.slice(0, -1).map((object) => object.id),
     mana_abilities,
+    can_act: true,
     can_pass: true,
   }
   return { id: 1, decision: { player: viewer, kind: { Priority: options } } }
