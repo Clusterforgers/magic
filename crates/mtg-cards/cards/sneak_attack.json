@@ -1,0 +1,50 @@
+{
+  "oracle_id": "e7aee670-e6ac-4b3a-b3d1-7b7013db8f3d",
+  "name": "Sneak Attack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sneak Attack",
+      "oracle_fingerprint": "e37e2368a5d3a565eec58745708d9a1f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{R}",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Creature" }]
+                        },
+                        "as": "creature"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "creature" }, "to": { "Battlefield": {} } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "creature" },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "Forever"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          { "Sacrifice": { "filter": [{ "Is": { "Bound": "creature" } }] } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

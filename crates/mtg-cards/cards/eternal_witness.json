@@ -1,0 +1,22 @@
+{
+  "oracle_id": "30b24e8e-3b0e-4d8e-90f3-f66eb7c1858c",
+  "name": "Eternal Witness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eternal Witness",
+      "oracle_fingerprint": "e53f79c5553b801dfe23c2fdc4496175",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] } }],
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

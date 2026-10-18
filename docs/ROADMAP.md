@@ -53,15 +53,18 @@ After a restart, run `git worktree list` and read each worktree's status before 
   - Smart stops, per-ability yields, auto-ordered triggers and damage auto-assign (P10) go with the M3 trigger item
 
 ## M3 Rules depth
-- [ ] `mtg-cards` DSL: Cost, Selector, Condition, Effect, Duration, TargetSpec primitives with data files
-- [ ] Decision kinds the effects need (one task each across `mtg-engine`, `mtg-protocol` and a web prompt, with tests; today the engine has no targeting or choices): `ChooseTargets`, `ChooseMode`, `ChooseNumber` (X, "any number"), `ChooseCards` from a zone or revealed set (search, reveal, "choose a creature"), `OrderCards` (scry, surveil, put back, bottom in any order), `YesNo` for "may", `OrderTriggers` (same controller), `ChooseReplacement`
-- [ ] Keywords, one task each with a table test: flying/reach, first strike/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof/ward. Also here: `DamageOptions` gets player and trample targets, and the views carry keywords so the damage prompt's lethal hint knows deathtouch (`docs/web.md`, AssignDamage)
-- [ ] Keyword actions (CR 701), one engine primitive each, table-tested, with a web prompt where the player chooses: draw/discard/mill/shuffle, scry, surveil, fateseal, search, reveal, sacrifice/destroy/exile/counter, create tokens and populate (the "summon" family), fight, explore, proliferate, investigate and other predefined tokens (Clue, Treasure, Food), amass, connive, learn, transform/meld, attach/equip, regenerate, goad, monstrosity, adapt, bolster, support, venture. Arena-only digital actions (conjure, seek, specialize) stay out until asked for
-- [ ] Keyword abilities beyond combat (CR 702), one task each: flash, equip/reconfigure, enchant, cycling, kicker/multikicker, flashback, madness, prowess, convoke, delve, cascade, storm, morph/disguise, suspend, evoke, overload, and the Commander-relevant ones (partner, companion, ward is above)
-- [ ] Triggered abilities (incl. APNAP ordering, delayed triggers), with per-step stops and holding priority, now that responses exist
-- [ ] Replacement and prevention effects
-- [ ] Layers: full CR 613 ordering with dependencies, counters, auras, equipment
-- [ ] Tokens, copy effects, X costs, alternative and additional costs, modal spells. X costs also need `ManaSymbol::X` in `ManaCost` (the parser refuses `{X}` today, by name), a `ChooseNumber` for the value, and the PayMana prompt and `payment.ts` counting it in the mana value
+Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d) to (k) in parallel.
+- [ ] (a) `mtg-cards` DSL: Cost, Selector, Condition, Effect, Duration, TargetSpec, Amount and every ability kind as data files with loader, validation, support records and a 40-card corpus
+- [ ] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL; `CardDefinition` moves to `mtg-cards`
+- [ ] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
+- [ ] (d) Decision kinds the effects need, one task each across `mtg-engine`, `mtg-protocol` and a web prompt, with tests: `ChooseMode`, `ChooseNumber` (X, "any number"), `DivideAmount`, `ChooseCards` (search, reveal, "choose a creature"; any seat), `OrderCards` (scry, surveil, put back, bottom in any order), `YesNo` for "may", `ChooseOption`, `ChooseCosts`, `OrderTriggers`, `ChooseReplacement`
+- [ ] (e) Keywords, one task each with a table test: flying/reach, first strike/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof/ward; `DamageOptions` gets player and trample targets and the views carry keywords for the damage prompt's lethal hint (`docs/web.md`, AssignDamage)
+- [ ] (f) Keyword actions (CR 701), one engine primitive each, table-tested, with a web prompt where the player chooses: draw/discard/mill/shuffle, scry, surveil, fateseal, search, reveal, sacrifice/destroy/exile/counter, create tokens and populate, fight, explore, proliferate, investigate and the predefined tokens (Clue, Treasure, Food), amass, connive, learn, transform/meld, attach/equip, regenerate, goad, monstrosity, adapt, bolster, support, venture; Arena-only digital actions (conjure, seek, specialize) stay out
+- [ ] (g) Tokens, copy effects, X costs (`ManaSymbol::X`, `ChooseNumber`, PayMana prompt, `payment.ts`), alternative and additional costs, modal spells
+- [ ] (h) Keyword abilities beyond combat (CR 702), one task each: flash, equip/reconfigure, enchant, cycling, kicker/multikicker, flashback, madness, prowess, convoke, delve, cascade, storm, morph/disguise, suspend, evoke, overload, and the Commander-relevant partner and companion
+- [ ] (i) Triggered abilities: APNAP ordering, delayed triggers, intervening if, per-step stops and holding priority, and the smart stops, per-ability yields, auto-ordered triggers and damage auto-assign of Arena flow P10 (`docs/arena-flow.md`)
+- [ ] (j) Replacement and prevention effects (CR 614 to 616)
+- [ ] (k) Layers: full CR 613 ordering with dependencies, timestamps, counters, auras, equipment
 
 ## M4 Multiplayer product
 - [ ] Invite-link lobbies on top of users (accounts land in M2)
@@ -69,7 +72,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 - [ ] Deck check and the Verified marker (the player's request, 2026-10-18; design in `docs/deck-check.md`): choose or build a deck, run a check that reports legality and every card the game cannot play without manual steps, highlight those cards (icon, word, edge, reasons, unsupported clauses underlined), show a marker on a saved deck whose check is clean, derived from the deck's content hash and the cards' support records so any edit or engine change removes it until the next check; save runs the check automatically, the sideboard counts toward the marker, a deck with manual cards may be played with a count-only note to the table (names show when a card becomes public); live issue counter while building; precon badges
 - [ ] Precon browser with one-click play
 - [ ] N-player layout, game log, stack panel, stop settings
-- [ ] Spectators and reconnect polish
+- [ ] Spectators and reconnect polish: a spectator seat, a face-down card rule in `zone_is_visible`, a "waiting on" message for tables of three or more
 
 ## M5 Commander
 - [ ] `Commander` format rules: 100-card singleton, color identity, 40 life, command zone, tax, 21 commander damage; `PlayerView`/`ObjectView` carry commander damage and tax so the table's "not tracked yet" slot (`SeatPanel`) fills
@@ -79,8 +82,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 ## M6 Coverage
 - [ ] Manual-resolve fallback mode for unimplemented cards
 - [ ] Oracle-text compiler for common templates with golden tests Reference first: the phase.rs oracle parser (Rust, MIT or Apache-2.0, `crates/engine/src/parser`) and XMage (MIT); Forge and Magarena are GPL-3.0, so study only and copy nothing. Check each compiled card by rendering the data back to English and comparing it with the oracle text
-- [ ] Coverage dashboard ranked by frequency; target: 100% of a chosen set of Commander precons
-- [ ] Card support records for the deck check (`docs/deck-check.md`): a coverage run (CLI or CI) writes per oracle id Verified, Partial, Manual, Stale or Unplayable with reasons, clause spans and a fingerprint; Stale comes from oracle-text drift after an import
+- [ ] Coverage dashboard over `Library::support` (computed, never stored): states, reasons and clause spans per card, ranked by how many saved decks use it; target: 100% of a chosen set of Commander precons (`docs/deck-check.md`)
 
 ## M7 Polish and deploy
 - [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain

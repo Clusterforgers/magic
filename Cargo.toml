@@ -46,6 +46,7 @@ tower-http = { version = "0.7", features = ["cors", "set-header"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 sha2 = "0.11"
+serde_path_to_error = "0.1"
 getrandom = "0.4"
 # Exact pins: password hashing is not a place for a surprise upgrade.
 argon2 = { version = "=0.6.0", default-features = false, features = ["alloc", "getrandom", "password-hash"] }

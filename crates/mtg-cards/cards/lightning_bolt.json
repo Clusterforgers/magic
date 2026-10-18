@@ -1,0 +1,19 @@
+{
+  "oracle_id": "4457ed35-7c10-48c8-9776-456485fdf070",
+  "name": "Lightning Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Bolt",
+      "oracle_fingerprint": "1c8ec5180252d4d2258eec2c0312b6f3",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

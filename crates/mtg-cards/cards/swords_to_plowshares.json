@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b1544f21-7e98-461b-aed5-e748b0168c52",
+  "name": "Swords to Plowshares",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swords to Plowshares",
+      "oracle_fingerprint": "03c7ae8fb4c3ffc6452288ebefb73e42",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "GainLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "notes": "Both steps read the creature as it was on the battlefield (last known information, CR 608.2h)."
+}

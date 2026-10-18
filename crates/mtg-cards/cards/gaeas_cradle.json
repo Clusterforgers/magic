@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7c427c3d-ecd8-45ef-bebd-8f10f4a311db",
+  "name": "Gaea's Cradle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaea's Cradle",
+      "oracle_fingerprint": "e2b7b50a42dc61bccaf8c06ddc2ed7bd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Green"] },
+                  "times": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

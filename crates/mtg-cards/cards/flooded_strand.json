@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f3c7af78-a77d-4134-82a2-a5ce84285a84",
+  "name": "Flooded Strand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flooded Strand",
+      "oracle_fingerprint": "25e050ae7cc382b2fca7c5e01d3b1885",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "AnyOf": [{ "Subtype": "Plains" }, { "Subtype": "Island" }] }],
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

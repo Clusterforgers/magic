@@ -1,0 +1,33 @@
+{
+  "oracle_id": "ae92942b-919c-4ea9-b693-85fcef765d5a",
+  "name": "Fire // Ice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fire",
+      "oracle_fingerprint": "0e92033d9c92af55ac70746ad48704e7",
+      "abilities": [
+        { "Keyword": "Fuse" },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 2 }, "divide": 2 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ice",
+      "oracle_fingerprint": "4ead681e53372ef7f43ef48f4520b796",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ],
+  "notes": "Fuse is a property of the whole card and sits on the first face."
+}
