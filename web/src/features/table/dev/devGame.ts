@@ -104,6 +104,8 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
 export interface FixtureGameOptions extends FixtureOptions {
   prompt?: string
   turn?: 'you'
+  /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
+  previewMs?: number
 }
 
 /** A game context holding a fresh fixture table. */
@@ -117,6 +119,6 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const fixture = table === undefined ? built : table(built)
   store.setState(fixtureState(fixture, prompt === undefined ? null : prompt(fixture)))
   // The dev table answers a preview after a moment, so the "checking outcome" state can be looked at too.
-  const session = fixtureSession(store, { previewAfter: PREVIEW_LATENCY_MS })
+  const session = fixtureSession(store, { previewAfter: options.previewMs ?? PREVIEW_LATENCY_MS })
   return { game: 'dev-fixture', session, lookup: fixtureLookup(fixture) }
 }

@@ -7,7 +7,7 @@ import type {
   ObjectId,
   PlayerForecast,
 } from '@/protocol/generated'
-import { forecastSentences, lifeWords, listOf, outlookWords } from './forecastText'
+import { forecastSentences, forecastSummary, lifeWords, listOf, outlookWords } from './forecastText'
 import type { ForecastNames } from './forecastText'
 
 const CREATURES: Record<number, string> = {
@@ -191,6 +191,49 @@ describe('forecastSentences', () => {
     ],
   ])('says %s', (_name, given, expected) => {
     expect(forecastSentences(given, names)).toEqual(expected)
+  })
+})
+
+describe('forecastSummary, the one sentence a live region reads when the outcome changes', () => {
+  it.each<[string, CombatForecast, string]>([
+    ['an empty forecast', forecast([]), 'No creature would die. No player would take damage.'],
+    [
+      'a block in which nothing dies and nothing gets through',
+      forecast([], [fate(2, false), fate(1, false)], [hit(0, 20)]),
+      'No creature would die. No player would take damage.',
+    ],
+    [
+      'one death and damage to the viewer',
+      forecast([], [fate(2, true), fate(1, false)], [hit(3, 20)]),
+      'Your Grizzly Bears would die. You would take 3 damage.',
+    ],
+    [
+      "two deaths, one of them an opponent's, and lethal damage",
+      forecast([], [fate(1, true), fate(2, true)], [hit(7, 5, true)]),
+      "Bo's Hill Giant and your Grizzly Bears would die. You would take 7 damage, which is lethal.",
+    ],
+    [
+      'three deaths are named, in the order of the forecast',
+      forecast([], [fate(3, true), fate(4, true), fate(5, true)], [hit(0, 20)]),
+      "Your Elf, your Goblin and Cy's Wall would die. No player would take damage.",
+    ],
+    [
+      'four deaths are only counted',
+      forecast([], [fate(1, true), fate(2, true), fate(3, true), fate(4, true)], [hit(1, 20)]),
+      '4 creatures would die. You would take 1 damage.',
+    ],
+    [
+      'damage to several players, the ones who take none left out',
+      forecast([], [], [hit(2, 20), hit(0, 40, false, 1), hit(9, 8, true, 2)]),
+      'No creature would die. You would take 2 damage. Cy would take 9 damage, which is lethal.',
+    ],
+    [
+      'another player at the receiving end of an attack',
+      forecast([], [fate(2, true)], [hit(6, 5, true, 1)]),
+      'Your Grizzly Bears would die. Bo would take 6 damage, which is lethal.',
+    ],
+  ])('says %s', (_name, given, expected) => {
+    expect(forecastSummary(given, names)).toBe(expected)
   })
 })
 
