@@ -1,16 +1,16 @@
 # Deck check and the Verified marker
 
-Design of the deck check: when a deck is chosen or built, a check finds the cards the game cannot play without manual steps and highlights them, and a saved deck that passes shows a Verified marker until it changes. Status: design only.
+Design of the deck check: when a deck is chosen or built, a check finds the cards the game cannot play without manual steps and highlights them, and a saved deck that passes shows a Verified marker until it changes.
 
-It builds on `impl_status` in the card data, stored decks and the builder, and card coverage. A card without an implementation counts as `Manual`, so the report always says how much of the deck the table resolves by hand.
+The per-card support lookup (`Library::support` in `mtg-cards`) exists; the report, endpoint, marker and interface below are design. A card without an implementation counts as `Manual`, so the report always says how much of the deck the table resolves by hand.
 
 ## Terms
 
-- Card support, per oracle id:
-  - `Verified`: an implementation exists, the fingerprint of the oracle text it was written for equals the current text, and its tests pass.
+- Card support, per oracle id, is computed from the card's rules file, its imported oracle text and the primitives the engine runs ([cards-dsl.md](cards-dsl.md) owns the definitions):
+  - `Verified`: the rules cover the whole text, the text is unchanged, and the engine runs every primitive used.
   - `Partial`: implemented except the listed clauses; each carries a plain reason and the span of oracle text it covers.
   - `Manual`: no implementation; the table resolves the whole text by hand.
-  - `Stale`: implemented, but the oracle text has changed (errata). Counts as `Manual` until reviewed.
+  - `Stale`: the oracle text changed since the rules were written (errata). Counts as `Manual` until reviewed.
   - `Unplayable`: the engine cannot host the card at all (digital-only actions, ante, joke-set mechanics).
 - Deck state:
   - `Verified`: legal, and every card of every zone is `Verified`, the sideboard included.
@@ -57,9 +57,8 @@ In order of value:
 
 ## Rollout
 
-- Card data carries `impl_status` with reasons, text spans and the oracle fingerprint (the DSL design).
 - Decks table and REST, the report function and endpoint, the builder panel with highlighting, the marker and precon badges.
-- The coverage run writes `card_support` rows (status, reasons, spans, fingerprint); Stale detection comes from import drift; the dashboard ranks by deck demand.
+- The coverage dashboard ranks cards by deck demand; Stale detection comes from import drift (a changed oracle fingerprint).
 - Then the smoke test, swap suggestions and the table setting.
 
 ## Decisions
