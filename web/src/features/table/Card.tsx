@@ -7,6 +7,7 @@ import type { Highlight } from './cardModel'
 import { HIGHLIGHT, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { CardFace } from './CardFace'
+import { useCardMark, useMarksStore } from './prompt/marks'
 import { combatRoleIn } from './selectors'
 import { usePreviewHandlers } from './usePreviewHandlers'
 
@@ -17,28 +18,45 @@ export interface CardProps {
   size?: CardSize
   /** False takes the card out of the tab order; a row keeps exactly one of its cards tabbable. */
   tabbable?: boolean
-  /** Seam for the decision layer: marks the card as a legal choice, a dimmed one or the chosen one. */
+  /** Overrides the mark the active prompt gives this card (see `prompt/marks.ts`): legal, dimmed or chosen. */
   highlight?: Highlight
-  /** Seam for the decision layer: called with the id when the card is clicked or activated by keyboard. */
+  /** Overrides what the active prompt does on a click: called with the id on a click or an activation by keyboard. */
   onSelect?: (id: ObjectId) => void
 }
 
+/** What a mark adds to a card's spoken name; a selection that reads as pressed needs no extra word. */
+const MARK_WORDS: Record<Highlight, string> = {
+  legal: 'available',
+  dimmed: 'not available',
+  selected: 'selected',
+}
+
 /**
- * One card of the table. It subscribes to its own object and combat role only and is memoised, so a batch redraws
- * the cards it changed and no others. Hover and focus preview it; a click pins the preview and calls `onSelect`.
+ * One card of the table. It subscribes to its own object, combat role and prompt mark only and is memoised, so a
+ * batch redraws the cards it changed and no others. Hover and focus preview it; a click pins the preview and, on a
+ * legal or selected card, tells the active prompt.
  */
 export const Card = memo(function Card({
   id,
   size = 'normal',
   tabbable = true,
-  highlight,
-  onSelect,
+  highlight: given,
+  onSelect: givenSelect,
 }: CardProps) {
   const object = usePlay((state) => state.objectsById[id])
   const role = usePlay((state) => combatRoleIn(state, id))
+  const marks = useMarksStore()
+  const { highlight: marked, toggles } = useCardMark(id)
+  const highlight = given ?? marked
+  // An explicit highlight is a toggle, as it always was; a prompt says so when its marks are.
+  const pressable = given !== undefined || toggles
+  const promptSelects = given === undefined && (marked === 'legal' || marked === 'selected')
+  const onSelect = givenSelect ?? (promptSelects ? marks.select : undefined)
   const handlers = usePreviewHandlers(id, onSelect === undefined ? undefined : () => onSelect(id))
   if (object === undefined) return null
   const tapped = object.permanent?.tapped === true
+  const words =
+    highlight === undefined || (pressable && highlight === 'selected') ? '' : `, ${MARK_WORDS[highlight]}`
   return (
     <button
       type="button"
@@ -46,8 +64,8 @@ export const Card = memo(function Card({
       data-highlight={highlight}
       data-size={size}
       data-tapped={tapped || undefined}
-      aria-label={cardLabel(object, role)}
-      aria-pressed={highlight === undefined ? undefined : highlight === 'selected'}
+      aria-label={cardLabel(object, role) + words}
+      aria-pressed={highlight === undefined || !pressable ? undefined : highlight === 'selected'}
       tabIndex={tabbable ? 0 : -1}
       {...handlers}
       className={cn(

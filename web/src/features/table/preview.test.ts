@@ -171,8 +171,18 @@ describe('parseDevSearch', () => {
     [{ seats: 6, mode: 'wide' }, { seats: 6 }],
     [{ seats: 6, focus: -1 }, { seats: 6 }],
     [{ seats: 6, focus: '2' }, { seats: 6 }],
+    [
+      { seats: 2, prompt: 'priority' },
+      { seats: 2, prompt: 'priority' },
+    ],
+    [{ seats: 2, prompt: 7 }, { seats: 2 }],
   ])('reads %j as %j', (search, parsed) => {
     expect(parseDevSearch(search)).toMatchObject(parsed)
+  })
+
+  it('leaves out a prompt that is not a word', () => {
+    expect(parseDevSearch({ prompt: 7 }).prompt).toBeUndefined()
+    expect(parseDevSearch({}).prompt).toBeUndefined()
   })
 
   it('leaves out a mode and a focus it did not understand', () => {

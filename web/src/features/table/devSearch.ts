@@ -9,12 +9,14 @@ export interface DevSearch {
   mode?: TableMode
   /** The opponent to open focused; the one following the turn when missing. */
   focus?: PlayerId
+  /** The decision to face, by name in `dev/prompts.ts` (such as `priority`); none when missing or unknown. */
+  prompt?: string
 }
 
 const whole = (value: unknown): number | undefined =>
   typeof value === 'number' && Number.isInteger(value) ? value : undefined
 
-/** Reads `?seats=&mode=&focus=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&mode=&focus=&prompt=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -23,5 +25,6 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     seats: seats === undefined || seats < 2 || seats > 12 ? 4 : seats,
     mode,
     focus: focus === undefined || focus < 0 ? undefined : focus,
+    prompt: typeof search.prompt === 'string' ? search.prompt : undefined,
   }
 }

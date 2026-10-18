@@ -1,9 +1,9 @@
-// Goal: a batch redraws only what it changed, at the worst case of 12 seats with 40 permanents each (480 cards on screen): tapping one permanent renders that card and no battlefield row, a change to the turn renders no card, a change of controller renders that card and the two rows it leaves and joins.
+// Goal: a batch redraws only what it changed, at the worst case of 12 seats with 40 permanents each (480 cards on screen): tapping one permanent renders that card and no battlefield row, a change to the turn renders no card, a change of controller renders that card and the two rows it leaves and joins; a decision arriving, being replaced or answered renders only the viewer's own marked cards (once each) and no row, and while one is on screen a tap still renders one card.
 import { act } from '@testing-library/react'
 import type { ComponentProps } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { applyBatch, indexById } from '@/play/view'
-import type { EventBatch, ObjectView, StateView } from '@/protocol/generated'
+import type { EventBatch, ObjectView, PriorityOptions, ServerMessage, StateView } from '@/protocol/generated'
 import { batchOf, clone, must, tableOf, withTapped } from '@/test-utils/batches'
 import { startSession } from '@/test-utils/harness'
 import type { Harness } from '@/test-utils/harness'
@@ -197,5 +197,115 @@ describe('a table of 12 seats with 40 permanents each', () => {
     const after = applyBatch(before, batchOf(before, { objects: [withTapped(land, true)] }))
     const changed = after.objects.filter((object, index) => object !== before.objects[index])
     expect(changed.map((object) => object.id)).toEqual([land.id])
+  })
+})
+
+const priority = (id: number, options: Partial<PriorityOptions> = {}, player = 0): ServerMessage => ({
+  type: 'Decision',
+  id,
+  decision: {
+    player,
+    kind: { Priority: { playable_lands: [], castable: [], mana_abilities: [], can_pass: true, ...options } },
+  },
+})
+
+describe('a decision at the same table', () => {
+  beforeEach(reset)
+
+  const handOf = (view: StateView): number[] => must(view.players[0]?.hand.cards)
+  /** The viewer's own cards: the hand and the 40 permanents, which a Priority prompt marks. */
+  const ownOf = (view: StateView): Set<number> =>
+    new Set([
+      ...handOf(view),
+      ...view.objects
+        .filter((object) => object.zone === 'Battlefield' && object.controller === 0)
+        .map((object) => object.id),
+    ])
+
+  /** A decision whose legal cards are the first two cards of the hand and one untapped land. */
+  function options(view: StateView): Partial<PriorityOptions> {
+    const land = untappedLand(view, 0)
+    const [first, second] = handOf(view)
+    return {
+      playable_lands: [must(first)],
+      castable: [must(second)],
+      mana_abilities: [{ source: { object: land.id, ability: 0 }, produces: 'Green' }],
+    }
+  }
+
+  it('redraws each of the viewer cards once when it arrives, and no other card and no row', () => {
+    const { h, view } = mount()
+    const own = ownOf(view())
+    expect(own.size).toBe(47)
+    reset()
+    act(() => h.deliver(priority(5, options(view()))))
+    expect(new Set(probe.faces.keys())).toEqual(own)
+    for (const count of probe.faces.values()) expect(count).toBe(1)
+    expect(battlefieldRows()).toEqual([])
+    expect([...probe.rows.keys()].filter((label) => !label.startsWith("Alice's"))).toEqual([])
+  })
+
+  it('still redraws only the cards that a batch taps while the prompt is on screen', () => {
+    const { h, send, view } = mount()
+    act(() => h.deliver(priority(5, options(view()))))
+    const theirs = untappedLand(view(), 7)
+    const mine = untappedLand(view(), 0)
+    reset()
+    send({
+      events: [{ Public: { PermanentTapped: { object: theirs.id } } }],
+      objects: [withTapped(theirs, true)],
+    })
+    send({
+      events: [{ Public: { PermanentTapped: { object: mine.id } } }],
+      objects: [withTapped(mine, true)],
+    })
+    expect([...probe.faces]).toEqual([
+      [theirs.id, 1],
+      [mine.id, 1],
+    ])
+    expect(battlefieldRows()).toEqual([])
+  })
+
+  it('redraws no card for a batch that only moves the turn along while the prompt is on screen', () => {
+    const { h, send, view } = mount()
+    act(() => h.deliver(priority(5, options(view()))))
+    const table = clone(tableOf(view()))
+    table.turn = { ...table.turn, step: 'CombatDamage' }
+    reset()
+    send({ events: [{ Public: { StepBegan: { step: 'CombatDamage' } } }], table })
+    expect(probe.faces.size).toBe(0)
+  })
+
+  it('redraws only the viewer cards when it is answered, once each', () => {
+    const { h, view } = mount()
+    const own = ownOf(view())
+    act(() => h.deliver(priority(5, options(view()))))
+    reset()
+    act(() => {
+      h.session.answer({ Priority: 'Pass' })
+    })
+    expect(new Set(probe.faces.keys())).toEqual(own)
+    for (const count of probe.faces.values()) expect(count).toBe(1)
+    expect(battlefieldRows()).toEqual([])
+  })
+
+  it('redraws only viewer cards when another decision replaces it', () => {
+    const { h, view } = mount()
+    const own = ownOf(view())
+    act(() => h.deliver(priority(5, options(view()))))
+    reset()
+    act(() => h.deliver(priority(6, { ...options(view()), castable: handOf(view()).slice(1, 4) })))
+    expect(probe.faces.size).toBeGreaterThan(0)
+    for (const id of probe.faces.keys()) expect(own.has(id)).toBe(true)
+    for (const count of probe.faces.values()) expect(count).toBeLessThanOrEqual(2)
+    expect(battlefieldRows()).toEqual([])
+  })
+
+  it('redraws no card for a decision that belongs to another seat', () => {
+    const { h, view } = mount()
+    reset()
+    act(() => h.deliver(priority(5, options(view()), 3)))
+    expect(probe.faces.size).toBe(0)
+    expect(probe.rows.size).toBe(0)
   })
 })

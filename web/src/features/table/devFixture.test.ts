@@ -1,4 +1,4 @@
-// Goal: the dev fixture is a realistic, valid table for every seat count 2 to 12 (about 40 permanents per seat in every state, an attack with blockers, three spells on the stack, graveyards, a commander each and about 50 log events), is the same every time, and passes the wire parser, so the screens built on it are looking at something the server could send.
+// Goal: the dev fixture is a realistic, valid table for every seat count 2 to 12 (about 40 permanents per seat in every state, an attack with blockers, three spells on the stack, graveyards, a commander each and about 50 log events), is the same every time, and passes the wire parser, so the screens built on it are looking at something the server could send; it can also hand the viewer a named decision (`prompt=priority`) made of real cards, and ignores a name it does not know.
 import { describe, expect, it } from 'vitest'
 import { isStateView, parseMessage } from '@/net/parse'
 import { applyBatch } from '@/play/view'
@@ -183,5 +183,63 @@ describe('the fixture game', () => {
 
   it('carries a marker the production build is searched for', () => {
     expect(FIXTURE_MARKER).toMatch(/^dev-table-fixture-/)
+  })
+})
+
+describe('the fixture game with a prompt', () => {
+  it('faces no decision unless one is asked for', () => {
+    expect(fixtureGame({ seats: 3 }).session.store.getState().pending).toBeNull()
+  })
+
+  it.each([undefined, 'nonsense', 'constructor', 'toString', '__proto__', ''])(
+    'faces no decision for the prompt name %j',
+    (prompt) => {
+      expect(fixtureGame({ seats: 3, prompt }).session.store.getState().pending).toBeNull()
+    },
+  )
+
+  it.each(COUNTS)('offers a priority decision of real cards at %i seats', (seats) => {
+    const game = fixtureGame({ seats, prompt: 'priority' })
+    const { pending, view } = game.session.store.getState()
+    const decision = must(pending)
+    expect(decision.decision.player).toBe(0)
+    const options = must('Priority' in decision.decision.kind ? decision.decision.kind.Priority : null)
+    const byId = new Map(must(view).objects.map((object) => [object.id, object]))
+    const hand = must(must(view).players[0]?.hand.cards)
+    expect(options.playable_lands.length).toBeGreaterThan(0)
+    expect(options.castable.length).toBeGreaterThan(0)
+    expect(options.can_pass).toBe(true)
+    for (const id of options.playable_lands) {
+      expect(hand).toContain(id)
+      expect(byId.get(id)?.types).toContain('Land')
+    }
+    for (const id of options.castable) {
+      expect(hand).toContain(id)
+      expect(byId.get(id)?.types).not.toContain('Land')
+    }
+    // One spell of the hand is left uncastable, so a dimmed hand card can be seen.
+    expect(
+      hand.filter((id) => !options.castable.includes(id) && !options.playable_lands.includes(id)),
+    ).not.toEqual([])
+    for (const { source } of options.mana_abilities) {
+      const object = must(byId.get(source.object))
+      expect(object).toMatchObject({ controller: 0, zone: 'Battlefield' })
+      expect(object.permanent?.tapped).toBe(false)
+    }
+    const objects = options.mana_abilities.map((option) => option.source.object)
+    expect(objects.some((object, index) => objects.indexOf(object) !== index)).toBe(true)
+  })
+
+  it('is a decision message the wire parser accepts', () => {
+    const { pending } = fixtureGame({ seats: 2, prompt: 'priority' }).session.store.getState()
+    const message = { type: 'Decision', id: must(pending).id, decision: must(pending).decision }
+    expect(parseMessage(message).ok).toBe(true)
+  })
+
+  it('takes an answer as the real session does: the decision is cleared, once', () => {
+    const { session } = fixtureGame({ seats: 2, prompt: 'priority' })
+    expect(session.answer({ Priority: 'Pass' })).toBe(true)
+    expect(session.store.getState().pending).toBeNull()
+    expect(session.answer({ Priority: 'Pass' })).toBe(false)
   })
 })

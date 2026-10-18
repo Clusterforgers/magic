@@ -122,16 +122,22 @@ describe('turn banner and decision line', () => {
     expect(strip).not.toHaveTextContent('Your decision')
   })
 
-  it('is read-only: there is nothing in the strip to press', () => {
-    renderTable({ seats: 4 })
+  it('is read-only while another seat decides: there is nothing in the strip to press', () => {
+    renderTable({ seats: 4, state: (state) => ({ ...state, pending: null }) })
     expect(
       within(screen.getByRole('region', { name: 'Turn and priority' })).queryAllByRole('button'),
     ).toEqual([])
   })
 
-  it('announces a change of decision politely', () => {
-    renderTable({ seats: 2 })
-    const line = screen.getByText('Your decision: Priority')
+  it.each([
+    ['the waiting line', false, /^Waiting for/],
+    ['the prompt text', true, /^You are responding to/],
+  ] as const)('announces %s politely', (_what, decides, words) => {
+    renderTable({
+      seats: 2,
+      state: (state) => ({ ...state, pending: decides ? state.pending : null }),
+    })
+    const line = screen.getByText(words)
     expect(line).toHaveAttribute('aria-live', 'polite')
   })
 })

@@ -15,6 +15,21 @@ const TONE: Record<ManaType, PipTone> = {
   Colorless: 'colorless',
 }
 
+/** One mana symbol, a coloured dot with the kind's letter; decoration, so name the mana in words beside it. */
+export function ManaDot({ type }: { type: ManaType }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        'inline-flex size-4 items-center justify-center rounded-full text-[0.6rem] font-bold ring-1 ring-foreground/25',
+        PIP[TONE[type]],
+      )}
+    >
+      {manaLetter(type)}
+    </span>
+  )
+}
+
 /** The mana a seat has floating, by kind; "empty" when there is none. */
 export function ManaPool({ pool, className }: { pool: ManaPoolValue; className?: string }) {
   const held = TYPES.flatMap((type, index) => {
@@ -33,15 +48,7 @@ export function ManaPool({ pool, className }: { pool: ManaPoolValue; className?:
       ) : (
         held.map(({ type, count }) => (
           <span key={type} className="inline-flex items-center gap-1">
-            <span
-              aria-hidden="true"
-              className={cn(
-                'inline-flex size-4 items-center justify-center rounded-full text-[0.6rem] font-bold ring-1 ring-foreground/25',
-                PIP[TONE[type]],
-              )}
-            >
-              {manaLetter(type)}
-            </span>
+            <ManaDot type={type} />
             <span className="font-semibold tabular-nums" aria-hidden="true">
               {count}
             </span>
