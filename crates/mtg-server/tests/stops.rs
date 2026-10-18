@@ -49,16 +49,17 @@ async fn table(
     (handle, store, clients)
 }
 
-fn stop(side: StopSide, step: Step) -> Stop {
-    Stop { side, step }
+fn stop(side: StopSide, step: Step, keep: bool) -> Stop {
+    Stop { side, step, keep }
 }
 
-fn set(stop: Stop, on: bool, keep: bool) -> ClientMessage {
+/// The request that sets `stop` with the `keep` it carries, or with `on` false clears the stop at its side and step.
+fn set(stop: Stop, on: bool) -> ClientMessage {
     ClientMessage::SetStop {
         side: stop.side,
         step: stop.step,
         on,
-        keep,
+        keep: stop.keep,
     }
 }
 
@@ -138,32 +139,32 @@ async fn every_step_on_both_sides_is_set_and_cleared_or_refused_by_the_rule(
     let (handle, _, mut clients) = table(instant_duel(), 2, started).await;
     for side in SIDES {
         for step in Step::ALL {
-            let target = stop(side, step);
-            let told = poke(&handle, &mut clients, ME, set(target, true, false)).await;
-            silent(&told[FOE]);
-            if step.grants_priority() {
-                assert_eq!(stops_told(&told[ME]), [vec![target]], "{side:?} {step:?}");
-                assert_eq!(told[ME].len(), 1, "and nothing else: {:?}", told[ME]);
-                let told = poke(&handle, &mut clients, ME, set(target, false, false)).await;
-                assert_eq!(
-                    stops_told(&told[ME]),
-                    [Vec::<Stop>::new()],
-                    "{side:?} {step:?}"
-                );
+            // Both kinds of stop follow the same rule.
+            for keep in [false, true] {
+                let target = stop(side, step, keep);
+                let told = poke(&handle, &mut clients, ME, set(target, true)).await;
                 silent(&told[FOE]);
-            } else {
-                // Not a stale or illegal answer, so the client has no reason to resync.
-                assert!(
-                    is_error(&told[ME], ErrorCode::BadMessage),
-                    "{side:?} {step:?}: {:?}",
-                    told[ME]
-                );
-                let told = poke(&handle, &mut clients, ME, set(target, false, false)).await;
-                assert!(
-                    is_error(&told[ME], ErrorCode::BadMessage),
-                    "clearing {side:?} {step:?} is refused too"
-                );
-                silent(&told[FOE]);
+                if step.grants_priority() {
+                    let said = format!("{side:?} {step:?} {keep}");
+                    assert_eq!(stops_told(&told[ME]), [vec![target]], "{said}");
+                    assert_eq!(told[ME].len(), 1, "and nothing else: {:?}", told[ME]);
+                    let told = poke(&handle, &mut clients, ME, set(target, false)).await;
+                    assert_eq!(stops_told(&told[ME]), [Vec::<Stop>::new()], "{said}");
+                    silent(&told[FOE]);
+                } else {
+                    // Not a stale or illegal answer, so the client has no reason to resync.
+                    assert!(
+                        is_error(&told[ME], ErrorCode::BadMessage),
+                        "{side:?} {step:?}: {:?}",
+                        told[ME]
+                    );
+                    let told = poke(&handle, &mut clients, ME, set(target, false)).await;
+                    assert!(
+                        is_error(&told[ME], ErrorCode::BadMessage),
+                        "clearing {side:?} {step:?} is refused too"
+                    );
+                    silent(&told[FOE]);
+                }
             }
         }
     }
@@ -175,15 +176,16 @@ async fn every_step_on_both_sides_is_set_and_cleared_or_refused_by_the_rule(
 #[tokio::test]
 async fn setting_a_held_stop_again_is_still_one_stop_and_a_request_that_changes_nothing_is_silent(
     #[values(false, true)] started: bool,
+    #[values(false, true)] keep: bool,
 ) {
     let (handle, _, mut clients) = table(instant_duel(), 2, started).await;
-    let held = stop(StopSide::Own, Step::Main1);
+    let held = stop(StopSide::Own, Step::Main1, keep);
 
-    let told = poke(&handle, &mut clients, ME, set(held, true, false)).await;
+    let told = poke(&handle, &mut clients, ME, set(held, true)).await;
     assert_eq!(stops_told(&told[ME]), [vec![held]]);
-    // The same again, and the same with a different `keep`: the seat sees no difference, so it hears nothing.
-    for keep in [false, true, false] {
-        let told = poke(&handle, &mut clients, ME, set(held, true, keep)).await;
+    // The same again, however often: nothing changed, so nothing is said.
+    for _ in 0..3 {
+        let told = poke(&handle, &mut clients, ME, set(held, true)).await;
         silent(&told[ME]);
         silent(&told[FOE]);
     }
@@ -193,30 +195,106 @@ async fn setting_a_held_stop_again_is_still_one_stop_and_a_request_that_changes_
         "one stop, not four"
     );
 
-    let told = poke(&handle, &mut clients, ME, set(held, false, true)).await;
+    // Clearing ignores the `keep` the request carries, so a request with the other one clears it as well.
+    let other = stop(held.side, held.step, !keep);
+    let told = poke(&handle, &mut clients, ME, set(other, false)).await;
     assert_eq!(stops_told(&told[ME]), [Vec::<Stop>::new()]);
-    let told = poke(&handle, &mut clients, ME, set(held, false, false)).await;
-    silent(&told[ME]);
+    for request in [held, other] {
+        let told = poke(&handle, &mut clients, ME, set(request, false)).await;
+        silent(&told[ME]);
+    }
+}
+
+#[rstest]
+#[tokio::test]
+async fn a_lasting_and_a_one_turn_stop_are_told_with_the_keep_each_was_set_with(
+    #[values(false, true)] started: bool,
+) {
+    let (handle, _, mut clients) = table(instant_duel(), 2, started).await;
+    let lasting = stop(StopSide::Own, Step::Main1, true);
+    let one_turn = stop(StopSide::Opponent, Step::End, false);
+
+    let told = poke(&handle, &mut clients, ME, set(one_turn, true)).await;
+    assert_eq!(stops_told(&told[ME]), [vec![one_turn]]);
+    let told = poke(&handle, &mut clients, ME, set(lasting, true)).await;
+    assert_eq!(stops_told(&told[ME]), [vec![lasting, one_turn]]);
+    silent(&told[FOE]);
+
+    // A welcome says the same, and another seat holds neither.
+    let (held, mode) = reconnect(&handle, &mut clients[ME]).await;
+    assert_eq!(
+        (held, mode),
+        (vec![lasting, one_turn], FullControlMode::Off)
+    );
+    assert_eq!(reconnect(&handle, &mut clients[FOE]).await.0, []);
+}
+
+#[rstest]
+#[tokio::test]
+async fn setting_a_held_stop_again_with_another_keep_upgrades_or_downgrades_it_and_tells_the_list(
+    #[values(false, true)] started: bool,
+) {
+    let (handle, _, mut clients) = table(instant_duel(), 2, started).await;
+    let at = |keep| stop(StopSide::Own, Step::Main1, keep);
+    let other = stop(StopSide::Opponent, Step::Draw, true);
+    poke(&handle, &mut clients, ME, set(other, true)).await;
+
+    // One turn, then lasting, then one turn again, with a repeat in between that says nothing.
+    let requests = [
+        (at(false), Some(vec![at(false), other])),
+        (at(true), Some(vec![at(true), other])),
+        (at(true), None),
+        (at(false), Some(vec![at(false), other])),
+        (at(false), None),
+        (at(true), Some(vec![at(true), other])),
+    ];
+    for (request, told_now) in requests {
+        let told = poke(&handle, &mut clients, ME, set(request, true)).await;
+        assert_eq!(
+            stops_told(&told[ME]),
+            told_now.clone().into_iter().collect::<Vec<_>>(),
+            "{request:?}"
+        );
+        assert_eq!(
+            told[ME].len(),
+            usize::from(told_now.is_some()),
+            "only the list is told"
+        );
+        silent(&told[FOE]);
+    }
+    // Where it ended up is what a welcome says.
+    assert_eq!(
+        reconnect(&handle, &mut clients[ME]).await.0,
+        [at(true), other]
+    );
 }
 
 #[tokio::test]
-async fn the_whole_list_is_told_each_time_own_side_first_and_each_side_in_turn_order() {
+async fn the_whole_list_is_told_each_time_own_side_first_and_each_side_in_turn_order_whatever_the_keeps()
+ {
     let (handle, _, mut clients) = table(instant_duel(), 2, false).await;
     let (a, b, c, d) = (
-        stop(StopSide::Opponent, Step::End),
-        stop(StopSide::Own, Step::Main2),
-        stop(StopSide::Own, Step::Upkeep),
-        stop(StopSide::Opponent, Step::Upkeep),
+        stop(StopSide::Opponent, Step::End, true),
+        stop(StopSide::Own, Step::Main2, false),
+        stop(StopSide::Own, Step::Upkeep, true),
+        stop(StopSide::Opponent, Step::Upkeep, false),
     );
     let mut told = Vec::new();
     for item in [a, b, c, d] {
-        let got = poke(&handle, &mut clients, ME, set(item, true, false)).await;
+        let got = poke(&handle, &mut clients, ME, set(item, true)).await;
         told.extend(stops_told(&got[ME]));
     }
     assert_eq!(told, [vec![a], vec![b, a], vec![c, b, a], vec![c, b, d, a]]);
+
+    // Turning two of them over changes their keeps and moves nothing.
+    let flipped = |s: Stop| stop(s.side, s.step, !s.keep);
+    let got = poke(&handle, &mut clients, ME, set(flipped(b), true)).await;
+    assert_eq!(stops_told(&got[ME]), [vec![c, flipped(b), d, a]]);
+    let got = poke(&handle, &mut clients, ME, set(flipped(d), true)).await;
+    assert_eq!(stops_told(&got[ME]), [vec![c, flipped(b), flipped(d), a]]);
     assert_eq!(
         reconnect(&handle, &mut clients[ME]).await.0,
-        [c, b, d, a],
+        [c, flipped(b), flipped(d), a],
         "and a welcome lists them alike"
     );
 }
@@ -225,8 +303,8 @@ async fn the_whole_list_is_told_each_time_own_side_first_and_each_side_in_turn_o
 #[tokio::test]
 async fn each_seat_holds_its_own_and_only_it_is_told(#[values(false, true)] started: bool) {
     let (handle, _, mut clients) = table(table_setup(3, 5), 3, started).await;
-    let mine = stop(StopSide::Own, Step::Upkeep);
-    let told = poke(&handle, &mut clients, 2, set(mine, true, true)).await;
+    let mine = stop(StopSide::Own, Step::Upkeep, true);
+    let told = poke(&handle, &mut clients, 2, set(mine, true)).await;
     assert_eq!(stops_told(&told[2]), [vec![mine]]);
     silent(&told[0]);
     silent(&told[1]);
@@ -285,10 +363,10 @@ async fn full_control_takes_each_mode_and_a_mode_it_already_has_says_nothing() {
 #[tokio::test]
 async fn they_survive_a_reconnect_and_a_resync_and_nothing_is_repeated_to_the_seat() {
     let (handle, _, mut clients) = table(instant_duel(), 2, true).await;
-    let own = stop(StopSide::Own, Step::Upkeep);
-    let theirs = stop(StopSide::Opponent, Step::DeclareAttackers);
-    poke(&handle, &mut clients, ME, set(own, true, true)).await;
-    poke(&handle, &mut clients, ME, set(theirs, true, false)).await;
+    let own = stop(StopSide::Own, Step::Upkeep, true);
+    let theirs = stop(StopSide::Opponent, Step::DeclareAttackers, false);
+    poke(&handle, &mut clients, ME, set(own, true)).await;
+    poke(&handle, &mut clients, ME, set(theirs, true)).await;
     poke(
         &handle,
         &mut clients,
@@ -314,8 +392,8 @@ async fn they_survive_a_reconnect_and_a_resync_and_nothing_is_repeated_to_the_se
 #[tokio::test]
 async fn stops_set_in_the_lobby_are_held_for_the_game() {
     let (handle, _, mut clients) = table(instant_duel(), 2, false).await;
-    let held = stop(StopSide::Opponent, Step::Main1);
-    let told = poke(&handle, &mut clients, FOE, set(held, true, true)).await;
+    let held = stop(StopSide::Opponent, Step::Main1, true);
+    let told = poke(&handle, &mut clients, FOE, set(held, true)).await;
     assert_eq!(stops_told(&told[FOE]), [vec![held]]);
     poke(
         &handle,
@@ -348,8 +426,8 @@ async fn a_game_resumed_from_its_log_starts_without_stops() {
     for client in &clients {
         client.say(&first, ClientMessage::Ready).await;
     }
-    let held = stop(StopSide::Own, Step::Main1);
-    poke(&first, &mut clients, ME, set(held, true, true)).await;
+    let held = stop(StopSide::Own, Step::Main1, true);
+    poke(&first, &mut clients, ME, set(held, true)).await;
     poke(
         &first,
         &mut clients,
@@ -386,11 +464,11 @@ async fn setting_them_takes_no_step_so_nothing_is_saved_and_the_pending_decision
     let before = handle.status().await.unwrap();
     let logged = store.inner().load(game_id(1)).await.unwrap();
 
-    let mine = stop(StopSide::Own, Step::Main1);
-    let theirs = stop(StopSide::Opponent, Step::End);
+    let mine = stop(StopSide::Own, Step::Main1, true);
+    let theirs = stop(StopSide::Opponent, Step::End, false);
     for (from, message) in [
-        (ME, set(mine, true, true)),
-        (FOE, set(theirs, true, false)),
+        (ME, set(mine, true)),
+        (FOE, set(theirs, true)),
         (ME, full_control(FullControlMode::Held)),
         (FOE, full_control(FullControlMode::NextWindow)),
     ] {
@@ -430,8 +508,8 @@ async fn setting_them_takes_no_step_so_nothing_is_saved_and_the_pending_decision
 #[tokio::test]
 async fn a_seat_that_concedes_loses_what_it_held_is_told_after_the_events_and_cannot_set_more() {
     let (handle, _, mut clients) = table(table_setup(3, 5), 3, true).await;
-    let held = stop(StopSide::Own, Step::Main1);
-    poke(&handle, &mut clients, 2, set(held, true, true)).await;
+    let held = stop(StopSide::Own, Step::Main1, true);
+    poke(&handle, &mut clients, 2, set(held, true)).await;
     poke(
         &handle,
         &mut clients,
@@ -439,7 +517,7 @@ async fn a_seat_that_concedes_loses_what_it_held_is_told_after_the_events_and_ca
         full_control(FullControlMode::Held),
     )
     .await;
-    poke(&handle, &mut clients, 0, set(held, true, true)).await;
+    poke(&handle, &mut clients, 0, set(held, true)).await;
 
     let told = poke(&handle, &mut clients, 2, ClientMessage::Concede).await;
     assert_eq!(order(&told[2]), ["events", "stops", "full control"]);
@@ -453,8 +531,8 @@ async fn a_seat_that_concedes_loses_what_it_held_is_told_after_the_events_and_ca
     );
 
     for message in [
-        set(stop(StopSide::Own, Step::Upkeep), true, false),
-        set(stop(StopSide::Own, Step::Upkeep), false, false),
+        set(stop(StopSide::Own, Step::Upkeep, false), true),
+        set(stop(StopSide::Own, Step::Upkeep, false), false),
         full_control(FullControlMode::Held),
         full_control(FullControlMode::Off),
     ] {
@@ -469,7 +547,7 @@ async fn a_seat_that_concedes_loses_what_it_held_is_told_after_the_events_and_ca
 async fn when_the_game_ends_every_seat_is_told_before_the_game_over_and_can_set_no_more() {
     let (handle, _, mut clients) = table(instant_duel(), 2, true).await;
     for seat in [FOE, ME] {
-        let message = set(stop(StopSide::Opponent, Step::End), true, true);
+        let message = set(stop(StopSide::Opponent, Step::End, true), true);
         poke(&handle, &mut clients, seat, message).await;
         poke(
             &handle,
@@ -499,7 +577,7 @@ async fn when_the_game_ends_every_seat_is_told_before_the_game_over_and_can_set_
     for seat in [FOE, ME] {
         for message in [
             full_control(FullControlMode::Held),
-            set(stop(StopSide::Own, Step::End), true, true),
+            set(stop(StopSide::Own, Step::End, true), true),
         ] {
             let told = poke(&handle, &mut clients, seat, message).await;
             assert!(
@@ -516,8 +594,8 @@ async fn when_the_game_ends_every_seat_is_told_before_the_game_over_and_can_set_
 #[tokio::test]
 async fn a_failed_save_leaves_what_the_seat_held_and_the_retry_clears_it() {
     let (handle, store, mut clients) = table(table_setup(3, 5), 3, true).await;
-    let held = stop(StopSide::Opponent, Step::End);
-    poke(&handle, &mut clients, 2, set(held, true, false)).await;
+    let held = stop(StopSide::Opponent, Step::End, false);
+    poke(&handle, &mut clients, 2, set(held, true)).await;
     poke(
         &handle,
         &mut clients,
@@ -567,7 +645,7 @@ async fn bots_that_hold_everything(players: usize, seed: u64) {
     for n in 0..players {
         for side in SIDES {
             for step in Step::ALL.into_iter().filter(|step| step.grants_priority()) {
-                let message = set(stop(side, step), true, n % 2 == 0);
+                let message = set(stop(side, step, n % 2 == 0), true);
                 handle.send(seat(n), message).await.unwrap();
             }
         }

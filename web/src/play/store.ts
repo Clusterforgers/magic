@@ -113,8 +113,9 @@ export interface PlayState {
    */
   yielding: YieldUntil | null
   /**
-   * The stops the server holds for this seat: steps at which it asks to be given priority. The server's word: set by
-   * every Welcome and every `Stops` message, never by the page; each side and step is listed once, own side first.
+   * The stops the server holds for this seat: steps at which it asks to be given priority, each with whether it
+   * lasts (`keep` true) or goes once that step has passed (`keep` false). The server's word: set by every Welcome and
+   * every `Stops` message, never by the page; each side and step is listed once, own side first.
    */
   stops: readonly Stop[]
   /**

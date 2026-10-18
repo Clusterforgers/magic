@@ -107,11 +107,13 @@ function isStop(value: unknown): value is Stop {
     isText(value.side) &&
     Object.hasOwn(STOP_SIDES, value.side) &&
     isText(value.step) &&
-    Object.hasOwn(STEPS, value.step)
+    Object.hasOwn(STEPS, value.step) &&
+    // Whether the stop lasts: the server always says, so a stop without it is not one to show.
+    isFlag(value.keep)
   )
 }
 
-// The server lists each side and step once, so a list that repeats one is not one to keep.
+// The server lists each side and step once (whatever the keep), so a list that repeats one is not one to keep.
 function isStopList(value: unknown): value is Stop[] {
   return (
     isListOf(value, isStop) && new Set(value.map((stop) => `${stop.side}/${stop.step}`)).size === value.length
@@ -337,7 +339,8 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isCount(v.seats)) return '"seats" must be a whole number'
       if (!isFlag(v.auto_pass)) return '"auto_pass" must be true or false'
       if (!isYielding(v.yielding)) return '"yielding" must be Resolve, EndOfTurn, MyTurn or null'
-      if (!isStopList(v.stops)) return '"stops" must be a list of stops, each side and step once'
+      if (!isStopList(v.stops))
+        return '"stops" must be a list of stops (side, step, keep), each side and step once'
       if (!isFullControl(v.full_control)) return '"full_control" must be Off, NextWindow or Held'
       return {
         type,
@@ -407,7 +410,8 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isYielding(v.until)) return '"until" must be Resolve, EndOfTurn, MyTurn or null'
       return { type, until: v.until }
     case 'Stops':
-      if (!isStopList(v.stops)) return '"stops" must be a list of stops, each side and step once'
+      if (!isStopList(v.stops))
+        return '"stops" must be a list of stops (side, step, keep), each side and step once'
       return { type, stops: v.stops }
     case 'FullControl':
       if (!isFullControl(v.mode)) return '"mode" must be Off, NextWindow or Held'

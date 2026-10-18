@@ -374,7 +374,7 @@ impl<S: EventStore> GameActor<S> {
                 step,
                 on,
                 keep,
-            } => self.set_stop(seat, Stop { side, step }, on, keep),
+            } => self.set_stop(seat, Stop { side, step, keep }, on),
             ClientMessage::FullControl { mode } => self.set_full_control(seat, mode),
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),

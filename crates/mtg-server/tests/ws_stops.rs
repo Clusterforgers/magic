@@ -57,13 +57,14 @@ async fn stops_and_full_control_are_flat_messages_told_back_whole_and_in_the_wel
     assert_eq!(welcome["stops"], json!([]), "{welcome}");
     assert_eq!(welcome["full_control"], "Off", "{welcome}");
 
-    // Stops are held from the lobby on; each change is told back as the whole list, own side first.
+    // Stops are held from the lobby on; each change is told back as the whole list, own side first, each stop
+    // with the `keep` it was set with.
     first
         .send_text(r#"{"type":"SetStop","side":"Opponent","step":"End","on":true,"keep":true}"#)
         .await;
     assert_eq!(
         next_of(&mut first, "Stops").await,
-        json!({"type": "Stops", "stops": [{"side": "Opponent", "step": "End"}]})
+        json!({"type": "Stops", "stops": [{"side": "Opponent", "step": "End", "keep": true}]})
     );
     first
         .send_text(r#"{"type":"SetStop","side":"Own","step":"Main1","on":true,"keep":false}"#)
@@ -71,9 +72,35 @@ async fn stops_and_full_control_are_flat_messages_told_back_whole_and_in_the_wel
     assert_eq!(
         next_of(&mut first, "Stops").await,
         json!({"type": "Stops", "stops": [
-            {"side": "Own", "step": "Main1"},
-            {"side": "Opponent", "step": "End"},
+            {"side": "Own", "step": "Main1", "keep": false},
+            {"side": "Opponent", "step": "End", "keep": true},
         ]})
+    );
+    // The same stop again with the other `keep` is a change, told as the list in the same order; the same
+    // request once more is not.
+    first
+        .send_text(r#"{"type":"SetStop","side":"Own","step":"Main1","on":true,"keep":true}"#)
+        .await;
+    assert_eq!(
+        next_of(&mut first, "Stops").await,
+        json!({"type": "Stops", "stops": [
+            {"side": "Own", "step": "Main1", "keep": true},
+            {"side": "Opponent", "step": "End", "keep": true},
+        ]})
+    );
+    first
+        .send_text(r#"{"type":"SetStop","side":"Own","step":"Main1","on":true,"keep":true}"#)
+        .await;
+    first
+        .send_text(r#"{"type":"SetStop","side":"Own","step":"Main1","on":true,"keep":false}"#)
+        .await;
+    assert_eq!(
+        next_of(&mut first, "Stops").await,
+        json!({"type": "Stops", "stops": [
+            {"side": "Own", "step": "Main1", "keep": false},
+            {"side": "Opponent", "step": "End", "keep": true},
+        ]}),
+        "the repeat said nothing, so the next word is the downgrade"
     );
     first
         .send_text(r#"{"type":"FullControl","mode":"Held"}"#)
@@ -97,19 +124,23 @@ async fn stops_and_full_control_are_flat_messages_told_back_whole_and_in_the_wel
     let (mut again, welcome) = welcomed(&server, &game, &tokens[0]).await;
     assert_eq!(
         welcome["stops"],
-        json!([{"side": "Own", "step": "Main1"}, {"side": "Opponent", "step": "End"}])
+        json!([
+            {"side": "Own", "step": "Main1", "keep": false},
+            {"side": "Opponent", "step": "End", "keep": true},
+        ])
     );
     assert_eq!(welcome["full_control"], "NextWindow");
     let (_, other) = welcomed(&server, &game, &tokens[1]).await;
     assert_eq!(other["stops"], json!([]));
     assert_eq!(other["full_control"], "Off");
 
+    // Clearing names the stop by side and step: the `keep` it carries need not be the one the stop has.
     again
-        .send_text(r#"{"type":"SetStop","side":"Own","step":"Main1","on":false,"keep":false}"#)
+        .send_text(r#"{"type":"SetStop","side":"Own","step":"Main1","on":false,"keep":true}"#)
         .await;
     assert_eq!(
         next_of(&mut again, "Stops").await,
-        json!({"type": "Stops", "stops": [{"side": "Opponent", "step": "End"}]})
+        json!({"type": "Stops", "stops": [{"side": "Opponent", "step": "End", "keep": true}]})
     );
 }
 
@@ -139,7 +170,7 @@ async fn a_step_where_nobody_gets_priority_is_a_bad_message_and_the_socket_and_t
         .await;
     assert_eq!(
         next_of(&mut socket, "Stops").await,
-        json!({"type": "Stops", "stops": [{"side": "Own", "step": "Upkeep"}]}),
+        json!({"type": "Stops", "stops": [{"side": "Own", "step": "Upkeep", "keep": false}]}),
         "only the valid one was kept"
     );
 }

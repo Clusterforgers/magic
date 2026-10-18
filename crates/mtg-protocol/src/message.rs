@@ -73,13 +73,16 @@ pub enum StopSide {
 
 /// A step at which a seat asks to be given priority (see [`ClientMessage::SetStop`]).
 ///
-/// Ordered own side first, then by turn order, which is the order the server lists them in.
+/// Ordered own side first, then by turn order, which is the order the server lists them in. A seat holds one
+/// stop per side and step, so `keep`, the last field, never decides where a stop is listed.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, TS)]
 pub struct Stop {
     /// Whose turns the stop is for.
     pub side: StopSide,
     /// The step; only a step where a player gets priority can hold a stop, so never untap or cleanup.
     pub step: Step,
+    /// How long the stop lasts: false until that step has passed once, true until it is cleared.
+    pub keep: bool,
 }
 
 /// How much of the game a seat plays by hand (see [`ClientMessage::FullControl`]).
@@ -163,11 +166,11 @@ pub enum ClientMessage {
     /// Only a step where a player gets priority can hold a stop. `Untap` and `Cleanup` are refused, set or
     /// cleared alike, with `Error{BadMessage}`: nothing changes and no resync is needed. `keep` says how long
     /// a stop that is set lasts: false until that step has passed once, true until it is cleared; setting a
-    /// stop that is already set replaces its `keep`, and clearing ignores it. A request that changes the seat's
-    /// stops is answered with [`ServerMessage::Stops`], one that changes nothing with silence. A seat that is
-    /// out of the game, or a game that is over, gets `Error{BadMessage}` too. The server holds the stops per
-    /// seat in memory, from the lobby on, and only stores and reports them for now: no seat is asked at a
-    /// stop yet.
+    /// stop that is already set replaces its `keep` (a lasting stop becomes a one-turn one and back), and
+    /// clearing ignores it. A request that changes the seat's stops, `keep` included, is answered with
+    /// [`ServerMessage::Stops`], one that changes nothing with silence. A seat that is out of the game, or a
+    /// game that is over, gets `Error{BadMessage}` too. The server holds the stops per seat in memory, from the
+    /// lobby on, and only stores and reports them for now: no seat is asked at a stop yet.
     SetStop {
         /// Whose turns the stop is for.
         side: StopSide,
@@ -284,7 +287,8 @@ pub enum ServerMessage {
     ///
     /// Sent whenever the set the seat can see changes, whatever the cause, after the events of the step that
     /// changed it and before the decision that follows, like [`ServerMessage::Yielding`]. It lists every stop
-    /// the seat holds, once each, own side first and each side in turn order, so the list replaces the client's.
+    /// the seat holds with its `keep`, once each, own side first and each side in turn order, so the list
+    /// replaces the client's. Replacing only the `keep` of a stop changes the list, so it is told too.
     Stops {
         /// The stops now held; empty when there are none.
         stops: Vec<Stop>,
