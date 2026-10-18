@@ -8,6 +8,7 @@ Design record for `mtg-engine` and `mtg-testkit`. Rules of the house are in `CLA
 - `MulliganOptions` states the mulligan costs from `FormatRules::mulligan_rule` (`MulliganRule { hand_size, free_mulligans }`): `free_mulligans`, `bottom_if_keep` (the count the `BottomCards` decision will ask for) and `bottom_if_mulligan`. Normal is the London mulligan with no free one; a format with a free mulligan (Commander, CR 103.5c; M5) only sets `free_mulligans`. Clients repeat these counts and never work them out.
 - One `Event` enum (~36 variants) and one `apply_event` fold. State is the fold of events.
 - `FormatRules` trait with `Normal` implemented; Commander is not started.
+- `caps()` names the primitives the engine runs, in the vocabulary of the card support records (`docs/cards-dsl.md`); today the plain tap-for-mana ability. A spell with `{X}` in its printed cost (`CardDefinition::x_in_cost`) is never castable until X costs land.
 
 ## Decisions
 - Random choices use a ChaCha8 substream keyed by (seed, counter in state). Events carry the results, so replay needs no RNG.

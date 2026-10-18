@@ -1,7 +1,7 @@
 //! The card definition the engine plays: printed characteristics and the abilities it runs.
 //!
 //! The server assembles one per oracle card from the imported record and the rules data
-//! ([`crate::assemble`]); the test helpers in [`crate::vanilla`] build the plain ones directly.
+//! ([`crate::assemble()`]); the test helpers in [`crate::vanilla`] build the plain ones directly.
 
 use std::collections::BTreeSet;
 

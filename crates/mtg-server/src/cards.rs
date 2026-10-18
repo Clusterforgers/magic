@@ -2,7 +2,7 @@
 //! and the lookup that turns a deck of oracle ids into the definitions the engine plays.
 //!
 //! A row of `cards` (the imported Scryfall record) gives the printed side; the rules files embedded
-//! in `mtg-cards` give the abilities; what the engine runs ([`mtg_engine::caps`]) decides which of
+//! in `mtg-cards` give the abilities; what the engine runs ([`mtg_engine::caps()`]) decides which of
 //! those abilities reach the definition (`docs/cards-dsl.md`, "Printed side and rules").
 
 use std::collections::BTreeMap;
