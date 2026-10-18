@@ -36,7 +36,9 @@ After a restart, run `git worktree list` and read each worktree's status before 
 - [ ] Table feedback: animations for attacking, blocking, creatures dying and a player taking damage (driven by the event diff, off under `prefers-reduced-motion`); a pulsing "your turn" cue on the table and in the tab title so nobody misses their turn
 - [ ] Concede: a button with a confirm step wired to the existing `ClientMessage::Concede`, conceded seats marked in the seat panel and log
 - [ ] Lobby shows who has pressed Ready: the server tracks Ready per seat, lists it in the REST lookup and pushes changes, and the lobby shows every seat's state
-- [ ] Users (pulled forward from M4 Auth; needs persistence (b)): users table, username + argon2, session cookie, register/login/logout/me endpoints and pages; games and seats bound to a user; "My games" lists running and finished games and rejoins a seat by user, with the seat-token link kept for guests; `sqlx::test` tests
+- [ ] Users (pulled forward from M4 Auth), (a) server: users table, username + argon2, session cookie, register/login/logout/me endpoints, games and seats bound to a user, a "my games" listing (running and finished) and a rejoin that needs the session instead of the seat token, with the seat-token link kept for guests; `sqlx::test` tests
+- [ ] Users, (b) web: register and login pages, the signed-in state in the header, a "My games" page that lists games and rejoins a seat, create-game binding the creator's seat to the account
+- [ ] Resume checks the deck contents: the stored recipe names demo decks only by id, so a changed deck would replay a log under the wrong cards unnoticed; store a content hash (or the deck list) in the recipe and fail the game on mismatch
 
 ## M3 Rules depth
 - [ ] `mtg-cards` DSL: Cost, Selector, Condition, Effect, Duration, TargetSpec primitives with data files
