@@ -26,7 +26,7 @@ pub(crate) fn first_strike_step_needed(_state: &GameState) -> bool {
 }
 
 /// Damage `id` deals in `pass`; `None` if it is not on the battlefield or does not strike in this pass.
-fn strike_power(state: &GameState, id: ObjectId, pass: DamagePass) -> Option<u32> {
+pub(crate) fn strike_power(state: &GameState, id: ObjectId, pass: DamagePass) -> Option<u32> {
     let on_battlefield = state
         .object(id)
         .is_some_and(|o| o.zone() == Zone::Battlefield);
@@ -118,6 +118,8 @@ fn attacker_damage(state: &GameState, a: &Attacker, power: u32) -> Vec<Event> {
 }
 
 /// All combat damage for `pass`, dealt simultaneously from the same pre-damage state.
+///
+/// `forecast::combat_forecast` mirrors this; change them together.
 pub(crate) fn damage_events(state: &GameState, pass: DamagePass) -> Vec<Event> {
     let mut events = Vec::new();
     for attacker in state.combat().attackers() {
