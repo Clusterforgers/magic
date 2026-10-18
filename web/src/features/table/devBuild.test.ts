@@ -1,10 +1,11 @@
-// Goal: the production build contains nothing of the dev table fixture (its marker text and card names are in no output file), while a build with DEV on does contain it, so the check could fail.
+// Goal: the production build contains nothing of the dev table and dev lobby fixtures (their marker text, card names and seat names are in no output file), while a build with DEV on does contain them, so the check could fail.
 import { execFile } from 'node:child_process'
 import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { promisify } from 'node:util'
 import { afterAll, describe, expect, it } from 'vitest'
+import { LOBBY_FIXTURE_MARKER } from '@/features/game/dev/lobbyGame'
 import { COMMANDERS } from './dev/cards'
 import { FIXTURE_MARKER } from './dev/fixture'
 
@@ -30,7 +31,13 @@ async function build(nodeEnv: 'production' | 'development'): Promise<Map<string,
   return files
 }
 
-const FIXTURE_TRACES = [FIXTURE_MARKER, COMMANDERS[0].name, 'Sakashima of a Thousand Faces']
+const FIXTURE_TRACES = [
+  FIXTURE_MARKER,
+  COMMANDERS[0].name,
+  'Sakashima of a Thousand Faces',
+  LOBBY_FIXTURE_MARKER,
+  'Wolfeschlegelsteinhausenbergerdo',
+]
 const filesWith = (files: Map<string, string>, text: string): string[] =>
   [...files].filter(([, content]) => content.includes(text)).map(([name]) => name)
 
@@ -52,6 +59,7 @@ describe('the dev table route in a build', () => {
     const [production] = await builds
     const route = [...production].filter(([name]) => /dev\.table/.test(name))
     expect(route).toHaveLength(1)
+    expect([...production].filter(([name]) => /dev\.lobby/.test(name))).toHaveLength(1)
   }, 90_000)
 
   it('puts the fixture in a chunk of its own when DEV is on, which is how the check above can fail', async () => {
@@ -59,5 +67,7 @@ describe('the dev table route in a build', () => {
     const [name] = filesWith(development, FIXTURE_MARKER)
     expect(name).toMatch(/DevTableRoute/)
     expect(filesWith(development, COMMANDERS[0].name).length).toBeGreaterThan(0)
+    const [lobby] = filesWith(development, LOBBY_FIXTURE_MARKER)
+    expect(lobby).toMatch(/DevLobbyRoute/)
   }, 90_000)
 })

@@ -4,6 +4,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import { CombatLegend } from './combat/CombatLegend'
 import { useSeatNamer } from './names'
+import { OpeningStatus } from './OpeningStatus'
 import { NothingToDoBanner } from './prompt/NothingToDoBanner'
 import { ownDecision } from './prompt/ownDecision'
 import { PromptHost } from './prompt/PromptHost'
@@ -65,6 +66,7 @@ export function CentreStrip() {
           {waitingText(waiting, name)}
         </p>
       )}
+      <OpeningStatus />
       <CombatLegend />
       <NothingToDoBanner />
     </section>

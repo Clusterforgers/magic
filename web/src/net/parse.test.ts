@@ -37,6 +37,14 @@ const samples: Record<string, Record<string, unknown>> = {
   Events: isRecord(withObjects) ? withObjects : first('Events'),
   Decision: first('Decision'),
   GameOver: first('GameOver'),
+  Lobby: {
+    type: 'Lobby',
+    seats: [
+      { seat: 0, name: 'Ana', connected: true, ready: false },
+      { seat: 1, name: 'Bo', connected: false, ready: true },
+    ],
+    needed: 1,
+  },
   Chat: { type: 'Chat', from: 1, text: 'good luck' },
   Error: { type: 'Error', code: 'StaleDecision', message: 'that decision is not pending for you' },
 }
@@ -125,6 +133,24 @@ describe('parseFrame checks the fields of each message', () => {
     ['Welcome', 'auto_pass as text', ['auto_pass'], 'on'],
     ['Welcome', 'auto_pass as a number', ['auto_pass'], 1],
     ['Welcome', 'auto_pass as null', ['auto_pass'], null],
+    ['Lobby', 'seats as null', ['seats'], null],
+    ['Lobby', 'seats as an object', ['seats'], {}],
+    ['Lobby', 'a seat that is text', ['seats', '0'], 'Ana'],
+    ['Lobby', 'a seat that is null', ['seats', '1'], null],
+    ['Lobby', 'a seat number as text', ['seats', '0', 'seat'], '0'],
+    ['Lobby', 'a seat number as a fraction', ['seats', '0', 'seat'], 0.5],
+    ['Lobby', 'a seat number out of order', ['seats', '1', 'seat'], 5],
+    ['Lobby', 'a seat number repeated', ['seats', '1', 'seat'], 0],
+    ['Lobby', 'a name as a number', ['seats', '0', 'name'], 5],
+    ['Lobby', 'a name as null', ['seats', '0', 'name'], null],
+    ['Lobby', 'connected as text', ['seats', '0', 'connected'], 'yes'],
+    ['Lobby', 'connected as a number', ['seats', '0', 'connected'], 1],
+    ['Lobby', 'ready as null', ['seats', '0', 'ready'], null],
+    ['Lobby', 'ready as text', ['seats', '1', 'ready'], 'true'],
+    ['Lobby', 'needed as text', ['needed'], '1'],
+    ['Lobby', 'needed as negative', ['needed'], -1],
+    ['Lobby', 'needed as a fraction', ['needed'], 0.5],
+    ['Lobby', 'needed as null', ['needed'], null],
     ['Decision', 'id as text', ['id'], '7'],
     ['Decision', 'id as negative', ['id'], -3],
     ['Decision', 'deadline_ms as text', ['deadline_ms'], '10000'],
@@ -207,6 +233,38 @@ describe('parseFrame checks the fields of each message', () => {
       ok: false,
       error: { kind: 'bad_shape', detail: expect.stringContaining(`${type}: `) },
     })
+  })
+
+  it('reads the roster exactly as the server writes it, and hands on every field unchanged', () => {
+    // The text `crates/mtg-server/tests/ws_lobby.rs` asserts the server sends for a lobby of three seats.
+    const text =
+      '{"type":"Lobby","seats":[{"seat":0,"name":"Ada","connected":true,"ready":false},' +
+      '{"seat":1,"name":"Bo","connected":false,"ready":false},' +
+      '{"seat":2,"name":"Cy of the Many Long Names Indeed","connected":false,"ready":false}],"needed":3}'
+    expect(parseFrame(text)).toEqual({
+      ok: true,
+      message: {
+        type: 'Lobby',
+        needed: 3,
+        seats: [
+          { seat: 0, name: 'Ada', connected: true, ready: false },
+          { seat: 1, name: 'Bo', connected: false, ready: false },
+          { seat: 2, name: 'Cy of the Many Long Names Indeed', connected: false, ready: false },
+        ],
+      },
+    })
+  })
+
+  it('accepts a roster of any size the server can send, and names of any kind', () => {
+    for (const count of [1, 2, 6, 12]) {
+      const seats = Array.from({ length: count }, (_, seat) => ({
+        seat,
+        name: seat % 2 === 0 ? 'Ünïcode "quoted" \\ name' : '',
+        connected: seat % 3 === 0,
+        ready: seat % 2 === 0,
+      }))
+      expect(parseFrame(wire({ type: 'Lobby', seats, needed: count })).ok).toBe(true)
+    }
   })
 
   it('keeps the deadline of a decision on a clock and leaves the field out of one without', () => {

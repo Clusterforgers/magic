@@ -7,6 +7,7 @@ import type {
   DecisionKind,
   ManaCost,
   ManaOption,
+  MulliganStatus,
   ObjectId,
   ObjectView,
   PayOptions,
@@ -269,6 +270,27 @@ const payHybrid: DevPrompt = (fixture) => {
   return { id, decision: { ...decision, kind: { PayMana: mixed } } }
 }
 
+/**
+ * The opening hands: the stage is the mulligan, the viewer is at `viewerStatus` after one mulligan and the other seats
+ * are spread over the steps of the procedure, so the line that lists every seat has something to say.
+ */
+const openingTable =
+  (viewerStatus: MulliganStatus): DevTable =>
+  (fixture) => {
+    const steps: [MulliganStatus, number][] = [
+      ['Kept', 0],
+      ['Mulliganing', 1],
+      ['Deciding', 2],
+      [{ Bottoming: 2 }, 2],
+    ]
+    const players = fixture.view.players.map((player) => {
+      if (player.seat === fixture.view.viewer) return { ...player, mulligan: viewerStatus, mulligans: 1 }
+      const [mulligan, mulligans] = steps[(player.seat + steps.length - 1) % steps.length] ?? steps[0] ?? []
+      return mulligan === undefined ? player : { ...player, mulligan, mulligans: mulligans ?? 0 }
+    })
+    return withView(fixture, { stage: 'Mulligan', players })
+  }
+
 /** The spell being paid for gets the hybrid cost too, so its card in the hand draws the symbols. */
 const hybridTable: DevTable = (fixture) => {
   const { objects } = fixture.view
@@ -355,4 +377,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   forecast: forecastScene,
   'pay-hybrid': hybridTable,
   'pay-low-life': hybridTable,
+  mulligan: openingTable('Deciding'),
+  'mulligan-free': openingTable('Deciding'),
+  bottom: openingTable({ Bottoming: 2 }),
 }

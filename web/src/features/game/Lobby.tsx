@@ -1,38 +1,45 @@
 import { Link } from '@tanstack/react-router'
-import { Circle, CircleCheck } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 import { useGame, usePlay } from './gameContext'
 import { Invites } from './Invites'
-import { seatName } from './useGameInfo'
+import { lobbyRows, summaryText } from './lobbyModel'
+import { LobbySeatRow } from './LobbySeatRow'
+import { useLobbyAnnouncement } from './useLobbyAnnouncement'
 import { useSeatAccounts } from './useSeatAccounts'
 
-/** Who is at the table before the game starts: the seats, who is connected, and this seat's Ready. */
+/**
+ * Who is at the table before the game starts: every seat with its name, whether it is here and whether it is ready,
+ * a line that sums it up, and this seat's Ready, which can be taken back until the game starts. The server pushes the
+ * roster at every change; before the socket opens (and while it is down) the REST lookup stands in.
+ */
 export function Lobby() {
   const { game, session, lookup } = useGame()
-  const { seat, seatCount, status } = usePlay(
-    useShallow((state) => ({ seat: state.seat, seatCount: state.seatCount, status: state.status })),
+  const { seat, seatCount, status, roster } = usePlay(
+    useShallow((state) => ({
+      seat: state.seat,
+      seatCount: state.seatCount,
+      status: state.status,
+      roster: state.lobby,
+    })),
   )
-  const [ready, setReady] = useState(false)
   const [refused, setRefused] = useState(false)
-  const accounts = useSeatAccounts(game, seat, `${status}|${lookup.game?.connected.join(',') ?? ''}`)
+  const open = status === 'open'
+  const rows = useMemo(
+    () => lobbyRows({ roster, info: lookup.game, open, seat, seatCount }),
+    [roster, lookup.game, open, seat, seatCount],
+  )
+  const announced = useLobbyAnnouncement(rows, roster !== null || lookup.game !== null)
+  const here = rows
+    .filter((row) => row.connected)
+    .map((row) => row.seat)
+    .join(',')
+  const accounts = useSeatAccounts(game, seat, `${status}|${here}`)
+  const ready = rows.find((row) => row.you)?.ready ?? false
 
-  const seats = seatCount ?? lookup.game?.seats.length ?? 0
-  const rows = Array.from({ length: seats }, (_, index) => {
-    const you = index === seat
-    // REST lists who is connected; this page's own socket is the better witness for itself.
-    const here = you ? status === 'open' : (lookup.game?.connected.includes(index) ?? false)
-    return { index, you, here, name: seatName(lookup, index), account: accounts.bySeat.get(index) ?? null }
-  })
-  const present = rows.filter((row) => row.here).length
-
-  function sayReady(): void {
-    const sent = session.ready()
-    setReady(sent)
-    setRefused(!sent)
+  function toggleReady(): void {
+    setRefused(!(ready ? session.notReady() : session.ready()))
   }
 
   // `grid-cols-1` is `minmax(0, 1fr)`: a long unbroken name or username may not stretch the column past the screen.
@@ -46,47 +53,18 @@ export function Lobby() {
       </div>
 
       <section aria-labelledby="seats-title" className="grid grid-cols-1 gap-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <h2 id="seats-title" className="text-sm font-medium">
-            Seats
-          </h2>
-          <p className="text-sm text-muted-foreground" aria-live="polite">
-            {present} of {seats} here
-          </p>
-        </div>
+        <h2 id="seats-title" className="text-sm font-medium">
+          Seats
+        </h2>
         <ul aria-label="Seats" className="divide-y rounded-xl bg-card ring-1 ring-foreground/10">
           {rows.map((row) => (
-            <li key={row.index} className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm">
-              <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="shrink-0 text-muted-foreground">Seat {row.index + 1}</span>
-                <span className="max-w-full truncate font-medium">{row.name}</span>
-                {row.you ? <Badge variant="secondary">you</Badge> : null}
-                {row.account === null ? null : (
-                  <span
-                    data-slot="seat-account"
-                    className="max-w-full truncate text-xs text-muted-foreground"
-                  >
-                    signed in as {row.account}
-                  </span>
-                )}
-              </span>
-              <span
-                className={cn(
-                  'flex shrink-0 items-center gap-1.5 text-xs',
-                  row.here ? 'text-foreground' : 'text-muted-foreground',
-                )}
-              >
-                {row.here ? (
-                  <CircleCheck aria-hidden="true" className="size-4" />
-                ) : (
-                  <Circle aria-hidden="true" className="size-4" />
-                )}
-                {row.here ? 'Here' : 'Not here yet'}
-              </span>
-            </li>
+            <LobbySeatRow key={row.seat} row={row} account={accounts.bySeat.get(row.seat) ?? null} />
           ))}
         </ul>
-        {lookup.game === null && lookup.failed ? (
+        <p data-slot="lobby-summary" className="text-sm [overflow-wrap:anywhere]">
+          {summaryText(rows)}
+        </p>
+        {roster === null && lookup.game === null && lookup.failed ? (
           <p className="text-xs text-muted-foreground">
             Could not load the names and who is here. This page keeps trying.
           </p>
@@ -100,26 +78,32 @@ export function Lobby() {
             without the link.
           </p>
         ) : null}
+        {/* No role: the connection banner is the page's status, and a second one would make both ambiguous. */}
+        <p aria-live="polite" aria-atomic="true" className="sr-only" data-slot="lobby-announcement">
+          {announced}
+        </p>
       </section>
 
       <div className="grid justify-items-start gap-2">
-        <Button type="button" size="lg" disabled={ready || status !== 'open'} onClick={sayReady}>
-          {ready ? 'You are ready' : 'Ready'}
+        <Button
+          type="button"
+          size="lg"
+          variant={ready ? 'outline' : 'default'}
+          disabled={!open}
+          onClick={toggleReady}
+        >
+          {ready ? 'Not ready' : 'Ready'}
         </Button>
-        <p className="text-sm text-muted-foreground" aria-live="polite">
+        <p className="text-sm text-muted-foreground">
           {ready
-            ? 'Waiting for the other players. You cannot take Ready back.'
+            ? 'You are ready. You can take it back until the game starts.'
             : 'Press Ready when you are set to play.'}
         </p>
         {refused ? (
           <p role="alert" className="text-sm text-destructive">
-            Ready did not go through because the connection is not open. Try again in a moment.
+            That did not go through because the connection is not open. Try again in a moment.
           </p>
         ) : null}
-        <p className="text-xs text-muted-foreground">
-          The server only says who is connected, not who has pressed Ready, so only your own Ready is shown
-          here.
-        </p>
       </div>
 
       <Invites game={game} mine={seat} />

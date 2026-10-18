@@ -15,6 +15,7 @@ import type {
   EventView,
   ForecastDamage,
   GameResult,
+  LobbySeat,
   ObjectView,
   PlayerForecast,
   PlayerView,
@@ -41,6 +42,7 @@ export type ParsedFrame = { ok: true; message: ServerMessage } | { ok: false; er
 
 const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   Welcome: true,
+  Lobby: true,
   Decision: true,
   Events: true,
   Snapshot: true,
@@ -241,6 +243,16 @@ export function isStateView(value: unknown): value is StateView {
   return isRecord(value) && isListOf(value.objects, isObjectView) && isTableView(value)
 }
 
+function isLobbySeat(value: unknown): value is LobbySeat {
+  return (
+    isRecord(value) &&
+    isCount(value.seat) &&
+    isText(value.name) &&
+    isFlag(value.connected) &&
+    isFlag(value.ready)
+  )
+}
+
 function isEventView(value: unknown): value is EventView {
   return isRecord(value) && isOneKey(value) && (isTag(value.Public) || isTag(value.Hidden))
 }
@@ -274,6 +286,14 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         seats: v.seats,
         auto_pass: v.auto_pass,
       }
+    case 'Lobby':
+      if (!isListOf(v.seats, isLobbySeat)) {
+        return '"seats" must be a list of seats with a name, connected and ready'
+      }
+      // The lobby is drawn by seat number, so a roster that skips or repeats one is not one to draw.
+      if (v.seats.some((seat, index) => seat.seat !== index)) return '"seats" must be listed in seat order'
+      if (!isCount(v.needed)) return '"needed" must be a whole number'
+      return { type, seats: v.seats, needed: v.needed }
     case 'Decision':
       if (!isCount(v.id)) return '"id" must be a whole number'
       if (!isDecision(v.decision)) return '"decision" must name a player and exactly one decision kind'

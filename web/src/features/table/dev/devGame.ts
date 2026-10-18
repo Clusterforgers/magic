@@ -44,7 +44,9 @@ export function fixtureState(fixture: Fixture, pending?: PendingDecision | null)
 export function fixtureLookup(fixture: Fixture): GameLookup {
   const seats = fixture.names.map((name, seat) => ({ seat, name }))
   const connected = seats.map((entry) => entry.seat)
-  return { game: { started: true, seats, connected, result: null }, missing: false, failed: false }
+  // A game that runs has every seat ready.
+  const game = { started: true, seats, connected, ready: connected, result: null }
+  return { game, missing: false, failed: false }
 }
 
 /**
@@ -57,6 +59,7 @@ export function fixtureSession(store: PlayStore): Session {
     connect: () => undefined,
     disconnect: () => undefined,
     ready: () => false,
+    notReady: () => false,
     answer() {
       if (store.getState().pending === null) return false
       store.setState({ pending: null, clock: null })

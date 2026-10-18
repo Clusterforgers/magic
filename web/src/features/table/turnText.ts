@@ -100,6 +100,25 @@ export function describeMulligan(status: MulliganStatus, mulligans: number): str
   }
 }
 
+/**
+ * What a seat is doing in the opening hands, in a few words for the line that lists every seat: "deciding",
+ * "keeping", "deciding · 1 mulligan taken". Only what the table view says publicly: the status and the mulligans taken.
+ */
+export function describeOpening(status: MulliganStatus, mulligans: number): string {
+  const taken = mulligans === 0 ? '' : ` · ${mulligans} ${mulligans === 1 ? 'mulligan' : 'mulligans'} taken`
+  if (typeof status !== 'string') return `keeping, bottoming ${status.Bottoming}${taken}`
+  switch (status) {
+    case 'NeedsHand':
+      return `getting a new hand${taken}`
+    case 'Deciding':
+      return `deciding${taken}`
+    case 'Mulliganing':
+      return `taking a mulligan${taken}`
+    case 'Kept':
+      return `keeping${taken}`
+  }
+}
+
 /** What the game is waiting for: this seat's own decision, other seats, or nothing in particular. */
 export type Waiting =
   { kind: 'you'; label: string } | { kind: 'others'; seats: PlayerId[] } | { kind: 'idle'; label: string }
