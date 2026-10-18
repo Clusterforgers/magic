@@ -1,6 +1,7 @@
 /** Decisions the dev table can show: `/dev/table?prompt=<name>`. Add a line to `DEV_PROMPTS` for each new prompt. */
 import type { PendingDecision } from '@/play/store'
 import type { ManaOption, ObjectView, PriorityOptions } from '@/protocol/generated'
+import { assignDamage } from './damagePrompt'
 import type { Fixture } from './fixture'
 
 /** Builds the decision the viewer of a fixture faces. */
@@ -48,4 +49,7 @@ const priority: DevPrompt = ({ view }) => {
 /** The prompts by their `?prompt=` name. */
 export const DEV_PROMPTS: Record<string, DevPrompt> = {
   priority,
+  damage: assignDamage(2),
+  damage3: assignDamage(3),
+  damage1: assignDamage(1),
 }
