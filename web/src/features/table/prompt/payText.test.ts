@@ -42,6 +42,7 @@ const input = (over: Partial<PayTextInput>): PayTextInput => ({
   covered: false,
   canAdd: true,
   auto: true,
+  cancel: true,
   note: '',
   ...over,
 })
@@ -66,12 +67,27 @@ describe('payText', () => {
     [
       'with something chosen',
       input({ chosen: 1, owed: cost(2, [0, 0, 0, 0, 1]), note: 'Added white from Plains.' }),
-      'Added white from Plains. Still to pay: 2 generic and 1 green.',
+      'Added white from Plains. Still to pay: 2 generic and 1 green. Choose more, or pay the rest for me.',
+    ],
+    [
+      'with something chosen and no automatic payment, which leaves out the offer to pay the rest',
+      input({ chosen: 1, owed: GROWTH, auto: false, note: 'Added white from Plains.' }),
+      'Added white from Plains. Still to pay: 1 green.',
     ],
     [
       'with something chosen and nothing left to add',
       input({ chosen: 1, owed: GROWTH, canAdd: false }),
       'Still to pay: 1 green. Nothing left can pay it; remove a choice or cancel.',
+    ],
+    [
+      'with something chosen, nothing left to add and no way to cancel',
+      input({ chosen: 1, owed: GROWTH, canAdd: false, cancel: false }),
+      'Still to pay: 1 green. Nothing left can pay it; remove a choice.',
+    ],
+    [
+      'before anything is chosen, unpayable, with no way to cancel',
+      input({ auto: false, cancel: false }),
+      'You cannot pay 2 generic, 1 white and 1 green for Selesnya Evangel with the mana you have.',
     ],
     [
       'when the cost is covered',

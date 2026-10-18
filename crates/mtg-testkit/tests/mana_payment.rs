@@ -335,3 +335,85 @@ fn only_castable_spells_can_be_started() -> Result<(), ScriptError> {
     assert_eq!(driver.engine().state_hash(), before);
     Ok(())
 }
+
+fn source_of(driver: &Driver, mana: ManaType) -> Result<ManaSource, ScriptError> {
+    pay_options(driver)?
+        .sources
+        .into_iter()
+        .find(|o| o.produces == mana)
+        .map(|o| o.source)
+        .ok_or_else(|| ScriptError::Expectation(format!("no {mana:?} source")))
+}
+
+#[test]
+fn completing_a_partial_payment_keeps_the_chosen_land_and_pays_the_rest() -> Result<(), ScriptError>
+{
+    let mut driver = driver_with("{1}{G}", "WGR")?;
+    driver.begin_cast("Spell")?;
+    let plains = source_of(&driver, ManaType::White)?;
+    let events = driver.answer(Answer::PayMana(PayChoice::Complete(Payment {
+        pool: vec![],
+        taps: vec![plains],
+    })))?;
+    let tapped: Vec<_> = events
+        .iter()
+        .filter_map(|e| match e {
+            Event::PermanentTapped { object } => Some(*object),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(
+        tapped.len(),
+        2,
+        "the chosen Plains and the Forest the engine added"
+    );
+    assert!(tapped.contains(&plains.object));
+    driver.expect_event("ManaSpent of W and G", |e| {
+        matches!(e, Event::ManaSpent { mana, .. } if mana.len() == 2 && mana.contains(&ManaType::White) && mana.contains(&ManaType::Green))
+    })
+}
+
+#[rstest]
+#[case::wastes_a_colour("{G}{G}", "GGW", &[ManaType::White])]
+fn a_partial_payment_that_cannot_be_finished_is_rejected_whole(
+    #[case] cost: &str,
+    #[case] lands_in_play: &str,
+    #[case] chosen: &[ManaType],
+) -> Result<(), ScriptError> {
+    let mut driver = driver_with(cost, lands_in_play)?;
+    driver.begin_cast("Spell")?;
+    let before = driver.engine().state_hash();
+    let log_len = driver.engine().events().len();
+    let taps = chosen
+        .iter()
+        .map(|m| source_of(&driver, *m))
+        .collect::<Result<Vec<_>, _>>()?;
+    let result = driver.answer(Answer::PayMana(PayChoice::Complete(Payment {
+        pool: vec![],
+        taps,
+    })));
+    assert!(matches!(
+        result,
+        Err(ScriptError::Engine(EngineError::Illegal(_)))
+    ));
+    assert_eq!(driver.engine().state_hash(), before);
+    assert_eq!(driver.engine().events().len(), log_len);
+    driver.expect_decision(0, "pay-mana")
+}
+
+#[test]
+fn a_cancelled_cast_can_be_started_and_paid_again() -> Result<(), ScriptError> {
+    let mut driver = driver_with("{G}", "G")?;
+    driver.begin_cast("Spell")?;
+    assert!(pay_options(&driver)?.can_cancel);
+    let events = driver.answer(Answer::PayMana(PayChoice::Cancel))?;
+    assert!(
+        events.is_empty(),
+        "the log shows nothing of a cancelled cast"
+    );
+    let in_hand = driver.state().zone(Zone::Hand(pid(0))).len();
+    assert_eq!(in_hand, 1, "the spell never left the hand");
+    driver.cast("Spell")?;
+    assert_eq!(driver.state().zone(Zone::Stack).len(), 1);
+    Ok(())
+}

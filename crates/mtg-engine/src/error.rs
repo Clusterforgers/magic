@@ -1,6 +1,6 @@
 //! Error types returned by the engine.
 
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use thiserror::Error;
 
@@ -58,6 +58,12 @@ pub enum PaymentError {
     /// The same source was tapped twice.
     #[error("{0:?} was tapped twice")]
     DuplicateSource(ManaSource),
+    /// Two abilities of one permanent were used, which would tap it twice.
+    #[error("{0:?} would be tapped twice")]
+    ObjectTappedTwice(ObjectId),
+    /// A tap named a permanent that is already tapped.
+    #[error("{0:?} is already tapped")]
+    AlreadyTapped(ObjectId),
     /// More floating mana was spent than is in the pool.
     #[error("not enough {0:?} mana in the pool")]
     PoolShortfall(ManaType),
@@ -72,6 +78,12 @@ pub enum PaymentError {
     /// A colored or colorless requirement is not covered.
     #[error("the cost needs more {0:?} mana")]
     MissingMana(ManaType),
+    /// The mana chosen so far cannot all go toward the cost, so no completion exists.
+    #[error("the chosen mana would be wasted")]
+    Wasted,
+    /// What is left cannot pay the rest of the cost.
+    #[error("the rest of the cost cannot be paid from the remaining mana")]
+    CannotComplete,
 }
 
 /// Why an answer was rejected.

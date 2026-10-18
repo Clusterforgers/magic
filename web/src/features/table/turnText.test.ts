@@ -42,6 +42,7 @@ const KINDS: Record<DecisionName, DecisionKind> = {
       pool: { counts: [0, 0, 0, 0, 0, 0] },
       sources: [],
       auto_available: false,
+      can_cancel: true,
     },
   },
   DeclareAttackers: { DeclareAttackers: { attackers: [] } },
