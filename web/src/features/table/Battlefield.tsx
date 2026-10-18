@@ -5,6 +5,7 @@ import type { PlayerId } from '@/protocol/generated'
 import type { RowKind } from './cardModel'
 import type { CardSize } from './cardSize'
 import { CardRow } from './CardRow'
+import { useGhosts } from './fx/hooks'
 import { useSeatNamer } from './names'
 import { battlefieldRow, isBattlefieldEmpty } from './selectors'
 
@@ -30,7 +31,8 @@ interface PermanentRowProps {
 /** One row of a seat's permanents; it redraws only when the ids in it change. */
 const PermanentRow = memo(function PermanentRow({ seat, row, label, size }: PermanentRowProps) {
   const ids = usePlay(useShallow((state) => battlefieldRow(state, seat, row)))
-  return <CardRow ids={ids} label={label} size={size} />
+  const ghosts = useGhosts(seat, row)
+  return <CardRow ids={ids} ghosts={ghosts} label={label} size={size} />
 })
 
 interface BattlefieldProps {
