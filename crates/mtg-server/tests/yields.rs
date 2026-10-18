@@ -1,4 +1,4 @@
-//! Goal: a seat that yields is passed for through the normal path at every priority window until its yield ends (an opponent's new object it could answer, the end of the turn, its own turn, the stack empty), is told when the yield starts and ends and is never sent a priority decision in between, still gets every other decision, and loses the yield with a cancel, a concession, a lost game, a resume or a failed save; the pending decision is passed at once or sent again.
+//! Goal: a seat that yields is passed for through the normal path at every priority window until its yield ends (an opponent's new object, whatever the seat could do about it, the end of the turn, its own turn, the stack empty), is told when the yield starts and ends and is never sent a priority decision in between, still gets every other decision, and loses the yield with a cancel, a concession, a lost game, a resume or a failed save; the pending decision is passed at once or sent again.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
