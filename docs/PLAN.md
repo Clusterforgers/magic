@@ -43,7 +43,7 @@ Details are in [engine.md](engine.md).
 - Rules breadth: replacement and prevention effects (CR 614, 615), triggered abilities (CR 603, delayed and reflexive included), static, activated and mana abilities, state-based actions to a fixpoint (CR 704), the stack, APNAP order, combat and target re-validation on resolution.
 - Formats are a trait (`FormatRules`: deck validation, starting life, mulligan, extra zones and rules). `Normal` is 60 cards, 20 life and the London mulligan. `Commander` is 100 singleton, colour identity, command zone, tax, 40 life, 21 commander damage, partner and companion.
 - Any player count: attacks go at any opponent or planeswalker, and elimination and leaving the game are handled.
-- Card DSL: declarative data (RON or JSON in the repo and the database) built from `Cost`, `Selector`, `Condition`, `Effect`, `Duration` and `TargetSpec`. Each card has `impl_status: Full | Partial | Manual`.
+- Card DSL: one JSON rules file per oracle card, built from verbs (`Effect`, `TriggerPattern`, `CostItem`, `Modification`, `Keyword`) and values (`Ref`, `Selector`, `Amount`, `Condition`). Each card declares `impl_status` (`Full`, `Partial`, `Manual` or `Unplayable`); its support is computed from the file, the imported text and the engine's capabilities. See [cards-dsl.md](cards-dsl.md).
 - Manual fallback: a `Manual` card shows its oracle text and offers generic logged actions (move card, counters, life, create token, tap) that other players can see and object to, so no deck is blocked.
 - Oracle-text compiler: a template-based parser compiles common wordings to the DSL and leaves the rest `Manual`. A coverage report ranks unimplemented cards by frequency across imported decks and precons.
 
