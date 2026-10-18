@@ -1066,6 +1066,7 @@ dependencies = [
 name = "mtg-cards"
 version = "0.1.0"
 dependencies = [
+ "flate2",
  "mtg-core",
  "mtg-import",
  "proptest",

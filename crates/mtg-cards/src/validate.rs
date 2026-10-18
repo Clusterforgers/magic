@@ -157,9 +157,21 @@ impl<'a> Walker<'a> {
         result
     }
 
+    /// The path as serde writes it: names joined by dots, indices attached (`effects[2].If.then[0]`).
+    fn current_path(&self) -> String {
+        let mut path = String::new();
+        for segment in &self.path {
+            if !path.is_empty() && !segment.starts_with('[') {
+                path.push('.');
+            }
+            path.push_str(segment);
+        }
+        path
+    }
+
     fn problem(&mut self, message: impl Into<String>) {
         self.problems.push(Problem {
-            path: self.path.join("."),
+            path: self.current_path(),
             message: message.into(),
         });
     }
@@ -240,7 +252,7 @@ impl<'a> Walker<'a> {
             Pred::HasKeyword(keyword) => self.keyword(keyword),
             Pred::Named(name) => self
                 .names
-                .push((self.face, self.path.join("."), name.clone())),
+                .push((self.face, self.current_path(), name.clone())),
             Pred::Compare { to, .. } => self.at("to", |w| w.amount(to)),
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
@@ -273,7 +285,7 @@ impl<'a> Walker<'a> {
             Amount::Fixed(_) => {}
             Amount::X => {
                 if !self.x_free {
-                    self.x_uses.push((self.face, self.path.join(".")));
+                    self.x_uses.push((self.face, self.current_path()));
                 }
             }
             Amount::Count(selector) => self.selector(selector),
@@ -395,7 +407,7 @@ impl<'a> Walker<'a> {
             Keyword::Enchant(selector) => self.selector(selector),
             Keyword::PartnerWith(name) => {
                 self.names
-                    .push((self.face, self.path.join("."), name.clone()));
+                    .push((self.face, self.current_path(), name.clone()));
             }
             _ => {}
         }
@@ -1145,6 +1157,10 @@ mod tests {
     #[case::target_out_of_range(
         r#"{"Spell":{"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]}}"#,
         "faces[0].abilities[0].Spell.effects[0].DealDamage.to: target 0 does not exist"
+    )]
+    #[case::indices_attach_to_the_name(
+        r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"ControlledBy":{"Target":0}}]}}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Destroy.what[0]: target 0 does not exist"
     )]
     #[case::target_unused(
         r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Draw":{}}]}}"#,

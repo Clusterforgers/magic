@@ -1,4 +1,4 @@
-//! Helpers shared by the integration tests: the corpus directory and the imported Scryfall fixture.
+//! Goal: shared helpers for the integration tests: the corpus directory and the imported Scryfall fixture (this is not a test module itself).
 #![allow(dead_code, clippy::expect_used)]
 
 use std::path::{Path, PathBuf};
