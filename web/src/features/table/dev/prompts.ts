@@ -1,6 +1,7 @@
 /** Decisions the dev table can show: `/dev/table?prompt=<name>`. Add a line to `DEV_PROMPTS` for each new prompt. */
 import type { PendingDecision } from '@/play/store'
 import type { DecisionKind, ManaOption, ObjectId, ObjectView, PriorityOptions } from '@/protocol/generated'
+import { assignDamage } from './damagePrompt'
 import type { Fixture } from './fixture'
 
 /** Builds the decision the viewer of a fixture faces. */
@@ -59,4 +60,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   mulligan: aboutHand((hand) => ({ Mulligan: { hand, mulligans_taken: 1, can_mulligan: true } })),
   bottom: aboutHand((hand) => ({ BottomCards: { hand, count: 2 } })),
   discard: aboutHand((hand) => ({ Discard: { hand: hand.slice(0, -1), count: 2 } })),
+  damage: assignDamage(2),
+  damage3: assignDamage(3),
+  damage1: assignDamage(1),
 }

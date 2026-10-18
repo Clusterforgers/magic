@@ -10,7 +10,7 @@ import { PROMPTS } from './registry'
 
 const NAMES = Object.keys(DECISION_LABEL) as DecisionName[]
 // Part 2b to 2e take these off the list one at a time as they replace the placeholder in `kinds/`.
-const UNBUILT: readonly DecisionName[] = ['PayMana', 'DeclareAttackers', 'DeclareBlockers', 'AssignDamage']
+const UNBUILT: readonly DecisionName[] = ['PayMana', 'DeclareAttackers', 'DeclareBlockers']
 
 describe('the registry', () => {
   it('has a prompt for each of the eight decision kinds and for nothing else', () => {
