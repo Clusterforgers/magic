@@ -101,7 +101,7 @@ export function toAnswer(recipients: readonly DamageRecipient[], amounts: readon
   return { AssignDamage: shares }
 }
 
-/** How a recipient stands against its lethal damage, in words: "Lethal", "2 short of lethal", or null when unknown. */
+/** How a recipient stands against its lethal damage: "Lethal" or "2 short of lethal", null when unknown or already lethal. */
 export function lethalNote(recipient: DamageRecipient, amount: number): string | null {
   const lethal = lethalDamage(recipient)
   // With lethal damage already marked there is nothing to compare; `factsOf` says so.

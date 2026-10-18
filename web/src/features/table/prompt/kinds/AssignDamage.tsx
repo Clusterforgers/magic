@@ -31,12 +31,13 @@ interface RowProps {
   max: number
   active: boolean
   inputRef(element: HTMLInputElement | null): void
-  onFocus(): void
+  onEnter(): void
+  onLeave(): void
   onChange(wanted: number): void
 }
 
 /** One blocker: its name and numbers, and a stepper (less, a number, more) for the damage it receives. */
-function Row({ recipient, label, amount, max, active, inputRef, onFocus, onChange }: RowProps) {
+function Row({ recipient, label, amount, max, active, inputRef, onEnter, onLeave, onChange }: RowProps) {
   const note = lethalNote(recipient, amount)
   const step = (by: number) => () => onChange(amount + by)
   const key = (event: KeyboardEvent<HTMLInputElement>): void => {
@@ -49,6 +50,10 @@ function Row({ recipient, label, amount, max, active, inputRef, onFocus, onChang
       data-slot="damage-row"
       data-object-id={recipient.id}
       data-active={active}
+      onFocus={onEnter}
+      onBlur={(event: FocusEvent<HTMLLIElement>) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) onLeave()
+      }}
       className="grid gap-1 rounded-md border bg-background px-2 py-1.5 data-[active=true]:border-ring data-[active=true]:ring-2 data-[active=true]:ring-ring/50"
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
@@ -80,7 +85,6 @@ function Row({ recipient, label, amount, max, active, inputRef, onFocus, onChang
           className="h-10 w-16 text-center [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           onFocus={(event: FocusEvent<HTMLInputElement>) => {
             event.currentTarget.select()
-            onFocus()
           }}
           onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(Number(event.target.value))}
           onKeyDown={key}
@@ -161,7 +165,10 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
   const target = blockers.length === 1 ? 'its blocker' : 'its blockers'
   const verb = blockers.length === 1 ? 'Assign' : 'Divide'
   const where = blockers.length === 1 ? 'to' : 'among'
-  const text = `${verb} the ${power} combat damage of ${attackerName} ${where} ${target}: ${joinWords(labels)}.`
+  const text =
+    blockers.length === 0
+      ? `${attackerName} has no blocker to assign its ${power} combat damage to.`
+      : `${verb} the ${power} combat damage of ${attackerName} ${where} ${target}: ${joinWords(labels)}.`
 
   return (
     <PromptLayout text={text}>
@@ -181,7 +188,8 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
                   if (element === null) inputs.current.delete(recipient.id)
                   else inputs.current.set(recipient.id, element)
                 }}
-                onFocus={() => selection.set([recipient.id])}
+                onEnter={() => selection.set([recipient.id])}
+                onLeave={() => selection.clear()}
                 onChange={change(index)}
               />
             )
