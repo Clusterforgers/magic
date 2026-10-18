@@ -2,9 +2,11 @@
 
 use std::sync::Arc;
 
-use mtg_core::card::{CardDefinition, CardType};
+use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::mana::{ManaCost, ManaSymbol};
+
+use crate::definition::CardDefinition;
 
 /// The basic land that taps for `color`.
 pub fn basic_land(color: Color) -> Arc<CardDefinition> {

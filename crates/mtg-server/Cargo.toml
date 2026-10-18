@@ -10,6 +10,8 @@ publish.workspace = true
 mtg-core.workspace = true
 mtg-engine.workspace = true
 mtg-cards.workspace = true
+mtg-db.workspace = true
+mtg-import.workspace = true
 mtg-protocol.workspace = true
 argon2.workspace = true
 axum.workspace = true
@@ -29,7 +31,6 @@ uuid = { workspace = true, features = ["v4"] }
 workspace = true
 
 [dev-dependencies]
-mtg-db.workspace = true
 mtg-testkit.workspace = true
 futures-util.workspace = true
 rstest.workspace = true

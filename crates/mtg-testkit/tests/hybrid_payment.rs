@@ -5,7 +5,7 @@ mod common;
 use std::sync::Arc;
 
 use common::pid;
-use mtg_core::card::CardDefinition;
+use mtg_cards::CardDefinition;
 use mtg_core::mana::{ManaCost, ManaType};
 use mtg_engine::decision::{Answer, PayChoice};
 use mtg_engine::mana::Payment;

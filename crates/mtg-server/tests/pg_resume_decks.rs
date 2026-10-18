@@ -8,7 +8,8 @@ use std::io;
 use std::sync::{Arc, Mutex, OnceLock};
 
 use common::{Bot, drive, roomy};
-use mtg_core::card::{CardDefinition, CardType};
+use mtg_cards::CardDefinition;
+use mtg_core::card::CardType;
 use mtg_core::mana::ManaCost;
 use mtg_protocol::ClientMessage;
 use mtg_server::registry::SeatRequest;

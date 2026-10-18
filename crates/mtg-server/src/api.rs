@@ -132,7 +132,10 @@ impl From<CreateError> for ApiError {
                 )
             }
             // Details stay in the log: they describe the server, not the request.
-            CreateError::Random(_) | CreateError::Start(_) | CreateError::Recipe(_) => {
+            CreateError::Random(_)
+            | CreateError::Start(_)
+            | CreateError::Recipe(_)
+            | CreateError::Cards(_) => {
                 tracing::error!(%error, "game creation failed");
                 ApiError::new(
                     StatusCode::INTERNAL_SERVER_ERROR,

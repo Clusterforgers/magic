@@ -4,7 +4,8 @@ use std::collections::BTreeMap;
 use std::fmt::Debug;
 use std::sync::Arc;
 
-use mtg_core::card::{CardDefinition, Supertype};
+use mtg_cards::CardDefinition;
+use mtg_core::card::Supertype;
 use mtg_core::ids::PlayerId;
 use thiserror::Error;
 

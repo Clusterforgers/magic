@@ -1,0 +1,333 @@
+//! The card definition the engine plays: printed characteristics and the abilities it runs.
+//!
+//! The server assembles one per oracle card from the imported record and the rules data
+//! ([`crate::assemble()`]); the test helpers in [`crate::vanilla`] build the plain ones directly.
+
+use std::collections::BTreeSet;
+
+use mtg_core::card::{CardType, CardTypes, Subtype, Supertype};
+use mtg_core::color::{Color, ColorSet};
+use mtg_core::mana::{ManaCost, ManaType};
+use serde::{Deserialize, Serialize};
+
+/// `{T}: Add one mana of a fixed type`; shaped so costs and choices can extend it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct ManaAbility {
+    /// The mana produced.
+    pub produces: ManaType,
+}
+
+/// An ability printed on a card; the card DSL will add variants.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum AbilityDef {
+    /// A tap-for-mana ability.
+    Mana(ManaAbility),
+}
+
+/// Whether a count is zero, so serialization can leave it out (serde hands over a reference).
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(count: &u8) -> bool {
+    *count == 0
+}
+
+/// The static, printed side of a card.
+///
+/// A field added after the first fingerprints were stored is left out of the serialized form while it
+/// holds its default (`docs/server.md`, deck check), so older decks keep their fingerprints.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub struct CardDefinition {
+    /// Card name.
+    pub name: String,
+    /// Mana cost without its `{X}` symbols; `None` for cards without a cost (lands).
+    pub mana_cost: Option<ManaCost>,
+    /// How many `{X}` symbols the printed cost holds. The engine cannot pay them yet, so such a card
+    /// is not offered as castable.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub x_in_cost: u8,
+    /// Supertypes.
+    pub supertypes: BTreeSet<Supertype>,
+    /// Card types.
+    pub types: BTreeSet<CardType>,
+    /// Subtypes in printed order.
+    pub subtypes: Vec<Subtype>,
+    /// Printed power (creatures).
+    pub power: Option<i32>,
+    /// Printed toughness (creatures).
+    pub toughness: Option<i32>,
+    /// Starting loyalty (planeswalkers).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub loyalty: Option<u32>,
+    /// Starting defense (battles).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub defense: Option<u32>,
+    /// The colors a color indicator gives (CR 204), when the mana cost does not.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub color_indicator: Option<ColorSet>,
+    /// Printed abilities.
+    pub abilities: Vec<AbilityDef>,
+}
+
+impl CardDefinition {
+    /// A blank definition with just a name.
+    pub fn new(name: impl Into<String>) -> Self {
+        CardDefinition {
+            name: name.into(),
+            mana_cost: None,
+            x_in_cost: 0,
+            supertypes: BTreeSet::new(),
+            types: BTreeSet::new(),
+            subtypes: Vec::new(),
+            power: None,
+            toughness: None,
+            loyalty: None,
+            defense: None,
+            color_indicator: None,
+            abilities: Vec::new(),
+        }
+    }
+
+    /// Sets the mana cost.
+    #[must_use]
+    pub fn with_mana_cost(mut self, cost: ManaCost) -> Self {
+        self.mana_cost = Some(cost);
+        self
+    }
+
+    /// Sets the number of `{X}` symbols in the printed cost.
+    #[must_use]
+    pub fn with_x_in_cost(mut self, x: u8) -> Self {
+        self.x_in_cost = x;
+        self
+    }
+
+    /// Sets the starting loyalty.
+    #[must_use]
+    pub fn with_loyalty(mut self, loyalty: u32) -> Self {
+        self.loyalty = Some(loyalty);
+        self
+    }
+
+    /// Sets the starting defense.
+    #[must_use]
+    pub fn with_defense(mut self, defense: u32) -> Self {
+        self.defense = Some(defense);
+        self
+    }
+
+    /// Sets the colors of a color indicator.
+    #[must_use]
+    pub fn with_color_indicator(mut self, colors: ColorSet) -> Self {
+        self.color_indicator = Some(colors);
+        self
+    }
+
+    /// Adds a card type.
+    #[must_use]
+    pub fn with_type(mut self, ty: CardType) -> Self {
+        self.types.insert(ty);
+        self
+    }
+
+    /// Adds a supertype.
+    #[must_use]
+    pub fn with_supertype(mut self, supertype: Supertype) -> Self {
+        self.supertypes.insert(supertype);
+        self
+    }
+
+    /// Adds a subtype.
+    #[must_use]
+    pub fn with_subtype(mut self, subtype: impl Into<String>) -> Self {
+        self.subtypes.push(Subtype(subtype.into()));
+        self
+    }
+
+    /// Sets printed power and toughness.
+    #[must_use]
+    pub fn with_power_toughness(mut self, power: i32, toughness: i32) -> Self {
+        self.power = Some(power);
+        self.toughness = Some(toughness);
+        self
+    }
+
+    /// Adds a printed ability.
+    #[must_use]
+    pub fn with_ability(mut self, ability: AbilityDef) -> Self {
+        self.abilities.push(ability);
+        self
+    }
+
+    /// The basic land for `color`, or Wastes for `None`.
+    pub fn basic_land(color: Option<Color>) -> Self {
+        let (name, subtype, mana) = match color {
+            Some(Color::White) => ("Plains", Some("Plains"), ManaType::White),
+            Some(Color::Blue) => ("Island", Some("Island"), ManaType::Blue),
+            Some(Color::Black) => ("Swamp", Some("Swamp"), ManaType::Black),
+            Some(Color::Red) => ("Mountain", Some("Mountain"), ManaType::Red),
+            Some(Color::Green) => ("Forest", Some("Forest"), ManaType::Green),
+            None => ("Wastes", None, ManaType::Colorless),
+        };
+        let land = CardDefinition::new(name)
+            .with_supertype(Supertype::Basic)
+            .with_type(CardType::Land)
+            .with_ability(AbilityDef::Mana(ManaAbility { produces: mana }));
+        match subtype {
+            Some(s) => land.with_subtype(s),
+            None => land,
+        }
+    }
+
+    /// Whether the card has `ty` among its printed types.
+    pub fn is_type(&self, ty: CardType) -> bool {
+        self.types.contains(&ty)
+    }
+
+    /// Printed types as a compact set.
+    pub fn type_set(&self) -> CardTypes {
+        self.types.iter().copied().collect()
+    }
+
+    /// Printed colors: those of the color indicator if it has one (CR 204), otherwise those of the
+    /// mana cost (CR 105.2).
+    pub fn colors(&self) -> ColorSet {
+        self.color_indicator.unwrap_or_else(|| {
+            self.mana_cost
+                .as_ref()
+                .map(ManaCost::colors)
+                .unwrap_or_default()
+        })
+    }
+
+    /// Mana value of the card (0 without a cost).
+    pub fn mana_value(&self) -> u32 {
+        self.mana_cost.as_ref().map_or(0, ManaCost::mana_value)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: card definition helpers derive colors, values and basic lands consistently.
+    use super::*;
+    use rstest::rstest;
+
+    #[rstest]
+    #[case(Some(Color::White), "Plains", ManaType::White)]
+    #[case(Some(Color::Blue), "Island", ManaType::Blue)]
+    #[case(Some(Color::Black), "Swamp", ManaType::Black)]
+    #[case(Some(Color::Red), "Mountain", ManaType::Red)]
+    #[case(Some(Color::Green), "Forest", ManaType::Green)]
+    #[case(None, "Wastes", ManaType::Colorless)]
+    fn basic_lands_tap_for_their_own_mana(
+        #[case] color: Option<Color>,
+        #[case] name: &str,
+        #[case] mana: ManaType,
+    ) {
+        let land = CardDefinition::basic_land(color);
+        assert_eq!(land.name, name);
+        assert!(land.is_type(CardType::Land));
+        assert!(land.supertypes.contains(&Supertype::Basic));
+        assert_eq!(
+            land.abilities,
+            vec![AbilityDef::Mana(ManaAbility { produces: mana })]
+        );
+        assert!(land.colors().is_empty());
+        assert_eq!(land.mana_value(), 0);
+    }
+
+    #[rstest]
+    #[case("{1}{G}", 2, "G")]
+    #[case("{W}{U}{B}", 3, "WUB")]
+    #[case("{3}", 3, "")]
+    #[case::hybrid("{1}{R/W}{R/W}", 3, "WR")]
+    #[case::monocolored_hybrid("{2/G}", 2, "G")]
+    #[case::phyrexian("{2}{U/P}", 3, "U")]
+    #[case::colorless_hybrid("{C/B}", 1, "B")]
+    #[case::colorless_phyrexian("{8}{C/P}{C/P}", 10, "")]
+    fn colors_and_value_come_from_the_cost(
+        #[case] cost: &str,
+        #[case] value: u32,
+        #[case] colors: &str,
+    ) {
+        let card = CardDefinition::new("X")
+            .with_type(CardType::Creature)
+            .with_mana_cost(ManaCost::parse(cost).unwrap());
+        assert_eq!(card.mana_value(), value);
+        let expected: ColorSet = colors.chars().filter_map(Color::from_symbol).collect();
+        assert_eq!(card.colors(), expected);
+    }
+
+    #[test]
+    fn type_set_matches_declared_types() {
+        let card = CardDefinition::new("X")
+            .with_type(CardType::Artifact)
+            .with_type(CardType::Creature);
+        let set = card.type_set();
+        assert!(set.contains(CardType::Artifact) && set.contains(CardType::Creature));
+        assert!(!set.contains(CardType::Land));
+    }
+
+    #[rstest]
+    #[case::indicator_beats_the_cost("{2}{G}", Some("U"), "U")]
+    #[case::indicator_without_a_cost("", Some("WB"), "WB")]
+    #[case::indicator_of_nothing("{1}{R}", Some(""), "")]
+    #[case::cost_when_there_is_no_indicator("{1}{R}", None, "R")]
+    fn a_color_indicator_replaces_the_colors_of_the_cost(
+        #[case] cost: &str,
+        #[case] indicator: Option<&str>,
+        #[case] expected: &str,
+    ) {
+        let letters =
+            |text: &str| -> ColorSet { text.chars().filter_map(Color::from_symbol).collect() };
+        let mut card = CardDefinition::new("X").with_type(CardType::Creature);
+        if !cost.is_empty() {
+            card = card.with_mana_cost(ManaCost::parse(cost).unwrap());
+        }
+        if let Some(indicator) = indicator {
+            card = card.with_color_indicator(letters(indicator));
+        }
+        assert_eq!(card.colors(), letters(expected));
+    }
+
+    #[test]
+    fn fields_added_later_stay_out_of_the_stored_form_until_they_are_used() {
+        let plain = CardDefinition::basic_land(Some(Color::Green));
+        let json = serde_json::to_value(&plain).unwrap();
+        let keys: BTreeSet<&str> = json
+            .as_object()
+            .unwrap()
+            .keys()
+            .map(String::as_str)
+            .collect();
+        let expected = [
+            "abilities",
+            "mana_cost",
+            "name",
+            "power",
+            "subtypes",
+            "supertypes",
+            "toughness",
+            "types",
+        ];
+        assert_eq!(keys, expected.into_iter().collect());
+        assert_eq!(
+            serde_json::from_value::<CardDefinition>(json).unwrap(),
+            plain
+        );
+
+        let used = CardDefinition::new("Y")
+            .with_x_in_cost(2)
+            .with_loyalty(3)
+            .with_defense(4)
+            .with_color_indicator(ColorSet::EMPTY.with(Color::Blue));
+        let json = serde_json::to_value(&used).unwrap();
+        for key in ["x_in_cost", "loyalty", "defense", "color_indicator"] {
+            assert!(json.get(key).is_some(), "{key} is stored once it is used");
+        }
+        assert_eq!(
+            serde_json::from_value::<CardDefinition>(json).unwrap(),
+            used
+        );
+    }
+}

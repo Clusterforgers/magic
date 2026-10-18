@@ -55,7 +55,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 ## M3 Rules depth
 Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d) to (k) in parallel.
 - [ ] (a) `mtg-cards` DSL: Cost, Selector, Condition, Effect, Duration, TargetSpec, Amount and every ability kind as data files with loader, validation, support records and a 40-card corpus
-- [ ] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL; `CardDefinition` moves to `mtg-cards`
+- [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL; `CardDefinition` moves to `mtg-cards`
 - [ ] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
 - [ ] (d) Decision kinds the effects need, one task each across `mtg-engine`, `mtg-protocol` and a web prompt, with tests: `ChooseMode`, `ChooseNumber` (X, "any number"), `DivideAmount`, `ChooseCards` (search, reveal, "choose a creature"; any seat), `OrderCards` (scry, surveil, put back, bottom in any order), `YesNo` for "may", `ChooseOption`, `ChooseCosts`, `OrderTriggers`, `ChooseReplacement`
 - [ ] (e) Keywords, one task each with a table test: flying/reach, first strike/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof/ward; `DamageOptions` gets player and trample targets and the views carry keywords for the damage prompt's lethal hint (`docs/web.md`, AssignDamage)

@@ -7,6 +7,7 @@ use std::fmt::Write as _;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
+use crate::assemble::printed_gaps;
 use crate::card::{Card, ImplStatus, Span};
 use crate::validate::used_primitives;
 
@@ -29,6 +30,8 @@ pub struct PrintedFace {
     pub loyalty: Option<String>,
     /// Battle defense, as text.
     pub defense: Option<String>,
+    /// The face's colors as Scryfall letters (`W`, `U`, `B`, `R`, `G`); empty when the record gives none.
+    pub colors: Vec<String>,
 }
 
 /// An oracle card as imported: what the rules file is checked against.
@@ -117,6 +120,11 @@ impl Caps {
         }
     }
 
+    /// Whether the engine runs the primitive called `name`.
+    pub fn runs(&self, name: &str) -> bool {
+        self.everything || self.names.contains(name)
+    }
+
     /// The primitives of `used` the engine does not run.
     pub fn missing(&self, used: &BTreeSet<String>) -> Vec<String> {
         if self.everything {
@@ -198,7 +206,7 @@ fn fingerprint(
     digest(&slices)
 }
 
-fn whole_text(text: &str) -> Span {
+pub(crate) fn whole_text(text: &str) -> Span {
     Span {
         start: 0,
         end: u32::try_from(text.chars().count()).unwrap_or(u32::MAX),
@@ -268,8 +276,12 @@ pub fn support(card: Option<&Card>, printed: &PrintedCard, caps: &Caps) -> Suppo
                         rules.name != face.name || rules.oracle_fingerprint != *now
                     },
                 );
+            let gaps = printed_gaps(printed, caps);
             if drifted {
                 (Support::Stale, Vec::new())
+            } else if !gaps.is_empty() {
+                // Characteristics the engine cannot hold are no ground for trusting the rules.
+                (Support::Manual, gaps)
             } else {
                 gate(card, printed, caps)
             }
