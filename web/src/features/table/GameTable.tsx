@@ -1,4 +1,5 @@
 import { memo, useContext, useMemo, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -8,6 +9,8 @@ import { CardPreview } from './CardPreview'
 import { ConcedeButton } from './ConcedeButton'
 import { CentreStrip } from './CentreStrip'
 import { Drawer } from './Drawer'
+import { FxContext } from './fx/hooks'
+import { EFFECTS_BY_DEFAULT, useTableFx } from './fx/useTableFx'
 import { arrangeSeats } from './layout'
 import type { SeatPlan, TableMode } from './layout'
 import { createMarksStore, MarksContext } from './prompt/marks'
@@ -85,39 +88,46 @@ export const GameTable = memo(function GameTable() {
     [seatCount, seat, mode, chosen, followed],
   )
   const size: CardSize = plan.compact ? 'compact' : 'normal'
+  const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
 
   return (
-    <PreviewContext value={previews}>
-      <MarksContext value={marks}>
-        <section aria-label="Game table" className="flex w-full items-start">
-          <div className="grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
-            <h1 className="sr-only">Game table</h1>
-            {!ready || seat === null ? (
-              <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
-            ) : (
-              <>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <TableToolbar
-                    mode={plan.mode}
-                    onMode={setMode}
-                    pinnedFocus={chosen !== null}
-                    onFollow={() => setChosen(null)}
-                  />
-                  <ConcedeButton />
-                </div>
-                <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
-                <div className="grid gap-3">
-                  <CentreStrip />
-                  <StackPanel />
-                </div>
-                <OwnBoard seat={plan.viewer} size={size} />
-              </>
-            )}
-          </div>
-          <Drawer />
-        </section>
-        <CardPreview />
-      </MarksContext>
-    </PreviewContext>
+    <FxContext value={fx}>
+      <PreviewContext value={previews}>
+        <MarksContext value={marks}>
+          <section
+            aria-label="Game table"
+            className="flex w-full items-start"
+            style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
+          >
+            <div className="grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
+              <h1 className="sr-only">Game table</h1>
+              {!ready || seat === null ? (
+                <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
+              ) : (
+                <>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <TableToolbar
+                      mode={plan.mode}
+                      onMode={setMode}
+                      pinnedFocus={chosen !== null}
+                      onFollow={() => setChosen(null)}
+                    />
+                    <ConcedeButton />
+                  </div>
+                  <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
+                  <div className="grid gap-3">
+                    <CentreStrip />
+                    <StackPanel />
+                  </div>
+                  <OwnBoard seat={plan.viewer} size={size} />
+                </>
+              )}
+            </div>
+            <Drawer />
+          </section>
+          <CardPreview />
+        </MarksContext>
+      </PreviewContext>
+    </FxContext>
   )
 })

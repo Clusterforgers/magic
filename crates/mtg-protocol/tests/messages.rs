@@ -81,6 +81,10 @@ fn answers() -> Vec<Answer> {
             pool: vec![ManaType::Red],
             taps: vec![source],
         })),
+        Answer::PayMana(PayChoice::Complete(Payment {
+            pool: vec![],
+            taps: vec![source],
+        })),
         Answer::DeclareAttackers(vec![
             (a, AttackTarget::Player(PlayerId(1))),
             (b, AttackTarget::Planeswalker(ObjectId(9))),
@@ -125,6 +129,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             pool: ManaPool::default(),
             sources: vec![option],
             auto_available: true,
+            can_cancel: true,
         }),
         DecisionKind::DeclareAttackers(AttackOptions {
             attackers: vec![AttackerOption {

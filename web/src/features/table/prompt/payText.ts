@@ -61,12 +61,24 @@ export interface PayTextInput {
   canAdd: boolean
   /** True when the game offers to pay by itself. */
   auto: boolean
+  /** True when the cast may be backed out of. */
+  cancel: boolean
   /** What the last click did, as a sentence; said before the status. */
   note: string
 }
 
 /** The one live sentence of the prompt: the last change, then what is owed and what to do. */
-export function payText({ spell, cost, owed, chosen, covered, canAdd, auto, note }: PayTextInput): string {
+export function payText({
+  spell,
+  cost,
+  owed,
+  chosen,
+  covered,
+  canAdd,
+  auto,
+  cancel,
+  note,
+}: PayTextInput): string {
   const lead = note === '' ? '' : `${note} `
   if (covered) {
     return manaValue(cost) === 0
@@ -77,9 +89,12 @@ export function payText({ spell, cost, owed, chosen, covered, canAdd, auto, note
   if (chosen === 0) {
     // The game offers an automatic payment whenever the cost can be paid at all.
     if (!auto || !canAdd) {
-      return `You cannot pay ${costWords(cost)} for ${spell} with the mana you have. Cancel to go back.`
+      return `You cannot pay ${costWords(cost)} for ${spell} with the mana you have.${cancel ? ' Cancel to go back.' : ''}`
     }
     return `${lead}Pay ${costWords(cost)} for ${spell}. Choose a land or other mana source to use its mana, or pay automatically.`
   }
-  return canAdd ? `${lead}${still}` : `${lead}${still} Nothing left can pay it; remove a choice or cancel.`
+  if (!canAdd) {
+    return `${lead}${still} Nothing left can pay it; remove a choice${cancel ? ' or cancel' : ''}.`
+  }
+  return auto ? `${lead}${still} Choose more, or pay the rest for me.` : `${lead}${still}`
 }

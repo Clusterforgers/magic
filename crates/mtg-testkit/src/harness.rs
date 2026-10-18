@@ -19,6 +19,8 @@ pub struct PlayOptions {
     pub max_answers: usize,
     /// Check invariants after every event and answer.
     pub check_invariants: bool,
+    /// Let the bots pay with part of a payment for the engine to finish (see [`RandomBot::with_partial_payments`]).
+    pub partial_payments: bool,
 }
 
 impl Default for PlayOptions {
@@ -26,6 +28,7 @@ impl Default for PlayOptions {
         PlayOptions {
             max_answers: 200_000,
             check_invariants: true,
+            partial_payments: false,
         }
     }
 }
@@ -120,7 +123,14 @@ pub fn play_game_with(
     };
     let mut bots: Vec<RandomBot> = (0u64..)
         .take(setup.players.len())
-        .map(|seat| RandomBot::new(seed, seat))
+        .map(|seat| {
+            let bot = RandomBot::new(seed, seat);
+            if options.partial_payments {
+                bot.with_partial_payments()
+            } else {
+                bot
+            }
+        })
         .collect();
     let mut engine = Engine::new(setup).map_err(|e| fail(e.into(), &[]))?;
     observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;

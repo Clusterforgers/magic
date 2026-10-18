@@ -12,11 +12,12 @@ function subscribe(onChange: () => void): () => void {
   return () => list?.removeEventListener('change', onChange)
 }
 
+/** True while the person asks their system for less motion, read now; `useReducedMotion` follows a change. */
+export function prefersReducedMotion(): boolean {
+  return query()?.matches ?? false
+}
+
 /** True while the person asks their system for less motion; follows a change of the setting. */
 export function useReducedMotion(): boolean {
-  return useSyncExternalStore(
-    subscribe,
-    () => query()?.matches ?? false,
-    () => false,
-  )
+  return useSyncExternalStore(subscribe, prefersReducedMotion, () => false)
 }

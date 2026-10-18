@@ -14,6 +14,7 @@ use mtg_engine::rng::GameRng;
 #[derive(Debug, Clone)]
 pub struct RandomBot {
     rng: GameRng,
+    partial_payments: bool,
 }
 
 /// A way to produce one mana while paying: floating mana or a tap.
@@ -32,10 +33,21 @@ impl Supply {
 
 impl RandomBot {
     /// A bot using substream `stream` of the generator keyed by `seed`.
+    ///
+    /// Its choices stay fixed (cancel, automatic and exact payments) because seeded fixtures, such as the
+    /// transcripts the web tests pin, replay its games; new kinds of answer are opt-in.
     pub fn new(seed: u64, stream: u64) -> Self {
         RandomBot {
             rng: GameRng::substream(seed, stream),
+            partial_payments: false,
         }
+    }
+
+    /// Also pays by choosing part of a payment and letting the engine finish it (`PayChoice::Complete`).
+    #[must_use]
+    pub const fn with_partial_payments(mut self) -> Self {
+        self.partial_payments = true;
+        self
     }
 
     /// Answers `decision` with a uniformly random legal choice.
@@ -114,13 +126,47 @@ impl RandomBot {
 
     fn pay(&mut self, options: &PayOptions) -> PayChoice {
         let manual = self.random_payment(options);
-        let mut choices = vec![PayChoice::Cancel];
+        let mut choices = Vec::new();
+        if options.can_cancel {
+            choices.push(PayChoice::Cancel);
+        }
         if options.auto_available {
             choices.push(PayChoice::Auto);
         }
-        choices.extend(manual.map(PayChoice::Manual));
+        if let Some(payment) = manual {
+            if self.partial_payments {
+                choices.push(PayChoice::Complete(self.some_of(&payment)));
+            }
+            choices.push(PayChoice::Manual(payment));
+        }
+        // A payment is always possible when a cast is offered, so only a cancel-less decision can end up empty.
+        if choices.is_empty() {
+            return PayChoice::Auto;
+        }
         let pick = self.rng.index(choices.len());
         choices.swap_remove(pick)
+    }
+
+    /// A random part of `payment` (possibly all or none of it), the way a player who has paid part by hand leaves it.
+    fn some_of(&mut self, payment: &Payment) -> Payment {
+        let mut keep =
+            |len: usize| -> Vec<bool> { (0..len).map(|_| self.rng.below(2) == 0).collect() };
+        let pool_keep = keep(payment.pool.len());
+        let tap_keep = keep(payment.taps.len());
+        Payment {
+            pool: payment
+                .pool
+                .iter()
+                .zip(pool_keep)
+                .filter_map(|(m, k)| k.then_some(*m))
+                .collect(),
+            taps: payment
+                .taps
+                .iter()
+                .zip(tap_keep)
+                .filter_map(|(t, k)| k.then_some(*t))
+                .collect(),
+        }
     }
 
     /// A random exact payment: required colors first, then random mana for the generic part.
@@ -135,17 +181,28 @@ impl RandomBot {
         }
         self.rng.shuffle(&mut supply);
         let mut chosen = Vec::new();
+        // A permanent is tapped once, so choosing one of its abilities drops the others from the supply.
+        let take = |supply: &mut Vec<Supply>, pos: usize, chosen: &mut Vec<Supply>| {
+            let item = supply.remove(pos);
+            if let Supply::Tap(source, _) = item {
+                supply.retain(
+                    |s| !matches!(s, Supply::Tap(other, _) if other.object == source.object),
+                );
+            }
+            chosen.push(item);
+        };
         for mana in ManaType::ALL {
             for _ in 0..options.cost.required(mana) {
                 let pos = supply.iter().position(|s| s.mana() == mana)?;
-                chosen.push(supply.remove(pos));
+                take(&mut supply, pos, &mut chosen);
             }
         }
-        let generic = usize::try_from(options.cost.generic()).ok()?;
-        if supply.len() < generic {
-            return None;
+        for _ in 0..options.cost.generic() {
+            if supply.is_empty() {
+                return None;
+            }
+            take(&mut supply, 0, &mut chosen);
         }
-        chosen.extend(supply.drain(..generic));
         let mut payment = Payment::default();
         for item in chosen {
             match item {
@@ -178,7 +235,7 @@ mod tests {
 
     proptest! {
         #[test]
-        fn bot_answers_are_always_accepted(seed in any::<u64>(), step in 0usize..4) {
+        fn bot_answers_are_always_accepted(seed in any::<u64>(), step in 0usize..4, partial in any::<bool>()) {
             let step = [Step::Main1, Step::DeclareAttackers, Step::Main2, Step::Cleanup][step];
             let mut engine = Scenario::new(3)
                 .at(2, 0, step)
@@ -188,6 +245,9 @@ mod tests {
                 .build()
                 .unwrap();
             let mut bot = RandomBot::new(seed, 0);
+            if partial {
+                bot = bot.with_partial_payments();
+            }
             for _ in 0..200 {
                 let Some(decision) = engine.decision().cloned() else { break };
                 let answer = bot.choose(&decision);
