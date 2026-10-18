@@ -23,6 +23,9 @@ pub enum StoreError {
     /// The backing store could not be reached or refused the write.
     #[error("store unavailable: {0}")]
     Unavailable(String),
+    /// An event could not be encoded, or the stored log has a gap or an event that does not decode.
+    #[error("stored log is unusable: {0}")]
+    Corrupt(String),
 }
 
 /// Append-only storage of each game's event log.

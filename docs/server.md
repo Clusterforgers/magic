@@ -16,7 +16,16 @@ Design record for the `mtg-server` game actor. Rules of the house are in `CLAUDE
 - `GameId::random()` (uuid v4) names every new game.
 - Persisting the `GameSetup` is the store's job: it holds an `Arc<dyn FormatRules>`, so the stored record must be a serializable recipe (format, seed, decks).
 
+## Persistence
+- `PgEventStore::new(pool)` implements `EventStore` over table `game_events (game_id uuid, seq bigint, event jsonb, created_at)`, primary key `(game_id, seq)`: one row per engine event, serialised with serde (`Event` as externally tagged JSON). `read_from(game, seq)` returns the tail; `load` is `read_from(game, 0)`.
+- An append is one transaction holding a per-game advisory lock (`pg_advisory_xact_lock(class, hashtext(game))`): it checks that the log ends at `from_seq`, then inserts the whole batch with one `unnest(...) WITH ORDINALITY` statement, so a gap, a repeat or a lost race returns `OutOfOrder` with the stored count and a failure midway leaves no rows. The primary key backs the lock up. The actor's rollback needs nothing from the store, because it restores its `Engine` from a `Checkpoint` and only appends after the step succeeded.
+- Reads check that sequence numbers run without a gap and that every event decodes, else `StoreError::Corrupt`; connection and SQL failures are `Unavailable`.
+- Migrations live in `crates/mtg-server/migrations` and are tracked in `_mtg_server_migrations`, not `_sqlx_migrations` (which `mtg-db` owns), so the two crates migrate one database in any order, repeatedly and concurrently. `mtg_server::migrate(&pool)` runs them; the table name is part of the on-disk contract and must never change. `sqlx::test` suites must use `migrations = false` and call `migrate`, since the default would use `_sqlx_migrations`.
+- Refresh `.sqlx/` after changing a query: create a scratch database, apply `crates/mtg-server/migrations/*.sql` to it, then run `SQLX_OFFLINE=false DATABASE_URL=<scratch db> SQLX_OFFLINE_DIR=<repo>/.sqlx cargo check -p mtg-server`.
+- Not yet stored: game and seat records and the setup recipe (part b of the roadmap item).
+
 ## Tests
+- `tests/store_contract.rs` runs one contract (round trip, empty appends, gaps and repeats, game isolation, racing appends with exactly one winner, whole-batch races) against `MemoryStore` and `PgEventStore`; `pg_store.rs` covers real game logs, `read_from`, a failing batch, damaged rows and an unreachable database; `pg_migrations.rs` runs both migrators in each order, repeatedly and concurrently; `pg_game.rs` plays and resumes whole bot games on Postgres.
 - Bot clients play through the handle only; the actor's log equals the same game run on a bare engine (2 to 4 seats), 30 concurrent games finish, a reconnect continues to the uninterrupted result, and a failing store leaves the game unchanged.
 
 ## Transport

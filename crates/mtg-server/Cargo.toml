@@ -16,6 +16,7 @@ getrandom.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
+sqlx.workspace = true
 thiserror.workspace = true
 tokio = { workspace = true, features = ["net", "signal"] }
 tower-http.workspace = true
@@ -27,6 +28,7 @@ uuid = { workspace = true, features = ["v4"] }
 workspace = true
 
 [dev-dependencies]
+mtg-db.workspace = true
 mtg-testkit.workspace = true
 futures-util.workspace = true
 rstest.workspace = true
