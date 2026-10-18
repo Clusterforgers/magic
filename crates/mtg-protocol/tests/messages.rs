@@ -81,10 +81,17 @@ fn answers() -> Vec<Answer> {
         Answer::PayMana(PayChoice::Manual(Payment {
             pool: vec![ManaType::Red],
             taps: vec![source],
+            life: 0,
+        })),
+        Answer::PayMana(PayChoice::Manual(Payment {
+            pool: vec![],
+            taps: vec![],
+            life: 4,
         })),
         Answer::PayMana(PayChoice::Complete(Payment {
             pool: vec![],
             taps: vec![source],
+            life: 2,
         })),
         Answer::DeclareAttackers(vec![
             (a, AttackTarget::Player(PlayerId(1))),
@@ -132,6 +139,18 @@ fn decision_kinds() -> Vec<DecisionKind> {
             sources: vec![option],
             auto_available: true,
             can_cancel: true,
+            life: 20,
+            max_life: 0,
+        }),
+        DecisionKind::PayMana(PayOptions {
+            spell: b,
+            cost: ManaCost::parse("{2}{W/P}{G/U/P}").unwrap(),
+            pool: ManaPool::default(),
+            sources: vec![option],
+            auto_available: false,
+            can_cancel: false,
+            life: 3,
+            max_life: 2,
         }),
         DecisionKind::DeclareAttackers(AttackOptions {
             attackers: vec![AttackerOption {
@@ -384,6 +403,71 @@ fn mulligan_options_carry_the_bottom_counts_by_name() {
             "bottom_if_mulligan": 1,
         }})
     );
+}
+
+#[test]
+fn a_cost_is_the_list_of_its_symbols_in_canonical_order() {
+    let cost = ManaCost::parse("{G/U/P}{C/P}{W/P}{2/R}{B/R}{C/W}{G}{C}{2}").unwrap();
+    assert_eq!(
+        serde_json::to_value(&cost).unwrap(),
+        json!([
+            {"Generic": 2},
+            "Colorless",
+            {"Colored": "Green"},
+            {"ColorlessHybrid": "White"},
+            {"Hybrid": ["Black", "Red"]},
+            {"MonoHybrid": "Red"},
+            {"Phyrexian": "White"},
+            "ColorlessPhyrexian",
+            {"HybridPhyrexian": ["Green", "Blue"]},
+        ])
+    );
+    assert_eq!(serde_json::to_value(ManaCost::ZERO).unwrap(), json!([]));
+    // A list written another way round, or with a pair the other way round, reads as the same cost.
+    let jumbled: ManaCost = serde_json::from_value(json!([
+        {"Colored": "Green"},
+        {"Hybrid": ["Red", "Black"]},
+        {"Generic": 1},
+        {"Generic": 1},
+    ]))
+    .unwrap();
+    assert_eq!(jumbled, ManaCost::parse("{2}{G}{B/R}").unwrap());
+}
+
+#[test]
+fn a_payment_names_the_life_it_pays_and_may_leave_it_out() {
+    let payment = Payment {
+        pool: vec![ManaType::Red],
+        taps: vec![],
+        life: 2,
+    };
+    assert_eq!(
+        serde_json::to_value(&payment).unwrap(),
+        json!({"pool": ["Red"], "taps": [], "life": 2})
+    );
+    let without: Payment = serde_json::from_value(json!({"pool": [], "taps": []})).unwrap();
+    assert_eq!(
+        without.life, 0,
+        "a client that knows no Phyrexian mana pays no life"
+    );
+}
+
+#[test]
+fn pay_options_carry_the_life_total_and_the_most_life_that_may_be_paid() {
+    let options = PayOptions {
+        spell: ObjectId(4),
+        cost: ManaCost::parse("{W/P}").unwrap(),
+        pool: ManaPool::default(),
+        sources: vec![],
+        auto_available: false,
+        can_cancel: true,
+        life: 2,
+        max_life: 2,
+    };
+    let value = serde_json::to_value(DecisionKind::PayMana(options)).unwrap();
+    assert_eq!(value["PayMana"]["life"], 2);
+    assert_eq!(value["PayMana"]["max_life"], 2);
+    assert_eq!(value["PayMana"]["cost"], json!([{"Phyrexian": "White"}]));
 }
 
 #[test]

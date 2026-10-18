@@ -4,11 +4,12 @@ use std::sync::Arc;
 
 use mtg_core::card::CardDefinition;
 use mtg_core::color::Color;
+use mtg_core::mana::{ManaCost, ManaSymbol};
 use mtg_engine::GameSetup;
 use mtg_engine::format::Normal;
 use mtg_engine::rng::GameRng;
 
-use crate::cards::{creature, land};
+use crate::cards::{creature, creature_costing, land, wastes};
 
 /// Lands in a generated deck.
 const LANDS: usize = 24;
@@ -46,6 +47,67 @@ pub fn fuzz_setup(players: usize, seed: u64) -> GameSetup {
     GameSetup::new(Arc::new(Normal), seed, decks)
 }
 
+/// A random cost symbol of any kind, mostly in the deck's two colours so that some of it can be paid in mana.
+fn random_symbol(rng: &mut GameRng, colors: [Color; 2]) -> ManaSymbol {
+    let own = |rng: &mut GameRng| colors[rng.index(2)];
+    let any = |rng: &mut GameRng| Color::ALL[rng.index(Color::ALL.len())];
+    let other = |rng: &mut GameRng, first: Color| {
+        Color::ALL[(first.index() + 1 + rng.index(Color::ALL.len() - 1)) % Color::ALL.len()]
+    };
+    match rng.index(9) {
+        0 => ManaSymbol::Colored(own(rng)),
+        1 => ManaSymbol::Hybrid(colors[0], colors[1]),
+        2 => ManaSymbol::MonoHybrid(own(rng)),
+        3 => ManaSymbol::Phyrexian(any(rng)),
+        4 => {
+            let first = any(rng);
+            ManaSymbol::HybridPhyrexian(first, other(rng, first))
+        }
+        5 => ManaSymbol::ColorlessHybrid(own(rng)),
+        6 => ManaSymbol::ColorlessPhyrexian,
+        7 => ManaSymbol::Colored(any(rng)),
+        _ => {
+            let first = any(rng);
+            ManaSymbol::Hybrid(first, other(rng, first))
+        }
+    }
+}
+
+/// A legal Normal deck in two colors whose creatures cost hybrid and Phyrexian symbols, derived entirely from `rng`.
+///
+/// It has its own generator, so [`random_deck`] and the games seeded from it stay as they were.
+pub fn symbol_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
+    let first = Color::ALL[rng.index(Color::ALL.len())];
+    let second =
+        Color::ALL[(first.index() + 1 + rng.index(Color::ALL.len() - 1)) % Color::ALL.len()];
+    let colors = [first, second];
+    // Two Wastes give the colorless symbols something to pay with.
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS - 2).map(|i| land(colors[i % 2])).collect();
+    deck.extend(std::iter::repeat_n(wastes(), 2));
+    for slot in 0..DISTINCT_CREATURES {
+        let generic = u32::try_from(rng.index(3)).unwrap_or(0);
+        let symbols: Vec<ManaSymbol> = std::iter::once(ManaSymbol::Generic(generic))
+            .chain((0..=rng.index(3)).map(|_| random_symbol(rng, colors)))
+            .collect();
+        let power = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let toughness = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let cost = ManaCost::from_symbols(symbols.iter().copied());
+        let name = format!("Symbol {slot} {cost} {power}/{toughness}");
+        let card = creature_costing(&name, &symbols, power, toughness);
+        deck.extend(std::iter::repeat_n(card, COPIES));
+    }
+    deck
+}
+
+/// A normal game of `players` seats whose decks are [`symbol_deck`]s, fully determined by `seed`.
+pub fn symbol_fuzz_setup(players: usize, seed: u64) -> GameSetup {
+    let decks = (0u64..)
+        .take(players)
+        .map(|seat| symbol_deck(&mut GameRng::substream(seed, 2_000 + seat)))
+        .collect();
+    GameSetup::new(Arc::new(Normal), seed, decks)
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: generated decks are always legal Normal decks and are reproducible from the seed.
@@ -70,6 +132,48 @@ mod tests {
             let setup = fuzz_setup(players, 5);
             assert_eq!(setup.players.len(), players);
             assert!(setup.validate().is_ok());
+            let setup = symbol_fuzz_setup(players, 5);
+            assert_eq!(setup.players.len(), players);
+            assert!(setup.validate().is_ok());
         }
+    }
+
+    proptest! {
+        #[test]
+        fn symbol_decks_are_legal_reproducible_and_use_every_kind(seed in any::<u64>()) {
+            let deck = symbol_deck(&mut GameRng::substream(seed, 0));
+            prop_assert_eq!(deck.len(), 60);
+            prop_assert!(Normal.validate_deck(&deck).is_ok());
+            prop_assert_eq!(&deck, &symbol_deck(&mut GameRng::substream(seed, 0)));
+            prop_assert!(deck.iter().any(|c| c.mana_cost.as_ref().is_some_and(|m| !m.is_plain())));
+        }
+    }
+
+    #[test]
+    fn across_many_seeds_the_decks_hold_every_kind_of_symbol() {
+        let mut seen = [false; 9];
+        for seed in 0..60 {
+            for card in symbol_deck(&mut GameRng::substream(seed, 0)) {
+                for symbol in card.mana_cost.iter().flat_map(ManaCost::symbols) {
+                    let kind = match symbol {
+                        ManaSymbol::Generic(_) => 0,
+                        ManaSymbol::Colored(_) => 1,
+                        ManaSymbol::Colorless => 2,
+                        ManaSymbol::Hybrid(..) => 3,
+                        ManaSymbol::MonoHybrid(_) => 4,
+                        ManaSymbol::Phyrexian(_) => 5,
+                        ManaSymbol::HybridPhyrexian(..) => 6,
+                        ManaSymbol::ColorlessHybrid(_) => 7,
+                        ManaSymbol::ColorlessPhyrexian => 8,
+                    };
+                    seen[kind] = true;
+                }
+            }
+        }
+        // {C} alone is not generated: colorless only comes in the hybrid and Phyrexian forms.
+        assert_eq!(
+            seen,
+            [true, true, false, true, true, true, true, true, true]
+        );
     }
 }

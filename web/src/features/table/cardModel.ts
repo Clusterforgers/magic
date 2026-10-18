@@ -4,10 +4,12 @@ import type {
   CombatView,
   Color,
   ManaCost,
+  ManaSymbol,
   ManaType,
   ObjectId,
   ObjectView,
 } from '@/protocol/generated'
+import { LIFE_PER_SYMBOL, shapeOf, symbolText } from './manaSymbols'
 
 /** Where a permanent sits on its controller's battlefield. */
 export type RowKind = 'creatures' | 'other' | 'lands'
@@ -27,9 +29,18 @@ export type PipTone = Frame | 'generic'
 /** One mana symbol of a cost. */
 export interface ManaPip {
   key: string
+  /** The fill, or the upper left half of a split symbol. */
   tone: PipTone
-  /** The letter or number drawn in the symbol. */
+  /** The fill of the lower right half of a split symbol: hybrid and monocolored hybrid. */
+  split?: PipTone
+  /** The letter, number or phi drawn in the symbol; for a split symbol, the one in its upper left half. */
   text: string
+  /** The letter in the lower right half of a split symbol. */
+  text2?: string
+  /** True for a Phyrexian symbol, which carries the phi mark. */
+  phyrexian?: boolean
+  /** The symbol as a card prints it, without braces: "G", "2", "W/P". */
+  symbol: string
   /** The symbol in words, for screen readers. */
   name: string
 }
@@ -84,39 +95,90 @@ export function frameOf(object: ObjectView): Frame {
   return second === undefined ? FRAME_OF[first] : 'gold'
 }
 
-/** The symbols of a mana cost in card order: the generic amount, colourless, then white to green. */
-export function costPips(cost: ManaCost): ManaPip[] {
-  const pips: ManaPip[] = []
-  if (cost.generic > 0) {
-    pips.push({
-      key: 'generic',
-      tone: 'generic',
-      text: String(cost.generic),
-      name: `${cost.generic} generic`,
-    })
-  }
-  for (let n = 0; n < cost.colorless; n += 1) {
-    pips.push({ key: `colorless${n}`, tone: 'colorless', text: LETTER.Colorless, name: 'colorless' })
-  }
-  cost.colored.forEach((count, index) => {
-    const color = COLORS[index]
-    if (color === undefined) return
-    for (let n = 0; n < count; n += 1) {
-      pips.push({
-        key: `${color}${n}`,
-        tone: FRAME_OF[color],
-        text: LETTER[color],
-        name: color.toLowerCase(),
-      })
+/** The Phyrexian mark drawn over a symbol that life can pay. */
+export const PHI = 'ϕ'
+
+const colorWord = (color: Color): string => color.toLowerCase()
+
+function pipOf(symbol: ManaSymbol, index: number): ManaPip {
+  const shape = shapeOf(symbol)
+  const base = { key: `${index}-${symbolText(symbol)}`, symbol: symbolText(symbol) }
+  switch (shape.kind) {
+    case 'generic':
+      return { ...base, tone: 'generic', text: String(shape.count), name: `${shape.count} generic` }
+    case 'colored':
+      return { ...base, tone: FRAME_OF[shape.color], text: LETTER[shape.color], name: colorWord(shape.color) }
+    case 'colorless':
+      return { ...base, tone: 'colorless', text: LETTER.Colorless, name: 'colorless' }
+    case 'hybrid': {
+      const [a, b] = shape.colors
+      return {
+        ...base,
+        tone: FRAME_OF[a],
+        split: FRAME_OF[b],
+        text: LETTER[a],
+        text2: LETTER[b],
+        name: `${colorWord(a)} or ${colorWord(b)} mana`,
+      }
     }
-  })
-  return pips.length > 0 ? pips : [{ key: 'zero', tone: 'generic', text: '0', name: 'zero' }]
+    case 'monoHybrid':
+      return {
+        ...base,
+        tone: 'generic',
+        split: FRAME_OF[shape.color],
+        text: '2',
+        text2: LETTER[shape.color],
+        name: `${colorWord(shape.color)} mana or 2 generic mana`,
+      }
+    case 'phyrexian':
+      return {
+        ...base,
+        tone: FRAME_OF[shape.color],
+        text: PHI,
+        phyrexian: true,
+        name: `${colorWord(shape.color)} mana or ${LIFE_PER_SYMBOL} life`,
+      }
+    case 'hybridPhyrexian': {
+      const [a, b] = shape.colors
+      return {
+        ...base,
+        tone: FRAME_OF[a],
+        split: FRAME_OF[b],
+        text: PHI,
+        phyrexian: true,
+        name: `${colorWord(a)} or ${colorWord(b)} mana or ${LIFE_PER_SYMBOL} life`,
+      }
+    }
+    case 'colorlessHybrid':
+      return {
+        ...base,
+        tone: 'colorless',
+        split: FRAME_OF[shape.color],
+        text: LETTER.Colorless,
+        text2: LETTER[shape.color],
+        name: `colorless or ${colorWord(shape.color)} mana`,
+      }
+    case 'colorlessPhyrexian':
+      return {
+        ...base,
+        tone: 'colorless',
+        text: PHI,
+        phyrexian: true,
+        name: `colorless mana or ${LIFE_PER_SYMBOL} life`,
+      }
+  }
 }
 
-/** A cost as written on a card, such as "{2}{U}{R}". */
+/** The symbols of a mana cost in card order, as the server sends them; a free cost is one zero. */
+export function costPips(cost: ManaCost): ManaPip[] {
+  const pips = cost.map(pipOf)
+  return pips.length > 0 ? pips : [{ key: 'zero', tone: 'generic', text: '0', symbol: '0', name: 'zero' }]
+}
+
+/** A cost as written on a card, such as '{2}{U}{R}' or '{2}{W/P}'. */
 export function costText(cost: ManaCost): string {
   return costPips(cost)
-    .map((pip) => `{${pip.text}}`)
+    .map((pip) => `{${pip.symbol}}`)
     .join('')
 }
 

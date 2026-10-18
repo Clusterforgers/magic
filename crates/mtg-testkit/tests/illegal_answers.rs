@@ -6,7 +6,7 @@ use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{Answer, MulliganChoice, PayChoice, PriorityAction};
 use mtg_engine::mana::{ManaSource, Payment};
 use mtg_engine::{Engine, EngineError, Event};
-use mtg_testkit::{RandomBot, fuzz_setup};
+use mtg_testkit::{RandomBot, fuzz_setup, symbol_fuzz_setup};
 use proptest::prelude::*;
 use rstest::rstest;
 
@@ -47,14 +47,24 @@ fn any_answer() -> impl Strategy<Value = Answer> {
             Just(PayChoice::Cancel),
             (
                 prop::collection::vec(mana(), 0..3),
-                prop::collection::vec(source(), 0..4)
+                prop::collection::vec(source(), 0..4),
+                0u32..7
             )
-                .prop_map(|(pool, taps)| PayChoice::Manual(Payment { pool, taps })),
+                .prop_map(|(pool, taps, life)| PayChoice::Manual(Payment {
+                    pool,
+                    taps,
+                    life
+                })),
             (
                 prop::collection::vec(mana(), 0..3),
-                prop::collection::vec(source(), 0..4)
+                prop::collection::vec(source(), 0..4),
+                0u32..7
             )
-                .prop_map(|(pool, taps)| PayChoice::Complete(Payment { pool, taps })),
+                .prop_map(|(pool, taps, life)| PayChoice::Complete(Payment {
+                    pool,
+                    taps,
+                    life
+                })),
         ]
         .prop_map(Answer::PayMana),
         prop::collection::vec((object(), target()), 0..4).prop_map(Answer::DeclareAttackers),
@@ -67,6 +77,29 @@ fn any_answer() -> impl Strategy<Value = Answer> {
 fn game_after(seed: u64, steps: usize) -> Result<Engine, EngineError> {
     let mut engine = Engine::new(fuzz_setup(3, seed))?;
     let mut bots: Vec<RandomBot> = (0..3).map(|i| RandomBot::new(seed, i)).collect();
+    play_steps(&mut engine, &mut bots, steps)?;
+    Ok(engine)
+}
+
+/// Like `game_after`, in a game of hybrid and Phyrexian costs played by bots that pay them by hand, so payments with life are pending too.
+fn symbol_game_after(seed: u64, steps: usize) -> Result<Engine, EngineError> {
+    let mut engine = Engine::new(symbol_fuzz_setup(3, seed))?;
+    let mut bots: Vec<RandomBot> = (0..3)
+        .map(|i| {
+            RandomBot::new(seed, i)
+                .with_symbol_choices()
+                .with_partial_payments()
+        })
+        .collect();
+    play_steps(&mut engine, &mut bots, steps)?;
+    Ok(engine)
+}
+
+fn play_steps(
+    engine: &mut Engine,
+    bots: &mut [RandomBot],
+    steps: usize,
+) -> Result<(), EngineError> {
     for _ in 0..steps {
         let Some(decision) = engine.decision().cloned() else {
             break;
@@ -74,7 +107,7 @@ fn game_after(seed: u64, steps: usize) -> Result<Engine, EngineError> {
         let answer = bots[decision.player.index()].choose(&decision);
         engine.apply(answer)?;
     }
-    Ok(engine)
+    Ok(())
 }
 
 proptest! {
@@ -97,6 +130,24 @@ proptest! {
                     prop_assert_eq!(engine.events().len(), log_len);
                     prop_assert_eq!(engine.decision().cloned(), decision);
                 }
+            }
+        }
+    }
+
+    #[test]
+    fn rejected_answers_never_change_anything_in_a_game_of_hybrid_and_phyrexian_costs(
+        seed in 0u64..40,
+        steps in 0usize..500,
+        answers in prop::collection::vec(any_answer(), 1..8),
+    ) {
+        let mut engine = symbol_game_after(seed, steps).map_err(|e| TestCaseError::fail(e.to_string()))?;
+        for answer in answers {
+            let (hash, log_len, decision) = (engine.state_hash(), engine.events().len(), engine.decision().cloned());
+            if let Err(error) = engine.apply(answer) {
+                prop_assert!(matches!(error, EngineError::Illegal(_) | EngineError::NoDecision), "{error:?}");
+                prop_assert_eq!(engine.state_hash(), hash);
+                prop_assert_eq!(engine.events().len(), log_len);
+                prop_assert_eq!(engine.decision().cloned(), decision);
             }
         }
     }

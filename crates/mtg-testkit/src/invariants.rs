@@ -29,7 +29,7 @@ pub enum Violation {
     /// A mana pool disagrees with the mana added and spent.
     #[error("mana pool mismatch: {0}")]
     Mana(String),
-    /// A life total or damage counter disagrees with the damage dealt.
+    /// A life total or damage counter disagrees with the damage dealt and the life paid.
     #[error("life/damage mismatch: {0}")]
     Damage(String),
     /// An event could not be folded onto the shadow state.
@@ -310,30 +310,36 @@ impl InvariantChecker {
             }
             Event::DamageDealt { target, amount, .. } => {
                 match target {
-                    DamageTarget::Player(p) => {
-                        let life = self
-                            .expected_life
-                            .get_mut(p.index())
-                            .ok_or_else(|| Violation::Damage(format!("unknown {p:?}")))?;
-                        *life -= i32::try_from(*amount).unwrap_or(i32::MAX);
-                        let actual = self.shadow.player(*p).map(Player::life);
-                        if actual != Some(*life) {
-                            return Err(Violation::Damage(format!(
-                                "{p:?} life is {actual:?}, damage history says {life}"
-                            )));
-                        }
-                    }
+                    DamageTarget::Player(p) => self.lose_life(*p, *amount, "damage")?,
                     DamageTarget::Object(o) => {
                         *self.expected_damage.entry(*o).or_default() += amount;
                     }
                 }
                 Ok(())
             }
+            Event::LifePaid { player, amount } => self.lose_life(*player, *amount, "life paid"),
             Event::DamageCleared => {
                 self.expected_damage.clear();
                 Ok(())
             }
             _ => Ok(()),
+        }
+    }
+
+    /// Takes `amount` off the independent life history of `player` and compares it with the shadow state.
+    fn lose_life(&mut self, player: PlayerId, amount: u32, cause: &str) -> Result<(), Violation> {
+        let life = self
+            .expected_life
+            .get_mut(player.index())
+            .ok_or_else(|| Violation::Damage(format!("unknown {player:?}")))?;
+        *life -= i32::try_from(amount).unwrap_or(i32::MAX);
+        let actual = self.shadow.player(player).map(Player::life);
+        if actual == Some(*life) {
+            Ok(())
+        } else {
+            Err(Violation::Damage(format!(
+                "{player:?} life is {actual:?}, the {cause} history says {life}"
+            )))
         }
     }
 

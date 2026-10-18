@@ -160,6 +160,13 @@ pub enum Event {
         /// Whose pool.
         player: PlayerId,
     },
+    /// Life was paid as (part of) a cost; it is lost, not damage (CR 119.4).
+    LifePaid {
+        /// Who paid.
+        player: PlayerId,
+        /// The life paid, at least 1.
+        amount: u32,
+    },
     /// A card was drawn.
     CardDrawn {
         /// Who drew.
@@ -271,6 +278,7 @@ impl Event {
             | Event::ManaAdded { .. }
             | Event::ManaSpent { .. }
             | Event::ManaPoolEmptied { .. }
+            | Event::LifePaid { .. }
             | Event::DrewFromEmptyLibrary { .. }
             | Event::BlockersDeclared { .. }
             | Event::DamageAssigned { .. }

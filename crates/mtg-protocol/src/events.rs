@@ -131,6 +131,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ManaAdded { .. }
         | Event::ManaSpent { .. }
         | Event::ManaPoolEmptied { .. }
+        | Event::LifePaid { .. }
         | Event::DrewFromEmptyLibrary { .. }
         | Event::CardDiscarded { .. }
         | Event::AttackersDeclared { .. }

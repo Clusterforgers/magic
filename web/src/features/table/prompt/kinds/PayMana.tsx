@@ -3,12 +3,13 @@ import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
 import type { ManaOption, ManaType, ObjectId } from '@/protocol/generated'
+import { LIFE_PER_SYMBOL, manaWords } from '../../manaSymbols'
 import { ManaChoice } from '../ManaChoice'
 import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { payText, spendWords } from '../payText'
-import { allowed, covers, fittingOptions, MANA_TYPES, owed, toPayment } from '../payment'
-import type { Spend } from '../payment'
+import { allowed, covers, fittingOptions, lifeChoices, lifeOf, MANA_TYPES, owed, toPayment } from '../payment'
+import type { LifeSymbols, Spend } from '../payment'
 import { PaymentSummary } from '../PaymentSummary'
 import { manaByPermanent } from '../priorityText'
 import { usePrompt } from '../PromptContext'
@@ -18,19 +19,22 @@ import type { PromptComponent } from '../types'
 const focusCard = (id: ObjectId): void =>
   document.querySelector<HTMLElement>(`button[data-object-id="${id}"]`)?.focus()
 
-/** The payment so far, in order of choice, and the sentence about the last change to it. */
+/** The payment so far, in order of choice, the symbols life pays, and the sentence about the last change to it. */
 interface Chosen {
   spends: readonly Spend[]
+  life: LifeSymbols
   note: string
 }
-const START: Chosen = { spends: [], note: '' }
+const START: Chosen = { spends: [], life: [], note: '' }
 
 /**
  * PayMana: what the spell costs, the floating mana, and what is still owed. Untapped permanents with a mana ability
  * are legal; a click adds one (a permanent with several kinds of mana asks which), a click on a chosen one takes it
- * back. Mana that would be wasted is not offered, so a payment is complete when nothing is owed. Confirm sends the
- * chosen payment; with nothing chosen yet "Pay automatically" lets the game choose, and after some picks "Pay the rest
- * for me" keeps them and lets the game pay what is owed; Cancel (only when the options allow it) gives up on the cast.
+ * back. Mana that would be wasted is not offered, so a payment is complete when nothing is owed. A Phyrexian symbol
+ * has a switch that pays 2 life for it instead of mana (within the life total and what the options allow). Confirm
+ * sends the chosen payment; with nothing chosen yet "Pay automatically" lets the game choose, and after some picks
+ * "Pay the rest for me" keeps them and lets the game pay what is owed; Cancel (only when the options allow it)
+ * gives up on the cast.
  */
 export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const { answer, selection } = usePrompt()
@@ -42,19 +46,19 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const nameOf = (id: ObjectId): string =>
     names[named.indexOf(id)] ?? (id === spell ? 'the spell' : 'a permanent')
 
-  const [{ spends, note }, setChosen] = useState(START)
+  const [{ spends, life, note }, setChosen] = useState(START)
   const [choosing] = selection.ids
   const fitting = (id: ObjectId, given: readonly Spend[] = spends): ManaOption[] =>
-    fittingOptions(cost, pool, given, byPermanent.get(id) ?? [])
+    fittingOptions(cost, pool, given, byPermanent.get(id) ?? [], life)
   const choices = choosing === undefined ? [] : fitting(choosing)
   const chooser = choices.length > 1 ? choosing : undefined
 
   const legal = useMemo(
     () =>
       [...byPermanent.keys()].filter(
-        (id) => fittingOptions(cost, pool, spends, byPermanent.get(id) ?? []).length > 0,
+        (id) => fittingOptions(cost, pool, spends, byPermanent.get(id) ?? [], life).length > 0,
       ),
-    [byPermanent, cost, pool, spends],
+    [byPermanent, cost, pool, spends, life],
   )
   const taken = useMemo(
     () => spends.flatMap((spend) => (spend.kind === 'tap' ? [spend.option.source.object] : [])),
@@ -65,16 +69,23 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     [own, legal, taken, chooser],
   )
 
-  const canSpend = (mana: ManaType): boolean => allowed(cost, pool, spends, { kind: 'pool', mana })
-  const owedNow = owed(cost, spends)
-  const covered = covers(cost, spends)
-  const canAdd = legal.length > 0 || MANA_TYPES.some(canSpend)
+  const canSpend = (mana: ManaType): boolean => allowed(cost, pool, spends, { kind: 'pool', mana }, life)
+  const owedNow = owed(cost, spends, life)
+  const covered = covers(cost, spends, life)
+  const lifeSwitches = lifeChoices(cost, spends, life, options.max_life)
+  const lifeCanPay = lifeSwitches.some((choice) => !choice.paid && choice.available)
+  const canAdd = legal.length > 0 || MANA_TYPES.some(canSpend) || lifeCanPay
+  const paidLife = lifeOf(life)
+  const wordsOf = (index: number): string => {
+    const symbol = cost[index]
+    return symbol === undefined ? 'mana' : manaWords(symbol)
+  }
 
   const add = (spend: Spend): void => {
     // Checked against the latest payment, so two quick clicks cannot add what no longer fits.
     setChosen((now) =>
-      allowed(cost, pool, now.spends, spend)
-        ? { spends: [...now.spends, spend], note: `Added ${spendWords(spend, nameOf)}.` }
+      allowed(cost, pool, now.spends, spend, now.life)
+        ? { ...now, spends: [...now.spends, spend], note: `Added ${spendWords(spend, nameOf)}.` }
         : now,
     )
     selection.clear()
@@ -84,12 +95,36 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
       const gone = now.spends[index]
       return gone === undefined
         ? now
-        : { spends: now.spends.filter((_, at) => at !== index), note: `Removed ${spendWords(gone, nameOf)}.` }
+        : {
+            ...now,
+            spends: now.spends.filter((_, at) => at !== index),
+            note: `Removed ${spendWords(gone, nameOf)}.`,
+          }
     })
     selection.clear()
   }
   const clear = (): void => {
-    setChosen({ spends: [], note: 'Cleared the payment.' })
+    setChosen({ spends: [], life: [], note: 'Cleared the payment.' })
+    selection.clear()
+  }
+  const toggleLife = (index: number): void => {
+    setChosen((now) => {
+      const paying = !now.life.includes(index)
+      const next = paying ? [...now.life, index] : now.life.filter((other) => other !== index)
+      // Checked against the latest payment too: life only changes to a payment the engine could still accept.
+      const flip = lifeChoices(cost, now.spends, now.life, options.max_life).find(
+        (choice) => choice.index === index,
+      )
+      if (flip?.available !== true) return now
+      const word = wordsOf(index)
+      return {
+        ...now,
+        life: next,
+        note: paying
+          ? `Paying ${LIFE_PER_SYMBOL} life instead of ${word}.`
+          : `No longer paying ${LIFE_PER_SYMBOL} life instead of ${word}.`,
+      }
+    })
     selection.clear()
   }
 
@@ -120,17 +155,20 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     if (chooser !== undefined) focusCard(chooser)
   }
 
+  const hasLife = lifeSwitches.length > 0
   const text = payText({
     spell: nameOf(spell),
     cost,
     owed: owedNow,
-    chosen: spends.length,
+    chosen: spends.length + life.length,
     covered,
     canAdd,
     auto: options.auto_available,
     cancel: options.can_cancel,
     note,
+    life: hasLife ? { paid: paidLife, after: options.life - paidLife, may: lifeCanPay } : undefined,
   })
+  const nothingChosen = spends.length === 0 && life.length === 0
   return (
     <PromptLayout text={text}>
       <PaymentSummary
@@ -144,6 +182,17 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         onSpendPool={(mana) => add({ kind: 'pool', mana })}
         onRemove={removeAt}
         onClear={clear}
+        life={
+          hasLife
+            ? {
+                total: options.life,
+                paid: paidLife,
+                choices: lifeSwitches,
+                words: wordsOf,
+                onToggle: toggleLife,
+              }
+            : undefined
+        }
       />
       {chooser !== undefined ? (
         <ManaChoice card={chooser} options={choices} onPick={pick} onCancel={closeChooser} />
@@ -152,11 +201,11 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         className="h-10 px-4"
         data-slot="pay-confirm"
         disabled={!covered}
-        onClick={() => answer({ PayMana: { Manual: toPayment(spends) } })}
+        onClick={() => answer({ PayMana: { Manual: toPayment(spends, life) } })}
       >
         Confirm payment
       </Button>
-      {options.auto_available && spends.length === 0 ? (
+      {options.auto_available && nothingChosen ? (
         <Button
           className="h-10 px-4"
           variant="outline"
@@ -166,12 +215,12 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           Pay automatically
         </Button>
       ) : null}
-      {options.auto_available && spends.length > 0 && !covered ? (
+      {options.auto_available && !nothingChosen && !covered ? (
         <Button
           className="h-10 px-4"
           variant="outline"
           data-slot="pay-rest"
-          onClick={() => answer({ PayMana: { Complete: toPayment(spends) } })}
+          onClick={() => answer({ PayMana: { Complete: toPayment(spends, life) } })}
         >
           Pay the rest for me
         </Button>

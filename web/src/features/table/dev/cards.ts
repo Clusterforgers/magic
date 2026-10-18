@@ -1,5 +1,13 @@
 /** A small catalogue of real card names with their types and costs, for the fixture. */
-import type { CardType, Color, ManaCost, ManaType, Subtype, Supertype } from '@/protocol/generated'
+import type {
+  CardType,
+  Color,
+  ManaCost,
+  ManaSymbol,
+  ManaType,
+  Subtype,
+  Supertype,
+} from '@/protocol/generated'
 
 /** What a fixture card is made from. */
 export interface Template {
@@ -18,15 +26,18 @@ export interface Template {
 /** A list with at least one item, so picking from it by index always finds something. */
 export type NonEmpty<T> = [T, ...T[]]
 
-// W U B R G, as ManaCost.colored is laid out.
+const COLORS: readonly Color[] = ['White', 'Blue', 'Black', 'Red', 'Green']
+
+// A cost of `generic` and the coloured symbols, counted in W U B R G order.
 const cost = (
   generic: number,
   colored: [number, number, number, number, number] = [0, 0, 0, 0, 0],
-): ManaCost => ({
-  generic,
-  colorless: 0,
-  colored,
-})
+): ManaCost => [
+  ...(generic > 0 ? [{ Generic: generic }] : []),
+  ...COLORS.flatMap((color, index) =>
+    Array.from({ length: colored[index] ?? 0 }, (): ManaSymbol => ({ Colored: color })),
+  ),
+]
 
 const basic = (name: string, produces: ManaType): Template => ({
   name,

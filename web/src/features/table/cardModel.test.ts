@@ -1,7 +1,8 @@
 // Goal: the facts a card face draws are derived correctly for every kind of permanent: its row, cost symbols in card order, type line, power and toughness, frame colour, state labels and the full spoken description.
 import { describe, expect, it } from 'vitest'
-import type { CardType, Color, CombatView, ManaCost, ManaType } from '@/protocol/generated'
+import type { CardType, Color, CombatView, ManaType } from '@/protocol/generated'
 import { card, forest, permanent } from '@/test-utils/cards'
+import { cost } from '@/test-utils/mana'
 import {
   abilityText,
   abilityWords,
@@ -18,12 +19,6 @@ import {
   statusWords,
   typeLine,
 } from './cardModel'
-
-const cost = (generic: number, colored: ManaCost['colored'], colorless = 0): ManaCost => ({
-  generic,
-  colorless,
-  colored,
-})
 
 describe('rowOf', () => {
   it.each<[CardType[], string]>([
@@ -43,26 +38,74 @@ describe('rowOf', () => {
 })
 
 describe('costPips', () => {
-  it.each<[string, ManaCost, string[]]>([
-    ['a generic and two colours, in card order', cost(2, [0, 1, 0, 1, 0]), ['2', 'U', 'R']],
-    ['all five colours in WUBRG order', cost(0, [1, 1, 1, 1, 1]), ['W', 'U', 'B', 'R', 'G']],
-    ['colourless symbols after the generic amount', cost(1, [0, 0, 0, 0, 1], 2), ['1', 'C', 'C', 'G']],
-    ['a doubled colour', cost(0, [0, 0, 2, 0, 0]), ['B', 'B']],
-    ['a zero cost as {0}', cost(0, [0, 0, 0, 0, 0]), ['0']],
-  ])('lists %s', (_what, mana, texts) => {
-    expect(costPips(mana).map((pip) => pip.text)).toEqual(texts)
+  it.each<[string, string, string[]]>([
+    ['a generic and two colours, in card order', '{2}{U}{R}', ['2', 'U', 'R']],
+    ['all five colours in WUBRG order', '{W}{U}{B}{R}{G}', ['W', 'U', 'B', 'R', 'G']],
+    ['colourless symbols after the generic amount', '{1}{C}{C}{G}', ['1', 'C', 'C', 'G']],
+    ['a doubled colour', '{B}{B}', ['B', 'B']],
+    ['a zero cost as {0}', '', ['0']],
+    ['a two-colour hybrid symbol with a letter in each half', '{W/U}', ['W']],
+    ['a monocolored hybrid symbol with its 2', '{2/W}', ['2']],
+    ['a Phyrexian symbol with the phi mark', '{W/P}', ['ϕ']],
+    ['a hybrid Phyrexian symbol with the phi mark', '{G/U/P}', ['ϕ']],
+    ['a colorless hybrid symbol with a letter in each half', '{C/W}', ['C']],
+    ['the colorless Phyrexian symbol with the phi mark', '{C/P}', ['ϕ']],
+  ])('lists %s', (_what, text, texts) => {
+    expect(costPips(cost(text)).map((pip) => pip.text)).toEqual(texts)
   })
 
   it('gives each symbol a unique key, a tone and a spoken name', () => {
-    const pips = costPips(cost(3, [0, 0, 2, 1, 0]))
+    const pips = costPips(cost('{3}{B}{B}{R}'))
     expect(new Set(pips.map((pip) => pip.key)).size).toBe(pips.length)
     expect(pips.map((pip) => pip.tone)).toEqual(['generic', 'black', 'black', 'red'])
     expect(pips.map((pip) => pip.name)).toEqual(['3 generic', 'black', 'black', 'red'])
   })
 
+  it('keeps the keys unique when a symbol is repeated or the cost is mixed', () => {
+    const pips = costPips(cost('{R/W}{R/W}{R/W}{B/P}{B/P}'))
+    expect(new Set(pips.map((pip) => pip.key)).size).toBe(5)
+  })
+
+  // The look of each kind of symbol: the fill, the second half of a split disc, the second letter, the phi mark and the words.
+  it.each<[string, string, string | undefined, string | undefined, boolean, string]>([
+    ['{W/U}', 'white', 'blue', 'U', false, 'white or blue mana'],
+    ['{G/W}', 'green', 'white', 'W', false, 'green or white mana'],
+    ['{2/W}', 'generic', 'white', 'W', false, 'white mana or 2 generic mana'],
+    ['{2/B}', 'generic', 'black', 'B', false, 'black mana or 2 generic mana'],
+    ['{W/P}', 'white', undefined, undefined, true, 'white mana or 2 life'],
+    ['{R/P}', 'red', undefined, undefined, true, 'red mana or 2 life'],
+    ['{G/U/P}', 'green', 'blue', undefined, true, 'green or blue mana or 2 life'],
+    ['{C/W}', 'colorless', 'white', 'W', false, 'colorless or white mana'],
+    ['{C/P}', 'colorless', undefined, undefined, true, 'colorless mana or 2 life'],
+  ])('draws %s', (text, tone, split, letter, phyrexian, name) => {
+    const [pip] = costPips(cost(text))
+    expect([pip?.tone, pip?.split, pip?.text2, pip?.name]).toEqual([tone, split, letter, name])
+    expect(pip?.phyrexian === true).toBe(phyrexian)
+  })
+
+  it('names a mixed cost symbol by symbol for a screen reader', () => {
+    expect(costPips(cost('{2}{W/P}{G/U/P}')).map((pip) => pip.name)).toEqual([
+      '2 generic',
+      'white mana or 2 life',
+      'green or blue mana or 2 life',
+    ])
+  })
+
   it('writes a cost the way a card does', () => {
-    expect(costText(cost(2, [0, 1, 0, 1, 0]))).toBe('{2}{U}{R}')
-    expect(costText(cost(0, [0, 0, 0, 0, 0]))).toBe('{0}')
+    expect(costText(cost('{2}{U}{R}'))).toBe('{2}{U}{R}')
+    expect(costText(cost(''))).toBe('{0}')
+  })
+
+  it.each([
+    '{2}{W/P}{G/U/P}',
+    '{R/W}{R/W}{R/W}',
+    '{1}{G/W}{G/W}',
+    '{2/W}{2/U}{2/B}{2/R}{2/G}',
+    '{8}{C/P}{C/P}',
+    '{C/W}{C/U}{C/B}{C/R}{C/G}',
+    '{1}{B/P}{B/P}',
+  ])('writes %s back as it was written', (text) => {
+    expect(costText(cost(text))).toBe(text)
   })
 })
 
