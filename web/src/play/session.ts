@@ -5,8 +5,17 @@
 import { GameSocket } from '@/net/socket'
 import type { GameSocketOptions, SocketEvent } from '@/net/socket'
 import { browserTimers } from '@/net/timers'
-import type { Answer, DecisionId, ServerMessage, YieldUntil } from '@/protocol/generated'
+import type {
+  Answer,
+  DecisionId,
+  FullControlMode,
+  ServerMessage,
+  Step,
+  StopSide,
+  YieldUntil,
+} from '@/protocol/generated'
 import { previewKey } from './preview'
+import { canHoldStop } from './stops'
 import { appendChat, appendLog, createPlayStore, dropLogFrom } from './store'
 import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById } from './view'
@@ -40,14 +49,19 @@ export interface Session {
   /** Gives up the game. */
   concede(): boolean
   /**
-   * Asks the server to pass priority for this seat whenever it has nothing to do, or to stop doing so. The store's
-   * `autoPass` follows once the message is out; false (and no change) when the socket is not open.
+   * Asks the server to set (`on`) or clear the stop at `step` of `side`'s turns, where this seat is given priority
+   * even with nothing to do; `keep` false is a one-turn stop, true a lasting one. The store's `stops` follows when the
+   * server says so, not before. Nothing is sent, and false returned, for a step that cannot hold a stop (untap and
+   * cleanup, which the server refuses) and when the socket is not open.
    */
-  setAutoPass(enabled: boolean): boolean
+  setStop(side: StopSide, step: Step, on: boolean, keep: boolean): boolean
+  /** Asks the server for a Full Control mode; the store's `fullControl` follows when it says so. False when the socket is not open. */
+  setFullControl(mode: FullControlMode): boolean
   /**
    * Asks the server to pass priority for this seat until `until`, so it is not asked again until something happens
    * (see `ClientMessage::Yield`). The store's `yielding` follows when the server says so, not before, and the
-   * pending priority decision goes with it; false when the socket is not open.
+   * pending priority decision goes with it; false when the socket is not open and while Full Control is on, which
+   * the server refuses.
    */
   yieldUntil(until: YieldUntil): boolean
   /** Asks the server to end this seat's yield; `yielding` becomes null when it confirms. False when the socket is not open. */
@@ -80,6 +94,9 @@ export function createSession(deps: SessionDeps): Session {
   // Bookkeeping of the current connection, not state a screen needs.
   let awaitingSnapshot = false
   let lastAnswered: number | null = null
+  // The Priority decision this seat asked to yield in. The server passes for it at once, but says so (`Yielding`) only
+  // when the yield lasts past the step; the game moving on while it waits is the other sign, since nothing happens then.
+  let yieldedFor: DecisionId | null = null
   // The previews asked for and not yet answered, oldest first: the server answers each one, in order.
   let asked: { decision: DecisionId; key: string }[] = []
   // False once an older server has refused a Preview as a message it does not know.
@@ -138,6 +155,7 @@ export function createSession(deps: SessionDeps): Session {
       // A decision, its id and a pending resync belong to one connection; the next Snapshot starts fresh.
       awaitingSnapshot = false
       lastAnswered = null
+      yieldedFor = null
       asked = []
     }
     setState((state) => ({
@@ -156,12 +174,12 @@ export function createSession(deps: SessionDeps): Session {
       case 'Welcome':
         awaitingSnapshot = false
         lastAnswered = null
+        yieldedFor = null
         asked = []
         previewsKnown = true
         setState({
           seat: message.player,
           seatCount: message.seats,
-          autoPass: message.auto_pass,
           yielding: message.yielding,
           stops: message.stops,
           fullControl: message.full_control,
@@ -214,6 +232,7 @@ export function createSession(deps: SessionDeps): Session {
   function onSnapshot(message: Of<'Snapshot'>): void {
     awaitingSnapshot = false
     lastAnswered = null
+    yieldedFor = null
     setState((state) => {
       const view = fromSnapshot(state.view, message.state)
       return {
@@ -243,6 +262,9 @@ export function createSession(deps: SessionDeps): Session {
       awaitingSnapshot = socket.send({ type: 'Resync' })
       return
     }
+    // The game has moved on past the decision this seat yielded in, so the server has passed for it.
+    const passed = yieldedFor !== null && state.pending?.id === yieldedFor
+    yieldedFor = null
     setState({
       view,
       objectsById: view.objects === state.view?.objects ? state.objectsById : indexById(view.objects),
@@ -250,6 +272,7 @@ export function createSession(deps: SessionDeps): Session {
       log: appendLog(state.log, batch.from_seq, batch.events),
       phase: state.result === null ? 'playing' : 'over',
       lobby: null,
+      ...(passed ? { pending: null, preview: null } : {}),
     })
   }
 
@@ -296,6 +319,7 @@ export function createSession(deps: SessionDeps): Session {
         resyncUnlessWaiting()
         return
       case 'BadMessage':
+        yieldedFor = null
         // A server that predates previews refuses each Preview as a message it does not know. That is no news for
         // the player: stop asking and let the prompts say the outcome shows after confirming.
         if (asked.shift() !== undefined) {
@@ -338,12 +362,15 @@ export function createSession(deps: SessionDeps): Session {
       return true
     },
     concede: () => socket.send({ type: 'Concede' }),
-    setAutoPass(enabled) {
-      if (!socket.send({ type: 'AutoPass', enabled })) return false
-      setState({ autoPass: enabled })
+    setStop: (side, step, on, keep) =>
+      canHoldStop(step) && socket.send({ type: 'SetStop', side, step, on, keep }),
+    setFullControl: (mode) => socket.send({ type: 'FullControl', mode }),
+    yieldUntil(until) {
+      if (getState().fullControl !== 'Off' || !socket.send({ type: 'Yield', until })) return false
+      const { pending } = getState()
+      yieldedFor = pending !== null && 'Priority' in pending.decision.kind ? pending.id : null
       return true
     },
-    yieldUntil: (until) => socket.send({ type: 'Yield', until }),
     cancelYield: () => socket.send({ type: 'CancelYield' }),
     chat(text) {
       const line = text.trim()

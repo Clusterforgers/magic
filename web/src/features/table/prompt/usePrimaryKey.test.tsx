@@ -1,8 +1,9 @@
-// Goal: a plain Space or Enter that nothing has focus for presses the primary button once, and every key that belongs to a field, a control, a menu or a dialog, or that carries a modifier, is left alone.
+// Goal: a plain Space or Enter that nothing has focus for runs its own function once (Space and Enter apart), and every key that belongs to a field, a control, a menu or a dialog, or that carries a modifier, is left alone.
 import { render, renderHook } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { isFocusFree, isPrimaryKey, usePrimaryKey } from './usePrimaryKey'
+import { isFocusFree, primaryKeyOf, usePrimaryKey } from './usePrimaryKey'
+import type { PrimaryKeys } from './usePrimaryKey'
 
 afterEach(() => {
   document.body.innerHTML = ''
@@ -60,53 +61,71 @@ describe('which keys count', () => {
   const key = (init: KeyboardEventInit): KeyboardEvent => new KeyboardEvent('keydown', init)
 
   it.each([
-    [{ key: ' ' }, true],
-    [{ key: 'Enter' }, true],
-    [{ key: ' ', repeat: true }, false],
-    [{ key: 'Enter', repeat: true }, false],
-    [{ key: ' ', ctrlKey: true }, false],
-    [{ key: ' ', altKey: true }, false],
-    [{ key: ' ', metaKey: true }, false],
-    [{ key: ' ', shiftKey: true }, false],
-    [{ key: 'Enter', shiftKey: true }, false],
-    [{ key: 'Escape' }, false],
-    [{ key: 'a' }, false],
-    [{ key: 'ArrowRight' }, false],
-    [{ key: 'Tab' }, false],
-  ])('%j counts: %s', (init, counts) => {
-    expect(isPrimaryKey(key(init))).toBe(counts)
+    [{ key: ' ' }, 'space'],
+    [{ key: 'Enter' }, 'enter'],
+    [{ key: ' ', repeat: true }, null],
+    [{ key: 'Enter', repeat: true }, null],
+    [{ key: ' ', ctrlKey: true }, null],
+    [{ key: ' ', altKey: true }, null],
+    [{ key: ' ', metaKey: true }, null],
+    [{ key: ' ', shiftKey: true }, null],
+    [{ key: 'Enter', ctrlKey: true }, null],
+    [{ key: 'Enter', altKey: true }, null],
+    [{ key: 'Enter', metaKey: true }, null],
+    [{ key: 'Enter', shiftKey: true }, null],
+    [{ key: 'Escape' }, null],
+    [{ key: 'a' }, null],
+    [{ key: 'ArrowRight' }, null],
+    [{ key: 'Tab' }, null],
+    [{ key: 'Control' }, null],
+    [{ key: 'Shift' }, null],
+  ])('%j is %s', (init, expected) => {
+    expect(primaryKeyOf(key(init))).toBe(expected)
   })
 })
 
+/** Two spies, one for each key. */
+function spies() {
+  const space = vi.fn()
+  const enter = vi.fn()
+  const keys: PrimaryKeys = { space, enter }
+  return { space, enter, keys }
+}
+
 describe('the shortcut', () => {
   it.each([
-    ['Space', ' '],
-    ['Enter', '{Enter}'],
-  ])('%s presses the primary button when nothing is focused', async (_name, keys) => {
-    const press = vi.fn()
-    renderHook(() => usePrimaryKey(press, true))
-    await userEvent.setup().keyboard(keys)
-    expect(press).toHaveBeenCalledTimes(1)
+    ['Space', ' ', 'space'],
+    ['Enter', '{Enter}', 'enter'],
+  ] as const)(
+    '%s runs its own function and not the other, when nothing is focused',
+    async (_name, keys, which) => {
+      const { keys: handlers, space, enter } = spies()
+      renderHook(() => usePrimaryKey(handlers, true))
+      await userEvent.setup().keyboard(keys)
+      expect(which === 'space' ? space : enter).toHaveBeenCalledTimes(1)
+      expect(which === 'space' ? enter : space).not.toHaveBeenCalled()
+    },
+  )
+
+  it('runs each once for a key held down', async () => {
+    const { keys, space, enter } = spies()
+    renderHook(() => usePrimaryKey(keys, true))
+    await userEvent.setup().keyboard('{Enter>3/}{ >3/}')
+    expect(enter).toHaveBeenCalledTimes(1)
+    expect(space).toHaveBeenCalledTimes(1)
   })
 
-  it('presses it once for a key held down', async () => {
-    const press = vi.fn()
-    renderHook(() => usePrimaryKey(press, true))
-    await userEvent.setup().keyboard('{Enter>3/}')
-    expect(press).toHaveBeenCalledTimes(1)
-  })
-
-  it('stops the page from scrolling for the Space it takes, and leaves every other key alone', async () => {
-    renderHook(() => usePrimaryKey(vi.fn(), true))
+  it('stops the page from scrolling for the Space it takes and the Enter it takes, and leaves every other key alone', async () => {
+    renderHook(() => usePrimaryKey(spies().keys, true))
     const seen: boolean[] = []
     const watch = (event: KeyboardEvent): void => {
       seen.push(event.defaultPrevented)
     }
     // Registered after the hook's listener, so it sees what the hook did to the event.
     document.addEventListener('keydown', watch)
-    await userEvent.setup().keyboard(' a')
+    await userEvent.setup().keyboard(' a{Enter}')
     document.removeEventListener('keydown', watch)
-    expect(seen).toEqual([true, false])
+    expect(seen).toEqual([true, false, true])
   })
 
   it.each([
@@ -116,85 +135,113 @@ describe('the shortcut', () => {
     ['a link', '<a href="#x">x</a>'],
     ['a menu item', '<div role="menuitem" tabindex="0">x</div>'],
   ])('leaves the keys to %s when it has focus', async (_name, html) => {
-    const press = vi.fn()
-    renderHook(() => usePrimaryKey(press, true))
+    const { keys, space, enter } = spies()
+    renderHook(() => usePrimaryKey(keys, true))
     const user = userEvent.setup()
     const element = make(html)
     element.focus()
     expect(document.activeElement).toBe(element)
     await user.keyboard(' {Enter}')
-    expect(press).not.toHaveBeenCalled()
+    expect(space).not.toHaveBeenCalled()
+    expect(enter).not.toHaveBeenCalled()
   })
 
   it('does not take Space typed into a text field, so a chat line keeps its spaces', async () => {
-    const press = vi.fn()
-    renderHook(() => usePrimaryKey(press, true))
+    const { keys, space, enter } = spies()
+    renderHook(() => usePrimaryKey(keys, true))
     const user = userEvent.setup()
     const field = make('<input type="text">')
     await user.click(field)
     await user.keyboard('good game')
     expect((field as HTMLInputElement).value).toBe('good game')
-    expect(press).not.toHaveBeenCalled()
+    expect(space).not.toHaveBeenCalled()
+    expect(enter).not.toHaveBeenCalled()
   })
+
+  it.each([
+    ['Control', '{Control>}{key}{/Control}'],
+    ['Alt', '{Alt>}{key}{/Alt}'],
+    ['Meta', '{Meta>}{key}{/Meta}'],
+    ['Shift', '{Shift>}{key}{/Shift}'],
+  ])(
+    'ignores both keys with %s held, so Shift+Enter is not the end-of-turn yield',
+    async (_name, pattern) => {
+      const { keys, space, enter } = spies()
+      renderHook(() => usePrimaryKey(keys, true))
+      const user = userEvent.setup()
+      await user.keyboard(pattern.replace('{key}', ' '))
+      await user.keyboard(pattern.replace('{key}', '{Enter}'))
+      expect(space).not.toHaveBeenCalled()
+      expect(enter).not.toHaveBeenCalled()
+    },
+  )
 
   it('does nothing while it is disabled, and listens again once it is enabled', async () => {
-    const press = vi.fn()
-    const { rerender } = renderHook(({ on }) => usePrimaryKey(press, on), { initialProps: { on: false } })
+    const { keys, space, enter } = spies()
+    const { rerender } = renderHook(({ on }) => usePrimaryKey(keys, on), { initialProps: { on: false } })
     const user = userEvent.setup()
-    await user.keyboard(' ')
-    expect(press).not.toHaveBeenCalled()
+    await user.keyboard(' {Enter}')
+    expect(space).not.toHaveBeenCalled()
+    expect(enter).not.toHaveBeenCalled()
     rerender({ on: true })
-    await user.keyboard(' ')
-    expect(press).toHaveBeenCalledTimes(1)
+    await user.keyboard(' {Enter}')
+    expect(space).toHaveBeenCalledTimes(1)
+    expect(enter).toHaveBeenCalledTimes(1)
     rerender({ on: false })
-    await user.keyboard(' ')
-    expect(press).toHaveBeenCalledTimes(1)
+    await user.keyboard(' {Enter}')
+    expect(space).toHaveBeenCalledTimes(1)
+    expect(enter).toHaveBeenCalledTimes(1)
   })
 
-  it('calls the newest function it was given, not the one from the first render', async () => {
-    const first = vi.fn()
-    const second = vi.fn()
-    const { rerender } = renderHook(({ press }) => usePrimaryKey(press, true), {
-      initialProps: { press: first },
+  it('calls the newest functions it was given, not the ones from the first render', async () => {
+    const first = spies()
+    const second = spies()
+    const { rerender } = renderHook(({ keys }) => usePrimaryKey(keys, true), {
+      initialProps: { keys: first.keys },
     })
-    rerender({ press: second })
-    await userEvent.setup().keyboard(' ')
-    expect(first).not.toHaveBeenCalled()
-    expect(second).toHaveBeenCalledTimes(1)
+    rerender({ keys: second.keys })
+    await userEvent.setup().keyboard(' {Enter}')
+    expect(first.space).not.toHaveBeenCalled()
+    expect(first.enter).not.toHaveBeenCalled()
+    expect(second.space).toHaveBeenCalledTimes(1)
+    expect(second.enter).toHaveBeenCalledTimes(1)
   })
 
   it('stops listening when it unmounts', async () => {
-    const press = vi.fn()
-    const { unmount } = renderHook(() => usePrimaryKey(press, true))
+    const { keys, space, enter } = spies()
+    const { unmount } = renderHook(() => usePrimaryKey(keys, true))
     unmount()
     await userEvent.setup().keyboard(' {Enter}')
-    expect(press).not.toHaveBeenCalled()
+    expect(space).not.toHaveBeenCalled()
+    expect(enter).not.toHaveBeenCalled()
   })
 
   it('leaves a key that something else already handled', async () => {
-    const press = vi.fn()
-    renderHook(() => usePrimaryKey(press, true))
+    const { keys, space } = spies()
+    renderHook(() => usePrimaryKey(keys, true))
     const handled = (event: KeyboardEvent): void => event.preventDefault()
     // Registered first on the window, which the document hears after: the event arrives marked as handled.
     window.addEventListener('keydown', handled, true)
     await userEvent.setup().keyboard(' ')
     window.removeEventListener('keydown', handled, true)
-    expect(press).not.toHaveBeenCalled()
+    expect(space).not.toHaveBeenCalled()
   })
 
   it('works with the page of a real render too', async () => {
-    const press = vi.fn()
+    const { keys, space, enter } = spies()
     function Page() {
-      usePrimaryKey(press, true)
+      usePrimaryKey(keys, true)
       return <button>Elsewhere</button>
     }
     const view = render(<Page />)
     const user = userEvent.setup()
-    await user.keyboard(' ')
-    expect(press).toHaveBeenCalledTimes(1)
+    await user.keyboard(' {Enter}')
+    expect(space).toHaveBeenCalledTimes(1)
+    expect(enter).toHaveBeenCalledTimes(1)
     await user.tab()
     expect(view.getByRole('button', { name: 'Elsewhere' })).toHaveFocus()
-    await user.keyboard(' ')
-    expect(press).toHaveBeenCalledTimes(1)
+    await user.keyboard(' {Enter}')
+    expect(space).toHaveBeenCalledTimes(1)
+    expect(enter).toHaveBeenCalledTimes(1)
   })
 })

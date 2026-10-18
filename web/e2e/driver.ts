@@ -35,6 +35,8 @@ interface Seen {
   kind: string
   /** The decision id: `data-decision-id`, new for every decision even when the kind repeats. */
   id: string
+  /** The turn banner, such as "Turn 5 · Ada · End step": where in the game the decision is asked. */
+  banner: string
   text: string
   buttons: Control[]
   /** Cards of this seat's hand the prompt marks legal. */
@@ -65,6 +67,7 @@ function look(arg: { me: string; answered: string | null }): Observed | null {
     over: false,
     kind: root.dataset['decision'] ?? '',
     id,
+    banner: document.querySelector('[data-slot="banner"]')?.textContent ?? '',
     text: root.querySelector('[data-slot="prompt-text"]')?.textContent ?? '',
     buttons: Array.from(root.querySelectorAll('button')).map((button) => ({
       label: (button.textContent ?? '').trim(),
@@ -80,8 +83,10 @@ export class Run {
   steps = 0
   /** Decisions answered, by kind. */
   readonly kinds = new Map<string, number>()
-  /** Priority windows each seat (by name) was asked about with no land and no spell to offer; auto-pass leaves none. */
+  /** Priority windows each seat (by name) was asked about with no land and no spell to offer; a seat with no stop and Full Control off is asked none. */
   readonly idle = new Map<string, number>()
+  /** Where each seat (by name) was asked those windows, as the turn banner says it. */
+  readonly idleAt = new Map<string, string[]>()
   /** Times each seat (by name) pressed "End turn" to have the server pass for it until the turn ended. */
   readonly yields = new Map<string, number>()
   readonly trail: string[] = []
@@ -283,9 +288,10 @@ async function drive(player: Player, style: Style, run: Run): Promise<void> {
   for (;;) {
     const seen = await nextDecision(player, answered, run)
     if (seen.over) return
-    // A priority window that offers no land and no spell can be passed and nothing else; auto-pass keeps it from being asked.
+    // A priority window that offers no land and no spell can be passed and nothing else; only a stop or Full Control asks for it.
     if (seen.kind === 'Priority' && seen.hand.length === 0) {
       run.idle.set(player.name, (run.idle.get(player.name) ?? 0) + 1)
+      run.idleAt.set(player.name, [...(run.idleAt.get(player.name) ?? []), seen.banner])
     }
     const answer = ANSWERS[seen.kind]
     if (answer === undefined)

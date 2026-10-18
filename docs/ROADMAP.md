@@ -45,9 +45,9 @@ After a restart, run `git worktree list` and read each worktree's status before 
   - [ ] (d2) Stops in the actor with Arena's default window table (P2): a seat is asked at the default windows and at its stops, one-turn stops clear when the step ends, a stop interrupts a yield and is sent even when `can_act` is false; table test and bot games equal to the bare engine
   - [ ] (d3) Idle windows as short hidden clocks (P3): a window the seat cannot use waits a human-like 0.3 to 0.9 s (`MTG_DWELL_MS`, 0 = off) and then passes as its own step and batch; yields and Full Control are exempt; paused-time tests
   - [ ] (d4) Full Control in the actor (P4): asked at every step, never passed or yielded for; the response clock keeps its `can_act` condition
-  - [ ] (d5) Web session for stops and Full Control (P5): `session.setStop`, `setFullControl`, store fields, parse, Ctrl and Ctrl+Shift
-  - [ ] (d6) Stop ladder in the table (P6): two rows of step icons, click for a one-turn stop, shift-click for a lasting one, the current step marked, Full Control state, screen-reader text, `/dev/table?stops=`
-  - [ ] (d7) Keys like Arena (P7): Space one pass, Enter the end-of-turn yield; Shift+Enter only if the player asks
+  - [x] (d5) Web session for stops and Full Control (P5): `session.setStop` and `setFullControl` send what the server accepts and the page shows its word; a Full Control toggle with a menu replaces the auto-pass switch; Control asks for the next window, Control with Shift for Held (`docs/web.md`)
+  - [x] (d6) Stop ladder in the table (P6): two rows of step buttons (yours, theirs) beside the Full Control toggle; a press sets a one-turn stop, shift or Keep a lasting one with a pin; the current step and the turn are marked, every button is spoken, the rows fold up on a narrow screen; `/dev/table?stops=` (`docs/web.md`)
+  - [x] (d7) Keys like Arena (P7): Space passes once, Enter is the end-of-turn yield (a pass under Full Control), key hints on the buttons, tooltips and menu, no Shift+Enter (`docs/web.md`)
   - [ ] (d8) Leak test (P8): two seeded games equal but for one hidden card; what the other seat receives (types, batch boundaries, arrival times on paused time) must match
   - [ ] (d9) Timer bank (P9): extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
   - Smart stops, per-ability yields, auto-ordered triggers and damage auto-assign (P10) go with the M3 trigger item

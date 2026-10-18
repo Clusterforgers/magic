@@ -1,4 +1,4 @@
-// Goal: the primary button says what passing does now, in plain words and never "pass priority": over a spell it resolves it, on the viewer's turn it names the next step (the last window ends the turn), on anybody else's it continues; the table covers every step and both turn owners, and the words of the yields and of the situation read off the table are fixed too.
+// Goal: the primary button says what passing does now, in plain words and never "pass priority": over a spell it resolves it, on the viewer's turn it names the next step (the last window ends the turn), on anybody else's it continues; the table covers every step and both turn owners, and the words of the yields and of the situation read off the table are fixed too, and Enter ends the turn exactly where an "End turn" button is drawn: never under Full Control and never in the last window of the turn.
 import { describe, expect, it } from 'vitest'
 import { initialPlayState } from '@/play/store'
 import type { PlayState } from '@/play/store'
@@ -7,7 +7,15 @@ import { clone, must } from '@/test-utils/batches'
 import { buildFixture } from '../dev/fixture'
 import { fixtureState } from '../dev/devGame'
 import { STEP_LABEL } from '../turnText'
-import { passSituation, primaryDescription, primaryEndsTurn, primaryLabel, YIELD_WORDS } from './passWords'
+import {
+  enterYields,
+  KEY_LEGEND,
+  passSituation,
+  primaryDescription,
+  primaryEndsTurn,
+  primaryLabel,
+  YIELD_WORDS,
+} from './passWords'
 import type { PassSituation } from './passWords'
 
 const STEPS = Object.keys(STEP_LABEL) as Step[]
@@ -145,5 +153,37 @@ describe('what the controls read off the table', () => {
     strange.stack = { count: 1, cards: [999_999] }
     expect(passSituation({ ...next, view: strange }).top).toBeNull()
     expect(passSituation(initialPlayState())).toEqual({ step: 'Main1', yourTurn: false, top: null })
+  })
+})
+
+describe('what Enter does', () => {
+  const CASES = STEPS.flatMap((step) =>
+    [true, false].flatMap((yourTurn) =>
+      [null, 'Lightning Bolt'].map((top): [Step, boolean, string | null] => [step, yourTurn, top]),
+    ),
+  )
+
+  it.each(CASES)(
+    'ends the turn, when Full Control is off, only where "End turn" is drawn: %s, your turn %s, top %s',
+    (step, yourTurn, top) => {
+      const here = situation(step, yourTurn, top)
+      expect(enterYields(here, false)).toBe(!primaryEndsTurn(here))
+    },
+  )
+
+  it.each(CASES)('passes once under Full Control: %s, your turn %s, top %s', (step, yourTurn, top) => {
+    expect(enterYields(situation(step, yourTurn, top), true)).toBe(false)
+  })
+
+  it('passes once in the last window of your own turn, where the primary button reads "End turn"', () => {
+    expect(enterYields(situation('End', true), false)).toBe(false)
+    expect(enterYields(situation('End', true, 'Lightning Bolt'), false)).toBe(true)
+    expect(enterYields(situation('End', false), false)).toBe(true)
+  })
+
+  it('has a legend for the menu that names both keys and never says "pass priority"', () => {
+    expect(KEY_LEGEND).toContain('Space')
+    expect(KEY_LEGEND).toContain('Enter')
+    expect(KEY_LEGEND).not.toMatch(/priority/i)
   })
 })

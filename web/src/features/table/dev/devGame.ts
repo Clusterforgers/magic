@@ -3,10 +3,13 @@ import type { GameContextValue } from '@/features/game/gameContext'
 import type { GameLookup } from '@/features/game/useGameInfo'
 import { previewKey } from '@/play/preview'
 import type { Session } from '@/play/session'
+import { canHoldStop } from '@/play/stops'
 import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById } from '@/play/view'
+import type { FullControlMode, Stop } from '@/protocol/generated'
 import { devPreview } from './devForecast'
+import { withStop } from './devStops'
 import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
 import { DEV_PROMPTS, DEV_TABLES, DEV_YIELDS } from './prompts'
@@ -95,12 +98,20 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       return true
     },
     concede: () => false,
-    setAutoPass(enabled) {
-      store.setState({ autoPass: enabled })
+    // As the server answers a stop: it holds it and says the whole list (untap and cleanup it refuses).
+    setStop(side, step, on, keep) {
+      if (!canHoldStop(step)) return false
+      store.setState((state) => ({ stops: withStop(state.stops, side, step, on, keep) }))
       return true
     },
-    // As the server answers a yield: it starts, and the priority decision on screen is passed.
+    // As the server answers Full Control: turning it on ends a running yield.
+    setFullControl(mode) {
+      store.setState((state) => ({ fullControl: mode, yielding: mode === 'Off' ? state.yielding : null }))
+      return true
+    },
+    // As the server answers a yield (it refuses one under Full Control): it starts, and the priority decision on screen is passed.
     yieldUntil(until) {
+      if (store.getState().fullControl !== 'Off') return false
       store.setState((state) => ({
         yielding: until,
         pending: state.pending !== null && 'Priority' in state.pending.decision.kind ? null : state.pending,
@@ -132,6 +143,10 @@ export interface FixtureGameOptions extends FixtureOptions {
   turn?: 'you'
   /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
   previewMs?: number
+  /** The stops the viewer holds from the start; none when left out. */
+  stops?: Stop[]
+  /** The Full Control mode the viewer holds from the start; off when left out. */
+  fullControl?: FullControlMode
 }
 
 /** A game context holding a fresh fixture table. */
@@ -145,6 +160,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const table = Object.hasOwn(DEV_TABLES, name) ? DEV_TABLES[name] : undefined
   const fixture = table === undefined ? built : table(built)
   store.setState(fixtureState(fixture, prompt === undefined ? null : prompt(fixture)))
+  if (options.stops !== undefined) store.setState({ stops: options.stops })
+  if (options.fullControl !== undefined) store.setState({ fullControl: options.fullControl })
   // A seat that is already yielding faces no priority decision, only the line that says it is passing.
   if (Object.hasOwn(DEV_YIELDS, name)) store.setState({ yielding: DEV_YIELDS[name] ?? null })
   // The dev table answers a preview after a moment, so the "checking outcome" state can be looked at too.

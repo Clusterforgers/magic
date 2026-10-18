@@ -4,7 +4,6 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
-import { AutoPassSwitch } from './AutoPassSwitch'
 import type { CardSize } from './cardSize'
 import { CardPreview } from './CardPreview'
 import { CombatOverlay } from './combat/CombatOverlay'
@@ -22,6 +21,7 @@ import { OpponentBoard, OwnBoard } from './SeatBoards'
 import { SeatTile } from './SeatTile'
 import { defaultFocusOf, seatCountOf } from './selectors'
 import { StackPanel } from './StackPanel'
+import { StopsBar } from './stops/StopsBar'
 import { TableOptionsContext } from './tableOptions'
 import { TableToolbar } from './TableToolbar'
 
@@ -108,15 +108,18 @@ const Table = memo(function Table() {
                 <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
               ) : (
                 <>
-                  <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <TableToolbar
                       mode={plan.mode}
                       onMode={setMode}
                       pinnedFocus={chosen !== null}
                       onFollow={() => setChosen(null)}
                     />
-                    <div className="flex flex-wrap items-center gap-3">
-                      <AutoPassSwitch />
+                    {/* Right of the layout buttons on a wide screen; on a narrow one Concede takes that place and the stops fill the line below. */}
+                    <div className="empty:hidden sm:ml-auto max-sm:order-last max-sm:basis-full">
+                      <StopsBar />
+                    </div>
+                    <div className="empty:hidden max-sm:ml-auto">
                       <ConcedeButton />
                     </div>
                   </div>

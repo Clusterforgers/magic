@@ -99,8 +99,39 @@ describe('handing the turn over', () => {
     await user.keyboard(' ')
     expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 21, answer: { Priority: 'Pass' } }])
     send(decision(22))
-    await user.keyboard('{Enter}')
+    await user.keyboard(' ')
     expect(h.answeredIds()).toEqual([21, 22])
+  })
+
+  it('sends one Yield when Enter is pressed, answers nothing, and keeps the prompt until the server confirms', async () => {
+    const { h, send, user, prompt, indicator } = mount()
+    send(decision(31))
+    await user.keyboard('{Enter}{Enter}')
+    expect(h.sentOf('Yield')).toEqual([{ type: 'Yield', until: 'EndOfTurn' }])
+    expect(h.sentOf('Answer')).toEqual([])
+    expect(prompt()).not.toBeNull()
+
+    send({ type: 'Yielding', until: 'EndOfTurn' })
+    expect(prompt()).toBeNull()
+    expect(indicator()).toHaveAttribute('data-yield', 'EndOfTurn')
+  })
+
+  it('passes once with Enter under Full Control, which the server would not let a yield run beside', async () => {
+    const { h, send, user } = mount()
+    send({ type: 'FullControl', mode: 'Held' }, decision(41))
+    await user.keyboard('{Enter}')
+    expect(h.sentOf('Yield')).toEqual([])
+    expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 41, answer: { Priority: 'Pass' } }])
+  })
+
+  it('shows the yield buttons again when the server lets go of Full Control, and Enter ends the turn', async () => {
+    const { h, send, user, secondary } = mount()
+    send({ type: 'FullControl', mode: 'NextWindow' }, decision(51))
+    expect(document.querySelector('[data-slot="secondary-action"]')).toBeNull()
+    send({ type: 'FullControl', mode: 'Off' }, decision(52))
+    expect(secondary()).toBeEnabled()
+    await user.keyboard('{Enter}')
+    expect(h.sentOf('Yield')).toEqual([{ type: 'Yield', until: 'EndOfTurn' }])
   })
 
   it('shows the line from the Welcome of a reconnect, with no prompt to answer', async () => {
