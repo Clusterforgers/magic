@@ -17,7 +17,12 @@ if [[ "$mode" == rust || "$mode" == all ]]; then
     docker compose up -d --wait db >/dev/null
   fi
   export DATABASE_URL="${DATABASE_URL:-postgres://magic:magic@localhost:5432/magic}"
-  cargo test --workspace --quiet
+  # sqlx::test drops other runs' test databases on a shared server, so one test run at a time uses it.
+  if command -v flock >/dev/null; then
+    flock "${TMPDIR:-/tmp}/mtg-pg-tests.lock" cargo test --workspace --quiet
+  else
+    cargo test --workspace --quiet
+  fi
 fi
 
 if [[ "$mode" == web || "$mode" == all ]] && [[ -d web ]]; then
