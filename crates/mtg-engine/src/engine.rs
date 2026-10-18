@@ -107,7 +107,7 @@ impl Engine {
     /// event produced, including the automatic steps that followed the answer.
     pub fn apply(&mut self, answer: Answer) -> Result<Vec<Event>, EngineError> {
         let decision = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
-        let outcome = handle(decision, answer)?;
+        let outcome = handle(&self.state, decision, answer)?;
         let player = decision.player;
         let checkpoint = self.checkpoint();
         let result = self.run(outcome, player).and_then(|()| self.advance());

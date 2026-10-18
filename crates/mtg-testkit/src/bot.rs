@@ -114,13 +114,45 @@ impl RandomBot {
 
     fn pay(&mut self, options: &PayOptions) -> PayChoice {
         let manual = self.random_payment(options);
-        let mut choices = vec![PayChoice::Cancel];
+        let mut choices = Vec::new();
+        if options.can_cancel {
+            choices.push(PayChoice::Cancel);
+        }
         if options.auto_available {
             choices.push(PayChoice::Auto);
         }
-        choices.extend(manual.map(PayChoice::Manual));
+        if let Some(payment) = manual {
+            choices.push(PayChoice::Complete(self.some_of(&payment)));
+            choices.push(PayChoice::Manual(payment));
+        }
+        // A payment is always possible when a cast is offered, so only a cancel-less decision can end up empty.
+        if choices.is_empty() {
+            return PayChoice::Auto;
+        }
         let pick = self.rng.index(choices.len());
         choices.swap_remove(pick)
+    }
+
+    /// A random part of `payment` (possibly all or none of it), the way a player who has paid part by hand leaves it.
+    fn some_of(&mut self, payment: &Payment) -> Payment {
+        let mut keep =
+            |len: usize| -> Vec<bool> { (0..len).map(|_| self.rng.below(2) == 0).collect() };
+        let pool_keep = keep(payment.pool.len());
+        let tap_keep = keep(payment.taps.len());
+        Payment {
+            pool: payment
+                .pool
+                .iter()
+                .zip(pool_keep)
+                .filter_map(|(m, k)| k.then_some(*m))
+                .collect(),
+            taps: payment
+                .taps
+                .iter()
+                .zip(tap_keep)
+                .filter_map(|(t, k)| k.then_some(*t))
+                .collect(),
+        }
     }
 
     /// A random exact payment: required colors first, then random mana for the generic part.
@@ -135,17 +167,28 @@ impl RandomBot {
         }
         self.rng.shuffle(&mut supply);
         let mut chosen = Vec::new();
+        // A permanent is tapped once, so choosing one of its abilities drops the others from the supply.
+        let take = |supply: &mut Vec<Supply>, pos: usize, chosen: &mut Vec<Supply>| {
+            let item = supply.remove(pos);
+            if let Supply::Tap(source, _) = item {
+                supply.retain(
+                    |s| !matches!(s, Supply::Tap(other, _) if other.object == source.object),
+                );
+            }
+            chosen.push(item);
+        };
         for mana in ManaType::ALL {
             for _ in 0..options.cost.required(mana) {
                 let pos = supply.iter().position(|s| s.mana() == mana)?;
-                chosen.push(supply.remove(pos));
+                take(&mut supply, pos, &mut chosen);
             }
         }
-        let generic = usize::try_from(options.cost.generic()).ok()?;
-        if supply.len() < generic {
-            return None;
+        for _ in 0..options.cost.generic() {
+            if supply.is_empty() {
+                return None;
+            }
+            take(&mut supply, 0, &mut chosen);
         }
-        chosen.extend(supply.drain(..generic));
         let mut payment = Payment::default();
         for item in chosen {
             match item {
