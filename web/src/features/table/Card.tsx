@@ -46,7 +46,7 @@ export const Card = memo(function Card({
   const object = usePlay((state) => state.objectsById[id])
   const role = usePlay((state) => combatRoleIn(state, id))
   const marks = useMarksStore()
-  const { highlight: marked, toggles } = useCardMark(id)
+  const { highlight: marked, toggles, note } = useCardMark(id)
   const highlight = given ?? marked
   // An explicit highlight is a toggle, as it always was; a prompt says so when its marks are.
   const pressable = given !== undefined || toggles
@@ -55,8 +55,9 @@ export const Card = memo(function Card({
   const handlers = usePreviewHandlers(id, onSelect === undefined ? undefined : () => onSelect(id))
   if (object === undefined) return null
   const tapped = object.permanent?.tapped === true
-  const words =
+  const markWords =
     highlight === undefined || (pressable && highlight === 'selected') ? '' : `, ${MARK_WORDS[highlight]}`
+  const words = note === undefined ? markWords : `${markWords}, ${note.words}`
   return (
     <button
       type="button"
@@ -75,7 +76,7 @@ export const Card = memo(function Card({
         highlight === undefined ? null : HIGHLIGHT[highlight],
       )}
     >
-      <CardFace object={object} role={role} size={size} />
+      <CardFace object={object} role={role} size={size} note={note} />
     </button>
   )
 })

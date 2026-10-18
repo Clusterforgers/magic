@@ -14,8 +14,6 @@ const UNBUILT: readonly DecisionName[] = [
   'Mulligan',
   'BottomCards',
   'PayMana',
-  'DeclareAttackers',
-  'DeclareBlockers',
   'AssignDamage',
   'Discard',
 ]

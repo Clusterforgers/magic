@@ -7,7 +7,7 @@ import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById } from '@/play/view'
 import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
-import { DEV_PROMPTS } from './prompts'
+import { DEV_PROMPTS, DEV_TABLES } from './prompts'
 
 /**
  * The play state of a seat that has just seen `fixture`. It faces `pending`, by default a priority decision with
@@ -75,12 +75,13 @@ export interface FixtureGameOptions extends FixtureOptions {
 
 /** A game context holding a fresh fixture table. */
 export function fixtureGame(options: FixtureGameOptions): GameContextValue {
-  const fixture = buildFixture(options)
+  const built = buildFixture(options)
   const store = createPlayStore()
-  const prompt =
-    options.prompt !== undefined && Object.hasOwn(DEV_PROMPTS, options.prompt)
-      ? DEV_PROMPTS[options.prompt]
-      : undefined
+  const name = options.prompt ?? ''
+  const prompt = Object.hasOwn(DEV_PROMPTS, name) ? DEV_PROMPTS[name] : undefined
+  // A prompt may need another moment of the game than the fixture shows (the viewer's own turn, an attack to block).
+  const table = prompt !== undefined && Object.hasOwn(DEV_TABLES, name) ? DEV_TABLES[name] : undefined
+  const fixture = table === undefined ? built : table(built)
   store.setState(fixtureState(fixture, prompt === undefined ? null : prompt(fixture)))
   return { game: 'dev-fixture', session: fixtureSession(store), lookup: fixtureLookup(fixture) }
 }
