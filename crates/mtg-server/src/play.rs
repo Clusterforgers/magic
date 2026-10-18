@@ -86,6 +86,11 @@ impl<S: EventStore> GameActor<S> {
         match committed {
             Ok(batches) => {
                 let next = running.settle(keep_unchanged);
+                let result = running.engine.result();
+                // Before anyone hears `GameOver`, so a client that saw it can trust the record.
+                if let (Some(recorder), Some(result)) = (&self.recorder, result) {
+                    recorder.finished(result).await;
+                }
                 self.announce(batches, next);
                 Ok(())
             }

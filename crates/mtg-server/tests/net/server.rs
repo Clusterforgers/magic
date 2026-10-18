@@ -6,6 +6,7 @@ use std::time::Duration;
 
 use mtg_server::config::SocketLimits;
 use mtg_server::{GameConfig, Registry, Server, ServerConfig};
+use sqlx::PgPool;
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
@@ -37,9 +38,18 @@ pub struct TestServer {
 impl TestServer {
     /// Binds port 0 on localhost and serves `config` there.
     pub async fn start(config: ServerConfig) -> TestServer {
+        TestServer::serve(Server::new(config)).await
+    }
+
+    /// Like [`TestServer::start`] on a server that records its games in `pool` and first resumes
+    /// the ones an earlier server left unfinished.
+    pub async fn start_on(pool: PgPool, config: ServerConfig) -> TestServer {
+        TestServer::serve(Server::open(config, pool).await.unwrap()).await
+    }
+
+    async fn serve(server: Server) -> TestServer {
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let addr = listener.local_addr().unwrap();
-        let server = Server::new(config);
         let registry = server.registry();
         let (stop, stopped) = oneshot::channel::<()>();
         let task = tokio::spawn(server.serve(listener, async move {
