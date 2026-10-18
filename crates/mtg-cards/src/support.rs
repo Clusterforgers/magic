@@ -159,7 +159,7 @@ pub fn oracle_fingerprint(text: &str) -> String {
     hex(&Sha256::digest(normalized(text).as_bytes())[..16])
 }
 
-/// The hash of a card's implementation: the canonical JSON of every face's abilities.
+/// The hash of a card's implementation: the compact JSON of every face's abilities, in serde's field order.
 pub fn implementation_hash(card: &Card) -> String {
     let abilities: Vec<_> = card.faces.iter().map(|face| &face.abilities).collect();
     let json = serde_json::to_vec(&abilities).unwrap_or_default();

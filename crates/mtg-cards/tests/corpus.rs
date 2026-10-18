@@ -388,3 +388,29 @@ fn the_corpus_still_matches_a_fresh_oracle_cards_download() {
             .join("\n")
     );
 }
+
+#[test]
+fn clause_spans_cut_out_the_sentences_they_name() {
+    let library = library();
+    let mut found = Vec::new();
+    for shown in printed() {
+        let card = library.card(&shown.oracle_id).unwrap();
+        for (index, face) in card.faces.iter().enumerate() {
+            for ability in &face.abilities {
+                if let Ability::Manual { span, .. } = ability {
+                    let clause = span.slice(&shown.faces[index].oracle_text).unwrap();
+                    found.push((card.name.clone(), clause.to_owned()));
+                }
+            }
+        }
+    }
+    let expected = [
+        "Questing Beast can't be blocked by creatures with power 2 or less.",
+        "Combat damage that would be dealt by creatures you control can't be prevented.",
+        "Whenever Questing Beast deals combat damage to an opponent, it deals that much damage to target planeswalker that player controls.",
+    ];
+    assert_eq!(
+        found,
+        expected.map(|clause| ("Questing Beast".to_owned(), clause.to_owned()))
+    );
+}
