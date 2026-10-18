@@ -14,6 +14,7 @@ use mtg_engine::rng::GameRng;
 #[derive(Debug, Clone)]
 pub struct RandomBot {
     rng: GameRng,
+    partial_payments: bool,
 }
 
 /// A way to produce one mana while paying: floating mana or a tap.
@@ -32,10 +33,21 @@ impl Supply {
 
 impl RandomBot {
     /// A bot using substream `stream` of the generator keyed by `seed`.
+    ///
+    /// Its choices stay fixed (cancel, automatic and exact payments) because seeded fixtures, such as the
+    /// transcripts the web tests pin, replay its games; new kinds of answer are opt-in.
     pub fn new(seed: u64, stream: u64) -> Self {
         RandomBot {
             rng: GameRng::substream(seed, stream),
+            partial_payments: false,
         }
+    }
+
+    /// Also pays by choosing part of a payment and letting the engine finish it (`PayChoice::Complete`).
+    #[must_use]
+    pub const fn with_partial_payments(mut self) -> Self {
+        self.partial_payments = true;
+        self
     }
 
     /// Answers `decision` with a uniformly random legal choice.
@@ -122,7 +134,9 @@ impl RandomBot {
             choices.push(PayChoice::Auto);
         }
         if let Some(payment) = manual {
-            choices.push(PayChoice::Complete(self.some_of(&payment)));
+            if self.partial_payments {
+                choices.push(PayChoice::Complete(self.some_of(&payment)));
+            }
             choices.push(PayChoice::Manual(payment));
         }
         // A payment is always possible when a cast is offered, so only a cancel-less decision can end up empty.
@@ -221,7 +235,7 @@ mod tests {
 
     proptest! {
         #[test]
-        fn bot_answers_are_always_accepted(seed in any::<u64>(), step in 0usize..4) {
+        fn bot_answers_are_always_accepted(seed in any::<u64>(), step in 0usize..4, partial in any::<bool>()) {
             let step = [Step::Main1, Step::DeclareAttackers, Step::Main2, Step::Cleanup][step];
             let mut engine = Scenario::new(3)
                 .at(2, 0, step)
@@ -231,6 +245,9 @@ mod tests {
                 .build()
                 .unwrap();
             let mut bot = RandomBot::new(seed, 0);
+            if partial {
+                bot = bot.with_partial_payments();
+            }
             for _ in 0..200 {
                 let Some(decision) = engine.decision().cloned() else { break };
                 let answer = bot.choose(&decision);

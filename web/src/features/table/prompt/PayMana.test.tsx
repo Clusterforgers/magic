@@ -734,7 +734,17 @@ describe('Pay automatically, Cancel and Confirm', () => {
 
   it.each([
     ['one land', ['0'], payment([], [[0, 0]])],
-    ['two lands in the order chosen', ['1', '0'], payment([], [[1, 0], [0, 0]])],
+    [
+      'two lands in the order chosen',
+      ['1', '0'],
+      payment(
+        [],
+        [
+          [1, 0],
+          [0, 0],
+        ],
+      ),
+    ],
     ['a land and floating mana', ['0', 'pool:R'], payment(['R'], [[0, 0]])],
     ['floating mana alone', ['pool:R'], payment(['R'], [])],
   ])('Pay the rest for me keeps %s and answers Complete', async (_what, picks, expected) => {
@@ -757,9 +767,20 @@ describe('Pay automatically, Cancel and Confirm', () => {
   })
 
   it.each([
-    ['the game offers no automatic payment', payOptions('{G}{G}', [[0, 'G']], { auto_available: false }), ['0']],
+    [
+      'the game offers no automatic payment',
+      payOptions('{G}{G}', [[0, 'G']], { auto_available: false }),
+      ['0'],
+    ],
     ['the payment already covers the cost', payOptions('{G}', [[0, 'G']]), ['0']],
-    ['nothing has been chosen', payOptions('{2}', [[0, 'G'], [1, 'U']]), []],
+    [
+      'nothing has been chosen',
+      payOptions('{2}', [
+        [0, 'G'],
+        [1, 'U'],
+      ]),
+      [],
+    ],
   ])('has no Pay the rest for me when %s', async (_what, given, picks) => {
     const { steps } = renderPay(given)
     await steps(picks)
@@ -767,7 +788,12 @@ describe('Pay automatically, Cancel and Confirm', () => {
   })
 
   it('goes back to Pay automatically when the picks are taken back', async () => {
-    const { user, steps, chips } = renderPay(payOptions('{2}', [[0, 'G'], [1, 'U']]))
+    const { user, steps, chips } = renderPay(
+      payOptions('{2}', [
+        [0, 'G'],
+        [1, 'U'],
+      ]),
+    )
     await steps(['0'])
     await user.click(screen.getByRole('button', { name: /^Remove green/ }))
     expect(chips()).toEqual([])
@@ -820,7 +846,21 @@ describe('Pay automatically, Cancel and Confirm', () => {
     ['Pay automatically', [], { PayMana: 'Auto' }],
     ['Pay the rest for me', ['0'], { PayMana: { Complete: payment([], [[0, 0]]) } }],
     ['Cancel casting', [], { PayMana: 'Cancel' }],
-    ['Confirm payment', ['0', '1'], { PayMana: { Manual: payment([], [[0, 0], [1, 0]]) } }],
+    [
+      'Confirm payment',
+      ['0', '1'],
+      {
+        PayMana: {
+          Manual: payment(
+            [],
+            [
+              [0, 0],
+              [1, 0],
+            ],
+          ),
+        },
+      },
+    ],
   ])('a double click on %s sends one answer', async (name, picks, expected) => {
     const { answer, user, steps } = renderPay(
       payOptions('{G}{U}', [

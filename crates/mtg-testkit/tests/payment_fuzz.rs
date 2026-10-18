@@ -32,7 +32,7 @@ fn cancel_and_complete_hold_in_every_position(#[case] players: usize) {
         let mut engine = Engine::new(setup.clone()).expect("a fuzz setup is valid");
         let mut bots: Vec<RandomBot> = (0u64..)
             .take(players)
-            .map(|seat| RandomBot::new(seed, seat))
+            .map(|seat| RandomBot::new(seed, seat).with_partial_payments())
             .collect();
         let mut previous: Option<Decision> = None;
         while let Some(decision) = engine.decision().cloned() {
