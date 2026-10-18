@@ -7,18 +7,21 @@ use std::fmt::Debug;
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaType};
-use mtg_engine::combat::AttackTarget;
+use mtg_engine::combat::{AttackTarget, DamageTarget};
 use mtg_engine::decision::{
     AttackOptions, AttackerOption, BlockOptions, BlockerOption, BottomOptions, DamageOptions,
     DecisionKind, DiscardOptions, MulliganChoice, MulliganOptions, PayChoice, PayOptions,
     PriorityAction, PriorityOptions,
+};
+use mtg_engine::forecast::{
+    AttackerForecast, CombatForecast, CreatureForecast, ForecastDamage, PlayerForecast,
 };
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use mtg_engine::state::GameResult;
 use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
     ClientMessage, DecisionId, ErrorCode, EventBatch, EventView, HiddenEvent, LobbySeat,
-    PROTOCOL_VERSION, ServerMessage, StateView, project_events,
+    PROTOCOL_VERSION, ServerMessage, StateView, YieldUntil, project_events,
 };
 use mtg_testkit::fuzz_setup;
 use proptest::prelude::*;
@@ -27,8 +30,14 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 8;
-const SERVER_VARIANTS: usize = 8;
+const CLIENT_VARIANTS: usize = 11;
+const SERVER_VARIANTS: usize = 10;
+
+const YIELDS: [YieldUntil; 3] = [
+    YieldUntil::Resolve,
+    YieldUntil::EndOfTurn,
+    YieldUntil::MyTurn,
+];
 
 /// Index of each client variant; adding a variant breaks this match until the table below grows.
 fn client_index(message: &ClientMessage) -> usize {
@@ -40,7 +49,10 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::Concede => 4,
         ClientMessage::Resync => 5,
         ClientMessage::AutoPass { .. } => 6,
-        ClientMessage::NotReady => 7,
+        ClientMessage::Preview { .. } => 7,
+        ClientMessage::Yield { .. } => 8,
+        ClientMessage::CancelYield => 9,
+        ClientMessage::NotReady => 10,
     }
 }
 
@@ -54,7 +66,9 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::Chat { .. } => 4,
         ServerMessage::Error { .. } => 5,
         ServerMessage::GameOver { .. } => 6,
-        ServerMessage::Lobby { .. } => 7,
+        ServerMessage::Forecast { .. } => 7,
+        ServerMessage::Yielding { .. } => 8,
+        ServerMessage::Lobby { .. } => 9,
     }
 }
 
@@ -204,6 +218,45 @@ fn lobby_seats() -> Vec<LobbySeat> {
     ]
 }
 
+/// A forecast with a block, so every field of it is exercised: creature 4 attacks player 1 and creature 3 blocks it.
+fn sample_forecast() -> CombatForecast {
+    let (blocker, attacker) = (ObjectId(3), ObjectId(4));
+    let hit = |source, target, amount| ForecastDamage {
+        source,
+        target,
+        amount,
+    };
+    CombatForecast {
+        attackers: vec![AttackerForecast {
+            attacker,
+            target: AttackTarget::Player(PlayerId(1)),
+            blocked: true,
+            blockers: vec![blocker],
+            deals: vec![hit(attacker, DamageTarget::Object(blocker), 3)],
+            receives: vec![hit(blocker, DamageTarget::Object(attacker), 1)],
+        }],
+        creatures: vec![
+            CreatureForecast {
+                object: blocker,
+                damage: 3,
+                dies: true,
+            },
+            CreatureForecast {
+                object: attacker,
+                damage: 1,
+                dies: false,
+            },
+        ],
+        players: vec![PlayerForecast {
+            player: PlayerId(1),
+            damage: 0,
+            life: 20,
+            life_after: 20,
+            lethal: false,
+        }],
+    }
+}
+
 fn client_samples() -> Vec<ClientMessage> {
     let mut out = vec![
         ClientMessage::Join {
@@ -220,8 +273,14 @@ fn client_samples() -> Vec<ClientMessage> {
         ClientMessage::Resync,
         ClientMessage::AutoPass { enabled: true },
         ClientMessage::AutoPass { enabled: false },
+        ClientMessage::CancelYield,
     ];
+    out.extend(YIELDS.map(|until| ClientMessage::Yield { until }));
     out.extend(answers().into_iter().map(|answer| ClientMessage::Answer {
+        decision: DecisionId(41),
+        answer,
+    }));
+    out.extend(answers().into_iter().map(|answer| ClientMessage::Preview {
         decision: DecisionId(41),
         answer,
     }));
@@ -237,6 +296,7 @@ fn server_samples() -> Vec<ServerMessage> {
             player: PlayerId(1),
             seats: 4,
             auto_pass: true,
+            yielding: None,
         },
         ServerMessage::Lobby {
             seats: lobby_seats(),
@@ -257,7 +317,26 @@ fn server_samples() -> Vec<ServerMessage> {
         ServerMessage::GameOver {
             result: GameResult::Draw,
         },
+        ServerMessage::Forecast {
+            decision: DecisionId(41),
+            forecast: Some(sample_forecast()),
+        },
+        ServerMessage::Forecast {
+            decision: DecisionId(41),
+            forecast: None,
+        },
     ];
+    // A welcome states the yield the seat holds, and so does every change of it.
+    out.extend(YIELDS.map(|until| ServerMessage::Welcome {
+        protocol_version: PROTOCOL_VERSION,
+        game: "table-1".into(),
+        player: PlayerId(0),
+        seats: 2,
+        auto_pass: false,
+        yielding: Some(until),
+    }));
+    out.extend(YIELDS.map(|until| ServerMessage::Yielding { until: Some(until) }));
+    out.push(ServerMessage::Yielding { until: None });
     for code in [
         ErrorCode::UnsupportedVersion,
         ErrorCode::BadMessage,
@@ -338,6 +417,19 @@ fn every_event_view_variant_round_trips() {
 #[case(ClientMessage::NotReady, json!({"type": "NotReady"}))]
 #[case(ClientMessage::Resync, json!({"type": "Resync"}))]
 #[case(ClientMessage::AutoPass { enabled: false }, json!({"type": "AutoPass", "enabled": false}))]
+#[case(ClientMessage::CancelYield, json!({"type": "CancelYield"}))]
+#[case(
+    ClientMessage::Yield { until: YieldUntil::Resolve },
+    json!({"type": "Yield", "until": "Resolve"})
+)]
+#[case(
+    ClientMessage::Yield { until: YieldUntil::EndOfTurn },
+    json!({"type": "Yield", "until": "EndOfTurn"})
+)]
+#[case(
+    ClientMessage::Yield { until: YieldUntil::MyTurn },
+    json!({"type": "Yield", "until": "MyTurn"})
+)]
 #[case(
     ClientMessage::Join { protocol_version: 1, game: "g".into(), name: "n".into() },
     json!({"type": "Join", "protocol_version": 1, "game": "g", "name": "n"})
@@ -350,6 +442,10 @@ fn every_event_view_variant_round_trips() {
     ClientMessage::Chat { text: "hi".into() },
     json!({"type": "Chat", "text": "hi"})
 )]
+#[case(
+    ClientMessage::Preview { decision: DecisionId(7), answer: Answer::DeclareBlockers(vec![(ObjectId(3), ObjectId(4))]) },
+    json!({"type": "Preview", "decision": 7, "answer": {"DeclareBlockers": [[3, 4]]}})
+)]
 fn client_wire_shape_is_flat_and_tagged(
     #[case] message: ClientMessage,
     #[case] expected: serde_json::Value,
@@ -359,8 +455,8 @@ fn client_wire_shape_is_flat_and_tagged(
 
 #[rstest]
 #[case(
-    ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true },
-    json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true})
+    ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true, yielding: None },
+    json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true, "yielding": null})
 )]
 #[case(
     ServerMessage::Lobby {
@@ -372,6 +468,15 @@ fn client_wire_shape_is_flat_and_tagged(
         "seats": [{"seat": 0, "name": "Ana", "connected": true, "ready": false}]
     })
 )]
+#[case(
+    ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(0), seats: 2, auto_pass: false, yielding: Some(YieldUntil::MyTurn) },
+    json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 0, "seats": 2, "auto_pass": false, "yielding": "MyTurn"})
+)]
+#[case(
+    ServerMessage::Yielding { until: Some(YieldUntil::EndOfTurn) },
+    json!({"type": "Yielding", "until": "EndOfTurn"})
+)]
+#[case(ServerMessage::Yielding { until: None }, json!({"type": "Yielding", "until": null}))]
 #[case(
     ServerMessage::Decision {
         id: DecisionId(3),
@@ -407,6 +512,25 @@ fn client_wire_shape_is_flat_and_tagged(
 #[case(
     ServerMessage::GameOver { result: GameResult::Draw },
     json!({"type": "GameOver", "result": "Draw"})
+)]
+#[case(
+    ServerMessage::Forecast { decision: DecisionId(7), forecast: None },
+    json!({"type": "Forecast", "decision": 7, "forecast": null})
+)]
+#[case(
+    ServerMessage::Forecast {
+        decision: DecisionId(7),
+        forecast: Some(CombatForecast {
+            attackers: Vec::new(),
+            creatures: vec![CreatureForecast { object: ObjectId(3), damage: 2, dies: true }],
+            players: Vec::new(),
+        }),
+    },
+    json!({"type": "Forecast", "decision": 7, "forecast": {
+        "attackers": [],
+        "creatures": [{"object": 3, "damage": 2, "dies": true}],
+        "players": [],
+    }})
 )]
 fn server_wire_shape_is_flat_and_tagged(
     #[case] message: ServerMessage,
@@ -561,4 +685,25 @@ proptest! {
         round_trip(&answer);
         round_trip(&error);
     }
+}
+
+#[rstest]
+#[case::no_duration(r#"{"type":"Yield"}"#)]
+#[case::unknown_duration(r#"{"type":"Yield","until":"Never"}"#)]
+#[case::lower_case(r#"{"type":"Yield","until":"endofturn"}"#)]
+#[case::null_duration(r#"{"type":"Yield","until":null}"#)]
+#[case::number_duration(r#"{"type":"Yield","until":3}"#)]
+#[case::object_duration(r#"{"type":"Yield","until":{"EndOfTurn":true}}"#)]
+fn a_yield_that_is_not_one_of_the_three_is_refused(#[case] text: &str) {
+    let parsed = serde_json::from_str::<ClientMessage>(text);
+    assert!(parsed.is_err(), "{text} was accepted as {parsed:?}");
+}
+
+#[rstest]
+#[case::lower_case(r#"{"type":"Yielding","until":"mine"}"#)]
+#[case::text_in_place_of_null(r#"{"type":"Yielding","until":"None"}"#)]
+#[case::number(r#"{"type":"Yielding","until":0}"#)]
+fn a_yielding_notice_with_a_wrong_duration_is_refused(#[case] text: &str) {
+    let parsed = serde_json::from_str::<ServerMessage>(text);
+    assert!(parsed.is_err(), "{text} was accepted as {parsed:?}");
 }

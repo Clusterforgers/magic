@@ -3,6 +3,8 @@
 //! Clients never touch the engine. They send [`ClientMessage`]s through a [`GameHandle`] and read
 //! [`ServerMessage`]s from a bounded queue, so a slow or vanished client can never stall a game.
 
+use std::time::Instant;
+
 use mtg_core::ids::PlayerId;
 use mtg_engine::error::SetupError;
 use mtg_engine::{Engine, EngineError, GameSetup};
@@ -13,10 +15,12 @@ use tokio::sync::{mpsc, oneshot};
 use crate::game_id::GameId;
 use crate::handle::{Command, GameHandle, GameStatus, JoinError};
 use crate::pace::Pace;
+use crate::preview::PreviewLimits;
 use crate::recorder::Recorder;
 use crate::running::{Rejection, Running, count};
 use crate::seats::Seats;
 use crate::store::{EventStore, StoreError};
+use crate::yields::Yields;
 
 /// Longest chat line, in characters.
 pub const MAX_CHAT_CHARS: usize = 500;
@@ -190,7 +194,9 @@ fn launch<S: EventStore>(
         id,
         store,
         seats: Seats::new(setup.players.len(), config.seat_queue),
+        previews: PreviewLimits::new(setup.players.len(), Instant::now()),
         auto_pass: vec![config.pace.auto_pass; setup.players.len()],
+        yields: Yields::new(setup.players.len()),
         pace: config.pace,
         setup,
         phase,
@@ -221,10 +227,14 @@ pub(crate) struct GameActor<S> {
     pub(crate) store: S,
     pub(crate) setup: GameSetup,
     pub(crate) seats: Seats,
+    /// How fast each seat may ask for previews.
+    pub(crate) previews: PreviewLimits,
     /// How fast the game moves (settings shared by every seat).
     pub(crate) pace: Pace,
     /// Per seat: whether a priority decision it cannot use is passed for it. Starts at the server default, resets on resume.
     pub(crate) auto_pass: Vec<bool>,
+    /// Per seat: the priority it asked the server to pass for it (`Yield`). Never stored, so a resumed game has none.
+    pub(crate) yields: Yields,
     pub(crate) phase: Phase,
     /// Where a persistent game notes its milestones; `None` for a game that lives in memory only.
     pub(crate) recorder: Option<Recorder>,
@@ -307,6 +317,7 @@ impl<S: EventStore> GameActor<S> {
             player: seat,
             seats: u32::try_from(self.seats.len()).unwrap_or(u32::MAX),
             auto_pass: self.auto_pass.get(seat.index()).copied().unwrap_or(false),
+            yielding: self.yields.get(seat),
         };
         self.seats.send(seat, welcome);
         self.sync(seat);
@@ -346,8 +357,11 @@ impl<S: EventStore> GameActor<S> {
             ClientMessage::Answer { decision, answer } => {
                 return self.answer(seat, decision, answer).await;
             }
+            ClientMessage::Preview { decision, answer } => self.preview(seat, decision, &answer),
             ClientMessage::Concede => return self.concede(seat).await,
             ClientMessage::AutoPass { enabled } => return self.set_auto_pass(seat, enabled).await,
+            ClientMessage::Yield { until } => return self.set_yield(seat, until).await,
+            ClientMessage::CancelYield => self.cancel_yield(seat),
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),
                 Phase::Lobby { .. } => self.refuse(seat, not_started()),

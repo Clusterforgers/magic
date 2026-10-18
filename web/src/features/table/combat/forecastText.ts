@@ -64,6 +64,27 @@ export function forecastSentences(forecast: CombatForecast, names: ForecastNames
   return sentences
 }
 
+/**
+ * The forecast in one short sentence, for a live region that is read out each time the choice changes: who would die
+ * (named up to three, then counted) and what the attacked players would take.
+ */
+export function forecastSummary(forecast: CombatForecast, names: ForecastNames): string {
+  const dying = forecast.creatures.filter((creature) => creature.dies).map((c) => names.creature(c.object))
+  const deaths =
+    dying.length === 0
+      ? 'No creature would die'
+      : dying.length <= 3
+        ? `${capital(listOf(dying))} would die`
+        : `${dying.length} creatures would die`
+  const hurt = forecast.players
+    .filter((player) => player.damage > 0)
+    .map(
+      (player) =>
+        `${capital(names.player(player.player))} would take ${damageOf(player.damage)}${player.lethal ? ', which is lethal' : ''}`,
+    )
+  return `${[deaths, ...(hurt.length === 0 ? ['No player would take damage'] : hurt)].join('. ')}.`
+}
+
 /** What a creature's outlook says: "would take 3 damage and die", "would take 1 damage", "would die". */
 export function outlookText(outlook: CreatureOutlook): string {
   if (outlook.damage === 0) return 'would die'

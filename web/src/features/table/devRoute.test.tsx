@@ -2,6 +2,7 @@
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { maybePrimaryButton, primaryButton } from '@/test-utils/passControls'
 import { FIXTURE_MARKER } from './dev/fixture'
 
 /** The real route tree, loaded fresh so the route sees the `import.meta.env.DEV` the test has set. */
@@ -66,12 +67,14 @@ describe('/dev/table in development', () => {
   })
 })
 
+const findPrimary = (): Promise<HTMLElement> => waitFor(() => primaryButton())
+
 describe('/dev/table with a prompt', () => {
   it('shows no decision by default', async () => {
     await visit('/dev/table?seats=2')
     await screen.findByRole('region', { name: 'Game table' })
     expect(document.querySelector('[data-decision]')).toBeNull()
-    expect(screen.queryByRole('button', { name: 'Pass priority' })).toBeNull()
+    expect(maybePrimaryButton()).toBeNull()
   })
 
   it.each(['?seats=2&prompt=priority', '?seats=4&mode=grid&prompt=priority'])(
@@ -80,7 +83,7 @@ describe('/dev/table with a prompt', () => {
       await visit(`/dev/table${search}`)
       await screen.findByRole('region', { name: 'Game table' })
       expect(document.querySelector('[data-decision="Priority"]')).not.toBeNull()
-      expect(screen.getByRole('button', { name: 'Pass priority' })).toBeEnabled()
+      expect(primaryButton()).toBeEnabled()
       expect(document.querySelectorAll('[data-highlight="legal"]').length).toBeGreaterThan(3)
       expect(document.querySelectorAll('[data-highlight="dimmed"]').length).toBeGreaterThan(3)
     },
@@ -88,7 +91,7 @@ describe('/dev/table with a prompt', () => {
 
   it('lets the prompt be answered, which clears it', async () => {
     await visit('/dev/table?seats=2&prompt=priority')
-    const pass = await screen.findByRole('button', { name: 'Pass priority' })
+    const pass = await findPrimary()
     await act(async () => pass.click())
     expect(document.querySelector('[data-decision]')).toBeNull()
     expect(document.querySelectorAll('[data-highlight]')).toHaveLength(0)
@@ -99,6 +102,49 @@ describe('/dev/table with a prompt', () => {
     await screen.findByRole('region', { name: 'Game table' })
     expect(document.querySelector('[data-decision]')).toBeNull()
   })
+})
+
+describe('/dev/table with the controls of the Priority prompt', () => {
+  it.each([
+    ['priority', 'Resolve Lightning Bolt', true],
+    ['priority-main', 'Next: Combat', true],
+    ['priority-end', 'End turn', false],
+    ['priority-wait', 'Continue', true],
+  ])('?prompt=%s reads "%s" (an End turn beside it: %s)', async (prompt, label, hasSecondary) => {
+    await visit(`/dev/table?seats=2&prompt=${prompt}`)
+    await screen.findByRole('region', { name: 'Game table' })
+    expect(await findPrimary()).toHaveTextContent(label)
+    expect(document.querySelector('[data-slot="secondary-action"]') !== null).toBe(hasSecondary)
+    expect(document.querySelector('[data-slot="yield-indicator"]')).toBeNull()
+  })
+
+  it('starts a yield from the prompt as the server would: the prompt gives way to the line, which can be stopped', async () => {
+    await visit('/dev/table?seats=2&prompt=priority')
+    await findPrimary()
+    await act(async () => document.querySelector<HTMLElement>('[data-slot="secondary-action"]')?.click())
+    expect(document.querySelector('[data-decision]')).toBeNull()
+    expect(await screen.findByText('Passing until the end of turn')).toBeInTheDocument()
+    expect(document.querySelectorAll('[data-highlight]')).toHaveLength(0)
+
+    await act(async () => screen.getByRole('button', { name: 'Stop passing' }).click())
+    expect(document.querySelector('[data-slot="yield-indicator"]')).toBeNull()
+  })
+
+  it.each([
+    ['yield', 'Passing until the end of turn'],
+    ['yield-resolve', 'Passing until the stack is empty'],
+    ['yield-turn', 'Passing until your next turn'],
+  ])(
+    '?prompt=%s starts passing: "%s", no decision and nothing to press but Stop passing',
+    async (prompt, words) => {
+      await visit(`/dev/table?seats=2&prompt=${prompt}`)
+      await screen.findByRole('region', { name: 'Game table' })
+      expect(await screen.findByText(words)).toBeInTheDocument()
+      expect(document.querySelector('[data-decision]')).toBeNull()
+      expect(maybePrimaryButton()).toBeNull()
+      expect(screen.getByRole('button', { name: 'Stop passing' })).toBeEnabled()
+    },
+  )
 })
 
 describe('/dev/table with the viewer’s own turn', () => {

@@ -14,6 +14,8 @@ import type {
   PlayerId,
   PriorityOptions,
   StateView,
+  Step,
+  YieldUntil,
 } from '@/protocol/generated'
 import { forecastScene, withBlockForecast } from './combatScene'
 import { assignDamage } from './damagePrompt'
@@ -333,6 +335,10 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-clock': (fixture) => ({ ...priority(fixture), deadlineMs: 10_000 }),
   // The viewer holds priority in a declare-blockers step whose blocks are made: the forecast is all there is to read.
   forecast: priority,
+  // The controls of the Priority prompt at other moments (`DEV_TABLES`): the viewer's turn, its last window, a quiet one.
+  'priority-main': priority,
+  'priority-end': priority,
+  'priority-wait': priority,
   attack,
   block,
   'block-clock': (fixture) => ({ ...block(fixture), deadlineMs: 45_000 }),
@@ -369,6 +375,25 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-low-life': payLowLife,
 }
 
+/**
+ * A quiet moment of `step` with nothing on the stack, on the viewer's turn or on the next seat's. The viewer holds
+ * priority, which is what the controls of the Priority prompt read ("Next: Combat", "End turn", "Continue"), or the
+ * active seat does while the viewer is passing for the whole turn.
+ */
+const quietMoment =
+  (step: Step, own: boolean, viewerHolds = true): DevTable =>
+  (fixture) => {
+    const { view } = fixture
+    const active = own ? view.viewer : (othersAfter(view, view.viewer)[0] ?? view.viewer)
+    return withView(fixture, {
+      turn: { ...view.turn, active, step },
+      stack: { count: 0, cards: [] },
+      combat: { attackers: [], attackers_declared: false, blockers_declared: [] },
+      combat_forecast: null,
+      priority: { holder: viewerHolds ? view.viewer : active, passed: [] },
+    })
+  }
+
 /** Prompts that need another moment of the game than the default fixture shows, by `?prompt=` name. */
 export const DEV_TABLES: Record<string, DevTable> = {
   attack: attackTable,
@@ -380,4 +405,23 @@ export const DEV_TABLES: Record<string, DevTable> = {
   mulligan: openingTable('Deciding'),
   'mulligan-free': openingTable('Deciding'),
   bottom: openingTable({ Bottoming: 2 }),
+  // Priority over the fixture's own stack is `priority`: the opponent's turn, three spells, "Resolve <the top one>".
+  'priority-main': quietMoment('Main1', true),
+  'priority-end': quietMoment('End', true),
+  'priority-wait': quietMoment('Upkeep', false),
+  yield: quietMoment('Upkeep', false, false),
+  // Passing until the stack is empty is asked over a stack: the fixture's three spells, the active seat holding priority.
+  'yield-resolve': (fixture) =>
+    withView(fixture, { priority: { holder: fixture.view.turn.active, passed: [] } }),
+  'yield-turn': quietMoment('Upkeep', false, false),
+}
+
+/**
+ * The yields the dev table can start in, by `?prompt=` name: the seat is already passing, so no decision is pending and
+ * the line that says so is drawn with its "Stop passing" button.
+ */
+export const DEV_YIELDS: Record<string, YieldUntil> = {
+  yield: 'EndOfTurn',
+  'yield-resolve': 'Resolve',
+  'yield-turn': 'MyTurn',
 }

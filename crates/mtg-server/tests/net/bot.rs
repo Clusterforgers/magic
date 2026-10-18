@@ -136,6 +136,7 @@ impl WsBot {
         let report = BotReport {
             seat: PlayerId::from_index(self.seat),
             result,
+            yields: 0,
             decisions: self.decisions,
             idle_decisions: self.idle_decisions,
             clocked: self.clocked,
@@ -183,8 +184,13 @@ impl WsBot {
             }
             ServerMessage::Error { code, message } => self.errors.push((code, message)),
             // The roster of a lobby is for people; a bot only waits for its first decision.
-            ServerMessage::Chat { .. } | ServerMessage::Lobby { .. } => {}
+            ServerMessage::Chat { .. }
+            | ServerMessage::Lobby { .. }
+            | ServerMessage::Yielding { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),
+            ServerMessage::Forecast { .. } => {
+                panic!("a bot never previews, so it is sent no forecast")
+            }
         }
         None
     }

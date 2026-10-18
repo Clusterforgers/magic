@@ -12,7 +12,9 @@ import type {
   ObjectView,
   PlayerId,
   StateView,
+  YieldUntil,
 } from '@/protocol/generated'
+import type { PreviewState } from './preview'
 
 /** How many of the most recent events `log` keeps. */
 export const LOG_LIMIT = 500
@@ -82,6 +84,8 @@ export interface PlayState {
   seq: number | null
   /** The decision this seat must answer now, if any. */
   pending: PendingDecision | null
+  /** The engine's forecast for the answer this seat is choosing, as of its latest preview; gone with the decision. */
+  preview: PreviewState | null
   /** The clock of `pending` while it has one, counted down from the moment the decision arrived. */
   clock: DecisionClock | null
   /** The most recent events (at most `LOG_LIMIT`), oldest first. */
@@ -101,6 +105,11 @@ export interface PlayState {
    * switch). The server's word: set by every Welcome and by a switch that went out; on until told otherwise.
    */
   autoPass: boolean
+  /**
+   * What the server is passing priority for this seat until (a yield), or null. The server's word: set by every
+   * Welcome and every `Yielding` message, never by the page. While it is set the server sends no priority decision.
+   */
+  yielding: YieldUntil | null
 }
 
 /** The store type: a vanilla zustand store; in React read it with `useStore(store, selector)` from `zustand`. */
@@ -117,6 +126,7 @@ export function initialPlayState(): PlayState {
     objectsById: {},
     seq: null,
     pending: null,
+    preview: null,
     clock: null,
     log: [],
     chat: [],
@@ -125,6 +135,7 @@ export function initialPlayState(): PlayState {
     result: null,
     notice: null,
     autoPass: true,
+    yielding: null,
   }
 }
 

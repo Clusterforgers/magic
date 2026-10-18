@@ -6,11 +6,13 @@ use crate::answers::{Outcome, handle};
 use crate::cast::pay_options;
 use crate::decision::{Answer, Decision, DecisionKind};
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
-use crate::error::EngineError;
+use crate::error::{EngineError, PreviewError};
 use crate::events::Event;
 use crate::flow::{Progress, next};
 use crate::fold::apply_event;
+use crate::forecast::CombatForecast;
 use crate::player::LossReason;
+use crate::preview::preview_forecast;
 use crate::setup::GameSetup;
 use crate::state::{GameResult, GameState};
 
@@ -112,6 +114,23 @@ impl Engine {
         let checkpoint = self.checkpoint();
         let result = self.run(outcome, player).and_then(|()| self.advance());
         self.finish(checkpoint, result)
+    }
+
+    /// What combat damage would do if `seat` gave `answer` to the decision it faces now, without giving it.
+    ///
+    /// Only a pending attack or block can be previewed. The answer is validated exactly as [`apply`](Engine::apply)
+    /// would, so an illegal one is an error and never a forecast. The engine is not touched: no event is logged,
+    /// no random number is drawn and the state hash stays as it is.
+    pub fn preview_forecast(
+        &self,
+        seat: PlayerId,
+        answer: &Answer,
+    ) -> Result<CombatForecast, PreviewError> {
+        let decision = self.decision.as_ref().ok_or(PreviewError::NoDecision)?;
+        if decision.player != seat {
+            return Err(PreviewError::NotYourDecision(seat));
+        }
+        preview_forecast(&self.state, decision, answer)
     }
 
     /// Removes `player` from the game at once (CR 104.3a); a player may concede at any time.

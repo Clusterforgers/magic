@@ -73,7 +73,8 @@ describe('the seam of the block preview', () => {
     const t = block()
     await t.user.click(t.card(t.blocker))
     await t.user.click(t.card(t.attacker))
-    expect(screen.getByText('Outcome shown after you confirm.')).toBeInTheDocument()
+    // This table has no server to preview with, so after the debounce the prompt falls back to the old words.
+    expect(await screen.findByText('Outcome shown after you confirm.')).toBeInTheDocument()
     expect(t.doomed()).toEqual([])
 
     // The engine answers: the pending block now has a forecast, and the table draws it.

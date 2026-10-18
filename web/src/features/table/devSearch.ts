@@ -10,6 +10,9 @@ export type DevFx = (typeof DEV_FX)[number]
 /** The longest slow-down `?slow=` accepts. */
 export const MAX_DEV_SLOW = 20
 
+/** The longest wait `?preview=` accepts, in milliseconds. */
+export const MAX_DEV_PREVIEW_MS = 10_000
+
 /** The address parameters of `/dev/table`. */
 export interface DevSearch {
   /** How many seats the fixture table has, 2 to 12; 4 when missing or wrong. */
@@ -26,6 +29,8 @@ export interface DevSearch {
   fx?: DevFx
   /** Makes every table effect this many times slower (above 1, up to 20), to look at one before it is gone. */
   slow?: number
+  /** Milliseconds the dev table takes to answer a preview of blocks or attacks (0 to 10 000), to look at "Checking outcome…". */
+  preview?: number
 }
 
 const whole = (value: unknown): number | undefined =>
@@ -33,7 +38,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&mode=&focus=&prompt=&turn=&fx=&slow=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&mode=&focus=&prompt=&turn=&fx=&slow=&preview=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -50,5 +55,12 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     turn: search.turn === 'you' ? 'you' : undefined,
     fx: isDevFx(search.fx) ? search.fx : undefined,
     slow,
+    preview:
+      typeof search.preview === 'number' &&
+      Number.isInteger(search.preview) &&
+      search.preview >= 0 &&
+      search.preview <= MAX_DEV_PREVIEW_MS
+        ? search.preview
+        : undefined,
   }
 }

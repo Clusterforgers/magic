@@ -11,6 +11,7 @@ import { PromptHost } from './prompt/PromptHost'
 import { isYourTurn } from './selectors'
 import { bannerText, priorityText, waitingOn, waitingText } from './turnText'
 import { useStable } from './useStable'
+import { YieldIndicator } from './YieldIndicator'
 
 /**
  * The middle of the table: the turn banner, who has priority and what the game is waiting for. When this seat must
@@ -67,6 +68,7 @@ export function CentreStrip() {
         </p>
       )}
       <OpeningStatus />
+      <YieldIndicator />
       <CombatLegend />
       <NothingToDoBanner />
     </section>

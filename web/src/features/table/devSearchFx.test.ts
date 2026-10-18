@@ -1,6 +1,6 @@
-// Goal: the dev address takes `?fx=` only for one of the moves the dev table can play and `?slow=` only for a slow-down above 1 and up to 20, and shrugs off every other value, so a mistyped address still shows the plain table.
+// Goal: the dev address takes `?fx=` only for one of the moves the dev table can play, `?slow=` only for a slow-down above 1 and up to 20 and `?preview=` only for a whole number of milliseconds up to 10 000, and shrugs off every other value, so a mistyped address still shows the plain table.
 import { describe, expect, it } from 'vitest'
-import { DEV_FX, MAX_DEV_SLOW, parseDevSearch } from './devSearch'
+import { DEV_FX, MAX_DEV_PREVIEW_MS, MAX_DEV_SLOW, parseDevSearch } from './devSearch'
 
 describe('?fx=', () => {
   it.each(DEV_FX)('reads %s', (fx) => {
@@ -14,6 +14,19 @@ describe('?fx=', () => {
   it('names the moves the table buttons are made from', () => {
     expect([...DEV_FX]).toEqual(['attack', 'block', 'damage', 'death', 'life', 'enter'])
   })
+})
+
+describe('?preview=', () => {
+  it.each([0, 1, 120, 3000, MAX_DEV_PREVIEW_MS])('reads %j', (preview) => {
+    expect(parseDevSearch({ seats: 2, preview }).preview).toBe(preview)
+  })
+
+  it.each([undefined, -1, 0.5, 1.5, MAX_DEV_PREVIEW_MS + 1, '300', '', Number.NaN, Infinity, null, true])(
+    'leaves out %j',
+    (preview) => {
+      expect(parseDevSearch({ seats: 2, preview }).preview).toBeUndefined()
+    },
+  )
 })
 
 describe('?slow=', () => {

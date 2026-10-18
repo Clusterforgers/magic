@@ -47,6 +47,7 @@ const samples: Record<string, Record<string, unknown>> = {
   },
   Chat: { type: 'Chat', from: 1, text: 'good luck' },
   Error: { type: 'Error', code: 'StaleDecision', message: 'that decision is not pending for you' },
+  Yielding: { type: 'Yielding', until: 'EndOfTurn' },
 }
 
 describe('parseFrame on real traffic', () => {
@@ -151,6 +152,16 @@ describe('parseFrame checks the fields of each message', () => {
     ['Lobby', 'needed as negative', ['needed'], -1],
     ['Lobby', 'needed as a fraction', ['needed'], 0.5],
     ['Lobby', 'needed as null', ['needed'], null],
+    ['Welcome', 'yielding as an unknown word', ['yielding'], 'Soon'],
+    ['Welcome', 'yielding in lower case', ['yielding'], 'endofturn'],
+    ['Welcome', 'yielding as a number', ['yielding'], 1],
+    ['Welcome', 'yielding as a flag', ['yielding'], true],
+    ['Welcome', 'yielding as a prototype name', ['yielding'], 'toString'],
+    ['Yielding', 'until as an unknown word', ['until'], 'Soon'],
+    ['Yielding', 'until in lower case', ['until'], 'mine'],
+    ['Yielding', 'until as a number', ['until'], 0],
+    ['Yielding', 'until as an object', ['until'], { EndOfTurn: true }],
+    ['Yielding', 'until as a prototype name', ['until'], '__proto__'],
     ['Decision', 'id as text', ['id'], '7'],
     ['Decision', 'id as negative', ['id'], -3],
     ['Decision', 'deadline_ms as text', ['deadline_ms'], '10000'],
@@ -279,6 +290,29 @@ describe('parseFrame checks the fields of each message', () => {
     for (const result of ['Draw', { Winner: 3 }]) {
       expect(parseFrame(wire({ type: 'GameOver', result })).ok).toBe(true)
     }
+  })
+
+  it.each([null, 'Resolve', 'EndOfTurn', 'MyTurn'])(
+    'accepts %s as the yield of a Welcome and of a Yielding, and hands it on unchanged',
+    (yielding) => {
+      const welcome = { ...samples.Welcome, yielding }
+      expect(parseFrame(wire(welcome))).toEqual({ ok: true, message: welcome })
+      const notice = { type: 'Yielding', until: yielding }
+      expect(parseFrame(wire(notice))).toEqual({ ok: true, message: notice })
+    },
+  )
+
+  it('does not take a missing yield for none: the server always says which', () => {
+    const { yielding: _yielding, ...without } = samples.Welcome ?? {}
+    expect(parseFrame(wire(without))).toMatchObject({ ok: false, error: { kind: 'bad_shape' } })
+    expect(parseFrame(wire({ type: 'Yielding' }))).toMatchObject({ ok: false, error: { kind: 'bad_shape' } })
+  })
+
+  it('names the yield field in the reason', () => {
+    const frame = parseFrame(wire({ type: 'Yielding', until: 'Soon' }))
+    expect(!frame.ok && frame.error.detail).toMatch(
+      /Yielding: "until" must be Resolve, EndOfTurn, MyTurn or null/,
+    )
   })
 
   it('reads decoded JSON the same way as a raw frame', () => {

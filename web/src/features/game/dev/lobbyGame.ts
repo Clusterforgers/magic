@@ -1,8 +1,9 @@
 /** A lobby around a fixture, with no server: a store holding a roster and a session that answers Ready itself. */
 import type { GameContextValue } from '@/features/game/gameContext'
+import { createSession } from '@/play/session'
 import type { Session } from '@/play/session'
-import { createPlayStore, initialPlayState } from '@/play/store'
-import type { LobbyRoster, PlayStore } from '@/play/store'
+import { initialPlayState } from '@/play/store'
+import type { LobbyRoster } from '@/play/store'
 import type { DevLobbySearch } from './lobbySearch'
 
 /** The text the dev page prints, so a production bundle can be searched for any trace of the fixture. */
@@ -32,8 +33,13 @@ export function fixtureRoster({ seats, ready, away, names }: DevLobbySearch): Lo
   return { seats: listed, needed: listed.filter((entry) => !entry.ready).length }
 }
 
-/** A session over `store` that plays the server's part for this seat: Ready and NotReady change the roster at once. */
-function lobbySession(store: PlayStore, me: number): Session {
+/**
+ * A session that plays the server's part for this seat: Ready and Not ready change the roster at once. It is a real
+ * session that never connects, so it has every action the page may call, now and as the session grows.
+ */
+function lobbySession(me: number): Session {
+  const inert = createSession({ game: 'dev-lobby', name: 'dev' })
+  const { store } = inert
   const setReady = (ready: boolean): boolean => {
     store.setState((state) => {
       if (state.lobby === null) return {}
@@ -42,34 +48,18 @@ function lobbySession(store: PlayStore, me: number): Session {
     })
     return true
   }
-  return {
-    store,
-    connect: () => undefined,
-    disconnect: () => undefined,
-    ready: () => setReady(true),
-    notReady: () => setReady(false),
-    answer: () => false,
-    concede: () => false,
-    setAutoPass: () => false,
-    chat: () => false,
-    resync: () => false,
-    dismissNotice: () => undefined,
-  }
+  return { ...inert, ready: () => setReady(true), notReady: () => setReady(false) }
 }
 
 /** A game context holding a lobby: the roster of `options`, this page seated at `me`, the socket open. */
 export function lobbyGame(options: DevLobbySearch): GameContextValue {
-  const store = createPlayStore()
-  store.setState({
+  const session = lobbySession(options.me)
+  session.store.setState({
     ...initialPlayState(),
     status: 'open',
     seat: options.me,
     seatCount: options.seats,
     lobby: fixtureRoster(options),
   })
-  return {
-    game: 'dev-lobby',
-    session: lobbySession(store, options.me),
-    lookup: { game: null, missing: false, failed: false },
-  }
+  return { game: 'dev-lobby', session, lookup: { game: null, missing: false, failed: false } }
 }

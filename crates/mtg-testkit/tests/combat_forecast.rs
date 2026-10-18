@@ -4,29 +4,18 @@
 
 mod common;
 
-use common::combat::to_blockers;
+use common::combat::{Fighter, creatures, to_blockers};
 use common::forecast::disagreement;
 use common::name_of;
 use mtg_engine::combat::DamageTarget;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::forecast::{CombatForecast, pending_combat_forecast};
 use mtg_engine::turn::Step;
-use mtg_testkit::cards::free_creature;
-use mtg_testkit::{Driver, Scenario, ScriptError, damaged};
+use mtg_testkit::{Driver, Scenario, ScriptError};
 use rstest::rstest;
 
-/// A creature of the table: name, power, toughness and damage already marked.
-type Fighter = (&'static str, i32, i32, u32);
 /// One packet of expected damage: source, target (a card name or `P1`) and amount.
 type Hit = (&'static str, &'static str, u32);
-
-fn creatures(list: &[Fighter]) -> Vec<mtg_engine::PresetPermanent> {
-    list.iter()
-        .map(|&(name, power, toughness, marked)| {
-            damaged(free_creature(name, power, toughness), marked)
-        })
-        .collect()
-}
 
 /// Player 0 attacks player 1 with every attacker; blocks are declared; priority is back with player 0.
 fn blocked_combat(

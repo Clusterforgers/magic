@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { useShallow } from 'zustand/react/shallow'
-import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
 import type { ManaOption, ObjectId } from '@/protocol/generated'
 import { useSeatNamer } from '../../names'
 import { ManaChoice } from '../ManaChoice'
 import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
+import { PassControls } from '../PassControls'
 import { PromptLayout } from '../PromptLayout'
 import { usePrompt } from '../PromptContext'
 import { manaByPermanent, priorityText, topOfStack } from '../priorityText'
@@ -69,9 +69,7 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
       {choosing !== undefined && choices !== undefined && choices.length > 1 ? (
         <ManaChoice card={choosing} options={choices} onPick={pick} onCancel={cancel} />
       ) : null}
-      <Button className="h-10 px-4" disabled={!options.can_pass} onClick={() => answer({ Priority: 'Pass' })}>
-        Pass priority
-      </Button>
+      <PassControls canPass={options.can_pass} />
     </PromptLayout>
   )
 }

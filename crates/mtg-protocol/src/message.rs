@@ -3,6 +3,7 @@
 //! Both enums are internally tagged with `type`, so each message is one flat JSON object.
 
 use mtg_core::ids::PlayerId;
+use mtg_engine::forecast::CombatForecast;
 use mtg_engine::state::GameResult;
 use mtg_engine::{Answer, Decision};
 use serde::{Deserialize, Serialize};
@@ -49,6 +50,17 @@ pub struct LobbySeat {
     pub ready: bool,
 }
 
+/// How long a seat asks the server to pass priority for it (see [`ClientMessage::Yield`]).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+pub enum YieldUntil {
+    /// Until the stack is empty.
+    Resolve,
+    /// Until the turn ends.
+    EndOfTurn,
+    /// Until the seat's own next turn begins.
+    MyTurn,
+}
+
 /// A message from a client to the server.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(tag = "type")]
@@ -73,6 +85,15 @@ pub enum ClientMessage {
         /// The chosen answer, built from the decision's options.
         answer: Answer,
     },
+    /// Asks what combat damage would do if `answer` were given to the pending decision `decision`, without giving it.
+    ///
+    /// Advisory: the server replies with exactly one [`ServerMessage::Forecast`], never an error, and logs nothing.
+    Preview {
+        /// The decision the answer is for.
+        decision: DecisionId,
+        /// The answer to try, built from the decision's options like a real one.
+        answer: Answer,
+    },
     /// A chat line for the table.
     Chat {
         /// The text.
@@ -91,6 +112,19 @@ pub enum ClientMessage {
         /// The new setting.
         enabled: bool,
     },
+    /// Asks the server to pass priority for this seat until `until`; [`ServerMessage::Yielding`] says when it starts or ends.
+    ///
+    /// While it lasts the server answers each `Priority` decision of the seat with a pass and never sends it; the
+    /// pending one is passed at once. It ends, and decisions come as usual, when an opponent puts a new object on
+    /// the stack, at `until`, when the seat leaves the game and on `CancelYield`; what the seat could do about it
+    /// never matters. Other decisions (attackers, blockers, a discard, a payment) are always sent and leave it as
+    /// it is. A new `Yield` replaces the old one. Kept in memory per seat: a resumed game starts with none.
+    Yield {
+        /// How long to pass for.
+        until: YieldUntil,
+    },
+    /// Ends this seat's yield, if it has one.
+    CancelYield,
 }
 
 /// A message from the server to one client.
@@ -109,6 +143,8 @@ pub enum ServerMessage {
         seats: u32,
         /// Whether the server passes for this seat when it cannot act (see [`ClientMessage::AutoPass`]).
         auto_pass: bool,
+        /// The yield the server holds for this seat, if any (see [`ClientMessage::Yield`]).
+        yielding: Option<YieldUntil>,
     },
     /// Who is at the table before the game starts.
     ///
@@ -133,6 +169,14 @@ pub enum ServerMessage {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[ts(optional)]
         deadline_ms: Option<u64>,
+    },
+    /// The reply to [`ClientMessage::Preview`]: what combat damage would do for the answer tried.
+    Forecast {
+        /// The decision the preview named, echoed.
+        decision: DecisionId,
+        /// The engine's forecast, or null when there is none to give: the decision is not pending for this seat, the
+        /// answer is not a legal attack or block, or this seat is previewing faster than the server allows.
+        forecast: Option<CombatForecast>,
     },
     /// New events, projected for this client.
     Events(EventBatch),
@@ -161,5 +205,13 @@ pub enum ServerMessage {
     GameOver {
         /// How it ended.
         result: GameResult,
+    },
+    /// This seat's yield changed (see [`ClientMessage::Yield`]).
+    ///
+    /// Sent whenever it starts, is replaced or ends, after the events of the step that changed it and before
+    /// the decision that follows. Ending covers every cause, so a client never works out when a yield stopped.
+    Yielding {
+        /// The yield now in force, or `None` when the seat is not yielding.
+        until: Option<YieldUntil>,
     },
 }

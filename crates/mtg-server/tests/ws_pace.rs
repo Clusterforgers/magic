@@ -1,4 +1,4 @@
-//! Goal: over a real socket the pace messages have the documented shape: `AutoPass` is a flat tagged message the server accepts, `Welcome` states the seat's setting and a decision states its clock or leaves the field out; a malformed `AutoPass` is a bad message and nothing more.
+//! Goal: over a real socket the pace messages have the documented shape: `AutoPass` is a flat tagged message the server accepts, `Welcome` states the seat's setting and a decision states its clock or leaves the field out; a malformed `AutoPass` is a bad message and nothing more; `Yield` and `CancelYield` are flat tagged messages, `Yielding` and `Welcome.yielding` tell the seat what the server holds, and a yield the server cannot read or use is a bad message.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -174,4 +174,97 @@ async fn a_decision_on_a_clock_states_the_milliseconds_it_has() {
         }
     }
     assert!(!asked);
+}
+
+/// Waits for the next `Yielding` frame on `socket` and returns it as JSON.
+async fn next_yielding(socket: &mut WsClient) -> Value {
+    loop {
+        let Frame::Message(message) = socket.next().await else {
+            panic!("the socket ended before a Yielding");
+        };
+        if matches!(message, ServerMessage::Yielding { .. }) {
+            return serde_json::from_str(socket.texts.last().unwrap()).unwrap();
+        }
+    }
+}
+
+/// Waits for the next `Error` frame on `socket` and returns its code.
+async fn next_error(socket: &mut WsClient) -> ErrorCode {
+    loop {
+        let Frame::Message(message) = socket.next().await else {
+            panic!("the socket ended before an Error");
+        };
+        if let ServerMessage::Error { code, .. } = message {
+            return code;
+        }
+    }
+}
+
+#[tokio::test]
+async fn yields_are_flat_wire_messages_told_back_in_a_notice_and_in_the_welcome() {
+    let server = TestServer::start(paced()).await;
+    let (game, tokens) = create_game(server.addr, two_seats()).await;
+    let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+    let (mut first, _, text) = welcomed(&server, &game, &tokens[0]).await;
+    assert!(text.contains(r#""yielding":null"#), "{text}");
+
+    // Before the game starts there is nothing to pass for; cancelling nothing is no news.
+    first
+        .send_text(r#"{"type":"Yield","until":"EndOfTurn"}"#)
+        .await;
+    assert_eq!(next_error(&mut first).await, ErrorCode::BadMessage);
+    first.send_text(r#"{"type":"CancelYield"}"#).await;
+
+    let (_, _, other) = welcomed(&server, &game, &tokens[1]).await;
+    assert!(other.contains(r#""yielding":null"#), "{other}");
+    for seat in 0..2 {
+        handle
+            .send(PlayerId::from_index(seat), ClientMessage::Ready)
+            .await
+            .unwrap();
+    }
+
+    // Malformed asks are bad messages and change nothing.
+    for bad in [
+        r#"{"type":"Yield"}"#,
+        r#"{"type":"Yield","until":"Never"}"#,
+        r#"{"type":"Yield","until":null}"#,
+        r#"{"type":"Yield","until":3}"#,
+    ] {
+        first.send_text(bad).await;
+        assert_eq!(next_error(&mut first).await, ErrorCode::BadMessage, "{bad}");
+    }
+
+    // A good one is told back as one flat message, and so is its end.
+    first
+        .send_text(r#"{"type":"Yield","until":"MyTurn"}"#)
+        .await;
+    assert_eq!(
+        next_yielding(&mut first).await,
+        serde_json::json!({"type": "Yielding", "until": "MyTurn"})
+    );
+    first
+        .send(&ClientMessage::Yield {
+            until: mtg_protocol::YieldUntil::Resolve,
+        })
+        .await;
+    assert_eq!(
+        next_yielding(&mut first).await,
+        serde_json::json!({"type": "Yielding", "until": "Resolve"}),
+        "a new yield replaces the old one"
+    );
+
+    // A socket that joins later is told what the server holds, and another seat is not told of it.
+    let (mut again, _, text) = welcomed(&server, &game, &tokens[0]).await;
+    assert!(text.contains(r#""yielding":"Resolve""#), "{text}");
+    let (_, _, text) = welcomed(&server, &game, &tokens[1]).await;
+    assert!(text.contains(r#""yielding":null"#), "{text}");
+
+    again.send_text(r#"{"type":"CancelYield"}"#).await;
+    assert_eq!(
+        next_yielding(&mut again).await,
+        serde_json::json!({"type": "Yielding", "until": null})
+    );
+    let (_, _, text) = welcomed(&server, &game, &tokens[0]).await;
+    assert!(text.contains(r#""yielding":null"#), "{text}");
 }

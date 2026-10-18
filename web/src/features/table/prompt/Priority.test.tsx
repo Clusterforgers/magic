@@ -3,6 +3,7 @@ import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, ManaOption, ObjectId, PriorityOptions } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
+import { primaryButton } from '@/test-utils/passControls'
 import { renderTable } from '@/test-utils/tableHarness'
 import { buildFixture } from '../dev/fixture'
 
@@ -109,7 +110,7 @@ function renderPriority(given: PriorityOptions, { emptyStack = false } = {}) {
         must(element.getAttribute('data-highlight')),
       ]),
     )
-  const pass = (): HTMLElement => screen.getByRole('button', { name: 'Pass priority' })
+  const pass = (): HTMLElement => primaryButton()
   return { ...table, answer, card, marks, pass }
 }
 

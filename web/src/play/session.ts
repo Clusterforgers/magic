@@ -5,7 +5,8 @@
 import { GameSocket } from '@/net/socket'
 import type { GameSocketOptions, SocketEvent } from '@/net/socket'
 import { browserTimers } from '@/net/timers'
-import type { Answer, ServerMessage } from '@/protocol/generated'
+import type { Answer, DecisionId, ServerMessage, YieldUntil } from '@/protocol/generated'
+import { previewKey } from './preview'
 import { appendChat, appendLog, createPlayStore, dropLogFrom } from './store'
 import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById } from './view'
@@ -30,6 +31,12 @@ export interface Session {
   notReady(): boolean
   /** Answers the pending decision, once; false when there is none or the socket is not open. */
   answer(answer: Answer): boolean
+  /**
+   * Asks the engine what combat damage would do if `answer` were given to the pending decision `decision`, without
+   * giving it; the reply lands in `store.preview` (docs/protocol.md, Preview). Advice only: false when `decision` is
+   * not the pending one, when the socket is not open and once the server has shown it does not know previews.
+   */
+  preview(decision: DecisionId, answer: Answer): boolean
   /** Gives up the game. */
   concede(): boolean
   /**
@@ -37,6 +44,14 @@ export interface Session {
    * `autoPass` follows once the message is out; false (and no change) when the socket is not open.
    */
   setAutoPass(enabled: boolean): boolean
+  /**
+   * Asks the server to pass priority for this seat until `until`, so it is not asked again until something happens
+   * (see `ClientMessage::Yield`). The store's `yielding` follows when the server says so, not before, and the
+   * pending priority decision goes with it; false when the socket is not open.
+   */
+  yieldUntil(until: YieldUntil): boolean
+  /** Asks the server to end this seat's yield; `yielding` becomes null when it confirms. False when the socket is not open. */
+  cancelYield(): boolean
   /** Says `text` to the table (trimmed, at most `MAX_CHAT_CHARS` characters). */
   chat(text: string): boolean
   /** Asks the server for a fresh snapshot; the escape hatch when the game looks stuck. */
@@ -65,6 +80,10 @@ export function createSession(deps: SessionDeps): Session {
   // Bookkeeping of the current connection, not state a screen needs.
   let awaitingSnapshot = false
   let lastAnswered: number | null = null
+  // The previews asked for and not yet answered, oldest first: the server answers each one, in order.
+  let asked: { decision: DecisionId; key: string }[] = []
+  // False once an older server has refused a Preview as a message it does not know.
+  let previewsKnown = true
   const socket = new GameSocket({ ...deps, onEvent })
   const timers = deps.timers ?? browserTimers
   // The one timer that keeps `clock` in step with the pending decision; cancelled whenever that decision goes.
@@ -88,7 +107,7 @@ export function createSession(deps: SessionDeps): Session {
       const leftMs = endsAt - timers.now()
       if (leftMs <= 0) {
         // The server has answered for this seat, or is about to; either way this prompt is over.
-        if (getState().pending?.id === id) setState({ pending: null })
+        if (getState().pending?.id === id) setState({ pending: null, preview: null })
         return
       }
       setState({ clock: { id, totalMs, leftMs } })
@@ -119,6 +138,7 @@ export function createSession(deps: SessionDeps): Session {
       // A decision, its id and a pending resync belong to one connection; the next Snapshot starts fresh.
       awaitingSnapshot = false
       lastAnswered = null
+      asked = []
     }
     setState((state) => ({
       status: event.status,
@@ -127,6 +147,7 @@ export function createSession(deps: SessionDeps): Session {
       pending: live ? state.pending : null,
       // Only a live connection hears of the lobby; once it is gone the roster is no longer the server's latest word.
       lobby: live ? state.lobby : null,
+      preview: live ? state.preview : null,
     }))
   }
 
@@ -135,7 +156,17 @@ export function createSession(deps: SessionDeps): Session {
       case 'Welcome':
         awaitingSnapshot = false
         lastAnswered = null
-        setState({ seat: message.player, seatCount: message.seats, autoPass: message.auto_pass })
+        asked = []
+        previewsKnown = true
+        setState({
+          seat: message.player,
+          seatCount: message.seats,
+          autoPass: message.auto_pass,
+          yielding: message.yielding,
+        })
+        return
+      case 'Yielding':
+        onYielding(message)
         return
       case 'Lobby':
         // The server sends the whole roster each time, so the newest one simply replaces the last.
@@ -150,6 +181,9 @@ export function createSession(deps: SessionDeps): Session {
       case 'Decision':
         onDecision(message)
         return
+      case 'Forecast':
+        onForecast(message)
+        return
       case 'Chat':
         setState((state) => ({ chat: appendChat(state.chat, { from: message.from, text: message.text }) }))
         return
@@ -158,7 +192,7 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'GameOver':
         socket.retire()
-        setState({ result: message.result, phase: 'over', pending: null })
+        setState({ result: message.result, phase: 'over', pending: null, preview: null, yielding: null })
         return
       default: {
         // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
@@ -178,6 +212,7 @@ export function createSession(deps: SessionDeps): Session {
         objectsById: view.objects === state.view?.objects ? state.objectsById : indexById(view.objects),
         seq: message.seq,
         pending: null, // the server sends the current decision right after the snapshot
+        preview: null,
         log: dropLogFrom(state.log, message.seq),
         phase: state.result === null ? 'playing' : 'over',
         lobby: null, // the game is on, so the roster of the table before it is over
@@ -217,7 +252,28 @@ export function createSession(deps: SessionDeps): Session {
         message.deadline_ms === undefined
           ? { id: message.id, decision: message.decision }
           : { id: message.id, decision: message.decision, deadlineMs: message.deadline_ms },
+      preview: null,
     })
+  }
+
+  function onYielding(message: Of<'Yielding'>): void {
+    // A yield that starts has passed for the priority decision on screen (or is about to), so that prompt is over.
+    // Other decisions stay: the server still asks for attackers, blockers and the like.
+    setState((state) => {
+      const passed =
+        message.until !== null && state.pending !== null && 'Priority' in state.pending.decision.kind
+      return passed ? { yielding: message.until, pending: null, preview: null } : { yielding: message.until }
+    })
+  }
+
+  function onForecast(message: Of<'Forecast'>): void {
+    const request = asked.shift()
+    // The server answers every preview, in order. Only the answer to the newest one says anything about the choice
+    // on screen, and only while its decision is the pending one.
+    if (request === undefined || asked.length > 0) return
+    const { pending } = getState()
+    if (pending === null || pending.id !== message.decision || request.decision !== message.decision) return
+    setState({ preview: { decision: message.decision, key: request.key, forecast: message.forecast } })
   }
 
   function onError(message: Of<'Error'>): void {
@@ -231,6 +287,12 @@ export function createSession(deps: SessionDeps): Session {
         resyncUnlessWaiting()
         return
       case 'BadMessage':
+        // A server that predates previews refuses each Preview as a message it does not know. That is no news for
+        // the player: stop asking and let the prompts say the outcome shows after confirming.
+        if (asked.shift() !== undefined) {
+          previewsKnown = false
+          return
+        }
         setState({ notice: NOTICES.refused(message.message) })
         return
       case 'Internal':
@@ -256,7 +318,14 @@ export function createSession(deps: SessionDeps): Session {
       const { pending } = getState()
       if (pending === null || !socket.send({ type: 'Answer', decision: pending.id, answer })) return false
       lastAnswered = pending.id
-      setState({ pending: null })
+      setState({ pending: null, preview: null })
+      return true
+    },
+    preview(decision, answer) {
+      const { pending } = getState()
+      if (!previewsKnown || pending === null || pending.id !== decision) return false
+      if (!socket.send({ type: 'Preview', decision, answer })) return false
+      asked.push({ decision, key: previewKey(answer) })
       return true
     },
     concede: () => socket.send({ type: 'Concede' }),
@@ -265,6 +334,8 @@ export function createSession(deps: SessionDeps): Session {
       setState({ autoPass: enabled })
       return true
     },
+    yieldUntil: (until) => socket.send({ type: 'Yield', until }),
+    cancelYield: () => socket.send({ type: 'CancelYield' }),
     chat(text) {
       const line = text.trim()
       if (line === '') return false

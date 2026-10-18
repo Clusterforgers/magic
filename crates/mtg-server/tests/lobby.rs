@@ -31,6 +31,7 @@ async fn welcome_names_the_game_the_seat_and_the_table_size() {
             player: seat(1),
             seats: 3,
             auto_pass: false,
+            yielding: None,
         }
     );
     // The roster follows the welcome: only this seat is here and nobody is ready.

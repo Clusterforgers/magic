@@ -22,6 +22,7 @@ import type {
   ServerMessage,
   StateView,
   TableView,
+  YieldUntil,
 } from '@/protocol/generated'
 import { isCount, isFlag, isInt, isListOf, isRecord, isText } from './check'
 
@@ -44,11 +45,13 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   Welcome: true,
   Lobby: true,
   Decision: true,
+  Forecast: true,
   Events: true,
   Snapshot: true,
   Chat: true,
   Error: true,
   GameOver: true,
+  Yielding: true,
 }
 
 const ERROR_CODES: Record<ErrorCode, true> = {
@@ -59,6 +62,13 @@ const ERROR_CODES: Record<ErrorCode, true> = {
   IllegalAnswer: true,
   Internal: true,
 }
+
+const YIELD_UNTIL: Record<YieldUntil, true> = { Resolve: true, EndOfTurn: true, MyTurn: true }
+
+const isYieldUntil = (value: unknown): value is YieldUntil =>
+  isText(value) && Object.hasOwn(YIELD_UNTIL, value)
+// The server states the yield it holds as one of the three words, or null for none; an absent field is not none.
+const isYielding = (value: unknown): value is YieldUntil | null => value === null || isYieldUntil(value)
 
 const isMessageType = (value: string): value is ServerMessage['type'] => Object.hasOwn(MESSAGE_TYPES, value)
 const isErrorCode = (value: unknown): value is ErrorCode => isText(value) && Object.hasOwn(ERROR_CODES, value)
@@ -278,6 +288,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isCount(v.player)) return '"player" must be a seat number'
       if (!isCount(v.seats)) return '"seats" must be a whole number'
       if (!isFlag(v.auto_pass)) return '"auto_pass" must be true or false'
+      if (!isYielding(v.yielding)) return '"yielding" must be Resolve, EndOfTurn, MyTurn or null'
       return {
         type,
         protocol_version: v.protocol_version,
@@ -285,6 +296,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         player: v.player,
         seats: v.seats,
         auto_pass: v.auto_pass,
+        yielding: v.yielding,
       }
     case 'Lobby':
       if (!isListOf(v.seats, isLobbySeat)) {
@@ -304,6 +316,12 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       return v.deadline_ms === undefined
         ? { type, id: v.id, decision: v.decision }
         : { type, id: v.id, decision: v.decision, deadline_ms: v.deadline_ms }
+    case 'Forecast':
+      if (!isCount(v.decision)) return '"decision" must be a whole number'
+      if (v.forecast !== null && !isCombatForecast(v.forecast)) {
+        return '"forecast" must be null or a combat forecast'
+      }
+      return { type, decision: v.decision, forecast: v.forecast }
     case 'Events':
       if (!isCount(v.from_seq)) return '"from_seq" must be a whole number'
       if (!isListOf(v.events, isEventView)) return '"events" must be a list of Public or Hidden events'
@@ -333,6 +351,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'GameOver':
       if (!isGameResult(v.result)) return '"result" must be Draw or a Winner'
       return { type, result: v.result }
+    case 'Yielding':
+      if (!isYielding(v.until)) return '"until" must be Resolve, EndOfTurn, MyTurn or null'
+      return { type, until: v.until }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type
