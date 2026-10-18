@@ -1,4 +1,4 @@
-// Goal: the page moves from lobby to the table placeholder when the game starts however the state arrives, keeps the table under a reconnect message, and ends on a result screen that says who won, a draw or a concession, with the way to a new game and no connection notice.
+// Goal: the page moves from lobby to the table when the game starts however the state arrives, keeps the table under a reconnect message, and ends on a result screen that says who won, a draw or a concession, with the way to a new game and no connection notice.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { GameResult, LossReason, StateView } from '@/protocol/generated'
@@ -17,7 +17,7 @@ const names = {
   result: null,
 }
 
-const table = () => screen.getByTestId('game-table-placeholder')
+const table = () => screen.getByRole('region', { name: 'Game table' })
 
 /** The transcript's final view, with seat `loser` having lost for `reason` and the game decided by `result`. */
 function endedView(loser: number, reason: LossReason): StateView {
@@ -42,14 +42,13 @@ describe('playing', () => {
   it.each([
     ['a snapshot, as a seat that joins a running game gets', lateJoin.raw.slice(1, 2)],
     ['the first batch, as a seat that was in the lobby gets', lobbyStart.raw.slice(1, 2)],
-  ])('shows the table placeholder with the seat count and phase once %s arrives', (_how, messages) => {
+  ])('shows the table with a panel for each seat once %s arrives', (_how, messages) => {
     return renderGame().then((h) => {
       h.join()
       expect(screen.getByRole('heading', { name: 'Waiting for players' })).toBeInTheDocument()
       h.deliver(...messages)
       expect(screen.queryByRole('heading', { name: 'Waiting for players' })).toBeNull()
-      expect(table()).toHaveTextContent('Seats2')
-      expect(table()).toHaveTextContent('Phaseplaying')
+      expect(table().querySelectorAll('[data-seat]')).toHaveLength(2)
       expect(document.title).toBe('Game · Magic')
     })
   })
@@ -58,7 +57,7 @@ describe('playing', () => {
     const h = await renderGame()
     h.join()
     h.deliver(...lateJoin.raw.slice(1, -1))
-    expect(table()).toHaveTextContent('Phaseplaying')
+    expect(table().querySelectorAll('[data-seat]')).toHaveLength(2)
     expect(screen.queryByRole('heading', { name: 'Game over' })).toBeNull()
   })
 

@@ -21,6 +21,8 @@
   --color-mana-black: var(--mana-black);
   --color-mana-red: var(--mana-red);
   --color-mana-green: var(--mana-green);
+  --color-mana-gold: var(--mana-gold);
+  --color-mana-colorless: var(--mana-colorless);
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
@@ -83,6 +85,8 @@
   --mana-black: oklch(0.3 0.02 300);
   --mana-red: oklch(0.62 0.21 28);
   --mana-green: oklch(0.58 0.16 150);
+  --mana-gold: oklch(0.78 0.13 85);
+  --mana-colorless: oklch(0.7 0.01 260);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -122,6 +126,8 @@
   --mana-black: oklch(0.45 0.02 300);
   --mana-red: oklch(0.66 0.2 28);
   --mana-green: oklch(0.64 0.16 150);
+  --mana-gold: oklch(0.8 0.13 85);
+  --mana-colorless: oklch(0.6 0.01 260);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);

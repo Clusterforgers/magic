@@ -26,7 +26,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 - [x] `mtg-server` transport: axum binary, create-game REST with per-seat tokens, one WebSocket per seat, built-in demo decks, graceful shutdown; tests with real sockets (in-memory store)
 - [x] Protocol sync: every `Events` batch carries the whole table state plus a before/after object diff, so the client never folds engine events; reference `StateView::apply`, per-seat property tests, transcript fixture for the web
 - [x] Web core: typed REST + WebSocket client (reconnect, close codes, gap in `from_seq` sends `Resync`), zustand store applying snapshots and batches, tested against the transcript fixture and a fake socket
-- [ ] Web game UI: part 1a done (routes, create-game page, connection/lobby/game-over screens, spike removed); part 2 left: N-seat board in `GameTable`, hand, stack, log; Arena-style prompts for all eight decision kinds, legal-option highlights, "nothing to do" banners
+- [ ] Web game UI: part 1a done (routes, create-game page, connection/lobby/game-over screens, spike removed); part 1b done (read-only N-seat table in `GameTable`: grid and focus layouts, seat panels, battlefields, hand, stack, log, chat, card preview, `/dev/table`); part 2 left: Arena-style prompts for all eight decision kinds, legal-option highlights, "nothing to do" banners, commander damage and tax once the views carry them
 - [ ] Playwright e2e: full 2-player vanilla game in the browser
 - [ ] `mtg-server` persistence: Postgres `EventStore` with its own migration table, game and seat records (store a serializable setup recipe), resume running games on boot; `sqlx::test` tests
 

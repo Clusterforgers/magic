@@ -1,40 +1,115 @@
+import { memo, useContext, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
+import { cn } from '@/lib/utils'
+import type { PlayerId } from '@/protocol/generated'
+import type { CardSize } from './cardSize'
+import { CardPreview } from './CardPreview'
+import { CentreStrip } from './CentreStrip'
+import { Drawer } from './Drawer'
+import { arrangeSeats } from './layout'
+import type { SeatPlan, TableMode } from './layout'
+import { createPreviewStore, PreviewContext } from './preview'
+import { OpponentBoard, OwnBoard } from './SeatBoards'
+import { SeatTile } from './SeatTile'
+import { defaultFocusOf, seatCountOf } from './selectors'
+import { StackPanel } from './StackPanel'
+import { TableOptionsContext } from './tableOptions'
+import { TableToolbar } from './TableToolbar'
 
-/**
- * PLACEHOLDER for the N-seat table (next task: battlefields, hand, stack, log and the decision prompts).
- *
- * `GamePage` renders it, with no props, while the game is being played. Read live state with `usePlay(selector)` and
- * act through `useGame().session`; both come from `features/game/gameContext`. Replace this body, keep the name.
- */
-export function GameTable() {
-  const { seatCount, phase, stage } = usePlay(
-    useShallow((state) => ({
-      seatCount: state.seatCount,
-      phase: state.phase,
-      stage: state.view?.stage ?? null,
-    })),
-  )
+// Whole class names, so Tailwind can see them.
+const COLUMNS: Record<SeatPlan['columns'], string> = {
+  1: 'grid-cols-1',
+  2: 'grid-cols-1 md:grid-cols-2',
+  3: 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3',
+}
+
+interface OpponentsProps {
+  plan: SeatPlan
+  size: CardSize
+  onFocusSeat: (seat: PlayerId) => void
+}
+
+/** Grid mode: every opponent's board in 1 to 3 columns. Focus mode: a tile for each and one board drawn large. */
+function Opponents({ plan, size, onFocusSeat }: OpponentsProps) {
+  if (plan.mode === 'grid') {
+    return (
+      <div
+        data-layout="grid"
+        data-columns={plan.columns}
+        className={cn('grid items-start gap-3', COLUMNS[plan.columns])}
+      >
+        {plan.boards.map((seat) => (
+          <OpponentBoard key={seat} seat={seat} size={size} />
+        ))}
+      </div>
+    )
+  }
   return (
-    <section
-      aria-label="Game table"
-      data-testid="game-table-placeholder"
-      className="mx-auto grid w-full max-w-2xl gap-2 px-4 py-6 sm:px-6"
-    >
-      <h1 className="text-2xl font-semibold tracking-tight">The game is on</h1>
-      <p className="text-sm text-muted-foreground">The table is not built yet. This is its placeholder.</p>
-      <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-        <dt className="text-muted-foreground">Seats</dt>
-        <dd>{seatCount ?? 'unknown'}</dd>
-        <dt className="text-muted-foreground">Phase</dt>
-        <dd>{phase}</dd>
-        {stage === null ? null : (
-          <>
-            <dt className="text-muted-foreground">Stage</dt>
-            <dd>{stage}</dd>
-          </>
-        )}
-      </dl>
-    </section>
+    <div data-layout="focus" className="grid gap-3">
+      <ul
+        role="list"
+        aria-label="Opponents"
+        className="relative flex gap-2 overflow-x-auto p-1 sm:grid sm:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:overflow-visible"
+      >
+        {plan.tiles.map((seat) => (
+          <li key={seat} className="flex">
+            <SeatTile seat={seat} focused={seat === plan.focused} onFocusSeat={onFocusSeat} />
+          </li>
+        ))}
+      </ul>
+      {plan.focused === null ? null : <OpponentBoard seat={plan.focused} size={size} />}
+    </div>
   )
 }
+
+/**
+ * The table: every seat's battlefield and panel with the viewer at the bottom, the turn banner and stack in the
+ * middle, and the log and chat in a drawer. Up to 4 seats it opens in grid mode, from 5 in focus mode, and the
+ * toolbar switches either. It reads the game with `usePlay` and acts through `useGame().session`.
+ */
+export const GameTable = memo(function GameTable() {
+  const options = useContext(TableOptionsContext)
+  const { seat, seatCount, ready } = usePlay(
+    useShallow((state) => ({ seat: state.seat, seatCount: seatCountOf(state), ready: state.view !== null })),
+  )
+  const followed = usePlay(defaultFocusOf)
+  const [mode, setMode] = useState<TableMode | undefined>(options.mode)
+  const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
+  const [previews] = useState(createPreviewStore)
+  const plan = useMemo(
+    () => arrangeSeats({ seatCount, viewer: seat ?? 0, mode, focus: chosen ?? followed }),
+    [seatCount, seat, mode, chosen, followed],
+  )
+  const size: CardSize = plan.compact ? 'compact' : 'normal'
+
+  return (
+    <PreviewContext value={previews}>
+      <section aria-label="Game table" className="flex w-full items-start">
+        <div className="grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
+          <h1 className="sr-only">Game table</h1>
+          {!ready || seat === null ? (
+            <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
+          ) : (
+            <>
+              <TableToolbar
+                mode={plan.mode}
+                onMode={setMode}
+                pinnedFocus={chosen !== null}
+                onFollow={() => setChosen(null)}
+              />
+              <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
+              <div className="grid gap-3">
+                <CentreStrip />
+                <StackPanel />
+              </div>
+              <OwnBoard seat={plan.viewer} size={size} />
+            </>
+          )}
+        </div>
+        <Drawer />
+      </section>
+      <CardPreview />
+    </PreviewContext>
+  )
+})
