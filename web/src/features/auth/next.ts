@@ -37,8 +37,11 @@ export function sanitizeNext(value: unknown): string | null {
   return path
 }
 
-/** The search of the sign-in pages: `next` only when it is safe. Hands `validateSearch` the raw search of the address. */
-export function parseAuthSearch(search: Record<string, unknown>): { next?: string } {
-  const next = sanitizeNext(search.next)
-  return next === null ? {} : { next }
+/**
+ * The search of the sign-in pages: `next` only when it is safe. The key is always there, `undefined` when the value
+ * was refused: the router merges what a page validates over the raw search of the address, so leaving the key out
+ * would let the unchecked value through.
+ */
+export function parseAuthSearch(search: Record<string, unknown>): { next?: string | undefined } {
+  return { next: sanitizeNext(search.next) ?? undefined }
 }

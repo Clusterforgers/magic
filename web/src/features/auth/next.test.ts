@@ -94,14 +94,18 @@ describe('sanitizeNext refuses everything else', () => {
 
 describe('parseAuthSearch', () => {
   it('keeps a good next and drops a bad one, without throwing', () => {
-    expect(parseAuthSearch({ next: '/games' })).toEqual({ next: '/games' })
-    expect(parseAuthSearch({ next: '//evil.example' })).toEqual({})
-    expect(parseAuthSearch({ next: 7 })).toEqual({})
-    expect(parseAuthSearch({})).toEqual({})
+    expect(parseAuthSearch({ next: '/games' })).toStrictEqual({ next: '/games' })
+    expect(parseAuthSearch({ next: '//evil.example' })).toStrictEqual({ next: undefined })
+    expect(parseAuthSearch({ next: 7 })).toStrictEqual({ next: undefined })
+    expect(parseAuthSearch({})).toStrictEqual({ next: undefined })
+  })
+
+  it('always names the key, because the router lets the raw value through where a validator leaves it out', () => {
+    expect(Object.hasOwn(parseAuthSearch({ next: 'https://evil.example' }), 'next')).toBe(true)
   })
 
   it('ignores every other parameter', () => {
-    expect(parseAuthSearch({ next: '/games', redirect: 'https://evil.example', x: 1 })).toEqual({
+    expect(parseAuthSearch({ next: '/games', redirect: 'https://evil.example', x: 1 })).toStrictEqual({
       next: '/games',
     })
   })
