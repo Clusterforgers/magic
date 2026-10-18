@@ -6,12 +6,14 @@ import type {
   Decision,
   DecisionId,
   EventView,
+  FullControlMode,
   GameResult,
   LobbySeat,
   ObjectId,
   ObjectView,
   PlayerId,
   StateView,
+  Stop,
   YieldUntil,
 } from '@/protocol/generated'
 import type { PreviewState } from './preview'
@@ -110,6 +112,16 @@ export interface PlayState {
    * Welcome and every `Yielding` message, never by the page. While it is set the server sends no priority decision.
    */
   yielding: YieldUntil | null
+  /**
+   * The stops the server holds for this seat: steps at which it asks to be given priority. The server's word: set by
+   * every Welcome and every `Stops` message, never by the page; each side and step is listed once, own side first.
+   */
+  stops: readonly Stop[]
+  /**
+   * The Full Control mode the server holds for this seat. The server's word: set by every Welcome and every
+   * `FullControl` message, never by the page.
+   */
+  fullControl: FullControlMode
 }
 
 /** The store type: a vanilla zustand store; in React read it with `useStore(store, selector)` from `zustand`. */
@@ -136,6 +148,8 @@ export function initialPlayState(): PlayState {
     notice: null,
     autoPass: true,
     yielding: null,
+    stops: [],
+    fullControl: 'Off',
   }
 }
 
