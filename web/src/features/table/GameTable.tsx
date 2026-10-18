@@ -99,7 +99,7 @@ export const GameTable = memo(function GameTable() {
                 onFollow={() => setChosen(null)}
               />
               <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
-              <div className="grid gap-3 md:grid-cols-2">
+              <div className="grid gap-3">
                 <CentreStrip />
                 <StackPanel />
               </div>

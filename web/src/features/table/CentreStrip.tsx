@@ -24,16 +24,18 @@ export function CentreStrip() {
   return (
     <section
       aria-label="Turn and priority"
-      className="grid content-start gap-1 rounded-xl bg-card p-3 ring-1 ring-foreground/10"
+      className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 rounded-xl bg-card p-3 ring-1 ring-foreground/10"
     >
-      <h2 data-slot="banner" className="text-lg leading-tight font-semibold">
-        {bannerText(banner, name)}
-      </h2>
-      {holder === '' ? null : (
-        <p data-slot="priority" className="text-sm">
-          {holder}
-        </p>
-      )}
+      <div className="grid gap-0.5">
+        <h2 data-slot="banner" className="text-lg leading-tight font-semibold">
+          {bannerText(banner, name)}
+        </h2>
+        {holder === '' ? null : (
+          <p data-slot="priority" className="text-sm">
+            {holder}
+          </p>
+        )}
+      </div>
       <p
         data-slot="decision-line"
         aria-live="polite"

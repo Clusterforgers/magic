@@ -73,7 +73,7 @@ export function StackPanel() {
           aria-label="Stack, top first"
           onFocus={roving.onFocus}
           onKeyDown={roving.onKeyDown}
-          className="grid gap-1.5"
+          className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3"
         >
           {ids.map((id, index) => (
             <StackItem key={id} id={id} top={index === 0} tabbable={id === roving.current} />

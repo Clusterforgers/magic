@@ -237,7 +237,11 @@ export function buildFixture(options: FixtureOptions): Fixture {
   const chat: ChatLine[] = [
     { from: active, text: 'Attacking with the whole squad.' },
     { from: viewer, text: 'I have a response.' },
-    { from: (viewer + 2) % seats, text: 'Counterspell on the bolt, if it comes to that.' },
+    // With two seats the third voice is the attacker again, never the viewer twice in a row.
+    {
+      from: seats > 2 ? (viewer + 2) % seats : active,
+      text: 'Counterspell on the bolt, if it comes to that.',
+    },
   ]
   return { view, log, chat, names }
 }
