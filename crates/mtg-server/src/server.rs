@@ -10,13 +10,15 @@ use axum::http::header::{CACHE_CONTROL, CONTENT_TYPE, X_CONTENT_TYPE_OPTIONS};
 use axum::http::{HeaderValue, Method};
 use axum::routing::{get, post};
 use axum::serve::ListenerExt;
+use sqlx::PgPool;
 use tokio::net::TcpListener;
 use tokio::sync::{mpsc, watch};
 use tower_http::cors::{AllowOrigin, CorsLayer};
 use tower_http::set_header::SetResponseHeaderLayer;
 
 use crate::config::ServerConfig;
-use crate::registry::Registry;
+use crate::records::RecordError;
+use crate::registry::{Registry, ResumeReport};
 use crate::{api, ws};
 
 struct Inner {
@@ -62,14 +64,44 @@ pub struct Server {
     state: AppState,
     stop: watch::Sender<bool>,
     drained: mpsc::Receiver<()>,
+    resumed: ResumeReport,
 }
 
 impl Server {
-    /// Builds a server that follows `config`; nothing listens until [`Server::serve`].
+    /// Builds a server that follows `config` and keeps its games in memory; nothing listens until
+    /// [`Server::serve`].
     pub fn new(config: ServerConfig) -> Server {
+        let registry = Registry::new(&config);
+        Server::with_registry(config, registry, ResumeReport::default())
+    }
+
+    /// Builds a server that records its games in `pool` (already migrated by [`crate::migrate`])
+    /// and first brings back the games an earlier process left unfinished.
+    ///
+    /// A game that cannot be loaded is marked failed and skipped; only an unreachable database
+    /// is an error.
+    pub async fn open(config: ServerConfig, pool: PgPool) -> Result<Server, RecordError> {
+        let registry = Registry::with_database(&config, pool);
+        let resumed = registry.resume().await?;
+        tracing::info!(
+            resumed = resumed.resumed,
+            lobbies = resumed.lobbies,
+            finished = resumed.finished,
+            expired = resumed.expired,
+            failed = resumed.failed.len(),
+            "stored games loaded"
+        );
+        Ok(Server::with_registry(config, registry, resumed))
+    }
+
+    /// What loading the stored games did; empty for a server without a database.
+    pub fn resumed(&self) -> &ResumeReport {
+        &self.resumed
+    }
+
+    fn with_registry(config: ServerConfig, registry: Registry, resumed: ResumeReport) -> Server {
         let (stop, stop_receiver) = watch::channel(false);
         let (sessions, drained) = mpsc::channel(1);
-        let registry = Registry::new(&config);
         let state = AppState {
             inner: Arc::new(Inner {
                 config,
@@ -82,6 +114,7 @@ impl Server {
             state,
             stop,
             drained,
+            resumed,
         }
     }
 
@@ -106,6 +139,7 @@ impl Server {
             state,
             stop,
             mut drained,
+            ..
         } = self;
         let grace = state.config().shutdown_grace;
         let mut stopping = state.stop();

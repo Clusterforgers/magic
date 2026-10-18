@@ -40,7 +40,10 @@ fn shipped() -> usize {
 async fn the_server_alone_creates_only_its_own_tables_and_can_rerun(pool: PgPool) {
     for _ in 0..3 {
         migrate(&pool).await.unwrap();
-        assert_eq!(tables(&pool).await, [MIGRATIONS_TABLE, "game_events"]);
+        assert_eq!(
+            tables(&pool).await,
+            [MIGRATIONS_TABLE, "game_events", "games", "seats"]
+        );
         let rows = recorded(&pool, MIGRATIONS_TABLE).await;
         assert_eq!(rows.len(), shipped());
         assert_ne!(rows.len(), 0);
@@ -88,8 +91,10 @@ async fn both_in_order(pool: PgPool, server_first: bool) {
         "_sqlx_migrations",
         "cards",
         "game_events",
+        "games",
         "import_runs",
         "printings",
+        "seats",
     ] {
         assert!(
             names.iter().any(|n| n == expected),
