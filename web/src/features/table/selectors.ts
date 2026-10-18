@@ -98,3 +98,24 @@ export function defaultFocusOf(state: PlayState): PlayerId | null {
     eliminated,
   })
 }
+
+/** Whether it is this seat's own turn in a running game; a boolean, so it needs no `useShallow`. */
+export function isYourTurn(state: PlayState): boolean {
+  const { view, seat } = state
+  return (
+    seat !== null &&
+    view !== null &&
+    view.stage === 'Turns' &&
+    view.result === null &&
+    view.turn.active === seat
+  )
+}
+
+/** Whether this seat may still concede: it is in the game, which has not ended. */
+export function canConcede(state: PlayState): boolean {
+  const { view, seat } = state
+  if (seat === null || view === null || state.phase !== 'playing') return false
+  if (view.stage === 'Finished' || view.result !== null) return false
+  const player = playerOf(state, seat)
+  return player !== undefined && player.lost === null
+}
