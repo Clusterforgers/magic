@@ -32,7 +32,9 @@
 //!   opponent's new object, whatever the seat could do about it, ends it; it is held in memory only).
 //!   A seat that is not the active player has a clock on every priority decision (10 s) and on declaring
 //!   blockers (45 s); at the deadline the server answers for the seat (a pass, or no blocks) the same
-//!   way, so a late answer is stale. Every other decision waits as long as it takes.
+//!   way, so a late answer is stale. Every other decision waits as long as it takes. A seat can also set
+//!   stops and Full Control (`ClientMessage::SetStop`, `ClientMessage::FullControl`); they are held in
+//!   memory per seat and reported back, and nothing decides when a seat is asked from them yet.
 //! - **Chat** is broadcast to connected seats and never stored.
 //! - **Previews** (`ClientMessage::Preview`) are advice about a pending attack or block: the actor answers
 //!   each with one `Forecast` (empty when there is none or the seat is over its rate limit), never an
@@ -42,9 +44,11 @@
 //! [`migrate`] applies and tracks in its own table so `mtg-db` can share the database).
 //!
 //! With a database ([`Server::open`]) every game the REST path creates is also recorded: a
-//! [`GameRecipe`] that rebuilds its `GameSetup`, its seats with the SHA-256 of each token, and its
-//! status ([`RecordStatus`]). On boot [`Registry::resume`] brings back every game that is not
-//! finished, so a client that returns with its old token lands in the same game.
+//! [`GameRecipe`] that rebuilds its `GameSetup` (and fingerprints each seat's deck, so a deck that
+//! a deploy changed fails the game instead of replaying its log under other cards), its seats with
+//! the SHA-256 of each token, and its status ([`RecordStatus`]). On boot [`Registry::resume`]
+//! brings back every game that is not finished, so a client that returns with its old token lands
+//! in the same game.
 //!
 //! The same database holds the accounts: usernames with Argon2id password hashes and browser
 //! sessions kept as the SHA-256 of the `mtg_session` cookie's token (`/api/auth/*`). A seat can
@@ -81,6 +85,7 @@ mod seats;
 mod secret;
 mod server;
 mod session;
+mod stops;
 mod store;
 mod throttle;
 mod user_id;
@@ -100,7 +105,10 @@ pub use pace::{MAX_CLOCK_SECS, Pace};
 pub use passwords::{HashCost, HashCostError};
 pub use pg_store::PgEventStore;
 pub use preview::{PREVIEW_BURST, PREVIEWS_PER_SECOND};
-pub use recipe::{DeckRef, FormatKind, GameRecipe, RecipeError};
+pub use recipe::{
+    DeckFingerprint, DeckRef, FINGERPRINT_VERSION, FingerprintError, FormatKind, GameRecipe,
+    RecipeError,
+};
 pub use records::{
     Binding, GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord, UserGame, UserGameSeat,
 };

@@ -186,7 +186,9 @@ impl WsBot {
             // The roster of a lobby is for people; a bot only waits for its first decision.
             ServerMessage::Chat { .. }
             | ServerMessage::Lobby { .. }
-            | ServerMessage::Yielding { .. } => {}
+            | ServerMessage::Yielding { .. }
+            | ServerMessage::Stops { .. }
+            | ServerMessage::FullControl { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

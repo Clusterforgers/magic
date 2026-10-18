@@ -9,7 +9,7 @@ Design record (2026-10-18) for the player's request: when a deck is chosen or bu
   - `Manual`: no implementation; the table resolves the whole text by hand (the M6 fallback).
   - `Stale`: implemented, but the oracle text changed since (errata). Counts as `Manual` until reviewed.
   - `Unplayable`: the engine cannot host the card at all (digital-only actions, ante, joke-set mechanics).
-- Deck state: `Verified` (legal, every card `Verified`), `Manual play` (legal, some cards not `Verified`), `Blocked` (illegal, or holds an `Unplayable` card), `Unchecked` (never checked, or changed since).
+- Deck state: `Verified` (legal, every card of every zone `Verified`, the sideboard included), `Manual play` (legal, some cards not `Verified`), `Blocked` (illegal, or holds an `Unplayable` card), `Unchecked` (never checked, or changed since).
 
 ## The marker
 - It is derived, never a flag set by hand. A check stores `{deck_hash, coverage_hash, checked_at, summary}` with the deck. The marker shows only while the stored `deck_hash` equals the current one and the stored `coverage_hash` equals the one computed from the cards' current support records. Editing the deck changes the hash, so the marker disappears at once with the note "changed since the last check"; nothing can leave it behind by mistake.
@@ -25,6 +25,7 @@ Design record (2026-10-18) for the player's request: when a deck is chosen or bu
 - Card preview: the oracle text with the unsupported clauses underlined and the reason beside it (needs spans from the card data).
 - Game: a card in play with manual text carries a small "manual" badge for every seat, and its prompt quotes only the unsupported clause.
 - Lobby and precon browser: each seat's deck and each precon shows its state; the M6 target (100% of chosen precons) becomes a visible list.
+- The report groups cards by zone (main, sideboard, commander, companion), so the owner sees where an issue sits.
 
 ## Ideas, in order of value
 1. Live counter while building: the check is a pure lookup, so "N issues" updates as cards are added or removed.
@@ -42,7 +43,7 @@ Design record (2026-10-18) for the player's request: when a deck is chosen or bu
 - M6: the coverage run writes `card_support` rows (status, reasons, spans, fingerprint); Stale detection comes from import drift; the dashboard ranks by deck demand.
 - After: smoke test, swap suggestions, the table setting.
 
-## Open questions for the player
-1. Check on save automatically (recommended), or only on the button?
-2. May a deck with manual cards be played? Assumed yes, with a visible note to all seats.
-3. Does the sideboard count toward the marker? Assumed no: it is reported separately.
+## Decisions (the player, 2026-10-18)
+1. Saving runs the check automatically; the button stays for unsaved decks and pasted lists.
+2. A deck with manual cards may be played, with a note to everyone at the table. The note is a count ("Bo's deck has 3 manual cards"), never the names, because names would reveal the deck; a card's name, badge and the clause to resolve appear when it becomes public (cast or in play).
+3. The sideboard counts toward the marker: one manual card there keeps the deck unmarked. The report still shows it under its zone.

@@ -14,6 +14,7 @@ import type {
   ErrorCode,
   EventView,
   ForecastDamage,
+  FullControlMode,
   GameResult,
   LobbySeat,
   ObjectView,
@@ -21,6 +22,9 @@ import type {
   PlayerView,
   ServerMessage,
   StateView,
+  Step,
+  Stop,
+  StopSide,
   TableView,
   YieldUntil,
 } from '@/protocol/generated'
@@ -52,6 +56,8 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   Error: true,
   GameOver: true,
   Yielding: true,
+  Stops: true,
+  FullControl: true,
 }
 
 const ERROR_CODES: Record<ErrorCode, true> = {
@@ -69,6 +75,50 @@ const isYieldUntil = (value: unknown): value is YieldUntil =>
   isText(value) && Object.hasOwn(YIELD_UNTIL, value)
 // The server states the yield it holds as one of the three words, or null for none; an absent field is not none.
 const isYielding = (value: unknown): value is YieldUntil | null => value === null || isYieldUntil(value)
+
+const STOP_SIDES: Record<StopSide, true> = { Own: true, Opponent: true }
+
+// Every step of a turn. The server holds a stop only in a step where a player gets priority (never Untap or Cleanup);
+// that rule is the server's to keep, so a step is checked here only to be a step.
+const STEPS: Record<Step, true> = {
+  Untap: true,
+  Upkeep: true,
+  Draw: true,
+  Main1: true,
+  BeginCombat: true,
+  DeclareAttackers: true,
+  DeclareBlockers: true,
+  FirstStrikeDamage: true,
+  CombatDamage: true,
+  EndCombat: true,
+  Main2: true,
+  End: true,
+  Cleanup: true,
+}
+
+const FULL_CONTROL: Record<FullControlMode, true> = { Off: true, NextWindow: true, Held: true }
+
+const isFullControl = (value: unknown): value is FullControlMode =>
+  isText(value) && Object.hasOwn(FULL_CONTROL, value)
+
+function isStop(value: unknown): value is Stop {
+  return (
+    isRecord(value) &&
+    isText(value.side) &&
+    Object.hasOwn(STOP_SIDES, value.side) &&
+    isText(value.step) &&
+    Object.hasOwn(STEPS, value.step) &&
+    // Whether the stop lasts: the server always says, so a stop without it is not one to show.
+    isFlag(value.keep)
+  )
+}
+
+// The server lists each side and step once (whatever the keep), so a list that repeats one is not one to keep.
+function isStopList(value: unknown): value is Stop[] {
+  return (
+    isListOf(value, isStop) && new Set(value.map((stop) => `${stop.side}/${stop.step}`)).size === value.length
+  )
+}
 
 const isMessageType = (value: string): value is ServerMessage['type'] => Object.hasOwn(MESSAGE_TYPES, value)
 const isErrorCode = (value: unknown): value is ErrorCode => isText(value) && Object.hasOwn(ERROR_CODES, value)
@@ -289,6 +339,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isCount(v.seats)) return '"seats" must be a whole number'
       if (!isFlag(v.auto_pass)) return '"auto_pass" must be true or false'
       if (!isYielding(v.yielding)) return '"yielding" must be Resolve, EndOfTurn, MyTurn or null'
+      if (!isStopList(v.stops))
+        return '"stops" must be a list of stops (side, step, keep), each side and step once'
+      if (!isFullControl(v.full_control)) return '"full_control" must be Off, NextWindow or Held'
       return {
         type,
         protocol_version: v.protocol_version,
@@ -297,6 +350,8 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
         seats: v.seats,
         auto_pass: v.auto_pass,
         yielding: v.yielding,
+        stops: v.stops,
+        full_control: v.full_control,
       }
     case 'Lobby':
       if (!isListOf(v.seats, isLobbySeat)) {
@@ -354,6 +409,13 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'Yielding':
       if (!isYielding(v.until)) return '"until" must be Resolve, EndOfTurn, MyTurn or null'
       return { type, until: v.until }
+    case 'Stops':
+      if (!isStopList(v.stops))
+        return '"stops" must be a list of stops (side, step, keep), each side and step once'
+      return { type, stops: v.stops }
+    case 'FullControl':
+      if (!isFullControl(v.mode)) return '"mode" must be Off, NextWindow or Held'
+      return { type, mode: v.mode }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

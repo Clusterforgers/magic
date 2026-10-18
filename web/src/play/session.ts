@@ -163,10 +163,19 @@ export function createSession(deps: SessionDeps): Session {
           seatCount: message.seats,
           autoPass: message.auto_pass,
           yielding: message.yielding,
+          stops: message.stops,
+          fullControl: message.full_control,
         })
         return
       case 'Yielding':
         onYielding(message)
+        return
+      case 'Stops':
+        // The server sends every stop it holds each time, so the newest list simply replaces the last.
+        setState({ stops: message.stops })
+        return
+      case 'FullControl':
+        setState({ fullControl: message.mode })
         return
       case 'Lobby':
         // The server sends the whole roster each time, so the newest one simply replaces the last.

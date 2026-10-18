@@ -5,6 +5,7 @@
 use mtg_core::ids::PlayerId;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::state::GameResult;
+use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision};
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
@@ -59,6 +60,41 @@ pub enum YieldUntil {
     EndOfTurn,
     /// Until the seat's own next turn begins.
     MyTurn,
+}
+
+/// Whose turns a stop applies to (see [`ClientMessage::SetStop`]).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, TS)]
+pub enum StopSide {
+    /// The turns of the seat that holds the stop.
+    Own,
+    /// The turn of any opponent.
+    Opponent,
+}
+
+/// A step at which a seat asks to be given priority (see [`ClientMessage::SetStop`]).
+///
+/// Ordered own side first, then by turn order, which is the order the server lists them in. A seat holds one
+/// stop per side and step, so `keep`, the last field, never decides where a stop is listed.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, TS)]
+pub struct Stop {
+    /// Whose turns the stop is for.
+    pub side: StopSide,
+    /// The step; only a step where a player gets priority can hold a stop, so never untap or cleanup.
+    pub step: Step,
+    /// How long the stop lasts: false until that step has passed once, true until it is cleared.
+    pub keep: bool,
+}
+
+/// How much of the game a seat plays by hand (see [`ClientMessage::FullControl`]).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+pub enum FullControlMode {
+    /// The server passes for the seat by its usual rules.
+    #[default]
+    Off,
+    /// The seat is asked at every step until it has passed once, then the mode returns to `Off`.
+    NextWindow,
+    /// The seat is asked at every step until it turns the mode off.
+    Held,
 }
 
 /// A message from a client to the server.
@@ -125,6 +161,35 @@ pub enum ClientMessage {
     },
     /// Ends this seat's yield, if it has one.
     CancelYield,
+    /// Sets or clears one of this seat's stops: a step at which the seat asks to be given priority.
+    ///
+    /// Only a step where a player gets priority can hold a stop. `Untap` and `Cleanup` are refused, set or
+    /// cleared alike, with `Error{BadMessage}`: nothing changes and no resync is needed. `keep` says how long
+    /// a stop that is set lasts: false until that step has passed once, true until it is cleared; setting a
+    /// stop that is already set replaces its `keep` (a lasting stop becomes a one-turn one and back), and
+    /// clearing ignores it. A request that changes the seat's stops, `keep` included, is answered with
+    /// [`ServerMessage::Stops`], one that changes nothing with silence. A seat that is out of the game, or a
+    /// game that is over, gets `Error{BadMessage}` too. The server holds the stops per seat in memory, from the
+    /// lobby on, and only stores and reports them for now: no seat is asked at a stop yet.
+    SetStop {
+        /// Whose turns the stop is for.
+        side: StopSide,
+        /// The step; refused unless a player gets priority in it.
+        step: Step,
+        /// True to set the stop, false to clear it.
+        on: bool,
+        /// With `on`: false drops the stop once that step has passed, true keeps it until it is cleared.
+        keep: bool,
+    },
+    /// Sets how much of the game this seat plays by hand; [`ServerMessage::FullControl`] says what the server holds.
+    ///
+    /// Kept per seat in memory like the stops, and only stored and reported for now: no seat is asked at every
+    /// step yet. Answered like [`ClientMessage::SetStop`]: [`ServerMessage::FullControl`] when the mode changes,
+    /// silence when it does not, `Error{BadMessage}` from a seat that is out of the game.
+    FullControl {
+        /// The new mode.
+        mode: FullControlMode,
+    },
 }
 
 /// A message from the server to one client.
@@ -145,6 +210,10 @@ pub enum ServerMessage {
         auto_pass: bool,
         /// The yield the server holds for this seat, if any (see [`ClientMessage::Yield`]).
         yielding: Option<YieldUntil>,
+        /// The stops the server holds for this seat, in the order of [`ServerMessage::Stops`].
+        stops: Vec<Stop>,
+        /// The Full Control mode the server holds for this seat (see [`ClientMessage::FullControl`]).
+        full_control: FullControlMode,
     },
     /// Who is at the table before the game starts.
     ///
@@ -213,5 +282,22 @@ pub enum ServerMessage {
     Yielding {
         /// The yield now in force, or `None` when the seat is not yielding.
         until: Option<YieldUntil>,
+    },
+    /// The stops this seat holds changed (see [`ClientMessage::SetStop`]).
+    ///
+    /// Sent whenever the set the seat can see changes, whatever the cause, after the events of the step that
+    /// changed it and before the decision that follows, like [`ServerMessage::Yielding`]. It lists every stop
+    /// the seat holds with its `keep`, once each, own side first and each side in turn order, so the list
+    /// replaces the client's. Replacing only the `keep` of a stop changes the list, so it is told too.
+    Stops {
+        /// The stops now held; empty when there are none.
+        stops: Vec<Stop>,
+    },
+    /// This seat's Full Control mode changed (see [`ClientMessage::FullControl`]).
+    ///
+    /// Sent whenever the mode changes, whatever the cause, in the same place as [`ServerMessage::Stops`].
+    FullControl {
+        /// The mode now in force.
+        mode: FullControlMode,
     },
 }
