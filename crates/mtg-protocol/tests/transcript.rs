@@ -14,7 +14,8 @@ use common::{Step, run_game};
 use mtg_core::ids::PlayerId;
 use mtg_engine::Decision;
 use mtg_protocol::{
-    DecisionId, LobbySeat, PROTOCOL_VERSION, ServerMessage, StateView, project_events,
+    DecisionId, FullControlMode, LobbySeat, PROTOCOL_VERSION, ServerMessage, StateView,
+    project_events,
 };
 use mtg_testkit::fuzz_setup;
 use serde::Deserialize;
@@ -112,6 +113,8 @@ fn welcome() -> ServerMessage {
         seats: 2,
         auto_pass: false,
         yielding: None,
+        stops: Vec::new(),
+        full_control: FullControlMode::Off,
     }
 }
 

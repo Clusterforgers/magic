@@ -5,7 +5,7 @@ mod common;
 
 use common::{Client, game_id, poke, roomy, roster, seat, silent, table_setup};
 use mtg_engine::{GameSetup, replay};
-use mtg_protocol::{ClientMessage, ErrorCode, PROTOCOL_VERSION, ServerMessage};
+use mtg_protocol::{ClientMessage, ErrorCode, FullControlMode, PROTOCOL_VERSION, ServerMessage};
 use mtg_server::{
     EventStore, GameHandle, JoinError, MAX_CHAT_CHARS, MemoryStore, StartError, spawn_game,
     spawn_game_with,
@@ -32,6 +32,8 @@ async fn welcome_names_the_game_the_seat_and_the_table_size() {
             seats: 3,
             auto_pass: false,
             yielding: None,
+            stops: Vec::new(),
+            full_control: FullControlMode::Off,
         }
     );
     // The roster follows the welcome: only this seat is here and nobody is ready.

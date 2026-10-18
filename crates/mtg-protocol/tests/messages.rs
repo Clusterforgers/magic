@@ -18,10 +18,12 @@ use mtg_engine::forecast::{
 };
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use mtg_engine::state::GameResult;
+use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
-    ClientMessage, DecisionId, ErrorCode, EventBatch, EventView, HiddenEvent, LobbySeat,
-    PROTOCOL_VERSION, ServerMessage, StateView, YieldUntil, project_events,
+    ClientMessage, DecisionId, ErrorCode, EventBatch, EventView, FullControlMode, HiddenEvent,
+    LobbySeat, PROTOCOL_VERSION, ServerMessage, StateView, Stop, StopSide, YieldUntil,
+    project_events,
 };
 use mtg_testkit::fuzz_setup;
 use proptest::prelude::*;
@@ -30,14 +32,35 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 11;
-const SERVER_VARIANTS: usize = 10;
+const CLIENT_VARIANTS: usize = 13;
+const SERVER_VARIANTS: usize = 12;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
     YieldUntil::EndOfTurn,
     YieldUntil::MyTurn,
 ];
+
+const SIDES: [StopSide; 2] = [StopSide::Own, StopSide::Opponent];
+
+const MODES: [FullControlMode; 3] = [
+    FullControlMode::Off,
+    FullControlMode::NextWindow,
+    FullControlMode::Held,
+];
+
+/// Every stop a server may list: both sides, each step where a player gets priority, in the order it lists them.
+fn every_stop() -> Vec<Stop> {
+    SIDES
+        .into_iter()
+        .flat_map(|side| {
+            Step::ALL
+                .into_iter()
+                .filter(|step| step.grants_priority())
+                .map(move |step| Stop { side, step })
+        })
+        .collect()
+}
 
 /// Index of each client variant; adding a variant breaks this match until the table below grows.
 fn client_index(message: &ClientMessage) -> usize {
@@ -53,6 +76,8 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::Yield { .. } => 8,
         ClientMessage::CancelYield => 9,
         ClientMessage::NotReady => 10,
+        ClientMessage::SetStop { .. } => 11,
+        ClientMessage::FullControl { .. } => 12,
     }
 }
 
@@ -69,6 +94,8 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::Forecast { .. } => 7,
         ServerMessage::Yielding { .. } => 8,
         ServerMessage::Lobby { .. } => 9,
+        ServerMessage::Stops { .. } => 10,
+        ServerMessage::FullControl { .. } => 11,
     }
 }
 
@@ -276,6 +303,20 @@ fn client_samples() -> Vec<ClientMessage> {
         ClientMessage::CancelYield,
     ];
     out.extend(YIELDS.map(|until| ClientMessage::Yield { until }));
+    // Every step is well formed on the wire, the two where nobody gets priority too: the server refuses those by rule.
+    for side in SIDES {
+        for step in Step::ALL {
+            for (on, keep) in [(true, false), (true, true), (false, false)] {
+                out.push(ClientMessage::SetStop {
+                    side,
+                    step,
+                    on,
+                    keep,
+                });
+            }
+        }
+    }
+    out.extend(MODES.map(|mode| ClientMessage::FullControl { mode }));
     out.extend(answers().into_iter().map(|answer| ClientMessage::Answer {
         decision: DecisionId(41),
         answer,
@@ -297,6 +338,8 @@ fn server_samples() -> Vec<ServerMessage> {
             seats: 4,
             auto_pass: true,
             yielding: None,
+            stops: Vec::new(),
+            full_control: FullControlMode::Off,
         },
         ServerMessage::Lobby {
             seats: lobby_seats(),
@@ -334,9 +377,32 @@ fn server_samples() -> Vec<ServerMessage> {
         seats: 2,
         auto_pass: false,
         yielding: Some(until),
+        stops: Vec::new(),
+        full_control: FullControlMode::Off,
     }));
     out.extend(YIELDS.map(|until| ServerMessage::Yielding { until: Some(until) }));
     out.push(ServerMessage::Yielding { until: None });
+    // A welcome states the stops and the Full Control mode the seat holds, and so does every change of them.
+    out.extend(MODES.map(|full_control| ServerMessage::Welcome {
+        protocol_version: PROTOCOL_VERSION,
+        game: "table-1".into(),
+        player: PlayerId(0),
+        seats: 2,
+        auto_pass: true,
+        yielding: None,
+        stops: every_stop(),
+        full_control,
+    }));
+    out.push(ServerMessage::Stops { stops: Vec::new() });
+    out.push(ServerMessage::Stops {
+        stops: every_stop(),
+    });
+    out.extend(
+        every_stop()
+            .into_iter()
+            .map(|stop| ServerMessage::Stops { stops: vec![stop] }),
+    );
+    out.extend(MODES.map(|mode| ServerMessage::FullControl { mode }));
     for code in [
         ErrorCode::UnsupportedVersion,
         ErrorCode::BadMessage,
@@ -431,6 +497,30 @@ fn every_event_view_variant_round_trips() {
     json!({"type": "Yield", "until": "MyTurn"})
 )]
 #[case(
+    ClientMessage::SetStop { side: StopSide::Own, step: Step::Upkeep, on: true, keep: false },
+    json!({"type": "SetStop", "side": "Own", "step": "Upkeep", "on": true, "keep": false})
+)]
+#[case(
+    ClientMessage::SetStop { side: StopSide::Opponent, step: Step::EndCombat, on: true, keep: true },
+    json!({"type": "SetStop", "side": "Opponent", "step": "EndCombat", "on": true, "keep": true})
+)]
+#[case(
+    ClientMessage::SetStop { side: StopSide::Opponent, step: Step::FirstStrikeDamage, on: false, keep: false },
+    json!({"type": "SetStop", "side": "Opponent", "step": "FirstStrikeDamage", "on": false, "keep": false})
+)]
+#[case(
+    ClientMessage::FullControl { mode: FullControlMode::Off },
+    json!({"type": "FullControl", "mode": "Off"})
+)]
+#[case(
+    ClientMessage::FullControl { mode: FullControlMode::NextWindow },
+    json!({"type": "FullControl", "mode": "NextWindow"})
+)]
+#[case(
+    ClientMessage::FullControl { mode: FullControlMode::Held },
+    json!({"type": "FullControl", "mode": "Held"})
+)]
+#[case(
     ClientMessage::Join { protocol_version: 1, game: "g".into(), name: "n".into() },
     json!({"type": "Join", "protocol_version": 1, "game": "g", "name": "n"})
 )]
@@ -455,8 +545,14 @@ fn client_wire_shape_is_flat_and_tagged(
 
 #[rstest]
 #[case(
-    ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true, yielding: None },
-    json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true, "yielding": null})
+    ServerMessage::Welcome {
+        protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true, yielding: None,
+        stops: vec![], full_control: FullControlMode::Off,
+    },
+    json!({
+        "type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true,
+        "yielding": null, "stops": [], "full_control": "Off"
+    })
 )]
 #[case(
     ServerMessage::Lobby {
@@ -469,8 +565,33 @@ fn client_wire_shape_is_flat_and_tagged(
     })
 )]
 #[case(
-    ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(0), seats: 2, auto_pass: false, yielding: Some(YieldUntil::MyTurn) },
-    json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 0, "seats": 2, "auto_pass": false, "yielding": "MyTurn"})
+    ServerMessage::Welcome {
+        protocol_version: 1, game: "g".into(), player: PlayerId(0), seats: 2, auto_pass: false,
+        yielding: Some(YieldUntil::MyTurn),
+        stops: vec![Stop { side: StopSide::Own, step: Step::Main1 }, Stop { side: StopSide::Opponent, step: Step::End }],
+        full_control: FullControlMode::Held,
+    },
+    json!({
+        "type": "Welcome", "protocol_version": 1, "game": "g", "player": 0, "seats": 2, "auto_pass": false,
+        "yielding": "MyTurn",
+        "stops": [{"side": "Own", "step": "Main1"}, {"side": "Opponent", "step": "End"}],
+        "full_control": "Held"
+    })
+)]
+#[case(ServerMessage::Stops { stops: vec![] }, json!({"type": "Stops", "stops": []}))]
+#[case(
+    ServerMessage::Stops { stops: vec![
+        Stop { side: StopSide::Own, step: Step::DeclareBlockers },
+        Stop { side: StopSide::Opponent, step: Step::CombatDamage },
+    ] },
+    json!({"type": "Stops", "stops": [
+        {"side": "Own", "step": "DeclareBlockers"},
+        {"side": "Opponent", "step": "CombatDamage"},
+    ]})
+)]
+#[case(
+    ServerMessage::FullControl { mode: FullControlMode::NextWindow },
+    json!({"type": "FullControl", "mode": "NextWindow"})
 )]
 #[case(
     ServerMessage::Yielding { until: Some(YieldUntil::EndOfTurn) },
@@ -706,4 +827,109 @@ fn a_yield_that_is_not_one_of_the_three_is_refused(#[case] text: &str) {
 fn a_yielding_notice_with_a_wrong_duration_is_refused(#[case] text: &str) {
     let parsed = serde_json::from_str::<ServerMessage>(text);
     assert!(parsed.is_err(), "{text} was accepted as {parsed:?}");
+}
+
+#[rstest]
+#[case::no_side(r#"{"type":"SetStop","step":"Main1","on":true,"keep":false}"#)]
+#[case::no_step(r#"{"type":"SetStop","side":"Own","on":true,"keep":false}"#)]
+#[case::no_on(r#"{"type":"SetStop","side":"Own","step":"Main1","keep":false}"#)]
+#[case::no_keep(r#"{"type":"SetStop","side":"Own","step":"Main1","on":true}"#)]
+#[case::unknown_side(r#"{"type":"SetStop","side":"Both","step":"Main1","on":true,"keep":false}"#)]
+#[case::side_in_lower_case(
+    r#"{"type":"SetStop","side":"own","step":"Main1","on":true,"keep":false}"#
+)]
+#[case::side_as_number(r#"{"type":"SetStop","side":0,"step":"Main1","on":true,"keep":false}"#)]
+#[case::side_as_null(r#"{"type":"SetStop","side":null,"step":"Main1","on":true,"keep":false}"#)]
+#[case::unknown_step(r#"{"type":"SetStop","side":"Own","step":"Combat","on":true,"keep":false}"#)]
+#[case::step_in_lower_case(
+    r#"{"type":"SetStop","side":"Own","step":"main1","on":true,"keep":false}"#
+)]
+#[case::step_with_a_space(
+    r#"{"type":"SetStop","side":"Own","step":"Main 1","on":true,"keep":false}"#
+)]
+#[case::step_as_number(r#"{"type":"SetStop","side":"Own","step":3,"on":true,"keep":false}"#)]
+#[case::step_as_object(
+    r#"{"type":"SetStop","side":"Own","step":{"Main1":true},"on":true,"keep":false}"#
+)]
+#[case::on_as_text(r#"{"type":"SetStop","side":"Own","step":"Main1","on":"yes","keep":false}"#)]
+#[case::on_as_number(r#"{"type":"SetStop","side":"Own","step":"Main1","on":1,"keep":false}"#)]
+#[case::on_as_null(r#"{"type":"SetStop","side":"Own","step":"Main1","on":null,"keep":false}"#)]
+#[case::keep_as_text(r#"{"type":"SetStop","side":"Own","step":"Main1","on":true,"keep":"no"}"#)]
+#[case::keep_as_null(r#"{"type":"SetStop","side":"Own","step":"Main1","on":true,"keep":null}"#)]
+fn a_stop_request_that_is_not_well_formed_is_refused(#[case] text: &str) {
+    let parsed = serde_json::from_str::<ClientMessage>(text);
+    assert!(parsed.is_err(), "{text} was accepted as {parsed:?}");
+}
+
+#[rstest]
+#[case::no_mode(r#"{"type":"FullControl"}"#)]
+#[case::unknown_mode(r#"{"type":"FullControl","mode":"Always"}"#)]
+#[case::lower_case(r#"{"type":"FullControl","mode":"held"}"#)]
+#[case::a_flag_word(r#"{"type":"FullControl","mode":"On"}"#)]
+#[case::a_flag(r#"{"type":"FullControl","mode":true}"#)]
+#[case::null(r#"{"type":"FullControl","mode":null}"#)]
+#[case::number(r#"{"type":"FullControl","mode":1}"#)]
+#[case::object(r#"{"type":"FullControl","mode":{"Held":true}}"#)]
+fn a_full_control_message_that_is_not_one_of_the_three_modes_is_refused(#[case] text: &str) {
+    let parsed = serde_json::from_str::<ClientMessage>(text);
+    assert!(parsed.is_err(), "{text} was accepted as {parsed:?}");
+    let parsed = serde_json::from_str::<ServerMessage>(text);
+    assert!(parsed.is_err(), "{text} was accepted as {parsed:?}");
+}
+
+#[rstest]
+#[case::stops_missing(r#"{"type":"Stops"}"#)]
+#[case::stops_null(r#"{"type":"Stops","stops":null}"#)]
+#[case::stops_as_one_object(r#"{"type":"Stops","stops":{"side":"Own","step":"Main1"}}"#)]
+#[case::a_stop_as_text(r#"{"type":"Stops","stops":["Main1"]}"#)]
+#[case::a_stop_without_side(r#"{"type":"Stops","stops":[{"step":"Main1"}]}"#)]
+#[case::a_stop_without_step(r#"{"type":"Stops","stops":[{"side":"Own"}]}"#)]
+#[case::an_unknown_side(r#"{"type":"Stops","stops":[{"side":"Both","step":"Main1"}]}"#)]
+#[case::an_unknown_step(r#"{"type":"Stops","stops":[{"side":"Own","step":"Combat"}]}"#)]
+#[case::a_step_in_lower_case(r#"{"type":"Stops","stops":[{"side":"Own","step":"upkeep"}]}"#)]
+#[case::welcome_without_stops(
+    r#"{"type":"Welcome","protocol_version":1,"game":"g","player":0,"seats":2,"auto_pass":true,"yielding":null,"full_control":"Off"}"#
+)]
+#[case::welcome_without_full_control(
+    r#"{"type":"Welcome","protocol_version":1,"game":"g","player":0,"seats":2,"auto_pass":true,"yielding":null,"stops":[]}"#
+)]
+#[case::welcome_with_an_unknown_mode(
+    r#"{"type":"Welcome","protocol_version":1,"game":"g","player":0,"seats":2,"auto_pass":true,"yielding":null,"stops":[],"full_control":"Always"}"#
+)]
+fn a_notice_with_wrong_stops_or_a_wrong_mode_is_refused(#[case] text: &str) {
+    let parsed = serde_json::from_str::<ServerMessage>(text);
+    assert!(parsed.is_err(), "{text} was accepted as {parsed:?}");
+}
+
+#[test]
+fn stops_sort_own_side_first_and_each_side_in_turn_order() {
+    let stop = |side, step| Stop { side, step };
+    let mut stops = vec![
+        stop(StopSide::Opponent, Step::Main1),
+        stop(StopSide::Own, Step::End),
+        stop(StopSide::Opponent, Step::Upkeep),
+        stop(StopSide::Own, Step::Upkeep),
+    ];
+    stops.sort();
+    assert_eq!(
+        stops,
+        [
+            stop(StopSide::Own, Step::Upkeep),
+            stop(StopSide::Own, Step::End),
+            stop(StopSide::Opponent, Step::Upkeep),
+            stop(StopSide::Opponent, Step::Main1),
+        ]
+    );
+    let every = every_stop();
+    assert!(every.is_sorted(), "the list a server sends is in order");
+    assert_eq!(
+        every.len(),
+        2 * 11,
+        "eleven steps give priority, on two sides"
+    );
+}
+
+#[test]
+fn full_control_starts_off() {
+    assert_eq!(FullControlMode::default(), FullControlMode::Off);
 }
