@@ -76,11 +76,48 @@ describe('transcript fixture', () => {
     expect(fixture.expected.result).not.toBeNull()
   })
 
-  it('opens a lobby transcript with the batch at seq 0 and no Snapshot', () => {
-    const [welcome, first] = fixture.lobby.messages
+  it('opens a lobby transcript with the welcome, the lobby rosters and the batch at seq 0, and no Snapshot', () => {
+    const [welcome, ...rest] = fixture.lobby.messages
     expect(welcome?.type).toBe('Welcome')
+    const at = rest.findIndex((m) => m.type === 'Events')
+    expect(at).toBeGreaterThan(0)
+    expect(rest.slice(0, at).every((m) => m.type === 'Lobby')).toBe(true)
+    const first = rest[at]
     expect(first?.type === 'Events' && first.from_seq).toBe(0)
+    expect(rest.slice(at).some((m) => m.type === 'Lobby')).toBe(false)
     expect(fixture.lobby.messages.some((m) => m.type === 'Snapshot')).toBe(false)
+  })
+
+  it('has rosters that read as one table filling up: both seats named, needed following the ready seats', () => {
+    const rosters = fixture.lobby.messages.flatMap((m) => (m.type === 'Lobby' ? [m] : []))
+    expect(rosters.length).toBeGreaterThanOrEqual(3)
+    for (const roster of rosters) {
+      expect(roster.seats.map((seat) => seat.seat)).toEqual([0, 1])
+      expect(roster.needed).toBe(roster.seats.filter((seat) => !seat.ready).length)
+    }
+    // Seat 1 joins, is ready, takes it back and is ready again: the flags move one at a time.
+    expect(rosters.map((roster) => roster.seats.map((seat) => [seat.connected, seat.ready]))).toEqual([
+      [
+        [true, false],
+        [false, false],
+      ],
+      [
+        [true, false],
+        [true, false],
+      ],
+      [
+        [true, false],
+        [true, true],
+      ],
+      [
+        [true, false],
+        [true, false],
+      ],
+      [
+        [true, false],
+        [true, true],
+      ],
+    ])
   })
 
   it.each(transcripts)('%s: every message has the shape the bindings describe', (_name, transcript) => {
@@ -118,6 +155,12 @@ describe('transcript fixture', () => {
           break
         case 'GameOver':
           expect(keysOf(message)).toEqual(['result', 'type'])
+          break
+        case 'Lobby':
+          // Only a seat that was there before the start is sent rosters.
+          expect(keysOf(message)).toEqual(['needed', 'seats', 'type'])
+          for (const seat of message.seats)
+            expect(keysOf(seat)).toEqual(['connected', 'name', 'ready', 'seat'])
           break
         default:
           expect.unreachable(`a transcript never carries a ${message.type} message`)

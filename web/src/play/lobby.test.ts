@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import { startSession } from '@/test-utils/harness'
 import { emptyTable, lobbyMessage, withSeats } from '@/test-utils/lobbyFrames'
-import { lateJoin, lobbyStart } from '@/test-utils/transcripts'
+import { lateJoin, lobbyBatchAt, lobbyStart } from '@/test-utils/transcripts'
 
 const table = emptyTable(3)
 
@@ -69,7 +69,7 @@ describe('the roster', () => {
     lobby.join(0, 2)
     lobby.deliver(lobbyMessage(emptyTable(2)))
     expect(lobby.state().phase).toBe('lobby')
-    lobby.deliver(lobbyStart.raw[1])
+    lobby.deliver(lobbyStart.raw[lobbyBatchAt])
     expect(lobby.state().phase).toBe('playing')
     expect(lobby.state().lobby).toBeNull()
 

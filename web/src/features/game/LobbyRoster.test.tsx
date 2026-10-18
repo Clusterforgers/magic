@@ -5,7 +5,7 @@ import { jsonResponse } from '@/test-utils/fakeFetch'
 import { renderGame } from '@/test-utils/gameHarness'
 import { emptyTable, lobbyMessage, withSeats } from '@/test-utils/lobbyFrames'
 import type { SeatFlags } from '@/test-utils/lobbyFrames'
-import { lobbyStart } from '@/test-utils/transcripts'
+import { lobbyBatchAt, lobbyStart } from '@/test-utils/transcripts'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -143,7 +143,7 @@ describe('what the roster does to the page', () => {
     const h = await lobby(2)
     h.deliver(lobbyMessage(emptyTable(2)))
     expect(screen.getByRole('heading', { name: 'Waiting for players' })).toBeInTheDocument()
-    h.deliver(lobbyStart.raw[1])
+    h.deliver(lobbyStart.raw[lobbyBatchAt])
     expect(screen.queryByRole('heading', { name: 'Waiting for players' })).toBeNull()
     expect(screen.getByRole('region', { name: 'Game table' })).toBeInTheDocument()
   })
