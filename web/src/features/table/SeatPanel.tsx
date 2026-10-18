@@ -9,6 +9,7 @@ import { Card } from './Card'
 import type { CardSize } from './cardSize'
 import { CardRow } from './CardRow'
 import { LifeForecast } from './combat/LifeForecast'
+import { LifeFx } from './fx/LifeFx'
 import { Hand } from './Hand'
 import { ManaPool } from './ManaPool'
 import { useSeatNamer } from './names'
@@ -75,7 +76,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, size }: SeatPanelProps)
                 {flags.priority ? <Badge variant="outline">Has priority</Badge> : null}
               </p>
             </div>
-            <p className="shrink-0 text-right">
+            <LifeFx as="p" seat={seat} className="shrink-0 text-right">
               <span className="block text-xs text-muted-foreground">Life</span>
               <span
                 className={cn(
@@ -85,7 +86,7 @@ export const SeatPanel = memo(function SeatPanel({ seat, size }: SeatPanelProps)
               >
                 {player.life}
               </span>
-            </p>
+            </LifeFx>
           </header>
           <LifeForecast seat={seat} />
           {player.lost === null ? null : (
