@@ -66,7 +66,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 ## M4 Multiplayer product
 - [ ] Invite-link lobbies on top of users (accounts land in M2)
 - [ ] Deck builder UI with card search, import, validation, export
-- [ ] Deck check and the Verified marker (the player's request, 2026-10-18; design in `docs/deck-check.md`): choose or build a deck, run a check that reports legality and every card the game cannot play without manual steps, highlight those cards (icon, word, edge, reasons, unsupported clauses underlined), show a marker on a saved deck whose check is clean, derived from the deck's content hash and the cards' support records so any edit or engine change removes it until the next check; save runs the check; live issue counter while building; precon badges
+- [ ] Deck check and the Verified marker (the player's request, 2026-10-18; design in `docs/deck-check.md`): choose or build a deck, run a check that reports legality and every card the game cannot play without manual steps, highlight those cards (icon, word, edge, reasons, unsupported clauses underlined), show a marker on a saved deck whose check is clean, derived from the deck's content hash and the cards' support records so any edit or engine change removes it until the next check; save runs the check automatically, the sideboard counts toward the marker, a deck with manual cards may be played with a count-only note to the table (names show when a card becomes public); live issue counter while building; precon badges
 - [ ] Precon browser with one-click play
 - [ ] N-player layout, game log, stack panel, stop settings
 - [ ] Spectators and reconnect polish
