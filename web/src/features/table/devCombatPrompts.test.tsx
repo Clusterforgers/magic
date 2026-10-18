@@ -65,20 +65,24 @@ describe('prompt=attack', () => {
 
 describe('prompt=block', () => {
   it.each(COUNTS)(
-    'at %i seats is the declare-blockers step with six attackers and no blocks yet',
+    'at %i seats is the declare-blockers step with six attackers and no block by the viewer yet',
     (seats) => {
       const { view } = decisionOf(seats, 'block')
       expect(view.turn.step).toBe('DeclareBlockers')
       expect(view.combat.attackers).toHaveLength(6)
       expect(view.combat.attackers_declared).toBe(true)
-      expect(view.combat.blockers_declared).toEqual([])
+      expect(view.combat.blockers_declared).not.toContain(0)
       for (const attacker of view.combat.attackers) {
-        expect(attacker).toMatchObject({ blocked: false, blockers: [] })
+        const blockers = attacker.blockers.map((id) => view.objects.find((object) => object.id === id))
+        // The only blocks are those of another defender, who has double-blocked one attacker aimed at them.
+        for (const blocker of blockers) expect(blocker?.controller).not.toBe(0)
+        expect(attacker.blocked).toBe(attacker.blockers.length > 0)
         expect(view.objects.find((object) => object.id === attacker.object)).toMatchObject({
           controller: view.turn.active,
           permanent: { tapped: true },
         })
       }
+      expect(view.combat.attackers.filter((attacker) => attacker.blocked)).toHaveLength(seats === 2 ? 0 : 1)
       expect(isStateView(view)).toBe(true)
     },
   )

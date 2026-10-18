@@ -5,6 +5,10 @@ import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView } from '@/protocol/generated'
 import { powerToughness } from '../../cardModel'
+import { useBlockPreview } from '../../combat/forecast'
+import { forecastSentences } from '../../combat/forecastText'
+import { usePublishPending } from '../../combat/pending'
+import { useForecastNames } from '../../combat/useForecastNames'
 import { useSeatNamer } from '../../names'
 import { NO_IDS } from '../../selectors'
 import { blockersByAttacker, blockSummary, uniqueNames } from '../combatText'
@@ -123,6 +127,14 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
 
   // Each blocker blocks one attacker; the map keeps the order the blocks were made in.
   const [pairs, setPairs] = useState<ReadonlyMap<ObjectId, ObjectId>>(new Map())
+  // The blocks are drawn as lines while they are only a choice, and they put the table's forecast out of date.
+  usePublishPending({ blocks: pairs })
+  const preview = useBlockPreview()
+  const previewNames = useForecastNames(preview)
+  const outcome = useMemo(
+    () => (preview === null ? [] : forecastSentences(preview, previewNames)),
+    [preview, previewNames],
+  )
   const [picked] = selection.ids
   const choosing = picked !== undefined && offered.has(picked) ? picked : undefined
   const choices = useMemo(
@@ -250,7 +262,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
           {[...pairs].map(([blocker, attacker]) => (
             <li key={blocker} className="flex items-center justify-between gap-2 text-sm">
               <span className="min-w-0">
-                {blockerName(blocker)} blocks {attackerName(attacker)} ({controllerOf(attacker)})
+                Your {blockerName(blocker)} blocks {controllerOf(attacker)}&apos;s {attackerName(attacker)}
               </span>
               <span className="flex shrink-0 gap-1">
                 <Button
@@ -273,6 +285,24 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
             </li>
           ))}
         </ul>
+      )}
+      {preview === null && pairs.size === 0 ? null : (
+        <div data-slot="block-outcome" className="grid basis-full gap-0.5 text-sm">
+          {preview === null ? (
+            <p className="text-muted-foreground">Outcome shown after you confirm.</p>
+          ) : (
+            <>
+              <p className="font-medium">
+                {pairs.size === 0 ? 'If you do not block' : 'If you block like this'}
+              </p>
+              <ul className="max-h-32 list-disc overflow-y-auto pl-5 text-muted-foreground">
+                {outcome.map((sentence, index) => (
+                  <li key={`${index}:${sentence}`}>{sentence}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
       )}
     </PromptLayout>
   )

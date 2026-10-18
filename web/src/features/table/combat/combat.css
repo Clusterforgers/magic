@@ -1,0 +1,124 @@
+/*
+ * The combat overlay and its legend. The colours are tokens so that light and dark can differ; the only motion is the
+ * line drawing itself in, and that sits inside a media query so a person who asks for less motion gets none.
+ */
+:root {
+  --combat-attack: oklch(0.45 0 0 / 0.55);
+  --combat-block: oklch(0.2 0 0);
+  --combat-attacker-dies: oklch(0.52 0.19 258);
+  --combat-blocker-dies: oklch(0.66 0.17 55);
+  --combat-both-die: oklch(0.5 0.23 335);
+  --combat-both-survive: oklch(0.56 0.12 180);
+  --combat-damage: oklch(0.5 0.22 27);
+}
+
+.dark {
+  --combat-attack: oklch(0.85 0 0 / 0.55);
+  --combat-block: oklch(0.96 0 0);
+  --combat-attacker-dies: oklch(0.72 0.14 250);
+  --combat-blocker-dies: oklch(0.78 0.15 65);
+  --combat-both-die: oklch(0.7 0.2 335);
+  --combat-both-survive: oklch(0.75 0.12 175);
+  --combat-damage: oklch(0.5 0.22 27);
+}
+
+/* A line, or a swatch of one in the legend. Attacks are muted and thin, blocks strong, unsent choices dashed. */
+.combat-group {
+  --line: var(--combat-attack);
+}
+
+.combat-group[data-kind='block'] {
+  --line: var(--combat-block);
+}
+
+.combat-group[data-outcome='attacker-dies'] {
+  --line: var(--combat-attacker-dies);
+}
+
+.combat-group[data-outcome='blocker-dies'] {
+  --line: var(--combat-blocker-dies);
+}
+
+.combat-group[data-outcome='both-die'] {
+  --line: var(--combat-both-die);
+}
+
+.combat-group[data-outcome='both-survive'] {
+  --line: var(--combat-both-survive);
+}
+
+/* The halo keeps a line readable over a card of any colour. */
+.combat-halo,
+.combat-line {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.combat-halo {
+  stroke: var(--background);
+  stroke-opacity: 0.7;
+  stroke-width: 4.5;
+}
+
+.combat-line {
+  stroke: var(--line);
+  stroke-width: 1.75;
+}
+
+.combat-group[data-kind='block'] .combat-halo {
+  stroke-width: 6.5;
+}
+
+.combat-group[data-kind='block'] .combat-line {
+  stroke-width: 3;
+}
+
+.combat-group[data-pending] .combat-line {
+  stroke-dasharray: 7 6;
+}
+
+.combat-head {
+  fill: var(--line);
+  stroke: var(--background);
+  stroke-opacity: 0.7;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Needs pathLength="1" on the path, which makes one unit the whole line whatever its length. */
+  :is(.combat-overlay, .combat-ghost) .combat-group:not([data-pending]) :is(.combat-halo, .combat-line) {
+    stroke-dasharray: 1;
+    animation: combat-line-draw 280ms ease-out both;
+  }
+
+  :is(.combat-overlay, .combat-ghost) .combat-group[data-pending] :is(.combat-halo, .combat-line) {
+    animation: combat-line-fade 200ms ease-out both;
+  }
+
+  :is(.combat-overlay, .combat-ghost) .combat-head {
+    animation: combat-line-fade 160ms ease-out 140ms both;
+  }
+
+  @keyframes combat-line-draw {
+    from {
+      stroke-dashoffset: 1;
+    }
+
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes combat-line-fade {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+}

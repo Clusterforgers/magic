@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { abilityText, costText, powerToughness, statusWords, typeLine } from './cardModel'
 import { CardFace } from './CardFace'
+import { useCreatureOutlook } from './combat/drawn'
+import { outlookText } from './combat/forecastText'
 import { useSeatNamer } from './names'
 import { dockOf, usePreviewStore, usePreviewTarget } from './preview'
 import type { Dock, PreviewTarget } from './preview'
@@ -35,6 +37,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const { id } = target
   const object = usePlay((state) => state.objectsById[id])
   const role = usePlay((state) => combatRoleIn(state, id))
+  const outlook = useCreatureOutlook(id)
   const fight = usePlay((state) =>
     state.view === null
       ? null
@@ -89,6 +92,9 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
         )}
         {status.length === 0 ? null : <p>Status: {status.join(', ')}</p>}
         {fight === null ? null : <p>{fight}</p>}
+        {outlook === null ? null : (
+          <p data-slot="preview-forecast">Combat forecast: {outlookText(outlook)}.</p>
+        )}
         <p className="text-muted-foreground">
           {zoneText(object.zone, name)}. {controlText(object, name)}.
         </p>

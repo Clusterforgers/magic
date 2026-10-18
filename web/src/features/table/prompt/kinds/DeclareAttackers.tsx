@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import type { AttackerOption, AttackTarget, ObjectId } from '@/protocol/generated'
+import { usePublishPending } from '../../combat/pending'
 import { attackSummary, distinctTargets, sameTarget, targetKey, uniqueNames } from '../combatText'
 import { markCards, useCardMarks, useCardNotes } from '../marks'
 import type { CardNotes } from '../marks'
@@ -54,6 +55,9 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
     [selection.ids, offered, targets],
   )
   const declaredIds = useMemo(() => declared.map((entry) => entry.object), [declared])
+  // The attack as chosen so far is drawn as lines from each attacker to what it attacks, before anything is sent.
+  const drawn = useMemo(() => new Map(declared.map(({ object, target }) => [object, target])), [declared])
+  usePublishPending({ attacks: drawn })
   const creatures = useObjects(declaredIds)
   const labels = useMemo(
     () => uniqueNames(declaredIds.map((id, index) => ({ id, name: creatures[index]?.name ?? 'a creature' }))),

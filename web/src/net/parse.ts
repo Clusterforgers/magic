@@ -6,12 +6,17 @@
  * come from the generated bindings, which a Rust test keeps in step with the server.
  */
 import type {
+  AttackerForecast,
   AttackerView,
+  CombatForecast,
+  CreatureForecast,
   Decision,
   ErrorCode,
   EventView,
+  ForecastDamage,
   GameResult,
   ObjectView,
+  PlayerForecast,
   PlayerView,
   ServerMessage,
   StateView,
@@ -127,6 +132,59 @@ export function isGameResult(value: unknown): value is GameResult {
   return value === 'Draw' || (isRecord(value) && isOneKey(value) && isCount(value.Winner))
 }
 
+// A one-key object such as `{ Player: 1 }`: the key is one of `tags` and the value an id or seat.
+function isTaggedId(value: unknown, tags: readonly string[]): boolean {
+  if (!isRecord(value) || !isOneKey(value)) return false
+  const [tag] = Object.keys(value)
+  return tag !== undefined && tags.includes(tag) && isCount(value[tag])
+}
+
+function isForecastDamage(value: unknown): value is ForecastDamage {
+  return (
+    isRecord(value) &&
+    isCount(value.source) &&
+    isTaggedId(value.target, ['Player', 'Object']) &&
+    isCount(value.amount)
+  )
+}
+
+function isAttackerForecast(value: unknown): value is AttackerForecast {
+  return (
+    isRecord(value) &&
+    isCount(value.attacker) &&
+    isTaggedId(value.target, ['Player', 'Planeswalker']) &&
+    isFlag(value.blocked) &&
+    isIdList(value.blockers) &&
+    isListOf(value.deals, isForecastDamage) &&
+    isListOf(value.receives, isForecastDamage)
+  )
+}
+
+function isCreatureForecast(value: unknown): value is CreatureForecast {
+  return isRecord(value) && isCount(value.object) && isCount(value.damage) && isFlag(value.dies)
+}
+
+function isPlayerForecast(value: unknown): value is PlayerForecast {
+  return (
+    isRecord(value) &&
+    isCount(value.player) &&
+    isCount(value.damage) &&
+    isInt(value.life) &&
+    isInt(value.life_after) &&
+    isFlag(value.lethal)
+  )
+}
+
+/** True for the combat forecast of a table view: attackers, creatures and players, each checked down to its leaves. */
+export function isCombatForecast(value: unknown): value is CombatForecast {
+  return (
+    isRecord(value) &&
+    isListOf(value.attackers, isAttackerForecast) &&
+    isListOf(value.creatures, isCreatureForecast) &&
+    isListOf(value.players, isPlayerForecast)
+  )
+}
+
 function isTableView(value: unknown): value is TableView {
   return (
     isRecord(value) &&
@@ -149,6 +207,7 @@ function isTableView(value: unknown): value is TableView {
     isListOf(value.combat.attackers, isAttacker) &&
     isFlag(value.combat.attackers_declared) &&
     isIdList(value.combat.blockers_declared) &&
+    (value.combat_forecast === null || isCombatForecast(value.combat_forecast)) &&
     (value.result === null || isGameResult(value.result))
   )
 }
