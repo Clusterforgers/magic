@@ -11,6 +11,7 @@ use crate::recipe::GameRecipe;
 use crate::recorder::Recorder;
 use crate::records::{GameRecord, GameRecords, RecordError, RecordStatus};
 use crate::secret::TokenDigest;
+use crate::user_id::UserId;
 
 /// What [`Registry::resume`] did with the games it found.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -40,6 +41,7 @@ struct Unpacked {
     setup: GameSetup,
     names: Vec<String>,
     digests: Vec<TokenDigest>,
+    users: Vec<Option<UserId>>,
 }
 
 impl Registry {
@@ -78,6 +80,7 @@ impl Registry {
             setup,
             names,
             digests,
+            users,
         } = match unpack(&record) {
             Ok(unpacked) => unpacked,
             Err(reason) => return give_up(records, id, &reason).await,
@@ -117,7 +120,7 @@ impl Registry {
         let now = Instant::now();
         let created = now.checked_sub(record.age).unwrap_or(now);
         self.games()
-            .insert(id, Entry::new(handle, names, digests, created));
+            .insert(id, Entry::new(handle, names, digests, users, created));
         tracing::info!(game = %id, started = status.started, events = status.events, "game resumed");
         Outcome::Live {
             lobby: !status.started,
@@ -151,6 +154,7 @@ fn unpack(record: &GameRecord) -> Result<Unpacked, String> {
             .iter()
             .map(|seat| TokenDigest::from_bytes(seat.token_digest))
             .collect(),
+        users: record.seats.iter().map(|seat| seat.user).collect(),
         setup,
     })
 }

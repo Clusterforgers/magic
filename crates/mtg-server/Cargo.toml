@@ -11,6 +11,7 @@ mtg-core.workspace = true
 mtg-engine.workspace = true
 mtg-cards.workspace = true
 mtg-protocol.workspace = true
+argon2.workspace = true
 axum.workspace = true
 getrandom.workspace = true
 serde.workspace = true

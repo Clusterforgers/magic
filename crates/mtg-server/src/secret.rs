@@ -1,4 +1,5 @@
-//! Secrets: seat tokens (random, shown once, kept only as SHA-256 digests) and server-chosen seeds.
+//! Secrets: seat and session tokens (random, shown once, kept only as SHA-256 digests) and
+//! server-chosen seeds.
 
 use std::fmt;
 
@@ -19,17 +20,21 @@ pub struct RandomError;
 #[derive(Clone, PartialEq, Eq)]
 pub struct SeatToken(String);
 
+/// 256 random bits from the operating system's CSPRNG as lowercase hex.
+fn random_token() -> Result<String, RandomError> {
+    let mut bytes = [0u8; TOKEN_BYTES];
+    getrandom::fill(&mut bytes).map_err(|_| RandomError)?;
+    Ok(bytes
+        .iter()
+        .flat_map(|byte| [byte >> 4, byte & 0x0f])
+        .map(|nibble| char::from_digit(u32::from(nibble), 16).unwrap_or('0'))
+        .collect())
+}
+
 impl SeatToken {
     /// A fresh token from the operating system's CSPRNG.
     pub fn generate() -> Result<SeatToken, RandomError> {
-        let mut bytes = [0u8; TOKEN_BYTES];
-        getrandom::fill(&mut bytes).map_err(|_| RandomError)?;
-        let hex = bytes
-            .iter()
-            .flat_map(|byte| [byte >> 4, byte & 0x0f])
-            .map(|nibble| char::from_digit(u32::from(nibble), 16).unwrap_or('0'))
-            .collect();
-        Ok(SeatToken(hex))
+        random_token().map(SeatToken)
     }
 
     /// The token text, for the one response that hands it to its owner.
@@ -46,6 +51,34 @@ impl SeatToken {
 impl fmt::Debug for SeatToken {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str("SeatToken(<redacted>)")
+    }
+}
+
+/// A browser session's credential: 256 random bits as lowercase hex, sent in the session cookie.
+/// It never appears in `Debug` output or logs, and only its digest is stored.
+#[derive(Clone, PartialEq, Eq)]
+pub struct SessionToken(String);
+
+impl SessionToken {
+    /// A fresh token from the operating system's CSPRNG.
+    pub fn generate() -> Result<SessionToken, RandomError> {
+        random_token().map(SessionToken)
+    }
+
+    /// The token text, for the one response that sets the cookie.
+    pub fn expose(&self) -> &str {
+        &self.0
+    }
+
+    /// The digest the database stores in place of the token.
+    pub fn digest(&self) -> TokenDigest {
+        TokenDigest::of(&self.0)
+    }
+}
+
+impl fmt::Debug for SessionToken {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("SessionToken(<redacted>)")
     }
 }
 
@@ -127,6 +160,28 @@ mod tests {
         let token = SeatToken::generate().unwrap();
         let shown = format!("{token:?} {:?}", token.digest());
         assert!(!shown.contains(token.expose()));
+    }
+
+    #[test]
+    fn session_tokens_are_distinct_well_formed_and_never_printed() {
+        let tokens: Vec<SessionToken> = (0..500)
+            .map(|_| SessionToken::generate().unwrap())
+            .collect();
+        assert!(tokens.iter().all(|t| looks_like_token(t.expose())));
+        let distinct: HashSet<&str> = tokens.iter().map(SessionToken::expose).collect();
+        assert_eq!(distinct.len(), tokens.len());
+        for token in tokens.iter().take(5) {
+            let shown = format!("{token:?} {token:#?} {:?}", token.digest());
+            assert!(!shown.contains(token.expose()), "{shown}");
+            assert!(token.digest().matches(&TokenDigest::of(token.expose())));
+        }
+    }
+
+    #[test]
+    fn a_seat_token_and_a_session_token_never_collide() {
+        let seat = SeatToken::generate().unwrap();
+        let session = SessionToken::generate().unwrap();
+        assert_ne!(seat.expose(), session.expose());
     }
 
     #[test]

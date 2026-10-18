@@ -36,8 +36,10 @@ async fn run() -> Result<(), String> {
         .map_err(|error| format!("cannot listen on {}: {error}", config.bind))?;
     let (bind, max_games, allowed_origins) =
         (config.bind, config.max_games, config.allowed_origins.len());
+    let registration = format!("{:?}", config.auth.registration);
+    let (cookie_secure, trusted_proxies) = (config.auth.cookie_secure, config.auth.trusted_proxies);
     let server = build(config).await?;
-    tracing::info!(%bind, max_games, allowed_origins, "listening");
+    tracing::info!(%bind, max_games, allowed_origins, %registration, cookie_secure, trusted_proxies, "listening");
     server
         .serve(listener, shutdown_signal())
         .await
