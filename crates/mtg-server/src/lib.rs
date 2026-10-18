@@ -42,9 +42,11 @@
 //! [`migrate`] applies and tracks in its own table so `mtg-db` can share the database).
 //!
 //! With a database ([`Server::open`]) every game the REST path creates is also recorded: a
-//! [`GameRecipe`] that rebuilds its `GameSetup`, its seats with the SHA-256 of each token, and its
-//! status ([`RecordStatus`]). On boot [`Registry::resume`] brings back every game that is not
-//! finished, so a client that returns with its old token lands in the same game.
+//! [`GameRecipe`] that rebuilds its `GameSetup` (and fingerprints each seat's deck, so a deck that
+//! a deploy changed fails the game instead of replaying its log under other cards), its seats with
+//! the SHA-256 of each token, and its status ([`RecordStatus`]). On boot [`Registry::resume`]
+//! brings back every game that is not finished, so a client that returns with its old token lands
+//! in the same game.
 //!
 //! The same database holds the accounts: usernames with Argon2id password hashes and browser
 //! sessions kept as the SHA-256 of the `mtg_session` cookie's token (`/api/auth/*`). A seat can
@@ -100,7 +102,10 @@ pub use pace::{MAX_CLOCK_SECS, Pace};
 pub use passwords::{HashCost, HashCostError};
 pub use pg_store::PgEventStore;
 pub use preview::{PREVIEW_BURST, PREVIEWS_PER_SECOND};
-pub use recipe::{DeckRef, FormatKind, GameRecipe, RecipeError};
+pub use recipe::{
+    DeckFingerprint, DeckRef, FINGERPRINT_VERSION, FingerprintError, FormatKind, GameRecipe,
+    RecipeError,
+};
 pub use records::{
     Binding, GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord, UserGame, UserGameSeat,
 };

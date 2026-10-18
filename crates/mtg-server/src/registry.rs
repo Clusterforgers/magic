@@ -253,7 +253,8 @@ impl Registry {
         let decks = seats.iter().map(|seat| DeckRef::Demo {
             id: seat.deck.id.to_owned(),
         });
-        let recipe = GameRecipe::normal(seed, decks);
+        // The decks as they are now, kept so that a later boot can tell when a deploy changed one.
+        let recipe = GameRecipe::normal(seed, decks).with_fingerprints()?;
         let setup = recipe.build()?;
         let names = seats.iter().map(|s| s.name.clone()).collect();
         self.admit(setup, names, Some(recipe), host).await
