@@ -129,7 +129,7 @@ export function PaymentSummary({
             <Button
               key={`${base}-${nth}`}
               type="button"
-              variant="secondary"
+              variant="outline"
               size="sm"
               data-slot="pay-chip"
               aria-label={`Remove ${spendWords(spend, nameOf)}`}

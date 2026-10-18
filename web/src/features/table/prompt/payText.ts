@@ -75,12 +75,11 @@ export function payText({ spell, cost, owed, chosen, covered, canAdd, auto, note
   }
   const still = `Still to pay: ${costWords(owed)}.`
   if (chosen === 0) {
-    if (!auto && !canAdd) {
+    // The game offers an automatic payment whenever the cost can be paid at all.
+    if (!auto || !canAdd) {
       return `You cannot pay ${costWords(cost)} for ${spell} with the mana you have. Cancel to go back.`
     }
-    const pick = 'Choose a land or other mana source to use its mana'
-    const how = auto ? `${pick}, or pay automatically.` : `${pick}.`
-    return `${lead}Pay ${costWords(cost)} for ${spell}. ${how}`
+    return `${lead}Pay ${costWords(cost)} for ${spell}. Choose a land or other mana source to use its mana, or pay automatically.`
   }
   return canAdd ? `${lead}${still}` : `${lead}${still} Nothing left can pay it; remove a choice or cancel.`
 }

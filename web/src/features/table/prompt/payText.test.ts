@@ -54,13 +54,13 @@ describe('payText', () => {
       'Pay 2 generic, 1 white and 1 green for Selesnya Evangel. Choose a land or other mana source to use its mana, or pay automatically.',
     ],
     [
-      'before anything is chosen, with no automatic payment',
+      'before anything is chosen, with no automatic payment, which means the cost cannot be paid',
       input({ auto: false }),
-      'Pay 2 generic, 1 white and 1 green for Selesnya Evangel. Choose a land or other mana source to use its mana.',
+      'You cannot pay 2 generic, 1 white and 1 green for Selesnya Evangel with the mana you have. Cancel to go back.',
     ],
     [
-      'before anything is chosen, with no way to pay at all',
-      input({ auto: false, canAdd: false }),
+      'before anything is chosen, with nothing that can be added',
+      input({ canAdd: false }),
       'You cannot pay 2 generic, 1 white and 1 green for Selesnya Evangel with the mana you have. Cancel to go back.',
     ],
     [

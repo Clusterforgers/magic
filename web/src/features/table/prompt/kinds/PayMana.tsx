@@ -157,7 +157,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
       {options.auto_available ? (
         <Button
           className="h-10 px-4"
-          variant="secondary"
+          variant="outline"
           data-slot="pay-auto"
           onClick={() => answer({ PayMana: 'Auto' })}
         >
@@ -166,7 +166,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
       ) : null}
       <Button
         className="h-10 px-4"
-        variant="ghost"
+        variant="outline"
         data-slot="pay-cancel"
         onClick={() => answer({ PayMana: 'Cancel' })}
       >
