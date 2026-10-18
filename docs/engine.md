@@ -24,7 +24,7 @@ Design record for `mtg-engine` and `mtg-testkit`. Rules of the house are in `CLA
 - A mana ability resets the passes in a priority round: consistent with a literal reading of 117.4 (all players pass "without taking any actions in between"). No official ruling found; low impact, keep.
 
 ## Gaps (roadmap M3 onwards)
-- No keywords, triggers, targeting or Commander.
+- No keywords, triggers, targeting or Commander, and no spell or ability effects beyond permanents entering: scry, search, tokens and the other keyword actions need the choice decisions listed in the M3 roadmap first.
 - Layer dependencies (CR 613.8) are not modelled; only type, colour and power/toughness modifications work.
 - No tokens or control change.
 - The first-strike step exists but never occurs.

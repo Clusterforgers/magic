@@ -33,7 +33,10 @@ After a restart, run `git worktree list` and read each worktree's status before 
 
 ## M3 Rules depth
 - [ ] `mtg-cards` DSL: Cost, Selector, Condition, Effect, Duration, TargetSpec primitives with data files
+- [ ] Decision kinds the effects need (one task each across `mtg-engine`, `mtg-protocol` and a web prompt, with tests; today the engine has no targeting or choices): `ChooseTargets`, `ChooseMode`, `ChooseNumber` (X, "any number"), `ChooseCards` from a zone or revealed set (search, reveal, "choose a creature"), `OrderCards` (scry, surveil, put back, bottom in any order), `YesNo` for "may", `OrderTriggers` (same controller), `ChooseReplacement`
 - [ ] Keywords, one task each with a table test: flying/reach, first strike/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof/ward
+- [ ] Keyword actions (CR 701), one engine primitive each, table-tested, with a web prompt where the player chooses: draw/discard/mill/shuffle, scry, surveil, fateseal, search, reveal, sacrifice/destroy/exile/counter, create tokens and populate (the "summon" family), fight, explore, proliferate, investigate and other predefined tokens (Clue, Treasure, Food), amass, connive, learn, transform/meld, attach/equip, regenerate, goad, monstrosity, adapt, bolster, support, venture. Arena-only digital actions (conjure, seek, specialize) stay out until asked for
+- [ ] Keyword abilities beyond combat (CR 702), one task each: flash, equip/reconfigure, enchant, cycling, kicker/multikicker, flashback, madness, prowess, convoke, delve, cascade, storm, morph/disguise, suspend, evoke, overload, and the Commander-relevant ones (partner, companion, ward is above)
 - [ ] Triggered abilities (incl. APNAP ordering, delayed triggers)
 - [ ] Replacement and prevention effects
 - [ ] Layers: full CR 613 ordering with dependencies, counters, auras, equipment
