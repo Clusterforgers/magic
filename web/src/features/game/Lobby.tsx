@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { useMemo, useState } from 'react'
+import type { MouseEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { useGame, usePlay } from './gameContext'
@@ -38,7 +39,9 @@ export function Lobby() {
   const accounts = useSeatAccounts(game, seat, `${status}|${here}`)
   const ready = rows.find((row) => row.you)?.ready ?? false
 
-  function toggleReady(): void {
+  function toggleReady(event: MouseEvent<HTMLButtonElement>): void {
+    // The second click of a double click is not a second decision: on a fast connection the label has flipped by then.
+    if (event.detail > 1) return
     setRefused(!(ready ? session.notReady() : session.ready()))
   }
 

@@ -188,6 +188,27 @@ describe('saying Ready and taking it back', () => {
     expect(h.socket().sentTypes).toEqual(['Join', 'Ready', 'NotReady', 'Ready', 'NotReady'])
   })
 
+  it('takes a double click for one press, since the label may have flipped between the two clicks', async () => {
+    const h = await renderGame()
+    h.join()
+    h.deliver(lobbyMessage(table))
+    await h.user.dblClick(screen.getByRole('button', { name: 'Ready' }))
+    expect(h.socket().sentTypes).toEqual(['Join', 'Ready'])
+    h.deliver(lobbyMessage(ready))
+    await h.user.dblClick(screen.getByRole('button', { name: 'Not ready' }))
+    expect(h.socket().sentTypes).toEqual(['Join', 'Ready', 'NotReady'])
+  })
+
+  it('answers the keyboard as well as the mouse', async () => {
+    const h = await renderGame()
+    h.join()
+    h.deliver(lobbyMessage(table))
+    screen.getByRole('button', { name: 'Ready' }).focus()
+    await h.user.keyboard('{Enter}')
+    await h.user.keyboard(' ')
+    expect(h.socket().sentTypes).toEqual(['Join', 'Ready', 'Ready'])
+  })
+
   it('is not offered while the connection is down', async () => {
     const h = await renderGame()
     h.join()
