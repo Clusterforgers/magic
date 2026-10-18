@@ -46,14 +46,17 @@ export async function createAndJoin(browser: Browser, plans: readonly SeatPlan[]
   // The links are read from the page, as a host would copy them: `/game/<id>#seat=<n>&token=<token>`.
   const links = first.page.getByRole('list', { name: 'Seat links' }).locator('a[data-share-link]')
   await expect(links).toHaveCount(plans.length)
-  const paths = await links.evaluateAll((anchors) => anchors.map((anchor) => anchor.getAttribute('href') ?? ''))
+  const paths = await links.evaluateAll((anchors) =>
+    anchors.map((anchor) => anchor.getAttribute('href') ?? ''),
+  )
 
   await first.page.getByRole('button', { name: `Open my seat (${host.name})` }).click()
   const players = [first]
   for (const [index, guest] of guests.entries()) {
     const player = await newPlayer(browser, guest.name)
     const path = paths[index + 1]
-    if (path === undefined || !path.startsWith('/game/')) throw new Error(`no link for seat ${index + 2}: ${path}`)
+    if (path === undefined || !path.startsWith('/game/'))
+      throw new Error(`no link for seat ${index + 2}: ${path}`)
     await player.page.goto(path)
     players.push(player)
   }
@@ -65,8 +68,14 @@ export async function createAndJoin(browser: Browser, plans: readonly SeatPlan[]
 
 /** Presses Ready on every page; the game starts when the last one has. */
 export async function everyoneReady(players: readonly Player[]): Promise<void> {
-  for (const { page } of players) {
+  for (const [index, { page }] of players.entries()) {
     await page.getByRole('button', { name: 'Ready', exact: true }).click()
-    await expect(page.getByRole('button', { name: 'You are ready' })).toBeVisible()
+    // The last Ready starts the game, which can replace the lobby before this line looks at it.
+    if (index < players.length - 1) {
+      await expect(page.getByRole('button', { name: 'You are ready' })).toBeVisible()
+    }
+  }
+  for (const { page } of players) {
+    await expect(page.getByRole('heading', { name: 'Opening hands' })).toBeVisible()
   }
 }
