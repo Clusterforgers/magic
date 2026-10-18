@@ -11,7 +11,7 @@ import { CardRow } from './CardRow'
 import { Hand } from './Hand'
 import { ManaPool } from './ManaPool'
 import { useSeatNamer } from './names'
-import { exileOf, NO_IDS, playerOf } from './selectors'
+import { exileOf, isYourTurn, NO_IDS, playerOf } from './selectors'
 import { describeMulligan } from './turnText'
 import { ZoneButton } from './ZoneButton'
 
@@ -34,6 +34,8 @@ export const SeatPanel = memo(function SeatPanel({ seat, size }: SeatPanelProps)
     useShallow((state) => ({
       you: state.seat === seat,
       active: state.view?.turn.active === seat,
+      // The viewer's own turn: the panel joins the banner in the "your turn" glow.
+      cue: state.seat === seat && isYourTurn(state),
       priority: state.view?.priority?.holder === seat,
       mulligan: state.view?.stage === 'Mulligan',
       commander: state.view?.format.toLowerCase().includes('commander') ?? false,
@@ -52,10 +54,12 @@ export const SeatPanel = memo(function SeatPanel({ seat, size }: SeatPanelProps)
       data-seat={seat}
       data-you={flags.you || undefined}
       data-active={flags.active || undefined}
+      data-your-turn={flags.cue || undefined}
       data-eliminated={eliminated || undefined}
       className={cn(
-        '@container grid content-start gap-2 rounded-xl bg-card p-3 text-card-foreground ring-1 ring-foreground/10',
-        flags.active && 'ring-2 ring-primary',
+        '@container grid content-start gap-2 rounded-xl bg-card p-3 text-card-foreground',
+        // The glow carries its own ring, so it stands in for the ring classes instead of adding to them.
+        flags.cue ? 'your-turn-cue' : flags.active ? 'ring-2 ring-primary' : 'ring-1 ring-foreground/10',
         eliminated && 'border-l-4 border-destructive',
       )}
     >

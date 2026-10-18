@@ -20,6 +20,7 @@ import { Lobby } from './Lobby'
 import { SeatLinkMissing } from './SeatLinkMissing'
 import { ServerNotice } from './ServerNotice'
 import { useGameInfo } from './useGameInfo'
+import { useTurnTitle } from './useTurnTitle'
 
 /** The parts of `SessionDeps` a caller may replace, such as the socket and the clock in tests. */
 export type SessionOverrides = Omit<SessionDeps, 'game' | 'token' | 'name'>
@@ -114,7 +115,7 @@ function SeatedGame({ gameId, link, api, deps }: SeatedGameProps) {
     screen = state.phase === 'playing' ? <GameTable /> : <Lobby />
     title = state.phase === 'playing' ? 'Game' : 'Lobby'
   }
-  usePageTitle(title)
+  usePageTitle(useTurnTitle(session.store, title, screen !== null && state.phase === 'playing'))
 
   const retry = (): void => {
     session.disconnect()
