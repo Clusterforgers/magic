@@ -76,5 +76,6 @@ export type { Supertype } from "./Supertype";
 export type { TableView } from "./TableView";
 export type { TurnView } from "./TurnView";
 export type { UserView } from "./UserView";
+export type { YieldUntil } from "./YieldUntil";
 export type { Zone } from "./Zone";
 export type { ZoneView } from "./ZoneView";

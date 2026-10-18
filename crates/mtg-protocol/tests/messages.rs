@@ -21,7 +21,7 @@ use mtg_engine::state::GameResult;
 use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
     ClientMessage, DecisionId, ErrorCode, EventBatch, EventView, HiddenEvent, PROTOCOL_VERSION,
-    ServerMessage, StateView, project_events,
+    ServerMessage, StateView, YieldUntil, project_events,
 };
 use mtg_testkit::fuzz_setup;
 use proptest::prelude::*;
@@ -30,8 +30,14 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 8;
-const SERVER_VARIANTS: usize = 8;
+const CLIENT_VARIANTS: usize = 10;
+const SERVER_VARIANTS: usize = 9;
+
+const YIELDS: [YieldUntil; 3] = [
+    YieldUntil::Resolve,
+    YieldUntil::EndOfTurn,
+    YieldUntil::MyTurn,
+];
 
 /// Index of each client variant; adding a variant breaks this match until the table below grows.
 fn client_index(message: &ClientMessage) -> usize {
@@ -44,6 +50,8 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::Resync => 5,
         ClientMessage::AutoPass { .. } => 6,
         ClientMessage::Preview { .. } => 7,
+        ClientMessage::Yield { .. } => 8,
+        ClientMessage::CancelYield => 9,
     }
 }
 
@@ -58,6 +66,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::Error { .. } => 5,
         ServerMessage::GameOver { .. } => 6,
         ServerMessage::Forecast { .. } => 7,
+        ServerMessage::Yielding { .. } => 8,
     }
 }
 
@@ -246,7 +255,9 @@ fn client_samples() -> Vec<ClientMessage> {
         ClientMessage::Resync,
         ClientMessage::AutoPass { enabled: true },
         ClientMessage::AutoPass { enabled: false },
+        ClientMessage::CancelYield,
     ];
+    out.extend(YIELDS.map(|until| ClientMessage::Yield { until }));
     out.extend(answers().into_iter().map(|answer| ClientMessage::Answer {
         decision: DecisionId(41),
         answer,
@@ -267,6 +278,7 @@ fn server_samples() -> Vec<ServerMessage> {
             player: PlayerId(1),
             seats: 4,
             auto_pass: true,
+            yielding: None,
         },
         ServerMessage::Events(batch.clone()),
         ServerMessage::Snapshot {
@@ -292,6 +304,17 @@ fn server_samples() -> Vec<ServerMessage> {
             forecast: None,
         },
     ];
+    // A welcome states the yield the seat holds, and so does every change of it.
+    out.extend(YIELDS.map(|until| ServerMessage::Welcome {
+        protocol_version: PROTOCOL_VERSION,
+        game: "table-1".into(),
+        player: PlayerId(0),
+        seats: 2,
+        auto_pass: false,
+        yielding: Some(until),
+    }));
+    out.extend(YIELDS.map(|until| ServerMessage::Yielding { until: Some(until) }));
+    out.push(ServerMessage::Yielding { until: None });
     for code in [
         ErrorCode::UnsupportedVersion,
         ErrorCode::BadMessage,
@@ -371,6 +394,19 @@ fn every_event_view_variant_round_trips() {
 #[case(ClientMessage::Ready, json!({"type": "Ready"}))]
 #[case(ClientMessage::Resync, json!({"type": "Resync"}))]
 #[case(ClientMessage::AutoPass { enabled: false }, json!({"type": "AutoPass", "enabled": false}))]
+#[case(ClientMessage::CancelYield, json!({"type": "CancelYield"}))]
+#[case(
+    ClientMessage::Yield { until: YieldUntil::Resolve },
+    json!({"type": "Yield", "until": "Resolve"})
+)]
+#[case(
+    ClientMessage::Yield { until: YieldUntil::EndOfTurn },
+    json!({"type": "Yield", "until": "EndOfTurn"})
+)]
+#[case(
+    ClientMessage::Yield { until: YieldUntil::MyTurn },
+    json!({"type": "Yield", "until": "MyTurn"})
+)]
 #[case(
     ClientMessage::Join { protocol_version: 1, game: "g".into(), name: "n".into() },
     json!({"type": "Join", "protocol_version": 1, "game": "g", "name": "n"})
@@ -396,9 +432,18 @@ fn client_wire_shape_is_flat_and_tagged(
 
 #[rstest]
 #[case(
-    ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true },
-    json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true})
+    ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true, yielding: None },
+    json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true, "yielding": null})
 )]
+#[case(
+    ServerMessage::Welcome { protocol_version: 1, game: "g".into(), player: PlayerId(0), seats: 2, auto_pass: false, yielding: Some(YieldUntil::MyTurn) },
+    json!({"type": "Welcome", "protocol_version": 1, "game": "g", "player": 0, "seats": 2, "auto_pass": false, "yielding": "MyTurn"})
+)]
+#[case(
+    ServerMessage::Yielding { until: Some(YieldUntil::EndOfTurn) },
+    json!({"type": "Yielding", "until": "EndOfTurn"})
+)]
+#[case(ServerMessage::Yielding { until: None }, json!({"type": "Yielding", "until": null}))]
 #[case(
     ServerMessage::Decision {
         id: DecisionId(3),
@@ -607,4 +652,25 @@ proptest! {
         round_trip(&answer);
         round_trip(&error);
     }
+}
+
+#[rstest]
+#[case::no_duration(r#"{"type":"Yield"}"#)]
+#[case::unknown_duration(r#"{"type":"Yield","until":"Never"}"#)]
+#[case::lower_case(r#"{"type":"Yield","until":"endofturn"}"#)]
+#[case::null_duration(r#"{"type":"Yield","until":null}"#)]
+#[case::number_duration(r#"{"type":"Yield","until":3}"#)]
+#[case::object_duration(r#"{"type":"Yield","until":{"EndOfTurn":true}}"#)]
+fn a_yield_that_is_not_one_of_the_three_is_refused(#[case] text: &str) {
+    let parsed = serde_json::from_str::<ClientMessage>(text);
+    assert!(parsed.is_err(), "{text} was accepted as {parsed:?}");
+}
+
+#[rstest]
+#[case::lower_case(r#"{"type":"Yielding","until":"mine"}"#)]
+#[case::text_in_place_of_null(r#"{"type":"Yielding","until":"None"}"#)]
+#[case::number(r#"{"type":"Yielding","until":0}"#)]
+fn a_yielding_notice_with_a_wrong_duration_is_refused(#[case] text: &str) {
+    let parsed = serde_json::from_str::<ServerMessage>(text);
+    assert!(parsed.is_err(), "{text} was accepted as {parsed:?}");
 }

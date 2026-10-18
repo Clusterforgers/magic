@@ -9,7 +9,7 @@ import { indexById } from '@/play/view'
 import { devPreview } from './devForecast'
 import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
-import { DEV_PROMPTS, DEV_TABLES } from './prompts'
+import { DEV_PROMPTS, DEV_TABLES, DEV_YIELDS } from './prompts'
 
 /**
  * The play state of a seat that has just seen `fixture`. It faces `pending`, by default a priority decision with
@@ -96,6 +96,19 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       store.setState({ autoPass: enabled })
       return true
     },
+    // As the server answers a yield: it starts, and the priority decision on screen is passed.
+    yieldUntil(until) {
+      store.setState((state) => ({
+        yielding: until,
+        pending: state.pending !== null && 'Priority' in state.pending.decision.kind ? null : state.pending,
+        clock: null,
+      }))
+      return true
+    },
+    cancelYield() {
+      store.setState({ yielding: null })
+      return true
+    },
     chat(text) {
       const line = text.trim()
       if (line === '') return false
@@ -124,10 +137,13 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const store = createPlayStore()
   const name = options.prompt ?? ''
   const prompt = Object.hasOwn(DEV_PROMPTS, name) ? DEV_PROMPTS[name] : undefined
-  // A prompt may need another moment of the game than the fixture shows (the viewer's own turn, an attack to block).
-  const table = prompt !== undefined && Object.hasOwn(DEV_TABLES, name) ? DEV_TABLES[name] : undefined
+  // A prompt may need another moment of the game than the fixture shows (the viewer's own turn, an attack to block),
+  // and so may a state without any prompt, such as a seat that is already passing.
+  const table = Object.hasOwn(DEV_TABLES, name) ? DEV_TABLES[name] : undefined
   const fixture = table === undefined ? built : table(built)
   store.setState(fixtureState(fixture, prompt === undefined ? null : prompt(fixture)))
+  // A seat that is already yielding faces no priority decision, only the line that says it is passing.
+  if (Object.hasOwn(DEV_YIELDS, name)) store.setState({ yielding: DEV_YIELDS[name] ?? null })
   // The dev table answers a preview after a moment, so the "checking outcome" state can be looked at too.
   const session = fixtureSession(store, { previewAfter: options.previewMs ?? PREVIEW_LATENCY_MS })
   return { game: 'dev-fixture', session, lookup: fixtureLookup(fixture) }

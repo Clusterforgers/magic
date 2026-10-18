@@ -23,10 +23,12 @@
 //!   `Resync` repeats the last two. Queues are bounded: a client that stops reading is dropped and
 //!   must join again. The game waits for absent seats, with the exceptions of the next bullet.
 //! - **Pace.** A seat with nothing to do is passed for ([`Pace`], `ClientMessage::AutoPass`) through
-//!   the same path as an answer, and its client is never sent that decision. A seat that is not the
-//!   active player has a clock on a priority decision it can act on (10 s) and on declaring blockers
-//!   (45 s); at the deadline the server answers for the seat (a pass, or no blocks) the same way, so
-//!   a late answer is stale. Every other decision waits as long as it takes.
+//!   the same path as an answer, and its client is never sent that decision. So is a seat that yields
+//!   (`ClientMessage::Yield`: until the stack is empty, the turn ends or its own turn begins; an
+//!   opponent's new object, whatever the seat could do about it, ends it; it is held in memory only).
+//!   A seat that is not the active player has a clock on every priority decision (10 s) and on declaring
+//!   blockers (45 s); at the deadline the server answers for the seat (a pass, or no blocks) the same
+//!   way, so a late answer is stale. Every other decision waits as long as it takes.
 //! - **Chat** is broadcast to connected seats and never stored.
 //! - **Previews** (`ClientMessage::Preview`) are advice about a pending attack or block: the actor answers
 //!   each with one `Forecast` (empty when there is none or the seat is over its rate limit), never an
@@ -79,6 +81,7 @@ mod store;
 mod throttle;
 mod user_id;
 mod ws;
+mod yields;
 
 pub use actor::{
     GameConfig, MAX_CHAT_CHARS, StartError, resume_game, resume_game_with, spawn_game,

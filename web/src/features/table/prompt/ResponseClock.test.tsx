@@ -1,10 +1,11 @@
 // Goal: the prompt of a decision on a clock shows the seconds left as text that counts down with the session's clock, a bar that drains over the time left (not drawn, with only the number, under a preference for less motion), says its sentence once to a screen reader, turns urgent in the last seconds and goes with the prompt at zero; a decision without a clock, or another decision's clock, shows nothing.
-import { act, screen, within } from '@testing-library/react'
+import { act, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { DecisionKind, ServerMessage } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { KINDS } from '@/test-utils/decisions'
 import { startSession } from '@/test-utils/harness'
+import { primaryButton } from '@/test-utils/passControls'
 import { renderLiveTable } from '@/test-utils/tableHarness'
 import { fixtureLookup } from '../dev/devGame'
 import { buildFixture } from '../dev/fixture'
@@ -171,7 +172,7 @@ describe('when there is nothing to show', () => {
   it('goes when the seat answers, and the answer is sent once', async () => {
     const { h, send, clock, user } = mount()
     send(decision(5, KINDS.Priority, 10_000))
-    await user.click(screen.getByRole('button', { name: 'Pass priority' }))
+    await user.click(primaryButton())
     expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 5, answer: { Priority: 'Pass' } }])
     expect(clock()).toBeNull()
   })

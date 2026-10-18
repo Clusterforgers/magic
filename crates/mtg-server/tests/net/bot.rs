@@ -136,6 +136,7 @@ impl WsBot {
         let report = BotReport {
             seat: PlayerId::from_index(self.seat),
             result,
+            yields: 0,
             decisions: self.decisions,
             idle_decisions: self.idle_decisions,
             clocked: self.clocked,
@@ -182,7 +183,7 @@ impl WsBot {
                 return self.respond(id, decision).await;
             }
             ServerMessage::Error { code, message } => self.errors.push((code, message)),
-            ServerMessage::Chat { .. } => {}
+            ServerMessage::Chat { .. } | ServerMessage::Yielding { .. } => {}
             ServerMessage::GameOver { result } => return Some(Stop::Over(result)),
             ServerMessage::Forecast { .. } => {
                 panic!("a bot never previews, so it is sent no forecast")

@@ -32,13 +32,16 @@ test('two seats play a vanilla game to the end in the browser', async ({ browser
     // Ada taps her lands by hand and never blocks; Bo pays automatically and blocks, so each path is walked by a seat.
     await playToTheEnd(
       [
-        { player: ada, style: { blocks: false, autoPay: false } },
-        { player: bo, style: { blocks: true, autoPay: true } },
+        { player: ada, style: { blocks: false, autoPay: false, yields: false } },
+        { player: bo, style: { blocks: true, autoPay: true, yields: true } },
       ],
       run,
     )
     expect(run.idle.get('Ada') ?? 0, 'Ada was asked about windows she could do nothing in').toBe(0)
     expect(run.idle.get('Bo') ?? 0, 'Bo asked to be stopped at every window').toBeGreaterThan(0)
+    // Bo hands the rest of a turn to the server when it has nothing to play, so the yield is walked in a real browser too.
+    expect(run.yields.get('Bo') ?? 0, 'Bo never pressed End turn').toBeGreaterThan(0)
+    expect(run.yields.get('Ada') ?? 0).toBe(0)
 
     // Both screens agree on the winner: one seat is told it won, the other that it lost, and each list names one Winner.
     const headlines = await Promise.all(

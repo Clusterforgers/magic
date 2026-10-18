@@ -37,6 +37,17 @@ pub enum ErrorCode {
     Internal,
 }
 
+/// How long a seat asks the server to pass priority for it (see [`ClientMessage::Yield`]).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+pub enum YieldUntil {
+    /// Until the stack is empty.
+    Resolve,
+    /// Until the turn ends.
+    EndOfTurn,
+    /// Until the seat's own next turn begins.
+    MyTurn,
+}
+
 /// A message from a client to the server.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(tag = "type")]
@@ -86,6 +97,19 @@ pub enum ClientMessage {
         /// The new setting.
         enabled: bool,
     },
+    /// Asks the server to pass priority for this seat until `until`; [`ServerMessage::Yielding`] says when it starts or ends.
+    ///
+    /// While it lasts the server answers each `Priority` decision of the seat with a pass and never sends it; the
+    /// pending one is passed at once. It ends, and decisions come as usual, when an opponent puts a new object on
+    /// the stack, at `until`, when the seat leaves the game and on `CancelYield`; what the seat could do about it
+    /// never matters. Other decisions (attackers, blockers, a discard, a payment) are always sent and leave it as
+    /// it is. A new `Yield` replaces the old one. Kept in memory per seat: a resumed game starts with none.
+    Yield {
+        /// How long to pass for.
+        until: YieldUntil,
+    },
+    /// Ends this seat's yield, if it has one.
+    CancelYield,
 }
 
 /// A message from the server to one client.
@@ -104,6 +128,8 @@ pub enum ServerMessage {
         seats: u32,
         /// Whether the server passes for this seat when it cannot act (see [`ClientMessage::AutoPass`]).
         auto_pass: bool,
+        /// The yield the server holds for this seat, if any (see [`ClientMessage::Yield`]).
+        yielding: Option<YieldUntil>,
     },
     /// The client must answer; the engine's legal options are inside.
     Decision {
@@ -153,5 +179,13 @@ pub enum ServerMessage {
     GameOver {
         /// How it ended.
         result: GameResult,
+    },
+    /// This seat's yield changed (see [`ClientMessage::Yield`]).
+    ///
+    /// Sent whenever it starts, is replaced or ends, after the events of the step that changed it and before
+    /// the decision that follows. Ending covers every cause, so a client never works out when a yield stopped.
+    Yielding {
+        /// The yield now in force, or `None` when the seat is not yielding.
+        until: Option<YieldUntil>,
     },
 }

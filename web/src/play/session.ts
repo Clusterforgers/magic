@@ -5,7 +5,7 @@
 import { GameSocket } from '@/net/socket'
 import type { GameSocketOptions, SocketEvent } from '@/net/socket'
 import { browserTimers } from '@/net/timers'
-import type { Answer, DecisionId, ServerMessage } from '@/protocol/generated'
+import type { Answer, DecisionId, ServerMessage, YieldUntil } from '@/protocol/generated'
 import { previewKey } from './preview'
 import { appendChat, appendLog, createPlayStore, dropLogFrom } from './store'
 import type { PlayState, PlayStore } from './store'
@@ -42,6 +42,14 @@ export interface Session {
    * `autoPass` follows once the message is out; false (and no change) when the socket is not open.
    */
   setAutoPass(enabled: boolean): boolean
+  /**
+   * Asks the server to pass priority for this seat until `until`, so it is not asked again until something happens
+   * (see `ClientMessage::Yield`). The store's `yielding` follows when the server says so, not before, and the
+   * pending priority decision goes with it; false when the socket is not open.
+   */
+  yieldUntil(until: YieldUntil): boolean
+  /** Asks the server to end this seat's yield; `yielding` becomes null when it confirms. False when the socket is not open. */
+  cancelYield(): boolean
   /** Says `text` to the table (trimmed, at most `MAX_CHAT_CHARS` characters). */
   chat(text: string): boolean
   /** Asks the server for a fresh snapshot; the escape hatch when the game looks stuck. */
@@ -146,7 +154,15 @@ export function createSession(deps: SessionDeps): Session {
         lastAnswered = null
         asked = []
         previewsKnown = true
-        setState({ seat: message.player, seatCount: message.seats, autoPass: message.auto_pass })
+        setState({
+          seat: message.player,
+          seatCount: message.seats,
+          autoPass: message.auto_pass,
+          yielding: message.yielding,
+        })
+        return
+      case 'Yielding':
+        onYielding(message)
         return
       case 'Snapshot':
         onSnapshot(message)
@@ -168,7 +184,7 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'GameOver':
         socket.retire()
-        setState({ result: message.result, phase: 'over', pending: null, preview: null })
+        setState({ result: message.result, phase: 'over', pending: null, preview: null, yielding: null })
         return
       default: {
         // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
@@ -227,6 +243,16 @@ export function createSession(deps: SessionDeps): Session {
           ? { id: message.id, decision: message.decision }
           : { id: message.id, decision: message.decision, deadlineMs: message.deadline_ms },
       preview: null,
+    })
+  }
+
+  function onYielding(message: Of<'Yielding'>): void {
+    // A yield that starts has passed for the priority decision on screen (or is about to), so that prompt is over.
+    // Other decisions stay: the server still asks for attackers, blockers and the like.
+    setState((state) => {
+      const passed =
+        message.until !== null && state.pending !== null && 'Priority' in state.pending.decision.kind
+      return passed ? { yielding: message.until, pending: null, preview: null } : { yielding: message.until }
     })
   }
 
@@ -297,6 +323,8 @@ export function createSession(deps: SessionDeps): Session {
       setState({ autoPass: enabled })
       return true
     },
+    yieldUntil: (until) => socket.send({ type: 'Yield', until }),
+    cancelYield: () => socket.send({ type: 'CancelYield' }),
     chat(text) {
       const line = text.trim()
       if (line === '') return false

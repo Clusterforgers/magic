@@ -13,6 +13,8 @@ export interface Style {
   blocks: boolean
   /** Pay with "Pay automatically"; otherwise tap sources by hand until the cost is covered. */
   autoPay: boolean
+  /** In a priority window with nothing to play press "End turn" (the server passes for the rest of the turn); otherwise continue. */
+  yields: boolean
 }
 
 interface Card {
@@ -80,6 +82,8 @@ export class Run {
   readonly kinds = new Map<string, number>()
   /** Priority windows each seat (by name) was asked about with no land and no spell to offer; auto-pass leaves none. */
   readonly idle = new Map<string, number>()
+  /** Times each seat (by name) pressed "End turn" to have the server pass for it until the turn ended. */
+  readonly yields = new Map<string, number>()
   readonly trail: string[] = []
   /** Set by the first loop that fails, so the other stops instead of waiting out the stall limit. */
   failure: Error | null = null
@@ -114,11 +118,14 @@ export class Run {
     }
   }
 
-  /** "364 decisions (Priority 280, PayMana 30, ...), idle windows: Ada 0, Bo 31". */
+  /** "364 decisions (Priority 280, PayMana 30, ...), idle windows: Ada 0, Bo 31, turns ended: Bo 12". */
   summary(): string {
     const kinds = [...this.kinds].map(([kind, count]) => `${kind} ${count}`).join(', ')
     const idle = [...this.idle].map(([name, count]) => `${name} ${count}`).join(', ')
-    return `${this.steps} decisions (${kinds})${idle === '' ? '' : `, idle windows: ${idle}`}`
+    const ended = [...this.yields].map(([name, count]) => `${name} ${count}`).join(', ')
+    return `${this.steps} decisions (${kinds})${idle === '' ? '' : `, idle windows: ${idle}`}${
+      ended === '' ? '' : `, turns ended: ${ended}`
+    }`
   }
 
   private tail(): string {
@@ -155,11 +162,16 @@ interface Turn {
   player: Player
   style: Style
   seen: Seen
+  run: Run
 }
 
 const named = (card: Card): string => card.label.split(',')[0] ?? card.label
 const prompt = (page: Page): Locator => page.locator('[data-decision]')
 const button = (page: Page, name: string): Locator => prompt(page).getByRole('button', { name, exact: true })
+/** The Priority prompt's primary button: its words depend on the moment ("Next: Combat", "Continue"...), its slot does not. */
+const primary = (page: Page): Locator => prompt(page).locator('[data-slot="primary-action"]')
+/** "End turn" beside the primary button, which is not drawn in the last window of one's own turn. */
+const endTurn = (page: Page): Locator => prompt(page).locator('[data-slot="secondary-action"]')
 const card = (page: Page, id: string): Locator => page.locator(`button[data-object-id="${id}"]`)
 const enabled = (seen: Seen, label: string): boolean =>
   seen.buttons.some((control) => control.label === label && !control.disabled)
@@ -171,12 +183,17 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     return 'keeps the opening hand'
   },
 
-  async Priority({ player, seen }) {
-    // Lands first, so the mana is there for the creature that follows; with nothing to play, pass.
+  async Priority({ player, style, seen, run }) {
+    // Lands first, so the mana is there for the creature that follows; with nothing to play, go on.
     const play = seen.hand.find((candidate) => candidate.land) ?? seen.hand[0]
     if (play === undefined) {
-      await button(player.page, 'Pass priority').click()
-      return 'passes priority'
+      if (style.yields && (await endTurn(player.page).count()) > 0) {
+        await endTurn(player.page).click()
+        run.yields.set(player.name, (run.yields.get(player.name) ?? 0) + 1)
+        return 'ends the turn'
+      }
+      await primary(player.page).click()
+      return 'continues'
     }
     await card(player.page, play.id).click()
     return `${play.land ? 'plays' : 'casts'} ${named(play)}`
@@ -273,7 +290,7 @@ async function drive(player: Player, style: Style, run: Run): Promise<void> {
     const answer = ANSWERS[seen.kind]
     if (answer === undefined)
       throw new Error(`${player.name} faces ${seen.kind}, which the driver cannot answer`)
-    run.step(player.name, seen.kind, `#${seen.id} ${await answer({ player, style, seen })}`)
+    run.step(player.name, seen.kind, `#${seen.id} ${await answer({ player, style, seen, run })}`)
     answered = seen.id
   }
 }

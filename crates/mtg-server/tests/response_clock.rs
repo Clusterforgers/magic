@@ -1,4 +1,4 @@
-//! Goal: a seat that is not the active player and can act has a response clock, a defender has a longer one for blocking, and nothing else is hurried; at the deadline the server answers for the seat (a pass, or no blocks) through the normal path so a late answer is stale, a reconnect is told the time that is left, the clock runs while the seat is away, and a failing store neither loses the move nor makes the server spin.
+//! Goal: a seat that is not the active player has a response clock on every priority decision (even with nothing to do), a defender has a longer one for blocking, and nothing else is hurried; at the deadline the server answers for the seat (a pass, or no blocks) through the normal path so a late answer is stale, a reconnect is told the time that is left, the clock runs while the seat is away, and a failing store neither loses the move nor makes the server spin.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -254,10 +254,10 @@ async fn the_active_player_is_never_on_a_clock() {
 }
 
 #[tokio::test(start_paused = true)]
-async fn a_seat_with_nothing_to_do_is_not_on_a_clock_even_when_it_is_asked() {
+async fn a_seat_that_is_not_the_active_player_is_hurried_even_with_nothing_to_do() {
     // Auto-pass off: seat 0's idle window is delivered and, once passed, so is seat 1's.
     let setup = Scenario::new(2).setup().unwrap();
-    let (handle, _) = spawn(
+    let (handle, store) = spawn(
         setup,
         Pace {
             auto_pass: false,
@@ -266,18 +266,32 @@ async fn a_seat_with_nothing_to_do_is_not_on_a_clock_even_when_it_is_asked() {
     );
     let mut clients = join_and_ready(&handle).await;
     let (id, _, left) = clocked(&mut clients[0]).await;
-    assert_eq!(left, None);
+    assert_eq!(left, None, "the active player holds its own turn");
     pass(&handle, &clients[0], id).await;
-    let (_, decision, left) = clocked(&mut clients[1]).await;
-    assert_eq!(left, None, "it could do nothing, so it is not hurried");
+    let (window, decision, left) = clocked(&mut clients[1]).await;
+    assert_eq!(
+        left,
+        Some(10_000),
+        "an idle window holds the table for nothing, so it has the usual clock"
+    );
     let DecisionKind::Priority(options) = &decision.kind else {
         panic!("expected priority");
     };
     assert!(!options.can_act);
 
-    let status = handle.status().await.unwrap();
-    tokio::time::advance(Duration::from_secs(3600)).await;
-    assert_eq!(quiet(&handle).await, status);
+    // At the deadline the server passes for it, as for any seat, and a late answer is stale.
+    let events = handle.status().await.unwrap().events;
+    let passed = passes_by(&store.inner().load(game_id(1)).await.unwrap(), PlayerId(1));
+    clients[1].drain();
+    tokio::time::advance(RESPONSE).await;
+    let status = moved_past(&handle, events).await;
+    assert_eq!(status.waiting_on, Some(seat(0)));
+    let logged = store.inner().load(game_id(1)).await.unwrap();
+    assert_eq!(passes_by(&logged, PlayerId(1)), passed + 1);
+    clients[1].drain();
+    pass(&handle, &clients[1], window).await;
+    handle.status().await.unwrap();
+    assert!(is_stale(&clients[1].drain()));
 }
 
 /// Passes for whoever is asked about priority until seat 1 is asked to block; returns that decision.

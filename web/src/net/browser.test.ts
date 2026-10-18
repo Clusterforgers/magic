@@ -36,6 +36,7 @@ const welcome = {
   player: 1,
   seats: 3,
   auto_pass: true,
+  yielding: null,
 }
 
 beforeEach(() => {

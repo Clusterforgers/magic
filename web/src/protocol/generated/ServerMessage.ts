@@ -7,6 +7,7 @@ import type { EventBatch } from "./EventBatch";
 import type { GameResult } from "./GameResult";
 import type { PlayerId } from "./PlayerId";
 import type { StateView } from "./StateView";
+import type { YieldUntil } from "./YieldUntil";
 
 /**
  * A message from the server to one client.
@@ -31,7 +32,11 @@ seats: number,
 /**
  * Whether the server passes for this seat when it cannot act (see [`ClientMessage::AutoPass`]).
  */
-auto_pass: boolean, } | { "type": "Decision", 
+auto_pass: boolean, 
+/**
+ * The yield the server holds for this seat, if any (see [`ClientMessage::Yield`]).
+ */
+yielding: YieldUntil | null, } | { "type": "Decision", 
 /**
  * Echo this id in the answer.
  */
@@ -82,4 +87,8 @@ message: string, } | { "type": "GameOver",
 /**
  * How it ended.
  */
-result: GameResult, };
+result: GameResult, } | { "type": "Yielding", 
+/**
+ * The yield now in force, or `None` when the seat is not yielding.
+ */
+until: YieldUntil | null, };
