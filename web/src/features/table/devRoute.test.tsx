@@ -27,11 +27,12 @@ afterEach(() => {
 describe('/dev/table in development', () => {
   it('shows a four-seat grid table when the address says nothing', async () => {
     await visit('/dev/table')
-    await screen.findByRole('region', { name: 'Game table' })
+    // The first visit pays for importing the whole route tree again, which can pass 1 s under a loaded runner.
+    await screen.findByRole('region', { name: 'Game table' }, { timeout: 8000 })
     expect(panels()).toEqual([1, 2, 3, 0])
     expect(document.querySelector('[data-layout]')).toHaveAttribute('data-layout', 'grid')
     expect(document.querySelector(`[data-fixture="${FIXTURE_MARKER}"]`)).not.toBeNull()
-  })
+  }, 10_000)
 
   it.each([
     ['?seats=2', 'grid', [1, 0]],
