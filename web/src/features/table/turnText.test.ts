@@ -23,7 +23,16 @@ const name = (seat: number): string => NAMES[seat] ?? `Seat ${seat + 1}`
 const ZERO: ManaCost = { generic: 0, colorless: 0, colored: [0, 0, 0, 0, 0] }
 // One of every decision kind; the type makes a new kind fail to compile here until it has a sample.
 const KINDS: Record<DecisionName, DecisionKind> = {
-  Mulligan: { Mulligan: { hand: [], mulligans_taken: 0, can_mulligan: true } },
+  Mulligan: {
+    Mulligan: {
+      hand: [],
+      mulligans_taken: 0,
+      can_mulligan: true,
+      free_mulligans: 0,
+      bottom_if_keep: 0,
+      bottom_if_mulligan: 1,
+    },
+  },
   BottomCards: { BottomCards: { hand: [], count: 1 } },
   Priority: { Priority: { playable_lands: [], castable: [], mana_abilities: [], can_pass: true } },
   PayMana: {

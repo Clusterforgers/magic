@@ -105,6 +105,9 @@ fn decision_kinds() -> Vec<DecisionKind> {
             hand: vec![a, b],
             mulligans_taken: 1,
             can_mulligan: true,
+            free_mulligans: 1,
+            bottom_if_keep: 0,
+            bottom_if_mulligan: 1,
         }),
         DecisionKind::BottomCards(BottomOptions {
             hand: vec![a, b],
@@ -316,6 +319,29 @@ fn server_wire_shape_is_flat_and_tagged(
     #[case] expected: serde_json::Value,
 ) {
     assert_eq!(serde_json::to_value(&message).unwrap(), expected);
+}
+
+#[test]
+fn mulligan_options_carry_the_bottom_counts_by_name() {
+    let options = MulliganOptions {
+        hand: vec![ObjectId(3)],
+        mulligans_taken: 1,
+        can_mulligan: true,
+        free_mulligans: 1,
+        bottom_if_keep: 0,
+        bottom_if_mulligan: 1,
+    };
+    assert_eq!(
+        serde_json::to_value(DecisionKind::Mulligan(options)).unwrap(),
+        json!({"Mulligan": {
+            "hand": [3],
+            "mulligans_taken": 1,
+            "can_mulligan": true,
+            "free_mulligans": 1,
+            "bottom_if_keep": 0,
+            "bottom_if_mulligan": 1,
+        }})
+    );
 }
 
 #[test]

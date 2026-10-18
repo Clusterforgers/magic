@@ -227,6 +227,7 @@ mod tests {
     fn normal_constants() {
         assert_eq!(Normal.starting_life(), 20);
         assert_eq!(Normal.mulligan_rule().hand_size, 7);
+        assert_eq!(Normal.mulligan_rule().free_mulligans, 0);
         assert_eq!(Normal.extra_zones().len(), 0);
         assert_eq!(Normal.name(), "normal");
     }

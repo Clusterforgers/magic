@@ -241,7 +241,27 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   priority,
   attack,
   block,
-  mulligan: aboutHand((hand) => ({ Mulligan: { hand, mulligans_taken: 1, can_mulligan: true } })),
+  mulligan: aboutHand((hand) => ({
+    Mulligan: {
+      hand,
+      mulligans_taken: 1,
+      can_mulligan: true,
+      free_mulligans: 0,
+      bottom_if_keep: 1,
+      bottom_if_mulligan: 2,
+    },
+  })),
+  // A format with one free mulligan (Commander's, CR 103.5c): the next mulligan costs no card.
+  'mulligan-free': aboutHand((hand) => ({
+    Mulligan: {
+      hand,
+      mulligans_taken: 0,
+      can_mulligan: true,
+      free_mulligans: 1,
+      bottom_if_keep: 0,
+      bottom_if_mulligan: 0,
+    },
+  })),
   bottom: aboutHand((hand) => ({ BottomCards: { hand, count: 2 } })),
   discard: aboutHand((hand) => ({ Discard: { hand: hand.slice(0, -1), count: 2 } })),
   damage: assignDamage(2),
