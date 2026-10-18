@@ -161,7 +161,7 @@ function isObjectView(value: unknown): value is ObjectView {
     isCount(value.controller) &&
     isTag(value.zone) &&
     isText(value.name) &&
-    (value.mana_cost === null || isRecord(value.mana_cost)) &&
+    (value.mana_cost === null || Array.isArray(value.mana_cost)) &&
     isListOf(value.supertypes, isText) &&
     isListOf(value.types, isText) &&
     isListOf(value.subtypes, isText) &&

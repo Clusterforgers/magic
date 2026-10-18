@@ -8,7 +8,7 @@ export function card(over: Partial<ObjectView> = {}): ObjectView {
     controller: 0,
     zone: 'Battlefield',
     name: 'Grizzly Bears',
-    mana_cost: { generic: 1, colorless: 0, colored: [0, 0, 0, 0, 1] },
+    mana_cost: [{ Generic: 1 }, { Colored: 'Green' }],
     supertypes: [],
     types: ['Creature'],
     subtypes: ['Bear'],

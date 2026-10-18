@@ -270,7 +270,8 @@ pub enum ParseManaCostError {
     Unsupported(String),
 }
 
-/// A mana cost: its symbols in one canonical order, so equal costs are equal values (CR 107.4: the order is not meaningful).
+/// A mana cost: its symbols in one canonical order, so equal costs are equal values (the order a card prints
+/// its symbols in has no rules meaning).
 ///
 /// Generic symbols are merged into one, `{0}` is dropped (the empty cost prints as `{0}`), and a colour pair
 /// is written the way cards print it. On the wire it is the list of its symbols.

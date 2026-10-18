@@ -19,11 +19,13 @@ export const KINDS: Record<DecisionName, DecisionKind> = {
   PayMana: {
     PayMana: {
       spell: 1,
-      cost: { generic: 1, colorless: 0, colored: [0, 0, 0, 0, 0] },
+      cost: [{ Generic: 1 }],
       pool: { counts: [0, 0, 0, 0, 0, 0] },
       sources: [],
       auto_available: false,
       can_cancel: true,
+      life: 20,
+      max_life: 0,
     },
   },
   DeclareAttackers: { DeclareAttackers: { attackers: [] } },

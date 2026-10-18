@@ -5,6 +5,7 @@ import type {
   AttackTarget,
   BlockOptions,
   DecisionKind,
+  ManaCost,
   ManaOption,
   ObjectId,
   ObjectView,
@@ -132,7 +133,7 @@ const attackTable: DevTable = (fixture) => {
     controller: owner,
     zone: 'Battlefield',
     name: 'Jace, the Mind Sculptor',
-    mana_cost: { generic: 2, colorless: 0, colored: [0, 2, 0, 0, 0] },
+    mana_cost: [{ Generic: 2 }, { Colored: 'Blue' }, { Colored: 'Blue' }],
     supertypes: ['Legendary'],
     types: ['Planeswalker'],
     subtypes: [],
@@ -181,7 +182,7 @@ const blockTable: DevTable = (fixture) => {
 /**
  * Paying for Selesnya Evangel ({2}{W}{G}) from the hand, with the viewer's floating mana (two red, a green, a
  * colourless), every untapped land and mana rock, and one invented second ability (red) on the first rock so the
- * choice between abilities can be seen. Costs have no hybrid or X, so there is one cost to show.
+ * choice between abilities can be seen. The other pay prompts show hybrid and Phyrexian symbols.
  */
 const pay: DevPrompt = ({ view }) => {
   const viewer = view.viewer
@@ -196,7 +197,7 @@ const pay: DevPrompt = ({ view }) => {
   const rock = sources.find((object) => !object.types.includes('Land'))
   const options: PayOptions = {
     spell: spell?.id ?? 0,
-    cost: spell?.mana_cost ?? { generic: 2, colorless: 0, colored: [1, 0, 0, 0, 1] },
+    cost: spell?.mana_cost ?? [{ Generic: 2 }, { Colored: 'White' }, { Colored: 'Green' }],
     pool: view.players[viewer]?.mana ?? { counts: [0, 0, 0, 0, 0, 0] },
     sources: sources.flatMap((object): ManaOption[] =>
       object.abilities.flatMap((ability, index): ManaOption[] =>
@@ -207,6 +208,8 @@ const pay: DevPrompt = ({ view }) => {
     ),
     auto_available: true,
     can_cancel: true,
+    life: view.players[viewer]?.life ?? 20,
+    max_life: 0,
   }
   if (rock !== undefined) {
     options.sources.push({ source: { object: rock.id, ability: rock.abilities.length }, produces: 'Red' })
@@ -221,12 +224,51 @@ const payShort: DevPrompt = (fixture) => {
   const { PayMana: options } = decision.kind
   const short: PayOptions = {
     ...options,
-    cost: { generic: 3, colorless: 0, colored: [0, 2, 0, 0, 0] },
+    cost: [{ Generic: 3 }, { Colored: 'Blue' }, { Colored: 'Blue' }],
     pool: { counts: [0, 0, 0, 0, 0, 0] },
     sources: options.sources.filter((option) => option.produces !== 'Blue').slice(0, 3),
     auto_available: false,
   }
   return { id, decision: { ...decision, kind: { PayMana: short } } }
+}
+
+const HYBRID_COST: ManaCost = [
+  { Generic: 1 },
+  { Hybrid: ['Green', 'White'] },
+  { MonoHybrid: 'Blue' },
+  { Phyrexian: 'White' },
+  { HybridPhyrexian: ['Green', 'Blue'] },
+]
+
+/**
+ * Hybrid, monocolored hybrid and Phyrexian symbols in one cost, `{1}{G/W}{2/U}{W/P}{G/U/P}`, with 20 life: two
+ * symbols that life can pay, each with a switch, and the lands to pay the rest from.
+ */
+const payHybrid: DevPrompt = (fixture) => {
+  const { id, decision } = pay(fixture)
+  if (!('PayMana' in decision.kind)) return { id, decision }
+  const { PayMana: options } = decision.kind
+  const mixed: PayOptions = { ...options, cost: HYBRID_COST, life: 20, max_life: 4 }
+  return { id, decision: { ...decision, kind: { PayMana: mixed } } }
+}
+
+/** The spell being paid for gets the hybrid cost too, so its card in the hand draws the symbols. */
+const hybridTable: DevTable = (fixture) => {
+  const { objects, viewer } = fixture.view
+  const spell = objects.find((object) => object.name === 'Selesnya Evangel' && object.owner === viewer)
+  return withView(fixture, {
+    objects: objects.map((object) =>
+      object.id === spell?.id ? { ...object, mana_cost: HYBRID_COST } : object,
+    ),
+  })
+}
+
+/** The same cost when the viewer has 3 life: 2 can be paid for one symbol, not for both, and the switch for the second is dead. */
+const payLowLife: DevPrompt = (fixture) => {
+  const { id, decision } = payHybrid(fixture)
+  if (!('PayMana' in decision.kind)) return { id, decision }
+  const low: PayOptions = { ...decision.kind.PayMana, life: 3, max_life: 2 }
+  return { id, decision: { ...decision, kind: { PayMana: low } } }
 }
 
 /** The same payment when the cast may not be backed out of: no Cancel button, and the sentence does not mention it. */
@@ -279,10 +321,14 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   pay,
   'pay-short': payShort,
   'pay-locked': payLocked,
+  'pay-hybrid': payHybrid,
+  'pay-low-life': payLowLife,
 }
 
 /** Prompts that need another moment of the game than the default fixture shows, by `?prompt=` name. */
 export const DEV_TABLES: Record<string, DevTable> = {
   attack: attackTable,
   block: blockTable,
+  'pay-hybrid': hybridTable,
+  'pay-low-life': hybridTable,
 }
