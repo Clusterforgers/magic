@@ -28,6 +28,9 @@ Design record for `mtg-protocol`. Rules of the house are in `CLAUDE.md`; engine 
 - A seat that joins the lobby is sent `Welcome` only (there is no engine yet), so it has no `Snapshot` when the game starts. Its first batch has `from_seq` 0 and lists every object, and it starts its state from that batch. A seat that joins a running game gets `Welcome`, `Snapshot`, its pending `Decision`.
 - Never serialize `GameState` or a raw `Event` to a client.
 
+- `PayOptions.can_cancel` says whether `PayChoice::Cancel` is legal, and `PayChoice::Complete(Payment)` sends part of a payment (floating mana and taps) for the engine to finish; a rejected answer leaves the decision pending. A cancelled cast produces no events, so the server sends no `Events` batch and stores nothing, only the caster's `Priority` decision again with a fresh id; the log never records a cast that was not paid.
+
+
 ## Hidden-information test
 - `tests/hidden_info.rs` plays seeded 2, 3 and 4-player bot games with unique card names and searches every viewer's event batches (each answer; `events`, `table`, `objects` and `gone` one by one) and snapshots (every 20 answers) for hidden names and ids. A control test plants a hidden card in each part and checks the scan flags it.
 - It skips JSON keys that hold seat numbers or counters (`SCALAR_KEYS`), so a new numeric field can fail it until its key is listed.

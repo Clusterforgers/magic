@@ -200,8 +200,10 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       tapped.push(named(source))
       now = await seeNow(player)
     }
-    if (now !== null && enabled(now, 'Pay automatically')) {
-      await button(page, 'Pay automatically').click()
+    // After some picks the prompt offers to pay the rest instead of paying everything automatically.
+    const rest = now !== null && enabled(now, 'Pay the rest for me') ? 'Pay the rest for me' : 'Pay automatically'
+    if (now !== null && enabled(now, rest)) {
+      await button(page, rest).click()
       return 'pays automatically (nothing left to tap by hand)'
     }
     await button(page, 'Cancel casting').click()

@@ -29,7 +29,8 @@ const START: Chosen = { spends: [], note: '' }
  * PayMana: what the spell costs, the floating mana, and what is still owed. Untapped permanents with a mana ability
  * are legal; a click adds one (a permanent with several kinds of mana asks which), a click on a chosen one takes it
  * back. Mana that would be wasted is not offered, so a payment is complete when nothing is owed. Confirm sends the
- * chosen payment, "Pay automatically" lets the game choose, Cancel gives up on casting the spell.
+ * chosen payment; with nothing chosen yet "Pay automatically" lets the game choose, and after some picks "Pay the rest
+ * for me" keeps them and lets the game pay what is owed; Cancel (only when the options allow it) gives up on the cast.
  */
 export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const { answer, selection } = usePrompt()
@@ -127,6 +128,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     covered,
     canAdd,
     auto: options.auto_available,
+    cancel: options.can_cancel,
     note,
   })
   return (
@@ -154,7 +156,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
       >
         Confirm payment
       </Button>
-      {options.auto_available ? (
+      {options.auto_available && spends.length === 0 ? (
         <Button
           className="h-10 px-4"
           variant="outline"
@@ -164,14 +166,26 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           Pay automatically
         </Button>
       ) : null}
-      <Button
-        className="h-10 px-4"
-        variant="outline"
-        data-slot="pay-cancel"
-        onClick={() => answer({ PayMana: 'Cancel' })}
-      >
-        Cancel casting
-      </Button>
+      {options.auto_available && spends.length > 0 && !covered ? (
+        <Button
+          className="h-10 px-4"
+          variant="outline"
+          data-slot="pay-rest"
+          onClick={() => answer({ PayMana: { Complete: toPayment(spends) } })}
+        >
+          Pay the rest for me
+        </Button>
+      ) : null}
+      {options.can_cancel ? (
+        <Button
+          className="h-10 px-4"
+          variant="outline"
+          data-slot="pay-cancel"
+          onClick={() => answer({ PayMana: 'Cancel' })}
+        >
+          Cancel casting
+        </Button>
+      ) : null}
     </PromptLayout>
   )
 }
