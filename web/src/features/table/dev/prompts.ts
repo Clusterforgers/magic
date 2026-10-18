@@ -4,6 +4,7 @@ import type {
   AttackOptions,
   AttackTarget,
   BlockOptions,
+  DecisionKind,
   ManaOption,
   ObjectId,
   ObjectView,
@@ -175,11 +176,22 @@ const blockTable: DevTable = (fixture) => {
   })
 }
 
+/** A decision about the viewer's hand, such as an opening hand to judge or cards to discard. */
+const aboutHand =
+  (kind: (hand: ObjectId[]) => DecisionKind): DevPrompt =>
+  ({ view }) => ({
+    id: 1,
+    decision: { player: view.viewer, kind: kind(view.players[view.viewer]?.hand.cards ?? []) },
+  })
+
 /** The prompts by their `?prompt=` name. */
 export const DEV_PROMPTS: Record<string, DevPrompt> = {
   priority,
   attack,
   block,
+  mulligan: aboutHand((hand) => ({ Mulligan: { hand, mulligans_taken: 1, can_mulligan: true } })),
+  bottom: aboutHand((hand) => ({ BottomCards: { hand, count: 2 } })),
+  discard: aboutHand((hand) => ({ Discard: { hand: hand.slice(0, -1), count: 2 } })),
 }
 
 /** Prompts that need another moment of the game than the default fixture shows, by `?prompt=` name. */
