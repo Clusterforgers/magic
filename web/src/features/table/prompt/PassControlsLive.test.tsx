@@ -121,6 +121,8 @@ describe('handing the turn over', () => {
         seats: 2,
         auto_pass: true,
         yielding: 'Resolve',
+        stops: [],
+        full_control: 'Off',
       },
       { type: 'Snapshot', seq: 2, state: fixture.view },
     )

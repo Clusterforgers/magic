@@ -240,6 +240,8 @@ describe('the socket with the pacer in front', () => {
       seats: 2,
       auto_pass: true,
       yielding: null,
+      stops: [],
+      full_control: 'Off',
     })
     sendMany(t, 100)
     expect(t.net.last.frames).toHaveLength(SEND_BURST)

@@ -70,6 +70,8 @@ describe('transcript fixture', () => {
       seats: 2,
       auto_pass: false,
       yielding: null,
+      stops: [],
+      full_control: 'Off',
     })
     expect(snapshot?.type).toBe('Snapshot')
     expect(rest.at(-1)?.type).toBe('GameOver')
@@ -128,10 +130,12 @@ describe('transcript fixture', () => {
         case 'Welcome':
           expect(keysOf(message)).toEqual([
             'auto_pass',
+            'full_control',
             'game',
             'player',
             'protocol_version',
             'seats',
+            'stops',
             'type',
             'yielding',
           ])

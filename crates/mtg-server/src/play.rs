@@ -3,7 +3,7 @@
 use mtg_core::ids::PlayerId;
 use mtg_engine::{Answer, EngineError, Event, GameState};
 use mtg_protocol::{
-    DecisionId, ErrorCode, EventBatch, ProtocolError, ServerMessage, YieldUntil, project_events,
+    DecisionId, ErrorCode, EventBatch, ProtocolError, ServerMessage, project_events,
 };
 use thiserror::Error;
 
@@ -79,7 +79,7 @@ impl<S: EventStore> GameActor<S> {
     ///
     /// First the seats that have nothing to do and asked to be skipped, and the seats that yield, are passed
     /// for, so the step, the passes that follow it and the save are one unit: either the whole stretch is kept
-    /// or none of it.
+    /// or none of it. The yields and the stops start from copies that replace the seats' own only once saved.
     pub(crate) async fn publish(&mut self, step: Step) -> Result<(), Fatal> {
         let yields = self.yields.clone();
         self.publish_with(step, yields).await
@@ -99,6 +99,7 @@ impl<S: EventStore> GameActor<S> {
             origin,
             keep_unchanged,
         } = step;
+        let mut stops = self.stops.clone();
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
         };
@@ -113,7 +114,14 @@ impl<S: EventStore> GameActor<S> {
         match committed {
             Ok(batches) => {
                 yields.drop_finished(running.engine.state());
-                let notices = self.yields.replace(yields);
+                stops.drop_finished(running.engine.state());
+                let mut notices: Vec<(PlayerId, ServerMessage)> = self
+                    .yields
+                    .replace(yields)
+                    .into_iter()
+                    .map(|(seat, until)| (seat, ServerMessage::Yielding { until }))
+                    .collect();
+                notices.extend(self.stops.replace(stops));
                 let next = running.settle(keep_unchanged);
                 let result = running.engine.result();
                 // Before anyone hears `GameOver`, so a client that saw it can trust the record.
@@ -152,22 +160,22 @@ impl<S: EventStore> GameActor<S> {
         Ok(viewers.into_iter().zip(batches).collect())
     }
 
-    /// Sends saved events to their seats, then each changed yield, then the next decision to the seat it names,
-    /// then the result.
+    /// Sends saved events to their seats, then each notice of a change (yields, then stops and Full Control), then
+    /// the next decision to the seat it names, then the result.
     ///
     /// A yield that ended is told before the decision that ended it, so the prompt never appears under a
-    /// "passing" notice.
+    /// "passing" notice; the stops are told in the same place.
     pub(crate) fn announce(
         &mut self,
         batches: Vec<(PlayerId, EventBatch)>,
-        notices: Vec<(PlayerId, Option<YieldUntil>)>,
+        notices: Vec<(PlayerId, ServerMessage)>,
         next: Option<Issued>,
     ) {
         for (seat, batch) in batches {
             self.seats.send(seat, ServerMessage::Events(batch));
         }
-        for (seat, until) in notices {
-            self.seats.send(seat, ServerMessage::Yielding { until });
+        for (seat, notice) in notices {
+            self.seats.send(seat, notice);
         }
         if let Some(Issued {
             id,
