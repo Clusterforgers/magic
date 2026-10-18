@@ -13,7 +13,6 @@ const NAMES = Object.keys(DECISION_LABEL) as DecisionName[]
 const UNBUILT: readonly DecisionName[] = [
   'Mulligan',
   'BottomCards',
-  'PayMana',
   'DeclareAttackers',
   'DeclareBlockers',
   'AssignDamage',
