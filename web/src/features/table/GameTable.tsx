@@ -9,6 +9,7 @@ import { CentreStrip } from './CentreStrip'
 import { Drawer } from './Drawer'
 import { arrangeSeats } from './layout'
 import type { SeatPlan, TableMode } from './layout'
+import { createMarksStore, MarksContext } from './prompt/marks'
 import { createPreviewStore, PreviewContext } from './preview'
 import { OpponentBoard, OwnBoard } from './SeatBoards'
 import { SeatTile } from './SeatTile'
@@ -77,6 +78,7 @@ export const GameTable = memo(function GameTable() {
   const [mode, setMode] = useState<TableMode | undefined>(options.mode)
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
   const [previews] = useState(createPreviewStore)
+  const [marks] = useState(createMarksStore)
   const plan = useMemo(
     () => arrangeSeats({ seatCount, viewer: seat ?? 0, mode, focus: chosen ?? followed }),
     [seatCount, seat, mode, chosen, followed],
@@ -85,31 +87,33 @@ export const GameTable = memo(function GameTable() {
 
   return (
     <PreviewContext value={previews}>
-      <section aria-label="Game table" className="flex w-full items-start">
-        <div className="grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
-          <h1 className="sr-only">Game table</h1>
-          {!ready || seat === null ? (
-            <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
-          ) : (
-            <>
-              <TableToolbar
-                mode={plan.mode}
-                onMode={setMode}
-                pinnedFocus={chosen !== null}
-                onFollow={() => setChosen(null)}
-              />
-              <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
-              <div className="grid gap-3">
-                <CentreStrip />
-                <StackPanel />
-              </div>
-              <OwnBoard seat={plan.viewer} size={size} />
-            </>
-          )}
-        </div>
-        <Drawer />
-      </section>
-      <CardPreview />
+      <MarksContext value={marks}>
+        <section aria-label="Game table" className="flex w-full items-start">
+          <div className="grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
+            <h1 className="sr-only">Game table</h1>
+            {!ready || seat === null ? (
+              <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
+            ) : (
+              <>
+                <TableToolbar
+                  mode={plan.mode}
+                  onMode={setMode}
+                  pinnedFocus={chosen !== null}
+                  onFollow={() => setChosen(null)}
+                />
+                <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
+                <div className="grid gap-3">
+                  <CentreStrip />
+                  <StackPanel />
+                </div>
+                <OwnBoard seat={plan.viewer} size={size} />
+              </>
+            )}
+          </div>
+          <Drawer />
+        </section>
+        <CardPreview />
+      </MarksContext>
     </PreviewContext>
   )
 })

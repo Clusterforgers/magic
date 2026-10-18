@@ -1,12 +1,16 @@
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { useSeatNamer } from './names'
+import { NothingToDoBanner } from './prompt/NothingToDoBanner'
+import { ownDecision } from './prompt/ownDecision'
+import { PromptHost } from './prompt/PromptHost'
 import { bannerText, priorityText, waitingOn, waitingText } from './turnText'
 import { useStable } from './useStable'
 
 /**
- * The middle of the table: the turn banner, who has priority and, read-only, what the game is waiting for. The
- * decision prompts replace the last line with real controls; `data-slot="decision-line"` marks the place.
+ * The middle of the table: the turn banner, who has priority and what the game is waiting for. When this seat must
+ * decide, the prompt (`prompt/PromptHost`) takes the place of the read-only line; `data-slot="decision-line"` marks
+ * both. A "nothing to do" note sits beneath.
  */
 export function CentreStrip() {
   const name = useSeatNamer()
@@ -20,6 +24,7 @@ export function CentreStrip() {
   )
   const priority = usePlay((state) => state.view?.priority ?? null)
   const waiting = usePlay(useStable(waitingOn))
+  const mine = usePlay((state) => ownDecision(state) !== null)
   const holder = priorityText(priority, banner.stage, name)
   return (
     <section
@@ -36,14 +41,19 @@ export function CentreStrip() {
           </p>
         )}
       </div>
-      <p
-        data-slot="decision-line"
-        aria-live="polite"
-        aria-atomic="true"
-        className="w-fit rounded-md bg-muted px-2 py-1 text-sm font-medium"
-      >
-        {waitingText(waiting, name)}
-      </p>
+      {mine ? (
+        <PromptHost />
+      ) : (
+        <p
+          data-slot="decision-line"
+          aria-live="polite"
+          aria-atomic="true"
+          className="w-fit rounded-md bg-muted px-2 py-1 text-sm font-medium"
+        >
+          {waitingText(waiting, name)}
+        </p>
+      )}
+      <NothingToDoBanner />
     </section>
   )
 }
