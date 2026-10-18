@@ -276,7 +276,11 @@ impl RandomBot {
 mod tests {
     //! Goal: every answer the bot gives is legal for the decision, across all decision kinds.
     use super::*;
-    use crate::cards::{bear, forest, free_creature};
+    use crate::cards::{
+        bear, colorless_hybrid_elf, colorless_phyrexian_elf, double_phyrexian_ogre, elf, forest,
+        free_creature, giant, hybrid_bear, hybrid_phyrexian_elf, island, mono_hybrid_bear,
+        phyrexian_bear, swamp, wastes,
+    };
     use crate::scenario::{Scenario, ready};
     use mtg_engine::turn::Step;
     use proptest::prelude::*;
@@ -300,6 +304,58 @@ mod tests {
                 let Some(decision) = engine.decision().cloned() else { break };
                 let answer = bot.choose(&decision);
                 prop_assert!(engine.apply(answer).is_ok(), "bot gave an illegal answer to {decision:?}");
+            }
+        }
+
+        #[test]
+        fn bot_answers_to_hybrid_and_phyrexian_costs_are_always_accepted(
+            seed in any::<u64>(), partial in any::<bool>(), symbol_choices in any::<bool>(), life in 1i32..9
+        ) {
+            let hand = [hybrid_bear(), mono_hybrid_bear(), phyrexian_bear(), double_phyrexian_ogre(), hybrid_phyrexian_elf(), colorless_hybrid_elf(), colorless_phyrexian_elf()];
+            let mut engine = Scenario::new(2)
+                .hand(0, hand.into_iter().cycle().take(14))
+                .battlefield(0, [ready(forest()), ready(island()), ready(swamp()), ready(wastes())])
+                .life(0, life)
+                .build()
+                .unwrap();
+            let mut bot = RandomBot::new(seed, 0);
+            if partial {
+                bot = bot.with_partial_payments();
+            }
+            if symbol_choices {
+                bot = bot.with_symbol_choices();
+            }
+            for _ in 0..120 {
+                let Some(decision) = engine.decision().cloned() else { break };
+                let answer = bot.choose(&decision);
+                prop_assert!(engine.apply(answer).is_ok(), "bot gave an illegal answer to {decision:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn plain_costs_get_the_same_answers_whether_or_not_symbols_are_chosen() {
+        // Seeded fixtures replay the plain bot, so the opt-in must not change a single draw of it.
+        let build = || {
+            Scenario::new(2)
+                .hand(0, [bear(), giant(), elf()])
+                .battlefield(0, std::iter::repeat_n(ready(forest()), 4))
+                .build()
+                .unwrap()
+        };
+        for seed in 0..40 {
+            let (mut first, mut second) = (build(), build());
+            let mut plain = RandomBot::new(seed, 0);
+            let mut choosing = RandomBot::new(seed, 0).with_symbol_choices();
+            for _ in 0..60 {
+                let (Some(a), Some(b)) = (first.decision().cloned(), second.decision().cloned())
+                else {
+                    break;
+                };
+                let (answer_a, answer_b) = (plain.choose(&a), choosing.choose(&b));
+                assert_eq!(answer_a, answer_b, "seed {seed}");
+                first.apply(answer_a).unwrap();
+                second.apply(answer_b).unwrap();
             }
         }
     }

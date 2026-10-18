@@ -184,6 +184,11 @@ impl Driver {
         life: u32,
     ) -> Result<Vec<Event>, ScriptError> {
         self.begin_cast(name)?;
+        self.pay_tapping(lands, life)
+    }
+
+    /// Answers the pending payment by tapping the named lands and paying `life`.
+    pub fn pay_tapping(&mut self, lands: &[&str], life: u32) -> Result<Vec<Event>, ScriptError> {
         let DecisionKind::PayMana(options) = &self.decision()?.kind else {
             return Err(self.unexpected("pay-mana"));
         };
