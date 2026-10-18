@@ -3,10 +3,12 @@ import type { GameContextValue } from '@/features/game/gameContext'
 import type { GameLookup } from '@/features/game/useGameInfo'
 import { previewKey } from '@/play/preview'
 import type { Session } from '@/play/session'
+import { canHoldStop } from '@/play/stops'
 import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById } from '@/play/view'
 import { devPreview } from './devForecast'
+import { withStop } from './devStops'
 import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
 import { DEV_PROMPTS, DEV_TABLES, DEV_YIELDS } from './prompts'
@@ -95,12 +97,20 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
       return true
     },
     concede: () => false,
-    setAutoPass(enabled) {
-      store.setState({ autoPass: enabled })
+    // As the server answers a stop: it holds it and says the whole list (untap and cleanup it refuses).
+    setStop(side, step, on, keep) {
+      if (!canHoldStop(step)) return false
+      store.setState((state) => ({ stops: withStop(state.stops, side, step, on, keep) }))
       return true
     },
-    // As the server answers a yield: it starts, and the priority decision on screen is passed.
+    // As the server answers Full Control: turning it on ends a running yield.
+    setFullControl(mode) {
+      store.setState((state) => ({ fullControl: mode, yielding: mode === 'Off' ? state.yielding : null }))
+      return true
+    },
+    // As the server answers a yield (it refuses one under Full Control): it starts, and the priority decision on screen is passed.
     yieldUntil(until) {
+      if (store.getState().fullControl !== 'Off') return false
       store.setState((state) => ({
         yielding: until,
         pending: state.pending !== null && 'Priority' in state.pending.decision.kind ? null : state.pending,

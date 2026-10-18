@@ -29,6 +29,8 @@ export function PassControls({ canPass }: { canPass: boolean }) {
   const { answer } = usePrompt()
   const situation = usePlay(useShallow(passSituation))
   const stacked = usePlay((state) => (state.view?.stack.count ?? 0) > 0)
+  // The server refuses a yield while Full Control is on, so there is nothing to offer then.
+  const canYield = usePlay((state) => state.fullControl === 'Off')
   // One request per prompt: the server answers it with a new decision or a notice, and either replaces this prompt.
   const [asked, setAsked] = useState(false)
   const free = canPass && !asked
@@ -62,7 +64,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
           Space
         </kbd>
       </Button>
-      {primaryEndsTurn(situation) ? null : (
+      {primaryEndsTurn(situation) || !canYield ? null : (
         <Button
           data-slot="secondary-action"
           variant="outline"
@@ -74,34 +76,36 @@ export function PassControls({ canPass }: { canPass: boolean }) {
           {YIELD_WORDS.EndOfTurn.action}
         </Button>
       )}
-      <DropdownMenu>
-        <DropdownMenuTrigger
-          data-slot="more-passing"
-          aria-label="More ways to pass"
-          disabled={!free}
-          render={<Button variant="outline" size="icon" className="size-10" />}
-        >
-          <EllipsisVertical aria-hidden="true" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {stacked ? (
-            <DropdownMenuItem
-              data-yield="Resolve"
-              aria-description={YIELD_WORDS.Resolve.description}
-              onClick={() => yieldTo('Resolve')}
-            >
-              {YIELD_WORDS.Resolve.action}
-            </DropdownMenuItem>
-          ) : null}
-          <DropdownMenuItem
-            data-yield="MyTurn"
-            aria-description={YIELD_WORDS.MyTurn.description}
-            onClick={() => yieldTo('MyTurn')}
+      {canYield ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            data-slot="more-passing"
+            aria-label="More ways to pass"
+            disabled={!free}
+            render={<Button variant="outline" size="icon" className="size-10" />}
           >
-            {YIELD_WORDS.MyTurn.action}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+            <EllipsisVertical aria-hidden="true" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {stacked ? (
+              <DropdownMenuItem
+                data-yield="Resolve"
+                aria-description={YIELD_WORDS.Resolve.description}
+                onClick={() => yieldTo('Resolve')}
+              >
+                {YIELD_WORDS.Resolve.action}
+              </DropdownMenuItem>
+            ) : null}
+            <DropdownMenuItem
+              data-yield="MyTurn"
+              aria-description={YIELD_WORDS.MyTurn.description}
+              onClick={() => yieldTo('MyTurn')}
+            >
+              {YIELD_WORDS.MyTurn.action}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : null}
     </>
   )
 }

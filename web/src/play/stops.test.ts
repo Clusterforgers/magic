@@ -181,7 +181,6 @@ describe('what the session leaves alone', () => {
     expect(after.pending).toBe(before.pending)
     expect(after.clock).toBe(before.clock)
     expect(after.yielding).toBe('MyTurn')
-    expect(after.autoPass).toBe(before.autoPass)
     expect(after.lobby).toBe(before.lobby)
     expect(after.notice).toBeNull()
   })

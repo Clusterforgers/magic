@@ -120,7 +120,7 @@ export function canConcede(state: PlayState): boolean {
   return player !== undefined && player.lost === null
 }
 
-/** Whether the switch for passing priority automatically means anything: the seat is still in a running game. */
-export function canSetAutoPass(state: PlayState): boolean {
+/** Whether stops and Full Control mean anything: the seat is still in a running game. */
+export function canSetStops(state: PlayState): boolean {
   return canConcede(state)
 }

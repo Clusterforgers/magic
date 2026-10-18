@@ -3,7 +3,6 @@ import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { clone, must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
-import { AUTO_PASS_LABEL } from './AutoPassSwitch'
 import { buildFixture } from './dev/fixture'
 import { opponentsOf } from './layout'
 
@@ -147,14 +146,16 @@ describe('choosing the opponent to focus', () => {
     expect(tile(container, 4)).toHaveAttribute('aria-current', 'true')
   })
 
-  it('reaches the tiles with Tab, after the layout buttons, the auto-pass switch and Concede', async () => {
+  it('reaches the tiles with Tab, after the layout buttons, Full Control and Concede', async () => {
     const { container, user } = renderTable({ fixture: buildFixture({ seats: 5, permanents: 2 }) })
     await user.tab()
     expect(screen.getByRole('button', { name: 'Grid' })).toHaveFocus()
     await user.tab()
     expect(screen.getByRole('button', { name: 'Focus' })).toHaveFocus()
     await user.tab()
-    expect(screen.getByRole('switch', { name: AUTO_PASS_LABEL })).toHaveFocus()
+    expect(screen.getByRole('button', { name: 'Full Control: off' })).toHaveFocus()
+    await user.tab()
+    expect(screen.getByRole('button', { name: 'Full Control options' })).toHaveFocus()
     await user.tab()
     expect(screen.getByRole('button', { name: 'Concede' })).toHaveFocus()
     await user.tab()

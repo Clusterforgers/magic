@@ -1,7 +1,7 @@
 // Goal: the Priority prompt passes through one primary button whose words say what passing does now, an "End turn" beside it and a small menu, each asking the session for the right yield exactly once per prompt; Space or Enter presses the primary button only when nothing else has the keyboard; and nothing says "pass priority" except the description a screen reader gets.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import type { Answer, PriorityOptions, Step, YieldUntil } from '@/protocol/generated'
+import type { Answer, FullControlMode, PriorityOptions, Step, YieldUntil } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
 import { primaryButton } from '@/test-utils/passControls'
 import { renderTable } from '@/test-utils/tableHarness'
@@ -33,6 +33,8 @@ interface Situation {
   given?: PriorityOptions
   /** What the session answers to a request for a yield. */
   accepts?: boolean
+  /** The Full Control mode the server holds. */
+  fullControl?: FullControlMode
 }
 
 /** Seat 0 facing priority at `situation`, with spies for the session's answers and yields. */
@@ -42,6 +44,7 @@ function renderControls({
   stacked = true,
   given = options(),
   accepts = true,
+  fullControl = 'Off',
 }: Situation = {}) {
   const answer = vi.fn((_answer: Answer) => true)
   const yieldUntil = vi.fn((_until: YieldUntil) => accepts)
@@ -58,7 +61,12 @@ function renderControls({
       const view = clone(must(state.view))
       view.turn = { ...view.turn, step, active: own ? 0 : 1 }
       if (!stacked) view.stack = { count: 0, cards: [] }
-      return { ...state, view, pending: { id: 4, decision: { player: 0, kind: { Priority: given } } } }
+      return {
+        ...state,
+        view,
+        fullControl,
+        pending: { id: 4, decision: { player: 0, kind: { Priority: given } } },
+      }
     },
   })
   const primary = (): HTMLElement => primaryButton()
@@ -202,6 +210,52 @@ describe('"End turn"', () => {
     expect(must(secondary())).toBeEnabled()
     await user.click(must(secondary()))
     expect(yieldUntil).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('under Full Control, which the server does not let a yield run beside', () => {
+  const yieldControls = (): number =>
+    document.querySelectorAll('[data-slot="secondary-action"], [data-slot="more-passing"]').length
+
+  it.each(['NextWindow', 'Held'] satisfies FullControlMode[])(
+    'offers only the primary button while the mode is %s',
+    (fullControl) => {
+      const { primary, secondary } = renderControls({ fullControl })
+      expect(primary()).toBeEnabled()
+      expect(secondary()).toBeNull()
+      expect(screen.queryByRole('button', { name: 'More ways to pass' })).toBeNull()
+      expect(yieldControls()).toBe(0)
+    },
+  )
+
+  it('offers the yields again when the mode is off', () => {
+    const { secondary, trigger } = renderControls({ fullControl: 'Off' })
+    expect(secondary()).toHaveTextContent('End turn')
+    expect(trigger()).toBeEnabled()
+  })
+
+  it('still passes once with the primary button', async () => {
+    const { primary, answer, yieldUntil, user } = renderControls({ fullControl: 'Held' })
+    await user.click(primary())
+    expect(answer.mock.calls).toEqual([[{ Priority: 'Pass' }]])
+    expect(yieldUntil).not.toHaveBeenCalled()
+  })
+
+  it('takes the yield buttons away when the server turns it on, and brings them back when it turns it off', () => {
+    const { secondary, update } = renderControls()
+    expect(yieldControls()).toBe(2)
+    update(() => ({ fullControl: 'Held' }))
+    expect(secondary()).toBeNull()
+    expect(yieldControls()).toBe(0)
+    update(() => ({ fullControl: 'Off' }))
+    expect(yieldControls()).toBe(2)
+  })
+
+  it('keeps the primary button free when the server turns it on', () => {
+    const { primary, update } = renderControls({ own: true, stacked: false, step: 'Main1' })
+    update(() => ({ fullControl: 'NextWindow' }))
+    expect(primary()).toBeEnabled()
+    expect(primary()).toHaveTextContent('Next: Combat')
   })
 })
 

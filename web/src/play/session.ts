@@ -5,8 +5,17 @@
 import { GameSocket } from '@/net/socket'
 import type { GameSocketOptions, SocketEvent } from '@/net/socket'
 import { browserTimers } from '@/net/timers'
-import type { Answer, DecisionId, ServerMessage, YieldUntil } from '@/protocol/generated'
+import type {
+  Answer,
+  DecisionId,
+  FullControlMode,
+  ServerMessage,
+  Step,
+  StopSide,
+  YieldUntil,
+} from '@/protocol/generated'
 import { previewKey } from './preview'
+import { canHoldStop } from './stops'
 import { appendChat, appendLog, createPlayStore, dropLogFrom } from './store'
 import type { PlayState, PlayStore } from './store'
 import { applyBatch, fromFirstBatch, fromSnapshot, indexById } from './view'
@@ -40,14 +49,19 @@ export interface Session {
   /** Gives up the game. */
   concede(): boolean
   /**
-   * Asks the server to pass priority for this seat whenever it has nothing to do, or to stop doing so. The store's
-   * `autoPass` follows once the message is out; false (and no change) when the socket is not open.
+   * Asks the server to set (`on`) or clear the stop at `step` of `side`'s turns, where this seat is given priority
+   * even with nothing to do; `keep` false is a one-turn stop, true a lasting one. The store's `stops` follows when the
+   * server says so, not before. Nothing is sent, and false returned, for a step that cannot hold a stop (untap and
+   * cleanup, which the server refuses) and when the socket is not open.
    */
-  setAutoPass(enabled: boolean): boolean
+  setStop(side: StopSide, step: Step, on: boolean, keep: boolean): boolean
+  /** Asks the server for a Full Control mode; the store's `fullControl` follows when it says so. False when the socket is not open. */
+  setFullControl(mode: FullControlMode): boolean
   /**
    * Asks the server to pass priority for this seat until `until`, so it is not asked again until something happens
    * (see `ClientMessage::Yield`). The store's `yielding` follows when the server says so, not before, and the
-   * pending priority decision goes with it; false when the socket is not open.
+   * pending priority decision goes with it; false when the socket is not open and while Full Control is on, which
+   * the server refuses.
    */
   yieldUntil(until: YieldUntil): boolean
   /** Asks the server to end this seat's yield; `yielding` becomes null when it confirms. False when the socket is not open. */
@@ -161,7 +175,6 @@ export function createSession(deps: SessionDeps): Session {
         setState({
           seat: message.player,
           seatCount: message.seats,
-          autoPass: message.auto_pass,
           yielding: message.yielding,
           stops: message.stops,
           fullControl: message.full_control,
@@ -338,12 +351,10 @@ export function createSession(deps: SessionDeps): Session {
       return true
     },
     concede: () => socket.send({ type: 'Concede' }),
-    setAutoPass(enabled) {
-      if (!socket.send({ type: 'AutoPass', enabled })) return false
-      setState({ autoPass: enabled })
-      return true
-    },
-    yieldUntil: (until) => socket.send({ type: 'Yield', until }),
+    setStop: (side, step, on, keep) =>
+      canHoldStop(step) && socket.send({ type: 'SetStop', side, step, on, keep }),
+    setFullControl: (mode) => socket.send({ type: 'FullControl', mode }),
+    yieldUntil: (until) => getState().fullControl === 'Off' && socket.send({ type: 'Yield', until }),
     cancelYield: () => socket.send({ type: 'CancelYield' }),
     chat(text) {
       const line = text.trim()

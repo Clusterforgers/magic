@@ -103,11 +103,6 @@ export interface PlayState {
   /** The latest thing worth telling the player (a refused action, a lost seat), or null; clear it with `dismissNotice`. */
   notice: string | null
   /**
-   * Whether the server passes priority for this seat when it has nothing to do (the "Skip turns when I can't act"
-   * switch). The server's word: set by every Welcome and by a switch that went out; on until told otherwise.
-   */
-  autoPass: boolean
-  /**
    * What the server is passing priority for this seat until (a yield), or null. The server's word: set by every
    * Welcome and every `Yielding` message, never by the page. While it is set the server sends no priority decision.
    */
@@ -147,7 +142,6 @@ export function initialPlayState(): PlayState {
     lobby: null,
     result: null,
     notice: null,
-    autoPass: true,
     yielding: null,
     stops: [],
     fullControl: 'Off',

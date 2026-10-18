@@ -4,7 +4,6 @@ import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
-import { AutoPassSwitch } from './AutoPassSwitch'
 import type { CardSize } from './cardSize'
 import { CardPreview } from './CardPreview'
 import { CombatOverlay } from './combat/CombatOverlay'
@@ -22,6 +21,7 @@ import { OpponentBoard, OwnBoard } from './SeatBoards'
 import { SeatTile } from './SeatTile'
 import { defaultFocusOf, seatCountOf } from './selectors'
 import { StackPanel } from './StackPanel'
+import { FullControlToggle } from './stops/FullControlToggle'
 import { TableOptionsContext } from './tableOptions'
 import { TableToolbar } from './TableToolbar'
 
@@ -116,7 +116,7 @@ const Table = memo(function Table() {
                       onFollow={() => setChosen(null)}
                     />
                     <div className="flex flex-wrap items-center gap-3">
-                      <AutoPassSwitch />
+                      <FullControlToggle />
                       <ConcedeButton />
                     </div>
                   </div>
