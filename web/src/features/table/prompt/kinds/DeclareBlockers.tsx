@@ -125,7 +125,10 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
   const [pairs, setPairs] = useState<ReadonlyMap<ObjectId, ObjectId>>(new Map())
   const [picked] = selection.ids
   const choosing = picked !== undefined && offered.has(picked) ? picked : undefined
-  const choices = useMemo(() => (choosing === undefined ? [] : (offered.get(choosing) ?? [])), [offered, choosing])
+  const choices = useMemo(
+    () => (choosing === undefined ? [] : (offered.get(choosing) ?? [])),
+    [offered, choosing],
+  )
   const blockerName = (id: ObjectId): string => blockerNames.get(id) ?? 'a creature'
   const attackerName = (id: ObjectId): string => attackerNames.get(id) ?? 'an attacker'
   const controllerOf = useCallback(
@@ -150,7 +153,10 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
     const written = new Map<ObjectId, { label: string; words: string }>()
     for (const [blocker, attacker] of pairs) {
       const name = byId.get(attacker)?.name ?? 'an attacker'
-      written.set(blocker, { label: `Blocks ${name}`, words: `blocking ${name}, ${controllerOf(attacker)}'s` })
+      written.set(blocker, {
+        label: `Blocks ${name}`,
+        words: `blocking ${name}, ${controllerOf(attacker)}'s`,
+      })
     }
     for (const [attacker, blockers] of blockersByAttacker(pairs)) {
       const names = blockers.map((id) => byId.get(id)?.name ?? 'a creature')
@@ -236,7 +242,11 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
         />
       )}
       {pairs.size === 0 ? null : (
-        <ul aria-label="Your blocks" data-slot="block-pairs" className="grid max-h-44 basis-full gap-1 overflow-y-auto">
+        <ul
+          aria-label="Your blocks"
+          data-slot="block-pairs"
+          className="grid max-h-44 basis-full gap-1 overflow-y-auto"
+        >
           {[...pairs].map(([blocker, attacker]) => (
             <li key={blocker} className="flex items-center justify-between gap-2 text-sm">
               <span className="min-w-0">

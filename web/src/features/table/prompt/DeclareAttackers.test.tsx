@@ -13,7 +13,8 @@ const seatsOf = (seats: number): AttackTarget[] =>
 const walkerOf = (seats: number): ObjectId =>
   must(
     fixtureOf(seats).view.objects.find(
-      (object) => object.zone === 'Battlefield' && object.controller === 1 && !object.types.includes('Creature'),
+      (object) =>
+        object.zone === 'Battlefield' && object.controller === 1 && !object.types.includes('Creature'),
     ),
   ).id
 
@@ -118,7 +119,16 @@ describe('one defender', () => {
     await user.click(card(a))
     expect(screen.queryByRole('list', { name: 'Who each creature attacks' })).toBeNull()
     await user.click(button('Confirm attack'))
-    expect(answer.mock.calls).toEqual([[{ DeclareAttackers: [[b, { Player: 1 }], [a, { Player: 1 }]] }]])
+    expect(answer.mock.calls).toEqual([
+      [
+        {
+          DeclareAttackers: [
+            [b, { Player: 1 }],
+            [a, { Player: 1 }],
+          ],
+        },
+      ],
+    ])
   })
 
   it('writes "At Bo" on a chosen attacker and speaks it', async () => {
@@ -146,7 +156,11 @@ describe('one defender', () => {
     await user.click(button('Attack with all'))
     await user.click(button('Confirm attack'))
     expect(answer.mock.calls).toEqual([
-      [{ DeclareAttackers: options.attackers.map((x): [ObjectId, AttackTarget] => [x.object, { Player: 1 }]) }],
+      [
+        {
+          DeclareAttackers: options.attackers.map((x): [ObjectId, AttackTarget] => [x.object, { Player: 1 }]),
+        },
+      ],
     ])
   })
 
@@ -156,7 +170,12 @@ describe('one defender', () => {
     await user.click(button('Attack with all'))
     await user.click(button('Confirm attack'))
     const sent = answer.mock.calls[0]?.[0] as { DeclareAttackers: [ObjectId, AttackTarget][] }
-    expect(sent.DeclareAttackers.map(([id]) => id)).toEqual([c, a, b, must(optionsOf(spec).attackers[3]).object])
+    expect(sent.DeclareAttackers.map(([id]) => id)).toEqual([
+      c,
+      a,
+      b,
+      must(optionsOf(spec).attackers[3]).object,
+    ])
   })
 
   it('clears the attack, which disables Confirm attack', async () => {
@@ -218,31 +237,46 @@ describe('several defenders', () => {
   it.each(seatCases)('at %i seats lists every other seat and starts with the first', (seats) => {
     attack(optionsOf({ name: '', seats, count: 3 }), seats)
     const select = screen.getByRole('combobox', { name: 'Attack at' })
-    expect(within(select).getAllByRole('option').map((o) => o.textContent)).toEqual(NAMES.slice(1, seats))
+    expect(
+      within(select)
+        .getAllByRole('option')
+        .map((o) => o.textContent),
+    ).toEqual(NAMES.slice(1, seats))
     expect(select).toHaveValue('player:1')
   })
 
-  it.each(seatCases)('at %i seats a click aims at the chosen seat (%s) and the answer agrees', async (seats, last) => {
-    const options = optionsOf({ name: '', seats, count: 3 })
-    const table = attack(options, seats)
-    const [a, b, c] = options.attackers.map((x) => x.object) as [ObjectId, ObjectId, ObjectId]
-    await table.user.click(table.card(a))
-    await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), last)
-    await table.user.click(table.card(b))
-    await table.user.click(table.card(c))
-    expect(table.notes()).toEqual(
-      new Map([
-        [a, 'At Bo'],
-        [b, `At ${last}`],
-        [c, `At ${last}`],
-      ]),
-    )
-    expect(table.text()).toBe(`3 attackers: 1 at Bo, 2 at ${last}. Confirm the attack, or keep choosing.`)
-    await table.user.click(table.button('Confirm attack'))
-    expect(table.answer.mock.calls).toEqual([
-      [{ DeclareAttackers: [[a, { Player: 1 }], [b, { Player: seats - 1 }], [c, { Player: seats - 1 }]] }],
-    ])
-  })
+  it.each(seatCases)(
+    'at %i seats a click aims at the chosen seat (%s) and the answer agrees',
+    async (seats, last) => {
+      const options = optionsOf({ name: '', seats, count: 3 })
+      const table = attack(options, seats)
+      const [a, b, c] = options.attackers.map((x) => x.object) as [ObjectId, ObjectId, ObjectId]
+      await table.user.click(table.card(a))
+      await table.user.selectOptions(screen.getByRole('combobox', { name: 'Attack at' }), last)
+      await table.user.click(table.card(b))
+      await table.user.click(table.card(c))
+      expect(table.notes()).toEqual(
+        new Map([
+          [a, 'At Bo'],
+          [b, `At ${last}`],
+          [c, `At ${last}`],
+        ]),
+      )
+      expect(table.text()).toBe(`3 attackers: 1 at Bo, 2 at ${last}. Confirm the attack, or keep choosing.`)
+      await table.user.click(table.button('Confirm attack'))
+      expect(table.answer.mock.calls).toEqual([
+        [
+          {
+            DeclareAttackers: [
+              [a, { Player: 1 }],
+              [b, { Player: seats - 1 }],
+              [c, { Player: seats - 1 }],
+            ],
+          },
+        ],
+      ])
+    },
+  )
 
   it('shows one row per attacker and lets one be aimed elsewhere', async () => {
     const options = optionsOf({ name: '', seats: 4, count: 3 })
@@ -258,7 +292,14 @@ describe('several defenders', () => {
     expect(table.notes().get(b)).toBe('At Dee')
     await table.user.click(table.button('Confirm attack'))
     expect(table.answer.mock.calls).toEqual([
-      [{ DeclareAttackers: [[a, { Player: 1 }], [b, { Player: 3 }]] }],
+      [
+        {
+          DeclareAttackers: [
+            [a, { Player: 1 }],
+            [b, { Player: 3 }],
+          ],
+        },
+      ],
     ])
   })
 
@@ -293,7 +334,9 @@ describe('several defenders', () => {
     const table = attack(options, 4)
     const walker = walkerOf(4)
     const select = screen.getByRole('combobox', { name: 'Attack at' })
-    const labels = within(select).getAllByRole('option').map((o) => o.textContent)
+    const labels = within(select)
+      .getAllByRole('option')
+      .map((o) => o.textContent)
     expect(labels.at(-1)).toMatch(/, Bo's planeswalker$/)
     await table.user.selectOptions(select, `walker:${walker}`)
     const [a] = options.attackers.map((x) => x.object) as [ObjectId]
@@ -335,7 +378,12 @@ describe('several defenders', () => {
     table.update((state) => {
       const named = (id: ObjectId, name: string) => ({ ...must(state.objectsById[id]), name })
       return {
-        objectsById: { ...state.objectsById, [a]: named(a, 'Goblin'), [b]: named(b, 'Goblin'), [c]: named(c, 'Elf') },
+        objectsById: {
+          ...state.objectsById,
+          [a]: named(a, 'Goblin'),
+          [b]: named(b, 'Goblin'),
+          [c]: named(c, 'Elf'),
+        },
       }
     })
     await table.user.click(table.button('Attack with all'))
@@ -367,7 +415,9 @@ describe('a replaced decision', () => {
         id: 8,
         decision: {
           player: 0,
-          kind: { DeclareAttackers: { attackers: [{ object: b, defenders: [{ Player: 1 }, { Player: 2 }] }] } },
+          kind: {
+            DeclareAttackers: { attackers: [{ object: b, defenders: [{ Player: 1 }, { Player: 2 }] }] },
+          },
         },
       },
       seq: state.seq,

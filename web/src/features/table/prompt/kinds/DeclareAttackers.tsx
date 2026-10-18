@@ -13,7 +13,9 @@ import { useObjects, useTargetNames } from '../useCombatNames'
 
 /** The attacker's defender that is `aim`, else its first defender; undefined for an attacker with none. */
 function aimedAt(option: AttackerOption, aim: AttackTarget | undefined): AttackTarget | undefined {
-  return option.defenders.find((target) => aim !== undefined && sameTarget(target, aim)) ?? option.defenders[0]
+  return (
+    option.defenders.find((target) => aim !== undefined && sameTarget(target, aim)) ?? option.defenders[0]
+  )
 }
 
 /**
@@ -54,10 +56,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const declaredIds = useMemo(() => declared.map((entry) => entry.object), [declared])
   const creatures = useObjects(declaredIds)
   const labels = useMemo(
-    () =>
-      uniqueNames(
-        declaredIds.map((id, index) => ({ id, name: creatures[index]?.name ?? 'a creature' })),
-      ),
+    () => uniqueNames(declaredIds.map((id, index) => ({ id, name: creatures[index]?.name ?? 'a creature' }))),
     [declaredIds, creatures],
   )
 
@@ -141,7 +140,12 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
           All at {names.short(aim)}
         </Button>
       ) : null}
-      <Button variant="outline" className="h-10 px-4" disabled={declared.length === 0} onClick={selection.clear}>
+      <Button
+        variant="outline"
+        className="h-10 px-4"
+        disabled={declared.length === 0}
+        onClick={selection.clear}
+      >
         Clear
       </Button>
       <Button

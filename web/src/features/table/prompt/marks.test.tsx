@@ -101,15 +101,25 @@ describe('the marks store', () => {
     expect(told).toEqual(changed)
   })
 
-  it('tells every watched card when marks start to act as toggles, and not before', () => {
+  it('tells the marked cards, and no other, when marks start to act as toggles, and not before', () => {
     const store = createMarksStore()
     store.publish(marks([1, 'legal']), undefined, false)
     const spies = watch(store, [1, 2])
     store.publish(marks([1, 'legal']), undefined, false)
     expect([...spies.values()].map((spy) => spy.mock.calls.length)).toEqual([0, 0])
     store.publish(marks([1, 'legal']), undefined, true)
-    expect([...spies.values()].map((spy) => spy.mock.calls.length)).toEqual([1, 1])
+    expect([...spies.values()].map((spy) => spy.mock.calls.length)).toEqual([1, 0])
     expect(store.toggles()).toBe(true)
+  })
+
+  it('tells the cards marked before and after when toggling flips together with the marks', () => {
+    const store = createMarksStore()
+    store.publish(marks([1, 'legal']), undefined, false)
+    const spies = watch(store, [1, 2, 3])
+    store.publish(marks([2, 'dimmed']), undefined, true)
+    expect([...spies.values()].map((spy) => spy.mock.calls.length)).toEqual([1, 1, 0])
+    store.clear()
+    expect([...spies.values()].map((spy) => spy.mock.calls.length)).toEqual([1, 2, 0])
   })
 
   it('forwards select to the latest handler and to nobody after clear', () => {

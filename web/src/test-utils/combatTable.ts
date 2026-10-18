@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react'
 import { vi } from 'vitest'
 import { buildFixture } from '@/features/table/dev/fixture'
 import type { Fixture } from '@/features/table/dev/fixture'
-import type { Answer, AttackOptions, BlockOptions, DecisionKind, ObjectId } from '@/protocol/generated'
+import type { Answer, AttackOptions, BlockOptions, ObjectId } from '@/protocol/generated'
 import { must } from './batches'
 import { renderTable } from './tableHarness'
 
@@ -22,7 +22,8 @@ export function fixtureOf(seats: number): Fixture {
 /** The creatures `seat` controls on the battlefield, in the order the fixture lists them, untapped ones first. */
 export function creaturesOf(fixture: Fixture, seat: number): ObjectId[] {
   const mine = fixture.view.objects.filter(
-    (object) => object.zone === 'Battlefield' && object.controller === seat && object.types.includes('Creature'),
+    (object) =>
+      object.zone === 'Battlefield' && object.controller === seat && object.types.includes('Creature'),
   )
   const untapped = mine.filter((object) => object.permanent?.tapped === false)
   return [...untapped, ...mine.filter((object) => !untapped.includes(object))].map((object) => object.id)
@@ -49,13 +50,14 @@ export function renderCombat(kind: CombatOptions, { seats = 2, id = 7 } = {}) {
     session: { answer },
     state: (state) => ({
       ...state,
-      pending: { id, decision: { player: 0, kind: kind satisfies DecisionKind } },
+      pending: { id, decision: { player: 0, kind } },
     }),
   })
   const root = table.container
   const card = (object: ObjectId): HTMLElement =>
     must(root.querySelector<HTMLElement>(`button[data-object-id="${object}"]`), `card ${object}`)
-  const hasCard = (object: ObjectId): boolean => root.querySelector(`button[data-object-id="${object}"]`) !== null
+  const hasCard = (object: ObjectId): boolean =>
+    root.querySelector(`button[data-object-id="${object}"]`) !== null
   const marks = (): Map<ObjectId, string> =>
     new Map(
       [...root.querySelectorAll<HTMLElement>('button[data-highlight]')].map((element) => [

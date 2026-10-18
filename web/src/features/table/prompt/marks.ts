@@ -77,7 +77,8 @@ export function createMarksStore(): MarksStore {
     marks = next
     toggling = nextToggles
     if (flipped) {
-      notify([...listeners.keys()])
+      // Only a marked card reads differently as a toggle, so a table of hundreds of cards is not redrawn for it.
+      notify(new Set([...before.keys(), ...next.keys()]))
       return
     }
     const changed: ObjectId[] = []

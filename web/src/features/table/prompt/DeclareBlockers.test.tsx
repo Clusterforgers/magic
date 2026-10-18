@@ -19,7 +19,11 @@ interface Spec {
 }
 
 /** Attackers are creatures of `from` (seat 1, the active seat of the fixture, by default); blockers are the viewer's. */
-function optionsOf({ seats, blocks, from = 1 }: Spec): { options: BlockOptions; attackers: ObjectId[]; blockers: ObjectId[] } {
+function optionsOf({ seats, blocks, from = 1 }: Spec): {
+  options: BlockOptions
+  attackers: ObjectId[]
+  blockers: ObjectId[]
+} {
   const attackers = creaturesOf(fixtureOf(seats), from).slice(0, 5)
   const mine = creaturesOf(fixtureOf(seats), 0)
   const blockers = mine.slice(0, blocks.length)
@@ -27,23 +31,46 @@ function optionsOf({ seats, blocks, from = 1 }: Spec): { options: BlockOptions; 
     attackers,
     blockers,
     options: {
-      blockers: blocks.map(
-        (indices, index): BlockerOption => ({
-          object: must(blockers[index]),
-          can_block: indices.map((i) => must(attackers[i])),
-        }),
-      ),
+      blockers: blocks.map((indices, index): BlockerOption => ({
+        object: must(blockers[index]),
+        can_block: indices.map((i) => must(attackers[i])),
+      })),
     },
   }
 }
 
 const SPECS: Spec[] = [
   { name: 'one blocker and one attacker', seats: 2, blocks: [[0]] },
-  { name: 'three blockers that may block all of three attackers', seats: 2, blocks: [[0, 1, 2], [0, 1, 2], [0, 1, 2]] },
-  { name: 'a blocker that may block several attackers and one that may block one', seats: 3, blocks: [[0, 1, 2, 3], [2]] },
-  { name: 'blockers that may not block some attackers', seats: 4, blocks: [[0, 1], [2, 3], [1, 3]] },
+  {
+    name: 'three blockers that may block all of three attackers',
+    seats: 2,
+    blocks: [
+      [0, 1, 2],
+      [0, 1, 2],
+      [0, 1, 2],
+    ],
+  },
+  {
+    name: 'a blocker that may block several attackers and one that may block one',
+    seats: 3,
+    blocks: [[0, 1, 2, 3], [2]],
+  },
+  {
+    name: 'blockers that may not block some attackers',
+    seats: 4,
+    blocks: [
+      [0, 1],
+      [2, 3],
+      [1, 3],
+    ],
+  },
   { name: 'five blockers at 8 seats', seats: 8, blocks: [[0, 1], [0, 1], [2], [3, 4], [4]] },
-  { name: 'attackers of a seat that is not drawn, at 12 seats', seats: 12, blocks: [[0, 1, 2], [1]], from: 5 },
+  {
+    name: 'attackers of a seat that is not drawn, at 12 seats',
+    seats: 12,
+    blocks: [[0, 1, 2], [1]],
+    from: 5,
+  },
   { name: 'attackers of the next seat, at 12 seats', seats: 12, blocks: [[0, 1, 2, 3, 4], [0], [4], [2, 3]] },
 ]
 
@@ -271,12 +298,16 @@ describe('the first blocker of a table of two', () => {
     await user.click(card(b2))
     await user.click(card(a1))
     expect(notes().get(a1)).toBe('Blocked by 2')
-    await user.click(within(must(pairs()[0])).getByRole('button', { name: `Change the block of ${objectOf(2, b1).name}` }))
+    await user.click(
+      within(must(pairs()[0])).getByRole('button', { name: `Change the block of ${objectOf(2, b1).name}` }),
+    )
     expect(choices()[0]).toHaveFocus()
     await user.click(must(choices()[1]))
     expect(notes().get(b1)).toBe(`Blocks ${objectOf(2, a2).name}`)
     expect(notes().get(a1)).toBe(`Blocked by ${objectOf(2, b2).name}`)
-    await user.click(within(must(pairs()[1])).getByRole('button', { name: `Remove the block of ${objectOf(2, b2).name}` }))
+    await user.click(
+      within(must(pairs()[1])).getByRole('button', { name: `Remove the block of ${objectOf(2, b2).name}` }),
+    )
     expect(notes().has(b2)).toBe(false)
     expect(notes().has(a1)).toBe(false)
     expect(pairs()).toHaveLength(1)
@@ -298,17 +329,40 @@ describe('the first blocker of a table of two', () => {
     )
     expect(text()).toBe('2 blockers on 1 attacker. Confirm the blocks, or choose another creature.')
     await user.click(button('Confirm blocks'))
-    expect(answer.mock.calls).toEqual([[{ DeclareBlockers: [[b1, a1], [b2, a1]] }]])
+    expect(answer.mock.calls).toEqual([
+      [
+        {
+          DeclareBlockers: [
+            [b1, a1],
+            [b2, a1],
+          ],
+        },
+      ],
+    ])
   })
 
   it('sends the pairs in the order they were made', async () => {
     const { card, user, answer, button } = block(spec)
-    for (const [blocker, attacker] of [[b3, a1], [b1, a3], [b2, a2]] as const) {
+    for (const [blocker, attacker] of [
+      [b3, a1],
+      [b1, a3],
+      [b2, a2],
+    ] as const) {
       await user.click(card(blocker))
       await user.click(card(attacker))
     }
     await user.click(button('Confirm blocks'))
-    expect(answer.mock.calls).toEqual([[{ DeclareBlockers: [[b3, a1], [b1, a3], [b2, a2]] }]])
+    expect(answer.mock.calls).toEqual([
+      [
+        {
+          DeclareBlockers: [
+            [b3, a1],
+            [b1, a3],
+            [b2, a2],
+          ],
+        },
+      ],
+    ])
   })
 })
 
@@ -386,7 +440,10 @@ describe('a replaced decision', () => {
     await user.click(card(a1))
     await user.click(card(b2))
     update(() => ({
-      pending: { id: 9, decision: { player: 0, kind: { DeclareBlockers: { blockers: [{ object: b2, can_block: [a1] }] } } } },
+      pending: {
+        id: 9,
+        decision: { player: 0, kind: { DeclareBlockers: { blockers: [{ object: b2, can_block: [a1] }] } } },
+      },
     }))
     expect(notes().size).toBe(0)
     expect(marks().get(b1)).toBe('dimmed')
@@ -432,7 +489,10 @@ describe('the words', () => {
       },
     }))
     await user.click(card(blocker))
-    expect(choices().map((c) => c.textContent?.split(' (')[0]?.replace(/ \d+\/\d+$/, ''))).toEqual(['Goblin 1', 'Goblin 2'])
+    expect(choices().map((c) => c.textContent?.split(' (')[0]?.replace(/ \d+\/\d+$/, ''))).toEqual([
+      'Goblin 1',
+      'Goblin 2',
+    ])
     await user.click(must(choices()[1]))
     expect(pairs()[0]).toHaveTextContent(/blocks Goblin 2 \(Bo\)/)
   })

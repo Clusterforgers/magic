@@ -23,7 +23,8 @@ export function sameTarget(a: AttackTarget, b: AttackTarget): boolean {
 export function distinctTargets(attackers: readonly AttackerOption[]): AttackTarget[] {
   const seen = new Map<string, AttackTarget>()
   for (const attacker of attackers) {
-    for (const target of attacker.defenders) if (!seen.has(targetKey(target))) seen.set(targetKey(target), target)
+    for (const target of attacker.defenders)
+      if (!seen.has(targetKey(target))) seen.set(targetKey(target), target)
   }
   return [...seen.values()]
 }
