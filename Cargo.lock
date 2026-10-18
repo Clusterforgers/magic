@@ -1191,6 +1191,7 @@ dependencies = [
  "mtg-cards",
  "mtg-core",
  "mtg-engine",
+ "mtg-import",
  "proptest",
  "rstest",
  "thiserror",

@@ -11,6 +11,7 @@ use mtg_engine::{Engine, EngineError, GameSetup, PresetPermanent, Start};
 use thiserror::Error;
 
 use crate::cards::forest;
+use crate::corpus::{self, CorpusError};
 
 /// Cards in a default filler library, so scenarios never deck unless asked to.
 const FILLER_LIBRARY: usize = 30;
@@ -21,6 +22,9 @@ pub enum ScenarioError {
     /// A builder call named a player that is not seated.
     #[error("scenario has no player {0}")]
     NoSuchPlayer(usize),
+    /// A card was asked for by name and the corpus could not give it.
+    #[error(transparent)]
+    Corpus(#[from] CorpusError),
     /// The engine rejected the setup.
     #[error(transparent)]
     Engine(#[from] EngineError),
@@ -168,6 +172,68 @@ impl Scenario {
         self
     }
 
+    /// The corpus cards called `names`; one that is not there is recorded and the rest are returned.
+    fn corpus_cards<N: AsRef<str>>(
+        &mut self,
+        names: impl IntoIterator<Item = N>,
+    ) -> Vec<Arc<CardDefinition>> {
+        let mut found = Vec::new();
+        for name in names {
+            match corpus::card(name.as_ref()) {
+                Ok(card) => found.push(card),
+                Err(error) => {
+                    self.error.get_or_insert(ScenarioError::Corpus(error));
+                }
+            }
+        }
+        found
+    }
+
+    /// Sets a player's hand to the corpus cards called `names` (`corpus` module).
+    #[must_use]
+    pub fn hand_named<N: AsRef<str>>(
+        mut self,
+        player: usize,
+        names: impl IntoIterator<Item = N>,
+    ) -> Self {
+        let cards = self.corpus_cards(names);
+        self.hand(player, cards)
+    }
+
+    /// Sets a player's library, top card first, to the corpus cards called `names`.
+    #[must_use]
+    pub fn library_named<N: AsRef<str>>(
+        mut self,
+        player: usize,
+        names: impl IntoIterator<Item = N>,
+    ) -> Self {
+        let cards = self.corpus_cards(names);
+        self.library(player, cards)
+    }
+
+    /// Sets a player's graveyard to the corpus cards called `names`.
+    #[must_use]
+    pub fn graveyard_named<N: AsRef<str>>(
+        mut self,
+        player: usize,
+        names: impl IntoIterator<Item = N>,
+    ) -> Self {
+        let cards = self.corpus_cards(names);
+        self.graveyard(player, cards)
+    }
+
+    /// Sets a player's permanents to the corpus cards called `names`, untapped and ready.
+    #[must_use]
+    pub fn battlefield_named<N: AsRef<str>>(
+        mut self,
+        player: usize,
+        names: impl IntoIterator<Item = N>,
+    ) -> Self {
+        let permanents: Vec<PresetPermanent> =
+            self.corpus_cards(names).into_iter().map(ready).collect();
+        self.battlefield(player, permanents)
+    }
+
     /// Sets a player's life total.
     #[must_use]
     pub fn life(mut self, player: usize, life: i32) -> Self {
@@ -248,6 +314,50 @@ mod tests {
             ["Llanowar Elf", "Llanowar Elf", "Grizzly Bears"]
         );
         assert_eq!(names(Zone::Library(PlayerId(0))).len(), FILLER_LIBRARY);
+    }
+
+    #[test]
+    fn corpus_cards_are_placed_by_name() {
+        let engine = Scenario::new(2)
+            .hand_named(0, ["Lightning Bolt", "grizzly bears"])
+            .battlefield_named(0, ["Forest", "Llanowar Elves"])
+            .graveyard_named(1, ["Fire // Ice"])
+            .library_named(1, ["Opt", "Brainstorm"])
+            .build()
+            .unwrap();
+        let state = engine.state();
+        let names = |zone: Zone| -> Vec<String> {
+            state
+                .zone(zone)
+                .iter()
+                .filter_map(|id| state.object(*id))
+                .map(|o| o.card().name.clone())
+                .collect()
+        };
+        assert_eq!(
+            names(Zone::Hand(PlayerId(0))),
+            ["Lightning Bolt", "Grizzly Bears"]
+        );
+        assert_eq!(names(Zone::Battlefield), ["Forest", "Llanowar Elves"]);
+        assert_eq!(names(Zone::Graveyard(PlayerId(1))), ["Fire"]);
+        assert_eq!(
+            names(Zone::Library(PlayerId(1))),
+            ["Brainstorm", "Opt"],
+            "the top card is first in the list and last in the zone"
+        );
+    }
+
+    #[test]
+    fn a_name_the_corpus_lacks_is_reported_once_whatever_else_is_asked() {
+        let error = Scenario::new(2)
+            .hand_named(0, ["Black Lotus", "Ancestral Recall", "Forest"])
+            .hand_named(1, ["Mox Pearl"])
+            .setup()
+            .unwrap_err();
+        assert_eq!(
+            error,
+            ScenarioError::Corpus(CorpusError::UnknownCard("Black Lotus".into()))
+        );
     }
 
     #[test]

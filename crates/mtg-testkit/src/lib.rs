@@ -5,6 +5,7 @@
 
 pub mod bot;
 pub mod cards;
+pub mod corpus;
 pub mod decks;
 pub mod driver;
 pub mod expect;

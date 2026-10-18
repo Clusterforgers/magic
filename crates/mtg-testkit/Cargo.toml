@@ -10,6 +10,7 @@ publish.workspace = true
 mtg-cards.workspace = true
 mtg-core.workspace = true
 mtg-engine.workspace = true
+mtg-import.workspace = true
 thiserror.workspace = true
 
 [lints]
