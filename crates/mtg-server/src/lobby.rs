@@ -41,6 +41,9 @@ impl<S: EventStore> GameActor<S> {
                 let mut running = Running::new(engine);
                 let first = running.settle(false);
                 self.phase = Phase::Running(Box::new(running));
+                if let Some(recorder) = &self.recorder {
+                    recorder.started().await;
+                }
                 self.announce(batches, first);
             }
             Err(error) => self.refuse(trigger, error.into_rejection()),

@@ -59,6 +59,16 @@ impl TokenDigest {
         TokenDigest(Sha256::digest(presented.as_bytes()).into())
     }
 
+    /// A digest read back from storage.
+    pub fn from_bytes(bytes: [u8; 32]) -> TokenDigest {
+        TokenDigest(bytes)
+    }
+
+    /// The raw digest, for storage.
+    pub fn as_bytes(&self) -> &[u8; 32] {
+        &self.0
+    }
+
     /// Whether both digests are equal, without stopping at the first difference.
     pub fn matches(&self, other: &TokenDigest) -> bool {
         self.0

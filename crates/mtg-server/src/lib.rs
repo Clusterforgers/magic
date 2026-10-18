@@ -26,6 +26,11 @@
 //!
 //! Event logs live in memory ([`MemoryStore`]) or in Postgres ([`PgEventStore`], whose schema
 //! [`migrate`] applies and tracks in its own table so `mtg-db` can share the database).
+//!
+//! With a database ([`Server::open`]) every game the REST path creates is also recorded: a
+//! [`GameRecipe`] that rebuilds its `GameSetup`, its seats with the SHA-256 of each token, and its
+//! status ([`RecordStatus`]). On boot [`Registry::resume`] brings back every game that is not
+//! finished, so a client that returns with its old token lands in the same game.
 
 mod actor;
 mod api;
@@ -39,6 +44,9 @@ mod migrations;
 mod origin;
 mod pg_store;
 mod play;
+mod recipe;
+mod recorder;
+mod records;
 pub mod registry;
 mod running;
 mod seats;
@@ -58,7 +66,9 @@ pub use game_id::GameId;
 pub use handle::{GameClosed, GameHandle, GameStatus, JoinError};
 pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};
 pub use pg_store::PgEventStore;
-pub use registry::Registry;
+pub use recipe::{DeckRef, FormatKind, GameRecipe, RecipeError};
+pub use records::{GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord};
+pub use registry::{Registry, ResumeReport};
 pub use seats::MIN_QUEUE;
 pub use secret::{RandomError, SeatToken};
 pub use server::Server;

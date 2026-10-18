@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE games SET status = 'finished', result = $2, finished_at = now()\n             WHERE id = $1 AND status IN ('lobby', 'running')",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Jsonb"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "628f20fe17d20840f6949d2ed700b95aa3a2378eb2aac03c6f31af211d08d9f6"
+}

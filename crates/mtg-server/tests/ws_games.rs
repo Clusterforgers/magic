@@ -248,7 +248,7 @@ async fn a_seats_sockets_never_carry_the_names_of_cards_hidden_from_it(
 
     let server = TestServer::start(bot_config()).await;
     let names = (0..players).map(|i| format!("Bot {i}")).collect();
-    let created = server.registry.register(setup, names).unwrap();
+    let created = server.registry.register(setup, names).await.unwrap();
     let game = created.id.to_string();
     let tokens: Vec<String> = created
         .seats

@@ -10,7 +10,7 @@ use mtg_engine::error::SetupError;
 use mtg_protocol::ClientMessage;
 use mtg_server::config::Retention;
 use mtg_server::registry::{CreateError, SeatRequest};
-use mtg_server::{GameHandle, Registry, ServerConfig, StartError, demo};
+use mtg_server::{GameHandle, RecipeError, Registry, ServerConfig, demo};
 
 fn requests(decks: &[&str]) -> Vec<SeatRequest> {
     decks
@@ -41,9 +41,10 @@ fn in_secs(secs: u64) -> Instant {
 #[tokio::test]
 async fn a_token_opens_exactly_its_own_seat_of_its_own_game() {
     let registry = Registry::new(&ServerConfig::default());
-    let first = registry.create(&pair()).unwrap();
+    let first = registry.create(&pair()).await.unwrap();
     let second = registry
         .create(&requests(&["mono-red", "mono-white", "mono-green"]))
+        .await
         .unwrap();
     assert_eq!((first.seats.len(), second.seats.len()), (2, 3));
 
@@ -98,25 +99,31 @@ async fn the_cap_counts_live_games_and_frees_a_slot_when_one_is_dropped() {
         ..ServerConfig::default()
     };
     let registry = Registry::new(&config);
-    let a = registry.create(&pair()).unwrap();
-    let _b = registry.create(&pair()).unwrap();
-    assert_eq!(registry.create(&pair()).unwrap_err(), CreateError::Full);
+    let a = registry.create(&pair()).await.unwrap();
+    let _b = registry.create(&pair()).await.unwrap();
+    assert_eq!(
+        registry.create(&pair()).await.unwrap_err(),
+        CreateError::Full
+    );
     assert_eq!(registry.len(), 2);
 
     // Two idle lobbies expire after an hour; then there is room again.
     assert_eq!(registry.sweep(in_secs(3_601)).await, 2);
     assert!(registry.is_empty());
-    assert!(registry.create(&pair()).is_ok());
+    assert!(registry.create(&pair()).await.is_ok());
     assert!(registry.handle(a.id).is_none());
 }
 
 #[tokio::test]
 async fn a_game_that_cannot_be_set_up_is_refused_not_registered() {
     let registry = Registry::new(&ServerConfig::default());
-    let error = registry.create(&requests(&["mono-green"])).unwrap_err();
+    let error = registry
+        .create(&requests(&["mono-green"]))
+        .await
+        .unwrap_err();
     assert!(matches!(
         error,
-        CreateError::Start(StartError::Setup(SetupError::TooFewPlayers(1)))
+        CreateError::Recipe(RecipeError::Setup(SetupError::TooFewPlayers(1)))
     ));
     assert!(registry.is_empty());
 }
@@ -124,7 +131,7 @@ async fn a_game_that_cannot_be_set_up_is_refused_not_registered() {
 #[tokio::test]
 async fn shuffles_are_server_random_unless_a_test_fixes_the_seed() {
     async fn opening_hash(registry: &Registry) -> u64 {
-        let created = registry.create(&pair()).unwrap();
+        let created = registry.create(&pair()).await.unwrap();
         let handle = registry.handle(created.id).unwrap();
         start(&handle, 2).await;
         handle.status().await.unwrap().state_hash.unwrap()
@@ -158,7 +165,7 @@ fn registry_with_seed(seed: u64) -> Registry {
 #[tokio::test]
 async fn finished_games_go_ten_minutes_after_a_sweep_first_sees_them_finished() {
     let registry = Registry::new(&ServerConfig::default());
-    let created = registry.create(&pair()).unwrap();
+    let created = registry.create(&pair()).await.unwrap();
     let handle = registry.handle(created.id).unwrap();
     start(&handle, 2).await;
     let (token, access) = {
@@ -202,7 +209,7 @@ async fn finished_games_go_ten_minutes_after_a_sweep_first_sees_them_finished() 
 #[tokio::test]
 async fn lobbies_that_never_start_go_after_an_hour() {
     let registry = Registry::new(&ServerConfig::default());
-    let created = registry.create(&pair()).unwrap();
+    let created = registry.create(&pair()).await.unwrap();
     let handle = registry.handle(created.id).unwrap();
     // Seats may be connected and one may be ready; the game still never starts.
     let _inbox = handle.join(seat(0)).await.unwrap();
@@ -219,7 +226,7 @@ async fn started_games_stay_while_somebody_is_connected_and_go_a_day_after_every
         ..ServerConfig::default()
     };
     let registry = Registry::new(&config);
-    let created = registry.create(&pair()).unwrap();
+    let created = registry.create(&pair()).await.unwrap();
     let handle = registry.handle(created.id).unwrap();
     start(&handle, 2).await;
     let inbox = handle.join(seat(1)).await.unwrap();
@@ -250,7 +257,7 @@ async fn the_janitor_task_sweeps_on_its_own_and_stops_on_request() {
         retention,
         ..ServerConfig::default()
     });
-    registry.create(&pair()).unwrap();
+    registry.create(&pair()).await.unwrap();
     let (stop, stopped) = tokio::sync::watch::channel(false);
     let janitor = registry.spawn_janitor(stopped);
     for _ in 0..100 {

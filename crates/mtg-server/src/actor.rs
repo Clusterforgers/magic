@@ -12,6 +12,7 @@ use tokio::sync::{mpsc, oneshot};
 
 use crate::game_id::GameId;
 use crate::handle::{Command, GameHandle, GameStatus, JoinError};
+use crate::recorder::Recorder;
 use crate::running::{Rejection, Running, count};
 use crate::seats::Seats;
 use crate::store::{EventStore, StoreError};
@@ -67,11 +68,22 @@ pub fn spawn_game_with<S: EventStore>(
     store: S,
     config: GameConfig,
 ) -> Result<GameHandle, StartError> {
+    spawn_recorded(id, setup, store, config, None)
+}
+
+/// Starts a lobby whose milestones (joins, start, end) are written to `recorder`.
+pub(crate) fn spawn_recorded<S: EventStore>(
+    id: GameId,
+    setup: GameSetup,
+    store: S,
+    config: GameConfig,
+    recorder: Option<Recorder>,
+) -> Result<GameHandle, StartError> {
     setup.validate()?;
     let phase = Phase::Lobby {
         ready: vec![false; setup.players.len()],
     };
-    Ok(launch(id, setup, store, config, phase))
+    Ok(launch(id, setup, store, config, phase, recorder))
 }
 
 /// Rebuilds a game from its stored log and runs it, waiting for its players to reconnect.
@@ -92,9 +104,20 @@ pub async fn resume_game_with<S: EventStore>(
     setup: GameSetup,
     config: GameConfig,
 ) -> Result<GameHandle, StartError> {
+    resume_recorded(store, id, setup, config, None).await
+}
+
+/// Like [`resume_game_with`], writing the game's milestones to `recorder`.
+pub(crate) async fn resume_recorded<S: EventStore>(
+    store: S,
+    id: GameId,
+    setup: GameSetup,
+    config: GameConfig,
+    recorder: Option<Recorder>,
+) -> Result<GameHandle, StartError> {
     let stored = store.load(id).await?;
     if stored.is_empty() {
-        return spawn_game_with(id, setup, store, config);
+        return spawn_recorded(id, setup, store, config, recorder);
     }
     let stored_len = stored.len();
     let engine = Engine::resume(setup.clone(), stored)?;
@@ -111,6 +134,7 @@ pub async fn resume_game_with<S: EventStore>(
         store,
         config,
         Phase::Running(Box::new(running)),
+        recorder,
     ))
 }
 
@@ -120,6 +144,7 @@ fn launch<S: EventStore>(
     store: S,
     config: GameConfig,
     phase: Phase,
+    recorder: Option<Recorder>,
 ) -> GameHandle {
     let (commands, inbox) = mpsc::channel(config.command_queue.max(1));
     let actor = GameActor {
@@ -128,6 +153,7 @@ fn launch<S: EventStore>(
         seats: Seats::new(setup.players.len(), config.seat_queue),
         setup,
         phase,
+        recorder,
     };
     tokio::spawn(actor.run(inbox));
     GameHandle::new(id, commands)
@@ -152,6 +178,8 @@ pub(crate) struct GameActor<S> {
     pub(crate) setup: GameSetup,
     pub(crate) seats: Seats,
     pub(crate) phase: Phase,
+    /// Where a persistent game notes its milestones; `None` for a game that lives in memory only.
+    pub(crate) recorder: Option<Recorder>,
 }
 
 impl<S: EventStore> GameActor<S> {
@@ -166,7 +194,7 @@ impl<S: EventStore> GameActor<S> {
 
     async fn handle(&mut self, command: Command) -> Result<(), Fatal> {
         match command {
-            Command::Join { seat, reply } => self.join(seat, reply),
+            Command::Join { seat, reply } => self.join(seat, reply).await,
             Command::Message { seat, message } => return self.message(seat, message).await,
             Command::Leave { seat } => self.seats.detach(seat),
             Command::Status { reply } => {
@@ -177,7 +205,7 @@ impl<S: EventStore> GameActor<S> {
         Ok(())
     }
 
-    fn join(
+    async fn join(
         &mut self,
         seat: PlayerId,
         reply: oneshot::Sender<Result<mpsc::Receiver<ServerMessage>, JoinError>>,
@@ -196,6 +224,10 @@ impl<S: EventStore> GameActor<S> {
         self.seats.send(seat, welcome);
         self.sync(seat);
         let _ = reply.send(Ok(inbox));
+        // After the reply, so the client never waits for the database.
+        if let Some(recorder) = &mut self.recorder {
+            recorder.joined(seat).await;
+        }
     }
 
     /// Queues a snapshot, the seat's pending decision and the result for a game that is running.
