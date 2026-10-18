@@ -146,12 +146,22 @@ describe('choosing the opponent to focus', () => {
     expect(tile(container, 4)).toHaveAttribute('aria-current', 'true')
   })
 
-  it('reaches the tiles with Tab, after the layout buttons, Full Control and Concede', async () => {
+  it('reaches the tiles with Tab, after the layout buttons, the stops, Full Control and Concede', async () => {
     const { container, user } = renderTable({ fixture: buildFixture({ seats: 5, permanents: 2 }) })
     await user.tab()
     expect(screen.getByRole('button', { name: 'Grid' })).toHaveFocus()
     await user.tab()
     expect(screen.getByRole('button', { name: 'Focus' })).toHaveFocus()
+    // The stop ladder is one stop for the line that folds it up (hidden on a wide screen), one for each row (the
+    // opponent's turn is under way, so that row is entered at the step it is in) and one for Keep.
+    await user.tab()
+    expect(screen.getByRole('button', { name: /^Stops · / })).toHaveFocus()
+    await user.tab()
+    expect(screen.getByRole('button', { name: /^Your upkeep stop/ })).toHaveFocus()
+    await user.tab()
+    expect(screen.getByRole('button', { name: /^Opponents' declare blockers stop/ })).toHaveFocus()
+    await user.tab()
+    expect(screen.getByRole('button', { name: 'Keep stops' })).toHaveFocus()
     await user.tab()
     expect(screen.getByRole('button', { name: 'Full Control: off' })).toHaveFocus()
     await user.tab()

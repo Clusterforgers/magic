@@ -6,6 +6,7 @@ import { TableOptionsContext } from '@/features/table/tableOptions'
 import { DevFxControls } from './DevFxControls'
 import { fixtureGame } from './devGame'
 import { FIXTURE_MARKER } from './fixture'
+import { parseStopSpec } from './stopSpec'
 
 /**
  * `/dev/table?seats=2|4|12&mode=grid|focus&focus=<seat>&prompt=priority&turn=you&fx=damage&slow=5&preview=3000`: the
@@ -13,13 +14,23 @@ import { FIXTURE_MARKER } from './fixture'
  * face; answering it clears it. `turn=you` makes it the viewer's own turn. `fx` plays one of the moves of
  * `dev/fxScenarios.ts` once the page has loaded (buttons in the page play them again) and `slow` stretches the
  * table effects, so one can be looked at before it is gone. `preview` is how many milliseconds the table takes to
- * answer a preview of blocks or attacks (120 when missing), so "Checking outcome…" can be looked at.
+ * answer a preview of blocks or attacks (120 when missing), so "Checking outcome…" can be looked at. `stops` lights stops
+ * (`own:main1,opp:end:keep`: side, step, and `keep` for a lasting one) and `fc=next|held` sets Full Control; the
+ * ladder and the toggle then answer as a server would.
  */
 export function DevTableRoute() {
-  const { seats, mode, focus, prompt, turn, fx, slow, preview } = useSearch({ from: '/dev/table' })
+  const { seats, mode, focus, prompt, turn, fx, slow, preview, stops, fc } = useSearch({ from: '/dev/table' })
   const game = useMemo(
-    () => fixtureGame({ seats, prompt, turn, previewMs: preview }),
-    [seats, prompt, turn, preview],
+    () =>
+      fixtureGame({
+        seats,
+        prompt,
+        turn,
+        previewMs: preview,
+        stops: stops === undefined ? undefined : parseStopSpec(stops),
+        fullControl: fc === 'next' ? 'NextWindow' : fc === 'held' ? 'Held' : undefined,
+      }),
+    [seats, prompt, turn, preview, stops, fc],
   )
   // Asking for an effect turns the layer on, even where it is off by default.
   const options = useMemo(

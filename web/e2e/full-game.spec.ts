@@ -11,6 +11,7 @@ const STALL_MS = 30_000
 const standings = (page: Page) => page.getByRole('list', { name: 'How each seat finished' })
 
 /** The Full Control button of a page, by the state it says ("off", "next window", "held"). */
+const stop = (page: Page, name: string) => page.getByRole('button', { name: new RegExp(`^${name}`) })
 const fullControl = (page: Page, state: string) =>
   page.getByRole('button', { name: `Full Control: ${state}` })
 
@@ -35,6 +36,13 @@ test('two seats play a vanilla game to the end in the browser', async ({ browser
     await expect(fullControl(ada.page, 'off')).toBeVisible()
     await fullControl(bo.page, 'held').click()
     await expect(fullControl(bo.page, 'off')).toHaveAttribute('aria-pressed', 'false')
+    // Bo stops at the end step of every opponent turn (shift for a lasting stop). A server that gives a stop its window
+    // asks Bo there with nothing to do, and he ends the turn; one that does not yet never asks.
+    await stop(bo.page, "Opponents' end step stop: off").click({ modifiers: ['Shift'] })
+    await expect(stop(bo.page, "Opponents' end step stop: on every turn")).toHaveAttribute(
+      'data-keep',
+      'lasting',
+    )
     // Ada taps her lands by hand and never blocks; Bo pays automatically and blocks, so each path is walked by a seat.
     await playToTheEnd(
       [
@@ -43,11 +51,14 @@ test('two seats play a vanilla game to the end in the browser', async ({ browser
       ],
       run,
     )
-    // With no stop and Full Control off, nobody is asked about a window there is nothing to do in.
-    for (const { name } of players) {
-      expect(run.idle.get(name) ?? 0, `${name} was asked about windows there was nothing to do in`).toBe(0)
-    }
+    // Ada set no stop and kept Full Control off, so she is never asked about a window there is nothing to do in.
+    expect(run.idle.get('Ada') ?? 0, 'Ada was asked about windows there was nothing to do in').toBe(0)
     expect(run.yields.get('Ada') ?? 0).toBe(0)
+    // Bo is asked about nothing but the stop he set, the end step of Ada's turn, and ends the turn in each of them.
+    for (const where of run.idleAt.get('Bo') ?? []) expect(where).toMatch(/ · Ada · End step$/)
+    expect(run.yields.get('Bo') ?? 0, 'Bo did not end the turn in every window he was asked about').toBe(
+      run.idle.get('Bo') ?? 0,
+    )
 
     // Both screens agree on the winner: one seat is told it won, the other that it lost, and each list names one Winner.
     const headlines = await Promise.all(

@@ -7,6 +7,7 @@ import { canHoldStop } from '@/play/stops'
 import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById } from '@/play/view'
+import type { FullControlMode, Stop } from '@/protocol/generated'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
 import { buildFixture } from './fixture'
@@ -142,6 +143,10 @@ export interface FixtureGameOptions extends FixtureOptions {
   turn?: 'you'
   /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
   previewMs?: number
+  /** The stops the viewer holds from the start; none when left out. */
+  stops?: Stop[]
+  /** The Full Control mode the viewer holds from the start; off when left out. */
+  fullControl?: FullControlMode
 }
 
 /** A game context holding a fresh fixture table. */
@@ -155,6 +160,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const table = Object.hasOwn(DEV_TABLES, name) ? DEV_TABLES[name] : undefined
   const fixture = table === undefined ? built : table(built)
   store.setState(fixtureState(fixture, prompt === undefined ? null : prompt(fixture)))
+  if (options.stops !== undefined) store.setState({ stops: options.stops })
+  if (options.fullControl !== undefined) store.setState({ fullControl: options.fullControl })
   // A seat that is already yielding faces no priority decision, only the line that says it is passing.
   if (Object.hasOwn(DEV_YIELDS, name)) store.setState({ yielding: DEV_YIELDS[name] ?? null })
   // The dev table answers a preview after a moment, so the "checking outcome" state can be looked at too.
