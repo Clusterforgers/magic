@@ -23,6 +23,9 @@
 //!   `Resync` repeats the last two. Queues are bounded: a client that stops reading is dropped and
 //!   must join again. The game waits for absent seats and never passes for them.
 //! - **Chat** is broadcast to connected seats and never stored.
+//!
+//! Event logs live in memory ([`MemoryStore`]) or in Postgres ([`PgEventStore`], whose schema
+//! [`migrate`] applies and tracks in its own table so `mtg-db` can share the database).
 
 mod actor;
 mod api;
@@ -32,7 +35,9 @@ mod game_id;
 mod handle;
 mod limit;
 mod lobby;
+mod migrations;
 mod origin;
+mod pg_store;
 mod play;
 pub mod registry;
 mod running;
@@ -51,6 +56,8 @@ pub use api::{BODY_LIMIT, MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS};
 pub use config::{ConfigError, ServerConfig};
 pub use game_id::GameId;
 pub use handle::{GameClosed, GameHandle, GameStatus, JoinError};
+pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};
+pub use pg_store::PgEventStore;
 pub use registry::Registry;
 pub use seats::MIN_QUEUE;
 pub use secret::{RandomError, SeatToken};

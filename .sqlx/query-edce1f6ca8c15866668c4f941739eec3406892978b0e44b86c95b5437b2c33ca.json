@@ -1,0 +1,41 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT seq, event FROM game_events WHERE game_id = $1 AND seq >= $2 ORDER BY seq",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "seq",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "game_events",
+            "name": "seq"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "event",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "game_events",
+            "name": "event"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "edce1f6ca8c15866668c4f941739eec3406892978b0e44b86c95b5437b2c33ca"
+}

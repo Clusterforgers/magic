@@ -13,7 +13,7 @@ Rules: one item = one focused piece of work (about 15 minutes for an agent). Tic
 After a restart, run `git worktree list` and read each worktree's status before touching anything in flight.
 
 ## M1 Card data (rest)
-- [ ] `mtg-db` follow-ups: reap stale `running` import runs, skip NUL-containing records instead of failing the batch, give `mtg-server` its own migration table (`mtg-db` owns `_sqlx_migrations`)
+- [ ] `mtg-db` follow-ups: reap stale `running` import runs, skip NUL-containing records instead of failing the batch
 - [ ] CLI binary `mtg-cli`: download Scryfall bulk + MTGJSON deck index/decks, ingest into Postgres (resumable, polite rate limit)
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports. Verified on real exports of two Commander decks (`real_exports.rs`) and on a corpus of 29 public decks, 183 export files compared with each site's own card lists (`corpus_parse.rs`, `corpus_detect.rs`, `corpus_export.rs`, `docs/data-sources.md`): MTGO text is its own `DeckFormat`, Moxfield's single commander is promoted by `promote_implied_commander`, Moxfield `STICKERS:` is reported in `ParsedDeck::ignored`. Still open: a real MTGO `.dek`, a real Arena client export, companions and custom cards (no public deck found), and resolving the names parsing leaves as written (flavor and digital names, `A / B`, `A/B`, `A /// B`, front faces)
 - [ ] Importer 2b, name resolution on the corpus: look up by printing (set + collector number) before name; resolve `A / B`, `A/B`, `A /// B`, front-face-only, flavor and digital (Arena/MTGO) names; real-data test that resolves all 183 corpus exports against Scryfall
@@ -29,7 +29,8 @@ After a restart, run `git worktree list` and read each worktree's status before 
 - [x] Web game UI: routes, create-game page, connection/lobby/game-over screens; read-only N-seat table in `GameTable` (grid and focus layouts, seat panels, battlefields, hand, stack, log, chat, card preview, `/dev/table`); prompts for all eight decision kinds (`features/table/prompt/`, `?prompt=` on `/dev/table`), legal-option highlights and "nothing to do" notes (`docs/web.md`). Commander damage and tax in the table wait for M5
 - [ ] Protocol and engine gaps the prompts exposed (one task each, with tests): `MulliganOptions` should carry the free-mulligan rule (the UI assumes `mulligans_taken + 1` cards go to the bottom); `ManaCost` has no hybrid or X; `PayOptions` has no cancel flag and there is no "complete my partial payment" answer (`Auto` ignores what was chosen); `check_payment` accepts two abilities of one permanent, which would tap it twice; `DamageOptions` carries no player or trample targets and the views carry no keywords, so deathtouch is not in the lethal hint
 - [ ] Playwright e2e: full 2-player vanilla game in the browser
-- [ ] `mtg-server` persistence: Postgres `EventStore` with its own migration table, game and seat records (store a serializable setup recipe), resume running games on boot; `sqlx::test` tests
+- [x] `mtg-server` persistence (a): Postgres `EventStore` and migration table
+- [ ] `mtg-server` persistence (b): game and seat records (store a serializable setup recipe), resume running games on boot; `sqlx::test` tests
 
 ## M3 Rules depth
 - [ ] `mtg-cards` DSL: Cost, Selector, Condition, Effect, Duration, TargetSpec primitives with data files

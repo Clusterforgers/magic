@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO game_events (game_id, seq, event)\n                 SELECT $1, $2 + t.ord - 1, t.event\n                 FROM unnest($3::jsonb[]) WITH ORDINALITY AS t(event, ord)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int8",
+        "JsonbArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "b8d610b814ee2f1e32bb8b38b2d9e7d38a9bdcc423a0d1db3f2aa0d9d85a3c74"
+}
