@@ -63,6 +63,14 @@ describe('the host', () => {
     expect(container.querySelector('[data-decision]')).toBeNull()
   })
 
+  it('names the decision id, so a driver can tell two decisions of one kind apart', () => {
+    const { container, update } = renderTable({ state: (state) => ({ ...state, pending: mulligan(3) }) })
+    const id = () => container.querySelector('[data-decision]')?.getAttribute('data-decision-id')
+    expect(id()).toBe('3')
+    update(() => ({ pending: mulligan(4) }))
+    expect(id()).toBe('4')
+  })
+
   it('swaps one prompt for the next when the decision changes kind', () => {
     const { container, update } = renderTable({ state: (state) => ({ ...state, pending: mulligan(3) }) })
     expect(container.querySelector('[data-decision="Mulligan"]')).not.toBeNull()

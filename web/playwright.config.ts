@@ -1,4 +1,9 @@
 import { defineConfig } from '@playwright/test'
+import { SERVER_PORT, SERVER_URL, WEB_PORT, WEB_URL } from './e2e/ports'
+
+// Both servers are started here and are new for every run (in-memory store, built-in demo decks). Set E2E_REUSE=1 to
+// keep servers that are already listening on the two ports, which saves the build while a spec is being written.
+const reuseExistingServer = process.env.E2E_REUSE === '1'
 
 export default defineConfig({
   testDir: './e2e',
@@ -6,14 +11,30 @@ export default defineConfig({
   workers: 1,
   reporter: [['list']],
   use: {
-    baseURL: 'http://localhost:4173',
+    baseURL: WEB_URL,
     viewport: { width: 1600, height: 1000 },
+    actionTimeout: 15_000,
+    // NixOS cannot run the browser Playwright downloads; docs/web.md says which chromium to point this at.
     launchOptions: { executablePath: process.env.CHROMIUM_PATH },
   },
-  webServer: {
-    command: 'pnpm build && pnpm exec vite preview --port 4173 --strictPort',
-    url: 'http://localhost:4173',
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
+  webServer: [
+    {
+      command: 'cargo run --quiet -p mtg-server',
+      cwd: '..',
+      env: { MTG_BIND: `127.0.0.1:${SERVER_PORT}`, RUST_LOG: 'warn' },
+      url: `${SERVER_URL}/healthz`,
+      reuseExistingServer,
+      gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
+      // A cold build of the workspace is slow; a warm one answers within a second.
+      timeout: 600_000,
+    },
+    {
+      command: `pnpm build && pnpm exec vite preview --host 127.0.0.1 --port ${WEB_PORT} --strictPort`,
+      // The preview server keeps the browser's Host header when it proxies /api and /ws to this server.
+      env: { MTG_SERVER_URL: SERVER_URL },
+      url: WEB_URL,
+      reuseExistingServer,
+      timeout: 180_000,
+    },
+  ],
 })

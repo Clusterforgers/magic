@@ -28,7 +28,7 @@ After a restart, run `git worktree list` and read each worktree's status before 
 - [x] Web core: typed REST + WebSocket client (reconnect, close codes, gap in `from_seq` sends `Resync`), zustand store applying snapshots and batches, tested against the transcript fixture and a fake socket
 - [x] Web game UI: routes, create-game page, connection/lobby/game-over screens; read-only N-seat table in `GameTable` (grid and focus layouts, seat panels, battlefields, hand, stack, log, chat, card preview, `/dev/table`); prompts for all eight decision kinds (`features/table/prompt/`, `?prompt=` on `/dev/table`), legal-option highlights and "nothing to do" notes (`docs/web.md`). Commander damage and tax in the table wait for M5
 - [ ] Protocol and engine gaps the prompts exposed (one task each, with tests): `MulliganOptions` should carry the free-mulligan rule (the UI assumes `mulligans_taken + 1` cards go to the bottom); `ManaCost` has no hybrid or X; `PayOptions` has no cancel flag and there is no "complete my partial payment" answer (`Auto` ignores what was chosen); `check_payment` accepts two abilities of one permanent, which would tap it twice; `DamageOptions` carries no player or trample targets and the views carry no keywords, so deathtouch is not in the lethal hint
-- [ ] Playwright e2e: full 2-player vanilla game in the browser
+- [x] Playwright e2e: full 2-player vanilla game in the browser (`web/e2e`, `pnpm e2e`; command and driver in `docs/web.md`)
 - [x] `mtg-server` persistence (a): Postgres `EventStore` and migration table
 - [ ] `mtg-server` persistence (b): game and seat records (store a serializable setup recipe), resume running games on boot; `sqlx::test` tests
 
