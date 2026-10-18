@@ -20,8 +20,9 @@ const STEPS: Step[] = [
   'End',
 ]
 
-const own = (step: Step): Stop => ({ side: 'Own', step })
-const opponent = (step: Step): Stop => ({ side: 'Opponent', step })
+// A stop lasts (`keep`) or goes once its step has passed; most of these are one-turn stops, the default of a click.
+const own = (step: Step, keep = false): Stop => ({ side: 'Own', step, keep })
+const opponent = (step: Step, keep = false): Stop => ({ side: 'Opponent', step, keep })
 
 const stopsMessage = (stops: Stop[]): ServerMessage => ({ type: 'Stops', stops })
 const modeMessage = (mode: FullControlMode): ServerMessage => ({ type: 'FullControl', mode })
@@ -29,9 +30,15 @@ const modeMessage = (mode: FullControlMode): ServerMessage => ({ type: 'FullCont
 const LISTS: [string, Stop[]][] = [
   ['none', []],
   ['one on the seat’s own turn', [own('Main1')]],
-  ['one on an opponent’s turn', [opponent('End')]],
-  ['both sides', [own('Upkeep'), own('End'), opponent('Draw'), opponent('DeclareBlockers')]],
-  ['every step on both sides', SIDES.flatMap((side) => STEPS.map((step): Stop => ({ side, step })))],
+  ['one lasting on an opponent’s turn', [opponent('End', true)]],
+  [
+    'both sides, lasting and one-turn',
+    [own('Upkeep', true), own('End'), opponent('Draw', true), opponent('DeclareBlockers')],
+  ],
+  [
+    'every step on both sides, alternating',
+    SIDES.flatMap((side) => STEPS.map((step, n): Stop => ({ side, step, keep: n % 2 === 0 }))),
+  ],
 ]
 
 describe('what the server says', () => {
@@ -111,10 +118,38 @@ describe('what the server says', () => {
     expect(h.state()).toMatchObject({ stops: [opponent('DeclareAttackers')], fullControl: 'NextWindow' })
   })
 
+  it('shows a lasting stop and a one-turn stop as the server told them, in the Welcome and in a notice', () => {
+    const lasting = own('Main1', true)
+    const oneTurn = opponent('End')
+    const h = startSession()
+    h.session.connect()
+    h.net.last.open()
+    h.deliver({ ...welcome, stops: [lasting, oneTurn] })
+    expect(h.state().stops).toStrictEqual([lasting, oneTurn])
+    expect(h.state().stops.map((stop) => stop.keep)).toEqual([true, false])
+
+    h.deliver(stopsMessage([oneTurn, opponent('Upkeep', true)]))
+    expect(h.state().stops.map((stop) => [stop.step, stop.keep])).toEqual([
+      ['End', false],
+      ['Upkeep', true],
+    ])
+  })
+
+  it('follows a stop upgraded to lasting and downgraded again by the list the server tells each time', () => {
+    const h = startSession()
+    h.join()
+    const other = opponent('Draw', true)
+    // The same stop in the same place of the list, with the other keep each time.
+    for (const keep of [false, true, false, true, true, false]) {
+      h.deliver(stopsMessage([own('Main1', keep), other]))
+      expect(h.state().stops).toEqual([own('Main1', keep), other])
+    }
+  })
+
   it('hands on the stops of a Welcome and of a notice as the server listed them', () => {
     const h = startSession()
     h.join()
-    const listed = [own('Upkeep'), own('End'), opponent('Draw')]
+    const listed = [own('Upkeep', true), own('End'), opponent('Draw', true)]
     h.deliver(stopsMessage(listed))
     expect(h.state().stops).toStrictEqual(listed)
   })
@@ -176,26 +211,40 @@ describe('the end of the game and notices it cannot read', () => {
   it.each([
     ['nothing', { type: 'Stops' }],
     ['null', { type: 'Stops', stops: null }],
-    ['one stop instead of a list', { type: 'Stops', stops: { side: 'Own', step: 'Main1' } }],
+    ['one stop instead of a list', { type: 'Stops', stops: { side: 'Own', step: 'Main1', keep: true } }],
     ['a stop that is text', { type: 'Stops', stops: ['Main1'] }],
-    ['an unknown side', { type: 'Stops', stops: [{ side: 'Both', step: 'Main1' }] }],
-    ['an unknown step', { type: 'Stops', stops: [{ side: 'Own', step: 'Combat' }] }],
-    ['a step in lower case', { type: 'Stops', stops: [{ side: 'Own', step: 'main1' }] }],
+    ['an unknown side', { type: 'Stops', stops: [{ side: 'Both', step: 'Main1', keep: true }] }],
+    ['an unknown step', { type: 'Stops', stops: [{ side: 'Own', step: 'Combat', keep: true }] }],
+    ['a step in lower case', { type: 'Stops', stops: [{ side: 'Own', step: 'main1', keep: true }] }],
+    ['a stop without keep', { type: 'Stops', stops: [{ side: 'Own', step: 'Main1' }] }],
+    ['keep as text', { type: 'Stops', stops: [{ side: 'Own', step: 'Main1', keep: 'yes' }] }],
+    ['keep as a number', { type: 'Stops', stops: [{ side: 'Own', step: 'Main1', keep: 1 }] }],
+    ['keep as null', { type: 'Stops', stops: [{ side: 'Own', step: 'Main1', keep: null }] }],
     [
       'a stop twice',
       {
         type: 'Stops',
         stops: [
-          { side: 'Own', step: 'Main1' },
-          { side: 'Own', step: 'Main1' },
+          { side: 'Own', step: 'Main1', keep: true },
+          { side: 'Own', step: 'Main1', keep: true },
+        ],
+      },
+    ],
+    [
+      'a stop twice with different keeps',
+      {
+        type: 'Stops',
+        stops: [
+          { side: 'Own', step: 'Main1', keep: true },
+          { side: 'Own', step: 'Main1', keep: false },
         ],
       },
     ],
   ])('ignores a Stops notice with %s and says so', (_what, frame) => {
     const h = startSession()
     h.join()
-    h.deliver(stopsMessage([opponent('End')]), frame)
-    expect(h.state().stops).toEqual([opponent('End')])
+    h.deliver(stopsMessage([opponent('End', true)]), frame)
+    expect(h.state().stops).toEqual([opponent('End', true)])
     expect(h.state().notice).toMatch(/could not read/)
   })
 
@@ -216,7 +265,8 @@ describe('the end of the game and notices it cannot read', () => {
   it.each([
     ['no stops', { ...welcome, stops: undefined }],
     ['stops that are not a list', { ...welcome, stops: 'Main1' }],
-    ['a stop on an unknown step', { ...welcome, stops: [{ side: 'Own', step: 'Combat' }] }],
+    ['a stop on an unknown step', { ...welcome, stops: [{ side: 'Own', step: 'Combat', keep: true }] }],
+    ['a stop without keep', { ...welcome, stops: [{ side: 'Own', step: 'Main1' }] }],
     ['no mode', { ...welcome, full_control: undefined }],
     ['an unknown mode', { ...welcome, full_control: 'Always' }],
   ])('ignores a Welcome with %s, and so never takes the seat', (_what, frame) => {

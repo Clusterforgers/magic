@@ -49,7 +49,8 @@ const MODES: [FullControlMode; 3] = [
     FullControlMode::Held,
 ];
 
-/// Every stop a server may list: both sides, each step where a player gets priority, in the order it lists them.
+/// Every stop a server may list: both sides, each step where a player gets priority, in the order it lists them;
+/// lasting and one-turn stops alternate, so both kinds are on every side.
 fn every_stop() -> Vec<Stop> {
     SIDES
         .into_iter()
@@ -57,7 +58,12 @@ fn every_stop() -> Vec<Stop> {
             Step::ALL
                 .into_iter()
                 .filter(|step| step.grants_priority())
-                .map(move |step| Stop { side, step })
+                .enumerate()
+                .map(move |(n, step)| Stop {
+                    side,
+                    step,
+                    keep: n % 2 == 0,
+                })
         })
         .collect()
 }
@@ -568,25 +574,31 @@ fn client_wire_shape_is_flat_and_tagged(
     ServerMessage::Welcome {
         protocol_version: 1, game: "g".into(), player: PlayerId(0), seats: 2, auto_pass: false,
         yielding: Some(YieldUntil::MyTurn),
-        stops: vec![Stop { side: StopSide::Own, step: Step::Main1 }, Stop { side: StopSide::Opponent, step: Step::End }],
+        stops: vec![
+            Stop { side: StopSide::Own, step: Step::Main1, keep: true },
+            Stop { side: StopSide::Opponent, step: Step::End, keep: false },
+        ],
         full_control: FullControlMode::Held,
     },
     json!({
         "type": "Welcome", "protocol_version": 1, "game": "g", "player": 0, "seats": 2, "auto_pass": false,
         "yielding": "MyTurn",
-        "stops": [{"side": "Own", "step": "Main1"}, {"side": "Opponent", "step": "End"}],
+        "stops": [
+            {"side": "Own", "step": "Main1", "keep": true},
+            {"side": "Opponent", "step": "End", "keep": false},
+        ],
         "full_control": "Held"
     })
 )]
 #[case(ServerMessage::Stops { stops: vec![] }, json!({"type": "Stops", "stops": []}))]
 #[case(
     ServerMessage::Stops { stops: vec![
-        Stop { side: StopSide::Own, step: Step::DeclareBlockers },
-        Stop { side: StopSide::Opponent, step: Step::CombatDamage },
+        Stop { side: StopSide::Own, step: Step::DeclareBlockers, keep: false },
+        Stop { side: StopSide::Opponent, step: Step::CombatDamage, keep: true },
     ] },
     json!({"type": "Stops", "stops": [
-        {"side": "Own", "step": "DeclareBlockers"},
-        {"side": "Opponent", "step": "CombatDamage"},
+        {"side": "Own", "step": "DeclareBlockers", "keep": false},
+        {"side": "Opponent", "step": "CombatDamage", "keep": true},
     ]})
 )]
 #[case(
@@ -880,13 +892,24 @@ fn a_full_control_message_that_is_not_one_of_the_three_modes_is_refused(#[case] 
 #[rstest]
 #[case::stops_missing(r#"{"type":"Stops"}"#)]
 #[case::stops_null(r#"{"type":"Stops","stops":null}"#)]
-#[case::stops_as_one_object(r#"{"type":"Stops","stops":{"side":"Own","step":"Main1"}}"#)]
+#[case::stops_as_one_object(
+    r#"{"type":"Stops","stops":{"side":"Own","step":"Main1","keep":true}}"#
+)]
 #[case::a_stop_as_text(r#"{"type":"Stops","stops":["Main1"]}"#)]
-#[case::a_stop_without_side(r#"{"type":"Stops","stops":[{"step":"Main1"}]}"#)]
-#[case::a_stop_without_step(r#"{"type":"Stops","stops":[{"side":"Own"}]}"#)]
-#[case::an_unknown_side(r#"{"type":"Stops","stops":[{"side":"Both","step":"Main1"}]}"#)]
-#[case::an_unknown_step(r#"{"type":"Stops","stops":[{"side":"Own","step":"Combat"}]}"#)]
-#[case::a_step_in_lower_case(r#"{"type":"Stops","stops":[{"side":"Own","step":"upkeep"}]}"#)]
+#[case::a_stop_without_side(r#"{"type":"Stops","stops":[{"step":"Main1","keep":true}]}"#)]
+#[case::a_stop_without_step(r#"{"type":"Stops","stops":[{"side":"Own","keep":true}]}"#)]
+#[case::a_stop_without_keep(r#"{"type":"Stops","stops":[{"side":"Own","step":"Main1"}]}"#)]
+#[case::an_unknown_side(r#"{"type":"Stops","stops":[{"side":"Both","step":"Main1","keep":true}]}"#)]
+#[case::an_unknown_step(r#"{"type":"Stops","stops":[{"side":"Own","step":"Combat","keep":true}]}"#)]
+#[case::a_step_in_lower_case(
+    r#"{"type":"Stops","stops":[{"side":"Own","step":"upkeep","keep":true}]}"#
+)]
+#[case::keep_as_text(r#"{"type":"Stops","stops":[{"side":"Own","step":"Main1","keep":"yes"}]}"#)]
+#[case::keep_as_a_number(r#"{"type":"Stops","stops":[{"side":"Own","step":"Main1","keep":1}]}"#)]
+#[case::keep_as_null(r#"{"type":"Stops","stops":[{"side":"Own","step":"Main1","keep":null}]}"#)]
+#[case::welcome_with_a_stop_without_keep(
+    r#"{"type":"Welcome","protocol_version":1,"game":"g","player":0,"seats":2,"auto_pass":true,"yielding":null,"stops":[{"side":"Own","step":"Main1"}],"full_control":"Off"}"#
+)]
 #[case::welcome_without_stops(
     r#"{"type":"Welcome","protocol_version":1,"game":"g","player":0,"seats":2,"auto_pass":true,"yielding":null,"full_control":"Off"}"#
 )]
@@ -902,24 +925,30 @@ fn a_notice_with_wrong_stops_or_a_wrong_mode_is_refused(#[case] text: &str) {
 }
 
 #[test]
-fn stops_sort_own_side_first_and_each_side_in_turn_order() {
-    let stop = |side, step| Stop { side, step };
-    let mut stops = vec![
-        stop(StopSide::Opponent, Step::Main1),
-        stop(StopSide::Own, Step::End),
-        stop(StopSide::Opponent, Step::Upkeep),
-        stop(StopSide::Own, Step::Upkeep),
-    ];
-    stops.sort();
-    assert_eq!(
-        stops,
-        [
-            stop(StopSide::Own, Step::Upkeep),
-            stop(StopSide::Own, Step::End),
-            stop(StopSide::Opponent, Step::Upkeep),
-            stop(StopSide::Opponent, Step::Main1),
-        ]
-    );
+fn stops_sort_own_side_first_and_each_side_in_turn_order_whether_they_last_or_not() {
+    let stop = |side, step, keep| Stop { side, step, keep };
+    // Every mix of lasting and one-turn stops sorts the same way: `keep` never decides the place of a stop.
+    for mask in 0..16_u32 {
+        let keep = |bit: u32| mask & (1 << bit) != 0;
+        let mut stops = [
+            stop(StopSide::Opponent, Step::Main1, keep(0)),
+            stop(StopSide::Own, Step::End, keep(1)),
+            stop(StopSide::Opponent, Step::Upkeep, keep(2)),
+            stop(StopSide::Own, Step::Upkeep, keep(3)),
+        ];
+        stops.sort();
+        let order: Vec<_> = stops.iter().map(|s| (s.side, s.step)).collect();
+        assert_eq!(
+            order,
+            [
+                (StopSide::Own, Step::Upkeep),
+                (StopSide::Own, Step::End),
+                (StopSide::Opponent, Step::Upkeep),
+                (StopSide::Opponent, Step::Main1),
+            ],
+            "mask {mask:04b}"
+        );
+    }
     let every = every_stop();
     assert!(every.is_sorted(), "the list a server sends is in order");
     assert_eq!(

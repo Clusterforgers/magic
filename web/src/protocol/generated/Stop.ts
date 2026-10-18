@@ -5,7 +5,8 @@ import type { StopSide } from "./StopSide";
 /**
  * A step at which a seat asks to be given priority (see [`ClientMessage::SetStop`]).
  *
- * Ordered own side first, then by turn order, which is the order the server lists them in.
+ * Ordered own side first, then by turn order, which is the order the server lists them in. A seat holds one
+ * stop per side and step, so `keep`, the last field, never decides where a stop is listed.
  */
 export type Stop = { 
 /**
@@ -15,4 +16,8 @@ side: StopSide,
 /**
  * The step; only a step where a player gets priority can hold a stop, so never untap or cleanup.
  */
-step: Step, };
+step: Step, 
+/**
+ * How long the stop lasts: false until that step has passed once, true until it is cleared.
+ */
+keep: boolean, };

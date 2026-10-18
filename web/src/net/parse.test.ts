@@ -48,7 +48,8 @@ const STEPS = [
 ]
 const SIDES = ['Own', 'Opponent']
 const MODES = ['Off', 'NextWindow', 'Held']
-const everyStop = SIDES.flatMap((side) => STEPS.map((step) => ({ side, step })))
+// Lasting and one-turn stops alternate, so both kinds are on every side.
+const everyStop = SIDES.flatMap((side) => STEPS.map((step, n) => ({ side, step, keep: n % 2 === 0 })))
 
 /** One valid sample of every server message type. */
 const samples: Record<string, Record<string, unknown>> = {
@@ -56,8 +57,8 @@ const samples: Record<string, Record<string, unknown>> = {
   Welcome: {
     ...first('Welcome'),
     stops: [
-      { side: 'Own', step: 'Main1' },
-      { side: 'Opponent', step: 'End' },
+      { side: 'Own', step: 'Main1', keep: true },
+      { side: 'Opponent', step: 'End', keep: false },
     ],
     full_control: 'Held',
   },
@@ -79,8 +80,8 @@ const samples: Record<string, Record<string, unknown>> = {
   Stops: {
     type: 'Stops',
     stops: [
-      { side: 'Own', step: 'Upkeep' },
-      { side: 'Opponent', step: 'DeclareBlockers' },
+      { side: 'Own', step: 'Upkeep', keep: false },
+      { side: 'Opponent', step: 'DeclareBlockers', keep: true },
     ],
   },
   FullControl: { type: 'FullControl', mode: 'NextWindow' },
@@ -199,7 +200,7 @@ describe('parseFrame checks the fields of each message', () => {
     ['Yielding', 'until as an object', ['until'], { EndOfTurn: true }],
     ['Yielding', 'until as a prototype name', ['until'], '__proto__'],
     ['Welcome', 'stops as null', ['stops'], null],
-    ['Welcome', 'stops as one stop', ['stops'], { side: 'Own', step: 'Main1' }],
+    ['Welcome', 'stops as one stop', ['stops'], { side: 'Own', step: 'Main1', keep: true }],
     ['Welcome', 'stops as text', ['stops'], 'Main1'],
     ['Welcome', 'a stop that is text', ['stops', '0'], 'Main1'],
     ['Welcome', 'a stop that is null', ['stops', '1'], null],
@@ -214,20 +215,41 @@ describe('parseFrame checks the fields of each message', () => {
     ['Welcome', 'a step with a space', ['stops', '0', 'step'], 'Main 1'],
     ['Welcome', 'a step as a number', ['stops', '0', 'step'], 3],
     ['Welcome', 'a step from the prototype', ['stops', '0', 'step'], '__proto__'],
-    ['Welcome', 'a stop listed twice', ['stops', '1'], { side: 'Own', step: 'Main1' }],
+    ['Welcome', 'a stop without keep', ['stops', '0', 'keep'], undefined],
+    ['Welcome', 'keep as text', ['stops', '0', 'keep'], 'yes'],
+    ['Welcome', 'keep as a number', ['stops', '1', 'keep'], 1],
+    ['Welcome', 'keep as null', ['stops', '1', 'keep'], null],
+    ['Welcome', 'a stop listed twice', ['stops', '1'], { side: 'Own', step: 'Main1', keep: true }],
+    [
+      'Welcome',
+      'a stop listed twice with another keep',
+      ['stops', '1'],
+      { side: 'Own', step: 'Main1', keep: false },
+    ],
     ['Welcome', 'full_control as an unknown word', ['full_control'], 'Always'],
     ['Welcome', 'full_control in lower case', ['full_control'], 'held'],
     ['Welcome', 'full_control as a flag', ['full_control'], true],
     ['Welcome', 'full_control as null', ['full_control'], null],
     ['Welcome', 'full_control as a prototype name', ['full_control'], 'constructor'],
     ['Stops', 'stops as null', ['stops'], null],
-    ['Stops', 'stops as one stop', ['stops'], { side: 'Own', step: 'Main1' }],
+    ['Stops', 'stops as one stop', ['stops'], { side: 'Own', step: 'Main1', keep: true }],
     ['Stops', 'a stop that is text', ['stops', '0'], 'Upkeep'],
     ['Stops', 'a side that is unknown', ['stops', '0', 'side'], 'Both'],
     ['Stops', 'a step that is unknown', ['stops', '1', 'step'], 'Combat'],
     ['Stops', 'a step in lower case', ['stops', '1', 'step'], 'declareblockers'],
     ['Stops', 'a stop without a step', ['stops', '1', 'step'], undefined],
-    ['Stops', 'a stop listed twice', ['stops', '1'], { side: 'Own', step: 'Upkeep' }],
+    ['Stops', 'a stop without keep', ['stops', '1', 'keep'], undefined],
+    ['Stops', 'keep as text', ['stops', '0', 'keep'], 'false'],
+    ['Stops', 'keep as a number', ['stops', '1', 'keep'], 0],
+    ['Stops', 'keep as null', ['stops', '0', 'keep'], null],
+    ['Stops', 'keep as an object', ['stops', '0', 'keep'], { value: true }],
+    ['Stops', 'a stop listed twice', ['stops', '1'], { side: 'Own', step: 'Upkeep', keep: false }],
+    [
+      'Stops',
+      'a stop listed twice with another keep',
+      ['stops', '1'],
+      { side: 'Own', step: 'Upkeep', keep: true },
+    ],
     ['FullControl', 'mode as an unknown word', ['mode'], 'Always'],
     ['FullControl', 'mode in lower case', ['mode'], 'nextwindow'],
     ['FullControl', 'mode as a flag', ['mode'], false],
@@ -411,11 +433,33 @@ describe('parseFrame checks the fields of each message', () => {
 
   it('takes the same step on the two sides for two stops, and a side and step twice for a mistake', () => {
     const both = [
-      { side: 'Own', step: 'Main1' },
-      { side: 'Opponent', step: 'Main1' },
+      { side: 'Own', step: 'Main1', keep: true },
+      { side: 'Opponent', step: 'Main1', keep: true },
     ]
     expect(parseFrame(wire({ type: 'Stops', stops: both })).ok).toBe(true)
     expect(parseFrame(wire({ type: 'Stops', stops: [...both, both[0]] })).ok).toBe(false)
+    // Whatever keep the repeat has: a seat holds one stop at a side and step.
+    const other = { side: 'Own', step: 'Main1', keep: false }
+    expect(parseFrame(wire({ type: 'Stops', stops: [...both, other] })).ok).toBe(false)
+  })
+
+  it('hands on the keep of every stop as the server said it, lasting or not', () => {
+    const lasting = { side: 'Own', step: 'Main1', keep: true }
+    const oneTurn = { side: 'Opponent', step: 'End', keep: false }
+    for (const stops of [[lasting], [oneTurn], [lasting, oneTurn], [oneTurn, lasting]]) {
+      const notice = { type: 'Stops', stops }
+      expect(parseFrame(wire(notice))).toEqual({ ok: true, message: notice })
+    }
+  })
+
+  it('does not take a stop without a keep for a one-turn stop: the server always says which', () => {
+    const { keep: _keep, ...bare } = { side: 'Own', step: 'Main1', keep: true }
+    for (const bad of [
+      { type: 'Stops', stops: [bare] },
+      { ...samples.Welcome, stops: [bare] },
+    ]) {
+      expect(parseFrame(wire(bad))).toMatchObject({ ok: false, error: { kind: 'bad_shape' } })
+    }
   })
 
   it('does not take a missing list for none or a missing mode for Off: the server always says which', () => {
@@ -427,9 +471,9 @@ describe('parseFrame checks the fields of each message', () => {
   })
 
   it('names the stops and the mode in the reason', () => {
-    const stops = parseFrame(wire({ type: 'Stops', stops: [{ side: 'Own', step: 'Combat' }] }))
+    const stops = parseFrame(wire({ type: 'Stops', stops: [{ side: 'Own', step: 'Combat', keep: true }] }))
     expect(!stops.ok && stops.error.detail).toMatch(
-      /Stops: "stops" must be a list of stops, each side and step once/,
+      /Stops: "stops" must be a list of stops \(side, step, keep\), each side and step once/,
     )
     const mode = parseFrame(wire({ type: 'FullControl', mode: 'Always' }))
     expect(!mode.ok && mode.error.detail).toMatch(/FullControl: "mode" must be Off, NextWindow or Held/)
