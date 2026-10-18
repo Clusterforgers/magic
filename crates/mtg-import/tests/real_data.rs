@@ -14,6 +14,9 @@ use flate2::read::GzDecoder;
 use mtg_import::mtgjson::{parse_deck, parse_deck_list};
 use mtg_import::resolve::{CardIndex, resolve_deck};
 use mtg_import::scryfall::{CardRecord, cards_jsonl, rulings_jsonl};
+use support::{Verdict, verdict};
+
+mod support;
 
 fn data_dir() -> PathBuf {
     PathBuf::from(std::env::var("MTG_REAL_DATA_DIR").expect("set MTG_REAL_DATA_DIR"))
@@ -129,4 +132,51 @@ fn real_precon_decks_resolve_completely_against_real_cards() {
             deck.name
         );
     }
+}
+
+#[test]
+#[ignore = "needs MTG_REAL_DATA_DIR"]
+fn every_real_mana_cost_is_read_or_refused_by_name() {
+    let records = load_cards();
+    let (mut read, mut refused, mut checked) = (0usize, 0usize, 0usize);
+    let mut disagree: Vec<String> = Vec::new();
+    for card in &records {
+        let mut texts = vec![card.mana_cost.as_str()];
+        texts.extend(card.faces().map(|face| face.mana_cost.as_str()));
+        for text in texts.into_iter().filter(|text| !text.is_empty()) {
+            match verdict(text) {
+                Verdict::Parsed(_) => read += 1,
+                Verdict::Refused(_) => refused += 1,
+            }
+        }
+        // A plain single-faced card must also agree with Scryfall on mana value.
+        let devoid = card.keywords.iter().any(|k| k == "Devoid");
+        if card.back_faces.is_empty()
+            && !card.mana_cost.is_empty()
+            && !devoid
+            && let Verdict::Parsed(costs) = verdict(&card.mana_cost)
+        {
+            let [cost] = costs.as_slice() else {
+                panic!("{}: one cost expected", card.name);
+            };
+            checked += 1;
+            if (f64::from(cost.mana_value()) - card.mana_value).abs() > 1e-9 {
+                disagree.push(format!(
+                    "{} ({}): {} against {}",
+                    card.name, card.set, card.mana_cost, card.mana_value
+                ));
+            }
+        }
+    }
+    // A few joke cards give a cost another mana value in their rules text.
+    assert!(disagree.len() <= 3, "{disagree:?}");
+    assert!(
+        read > 30_000 && checked > 20_000,
+        "read {read}, checked {checked}"
+    );
+    assert!(
+        refused < read / 10,
+        "{refused} refused of {}",
+        read + refused
+    );
 }
