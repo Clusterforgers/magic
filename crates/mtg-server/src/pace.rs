@@ -7,11 +7,12 @@ use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::PriorityAction;
-use mtg_engine::{Answer, Decision, DecisionKind};
+use mtg_engine::{Answer, Decision, DecisionKind, GameState};
 use tokio::time::Instant;
 
 use crate::actor::{Fatal, GameActor, Phase};
 use crate::store::EventStore;
+use crate::yields::Yields;
 
 /// Longest clock the settings accept, in seconds (a day), so a deadline can never overflow.
 pub const MAX_CLOCK_SECS: u64 = 86_400;
@@ -24,8 +25,8 @@ const RETRY_AFTER: Duration = Duration::from_secs(1);
 pub struct Pace {
     /// Whether each seat starts with auto-pass on (`MTG_AUTO_PASS`); a seat can change its own with `AutoPass`.
     pub auto_pass: bool,
-    /// Time a seat that is not the active player has to use priority it can act on (`MTG_RESPONSE_SECS`);
-    /// `None` is no clock.
+    /// Time a seat that is not the active player has to answer a priority decision, whether it can act or not
+    /// (`MTG_RESPONSE_SECS`); `None` is no clock.
     pub response: Option<Duration>,
     /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`); `None` is no clock.
     pub blocks: Option<Duration>,
@@ -41,15 +42,16 @@ impl Pace {
 
     /// The clock `decision` runs on, if any.
     ///
-    /// Only a seat that is not the active player is hurried, and only for a priority decision it can act on
-    /// or for declaring blockers; every other decision (mulligans, discards, damage division, the active
-    /// player's own turn) waits for as long as it takes.
+    /// Only a seat that is not the active player is hurried, and only for a priority decision or for
+    /// declaring blockers; every other decision (mulligans, discards, damage division, the active
+    /// player's own turn) waits for as long as it takes. A priority window the seat has nothing to do in
+    /// is hurried too (it is only delivered with auto-pass off): it would hold the table for no reason.
     pub(crate) fn clock_for(&self, decision: &Decision, active: PlayerId) -> Option<Duration> {
         if decision.player == active {
             return None;
         }
         match &decision.kind {
-            DecisionKind::Priority(options) if options.can_act => self.response,
+            DecisionKind::Priority(_) => self.response,
             DecisionKind::DeclareBlockers(_) => self.blocks,
             _ => None,
         }
@@ -76,6 +78,11 @@ pub(crate) fn idle(decision: &Decision) -> bool {
     matches!(&decision.kind, DecisionKind::Priority(options) if !options.can_act)
 }
 
+/// Whether the decision is a priority decision, whatever its options.
+pub(crate) fn is_priority(decision: &Decision) -> bool {
+    matches!(&decision.kind, DecisionKind::Priority(_))
+}
+
 /// Whether the server passes for the decision's seat without asking: it is idle and the seat has auto-pass on.
 pub(crate) fn skippable(decision: &Decision, auto_pass: &[bool]) -> bool {
     idle(decision)
@@ -83,6 +90,20 @@ pub(crate) fn skippable(decision: &Decision, auto_pass: &[bool]) -> bool {
             .get(decision.player.index())
             .copied()
             .unwrap_or(false)
+}
+
+/// Whether the server passes for the decision's seat without asking: the seat yields, or it is idle with
+/// auto-pass on. A yield that this decision ends is dropped from `yields` and the auto-pass rule decides.
+pub(crate) fn passes_for(
+    decision: &Decision,
+    auto_pass: &[bool],
+    yields: &mut Yields,
+    state: &GameState,
+) -> bool {
+    let DecisionKind::Priority(options) = &decision.kind else {
+        return false;
+    };
+    yields.passes(decision.player, state, options.can_act) || skippable(decision, auto_pass)
 }
 
 /// What the table answers for a seat whose clock ran out: a pass, or no blockers.
@@ -248,7 +269,7 @@ mod tests {
 
     #[rstest]
     #[case::response_to_an_opponents_turn(OTHER, priority(true), Some(10))]
-    #[case::nothing_to_respond_with(OTHER, priority(false), None)]
+    #[case::nothing_to_respond_with_is_hurried_too(OTHER, priority(false), Some(10))]
     #[case::the_active_players_own_priority(ACTIVE, priority(true), None)]
     #[case::the_active_player_with_nothing_to_do(ACTIVE, priority(false), None)]
     #[case::a_defender_blocking(OTHER, blockers(), Some(45))]

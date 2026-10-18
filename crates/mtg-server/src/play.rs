@@ -3,13 +3,14 @@
 use mtg_core::ids::PlayerId;
 use mtg_engine::{Answer, EngineError, Event, GameState};
 use mtg_protocol::{
-    DecisionId, ErrorCode, EventBatch, ProtocolError, ServerMessage, project_events,
+    DecisionId, ErrorCode, EventBatch, ProtocolError, ServerMessage, YieldUntil, project_events,
 };
 use thiserror::Error;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
 use crate::running::{Issued, Rejection, Step};
 use crate::store::{EventStore, StoreError};
+use crate::yields::{self, Yields};
 
 /// Why a step could not be turned into something clients may see.
 #[derive(Debug, Error)]
@@ -76,9 +77,20 @@ impl<S: EventStore> GameActor<S> {
 
     /// Persists a step and shows it to the table, or takes it back if it cannot be saved.
     ///
-    /// First the seats that have nothing to do and asked to be skipped are passed for, so the step, the
-    /// passes that follow it and the save are one unit: either the whole stretch is kept or none of it.
+    /// First the seats that have nothing to do and asked to be skipped, and the seats that yield, are passed
+    /// for, so the step, the passes that follow it and the save are one unit: either the whole stretch is kept
+    /// or none of it.
     pub(crate) async fn publish(&mut self, step: Step) -> Result<(), Fatal> {
+        let yields = self.yields.clone();
+        self.publish_with(step, yields).await
+    }
+
+    /// [`publish`](GameActor::publish) with the yields the step starts from, which are kept only if it is saved.
+    pub(crate) async fn publish_with(
+        &mut self,
+        step: Step,
+        mut yields: Yields,
+    ) -> Result<(), Fatal> {
         let Step {
             before,
             checkpoint,
@@ -90,7 +102,7 @@ impl<S: EventStore> GameActor<S> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
         };
-        let skipped = running.skip_idle(&mut events, &self.auto_pass);
+        let skipped = running.skip_idle(&mut events, &self.auto_pass, &mut yields);
         let committed = match skipped {
             Ok(()) => self.persist(&before, &events, from_seq).await,
             Err(error) => Err(CommitError::from(error)),
@@ -100,13 +112,15 @@ impl<S: EventStore> GameActor<S> {
         };
         match committed {
             Ok(batches) => {
+                yields.drop_finished(running.engine.state());
+                let notices = self.yields.replace(yields);
                 let next = running.settle(keep_unchanged);
                 let result = running.engine.result();
                 // Before anyone hears `GameOver`, so a client that saw it can trust the record.
                 if let (Some(recorder), Some(result)) = (&self.recorder, result) {
                     recorder.finished(result).await;
                 }
-                self.announce(batches, next);
+                self.announce(batches, notices, next);
                 Ok(())
             }
             Err(error) => {
@@ -138,10 +152,22 @@ impl<S: EventStore> GameActor<S> {
         Ok(viewers.into_iter().zip(batches).collect())
     }
 
-    /// Sends saved events to their seats, then the next decision to the seat it names, then the result.
-    pub(crate) fn announce(&mut self, batches: Vec<(PlayerId, EventBatch)>, next: Option<Issued>) {
+    /// Sends saved events to their seats, then each changed yield, then the next decision to the seat it names,
+    /// then the result.
+    ///
+    /// A yield that ended is told before the decision that ended it, so the prompt never appears under a
+    /// "passing" notice.
+    pub(crate) fn announce(
+        &mut self,
+        batches: Vec<(PlayerId, EventBatch)>,
+        notices: Vec<(PlayerId, Option<YieldUntil>)>,
+        next: Option<Issued>,
+    ) {
         for (seat, batch) in batches {
             self.seats.send(seat, ServerMessage::Events(batch));
+        }
+        for (seat, until) in notices {
+            self.seats.send(seat, yields::notice(until));
         }
         if let Some(Issued {
             id,

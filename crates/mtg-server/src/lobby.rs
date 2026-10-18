@@ -49,7 +49,7 @@ impl<S: EventStore> GameActor<S> {
                 if let Some(recorder) = &self.recorder {
                     recorder.started().await;
                 }
-                self.announce(batches, if idle { None } else { first });
+                self.announce(batches, Vec::new(), if idle { None } else { first });
                 if idle {
                     return self.start_up().await;
                 }

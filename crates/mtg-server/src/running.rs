@@ -8,6 +8,7 @@ use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView};
 use tokio::time::Instant;
 
 use crate::pace::{self, Pace};
+use crate::yields::Yields;
 
 /// Most priority passes made for idle seats in one go; past it the decision is sent as it is.
 ///
@@ -244,26 +245,59 @@ impl Running {
         self.answer(seat, id, answer)
     }
 
-    /// Passes for every seat that has nothing to do and has auto-pass on, until some decision needs a player.
+    /// Passes for every seat that has nothing to do and has auto-pass on, and for every seat that yields,
+    /// until some decision needs a player.
     ///
     /// The passes go through the engine like any answer; their events are added to `events`, so the
     /// whole stretch is saved and shown as one batch. A seat that is asked anything else, or that can
-    /// act, stops the run, and so does the end of the game.
+    /// act (unless it yields), stops the run, and so does the end of the game. A yield that reaches its end
+    /// on the way is dropped from `yields`, which the caller keeps only if the stretch is saved.
     pub(crate) fn skip_idle(
         &mut self,
         events: &mut Vec<Event>,
         auto_pass: &[bool],
+        yields: &mut Yields,
     ) -> Result<(), EngineError> {
-        for _ in 0..MAX_IDLE_PASSES {
+        self.skip_up_to(MAX_IDLE_PASSES, events, auto_pass, yields)
+    }
+
+    /// [`skip_idle`](Running::skip_idle) with a limit on the passes, which a test can make small.
+    fn skip_up_to(
+        &mut self,
+        limit: usize,
+        events: &mut Vec<Event>,
+        auto_pass: &[bool],
+        yields: &mut Yields,
+    ) -> Result<(), EngineError> {
+        for _ in 0..limit {
             let Some(decision) = self.engine.decision() else {
-                break;
+                return Ok(());
             };
-            if !pace::skippable(decision, auto_pass) {
-                break;
+            if !pace::passes_for(decision, auto_pass, yields, self.engine.state()) {
+                return Ok(());
             }
             events.extend(self.engine.apply(pace::pass())?);
         }
+        // Cut short: the next priority decision is sent as it is, so a yield it belongs to ends here instead of
+        // leaving a seat that "passes for it" with a prompt to answer.
+        if let Some(decision) = self.engine.decision().filter(|d| pace::is_priority(d)) {
+            yields.cancel(decision.player);
+        }
         Ok(())
+    }
+
+    /// Whether the pending decision is a priority decision of `seat`.
+    pub(crate) fn asks_priority_of(&self, seat: PlayerId) -> bool {
+        self.pending
+            .as_ref()
+            .is_some_and(|p| p.decision.player == seat && pace::is_priority(&p.decision))
+    }
+
+    /// A step that changes nothing, so that the pending decision of `seat` meets a new yield and, if the
+    /// yield does not pass for it, is issued again with a new id.
+    pub(crate) fn restart_decision(&mut self, seat: PlayerId) -> Result<Step, Rejection> {
+        self.step(seat, false, |_| Ok(Vec::new()))
+            .map_err(|_| Rejection::engine_failed())
     }
 
     /// Removes `seat` from the game.

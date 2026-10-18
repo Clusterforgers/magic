@@ -108,6 +108,7 @@ fn welcome() -> ServerMessage {
         player: SEAT,
         seats: 2,
         auto_pass: false,
+        yielding: None,
     }
 }
 

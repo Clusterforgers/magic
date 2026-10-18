@@ -75,6 +75,7 @@ mod store;
 mod throttle;
 mod user_id;
 mod ws;
+mod yields;
 
 pub use actor::{
     GameConfig, MAX_CHAT_CHARS, StartError, resume_game, resume_game_with, spawn_game,
