@@ -1,0 +1,19 @@
+{
+  "oracle_id": "68954295-54e3-4303-a6bc-fc4547a4e3a3",
+  "name": "Llanowar Elves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Llanowar Elves",
+      "oracle_fingerprint": "9231ec8ed88e95d1df0ea928fdee13d6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

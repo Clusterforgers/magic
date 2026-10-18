@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b685757b-521e-4353-a233-97052359723d",
+  "name": "Questing Beast",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Questing Beast",
+      "oracle_fingerprint": "d2e683011e1ea15dbfbbf6ba757bca8c",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Haste" },
+        {
+          "Manual": {
+            "reason": "No way yet to say a creature can't be blocked by creatures with power 2 or less.",
+            "span": { "start": 29, "end": 95 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "No way yet to say that combat damage dealt by a set of creatures can't be prevented.",
+            "span": { "start": 96, "end": 174 }
+          }
+        },
+        {
+          "Manual": {
+            "reason": "Needs a trigger on combat damage dealt to a player and the amount of that damage.",
+            "span": { "start": 175, "end": 305 }
+          }
+        }
+      ]
+    }
+  ]
+}

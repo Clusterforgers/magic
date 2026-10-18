@@ -1,0 +1,12 @@
+{
+  "oracle_id": "713332c1-5bd8-400f-bfff-c1ca0697a043",
+  "name": "Opt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Opt",
+      "oracle_fingerprint": "1eccd7bd99ba95e48986c4f2ca4d1db4",
+      "abilities": [{ "Spell": { "effects": [{ "Scry": {} }, { "Draw": {} }] } }]
+    }
+  ]
+}

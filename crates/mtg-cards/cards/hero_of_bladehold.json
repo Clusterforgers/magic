@@ -1,0 +1,38 @@
+{
+  "oracle_id": "454a8902-8120-4373-96ee-bbf352b04e8d",
+  "name": "Hero of Bladehold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hero of Bladehold",
+      "oracle_fingerprint": "56035086131a0cce66abc57890a79aca",
+      "abilities": [
+        { "Keyword": "BattleCry" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2,
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

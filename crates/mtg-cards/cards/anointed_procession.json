@@ -1,0 +1,12 @@
+{
+  "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+  "name": "Anointed Procession",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anointed Procession",
+      "oracle_fingerprint": "a774995cbdf7ee2d73679ae422bfdcb2",
+      "abilities": [{ "Replacement": { "when": { "TokenCreation": {} }, "by": { "Multiply": 2 } } }]
+    }
+  ]
+}
