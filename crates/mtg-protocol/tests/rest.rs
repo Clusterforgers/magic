@@ -1,13 +1,15 @@
-//! Goal: the account bodies keep their documented JSON shape and refuse anything else, a password never reaches `Debug` output, every error code has one spelling shared by serde and `as_str`, and the TypeScript bindings carry all of it.
+//! Goal: the account and game-list bodies keep their documented JSON shape and refuse anything else, a password never reaches `Debug` output, every error code has one spelling shared by serde and `as_str`, and the TypeScript bindings carry all of it.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use mtg_core::ids::PlayerId;
+use mtg_engine::state::GameResult;
 use mtg_protocol::bindings::export_to;
 use mtg_protocol::rest::{
-    AuthErrorCode, Credentials, PASSWORD_MAX_CHARS, PASSWORD_MIN_CHARS, USERNAME_MAX_CHARS,
-    USERNAME_MIN_CHARS, UserView,
+    AuthErrorCode, Credentials, MyGame, MyGameSeat, MyGameStatus, MyGames, PASSWORD_MAX_CHARS,
+    PASSWORD_MIN_CHARS, USERNAME_MAX_CHARS, USERNAME_MIN_CHARS, UserView,
 };
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -133,6 +135,95 @@ fn the_limits_are_ordered_and_match_the_documented_numbers() {
     const { assert!(PASSWORD_MIN_CHARS <= PASSWORD_MAX_CHARS) };
 }
 
+fn listing() -> MyGames {
+    MyGames {
+        games: vec![
+            MyGame {
+                game: "5f2b9c1e-0000-4000-8000-000000000001".into(),
+                seat: PlayerId(0),
+                name: "Ann".into(),
+                status: MyGameStatus::Finished,
+                created_at: "2026-10-18T12:00:00Z".into(),
+                others: vec![
+                    MyGameSeat {
+                        seat: PlayerId(1),
+                        name: "Bo".into(),
+                        user: None,
+                    },
+                    MyGameSeat {
+                        seat: PlayerId(2),
+                        name: "Cy".into(),
+                        user: Some("cyrus".into()),
+                    },
+                ],
+                result: Some(GameResult::Winner(PlayerId(2))),
+            },
+            MyGame {
+                game: "5f2b9c1e-0000-4000-8000-000000000002".into(),
+                seat: PlayerId(1),
+                name: "Ann".into(),
+                status: MyGameStatus::Running,
+                created_at: "2026-10-18T11:00:00Z".into(),
+                others: Vec::new(),
+                result: None,
+            },
+        ],
+    }
+}
+
+#[test]
+fn the_game_list_has_the_documented_wire_shape() {
+    let value = serde_json::to_value(listing()).unwrap();
+    assert_eq!(
+        value,
+        json!({"games": [
+            {
+                "game": "5f2b9c1e-0000-4000-8000-000000000001",
+                "seat": 0,
+                "name": "Ann",
+                "status": "finished",
+                "created_at": "2026-10-18T12:00:00Z",
+                "others": [
+                    {"seat": 1, "name": "Bo", "user": null},
+                    {"seat": 2, "name": "Cy", "user": "cyrus"},
+                ],
+                "result": {"Winner": 2},
+            },
+            {
+                "game": "5f2b9c1e-0000-4000-8000-000000000002",
+                "seat": 1,
+                "name": "Ann",
+                "status": "running",
+                "created_at": "2026-10-18T11:00:00Z",
+                "others": [],
+                "result": null,
+            },
+        ]})
+    );
+    assert_eq!(serde_json::from_value::<MyGames>(value).unwrap(), listing());
+}
+
+#[rstest]
+#[case(MyGameStatus::Lobby, "lobby")]
+#[case(MyGameStatus::Running, "running")]
+#[case(MyGameStatus::Finished, "finished")]
+fn game_statuses_are_snake_case(#[case] status: MyGameStatus, #[case] text: &str) {
+    assert_eq!(serde_json::to_value(status).unwrap(), json!(text));
+    assert_eq!(
+        serde_json::from_value::<MyGameStatus>(json!(text)).unwrap(),
+        status
+    );
+}
+
+#[rstest]
+#[case("Lobby")]
+#[case("expired")]
+#[case("failed")]
+#[case("")]
+fn statuses_of_games_that_are_not_listed_do_not_exist(#[case] text: &str) {
+    assert!(serde_json::from_value::<MyGameStatus>(json!(text)).is_err());
+}
+
 fn generated() -> BTreeMap<String, String> {
     let scratch = tempfile::tempdir().unwrap();
     export_to(scratch.path()).unwrap();
@@ -166,4 +257,23 @@ fn the_bindings_carry_the_account_types() {
             code.as_str()
         );
     }
+}
+
+#[test]
+fn the_bindings_carry_the_game_list() {
+    let files = generated();
+    for needed in [
+        "MyGames.ts",
+        "MyGame.ts",
+        "MyGameSeat.ts",
+        "MyGameStatus.ts",
+    ] {
+        assert!(files.contains_key(needed), "missing {needed}");
+        assert!(files["index.ts"].contains(needed.trim_end_matches(".ts")));
+    }
+    assert!(files["MyGameStatus.ts"].contains("\"lobby\" | \"running\" | \"finished\""));
+    assert!(files["MyGame.ts"].contains("others: Array<MyGameSeat>"));
+    assert!(files["MyGame.ts"].contains("result: GameResult | null"));
+    assert!(files["MyGameSeat.ts"].contains("user: string | null"));
+    assert!(files["MyGames.ts"].contains("games: Array<MyGame>"));
 }

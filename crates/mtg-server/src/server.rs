@@ -22,7 +22,7 @@ use crate::auth::{self, Auth};
 use crate::config::ServerConfig;
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
-use crate::{api, ws};
+use crate::{api, my_games, ws};
 
 struct Inner {
     config: ServerConfig,
@@ -226,7 +226,9 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/auth/login", post(auth::login))
         .route("/api/auth/logout", post(auth::logout))
         .route("/api/auth/me", get(auth::me))
+        .route("/api/me/games", get(my_games::list))
         .route("/ws/{game}/{token}", get(ws::upgrade))
+        .route("/ws/{game}", get(ws::upgrade_as_user))
         .fallback(api::not_found)
         .method_not_allowed_fallback(api::method_not_allowed)
         .layer(middleware::from_fn_with_state(

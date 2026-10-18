@@ -97,6 +97,16 @@ impl Auth {
             .map_err(unavailable)
     }
 
+    /// The signed-in account, or the error to send: 503 on a server without accounts, 401 when the
+    /// request has no valid session.
+    pub(crate) async fn require_user(&self, headers: &HeaderMap) -> Result<User, ApiError> {
+        self.accounts()?;
+        match self.session_user(headers).await? {
+            Some(user) => Ok(user),
+            None => Err(self.unauthenticated(headers)),
+        }
+    }
+
     /// Stores a new session for `user` and returns the `Set-Cookie` value for it. The session the
     /// browser presented, if any, ends here: signing in again replaces it.
     async fn open_session(
@@ -293,12 +303,8 @@ pub(crate) async fn me(
     State(app): State<AppState>,
     headers: HeaderMap,
 ) -> Result<Json<UserView>, ApiError> {
-    let auth = app.auth();
-    auth.accounts()?;
-    match auth.session_user(&headers).await? {
-        Some(user) => Ok(Json(user_view(&user))),
-        None => Err(auth.unauthenticated(&headers)),
-    }
+    let user = app.auth().require_user(&headers).await?;
+    Ok(Json(user_view(&user)))
 }
 
 fn user_view(user: &User) -> UserView {

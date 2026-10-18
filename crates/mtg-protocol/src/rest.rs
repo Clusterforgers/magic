@@ -1,10 +1,13 @@
-//! Bodies of the account endpoints of `mtg-server` (`/api/auth/*`), with TypeScript bindings.
+//! Bodies of the account endpoints of `mtg-server` (`/api/auth/*`) and of the signed-in user's
+//! game list (`/api/me/games`), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The game bodies
 //! (`POST /api/games`, `GET /api/games/{id}`) are still written by hand on the web side.
 
 use std::fmt;
 
+use mtg_core::ids::PlayerId;
+use mtg_engine::state::GameResult;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -122,4 +125,55 @@ impl AuthErrorCode {
             AuthErrorCode::Internal => "internal",
         }
     }
+}
+
+/// Where a game in the user's list stands. Games the server dropped or could not load are not
+/// listed at all.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(rename_all = "snake_case")]
+pub enum MyGameStatus {
+    /// Created; not every seat has pressed ready yet.
+    Lobby,
+    /// Being played.
+    Running,
+    /// Over; `result` says how it ended.
+    Finished,
+}
+
+/// One seat of a listed game, as the user may know it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct MyGameSeat {
+    /// The seat number.
+    pub seat: PlayerId,
+    /// The name the seat was given when the game was made.
+    pub name: String,
+    /// The username of the account sitting there; null for a guest seat.
+    pub user: Option<String>,
+}
+
+/// One game in the signed-in user's list.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct MyGame {
+    /// The game's id; `GET /api/games/{id}` and the socket `/ws/{id}` take it.
+    pub game: String,
+    /// The user's own seat.
+    pub seat: PlayerId,
+    /// The user's own seat's name.
+    pub name: String,
+    /// Where the game stands.
+    pub status: MyGameStatus,
+    /// When the game was created, as `YYYY-MM-DDTHH:MM:SSZ` (UTC).
+    pub created_at: String,
+    /// The other seats in seat order, each with its name and, when an account sits there, the
+    /// username.
+    pub others: Vec<MyGameSeat>,
+    /// How the game ended; null until it has.
+    pub result: Option<GameResult>,
+}
+
+/// The answer of `GET /api/me/games`: the user's games, newest first, at most 100.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct MyGames {
+    /// The games.
+    pub games: Vec<MyGame>,
 }

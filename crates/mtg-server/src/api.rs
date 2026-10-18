@@ -265,6 +265,9 @@ pub(crate) async fn game(
 }
 
 /// `POST /api/games`: creates a Normal game and returns each seat's token (the only time it is shown).
+///
+/// A signed-in creator owns seat 0 from the start (the web opens "my seat" there); the rest of the
+/// seats are guests' until somebody signed in opens their link.
 pub(crate) async fn create_game(
     State(app): State<AppState>,
     request: Request,
@@ -272,10 +275,12 @@ pub(crate) async fn create_game(
     if app.stopping() {
         return Err(ApiError::unavailable());
     }
+    let headers = request.headers().clone();
     let body = read_json::<NewGame>(request).await?;
     let seats = validate(&body)?;
-    let created = app.registry().create(&seats).await?;
-    tracing::info!(game = %created.id, seats = seats.len(), "game created");
+    let host = app.auth().session_user(&headers).await?.map(|user| user.id);
+    let created = app.registry().create_for(&seats, host).await?;
+    tracing::info!(game = %created.id, seats = seats.len(), bound = host.is_some(), "game created");
     let seats = created
         .seats
         .iter()

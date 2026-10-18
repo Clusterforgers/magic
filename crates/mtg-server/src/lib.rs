@@ -33,8 +33,10 @@
 //! finished, so a client that returns with its old token lands in the same game.
 //!
 //! The same database holds the accounts: usernames with Argon2id password hashes and browser
-//! sessions kept as the SHA-256 of the `mtg_session` cookie's token (`/api/auth/*`). Without a
-//! database there are no accounts and every game is guest-only.
+//! sessions kept as the SHA-256 of the `mtg_session` cookie's token (`/api/auth/*`). A seat can
+//! belong to an account ([`Registry::bind_seat`]): its token keeps opening it, and the account
+//! adds a socket without the token (`/ws/{game}` with the cookie) and a list of its games
+//! (`/api/me/games`). Without a database there are no accounts and every game is guest-only.
 
 mod accounts;
 mod actor;
@@ -49,6 +51,7 @@ mod handle;
 mod limit;
 mod lobby;
 mod migrations;
+mod my_games;
 mod origin;
 mod passwords;
 mod pg_store;
@@ -79,7 +82,9 @@ pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};
 pub use passwords::{HashCost, HashCostError};
 pub use pg_store::PgEventStore;
 pub use recipe::{DeckRef, FormatKind, GameRecipe, RecipeError};
-pub use records::{GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord};
+pub use records::{
+    Binding, GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord, UserGame, UserGameSeat,
+};
 pub use registry::{Registry, ResumeReport};
 pub use seats::MIN_QUEUE;
 pub use secret::{RandomError, SeatToken};

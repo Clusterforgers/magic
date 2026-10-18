@@ -22,7 +22,7 @@ pub use error::ProtocolError;
 pub use events::{EventBatch, EventView, HiddenEvent, project_events};
 pub use message::{ClientMessage, DecisionId, ErrorCode, PROTOCOL_VERSION, ServerMessage};
 pub use project::zone_is_visible;
-pub use rest::{AuthErrorCode, Credentials, UserView};
+pub use rest::{AuthErrorCode, Credentials, MyGame, MyGameSeat, MyGameStatus, MyGames, UserView};
 pub use view::{
     AttackerView, CombatView, ObjectView, PermanentView, PlayerView, PriorityView, StateView,
     TableView, TurnView, ZoneView,

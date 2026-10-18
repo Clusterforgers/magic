@@ -13,4 +13,4 @@ pub use bot::WsBot;
 pub use http::{Reply, create_game, get, post_json, request, send_raw};
 pub use server::{TestServer, bot_config};
 pub use table::{Table, table_config, two_seats};
-pub use ws::{Frame, WsClient, connect, refused, try_connect};
+pub use ws::{Frame, WsClient, connect, open, refused, refused_at, try_connect, try_open};

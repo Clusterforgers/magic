@@ -1,8 +1,10 @@
 //! Game and seat records in Postgres: what a restart needs to bring a game back.
 //!
 //! `games` holds the recipe and the game's status, `seats` the display name, the SHA-256 of the
-//! token and whether the seat ever joined. The event log lives apart in `game_events`. Run
-//! [`migrate`](crate::migrate) before use.
+//! token, whether the seat ever joined and the account it belongs to, if any. The event log lives
+//! apart in `game_events`. Run [`migrate`](crate::migrate) before use.
+
+mod users;
 
 use std::collections::HashMap;
 use std::time::Duration;
@@ -16,6 +18,9 @@ use uuid::Uuid;
 use crate::game_id::GameId;
 use crate::pg_store::PgEventStore;
 use crate::recipe::GameRecipe;
+use crate::user_id::UserId;
+
+pub use users::{Binding, UserGame, UserGameSeat};
 
 /// Why the records could not be read or written.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -83,6 +88,8 @@ impl RecordStatus {
 pub(crate) struct NewSeat {
     pub(crate) name: String,
     pub(crate) digest: [u8; 32],
+    /// The account the seat belongs to from the start.
+    pub(crate) user: Option<UserId>,
 }
 
 /// A stored seat.
@@ -96,6 +103,8 @@ pub struct SeatRecord {
     pub token_digest: [u8; 32],
     /// Whether anybody ever connected to the seat.
     pub joined: bool,
+    /// The account the seat is bound to; guests' seats have none.
+    pub user: Option<UserId>,
 }
 
 /// A stored game with its seats in seat order.
@@ -176,6 +185,10 @@ impl GameRecords {
             .collect();
         let names: Vec<String> = seats.iter().map(|seat| seat.name.clone()).collect();
         let digests: Vec<Vec<u8>> = seats.iter().map(|seat| seat.digest.to_vec()).collect();
+        let users: Vec<Option<Uuid>> = seats
+            .iter()
+            .map(|seat| seat.user.map(UserId::uuid))
+            .collect();
 
         let mut tx = self.pool.begin().await?;
         sqlx::query!(
@@ -186,13 +199,16 @@ impl GameRecords {
         .execute(&mut *tx)
         .await?;
         sqlx::query!(
-            "INSERT INTO seats (game_id, seat, name, token_digest)
-             SELECT $1, t.seat, t.name, t.digest
-             FROM unnest($2::int4[], $3::text[], $4::bytea[]) AS t(seat, name, digest)",
+            "INSERT INTO seats (game_id, seat, name, token_digest, user_id)
+             SELECT $1, t.seat, t.name, t.digest, t.user_id
+             FROM unnest($2::int4[], $3::text[], $4::bytea[], $5::uuid[])
+                  AS t(seat, name, digest, user_id)",
             id.uuid(),
             &numbers[..],
             &names[..],
             &digests[..],
+            // Seats of guests have no account: the macro cannot see that elements may be NULL.
+            &users[..] as _,
         )
         .execute(&mut *tx)
         .await?;
@@ -245,7 +261,7 @@ impl GameRecords {
         games: &[Uuid],
     ) -> Result<HashMap<Uuid, Vec<SeatRecord>>, RecordError> {
         let rows = sqlx::query!(
-            "SELECT game_id, seat, name, token_digest, joined
+            "SELECT game_id, seat, name, token_digest, joined, user_id
              FROM seats WHERE game_id = ANY($1) ORDER BY game_id, seat",
             games,
         )
@@ -264,6 +280,7 @@ impl GameRecords {
                 name: row.name,
                 token_digest,
                 joined: row.joined,
+                user: row.user_id.map(UserId),
             });
         }
         Ok(by_game)

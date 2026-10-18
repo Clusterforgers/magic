@@ -10,7 +10,7 @@ use thiserror::Error;
 use ts_rs::{Config, ExportError, TS};
 
 use crate::message::{ClientMessage, PROTOCOL_VERSION, ServerMessage};
-use crate::rest::{AuthErrorCode, Credentials, UserView};
+use crate::rest::{AuthErrorCode, Credentials, MyGames, UserView};
 
 /// Where the committed bindings live, relative to the workspace root.
 pub const GENERATED_DIR: &str = "web/src/protocol/generated";
@@ -43,6 +43,7 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     Credentials::export_all(&config)?;
     UserView::export_all(&config)?;
     AuthErrorCode::export_all(&config)?;
+    MyGames::export_all(&config)?;
     fs::write(dir.join("index.ts"), index(dir)?)?;
     Ok(())
 }

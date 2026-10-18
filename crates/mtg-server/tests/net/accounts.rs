@@ -2,7 +2,7 @@
 
 use std::net::SocketAddr;
 
-use serde_json::json;
+use serde_json::{Value, json};
 
 use super::http::{Reply, request};
 
@@ -62,6 +62,27 @@ impl Browser {
             ("Cookie", self.cookie.as_str()),
         ];
         request(addr, "POST", path, &headers, body.as_bytes()).await
+    }
+
+    /// Creates a game as this user, which must succeed; returns its id and the seat tokens.
+    pub async fn create_game(&self, addr: SocketAddr, body: &Value) -> (String, Vec<String>) {
+        let reply = self.post(addr, "/api/games", &body.to_string()).await;
+        assert_eq!(reply.status, 201, "{}", reply.text());
+        let json = reply.json();
+        let tokens = json["seats"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|seat| seat["token"].as_str().unwrap().to_owned())
+            .collect();
+        (json["game"].as_str().unwrap().to_owned(), tokens)
+    }
+
+    /// `GET /api/me/games`, which must succeed; returns the `games` array.
+    pub async fn games(&self, addr: SocketAddr) -> Vec<Value> {
+        let reply = self.get(addr, "/api/me/games").await;
+        assert_eq!(reply.status, 200, "{}", reply.text());
+        reply.json()["games"].as_array().unwrap().clone()
     }
 }
 
