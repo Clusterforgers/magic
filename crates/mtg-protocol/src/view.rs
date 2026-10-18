@@ -8,6 +8,7 @@ use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use mtg_engine::combat::AttackTarget;
+use mtg_engine::forecast::CombatForecast;
 use mtg_engine::mana::ManaPool;
 use mtg_engine::player::{LossReason, MulliganStatus};
 use mtg_engine::state::{GameResult, Stage};
@@ -167,6 +168,8 @@ pub struct TableView {
     pub exile: ZoneView,
     /// Combat in progress.
     pub combat: CombatView,
+    /// What combat damage would do, while it is still ahead; derived from public state, so every seat sees the same.
+    pub combat_forecast: Option<CombatForecast>,
     /// The result once the game is over.
     pub result: Option<GameResult>,
 }

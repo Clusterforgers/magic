@@ -22,6 +22,7 @@ use serde_json::Value;
 const SCALAR_KEYS: &[&str] = &[
     "counts",
     "life",
+    "life_after",
     "count",
     "number",
     "lands_played",
