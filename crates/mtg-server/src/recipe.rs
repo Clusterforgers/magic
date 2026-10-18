@@ -14,7 +14,7 @@ mod fingerprint;
 use std::fmt;
 use std::sync::Arc;
 
-use mtg_core::card::CardDefinition;
+use mtg_cards::CardDefinition;
 use mtg_engine::GameSetup;
 use mtg_engine::error::SetupError;
 use mtg_engine::format::{FormatRules, Normal};

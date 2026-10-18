@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use mtg_core::card::CardDefinition;
+use mtg_cards::CardDefinition;
 use mtg_core::ids::PlayerId;
 use mtg_engine::PlayerSetup;
 use mtg_engine::format::{FormatRules, Normal};

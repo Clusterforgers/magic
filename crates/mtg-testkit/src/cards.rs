@@ -2,7 +2,8 @@
 
 use std::sync::Arc;
 
-use mtg_core::card::{CardDefinition, CardType};
+use mtg_cards::CardDefinition;
+use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
@@ -193,9 +194,9 @@ mod tests {
     fn lands_tap_for_their_color(#[case] card: Arc<CardDefinition>, #[case] mana: ManaType) {
         assert_eq!(
             card.abilities,
-            vec![mtg_core::card::AbilityDef::Mana(
-                mtg_core::card::ManaAbility { produces: mana }
-            )]
+            vec![mtg_cards::AbilityDef::Mana(mtg_cards::ManaAbility {
+                produces: mana
+            })]
         );
     }
 

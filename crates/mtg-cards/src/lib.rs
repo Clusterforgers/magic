@@ -6,6 +6,7 @@
 pub mod ability;
 pub mod card;
 pub mod cost;
+pub mod definition;
 pub mod effect;
 pub mod keyword;
 pub mod load;
@@ -18,3 +19,6 @@ pub mod trigger;
 pub mod validate;
 pub mod value;
 pub mod vanilla;
+
+pub use definition::{AbilityDef, CardDefinition, ManaAbility};
+pub use support::{Caps, PrintedCard, PrintedFace};

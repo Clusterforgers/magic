@@ -3,7 +3,8 @@
 use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
-use mtg_core::card::{CardDefinition, CardTypes};
+use mtg_cards::CardDefinition;
+use mtg_core::card::CardTypes;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::hash::stable_hash;

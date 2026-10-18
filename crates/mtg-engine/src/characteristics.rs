@@ -1,6 +1,7 @@
 //! Derived characteristics: base values from the card plus continuous effects, layer by layer.
 
-use mtg_core::card::{AbilityDef, CardType, CardTypes};
+use mtg_cards::AbilityDef;
+use mtg_core::card::{CardType, CardTypes};
 use mtg_core::color::ColorSet;
 use mtg_core::ids::ObjectId;
 

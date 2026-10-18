@@ -2,7 +2,8 @@
 
 use std::collections::BTreeSet;
 
-use mtg_core::card::{AbilityDef, CardType};
+use mtg_cards::AbilityDef;
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::answers::Outcome;

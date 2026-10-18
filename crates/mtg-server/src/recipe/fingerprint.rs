@@ -18,7 +18,7 @@ use std::fmt;
 use std::str::FromStr;
 use std::sync::Arc;
 
-use mtg_core::card::CardDefinition;
+use mtg_cards::CardDefinition;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sha2::{Digest, Sha256};
@@ -171,7 +171,8 @@ mod tests {
     use std::collections::BTreeSet;
 
     use mtg_cards::vanilla::{basic_land, creature};
-    use mtg_core::card::{AbilityDef, CardType, ManaAbility, Subtype, Supertype};
+    use mtg_cards::{AbilityDef, ManaAbility};
+    use mtg_core::card::{CardType, Subtype, Supertype};
     use mtg_core::color::Color;
     use mtg_core::mana::{ManaCost, ManaType};
     use rstest::rstest;
