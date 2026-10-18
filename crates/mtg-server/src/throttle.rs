@@ -8,6 +8,7 @@
 //! nothing about it.
 
 use std::collections::HashMap;
+use std::fmt;
 use std::net::{IpAddr, Ipv6Addr};
 use std::sync::{Mutex, MutexGuard, PoisonError};
 use std::time::{Duration, Instant};
@@ -20,8 +21,9 @@ const MAX_TRACKED: usize = 50_000;
 /// Size at which the first sweep of expired counters runs.
 const FIRST_SWEEP: usize = 1024;
 
-/// What a counter counts.
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+/// What a counter counts. Nothing here is `Debug`: the keys hold usernames, and a name tried in a
+/// failed login may be a password typed into the wrong box.
+#[derive(Clone, PartialEq, Eq, Hash)]
 enum Key {
     /// Logins from one network that were started and not (yet) successful.
     LoginAddress(IpAddr),
@@ -31,13 +33,13 @@ enum Key {
     RegisterAddress(IpAddr),
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 struct Counter {
     started: Instant,
     count: u32,
 }
 
-#[derive(Debug, Default)]
+#[derive(Default)]
 struct State {
     counters: HashMap<Key, Counter>,
     /// Size at which expired counters are swept next.
@@ -77,16 +79,38 @@ impl Blocked {
 
 /// A login that was counted when it began; pass it to [`Throttle::succeeded`] or
 /// [`Throttle::abandoned`] to take the count back.
-#[derive(Debug)]
 pub(crate) struct Attempt {
     counted: Vec<Key>,
+    exhausted: bool,
+}
+
+impl Attempt {
+    /// Whether this was the last try the address or the username gets in this window.
+    pub(crate) fn exhausted(&self) -> bool {
+        self.exhausted
+    }
+}
+
+impl fmt::Debug for Attempt {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Attempt")
+            .field("exhausted", &self.exhausted)
+            .finish_non_exhaustive()
+    }
 }
 
 /// The counters and their limits.
-#[derive(Debug)]
 pub(crate) struct Throttle {
     limits: AttemptLimits,
     state: Mutex<State>,
+}
+
+impl fmt::Debug for Throttle {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Throttle")
+            .field("limits", &self.limits)
+            .finish_non_exhaustive()
+    }
 }
 
 impl Throttle {
@@ -120,7 +144,8 @@ impl Throttle {
                 self.limits.login_per_username,
             ),
         ];
-        self.admit(now, &wanted).map(|counted| Attempt { counted })
+        self.admit(now, &wanted)
+            .map(|(counted, exhausted)| Attempt { counted, exhausted })
     }
 
     /// Takes back the count of a login that turned out right: the address keeps its other
@@ -152,18 +177,20 @@ impl Throttle {
         }
     }
 
-    /// Counts a registration from `address`, or says to wait.
-    pub(crate) fn begin_register(&self, now: Instant, address: IpAddr) -> Result<(), Blocked> {
+    /// Counts a registration from `address`, or says to wait. `true` means this was the last
+    /// registration the address gets in this window.
+    pub(crate) fn begin_register(&self, now: Instant, address: IpAddr) -> Result<bool, Blocked> {
         let wanted = [(
             Key::RegisterAddress(network(address)),
             self.limits.register_per_ip,
         )];
-        self.admit(now, &wanted).map(|_| ())
+        self.admit(now, &wanted).map(|(_, exhausted)| exhausted)
     }
 
-    /// Counts one attempt on every key in `wanted` if none is at its limit; the keys counted are
-    /// returned. Nothing is counted when any key is full.
-    fn admit(&self, now: Instant, wanted: &[(Key, u32)]) -> Result<Vec<Key>, Blocked> {
+    /// Counts one attempt on every key in `wanted` if none is at its limit; returns the keys
+    /// counted and whether any of them has now reached its limit. Nothing is counted when any key
+    /// is full.
+    fn admit(&self, now: Instant, wanted: &[(Key, u32)]) -> Result<(Vec<Key>, bool), Blocked> {
         let window = self.limits.window;
         let age = |counter: &Counter| now.saturating_duration_since(counter.started);
         let mut state = self.state();
@@ -185,7 +212,8 @@ impl Throttle {
         }
 
         let mut counted = Vec::with_capacity(wanted.len());
-        for (key, _) in wanted {
+        let mut exhausted = false;
+        for (key, max) in wanted {
             if !state.counters.contains_key(key) && state.counters.len() >= MAX_TRACKED {
                 continue;
             }
@@ -200,9 +228,10 @@ impl Throttle {
                 };
             }
             slot.count = slot.count.saturating_add(1);
+            exhausted |= slot.count >= *max;
             counted.push(key.clone());
         }
-        Ok(counted)
+        Ok((counted, exhausted))
     }
 
     /// Counters in the table, expired ones included.
@@ -359,6 +388,52 @@ mod tests {
         // The address is used up too: 2 + 3 counted.
         assert!(throttle.begin_login(t0, ip("10.0.0.1"), "bob").is_err());
         assert!(throttle.begin_login(t0, ip("10.0.0.2"), "bob").is_ok());
+    }
+
+    #[test]
+    fn the_try_that_uses_up_a_limit_says_so_once() {
+        let throttle = Throttle::new(limits());
+        let t0 = Instant::now();
+        let exhausted: Vec<bool> = (0..3)
+            .map(|_| {
+                throttle
+                    .begin_login(t0, ip("10.0.0.1"), "ann")
+                    .unwrap()
+                    .exhausted()
+            })
+            .collect();
+        // The name's limit is 3 and the address's 5: the third try reaches the name's.
+        assert_eq!(exhausted, [false, false, true]);
+        assert!(throttle.begin_login(t0, ip("10.0.0.1"), "ann").is_err());
+        // An address reaches its own limit with the fifth try, whoever sends it.
+        let throttle = Throttle::new(limits());
+        let at_address: Vec<bool> = (0..5)
+            .map(|n| {
+                throttle
+                    .begin_login(t0, ip("10.0.0.1"), &format!("user{n}"))
+                    .unwrap()
+                    .exhausted()
+            })
+            .collect();
+        assert_eq!(at_address, [false, false, false, false, true]);
+        // Registrations say the same.
+        let throttle = Throttle::new(limits());
+        assert_eq!(throttle.begin_register(t0, ip("10.0.0.1")), Ok(false));
+        assert_eq!(throttle.begin_register(t0, ip("10.0.0.1")), Ok(true));
+        assert!(throttle.begin_register(t0, ip("10.0.0.1")).is_err());
+    }
+
+    #[test]
+    fn what_the_throttle_prints_holds_no_username() {
+        let throttle = Throttle::new(limits());
+        let attempt = throttle
+            .begin_login(Instant::now(), ip("10.0.0.1"), "correcthorse")
+            .unwrap();
+        let shown = format!("{throttle:?} {throttle:#?} {attempt:?} {attempt:#?}");
+        assert!(
+            !shown.contains("correcthorse") && !shown.contains("10.0.0.1"),
+            "{shown}"
+        );
     }
 
     #[test]

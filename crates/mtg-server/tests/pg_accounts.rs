@@ -1251,6 +1251,10 @@ async fn passwords_and_tokens_never_reach_the_logs(pool: PgPool) {
 
     let text = String::from_utf8_lossy(&logs.lock().unwrap()).into_owned();
     assert!(text.contains("account created"), "the capture works");
+    assert!(
+        text.contains("used up its login tries"),
+        "the throttle logged"
+    );
     assert!(text.contains("turned a client away"), "the throttle logged");
     let hash: String = sqlx::query_scalar("SELECT password_hash FROM users")
         .fetch_one(&pool)

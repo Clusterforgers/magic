@@ -200,9 +200,13 @@ pub(crate) async fn register(
             password_rules(),
         )
     })?;
-    auth.throttle
+    let last = auth
+        .throttle
         .begin_register(Instant::now(), address)
         .map_err(too_many)?;
+    if last {
+        tracing::warn!("an address has used up its registrations; more are turned away");
+    }
 
     let hash = auth
         .passwords
@@ -257,6 +261,9 @@ pub(crate) async fn login(
         .throttle
         .begin_login(Instant::now(), address, &name.key)
         .map_err(too_many)?;
+    if attempt.exhausted() {
+        tracing::warn!("a client has used up its login tries; more are turned away");
+    }
     match auth
         .check_login(accounts, &name, credentials.password)
         .await
@@ -329,7 +336,9 @@ fn invalid_credentials() -> ApiError {
 
 fn too_many(blocked: Blocked) -> ApiError {
     let seconds = blocked.seconds();
-    tracing::warn!(
+    // Quiet on purpose: a client that keeps knocking would fill the log, and the try that used up
+    // the limit was already reported.
+    tracing::debug!(
         retry_after = seconds,
         "an account endpoint turned a client away"
     );

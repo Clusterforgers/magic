@@ -170,23 +170,24 @@ impl Passwords {
     /// The PHC string the unknown-user path checks against: made with the current cost from a
     /// random password that is thrown away.
     async fn stand_in(&self) -> String {
-        self.shared
+        let made = self
+            .shared
             .stand_in
-            .get_or_init(|| async {
-                let Ok(secret) = SessionToken::generate() else {
-                    tracing::error!("no random bytes for the stand-in password hash");
-                    return String::new();
-                };
-                match self.hash(secret.expose().to_owned()).await {
-                    Ok(phc) => phc,
-                    Err(error) => {
-                        tracing::error!(%error, "could not make the stand-in password hash");
-                        String::new()
-                    }
-                }
+            .get_or_try_init(|| async {
+                let secret =
+                    SessionToken::generate().map_err(|error| HashError::Hash(error.to_string()))?;
+                self.hash(secret.expose().to_owned()).await
             })
-            .await
-            .clone()
+            .await;
+        match made {
+            Ok(phc) => phc.clone(),
+            Err(error) => {
+                // Nothing is cached, so the next unknown username tries again; this one is
+                // checked against nothing and so fails a little faster than it should.
+                tracing::error!(%error, "could not make the stand-in password hash");
+                String::new()
+            }
+        }
     }
 }
 
