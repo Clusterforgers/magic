@@ -11,7 +11,7 @@ interface SizeClasses {
   pip: string
 }
 
-// Whole class names, so Tailwind can see them.
+/** The box and text classes of each card size. Whole class names, so Tailwind can see them. */
 export const SIZE: Record<CardSize, SizeClasses> = {
   compact: {
     vars: '[--card-w:3.75rem] [--card-h:5.25rem]',

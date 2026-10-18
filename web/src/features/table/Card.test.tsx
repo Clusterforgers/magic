@@ -251,7 +251,7 @@ describe('the preview', () => {
     const attacker = must(fixture.view.combat.attackers[0]).object
     await user.hover(must(container.querySelector<HTMLElement>(`button[data-object-id="${attacker}"]`)))
     const preview = screen.getByTestId('card-preview')
-    expect(preview).toHaveTextContent('Attacking, blocked Alice')
+    expect(preview).toHaveTextContent('Attacking Alice, blocked')
     expect(preview).toHaveTextContent('Status: tapped, attacking, blocked')
     expect(preview).toHaveTextContent('No abilities.')
   })

@@ -37,7 +37,7 @@ export function combatText(
     if (attacker.object === id) {
       const target =
         'Player' in attacker.target ? name(attacker.target.Player) : cardName(attacker.target.Planeswalker)
-      return `${attacker.blocked ? 'Attacking, blocked' : 'Attacking'} ${target}`
+      return `Attacking ${target}${attacker.blocked ? ', blocked' : ''}`
     }
     if (attacker.blockers.includes(id)) return `Blocking ${cardName(attacker.object)}`
   }

@@ -35,7 +35,7 @@ export function ChatPanel() {
         aria-label="Chat"
         aria-live="polite"
         tabIndex={0}
-        className="min-h-0 flex-1 overflow-y-auto rounded-md px-1 text-sm outline-ring focus-visible:outline-2"
+        className="min-h-0 flex-1 overflow-y-auto rounded-md px-1 text-sm outline-primary focus-visible:outline-2"
       >
         {chat.length === 0 ? (
           <p className="p-2 text-muted-foreground">No messages yet.</p>

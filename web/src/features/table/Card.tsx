@@ -51,7 +51,7 @@ export const Card = memo(function Card({
       tabIndex={tabbable ? 0 : -1}
       {...handlers}
       className={cn(
-        'grid h-(--card-h) shrink-0 place-items-center rounded-md outline-offset-2 outline-ring focus-visible:outline-2',
+        'grid h-(--card-h) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
         SIZE[size].vars,
         tapped ? 'w-(--card-h)' : 'w-(--card-w)',
         highlight === undefined ? null : HIGHLIGHT[highlight],

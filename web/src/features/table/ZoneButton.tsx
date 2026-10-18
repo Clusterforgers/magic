@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import type { ObjectId } from '@/protocol/generated'
 import { CardRow } from './CardRow'
+import { usePreviewStore } from './preview'
 
 interface ZoneButtonProps {
   /** "Graveyard" or "Exile". */
@@ -16,6 +17,7 @@ interface ZoneButtonProps {
 /** A button that opens the list of every card in a zone, most recent first. */
 export function ZoneButton({ zone, owner, ids }: ZoneButtonProps) {
   const [open, setOpen] = useState(false)
+  const preview = usePreviewStore()
   const noun = ids.length === 1 ? 'card' : 'cards'
   return (
     <>
@@ -34,7 +36,14 @@ export function ZoneButton({ zone, owner, ids }: ZoneButtonProps) {
           {ids.length === 0 ? '' : ', opens the list'}
         </span>
       </Button>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog
+        open={open}
+        onOpenChange={(next) => {
+          setOpen(next)
+          // A card previewed from inside the list would otherwise stay up behind the closed dialog.
+          if (!next) preview.dismiss()
+        }}
+      >
         <DialogContent>
           <DialogTitle>
             {owner}&rsquo;s {zone.toLowerCase()}

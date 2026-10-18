@@ -41,7 +41,7 @@ export function LogPanel() {
         const { scrollHeight, scrollTop, clientHeight } = event.currentTarget
         following.current = scrollHeight - scrollTop - clientHeight < FOLLOW_SLACK
       }}
-      className="h-full overflow-y-auto rounded-md px-1 text-sm outline-ring focus-visible:outline-2"
+      className="h-full overflow-y-auto rounded-md px-1 text-sm outline-primary focus-visible:outline-2"
     >
       {lines.length === 0 ? (
         <p className="p-2 text-muted-foreground">Nothing has happened yet.</p>

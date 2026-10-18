@@ -65,7 +65,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
       data-dock={dock}
       data-pinned={target.pinned || undefined}
       className={cn(
-        'fixed z-50 max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-xl bg-popover p-3 text-popover-foreground shadow-lg ring-1 ring-foreground/15',
+        'fixed z-[60] max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-xl bg-popover p-3 text-popover-foreground shadow-lg ring-1 ring-foreground/15',
         DOCK[dock],
         target.pinned ? null : 'pointer-events-none',
       )}

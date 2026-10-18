@@ -34,7 +34,7 @@ const StackItem = memo(function StackItem({
         tabIndex={tabbable ? 0 : -1}
         {...handlers}
         className={cn(
-          'grid w-full gap-0.5 rounded-lg border bg-background px-2.5 py-1.5 text-left text-sm outline-offset-2 outline-ring focus-visible:outline-2',
+          'grid w-full gap-0.5 rounded-lg border bg-background px-2.5 py-1.5 text-left text-sm outline-offset-2 outline-primary focus-visible:outline-2',
           top && 'border-primary',
         )}
       >

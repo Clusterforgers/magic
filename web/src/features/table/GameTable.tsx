@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from 'react'
+import { memo, useContext, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -50,7 +50,7 @@ function Opponents({ plan, size, onFocusSeat }: OpponentsProps) {
       <ul
         role="list"
         aria-label="Opponents"
-        className="flex gap-2 overflow-x-auto p-1 sm:grid sm:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:overflow-visible"
+        className="relative flex gap-2 overflow-x-auto p-1 sm:grid sm:grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] sm:overflow-visible"
       >
         {plan.tiles.map((seat) => (
           <li key={seat} className="flex">
@@ -68,7 +68,7 @@ function Opponents({ plan, size, onFocusSeat }: OpponentsProps) {
  * middle, and the log and chat in a drawer. Up to 4 seats it opens in grid mode, from 5 in focus mode, and the
  * toolbar switches either. It reads the game with `usePlay` and acts through `useGame().session`.
  */
-export function GameTable() {
+export const GameTable = memo(function GameTable() {
   const options = useContext(TableOptionsContext)
   const { seat, seatCount, ready } = usePlay(
     useShallow((state) => ({ seat: state.seat, seatCount: seatCountOf(state), ready: state.view !== null })),
@@ -112,4 +112,4 @@ export function GameTable() {
       <CardPreview />
     </PreviewContext>
   )
-}
+})
