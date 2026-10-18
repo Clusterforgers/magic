@@ -55,7 +55,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         Hand {player.hand.count} · Library {player.library.count}
       </span>
       <span className="text-muted-foreground">
-        {counts.lands} lands · {counts.creatures} creatures · {counts.other} other
+        {counts.lands + counts.creatures + counts.other} permanents · {counts.creatures} creatures
       </span>
       <span className="flex flex-wrap gap-1 empty:hidden">
         {flags.active ? <b className="rounded bg-primary px-1 text-primary-foreground">Active turn</b> : null}

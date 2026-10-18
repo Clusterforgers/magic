@@ -10,13 +10,15 @@ interface CardFaceProps {
   object: ObjectView
   role: CombatRole | null
   size: CardSize
+  /** Keep a tapped card upright, as the preview does: it says "tapped" in words instead. */
+  upright?: boolean
 }
 
 /**
  * What a card looks like: name, cost, a place for art, type line and power/toughness, in its colour. Plain
  * `span`s so it can sit inside a button. Tapped is a quarter turn plus the word "Tapped", never colour alone.
  */
-export function CardFace({ object, role, size }: CardFaceProps) {
+export function CardFace({ object, role, size, upright = false }: CardFaceProps) {
   const classes = SIZE[size]
   const tapped = object.permanent?.tapped === true
   const frame = frameOf(object)
@@ -31,11 +33,11 @@ export function CardFace({ object, role, size }: CardFaceProps) {
         'relative flex h-(--card-h) w-(--card-w) flex-col overflow-hidden rounded-md border-2 text-left text-card-foreground shadow-sm ring-1 ring-foreground/15 motion-safe:transition-transform',
         classes.vars,
         FRAME[frame],
-        tapped && 'rotate-90',
+        tapped && !upright && 'rotate-90',
       )}
     >
       <span className={cn('px-1 pt-0.5 leading-tight font-semibold', classes.name)}>
-        <span className={cn('block', full ? 'line-clamp-2' : 'line-clamp-3')}>{object.name}</span>
+        <span className={cn('block break-words hyphens-auto', full ? 'line-clamp-2' : 'line-clamp-3')}>{object.name}</span>
       </span>
       {full && object.mana_cost !== null ? (
         <ManaPips
@@ -63,7 +65,7 @@ export function CardFace({ object, role, size }: CardFaceProps) {
         ))}
       </span>
       {full ? (
-        <span className={cn('truncate px-1 leading-tight text-muted-foreground', classes.text)}>
+        <span className={cn('line-clamp-2 px-1 leading-tight text-muted-foreground', classes.text)}>
           {typeLine(object)}
         </span>
       ) : null}

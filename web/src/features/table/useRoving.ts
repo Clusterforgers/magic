@@ -5,7 +5,9 @@ import type { ObjectId } from '@/protocol/generated'
 /** The object id a focused element belongs to, or null. */
 export function objectIdOf(element: Element): ObjectId | null {
   const raw = element.closest('[data-object-id]')?.getAttribute('data-object-id')
-  const id = raw === null || raw === undefined ? Number.NaN : Number(raw)
+  // `Number('')` is 0, which would be taken for the id of the first object.
+  if (raw === null || raw === undefined || raw.trim() === '') return null
+  const id = Number(raw)
   return Number.isInteger(id) ? id : null
 }
 

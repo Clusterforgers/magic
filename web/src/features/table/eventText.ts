@@ -46,16 +46,20 @@ function describeEffect(effect: ContinuousEffect, n: EventNames): string {
         ? n.card(selector.Object)
         : `Creatures controlled by ${n.seat(selector.CreaturesControlledBy)}`
   }
+  // One card "becomes" and "gets"; a group of creatures "become" and "get".
+  const group = typeof selector === 'string' || 'CreaturesControlledBy' in selector
+  const becomes = group ? 'become' : 'becomes'
   let what = 'changes'
-  if ('AddType' in modification) what = `becomes ${modification.AddType.toLowerCase()} too`
+  if ('AddType' in modification) what = `${becomes} ${modification.AddType.toLowerCase()} too`
   else if ('SetColors' in modification) {
     const colors = colorsInSet(modification.SetColors).map((color) => color.toLowerCase())
-    what = `becomes ${colors.length === 0 ? 'colorless' : joinWords(colors)}`
+    what = `${becomes} ${colors.length === 0 ? 'colorless' : joinWords(colors)}`
   } else if ('SetPowerToughness' in modification) {
-    what = `becomes ${modification.SetPowerToughness.power}/${modification.SetPowerToughness.toughness}`
+    const { power, toughness } = modification.SetPowerToughness
+    what = `${becomes} ${power}/${toughness}`
   } else {
     const { power, toughness } = modification.ModifyPowerToughness
-    what = `gets ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
+    what = `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
   }
   const until =
     duration === 'UntilEndOfTurn'

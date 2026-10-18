@@ -71,7 +71,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
       )}
     >
       <div className="shrink-0">
-        <CardFace object={object} role={role} size={wide ? 'large' : 'medium'} />
+        <CardFace object={object} role={role} size={wide ? 'large' : 'medium'} upright />
       </div>
       <div className={cn('grid content-start gap-1 text-sm', wide ? 'mt-3' : 'min-w-0 flex-1')}>
         <p className="font-semibold">{object.name}</p>

@@ -26,9 +26,10 @@ export function ZoneButton({ zone, owner, ids }: ZoneButtonProps) {
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}
       >
-        {zone}
-        <span className="tabular-nums">{ids.length}</span>
+        {/* Explicit spaces: a screen reader joins the pieces of a name, and an inline span adds none. */}
+        {zone} <span className="tabular-nums">{ids.length}</span>
         <span className="sr-only">
+          {' '}
           {noun}
           {ids.length === 0 ? '' : ', opens the list'}
         </span>

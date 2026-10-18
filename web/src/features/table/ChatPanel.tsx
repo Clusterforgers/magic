@@ -22,6 +22,7 @@ export function ChatPanel() {
 
   function send(event: FormEvent): void {
     event.preventDefault()
+    if (text.trim() === '') return
     // Keep the text when it was not sent, so a dropped connection loses nothing.
     if (session.chat(text)) setText('')
   }

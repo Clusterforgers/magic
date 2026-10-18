@@ -95,7 +95,7 @@ export function GameTable() {
                 onFollow={() => setChosen(null)}
               />
               <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
-              <div className="grid items-start gap-3 md:grid-cols-2">
+              <div className="grid gap-3 md:grid-cols-2">
                 <CentreStrip />
                 <StackPanel />
               </div>
