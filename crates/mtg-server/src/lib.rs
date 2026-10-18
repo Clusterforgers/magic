@@ -31,10 +31,18 @@
 //! [`GameRecipe`] that rebuilds its `GameSetup`, its seats with the SHA-256 of each token, and its
 //! status ([`RecordStatus`]). On boot [`Registry::resume`] brings back every game that is not
 //! finished, so a client that returns with its old token lands in the same game.
+//!
+//! The same database holds the accounts: usernames with Argon2id password hashes and browser
+//! sessions kept as the SHA-256 of the `mtg_session` cookie's token (`/api/auth/*`). Without a
+//! database there are no accounts and every game is guest-only.
 
+mod accounts;
 mod actor;
 mod api;
+mod auth;
 pub mod config;
+mod cookie;
+mod credentials;
 pub mod demo;
 mod game_id;
 mod handle;
@@ -42,6 +50,7 @@ mod limit;
 mod lobby;
 mod migrations;
 mod origin;
+mod passwords;
 mod pg_store;
 mod play;
 mod recipe;
@@ -54,6 +63,8 @@ mod secret;
 mod server;
 mod session;
 mod store;
+mod throttle;
+mod user_id;
 mod ws;
 
 pub use actor::{
@@ -61,10 +72,11 @@ pub use actor::{
     spawn_game_with,
 };
 pub use api::{BODY_LIMIT, MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS};
-pub use config::{ConfigError, ServerConfig};
+pub use config::{AuthConfig, ConfigError, ServerConfig};
 pub use game_id::GameId;
 pub use handle::{GameClosed, GameHandle, GameStatus, JoinError};
 pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};
+pub use passwords::{HashCost, HashCostError};
 pub use pg_store::PgEventStore;
 pub use recipe::{DeckRef, FormatKind, GameRecipe, RecipeError};
 pub use records::{GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord};
@@ -73,3 +85,4 @@ pub use seats::MIN_QUEUE;
 pub use secret::{RandomError, SeatToken};
 pub use server::Server;
 pub use store::{EventStore, MemoryStore, StoreError};
+pub use user_id::UserId;

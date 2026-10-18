@@ -4,7 +4,8 @@ use axum::Json;
 use axum::extract::rejection::PathRejection;
 use axum::extract::{Path, Request, State};
 use axum::http::header::CONTENT_TYPE;
-use axum::http::{HeaderMap, StatusCode};
+use axum::http::{HeaderMap, HeaderName, HeaderValue, Method, StatusCode};
+use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
@@ -13,6 +14,7 @@ use serde_json::json;
 
 use crate::demo::{self, DemoDeck};
 use crate::game_id::GameId;
+use crate::origin::origin_allowed;
 use crate::registry::{CreateError, SeatRequest};
 use crate::server::AppState;
 
@@ -27,24 +29,38 @@ pub const MAX_NAME_CHARS: usize = 32;
 /// Longest part of a parser message echoed to the client, in characters.
 const MAX_DETAIL_CHARS: usize = 120;
 
-/// A failed request: a status and a short machine-readable code plus message.
+/// A failed request: a status and a short machine-readable code plus message, and any headers the
+/// answer needs (`Retry-After`, a cookie to clear).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct ApiError {
     status: StatusCode,
     code: &'static str,
     message: String,
+    /// Kept as a list, not a map, so the error stays small enough to return by value.
+    headers: Vec<(HeaderName, HeaderValue)>,
 }
 
 impl ApiError {
-    fn new(status: StatusCode, code: &'static str, message: impl Into<String>) -> ApiError {
+    pub(crate) fn new(
+        status: StatusCode,
+        code: &'static str,
+        message: impl Into<String>,
+    ) -> ApiError {
         ApiError {
             status,
             code,
             message: message.into(),
+            headers: Vec::new(),
         }
     }
 
-    fn invalid(message: impl Into<String>) -> ApiError {
+    /// The same error with one more header on its answer.
+    pub(crate) fn with_header(mut self, name: HeaderName, value: HeaderValue) -> ApiError {
+        self.headers.push((name, value));
+        self
+    }
+
+    pub(crate) fn invalid(message: impl Into<String>) -> ApiError {
         ApiError::new(StatusCode::BAD_REQUEST, "invalid_request", message)
     }
 
@@ -72,8 +88,31 @@ impl ApiError {
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         let body = json!({ "error": self.code, "message": self.message });
-        (self.status, Json(body)).into_response()
+        let mut response = (self.status, Json(body)).into_response();
+        for (name, value) in self.headers {
+            response.headers_mut().append(name, value);
+        }
+        response
     }
+}
+
+/// Refuses a request that changes something (any method but `GET`, `HEAD` and `OPTIONS`) when it
+/// comes from another site. Browsers always say where a page they ran came from, so this keeps a
+/// stranger's page from acting with a visitor's cookie; a request with no `Origin` is not from a
+/// browser and passes. Same rule, same list as the game socket's.
+pub(crate) async fn same_site_only(
+    State(app): State<AppState>,
+    request: Request,
+    next: Next,
+) -> Response {
+    let safe = matches!(
+        *request.method(),
+        Method::GET | Method::HEAD | Method::OPTIONS
+    );
+    if !safe && !origin_allowed(request.headers(), &app.config().allowed_origins) {
+        return ApiError::forbidden_origin().into_response();
+    }
+    next.run(request).await
 }
 
 impl From<CreateError> for ApiError {
@@ -253,7 +292,9 @@ pub(crate) async fn create_game(
 }
 
 /// Reads a bounded JSON body; only `application/json` is accepted, which also forces a CORS preflight.
-async fn read_json<T: serde::de::DeserializeOwned>(request: Request) -> Result<T, ApiError> {
+pub(crate) async fn read_json<T: serde::de::DeserializeOwned>(
+    request: Request,
+) -> Result<T, ApiError> {
     if !is_json(request.headers()) {
         return Err(ApiError::new(
             StatusCode::UNSUPPORTED_MEDIA_TYPE,
