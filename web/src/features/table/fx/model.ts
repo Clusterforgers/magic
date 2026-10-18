@@ -71,11 +71,6 @@ export function isLifeEffect(effect: Effect): effect is LifeEffect {
   return 'seat' in effect && effect.kind !== 'died'
 }
 
-/** An effect that plays on a card on the battlefield. */
-export function isCardEffect(effect: Effect): effect is LeanEffect | EnterEffect | HurtEffect {
-  return effect.kind !== 'died' && 'object' in effect
-}
-
 /** One effect while it plays on a card or a life total. `token` is new for every effect, so a repeat restarts. */
 export interface FxEntry {
   readonly kind: FxKind
