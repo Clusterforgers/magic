@@ -38,6 +38,7 @@ export type { FullControlMode } from "./FullControlMode";
 export type { GameResult } from "./GameResult";
 export type { HiddenEvent } from "./HiddenEvent";
 export type { Layer } from "./Layer";
+export type { LobbySeat } from "./LobbySeat";
 export type { LossReason } from "./LossReason";
 export type { ManaAbility } from "./ManaAbility";
 export type { ManaCost } from "./ManaCost";

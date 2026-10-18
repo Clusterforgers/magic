@@ -3,7 +3,7 @@
 
 mod common;
 
-use common::{Client, game_id, poke, roomy, seat, silent, table_setup};
+use common::{Client, game_id, poke, roomy, roster, seat, silent, table_setup};
 use mtg_engine::{GameSetup, replay};
 use mtg_protocol::{ClientMessage, ErrorCode, FullControlMode, PROTOCOL_VERSION, ServerMessage};
 use mtg_server::{
@@ -35,6 +35,11 @@ async fn welcome_names_the_game_the_seat_and_the_table_size() {
             stops: Vec::new(),
             full_control: FullControlMode::Off,
         }
+    );
+    // The roster follows the welcome: only this seat is here and nobody is ready.
+    assert_eq!(
+        client.next().await,
+        roster(&[(false, false), (true, false), (false, false)])
     );
     silent(&client.drain());
     let status = handle.status().await.unwrap();
@@ -68,7 +73,15 @@ async fn the_engine_exists_only_once_every_seat_is_ready() {
         client.drain();
     }
 
-    // Two ready seats, repeated as often as they like, do not start anything.
+    // Two ready seats do not start anything. The first press of each changes the roster, so everyone hears of it ...
+    for n in 0..2 {
+        let received = poke(&handle, &mut clients, n, ClientMessage::Ready).await;
+        let flags: Vec<(bool, bool)> = (0..3).map(|seat| (true, seat <= n)).collect();
+        for messages in &received {
+            assert_eq!(messages.as_slice(), [roster(&flags)]);
+        }
+    }
+    // ... and pressing again, as often as they like, changes nothing, so nobody hears anything.
     for _ in 0..3 {
         for n in 0..2 {
             let received = poke(&handle, &mut clients, n, ClientMessage::Ready).await;
@@ -206,14 +219,19 @@ async fn a_game_id_that_already_has_a_log_cannot_be_started_over_it() {
     poke(&handle, &mut clients, 0, ClientMessage::Ready).await;
     let received = poke(&handle, &mut clients, 1, ClientMessage::Ready).await;
 
+    // The last seat is told the start failed; the lobby stays as it was, with everybody ready, and everyone sees that.
+    let everybody = roster(&[(true, true), (true, true)]);
     assert!(matches!(
         received[1].as_slice(),
-        [ServerMessage::Error {
-            code: ErrorCode::Internal,
-            ..
-        }]
+        [
+            ServerMessage::Error {
+                code: ErrorCode::Internal,
+                ..
+            },
+            roster
+        ] if *roster == everybody
     ));
-    silent(&received[0]);
+    assert_eq!(received[0].as_slice(), [everybody]);
     assert!(!handle.status().await.unwrap().started);
     assert_eq!(
         store.load(game_id(7)).await.unwrap().len(),

@@ -18,6 +18,7 @@ const lookup: GameLookup = {
       { seat: 1, name: 'Bo' },
     ],
     connected: [0, 1],
+    ready: [0, 1],
     result: null,
   },
   missing: false,

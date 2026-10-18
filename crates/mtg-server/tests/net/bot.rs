@@ -183,7 +183,9 @@ impl WsBot {
                 return self.respond(id, decision).await;
             }
             ServerMessage::Error { code, message } => self.errors.push((code, message)),
+            // The roster of a lobby is for people; a bot only waits for its first decision.
             ServerMessage::Chat { .. }
+            | ServerMessage::Lobby { .. }
             | ServerMessage::Yielding { .. }
             | ServerMessage::Stops { .. }
             | ServerMessage::FullControl { .. } => {}

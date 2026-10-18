@@ -6,6 +6,7 @@ import type { ErrorCode } from "./ErrorCode";
 import type { EventBatch } from "./EventBatch";
 import type { FullControlMode } from "./FullControlMode";
 import type { GameResult } from "./GameResult";
+import type { LobbySeat } from "./LobbySeat";
 import type { PlayerId } from "./PlayerId";
 import type { StateView } from "./StateView";
 import type { Stop } from "./Stop";
@@ -46,7 +47,15 @@ stops: Array<Stop>,
 /**
  * The Full Control mode the server holds for this seat (see [`ClientMessage::FullControl`]).
  */
-full_control: FullControlMode, } | { "type": "Decision", 
+full_control: FullControlMode, } | { "type": "Lobby", 
+/**
+ * Every seat in seat order.
+ */
+seats: Array<LobbySeat>, 
+/**
+ * How many seats still have to press Ready before the game starts.
+ */
+needed: number, } | { "type": "Decision", 
 /**
  * Echo this id in the answer.
  */

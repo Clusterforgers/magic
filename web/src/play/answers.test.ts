@@ -138,6 +138,7 @@ describe('answering while the socket is down', () => {
 describe('the other actions', () => {
   const actions: [string, (session: Session) => boolean, unknown][] = [
     ['ready', (s) => s.ready(), { type: 'Ready' }],
+    ['notReady', (s) => s.notReady(), { type: 'NotReady' }],
     ['concede', (s) => s.concede(), { type: 'Concede' }],
     ['chat', (s) => s.chat('  good luck  '), { type: 'Chat', text: 'good luck' }],
     ['resync', (s) => s.resync(), { type: 'Resync' }],

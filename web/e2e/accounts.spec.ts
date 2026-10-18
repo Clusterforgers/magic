@@ -91,7 +91,9 @@ test('an account creates a game, closes the page, finds it under My games and re
     expect(new URL(back.url()).pathname).toBe(`/game/${game}`)
     expect(new URL(back.url()).hash).toBe('')
     await expect(back.getByRole('list', { name: 'Seats' }).getByRole('listitem').first()).toContainText('you')
-    await expect(back.getByText('1 of 2 here')).toBeVisible()
+    await expect(back.locator('[data-slot="lobby-summary"]')).toHaveText(
+      '0 of 2 ready, waiting for you to press Ready and Player 2 to join',
+    )
     expect(errors).toEqual([])
   } finally {
     await context.close()

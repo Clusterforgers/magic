@@ -25,6 +25,7 @@ const game = {
     { seat: 1, name: 'Bo' },
   ],
   connected: [0],
+  ready: [0],
   result: null,
 }
 const decks = [
@@ -94,13 +95,23 @@ describe('requests and answers', () => {
   })
 
   it.each<[string, unknown]>([
-    ['not started, no result', { ...game, started: false, connected: [] }],
+    ['not started, no result', { ...game, started: false, connected: [], ready: [] }],
+    [
+      'not started, with ready seats that are away',
+      { ...game, started: false, connected: [], ready: [0, 1] },
+    ],
     ['a draw', { ...game, result: 'Draw' }],
-    ['a winner', { ...game, result: { Winner: 1 }, connected: [0, 1] }],
+    ['a winner', { ...game, result: { Winner: 1 }, connected: [0, 1], ready: [0, 1] }],
   ])('reads a game that is %s', async (_name, body) => {
     const fake = fakeFetch(() => jsonResponse(200, body))
     expect(await createApi({ fetch: fake.fetch }).getGame('g-1')).toEqual(body)
     expect(fake.calls[0]?.init).toBeUndefined()
+  })
+
+  it('takes a server that sends no ready list for one where nobody is known to be ready', async () => {
+    const { ready: _ready, ...older } = game
+    const fake = fakeFetch(() => jsonResponse(200, older))
+    expect(await createApi({ fetch: fake.fetch }).getGame('g-1')).toEqual({ ...older, ready: [] })
   })
 
   it('escapes the game id in the path', async () => {
@@ -215,6 +226,10 @@ describe('bodies that parse but do not have the documented shape', () => {
     ],
     ['getGame: started is text', (api) => api.getGame('g'), { ...game, started: 'yes' }],
     ['getGame: connected has a fraction', (api) => api.getGame('g'), { ...game, connected: [0.5] }],
+    ['getGame: ready has a fraction', (api) => api.getGame('g'), { ...game, ready: [0.5] }],
+    ['getGame: ready is a number', (api) => api.getGame('g'), { ...game, ready: 1 }],
+    ['getGame: ready is null', (api) => api.getGame('g'), { ...game, ready: null }],
+    ['getGame: a ready seat is negative', (api) => api.getGame('g'), { ...game, ready: [-1] }],
     ['getGame: result is an unknown word', (api) => api.getGame('g'), { ...game, result: 'Win' }],
     ['getGame: result is missing', (api) => api.getGame('g'), { started: true, seats: [], connected: [] }],
     ['getGame: a seat has no name', (api) => api.getGame('g'), { ...game, seats: [{ seat: 0 }] }],

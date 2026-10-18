@@ -4,7 +4,7 @@ import type { StateView } from '@/protocol/generated'
 import { asRecord, must } from '@/test-utils/batches'
 import { reference } from '@/test-utils/foldChecks'
 import { startSession } from '@/test-utils/harness'
-import { lateJoin, lobbyStart } from '@/test-utils/transcripts'
+import { lateJoin, lobbyBatchAt, lobbyStart } from '@/test-utils/transcripts'
 import type { Transcript } from '@/test-utils/transcripts'
 
 /** The true view and log position after the first `count` messages of a transcript, by the plain reference fold. */
@@ -151,8 +151,8 @@ describe('a batch with no view yet', () => {
     'at position %i, instead of the batch at 0, asks once and applies nothing',
     (fromSeq) => {
       const h = lobbyStartOnly()
-      const batch = asRecord(lobbyStart.raw[3], 'the second batch')
-      h.deliver({ ...batch, from_seq: fromSeq }, batch, lobbyStart.raw[1])
+      const batch = asRecord(lobbyStart.raw[lobbyBatchAt + 2], 'the second batch')
+      h.deliver({ ...batch, from_seq: fromSeq }, batch, lobbyStart.raw[lobbyBatchAt])
       expect(h.sentOf('Resync')).toHaveLength(1)
       expect(h.state()).toMatchObject({ view: null, seq: null, phase: 'lobby' })
     },
@@ -160,11 +160,11 @@ describe('a batch with no view yet', () => {
 
   it('starts from the batch at 0 after a Snapshot recovers it', () => {
     const h = lobbyStartOnly()
-    h.deliver(lobbyStart.raw[3])
+    h.deliver(lobbyStart.raw[lobbyBatchAt + 2])
     expect(h.sentOf('Resync')).toHaveLength(1)
-    const recovered = truth(lobbyStart, 4)
+    const recovered = truth(lobbyStart, lobbyBatchAt + 3)
     h.deliver({ type: 'Snapshot', seq: recovered.seq, state: recovered.state })
-    h.deliver(...lobbyStart.raw.slice(4))
+    h.deliver(...lobbyStart.raw.slice(lobbyBatchAt + 3))
     expect(h.state().view).toEqual(lobbyStart.expected)
     expect(h.sentOf('Resync')).toHaveLength(1)
   })

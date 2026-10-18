@@ -14,7 +14,8 @@ use common::{Step, run_game};
 use mtg_core::ids::PlayerId;
 use mtg_engine::Decision;
 use mtg_protocol::{
-    DecisionId, FullControlMode, PROTOCOL_VERSION, ServerMessage, StateView, project_events,
+    DecisionId, FullControlMode, LobbySeat, PROTOCOL_VERSION, ServerMessage, StateView,
+    project_events,
 };
 use mtg_testkit::fuzz_setup;
 use serde::Deserialize;
@@ -32,7 +33,8 @@ const DESCRIPTION: &str = "What seat 0 of a seeded two-player bot game is sent b
     off (a seat that is stopped at every priority window). \
     `messages` is a seat that joins a running game: Welcome, Snapshot, its pending Decision, then the last \
     batches of the game with their Decisions and GameOver. `lobby` is a seat that joined before the start: \
-    Welcome, then the first batches from seq 0 with no Snapshot. `expected` is the seat's true StateView \
+    Welcome, the lobby's rosters (seat 1 joins, presses Ready, takes it back, presses it again), then the first \
+    batches from seq 0 with no Snapshot. `expected` is the seat's true StateView \
     after the last message. Regenerate: MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test transcript";
 
 /// One engine step as the seat lives it.
@@ -152,10 +154,39 @@ fn late_join(seed: u64) -> (Vec<ServerMessage>, StateView) {
     (messages, beats.last().unwrap().view.clone())
 }
 
-/// A seat that was connected before the game started: no snapshot, the first batch is from seq 0.
+/// The roster `GameActor` sends seat 0 while the table fills and gets ready, one message per change: its own join,
+/// seat 1 joining, seat 1 pressing Ready, taking it back and pressing it again. The `Ready` of seat 0 that starts the
+/// game is answered by the opening batch and no roster.
+fn lobby_rosters() -> Vec<ServerMessage> {
+    // (seat 1 connected, seat 1 ready) after each change.
+    [
+        (false, false),
+        (true, false),
+        (true, true),
+        (true, false),
+        (true, true),
+    ]
+    .into_iter()
+    .map(|(here, ready)| {
+        let seat = |index: u64, name: &str, connected: bool, ready: bool| LobbySeat {
+            seat: PlayerId(index),
+            name: name.to_owned(),
+            connected,
+            ready,
+        };
+        let seats = vec![seat(0, "Ana", true, false), seat(1, "Bo", here, ready)];
+        let needed = if ready { 1 } else { 2 };
+        ServerMessage::Lobby { seats, needed }
+    })
+    .collect()
+}
+
+/// A seat that was connected before the game started: its welcome and the lobby's rosters, no snapshot, and a first
+/// batch from seq 0.
 fn lobby(seed: u64) -> (Vec<ServerMessage>, StateView) {
     let beats = play(seed);
     let mut messages = vec![welcome()];
+    messages.extend(lobby_rosters());
     let mut found = 0;
     for beat in &beats {
         messages.extend(beat.sent.clone());
@@ -327,9 +358,28 @@ fn folding_the_committed_fixture_gives_the_expected_view() {
         Some(ServerMessage::GameOver { .. })
     ));
     assert!(fixture.expected.table.result.is_some());
+    let first_batch = fixture
+        .lobby
+        .messages
+        .iter()
+        .position(|message| matches!(message, ServerMessage::Events(_)))
+        .unwrap();
     assert!(
-        matches!(&fixture.lobby.messages[1], ServerMessage::Events(batch) if batch.from_seq == 0),
+        matches!(&fixture.lobby.messages[first_batch], ServerMessage::Events(batch) if batch.from_seq == 0),
         "a lobby seat starts from the batch at seq 0"
+    );
+    assert!(
+        fixture.lobby.messages[1..first_batch]
+            .iter()
+            .all(|message| matches!(message, ServerMessage::Lobby { .. }))
+            && first_batch > 1,
+        "after its welcome a lobby seat is sent rosters and nothing else until the game starts"
+    );
+    assert!(
+        !fixture.lobby.messages[first_batch..]
+            .iter()
+            .any(|message| matches!(message, ServerMessage::Lobby { .. })),
+        "no roster once the game runs"
     );
     assert!(
         fixture

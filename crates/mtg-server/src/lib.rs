@@ -6,11 +6,14 @@
 //! the seat's queue. The [`Registry`] owns the live games and the per-seat tokens.
 //!
 //! How a game behaves:
-//! - **Lobby.** Until every seat has sent `Ready` there is no engine; joins, readiness and chat
-//!   are all the actor handles. The last `Ready` creates the engine, saves its opening events and
-//!   shows them to every seat from seq 0 like any other batch. If that fails the lobby stays as it
-//!   was and a repeated `Ready` retries. A game resumed from a non-empty log goes straight to
-//!   running; one with nothing stored never started and returns to its lobby.
+//! - **Lobby.** Until every seat has sent `Ready` there is no engine; joins, readiness (`Ready`,
+//!   and `NotReady` to take it back) and chat are all the actor handles. Every connected seat is
+//!   kept told who is at the table (`ServerMessage::Lobby`: names, who is connected, who is ready)
+//!   after its `Welcome` and at each change. The last `Ready` creates the engine, saves its opening
+//!   events and shows them to every seat from seq 0 like any other batch. If that fails the lobby
+//!   stays as it was and a repeated `Ready` retries. A game resumed from a non-empty log goes
+//!   straight to running; one with nothing stored never started and returns to its lobby, where
+//!   nobody is ready (readiness is not stored).
 //! - **Persist first.** A step (an answer or a concession) is applied to the engine, projected for
 //!   the connected seats, saved, and only then sent. If the save fails the engine is rolled back
 //!   (`Engine::restore`), the sender gets `Error{Internal}` and nobody else hears of it.
@@ -19,7 +22,8 @@
 //!   was answered get `StaleDecision`; answers the engine rejects get `IllegalAnswer`; neither
 //!   changes the game. A concession that leaves the pending decision untouched keeps its id.
 //! - **Connections.** `join` replaces whatever connection the seat had and sends `Welcome`, then
-//!   (once running) a snapshot, the seat's pending decision and the result if the game is over;
+//!   the lobby roster, or (once running) a snapshot, the seat's pending decision and the result if
+//!   the game is over;
 //!   `Resync` repeats the last two. Queues are bounded: a client that stops reading is dropped and
 //!   must join again. The game waits for absent seats, with the exceptions of the next bullet.
 //! - **Pace.** A seat with nothing to do is passed for ([`Pace`], `ClientMessage::AutoPass`) through

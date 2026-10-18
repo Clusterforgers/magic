@@ -22,7 +22,8 @@ use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
     ClientMessage, DecisionId, ErrorCode, EventBatch, EventView, FullControlMode, HiddenEvent,
-    PROTOCOL_VERSION, ServerMessage, StateView, Stop, StopSide, YieldUntil, project_events,
+    LobbySeat, PROTOCOL_VERSION, ServerMessage, StateView, Stop, StopSide, YieldUntil,
+    project_events,
 };
 use mtg_testkit::fuzz_setup;
 use proptest::prelude::*;
@@ -31,8 +32,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 12;
-const SERVER_VARIANTS: usize = 11;
+const CLIENT_VARIANTS: usize = 13;
+const SERVER_VARIANTS: usize = 12;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -74,8 +75,9 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::Preview { .. } => 7,
         ClientMessage::Yield { .. } => 8,
         ClientMessage::CancelYield => 9,
-        ClientMessage::SetStop { .. } => 10,
-        ClientMessage::FullControl { .. } => 11,
+        ClientMessage::NotReady => 10,
+        ClientMessage::SetStop { .. } => 11,
+        ClientMessage::FullControl { .. } => 12,
     }
 }
 
@@ -91,8 +93,9 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::GameOver { .. } => 6,
         ServerMessage::Forecast { .. } => 7,
         ServerMessage::Yielding { .. } => 8,
-        ServerMessage::Stops { .. } => 9,
-        ServerMessage::FullControl { .. } => 10,
+        ServerMessage::Lobby { .. } => 9,
+        ServerMessage::Stops { .. } => 10,
+        ServerMessage::FullControl { .. } => 11,
     }
 }
 
@@ -227,6 +230,21 @@ fn sample_view_and_batch() -> (StateView, EventBatch) {
     (StateView::for_player(engine.state(), PlayerId(0)), batch)
 }
 
+/// A lobby of three seats in every state a seat can be in: ready, here but not ready, away.
+fn lobby_seats() -> Vec<LobbySeat> {
+    let seat = |index: u64, name: &str, connected: bool, ready: bool| LobbySeat {
+        seat: PlayerId(index),
+        name: name.to_owned(),
+        connected,
+        ready,
+    };
+    vec![
+        seat(0, "Ana", true, true),
+        seat(1, "Bo \"the\" Ünïcode", true, false),
+        seat(2, "Cy", false, false),
+    ]
+}
+
 /// A forecast with a block, so every field of it is exercised: creature 4 attacks player 1 and creature 3 blocks it.
 fn sample_forecast() -> CombatForecast {
     let (blocker, attacker) = (ObjectId(3), ObjectId(4));
@@ -274,6 +292,7 @@ fn client_samples() -> Vec<ClientMessage> {
             name: "Ana".into(),
         },
         ClientMessage::Ready,
+        ClientMessage::NotReady,
         ClientMessage::Chat {
             text: "gg, \"quotes\" and ünïcode".into(),
         },
@@ -321,6 +340,10 @@ fn server_samples() -> Vec<ServerMessage> {
             yielding: None,
             stops: Vec::new(),
             full_control: FullControlMode::Off,
+        },
+        ServerMessage::Lobby {
+            seats: lobby_seats(),
+            needed: 2,
         },
         ServerMessage::Events(batch.clone()),
         ServerMessage::Snapshot {
@@ -457,6 +480,7 @@ fn every_event_view_variant_round_trips() {
 
 #[rstest]
 #[case(ClientMessage::Ready, json!({"type": "Ready"}))]
+#[case(ClientMessage::NotReady, json!({"type": "NotReady"}))]
 #[case(ClientMessage::Resync, json!({"type": "Resync"}))]
 #[case(ClientMessage::AutoPass { enabled: false }, json!({"type": "AutoPass", "enabled": false}))]
 #[case(ClientMessage::CancelYield, json!({"type": "CancelYield"}))]
@@ -528,6 +552,16 @@ fn client_wire_shape_is_flat_and_tagged(
     json!({
         "type": "Welcome", "protocol_version": 1, "game": "g", "player": 2, "seats": 4, "auto_pass": true,
         "yielding": null, "stops": [], "full_control": "Off"
+    })
+)]
+#[case(
+    ServerMessage::Lobby {
+        seats: vec![LobbySeat { seat: PlayerId(0), name: "Ana".into(), connected: true, ready: false }],
+        needed: 1,
+    },
+    json!({
+        "type": "Lobby", "needed": 1,
+        "seats": [{"seat": 0, "name": "Ana", "connected": true, "ready": false}]
     })
 )]
 #[case(
