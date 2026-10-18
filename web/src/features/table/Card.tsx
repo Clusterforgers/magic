@@ -7,6 +7,12 @@ import type { Highlight } from './cardModel'
 import { HIGHLIGHT, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { CardFace } from './CardFace'
+import { useCreatureOutlook } from './combat/drawn'
+import { outlookWords } from './combat/forecastText'
+import { ForecastMarks } from './combat/ForecastMarks'
+import { FxFloat } from './fx/FxFloat'
+import { useCardFx } from './fx/hooks'
+import { fxAttr, fxSide } from './fx/model'
 import { useCardMark, useMarksStore } from './prompt/marks'
 import { combatRoleIn } from './selectors'
 import { usePreviewHandlers } from './usePreviewHandlers'
@@ -47,6 +53,8 @@ export const Card = memo(function Card({
   const role = usePlay((state) => combatRoleIn(state, id))
   const marks = useMarksStore()
   const { highlight: marked, toggles, note } = useCardMark(id)
+  const outlook = useCreatureOutlook(id)
+  const fx = useCardFx(id)
   const highlight = given ?? marked
   // An explicit highlight is a toggle, as it always was; a prompt says so when its marks are.
   const pressable = given !== undefined || toggles
@@ -65,18 +73,27 @@ export const Card = memo(function Card({
       data-highlight={highlight}
       data-size={size}
       data-tapped={tapped || undefined}
-      aria-label={cardLabel(object, role) + words}
+      data-doomed={outlook?.dies || undefined}
+      data-fx={fxAttr(fx)}
+      data-fx-side={fxSide(fx)}
+      aria-label={cardLabel(object, role) + words + outlookWords(outlook)}
       aria-pressed={highlight === undefined || !pressable ? undefined : highlight === 'selected'}
       tabIndex={tabbable ? 0 : -1}
       {...handlers}
       className={cn(
-        'grid h-(--card-h) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
+        'relative grid h-(--card-h) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
         SIZE[size].vars,
         tapped ? 'w-(--card-h)' : 'w-(--card-w)',
         highlight === undefined ? null : HIGHLIGHT[highlight],
       )}
     >
       <CardFace object={object} role={role} size={size} note={note} />
+      {outlook === null ? null : (
+        <ForecastMarks outlook={outlook} tapped={tapped} compact={size === 'compact'} />
+      )}
+      {fx.map((entry) =>
+        entry.kind === 'damaged' ? <FxFloat key={entry.token} kind="damaged" amount={entry.amount} /> : null,
+      )}
     </button>
   )
 })

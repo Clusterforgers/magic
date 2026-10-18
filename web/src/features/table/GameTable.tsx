@@ -1,4 +1,5 @@
 import { memo, useContext, useMemo, useState } from 'react'
+import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -6,9 +7,13 @@ import type { PlayerId } from '@/protocol/generated'
 import { AutoPassSwitch } from './AutoPassSwitch'
 import type { CardSize } from './cardSize'
 import { CardPreview } from './CardPreview'
+import { CombatOverlay } from './combat/CombatOverlay'
+import { CombatProviders } from './combat/CombatProviders'
 import { ConcedeButton } from './ConcedeButton'
 import { CentreStrip } from './CentreStrip'
 import { Drawer } from './Drawer'
+import { FxContext } from './fx/hooks'
+import { EFFECTS_BY_DEFAULT, useTableFx } from './fx/useTableFx'
 import { arrangeSeats } from './layout'
 import type { SeatPlan, TableMode } from './layout'
 import { createMarksStore, MarksContext } from './prompt/marks'
@@ -71,7 +76,7 @@ function Opponents({ plan, size, onFocusSeat }: OpponentsProps) {
  * middle, and the log and chat in a drawer. Up to 4 seats it opens in grid mode, from 5 in focus mode, and the
  * toolbar switches either. It reads the game with `usePlay` and acts through `useGame().session`.
  */
-export const GameTable = memo(function GameTable() {
+const Table = memo(function Table() {
   const options = useContext(TableOptionsContext)
   const { seat, seatCount, ready } = usePlay(
     useShallow((state) => ({ seat: state.seat, seatCount: seatCountOf(state), ready: state.view !== null })),
@@ -86,42 +91,60 @@ export const GameTable = memo(function GameTable() {
     [seatCount, seat, mode, chosen, followed],
   )
   const size: CardSize = plan.compact ? 'compact' : 'normal'
+  const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
 
   return (
-    <PreviewContext value={previews}>
-      <MarksContext value={marks}>
-        <section aria-label="Game table" className="flex w-full items-start">
-          <div className="grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
-            <h1 className="sr-only">Game table</h1>
-            {!ready || seat === null ? (
-              <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
-            ) : (
-              <>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <TableToolbar
-                    mode={plan.mode}
-                    onMode={setMode}
-                    pinnedFocus={chosen !== null}
-                    onFollow={() => setChosen(null)}
-                  />
-                  <div className="flex flex-wrap items-center gap-3">
-                    <AutoPassSwitch />
-                    <ConcedeButton />
+    <FxContext value={fx}>
+      <PreviewContext value={previews}>
+        <MarksContext value={marks}>
+          <section
+            aria-label="Game table"
+            className="flex w-full items-start"
+            style={fx.slow === 1 ? undefined : ({ '--fx-slow': fx.slow } as CSSProperties)}
+          >
+            <div className="relative grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
+              <h1 className="sr-only">Game table</h1>
+              {!ready || seat === null ? (
+                <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
+              ) : (
+                <>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <TableToolbar
+                      mode={plan.mode}
+                      onMode={setMode}
+                      pinnedFocus={chosen !== null}
+                      onFollow={() => setChosen(null)}
+                    />
+                    <div className="flex flex-wrap items-center gap-3">
+                      <AutoPassSwitch />
+                      <ConcedeButton />
+                    </div>
                   </div>
-                </div>
-                <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
-                <div className="grid gap-3">
-                  <CentreStrip />
-                  <StackPanel />
-                </div>
-                <OwnBoard seat={plan.viewer} size={size} />
-              </>
-            )}
-          </div>
-          <Drawer />
-        </section>
-        <CardPreview />
-      </MarksContext>
-    </PreviewContext>
+                  <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
+                  {/* Above the combat lines, so they run behind the prompt and never over its words. */}
+                  <div className="relative z-20 grid gap-3">
+                    <CentreStrip />
+                    <StackPanel />
+                  </div>
+                  <OwnBoard seat={plan.viewer} size={size} />
+                  <CombatOverlay />
+                </>
+              )}
+            </div>
+            <Drawer />
+          </section>
+          <CardPreview />
+        </MarksContext>
+      </PreviewContext>
+    </FxContext>
+  )
+})
+
+/** The table inside the stores its combat marks share (`combat/CombatProviders`). */
+export const GameTable = memo(function GameTable() {
+  return (
+    <CombatProviders>
+      <Table />
+    </CombatProviders>
   )
 })

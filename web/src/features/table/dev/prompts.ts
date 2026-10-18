@@ -13,6 +13,7 @@ import type {
   PriorityOptions,
   StateView,
 } from '@/protocol/generated'
+import { forecastScene, withBlockForecast } from './combatScene'
 import { assignDamage } from './damagePrompt'
 import type { Fixture } from './fixture'
 
@@ -157,7 +158,7 @@ const attackTable: DevTable = (fixture) => {
  * The active seat has attacked with six creatures and nobody has blocked: four at the viewer and, when there is a
  * third seat, two at another player (which the viewer may not block).
  */
-const blockTable: DevTable = (fixture) => {
+const blockAttack: DevTable = (fixture) => {
   const { view } = fixture
   const active = view.turn.active
   const elsewhere = othersAfter(view, view.viewer).find((seat) => seat !== active)
@@ -178,6 +179,12 @@ const blockTable: DevTable = (fixture) => {
     priority: null,
   })
 }
+
+/**
+ * That attack as the viewer meets it, with the forecast the engine would send now: the viewer has not blocked, so
+ * their attackers are unblocked and lethal; another player (with a third seat) has double-blocked one of theirs.
+ */
+const blockTable: DevTable = (fixture) => withBlockForecast(blockAttack(fixture))
 
 /**
  * Paying for Selesnya Evangel ({2}{W}{G}) from the hand, with the viewer's floating mana (two red, a green, a
@@ -251,6 +258,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   priority,
   // The same decisions on a response clock (`devGame` starts the countdown; nothing ticks it in the dev route).
   'priority-clock': (fixture) => ({ ...priority(fixture), deadlineMs: 10_000 }),
+  // The viewer holds priority in a declare-blockers step whose blocks are made: the forecast is all there is to read.
+  forecast: priority,
   attack,
   block,
   'block-clock': (fixture) => ({ ...block(fixture), deadlineMs: 45_000 }),
@@ -290,4 +299,5 @@ export const DEV_TABLES: Record<string, DevTable> = {
   attack: attackTable,
   block: blockTable,
   'block-clock': blockTable,
+  forecast: forecastScene,
 }

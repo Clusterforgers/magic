@@ -2,6 +2,8 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 @import '@fontsource-variable/geist';
+@import './features/table/fx/fx.css';
+@import './features/table/prompt/responseClock.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -164,27 +166,6 @@
     0 0 14px 3px color-mix(in oklch, var(--your-turn) 65%, transparent);
   @media (prefers-reduced-motion: no-preference) {
     animation: your-turn-glow 2.8s ease-in-out infinite;
-  }
-}
-
-@keyframes response-clock-drain {
-  from {
-    transform: scaleX(var(--clock-from, 1));
-  }
-  to {
-    transform: scaleX(0);
-  }
-}
-
-/*
- * The bar of the response clock: it drains from the part that was left when the prompt appeared to nothing, over the
- * time that was left (set as animation-duration). It only moves where motion is welcome; the prompt draws no bar at
- * all for a person who asks for less, and the number says the rest.
- */
-@utility response-clock-bar {
-  transform-origin: left center;
-  @media (prefers-reduced-motion: no-preference) {
-    animation: response-clock-drain linear forwards;
   }
 }
 

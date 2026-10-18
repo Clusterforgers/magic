@@ -8,6 +8,7 @@ use mtg_core::ids::PlayerId;
 use mtg_protocol::{ClientMessage, PROTOCOL_VERSION, ServerMessage};
 use tokio::net::TcpStream;
 use tokio_tungstenite::tungstenite::client::IntoClientRequest;
+use tokio_tungstenite::tungstenite::http::{HeaderName, HeaderValue};
 use tokio_tungstenite::tungstenite::protocol::CloseFrame;
 use tokio_tungstenite::tungstenite::{Error as WsError, Message};
 use tokio_tungstenite::{MaybeTlsStream, WebSocketStream, connect_async_with_config};
@@ -45,11 +46,22 @@ pub async fn try_connect(
     token: &str,
     origin: Option<&str>,
 ) -> Result<WsClient, WsError> {
-    let mut request = format!("ws://{addr}/ws/{game}/{token}").into_client_request()?;
-    if let Some(origin) = origin {
+    let headers: Vec<(&str, &str)> = origin.map(|o| ("Origin", o)).into_iter().collect();
+    try_open(addr, &format!("/ws/{game}/{token}"), &headers).await
+}
+
+/// Opens a socket to `path` with the given request headers (`Cookie`, `Origin`).
+pub async fn try_open(
+    addr: SocketAddr,
+    path: &str,
+    headers: &[(&str, &str)],
+) -> Result<WsClient, WsError> {
+    let mut request = format!("ws://{addr}{path}").into_client_request()?;
+    for (name, value) in headers {
+        let name = HeaderName::from_bytes(name.as_bytes()).unwrap();
         request
             .headers_mut()
-            .insert("Origin", origin.parse().unwrap());
+            .insert(name, HeaderValue::from_str(value).unwrap());
     }
     let (socket, _) = connect_async_with_config(request, None, true).await?;
     Ok(WsClient {
@@ -57,6 +69,30 @@ pub async fn try_connect(
         texts: Vec::new(),
         ended: false,
     })
+}
+
+/// Opens a socket to `path` that must be accepted.
+pub async fn open(addr: SocketAddr, path: &str, headers: &[(&str, &str)]) -> WsClient {
+    match try_open(addr, path, headers).await {
+        Ok(client) => client,
+        Err(error) => panic!("the socket at {path} was refused: {error}"),
+    }
+}
+
+/// Tries to open a socket at `path` that must be refused with an HTTP answer; returns its status
+/// and body.
+pub async fn refused_at(addr: SocketAddr, path: &str, headers: &[(&str, &str)]) -> (u16, String) {
+    match try_open(addr, path, headers).await {
+        Err(WsError::Http(response)) => {
+            let body = response.body().clone().unwrap_or_default();
+            (
+                response.status().as_u16(),
+                String::from_utf8_lossy(&body).into_owned(),
+            )
+        }
+        Err(other) => panic!("expected an HTTP refusal, got {other}"),
+        Ok(_) => panic!("the socket at {path} was accepted"),
+    }
 }
 
 /// Opens a socket that must be accepted.

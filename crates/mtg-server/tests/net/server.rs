@@ -5,13 +5,14 @@ use std::net::SocketAddr;
 use std::time::Duration;
 
 use mtg_server::config::SocketLimits;
-use mtg_server::{GameConfig, Pace, Registry, Server, ServerConfig};
+use mtg_server::{AuthConfig, GameConfig, HashCost, Pace, Registry, Server, ServerConfig};
 use sqlx::PgPool;
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
 use tokio::task::JoinHandle;
 
-/// A config for bot games: roomy queues and a rate limit no bot reaches.
+/// A config for bot games: roomy queues and a rate limit no bot reaches. Passwords hash at the
+/// cheapest cost Argon2 allows, so tests with accounts stay fast.
 pub fn bot_config() -> ServerConfig {
     ServerConfig {
         game: GameConfig {
@@ -23,6 +24,10 @@ pub fn bot_config() -> ServerConfig {
             burst: 1_000_000,
             per_second: 1_000_000,
             ..SocketLimits::default()
+        },
+        auth: AuthConfig {
+            hash_cost: HashCost::cheapest(),
+            ..AuthConfig::default()
         },
         ..ServerConfig::default()
     }

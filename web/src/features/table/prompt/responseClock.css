@@ -1,0 +1,22 @@
+/* The bar of the response clock (prompt/ResponseClock.tsx); imported by the app stylesheet. */
+
+@keyframes response-clock-drain {
+  from {
+    transform: scaleX(var(--clock-from, 1));
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/*
+ * The bar drains from the part that was left when the prompt appeared to nothing, over the time that was left (the
+ * element sets animation-duration). It only moves where motion is welcome; the prompt draws no bar at all for a person
+ * who asks for less, and the number says the rest.
+ */
+@utility response-clock-bar {
+  transform-origin: left center;
+  @media (prefers-reduced-motion: no-preference) {
+    animation: response-clock-drain linear forwards;
+  }
+}

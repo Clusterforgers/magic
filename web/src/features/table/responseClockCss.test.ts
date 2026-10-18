@@ -2,23 +2,12 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { blockAfter } from '@/test-utils/cssBlocks'
 
 // Read as text rather than imported, which would hand back what Tailwind builds from it.
-const css = readFileSync(join(import.meta.dirname, '../../index.css'), 'utf8')
+const css = readFileSync(join(import.meta.dirname, 'prompt/responseClock.css'), 'utf8')
 
-/** The text between the braces that open after `head`, nested braces included. */
-function blockAfter(source: string, head: string): string {
-  const start = source.indexOf(head)
-  if (start < 0) throw new Error(`the stylesheet has no "${head}"`)
-  const open = source.indexOf('{', start)
-  let depth = 0
-  for (let at = open; at < source.length; at += 1) {
-    if (source[at] === '{') depth += 1
-    if (source[at] === '}') depth -= 1
-    if (depth === 0) return source.slice(open + 1, at)
-  }
-  throw new Error(`"${head}" never closes`)
-}
+const app = readFileSync(join(import.meta.dirname, '../../index.css'), 'utf8')
 
 const NO_PREFERENCE = '@media (prefers-reduced-motion: no-preference)'
 
@@ -43,5 +32,10 @@ describe('the response clock stylesheet', () => {
     expect(frames).toMatch(/from\s*\{[^}]*scaleX\(var\(--clock-from, 1\)\)/)
     expect(frames).toMatch(/to\s*\{[^}]*scaleX\(0\)/)
     expect(still).toMatch(/transform-origin:\s*left/)
+  })
+
+  it('is part of the app stylesheet without adding an animation to it', () => {
+    expect(app).toMatch(/@import\s+'\.\/features\/table\/prompt\/responseClock\.css';/)
+    expect(app).not.toMatch(/response-clock/)
   })
 })

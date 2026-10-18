@@ -25,6 +25,15 @@ impl Reply {
             .map(|(_, v)| v.as_str())
     }
 
+    /// Every header called `name`, case-insensitively, in the order they arrived.
+    pub fn headers_named(&self, name: &str) -> Vec<&str> {
+        self.headers
+            .iter()
+            .filter(|(k, _)| k.eq_ignore_ascii_case(name))
+            .map(|(_, v)| v.as_str())
+            .collect()
+    }
+
     pub fn text(&self) -> String {
         String::from_utf8_lossy(&self.body).into_owned()
     }

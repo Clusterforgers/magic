@@ -8,6 +8,10 @@ export interface TableOptions {
   mode?: TableMode
   /** The opponent to open focused (focus mode); the one that follows the turn when left out. */
   focus?: PlayerId
+  /** Decorate batches with animations (`features/table/fx`); on everywhere but under vitest when left out. */
+  effects?: boolean
+  /** Multiplies the duration of every animation, to look at one slowly; 1 when left out. */
+  effectsSlow?: number
 }
 
 /** Provide a `TableOptions` around `GameTable`; without one the table picks its own start. */
