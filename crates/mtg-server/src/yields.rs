@@ -310,7 +310,7 @@ mod tests {
         // Both pass: the spell resolves and seat 0 holds priority again with an empty stack.
         pass(&mut engine);
         pass(&mut engine);
-        assert!(engine.state().stack().is_empty());
+        assert_eq!(engine.state().stack(), []);
         assert!(!yields.passes(ME, engine.state(), false));
         assert_eq!(yields.get(ME), None, "and the yield is over");
     }
@@ -426,7 +426,7 @@ mod tests {
         for _ in 0..4 {
             pass(&mut engine);
         }
-        assert!(engine.state().stack().is_empty());
+        assert_eq!(engine.state().stack(), []);
         assert!(yields.passes(ME, engine.state(), true));
         assert!(yields.seats[ME.index()].as_ref().unwrap().seen.is_empty());
     }
