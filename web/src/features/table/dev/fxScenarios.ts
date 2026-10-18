@@ -42,6 +42,7 @@ function tableOf(view: StateView): TableView {
     stack: view.stack,
     exile: view.exile,
     combat: view.combat,
+    combat_forecast: view.combat_forecast,
     result: view.result,
   }
 }

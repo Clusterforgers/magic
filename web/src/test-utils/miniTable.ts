@@ -120,6 +120,7 @@ export function miniView(): StateView {
     stack: zone([FOE_SPELL]),
     exile: zone([]),
     combat: { attackers: [], attackers_declared: false, blockers_declared: [] },
+    combat_forecast: null,
     result: null,
   }
 }
