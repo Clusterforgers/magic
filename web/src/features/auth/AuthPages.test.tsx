@@ -52,6 +52,11 @@ describe.each([
     expect(submitButton(submit)).toHaveAttribute('type', 'submit')
   })
 
+  it('would never put the credentials in the address, even if a submit got past the page’s handler', async () => {
+    await open(url)
+    expect(form()).toHaveAttribute('method', 'post')
+  })
+
   it('has a username field and a password field that password managers recognise', async () => {
     await open(url)
     expect(username()).toHaveAttribute('autocomplete', 'username')

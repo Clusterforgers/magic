@@ -56,12 +56,15 @@ export function Lobby() {
         <ul aria-label="Seats" className="divide-y rounded-xl bg-card ring-1 ring-foreground/10">
           {rows.map((row) => (
             <li key={row.index} className="flex items-center justify-between gap-3 px-3 py-2.5 text-sm">
-              <span className="flex min-w-0 items-center gap-2">
+              <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
                 <span className="shrink-0 text-muted-foreground">Seat {row.index + 1}</span>
-                <span className="truncate font-medium">{row.name}</span>
+                <span className="max-w-full truncate font-medium">{row.name}</span>
                 {row.you ? <Badge variant="secondary">you</Badge> : null}
                 {row.account === null ? null : (
-                  <span data-slot="seat-account" className="truncate text-xs text-muted-foreground">
+                  <span
+                    data-slot="seat-account"
+                    className="max-w-full truncate text-xs text-muted-foreground"
+                  >
                     signed in as {row.account}
                   </span>
                 )}

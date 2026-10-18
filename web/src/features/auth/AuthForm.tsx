@@ -100,6 +100,8 @@ export function AuthForm({ mode, next }: AuthFormProps) {
   return (
     <form
       ref={formRef}
+      // Never GET: if a submit ever got past `preventDefault`, the credentials must not end up in the address.
+      method="post"
       noValidate
       aria-labelledby={`${mode}-title`}
       aria-busy={pending}
