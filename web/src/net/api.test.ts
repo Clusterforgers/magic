@@ -87,6 +87,12 @@ describe('requests and answers', () => {
     expect(JSON.parse(String(call?.init?.body))).toEqual(request)
   })
 
+  it('sends the session cookie with createGame, which is what binds the creator’s seat to their account', async () => {
+    const fake = fakeFetch(() => jsonResponse(201, created))
+    await createApi({ fetch: fake.fetch }).createGame(request)
+    expect(fake.calls[0]?.init?.credentials).toBe('include')
+  })
+
   it.each<[string, unknown]>([
     ['not started, no result', { ...game, started: false, connected: [] }],
     ['a draw', { ...game, result: 'Draw' }],

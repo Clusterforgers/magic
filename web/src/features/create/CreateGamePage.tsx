@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/features/auth/context'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { api as sharedApi } from '@/net/api'
 import type { Api } from '@/net/api'
@@ -9,9 +10,11 @@ import { useDecks } from './useDecks'
 export function CreateGamePage({ api = sharedApi }: { api?: Api }) {
   usePageTitle('Create a game')
   const { state, reload } = useDecks(api)
+  // The form names the creator's own seat after the account, so it waits until the server has said who that is.
+  const unknownAccount = useAuth((auth) => auth.status === 'loading')
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6">
-      {state.status === 'loading' ? (
+      {state.status === 'loading' || (state.status === 'ready' && unknownAccount) ? (
         <p role="status" className="text-sm text-muted-foreground">
           Loading the decks…
         </p>
@@ -33,7 +36,7 @@ export function CreateGamePage({ api = sharedApi }: { api?: Api }) {
           </p>
         </div>
       ) : null}
-      {state.status === 'ready' && state.decks.length > 0 ? (
+      {state.status === 'ready' && state.decks.length > 0 && !unknownAccount ? (
         <CreateForm api={api} decks={state.decks} />
       ) : null}
     </div>

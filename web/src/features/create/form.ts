@@ -54,11 +54,15 @@ function withSeat(draft: Draft, decks: readonly DeckInfo[]): Draft {
   return { seats: [...draft.seats, seat], nextId: draft.nextId + 1 }
 }
 
-/** The form as first shown: `MIN_SEATS` seats named Player 1, Player 2, ..., on different decks while the server has them. */
-export function defaultDraft(decks: readonly DeckInfo[]): Draft {
+/**
+ * The form as first shown: `MIN_SEATS` seats named Player 1, Player 2, ..., on different decks while the server has
+ * them. `host`, the signed-in creator's username, names the first seat, which is the creator's own.
+ */
+export function defaultDraft(decks: readonly DeckInfo[], host?: string): Draft {
   let draft: Draft = { seats: [], nextId: 0 }
   for (let i = 0; i < MIN_SEATS; i += 1) draft = withSeat(draft, decks)
-  return draft
+  const first = draft.seats[0]
+  return host === undefined || first === undefined ? draft : editSeat(draft, first.id, { name: host })
 }
 
 /** The form with one more seat, or as it was when it is full. */
