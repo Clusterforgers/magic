@@ -5,6 +5,7 @@ import { buildFixture } from '@/features/table/dev/fixture'
 import type { Fixture } from '@/features/table/dev/fixture'
 import { DEV_PROMPTS, DEV_TABLES } from '@/features/table/dev/prompts'
 import { GameTable } from '@/features/table/GameTable'
+import type { TableOptions } from '@/features/table/tableOptions'
 import type { CombatForecast, ObjectId, PlayerId } from '@/protocol/generated'
 import type { PlayState } from '@/play/store'
 import { must } from './batches'
@@ -56,6 +57,8 @@ export interface ForecastTableOptions {
   prompt?: string
   /** How to turn the plain fixture into the moment to look at. */
   scene?: (fixture: Fixture) => Fixture
+  /** Where the layout starts: `{ mode: 'grid' }` draws every seat's board, the worst case at 12 seats. */
+  layout?: TableOptions
 }
 
 /** Renders the table over the moment asked for, with a rect provider in place of the DOM. */
@@ -63,12 +66,14 @@ export function renderForecastTable({
   seats = 2,
   prompt,
   scene = prompt === undefined ? forecastScene : (DEV_TABLES[prompt] ?? ((fixture) => fixture)),
+  layout,
 }: ForecastTableOptions = {}): ForecastTable {
   const rects = fakeRects()
   const fixture = scene(buildFixture({ seats }))
   const decision = prompt === undefined ? null : (DEV_PROMPTS[prompt]?.(fixture) ?? null)
   const table = renderTable({
     fixture,
+    options: layout,
     state: (state) => ({ ...state, pending: decision }),
     ui: (
       <RectProviderContext value={rects.provider}>

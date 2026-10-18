@@ -72,7 +72,7 @@ function Opponents({ plan, size, onFocusSeat }: OpponentsProps) {
  * middle, and the log and chat in a drawer. Up to 4 seats it opens in grid mode, from 5 in focus mode, and the
  * toolbar switches either. It reads the game with `usePlay` and acts through `useGame().session`.
  */
-export const GameTable = memo(function GameTable() {
+const Table = memo(function Table() {
   const options = useContext(TableOptionsContext)
   const { seat, seatCount, ready } = usePlay(
     useShallow((state) => ({ seat: state.seat, seatCount: seatCountOf(state), ready: state.view !== null })),
@@ -91,39 +91,46 @@ export const GameTable = memo(function GameTable() {
   return (
     <PreviewContext value={previews}>
       <MarksContext value={marks}>
-        <CombatProviders>
-          <section aria-label="Game table" className="flex w-full items-start">
-            <div className="relative grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
-              <h1 className="sr-only">Game table</h1>
-              {!ready || seat === null ? (
-                <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
-              ) : (
-                <>
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <TableToolbar
-                      mode={plan.mode}
-                      onMode={setMode}
-                      pinnedFocus={chosen !== null}
-                      onFollow={() => setChosen(null)}
-                    />
-                    <ConcedeButton />
-                  </div>
-                  <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
-                  {/* Above the combat lines, so they run behind the prompt and never over its words. */}
-                  <div className="relative z-20 grid gap-3">
-                    <CentreStrip />
-                    <StackPanel />
-                  </div>
-                  <OwnBoard seat={plan.viewer} size={size} />
-                  <CombatOverlay />
-                </>
-              )}
-            </div>
-            <Drawer />
-          </section>
-          <CardPreview />
-        </CombatProviders>
+        <section aria-label="Game table" className="flex w-full items-start">
+          <div className="relative grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
+            <h1 className="sr-only">Game table</h1>
+            {!ready || seat === null ? (
+              <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
+            ) : (
+              <>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <TableToolbar
+                    mode={plan.mode}
+                    onMode={setMode}
+                    pinnedFocus={chosen !== null}
+                    onFollow={() => setChosen(null)}
+                  />
+                  <ConcedeButton />
+                </div>
+                <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
+                {/* Above the combat lines, so they run behind the prompt and never over its words. */}
+                <div className="relative z-20 grid gap-3">
+                  <CentreStrip />
+                  <StackPanel />
+                </div>
+                <OwnBoard seat={plan.viewer} size={size} />
+                <CombatOverlay />
+              </>
+            )}
+          </div>
+          <Drawer />
+        </section>
+        <CardPreview />
       </MarksContext>
     </PreviewContext>
+  )
+})
+
+/** The table inside the stores its combat marks share (`combat/CombatProviders`). */
+export const GameTable = memo(function GameTable() {
+  return (
+    <CombatProviders>
+      <Table />
+    </CombatProviders>
   )
 })
