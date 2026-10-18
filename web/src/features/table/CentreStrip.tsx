@@ -1,9 +1,12 @@
 import { useShallow } from 'zustand/react/shallow'
+import { Badge } from '@/components/ui/badge'
 import { usePlay } from '@/features/game/gameContext'
+import { cn } from '@/lib/utils'
 import { useSeatNamer } from './names'
 import { NothingToDoBanner } from './prompt/NothingToDoBanner'
 import { ownDecision } from './prompt/ownDecision'
 import { PromptHost } from './prompt/PromptHost'
+import { isYourTurn } from './selectors'
 import { bannerText, priorityText, waitingOn, waitingText } from './turnText'
 import { useStable } from './useStable'
 
@@ -26,15 +29,23 @@ export function CentreStrip() {
   const waiting = usePlay(useStable(waitingOn))
   const mine = usePlay((state) => ownDecision(state) !== null)
   const holder = priorityText(priority, banner.stage, name)
+  const yourTurn = usePlay(isYourTurn)
   return (
     <section
       aria-label="Turn and priority"
-      className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 rounded-xl bg-card p-3 ring-1 ring-foreground/10"
+      data-your-turn={yourTurn || undefined}
+      className={cn(
+        'flex flex-wrap items-center justify-between gap-x-6 gap-y-2 rounded-xl bg-card p-3',
+        yourTurn ? 'your-turn-cue' : 'ring-1 ring-foreground/10',
+      )}
     >
       <div className="grid gap-0.5">
-        <h2 data-slot="banner" className="text-lg leading-tight font-semibold">
-          {bannerText(banner, name)}
-        </h2>
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 data-slot="banner" className="text-lg leading-tight font-semibold">
+            {bannerText(banner, name)}
+          </h2>
+          {yourTurn ? <Badge data-slot="your-turn">Your turn</Badge> : null}
+        </div>
         {holder === '' ? null : (
           <p data-slot="priority" className="text-sm">
             {holder}

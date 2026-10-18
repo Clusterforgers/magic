@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import type { CardSize } from './cardSize'
 import { CardPreview } from './CardPreview'
+import { ConcedeButton } from './ConcedeButton'
 import { CentreStrip } from './CentreStrip'
 import { Drawer } from './Drawer'
 import { arrangeSeats } from './layout'
@@ -95,12 +96,15 @@ export const GameTable = memo(function GameTable() {
               <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
             ) : (
               <>
-                <TableToolbar
-                  mode={plan.mode}
-                  onMode={setMode}
-                  pinnedFocus={chosen !== null}
-                  onFollow={() => setChosen(null)}
-                />
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <TableToolbar
+                    mode={plan.mode}
+                    onMode={setMode}
+                    pinnedFocus={chosen !== null}
+                    onFollow={() => setChosen(null)}
+                  />
+                  <ConcedeButton />
+                </div>
                 <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
                 <div className="grid gap-3">
                   <CentreStrip />

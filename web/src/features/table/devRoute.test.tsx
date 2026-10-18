@@ -101,6 +101,28 @@ describe('/dev/table with a prompt', () => {
   })
 })
 
+describe('/dev/table with the viewer’s own turn', () => {
+  it.each(['?seats=2&turn=you', '?seats=4&turn=you&prompt=priority', '?seats=12&turn=you'])(
+    'lights the your-turn cue for %s',
+    async (search) => {
+      await visit(`/dev/table${search}`)
+      await screen.findByRole('region', { name: 'Game table' })
+      expect(screen.getByRole('heading', { name: /^Turn 5 · Alice · / })).toBeInTheDocument()
+      expect([...document.querySelectorAll('[data-your-turn]')].map((element) => element.tagName)).toEqual([
+        'SECTION',
+        'SECTION',
+      ])
+      expect(document.querySelector('section[data-seat="0"]')).toHaveAttribute('data-your-turn', 'true')
+    },
+  )
+
+  it.each(['?seats=2', '?seats=2&turn=them', '?seats=2&turn=1'])('shows no cue for %s', async (search) => {
+    await visit(`/dev/table${search}`)
+    await screen.findByRole('region', { name: 'Game table' })
+    expect(document.querySelector('[data-your-turn]')).toBeNull()
+  })
+})
+
 describe('/dev/table in a production build', () => {
   it('answers not found and draws no fixture', async () => {
     vi.stubEnv('DEV', false)
