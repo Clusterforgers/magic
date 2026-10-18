@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import type { CardSize } from './cardSize'
 import { CardPreview } from './CardPreview'
+import { CombatOverlay } from './combat/CombatOverlay'
+import { createPendingCombatStore, PendingCombatContext } from './combat/pending'
 import { ConcedeButton } from './ConcedeButton'
 import { CentreStrip } from './CentreStrip'
 import { Drawer } from './Drawer'
@@ -80,6 +82,7 @@ export const GameTable = memo(function GameTable() {
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
   const [previews] = useState(createPreviewStore)
   const [marks] = useState(createMarksStore)
+  const [pendingCombat] = useState(createPendingCombatStore)
   const plan = useMemo(
     () => arrangeSeats({ seatCount, viewer: seat ?? 0, mode, focus: chosen ?? followed }),
     [seatCount, seat, mode, chosen, followed],
@@ -89,34 +92,38 @@ export const GameTable = memo(function GameTable() {
   return (
     <PreviewContext value={previews}>
       <MarksContext value={marks}>
-        <section aria-label="Game table" className="flex w-full items-start">
-          <div className="grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
-            <h1 className="sr-only">Game table</h1>
-            {!ready || seat === null ? (
-              <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
-            ) : (
-              <>
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <TableToolbar
-                    mode={plan.mode}
-                    onMode={setMode}
-                    pinnedFocus={chosen !== null}
-                    onFollow={() => setChosen(null)}
-                  />
-                  <ConcedeButton />
-                </div>
-                <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
-                <div className="grid gap-3">
-                  <CentreStrip />
-                  <StackPanel />
-                </div>
-                <OwnBoard seat={plan.viewer} size={size} />
-              </>
-            )}
-          </div>
-          <Drawer />
-        </section>
-        <CardPreview />
+        <PendingCombatContext value={pendingCombat}>
+          <section aria-label="Game table" className="flex w-full items-start">
+            <div className="relative grid min-w-0 flex-1 content-start gap-3 p-3 max-lg:pb-16 lg:p-4">
+              <h1 className="sr-only">Game table</h1>
+              {!ready || seat === null ? (
+                <p className="p-6 text-sm text-muted-foreground">Waiting for the table…</p>
+              ) : (
+                <>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <TableToolbar
+                      mode={plan.mode}
+                      onMode={setMode}
+                      pinnedFocus={chosen !== null}
+                      onFollow={() => setChosen(null)}
+                    />
+                    <ConcedeButton />
+                  </div>
+                  <Opponents plan={plan} size={size} onFocusSeat={setChosen} />
+                  {/* Above the combat lines, so they run behind the prompt and never over its words. */}
+                  <div className="relative z-20 grid gap-3">
+                    <CentreStrip />
+                    <StackPanel />
+                  </div>
+                  <OwnBoard seat={plan.viewer} size={size} />
+                  <CombatOverlay />
+                </>
+              )}
+            </div>
+            <Drawer />
+          </section>
+          <CardPreview />
+        </PendingCombatContext>
       </MarksContext>
     </PreviewContext>
   )
