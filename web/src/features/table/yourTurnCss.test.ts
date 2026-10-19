@@ -20,7 +20,7 @@ describe('the your-turn cue stylesheet', () => {
   })
 
   it('keeps a ring and a glow without any motion', () => {
-    expect(still).toMatch(/box-shadow:[^;]*var\(--primary\)[^;]*var\(--your-turn\)/)
+    expect(still).toMatch(/box-shadow:[^;]*var\(--turn-you-edge\)[^;]*color-mix\([^;]*var\(--turn-you-edge\)/)
   })
 
   it('has no other animation in the stylesheet that could slip out of the media query', () => {
@@ -31,7 +31,7 @@ describe('the your-turn cue stylesheet', () => {
     const frames = blockAfter(css, '@keyframes your-turn-glow')
     const shadows = [...frames.matchAll(/box-shadow:\s*([^;]*?),/g)].map((match) => match[1])
     expect(shadows.length).toBeGreaterThanOrEqual(2)
-    for (const ring of shadows) expect(ring).toBe('0 0 0 2px var(--primary)')
-    expect(still).toContain('0 0 0 2px var(--primary)')
+    for (const ring of shadows) expect(ring).toBe('0 0 0 2px var(--turn-you-edge)')
+    expect(still).toContain('0 0 0 2px var(--turn-you-edge)')
   })
 })

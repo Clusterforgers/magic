@@ -41,7 +41,7 @@ export const SIZE: Record<CardSize, SizeClasses> = {
 
 /** The border and tint of each frame colour. */
 export const FRAME: Record<Frame, string> = {
-  white: 'border-mana-white bg-mana-white/25',
+  white: 'border-border-strong bg-mana-white/25',
   blue: 'border-mana-blue bg-mana-blue/12',
   black: 'border-mana-black bg-mana-black/12',
   red: 'border-mana-red bg-mana-red/12',
@@ -52,25 +52,25 @@ export const FRAME: Record<Frame, string> = {
 
 /** The fill of a mana symbol. */
 export const PIP: Record<PipTone, string> = {
-  white: 'bg-mana-white text-foreground',
-  blue: 'bg-mana-blue text-white',
-  black: 'bg-mana-black text-white',
-  red: 'bg-mana-red text-white',
-  green: 'bg-mana-green text-white',
-  gold: 'bg-mana-gold text-foreground',
-  colorless: 'bg-mana-colorless text-foreground',
+  white: 'bg-mana-white text-on-mana-white',
+  blue: 'bg-mana-blue text-on-mana-blue',
+  black: 'bg-mana-black text-on-mana-black',
+  red: 'bg-mana-red text-on-mana-red',
+  green: 'bg-mana-green text-on-mana-green',
+  gold: 'bg-mana-gold text-on-mana-gold',
+  colorless: 'bg-mana-colorless text-on-mana-colorless',
   generic: 'bg-muted text-foreground',
 }
 
 /** The ink that reads on a fill of this tone. */
 export const PIP_INK: Record<PipTone, string> = {
-  white: 'text-foreground',
-  blue: 'text-white',
-  black: 'text-white',
-  red: 'text-white',
-  green: 'text-white',
-  gold: 'text-foreground',
-  colorless: 'text-foreground',
+  white: 'text-on-mana-white',
+  blue: 'text-on-mana-blue',
+  black: 'text-on-mana-black',
+  red: 'text-on-mana-red',
+  green: 'text-on-mana-green',
+  gold: 'text-on-mana-gold',
+  colorless: 'text-on-mana-colorless',
   generic: 'text-foreground',
 }
 

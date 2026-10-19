@@ -4,7 +4,24 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <title>Magic</title>
+    <script>
+      // Puts the theme on the page before the first paint, so a dark page never flashes white.
+      // The same rule as src/hooks/useTheme.ts; themeScript.test.ts holds them equal.
+      ;(function () {
+        var choice = null
+        try {
+          choice = localStorage.getItem('theme')
+        } catch (error) {}
+        var dark =
+          choice === 'dark' ||
+          (choice !== 'light' &&
+            typeof matchMedia === 'function' &&
+            matchMedia('(prefers-color-scheme: dark)').matches)
+        if (dark) document.documentElement.classList.add('dark')
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

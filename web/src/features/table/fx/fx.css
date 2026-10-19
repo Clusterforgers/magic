@@ -233,7 +233,7 @@
   }
 
   button[data-object-id][data-fx~='attacked'] > [data-slot='card-face']::before {
-    --fx-tint: var(--your-turn);
+    --fx-tint: var(--turn-you-edge);
     animation: fx-glow calc(var(--fx-attacked-ms) * var(--fx-slow, 1)) ease-out;
   }
 
@@ -313,7 +313,7 @@
 /* Reduced motion: the same events as a still highlight for as long as the effect would run. */
 @media (prefers-reduced-motion: reduce) {
   button[data-object-id][data-fx~='attacked'] > [data-slot='card-face'] {
-    outline: 3px solid var(--your-turn);
+    outline: 3px solid var(--turn-you-edge);
     outline-offset: 1px;
   }
 

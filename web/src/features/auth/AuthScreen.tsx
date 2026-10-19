@@ -1,5 +1,6 @@
 import { Link, useRouter } from '@tanstack/react-router'
 import { useEffect } from 'react'
+import { PageShell } from '@/components/PageShell'
 import { buttonVariants } from '@/components/ui/button'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { AuthForm } from './AuthForm'
@@ -29,13 +30,13 @@ export function AuthScreen({ mode, next }: AuthScreenProps) {
   }, [status, destination, router])
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 py-8 sm:px-6">
+    <PageShell width="narrow">
       {status === 'unavailable' ? (
         <section aria-labelledby="no-accounts-title" className="grid justify-items-start gap-3">
           <h1 id="no-accounts-title" className="text-2xl font-semibold tracking-tight">
             This server has no accounts
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             Games here are played as a guest: one person creates a game and sends every player the link for
             their seat. There is nothing to sign in to.
           </p>
@@ -50,6 +51,6 @@ export function AuthScreen({ mode, next }: AuthScreenProps) {
         </p>
       ) : null}
       {status === 'loading' || status === 'signed-out' ? <AuthForm mode={mode} next={safe} /> : null}
-    </div>
+    </PageShell>
   )
 }

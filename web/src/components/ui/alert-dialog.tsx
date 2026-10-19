@@ -13,12 +13,12 @@ function AlertDialogContent({
     <AlertDialogPrimitive.Portal>
       <AlertDialogPrimitive.Backdrop
         data-slot="alert-dialog-overlay"
-        className="fixed inset-0 z-50 bg-black/40 duration-100 data-ending-style:opacity-0 data-starting-style:opacity-0 motion-safe:transition-opacity"
+        className="fixed inset-0 z-50 bg-scrim transition-opacity duration-fast ease-out data-ending-style:opacity-0 data-starting-style:opacity-0"
       />
       <AlertDialogPrimitive.Popup
         data-slot="alert-dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid max-h-[85dvh] w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 gap-3 overflow-y-auto rounded-xl bg-popover p-4 text-popover-foreground shadow-lg ring-1 ring-foreground/10 outline-none",
+          "fixed top-1/2 left-1/2 z-50 grid max-h-[85dvh] w-[calc(100vw-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-xl border bg-popover p-6 text-popover-foreground shadow-e3 popup-motion",
           className
         )}
         {...props}
@@ -34,7 +34,7 @@ function AlertDialogTitle({
   return (
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
-      className={cn("font-heading text-base font-medium", className)}
+      className={cn("font-heading text-lg font-semibold", className)}
       {...props}
     />
   )

@@ -197,11 +197,9 @@ fn play(players: usize, seed: u64) -> Result<Coverage, String> {
         if open.dealing {
             open.events.extend(events);
         }
-        if dealt_regular {
-            if let Some(done) = held.take() {
-                settle(&done, &engine, &mut coverage)
-                    .map_err(|e| format!("seed {seed}, {players} players: {e}"))?;
-            }
+        if dealt_regular && let Some(done) = held.take() {
+            settle(&done, &engine, &mut coverage)
+                .map_err(|e| format!("seed {seed}, {players} players: {e}"))?;
         }
     }
     Err(format!("seed {seed}: game did not finish"))

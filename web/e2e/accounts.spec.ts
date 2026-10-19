@@ -180,7 +180,10 @@ test('signing out leaves a guest, My games asks for a sign-in and comes back to 
     await page.goto('/games')
     await expect(games(page)).toHaveCount(1)
 
-    await account(page).getByRole('button', { name: 'Sign out' }).click()
+    await account(page)
+      .getByRole('button', { name: /signed in as/i })
+      .click()
+    await page.getByRole('menuitem', { name: 'Sign out' }).click()
     await expect(page.getByRole('form', { name: 'Create a game' })).toBeVisible() // signing out on /games goes home
     await expect(account(page).getByRole('link', { name: 'Sign in' })).toBeVisible()
     await expect(account(page).getByText(adaName)).toHaveCount(0)

@@ -75,13 +75,13 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [ ] Choose a deck in the lobby: a stored deck or a precon per seat; the table sees each seat's deck state as a count of manual cards, never their names (`docs/deck-check.md`)
 - [x] N-player layout, game log, stack panel, stop settings
 - [ ] UI rebuild: the table fits the screen, a turn change is unmistakable and games are joined from a list (`docs/ui-design.md`, Tasks). In order:
-  - [ ] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
+  - [x] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
   - [x] (U2) Fit engine: card sizes from the space available and grouping of identical permanents, pure and tested
   - [ ] (U3) Table grid: top bar, opponents, shared strip, own board, hand dock and side tabs in one viewport from 1280x720
   - [ ] (U4) Seat pods, scaled battlefield rows and a hand dock that hold 40 permanents a seat
   - [ ] (U5) Controls dock: a 44 px pass button, a one-row stop ladder and a menu for the rest
-  - [ ] (U6) Turn feedback: turn badge, turn banner, active-seat emphasis and a ticker for automatic passes and skips
-  - [ ] (U7) Server: game visibility, open seats, claim and join code
+  - [ ] (U6) Turn feedback: turn badge, turn banner, active-seat emphasis, a distinct theme for each phase so the current phase is unmistakable, and a ticker for automatic passes and skips
+  - [x] (U7) Server: game visibility, open seats, claim and join code
   - [ ] (U8) Server: public game listing, join, leave and release, with privacy tests
   - [ ] (U9) Game browser page: live list, join dialog, empty, loading and error states
   - [ ] (U10) Create-game visibility, invite link and code, lobby controls for host and guests
@@ -101,6 +101,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [ ] Coverage dashboard over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of a chosen set of Commander precons (`docs/deck-check.md`)
 
 ## M7 Polish and deploy
-- [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain (`docs/PLAN.md`, Deployment)
 - [ ] Animations beyond the table feedback (zone moves to hand, exile and library, a spell on the stack; `docs/web.md`), sounds, replays, solo play against bots
+- [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain (`docs/PLAN.md`, Deployment)
 - [ ] Performance profile on real hardware with real card art

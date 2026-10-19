@@ -8,10 +8,16 @@
 //! in ([`Registry::authenticate_user`]) and puts the game on the account's list
 //! ([`Registry::games_of`]). A seat is bound once, to the first account that claims it
 //! ([`Registry::bind_seat`]), and an account holds one seat per game.
+//!
+//! A game is also made [`Visibility::Public`] or [`Visibility::Invite`], and each of its seats is
+//! held from the start (its token is in the create response) or open ([`SeatState`]).
 
+mod claims;
+mod listing;
 mod resume;
 
 use std::collections::HashMap;
+use std::net::IpAddr;
 use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 use std::time::Instant;
 
@@ -29,16 +35,22 @@ use crate::config::{Retention, ServerConfig};
 use crate::demo::DemoDeck;
 use crate::game_id::GameId;
 use crate::handle::{GameHandle, GameStatus};
-use crate::recipe::{Catalog, DeckRef, GameRecipe, RecipeError};
+use crate::join_code::JoinCode;
+use crate::recipe::{Catalog, DeckRef, FormatKind, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
-use crate::records::{Binding, GameRecords, NewSeat, RecordError, UserGame};
+use crate::records::{
+    Binding, GameRecords, NewGame, NewSeat, RecordError, SeatState, UserGame, Visibility,
+};
 use crate::secret::{RandomError, SeatToken, TokenDigest, looks_like_token, random_seed};
 use crate::store::MemoryStore;
+use crate::throttle::{Blocked, Throttle};
 use crate::user_id::UserId;
 
 /// Most games `Registry::games_of` returns: the newest ones.
 pub const MAX_LISTED_GAMES: usize = 100;
 
+pub use claims::{ClaimError, Entrance, HOST, SeatClaim, Seated, TableError};
+pub use listing::{ListedGame, MAX_LISTED_LOBBIES};
 pub use resume::ResumeReport;
 
 /// Why a game could not be created.
@@ -73,13 +85,29 @@ pub struct SeatRequest {
     pub deck: &'static DemoDeck,
 }
 
-/// A new game and the secret credential of each seat.
+/// What a new game is made with besides its seats.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub struct GameOptions {
+    /// Who may find and join the game; invite-only unless said otherwise.
+    pub visibility: Visibility,
+    /// How many seats, counted from seat 0, are held from the start: each gets its token in the
+    /// create response and the names of the request. The rest are open for a join to claim, their
+    /// requested names are ignored, and the decks are the ones requested. `None` holds them all,
+    /// as [`Registry::create`] does. The creator plays seat 0, so at least that one is held.
+    pub held: Option<usize>,
+}
+
+/// A new game and the secret credential of each seat that is held.
 #[derive(Debug)]
 pub struct Created {
     /// The game.
     pub id: GameId,
-    /// Every seat with its token, in seat order. This is the only time the tokens exist in clear.
+    /// Every held seat with its token, in seat order; open seats have none. This is the only time
+    /// the tokens exist in clear.
     pub seats: Vec<(PlayerId, SeatToken)>,
+    /// The code that lets anybody who has it into the game's open seats. Like the tokens, it
+    /// exists in clear only here.
+    pub code: JoinCode,
 }
 
 /// A seat as everybody may see it.
@@ -87,13 +115,17 @@ pub struct Created {
 pub struct SeatSummary {
     /// The seat.
     pub seat: PlayerId,
-    /// Its display name.
+    /// Its display name; empty while the seat is open.
     pub name: String,
+    /// How the seat is held: its token was made with the game, a join claimed it, or a join may.
+    pub state: SeatState,
 }
 
 /// What anybody may learn about a game: no tokens, no cards, no seed.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PublicGame {
+    /// Who may find and join the game.
+    pub visibility: Visibility,
     /// Whether every seat is ready and the game began.
     pub started: bool,
     /// The seats and their names.
@@ -119,12 +151,92 @@ pub struct SeatAccess {
     pub removed: watch::Receiver<()>,
 }
 
+/// What the registry knows about one seat.
+#[derive(Debug, Clone)]
+struct SeatSlot {
+    state: SeatState,
+    /// What the lobby calls the seat; empty while it is open.
+    name: String,
+    /// The token's digest; none while the seat is open.
+    digest: Option<TokenDigest>,
+    /// The account the seat is bound to; guests' seats have none.
+    user: Option<UserId>,
+}
+
+impl SeatSlot {
+    /// A seat whose token was made with the game.
+    fn issued(name: String, digest: TokenDigest, user: Option<UserId>) -> SeatSlot {
+        SeatSlot {
+            state: SeatState::Issued,
+            name,
+            digest: Some(digest),
+            user,
+        }
+    }
+
+    /// A seat nobody holds.
+    fn open() -> SeatSlot {
+        SeatSlot {
+            state: SeatState::Open,
+            name: String::new(),
+            digest: None,
+            user: None,
+        }
+    }
+}
+
+/// The slots of a new game with `seats` seats: a seat with a token is issued under its name (a
+/// missing or blank name becomes "Seat N", since an empty name marks an open seat) and `host`
+/// owns seat 0; the others are open.
+fn seat_slots(
+    mut names: Vec<String>,
+    tokens: &[SeatToken],
+    seats: usize,
+    host: Option<UserId>,
+) -> Vec<SeatSlot> {
+    names.truncate(seats);
+    while names.len() < seats {
+        names.push(format!("Seat {}", names.len() + 1));
+    }
+    names
+        .into_iter()
+        .enumerate()
+        .map(|(seat, name)| match tokens.get(seat) {
+            Some(token) => {
+                let name = if name.trim().is_empty() {
+                    format!("Seat {}", seat + 1)
+                } else {
+                    name
+                };
+                SeatSlot::issued(name, token.digest(), host.filter(|_| seat == 0))
+            }
+            None => SeatSlot::open(),
+        })
+        .collect()
+}
+
+/// What an entry starts from.
+struct Parts {
+    visibility: Visibility,
+    format: FormatKind,
+    code: Option<TokenDigest>,
+    /// Whether the game is in the database, so changes to its seats are written there too.
+    recorded: bool,
+    seats: Vec<SeatSlot>,
+}
+
 struct Entry {
     handle: GameHandle,
-    names: Vec<String>,
-    digests: Vec<TokenDigest>,
-    /// The account each seat is bound to, in seat order; guests' seats have none.
-    users: Vec<Option<UserId>>,
+    visibility: Visibility,
+    format: FormatKind,
+    /// The digest of the join code; none for a game stored before codes existed.
+    code: Option<TokenDigest>,
+    recorded: bool,
+    /// Every seat in seat order.
+    seats: Vec<SeatSlot>,
+    /// Held while the seats of the game change hands, which spans the database and the actor, so
+    /// two changes to one table never interleave.
+    turn: Arc<tokio::sync::Mutex<()>>,
     created: Instant,
     /// When a sweep first saw the game finished.
     finished: Option<Instant>,
@@ -136,19 +248,16 @@ struct Entry {
 
 impl Entry {
     /// An entry for a game created at `created` that nobody has connected to yet.
-    fn new(
-        handle: GameHandle,
-        names: Vec<String>,
-        digests: Vec<TokenDigest>,
-        users: Vec<Option<UserId>>,
-        created: Instant,
-    ) -> Entry {
+    fn new(handle: GameHandle, parts: Parts, created: Instant) -> Entry {
         let (alive, _) = watch::channel(());
         Entry {
             handle,
-            names,
-            digests,
-            users,
+            visibility: parts.visibility,
+            format: parts.format,
+            code: parts.code,
+            recorded: parts.recorded,
+            seats: parts.seats,
+            turn: Arc::new(tokio::sync::Mutex::new(())),
             created,
             finished: None,
             last_connected: Instant::now(),
@@ -185,6 +294,8 @@ struct Shared {
     records: Option<GameRecords>,
     /// Where the cards of a deck of oracle ids come from; present with a database.
     cards: Option<CardSource>,
+    /// Join code lookups that missed, per client address.
+    throttle: Throttle,
 }
 
 /// The games of one server, by id. Cheap to clone.
@@ -228,6 +339,7 @@ impl Registry {
                 retention: config.retention,
                 records,
                 cards,
+                throttle: Throttle::new(config.auth.limits),
             }),
         }
     }
@@ -265,6 +377,16 @@ impl Registry {
         seats: &[SeatRequest],
         host: Option<UserId>,
     ) -> Result<Created, CreateError> {
+        self.create_with(seats, GameOptions::default(), host).await
+    }
+
+    /// Like [`Registry::create_for`] with the game's visibility and open seats from `options`.
+    pub async fn create_with(
+        &self,
+        seats: &[SeatRequest],
+        options: GameOptions,
+        host: Option<UserId>,
+    ) -> Result<Created, CreateError> {
         let seed = match self.shared.fixed_seed {
             Some(seed) => seed,
             None => random_seed()?,
@@ -276,7 +398,7 @@ impl Registry {
         let recipe = GameRecipe::normal(seed, decks).with_fingerprints()?;
         let setup = recipe.build()?;
         let names = seats.iter().map(|s| s.name.clone()).collect();
-        self.admit(setup, names, Some(recipe), host).await
+        self.admit(setup, names, Some(recipe), host, options).await
     }
 
     /// Creates a game from a recipe the caller made, whose decks may name cards by oracle id: their
@@ -289,13 +411,25 @@ impl Registry {
         names: Vec<String>,
         host: Option<UserId>,
     ) -> Result<Created, CreateError> {
+        self.create_from_recipe_with(recipe, names, host, GameOptions::default())
+            .await
+    }
+
+    /// Like [`Registry::create_from_recipe`] with the game's visibility and open seats from `options`.
+    pub async fn create_from_recipe_with(
+        &self,
+        recipe: GameRecipe,
+        names: Vec<String>,
+        host: Option<UserId>,
+        options: GameOptions,
+    ) -> Result<Created, CreateError> {
         let catalog = match &self.shared.cards {
             Some(cards) => cards.catalog_for(&recipe).await?,
             None => Catalog::default(),
         };
         let recipe = recipe.with_fingerprints_from(&catalog)?;
         let setup = recipe.build_with(&catalog)?;
-        self.admit(setup, names, Some(recipe), host).await
+        self.admit(setup, names, Some(recipe), host, options).await
     }
 
     /// Registers a game built by the caller (a missing name becomes "Seat N"). Needs a tokio runtime.
@@ -307,7 +441,8 @@ impl Registry {
         setup: GameSetup,
         names: Vec<String>,
     ) -> Result<Created, CreateError> {
-        self.admit(setup, names, None, None).await
+        self.admit(setup, names, None, None, GameOptions::default())
+            .await
     }
 
     /// Gives a validated setup its tokens, records it when it has a recipe and starts its actor.
@@ -315,96 +450,167 @@ impl Registry {
     async fn admit(
         &self,
         setup: GameSetup,
-        mut names: Vec<String>,
+        names: Vec<String>,
         recipe: Option<GameRecipe>,
         host: Option<UserId>,
+        options: GameOptions,
     ) -> Result<Created, CreateError> {
         let seats = setup.players.len();
-        names.truncate(seats);
-        while names.len() < seats {
-            names.push(format!("Seat {}", names.len() + 1));
-        }
-        let tokens = (0..seats)
+        let held = options.held.map_or(seats, |held| held.max(1).min(seats));
+        let tokens = (0..held)
             .map(|_| SeatToken::generate())
             .collect::<Result<Vec<_>, _>>()?;
-        let digests: Vec<TokenDigest> = tokens.iter().map(SeatToken::digest).collect();
         // Before anything is written, so a setup the actor would refuse leaves no record.
         setup.validate().map_err(StartError::Setup)?;
 
         let _creating = self.shared.creating.lock().await;
-        let id = {
-            let games = self.games();
-            if games.len() >= self.shared.max_games {
-                return Err(CreateError::Full);
-            }
-            loop {
-                let id = GameId::random();
-                if !games.contains_key(&id) {
-                    break id;
-                }
-            }
-        };
+        let (id, code) = self.unused_id_and_code()?;
         // Bound only where it is recorded: a game without a database has no accounts to bind.
         let persistent = self.shared.records.is_some() && recipe.is_some();
-        let users: Vec<Option<UserId>> = (0..seats)
-            .map(|seat| if seat == 0 && persistent { host } else { None })
-            .collect();
-        let handle = match (&self.shared.records, &recipe) {
-            (Some(records), Some(recipe)) => {
-                let rows: Vec<NewSeat> = names
-                    .iter()
-                    .zip(&digests)
-                    .zip(&users)
-                    .map(|((name, digest), user)| NewSeat {
-                        name: name.clone(),
-                        digest: *digest.as_bytes(),
-                        user: *user,
-                    })
-                    .collect();
-                records.insert(id, recipe, &rows).await?;
-                let recorder = Recorder::new(records.clone(), id, vec![false; seats]);
-                let game = self.shared.game;
-                let spawned = spawn_named(
-                    id,
-                    setup,
-                    records.store(),
-                    game,
-                    Some(recorder),
-                    names.clone(),
-                );
-                match spawned {
-                    Ok(handle) => handle,
-                    Err(error) => {
-                        // Not reachable after `validate`, but a record must not outlive its game.
-                        let _ = records.mark_failed(id, &error.to_string()).await;
-                        return Err(error.into());
-                    }
-                }
-            }
-            _ => spawn_named(
-                id,
-                setup,
-                MemoryStore::new(),
-                self.shared.game,
-                None,
-                names.clone(),
-            )?,
+        let host = host.filter(|_| persistent);
+        let slots = seat_slots(names, &tokens, seats, host);
+        let meta = NewGame {
+            visibility: options.visibility,
+            code_digest: Some(*code.digest().as_bytes()),
         };
-        self.games().insert(
-            id,
-            Entry::new(handle, names, digests, users, Instant::now()),
-        );
+        let handle = self
+            .start(id, setup, recipe.as_ref(), &meta, &slots)
+            .await?;
+        let parts = Parts {
+            visibility: options.visibility,
+            format: recipe.as_ref().map_or(FormatKind::Normal, |r| r.format),
+            code: Some(code.digest()),
+            recorded: persistent,
+            seats: slots,
+        };
+        self.games()
+            .insert(id, Entry::new(handle, parts, Instant::now()));
         let seats = tokens
             .into_iter()
             .enumerate()
             .map(|(seat, token)| (PlayerId::from_index(seat), token))
             .collect();
-        Ok(Created { id, seats })
+        Ok(Created { id, seats, code })
+    }
+
+    /// An id and a join code no live game has, if the cap leaves room for one more game.
+    fn unused_id_and_code(&self) -> Result<(GameId, JoinCode), CreateError> {
+        let games = self.games();
+        if games.len() >= self.shared.max_games {
+            return Err(CreateError::Full);
+        }
+        let id = loop {
+            let id = GameId::random();
+            if !games.contains_key(&id) {
+                break id;
+            }
+        };
+        // No two live games share a code, so a code names one game.
+        let code = loop {
+            let code = JoinCode::generate()?;
+            let digest = code.digest();
+            let taken = games
+                .values()
+                .any(|entry| entry.code.as_ref().is_some_and(|c| c.matches(&digest)));
+            if !taken {
+                break code;
+            }
+        };
+        Ok((id, code))
+    }
+
+    /// Records the game when it has a recipe and a database, and starts its actor.
+    async fn start(
+        &self,
+        id: GameId,
+        setup: GameSetup,
+        recipe: Option<&GameRecipe>,
+        meta: &NewGame,
+        slots: &[SeatSlot],
+    ) -> Result<GameHandle, CreateError> {
+        let names: Vec<String> = slots.iter().map(|slot| slot.name.clone()).collect();
+        let (Some(records), Some(recipe)) = (&self.shared.records, recipe) else {
+            return Ok(spawn_named(
+                id,
+                setup,
+                MemoryStore::new(),
+                self.shared.game,
+                None,
+                names,
+            )?);
+        };
+        let rows: Vec<NewSeat> = slots
+            .iter()
+            .map(|slot| NewSeat {
+                name: slot.name.clone(),
+                digest: slot.digest.as_ref().map(|digest| *digest.as_bytes()),
+                state: slot.state,
+                user: slot.user,
+            })
+            .collect();
+        records.insert(id, recipe, meta, &rows).await?;
+        let recorder = Recorder::new(records.clone(), id, vec![false; slots.len()]);
+        let spawned = spawn_named(
+            id,
+            setup,
+            records.store(),
+            self.shared.game,
+            Some(recorder),
+            names,
+        );
+        match spawned {
+            Ok(handle) => Ok(handle),
+            Err(error) => {
+                // Not reachable after `validate`, but a record must not outlive its game.
+                let _ = records.mark_failed(id, &error.to_string()).await;
+                Err(error.into())
+            }
+        }
+    }
+
+    /// The game whose join code `typed` is, or `None`; a code that finds nothing and a text that
+    /// cannot be a code are the same answer. Misses are counted per client `address` at time `now`
+    /// (`AttemptLimits::code_misses_per_ip` in `code_window`); an address over the limit is turned
+    /// away with [`Blocked`], even for a right code, until the window passes. Games are compared
+    /// by digest without stopping at the first match.
+    pub fn find_by_code(
+        &self,
+        typed: &str,
+        address: IpAddr,
+        now: Instant,
+    ) -> Result<Option<GameId>, Blocked> {
+        let attempt = self.shared.throttle.begin_code(now, address)?;
+        let found = JoinCode::parse(typed).and_then(|code| {
+            let presented = code.digest();
+            let games = self.games();
+            let mut found = None;
+            for (id, entry) in games.iter() {
+                if entry
+                    .code
+                    .as_ref()
+                    .is_some_and(|stored| stored.matches(&presented))
+                {
+                    found = Some(*id);
+                }
+            }
+            found
+        });
+        if found.is_some() {
+            self.shared.throttle.succeeded(attempt);
+        } else if attempt.exhausted() {
+            tracing::warn!("a client has used up its join code misses; more are turned away");
+        }
+        Ok(found)
     }
 
     /// The actor of a game, for tests and admin views.
     pub fn handle(&self, id: GameId) -> Option<GameHandle> {
         self.games().get(&id).map(|entry| entry.handle.clone())
+    }
+
+    /// Who may find and join a live game; `None` if there is no such game.
+    pub fn visibility(&self, id: GameId) -> Option<Visibility> {
+        self.games().get(&id).map(|entry| entry.visibility)
     }
 
     /// Maps a presented token to its seat; `None` for an unknown game and a wrong token alike.
@@ -417,8 +623,12 @@ impl Registry {
         let entry = games.get(&id)?;
         // Check every seat so the time taken does not say which one matched.
         let mut found = None;
-        for (seat, digest) in entry.digests.iter().enumerate() {
-            if digest.matches(&presented) {
+        for (seat, slot) in entry.seats.iter().enumerate() {
+            if slot
+                .digest
+                .as_ref()
+                .is_some_and(|digest| digest.matches(&presented))
+            {
                 found = Some(seat);
             }
         }
@@ -435,7 +645,10 @@ impl Registry {
     pub fn authenticate_user(&self, id: GameId, user: UserId) -> Option<SeatAccess> {
         let games = self.games();
         let entry = games.get(&id)?;
-        let seat = entry.users.iter().position(|bound| *bound == Some(user))?;
+        let seat = entry
+            .seats
+            .iter()
+            .position(|slot| slot.user == Some(user))?;
         Some(SeatAccess {
             game: id,
             handle: entry.handle.clone(),
@@ -456,30 +669,41 @@ impl Registry {
         let Some(records) = &self.shared.records else {
             return Ok(Binding::Missing);
         };
+        let Some(turn) = self.games().get(&game).map(|entry| Arc::clone(&entry.turn)) else {
+            return Ok(Binding::Missing);
+        };
+        // Seats do not change hands while an account is being bound.
+        let _turn = turn.lock().await;
         {
             let games = self.games();
             let Some(entry) = games.get(&game) else {
                 return Ok(Binding::Missing);
             };
-            match entry.users.get(seat.index()) {
+            match entry.seats.get(seat.index()) {
+                // An open seat has no token to bring anybody to it.
                 None => return Ok(Binding::Missing),
-                Some(Some(holder)) => {
+                Some(slot) if slot.state == SeatState::Open => return Ok(Binding::Missing),
+                Some(SeatSlot {
+                    user: Some(holder), ..
+                }) => {
                     return Ok(if *holder == user {
                         Binding::Already
                     } else {
                         Binding::Taken
                     });
                 }
-                Some(None) if entry.users.contains(&Some(user)) => return Ok(Binding::Elsewhere),
-                Some(None) => {}
+                Some(_) if entry.seats.iter().any(|slot| slot.user == Some(user)) => {
+                    return Ok(Binding::Elsewhere);
+                }
+                Some(_) => {}
             }
         }
         let outcome = records.bind_user(game, seat, user).await?;
         if outcome == Binding::Bound
             && let Some(entry) = self.games().get_mut(&game)
-            && let Some(slot) = entry.users.get_mut(seat.index())
+            && let Some(slot) = entry.seats.get_mut(seat.index())
         {
-            *slot = Some(user);
+            slot.user = Some(user);
         }
         Ok(outcome)
     }
@@ -496,22 +720,26 @@ impl Registry {
 
     /// The public facts of a game; `None` if there is no such game or its actor is gone.
     pub async fn describe(&self, id: GameId) -> Option<PublicGame> {
-        let (handle, names) = {
+        let (handle, visibility, seats) = {
             let games = self.games();
             let entry = games.get(&id)?;
-            (entry.handle.clone(), entry.names.clone())
+            let seats: Vec<SeatSummary> = entry
+                .seats
+                .iter()
+                .enumerate()
+                .map(|(seat, slot)| SeatSummary {
+                    seat: PlayerId::from_index(seat),
+                    name: slot.name.clone(),
+                    state: slot.state,
+                })
+                .collect();
+            (entry.handle.clone(), entry.visibility, seats)
         };
         let status = handle.status().await.ok()?;
         Some(PublicGame {
+            visibility,
             started: status.started,
-            seats: names
-                .into_iter()
-                .enumerate()
-                .map(|(seat, name)| SeatSummary {
-                    seat: PlayerId::from_index(seat),
-                    name,
-                })
-                .collect(),
+            seats,
             connected: status.connected,
             ready: status.ready,
             result: status.result,
