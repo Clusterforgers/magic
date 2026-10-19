@@ -40,6 +40,21 @@ describe('loading the decks', () => {
     expect(document.title).toBe('Create a game · Magic')
   })
 
+  it('draws the skeleton of the form only once the wait has lasted 300 ms', async () => {
+    await openPage({ decks: () => new Promise<Response>(() => undefined) })
+    expect(screen.getByRole('status')).toHaveTextContent('Loading the decks')
+    expect(document.querySelector('[data-slot="skeleton"]')).toBeNull()
+    await waitFor(() => expect(document.querySelector('[data-slot="skeleton"]')).not.toBeNull(), {
+      timeout: 1500,
+    })
+    expect(screen.queryByRole('form')).toBeNull()
+  })
+
+  it('draws no skeleton at all when the decks come at once', async () => {
+    await openForm()
+    expect(document.querySelector('[data-slot="skeleton"]')).toBeNull()
+  })
+
   it('asks for the decks once, even when React mounts everything twice', async () => {
     const { server } = await openPage({}, true)
     await screen.findByRole('form', { name: 'Create a game' })
@@ -59,7 +74,7 @@ describe('loading the decks', () => {
     })
     expect(await screen.findByRole('alert')).toHaveTextContent('Cannot load the decks')
     expect(screen.getByRole('alert')).toHaveTextContent(/shutting down or restarting/i)
-    await user.click(button('Try again'))
+    await user.click(button('Retry'))
     expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
     expect(attempts).toBe(2)
   })

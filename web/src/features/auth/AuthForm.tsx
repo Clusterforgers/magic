@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { CircleAlertIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -105,23 +106,24 @@ export function AuthForm({ mode, next }: AuthFormProps) {
       noValidate
       aria-labelledby={`${mode}-title`}
       aria-busy={pending}
-      className="grid gap-5"
+      className="grid gap-6"
       onSubmit={(event) => void submit(event)}
     >
       <div>
         <h1 id={`${mode}-title`} className="text-2xl font-semibold tracking-tight">
           {words.title}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">{words.intro}</p>
+        <p className="mt-1 text-base text-muted-foreground">{words.intro}</p>
       </div>
 
       {problems.form === null ? null : (
         <Alert ref={alertRef} tabIndex={-1} variant="destructive" className="outline-none">
-          <AlertDescription className="text-destructive">{problems.form}</AlertDescription>
+          <CircleAlertIcon aria-hidden="true" />
+          <AlertDescription className="text-foreground">{problems.form}</AlertDescription>
         </Alert>
       )}
 
-      <div className="grid gap-1.5">
+      <div className="grid gap-2">
         <Label htmlFor={usernameId}>Username</Label>
         <Input
           ref={usernameRef}
@@ -144,13 +146,13 @@ export function AuthForm({ mode, next }: AuthFormProps) {
           {USERNAME_RULE}
         </p>
         {problems.username === null ? null : (
-          <p id={`${usernameId}-problem`} className="text-xs text-destructive">
+          <p id={`${usernameId}-problem`} className="text-sm text-destructive">
             {problems.username}
           </p>
         )}
       </div>
 
-      <div className="grid gap-1.5">
+      <div className="grid gap-2">
         <Label htmlFor={passwordId}>Password</Label>
         <Input
           ref={passwordRef}
@@ -171,14 +173,14 @@ export function AuthForm({ mode, next }: AuthFormProps) {
           {PASSWORD_RULE}
         </p>
         {problems.password === null ? null : (
-          <p id={`${passwordId}-problem`} className="text-xs text-destructive">
+          <p id={`${passwordId}-problem`} className="text-sm text-destructive">
             {problems.password}
           </p>
         )}
       </div>
 
       <div>
-        <Button type="submit" size="lg" disabled={pending}>
+        <Button type="submit" size="lg" loading={pending}>
           {pending ? words.pending : words.submit}
         </Button>
       </div>
