@@ -1,9 +1,9 @@
-/** A table of seat 0 facing a combat decision, with an answer spy and readers of what the cards show. */
+/** A table of seat 0 facing a decision (a combat one, or any other), with an answer spy and readers of what the cards show. */
 import { screen } from '@testing-library/react'
 import { vi } from 'vitest'
 import { buildFixture } from '@/features/table/dev/fixture'
 import type { Fixture } from '@/features/table/dev/fixture'
-import type { Answer, AttackOptions, BlockOptions, ObjectId } from '@/protocol/generated'
+import type { Answer, AttackOptions, BlockOptions, DecisionKind, ObjectId } from '@/protocol/generated'
 import { must } from './batches'
 import { renderTable } from './tableHarness'
 
@@ -42,7 +42,18 @@ export function ownOf(fixture: Fixture): ObjectId[] {
 export type CombatOptions = { DeclareAttackers: AttackOptions } | { DeclareBlockers: BlockOptions }
 
 /** Renders the table of `seats` seats facing `kind` as decision `id`; every answer goes to a spy that accepts it. */
-export function renderCombat(kind: CombatOptions, { seats = 2, id = 7 } = {}) {
+export function renderCombat(kind: CombatOptions, setup: DecisionSetup = {}) {
+  return renderDecision(kind, setup)
+}
+
+/** Where a decision is faced: the seats of the table and the decision id. */
+export interface DecisionSetup {
+  seats?: number
+  id?: number
+}
+
+/** Renders the table of `seats` seats facing any decision `kind` as decision `id`; every answer goes to a spy that accepts it. */
+export function renderDecision(kind: DecisionKind, { seats = 2, id = 7 }: DecisionSetup = {}) {
   const fixture = fixtureOf(seats)
   const answer = vi.fn((_answer: Answer) => true)
   const table = renderTable({

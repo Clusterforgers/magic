@@ -1,8 +1,10 @@
 //! Projecting the engine's event log for one viewer without leaking hidden cards.
 
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::abilities::Cause;
 use mtg_engine::apply_event;
 use mtg_engine::events::{Event, ZoneCause};
+use mtg_engine::object::ObjectRef;
 use mtg_engine::state::GameState;
 use mtg_engine::zones::Zone;
 use serde::{Deserialize, Serialize};
@@ -89,6 +91,38 @@ pub enum HiddenEvent {
         /// Where the next step runs.
         position: Vec<usize>,
     },
+    /// A triggered ability triggered on a card the viewer cannot see (a card drawn, say): which ability, never the card.
+    AbilityTriggered {
+        /// The object with the ability, as it was.
+        source: ObjectRef,
+        /// Its index among the rules of the source's card.
+        ability: usize,
+        /// Who controls it.
+        controller: PlayerId,
+    },
+    /// A triggered ability went on the stack for a card the viewer cannot see.
+    AbilityPutOnStack {
+        /// The ability's new object.
+        object: ObjectId,
+        /// The object it comes from, as it was.
+        source: ObjectRef,
+        /// Who controls it.
+        controller: PlayerId,
+    },
+    /// A waiting triggered ability was removed; what it triggered on is a card the viewer cannot see.
+    TriggerRemoved {
+        /// The object with the ability, as it was.
+        source: ObjectRef,
+        /// Its index among the rules of the source's card.
+        ability: usize,
+    },
+    /// A delayed triggered ability was set up with a card the viewer cannot see among the names it took.
+    DelayedTriggerCreated {
+        /// The object whose spell or ability set it up.
+        source: ObjectRef,
+        /// Who controls it.
+        controller: PlayerId,
+    },
 }
 
 /// One log event as a viewer sees it; the list stays aligned one-to-one with the log.
@@ -157,6 +191,11 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ZoneChanged { .. }
         | Event::ChoiceMade { .. }
         | Event::StepDone { .. } => redact_effects(before, event, viewer),
+        // A triggered ability can be about a card that only some seats can see.
+        Event::AbilityTriggered(_)
+        | Event::AbilityPutOnStack(_)
+        | Event::TriggerRemoved { .. }
+        | Event::DelayedTriggerCreated(_) => redact_triggers(before, event, viewer),
         Event::HandDealt { .. }
         | Event::CardsBottomed { .. }
         | Event::CardDrawn { .. }
@@ -193,9 +232,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::PlayerLost { .. }
         | Event::GameEnded { .. }
         // The ability on the stack is public, and so is what was announced for it.
-        | Event::AbilityPutOnStack(_)
         | Event::AbilityActivated { .. }
-        | Event::AbilityTriggered(_)
+        | Event::TriggersOrdered { .. }
+        | Event::DelayedTriggerExpired { .. }
         | Event::ResolutionBegan { .. }
         | Event::ResolutionEnded { .. }
         | Event::LifeGained { .. }
@@ -264,6 +303,70 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
     }
 }
 
+/// The hidden form of an event about a triggered ability, when what it triggered on is a card the viewer cannot see.
+///
+/// A card is judged by the zone it is in as the event happens and by the zone it was in when it was photographed for
+/// the ability, so a card drawn is hidden from the other seats whether or not it has been played since.
+fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenEvent> {
+    let unseen_cause = |cause: &Cause| {
+        cause
+            .snapshots
+            .iter()
+            .any(|shot| !zone_is_visible(shot.zone, viewer))
+            || cause
+                .subjects
+                .iter()
+                .filter_map(|subject| subject.object())
+                .any(|object| !knows(before, object.id, viewer))
+    };
+    match event {
+        Event::AbilityTriggered(t)
+            if !zone_is_visible(t.snapshot.zone, viewer) || unseen_cause(&t.cause) =>
+        {
+            Some(HiddenEvent::AbilityTriggered {
+                source: t.source,
+                ability: t.ability,
+                controller: t.controller,
+            })
+        }
+        Event::AbilityPutOnStack(put)
+            if put.cause.as_ref().is_some_and(|cause| {
+                !zone_is_visible(put.snapshot.zone, viewer) || unseen_cause(cause)
+            }) =>
+        {
+            Some(HiddenEvent::AbilityPutOnStack {
+                object: put.object,
+                source: put.source,
+                controller: put.controller,
+            })
+        }
+        Event::TriggerRemoved {
+            source,
+            ability,
+            cause,
+            ..
+        } if unseen_cause(cause) => Some(HiddenEvent::TriggerRemoved {
+            source: *source,
+            ability: *ability,
+        }),
+        Event::DelayedTriggerCreated(created)
+            if !zone_is_visible(created.snapshot.zone, viewer)
+                || created
+                    .bindings
+                    .iter()
+                    .flat_map(|(_, targets)| targets)
+                    .filter_map(|target| target.object())
+                    .any(|object| !knows(before, object.id, viewer)) =>
+        {
+            Some(HiddenEvent::DelayedTriggerCreated {
+                source: created.source,
+                controller: created.controller,
+            })
+        }
+        _ => None,
+    }
+}
+
 /// Whether `viewer` may identify the object in the state it is in before the event; an object that is not
 /// there is not known.
 fn knows(before: &GameState, object: ObjectId, viewer: PlayerId) -> bool {
@@ -319,6 +422,7 @@ mod tests {
     //! Goal: every event of the effect pipeline has its visibility decided: what a player learns by looking or by choosing among cards the others cannot see is shown to that player only (the others get counts or the position), a card moving between places nobody can see into is not named, and everything else is public.
     #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+    use mtg_cards::trigger::TriggerPattern;
     use mtg_cards::value::CounterKind;
     use mtg_core::ids::ObjectId;
     use mtg_engine::abilities::{Cause, PutOnStack};
@@ -328,7 +432,7 @@ mod tests {
     use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried};
     use mtg_engine::snapshot::snapshot;
     use mtg_engine::tokens::TokenCreated;
-    use mtg_engine::triggers::Triggered;
+    use mtg_engine::triggers::{DelayedCreated, DelayedId, Triggered};
     use mtg_testkit::cards::{bear, forest, free_creature, giant};
     use mtg_testkit::{Scenario, ready};
 
@@ -536,17 +640,26 @@ mod tests {
                 controller: OWNER,
                 choices: Choices::default(),
                 cause: None,
+                delayed: None,
             })),
             Event::AbilityActivated {
                 player: OWNER,
                 source,
                 ability: 0,
             },
-            Event::AbilityTriggered(Triggered {
+            Event::AbilityTriggered(Box::new(Triggered {
                 source,
                 ability: 0,
+                controller: OWNER,
                 cause: Cause::default(),
-            }),
+                snapshot: snapshot(&t.state, t.creature).unwrap(),
+                delayed: None,
+            })),
+            Event::TriggersOrdered {
+                player: OWNER,
+                order: vec![1, 0],
+            },
+            Event::DelayedTriggerExpired { id: DelayedId(0) },
             Event::ResolutionBegan {
                 object: ObjectId(900),
             },
@@ -587,5 +700,124 @@ mod tests {
                 assert_eq!(told(&t.state, event, viewer), Ok(()), "{event:?}");
             }
         }
+    }
+
+    /// A trigger of the creature in play, about `subject`.
+    fn triggered_on(t: &Table, subject: ObjectId) -> Triggered {
+        let source = t.state.object(t.creature).unwrap().reference();
+        let reference = t.state.object(subject).unwrap().reference();
+        Triggered {
+            source,
+            ability: 1,
+            controller: OWNER,
+            cause: Cause {
+                subjects: vec![Target::Object(reference)],
+                snapshots: vec![snapshot(&t.state, subject).unwrap()],
+            },
+            snapshot: snapshot(&t.state, t.creature).unwrap(),
+            delayed: None,
+        }
+    }
+
+    #[test]
+    fn a_trigger_about_a_card_only_its_owner_can_see_is_shown_to_the_others_without_the_card() {
+        let t = table();
+        let source = t.state.object(t.creature).unwrap().reference();
+        let in_hand = triggered_on(&t, t.hand);
+        let on_the_table = triggered_on(&t, t.creature);
+
+        let event = Event::AbilityTriggered(Box::new(in_hand.clone()));
+        assert_eq!(told(&t.state, &event, OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &event, OTHER),
+            Err(HiddenEvent::AbilityTriggered {
+                source,
+                ability: 1,
+                controller: OWNER
+            })
+        );
+        let event = Event::AbilityTriggered(Box::new(on_the_table.clone()));
+        for viewer in [OWNER, OTHER] {
+            assert_eq!(told(&t.state, &event, viewer), Ok(()));
+        }
+
+        let put = |trigger: &Triggered| {
+            Event::AbilityPutOnStack(Box::new(PutOnStack {
+                object: ObjectId(900),
+                source,
+                snapshot: trigger.snapshot.clone(),
+                ability: 1,
+                controller: OWNER,
+                choices: Choices::default(),
+                cause: Some(trigger.cause.clone()),
+                delayed: None,
+            }))
+        };
+        assert_eq!(told(&t.state, &put(&in_hand), OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &put(&in_hand), OTHER),
+            Err(HiddenEvent::AbilityPutOnStack {
+                object: ObjectId(900),
+                source,
+                controller: OWNER
+            })
+        );
+        assert_eq!(told(&t.state, &put(&on_the_table), OTHER), Ok(()));
+
+        let removed = |trigger: &Triggered| Event::TriggerRemoved {
+            source,
+            ability: 1,
+            delayed: None,
+            cause: trigger.cause.clone(),
+        };
+        assert_eq!(told(&t.state, &removed(&in_hand), OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &removed(&in_hand), OTHER),
+            Err(HiddenEvent::TriggerRemoved { source, ability: 1 })
+        );
+        assert_eq!(told(&t.state, &removed(&on_the_table), OTHER), Ok(()));
+    }
+
+    #[test]
+    fn a_trigger_keeps_hiding_the_card_it_photographed_in_a_hand_once_it_is_on_the_table() {
+        let mut t = table();
+        let in_hand = triggered_on(&t, t.hand);
+        let played = Event::LandPlayed {
+            player: OWNER,
+            object: t.hand,
+        };
+        apply_event(&mut t.state, &played).unwrap();
+        let event = Event::AbilityTriggered(Box::new(in_hand));
+        assert!(told(&t.state, &event, OTHER).is_err());
+        assert_eq!(told(&t.state, &event, OWNER), Ok(()));
+    }
+
+    #[test]
+    fn a_delayed_trigger_that_took_a_hidden_card_is_shown_without_it() {
+        let t = table();
+        let source = t.state.object(t.creature).unwrap().reference();
+        let created = |bound: ObjectId| {
+            let reference = t.state.object(bound).unwrap().reference();
+            Event::DelayedTriggerCreated(Box::new(DelayedCreated {
+                id: DelayedId(0),
+                source,
+                snapshot: snapshot(&t.state, t.creature).unwrap(),
+                controller: OWNER,
+                ability: 0,
+                when: TriggerPattern::AnyOf(Vec::new()),
+                once: true,
+                effects: Vec::new(),
+                bindings: vec![("card".to_owned(), vec![Target::Object(reference)])],
+            }))
+        };
+        assert_eq!(told(&t.state, &created(t.hand), OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &created(t.hand), OTHER),
+            Err(HiddenEvent::DelayedTriggerCreated {
+                source,
+                controller: OWNER
+            })
+        );
+        assert_eq!(told(&t.state, &created(t.creature), OTHER), Ok(()));
     }
 }

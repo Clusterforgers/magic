@@ -3,4 +3,4 @@
 /**
  * How the resolution of a spell or ability ended.
  */
-export type ResolutionOutcome = "Resolved" | "Fizzled" | "Countered";
+export type ResolutionOutcome = "Resolved" | "Fizzled" | "Countered" | "Lapsed";

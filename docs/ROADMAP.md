@@ -49,7 +49,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
   - [x] (d7) Keys like Arena (P7)
   - [x] (d8) Leak test (P8): two seeded games equal but for one hidden card send the other seat the same messages at the same times
   - [ ] (d9) Timer bank (P9): extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
-  - [ ] (d10) The leak test covers a spell and a trigger on the stack as well as combat windows
+  - [x] (d10) The leak test covers a spell and a trigger on the stack as well as combat windows
 
 ## M3 Rules depth
 Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d) to (k) in parallel.
@@ -57,13 +57,14 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
 - [x] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
 - [ ] (d) Decision kinds the effects need, one task each across engine, protocol and a web prompt (the table in `docs/cards-dsl.md`, Decisions the effects need)
-- [ ] Response clocks for the effect decisions of a non-active seat (targets, choices, orders), so one seat cannot hold the table (`docs/server.md`, Response clocks)
+- [ ] Response clocks for the choice decisions of a non-active seat (cards, modes, numbers, options, yes or no), each with a fallback answer, so one seat cannot hold the table; targets and trigger orders have theirs (`docs/server.md`, Response clocks)
 - [x] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets and the views carry keywords, counters and attachments (`docs/web.md`)
 - [ ] (e2) Keywords hexproof and ward, one task each; counters and attachments on the object views; the blockers prompt reads `BlockOptions.min_blockers` so menace is explained before Confirm (`docs/web.md`)
 - [ ] (f) Keyword actions (CR 701), one engine primitive each, with a web prompt where the player chooses (scope in `docs/cards-dsl.md`, Tasks)
 - [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
 - [ ] (h) Keyword abilities beyond combat (CR 702), one task each for the other `Keyword` variants (flash, equip, cycling, kicker, flashback, cascade, storm, ...); cost-based ones follow (g)
-- [ ] (i) Triggered abilities: APNAP ordering, delayed triggers, intervening if, and Arena flow P10: smart stops, per-ability yields, auto-ordered triggers, damage auto-assign (`docs/arena-flow.md`)
+- [x] (i) Triggered abilities: APNAP ordering, delayed triggers, intervening if, and Arena flow P10: smart stops, per-ability yields, auto-ordered triggers, damage auto-assign (`docs/arena-flow.md`)
+- [ ] (i) follow-up, Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
 - [ ] (j) Replacement and prevention effects (CR 614 to 616)
 - [ ] (k) Layers: full CR 613 ordering with dependencies, timestamps, counters, auras, equipment
 

@@ -29,4 +29,13 @@ max: number,
 /**
  * Whether the cast or activation may still be backed out of: nothing is logged until it is paid for.
  */
-can_cancel: boolean, };
+can_cancel: boolean, 
+/**
+ * What the specification asks for in the words of a card: "target creature you control".
+ */
+wording?: string, 
+/**
+ * Whether the targets are for a triggered ability that goes on the stack, which cannot be backed out of: a player
+ * who chooses none removes it (CR 603.3d).
+ */
+triggered?: boolean, };

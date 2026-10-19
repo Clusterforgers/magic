@@ -1,5 +1,6 @@
 //! The engine's control loop as a pure function of state: what happens next?
 
+use crate::cast::Pending;
 use crate::decision::Decision;
 use crate::error::EngineError;
 use crate::events::Event;
@@ -8,6 +9,7 @@ use crate::resolve;
 use crate::sba;
 use crate::state::{GameState, Stage};
 use crate::steps;
+use crate::triggers;
 
 /// What the engine does next.
 #[derive(Debug)]
@@ -16,6 +18,8 @@ pub(crate) enum Progress {
     Events(Vec<Event>),
     /// A player must choose.
     Decide(Decision),
+    /// A triggered ability goes on the stack next: its targets are announced like those of a cast.
+    Put(Pending),
     /// The game is over.
     Done,
     /// The game cannot go on: a spell or ability uses something the engine does not play.
@@ -34,7 +38,8 @@ pub(crate) fn next(state: &GameState) -> Progress {
 }
 
 /// A resolution first (state-based actions wait for it to end, CR 704.3), then state-based actions to a
-/// fixpoint, then the game-end check, then the turn structure.
+/// fixpoint, then the game-end check, then the triggered abilities waiting for the stack (CR 603.3), then the turn
+/// structure.
 fn next_in_turns(state: &GameState) -> Progress {
     if state.resolving().is_some() {
         return resolve::next(state);
@@ -43,7 +48,10 @@ fn next_in_turns(state: &GameState) -> Progress {
     if !actions.is_empty() {
         return Progress::Events(actions);
     }
-    settle(state).unwrap_or_else(|| steps::next(state))
+    if let Some(progress) = settle(state) {
+        return progress;
+    }
+    triggers::sweep(state).unwrap_or_else(|| steps::next(state))
 }
 
 /// The game-end check, then the removal of eliminated players' objects and ended effects.

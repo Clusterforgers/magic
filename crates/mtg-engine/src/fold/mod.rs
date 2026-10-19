@@ -69,7 +69,18 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         | Event::ChoiceMade { .. }
         | Event::StepDone { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
-        Event::AbilityTriggered(triggered) => crate::triggers::fold(state, triggered),
+        Event::AbilityTriggered(triggered) => crate::triggers::fold_triggered(state, triggered),
+        Event::TriggersOrdered { player, order } => {
+            crate::triggers::fold_ordered(state, *player, order)
+        }
+        Event::TriggerRemoved {
+            source,
+            ability,
+            delayed,
+            cause,
+        } => crate::triggers::fold_removed(state, *source, *ability, *delayed, cause),
+        Event::DelayedTriggerCreated(created) => crate::triggers::fold_created(state, created),
+        Event::DelayedTriggerExpired { id } => crate::triggers::fold_expired(state, *id),
         Event::CountersChanged(counters) => crate::counters::fold(state, counters),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
         // What a player learned changes nothing in the game; the protocol decides who may see it.
@@ -87,6 +98,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.turn.active = *active;
             state.turn.step = Step::Untap;
             state.turn.lands_played = 0;
+            state.limits_spent.clear();
             state.priority = None;
             state.combat = crate::combat::CombatState::default();
             for object in state.objects.values_mut() {

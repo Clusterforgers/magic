@@ -14,6 +14,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
+pub(crate) use value::zone_kind;
 pub use value::{Bindings, ResolveError, Scope};
 
 use crate::abilities::AbilityObject;
@@ -236,6 +237,19 @@ fn step_with(
         return Ok(Progress::Done(finish(object)));
     };
     let scope = scope_of(state, object, resolving, rules);
+    // CR 603.4: a triggered ability whose "if" is no longer true as it resolves does nothing.
+    if resolving.position == START
+        && let Ability::Triggered {
+            intervening_if: Some(condition),
+            ..
+        } = rules
+        && !scope.holds(condition)?
+    {
+        return Ok(Progress::Done(vec![Event::ResolutionEnded {
+            object: object.id(),
+            outcome: ResolutionOutcome::Lapsed,
+        }]));
+    }
     // CR 608.2b: a spell or ability whose targets have all become illegal does nothing at all.
     if resolving.position == START && scope.all_targets_illegal() {
         return Ok(Progress::Done(vec![Event::ResolutionEnded {
@@ -344,6 +358,7 @@ mod tests {
                 controller: PlayerId(0),
                 choices: Choices::default(),
                 cause: None,
+                delayed: None,
             })),
             Event::ResolutionBegan { object: ability },
         ]

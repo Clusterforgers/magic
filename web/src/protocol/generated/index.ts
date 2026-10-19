@@ -59,6 +59,8 @@ export type { DeckReport } from "./DeckReport";
 export type { DeckState } from "./DeckState";
 export type { DeckView } from "./DeckView";
 export type { DeckZone } from "./DeckZone";
+export type { DelayedCreated } from "./DelayedCreated";
+export type { DelayedId } from "./DelayedId";
 export type { DiscardOptions } from "./DiscardOptions";
 export type { DivideChoice } from "./DivideChoice";
 export type { DivideOptions } from "./DivideOptions";
