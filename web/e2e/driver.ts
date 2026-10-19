@@ -56,6 +56,10 @@ function look(arg: { me: string; answered: string | null }): Observed | null {
   const root = document.querySelector<HTMLElement>('[data-decision]')
   const id = root?.dataset['decisionId']
   if (root === null || id === undefined || id === arg.answered) return null
+  // The sentence arrives in a deferred render after the prompt's first one, so that a screen reader announces it. A
+  // read before then has nothing to parse ("0 of 2 chosen"), and Discard would pick no cards.
+  const text = root.querySelector('[data-slot="prompt-text"]')?.textContent ?? ''
+  if (text === '') return null
   const legal = (scope: string): Card[] =>
     Array.from(
       document.querySelectorAll<HTMLElement>(`${scope} button[data-object-id][data-highlight="legal"]`),
@@ -68,7 +72,7 @@ function look(arg: { me: string; answered: string | null }): Observed | null {
     kind: root.dataset['decision'] ?? '',
     id,
     banner: document.querySelector('[data-slot="banner"]')?.textContent ?? '',
-    text: root.querySelector('[data-slot="prompt-text"]')?.textContent ?? '',
+    text,
     buttons: Array.from(root.querySelectorAll('button')).map((button) => ({
       label: (button.textContent ?? '').trim(),
       disabled: button.disabled || button.getAttribute('aria-disabled') === 'true',

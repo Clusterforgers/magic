@@ -145,6 +145,7 @@ After a Welcome the lobby or table stays under the reconnect notice. A `notice` 
 - Your turn: while `isYourTurn` (stage Turns, no result) the shared strip and the viewer's pod take the `your-turn-cue` utility (ring and glow) and the badge turns gold. `features/game/useTurnTitle` prefixes the tab title with "Your turn · " and, while the tab is hidden and a decision waits, alternates it with "● Your move" (held on it under reduced motion).
 - Game over: the results list scrolls inside itself past 24 rem or 45 dvh, so the headline and the way to a new game stay in the window.
 - Rendering: a `Card` reads only its own object and combat role and is `memo`; rows read ids through `useShallow(battlefieldRow)`; `selectors.ts` splits the shared battlefield by controller once per view. A batch that taps one permanent redraws that card and no row (`perf.test.tsx`, 12 seats with 40 permanents).
+- Preview: hover and focus show a card large, a click that only looks pins it until Escape or Close, and a click that acts (the prompt marks the card: it plays, taps or is chosen) pins nothing, since a pinned preview covers part of the table and the prompt with it.
 - Cards carry `data-object-id` and pods `data-seat`; regions carry `data-region` (`bar`, `shared`, `hand`, `controls`) and cells `data-area`; the prompt mounts in `[data-slot="decision-line"]`.
 
 ## Fit and grouping
