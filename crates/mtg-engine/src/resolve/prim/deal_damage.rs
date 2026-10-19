@@ -5,13 +5,14 @@ use mtg_cards::effect::Effect;
 use super::wrong_effect;
 use crate::choose::Target;
 use crate::combat::DamageTarget;
-use crate::events::Event;
+use crate::damage;
 use crate::resolve::{Cx, ResolveError, Run};
 
 /// The source deals the amount to each recipient still there to take it; damage of nothing is no event.
 ///
 /// The source is the spell or the ability's source unless the effect names another. Recipients that left the
-/// game, are not on the battlefield any more or cannot be dealt damage are passed over.
+/// game, are not on the battlefield any more or cannot be dealt damage are passed over. A source with
+/// lifelink gains its controller the damage in the same batch (`damage::dealt`).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::DealDamage { source, to, amount } = effect else {
         return Err(wrong_effect("DealDamage"));
@@ -40,11 +41,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 }
                 _ => continue,
             };
-            events.push(Event::DamageDealt {
-                source,
-                target,
-                amount,
-            });
+            events.extend(damage::dealt(cx.state(), source, target, amount));
         }
     }
     Ok(Run::events(events))
