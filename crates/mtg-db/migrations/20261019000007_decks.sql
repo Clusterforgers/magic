@@ -1,6 +1,6 @@
 -- Stored decks: one row per deck and one per line of it. A deck belongs to an account of the
--- server, whose `users` table is the server's own, so `owner` has no foreign key here; the
--- server deletes a user's decks with the account.
+-- server, whose `users` table is the server's own, so `owner` has no foreign key here: deleting
+-- an account has to delete its decks as well.
 CREATE TABLE decks (
     id         uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
     owner      uuid        NOT NULL,
