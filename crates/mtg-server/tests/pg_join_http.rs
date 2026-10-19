@@ -1,4 +1,4 @@
-//! Goal: on Postgres a signed-in visitor joins a public game by its id or any game by its code in one request with no name, the seat is bound to the account and opens through the session alone, a repeat join returns the account's own seat without a token, leaving frees the account to join again, the host acts through the session as well as a token, a stale session is told to sign in again, and a claim or a release the database refuses is a 503 that changes nothing at the table.
+//! Goal: on Postgres a signed-in visitor joins a public game by its id or any game by its code in one request with no name, the answer names the game (a code is the only way to learn the id of an invite game), the seat is bound to the account and opens through the session alone, a repeat join returns the account's own seat without a token, leaving frees the account to join again, the host acts through the session as well as a token, a stale session is told to sign in again, and a claim or a release the database refuses is a 503 that changes nothing at the table.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -75,6 +75,7 @@ async fn a_signed_in_visitor_joins_by_the_id_in_one_request_and_the_seat_is_thei
     .await;
     assert_eq!(reply.status, 200, "{}", reply.text());
     let body = reply.json();
+    assert_eq!(body["game"], game.id);
     assert_eq!(body["seat"], 1);
     assert!(body["token"].is_string());
     // The seat is named after the account and belongs to it.
@@ -110,6 +111,7 @@ async fn a_signed_in_visitor_joins_by_a_code_and_may_choose_the_name(pool: PgPoo
     )
     .await;
     assert_eq!(by_id.status, 404, "an invite game is not reached by its id");
+    assert!(!by_id.text().contains(&game.id), "{}", by_id.text());
     let reply = as_user(
         &server,
         &bo,
@@ -119,6 +121,7 @@ async fn a_signed_in_visitor_joins_by_a_code_and_may_choose_the_name(pool: PgPoo
     )
     .await;
     assert_eq!(reply.status, 200, "{}", reply.text());
+    assert_eq!(reply.json()["game"], game.id, "the code names the game");
     assert_eq!(reply.json()["seat"], 1);
     let reply = as_user(
         &server,
@@ -128,6 +131,7 @@ async fn a_signed_in_visitor_joins_by_a_code_and_may_choose_the_name(pool: PgPoo
         Some(&json!({ "code": game.code.to_lowercase(), "name": "Cyrus" })),
     )
     .await;
+    assert_eq!(reply.json()["game"], game.id);
     assert_eq!(reply.json()["seat"], 2);
     assert_eq!(names(&server, &game.id).await, ["Ann", "Bob", "Cyrus"]);
     assert_eq!(cy.games(server.addr).await[0]["seat"], 2);
@@ -170,7 +174,10 @@ async fn a_repeat_join_returns_the_accounts_own_seat_without_a_token(pool: PgPoo
     for _ in 0..2 {
         let again = as_user(&server, &bo, "POST", &path, Some(&json!({}))).await;
         assert_eq!(again.status, 200, "{}", again.text());
-        assert_eq!(again.json(), json!({ "seat": 1, "token": null }));
+        assert_eq!(
+            again.json(),
+            json!({ "game": game.id, "seat": 1, "token": null })
+        );
     }
     let by_code = as_user(
         &server,
@@ -180,10 +187,16 @@ async fn a_repeat_join_returns_the_accounts_own_seat_without_a_token(pool: PgPoo
         Some(&json!({ "code": game.code })),
     )
     .await;
-    assert_eq!(by_code.json(), json!({ "seat": 1, "token": null }));
+    assert_eq!(
+        by_code.json(),
+        json!({ "game": game.id, "seat": 1, "token": null })
+    );
     // The host, who holds seat 0, is handed that seat back too.
     let host = as_user(&server, &ann, "POST", &path, Some(&json!({}))).await;
-    assert_eq!(host.json(), json!({ "seat": 0, "token": null }));
+    assert_eq!(
+        host.json(),
+        json!({ "game": game.id, "seat": 0, "token": null })
+    );
     // No second seat was taken.
     assert_eq!(names(&server, &game.id).await, ["Ann", "Bob", ""]);
 }
@@ -213,7 +226,54 @@ async fn a_guest_and_accounts_share_a_table_until_it_is_full(pool: PgPool) {
     assert_eq!((full.status, full.error_code().as_str()), (409, "full"));
     // An account that is already seated is not told the game is full.
     let again = as_user(&server, &bo, "POST", &path, Some(&json!({}))).await;
-    assert_eq!(again.json(), json!({ "seat": 2, "token": null }));
+    assert_eq!(
+        again.json(),
+        json!({ "game": game.id, "seat": 2, "token": null })
+    );
+}
+
+/// An account that sits in an invite game is taken back to it by the code and learns nothing from
+/// the id: the id route is the same 404 for it as for a stranger.
+#[sqlx::test(migrations = false)]
+async fn an_account_in_an_invite_game_finds_it_by_the_code_and_not_by_the_id(pool: PgPool) {
+    let server = start(&pool).await;
+    let ann = register(server.addr, "Ann", PASSWORD).await;
+    let bo = register(server.addr, "Bob", PASSWORD).await;
+    let game = make_as(&server, &ann, 3, "invite").await;
+    let by_code = json!({ "code": game.code });
+
+    let first = as_user(&server, &bo, "POST", "/api/join", Some(&by_code)).await;
+    assert_eq!(first.json()["game"], game.id);
+    assert!(first.json()["token"].is_string());
+    let again = as_user(&server, &bo, "POST", "/api/join", Some(&by_code)).await;
+    assert_eq!(
+        again.json(),
+        json!({ "game": game.id, "seat": 1, "token": null })
+    );
+
+    let by_id = as_user(
+        &server,
+        &bo,
+        "POST",
+        &format!("/api/games/{}/join", game.id),
+        Some(&json!({})),
+    )
+    .await;
+    assert_eq!(
+        (by_id.status, by_id.error_code().as_str()),
+        (404, "not_found")
+    );
+    assert!(!by_id.text().contains(&game.id), "{}", by_id.text());
+    // A code that is not the game's is the same 404 for an account, and names nothing.
+    let wrong = as_user(
+        &server,
+        &bo,
+        "POST",
+        "/api/join",
+        Some(&json!({ "code": "ABCD2345" })),
+    )
+    .await;
+    assert_eq!(wrong.body, by_id.body);
 }
 
 #[sqlx::test(migrations = false)]

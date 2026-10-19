@@ -14,6 +14,12 @@ export interface JoinFailure {
  */
 export const NOT_OPEN = 'That game is not open any more. The list shows the games that are.'
 
+/**
+ * The one sentence for a join with a code that found no game. A wrong code, a malformed one and a game that is gone
+ * share a 404 on the server, so it says no more than that nothing is open under the code.
+ */
+export const NO_GAME_WITH_CODE = 'No open game with that code.'
+
 /** The words for a failed `joinGame`; every other code keeps its sentence from `describeLobbyError`. */
 export function joinFailure(error: unknown): JoinFailure {
   if (error instanceof LobbyError) {
@@ -23,4 +29,12 @@ export function joinFailure(error: unknown): JoinFailure {
     }
   }
   return { text: describeLobbyError(error), final: false }
+}
+
+/** The words for a failed `joinByCode`: as for a row, but a 404 says that no open game has the code. */
+export function codeFailure(error: unknown): JoinFailure {
+  if (error instanceof LobbyError && error.code === 'not_found') {
+    return { text: NO_GAME_WITH_CODE, final: true }
+  }
+  return joinFailure(error)
 }

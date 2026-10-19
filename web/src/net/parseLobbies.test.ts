@@ -96,28 +96,38 @@ describe('readLobbyList', () => {
 })
 
 describe('readJoined', () => {
-  it('reads the seat and its token', () => {
-    expect(readJoined({ seat: 2, token: 'abc' })).toEqual({ seat: 2, token: 'abc' })
+  const game = '6f1e0c1a-3b1f-4d9e-8a3e-0d3c2d1b7a55'
+
+  it('reads the game, the seat and its token', () => {
+    expect(readJoined({ game, seat: 2, token: 'abc' })).toEqual({ game, seat: 2, token: 'abc' })
   })
 
   it('reads a null token, which is how an account that already held a seat is told', () => {
-    expect(readJoined({ seat: 0, token: null })).toEqual({ seat: 0, token: null })
+    expect(readJoined({ game, seat: 0, token: null })).toEqual({ game, seat: 0, token: null })
   })
 
   it('drops fields it does not know', () => {
-    expect(readJoined({ seat: 1, token: 't', code: 'ABCD2345' })).toEqual({ seat: 1, token: 't' })
+    expect(readJoined({ game, seat: 1, token: 't', code: 'ABCD2345' })).toEqual({
+      game,
+      seat: 1,
+      token: 't',
+    })
   })
 
   it.each<[string, unknown]>([
-    ['no token key at all', { seat: 1 }],
-    ['a numeric token', { seat: 1, token: 5 }],
-    ['a list as the token', { seat: 1, token: ['t'] }],
-    ['no seat', { token: 't' }],
-    ['a negative seat', { seat: -1, token: 't' }],
-    ['a fractional seat', { seat: 0.5, token: 't' }],
-    ['a text seat', { seat: '1', token: 't' }],
+    ['no game', { seat: 1, token: 't' }],
+    ['an empty game', { game: '', seat: 1, token: 't' }],
+    ['a numeric game', { game: 7, seat: 1, token: 't' }],
+    ['a null game', { game: null, seat: 1, token: 't' }],
+    ['no token key at all', { game, seat: 1 }],
+    ['a numeric token', { game, seat: 1, token: 5 }],
+    ['a list as the token', { game, seat: 1, token: ['t'] }],
+    ['no seat', { game, token: 't' }],
+    ['a negative seat', { game, seat: -1, token: 't' }],
+    ['a fractional seat', { game, seat: 0.5, token: 't' }],
+    ['a text seat', { game, seat: '1', token: 't' }],
     ['null', null],
-    ['a list', [1, 't']],
+    ['a list', [game, 1, 't']],
   ])('is null for %s', (_what, body) => {
     expect(readJoined(body)).toBeNull()
   })

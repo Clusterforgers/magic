@@ -36,12 +36,15 @@ export function readLobbyList(body: unknown): LobbyGame[] | null {
   return games
 }
 
-/** The seat a join gave: `token` is `null` when the account already held the seat, and must be there either way. */
+/**
+ * The seat a join gave and the game it is in (the only place a join by code learns the id). `token` is `null` when the
+ * account already held the seat, and must be there either way.
+ */
 export function readJoined(body: unknown): Joined | null {
-  if (!isRecord(body) || !isCount(body.seat)) return null
+  if (!isRecord(body) || !isText(body.game) || body.game === '' || !isCount(body.seat)) return null
   const { token } = body
   if (token !== null && !isText(token)) return null
-  return { seat: body.seat, token }
+  return { game: body.game, seat: body.seat, token }
 }
 
 /** The visibility `PATCH /api/games/{id}` answers with. */

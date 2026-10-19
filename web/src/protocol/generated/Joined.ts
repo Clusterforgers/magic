@@ -2,11 +2,16 @@
 import type { PlayerId } from "./PlayerId";
 
 /**
- * The seat a join gives the visitor.
+ * The seat a join gives the visitor, and the game it is in.
  *
  * `Debug` never prints the token.
  */
 export type Joined = { 
+/**
+ * The id of the game the seat is in. A join by code is the one way to learn it from the code,
+ * and only a right code answers it.
+ */
+game: string, 
 /**
  * The seat.
  */

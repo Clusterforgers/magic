@@ -7,14 +7,14 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { nameProblem } from '@/features/create/form'
-import type { LobbyGame } from '@/protocol/generated'
 import { loadGuestName, saveGuestName } from './guestName'
 
 const NAME_ID = 'join-name'
 const PROBLEM_ID = 'join-name-problem'
 
 interface Props {
-  game: LobbyGame
+  /** What the guest is joining: "Join Bo's game", or "Join with a code". */
+  title: string
   /** False while the dialog closes; it stays mounted until `onClosed`. */
   open: boolean
   /** The request is on its way: the name cannot change and the button spins. */
@@ -33,7 +33,7 @@ interface Props {
 
 /** "Join Bo's game": what a guest is called at the table. The name is remembered for the next join. */
 export function GuestJoinDialog({
-  game,
+  title,
   open,
   pending,
   failure,
@@ -73,7 +73,7 @@ export function GuestJoinDialog({
       <DialogContent className="max-w-md" initialFocus={nameField} finalFocus={() => returnFocus() ?? true}>
         <form noValidate aria-busy={pending} className="grid gap-4" onSubmit={submit}>
           <div className="grid gap-1">
-            <DialogTitle>{`Join ${game.host}'s game`}</DialogTitle>
+            <DialogTitle>{title}</DialogTitle>
             <DialogDescription>Choose the name the other players see at the table.</DialogDescription>
           </div>
           {failure === null ? null : (

@@ -40,11 +40,15 @@ async function failureOf(promise: Promise<unknown>): Promise<LobbyError> {
 /** Every call of the game browser, with a way to make it and an answer the server gives it on success. */
 const calls: [string, (api: Api) => Promise<unknown>, () => Response][] = [
   ['listLobbies', (api) => api.listLobbies(), () => jsonResponse(200, { games: [row] })],
-  ['joinGame', (api) => api.joinGame(GAME, { name: 'Bo' }), () => jsonResponse(200, { seat: 1, token: 't' })],
+  [
+    'joinGame',
+    (api) => api.joinGame(GAME, { name: 'Bo' }),
+    () => jsonResponse(200, { game: GAME, seat: 1, token: 't' }),
+  ],
   [
     'joinByCode',
     (api) => api.joinByCode('ABCD2345', { name: 'Bo' }),
-    () => jsonResponse(200, { seat: 1, token: 't' }),
+    () => jsonResponse(200, { game: GAME, seat: 1, token: 't' }),
   ],
   ['leaveGame', (api) => api.leaveGame(GAME, { token: TOKEN }), () => empty(204)],
   ['releaseSeat', (api) => api.releaseSeat(GAME, 1, { token: TOKEN }), () => empty(204)],
@@ -157,9 +161,9 @@ describe('listLobbies', () => {
 
 describe('joinGame and joinByCode', () => {
   it('post the name as JSON with the session cookie and read the seat and its token', async () => {
-    const fake = fakeFetch(() => jsonResponse(200, { seat: 2, token: 'secret' }))
+    const fake = fakeFetch(() => jsonResponse(200, { game: GAME, seat: 2, token: 'secret' }))
     const joined = await createApi({ fetch: fake.fetch }).joinGame(GAME, { name: 'Bo' })
-    expect(joined).toEqual({ seat: 2, token: 'secret' })
+    expect(joined).toEqual({ game: GAME, seat: 2, token: 'secret' })
     const [call] = fake.calls
     expect(call?.url).toBe(`/api/games/${GAME}/join`)
     expect(call?.init).toEqual({
@@ -171,32 +175,41 @@ describe('joinGame and joinByCode', () => {
   })
 
   it('send an empty object for a signed-in visitor who gives no name', async () => {
-    const fake = fakeFetch(() => jsonResponse(200, { seat: 1, token: null }))
+    const fake = fakeFetch(() => jsonResponse(200, { game: GAME, seat: 1, token: null }))
     const api = createApi({ fetch: fake.fetch })
-    expect(await api.joinGame(GAME)).toEqual({ seat: 1, token: null })
-    expect(await api.joinByCode('ABCD2345')).toEqual({ seat: 1, token: null })
+    expect(await api.joinGame(GAME)).toEqual({ game: GAME, seat: 1, token: null })
+    expect(await api.joinByCode('ABCD2345')).toEqual({ game: GAME, seat: 1, token: null })
     expect(fake.calls.map((call) => call.init?.body)).toEqual(['{}', '{"code":"ABCD2345"}'])
   })
 
   it('sends the code as it was typed and leaves the judging to the server', async () => {
-    const fake = fakeFetch(() => jsonResponse(200, { seat: 1, token: 't' }))
+    const fake = fakeFetch(() => jsonResponse(200, { game: GAME, seat: 1, token: 't' }))
     await createApi({ fetch: fake.fetch }).joinByCode(' abcd-2345 ', { name: 'Bo' })
     expect(fake.calls[0]?.url).toBe('/api/join')
     expect(JSON.parse(String(fake.calls[0]?.init?.body))).toEqual({ code: ' abcd-2345 ', name: 'Bo' })
   })
 
   it('escapes the game id in the path', async () => {
-    const fake = fakeFetch(() => jsonResponse(200, { seat: 1, token: 't' }))
+    const fake = fakeFetch(() => jsonResponse(200, { game: GAME, seat: 1, token: 't' }))
     await createApi({ fetch: fake.fetch }).joinGame('a/b?c')
     expect(fake.calls[0]?.url).toBe('/api/games/a%2Fb%3Fc/join')
   })
 
+  it('read the game the answer names, which a join by code could not have known', async () => {
+    const fake = fakeFetch(() => jsonResponse(200, { game: 'invite-only', seat: 3, token: 't' }))
+    const joined = await createApi({ fetch: fake.fetch }).joinByCode('ABCD2345', { name: 'Bo' })
+    expect(joined).toEqual({ game: 'invite-only', seat: 3, token: 't' })
+  })
+
   it.each<[string, unknown]>([
-    ['no token key', { seat: 1 }],
-    ['a numeric token', { seat: 1, token: 7 }],
-    ['a negative seat', { seat: -1, token: 't' }],
-    ['a fractional seat', { seat: 1.5, token: 't' }],
-    ['a list', [1, 't']],
+    ['no game', { seat: 1, token: 't' }],
+    ['an empty game', { game: '', seat: 1, token: 't' }],
+    ['a numeric game', { game: 7, seat: 1, token: 't' }],
+    ['no token key', { game: GAME, seat: 1 }],
+    ['a numeric token', { game: GAME, seat: 1, token: 7 }],
+    ['a negative seat', { game: GAME, seat: -1, token: 't' }],
+    ['a fractional seat', { game: GAME, seat: 1.5, token: 't' }],
+    ['a list', [GAME, 1, 't']],
   ])('refuse an answer with %s as a bad_response', async (_what, body) => {
     const fake = fakeFetch(() => jsonResponse(200, body))
     const api = createApi({ fetch: fake.fetch })

@@ -314,6 +314,7 @@ fn checked_name(name: &str) -> Result<String, ApiError> {
 
 fn joined(seated: Seated) -> Json<Joined> {
     Json(Joined {
+        game: seated.game.to_string(),
         seat: seated.seat,
         token: seated.token.map(|token| token.expose().to_owned()),
     })
