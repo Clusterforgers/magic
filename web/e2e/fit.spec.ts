@@ -47,7 +47,7 @@ const THINGS = {
   primary: '[data-region="controls"] [data-slot="primary-action"]',
   keep: '[data-decision="Mulligan"] button',
   result: '#over-title',
-  again: 'main a[href="/"]',
+  again: 'main a[href="/new"]',
 } as const
 
 type Thing = keyof typeof THINGS
