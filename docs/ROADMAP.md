@@ -87,6 +87,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [ ] (U10) Create-game visibility, invite link and code, lobby controls for host and guests
   - [ ] (U11) Page polish: game over, My games, sign-in and one page width scale
   - [ ] (U12) Layout gate at six sizes in both themes; the audit leaves `docs/ui-design.md`
+- [ ] Specific themes between phases to make it clear what phase you are currently in
 - [ ] Spectators and reconnect polish: a spectator seat, a face-down card rule in `zone_is_visible`, a "waiting on" message for tables of three or more
 - [ ] Account settings: change the password, delete the account (its seats are freed); a game that failed to resume shows in My games with its reason
 
@@ -101,6 +102,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [ ] Coverage dashboard over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of a chosen set of Commander precons (`docs/deck-check.md`)
 
 ## M7 Polish and deploy
-- [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain (`docs/PLAN.md`, Deployment)
 - [ ] Animations beyond the table feedback (zone moves to hand, exile and library, a spell on the stack; `docs/web.md`), sounds, replays, solo play against bots
+- [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain (`docs/PLAN.md`, Deployment)
 - [ ] Performance profile on real hardware with real card art
