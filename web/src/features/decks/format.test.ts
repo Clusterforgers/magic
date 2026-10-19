@@ -1,17 +1,19 @@
-// Goal: the words of the decks page are right in every case: a format key becomes its name, the check state of a deck becomes a word and a one-line note that counts what needs manual steps, what blocks the deck or that it changed, and an import summary counts cards per zone; the format list is the one the server checks.
+// Goal: the words of the decks page and the builder are right in every case: a format key becomes its name, the check state of a deck and the support state of a card become words, the counts of a check become one line ("96 of 100 verified, 3 manual, 1 partial"), a deck's note counts what needs manual steps or what blocks it and leaves a changed deck to its marker, and an import summary counts cards per zone; the format list is the one the server checks.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import type { DeckState } from '@/protocol/generated'
+import type { Counts, DeckState, Support } from '@/protocol/generated'
 import { counts, deckIn, importResult, lineOf, summary } from './fakeDecks'
 import {
   cardsText,
   checkNote,
+  countsText,
   DECK_FORMATS,
   formatLabel,
   importSummary,
   SOURCE_LABEL,
   STATE_LABEL,
+  SUPPORT_LABEL,
 } from './format'
 
 describe('formatLabel', () => {
@@ -52,6 +54,40 @@ describe('STATE_LABEL', () => {
     ['unchecked', 'Unchecked'],
   ] satisfies ReadonlyArray<[DeckState, string]>)('words %s as %s', (state, word) => {
     expect(STATE_LABEL[state]).toBe(word)
+  })
+})
+
+describe('SUPPORT_LABEL', () => {
+  it.each([
+    ['verified', 'Verified'],
+    ['partial', 'Partial'],
+    ['manual', 'Manual'],
+    ['stale', 'Stale'],
+    ['unplayable', 'Unplayable'],
+  ] satisfies ReadonlyArray<[Support, string]>)('words %s as %s', (support, word) => {
+    expect(SUPPORT_LABEL[support]).toBe(word)
+  })
+})
+
+describe('countsText', () => {
+  it.each([
+    ['a clean deck', counts(), '100 of 100 verified'],
+    ['manual cards', counts({ verified: 97, manual: 3 }), '97 of 100 verified, 3 manual'],
+    [
+      'the example of the design',
+      counts({ verified: 96, manual: 3, partial: 1 }),
+      '96 of 100 verified, 3 manual, 1 partial',
+    ],
+    ['stale cards', counts({ verified: 98, stale: 2 }), '98 of 100 verified, 2 stale'],
+    [
+      'every state',
+      counts({ total: 10, verified: 4, partial: 3, manual: 1, stale: 1, unplayable: 1 }),
+      '4 of 10 verified, 1 manual, 3 partial, 1 stale, 1 unplayable',
+    ],
+    ['an unplayable card', counts({ verified: 99, unplayable: 1 }), '99 of 100 verified, 1 unplayable'],
+    ['no cards', counts({ total: 0, verified: 0 }), '0 of 0 verified'],
+  ] satisfies ReadonlyArray<[string, Counts, string]>)('words %s', (_what, given, text) => {
+    expect(countsText(given)).toBe(text)
   })
 })
 
@@ -105,11 +141,14 @@ describe('checkNote', () => {
   })
 
   it.each([
-    [true, 'Changed since the last check'],
+    [true, null],
     [false, 'Not checked yet'],
-  ])('for an unchecked deck with changed=%s says %j', (changed, note) => {
-    expect(checkNote(deckIn('unchecked', { changed }))).toBe(note)
-  })
+  ])(
+    'for an unchecked deck with changed=%s says %j (a changed deck says it in its marker)',
+    (changed, note) => {
+      expect(checkNote(deckIn('unchecked', { changed }))).toBe(note)
+    },
+  )
 })
 
 describe('importSummary', () => {

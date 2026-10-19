@@ -75,8 +75,8 @@ interface BuilderProps {
 
 /**
  * The deck builder for one stored deck: card search beside the deck. Edits stay in the browser until Save sends the
- * whole deck; the server checks it and answers the state that the badge then shows. Leaving with unsaved changes asks
- * first. From the `sm` breakpoint the page is as tall as the window under the header and the two panes scroll inside
+ * whole deck; the server checks it and answers the report that the deck pane then shows, with the marker. Leaving with
+ * unsaved changes asks first. From the `sm` breakpoint the page is as tall as the window under the header and the two panes scroll inside
  * their own regions; under `lg` a Search or Deck switch shows one at a time.
  */
 export function Builder({ view, api, cards }: BuilderProps) {
@@ -180,6 +180,8 @@ export function Builder({ view, api, cards }: BuilderProps) {
         <DeckPane
           draft={draft}
           state={stored.view.state}
+          changed={stored.view.changed}
+          report={stored.view.report}
           dirty={dirty}
           saving={saving}
           nameProblem={nameProblem}

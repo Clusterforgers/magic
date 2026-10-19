@@ -77,6 +77,11 @@
   --color-warning: var(--warning);
   --color-destructive: var(--destructive);
   --color-scrim: var(--scrim);
+  --color-support-verified: var(--support-verified);
+  --color-support-partial: var(--support-partial);
+  --color-support-manual: var(--support-manual);
+  --color-support-stale: var(--support-stale);
+  --color-support-unplayable: var(--support-unplayable);
 
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -129,6 +134,11 @@
   --warning: oklch(0.5 0.14 55);
   --destructive: oklch(0.5 0.2 27);
   --scrim: oklch(0.2 0.02 265 / 0.4);
+  --support-verified: oklch(0.45 0.14 150);
+  --support-partial: oklch(0.46 0.13 245);
+  --support-manual: oklch(0.46 0.13 55);
+  --support-stale: oklch(0.44 0.09 100);
+  --support-unplayable: oklch(0.47 0.19 27);
 
   --card: var(--surface);
   --card-foreground: var(--foreground);
@@ -188,6 +198,11 @@
   --warning: oklch(0.8 0.15 70);
   --destructive: oklch(0.72 0.17 25);
   --scrim: oklch(0 0 0 / 0.6);
+  --support-verified: oklch(0.74 0.15 150);
+  --support-partial: oklch(0.76 0.1 245);
+  --support-manual: oklch(0.8 0.15 70);
+  --support-stale: oklch(0.84 0.14 100);
+  --support-unplayable: oklch(0.77 0.15 25);
 
   --secondary: oklch(0.26 0.016 265);
   --muted: oklch(0.26 0.016 265);

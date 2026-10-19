@@ -157,7 +157,7 @@ describe('the check state of a deck', () => {
   ]
 
   it.each(WORDS)('shows %s as an icon and the word %s', async (state, word) => {
-    await renderDecks({ decks: [deckIn(state, { name: 'Probe' })] })
+    await renderDecks({ decks: [deckIn(state, { name: 'Probe', changed: false })] })
     await screen.findByRole('list', { name: 'Your decks' })
     const badge = rowOf('Probe').querySelector('[data-deck-state]')
     expect(badge).toHaveAttribute('data-deck-state', state)
@@ -165,14 +165,27 @@ describe('the check state of a deck', () => {
     expect(badge?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it('gives every state its own icon, so colour never carries the meaning alone', async () => {
-    await renderDecks({ decks: WORDS.map(([state]) => deckIn(state, { id: state, name: state })) })
+  it('says "Changed since the last check" beside the name of a deck whose stored check is stale', async () => {
+    await renderDecks({ decks: [deckIn('unchecked', { name: 'Probe', changed: true })] })
     await screen.findByRole('list', { name: 'Your decks' })
-    const icons = WORDS.map(([state]) =>
-      rowOf(state).querySelector('[data-deck-state] svg')?.getAttribute('class'),
+    const marker = rowOf('Probe').querySelector('[data-marker]')
+    expect(marker).toHaveAttribute('data-marker', 'changed')
+    expect(marker).toHaveTextContent(/^Changed since the last check$/)
+    expect(marker?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('gives every state its own icon, so colour never carries the meaning alone', async () => {
+    const decks = [
+      ...WORDS.map(([state]) => deckIn(state, { id: state, name: state, changed: false })),
+      deckIn('unchecked', { id: 'changed', name: 'changed', changed: true }),
+    ]
+    await renderDecks({ decks })
+    await screen.findByRole('list', { name: 'Your decks' })
+    const icons = decks.map((deck) =>
+      rowOf(deck.name).querySelector('[data-marker] svg')?.getAttribute('class'),
     )
     expect(icons.every((icon) => (icon ?? '').includes('lucide-'))).toBe(true)
-    expect(new Set(icons).size).toBe(WORDS.length)
+    expect(new Set(icons).size).toBe(decks.length)
   })
 
   it.each([

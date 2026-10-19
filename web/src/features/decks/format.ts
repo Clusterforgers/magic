@@ -1,5 +1,13 @@
 /** Words for the decks page: format names, the check state and its note, card counts and the kind of a pasted list. */
-import type { DeckListItem, DeckState, DeckZone, ImportResult, ImportSource } from '@/protocol/generated'
+import type {
+  Counts,
+  DeckListItem,
+  DeckState,
+  DeckZone,
+  ImportResult,
+  ImportSource,
+  Support,
+} from '@/protocol/generated'
 
 // In the order of `SUPPORTED_FORMATS` in `crates/mtg-cards/src/deck/legality.rs`.
 const FORMAT_LABEL: Readonly<Record<string, string>> = {
@@ -38,28 +46,44 @@ export const STATE_LABEL: Readonly<Record<DeckState, string>> = {
   unchecked: 'Unchecked',
 }
 
+/** The word of each support state; a mark shows it beside an icon so colour never carries the meaning alone. */
+export const SUPPORT_LABEL: Readonly<Record<Support, string>> = {
+  verified: 'Verified',
+  partial: 'Partial',
+  manual: 'Manual',
+  stale: 'Stale',
+  unplayable: 'Unplayable',
+}
+
 /** "1 card", "100 cards". */
 export const cardsText = (count: number): string => `${count} ${count === 1 ? 'card' : 'cards'}`
 
 const plural = (count: number, noun: string): string => `${count} ${noun}${count === 1 ? '' : 's'}`
 
 /**
+ * What a check found, in copies: "96 of 100 verified, 3 manual, 1 partial". Only the states that have copies are named.
+ */
+export function countsText(counts: Counts): string {
+  const parts = [
+    counts.manual > 0 ? `${counts.manual} manual` : null,
+    counts.partial > 0 ? `${counts.partial} partial` : null,
+    counts.stale > 0 ? `${counts.stale} stale` : null,
+    counts.unplayable > 0 ? `${counts.unplayable} unplayable` : null,
+  ].filter((part) => part !== null)
+  return [`${counts.verified} of ${counts.total} verified`, ...parts].join(', ')
+}
+
+/**
  * The line under a deck's name that explains its check state: how many cards need manual steps, what blocks it, or that
- * it changed since the last check. A verified deck needs no line.
+ * it was never checked. A verified deck, and one that changed since its check, need no line: its marker says so.
  */
 export function checkNote(deck: DeckListItem): string | null {
   const { counts, issues } = deck.summary
   switch (deck.state) {
     case 'verified':
       return null
-    case 'manual_play': {
-      const parts = [
-        counts.manual > 0 ? `${counts.manual} manual` : null,
-        counts.partial > 0 ? `${counts.partial} partial` : null,
-        counts.stale > 0 ? `${counts.stale} stale` : null,
-      ].filter((part) => part !== null)
-      return [`${counts.verified} of ${counts.total} verified`, ...parts].join(', ')
-    }
+    case 'manual_play':
+      return countsText(counts)
     case 'blocked': {
       const parts = [
         issues > 0 ? plural(issues, 'legality issue') : null,
@@ -68,7 +92,7 @@ export function checkNote(deck: DeckListItem): string | null {
       return parts.length > 0 ? parts.join(', ') : 'Cannot be played as it stands'
     }
     case 'unchecked':
-      return deck.changed ? 'Changed since the last check' : 'Not checked yet'
+      return deck.changed ? null : 'Not checked yet'
   }
 }
 
