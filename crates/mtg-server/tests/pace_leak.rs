@@ -1,4 +1,4 @@
-//! Goal: the table cannot tell a seat with a play from one without by what it is sent or when, at the windows the dwell hides. In two games with the same seed that differ by one card in a hidden hand, an instant the seat can cast against one it cannot afford, and an attack that ends the game, the other seat is sent the same kinds of message, batches and views, each batch arriving 300 to 900 ms after the one before it on a paused clock, and nothing that depends on the hand (a yield, a stop, an error); with the dwell switched off the same comparison finds the difference, and so it does in a seat's own main phase with an empty stack, which the dwell leaves alone.
+//! Goal: the table cannot tell a seat with a play from one without by what it is sent or when, at the windows the dwell hides. In two games with the same seed that differ by one card in a hidden hand, an instant the seat can cast against one it cannot afford, and an attack that ends the game, the other seat (able to act or idle) is sent the same kinds of message, batches and views, each batch arriving 250 to 700 ms after the one before it on a paused clock, and nothing that depends on the hand (a yield, a stop, an error); with the dwell switched off the same comparison finds the difference, and so it does in a seat's own main phase with an empty stack, which the dwell leaves alone.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -18,8 +18,8 @@ use tokio::time::Instant;
 
 /// How long each seat's bot takes to answer, decision after decision: a person's pause, inside the dwell range.
 const THINKING_MS: [[u64; 8]; 2] = [
-    [450, 620, 530, 780, 360, 840, 400, 700],
-    [700, 380, 820, 500, 610, 340, 870, 460],
+    [450, 620, 530, 680, 360, 640, 400, 560],
+    [610, 380, 660, 500, 560, 340, 690, 460],
 ];
 
 /// Batches the first of the other seats is sent before a game that has not ended is cut.
@@ -52,18 +52,13 @@ fn quiet() -> Scenario {
 
 /// Seat 0 attacks seat 1, who has two life and nothing to block with, in the declare attackers step of turn 2: the
 /// declare attackers and declare blockers steps are where the dwell hides what the holder holds, and the damage ends
-/// the game. The other seat holds a free instant, so it is asked in each of its windows like the holder with a play:
-/// the pass of an idle seat right behind another idle seat is shorter (a stagger), which would tell them apart.
-fn combat(holder: usize, card: Card) -> GameSetup {
-    combat_with(holder, card, true)
-}
-
-/// [`combat`] where the other seat can act (it holds a free instant) or, with `observer_can_act` false, cannot.
-fn combat_with(holder: usize, card: Card, observer_can_act: bool) -> GameSetup {
+/// the game. The other seat holds a free instant, so it can act in each of its windows, or (`other_can_act` false) a
+/// giant, so it cannot and is passed for after a dwell of its own like the holder without a play.
+fn combat(holder: usize, card: Card, other_can_act: bool) -> GameSetup {
     let hand = |seat| {
         if seat == holder {
             trick(card)
-        } else if observer_can_act {
+        } else if other_can_act {
             instant("Free Trick", 0, &[])
         } else {
             giant()
@@ -307,11 +302,14 @@ fn ended(run: &Run) -> bool {
 }
 
 #[rstest]
-#[case::the_attacker_holds_the_card(0)]
-#[case::the_defender_holds_the_card(1)]
+#[case::the_attacker_holds_the_card_and_the_other_seat_can_act(0, true)]
+#[case::the_attacker_holds_the_card_and_the_other_seat_is_idle(0, false)]
+#[case::the_defender_holds_the_card_and_the_other_seat_can_act(1, true)]
+#[case::the_defender_holds_the_card_and_the_other_seat_is_idle(1, false)]
 #[tokio::test(start_paused = true)]
 async fn the_table_cannot_tell_a_seat_with_a_play_from_one_without_in_combat(
     #[case] holder: usize,
+    #[case] other_can_act: bool,
 ) {
     assert!(
         THINKING_MS
@@ -320,8 +318,9 @@ async fn the_table_cannot_tell_a_seat_with_a_play_from_one_without_in_combat(
             .all(|pause| dwell_range().contains(pause)),
         "the bots think as long as a dwell lasts, or the pause alone would give them away"
     );
-    let with_a_play = play(combat(holder, Card::Castable), holder, Dwell::DEFAULT).await;
-    let without = play(combat(holder, Card::Unaffordable), holder, Dwell::DEFAULT).await;
+    let hands = |card| combat(holder, card, other_can_act);
+    let with_a_play = play(hands(Card::Castable), holder, Dwell::DEFAULT).await;
+    let without = play(hands(Card::Unaffordable), holder, Dwell::DEFAULT).await;
 
     // What the other seat can see of the two games is nothing that tells them apart...
     assert_eq!(differences(&with_a_play, &without), Vec::<String>::new());
@@ -353,8 +352,13 @@ async fn the_table_cannot_tell_a_seat_with_a_play_from_one_without_in_combat(
 #[tokio::test(start_paused = true)]
 async fn with_the_dwell_switched_off_the_same_comparison_finds_the_tell(#[case] holder: usize) {
     // MTG_DWELL_MS=0: an idle window is passed for at once, in the batch of the step before it.
-    let with_a_play = play(combat(holder, Card::Castable), holder, Dwell::OFF).await;
-    let without = play(combat(holder, Card::Unaffordable), holder, Dwell::OFF).await;
+    let with_a_play = play(combat(holder, Card::Castable, false), holder, Dwell::OFF).await;
+    let without = play(
+        combat(holder, Card::Unaffordable, false),
+        holder,
+        Dwell::OFF,
+    )
+    .await;
 
     let found = differences(&with_a_play, &without);
     assert!(
@@ -368,29 +372,6 @@ async fn with_the_dwell_switched_off_the_same_comparison_finds_the_tell(#[case] 
             .iter()
             .any(|difference| difference.contains("messages it is sent differ")),
         "and so does the stream of messages: {found:?}"
-    );
-}
-
-#[rstest]
-#[case::the_attacker_holds_the_card(0)]
-#[case::the_defender_holds_the_card(1)]
-#[tokio::test(start_paused = true)]
-async fn behind_an_idle_seat_the_pass_of_an_idle_seat_is_a_stagger_and_shows(
-    #[case] holder: usize,
-) {
-    // When both seats are idle in a step, the second waits a stagger (80 to 250 ms) behind the dwell of the first, which
-    // is shorter than a person thinks. So a holder that is idle right behind the other seat, or the other seat idle
-    // right behind a holder that is, shows it by how soon the pass comes: this is what the dwell does not hide.
-    let card = |card| combat_with(holder, card, false);
-    let with_a_play = play(card(Card::Castable), holder, Dwell::DEFAULT).await;
-    let without = play(card(Card::Unaffordable), holder, Dwell::DEFAULT).await;
-
-    let found = differences(&with_a_play, &without);
-    assert!(
-        found
-            .iter()
-            .any(|difference| difference.contains("ms after")),
-        "a stagger came sooner than a dwell can: {found:?}"
     );
 }
 

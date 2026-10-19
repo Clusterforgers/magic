@@ -72,11 +72,8 @@ pub(crate) struct Step {
     pub(crate) origin: PlayerId,
     /// Whether a pending decision the step left unchanged keeps its id.
     pub(crate) keep_unchanged: bool,
-    /// Whether the step is the origin seat's pass of priority (its own, or the table's at its clock).
+    /// Whether the step is the origin seat's pass of priority (its own, or the table's at its clock or dwell).
     pub(crate) passed: bool,
-    /// Whether the step is the table's pass for a seat at an idle window once its dwell ran out, which the next dwell of
-    /// the same round follows as a stagger.
-    pub(crate) by_dwell: bool,
 }
 
 /// The decision awaiting an answer, the id the client must echo and when its clock runs out.
@@ -209,15 +206,10 @@ impl Running {
     /// `keep_unchanged`, a decision that did not change keeps its id and clock and is not sent again, so a
     /// concession elsewhere does not invalidate a pending answer.
     ///
-    /// At `Halt::Dwell` the decision is held back instead of sent: it gets no clock but the wait of the idle window
-    /// ([`Waits::wait`]), which is a stagger when `by_dwell` says the pass that led here was a dwell's, and the actor
-    /// passes for the seat at that time. A decision that is held back and unchanged keeps its wait.
-    pub(crate) fn settle(
-        &mut self,
-        keep_unchanged: bool,
-        halt: Halt,
-        by_dwell: bool,
-    ) -> Option<Issued> {
+    /// At `Halt::Dwell` the decision is held back instead of sent: it gets no clock but a dwell of its own
+    /// ([`Waits::wait`], drawn now, whatever the windows before it were), and the actor passes for the seat at that
+    /// time. A decision that is held back and unchanged keeps its wait.
+    pub(crate) fn settle(&mut self, keep_unchanged: bool, halt: Halt) -> Option<Issued> {
         let Some(decision) = self.engine.decision().cloned() else {
             self.pending = None;
             return None;
@@ -233,8 +225,7 @@ impl Running {
         self.last_id += 1;
         let id = DecisionId(self.last_id);
         if dwell {
-            let turn = self.engine.state().turn();
-            let wait = self.waits.wait((turn.number(), turn.step()), by_dwell);
+            let wait = self.waits.wait();
             let now = Instant::now();
             self.pending = Some(Pending {
                 id,
@@ -357,21 +348,18 @@ impl Running {
     /// Answers the pending decision for its seat with the safe default: a pass, or no blocks.
     ///
     /// It goes through the same checks, log and projection as [`answer`](Running::answer), so it is handled like the
-    /// seat's own move. The step says whether the pending decision was held back for a dwell.
+    /// seat's own move, whether the decision was sent to the seat or held back for its dwell.
     pub(crate) fn fall_back(&mut self) -> Result<Step, Rejection> {
         let pending = self.pending.as_ref();
-        let Some((id, seat, answer, hidden)) = pending.and_then(|p| {
-            pace::fallback(&p.decision).map(|answer| (p.id, p.decision.player, answer, p.hidden))
+        let Some((id, seat, answer)) = pending.and_then(|p| {
+            pace::fallback(&p.decision).map(|answer| (p.id, p.decision.player, answer))
         }) else {
             return Err(Rejection::new(
                 ErrorCode::StaleDecision,
                 "no decision is pending that can be answered for its seat",
             ));
         };
-        self.apply_answer(seat, id, answer).map(|step| Step {
-            by_dwell: hidden,
-            ..step
-        })
+        self.apply_answer(seat, id, answer)
     }
 
     /// Passes for every seat the windows pass for at once ([`windows::verdict`]: not in Full Control, not at a window
@@ -469,7 +457,6 @@ impl Running {
             origin,
             keep_unchanged,
             passed: false,
-            by_dwell: false,
         })
     }
 }
@@ -491,7 +478,7 @@ mod tests {
     fn running() -> Running {
         let setup = Scenario::new(2).setup().unwrap();
         let mut running = Running::new(Engine::new(setup).unwrap(), Pace::MANUAL);
-        running.settle(false, Halt::Ask, false);
+        running.settle(false, Halt::Ask);
         running
     }
 
@@ -573,13 +560,13 @@ mod tests {
             .unwrap();
         engine.apply(Answer::PayMana(PayChoice::Auto)).unwrap();
         let mut running = Running::new(engine, pace);
-        running.settle(false, Halt::Ask, false);
+        running.settle(false, Halt::Ask);
         running
     }
 
     fn held_back(dwell: Dwell) -> Running {
         let mut running = idle_with_a_spell(dwell);
-        assert!(running.settle(false, Halt::Dwell, false).is_none());
+        assert!(running.settle(false, Halt::Dwell).is_none());
         running
     }
 
@@ -592,7 +579,7 @@ mod tests {
         };
         let setup = Scenario::new(2).setup().unwrap();
         let mut running = Running::new(Engine::new(setup).unwrap(), pace);
-        running.settle(false, Halt::Ask, false);
+        running.settle(false, Halt::Ask);
         assert_eq!(
             running.verdict_pending(SEATS[0], &Stops::new(2), &Yields::new(2)),
             Some(Verdict::Pass)
@@ -669,11 +656,11 @@ mod tests {
     }
 
     #[tokio::test(start_paused = true)]
-    async fn the_table_passes_for_a_held_back_seat_as_a_step_of_its_own_marked_as_a_dwells() {
+    async fn the_table_passes_for_a_held_back_seat_as_a_step_of_its_own() {
         let mut running = held_back(Dwell::fixed(500));
         let before = running.engine.events().len();
         let step = running.fall_back().unwrap();
-        assert!(step.by_dwell && step.passed);
+        assert!(step.passed);
         assert_eq!(step.origin, SEATS[0]);
         assert_eq!(step.from_seq, count(before));
         assert!(matches!(
@@ -683,32 +670,32 @@ mod tests {
     }
 
     #[tokio::test(start_paused = true)]
-    async fn a_clock_that_runs_out_is_not_a_dwell() {
+    async fn a_clock_belongs_to_a_decision_that_is_sent_and_a_dwell_to_one_that_is_held_back() {
         let pace = Pace {
             response: Some(Duration::from_secs(10)),
             ..Pace::MANUAL
         };
         let setup = Scenario::new(2).setup().unwrap();
         let mut running = Running::new(Engine::new(setup).unwrap(), pace);
-        // Seat 0 is the active player, so it has no clock, and the pass the table makes for it is not a dwell's.
-        let first = running.settle(false, Halt::Ask, false).unwrap();
+        // Seat 0 is the active player, so it has no clock; the table's pass for it is the seat's own move.
+        let first = running.settle(false, Halt::Ask).unwrap();
         assert_eq!(first.deadline_ms, None);
         let step = running.fall_back().unwrap();
-        assert!(step.passed && !step.by_dwell);
-        // Seat 1 is not, so its window has the response clock, and the pass at its end is no dwell's either.
-        let afterwards = running.settle(false, Halt::Ask, false).unwrap();
+        assert!(step.passed);
+        // Seat 1 is not, so a window it is sent has the response clock, and the pass at its end is the same step.
+        let afterwards = running.settle(false, Halt::Ask).unwrap();
         assert_eq!(afterwards.decision.player, SEATS[1]);
         assert_eq!(afterwards.deadline_ms, Some(10_000));
         let step = running.fall_back().unwrap();
-        assert!(step.passed && !step.by_dwell);
+        assert!(step.passed);
     }
 
     #[tokio::test(start_paused = true)]
     async fn a_kept_dwell_keeps_its_id_and_time_and_a_new_one_draws_again() {
-        let mut running = held_back(Dwell::between(300, 900));
+        let mut running = held_back(Dwell::DEFAULT);
         let (id, due) = (running.pending.as_ref().unwrap().id, running.due());
         tokio::time::advance(Duration::from_millis(100)).await;
-        assert!(running.settle(true, Halt::Dwell, false).is_none());
+        assert!(running.settle(true, Halt::Dwell).is_none());
         assert_eq!(running.pending.as_ref().unwrap().id, id);
         assert_eq!(
             running.due(),
@@ -716,20 +703,18 @@ mod tests {
             "a concession elsewhere does not move it"
         );
 
-        assert!(running.settle(false, Halt::Dwell, false).is_none());
+        assert!(running.settle(false, Halt::Dwell).is_none());
         assert_ne!(running.pending.as_ref().unwrap().id, id);
         let wait = running.due().unwrap() - Instant::now();
-        assert!(
-            (Duration::from_millis(300)..=Duration::from_millis(900)).contains(&wait),
-            "{wait:?}"
-        );
+        let (shortest, longest) = Dwell::DEFAULT.range();
+        assert!((shortest..=longest).contains(&wait), "{wait:?}");
     }
 
     #[tokio::test(start_paused = true)]
     async fn when_the_rules_ask_a_held_back_seat_its_decision_is_issued_with_a_new_id() {
         let mut running = held_back(Dwell::fixed(500));
         let held = running.pending.as_ref().unwrap().id;
-        let issued = running.settle(true, Halt::Ask, false).unwrap();
+        let issued = running.settle(true, Halt::Ask).unwrap();
         assert_ne!(issued.id, held);
         assert_eq!(issued.decision.player, SEATS[0]);
         let messages = running.sync_messages(SEATS[0]);
@@ -795,13 +780,7 @@ mod tests {
         // Two games of the same seed and cards draw their dwells apart: the draws come from the operating system.
         let draw = || {
             let mut running = idle_with_a_spell(Dwell::DEFAULT);
-            (1..=8)
-                .map(|turn| {
-                    running
-                        .waits
-                        .wait((turn, mtg_engine::turn::Step::Main1), false)
-                })
-                .collect::<Vec<_>>()
+            (0..8).map(|_| running.waits.wait()).collect::<Vec<_>>()
         };
         assert_ne!(draw(), draw());
     }

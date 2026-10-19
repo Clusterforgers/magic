@@ -138,7 +138,7 @@ Mitigations, ranked by value for effort:
 |---|---|---|---|---|
 | 1 | Stops and Full Control: the player chooses when to be asked and can bluff a window | Arena [official S1, S7] | medium (P1, P2, P4 to P6) | whatever that player decides to |
 | 2 | Table-driven windows with Arena's default table (none in own upkeep or end step unless set) | Arena [official S1] | small, inside P2 | pauses in steps where only a holder of an instant stops |
-| 3 | A window the seat cannot use is held for a human-like 0.3 to 0.9 s, then passed as its own step and batch | ours, not in Arena [unverified] | small (P3), about 1 s per window a seat could use | the instant pass and the batch burst |
+| 3 | A window the seat cannot use is held for a human-like 0.25 to 0.7 s, then passed as its own step and batch | ours, not in Arena [unverified] | small (P3), about 1 s per window a seat could use | the instant pass and the batch burst |
 | 4 | Leak test over what the other seats receive | ours | small (P8) | keeps 2 and 3 true |
 | 5 | Strict table: auto-pass off for every seat | ours (MTGO's default stops are the nearest [official S5]) | tiny, a creation option | everything, paid in clicks |
 | 6 | Never add a hover or selection relay, a clock or "thinking" cue for opponents, or the kind of decision owed to the views | Arena leaks these [community S22, S25] | none | avoids new tells |
@@ -178,7 +178,7 @@ About 15 minutes each, in order of value.
   - One-turn stops clear when the step ends; a stop interrupts a yield, and the decision is sent even when `can_act` is false.
   - Tests: a table test, and bot games equal to the bare engine under the same rule.
   - Scope: `mtg-server` (`stops.rs`, the skip rule in `running.rs`, `start_up`), `mtg-testkit` (`PlayOptions`), `server.md`.
-- **P3 Idle windows as hidden clocks**: inside P2's window set, a window the seat cannot use waits `Pace.dwell` (300 to 900 ms jittered, `MTG_DWELL_MS`, 0 = off), then passes as its own step and batch through `fall_back`.
+- **P3 Idle windows as hidden clocks**: inside P2's window set, a window the seat cannot use waits `Pace.dwell` (250 to 700 ms jittered, `MTG_DWELL_MS`, 0 = off), then passes as its own step and batch through `fall_back`.
   - Yields and Full Control are exempt. Only the wall clock changes, so the log and the hash do not.
   - Windows are sequential, so at three or more seats the waits add up per idle seat.
   - Tests on paused time (`tests/idle_dwell.rs`). Scope: `mtg-server` (`pace.rs`, `running.rs`), `server.md`.
