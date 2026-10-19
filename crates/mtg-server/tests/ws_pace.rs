@@ -5,20 +5,24 @@ mod common;
 mod net;
 
 use mtg_core::ids::PlayerId;
-use mtg_protocol::{ClientMessage, ErrorCode, ServerMessage};
-use mtg_server::{GameConfig, Pace, ServerConfig};
+use mtg_engine::turn::Step;
+use mtg_protocol::{ClientMessage, ErrorCode, ServerMessage, StopSide};
+use mtg_server::{Dwell, GameConfig, Pace, ServerConfig};
 use mtg_testkit::Scenario;
 use mtg_testkit::cards::instant;
 use net::{Frame, TestServer, WsClient, bot_config, connect, create_game, two_seats};
 use serde_json::Value;
 
-/// Bot-sized queues and rate limits with the default pace: auto-pass on, clocks running.
+/// Bot-sized queues and rate limits with the default pace: auto-pass on, clocks running and no dwell, so a pass never waits.
 fn paced() -> ServerConfig {
     let bots = bot_config();
     ServerConfig {
         fixed_seed: Some(1),
         game: GameConfig {
-            pace: Pace::default(),
+            pace: Pace {
+                dwell: Dwell::OFF,
+                ..Pace::default()
+            },
             ..bots.game
         },
         ..bots
@@ -136,7 +140,7 @@ async fn a_decision_without_a_clock_leaves_the_field_out() {
 #[tokio::test]
 async fn a_decision_on_a_clock_states_the_milliseconds_it_has() {
     let server = TestServer::start(paced()).await;
-    // Seat 1 holds a free instant, so it can respond in every window of seat 0's turn.
+    // Seat 1 holds a free instant and a stop in seat 0's first main phase, so it is asked there, on a clock.
     let setup = Scenario::new(2)
         .hand(1, [instant("Zap", 0, &[])])
         .setup()
@@ -151,6 +155,13 @@ async fn a_decision_on_a_clock_states_the_milliseconds_it_has() {
     let handle = server.registry.handle(created.id).unwrap();
     let (mut first, _, _) = welcomed(&server, &game, &tokens[0]).await;
     let (mut second, _, _) = welcomed(&server, &game, &tokens[1]).await;
+    let stop = ClientMessage::SetStop {
+        side: StopSide::Opponent,
+        step: Step::Main1,
+        on: true,
+        keep: true,
+    };
+    handle.send(PlayerId::from_index(1), stop).await.unwrap();
     for seat in 0..2 {
         handle
             .send(PlayerId::from_index(seat), ClientMessage::Ready)

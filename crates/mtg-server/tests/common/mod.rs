@@ -3,6 +3,7 @@
 
 pub mod bot;
 pub mod store;
+pub mod tape;
 
 use std::future::Future;
 use std::time::Duration;
@@ -10,14 +11,16 @@ use std::time::Duration;
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_engine::{Event, GameSetup};
-use mtg_protocol::{ClientMessage, DecisionId, ServerMessage};
-use mtg_server::{GameConfig, GameHandle, GameId, Pace};
+use mtg_protocol::{ClientMessage, DecisionId, FullControlMode, ServerMessage, StopSide};
+use mtg_server::{Dwell, GameConfig, GameHandle, GameId, Pace};
+use mtg_testkit::windows::{Mode, SeatWindows, Side};
 use mtg_testkit::{PlayOptions, fuzz_setup, play_game, play_game_with};
 use tokio::sync::mpsc::Receiver;
 use uuid::Uuid;
 
 pub use bot::{Bot, BotReport, Progress, drive, play_bots, play_table};
 pub use store::FlakyStore;
+pub use tape::{Tape, Taped, kind, ms};
 
 /// A game id derived from a number, so tests stay readable.
 pub fn game_id(n: u128) -> GameId {
@@ -43,6 +46,20 @@ pub fn roomy() -> GameConfig {
         seat_queue: 8192,
         command_queue: 64,
         pace: Pace::MANUAL,
+    }
+}
+
+/// Roomy queues, the default windows (every seat starts in Full Control `Off`) and no clocks, so only the windows,
+/// stops, modes and yields under test decide when a seat is asked.
+pub fn windowed() -> GameConfig {
+    GameConfig {
+        pace: Pace {
+            auto_pass: true,
+            response: None,
+            blocks: None,
+            dwell: Dwell::OFF,
+        },
+        ..roomy()
     }
 }
 
@@ -86,6 +103,55 @@ pub fn reference_auto_pass(setup: GameSetup, seed: u64) -> Reference {
         answers: outcome.answers,
         auto_passes: outcome.auto_passes,
     }
+}
+
+/// The same game played on a bare engine under the reference windows ([`mtg_testkit::Windows`]): every seat starts in
+/// the mode the server default names (`auto_pass`), and with `bot_windows` each bot first chooses its own stops and
+/// mode, which [`Bot::choose_windows`] sends to the server.
+pub fn reference_windows(
+    setup: GameSetup,
+    seed: u64,
+    auto_pass: bool,
+    bot_windows: bool,
+) -> Reference {
+    let options = PlayOptions {
+        auto_pass,
+        bot_windows,
+        ..PlayOptions::default()
+    };
+    let outcome = play_game_with(setup, seed, options).unwrap_or_else(|f| panic!("{f}"));
+    Reference {
+        events: outcome.events,
+        final_hash: outcome.final_hash,
+        result: outcome.result,
+        answers: outcome.answers,
+        auto_passes: outcome.auto_passes,
+    }
+}
+
+/// Sends the stops and Full Control mode `windows` names as `seat`, the way a client does before the start.
+pub async fn send_windows(handle: &GameHandle, seat: PlayerId, windows: &SeatWindows) {
+    for stop in &windows.stops {
+        let message = ClientMessage::SetStop {
+            side: match stop.side {
+                Side::Own => StopSide::Own,
+                Side::Opponent => StopSide::Opponent,
+            },
+            step: stop.step,
+            on: true,
+            keep: stop.keep,
+        };
+        handle.send(seat, message).await.unwrap();
+    }
+    let mode = match windows.mode {
+        Mode::Off => FullControlMode::Off,
+        Mode::NextWindow => FullControlMode::NextWindow,
+        Mode::Held => FullControlMode::Held,
+    };
+    handle
+        .send(seat, ClientMessage::FullControl { mode })
+        .await
+        .unwrap();
 }
 
 /// A hand-driven client: it reads what the server sends and sends whatever the test wants.

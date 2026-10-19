@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id AS \"id: _\", source AS \"source: _\", started_at, finished_at,\n                      status AS \"status: _\", counts, error\n               FROM import_runs\n               ORDER BY started_at DESC, id DESC LIMIT $1",
+  "query": "SELECT id AS \"id: _\", source AS \"source: _\", started_at, finished_at,\n                      status AS \"status: _\", counts, error, input\n               FROM import_runs WHERE id = $1",
   "describe": {
     "columns": [
       {
@@ -101,6 +101,17 @@
             "name": "error"
           }
         }
+      },
+      {
+        "ordinal": 7,
+        "name": "input",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "import_runs",
+            "name": "input"
+          }
+        }
       }
     ],
     "parameters": {
@@ -115,8 +126,9 @@
       true,
       false,
       false,
+      true,
       true
     ]
   },
-  "hash": "70a54f5637d3897539157a47ef84eba127da913912690957f64aebc25a8b942d"
+  "hash": "55360fcb0076686f42605c1e4524f23285bd3a9552dc638df5cc367f800f666f"
 }

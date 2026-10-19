@@ -17,7 +17,7 @@ use crate::handle::{Command, GameHandle, GameStatus, JoinError};
 use crate::pace::Pace;
 use crate::preview::PreviewLimits;
 use crate::recorder::Recorder;
-use crate::running::{Rejection, Running, count};
+use crate::running::{Halt, Rejection, Running, count};
 use crate::seats::Seats;
 use crate::stops::Stops;
 use crate::store::{EventStore, StoreError};
@@ -171,7 +171,7 @@ pub(crate) async fn resume_named<S: EventStore>(
         store.append(id, count(stored_len), fresh).await?;
     }
     let mut running = Running::new(engine, config.pace);
-    running.settle(false);
+    running.settle(false, Halt::Ask, false);
     Ok(launch(
         id,
         setup,
@@ -196,9 +196,8 @@ fn launch<S: EventStore>(
         store,
         seats: Seats::new(setup.players.len(), config.seat_queue),
         previews: PreviewLimits::new(setup.players.len(), Instant::now()),
-        auto_pass: vec![config.pace.auto_pass; setup.players.len()],
         yields: Yields::new(setup.players.len()),
-        stops: Stops::new(setup.players.len()),
+        stops: Stops::with_mode(setup.players.len(), config.pace.mode()),
         pace: config.pace,
         setup,
         phase,
@@ -233,12 +232,10 @@ pub(crate) struct GameActor<S> {
     pub(crate) previews: PreviewLimits,
     /// How fast the game moves (settings shared by every seat).
     pub(crate) pace: Pace,
-    /// Per seat: whether a priority decision it cannot use is passed for it. Starts at the server default, resets on resume.
-    pub(crate) auto_pass: Vec<bool>,
     /// Per seat: the priority it asked the server to pass for it (`Yield`). Never stored, so a resumed game has none.
     pub(crate) yields: Yields,
-    /// Per seat: the stops and Full Control mode it set. Never stored, so a resumed game has none; kept across
-    /// reconnects. Reported back to the seat but not read by play yet.
+    /// Per seat: the stops and Full Control mode it set (auto-pass off is the `Held` mode). Never stored, so a resumed
+    /// game starts every seat at the server default mode with no stop; kept across reconnects. Read by `windows`.
     pub(crate) stops: Stops,
     pub(crate) phase: Phase,
     /// Where a persistent game notes its milestones; `None` for a game that lives in memory only.
@@ -321,7 +318,7 @@ impl<S: EventStore> GameActor<S> {
             game: self.id.to_string(),
             player: seat,
             seats: u32::try_from(self.seats.len()).unwrap_or(u32::MAX),
-            auto_pass: self.auto_pass.get(seat.index()).copied().unwrap_or(false),
+            auto_pass: self.stops.auto_pass(seat),
             yielding: self.yields.get(seat),
             stops: self.stops.stops(seat),
             full_control: self.stops.full_control(seat),
@@ -374,8 +371,8 @@ impl<S: EventStore> GameActor<S> {
                 step,
                 on,
                 keep,
-            } => self.set_stop(seat, Stop { side, step, keep }, on),
-            ClientMessage::FullControl { mode } => self.set_full_control(seat, mode),
+            } => return self.set_stop(seat, Stop { side, step, keep }, on).await,
+            ClientMessage::FullControl { mode } => return self.set_full_control(seat, mode).await,
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),
                 Phase::Lobby { .. } => self.refuse(seat, not_started()),

@@ -82,8 +82,8 @@ The payment rules are in [engine.md](engine.md); the wire facts are:
 
 ### Auto-pass
 
-- `AutoPass { enabled }` turns the server's passing for the seat on or off whenever `can_act` is false. There is no reply; the effect shows in later messages. `Welcome.auto_pass` is the seat's current setting (the server default after a restart).
-- While it is on, a client is never sent a `Priority` decision whose `can_act` is false, so it must not rely on seeing every priority window. The events of the passes arrive in the batch of the answer that led to them.
+- `AutoPass { enabled }` is the Full Control mode `Held` when `enabled` is false and `Off` when it is true (a seat in `NextWindow` stays in it). The change is told as a `FullControl` message. `Welcome.auto_pass` is true unless the seat is in `Held` (the server default after a restart).
+- A client must not rely on seeing every priority window: outside Full Control the server asks a seat only at its windows (below). The events of the passes arrive in the batch of the answer that led to them, except the pass for a seat that cannot act in a combat window or while a spell waits on the stack: it comes in a batch of its own after a wait of 0.3 to 0.9 s (`server.md`, Dwell), so the pace does not tell the table what a seat holds.
 
 ### Yields
 
@@ -92,11 +92,12 @@ The payment rules are in [engine.md](engine.md); the wire facts are:
 - It ends, and decisions come as usual, when:
   - an opponent puts an object on the stack that the seat has not passed on yet;
   - its target is reached: `Resolve` when the stack is empty, `EndOfTurn` when another turn has begun, `MyTurn` when another turn of the seat's own has begun;
+  - the seat holds a stop at a window (not in the step of the window it asked at);
   - the seat leaves the game or the game ends, or sends `CancelYield`.
 - Other decisions (attackers, blockers, a discard, a payment, damage division) are always sent and leave the yield as it is.
 - The end rules look at the table only, never at what the seat could do, so the pace reveals nothing about a hand. They live in `yields.rs` in `mtg-server`.
 - A client asks for `Resolve` only over a stack: over an empty one the yield ends at once, passes nothing, and the same window returns with a new decision id.
-- Yields live in memory per seat, so a resumed game has none. A seat that is out of the game, or a game that has not started or is over, gets `Error{BadMessage}`.
+- Yields live in memory per seat, so a resumed game has none. A seat that is out of the game or in Full Control (`NextWindow`, `Held`), or a game that has not started or is over, gets `Error{BadMessage}`; turning Full Control on ends a yield.
 - `Yielding { until }` (`null` for none) reports every change of the seat's yield, whatever the cause; `Welcome.yielding` gives it at join.
   - It follows the events of the step that changed it and precedes the `Decision` that follows, so a prompt never appears under a "passing" line. A yield that starts and ends inside one step is never told.
   - A client that sees `Yielding` with a yield drops the `Priority` decision it still shows (the server passed for it); other decisions stay.
@@ -113,9 +114,13 @@ The design is in [arena-flow.md](arena-flow.md).
 - `Stops { stops }` and `FullControl { mode }` report what the server holds whenever it changes, whatever the cause. They follow the events of the step that changed it and precede the `Decision` that follows, as `Yielding` does. `Welcome.stops` and `Welcome.full_control` give the values at join.
   - `Stops` is the whole list and replaces the client's: each side and step once, own side first, each side in turn order (`keep` never decides the order).
   - A request that changes nothing gets silence. One that only changes a held stop's `keep` is a change and is told as the whole list.
-- Both live in memory per seat from the lobby on and survive reconnects and `Resync`; a resumed game starts with none.
+- Both live in memory per seat from the lobby on and survive reconnects and `Resync`; a resumed game starts with no stop and the server's default mode (`Held` when auto-pass is off by default).
 - A seat that leaves the game, and every seat once the game is over, loses them and is told (`Stops` empty, `FullControl` `Off`) before its decision or `GameOver`. Requests from such a seat, or in a game that is over, get `Error{BadMessage}`.
-- The server stores and reports them but does not act on them: no window is added, kept or skipped because of a stop or Full Control, so a client must not promise a player a window.
+- The server asks a seat at a priority decision only at its windows and passes for it elsewhere (the rules are in `windows.rs`, see `server.md`):
+  - in `NextWindow` and `Held`, at every window;
+  - at a stop, whether the seat can act or not;
+  - at the default windows, only if it can act: the seat's own main phases, the declare attackers and declare blockers steps, and any moment an object of another seat is on the stack; a seat that cannot act is passed for there after the wait above, except in its own main phase with an empty stack, where it is passed for at once.
+- A one-turn stop goes once the game has left its step. `NextWindow` goes back to `Off` when the seat has passed.
 - The web checks both messages and the `Welcome` fields in `net/parse.ts` (a step only has to be a step; whether it may hold a stop is the server's rule) and keeps them in the store as `stops` and `fullControl`.
 
 ## Preview

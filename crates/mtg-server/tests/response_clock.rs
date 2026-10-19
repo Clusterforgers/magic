@@ -11,9 +11,9 @@ use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{DecisionKind, PriorityAction};
 use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision, Event, GameSetup};
-use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage};
+use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, FullControlMode, ServerMessage};
 use mtg_server::{
-    EventStore, GameConfig, GameHandle, GameStatus, Pace, resume_game_with, spawn_game_with,
+    Dwell, EventStore, GameConfig, GameHandle, GameStatus, Pace, resume_game_with, spawn_game_with,
 };
 use mtg_testkit::cards::{forest, free_creature, instant};
 use mtg_testkit::{Scenario, ready};
@@ -27,6 +27,7 @@ const DEFAULT: Pace = Pace {
     auto_pass: true,
     response: Some(RESPONSE),
     blocks: Some(BLOCKS),
+    dwell: Dwell::OFF,
 };
 
 fn config(pace: Pace) -> GameConfig {
@@ -34,6 +35,7 @@ fn config(pace: Pace) -> GameConfig {
 }
 
 /// Seat 1 holds a free instant, so it can act in every priority window; seat 0 holds nothing and is passed for.
+/// Seat 1 is in Full Control (`join_and_ready` puts it there), so it is asked at every window of seat 0's turn.
 fn instant_table() -> GameSetup {
     Scenario::new(2)
         .hand(1, [instant("Zap", 0, &[])])
@@ -57,11 +59,17 @@ fn spawn(setup: GameSetup, pace: Pace) -> (GameHandle, FlakyStore) {
     (handle, store)
 }
 
+/// Both seats join and say they are ready; seat 1 first asks for Full Control, so the windows of the other seat's
+/// turn all reach it (and run its clock).
 async fn join_and_ready(handle: &GameHandle) -> Vec<Client> {
     let mut clients = Vec::new();
     for n in 0..2 {
         clients.push(Client::join(handle, n).await);
     }
+    let held = ClientMessage::FullControl {
+        mode: FullControlMode::Held,
+    };
+    clients[1].say(handle, held).await;
     for client in &clients {
         client.say(handle, ClientMessage::Ready).await;
     }
@@ -509,21 +517,32 @@ async fn a_resumed_game_starts_the_clock_of_its_pending_decision_afresh() {
     drop(first);
     tokio::time::advance(Duration::from_secs(5)).await;
 
-    let second = resume_game_with(store.clone(), game_id(1), setup, config(DEFAULT))
+    // A resumed game starts every seat in the server's default mode: Full Control for all, so the window is delivered.
+    let held = Pace {
+        auto_pass: false,
+        ..DEFAULT
+    };
+    let second = resume_game_with(store.clone(), game_id(1), setup, config(held))
         .await
         .unwrap();
     assert_eq!(second.status().await.unwrap().events, stopped.events);
     let mut back = Client::join(&second, 1).await;
     assert!(matches!(back.next().await, ServerMessage::Welcome { .. }));
     assert!(matches!(back.next().await, ServerMessage::Snapshot { .. }));
-    let (resumed_id, _, left) = clocked(&mut back).await;
+    let (_, _, left) = clocked(&mut back).await;
     assert_eq!(
         left,
         Some(10_000),
         "the process was away; the clock starts over"
     );
 
+    let passed = passes_by(&store.inner().load(game_id(1)).await.unwrap(), PlayerId(1));
     tokio::time::advance(RESPONSE).await;
-    let (next, _, _) = clocked(&mut back).await;
-    assert!(next > resumed_id, "and it runs out like any other");
+    moved_past(&second, stopped.events).await;
+    let logged = store.inner().load(game_id(1)).await.unwrap();
+    assert_eq!(
+        passes_by(&logged, PlayerId(1)),
+        passed + 1,
+        "and it runs out like any other"
+    );
 }

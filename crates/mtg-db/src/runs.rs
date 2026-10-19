@@ -1,10 +1,23 @@
 //! Bookkeeping of import runs: when they started, how they ended and what they changed.
 
+use std::time::Duration;
+
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::PgPool;
 
 use crate::error::DbError;
+
+/// How long a run may stay `running` before the next import start marks it failed.
+pub const STALE_AFTER: Duration = Duration::from_hours(1);
+
+/// Why a reaped run failed.
+const REAPED: &str = "abandoned: the importing process ended without closing the run";
+
+/// Replaces NUL bytes, which Postgres text cannot hold, with a visible mark.
+pub(crate) fn without_nul(text: &str) -> String {
+    text.replace('\0', "\u{2400}")
+}
 
 /// Identifier of an import run.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, sqlx::Type)]
@@ -59,6 +72,8 @@ pub struct ImportRun {
     pub counts: serde_json::Value,
     /// Failure message of a failed run.
     pub error: Option<String>,
+    /// What the run read, as its starter named it (the CLI uses file checksums).
+    pub input: Option<String>,
 }
 
 /// Records and reads the history of import runs.
@@ -74,13 +89,42 @@ impl ImportRuns {
 
     /// Opens a new run in the `running` state.
     pub async fn start(&self, source: ImportSource) -> Result<RunId, DbError> {
+        self.start_with_input(source, None).await
+    }
+
+    /// Opens a new run in the `running` state that records what it reads (see [`ImportRun::input`]).
+    pub async fn start_with_input(
+        &self,
+        source: ImportSource,
+        input: Option<&str>,
+    ) -> Result<RunId, DbError> {
         let id = sqlx::query_scalar!(
-            r#"INSERT INTO import_runs (source) VALUES ($1) RETURNING id AS "id: RunId""#,
-            source as _
+            r#"INSERT INTO import_runs (source, input) VALUES ($1, $2) RETURNING id AS "id: RunId""#,
+            source as _,
+            input
         )
         .fetch_one(&self.pool)
         .await?;
         Ok(id)
+    }
+
+    /// Marks every run that has been `running` for longer than `max_age` as failed and returns their ids.
+    ///
+    /// A run left `running` by a process that died never ends on its own; the importer calls this
+    /// with [`STALE_AFTER`] before it opens a run.
+    pub async fn reap_stale(&self, max_age: Duration) -> Result<Vec<RunId>, DbError> {
+        let mut ids = sqlx::query_scalar!(
+            r#"UPDATE import_runs
+               SET status = 'failed', finished_at = now(), error = $2
+               WHERE status = 'running' AND started_at < now() - make_interval(secs => $1)
+               RETURNING id AS "id: RunId""#,
+            max_age.as_secs_f64(),
+            REAPED
+        )
+        .fetch_all(&self.pool)
+        .await?;
+        ids.sort();
+        Ok(ids)
     }
 
     /// Marks a running run as succeeded and stores its counters.
@@ -111,7 +155,7 @@ impl ImportRuns {
              SET status = 'failed', finished_at = now(), error = $2, counts = $3
              WHERE id = $1 AND status = 'running'",
             id as _,
-            error,
+            without_nul(error),
             counts
         )
         .execute(&self.pool)
@@ -124,7 +168,7 @@ impl ImportRuns {
         let run = sqlx::query_as!(
             ImportRun,
             r#"SELECT id AS "id: _", source AS "source: _", started_at, finished_at,
-                      status AS "status: _", counts, error
+                      status AS "status: _", counts, error, input
                FROM import_runs WHERE id = $1"#,
             id as _
         )
@@ -138,8 +182,26 @@ impl ImportRuns {
         let run = sqlx::query_as!(
             ImportRun,
             r#"SELECT id AS "id: _", source AS "source: _", started_at, finished_at,
-                      status AS "status: _", counts, error
+                      status AS "status: _", counts, error, input
                FROM import_runs WHERE source = $1
+               ORDER BY started_at DESC, id DESC LIMIT 1"#,
+            source as _
+        )
+        .fetch_optional(&self.pool)
+        .await?;
+        Ok(run)
+    }
+
+    /// The most recently started run of a source that succeeded.
+    pub async fn latest_succeeded(
+        &self,
+        source: ImportSource,
+    ) -> Result<Option<ImportRun>, DbError> {
+        let run = sqlx::query_as!(
+            ImportRun,
+            r#"SELECT id AS "id: _", source AS "source: _", started_at, finished_at,
+                      status AS "status: _", counts, error, input
+               FROM import_runs WHERE source = $1 AND status = 'succeeded'
                ORDER BY started_at DESC, id DESC LIMIT 1"#,
             source as _
         )
@@ -153,7 +215,7 @@ impl ImportRuns {
         let runs = sqlx::query_as!(
             ImportRun,
             r#"SELECT id AS "id: _", source AS "source: _", started_at, finished_at,
-                      status AS "status: _", counts, error
+                      status AS "status: _", counts, error, input
                FROM import_runs
                ORDER BY started_at DESC, id DESC LIMIT $1"#,
             i64::from(limit)

@@ -13,6 +13,9 @@ use mtg_engine::decision::{
 };
 use mtg_engine::mana::{ManaSource, Payment};
 use mtg_engine::rng::GameRng;
+use mtg_engine::turn::Step;
+
+use crate::windows::{Mode, SeatWindows, Side, Stop};
 
 /// Picks random legal answers from a seeded generator, so a bot game is reproducible from its seed.
 #[derive(Debug, Clone)]
@@ -64,6 +67,30 @@ impl RandomBot {
     pub const fn with_symbol_choices(mut self) -> Self {
         self.symbol_choices = true;
         self
+    }
+
+    /// Chooses the stops and the Full Control mode this bot plays a game with.
+    ///
+    /// The mode is `Off` in two games out of five, `NextWindow` in one and `Held` in two. Each of the eleven steps
+    /// where a player gets priority holds a stop with chance one in four on each side, and half the stops are kept.
+    /// This takes from the bot's own random stream, so a bot that calls it before its first answer, in a game and in
+    /// the one it is compared with, plays the same.
+    pub fn windows(&mut self) -> SeatWindows {
+        let mode = match self.rng.below(5) {
+            0 | 1 => Mode::Off,
+            2 => Mode::NextWindow,
+            _ => Mode::Held,
+        };
+        let mut stops = Vec::new();
+        for side in [Side::Own, Side::Opponent] {
+            for step in Step::ALL.into_iter().filter(|step| step.grants_priority()) {
+                if self.rng.below(4) == 0 {
+                    let keep = self.rng.below(2) == 0;
+                    stops.push(Stop { side, step, keep });
+                }
+            }
+        }
+        SeatWindows { stops, mode }
     }
 
     /// Answers `decision` with a uniformly random legal choice.

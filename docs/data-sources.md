@@ -1,12 +1,34 @@
 # Data sources
 
-Reference for the external data `mtg-import` reads: Scryfall and MTGJSON bulk files, mana cost strings, and the deck export formats of Moxfield, Archidekt, Arena and MTGO. Everything here was checked against live data or real exports.
+Reference for the external data `mtg-import` reads and how `mtg-cli` fetches it: Scryfall and MTGJSON bulk files, mana cost strings, and the deck export formats of Moxfield, Archidekt, Arena and MTGO. Everything here was checked against live data or real exports.
 
 ## Bulk data
 
 - **Scryfall** (`GET https://api.scryfall.com/bulk-data`; send `User-Agent` and `Accept`): the files are gzipped JSONL (`jsonl_download_uri`). `oracle_cards` is the card catalogue and `rulings` the rulings. `mtg_import::scryfall::{cards_jsonl, rulings_jsonl}` parse them behind a gzip decoder; `cards` and `rulings` read the JSON-array form of older dumps.
 - **MTGJSON**: `https://mtgjson.com/api/v5/DeckList.json` indexes about 3,100 decks of many types (`Commander Deck`, `Starter Deck`, `Planeswalker Deck`, ...). A deck file is `https://mtgjson.com/api/v5/decks/<fileName>.json`.
 - Quirks the importer handles: MTGJSON lists reversible cards as `A // A` where Scryfall names them `A`, and memorabilia `front_card` placeholders share names with real cards but are not deck cards.
+
+## Using mtg-cli
+
+`mtg-cli` downloads the bulk files into a cache and loads them into Postgres. `DATABASE_URL` selects the database (`cargo run` applies the default of `.cargo/config.toml`); `--cache <dir>` or `MTG_CACHE_DIR` selects the cache, which defaults to `$XDG_CACHE_HOME/mtg-cli` or `~/.cache/mtg-cli`. Progress and warnings go to stderr, one summary line to stdout.
+
+```sh
+docker compose up -d db
+cargo run -p mtg-cli -- fetch scryfall   # Oracle Cards and rulings, about 30 MiB
+cargo run -p mtg-cli -- fetch decks      # the 198 Commander precons, about 100 MiB
+cargo run -p mtg-cli -- ingest           # applies the migrations, then loads the cache
+cargo run -p mtg-cli -- status           # cache, row counts, latest import runs
+```
+
+- **`fetch scryfall`** reads the `bulk-data` listing and downloads `oracle_cards` and `rulings` (`jsonl_download_uri`, else `download_uri`). A file is skipped while the manifest holds it under the listing's `updated_at`; `--force` downloads anyway.
+  - The file is written to `<name>.part`, resumed there with a `Range` request, checked (gzip integrity and the announced `compressed_size`), hashed with SHA-256 and renamed. The manifest (`manifest.json` in the cache) records `updated_at`, size, checksum and address of each complete file.
+- **`fetch decks`** saves `DeckList.json` and the decks it lists. The default is the `Commander Deck` type; `--type <TYPE>` (repeatable, `all` for every type), `--only <NAME>` (a part of the deck name, or its file name; repeatable) and `--limit <N>` (the newest N) narrow or widen the choice.
+  - A cached deck is asked about only when the index build differs from the one that last confirmed it, and then with `If-None-Match`. A deck the server lacks is reported and skipped; any other failure stops the run and keeps what was fetched.
+- **Politeness:** every request sends `User-Agent: mtg-cli/<version>` and an `Accept` header, and starts at least 100 ms after the previous one ended. Connection failures, timeouts, 408, 425, 429 and 5xx are tried three times with waits of 2 s and 4 s, or the server's `Retry-After` (at most 60 s); other statuses end the request.
+- **`ingest`** streams the cached files through `mtg-import` and upserts them in batches (`--batch-size`, default 500) while a reader thread parses ahead. Each import run stores the SHA-256 of what it read in `import_runs.input`.
+  - The latest successful run of a source with the same input makes the next ingest skip it; `--force` loads it anyway and changes no row. Rulings and decks include the cards input in their identity, so new cards bring them back in.
+  - A failed run keeps its finished batches and the rerun upserts the rest. A record Postgres cannot store (a bad id or date, a NUL byte in any text) is skipped, counted and warned about; a run left `running` for over an hour is marked failed when the next import starts.
+  - `--dry-run` reads and checks the cached files with the importers' record rules, connects to no database and writes nothing.
 
 Real-data tests are ignored by default; they need downloaded files:
 

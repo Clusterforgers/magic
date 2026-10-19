@@ -2,13 +2,14 @@
 
 use std::fmt;
 
-use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
+use mtg_engine::decision::{Answer, PriorityAction};
 use mtg_engine::state::Stage;
 use mtg_engine::{Engine, EngineError, Event, GameResult, GameSetup};
 use thiserror::Error;
 
 use crate::bot::RandomBot;
 use crate::invariants::{InvariantChecker, Violation};
+use crate::windows::{Mode, SeatWindows, Windows};
 
 /// Whole-state invariants run every this many answers; per-event checks run on every event.
 const FULL_CHECK_EVERY: usize = 25;
@@ -26,8 +27,12 @@ pub struct PlayOptions {
     pub partial_payments: bool,
     /// Let the bots choose how to pay hybrid and Phyrexian symbols, life included (see [`RandomBot::with_symbol_choices`]).
     pub symbol_choices: bool,
-    /// Pass for a priority holder who cannot act without asking its bot, as a server with auto-pass on does.
+    /// Play under the default windows of a server with auto-pass on ([`Windows`]): a holder the windows pass for is
+    /// not asked of its bot. Off, every seat is in Full Control `Held` and is asked at every window, as on a bare engine.
     pub auto_pass: bool,
+    /// Let each bot choose its stops and Full Control mode before the game ([`RandomBot::windows`]), as a seat that
+    /// sets them in the lobby does; they replace what `auto_pass` gives that seat.
+    pub bot_windows: bool,
 }
 
 impl Default for PlayOptions {
@@ -38,6 +43,7 @@ impl Default for PlayOptions {
             partial_payments: false,
             symbol_choices: false,
             auto_pass: false,
+            bot_windows: false,
         }
     }
 }
@@ -49,7 +55,8 @@ pub struct GameOutcome {
     pub result: GameResult,
     /// Answers given.
     pub answers: usize,
-    /// Passes made for seats that could not act (0 unless [`PlayOptions::auto_pass`] is set); they count in `answers` too.
+    /// Passes the windows made for seats instead of asking their bots (0 unless [`PlayOptions::auto_pass`] or
+    /// [`PlayOptions::bot_windows`] lets a seat out of Full Control); they count in `answers` too.
     pub auto_passes: usize,
     /// The turn it ended on.
     pub turns: u32,
@@ -148,6 +155,25 @@ pub fn play_game_with(
     let mut engine = Engine::new(setup).map_err(|e| fail(e.into(), &[]))?;
     observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
 
+    let start = if options.auto_pass {
+        Mode::Off
+    } else {
+        Mode::Held
+    };
+    let seats = bots
+        .iter_mut()
+        .map(|bot| {
+            if options.bot_windows {
+                bot.windows()
+            } else {
+                SeatWindows::in_mode(start)
+            }
+        })
+        .collect();
+    let mut windows = Windows::new(seats, engine.state());
+    windows.observe(engine.events());
+
+    let pass = Answer::Priority(PriorityAction::Pass);
     let mut answers = 0;
     let mut auto_passes = 0;
     while let Some(decision) = engine.decision().cloned() {
@@ -158,16 +184,21 @@ pub fn play_game_with(
             let message = format!("decision for unknown {:?}", decision.player);
             return Err(fail(FailureKind::BadEnding(message), engine.events()));
         };
-        let idle = matches!(&decision.kind, DecisionKind::Priority(o) if !o.can_act);
-        let answer = if options.auto_pass && idle {
+        let table_passes = windows.passes(engine.state(), &decision);
+        let answer = if table_passes {
             auto_passes += 1;
-            Answer::Priority(PriorityAction::Pass)
+            pass.clone()
         } else {
             bot.choose(&decision)
         };
-        engine
+        let seat_passes = !table_passes && answer == pass;
+        let events = engine
             .apply(answer)
             .map_err(|e| fail(e.into(), engine.events()))?;
+        windows.observe(&events);
+        if seat_passes {
+            windows.passed(decision.player);
+        }
         answers += 1;
         observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
     }

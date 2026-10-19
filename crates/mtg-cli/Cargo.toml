@@ -1,0 +1,38 @@
+[package]
+name = "mtg-cli"
+description = "Command line tool that downloads Scryfall and MTGJSON data and loads it into Postgres"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lib]
+name = "mtg_cli"
+path = "src/lib.rs"
+
+[[bin]]
+name = "mtg-cli"
+path = "src/main.rs"
+
+[dependencies]
+mtg-db.workspace = true
+mtg-import.workspace = true
+chrono.workspace = true
+clap.workspace = true
+flate2.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+sqlx.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["fs", "io-util"] }
+
+[dev-dependencies]
+proptest.workspace = true
+rstest.workspace = true
+tempfile.workspace = true
+tokio = { workspace = true, features = ["fs", "io-util", "net", "test-util"] }
+
+[lints]
+workspace = true

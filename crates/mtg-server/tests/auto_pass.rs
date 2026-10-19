@@ -11,9 +11,9 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{DecisionKind, PriorityAction, PriorityOptions};
 use mtg_engine::state::GameResult;
 use mtg_engine::{Answer, Decision, Event, GameSetup, replay};
-use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage};
+use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, FullControlMode, ServerMessage};
 use mtg_server::{
-    EventStore, GameConfig, GameHandle, MemoryStore, Pace, resume_game_with, spawn_game_with,
+    Dwell, EventStore, GameConfig, GameHandle, MemoryStore, Pace, resume_game_with, spawn_game_with,
 };
 use mtg_testkit::cards::{bear, forest, free_creature, giant};
 use mtg_testkit::{Scenario, ready};
@@ -24,6 +24,7 @@ const ON: Pace = Pace {
     auto_pass: true,
     response: None,
     blocks: None,
+    dwell: Dwell::OFF,
 };
 
 fn config(pace: Pace) -> GameConfig {
@@ -102,10 +103,14 @@ async fn set(handle: &GameHandle, from: &Client, enabled: bool) {
     handle.status().await.unwrap();
 }
 
-/// Plays a bot game with the server defaults (auto-pass on, clocks running) and checks it against the bare engine.
+/// Plays a bot game with the server defaults (auto-pass on, clocks running, no dwell) and checks it against the bare engine.
 async fn bot_game_matches_the_bare_engine_under_the_same_rule(players: usize, seed: u64) {
     // The bots answer at once, so no clock ever runs out.
-    let (handle, store) = spawn(table_setup(players, seed), Pace::default());
+    let pace = Pace {
+        dwell: Dwell::OFF,
+        ..Pace::default()
+    };
+    let (handle, store) = spawn(table_setup(players, seed), pace);
     let reports = play_table(&handle, players, seed).await;
 
     let straight = reference_auto_pass(table_setup(players, seed), seed);
@@ -202,9 +207,14 @@ async fn a_seat_can_switch_auto_pass_off_and_on_in_the_middle_of_a_game() {
     let land = priority(&decision).playable_lands[0];
     clients[0].drain();
 
-    // Off, nothing happens by itself.
+    // Off is the Full Control mode `Held`: the seat is told so and nothing happens by itself.
     set(&handle, &clients[1], false).await;
-    silent(&clients[1].drain());
+    assert_eq!(
+        clients[1].drain(),
+        [ServerMessage::FullControl {
+            mode: FullControlMode::Held
+        }]
+    );
 
     // The land is played; seat 1 now has nothing to do, and with the setting off it is asked all the same.
     let play = Answer::Priority(PriorityAction::PlayLand(land));

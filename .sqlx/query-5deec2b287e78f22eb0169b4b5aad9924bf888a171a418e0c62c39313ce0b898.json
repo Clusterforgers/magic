@@ -1,0 +1,49 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT (SELECT count(*) FROM cards) AS \"cards!\",\n                      (SELECT count(*) FROM printings) AS \"printings!\",\n                      (SELECT count(*) FROM rulings) AS \"rulings!\",\n                      (SELECT count(*) FROM precon_decks) AS \"precon_decks!\",\n                      (SELECT count(*) FROM precon_deck_cards) AS \"precon_entries!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "cards!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "printings!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "rulings!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "precon_decks!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "precon_entries!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "5deec2b287e78f22eb0169b4b5aad9924bf888a171a418e0c62c39313ce0b898"
+}

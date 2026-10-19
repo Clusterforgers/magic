@@ -52,6 +52,9 @@ getrandom = "0.4"
 argon2 = { version = "=0.6.0", default-features = false, features = ["alloc", "getrandom", "password-hash"] }
 tokio-tungstenite = "0.30"
 futures-util = "0.3"
+clap = { version = "4", features = ["derive", "env"] }
+# TLS through rustls; transparent gzip for the MTGJSON files. No native-tls, so no system OpenSSL.
+reqwest = { version = "0.13", default-features = false, features = ["rustls", "http2", "gzip", "system-proxy"] }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

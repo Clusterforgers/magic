@@ -8,7 +8,8 @@ use mtg_protocol::{
 use thiserror::Error;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
-use crate::running::{Issued, Rejection, Step};
+use crate::running::{Halt, Issued, Rejection, Step};
+use crate::stops::{self, Stops};
 use crate::store::{EventStore, StoreError};
 use crate::yields::Yields;
 
@@ -77,19 +78,25 @@ impl<S: EventStore> GameActor<S> {
 
     /// Persists a step and shows it to the table, or takes it back if it cannot be saved.
     ///
-    /// First the seats that have nothing to do and asked to be skipped, and the seats that yield, are passed
-    /// for, so the step, the passes that follow it and the save are one unit: either the whole stretch is kept
-    /// or none of it. The yields and the stops start from copies that replace the seats' own only once saved.
+    /// First the seats the windows pass for at once ([`crate::windows`]: a seat that is not in Full Control and meets no
+    /// window of its own, or that yields) are passed for, so the step, the passes that follow it and the save are
+    /// one unit: either the whole stretch is kept or none of it. A seat that must wait at its window (`Window::dwells`)
+    /// is not passed for here: the run stops at it and the pass comes as a step of its own when its dwell is over
+    /// ([`GameActor::expire`]). The yields and the stops (with the modes) start from copies that replace the seats' own
+    /// only once saved.
     pub(crate) async fn publish(&mut self, step: Step) -> Result<(), Fatal> {
         let yields = self.yields.clone();
-        self.publish_with(step, yields).await
+        let stops = self.stops.clone();
+        self.publish_with(step, yields, stops).await
     }
 
-    /// [`publish`](GameActor::publish) with the yields the step starts from, which are kept only if it is saved.
+    /// [`publish`](GameActor::publish) with the yields and the stops the step starts from, which are kept only if
+    /// it is saved.
     pub(crate) async fn publish_with(
         &mut self,
         step: Step,
         mut yields: Yields,
+        mut stops: Stops,
     ) -> Result<(), Fatal> {
         let Step {
             before,
@@ -98,14 +105,21 @@ impl<S: EventStore> GameActor<S> {
             from_seq,
             origin,
             keep_unchanged,
+            passed,
+            by_dwell,
         } = step;
-        let mut stops = self.stops.clone();
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
         };
-        let skipped = running.skip_idle(&mut events, &self.auto_pass, &mut yields);
+        // The step's own events come first, so the passes that follow already meet the stops and the mode it left.
+        stops.left(stops::place(&before), &events);
+        if passed {
+            stops.passed(origin);
+        }
+        let skipped = running.skip_idle(&mut events, &mut stops, &mut yields);
+        let halt = skipped.as_ref().ok().copied().unwrap_or(Halt::Ask);
         let committed = match skipped {
-            Ok(()) => self.persist(&before, &events, from_seq).await,
+            Ok(_) => self.persist(&before, &events, from_seq).await,
             Err(error) => Err(CommitError::from(error)),
         };
         let Phase::Running(running) = &mut self.phase else {
@@ -122,7 +136,7 @@ impl<S: EventStore> GameActor<S> {
                     .map(|(seat, until)| (seat, ServerMessage::Yielding { until }))
                     .collect();
                 notices.extend(self.stops.replace(stops));
-                let next = running.settle(keep_unchanged);
+                let next = running.settle(keep_unchanged, halt, by_dwell);
                 let result = running.engine.result();
                 // Before anyone hears `GameOver`, so a client that saw it can trust the record.
                 if let (Some(recorder), Some(result)) = (&self.recorder, result) {
