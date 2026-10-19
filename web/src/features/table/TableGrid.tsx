@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { gridColumns, gridRows, mainColumns } from './layout'
 import type { Regions } from './layout'
+import { usePhase } from './turn/usePhase'
 
 /** The named regions of the table, top to bottom: the bar, the opponents, the shared strip, your board, the hand and the controls. */
 const AREAS = '"bar bar" "opponents opponents" "shared shared" "own own" "hand controls"'
@@ -59,9 +60,13 @@ export function TableGrid({
   side,
   overlay,
 }: TableGridProps) {
+  // Read here, so a change of phase redraws the frame alone: the regions are elements made by the table and stay as they were.
+  const phase = usePhase()
   return (
     <div
       data-slot="table-grid"
+      // The phase of the turn, for the stylesheet to theme the bar, the strip and the ground (`turn/phase.css`).
+      data-phase={phase?.id}
       data-breakpoint={regions.breakpoint}
       data-side={regions.side}
       style={{ gridTemplateColumns: gridColumns(regions.side) } as CSSProperties}

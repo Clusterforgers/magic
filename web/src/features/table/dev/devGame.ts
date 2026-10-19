@@ -7,7 +7,7 @@ import { canHoldStop } from '@/play/stops'
 import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById } from '@/play/view'
-import type { FullControlMode, Stop } from '@/protocol/generated'
+import type { FullControlMode, Step, Stop } from '@/protocol/generated'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
 import { buildFixture } from './fixture'
@@ -141,6 +141,8 @@ export function fixtureSession(store: PlayStore, options: FixtureSessionOptions 
 export interface FixtureGameOptions extends FixtureOptions {
   prompt?: string
   turn?: 'you'
+  /** The step the turn is in, whatever the fixture or the prompt's moment has; theirs when left out. */
+  step?: Step
   /** Milliseconds the table takes to answer a preview; `PREVIEW_LATENCY_MS` when left out. */
   previewMs?: number
   /** The stops the viewer holds from the start; none when left out. */
@@ -158,7 +160,11 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   // A prompt may need another moment of the game than the fixture shows (the viewer's own turn, an attack to block),
   // and so may a state without any prompt, such as a seat that is already passing.
   const table = Object.hasOwn(DEV_TABLES, name) ? DEV_TABLES[name] : undefined
-  const fixture = table === undefined ? built : table(built)
+  const moment = table === undefined ? built : table(built)
+  const fixture =
+    options.step === undefined
+      ? moment
+      : { ...moment, view: { ...moment.view, turn: { ...moment.view.turn, step: options.step } } }
   store.setState(fixtureState(fixture, prompt === undefined ? null : prompt(fixture)))
   if (options.stops !== undefined) store.setState({ stops: options.stops })
   if (options.fullControl !== undefined) store.setState({ fullControl: options.fullControl })

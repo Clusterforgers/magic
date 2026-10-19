@@ -1,5 +1,6 @@
-// Goal: the step ladder in the top bar lights the current step in the colour of whose turn it is, fills the steps behind it, leaves the ones to come hollow, dashes a step the game passed without a window for 1 s before it settles as passed, starts over with each turn, adds first-strike damage only while it matters, is a picture a screen reader skips, and draws the same marks without the timed cues.
+// Goal: the step ladder in the top bar lights the current step in the colour of its phase (solid on your turn, tinted on another seat's), leads each run of one phase with the phase's icon and names the current one beside the colour, fills the steps behind it, leaves the ones to come hollow, dashes a step the game passed without a window for 1 s before it settles as passed, starts over with each turn, adds first-strike damage only while it matters, is a picture a screen reader skips, and draws the same marks without the timed cues.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import type { Step } from '@/protocol/generated'
 import { cueDom, renderCueTable, useCueClock } from '@/test-utils/cueTable'
 import { renderTable } from '@/test-utils/tableHarness'
 import { passTurn } from '@/test-utils/turnEvents'
@@ -22,18 +23,23 @@ afterEach(() => {
 })
 
 describe('the marks', () => {
-  it('lights the current step in the colour of an opponent’s turn and fills the ones behind it', () => {
+  it('lights the current step on an opponent’s turn as a tint with a heavier edge and fills the ones behind it', () => {
     renderCueTable()
     // Bo's turn 5, in declare blockers: Upkeep to Declare attackers are behind, four steps are to come.
     expect(ladder()).toHaveAttribute('data-side', 'them')
     expect(marks()).toBe('pppppcuuuu')
+    expect(ladder()?.querySelector('[data-state="current"]')).toHaveClass(
+      'bg-phase-soft',
+      'border-2',
+      'border-phase',
+    )
   })
 
-  it('lights it in gold on your own turn', () => {
+  it('lights it solid in the colour of the phase on your own turn', () => {
     renderCueTable({}, { fixture: buildFixture({ seats: 2, permanents: 2, active: 0 }) })
     expect(ladder()).toHaveAttribute('data-side', 'you')
     const lit = ladder()?.querySelector('[data-state="current"]')
-    expect(lit).toHaveClass('bg-turn-you', 'border-turn-you-edge')
+    expect(lit).toHaveClass('bg-phase', 'border-phase')
   })
 
   it('tells the marks apart by shape: filled, hollow and dashed, not by colour alone', () => {
@@ -42,7 +48,7 @@ describe('the marks', () => {
     expect(of('passed')).toHaveClass('bg-step-passed')
     expect(of('upcoming')).not.toHaveClass('bg-step-passed')
     expect(of('upcoming')).toHaveClass('border-border-strong')
-    expect(of('current')).toHaveClass('bg-turn-them')
+    expect(of('current')).toHaveClass('bg-phase-soft')
   })
 
   it('names each step for a pointer', () => {
@@ -83,6 +89,79 @@ describe('the marks', () => {
     expect(ladder()).toBeNull()
     table.update((state) => ({ view: state.view && { ...state.view, stage: 'Finished' } }))
     expect(ladder()).toBeNull()
+  })
+})
+
+describe('the phases', () => {
+  const runs = (): HTMLElement[] => [...document.querySelectorAll<HTMLElement>('[data-slot="phase-run"]')]
+  const lit = (): number[] =>
+    runs().flatMap((run, index) => (run.hasAttribute('data-current') ? [index] : []))
+
+  it('leads each run of one phase with its icon: five runs, the main phase on both sides of combat', () => {
+    renderCueTable()
+    expect(runs().map((run) => run.dataset.phaseId)).toEqual([
+      'beginning',
+      'main',
+      'combat',
+      'main',
+      'ending',
+    ])
+    for (const run of runs()) expect(run.querySelector('svg'), run.dataset.phaseId).not.toBeNull()
+  })
+
+  it('names the phase of the current run, and no other, with its icon in the phase’s colour beside the lit step', () => {
+    renderCueTable()
+    // Bo's turn, declare blockers: the combat run is the one that is lit.
+    expect(lit()).toEqual([2])
+    expect(runs().map((run) => run.querySelector('span')?.textContent ?? '')).toEqual([
+      '',
+      '',
+      'Combat',
+      '',
+      '',
+    ])
+    expect(runs()[2]?.querySelector('svg')).toHaveClass('text-phase')
+    expect(runs()[1]?.querySelector('svg')).toHaveClass('text-muted-foreground')
+  })
+
+  it.each<[Step, number]>([
+    ['Upkeep', 0],
+    ['Draw', 0],
+    ['Main1', 1],
+    ['BeginCombat', 2],
+    ['EndCombat', 2],
+    ['Main2', 3],
+    ['End', 4],
+  ])('with the turn in %s it lights run %i of the ladder', (step, run) => {
+    const table = renderCueTable()
+    table.deliver([], { step })
+    expect(lit()).toEqual([run])
+  })
+
+  it.each<[Step, number]>([
+    ['Untap', 0],
+    ['Cleanup', 4],
+  ])('with the turn in %s, which the ladder does not draw, it lights run %i of its phase', (step, run) => {
+    const table = renderCueTable()
+    table.deliver([], { step })
+    expect(lit()).toEqual([run])
+    expect(document.querySelector('[data-slot="step-ladder"] [data-state="current"]')).toBeNull()
+  })
+
+  it('keeps first-strike damage in the combat run while it is drawn', () => {
+    const table = renderCueTable()
+    table.deliver([], { step: 'FirstStrikeDamage' })
+    expect(runs()[2]?.querySelectorAll('li')).toHaveLength(6)
+    expect(runs()[2]).toHaveAttribute('data-current')
+  })
+
+  it('marks every piece that takes the phase’s colour, so the change between phases can fade', () => {
+    renderCueTable()
+    for (const part of document.querySelectorAll(
+      '[data-slot="step-ladder"] li, [data-slot="phase-run"] svg',
+    )) {
+      expect(part).toHaveAttribute('data-themed')
+    }
   })
 })
 

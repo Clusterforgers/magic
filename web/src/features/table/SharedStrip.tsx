@@ -49,9 +49,11 @@ export function SharedStrip({ sheetMax, inset = 0 }: { sheetMax: number; inset?:
         data-your-turn={yourTurn || undefined}
         // The sheet starts beside the pod column, which keeps the life of the seat above it in view.
         style={inset === 0 ? undefined : { left: inset }}
+        // The edge takes the colour of the phase; on your turn the gold glow of `your-turn-cue` lies outside it.
+        data-themed=""
         className={cn(
-          'fade-scroll absolute inset-x-0 bottom-0 max-h-(--sheet-max) min-h-full rounded-xl bg-card px-3 py-1',
-          yourTurn ? 'your-turn-cue' : 'ring-1 ring-foreground/10',
+          'fade-scroll absolute inset-x-0 bottom-0 max-h-(--sheet-max) min-h-full rounded-xl border-2 border-phase bg-card px-3 py-1',
+          yourTurn && 'your-turn-cue',
         )}
       >
         <div className="flex min-h-full flex-col">

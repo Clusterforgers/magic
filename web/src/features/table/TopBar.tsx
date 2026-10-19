@@ -60,7 +60,12 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
   // The question goes with the right to concede, such as when the game ends while it is open.
   const allowed = usePlay(canConcede)
   return (
-    <header data-region="bar" className="flex min-h-0 min-w-0 items-center gap-2 border-b bg-surface px-2">
+    // The 3 px rule under the bar takes the colour of the phase (`turn/phase.css`).
+    <header
+      data-region="bar"
+      data-themed=""
+      className="flex min-h-0 min-w-0 items-center gap-2 border-b-[3px] border-phase bg-surface px-2"
+    >
       <HomeLink />
       <TurnBadge />
       <StepLadder />

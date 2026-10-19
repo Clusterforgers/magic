@@ -13,10 +13,10 @@ Tags: [official] a standard, vendor or Nielsen Norman Group (NN/g) page; [commun
 | Control and freedom | Concede, Stop passing, Not ready and Leave are one reversible step | S1 |
 | Error prevention | Confirm only Concede; a disabled Join says why; illegal cards dim | S1 S11 |
 | Minimalism, disclosure | One primary action per region; the rest one menu level down, never two; key hints on buttons | S1 S8 |
-| Visual hierarchy | Hand, pass button and life are biggest; state colour only for turn, priority, legal | S2 |
+| Visual hierarchy | Hand, pass button and life are biggest; state colour only for turn, phase, priority, legal | S2 |
 | Proximity | A seat pod groups name, life, zones; 8 px inside a group, 16 between | S3 |
 | Fitts's law | Pass is the largest target, bottom right; frequent controls 32 px or more, 44 on touch | S4 S5 |
-| Contrast and focus | 4.5:1 text, 3:1 edges and rings, focus never covered, colour never alone | S12 to S15 |
+| Contrast and focus | 4.5:1 text, 3:1 edges and rings, focus never covered, colour never alone | S12 to S15 S30 |
 | Motion and timing | 100 to 300 ms, ease-out in; nothing delays an answer; a working state past 1 s | S6 S7 S16 |
 
 ## Audit
@@ -70,6 +70,7 @@ Tokens are CSS variables in `index.css`, mapped by `@theme inline` (S17); shadcn
 | turn-you, on-turn-you | `oklch(0.82 0.16 85)`, `oklch(0.20 0.02 265)` | `oklch(0.82 0.15 85)`, same | your-turn pill and banner |
 | turn-you-edge | `oklch(0.55 0.14 65)` | `oklch(0.82 0.15 85)` | pod edge and ring, 4.8:1 |
 | turn-them | `oklch(0.50 0.09 250)` | `oklch(0.74 0.09 250)` | opponent turn marker |
+| phase-`<id>`, `-soft`, on-phase-`<id>` | [Phase themes](#phase-themes) | same | accent, tint and text of the four phases |
 | success, warning, destructive | `oklch(0.50 0.14 150)`, `oklch(0.50 0.14 55)`, `oklch(0.50 0.20 27)` | `oklch(0.74 0.15 150)`, `oklch(0.80 0.15 70)`, `oklch(0.72 0.17 25)` | ready, urgent clock, lethal and Concede |
 | mana fill, ink | blue `0.50 0.13 245`, red `0.52 0.20 28`, green `0.50 0.14 150`, black `0.30 0.02 300` with white ink; gold `0.82 0.14 85`, white `0.96 0.03 90`, colorless `0.78 0.01 260` with dark ink | same | pips, 5.6:1 or more |
 
@@ -132,15 +133,42 @@ Whose turn it is stays on screen as a token: Legends of Runeterra's attack token
 
 | Cue | When | Shows | Reduced motion |
 |---|---|---|---|
-| Turn badge | always, in the top bar | "Your turn · 5 · Precombat main" (turn-you fill) or "Bo's turn · 5 · Declare blockers" (turn-them outline, seat dot) | unchanged |
+| Turn badge | always, in the top bar | the phase's icon and name, then "Your turn · 5 · Precombat main" (accent fill) or "Bo's turn · 5 · Declare blockers" (tint, accent edge); [Phase themes](#phase-themes) | unchanged |
 | Turn banner | turn number or active seat changes | a band over the shared region, "Your turn" or "Bo's turn" and the turn; 250 ms in, 600 held, 150 out; `pointer-events: none` | fade only, held 1.5 s |
 | Active seat | during its turn | a 3 px pod edge (turn-you-edge or turn-them); a dot on a priority holder who is not active; your pod keeps `your-turn-cue`, pulsing 6 s at most; in Focus mode the large board follows it, a 150 ms cross-fade | static ring, no fade |
 | Ticker | every batch | one line: the newest non-minor log line, plus "Skipped Upkeep, Draw" when steps passed with no window for you; three lines, 3 s each | static |
-| Ladder | a step changes | current step lit, passed steps filled, a skipped step dashed for 1 s | no sweep |
+| Ladder | a step changes | current step lit in the phase's accent, passed steps filled, a skipped step dashed for 1 s | no sweep |
 
 - Only your own skips are explained ("You had no plays"). Another seat's pass never says if it was automatic, how long it took or who is deciding.
 - `turn/feed.ts` is pure over `(prev, next, events)`; a test replays two transcripts that differ in one hidden card and requires identical feeds.
 - A polite live region announces the banner. The tab title cue stays.
+
+### Phase themes
+
+Four themes mark the phase of the turn at a glance. A step maps to one by the step alone, which every seat sees (`turn/phase.ts`). Arena lights the current phase's symbol in one orange [S24] and Hearthstone lights one button [S25]; here the hue changes with the phase, and an icon and a name sit beside it.
+
+| Phase | Steps | Icon | Accent, light | Accent, dark |
+|---|---|---|---|---|
+| Beginning | untap, upkeep, draw | sunrise | `oklch(0.54 0.16 250)` | `oklch(0.84 0.09 250)` |
+| Main | precombat and postcombat main | wand | `oklch(0.44 0.11 170)` | `oklch(0.68 0.157 170)` |
+| Combat | beginning of combat to end of combat, first-strike damage included | swords | `oklch(0.45 0.147 36)` | `oklch(0.68 0.16 36)` |
+| Ending | end step, cleanup | moon | `oklch(0.54 0.097 342)` | `oklch(0.68 0.09 342)` |
+
+Each theme has `phase-<id>` (accent), `phase-<id>-soft` (tint, lightness 0.95 light and 0.30 dark) and `on-phase-<id>` (text on the accent, `on-primary`'s values), in both colour schemes. The table root carries `data-phase`, and `phase.css` points `phase`, `phase-soft` and `on-phase` at that set; before and after the turns they stay neutral.
+
+| Piece | Takes the theme as |
+|---|---|
+| Top bar | a 3 px rule in the accent |
+| Turn badge | the phase's icon and name, then the turn's words: accent fill on your turn, tint with an accent edge on another seat's |
+| Ladder | the current step in the accent (solid on your turn, tint with a heavier edge on another seat's), an icon before each run of steps of one phase, the name beside the run holding the step |
+| Shared strip | a 2 px edge in the accent, inside the your-turn glow |
+| Table | the accent at 5 % over the ground |
+
+- Never colour alone [S30]: the badge and the ladder carry the icon and the name; whose turn it is stays in words and in fill against tint.
+- The hues follow Okabe and Ito [S31]: blue, bluish green, vermillion for red and reddish purple for violet. None is yellow or orange, which is the gold of your turn.
+- Contrast: text on the accent and on the tint 4.5:1 [S13]; the accent against every surface, its tint and the washed table 3:1 [S14]; text on the washed table 4.5:1. The wash is 6 % at most.
+- Colour-blind: any two accents, and an accent and the gold of your turn, differ by CIEDE2000 [S33] 12 or more under full vision, protanopia, deuteranopia and tritanopia [S32].
+- Motion: a change of theme fades in 200 ms and is immediate under reduced motion. Nothing waits for a theme, and none adds a delay to an answer.
 
 ## Game browser and lobby
 
@@ -223,3 +251,7 @@ Each is 45 to 60 minutes; "After" names what must be done first and what runs al
 - S27 [community] Legends of Runeterra UI: https://www.ludo.guide/guide/legends-of-runeterra/understanding-the-ui
 - S28 [community] Slay the Spire UI: https://www.ludo.guide/guide/slay-the-spire/getting-started/understanding-the-user-interface
 - S29 [official] Unity Lobby glossary (a search summary only): https://docs.unity.com/en-us/lobby/glossary
+- S30 [official] WCAG 1.4.1 use of colour: https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html
+- S31 [official] Okabe and Ito, Color Universal Design: https://jfly.uni-koeln.de/color/
+- S32 [official] Machado, Oliveira and Fernandes 2009, colour vision deficiency simulation: https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html
+- S33 [official] Sharma, Wu and Dalal, the CIEDE2000 colour difference with test data: https://hajim.rochester.edu/ece/sites/gsharma/ciede2000/ciede2000noteCRNA.pdf
