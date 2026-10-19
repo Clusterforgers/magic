@@ -10,7 +10,7 @@ The `mtg-server` crate: one actor per game behind an axum REST and WebSocket tra
 - The lobby has no engine until every seat has sent `Ready`; readiness is never stored and outlives a connection. The last `Ready` creates the engine and broadcasts the opening events from seq 0; if that fails, a repeated `Ready` retries. Chat (500 characters at most) goes to the connected seats and is never stored.
 - The lobby roster (`ServerMessage::Lobby`) lists every seat and is sent after each change. An open seat is listed with an empty name, not connected and not ready, so it counts in `needed` and the game cannot start while one is open: nobody can join an open seat and nothing sent as one counts, so a `Ready` still on its way from a player removed a moment ago starts nothing.
 - `Registry` holds the live games by random v4 `GameId`. A seat token is 256 random bits kept only as its SHA-256, and `authenticate` compares every seat so timing does not say which one matched. `MTG_MAX_GAMES` caps creation.
-- The janitor sweeps every 30 s and drops finished games after 10 min, lobbies that never started after 1 h and started games with nobody connected for 24 h (`Retention`). It closes their sockets with 1001 and marks the record `expired` or `finished`.
+- The janitor sweeps every 30 s and drops finished games after 10 min, lobbies that never started after 1 h and started games with nobody connected for 24 h (`Retention`). It closes their sockets with 1001 and marks the record `expired` or `finished`. A host who abandons a lobby ends it sooner with `DELETE /api/games/{id}` ([Open games](#open-games)).
 
 ## Transport
 
