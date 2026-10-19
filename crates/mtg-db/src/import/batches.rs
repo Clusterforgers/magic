@@ -6,6 +6,8 @@ use std::iter::Fuse;
 use mtg_import::scryfall::ScryfallError;
 use serde::Serialize;
 
+use crate::runs::without_nul;
+
 /// How many skipped records are described in detail; the rest are only counted.
 const MAX_SAMPLES: usize = 20;
 
@@ -32,9 +34,10 @@ impl SkipLog {
     pub(crate) fn record(&mut self, position: u64, reason: impl Display) {
         self.count += 1;
         if self.samples.len() < MAX_SAMPLES {
+            // Reasons echo record text and end up in the run's JSON counters, which cannot hold NUL.
             self.samples.push(SkippedRecord {
                 position,
-                reason: reason.to_string(),
+                reason: without_nul(&reason.to_string()),
             });
         }
     }

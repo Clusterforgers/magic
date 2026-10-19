@@ -14,11 +14,11 @@ pub mod runs;
 pub use cards::{
     CardPage, CardRepo, CardSearch, ColorFilter, ColorMatch, NameSuggestion, Page, SortKey,
 };
-pub use database::Database;
+pub use database::{Database, RowCounts};
 pub use error::DbError;
-pub use import::{ImportError, Importer};
+pub use import::{CheckReport, ImportError, Importer, check_cards, check_precons, check_rulings};
 pub use model::{Card, CardDetail, ImplStatus, Printing, PrintingImages, Ruling, StoredFace};
 pub use precons::{
     DeckBoard, PreconDeckDetail, PreconDeckId, PreconDeckSummary, PreconEntry, PreconRepo,
 };
-pub use runs::{ImportRun, ImportRuns, ImportSource, RunId, RunStatus};
+pub use runs::{ImportRun, ImportRuns, ImportSource, RunId, RunStatus, STALE_AFTER};

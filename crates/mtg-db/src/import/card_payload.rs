@@ -40,6 +40,35 @@ pub(crate) enum Rejection {
     /// The mana value is negative or not finite.
     #[error("mana value {0} is not a non-negative finite number")]
     ManaValue(f64),
+    /// A text value holds a NUL byte, which Postgres cannot store.
+    #[error("a text value contains a NUL byte")]
+    Nul,
+}
+
+/// Refuses a row whose text holds a NUL byte, which neither `text` nor `jsonb` can store.
+///
+/// The check reads the JSON the database would receive, where a NUL is the escape `\u0000`.
+pub(crate) fn reject_nul(row: &impl Serialize) -> Result<(), Rejection> {
+    match serde_json::to_vec(row) {
+        Ok(json) if has_nul_escape(&json) => Err(Rejection::Nul),
+        _ => Ok(()),
+    }
+}
+
+/// Whether JSON text holds the escape `\u0000`; a backslash before it escapes the backslash instead.
+fn has_nul_escape(json: &[u8]) -> bool {
+    let mut at = 0;
+    while at < json.len() {
+        if json[at] == b'\\' {
+            if json[at + 1..].starts_with(b"u0000") {
+                return true;
+            }
+            at += 2;
+        } else {
+            at += 1;
+        }
+    }
+    false
 }
 
 /// A `cards` row in the shape of the upsert statement's `jsonb_to_recordset` columns.
@@ -151,6 +180,8 @@ pub(crate) fn split_record(
             faces: record.faces().map(|face| face.images.clone()).collect(),
         },
     };
+    reject_nul(&card)?;
+    reject_nul(&printing)?;
     Ok((card, printing))
 }
 
@@ -176,9 +207,10 @@ fn joined_oracle_text(record: &CardRecord) -> String {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: records become storable rows exactly when their ids, dates and numbers are usable, and multi-face text and names are folded consistently with the in-memory card index.
+    //! Goal: records become storable rows exactly when their ids, dates, numbers and text are usable, and multi-face text and names are folded consistently with the in-memory card index.
     use mtg_import::ids::OracleId;
     use mtg_import::scryfall::cards;
+    use proptest::prelude::*;
     use rstest::rstest;
 
     use super::*;
@@ -201,6 +233,10 @@ mod tests {
     #[case::negative_mana_value(|r: &mut CardRecord| r.mana_value = -1.0, Rejection::ManaValue(-1.0))]
     #[case::infinite_mana_value(|r: &mut CardRecord| r.mana_value = f64::INFINITY, Rejection::ManaValue(f64::INFINITY))]
     #[case::blank_name(|r: &mut CardRecord| r.name = " \u{200B} ".into(), Rejection::BlankName(" \u{200B} ".into()))]
+    #[case::nul_in_the_name(|r: &mut CardRecord| r.name = "Bolt\0".into(), Rejection::Nul)]
+    #[case::nul_in_the_rules_text(|r: &mut CardRecord| r.front.oracle_text = "Deals 3\0damage.".into(), Rejection::Nul)]
+    #[case::nul_in_the_set_code(|r: &mut CardRecord| r.set = "\0lea".into(), Rejection::Nul)]
+    #[case::nul_in_a_keyword(|r: &mut CardRecord| r.keywords = vec!["Haste\0".into()], Rejection::Nul)]
     fn unusable_records_are_rejected(
         #[case] damage: fn(&mut CardRecord),
         #[case] expected: Rejection,
@@ -259,5 +295,34 @@ mod tests {
         let (_, bolt) = split_record(&record("Lightning Bolt")).unwrap();
         assert!(bolt.images.card.is_some());
         assert_eq!(bolt.images.faces, vec![None]);
+    }
+
+    #[rstest]
+    #[case::plain("abc", false)]
+    #[case::nul("a\0b", true)]
+    #[case::only_a_nul("\0", true)]
+    #[case::the_letters_after_a_backslash("a\\u0000b", false)]
+    #[case::a_backslash_then_a_nul("\\\0", true)]
+    #[case::two_backslashes_then_the_letters("\\\\u0000", false)]
+    #[case::other_control_characters("a\u{1}\u{1f}b", false)]
+    #[case::beyond_ascii("Æther ☃\0", true)]
+    fn only_a_real_nul_is_refused(#[case] text: &str, #[case] refused: bool) {
+        assert_eq!(
+            reject_nul(&text),
+            if refused { Err(Rejection::Nul) } else { Ok(()) }
+        );
+    }
+
+    proptest! {
+        #[test]
+        fn text_is_refused_exactly_when_it_holds_a_nul(text in "[\\x00\\\\u0a]{0,16}") {
+            prop_assert_eq!(reject_nul(&text).is_err(), text.contains('\0'));
+            prop_assert_eq!(reject_nul(&vec![text.clone()]).is_err(), text.contains('\0'));
+        }
+
+        #[test]
+        fn any_text_is_refused_exactly_when_it_holds_a_nul(text in "\\PC{0,24}|[\\x00-\\x7f]{0,24}") {
+            prop_assert_eq!(reject_nul(&text).is_err(), text.contains('\0'));
+        }
     }
 }

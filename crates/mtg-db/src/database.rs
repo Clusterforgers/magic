@@ -73,4 +73,39 @@ impl Database {
     pub fn importer(&self) -> Importer {
         Importer::new(self.pool.clone())
     }
+
+    /// How many rows each card-data table holds.
+    pub async fn row_counts(&self) -> Result<RowCounts, DbError> {
+        let row = sqlx::query!(
+            r#"SELECT (SELECT count(*) FROM cards) AS "cards!",
+                      (SELECT count(*) FROM printings) AS "printings!",
+                      (SELECT count(*) FROM rulings) AS "rulings!",
+                      (SELECT count(*) FROM precon_decks) AS "precon_decks!",
+                      (SELECT count(*) FROM precon_deck_cards) AS "precon_entries!""#
+        )
+        .fetch_one(&self.pool)
+        .await?;
+        Ok(RowCounts {
+            cards: row.cards.unsigned_abs(),
+            printings: row.printings.unsigned_abs(),
+            rulings: row.rulings.unsigned_abs(),
+            precon_decks: row.precon_decks.unsigned_abs(),
+            precon_entries: row.precon_entries.unsigned_abs(),
+        })
+    }
+}
+
+/// Rows per card-data table.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct RowCounts {
+    /// Oracle cards.
+    pub cards: u64,
+    /// Printings.
+    pub printings: u64,
+    /// Rulings.
+    pub rulings: u64,
+    /// Precon decks.
+    pub precon_decks: u64,
+    /// Lines of precon decks.
+    pub precon_entries: u64,
 }
