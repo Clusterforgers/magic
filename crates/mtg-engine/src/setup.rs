@@ -239,6 +239,8 @@ impl GameState {
             effects: Vec::new(),
             next_effect: 0,
             next_timestamp: 0,
+            next_object: next_id,
+            resolving: None,
             result: None,
         })
     }

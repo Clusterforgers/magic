@@ -1,4 +1,4 @@
-//! Game objects: cards (and later tokens and abilities) with their zone and permanent state.
+//! Game objects: cards, tokens and abilities on the stack, with their zone and permanent state.
 
 use std::hash::{Hash, Hasher};
 use std::sync::Arc;
@@ -6,9 +6,42 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_core::card::CardTypes;
 use mtg_core::ids::{ObjectId, PlayerId};
+use serde::{Deserialize, Serialize};
 
+use crate::abilities::AbilityObject;
+use crate::choose::Choices;
 use crate::hash::stable_hash;
 use crate::zones::Zone;
+
+/// What a game object is.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum ObjectKind {
+    /// A card (a spell on the stack is its card).
+    #[default]
+    Card,
+    /// A token.
+    Token,
+    /// An activated or triggered ability on the stack.
+    Ability,
+}
+
+impl ObjectKind {
+    /// Whether this is a card, so serialization can leave it out.
+    pub const fn is_card(&self) -> bool {
+        matches!(self, ObjectKind::Card)
+    }
+}
+
+/// A reference to an object that notices when the object has become a new one by changing zones (CR 400.7).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct ObjectRef {
+    /// The object.
+    pub id: ObjectId,
+    /// Its zone-change counter when the reference was taken.
+    pub counter: u32,
+}
 
 /// State that only exists while an object is on the battlefield.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -35,7 +68,7 @@ impl PermanentState {
     }
 }
 
-/// A card in the game with its current zone, controller and permanent state.
+/// A card, token or ability in the game with its current zone, controller and permanent state.
 #[derive(Debug, Clone)]
 pub struct GameObject {
     pub(crate) id: ObjectId,
@@ -46,6 +79,10 @@ pub struct GameObject {
     pub(crate) base_types: CardTypes,
     pub(crate) zone: Zone,
     pub(crate) permanent: Option<PermanentState>,
+    pub(crate) counter: u32,
+    pub(crate) kind: ObjectKind,
+    pub(crate) choices: Choices,
+    pub(crate) ability: Option<Box<AbilityObject>>,
 }
 
 impl GameObject {
@@ -59,12 +96,68 @@ impl GameObject {
             def,
             zone,
             permanent: None,
+            counter: 0,
+            kind: ObjectKind::Card,
+            choices: Choices::default(),
+            ability: None,
+        }
+    }
+
+    /// An ability on top of the stack; it is named after its source and has no characteristics of its own.
+    pub(crate) fn on_stack(
+        id: ObjectId,
+        controller: PlayerId,
+        source: &GameObject,
+        choices: Choices,
+        ability: AbilityObject,
+    ) -> Self {
+        GameObject {
+            id,
+            owner: controller,
+            controller,
+            def: Arc::clone(&source.def),
+            def_fingerprint: source.def_fingerprint,
+            base_types: CardTypes::default(),
+            zone: Zone::Stack,
+            permanent: None,
+            counter: 0,
+            kind: ObjectKind::Ability,
+            choices,
+            ability: Some(Box::new(ability)),
         }
     }
 
     /// The object's id.
     pub const fn id(&self) -> ObjectId {
         self.id
+    }
+
+    /// The object's id and zone-change counter, for a reference that outlives a zone change.
+    pub const fn reference(&self) -> ObjectRef {
+        ObjectRef {
+            id: self.id,
+            counter: self.counter,
+        }
+    }
+
+    /// How many times the object has changed zones: after a change it is a new object (CR 400.7).
+    pub const fn counter(&self) -> u32 {
+        self.counter
+    }
+
+    /// Whether this is a card, a token or an ability.
+    pub const fn kind(&self) -> ObjectKind {
+        self.kind
+    }
+
+    /// What was announced for the spell or ability while it is on the stack; empty elsewhere.
+    pub const fn choices(&self) -> &Choices {
+        &self.choices
+    }
+
+    /// The ability this object is, if it is one on the stack.
+    pub fn ability(&self) -> Option<&AbilityObject> {
+        self.ability.as_deref()
     }
 
     /// The player who owns the card.
@@ -106,6 +199,10 @@ impl PartialEq for GameObject {
             && self.def_fingerprint == other.def_fingerprint
             && self.zone == other.zone
             && self.permanent == other.permanent
+            && self.counter == other.counter
+            && self.kind == other.kind
+            && self.choices == other.choices
+            && self.ability == other.ability
     }
 }
 
@@ -120,5 +217,9 @@ impl Hash for GameObject {
         self.def_fingerprint.hash(state);
         self.zone.hash(state);
         self.permanent.hash(state);
+        self.counter.hash(state);
+        self.kind.hash(state);
+        self.choices.hash(state);
+        self.ability.hash(state);
     }
 }

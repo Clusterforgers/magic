@@ -103,6 +103,9 @@ impl ObjectView {
                 damage: p.damage(),
                 summoning_sick: p.summoning_sick(),
             }),
+            kind: object.kind(),
+            source: object.ability().map(|ability| ability.source().id),
+            targets: object.choices().targets.clone(),
         })
     }
 }

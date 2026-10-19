@@ -39,6 +39,7 @@ impl CardType {
 
 /// A cheap copyable set of card types.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 #[serde(transparent)]
 pub struct CardTypes(u16);
 

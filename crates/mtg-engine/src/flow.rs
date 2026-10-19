@@ -1,8 +1,10 @@
 //! The engine's control loop as a pure function of state: what happens next?
 
 use crate::decision::Decision;
+use crate::error::EngineError;
 use crate::events::Event;
 use crate::mulligan;
+use crate::resolve;
 use crate::sba;
 use crate::state::{GameState, Stage};
 use crate::steps;
@@ -16,6 +18,8 @@ pub(crate) enum Progress {
     Decide(Decision),
     /// The game is over.
     Done,
+    /// The game cannot go on: a spell or ability uses something the engine does not play.
+    Fail(EngineError),
 }
 
 /// Computes the next batch of events or the next decision from `state` alone.
@@ -29,8 +33,12 @@ pub(crate) fn next(state: &GameState) -> Progress {
     }
 }
 
-/// State-based actions first, to a fixpoint, then the game-end check, then the turn structure.
+/// A resolution first (state-based actions wait for it to end, CR 704.3), then state-based actions to a
+/// fixpoint, then the game-end check, then the turn structure.
 fn next_in_turns(state: &GameState) -> Progress {
+    if state.resolving().is_some() {
+        return resolve::next(state);
+    }
     let actions = sba::check(state);
     if !actions.is_empty() {
         return Progress::Events(actions);

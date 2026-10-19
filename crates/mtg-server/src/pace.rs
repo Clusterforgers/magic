@@ -259,6 +259,7 @@ mod tests {
             playable_lands: Vec::new(),
             castable: Vec::new(),
             mana_abilities: Vec::new(),
+            abilities: Vec::new(),
             can_act,
             can_pass: true,
         })

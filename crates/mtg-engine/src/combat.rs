@@ -8,6 +8,7 @@ use crate::characteristics::characteristics;
 use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption};
 use crate::error::IllegalAnswer;
 use crate::events::Event;
+use crate::keywords;
 use crate::object::GameObject;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -199,10 +200,13 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             state.object(*id).is_some_and(|o| o.controller() == player)
                 && is_untapped_creature(state, *id)
         })
-        .filter(|_| !blockable.is_empty())
-        .map(|object| BlockerOption {
-            object,
-            can_block: blockable.clone(),
+        .filter_map(|object| {
+            let can_block: Vec<ObjectId> = blockable
+                .iter()
+                .copied()
+                .filter(|attacker| !keywords::stops_block(state, *attacker, object))
+                .collect();
+            (!can_block.is_empty()).then_some(BlockerOption { object, can_block })
         })
         .collect();
     BlockOptions { blockers }

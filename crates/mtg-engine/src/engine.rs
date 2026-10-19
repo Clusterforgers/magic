@@ -1,10 +1,11 @@
 //! The public driver: advance until a player must decide, then validate and apply answers.
 
-use mtg_core::ids::{EffectId, ObjectId, PlayerId};
+use mtg_core::ids::{EffectId, PlayerId};
 
 use crate::answers::{Outcome, handle};
-use crate::cast::pay_options;
-use crate::decision::{Answer, Decision, DecisionKind};
+use crate::cast::{Next, Pending, What, announce};
+use crate::choose::Choices;
+use crate::decision::{Answer, Decision};
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::error::{EngineError, PreviewError};
 use crate::events::Event;
@@ -19,19 +20,12 @@ use crate::state::{GameResult, GameState};
 /// Internal progress steps allowed between decisions before the engine reports a stall.
 const MAX_INTERNAL_STEPS: usize = 10_000;
 
-/// A spell whose payment has not been chosen yet; it lives outside game state until paid.
-#[derive(Debug, Clone, Copy)]
-struct PendingCast {
-    player: PlayerId,
-    spell: ObjectId,
-}
-
 /// Where an engine stood before a step; [`Engine::restore`] returns it to that point.
 #[derive(Debug, Clone)]
 pub struct Checkpoint {
     mark: usize,
     decision: Option<Decision>,
-    pending: Option<PendingCast>,
+    pending: Option<Pending>,
 }
 
 /// Replays `events` over the initial state of `setup`.
@@ -50,7 +44,7 @@ pub struct Engine {
     state: GameState,
     events: Vec<Event>,
     decision: Option<Decision>,
-    pending: Option<PendingCast>,
+    pending: Option<Pending>,
 }
 
 impl Engine {
@@ -109,7 +103,11 @@ impl Engine {
     /// event produced, including the automatic steps that followed the answer.
     pub fn apply(&mut self, answer: Answer) -> Result<Vec<Event>, EngineError> {
         let decision = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
-        let outcome = handle(&self.state, decision, answer)?;
+        let announced = self
+            .pending
+            .as_ref()
+            .map_or_else(Choices::default, |pending| pending.choices.clone());
+        let outcome = handle(&self.state, &announced, decision, answer)?;
         let player = decision.player;
         let checkpoint = self.checkpoint();
         let result = self.run(outcome, player).and_then(|()| self.advance());
@@ -161,7 +159,7 @@ impl Engine {
         Checkpoint {
             mark: self.events.len(),
             decision: self.decision.clone(),
-            pending: self.pending,
+            pending: self.pending.clone(),
         }
     }
 
@@ -220,7 +218,17 @@ impl Engine {
                 self.commit(events)
             }
             Outcome::BeginCast(spell) => {
-                self.pending = Some(PendingCast { player, spell });
+                self.pending = Some(Pending::new(player, What::Spell(spell)));
+                Ok(())
+            }
+            Outcome::BeginActivation(ability) => {
+                self.pending = Some(Pending::new(player, What::Ability(ability)));
+                Ok(())
+            }
+            Outcome::Targets(targets) => {
+                if let Some(pending) = &mut self.pending {
+                    pending.choices.targets.push(targets);
+                }
                 Ok(())
             }
             Outcome::CancelCast => {
@@ -241,17 +249,19 @@ impl Engine {
     /// Runs the game until a decision is needed or the game ends.
     fn advance(&mut self) -> Result<(), EngineError> {
         for _ in 0..MAX_INTERNAL_STEPS {
-            if let Some(cast) = self.pending {
-                match pay_options(&self.state, cast.player, cast.spell) {
-                    Some(options) => {
-                        self.decision = Some(Decision {
-                            player: cast.player,
-                            kind: DecisionKind::PayMana(options),
-                        });
+            if let Some(pending) = self.pending.as_mut() {
+                match announce(&self.state, pending) {
+                    Next::Ask(decision) => {
+                        self.decision = Some(decision);
                         return Ok(());
                     }
-                    None => self.pending = None,
+                    Next::Commit(events) => {
+                        self.pending = None;
+                        self.commit(events)?;
+                    }
+                    Next::Drop => self.pending = None,
                 }
+                continue;
             }
             match next(&self.state) {
                 Progress::Decide(decision) => {
@@ -263,6 +273,7 @@ impl Engine {
                     return Ok(());
                 }
                 Progress::Events(events) => self.commit(events)?,
+                Progress::Fail(error) => return Err(error),
             }
         }
         Err(EngineError::Stalled(MAX_INTERNAL_STEPS))

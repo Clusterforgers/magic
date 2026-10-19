@@ -2,8 +2,9 @@
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::apply_event;
-use mtg_engine::events::Event;
+use mtg_engine::events::{Event, ZoneCause};
 use mtg_engine::state::GameState;
+use mtg_engine::zones::Zone;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -46,6 +47,48 @@ pub enum HiddenEvent {
     },
     /// A card the viewer could not see left the game with its owner.
     ObjectLeftGame,
+    /// A player looked at cards in a library; which, only they know.
+    LibraryLooked {
+        /// Who looked.
+        player: PlayerId,
+        /// Cards looked at.
+        count: u32,
+    },
+    /// A player found cards by searching; which, only they know until they are revealed.
+    CardsFound {
+        /// Who searched.
+        player: PlayerId,
+        /// Cards found.
+        count: u32,
+    },
+    /// A player scried and chose which cards stay on top, which only they know.
+    Scried {
+        /// Who scried.
+        player: PlayerId,
+        /// Cards that stay on top.
+        top: u32,
+        /// Cards put on the bottom.
+        bottom: u32,
+    },
+    /// A card moved between zones the viewer cannot see into, so which card is withheld.
+    ZoneChanged {
+        /// Where it was.
+        from: Zone,
+        /// Where it went.
+        to: Zone,
+        /// Why.
+        cause: ZoneCause,
+    },
+    /// A player answered a question about cards the viewer cannot see; the answer is withheld.
+    ChoiceMade {
+        /// Who answered.
+        player: PlayerId,
+    },
+    /// A step of a resolution that bound or moved cards the viewer cannot see; only where it went on is shown.
+    StepDone {
+        /// Where the next step runs.
+        position: Vec<usize>,
+    },
 }
 
 /// One log event as a viewer sees it; the list stays aligned one-to-one with the log.
@@ -105,11 +148,15 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
             Some(HiddenEvent::CardDrawn { player: *player })
         }
         Event::ObjectLeftGame { object } => {
-            let seen = before
-                .object(*object)
-                .is_some_and(|o| zone_is_visible(o.zone(), viewer));
-            (!seen).then_some(HiddenEvent::ObjectLeftGame)
+            (!knows(before, *object, viewer)).then_some(HiddenEvent::ObjectLeftGame)
         }
+        // What the effects of spells and abilities make known: some of it is private to a player or to cards.
+        Event::LibraryLooked(_)
+        | Event::CardsFound(_)
+        | Event::Scried(_)
+        | Event::ZoneChanged { .. }
+        | Event::ChoiceMade { .. }
+        | Event::StepDone { .. } => redact_effects(before, event, viewer),
         Event::HandDealt { .. }
         | Event::CardsBottomed { .. }
         | Event::CardDrawn { .. }
@@ -144,8 +191,85 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::EffectExpired { .. }
         | Event::CreatureDied { .. }
         | Event::PlayerLost { .. }
-        | Event::GameEnded { .. } => None,
+        | Event::GameEnded { .. }
+        // The ability on the stack is public, and so is what was announced for it.
+        | Event::AbilityPutOnStack(_)
+        | Event::AbilityActivated { .. }
+        | Event::AbilityTriggered(_)
+        | Event::ResolutionBegan { .. }
+        | Event::ResolutionEnded { .. }
+        | Event::LifeGained { .. }
+        | Event::LifeLost { .. }
+        | Event::CountersChanged(_)
+        | Event::TokenCreated(_)
+        | Event::Revealed(_) => None,
     }
+}
+
+/// The hidden form of an event of the effect pipeline that may name cards or learn a player something private.
+fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenEvent> {
+    match event {
+        // What a player learned by looking is theirs alone.
+        Event::LibraryLooked(looked) if looked.player != viewer => {
+            Some(HiddenEvent::LibraryLooked {
+                player: looked.player,
+                count: count(looked.cards.len()),
+            })
+        }
+        Event::CardsFound(found) if found.player != viewer => Some(HiddenEvent::CardsFound {
+            player: found.player,
+            count: count(found.cards.len()),
+        }),
+        Event::Scried(scried) if scried.player != viewer => Some(HiddenEvent::Scried {
+            player: scried.player,
+            top: count(scried.top.len()),
+            bottom: count(scried.bottom.len()),
+        }),
+        // A card that moves between places the viewer cannot see into is not told apart.
+        Event::ZoneChanged {
+            from, to, cause, ..
+        } if !zone_is_visible(*from, viewer) && !zone_is_visible(*to, viewer) => {
+            Some(HiddenEvent::ZoneChanged {
+                from: *from,
+                to: *to,
+                cause: *cause,
+            })
+        }
+        // Whoever answers knows the answer; the others know it when everything it names is open to them.
+        Event::ChoiceMade { player, choice }
+            if *player != viewer
+                && !choice.objects().iter().all(|id| knows(before, *id, viewer)) =>
+        {
+            Some(HiddenEvent::ChoiceMade { player: *player })
+        }
+        // A step is shown whole when every card it bound and every object it moved away is open to the viewer.
+        Event::StepDone {
+            position,
+            bound,
+            snapshots,
+        } if !bound
+            .iter()
+            .flat_map(|(_, targets)| targets)
+            .filter_map(|target| target.object())
+            .all(|object| knows(before, object.id, viewer))
+            || !snapshots
+                .iter()
+                .all(|shot| zone_is_visible(shot.zone, viewer)) =>
+        {
+            Some(HiddenEvent::StepDone {
+                position: position.clone(),
+            })
+        }
+        _ => None,
+    }
+}
+
+/// Whether `viewer` may identify the object in the state it is in before the event; an object that is not
+/// there is not known.
+fn knows(before: &GameState, object: ObjectId, viewer: PlayerId) -> bool {
+    before
+        .object(object)
+        .is_some_and(|o| zone_is_visible(o.zone(), viewer))
 }
 
 /// Projects `events` (which `before` has not yet seen) for each of `viewers`, one batch per viewer.

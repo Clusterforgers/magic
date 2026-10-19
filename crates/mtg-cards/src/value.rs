@@ -52,7 +52,8 @@ impl Cmp {
 }
 
 /// A kind of counter.
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum CounterKind {
     /// A +1/+1 counter.
     #[serde(rename = "+1/+1")]

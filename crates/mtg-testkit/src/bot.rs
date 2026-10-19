@@ -3,6 +3,10 @@
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType, PHYREXIAN_LIFE, Resolution};
 use mtg_engine::Decision;
+use mtg_engine::choose::{
+    CardsChoice, CostsChoice, DivideChoice, DivideOptions, ModeChoice, NumberChoice, OptionChoice,
+    OrderChoice, ReplacementChoice, Target, TargetChoice, TriggersChoice, YesNoChoice,
+};
 use mtg_engine::decision::{
     Answer, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction,
     PriorityOptions,
@@ -103,7 +107,51 @@ impl RandomBot {
                 Answer::DeclareBlockers(blocks)
             }
             DecisionKind::AssignDamage(options) => Answer::AssignDamage(self.divide(options)),
+            DecisionKind::ChooseTargets(options) => {
+                // Any number between the bounds; a bot never backs out of a cast it began.
+                let spread =
+                    usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
+                let wanted = options.min as usize + self.rng.index(spread);
+                Answer::ChooseTargets(TargetChoice::Targets(self.pick(&options.legal, wanted)))
+            }
+            DecisionKind::ChooseMode(options) => Answer::ChooseMode(ModeChoice(
+                options
+                    .modes
+                    .iter()
+                    .take(options.min as usize)
+                    .map(|mode| mode.index)
+                    .collect(),
+            )),
+            DecisionKind::ChooseNumber(options) => Answer::ChooseNumber(NumberChoice(options.min)),
+            DecisionKind::DivideAmount(options) => {
+                Answer::DivideAmount(DivideChoice(even_division(options)))
+            }
+            DecisionKind::ChooseCards(options) => Answer::ChooseCards(CardsChoice(
+                options
+                    .from
+                    .iter()
+                    .copied()
+                    .take(options.min as usize)
+                    .collect(),
+            )),
+            DecisionKind::OrderCards(options) => {
+                Answer::OrderCards(OrderChoice(options.cards.clone()))
+            }
+            DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(self.rng.below(2) == 0)),
+            DecisionKind::ChooseOption(_) => Answer::ChooseOption(OptionChoice(0)),
+            DecisionKind::ChooseCosts(_) => Answer::ChooseCosts(CostsChoice(Vec::new())),
+            DecisionKind::OrderTriggers(options) => {
+                Answer::OrderTriggers(TriggersChoice((0..options.triggers.len()).collect()))
+            }
+            DecisionKind::ChooseReplacement(_) => Answer::ChooseReplacement(ReplacementChoice(0)),
         }
+    }
+
+    fn pick<T: Copy>(&mut self, from: &[T], count: usize) -> Vec<T> {
+        let mut items = from.to_vec();
+        self.rng.shuffle(&mut items);
+        items.truncate(count);
+        items
     }
 
     fn subset(&mut self, from: &[ObjectId], count: usize) -> Vec<ObjectId> {
@@ -132,6 +180,12 @@ impl RandomBot {
                 .mana_abilities
                 .iter()
                 .map(|m| PriorityAction::ActivateMana(m.source)),
+        );
+        actions.extend(
+            options
+                .abilities
+                .iter()
+                .map(|a| PriorityAction::Activate(*a)),
         );
         actions[self.rng.index(actions.len())]
     }
@@ -270,6 +324,25 @@ impl RandomBot {
         }
         shares
     }
+}
+
+/// Divides the total as evenly as it goes among the targets, the first getting what is left over.
+fn even_division(options: &DivideOptions) -> Vec<(Target, u32)> {
+    let count = u32::try_from(options.among.len()).unwrap_or(1).max(1);
+    let share = options.total / count;
+    options
+        .among
+        .iter()
+        .enumerate()
+        .map(|(at, target)| {
+            let amount = if at == 0 {
+                options.total - share * (count - 1)
+            } else {
+                share
+            };
+            (*target, amount)
+        })
+        .collect()
 }
 
 #[cfg(test)]

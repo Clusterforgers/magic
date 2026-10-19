@@ -21,8 +21,9 @@ use mtg_testkit::{Driver, Scenario, ScriptError, play_game};
 use Support::{Manual, Verified};
 
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
-/// its definition carries. The engine runs the plain mana ability and nothing else, so the three
-/// cards that need no more are Verified (the Forest's ability comes from its land type).
+/// its definition carries (mana abilities and rules together). The engine runs the plain mana ability
+/// and spells and `{T}` abilities made of drawing, life and damage, so the four cards that need no more
+/// are Verified (the Forest's ability comes from its land type).
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Manual, 0),
@@ -49,7 +50,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Hero of Bladehold", Manual, 0),
     ("Izzet Charm", Manual, 0),
     ("Jace, the Mind Sculptor", Manual, 0),
-    ("Lightning Bolt", Manual, 0),
+    ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
     ("Mulldrifter", Manual, 0),
     ("Opt", Manual, 0),
@@ -80,7 +81,8 @@ fn each_corpus_card_arrives_as_its_support_record_says() {
     let mut wrong = Vec::new();
     for (name, state, abilities) in CARDS {
         let record = corpus.support(name).unwrap();
-        let carried = corpus.card(name).unwrap().abilities.len();
+        let definition = corpus.card(name).unwrap();
+        let carried = definition.abilities.len() + definition.rules.len();
         if (record.support, carried) != (state, abilities) {
             wrong.push(format!(
                 "{name}: {:?} with {carried} abilities, wanted {state:?} with {abilities} ({:?})",

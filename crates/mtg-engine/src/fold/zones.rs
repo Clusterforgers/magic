@@ -1,16 +1,14 @@
 //! Folding events that move objects between zones.
 
-use std::collections::BTreeSet;
-
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
-use super::{invalid, player_mut, reset_passes};
+use super::{invalid, player_mut, priority_to_active, reset_passes};
+use crate::choose::Choices;
 use crate::combat::AttackTarget;
 use crate::error::EngineError;
 use crate::events::Event;
-use crate::object::{GameObject, PermanentState};
-use crate::priority::PriorityState;
+use crate::object::{GameObject, ObjectKind, PermanentState};
 use crate::state::GameState;
 use crate::zones::{Placement, Zone};
 
@@ -34,6 +32,11 @@ pub(super) fn move_object(
     }
     state.zones.insert(to, id, placement);
     object.zone = to;
+    // A new zone makes it a new object (CR 400.7); what was announced for it on the stack goes with the stack.
+    object.counter += 1;
+    if from == Zone::Stack {
+        object.choices = Choices::default();
+    }
     if from == Zone::Battlefield {
         object.permanent = None;
         state.combat.remove_object(id);
@@ -73,13 +76,31 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             state.turn.lands_played += 1;
             reset_passes(state);
         }
-        Event::SpellCast { player, object } => {
+        Event::SpellCast {
+            player,
+            object,
+            choices,
+        } => {
             expect_in(state, *object, Zone::Hand(*player))?;
             move_object(state, *object, Zone::Stack, Placement::Top)?;
             set_controller(state, *object, *player);
+            if let Some(spell) = state.objects.get_mut(object) {
+                spell.choices.clone_from(choices);
+            }
             reset_passes(state);
         }
         Event::SpellResolved { object } => resolve_spell(state, *object)?,
+        Event::ZoneChanged {
+            object, from, to, ..
+        } => {
+            expect_in(state, *object, *from)?;
+            if state.object(*object).map(GameObject::kind) == Some(ObjectKind::Ability) {
+                return Err(invalid(format!(
+                    "{object:?} is an ability, which does not change zones"
+                )));
+            }
+            move_object(state, *object, *to, Placement::Top)?;
+        }
         Event::CardDrawn { player, object } => {
             if state.zones.get(Zone::Library(*player)).last() != Some(object) {
                 return Err(invalid("drawn card is not on top of the library"));
@@ -123,13 +144,7 @@ fn resolve_spell(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
     } else {
         move_object(state, id, Zone::Battlefield, Placement::Top)?;
     }
-    let active = state.turn.active;
-    if let Some(holder) = state.turn_order_from(active).first().copied() {
-        state.priority = Some(PriorityState {
-            holder,
-            passed: BTreeSet::default(),
-        });
-    }
+    priority_to_active(state);
     Ok(())
 }
 
@@ -140,6 +155,9 @@ fn leave_game(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
         .ok_or_else(|| invalid(format!("unknown object {id:?}")))?;
     if !state.zones.remove(object.zone, id) {
         return Err(invalid(format!("{id:?} is not in {:?}", object.zone)));
+    }
+    if state.resolving.as_ref().is_some_and(|r| r.object == id) {
+        state.resolving = None;
     }
     state.combat.remove_object(id);
     state

@@ -178,6 +178,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             playable_lands: vec![a],
             castable: vec![b],
             mana_abilities: vec![option],
+            abilities: Vec::new(),
             can_act: true,
             can_pass: true,
         }),

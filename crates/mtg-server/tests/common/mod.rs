@@ -228,6 +228,8 @@ pub fn passive(decision: &mtg_engine::Decision) -> mtg_engine::Answer {
                 .collect(),
         ),
         DecisionKind::Discard(o) => Answer::Discard(o.hand.iter().copied().take(o.count).collect()),
+        // These games are vanilla, so no spell or ability ever asks about its effects.
+        other => panic!("no passive answer to a {} decision", other.name()),
     }
 }
 
