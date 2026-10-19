@@ -295,23 +295,23 @@ describe('planTable', () => {
     expect(plan.pod).toBe(viewport.width < 640 ? 'line' : 'aside')
   })
 
-  it('draws the stop ladder as one row in the controls dock from the L breakpoint up, at any height', () => {
+  it('draws the stop ladder as one row in the controls dock from the XL breakpoint up, at any height', () => {
     for (const [, viewport] of SIZES) {
       const plan = planTable({ viewport, seatCount: 2, viewer: 0 })
       expect(plan.stopsRow).toBe(viewport.width >= STOPS_ROW_MIN_WIDTH_PX)
     }
-    expect(STOPS_ROW_MIN_WIDTH_PX).toBe(1280)
+    expect(STOPS_ROW_MIN_WIDTH_PX).toBe(1600)
   })
 
   it.each([
     [1920, 1080, true],
     [1600, 1000, true],
-    [1440, 900, true],
-    [1366, 768, true],
-    [1280, 720, true],
-    [1280, 480, true],
-    // One pixel short of L: the same content opens from the dock's "Stops" button.
-    [1279, 720, false],
+    [1440, 900, false],
+    [1366, 768, false],
+    [1280, 720, false],
+    [1280, 480, false],
+    // One pixel short of XL: the same content opens from the dock's "Stops" button.
+    [1599, 1000, false],
     [1024, 768, false],
     [768, 1024, false],
     [844, 390, false],

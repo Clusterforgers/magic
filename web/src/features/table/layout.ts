@@ -188,9 +188,10 @@ export const RAIL_PX = 44
 export const LANDSCAPE_MAX_HEIGHT = 500
 /**
  * The narrowest window whose controls dock draws the stop ladder and Full Control as one row above the pass buttons
- * (L and up). A narrower dock holds the same content behind its "Stops" button.
+ * (XL and up): at 1280 the hand dock beside it would get a third of the width. A narrower dock holds the same content
+ * behind its "Stops" button.
  */
-export const STOPS_ROW_MIN_WIDTH_PX = BREAKPOINT_FROM.l
+export const STOPS_ROW_MIN_WIDTH_PX = BREAKPOINT_FROM.xl
 
 /** The sizes of the table's regions in a window, in px. Rounded nowhere, as CSS is not. */
 export interface Regions {

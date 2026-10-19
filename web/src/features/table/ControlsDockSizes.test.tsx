@@ -1,4 +1,4 @@
-// Goal: at every window width the controls dock holds at most five controls, with the stop ladder and Full Control as one row from 1280 up and behind one Stops button below, the primary pass button last and 44 px high in the corner, its words naming what passing does for the prompt on screen, every control reachable by Tab in the order of reading, and Space, Enter and Control meaning what they always meant.
+// Goal: at every window width the controls dock holds at most five controls, with the stop ladder and Full Control as one row from 1600 up and behind one Stops button below, the primary pass button last and 44 px high in the corner, its words naming what passing does for the prompt on screen, every control reachable by Tab in the order of reading, and Space, Enter and Control meaning what they always meant.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, FullControlMode, Step, YieldUntil } from '@/protocol/generated'
@@ -10,12 +10,13 @@ const ROW = ['stop-ladder', 'full-control', 'secondary-action', 'more-passing', 
 const BUTTON = ['stops-button', 'secondary-action', 'more-passing', 'primary-action']
 const PHONE = ['stops-button', 'more-passing', 'primary-action']
 
-/** Window widths with the controls each shows, in the order of reading. 1279 is one pixel short of the row. */
+/** Window widths with the controls each shows, in the order of reading. 1599 is one pixel short of the row. */
 const SIZES: ReadonlyArray<[number, number, string[]]> = [
   [1920, 1080, ROW],
-  [1440, 900, ROW],
-  [1280, 720, ROW],
-  [1279, 720, BUTTON],
+  [1600, 1000, ROW],
+  [1599, 1000, BUTTON],
+  [1440, 900, BUTTON],
+  [1280, 720, BUTTON],
   [1024, 768, BUTTON],
   [390, 844, PHONE],
 ]
@@ -35,7 +36,7 @@ interface Situation {
 
 /** A table whose viewer faces priority, or nothing, in a window, with spies for what the session is asked. */
 function dockOf({
-  width = 1280,
+  width = 1600,
   height = 720,
   own = false,
   step = 'DeclareBlockers',
@@ -132,7 +133,7 @@ describe.each(SIZES)('the dock at %i x %i', (width, height, expected) => {
 
 describe('the Stops button', () => {
   it('opens the same ladder and Full Control as the row has, saying how many stops are set', async () => {
-    const { unmount } = dockOf({ width: 1280 })
+    const { unmount } = dockOf({ width: 1600 })
     const names = (root: ParentNode): string[] =>
       [...root.querySelectorAll<HTMLElement>('button')].map(
         (button) => button.getAttribute('aria-label') ?? button.textContent ?? '',
@@ -239,7 +240,7 @@ describe('the keyboard', () => {
       : (element.dataset['slot'] ?? '')
 
   it('reaches every control of the row in the order of reading, the step row as one stop', async () => {
-    const { user } = dockOf({ width: 1280, own: true, stacked: false, step: 'Main1' })
+    const { user } = dockOf({ width: 1600, own: true, stacked: false, step: 'Main1' })
     const first = must(dock().querySelector<HTMLElement>('[data-slot="stop-side"] button'))
     expect(await walk(user, first)).toEqual([
       'Mine, none set',
@@ -254,7 +255,7 @@ describe('the keyboard', () => {
     ])
   })
 
-  it('reaches the Stops button, then the pass controls, below 1280, and the popover from the button alone', async () => {
+  it('reaches the Stops button, then the pass controls, below 1600, and the popover from the button alone', async () => {
     const { user } = dockOf({ width: 1024, height: 768, own: true, stacked: false, step: 'Main1' })
     const stops = screen.getByRole('button', { name: /^Stops/ })
     expect(await walk(user, stops)).toEqual([
@@ -274,7 +275,7 @@ describe('the keyboard', () => {
   })
 
   it.each([
-    [1280, 720],
+    [1600, 1000],
     [390, 844],
   ])('keeps Space, Enter and Control as they were at %i px, with focus on nothing', async (width, height) => {
     const { user, answer, yieldUntil, setFullControl } = dockOf({
@@ -294,7 +295,7 @@ describe('the keyboard', () => {
   })
 
   it('leaves the keys to a stop that has focus, as to any button', async () => {
-    const { user, answer } = dockOf({ width: 1280, own: true, stacked: false, step: 'Main1' })
+    const { user, answer } = dockOf({ width: 1600, own: true, stacked: false, step: 'Main1' })
     act(() => must(within(dock()).getAllByRole('button', { name: /stop: / })[0]).focus())
     await user.keyboard(' ')
     expect(answer).not.toHaveBeenCalled()

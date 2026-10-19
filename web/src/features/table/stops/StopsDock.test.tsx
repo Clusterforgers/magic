@@ -1,4 +1,4 @@
-// Goal: the stop toggles of the controls dock reach the same session calls whether the ladder is a row (1280 and up) or opens from the Stops button, the popover keeps the Keep toggle and the side picked while it is shut and does not stop the Control keys, every button of the dock is 32 px high or more (44 under a coarse pointer), and the table menu holds none of it.
+// Goal: the stop toggles of the controls dock reach the same session calls whether the ladder is a row (1600 and up) or opens from the Stops button, the popover keeps the Keep toggle and the side picked while it is shut and does not stop the Control keys, every button of the dock is 32 px high or more (44 under a coarse pointer), and the table menu holds none of it.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { FullControlMode, Step, StopSide } from '@/protocol/generated'
@@ -6,7 +6,7 @@ import { clone, must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 
 const SIZES: ReadonlyArray<[string, number, number]> = [
-  ['a row', 1280, 720],
+  ['a row', 1600, 1000],
   ['a popover on a laptop', 1024, 768],
   ['a popover on a phone', 390, 844],
 ]
