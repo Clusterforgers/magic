@@ -9,8 +9,8 @@ import type { Question } from './lobbyQuestions'
 /** The REST calls the lobby's controls make. */
 export type LobbyApi = Pick<Api, 'closeGame' | 'leaveGame' | 'releaseSeat' | 'setVisibility'>
 
-/** Where focus goes when a question has closed: back to its button, or to the seat list when that button is not the place. */
-export type FocusAfter = 'opener' | 'seats'
+/** Where focus goes when a question has closed: back to its button, to the seat list, or to the words that the game began. */
+export type FocusAfter = 'opener' | 'seats' | 'note'
 
 /** The question on screen. It is kept while the dialog closes, so its words do not vanish mid-fade. */
 export interface Asking {
@@ -121,7 +121,7 @@ export function useLobbyControls({ api, game, token, started }: Options): LobbyC
         const words = describeLobbyError(outcome.error, question.kind)
         if (outcome.error instanceof LobbyError && outcome.error.code === 'started') {
           stop(words)
-          setAsking((now) => (now === null ? null : { ...now, open: false, problem: null, after: 'seats' }))
+          setAsking((now) => (now === null ? null : { ...now, open: false, problem: null, after: 'note' }))
         } else {
           setAsking((now) => (now === null ? null : { ...now, problem: words }))
         }

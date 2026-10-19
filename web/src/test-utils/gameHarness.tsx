@@ -23,6 +23,8 @@ export interface GameOptions {
   /** How the fake REST server answers. */
   script?: ServerScript
   strict?: boolean
+  /** Mount the page at its own address with a stand-in for Play at `/`, so `router` shows where it sends the visitor. */
+  routed?: boolean
 }
 
 /** A game page on fake sockets, a manual clock and an in-memory REST server, with the server's part in helpers. */
@@ -33,6 +35,8 @@ export interface GameHarness {
   api: Api
   user: ReturnType<typeof userEvent.setup>
   container: HTMLElement
+  /** The test router; `router.state.location.pathname` is where the page is. */
+  router: Awaited<ReturnType<typeof renderInRouter>>['router']
   /** The newest socket the page opened. */
   socket(): FakeSocket
   /** Opens the newest socket and answers its Join with a Welcome for `seat` of `seats`. */
@@ -65,7 +69,7 @@ export async function renderGame(options: GameOptions = {}): Promise<GameHarness
   )
   const view = await renderInRouter(
     options.auth === undefined ? page : <AuthProvider store={options.auth}>{page}</AuthProvider>,
-    { strict: options.strict },
+    { strict: options.strict, routed: options.routed, url: options.routed ? `/game/${GAME_ID}` : undefined },
   )
   const settle = async (): Promise<void> => {
     await act(async () => {
@@ -80,6 +84,7 @@ export async function renderGame(options: GameOptions = {}): Promise<GameHarness
     api: server.api,
     user: userEvent.setup(),
     container: view.container,
+    router: view.router,
     socket: () => net.last,
     join(seat = 0, seats = 2) {
       act(() => {

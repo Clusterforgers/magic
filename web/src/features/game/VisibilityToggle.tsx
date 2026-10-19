@@ -29,7 +29,11 @@ export function VisibilityToggle({ shown, control, busy }: VisibilityToggleProps
       data-pending={pending ?? undefined}
       className="mt-3 grid gap-2"
     >
-      <div role="group" aria-labelledby="visibility-title" className="flex flex-wrap items-center gap-x-3 gap-y-1">
+      <div
+        role="group"
+        aria-labelledby="visibility-title"
+        className="flex flex-wrap items-center gap-x-3 gap-y-1"
+      >
         <span id="visibility-title" className="text-sm text-muted-foreground">
           Who can find this game
         </span>

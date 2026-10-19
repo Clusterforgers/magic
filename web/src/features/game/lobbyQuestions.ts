@@ -1,10 +1,7 @@
 /** The words of the three questions the lobby asks before it acts, and of the notices that follow them. Pure, so tested as a table. */
 
 /** What a confirmation is about. */
-export type Question =
-  | { kind: 'close' }
-  | { kind: 'leave' }
-  | { kind: 'remove'; seat: number; name: string }
+export type Question = { kind: 'close' } | { kind: 'leave' } | { kind: 'remove'; seat: number; name: string }
 
 /** One confirmation as the dialog shows it. */
 export interface QuestionWords {

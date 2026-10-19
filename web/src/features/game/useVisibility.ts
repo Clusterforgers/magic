@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { SeatCredential } from '@/net/api'
 import { describeLobbyError, LobbyError } from '@/net/lobbyErrors'
 import type { Visibility } from '@/protocol/generated'
@@ -54,9 +54,8 @@ export function useVisibility({ api, game, credential, known, run, stop }: Optio
   const [result, setResult] = useState<string | null>(null)
   const [problem, setProblem] = useState<string | null>(null)
 
-  useEffect(() => {
-    if (confirmed !== null && confirmed === known) setConfirmed(null)
-  }, [confirmed, known])
+  // The lookup has caught up with the answer: let go of it, so a change made elsewhere shows from now on.
+  if (confirmed !== null && confirmed === known) setConfirmed(null)
 
   const shown = pending ?? confirmed ?? known
 

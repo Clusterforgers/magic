@@ -20,6 +20,11 @@ export interface ServerScript {
   game?: (id: string, call: FetchCall) => Response | Promise<Response>
   /** Answers `GET /api/lobbies`; an empty list by default. */
   lobbies?: (call: FetchCall) => Response | Promise<Response>
+  /**
+   * Answers the changes a seat makes: `PATCH` and `DELETE /api/games/{id}`, `POST .../leave` and
+   * `POST .../seats/{n}/release`. The good answer by default (`changedReply`).
+   */
+  change?: (call: FetchCall) => Response | Promise<Response>
 }
 
 /** A REST server in memory, with a record of what was asked of it. */
@@ -51,6 +56,18 @@ export function createdReply(body: unknown): Response {
   })
 }
 
+/** The reply of a real server to a good change: the visibility now in force for a `PATCH`, 204 for the rest. */
+export function changedReply(call: FetchCall): Response {
+  if (call.init?.method !== 'PATCH') return new Response(null, { status: 204 })
+  const body: unknown = typeof call.init.body === 'string' ? JSON.parse(call.init.body) : null
+  return jsonResponse(200, { visibility: isRecord(body) ? body.visibility : 'invite' })
+}
+
+const isChange = (path: string, method: string | undefined): boolean =>
+  method === 'PATCH' ||
+  method === 'DELETE' ||
+  (method === 'POST' && /\/(leave|seats\/\d+\/release)$/.test(path))
+
 /** Builds a REST client whose `fetch` is answered by `script`; unknown paths get the server's 404. */
 export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS): FakeServer {
   const creates: unknown[] = []
@@ -66,6 +83,9 @@ export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS
     if (path.startsWith('/api/games/') && call.init?.method === undefined) {
       const id = decodeURIComponent(path.slice('/api/games/'.length))
       return script.game?.(id, call) ?? jsonResponse(404, { error: 'not_found', message: 'no such resource' })
+    }
+    if (path.startsWith('/api/games/') && isChange(path, call.init?.method)) {
+      return script.change?.(call) ?? changedReply(call)
     }
     return jsonResponse(404, { error: 'not_found', message: 'no such resource' })
   })

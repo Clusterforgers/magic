@@ -45,8 +45,9 @@ export function lobbyRows({ roster, info, open, seat, seatCount }: LobbySources)
   return Array.from({ length: count }, (_, index): LobbyRow => {
     const pushed = roster?.seats[index]
     const listed = info?.seats.find((entry) => entry.seat === index)?.name
-    // An open seat has an empty name until somebody takes it; it reads as a seat nobody has joined yet.
-    const name = filled(pushed?.name) ?? filled(listed)
+    // An open seat has an empty name until somebody takes it; it reads as a seat nobody has joined yet. The roster is
+    // newer than the lookup, so its empty name is not filled from the name the lookup still has for a seat just given back.
+    const name = filled(pushed === undefined ? listed : pushed.name)
     const you = index === seat
     // A page knows best whether its own socket is open.
     const connected = you ? open : (pushed?.connected ?? info?.connected.includes(index) ?? false)

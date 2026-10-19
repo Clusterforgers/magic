@@ -112,7 +112,12 @@ export function Lobby({ api, token }: LobbyProps) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,20rem)] lg:items-start">
         <div className="grid grid-cols-1 gap-6">
           <section aria-labelledby="seats-title" className="grid grid-cols-1 gap-2">
-            <h2 id="seats-title" ref={seatsHeading} tabIndex={-1} className="text-lg font-semibold outline-none">
+            <h2
+              id="seats-title"
+              ref={seatsHeading}
+              tabIndex={-1}
+              className="text-lg font-semibold outline-none"
+            >
               Seats
             </h2>
             <ul aria-label="Seats" className="surface divide-y">
@@ -230,7 +235,8 @@ export function Lobby({ api, token }: LobbyProps) {
         <LobbyQuestion
           asking={controls.asking}
           busy={controls.busy}
-          fallback={() => seatsHeading.current}
+          seats={() => seatsHeading.current}
+          note={() => note.current}
           onConfirm={controls.confirm}
           onCancel={controls.cancel}
           onClosed={controls.closed}
