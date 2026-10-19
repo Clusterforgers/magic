@@ -179,6 +179,33 @@ fn menace_counts_only_the_creatures_that_can_block_the_attacker(
 }
 
 #[test]
+fn the_options_say_how_many_blockers_a_menace_attacker_needs() -> Result<(), ScriptError> {
+    let attackers: [Unit; 2] = [("Menace", 2, 2, "menace"), ("Plain", 2, 2, "")];
+    let mut driver = duel(&attackers, &[("B1", 1, 4, ""), ("B2", 1, 4, "")])?;
+    attack_with_all(&mut driver, &attackers)?;
+    let menace = driver.id_of("Menace")?;
+    let DecisionKind::DeclareBlockers(options) = &driver.decision()?.kind else {
+        panic!("blockers expected");
+    };
+    assert_eq!(options.min_blockers, [(menace, 2)]);
+    // With one creature left that could block, the attacker is not offered and needs nobody.
+    let attackers: [Unit; 2] = [("Menace", 2, 2, "menace"), ("Plain", 2, 2, "")];
+    let mut driver = duel(&attackers, &[("B1", 1, 4, "")])?;
+    attack_with_all(&mut driver, &attackers)?;
+    let DecisionKind::DeclareBlockers(options) = &driver.decision()?.kind else {
+        panic!("blockers expected");
+    };
+    assert_eq!(options.min_blockers, []);
+    assert_eq!(options.blockers.len(), 1);
+    assert_eq!(
+        options.blockers[0].can_block.len(),
+        1,
+        "only the plain attacker"
+    );
+    Ok(())
+}
+
+#[test]
 fn menace_and_a_plain_attacker_are_blocked_separately() -> Result<(), ScriptError> {
     let attackers: [Unit; 2] = [("Menace", 2, 2, "menace"), ("Plain", 2, 2, "")];
     let mut driver = duel(&attackers, &[("B1", 1, 4, ""), ("B2", 1, 4, "")])?;

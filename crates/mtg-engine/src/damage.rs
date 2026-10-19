@@ -325,3 +325,193 @@ pub(crate) fn damage_events(state: &GameState, pass: DamagePass) -> Vec<Event> {
     }
     events
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the default division gives each blocker lethal damage in order and puts the rest on the last blocker or, with trample, on the player attacked; a controller has a choice exactly when there is more than one way to divide; and a division is accepted exactly when it respects lethal damage before the player, for any power and toughness mix.
+    use super::*;
+    use mtg_core::ids::PlayerId;
+    use proptest::prelude::*;
+    use rstest::rstest;
+
+    const PLAYER: DamageTarget = DamageTarget::Player(PlayerId(1));
+
+    fn options(power: u32, lethal: &[u32], trample: bool) -> DamageOptions {
+        DamageOptions {
+            attacker: ObjectId(1),
+            power,
+            blockers: (0..lethal.len())
+                .map(|at| ObjectId(10 + at as u64))
+                .collect(),
+            excess: trample.then_some(PLAYER),
+            lethal: lethal.to_vec(),
+        }
+    }
+
+    /// The blockers' shares and what is left for the player, from a division.
+    fn split(shares: &[(DamageTarget, u32)]) -> (Vec<u32>, u32) {
+        let to_blockers = shares
+            .iter()
+            .filter(|(target, _)| matches!(target, DamageTarget::Object(_)))
+            .map(|(_, amount)| *amount)
+            .collect();
+        let to_the_player = shares
+            .iter()
+            .filter(|(target, _)| *target == PLAYER)
+            .map(|(_, amount)| *amount)
+            .sum();
+        (to_blockers, to_the_player)
+    }
+
+    #[rstest]
+    #[case::one_blocker_takes_it_all(5, &[3], false, &[5], 0)]
+    #[case::exact_fit(5, &[2, 3], false, &[2, 3], 0)]
+    #[case::leftover_on_the_last(7, &[2, 3], false, &[2, 5], 0)]
+    #[case::short_of_the_first(1, &[2, 3], false, &[1, 0], 0)]
+    #[case::three_way(9, &[2, 2, 2], false, &[2, 2, 5], 0)]
+    #[case::already_dead_first(3, &[0, 3], false, &[0, 3], 0)]
+    #[case::no_power(0, &[2, 2], false, &[0, 0], 0)]
+    #[case::trample_leftover_to_the_player(7, &[2, 3], true, &[2, 3], 2)]
+    #[case::trample_short_of_lethal(4, &[2, 3], true, &[2, 2], 0)]
+    #[case::trample_exact_lethal(5, &[2, 3], true, &[2, 3], 0)]
+    #[case::trample_over_a_blocker_with_lethal_damage_marked(3, &[0], true, &[0], 3)]
+    #[case::deathtouch_trample(4, &[1, 1, 1], true, &[1, 1, 1], 1)]
+    fn the_default_division(
+        #[case] power: u32,
+        #[case] lethal: &[u32],
+        #[case] trample: bool,
+        #[case] blockers: &[u32],
+        #[case] player: u32,
+    ) {
+        let shares = default_shares(&options(power, lethal, trample));
+        assert_eq!(split(&shares), (blockers.to_vec(), player));
+    }
+
+    #[rstest]
+    #[case::no_power(0, &[2, 2], false, false)]
+    #[case::one_blocker(5, &[3], false, false)]
+    #[case::two_blockers(5, &[3, 3], false, true)]
+    #[case::two_blockers_with_one_point(1, &[3, 3], false, true)]
+    #[case::trampler_that_can_go_past(5, &[3], true, true)]
+    #[case::trampler_with_exactly_lethal(3, &[3], true, false)]
+    #[case::trampler_short_of_lethal(2, &[3], true, false)]
+    #[case::trampler_against_a_blocker_needing_nothing(1, &[0], true, true)]
+    #[case::trampler_with_two_blockers_and_no_power(0, &[3, 3], true, false)]
+    #[case::trampler_with_two_blockers(1, &[3, 3], true, true)]
+    fn a_controller_has_a_choice_only_when_there_is_more_than_one_division(
+        #[case] power: u32,
+        #[case] lethal: &[u32],
+        #[case] trample: bool,
+        #[case] choice: bool,
+    ) {
+        assert_eq!(has_choice(&options(power, lethal, trample)), choice);
+    }
+
+    #[rstest]
+    #[case::everything_on_blockers_without_trample(5, &[2, 2], false, &[(0, 3), (1, 2)], true)]
+    #[case::short_without_trample(5, &[2, 2], false, &[(0, 2), (1, 2)], false)]
+    #[case::too_much(5, &[2, 2], false, &[(0, 3), (1, 3)], false)]
+    #[case::the_rest_past_lethal_blockers(5, &[2, 2], true, &[(0, 2), (1, 2)], true)]
+    #[case::nothing_assigned_is_all_past(5, &[2, 2], true, &[], false)]
+    #[case::the_rest_past_a_short_blocker(5, &[2, 2], true, &[(0, 1), (1, 2)], false)]
+    #[case::everything_on_one_blocker(5, &[2, 2], true, &[(0, 5)], true)]
+    #[case::more_than_the_power(5, &[2, 2], true, &[(0, 3), (1, 3)], false)]
+    #[case::no_lethal_needed_past_a_blocker_that_needs_none(3, &[0], true, &[], true)]
+    fn a_division_is_accepted_when_it_keeps_to_the_rules(
+        #[case] power: u32,
+        #[case] lethal: &[u32],
+        #[case] trample: bool,
+        #[case] given: &[(usize, u32)],
+        #[case] accepted: bool,
+    ) {
+        let options = options(power, lethal, trample);
+        let assignment = given
+            .iter()
+            .map(|(at, amount)| (options.blockers[*at], *amount))
+            .collect();
+        assert_eq!(assignment_answer(&options, assignment).is_ok(), accepted);
+    }
+
+    #[test]
+    fn a_blocker_that_is_not_offered_or_named_twice_is_refused() {
+        let options = options(4, &[2, 2], true);
+        let stranger = vec![(ObjectId(99), 4)];
+        assert_eq!(
+            assignment_answer(&options, stranger).err(),
+            Some(IllegalAnswer::NotOffered("blocker"))
+        );
+        let twice = vec![(options.blockers[0], 2), (options.blockers[0], 2)];
+        assert_eq!(
+            assignment_answer(&options, twice).err(),
+            Some(IllegalAnswer::Duplicate("blocker"))
+        );
+        let huge = vec![
+            (options.blockers[0], u32::MAX),
+            (options.blockers[1], u32::MAX),
+        ];
+        assert_eq!(
+            assignment_answer(&options, huge).err(),
+            Some(IllegalAnswer::DamageSplit {
+                power: 4,
+                assigned: u32::MAX
+            })
+        );
+    }
+
+    proptest! {
+        #[test]
+        fn the_default_division_conserves_power_and_is_always_accepted(
+            power in 0u32..40,
+            lethal in prop::collection::vec(0u32..10, 1..6),
+            trample in any::<bool>(),
+        ) {
+            let options = options(power, &lethal, trample);
+            let shares = default_shares(&options);
+            let (to_blockers, to_the_player) = split(&shares);
+            prop_assert_eq!(to_blockers.len(), lethal.len());
+            prop_assert_eq!(to_blockers.iter().sum::<u32>() + to_the_player, power);
+            if !trample {
+                prop_assert_eq!(to_the_player, 0);
+            }
+            // Past a blocker that is not the last, or past any with trample, only lethal damage is given.
+            let early = if trample { lethal.len() } else { lethal.len() - 1 };
+            for at in 0..early {
+                prop_assert!(to_blockers[at] <= lethal[at]);
+            }
+            if to_the_player > 0 {
+                for (share, needed) in to_blockers.iter().zip(&lethal) {
+                    prop_assert!(share >= needed);
+                }
+            }
+            // The blockers' part is what the answer lists, and the engine takes it as it is.
+            let assignment = options
+                .blockers
+                .iter()
+                .copied()
+                .zip(to_blockers)
+                .collect();
+            prop_assert!(assignment_answer(&options, assignment).is_ok());
+        }
+
+        #[test]
+        fn an_answer_that_sends_damage_past_a_short_blocker_is_never_accepted(
+            lethal in prop::collection::vec(1u32..10, 1..5),
+            short in 0usize..5,
+            extra in 1u32..5,
+        ) {
+            let short = short % lethal.len();
+            let options = options(lethal.iter().sum::<u32>() + extra, &lethal, true);
+            let assignment: Vec<(ObjectId, u32)> = options
+                .blockers
+                .iter()
+                .zip(&lethal)
+                .enumerate()
+                .map(|(at, (blocker, needed))| (*blocker, if at == short { needed - 1 } else { *needed }))
+                .collect();
+            prop_assert_eq!(
+                assignment_answer(&options, assignment).err(),
+                Some(IllegalAnswer::ExcessBeforeLethal)
+            );
+        }
+    }
+}

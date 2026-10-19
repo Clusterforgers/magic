@@ -256,6 +256,7 @@ mod tests {
     fn blockers() -> DecisionKind {
         DecisionKind::DeclareBlockers(BlockOptions {
             blockers: Vec::new(),
+            min_blockers: Vec::new(),
         })
     }
 

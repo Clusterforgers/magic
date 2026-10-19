@@ -131,6 +131,13 @@ impl RandomBot {
                         blocks.push((option.object, *attacker));
                     }
                 }
+                // An attacker that needs several blockers (menace) is left alone unless it got that many.
+                for (attacker, needed) in &options.min_blockers {
+                    let got = blocks.iter().filter(|(_, a)| a == attacker).count();
+                    if got < *needed {
+                        blocks.retain(|(_, a)| a != attacker);
+                    }
+                }
                 Answer::DeclareBlockers(blocks)
             }
             DecisionKind::AssignDamage(options) => Answer::AssignDamage(self.divide(options)),

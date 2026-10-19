@@ -202,6 +202,11 @@ pub struct BlockerOption {
 pub struct BlockOptions {
     /// Every creature that may block; choosing none is always legal.
     pub blockers: Vec<BlockerOption>,
+    /// The fewest creatures that may block an attacker together, for each attacker that needs more than one
+    /// (menace): it is blocked by that many or by none. Left out while no attacker needs several.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(ObjectId, usize)>>", optional))]
+    pub min_blockers: Vec<(ObjectId, usize)>,
 }
 
 /// An attacker that must divide its damage among blockers and, with trample, the player or planeswalker it attacks.

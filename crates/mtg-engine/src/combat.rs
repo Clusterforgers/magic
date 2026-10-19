@@ -241,7 +241,17 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             })
         })
         .collect();
-    BlockOptions { blockers }
+    let min_blockers = blockable
+        .iter()
+        .copied()
+        .filter(|attacker| blockable_together(*attacker))
+        .map(|attacker| (attacker, keywords::min_blockers(state, attacker)))
+        .filter(|(_, needed)| *needed > 1)
+        .collect();
+    BlockOptions {
+        blockers,
+        min_blockers,
+    }
 }
 
 /// Checks a declared attack against the options.
