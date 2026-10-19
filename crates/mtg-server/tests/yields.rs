@@ -12,16 +12,23 @@ use mtg_engine::decision::{DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::state::GameResult;
 use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision, Event, GameSetup, replay};
-use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage, YieldUntil};
+use mtg_protocol::{
+    ClientMessage, DecisionId, ErrorCode, FullControlMode, ServerMessage, YieldUntil,
+};
 use mtg_server::{
     EventStore, GameConfig, GameHandle, MemoryStore, Pace, resume_game_with, spawn_game_with,
 };
-use mtg_testkit::cards::{free_creature, instant};
+use mtg_testkit::cards::{forest, free_creature, instant};
 use mtg_testkit::{Scenario, ready};
 use rstest::rstest;
 
-/// Nothing is passed for a seat that did not ask for it and no clock runs.
-const OFF: Pace = Pace::MANUAL;
+/// The default windows decide when a seat is asked, and no clock runs. A seat that yields is in Full Control `Off`;
+/// `join_and_ready` puts seat 0, which plays by hand, in Full Control so that it is asked at every window.
+const OFF: Pace = Pace {
+    auto_pass: true,
+    response: None,
+    blocks: None,
+};
 
 /// The server defaults: auto-pass on, 10 s to respond, 45 s to block.
 const DEFAULT: Pace = Pace {
@@ -58,9 +65,20 @@ fn creature_duel() -> GameSetup {
         .unwrap()
 }
 
-/// Seat 0 is about to attack with a creature that seat 1 can block.
+/// Turn 2, seat 1's own first main phase, with a free instant in hand: a default window over an empty stack.
+fn my_main() -> GameSetup {
+    Scenario::new(2)
+        .at(2, 1, Step::Main1)
+        .hand(1, [instant("My Zap", 0, &[])])
+        .setup()
+        .unwrap()
+}
+
+/// Seat 0 is about to attack with a creature that seat 1 can block; seat 1 holds a land for its own next turn and a
+/// free instant.
 fn combat_duel() -> GameSetup {
     Scenario::new(2)
+        .hand(1, [forest(), instant("My Zap", 0, &[])])
         .at(2, 0, Step::DeclareAttackers)
         .battlefield(0, [ready(free_creature("Raider", 2, 2))])
         .battlefield(1, [ready(free_creature("Guard", 1, 3))])
@@ -74,11 +92,17 @@ fn spawn(setup: GameSetup, pace: Pace) -> (GameHandle, FlakyStore) {
     (handle, store)
 }
 
+/// Seats `seats` clients and readies them all; seat 0 first asks for Full Control, so the hand-driven seat is asked at
+/// every window while the others are asked as the windows say.
 async fn join_and_ready(handle: &GameHandle, seats: usize) -> Vec<Client> {
     let mut clients = Vec::new();
     for n in 0..seats {
         clients.push(Client::join(handle, n).await);
     }
+    let held = ClientMessage::FullControl {
+        mode: FullControlMode::Held,
+    };
+    clients[FOE].say(handle, held).await;
     for client in &clients {
         client.say(handle, ClientMessage::Ready).await;
     }
@@ -118,7 +142,12 @@ async fn pass_while_waiting(handle: &GameHandle, client: &mut Client) -> usize {
 /// Seat 0 casts the first spell it can and pays for it; it holds priority again afterwards.
 async fn foe_casts(handle: &GameHandle, foe: &mut Client) {
     let (id, decision) = foe.decision().await;
-    let DecisionKind::Priority(options) = decision.kind else {
+    foe_casts_at(handle, foe, id, &decision).await;
+}
+
+/// [`foe_casts`] at the window `id` that seat 0 was already sent.
+async fn foe_casts_at(handle: &GameHandle, foe: &mut Client, id: DecisionId, decision: &Decision) {
+    let DecisionKind::Priority(options) = &decision.kind else {
         panic!("expected priority, got {decision:?}");
     };
     let spell = options.castable[0];
@@ -254,9 +283,11 @@ async fn a_yield_to_the_end_of_turn_passes_at_every_window_and_returns_the_first
         1,
         "only the window that ended it"
     );
+    // The yield ended in seat 1's upkeep of turn 2, which is no window for it, and the notice went out with that
+    // step; the first window it is asked at is its own first main phase.
     let tail: Vec<_> = order(&told).into_iter().rev().take(3).collect();
-    assert_eq!(tail, ["decision priority", "yield none", "events"]);
-    assert_eq!(last_table(&told).0, 2, "the first window of turn 2");
+    assert_eq!(tail, ["decision priority", "events", "yield none"]);
+    assert_eq!(last_table(&told).0, 2, "its first main phase of turn 2");
     // It was passed for in the windows it skipped, as a normal pass in the log.
     assert!(passes_by(&logged(&store).await, ME) >= 5);
     // The yield is gone: the seat answers its own window and the next one is delivered to it.
@@ -273,6 +304,7 @@ async fn a_yield_to_the_end_of_turn_passes_at_every_window_and_returns_the_first
 async fn setting_a_yield_passes_the_pending_decision_at_once_and_the_old_id_goes_stale() {
     let (handle, store) = spawn(instant_duel(), OFF);
     let mut clients = join_and_ready(&handle, 2).await;
+    foe_casts(&handle, &mut clients[FOE]).await;
     foe_passes_once(&handle, &mut clients[FOE]).await;
     let (window, decision) = clients[ME].decision().await;
     assert_eq!(decision.kind.name(), "priority");
@@ -300,11 +332,10 @@ fn duel_for(can_answer: bool) -> GameSetup {
 
 #[rstest]
 #[tokio::test(start_paused = true)]
-async fn an_opponents_new_spell_stops_a_yield_the_same_way_whether_or_not_the_seat_could_answer_it(
+async fn an_opponents_new_spell_ends_a_yield_whether_or_not_the_seat_could_answer_it_and_the_window_is_the_seats_only_if_it_could(
     #[values(YieldUntil::EndOfTurn, YieldUntil::MyTurn)] until: YieldUntil,
     #[values(true, false)] can_answer: bool,
 ) {
-    // The pace tells nothing about the hand: both seats are stopped, asked and hurried alike.
     let (handle, _) = spawn(
         duel_for(can_answer),
         Pace {
@@ -319,32 +350,47 @@ async fn an_opponents_new_spell_stops_a_yield_the_same_way_whether_or_not_the_se
     foe_casts(&handle, &mut clients[FOE]).await;
     foe_passes_once(&handle, &mut clients[FOE]).await;
 
-    assert_eq!(handle.status().await.unwrap().waiting_on, Some(seat(ME)));
     let told = clients[ME].drain();
-    assert_eq!(priority_decisions(&told), 1);
-    let tail: Vec<_> = order(&told).into_iter().rev().take(2).collect();
-    assert_eq!(tail, ["decision priority", "yield none"]);
-    assert_eq!(last_table(&told), (1, 1), "turn 1, the spell on the stack");
-    assert_eq!(deadline(&told), Some(10_000), "and the usual clock starts");
-    let (_, decision) = decisions(&told).remove(0);
-    let DecisionKind::Priority(options) = decision.kind else {
-        panic!("expected priority");
-    };
-    assert_eq!(options.can_act, can_answer);
+    assert_eq!(notices(&told), [None], "the yield ends either way");
+    if can_answer {
+        // The spell is a default window for a seat that can act, on the usual clock.
+        assert_eq!(handle.status().await.unwrap().waiting_on, Some(seat(ME)));
+        assert_eq!(priority_decisions(&told), 1);
+        let tail: Vec<_> = order(&told).into_iter().rev().take(2).collect();
+        assert_eq!(tail, ["decision priority", "yield none"]);
+        assert_eq!(last_table(&told), (1, 1), "turn 1, the spell on the stack");
+        assert_eq!(deadline(&told), Some(10_000), "and the usual clock starts");
+        let (_, decision) = decisions(&told).remove(0);
+        let DecisionKind::Priority(options) = decision.kind else {
+            panic!("expected priority");
+        };
+        assert!(options.can_act);
+    } else {
+        // Nothing to answer with: the window is passed for the seat and the spell resolves.
+        assert_eq!(priority_decisions(&told), 0);
+        assert_eq!(handle.status().await.unwrap().waiting_on, Some(seat(FOE)));
+        assert_eq!(
+            last_table(&told),
+            (1, 0),
+            "turn 1, the stack is empty again"
+        );
+    }
 }
 
 #[tokio::test(start_paused = true)]
-async fn with_auto_pass_on_the_window_that_ended_the_yield_is_passed_by_auto_pass_as_ever() {
-    // Seat 1 holds nothing and has auto-pass on. The spell ends its yield and is announced; the idle window is then
-    // auto-pass's.
+async fn a_seat_that_cannot_act_is_passed_for_at_the_window_that_ended_its_yield_and_auto_pass_on_changes_nothing()
+ {
+    // Seat 1 holds nothing. The spell ends its yield and is announced; the window is then the table's to pass.
     let (handle, _) = spawn(creature_duel(), OFF);
     let mut clients = join_and_ready(&handle, 2).await;
+    clients[ME].drain();
     send(
         &handle,
         &clients[ME],
         ClientMessage::AutoPass { enabled: true },
     )
     .await;
+    silent(&clients[ME].drain());
     yield_until(&handle, &clients[ME], YieldUntil::EndOfTurn).await;
     clients[ME].drain();
 
@@ -365,7 +411,7 @@ async fn with_auto_pass_on_the_window_that_ended_the_yield_is_passed_by_auto_pas
 async fn a_spell_the_seat_already_saw_does_not_end_the_yield_it_asks_over_it(
     #[case] until: YieldUntil,
 ) {
-    let (handle, _) = spawn(creature_duel(), OFF);
+    let (handle, _) = spawn(instant_duel(), OFF);
     let mut clients = join_and_ready(&handle, 2).await;
     foe_casts(&handle, &mut clients[FOE]).await;
     // The spell is on the stack and seat 1 is shown it, as it would be without a yield.
@@ -377,17 +423,17 @@ async fn a_spell_the_seat_already_saw_does_not_end_the_yield_it_asks_over_it(
     yield_until(&handle, &clients[ME], until).await;
     let after_yield = clients[ME].drain();
     assert_eq!(notices(&after_yield), [Some(until)]);
-    // The spell resolves; `Resolve` has what it waited for, the others go on to the end or to the next turn.
+    // The spell resolves and every yield is over by the end of seat 0's turn (`Resolve` at once). Seat 1 is asked
+    // again at its own first main phase, the first window it can use, in turn 2.
     pass_while_waiting(&handle, &mut clients[FOE]).await;
     let told = clients[ME].drain();
     assert_eq!(notices(&told), [None]);
     assert_eq!(priority_decisions(&told), 1);
-    let expected_turn = if until == YieldUntil::Resolve { 1 } else { 2 };
-    assert_eq!(last_table(&told).0, expected_turn);
+    assert_eq!(last_table(&told).0, 2);
 }
 
 #[tokio::test(start_paused = true)]
-async fn resolve_passes_until_the_stack_is_empty_and_then_returns_the_seat_its_window() {
+async fn resolve_passes_until_the_stack_is_empty_and_then_leaves_the_seat_to_the_windows() {
     let (handle, _) = spawn(instant_duel(), OFF);
     let mut clients = join_and_ready(&handle, 2).await;
     foe_casts(&handle, &mut clients[FOE]).await;
@@ -401,10 +447,13 @@ async fn resolve_passes_until_the_stack_is_empty_and_then_returns_the_seat_its_w
     assert_eq!(order(&clients[ME].drain()), ["events", "yield Resolve"]);
     assert_eq!(handle.status().await.unwrap().waiting_on, Some(seat(FOE)));
 
+    // Seat 1's next window has an empty stack under seat 0's main phase, which is no window for it: its yield is
+    // over, the notice says so and the window is passed for it.
     foe_passes_once(&handle, &mut clients[FOE]).await;
     let told = clients[ME].drain();
-    assert_eq!(order(&told), ["events", "yield none", "decision priority"]);
+    assert_eq!(order(&told), ["events", "yield none"]);
     assert_eq!(last_table(&told), (1, 0), "the stack is empty");
+    assert_eq!(handle.status().await.unwrap().waiting_on, Some(seat(FOE)));
 }
 
 #[tokio::test(start_paused = true)]
@@ -427,9 +476,8 @@ async fn resolve_also_ends_for_a_new_spell_of_the_opponent_while_it_waits() {
 
 #[tokio::test(start_paused = true)]
 async fn resolve_over_an_empty_stack_sends_the_window_again_with_a_new_id() {
-    let (handle, store) = spawn(instant_duel(), OFF);
+    let (handle, store) = spawn(my_main(), OFF);
     let mut clients = join_and_ready(&handle, 2).await;
-    foe_passes_once(&handle, &mut clients[FOE]).await;
     let (window, decision) = clients[ME].decision().await;
     clients[ME].drain();
     let events = handle.status().await.unwrap().events;
@@ -501,7 +549,7 @@ async fn a_discard_at_the_end_of_the_turn_is_delivered_to_a_seat_that_yields() {
     // Seat 1's hand is over the limit when its own turn ends; it yields until the end of that turn.
     let setup = Scenario::new(2)
         .at(1, 1, Step::Main1)
-        .hand(1, vec![instant("Spare", 5, &[]); 9])
+        .hand(1, vec![instant("Spare", 0, &[]); 9])
         .setup()
         .unwrap();
     let (handle, _) = spawn(setup, OFF);
@@ -548,8 +596,9 @@ async fn cancelling_returns_the_windows_and_cancelling_nothing_says_nothing() {
     assert_eq!(order(&clients[ME].drain()), ["yield none"]);
     silent(&clients[FOE].drain());
 
-    // The windows are back.
-    answer(&handle, &clients[FOE], window, passive(&decision)).await;
+    // The windows are back: a spell of seat 0 is asked of seat 1, which can answer it.
+    foe_casts_at(&handle, &mut clients[FOE], window, &decision).await;
+    foe_passes_once(&handle, &mut clients[FOE]).await;
     let told = clients[ME].drain();
     assert_eq!(priority_decisions(&told), 1);
 }
@@ -585,34 +634,49 @@ async fn each_seat_has_its_own_yield() {
 
 #[tokio::test(start_paused = true)]
 async fn a_game_resumed_from_its_log_starts_without_yields() {
-    let setup = instant_duel();
+    let setup = combat_duel();
     let store = MemoryStore::new();
     let first = spawn_game_with(game_id(1), setup.clone(), store.clone(), config(OFF)).unwrap();
     let mut clients = join_and_ready(&first, 2).await;
     yield_until(&first, &clients[ME], YieldUntil::EndOfTurn).await;
+
+    // Seat 0 attacks; seat 1 blocks nothing, and its yield passes its priority in the declare blockers step.
+    let (id, decision) = clients[FOE].decision().await;
+    let DecisionKind::DeclareAttackers(options) = &decision.kind else {
+        panic!("expected the attack, got {decision:?}");
+    };
+    let attack = vec![(
+        options.attackers[0].object,
+        AttackTarget::Player(PlayerId(1)),
+    )];
+    answer(&first, &clients[FOE], id, Answer::DeclareAttackers(attack)).await;
     foe_passes_once(&first, &mut clients[FOE]).await;
-    assert_eq!(
-        first.status().await.unwrap().waiting_on,
-        Some(seat(FOE)),
-        "seat 1's window was passed for"
-    );
+    let (blocks, _) = clients[ME].decision().await;
+    answer(
+        &first,
+        &clients[ME],
+        blocks,
+        Answer::DeclareBlockers(Vec::new()),
+    )
+    .await;
+    assert_eq!(first.status().await.unwrap().waiting_on, Some(seat(FOE)));
     drop(clients);
     drop(first);
 
+    // The game resumes with every seat in the default mode and no yield: seat 0 holds nothing it can use and is
+    // passed for at start-up, so seat 1, which holds an instant, is asked in the declare blockers step.
     let second = resume_game_with(store.clone(), game_id(1), setup, config(OFF))
         .await
         .unwrap();
+    assert_eq!(second.status().await.unwrap().waiting_on, Some(seat(ME)));
     let mut me = Client::join(&second, ME).await;
     assert!(matches!(
         me.next().await,
         ServerMessage::Welcome { yielding: None, .. }
     ));
-    let mut foe = Client::join(&second, FOE).await;
-    foe.next().await;
-    foe_passes_once(&second, &mut foe).await;
-    let told = me.drain();
-    assert_eq!(priority_decisions(&told), 1, "seat 1 is asked again");
-    assert_eq!(notices(&told), []);
+    let (_, decision) = me.decision().await;
+    assert_eq!(decision.kind.name(), "priority");
+    assert_eq!(notices(&me.drain()), []);
 }
 
 #[tokio::test(start_paused = true)]
@@ -711,6 +775,7 @@ async fn a_yield_before_the_game_starts_is_refused() {
 async fn a_failed_save_takes_back_a_new_yield_and_the_passes_it_made() {
     let (handle, store) = spawn(instant_duel(), OFF);
     let mut clients = join_and_ready(&handle, 2).await;
+    foe_casts(&handle, &mut clients[FOE]).await;
     foe_passes_once(&handle, &mut clients[FOE]).await;
     let (window, decision) = clients[ME].decision().await;
     clients[ME].drain();
@@ -758,6 +823,7 @@ async fn a_failed_save_takes_back_the_end_of_a_yield_too() {
 async fn a_late_answer_to_a_window_the_yield_passed_is_stale_and_changes_nothing() {
     let (handle, _) = spawn(instant_duel(), OFF);
     let mut clients = join_and_ready(&handle, 2).await;
+    foe_casts(&handle, &mut clients[FOE]).await;
     foe_passes_once(&handle, &mut clients[FOE]).await;
     let (window, decision) = clients[ME].decision().await;
     yield_until(&handle, &clients[ME], YieldUntil::MyTurn).await;
@@ -822,11 +888,13 @@ async fn a_game_where_a_seat_yields_to_the_end_of_every_turn_ends_normally(
     bots_with_a_yielding_seat(players, seed, pace, YieldUntil::EndOfTurn).await;
 }
 
+// `Resolve` is left to the tests above: the bots hold no instants, so a seat that can act is asked over a spell only
+// in its own main phase, and a bot rarely stays able to act after casting one.
 #[rstest]
 #[tokio::test]
-async fn so_does_one_that_yields_until_its_own_turn_or_over_the_stack(
+async fn so_does_one_that_yields_until_its_own_turn(
     #[values(2, 4)] players: usize,
-    #[values(YieldUntil::MyTurn, YieldUntil::Resolve)] until: YieldUntil,
+    #[values(1, 2, 3, 4)] seed: u64,
 ) {
-    bots_with_a_yielding_seat(players, 4, OFF, until).await;
+    bots_with_a_yielding_seat(players, seed, OFF, YieldUntil::MyTurn).await;
 }

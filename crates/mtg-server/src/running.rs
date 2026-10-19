@@ -9,6 +9,8 @@ use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView};
 use tokio::time::Instant;
 
 use crate::pace::{self, Pace};
+use crate::stops::{self, Stops};
+use crate::windows;
 use crate::yields::Yields;
 
 /// Most priority passes made for idle seats in one go; past it the decision is sent as it is.
@@ -62,6 +64,8 @@ pub(crate) struct Step {
     pub(crate) origin: PlayerId,
     /// Whether a pending decision the step left unchanged keeps its id.
     pub(crate) keep_unchanged: bool,
+    /// Whether the step is the origin seat's pass of priority (its own, or the table's at its clock).
+    pub(crate) passed: bool,
 }
 
 /// The decision awaiting an answer, the id the client must echo and when its clock runs out.
@@ -135,11 +139,14 @@ impl Running {
         }
     }
 
-    /// Whether the pending decision is `seat`'s, cannot be used and `seat` has auto-pass on.
-    pub(crate) fn idle_for(&self, seat: PlayerId, auto_pass: &[bool]) -> bool {
-        self.pending
-            .as_ref()
-            .is_some_and(|p| p.decision.player == seat && pace::skippable(&p.decision, auto_pass))
+    /// Whether the pending decision is `seat`'s and the table passes for it under `stops` and `yields`.
+    ///
+    /// Nothing is changed: a yield the decision would end stays in `yields`.
+    pub(crate) fn passes_pending(&self, seat: PlayerId, stops: &Stops, yields: &Yields) -> bool {
+        self.pending.as_ref().is_some_and(|p| {
+            p.decision.player == seat
+                && windows::passes_for(&p.decision, stops, &mut yields.clone(), self.engine.state())
+        })
     }
 
     /// Aligns the pending decision with the engine's and returns what a client must be sent, if anything.
@@ -218,7 +225,12 @@ impl Running {
                 "that decision is not pending for you",
             ));
         }
+        let passes = answer == pace::pass();
         self.step(seat, false, |engine| engine.apply(answer))
+            .map(|step| Step {
+                passed: passes,
+                ..step
+            })
             .map_err(|error| match error {
                 EngineError::Illegal(illegal) => {
                     Rejection::new(ErrorCode::IllegalAnswer, illegal.to_string())
@@ -264,20 +276,21 @@ impl Running {
         self.answer(seat, id, answer)
     }
 
-    /// Passes for every seat that has nothing to do and has auto-pass on, and for every seat that yields,
-    /// until some decision needs a player.
+    /// Passes for every seat the windows pass for ([`windows::passes_for`]: not in Full Control, not at a window
+    /// of its own, or yielding) until some decision needs a player.
     ///
     /// The passes go through the engine like any answer; their events are added to `events`, so the
-    /// whole stretch is saved and shown as one batch. A seat that is asked anything else, or that can
-    /// act (unless it yields), stops the run, and so does the end of the game. A yield that reaches its end
-    /// on the way is dropped from `yields`, which the caller keeps only if the stretch is saved.
+    /// whole stretch is saved and shown as one batch. A seat that is asked, or is asked anything else, stops the
+    /// run, and so does the end of the game. A yield that reaches its end on the way is dropped from `yields`,
+    /// and the one-turn stops of the steps the passes leave are cleared from `stops`; the caller keeps both only
+    /// if the stretch is saved.
     pub(crate) fn skip_idle(
         &mut self,
         events: &mut Vec<Event>,
-        auto_pass: &[bool],
+        stops: &mut Stops,
         yields: &mut Yields,
     ) -> Result<(), EngineError> {
-        self.skip_up_to(MAX_IDLE_PASSES, events, auto_pass, yields)
+        self.skip_up_to(MAX_IDLE_PASSES, events, stops, yields)
     }
 
     /// [`skip_idle`](Running::skip_idle) with a limit on the passes, which a test can make small.
@@ -285,17 +298,20 @@ impl Running {
         &mut self,
         limit: usize,
         events: &mut Vec<Event>,
-        auto_pass: &[bool],
+        stops: &mut Stops,
         yields: &mut Yields,
     ) -> Result<(), EngineError> {
         for _ in 0..limit {
             let Some(decision) = self.engine.decision() else {
                 return Ok(());
             };
-            if !pace::passes_for(decision, auto_pass, yields, self.engine.state()) {
+            if !windows::passes_for(decision, stops, yields, self.engine.state()) {
                 return Ok(());
             }
-            events.extend(self.engine.apply(pace::pass())?);
+            let at = stops::place(self.engine.state());
+            let passed = self.engine.apply(pace::pass())?;
+            stops.left(at, &passed);
+            events.extend(passed);
         }
         // Cut short: the next priority decision is sent as it is, so a yield it belongs to ends here instead of
         // leaving a seat that "passes for it" with a prompt to answer.
@@ -350,6 +366,7 @@ impl Running {
             from_seq,
             origin,
             keep_unchanged,
+            passed: false,
         })
     }
 }
@@ -358,7 +375,7 @@ impl Running {
 mod tests {
     //! Goal: a run of passes stops at its limit with the next priority decision still pending, and a yield that decision belongs to ends there, so the seat is never handed a prompt while the server still "passes for it"; every other seat is left alone.
     use super::*;
-    use mtg_protocol::YieldUntil;
+    use mtg_protocol::{FullControlMode, YieldUntil};
     use mtg_testkit::Scenario;
     use rstest::rstest;
 
@@ -391,7 +408,7 @@ mod tests {
         let mut yields = yielding(&running, before);
         let mut events = Vec::new();
         running
-            .skip_up_to(limit, &mut events, &[false, false], &mut yields)
+            .skip_up_to(limit, &mut events, &mut Stops::new(2), &mut yields)
             .unwrap();
         let passes = events
             .iter()
@@ -413,9 +430,11 @@ mod tests {
     fn without_a_limit_in_the_way_the_run_goes_on_until_a_seat_must_decide() {
         let mut running = running();
         let mut yields = yielding(&running, &[SEATS[0]]);
+        let mut stops = Stops::new(2);
+        stops.set_full_control(SEATS[1], FullControlMode::Held);
         let mut events = Vec::new();
         running
-            .skip_idle(&mut events, &[false, false], &mut yields)
+            .skip_idle(&mut events, &mut stops, &mut yields)
             .unwrap();
         assert_eq!(events.len(), 1, "seat 1 does not yield and is asked");
         assert_eq!(running.engine.decision().map(|d| d.player), Some(SEATS[1]));

@@ -2,22 +2,24 @@
 //!
 //! A stop is a step of a turn at which the seat wants to be given priority; Full Control is a mode in which it
 //! wants priority at every step. Both live in the actor's memory per seat, like yields: they are not stored, they
-//! survive a reconnect (`Welcome` states them) and a resumed game starts without any. They are only stored and
-//! reported for now: nothing that decides when a seat is asked reads them.
+//! survive a reconnect (`Welcome` states them) and a resumed game starts with the server's default mode and no
+//! stop. [`crate::windows`] reads them to decide when a seat is asked. Turning auto-pass off is the `Held` mode,
+//! so the seat's auto-pass flag is not kept apart from the mode.
 //!
 //! The rules of a stop are here: it names a step where a player gets priority (never untap or cleanup), a seat holds
-//! each side and step once, and setting a held stop again replaces how long it lasts. A refusal is a small
-//! `Error{BadMessage}` that leaves everything as it was, so a client never needs a resync after one.
+//! each side and step once, setting a held stop again replaces how long it lasts, and a one-turn stop goes once the
+//! game has left its step. A refusal is a small `Error{BadMessage}` that leaves everything as it was, so a client
+//! never needs a resync after one.
 
 use std::collections::BTreeMap;
 
 use mtg_core::ids::PlayerId;
-use mtg_engine::GameState;
 use mtg_engine::turn::Step;
+use mtg_engine::{Event, GameState};
 use mtg_protocol::{ErrorCode, FullControlMode, ServerMessage, Stop, StopSide};
 use thiserror::Error;
 
-use crate::actor::{GameActor, Phase};
+use crate::actor::{Fatal, GameActor, Phase};
 use crate::running::Rejection;
 use crate::store::EventStore;
 
@@ -54,12 +56,49 @@ pub(crate) struct Stops {
     seats: Vec<Held>,
 }
 
+/// Where the game is: whose turn it is and in which step.
+pub(crate) type Place = (PlayerId, Step);
+
+/// Where `state` stands.
+pub(crate) fn place(state: &GameState) -> Place {
+    let turn = state.turn();
+    (turn.active(), turn.step())
+}
+
 impl Stops {
     /// No seat holds a stop, and every seat is out of Full Control.
+    #[cfg(test)]
     pub(crate) fn new(seats: usize) -> Stops {
+        Stops::with_mode(seats, FullControlMode::Off)
+    }
+
+    /// No seat holds a stop, and every seat is in Full Control mode `mode` (the server's default).
+    pub(crate) fn with_mode(seats: usize, mode: FullControlMode) -> Stops {
         Stops {
-            seats: vec![Held::default(); seats],
+            seats: vec![
+                Held {
+                    full_control: mode,
+                    ..Held::default()
+                };
+                seats
+            ],
         }
+    }
+
+    /// Whether `seat` holds a stop at `step` of a turn on `side`, one-turn or lasting.
+    pub(crate) fn holds(&self, seat: PlayerId, side: StopSide, step: Step) -> bool {
+        self.seats
+            .get(seat.index())
+            .is_some_and(|held| held.stops.contains_key(&(side, step)))
+    }
+
+    /// Whether the server passes for `seat` by its usual rules: the seat is in any mode but `Held`.
+    ///
+    /// This is the seat's auto-pass setting: turning it off is the `Held` mode.
+    pub(crate) fn auto_pass(&self, seat: PlayerId) -> bool {
+        self.seats
+            .get(seat.index())
+            .is_some_and(|held| held.full_control != FullControlMode::Held)
     }
 
     /// The stops `seat` holds, once each with its `keep`: own side first and each side in turn order.
@@ -106,6 +145,49 @@ impl Stops {
     pub(crate) fn set_full_control(&mut self, seat: PlayerId, mode: FullControlMode) {
         if let Some(held) = self.seats.get_mut(seat.index()) {
             held.full_control = mode;
+        }
+    }
+
+    /// Clears the one-turn stops of the steps that `events` left, applied with the game at `at`; lasting stops stay.
+    ///
+    /// A step is left when the next one begins, so a step the game entered and left in one go (declare attackers
+    /// with nobody to attack) counts, and one it never entered does not.
+    pub(crate) fn left(&mut self, mut at: Place, events: &[Event]) {
+        for event in events {
+            match event {
+                Event::TurnBegan { active, .. } => {
+                    self.over(at);
+                    at = (*active, Step::Untap);
+                }
+                Event::StepBegan { step } if *step != at.1 => {
+                    self.over(at);
+                    at.1 = *step;
+                }
+                _ => {}
+            }
+        }
+    }
+
+    /// Removes every seat's one-turn stop at the side that `place` is for that seat, and the step.
+    fn over(&mut self, (active, step): Place) {
+        for (seat, held) in self.seats.iter_mut().enumerate() {
+            let side = if PlayerId::from_index(seat) == active {
+                StopSide::Own
+            } else {
+                StopSide::Opponent
+            };
+            if held.stops.get(&(side, step)) == Some(&false) {
+                held.stops.remove(&(side, step));
+            }
+        }
+    }
+
+    /// `seat` has passed priority: a `NextWindow` mode ends.
+    pub(crate) fn passed(&mut self, seat: PlayerId) {
+        if let Some(held) = self.seats.get_mut(seat.index())
+            && held.full_control == FullControlMode::NextWindow
+        {
+            held.full_control = FullControlMode::Off;
         }
     }
 
@@ -169,14 +251,68 @@ impl<S: EventStore> GameActor<S> {
     }
 
     /// Puts `seat` in Full Control mode `mode` and tells it if the mode changed.
-    pub(crate) fn set_full_control(&mut self, seat: PlayerId, mode: FullControlMode) {
+    pub(crate) async fn set_full_control(
+        &mut self,
+        seat: PlayerId,
+        mode: FullControlMode,
+    ) -> Result<(), Fatal> {
         if let Some(rejection) = self.out_of_game(seat) {
             self.refuse(seat, rejection);
-            return;
+            return Ok(());
+        }
+        self.put_in_mode(seat, mode).await
+    }
+
+    /// Sets the seat's auto-pass: off is the `Held` mode, on is `Off` unless the seat is in a mode that already
+    /// lets the server pass for it (`NextWindow` stays).
+    ///
+    /// A seat that is out of the game, or a game that is over, has nothing to set and is not answered.
+    pub(crate) async fn set_auto_pass(
+        &mut self,
+        seat: PlayerId,
+        enabled: bool,
+    ) -> Result<(), Fatal> {
+        if self.out_of_game(seat).is_some() {
+            return Ok(());
+        }
+        let mode = match (enabled, self.stops.full_control(seat)) {
+            (false, _) => FullControlMode::Held,
+            (true, FullControlMode::Held) => FullControlMode::Off,
+            (true, other) => other,
+        };
+        self.put_in_mode(seat, mode).await
+    }
+
+    /// Takes `mode` for `seat`; a mode it already has changes nothing and says nothing.
+    ///
+    /// Turning Full Control on ends a running yield. Turning it off while the seat faces a priority decision that
+    /// the usual rules now pass for passes at once, as a started yield does: the passes, the new mode and the save
+    /// are one unit, so a failed save keeps the mode as it was.
+    async fn put_in_mode(&mut self, seat: PlayerId, mode: FullControlMode) -> Result<(), Fatal> {
+        if self.stops.full_control(seat) == mode {
+            return Ok(());
         }
         let mut stops = self.stops.clone();
         stops.set_full_control(seat, mode);
+        let mut yields = self.yields.clone();
+        if mode != FullControlMode::Off {
+            yields.cancel(seat);
+        }
+        if let Phase::Running(running) = &mut self.phase
+            && mode == FullControlMode::Off
+            && running.passes_pending(seat, &stops, &yields)
+        {
+            return match running.restart_decision(seat) {
+                Ok(step) => self.publish_with(step, yields, stops).await,
+                Err(rejection) => {
+                    self.refuse(seat, rejection);
+                    Ok(())
+                }
+            };
+        }
+        self.commit_yields(yields);
         self.commit_stops(stops);
+        Ok(())
     }
 
     /// Takes `stops` as the seats' stops and modes and tells each seat whose own changed.
@@ -203,7 +339,7 @@ impl<S: EventStore> GameActor<S> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, and a seat that left the game or a finished game holds nothing.
+    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, and a seat that left the game or a finished game holds nothing.
     use super::*;
     use mtg_engine::Engine;
     use mtg_testkit::Scenario;
@@ -476,5 +612,187 @@ mod tests {
         assert!(engine.state().result().is_some(), "the game is over");
         stops.drop_finished(engine.state());
         assert_eq!(stops, Stops::new(3), "so is everyone's");
+    }
+
+    #[rstest]
+    #[case::off(FullControlMode::Off, true)]
+    #[case::next_window(FullControlMode::NextWindow, true)]
+    #[case::held(FullControlMode::Held, false)]
+    fn auto_pass_is_on_in_every_mode_but_held_and_every_seat_starts_in_the_mode_it_is_given(
+        #[case] mode: FullControlMode,
+        #[case] auto_pass: bool,
+    ) {
+        let mut stops = Stops::with_mode(3, mode);
+        for seat in 0..3 {
+            assert_eq!(stops.full_control(PlayerId(seat)), mode);
+            assert_eq!(stops.auto_pass(PlayerId(seat)), auto_pass);
+        }
+        assert!(
+            !stops.auto_pass(PlayerId(7)),
+            "a seat the table does not have is passed for by nobody"
+        );
+        stops.set_full_control(ME, FullControlMode::Held);
+        assert!(!stops.auto_pass(ME));
+        assert_eq!(stops.auto_pass(FOE), auto_pass, "only the seat's own");
+    }
+
+    #[test]
+    fn a_stop_is_held_at_its_side_and_step_only_whatever_its_keep() {
+        let mut stops = Stops::new(2);
+        stops.set(ME, own(Step::Main1, false)).unwrap();
+        stops.set(ME, opponent(Step::End, true)).unwrap();
+        for side in SIDES {
+            for step in Step::ALL {
+                let held = matches!(
+                    (side, step),
+                    (StopSide::Own, Step::Main1) | (StopSide::Opponent, Step::End)
+                );
+                assert_eq!(stops.holds(ME, side, step), held, "{side:?} {step:?}");
+                assert!(!stops.holds(FOE, side, step), "another seat holds none");
+            }
+        }
+    }
+
+    fn began(step: Step) -> Event {
+        Event::StepBegan { step }
+    }
+
+    fn turn(number: u32, active: PlayerId) -> [Event; 2] {
+        [
+            Event::TurnBegan { number, active },
+            Event::StepBegan { step: Step::Untap },
+        ]
+    }
+
+    /// Seat 1 holds a one-turn and a lasting stop at `step` on `side`; the game is at `at` and `events` happen.
+    fn after(side: StopSide, step: Step, at: Place, events: &[Event]) -> (Vec<Stop>, Vec<Stop>) {
+        let mut stops = Stops::new(2);
+        stops.set(ME, stop(side, step, false)).unwrap();
+        let other = if step == Step::End {
+            Step::Main2
+        } else {
+            Step::End
+        };
+        stops.set(ME, stop(side, other, true)).unwrap();
+        stops.left(at, events);
+        let kept = stops.stops(ME);
+        let lasting = kept.iter().copied().filter(|s| s.keep).collect();
+        let one_turn = kept.into_iter().filter(|s| !s.keep).collect();
+        (one_turn, lasting)
+    }
+
+    #[rstest]
+    #[case::the_next_step_begins(StopSide::Own, Step::Main1, (ME, Step::Main1), vec![began(Step::BeginCombat)], true)]
+    #[case::a_step_left_on_the_other_side_leaves_it(StopSide::Opponent, Step::Main1, (ME, Step::Main1), vec![began(Step::BeginCombat)], false)]
+    #[case::the_other_sides_turn_is_not_this_one(StopSide::Own, Step::Main1, (FOE, Step::Main1), vec![began(Step::BeginCombat)], false)]
+    #[case::the_opponents_step_on_the_opponents_turn(StopSide::Opponent, Step::End, (FOE, Step::End), vec![began(Step::Cleanup)], true)]
+    #[case::another_step_of_the_turn_is_left(StopSide::Own, Step::Main1, (ME, Step::Draw), vec![began(Step::Main1)], false)]
+    #[case::the_step_is_still_running(StopSide::Own, Step::Main1, (ME, Step::Main1), vec![], false)]
+    #[case::a_new_turn_ends_the_step(StopSide::Own, Step::End, (ME, Step::End), turn(4, FOE).to_vec(), true)]
+    fn a_one_turn_stop_goes_when_its_step_is_left_and_not_before(
+        #[case] side: StopSide,
+        #[case] step: Step,
+        #[case] at: Place,
+        #[case] events: Vec<Event>,
+        #[case] gone: bool,
+    ) {
+        let (one_turn, lasting) = after(side, step, at, &events);
+        assert_eq!(one_turn.is_empty(), gone, "{one_turn:?}");
+        assert_eq!(lasting.len(), 1, "a lasting stop always stays");
+    }
+
+    #[test]
+    fn a_step_entered_and_left_in_one_go_is_passed_and_one_never_entered_is_not() {
+        // Declare attackers with nobody to attack with: the game enters the step and leaves it without priority.
+        let events = [began(Step::DeclareAttackers), began(Step::EndCombat)];
+        let (kept, _) = after(
+            StopSide::Own,
+            Step::DeclareAttackers,
+            (ME, Step::BeginCombat),
+            &events,
+        );
+        assert_eq!(kept, [], "passed through");
+        // The same turn skips the blockers step altogether, so a stop there waits for a turn that has one.
+        let (kept, _) = after(
+            StopSide::Own,
+            Step::DeclareBlockers,
+            (ME, Step::BeginCombat),
+            &events,
+        );
+        assert_eq!(kept, [own(Step::DeclareBlockers, false)], "never entered");
+    }
+
+    #[test]
+    fn a_stop_set_while_its_step_runs_covers_that_step_and_one_set_for_a_step_already_past_waits_for_the_next_turn()
+     {
+        let mut stops = Stops::new(2);
+        // Set in seat 1's own first main phase: it covers this main phase and goes when the phase is left.
+        stops.set(ME, own(Step::Main1, false)).unwrap();
+        // Set after seat 1's own upkeep passed: it waits for the next turn of seat 1.
+        stops.set(ME, own(Step::Upkeep, false)).unwrap();
+        stops.left((ME, Step::Main1), &[began(Step::BeginCombat)]);
+        assert_eq!(stops.stops(ME), [own(Step::Upkeep, false)]);
+        // A whole turn of each seat goes by: seat 1's upkeep comes round again and ends the stop at it.
+        let mut events = Vec::new();
+        events.extend(turn(3, FOE));
+        events.extend(turn(4, ME));
+        events.push(began(Step::Upkeep));
+        events.push(began(Step::Draw));
+        stops.left((ME, Step::End), &events);
+        assert_eq!(stops.stops(ME), []);
+    }
+
+    #[test]
+    fn several_turns_clear_each_one_turn_stop_once_and_keep_the_lasting_ones() {
+        let setup = Scenario::new(2).setup().unwrap();
+        let mut engine = Engine::new(setup).unwrap();
+        let mut stops = Stops::new(2);
+        let lasting = own(Step::Main2, true);
+        stops.set(ME, lasting).unwrap();
+        stops.set(ME, opponent(Step::End, false)).unwrap();
+        stops.set(ME, own(Step::End, false)).unwrap();
+        stops.set(FOE, own(Step::End, false)).unwrap();
+
+        let mut cleared = Vec::new();
+        while engine.state().turn().number() < 4 {
+            let at = place(engine.state());
+            let before = (stops.stops(ME), stops.stops(FOE));
+            let events = engine
+                .apply(mtg_engine::Answer::Priority(
+                    mtg_engine::decision::PriorityAction::Pass,
+                ))
+                .unwrap();
+            stops.left(at, &events);
+            if (stops.stops(ME), stops.stops(FOE)) != before {
+                cleared.push(at);
+            }
+        }
+        // Seat 0 plays turns 1 and 3, seat 1 turn 2. Seat 0's end step in turn 1 ends seat 1's `Opponent` stop and
+        // seat 0's own `Own` stop together; seat 1's end step in turn 2 ends its `Own` stop. The lasting stop stays.
+        assert_eq!(cleared, [(FOE, Step::End), (ME, Step::End)]);
+        assert_eq!(stops.stops(ME), [lasting]);
+        assert_eq!(stops.stops(FOE), []);
+    }
+
+    #[test]
+    fn passing_ends_a_next_window_and_no_other_mode() {
+        for (before, after) in [
+            (FullControlMode::Off, FullControlMode::Off),
+            (FullControlMode::NextWindow, FullControlMode::Off),
+            (FullControlMode::Held, FullControlMode::Held),
+        ] {
+            let mut stops = Stops::new(2);
+            stops.set_full_control(ME, before);
+            stops.set_full_control(FOE, FullControlMode::NextWindow);
+            stops.passed(ME);
+            assert_eq!(stops.full_control(ME), after, "{before:?}");
+            assert_eq!(
+                stops.full_control(FOE),
+                FullControlMode::NextWindow,
+                "another seat's pass is not this seat's"
+            );
+        }
+        // A seat the table does not have passes into thin air.
+        Stops::new(2).passed(PlayerId(9));
     }
 }

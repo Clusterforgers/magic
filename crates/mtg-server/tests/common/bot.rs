@@ -7,6 +7,7 @@ use mtg_engine::{Answer, Decision, DecisionKind};
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage, YieldUntil};
 use mtg_server::GameHandle;
 use mtg_testkit::RandomBot;
+use mtg_testkit::SeatWindows;
 use tokio::sync::mpsc::Receiver;
 
 use super::timed;
@@ -88,6 +89,14 @@ impl Bot {
             snapshots: 0,
             errors: Vec::new(),
         }
+    }
+
+    /// Chooses the stops and Full Control mode this bot plays with, tells the server (as a seat does in the lobby) and
+    /// returns the choice. Call it before anything else, as the reference game does.
+    pub async fn choose_windows(&mut self, handle: &GameHandle) -> SeatWindows {
+        let chosen = self.brain.windows();
+        super::send_windows(handle, self.seat, &chosen).await;
+        chosen
     }
 
     /// Connects the seat again (to a new actor, or after dropping the old queue).
