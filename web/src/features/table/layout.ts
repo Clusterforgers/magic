@@ -332,6 +332,14 @@ export interface TableInput extends Omit<SeatInput, 'mode'> {
   viewport: Viewport
   /** The mode the player chose, if any. */
   mode?: TableMode | undefined
+  /** The seat whose turn it is; on a phone its tile leads the strip. */
+  active?: PlayerId | null | undefined
+}
+
+/** `tiles` with `active` moved to the front, the rest as they were; unchanged when `active` is not among them. */
+export function activeFirst(tiles: readonly PlayerId[], active: PlayerId | null | undefined): PlayerId[] {
+  if (active === null || active === undefined || !tiles.includes(active)) return [...tiles]
+  return [active, ...tiles.filter((seat) => seat !== active)]
 }
 
 /** The whole layout of the table for a window and a seat count. */
@@ -351,7 +359,9 @@ export function planTable(input: TableInput): TablePlan {
   const regions = regionSizes(input.viewport)
   const seatCount = wholeSeats(input.seatCount)
   const mode = chooseMode({ seatCount, mainWidth: regions.main.width, override: input.mode })
-  const seats = arrangeSeats({ ...input, seatCount, mode })
+  const arranged = arrangeSeats({ ...input, seatCount, mode })
+  // The strip of a phone shows a few tiles at a time: the seat whose turn it is leads it.
+  const seats = regions.phone ? { ...arranged, tiles: activeFirst(arranged.tiles, input.active) } : arranged
   const pod: PodPlace = regions.phone ? 'line' : 'aside'
   return {
     regions,

@@ -86,7 +86,7 @@ export function Opponents({ plan, size, pod, onFocusSeat }: OpponentsProps) {
           role="list"
           aria-label="Opponents"
           data-slot="tile-strip"
-          className="relative flex h-14 shrink-0 gap-2 overflow-x-auto p-1"
+          className="relative flex h-14 shrink-0 gap-2 overflow-x-auto p-1 [scrollbar-width:none]"
         >
           {plan.tiles.map((seat) => (
             <li key={seat} className="flex min-w-44 flex-1">

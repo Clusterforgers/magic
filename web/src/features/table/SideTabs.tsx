@@ -155,14 +155,14 @@ export function SideTabs() {
 }
 
 /** The button of the top bar that opens the sheet, with what wants a look on it. */
-export function SideSheetButton() {
+export function SideSheetButton({ compact = false }: { compact?: boolean }) {
   const side = useSide()
   if (side.kind !== 'sheet') return null
   const waiting = side.attention
   return (
     <Button
       variant="ghost"
-      size="icon"
+      size={compact ? 'icon-sm' : 'icon'}
       className="relative"
       aria-haspopup="dialog"
       aria-expanded={side.open}

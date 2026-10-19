@@ -49,7 +49,7 @@ export function ControlsDock({ stops }: { stops: boolean }) {
       <div
         ref={setSlot}
         data-slot="pass-slot"
-        className="flex flex-wrap items-center justify-end gap-2 empty:hidden"
+        className="flex w-full flex-wrap items-center justify-end gap-2 empty:hidden"
       />
       {stops ? <StopsBar /> : null}
     </section>

@@ -44,6 +44,8 @@ interface TopBarProps {
   onFollow: () => void
   /** The stop ladder and Full Control sit in the menu, not in the controls dock. */
   stopsInMenu: boolean
+  /** The bar is 32 px high, on a phone on its side: the buttons are smaller. */
+  compact?: boolean
 }
 
 /**
@@ -51,7 +53,7 @@ interface TopBarProps {
  * (layout, stops and Full Control where the dock has no room, theme, Concede). 44 px high, 32 px on a phone on its
  * side.
  */
-export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu }: TopBarProps) {
+export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compact = false }: TopBarProps) {
   const [menu, setMenu] = useState(false)
   const [conceding, setConceding] = useState(false)
   // The question goes with the right to concede, such as when the game ends while it is open.
@@ -61,8 +63,9 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu }: Top
       <HomeLink />
       <TurnBadge />
       <span className="ml-auto" />
-      <SideSheetButton />
+      <SideSheetButton compact={compact} />
       <TableMenu
+        compact={compact}
         mode={mode}
         onMode={onMode}
         pinnedFocus={pinnedFocus}

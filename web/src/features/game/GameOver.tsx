@@ -39,7 +39,11 @@ export function GameOver() {
           {detail === null ? null : <p className="mt-1 text-base text-muted-foreground">{detail}</p>}
         </div>
         {seats.length === 0 ? null : (
-          <ul aria-label="How each seat finished" className="surface divide-y">
+          // A long table of seats scrolls inside its list, so the page and its button stay in the window.
+          <ul
+            aria-label="How each seat finished"
+            className="surface max-h-[min(24rem,45dvh)] divide-y overflow-y-auto"
+          >
             {seats.map((entry) => (
               <li key={entry.seat} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
                 <span className="flex min-w-0 items-center gap-2">

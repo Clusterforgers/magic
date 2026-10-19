@@ -133,6 +133,14 @@ describe('game over', () => {
     expect(document.title).toBe('Game over · Magic')
   })
 
+  it('keeps a long table of results inside its list, which scrolls, so the page and the way to a new game stay in the window', async () => {
+    await finishedGame(0, 1, 'ZeroLife', { Winner: 0 })
+    const list = screen.getByRole('list', { name: 'How each seat finished' })
+    expect(list).toHaveClass('overflow-y-auto')
+    expect(list.className).toContain('max-h-[min(24rem,45dvh)]')
+    expect(screen.getByRole('link', { name: 'Create a new game' })).not.toBe(list)
+  })
+
   it('keeps the result when the server closes the socket afterwards, with no connection notice', async () => {
     const h = await renderGame()
     h.join()

@@ -40,6 +40,8 @@ interface TableMenuProps {
   onConcede: () => void
   open: boolean
   onOpenChange: (open: boolean) => void
+  /** The top bar is low (a phone on its side): a smaller button. */
+  compact?: boolean
 }
 
 /**
@@ -56,12 +58,15 @@ export function TableMenu({
   onConcede,
   open,
   onOpenChange,
+  compact = false,
 }: TableMenuProps) {
   const { choice, setChoice } = useTheme()
   const concede = usePlay(canConcede)
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger render={<Button variant="ghost" size="icon" aria-label="Table menu" />}>
+      <PopoverTrigger
+        render={<Button variant="ghost" size={compact ? 'icon-sm' : 'icon'} aria-label="Table menu" />}
+      >
         <MenuIcon aria-hidden="true" />
       </PopoverTrigger>
       {/* Kept in the page while closed when it holds the ladder, whose Control key handlers must go on working. */}

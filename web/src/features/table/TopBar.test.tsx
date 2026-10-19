@@ -83,6 +83,15 @@ describe('the bar', () => {
     expect(sheet !== null).toBe(has)
   })
 
+  it('has smaller buttons in the 32 px bar of a phone on its side, and the usual ones elsewhere', () => {
+    const { unmount } = renderTable({ seats: 2, options: { viewport: { width: 844, height: 390 } } })
+    expect(menuButton()).toHaveClass('size-8')
+    expect(within(bar()).getByRole('button', { name: /^Log, chat and stack/ })).toHaveClass('size-8')
+    unmount()
+    renderTable({ seats: 2, options: { viewport: { width: 800, height: 900 } } })
+    expect(menuButton()).toHaveClass('size-9')
+  })
+
   it('names home by its words on a phone, where the word "Magic" is left out', () => {
     renderTable({ seats: 2, options: { viewport: PHONE } })
     expect(within(bar()).getByRole('link', { name: 'Home' })).toBeInTheDocument()

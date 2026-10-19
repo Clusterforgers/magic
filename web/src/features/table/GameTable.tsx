@@ -41,13 +41,14 @@ const Table = memo(function Table() {
     useShallow((state) => ({ seat: state.seat, seatCount: seatCountOf(state), ready: state.view !== null })),
   )
   const followed = usePlay(defaultFocusOf)
+  const active = usePlay((state) => state.view?.turn.active ?? null)
   const [mode, setMode] = useState<TableMode | undefined>(options.mode)
   const [chosen, setChosen] = useState<PlayerId | null>(options.focus ?? null)
   const [previews] = useState(createPreviewStore)
   const [marks] = useState(createMarksStore)
   const table = useMemo(
-    () => planTable({ viewport, seatCount, viewer: seat ?? 0, mode, focus: chosen ?? followed }),
-    [viewport, seatCount, seat, mode, chosen, followed],
+    () => planTable({ viewport, seatCount, viewer: seat ?? 0, mode, focus: chosen ?? followed, active }),
+    [viewport, seatCount, seat, mode, chosen, followed, active],
   )
   const { regions, seats: plan } = table
   const size: CardSize = plan.compact ? 'compact' : 'normal'
@@ -79,6 +80,7 @@ const Table = memo(function Table() {
                         pinnedFocus={chosen !== null}
                         onFollow={() => setChosen(null)}
                         stopsInMenu={!table.stopsInDock}
+                        compact={regions.landscape}
                       />
                     }
                     opponents={

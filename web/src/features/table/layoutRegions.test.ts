@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import {
+  activeFirst,
   arrangeSeats,
   breakpointOf,
   chooseMode,
@@ -325,6 +326,29 @@ describe('planTable', () => {
     expect(mainColumns({ phone: false }, true)).toBe('minmax(0, 1fr) fit-content(720px)')
     expect(mainColumns({ phone: true }, false)).toBe('minmax(0, 1fr) fit-content(160px)')
     expect(mainColumns({ phone: true }, true)).toBe('minmax(0, 1fr) fit-content(160px)')
+  })
+
+  it('puts the seat whose turn it is first in the strip of a phone, and leaves the strip of a wide window in turn order', () => {
+    const phone = { width: 390, height: 844 }
+    const wide = { width: 1920, height: 1080 }
+    const on = (viewport: Viewport, active: number) =>
+      planTable({ viewport, seatCount: 5, viewer: 0, active }).seats.tiles
+    expect(on(phone, 3)).toEqual([3, 1, 2, 4])
+    expect(on(phone, 1)).toEqual([1, 2, 3, 4])
+    // The viewer's own turn leads nothing: the tiles are the opponents' only.
+    expect(on(phone, 0)).toEqual([1, 2, 3, 4])
+    expect(on(wide, 3)).toEqual([1, 2, 3, 4])
+  })
+
+  it.each([
+    [[1, 2, 3, 4], 3, [3, 1, 2, 4]],
+    [[1, 2, 3, 4], 1, [1, 2, 3, 4]],
+    [[1, 2, 3, 4], 0, [1, 2, 3, 4]],
+    [[1, 2, 3, 4], null, [1, 2, 3, 4]],
+    [[1, 2, 3, 4], undefined, [1, 2, 3, 4]],
+    [[], 2, []],
+  ])('moves the active seat to the front of %j: %s gives %j', (tiles, active, expected) => {
+    expect(activeFirst(tiles, active)).toEqual(expected)
   })
 
   it('follows the chosen mode and the focus through to the seats', () => {

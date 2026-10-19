@@ -49,7 +49,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       aria-label={`Show ${name}'s board. Life ${player.life}, ${player.hand.count} cards in hand${spoken === '' ? '' : `, ${spoken}`}${focused ? ', shown now' : ''}`}
       onClick={() => onFocusSeat(seat)}
       className={cn(
-        'grid h-full min-w-44 flex-1 content-center gap-0.5 overflow-hidden rounded-lg bg-card px-2 py-1 text-left text-xs ring-1 ring-foreground/10 outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-primary',
+        'grid h-full min-w-44 flex-1 grid-cols-[minmax(0,1fr)] content-center gap-0.5 overflow-hidden rounded-lg bg-card px-2 py-1 text-left text-xs ring-1 ring-foreground/10 outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-primary',
         focused && 'ring-2 ring-primary',
         eliminated && 'border-l-4 border-destructive',
         flags.active && 'bg-primary/5',
@@ -62,7 +62,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         </LifeFx>
       </span>
       {/* Each figure keeps together; what does not fit the tile is cut, the spoken name has it all. */}
-      <span className="flex gap-x-2 whitespace-nowrap text-muted-foreground">
+      <span className="flex gap-x-2 overflow-hidden whitespace-nowrap text-muted-foreground">
         <span>Hand {player.hand.count}</span>
         <span>Library {player.library.count}</span>
         <span>{counts.creatures} creatures</span>
