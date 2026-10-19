@@ -7,7 +7,7 @@ Template for delegating a task to an agent, and the rules the orchestrator follo
 Use it for every delegated task and keep the brief itself short.
 
 ```
-Task: <one roadmap item, one focused piece, about 15 minutes>
+Task: <one roadmap item, one focused piece, about 15 minutes; at about 80 model turns commit and report what is left>
 Read first: CLAUDE.md, docs/ROADMAP.md, <only the files you need>
 Scope: only <crate or folder>; no edits elsewhere except append-only workspace deps.
 Deliver: <list>
