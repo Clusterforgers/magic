@@ -1,12 +1,23 @@
 import type { DecisionName } from '../turnText'
 import { AssignDamagePrompt } from './kinds/AssignDamage'
 import { BottomCardsPrompt } from './kinds/BottomCards'
+import { ChooseCardsPrompt } from './kinds/ChooseCards'
+import { ChooseCostsPrompt } from './kinds/ChooseCosts'
+import { ChooseModePrompt } from './kinds/ChooseMode'
+import { ChooseNumberPrompt } from './kinds/ChooseNumber'
+import { ChooseOptionPrompt } from './kinds/ChooseOption'
+import { ChooseReplacementPrompt } from './kinds/ChooseReplacement'
+import { ChooseTargetsPrompt } from './kinds/ChooseTargets'
 import { DeclareAttackersPrompt } from './kinds/DeclareAttackers'
 import { DeclareBlockersPrompt } from './kinds/DeclareBlockers'
 import { DiscardPrompt } from './kinds/Discard'
+import { DivideAmountPrompt } from './kinds/DivideAmount'
 import { MulliganPrompt } from './kinds/Mulligan'
+import { OrderCardsPrompt } from './kinds/OrderCards'
+import { OrderTriggersPrompt } from './kinds/OrderTriggers'
 import { PayManaPrompt } from './kinds/PayMana'
 import { PriorityPrompt } from './kinds/Priority'
+import { YesNoPrompt } from './kinds/YesNo'
 import type { PromptComponent } from './types'
 
 /**
@@ -22,4 +33,15 @@ export const PROMPTS: { [K in DecisionName]: PromptComponent<K> } = {
   DeclareBlockers: DeclareBlockersPrompt,
   AssignDamage: AssignDamagePrompt,
   Discard: DiscardPrompt,
+  ChooseTargets: ChooseTargetsPrompt,
+  ChooseMode: ChooseModePrompt,
+  ChooseNumber: ChooseNumberPrompt,
+  DivideAmount: DivideAmountPrompt,
+  ChooseCards: ChooseCardsPrompt,
+  OrderCards: OrderCardsPrompt,
+  YesNo: YesNoPrompt,
+  ChooseOption: ChooseOptionPrompt,
+  ChooseCosts: ChooseCostsPrompt,
+  OrderTriggers: OrderTriggersPrompt,
+  ChooseReplacement: ChooseReplacementPrompt,
 }

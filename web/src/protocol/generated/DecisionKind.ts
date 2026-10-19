@@ -2,13 +2,24 @@
 import type { AttackOptions } from "./AttackOptions";
 import type { BlockOptions } from "./BlockOptions";
 import type { BottomOptions } from "./BottomOptions";
+import type { CardsOptions } from "./CardsOptions";
+import type { CostsOptions } from "./CostsOptions";
 import type { DamageOptions } from "./DamageOptions";
 import type { DiscardOptions } from "./DiscardOptions";
+import type { DivideOptions } from "./DivideOptions";
+import type { ModeOptions } from "./ModeOptions";
 import type { MulliganOptions } from "./MulliganOptions";
+import type { NumberOptions } from "./NumberOptions";
+import type { OptionOptions } from "./OptionOptions";
+import type { OrderOptions } from "./OrderOptions";
 import type { PayOptions } from "./PayOptions";
 import type { PriorityOptions } from "./PriorityOptions";
+import type { ReplacementOptions } from "./ReplacementOptions";
+import type { TargetOptions } from "./TargetOptions";
+import type { TriggersOptions } from "./TriggersOptions";
+import type { YesNoOptions } from "./YesNoOptions";
 
 /**
  * The kind of decision, each variant carrying its exhaustive options.
  */
-export type DecisionKind = { "Mulligan": MulliganOptions } | { "BottomCards": BottomOptions } | { "Priority": PriorityOptions } | { "PayMana": PayOptions } | { "DeclareAttackers": AttackOptions } | { "DeclareBlockers": BlockOptions } | { "AssignDamage": DamageOptions } | { "Discard": DiscardOptions };
+export type DecisionKind = { "Mulligan": MulliganOptions } | { "BottomCards": BottomOptions } | { "Priority": PriorityOptions } | { "PayMana": PayOptions } | { "DeclareAttackers": AttackOptions } | { "DeclareBlockers": BlockOptions } | { "AssignDamage": DamageOptions } | { "Discard": DiscardOptions } | { "ChooseTargets": TargetOptions } | { "ChooseMode": ModeOptions } | { "ChooseNumber": NumberOptions } | { "DivideAmount": DivideOptions } | { "ChooseCards": CardsOptions } | { "OrderCards": OrderOptions } | { "YesNo": YesNoOptions } | { "ChooseOption": OptionOptions } | { "ChooseCosts": CostsOptions } | { "OrderTriggers": TriggersOptions } | { "ChooseReplacement": ReplacementOptions };

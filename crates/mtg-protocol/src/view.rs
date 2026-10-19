@@ -8,9 +8,11 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
+use mtg_engine::choose::Target;
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::mana::ManaPool;
+use mtg_engine::object::ObjectKind;
 use mtg_engine::player::{LossReason, MulliganStatus};
 use mtg_engine::state::{GameResult, Stage};
 use mtg_engine::turn::Step;
@@ -69,6 +71,19 @@ pub struct ObjectView {
     pub abilities: Vec<AbilityDef>,
     /// Permanent state when on the battlefield.
     pub permanent: Option<PermanentView>,
+    /// What the object is; a card when absent. An ability on the stack is named after its source and has no
+    /// types, colours or abilities of its own.
+    #[serde(default, skip_serializing_if = "ObjectKind::is_card")]
+    #[ts(as = "Option<ObjectKind>", optional)]
+    pub kind: ObjectKind,
+    /// The object an ability on the stack comes from.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub source: Option<ObjectId>,
+    /// What a spell or ability on the stack targets, one list for each target specification.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<Vec<Target>>>", optional)]
+    pub targets: Vec<Vec<Target>>,
 }
 
 /// One seat as a viewer sees it.

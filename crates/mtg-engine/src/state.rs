@@ -14,6 +14,7 @@ use crate::hash::stable_hash;
 use crate::object::GameObject;
 use crate::player::Player;
 use crate::priority::PriorityState;
+use crate::resolve::Resolving;
 use crate::turn::TurnState;
 use crate::zones::{Zone, Zones};
 
@@ -58,6 +59,8 @@ pub struct GameState {
     pub(crate) effects: Vec<ContinuousEffect>,
     pub(crate) next_effect: u64,
     pub(crate) next_timestamp: u64,
+    pub(crate) next_object: u64,
+    pub(crate) resolving: Option<Resolving>,
     pub(crate) result: Option<GameResult>,
 }
 
@@ -142,6 +145,16 @@ impl GameState {
         &self.effects
     }
 
+    /// The spell or ability that is resolving, with its journal.
+    pub const fn resolving(&self) -> Option<&Resolving> {
+        self.resolving.as_ref()
+    }
+
+    /// The id the next object created during the game gets (abilities on the stack, and tokens later).
+    pub const fn next_object(&self) -> ObjectId {
+        ObjectId(self.next_object)
+    }
+
     /// The result once the game is over.
     pub const fn result(&self) -> Option<GameResult> {
         self.result
@@ -201,6 +214,8 @@ impl Hash for GameState {
         self.effects.hash(state);
         self.next_effect.hash(state);
         self.next_timestamp.hash(state);
+        self.next_object.hash(state);
+        self.resolving.hash(state);
         self.result.hash(state);
     }
 }

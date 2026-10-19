@@ -54,7 +54,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d) to (k) in parallel.
 - [x] (a) `mtg-cards` DSL: data model for every ability kind, loader, validation, support records and a 40-card corpus
 - [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
-- [ ] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
+- [x] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
 - [ ] (d) Decision kinds the effects need, one task each across engine, protocol and a web prompt (the table in `docs/cards-dsl.md`, Decisions the effects need)
 - [ ] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets and the views carry keywords, counters and attachments (`docs/web.md`)
 - [ ] (f) Keyword actions (CR 701), one engine primitive each, with a web prompt where the player chooses (scope in `docs/cards-dsl.md`, Tasks)
@@ -69,7 +69,21 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [ ] Deck builder UI with card search, import, validation, export
 - [ ] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
 - [ ] Precon browser with one-click play
+- [ ] Choose a deck in the lobby: a stored deck or a precon per seat; the table sees each seat's deck state as a count of manual cards, never their names (`docs/deck-check.md`)
 - [x] N-player layout, game log, stack panel, stop settings
+- [ ] UI rebuild: the table fits the screen, a turn change is unmistakable and games are joined from a list (`docs/ui-design.md`, Tasks). In order:
+  - [ ] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
+  - [ ] (U2) Fit engine: card sizes from the space available and grouping of identical permanents, pure and tested
+  - [ ] (U3) Table grid: top bar, opponents, shared strip, own board, hand dock and side tabs in one viewport from 1280x720
+  - [ ] (U4) Seat pods, scaled battlefield rows and a hand dock that hold 40 permanents a seat
+  - [ ] (U5) Controls dock: a 44 px pass button, a one-row stop ladder and a menu for the rest
+  - [ ] (U6) Turn feedback: turn badge, turn banner, active-seat emphasis and a ticker for automatic passes and skips
+  - [ ] (U7) Server: game visibility, open seats, claim and join code
+  - [ ] (U8) Server: public game listing, join, leave and release, with privacy tests
+  - [ ] (U9) Game browser page: live list, join dialog, empty, loading and error states
+  - [ ] (U10) Create-game visibility, invite link and code, lobby controls for host and guests
+  - [ ] (U11) Page polish: game over, My games, sign-in and one page width scale
+  - [ ] (U12) Layout gate at six sizes in both themes; the audit leaves `docs/ui-design.md`
 - [ ] Spectators and reconnect polish: a spectator seat, a face-down card rule in `zone_is_visible`, a "waiting on" message for tables of three or more
 
 ## M5 Commander

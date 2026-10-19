@@ -8,15 +8,20 @@
 mod answers;
 mod cast;
 mod damage;
+#[cfg(test)]
+mod fixtures;
 mod flow;
 mod mulligan;
 mod preview;
 mod sba;
 mod steps;
 
+pub mod abilities;
 pub mod caps;
 pub mod characteristics;
+pub mod choose;
 pub mod combat;
+pub mod counters;
 pub mod decision;
 pub mod effects;
 pub mod engine;
@@ -26,14 +31,21 @@ pub mod fold;
 pub mod forecast;
 pub mod format;
 pub mod hash;
+pub mod keywords;
+pub mod library;
 pub mod mana;
 pub mod object;
 pub mod player;
 pub mod priority;
+pub mod replace;
+pub mod resolve;
 pub mod rng;
 pub mod setup;
+pub mod snapshot;
 pub mod stack;
 pub mod state;
+pub mod tokens;
+pub mod triggers;
 pub mod turn;
 pub mod zones;
 
@@ -45,4 +57,5 @@ pub use error::{EngineError, PreviewError};
 pub use events::Event;
 pub use fold::apply_event;
 pub use setup::{GameSetup, PlayerSetup, PresetPermanent, Start};
+pub use snapshot::{Snapshot, snapshot};
 pub use state::{GameResult, GameState};

@@ -4,10 +4,12 @@ import type { CardType } from "./CardType";
 import type { Color } from "./Color";
 import type { ManaCost } from "./ManaCost";
 import type { ObjectId } from "./ObjectId";
+import type { ObjectKind } from "./ObjectKind";
 import type { PermanentView } from "./PermanentView";
 import type { PlayerId } from "./PlayerId";
 import type { Subtype } from "./Subtype";
 import type { Supertype } from "./Supertype";
+import type { Target } from "./Target";
 import type { Zone } from "./Zone";
 
 /**
@@ -69,4 +71,17 @@ abilities: Array<AbilityDef>,
 /**
  * Permanent state when on the battlefield.
  */
-permanent: PermanentView | null, };
+permanent: PermanentView | null, 
+/**
+ * What the object is; a card when absent. An ability on the stack is named after its source and has no
+ * types, colours or abilities of its own.
+ */
+kind?: ObjectKind, 
+/**
+ * The object an ability on the stack comes from.
+ */
+source?: ObjectId, 
+/**
+ * What a spell or ability on the stack targets, one list for each target specification.
+ */
+targets?: Array<Array<Target>>, };

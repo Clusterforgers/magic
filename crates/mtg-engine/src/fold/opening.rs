@@ -112,6 +112,7 @@ fn take_mulligan(
     for card in &hand {
         if let Some(object) = state.objects.get_mut(card) {
             object.zone = Zone::Library(player);
+            object.counter += 1;
         }
     }
     state.zones.set(Zone::Hand(player), Vec::new());

@@ -42,6 +42,7 @@ mod tests {
 
     use super::*;
     use mtg_core::ids::PlayerId;
+    use mtg_engine::object::ObjectKind;
     use mtg_engine::zones::Zone;
     use proptest::prelude::*;
     use rstest::rstest;
@@ -68,6 +69,9 @@ mod tests {
                 damage: 0,
                 summoning_sick: false,
             }),
+            kind: ObjectKind::Card,
+            source: None,
+            targets: Vec::new(),
         }
     }
 

@@ -1,8 +1,9 @@
 // Goal: the turn banner, priority line, mulligan progress and the read-only "what is the game waiting for" line say the right thing in every stage, step and decision kind.
 import { describe, expect, it } from 'vitest'
 import type { PlayState } from '@/play/store'
-import type { DecisionKind, ManaCost, MulliganStatus, Stage, Step } from '@/protocol/generated'
+import type { MulliganStatus, Stage, Step } from '@/protocol/generated'
 import { clone, must } from '@/test-utils/batches'
+import { KINDS } from '@/test-utils/decisions'
 import { fixtureState } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import {
@@ -20,50 +21,8 @@ import type { BannerInput, DecisionName } from './turnText'
 const NAMES = ['Alice', 'Bo', 'Cy', 'Dee', 'Eli']
 const name = (seat: number): string => NAMES[seat] ?? `Seat ${seat + 1}`
 
-const ZERO: ManaCost = []
-// One of every decision kind; the type makes a new kind fail to compile here until it has a sample.
-const KINDS: Record<DecisionName, DecisionKind> = {
-  Mulligan: {
-    Mulligan: {
-      hand: [],
-      mulligans_taken: 0,
-      can_mulligan: true,
-      free_mulligans: 0,
-      bottom_if_keep: 0,
-      bottom_if_mulligan: 1,
-    },
-  },
-  BottomCards: { BottomCards: { hand: [], count: 1 } },
-  Priority: {
-    Priority: { playable_lands: [], castable: [], mana_abilities: [], can_act: false, can_pass: true },
-  },
-  PayMana: {
-    PayMana: {
-      spell: 1,
-      cost: ZERO,
-      pool: { counts: [0, 0, 0, 0, 0, 0] },
-      sources: [],
-      auto_available: false,
-      can_cancel: true,
-      life: 20,
-      max_life: 0,
-    },
-  },
-  DeclareAttackers: { DeclareAttackers: { attackers: [] } },
-  DeclareBlockers: { DeclareBlockers: { blockers: [] } },
-  AssignDamage: { AssignDamage: { attacker: 1, power: 2, blockers: [] } },
-  Discard: { Discard: { hand: [], count: 1 } },
-}
-const NAMES_OF_KINDS: DecisionName[] = [
-  'Mulligan',
-  'BottomCards',
-  'Priority',
-  'PayMana',
-  'DeclareAttackers',
-  'DeclareBlockers',
-  'AssignDamage',
-  'Discard',
-]
+// One of every decision kind, from the shared samples: the type makes a new kind fail to compile there until it has one.
+const NAMES_OF_KINDS = Object.keys(KINDS) as DecisionName[]
 const STEPS: Step[] = [
   'Untap',
   'Upkeep',
