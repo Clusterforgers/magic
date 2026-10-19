@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO games (id, status, recipe, visibility, code_digest)\n             VALUES ($1, 'lobby', $2, $3, $4)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Jsonb",
+        "Text",
+        "Bytea"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "03c83b22a8a45c157b36b55ce8f9f999f101ceb35c54342462b56c067bce1f3c"
+}
