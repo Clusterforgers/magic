@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT seat FROM seats WHERE game_id = $1 AND user_id = $2",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "seat",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "seats",
+            "name": "seat"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "00de97b4f95991f6a3093fd11807be66ee69f215be4efb2885c60add8357ea37"
+}

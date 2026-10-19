@@ -4,14 +4,13 @@ use std::time::Instant;
 
 use mtg_engine::GameSetup;
 
-use super::{Entry, Registry};
+use super::{Entry, Parts, Registry, SeatSlot};
 use crate::actor::resume_named;
 use crate::game_id::GameId;
-use crate::recipe::{Catalog, GameRecipe, RecipeError};
+use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
-use crate::records::{GameRecord, GameRecords, RecordError, RecordStatus};
+use crate::records::{GameRecord, GameRecords, RecordError, RecordStatus, SeatState};
 use crate::secret::TokenDigest;
-use crate::user_id::UserId;
 
 /// What [`Registry::resume`] did with the games it found.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -39,9 +38,8 @@ enum Outcome {
 /// A recipe turned back into what the registry needs.
 struct Unpacked {
     setup: GameSetup,
-    names: Vec<String>,
-    digests: Vec<TokenDigest>,
-    users: Vec<Option<UserId>>,
+    format: FormatKind,
+    seats: Vec<SeatSlot>,
     /// Whether the decks were compared with fingerprints stored in the recipe; false for a recipe
     /// that predates them.
     checked: bool,
@@ -103,14 +101,14 @@ impl Registry {
         };
         let Unpacked {
             setup,
-            names,
-            digests,
-            users,
+            format,
+            seats,
             checked,
         } = match unpacked {
             Ok(unpacked) => unpacked,
             Err(Unloadable { reason, seat }) => return give_up(records, id, seat, &reason).await,
         };
+        let names: Vec<String> = seats.iter().map(|slot| slot.name.clone()).collect();
         let joined = record.seats.iter().map(|seat| seat.joined).collect();
         let recorder = Recorder::new(records.clone(), id, joined);
         // Replaying a log is where a bug would panic; that must cost one game, not the boot.
@@ -120,7 +118,7 @@ impl Registry {
             setup,
             self.shared.game,
             Some(recorder),
-            names.clone(),
+            names,
         ));
         let handle = match resuming.await {
             Ok(Ok(handle)) => handle,
@@ -143,14 +141,24 @@ impl Registry {
             note(records.mark_expired(id).await, id);
             return Outcome::Expired;
         }
+        // A game cannot begin while a seat is open, because nobody there can press Ready.
+        if status.started && seats.iter().any(|slot| slot.state == SeatState::Open) {
+            return give_up(records, id, None, "the game began with a seat nobody holds").await;
+        }
         if status.started && record.status == RecordStatus::Lobby {
             note(records.mark_running(id).await, id);
         }
         // A resumed game keeps the age it had, so the lobby clock does not restart with the boot.
         let now = Instant::now();
         let created = now.checked_sub(record.age).unwrap_or(now);
-        self.games()
-            .insert(id, Entry::new(handle, names, digests, users, created));
+        let parts = Parts {
+            visibility: record.visibility,
+            format,
+            code: record.code_digest.map(TokenDigest::from_bytes),
+            recorded: true,
+            seats,
+        };
+        self.games().insert(id, Entry::new(handle, parts, created));
         if checked {
             tracing::info!(game = %id, started = status.started, events = status.events, "game resumed");
         } else {
@@ -219,13 +227,17 @@ fn unpack(
     }
     Ok(Unpacked {
         checked: recipe.is_fingerprinted(),
-        names: record.seats.iter().map(|seat| seat.name.clone()).collect(),
-        digests: record
+        format: recipe.format,
+        seats: record
             .seats
             .iter()
-            .map(|seat| TokenDigest::from_bytes(seat.token_digest))
+            .map(|seat| SeatSlot {
+                state: seat.state,
+                name: seat.name.clone(),
+                digest: seat.token_digest.map(TokenDigest::from_bytes),
+                user: seat.user,
+            })
             .collect(),
-        users: record.seats.iter().map(|seat| seat.user).collect(),
         setup,
     })
 }

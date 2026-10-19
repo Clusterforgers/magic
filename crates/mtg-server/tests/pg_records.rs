@@ -7,7 +7,8 @@ mod net;
 use common::{Bot, drive, roomy};
 use mtg_server::registry::{CreateError, SeatRequest};
 use mtg_server::{
-    DeckRef, GameId, GameRecipe, GameRecords, RecordStatus, Registry, ServerConfig, demo, migrate,
+    DeckRef, GameId, GameRecipe, GameRecords, RecordStatus, Registry, SeatState, ServerConfig,
+    demo, migrate,
 };
 use net::{TestServer, bot_config, two_seats};
 use sha2::{Digest, Sha256};
@@ -78,7 +79,8 @@ async fn a_new_game_is_stored_with_its_recipe_its_seats_and_only_the_digests_of_
         assert_eq!(stored.seat, seat);
         assert_eq!(number.index(), seat);
         assert_eq!(stored.name, format!("Player {seat}"));
-        assert_eq!(stored.token_digest, digest(token.expose()));
+        assert_eq!(stored.token_digest, Some(digest(token.expose())));
+        assert_eq!(stored.state, SeatState::Issued);
         assert!(!stored.joined);
     }
     assert_ne!(record.seats[0].token_digest, record.seats[1].token_digest);

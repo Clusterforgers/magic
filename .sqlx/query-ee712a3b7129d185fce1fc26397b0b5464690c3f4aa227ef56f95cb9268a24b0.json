@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO seats (game_id, seat, name, token_digest, state, user_id)\n             SELECT $1, t.seat, t.name, t.digest, t.state, t.user_id\n             FROM unnest($2::int4[], $3::text[], $4::bytea[], $5::text[], $6::uuid[])\n                  AS t(seat, name, digest, state, user_id)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Int4Array",
+        "TextArray",
+        "ByteaArray",
+        "TextArray",
+        "UuidArray"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ee712a3b7129d185fce1fc26397b0b5464690c3f4aa227ef56f95cb9268a24b0"
+}
