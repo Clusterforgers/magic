@@ -4,11 +4,16 @@ import { decisionName } from '../turnText'
 import type { DecisionName } from '../turnText'
 
 /** What a clock counts down for: a decision kind, or a kind whose answer at zero depends on its options. */
-export type ClockKind = DecisionName | 'ChooseModeCancel'
+export type ClockKind = DecisionName | 'ChooseModeCancel' | 'ChooseCardsNone'
 
-/** The clock kind of a decision: a choice of modes that can be backed out of is told apart, since the server takes the cast back for it. */
+/**
+ * The clock kind of a decision: a choice of modes that can be backed out of is told apart, since the server takes the
+ * cast back for it, and so is a choice of cards that may be none, since the server then chooses none.
+ */
 export function clockKind(kind: DecisionKind): ClockKind {
-  return 'ChooseMode' in kind && kind.ChooseMode.can_cancel ? 'ChooseModeCancel' : decisionName(kind)
+  if ('ChooseMode' in kind && kind.ChooseMode.can_cancel) return 'ChooseModeCancel'
+  if ('ChooseCards' in kind && kind.ChooseCards.min === 0) return 'ChooseCardsNone'
+  return decisionName(kind)
 }
 
 /** What the server answers for a seat whose clock ran out, by kind: as the countdown puts it and as it is announced. */
@@ -24,6 +29,12 @@ const AT_ZERO: Partial<Record<ClockKind, { countdown: string; announced: string 
   },
   ChooseMode: { countdown: 'Choosing the first mode for you', announced: 'chooses the first mode for you' },
   ChooseModeCancel: { countdown: 'Cancelling for you', announced: 'cancels for you' },
+  ChooseCards: {
+    countdown: 'Choosing the first cards for you',
+    announced: 'chooses the first cards for you',
+  },
+  ChooseCardsNone: { countdown: 'Choosing no cards for you', announced: 'chooses no cards for you' },
+  OrderCards: { countdown: 'Keeping the order for you', announced: 'keeps the order for you' },
 }
 
 /** The countdown in plain words: "Passing for you in 7 s". */

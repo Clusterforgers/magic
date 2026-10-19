@@ -1,4 +1,4 @@
-/** The decisions of spells and abilities the dev table can show: `?prompt=targets`, `targets-two`, `targets-trigger`, `order`, `yesno`, `option`, `option-players`, `mode`, `mode-two`, `mode-trigger` and their clocks. */
+/** The decisions of spells and abilities the dev table can show: `?prompt=targets`, `targets-two`, `targets-trigger`, `order`, `yesno`, `option`, `option-players`, `mode`, `mode-two`, `mode-trigger`, `cards`, `cards-battlefield`, `cards-many`, `order-cards` and their clocks. */
 import type { PendingDecision } from '@/play/store'
 import type {
   ChoiceOption,
@@ -10,10 +10,15 @@ import type {
   Target,
   TriggerEntry,
 } from '@/protocol/generated'
+import { CREATURES, INSTANTS, LANDS } from './cards'
+import type { Template } from './cards'
 import type { Fixture } from './fixture'
 
 /** Builds the decision the viewer of a fixture faces. */
 type DevPrompt = (fixture: Fixture) => PendingDecision
+
+/** Changes a fixture into the moment a decision belongs to. */
+type DevMoment = (fixture: Fixture) => Fixture
 
 const object = (id: ObjectId): Target => ({ Object: { id, counter: 0 } })
 
@@ -224,6 +229,112 @@ const modeTrigger: DevPrompt = ({ view }) => ({
   },
 })
 
+/** The viewer's hand. */
+const handOf = (view: StateView): ObjectId[] => view.players[view.viewer]?.hand.cards ?? []
+
+/** An opponent's creature, whose ability makes the viewer choose. */
+const foeOf = (view: StateView): ObjectId =>
+  opponents(view).flatMap((seat) => creaturesOf(view, seat))[0]?.id ?? askerOf(view)
+
+/** An opponent's spell makes the viewer discard two cards of their hand. */
+const cards: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      ChooseCards: { source: foeOf(view), from: handOf(view), min: 2, max: 2, text: 'Discard two cards.' },
+    },
+  },
+})
+
+/** An opponent's creature makes the viewer sacrifice one of four of their creatures, which are on the table. */
+const cardsBattlefield: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      ChooseCards: {
+        source: foeOf(view),
+        from: creaturesOf(view, view.viewer)
+          .slice(0, 4)
+          .map((o) => o.id),
+        min: 1,
+        max: 1,
+        text: 'Sacrifice a creature or planeswalker.',
+      },
+    },
+  },
+})
+
+/** The search the viewer makes: up to two of the forty cards of their library. */
+const cardsMany: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      ChooseCards: {
+        source: askerOf(view),
+        from: view.objects
+          .filter((o) => typeof o.zone === 'object' && 'Library' in o.zone && o.zone.Library === view.viewer)
+          .map((o) => o.id),
+        min: 0,
+        max: 2,
+        text: 'Search your library for up to two cards.',
+      },
+    },
+  },
+})
+
+const SEARCHED: readonly Template[] = [...LANDS, ...CREATURES, ...INSTANTS]
+const SEARCH_COUNT = 40
+
+/** The viewer's library as a search shows it: forty cards, several of them twice. */
+const searchMoment: DevMoment = (fixture) => {
+  const { view } = fixture
+  const first = Math.max(...view.objects.map((o) => o.id)) + 1
+  const found = Array.from({ length: SEARCH_COUNT }, (_, index): ObjectView => {
+    const template = SEARCHED[(index * 7) % SEARCHED.length] ?? LANDS[0]
+    return {
+      id: first + index,
+      owner: view.viewer,
+      controller: view.viewer,
+      zone: { Library: view.viewer },
+      name: template.name,
+      mana_cost: template.cost,
+      supertypes: template.supertypes ?? [],
+      types: template.types,
+      subtypes: template.subtypes ?? [],
+      colors: template.colors,
+      power: template.power ?? null,
+      toughness: template.toughness ?? null,
+      abilities: template.produces === undefined ? [] : [{ Mana: { produces: template.produces } }],
+      permanent: null,
+    }
+  })
+  return { ...fixture, view: { ...view, objects: [...view.objects, ...found] } }
+}
+
+/** The viewer puts four cards of their hand on the bottom of their library in any order. */
+const orderCards: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      OrderCards: {
+        source: askerOf(view),
+        cards: handOf(view).slice(0, 4),
+        text: 'Put the cards on the bottom of your library in any order.',
+      },
+    },
+  },
+})
+
+/** The moments the dev table needs for some of the decisions above, by `?prompt=` name. */
+export const EFFECT_MOMENTS: Record<string, DevMoment> = {
+  'cards-many': searchMoment,
+  'cards-many-clock': searchMoment,
+}
+
 /** The decisions by their `?prompt=` name; the viewer is not the active seat, so these run on a response clock. */
 export const EFFECT_PROMPTS: Record<string, DevPrompt> = {
   targets,
@@ -241,4 +352,12 @@ export const EFFECT_PROMPTS: Record<string, DevPrompt> = {
   'mode-two': modeTwo,
   'mode-trigger': modeTrigger,
   'mode-clock': (fixture) => ({ ...mode(fixture), deadlineMs: 10_000 }),
+  cards,
+  'cards-clock': (fixture) => ({ ...cards(fixture), deadlineMs: 10_000 }),
+  'cards-battlefield': cardsBattlefield,
+  'cards-battlefield-clock': (fixture) => ({ ...cardsBattlefield(fixture), deadlineMs: 10_000 }),
+  'cards-many': cardsMany,
+  'cards-many-clock': (fixture) => ({ ...cardsMany(fixture), deadlineMs: 10_000 }),
+  'order-cards': orderCards,
+  'order-cards-clock': (fixture) => ({ ...orderCards(fixture), deadlineMs: 10_000 }),
 }

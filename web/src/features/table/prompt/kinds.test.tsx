@@ -1,4 +1,4 @@
-/** Goal: every decision kind has a prompt in the registry and the thirteen the table is built for (the eight it has always asked, the targets of a spell or ability, the order of triggers, yes or no, an option and modes) are built; the placeholder for the others names the decision and offers nothing to press, so the table never shows a blank where a decision is waiting. */
+/** Goal: every decision kind has a prompt in the registry and the fifteen the table is built for (the eight it has always asked, the targets of a spell or ability, the order of triggers, yes or no, an option, modes, cards and an order of cards) are built; the placeholder for the others names the decision and offers nothing to press, so the table never shows a blank where a decision is waiting. */
 import { render, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
@@ -17,6 +17,8 @@ const BUILT: DecisionName[] = [
   'YesNo',
   'ChooseOption',
   'ChooseMode',
+  'ChooseCards',
+  'OrderCards',
   'Mulligan',
   'BottomCards',
   'Priority',
