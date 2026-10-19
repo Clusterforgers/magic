@@ -148,7 +148,7 @@ The Priority prompt's controls (`prompt/PassControls.tsx`), over the wire rules 
 
 ### Stops and Full Control
 
-`features/table/stops/` and `play/session.ts`. The server stores and reports both but adds, keeps or skips no window because of them, so the page promises no window.
+`features/table/stops/` and `play/session.ts`. The server decides the windows from the stops and the mode ([protocol.md](protocol.md), Stops and Full Control); the page only asks for them and shows what the server holds.
 
 - `stops` (`{side, step, keep}`; `keep` true is lasting, false goes once its step has passed) and `fullControl` (`Off`, `NextWindow`, `Held`) are replaced whole by `Welcome`, `Stops` and `FullControl` and survive a dropped connection until the next `Welcome`.
 - `StopLadder` (in `StopsBar`, beside `FullControlToggle`) has a row for your turns and one for opponents' with a button per step in turn order (ten; first-strike damage joins while it is the current step or holds a stop). Untap and cleanup get none: the server refuses them, so `setStop` sends nothing for them (`play/stops.ts`). A lit button (`aria-pressed`) is a stop the server holds; `data-keep` is `turn` or `lasting`. Below 640 px the rows fold behind "Stops · 2 set".
