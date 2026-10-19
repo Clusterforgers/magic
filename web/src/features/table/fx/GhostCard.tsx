@@ -11,7 +11,7 @@ import type { Ghost } from './model'
  * never a second copy of the card for a screen reader, the keyboard or a script that looks cards up. The real card
  * is already in the graveyard, which is where the game put it.
  */
-export function GhostCard({ ghost, size }: { ghost: Ghost; size: CardSize }) {
+export function GhostCard({ ghost, size, fit = false }: { ghost: Ghost; size: CardSize; fit?: boolean }) {
   const { object } = ghost
   const tapped = object.permanent?.tapped === true
   return (
@@ -21,12 +21,12 @@ export function GhostCard({ ghost, size }: { ghost: Ghost; size: CardSize }) {
       data-fx="died"
       className={cn(
         'flex w-(--ghost-w) shrink-0 overflow-hidden',
-        SIZE[size].vars,
+        fit ? null : SIZE[size].vars,
         tapped ? '[--ghost-w:var(--card-h)]' : '[--ghost-w:var(--card-w)]',
       )}
     >
       <span className="relative grid h-(--card-h) w-full place-items-center">
-        <CardFace object={object} role={null} size={size} />
+        <CardFace object={object} role={null} size={size} fit={fit} />
         <svg
           aria-hidden="true"
           focusable="false"

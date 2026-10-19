@@ -224,6 +224,38 @@
 }
 
 /*
+ * A zone of the table that cannot show everything scrolls inside itself, never the page. `useEdgeFade` keeps
+ * `data-fade` at the edges that hide more, and those edges fade out instead of ending in a hard cut.
+ */
+@utility fade-scroll {
+  --fade-size: 1.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  &[data-fade='bottom'] {
+    mask-image: linear-gradient(to bottom, black calc(100% - var(--fade-size)), transparent);
+  }
+  &[data-fade='top'] {
+    mask-image: linear-gradient(to bottom, transparent, black var(--fade-size));
+  }
+  &[data-fade='both'] {
+    mask-image: linear-gradient(
+      to bottom,
+      transparent,
+      black var(--fade-size),
+      black calc(100% - var(--fade-size)),
+      transparent
+    );
+  }
+  /* The count of what is below goes once the zone is scrolled to its end. */
+  &[data-fade='top'] ~ [data-slot='more-hidden'],
+  &[data-fade='none'] ~ [data-slot='more-hidden'] {
+    display: none;
+  }
+}
+
+/*
  * Menus and popovers fade in and out; where motion is welcome they also scale a little. Base UI sets the two
  * data attributes while the popup mounts and unmounts.
  */
@@ -256,6 +288,8 @@
   html {
     @apply font-sans;
     scroll-padding-block: 4rem;
+    /* The zones of the table scroll inside themselves: a quiet thumb in the theme's colour, not the system's white bar. */
+    scrollbar-color: var(--border-strong) transparent;
   }
   body {
     @apply bg-background text-base text-foreground antialiased;

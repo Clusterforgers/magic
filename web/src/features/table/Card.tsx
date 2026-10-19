@@ -22,6 +22,8 @@ export interface CardProps {
   /** The object to draw; the card reads it from the store itself, so a parent passes only the id. */
   id: ObjectId
   size?: CardSize
+  /** The box (`--card-w` by `--card-h`) comes from the row the card sits in, which fits it to its zone; `size` then only picks the face. */
+  fit?: boolean
   /** False takes the card out of the tab order; a row keeps exactly one of its cards tabbable. */
   tabbable?: boolean
   /** Overrides the mark the active prompt gives this card (see `prompt/marks.ts`): legal, dimmed or chosen. */
@@ -45,6 +47,7 @@ const MARK_WORDS: Record<Highlight, string> = {
 export const Card = memo(function Card({
   id,
   size = 'normal',
+  fit = false,
   tabbable = true,
   highlight: given,
   onSelect: givenSelect,
@@ -82,12 +85,12 @@ export const Card = memo(function Card({
       {...handlers}
       className={cn(
         'relative grid h-(--card-h) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
-        SIZE[size].vars,
+        fit ? null : SIZE[size].vars,
         tapped ? 'w-(--card-h)' : 'w-(--card-w)',
         highlight === undefined ? null : HIGHLIGHT[highlight],
       )}
     >
-      <CardFace object={object} role={role} size={size} note={note} />
+      <CardFace object={object} role={role} size={size} fit={fit} note={note} />
       {outlook === null ? null : (
         <ForecastMarks outlook={outlook} tapped={tapped} compact={size === 'compact'} />
       )}

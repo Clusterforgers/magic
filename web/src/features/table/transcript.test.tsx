@@ -28,7 +28,7 @@ const lookup: GameLookup = {
 // Where each recording stops: the late join runs to GameOver, the lobby one ends in the third turn.
 const FINAL_BANNER: Record<string, string> = {
   'late join': 'The game is over',
-  lobby: 'Turn 3 · Ana · Upkeep',
+  lobby: 'Your turn · 3 · Upkeep',
 }
 
 const ids = (elements: Iterable<Element>): number[] =>
@@ -71,14 +71,15 @@ function expectScreenToMatch(container: HTMLElement, state: PlayState, step: str
   const hand = must(view.players[viewer]?.hand.cards)
   const handRow = container.querySelector(`ul[aria-label="${must(lookup.game).seats[viewer]?.name}'s hand"]`)
   expect(ids(handRow?.querySelectorAll('button[data-object-id]') ?? []), `${step}: hand`).toEqual(hand)
-  const stack = within(container).queryByRole('list', { name: 'Stack, top first' })
+  // The stack is the chips of the shared strip, and its count is on the Stack tab.
+  const stack = within(container).queryByRole('list', { name: 'Spells on the stack, top first' })
   expect(ids(stack?.querySelectorAll('button[data-object-id]') ?? []), `${step}: stack`).toEqual(
     must(view.stack.cards).toReversed(),
   )
-  expect(
-    within(container).getByRole('heading', { name: `Stack (${view.stack.count})` }),
-    step,
-  ).toBeInTheDocument()
+  const count = container.querySelector('[data-slot="side-count"][data-tab="stack"]')
+  expect(count?.textContent ?? null, step).toBe(
+    view.stack.count === 0 ? null : `${view.stack.count} on the stack`,
+  )
   const log = within(container).getByRole('log', { name: 'Game log' })
   if (state.log.length === 0) expect(log, step).toHaveTextContent('Nothing has happened yet.')
   else expect(log.querySelectorAll('li'), `${step}: log`).toHaveLength(state.log.length)
@@ -145,7 +146,7 @@ describe.each(transcripts)('replaying the $name transcript of seat 0', (transcri
   })
 
   it('words the turn banner while it plays and where the recording ends', () => {
-    expect([...played.banners].some((text) => /^Turn \d+ · (Ana|Bo) · /.test(text))).toBe(true)
+    expect([...played.banners].some((text) => /^(Your|Bo's) turn · \d+ · /.test(text))).toBe(true)
     expect(played.lastBanner).toBe(FINAL_BANNER[transcript.name])
   })
 

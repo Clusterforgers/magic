@@ -1,4 +1,4 @@
-// Goal: the table is usable from the keyboard and by a screen reader: each row of cards is one tab stop moved with the arrow keys, every region and control has a name, the turn banner and the read-only decision line say where the game is, and the log and chat drawer collapses and opens as a side column or a bottom sheet.
+// Goal: the table is usable from the keyboard and by a screen reader: each row of cards is one tab stop moved with the arrow keys, every region and control has a name, the turn badge and the read-only decision line say where the game is.
 import { act, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { indexById } from '@/play/view'
@@ -71,7 +71,8 @@ describe('regions and the rest of the page', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Game table' })).toBeInTheDocument()
     for (const name of [
       'Turn and priority',
-      'Stack',
+      'Your hand',
+      'Pass controls',
       'Bo',
       'Cy',
       'Alice (you)',
@@ -81,7 +82,7 @@ describe('regions and the rest of the page', () => {
       expect(screen.getByRole('region', { name }), name).toBeInTheDocument()
     }
     expect(screen.getByRole('complementary', { name: 'Game log and chat' })).toBeInTheDocument()
-    expect(screen.getByRole('toolbar', { name: 'Table layout' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Table menu' })).toBeInTheDocument()
     for (const control of screen.getAllByRole('button')) expect(control).toHaveAccessibleName()
     for (const list of screen.getAllByRole('list')) {
       if (list.closest('aside') === null) expect(list).toHaveAccessibleName()
@@ -100,11 +101,13 @@ describe('regions and the rest of the page', () => {
   })
 })
 
-describe('turn banner and decision line', () => {
-  it('prints the turn, the priority holder and the decision this seat faces', () => {
+describe('turn badge and decision line', () => {
+  it('prints the turn in the top bar, and the priority holder and the decision this seat faces in the strip', () => {
     renderTable({ seats: 4 })
+    expect(document.querySelector('[data-slot="banner"]')).toHaveTextContent(
+      "Bo's turn · 5 · Declare blockers",
+    )
     const strip = screen.getByRole('region', { name: 'Turn and priority' })
-    expect(within(strip).getByRole('heading', { name: 'Turn 5 · Bo · Declare blockers' })).toBeInTheDocument()
     expect(strip).toHaveTextContent('Alice has priority · 1 passed')
     expect(strip).toHaveTextContent('Your decision: Priority')
   })
@@ -122,11 +125,12 @@ describe('turn banner and decision line', () => {
     expect(strip).not.toHaveTextContent('Your decision')
   })
 
-  it('is read-only while another seat decides: there is nothing in the strip to press', () => {
+  it('is read-only while another seat decides: nothing in the strip answers, only the spells on the stack show', () => {
     renderTable({ seats: 4, state: (state) => ({ ...state, pending: null }) })
-    expect(
-      within(screen.getByRole('region', { name: 'Turn and priority' })).queryAllByRole('button'),
-    ).toEqual([])
+    const buttons = within(screen.getByRole('region', { name: 'Turn and priority' })).queryAllByRole('button')
+    expect(buttons.length).toBeGreaterThan(0)
+    for (const button of buttons) expect(button.closest('[data-slot="stack-chips"]')).not.toBeNull()
+    expect(document.querySelector('[data-region="controls"] [data-slot="primary-action"]')).toBeNull()
   })
 
   it.each([
@@ -139,44 +143,5 @@ describe('turn banner and decision line', () => {
     })
     const line = screen.getByText(words)
     expect(line).toHaveAttribute('aria-live', 'polite')
-  })
-})
-
-describe('the drawer', () => {
-  const drawer = () => screen.getByRole('complementary', { name: 'Game log and chat' })
-
-  it('opens on the log with the chat a tab away', async () => {
-    const { user } = renderTable({ seats: 2 })
-    expect(within(drawer()).getByRole('log', { name: 'Game log' })).toBeInTheDocument()
-    expect(within(drawer()).queryByRole('log', { name: 'Chat' })).toBeNull()
-    await user.click(within(drawer()).getByRole('tab', { name: 'Chat' }))
-    expect(within(drawer()).getByRole('log', { name: 'Chat' })).toBeInTheDocument()
-    expect(within(drawer()).queryByRole('log', { name: 'Game log' })).toBeNull()
-  })
-
-  it('collapses and expands from its button', async () => {
-    const { user } = renderTable({ seats: 2 })
-    const toggle = within(drawer()).getByRole('button', { name: 'Collapse log and chat' })
-    expect(toggle).toHaveAttribute('aria-expanded', 'true')
-    await user.click(toggle)
-    expect(within(drawer()).queryByRole('log')).toBeNull()
-    const open = within(drawer()).getByRole('button', { name: 'Expand log and chat' })
-    expect(open).toHaveAttribute('aria-expanded', 'false')
-    await user.click(open)
-    expect(within(drawer()).getByRole('log', { name: 'Game log' })).toBeInTheDocument()
-  })
-
-  it('starts folded on a narrow screen, and a tab opens it', async () => {
-    vi.stubGlobal('matchMedia', () => ({ matches: false }))
-    const { user } = renderTable({ seats: 2 })
-    expect(within(drawer()).queryByRole('log')).toBeNull()
-    await user.click(within(drawer()).getByRole('tab', { name: 'Chat' }))
-    expect(within(drawer()).getByRole('log', { name: 'Chat' })).toBeInTheDocument()
-  })
-
-  it('stays open from the first render on a wide screen', () => {
-    vi.stubGlobal('matchMedia', () => ({ matches: true }))
-    renderTable({ seats: 2 })
-    expect(within(drawer()).getByRole('log', { name: 'Game log' })).toBeInTheDocument()
   })
 })

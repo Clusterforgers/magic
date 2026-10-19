@@ -57,29 +57,31 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
 - [x] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
 - [ ] (d) Decision kinds the effects need, one task each across engine, protocol and a web prompt (the table in `docs/cards-dsl.md`, Decisions the effects need)
-- [ ] Response clocks for the choice decisions of a non-active seat (cards, modes, numbers, options, yes or no), each with a fallback answer, so one seat cannot hold the table; targets and trigger orders have theirs (`docs/server.md`, Response clocks)
+- [ ] Response clocks for the choice decisions of a non-active seat (cards, modes, numbers, options, yes or no, mana payments), each with a fallback answer, so one seat cannot hold the table; targets and trigger orders have theirs (`docs/server.md`, Response clocks)
 - [x] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets and the views carry keywords, counters and attachments (`docs/web.md`)
 - [ ] (e2) Keywords hexproof and ward, one task each; counters and attachments on the object views; the blockers prompt reads `BlockOptions.min_blockers` so menace is explained before Confirm (`docs/web.md`)
 - [ ] (f) Keyword actions (CR 701), one engine primitive each, with a web prompt where the player chooses (scope in `docs/cards-dsl.md`, Tasks)
 - [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
 - [ ] (h) Keyword abilities beyond combat (CR 702), one task each for the other `Keyword` variants (flash, equip, cycling, kicker, flashback, cascade, storm, ...); cost-based ones follow (g)
-- [x] (i) Triggered abilities: APNAP ordering, delayed triggers, intervening if, and Arena flow P10: smart stops, per-ability yields, auto-ordered triggers, damage auto-assign (`docs/arena-flow.md`)
-- [ ] (i) follow-up, Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
+- [x] (i) Triggered abilities: APNAP ordering, delayed triggers, intervening if, with the target and trigger-order prompts and their response clocks (`docs/engine.md`)
+- [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
+- [ ] (i3) State triggers (CR 603.8) and abilities that work from a zone other than the battlefield (`from`) (`docs/engine.md`)
 - [ ] (j) Replacement and prevention effects (CR 614 to 616)
 - [ ] (k) Layers: full CR 613 ordering with dependencies, timestamps, counters, auras, equipment
 
 ## M4 Multiplayer product
 - [x] Invite-link lobbies on top of users
-- [ ] Deck builder UI with card search, import, validation, export
+- [ ] (B1) Deck list page: the account's decks with name, format, size and check state; new, import (text, Arena, MTGO), export and delete
+- [ ] (B2) Deck builder page: card search with filters, add and remove by zone, counts, save with the check on save (`docs/deck-check.md`)
 - [x] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
-- [ ] Deck builder UI on the stored decks and the check: highlighting of the cards that are not verified, the Verified marker and the state of each deck in the deck list, the lobby and the precon browser (`docs/deck-check.md`, `docs/server.md`)
+- [ ] (B3) Deck check in the builder: cards that are not verified highlighted with icon, word and reason, an issues-only filter, the Verified marker, and each deck's state in the lobby and the precon browser (`docs/deck-check.md`)
 - [ ] Precon browser with one-click play
 - [ ] Choose a deck in the lobby: a stored deck or a precon per seat; the table sees each seat's deck state as a count of manual cards, never their names (`docs/deck-check.md`)
 - [x] N-player layout, game log, stack panel, stop settings
 - [ ] UI rebuild: the table fits the screen, a turn change is unmistakable and games are joined from a list (`docs/ui-design.md`, Tasks). In order:
   - [x] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
   - [x] (U2) Fit engine: card sizes from the space available and grouping of identical permanents, pure and tested
-  - [ ] (U3) Table grid: top bar, opponents, shared strip, own board, hand dock and side tabs in one viewport from 1280x720
+  - [x] (U3) Table grid: top bar, opponents, shared strip, own board, hand dock and side tabs in one viewport from 1280x720
   - [ ] (U4) Seat pods, scaled battlefield rows and a hand dock that hold 40 permanents a seat
   - [ ] (U5) Controls dock: a 44 px pass button, a one-row stop ladder and a menu for the rest
   - [ ] (U6) Turn feedback: turn badge, turn banner, active-seat emphasis, a distinct theme for each phase so the current phase is unmistakable, and a ticker for automatic passes and skips

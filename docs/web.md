@@ -37,6 +37,7 @@ The tokens, scales and pieces of [ui-design.md](ui-design.md). `src/index.css` h
 - `tokens.test.ts` computes the contrast of every text, edge and ring pair from the stylesheet in both themes, with colours outside sRGB cut off and with their chroma lowered: 4.5:1 for text, 3:1 for edges, rings and other non-text parts. A state tint (`bg-success/12`, a hovered `bg-primary/90`) sits on the page, panels and menus, not on the table. The test also holds the scales above. `tokenUse.test.ts` keeps hard-coded and palette colours, sizes written in px or rem, text sizes outside the scale and translucent focus rings out of `components/` and the pages beside the table.
 - Focus is a 2 px outline in `ring` with a 2 px offset, set once for `:focus-visible` in `index.css`; a component does not draw its own.
 - `Button` heights are `xs` 24, `sm` 32, `default` 36 and `lg` 44 px, and 44 under `pointer: coarse`. `loading` shows a spinner and ignores presses while the button stays focusable (`aria-disabled`).
+- `Popover` (a panel at its button; `keepMounted` keeps its content in the page, hidden, while it is shut) and `Sheet` (a dialog that hangs from a top bar of a given height, a full-width sheet on a phone and 24 rem of it from `sm`) join the menu and dialog primitives in `components/ui`; both are built on Base UI like the rest.
 - `Pill` (neutral, success, warning, turn-you, turn-them; a control when rendered as a button or link, then `selected` rings it), `EmptyState`, `Kbd`, `Tooltip` for icon-only controls and `Skeleton` are the shared pieces. `Loading` is a polite status at once and the skeleton after 300 ms (`useAfterDelay`). An error is an `Alert` with an icon and a title, and a Retry where retrying works.
 
 ### Theme
@@ -55,6 +56,8 @@ The tokens, scales and pieces of [ui-design.md](ui-design.md). `src/index.css` h
 | Account | `AccountNav`: Sign in and Register for a guest, a menu named after the username with Sign out for an account; nothing while unknown or without accounts |
 
 Play and Create both open `/` until the game browser moves Create to `/new`. Under 640 px the navigation drops to a second row and Register leaves the header (the sign-in page links to it).
+
+A page that takes the whole window calls `useFullBleed` (`components/appChrome`, counted, so two pages swapping do not flicker): the shell then draws no header, its root is the window high with `overflow: hidden` (`data-bleed`), and only the offline notice floats over the page. The game table is the one such page.
 
 ## Data flow
 
@@ -109,14 +112,45 @@ After a Welcome the lobby or table stays under the reconnect notice. A `notice` 
 
 ## The table
 
-`features/table/GameTable` takes no props: it reads with `usePlay(selector)` and starts from `TableOptionsContext` (`mode`, `focus`, `effects`, `effectsSlow`; only the dev route sets it).
+`features/table/GameTable` takes no props: it reads with `usePlay(selector)` and starts from `TableOptionsContext` (`mode`, `focus`, `effects`, `effectsSlow`, `viewport`; only the dev route and tests set it). The table is exactly the window high and never scrolls the page.
 
-- Layout (`layout.ts`, pure): opponents run in turn order after the viewer, who is drawn last, at the bottom. Grid mode (default up to 4 seats) draws every opponent in `min(3, opponents)` columns. Focus mode (default from 5) draws a tile per opponent and one opponent large: the active player, else the priority holder, else the next seat still in, following the turn until a tile is chosen ("Follow the turn" undoes it). The toolbar switches modes at any size. From 8 seats cards are compact; lands always are.
-- The views carry no art, counters, attachments or commander damage and tax, so none is drawn; the panel's slot reads "not tracked yet" and `data-slot="card-art"` waits for an image id. A card with keywords lists their names as plain text (`keywordLine`): under the type line of a full-size face (`data-slot="card-keywords"`), in the preview, and in the spoken description; `groupPermanents` keeps permanents with different keywords apart.
-- Opening hands: while `view.stage` is `Mulligan`, `OpeningStatus` lists every seat's public progress from `PlayerView.mulligan` (`describeOpening`) at any size, because from five seats only one opponent has a panel.
-- Your turn: while `isYourTurn` (stage Turns, no result) the banner and the viewer's panel take the `your-turn-cue` utility (ring and glow) and the banner a "Your turn" badge. `features/game/useTurnTitle` prefixes the tab title with "Your turn · " and, while the tab is hidden and a decision waits, alternates it with "● Your move" (held on it under reduced motion).
+### Regions and breakpoints
+
+`TableGrid` is one grid inside a root that clips (`h-dvh overflow-hidden`). Each region is a cell with `min-height: 0` (`data-area`); a zone that cannot fit scrolls inside itself with an edge fade (`fade-scroll`, `useEdgeFade`), never the page. `useFullBleed` (`components/appChrome`) makes `AppShell` draw no header while the table is mounted: the offline notice, and the connection and server notices of `GamePage` (`data-slot="table-notices"`), float under the top bar.
+
+| Region | Content | Size |
+|---|---|---|
+| bar | home, the turn badge, the side sheet's button (S, XS), the table menu | 44 px; 32 px on a phone on its side |
+| opponents | the opponents' pods and boards | `minmax(0, 1fr)` |
+| shared | the stack as chips, the prompt or the waiting line, priority, the combat key | `clamp(56px, 9dvh, 88px)` |
+| own | your pod and battlefield | `minmax(0, 1.15fr)` |
+| hand | your hand in one line, as tall as the dock allows | `clamp(112px, 17dvh, 200px)`; phone `clamp(96px, 14dvh, 120px)` |
+| controls | the pass buttons, the passing line, the stop ladder when there is room | bottom right, as wide as its content up to 480 px (720 with the ladder, 160 on a phone) |
+| side | Log, Chat, Stack | by breakpoint |
+
+| Breakpoint | Width | Side area |
+|---|---|---|
+| XS | under 640 | a sheet from the top bar; a phone layout |
+| S | 640 to 1023 | a sheet from the top bar |
+| M | 1024 to 1279 | a 44 px rail; a tab opens a 320 px panel over the table |
+| L | 1280 to 1599 | a column of 22 % of the width, 280 to 320 px |
+| XL | 1600 up | the same column |
+
+- `layout.ts` is pure and holds the sizes: `regionSizes(viewport)` (rows, side kind, the most a prompt sheet grows), `gridRows`, `gridColumns` and `mainColumns` (the CSS templates, held equal to the numbers by `layoutRegions.test.ts`), `chooseMode`, `arrangeSeats` and `planTable`, which joins them for a window and a seat count. `useViewport` follows the window.
+- Mode: grid for 2 to 4 seats unless a board column would be under 280 px (`gridColumnWidth`), focus otherwise; the menu's Grid and Focus override it. Focus draws a two-line tile per opponent and one board large: the active player, else the priority holder, else the next seat still in, following the turn until a tile is chosen ("Follow the turn" in the menu undoes it). From 8 seats cards are compact until a zone is measured.
+- Seats (`SeatPlan.shape`): `duel`, one opponent, is a wide board beside a 168 px pod column; `columns`, 3 or 4 seats, are two or three columns of a one-line pod (`SeatPanel` `variant="line"`) over a board; `focus` is the tile strip over one board with a pod column. Your own board is a pod column beside the board. On a phone (XS) a pod is one line, yours at the foot of your board, the focused opponent's has none (its tile says it), and the strip leads with the active seat.
+- Pods draw the seat panel as before (name, life, mana, counts, zones, command zone); only the viewer's hand has left it for the hand dock. The views carry no art, counters, attachments or commander damage and tax, so none is drawn; the panel's slot reads "not tracked yet" and `data-slot="card-art"` waits for an image id. A card with keywords lists their names as plain text (`keywordLine`): under the type line of a full-size face (`data-slot="card-keywords"`), in the preview, and in the spoken description; `groupPermanents` keeps permanents with different keywords apart.
+- Shared strip (`SharedStrip`): the prompt keeps its title for a screen reader only. A prompt that needs more than the strip grows into a sheet of at most 40 dvh, up over the opponents' board and starting beside the pod column, so your life, your board (the cards a prompt asks you to click), the hand dock and the controls stay in view and clickable; past that it scrolls inside itself.
+- Controls dock (`ControlsDock`): the pass buttons of the Priority prompt are drawn here, not in the prompt's line (`InControlsDock` portals them into `[data-slot="pass-slot"]`; without a dock they draw in place), together with the server's passing line. The stop ladder and Full Control sit in the dock when it is at least 128 px high and the main area at least 1280 px wide (`planTable().stopsInDock`), else in the table menu, never in both.
+- Hand dock (`HandDock`): one line of cards as tall as the dock allows (`handCardWidth`), at the normal gap while they fit and overlapping by just enough (`handFan`, at least 62 % of a card shows) before the line scrolls.
+- Side area (`SideTabs`, `sideState`): tabs Log, Chat and Stack with counts: the log lines worth reading (not passes or mana) and the chat lines of other seats since the tab was last on show, and the spells on the stack. Nothing counts while a tab is on show, and lines present when the table opens are read.
+- Top bar and menu (`TopBar`, `TableMenu`): the turn badge reads "Your turn · 5 · Precombat main" (gold) or "Bo's turn · 5 · Declare blockers" (outlined), a heading, not a live region. The menu is a panel with Layout (Grid, Focus, Follow the turn), the stop ladder and Full Control where the dock has no room (kept in the page while shut, so the Control keys work), Theme and Concede, which asks `ConcedeDialog` hosted by the bar.
+- Opening hands: while `view.stage` is `Mulligan`, `OpeningStatus` lists every seat's public progress from `PlayerView.mulligan` (`describeOpening`) at any size, because from five seats only one opponent has a pod. The hand dock shows the opening hand while the Mulligan prompt is up.
+- Your turn: while `isYourTurn` (stage Turns, no result) the shared strip and the viewer's pod take the `your-turn-cue` utility (ring and glow) and the badge turns gold. `features/game/useTurnTitle` prefixes the tab title with "Your turn · " and, while the tab is hidden and a decision waits, alternates it with "● Your move" (held on it under reduced motion).
+- Game over: the results list scrolls inside itself past 24 rem or 45 dvh, so the headline and the way to a new game stay in the window.
 - Rendering: a `Card` reads only its own object and combat role and is `memo`; rows read ids through `useShallow(battlefieldRow)`; `selectors.ts` splits the shared battlefield by controller once per view. A batch that taps one permanent redraws that card and no row (`perf.test.tsx`, 12 seats with 40 permanents).
-- Cards carry `data-object-id` and panels `data-seat`; the prompt mounts in `[data-slot="decision-line"]`.
+- Preview: hover and focus show a card large, a click that only looks pins it until Escape or Close, and a click that acts (the prompt marks the card: it plays, taps or is chosen) pins nothing, since a pinned preview covers part of the table and the prompt with it.
+- Cards carry `data-object-id` and pods `data-seat`; regions carry `data-region` (`bar`, `shared`, `hand`, `controls`) and cells `data-area`; the prompt mounts in `[data-slot="decision-line"]`.
 
 ## Fit and grouping
 
@@ -127,13 +161,13 @@ After a Welcome the lobby or table stays under the reconnect notice. A `notice` 
 - When the floor does not fit the height, `scrolls` is true at the floor and `hidden` counts the stacks on lines cut off at the bottom of the box, the "+N" of the zone's edge fade. `rows` and `lines` count the rows with stacks and all wrapped lines.
 - `groupPermanents(permanents, { groupOthers })` merges permanents with the same face into a `Stack` (`key`, `count`, `members`): name, owner, controller, token or card, types, colors, power, toughness, abilities, tapped, summoning sick, damage, counters and attachments (the last two once the views carry them). Tapped and untapped never share a stack. Lands and tokens always merge; other cards only with `groupOthers`, which the caller sets when a zone's fit is under `GROUP_OTHERS_BELOW` (64 px).
 - Stacks come in the order of their first member. A merged stack's key is its face and a card that stays alone has its id, so a key survives members joining and leaving, and one member joining or leaving changes no other stack's key, count or place. `expandStack(stack)` returns the members, for opening a stack in place and for prompts that need each one; regrouping them gives the same stacks.
-- Use: the table grid measures each zone with a `ResizeObserver`, calls `fitRows` and writes `--card-w`; a battlefield row fits with every card alone and, when that is under 64 px, again with `groupOthers`; a stack draws one card with a ×N badge ([ui-design.md](ui-design.md), Table layout). `fitPerf.test.ts` holds grouping and fitting 40 permanents a seat for 6 and 12 seats to a few milliseconds.
+- Use: `useZoneFit` (`useContentBox`) follows a zone's content box with a `ResizeObserver`; a `Battlefield` calls `fitRows` over its three rows with every permanent in a box of its own (a tapped card is a square one card high, so it counts as 1.4 boxes of width, `stacksOf`) and writes `--card-w` and `--card-h` on each row (lands at 0.8). A face is whole from 76 px and short below it. Without a measured size (jsdom, a hidden zone) cards keep the box of their size. `CardRow` takes the box (`box`) and, for the hand, the gap (`gap`, negative to overlap). `fitPerf.test.ts` holds grouping and fitting 40 permanents a seat for 6 and 12 seats to a few milliseconds.
 
 ## Prompts
 
 `features/table/prompt/` answers the decision this seat faces.
 
-- `PromptHost` (in `CentreStrip`, in place of the read-only "Waiting for ..." line while `ownDecision` is set) renders `PROMPTS[kind]` with the kind's `options` in a scope keyed by decision id, so a new decision remounts the prompt with an empty selection.
+- `PromptHost` (in `SharedStrip`, in place of the read-only "Waiting for ..." line while `ownDecision` is set) renders `PROMPTS[kind]` with the kind's `options` in a scope keyed by decision id, so a new decision remounts the prompt with an empty selection.
 - `registry.ts` has an entry per `DecisionKind`; a new kind stops compiling until it has one (`kinds/<Kind>.tsx`, a `PromptComponent<'Kind'>` with props `{ options }`). `kinds.test.tsx` fails while one of the ten built kinds (the eight the table has always asked, `ChooseTargets` and `OrderTriggers`) is the `UnsupportedPrompt` stand-in. The other nine questions of spells and abilities are stand-ins in their own files, which their tasks replace.
 - `usePrompt()` gives `{ id, name, decision, answer, selection }`. `answer(a)` wraps `session.answer`: once per decision, false when already sent, refused by the socket (a retry is allowed) or when the store holds another decision by now. `PromptLayout` (prop `text`, controls as children) draws the shared shape: the decision's name, one polite live sentence, a row of controls.
 - Card marks (`prompt/marks.ts`): `useCardMarks(marks, onSelect, { toggles })` takes a `Map<ObjectId, 'legal' | 'dimmed' | 'selected'>` from `markCards(own, legal, selected)`. A click or Enter/Space on a legal or selected card calls `onSelect(id)`; a `Card`'s own `highlight` and `onSelect` props win. Each `Card` subscribes to its own id, so publishing redraws only the changed cards.
@@ -195,7 +229,7 @@ Every prompt but Mulligan, AssignDamage and OrderTriggers dims the viewer's othe
 
 ## Pace controls
 
-The Priority prompt's controls (`prompt/PassControls.tsx`), over the wire rules in [protocol.md](protocol.md) (Pace of play) and the design in [arena-flow.md](arena-flow.md).
+The Priority prompt's controls (`prompt/PassControls.tsx`, drawn in the controls dock of the table, 44 px high), over the wire rules in [protocol.md](protocol.md) (Pace of play) and the design in [arena-flow.md](arena-flow.md).
 
 ### Primary button and yields
 
@@ -217,7 +251,7 @@ The Priority prompt's controls (`prompt/PassControls.tsx`), over the wire rules 
 `features/table/stops/` and `play/session.ts`. The server decides the windows from the stops and the mode ([protocol.md](protocol.md), Stops and Full Control); the page only asks for them and shows what the server holds.
 
 - `stops` (`{side, step, keep}`; `keep` true is lasting, false goes once its step has passed) and `fullControl` (`Off`, `NextWindow`, `Held`) are replaced whole by `Welcome`, `Stops` and `FullControl` and survive a dropped connection until the next `Welcome`.
-- `StopLadder` (in `StopsBar`, beside `FullControlToggle`) has a row for your turns and one for opponents' with a button per step in turn order (ten; first-strike damage joins while it is the current step or holds a stop). Untap and cleanup get none: the server refuses them, so `setStop` sends nothing for them (`play/stops.ts`). A lit button (`aria-pressed`) is a stop the server holds; `data-keep` is `turn` or `lasting`. Below 640 px the rows fold behind "Stops · 2 set".
+- `StopLadder` (in `StopsBar`, beside `FullControlToggle`, in the controls dock or the table menu) has a row for your turns and one for opponents' with a button per step in turn order (ten; first-strike damage joins while it is the current step or holds a stop). Untap and cleanup get none: the server refuses them, so `setStop` sends nothing for them (`play/stops.ts`). A lit button (`aria-pressed`) is a stop the server holds; `data-keep` is `turn` or `lasting`. Below 640 px the rows fold behind "Stops · 2 set".
 - A press sets a one-turn stop and clears a held one; shift and press, or the Keep toggle (for touch), sets a lasting stop and makes a one-turn stop lasting (`pressRequest`). The toggle asks for Held, or Off when a mode is on; its menu asks for the mode it names.
 
 ### Response clock
@@ -266,17 +300,18 @@ The `prompt` names are the keys of `DEV_PROMPTS` in `dev/prompts.ts` (`DEV_TABLE
 ## Testing
 
 - vitest on jsdom: `scripts/check.sh web`, or `pnpm test` in `web/`.
-- `src/test-utils` has the fakes (`FakeNetwork`, `FakeTimers`, `startSession()`), the Rust-generated `transcripts` (replayed through the real store by `transcript.test.tsx`) and the harnesses: `renderGame()` (fake sockets, manual clock, in-memory REST), `renderTable` and `renderLiveTable`, and `renderApp(url, {accounts, rest})` with `startAccounts(script)`, an in-memory account server.
+- `src/test-utils` has the fakes (`FakeNetwork`, `FakeTimers`, `startSession()`), the Rust-generated `transcripts` (replayed through the real store by `transcript.test.tsx`) and the harnesses: `renderGame()` (fake sockets, manual clock, in-memory REST), `renderTable` and `renderLiveTable` (they lay the table out for `TEST_VIEWPORT`, 1600x1000, which has the side column and the whole controls dock; `options.viewport` sets another, and jsdom has no layout, so a test that needs measured sizes fakes `ResizeObserver` and `clientWidth`, as `zoneFit.test.tsx` does), and `renderApp(url, {accounts, rest})` with `startAccounts(script)`, an in-memory account server.
 - `test-utils/passControls.ts` finds the primary button by its slot, since its words change. A new prompt copies `Priority.test.tsx` (table-driven) and `PriorityLive.test.tsx` (real session, one Answer per decision).
-- Screenshots: `node scripts/ui-shot.mjs <url> <out-prefix>` (options in `CLAUDE.md`) over a dev route. The page loads at the first width, so shoot one width per run: state read at mount, such as the drawer, does not follow a later width.
+- Screenshots: `node scripts/ui-shot.mjs <url> <out-prefix>` (options in `CLAUDE.md`) over a dev route. The page loads at the first width, so shoot one width per run: state read at mount does not follow a later width. The table follows `resize`, so one run may shoot several widths.
 - A theme in a screenshot: the headless browser follows its system, so store the choice and reload once, which also runs the head script: `--wait "(sessionStorage.getItem('s') ? <ready> : (sessionStorage.setItem('s', '1'), localStorage.setItem('theme', 'dark'), location.reload(), false))"`.
 ### End-to-end
 
 `pnpm e2e` (`playwright.config.ts`) starts `cargo run -p mtg-server` (an empty `DATABASE_URL` gives the in-memory store and the built-in demo decks; `MTG_DWELL_MS=0` passes for idle seats at once, since the default wait would take the full game from about 8 s to between 29 and 35 s) on port 8301 and `pnpm build` plus `vite preview` on port 5301, both new for every run.
 
-- `E2E_SERVER_PORT` and `E2E_WEB_PORT` override the ports (defaults 8301 and 5301, `e2e/ports.ts`) to run several suites at once. `E2E_REUSE=1` keeps servers already listening there; `E2E_TRAIL=1` prints every answered decision; `--repeat-each=N` repeats the game.
+- `E2E_SERVER_PORT` and `E2E_WEB_PORT` override the ports (defaults 8301 and 5301, `e2e/ports.ts`) to run several suites at once; the Vite dev server that serves `/dev/table` to `fit.spec.ts` listens on `E2E_DEV_WEB_PORT` (the web port plus 1000). `E2E_REUSE=1` keeps servers already listening there; `E2E_TRAIL=1` prints every answered decision; `--repeat-each=N` repeats the game.
 - On NixOS Playwright's own browser cannot run. Point `CHROMIUM_PATH` at the Nix chromium with a glob, because the store path changes with every update: `CHROMIUM_PATH=$(ls -d /nix/store/*-chromium-[0-9]*/bin/chromium | head -n 1) pnpm --dir web e2e`.
 - `full-game.spec.ts` (`driver.ts`) plays both seats through the real UI. A seat waits for a `[data-decision]` with a new `data-decision-id` (the id tells two Priority prompts apart), reads its legal cards (`data-highlight="legal"`) and answers with real clicks. There are no sleeps: waits are `waitForFunction` polls. The engine seed is random per game.
+- `fit.spec.ts` sweeps the six sizes of [ui-design.md](ui-design.md) (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768, 390x844), down and back up in one page: in a real two-seat game at the opening hands and at the first priority window, on `/dev/table` at 2, 4, 6 and 12 seats with 40 permanents a seat, and on the game-over screen. At each size the page does not scroll, every region is inside the window, and the hand, the primary pass button (or Keep), your life and the way to a new game are in view and not covered (`document.elementFromPoint`).
 - `accounts.spec.ts` needs Postgres. With `E2E_DATABASE_URL` set to an empty scratch database (the server migrates it on boot) the config also starts a second server on port 8302 and a second preview on 5302 (`E2E_ACCOUNTS_SERVER_PORT`, `E2E_ACCOUNTS_WEB_PORT`). Without it `pnpm e2e` stays hermetic and the spec is skipped. Usernames are random per run, so one database serves many runs.
 
 ```sh

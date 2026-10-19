@@ -1,8 +1,9 @@
 // Goal: /dev/table serves the real table over the fixture in development, reads seats, mode and focus from the address (and shrugs off nonsense), and answers "not found" with no fixture when the build is a production one.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, cleanup, render, screen, waitFor } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { maybePrimaryButton, primaryButton } from '@/test-utils/passControls'
+import { TEST_VIEWPORT } from '@/test-utils/tableHarness'
 import { FIXTURE_MARKER } from './dev/fixture'
 
 /** The real route tree, loaded fresh so the route sees the `import.meta.env.DEV` the test has set. */
@@ -20,9 +21,19 @@ async function visit(url: string) {
 const panels = (): number[] =>
   [...document.querySelectorAll('[data-seat]')].map((element) => Number(element.getAttribute('data-seat')))
 
+// A table laid out for a desktop: the side column and the whole dock, whatever size the test window has.
+const window0 = { width: window.innerWidth, height: window.innerHeight }
+
+beforeEach(() => {
+  window.innerWidth = TEST_VIEWPORT.width
+  window.innerHeight = TEST_VIEWPORT.height
+})
+
 afterEach(() => {
   cleanup()
   vi.unstubAllEnvs()
+  window.innerWidth = window0.width
+  window.innerHeight = window0.height
 })
 
 describe('/dev/table in development', () => {
@@ -58,12 +69,13 @@ describe('/dev/table in development', () => {
     },
   )
 
-  it('is the real table, with its toolbar, banner and drawer', async () => {
+  it('is the real table, with its top bar, turn badge and side column, and no header of the shell', async () => {
     await visit('/dev/table?seats=2')
     await screen.findByRole('region', { name: 'Game table' })
-    expect(screen.getByRole('toolbar', { name: 'Table layout' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: 'Turn 5 · Bo · Declare blockers' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Table menu' })).toBeInTheDocument()
+    expect(screen.getByText("Bo's turn · 5 · Declare blockers")).toBeInTheDocument()
     expect(screen.getByRole('complementary', { name: 'Game log and chat' })).toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: 'Main' })).toBeNull()
   })
 })
 
@@ -153,11 +165,15 @@ describe('/dev/table with the viewer’s own turn', () => {
     async (search) => {
       await visit(`/dev/table${search}`)
       await screen.findByRole('region', { name: 'Game table' })
-      expect(screen.getByRole('heading', { name: /^Turn 5 · Alice · / })).toBeInTheDocument()
-      expect([...document.querySelectorAll('[data-your-turn]')].map((element) => element.tagName)).toEqual([
-        'SECTION',
-        'SECTION',
-      ])
+      expect(screen.getByText(/^Your turn · 5 · /)).toBeInTheDocument()
+      // The turn badge, the shared strip (its section and the glowing sheet in it) and the viewer's own panel.
+      const lit = [...document.querySelectorAll('[data-your-turn]')].map(
+        (element) =>
+          element.getAttribute('data-slot') ??
+          element.getAttribute('data-region') ??
+          `seat ${element.getAttribute('data-seat')}`,
+      )
+      expect(lit).toEqual(['banner', 'shared', 'shared-sheet', 'seat 0'])
       expect(document.querySelector('section[data-seat="0"]')).toHaveAttribute('data-your-turn', 'true')
     },
   )

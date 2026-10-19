@@ -318,6 +318,15 @@ describe('the preview', () => {
     expect(screen.queryByTestId('card-preview')).toBeNull()
   })
 
+  it('pins on Enter of a card with no act, as it does on a click', async () => {
+    const { container, user } = renderTable({ seats: 2 })
+    act(() => firstCard(container).focus())
+    await user.keyboard('{Enter}')
+    expect(screen.getByTestId('card-preview')).toHaveAttribute('data-pinned', 'true')
+    await user.keyboard('{Escape}')
+    expect(screen.queryByTestId('card-preview')).toBeNull()
+  })
+
   it('closes when the card it shows leaves the game', async () => {
     const { container, user, update } = renderTable({ seats: 2 })
     const land = firstCard(container)

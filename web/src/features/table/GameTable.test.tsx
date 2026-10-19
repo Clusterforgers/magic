@@ -1,4 +1,4 @@
-// Goal: the table draws every seat at the right place for tables of 2 to 12 with the viewer at the bottom, opens in grid mode up to 4 seats and focus mode from 5, switches between them from the toolbar, focuses an opponent from a tile by mouse or keyboard, follows the turn until told otherwise, and draws cards compact from 8 seats.
+// Goal: the table draws every seat at the right place for tables of 2 to 12 with the viewer at the bottom, opens in grid mode up to 4 seats and focus mode from 5, switches between them from the table menu, focuses an opponent from a tile by mouse or keyboard, follows the turn until told otherwise, and draws cards compact from 8 seats.
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { clone, must } from '@/test-utils/batches'
@@ -18,6 +18,9 @@ const tile = (container: HTMLElement, seat: number): HTMLElement =>
   must(container.querySelector<HTMLElement>(`[data-tile-seat="${seat}"]`))
 const layout = (container: HTMLElement): string | null =>
   container.querySelector('[data-layout]')?.getAttribute('data-layout') ?? null
+/** The layout buttons, Follow the turn and Concede are in the table menu. */
+const openMenu = (user: ReturnType<typeof renderTable>['user']) =>
+  user.click(screen.getByRole('button', { name: 'Table menu' }))
 
 describe('grid mode', () => {
   it.each(COUNTS)('draws every opponent in turn order and then the viewer last at a table of %i', (count) => {
@@ -41,12 +44,12 @@ describe('grid mode', () => {
     expect(container.querySelector('[data-layout]')).toHaveAttribute('data-columns', columns)
   })
 
-  it('puts the viewer at the bottom, below the battlefields of the opponents and the stack', () => {
+  it('puts the viewer at the bottom, below the opponents and the shared strip with the stack', () => {
     const { container } = renderTable({ seats: 3 })
-    const order = [...container.querySelectorAll('[data-seat], [aria-label="Stack"]')].map(
-      (element) => element.getAttribute('data-seat') ?? 'stack',
+    const order = [...container.querySelectorAll('[data-seat], [data-region="shared"]')].map(
+      (element) => element.getAttribute('data-seat') ?? 'shared',
     )
-    expect(order).toEqual(['1', '2', 'stack', '0'])
+    expect(order).toEqual(['1', '2', 'shared', '0'])
   })
 
   it('turns the viewer around: seat 2 of 4 sees 3, 0, 1 above itself', () => {
@@ -59,12 +62,13 @@ describe('grid mode', () => {
     const rows = screen.getAllByRole('list').map((list) => list.getAttribute('aria-label'))
     const bo = rows.filter((label) => label?.startsWith("Bo's"))
     expect(bo).toEqual(["Bo's command zone", "Bo's lands", "Bo's other permanents", "Bo's creatures"])
+    // Her pod, then her battlefield with the creatures toward the middle, then the hand dock along the bottom.
     const alice = rows.filter((label) => label?.startsWith("Alice's"))
     expect(alice).toEqual([
+      "Alice's command zone",
       "Alice's creatures",
       "Alice's other permanents",
       "Alice's lands",
-      "Alice's command zone",
       "Alice's hand",
     ])
   })
@@ -146,28 +150,12 @@ describe('choosing the opponent to focus', () => {
     expect(tile(container, 4)).toHaveAttribute('aria-current', 'true')
   })
 
-  it('reaches the tiles with Tab, after the layout buttons, the stops, Full Control and Concede', async () => {
+  it('reaches the tiles with Tab, after home and the table menu of the top bar', async () => {
     const { container, user } = renderTable({ fixture: buildFixture({ seats: 5, permanents: 2 }) })
     await user.tab()
-    expect(screen.getByRole('button', { name: 'Grid' })).toHaveFocus()
+    expect(screen.getByRole('link', { name: 'Home' })).toHaveFocus()
     await user.tab()
-    expect(screen.getByRole('button', { name: 'Focus' })).toHaveFocus()
-    // The stop ladder is one stop for the line that folds it up (hidden on a wide screen), one for each row (the
-    // opponent's turn is under way, so that row is entered at the step it is in) and one for Keep.
-    await user.tab()
-    expect(screen.getByRole('button', { name: /^Stops · / })).toHaveFocus()
-    await user.tab()
-    expect(screen.getByRole('button', { name: /^Your upkeep stop/ })).toHaveFocus()
-    await user.tab()
-    expect(screen.getByRole('button', { name: /^Opponents' declare blockers stop/ })).toHaveFocus()
-    await user.tab()
-    expect(screen.getByRole('button', { name: 'Keep stops' })).toHaveFocus()
-    await user.tab()
-    expect(screen.getByRole('button', { name: 'Full Control: off' })).toHaveFocus()
-    await user.tab()
-    expect(screen.getByRole('button', { name: 'Full Control options' })).toHaveFocus()
-    await user.tab()
-    expect(screen.getByRole('button', { name: 'Concede' })).toHaveFocus()
+    expect(screen.getByRole('button', { name: 'Table menu' })).toHaveFocus()
     await user.tab()
     expect(tile(container, 1)).toHaveFocus()
     await user.tab()
@@ -184,12 +172,15 @@ describe('choosing the opponent to focus', () => {
         view.turn.active = seat
         return { view }
       })
+    await openMenu(user)
     expect(screen.queryByRole('button', { name: 'Follow the turn' })).toBeNull()
+    await user.keyboard('{Escape}')
     turnOf(4)
     expect(panels(container)).toEqual([4, 0])
     await user.click(tile(container, 2))
     turnOf(5)
     expect(panels(container)).toEqual([2, 0])
+    await openMenu(user)
     await user.click(screen.getByRole('button', { name: 'Follow the turn' }))
     expect(panels(container)).toEqual([5, 0])
     expect(screen.queryByRole('button', { name: 'Follow the turn' })).toBeNull()
@@ -222,6 +213,7 @@ describe('choosing the opponent to focus', () => {
 describe('the layout toggle', () => {
   it('switches a small table to focus mode and back', async () => {
     const { container, user } = renderTable({ fixture: buildFixture({ seats: 3, permanents: 2 }) })
+    await openMenu(user)
     const grid = screen.getByRole('button', { name: 'Grid' })
     const focus = screen.getByRole('button', { name: 'Focus' })
     expect(grid).toHaveAttribute('aria-pressed', 'true')
@@ -240,15 +232,28 @@ describe('the layout toggle', () => {
   it('switches a large table to grid mode, which draws every opponent', async () => {
     const { container, user } = renderTable({ fixture: buildFixture({ seats: 7, permanents: 2 }) })
     expect(layout(container)).toBe('focus')
+    await openMenu(user)
     await user.click(screen.getByRole('button', { name: 'Grid' }))
     expect(panels(container)).toEqual([1, 2, 3, 4, 5, 6, 0])
     expect(container.querySelector('[data-layout]')).toHaveAttribute('data-columns', '3')
   })
 
-  it('is a labelled toolbar', () => {
-    renderTable({ seats: 2 })
+  it('is a labelled toolbar in the table menu', async () => {
+    const { user } = renderTable({ seats: 2 })
+    expect(screen.queryByRole('toolbar', { name: 'Table layout' })).toBeNull()
+    await openMenu(user)
     const toolbar = screen.getByRole('toolbar', { name: 'Table layout' })
     expect(within(toolbar).getAllByRole('button')).toHaveLength(2)
+  })
+
+  it('keeps the mode the player chose when the window changes size', async () => {
+    const small = { width: 390, height: 844 }
+    const { container, user } = renderTable({ seats: 2, options: { viewport: small } })
+    // A phone's board column is under 280 px wide, so the table starts in focus mode.
+    expect(layout(container)).toBe('focus')
+    await openMenu(user)
+    await user.click(screen.getByRole('button', { name: 'Grid' }))
+    expect(layout(container)).toBe('grid')
   })
 })
 

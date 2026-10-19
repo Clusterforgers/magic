@@ -63,7 +63,7 @@ function mount({ mode = 'Off', pending = 'priority', moment = 'main', focus = 'n
     },
   })
   if (focus === 'field') act(() => screen.getByRole('textbox', { name: 'A text field of the page' }).focus())
-  if (focus === 'button') act(() => screen.getByRole('button', { name: 'Grid' }).focus())
+  if (focus === 'button') act(() => screen.getByRole('button', { name: 'Keep stops' }).focus())
   return { ...table, asked }
 }
 
@@ -238,7 +238,7 @@ describe('what has the keyboard', () => {
     const { user, asked } = mount({ focus: 'button' })
     await user.keyboard(`${SPACE}${ENTER}`)
     expect(asked).toEqual([])
-    expect(screen.getByRole('button', { name: 'Grid' })).toHaveFocus()
+    expect(screen.getByRole('button', { name: 'Keep stops' })).toHaveFocus()
   })
 
   it('takes the keys again once the field is left', async () => {
