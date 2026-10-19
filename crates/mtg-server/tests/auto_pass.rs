@@ -11,7 +11,7 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{DecisionKind, PriorityAction, PriorityOptions};
 use mtg_engine::state::GameResult;
 use mtg_engine::{Answer, Decision, Event, GameSetup, replay};
-use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage};
+use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, FullControlMode, ServerMessage};
 use mtg_server::{
     EventStore, GameConfig, GameHandle, MemoryStore, Pace, resume_game_with, spawn_game_with,
 };
@@ -202,9 +202,14 @@ async fn a_seat_can_switch_auto_pass_off_and_on_in_the_middle_of_a_game() {
     let land = priority(&decision).playable_lands[0];
     clients[0].drain();
 
-    // Off, nothing happens by itself.
+    // Off is the Full Control mode `Held`: the seat is told so and nothing happens by itself.
     set(&handle, &clients[1], false).await;
-    silent(&clients[1].drain());
+    assert_eq!(
+        clients[1].drain(),
+        [ServerMessage::FullControl {
+            mode: FullControlMode::Held
+        }]
+    );
 
     // The land is played; seat 1 now has nothing to do, and with the setting off it is asked all the same.
     let play = Answer::Priority(PriorityAction::PlayLand(land));

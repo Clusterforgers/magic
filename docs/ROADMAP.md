@@ -1,7 +1,8 @@
 # Roadmap
 
-Single source of truth for progress. Any fresh session continues with: "read `docs/ROADMAP.md` and do the next unchecked item".
-Rules: one item = one focused piece of work (about 15 minutes for an agent). Tick the box in the same commit that finishes the item. Design reference: `docs/PLAN.md`.
+Progress record by milestone: what is built and what comes next, in build order.
+
+One item is one piece of about 15 minutes; tick it in the commit that finishes it; designs are in `docs/`.
 
 ## Done
 - [x] M0 Workspace, lint rules, CI, `CLAUDE.md`, local Postgres compose
@@ -10,81 +11,78 @@ Rules: one item = one focused piece of work (about 15 minutes for an agent). Tic
 - [x] M1b `mtg-db`: schema, upserts, card search, precon storage
 - [x] M2a Engine core + `mtg-testkit`: zones, turns, priority, stack, combat, layers skeleton, bots
 
-After a restart, run `git worktree list` and read each worktree's status before touching anything in flight.
-
-## M1 Card data (rest)
+## M1 Card data
 - [ ] `mtg-db` follow-ups: reap stale `running` import runs, skip NUL-containing records instead of failing the batch
-- [ ] CLI binary `mtg-cli`: download Scryfall bulk + MTGJSON deck index/decks, ingest into Postgres (resumable, polite rate limit)
-- [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports. Verified on real exports of two Commander decks (`real_exports.rs`) and on a corpus of 29 public decks, 183 export files compared with each site's own card lists (`corpus_parse.rs`, `corpus_detect.rs`, `corpus_export.rs`, `docs/data-sources.md`): MTGO text is its own `DeckFormat`, Moxfield's single commander is promoted by `promote_implied_commander`, Moxfield `STICKERS:` is reported in `ParsedDeck::ignored`. Still open: a real MTGO `.dek`, a real Arena client export, companions and custom cards (no public deck found), and resolving the names parsing leaves as written (flavor and digital names, `A / B`, `A/B`, `A /// B`, front faces)
-- [ ] Importer 2b, name resolution on the corpus: look up by printing (set + collector number) before name; resolve `A / B`, `A/B`, `A /// B`, front-face-only, flavor and digital (Arena/MTGO) names; real-data test that resolves all 183 corpus exports against Scryfall
+- [ ] CLI binary `mtg-cli`: download Scryfall bulk + MTGJSON deck index/decks, ingest into Postgres (resumable, polite rate limit; `docs/data-sources.md`)
+- [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
+- [ ] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
 - [ ] Card search HTTP endpoints in `mtg-server` (name, filters, color identity, pagination)
 
 ## M2 Engine and first playable
-- [x] Merge M2a; review against `CLAUDE.md`; engine design notes in `docs/engine.md`
+- [x] Merge M2a, reviewed against `CLAUDE.md`; design in `docs/engine.md`
 - [x] `mtg-protocol`: Decision/Event/State-view wire types, generated TypeScript bindings, drift test
-- [x] `mtg-server` actor (no network): `GameActor` owns an `Engine`, per-seat channels, projected events and decisions, stale-answer and reconnect handling, `EventStore` trait with an in-memory store; bot clients play full games in tests
-- [x] `mtg-server` transport: axum binary, create-game REST with per-seat tokens, one WebSocket per seat, built-in demo decks, graceful shutdown; tests with real sockets (in-memory store)
-- [x] Protocol sync: every `Events` batch carries the whole table state plus a before/after object diff, so the client never folds engine events; reference `StateView::apply`, per-seat property tests, transcript fixture for the web
-- [x] Web core: typed REST + WebSocket client (reconnect, close codes, gap in `from_seq` sends `Resync`), zustand store applying snapshots and batches, tested against the transcript fixture and a fake socket
-- [x] Web game UI: routes, create-game page, connection/lobby/game-over screens; read-only N-seat table in `GameTable` (grid and focus layouts, seat panels, battlefields, hand, stack, log, chat, card preview, `/dev/table`); prompts for all eight decision kinds (`features/table/prompt/`, `?prompt=` on `/dev/table`), legal-option highlights and "nothing to do" notes (`docs/web.md`). Commander damage and tax in the table wait for M5
-- [x] Protocol and engine gaps the prompts exposed (one task each, with tests): (a) `MulliganOptions` carries `free_mulligans`, `bottom_if_keep` and `bottom_if_mulligan`, and the prompt reads them; (b) `PayOptions` carries `can_cancel`, `PayChoice::Complete` pays the rest of a partial payment, and `check_payment` rejects two abilities of one permanent and tapped sources; (c) `ManaCost` is a canonical list of `ManaSymbol` with the hybrid, monocolored hybrid, Phyrexian, hybrid Phyrexian, colorless hybrid and colorless Phyrexian symbols (`docs/engine.md`): every Scryfall cost string reads or is refused by name, payment tries each way to pay them, `Payment.life` and the `LifePaid` event pay life for Phyrexian symbols, `PayOptions` carries `life` and `max_life`, and the PayMana prompt has a switch per Phyrexian symbol. The two gaps that wait for M3 features moved to the Keywords and the Tokens, copy effects, X costs items below
-- [x] Playwright e2e: full 2-player vanilla game in the browser (`web/e2e`, `pnpm e2e`; command and driver in `docs/web.md`)
+- [x] `mtg-server` actor (no network): per-seat channels, projected events and decisions, stale-answer and reconnect handling, `EventStore` trait; bots play full games
+- [x] `mtg-server` transport: axum binary, create-game REST with seat tokens, one WebSocket per seat, demo decks, graceful shutdown
+- [x] Protocol sync: each `Events` batch carries the table state and an object diff, so the client never folds engine events
+- [x] Web core: typed REST and WebSocket client with reconnect and resync, zustand store
+- [x] Web game UI: routes, create-game page, lobby and game-over screens, N-seat table, prompts for all eight decision kinds
+- [x] Protocol and engine gaps the prompts exposed: mulligan counts, payment cancel and complete, hybrid and Phyrexian mana costs paid with mana or life
+- [x] Playwright e2e: full 2-player vanilla game in the browser (`pnpm e2e`)
 - [x] `mtg-server` persistence (a): Postgres `EventStore` and migration table
-- [x] `mtg-server` persistence (b): game and seat records (store a serializable setup recipe), resume running games on boot; `sqlx::test` tests
-- [x] Game flow, from the first hands-on test (one task each, with tests): (a) done: `PriorityOptions.can_act` says whether the player can do anything useful (a land to play, a castable spell, an ability that is not a mana ability; tapping a land for mana alone does not count, so after the last land with nothing affordable there is nothing to do), and the server passes for a seat that cannot act (`ClientMessage::AutoPass`, per seat, on by default, `MTG_AUTO_PASS=0` changes the default; `Welcome.auto_pass` reports it; the web switch "Skip turns when I can't act"), so nobody waits on a "nothing to play" prompt; (b) done: response clock: when a seat that is not the active player can act, its priority decision carries `deadline_ms` (default 10 s, `MTG_RESPONSE_SECS`; blocking has 45 s, `MTG_BLOCK_SECS`; every other decision has none), the server answers at the deadline (a pass, or no blocks) through the normal path so a late answer is stale, and the prompt shows the countdown, so one player cannot hold the table; (c) done: the bare "Pass priority" button is gone. The Priority prompt has a primary button that says what passing does now ("Resolve <spell>" over a stack, "Next: <step>" on your turn and "End turn" in its last window, "Continue" on anyone else's; Space or Enter presses it), "End turn" beside it and a menu ("Resolve everything on the stack", "Pass until my next turn"). `ClientMessage::Yield { until: Resolve | EndOfTurn | MyTurn }` and `CancelYield` make the server pass for the seat through the auto-pass path (held per seat in memory, never stored, gone on resume; `ServerMessage::Yielding` and `Welcome.yielding` tell the seat) until the stack is empty, the turn ends or the seat's own turn begins, or an opponent adds to the stack; every other decision is still delivered. The web shows "Passing until the end of turn" with a "Stop passing" button. The response clock now also hurries a non-active seat that is asked with nothing to do (auto-pass off), and neither the clock nor the yield rules (one function, `yields.rs`) look at what a seat could do, so the pace tells the table nothing about a hand. Per-step stops and holding priority wait for instants and activated abilities (M3, see Triggered abilities)
-- [x] Combat readability: (a) done: engine `combat_forecast` (who deals what to whom, which creatures die, which players take lethal; keywords join it as they land) carried as `combat_forecast` in the table view while damage is ahead; (b) done (the preview of a pending answer is the item "Block preview" below): `net/parse.ts` checks the forecast, an SVG overlay (`web/src/features/table/combat`, `docs/web.md`) draws a muted line from each attacker to what it attacks and a strong line from each blocker to its attacker, coloured by the pair's outcome, with a key; doomed creatures look destroyed and creatures that would take damage show "-N"; attacked seats show "life → life after" and a lethal mark; the DeclareBlockers prompt lists the blocks made ("Your Grizzly Bears blocks Bo's Hill Giant", each can be undone) and draws them, and DeclareAttackers draws the attack chosen so far; `/dev/table?prompt=forecast|block`
-- [x] Block preview: `Engine::preview_forecast(seat, &answer)` runs a pending DeclareBlockers or DeclareAttackers answer through the real validation and fold on a scratch copy of the state, so it equals the forecast after the real answer (a bot-game property proves it); `ClientMessage::Preview` is answered by the actor with one `ServerMessage::Forecast` (null when the decision is not the seat's pending one, the answer is illegal or not combat, or the seat is over its limit of 20 then 10 a second), never an error, never a log write; `session.preview` keeps the reply with the key of the choice, and `useBlockPreview` returns the engine's preview of the choice being made, so doomed creatures and lethal marks follow the blocks and the attack while they are chosen, with "Checking outcome…", "Outcome shown after you confirm." as the fallback and a live sentence for screen readers (`docs/engine.md`, `protocol.md`, `server.md`, `web.md`)
-- [x] Table feedback: animations for attacking, blocking, damage, creatures dying, entering permanents and life changes (`features/table/fx`, `docs/web.md`): derived from each batch's before, after and events, ghosts for the dead, a still highlight under `prefers-reduced-motion`, off in vitest, `/dev/table?fx=` and `?slow=` to look at them
-- [x] Concede: a button with a confirm step wired to the existing `ClientMessage::Concede`, conceded seats marked in the seat panel and log (`ConcedeButton`; docs/web.md)
-- [x] Lobby shows who has pressed Ready: done. The server keeps Ready per seat in the lobby (not stored, so a resumed lobby starts with nobody ready), `ClientMessage::NotReady` takes it back until the start (ignored after), `ServerMessage::Lobby { seats: [{seat, name, connected, ready}], needed }` follows each seat's `Welcome` and is pushed again at every join, hang-up, `Ready` and `NotReady`, and `GET /api/games/{id}` lists `ready` beside `connected` (`docs/server.md`, `docs/protocol.md`); the lobby shows one row per seat (name, connected dot, "Ready" / "Not ready yet" / "Not here", this seat marked), a summary line ("2 of 3 ready, waiting for Cy to join"), a polite announcement of each change and a Ready button that becomes "Not ready" (`docs/web.md`, `/dev/lobby`); during the opening hands the table lists every seat's public mulligan status from what the views already carry, so no gap item is needed
-- [x] Users (pulled forward from M4 Auth), (a) server: users table, username + argon2, session cookie, register/login/logout/me endpoints, games and seats bound to a user, a "my games" listing (running and finished) and a rejoin that needs the session instead of the seat token, with the seat-token link kept for guests; `sqlx::test` tests. Done, see `docs/server.md` (Accounts): `/api/auth/{register,login,logout,me}`, `GET /api/me/games`, `GET /ws/{game}` rejoins a bound seat with the cookie alone, a signed-in creator owns seat 0 and the first signed-in visitor of a link claims its seat. Open for (b): `POST /api/games` takes no choice of the creator's seat (it is seat 0), and the account endpoints answer 503 `accounts_unavailable` without `DATABASE_URL`, so the in-memory e2e server has no sign-in
-- [x] Users, (b) web: register and login pages, the signed-in state in the header, a "My games" page that lists games and rejoins a seat, create-game binding the creator's seat to the account. Done, see `docs/web.md` (Accounts): `/login`, `/register` (checked before sending, every error code in words, `next` only as a same-site path), `AccountNav`, `/games` with Rejoin through the session (no View result: the server forgets a finished game ten minutes after it ends, so the row carries the result), the game page joins by `/ws/{game}` without a seat link when signed in, the create page and lobby name the account, and `e2e/accounts.spec.ts` runs with `E2E_DATABASE_URL` (skipped otherwise, so `pnpm e2e` stays hermetic)
-- [x] Resume checks the deck contents: done. A new game's recipe stores one `DeckFingerprint` per seat (`GameRecipe::with_fingerprints`; `v1:` and the SHA-256 of a canonical, versioned text of the ordered cards the engine is given, `recipe/fingerprint.rs`); `GameRecipe::build` refuses a deck that no longer hashes to it (`RecipeError::DeckChanged`, any card field, the order or the size), and resume marks the game `failed` with "the deck changed: seat N (..)" before replaying any event and logs the game and seat. Like every failed game it is then a 404 for tokens, the lookup and both socket routes and is not in My games; a recipe stored before fingerprints existed resumes unchecked with a warning (`docs/server.md`, Persistence; `tests/pg_resume_decks.rs`). Open: a game still running when this ships stays unchecked until it ends (resume could stamp the current fingerprints into such a recipe), and My games never shows a failed game with its reason (a `MyGameStatus` and web change)
-- [ ] Game flow (d), copy MTG Arena's priority, stops and yields (the player's direction, 2026-10-18: Arena is professionally made and tested, so use its methods instead of our own). The concern: skipping a seat that cannot act shows the table, through the pace, that it has nothing. Research and the full proposals are in `docs/arena-flow.md` (P1 to P10); decide the windows from the table (step, stack, stops), never from the hand. In order:
-  - [x] (d1) Stops and Full Control on the wire (P1, P4 messages): `Stop {side, step, keep}`, `SetStop {side, step, on, keep}`, `FullControl {mode}`, `Welcome.stops` and `full_control`, a server word back after a change like `Yielding`; stored per seat, no effect on play yet; bindings, round trips, drift test, `docs/protocol.md`. Done: `Stops` and `FullControl` notices carry the whole list (each stop with its `keep`, so the ladder can tell a lasting stop from a one-turn one) or the mode after a change (silence for a repeat; a repeated `SetStop` with the other `keep` is a change and is told); `stops.rs` holds them per seat in memory (from the lobby on, kept across reconnects, dropped for a seat that left and when the game is over, restored by a failed save); untap and cleanup are refused with a plain `Error{BadMessage}` (no resync); the web parses and stores `stops` and `fullControl` (no session method or UI); a bot game with everything held equals the bare reference game
-  - [ ] (d2) Stops in the actor with Arena's default window table (P2): a seat is asked at the default windows and at its stops, one-turn stops clear when the step ends, a stop interrupts a yield and is sent even when `can_act` is false; table test and bot games equal to the bare engine
-  - [ ] (d3) Idle windows as short hidden clocks (P3): a window the seat cannot use waits a human-like 0.3 to 0.9 s (`MTG_DWELL_MS`, 0 = off) and then passes as its own step and batch; yields and Full Control are exempt; paused-time tests
-  - [ ] (d4) Full Control in the actor (P4): asked at every step, never passed or yielded for; the response clock keeps its `can_act` condition
-  - [x] (d5) Web session for stops and Full Control (P5): `session.setStop` and `setFullControl` send what the server accepts and the page shows its word; a Full Control toggle with a menu replaces the auto-pass switch; Control asks for the next window, Control with Shift for Held (`docs/web.md`)
-  - [x] (d6) Stop ladder in the table (P6): two rows of step buttons (yours, theirs) beside the Full Control toggle; a press sets a one-turn stop, shift or Keep a lasting one with a pin; the current step and the turn are marked, every button is spoken, the rows fold up on a narrow screen; `/dev/table?stops=` (`docs/web.md`)
-  - [x] (d7) Keys like Arena (P7): Space passes once, Enter is the end-of-turn yield (a pass under Full Control), key hints on the buttons, tooltips and menu, no Shift+Enter (`docs/web.md`)
-  - [ ] (d8) Leak test (P8): two seeded games equal but for one hidden card; what the other seat receives (types, batch boundaries, arrival times on paused time) must match
+- [x] `mtg-server` persistence (b): game and seat records, resume running games on boot
+- [x] Game flow (a) to (c): auto-pass, response clocks, a pass button that names what passing does, yields
+- [x] Combat readability: engine `combat_forecast`, attack and block lines with outcome marks in the table
+- [x] Block preview: the engine's outcome of a pending attack or block, shown while it is chosen
+- [x] Table feedback: animations for attacks, blocks, damage, deaths, entries and life changes
+- [x] Concede: a button with a confirm step
+- [x] Lobby shows who has pressed Ready
+- [x] Users, (a) server: accounts, session cookie, auth endpoints, seats bound to users, "my games", rejoin by session
+- [x] Users, (b) web: login and register pages, account header, "My games" with rejoin
+- [x] Resume checks the deck contents: a deck fingerprint per seat fails a game whose cards changed
+- [ ] Game flow (d), copy MTG Arena's priority, stops and yields so the pace never tells the table what a seat holds (`docs/arena-flow.md`, P1 to P10). In order:
+  - [x] (d1) Stops and Full Control on the wire (P1, P4)
+  - [x] (d2) Stops in the actor with Arena's default window table (P2)
+  - [ ] (d3) Idle windows as short hidden clocks (P3): a window the seat cannot use waits 0.3 to 0.9 s (`MTG_DWELL_MS`), then passes as its own step and batch
+  - [x] (d4) Full Control in the actor (P4)
+  - [x] (d5) Web session for stops and Full Control (P5)
+  - [x] (d6) Stop ladder in the table (P6)
+  - [x] (d7) Keys like Arena (P7)
+  - [ ] (d8) Leak test (P8): two seeded games equal but for one hidden card send the other seat the same messages at the same times
   - [ ] (d9) Timer bank (P9): extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
-  - Smart stops, per-ability yields, auto-ordered triggers and damage auto-assign (P10) go with the M3 trigger item
 
 ## M3 Rules depth
 Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d) to (k) in parallel.
-- [ ] (a) `mtg-cards` DSL: Cost, Selector, Condition, Effect, Duration, TargetSpec, Amount and every ability kind as data files with loader, validation, support records and a 40-card corpus
-- [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL; `CardDefinition` moves to `mtg-cards`
+- [x] (a) `mtg-cards` DSL: data model for every ability kind, loader, validation, support records and a 40-card corpus
+- [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
 - [ ] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
-- [ ] (d) Decision kinds the effects need, one task each across `mtg-engine`, `mtg-protocol` and a web prompt, with tests: `ChooseMode`, `ChooseNumber` (X, "any number"), `DivideAmount`, `ChooseCards` (search, reveal, "choose a creature"; any seat), `OrderCards` (scry, surveil, put back, bottom in any order), `YesNo` for "may", `ChooseOption`, `ChooseCosts`, `OrderTriggers`, `ChooseReplacement`
-- [ ] (e) Keywords, one task each with a table test: flying/reach, first strike/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof/ward; `DamageOptions` gets player and trample targets and the views carry keywords for the damage prompt's lethal hint (`docs/web.md`, AssignDamage)
-- [ ] (f) Keyword actions (CR 701), one engine primitive each, table-tested, with a web prompt where the player chooses: draw/discard/mill/shuffle, scry, surveil, fateseal, search, reveal, sacrifice/destroy/exile/counter, create tokens and populate, fight, explore, proliferate, investigate and the predefined tokens (Clue, Treasure, Food), amass, connive, learn, transform/meld, attach/equip, regenerate, goad, monstrosity, adapt, bolster, support, venture; Arena-only digital actions (conjure, seek, specialize) stay out
-- [ ] (g) Tokens, copy effects, X costs (`ManaSymbol::X`, `ChooseNumber`, PayMana prompt, `payment.ts`), alternative and additional costs, modal spells
-- [ ] (h) Keyword abilities beyond combat (CR 702), one task each: flash, equip/reconfigure, enchant, cycling, kicker/multikicker, flashback, madness, prowess, convoke, delve, cascade, storm, morph/disguise, suspend, evoke, overload, and the Commander-relevant partner and companion
-- [ ] (i) Triggered abilities: APNAP ordering, delayed triggers, intervening if, per-step stops and holding priority, and the smart stops, per-ability yields, auto-ordered triggers and damage auto-assign of Arena flow P10 (`docs/arena-flow.md`)
+- [ ] (d) Decision kinds the effects need, one task each across engine, protocol and a web prompt (the table in `docs/cards-dsl.md`, Decisions the effects need)
+- [ ] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets (`docs/web.md`)
+- [ ] (f) Keyword actions (CR 701), one engine primitive each, with a web prompt where the player chooses (scope in `docs/cards-dsl.md`, Tasks)
+- [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
+- [ ] (h) Keyword abilities beyond combat (CR 702), one task each for the other `Keyword` variants (flash, equip, cycling, kicker, flashback, cascade, storm, ...); cost-based ones follow (g)
+- [ ] (i) Triggered abilities: APNAP ordering, delayed triggers, intervening if, and Arena flow P10: smart stops, per-ability yields, auto-ordered triggers, damage auto-assign (`docs/arena-flow.md`)
 - [ ] (j) Replacement and prevention effects (CR 614 to 616)
 - [ ] (k) Layers: full CR 613 ordering with dependencies, timestamps, counters, auras, equipment
 
 ## M4 Multiplayer product
-- [ ] Invite-link lobbies on top of users (accounts land in M2)
+- [x] Invite-link lobbies on top of users
 - [ ] Deck builder UI with card search, import, validation, export
-- [ ] Deck check and the Verified marker (the player's request, 2026-10-18; design in `docs/deck-check.md`): choose or build a deck, run a check that reports legality and every card the game cannot play without manual steps, highlight those cards (icon, word, edge, reasons, unsupported clauses underlined), show a marker on a saved deck whose check is clean, derived from the deck's content hash and the cards' support records so any edit or engine change removes it until the next check; save runs the check automatically, the sideboard counts toward the marker, a deck with manual cards may be played with a count-only note to the table (names show when a card becomes public); live issue counter while building; precon badges
+- [ ] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
 - [ ] Precon browser with one-click play
-- [ ] N-player layout, game log, stack panel, stop settings
+- [x] N-player layout, game log, stack panel, stop settings
 - [ ] Spectators and reconnect polish: a spectator seat, a face-down card rule in `zone_is_visible`, a "waiting on" message for tables of three or more
 
 ## M5 Commander
-- [ ] `Commander` format rules: 100-card singleton, color identity, 40 life, command zone, tax, 21 commander damage; `PlayerView`/`ObjectView` carry commander damage and tax so the table's "not tracked yet" slot (`SeatPanel`) fills
+- [ ] `Commander` format rules: 100-card singleton, color identity, 40 life, command zone, tax, 21 commander damage; the views carry commander damage and tax so the seat panel's "not tracked yet" slot fills
 - [ ] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
-- [ ] Partner, companion, Commander-specific tests and fuzz games with 4-6 players
+- [ ] Partner, companion, Commander-specific tests and Commander-format fuzz games with 4-6 players
 
 ## M6 Coverage
-- [ ] Manual-resolve fallback mode for unimplemented cards
-- [ ] Oracle-text compiler for common templates with golden tests Reference first: the phase.rs oracle parser (Rust, MIT or Apache-2.0, `crates/engine/src/parser`) and XMage (MIT); Forge and Magarena are GPL-3.0, so study only and copy nothing. Check each compiled card by rendering the data back to English and comparing it with the oracle text
-- [ ] Coverage dashboard over `Library::support` (computed, never stored): states, reasons and clause spans per card, ranked by how many saved decks use it; target: 100% of a chosen set of Commander precons (`docs/deck-check.md`)
+- [ ] Manual-resolve fallback mode for unimplemented cards (`docs/cards-dsl.md`, Compiler and Manual fallback)
+- [ ] Oracle-text compiler for common templates with golden tests (`docs/cards-dsl.md`, Compiler and Manual fallback)
+- [ ] Coverage dashboard over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of a chosen set of Commander precons (`docs/deck-check.md`)
 
 ## M7 Polish and deploy
-- [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain
-- [ ] Animations, sounds, replays, solo play against bots
+- [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain (`docs/PLAN.md`, Deployment)
+- [ ] Animations beyond the table feedback (`docs/web.md`), sounds, replays, solo play against bots
 - [ ] Performance profile on real hardware with real card art

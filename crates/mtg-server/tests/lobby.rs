@@ -30,10 +30,11 @@ async fn welcome_names_the_game_the_seat_and_the_table_size() {
             game: game_id(7).to_string(),
             player: seat(1),
             seats: 3,
+            // No auto-pass is the Held mode.
             auto_pass: false,
             yielding: None,
             stops: Vec::new(),
-            full_control: FullControlMode::Off,
+            full_control: FullControlMode::Held,
         }
     );
     // The roster follows the welcome: only this seat is here and nobody is ready.
