@@ -1,4 +1,4 @@
-// Goal: the table's regions follow the window: the rows always add up to the window height with the minimums of the design (44 px bar, 56 to 88 px shared strip, 112 to 200 px hand dock), the side area is a column, a rail or a sheet by width, the CSS templates equal the numbers, and the mode and seat arrangement follow the seat count and the width of a board column (grid for 2 to 4 seats unless a column would be under 280 px, focus otherwise, the menu overriding).
+// Goal: the table's regions follow the window: the rows always add up to the window height with the minimums of the design (44 px bar, 56 to 88 px shared strip, 112 to 200 px hand dock), the side area is a column, a rail or a sheet by width, the CSS templates equal the numbers, and the mode and seat arrangement follow the seat count and the width of a board column (grid for 2 to 4 seats unless a column would be under 280 px, focus otherwise, the menu overriding), and in focus mode the strip of tiles leads with the seat whose turn it is.
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import {
@@ -327,16 +327,34 @@ describe('planTable', () => {
     expect(mainColumns({ phone: true }, true)).toBe('minmax(0, 1fr) fit-content(160px)')
   })
 
-  it('puts the seat whose turn it is first in the strip of a phone, and leaves the strip of a wide window in turn order', () => {
-    const phone = { width: 390, height: 844 }
-    const wide = { width: 1920, height: 1080 }
-    const on = (viewport: Viewport, active: number) =>
-      planTable({ viewport, seatCount: 5, viewer: 0, active }).seats.tiles
-    expect(on(phone, 3)).toEqual([3, 1, 2, 4])
-    expect(on(phone, 1)).toEqual([1, 2, 3, 4])
-    // The viewer's own turn leads nothing: the tiles are the opponents' only.
-    expect(on(phone, 0)).toEqual([1, 2, 3, 4])
-    expect(on(wide, 3)).toEqual([1, 2, 3, 4])
+  it.each([
+    ['a phone', { width: 390, height: 844 }],
+    ['a tablet', { width: 820, height: 1180 }],
+    ['1280x720', { width: 1280, height: 720 }],
+    ['1920x1080', { width: 1920, height: 1080 }],
+  ])('puts the seat whose turn it is first in the strip, on %s', (_name, viewport) => {
+    const on = (active: number | null) => planTable({ viewport, seatCount: 5, viewer: 0, active }).seats.tiles
+    expect(on(3)).toEqual([3, 1, 2, 4])
+    expect(on(1)).toEqual([1, 2, 3, 4])
+    expect(on(4)).toEqual([4, 1, 2, 3])
+    // The viewer's own turn leads nothing: the tiles are the opponents' only, in turn order.
+    expect(on(0)).toEqual([1, 2, 3, 4])
+    expect(on(null)).toEqual([1, 2, 3, 4])
+  })
+
+  it('leads the strip with the active seat whichever opponent the board shows, and keeps the focus where it is', () => {
+    const viewport = { width: 1440, height: 900 }
+    const plan = planTable({ viewport, seatCount: 6, viewer: 0, mode: 'focus', focus: 2, active: 4 })
+    expect(plan.seats.tiles).toEqual([4, 1, 2, 3, 5])
+    expect(plan.seats.focused).toBe(2)
+    expect(plan.seats.boards).toEqual([2])
+  })
+
+  it('draws no tiles in grid mode, so no seat leads anything', () => {
+    const plan = planTable({ viewport: { width: 1920, height: 1080 }, seatCount: 4, viewer: 0, active: 2 })
+    expect(plan.seats.mode).toBe('grid')
+    expect(plan.seats.tiles).toEqual([])
+    expect(plan.seats.boards).toEqual([1, 2, 3])
   })
 
   it.each([

@@ -30,6 +30,31 @@ export function SeatDot({ seat, className }: { seat: PlayerId; className?: strin
   )
 }
 
+/** The 3 px edge of an opponent's pod or tile on its turn: the opponent's blue, inside the box so a column that clips its overflow keeps it. */
+export const ACTIVE_EDGE = 'inset-ring-3 inset-ring-turn-them'
+
+/** The faint tint of the active opponent's tile, in the colour of its edge; `cueTokens.test.ts` holds the text on it at 4.5:1. */
+export const ACTIVE_TINT = 'bg-turn-them/5'
+
+/** Your own pod on your turn: the gold glow of `your-turn-cue` with the 3 px gold edge drawn inside (`index.css`). */
+export const YOUR_TURN_EDGE = 'your-turn-cue [--cue-edge:3px]'
+
+/**
+ * A dot beside the name of a seat that holds priority without the turn. It is an image with a name and a shape of
+ * its own, so the cue is never colour alone; it takes the text colour, which every surface holds at 3:1 or more.
+ */
+export function PriorityDot({ label, className }: { label: string; className?: string }) {
+  return (
+    <span
+      role="img"
+      aria-label={label}
+      title={label}
+      data-slot="priority-dot"
+      className={cn('size-2.5 shrink-0 rounded-full bg-foreground ring-2 ring-foreground/25', className)}
+    />
+  )
+}
+
 /** How roomy a chip is: the pod's panel, its one-line form, or the two-line tile of the strip. */
 export type ChipDensity = 'panel' | 'line' | 'tile'
 

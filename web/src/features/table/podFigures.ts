@@ -55,9 +55,23 @@ export function podState(active: boolean, priority: boolean): string | undefined
   return tokens.length === 0 ? undefined : tokens.join(' ')
 }
 
-/** The sentence for a screen reader that says what a pod's marks say: "Active turn. Has priority."; empty for neither. */
+/** Whether a seat draws the priority dot: it holds priority and is not the active seat, whose edge marks the turn. */
+export function showsPriorityDot(active: boolean, priority: boolean): boolean {
+  return priority && !active
+}
+
+/** What the priority dot is called: "Bo has priority", or "You have priority" on the viewer's own pod. */
+export function priorityName(name: string, you: boolean): string {
+  return you ? 'You have priority' : `${name} has priority`
+}
+
+/**
+ * The sentence for a screen reader that says what a pod's marks say beyond the priority dot, which has its own name:
+ * "Active turn." or "Active turn. Has priority."; empty for a seat that has no turn.
+ */
 export function podStateWords(active: boolean, priority: boolean): string {
-  return [active ? 'Active turn.' : null, priority ? 'Has priority.' : null].filter(Boolean).join(' ')
+  if (!active) return ''
+  return priority ? 'Active turn. Has priority.' : 'Active turn.'
 }
 
 /** What a tile of the strip is called: its action and then everything the tile shows, in words. */

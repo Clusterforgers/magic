@@ -91,7 +91,8 @@ describe.each(VARIANTS)('the %s pod', (variant) => {
   })
 
   it.each([
-    [0, 'priority', 'Has priority.'],
+    // Seat 0 holds priority without the turn: its dot says so, with a name of its own, so the words add nothing.
+    [0, 'priority', ''],
     [1, 'active', 'Active turn.'],
     [2, undefined, ''],
   ])('marks seat %i with data-state %j, in words for a screen reader', (seat, state, words) => {

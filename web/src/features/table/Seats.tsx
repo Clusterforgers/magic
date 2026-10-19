@@ -8,6 +8,7 @@ import { POD_COLUMN_PX } from './layout'
 import type { PodPlace, SeatPlan } from './layout'
 import { SeatPanel } from './SeatPanel'
 import { SeatTile } from './SeatTile'
+import { useBoardFade } from './useBoardFade'
 import { useEdgeFade } from './useEdgeFade'
 
 interface SeatAreaProps {
@@ -53,6 +54,50 @@ export const SeatArea = memo(function SeatArea({ seat, size, facing, pod }: Seat
   )
 })
 
+interface FocusBoardProps {
+  seat: PlayerId
+  size: CardSize
+  pod: PodPlace
+}
+
+/**
+ * The large opponent of focus mode. When the seat changes, the board that leaves stays in the same cell for
+ * `FOCUS_FADE_MS`, fading out over the one that fades in (`focusBoard.css`); it takes no pointer and is hidden from
+ * a screen reader and from the keyboard, so the board that is there answers at once. Each seat keeps its own board
+ * through the change.
+ */
+function FocusBoard({ seat, size, pod }: FocusBoardProps) {
+  const { shown, leaving } = useBoardFade(seat)
+  const layers = leaving === null ? [shown] : [shown, leaving]
+  return (
+    <div data-slot="focus-board" className="relative flex min-h-0 min-w-0 flex-1">
+      {layers.map((layer) =>
+        layer === shown ? (
+          <div
+            key={layer}
+            data-slot="focus-layer"
+            data-crossfade={leaving === null ? undefined : 'in'}
+            className="flex min-h-0 min-w-0 flex-1"
+          >
+            <SeatArea seat={layer} size={size} facing="far" pod={pod} />
+          </div>
+        ) : (
+          <div
+            key={layer}
+            data-slot="focus-layer"
+            data-crossfade="out"
+            aria-hidden="true"
+            inert
+            className="pointer-events-none absolute inset-0 flex"
+          >
+            <SeatArea seat={layer} size={size} facing="far" pod={pod} />
+          </div>
+        ),
+      )}
+    </div>
+  )
+}
+
 // Whole class names, so Tailwind can see them.
 const COLUMNS: Record<SeatPlan['columns'], string> = {
   1: 'grid-cols-1',
@@ -88,7 +133,7 @@ export function Opponents({ plan, size, pod, onFocusSeat }: OpponentsProps) {
             </li>
           ))}
         </ul>
-        {plan.focused === null ? null : <SeatArea seat={plan.focused} size={size} facing="far" pod={pod} />}
+        {plan.focused === null ? null : <FocusBoard seat={plan.focused} size={size} pod={pod} />}
       </div>
     )
   }

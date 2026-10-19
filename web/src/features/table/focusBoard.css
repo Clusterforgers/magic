@@ -1,0 +1,27 @@
+/*
+ * The cross-fade of the large board in focus mode (docs/ui-design.md, "Turn and focus"): when the focused seat changes,
+ * the board that arrives fades in while the one that leaves fades out over the same cell, for 150 ms. The leaving
+ * board is kept for `FOCUS_FADE_MS` by `useBoardFade` and is not drawn at all under reduced motion, so both
+ * animations sit in the no-preference block alone, and only opacity changes. `focusBoardCss.test.ts` holds all of this.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='focus-layer'][data-crossfade='in'] {
+    animation: focus-board-in calc(150ms * var(--fx-slow, 1)) cubic-bezier(0.2, 0, 0, 1) both;
+  }
+
+  [data-slot='focus-layer'][data-crossfade='out'] {
+    animation: focus-board-out calc(150ms * var(--fx-slow, 1)) cubic-bezier(0.2, 0, 0, 1) both;
+  }
+
+  @keyframes focus-board-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes focus-board-out {
+    to {
+      opacity: 0;
+    }
+  }
+}
