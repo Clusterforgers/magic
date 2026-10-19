@@ -15,8 +15,9 @@ use tokio::time::Instant;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
 use crate::dwell::Dwell;
-use crate::running::Rejection;
+use crate::running::{Halt, Rejection};
 use crate::store::EventStore;
+use crate::windows::Verdict;
 use crate::yields::Yields;
 
 /// Longest clock the settings accept, in seconds (a day), so a deadline can never overflow.
@@ -118,7 +119,9 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Answers for the seat whose clock ran out, with a pass or no blocks, as if the seat had.
+    /// Answers for the seat whose clock ran out, with a pass or no blocks, as if the seat had. The same step passes for a
+    /// seat that cannot act at a default window once its dwell is over: the decision was never sent, and the pass is
+    /// saved, projected and sent like the seat's own, as a batch of its own.
     pub(crate) async fn expire(&mut self) -> Result<(), Fatal> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
@@ -196,7 +199,8 @@ impl<S: EventStore> GameActor<S> {
     }
 
     /// Settles what a game that is starting or resumed from its log left pending: if the windows pass for the seat
-    /// it waits on, it is passed for before any client connects.
+    /// it waits on, it is passed for before any client connects. A seat that cannot act at a default window waits
+    /// for a dwell that starts now, like one that meets such a window while the game runs.
     pub(crate) async fn start_up(&mut self) -> Result<(), Fatal> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
@@ -204,15 +208,19 @@ impl<S: EventStore> GameActor<S> {
         let Some(seat) = running.waiting_on() else {
             return Ok(());
         };
-        if !running.passes_pending(seat, &self.stops, &self.yields) {
-            return Ok(());
-        }
-        match running.fall_back() {
-            Ok(step) => self.publish(step).await,
-            Err(rejection) => {
-                self.refuse(seat, rejection);
+        match running.verdict_pending(seat, &self.stops, &self.yields) {
+            Some(Verdict::Pass) => match running.fall_back() {
+                Ok(step) => self.publish(step).await,
+                Err(rejection) => {
+                    self.refuse(seat, rejection);
+                    Ok(())
+                }
+            },
+            Some(Verdict::Dwell) => {
+                running.settle(false, Halt::Dwell, false);
                 Ok(())
             }
+            Some(Verdict::Ask) | None => Ok(()),
         }
     }
 }

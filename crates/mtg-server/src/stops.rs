@@ -227,11 +227,18 @@ impl<S: EventStore> GameActor<S> {
     /// Sets (`on`) or clears `stop` for `seat`, and tells the seat if the list it holds changed, `keep` included.
     ///
     /// Anything the rules refuse is answered with `Error{BadMessage}` and changes nothing. This takes no
-    /// step of the game, so there is nothing to save and nothing to take back.
-    pub(crate) fn set_stop(&mut self, seat: PlayerId, stop: Stop, on: bool) {
+    /// step of the game, so there is nothing to save and nothing to take back, except for a seat that waits for its
+    /// dwell at a window the new stop makes one to ask: that one is sent its decision at once, as a unit with the
+    /// stops (an empty step), so a failed save keeps them as they were.
+    pub(crate) async fn set_stop(
+        &mut self,
+        seat: PlayerId,
+        stop: Stop,
+        on: bool,
+    ) -> Result<(), Fatal> {
         if let Some(rejection) = self.out_of_game(seat) {
             self.refuse(seat, rejection);
-            return;
+            return Ok(());
         }
         let mut stops = self.stops.clone();
         let done = if on {
@@ -240,14 +247,34 @@ impl<S: EventStore> GameActor<S> {
             stops.clear(seat, stop)
         };
         match done {
-            Ok(()) => self.commit_stops(stops),
+            Ok(()) => self.take_stops(seat, stops).await,
             Err(refused) => {
-                self.refuse(
-                    seat,
-                    Rejection::new(ErrorCode::BadMessage, refused.to_string()),
-                );
+                let rejection = Rejection::new(ErrorCode::BadMessage, refused.to_string());
+                self.refuse(seat, rejection);
+                Ok(())
             }
         }
+    }
+
+    /// Takes `stops` as the seats' stops and modes. A seat that waits for its dwell is sent its decision at once if
+    /// they now ask it: the decision is issued again, as a unit with the stops.
+    async fn take_stops(&mut self, seat: PlayerId, stops: Stops) -> Result<(), Fatal> {
+        if let Phase::Running(running) = &mut self.phase
+            && running.dwell_ends(seat, &stops, &self.yields)
+        {
+            return match running.restart_decision(seat) {
+                Ok(step) => {
+                    let yields = self.yields.clone();
+                    self.publish_with(step, yields, stops).await
+                }
+                Err(rejection) => {
+                    self.refuse(seat, rejection);
+                    Ok(())
+                }
+            };
+        }
+        self.commit_stops(stops);
+        Ok(())
     }
 
     /// Puts `seat` in Full Control mode `mode` and tells it if the mode changed.
@@ -285,9 +312,10 @@ impl<S: EventStore> GameActor<S> {
 
     /// Takes `mode` for `seat`; a mode it already has changes nothing and says nothing.
     ///
-    /// Turning Full Control on ends a running yield. Turning it off while the seat faces a priority decision that
-    /// the usual rules now pass for passes at once, as a started yield does: the passes, the new mode and the save
-    /// are one unit, so a failed save keeps the mode as it was.
+    /// Turning Full Control on ends a running yield, and a seat that waited for its dwell is sent its decision at
+    /// once. Turning it off while the seat faces a priority decision that the usual rules now pass for passes at once,
+    /// as a started yield does (after its dwell, at an idle default window): the passes, the new mode and the save are
+    /// one unit, so a failed save keeps the mode as it was.
     async fn put_in_mode(&mut self, seat: PlayerId, mode: FullControlMode) -> Result<(), Fatal> {
         if self.stops.full_control(seat) == mode {
             return Ok(());
@@ -299,8 +327,8 @@ impl<S: EventStore> GameActor<S> {
             yields.cancel(seat);
         }
         if let Phase::Running(running) = &mut self.phase
-            && mode == FullControlMode::Off
-            && running.passes_pending(seat, &stops, &yields)
+            && ((mode == FullControlMode::Off && running.passes_pending(seat, &stops, &yields))
+                || running.dwell_ends(seat, &stops, &yields))
         {
             return match running.restart_decision(seat) {
                 Ok(step) => self.publish_with(step, yields, stops).await,

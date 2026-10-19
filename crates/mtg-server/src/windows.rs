@@ -1,19 +1,22 @@
 //! Windows: when the table asks a seat for priority and when it passes for it.
 //!
-//! [`passes_for`] decides at each priority decision of a seat, from the table (the step, whose turn it is, the
-//! stack), the seat's stops, its Full Control mode, its yield and whether it can act. The server's auto-pass is the
-//! mode: a seat that turned auto-pass off is in `Held`. The rules, in the order they are judged:
+//! [`verdict`] decides at each priority decision of a seat, from the table (the step, whose turn it is, the
+//! stack), the seat's stops, its Full Control mode, its yield and whether it can act, whether the seat is asked, passed
+//! for at once or passed for after a dwell. The server's auto-pass is the mode: a seat that turned auto-pass off is in
+//! `Held`. The rules, in the order they are judged:
 //! 1. Full Control (`Held`, `NextWindow`) asks at every window, so a seat in it is never passed for by a yield or by
 //!    the default windows.
 //! 2. A running yield passes (its own end conditions are in [`crate::yields`]); a stop of the seat at a window ends
 //!    it and the seat is asked, except in the step of the window the yield was asked at.
 //! 3. A stop of the seat at the window asks, whether the seat can act or not. `Own` stops are for the seat's own
 //!    turns, `Opponent` stops for the turn of any other seat.
-//! 4. The default windows (Arena's table) ask when the seat can act and pass otherwise: the seat's own precombat
-//!    and postcombat main phase, the declare attackers and declare blockers steps of any turn, and any moment an
-//!    object of another seat is on the stack.
+//! 4. The default windows (Arena's table) ask when the seat can act: the seat's own precombat and postcombat main
+//!    phase, the declare attackers and declare blockers steps of any turn, and any moment an object of another seat
+//!    is on the stack. Where the seat cannot act the table passes for it after a dwell ([`Verdict::Dwell`]), so the
+//!    pace does not show that it holds nothing.
 //! 5. Everywhere else (upkeep, draw, beginning of combat, the damage steps, end of combat, an end step, another
-//!    seat's main phase with an empty stack) the seat is passed for at once, whatever it holds.
+//!    seat's main phase with an empty stack) the seat is passed for at once, whatever it holds, and so is a seat that
+//!    yields: a yield is the seat's own choice to hurry.
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::turn::Step;
@@ -80,18 +83,48 @@ pub(crate) fn asks(
     mode != FullControlMode::Off || (!yielding && (stop || (window.is_default() && can_act)))
 }
 
-/// Whether the server passes for the holder of `decision` instead of asking it.
+/// What the table does at a priority window of a seat.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Verdict {
+    /// The seat is sent the decision.
+    Ask,
+    /// The server passes for the seat at once.
+    Pass,
+    /// The server passes for the seat after a dwell ([`crate::dwell`]): the window is a default one that the seat
+    /// cannot use, and a pass at once would show that it holds nothing.
+    Dwell,
+}
+
+/// The verdict at `window`; the facts are those of [`asks`].
+pub(crate) fn judge(
+    window: Window,
+    can_act: bool,
+    stop: bool,
+    mode: FullControlMode,
+    yielding: bool,
+) -> Verdict {
+    if asks(window, can_act, stop, mode, yielding) {
+        Verdict::Ask
+    } else if window.is_default() && !yielding {
+        // Not asked at a default window with no yield: the seat is in no Full Control, holds no stop and cannot act.
+        Verdict::Dwell
+    } else {
+        Verdict::Pass
+    }
+}
+
+/// What the table does with `decision`: ask its seat, pass for it at once or pass for it after a dwell.
 ///
 /// Any decision that is not a priority decision is asked. A yield that this window ends, or that a stop interrupts,
 /// is dropped from `yields` and the rest of the rules decide.
-pub(crate) fn passes_for(
+pub(crate) fn verdict(
     decision: &Decision,
     stops: &Stops,
     yields: &mut Yields,
     state: &GameState,
-) -> bool {
+) -> Verdict {
     let DecisionKind::Priority(options) = &decision.kind else {
-        return false;
+        return Verdict::Ask;
     };
     let seat = decision.player;
     let window = Window::at(state, seat);
@@ -99,12 +132,23 @@ pub(crate) fn passes_for(
     let stop = stops.holds(seat, window.side(), window.step);
     // A seat in Full Control holds no yield; the yield is left alone for the rules below it.
     let yielding = mode == FullControlMode::Off && yields.passes(seat, state, stop);
-    !asks(window, options.can_act, stop, mode, yielding)
+    judge(window, options.can_act, stop, mode, yielding)
+}
+
+/// Whether the server passes for the holder of `decision` instead of asking it, at once or after a dwell.
+#[cfg(test)]
+pub(crate) fn passes_for(
+    decision: &Decision,
+    stops: &Stops,
+    yields: &mut Yields,
+    state: &GameState,
+) -> bool {
+    verdict(decision, stops, yields, state) != Verdict::Ask
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the ask-or-pass verdict is the rule table for every combination of whose turn, step, stack, stop, Full Control mode, yield and ability to act; a stop interrupts a yield and Full Control ignores it; windows are read from the table alone, for the seat's own side and objects.
+    //! Goal: the verdict (ask, pass at once, pass after a dwell) is the rule table for every combination of whose turn, step, stack, stop, Full Control mode, yield and ability to act; only a default window the seat cannot use waits, a stop interrupts a yield and Full Control ignores it; windows are read from the table alone, for the seat's own side and objects.
     use super::*;
     use mtg_engine::decision::{PriorityAction, PriorityOptions};
     use mtg_engine::{Answer, Engine};
@@ -150,6 +194,33 @@ mod tests {
         default && can_act // a default window asks a seat that can act; nowhere else is a window
     }
 
+    /// What the table does, written as the rules read: Full Control asks, a yield is the seat's choice to hurry and
+    /// passes at once, a stop asks, a default window asks a seat that can act and makes one that cannot wait, and the
+    /// rest of the game passes at once.
+    #[allow(clippy::fn_params_excessive_bools)]
+    fn expected_verdict(
+        default: bool,
+        stop: bool,
+        mode: FullControlMode,
+        yielding: bool,
+        can_act: bool,
+    ) -> Verdict {
+        if mode != FullControlMode::Off {
+            return Verdict::Ask;
+        }
+        if yielding {
+            return Verdict::Pass;
+        }
+        if stop || (default && can_act) {
+            return Verdict::Ask;
+        }
+        if default {
+            Verdict::Dwell
+        } else {
+            Verdict::Pass
+        }
+    }
+
     #[test]
     fn every_combination_of_turn_step_stack_stop_mode_yield_and_ability_gives_the_table_verdict() {
         let mut cases = 0;
@@ -171,6 +242,11 @@ mod tests {
                                     assert_eq!(
                                         asks(window, can_act, stop, mode, yielding),
                                         expected(default, stop, mode, yielding, can_act),
+                                        "{window:?} stop {stop} {mode:?} yield {yielding} can act {can_act}"
+                                    );
+                                    assert_eq!(
+                                        judge(window, can_act, stop, mode, yielding),
+                                        expected_verdict(default, stop, mode, yielding, can_act),
                                         "{window:?} stop {stop} {mode:?} yield {yielding} can act {can_act}"
                                     );
                                 }
@@ -366,6 +442,82 @@ mod tests {
             assert!(!passes_for(&decision, &stops, &mut yields, engine.state()));
             assert_eq!(yields.get(ME), Some(YieldUntil::EndOfTurn), "{mode:?}");
         }
+    }
+
+    #[test]
+    fn a_default_window_the_seat_cannot_use_waits_and_every_other_pass_is_at_once() {
+        let engine = duel(0);
+        let state = engine.state();
+        // Seat 0 in its own first main phase is at a default window; seat 1 meets an ordinary step of seat 0's turn.
+        let verdict_for = |seat, can_act, stops: &Stops, yields: &mut Yields| {
+            verdict(&priority(seat, can_act), stops, yields, state)
+        };
+        let none = Stops::new(2);
+        assert_eq!(
+            verdict_for(FOE, false, &none, &mut Yields::new(2)),
+            Verdict::Dwell
+        );
+        assert_eq!(
+            verdict_for(FOE, true, &none, &mut Yields::new(2)),
+            Verdict::Ask
+        );
+        for can_act in [false, true] {
+            assert_eq!(
+                verdict_for(ME, can_act, &none, &mut Yields::new(2)),
+                Verdict::Pass,
+                "an ordinary window passes at once, whatever the seat holds ({can_act})"
+            );
+        }
+
+        let mut held = Stops::new(2);
+        held.set(
+            FOE,
+            mtg_protocol::Stop {
+                side: StopSide::Own,
+                step: Step::Main1,
+                keep: false,
+            },
+        )
+        .unwrap();
+        assert_eq!(
+            verdict_for(FOE, false, &held, &mut Yields::new(2)),
+            Verdict::Ask,
+            "a stop is the seat's own to answer"
+        );
+        for mode in [FullControlMode::NextWindow, FullControlMode::Held] {
+            let mut full = Stops::new(2);
+            full.set_full_control(FOE, mode);
+            assert_eq!(
+                verdict_for(FOE, false, &full, &mut Yields::new(2)),
+                Verdict::Ask,
+                "Full Control is the seat's own to answer ({mode:?})"
+            );
+        }
+        let mut yields = Yields::new(2);
+        yields.start(FOE, YieldUntil::EndOfTurn, state);
+        assert_eq!(
+            verdict_for(FOE, false, &none, &mut yields),
+            Verdict::Pass,
+            "a yield is the seat's choice to hurry"
+        );
+    }
+
+    #[test]
+    fn a_decision_that_is_not_priority_is_asked_whatever_the_seat_holds() {
+        let engine = duel(0);
+        let blockers = Decision {
+            player: FOE,
+            kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
+                blockers: Vec::new(),
+            }),
+        };
+        let verdict = verdict(
+            &blockers,
+            &Stops::new(2),
+            &mut Yields::new(2),
+            engine.state(),
+        );
+        assert_eq!(verdict, Verdict::Ask);
     }
 
     #[test]

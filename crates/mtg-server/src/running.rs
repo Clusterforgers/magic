@@ -8,9 +8,10 @@ use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameS
 use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView};
 use tokio::time::Instant;
 
+use crate::dwell::Waits;
 use crate::pace::{self, Pace};
 use crate::stops::{self, Stops};
-use crate::windows;
+use crate::windows::{self, Verdict};
 use crate::yields::Yields;
 
 /// Most priority passes made for idle seats in one go; past it the decision is sent as it is.
@@ -47,6 +48,13 @@ impl Rejection {
             "the game engine failed; the game is unchanged",
         )
     }
+
+    fn stale() -> Rejection {
+        Rejection::new(
+            ErrorCode::StaleDecision,
+            "that decision is not pending for you",
+        )
+    }
 }
 
 /// One engine step taken in memory but not yet persisted or announced.
@@ -66,6 +74,9 @@ pub(crate) struct Step {
     pub(crate) keep_unchanged: bool,
     /// Whether the step is the origin seat's pass of priority (its own, or the table's at its clock).
     pub(crate) passed: bool,
+    /// Whether the step is the table's pass for a seat at an idle window once its dwell ran out, which the next dwell of
+    /// the same round follows as a stagger.
+    pub(crate) by_dwell: bool,
 }
 
 /// The decision awaiting an answer, the id the client must echo and when its clock runs out.
@@ -75,6 +86,8 @@ struct Pending {
     decision: Decision,
     /// When the server answers for the seat; `None` for a decision without a clock.
     due: Option<Instant>,
+    /// Whether the decision is held back for the seat's dwell: never sent, and the table passes for the seat at `due`.
+    hidden: bool,
 }
 
 /// A decision just issued: what its seat is sent.
@@ -86,6 +99,15 @@ pub(crate) struct Issued {
     pub(crate) deadline_ms: Option<u64>,
 }
 
+/// Where a run of passes stopped.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Halt {
+    /// At a decision that its seat is sent, at one that is cut short, or at the end of the game.
+    Ask,
+    /// At a priority window of a seat that cannot act: the table passes for it once its dwell is over.
+    Dwell,
+}
+
 /// A started game.
 #[derive(Debug)]
 pub(crate) struct Running {
@@ -93,6 +115,8 @@ pub(crate) struct Running {
     pending: Option<Pending>,
     last_id: u64,
     pace: Pace,
+    /// The dwells of the idle windows, drawn apart from the game.
+    waits: Waits,
 }
 
 pub(crate) fn count(len: usize) -> u64 {
@@ -112,6 +136,7 @@ impl Running {
             pending: None,
             last_id: 0,
             pace,
+            waits: Waits::fresh(pace.dwell),
         }
     }
 
@@ -139,14 +164,43 @@ impl Running {
         }
     }
 
-    /// Whether the pending decision is `seat`'s and the table passes for it under `stops` and `yields`.
+    /// What the table does with `decision` under `stops` and `yields`: with the dwell switched off, a pass after a
+    /// dwell is a pass at once.
+    fn verdict(&self, decision: &Decision, stops: &Stops, yields: &mut Yields) -> Verdict {
+        match windows::verdict(decision, stops, yields, self.engine.state()) {
+            Verdict::Dwell if self.pace.dwell.is_off() => Verdict::Pass,
+            other => other,
+        }
+    }
+
+    /// What the table does with the pending decision if it is `seat`'s, under `stops` and `yields`.
     ///
     /// Nothing is changed: a yield the decision would end stays in `yields`.
+    pub(crate) fn verdict_pending(
+        &self,
+        seat: PlayerId,
+        stops: &Stops,
+        yields: &Yields,
+    ) -> Option<Verdict> {
+        let pending = self.pending.as_ref().filter(|p| p.decision.player == seat);
+        pending.map(|p| self.verdict(&p.decision, stops, &mut yields.clone()))
+    }
+
+    /// Whether the pending decision is `seat`'s and the table does not ask it under `stops` and `yields`: it passes
+    /// for the seat, at once or after a dwell.
     pub(crate) fn passes_pending(&self, seat: PlayerId, stops: &Stops, yields: &Yields) -> bool {
-        self.pending.as_ref().is_some_and(|p| {
-            p.decision.player == seat
-                && windows::passes_for(&p.decision, stops, &mut yields.clone(), self.engine.state())
-        })
+        self.verdict_pending(seat, stops, yields)
+            .is_some_and(|verdict| verdict != Verdict::Ask)
+    }
+
+    /// Whether the pending decision is `seat`'s, is held back for its dwell and is one that `stops` and `yields`
+    /// now ask the seat: its dwell is over and it has to be sent.
+    pub(crate) fn dwell_ends(&self, seat: PlayerId, stops: &Stops, yields: &Yields) -> bool {
+        let held = self
+            .pending
+            .as_ref()
+            .is_some_and(|p| p.hidden && p.decision.player == seat);
+        held && self.verdict_pending(seat, stops, yields) == Some(Verdict::Ask)
     }
 
     /// Aligns the pending decision with the engine's and returns what a client must be sent, if anything.
@@ -154,20 +208,42 @@ impl Running {
     /// Every new decision gets a fresh id and, when [`Pace`] gives it one, a clock that starts now. With
     /// `keep_unchanged`, a decision that did not change keeps its id and clock and is not sent again, so a
     /// concession elsewhere does not invalidate a pending answer.
-    pub(crate) fn settle(&mut self, keep_unchanged: bool) -> Option<Issued> {
+    ///
+    /// At `Halt::Dwell` the decision is held back instead of sent: it gets no clock but the wait of the idle window
+    /// ([`Waits::wait`]), which is a stagger when `by_dwell` says the pass that led here was a dwell's, and the actor
+    /// passes for the seat at that time. A decision that is held back and unchanged keeps its wait.
+    pub(crate) fn settle(
+        &mut self,
+        keep_unchanged: bool,
+        halt: Halt,
+        by_dwell: bool,
+    ) -> Option<Issued> {
         let Some(decision) = self.engine.decision().cloned() else {
             self.pending = None;
             return None;
         };
-        let unchanged = self
+        let dwell = halt == Halt::Dwell;
+        let kept = self
             .pending
             .as_ref()
-            .is_some_and(|p| p.decision == decision);
-        if keep_unchanged && unchanged {
+            .is_some_and(|p| p.decision == decision && p.hidden == dwell);
+        if keep_unchanged && kept {
             return None;
         }
         self.last_id += 1;
         let id = DecisionId(self.last_id);
+        if dwell {
+            let turn = self.engine.state().turn();
+            let wait = self.waits.wait((turn.number(), turn.step()), by_dwell);
+            let now = Instant::now();
+            self.pending = Some(Pending {
+                id,
+                decision,
+                due: Some(now.checked_add(wait).unwrap_or(now)),
+                hidden: true,
+            });
+            return None;
+        }
         let clock = self
             .pace
             .clock_for(&decision, self.engine.state().turn().active());
@@ -176,6 +252,7 @@ impl Running {
             id,
             decision: decision.clone(),
             due,
+            hidden: false,
         });
         Some(Issued {
             id,
@@ -186,13 +263,18 @@ impl Running {
 
     /// What a client needs to catch up: a snapshot, its pending decision and the result if the game is over.
     ///
-    /// The decision carries the time its clock has left, not the time it started with.
+    /// The decision carries the time its clock has left, not the time it started with. One that is held back for its
+    /// dwell is not sent: the seat is passed for, and a snapshot taken meanwhile must not tell it so.
     pub(crate) fn sync_messages(&self, seat: PlayerId) -> Vec<ServerMessage> {
         let mut messages = vec![ServerMessage::Snapshot {
             seq: count(self.engine.events().len()),
             state: Box::new(StateView::for_player(self.engine.state(), seat)),
         }];
-        if let Some(pending) = self.pending.as_ref().filter(|p| p.decision.player == seat) {
+        let visible = self
+            .pending
+            .as_ref()
+            .filter(|p| p.decision.player == seat && !p.hidden);
+        if let Some(pending) = visible {
             let now = Instant::now();
             messages.push(ServerMessage::Decision {
                 id: pending.id,
@@ -209,7 +291,22 @@ impl Running {
     }
 
     /// Applies `seat`'s answer to the decision `id`, if that decision is pending for that seat.
+    ///
+    /// A decision held back for its dwell was never sent, so no client is answering it: that is stale too.
     pub(crate) fn answer(
+        &mut self,
+        seat: PlayerId,
+        id: DecisionId,
+        answer: Answer,
+    ) -> Result<Step, Rejection> {
+        if self.pending.as_ref().is_none_or(|p| p.hidden) {
+            return Err(Rejection::stale());
+        }
+        self.apply_answer(seat, id, answer)
+    }
+
+    /// [`answer`](Running::answer) for the pending decision whether or not a client was sent it.
+    fn apply_answer(
         &mut self,
         seat: PlayerId,
         id: DecisionId,
@@ -220,10 +317,7 @@ impl Running {
             .as_ref()
             .is_some_and(|p| p.id == id && p.decision.player == seat);
         if !current {
-            return Err(Rejection::new(
-                ErrorCode::StaleDecision,
-                "that decision is not pending for you",
-            ));
+            return Err(Rejection::stale());
         }
         let passes = answer == pace::pass();
         self.step(seat, false, |engine| engine.apply(answer))
@@ -253,7 +347,7 @@ impl Running {
         let current = self
             .pending
             .as_ref()
-            .is_some_and(|p| p.id == id && p.decision.player == seat);
+            .is_some_and(|p| p.id == id && p.decision.player == seat && !p.hidden);
         if !current {
             return None;
         }
@@ -262,34 +356,40 @@ impl Running {
 
     /// Answers the pending decision for its seat with the safe default: a pass, or no blocks.
     ///
-    /// It goes through [`answer`](Running::answer), so it is checked and logged like the seat's own move.
+    /// It goes through the same checks, log and projection as [`answer`](Running::answer), so it is handled like the
+    /// seat's own move. The step says whether the pending decision was held back for a dwell.
     pub(crate) fn fall_back(&mut self) -> Result<Step, Rejection> {
         let pending = self.pending.as_ref();
-        let Some((id, seat, answer)) = pending.and_then(|p| {
-            pace::fallback(&p.decision).map(|answer| (p.id, p.decision.player, answer))
+        let Some((id, seat, answer, hidden)) = pending.and_then(|p| {
+            pace::fallback(&p.decision).map(|answer| (p.id, p.decision.player, answer, p.hidden))
         }) else {
             return Err(Rejection::new(
                 ErrorCode::StaleDecision,
                 "no decision is pending that can be answered for its seat",
             ));
         };
-        self.answer(seat, id, answer)
+        self.apply_answer(seat, id, answer).map(|step| Step {
+            by_dwell: hidden,
+            ..step
+        })
     }
 
-    /// Passes for every seat the windows pass for ([`windows::passes_for`]: not in Full Control, not at a window
-    /// of its own, or yielding) until some decision needs a player.
+    /// Passes for every seat the windows pass for at once ([`windows::verdict`]: not in Full Control, not at a window
+    /// of its own, or yielding, or at a window that is not one of the default table) until some decision needs a
+    /// player or the pass has to wait.
     ///
     /// The passes go through the engine like any answer; their events are added to `events`, so the
     /// whole stretch is saved and shown as one batch. A seat that is asked, or is asked anything else, stops the
-    /// run, and so does the end of the game. A yield that reaches its end on the way is dropped from `yields`,
-    /// and the one-turn stops of the steps the passes leave are cleared from `stops`; the caller keeps both only
-    /// if the stretch is saved.
+    /// run, and so does the end of the game; so does a seat that cannot act at a default window while the dwell is
+    /// on, with `Halt::Dwell`: nothing is passed for it here, the actor does that when its dwell is over. A yield
+    /// that reaches its end on the way is dropped from `yields`, and the one-turn stops of the steps the passes
+    /// leave are cleared from `stops`; the caller keeps both only if the stretch is saved.
     pub(crate) fn skip_idle(
         &mut self,
         events: &mut Vec<Event>,
         stops: &mut Stops,
         yields: &mut Yields,
-    ) -> Result<(), EngineError> {
+    ) -> Result<Halt, EngineError> {
         self.skip_up_to(MAX_IDLE_PASSES, events, stops, yields)
     }
 
@@ -300,13 +400,15 @@ impl Running {
         events: &mut Vec<Event>,
         stops: &mut Stops,
         yields: &mut Yields,
-    ) -> Result<(), EngineError> {
+    ) -> Result<Halt, EngineError> {
         for _ in 0..limit {
             let Some(decision) = self.engine.decision() else {
-                return Ok(());
+                return Ok(Halt::Ask);
             };
-            if !windows::passes_for(decision, stops, yields, self.engine.state()) {
-                return Ok(());
+            match self.verdict(decision, stops, yields) {
+                Verdict::Ask => return Ok(Halt::Ask),
+                Verdict::Dwell => return Ok(Halt::Dwell),
+                Verdict::Pass => {}
             }
             let at = stops::place(self.engine.state());
             let passed = self.engine.apply(pace::pass())?;
@@ -318,7 +420,7 @@ impl Running {
         if let Some(decision) = self.engine.decision().filter(|d| pace::is_priority(d)) {
             yields.cancel(decision.player);
         }
-        Ok(())
+        Ok(Halt::Ask)
     }
 
     /// Whether the pending decision is a priority decision of `seat`.
@@ -367,14 +469,16 @@ impl Running {
             origin,
             keep_unchanged,
             passed: false,
+            by_dwell: false,
         })
     }
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a run of passes stops at its limit with the next priority decision still pending, and a yield that decision belongs to ends there, so the seat is never handed a prompt while the server still "passes for it"; every other seat is left alone.
+    //! Goal: a run of passes stops at its limit with the next priority decision still pending, and a yield that decision belongs to ends there, so the seat is never handed a prompt while the server still "passes for it"; every other seat is left alone; a seat that cannot act at a default window stops the run with its decision held back (never sent, answered or previewed, passed for by the table with its dwell as the clock) until the rules ask it.
     use super::*;
+    use crate::dwell::Dwell;
     use mtg_protocol::{FullControlMode, YieldUntil};
     use mtg_testkit::Scenario;
     use rstest::rstest;
@@ -384,7 +488,7 @@ mod tests {
     fn running() -> Running {
         let setup = Scenario::new(2).setup().unwrap();
         let mut running = Running::new(Engine::new(setup).unwrap(), Pace::MANUAL);
-        running.settle(false);
+        running.settle(false, Halt::Ask, false);
         running
     }
 
@@ -439,5 +543,219 @@ mod tests {
         assert_eq!(events.len(), 1, "seat 1 does not yield and is asked");
         assert_eq!(running.engine.decision().map(|d| d.player), Some(SEATS[1]));
         assert_eq!(yields.get(SEATS[0]), Some(YieldUntil::EndOfTurn));
+    }
+
+    /// Seat 0's first main phase, with nothing in either hand: seat 0 cannot act at a window of the default table.
+    fn idle_at_main(dwell: Dwell) -> Running {
+        let pace = Pace {
+            dwell,
+            ..Pace::MANUAL
+        };
+        let setup = Scenario::new(2).setup().unwrap();
+        let mut running = Running::new(Engine::new(setup).unwrap(), pace);
+        running.settle(false, Halt::Ask, false);
+        running
+    }
+
+    fn held_back(dwell: Dwell) -> Running {
+        let mut running = idle_at_main(dwell);
+        assert!(running.settle(false, Halt::Dwell, false).is_none());
+        running
+    }
+
+    #[test]
+    fn the_run_stops_at_an_idle_default_window_and_passes_nothing_for_it() {
+        let mut running = idle_at_main(Dwell::fixed(500));
+        let mut events = Vec::new();
+        let halt = running
+            .skip_idle(&mut events, &mut Stops::new(2), &mut Yields::new(2))
+            .unwrap();
+        assert_eq!(halt, Halt::Dwell);
+        assert_eq!(events, [], "the pass waits for the dwell");
+        assert_eq!(running.engine.decision().map(|d| d.player), Some(SEATS[0]));
+    }
+
+    #[test]
+    fn with_the_dwell_off_the_run_passes_at_once_and_stops_where_a_seat_must_decide() {
+        let mut running = idle_at_main(Dwell::OFF);
+        let mut events = Vec::new();
+        let halt = running
+            .skip_idle(&mut events, &mut Stops::new(2), &mut Yields::new(2))
+            .unwrap();
+        assert_eq!(halt, Halt::Ask);
+        assert!(!events.is_empty(), "seat 0's idle windows were passed for");
+        assert_eq!(
+            running.engine.decision().map(|d| d.player),
+            Some(SEATS[1]),
+            "until seat 1 draws a land it can play"
+        );
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn a_decision_held_back_for_its_dwell_is_not_sent_answered_or_previewed() {
+        let mut running = held_back(Dwell::fixed(500));
+        let held = running.waiting_on();
+        assert_eq!(held, Some(SEATS[0]));
+        assert_eq!(
+            running.due(),
+            Some(Instant::now() + Duration::from_millis(500)),
+            "the dwell is its clock"
+        );
+
+        let messages = running.sync_messages(SEATS[0]);
+        assert!(
+            matches!(messages.as_slice(), [ServerMessage::Snapshot { .. }]),
+            "a snapshot taken meanwhile does not hand the seat the decision: {messages:?}"
+        );
+        // Whatever id a client guessed, the decision was never sent to it.
+        for guess in 1..=3 {
+            let id = DecisionId(guess);
+            let refused = running.answer(SEATS[0], id, pace::pass()).unwrap_err();
+            assert_eq!(refused.code, ErrorCode::StaleDecision);
+            assert!(
+                running
+                    .preview(SEATS[0], id, &Answer::DeclareBlockers(Vec::new()))
+                    .is_none()
+            );
+        }
+        assert!(running.asks_priority_of(SEATS[0]));
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn the_table_passes_for_a_held_back_seat_as_a_step_of_its_own_marked_as_a_dwells() {
+        let mut running = held_back(Dwell::fixed(500));
+        let before = running.engine.events().len();
+        let step = running.fall_back().unwrap();
+        assert!(step.by_dwell && step.passed);
+        assert_eq!(step.origin, SEATS[0]);
+        assert_eq!(step.from_seq, count(before));
+        assert!(matches!(
+            step.events.first(),
+            Some(Event::PriorityPassed { player }) if *player == SEATS[0]
+        ));
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn a_clock_that_runs_out_is_not_a_dwell() {
+        let pace = Pace {
+            response: Some(Duration::from_secs(10)),
+            ..Pace::MANUAL
+        };
+        let setup = Scenario::new(2).setup().unwrap();
+        let mut running = Running::new(Engine::new(setup).unwrap(), pace);
+        // Seat 0 is the active player, so it has no clock, and the pass the table makes for it is not a dwell's.
+        let first = running.settle(false, Halt::Ask, false).unwrap();
+        assert_eq!(first.deadline_ms, None);
+        let step = running.fall_back().unwrap();
+        assert!(step.passed && !step.by_dwell);
+        // Seat 1 is not, so its window has the response clock, and the pass at its end is no dwell's either.
+        let afterwards = running.settle(false, Halt::Ask, false).unwrap();
+        assert_eq!(afterwards.decision.player, SEATS[1]);
+        assert_eq!(afterwards.deadline_ms, Some(10_000));
+        let step = running.fall_back().unwrap();
+        assert!(step.passed && !step.by_dwell);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn a_kept_dwell_keeps_its_id_and_time_and_a_new_one_draws_again() {
+        let mut running = held_back(Dwell::between(300, 900));
+        let (id, due) = (running.pending.as_ref().unwrap().id, running.due());
+        tokio::time::advance(Duration::from_millis(100)).await;
+        assert!(running.settle(true, Halt::Dwell, false).is_none());
+        assert_eq!(running.pending.as_ref().unwrap().id, id);
+        assert_eq!(
+            running.due(),
+            due,
+            "a concession elsewhere does not move it"
+        );
+
+        assert!(running.settle(false, Halt::Dwell, false).is_none());
+        assert_ne!(running.pending.as_ref().unwrap().id, id);
+        let wait = running.due().unwrap() - Instant::now();
+        assert!(
+            (Duration::from_millis(300)..=Duration::from_millis(900)).contains(&wait),
+            "{wait:?}"
+        );
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn when_the_rules_ask_a_held_back_seat_its_decision_is_issued_with_a_new_id() {
+        let mut running = held_back(Dwell::fixed(500));
+        let held = running.pending.as_ref().unwrap().id;
+        let issued = running.settle(true, Halt::Ask, false).unwrap();
+        assert_ne!(issued.id, held);
+        assert_eq!(issued.decision.player, SEATS[0]);
+        let messages = running.sync_messages(SEATS[0]);
+        assert!(matches!(
+            messages.as_slice(),
+            [ServerMessage::Snapshot { .. }, ServerMessage::Decision { id, .. }] if *id == issued.id
+        ));
+        assert!(running.answer(SEATS[0], issued.id, pace::pass()).is_ok());
+    }
+
+    #[test]
+    fn a_decision_is_held_back_only_while_the_rules_would_pass_for_its_seat() {
+        let running = held_back(Dwell::fixed(500));
+        let mut stops = Stops::new(2);
+        let yields = Yields::new(2);
+        let seat = SEATS[0];
+        assert_eq!(
+            running.verdict_pending(seat, &stops, &yields),
+            Some(Verdict::Dwell)
+        );
+        assert!(running.passes_pending(seat, &stops, &yields));
+        assert!(!running.dwell_ends(seat, &stops, &yields));
+        assert_eq!(running.verdict_pending(SEATS[1], &stops, &yields), None);
+
+        stops.set_full_control(seat, FullControlMode::NextWindow);
+        assert_eq!(
+            running.verdict_pending(seat, &stops, &yields),
+            Some(Verdict::Ask)
+        );
+        assert!(running.dwell_ends(seat, &stops, &yields));
+        assert!(!running.dwell_ends(SEATS[1], &stops, &yields));
+
+        let mut stopped = Stops::new(2);
+        let here = mtg_protocol::Stop {
+            side: mtg_protocol::StopSide::Own,
+            step: mtg_engine::turn::Step::Main1,
+            keep: false,
+        };
+        stopped.set(seat, here).unwrap();
+        assert!(
+            running.dwell_ends(seat, &stopped, &yields),
+            "a stop here asks"
+        );
+
+        let mut yielding = Yields::new(2);
+        yielding.start(seat, YieldUntil::EndOfTurn, running.engine.state());
+        assert_eq!(
+            running.verdict_pending(seat, &Stops::new(2), &yielding),
+            Some(Verdict::Pass),
+            "a yield hurries the seat and skips the dwell"
+        );
+    }
+
+    #[test]
+    fn a_switched_off_dwell_makes_every_idle_window_a_pass_at_once() {
+        let running = idle_at_main(Dwell::OFF);
+        let verdict = running.verdict_pending(SEATS[0], &Stops::new(2), &Yields::new(2));
+        assert_eq!(verdict, Some(Verdict::Pass));
+    }
+
+    #[tokio::test]
+    async fn the_dwells_follow_neither_the_game_seed_nor_each_other() {
+        // Two games of the same seed and cards draw their dwells apart: the draws come from the operating system.
+        let draw = || {
+            let mut running = idle_at_main(Dwell::DEFAULT);
+            (1..=8)
+                .map(|turn| {
+                    running
+                        .waits
+                        .wait((turn, mtg_engine::turn::Step::Main1), false)
+                })
+                .collect::<Vec<_>>()
+        };
+        assert_ne!(draw(), draw());
     }
 }

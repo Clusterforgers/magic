@@ -3,6 +3,7 @@
 
 pub mod bot;
 pub mod store;
+pub mod tape;
 
 use std::future::Future;
 use std::time::Duration;
@@ -19,6 +20,7 @@ use uuid::Uuid;
 
 pub use bot::{Bot, BotReport, Progress, drive, play_bots, play_table};
 pub use store::FlakyStore;
+pub use tape::{Tape, kind, ms};
 
 /// A game id derived from a number, so tests stay readable.
 pub fn game_id(n: u128) -> GameId {

@@ -79,12 +79,11 @@ impl Dwell {
     /// nothing above [`MAX_DWELL_MS`].
     pub fn parse(text: &str) -> Option<Dwell> {
         let text = text.trim();
-        let (min_ms, max_ms) = match text.split_once('-') {
-            Some((low, high)) => (milliseconds(low)?, milliseconds(high)?),
-            None => {
-                let ms = milliseconds(text)?;
-                (ms, ms)
-            }
+        let (min_ms, max_ms) = if let Some((low, high)) = text.split_once('-') {
+            (milliseconds(low)?, milliseconds(high)?)
+        } else {
+            let ms = milliseconds(text)?;
+            (ms, ms)
         };
         (min_ms <= max_ms && max_ms <= MAX_DWELL_MS).then_some(Dwell { min_ms, max_ms })
     }
