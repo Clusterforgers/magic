@@ -106,7 +106,6 @@ impl<S: EventStore> GameActor<S> {
             origin,
             keep_unchanged,
             passed,
-            by_dwell,
         } = step;
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
@@ -136,7 +135,7 @@ impl<S: EventStore> GameActor<S> {
                     .map(|(seat, until)| (seat, ServerMessage::Yielding { until }))
                     .collect();
                 notices.extend(self.stops.replace(stops));
-                let next = running.settle(keep_unchanged, halt, by_dwell);
+                let next = running.settle(keep_unchanged, halt);
                 let result = running.engine.result();
                 // Before anyone hears `GameOver`, so a client that saw it can trust the record.
                 if let (Some(recorder), Some(result)) = (&self.recorder, result) {

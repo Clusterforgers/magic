@@ -1,4 +1,4 @@
-//! Goal: a seat that cannot act at a window where it waits (the declare attackers and declare blockers steps, a spell on the stack) waits a dwell and is then passed for as a batch of its own, while its own main phase with an empty stack and every other pass stay at once, and a seat that can act, holds a stop, is in Full Control or yields is not made to wait; a round of idle seats waits one dwell and then short staggers within a cap; a seat's own command ends its dwell and the rules decide again while anything else leaves it alone; a failed save at the end of a dwell is retried; and the wait is wall clock only, so bot games and resumed games write the log of the game without it.
+//! Goal: a seat that cannot act at a window where it waits (the declare attackers and declare blockers steps, a spell on the stack) waits a dwell and is then passed for as a batch of its own, while its own main phase with an empty stack and every other pass stay at once, and a seat that can act, holds a stop, is in Full Control or yields is not made to wait; every idle seat of a table waits a dwell of its own, the later ones no sooner for the seats before them; a seat's own command ends its dwell and the rules decide again while anything else leaves it alone; a failed save at the end of a dwell is retried; and the wait is wall clock only, so bot games and resumed games write the log of the game without it.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -251,17 +251,11 @@ async fn a_seat_that_cannot_act_in_combat_waits_its_dwell_and_each_pass_is_a_bat
         let times = table.batch_times(n);
         let gaps: Vec<u64> = times.windows(2).map(|pair| pair[1] - pair[0]).collect();
         assert_eq!(times[0], 0, "the attack is answered at once");
-        assert_eq!(gaps.len(), 4, "seat {n} was sent {times:?}");
         assert_eq!(
-            gaps[0], 600,
-            "seat 0 waits a dwell in the declare attackers step"
+            gaps,
+            [600, 600, 600, 600],
+            "each of the four windows waits a dwell of its own, the second of a step too: {times:?}"
         );
-        assert!(
-            (80..=250).contains(&gaps[1]),
-            "seat 1 behind it a stagger: {gaps:?}"
-        );
-        assert_eq!(gaps[2], 600, "the next step is a round of its own");
-        assert!((80..=250).contains(&gaps[3]), "{gaps:?}");
         assert_eq!(
             table.places(n),
             [
@@ -293,11 +287,9 @@ async fn a_spell_on_the_stack_makes_every_seat_that_cannot_answer_it_wait() {
 
     let times = table.batch_times(1);
     // The opening, the spell paid for, seat 0's pass after a dwell (its own main phase, with its spell on the
-    // stack), seat 1's pass a stagger after it; then the spell resolves and everything else passes at once, up to the
-    // main phase of seat 1, where it can play the land it drew.
-    assert_eq!(times.len(), 4, "{times:?}");
-    assert_eq!(times[..3], [0, 0, 600]);
-    assert!((680..=850).contains(&times[3]), "{times:?}");
+    // stack), seat 1's pass after a dwell of its own; then the spell resolves and everything else passes at once, up
+    // to the main phase of seat 1, where it can play the land it drew.
+    assert_eq!(times, [0, 0, 600, 1_200]);
     assert_eq!(
         table.places(1),
         [
@@ -394,7 +386,7 @@ async fn a_yield_is_the_seats_choice_to_hurry_and_waits_for_nothing() {
     table.run_to(3_000).await;
 
     // Seat 0 is passed for at once in both declaring steps, though it holds nothing there either way; seat 1 waits a
-    // dwell in each, as a round of its own.
+    // dwell in each.
     assert_eq!(table.batch_times(1), [0, 600, 1_200]);
     assert_eq!(
         table.places(1),
@@ -431,63 +423,40 @@ async fn a_window_that_would_run_a_response_clock_is_passed_after_its_dwell_and_
 
     let times = table.batch_times(1);
     assert!(
-        times.last().is_some_and(|last| *last <= 850),
-        "seat 1 was passed for within the dwell and the stagger behind it: {times:?}"
+        times.last().is_some_and(|last| *last <= 1_200),
+        "seat 1 was passed for after two dwells, not at the clock: {times:?}"
     );
     assert_eq!(table.places(1).last(), Some(&(2, Step::Main1)));
 }
 
 // ---------------------------------------------------------------------------------------------------------------
-// Rounds
+// Tables of idle seats
 
 #[rstest]
 #[case::four_seats(4)]
 #[case::six_seats(6)]
 #[tokio::test(start_paused = true)]
-async fn idle_seats_in_one_round_wait_one_dwell_then_staggers_and_the_round_stops_at_its_cap(
-    #[case] seats: usize,
-) {
+async fn every_idle_seat_of_a_table_waits_a_dwell_of_its_own(#[case] seats: usize) {
     let table = Table::start(combat(seats), config(Dwell::fixed(900)), seats).await;
     table.attack().await;
     let attacked_at = table.now();
-    table.run_to(attacked_at + 10_000).await;
+    table.run_to(attacked_at + 20_000).await;
 
-    // When each pass after the attack reached the last seat: every seat of the declare attackers step passes in turn
-    // (the `seats` passes of the first round), then every seat of the declare blockers step (the second).
+    // When each pass after the attack reached the last seat: every seat of the declare attackers step passes in turn,
+    // then every seat of the declare blockers step, each after a dwell of its own, none sooner for the seats that
+    // passed before it, so the step costs one dwell for each seat.
     let arrivals: Vec<u64> = table
         .batch_times(seats - 1)
         .into_iter()
         .filter(|at| *at > attacked_at)
         .map(|at| at - attacked_at)
         .collect();
+    let passes = 2 * u64::try_from(seats).unwrap();
+    let expected: Vec<u64> = (1..=passes).map(|pass| 900 * pass).collect();
     assert_eq!(
-        arrivals[0], 900,
-        "the first idle seat of the round waits a dwell"
-    );
-    let gaps: Vec<u64> = arrivals[..seats]
-        .windows(2)
-        .map(|pair| pair[1] - pair[0])
-        .collect();
-    assert!(
-        gaps.iter().all(|gap| *gap <= 250),
-        "the others wait a stagger of at most 250: {gaps:?}"
-    );
-    assert!(
-        arrivals[seats - 1] <= 1_200,
-        "and the whole round waits 1200 at most: {arrivals:?}"
-    );
-    if seats >= 6 {
-        // Four staggers of 80 or more use the 300 ms left after a dwell of 900 up, so each one after them is 0.
-        assert_eq!(arrivals[seats - 1], 1_200, "{arrivals:?}");
-        assert!(
-            gaps.iter().skip(4).all(|gap| *gap == 0),
-            "past the cap the passes follow at once: {gaps:?}"
-        );
-    }
-    assert_eq!(
-        arrivals[seats] - arrivals[seats - 1],
-        900,
-        "the next step is a round of its own and waits a dwell: {arrivals:?}"
+        arrivals[..expected.len()],
+        expected[..],
+        "{seats} seats in two steps"
     );
     assert!(
         table.tapes.iter().all(|tape| tape
@@ -556,7 +525,7 @@ async fn a_yield_during_the_dwell_passes_at_once() {
         2,
     )
     .await;
-    // The pass came at 200, with everything the yield passes for; seat 1 waits in its turn, as a round of its own.
+    // The pass came at 200, with everything the yield passes for; seat 1 then waits a dwell of its own.
     assert_eq!(table.batch_times(1), [0, 200]);
     assert_eq!(table.places(1)[1], (2, Step::DeclareAttackers));
     assert_eq!(table.decision_times(0), [0]);

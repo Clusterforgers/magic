@@ -42,7 +42,7 @@ pub enum ConfigError {
     BadBlockSecs(String),
     /// `MTG_DWELL_MS` is not a range or a number of milliseconds.
     #[error(
-        "MTG_DWELL_MS must be a range such as 300-900, or one whole number of milliseconds, 0 for no wait, at most 5000, got {0:?}"
+        "MTG_DWELL_MS must be a range such as 250-700, or one whole number of milliseconds, 0 for no wait, at most 5000, got {0:?}"
     )]
     BadDwellMs(String),
     /// `MTG_REGISTRATION` is neither `open` nor `closed`.
@@ -651,7 +651,7 @@ mod tests {
 
     #[rstest]
     #[case::unset("", Dwell::DEFAULT)]
-    #[case::the_default("300-900", Dwell::DEFAULT)]
+    #[case::the_default("250-700", Dwell::DEFAULT)]
     #[case::a_range(" 100 - 400 ", Dwell::between(100, 400))]
     #[case::fixed("500", Dwell::fixed(500))]
     #[case::off("0", Dwell::OFF)]

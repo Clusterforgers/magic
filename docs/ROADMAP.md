@@ -42,7 +42,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - [ ] Game flow (d), copy MTG Arena's priority, stops and yields so the pace never tells the table what a seat holds (`docs/arena-flow.md`, P1 to P10). In order:
   - [x] (d1) Stops and Full Control on the wire (P1, P4)
   - [x] (d2) Stops in the actor with Arena's default window table (P2)
-  - [x] (d3) Idle windows as short hidden clocks (P3): a window the seat cannot use waits 0.3 to 0.9 s (`MTG_DWELL_MS`), then passes as its own step and batch
+  - [x] (d3) Idle windows as short hidden clocks (P3): a window the seat cannot use waits 0.25 to 0.7 s (`MTG_DWELL_MS`), then passes as its own step and batch
   - [x] (d4) Full Control in the actor (P4)
   - [x] (d5) Web session for stops and Full Control (P5)
   - [x] (d6) Stop ladder in the table (P6)

@@ -5,28 +5,20 @@
 //! passes as the seat's own step, batch and save ([`crate::running::Running::fall_back`]), the way it would for a seat
 //! that could act and passed. The one default window it spares is the seat's own main phase with an empty stack, where
 //! what a seat holds shows anyway (a land or a spell is played in plain sight) and the pass is at once. The wait is wall
-//! clock only: the log, the event order and the state hash do not depend on
-//! it, and a game resumed from its log starts without one.
+//! clock only: the log, the event order and the state hash do not depend on it, and a game resumed from its log starts
+//! without one.
 //!
 //! [`Dwell`] is the setting (`MTG_DWELL_MS`). [`Waits`] draws the waits of one game from an RNG of its own that the
-//! operating system seeds, so they depend on neither the game seed nor the state. Idle windows that follow one another
-//! in one step without a seat acting between them are a round: the first waits a dwell, the others a short stagger,
-//! and the whole round waits at most [`ROUND_CAP_MS`], so a table of idle seats does not add up per seat.
+//! operating system seeds, so they depend on neither the game seed nor the state. Every idle seat waits a dwell of its
+//! own, drawn independently when it receives priority, whoever passed before it and however: a table of idle seats waits
+//! one dwell per seat, and how long a seat waits never tells whether the seats before it could act.
 
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
-
-use mtg_engine::turn::Step;
 
 use crate::secret::random_seed;
 
 /// Longest dwell the setting accepts, in milliseconds.
 pub const MAX_DWELL_MS: u64 = 5_000;
-
-/// Shortest and longest wait, in milliseconds, before each pass of a round after its first.
-const STAGGER_MS: (u64, u64) = (80, 250);
-
-/// Most a round of passes waits in all, in milliseconds. The first dwell is never cut by it.
-const ROUND_CAP_MS: u64 = 1_200;
 
 /// How long the table waits before it passes for a seat that cannot act at a window of the default table
 /// (`MTG_DWELL_MS`): between a shortest and a longest wait, drawn uniformly.
@@ -43,10 +35,10 @@ impl Dwell {
         max_ms: 0,
     };
 
-    /// Between 300 and 900 ms, the server default.
+    /// Between 250 and 700 ms, the server default.
     pub const DEFAULT: Dwell = Dwell {
-        min_ms: 300,
-        max_ms: 900,
+        min_ms: 250,
+        max_ms: 700,
     };
 
     /// The same wait every time (`0` is [`Dwell::OFF`]); above [`MAX_DWELL_MS`] it is lowered to it.
@@ -75,7 +67,7 @@ impl Dwell {
         }
     }
 
-    /// Reads the text of `MTG_DWELL_MS`: `300-900` is a range, a single number a fixed wait and `0` no wait at all.
+    /// Reads the text of `MTG_DWELL_MS`: `250-700` is a range, a single number a fixed wait and `0` no wait at all.
     ///
     /// `None` for anything else: a bound that is not a whole number of milliseconds, a range that runs backwards and
     /// nothing above [`MAX_DWELL_MS`].
@@ -101,22 +93,6 @@ impl Dwell {
             Duration::from_millis(self.min_ms),
             Duration::from_millis(self.max_ms),
         )
-    }
-
-    /// The bounds, in milliseconds, of the stagger before a pass after the first of a round: never longer than the
-    /// longest dwell, so a short dwell does not get a longer stagger.
-    const fn stagger(self) -> (u64, u64) {
-        let longest = if STAGGER_MS.1 < self.max_ms {
-            STAGGER_MS.1
-        } else {
-            self.max_ms
-        };
-        let shortest = if STAGGER_MS.0 < longest {
-            STAGGER_MS.0
-        } else {
-            longest
-        };
-        (shortest, longest)
     }
 }
 
@@ -161,23 +137,11 @@ fn fresh_seed() -> u64 {
     })
 }
 
-/// Where a round of idle windows is: the turn number and the step.
-pub(crate) type Moment = (u32, Step);
-
-/// The round in progress.
-#[derive(Debug, Clone, Copy)]
-struct Round {
-    at: Moment,
-    /// Milliseconds the round has waited so far.
-    waited_ms: u64,
-}
-
 /// The waits of the idle windows of one game.
 #[derive(Debug, Clone)]
 pub(crate) struct Waits {
     dwell: Dwell,
     jitter: Jitter,
-    round: Option<Round>,
 }
 
 impl Waits {
@@ -186,7 +150,6 @@ impl Waits {
         Waits {
             dwell,
             jitter: Jitter(seed),
-            round: None,
         }
     }
 
@@ -195,41 +158,26 @@ impl Waits {
         Waits::new(dwell, fresh_seed())
     }
 
-    /// How long to wait before passing at an idle window at `at`.
-    ///
-    /// With `continues` (the window follows a pass that was itself a dwell's) and the round still at `at`, this is a
-    /// stagger, cut so that the round never waits more than [`ROUND_CAP_MS`] in all. Otherwise a new round begins and
-    /// this is a dwell.
-    pub(crate) fn wait(&mut self, at: Moment, continues: bool) -> Duration {
-        if continues && let Some(round) = self.round.as_mut().filter(|round| round.at == at) {
-            let (low, high) = self.dwell.stagger();
-            let left = ROUND_CAP_MS.saturating_sub(round.waited_ms);
-            let ms = self.jitter.between(low, high).min(left);
-            round.waited_ms += ms;
-            return Duration::from_millis(ms);
-        }
-        let ms = self.jitter.between(self.dwell.min_ms, self.dwell.max_ms);
-        self.round = Some(Round { at, waited_ms: ms });
-        Duration::from_millis(ms)
+    /// How long a seat that receives priority now, and cannot act, waits before it is passed for: a dwell of its own,
+    /// whatever the windows before it were.
+    pub(crate) fn wait(&mut self) -> Duration {
+        Duration::from_millis(self.jitter.between(self.dwell.min_ms, self.dwell.max_ms))
     }
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the setting reads `300-900`, a single number and `0` and nothing else (nothing above 5000); waits stay in their range and reach both ends; the first idle window of a round waits a dwell, the next ones a short stagger, and a round never waits more than its cap in all, whatever the seed.
+    //! Goal: the setting reads `250-700`, a single number and `0` and nothing else (nothing above 5000); every wait is a dwell of its own that stays in the range and reaches both ends, the draws are even, independent of each other and of the seed of the game, and none is ever a shorter wait because of the one before it.
     use super::*;
     use rstest::rstest;
-
-    const AT: Moment = (3, Step::Main1);
-    const ELSEWHERE: Moment = (3, Step::DeclareAttackers);
 
     fn ms(span: Duration) -> u64 {
         u64::try_from(span.as_millis()).unwrap()
     }
 
     #[rstest]
-    #[case::the_default("300-900", Dwell::DEFAULT)]
-    #[case::spaces(" 300 - 900 ", Dwell::DEFAULT)]
+    #[case::the_default("250-700", Dwell::DEFAULT)]
+    #[case::spaces(" 250 - 700 ", Dwell::DEFAULT)]
     #[case::a_fixed_wait("500", Dwell::fixed(500))]
     #[case::off("0", Dwell::OFF)]
     #[case::an_empty_range("0-0", Dwell::OFF)]
@@ -262,7 +210,7 @@ mod tests {
 
     #[test]
     fn constructors_put_the_bounds_in_order_and_cap_them() {
-        assert_eq!(Dwell::between(900, 300), Dwell::DEFAULT);
+        assert_eq!(Dwell::between(700, 250), Dwell::DEFAULT);
         assert_eq!(Dwell::fixed(9_000), Dwell::fixed(MAX_DWELL_MS));
         assert_eq!(
             Dwell::between(6_000, 7_000),
@@ -275,7 +223,7 @@ mod tests {
         assert!(!Dwell::DEFAULT.is_off());
         assert_eq!(
             Dwell::DEFAULT.range(),
-            (Duration::from_millis(300), Duration::from_millis(900))
+            (Duration::from_millis(250), Duration::from_millis(700))
         );
     }
 
@@ -285,9 +233,7 @@ mod tests {
     #[case(0xDEAD_BEEF)]
     fn a_dwell_stays_in_its_range_and_reaches_both_ends(#[case] seed: u64) {
         let mut waits = Waits::new(Dwell::between(300, 309), seed);
-        let drawn: Vec<u64> = (0..400)
-            .map(|turn| ms(waits.wait((turn, Step::Main1), false)))
-            .collect();
+        let drawn: Vec<u64> = (0..400).map(|_| ms(waits.wait())).collect();
         assert!(drawn.iter().all(|ms| (300..=309).contains(ms)), "{drawn:?}");
         assert_eq!(drawn.iter().min(), Some(&300));
         assert_eq!(drawn.iter().max(), Some(&309));
@@ -296,13 +242,11 @@ mod tests {
     #[test]
     fn the_default_range_is_covered_evenly() {
         let mut waits = Waits::new(Dwell::DEFAULT, 99);
-        let drawn: Vec<u64> = (0..10_000)
-            .map(|turn| ms(waits.wait((turn, Step::Main1), false)))
-            .collect();
-        assert!(drawn.iter().all(|ms| (300..=900).contains(ms)));
+        let drawn: Vec<u64> = (0..10_000).map(|_| ms(waits.wait())).collect();
+        assert!(drawn.iter().all(|ms| (250..=700).contains(ms)));
         let mean = drawn.iter().sum::<u64>() / 10_000;
-        assert!((590..=610).contains(&mean), "the mean is {mean}");
-        for third in [(300, 499), (500, 699), (700, 900)] {
+        assert!((465..=485).contains(&mean), "the mean is {mean}");
+        for third in [(250, 399), (400, 549), (550, 700)] {
             let inside = drawn
                 .iter()
                 .filter(|ms| (third.0..=third.1).contains(*ms))
@@ -315,12 +259,27 @@ mod tests {
     }
 
     #[test]
+    fn a_wait_is_independent_of_the_one_before_it() {
+        // The same value twice in a row happens about once in 451 draws; a wait that followed the one before it
+        // (a shorter one behind a dwell, say) would repeat or fall short far more often.
+        let mut waits = Waits::new(Dwell::DEFAULT, 7);
+        let drawn: Vec<u64> = (0..20_000).map(|_| ms(waits.wait())).collect();
+        let repeats = drawn.windows(2).filter(|pair| pair[0] == pair[1]).count();
+        assert!(repeats < 100, "{repeats} repeats in 20000 draws");
+        let shorter = drawn.windows(2).filter(|pair| pair[1] < pair[0]).count();
+        assert!(
+            (9_000..=11_000).contains(&shorter),
+            "a wait is shorter than the one before it about half the time: {shorter}"
+        );
+    }
+
+    #[test]
     fn a_fixed_dwell_is_always_the_same_and_off_is_never_a_wait() {
         let mut fixed = Waits::new(Dwell::fixed(450), 5);
         let mut off = Waits::new(Dwell::OFF, 5);
-        for turn in 0..50 {
-            assert_eq!(fixed.wait((turn, AT.1), false), Duration::from_millis(450));
-            assert_eq!(off.wait((turn, AT.1), false), Duration::ZERO);
+        for _ in 0..50 {
+            assert_eq!(fixed.wait(), Duration::from_millis(450));
+            assert_eq!(off.wait(), Duration::ZERO);
         }
     }
 
@@ -328,98 +287,9 @@ mod tests {
     fn the_same_seed_draws_the_same_waits_and_another_seed_other_ones() {
         let draw = |seed| {
             let mut waits = Waits::new(Dwell::DEFAULT, seed);
-            (0..12)
-                .map(|turn| waits.wait((turn, AT.1), false))
-                .collect::<Vec<_>>()
+            (0..12).map(|_| waits.wait()).collect::<Vec<_>>()
         };
         assert_eq!(draw(7), draw(7));
         assert_ne!(draw(7), draw(8));
-    }
-
-    #[rstest]
-    #[case(1)]
-    #[case(2)]
-    #[case(3)]
-    #[case(4)]
-    fn a_round_waits_one_dwell_then_staggers_and_never_more_than_its_cap(#[case] seed: u64) {
-        let mut waits = Waits::new(Dwell::DEFAULT, seed);
-        let first = ms(waits.wait(AT, false));
-        assert!((300..=900).contains(&first), "{first}");
-        let mut total = first;
-        for _ in 0..40 {
-            let room = ROUND_CAP_MS - total;
-            let wait = ms(waits.wait(AT, true));
-            assert!(wait <= 250.min(room), "{wait} with {room} left");
-            assert!(wait >= 80.min(room), "{wait} with {room} left");
-            total += wait;
-        }
-        assert_eq!(total, ROUND_CAP_MS, "forty staggers use the cap up");
-        assert_eq!(
-            ms(waits.wait(AT, true)),
-            0,
-            "past the cap the passes are not delayed"
-        );
-    }
-
-    #[test]
-    fn the_first_stagger_of_a_round_fits_the_cap_for_the_longest_dwell() {
-        // After 900 ms, 300 are left: a stagger of 80 to 250 is not cut.
-        let mut waits = Waits::new(Dwell::fixed(900), 11);
-        assert_eq!(waits.wait(AT, false), Duration::from_millis(900));
-        let stagger = ms(waits.wait(AT, true));
-        assert!((80..=250).contains(&stagger), "{stagger}");
-    }
-
-    #[rstest]
-    #[case::short(100, 80, 100)]
-    #[case::shorter_than_the_shortest_stagger(50, 50, 50)]
-    #[case::as_long_as_the_longest_stagger(250, 80, 250)]
-    #[case::longer_than_the_cap(2_000, 0, 0)]
-    fn a_stagger_follows_a_short_dwell_and_the_cap(
-        #[case] fixed: u64,
-        #[case] low: u64,
-        #[case] high: u64,
-    ) {
-        let mut waits = Waits::new(Dwell::fixed(fixed), 3);
-        waits.wait(AT, false);
-        let stagger = ms(waits.wait(AT, true));
-        assert!(
-            (low..=high).contains(&stagger),
-            "{stagger} after a dwell of {fixed}"
-        );
-    }
-
-    #[test]
-    fn a_round_ends_when_the_game_moves_on_or_a_seat_acts() {
-        let mut waits = Waits::new(Dwell::fixed(600), 4);
-        assert_eq!(waits.wait(AT, false), Duration::from_millis(600));
-        assert!(
-            ms(waits.wait(AT, true)) <= 250,
-            "same step, a pass followed a pass"
-        );
-        assert_eq!(
-            waits.wait(ELSEWHERE, true),
-            Duration::from_millis(600),
-            "another step is a new round even right after a pass"
-        );
-        assert_eq!(
-            waits.wait((4, Step::DeclareAttackers), true),
-            Duration::from_millis(600),
-            "and so is the same step of another turn"
-        );
-        assert!(ms(waits.wait((4, Step::DeclareAttackers), true)) <= 250);
-        assert_eq!(
-            waits.wait((4, Step::DeclareAttackers), false),
-            Duration::from_millis(600),
-            "a seat acting starts a new round in the same step"
-        );
-    }
-
-    #[test]
-    fn a_dwell_that_is_off_never_staggers_either() {
-        let mut waits = Waits::new(Dwell::OFF, 1);
-        for _ in 0..5 {
-            assert_eq!(waits.wait(AT, true), Duration::ZERO);
-        }
     }
 }

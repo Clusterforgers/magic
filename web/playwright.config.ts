@@ -16,8 +16,8 @@ import {
 // keep servers that are already listening on the two ports, which saves the build while a spec is being written.
 const reuseExistingServer = process.env.E2E_REUSE === '1'
 
-// The servers pass for an idle seat at once. Their default wait of 0.3 to 0.9 s per combat or response window
-// (`MTG_DWELL_MS`) would take the full game from about 8 s to between 27 and 37 s of the 60 s a test has.
+// The servers pass for an idle seat at once. Their default wait of 0.25 to 0.7 s for each idle seat of a combat or
+// response window (`MTG_DWELL_MS`) would take the full game from about 8 s to between 29 and 35 s of the 60 s a test has.
 const NO_DWELL = '0'
 
 // With `E2E_DATABASE_URL` set to an empty scratch database a second pair starts: a server on that database (accounts
