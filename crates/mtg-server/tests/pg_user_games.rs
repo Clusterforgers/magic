@@ -135,7 +135,7 @@ async fn a_signed_in_creator_owns_seat_zero_and_nobody_else_is_bound(pool: PgPoo
     assert_eq!(owners(&pool, &stale).await, [None, None]);
     // The response is the one guests always got.
     let keys: Vec<String> = reply.json().as_object().unwrap().keys().cloned().collect();
-    assert_eq!(keys, ["game", "seats"]);
+    assert_eq!(keys, ["code", "game", "seats"]);
 }
 
 #[sqlx::test(migrations = false)]
