@@ -1,6 +1,8 @@
 // Goal: the countdown says what happens at zero for each kind of decision that has a clock, counts whole seconds up to the next one, and the sentence for a screen reader names the right number and the right consequence.
 import { describe, expect, it } from 'vitest'
-import { clockAnnouncement, clockText, secondsLeft } from './clockText'
+import type { DecisionKind } from '@/protocol/generated'
+import { KINDS } from '@/test-utils/decisions'
+import { clockAnnouncement, clockKind, clockText, secondsLeft } from './clockText'
 
 describe('clockText', () => {
   it.each([
@@ -9,6 +11,10 @@ describe('clockText', () => {
     ['DeclareBlockers', 45, 'Declaring no blocks in 45 s'],
     ['ChooseTargets', 10, 'Choosing no targets in 10 s'],
     ['OrderTriggers', 3, 'Ordering the triggers for you in 3 s'],
+    ['YesNo', 10, 'Answering no for you in 10 s'],
+    ['ChooseOption', 4, 'Choosing the first option for you in 4 s'],
+    ['ChooseMode', 10, 'Choosing the first mode for you in 10 s'],
+    ['ChooseModeCancel', 2, 'Cancelling for you in 2 s'],
   ] as const)('%s with %i s left reads "%s"', (kind, seconds, text) => {
     expect(clockText(kind, seconds)).toBe(text)
   })
@@ -25,8 +31,32 @@ describe('clockAnnouncement', () => {
     ['DeclareBlockers', 45, 'You have 45 seconds to answer; after that the game declares no blocks for you.'],
     ['ChooseTargets', 10, 'You have 10 seconds to answer; after that the game chooses no targets for you.'],
     ['OrderTriggers', 10, 'You have 10 seconds to answer; after that the game orders the triggers for you.'],
+    ['YesNo', 10, 'You have 10 seconds to answer; after that the game answers no for you.'],
+    [
+      'ChooseOption',
+      10,
+      'You have 10 seconds to answer; after that the game chooses the first option for you.',
+    ],
+    ['ChooseMode', 10, 'You have 10 seconds to answer; after that the game chooses the first mode for you.'],
+    ['ChooseModeCancel', 1, 'You have 1 second to answer; after that the game cancels for you.'],
   ] as const)('%s with %i s reads "%s"', (kind, seconds, text) => {
     expect(clockAnnouncement(kind, seconds)).toBe(text)
+  })
+})
+
+describe('clockKind', () => {
+  const modes = (can_cancel: boolean): DecisionKind => ({
+    ChooseMode: { source: 1, modes: [], min: 1, max: 1, repeat: false, can_cancel },
+  })
+
+  it.each([
+    ['a mode choice of a spell, which the server takes back', modes(true), 'ChooseModeCancel'],
+    ['a mode choice of a trigger, which the server answers with the first mode', modes(false), 'ChooseMode'],
+    ['a question', KINDS.YesNo, 'YesNo'],
+    ['an option', KINDS.ChooseOption, 'ChooseOption'],
+    ['a target choice, whichever way it can be answered', KINDS.ChooseTargets, 'ChooseTargets'],
+  ])('tells %s as %s', (_what, kind, expected) => {
+    expect(clockKind(kind)).toBe(expected)
   })
 })
 
