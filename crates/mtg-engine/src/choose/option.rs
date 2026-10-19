@@ -29,6 +29,10 @@ pub struct OptionOptions {
     pub source: ObjectId,
     /// The things to choose between.
     pub options: Vec<ChoiceOption>,
+    /// What is chosen, in the words of the card ("Choose a color."); empty when the engine gave none.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
+    pub text: String,
 }
 
 /// The option chosen, by index.

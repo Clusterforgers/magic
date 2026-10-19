@@ -13,4 +13,8 @@ source: ObjectId,
 /**
  * The things to choose between.
  */
-options: Array<ChoiceOption>, };
+options: Array<ChoiceOption>, 
+/**
+ * What is chosen, in the words of the card ("Choose a color."); empty when the engine gave none.
+ */
+text?: string, };

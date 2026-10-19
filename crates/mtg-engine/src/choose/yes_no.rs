@@ -14,6 +14,10 @@ use crate::error::{EngineError, IllegalAnswer};
 pub struct YesNoOptions {
     /// The object whose effect asks.
     pub source: ObjectId,
+    /// The question in the words of the card ("Pay {1}?"); empty when the engine gave none.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
+    pub text: String,
 }
 
 /// The answer.

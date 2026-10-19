@@ -1,6 +1,15 @@
-/** The decisions of spells and abilities the dev table can show: `?prompt=targets`, `targets-two`, `targets-trigger`, `order` and their clocks. */
+/** The decisions of spells and abilities the dev table can show: `?prompt=targets`, `targets-two`, `targets-trigger`, `order`, `yesno`, `option`, `option-players`, `mode`, `mode-two`, `mode-trigger` and their clocks. */
 import type { PendingDecision } from '@/play/store'
-import type { ObjectId, ObjectView, PlayerId, StateView, Target, TriggerEntry } from '@/protocol/generated'
+import type {
+  ChoiceOption,
+  Color,
+  ObjectId,
+  ObjectView,
+  PlayerId,
+  StateView,
+  Target,
+  TriggerEntry,
+} from '@/protocol/generated'
 import type { Fixture } from './fixture'
 
 /** Builds the decision the viewer of a fixture faces. */
@@ -107,6 +116,114 @@ const order: DevPrompt = ({ view }) => {
   return { id: 1, decision: { player: view.viewer, kind: { OrderTriggers: { triggers } } } }
 }
 
+/** The first creature of the viewer's, whose ability asks. */
+const askerOf = (view: StateView): ObjectId => creaturesOf(view, view.viewer)[0]?.id ?? 0
+
+/** A "may" of one of the viewer's creatures. */
+const yesNo: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: { YesNo: { source: askerOf(view), text: 'Draw a card?' } },
+  },
+})
+
+const COLORS: Color[] = ['White', 'Blue', 'Black', 'Red', 'Green']
+
+/** One of the viewer's creatures asks for a color. */
+const option: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      ChooseOption: {
+        source: askerOf(view),
+        options: COLORS.map((color): ChoiceOption => ({ Color: color })),
+        text: 'Choose a color.',
+      },
+    },
+  },
+})
+
+/** The same kind of question about the players still in the game, the viewer's own seat among them. */
+const optionPlayers: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      ChooseOption: {
+        source: askerOf(view),
+        options: view.players.filter((p) => p.lost === null).map((p): ChoiceOption => ({ Player: p.seat })),
+        text: 'Choose a player to attack first.',
+      },
+    },
+  },
+})
+
+const CHARM = [
+  'Deal 2 damage to target creature unless its controller discards a card',
+  'Counter target noncreature spell unless its controller pays {2}',
+  'Draw two cards, then discard two cards',
+]
+
+const BLESSING = ['Draw a card', 'Create a 1/1 Spirit token', 'You gain 3 life', 'Each opponent loses 2 life']
+
+const labelled = (labels: readonly string[]) => labels.map((label, index) => ({ index, label }))
+
+/** The viewer's spell asks for one of three modes and can still be taken back. */
+const mode: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      ChooseMode: {
+        source: ownSpell(view)?.id ?? 0,
+        modes: labelled(CHARM),
+        min: 1,
+        max: 1,
+        repeat: false,
+        can_cancel: true,
+      },
+    },
+  },
+})
+
+/** The same spell asks for two of four modes. */
+const modeTwo: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      ChooseMode: {
+        source: ownSpell(view)?.id ?? 0,
+        modes: labelled(BLESSING),
+        min: 2,
+        max: 2,
+        repeat: false,
+        can_cancel: true,
+      },
+    },
+  },
+})
+
+/** A triggered ability of one of the viewer's creatures chooses a mode as it goes on the stack; it cannot be backed out of. */
+const modeTrigger: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      ChooseMode: {
+        source: askerOf(view),
+        modes: labelled(BLESSING.slice(0, 3)),
+        min: 1,
+        max: 1,
+        repeat: false,
+        can_cancel: false,
+      },
+    },
+  },
+})
+
 /** The decisions by their `?prompt=` name; the viewer is not the active seat, so these run on a response clock. */
 export const EFFECT_PROMPTS: Record<string, DevPrompt> = {
   targets,
@@ -115,4 +232,13 @@ export const EFFECT_PROMPTS: Record<string, DevPrompt> = {
   'targets-clock': (fixture) => ({ ...targets(fixture), deadlineMs: 10_000 }),
   order,
   'order-clock': (fixture) => ({ ...order(fixture), deadlineMs: 10_000 }),
+  yesno: yesNo,
+  'yesno-clock': (fixture) => ({ ...yesNo(fixture), deadlineMs: 10_000 }),
+  option,
+  'option-players': optionPlayers,
+  'option-clock': (fixture) => ({ ...option(fixture), deadlineMs: 10_000 }),
+  mode,
+  'mode-two': modeTwo,
+  'mode-trigger': modeTrigger,
+  'mode-clock': (fixture) => ({ ...mode(fixture), deadlineMs: 10_000 }),
 }

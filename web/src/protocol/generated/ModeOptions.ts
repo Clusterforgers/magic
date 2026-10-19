@@ -25,4 +25,9 @@ max: number,
 /**
  * The same mode may be chosen more than once.
  */
-repeat: boolean, };
+repeat: boolean, 
+/**
+ * Whether the cast or activation may still be backed out of: nothing is logged until it is paid for. A triggered
+ * ability that chooses its modes as it goes on the stack cannot (CR 603.3c).
+ */
+can_cancel: boolean, };

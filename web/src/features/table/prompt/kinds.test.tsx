@@ -1,4 +1,4 @@
-/** Goal: every decision kind has a prompt in the registry and the ten the table asks today (the eight it has always asked, the targets of a spell or ability and the order of triggers) are built; the placeholder for the others names the decision and offers nothing to press, so the table never shows a blank where a decision is waiting. */
+/** Goal: every decision kind has a prompt in the registry and the thirteen the table is built for (the eight it has always asked, the targets of a spell or ability, the order of triggers, yes or no, an option and modes) are built; the placeholder for the others names the decision and offers nothing to press, so the table never shows a blank where a decision is waiting. */
 import { render, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
@@ -12,8 +12,11 @@ import { UnsupportedPrompt } from './PromptLayout'
 import { PROMPTS } from './registry'
 
 const NAMES = Object.keys(DECISION_LABEL) as DecisionName[]
-// The kinds the table asks today; the other questions of spells and abilities get their prompts with their tasks.
+// The kinds with a built prompt; the other questions of spells and abilities get theirs with their tasks.
 const BUILT: DecisionName[] = [
+  'YesNo',
+  'ChooseOption',
+  'ChooseMode',
   'Mulligan',
   'BottomCards',
   'Priority',

@@ -416,7 +416,8 @@ impl Driver {
             DecisionKind::ChooseTargets(o) => Answer::ChooseTargets(TargetChoice::Targets(
                 o.legal.iter().copied().take(o.min as usize).collect(),
             )),
-            DecisionKind::ChooseMode(o) => Answer::ChooseMode(ModeChoice(
+            DecisionKind::ChooseMode(o) if o.can_cancel => Answer::ChooseMode(ModeChoice::Cancel),
+            DecisionKind::ChooseMode(o) => Answer::ChooseMode(ModeChoice::Modes(
                 o.modes
                     .iter()
                     .take(o.min as usize)

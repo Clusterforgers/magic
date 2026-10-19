@@ -7,6 +7,7 @@ import { decisionName } from '../turnText'
 import { ownDecision } from './ownDecision'
 import { PromptContext } from './PromptContext'
 import type { PromptApi, Selection } from './PromptContext'
+import { clockKind } from './clockText'
 import { PROMPTS } from './registry'
 import { ResponseClock } from './ResponseClock'
 
@@ -68,7 +69,7 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
         className="grid max-w-full min-w-0 gap-1 rounded-md bg-muted px-3 py-1.5 sm:max-w-3xl"
       >
         <PromptFor kind={decision.kind} />
-        <ResponseClock id={id} kind={name} />
+        <ResponseClock id={id} kind={clockKind(decision.kind)} />
       </div>
     </PromptContext>
   )

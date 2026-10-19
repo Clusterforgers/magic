@@ -181,7 +181,7 @@ After a Welcome the lobby or table stays under the reconnect notice. A `notice` 
 `features/table/prompt/` answers the decision this seat faces.
 
 - `PromptHost` (in `SharedStrip`, in place of the read-only "Waiting for ..." line while `ownDecision` is set) renders `PROMPTS[kind]` with the kind's `options` in a scope keyed by decision id, so a new decision remounts the prompt with an empty selection.
-- `registry.ts` has an entry per `DecisionKind`; a new kind stops compiling until it has one (`kinds/<Kind>.tsx`, a `PromptComponent<'Kind'>` with props `{ options }`). `kinds.test.tsx` fails while one of the ten built kinds (the eight the table has always asked, `ChooseTargets` and `OrderTriggers`) is the `UnsupportedPrompt` stand-in. The other nine questions of spells and abilities are stand-ins in their own files, which their tasks replace.
+- `registry.ts` has an entry per `DecisionKind`; a new kind stops compiling until it has one (`kinds/<Kind>.tsx`, a `PromptComponent<'Kind'>` with props `{ options }`). `kinds.test.tsx` fails while one of the thirteen built kinds (the eight the table has always asked, `ChooseTargets`, `OrderTriggers`, `YesNo`, `ChooseOption` and `ChooseMode`) is the `UnsupportedPrompt` stand-in. The other six questions of spells and abilities are stand-ins in their own files, which their tasks replace.
 - `usePrompt()` gives `{ id, name, decision, answer, selection }`. `answer(a)` wraps `session.answer`: once per decision, false when already sent, refused by the socket (a retry is allowed) or when the store holds another decision by now. `PromptLayout` (prop `text`, controls as children) draws the shared shape: the decision's name, one polite live sentence, a row of controls.
 - Card marks (`prompt/marks.ts`): `useCardMarks(marks, onSelect, { toggles })` takes a `Map<ObjectId, 'legal' | 'dimmed' | 'selected'>` from `markCards(own, legal, selected)`. A click or Enter/Space on a legal or selected card calls `onSelect(id)`; a `Card`'s own `highlight` and `onSelect` props win. Each `Card` subscribes to its own id, so publishing redraws only the changed cards.
 
@@ -196,8 +196,11 @@ After a Welcome the lobby or table stays under the reconnect notice. A `notice` 
 | `AssignDamage` | blockers | a number box per blocker; Confirm | `[blocker, amount]` pairs |
 | `ChooseTargets` | the legal objects, as toggles | a button per legal target, players and undrawn cards too; Confirm targets; Undo; Cancel the spell (`can_cancel`); the chosen targets listed with Remove | `Targets`, `Cancel` |
 | `OrderTriggers` | none | the triggers in resolution order with Up and Down; Default order; Confirm order | the indices in the order they go on the stack |
+| `YesNo` | none | Yes and No, keys Y and N; focus on No | `true`, `false` |
+| `ChooseOption` | none | a button per option, keys 1 to 9 and 0; focus on the first | the index |
+| `ChooseMode` | none | a button per mode, keys 1 to 9 and 0; Confirm modes and Undo when it is not exactly one; Cancel the spell or ability (`can_cancel`) | `{ Modes }` by index, `Cancel` |
 
-Every prompt but Mulligan, AssignDamage and OrderTriggers dims the viewer's other cards.
+Every prompt but Mulligan, AssignDamage, OrderTriggers, YesNo, ChooseOption and ChooseMode dims the viewer's other cards.
 
 - Mulligan: the sentence reads `bottom_if_keep`, `bottom_if_mulligan` and `free_mulligans`, so the client derives no count.
 - Nothing to do: the newest `NothingToDo` event of this turn shows "You have no creatures that can attack" (or "block") until the viewer has answered something, since the engine usually asks for priority right after.
@@ -207,6 +210,9 @@ Every prompt but Mulligan, AssignDamage and OrderTriggers dims the viewer's othe
 - With trample (`DamageOptions.excess`) the split may fall short: the rest goes to the player or planeswalker attacked, named in the prompt and in a line under the rows (`data-slot="damage-excess"`), and Confirm waits until every blocker has its lethal damage. The first split gives each blocker lethal damage and leaves the rest to that line; the answer still lists the blockers' shares only.
 - ChooseTargets: the sentence names the source (the spell, or "Mulldrifter's ability" when `triggered`) and gives the engine's `wording` of the specification; `targetText.ts` holds the words. A click on a chosen target takes it back, one on another target changes a choice of one, and a full choice of several closes the rest. The list has every legal target because a player is not a card, a group or a zone may not draw one, and a card says where it is in brackets. A triggered ability has no Cancel (it cannot be backed out of); its way out is the response clock's `Remove` ([server.md](server.md), Response clocks).
 - OrderTriggers: the list is in resolution order (the top resolves first) and the answer is the same list reversed, the order they go on the stack (`orderText.ts`). The engine's order (the last to trigger on top) is in place at first. A moved row keeps focus on its button; at an end the button stays focusable and does nothing, so a repeated press never sends the trigger back; the sentence says where the trigger went.
+- The questions of effects (`YesNo`, `ChooseOption`, `ChooseMode`) ask in the card's words: the sentence is the source's name and the engine's `text` ("Pay {1}?"; a plain question when it has none), and a sentence only a screen reader hears names the keys. Letters and digits are hotkeys (`usePromptKeys`: a plain press, with focus on a button too, never in a field, menu or dialog); `KeyHint` draws the key in the button. Focus starts on the answer the response clock gives (`useDefaultFocus`, not while the player types): No, the first option, and for modes Cancel where the options allow it, else the first mode. The table's cards are not marked.
+- ChooseOption: a button per option answers at once; a color has its symbol, a player is named and the viewer's own seat says "(you)". The first ten have keys; a longer list scrolls inside the strip.
+- ChooseMode (`choiceText.ts`): a choice of exactly one answers at once from a button or its key; any other toggles modes and Confirm modes waits for `min`. The answer lists the chosen indices (not the places in the list) in the order on the card. A mode that may repeat is chosen again by each press, counted ("x2") and taken back with Undo. A mode without a label is "Mode N".
 
 ## Combat overlay and previews
 
@@ -285,7 +291,7 @@ The Priority prompt's controls (`prompt/PassControls.tsx`, drawn in the controls
 ### Response clock
 
 - A `Decision` with `deadline_ms` ([protocol.md](protocol.md), Decisions) becomes `pending.deadlineMs`. The session counts it down in `PlayState.clock` on its own `timers` (a test's manual clock moves it) and, at zero, clears `pending` itself: the server has answered for the seat, and a prompt left up would invite a stale answer.
-- `prompt/ResponseClock` shows "Passing for you in 7 s" (`clockText.ts` has the words for what the server answers at zero: a pass, no blocks, no targets, the triggers in the order they triggered) as a `role="timer"` that does not announce each second; the last three seconds are urgent (`data-urgent`). Its bar is the `response-clock-bar` utility in `prompt/responseClock.css`.
+- `prompt/ResponseClock` shows "Passing for you in 7 s" (`clockText.ts` has the words for what the server answers at zero: a pass, no blocks, no targets, the triggers in the order they triggered, No, the first option, the first mode, or the cast cancelled when `can_cancel` allows it; `clockKind` tells that last choice of modes apart) as a `role="timer"` that does not announce each second; the last three seconds are urgent (`data-urgent`). Its bar is the `response-clock-bar` utility in `prompt/responseClock.css`.
 
 ### Keys
 
@@ -335,7 +341,7 @@ All three exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a f
 
 `/dev/table` shows the real table over `features/table/dev/fixture.ts` (about 40 permanents per seat, an attack, a stack, a log). `fixtureSession` (`dev/devGame.ts`) answers as the server would.
 
-The `prompt` names are the keys of `DEV_PROMPTS` in `dev/prompts.ts` (`DEV_TABLES` sets the moment of the game each needs): `priority`, `priority-main`, `priority-end`, `priority-wait`, `priority-clock`, `block-clock`, `yield`, `yield-resolve`, `yield-turn`, `forecast` (`turn=you` flips the sides), `attack`, `block`, `mulligan`, `mulligan-free`, `bottom`, `discard`, `damage`, `damage3`, `damage1`, `pay`, `pay-short`, `pay-locked`, `pay-hybrid` and `pay-low-life`.
+The `prompt` names are the keys of `DEV_PROMPTS` in `dev/prompts.ts` (`DEV_TABLES` sets the moment of the game each needs): `priority`, `priority-main`, `priority-end`, `priority-wait`, `priority-clock`, `block-clock`, `yield`, `yield-resolve`, `yield-turn`, `forecast` (`turn=you` flips the sides), `attack`, `block`, `mulligan`, `mulligan-free`, `bottom`, `discard`, `damage`, `damage3`, `damage1`, `pay`, `pay-short`, `pay-locked`, `pay-hybrid` and `pay-low-life`. The decisions of spells and abilities (`dev/effectPrompts.ts`, all with a viewer who is not the active seat) are `targets`, `targets-two`, `targets-trigger`, `order`, `yesno`, `option`, `option-players`, `mode`, `mode-two` and `mode-trigger`, and `targets-clock`, `order-clock`, `yesno-clock`, `option-clock` and `mode-clock` with a 10 s response clock.
 
 ## Testing
 

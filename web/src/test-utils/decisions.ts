@@ -35,7 +35,7 @@ export const KINDS: Record<DecisionName, DecisionKind> = {
   AssignDamage: { AssignDamage: { attacker: 1, power: 2, blockers: [] } },
   Discard: { Discard: { hand: [], count: 1 } },
   ChooseTargets: { ChooseTargets: { source: 1, spec: 0, legal: [], min: 1, max: 1, can_cancel: true } },
-  ChooseMode: { ChooseMode: { source: 1, modes: [], min: 1, max: 1, repeat: false } },
+  ChooseMode: { ChooseMode: { source: 1, modes: [], min: 1, max: 1, repeat: false, can_cancel: true } },
   ChooseNumber: { ChooseNumber: { source: 1, min: 0, max: null } },
   DivideAmount: { DivideAmount: { source: 1, total: 2, among: [] } },
   ChooseCards: { ChooseCards: { source: 1, from: [], min: 1, max: 1 } },

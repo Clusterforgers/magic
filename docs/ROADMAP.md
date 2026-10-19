@@ -56,8 +56,9 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [x] (a) `mtg-cards` DSL: data model for every ability kind, loader, validation, support records and a 40-card corpus
 - [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
 - [x] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
-- [ ] (d) Decision kinds the effects need, one task each across engine, protocol and a web prompt (the table in `docs/cards-dsl.md`, Decisions the effects need)
-- [ ] Response clocks for the choice decisions of a non-active seat (cards, modes, numbers, options, yes or no, mana payments), each with a fallback answer, so one seat cannot hold the table; targets and trigger orders have theirs (`docs/server.md`, Response clocks)
+- [ ] (d) Decision kinds still open, one task each across engine, protocol and a web prompt: ChooseCards, OrderCards, ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement (the table in `docs/cards-dsl.md`, Decisions the effects need)
+- [ ] Engine side of YesNo, ChooseOption and ChooseMode: the answer checks and the effects that ask them (`May`, an option effect, modal spells), then a response-clock test through the actor (`docs/server.md`, Response clocks)
+- [ ] Response clocks for the choice decisions still without one (cards, orders of cards, numbers, divisions, costs, replacements, mana payments), each with a fallback answer, so one seat cannot hold the table; targets, trigger orders, yes or no, options and modes have theirs (`docs/server.md`, Response clocks)
 - [x] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets and the views carry keywords, counters and attachments (`docs/web.md`)
 - [ ] (e2) Keywords hexproof and ward, one task each; counters and attachments on the object views; the blockers prompt reads `BlockOptions.min_blockers` so menace is explained before Confirm (`docs/web.md`)
 - [ ] (f) Keyword actions (CR 701), one engine primitive each, with a web prompt where the player chooses (scope in `docs/cards-dsl.md`, Tasks)

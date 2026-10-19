@@ -4,12 +4,12 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { cn } from '@/lib/utils'
 import type { DecisionId } from '@/protocol/generated'
 import type { DecisionClock } from '@/play/store'
-import type { DecisionName } from '../turnText'
 import { clockAnnouncement, clockText, secondsLeft, URGENT_SECONDS } from './clockText'
+import type { ClockKind } from './clockText'
 
 interface ClockFaceProps {
   clock: DecisionClock
-  kind: DecisionName
+  kind: ClockKind
 }
 
 /** The face of a running clock; it is mounted once per decision, so what it starts from is what the prompt began with. */
@@ -51,7 +51,7 @@ function ClockFace({ clock, kind }: ClockFaceProps) {
 interface ResponseClockProps {
   /** The decision the prompt answers; a clock that belongs to another is not shown. */
   id: DecisionId
-  kind: DecisionName
+  kind: ClockKind
 }
 
 /**

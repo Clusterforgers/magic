@@ -8,4 +8,8 @@ export type YesNoOptions = {
 /**
  * The object whose effect asks.
  */
-source: ObjectId, };
+source: ObjectId, 
+/**
+ * The question in the words of the card ("Pay {1}?"); empty when the engine gave none.
+ */
+text?: string, };
