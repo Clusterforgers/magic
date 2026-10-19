@@ -78,6 +78,26 @@ describe('playing', () => {
     expect(table()).toBeInTheDocument()
   })
 
+  it('floats the message over the table instead of pushing it down, since the table is exactly the window', async () => {
+    const h = await renderGame()
+    h.join()
+    h.deliver(lateJoin.raw[1])
+    h.fail()
+    const notices = must(document.querySelector<HTMLElement>('[data-slot="table-notices"]'))
+    expect(notices).toHaveClass('fixed', 'inset-x-0', 'top-11')
+    expect(notices).toContainElement(screen.getByRole('status'))
+    expect(table().contains(notices)).toBe(false)
+    expect(screen.getByRole('status').closest('[data-slot="page"]')).toBeNull()
+  })
+
+  it('keeps the message in the page, as before, on the lobby', async () => {
+    const h = await renderGame()
+    h.join()
+    h.fail()
+    expect(document.querySelector('[data-slot="table-notices"]')).toBeNull()
+    expect(screen.getByRole('status').closest('[data-slot="page"]')).not.toBeNull()
+  })
+
   it('says it cannot reach the game above the table after five failures', async () => {
     const h = await renderGame()
     h.join()
@@ -111,6 +131,14 @@ describe('game over', () => {
     expect(results[1]).toHaveTextContent('life 0')
     expect(screen.getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/')
     expect(document.title).toBe('Game over · Magic')
+  })
+
+  it('keeps a long table of results inside its list, which scrolls, so the page and the way to a new game stay in the window', async () => {
+    await finishedGame(0, 1, 'ZeroLife', { Winner: 0 })
+    const list = screen.getByRole('list', { name: 'How each seat finished' })
+    expect(list).toHaveClass('overflow-y-auto')
+    expect(list.className).toContain('max-h-[min(24rem,45dvh)]')
+    expect(screen.getByRole('link', { name: 'Create a new game' })).not.toBe(list)
   })
 
   it('keeps the result when the server closes the socket afterwards, with no connection notice', async () => {

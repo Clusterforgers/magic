@@ -13,8 +13,9 @@ export interface PreviewHandlers {
 }
 
 /**
- * Hover (mouse only) and keyboard focus show the card's preview, leaving hides it, a click pins it. `onClick` runs
- * first, for a caller's own handling of the click.
+ * Hover (mouse only) and keyboard focus show the card's preview, leaving hides it, a click pins it. A click the caller
+ * handles (`onClick`: the card plays, taps or is chosen) pins nothing: it is an act and not a request to look, and a
+ * pinned preview covers a part of the table (the prompt among it) until it is closed.
  */
 export function usePreviewHandlers(id: ObjectId, onClick?: () => void): PreviewHandlers {
   const preview = usePreviewStore()
@@ -22,7 +23,10 @@ export function usePreviewHandlers(id: ObjectId, onClick?: () => void): PreviewH
   useEffect(() => () => preview.hide(id), [preview, id])
   return {
     onClick(event) {
-      onClick?.()
+      if (onClick !== undefined) {
+        onClick()
+        return
+      }
       preview.pin(id, anchorOf(event.currentTarget))
     },
     onPointerEnter(event) {

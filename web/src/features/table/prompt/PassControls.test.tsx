@@ -169,11 +169,16 @@ describe('the words on the buttons', () => {
     )
   })
 
-  it('has one prompt: its title, a live sentence and the buttons in a row', () => {
+  it('has one prompt, its title and a live sentence, and draws the three buttons in the controls dock', () => {
     const { container } = renderControls()
     const line = must(container.querySelector<HTMLElement>('[data-slot="decision-line"]'))
-    const actions = must(line.querySelector<HTMLElement>('[data-slot="prompt-actions"]'))
-    expect(within(actions).getAllByRole('button')).toHaveLength(3)
+    // The buttons belong to the prompt (state, keys), but sit in the dock at the bottom right of the table.
+    expect(must(line.querySelector<HTMLElement>('[data-slot="prompt-actions"]'))).toBeEmptyDOMElement()
+    expect(line.querySelectorAll('button')).toHaveLength(0)
+    const slot = must(
+      container.querySelector<HTMLElement>('[data-region="controls"] [data-slot="pass-slot"]'),
+    )
+    expect(within(slot).getAllByRole('button')).toHaveLength(3)
     expect(line.querySelectorAll('[aria-live]')).toHaveLength(1)
   })
 })

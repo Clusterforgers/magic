@@ -141,24 +141,40 @@ function SeatedGame({ gameId, token, name, api, deps }: SeatedGameProps) {
     session.disconnect()
     session.connect()
   }
+  const connectionNotice =
+    connection.kind !== 'open' && !over ? (
+      <ConnectionNotice
+        connection={connection}
+        standalone={screen === null}
+        missing={lookup.missing}
+        via={token === undefined ? 'session' : 'link'}
+        onRetry={retry}
+      />
+    ) : null
+  const serverNotice =
+    state.notice !== null && screen !== null && !over ? (
+      <ServerNotice message={state.notice} onDismiss={session.dismissNotice} />
+    ) : null
+  // The table is exactly the window, so a notice over it floats under its top bar instead of pushing it down.
+  const floating = screen !== null && state.phase === 'playing'
   return (
     <GameContext value={context}>
-      {connection.kind !== 'open' && !over ? (
-        <PageShell className="pb-0 sm:pb-0">
-          <ConnectionNotice
-            connection={connection}
-            standalone={screen === null}
-            missing={lookup.missing}
-            via={token === undefined ? 'session' : 'link'}
-            onRetry={retry}
-          />
-        </PageShell>
-      ) : null}
-      {state.notice !== null && screen !== null && !over ? (
-        <PageShell className="pb-0 sm:pb-0">
-          <ServerNotice message={state.notice} onDismiss={session.dismissNotice} />
-        </PageShell>
-      ) : null}
+      {floating ? (
+        <div
+          data-slot="table-notices"
+          className="pointer-events-none fixed inset-x-0 top-11 z-50 mx-auto grid max-w-page gap-2 px-4 empty:hidden"
+        >
+          {connectionNotice === null ? null : <div className="pointer-events-auto">{connectionNotice}</div>}
+          {serverNotice === null ? null : <div className="pointer-events-auto">{serverNotice}</div>}
+        </div>
+      ) : (
+        <>
+          {connectionNotice === null ? null : (
+            <PageShell className="pb-0 sm:pb-0">{connectionNotice}</PageShell>
+          )}
+          {serverNotice === null ? null : <PageShell className="pb-0 sm:pb-0">{serverNotice}</PageShell>}
+        </>
+      )}
       {screen}
     </GameContext>
   )

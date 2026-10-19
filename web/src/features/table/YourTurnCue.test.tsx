@@ -1,5 +1,5 @@
-// Goal: the table lights the "your turn" cue (a glow class, a data flag and a "Your turn" badge) on the turn banner and on the viewer's own seat panel exactly while the viewer is the active seat of a running game, never on an opponent's panel, and drops it the moment the turn passes, whatever the table size or seat.
-import { screen, within } from '@testing-library/react'
+// Goal: the table lights the "your turn" cue (a glow class and a data flag) on the shared strip and on the viewer's own seat panel, and a gold "Your turn" badge in the top bar, exactly while the viewer is the active seat of a running game, never on an opponent's panel, and drops it the moment the turn passes, whatever the table size or seat.
+import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { PlayState } from '@/play/store'
 import { clone, must } from '@/test-utils/batches'
@@ -7,7 +7,15 @@ import { renderTable } from '@/test-utils/tableHarness'
 import { buildFixture } from './dev/fixture'
 
 const CUE = 'your-turn-cue'
-const banner = () => screen.getByRole('region', { name: 'Turn and priority' })
+/** The strip between the boards, the part of the shared region that carries the glow. */
+const banner = () =>
+  must(
+    screen
+      .getByRole('region', { name: 'Turn and priority' })
+      .querySelector<HTMLElement>('[data-slot="shared-sheet"]'),
+  )
+/** The turn badge of the top bar. */
+const badge = () => must(document.querySelector<HTMLElement>('[data-slot="banner"]'))
 const panels = (container: HTMLElement): HTMLElement[] => [
   ...container.querySelectorAll<HTMLElement>('section[data-seat]'),
 ]
@@ -29,7 +37,7 @@ describe('on the viewer’s own turn', () => {
     const { container } = renderTable({ fixture })
     expect(banner()).toHaveAttribute('data-your-turn', 'true')
     expect(banner()).toHaveClass(CUE)
-    expect(within(banner()).getByText('Your turn')).toBeInTheDocument()
+    expect(badge()).toHaveTextContent(/^Your turn · /)
     expect(lit(container)).toEqual([viewer])
     expect(must(container.querySelector(`section[data-seat="${viewer}"]`))).toHaveClass(CUE)
   })
@@ -53,7 +61,7 @@ describe('on someone else’s turn', () => {
     const { container } = renderTable({ fixture: buildFixture({ seats, permanents: 2 }) })
     expect(container.querySelector('[data-your-turn]')).toBeNull()
     expect(container.querySelector(`.${CUE}`)).toBeNull()
-    expect(within(banner()).queryByText('Your turn')).toBeNull()
+    expect(badge()).not.toHaveTextContent(/^Your turn/)
     expect(banner()).toHaveClass('ring-1')
     const active = must(container.querySelector<HTMLElement>('section[data-seat][data-active]'))
     expect(active).toHaveAttribute('data-seat', '1')
@@ -74,11 +82,11 @@ describe('when the turn changes', () => {
     update(passTo(0))
     expect(lit(container)).toEqual([0])
     expect(banner()).toHaveAttribute('data-your-turn', 'true')
-    expect(within(banner()).getByText('Your turn')).toBeInTheDocument()
+    expect(badge()).toHaveTextContent(/^Your turn · /)
     update(passTo(2))
     expect(lit(container)).toEqual([])
     expect(banner()).not.toHaveAttribute('data-your-turn')
-    expect(within(banner()).queryByText('Your turn')).toBeNull()
+    expect(badge()).not.toHaveTextContent(/^Your turn/)
     expect(banner()).toHaveClass('ring-1')
     update(passTo(0))
     expect(lit(container)).toEqual([0])

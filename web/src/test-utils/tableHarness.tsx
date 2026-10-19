@@ -45,12 +45,15 @@ export interface TableHarness {
   unmount(): void
 }
 
+/** The window a test table is laid out for unless it says otherwise: a wide desktop, with the side column and the whole dock. */
+export const TEST_VIEWPORT = { width: 1600, height: 1000 }
+
 /** A table over a real session, such as one from `startSession()`, with the names a lookup gives. */
 export function renderLiveTable(session: Session, lookup: GameLookup, options: TableOptions = {}) {
   const value: GameContextValue = { game: 'test-game', session, lookup }
   const view = render(
     <GameContext value={value}>
-      <TableOptionsContext value={options}>
+      <TableOptionsContext value={{ viewport: TEST_VIEWPORT, ...options }}>
         <GameTable />
       </TableOptionsContext>
     </GameContext>,
@@ -69,7 +72,9 @@ export function renderTable(setup: TableSetup = {}): TableHarness {
   const value: GameContextValue = { game: 'test-game', session, lookup }
   const view = render(
     <GameContext value={value}>
-      <TableOptionsContext value={setup.options ?? {}}>{setup.ui ?? <GameTable />}</TableOptionsContext>
+      <TableOptionsContext value={{ viewport: TEST_VIEWPORT, ...setup.options }}>
+        {setup.ui ?? <GameTable />}
+      </TableOptionsContext>
     </GameContext>,
   )
   return {

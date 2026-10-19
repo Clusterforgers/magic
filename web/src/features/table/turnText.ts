@@ -97,6 +97,16 @@ export function bannerText(input: BannerInput, name: Names): string {
   }
 }
 
+/**
+ * The words of the turn badge in the top bar: "Your turn · 5 · Precombat main", "Bo's turn · 5 · Declare blockers",
+ * or what the game is doing before and after its turns. `viewer` is this client's seat.
+ */
+export function badgeText(input: BannerInput, viewer: PlayerId | null, name: Names): string {
+  if (input.stage !== 'Turns') return bannerText(input, name)
+  const who = input.active === viewer ? 'Your turn' : `${name(input.active)}'s turn`
+  return `${who} · ${input.turn} · ${STEP_LABEL[input.step]}`
+}
+
 /** Who has priority and how many have passed it on. */
 export function priorityText(priority: PriorityView | null, stage: Stage, name: Names): string {
   if (priority === null) return stage === 'Turns' ? 'Nobody has priority' : ''

@@ -23,7 +23,7 @@ export function DevFxControls({ initial }: { initial?: DevFx | undefined }) {
     <div
       role="group"
       aria-label="Table effects (development)"
-      className="fixed bottom-16 left-2 z-50 flex flex-wrap items-center gap-1 rounded-lg border bg-popover p-1.5 text-xs text-popover-foreground shadow-md lg:top-1.5 lg:bottom-auto lg:left-1/2 lg:-translate-x-1/2"
+      className="fixed top-12 left-2 z-50 flex flex-wrap items-center gap-1 rounded-lg border bg-popover p-1.5 text-xs text-popover-foreground shadow-md lg:top-1.5 lg:left-1/2 lg:-translate-x-1/2"
     >
       <span className="px-1 font-medium">Effects</span>
       {DEV_FX.map((kind) => (

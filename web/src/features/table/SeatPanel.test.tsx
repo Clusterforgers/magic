@@ -1,4 +1,4 @@
-// Goal: a seat panel shows a player's name, life, mana pool, library and hand counts, graveyard, exile and command zone, marks the active turn and priority, and says plainly when the player is eliminated, which mulligan step they are on, and where commander damage and tax will go.
+// Goal: a seat panel shows a player's name, life, mana pool, library and hand counts, graveyard, exile and command zone, marks the active turn and priority, and says plainly when the player is eliminated, which mulligan step they are on, and where commander damage and tax will go, and keeps to one line (name, life, counts, zones) for a column of boards.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { PlayState } from '@/play/store'
@@ -7,6 +7,7 @@ import type { LossReason, MulliganStatus, StateView } from '@/protocol/generated
 import { clone, must } from '@/test-utils/batches'
 import { card } from '@/test-utils/cards'
 import { renderTable } from '@/test-utils/tableHarness'
+import { buildFixture } from './dev/fixture'
 import { SeatPanel } from './SeatPanel'
 
 /** The fixture state with its view changed by `edit`. */
@@ -244,5 +245,84 @@ describe('graveyard and exile', () => {
     const dialog = await screen.findByRole('dialog', { name: /exile/i })
     expect(dialog).toHaveTextContent('Exiled A')
     expect(dialog).not.toHaveTextContent('Exiled C')
+  })
+})
+
+describe('the one-line variant', () => {
+  const line = (seat: number, edit: (view: StateView) => void = () => undefined) =>
+    renderTable({ seats: 4, ui: <SeatPanel seat={seat} size="normal" variant="line" />, state: edited(edit) })
+
+  it('keeps the root of a panel: its name, its marks for the decision layer and the data of the seat', () => {
+    line(1)
+    const bo = panel('Bo')
+    expect(bo).toHaveAttribute('data-seat', '1')
+    expect(bo).toHaveAttribute('data-variant', 'line')
+    expect(bo).toHaveAttribute('data-active', 'true')
+    expect(within(bo).getByRole('heading', { name: 'Bo' })).toBeInTheDocument()
+  })
+
+  it('says life, hand and library in one line, with the zones as small buttons', () => {
+    line(2)
+    const cy = panel('Cy')
+    expect(cy).toHaveTextContent('Life 36')
+    expect(cy).toHaveTextContent('Hand 7')
+    expect(cy).toHaveTextContent('Library 46')
+    expect(within(cy).getByRole('button', { name: /^Graveyard 5/ })).toBeEnabled()
+    expect(within(cy).getByRole('button', { name: /^Exile 1/ })).toBeEnabled()
+    // No command zone, mana pool or commander note: those are for the whole panel.
+    expect(cy.querySelector('[data-slot="commander-stats"]')).toBeNull()
+    expect(within(cy).queryByRole('group', { name: 'Mana pool' })).toBeNull()
+  })
+
+  it('marks you, the active turn and priority as small badges', () => {
+    line(0)
+    expect(panel('Alice (you)')).toHaveTextContent('you')
+    expect(panel('Alice (you)')).toHaveTextContent('Has priority')
+  })
+
+  it('marks the active turn', () => {
+    line(1)
+    expect(panel('Bo')).toHaveTextContent('Active turn')
+  })
+
+  it('shows the mana pool only while there is mana in it', () => {
+    line(0)
+    expect(within(panel('Alice (you)')).getByRole('group', { name: 'Mana pool' })).toBeInTheDocument()
+  })
+
+  it('shows red life of 5 or less, the elimination and the mulligan step', () => {
+    line(3, (view) => {
+      must(view.players[3]).life = 4
+      must(view.players[3]).lost = 'ZeroLife'
+      view.stage = 'Mulligan'
+    })
+    const dee = panel('Dee')
+    expect(dee).toHaveAttribute('data-eliminated', 'true')
+    expect(dee).toHaveTextContent('Eliminated: ')
+    expect(dee.querySelector('.text-destructive.font-bold')).toHaveTextContent('4')
+    expect(dee.querySelector('[data-slot="mulligan"]')).toHaveTextContent('Mulligan: ')
+  })
+
+  it('has the panel of the viewer light up on their own turn, like the whole panel', () => {
+    renderTable({
+      fixture: buildFixture({ seats: 4, active: 0, permanents: 2 }),
+      ui: <SeatPanel seat={0} size="normal" variant="line" />,
+    })
+    expect(panel('Alice (you)')).toHaveClass('your-turn-cue')
+  })
+})
+
+describe('the viewer’s hand', () => {
+  it('is in the panel by default, and left to the hand dock when the table says so', () => {
+    const { unmount } = renderTable({ seats: 2, ui: <SeatPanel seat={0} size="normal" /> })
+    expect(within(panel('Alice (you)')).getByRole('list', { name: "Alice's hand" })).toBeInTheDocument()
+    unmount()
+    renderTable({ seats: 2, ui: <SeatPanel seat={0} size="normal" hand={false} /> })
+    expect(within(panel('Alice (you)')).queryByRole('list', { name: "Alice's hand" })).toBeNull()
+  })
+
+  it('leaves the card backs of another seat alone either way', () => {
+    renderTable({ seats: 2, ui: <SeatPanel seat={1} size="normal" hand={false} /> })
+    expect(panel('Bo').querySelector('[data-slot="hand-backs"]')).not.toBeNull()
   })
 })

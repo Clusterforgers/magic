@@ -11,6 +11,8 @@ interface CardFaceProps {
   object: ObjectView
   role: CombatRole | null
   size: CardSize
+  /** The box comes from an enclosing row (`Card` `fit`); `size` then only picks which parts of the face are drawn. */
+  fit?: boolean
   /** Keep a tapped card upright, as the preview does: it says "tapped" in words instead. */
   upright?: boolean
   /** What the active prompt writes on the card, such as "At Ana"; drawn after the status labels. */
@@ -21,7 +23,7 @@ interface CardFaceProps {
  * What a card looks like: name, cost, a place for art, type line and power/toughness, in its colour. Plain
  * `span`s so it can sit inside a button. Tapped is a quarter turn plus the word "Tapped", never colour alone.
  */
-export function CardFace({ object, role, size, upright = false, note }: CardFaceProps) {
+export function CardFace({ object, role, size, fit = false, upright = false, note }: CardFaceProps) {
   const classes = SIZE[size]
   const tapped = object.permanent?.tapped === true
   const frame = frameOf(object)
@@ -35,7 +37,7 @@ export function CardFace({ object, role, size, upright = false, note }: CardFace
       data-frame={frame}
       className={cn(
         'relative flex h-(--card-h) w-(--card-w) flex-col overflow-hidden rounded-md border-2 text-left text-card-foreground shadow-sm ring-1 ring-foreground/15 motion-safe:transition-transform',
-        classes.vars,
+        fit ? null : classes.vars,
         FRAME[frame],
         tapped && !upright && 'rotate-90',
       )}

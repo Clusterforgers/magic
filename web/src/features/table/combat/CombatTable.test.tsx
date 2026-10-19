@@ -109,12 +109,12 @@ describe('the lines over the table', () => {
     expect(table.container.querySelector('[data-layer="ghost"]')).toHaveClass('opacity-30')
   })
 
-  it('is inside the table column, which is positioned, with the centre strip stacked above the lines', () => {
+  it('is inside the table grid, which is positioned and has a stacking context of its own, with the shared strip above the lines', () => {
     const { table } = scene()
     const overlay = must(table.overlay())
-    expect(overlay.parentElement).toHaveClass('relative')
-    const centre = must(table.container.querySelector('[data-slot="banner"]')).closest('.z-20')
-    expect(centre).not.toBeNull()
+    expect(overlay.parentElement).toHaveAttribute('data-slot', 'table-grid')
+    expect(overlay.parentElement).toHaveClass('relative', 'isolate')
+    expect(must(table.container.querySelector('[data-region="shared"]'))).toHaveClass('z-20')
     expect(overlay.querySelector('[data-layer="lines"]')).toHaveClass('z-10')
     expect(overlay.querySelector('[data-layer="ghost"]')).toHaveClass('z-30')
   })

@@ -115,7 +115,7 @@ Arena puts the opponent on top, your hand on the bottom edge rising on hover, th
 |---|---|---|
 | top bar | home, turn badge, mini phase pips, menu (layout, stops, Full Control, theme, Concede) | 44 px |
 | opponents | a pod and board per opponent | `minmax(0, 1fr)` |
-| shared | stack chips, ticker, prompt line; a long prompt grows into a sheet of at most 40 dvh over the own board, never over the hand or controls | `clamp(56px, 9dvh, 88px)` |
+| shared | stack chips, ticker, prompt line; a long prompt grows up into a sheet of at most 40 dvh over the opponents' board, beside the pod column, never over your board (its cards are what a prompt asks you to click), the hand or the controls | `clamp(56px, 9dvh, 88px)` |
 | own | pod, then creatures, other, lands | `minmax(0, 1.15fr)` |
 | hand dock | overlapping fan, 62% of each card showing; hover or focus lifts it 40% and opens the preview | `clamp(112px, 17dvh, 200px)` |
 | controls dock | pass controls (button 44 px or more, End turn, menu) and the stop ladder, one row with a Mine or Theirs switch, with Full Control | bottom right |
@@ -184,7 +184,7 @@ Each is 45 to 60 minutes; "After" names what must be done first and what runs al
 | U3 | Table grid | `GameTable.tsx`, `TableGrid.tsx`, `TopBar.tsx`, `SideTabs.tsx`, `layout.ts`, `e2e/fit.spec.ts` | U1, U2 | no page scroll at 2, 4, 6 seats, six sizes; hand and pass inside the viewport |
 | U4 | Pods, rows, hand | `SeatPod.tsx`, `Battlefield.tsx`, `HandDock.tsx`, `CardStack.tsx`, `cardSize.ts` | U3 | 40 permanents a seat at 1280x720 without zone scroll; no text under 11 px; `perf.test.tsx` green |
 | U5 | Controls dock | `ControlsDock.tsx`, `PassControls.tsx`, `StopLadder.tsx`, `TopBarMenu.tsx` | U3; with U4 | pass 44 px bottom right; at most 5 visible controls; key tests green |
-| U6 | Turn feedback | `table/turn/*`, `CentreStrip.tsx` | U3; with U4 | the Turn and focus table; feed leak test; CSS test |
+| U6 | Turn feedback | `table/turn/*`, `SharedStrip.tsx` | U3; with U4 | the Turn and focus table; feed leak test; CSS test |
 | U7 | Server model | `registry.rs`, `seats.rs`, `lobby.rs`, a migration, `docs/server.md` | none | visibility, open seats, claim and code, tested |
 | U8 | Server endpoints | `api.rs`, `server.rs`, `rest.rs`, bindings | U7 | lobbies, join, leave, release; privacy and throttle tests |
 | U9 | Browser page | `features/browser/*`, `routes/index.tsx`, `net/api.ts` | U1, U8 | the browser section, tested and photographed |
