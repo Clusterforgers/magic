@@ -126,14 +126,15 @@ pub struct Counts {
 
 impl Counts {
     fn add(&mut self, support: Support, copies: u32) {
-        self.total += copies;
-        match support {
-            Support::Verified => self.verified += copies,
-            Support::Partial => self.partial += copies,
-            Support::Manual => self.manual += copies,
-            Support::Stale => self.stale += copies,
-            Support::Unplayable => self.unplayable += copies,
-        }
+        self.total = self.total.saturating_add(copies);
+        let slot = match support {
+            Support::Verified => &mut self.verified,
+            Support::Partial => &mut self.partial,
+            Support::Manual => &mut self.manual,
+            Support::Stale => &mut self.stale,
+            Support::Unplayable => &mut self.unplayable,
+        };
+        *slot = slot.saturating_add(copies);
     }
 }
 
@@ -238,9 +239,10 @@ impl DeckReport {
 fn merged(lines: &[DeckLine]) -> BTreeMap<(DeckZone, String), u32> {
     let mut merged = BTreeMap::new();
     for line in lines.iter().filter(|line| line.count > 0) {
-        *merged
+        let copies = merged
             .entry((line.zone, line.oracle_id.to_ascii_lowercase()))
-            .or_insert(0u32) += line.count;
+            .or_insert(0u32);
+        *copies = copies.saturating_add(line.count);
     }
     merged
 }

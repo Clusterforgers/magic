@@ -134,7 +134,7 @@ The design is in [arena-flow.md](arena-flow.md).
 
 ## REST bodies
 
-The account endpoints of `mtg-server` take their bodies from `mtg_protocol::rest`, so the web gets them from the bindings.
+The account, card and deck endpoints of `mtg-server` take their bodies from `mtg_protocol::rest`, so the web gets them from the bindings.
 
 - `Credentials {username, password}` is the request of `register` and `login`. Unknown fields are refused and `Debug` prints the password as `<redacted>`.
 - `UserView {id, username}` is the answer of `register`, `login` and `GET /api/auth/me`.

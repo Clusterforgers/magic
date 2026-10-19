@@ -770,6 +770,27 @@ fn the_report_keeps_its_wire_shape() {
 }
 
 #[test]
+fn absurd_counts_saturate_instead_of_overflowing() {
+    let lines = [
+        line(Main, "Forest", u32::MAX),
+        line(Main, "Forest", u32::MAX),
+        line(Sideboard, "Forest", u32::MAX),
+        line(Commander, "Atraxa, Praetors' Voice", u32::MAX),
+    ];
+    for format in ["freeform", "commander", "modern"] {
+        let found = report(format, &lines);
+        assert_eq!(found.summary.counts.total, u32::MAX, "{format}");
+        assert_eq!(found.cards.iter().map(|c| c.count).max(), Some(u32::MAX));
+    }
+    let hash = |lines: &[DeckLine]| mtg_cards::deck::deck_hash(lines);
+    assert_eq!(
+        hash(&lines),
+        hash(&lines[1..]),
+        "copies of a card in a zone are summed, up to the largest count"
+    );
+}
+
+#[test]
 fn the_same_deck_gives_the_same_report_from_any_order_of_input() {
     let a = report(
         "commander",

@@ -164,8 +164,7 @@ type Cards = BTreeMap<String, CardFacts>;
 fn copies_in(deck: &Deck, zone: DeckZone) -> u32 {
     deck.iter()
         .filter(|((z, _), _)| *z == zone)
-        .map(|(_, count)| *count)
-        .sum()
+        .fold(0u32, |all, (_, count)| all.saturating_add(*count))
 }
 
 /// The cards of the given zones with their facts, ordered by name, one entry per zone and card.
@@ -400,7 +399,7 @@ fn copy_limits(
     let mut totals: BTreeMap<&str, (DeckZone, u32)> = BTreeMap::new();
     for (zone, id, count, _) in cards_in(deck, cards, zones) {
         let entry = totals.entry(id).or_insert((zone, 0));
-        entry.1 += count;
+        entry.1 = entry.1.saturating_add(count);
     }
     let mut over: Vec<(String, Issue)> = Vec::new();
     for (id, (zone, copies)) in totals {
@@ -489,7 +488,7 @@ fn commander(deck: &Deck, cards: &Cards, issues: &mut Vec<Issue>) {
         }
     }
 
-    let size = copies_in(deck, DeckZone::Main) + seats;
+    let size = copies_in(deck, DeckZone::Main).saturating_add(seats);
     if size != COMMANDER_SIZE {
         issues.push(Issue::deck(
             IssueCode::DeckSize,
