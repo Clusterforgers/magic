@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { isJoinCode, normalizeCode } from './format'
+import { CODE_SHAPE } from './joinErrors'
 import type { OnJoinCode } from './useJoinGame'
 
 const PROBLEM_ID = 'join-code-problem'
@@ -44,9 +45,7 @@ export function JoinWithCode({
     if (pending || busy) return
     const code = normalizeCode(typed)
     if (!isJoinCode(code)) {
-      setProblem(
-        code === '' ? 'Type the code the host gave you.' : 'A code is 8 letters and digits, like K7M2-9QXA.',
-      )
+      setProblem(code === '' ? 'Type the code the host gave you.' : CODE_SHAPE)
       return
     }
     setProblem(null)

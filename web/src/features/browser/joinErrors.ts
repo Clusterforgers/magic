@@ -20,6 +20,9 @@ export const NOT_OPEN = 'That game is not open any more. The list shows the game
  */
 export const NO_GAME_WITH_CODE = 'No open game with that code.'
 
+/** What a join code looks like, said to someone whose text cannot be one (checked before the server is asked). */
+export const CODE_SHAPE = 'A code is 8 letters and digits, like K7M2-9QXA.'
+
 /** The words for a failed `joinGame`; every other code keeps its sentence from `describeLobbyError`. */
 export function joinFailure(error: unknown): JoinFailure {
   if (error instanceof LobbyError) {
