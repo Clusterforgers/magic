@@ -148,7 +148,7 @@ impl RandomBot {
                 let wanted = options.min as usize + self.rng.index(spread);
                 Answer::ChooseTargets(TargetChoice::Targets(self.pick(&options.legal, wanted)))
             }
-            DecisionKind::ChooseMode(options) => Answer::ChooseMode(ModeChoice(
+            DecisionKind::ChooseMode(options) => Answer::ChooseMode(ModeChoice::Modes(
                 options
                     .modes
                     .iter()

@@ -383,6 +383,7 @@ mod tests {
                     player: cx.controller(),
                     kind: DecisionKind::YesNo(YesNoOptions {
                         source: cx.scope.source.id,
+                        text: String::new(),
                     }),
                 })),
                 [(_, Choice::YesNo(yes))] => Ok(Run::events(if *yes {

@@ -177,7 +177,8 @@ fn answers() -> Vec<Answer> {
         ])),
         Answer::ChooseTargets(TargetChoice::Targets(Vec::new())),
         Answer::ChooseTargets(TargetChoice::Cancel),
-        Answer::ChooseMode(ModeChoice(vec![0, 2])),
+        Answer::ChooseMode(ModeChoice::Modes(vec![0, 2])),
+        Answer::ChooseMode(ModeChoice::Cancel),
         Answer::ChooseNumber(NumberChoice(4)),
         Answer::DivideAmount(DivideChoice(vec![
             (Target::Player(PlayerId(0)), 2),
@@ -285,6 +286,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
 }
 
 /// The decisions spells and abilities added, and a priority decision that offers an ability.
+#[allow(clippy::too_many_lines)]
 fn pipeline_decision_kinds() -> Vec<DecisionKind> {
     let (a, b) = (ObjectId(3), ObjectId(4));
     vec![
@@ -327,6 +329,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             min: 1,
             max: 2,
             repeat: false,
+            can_cancel: true,
         }),
         DecisionKind::ChooseNumber(NumberOptions {
             source: b,
@@ -348,7 +351,10 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             source: b,
             cards: vec![a, b],
         }),
-        DecisionKind::YesNo(YesNoOptions { source: b }),
+        DecisionKind::YesNo(YesNoOptions {
+            source: b,
+            text: "Pay {1}?".into(),
+        }),
         DecisionKind::ChooseOption(OptionOptions {
             source: b,
             options: vec![
@@ -356,6 +362,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                 ChoiceOption::Color(Color::Red),
                 ChoiceOption::Label("Goblin".into()),
             ],
+            text: "Choose a creature type.".into(),
         }),
         DecisionKind::ChooseCosts(CostsOptions {
             source: b,
@@ -1283,6 +1290,68 @@ fn every_event_of_the_pipeline_round_trips_as_logged_and_in_a_batch() {
 }
 
 #[test]
+fn the_question_of_a_yes_no_or_option_decision_is_left_out_while_empty_and_a_mode_decision_says_if_it_can_be_backed_out_of()
+ {
+    let source = ObjectId(4);
+    let shape = |kind: DecisionKind| {
+        serde_json::to_value(Decision {
+            player: PlayerId(0),
+            kind,
+        })
+        .unwrap()["kind"]
+            .clone()
+    };
+    assert_eq!(
+        shape(DecisionKind::YesNo(YesNoOptions {
+            source,
+            text: String::new(),
+        })),
+        json!({"YesNo": {"source": 4}})
+    );
+    assert_eq!(
+        shape(DecisionKind::YesNo(YesNoOptions {
+            source,
+            text: "Pay {1}?".into(),
+        })),
+        json!({"YesNo": {"source": 4, "text": "Pay {1}?"}})
+    );
+    assert_eq!(
+        shape(DecisionKind::ChooseOption(OptionOptions {
+            source,
+            options: vec![ChoiceOption::Color(Color::Red)],
+            text: String::new(),
+        })),
+        json!({"ChooseOption": {"source": 4, "options": [{"Color": "Red"}]}})
+    );
+    assert_eq!(
+        shape(DecisionKind::ChooseMode(ModeOptions {
+            source,
+            modes: vec![ModeOption {
+                index: 1,
+                label: None,
+            }],
+            min: 1,
+            max: 1,
+            repeat: false,
+            can_cancel: false,
+        })),
+        json!({"ChooseMode": {
+            "source": 4, "modes": [{"index": 1, "label": null}],
+            "min": 1, "max": 1, "repeat": false, "can_cancel": false
+        }})
+    );
+    // A decision without a question still parses, with an empty one.
+    let old: DecisionKind = serde_json::from_value(json!({"YesNo": {"source": 4}})).unwrap();
+    assert_eq!(
+        old,
+        DecisionKind::YesNo(YesNoOptions {
+            source,
+            text: String::new(),
+        })
+    );
+}
+
+#[test]
 fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
     let target = Target::Object(ObjectRef {
         id: ObjectId(9),
@@ -1318,8 +1387,12 @@ fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
             json!({"ChooseTargets": "Cancel"}),
         ),
         (
-            Answer::ChooseMode(ModeChoice(vec![0, 2])),
-            json!({"ChooseMode": [0, 2]}),
+            Answer::ChooseMode(ModeChoice::Modes(vec![0, 2])),
+            json!({"ChooseMode": {"Modes": [0, 2]}}),
+        ),
+        (
+            Answer::ChooseMode(ModeChoice::Cancel),
+            json!({"ChooseMode": "Cancel"}),
         ),
         (
             Answer::ChooseNumber(NumberChoice(4)),

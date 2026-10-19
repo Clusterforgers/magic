@@ -32,12 +32,20 @@ pub struct ModeOptions {
     pub max: u32,
     /// The same mode may be chosen more than once.
     pub repeat: bool,
+    /// Whether the cast or activation may still be backed out of: nothing is logged until it is paid for. A triggered
+    /// ability that chooses its modes as it goes on the stack cannot (CR 603.3c).
+    pub can_cancel: bool,
 }
 
-/// The modes chosen, by index, in the order they happen.
+/// The answer to a mode decision.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
-pub struct ModeChoice(pub Vec<usize>);
+pub enum ModeChoice {
+    /// These modes, by index, in the order they happen: between `min` and `max` of them.
+    Modes(Vec<usize>),
+    /// Back out of the cast or activation (when `can_cancel`).
+    Cancel,
+}
 
 pub(crate) fn answer(
     _player: PlayerId,
