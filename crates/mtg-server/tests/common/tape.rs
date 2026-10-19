@@ -4,7 +4,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
-use mtg_engine::Decision;
+use mtg_engine::{Answer, Decision};
 use mtg_protocol::{ClientMessage, DecisionId, EventBatch, ServerMessage};
 use mtg_server::GameHandle;
 use tokio::sync::mpsc::Receiver;
@@ -33,14 +33,15 @@ impl Tape {
         Tape { log, task }
     }
 
-    /// Like [`Tape::listen`] for a seat played by a bot: it answers each decision it is sent with the harmless answer
-    /// (a pass for priority) after a pause, the n-th decision after `think[n]` (the list repeats).
+    /// Like [`Tape::listen`] for a seat played by a bot: it answers each decision it is sent with what `brain` makes
+    /// of it after a pause, the n-th decision after `think[n]` (the list repeats).
     pub fn play(
         mut inbox: Receiver<ServerMessage>,
         since: Instant,
         handle: GameHandle,
         seat: PlayerId,
         think: Vec<Duration>,
+        brain: fn(&Decision) -> Answer,
     ) -> Tape {
         let log = Arc::new(Mutex::new(Vec::new()));
         let writer = Arc::clone(&log);
@@ -48,7 +49,7 @@ impl Tape {
             let mut asked = 0;
             while let Some(message) = inbox.recv().await {
                 if let ServerMessage::Decision { id, decision, .. } = &message {
-                    let (id, answer) = (*id, super::passive(decision));
+                    let (id, answer) = (*id, brain(decision));
                     let pause = think[asked % think.len()];
                     asked += 1;
                     let handle = handle.clone();

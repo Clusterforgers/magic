@@ -3,7 +3,9 @@
 //! A seat that can act makes the table wait for a human, so a seat passed for at once would show by its pace that it
 //! holds nothing. At a default window ([`crate::windows`]) the table therefore waits a human-like time first and then
 //! passes as the seat's own step, batch and save ([`crate::running::Running::fall_back`]), the way it would for a seat
-//! that could act and passed. The wait is wall clock only: the log, the event order and the state hash do not depend on
+//! that could act and passed. The one default window it spares is the seat's own main phase with an empty stack, where
+//! what a seat holds shows anyway (a land or a spell is played in plain sight) and the pass is at once. The wait is wall
+//! clock only: the log, the event order and the state hash do not depend on
 //! it, and a game resumed from its log starts without one.
 //!
 //! [`Dwell`] is the setting (`MTG_DWELL_MS`). [`Waits`] draws the waits of one game from an RNG of its own that the

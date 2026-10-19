@@ -4,7 +4,7 @@
 //! All of them work through the same path as a seat's own answer ([`crate::running::Running::answer`]), so what a
 //! pass or a timeout does to the log, the store and every projection is exactly what the seat's click would have done.
 //! When a seat is asked is decided in [`crate::windows`] and when a yield stops in [`crate::yields`], alone. A seat that
-//! cannot act at a default window is passed for the same way once its dwell ([`crate::dwell`]) is over.
+//! cannot act at a window where it waits is passed for the same way once its dwell ([`crate::dwell`]) is over.
 
 use std::time::Duration;
 
@@ -39,7 +39,8 @@ pub struct Pace {
     pub response: Option<Duration>,
     /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`); `None` is no clock.
     pub blocks: Option<Duration>,
-    /// How long the table waits before it passes for a seat that cannot act at a default window (`MTG_DWELL_MS`).
+    /// How long the table waits before it passes for an idle seat at a window of the default table, its own main phase
+    /// with an empty stack aside (`MTG_DWELL_MS`).
     pub dwell: Dwell,
 }
 
@@ -121,8 +122,8 @@ impl<S: EventStore> GameActor<S> {
     }
 
     /// Answers for the seat whose clock ran out, with a pass or no blocks, as if the seat had. The same step passes for a
-    /// seat that cannot act at a default window once its dwell is over: the decision was never sent, and the pass is
-    /// saved, projected and sent like the seat's own, as a batch of its own.
+    /// seat that cannot act once its dwell is over: the decision was never sent, and the pass is saved, projected and
+    /// sent like the seat's own, as a batch of its own.
     pub(crate) async fn expire(&mut self) -> Result<(), Fatal> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
@@ -200,8 +201,8 @@ impl<S: EventStore> GameActor<S> {
     }
 
     /// Settles what a game that is starting or resumed from its log left pending: if the windows pass for the seat
-    /// it waits on, it is passed for before any client connects. A seat that cannot act at a default window waits
-    /// for a dwell that starts now, like one that meets such a window while the game runs.
+    /// it waits on, it is passed for before any client connects. A seat that must wait at its window gets a dwell that
+    /// starts now, like one that meets such a window while the game runs.
     pub(crate) async fn start_up(&mut self) -> Result<(), Fatal> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());

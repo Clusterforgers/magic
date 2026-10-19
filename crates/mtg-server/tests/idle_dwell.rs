@@ -1,4 +1,4 @@
-//! Goal: a seat that cannot act at a window of the default table waits a dwell and is then passed for as a batch of its own, while every other pass stays at once and a seat that can act, holds a stop, is in Full Control or yields is not made to wait; a round of idle seats waits one dwell and then short staggers within a cap; a seat's own command ends its dwell and the rules decide again while anything else leaves it alone; a failed save at the end of a dwell is retried; and the wait is wall clock only, so bot games and resumed games write the log of the game without it.
+//! Goal: a seat that cannot act at a window where it waits (the declare attackers and declare blockers steps, a spell on the stack) waits a dwell and is then passed for as a batch of its own, while its own main phase with an empty stack and every other pass stay at once, and a seat that can act, holds a stop, is in Full Control or yields is not made to wait; a round of idle seats waits one dwell and then short staggers within a cap; a seat's own command ends its dwell and the rules decide again while anything else leaves it alone; a failed save at the end of a dwell is retried; and the wait is wall clock only, so bot games and resumed games write the log of the game without it.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -9,6 +9,7 @@ use common::{
     Bot, FlakyStore, Tape, game_id, kind, ms, passive, play_bots, reference_windows, roomy, seat,
     table_setup,
 };
+use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::turn::Step;
 use mtg_engine::{Answer, GameSetup};
@@ -18,8 +19,8 @@ use mtg_protocol::{
 use mtg_server::{
     Dwell, EventStore, GameConfig, GameHandle, Pace, resume_game_with, spawn_game_with,
 };
-use mtg_testkit::Scenario;
-use mtg_testkit::cards::{free_creature, giant};
+use mtg_testkit::cards::{forest, free_creature, giant};
+use mtg_testkit::{Scenario, ready};
 use rstest::rstest;
 use tokio::time::Instant;
 
@@ -32,10 +33,36 @@ fn quiet(seats: usize) -> Scenario {
     scenario
 }
 
+/// A library that opens with a Forest and goes on with giants: its owner can play a land the turn it draws it.
+fn forest_first() -> Vec<std::sync::Arc<mtg_cards::CardDefinition>> {
+    let mut cards = vec![forest()];
+    cards.extend(vec![giant(); 29]);
+    cards
+}
+
 /// [`quiet`] with a creature that costs nothing in the hand of seat 0, which can then act at its main phase.
 fn with_a_play(seats: usize) -> GameSetup {
     quiet(seats)
         .hand(0, [free_creature("Spare Bear", 2, 2)])
+        .setup()
+        .unwrap()
+}
+
+/// [`with_a_play`] where seat 1 draws a Forest on its first turn, so that the game stops there for a seat that can act.
+fn with_a_play_and_a_land() -> GameSetup {
+    quiet(2)
+        .library(1, forest_first())
+        .hand(0, [free_creature("Spare Bear", 2, 2)])
+        .setup()
+        .unwrap()
+}
+
+/// Seat 0 is about to attack seat 1 with a creature: the declare attackers step of turn 2 opens on its declaration.
+/// Nobody holds a card, so no seat can act in the windows that follow.
+fn combat(seats: usize) -> GameSetup {
+    quiet(seats)
+        .at(2, 0, Step::DeclareAttackers)
+        .battlefield(0, [ready(free_creature("Raider", 2, 2))])
         .setup()
         .unwrap()
 }
@@ -141,6 +168,20 @@ impl Table {
         self.answer(from, Answer::PayMana(PayChoice::Auto)).await;
     }
 
+    /// Seat 0 attacks seat 1 with every creature that can.
+    async fn attack(&self) {
+        let (_, decision) = self.decision(0);
+        let DecisionKind::DeclareAttackers(options) = &decision.kind else {
+            panic!("expected the attack, got {decision:?}");
+        };
+        let attackers = options
+            .attackers
+            .iter()
+            .map(|attacker| (attacker.object, AttackTarget::Player(seat(1))))
+            .collect();
+        self.answer(0, Answer::DeclareAttackers(attackers)).await;
+    }
+
     /// When the batches `from` was sent arrived, in milliseconds since the table opened.
     fn batch_times(&self, from: usize) -> Vec<u64> {
         self.tapes[from]
@@ -183,34 +224,54 @@ fn own(step: Step) -> ClientMessage {
     }
 }
 
+/// The errors `from` was sent.
+fn errors(table: &Table, from: usize) -> Vec<ErrorCode> {
+    table.tapes[from]
+        .heard()
+        .into_iter()
+        .filter_map(|(_, message)| match message {
+            ServerMessage::Error { code, .. } => Some(code),
+            _ => None,
+        })
+        .collect()
+}
+
 // ---------------------------------------------------------------------------------------------------------------
 // The dwell itself
 
 #[tokio::test(start_paused = true)]
-async fn an_idle_main_window_waits_its_dwell_and_the_pass_is_a_batch_of_its_own() {
-    let table = Table::start(quiet(2).setup().unwrap(), config(Dwell::fixed(600)), 2).await;
-    table.run_to(2_500).await;
+async fn a_seat_that_cannot_act_in_combat_waits_its_dwell_and_each_pass_is_a_batch_of_its_own() {
+    let table = Table::start(combat(2), config(Dwell::fixed(600)), 2).await;
+    table.attack().await;
+    table.run_to(5_000).await;
 
     for n in 0..2 {
+        // The attack, then a batch for each of the four windows of the two steps (the last one runs on through the
+        // damage and the quiet turn of seat 1 to the next attack of seat 0).
+        let times = table.batch_times(n);
+        let gaps: Vec<u64> = times.windows(2).map(|pair| pair[1] - pair[0]).collect();
+        assert_eq!(times[0], 0, "the attack is answered at once");
+        assert_eq!(gaps.len(), 4, "seat {n} was sent {times:?}");
         assert_eq!(
-            table.batch_times(n),
-            [0, 600, 1200, 1800, 2400],
-            "seat {n} hears of every pass when its dwell is over"
+            gaps[0], 600,
+            "seat 0 waits a dwell in the declare attackers step"
         );
-        // The steps in between (upkeep, draw, combat, end) pass at once, inside the batch of the pass before them.
+        assert!(
+            (80..=250).contains(&gaps[1]),
+            "seat 1 behind it a stagger: {gaps:?}"
+        );
+        assert_eq!(gaps[2], 600, "the next step is a round of its own");
+        assert!((80..=250).contains(&gaps[3]), "{gaps:?}");
         assert_eq!(
             table.places(n),
             [
-                (1, Step::Main1),
-                (1, Step::Main2),
-                (2, Step::Main1),
-                (2, Step::Main2),
-                (3, Step::Main1)
-            ]
-        );
-        assert!(
-            table.tapes[n].decisions().is_empty(),
-            "nobody is asked for a window it cannot use"
+                (2, Step::DeclareAttackers),
+                (2, Step::DeclareAttackers),
+                (2, Step::DeclareBlockers),
+                (2, Step::DeclareBlockers),
+                (4, Step::DeclareAttackers)
+            ],
+            "seat {n}: the steps in between pass at once, inside the batch of the pass before them"
         );
         let mut next = 0;
         for (_, batch) in table.tapes[n].batches() {
@@ -219,26 +280,49 @@ async fn an_idle_main_window_waits_its_dwell_and_the_pass_is_a_batch_of_its_own(
         }
         assert_eq!(table.log().await.len(), usize::try_from(next).unwrap());
     }
-    // The game waits on the seat that dwells although the seat was told nothing.
-    let status = table.handle.status().await.unwrap();
-    assert_eq!(status.waiting_on, Some(seat(0)));
+    // Seat 0 was asked to attack, at the start and when its next turn came; nobody was asked to pass.
+    assert_eq!(table.decision_times(0).len(), 2);
+    assert_eq!(table.decision_times(1), Vec::<u64>::new());
 }
 
 #[tokio::test(start_paused = true)]
-async fn a_dwell_drawn_between_300_and_900_stays_inside_that_range() {
-    let table = Table::start(quiet(2).setup().unwrap(), config(Dwell::DEFAULT), 2).await;
-    table.run_to(30_000).await;
+async fn a_spell_on_the_stack_makes_every_seat_that_cannot_answer_it_wait() {
+    let table = Table::start(with_a_play_and_a_land(), config(Dwell::fixed(600)), 2).await;
+    table.cast(0).await;
+    table.run_to(5_000).await;
 
-    // The game stops at the first discard, when a seat that never plays holds eight cards: about 33 windows.
     let times = table.batch_times(1);
-    assert!(times.len() >= 25, "{} batches in 30 s", times.len());
-    let gaps: Vec<u64> = times.windows(2).map(|pair| pair[1] - pair[0]).collect();
-    assert!(
-        gaps.iter().all(|gap| (300..=900).contains(gap)),
-        "every wait is one dwell: {gaps:?}"
+    // The opening, the spell paid for, seat 0's pass after a dwell (its own main phase, with its spell on the
+    // stack), seat 1's pass a stagger after it; then the spell resolves and everything else passes at once, up to the
+    // main phase of seat 1, where it can play the land it drew.
+    assert_eq!(times.len(), 4, "{times:?}");
+    assert_eq!(times[..3], [0, 0, 600]);
+    assert!((680..=850).contains(&times[3]), "{times:?}");
+    assert_eq!(
+        table.places(1),
+        [
+            (1, Step::Main1),
+            (1, Step::Main1),
+            (1, Step::Main1),
+            (2, Step::Main1)
+        ]
     );
-    assert!(gaps.iter().any(|gap| *gap < 600), "short ones: {gaps:?}");
-    assert!(gaps.iter().any(|gap| *gap > 600), "and long ones: {gaps:?}");
+    assert_eq!(table.decision_times(1), [times[3]]);
+    // Seat 0's own main phases with an empty stack, before and after the spell, cost no time.
+    assert_eq!(table.decision_times(0), [0, 0]);
+}
+
+#[tokio::test(start_paused = true)]
+async fn a_seats_own_main_phase_with_an_empty_stack_is_passed_for_at_once_whatever_the_dwell() {
+    let setup = quiet(2).library(1, forest_first()).setup().unwrap();
+    let table = Table::start(setup, config(Dwell::fixed(600)), 2).await;
+    table.run_to(5_000).await;
+
+    // Nobody waits: the opening, then every pass of turn 1 up to the main phase of seat 1 on turn 2, where it can
+    // play its land.
+    assert_eq!(table.batch_times(0), [0, 0]);
+    assert_eq!(table.places(0), [(1, Step::Main1), (2, Step::Main1)]);
+    assert_eq!(table.decision_times(1), [0]);
 }
 
 #[tokio::test(start_paused = true)]
@@ -297,8 +381,7 @@ async fn a_stop_or_full_control_window_is_the_seats_own_to_answer_with_no_dwell(
 
 #[tokio::test(start_paused = true)]
 async fn a_yield_is_the_seats_choice_to_hurry_and_waits_for_nothing() {
-    let table = Table::start(with_a_play(2), config(Dwell::fixed(600)), 2).await;
-    table.run_to(1_000).await;
+    let table = Table::start(combat(2), config(Dwell::fixed(600)), 2).await;
     table
         .send(
             0,
@@ -307,28 +390,32 @@ async fn a_yield_is_the_seats_choice_to_hurry_and_waits_for_nothing() {
             },
         )
         .await;
+    table.attack().await;
     table.run_to(3_000).await;
 
-    // The rest of seat 0's turn passes at once, though seat 0 could act in its second main phase; seat 1's two
-    // windows of its own turn are idle and wait, and seat 0 is asked again when its next turn begins.
-    assert_eq!(table.batch_times(1), [0, 1_000, 1_600, 2_200]);
+    // Seat 0 is passed for at once in both declaring steps, though it holds nothing there either way; seat 1 waits a
+    // dwell in each, as a round of its own.
+    assert_eq!(table.batch_times(1), [0, 600, 1_200]);
     assert_eq!(
         table.places(1),
         [
-            (1, Step::Main1),
-            (2, Step::Main1),
-            (2, Step::Main2),
-            (3, Step::Main1)
+            (2, Step::DeclareAttackers),
+            (2, Step::DeclareBlockers),
+            (4, Step::DeclareAttackers)
         ]
     );
-    assert_eq!(table.decision_times(0), [0, 2_200]);
+    assert_eq!(
+        table.decision_times(0),
+        [0, 1_200],
+        "asked to attack again when its next turn comes"
+    );
 }
 
 #[tokio::test(start_paused = true)]
 async fn a_window_that_would_run_a_response_clock_is_passed_after_its_dwell_and_not_at_the_clock() {
     // Seat 1 is not the active player, so a window it was sent would run a 10 s clock; this one it is not sent.
     let table = Table::start(
-        with_a_play(2),
+        with_a_play_and_a_land(),
         GameConfig {
             pace: Pace {
                 response: Some(Duration::from_secs(10)),
@@ -340,18 +427,14 @@ async fn a_window_that_would_run_a_response_clock_is_passed_after_its_dwell_and_
     )
     .await;
     table.cast(0).await;
-    table.run_to(60_000).await;
-    let status = table.handle.status().await.unwrap();
-    assert!(status.events > 50, "the game went on: {status:?}");
-    let gaps: Vec<u64> = table
-        .batch_times(1)
-        .windows(2)
-        .map(|pair| pair[1] - pair[0])
-        .collect();
+    table.run_to(12_000).await;
+
+    let times = table.batch_times(1);
     assert!(
-        gaps.iter().all(|gap| *gap <= 600),
-        "no pass waits for a clock: {gaps:?}"
+        times.last().is_some_and(|last| *last <= 850),
+        "seat 1 was passed for within the dwell and the stagger behind it: {times:?}"
     );
+    assert_eq!(table.places(1).last(), Some(&(2, Step::Main1)));
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -364,24 +447,24 @@ async fn a_window_that_would_run_a_response_clock_is_passed_after_its_dwell_and_
 async fn idle_seats_in_one_round_wait_one_dwell_then_staggers_and_the_round_stops_at_its_cap(
     #[case] seats: usize,
 ) {
-    let table = Table::start(with_a_play(seats), config(Dwell::fixed(900)), seats).await;
-    table.cast(0).await;
-    let cast_at = table.now();
-    table.run_to(cast_at + 10_000).await;
+    let table = Table::start(combat(seats), config(Dwell::fixed(900)), seats).await;
+    table.attack().await;
+    let attacked_at = table.now();
+    table.run_to(attacked_at + 10_000).await;
 
-    // When each pass after the cast reached the last seat: seat 0 first, then every other seat, then seat 0 once more
-    // when the spell has resolved (those are the `seats + 1` passes of the round), then the pass of the next step.
+    // When each pass after the attack reached the last seat: every seat of the declare attackers step passes in turn
+    // (the `seats` passes of the first round), then every seat of the declare blockers step (the second).
     let arrivals: Vec<u64> = table
         .batch_times(seats - 1)
         .into_iter()
-        .filter(|at| *at > cast_at)
-        .map(|at| at - cast_at)
+        .filter(|at| *at > attacked_at)
+        .map(|at| at - attacked_at)
         .collect();
     assert_eq!(
         arrivals[0], 900,
         "the first idle seat of the round waits a dwell"
     );
-    let gaps: Vec<u64> = arrivals[..=seats]
+    let gaps: Vec<u64> = arrivals[..seats]
         .windows(2)
         .map(|pair| pair[1] - pair[0])
         .collect();
@@ -389,18 +472,21 @@ async fn idle_seats_in_one_round_wait_one_dwell_then_staggers_and_the_round_stop
         gaps.iter().all(|gap| *gap <= 250),
         "the others wait a stagger of at most 250: {gaps:?}"
     );
-    assert_eq!(
-        arrivals[seats], 1_200,
+    assert!(
+        arrivals[seats - 1] <= 1_200,
         "and the whole round waits 1200 at most: {arrivals:?}"
     );
-    // Four staggers of 80 or more use the 300 ms left after a dwell of 900 up, so each one after the fourth is 0.
-    assert!(
-        gaps.iter().skip(4).all(|gap| *gap == 0),
-        "past the cap the passes follow at once: {gaps:?}"
-    );
+    if seats >= 6 {
+        // Four staggers of 80 or more use the 300 ms left after a dwell of 900 up, so each one after them is 0.
+        assert_eq!(arrivals[seats - 1], 1_200, "{arrivals:?}");
+        assert!(
+            gaps.iter().skip(4).all(|gap| *gap == 0),
+            "past the cap the passes follow at once: {gaps:?}"
+        );
+    }
     assert_eq!(
-        arrivals[seats + 1],
-        1_200 + 900,
+        arrivals[seats] - arrivals[seats - 1],
+        900,
         "the next step is a round of its own and waits a dwell: {arrivals:?}"
     );
     assert!(
@@ -415,14 +501,11 @@ async fn idle_seats_in_one_round_wait_one_dwell_then_staggers_and_the_round_stop
 // ---------------------------------------------------------------------------------------------------------------
 // What a seat does during its dwell
 
-/// Seat 0 dwells at its first main phase from 0 to 600; at 200 it, or seat 1, sends `message`. Returns the table at 700.
+/// Seat 0 attacks at once and dwells in the declare attackers step from 0 to 600; at 200 `from` sends `message`.
+/// Returns the table at 700.
 async fn disturbed(from: usize, message: ClientMessage, seats: usize) -> Table {
-    let table = Table::start(
-        quiet(seats).setup().unwrap(),
-        config(Dwell::fixed(600)),
-        seats,
-    )
-    .await;
+    let table = Table::start(combat(seats), config(Dwell::fixed(600)), seats).await;
+    table.attack().await;
     table.run_to(200).await;
     assert_eq!(table.batch_times(0), [0], "still dwelling at 200");
     table.send(from, message).await;
@@ -431,7 +514,7 @@ async fn disturbed(from: usize, message: ClientMessage, seats: usize) -> Table {
 }
 
 #[rstest]
-#[case::a_stop_at_this_window(own(Step::Main1))]
+#[case::a_stop_at_this_window(own(Step::DeclareAttackers))]
 #[case::the_next_window(ClientMessage::FullControl { mode: FullControlMode::NextWindow })]
 #[case::full_control_held(ClientMessage::FullControl { mode: FullControlMode::Held })]
 #[case::auto_pass_off(ClientMessage::AutoPass { enabled: false })]
@@ -442,7 +525,7 @@ async fn a_seat_that_asks_for_the_window_during_its_dwell_is_sent_it_at_once(
     let table = disturbed(0, message, 2).await;
     assert_eq!(
         table.decision_times(0),
-        [200],
+        [0, 200],
         "the dwell is over the moment the seat asks"
     );
     assert_eq!(
@@ -473,10 +556,10 @@ async fn a_yield_during_the_dwell_passes_at_once() {
         2,
     )
     .await;
-    // The pass came at 200, with everything the yield passes for; seat 1's idle window of the next turn waits.
+    // The pass came at 200, with everything the yield passes for; seat 1 waits in its turn, as a round of its own.
     assert_eq!(table.batch_times(1), [0, 200]);
-    assert_eq!(table.places(1)[1], (2, Step::Main1));
-    assert_eq!(table.decision_times(0), Vec::<u64>::new());
+    assert_eq!(table.places(1)[1], (2, Step::DeclareAttackers));
+    assert_eq!(table.decision_times(0), [0]);
     table.run_to(900).await;
     assert_eq!(table.batch_times(1), [0, 200, 800]);
 }
@@ -493,7 +576,7 @@ async fn a_concession_during_the_dwell_ends_the_game_and_the_dwell_with_it() {
 #[rstest]
 #[case::chat_from_the_other_seat(1, ClientMessage::Chat { text: "hello".to_owned() })]
 #[case::a_stop_at_another_step(0, own(Step::Main2))]
-#[case::a_stop_of_another_seat_at_this_step(1, own(Step::Main1))]
+#[case::a_stop_of_another_seat(1, own(Step::DeclareAttackers))]
 #[case::a_repeated_resync(0, ClientMessage::Resync)]
 #[case::a_guessed_decision_id(
     0,
@@ -513,7 +596,7 @@ async fn a_concession_during_the_dwell_ends_the_game_and_the_dwell_with_it() {
 async fn nothing_else_moves_a_dwell(#[case] from: usize, #[case] message: ClientMessage) {
     let table = disturbed(from, message, 2).await;
     assert_eq!(
-        table.batch_times(1),
+        table.batch_times(1)[..2],
         [0, 600],
         "the pass comes when the dwell, drawn at the start, is over"
     );
@@ -521,7 +604,7 @@ async fn nothing_else_moves_a_dwell(#[case] from: usize, #[case] message: Client
         table.tapes[0]
             .decisions()
             .iter()
-            .all(|(at, _, _)| ms(*at) >= 600),
+            .all(|(at, _, _)| ms(*at) == 0 || ms(*at) >= 600),
         "and the seat was never sent the window: {:?}",
         table.tapes[0].kinds()
     );
@@ -536,7 +619,7 @@ async fn a_resync_during_the_dwell_hands_over_a_snapshot_and_no_decision() {
         1,
         "{kinds:?}"
     );
-    assert!(!kinds.contains(&"Decision".to_owned()), "{kinds:?}");
+    assert_eq!(table.decision_times(0), [0], "only the attack came");
 }
 
 #[tokio::test(start_paused = true)]
@@ -550,22 +633,14 @@ async fn an_answer_for_a_decision_nobody_was_sent_is_stale_and_changes_nothing()
         2,
     )
     .await;
-    let errors: Vec<ErrorCode> = table.tapes[0]
-        .heard()
-        .into_iter()
-        .filter_map(|(_, message)| match message {
-            ServerMessage::Error { code, .. } => Some(code),
-            _ => None,
-        })
-        .collect();
-    assert_eq!(errors, [ErrorCode::StaleDecision]);
+    assert_eq!(errors(&table, 0), [ErrorCode::StaleDecision]);
 }
 
 #[tokio::test(start_paused = true)]
 async fn the_concession_of_a_third_seat_leaves_the_dwell_of_the_first_alone() {
     let table = disturbed(2, ClientMessage::Concede, 3).await;
     assert_eq!(
-        table.batch_times(1),
+        table.batch_times(1)[..3],
         [0, 200, 600],
         "the concession is a batch of its own; seat 0 is passed for when its dwell is over"
     );
@@ -576,23 +651,16 @@ async fn the_concession_of_a_third_seat_leaves_the_dwell_of_the_first_alone() {
 
 #[tokio::test(start_paused = true)]
 async fn a_pass_that_cannot_be_saved_leaves_the_game_as_it_was_and_is_tried_again() {
-    let table = Table::start(quiet(2).setup().unwrap(), config(Dwell::fixed(600)), 2).await;
+    let table = Table::start(combat(2), config(Dwell::fixed(600)), 2).await;
+    table.attack().await;
     table.run_to(100).await;
-    let opening = table.log().await;
+    let before = table.log().await;
     table.store.fail(true);
     table.run_to(700).await;
 
-    assert_eq!(table.log().await, opening, "nothing was written");
+    assert_eq!(table.log().await, before, "nothing was written");
     assert_eq!(table.batch_times(1), [0], "and nobody was told of a pass");
-    let errors: Vec<ErrorCode> = table.tapes[0]
-        .heard()
-        .into_iter()
-        .filter_map(|(_, message)| match message {
-            ServerMessage::Error { code, .. } => Some(code),
-            _ => None,
-        })
-        .collect();
-    assert_eq!(errors, [ErrorCode::Internal]);
+    assert_eq!(errors(&table, 0), [ErrorCode::Internal]);
     assert_eq!(
         table.handle.status().await.unwrap().waiting_on,
         Some(seat(0))
@@ -649,16 +717,18 @@ async fn bot_games_with_a_dwell_write_the_log_of_the_game_without_one(
 
 #[tokio::test(start_paused = true)]
 async fn a_resumed_game_starts_its_dwell_afresh_and_writes_the_same_log() {
-    let setup = quiet(2).setup().unwrap();
+    let setup = combat(2);
     let whole = Table::start(setup.clone(), config(Dwell::fixed(600)), 2).await;
-    whole.run_to(2_500).await;
+    whole.attack().await;
+    whole.run_to(700).await;
     let uninterrupted = whole.log().await;
-    assert_eq!(whole.batch_times(0).len(), 5);
+    assert_eq!(whole.batch_times(0), [0, 600]);
 
     let first = Table::start(setup.clone(), config(Dwell::fixed(600)), 2).await;
-    first.run_to(1_300).await;
-    assert_eq!(first.batch_times(0), [0, 600, 1200]);
+    first.attack().await;
+    first.run_to(300).await;
     let log_at_the_break = first.log().await;
+    assert_eq!(first.batch_times(0), [0]);
     let store = first.store.clone();
     // Everything of the first run goes: the game ends with its last handle, and its dwell with it.
     drop(first);
@@ -668,23 +738,28 @@ async fn a_resumed_game_starts_its_dwell_afresh_and_writes_the_same_log() {
     let handle = resume_game_with(store.clone(), game_id(1), setup, config(Dwell::fixed(600)))
         .await
         .unwrap();
-    let tapes: Vec<Tape> = {
-        let mut tapes = Vec::new();
-        for n in 0..2 {
-            let inbox = handle.join(seat(n)).await.unwrap();
-            tapes.push(Tape::listen(inbox, resumed_at));
-        }
-        tapes
-    };
-    tokio::time::sleep_until(resumed_at + Duration::from_millis(1_300)).await;
+    let mut tapes = Vec::new();
+    for n in 0..2 {
+        let inbox = handle.join(seat(n)).await.unwrap();
+        tapes.push(Tape::listen(inbox, resumed_at));
+    }
+    // The wait left over from before is not remembered: a full dwell from the resume.
+    tokio::time::sleep_until(resumed_at + Duration::from_millis(500)).await;
     handle.status().await.unwrap();
     tokio::task::yield_now().await;
+    assert_eq!(store.load(game_id(1)).await.unwrap(), log_at_the_break);
+    assert_eq!(tapes[1].batches().len(), 0);
+    assert_eq!(
+        tapes[0].decisions().len(),
+        0,
+        "the window of seat 0 is not handed over by the sync that comes with the join"
+    );
 
-    // The wait left over from before is not remembered: a full dwell from the resume, then one per window.
+    tokio::time::sleep_until(resumed_at + Duration::from_millis(650)).await;
+    handle.status().await.unwrap();
+    tokio::task::yield_now().await;
     let times: Vec<u64> = tapes[1].batches().iter().map(|(at, _)| ms(*at)).collect();
-    assert_eq!(times, [600, 1_200], "after the snapshot, one batch a dwell");
-    let log = store.load(game_id(1)).await.unwrap();
-    assert!(log.len() > log_at_the_break.len());
-    assert_eq!(log, uninterrupted[..log.len()]);
+    assert_eq!(times, [600]);
+    assert_eq!(store.load(game_id(1)).await.unwrap(), uninterrupted);
     assert_eq!(kind(&tapes[1].heard()[0].1), "Welcome");
 }
