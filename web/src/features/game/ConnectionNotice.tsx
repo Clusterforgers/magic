@@ -115,7 +115,7 @@ export function ConnectionNotice({
   const heading = (
     <Heading
       className={cn(
-        standalone ? 'text-xl font-semibold tracking-tight' : 'font-medium',
+        standalone ? 'text-2xl font-semibold tracking-tight' : 'font-medium',
         bad === true && 'text-destructive',
       )}
     >
@@ -137,7 +137,7 @@ export function ConnectionNotice({
     )
   }
   return (
-    <Alert className="gap-2 p-4">
+    <Alert variant={bad === true ? 'destructive' : 'default'} className="gap-2 p-4">
       {heading}
       <AlertDescription className="text-foreground">{body}</AlertDescription>
       <div className="mt-2 flex flex-wrap gap-2">

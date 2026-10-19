@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { CircleAlertIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -117,7 +118,8 @@ export function AuthForm({ mode, next }: AuthFormProps) {
 
       {problems.form === null ? null : (
         <Alert ref={alertRef} tabIndex={-1} variant="destructive" className="outline-none">
-          <AlertDescription className="text-destructive">{problems.form}</AlertDescription>
+          <CircleAlertIcon aria-hidden="true" />
+          <AlertDescription className="text-foreground">{problems.form}</AlertDescription>
         </Alert>
       )}
 
@@ -144,7 +146,7 @@ export function AuthForm({ mode, next }: AuthFormProps) {
           {USERNAME_RULE}
         </p>
         {problems.username === null ? null : (
-          <p id={`${usernameId}-problem`} className="text-xs text-destructive">
+          <p id={`${usernameId}-problem`} className="text-sm text-destructive">
             {problems.username}
           </p>
         )}
@@ -171,14 +173,14 @@ export function AuthForm({ mode, next }: AuthFormProps) {
           {PASSWORD_RULE}
         </p>
         {problems.password === null ? null : (
-          <p id={`${passwordId}-problem`} className="text-xs text-destructive">
+          <p id={`${passwordId}-problem`} className="text-sm text-destructive">
             {problems.password}
           </p>
         )}
       </div>
 
       <div>
-        <Button type="submit" size="lg" disabled={pending}>
+        <Button type="submit" size="lg" loading={pending}>
           {pending ? words.pending : words.submit}
         </Button>
       </div>

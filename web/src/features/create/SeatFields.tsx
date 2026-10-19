@@ -36,7 +36,7 @@ export function SeatFields({
   const nameProblem = problems?.name ?? null
   const deckProblem = problems?.deck ?? null
   return (
-    <li className="rounded-xl bg-card p-3 text-card-foreground ring-1 ring-foreground/10 sm:p-4">
+    <li className="surface p-4">
       <div className="mb-3 flex items-center justify-between gap-2">
         <h3 className="text-sm font-medium">Seat {position}</h3>
         <Button
@@ -64,7 +64,7 @@ export function SeatFields({
             onChange={(event) => onEdit(seat.id, { name: event.target.value })}
           />
           {nameProblem === null ? null : (
-            <p id={`${nameId}-problem`} className="text-xs text-destructive">
+            <p id={`${nameId}-problem`} className="text-sm text-destructive">
               {nameProblem}
             </p>
           )}
@@ -88,7 +88,7 @@ export function SeatFields({
             ))}
           </NativeSelect>
           {deckProblem === null ? null : (
-            <p id={`${deckId}-problem`} className="text-xs text-destructive">
+            <p id={`${deckId}-problem`} className="text-sm text-destructive">
               {deckProblem}
             </p>
           )}

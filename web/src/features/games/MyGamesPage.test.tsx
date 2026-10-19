@@ -111,7 +111,7 @@ describe('the list', () => {
     const app = await openApp({ override: { games: () => new Promise<Response>(() => undefined) } })
     await waitFor(() => expect(app.store.getState().games.status).toBe('loading'))
     expect(screen.getByRole('status')).toHaveTextContent('Loading your games…')
-    expect(screen.getByRole('button', { name: 'Reloading…' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Reloading…' })).toHaveAttribute('aria-disabled', 'true')
   })
 
   it('lists the newest game first, whatever order the server used', async () => {
@@ -172,7 +172,7 @@ describe('when loading fails', () => {
     expect(alert).toHaveTextContent(/cannot check accounts right now/i)
     expect(screen.queryByRole('list', { name: 'Your games' })).toBeNull()
     broken = false
-    await app.user.click(within(alert).getByRole('button', { name: 'Try again' }))
+    await app.user.click(within(alert).getByRole('button', { name: 'Retry' }))
     expect(await screen.findByRole('list', { name: 'Your games' })).toBeInTheDocument()
     expect(screen.queryByRole('alert')).toBeNull()
   })
@@ -239,7 +239,7 @@ describe('reloading', () => {
     hold = true
     await app.user.click(screen.getByRole('button', { name: 'Reload' }))
     const busy = await screen.findByRole('button', { name: 'Reloading…' })
-    expect(busy).toBeDisabled()
+    expect(busy).toHaveAttribute('aria-disabled', 'true')
     expect(list()).toHaveAttribute('aria-busy', 'true')
     expect(rows()).toHaveLength(1) // the old list stays up
     release(

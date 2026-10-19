@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import { PageShell } from '@/components/PageShell'
 import { buttonVariants } from '@/components/ui/button'
 import { useAuth } from '@/features/auth/context'
 import { usePageTitle } from '@/hooks/usePageTitle'
@@ -13,12 +14,12 @@ export function SeatLinkMissing({ gameId }: { gameId?: string }) {
   const title = canSignIn ? 'Open your seat link or sign in' : 'Open your seat link'
   usePageTitle(title)
   return (
-    <div className="mx-auto grid w-full max-w-2xl gap-4 px-4 py-8 sm:px-6">
+    <PageShell className="grid gap-4">
       <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
       <p className="text-muted-foreground">
         This page needs the link made for your seat. It ends in something like{' '}
-        <code className="rounded bg-muted px-1 py-0.5 text-sm">#seat=1&amp;token=…</code>, and the host gets
-        it when the game is created.
+        <code className="rounded-sm bg-muted px-1 py-0.5 text-sm">#seat=1&amp;token=…</code>, and the host
+        gets it when the game is created.
       </p>
       <p className="text-muted-foreground">
         Open that link, or ask the host to send it again. If you did open a seat link, it may have been cut
@@ -44,6 +45,6 @@ export function SeatLinkMissing({ gameId }: { gameId?: string }) {
           Create a new game
         </Link>
       </div>
-    </div>
+    </PageShell>
   )
 }

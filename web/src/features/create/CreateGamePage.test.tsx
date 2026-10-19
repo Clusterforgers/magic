@@ -59,7 +59,7 @@ describe('loading the decks', () => {
     })
     expect(await screen.findByRole('alert')).toHaveTextContent('Cannot load the decks')
     expect(screen.getByRole('alert')).toHaveTextContent(/shutting down or restarting/i)
-    await user.click(button('Try again'))
+    await user.click(button('Retry'))
     expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
     expect(attempts).toBe(2)
   })

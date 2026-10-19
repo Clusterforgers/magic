@@ -64,7 +64,7 @@ export function GameCreated({ created, request, decks, origin, onOpenSeat, onAno
           </p>
         )}
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {mine === undefined ? null : (
           <Button type="button" size="lg" onClick={() => onOpenSeat(mine.seat, mine.token)}>
             Open my seat ({mine.name})
@@ -91,7 +91,7 @@ export function GameCreated({ created, request, decks, origin, onOpenSeat, onAno
         from the lobby; it forgets them when you close the tab.
       </p>
       <div>
-        <Button type="button" variant="ghost" onClick={onAnother}>
+        <Button type="button" variant="outline" onClick={onAnother}>
           Create another game
         </Button>
       </div>

@@ -1,8 +1,8 @@
 import { Link, useNavigate } from '@tanstack/react-router'
-import { Plus } from 'lucide-react'
+import { CircleAlertIcon, Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Badge } from '@/components/ui/badge'
+import { Pill } from '@/components/Pill'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { useAuth, useAuthStore } from '@/features/auth/context'
@@ -169,14 +169,14 @@ export function CreateForm({ api, decks }: CreateFormProps) {
       <fieldset className="grid gap-2">
         <legend className="mb-1 text-sm font-medium">Format</legend>
         <div className="flex flex-wrap gap-2">
-          <label className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm ring-1 ring-foreground/20 has-checked:bg-muted has-checked:ring-primary">
+          <label className="flex min-h-9 items-center gap-2 rounded-lg border border-border-strong px-3 py-2 text-sm has-checked:border-primary has-checked:bg-muted pointer-coarse:min-h-11">
             <input type="radio" name="format" value="normal" defaultChecked className="accent-primary" />
             Normal
           </label>
-          <label className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground opacity-70 ring-1 ring-foreground/10">
+          <label className="flex min-h-9 items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground pointer-coarse:min-h-11">
             <input type="radio" name="format" value="commander" disabled />
             Commander
-            <Badge variant="secondary">coming soon</Badge>
+            <Pill>coming soon</Pill>
           </label>
         </div>
       </fieldset>
@@ -214,7 +214,8 @@ export function CreateForm({ api, decks }: CreateFormProps) {
 
       {showProblems && troubled > 0 ? (
         <Alert variant="destructive">
-          <AlertDescription className="text-destructive">
+          <CircleAlertIcon aria-hidden="true" />
+          <AlertDescription className="text-foreground">
             {troubled === 1 ? 'One seat needs' : `${troubled} seats need`} fixing before the game can be
             created.
           </AlertDescription>
@@ -222,12 +223,13 @@ export function CreateForm({ api, decks }: CreateFormProps) {
       ) : null}
       {failure === null ? null : (
         <Alert ref={failureRef} tabIndex={-1} variant="destructive" className="outline-none">
-          <AlertDescription className="text-destructive">{failure}</AlertDescription>
+          <CircleAlertIcon aria-hidden="true" />
+          <AlertDescription className="text-foreground">{failure}</AlertDescription>
         </Alert>
       )}
 
       <div>
-        <Button type="submit" size="lg" disabled={pending}>
+        <Button type="submit" size="lg" loading={pending}>
           {pending ? 'Creating the game…' : 'Create game'}
         </Button>
       </div>
