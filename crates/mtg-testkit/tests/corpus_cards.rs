@@ -1,4 +1,4 @@
-//! Goal: the 40 corpus cards reach the engine as their support records say (Verified with their abilities, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 40 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -11,21 +11,23 @@ use mtg_cards::CardDefinition;
 use mtg_cards::support::Support;
 use mtg_cards::validate::used_primitives;
 use mtg_core::card::CardType;
+use mtg_core::ids::PlayerId;
 use mtg_core::mana::{ManaCost, ManaType};
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::format::Normal;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, GameSetup};
+use mtg_testkit::cards::{forest, island};
 use mtg_testkit::corpus::{card, corpus};
-use mtg_testkit::{Driver, Scenario, ScriptError, play_game};
+use mtg_testkit::{Driver, Scenario, ScriptError, play_game, ready};
 
 use Support::{Manual, Partial, Verified};
 
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
-/// its definition carries (mana abilities and rules together). The engine runs the plain mana ability,
-/// spells and `{T}` abilities made of drawing, life and damage, and the keywords of combat, so the five
-/// cards that need no more are Verified (the Forest's ability comes from its land type) and a card whose
-/// other abilities are still missing carries its keywords as Partial.
+/// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
+/// `{T}` abilities and triggered abilities made of drawing, life and damage, and the keywords of combat, so the five
+/// cards that need no more are Verified (the Forest's ability comes from its land type) and a card whose other
+/// abilities are still missing carries what runs as Partial: Mulldrifter's draw and flying, not its evoke.
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Partial, 1),
@@ -54,7 +56,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Jace, the Mind Sculptor", Manual, 0),
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
-    ("Mulldrifter", Partial, 1),
+    ("Mulldrifter", Partial, 2),
     ("Opt", Manual, 0),
     ("Pacifism", Manual, 0),
     ("Panharmonicon", Manual, 0),
@@ -152,6 +154,23 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     let burst = reasons("Burst Lightning");
     assert!(burst.contains("Keyword.Kicker"), "{burst}");
     assert!(!burst.contains("Effect.DealDamage"), "{burst}");
+    // Rhystic Study's trigger is there; the payment and the choice it ends in are not.
+    let rhystic = reasons("Rhystic Study");
+    assert!(
+        rhystic.contains("Effect.Pay") && rhystic.contains("Effect.May"),
+        "{rhystic}"
+    );
+    assert!(
+        !rhystic.contains("Trigger.SpellCast") && !rhystic.contains("Ability.Triggered"),
+        "{rhystic}"
+    );
+    // Mulldrifter's draw and flying are covered, its evoke is not.
+    let mulldrifter = reasons("Mulldrifter");
+    assert!(mulldrifter.contains("Keyword.Evoke"), "{mulldrifter}");
+    assert!(
+        !mulldrifter.contains("Keyword.Flying") && !mulldrifter.contains("Effect.Draw"),
+        "{mulldrifter}"
+    );
     // A card whose file models nothing says nothing about the engine.
     assert_eq!(reasons("Panharmonicon"), "");
 }
@@ -206,6 +225,33 @@ fn llanowar_elves_taps_for_green_mana_from_its_assembled_ability() -> Result<(),
     driver.cast("Grizzly Bears")?;
     resolve_the_stack(&mut driver)?;
     assert!(names(driver.state(), Zone::Battlefield).contains(&"Grizzly Bears".to_owned()));
+    Ok(())
+}
+
+#[test]
+fn mulldrifter_draws_two_cards_when_it_enters_from_its_assembled_ability() -> Result<(), ScriptError>
+{
+    let lands = [
+        ready(island()),
+        ready(forest()),
+        ready(forest()),
+        ready(forest()),
+        ready(forest()),
+    ];
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .hand_named(0, ["Mulldrifter"])
+            .battlefield(0, lands),
+    )?;
+    let hand = driver.state().zone(Zone::Hand(PlayerId(0))).len();
+    driver.cast("Mulldrifter")?;
+    resolve_the_stack(&mut driver)?;
+    assert!(names(driver.state(), Zone::Battlefield).contains(&"Mulldrifter".to_owned()));
+    assert_eq!(
+        driver.state().zone(Zone::Hand(PlayerId(0))).len(),
+        hand - 1 + 2,
+        "the creature left the hand and its trigger drew two cards"
+    );
     Ok(())
 }
 

@@ -208,7 +208,7 @@ pub fn play_game_with(
 
 fn observe(checker: &mut Option<InvariantChecker>, engine: &Engine) -> Result<(), Violation> {
     match checker {
-        Some(checker) => checker.observe(engine.state(), engine.events()),
+        Some(checker) => checker.observe_engine(engine),
         None => Ok(()),
     }
 }

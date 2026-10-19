@@ -9,7 +9,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::choose::{Choices, Target};
 use crate::object::ObjectRef;
+use crate::resolve::Bindings;
 use crate::snapshot::Snapshot;
+use crate::triggers::DelayedId;
 
 /// An ability of a permanent, named by the permanent and the ability's index among its card's rules.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -55,6 +57,10 @@ pub struct PutOnStack {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub cause: Option<Cause>,
+    /// The delayed trigger it is one of, for a delayed triggered ability.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub delayed: Option<DelayedId>,
 }
 
 /// An activated or triggered ability on the stack: it exists on its own once put there (CR 113.7a).
@@ -65,6 +71,8 @@ pub struct AbilityObject {
     pub(crate) index: usize,
     pub(crate) rules: Arc<Ability>,
     pub(crate) cause: Option<Cause>,
+    pub(crate) delayed: Option<DelayedId>,
+    pub(crate) bindings: Bindings,
 }
 
 impl AbilityObject {
@@ -92,14 +100,27 @@ impl AbilityObject {
     pub const fn cause(&self) -> Option<&Cause> {
         self.cause.as_ref()
     }
+
+    /// The delayed trigger it is one of, for a delayed triggered ability.
+    pub const fn delayed(&self) -> Option<DelayedId> {
+        self.delayed
+    }
+
+    /// The names a delayed trigger took from the resolution that set it up, which its own resolution starts with.
+    pub const fn bindings(&self) -> &Bindings {
+        &self.bindings
+    }
 }
 
-// The rules follow from the source's card and the index, so hashing them would only cost time.
+// The rules follow from the source's card and the index (or from the delayed trigger, which the log names), so
+// hashing them would only cost time.
 impl Hash for AbilityObject {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.source.hash(state);
         self.snapshot.hash(state);
         self.index.hash(state);
         self.cause.hash(state);
+        self.delayed.hash(state);
+        self.bindings.hash(state);
     }
 }

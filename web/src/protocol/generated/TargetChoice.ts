@@ -4,4 +4,4 @@ import type { Target } from "./Target";
 /**
  * The answer to a target decision.
  */
-export type TargetChoice = { "Targets": Array<Target> } | "Cancel";
+export type TargetChoice = { "Targets": Array<Target> } | "Cancel" | "Remove";

@@ -3,7 +3,7 @@
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{
     CardsChoice, CostsChoice, DivideChoice, ModeChoice, NumberChoice, OptionChoice, OrderChoice,
-    ReplacementChoice, Target, TargetChoice, TriggersChoice, YesNoChoice,
+    ReplacementChoice, Target, TargetChoice, TriggersChoice, TriggersOptions, YesNoChoice,
 };
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{
@@ -33,7 +33,7 @@ impl Driver {
     /// Wraps an engine that has just been created.
     pub fn new(engine: Engine) -> Result<Self, ScriptError> {
         let mut checker = InvariantChecker::new(engine.setup())?;
-        checker.observe(engine.state(), engine.events())?;
+        checker.observe_engine(&engine)?;
         Ok(Driver { engine, checker })
     }
 
@@ -62,16 +62,14 @@ impl Driver {
     /// Applies a raw answer and checks invariants; returns the events it produced.
     pub fn answer(&mut self, answer: Answer) -> Result<Vec<Event>, ScriptError> {
         let events = self.engine.apply(answer)?;
-        self.checker
-            .observe(self.engine.state(), self.engine.events())?;
+        self.checker.observe_engine(&self.engine)?;
         Ok(events)
     }
 
     /// A player concedes and the invariants are checked; returns the events it produced.
     pub fn concede(&mut self, player: PlayerId) -> Result<Vec<Event>, ScriptError> {
         let events = self.engine.concede(player)?;
-        self.checker
-            .observe(self.engine.state(), self.engine.events())?;
+        self.checker.observe_engine(&self.engine)?;
         Ok(events)
     }
 
@@ -136,8 +134,7 @@ impl Driver {
         let events = self
             .engine
             .add_continuous_effect(selector, modification, duration)?;
-        self.checker
-            .observe(self.engine.state(), self.engine.events())?;
+        self.checker.observe_engine(&self.engine)?;
         Ok(events)
     }
 
@@ -264,6 +261,28 @@ impl Driver {
         self.answer(Answer::ChooseTargets(TargetChoice::Targets(
             targets.to_vec(),
         )))
+    }
+
+    /// The pending trigger-order decision's options.
+    pub fn trigger_options(&self) -> Result<&TriggersOptions, ScriptError> {
+        match &self.decision()?.kind {
+            DecisionKind::OrderTriggers(options) => Ok(options),
+            _ => Err(self.unexpected("order-triggers")),
+        }
+    }
+
+    /// Answers the pending trigger-order decision: the triggers by position, in the order they go on the stack.
+    pub fn order_triggers(&mut self, order: &[usize]) -> Result<Vec<Event>, ScriptError> {
+        self.trigger_options()?;
+        self.answer(Answer::OrderTriggers(TriggersChoice(order.to_vec())))
+    }
+
+    /// Chooses no target for the triggered ability at the pending target decision, which removes it (CR 603.3d).
+    pub fn remove_trigger(&mut self) -> Result<Vec<Event>, ScriptError> {
+        if !matches!(self.decision()?.kind, DecisionKind::ChooseTargets(_)) {
+            return Err(self.unexpected("choose-targets"));
+        }
+        self.answer(Answer::ChooseTargets(TargetChoice::Remove))
     }
 
     /// Backs out of the cast or activation at its pending target decision.

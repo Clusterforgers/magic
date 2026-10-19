@@ -212,6 +212,10 @@ fn games_without_spells_hold_none_of_the_new_events_and_log_a_cast_as_it_always_
                     Event::AbilityPutOnStack(_)
                         | Event::AbilityActivated { .. }
                         | Event::AbilityTriggered(_)
+                        | Event::TriggersOrdered { .. }
+                        | Event::TriggerRemoved { .. }
+                        | Event::DelayedTriggerCreated(_)
+                        | Event::DelayedTriggerExpired { .. }
                         | Event::ResolutionBegan { .. }
                         | Event::ChoiceMade { .. }
                         | Event::StepDone { .. }

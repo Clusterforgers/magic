@@ -3,7 +3,7 @@
 use std::collections::BTreeSet;
 
 use mtg_cards::AbilityDef;
-use mtg_cards::ability::{Ability, Timing};
+use mtg_cards::ability::{Ability, Limit, Timing};
 use mtg_cards::cost::CostItem;
 use mtg_cards::refs::TargetSpec;
 use mtg_core::card::CardType;
@@ -105,7 +105,7 @@ fn announceable(
     specs
         .iter()
         .enumerate()
-        .all(|(index, spec)| options_for(state, source, player, index, spec, true).is_some())
+        .all(|(index, spec)| options_for(state, source, player, index, spec, true, None).is_some())
 }
 
 /// Whether the ability `index` of the permanent `object` could be activated by `player` now.
@@ -118,12 +118,16 @@ fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index:
     let Ability::Activated {
         cost,
         timing,
+        limit,
         targets,
         ..
     } = &**rules
     else {
         return false;
     };
+    if *limit == Some(Limit::OncePerTurn) && state.limit_spent(object.reference(), index) {
+        return false;
+    }
     if rules.is_mana_ability() || !cost.0.iter().all(|item| matches!(item, CostItem::Tap)) {
         return false;
     }

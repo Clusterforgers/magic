@@ -23,14 +23,17 @@ use crate::priority::mana_options;
 use crate::resolve::spell_ability;
 use crate::snapshot::snapshot;
 use crate::state::GameState;
+use crate::triggers::PendingTrigger;
 
 /// What is being put on the stack.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum What {
     /// A spell cast from a hand.
     Spell(ObjectId),
     /// An activated ability of a permanent.
     Ability(AbilityRef),
+    /// A triggered ability that waits in the queue; its targets are chosen as it goes on the stack (CR 603.3d).
+    Trigger(Box<PendingTrigger>),
 }
 
 /// A cast or activation that has begun and is not paid for yet.
@@ -50,6 +53,11 @@ impl Pending {
             choices: Choices::default(),
         }
     }
+
+    /// The announcement of a triggered ability that waits in the queue.
+    pub(crate) fn trigger(player: PlayerId, waiting: PendingTrigger) -> Self {
+        Pending::new(player, What::Trigger(Box::new(waiting)))
+    }
 }
 
 /// What the cast or activation needs next.
@@ -63,15 +71,16 @@ pub(crate) enum Next {
 }
 
 /// The object whose abilities and targets are being announced.
-const fn source_of(what: What) -> ObjectId {
+const fn source_of(what: &What) -> ObjectId {
     match what {
-        What::Spell(spell) => spell,
+        What::Spell(spell) => *spell,
         What::Ability(ability) => ability.object,
+        What::Trigger(waiting) => waiting.trigger.source.id,
     }
 }
 
 /// The target specifications of the spell or ability.
-fn specs_of(state: &GameState, what: What) -> &[TargetSpec] {
+fn specs_of<'a>(state: &'a GameState, what: &'a What) -> &'a [TargetSpec] {
     let object = state.object(source_of(what));
     match what {
         What::Spell(_) => object
@@ -80,37 +89,47 @@ fn specs_of(state: &GameState, what: What) -> &[TargetSpec] {
         What::Ability(ability) => object
             .and_then(|o| o.card().rules.get(ability.ability))
             .map_or(&[][..], |rules| rules.targets()),
+        What::Trigger(waiting) => waiting.rules.targets(),
     }
 }
 
 /// The next decision of a pending cast or activation, or the events that complete it.
 ///
-/// A target specification that allows no targets, or has none to offer and needs none, is passed over.
+/// A target specification that allows no targets, or has none to offer and needs none, is passed over. A triggered
+/// ability that cannot be given the targets it needs is removed (CR 603.3d).
 pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
-    let specs = specs_of(state, pending.what);
+    let specs = specs_of(state, &pending.what);
+    let triggered = match &pending.what {
+        What::Trigger(waiting) => Some(waiting),
+        _ => None,
+    };
     while pending.choices.targets.len() < specs.len() {
         let index = pending.choices.targets.len();
-        let Some(options) = options_for(
+        let Some(mut options) = options_for(
             state,
-            source_of(pending.what),
+            source_of(&pending.what),
             pending.player,
             index,
             &specs[index],
-            true,
+            triggered.is_none(),
+            triggered.map(|waiting| &waiting.trigger.cause),
         ) else {
-            return Next::Drop;
+            return triggered.map_or(Next::Drop, |waiting| {
+                Next::Commit(vec![crate::triggers::removing(waiting)])
+            });
         };
         if !asks(&options) {
             pending.choices.targets.push(Vec::new());
             continue;
         }
+        options.triggered = triggered.is_some();
         return Next::Ask(Decision {
             player: pending.player,
             kind: DecisionKind::ChooseTargets(options),
         });
     }
-    match pending.what {
-        What::Spell(spell) => match pay_options(state, pending.player, spell) {
+    match &pending.what {
+        What::Spell(spell) => match pay_options(state, pending.player, *spell) {
             Some(options) => Next::Ask(Decision {
                 player: pending.player,
                 kind: DecisionKind::PayMana(options),
@@ -118,10 +137,28 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             None => Next::Drop,
         },
         What::Ability(ability) => {
-            activation_events(state, pending.player, ability, &pending.choices)
+            activation_events(state, pending.player, *ability, &pending.choices)
                 .map_or(Next::Drop, Next::Commit)
         }
+        What::Trigger(waiting) => {
+            Next::Commit(vec![trigger_event(state, waiting, &pending.choices)])
+        }
     }
+}
+
+/// The event that puts a waiting triggered ability on the stack with the targets its controller chose.
+fn trigger_event(state: &GameState, waiting: &PendingTrigger, choices: &Choices) -> Event {
+    let t = &waiting.trigger;
+    Event::AbilityPutOnStack(Box::new(PutOnStack {
+        object: state.next_object(),
+        source: t.source,
+        snapshot: t.snapshot.clone(),
+        ability: t.ability,
+        controller: t.controller,
+        choices: choices.clone(),
+        cause: Some(t.cause.clone()),
+        delayed: t.delayed,
+    }))
 }
 
 /// The events of activating an ability whose only cost is `{T}`: the tap, the activation and the ability on the stack.
@@ -157,6 +194,7 @@ fn activation_events(
         controller: player,
         choices: choices.clone(),
         cause: None,
+        delayed: None,
     })));
     Some(events)
 }

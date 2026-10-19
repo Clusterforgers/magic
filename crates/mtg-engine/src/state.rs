@@ -1,6 +1,6 @@
 //! The complete game state; only [`apply_event`](crate::fold::apply_event) mutates it.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
@@ -11,10 +11,11 @@ use crate::combat::CombatState;
 use crate::effects::ContinuousEffect;
 use crate::format::FormatRules;
 use crate::hash::stable_hash;
-use crate::object::GameObject;
+use crate::object::{GameObject, ObjectRef};
 use crate::player::Player;
 use crate::priority::PriorityState;
 use crate::resolve::Resolving;
+use crate::triggers::{Delayed, PendingTrigger};
 use crate::turn::TurnState;
 use crate::zones::{Zone, Zones};
 
@@ -61,6 +62,13 @@ pub struct GameState {
     pub(crate) next_timestamp: u64,
     pub(crate) next_object: u64,
     pub(crate) resolving: Option<Resolving>,
+    pub(crate) pending_triggers: Vec<PendingTrigger>,
+    pub(crate) trigger_round: u32,
+    pub(crate) delayed: Vec<Delayed>,
+    pub(crate) next_delayed: u64,
+    pub(crate) limits_spent: BTreeSet<(ObjectRef, usize)>,
+    /// Whether any card of the game has a triggered ability or sets up a delayed one; derived from the setup.
+    pub(crate) triggers_possible: bool,
     pub(crate) result: Option<GameResult>,
 }
 
@@ -150,6 +158,27 @@ impl GameState {
         self.resolving.as_ref()
     }
 
+    /// Triggered abilities that triggered and wait to go on the stack, in the order they triggered.
+    pub fn pending_triggers(&self) -> &[PendingTrigger] {
+        &self.pending_triggers
+    }
+
+    /// Delayed triggered abilities waiting for their event.
+    pub fn delayed(&self) -> &[Delayed] {
+        &self.delayed
+    }
+
+    /// Whether detecting triggers can find anything in this game: a card with a triggered ability or an effect that
+    /// sets one up exists, so a game of vanilla cards pays nothing for them.
+    pub(crate) fn watches(&self) -> bool {
+        self.triggers_possible || !self.delayed.is_empty()
+    }
+
+    /// Whether the once-each-turn ability `ability` of `source` has been used this turn.
+    pub(crate) fn limit_spent(&self, source: ObjectRef, ability: usize) -> bool {
+        self.limits_spent.contains(&(source, ability))
+    }
+
     /// The id the next object created during the game gets (abilities on the stack, and tokens later).
     pub const fn next_object(&self) -> ObjectId {
         ObjectId(self.next_object)
@@ -216,6 +245,11 @@ impl Hash for GameState {
         self.next_timestamp.hash(state);
         self.next_object.hash(state);
         self.resolving.hash(state);
+        self.pending_triggers.hash(state);
+        self.trigger_round.hash(state);
+        self.delayed.hash(state);
+        self.next_delayed.hash(state);
+        self.limits_spent.hash(state);
         self.result.hash(state);
     }
 }

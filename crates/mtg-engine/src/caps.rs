@@ -2,8 +2,8 @@
 //!
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
-//! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells and `{T}` abilities made of
-//! drawing, life and damage, the keywords of combat, and nothing else.
+//! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, `{T}` abilities and triggered
+//! abilities made of drawing, life and damage (and delayed triggers), the keywords of combat, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -15,11 +15,21 @@ const RUNS: &[&str] = &[
     PLAIN_MANA_ABILITY,
     "Ability.Spell",
     "Ability.Activated",
+    "Ability.Triggered",
+    "Ability.Limit",
+    "Trigger.ZoneChange",
+    "Trigger.Attacks",
+    "Trigger.SpellCast",
+    "Trigger.Sacrificed",
+    "Trigger.StepBegins",
+    "Trigger.BecomesTarget",
+    "Trigger.AnyOf",
     "Cost.Tap",
     "Effect.Draw",
     "Effect.DealDamage",
     "Effect.GainLife",
     "Effect.LoseLife",
+    "Effect.DelayedTrigger",
     "Keyword.Flying",
     "Keyword.Reach",
     "Keyword.Menace",
@@ -80,9 +90,17 @@ mod tests {
     #[case::gaining_life("Effect.GainLife", true)]
     #[case::losing_life("Effect.LoseLife", true)]
     #[case::mana_costs_of_abilities("Cost.Mana", false)]
-    #[case::once_a_turn("Ability.Limit", false)]
+    #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_zones("Ability.From", false)]
-    #[case::triggers("Ability.Triggered", false)]
+    #[case::triggers("Ability.Triggered", true)]
+    #[case::zone_changes("Trigger.ZoneChange", true)]
+    #[case::attacks("Trigger.Attacks", true)]
+    #[case::casting("Trigger.SpellCast", true)]
+    #[case::sacrifices("Trigger.Sacrificed", true)]
+    #[case::steps("Trigger.StepBegins", true)]
+    #[case::becoming_a_target("Trigger.BecomesTarget", true)]
+    #[case::either_of_two_events("Trigger.AnyOf", true)]
+    #[case::delayed_triggers("Effect.DelayedTrigger", true)]
     #[case::destroy("Effect.Destroy", false)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]

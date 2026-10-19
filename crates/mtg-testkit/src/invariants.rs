@@ -11,7 +11,7 @@ use mtg_engine::player::Player;
 use mtg_engine::state::Stage;
 use mtg_engine::zones::{Zone, Zones};
 use mtg_engine::{Characteristics, characteristics};
-use mtg_engine::{Event, GameSetup, GameState, apply_event, replay};
+use mtg_engine::{DecisionKind, Engine, Event, GameSetup, GameState, apply_event, replay};
 use thiserror::Error;
 
 /// A broken engine invariant.
@@ -58,6 +58,20 @@ fn zone_error(message: impl Into<String>) -> Violation {
 pub fn check_state(state: &GameState) -> Result<(), Violation> {
     check_zone_index(state)?;
     check_bookkeeping(state)
+}
+
+/// Checks what must hold where the engine has stopped to ask: a player asked for priority has no triggered ability
+/// waiting for the stack, since they go on it before a player would receive priority (CR 117.5, 603.3).
+pub fn check_decision(engine: &Engine) -> Result<(), Violation> {
+    let asked_for_priority = engine
+        .decision()
+        .is_some_and(|d| matches!(d.kind, DecisionKind::Priority(_)));
+    if asked_for_priority && !engine.state().pending_triggers().is_empty() {
+        return Err(Violation::Bookkeeping(
+            "a player has priority while triggered abilities wait for the stack".into(),
+        ));
+    }
+    Ok(())
 }
 
 /// At a decision point no creature that state-based actions would destroy is still on the battlefield:
@@ -180,6 +194,17 @@ fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
             out.id()
         )));
     }
+    if state.stage() != Stage::Finished {
+        for waiting in state.pending_triggers() {
+            let t = waiting.trigger();
+            if !state.is_alive(t.controller) || state.object(t.source.id).is_none() {
+                return Err(book(format!(
+                    "a triggered ability of {:?} waits for the stack but its controller or source has left the game",
+                    t.source
+                )));
+            }
+        }
+    }
     if let Some(resolving) = state.resolving() {
         let id = resolving.object();
         if state.stack().last() != Some(&id) {
@@ -241,6 +266,12 @@ impl InvariantChecker {
             full_every: 1,
             since_full: 0,
         })
+    }
+
+    /// [`observe`](Self::observe) for a live engine, with the checks that depend on the decision it stands at.
+    pub fn observe_engine(&mut self, engine: &Engine) -> Result<(), Violation> {
+        self.observe(engine.state(), engine.events())?;
+        check_decision(engine)
     }
 
     /// Runs the whole-state checks only every `n` calls to [`observe`](Self::observe); per-event checks always run.

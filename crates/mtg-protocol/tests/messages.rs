@@ -34,7 +34,7 @@ use mtg_engine::object::ObjectRef;
 use mtg_engine::snapshot::snapshot;
 use mtg_engine::state::GameResult;
 use mtg_engine::tokens::TokenCreated;
-use mtg_engine::triggers::Triggered;
+use mtg_engine::triggers::{DelayedId, Triggered};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Answer, Decision, Engine, Event};
@@ -308,7 +308,9 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             ],
             min: 0,
             max: 2,
-            can_cancel: true,
+            can_cancel: false,
+            wording: "up to two target creatures".into(),
+            triggered: true,
         }),
         DecisionKind::ChooseMode(ModeOptions {
             source: b,
@@ -367,10 +369,12 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                 TriggerEntry {
                     source: ObjectRef { id: a, counter: 1 },
                     ability: 0,
+                    when: "When it enters the battlefield".into(),
                 },
                 TriggerEntry {
                     source: ObjectRef { id: b, counter: 0 },
                     ability: 2,
+                    when: String::new(),
                 },
             ],
         }),
@@ -1171,17 +1175,32 @@ fn pipeline_events() -> Vec<Event> {
                 subjects: vec![target],
                 snapshots: vec![shot.clone()],
             }),
+            delayed: Some(DelayedId(2)),
         })),
         Event::AbilityActivated {
             player,
             source,
             ability: 0,
         },
-        Event::AbilityTriggered(Triggered {
+        Event::AbilityTriggered(Box::new(Triggered {
             source,
             ability: 0,
+            controller: player,
             cause: Cause::default(),
-        }),
+            snapshot: shot.clone(),
+            delayed: None,
+        })),
+        Event::TriggersOrdered {
+            player,
+            order: vec![1, 0],
+        },
+        Event::TriggerRemoved {
+            source,
+            ability: 0,
+            delayed: Some(DelayedId(2)),
+            cause: Cause::default(),
+        },
+        Event::DelayedTriggerExpired { id: DelayedId(2) },
         Event::ResolutionBegan { object: a },
         Event::ChoiceMade {
             player,
@@ -1278,6 +1297,8 @@ fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
             min: 1,
             max: 1,
             can_cancel: true,
+            wording: String::new(),
+            triggered: false,
         }),
     };
     assert_eq!(

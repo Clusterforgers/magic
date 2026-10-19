@@ -125,7 +125,7 @@ Mitigations, ranked by value for effort:
 | 1 | Stops and Full Control: the player chooses when to be asked and can bluff a window (Arena [official S1, S7]) | whatever that player decides to | done (P1, P2, P4 to P6) |
 | 2 | Table-driven windows with Arena's default table, none in own upkeep or end step unless set (Arena [official S1]) | pauses in steps where only a holder of an instant stops | done (P2) |
 | 3 | A window the seat cannot use is held for 0.25 to 0.7 s, then passed as its own step and batch (ours, not in Arena [unverified]) | the instant pass and the batch burst | done (P3); about 0.5 s per idle seat and window |
-| 4 | Leak test over what the other seats receive (ours) | keeps 2 and 3 true | done (P8), for combat windows |
+| 4 | Leak test over what the other seats receive (ours) | keeps 2 and 3 true | done (P8), for combat windows and for a spell or a triggered ability on the stack |
 | 5 | Strict table: auto-pass off for every seat (ours; MTGO's default stops are the nearest [official S5]) | everything, paid in clicks | `MTG_AUTO_PASS=0`, server-wide |
 | 6 | Never add a hover or selection relay, a thinking cue or the kind of decision owed to the views (Arena leaks these [community S22, S25]) | new tells | holds |
 
@@ -145,8 +145,8 @@ The client never paces steps: the fx layer must not wait for a cadence, and P3 d
 | Full Control: Ctrl, Ctrl+Shift | `NextWindow` (Ctrl) and `Held` (Ctrl+Shift), a toggle beside the ladder | done (P4, P5) |
 | No window unless a play; none in own upkeep or end step | default windows ask a seat that can act; elsewhere it is passed for at once | done (P2) |
 | No equivalent | dwell for a seat that cannot act at a combat or stack window | done (P3), ours |
-| Smart priority, auto-order triggers, per-ability yield | missing (needs triggers) | open (P10) |
-| Timers: rope, bank, delayed start, inactivity | 10 s on a non-active seat's priority windows, 45 s for blocks, none for the active seat | open (P9) |
+| Smart priority, auto-order triggers, per-ability yield | triggers exist and are ordered by the player only when the order can matter; smart stops, an order preference and the per-ability yield are missing | open (P10) |
+| Timers: rope, bank, delayed start, inactivity | 10 s on a non-active seat's priority, target and trigger-order decisions, 45 s for blocks, none for the active seat | open (P9) |
 | Auto-tap, Auto-Pay, land preview, Undo (Z) | "Pay automatically", "Pay the rest for me", payment Undo and Clear, Cancel casting; no hover preview | optional, later |
 | Hand hover relay; hold priority | no relay; none per spell in either, Full Control and stops cover it | keep |
 | Blocks asked whenever possible, `NothingToDo` otherwise; expiry answers for the player; combat choices validated while clicking; All Attack, No Attack, No Blocks | `fall_back`, `Preview`, "Attack with all", "No attack", "No blocks" | in place |
@@ -162,6 +162,6 @@ State follows the game flow item of `docs/ROADMAP.md`; the built designs are in 
 - **P5 Web session for stops and Full Control** (done): `session.setStop`, `setFullControl`, Ctrl and Ctrl+Shift.
 - **P6 Stop ladder** (done): two rows of step buttons (yours, theirs) and the Full Control toggle.
 - **P7 Keys like Arena** (done): Space passes once, Enter asks the end-of-turn yield. Not built: Shift+Enter and Shift-click as the strict pass, a `YieldUntil` strength that an opponent's play does not end, conditional on a player asking.
-- **P8 Leak test** (done): `crates/mtg-server/tests/pace_leak.rs` requires two seeded games that differ by one hidden card to send the other seat the same messages in the same batches, 250 to 700 ms apart; with the dwell off it finds the difference. It covers combat windows, not a spell on the stack. The client's turn feed gets the same test ([ui-design.md](ui-design.md), U6).
+- **P8 Leak test** (done): `crates/mtg-server/tests/pace_leak.rs` requires two seeded games that differ by one hidden card to send the other seat the same messages in the same batches, 250 to 700 ms apart; with the dwell off it finds the difference. It covers combat windows and a spell or a triggered ability on the stack. The client's turn feed gets the same test ([ui-design.md](ui-design.md), U6).
 - **P9 Timer bank** (open): extensions earned after three turns without using a clock and spent at expiry, a grace before the countdown shows, an optional clock for the active seat.
-- **P10 With triggers** (open, built with triggered abilities): smart stops (a step where an object can answer becomes a window), per-ability yield (`AutoYield`), auto-order triggers, damage auto-assign, and the engine's answer to a one-option decision, off under Full Control ([cards-dsl.md](cards-dsl.md)).
+- **P10 With triggers** (open): triggers are built, and the player orders them only when the order can matter ([engine.md](engine.md), Triggered abilities). Open: smart stops (a step where an object can answer becomes a window), per-ability yield (`AutoYield`), a preference to order by timestamp, damage auto-assign, and the engine's answer to a one-option decision, off under Full Control ([cards-dsl.md](cards-dsl.md)).
