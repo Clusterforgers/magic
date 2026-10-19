@@ -52,7 +52,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 
 ## M3 Rules depth
 Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d) to (k) in parallel.
-- [ ] (a) `mtg-cards` DSL: data model for every ability kind, loader, validation, support records and a 40-card corpus
+- [x] (a) `mtg-cards` DSL: data model for every ability kind, loader, validation, support records and a 40-card corpus
 - [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
 - [ ] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
 - [ ] (d) Decision kinds the effects need, one task each across engine, protocol and a web prompt (the table in `docs/cards-dsl.md`, Decisions the effects need)
@@ -65,11 +65,11 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [ ] (k) Layers: full CR 613 ordering with dependencies, timestamps, counters, auras, equipment
 
 ## M4 Multiplayer product
-- [ ] Invite-link lobbies on top of users
+- [x] Invite-link lobbies on top of users
 - [ ] Deck builder UI with card search, import, validation, export
 - [ ] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
 - [ ] Precon browser with one-click play
-- [ ] N-player layout, game log, stack panel, stop settings
+- [x] N-player layout, game log, stack panel, stop settings
 - [ ] Spectators and reconnect polish: a spectator seat, a face-down card rule in `zone_is_visible`, a "waiting on" message for tables of three or more
 
 ## M5 Commander
