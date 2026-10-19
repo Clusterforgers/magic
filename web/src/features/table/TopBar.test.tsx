@@ -1,4 +1,4 @@
-// Goal: the top bar of the table has home, a turn badge that says whose turn it is and which step (gold on your own turn, outlined on another's), the button of the side sheet where the side area is a sheet, and a table menu with the layout, the theme and Concede, and with the stop ladder and Full Control where the controls dock has no room for them, so that no control is lost at any window size and the Control keys work with the menu shut.
+// Goal: the top bar of the table has home, a turn badge that says whose turn it is and which step, with the phase's icon and name in its colour (filled on your own turn, tinted on another's) over an accent rule in the bar, the button of the side sheet where the side area is a sheet, and a table menu with the layout, the theme and Concede, and with the stop ladder and Full Control where the controls dock has no room for them, so that no control is lost at any window size and the Control keys work with the menu shut.
 import { act, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { appTheme } from '@/hooks/useTheme'
@@ -36,19 +36,32 @@ describe('the bar', () => {
     }
   })
 
-  it('says whose turn and which step on a pill: gold for yours, outlined for another seat', () => {
+  it('says whose turn and which step on a pill: filled with the phase’s colour for yours, tinted for another seat', () => {
     renderTable({
       fixture: buildFixture({ seats: 2, active: 0, permanents: 2 }),
       options: { viewport: WIDE },
     })
     expect(badge()).toHaveTextContent('Your turn · 5 · Declare blockers')
-    expect(within(badge()).getByText(/^Your turn/)).toHaveClass('bg-turn-you')
+    expect(within(badge()).getByText(/^Your turn/)).toHaveClass('bg-phase', 'text-on-phase', 'border-phase')
   })
 
   it("names the other seat on an opponent's turn", () => {
     renderTable({ seats: 3, options: { viewport: WIDE } })
     expect(badge()).toHaveTextContent("Bo's turn · 5 · Declare blockers")
-    expect(within(badge()).getByText(/^Bo's turn/)).toHaveClass('text-turn-them')
+    expect(within(badge()).getByText(/^Bo's turn/)).toHaveClass(
+      'bg-phase-soft',
+      'text-foreground',
+      'border-phase',
+    )
+  })
+
+  it('puts the phase’s icon and name in the same capsule, ahead of the words, and the accent rule under the bar', () => {
+    renderTable({ seats: 2, options: { viewport: WIDE } })
+    const tag = must(document.querySelector<HTMLElement>('[data-slot="phase-tag"]'))
+    expect(tag).toHaveTextContent('Combat')
+    expect(tag.querySelector('svg')).not.toBeNull()
+    expect(tag.compareDocumentPosition(badge()) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(bar()).toHaveClass('border-b-[3px]', 'border-phase')
   })
 
   it('follows the game: the next step, the next turn, the next seat', () => {

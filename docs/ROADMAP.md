@@ -84,7 +84,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [x] (U3) Table grid: top bar, opponents, shared strip, own board, hand dock and side tabs in one viewport from 1280x720
   - [ ] (U4) A pod panel and a hand dock fan that hold 40 permanents a seat
   - [ ] (U5) Controls dock: a 44 px pass button, a one-row stop ladder and a menu for the rest
-  - [ ] (U6) Turn feedback: active-seat cues in the pods, the Focus cross-fade and a distinct theme for each phase
+  - [ ] (U6) Turn feedback: active-seat cues in the pods and the Focus cross-fade
   - [x] (U7) Server: game visibility, open seats, claim and join code
   - [x] (U8) Server: public game listing, join, leave and release, with privacy tests
   - [ ] (U9) Game browser page: live list, join dialog, empty, loading and error states

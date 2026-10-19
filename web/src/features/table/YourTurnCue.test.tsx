@@ -1,4 +1,4 @@
-// Goal: the table lights the "your turn" cue (a glow class and a data flag) on the shared strip and on the viewer's own seat panel, and a gold "Your turn" badge in the top bar, exactly while the viewer is the active seat of a running game, never on an opponent's panel, and drops it the moment the turn passes, whatever the table size or seat.
+// Goal: the table lights the "your turn" cue (a glow class and a data flag) on the shared strip and on the viewer's own seat panel, and a "Your turn" badge in the top bar, exactly while the viewer is the active seat of a running game, never on an opponent's panel, and drops it the moment the turn passes, whatever the table size or seat.
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { PlayState } from '@/play/store'
@@ -62,7 +62,8 @@ describe('on someone else’s turn', () => {
     expect(container.querySelector('[data-your-turn]')).toBeNull()
     expect(container.querySelector(`.${CUE}`)).toBeNull()
     expect(badge()).not.toHaveTextContent(/^Your turn/)
-    expect(banner()).toHaveClass('ring-1')
+    // Another seat's turn leaves the strip with the edge of the phase alone, and no gold glow.
+    expect(banner()).toHaveClass('border-phase')
     const active = must(container.querySelector<HTMLElement>('section[data-seat][data-active]'))
     expect(active).toHaveAttribute('data-seat', '1')
     expect(active).toHaveClass('ring-2', 'ring-primary')
@@ -87,7 +88,8 @@ describe('when the turn changes', () => {
     expect(lit(container)).toEqual([])
     expect(banner()).not.toHaveAttribute('data-your-turn')
     expect(badge()).not.toHaveTextContent(/^Your turn/)
-    expect(banner()).toHaveClass('ring-1')
+    expect(banner()).toHaveClass('border-phase')
+    expect(banner()).not.toHaveClass(CUE)
     update(passTo(0))
     expect(lit(container)).toEqual([0])
   })
