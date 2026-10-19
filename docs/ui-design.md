@@ -1,0 +1,225 @@
+# UI design
+
+The rules, audit and design the web client is rebuilt to: principles, design system, a fit-to-viewport table, turn feedback, the game browser and the task order. Game flow stays as in [arena-flow.md](arena-flow.md).
+
+Tags: [official] a standard, vendor or Nielsen Norman Group (NN/g) page; [community] a guide, wiki or forum. `Sn` is a source below.
+
+## Principles
+
+| Principle | Applied here | Src |
+|---|---|---|
+| Visibility of system status | Turn, phase, connection and automatic passes are always on screen | S1 |
+| Consistency, real-world words | One token set, button hierarchy and row pattern; Magic's words, Arena's pass labels | S1 |
+| Control and freedom | Concede, Stop passing, Not ready and Leave are one reversible step | S1 |
+| Error prevention | Confirm only Concede; a disabled Join says why; illegal cards dim | S1 S11 |
+| Minimalism, disclosure | One primary action per region; the rest one menu level down, never two; key hints on buttons | S1 S8 |
+| Visual hierarchy | Hand, pass button and life are biggest; state colour only for turn, priority, legal | S2 |
+| Proximity | A seat pod groups name, life, zones; 8 px inside a group, 16 between | S3 |
+| Fitts's law | Pass is the largest target, bottom right; frequent controls 32 px or more, 44 on touch | S4 S5 |
+| Contrast and focus | 4.5:1 text, 3:1 edges and rings, focus never covered, colour never alone | S12 to S15 |
+| Motion and timing | 100 to 300 ms, ease-out in; nothing delays an answer; a working state past 1 s | S6 S7 S16 |
+
+## Audit
+
+Measured with `scripts/ui-shot.mjs` on the dev table and a real two-seat game. Page overflow in px at 16 permanents a seat; your own seat panel starts at y 1361 to 2515 (2 seats) and 1455 to 4616 (4 and 6):
+
+| Size | 2 seats | 4 seats | 6 seats |
+|---|---|---|---|
+| 1920x1080 | +598 | +864 | +708 |
+| 1440x900 | +778 | +1274 | +872 |
+| 1366x768 | +910 | +1547 | +1004 |
+| 1280x720 | +958 | +1687 | +1052 |
+| 1024x768 | +1461 | +3347 | +1637 |
+| 390x844 | +2157 | +4258 | +2279 |
+
+The table fits at no size: fixed chrome (toolbar 100, two panels near 300 each, banner, stack) exceeds 720 px before any card. The dev fixture's 40 permanents a seat add 140 to 1,500 px.
+
+| Screen | Size | Defect | Sev | Fix |
+|---|---|---|---|---|
+| Table | all | Your hand, the stack and the pass button are below the fold; cards are 96x134 and most of the width is empty | Blocker | Fit grid |
+| Table | 390x844 | 4,765 px tall at 40 permanents; pass button at y 2253 | Blocker | Phone stack |
+| Mulligan | 1440x900 | Empty boards still scroll 182 px; the opening hand is off screen while you decide | High | Fit grid |
+| Turn change | all | The banner text changes in place and scrolls away; no transition, ticker or skipped-step mark | Blocker | Turn feedback |
+| Toolbar | all | About 25 equal controls, 28 px high (stops 28x28); pass is not the loudest | High | Controls dock |
+| Type | table | 91 text nodes under 12 px (9, 9.9, 11.5); 8 arbitrary rem sizes | High | Type scale |
+| Contrast | light | Border and input 1.26:1; ring 2.59:1 (buttons use ring/50); muted on muted 4.34:1; pip ink 3.9:1; white frame 1.12:1 | High | Tokens |
+| Dark theme | all | `.dark` tokens exist; nothing sets the class or reads `prefers-color-scheme` | Medium | Theme hook (S10) |
+| Placeholder | table | "Commander damage and tax: not tracked yet" shows in every game | Medium | Commander only |
+| Sidebar | 1024x768 | Log starts open at 320 px (31%); chat has no unread mark | Medium | Side tabs |
+| Browser | `/` | No game list; a join needs a 140-character seat link from the host | Blocker | Browser |
+| Create, lobby, game over | `/` | No visibility choice; invite links live only in the creating tab; Ready is 36 px; no rematch | Medium | Create, polish |
+| Shell | all | No nav; pages are 624, 720 and 400 px wide | Medium | Shell |
+| States | create, My games | Loading is grey text with no skeleton; errors are bare alerts | Low | States |
+
+## Design system
+
+Tokens are CSS variables in `index.css`, mapped by `@theme inline` (S17); shadcn's names stay (S18). Surface and text steps follow Radix's roles (S19), `on-` pairs Material's (S20). `tokens.test.ts` keeps the contrast computed here.
+
+| Role | Light | Dark | Use |
+|---|---|---|---|
+| background | `oklch(0.985 0.004 265)` | `oklch(0.17 0.012 265)` | page |
+| surface | `oklch(1 0 0)` | `oklch(0.215 0.014 265)` | panels, rows |
+| table | `oklch(0.955 0.006 265)` | `oklch(0.145 0.012 265)` | boards, sunken zones |
+| raised | `oklch(1 0 0)` | `oklch(0.26 0.016 265)` | menus, dialogs |
+| foreground | `oklch(0.20 0.02 265)` | `oklch(0.96 0.005 265)` | text, 15:1 or more |
+| muted-foreground | `oklch(0.48 0.02 265)` | `oklch(0.72 0.015 265)` | secondary text, 5.7:1 |
+| border | `oklch(0.90 0.008 265)` | `oklch(0.30 0.014 265)` | separators |
+| border-strong | `oklch(0.60 0.02 265)` | `oklch(0.56 0.02 265)` | field and control edges, 3.7:1 |
+| ring | `oklch(0.50 0.19 275)` | `oklch(0.74 0.14 275)` | focus, 2 px plus 2 px offset, 6:1 |
+| primary, on-primary | `oklch(0.48 0.19 275)`, `oklch(0.985 0 0)` | `oklch(0.74 0.14 275)`, `oklch(0.17 0.012 265)` | main action, selection |
+| turn-you, on-turn-you | `oklch(0.82 0.16 85)`, `oklch(0.20 0.02 265)` | `oklch(0.82 0.15 85)`, same | your-turn pill and banner |
+| turn-you-edge | `oklch(0.55 0.14 65)` | `oklch(0.82 0.15 85)` | pod edge and ring, 4.8:1 |
+| turn-them | `oklch(0.50 0.09 250)` | `oklch(0.74 0.09 250)` | opponent turn marker |
+| success, warning, destructive | `oklch(0.50 0.14 150)`, `oklch(0.50 0.14 55)`, `oklch(0.50 0.20 27)` | `oklch(0.74 0.15 150)`, `oklch(0.80 0.15 70)`, `oklch(0.72 0.17 25)` | ready, urgent clock, lethal and Concede |
+| mana fill, ink | blue `0.50 0.13 245`, red `0.52 0.20 28`, green `0.50 0.14 150`, black `0.30 0.02 300` with white ink; gold `0.82 0.14 85`, white `0.96 0.03 90`, colorless `0.78 0.01 260` with dark ink | same | pips, 5.6:1 or more |
+
+| Token | Scale |
+|---|---|
+| Spacing | 4 px base as Tailwind's `--spacing` (S17): 4, 8, 12, 16, 24, 32, 48, 64 |
+| Type | Geist Variable. 11/16 card labels only, 12/16 caption and log, 14/20 UI, 16/24 body and fields, 18/28 section, 24/32 title, 36/40 life with `tabular-nums`, display `clamp(2rem, 4vw, 3rem)`; weights 400, 500, 600 |
+| Radius | 6 card, 8 control, 12 panel, full pill (`--radius` 0.5rem) |
+| Elevation | e0 border; e1 `0 1px 2px` 8%; e2 `0 4px 12px` 12% menus; e3 `0 12px 32px` 20% dialogs; dark lifts the `raised` surface instead |
+| Motion | fast 100 ms (hover, toggle), base 200 (menu, row), slow 300 (sheet, banner); effects stay at most 550 (`fx.css`); `--ease-out` `cubic-bezier(0.2, 0, 0, 1)` in, `cubic-bezier(0.3, 0, 1, 1)` out; linear for clocks only; under `reduce` opacity only, 100 ms |
+| Icons | lucide-react: 16 px in dense rows, 20 in controls, 24 in menus; always a label or `aria-label`; mana symbols stay in `ManaPips` |
+| Breakpoints | XS under 640, S 640 to 1023, M 1024 to 1279, L 1280 to 1599, XL 1600 up; container queries and `clamp()` inside the table (S21) |
+
+| Component | States | Maps to |
+|---|---|---|
+| Button | default, hover, active, focus-visible, `aria-disabled`, loading; 32, 36, 44 px | shadcn `button` |
+| Field, switch, segmented control | default, focus, invalid with text, disabled, selected | `input`, `native-select`, `switch`; add `radio-group`, `toggle-group` |
+| Pill, surface, list row | neutral, success, warning, turn-you, turn-them; hover, selected | `badge`; a `surface` utility over `card` |
+| Menu, popover, dialog, sheet | open, closed | `dropdown-menu`, `dialog`, `alert-dialog`; add `popover`, `sheet` |
+| Status, tooltip, key hint | skeleton, empty, error, offline | `alert`; add `skeleton`, `EmptyState`, `tooltip`, `Kbd` |
+| Game card | tapped, sick, legal, selected, dimmed, attacking, blocking, doomed | `Card` |
+| Seat pod, stack group, turn badge, banner, ticker, ladder, pass button, hand dock | below | new |
+
+## Table layout
+
+Arena puts the opponent on top, your hand on the bottom edge rising on hover, the phase strip above it and pass buttons bottom right [S24]; Marvel Snap and Slay the Spire put end turn lower right [S26 S28]; Hearthstone lights End Turn when no action remains [S25]. The table follows, in a `100dvh` grid (S22) that never scrolls the page.
+
+```
++-----------------------------------------------+------+
+| top bar: turn badge, phase pips, menu          |      |
++-----------------------------------------------+ side |
+| opponents: pods and boards                     | tabs |
++-----------------------------------------------+ Log  |
+| shared: stack chips, ticker, prompt line       | Chat |
++-----------------------------------------------+ Stack|
+| own: pod, creatures, other, lands              |      |
++-----------------------------------------------+      |
+| hand dock                    | controls dock   |      |
++-----------------------------------------------+------+
+```
+
+| Region | Content | Size |
+|---|---|---|
+| top bar | home, turn badge, mini phase pips, menu (layout, stops, Full Control, theme, Concede) | 44 px |
+| opponents | a pod and board per opponent | `minmax(0, 1fr)` |
+| shared | stack chips, ticker, prompt line; a long prompt grows into a sheet of at most 40 dvh over the own board, never over the hand or controls | `clamp(56px, 9dvh, 88px)` |
+| own | pod, then creatures, other, lands | `minmax(0, 1.15fr)` |
+| hand dock | overlapping fan, 62% of each card showing; hover or focus lifts it 40% and opens the preview | `clamp(112px, 17dvh, 200px)` |
+| controls dock | pass controls (button 44 px or more, End turn, menu) and the stop ladder, one row with a Mine or Theirs switch, with Full Control | bottom right |
+| side | Log, Chat, Stack tabs with unread counts (the stack also shows as chips in the shared region) | L, XL 280 to 320 px; M a 44 px rail opening over the table; S, XS a sheet |
+
+- `fitRows(box, groups, limits)` (pure, `fit.ts`) tries card widths from 112 px down to 44 px in 2 px steps (5:7, lands at 0.8) and returns the largest at which every row fits. At 44 px the zone scrolls inside, with an edge fade and a "+N" count. A `ResizeObserver` writes `--card-w`. Card text stays at 11 px or more; the preview carries the rest.
+- `group.ts` merges permanents equal in name, controller, tapped state, counters, attachments and summoning sickness into one stack with a ×N badge. Lands and tokens group at once, other cards when a zone would fall under 64 px. A stack opens in place on click or Enter, and while a prompt needs each member.
+- Seats: 2 draws one wide opponent board beside a 168 px pod column; 3 and 4 draw two or three columns of one-line pods; 5 or more, or any column under 280 px, draws a tile strip and one focused board that follows the active seat. That is Grid or Focus mode; the menu overrides it. Opponent boards shrink before yours.
+- S (tablet): the same grid, a side sheet, 44 px targets. XS (phone, portrait): top bar, a 56 px pod strip (active first), the focused opponent board, your board, the shared line, a 96 to 120 px hand dock; a tap on a pod focuses it. Landscape phones use S with a 32 px top bar.
+
+## Turn and focus
+
+Whose turn it is stays on screen as a token: Legends of Runeterra's attack token [S27], Hearthstone's lit End Turn button [S25]. Cues decorate the batch that arrived: none waits, delays an answer or adds a cadence, and text comes from public events, identical for every seat ([arena-flow.md](arena-flow.md)).
+
+| Cue | When | Shows | Reduced motion |
+|---|---|---|---|
+| Turn badge | always, in the top bar | "Your turn · 5 · Precombat main" (turn-you fill) or "Bo's turn · 5 · Declare blockers" (turn-them outline, seat dot) | unchanged |
+| Turn banner | turn number or active seat changes | a band over the shared region, "Your turn" or "Bo's turn" and the turn; 250 ms in, 600 held, 150 out; `pointer-events: none` | fade only, held 1.5 s |
+| Active seat | during its turn | a 3 px pod edge (turn-you-edge or turn-them); a dot on a priority holder who is not active; your pod keeps `your-turn-cue`, pulsing 6 s at most; in Focus mode the large board follows it, a 150 ms cross-fade | static ring, no fade |
+| Ticker | every batch | one line: the newest non-minor log line, plus "Skipped Upkeep, Draw" when steps passed with no window for you; three lines, 3 s each | static |
+| Ladder | a step changes | current step lit, passed steps filled, a skipped step dashed for 1 s | no sweep |
+
+- Only your own skips are explained ("You had no plays"). Another seat's pass never says if it was automatic, how long it took or who is deciding.
+- `turn/feed.ts` is pure over `(prev, next, events)`; a test replays two transcripts that differ in one hidden card and requires identical feeds.
+- A polite live region announces the banner. The tab title cue stays.
+
+## Game browser and lobby
+
+`/` becomes Play: open games, Create game and Join with a code. Create moves to `/new`, an invite opens `/join/$code`, My games stays; a signed-in user also gets "Continue" for a running game. Visibility follows Steamworks lobbies (private, public, a joinable flag) [S23] and Unity's, which hide private lobbies from queries and join them by code [S29].
+
+| Column | Content |
+|---|---|
+| Host | account or guest name |
+| Format | Normal (Commander with M5) |
+| Seats | "2 of 4" with dots; a full row dims and says "Full" |
+| Decks | "Your own deck"; a rule column once deck rules exist |
+| Age | "3 min ago" in a `<time>`, refreshed every 30 s |
+| Action | Join, the one primary button per row |
+
+- States: skeleton rows only after 300 ms (S9); empty ("No open games. Create one, or join with a code.") with both actions; error alert with Retry, stale rows kept and dimmed; filters (seats, format, hide full) above 8 rows.
+- Updates: poll `GET /api/lobbies` every 5 s while the tab is visible, with `ETag`, and a Refresh button; server-sent events can replace it. A row that fills before the click says "Someone took that seat" and the list reloads.
+- Join: a guest gets a name field (kept in `localStorage`, in try/catch) and a deck select until deck choice moves into the lobby; a signed-in user joins in one click and the seat binds to the account. Success opens `/game/{id}#seat=n&token=…`.
+- Create: seats 2 to 12 (default 2), your name and deck, Visibility with its consequence beside it ("Listed in the game browser" or "Only people with your link or code"; default Listed), an Advanced disclosure for today's flow. The lobby shows invite link, code and a visibility toggle with Close for the host, Leave for others.
+- Server: `visibility` (`public` or `invite`) on `POST /api/games` and in the record; open seats take name, deck and token when claimed (shared with "Choose a deck in the lobby"); `GET /api/lobbies` lists public lobby-phase games, newest first, at most 50: id, host name, format, seats filled and total, age, never a token or code; `POST /api/games/{id}/join` and `POST /api/join` (a code) answer `{seat, token}` or 409 `full` or `started`; `leave` and a host `release` free a seat before the start.
+- Privacy: an invite game is never listed; an unknown id, an invite game without its code and a wrong code give one 404. A code is 8 characters of a 32-letter alphabet (40 bits), stored as a digest, 429 after 5 misses a minute from one address. An account holds one seat per game, so a signed-in repeat join returns its own.
+- Accessibility: a real `<table>` with a caption from M up, stacked rows below; the button name is "Join Bo's game, 2 of 4 seats"; a polite "3 open games" line; polling never moves focus; a removed focused row sends it to the next Join.
+
+## Definition of done
+
+- Fits: the table never scrolls the page at the six sizes; other pages never scroll sideways; nothing is cut at 390 px.
+- Contrast: token pairs pass in both themes; focus is visible and uncovered.
+- Targets: 24 px floor, 32 px on desktop, 44 px under `pointer: coarse`.
+- Keyboard: tab order follows reading order; every action works without a mouse; no trap.
+- States: empty, loading, error and offline are designed.
+- Motion: inside `no-preference`, a CSS test per file, nothing delays an answer.
+- Evidence: screenshots at 1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and 390x844 in both themes, looked at, not committed; tests; `docs/web.md` updated.
+
+## Tasks
+
+Each is 45 to 60 minutes; "After" names what must be done first and what runs alongside.
+
+| # | Task | Files | After | Done when |
+|---|---|---|---|---|
+| U1 | Tokens and shell | `index.css`, `AppShell.tsx`, `ui/*`, `components/{Pill,EmptyState,Kbd}`, `hooks/useTheme.ts`, `tokens.test.ts` | none | contrast test passes both themes; theme follows the system, persists; nav Play, Create, My games |
+| U2 | Fit engine | `table/{fit,group}.ts`, tests | none | 150-case table: fits or scrolls, never under the floor; grouping keeps state apart |
+| U3 | Table grid | `GameTable.tsx`, `TableGrid.tsx`, `TopBar.tsx`, `SideTabs.tsx`, `layout.ts`, `e2e/fit.spec.ts` | U1, U2 | no page scroll at 2, 4, 6 seats, six sizes; hand and pass inside the viewport |
+| U4 | Pods, rows, hand | `SeatPod.tsx`, `Battlefield.tsx`, `HandDock.tsx`, `CardStack.tsx`, `cardSize.ts` | U3 | 40 permanents a seat at 1280x720 without zone scroll; no text under 11 px; `perf.test.tsx` green |
+| U5 | Controls dock | `ControlsDock.tsx`, `PassControls.tsx`, `StopLadder.tsx`, `TopBarMenu.tsx` | U3; with U4 | pass 44 px bottom right; at most 5 visible controls; key tests green |
+| U6 | Turn feedback | `table/turn/*`, `CentreStrip.tsx` | U3; with U4 | the Turn and focus table; feed leak test; CSS test |
+| U7 | Server model | `registry.rs`, `seats.rs`, `lobby.rs`, a migration, `docs/server.md` | none | visibility, open seats, claim and code, tested |
+| U8 | Server endpoints | `api.rs`, `server.rs`, `rest.rs`, bindings | U7 | lobbies, join, leave, release; privacy and throttle tests |
+| U9 | Browser page | `features/browser/*`, `routes/index.tsx`, `net/api.ts` | U1, U8 | the browser section, tested and photographed |
+| U10 | Create and lobby | `features/create/*`, `game/{Lobby,Invites}.tsx`, `routes/{new,join.$code}.tsx` | U9 | visibility, code and link, leave and close; `pnpm e2e` follows `/new` |
+| U11 | Page polish | `GameOver.tsx`, `MyGamesPage.tsx`, auth pages, `PageShell` | U1; with U3 | one width scale; designed states; rematch and way back |
+| U12 | Gate, cleanup | `scripts/ui-audit.mjs`, `e2e/layout.spec.ts`, `docs/web.md`, `docs/PLAN.md` | all | six sizes, both themes pass; the Audit section is deleted |
+
+## Sources
+
+- S1 [official] NN/g heuristics: https://www.nngroup.com/articles/ten-usability-heuristics/
+- S2 [official] NN/g visual hierarchy: https://www.nngroup.com/articles/visual-hierarchy-ux-definition/
+- S3 [official] NN/g proximity: https://www.nngroup.com/articles/gestalt-proximity/
+- S4 [official] NN/g Fitts's law: https://www.nngroup.com/articles/fitts-law/
+- S5 [official] NN/g touch targets, 1 cm: https://www.nngroup.com/articles/touch-target-size/
+- S6 [official] NN/g animation duration: https://www.nngroup.com/articles/animation-duration/
+- S7 [official] NN/g response times: https://www.nngroup.com/articles/response-times-3-important-limits/
+- S8 [official] NN/g progressive disclosure: https://www.nngroup.com/articles/progressive-disclosure/
+- S9 [official] NN/g empty states, skeletons: https://www.nngroup.com/articles/empty-state-interface-design/ · https://www.nngroup.com/articles/skeleton-screens/
+- S10 [official] NN/g dark mode, offer both: https://www.nngroup.com/articles/dark-mode/
+- S11 [official] NN/g confirmation dialogs: https://www.nngroup.com/articles/confirmation-dialog/
+- S12 [official] WCAG 2.5.8 and 2.5.5 target size: https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html · https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html
+- S13 [official] WCAG 1.4.3 contrast: https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
+- S14 [official] WCAG 1.4.11 non-text contrast: https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html
+- S15 [official] WCAG 2.4.7 and 2.4.11 focus: https://www.w3.org/WAI/WCAG22/Understanding/focus-visible.html · https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html
+- S16 [official] WCAG 2.3.3, MDN reduced motion: https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html · https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion
+- S17 [official] Tailwind theme variables: https://tailwindcss.com/docs/theme
+- S18 [official] shadcn theming: https://ui.shadcn.com/docs/theming
+- S19 [official] Radix Colors scale: https://www.radix-ui.com/colors/docs/palette-composition/understanding-the-scale
+- S20 [official] Material color roles, motion tokens, and the dark theme page (a search summary only): https://raw.githubusercontent.com/material-components/material-web/main/docs/theming/color.md · https://raw.githubusercontent.com/material-components/material-components-android/master/docs/theming/Motion.md · https://m2.material.io/design/color/dark-theme
+- S21 [official] MDN container queries, `clamp()`: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries · https://developer.mozilla.org/en-US/docs/Web/CSS/clamp
+- S22 [official] web.dev viewport units: https://web.dev/blog/viewport-units
+- S23 [official] Steamworks lobby types: https://partner.steamgames.com/doc/api/ISteamMatchmaking
+- S24 [community] Arena in-match screen: https://www.hipstersofthecoast.com/2018/03/how-to-play-mtg-arena-the-in-match-screen/
+- S25 [community] Hearthstone turn: https://hearthstone.wiki.gg/wiki/Turn
+- S26 [community] Marvel Snap screen: https://pixeltwelve.com/guides/marvel-snap-beginner-guide-cards-locations-energy-snap
+- S27 [community] Legends of Runeterra UI: https://www.ludo.guide/guide/legends-of-runeterra/understanding-the-ui
+- S28 [community] Slay the Spire UI: https://www.ludo.guide/guide/slay-the-spire/getting-started/understanding-the-user-interface
+- S29 [official] Unity Lobby glossary (a search summary only): https://docs.unity.com/en-us/lobby/glossary
