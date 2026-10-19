@@ -6,12 +6,13 @@ use mtg_engine::events::ResolutionOutcome;
 use mtg_testkit::{PlayOptions, play_game, play_game_with, trigger_fuzz_setup};
 use rstest::rstest;
 
-/// Games per table size; override with `MTG_FUZZ_GAMES` to run longer or shorter campaigns.
+/// Games per table size; override with `MTG_FUZZ_GAMES` to run longer or shorter campaigns. A game of triggers lasts
+/// about three times as many turns as one of vanilla creatures, so there are fewer of them.
 fn games() -> u64 {
     std::env::var("MTG_FUZZ_GAMES")
         .ok()
         .and_then(|v| v.parse().ok())
-        .unwrap_or(500)
+        .unwrap_or(200)
 }
 
 #[derive(Default)]

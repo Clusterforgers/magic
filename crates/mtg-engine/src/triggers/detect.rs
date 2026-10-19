@@ -279,9 +279,11 @@ fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool {
 /// The printed triggered abilities of the permanents of `state` that trigger on `happened`.
 fn printed(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, used: &mut Used) {
     for &id in state.zone(Zone::Battlefield) {
-        let (Some(object), Some(shot)) = (state.object(id), snapshot(state, id)) else {
+        let Some(object) = state.object(id) else {
             continue;
         };
+        // Most permanents have no triggered ability, and a snapshot costs the layers, so it is only taken for a trigger.
+        let mut shot = None;
         let (source, controller) = (object.reference(), object.controller());
         if !state.is_alive(controller) {
             continue;
@@ -313,6 +315,12 @@ fn printed(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, u
             {
                 continue;
             }
+            if shot.is_none() {
+                shot = snapshot(state, id);
+            }
+            let Some(shot) = &shot else {
+                continue;
+            };
             found.push(Triggered {
                 source,
                 ability: index,
@@ -358,6 +366,18 @@ fn delayed(
             delayed: Some(waiting.id()),
         });
     }
+}
+
+/// Whether [`detect`] reads the state before `events`: only a move out of the battlefield, a death, a discard and a
+/// spell or ability that ends without resolving look back at it. Any other batch is judged by the state after it
+/// alone, which saves copying the whole state for it.
+pub(crate) fn needs_before(events: &[Event]) -> bool {
+    events.iter().any(|event| match event {
+        Event::CreatureDied { .. } | Event::CardDiscarded { .. } => true,
+        Event::ZoneChanged { from, .. } => *from == Zone::Battlefield,
+        Event::ResolutionEnded { outcome, .. } => *outcome != ResolutionOutcome::Resolved,
+        _ => false,
+    })
 }
 
 /// The triggered abilities that trigger on `events`, in the order they triggered: event by event, a permanent's
@@ -1092,5 +1112,102 @@ mod tests {
             [],
             "so it no longer fires"
         );
+    }
+
+    #[rstest]
+    #[case::a_death(vec![Event::CreatureDied { object: ObjectId(1), cause: DeathCause::LethalDamage }], true)]
+    #[case::a_discard(vec![Event::CardDiscarded { player: ME, object: ObjectId(1) }], true)]
+    #[case::a_move_out_of_the_battlefield(vec![Event::ZoneChanged {
+        object: ObjectId(1),
+        from: Zone::Battlefield,
+        to: Zone::Exile,
+        cause: ZoneCause::Exiled,
+    }], true)]
+    #[case::a_spell_that_fizzles(vec![Event::ResolutionEnded { object: ObjectId(1), outcome: ResolutionOutcome::Fizzled }], true)]
+    #[case::a_spell_that_is_countered(vec![Event::ResolutionEnded { object: ObjectId(1), outcome: ResolutionOutcome::Countered }], true)]
+    #[case::an_ability_whose_condition_lapsed(vec![Event::ResolutionEnded { object: ObjectId(1), outcome: ResolutionOutcome::Lapsed }], true)]
+    #[case::one_of_several(vec![
+        Event::StepBegan { step: Step::End },
+        Event::CreatureDied { object: ObjectId(1), cause: DeathCause::LethalDamage },
+    ], true)]
+    #[case::a_spell_that_resolves(vec![Event::ResolutionEnded { object: ObjectId(1), outcome: ResolutionOutcome::Resolved }], false)]
+    #[case::a_move_into_the_battlefield(vec![Event::ZoneChanged {
+        object: ObjectId(1),
+        from: Zone::Hand(ME),
+        to: Zone::Battlefield,
+        cause: ZoneCause::Moved,
+    }], false)]
+    #[case::a_land_played(vec![Event::LandPlayed { player: ME, object: ObjectId(1) }], false)]
+    #[case::a_draw(vec![Event::CardDrawn { player: ME, object: ObjectId(1) }], false)]
+    #[case::a_spell_cast(vec![Event::SpellCast { player: ME, object: ObjectId(1), choices: Choices::default() }], false)]
+    #[case::a_step(vec![Event::StepBegan { step: Step::Upkeep }], false)]
+    #[case::nothing(Vec::new(), false)]
+    fn only_a_batch_that_looks_back_needs_the_state_before_it(
+        #[case] events: Vec<Event>,
+        #[case] needed: bool,
+    ) {
+        assert_eq!(needs_before(&events), needed);
+    }
+
+    #[test]
+    fn a_batch_that_does_not_look_back_finds_the_same_in_the_state_after_it_alone() {
+        let everything = with(
+            "Everything",
+            [
+                r#"{"ZoneChange":{"what":[]}}"#,
+                r#"{"Attacks":{"what":[]}}"#,
+                r#"{"SpellCast":{}}"#,
+                r#"{"BecomesTarget":{"what":[]}}"#,
+                r#"{"StepBegins":{"step":"Upkeep"}}"#,
+            ]
+            .map(triggered)
+            .to_vec(),
+        );
+        let pre = board(everything);
+        let at = Target::Object(reference(&pre, "Ogre"));
+        let batches = [
+            vec![Event::LandPlayed {
+                player: ME,
+                object: id(&pre, "Field"),
+            }],
+            vec![Event::CardDrawn {
+                player: FOE,
+                object: *pre.zone(Zone::Library(FOE)).last().unwrap(),
+            }],
+            vec![Event::AttackersDeclared {
+                player: ME,
+                attackers: vec![(id(&pre, "Bear"), AttackTarget::Player(FOE))],
+            }],
+            vec![cast(&pre, ME, "Spell", vec![at])],
+            vec![Event::StepBegan { step: Step::Upkeep }],
+            vec![Event::ZoneChanged {
+                object: id(&pre, "Spell"),
+                from: Zone::Hand(ME),
+                to: Zone::Exile,
+                cause: ZoneCause::Exiled,
+            }],
+        ];
+        for events in batches {
+            assert!(!needs_before(&events), "{events:?}");
+            let (post, found) = fire(&pre, &events);
+            assert!(!found.is_empty(), "the watcher sees {events:?}");
+            assert_eq!(detect(&post, &events, &post), found, "{events:?}");
+        }
+    }
+
+    #[test]
+    fn a_death_judged_by_the_state_after_it_alone_would_be_missed() {
+        let watcher = with(
+            "Watcher",
+            vec![triggered(
+                r#"{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}}"#,
+            )],
+        );
+        let pre = board(watcher);
+        let events = [died(&pre, "Watcher")];
+        assert!(needs_before(&events));
+        let (post, found) = fire(&pre, &events);
+        assert_eq!(found.len(), 1);
+        assert_eq!(detect(&post, &events, &post), [], "it is gone by then");
     }
 }

@@ -254,16 +254,21 @@ impl Engine {
     /// Folds and logs the events, then the triggered abilities they set off (CR 603.2): those are found by comparing
     /// the state before the events with the state after, and their own events follow in the log.
     fn commit(&mut self, events: Vec<Event>) -> Result<(), EngineError> {
-        let before = self.state.watches().then(|| self.state.clone());
+        let watching = self.state.watches();
+        let before = (watching && triggers::needs_before(&events)).then(|| self.state.clone());
         let start = self.events.len();
         for event in events {
             apply_event(&mut self.state, &event)?;
             self.events.push(event);
         }
-        let Some(before) = before else {
+        if !watching {
             return Ok(());
-        };
-        let triggered = triggers::detect(&before, &self.events[start..], &self.state);
+        }
+        let triggered = triggers::detect(
+            before.as_ref().unwrap_or(&self.state),
+            &self.events[start..],
+            &self.state,
+        );
         for trigger in triggered {
             let event = Event::AbilityTriggered(Box::new(trigger));
             apply_event(&mut self.state, &event)?;
