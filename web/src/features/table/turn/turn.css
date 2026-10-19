@@ -1,0 +1,63 @@
+/*
+ * The turn cues (docs/web.md, "Turn cues"): the banner over the shared strip and the ticker line in it. They decorate
+ * the batch that arrived and take no part in an answer, so the banner never takes a pointer. Outside the
+ * no-preference block only opacity changes; every movement and keyframe sits inside it. The banner's fades repeat
+ * `BANNER_TIMES` and `BANNER_TIMES_REDUCED` in `timing.ts`, and `turnCss.test.ts` keeps the two equal.
+ */
+[data-slot='turn-banner'] {
+  --turn-banner-in: 250ms;
+  --turn-banner-out: 150ms;
+  pointer-events: none;
+  opacity: 0;
+}
+
+[data-slot='turn-banner'][data-phase='in'],
+[data-slot='turn-banner'][data-phase='hold'] {
+  opacity: 1;
+  transition: opacity var(--turn-banner-in) cubic-bezier(0.2, 0, 0, 1);
+}
+
+[data-slot='turn-banner'][data-phase='out'] {
+  opacity: 0;
+  transition: opacity var(--turn-banner-out) cubic-bezier(0.3, 0, 1, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='turn-banner'] {
+    --turn-banner-in: 100ms;
+    --turn-banner-out: 100ms;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='turn-banner'] {
+    transform: translateY(-0.5rem);
+  }
+
+  [data-slot='turn-banner'][data-phase='in'],
+  [data-slot='turn-banner'][data-phase='hold'] {
+    transform: none;
+    transition:
+      opacity var(--turn-banner-in) cubic-bezier(0.2, 0, 0, 1),
+      transform var(--turn-banner-in) cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  [data-slot='turn-banner'][data-phase='out'] {
+    transform: translateY(-0.25rem);
+    transition:
+      opacity var(--turn-banner-out) cubic-bezier(0.3, 0, 1, 1),
+      transform var(--turn-banner-out) cubic-bezier(0.3, 0, 1, 1);
+  }
+
+  /* A new ticker line rises into place; under reduced motion it simply replaces the last. */
+  [data-slot='turn-ticker-line'] {
+    animation: turn-ticker-in 200ms cubic-bezier(0.2, 0, 0, 1) both;
+  }
+
+  @keyframes turn-ticker-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.25rem);
+    }
+  }
+}

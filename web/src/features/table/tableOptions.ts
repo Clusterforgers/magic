@@ -17,6 +17,8 @@ export interface TableOptions {
    * that other tests see every card; a test of stacks turns it on.
    */
   stacks?: boolean
+  /** Draw the timed turn cues (`features/table/turn`: banner, ticker, skipped marks); on everywhere but under vitest when left out. */
+  cues?: boolean
   /** Lay the table out for this window size instead of the browser's, which a test has no use for. */
   viewport?: Viewport
 }

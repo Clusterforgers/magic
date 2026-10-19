@@ -10,6 +10,7 @@ import { SideSheetButton } from './SideTabs'
 import { TableMenu } from './TableMenu'
 import type { TableMode } from './layout'
 import { TurnBadge } from './TurnBadge'
+import { StepLadder } from './turn/StepLadder'
 
 const HOME = cn(
   buttonVariants({ variant: 'ghost', size: 'sm' }),
@@ -62,6 +63,7 @@ export function TopBar({ mode, onMode, pinnedFocus, onFollow, stopsInMenu, compa
     <header data-region="bar" className="flex min-h-0 min-w-0 items-center gap-2 border-b bg-surface px-2">
       <HomeLink />
       <TurnBadge />
+      <StepLadder />
       <span className="ml-auto" />
       <SideSheetButton compact={compact} />
       <TableMenu
