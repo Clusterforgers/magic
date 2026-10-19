@@ -9,7 +9,9 @@
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
-use mtg_engine::choose::{TargetChoice, TriggersChoice};
+use mtg_engine::choose::{
+    ModeChoice, ModeOptions, OptionChoice, TargetChoice, TriggersChoice, YesNoChoice,
+};
 use mtg_engine::decision::PriorityAction;
 use mtg_engine::{Answer, Decision, DecisionKind};
 use mtg_protocol::{ErrorCode, FullControlMode, ServerMessage, YieldUntil};
@@ -36,7 +38,8 @@ pub struct Pace {
     /// A seat can change its own with `AutoPass` and `FullControl`.
     pub auto_pass: bool,
     /// Time a seat that is not the active player has to answer a priority decision, whether it can act or not, and to
-    /// choose the targets of a spell or ability or order its triggers (`MTG_RESPONSE_SECS`); `None` is no clock.
+    /// choose the targets of a spell or ability, order its triggers, answer a yes-or-no question, choose an option or
+    /// choose modes (`MTG_RESPONSE_SECS`); `None` is no clock.
     pub response: Option<Duration>,
     /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`); `None` is no clock.
     pub blocks: Option<Duration>,
@@ -66,19 +69,23 @@ impl Pace {
     /// The clock `decision` runs on, if any.
     ///
     /// Only a seat that is not the active player is hurried, and only for a priority decision, for choosing the
-    /// targets of a spell or ability, for ordering its triggers or for declaring blockers; every other decision
-    /// (mulligans, discards, damage division, the active player's own turn) waits for as long as it takes. A priority
-    /// window the seat has nothing to do in is hurried too (it is only delivered at a stop or in Full Control): it
-    /// would hold the table for no reason.
+    /// targets of a spell or ability, for ordering its triggers, for answering a question of an effect (yes or no, an
+    /// option, modes) or for declaring blockers; every other decision (mulligans, discards, damage division, the
+    /// active player's own turn) waits for as long as it takes. A priority window the seat has nothing to do in is
+    /// hurried too (it is only delivered at a stop or in Full Control): it would hold the table for no reason. The
+    /// rule reads the kind alone, never the options, the seat or the hand, so it shows nothing about them.
     pub(crate) fn clock_for(&self, decision: &Decision, active: PlayerId) -> Option<Duration> {
         if decision.player == active {
             return None;
         }
         match &decision.kind {
-            // A target or an order is asked of a seat the table waits for just as a priority window is.
+            // A target, an order or a question is asked of a seat the table waits for just as a priority window is.
             DecisionKind::Priority(_)
             | DecisionKind::ChooseTargets(_)
-            | DecisionKind::OrderTriggers(_) => self.response,
+            | DecisionKind::OrderTriggers(_)
+            | DecisionKind::YesNo(_)
+            | DecisionKind::ChooseOption(_)
+            | DecisionKind::ChooseMode(_) => self.response,
             DecisionKind::DeclareBlockers(_) => self.blocks,
             _ => None,
         }
@@ -107,10 +114,11 @@ pub(crate) fn is_priority(decision: &Decision) -> bool {
 }
 
 /// What the table answers for a seat whose clock ran out: a pass, no blockers, no target (a spell is taken back and a
-/// triggered ability removed, as the rules do when a target cannot be chosen) or the triggers in the order they
-/// triggered.
+/// triggered ability removed, as the rules do when a target cannot be chosen), the triggers in the order they
+/// triggered, No to a question, the first option, or for modes the cast taken back when the options allow it and the
+/// first mode otherwise.
 ///
-/// `None` for a decision that has no clock and no safe default.
+/// The answer is read from the decision alone. `None` for a decision that has no clock and no safe default.
 pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
     match &decision.kind {
         DecisionKind::Priority(_) => Some(pass()),
@@ -125,8 +133,37 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         DecisionKind::OrderTriggers(options) => Some(Answer::OrderTriggers(TriggersChoice(
             (0..options.triggers.len()).collect(),
         ))),
+        DecisionKind::YesNo(_) => Some(Answer::YesNo(YesNoChoice(false))),
+        // A list with nothing in it has no answer to give; the engine does not ask one.
+        DecisionKind::ChooseOption(options) => {
+            (!options.options.is_empty()).then_some(Answer::ChooseOption(OptionChoice(0)))
+        }
+        DecisionKind::ChooseMode(options) => first_modes(options).map(Answer::ChooseMode),
         _ => None,
     }
+}
+
+/// Backing out of the cast when the options allow it, else the first modes of the list: one, or as many as the
+/// choice has to have at least. When the list is shorter than that, a choice that may repeat a mode repeats the first.
+fn first_modes(options: &ModeOptions) -> Option<ModeChoice> {
+    if options.can_cancel {
+        return Some(ModeChoice::Cancel);
+    }
+    let first = options.modes.first()?;
+    let wanted = usize::try_from(options.min.max(1)).unwrap_or(1);
+    let mut chosen: Vec<usize> = options
+        .modes
+        .iter()
+        .take(wanted)
+        .map(|mode| mode.index)
+        .collect();
+    if chosen.len() < wanted {
+        if !options.repeat {
+            return None;
+        }
+        chosen.resize(wanted, first.index);
+    }
+    Some(ModeChoice::Modes(chosen))
 }
 
 /// Whether `answer` takes a triggered ability off the stack without a target. Only the clock gives it ([`fallback`]):
@@ -255,7 +292,10 @@ mod tests {
     //! Goal: the pace rules give the clock, the safe default and the priority test exactly to the decisions they are meant for, whatever the settings, and a seat starts in the mode its auto-pass default names.
     use super::*;
     use mtg_core::ids::ObjectId;
-    use mtg_engine::choose::{TargetOptions, TriggerEntry, TriggersOptions};
+    use mtg_engine::choose::{
+        ChoiceOption, ModeOption, OptionOptions, TargetOptions, TriggerEntry, TriggersOptions,
+        YesNoOptions,
+    };
     use mtg_engine::decision::{
         AttackOptions, BlockOptions, BottomOptions, DamageOptions, DiscardOptions, MulliganOptions,
         PayOptions, PriorityOptions,
@@ -354,6 +394,40 @@ mod tests {
         })
     }
 
+    fn question() -> DecisionKind {
+        DecisionKind::YesNo(YesNoOptions {
+            source: ObjectId(1),
+            text: "Pay {1}?".into(),
+        })
+    }
+
+    fn options(count: usize) -> DecisionKind {
+        DecisionKind::ChooseOption(OptionOptions {
+            source: ObjectId(1),
+            options: (0..count)
+                .map(|n| ChoiceOption::Label(format!("Option {n}")))
+                .collect(),
+            text: String::new(),
+        })
+    }
+
+    /// `count` modes on offer, whose indices (1, 3, 5, ...) differ from their places in the list.
+    fn modes(count: usize, min: u32, max: u32, repeat: bool, can_cancel: bool) -> DecisionKind {
+        DecisionKind::ChooseMode(ModeOptions {
+            source: ObjectId(1),
+            modes: (0..count)
+                .map(|n| ModeOption {
+                    index: 2 * n + 1,
+                    label: None,
+                })
+                .collect(),
+            min,
+            max,
+            repeat,
+            can_cancel,
+        })
+    }
+
     fn decision(player: PlayerId, kind: DecisionKind) -> Decision {
         Decision { player, kind }
     }
@@ -379,6 +453,13 @@ mod tests {
     #[case::the_active_player_choosing_targets(ACTIVE, targets(true), None)]
     #[case::the_active_player_choosing_the_targets_of_a_trigger(ACTIVE, targets(false), None)]
     #[case::the_active_player_ordering_triggers(ACTIVE, order(2), None)]
+    #[case::answering_a_question(OTHER, question(), Some(10))]
+    #[case::choosing_an_option(OTHER, options(3), Some(10))]
+    #[case::choosing_the_modes_of_a_spell(OTHER, modes(3, 1, 1, false, true), Some(10))]
+    #[case::choosing_the_modes_of_a_trigger(OTHER, modes(3, 1, 1, false, false), Some(10))]
+    #[case::the_active_player_answering_a_question(ACTIVE, question(), None)]
+    #[case::the_active_player_choosing_an_option(ACTIVE, options(3), None)]
+    #[case::the_active_player_choosing_modes(ACTIVE, modes(3, 1, 1, false, true), None)]
     fn clocks_by_decision(
         #[case] player: PlayerId,
         #[case] kind: DecisionKind,
@@ -411,6 +492,9 @@ mod tests {
             None
         );
         assert_eq!(pace.clock_for(&decision(OTHER, order(2)), ACTIVE), None);
+        for kind in [question(), options(2), modes(2, 1, 1, false, true)] {
+            assert_eq!(pace.clock_for(&decision(OTHER, kind), ACTIVE), None);
+        }
         if pace.blocks.is_none() {
             assert_eq!(pace.clock_for(&decision(OTHER, blockers()), ACTIVE), None);
         }
@@ -438,8 +522,93 @@ mod tests {
     #[case::a_spell_is_taken_back(targets(true), Some(Answer::ChooseTargets(TargetChoice::Cancel)))]
     #[case::a_trigger_is_removed(targets(false), Some(Answer::ChooseTargets(TargetChoice::Remove)))]
     #[case::triggers_go_on_in_the_order_they_triggered(order(3), Some(Answer::OrderTriggers(TriggersChoice(vec![0, 1, 2]))))]
+    #[case::no_to_a_question(question(), Some(Answer::YesNo(YesNoChoice(false))))]
+    #[case::the_first_of_the_options(options(4), Some(Answer::ChooseOption(OptionChoice(0))))]
+    #[case::the_only_option(options(1), Some(Answer::ChooseOption(OptionChoice(0))))]
+    #[case::no_option_to_choose(options(0), None)]
+    #[case::a_spell_is_taken_back_instead_of_choosing_modes(
+        modes(3, 1, 1, false, true),
+        Some(Answer::ChooseMode(ModeChoice::Cancel))
+    )]
+    #[case::taking_it_back_beats_a_choice_of_several(
+        modes(4, 2, 2, false, true),
+        Some(Answer::ChooseMode(ModeChoice::Cancel))
+    )]
+    #[case::a_trigger_takes_the_first_mode(modes(3, 1, 1, false, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1]))))]
+    #[case::the_index_of_the_mode_and_not_its_place(modes(1, 1, 1, false, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1]))))]
+    #[case::a_choice_of_two_takes_the_first_two(modes(4, 2, 2, false, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1, 3]))))]
+    #[case::up_to_three_takes_one(modes(4, 0, 3, false, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1]))))]
+    #[case::a_repeating_choice_with_too_few_modes_repeats_the_first(modes(1, 3, 3, true, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1, 1, 1]))))]
+    #[case::too_few_modes_that_may_not_repeat_have_no_answer(modes(1, 2, 2, false, false), None)]
+    #[case::no_modes_to_choose(modes(0, 1, 1, false, false), None)]
     fn safe_defaults(#[case] kind: DecisionKind, #[case] expected: Option<Answer>) {
         assert_eq!(fallback(&decision(OTHER, kind)), expected);
+    }
+
+    #[test]
+    fn the_clock_and_the_fallback_are_the_same_for_every_seat_and_every_shape_of_options() {
+        let kinds = [
+            question(),
+            options(1),
+            options(11),
+            modes(1, 1, 1, false, true),
+            modes(5, 2, 3, true, false),
+        ];
+        for kind in kinds {
+            let want = (
+                pace().clock_for(&decision(OTHER, kind.clone()), ACTIVE),
+                fallback(&decision(OTHER, kind.clone())),
+            );
+            assert_eq!(want.0, Some(Duration::from_secs(10)), "{kind:?}");
+            for seat in 1..12 {
+                let d = decision(PlayerId::from_index(seat), kind.clone());
+                assert_eq!((pace().clock_for(&d, ACTIVE), fallback(&d)), want, "{d:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn the_mode_fallback_is_a_choice_the_options_allow_whenever_it_gives_one() {
+        for (count, min, max, repeat) in mode_shapes() {
+            let kind = modes(count, min, max, repeat, false);
+            let DecisionKind::ChooseMode(options) = &kind else {
+                unreachable!("modes() builds a mode decision");
+            };
+            let wanted = usize::try_from(min.max(1)).unwrap();
+            let feasible = count > 0 && (count >= wanted || repeat);
+            let Some(Answer::ChooseMode(ModeChoice::Modes(chosen))) =
+                fallback(&decision(OTHER, kind.clone()))
+            else {
+                assert!(!feasible, "{kind:?} has an answer to give");
+                continue;
+            };
+            assert!(feasible, "{kind:?} gave an answer it cannot");
+            let offered: Vec<usize> = options.modes.iter().map(|m| m.index).collect();
+            assert!(chosen.iter().all(|i| offered.contains(i)), "{chosen:?}");
+            assert_eq!(chosen.len(), wanted, "as many as the choice has to have");
+            assert!(
+                chosen.len() <= max as usize,
+                "{chosen:?} is more than the most"
+            );
+            let mut once = chosen.clone();
+            once.dedup();
+            assert!(repeat || once.len() == chosen.len(), "{chosen:?} repeats");
+        }
+    }
+
+    /// Every (modes on offer, fewest, most, repeat) of a small range, `min <= max`, `max >= 1`.
+    fn mode_shapes() -> Vec<(usize, u32, u32, bool)> {
+        let mut all = Vec::new();
+        for count in 0..=5 {
+            for min in 0..=3 {
+                for max in min.max(1)..=4 {
+                    for repeat in [false, true] {
+                        all.push((count, min, max, repeat));
+                    }
+                }
+            }
+        }
+        all
     }
 
     #[test]
