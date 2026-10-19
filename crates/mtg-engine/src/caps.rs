@@ -1,16 +1,26 @@
 //! What the engine runs, in the vocabulary of the card DSL's support records.
 //!
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
-//! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records).
-//! Today the engine runs vanilla permanents and the plain `{T}: Add {X}` of a creature or land.
+//! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
+//! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells and `{T}` abilities made of
+//! drawing, life and damage, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
 
-/// The primitives the engine runs. A task that teaches the engine one adds its name here in the
-/// same change as the code, and teaches `mtg_cards::assemble::lower` to carry it into the
-/// definition; the test below fails when only one of the two is done.
-const RUNS: &[&str] = &[PLAIN_MANA_ABILITY];
+/// The primitives the engine runs, and the only list of them. A task that teaches the engine one adds its
+/// name here in the same change as the code: the test of the interpreter fails when a name is listed for an
+/// effect that is still a stub, and when an effect that runs is not listed.
+const RUNS: &[&str] = &[
+    PLAIN_MANA_ABILITY,
+    "Ability.Spell",
+    "Ability.Activated",
+    "Cost.Tap",
+    "Effect.Draw",
+    "Effect.DealDamage",
+    "Effect.GainLife",
+    "Effect.LoseLife",
+];
 
 /// The capabilities of this engine.
 pub fn caps() -> Caps {
@@ -50,8 +60,18 @@ mod tests {
 
     #[rstest]
     #[case::plain_mana_ability(PLAIN_MANA_ABILITY, true)]
-    #[case::spells("Ability.Spell", false)]
-    #[case::damage("Effect.DealDamage", false)]
+    #[case::spells("Ability.Spell", true)]
+    #[case::activated_abilities("Ability.Activated", true)]
+    #[case::tapping("Cost.Tap", true)]
+    #[case::drawing("Effect.Draw", true)]
+    #[case::damage("Effect.DealDamage", true)]
+    #[case::gaining_life("Effect.GainLife", true)]
+    #[case::losing_life("Effect.LoseLife", true)]
+    #[case::mana_costs_of_abilities("Cost.Mana", false)]
+    #[case::once_a_turn("Ability.Limit", false)]
+    #[case::other_zones("Ability.From", false)]
+    #[case::triggers("Ability.Triggered", false)]
+    #[case::destroy("Effect.Destroy", false)]
     #[case::flying("Keyword.Flying", false)]
     #[case::x_costs(X_COST, false)]
     #[case::faces(FACES, false)]

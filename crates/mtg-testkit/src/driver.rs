@@ -1,6 +1,10 @@
 //! A scripted-answer driver: feed answers by card name, then assert on state and events.
 
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::choose::{
+    CardsChoice, CostsChoice, DivideChoice, ModeChoice, NumberChoice, OptionChoice, OrderChoice,
+    ReplacementChoice, Target, TargetChoice, TriggersChoice, YesNoChoice,
+};
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{
     Answer, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction, PriorityOptions,
@@ -235,6 +239,63 @@ impl Driver {
         Ok(())
     }
 
+    /// A player as a target.
+    pub fn target_player(&self, seat: usize) -> Target {
+        Target::Player(PlayerId::from_index(seat))
+    }
+
+    /// The battlefield permanent with this name as a target, as it is now.
+    pub fn target_named(&self, name: &str) -> Result<Target, ScriptError> {
+        let id = self.id_of(name)?;
+        self.state()
+            .object(id)
+            .map(|object| Target::Object(object.reference()))
+            .ok_or_else(|| ScriptError::NoSuchCard {
+                name: name.to_owned(),
+                place: "the battlefield",
+            })
+    }
+
+    /// Answers the pending target decision with these targets.
+    pub fn choose_targets(&mut self, targets: &[Target]) -> Result<Vec<Event>, ScriptError> {
+        if !matches!(self.decision()?.kind, DecisionKind::ChooseTargets(_)) {
+            return Err(self.unexpected("choose-targets"));
+        }
+        self.answer(Answer::ChooseTargets(TargetChoice::Targets(
+            targets.to_vec(),
+        )))
+    }
+
+    /// Backs out of the cast or activation at its pending target decision.
+    pub fn cancel_targets(&mut self) -> Result<Vec<Event>, ScriptError> {
+        if !matches!(self.decision()?.kind, DecisionKind::ChooseTargets(_)) {
+            return Err(self.unexpected("choose-targets"));
+        }
+        self.answer(Answer::ChooseTargets(TargetChoice::Cancel))
+    }
+
+    /// Casts the named spell at these targets (one specification) and pays automatically.
+    pub fn cast_at(&mut self, name: &str, targets: &[Target]) -> Result<Vec<Event>, ScriptError> {
+        self.begin_cast(name)?;
+        self.choose_targets(targets)?;
+        self.answer(Answer::PayMana(PayChoice::Auto))
+    }
+
+    /// Starts activating the first ability of the named permanent that is not a mana ability.
+    pub fn begin_activation(&mut self, name: &str) -> Result<Vec<Event>, ScriptError> {
+        let (_, options) = self.priority()?;
+        let ability = options
+            .abilities
+            .iter()
+            .find(|a| self.name_of(a.object) == name)
+            .copied()
+            .ok_or_else(|| ScriptError::NoSuchCard {
+                name: name.to_owned(),
+                place: "activatable abilities",
+            })?;
+        self.answer(Answer::Priority(PriorityAction::Activate(ability)))
+    }
+
     fn unexpected(&self, wanted: &'static str) -> ScriptError {
         ScriptError::UnexpectedDecision {
             wanted,
@@ -329,6 +390,39 @@ impl Driver {
             DecisionKind::Discard(o) => {
                 Answer::Discard(o.hand.iter().copied().take(o.count).collect())
             }
+            // Backing out of a cast is the passive way through an announcement; a trigger has no way out.
+            DecisionKind::ChooseTargets(o) if o.can_cancel => {
+                Answer::ChooseTargets(TargetChoice::Cancel)
+            }
+            DecisionKind::ChooseTargets(o) => Answer::ChooseTargets(TargetChoice::Targets(
+                o.legal.iter().copied().take(o.min as usize).collect(),
+            )),
+            DecisionKind::ChooseMode(o) => Answer::ChooseMode(ModeChoice(
+                o.modes
+                    .iter()
+                    .take(o.min as usize)
+                    .map(|m| m.index)
+                    .collect(),
+            )),
+            DecisionKind::ChooseNumber(o) => Answer::ChooseNumber(NumberChoice(o.min)),
+            DecisionKind::DivideAmount(o) => Answer::DivideAmount(DivideChoice(
+                o.among
+                    .iter()
+                    .enumerate()
+                    .map(|(at, t)| (*t, if at == 0 { o.total } else { 0 }))
+                    .collect(),
+            )),
+            DecisionKind::ChooseCards(o) => Answer::ChooseCards(CardsChoice(
+                o.from.iter().copied().take(o.min as usize).collect(),
+            )),
+            DecisionKind::OrderCards(o) => Answer::OrderCards(OrderChoice(o.cards.clone())),
+            DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(false)),
+            DecisionKind::ChooseOption(_) => Answer::ChooseOption(OptionChoice(0)),
+            DecisionKind::ChooseCosts(_) => Answer::ChooseCosts(CostsChoice(Vec::new())),
+            DecisionKind::OrderTriggers(o) => {
+                Answer::OrderTriggers(TriggersChoice((0..o.triggers.len()).collect()))
+            }
+            DecisionKind::ChooseReplacement(_) => Answer::ChooseReplacement(ReplacementChoice(0)),
         }
     }
 

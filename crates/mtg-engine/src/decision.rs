@@ -6,6 +6,13 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use serde::{Deserialize, Serialize};
 
+use crate::abilities::AbilityRef;
+use crate::choose::{
+    CardsChoice, CardsOptions, CostsChoice, CostsOptions, DivideChoice, DivideOptions, ModeChoice,
+    ModeOptions, NumberChoice, NumberOptions, OptionChoice, OptionOptions, OrderChoice,
+    OrderOptions, ReplacementChoice, ReplacementOptions, TargetChoice, TargetOptions,
+    TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
+};
 use crate::combat::AttackTarget;
 use crate::mana::{ManaOption, ManaPool, ManaSource, Payment};
 
@@ -39,6 +46,28 @@ pub enum DecisionKind {
     AssignDamage(DamageOptions),
     /// Discard down to maximum hand size.
     Discard(DiscardOptions),
+    /// Choose the targets of one target specification as a spell or ability goes on the stack.
+    ChooseTargets(TargetOptions),
+    /// Choose the modes of a modal spell or ability.
+    ChooseMode(ModeOptions),
+    /// Choose a number (X, or "any number").
+    ChooseNumber(NumberOptions),
+    /// Divide damage or counters among the targets.
+    DivideAmount(DivideOptions),
+    /// Choose cards from a list; any seat may be asked.
+    ChooseCards(CardsOptions),
+    /// Put cards in an order; any seat may be asked.
+    OrderCards(OrderOptions),
+    /// Answer a "may" or a "pay or not"; any seat may be asked.
+    YesNo(YesNoOptions),
+    /// Choose one of a short list (a colour, a player, a name); any seat may be asked.
+    ChooseOption(OptionOptions),
+    /// Choose which optional costs to pay.
+    ChooseCosts(CostsOptions),
+    /// Order the triggered abilities that go on the stack together.
+    OrderTriggers(TriggersOptions),
+    /// Choose which replacement effect applies first.
+    ChooseReplacement(ReplacementOptions),
 }
 
 impl DecisionKind {
@@ -53,6 +82,17 @@ impl DecisionKind {
             DecisionKind::DeclareBlockers(_) => "declare-blockers",
             DecisionKind::AssignDamage(_) => "assign-damage",
             DecisionKind::Discard(_) => "discard",
+            DecisionKind::ChooseTargets(_) => "choose-targets",
+            DecisionKind::ChooseMode(_) => "choose-mode",
+            DecisionKind::ChooseNumber(_) => "choose-number",
+            DecisionKind::DivideAmount(_) => "divide-amount",
+            DecisionKind::ChooseCards(_) => "choose-cards",
+            DecisionKind::OrderCards(_) => "order-cards",
+            DecisionKind::YesNo(_) => "yes-no",
+            DecisionKind::ChooseOption(_) => "choose-option",
+            DecisionKind::ChooseCosts(_) => "choose-costs",
+            DecisionKind::OrderTriggers(_) => "order-triggers",
+            DecisionKind::ChooseReplacement(_) => "choose-replacement",
         }
     }
 }
@@ -95,6 +135,10 @@ pub struct PriorityOptions {
     pub castable: Vec<ObjectId>,
     /// Mana abilities that can be activated now.
     pub mana_abilities: Vec<ManaOption>,
+    /// Abilities that are not mana abilities and can be activated now; a player who has one has something to do.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<AbilityRef>>", optional))]
+    pub abilities: Vec<AbilityRef>,
     /// Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
     /// mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.
     pub can_act: bool,
@@ -204,6 +248,8 @@ pub enum PriorityAction {
     CastSpell(ObjectId),
     /// Activate this mana ability.
     ActivateMana(ManaSource),
+    /// Activate this ability, which is not a mana ability (leads to its announcement and costs).
+    Activate(AbilityRef),
 }
 
 /// How to pay for a spell.
@@ -240,6 +286,28 @@ pub enum Answer {
     AssignDamage(Vec<(ObjectId, u32)>),
     /// Cards to discard.
     Discard(Vec<ObjectId>),
+    /// The targets of the specification asked about, or backing out of the cast.
+    ChooseTargets(TargetChoice),
+    /// The modes chosen.
+    ChooseMode(ModeChoice),
+    /// The number chosen.
+    ChooseNumber(NumberChoice),
+    /// How the amount is divided.
+    DivideAmount(DivideChoice),
+    /// The cards chosen.
+    ChooseCards(CardsChoice),
+    /// The cards in the order chosen.
+    OrderCards(OrderChoice),
+    /// Yes or no.
+    YesNo(YesNoChoice),
+    /// The option chosen.
+    ChooseOption(OptionChoice),
+    /// The optional costs chosen.
+    ChooseCosts(CostsChoice),
+    /// The order of the triggers.
+    OrderTriggers(TriggersChoice),
+    /// The replacement effect applied first.
+    ChooseReplacement(ReplacementChoice),
 }
 
 impl Answer {
@@ -254,6 +322,17 @@ impl Answer {
             Answer::DeclareBlockers(_) => "declare-blockers",
             Answer::AssignDamage(_) => "assign-damage",
             Answer::Discard(_) => "discard",
+            Answer::ChooseTargets(_) => "choose-targets",
+            Answer::ChooseMode(_) => "choose-mode",
+            Answer::ChooseNumber(_) => "choose-number",
+            Answer::DivideAmount(_) => "divide-amount",
+            Answer::ChooseCards(_) => "choose-cards",
+            Answer::OrderCards(_) => "order-cards",
+            Answer::YesNo(_) => "yes-no",
+            Answer::ChooseOption(_) => "choose-option",
+            Answer::ChooseCosts(_) => "choose-costs",
+            Answer::OrderTriggers(_) => "order-triggers",
+            Answer::ChooseReplacement(_) => "choose-replacement",
         }
     }
 }

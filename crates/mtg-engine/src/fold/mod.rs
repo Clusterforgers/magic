@@ -2,6 +2,9 @@
 
 mod combat;
 mod opening;
+mod resolution;
+#[cfg(test)]
+mod tests;
 mod zones;
 
 use std::collections::BTreeSet;
@@ -52,6 +55,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         | Event::CardDrawn { .. }
         | Event::CardDiscarded { .. }
         | Event::CreatureDied { .. }
+        | Event::ZoneChanged { .. }
         | Event::ObjectLeftGame { .. } => zones::apply(state, event),
         Event::AttackersDeclared { .. }
         | Event::BlockersDeclared { .. }
@@ -59,6 +63,19 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         | Event::DamageDealt { .. }
         | Event::CombatEnded
         | Event::DamageCleared => combat::apply(state, event),
+        Event::AbilityPutOnStack(_)
+        | Event::AbilityActivated { .. }
+        | Event::ResolutionBegan { .. }
+        | Event::ChoiceMade { .. }
+        | Event::StepDone { .. }
+        | Event::ResolutionEnded { .. } => resolution::apply(state, event),
+        Event::AbilityTriggered(triggered) => crate::triggers::fold(state, triggered),
+        Event::CountersChanged(counters) => crate::counters::fold(state, counters),
+        Event::TokenCreated(token) => crate::tokens::fold(state, token),
+        // What a player learned changes nothing in the game; the protocol decides who may see it.
+        Event::LibraryLooked(_) | Event::CardsFound(_) | Event::Scried(_) | Event::Revealed(_) => {
+            Ok(())
+        }
         _ => apply_misc(state, event),
     }
 }
@@ -110,6 +127,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::ManaPoolEmptied { player } => pool_mut(state, *player)?.clear(),
         Event::LifePaid { player, amount } => pay_life(state, *player, *amount)?,
+        Event::LifeGained { player, amount } => change_life(state, *player, *amount, true)?,
+        Event::LifeLost { player, amount } => change_life(state, *player, *amount, false)?,
         Event::DrewFromEmptyLibrary { player } => {
             player_mut(state, *player)?.drew_from_empty = true;
         }
@@ -150,6 +169,39 @@ fn pay_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), Engi
             "{id:?} cannot pay {amount} life with {}",
             player.life
         ))),
+    }
+}
+
+/// Adds `amount` to a life total, or takes it off; a total may go to 0 or below, which state-based actions judge.
+fn change_life(
+    state: &mut GameState,
+    id: PlayerId,
+    amount: u32,
+    gain: bool,
+) -> Result<(), EngineError> {
+    let player = player_mut(state, id)?;
+    match i32::try_from(amount) {
+        Ok(change) if change > 0 => {
+            player.life = if gain {
+                player.life.saturating_add(change)
+            } else {
+                player.life.saturating_sub(change)
+            };
+            Ok(())
+        }
+        _ => Err(invalid(format!("{id:?} cannot change life by {amount}"))),
+    }
+}
+
+/// Gives priority to the active player (or the next player in turn order) with nobody having passed, as it
+/// is after something leaves the stack (CR 117.3b).
+pub(crate) fn priority_to_active(state: &mut GameState) {
+    let active = state.turn.active;
+    if let Some(holder) = state.turn_order_from(active).first().copied() {
+        state.priority = Some(PriorityState {
+            holder,
+            passed: BTreeSet::default(),
+        });
     }
 }
 

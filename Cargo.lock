@@ -1488,6 +1488,7 @@ dependencies = [
  "rand_core 0.10.1",
  "rstest",
  "serde",
+ "serde_json",
  "thiserror",
  "ts-rs",
 ]
@@ -1563,6 +1564,7 @@ dependencies = [
  "mtg-import",
  "proptest",
  "rstest",
+ "serde_json",
  "thiserror",
 ]
 

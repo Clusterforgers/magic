@@ -5,7 +5,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use mtg_engine::combat::{AttackTarget, DamageTarget};
-use mtg_engine::object::PermanentState;
+use mtg_engine::object::{ObjectKind, PermanentState};
 use mtg_engine::player::Player;
 use mtg_engine::state::Stage;
 use mtg_engine::zones::{Zone, Zones};
@@ -149,6 +149,28 @@ fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
             out.id()
         )));
     }
+    if let Some(resolving) = state.resolving() {
+        let id = resolving.object();
+        if state.stack().last() != Some(&id) {
+            return Err(book(format!(
+                "{id:?} is resolving but is not the top of the stack"
+            )));
+        }
+    }
+    for object in state.objects() {
+        if object.kind() == ObjectKind::Ability && object.zone() != Zone::Stack {
+            return Err(book(format!(
+                "ability {:?} is outside the stack",
+                object.id()
+            )));
+        }
+        if object.zone() != Zone::Stack && !object.choices().is_empty() {
+            return Err(book(format!(
+                "{:?} keeps what was announced for it after leaving the stack",
+                object.id()
+            )));
+        }
+    }
     Ok(())
 }
 
@@ -161,6 +183,7 @@ pub struct InvariantChecker {
     expected_life: Vec<i32>,
     expected_pool: Vec<[i64; 6]>,
     expected_damage: BTreeMap<ObjectId, u32>,
+    zones_seen: BTreeMap<ObjectId, (Zone, u32)>,
     events_seen: usize,
     full_every: usize,
     since_full: usize,
@@ -181,6 +204,7 @@ impl InvariantChecker {
             expected_life: shadow.players().iter().map(Player::life).collect(),
             expected_pool: vec![[0; 6]; shadow.players().len()],
             expected_damage,
+            zones_seen: BTreeMap::new(),
             shadow,
             events_seen: 0,
             full_every: 1,
@@ -219,7 +243,28 @@ impl InvariantChecker {
                 replayed: shadow_hash,
             });
         }
+        self.check_zone_changes()?;
         self.check_damage_totals()
+    }
+
+    /// An object that is in another zone than when last seen has a higher zone-change counter, and no counter ever falls (CR 400.7).
+    fn check_zone_changes(&mut self) -> Result<(), Violation> {
+        for object in self.shadow.objects() {
+            let now = (object.zone(), object.counter());
+            if let Some(&(zone, counter)) = self.zones_seen.get(&object.id()) {
+                let moved_without_counting = now.1 == counter && now.0 != zone;
+                if now.1 < counter || moved_without_counting {
+                    return Err(zone_error(format!(
+                        "{:?} was in {zone:?} at counter {counter} and is in {:?} at counter {}",
+                        object.id(),
+                        now.0,
+                        now.1
+                    )));
+                }
+            }
+            self.zones_seen.insert(object.id(), now);
+        }
+        Ok(())
     }
 
     /// Replays the whole log from the setup and compares it with `live`.
@@ -236,12 +281,18 @@ impl InvariantChecker {
     }
 
     fn observe_event(&mut self, event: &Event) -> Result<(), Violation> {
+        // An ability ceases to exist when its resolution ends, and the fold removes it, so look first.
+        let ability_ends = matches!(event, Event::ResolutionEnded { object, .. }
+            if self.shadow.object(*object).is_some_and(|o| o.kind() == ObjectKind::Ability));
         apply_event(&mut self.shadow, event)
             .map_err(|e| Violation::Fold(format!("{event:?}: {e}")))?;
         self.account(event)?;
         let touched = event.touched_objects();
-        if matches!(event, Event::ObjectLeftGame { .. }) {
+        if matches!(event, Event::ObjectLeftGame { .. }) || ability_ends {
             self.expected_objects -= 1;
+        }
+        if matches!(event, Event::AbilityPutOnStack(_)) {
+            self.expected_objects += 1;
         }
         if !touched.is_empty() {
             self.check_conservation()?;
@@ -318,6 +369,10 @@ impl InvariantChecker {
                 Ok(())
             }
             Event::LifePaid { player, amount } => self.lose_life(*player, *amount, "life paid"),
+            Event::LifeLost { player, amount } => self.lose_life(*player, *amount, "life lost"),
+            Event::LifeGained { player, amount } => {
+                self.change_life(*player, i64::from(*amount), "life gained")
+            }
             Event::DamageCleared => {
                 self.expected_damage.clear();
                 Ok(())
@@ -328,11 +383,16 @@ impl InvariantChecker {
 
     /// Takes `amount` off the independent life history of `player` and compares it with the shadow state.
     fn lose_life(&mut self, player: PlayerId, amount: u32, cause: &str) -> Result<(), Violation> {
+        self.change_life(player, -i64::from(amount), cause)
+    }
+
+    /// Moves the independent life history of `player` by `delta` and compares it with the shadow state.
+    fn change_life(&mut self, player: PlayerId, delta: i64, cause: &str) -> Result<(), Violation> {
         let life = self
             .expected_life
             .get_mut(player.index())
             .ok_or_else(|| Violation::Damage(format!("unknown {player:?}")))?;
-        *life -= i32::try_from(amount).unwrap_or(i32::MAX);
+        *life = i32::try_from(i64::from(*life) + delta).unwrap_or(i32::MAX);
         let actual = self.shadow.player(player).map(Player::life);
         if actual == Some(*life) {
             Ok(())

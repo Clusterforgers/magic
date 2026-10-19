@@ -17,6 +17,7 @@ import type {
   FullControlMode,
   GameResult,
   LobbySeat,
+  ObjectKind,
   ObjectView,
   PlayerForecast,
   PlayerView,
@@ -274,6 +275,17 @@ function isTableView(value: unknown): value is TableView {
   )
 }
 
+const OBJECT_KINDS: Record<ObjectKind, true> = { Card: true, Token: true, Ability: true }
+
+// A card, token or ability; the server leaves the field out for a card, and the other two fields out when empty.
+function isObjectKindInfo(value: Record<string, unknown>): boolean {
+  return (
+    (value.kind === undefined || (isText(value.kind) && Object.hasOwn(OBJECT_KINDS, value.kind))) &&
+    (value.source === undefined || isCount(value.source)) &&
+    (value.targets === undefined || isListOf(value.targets, Array.isArray))
+  )
+}
+
 function isObjectView(value: unknown): value is ObjectView {
   return (
     isRecord(value) &&
@@ -290,6 +302,7 @@ function isObjectView(value: unknown): value is ObjectView {
     (value.power === null || isInt(value.power)) &&
     (value.toughness === null || isInt(value.toughness)) &&
     Array.isArray(value.abilities) &&
+    isObjectKindInfo(value) &&
     (value.permanent === null ||
       (isRecord(value.permanent) &&
         isFlag(value.permanent.tapped) &&

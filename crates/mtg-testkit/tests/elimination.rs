@@ -3,6 +3,7 @@
 mod common;
 
 use common::pid;
+use mtg_engine::choose::Choices;
 use mtg_engine::combat::{AttackTarget, DamageTarget};
 use mtg_engine::decision::Answer;
 use mtg_engine::player::LossReason;
@@ -246,6 +247,7 @@ fn a_losing_players_spells_leave_the_stack_with_them() -> Result<(), ScriptError
         Event::SpellCast {
             player: pid(1),
             object: spell,
+            choices: Choices::default(),
         },
         Event::DamageDealt {
             source: striker,

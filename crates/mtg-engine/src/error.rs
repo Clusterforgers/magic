@@ -28,6 +28,9 @@ pub enum EngineError {
     /// The engine looped without reaching a decision or the end of the game.
     #[error("no progress after {0} internal steps")]
     Stalled(usize),
+    /// A spell or ability could not be run: it uses something the engine does not play, or its data is wrong.
+    #[error("cannot resolve: {0}")]
+    Resolution(String),
 }
 
 /// Why an answer could not be previewed with [`Engine::preview_forecast`](crate::engine::Engine::preview_forecast).
@@ -163,4 +166,7 @@ pub enum IllegalAnswer {
     /// The mana payment is invalid.
     #[error("invalid payment: {0}")]
     Payment(#[from] PaymentError),
+    /// A decision of a kind the engine does not ask yet was answered.
+    #[error("the engine does not ask {0} decisions yet")]
+    Unsupported(&'static str),
 }

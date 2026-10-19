@@ -5,6 +5,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::combat::Attacker;
 use mtg_engine::forecast::pending_combat_forecast;
+use mtg_engine::object::ObjectKind;
 use mtg_engine::player::{Player, PlayerStatus};
 use mtg_engine::state::GameState;
 use mtg_engine::zones::Zone;
@@ -84,16 +85,26 @@ impl ObjectView {
         }
         let chars = characteristics(state, id)?;
         let card = object.card();
+        // An ability on the stack is named after its source and has nothing else of the source's printed side.
+        let printed = object.kind() != ObjectKind::Ability;
         Some(ObjectView {
             id,
             owner: object.owner(),
             controller: object.controller(),
             zone: object.zone(),
             name: card.name.clone(),
-            mana_cost: card.mana_cost.clone(),
-            supertypes: card.supertypes.iter().copied().collect(),
+            mana_cost: card.mana_cost.clone().filter(|_| printed),
+            supertypes: if printed {
+                card.supertypes.iter().copied().collect()
+            } else {
+                Vec::new()
+            },
             types: type_list(chars.types),
-            subtypes: card.subtypes.clone(),
+            subtypes: if printed {
+                card.subtypes.clone()
+            } else {
+                Vec::new()
+            },
             colors: chars.colors.iter().collect(),
             power: chars.power,
             toughness: chars.toughness,
@@ -103,6 +114,9 @@ impl ObjectView {
                 damage: p.damage(),
                 summoning_sick: p.summoning_sick(),
             }),
+            kind: object.kind(),
+            source: object.ability().map(|ability| ability.source().id),
+            targets: object.choices().targets.clone(),
         })
     }
 }
