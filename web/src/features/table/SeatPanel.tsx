@@ -10,9 +10,9 @@ import { LifeForecast } from './combat/LifeForecast'
 import { LifeFx } from './fx/LifeFx'
 import { ManaPool } from './ManaPool'
 import { useSeatNamer } from './names'
-import { CountChip, SeatDot } from './PodParts'
-import { podCounts, podState, podStateWords } from './podFigures'
-import { exileOf, isYourTurn, NO_IDS, playerOf } from './selectors'
+import { ACTIVE_EDGE, CountChip, PriorityDot, SeatDot, YOUR_TURN_EDGE } from './PodParts'
+import { podCounts, podState, podStateWords, priorityName, showsPriorityDot } from './podFigures'
+import { exileOf, holdsPriority, isActiveSeat, isYourTurn, NO_IDS, playerOf } from './selectors'
 import { describeMulligan } from './turnText'
 import { ZoneButton } from './ZoneButton'
 
@@ -46,7 +46,8 @@ function Life({ seat, life, as, className }: LifeProps) {
  * The pod of a seat: its name with the seat's dot, life as the largest figure, the mana floating in the pool, chips
  * with the number of cards in the hand, library, graveyard and exile, and the commander once the command zone holds
  * one. A slot with nothing to say draws nothing. The root carries `data-seat` for the decision layer and `data-state`,
- * a list of `active` and `priority`, for the turn cues. As a `panel` it fits a column 168 px wide, with the
+ * a list of `active` and `priority`. The active seat has a 3 px edge inside the pod, yours the your-turn glow with it,
+ * and a seat that holds priority without the turn has a dot beside its name. As a `panel` it fits a column 168 px wide, with the
  * commander beside the chips; as a `line` it keeps to one row of the essentials and wraps the chips only when the
  * row is too narrow.
  */
@@ -57,10 +58,10 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
   const flags = usePlay(
     useShallow((state) => ({
       you: state.seat === seat,
-      active: state.view?.turn.active === seat,
+      active: isActiveSeat(state, seat),
       // The viewer's own turn: the pod joins the banner in the "your turn" glow.
       cue: state.seat === seat && isYourTurn(state),
-      priority: state.view?.priority?.holder === seat,
+      priority: holdsPriority(state, seat),
       mulligan: state.view?.stage === 'Mulligan',
     })),
   )
@@ -79,12 +80,8 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
     'data-state': podState(flags.active, flags.priority),
   }
   const words = podStateWords(flags.active, flags.priority)
-  // The glow carries its own ring, so it stands in for the ring classes instead of adding to them.
-  const ring = flags.cue
-    ? 'your-turn-cue'
-    : flags.active
-      ? 'ring-2 ring-primary'
-      : 'ring-1 ring-foreground/10'
+  // The glow carries its own ring and edge, so it stands in for the ring classes instead of adding to them.
+  const ring = flags.cue ? YOUR_TURN_EDGE : cn('ring-1 ring-foreground/10', flags.active && ACTIVE_EDGE)
   const line = variant === 'line'
   const mana = <ManaPool pool={player.mana} />
   const notes = (
@@ -108,6 +105,9 @@ export const SeatPanel = memo(function SeatPanel({ seat, variant = 'panel' }: Se
       <h3 className="truncate text-sm leading-5 font-semibold">{owner}</h3>
       {flags.you ? (
         <span className={cn('shrink-0 text-xs text-muted-foreground', line && '@max-sm:hidden')}>you</span>
+      ) : null}
+      {showsPriorityDot(flags.active, flags.priority) ? (
+        <PriorityDot label={priorityName(owner, flags.you)} />
       ) : null}
     </div>
   )

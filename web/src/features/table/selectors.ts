@@ -99,16 +99,26 @@ export function defaultFocusOf(state: PlayState): PlayerId | null {
   })
 }
 
+/** Whether turns are being played: the stage is Turns and the game has no result; a boolean, so it needs no `useShallow`. */
+export function turnsRunning(state: PlayState): boolean {
+  const { view } = state
+  return view !== null && view.stage === 'Turns' && view.result === null
+}
+
+/** Whether `seat` has the turn of a running game. Every seat sees the same, so a cue made from it leaks nothing. */
+export function isActiveSeat(state: PlayState, seat: PlayerId): boolean {
+  return turnsRunning(state) && state.view?.turn.active === seat
+}
+
+/** Whether `seat` holds priority; public, like the turn. */
+export function holdsPriority(state: PlayState, seat: PlayerId): boolean {
+  return state.view?.priority?.holder === seat
+}
+
 /** Whether it is this seat's own turn in a running game; a boolean, so it needs no `useShallow`. */
 export function isYourTurn(state: PlayState): boolean {
-  const { view, seat } = state
-  return (
-    seat !== null &&
-    view !== null &&
-    view.stage === 'Turns' &&
-    view.result === null &&
-    view.turn.active === seat
-  )
+  const { seat } = state
+  return seat !== null && isActiveSeat(state, seat)
 }
 
 /** Whether this seat may still concede: it is in the game, which has not ended. */

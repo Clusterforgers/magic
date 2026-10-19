@@ -1,4 +1,4 @@
-// Goal: the words and figures of a seat pod are pure: a card count reads "1 card" or "n cards", a chip is named after its zone and count, the zones drawn depend on the command zone alone, the state tokens are exactly `active` and `priority`, a tile's name repeats everything the tile shows, and a seat's hue differs from its neighbours' for any table up to 12 seats.
+// Goal: the words and figures of a seat pod are pure: a card count reads "1 card" or "n cards", a chip is named after its zone and count, the zones drawn depend on the command zone alone, the state tokens are exactly `active` and `priority`, the priority dot is for a seat that holds priority without the turn and is named after it, a tile's name repeats everything the tile shows, and a seat's hue differs from its neighbours' for any table up to 12 seats.
 import { describe, expect, it } from 'vitest'
 import type { PlayerView } from '@/protocol/generated'
 import {
@@ -7,7 +7,9 @@ import {
   podCounts,
   podState,
   podStateWords,
+  priorityName,
   seatHue,
+  showsPriorityDot,
   tileName,
   zoneLabel,
   ZONE_NAME,
@@ -67,15 +69,25 @@ describe('podCounts and chipZones', () => {
   })
 })
 
-describe('podState and podStateWords', () => {
+describe('podState, podStateWords and the priority dot', () => {
   it.each([
-    [false, false, undefined, ''],
-    [true, false, 'active', 'Active turn.'],
-    [false, true, 'priority', 'Has priority.'],
-    [true, true, 'active priority', 'Active turn. Has priority.'],
-  ])('active %s and priority %s: %j, "%s"', (active, priority, state, words) => {
+    [false, false, undefined, '', false],
+    [true, false, 'active', 'Active turn.', false],
+    // The dot has its own name, so the words add nothing for a seat that holds priority without the turn.
+    [false, true, 'priority', '', true],
+    [true, true, 'active priority', 'Active turn. Has priority.', false],
+  ])('active %s and priority %s: %j, "%s", dot %s', (active, priority, state, words, dot) => {
     expect(podState(active, priority)).toBe(state)
     expect(podStateWords(active, priority)).toBe(words)
+    expect(showsPriorityDot(active, priority)).toBe(dot)
+  })
+
+  it.each([
+    ['Bo', false, 'Bo has priority'],
+    ['Alice', false, 'Alice has priority'],
+    ['Alice', true, 'You have priority'],
+  ])('names the dot of %s (you: %s) "%s"', (name, you, expected) => {
+    expect(priorityName(name, you)).toBe(expected)
   })
 })
 

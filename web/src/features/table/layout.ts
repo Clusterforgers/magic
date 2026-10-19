@@ -331,7 +331,7 @@ export interface TableInput extends Omit<SeatInput, 'mode'> {
   viewport: Viewport
   /** The mode the player chose, if any. */
   mode?: TableMode | undefined
-  /** The seat whose turn it is; on a phone its tile leads the strip. */
+  /** The seat whose turn it is; in focus mode its tile leads the strip. */
   active?: PlayerId | null | undefined
 }
 
@@ -359,8 +359,8 @@ export function planTable(input: TableInput): TablePlan {
   const seatCount = wholeSeats(input.seatCount)
   const mode = chooseMode({ seatCount, mainWidth: regions.main.width, override: input.mode })
   const arranged = arrangeSeats({ ...input, seatCount, mode })
-  // The strip of a phone shows a few tiles at a time: the seat whose turn it is leads it.
-  const seats = regions.phone ? { ...arranged, tiles: activeFirst(arranged.tiles, input.active) } : arranged
+  // The strip leads with the seat whose turn it is, so that it is in view where the strip scrolls and one place to look at everywhere.
+  const seats = { ...arranged, tiles: activeFirst(arranged.tiles, input.active) }
   const pod: PodPlace = regions.phone ? 'line' : 'aside'
   return {
     regions,

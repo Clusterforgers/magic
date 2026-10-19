@@ -57,7 +57,7 @@ describe('on the viewer’s own turn', () => {
 })
 
 describe('on someone else’s turn', () => {
-  it.each([2, 3, 6])('lights nothing at %i seats, and the active opponent keeps the plain ring', (seats) => {
+  it.each([2, 3, 6])('lights nothing at %i seats, and the active opponent has the blue edge', (seats) => {
     const { container } = renderTable({ fixture: buildFixture({ seats, permanents: 2 }) })
     expect(container.querySelector('[data-your-turn]')).toBeNull()
     expect(container.querySelector(`.${CUE}`)).toBeNull()
@@ -66,7 +66,8 @@ describe('on someone else’s turn', () => {
     expect(banner()).toHaveClass('border-phase')
     const active = must(container.querySelector<HTMLElement>('section[data-seat][data-active]'))
     expect(active).toHaveAttribute('data-seat', '1')
-    expect(active).toHaveClass('ring-2', 'ring-primary')
+    expect(active).toHaveClass('inset-ring-3', 'inset-ring-turn-them')
+    expect(active).not.toHaveClass('inset-ring-turn-you-edge')
   })
 })
 

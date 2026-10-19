@@ -69,7 +69,7 @@ Tokens are CSS variables in `index.css`, mapped by `@theme inline` (S17); shadcn
 | primary, on-primary | `oklch(0.48 0.19 275)`, `oklch(0.985 0 0)` | `oklch(0.74 0.14 275)`, `oklch(0.17 0.012 265)` | main action, selection |
 | turn-you, on-turn-you | `oklch(0.82 0.16 85)`, `oklch(0.20 0.02 265)` | `oklch(0.82 0.15 85)`, same | your-turn pill and banner |
 | turn-you-edge | `oklch(0.55 0.14 65)` | `oklch(0.82 0.15 85)` | pod edge and ring, 4.8:1 |
-| turn-them | `oklch(0.50 0.09 250)` | `oklch(0.74 0.09 250)` | opponent turn marker |
+| turn-them | `oklch(0.50 0.09 250)` | `oklch(0.74 0.09 250)` | opponent turn marker, pod and tile edge |
 | phase-`<id>`, `-soft`, on-phase-`<id>` | [Phase themes](#phase-themes) | same | accent, tint and text of the four phases |
 | success, warning, destructive | `oklch(0.50 0.14 150)`, `oklch(0.50 0.14 55)`, `oklch(0.50 0.20 27)` | `oklch(0.74 0.15 150)`, `oklch(0.80 0.15 70)`, `oklch(0.72 0.17 25)` | ready, urgent clock, lethal and Concede |
 | mana fill, ink | blue `0.50 0.13 245`, red `0.52 0.20 28`, green `0.50 0.14 150`, black `0.30 0.02 300` with white ink; gold `0.82 0.14 85`, white `0.96 0.03 90`, colorless `0.78 0.01 260` with dark ink | same | pips, 5.6:1 or more |
@@ -135,7 +135,7 @@ Whose turn it is stays on screen as a token: Legends of Runeterra's attack token
 |---|---|---|---|
 | Turn badge | always, in the top bar | the phase's icon and name, then "Your turn · 5 · Precombat main" (accent fill) or "Bo's turn · 5 · Declare blockers" (tint, accent edge); [Phase themes](#phase-themes) | unchanged |
 | Turn banner | turn number or active seat changes | a band over the shared region, "Your turn" or "Bo's turn" and the turn; 250 ms in, 600 held, 150 out; `pointer-events: none` | fade only, held 1.5 s |
-| Active seat | during its turn | a 3 px pod edge (turn-you-edge or turn-them); a dot on a priority holder who is not active; your pod keeps `your-turn-cue`, pulsing 6 s at most; in Focus mode the large board follows it, a 150 ms cross-fade | static ring, no fade |
+| Active seat | during its turn | a 3 px edge inside the pod or tile (turn-you-edge or turn-them), with a faint tint on a tile; a dot after the name of a priority holder who is not active, named "Bo has priority"; your pod adds `your-turn-cue`, pulsing twice (5.6 s) and then resting; in Focus mode the strip leads with the active seat and the large board follows it, a 150 ms cross-fade | static ring, no fade |
 | Ticker | every batch | one line: the newest non-minor log line, plus "Skipped Upkeep, Draw" when steps passed with no window for you; three lines, 3 s each | static |
 | Ladder | a step changes | current step lit in the phase's accent, passed steps filled, a skipped step dashed for 1 s | no sweep |
 
