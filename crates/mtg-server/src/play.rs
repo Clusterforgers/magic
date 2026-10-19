@@ -80,8 +80,8 @@ impl<S: EventStore> GameActor<S> {
     ///
     /// First the seats the windows pass for at once ([`crate::windows`]: a seat that is not in Full Control and meets no
     /// window of its own, or that yields) are passed for, so the step, the passes that follow it and the save are
-    /// one unit: either the whole stretch is kept or none of it. A seat that cannot act at a default window is not
-    /// passed for here: the run stops at it and the pass comes as a step of its own when its dwell is over
+    /// one unit: either the whole stretch is kept or none of it. A seat that must wait at its window (`Window::dwells`)
+    /// is not passed for here: the run stops at it and the pass comes as a step of its own when its dwell is over
     /// ([`GameActor::expire`]). The yields and the stops (with the modes) start from copies that replace the seats' own
     /// only once saved.
     pub(crate) async fn publish(&mut self, step: Step) -> Result<(), Fatal> {

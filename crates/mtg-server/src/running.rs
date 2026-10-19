@@ -380,8 +380,8 @@ impl Running {
     ///
     /// The passes go through the engine like any answer; their events are added to `events`, so the
     /// whole stretch is saved and shown as one batch. A seat that is asked, or is asked anything else, stops the
-    /// run, and so does the end of the game; so does a seat that cannot act at a default window while the dwell is
-    /// on, with `Halt::Dwell`: nothing is passed for it here, the actor does that when its dwell is over. A yield
+    /// run, and so does the end of the game; so does a seat that must wait at its window (`Window::dwells`) while the
+    /// dwell is on, with `Halt::Dwell`: nothing is passed for it here, the actor does that when its dwell is over. A yield
     /// that reaches its end on the way is dropped from `yields`, and the one-turn stops of the steps the passes
     /// leave are cleared from `stops`; the caller keeps both only if the stretch is saved.
     pub(crate) fn skip_idle(
@@ -476,11 +476,14 @@ impl Running {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a run of passes stops at its limit with the next priority decision still pending, and a yield that decision belongs to ends there, so the seat is never handed a prompt while the server still "passes for it"; every other seat is left alone; a seat that cannot act at a default window stops the run with its decision held back (never sent, answered or previewed, passed for by the table with its dwell as the clock) until the rules ask it.
+    //! Goal: a run of passes stops at its limit with the next priority decision still pending, and a yield that decision belongs to ends there, so the seat is never handed a prompt while the server still "passes for it"; every other seat is left alone; a seat that cannot act at a window where it waits (a spell on the stack, not its own empty main phase) stops the run with its decision held back (never sent, answered or previewed, passed for by the table with its dwell as the clock) until the rules ask it.
     use super::*;
     use crate::dwell::Dwell;
+    use mtg_engine::DecisionKind;
+    use mtg_engine::decision::{PayChoice, PriorityAction};
     use mtg_protocol::{FullControlMode, YieldUntil};
     use mtg_testkit::Scenario;
+    use mtg_testkit::cards::free_creature;
     use rstest::rstest;
 
     const SEATS: [PlayerId; 2] = [PlayerId(0), PlayerId(1)];
@@ -545,27 +548,71 @@ mod tests {
         assert_eq!(yields.get(SEATS[0]), Some(YieldUntil::EndOfTurn));
     }
 
-    /// Seat 0's first main phase, with nothing in either hand: seat 0 cannot act at a window of the default table.
-    fn idle_at_main(dwell: Dwell) -> Running {
+    /// Seat 0 in its first main phase after it cast its free creature: the spell waits on the stack and seat 0 holds
+    /// nothing else, so it cannot act at a window where a seat that cannot act waits.
+    fn idle_with_a_spell(dwell: Dwell) -> Running {
         let pace = Pace {
             dwell,
             ..Pace::MANUAL
         };
-        let setup = Scenario::new(2).setup().unwrap();
-        let mut running = Running::new(Engine::new(setup).unwrap(), pace);
+        let setup = Scenario::new(2)
+            .hand(0, [free_creature("Spare Bear", 2, 2)])
+            .setup()
+            .unwrap();
+        let mut engine = Engine::new(setup).unwrap();
+        let Some(Decision {
+            kind: DecisionKind::Priority(options),
+            ..
+        }) = engine.decision().cloned()
+        else {
+            panic!("seat 0 holds priority");
+        };
+        let spell = options.castable[0];
+        engine
+            .apply(Answer::Priority(PriorityAction::CastSpell(spell)))
+            .unwrap();
+        engine.apply(Answer::PayMana(PayChoice::Auto)).unwrap();
+        let mut running = Running::new(engine, pace);
         running.settle(false, Halt::Ask, false);
         running
     }
 
     fn held_back(dwell: Dwell) -> Running {
-        let mut running = idle_at_main(dwell);
+        let mut running = idle_with_a_spell(dwell);
         assert!(running.settle(false, Halt::Dwell, false).is_none());
         running
     }
 
     #[test]
-    fn the_run_stops_at_an_idle_default_window_and_passes_nothing_for_it() {
-        let mut running = idle_at_main(Dwell::fixed(500));
+    fn a_seat_that_cannot_act_in_its_own_main_phase_with_an_empty_stack_is_passed_for_at_once() {
+        // Seat 0's first main phase, nothing in either hand: no dwell, though one is set.
+        let pace = Pace {
+            dwell: Dwell::fixed(500),
+            ..Pace::MANUAL
+        };
+        let setup = Scenario::new(2).setup().unwrap();
+        let mut running = Running::new(Engine::new(setup).unwrap(), pace);
+        running.settle(false, Halt::Ask, false);
+        assert_eq!(
+            running.verdict_pending(SEATS[0], &Stops::new(2), &Yields::new(2)),
+            Some(Verdict::Pass)
+        );
+        let mut events = Vec::new();
+        let halt = running
+            .skip_idle(&mut events, &mut Stops::new(2), &mut Yields::new(2))
+            .unwrap();
+        assert_eq!(halt, Halt::Ask, "nothing waits");
+        assert!(!events.is_empty(), "seat 0 was passed for");
+        assert_eq!(
+            running.engine.decision().map(|d| d.player),
+            Some(SEATS[1]),
+            "until seat 1 draws a land it can play"
+        );
+    }
+
+    #[test]
+    fn the_run_stops_at_a_window_a_seat_cannot_use_and_passes_nothing_for_it() {
+        let mut running = idle_with_a_spell(Dwell::fixed(500));
         let mut events = Vec::new();
         let halt = running
             .skip_idle(&mut events, &mut Stops::new(2), &mut Yields::new(2))
@@ -577,7 +624,7 @@ mod tests {
 
     #[test]
     fn with_the_dwell_off_the_run_passes_at_once_and_stops_where_a_seat_must_decide() {
-        let mut running = idle_at_main(Dwell::OFF);
+        let mut running = idle_with_a_spell(Dwell::OFF);
         let mut events = Vec::new();
         let halt = running
             .skip_idle(&mut events, &mut Stops::new(2), &mut Yields::new(2))
@@ -738,7 +785,7 @@ mod tests {
 
     #[test]
     fn a_switched_off_dwell_makes_every_idle_window_a_pass_at_once() {
-        let running = idle_at_main(Dwell::OFF);
+        let running = idle_with_a_spell(Dwell::OFF);
         let verdict = running.verdict_pending(SEATS[0], &Stops::new(2), &Yields::new(2));
         assert_eq!(verdict, Some(Verdict::Pass));
     }
@@ -747,7 +794,7 @@ mod tests {
     async fn the_dwells_follow_neither_the_game_seed_nor_each_other() {
         // Two games of the same seed and cards draw their dwells apart: the draws come from the operating system.
         let draw = || {
-            let mut running = idle_at_main(Dwell::DEFAULT);
+            let mut running = idle_with_a_spell(Dwell::DEFAULT);
             (1..=8)
                 .map(|turn| {
                     running
