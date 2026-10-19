@@ -6,6 +6,7 @@
 //! belongs to, if any. The event log lives apart in `game_events`. Run [`migrate`](crate::migrate)
 //! before use.
 
+mod claims;
 mod users;
 
 use std::collections::HashMap;
@@ -23,6 +24,7 @@ use crate::pg_store::PgEventStore;
 use crate::recipe::GameRecipe;
 use crate::user_id::UserId;
 
+pub(crate) use claims::Claimed;
 pub use users::{Binding, UserGame, UserGameSeat};
 
 /// Why the records could not be read or written.

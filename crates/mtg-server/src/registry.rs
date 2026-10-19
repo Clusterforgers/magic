@@ -12,6 +12,8 @@
 //! A game is also made [`Visibility::Public`] or [`Visibility::Invite`], and each of its seats is
 //! held from the start (its token is in the create response) or open ([`SeatState`]).
 
+mod claims;
+mod listing;
 mod resume;
 
 use std::collections::HashMap;
@@ -34,7 +36,7 @@ use crate::demo::DemoDeck;
 use crate::game_id::GameId;
 use crate::handle::{GameHandle, GameStatus};
 use crate::join_code::JoinCode;
-use crate::recipe::{Catalog, DeckRef, GameRecipe, RecipeError};
+use crate::recipe::{Catalog, DeckRef, FormatKind, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
 use crate::records::{
     Binding, GameRecords, NewGame, NewSeat, RecordError, SeatState, UserGame, Visibility,
@@ -47,6 +49,8 @@ use crate::user_id::UserId;
 /// Most games `Registry::games_of` returns: the newest ones.
 pub const MAX_LISTED_GAMES: usize = 100;
 
+pub use claims::{ClaimError, Entrance, HOST, SeatClaim, Seated, TableError};
+pub use listing::{ListedGame, MAX_LISTED_LOBBIES};
 pub use resume::ResumeReport;
 
 /// Why a game could not be created.
@@ -113,8 +117,8 @@ pub struct SeatSummary {
     pub seat: PlayerId,
     /// Its display name; empty while the seat is open.
     pub name: String,
-    /// Whether nobody holds the seat and a join may claim it.
-    pub open: bool,
+    /// How the seat is held: its token was made with the game, a join claimed it, or a join may.
+    pub state: SeatState,
 }
 
 /// What anybody may learn about a game: no tokens, no cards, no seed.
@@ -206,17 +210,25 @@ fn seat_slots(
 /// What an entry starts from.
 struct Parts {
     visibility: Visibility,
+    format: FormatKind,
     code: Option<TokenDigest>,
+    /// Whether the game is in the database, so changes to its seats are written there too.
+    recorded: bool,
     seats: Vec<SeatSlot>,
 }
 
 struct Entry {
     handle: GameHandle,
     visibility: Visibility,
+    format: FormatKind,
     /// The digest of the join code; none for a game stored before codes existed.
     code: Option<TokenDigest>,
+    recorded: bool,
     /// Every seat in seat order.
     seats: Vec<SeatSlot>,
+    /// Held while the seats of the game change hands, which spans the database and the actor, so
+    /// two changes to one table never interleave.
+    turn: Arc<tokio::sync::Mutex<()>>,
     created: Instant,
     /// When a sweep first saw the game finished.
     finished: Option<Instant>,
@@ -233,8 +245,11 @@ impl Entry {
         Entry {
             handle,
             visibility: parts.visibility,
+            format: parts.format,
             code: parts.code,
+            recorded: parts.recorded,
             seats: parts.seats,
+            turn: Arc::new(tokio::sync::Mutex::new(())),
             created,
             finished: None,
             last_connected: Instant::now(),
@@ -455,7 +470,9 @@ impl Registry {
             .await?;
         let parts = Parts {
             visibility: options.visibility,
+            format: recipe.as_ref().map_or(FormatKind::Normal, |r| r.format),
             code: Some(code.digest()),
+            recorded: persistent,
             seats: slots,
         };
         self.games()
@@ -644,6 +661,11 @@ impl Registry {
         let Some(records) = &self.shared.records else {
             return Ok(Binding::Missing);
         };
+        let Some(turn) = self.games().get(&game).map(|entry| Arc::clone(&entry.turn)) else {
+            return Ok(Binding::Missing);
+        };
+        // Seats do not change hands while an account is being bound.
+        let _turn = turn.lock().await;
         {
             let games = self.games();
             let Some(entry) = games.get(&game) else {
@@ -700,7 +722,7 @@ impl Registry {
                 .map(|(seat, slot)| SeatSummary {
                     seat: PlayerId::from_index(seat),
                     name: slot.name.clone(),
-                    open: slot.state == SeatState::Open,
+                    state: slot.state,
                 })
                 .collect();
             (entry.handle.clone(), entry.visibility, seats)

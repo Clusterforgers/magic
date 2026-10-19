@@ -6,7 +6,7 @@ mod common;
 use common::{Client, seat};
 use mtg_protocol::{LobbySeat, ServerMessage};
 use mtg_server::registry::{GameOptions, SeatRequest};
-use mtg_server::{GameId, Registry, ServerConfig, Visibility, demo};
+use mtg_server::{GameId, Registry, SeatState, ServerConfig, Visibility, demo};
 use rstest::rstest;
 use uuid::Uuid;
 
@@ -36,7 +36,12 @@ async fn a_game_is_invite_only_whichever_way_the_old_calls_make_it() {
         assert_eq!(registry.visibility(id), Some(Visibility::Invite));
         let public = registry.describe(id).await.unwrap();
         assert_eq!(public.visibility, Visibility::Invite);
-        assert!(public.seats.iter().all(|seat| !seat.open));
+        assert!(
+            public
+                .seats
+                .iter()
+                .all(|seat| seat.state == SeatState::Issued)
+        );
     }
     assert_eq!(
         by_create.seats.len(),
@@ -122,10 +127,11 @@ async fn only_the_held_seats_get_tokens_and_the_others_are_open(
     assert_eq!(public.seats.len(), seats);
     for (index, summary) in public.seats.iter().enumerate() {
         assert_eq!(summary.seat, seat(index));
-        assert_eq!(summary.open, index >= held, "seat {index}");
-        if summary.open {
+        if index >= held {
+            assert_eq!(summary.state, SeatState::Open, "seat {index}");
             assert_eq!(summary.name, "");
         } else {
+            assert_eq!(summary.state, SeatState::Issued, "seat {index}");
             assert_eq!(summary.name, format!("Player {index}"));
         }
     }

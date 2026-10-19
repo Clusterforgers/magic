@@ -43,6 +43,13 @@ impl Recorder {
         }
     }
 
+    /// Forgets that `seat` ever joined, for a seat given up in the lobby that somebody else may take.
+    pub(crate) fn forget(&mut self, seat: PlayerId) {
+        if let Some(flag) = self.joined.get_mut(seat.index()) {
+            *flag = false;
+        }
+    }
+
     /// Notes that the lobby is over.
     pub(crate) async fn started(&self) {
         if let Err(error) = self.records.mark_running(self.game).await {

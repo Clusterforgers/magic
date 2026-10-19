@@ -293,6 +293,10 @@ impl<S: EventStore> GameActor<S> {
                     self.push_roster();
                 }
             }
+            Command::Seat { seat, name, reply } => {
+                // A caller that stopped waiting needs no answer.
+                let _ = reply.send(self.seat_at(seat, name));
+            }
             Command::Status { reply } => {
                 // A caller that stopped waiting needs no answer.
                 let _ = reply.send(self.status());

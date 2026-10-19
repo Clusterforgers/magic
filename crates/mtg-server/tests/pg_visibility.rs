@@ -86,7 +86,12 @@ async fn a_game_stored_before_visibility_existed_is_invite_only_and_resumes(pool
     assert_eq!((report.resumed, report.lobbies), (1, 1));
     assert_eq!(registry.visibility(game.into()), Some(Visibility::Invite));
     let public = registry.describe(game.into()).await.unwrap();
-    assert!(public.seats.iter().all(|seat| !seat.open));
+    assert!(
+        public
+            .seats
+            .iter()
+            .all(|seat| seat.state == SeatState::Issued)
+    );
 }
 
 #[sqlx::test(migrations = false)]
@@ -130,8 +135,11 @@ async fn visibility_and_open_seats_are_stored_and_survive_a_restart(pool: PgPool
     assert_eq!(again.visibility(listed.id), Some(Visibility::Public));
     let public = again.describe(listed.id).await.unwrap();
     assert_eq!(public.visibility, Visibility::Public);
-    let open: Vec<_> = public.seats.iter().map(|seat| seat.open).collect();
-    assert_eq!(open, [false, true, true]);
+    let states: Vec<_> = public.seats.iter().map(|seat| seat.state).collect();
+    assert_eq!(
+        states,
+        [SeatState::Issued, SeatState::Open, SeatState::Open]
+    );
 
     // The held seat's old token opens it, and the lobby lists the open seats as nameless.
     let (_, token) = &listed.seats[0];

@@ -57,6 +57,14 @@ pub(crate) enum Command {
     Leave {
         seat: PlayerId,
     },
+    /// Names the person at a seat of the lobby, or empties the seat.
+    Seat {
+        seat: PlayerId,
+        /// The name now at the seat; `None` once the seat is open again.
+        name: Option<String>,
+        /// Whether the lobby took the change (not once the game runs).
+        reply: oneshot::Sender<bool>,
+    },
     Status {
         reply: oneshot::Sender<GameStatus>,
     },
@@ -107,6 +115,27 @@ impl GameHandle {
     pub async fn leave(&self, seat: PlayerId) {
         // A closed game has no connections left to drop, so there is nothing to report.
         let _ = self.commands.send(Command::Leave { seat }).await;
+    }
+
+    /// Puts `name` at `seat` of the lobby and tells the table. False, and nothing changed, once
+    /// the game runs.
+    pub(crate) async fn occupy(&self, seat: PlayerId, name: String) -> Result<bool, GameClosed> {
+        self.seat(seat, Some(name)).await
+    }
+
+    /// Empties `seat` of the lobby: its connection is closed, its `Ready` taken back and the table
+    /// told. False, and nothing changed, once the game runs.
+    pub(crate) async fn vacate(&self, seat: PlayerId) -> Result<bool, GameClosed> {
+        self.seat(seat, None).await
+    }
+
+    async fn seat(&self, seat: PlayerId, name: Option<String>) -> Result<bool, GameClosed> {
+        let (reply, answer) = oneshot::channel();
+        self.commands
+            .send(Command::Seat { seat, name, reply })
+            .await
+            .map_err(|_| GameClosed)?;
+        answer.await.map_err(|_| GameClosed)
     }
 
     /// The actor's view of the game right now.

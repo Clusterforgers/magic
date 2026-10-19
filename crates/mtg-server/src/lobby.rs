@@ -51,6 +51,33 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
+    /// Puts `name` at `seat` of the lobby, or empties the seat for `None`, and tells the table.
+    ///
+    /// Emptying a seat closes its connection and takes its `Ready` back, so nothing of the person
+    /// who left stays at the table. Returns false, with nothing changed, once the game runs or for
+    /// a seat the table does not have.
+    pub(crate) fn seat_at(&mut self, seat: PlayerId, name: Option<String>) -> bool {
+        let Phase::Lobby { ready, names } = &mut self.phase else {
+            return false;
+        };
+        let (Some(listed), Some(flag)) = (names.get_mut(seat.index()), ready.get_mut(seat.index()))
+        else {
+            return false;
+        };
+        if let Some(name) = name {
+            *listed = name;
+        } else {
+            listed.clear();
+            *flag = false;
+            self.seats.detach(seat);
+            if let Some(recorder) = &mut self.recorder {
+                recorder.forget(seat);
+            }
+        }
+        self.push_roster();
+        true
+    }
+
     /// Sends the roster to `seat` alone, for a connection that took the seat over from another.
     pub(crate) fn send_roster(&mut self, seat: PlayerId) {
         let connected = self.seats.connected();

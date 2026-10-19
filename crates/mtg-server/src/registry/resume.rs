@@ -7,7 +7,7 @@ use mtg_engine::GameSetup;
 use super::{Entry, Parts, Registry, SeatSlot};
 use crate::actor::resume_named;
 use crate::game_id::GameId;
-use crate::recipe::{Catalog, GameRecipe, RecipeError};
+use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
 use crate::records::{GameRecord, GameRecords, RecordError, RecordStatus, SeatState};
 use crate::secret::TokenDigest;
@@ -38,6 +38,7 @@ enum Outcome {
 /// A recipe turned back into what the registry needs.
 struct Unpacked {
     setup: GameSetup,
+    format: FormatKind,
     seats: Vec<SeatSlot>,
     /// Whether the decks were compared with fingerprints stored in the recipe; false for a recipe
     /// that predates them.
@@ -100,6 +101,7 @@ impl Registry {
         };
         let Unpacked {
             setup,
+            format,
             seats,
             checked,
         } = match unpacked {
@@ -151,7 +153,9 @@ impl Registry {
         let created = now.checked_sub(record.age).unwrap_or(now);
         let parts = Parts {
             visibility: record.visibility,
+            format,
             code: record.code_digest.map(TokenDigest::from_bytes),
+            recorded: true,
             seats,
         };
         self.games().insert(id, Entry::new(handle, parts, created));
@@ -223,6 +227,7 @@ fn unpack(
     }
     Ok(Unpacked {
         checked: recipe.is_fingerprinted(),
+        format: recipe.format,
         seats: record
             .seats
             .iter()
