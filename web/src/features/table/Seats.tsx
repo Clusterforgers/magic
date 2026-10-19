@@ -17,12 +17,10 @@ interface SeatAreaProps {
   facing: 'near' | 'far'
   /** The pod beside the board as a column, above it as one line, or not drawn. */
   pod: PodPlace
-  /** Draw the seat's hand in its pod; the viewer's goes in the hand dock instead. */
-  hand?: boolean
 }
 
-/** The pod of a seat as a column beside its board; taller than the zone, it scrolls inside. */
-function PodColumn({ seat, size, hand }: { seat: PlayerId; size: CardSize; hand: boolean }) {
+/** The pod of a seat as a column beside its board. It fits the zone at the sizes of the design; a window shorter than that scrolls it inside. */
+function PodColumn({ seat }: { seat: PlayerId }) {
   const column = useRef<HTMLDivElement>(null)
   useEdgeFade(column)
   return (
@@ -32,13 +30,13 @@ function PodColumn({ seat, size, hand }: { seat: PlayerId; size: CardSize; hand:
       style={{ width: POD_COLUMN_PX } as CSSProperties}
       className="fade-scroll min-h-0 shrink-0"
     >
-      <SeatPanel seat={seat} size={size} hand={hand} />
+      <SeatPanel seat={seat} />
     </div>
   )
 }
 
 /** One seat: its pod and its battlefield, side by side or one over the other. */
-export const SeatArea = memo(function SeatArea({ seat, size, facing, pod, hand = true }: SeatAreaProps) {
+export const SeatArea = memo(function SeatArea({ seat, size, facing, pod }: SeatAreaProps) {
   const aside = pod === 'aside'
   return (
     <div
@@ -46,15 +44,11 @@ export const SeatArea = memo(function SeatArea({ seat, size, facing, pod, hand =
       data-seat-area={seat}
       className={cn('flex min-h-0 min-w-0 flex-1 gap-2', aside ? 'flex-row' : 'flex-col')}
     >
-      {pod === 'aside' ? <PodColumn seat={seat} size={size} hand={hand} /> : null}
+      {pod === 'aside' ? <PodColumn seat={seat} /> : null}
       {/* A line pod is on the table's middle side of its board: over an opponent's, under yours, by your hand. */}
-      {pod === 'line' && facing === 'far' ? (
-        <SeatPanel seat={seat} size={size} variant="line" hand={hand} />
-      ) : null}
+      {pod === 'line' && facing === 'far' ? <SeatPanel seat={seat} variant="line" /> : null}
       <Battlefield seat={seat} size={size} facing={facing} />
-      {pod === 'line' && facing === 'near' ? (
-        <SeatPanel seat={seat} size={size} variant="line" hand={hand} />
-      ) : null}
+      {pod === 'line' && facing === 'near' ? <SeatPanel seat={seat} variant="line" /> : null}
     </div>
   )
 })

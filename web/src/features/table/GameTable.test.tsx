@@ -104,9 +104,11 @@ describe('focus mode', () => {
   it('shows every other seat as a tile with a name for a screen reader', () => {
     const { container } = renderTable({ fixture: buildFixture({ seats: 6, permanents: 2 }) })
     expect(within(screen.getByRole('list', { name: 'Opponents' })).getAllByRole('listitem')).toHaveLength(5)
-    expect(tile(container, 3)).toHaveAccessibleName("Show Dee's board. Life 34, 5 cards in hand")
+    expect(tile(container, 3)).toHaveAccessibleName(
+      "Show Dee's board. Life 34, 5 cards in hand, 45 in library, 5 in graveyard, 0 in exile, 1 in the command zone",
+    )
     expect(tile(container, 1)).toHaveAccessibleName(
-      "Show Bo's board. Life 38, 6 cards in hand, active turn, shown now",
+      /^Show Bo's board\. Life 38, 6 cards in hand, .*, active turn, shown now$/,
     )
   })
 

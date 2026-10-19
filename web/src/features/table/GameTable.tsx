@@ -92,9 +92,7 @@ const Table = memo(function Table() {
                         inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
                       />
                     }
-                    own={
-                      <SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} hand={false} />
-                    }
+                    own={<SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} />}
                     hand={<HandDock seat={plan.viewer} />}
                     controls={<ControlsDock stops={table.stopsInDock} />}
                     side={<SideTabs />}

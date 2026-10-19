@@ -1,0 +1,99 @@
+/** Pure words and figures of a seat pod: what each zone chip is called, what a tile says, the state tokens and a seat's colour. */
+import type { PlayerId, PlayerView } from '@/protocol/generated'
+
+/** The zones a pod counts. */
+export type ZoneKey = 'hand' | 'library' | 'graveyard' | 'exile' | 'command'
+
+/** A zone as the chips and dialogs name it. */
+export const ZONE_NAME: Record<ZoneKey, string> = {
+  hand: 'Hand',
+  library: 'Library',
+  graveyard: 'Graveyard',
+  exile: 'Exile',
+  command: 'Command zone',
+}
+
+/** "1 card" or "7 cards". */
+export function cardCount(count: number): string {
+  return count === 1 ? '1 card' : `${count} cards`
+}
+
+/** What a chip is called: "Graveyard 5 cards". */
+export function zoneLabel(zone: ZoneKey, count: number): string {
+  return `${ZONE_NAME[zone]} ${cardCount(count)}`
+}
+
+/** The cards in each zone of a pod. */
+export type PodCounts = Record<ZoneKey, number>
+
+/** The counts of a seat; exile is one shared zone, so its count is the cards `seat` owns (`exileOf`). */
+export function podCounts(player: PlayerView, exile: number): PodCounts {
+  return {
+    hand: player.hand.count,
+    library: player.library.count,
+    graveyard: player.graveyard.count,
+    exile,
+    command: player.command.count,
+  }
+}
+
+/** The zones a pod draws as chips: the four that always count, and the command zone once it holds a card. */
+export function chipZones(counts: PodCounts): ZoneKey[] {
+  return counts.command > 0
+    ? ['hand', 'library', 'graveyard', 'exile', 'command']
+    : ['hand', 'library', 'graveyard', 'exile']
+}
+
+/**
+ * The `data-state` of a pod: `active` and `priority` as space-separated tokens (match one with `[data-state~='active']`),
+ * or undefined while the seat is neither. The turn cues style them; the pod only carries them.
+ */
+export function podState(active: boolean, priority: boolean): string | undefined {
+  const tokens = [active ? 'active' : null, priority ? 'priority' : null].filter(
+    (token): token is string => token !== null,
+  )
+  return tokens.length === 0 ? undefined : tokens.join(' ')
+}
+
+/** The sentence for a screen reader that says what a pod's marks say: "Active turn. Has priority."; empty for neither. */
+export function podStateWords(active: boolean, priority: boolean): string {
+  return [active ? 'Active turn.' : null, priority ? 'Has priority.' : null].filter(Boolean).join(' ')
+}
+
+/** What a tile of the strip is called: its action and then everything the tile shows, in words. */
+export interface TileFacts {
+  name: string
+  life: number
+  counts: PodCounts
+  active: boolean
+  priority: boolean
+  eliminated: boolean
+  focused: boolean
+}
+
+/** The accessible name of a tile: "Show Bo's board. Life 38, 6 cards in hand, ..., active turn". */
+export function tileName(facts: TileFacts): string {
+  const { counts } = facts
+  const figures = [
+    `Life ${facts.life}`,
+    `${cardCount(counts.hand)} in hand`,
+    `${counts.library} in library`,
+    `${counts.graveyard} in graveyard`,
+    `${counts.exile} in exile`,
+    counts.command > 0 ? `${counts.command} in the command zone` : null,
+    facts.active ? 'active turn' : null,
+    facts.priority ? 'has priority' : null,
+    facts.eliminated ? 'eliminated' : null,
+    facts.focused ? 'shown now' : null,
+  ]
+  return `Show ${facts.name}'s board. ${figures.filter((part) => part !== null).join(', ')}`
+}
+
+/** The angle of the golden ratio in degrees: neighbours on the colour wheel land far apart however many seats sit. */
+const GOLDEN_ANGLE = 137.508
+
+/** The hue (0 to 360 degrees) of a seat's dot, the same for a seat wherever it is drawn. */
+export function seatHue(seat: PlayerId): number {
+  const turns = Number.isFinite(seat) ? Math.trunc(seat) : 0
+  return Math.round(((((turns * GOLDEN_ANGLE + 262) % 360) + 360) % 360) * 10) / 10
+}

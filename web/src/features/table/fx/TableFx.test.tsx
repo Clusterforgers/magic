@@ -258,7 +258,7 @@ describe('a life total', () => {
     expect(life).toHaveAttribute('data-fx', 'damaged')
     expect(floats(life)).toEqual(['-5'])
     expect(life).toHaveTextContent('15')
-    expect(screen.getByRole('region', { name: 'Bo' })).toHaveTextContent('Life15')
+    expect(screen.getByRole('region', { name: 'Bo' })).toHaveTextContent('Life 15')
   })
 
   it('flashes and floats “+N” when it rises', () => {
@@ -352,9 +352,17 @@ describe('a permanent that dies', () => {
     expect(ghost).toHaveAttribute('aria-hidden', 'true')
     expect(ghost?.querySelector('[data-object-id], button, a, input, [tabindex]')).toBeNull()
     expect(within(myCreatures()).getAllByRole('listitem')).toHaveLength(2)
-    expect(container.querySelectorAll(`[data-object-id="${MY_BEAR}"]`)).toHaveLength(1)
-    expect(cardOf(container, MY_BEAR).closest('[data-battlefield-seat]')).toBeNull()
-    expect(screen.queryAllByRole('button', { name: /Ash Bear/ })).toHaveLength(1)
+    // The graveyard is a count and a list behind a button, so the dead card is on the table nowhere: the ghost is no copy of it.
+    expect(container.querySelectorAll(`[data-object-id="${MY_BEAR}"]`)).toHaveLength(0)
+    expect(screen.queryAllByRole('button', { name: /Ash Bear/ })).toHaveLength(0)
+    fireEvent.click(
+      within(screen.getByRole('region', { name: 'Alice (you)' })).getByRole('button', {
+        name: /^Graveyard 1 card/,
+      }),
+    )
+    const listed = within(screen.getByRole('dialog')).getAllByRole('button', { name: /Ash Bear/ })
+    expect(listed).toHaveLength(1)
+    expect(listed[0]?.closest('[data-battlefield-seat]')).toBeNull()
   })
 
   it('floats the damage that killed it', () => {
@@ -425,7 +433,9 @@ describe('a permanent that dies', () => {
     expect(store.getState().objectsById[MY_BEAR]?.zone).toEqual({ Graveyard: ME })
     advance(FX_MS.died)
     expect(store.getState().objectsById[MY_BEAR]?.zone).toEqual({ Graveyard: ME })
-    expect(cardOf(container, MY_BEAR)).toHaveAccessibleName(/Ash Bear/)
+    expect(container.querySelectorAll(`[data-object-id="${MY_BEAR}"]`)).toHaveLength(0)
+    const mine = within(screen.getByRole('region', { name: 'Alice (you)' }))
+    expect(mine.getByRole('button', { name: /^Graveyard 1 card/ })).toBeEnabled()
   })
 })
 
