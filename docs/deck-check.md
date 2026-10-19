@@ -2,7 +2,7 @@
 
 Design of the deck check: when a deck is chosen or built, a check finds the cards the game cannot play without manual steps and highlights them, and a saved deck that passes shows a Verified marker until it changes.
 
-The per-card support lookup (`Library::support` in `mtg-cards`) exists; the report, endpoint, marker and interface below are design. A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
+The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mtg_cards::deck::deck_report`), the deck endpoints and the derived marker are implemented (`server.md`, "Cards and decks"); the highlighting and the interface below are design. A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
 
 ## Terms
 
@@ -20,20 +20,25 @@ The per-card support lookup (`Library::support` in `mtg-cards`) exists; the repo
 
 ## The marker
 
-- The marker is derived, never a flag set by hand. A check stores `{deck_hash, coverage_hash, checked_at, summary}` with the deck. The marker shows only while the stored `deck_hash` equals the current one and the stored `coverage_hash` equals the one computed from the cards' current support records.
+- The marker is derived, never a flag set by hand. A check stores `{deck_hash, coverage_hash, checked_at, summary}` with the deck. The marker shows only while the stored check is clean, the stored `deck_hash` equals the current one, the stored `coverage_hash` equals the one computed from the cards' current support records, and the check of the moment is clean too, so a ban that changes no hash still removes it. A stored check that was not clean never gives the marker; `mtg_cards::deck::marker` derives the state (`verified`, `manual_play`, `blocked`, `unchecked`) and `changed` ("changed since the last check").
 - Editing the deck changes the hash, so the marker disappears at once with the note "changed since the last check"; nothing can leave it behind by mistake.
-- `deck_hash` is SHA-256 over the sorted `(zone, oracle id, count)` of main, sideboard, commander and companion. Printings, the deck's name and notes are not in it, so swapping art keeps the marker.
-- `coverage_hash` is SHA-256 over the sorted `(oracle id, support fingerprint)` of the deck's cards. An engine or card-data release that changes one of them drops the marker with the reason ("Sheoldred's implementation changed").
-- The check is cheap, so the server re-runs it when the deck is next opened. A clean result brings the marker back; a worse one tells the owner what changed.
-- Saving runs the check, so a clean deck is marked at once. The "Check deck" button runs the same function without saving, on a stored deck, an unsaved one or a pasted list.
+- `deck_hash` is SHA-256 over the sorted `(zone, oracle id, count)` of main, sideboard, commander and companion: the text `mtg-deck-check/deck/v1` and one line `<zone> <oracle id> <count>` per card and zone, ordered by zone name and id, copies in one zone summed, as 64 lower-case hex digits. Printings, the deck's name, notes and format are not in it, so swapping art keeps the marker.
+- `coverage_hash` is SHA-256 over the sorted `(oracle id, support fingerprint)` of the deck's distinct cards: the text `mtg-deck-check/coverage/v1` and one line `<oracle id> <fingerprint>` per card. An engine or card-data release that changes one of them drops the marker with the reason ("Sheoldred's implementation changed").
+- The check is cheap, so the server re-runs it each time a deck is opened and answers the report next to the stored check. Opening writes nothing: a clean result of the moment brings the marker back when the deck is saved again, and a worse one shows as `blocked` or `manual_play` at once.
+- Saving runs the check, so a clean deck is marked at once. `POST /api/decks/check` runs the same function without saving, on a stored deck or an unsaved list (a signed-in account's; the check without an account is an extension).
 
 ## The report
 
-`DeckReport { deck_hash, coverage_hash, format, legality: [Issue], cards: [{oracle_id, name, count, zone, support, reasons: [{text, span}]}], summary }`.
+`DeckReport { deck_hash, coverage_hash, format, legality: [Issue], cards: [{oracle_id, name, zone, count, support, reasons: [{face, span, text}]}], summary }`; `summary` is `{format, state, counts, zones, issues}` with copies by support state (`total`, `verified`, `partial`, `manual`, `stale`, `unplayable`) overall and per zone, and `state` one of `verified`, `manual_play`, `blocked` (a report is never `unchecked`).
 
-- One pure function in `mtg-cards` (`support` module) over the deck and the support records serves the endpoint `POST /api/decks/check`, the CLI and tests.
-- Legality (size, singleton, colour identity, banned list, commander and companion rules) is its own section, so "illegal" and "not implemented" never blur.
-- Cards are grouped by zone (main, sideboard, commander, companion), so the owner sees where an issue sits.
+- One pure function in `mtg-cards` (`deck_report(format, lines, cards, library, caps)` in the `deck` module) over the deck, the facts of its cards and the rules library serves the deck endpoints, the CLI and tests.
+- Legality is its own section (`legality`, a list of `Issue {code, message, zone, oracle_id, name}`), so "illegal" and "not implemented" never blur. The rules:
+  - `freeform`: at least one card, nothing else.
+  - Constructed formats (`standard`, `pioneer`, `modern`, `legacy`, `vintage`, `pauper`, `historic`, `timeless`, `alchemy`, `penny`, `premodern`, `oldschool`): 60 cards or more in the main deck, at most 15 in the sideboard, no command zone, at most one companion, at most 4 copies of a card across main, sideboard and companion (1 where the format restricts it), every card legal or restricted in the format.
+  - `commander`: one commander, or two that can be partnered (Partner, Partner with, Friends forever, Choose a Background, Doctor's companion); a commander is a legendary creature (or a Vehicle or Spacecraft with a power) or says it can be the commander; the main deck and the command zone make exactly 100 cards, one copy of each; every card of the main deck and the companion lies within the commanders' colour identity; every card of every zone is legal in the format; at most one companion. The sideboard is checked for legality only.
+  - Basic lands are exempt from copy limits; a card that says "a deck can have any number" or "up to N" follows its text.
+  - A card the database lacks is an `unknown_card` issue and counts as `unplayable`; a format without rules is an `unknown_format` issue.
+- Cards are grouped by zone (main, sideboard, commander, companion), each by name, so the owner sees where an issue sits; the sideboard and the companion count toward the state like any zone.
 
 ## Highlighting
 

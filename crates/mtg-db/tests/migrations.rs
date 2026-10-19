@@ -9,7 +9,7 @@ use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 
 use common::db;
 
-const MIGRATION_COUNT: i64 = 6;
+const MIGRATION_COUNT: i64 = 7;
 
 async fn applied_migrations(pool: &PgPool) -> i64 {
     sqlx::query_scalar("SELECT count(*) FROM _sqlx_migrations WHERE success")
@@ -37,6 +37,8 @@ async fn applies_to_an_empty_database_and_can_be_rerun(pool: PgPool) {
         tables,
         [
             "cards",
+            "deck_cards",
+            "decks",
             "import_runs",
             "precon_deck_cards",
             "precon_decks",
