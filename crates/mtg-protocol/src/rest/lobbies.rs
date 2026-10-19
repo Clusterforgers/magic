@@ -82,11 +82,14 @@ pub struct JoinCodeRequest {
     pub name: Option<String>,
 }
 
-/// The seat a join gives the visitor.
+/// The seat a join gives the visitor, and the game it is in.
 ///
 /// `Debug` never prints the token.
 #[derive(Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct Joined {
+    /// The id of the game the seat is in. A join by code is the one way to learn it from the code,
+    /// and only a right code answers it.
+    pub game: String,
     /// The seat.
     pub seat: PlayerId,
     /// The seat's token, shown here and never again. Null when the signed-in visitor already held
@@ -97,6 +100,7 @@ pub struct Joined {
 impl fmt::Debug for Joined {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Joined")
+            .field("game", &self.game)
             .field("seat", &self.seat)
             .field("token", &self.token.as_ref().map(|_| "<redacted>"))
             .finish()

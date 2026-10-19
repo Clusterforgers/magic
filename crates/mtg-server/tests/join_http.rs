@@ -1,4 +1,4 @@
-//! Goal: joining over real HTTP: a guest takes the first open seat of a public lobby by the game's id, or of any game by its join code however it is typed, under a name of 1 to 32 characters, and is given that seat's token, which opens the seat's socket; an unknown id, a malformed id, an invite game reached by its id (started or not) and a wrong code are one byte-identical 404; a full or a started game says so; wrong codes are counted per address, five a minute, and then even the right code is turned away with Retry-After until the minute is over; bodies that are not a valid request are refused before any seat or code is looked at.
+//! Goal: joining over real HTTP: a guest takes the first open seat of a public lobby by the game's id, or of any game by its join code however it is typed, under a name of 1 to 32 characters, and is given the game's id and that seat's token, which opens the seat's socket; an unknown id, a malformed id, an invite game reached by its id (started or not) and a wrong code are one byte-identical 404, and only a right code names the game; a full or a started game says so; wrong codes are counted per address, five a minute, and then even the right code is turned away with Retry-After until the minute is over; bodies that are not a valid request are refused before any seat or code is looked at.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -52,7 +52,8 @@ async fn a_guest_joins_a_public_game_by_its_id_and_the_token_opens_the_seat() {
     assert_eq!(first.status, 200, "{}", first.text());
     assert_eq!(first.header("cache-control"), Some("no-store"));
     let body = first.json();
-    assert_eq!(keys(&body), BTreeSet::from(["seat", "token"]));
+    assert_eq!(keys(&body), BTreeSet::from(["game", "seat", "token"]));
+    assert_eq!(body["game"], game.id);
     assert_eq!(body["seat"], 1);
     let token = body["token"].as_str().unwrap().to_owned();
     assert!(token.len() >= 32 && token.bytes().all(|b| b.is_ascii_hexdigit()));
@@ -92,10 +93,81 @@ async fn a_code_joins_any_game_however_it_is_typed(#[case] typed: fn(&str) -> St
         let game = lobby::make(server.addr, "Ann", 2, 1, visibility).await;
         let reply = join_code(server.addr, &typed(&game.code), Some("Bo")).await;
         assert_eq!(reply.status, 200, "{visibility}: {}", reply.text());
+        assert_eq!(
+            keys(&reply.json()),
+            BTreeSet::from(["game", "seat", "token"])
+        );
+        assert_eq!(reply.json()["game"], game.id, "{visibility}");
         assert_eq!(reply.json()["seat"], 1);
         assert!(reply.json()["token"].is_string());
         assert_eq!(names(&server, &game.id).await, ["Ann", "Bo"]);
     }
+}
+
+/// The id of a game is a secret of its invite: a right code hands it over and nothing else does.
+#[tokio::test]
+async fn only_a_right_code_names_the_game() {
+    let server = forgiving_server().await;
+    let hidden = lobby::make(server.addr, "Ann", 4, 1, "invite").await;
+    let listed = lobby::make(server.addr, "Bo", 2, 1, "public").await;
+    let full = lobby::make(server.addr, "Cy", 2, 2, "invite").await;
+    let guest = json!({ "name": "Zed" });
+    let one_short = &hidden.code[..7];
+    let one_more = format!("{}A", hidden.code);
+
+    let refusals = [
+        ("its id", join(server.addr, &hidden.id, &guest, &[]).await),
+        (
+            "a wrong code",
+            join_code(server.addr, "ABCD2345", Some("Zed")).await,
+        ),
+        (
+            "its id as a code",
+            join_code(server.addr, &hidden.id, Some("Zed")).await,
+        ),
+        (
+            "a code one short",
+            join_code(server.addr, one_short, Some("Zed")).await,
+        ),
+        (
+            "a code one over",
+            join_code(server.addr, &one_more, Some("Zed")).await,
+        ),
+        (
+            "an empty code",
+            join_code(server.addr, "", Some("Zed")).await,
+        ),
+        // A right code for a full game says it is full and still not which game it was.
+        (
+            "the code of a full game",
+            join_code(server.addr, &full.code, Some("Zed")).await,
+        ),
+    ];
+    for (what, reply) in &refusals {
+        assert!(
+            matches!(reply.status, 404 | 409),
+            "{what}: {}",
+            reply.text()
+        );
+        assert_eq!(reply.json().get("game"), None, "{what}");
+        for game in [&hidden, &listed, &full] {
+            assert!(!reply.text().contains(&game.id), "{what} names {}", game.id);
+        }
+    }
+    assert_eq!(names(&server, &hidden.id).await, ["Ann", "", "", ""]);
+
+    for typed in [
+        hidden.code.clone(),
+        hidden.code.to_lowercase(),
+        format!(" {}-{} ", &hidden.code[..4], &hidden.code[4..]),
+    ] {
+        let reply = join_code(server.addr, &typed, Some("Zed")).await;
+        assert_eq!(reply.status, 200, "{typed:?}: {}", reply.text());
+        assert_eq!(reply.json()["game"], hidden.id, "{typed:?}");
+    }
+    // A listed game's code names it just the same.
+    let reply = join_code(server.addr, &listed.code, Some("Zed")).await;
+    assert_eq!(reply.json()["game"], listed.id);
 }
 
 #[tokio::test]
@@ -418,6 +490,8 @@ async fn five_wrong_codes_a_minute_then_even_the_right_code_is_turned_away() {
     let blocked = join_code(server.addr, &game.code, Some("Bo")).await;
     assert_eq!(blocked.status, 429, "{}", blocked.text());
     assert_eq!(blocked.error_code(), "too_many_attempts");
+    assert_eq!(blocked.json().get("game"), None);
+    assert!(!blocked.text().contains(&game.id), "{}", blocked.text());
     let wait: u64 = blocked
         .header("retry-after")
         .expect("Retry-After")

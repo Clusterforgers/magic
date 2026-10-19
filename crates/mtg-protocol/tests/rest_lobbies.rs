@@ -131,37 +131,53 @@ fn an_absent_name_is_left_out_of_a_request() {
     );
 }
 
+const GAME: &str = "6f1e0c1a-3b1f-4d9e-8a3e-0d3c2d1b7a55";
+
 #[test]
-fn a_join_answers_with_the_seat_and_a_token_that_may_be_null() {
+fn a_join_answers_with_the_game_the_seat_and_a_token_that_may_be_null() {
     let fresh = Joined {
+        game: GAME.into(),
         seat: PlayerId(2),
         token: Some("t0k3n".into()),
     };
     assert_eq!(
         serde_json::to_value(&fresh).unwrap(),
-        json!({"seat": 2, "token": "t0k3n"})
+        json!({"game": GAME, "seat": 2, "token": "t0k3n"})
     );
     let again = Joined {
+        game: GAME.into(),
         seat: PlayerId(2),
         token: None,
     };
     let value = serde_json::to_value(&again).unwrap();
-    assert_eq!(value, json!({"seat": 2, "token": null}));
+    assert_eq!(value, json!({"game": GAME, "seat": 2, "token": null}));
     assert_eq!(serde_json::from_value::<Joined>(value).unwrap(), again);
+}
+
+#[rstest]
+#[case::no_game(json!({"seat": 1, "token": "t"}))]
+#[case::game_is_a_number(json!({"game": 7, "seat": 1, "token": "t"}))]
+#[case::game_is_null(json!({"game": null, "seat": 1, "token": "t"}))]
+#[case::no_seat(json!({"game": GAME, "token": "t"}))]
+fn an_answer_that_does_not_name_the_game_and_the_seat_is_not_a_join(#[case] body: Value) {
+    assert!(serde_json::from_value::<Joined>(body).is_err());
 }
 
 #[test]
 fn debug_output_hides_the_token() {
     let joined = Joined {
+        game: GAME.into(),
         seat: PlayerId(1),
         token: Some("0123456789abcdef".into()),
     };
     let shown = format!("{joined:?} {joined:#?}");
     assert!(!shown.contains("0123456789abcdef"), "{shown}");
     assert!(shown.contains("<redacted>"), "{shown}");
+    assert!(shown.contains(GAME), "{shown}");
     let without = format!(
         "{:?}",
         Joined {
+            game: GAME.into(),
             seat: PlayerId(1),
             token: None
         }
@@ -303,10 +319,12 @@ fn the_bindings_carry_the_game_browser_types() {
     ] {
         assert!(files["LobbyGame.ts"].contains(field), "{field}");
     }
-    // A request leaves its name out when there is none; an answer says null for a token it does not give.
+    // A request leaves its name out when there is none; an answer names the game and says null for a
+    // token it does not give.
     assert!(files["JoinRequest.ts"].contains("name?: string"));
     assert!(files["JoinCodeRequest.ts"].contains("code: string"));
     assert!(files["JoinCodeRequest.ts"].contains("name?: string"));
+    assert!(files["Joined.ts"].contains("game: string"));
     assert!(files["Joined.ts"].contains("seat: PlayerId"));
     assert!(files["Joined.ts"].contains("token: string | null"));
     assert!(files["VisibilityBody.ts"].contains("visibility: Visibility"));

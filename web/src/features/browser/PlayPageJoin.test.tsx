@@ -7,7 +7,7 @@ import { createAuthStore, offlineAccounts } from '@/features/auth/store'
 import type { AuthStatus } from '@/features/auth/store'
 import type { AccountsApi } from '@/net/accounts'
 import { LobbyError } from '@/net/lobbyErrors'
-import type { LobbyErrorCode, UserView } from '@/protocol/generated'
+import type { Joined, LobbyErrorCode, UserView } from '@/protocol/generated'
 import { fakeLobbies, lobbyRow } from '@/test-utils/lobbies'
 import type { FakeLobbies } from '@/test-utils/lobbies'
 import { renderInRouter } from '@/test-utils/router'
@@ -80,7 +80,7 @@ describe('a guest', () => {
 
   it('opens the seat the server gave, whichever it is', async () => {
     const lobbies = fakeLobbies([BO])
-    lobbies.joinGame.mockResolvedValueOnce({ seat: 3, token: 'abc123' })
+    lobbies.joinGame.mockResolvedValueOnce({ game: 'g1', seat: 3, token: 'abc123' })
     const { user } = await open(lobbies)
     await joinAs(user, 'Cy')
     await waitFor(() => expect(stub()).toHaveTextContent('g1 /game/g1#seat=3&token=abc123'))
@@ -117,7 +117,7 @@ describe('a guest', () => {
 
   it('sends one request at a time: the buttons wait, a second Enter sends nothing, Escape keeps the dialog', async () => {
     const lobbies = fakeLobbies([BO])
-    let answer: (seat: { seat: number; token: string }) => void = () => undefined
+    let answer: (joined: Joined) => void = () => undefined
     lobbies.joinGame.mockImplementationOnce(
       () =>
         new Promise((resolve) => {
@@ -133,7 +133,7 @@ describe('a guest', () => {
     await user.keyboard('{Escape}')
     expect(screen.getByRole('dialog')).toBeInTheDocument()
     expect(lobbies.joinGame).toHaveBeenCalledTimes(1)
-    answer({ seat: 1, token: 'tok-1' })
+    answer({ game: 'g1', seat: 1, token: 'tok-1' })
     await waitFor(() => expect(stub()).toHaveTextContent('g1 /game/g1#seat=1&token=tok-1'))
   })
 
@@ -219,7 +219,7 @@ describe('a signed-in visitor', () => {
 
   it('opens the bare game page when the account already held a seat and the answer has no token', async () => {
     const lobbies = fakeLobbies([BO])
-    lobbies.joinGame.mockResolvedValueOnce({ seat: 0, token: null })
+    lobbies.joinGame.mockResolvedValueOnce({ game: 'g1', seat: 0, token: null })
     const { user } = await open(lobbies, accountStore('signed-in'))
     await user.click(joinButton())
     await waitFor(() => expect(stub()).toHaveTextContent(/^g1 \/game\/g1$/))
