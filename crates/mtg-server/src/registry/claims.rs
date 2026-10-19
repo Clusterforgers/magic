@@ -1,5 +1,6 @@
 //! Open seats: a visitor claims one and is given its token, a player gives one back, the host
-//! removes a player or changes who may find the game. All of it only while the game is in its lobby.
+//! removes a player, changes who may find the game or closes it. All of it only while the game is
+//! in its lobby.
 //!
 //! A seat is claimed in three steps: the row in the database (which decides between racing
 //! claims), the actor (which names the seat in the lobby and tells the table) and the registry's
@@ -12,7 +13,7 @@ use std::sync::Arc;
 use mtg_core::ids::PlayerId;
 use thiserror::Error;
 
-use super::{Entry, Registry, SeatSlot};
+use super::{Entry, Registry, Removal, SeatSlot};
 use crate::api::MAX_NAME_CHARS;
 use crate::game_id::GameId;
 use crate::handle::GameHandle;
@@ -276,6 +277,43 @@ impl Registry {
             Some(entry) => entry.visibility = visibility,
             None => return Err(TableError::NotFound),
         }
+        Ok(())
+    }
+
+    /// Closes a game that is still in its lobby, for good. It leaves the registry, so its listing,
+    /// links and code reach nothing at once; its record is marked `expired`; every socket of the
+    /// game is closed with 4002. Only the host ([`HOST`], as `by`) may, and once the game runs the
+    /// answer is [`TableError::Started`].
+    ///
+    /// The actor decides whether the game began: from its answer on no `Ready` starts it. The
+    /// record is written next, and a write that fails takes the answer back, so the lobby goes on
+    /// as it was.
+    pub async fn close(&self, game: GameId, by: PlayerId) -> Result<(), TableError> {
+        let table = self.table(game, |_| true).ok_or(TableError::NotFound)?;
+        if by != HOST {
+            return Err(TableError::NotAllowed);
+        }
+        let _turn = table.turn.lock().await;
+        // A close that held the turn before this one, or the janitor, may have taken the game.
+        if !self.games().contains_key(&game) {
+            return Err(TableError::NotFound);
+        }
+        match table.handle.close_lobby().await {
+            Ok(true) => {}
+            Ok(false) => return Err(TableError::Started),
+            Err(_) => return Err(TableError::NotFound),
+        }
+        if let Some(records) = &table.records
+            && let Err(error) = records.mark_expired(game).await
+        {
+            // The record still shows the lobby, so the lobby goes on.
+            let _ = table.handle.reopen_lobby().await;
+            return Err(TableError::Record(error));
+        }
+        let entry = self.games().remove(&game).ok_or(TableError::NotFound)?;
+        // Said before the entry is dropped, which is what closes the sockets.
+        entry.alive.send_replace(Removal::ClosedByHost);
+        tracing::info!(%game, "lobby closed by the host");
         Ok(())
     }
 

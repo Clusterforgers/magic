@@ -1,4 +1,4 @@
-//! Goal: giving a seat back, removing a player and listing or hiding the game over real HTTP: the holder of a claimed seat leaves with its token, only the host removes a player or switches the visibility (which the lookup of the game then reports), a stranger learns nothing (one 404 whatever is wrong), a seat made with the game cannot be given back, after the start every change answers 409 started, the old token dies with the seat, and a foreign origin is refused on every call that changes something while a listed origin may use the new methods and headers.
+//! Goal: giving a seat back, removing a player and listing or hiding the game over real HTTP: the holder of a claimed seat leaves with its token, only the host removes a player or switches the visibility (which the lookup of the game then reports), a stranger learns nothing (one 404 whatever is wrong), a seat made with the game cannot be given back, after the start every change answers 409 started, the old token dies with the seat, and a foreign origin is refused on every call that changes something (closing the game included) while a listed origin may use the new methods and headers.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -505,6 +505,7 @@ async fn a_foreign_origin_is_refused_on_every_call_that_changes_something() {
             Some(r#"{"visibility":"invite"}"#),
             host.clone(),
         ),
+        ("DELETE", game_path(id), None, host.clone()),
     ];
     for (method, path, body, authorization) in &calls {
         let reply = call(
@@ -543,6 +544,16 @@ async fn a_foreign_origin_is_refused_on_every_call_that_changes_something() {
     )
     .await;
     assert_eq!(reply.status, 200, "{}", reply.text());
+    let reply = call(
+        server.addr,
+        "DELETE",
+        &game_path(id),
+        None,
+        &[("Origin", &own), ("Authorization", &host)],
+    )
+    .await;
+    assert_eq!(reply.status, 204, "{}", reply.text());
+    assert_eq!(server.registry.len(), 0);
 }
 
 #[tokio::test]
@@ -640,4 +651,45 @@ async fn a_listed_origin_may_use_patch_the_bearer_header_and_read_the_tags() {
     assert_eq!(hide.status, 200, "{}", hide.text());
     let value: Value = hide.json();
     assert_eq!(value["visibility"], "invite");
+}
+
+#[tokio::test]
+async fn a_listed_origin_may_close_the_game_with_the_bearer_header() {
+    let mut config = bot_config();
+    config.allowed_origins = vec!["https://play.example".to_owned()];
+    let server = TestServer::start(config).await;
+    let game = lobby::make(server.addr, "Ann", 2, 1, "public").await;
+    let page = ("Origin", "https://play.example");
+
+    // Closing the game is a DELETE with the bearer header: its preflight and the call work.
+    let preflight = call(
+        server.addr,
+        "OPTIONS",
+        &game_path(&game.id),
+        None,
+        &[
+            page,
+            ("Access-Control-Request-Method", "DELETE"),
+            ("Access-Control-Request-Headers", "authorization"),
+        ],
+    )
+    .await;
+    let methods = preflight
+        .header("access-control-allow-methods")
+        .unwrap()
+        .to_ascii_uppercase();
+    assert!(methods.contains("DELETE"), "{methods}");
+    let close = call(
+        server.addr,
+        "DELETE",
+        &game_path(&game.id),
+        None,
+        &[page, ("Authorization", &bearer(game.host()))],
+    )
+    .await;
+    assert_eq!(close.status, 204, "{}", close.text());
+    assert_eq!(
+        close.header("access-control-allow-origin"),
+        Some("https://play.example")
+    );
 }

@@ -14,7 +14,7 @@ use tokio::time::{MissedTickBehavior, interval_at, timeout};
 use crate::config::SocketLimits;
 use crate::game_id::GameId;
 use crate::limit::RateLimiter;
-use crate::registry::SeatAccess;
+use crate::registry::{Removal, SeatAccess};
 
 /// Time a closing socket gets to deliver its close frame and see the peer's reply.
 const CLOSE_WAIT: Duration = Duration::from_secs(2);
@@ -51,6 +51,9 @@ const REPLACED: Goodbye = Goodbye::new(4000, "replaced by a newer connection");
 /// Application code: the seat was given back or the host removed its player, and its token no
 /// longer opens anything, so do not reconnect.
 const REMOVED: Goodbye = Goodbye::new(4001, "removed from the game");
+/// Application code: the host closed the game before it started, so its links and code open
+/// nothing any more and there is nothing to reconnect to.
+const CLOSED: Goodbye = Goodbye::new(4002, "closed by the host");
 
 impl Goodbye {
     const fn new(code: u16, reason: &'static str) -> Goodbye {
@@ -170,7 +173,7 @@ async fn pump(
         // Unbiased on purpose: a long burst from the game must not starve the client's messages.
         tokio::select! {
             () = stopped(stop) => return Exit::Say(SHUTTING_DOWN),
-            _ = access.removed.changed() => return Exit::Say(GAME_ENDED),
+            _ = access.removed.changed() => return Exit::Say(why_removed(&access.removed)),
             outgoing = queue.recv() => match outgoing {
                 Some(message) => {
                     if let Err(exit) = send(socket, &message, limits.send_timeout).await {
@@ -247,6 +250,15 @@ fn read_failure(error: &axum::Error) -> Goodbye {
 /// Resolves once the server is stopping (or gone, which comes to the same).
 async fn stopped(stop: &mut watch::Receiver<bool>) {
     let _ = stop.wait_for(|stopping| *stopping).await;
+}
+
+/// The registry let the game go: its host closed it, or it was dropped. The value stays readable
+/// after the channel's sender is gone.
+fn why_removed(removed: &watch::Receiver<Removal>) -> Goodbye {
+    match *removed.borrow() {
+        Removal::ClosedByHost => CLOSED,
+        Removal::Dropped => GAME_ENDED,
+    }
 }
 
 /// The actor closed this seat's queue: another socket took the seat, the seat was emptied, the

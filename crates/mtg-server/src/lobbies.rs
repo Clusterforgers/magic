@@ -1,6 +1,6 @@
 //! The game browser's endpoints: the public listing (`GET /api/lobbies`), joining by a game's id
-//! or by its join code, giving a seat back, the host removing a player and the host listing or
-//! hiding the game (`PATCH /api/games/{id}`).
+//! or by its join code, giving a seat back, the host removing a player, the host listing or
+//! hiding the game (`PATCH /api/games/{id}`) and the host closing it (`DELETE /api/games/{id}`).
 //!
 //! A visitor who asks for a game by its id learns nothing about invite games: an unknown id, an
 //! invite game reached by its id and a wrong code are one and the same `404`. A seat is named by
@@ -407,6 +407,22 @@ pub(crate) async fn set_visibility(
         .set_visibility(game, by, body.visibility)
         .await?;
     Ok(Json(body))
+}
+
+/// `DELETE /api/games/{id}`: the host closes a game that is still in its lobby. Its sockets are
+/// closed with 4002 and it leaves the listing at once.
+pub(crate) async fn close(
+    State(app): State<AppState>,
+    path: Result<Path<String>, PathRejection>,
+    headers: HeaderMap,
+) -> Result<StatusCode, ApiError> {
+    let game = game_of(path)?;
+    if app.stopping() {
+        return Err(shutting_down());
+    }
+    let by = holder(&app, &headers, game).await?;
+    app.registry().close(game, by).await?;
+    Ok(StatusCode::NO_CONTENT)
 }
 
 #[cfg(test)]

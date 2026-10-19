@@ -275,7 +275,9 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/games", post(api::create_game))
         .route(
             "/api/games/{id}",
-            get(api::game).patch(lobbies::set_visibility),
+            get(api::game)
+                .patch(lobbies::set_visibility)
+                .delete(lobbies::close),
         )
         .route("/api/games/{id}/join", post(lobbies::join_game))
         .route("/api/games/{id}/leave", post(lobbies::leave))

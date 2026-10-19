@@ -57,7 +57,7 @@ pub enum RecordStatus {
     Running,
     /// The game ended with a result.
     Finished,
-    /// Nobody came back in time, so the server dropped it.
+    /// The server dropped it because nobody came back in time, or its host closed the lobby.
     Expired,
     /// The recipe, a deck that changed since the game was created, or the log could not be loaded on boot.
     Failed,
@@ -417,7 +417,7 @@ impl GameRecords {
         Ok(())
     }
 
-    /// Notes that the server dropped an unfinished game for good.
+    /// Notes that an unfinished game is gone for good: the server dropped it, or its host closed it.
     pub(crate) async fn mark_expired(&self, id: GameId) -> Result<(), RecordError> {
         sqlx::query!(
             "UPDATE games SET status = 'expired' WHERE id = $1 AND status IN ('lobby', 'running')",

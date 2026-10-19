@@ -138,6 +138,15 @@ pub struct PublicGame {
     pub result: Option<GameResult>,
 }
 
+/// Why a game left the registry, as the sockets of its seats learn it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Removal {
+    /// The janitor dropped the game, or its actor ended.
+    Dropped,
+    /// The host closed the game while it was in its lobby.
+    ClosedByHost,
+}
+
 /// What a valid token opens: one seat of one game.
 #[derive(Debug, Clone)]
 pub struct SeatAccess {
@@ -147,8 +156,8 @@ pub struct SeatAccess {
     pub handle: GameHandle,
     /// The only seat the token grants.
     pub seat: PlayerId,
-    /// Reports an error once the registry drops the game.
-    pub removed: watch::Receiver<()>,
+    /// Reports an error, or a change, once the registry drops the game; the value says why.
+    pub removed: watch::Receiver<Removal>,
 }
 
 /// What the registry knows about one seat.
@@ -242,14 +251,15 @@ struct Entry {
     finished: Option<Instant>,
     /// Last time a sweep saw a seat connected.
     last_connected: Instant,
-    /// Dropped with the entry, which tells every socket of the game to close.
-    alive: watch::Sender<()>,
+    /// Dropped with the entry, which tells every socket of the game to close; a game closed by its
+    /// host says so first.
+    alive: watch::Sender<Removal>,
 }
 
 impl Entry {
     /// An entry for a game created at `created` that nobody has connected to yet.
     fn new(handle: GameHandle, parts: Parts, created: Instant) -> Entry {
-        let (alive, _) = watch::channel(());
+        let (alive, _) = watch::channel(Removal::Dropped);
         Entry {
             handle,
             visibility: parts.visibility,

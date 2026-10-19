@@ -27,8 +27,12 @@ impl<S: EventStore> GameActor<S> {
         )
     }
 
-    /// Marks `seat` ready and starts the game once every seat is; a late `Ready` is harmless.
+    /// Marks `seat` ready and starts the game once every seat is; a late `Ready` is harmless, and
+    /// so is one that reaches a lobby the registry is closing, which starts nothing.
     pub(crate) async fn ready(&mut self, seat: PlayerId) -> Result<(), Fatal> {
+        if self.closing {
+            return Ok(());
+        }
         let Phase::Lobby { ready, .. } = &mut self.phase else {
             return Ok(());
         };
@@ -87,6 +91,16 @@ impl<S: EventStore> GameActor<S> {
             }
         }
         self.push_roster();
+        true
+    }
+
+    /// Stops the lobby from starting (`on`) or lets it start again; nobody at the table is told.
+    /// Returns false, with nothing changed, once the game runs.
+    pub(crate) fn set_closing(&mut self, on: bool) -> bool {
+        if !self.in_lobby() {
+            return false;
+        }
+        self.closing = on;
         true
     }
 
@@ -195,7 +209,7 @@ impl<S: EventStore> GameActor<S> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the registry can name and empty a seat of the lobby: the table is told each time, emptying closes the seat's connection and takes its Ready back, and once the game runs or for a seat the table does not have nothing changes and nothing is sent.
+    //! Goal: the registry can name and empty a seat of the lobby: the table is told each time, emptying closes the seat's connection and takes its Ready back, and once the game runs or for a seat the table does not have nothing changes and nothing is sent; it can also hold the lobby closed, so that no Ready starts the game, until it lets go, and a game that runs cannot be held.
     use mtg_core::ids::PlayerId;
     use mtg_protocol::{ClientMessage, LobbySeat, ServerMessage};
     use mtg_testkit::fuzz_setup;
@@ -299,5 +313,46 @@ mod tests {
         let status = handle.status().await.unwrap();
         assert!(status.connected.contains(&PlayerId(0)));
         assert_eq!(status.open, [], "a game that runs has no open seat");
+    }
+
+    #[tokio::test]
+    async fn a_lobby_held_closed_starts_nothing_and_a_reopened_one_starts_again() {
+        let handle = lobby(2);
+        let mut inbox = handle.join(PlayerId(0)).await.unwrap();
+        drain(&mut inbox);
+
+        assert_eq!(handle.close_lobby().await, Ok(true));
+        assert_eq!(
+            handle.close_lobby().await,
+            Ok(true),
+            "closing twice is the same"
+        );
+        for seat in [PlayerId(0), PlayerId(1)] {
+            handle.send(seat, ClientMessage::Ready).await.unwrap();
+        }
+        let status = handle.status().await.unwrap();
+        assert!(!status.started, "a closing lobby starts nothing");
+        assert_eq!(status.ready, [], "it notes nobody's Ready");
+        assert_eq!(drain(&mut inbox), [], "and it tells nobody anything");
+
+        // Taken back, the lobby is what it was: the next round of Ready starts the game.
+        assert_eq!(handle.reopen_lobby().await, Ok(true));
+        for seat in [PlayerId(0), PlayerId(1)] {
+            handle.send(seat, ClientMessage::Ready).await.unwrap();
+        }
+        assert!(handle.status().await.unwrap().started);
+    }
+
+    #[tokio::test]
+    async fn a_game_that_runs_can_neither_be_closed_nor_reopened() {
+        let handle = lobby(2);
+        for seat in [PlayerId(0), PlayerId(1)] {
+            handle.send(seat, ClientMessage::Ready).await.unwrap();
+        }
+        // The Ready that came first started the game, so the close that follows it is too late.
+        assert!(handle.status().await.unwrap().started);
+        assert_eq!(handle.close_lobby().await, Ok(false));
+        assert_eq!(handle.reopen_lobby().await, Ok(false));
+        assert!(handle.status().await.unwrap().started);
     }
 }
