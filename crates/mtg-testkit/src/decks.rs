@@ -1,4 +1,5 @@
-//! Seeded random 60-card decks of basic lands and vanilla creatures for fuzz games.
+//! Seeded random 60-card decks for fuzz games: basic lands and vanilla creatures, and decks whose cards use the
+//! effect pipeline.
 
 use std::sync::Arc;
 
@@ -16,9 +17,10 @@ use mtg_engine::format::Normal;
 use mtg_engine::rng::GameRng;
 
 use crate::cards::{
-    burn, cost, creature, creature_costing, damage, drain, draw, gain_life, keyworded_creature,
-    land, library_of_cards, pinger, salve, wastes,
+    burn, cost, creature, creature_costing, damage, drain, draw, edict, gain_life,
+    keyworded_creature, land, library_of_cards, mind_rot, pinger, salve, walker, wastes,
 };
+use crate::corpus::{self, CorpusError};
 use crate::trigger_cards::{
     aimed_at, artifact_costing, hourglass, once_each_turn, only_if, trigger, vigil, when,
     with_rules,
@@ -272,6 +274,49 @@ pub fn trigger_fuzz_setup(players: usize, seed: u64) -> GameSetup {
         .map(|seat| trigger_deck(&mut GameRng::substream(seed, 5_000 + seat)))
         .collect();
     GameSetup::new(Arc::new(Normal), seed, decks)
+}
+
+/// A legal Normal deck in black and green whose cards make players choose among cards: four Archon of Cruelty (the
+/// corpus card, repriced so a bot pays for it), four edicts, four spells that make a player discard two cards, four
+/// planeswalkers and creatures between them to sacrifice, and lands.
+///
+/// It has its own generator, so the other decks and the games seeded from them stay as they were.
+pub fn archon_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    let colors = [Color::Black, Color::Green];
+    let archon = Arc::new(
+        (*corpus::card("Archon of Cruelty")?)
+            .clone()
+            .with_mana_cost(cost(2, &[])),
+    );
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS - 2).map(|i| land(colors[i % 2])).collect();
+    for card in [
+        archon,
+        edict("Archon Edict"),
+        mind_rot("Archon Rot"),
+        walker("Archon Walker", 1),
+    ] {
+        deck.extend(std::iter::repeat_n(card, 4));
+    }
+    // Twenty-two creatures make the 60 cards.
+    for slot in 0..11 {
+        let generic = u32::try_from(rng.index(3)).unwrap_or(0);
+        let power = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let toughness = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let name = format!("Archon Fodder {slot} {generic} {power}/{toughness}");
+        let card = creature(&name, generic, &[colors[rng.index(2)]], power, toughness);
+        deck.extend(std::iter::repeat_n(card, 2));
+    }
+    rng.shuffle(&mut deck);
+    Ok(deck)
+}
+
+/// A normal game of `players` seats whose decks are [`archon_deck`]s, fully determined by `seed`.
+pub fn archon_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(archon_deck(&mut GameRng::substream(seed, 6_000 + seat))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }
 
 /// The keywords of combat, in the order the decks pick from.
