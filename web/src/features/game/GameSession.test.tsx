@@ -235,12 +235,12 @@ describe('the game route', () => {
     expect(app.sockets).toHaveLength(1)
   })
 
-  it('is what Rejoin in My games opens: the game address with no fragment, connected through the session', async () => {
+  it('is what Continue in My games opens: the game address with no fragment, connected through the session', async () => {
     const app = await open('/games', {
       signedIn: ADA.username,
       games: [listed({ game: GAME, status: 'running' })],
     })
-    await app.user.click(await screen.findByRole('link', { name: /rejoin/i }))
+    await app.user.click(await screen.findByRole('link', { name: /continue/i }))
     await waitFor(() => expect(app.router.state.location.pathname).toBe(`/game/${GAME}`))
     expect(app.router.state.location.hash).toBe('')
     expect(app.router.state.location.href).toBe(`/game/${GAME}`)

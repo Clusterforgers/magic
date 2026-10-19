@@ -1,9 +1,10 @@
-// Goal: the words for a finished game are right for every way a seat can lose and every point of view: the winner, the loser, a draw, and a game seen without a view.
+// Goal: the words for a finished game are right for every way a seat can lose and every point of view: the winner, the loser, a draw, and a game seen without a view; and the kind of ending, a win, a loss, a draw or a concession, is read from the losses of the seats that are out.
 import { describe, expect, it } from 'vitest'
 import type { GameResult, LossReason, PlayerView } from '@/protocol/generated'
 import { clone } from '@/test-utils/batches'
 import { lateJoin } from '@/test-utils/transcripts'
-import { describeLoss, describeResult, seatOutcomes } from './outcome'
+import { describeLoss, describeResult, endKind, seatOutcomes } from './outcome'
+import type { EndKind } from './outcome'
 
 const name = (seat: number): string => ['Ana', 'Bo', 'Cy'][seat] ?? `Seat ${seat + 1}`
 
@@ -77,6 +78,38 @@ describe('describeResult', () => {
   ]
   it.each(cases)('%s', (_what, result, me, lost, headline, detail) => {
     expect(describeResult(result, me, name, players(...lost))).toEqual({ headline, detail })
+  })
+})
+
+describe('endKind', () => {
+  const cases: [string, GameResult, number | null, (LossReason | null)[], EndKind][] = [
+    ['the viewer won on the board', { Winner: 0 }, 0, [null, 'ZeroLife'], 'won'],
+    ['the viewer lost on the board', { Winner: 1 }, 0, ['EmptyLibrary', null], 'lost'],
+    ['the viewer watches a game another seat won', { Winner: 1 }, 2, [null, null, 'ZeroLife'], 'lost'],
+    ['a draw', 'Draw', 0, [null, null], 'drawn'],
+    ['the other seat conceded', { Winner: 0 }, 0, [null, 'Conceded'], 'conceded'],
+    ['the viewer conceded', { Winner: 1 }, 0, ['Conceded', null], 'conceded'],
+    [
+      'a seat left a game of three and the third ran out of life',
+      { Winner: 0 },
+      0,
+      [null, 'Conceded', 'ZeroLife'],
+      'conceded',
+    ],
+    ['three seats that all lost on the board', { Winner: 0 }, 0, [null, 'ZeroLife', 'EmptyLibrary'], 'won'],
+    [
+      'a concession while a seat is still in, which is no end by concession',
+      { Winner: 0 },
+      0,
+      [null, 'Conceded', null],
+      'won',
+    ],
+    ['the result is all that is known', { Winner: 1 }, 0, [], 'lost'],
+    ['the result is all that is known and it is a win', { Winner: 0 }, 0, [], 'won'],
+  ]
+
+  it.each(cases)('%s is %s', (_what, result, me, lost, kind) => {
+    expect(endKind(result, me, players(...lost))).toBe(kind)
   })
 })
 

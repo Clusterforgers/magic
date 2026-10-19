@@ -63,6 +63,27 @@ export function describeResult(
   return { headline: 'You lost', detail: how === null ? won : `${won} ${how}` }
 }
 
+/** The shape of an ending, for the picture beside the headline: won or lost on the board, drawn, or conceded. */
+export type EndKind = 'won' | 'lost' | 'drawn' | 'conceded'
+
+/**
+ * Which ending this game was. It ended by concession when every seat but the winner is out and one of them gave up;
+ * a seat that leaves a running game concedes, so a leave is a concession too. Without a view there is no loss to
+ * read, so the result alone says won, lost or drawn.
+ */
+export function endKind(result: GameResult, me: PlayerId | null, players: readonly PlayerView[]): EndKind {
+  const winner = result === 'Draw' ? null : result.Winner
+  const others = players.filter((player) => player.seat !== winner)
+  const conceded =
+    winner !== null &&
+    others.length > 0 &&
+    others.every((player) => player.lost !== null) &&
+    others.some((player) => player.lost === 'Conceded')
+  if (conceded) return 'conceded'
+  if (winner === null) return 'drawn'
+  return winner === me ? 'won' : 'lost'
+}
+
 /** One entry per seat for the results list. */
 export function seatOutcomes(
   result: GameResult,
