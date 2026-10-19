@@ -130,7 +130,7 @@ After a Welcome the lobby or table stays under the reconnect notice. A `notice` 
 `features/table/prompt/` answers the decision this seat faces.
 
 - `PromptHost` (in `CentreStrip`, in place of the read-only "Waiting for ..." line while `ownDecision` is set) renders `PROMPTS[kind]` with the kind's `options` in a scope keyed by decision id, so a new decision remounts the prompt with an empty selection.
-- `registry.ts` has an entry per `DecisionKind`; a new kind stops compiling until it has one (`kinds/<Kind>.tsx`, a `PromptComponent<'Kind'>` with props `{ options }`). `kinds.test.tsx` fails while one of the eight kinds the table has always asked is the `UnsupportedPrompt` stand-in. The eleven questions of spells and abilities (`ChooseTargets` to `ChooseReplacement`) are stand-ins in their own files, which their tasks replace; the `ChooseTargets` one offers "Cancel the spell", since nothing is paid when it is asked.
+- `registry.ts` has an entry per `DecisionKind`; a new kind stops compiling until it has one (`kinds/<Kind>.tsx`, a `PromptComponent<'Kind'>` with props `{ options }`). `kinds.test.tsx` fails while one of the ten built kinds (the eight the table has always asked, `ChooseTargets` and `OrderTriggers`) is the `UnsupportedPrompt` stand-in. The other nine questions of spells and abilities are stand-ins in their own files, which their tasks replace.
 - `usePrompt()` gives `{ id, name, decision, answer, selection }`. `answer(a)` wraps `session.answer`: once per decision, false when already sent, refused by the socket (a retry is allowed) or when the store holds another decision by now. `PromptLayout` (prop `text`, controls as children) draws the shared shape: the decision's name, one polite live sentence, a row of controls.
 - Card marks (`prompt/marks.ts`): `useCardMarks(marks, onSelect, { toggles })` takes a `Map<ObjectId, 'legal' | 'dimmed' | 'selected'>` from `markCards(own, legal, selected)`. A click or Enter/Space on a legal or selected card calls `onSelect(id)`; a `Card`'s own `highlight` and `onSelect` props win. Each `Card` subscribes to its own id, so publishing redraws only the changed cards.
 
@@ -143,14 +143,18 @@ After a Welcome the lobby or table stays under the reconnect notice. A `notice` 
 | `DeclareAttackers` | the offered creatures, as toggles | Attack at; Attack with all; Confirm attack; No attack | `[creature, target]` pairs |
 | `DeclareBlockers` | creatures with something to block | click a blocker, then the one attacker it blocks (a list, so an attacker on an undrawn seat can be picked); Confirm blocks; No blocks | `[blocker, attacker]` pairs |
 | `AssignDamage` | blockers | a number box per blocker; Confirm | `[blocker, amount]` pairs |
+| `ChooseTargets` | the legal objects, as toggles | a button per legal target, players and undrawn cards too; Confirm targets; Undo; Cancel the spell (`can_cancel`); the chosen targets listed with Remove | `Targets`, `Cancel` |
+| `OrderTriggers` | none | the triggers in resolution order with Up and Down; Default order; Confirm order | the indices in the order they go on the stack |
 
-Every prompt but Mulligan and AssignDamage dims the viewer's other cards.
+Every prompt but Mulligan, AssignDamage and OrderTriggers dims the viewer's other cards.
 
 - Mulligan: the sentence reads `bottom_if_keep`, `bottom_if_mulligan` and `free_mulligans`, so the client derives no count.
 - Nothing to do: the newest `NothingToDo` event of this turn shows "You have no creatures that can attack" (or "block") until the viewer has answered something, since the engine usually asks for priority right after.
 - PayMana: mana that would be wasted is not offered (`payment.ts` `fits`), so a payment is complete exactly when the engine's check passes; `payment.ts` resolves the cost as `ManaCost::resolutions` does (each hybrid and Phyrexian symbol in one of its ways) and `payment.test.ts` checks it against an independent rule. `toPayment` sends `{ pool, taps, life }`, 2 life per Phyrexian symbol paid with life; a life switch works while the life paid stays within `max_life` and the chosen mana still has a place (`lifeChoices`).
 - DeclareBlockers: a blocker blocks one attacker, as the engine demands, and `can_block` alone decides who may be blocked.
 - AssignDamage: the engine takes any whole-number split that adds up to `power`, so that is all the prompt enforces. The first split (`damageSplit.ts`) gives lethal damage in the offered order and the rest to the last; the views carry no keywords, so deathtouch is not in the lethal hint.
+- ChooseTargets: the sentence names the source (the spell, or "Mulldrifter's ability" when `triggered`) and gives the engine's `wording` of the specification; `targetText.ts` holds the words. A click on a chosen target takes it back, one on another target changes a choice of one, and a full choice of several closes the rest. The list has every legal target because a player is not a card, a group or a zone may not draw one, and a card says where it is in brackets. A triggered ability has no Cancel (it cannot be backed out of); its way out is the response clock's `Remove` ([server.md](server.md), Response clocks).
+- OrderTriggers: the list is in resolution order (the top resolves first) and the answer is the same list reversed, the order they go on the stack (`orderText.ts`). The engine's order (the last to trigger on top) is in place at first. A moved row keeps focus on its button; at an end the button stays focusable and does nothing, so a repeated press never sends the trigger back; the sentence says where the trigger went.
 
 ## Combat overlay and previews
 
@@ -214,7 +218,7 @@ The Priority prompt's controls (`prompt/PassControls.tsx`), over the wire rules 
 ### Response clock
 
 - A `Decision` with `deadline_ms` ([protocol.md](protocol.md), Decisions) becomes `pending.deadlineMs`. The session counts it down in `PlayState.clock` on its own `timers` (a test's manual clock moves it) and, at zero, clears `pending` itself: the server has answered for the seat, and a prompt left up would invite a stale answer.
-- `prompt/ResponseClock` shows "Passing for you in 7 s" as a `role="timer"` that does not announce each second; the last three seconds are urgent (`data-urgent`). Its bar is the `response-clock-bar` utility in `prompt/responseClock.css`.
+- `prompt/ResponseClock` shows "Passing for you in 7 s" (`clockText.ts` has the words for what the server answers at zero: a pass, no blocks, no targets, the triggers in the order they triggered) as a `role="timer"` that does not announce each second; the last three seconds are urgent (`data-urgent`). Its bar is the `response-clock-bar` utility in `prompt/responseClock.css`.
 
 ### Keys
 
