@@ -34,6 +34,8 @@ export interface LobbySources {
   seatCount: number | null
 }
 
+const filled = (name: string | undefined): string | undefined => (name === '' ? undefined : name)
+
 /**
  * The seats to show. The roster is the server's latest word and wins while the socket is open; without it (before
  * the first one, or while reconnecting) the lookup stands in, and a seat nobody has named yet is "Seat N".
@@ -43,7 +45,8 @@ export function lobbyRows({ roster, info, open, seat, seatCount }: LobbySources)
   return Array.from({ length: count }, (_, index): LobbyRow => {
     const pushed = roster?.seats[index]
     const listed = info?.seats.find((entry) => entry.seat === index)?.name
-    const name = pushed?.name ?? listed
+    // An open seat has an empty name until somebody takes it; it reads as a seat nobody has joined yet.
+    const name = filled(pushed?.name) ?? filled(listed)
     const you = index === seat
     // A page knows best whether its own socket is open.
     const connected = you ? open : (pushed?.connected ?? info?.connected.includes(index) ?? false)

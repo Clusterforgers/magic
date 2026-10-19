@@ -122,7 +122,8 @@ function SeatedGame({ gameId, token, name, api, deps }: SeatedGameProps) {
 
   const connection = connectionOf(state)
   const over = state.phase === 'over' && state.result !== null
-  const ended = connection.kind === 'replaced' || connection.kind === 'stopped' || connection.kind === 'closed'
+  const ended =
+    connection.kind === 'replaced' || connection.kind === 'stopped' || connection.kind === 'closed'
 
   // The screen is the game itself: the result, or what the seat sees once welcomed. Without one (still connecting,
   // or the seat was lost), the connection notice is the whole page.

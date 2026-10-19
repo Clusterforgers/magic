@@ -55,7 +55,9 @@ export function readVisibility(body: unknown): Visibility | null {
 }
 
 function readGameSeat(item: unknown): GameSeat | null {
-  return isRecord(item) && isCount(item.seat) && isText(item.name) ? { seat: item.seat, name: item.name } : null
+  return isRecord(item) && isCount(item.seat) && isText(item.name)
+    ? { seat: item.seat, name: item.name }
+    : null
 }
 
 /**

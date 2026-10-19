@@ -3,6 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { loadInvites } from '@/lib/invites'
+import { chooseSeatLinks } from '@/test-utils/createForm'
 import { MADE_GAME, startServer, tokenOf } from '@/test-utils/fakeServer'
 import { visibleOutsideShareLinks } from '@/test-utils/leaks'
 import { renderInRouter } from '@/test-utils/router'
@@ -13,6 +14,7 @@ async function createGame(seats = 3) {
   const user = userEvent.setup()
   const view = await renderInRouter(<CreateGamePage api={server.api} />)
   await screen.findByRole('form', { name: 'Create a game' })
+  await chooseSeatLinks(user)
   for (let seat = 2; seat < seats; seat += 1)
     await user.click(screen.getByRole('button', { name: 'Add seat' }))
   await user.clear(screen.getByLabelText('Name for seat 1'))

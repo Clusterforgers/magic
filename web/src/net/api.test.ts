@@ -27,6 +27,7 @@ const game = {
   connected: [0],
   ready: [0],
   result: null,
+  visibility: 'public',
 }
 const decks = [
   {
@@ -131,6 +132,17 @@ describe('requests and answers', () => {
     const { ready: _ready, ...older } = game
     const fake = fakeFetch(() => jsonResponse(200, older))
     expect(await createApi({ fetch: fake.fetch }).getGame('g-1')).toEqual({ ...older, ready: [] })
+  })
+
+  it.each(['public', 'invite'] as const)('reads a game whose visibility is %s', async (visibility) => {
+    const fake = fakeFetch(() => jsonResponse(200, { ...game, visibility }))
+    expect((await createApi({ fetch: fake.fetch }).getGame('g-1')).visibility).toBe(visibility)
+  })
+
+  it('takes a server that sends no visibility for one that lists nothing, so its game is invite only', async () => {
+    const { visibility: _visibility, ...older } = game
+    const fake = fakeFetch(() => jsonResponse(200, older))
+    expect(await createApi({ fetch: fake.fetch }).getGame('g-1')).toEqual({ ...older, visibility: 'invite' })
   })
 
   it('escapes the game id in the path', async () => {
@@ -253,6 +265,9 @@ describe('bodies that parse but do not have the documented shape', () => {
     ['getGame: a ready seat is negative', (api) => api.getGame('g'), { ...game, ready: [-1] }],
     ['getGame: result is an unknown word', (api) => api.getGame('g'), { ...game, result: 'Win' }],
     ['getGame: result is missing', (api) => api.getGame('g'), { started: true, seats: [], connected: [] }],
+    ['getGame: visibility is an unknown word', (api) => api.getGame('g'), { ...game, visibility: 'friends' }],
+    ['getGame: visibility is null', (api) => api.getGame('g'), { ...game, visibility: null }],
+    ['getGame: visibility is a number', (api) => api.getGame('g'), { ...game, visibility: 1 }],
     ['getGame: a seat has no name', (api) => api.getGame('g'), { ...game, seats: [{ seat: 0 }] }],
     ['listDecks: an object, not a list', (api) => api.listDecks(), { decks }],
     ['listDecks: a deck has no id', (api) => api.listDecks(), [{ ...decks[0], id: undefined }]],

@@ -12,13 +12,7 @@ import type { Timers } from './timers'
 
 /** Where the connection stands: `open` means the server answered `Join` with `Welcome`. */
 export type ConnectionStatus =
-  | 'idle'
-  | 'connecting'
-  | 'open'
-  | 'reconnecting'
-  | 'replaced'
-  | 'stopped'
-  | 'closed'
+  'idle' | 'connecting' | 'open' | 'reconnecting' | 'replaced' | 'stopped' | 'closed'
 
 /** What a `GameSocket` reports to its owner. */
 export type SocketEvent =
