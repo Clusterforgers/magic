@@ -20,7 +20,7 @@ use uuid::Uuid;
 
 pub use bot::{Bot, BotReport, Progress, drive, play_bots, play_table};
 pub use store::FlakyStore;
-pub use tape::{Tape, kind, ms};
+pub use tape::{Tape, Taped, kind, ms};
 
 /// A game id derived from a number, so tests stay readable.
 pub fn game_id(n: u128) -> GameId {

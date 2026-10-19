@@ -5,7 +5,8 @@ use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::Decision;
-use mtg_protocol::{DecisionId, EventBatch, ServerMessage};
+use mtg_protocol::{ClientMessage, DecisionId, EventBatch, ServerMessage};
+use mtg_server::GameHandle;
 use tokio::sync::mpsc::Receiver;
 use tokio::task::JoinHandle;
 use tokio::time::Instant;
@@ -26,6 +27,41 @@ impl Tape {
         let writer = Arc::clone(&log);
         let task = tokio::spawn(async move {
             while let Some(message) = inbox.recv().await {
+                writer.lock().unwrap().push((since.elapsed(), message));
+            }
+        });
+        Tape { log, task }
+    }
+
+    /// Like [`Tape::listen`] for a seat played by a bot: it answers each decision it is sent with the harmless answer
+    /// (a pass for priority) after a pause, the n-th decision after `think[n]` (the list repeats).
+    pub fn play(
+        mut inbox: Receiver<ServerMessage>,
+        since: Instant,
+        handle: GameHandle,
+        seat: PlayerId,
+        think: Vec<Duration>,
+    ) -> Tape {
+        let log = Arc::new(Mutex::new(Vec::new()));
+        let writer = Arc::clone(&log);
+        let task = tokio::spawn(async move {
+            let mut asked = 0;
+            while let Some(message) = inbox.recv().await {
+                if let ServerMessage::Decision { id, decision, .. } = &message {
+                    let (id, answer) = (*id, super::passive(decision));
+                    let pause = think[asked % think.len()];
+                    asked += 1;
+                    let handle = handle.clone();
+                    tokio::spawn(async move {
+                        tokio::time::sleep(pause).await;
+                        let reply = ClientMessage::Answer {
+                            decision: id,
+                            answer,
+                        };
+                        // A game that has ended no longer listens.
+                        let _ = handle.send(seat, reply).await;
+                    });
+                }
                 writer.lock().unwrap().push((since.elapsed(), message));
             }
         });
@@ -97,9 +133,4 @@ pub fn kind(message: &ServerMessage) -> String {
 /// Whole milliseconds of `span`.
 pub fn ms(span: Duration) -> u64 {
     u64::try_from(span.as_millis()).unwrap()
-}
-
-/// The seat a decision is for.
-pub fn seat_of(decision: &Decision) -> PlayerId {
-    decision.player
 }
