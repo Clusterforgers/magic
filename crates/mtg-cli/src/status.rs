@@ -107,10 +107,14 @@ async fn database_section(url: &str, wait: Duration) -> String {
         .acquire_timeout(wait)
         .connect(url)
         .await;
-    let db = match pool.map(Database::from_pool) {
-        Ok(db) => db,
-        Err(error) => return format!("database: {target}: cannot connect: {error}\n"),
-    };
+    match pool.map(Database::from_pool) {
+        Ok(db) => database_report(&db, &target).await,
+        Err(error) => format!("database: {target}: cannot connect: {error}\n"),
+    }
+}
+
+/// The database part of the report: where it is, its row counts and its latest import runs.
+pub async fn database_report(db: &Database, target: &str) -> String {
     let mut out = format!("database: {target}\n");
     match db.row_counts().await {
         Ok(rows) => {

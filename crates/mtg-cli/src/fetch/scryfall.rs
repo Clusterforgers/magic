@@ -65,14 +65,19 @@ pub async fn fetch_scryfall(
     progress: &Progress,
 ) -> Result<Vec<BulkOutcome>, CliError> {
     let listing = read_listing(http, listing_url).await?;
-    let mut outcomes = Vec::new();
+    // Every entry is checked before the first download starts.
+    let mut wanted = Vec::new();
     for kind in SCRYFALL_TYPES {
         let entry = listing
             .data
             .iter()
             .find(|entry| entry.kind == kind)
             .ok_or_else(|| invalid(listing_url, format!("the listing has no `{kind}` entry")))?;
-        outcomes.push(fetch_bulk(http, cache, kind, entry, listing_url, force, progress).await?);
+        wanted.push(resolve(kind, entry, listing_url)?);
+    }
+    let mut outcomes = Vec::new();
+    for bulk in &wanted {
+        outcomes.push(fetch_bulk(http, cache, bulk, force, progress).await?);
     }
     Ok(outcomes)
 }
@@ -94,15 +99,20 @@ fn invalid(url: &Url, reason: impl Into<String>) -> FetchError {
     }
 }
 
-async fn fetch_bulk(
-    http: &Http,
-    cache: &Cache,
+/// A listing entry with its download address checked.
+struct Wanted<'a> {
     kind: &'static str,
-    entry: &ListingEntry,
+    entry: &'a ListingEntry,
+    url: Url,
+    name: String,
+}
+
+/// Finds the address of a listing entry and the cache file name it implies.
+fn resolve<'a>(
+    kind: &'static str,
+    entry: &'a ListingEntry,
     listing_url: &Url,
-    force: bool,
-    progress: &Progress,
-) -> Result<BulkOutcome, CliError> {
+) -> Result<Wanted<'a>, FetchError> {
     let source = entry
         .jsonl_download_uri
         .as_deref()
@@ -114,12 +124,30 @@ async fn fetch_bulk(
         .path_segments()
         .and_then(|mut segments| segments.next_back())
         .filter(|name| is_plain_file_name(name))
+        .map(str::to_owned)
         .ok_or_else(|| {
             invalid(
                 listing_url,
                 format!("`{kind}` address {source:?} names no file"),
             )
         })?;
+    Ok(Wanted {
+        kind,
+        entry,
+        url,
+        name,
+    })
+}
+
+async fn fetch_bulk(
+    http: &Http,
+    cache: &Cache,
+    wanted: &Wanted<'_>,
+    force: bool,
+    progress: &Progress,
+) -> Result<BulkOutcome, CliError> {
+    let (kind, entry) = (wanted.kind, wanted.entry);
+    let (url, name) = (&wanted.url, wanted.name.as_str());
     let relative = format!("scryfall/{name}");
 
     let mut manifest = cache.manifest()?;
@@ -154,9 +182,9 @@ async fn fetch_bulk(
         .extension()
         .is_some_and(|extension| extension.eq_ignore_ascii_case("gz"));
     let expected = entry.compressed_size.filter(|_| packed);
-    let downloaded = http.download(&url, &part, expected).await?;
+    let downloaded = http.download(url, &part, expected).await?;
 
-    let (sha256, size) = verified_checksum(&part, &url).await?;
+    let (sha256, size) = verified_checksum(&part, url).await?;
     tokio::fs::rename(&part, &target)
         .await
         .map_err(|e| CliError::io(&target, e))?;
