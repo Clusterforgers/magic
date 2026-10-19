@@ -94,6 +94,25 @@ describe('requests and answers', () => {
     expect(fake.calls[0]?.init?.credentials).toBe('include')
   })
 
+  it('sends the visibility and the number of held seats when they are given, and only then', async () => {
+    const fake = fakeFetch(() => jsonResponse(201, created))
+    const api = createApi({ fetch: fake.fetch })
+    await api.createGame({ ...request, visibility: 'public', held: 1 })
+    await api.createGame(request)
+    const bodies = fake.calls.map((call) => JSON.parse(String(call.init?.body)) as unknown)
+    expect(bodies).toEqual([{ ...request, visibility: 'public', held: 1 }, request])
+  })
+
+  it('reads the join code of a new game, and the game of a server that predates codes', async () => {
+    const withCode = { ...created, code: 'ABCD2345' }
+    const fake = fakeFetch(() => jsonResponse(201, withCode))
+    expect(await createApi({ fetch: fake.fetch }).createGame(request)).toEqual(withCode)
+    const older = fakeFetch(() => jsonResponse(201, created))
+    const game = await createApi({ fetch: older.fetch }).createGame(request)
+    expect(game).toEqual(created)
+    expect('code' in game).toBe(false)
+  })
+
   it.each<[string, unknown]>([
     ['not started, no result', { ...game, started: false, connected: [], ready: [] }],
     [
@@ -224,6 +243,8 @@ describe('bodies that parse but do not have the documented shape', () => {
       (api) => api.createGame(request),
       { ...created, seats: [{ seat: -1, token: 't' }] },
     ],
+    ['createGame: the code is a number', (api) => api.createGame(request), { ...created, code: 5 }],
+    ['createGame: the code is null', (api) => api.createGame(request), { ...created, code: null }],
     ['getGame: started is text', (api) => api.getGame('g'), { ...game, started: 'yes' }],
     ['getGame: connected has a fraction', (api) => api.getGame('g'), { ...game, connected: [0.5] }],
     ['getGame: ready has a fraction', (api) => api.getGame('g'), { ...game, ready: [0.5] }],

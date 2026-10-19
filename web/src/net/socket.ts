@@ -74,6 +74,7 @@ export const LONGEST_RETRY_MS = 15_000
 const JITTER = 0.5
 const NORMAL_CLOSE = 1000
 const REPLACED_CODE = 4000
+const REMOVED_CODE = 4001
 
 /** The wait before retry number `failures` (1 is the first): 250 ms doubling to 15 s, minus up to half as jitter. */
 export function retryDelay(failures: number, random: number): number {
@@ -94,6 +95,8 @@ export function socketUrl(game: string, token: string | undefined, origin: strin
 }
 
 const REPLACED_TEXT = 'This seat was opened in another window or tab, which took it over.'
+// The seat was given back or the host removed its player: its token opens nothing now, so retrying cannot help.
+const REMOVED_TEXT = 'You were removed from this game.'
 
 // Close codes after which retrying cannot help; any other code is treated as a lost connection.
 const STOP_REASONS: Readonly<Record<number, string>> = {
@@ -233,6 +236,10 @@ export class GameSocket {
     this.generation += 1
     if (code === REPLACED_CODE) {
       this.halt('replaced', REPLACED_TEXT)
+      return
+    }
+    if (code === REMOVED_CODE) {
+      this.halt('stopped', REMOVED_TEXT)
       return
     }
     const stopped = STOP_REASONS[code]
