@@ -1,4 +1,4 @@
-// Goal: the sign-in and register pages show the server's rules, check them before sending, send exactly the typed credentials once, put every failure in plain words on the right field with focus on the first problem, empty the password after every submit, and follow only safe `next` addresses afterwards.
+// Goal: the sign-in and register pages are a card in the narrow column that shows the server's rules before the field, check them before sending, send exactly the typed credentials once, put every failure in plain words on the right field with focus on the first problem and a polite announcement of each, empty the password after every submit, and follow only safe `next` addresses afterwards.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { authError, startAccounts } from '@/test-utils/accountsServer'
@@ -321,9 +321,18 @@ describe('signing in', () => {
     const app = await renderApp('/login', { accounts: { unavailable: true } })
     expect(await screen.findByRole('heading', { name: 'This server has no accounts' })).toBeInTheDocument()
     expect(screen.queryByRole('form')).toBeNull()
-    expect(screen.getByRole('link', { name: 'Create a game' })).toHaveAttribute('href', '/new')
+    expect(screen.getByRole('link', { name: 'Create game' })).toHaveAttribute('href', '/new')
     expect(screen.queryByRole('navigation', { name: 'Account' })).toBeNull()
     expect(app.store.getState().status).toBe('unavailable')
+  })
+
+  it('designs that note as the page’s own empty state, in the narrow column, under one heading', async () => {
+    await renderApp('/register', { accounts: { unavailable: true } })
+    const heading = await screen.findByRole('heading', { level: 1, name: 'This server has no accounts' })
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
+    expect(heading.closest('[data-slot="empty-state"]')).not.toBeNull()
+    expect(heading.closest('[data-slot="page"]')).toHaveAttribute('data-width', 'narrow')
+    expect(screen.getByText(/nothing to sign in to/i)).toBeInTheDocument()
   })
 
   it('finds out during the submit that the server has no accounts, and says so', async () => {
@@ -467,6 +476,80 @@ describe('the screen on its own', () => {
       errors.mockRestore()
     },
   )
+})
+
+describe.each([
+  ['/login', 'Sign in', 'Could not sign in', 'Create one'],
+  ['/register', 'Create account', 'Could not create the account', 'Sign in'],
+])('the design of the form at %s', (url, submit, failed, otherLink) => {
+  const mode = url.slice(1)
+  const note = (field: string, kind: 'hint' | 'problem') =>
+    document.getElementById(`${mode}-${field}-${kind}`)
+
+  it('is a card in the narrow column, the one width a form takes', async () => {
+    await open(url)
+    expect(form()).toHaveClass('surface')
+    expect(form().closest('[data-slot="page"]')).toHaveAttribute('data-width', 'narrow')
+  })
+
+  it('says the rule before the input and keeps the problem under it', async () => {
+    await open(url)
+    for (const [field, input] of [
+      ['username', username()],
+      ['password', password()],
+    ] as const) {
+      const rule = note(field, 'hint')
+      const problem = note(field, 'problem')
+      expect(rule?.compareDocumentPosition(input)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+      expect(input.compareDocumentPosition(problem as Node)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+    }
+  })
+
+  it('tabs through the username, the password, the button and the link to the other page, and nothing else', async () => {
+    const app = await open(url)
+    username().focus()
+    const after = [password(), submitButton(submit), within(form()).getByRole('link', { name: otherLink })]
+    for (const stop of after) {
+      await app.user.tab()
+      expect(stop).toHaveFocus()
+    }
+    await app.user.tab()
+    expect(form()).not.toContainElement(document.activeElement as HTMLElement)
+  })
+
+  it('announces each problem in a polite region its field points at, first in the field’s description, with an icon', async () => {
+    const app = await open(url)
+    expect(note('username', 'problem')).toBeEmptyDOMElement()
+    expect(note('password', 'problem')).toBeEmptyDOMElement()
+    await app.user.click(submitButton(submit))
+    for (const [field, input, words] of [
+      ['username', username(), 'Enter a username.'],
+      ['password', password(), 'Enter a password.'],
+    ] as const) {
+      const region = note(field, 'problem')
+      expect(region).toHaveAttribute('aria-live', 'polite')
+      expect(region).toHaveTextContent(words)
+      expect(region?.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+      expect(input.getAttribute('aria-describedby')?.split(' ')).toEqual([
+        `${mode}-${field}-problem`,
+        `${mode}-${field}-hint`,
+      ])
+      expect(input).toHaveAccessibleDescription(
+        new RegExp(`^${words.replace('.', '\\.')} \\d+ to \\d+ characters`),
+      )
+    }
+  })
+
+  it('titles the alert about the whole form and puts its icon beside the words', async () => {
+    const app = await open(url, { override: { [mode]: () => authError(500, 'internal') } })
+    await type(app, ADA.username, ADA.password)
+    await app.user.click(submitButton(submit))
+    const alert = await screen.findByRole('alert')
+    expect(within(alert).getByText(failed)).toBeInTheDocument()
+    expect(alert.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+    expect(alert.querySelector('[data-slot="alert-description"]')).not.toBeEmptyDOMElement()
+    expect(alert).toHaveFocus()
+  })
 })
 
 describe('mounting twice', () => {
