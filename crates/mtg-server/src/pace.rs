@@ -14,6 +14,7 @@ use mtg_protocol::{ErrorCode, FullControlMode, ServerMessage, YieldUntil};
 use tokio::time::Instant;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
+use crate::dwell::Dwell;
 use crate::running::Rejection;
 use crate::store::EventStore;
 use crate::yields::Yields;
@@ -24,7 +25,8 @@ pub const MAX_CLOCK_SECS: u64 = 86_400;
 /// How long after a failed save the server tries again to answer for a seat whose clock ran out.
 const RETRY_AFTER: Duration = Duration::from_secs(1);
 
-/// How a game moves: how seats start out (auto-pass on, or in Full Control), and how long a seat may take to respond.
+/// How a game moves: how seats start out (auto-pass on, or in Full Control), how long a seat may take to respond and how
+/// long the table waits before it passes for a seat that cannot act.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Pace {
     /// Whether each seat starts with auto-pass on (`MTG_AUTO_PASS`): in Full Control mode `Off`, or `Held` when off.
@@ -35,6 +37,8 @@ pub struct Pace {
     pub response: Option<Duration>,
     /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`); `None` is no clock.
     pub blocks: Option<Duration>,
+    /// How long the table waits before it passes for a seat that cannot act at a default window (`MTG_DWELL_MS`).
+    pub dwell: Dwell,
 }
 
 impl Pace {
@@ -43,6 +47,7 @@ impl Pace {
         auto_pass: false,
         response: None,
         blocks: None,
+        dwell: Dwell::OFF,
     };
 
     /// The Full Control mode every seat starts in: `Off` with auto-pass on, `Held` with it off.
@@ -78,6 +83,7 @@ impl Default for Pace {
             auto_pass: true,
             response: Some(Duration::from_secs(10)),
             blocks: Some(Duration::from_secs(45)),
+            dwell: Dwell::DEFAULT,
         }
     }
 }
@@ -290,6 +296,7 @@ mod tests {
             auto_pass: true,
             response: Some(Duration::from_secs(10)),
             blocks: Some(Duration::from_secs(45)),
+            dwell: Dwell::OFF,
         }
     }
 
@@ -332,13 +339,18 @@ mod tests {
     }
 
     #[test]
-    fn the_defaults_are_ten_and_forty_five_seconds_with_auto_pass_on() {
+    fn the_defaults_are_ten_and_forty_five_seconds_and_a_dwell_with_auto_pass_on() {
         let pace = Pace::default();
         assert!(pace.auto_pass);
         assert_eq!(pace.response, Some(Duration::from_secs(10)));
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
+        assert_eq!(
+            pace.dwell.range(),
+            (Duration::from_millis(300), Duration::from_millis(900))
+        );
         assert_eq!(Pace::MANUAL.response, None);
         assert!(!std::hint::black_box(Pace::MANUAL).auto_pass);
+        assert!(Pace::MANUAL.dwell.is_off(), "the manual pace never waits");
     }
 
     #[rstest]

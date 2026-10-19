@@ -70,6 +70,7 @@ pub mod config;
 mod cookie;
 mod credentials;
 pub mod demo;
+mod dwell;
 mod game_id;
 mod handle;
 mod limit;
@@ -106,6 +107,7 @@ pub use actor::{
 pub use api::{BODY_LIMIT, MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS};
 pub use cards::{CardSource, CatalogError, printed_card};
 pub use config::{AuthConfig, ConfigError, ServerConfig};
+pub use dwell::{Dwell, MAX_DWELL_MS};
 pub use game_id::GameId;
 pub use handle::{GameClosed, GameHandle, GameStatus, JoinError};
 pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};

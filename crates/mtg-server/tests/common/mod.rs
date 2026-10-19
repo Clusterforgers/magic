@@ -11,7 +11,7 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_engine::{Event, GameSetup};
 use mtg_protocol::{ClientMessage, DecisionId, FullControlMode, ServerMessage, StopSide};
-use mtg_server::{GameConfig, GameHandle, GameId, Pace};
+use mtg_server::{Dwell, GameConfig, GameHandle, GameId, Pace};
 use mtg_testkit::windows::{Mode, SeatWindows, Side};
 use mtg_testkit::{PlayOptions, fuzz_setup, play_game, play_game_with};
 use tokio::sync::mpsc::Receiver;
@@ -55,6 +55,7 @@ pub fn windowed() -> GameConfig {
             auto_pass: true,
             response: None,
             blocks: None,
+            dwell: Dwell::OFF,
         },
         ..roomy()
     }

@@ -34,12 +34,15 @@ fn recipe(players: usize, seed: u64) -> GameRecipe {
     GameRecipe::normal(seed, decks)
 }
 
-/// The server defaults for pace: auto-pass on, 10 s to respond, 45 s to block.
+/// The server defaults for pace without the dwell (real time runs here): auto-pass on, 10 s to respond, 45 s to block.
 fn config(seed: u64) -> ServerConfig {
     ServerConfig {
         fixed_seed: Some(seed),
         game: GameConfig {
-            pace: mtg_server::Pace::default(),
+            pace: mtg_server::Pace {
+                dwell: mtg_server::Dwell::OFF,
+                ..mtg_server::Pace::default()
+            },
             ..roomy()
         },
         ..ServerConfig::default()
