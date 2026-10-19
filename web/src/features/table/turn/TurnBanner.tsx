@@ -19,9 +19,10 @@ const NEXT: Record<Exclude<Phase, 'idle'>, Phase> = { in: 'hold', hold: 'out', o
  * fades in, is held and fades out (250, 600 and 150 ms; a fade only and held 1.5 s under reduced motion) and takes no
  * pointer, so the strip under it keeps answering. The band is for the eye (`aria-hidden`); a polite live region says
  * the same in words. It draws only for a batch that changes the turn or the active seat, never at once for a snapshot.
- * Place it inside the strip, which is `relative`.
+ * Place it inside the strip, which is `relative`; `inset` is how far the strip's sheet starts from the left, which the
+ * band keeps to so that it lies exactly over the sheet.
  */
-export function TurnBanner() {
+export function TurnBanner({ inset = 0 }: { inset?: number }) {
   const { on, slow } = useCueOptions()
   const reduced = useReducedMotion()
   const [shown, setShown] = useState<Shown>({ cue: null, phase: 'idle' })
@@ -52,6 +53,7 @@ export function TurnBanner() {
         data-slot="turn-banner"
         data-phase={phase}
         data-your-turn={cue?.yours === true ? true : undefined}
+        style={inset === 0 ? undefined : { left: inset }}
         className={cn(
           'absolute inset-0 flex items-center justify-center gap-3 rounded-xl px-4 shadow-e2',
           cue?.yours === false ? 'bg-turn-them text-on-turn-them' : 'bg-turn-you text-on-turn-you',

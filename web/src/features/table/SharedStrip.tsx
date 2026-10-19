@@ -89,7 +89,7 @@ export function SharedStrip({ sheetMax, inset = 0 }: { sheetMax: number; inset?:
           <TurnTicker />
         </div>
       </div>
-      <TurnBanner />
+      <TurnBanner inset={inset} />
     </section>
   )
 }

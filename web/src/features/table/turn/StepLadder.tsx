@@ -13,11 +13,14 @@ import { useCueOptions, useTurnFeed } from './useTurnFeed'
 
 // Whole class names, so Tailwind can see them. Shape tells the marks apart as well as colour: filled, dashed, hollow, lit.
 const PIP: Record<Exclude<PipState, 'current'>, string> = {
-  upcoming: 'border-border-strong',
-  passed: 'border-step-passed bg-step-passed',
-  skipped: 'border-dashed border-step-skipped',
+  upcoming: 'border border-border-strong',
+  passed: 'border border-step-passed bg-step-passed',
+  skipped: 'border-2 border-dashed border-step-skipped',
 }
-const CURRENT = { you: 'border-turn-you-edge bg-turn-you', them: 'border-turn-them bg-turn-them' }
+const CURRENT = {
+  you: 'border border-turn-you-edge bg-turn-you',
+  them: 'border border-turn-them bg-turn-them',
+}
 
 /**
  * The turn's steps as a row of small marks in the top bar: the current step lit in the colour of whose turn it is,
@@ -65,7 +68,7 @@ export function StepLadder() {
             data-step={name}
             data-state={state}
             className={cn(
-              'h-2.5 w-4 rounded-[3px] border',
+              'h-3 w-5 rounded-[3px]',
               state === 'current' ? CURRENT[yours ? 'you' : 'them'] : PIP[state],
             )}
           />
