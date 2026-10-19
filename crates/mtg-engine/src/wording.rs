@@ -1,5 +1,6 @@
 //! Words for what the rules data says, for the prompts of players: a target specification ("up to two target
-//! creatures you control") and the event a triggered ability waits for ("When it enters the battlefield").
+//! creatures you control"), the event a triggered ability waits for ("When it enters the battlefield") and what a
+//! discard or a sacrifice asks ("Discard a card.").
 //!
 //! They are hints for a person choosing, not rules: a predicate with no short phrase is left out.
 
@@ -298,9 +299,35 @@ pub(crate) fn pattern(pattern: &TriggerPattern) -> String {
     format!("{} {text}", if itself { "When" } else { "Whenever" })
 }
 
+/// The plural of a noun phrase made of one or more alternatives: "creatures or planeswalkers".
+fn plural(head: &str) -> String {
+    head.split(" or ")
+        .map(|word| format!("{word}s"))
+        .collect::<Vec<_>>()
+        .join(" or ")
+}
+
+/// What a discard asks of the player who chooses, as a card says it: "Discard a card.", "Discard 2 cards."
+pub(crate) fn discard(count: usize) -> String {
+    if count == 1 {
+        "Discard a card.".to_owned()
+    } else {
+        format!("Discard {count} cards.")
+    }
+}
+
+/// What a sacrifice asks of the player who chooses: "Sacrifice a creature or planeswalker.", "Sacrifice 2 creatures."
+pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
+    if count == 1 {
+        return format!("Sacrifice {}.", subject(filter));
+    }
+    let (head, tail) = phrase(filter);
+    format!("Sacrifice {count} {}.", join(&plural(&head), &tail))
+}
+
 #[cfg(test)]
 mod tests {
-    //! Goal: target specifications and trigger patterns read as the cards say them, for the shapes the corpus and the prompts use, and a predicate with no phrase is left out instead of breaking the sentence.
+    //! Goal: target specifications, trigger patterns and the questions of discards and sacrifices read as the cards say them, for the shapes the corpus and the prompts use, and a predicate with no phrase is left out instead of breaking the sentence.
     use rstest::rstest;
 
     use super::*;
@@ -311,6 +338,51 @@ mod tests {
 
     fn words(json: &str) -> String {
         pattern(&serde_json::from_str(json).unwrap())
+    }
+
+    #[rstest]
+    #[case::one(1, "Discard a card.")]
+    #[case::two(2, "Discard 2 cards.")]
+    #[case::many(7, "Discard 7 cards.")]
+    fn a_discard_asks_for_the_cards_it_takes(#[case] count: usize, #[case] expected: &str) {
+        assert_eq!(discard(count), expected);
+    }
+
+    #[rstest]
+    #[case::two_kinds(
+        r#"[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]"#,
+        1,
+        "Sacrifice a creature or planeswalker."
+    )]
+    #[case::a_creature(r#"[{"Type":"Creature"}]"#, 1, "Sacrifice a creature.")]
+    #[case::yours(
+        r#"[{"Type":"Creature"},{"ControlledBy":"You"}]"#,
+        1,
+        "Sacrifice a creature you control."
+    )]
+    #[case::an_artifact(r#"[{"Type":"Artifact"}]"#, 1, "Sacrifice an artifact.")]
+    #[case::anything(r"[]", 1, "Sacrifice a permanent.")]
+    #[case::itself(r#"["This"]"#, 1, "Sacrifice it.")]
+    #[case::two_creatures(r#"[{"Type":"Creature"}]"#, 2, "Sacrifice 2 creatures.")]
+    #[case::two_of_two_kinds(
+        r#"[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]"#,
+        2,
+        "Sacrifice 2 creatures or planeswalkers."
+    )]
+    #[case::three_tapped_lands(
+        r#"[{"Type":"Land"},{"Tapped":null}]"#,
+        3,
+        "Sacrifice 3 tapped lands."
+    )]
+    fn a_sacrifice_asks_for_the_permanents_it_takes(
+        #[case] filter: &str,
+        #[case] count: usize,
+        #[case] expected: &str,
+    ) {
+        assert_eq!(
+            sacrifice(&serde_json::from_str(filter).unwrap(), count),
+            expected
+        );
     }
 
     #[rstest]

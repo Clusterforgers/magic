@@ -25,12 +25,13 @@ use Support::{Manual, Partial, Verified};
 
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
-/// `{T}` abilities and triggered abilities made of drawing, life and damage, and the keywords of combat, so the five
-/// cards that need no more are Verified (the Forest's ability comes from its land type) and a card whose other
-/// abilities are still missing carries what runs as Partial: Mulldrifter's draw and flying, not its evoke.
+/// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, life and damage, and the
+/// keywords of combat, so the six cards that need no more are Verified (the Forest's ability comes from its land
+/// type) and a card whose other abilities are still missing carries what runs as Partial: Mulldrifter's draw and
+/// flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
-    ("Archon of Cruelty", Partial, 1),
+    ("Archon of Cruelty", Verified, 2),
     ("Bloodbraid Elf", Partial, 1),
     ("Bonecrusher Giant // Stomp", Manual, 0),
     ("Bonesplitter", Manual, 0),
@@ -42,7 +43,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Dockside Extortionist", Manual, 0),
     ("Doom Blade", Manual, 0),
     ("Eternal Witness", Manual, 0),
-    ("Faithless Looting", Manual, 0),
+    ("Faithless Looting", Partial, 1),
     ("Felidar Sovereign", Partial, 2),
     ("Fire // Ice", Manual, 0),
     ("Fireball", Manual, 0),
@@ -171,6 +172,15 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         !mulldrifter.contains("Keyword.Flying") && !mulldrifter.contains("Effect.Draw"),
         "{mulldrifter}"
     );
+    // Faithless Looting's draw and discard are covered, its flashback is not.
+    let looting = reasons("Faithless Looting");
+    assert!(looting.contains("Keyword.Flashback"), "{looting}");
+    assert!(
+        !looting.contains("Effect.Draw") && !looting.contains("Effect.Discard"),
+        "{looting}"
+    );
+    // Archon of Cruelty is covered whole: its sacrifice and discard are played now.
+    assert_eq!(reasons("Archon of Cruelty"), "");
     // A card whose file models nothing says nothing about the engine.
     assert_eq!(reasons("Panharmonicon"), "");
 }
