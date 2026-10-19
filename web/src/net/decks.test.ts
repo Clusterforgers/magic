@@ -38,6 +38,7 @@ const CALLS: ReadonlyArray<readonly [string, (api: DecksApi) => Promise<unknown>
   ['list', (api) => api.list()],
   ['get', (api) => api.get('deck-1')],
   ['create', (api) => api.create(BODY)],
+  ['update', (api) => api.update('deck-1', BODY)],
   ['importList', (api) => api.importList(REQUEST)],
   ['remove', (api) => api.remove('deck-1')],
 ]
@@ -65,6 +66,18 @@ describe('the requests', () => {
     expect(saved).toMatchObject({ name: 'Burn', state: 'manual_play' })
     expect(calls[0]?.url).toBe('/api/decks')
     expect(calls[0]?.init?.method).toBe('POST')
+    expect(calls[0]?.init?.credentials).toBe('include')
+    expect(calls[0]?.init?.headers).toEqual({ 'content-type': 'application/json' })
+    expect(JSON.parse(String(calls[0]?.init?.body))).toEqual(BODY)
+  })
+
+  it('replaces a deck with PUT to its path and returns what the server stored', async () => {
+    const { api, calls } = serve(() =>
+      jsonResponse(200, deckView({ id: 'a b', name: 'Burn', state: 'blocked' })),
+    )
+    expect(await api.update('a b', BODY)).toMatchObject({ id: 'a b', name: 'Burn', state: 'blocked' })
+    expect(calls[0]?.url).toBe('/api/decks/a%20b')
+    expect(calls[0]?.init?.method).toBe('PUT')
     expect(calls[0]?.init?.credentials).toBe('include')
     expect(calls[0]?.init?.headers).toEqual({ 'content-type': 'application/json' })
     expect(JSON.parse(String(calls[0]?.init?.body))).toEqual(BODY)
@@ -162,6 +175,7 @@ describe('answers that do not match the types', () => {
     const { api } = serve(() => jsonResponse(200, body))
     await expect(api.get('deck-1')).rejects.toMatchObject({ code: 'bad_response' })
     await expect(api.create(BODY)).rejects.toMatchObject({ code: 'bad_response' })
+    await expect(api.update('deck-1', BODY)).rejects.toMatchObject({ code: 'bad_response' })
   })
 
   const line = lineOf('Lightning Bolt', 4)

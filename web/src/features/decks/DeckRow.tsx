@@ -1,6 +1,6 @@
 import { Trash2Icon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { timeSince } from '@/features/games/format'
+import { timeSince } from '@/lib/timeSince'
 import type { DecksApi } from '@/net/decks'
 import type { DeckListItem } from '@/protocol/generated'
 import { DeckStateBadge } from './DeckStateBadge'
