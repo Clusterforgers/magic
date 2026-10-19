@@ -49,6 +49,8 @@ pub struct PrintedCard {
 
 /// Whether and how well the game plays a card (`docs/deck-check.md`).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+#[serde(rename_all = "snake_case")]
 pub enum Support {
     /// Rules exist, cover the text, the text is unchanged and the engine runs every primitive used.
     Verified,
@@ -71,6 +73,28 @@ pub struct Clause {
     pub span: Span,
     /// Why it is left to the table.
     pub reason: String,
+}
+
+/// A clause the game cannot run as the REST bodies show it: where it is and why it is left to the table.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct Reason {
+    /// Which face the clause is in.
+    pub face: usize,
+    /// Where in that face's oracle text.
+    pub span: Span,
+    /// Why it is left to the table, in plain words.
+    pub text: String,
+}
+
+impl From<&Clause> for Reason {
+    fn from(clause: &Clause) -> Self {
+        Reason {
+            face: clause.face,
+            span: clause.span,
+            text: clause.reason.clone(),
+        }
+    }
 }
 
 /// The support of one card and the fingerprint a deck-level hash is built from.
@@ -137,7 +161,7 @@ impl Caps {
     }
 }
 
-fn hex(bytes: &[u8]) -> String {
+pub(crate) fn hex(bytes: &[u8]) -> String {
     bytes.iter().fold(String::new(), |mut out, byte| {
         let _ = write!(out, "{byte:02x}");
         out

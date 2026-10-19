@@ -9,6 +9,7 @@ pub mod assemble;
 pub mod builtin;
 pub mod card;
 pub mod cost;
+pub mod deck;
 pub mod definition;
 pub mod effect;
 pub mod keyword;
