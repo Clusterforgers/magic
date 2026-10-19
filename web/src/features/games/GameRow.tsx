@@ -3,7 +3,8 @@ import { Pill } from '@/components/Pill'
 import type { PillTone } from '@/components/Pill'
 import { buttonVariants } from '@/components/ui/button'
 import type { MyGame } from '@/protocol/generated'
-import { othersText, resultText, STATUS_LABEL, timeSince } from './format'
+import { timeSince } from '@/lib/timeSince'
+import { othersText, resultText, STATUS_LABEL } from './format'
 
 const TONE: Record<MyGame['status'], PillTone> = { lobby: 'neutral', running: 'success', finished: 'neutral' }
 

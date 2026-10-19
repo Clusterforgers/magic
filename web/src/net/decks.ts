@@ -1,5 +1,6 @@
 /**
- * The deck endpoints of `mtg-server` (docs/server.md, Cards and decks): list, read, save, import, export and delete.
+ * The deck endpoints of `mtg-server` (docs/server.md, Cards and decks): list, read, save, replace, import, export and
+ * delete.
  * The bodies are the generated types of `mtg_protocol::rest`; every answer is checked at runtime before it is
  * returned and every failure is a `DeckError` with a stable code. Every request carries the session cookie
  * (`credentials: 'include'`), since the deck routes need a signed-in account.
@@ -89,6 +90,8 @@ export interface DecksApi {
   get(id: string): Promise<DeckView>
   /** `POST /api/decks`: stores a deck and runs its check. */
   create(deck: DeckBody): Promise<DeckView>
+  /** `PUT /api/decks/{id}`: replaces the name, format, notes and every line, and runs the check again. */
+  update(id: string, deck: DeckBody): Promise<DeckView>
   /** `POST /api/decks/import`: reads a pasted list into lines without saving anything. */
   importList(request: ImportRequest): Promise<ImportResult>
   /** `DELETE /api/decks/{id}`. */
@@ -187,7 +190,8 @@ function readDeckView(body: unknown): DeckView | null {
   return body as DeckView
 }
 
-function readCardHit(value: unknown): CardHit | null {
+/** Reads a card as the card and deck endpoints send it; null when a field is missing or of another kind. */
+export function readCardHit(value: unknown): CardHit | null {
   if (!isRecord(value) || !isText(value.oracle_id) || !isText(value.name) || !isText(value.mana_cost))
     return null
   if (typeof value.mana_value !== 'number' || !isText(value.type_line) || !isSupport(value.support))
@@ -273,8 +277,8 @@ function failure(response: Response, body: unknown): DeckError {
 
 const GET: RequestInit = { credentials: 'include' }
 const DELETE: RequestInit = { method: 'DELETE', credentials: 'include' }
-const post = (body: unknown): RequestInit => ({
-  method: 'POST',
+const withBody = (method: 'POST' | 'PUT', body: unknown): RequestInit => ({
+  method,
   credentials: 'include',
   headers: { 'content-type': 'application/json' },
   body: JSON.stringify(body),
@@ -307,8 +311,9 @@ export function createDecksApi(options: DecksOptions = {}): DecksApi {
   return {
     list: () => call(`${base}/api/decks`, readList, GET),
     get: (id) => call(deckPath(id), readDeckView, GET),
-    create: (deck) => call(`${base}/api/decks`, readDeckView, post(deck)),
-    importList: (request) => call(`${base}/api/decks/import`, readImport, post(request)),
+    create: (deck) => call(`${base}/api/decks`, readDeckView, withBody('POST', deck)),
+    update: (id, deck) => call(deckPath(id), readDeckView, withBody('PUT', deck)),
+    importList: (request) => call(`${base}/api/decks/import`, readImport, withBody('POST', request)),
     remove: async (id) => {
       await call(deckPath(id), () => true, DELETE)
     },

@@ -1,6 +1,7 @@
-import { Trash2Icon } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { timeSince } from '@/features/games/format'
+import { Link } from '@tanstack/react-router'
+import { PencilIcon, Trash2Icon } from 'lucide-react'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { timeSince } from '@/lib/timeSince'
 import type { DecksApi } from '@/net/decks'
 import type { DeckListItem } from '@/protocol/generated'
 import { DeckStateBadge } from './DeckStateBadge'
@@ -16,8 +17,8 @@ interface DeckRowProps {
 }
 
 /**
- * One deck of the list: its name, check state (an icon and a word), format, card count and age, a line that says what
- * the state means for this deck, and the actions Export and Delete.
+ * One deck of the list: its name (a link to the builder), check state (an icon and a word), format, card count and age,
+ * a line that says what the state means for this deck, and the actions Edit, Export and Delete.
  */
 export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
   const note = checkNote(deck)
@@ -29,7 +30,15 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
     >
       <div className="grid min-w-0 gap-1">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <p className="min-w-0 text-base font-semibold break-words">{deck.name}</p>
+          <p className="min-w-0 text-base font-semibold break-words">
+            <Link
+              to="/decks/$deckId"
+              params={{ deckId: deck.id }}
+              className="underline-offset-4 hover:underline"
+            >
+              {deck.name}
+            </Link>
+          </p>
           <DeckStateBadge state={deck.state} />
         </div>
         <p className="text-sm text-muted-foreground">
@@ -41,6 +50,15 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
         {note === null ? null : <p className="text-sm">{note}</p>}
       </div>
       <div className="flex items-center gap-2">
+        <Link
+          to="/decks/$deckId"
+          params={{ deckId: deck.id }}
+          aria-label={`Edit ${deck.name}`}
+          className={buttonVariants({ variant: 'outline', size: 'sm' })}
+        >
+          <PencilIcon aria-hidden="true" />
+          Edit
+        </Link>
         <ExportMenu deck={deck} api={api} />
         <Button
           type="button"
