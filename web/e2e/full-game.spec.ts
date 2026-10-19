@@ -12,6 +12,12 @@ const standings = (page: Page) => page.getByRole('list', { name: 'How each seat 
 
 /** The Full Control button of a page, by the state it says ("off", "next window", "held"). */
 const stop = (page: Page, name: string) => page.getByRole('button', { name: new RegExp(`^${name}`) })
+/** Shows one side of the stops row: "Mine" for your own turns or "Theirs" for the opponents'. */
+const side = (page: Page, name: 'Mine' | 'Theirs') =>
+  page
+    .getByRole('group', { name: 'Stops for' })
+    .getByRole('button', { name: new RegExp(`^${name}`) })
+    .click()
 const fullControl = (page: Page, state: string) =>
   page.getByRole('button', { name: `Full Control: ${state}` })
 
@@ -38,6 +44,7 @@ test('two seats play a vanilla game to the end in the browser', async ({ browser
     await expect(fullControl(bo.page, 'off')).toHaveAttribute('aria-pressed', 'false')
     // Bo stops at the end step of every opponent turn (shift for a lasting stop). A server that gives a stop its window
     // asks Bo there with nothing to do, and he ends the turn; one that does not yet never asks.
+    await side(bo.page, 'Theirs')
     await stop(bo.page, "Opponents' end step stop: off").click({ modifiers: ['Shift'] })
     await expect(stop(bo.page, "Opponents' end step stop: on every turn")).toHaveAttribute(
       'data-keep',
