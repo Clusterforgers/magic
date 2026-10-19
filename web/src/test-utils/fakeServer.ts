@@ -18,6 +18,8 @@ export interface ServerScript {
   create?: (body: unknown, call: FetchCall) => Response | Promise<Response>
   /** Answers `GET /api/games/{id}`. */
   game?: (id: string, call: FetchCall) => Response | Promise<Response>
+  /** Answers `GET /api/lobbies`; an empty list by default. */
+  lobbies?: (call: FetchCall) => Response | Promise<Response>
 }
 
 /** A REST server in memory, with a record of what was asked of it. */
@@ -47,6 +49,7 @@ export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS
   const fake = fakeFetch((call) => {
     const path = call.url.split('?')[0] ?? call.url
     if (path === '/api/demo-decks') return script.decks?.(call) ?? jsonResponse(200, decks)
+    if (path === '/api/lobbies') return script.lobbies?.(call) ?? jsonResponse(200, { games: [] })
     if (path === '/api/games' && call.init?.method === 'POST') {
       const body: unknown = typeof call.init.body === 'string' ? JSON.parse(call.init.body) : null
       creates.push(body)

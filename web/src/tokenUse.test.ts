@@ -16,7 +16,9 @@ function sourcesIn(dir: string): string[] {
 // The table is rebuilt by its own tasks; everything else is held to the tokens now.
 const FILES = [
   ...sourcesIn(join(SRC, 'components')),
-  ...['auth', 'create', 'game', 'games'].flatMap((feature) => sourcesIn(join(SRC, 'features', feature))),
+  ...['auth', 'browser', 'create', 'game', 'games'].flatMap((feature) =>
+    sourcesIn(join(SRC, 'features', feature)),
+  ),
 ]
 
 const PALETTE =

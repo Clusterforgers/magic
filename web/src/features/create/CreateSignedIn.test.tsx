@@ -19,7 +19,7 @@ const seatName = (seat: number) => screen.getByLabelText(`Name for seat ${seat}`
 const myGamesRequests = (app: App) => app.accounts.calls.filter((call) => call.url === '/api/me/games')
 
 async function openCreate(accounts: AccountsScript = {}) {
-  const app = await renderApp('/', { accounts: { users, ...accounts } })
+  const app = await renderApp('/new', { accounts: { users, ...accounts } })
   await screen.findByRole('form', { name: 'Create a game' })
   return app
 }
@@ -53,7 +53,7 @@ describe('a signed-in creator', () => {
 
   it('waits for the server to say who is signed in before it shows the form', async () => {
     let answer!: (response: Response) => void
-    const app = await renderApp('/', {
+    const app = await renderApp('/new', {
       accounts: {
         users,
         signedIn: ADA.username,

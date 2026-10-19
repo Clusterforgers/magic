@@ -75,6 +75,22 @@ export const seatOptions = (games: readonly LobbyGame[]): number[] =>
 export const formatOptions = (games: readonly LobbyGame[]): string[] =>
   [...new Set(games.map((game) => game.format))].sort()
 
+/**
+ * The game whose Join should take focus when the one that had it (`gone`) left the list: the nearest row after it,
+ * else the nearest before it, preferring a row that can be joined. `null` when no row is left.
+ */
+export function nextJoin(
+  before: readonly LobbyGame[],
+  gone: string,
+  after: readonly LobbyGame[],
+): string | null {
+  const at = before.findIndex((row) => row.game === gone)
+  const nearest = [...before.slice(at + 1), ...before.slice(0, Math.max(at, 0)).reverse()]
+  const left = new Map(after.map((row) => [row.game, row]))
+  const rows = nearest.flatMap((row) => left.get(row.game) ?? [])
+  return (rows.find((row) => !isFull(row)) ?? rows[0])?.game ?? null
+}
+
 // The server's alphabet: capitals and digits without I, O, 0 and 1 (docs/server.md).
 const CODE_SYMBOLS = /^[ABCDEFGHJKLMNPQRSTUVWXYZ23456789]{8}$/
 

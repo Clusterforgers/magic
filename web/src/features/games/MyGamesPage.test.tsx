@@ -154,10 +154,12 @@ describe('the list', () => {
     expect(screen.queryByRole('status')).toBeNull()
   })
 
-  it('opens the create page from the empty state', async () => {
+  it('opens Play from the empty state, where the create button is', async () => {
     const app = await openApp({ games: [] })
     await app.user.click(await screen.findByRole('link', { name: 'Create a game' }))
-    expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Play' })).toBeInTheDocument()
+    const create = await screen.findAllByRole('link', { name: 'Create game' })
+    expect(create.map((link) => link.getAttribute('href'))).toEqual(['/new', '/new'])
   })
 
   it('asks for the games at most twice when React mounts everything twice', async () => {

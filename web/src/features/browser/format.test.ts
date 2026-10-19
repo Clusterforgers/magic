@@ -11,6 +11,7 @@ import {
   isFull,
   isJoinCode,
   joinLabel,
+  nextJoin,
   normalizeCode,
   NO_FILTERS,
   openGamesText,
@@ -135,6 +136,36 @@ describe('filters', () => {
     expect(filtersActive({ ...NO_FILTERS, seats: 2 })).toBe(true)
     expect(filtersActive({ ...NO_FILTERS, format: 'normal' })).toBe(true)
     expect(filtersActive({ ...NO_FILTERS, hideFull: true })).toBe(true)
+  })
+})
+
+describe('nextJoin', () => {
+  const rows = ['a', 'b', 'c', 'd'].map((id) => game({ game: id }))
+  const full = (id: string) => game({ game: id, filled: 4, total: 4 })
+  const of = (...ids: string[]) => ids.map((id) => rows.find((row) => row.game === id) as LobbyGame)
+
+  it.each([
+    ['the nearest row after', 'b', ['a', 'c', 'd'], 'c'],
+    ['the first row when the first went', 'a', ['b', 'c', 'd'], 'b'],
+    ['the nearest row before when the last went', 'd', ['a', 'b', 'c'], 'c'],
+    ['the next one still there when the one after went too', 'b', ['a', 'd'], 'd'],
+    ['the one before when none after is left', 'c', ['a', 'b'], 'b'],
+  ])('is %s', (_what, gone, left, expected) => {
+    expect(nextJoin(rows, gone, of(...left))).toBe(expected)
+  })
+
+  it('prefers a game that can be joined, after the gone row first and then before it', () => {
+    expect(nextJoin(rows, 'b', [rows[0] as LobbyGame, full('c'), rows[3] as LobbyGame])).toBe('d')
+    expect(nextJoin(rows, 'c', [rows[0] as LobbyGame, rows[1] as LobbyGame, full('d')])).toBe('b')
+  })
+
+  it('falls back to a full game when it is all that is left, and to nothing when no row is', () => {
+    expect(nextJoin(rows, 'a', [full('b'), full('c')])).toBe('b')
+    expect(nextJoin(rows, 'a', [])).toBeNull()
+  })
+
+  it('knows nothing of a row it was not shown, and still answers with the first row', () => {
+    expect(nextJoin(rows, 'zzz', of('a', 'b'))).toBe('a')
   })
 })
 

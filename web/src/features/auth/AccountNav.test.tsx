@@ -78,7 +78,7 @@ describe('a visitor who is not signed in', () => {
 
 describe('a server without accounts', () => {
   it('offers no account links at all, and the create page works as it always did', async () => {
-    const app = await open('/', { unavailable: true })
+    const app = await open('/new', { unavailable: true })
     expect(app.store.getState().status).toBe('unavailable')
     expect(nav()).toBeNull()
     expect(screen.queryByRole('link', { name: /sign in|register/i })).toBeNull()
@@ -154,7 +154,7 @@ describe('a signed-in account', () => {
     await signOut(app)
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
     await waitFor(() => expect(app.router.state.location.pathname).toBe('/'))
-    expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Play' })).toBeInTheDocument()
   })
 
   it('stays on other pages when it signs out', async () => {

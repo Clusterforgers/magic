@@ -2,6 +2,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { LobbyError } from '@/net/lobbyErrors'
+import { installFakeClock, removeFakeClock, settle } from '@/test-utils/fakeClock'
 import { fakeLobbies, lobbyRows } from '@/test-utils/lobbies'
 import { POLL_MS, useOpenGames } from './useOpenGames'
 
@@ -9,16 +10,15 @@ let hidden = false
 
 beforeEach(() => {
   hidden = false
-  vi.useFakeTimers()
+  installFakeClock()
   vi.spyOn(document, 'visibilityState', 'get').mockImplementation(() => (hidden ? 'hidden' : 'visible'))
 })
 
 afterEach(() => {
-  vi.useRealTimers()
+  removeFakeClock()
   vi.restoreAllMocks()
 })
 
-const settle = (ms = 0) => act(async () => void (await vi.advanceTimersByTimeAsync(ms)))
 const setHidden = (value: boolean) =>
   act(() => {
     hidden = value

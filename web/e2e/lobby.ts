@@ -34,7 +34,7 @@ export async function createAndJoin(browser: Browser, plans: readonly SeatPlan[]
   if (host === undefined) throw new Error('a game needs at least one seat')
   const first = await newPlayer(browser, host.name)
 
-  await first.page.goto('/')
+  await first.page.goto('/new')
   await expect(first.page.getByRole('heading', { name: 'Create a game' })).toBeVisible()
   for (const [index, plan] of plans.entries()) {
     await first.page.getByLabel(`Name for seat ${index + 1}`).fill(plan.name)

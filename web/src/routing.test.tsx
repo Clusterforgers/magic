@@ -1,4 +1,4 @@
-// Goal: the real route tree serves the create page at / and the game page at /game/$gameId, reading the seat and token from the address fragment, opening one socket per seat link and starting over when the link changes.
+// Goal: the real route tree serves Play at /, the create page at /new and the game page at /game/$gameId, reading the seat and token from the address fragment, opening one socket per seat link and starting over when the link changes.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { act, render, screen } from '@testing-library/react'
 import { StrictMode } from 'react'
@@ -51,8 +51,29 @@ async function visit(url: string, strict = false) {
 const GAME = '8f2c1a52-31de-4c77-9a35-0d1d3f6a7b10'
 
 describe('/', () => {
-  it('is the create-game page inside the app shell', async () => {
+  it('is Play inside the app shell, with the create button and a way to join by code', async () => {
     await visit('/')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Play' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Magic' })).toHaveAttribute('href', '/')
+    const create = await screen.findAllByRole('link', { name: 'Create game' })
+    expect(create.map((link) => link.getAttribute('href'))).toEqual(['/new', '/new'])
+    expect(screen.getByRole('form', { name: 'Join with a code' })).toBeInTheDocument()
+    expect(screen.queryByRole('form', { name: 'Create a game' })).not.toBeInTheDocument()
+    expect(RecordingSocket.opened).toHaveLength(0)
+  })
+
+  it('asks the server for the open games, and for nothing else', async () => {
+    const server = startServer()
+    vi.stubGlobal('fetch', server.fetch)
+    await visit('/')
+    await screen.findByRole('heading', { name: 'No open games' })
+    expect(server.calls.map((call) => call.url)).toEqual(['/api/lobbies'])
+  })
+})
+
+describe('/new', () => {
+  it('is the create-game page inside the app shell', async () => {
+    await visit('/new')
     expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Magic' })).toHaveAttribute('href', '/')
     expect(RecordingSocket.opened).toHaveLength(0)
@@ -128,7 +149,7 @@ describe('/game/$gameId', () => {
     const router = await visit(`/game/${GAME}#seat=0&token=${tokenOf(0)}`)
     await screen.findByRole('heading', { name: 'Connecting to the game…' })
     await act(async () => {
-      await router.navigate({ to: '/' })
+      await router.navigate({ to: '/new' })
     })
     expect(RecordingSocket.opened).toHaveLength(1)
     expect(RecordingSocket.opened[0]?.closed).toEqual({ code: 1000, reason: 'client closing' })
