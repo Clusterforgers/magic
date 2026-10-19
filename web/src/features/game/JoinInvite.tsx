@@ -49,7 +49,7 @@ export function JoinInvite({ game }: { game: string }) {
           <div className="grid gap-1">
             <dt className="text-xs text-muted-foreground">Code</dt>
             <dd className="flex items-center justify-between gap-2">
-              <span data-slot="invite-code" className="font-mono text-xl tracking-widest">
+              <span data-slot="invite-code" className="font-mono text-lg tracking-widest">
                 {shown}
               </span>
               <CopyButton text={shown} label="Copy code">

@@ -45,7 +45,7 @@ export function AdvancedOptions({ links, onLinks }: AdvancedOptionsProps) {
             className="mt-1 accent-primary"
             onChange={(event) => onLinks(event.target.checked)}
           />
-          <div className="grid gap-0.5">
+          <div className="grid gap-1">
             <Label htmlFor={linksId}>Give every seat its own link</Label>
             <p id={`${linksId}-help`} className="text-sm text-muted-foreground">
               Name each seat and choose its deck yourself, then send every player the link for their seat. The
