@@ -288,6 +288,8 @@
   html {
     @apply font-sans;
     scroll-padding-block: 4rem;
+    /* The zones of the table scroll inside themselves: a quiet thumb in the theme's colour, not the system's white bar. */
+    scrollbar-color: var(--border-strong) transparent;
   }
   body {
     @apply bg-background text-base text-foreground antialiased;

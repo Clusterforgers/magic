@@ -1,4 +1,4 @@
-// Goal: the shared strip between the boards holds the stack chips, the prompt or the line that says what the game waits for, and who has priority; a prompt that needs more than the strip grows into a sheet (at most 40 % of the window, over your board and never over the hand dock or the controls) and scrolls inside itself past that; on a phone the strip is a line.
+// Goal: the shared strip between the boards holds the stack chips, the prompt or the line that says what the game waits for, and who has priority; a prompt that needs more than the strip grows into a sheet (at most 40 % of the window, up over the opponents' board and never down over your board, the hand dock or the controls) and scrolls inside itself past that; on a phone the strip is a line.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
@@ -10,11 +10,12 @@ const strip = (): HTMLElement => screen.getByRole('region', { name: 'Turn and pr
 const sheet = (): HTMLElement => must(strip().querySelector<HTMLElement>('[data-slot="shared-sheet"]'))
 
 describe('the strip and its sheet', () => {
-  it('is a cell of the grid with the stack above the boards, and a sheet that grows from its top edge', () => {
+  it('is a cell of the grid between the boards, and a sheet that grows up from its bottom edge, not down over your board', () => {
     renderTable({ seats: 2 })
     expect(strip()).toHaveAttribute('data-region', 'shared')
     expect(strip()).toHaveClass('relative', 'z-20', 'min-h-0')
-    expect(sheet()).toHaveClass('absolute', 'inset-x-0', 'top-0', 'min-h-full')
+    expect(sheet()).toHaveClass('absolute', 'inset-x-0', 'bottom-0', 'min-h-full')
+    expect(sheet()).not.toHaveClass('top-0')
   })
 
   it.each<[string, Viewport]>([
@@ -28,7 +29,7 @@ describe('the strip and its sheet', () => {
     const most = Math.floor(regionSizes(viewport).sheet)
     expect(strip().style.getPropertyValue('--sheet-max')).toBe(`${most}px`)
     expect(sheet()).toHaveClass('max-h-(--sheet-max)')
-    // 40 % of the window at the most, and never further than the own board.
+    // 40 % of the window at the most, and never further up than the top bar.
     expect(most).toBeLessThanOrEqual(Math.floor(viewport.height * 0.4))
   })
 
@@ -66,9 +67,19 @@ describe('what it says', () => {
     expect(strip().querySelector('[data-slot="stack-chips"]')).not.toBeNull()
   })
 
-  it('hides the title of the prompt and the key to the combat lines on a phone, where the strip is a line', () => {
+  it('leaves the title of the prompt to a screen reader at every size and drops the key to the combat lines on a phone', () => {
     renderTable({ seats: 2, options: { viewport: { width: 390, height: 844 } } })
-    expect(strip().className).toContain('max-sm:[&_[data-slot=prompt-title]]:hidden')
+    expect(strip().className).toContain('[&_[data-slot=prompt-title]]:sr-only')
     expect(strip().className).toContain('max-sm:[&_[data-slot=combat-key]]:hidden')
+    expect(within(strip()).getByText(/^Your decision: Priority/)).toBeInTheDocument()
+  })
+
+  it('starts the sheet beside the pod column, so a long prompt never covers your life, and at the edge on a phone', () => {
+    const { unmount } = renderTable({ seats: 2, options: { viewport: { width: 1600, height: 1000 } } })
+    // The pod column of 168 px and a gap of 8.
+    expect(sheet().style.left).toBe('176px')
+    unmount()
+    renderTable({ seats: 2, options: { viewport: { width: 390, height: 844 } } })
+    expect(sheet().style.left).toBe('')
   })
 })

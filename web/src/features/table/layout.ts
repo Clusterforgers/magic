@@ -186,8 +186,13 @@ export const SIDE_MAX_PX = 320
 export const RAIL_PX = 44
 /** A window lower than this and wider than it is high is a phone on its side. */
 export const LANDSCAPE_MAX_HEIGHT = 500
-/** The room the stop ladder and Full Control need in the controls dock; a lower dock moves them into the menu. */
-export const STOPS_DOCK_MIN_PX = 150
+/**
+ * What the stop ladder and Full Control need in the controls dock, in one row under the pass buttons: a dock this
+ * high, and a main area wide enough to leave the hand dock 560 px beside a dock of `CONTROLS_STOPS_MAX_PX`. Short of
+ * either they sit in the table menu.
+ */
+export const STOPS_DOCK_MIN_PX = 128
+export const STOPS_DOCK_MIN_MAIN_PX = 1280
 
 /** The sizes of the table's regions in a window, in px. Rounded nowhere, as CSS is not. */
 export interface Regions {
@@ -206,7 +211,10 @@ export interface Regions {
   hand: number
   opponents: number
   own: number
-  /** The most a prompt sheet grows to: 40 % of the height, but never past the own board into the hand dock. */
+  /**
+   * The most a prompt sheet grows to: 40 % of the height, up over the opponents' board and no further than the top
+   * bar. Never down over your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
+   */
   sheet: number
 }
 
@@ -246,7 +254,7 @@ export function regionSizes(viewport: Viewport): Regions {
     hand,
     opponents,
     own,
-    sheet: Math.min((height * SHEET_MAX_VH) / 100, shared + own),
+    sheet: Math.min((height * SHEET_MAX_VH) / 100, shared + opponents),
   }
 }
 
@@ -259,13 +267,18 @@ export function gridRows(regions: Pick<Regions, 'phone' | 'landscape'>): string 
   return `${bar}px minmax(0, 1fr) ${clampCss(SHARED_CLAMP)} minmax(0, ${OWN_SHARE}fr) ${hand}`
 }
 
-/** The widest the controls dock gets, in px: room for the stop ladder; a phone's is a column for the pass button. */
-export const CONTROLS_MAX_PX = 448
+/**
+ * The widest the controls dock gets, in px: the pass buttons in one row; with the stop ladder and Full Control too,
+ * which take a row of their own; a phone's is a column for the pass button.
+ */
+export const CONTROLS_MAX_PX = 480
+export const CONTROLS_STOPS_MAX_PX = 720
 export const CONTROLS_MAX_PHONE_PX = 160
 
 /** The `grid-template-columns` of the main area: the controls dock is as wide as its content up to its limit and the hand dock has the rest. */
-export function mainColumns(regions: Pick<Regions, 'phone'>): string {
-  return `minmax(0, 1fr) fit-content(${regions.phone ? CONTROLS_MAX_PHONE_PX : CONTROLS_MAX_PX}px)`
+export function mainColumns(regions: Pick<Regions, 'phone'>, stopsInDock = false): string {
+  const widest = regions.phone ? CONTROLS_MAX_PHONE_PX : stopsInDock ? CONTROLS_STOPS_MAX_PX : CONTROLS_MAX_PX
+  return `minmax(0, 1fr) fit-content(${widest}px)`
 }
 
 /** The `grid-template-columns` of the table: the main area, then the side column or rail. */
@@ -345,6 +358,7 @@ export function planTable(input: TableInput): TablePlan {
     seats,
     pod,
     opponentPod: regions.phone && seats.shape === 'focus' ? 'none' : pod,
-    stopsInDock: !regions.phone && regions.hand >= STOPS_DOCK_MIN_PX,
+    stopsInDock:
+      !regions.phone && regions.hand >= STOPS_DOCK_MIN_PX && regions.main.width >= STOPS_DOCK_MIN_MAIN_PX,
   }
 }

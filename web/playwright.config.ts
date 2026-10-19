@@ -6,6 +6,8 @@ import {
   ACCOUNTS_SERVER_URL,
   ACCOUNTS_WEB_PORT,
   ACCOUNTS_WEB_URL,
+  DEV_WEB_PORT,
+  DEV_WEB_URL,
   SERVER_PORT,
   SERVER_URL,
   WEB_PORT,
@@ -86,6 +88,14 @@ export default defineConfig({
       url: WEB_URL,
       reuseExistingServer,
       timeout: 180_000,
+    },
+    {
+      // The dev server serves `/dev/table`, which a production build leaves out (`fit.spec.ts`).
+      command: `pnpm exec vite --host 127.0.0.1 --port ${DEV_WEB_PORT} --strictPort`,
+      env: { MTG_SERVER_URL: SERVER_URL },
+      url: DEV_WEB_URL,
+      reuseExistingServer,
+      timeout: 60_000,
     },
     ...accountServers,
   ],

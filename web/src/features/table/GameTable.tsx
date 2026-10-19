@@ -12,7 +12,7 @@ import { ControlsDock, ControlsSlotProvider } from './ControlsDock'
 import { FxContext } from './fx/hooks'
 import { EFFECTS_BY_DEFAULT, useTableFx } from './fx/useTableFx'
 import { HandDock } from './HandDock'
-import { planTable } from './layout'
+import { planTable, POD_COLUMN_PX, ZONE_GAP_PX } from './layout'
 import type { TableMode } from './layout'
 import { createMarksStore, MarksContext } from './prompt/marks'
 import { createPreviewStore, PreviewContext } from './preview'
@@ -71,6 +71,7 @@ const Table = memo(function Table() {
                 <SideProvider kind={regions.side}>
                   <TableGrid
                     regions={regions}
+                    stopsInDock={table.stopsInDock}
                     bar={
                       <TopBar
                         mode={plan.mode}
@@ -83,7 +84,12 @@ const Table = memo(function Table() {
                     opponents={
                       <Opponents plan={plan} size={size} pod={table.opponentPod} onFocusSeat={setChosen} />
                     }
-                    shared={<SharedStrip sheetMax={regions.sheet} />}
+                    shared={
+                      <SharedStrip
+                        sheetMax={regions.sheet}
+                        inset={table.pod === 'aside' ? POD_COLUMN_PX + ZONE_GAP_PX : 0}
+                      />
+                    }
                     own={
                       <SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} hand={false} />
                     }

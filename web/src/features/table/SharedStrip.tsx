@@ -18,10 +18,10 @@ import { useStable } from './useStable'
  * The shared strip between the opponents and your board: the spells on the stack as chips, who has priority and what
  * the game is waiting for. When this seat must decide, the prompt (`prompt/PromptHost`) takes the place of the
  * read-only line; `data-slot="decision-line"` marks both. A prompt that needs more than the strip grows into a sheet
- * over your board, at most `sheetMax` px high and never over the hand dock or the controls (they sit above it), and
- * scrolls inside itself past that.
+ * upward over the opponents' board, at most `sheetMax` px high, and scrolls inside itself past that. It never grows
+ * down over your board, which holds the cards a prompt asks you to click, nor over the hand dock or the controls.
  */
-export function SharedStrip({ sheetMax }: { sheetMax: number }) {
+export function SharedStrip({ sheetMax, inset = 0 }: { sheetMax: number; inset?: number }) {
   const name = useSeatNamer()
   const stage = usePlay((state) => state.view?.stage ?? 'PreGame')
   const priority = usePlay((state) => state.view?.priority ?? null)
@@ -37,32 +37,38 @@ export function SharedStrip({ sheetMax }: { sheetMax: number }) {
       data-region="shared"
       data-your-turn={yourTurn || undefined}
       style={{ '--sheet-max': `${Math.floor(sheetMax)}px` } as CSSProperties}
-      // On a phone the strip is a line: the prompt's title ("Your decision: ...") and the key to the combat lines go.
-      className="relative z-20 min-h-0 max-sm:[&_[data-slot=combat-key]]:hidden max-sm:[&_[data-slot=prompt-title]]:hidden"
+      // The prompt's title ("Your decision: ...") is for a screen reader; its sentence says the same to the eye in a
+      // line less. On a phone the key to the combat lines goes too.
+      className="relative z-20 min-h-0 max-sm:[&_[data-slot=combat-key]]:hidden [&_[data-slot=prompt-title]]:sr-only"
     >
       <div
         ref={sheet}
         data-slot="shared-sheet"
         data-your-turn={yourTurn || undefined}
+        // The sheet starts beside the pod column, which keeps the life of the seat above it in view.
+        style={inset === 0 ? undefined : { left: inset }}
         className={cn(
-          'fade-scroll absolute inset-x-0 top-0 max-h-(--sheet-max) min-h-full rounded-xl bg-card px-3 py-1',
+          'fade-scroll absolute inset-x-0 bottom-0 max-h-(--sheet-max) min-h-full rounded-xl bg-card px-3 py-1',
           yourTurn ? 'your-turn-cue' : 'ring-1 ring-foreground/10',
         )}
       >
         <div className="flex min-h-full flex-wrap items-center gap-x-4 gap-y-1">
           <StackChips />
-          {mine ? (
-            <PromptHost />
-          ) : (
-            <p
-              data-slot="decision-line"
-              aria-live="polite"
-              aria-atomic="true"
-              className="w-fit rounded-md bg-muted px-2 py-1 text-sm font-medium"
-            >
-              {waitingText(waiting, name)}
-            </p>
-          )}
+          {/* Room for the prompt beside the chips (it takes what they leave, down to 20 rem), so the two share a line. */}
+          <div className="min-w-0 flex-1 basis-80">
+            {mine ? (
+              <PromptHost />
+            ) : (
+              <p
+                data-slot="decision-line"
+                aria-live="polite"
+                aria-atomic="true"
+                className="w-fit rounded-md bg-muted px-2 py-1 text-sm font-medium"
+              >
+                {waitingText(waiting, name)}
+              </p>
+            )}
+          </div>
           {holder === '' ? null : (
             <p data-slot="priority" className="text-xs text-muted-foreground max-sm:sr-only">
               {holder}

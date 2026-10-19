@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import { buildFixture } from './dev/fixture'
-import { gridColumns, gridRows, mainColumns, regionSizes } from './layout'
+import { gridColumns, gridRows, mainColumns, planTable } from './layout'
 import type { Viewport } from './layout'
 
 const SIZES: ReadonlyArray<[string, Viewport]> = [
@@ -56,11 +56,11 @@ describe('the frame', () => {
 
   it.each(SIZES)('writes the rows and columns of the layout code at %s', (_name, viewport) => {
     const { container } = renderTable({ seats: 2, options: { viewport } })
-    const regions = regionSizes(viewport)
+    const { regions, stopsInDock } = planTable({ viewport, seatCount: 2, viewer: 0 })
     const main = must(container.querySelector<HTMLElement>('[data-slot="table-main"]'))
     const style = main.getAttribute('style') ?? ''
     expect(style).toContain(`grid-template-rows: ${gridRows(regions)}`)
-    expect(style).toContain(`grid-template-columns: ${mainColumns(regions)}`)
+    expect(style).toContain(`grid-template-columns: ${mainColumns(regions, stopsInDock)}`)
     expect(grid(container).getAttribute('style') ?? '').toContain(
       `grid-template-columns: ${gridColumns(regions.side)}`,
     )

@@ -6,6 +6,13 @@ export const WEB_URL = `http://127.0.0.1:${WEB_PORT}`
 export const SERVER_URL = `http://127.0.0.1:${SERVER_PORT}`
 
 /**
+ * A Vite dev server for the specs that look at `/dev/table`: that route is in development builds only, so the
+ * preview of the production build cannot serve it. Beside the preview's port by default.
+ */
+export const DEV_WEB_PORT = Number(process.env.E2E_DEV_WEB_PORT ?? WEB_PORT + 1000)
+export const DEV_WEB_URL = `http://127.0.0.1:${DEV_WEB_PORT}`
+
+/**
  * An empty scratch Postgres database for the account spec, from `E2E_DATABASE_URL`. Only when it is set does the
  * config start a second server on it (the server migrates it on boot) and a second web preview in front of that;
  * without it `pnpm e2e` stays hermetic, with no database at all, and the account spec is skipped.

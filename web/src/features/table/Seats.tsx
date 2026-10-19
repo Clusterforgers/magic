@@ -46,12 +46,15 @@ export const SeatArea = memo(function SeatArea({ seat, size, facing, pod, hand =
       data-seat-area={seat}
       className={cn('flex min-h-0 min-w-0 flex-1 gap-2', aside ? 'flex-row' : 'flex-col')}
     >
-      {pod === 'aside' ? (
-        <PodColumn seat={seat} size={size} hand={hand} />
-      ) : pod === 'line' ? (
+      {pod === 'aside' ? <PodColumn seat={seat} size={size} hand={hand} /> : null}
+      {/* A line pod is on the table's middle side of its board: over an opponent's, under yours, by your hand. */}
+      {pod === 'line' && facing === 'far' ? (
         <SeatPanel seat={seat} size={size} variant="line" hand={hand} />
       ) : null}
       <Battlefield seat={seat} size={size} facing={facing} />
+      {pod === 'line' && facing === 'near' ? (
+        <SeatPanel seat={seat} size={size} variant="line" hand={hand} />
+      ) : null}
     </div>
   )
 })

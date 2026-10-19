@@ -8,8 +8,8 @@ import { badgeText } from './turnText'
 
 /**
  * Whose turn it is and in which step, always in the top bar: "Your turn · 5 · Precombat main" on a gold pill, "Bo's turn ·
- * 5 · Declare blockers" on an outlined one, and what the game is doing before and after its turns. Plain text, not a live
- * region; `data-slot="banner"` is where scripts read the moment of the game.
+ * 5 · Declare blockers" on an outlined one, and what the game is doing before and after its turns ("Opening hands"). The
+ * heading of the table's moment, plain text and not a live region; `data-slot="banner"` is where scripts read it.
  */
 export function TurnBadge() {
   const name = useSeatNamer()
@@ -25,10 +25,10 @@ export function TurnBadge() {
   const yours = usePlay(isYourTurn)
   const tone: PillTone = yours ? 'turn-you' : input.stage === 'Turns' ? 'turn-them' : 'neutral'
   return (
-    <p data-slot="banner" data-your-turn={yours || undefined} className="min-w-0">
+    <h2 data-slot="banner" data-your-turn={yours || undefined} className="min-w-0">
       <Pill tone={tone} className="h-7 max-w-full shrink truncate px-3 text-sm">
         {badgeText(input, seat, name)}
       </Pill>
-    </p>
+    </h2>
   )
 }

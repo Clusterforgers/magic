@@ -1,5 +1,6 @@
 // Goal: the table's regions follow the window: the rows always add up to the window height with the minimums of the design (44 px bar, 56 to 88 px shared strip, 112 to 200 px hand dock), the side area is a column, a rail or a sheet by width, the CSS templates equal the numbers, and the mode and seat arrangement follow the seat count and the width of a board column (grid for 2 to 4 seats unless a column would be under 280 px, focus otherwise, the menu overriding).
 import { describe, expect, it } from 'vitest'
+import { must } from '@/test-utils/batches'
 import {
   arrangeSeats,
   breakpointOf,
@@ -10,10 +11,12 @@ import {
   gridRows,
   HAND_CLAMP,
   HAND_PHONE_CLAMP,
+  mainColumns,
   MIN_COLUMN_PX,
   planTable,
   regionSizes,
   SHARED_CLAMP,
+  STOPS_DOCK_MIN_MAIN_PX,
   STOPS_DOCK_MIN_PX,
 } from './layout'
 import type { Breakpoint, TableMode, Viewport } from './layout'
@@ -103,11 +106,22 @@ describe('regionSizes', () => {
           height,
           6,
         )
-        // A long prompt grows to 40 % of the height and never into the hand dock.
+        // A long prompt grows to 40 % of the height, up over the opponents and no further than the top bar.
         expect(regions.sheet, where).toBeLessThanOrEqual(height * 0.4 + 1e-9)
-        expect(regions.sheet, where).toBeLessThanOrEqual(regions.shared + regions.own + 1e-9)
+        expect(regions.sheet, where).toBeLessThanOrEqual(regions.shared + regions.opponents + 1e-9)
       }
     }
+  })
+
+  it.each([
+    ['1920x1080', 432],
+    ['1280x720', 288],
+    ['390x844', 337.6],
+    // A window so low that the strip and the opponents are less than 40 %: the sheet takes them and no more.
+    ['844x390', 56 + (390 - 32 - 56 - 112) / 2.15],
+  ])('lets the sheet of a %s window grow %f px up over the opponents', (name, most) => {
+    const viewport = must(SIZES.find(([label]) => label === name)?.[1])
+    expect(regionSizes(viewport).sheet).toBeCloseTo(most, 6)
   })
 
   it('draws a column of 280 to 320 px from L, a rail of 44 px at M and a sheet below', () => {
@@ -281,21 +295,36 @@ describe('planTable', () => {
     expect(plan.pod).toBe(viewport.width < 640 ? 'line' : 'aside')
   })
 
-  it('keeps the stop ladder in the controls dock only when the dock is tall enough', () => {
+  it('keeps the stop ladder in the controls dock only when the dock is high enough and the hand dock keeps its room', () => {
     for (const [, viewport] of SIZES) {
       const plan = planTable({ viewport, seatCount: 2, viewer: 0 })
-      const tall = plan.regions.hand >= STOPS_DOCK_MIN_PX && !plan.regions.phone
-      expect(plan.stopsInDock).toBe(tall)
+      const room =
+        plan.regions.hand >= STOPS_DOCK_MIN_PX &&
+        plan.regions.main.width >= STOPS_DOCK_MIN_MAIN_PX &&
+        !plan.regions.phone
+      expect(plan.stopsInDock).toBe(room)
     }
   })
 
-  it('keeps stops in the dock at 1920x1080 and 1440x900 and in the menu at 1280x720 and on a phone', () => {
-    const at = (width: number, height: number) =>
-      planTable({ viewport: { width, height }, seatCount: 2, viewer: 0 }).stopsInDock
-    expect(at(1920, 1080)).toBe(true)
-    expect(at(1600, 1000)).toBe(true)
-    expect(at(1280, 720)).toBe(false)
-    expect(at(390, 844)).toBe(false)
+  it.each([
+    [1920, 1080, true],
+    [1600, 1000, true],
+    // High enough, but too narrow to leave the hand dock its room beside the wide dock.
+    [1440, 900, false],
+    [1366, 768, false],
+    [1280, 720, false],
+    [1024, 768, false],
+    [768, 1024, false],
+    [390, 844, false],
+  ])('puts the ladder in a %ix%i window in the %s dock', (width, height, inDock) => {
+    expect(planTable({ viewport: { width, height }, seatCount: 2, viewer: 0 }).stopsInDock).toBe(inDock)
+  })
+
+  it('makes the controls dock wider while it holds the ladder, and a column on a phone', () => {
+    expect(mainColumns({ phone: false }, false)).toBe('minmax(0, 1fr) fit-content(480px)')
+    expect(mainColumns({ phone: false }, true)).toBe('minmax(0, 1fr) fit-content(720px)')
+    expect(mainColumns({ phone: true }, false)).toBe('minmax(0, 1fr) fit-content(160px)')
+    expect(mainColumns({ phone: true }, true)).toBe('minmax(0, 1fr) fit-content(160px)')
   })
 
   it('follows the chosen mode and the focus through to the seats', () => {

@@ -55,7 +55,7 @@ test('two seats play a vanilla game to the end in the browser', async ({ browser
     expect(run.idle.get('Ada') ?? 0, 'Ada was asked about windows there was nothing to do in').toBe(0)
     expect(run.yields.get('Ada') ?? 0).toBe(0)
     // Bo is asked about nothing but the stop he set, the end step of Ada's turn, and ends the turn in each of them.
-    for (const where of run.idleAt.get('Bo') ?? []) expect(where).toMatch(/ · Ada · End step$/)
+    for (const where of run.idleAt.get('Bo') ?? []) expect(where).toMatch(/^Ada's turn · \d+ · End step$/)
     expect(run.yields.get('Bo') ?? 0, 'Bo did not end the turn in every window he was asked about').toBe(
       run.idle.get('Bo') ?? 0,
     )

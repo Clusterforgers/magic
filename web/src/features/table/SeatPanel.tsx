@@ -93,13 +93,17 @@ export const SeatPanel = memo(function SeatPanel({
             {player.life}
           </span>
         </LifeFx>
-        {flags.you ? <Badge variant="secondary">you</Badge> : null}
+        {flags.you ? (
+          <Badge variant="secondary" className="max-sm:hidden">
+            you
+          </Badge>
+        ) : null}
         {flags.active ? <Badge>Active turn</Badge> : null}
         {flags.priority ? <Badge variant="outline">Has priority</Badge> : null}
         <span className="text-xs text-muted-foreground">
           Hand <b className="text-foreground tabular-nums">{player.hand.count}</b>
         </span>
-        <span className="text-xs text-muted-foreground">
+        <span className="text-xs text-muted-foreground max-sm:hidden">
           Library <b className="text-foreground tabular-nums">{player.library.count}</b>
         </span>
         <LifeForecast seat={seat} />

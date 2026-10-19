@@ -35,7 +35,7 @@ interface Seen {
   kind: string
   /** The decision id: `data-decision-id`, new for every decision even when the kind repeats. */
   id: string
-  /** The turn banner, such as "Turn 5 · Ada · End step": where in the game the decision is asked. */
+  /** The turn badge, such as "Ada's turn · 5 · End step": where in the game the decision is asked. */
   banner: string
   text: string
   buttons: Control[]
@@ -173,10 +173,14 @@ interface Turn {
 const named = (card: Card): string => card.label.split(',')[0] ?? card.label
 const prompt = (page: Page): Locator => page.locator('[data-decision]')
 const button = (page: Page, name: string): Locator => prompt(page).getByRole('button', { name, exact: true })
-/** The Priority prompt's primary button: its words depend on the moment ("Next: Combat", "Continue"...), its slot does not. */
-const primary = (page: Page): Locator => prompt(page).locator('[data-slot="primary-action"]')
+/**
+ * The Priority prompt's primary button: its words depend on the moment ("Next: Combat", "Continue"...), its slot does
+ * not. The prompt draws it in the controls dock at the bottom right of the table, away from the prompt's own line.
+ */
+const primary = (page: Page): Locator => page.locator('[data-region="controls"] [data-slot="primary-action"]')
 /** "End turn" beside the primary button, which is not drawn in the last window of one's own turn. */
-const endTurn = (page: Page): Locator => prompt(page).locator('[data-slot="secondary-action"]')
+const endTurn = (page: Page): Locator =>
+  page.locator('[data-region="controls"] [data-slot="secondary-action"]')
 const card = (page: Page, id: string): Locator => page.locator(`button[data-object-id="${id}"]`)
 const enabled = (seen: Seen, label: string): boolean =>
   seen.buttons.some((control) => control.label === label && !control.disabled)
