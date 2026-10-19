@@ -1,4 +1,4 @@
-//! Server settings: six come from the environment, the rest are limits that tests may tune.
+//! Server settings: read from the environment with defaults, plus limits that tests may tune.
 
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::time::Duration;

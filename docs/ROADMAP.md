@@ -49,6 +49,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
   - [x] (d7) Keys like Arena (P7)
   - [x] (d8) Leak test (P8): two seeded games equal but for one hidden card send the other seat the same messages at the same times
   - [ ] (d9) Timer bank (P9): extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
+  - [ ] (d10) The leak test covers a spell and a trigger on the stack as well as combat windows
 
 ## M3 Rules depth
 Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d) to (k) in parallel.
@@ -56,6 +57,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
 - [x] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
 - [ ] (d) Decision kinds the effects need, one task each across engine, protocol and a web prompt (the table in `docs/cards-dsl.md`, Decisions the effects need)
+- [ ] Response clocks for the effect decisions of a non-active seat (targets, choices, orders), so one seat cannot hold the table (`docs/server.md`, Response clocks)
 - [ ] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets and the views carry keywords, counters and attachments (`docs/web.md`)
 - [ ] (f) Keyword actions (CR 701), one engine primitive each, with a web prompt where the player chooses (scope in `docs/cards-dsl.md`, Tasks)
 - [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
@@ -68,13 +70,13 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [x] Invite-link lobbies on top of users
 - [ ] Deck builder UI with card search, import, validation, export
 - [x] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
-- [ ] Deck builder UI on the stored decks and the check: the builder panel with card search, import and export, highlighting of the cards that are not verified, and the state of each deck in the deck list, the lobby and the precon browser (`docs/deck-check.md`, `docs/server.md`)
+- [ ] Deck builder UI on the stored decks and the check: highlighting of the cards that are not verified, the Verified marker and the state of each deck in the deck list, the lobby and the precon browser (`docs/deck-check.md`, `docs/server.md`)
 - [ ] Precon browser with one-click play
 - [ ] Choose a deck in the lobby: a stored deck or a precon per seat; the table sees each seat's deck state as a count of manual cards, never their names (`docs/deck-check.md`)
 - [x] N-player layout, game log, stack panel, stop settings
 - [ ] UI rebuild: the table fits the screen, a turn change is unmistakable and games are joined from a list (`docs/ui-design.md`, Tasks). In order:
   - [ ] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
-  - [ ] (U2) Fit engine: card sizes from the space available and grouping of identical permanents, pure and tested
+  - [x] (U2) Fit engine: card sizes from the space available and grouping of identical permanents, pure and tested
   - [ ] (U3) Table grid: top bar, opponents, shared strip, own board, hand dock and side tabs in one viewport from 1280x720
   - [ ] (U4) Seat pods, scaled battlefield rows and a hand dock that hold 40 permanents a seat
   - [ ] (U5) Controls dock: a 44 px pass button, a one-row stop ladder and a menu for the rest
@@ -86,6 +88,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [ ] (U11) Page polish: game over, My games, sign-in and one page width scale
   - [ ] (U12) Layout gate at six sizes in both themes; the audit leaves `docs/ui-design.md`
 - [ ] Spectators and reconnect polish: a spectator seat, a face-down card rule in `zone_is_visible`, a "waiting on" message for tables of three or more
+- [ ] Account settings: change the password, delete the account (its seats are freed); a game that failed to resume shows in My games with its reason
 
 ## M5 Commander
 - [ ] `Commander` format rules: 100-card singleton, color identity, 40 life, command zone, tax, 21 commander damage; the views carry commander damage and tax so the seat panel's "not tracked yet" slot fills
