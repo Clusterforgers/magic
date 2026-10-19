@@ -1,0 +1,155 @@
+//! The command line.
+
+use std::path::PathBuf;
+
+use clap::{Args, Parser, Subcommand};
+
+/// Downloads Scryfall and MTGJSON data and loads it into Postgres.
+#[derive(Debug, Parser)]
+#[command(name = "mtg-cli", version, about, propagate_version = true)]
+pub struct Cli {
+    /// Directory for downloaded files (default: the user's cache directory, under `mtg-cli`).
+    #[arg(long, global = true, env = "MTG_CACHE_DIR", value_name = "DIR")]
+    pub cache: Option<PathBuf>,
+
+    /// Postgres to read and write.
+    #[arg(
+        long,
+        global = true,
+        env = "DATABASE_URL",
+        value_name = "URL",
+        hide_env_values = true
+    )]
+    pub database_url: Option<String>,
+
+    /// What to do.
+    #[command(subcommand)]
+    pub command: Command,
+}
+
+/// The commands.
+#[derive(Debug, Subcommand)]
+pub enum Command {
+    /// Download data into the cache.
+    Fetch {
+        /// What to download.
+        #[command(subcommand)]
+        what: Fetch,
+    },
+    /// Load the cached files into the database; inputs that were loaded before are skipped.
+    Ingest(IngestArgs),
+    /// Show what is cached, the latest import runs and the row counts.
+    Status,
+}
+
+/// What `fetch` downloads.
+#[derive(Debug, Subcommand)]
+pub enum Fetch {
+    /// Scryfall's Oracle Cards and rulings bulk files.
+    Scryfall(ScryfallArgs),
+    /// The MTGJSON deck index and the decks it lists.
+    Decks(DecksArgs),
+}
+
+/// Options of `fetch scryfall`.
+#[derive(Debug, Args)]
+pub struct ScryfallArgs {
+    /// Download even when the cached files are current.
+    #[arg(long)]
+    pub force: bool,
+}
+
+/// Options of `fetch decks`.
+#[derive(Debug, Args)]
+pub struct DecksArgs {
+    /// Fetch at most this many decks, the newest first.
+    #[arg(long, value_name = "N")]
+    pub limit: Option<usize>,
+
+    /// Fetch only decks whose name contains this text, or whose file name it is (repeatable).
+    #[arg(long, value_name = "NAME")]
+    pub only: Vec<String>,
+
+    /// Deck type to fetch (repeatable; `all` for every type); the default is "Commander Deck".
+    #[arg(long = "type", value_name = "TYPE")]
+    pub deck_type: Vec<String>,
+
+    /// Download even when the cached files are current.
+    #[arg(long)]
+    pub force: bool,
+}
+
+/// Options of `ingest`.
+#[derive(Debug, Args)]
+pub struct IngestArgs {
+    /// Read and check the cached files, write nothing and open no database connection.
+    #[arg(long)]
+    pub dry_run: bool,
+
+    /// Load inputs that were loaded before.
+    #[arg(long)]
+    pub force: bool,
+
+    /// Records per database transaction.
+    #[arg(long, value_name = "N", default_value_t = mtg_db::import::DEFAULT_BATCH_SIZE)]
+    pub batch_size: usize,
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the command line is well formed, takes the documented options in any position and refuses unknown ones.
+    use clap::CommandFactory;
+    use rstest::rstest;
+
+    use super::*;
+
+    #[test]
+    fn the_definition_is_consistent() {
+        Cli::command().debug_assert();
+    }
+
+    #[rstest]
+    #[case(&["mtg-cli", "status"])]
+    #[case(&["mtg-cli", "ingest"])]
+    #[case(&["mtg-cli", "ingest", "--dry-run", "--force", "--batch-size", "100"])]
+    #[case(&["mtg-cli", "fetch", "scryfall"])]
+    #[case(&["mtg-cli", "fetch", "scryfall", "--force"])]
+    #[case(&["mtg-cli", "fetch", "decks", "--limit", "3", "--only", "Atraxa", "--only", "Eldrazi"])]
+    #[case(&["mtg-cli", "fetch", "decks", "--type", "all", "--type", "Theme Deck"])]
+    #[case(&["mtg-cli", "--cache", "/tmp/c", "status"])]
+    #[case(&["mtg-cli", "status", "--cache", "/tmp/c", "--database-url", "postgres://x/y"])]
+    fn documented_invocations_parse(#[case] args: &[&str]) {
+        assert!(Cli::try_parse_from(args).is_ok(), "{args:?}");
+    }
+
+    #[rstest]
+    #[case(&["mtg-cli"])]
+    #[case(&["mtg-cli", "fetch"])]
+    #[case(&["mtg-cli", "fetch", "everything"])]
+    #[case(&["mtg-cli", "fetch", "decks", "--limit", "many"])]
+    #[case(&["mtg-cli", "ingest", "--batch-size", "-1"])]
+    #[case(&["mtg-cli", "status", "--frobnicate"])]
+    fn bad_invocations_are_refused(#[case] args: &[&str]) {
+        assert!(Cli::try_parse_from(args).is_err(), "{args:?}");
+    }
+
+    #[test]
+    fn options_land_in_their_fields() {
+        let cli = Cli::try_parse_from([
+            "mtg-cli", "--cache", "/c", "fetch", "decks", "--limit", "5", "--only", "A", "--type",
+            "all",
+        ])
+        .unwrap();
+        assert_eq!(cli.cache, Some(PathBuf::from("/c")));
+        let Command::Fetch {
+            what: Fetch::Decks(args),
+        } = cli.command
+        else {
+            panic!("expected fetch decks");
+        };
+        assert_eq!(
+            (args.limit, args.only, args.deck_type),
+            (Some(5), vec!["A".into()], vec!["all".into()])
+        );
+    }
+}
