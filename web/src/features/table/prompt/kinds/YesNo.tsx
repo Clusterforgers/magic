@@ -31,7 +31,13 @@ export const YesNoPrompt: PromptComponent<'YesNo'> = ({ options }) => {
         </>
       }
     >
-      <Button className="h-10 min-w-24 px-4" aria-label="Yes" aria-keyshortcuts="Y" onClick={say(true)}>
+      <Button
+        variant="outline"
+        className="h-10 min-w-24 px-4"
+        aria-label="Yes"
+        aria-keyshortcuts="Y"
+        onClick={say(true)}
+      >
         Yes
         <KeyHint>Y</KeyHint>
       </Button>

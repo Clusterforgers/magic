@@ -200,7 +200,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 ### Decisions the effects need
 
-`Decision.player` names who answers, so a decision may go to any seat. Every effect decision carries `source` (the object that asks). Decisions for a seat that is not the active player have a response clock (`server.md`). `ChooseTargets` and `OrderTriggers` are asked and have their prompts in the web; the other kinds in the table, `PayMana` aside, exist as options, answer and wire types in `choose/<kind>.rs` and have a placeholder prompt in the web, which their task replaces.
+`Decision.player` names who answers, so a decision may go to any seat. Every effect decision carries `source` (the object that asks). Decisions for a seat that is not the active player have a response clock (`server.md`). `ChooseTargets` and `OrderTriggers` are asked and have their prompts in the web; `YesNo`, `ChooseOption` and `ChooseMode` have their prompts and response clocks, and no effect asks them yet; the other kinds in the table, `PayMana` aside, exist as options, answer and wire types in `choose/<kind>.rs` and have a placeholder prompt in the web, which their task replaces. The questions of `YesNo` and `ChooseOption` carry `text` in the words of a card, and `ChooseMode` says whether the cast can be backed out of (`can_cancel`).
 
 | Decision | Who answers | When | Corpus cards that need it |
 |---|---|---|---|

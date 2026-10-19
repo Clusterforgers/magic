@@ -72,7 +72,7 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
     >
       {single ? null : (
         <Button
-          className="h-10 px-4"
+          className="h-9 px-4"
           disabled={chosen.length < min}
           onClick={() => void answer({ ChooseMode: { Modes: modesAnswer(chosen) } })}
         >
@@ -82,7 +82,7 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
       {single || !repeat ? null : (
         <Button
           variant="outline"
-          className="h-10 px-4"
+          className="h-9 px-4"
           disabled={chosen.length === 0}
           onClick={() => setChosen((current) => current.slice(0, -1))}
         >
@@ -93,7 +93,7 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
         <Button
           ref={cancel}
           variant="outline"
-          className="h-10 px-4"
+          className="h-9 px-4"
           onClick={() => void answer({ ChooseMode: 'Cancel' })}
         >
           {cancelWords}
@@ -103,7 +103,7 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
         role="group"
         aria-label="Modes"
         data-slot="mode-list"
-        className="flex max-h-44 basis-full flex-col gap-1.5 overflow-y-auto p-0.5"
+        className="flex max-h-56 basis-full flex-col gap-1 overflow-y-auto p-0.5"
       >
         {modes.map((mode, place) => {
           const key = numberKey(place)
@@ -115,7 +115,7 @@ export const ChooseModePrompt: PromptComponent<'ChooseMode'> = ({ options }) => 
               key={mode.index}
               ref={place === 0 ? first : undefined}
               variant={picked ? 'default' : 'outline'}
-              className="h-auto min-h-10 justify-start whitespace-normal px-4 py-1.5 text-left"
+              className="h-auto min-h-9 justify-start whitespace-normal px-3 py-0.5 text-left text-sm leading-snug"
               aria-label={label}
               aria-keyshortcuts={key}
               aria-pressed={single ? undefined : picked}
