@@ -114,6 +114,16 @@ describe('the list', () => {
     expect(screen.getByRole('button', { name: 'Reloading…' })).toHaveAttribute('aria-disabled', 'true')
   })
 
+  it('draws skeleton rows only once the wait has lasted 300 ms', async () => {
+    const app = await openApp({ override: { games: () => new Promise<Response>(() => undefined) } })
+    await waitFor(() => expect(app.store.getState().games.status).toBe('loading'))
+    expect(document.querySelector('[data-slot="skeleton"]')).toBeNull()
+    await waitFor(() => expect(document.querySelectorAll('[data-slot="skeleton"]')).toHaveLength(3), {
+      timeout: 1500,
+    })
+    expect(screen.getByRole('status')).toHaveTextContent('Loading your games…')
+  })
+
   it('lists the newest game first, whatever order the server used', async () => {
     const old = listed({
       game: 'old',

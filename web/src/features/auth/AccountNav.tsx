@@ -67,7 +67,7 @@ export function AccountNav() {
           >
             {user.username.slice(0, 1)}
           </span>
-          <span className="min-w-0 max-w-40 truncate max-sm:sr-only" title={user.username}>
+          <span className="min-w-0 max-w-24 truncate max-sm:sr-only lg:max-w-48" title={user.username}>
             <span className="sr-only">Signed in as </span>
             {user.username}
           </span>

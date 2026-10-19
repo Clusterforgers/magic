@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 
 // A tab of the main navigation: quiet until it is the current page, which gets a bar under it as well as strong text.
 const TAB =
-  "relative inline-flex h-11 items-center border-b-2 border-transparent px-3 text-sm font-medium text-muted-foreground transition-colors duration-fast ease-out hover:text-foreground aria-[current='page']:border-primary aria-[current='page']:text-foreground sm:h-14"
+  "relative inline-flex h-11 items-center border-b-2 whitespace-nowrap border-transparent px-3 text-sm font-medium text-muted-foreground transition-colors duration-fast ease-out hover:text-foreground aria-[current='page']:border-primary aria-[current='page']:text-foreground sm:h-14"
 
 /** The frame around every page: a header with the brand, the main navigation, the theme and the account, then the page. */
 export function AppShell() {
