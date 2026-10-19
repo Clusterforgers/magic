@@ -129,6 +129,12 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
     }
 }
 
+/// Whether `answer` takes a triggered ability off the stack without a target. Only the clock gives it ([`fallback`]):
+/// a player with a legal target has to choose one.
+pub(crate) fn is_removal(answer: &Answer) -> bool {
+    matches!(answer, Answer::ChooseTargets(TargetChoice::Remove))
+}
+
 impl<S: EventStore> GameActor<S> {
     /// When the pending decision's clock runs out, if it has one.
     pub(crate) fn due(&self) -> Option<Instant> {

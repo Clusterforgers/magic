@@ -293,7 +293,20 @@ impl Running {
         if self.pending.as_ref().is_none_or(|p| p.hidden) {
             return Err(Rejection::stale());
         }
+        if pace::is_removal(&answer) && self.is_pending_for(seat, id) {
+            return Err(Rejection::new(
+                ErrorCode::IllegalAnswer,
+                "only the clock removes a triggered ability",
+            ));
+        }
         self.apply_answer(seat, id, answer)
+    }
+
+    /// Whether the decision `id` is the pending one and is `seat`'s.
+    fn is_pending_for(&self, seat: PlayerId, id: DecisionId) -> bool {
+        self.pending
+            .as_ref()
+            .is_some_and(|p| p.id == id && p.decision.player == seat)
     }
 
     /// [`answer`](Running::answer) for the pending decision whether or not a client was sent it.
@@ -303,11 +316,7 @@ impl Running {
         id: DecisionId,
         answer: Answer,
     ) -> Result<Step, Rejection> {
-        let current = self
-            .pending
-            .as_ref()
-            .is_some_and(|p| p.id == id && p.decision.player == seat);
-        if !current {
+        if !self.is_pending_for(seat, id) {
             return Err(Rejection::stale());
         }
         let passes = answer == pace::pass();

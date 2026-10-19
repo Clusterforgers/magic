@@ -261,6 +261,41 @@ async fn choosing_the_target_in_time_stops_the_clock() {
 }
 
 #[tokio::test(start_paused = true)]
+async fn a_seat_cannot_remove_its_own_trigger_while_a_target_is_legal() {
+    let setup = burn_table(vec![seer("Seer")]);
+    let victim = object_named(&setup, "Victim");
+    let (handle, _store) = spawn(setup);
+    let mut clients = join_and_ready(&handle).await;
+    burn_the_victim(&handle, &mut clients, victim).await;
+    let (id, _, _) = decision_of(&mut clients[1]).await;
+    let events = handle.status().await.unwrap().events;
+    clients[1].drain();
+
+    reply(
+        &handle,
+        &clients[1],
+        id,
+        Answer::ChooseTargets(TargetChoice::Remove),
+    )
+    .await;
+    assert_eq!(quiet(&handle).await.events, events, "nothing happened");
+    assert!(
+        matches!(
+            clients[1].drain().as_slice(),
+            [ServerMessage::Error {
+                code: ErrorCode::IllegalAnswer,
+                ..
+            }]
+        ),
+        "the seat is told the answer is illegal"
+    );
+
+    // The decision stays pending: the clock still removes the trigger when it runs out.
+    tokio::time::advance(Duration::from_secs(10)).await;
+    moved_past(&handle, events).await;
+}
+
+#[tokio::test(start_paused = true)]
 async fn the_order_of_triggers_runs_on_the_clock_and_the_expiry_keeps_the_order_they_triggered() {
     let first = watcher("First", when::any_creature_dies(), vec![gain_life(1)]);
     let second = watcher("Second", when::any_creature_dies(), vec![gain_life(10)]);
