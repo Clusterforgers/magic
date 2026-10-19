@@ -22,6 +22,8 @@ interface Props {
   onJoin: OnJoin
   /** The id of the game whose join is on its way, or null. */
   joining: string | null
+  /** Some join is on its way, a row's or the code's: no Join can start another. */
+  busy: boolean
   /** The Refresh button, which takes focus when the row it was on is gone; the page uses it for the same. */
   refreshRef: RefObject<HTMLButtonElement | null>
   /** Sends a visitor with no game to the code field. */
@@ -43,7 +45,7 @@ function RowsSkeleton() {
  * The open games: a heading with the count and Refresh, filters above a long list, an alert with Retry when the last
  * request failed (the rows stay, dimmed), and the rows in a region that scrolls inside itself.
  */
-export function OpenGamesPanel({ open, onJoin, joining, refreshRef, onFocusCode }: Props) {
+export function OpenGamesPanel({ open, onJoin, joining, busy, refreshRef, onFocusCode }: Props) {
   const { listing, error, refreshing, refresh } = open
   const [chosen, setChosen] = useState<Filters>(NO_FILTERS)
   const now = useClock(CLOCK_MS)
@@ -113,6 +115,7 @@ export function OpenGamesPanel({ open, onJoin, joining, refreshRef, onFocusCode 
           stale={stale}
           onJoin={onJoin}
           joining={joining}
+          busy={busy}
         />
       </div>
     )

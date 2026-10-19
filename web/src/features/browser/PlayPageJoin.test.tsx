@@ -1,4 +1,4 @@
-// Goal: a Join on the Play page takes a seat and opens the game: a signed-in visitor in one click with no body and the seat bound to the account, a guest after a dialog that asks for a name (remembered, focus in and out, Escape and Cancel leave without sending), with one request at a time, the seat link in the fragment unless the account's session opens the seat, a seat that is gone said in words with the list read again, and every other failure leaving the form to be sent again.
+// Goal: a Join on the Play page, a row's or the code field's, takes a seat and opens the game the answer names: a signed-in visitor in one click with no body and the seat bound to the account, a guest after a dialog that asks for a name (remembered, focus in and out, Escape and Cancel leave without sending), with one request at a time, the seat link in the fragment unless the account's session opens the seat, a seat that is gone said in words with the list read again, a code that no open game has said in one sentence under the field, and every other failure leaving the form and the typed code to be sent again.
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -11,7 +11,7 @@ import type { Joined, LobbyErrorCode, UserView } from '@/protocol/generated'
 import { fakeLobbies, lobbyRow } from '@/test-utils/lobbies'
 import type { FakeLobbies } from '@/test-utils/lobbies'
 import { renderInRouter } from '@/test-utils/router'
-import { NOT_OPEN } from './joinErrors'
+import { NO_GAME_WITH_CODE, NOT_OPEN } from './joinErrors'
 import { PlayPage } from './PlayPage'
 
 beforeEach(() => localStorage.clear())
@@ -387,6 +387,285 @@ describe('a failure that sending again can mend', () => {
     await screen.findByText(/busy or restarting/)
     expect(screen.queryByText(/Could not reach the server/)).not.toBeInTheDocument()
     expect(screen.getAllByRole('alert')).toHaveLength(1)
+  })
+})
+
+const codeForm = () => screen.getByRole('form', { name: 'Join with a code' })
+const codeField = () => screen.getByRole('textbox', { name: 'Join with a code' })
+const codeButton = () => within(codeForm()).getByRole('button', { name: 'Join' })
+const codeAlert = () => within(codeForm()).getByRole('alert')
+const codeDialog = () => screen.findByRole('dialog', { name: 'Join with a code' })
+const CODED = 'coded-game /game/coded-game#seat=1&token=tok-1'
+
+/** Types `typed` into the code field and presses its Join. */
+async function sendCode(user: ReturnType<typeof userEvent.setup>, typed = 'k7m2-9qxa') {
+  await user.type(codeField(), typed)
+  await user.click(codeButton())
+}
+
+describe('joining with a code', () => {
+  const mendable: [string, LobbyError, string][] = [
+    ['offline', new LobbyError('network', 0, 'x'), 'Could not reach the server.'],
+    ['a busy server', new LobbyError('unavailable', 503, 'x'), 'The server is busy or restarting.'],
+    ['a server error', new LobbyError('internal', 500, 'x'), 'The server ran into a problem.'],
+    ['an unreadable answer', new LobbyError('bad_response', 502, 'x'), 'could not read'],
+    ['too many wrong codes', new LobbyError('too_many_attempts', 429, 'x', 12), 'Try again in 12 seconds.'],
+  ]
+  const closed: [string, LobbyErrorCode, number, string][] = [
+    ['a game that is full', 'full', 409, 'Someone took that seat first: the game is full.'],
+    ['a game that started', 'started', 409, 'That game has already started.'],
+  ]
+  const noGame: [string, string][] = [
+    ['a wrong code', 'wrong code'],
+    ['a game that is gone', 'unknown game'],
+    ['an invite game without that code', 'invite game'],
+  ]
+
+  describe('a signed-in visitor', () => {
+    it('joins in one click with the code as the server reads it, and opens the game the answer names', async () => {
+      const { lobbies, user } = await open(fakeLobbies([BO]), accountStore('signed-in'))
+      await sendCode(user)
+      await waitFor(() => expect(stub()).toHaveTextContent(CODED))
+      expect(lobbies.joinByCode).toHaveBeenCalledExactlyOnceWith('K7M29QXA', {})
+      expect(lobbies.joinGame).not.toHaveBeenCalled()
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
+
+    it('opens the bare game page when the account already held a seat and the answer has no token', async () => {
+      const lobbies = fakeLobbies([BO])
+      lobbies.joinByCode.mockResolvedValueOnce({ game: 'g9', seat: 0, token: null })
+      const { user } = await open(lobbies, accountStore('signed-in'))
+      await user.type(codeField(), 'ABCD2345{Enter}')
+      await waitFor(() => expect(stub()).toHaveTextContent(/^g9 \/game\/g9$/))
+    })
+
+    it('spins on the code form while the request is out, with every Join waiting and the code locked', async () => {
+      const lobbies = fakeLobbies([BO])
+      let answer: (joined: Joined) => void = () => undefined
+      lobbies.joinByCode.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            answer = resolve
+          }),
+      )
+      const { user } = await open(lobbies, accountStore('signed-in'))
+      await sendCode(user)
+      await waitFor(() => expect(codeButton()).toHaveAttribute('aria-busy', 'true'))
+      expect(codeField()).toHaveAttribute('readonly')
+      expect(rowButton()).toHaveAttribute('aria-disabled', 'true')
+      expect(rowButton()).not.toHaveAttribute('aria-busy')
+      await user.click(joinButton())
+      await user.type(codeField(), '{Enter}')
+      expect(lobbies.joinGame).not.toHaveBeenCalled()
+      expect(lobbies.joinByCode).toHaveBeenCalledTimes(1)
+      answer({ game: 'g7', seat: 2, token: 'abc' })
+      await waitFor(() => expect(stub()).toHaveTextContent('g7 /game/g7#seat=2&token=abc'))
+    })
+
+    it('keeps every row from joining while the code is out, and the code from joining while a row is', async () => {
+      const lobbies = fakeLobbies([BO])
+      lobbies.joinGame.mockImplementationOnce(() => new Promise(() => undefined))
+      const { user } = await open(lobbies, accountStore('signed-in'))
+      await user.click(joinButton())
+      await waitFor(() => expect(rowButton()).toHaveAttribute('aria-busy', 'true'))
+      expect(codeButton()).toHaveAttribute('aria-disabled', 'true')
+      await user.type(codeField(), 'ABCD2345{Enter}')
+      expect(lobbies.joinByCode).not.toHaveBeenCalled()
+    })
+
+    it.each(noGame)(
+      '(%s) is one message under the field, with the typed code kept and no other alert',
+      async (_what, said) => {
+        const lobbies = fakeLobbies([BO])
+        lobbies.joinByCode.mockRejectedValueOnce(new LobbyError('not_found', 404, said))
+        const { user } = await open(lobbies, accountStore('signed-in'))
+        await sendCode(user)
+        await waitFor(() => expect(codeAlert()).toHaveTextContent(NO_GAME_WITH_CODE))
+        expect(NO_GAME_WITH_CODE).toBe('No open game with that code.')
+        expect(codeField()).toHaveAccessibleDescription(NO_GAME_WITH_CODE)
+        expect(codeField()).toHaveValue('k7m2-9qxa')
+        expect(screen.getAllByRole('alert')).toHaveLength(1)
+        expect(screen.queryByText(/Could not join/)).not.toBeInTheDocument()
+        // The list says nothing new, so it is not read again; the button is free and keeps focus.
+        expect(lobbies.listLobbies).toHaveBeenCalledTimes(1)
+        expect(codeButton()).toBeEnabled()
+        expect(codeButton()).toHaveFocus()
+        expect(screen.queryByTestId('game-stub')).not.toBeInTheDocument()
+      },
+    )
+
+    it('lets the message go with the next edit of the code, and with the next try', async () => {
+      const lobbies = fakeLobbies([BO])
+      lobbies.joinByCode.mockRejectedValueOnce(new LobbyError('not_found', 404, 'x'))
+      lobbies.joinByCode.mockRejectedValueOnce(new LobbyError('not_found', 404, 'x'))
+      const { user } = await open(lobbies, accountStore('signed-in'))
+      await sendCode(user, 'ABCD2345')
+      await waitFor(() => expect(codeAlert()).toBeInTheDocument())
+      await user.type(codeField(), '6')
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+      await user.clear(codeField())
+      await user.type(codeField(), 'ABCD2346')
+      await user.click(codeButton())
+      await waitFor(() => expect(codeAlert()).toHaveTextContent(NO_GAME_WITH_CODE))
+      await user.click(codeButton())
+      await waitFor(() => expect(stub()).toHaveTextContent(CODED))
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    })
+
+    it.each(closed)(
+      '(%s) is said under the field in the shared words',
+      async (_what, code, status, words) => {
+        const lobbies = fakeLobbies([BO])
+        lobbies.joinByCode.mockRejectedValueOnce(new LobbyError(code, status, 'server words'))
+        const { user } = await open(lobbies, accountStore('signed-in'))
+        await sendCode(user)
+        await waitFor(() => expect(codeAlert()).toHaveTextContent(words))
+        expect(codeField()).toHaveValue('k7m2-9qxa')
+      },
+    )
+
+    it.each(mendable)(
+      '(%s) is said under the field with the code kept, and works on the second try',
+      async (_what, error, words) => {
+        const lobbies = fakeLobbies([BO])
+        lobbies.joinByCode.mockRejectedValueOnce(error)
+        const { user } = await open(lobbies, accountStore('signed-in'))
+        await sendCode(user)
+        await waitFor(() => expect(codeAlert()).toHaveTextContent(words))
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        expect(codeField()).toHaveValue('k7m2-9qxa')
+        expect(codeButton()).toBeEnabled()
+        expect(rowButton()).not.toHaveAttribute('aria-disabled', 'true')
+        expect(lobbies.listLobbies).toHaveBeenCalledTimes(1)
+        await user.click(codeButton())
+        await waitFor(() => expect(stub()).toHaveTextContent(CODED))
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+        expect(lobbies.joinByCode).toHaveBeenCalledTimes(2)
+      },
+    )
+
+    it('takes a failure of a row off the page when the code is tried, and the code failure when a row is', async () => {
+      const lobbies = fakeLobbies([BO])
+      lobbies.joinGame.mockRejectedValueOnce(new LobbyError('network', 0, 'x'))
+      lobbies.joinByCode.mockRejectedValueOnce(new LobbyError('not_found', 404, 'x'))
+      const { user } = await open(lobbies, accountStore('signed-in'))
+      await user.click(joinButton())
+      expect(await screen.findByText("Could not join Bo's game")).toBeInTheDocument()
+      await sendCode(user)
+      await waitFor(() => expect(codeAlert()).toHaveTextContent(NO_GAME_WITH_CODE))
+      expect(screen.queryByText("Could not join Bo's game")).not.toBeInTheDocument()
+      await user.click(joinButton())
+      await waitFor(() => expect(stub()).toHaveTextContent('g1'))
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('a guest', () => {
+    it('is asked for a name in a dialog about the code, with nothing sent yet', async () => {
+      const { lobbies, user } = await open()
+      await sendCode(user)
+      const form = await codeDialog()
+      await waitFor(() => expect(nameField()).toHaveFocus())
+      expect(within(form).getByText('Choose the name the other players see at the table.')).toBeVisible()
+      expect(lobbies.joinByCode).not.toHaveBeenCalled()
+      expect(lobbies.joinGame).not.toHaveBeenCalled()
+    })
+
+    it('joins under the trimmed name and opens the game the answer names with the seat link', async () => {
+      const { lobbies, user } = await open()
+      await sendCode(user)
+      await codeDialog()
+      await user.type(nameField(), '  Cy  ')
+      await user.click(sendButton())
+      await waitFor(() => expect(stub()).toHaveTextContent(CODED))
+      expect(lobbies.joinByCode).toHaveBeenCalledExactlyOnceWith('K7M29QXA', { name: 'Cy' })
+      expect(localStorage.getItem('magic.guestName')).toBe('Cy')
+    })
+
+    it.each([
+      [
+        'Cancel',
+        (user: ReturnType<typeof userEvent.setup>) =>
+          user.click(screen.getByRole('button', { name: 'Cancel' })),
+      ],
+      ['Escape', (user: ReturnType<typeof userEvent.setup>) => user.keyboard('{Escape}')],
+    ])(
+      'leaves by %s without sending, with the code kept and focus back on the code form',
+      async (_how, leave) => {
+        const { lobbies, user } = await open()
+        await sendCode(user)
+        await codeDialog()
+        await leave(user)
+        await gone()
+        expect(lobbies.joinByCode).not.toHaveBeenCalled()
+        await waitFor(() => expect(codeButton()).toHaveFocus())
+        expect(codeField()).toHaveValue('k7m2-9qxa')
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+      },
+    )
+
+    it.each(noGame)(
+      '(%s) closes the dialog and says it once under the field, with the code kept',
+      async (_what, said) => {
+        const lobbies = fakeLobbies([BO])
+        lobbies.joinByCode.mockRejectedValueOnce(new LobbyError('not_found', 404, said))
+        const { user } = await open(lobbies)
+        await sendCode(user)
+        await codeDialog()
+        await user.type(nameField(), 'Cy')
+        await user.click(sendButton())
+        await gone()
+        expect(codeAlert()).toHaveTextContent(NO_GAME_WITH_CODE)
+        expect(screen.getAllByRole('alert')).toHaveLength(1)
+        expect(codeField()).toHaveValue('k7m2-9qxa')
+        await waitFor(() => expect(codeButton()).toHaveFocus())
+        expect(lobbies.listLobbies).toHaveBeenCalledTimes(1)
+        // The name is remembered, so the next try asks only to be confirmed.
+        await user.click(codeButton())
+        await codeDialog()
+        expect(nameField()).toHaveValue('Cy')
+      },
+    )
+
+    it.each(closed)(
+      '(%s) closes the dialog and is said under the field',
+      async (_what, code, status, words) => {
+        const lobbies = fakeLobbies([BO])
+        lobbies.joinByCode.mockRejectedValueOnce(new LobbyError(code, status, 'server words'))
+        const { user } = await open(lobbies)
+        await sendCode(user)
+        await codeDialog()
+        await user.type(nameField(), 'Cy')
+        await user.click(sendButton())
+        await gone()
+        expect(codeAlert()).toHaveTextContent(words)
+      },
+    )
+
+    it.each(mendable)(
+      '(%s) stays in the dialog with the name kept, the code kept behind it, and works on the second try',
+      async (_what, error, words) => {
+        const lobbies = fakeLobbies([BO])
+        lobbies.joinByCode.mockRejectedValueOnce(error)
+        const { user } = await open(lobbies)
+        await sendCode(user)
+        await codeDialog()
+        await user.type(nameField(), 'Cy')
+        await user.click(sendButton())
+        const dialogAlert = await within(screen.getByRole('dialog')).findByRole('alert')
+        expect(dialogAlert).toHaveTextContent(words)
+        expect(nameField()).toHaveValue('Cy')
+        expect(sendButton()).not.toHaveAttribute('aria-busy')
+        // The dialog hides the page behind it from the accessibility tree, but not from the page.
+        expect(screen.getByRole('textbox', { name: 'Join with a code', hidden: true })).toHaveValue(
+          'k7m2-9qxa',
+        )
+        await user.click(sendButton())
+        await waitFor(() => expect(stub()).toHaveTextContent(CODED))
+        expect(lobbies.joinByCode).toHaveBeenCalledTimes(2)
+        expect(lobbies.joinByCode).toHaveBeenLastCalledWith('K7M29QXA', { name: 'Cy' })
+      },
+    )
   })
 })
 

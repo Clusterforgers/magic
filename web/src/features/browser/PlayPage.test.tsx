@@ -1,4 +1,4 @@
-// Goal: the Play page lists the open games as a table of host, format, seats, decks, age and a Join named after the game, counts them in a polite status, dims and explains a full game, waits 300 ms before it draws a skeleton, shows an empty list with both ways forward, keeps the old rows dimmed beside an error with Retry, filters a long list, and keeps the join code field disabled and explained.
+// Goal: the Play page lists the open games as a table of host, format, seats, decks, age and a Join named after the game, counts them in a polite status, dims and explains a full game, waits 300 ms before it draws a skeleton, shows an empty list with both ways forward, keeps the old rows dimmed beside an error with Retry, filters a long list, and offers a join code field that checks the code before it asks anybody.
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
@@ -7,7 +7,6 @@ import { LobbyError } from '@/net/lobbyErrors'
 import { fakeLobbies, lobbyRow, lobbyRows } from '@/test-utils/lobbies'
 import type { FakeLobbies } from '@/test-utils/lobbies'
 import { renderInRouter } from '@/test-utils/router'
-import { CODE_NOTE } from './JoinWithCode'
 import { PlayPage } from './PlayPage'
 
 beforeEach(installFakeClock)
@@ -133,27 +132,25 @@ describe('the open games', () => {
 })
 
 describe('the code form', () => {
-  it('is disabled and says why, while every row can be joined', async () => {
-    const lobbies = fakeLobbies(lobbyRows(2))
-    await open(lobbies)
-    expect(screen.getByText(CODE_NOTE)).toBeVisible()
+  it('is enabled and says nothing about being unavailable, beside rows that can be joined', async () => {
+    await open(fakeLobbies(lobbyRows(2)))
     const button = within(screen.getByRole('form', { name: 'Join with a code' })).getByRole('button', {
       name: 'Join',
     })
-    expect(button).toHaveAttribute('aria-disabled', 'true')
-    expect(button).toHaveAccessibleDescription(CODE_NOTE)
-    for (const join of within(table()).getAllByRole('button')) {
-      expect(join).toBeEnabled()
-      expect(join).not.toHaveAttribute('aria-disabled', 'true')
-    }
+    expect(button).toBeEnabled()
+    expect(button).not.toHaveAttribute('aria-disabled', 'true')
+    expect(button).not.toHaveAccessibleDescription()
+    expect(screen.queryByText(/not available/i)).not.toBeInTheDocument()
+    for (const join of within(table()).getAllByRole('button')) expect(join).toBeEnabled()
   })
 
-  it('sends nothing when a code is typed and Enter is pressed', async () => {
+  it('refuses a code that cannot be one with a reason on the field, and asks nobody', async () => {
     const lobbies = fakeLobbies([])
     const { user } = await open(lobbies)
-    await user.type(codeField(), 'K7M29QXA{Enter}')
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    await user.type(codeField(), 'K7M2{Enter}')
+    expect(screen.getByRole('alert')).toHaveTextContent('A code is 8 letters and digits')
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(lobbies.joinByCode).not.toHaveBeenCalled()
     expect(lobbies.joinGame).not.toHaveBeenCalled()
   })
 })

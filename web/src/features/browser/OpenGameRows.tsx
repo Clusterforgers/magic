@@ -19,8 +19,10 @@ export interface RowsProps {
   stale: boolean
   /** Starts joining a game. */
   onJoin: OnJoin
-  /** The id of the game whose join is on its way, or null: every Join is disabled while one is. */
+  /** The id of the game whose join is on its way, or null; that row's Join spins. */
   joining: string | null
+  /** Some join is on its way (a row's or the code's): every Join is disabled while one is. */
+  busy: boolean
 }
 
 const fullId = (game: LobbyGame): string => `full-${game.game}`
@@ -67,7 +69,12 @@ function Age({ game, fetchedAt, now }: { game: LobbyGame; fetchedAt: number; now
 }
 
 /** The one primary button of a row; a full game keeps it in place, disabled and explained, and the row being joined spins. */
-function JoinButton({ game, joining, onJoin }: Pick<RowsProps, 'joining' | 'onJoin'> & { game: LobbyGame }) {
+function JoinButton({
+  game,
+  joining,
+  busy,
+  onJoin,
+}: Pick<RowsProps, 'joining' | 'busy' | 'onJoin'> & { game: LobbyGame }) {
   const full = isFull(game)
   return (
     <Button
@@ -75,7 +82,7 @@ function JoinButton({ game, joining, onJoin }: Pick<RowsProps, 'joining' | 'onJo
       data-join={game.game}
       aria-label={joinLabel(game)}
       aria-describedby={full ? fullId(game) : undefined}
-      disabled={full || joining !== null}
+      disabled={full || busy}
       loading={joining === game.game}
       // A disabled button that keeps focus does not drop it when a game fills while it is the one in hand.
       focusableWhenDisabled
@@ -93,7 +100,7 @@ const HEAD =
 const CELL = 'border-b px-4 py-3 align-middle text-sm'
 
 /** From the M breakpoint up: a real table, its header kept in view while the rows scroll. */
-function GamesTable({ rows, fetchedAt, now, stale, onJoin, joining }: RowsProps) {
+function GamesTable({ rows, fetchedAt, now, stale, onJoin, joining, busy }: RowsProps) {
   return (
     <table className="w-full border-separate border-spacing-0 text-left">
       <caption className="sr-only">Open games, newest first</caption>
@@ -145,7 +152,7 @@ function GamesTable({ rows, fetchedAt, now, stale, onJoin, joining }: RowsProps)
                 <Age game={game} fetchedAt={fetchedAt} now={now} />
               </td>
               <td className={cn(CELL, 'text-right')}>
-                <JoinButton game={game} onJoin={onJoin} joining={joining} />
+                <JoinButton game={game} onJoin={onJoin} joining={joining} busy={busy} />
               </td>
             </tr>
           )
@@ -156,7 +163,7 @@ function GamesTable({ rows, fetchedAt, now, stale, onJoin, joining }: RowsProps)
 }
 
 /** Under the M breakpoint: one stacked row a game, the Join button at its right. */
-function GamesList({ rows, fetchedAt, now, stale, onJoin, joining }: RowsProps) {
+function GamesList({ rows, fetchedAt, now, stale, onJoin, joining, busy }: RowsProps) {
   return (
     <ul aria-label="Open games, newest first" className="grid">
       {rows.map((game) => {
@@ -185,7 +192,7 @@ function GamesList({ rows, fetchedAt, now, stale, onJoin, joining }: RowsProps) 
                 <Seats game={game} dim={dim} />
               </p>
             </div>
-            <JoinButton game={game} onJoin={onJoin} joining={joining} />
+            <JoinButton game={game} onJoin={onJoin} joining={joining} busy={busy} />
           </li>
         )
       })}

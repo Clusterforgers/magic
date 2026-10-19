@@ -18,13 +18,13 @@ import { useOpenGames } from './useOpenGames'
 /** What `PlayPage` takes. */
 export interface PlayPageProps {
   /** The client; the shared one by default. */
-  api?: Pick<Api, 'listLobbies' | 'joinGame'>
+  api?: Pick<Api, 'listLobbies' | 'joinGame' | 'joinByCode'>
 }
 
 /**
  * `/`: Play. The open games to join, a button to create a game and a field for a join code. The page fits the window
- * under the header; only the list of games scrolls. A Join takes a seat and opens the game: in one click for a
- * signed-in visitor, after a name in a dialog for a guest.
+ * under the header; only the list of games scrolls. A Join, a row's or the code's, takes a seat and opens the game: in
+ * one click for a signed-in visitor, after a name in a dialog for a guest.
  */
 export function PlayPage({ api = sharedApi }: PlayPageProps) {
   usePageTitle('Play')
@@ -44,7 +44,14 @@ export function PlayPage({ api = sharedApi }: PlayPageProps) {
         </Link>
       </header>
       <ContinueGames />
-      <JoinWithCode inputRef={code} />
+      <JoinWithCode
+        inputRef={code}
+        onJoin={join.startCode}
+        pending={join.joiningCode}
+        busy={join.busy}
+        failure={join.codeProblem}
+        onEdit={join.dismissCode}
+      />
       {failure === null ? null : (
         <Alert variant="destructive">
           <CircleAlertIcon aria-hidden="true" />
@@ -70,16 +77,19 @@ export function PlayPage({ api = sharedApi }: PlayPageProps) {
         open={open}
         onJoin={join.start}
         joining={join.joining}
+        busy={join.busy}
         refreshRef={refreshButton}
         onFocusCode={() => code.current?.focus()}
       />
       {asking === null ? null : (
         <GuestJoinDialog
-          game={asking.game}
+          title={
+            asking.target.kind === 'game' ? `Join ${asking.target.game.host}'s game` : 'Join with a code'
+          }
           open={asking.open}
-          pending={join.joining !== null}
+          pending={join.busy}
           failure={join.dialogFailure}
-          // The row's own button; if polling took the row away meanwhile, the one control that is always there.
+          // The button that asked; if polling took the row away meanwhile, the one control that is always there.
           returnFocus={() => (asking.opener?.isConnected === true ? asking.opener : refreshButton.current)}
           onSubmit={join.submit}
           onCancel={join.cancel}
