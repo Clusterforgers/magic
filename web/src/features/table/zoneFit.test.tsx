@@ -1,4 +1,4 @@
-// Goal: a battlefield fits its cards to the room its zone has: without layout the cards keep the sizes they were given; with it each row takes the card width the fit engine answers for the seat's rows (lands at 0.8), a face drops to the short variant under 76 px, a zone that cannot fit at the floor says how many permanents are cut off, a resize fits again, and a zone that scrolls fades the edge that hides more.
+// Goal: a battlefield fits its cards to the room its zone has: without layout the cards keep the sizes they were given; with it each row takes the card width the fit engine answers for the seat's rows (lands at 0.8), a face drops to the short variant under 76 px, a zone that cannot fit at the floor says how many permanents are cut off, a resize fits again, and a zone that scrolls fades the edge that hides more; with stacks on, the rows draw exactly the boxes the fit counts, tapped or not, and the count and the fade still show at the floor.
 import { act, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { RowKind } from './cardModel'
@@ -6,6 +6,7 @@ import { LAND_SCALE } from './fit'
 import type { FitBox } from './fit'
 import { battlefieldStacks, layoutSeat } from './rowStacks'
 import { fadeOf } from './useEdgeFade'
+import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import type { TableHarness } from '@/test-utils/tableHarness'
 
@@ -56,9 +57,9 @@ const NEAR: readonly RowKind[] = ['creatures', 'other', 'lands']
 const FAR: readonly RowKind[] = ['lands', 'other', 'creatures']
 
 /** What the layout says for a seat's battlefield in a box, rows in the order the zone draws them. */
-function expected(table: TableHarness, seat: number, facing: 'near' | 'far', box: FitBox) {
+function expected(table: TableHarness, seat: number, facing: 'near' | 'far', box: FitBox, grouped = false) {
   const order = facing === 'near' ? NEAR : FAR
-  const stacks = battlefieldStacks(table.store.getState(), seat, false)
+  const stacks = battlefieldStacks(table.store.getState(), seat, grouped)
   const fit = layoutSeat({ box, stacks, order, opened: new Set(), marked: new Set() }).fit
   if (fit === null) throw new Error('a box was given, so the layout fits')
   return { fit, order }
@@ -171,6 +172,56 @@ describe('a battlefield with room', () => {
     room.height = 500
     renderTable({ seats: 2 })
     expect(document.querySelector('[data-slot="more-hidden"]')).toBeNull()
+  })
+})
+
+describe('a battlefield with stacks', () => {
+  it.each([
+    ['a wide, tall zone', { width: 1000, height: 500 }],
+    ['a small zone', { width: 420, height: 160 }],
+    ['the floor', { width: 300, height: 90 }],
+  ])('draws exactly the boxes the fit counts, tapped or not, in %s', (_name, box) => {
+    room.width = box.width
+    room.height = box.height
+    const table = renderTable({ seats: 2, options: { stacks: true } })
+    for (const seat of [0, 1]) {
+      const { fit, order } = expected(table, seat, seat === 0 ? 'near' : 'far', box, true)
+      order.forEach((row, index) => {
+        const placed = must(fit.layout[index])
+        const items = rowOf(seat, row).querySelectorAll(':scope > li')
+        expect(items, `${seat} ${row}`).toHaveLength(placed.stacks)
+        expect(widthOf(rowOf(seat, row)), `${seat} ${row}`).toBe(`${placed.width}px`)
+        for (const button of rowOf(seat, row).querySelectorAll('button[data-object-id]')) {
+          expect(button).toHaveClass('w-(--card-w)', 'h-(--card-h)')
+        }
+      })
+    }
+  })
+
+  it('draws fewer boxes than permanents and so cards at least as large as without stacks', () => {
+    room.width = 700
+    room.height = 240
+    const table = renderTable({ seats: 2, options: { stacks: true } })
+    const plain = expected(table, 1, 'far', { width: 700, height: 240 }, false).fit
+    const stacked = expected(table, 1, 'far', { width: 700, height: 240 }, true).fit
+    expect(stacked.cardWidth).toBeGreaterThanOrEqual(plain.cardWidth)
+    expect(widthOf(rowOf(1, 'creatures'))).toBe(`${must(stacked.layout[2]).width}px`)
+  })
+
+  it('shows the count and the fade at the 44 px floor', () => {
+    room.width = 300
+    room.height = 90
+    room.scroll = 400
+    const table = renderTable({ seats: 2, options: { stacks: true } })
+    const { fit } = expected(table, 1, 'far', { width: 300, height: 90 }, true)
+    expect(fit.scrolls).toBe(true)
+    expect(fit.cardWidth).toBe(44)
+    expect(document.querySelector('[data-battlefield-seat="1"] [data-slot="more-hidden"]')).toHaveTextContent(
+      `+${fit.hidden}`,
+    )
+    expect(
+      document.querySelector('[data-battlefield-seat="1"] [data-slot="battlefield-zone"]'),
+    ).toHaveAttribute('data-fade', 'bottom')
   })
 })
 
