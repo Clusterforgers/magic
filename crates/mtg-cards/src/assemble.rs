@@ -54,7 +54,8 @@ pub struct Assembled {
 ///
 /// The printed side always comes from `printed`. The abilities of the rules are attached only when
 /// the support record says the engine runs them (`Verified` or `Partial`), and then only those the
-/// engine runs; every other card is `Manual` and has the printed side alone. The mana abilities the
+/// engine runs; every other card has the printed side alone. A card with no file is `Verified` when it
+/// has no rules text (a vanilla creature, a basic land) and `Manual` otherwise. The mana abilities the
 /// basic land types give are part of the printed side (CR 305.6), so they are always there.
 pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Assembled {
     let record = support(rules, printed, caps);

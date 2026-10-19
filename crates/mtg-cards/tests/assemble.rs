@@ -153,6 +153,35 @@ fn only_what_the_engine_runs_is_verified() {
 }
 
 #[test]
+fn a_vanilla_or_basic_card_is_verified_without_a_rules_file() {
+    let no_files = Library::from_sources(&[]).unwrap_or_else(|errors| panic!("{errors}"));
+    for caps in [Caps::none(), caps_of(&[PLAIN_MANA_ABILITY])] {
+        let mut verified = Vec::new();
+        for record in records() {
+            let assembled = no_files.assemble(&printed_of(&record), &caps);
+            if assembled.support.support == Support::Verified {
+                verified.push(record.name.clone());
+            }
+            if record.name == "Forest" {
+                // The land type gives the mana ability, so the card plays with no file at all.
+                assert_eq!(
+                    assembled.definition.abilities,
+                    [AbilityDef::Mana(ManaAbility {
+                        produces: ManaType::Green
+                    })]
+                );
+            }
+        }
+        verified.sort();
+        assert_eq!(
+            verified,
+            ["Forest", "Grizzly Bears"],
+            "every other card of the corpus has rules text"
+        );
+    }
+}
+
+#[test]
 fn rules_are_attached_only_when_the_support_record_says_the_engine_runs_them() {
     let library = library();
     let caps_to_try = [
