@@ -41,7 +41,7 @@ export function SeatLinkMissing({ gameId }: { gameId?: string }) {
             Sign in
           </Link>
         ) : null}
-        <Link to="/" className={buttonVariants({ variant: canSignIn ? 'outline' : 'default' })}>
+        <Link to="/new" className={buttonVariants({ variant: canSignIn ? 'outline' : 'default' })}>
           Create a new game
         </Link>
       </div>

@@ -29,7 +29,7 @@ describe('an address without a seat link', () => {
     const h = await renderGame({ link: null })
     expect(screen.getByRole('heading', { name: 'Open your seat link' })).toBeInTheDocument()
     expect(screen.getByText(/ask the host to send it again/i)).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/new')
     expect(h.net.sockets).toHaveLength(0)
     expect(h.server.calls).toHaveLength(0)
     expect(document.title).toBe('Open your seat link · Magic')
@@ -99,7 +99,7 @@ describe('cannot reach the game', () => {
     expect(alert()).toHaveTextContent(`tried ${UNREACHABLE_AFTER} times`)
     expect(screen.getByRole('heading', { name: 'Cannot reach the game' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Try again now' })).toBeEnabled()
-    expect(screen.getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/new')
   })
 
   it('names every likely cause, since a wrong token looks like a lost connection', async () => {

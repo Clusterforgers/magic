@@ -40,7 +40,7 @@ export function AuthScreen({ mode, next }: AuthScreenProps) {
             Games here are played as a guest: one person creates a game and sends every player the link for
             their seat. There is nothing to sign in to.
           </p>
-          <Link to="/" className={buttonVariants({ size: 'lg' })}>
+          <Link to="/new" className={buttonVariants({ size: 'lg' })}>
             Create a game
           </Link>
         </section>

@@ -60,7 +60,7 @@ export function GameOver() {
           </ul>
         )}
         <div>
-          <Link to="/" className={buttonVariants({ size: 'lg' })}>
+          <Link to="/new" className={buttonVariants({ size: 'lg' })}>
             Create a new game
           </Link>
         </div>

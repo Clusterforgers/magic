@@ -321,7 +321,7 @@ describe('signing in', () => {
     const app = await renderApp('/login', { accounts: { unavailable: true } })
     expect(await screen.findByRole('heading', { name: 'This server has no accounts' })).toBeInTheDocument()
     expect(screen.queryByRole('form')).toBeNull()
-    expect(screen.getByRole('link', { name: 'Create a game' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: 'Create a game' })).toHaveAttribute('href', '/new')
     expect(screen.queryByRole('navigation', { name: 'Account' })).toBeNull()
     expect(app.store.getState().status).toBe('unavailable')
   })

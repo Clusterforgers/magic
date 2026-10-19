@@ -145,7 +145,8 @@ describe('a signed-in account', () => {
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
     expect(app.store.getState().games.games).toEqual([])
     await app.store.getState().login(bo)
-    expect(app.store.getState().games).toMatchObject({ status: 'idle', games: [] })
+    // Play, where the app lands, asks for the new account's games at once, so the list may already be loading.
+    expect(app.store.getState().games.games).toEqual([])
   })
 
   it('goes home when it signs out on a page that needs an account, not to the sign-in form', async () => {

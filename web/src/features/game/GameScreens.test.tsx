@@ -129,7 +129,7 @@ describe('game over', () => {
     expect(results[1]).toHaveTextContent('Seat 2Bo')
     expect(results[1]).toHaveTextContent('Lost: ran out of life')
     expect(results[1]).toHaveTextContent('life 0')
-    expect(screen.getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/new')
     expect(document.title).toBe('Game over · Magic')
   })
 

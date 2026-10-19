@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { CircleAlertIcon, PlusIcon, RefreshCwIcon, SwordsIcon } from 'lucide-react'
 import { useMemo, useRef, useState } from 'react'
+import type { RefObject } from 'react'
 import { EmptyState } from '@/components/EmptyState'
 import { Loading } from '@/components/Loading'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -11,14 +12,18 @@ import { FocusKeeper } from './FocusKeeper'
 import { GameFilters } from './GameFilters'
 import { filterGames, FILTERS_ABOVE_ROWS, NO_FILTERS, openGamesText } from './format'
 import type { Filters } from './format'
-import type { OnJoin } from './joinTarget'
 import { OpenGameRows } from './OpenGameRows'
 import { CLOCK_MS, useClock } from './useClock'
+import type { OnJoin } from './useJoinGame'
 import type { OpenGames } from './useOpenGames'
 
 interface Props {
   open: OpenGames
-  onJoin: OnJoin | undefined
+  onJoin: OnJoin
+  /** The id of the game whose join is on its way, or null. */
+  joining: string | null
+  /** The Refresh button, which takes focus when the row it was on is gone; the page uses it for the same. */
+  refreshRef: RefObject<HTMLButtonElement | null>
   /** Sends a visitor with no game to the code field. */
   onFocusCode(): void
 }
@@ -38,12 +43,11 @@ function RowsSkeleton() {
  * The open games: a heading with the count and Refresh, filters above a long list, an alert with Retry when the last
  * request failed (the rows stay, dimmed), and the rows in a region that scrolls inside itself.
  */
-export function OpenGamesPanel({ open, onJoin, onFocusCode }: Props) {
+export function OpenGamesPanel({ open, onJoin, joining, refreshRef, onFocusCode }: Props) {
   const { listing, error, refreshing, refresh } = open
   const [chosen, setChosen] = useState<Filters>(NO_FILTERS)
   const now = useClock(CLOCK_MS)
   const section = useRef<HTMLElement>(null)
-  const refreshButton = useRef<HTMLButtonElement>(null)
 
   const games = useMemo(() => listing?.games ?? [], [listing])
   const filterable = games.length > FILTERS_ABOVE_ROWS
@@ -102,7 +106,14 @@ export function OpenGamesPanel({ open, onJoin, onFocusCode }: Props) {
         data-stale={stale || undefined}
         className="surface min-h-0 overflow-y-auto overscroll-contain"
       >
-        <OpenGameRows rows={rows} fetchedAt={listing.fetchedAt} now={now} stale={stale} onJoin={onJoin} />
+        <OpenGameRows
+          rows={rows}
+          fetchedAt={listing.fetchedAt}
+          now={now}
+          stale={stale}
+          onJoin={onJoin}
+          joining={joining}
+        />
       </div>
     )
   }
@@ -121,7 +132,7 @@ export function OpenGamesPanel({ open, onJoin, onFocusCode }: Props) {
           </p>
         </div>
         <Button
-          ref={refreshButton}
+          ref={refreshRef}
           type="button"
           variant="outline"
           size="sm"
@@ -156,7 +167,7 @@ export function OpenGamesPanel({ open, onJoin, onFocusCode }: Props) {
         <GameFilters games={games} filters={chosen} onChange={setChosen} />
       ) : null}
 
-      <FocusKeeper rows={rows} within={section} fallback={refreshButton}>
+      <FocusKeeper rows={rows} within={section} fallback={refreshRef}>
         {body}
       </FocusKeeper>
     </section>
