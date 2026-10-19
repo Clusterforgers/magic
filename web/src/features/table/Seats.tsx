@@ -10,6 +10,7 @@ import { SeatPanel } from './SeatPanel'
 import { SeatTile } from './SeatTile'
 import { useBoardFade } from './useBoardFade'
 import { useEdgeFade } from './useEdgeFade'
+import { useLeadInView } from './useLeadInView'
 
 interface SeatAreaProps {
   seat: PlayerId
@@ -98,6 +99,35 @@ function FocusBoard({ seat, size, pod }: FocusBoardProps) {
   )
 }
 
+interface TileStripProps {
+  /** The opponents' seats, the one whose turn it is first. */
+  tiles: PlayerId[]
+  /** The opponent whose board is large. */
+  focused: PlayerId | null
+  onFocusSeat: (seat: PlayerId) => void
+}
+
+/** The strip of tiles of focus mode; it scrolls back to its start when the seat that leads it changes. */
+function TileStrip({ tiles, focused, onFocusSeat }: TileStripProps) {
+  const strip = useRef<HTMLUListElement>(null)
+  useLeadInView(strip, tiles[0])
+  return (
+    <ul
+      ref={strip}
+      role="list"
+      aria-label="Opponents"
+      data-slot="tile-strip"
+      className="relative flex h-14 shrink-0 gap-2 overflow-x-auto p-1 [scrollbar-width:none]"
+    >
+      {tiles.map((seat) => (
+        <li key={seat} className="flex min-w-44 flex-1">
+          <SeatTile seat={seat} focused={seat === focused} onFocusSeat={onFocusSeat} />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 // Whole class names, so Tailwind can see them.
 const COLUMNS: Record<SeatPlan['columns'], string> = {
   1: 'grid-cols-1',
@@ -121,18 +151,7 @@ export function Opponents({ plan, size, pod, onFocusSeat }: OpponentsProps) {
   if (plan.shape === 'focus') {
     return (
       <div data-layout="focus" className="flex min-h-0 min-w-0 flex-col gap-2">
-        <ul
-          role="list"
-          aria-label="Opponents"
-          data-slot="tile-strip"
-          className="relative flex h-14 shrink-0 gap-2 overflow-x-auto p-1 [scrollbar-width:none]"
-        >
-          {plan.tiles.map((seat) => (
-            <li key={seat} className="flex min-w-44 flex-1">
-              <SeatTile seat={seat} focused={seat === plan.focused} onFocusSeat={onFocusSeat} />
-            </li>
-          ))}
-        </ul>
+        <TileStrip tiles={plan.tiles} focused={plan.focused} onFocusSeat={onFocusSeat} />
         {plan.focused === null ? null : <FocusBoard seat={plan.focused} size={size} pod={pod} />}
       </div>
     )

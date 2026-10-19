@@ -208,6 +208,25 @@ describe('the strip of tiles', () => {
     }
   })
 
+  it('scrolls back to its start when another seat gets the turn, so the lead is in view', () => {
+    const table = open()
+    const element = must(document.querySelector<HTMLElement>('[data-slot="tile-strip"]'))
+    const scrollTo = vi.fn()
+    Object.defineProperties(element, {
+      scrollLeft: { value: 180, configurable: true },
+      clientWidth: { value: 300, configurable: true },
+      scrollTo: { value: scrollTo, configurable: true },
+    })
+    // Every tile sits inside the visible part, so the tile that is shown asks for no scroll of its own.
+    for (const slot of element.querySelectorAll('li')) {
+      Object.defineProperties(slot, { offsetLeft: { value: 200 }, offsetWidth: { value: 100 } })
+    }
+    fireEvent.click(tile(3))
+    expect(scrollTo).not.toHaveBeenCalled()
+    turnOf(table, 4)
+    expect(scrollTo).toHaveBeenCalledExactlyOnceWith({ left: 0 })
+  })
+
   it('marks the active tile and the shown one apart, when they are not the same seat', () => {
     const table = open()
     turnOf(table, 4)
