@@ -601,4 +601,34 @@ mod tests {
         assert!(!yields.passes(ME, engine.state(), true), "{until:?}");
         assert_eq!(yields.get(ME), None);
     }
+
+    #[rstest]
+    #[case::resolve(YieldUntil::Resolve)]
+    #[case::end_of_turn(YieldUntil::EndOfTurn)]
+    #[case::my_turn(YieldUntil::MyTurn)]
+    fn a_triggered_ability_of_another_seat_that_goes_on_the_stack_ends_a_yield_like_any_new_object(
+        #[case] until: YieldUntil,
+    ) {
+        let drifter = mtg_testkit::trigger_cards::watcher(
+            "Drifter",
+            mtg_testkit::trigger_cards::when::this_enters(),
+            vec![mtg_testkit::cards::draw(1)],
+        );
+        let setup = Scenario::new(2).hand(0, [drifter]).setup().unwrap();
+        let mut engine = Engine::new(setup).unwrap();
+        cast(&mut engine);
+        // Seat 1 yields while the creature spell waits; it passes over the spell.
+        let mut yields = Yields::new(2);
+        yields.start(ME, until, engine.state());
+        assert!(yields.passes(ME, engine.state(), false));
+
+        // The spell resolves and the trigger goes on the stack: seat 1 meets an object it has not passed on.
+        pass(&mut engine);
+        pass(&mut engine);
+        pass(&mut engine);
+        assert_eq!(engine.state().stack().len(), 1, "the trigger");
+        assert_eq!(engine.decision().unwrap().player, ME);
+        assert!(!yields.passes(ME, engine.state(), false), "{until:?}");
+        assert_eq!(yields.get(ME), None);
+    }
 }
