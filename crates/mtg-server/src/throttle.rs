@@ -1,11 +1,12 @@
-//! Limits on guessing: how many failed logins one address and one username may cause, and how
-//! many accounts one address may try to register, per window. Kept in memory, per process.
+//! Limits on guessing: how many failed logins one address and one username may cause, how many
+//! accounts one address may try to register and how many join codes one address may miss, per
+//! window. Kept in memory, per process.
 //!
 //! Fixed windows: a counter starts at the first attempt and is forgotten one window later. A
-//! login is counted when it starts, so concurrent guesses cannot all slip under the limit, and
-//! handed back when it succeeds. A blocked attempt is not counted, so waiting out the window is
-//! enough. The username counter exists whether or not the account does, so the limit reveals
-//! nothing about it.
+//! login or a code lookup is counted when it starts, so concurrent guesses cannot all slip under
+//! the limit, and handed back when it succeeds. A blocked attempt is not counted, so waiting out
+//! the window is enough. The username counter exists whether or not the account does, so the limit
+//! reveals nothing about it. Code misses have a window of their own, shorter than the others.
 
 use std::collections::HashMap;
 use std::fmt;
@@ -31,6 +32,16 @@ enum Key {
     LoginName(String),
     /// Registrations tried from one network.
     RegisterAddress(IpAddr),
+    /// Join code lookups from one network that were started and did not (yet) find a game.
+    CodeAddress(IpAddr),
+}
+
+/// How long a counter of this kind lasts.
+fn window_of(limits: &AttemptLimits, key: &Key) -> Duration {
+    match key {
+        Key::CodeAddress(_) => limits.code_window,
+        Key::LoginAddress(_) | Key::LoginName(_) | Key::RegisterAddress(_) => limits.window,
+    }
 }
 
 #[derive(Clone, Copy)]
@@ -48,26 +59,27 @@ struct State {
 
 impl State {
     /// Drops expired counters once the table has doubled since the last sweep.
-    fn sweep(&mut self, now: Instant, window: Duration) {
+    fn sweep(&mut self, now: Instant, limits: &AttemptLimits) {
         if self.counters.len() < self.sweep_at.max(FIRST_SWEEP) {
             return;
         }
-        self.counters
-            .retain(|_, counter| now.saturating_duration_since(counter.started) < window);
+        self.counters.retain(|key, counter| {
+            now.saturating_duration_since(counter.started) < window_of(limits, key)
+        });
         self.sweep_at = self.counters.len().saturating_mul(2);
     }
 }
 
 /// The caller is over a limit.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) struct Blocked {
+pub struct Blocked {
     /// How long until the longest of the limits it hit resets.
-    pub(crate) retry_after: Duration,
+    pub retry_after: Duration,
 }
 
 impl Blocked {
     /// `retry_after` in whole seconds, rounded up and never zero, for the `Retry-After` header.
-    pub(crate) fn seconds(&self) -> u64 {
+    pub fn seconds(&self) -> u64 {
         let whole = self.retry_after.as_secs();
         if self.retry_after.subsec_nanos() > 0 {
             whole + 1
@@ -148,8 +160,19 @@ impl Throttle {
             .map(|(counted, exhausted)| Attempt { counted, exhausted })
     }
 
-    /// Takes back the count of a login that turned out right: the address keeps its other
-    /// failures, the username starts afresh.
+    /// Counts a lookup of a join code from `address`, or says to wait. Pass the attempt to
+    /// [`Throttle::succeeded`] when the code was right, so only misses use up the budget.
+    pub(crate) fn begin_code(&self, now: Instant, address: IpAddr) -> Result<Attempt, Blocked> {
+        let wanted = [(
+            Key::CodeAddress(network(address)),
+            self.limits.code_misses_per_ip,
+        )];
+        self.admit(now, &wanted)
+            .map(|(counted, exhausted)| Attempt { counted, exhausted })
+    }
+
+    /// Takes back the count of a login that turned out right (the address keeps its other
+    /// failures, the username starts afresh) or of a code that found its game.
     pub(crate) fn succeeded(&self, attempt: Attempt) {
         self.release(attempt, true);
     }
@@ -191,13 +214,13 @@ impl Throttle {
     /// counted and whether any of them has now reached its limit. Nothing is counted when any key
     /// is full.
     fn admit(&self, now: Instant, wanted: &[(Key, u32)]) -> Result<(Vec<Key>, bool), Blocked> {
-        let window = self.limits.window;
         let age = |counter: &Counter| now.saturating_duration_since(counter.started);
         let mut state = self.state();
-        state.sweep(now, window);
+        state.sweep(now, &self.limits);
 
         let mut wait = None;
         for (key, max) in wanted {
+            let window = window_of(&self.limits, key);
             let live = state
                 .counters
                 .get(key)
@@ -221,7 +244,7 @@ impl Throttle {
                 started: now,
                 count: 0,
             });
-            if age(slot) >= window {
+            if age(slot) >= window_of(&self.limits, key) {
                 *slot = Counter {
                     started: now,
                     count: 0,
@@ -252,13 +275,15 @@ fn network(address: IpAddr) -> IpAddr {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: each limit blocks exactly at its count and lifts exactly one window after the first attempt, blocked attempts cost nothing, a success hands its count back, addresses are grouped the way one client controls them, usernames and addresses do not share budgets, and the table stays bounded.
+    //! Goal: each limit blocks exactly at its count and lifts exactly one window after the first attempt, blocked attempts cost nothing, a success hands its count back, addresses are grouped the way one client controls them, usernames and addresses do not share budgets, join code misses follow a window of their own, and the table stays bounded.
     use std::net::Ipv4Addr;
 
     use super::*;
     use rstest::rstest;
 
     const WINDOW: Duration = Duration::from_secs(60);
+    /// Shorter than `WINDOW`, so a test can tell which window a counter follows.
+    const CODE_WINDOW: Duration = Duration::from_secs(20);
 
     fn limits() -> AttemptLimits {
         AttemptLimits {
@@ -266,6 +291,8 @@ mod tests {
             login_per_ip: 5,
             login_per_username: 3,
             register_per_ip: 2,
+            code_window: CODE_WINDOW,
+            code_misses_per_ip: 4,
         }
     }
 
@@ -584,6 +611,120 @@ mod tests {
         // The table is full, so this address goes untracked rather than locking anybody out.
         assert!(throttle.begin_register(t0, ip("10.0.0.1")).is_ok());
         assert_eq!(throttle.tracked(), MAX_TRACKED);
+    }
+
+    #[test]
+    fn code_misses_block_at_their_count_and_lift_after_their_own_window() {
+        let throttle = Throttle::new(limits());
+        let t0 = Instant::now();
+        let mut attempts = Vec::new();
+        for n in 0..4 {
+            let attempt = throttle.begin_code(t0 + secs(n), ip("10.0.0.1")).unwrap();
+            attempts.push(attempt.exhausted());
+        }
+        assert_eq!(attempts, [false, false, false, true]);
+        // The window began at the first miss and is 20 s long, not the 60 s of the logins.
+        let blocked = throttle
+            .begin_code(t0 + secs(5), ip("10.0.0.1"))
+            .unwrap_err();
+        assert_eq!(blocked.retry_after, secs(15));
+        let blocked = throttle
+            .begin_code(t0 + secs(19), ip("10.0.0.1"))
+            .unwrap_err();
+        assert_eq!(blocked.retry_after, secs(1));
+        // Other addresses are untouched.
+        assert!(throttle.begin_code(t0 + secs(5), ip("10.0.0.2")).is_ok());
+        assert!(throttle.begin_code(t0 + secs(20), ip("10.0.0.1")).is_ok());
+    }
+
+    #[test]
+    fn a_code_that_finds_its_game_costs_nothing() {
+        let throttle = Throttle::new(limits());
+        let t0 = Instant::now();
+        for _ in 0..200 {
+            let attempt = throttle.begin_code(t0, ip("10.0.0.1")).unwrap();
+            throttle.succeeded(attempt);
+        }
+        assert_eq!(throttle.tracked(), 0);
+        // Misses count, hits in between do not undo them.
+        for _ in 0..3 {
+            throttle.begin_code(t0, ip("10.0.0.1")).unwrap();
+        }
+        let hit = throttle.begin_code(t0, ip("10.0.0.1")).unwrap();
+        throttle.succeeded(hit);
+        assert!(throttle.begin_code(t0, ip("10.0.0.1")).is_ok());
+        assert!(throttle.begin_code(t0, ip("10.0.0.1")).is_err());
+    }
+
+    #[test]
+    fn code_misses_logins_and_registrations_do_not_share_a_budget() {
+        let throttle = Throttle::new(limits());
+        let t0 = Instant::now();
+        for _ in 0..4 {
+            throttle.begin_code(t0, ip("10.0.0.1")).unwrap();
+        }
+        assert!(throttle.begin_code(t0, ip("10.0.0.1")).is_err());
+        assert!(throttle.begin_login(t0, ip("10.0.0.1"), "ann").is_ok());
+        assert!(throttle.begin_register(t0, ip("10.0.0.1")).is_ok());
+        for _ in 0..2 {
+            throttle
+                .begin_register(t0 + secs(30), ip("10.0.0.3"))
+                .unwrap();
+        }
+        assert!(
+            throttle
+                .begin_register(t0 + secs(30), ip("10.0.0.3"))
+                .is_err()
+        );
+        assert!(throttle.begin_code(t0 + secs(30), ip("10.0.0.3")).is_ok());
+    }
+
+    #[rstest]
+    #[case::same_v4("10.0.0.1", "10.0.0.1", true)]
+    #[case::other_v4("10.0.0.1", "10.0.0.2", false)]
+    #[case::same_v6_64("2001:db8:1:2::1", "2001:db8:1:2:ffff:ffff:ffff:ffff", true)]
+    #[case::other_v6_64("2001:db8:1:2::1", "2001:db8:1:3::1", false)]
+    #[case::mapped_v4("10.0.0.1", "::ffff:10.0.0.1", true)]
+    fn code_misses_are_counted_per_network(
+        #[case] first: &str,
+        #[case] second: &str,
+        #[case] same: bool,
+    ) {
+        let throttle = Throttle::new(AttemptLimits {
+            code_misses_per_ip: 1,
+            ..limits()
+        });
+        let t0 = Instant::now();
+        assert!(throttle.begin_code(t0, ip(first)).is_ok());
+        assert_eq!(throttle.begin_code(t0, ip(second)).is_err(), same);
+    }
+
+    #[test]
+    fn the_sweep_judges_each_counter_by_its_own_window() {
+        let throttle = Throttle::new(limits());
+        let t0 = Instant::now();
+        // More code counters than the first sweep waits for, plus one login that lasts longer.
+        for n in 0..1_100u32 {
+            let address = IpAddr::V4(Ipv4Addr::from(0x0a00_0000 + n));
+            throttle.begin_code(t0, address).unwrap();
+        }
+        for _ in 0..3 {
+            throttle.begin_login(t0, ip("10.9.9.9"), "ann").unwrap();
+        }
+        assert_eq!(throttle.tracked(), 1_100 + 2);
+        // 30 s on, the code counters (20 s) have expired and the login counters (60 s) have not.
+        // The table is swept once it has doubled since the last sweep, which new traffic brings about.
+        for n in 0..1_000u32 {
+            let address = IpAddr::V4(Ipv4Addr::from(0x0b00_0000 + n));
+            throttle.begin_register(t0 + secs(30), address).unwrap();
+        }
+        assert_eq!(throttle.tracked(), 2 + 1_000);
+        assert!(
+            throttle
+                .begin_login(t0 + secs(30), ip("10.9.9.9"), "ann")
+                .is_err(),
+            "the username still has its three tries counted"
+        );
     }
 
     #[test]

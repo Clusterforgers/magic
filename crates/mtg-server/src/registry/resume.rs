@@ -151,6 +151,7 @@ impl Registry {
         let created = now.checked_sub(record.age).unwrap_or(now);
         let parts = Parts {
             visibility: record.visibility,
+            code: record.code_digest.map(TokenDigest::from_bytes),
             seats,
         };
         self.games().insert(id, Entry::new(handle, parts, created));
