@@ -74,7 +74,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [x] (B1) Deck list page: the account's decks with name, format, size and check state; new, import (text, Arena, MTGO), export and delete
 - [x] (B2) Deck builder page: card search with filters, add and remove by zone, counts, save with the check on save (`docs/deck-check.md`)
 - [x] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
-- [ ] (B3) Deck check, remaining: the card preview with the unsupported clauses underlined, the live check while building, and each deck's state in the lobby and the precon browser (`docs/deck-check.md`)
+- [ ] (B3) Deck check, remaining: each deck's state in the lobby and the precon browser (`docs/deck-check.md`)
 - [ ] Precon browser with one-click play
 - [ ] Choose a deck in the lobby: a stored deck or a precon per seat; the table sees each seat's deck state as a count of manual cards, never their names (`docs/deck-check.md`)
 - [x] N-player layout, game log, stack panel, stop settings

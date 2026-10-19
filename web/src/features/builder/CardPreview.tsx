@@ -203,9 +203,9 @@ function Body({ card, api }: { card: CardHit; api: CardsApi }) {
   const support = state.status === 'ready' ? state.detail.card.support : card.support
   return (
     <>
-      <header className="grid gap-2">
+      <header className="grid gap-2 pr-12">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <DialogTitle className="min-w-0 break-words">{card.name}</DialogTitle>
+          <DialogTitle className="min-w-0 pr-0 break-words">{card.name}</DialogTitle>
           {hasManyFaces(card) ? null : <ManaCost cost={card.mana_cost} />}
         </div>
         <DialogDescription>{card.type_line}</DialogDescription>
