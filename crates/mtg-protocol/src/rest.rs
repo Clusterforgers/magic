@@ -1,8 +1,10 @@
-//! Bodies of the account endpoints of `mtg-server` (`/api/auth/*`) and of the signed-in user's
-//! game list (`/api/me/games`), with TypeScript bindings.
+//! Bodies of the account endpoints of `mtg-server` (`/api/auth/*`), of the signed-in user's game
+//! list (`/api/me/games`) and of the card endpoints (`/api/cards`), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The game bodies
 //! (`POST /api/games`, `GET /api/games/{id}`) are still written by hand on the web side.
+
+mod cards;
 
 use std::fmt;
 
@@ -10,6 +12,11 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
+
+pub use cards::{
+    CardColor, CardDetail, CardFaceView, CardHit, CardImages, CardSearchPage, DEFAULT_PER_PAGE,
+    ImageLinks, MAX_PAGE, MAX_PER_PAGE, PrintingView, RulingView,
+};
 
 /// Fewest characters in a username.
 pub const USERNAME_MIN_CHARS: usize = 3;

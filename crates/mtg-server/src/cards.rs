@@ -9,9 +9,12 @@ use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use mtg_cards::assemble::Assembled;
+use mtg_cards::deck::{CardFacts, Legality};
 use mtg_cards::load::Library;
+use mtg_cards::support::SupportRecord;
 use mtg_cards::{Caps, CardDefinition, PrintedCard, PrintedFace, builtin};
 use mtg_core::mana::ManaType;
+use mtg_db::codec::legality_keyword;
 use mtg_db::{Card, Database, StoredFace};
 use mtg_import::ids::OracleId;
 use sqlx::PgPool;
@@ -66,6 +69,24 @@ pub fn printed_card(card: &Card) -> PrintedCard {
     }
 }
 
+/// A stored card as the deck check reads it: the imported side, the color identity and the legalities.
+pub fn card_facts(card: &Card) -> CardFacts {
+    CardFacts {
+        printed: printed_card(card),
+        color_identity: card.color_identity,
+        legalities: card
+            .legalities
+            .iter()
+            .map(|(format, legality)| {
+                (
+                    format.clone(),
+                    Legality::parse(legality_keyword(*legality)),
+                )
+            })
+            .collect(),
+    }
+}
+
 /// The spelling of an oracle id the database answers with, so `A1B2...` and `a1b2...` are one card.
 fn canonical(id: &str) -> String {
     Uuid::parse_str(id).map_or_else(|_| id.to_owned(), |uuid| uuid.to_string())
@@ -105,11 +126,27 @@ impl CardSource {
         self
     }
 
-    fn library(&self) -> Result<&Library, CatalogError> {
+    /// The rules files this source assembles with.
+    pub(crate) fn library(&self) -> Result<&Library, CatalogError> {
         match &self.rules {
             Some(rules) => Ok(rules),
             None => builtin::library().map_err(|errors| CatalogError::Rules(errors.to_string())),
         }
+    }
+
+    /// What the engine of this source runs.
+    pub(crate) fn caps(&self) -> &Caps {
+        &self.caps
+    }
+
+    /// The card database behind this source.
+    pub(crate) fn database(&self) -> &Database {
+        &self.db
+    }
+
+    /// How far the game plays a stored card: the pure lookup the deck check calls.
+    pub(crate) fn support_of(&self, card: &Card) -> Result<SupportRecord, CatalogError> {
+        Ok(self.library()?.support(&printed_card(card), &self.caps))
     }
 
     /// Assembles each distinct card of `ids`, keyed by the id as it was asked for. Every id the
