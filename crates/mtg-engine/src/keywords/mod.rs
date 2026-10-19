@@ -208,11 +208,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
     }
 }
 
-/// The keywords printed on a card, in the order of its rules.
-///
-/// Only [`keywords_of`] starts from this; it also answers for last known information, because what a card
-/// printed does not change when it changes zones.
-pub fn printed(object: &GameObject) -> impl Iterator<Item = &Keyword> {
+/// The keywords printed on a card, in the order of its rules; only [`keywords_of`] starts from them.
+fn printed(object: &GameObject) -> impl Iterator<Item = &Keyword> {
     object
         .card()
         .rules

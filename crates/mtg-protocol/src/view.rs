@@ -36,7 +36,7 @@ pub struct PermanentView {
     pub tapped: bool,
     /// Damage marked on it this turn.
     pub damage: u32,
-    /// Whether it has not been under its controller's control since their turn began.
+    /// Whether summoning sickness holds it back: it has not been under its controller's control since their turn began and has no haste.
     pub summoning_sick: bool,
 }
 

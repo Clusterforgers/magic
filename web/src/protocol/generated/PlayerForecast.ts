@@ -6,7 +6,7 @@ import type { PlayerId } from "./PlayerId";
  */
 export type PlayerForecast = { 
 /**
- * The player under attack, or one who gains life from the damage.
+ * The player under attack.
  */
 player: PlayerId, 
 /**

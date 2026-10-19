@@ -68,7 +68,7 @@ pub struct CreatureForecast {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct PlayerForecast {
-    /// The player under attack, or one who gains life from the damage.
+    /// The player under attack.
     pub player: PlayerId,
     /// Combat damage they are expected to take (0 when every attacker aimed at them is blocked).
     pub damage: u32,
@@ -88,7 +88,7 @@ pub struct CombatForecast {
     pub attackers: Vec<AttackerForecast>,
     /// Every creature in combat, by id, with its expected damage and fate.
     pub creatures: Vec<CreatureForecast>,
-    /// Every player an attacker is aimed at or whose life the damage changes, by seat.
+    /// Every player an attacker is aimed at, by seat.
     pub players: Vec<PlayerForecast>,
 }
 
@@ -154,17 +154,6 @@ pub fn combat_forecast(state: &GameState) -> CombatForecast {
             }
         }
     }
-    // Lifelink changes the life of players nobody attacks.
-    attacked.extend(
-        state
-            .players()
-            .iter()
-            .map(crate::player::Player::id)
-            .filter(|id| {
-                state.player(*id).map(crate::player::Player::life)
-                    != run.after.player(*id).map(crate::player::Player::life)
-            }),
-    );
 
     CombatForecast {
         attackers,

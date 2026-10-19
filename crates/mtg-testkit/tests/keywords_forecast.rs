@@ -313,17 +313,20 @@ fn the_forecast_of_a_fight_names_what_each_keyword_changes(
 }
 
 #[test]
-fn the_forecast_carries_lifelink_to_the_life_of_players_nobody_attacks() -> Result<(), ScriptError>
-{
-    let (_, forecast) = forecast_of_fight(&[("A", 3, 3, "lifelink")], &[("B", 1, 1, "")], &[])?;
+fn the_forecast_lists_the_players_attacked_and_not_the_one_who_gains_life_from_attacking()
+-> Result<(), ScriptError> {
+    let (mut driver, forecast) =
+        forecast_of_fight(&[("A", 3, 3, "lifelink")], &[("B", 1, 1, "")], &[])?;
     let lives: Vec<(usize, i32, i32, bool)> = forecast
         .players
         .iter()
         .map(|p| (p.player.index(), p.life, p.life_after, p.lethal))
         .collect();
-    // The player attacked takes 3; the attacker's controller gains 3 and is listed for it.
-    assert_eq!(lives, [(0, 20, 23, false), (1, 20, 17, false)]);
-    Ok(())
+    // The player attacked takes 3; the attacker's controller is not attacked, so only the real game shows the gain.
+    assert_eq!(lives, [(1, 20, 17, false)]);
+    driver.idle_until(2, Step::EndCombat)?;
+    driver.expect_life(0, 23)?;
+    driver.expect_life(1, 17)
 }
 
 #[test]

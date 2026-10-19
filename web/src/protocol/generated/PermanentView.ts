@@ -13,6 +13,6 @@ tapped: boolean,
  */
 damage: number, 
 /**
- * Whether it has not been under its controller's control since their turn began.
+ * Whether summoning sickness holds it back: it has not been under its controller's control since their turn began and has no haste.
  */
 summoning_sick: boolean, };
