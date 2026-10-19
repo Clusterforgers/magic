@@ -11,7 +11,7 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { DeckMarker } from '@/features/decks/DeckMarker'
 import { cardsText, DECK_FORMATS, formatLabel } from '@/features/decks/format'
 import { cn } from '@/lib/utils'
-import type { DeckReport, DeckState, DeckZone } from '@/protocol/generated'
+import type { DeckState, DeckZone } from '@/protocol/generated'
 import { CheckBar } from './CheckBar'
 import { hasRoom, linesIn, totalOf } from './deckEdit'
 import type { Draft } from './deckEdit'
@@ -20,6 +20,7 @@ import { LineRow } from './LineRow'
 import type { LineActions } from './LineRow'
 import { arrange, checkOf, checksOf } from './report'
 import type { SortKey } from './report'
+import type { LiveCheck } from './useLiveCheck'
 import { ZONE_TITLE, ZONES } from './zones'
 
 /** What the deck pane can ask of the builder. */
@@ -35,8 +36,8 @@ interface DeckPaneProps {
   state: DeckState
   /** A check is stored but the deck, the rules of its cards or the engine changed since it. */
   changed: boolean
-  /** The check of the deck as last saved: its legality issues and the support of each card. */
-  report: DeckReport
+  /** The check the pane shows: the saved deck's report, or the live check of the draft (its legality issues and the support of each card). */
+  check: LiveCheck
   /** The draft differs from what is saved. */
   dirty: boolean
   saving: boolean
@@ -52,13 +53,14 @@ interface DeckPaneProps {
 /**
  * The deck half of the builder: the name, format and Save, the marker of the deck's check ("Unsaved changes" joins it
  * while the draft differs), the check's counts with the Issues only switch and the sort, then the legality issues and
- * the lines by zone with a total each. Only the lines scroll.
+ * the lines by zone with a total each. The counts, marks, reasons and legality follow the draft through the live
+ * check. Only the lines scroll.
  */
 export function DeckPane({
   draft,
   state,
   changed,
-  report,
+  check,
   dirty,
   saving,
   nameProblem,
@@ -70,7 +72,10 @@ export function DeckPane({
   const id = useId()
   const [issuesOnly, setIssuesOnly] = useState(false)
   const [sort, setSort] = useState<SortKey>('name')
+  const { report } = check
   const checks = useMemo(() => checksOf(report), [report])
+  // The report is of the saved list while the draft's cards differ and no check of them has come back.
+  const asSaved = check.source === 'saved' && check.status !== 'current'
   const total = totalOf(draft)
   const room = hasRoom(draft)
   const zones: readonly DeckZone[] = ZONES.filter(
@@ -142,7 +147,11 @@ export function DeckPane({
         {total === 0 ? null : (
           <CheckBar
             counts={report.summary.counts}
-            stale={dirty}
+            asSaved={asSaved}
+            status={check.status}
+            error={check.error}
+            source={check.source}
+            onRetry={check.retry}
             issuesOnly={issuesOnly}
             onIssuesOnly={setIssuesOnly}
             sort={sort}
@@ -180,7 +189,7 @@ export function DeckPane({
           </EmptyState>
         ) : (
           <div className="grid gap-4">
-            <LegalitySection issues={report.legality} format={report.format} stale={dirty} />
+            <LegalitySection issues={report.legality} format={report.format} stale={asSaved} />
             {shown.length === 0 ? (
               <EmptyState icon={ShieldCheckIcon} as="h3" title="No cards with issues">
                 Every card in this deck plays without manual steps. Turn off Issues only to see the whole

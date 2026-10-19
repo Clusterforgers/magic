@@ -24,10 +24,12 @@ import {
   totalOf,
 } from './deckEdit'
 import type { Draft } from './deckEdit'
+import { CardPreview } from './CardPreview'
 import { DeckPane } from './DeckPane'
 import type { DeckActions } from './DeckPane'
 import { LeaveDialog } from './LeaveDialog'
 import { SearchPane } from './SearchPane'
+import { useLiveCheck } from './useLiveCheck'
 import { useUnsavedGuard } from './useUnsavedGuard'
 import { ZONE_THE, ZONE_TO } from './zones'
 
@@ -75,9 +77,11 @@ interface BuilderProps {
 
 /**
  * The deck builder for one stored deck: card search beside the deck. Edits stay in the browser until Save sends the
- * whole deck; the server checks it and answers the report that the deck pane then shows, with the marker. Leaving with
- * unsaved changes asks first. From the `sm` breakpoint the page is as tall as the window under the header and the two panes scroll inside
- * their own regions; under `lg` a Search or Deck switch shows one at a time.
+ * whole deck; the server checks it and answers the report that the deck pane then shows, with the marker. While the
+ * draft's cards differ from the saved ones the deck is checked live (`useLiveCheck`), so the counts, marks and reasons
+ * follow the draft. A card's name opens its preview. Leaving with unsaved changes asks first. From the `sm` breakpoint
+ * the page is as tall as the window under the header and the two panes scroll inside their own regions; under `lg` a
+ * Search or Deck switch shows one at a time.
  */
 export function Builder({ view, api, cards }: BuilderProps) {
   const [stored, setStored] = useState(() => ({ view, draft: draftOf(view) }))
@@ -91,10 +95,14 @@ export function Builder({ view, api, cards }: BuilderProps) {
   const [nameProblem, setNameProblem] = useState<string | null>(null)
   const [announcement, setAnnouncement] = useState('')
   const [shown, setShown] = useState<Shown>('search')
+  // The card whose preview is open, kept after it closes so it fades out whole, and the control that opened it.
+  const [preview, setPreview] = useState<{ card: CardHit; open: boolean } | null>(null)
+  const opener = useRef<HTMLElement | null>(null)
   const nameRef = useRef<HTMLInputElement>(null)
   const savingRef = useRef(false)
 
   const dirty = !sameDeck(draft, stored.draft)
+  const check = useLiveCheck(api, { draft: stored.draft, report: stored.view.report }, draft)
   usePageTitle(`Edit ${stored.view.name}`)
   const blocker = useUnsavedGuard(dirty)
 
@@ -110,6 +118,11 @@ export function Builder({ view, api, cards }: BuilderProps) {
     setDraft(next)
     const copies = copiesOf(next, card.oracle_id, zone)
     setAnnouncement(`Added ${card.name} to ${ZONE_THE[zone]}: ${copies} ${copies === 1 ? 'copy' : 'copies'}.`)
+  }
+
+  function showPreview(card: CardHit, from: HTMLElement): void {
+    opener.current = from
+    setPreview({ card, open: true })
   }
 
   async function save(): Promise<void> {
@@ -164,6 +177,7 @@ export function Builder({ view, api, cards }: BuilderProps) {
       setAnnouncement(`Moved ${nameOf(zone, id)} to ${ZONE_TO[to]}.`)
       setDraft((current) => moveLine(current, zone, id, to, count))
     },
+    preview: showPreview,
   }
 
   return (
@@ -175,13 +189,14 @@ export function Builder({ view, api, cards }: BuilderProps) {
           api={cards}
           draft={draft}
           onAdd={add}
+          onPreview={showPreview}
           className={cn(shown === 'search' ? 'flex' : 'hidden', 'lg:flex')}
         />
         <DeckPane
           draft={draft}
           state={stored.view.state}
           changed={stored.view.changed}
-          report={stored.view.report}
+          check={check}
           dirty={dirty}
           saving={saving}
           nameProblem={nameProblem}
@@ -194,6 +209,13 @@ export function Builder({ view, api, cards }: BuilderProps) {
       <p role="status" className="sr-only">
         {announcement}
       </p>
+      <CardPreview
+        card={preview?.card ?? null}
+        open={preview?.open === true}
+        api={cards}
+        finalFocus={opener}
+        onClose={() => setPreview((current) => current && { ...current, open: false })}
+      />
       <LeaveDialog blocker={blocker} name={draft.name} />
     </PageShell>
   )

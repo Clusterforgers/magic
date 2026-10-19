@@ -288,7 +288,9 @@ describe('targets', () => {
     expect(pane.getByRole('button', { name: 'Red' })).toHaveClass('pointer-coarse:size-11')
     await user.type(searchBox(), 'card')
     await screen.findByText('1–40 of 45')
-    expect(pane.getAllByRole('button', { name: /^Add Card 001 to main deck/ })[0]).toHaveClass('min-h-11')
+    expect(pane.getAllByRole('button', { name: /^Add Card 001 to main deck/ })[0]?.parentElement).toHaveClass(
+      'min-h-11',
+    )
     expect(pane.getByRole('button', { name: 'Add Card 001 to another part of the deck' })).toHaveClass(
       'pointer-coarse:size-11',
     )
