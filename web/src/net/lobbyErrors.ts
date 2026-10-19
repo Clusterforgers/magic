@@ -114,8 +114,47 @@ const MESSAGES: Record<LobbyFailureCode, (error: LobbyError) => string> = {
     `The server gave an answer this page could not read${error.status > 0 ? ` (status ${error.status})` : ''}. It may be down or restarting; try again in a moment.`,
 }
 
-/** What to tell a player about a failed call; anything that is not a `LobbyError` gets a general apology. */
-export function describeLobbyError(error: unknown): string {
-  if (error instanceof LobbyError) return MESSAGES[error.code](error)
+/** What a lobby control was doing when it failed; a few codes read better with that said. */
+export type LobbyAbout = 'visibility' | 'close' | 'remove' | 'leave'
+
+const GONE = 'This game is no longer open. The host may have closed it, or it may have started.'
+
+// Only the codes whose general sentence talks about joining or a code have their own here; the rest read the same.
+const ABOUT: Record<LobbyAbout, Partial<Record<LobbyFailureCode, string>>> = {
+  visibility: {
+    forbidden: 'Only the host can change who can find the game.',
+    not_found: GONE,
+    started: 'The game has already started, so who can find it can no longer change.',
+  },
+  close: {
+    forbidden: 'Only the host can close the game.',
+    not_found: 'This game is already closed or gone.',
+    started: 'The game has already started, so it can no longer be closed from the lobby.',
+  },
+  remove: {
+    forbidden: 'Only the host can remove a player.',
+    not_found: GONE,
+    started: 'The game has already started, so players can no longer be removed.',
+    not_claimed:
+      'That seat was made with the game, not taken through the game browser or a code, so its player cannot be removed.',
+  },
+  leave: {
+    forbidden: 'You cannot give back a seat that is not yours.',
+    not_found:
+      'You no longer have a seat in this game. It may have been closed, or the host may have removed you.',
+    started: 'The game has already started, so a seat can no longer be given back.',
+    not_claimed:
+      "This seat came with the game's own link, so it cannot be given back. Close this tab to stop playing it.",
+  },
+}
+
+/**
+ * What to tell a player about a failed call; anything that is not a `LobbyError` gets a general apology. `about` names
+ * the lobby control that failed, for the codes whose general sentence talks about joining.
+ */
+export function describeLobbyError(error: unknown, about?: LobbyAbout): string {
+  if (error instanceof LobbyError) {
+    return (about === undefined ? undefined : ABOUT[about][error.code]) ?? MESSAGES[error.code](error)
+  }
   return 'Something unexpected went wrong. Try again.'
 }

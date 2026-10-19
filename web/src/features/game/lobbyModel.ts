@@ -129,3 +129,15 @@ export function seatState(row: Pick<LobbyRow, 'connected' | 'ready'>): SeatState
   if (row.ready) return 'ready'
   return row.connected ? 'waiting' : 'away'
 }
+
+/**
+ * Whether the host may take the player in `row` out of the game: a seat somebody took (it has a name), not the host's
+ * own, and not one the game came with (`issued`: the seats this tab holds a token for, which the server cannot give back).
+ */
+export function removable(
+  row: Pick<LobbyRow, 'seat' | 'named'>,
+  hostSeat: number,
+  issued: ReadonlySet<number>,
+): boolean {
+  return row.named && row.seat !== hostSeat && !issued.has(row.seat)
+}
