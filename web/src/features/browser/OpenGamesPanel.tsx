@@ -143,7 +143,8 @@ export function OpenGamesPanel({ open, onJoin, onFocusCode }: Props) {
             {describeLobbyError(error)}
             {stale ? ' The games below may be out of date.' : ''}
           </AlertDescription>
-          <div className="mt-2">
+          {/* Under the words, so the icon's column stays as wide as the icon. */}
+          <div className="col-start-2 mt-2">
             <Button type="button" loading={refreshing} onClick={refresh}>
               Retry
             </Button>

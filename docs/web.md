@@ -55,9 +55,11 @@ The tokens, scales and pieces of [ui-design.md](ui-design.md). `src/index.css` h
 | Theme | `ThemeMenu`: Light, Dark, System |
 | Account | `AccountNav`: Sign in and Register for a guest, a menu named after the username with Sign out for an account; nothing while unknown or without accounts |
 
-Play and Create both open `/` until the game browser moves Create to `/new`. Under 640 px the navigation drops to a second row and Register leaves the header (the sign-in page links to it).
+Play opens `/` and Create opens `/new`. Under 640 px the navigation drops to a second row and Register leaves the header (the sign-in page links to it).
 
 A page that takes the whole window calls `useFullBleed` (`components/appChrome`, counted, so two pages swapping do not flicker): the shell then draws no header, its root is the window high with `overflow: hidden` (`data-bleed`), and only the offline notice floats over the page. The game table is the one such page.
+
+A page that only fits the window under the header calls `useFitWindow`: the root is the window high (`data-fit`) and `main` is a flex column that takes the rest, so the page scrolls one region inside itself and the page never scrolls. Play is the one such page.
 
 ## Data flow
 
@@ -86,7 +88,9 @@ The session's rules:
 
 ## Create and game pages
 
-- `/` (`create/CreateGamePage`): decks from `api.listDecks()`, 2 to 12 seats with a name and a deck, format Normal (Commander shown disabled). `create/form.ts` repeats the server's checks; `create/apiErrors.ts` words every `ApiError` code.
+- `/` (`browser/PlayPage`): the open games of `GET /api/lobbies`, a Create game link to `/new` and a "Join with a code" field. `useOpenGames` polls 5 s after each answer with the held `ETag` (a 304 keeps the same rows), pauses while the tab is hidden and keeps the rows, dimmed, beside an error with Retry. The rows are a table with a caption from the M breakpoint up and stacked rows under it, in a region that scrolls inside the page (`useFitWindow`); polling never moves focus, and `FocusKeeper` sends it from a removed row to the next Join. A join calls `onJoin(target)`; the route passes none, so every Join is disabled under the note "Joining is the next piece".
+
+- `/new` (`create/CreateGamePage`): decks from `api.listDecks()`, 2 to 12 seats with a name and a deck, format Normal (Commander shown disabled). `create/form.ts` repeats the server's checks; `create/apiErrors.ts` words every `ApiError` code.
 - `/game/$gameId#seat=<n>&token=<token>` (`game/GameRoute`) reads the fragment from the router's raw `location.href`, because its `hash` is percent-decoded.
 - A seat token lives only in the fragment, which a browser never sends. `components/SeatLinkRow` prints it only inside a `data-share-link` anchor, and tests scan the page for tokens outside those (`test-utils/leaks.ts`). `lib/invites.ts` keeps the host's links in `sessionStorage` (every access in try/catch) so the lobby can hand them out after the create page is gone.
 - `game/GamePage` makes one session per (game, seat, token) and connects one microtask after mount, so StrictMode's mount, unmount, mount opens one socket. `game/gameContext` gives `useGame()` (`game`, `session`, `lookup`) and `usePlay(selector)`; `lookup` is `GET /api/games/{id}`, polled every 3 s in the lobby.
