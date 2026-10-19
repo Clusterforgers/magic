@@ -259,6 +259,41 @@ fn gate(card: &Card, printed: &PrintedCard, caps: &Caps) -> (Support, Vec<Clause
     (state, clauses)
 }
 
+/// Whether `text` says anything outside parentheses.
+///
+/// Reminder text in parentheses explains a rule and adds none. A parenthesis that never closes counts
+/// as text, since nothing then shows that the rest is only a reminder.
+pub fn has_rules_text(text: &str) -> bool {
+    let mut depth = 0usize;
+    for c in text.chars() {
+        match c {
+            '(' => depth += 1,
+            ')' if depth > 0 => depth -= 1,
+            c if depth == 0 && !c.is_whitespace() => return true,
+            _ => {}
+        }
+    }
+    depth > 0
+}
+
+/// A card without a rules file: one with no rules text on any face plays as printed, any other is left to the table.
+fn unfiled(printed: &PrintedCard, caps: &Caps) -> (Support, Vec<Clause>) {
+    let vanilla = !printed.faces.is_empty()
+        && printed
+            .faces
+            .iter()
+            .all(|face| !has_rules_text(&face.oracle_text));
+    if !vanilla {
+        return (Support::Manual, Vec::new());
+    }
+    let gaps = printed_gaps(printed, caps);
+    if gaps.is_empty() {
+        (Support::Verified, Vec::new())
+    } else {
+        (Support::Manual, gaps)
+    }
+}
+
 /// The support of one card: a pure function of its rules file (if any), its imported text and the engine's capabilities.
 pub fn support(card: Option<&Card>, printed: &PrintedCard, caps: &Caps) -> SupportRecord {
     let current: Vec<String> = printed
@@ -267,7 +302,8 @@ pub fn support(card: Option<&Card>, printed: &PrintedCard, caps: &Caps) -> Suppo
         .map(|face| oracle_fingerprint(&face.oracle_text))
         .collect();
     let (state, clauses) = match card.map(|c| (c, c.impl_status)) {
-        None | Some((_, ImplStatus::Manual)) => (Support::Manual, Vec::new()),
+        None => unfiled(printed, caps),
+        Some((_, ImplStatus::Manual)) => (Support::Manual, Vec::new()),
         Some((_, ImplStatus::Unplayable)) => (Support::Unplayable, Vec::new()),
         Some((card, ImplStatus::Full | ImplStatus::Partial)) => {
             let drifted = card.faces.len() != printed.faces.len()
@@ -467,5 +503,120 @@ mod tests {
         assert_ne!(fa, support(Some(&b), &p, &caps).fingerprint);
         assert_ne!(fa, support(Some(&a), &p, &Caps::none()).fingerprint);
         assert_ne!(fa, support(None, &p, &caps).fingerprint);
+    }
+
+    #[rstest]
+    #[case::nothing("", false)]
+    #[case::blanks("  \n\t ", false)]
+    #[case::reminder("({T}: Add {G}.)", false)]
+    #[case::reminder_lines("(One.)\n(Two.)", false)]
+    #[case::nested("(Outer (inner) reminder.)", false)]
+    #[case::keyword("Flying", true)]
+    #[case::keyword_with_reminder("Flying (This creature can't be blocked.)", true)]
+    #[case::text_after_reminder("({T}: Add {C}.) {T}: Add {C}.", true)]
+    #[case::text_without_reminder("{T}: Add {C}.", true)]
+    #[case::never_closed("(Add {G}.", true)]
+    #[case::stray_close(") Add {G}.", true)]
+    fn only_text_outside_parentheses_is_rules_text(#[case] text: &str, #[case] expected: bool) {
+        assert_eq!(has_rules_text(text), expected);
+    }
+
+    fn vanilla(text: &str) -> PrintedCard {
+        let mut shown = printed(text);
+        shown.faces[0].type_line = "Creature \u{2014} Bear".into();
+        shown.faces[0].power = Some("2".into());
+        shown.faces[0].toughness = Some("2".into());
+        shown
+    }
+
+    #[rstest]
+    #[case::vanilla_creature("", Support::Verified)]
+    #[case::basic_land("({T}: Add {G}.)", Support::Verified)]
+    #[case::reminder_lines("(One.)\n(Two.)", Support::Verified)]
+    #[case::keyword("Flying", Support::Manual)]
+    #[case::keyword_with_reminder("Flying (Reminder.)", Support::Manual)]
+    #[case::wastes("{T}: Add {C}.", Support::Manual)]
+    #[case::spell(TEXT, Support::Manual)]
+    #[case::never_closed("(Reminder", Support::Manual)]
+    fn a_card_without_a_file_is_verified_only_when_it_has_no_rules_text(
+        #[case] text: &str,
+        #[case] expected: Support,
+        #[values(Caps::none(), Caps::everything())] caps: Caps,
+    ) {
+        let record = support(None, &vanilla(text), &caps);
+        assert_eq!(record.support, expected);
+        assert!(
+            record.clauses.is_empty(),
+            "nothing is left to the table: {:?}",
+            record.clauses
+        );
+    }
+
+    #[test]
+    fn a_card_printed_beyond_the_engine_stays_manual_until_the_engine_catches_up() {
+        let mut star = vanilla("");
+        star.faces[0].power = Some("*".into());
+        let record = support(None, &star, &Caps::none());
+        assert_eq!(record.support, Support::Manual);
+        assert_eq!(record.clauses.len(), 1, "{:?}", record.clauses);
+        assert!(record.clauses[0].reason.contains("power"));
+        let lifted = Caps::from_names([crate::assemble::VARIABLE_STATS]);
+        assert_eq!(support(None, &star, &lifted).support, Support::Verified);
+
+        let mut two_faced = vanilla("");
+        two_faced.faces.push(PrintedFace {
+            name: "Back".into(),
+            type_line: "Creature \u{2014} Bear".into(),
+            ..PrintedFace::default()
+        });
+        let record = support(None, &two_faced, &Caps::none());
+        assert_eq!((record.support, record.clauses.len()), (Support::Manual, 1));
+        let lifted = Caps::from_names([crate::assemble::FACES]);
+        assert_eq!(
+            support(None, &two_faced, &lifted).support,
+            Support::Verified
+        );
+    }
+
+    #[test]
+    fn a_record_without_faces_has_no_text_to_vouch_for() {
+        let bare = PrintedCard::default();
+        assert_eq!(
+            support(None, &bare, &Caps::everything()).support,
+            Support::Manual
+        );
+    }
+
+    #[test]
+    fn a_declared_manual_card_stays_manual_even_when_its_text_is_empty() {
+        let rules = card(ImplStatus::Manual, vec![], "");
+        let record = support(Some(&rules), &vanilla(""), &Caps::everything());
+        assert_eq!(record.support, Support::Manual);
+    }
+
+    mod generated {
+        //! Goal: over generated texts, a text is rules text exactly when something stands outside every balanced pair of parentheses.
+        use super::*;
+        use proptest::prelude::*;
+
+        /// A piece of text and whether it says anything on its own.
+        fn piece() -> impl Strategy<Value = (String, bool)> {
+            prop_oneof![
+                prop::sample::select(vec![" ", "\n", "\t"]).prop_map(|s| (s.to_owned(), false)),
+                "[A-Za-z{}:. ]{0,12}".prop_map(|inner| (format!("({inner})"), false)),
+                "[A-Za-z]{1,6}".prop_map(|word| (word, true)),
+            ]
+        }
+
+        proptest! {
+            #[test]
+            fn text_is_rules_text_exactly_when_a_piece_outside_reminders_says_something(
+                pieces in prop::collection::vec(piece(), 0..8)
+            ) {
+                let text: String = pieces.iter().map(|(text, _)| text.as_str()).collect();
+                let expected = pieces.iter().any(|(_, says)| *says);
+                prop_assert_eq!(has_rules_text(&text), expected, "{:?}", text);
+            }
+        }
     }
 }

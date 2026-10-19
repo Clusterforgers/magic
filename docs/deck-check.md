@@ -2,12 +2,12 @@
 
 Design of the deck check: when a deck is chosen or built, a check finds the cards the game cannot play without manual steps and highlights them, and a saved deck that passes shows a Verified marker until it changes.
 
-The per-card support lookup (`Library::support` in `mtg-cards`) exists; the report, endpoint, marker and interface below are design. A card without an implementation counts as `Manual`, so the report always says how much of the deck the table resolves by hand.
+The per-card support lookup (`Library::support` in `mtg-cards`) exists; the report, endpoint, marker and interface below are design. A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
 
 ## Terms
 
 - Card support, per oracle id, is computed from the card's rules file, its imported oracle text and the primitives the engine runs ([cards-dsl.md](cards-dsl.md) owns the definitions):
-  - `Verified`: the rules cover the whole text, the text is unchanged, and the engine runs every primitive used.
+  - `Verified`: the rules cover the whole text, the text is unchanged, and the engine runs every primitive used. A card with no file and no rules text once reminder text (parentheses) is removed, such as a vanilla creature or a basic land, is `Verified` too.
   - `Partial`: implemented except the listed clauses; each carries a plain reason and the span of oracle text it covers.
   - `Manual`: no implementation; the table resolves the whole text by hand.
   - `Stale`: the oracle text changed since the rules were written (errata). Counts as `Manual` until reviewed.

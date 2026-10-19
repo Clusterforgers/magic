@@ -2,6 +2,8 @@
 
 use mtg_core::ids::ObjectId;
 
+use crate::abilities::AbilityRef;
+use crate::choose::{self, Choices, Target};
 use crate::combat::{attack_events, check_attackers, check_blockers};
 use crate::damage::assignment_answer;
 use crate::decision::{Answer, Decision, DecisionKind};
@@ -16,15 +18,22 @@ use crate::{cast, priority};
 pub(crate) enum Outcome {
     /// Fold these events.
     Events(Vec<Event>),
-    /// Start casting this spell; payment is decided next.
+    /// Start casting this spell; its announcement and payment are decided next.
     BeginCast(ObjectId),
-    /// Abandon the cast in progress.
+    /// Start activating this ability; its announcement is decided next.
+    BeginActivation(AbilityRef),
+    /// These are the targets of the next specification of the cast or activation in progress.
+    Targets(Vec<Target>),
+    /// Abandon the cast or activation in progress.
     CancelCast,
 }
 
 /// Checks `answer` against `decision`; the result is only built from legal options.
+///
+/// `announced` is what the cast in progress has announced so far, which its payment puts on the spell.
 pub(crate) fn handle(
     state: &GameState,
+    announced: &Choices,
     decision: &Decision,
     answer: Answer,
 ) -> Result<Outcome, EngineError> {
@@ -40,7 +49,7 @@ pub(crate) fn handle(
             priority::answer(player, options, action)
         }
         (DecisionKind::PayMana(options), Answer::PayMana(choice)) => {
-            cast::pay_answer(state, player, options, choice)
+            cast::pay_answer(state, player, options, choice, announced)
         }
         (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
             check_attackers(options, &attackers)?;
@@ -64,6 +73,39 @@ pub(crate) fn handle(
                     .map(|object| Event::CardDiscarded { player, object })
                     .collect(),
             ))
+        }
+        (DecisionKind::ChooseTargets(options), Answer::ChooseTargets(choice)) => {
+            choose::targets_answer(player, options, choice)
+        }
+        (DecisionKind::ChooseMode(options), Answer::ChooseMode(choice)) => {
+            choose::mode_answer(player, options, choice)
+        }
+        (DecisionKind::ChooseNumber(options), Answer::ChooseNumber(choice)) => {
+            choose::number_answer(player, options, choice)
+        }
+        (DecisionKind::DivideAmount(options), Answer::DivideAmount(choice)) => {
+            choose::divide_answer(player, options, choice)
+        }
+        (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice)) => {
+            choose::cards_answer(player, options, choice)
+        }
+        (DecisionKind::OrderCards(options), Answer::OrderCards(choice)) => {
+            choose::order_answer(player, options, choice)
+        }
+        (DecisionKind::YesNo(options), Answer::YesNo(choice)) => {
+            choose::yes_no_answer(player, options, choice)
+        }
+        (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice)) => {
+            choose::option_answer(player, options, choice)
+        }
+        (DecisionKind::ChooseCosts(options), Answer::ChooseCosts(choice)) => {
+            choose::costs_answer(player, options, choice)
+        }
+        (DecisionKind::OrderTriggers(options), Answer::OrderTriggers(choice)) => {
+            choose::triggers_answer(player, options, choice)
+        }
+        (DecisionKind::ChooseReplacement(options), Answer::ChooseReplacement(choice)) => {
+            choose::replacement_answer(player, options, choice)
         }
         (kind, answer) => Err(IllegalAnswer::WrongKind {
             expected: kind.name(),

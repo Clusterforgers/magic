@@ -9,12 +9,13 @@ mod common;
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use common::{Step, is_hidden, run_game, unique_setup};
+use common::{Step, is_hidden, run_game, unique_setup, with_unique_names};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::object::GameObject;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
+use mtg_testkit::spell_fuzz_setup;
 use rstest::rstest;
 use serde_json::Value;
 
@@ -33,6 +34,14 @@ const SCALAR_KEYS: &[&str] = &[
     "amount",
     "from_seq",
     "ability",
+    "counter",
+    "types",
+    "colors",
+    "position",
+    "modes",
+    "x",
+    "optional_costs",
+    "division",
     "Bottoming",
     "protocol_version",
     "player",
@@ -166,6 +175,44 @@ fn no_hidden_object_reaches_any_viewer(#[case] players: usize, #[case] seed: u64
     });
     assert!(engine.result().is_some(), "game should finish");
     assert!(checked > 500 && snapshots > 5, "test must not be vacuous");
+}
+
+/// Spells with targets and abilities on the stack name only things every seat may see: the cast of a spell, the
+/// ability that goes on the stack and what the resolution binds and moves are public, and no hand or library card
+/// is named by them.
+#[rstest]
+#[case(2, 21)]
+#[case(3, 22)]
+#[case(4, 23)]
+fn no_hidden_object_reaches_any_viewer_in_games_of_spells_and_abilities(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut abilities) = (0usize, 0usize);
+    let setup = with_unique_names(spell_fuzz_setup(players, seed));
+    let engine = run_game(setup, seed, |step: &Step| {
+        abilities += step
+            .events
+            .iter()
+            .filter(|event| matches!(event, mtg_engine::Event::AbilityPutOnStack(_)))
+            .count();
+        let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+        for (viewer, batch) in viewers.iter().zip(&batches) {
+            let hidden = hidden_across(step.before, step.after, *viewer);
+            checked += hidden.len();
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&value, &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
+        }
+    });
+    assert!(engine.result().is_some(), "game should finish");
+    assert!(checked > 500 && abilities > 0, "test must not be vacuous");
 }
 
 #[rstest]

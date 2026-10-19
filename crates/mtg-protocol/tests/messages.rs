@@ -5,20 +5,38 @@
 use std::collections::BTreeSet;
 use std::fmt::Debug;
 
+use mtg_cards::value::CounterKind;
+use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaType};
+use mtg_engine::abilities::{AbilityRef, Cause, PutOnStack};
+use mtg_engine::choose::{
+    CardsChoice, CardsOptions, Choice, ChoiceOption, Choices, CostsChoice, CostsOptions,
+    DivideChoice, DivideOptions, ModeChoice, ModeOption, ModeOptions, NumberChoice, NumberOptions,
+    OptionChoice, OptionOptions, OptionalCost, OrderChoice, OrderOptions, ReplacementCandidate,
+    ReplacementChoice, ReplacementOptions, Target, TargetChoice, TargetOptions, TriggerEntry,
+    TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
+};
 use mtg_engine::combat::{AttackTarget, DamageTarget};
+use mtg_engine::counters::CountersChanged;
 use mtg_engine::decision::{
     AttackOptions, AttackerOption, BlockOptions, BlockerOption, BottomOptions, DamageOptions,
     DecisionKind, DiscardOptions, MulliganChoice, MulliganOptions, PayChoice, PayOptions,
     PriorityAction, PriorityOptions,
 };
+use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::forecast::{
     AttackerForecast, CombatForecast, CreatureForecast, ForecastDamage, PlayerForecast,
 };
+use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried};
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
+use mtg_engine::object::ObjectRef;
+use mtg_engine::snapshot::snapshot;
 use mtg_engine::state::GameResult;
+use mtg_engine::tokens::TokenCreated;
+use mtg_engine::triggers::Triggered;
 use mtg_engine::turn::Step;
+use mtg_engine::zones::Zone;
 use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
     ClientMessage, DecisionId, ErrorCode, EventBatch, EventView, FullControlMode, HiddenEvent,
@@ -149,6 +167,29 @@ fn answers() -> Vec<Answer> {
         Answer::DeclareBlockers(vec![(a, b)]),
         Answer::AssignDamage(vec![(a, 2), (b, 1)]),
         Answer::Discard(vec![a]),
+        Answer::Priority(PriorityAction::Activate(AbilityRef {
+            object: a,
+            ability: 1,
+        })),
+        Answer::ChooseTargets(TargetChoice::Targets(vec![
+            Target::Player(PlayerId(1)),
+            Target::Object(ObjectRef { id: b, counter: 2 }),
+        ])),
+        Answer::ChooseTargets(TargetChoice::Targets(Vec::new())),
+        Answer::ChooseTargets(TargetChoice::Cancel),
+        Answer::ChooseMode(ModeChoice(vec![0, 2])),
+        Answer::ChooseNumber(NumberChoice(4)),
+        Answer::DivideAmount(DivideChoice(vec![
+            (Target::Player(PlayerId(0)), 2),
+            (Target::Object(ObjectRef { id: a, counter: 0 }), 1),
+        ])),
+        Answer::ChooseCards(CardsChoice(vec![a])),
+        Answer::OrderCards(OrderChoice(vec![b, a])),
+        Answer::YesNo(YesNoChoice(true)),
+        Answer::ChooseOption(OptionChoice(1)),
+        Answer::ChooseCosts(CostsChoice(vec![0])),
+        Answer::OrderTriggers(TriggersChoice(vec![1, 0])),
+        Answer::ChooseReplacement(ReplacementChoice(0)),
     ]
 }
 
@@ -178,6 +219,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             playable_lands: vec![a],
             castable: vec![b],
             mana_abilities: vec![option],
+            abilities: Vec::new(),
             can_act: true,
             can_pass: true,
         }),
@@ -221,6 +263,105 @@ fn decision_kinds() -> Vec<DecisionKind> {
         DecisionKind::Discard(DiscardOptions {
             hand: vec![a, b],
             count: 1,
+        }),
+    ]
+}
+
+/// The decisions spells and abilities added, and a priority decision that offers an ability.
+fn pipeline_decision_kinds() -> Vec<DecisionKind> {
+    let (a, b) = (ObjectId(3), ObjectId(4));
+    vec![
+        DecisionKind::Priority(PriorityOptions {
+            playable_lands: Vec::new(),
+            castable: Vec::new(),
+            mana_abilities: Vec::new(),
+            abilities: vec![AbilityRef {
+                object: a,
+                ability: 0,
+            }],
+            can_act: true,
+            can_pass: true,
+        }),
+        DecisionKind::ChooseTargets(TargetOptions {
+            source: b,
+            spec: 1,
+            legal: vec![
+                Target::Player(PlayerId(0)),
+                Target::Object(ObjectRef { id: a, counter: 0 }),
+            ],
+            min: 0,
+            max: 2,
+            can_cancel: true,
+        }),
+        DecisionKind::ChooseMode(ModeOptions {
+            source: b,
+            modes: vec![
+                ModeOption {
+                    index: 0,
+                    label: Some("Draw".into()),
+                },
+                ModeOption {
+                    index: 1,
+                    label: None,
+                },
+            ],
+            min: 1,
+            max: 2,
+            repeat: false,
+        }),
+        DecisionKind::ChooseNumber(NumberOptions {
+            source: b,
+            min: 0,
+            max: None,
+        }),
+        DecisionKind::DivideAmount(DivideOptions {
+            source: b,
+            total: 4,
+            among: vec![Target::Player(PlayerId(1)), Target::Player(PlayerId(0))],
+        }),
+        DecisionKind::ChooseCards(CardsOptions {
+            source: b,
+            from: vec![a, b],
+            min: 1,
+            max: 1,
+        }),
+        DecisionKind::OrderCards(OrderOptions {
+            source: b,
+            cards: vec![a, b],
+        }),
+        DecisionKind::YesNo(YesNoOptions { source: b }),
+        DecisionKind::ChooseOption(OptionOptions {
+            source: b,
+            options: vec![
+                ChoiceOption::Player(PlayerId(1)),
+                ChoiceOption::Color(Color::Red),
+                ChoiceOption::Label("Goblin".into()),
+            ],
+        }),
+        DecisionKind::ChooseCosts(CostsOptions {
+            source: b,
+            optional: vec![OptionalCost {
+                index: 0,
+                label: "Kicker {R}".into(),
+            }],
+        }),
+        DecisionKind::OrderTriggers(TriggersOptions {
+            triggers: vec![
+                TriggerEntry {
+                    source: ObjectRef { id: a, counter: 1 },
+                    ability: 0,
+                },
+                TriggerEntry {
+                    source: ObjectRef { id: b, counter: 0 },
+                    ability: 2,
+                },
+            ],
+        }),
+        DecisionKind::ChooseReplacement(ReplacementOptions {
+            candidates: vec![ReplacementCandidate {
+                source: a,
+                ability: 0,
+            }],
         }),
     ]
 }
@@ -426,6 +567,7 @@ fn server_samples() -> Vec<ServerMessage> {
     out.extend(
         decision_kinds()
             .into_iter()
+            .chain(pipeline_decision_kinds())
             .zip([Some(10_000), None].into_iter().cycle())
             .map(|(kind, deadline_ms)| ServerMessage::Decision {
                 id: DecisionId(8),
@@ -473,6 +615,22 @@ fn every_event_view_variant_round_trips() {
         HiddenEvent::MulliganTaken { player },
         HiddenEvent::CardsBottomed { player, count: 2 },
         HiddenEvent::ObjectLeftGame,
+        HiddenEvent::LibraryLooked { player, count: 3 },
+        HiddenEvent::CardsFound { player, count: 1 },
+        HiddenEvent::Scried {
+            player,
+            top: 1,
+            bottom: 2,
+        },
+        HiddenEvent::ZoneChanged {
+            from: Zone::Library(player),
+            to: Zone::Hand(player),
+            cause: ZoneCause::Moved,
+        },
+        HiddenEvent::ChoiceMade { player },
+        HiddenEvent::StepDone {
+            position: vec![1, 0, 2],
+        },
     ];
     for event in hidden {
         round_trip(&EventView::Hidden(event));
@@ -961,4 +1119,220 @@ fn stops_sort_own_side_first_and_each_side_in_turn_order_whether_they_last_or_no
 #[test]
 fn full_control_starts_off() {
     assert_eq!(FullControlMode::default(), FullControlMode::Off);
+}
+
+/// The events of ability objects and of a resolution, with the fields they carry.
+fn pipeline_events() -> Vec<Event> {
+    let (a, b) = (ObjectId(3), ObjectId(4));
+    let player = PlayerId(1);
+    let setup = fuzz_setup(2, 3);
+    let state = mtg_engine::GameState::from_setup(&setup).unwrap();
+    let shot = snapshot(&state, a).unwrap();
+    let source = ObjectRef { id: a, counter: 2 };
+    let target = Target::Object(ObjectRef { id: b, counter: 1 });
+    let choices = Choices {
+        modes: vec![1],
+        x: Some(3),
+        targets: vec![vec![target, Target::Player(player)]],
+        division: vec![(target, 2)],
+        optional_costs: vec![0],
+    };
+    vec![
+        Event::SpellCast {
+            player,
+            object: a,
+            choices: choices.clone(),
+        },
+        Event::AbilityPutOnStack(Box::new(PutOnStack {
+            object: ObjectId(90),
+            source,
+            snapshot: shot.clone(),
+            ability: 1,
+            controller: player,
+            choices,
+            cause: Some(Cause {
+                subjects: vec![target],
+                snapshots: vec![shot.clone()],
+            }),
+        })),
+        Event::AbilityActivated {
+            player,
+            source,
+            ability: 0,
+        },
+        Event::AbilityTriggered(Triggered {
+            source,
+            ability: 0,
+            cause: Cause::default(),
+        }),
+        Event::ResolutionBegan { object: a },
+        Event::ChoiceMade {
+            player,
+            choice: Choice::Cards(vec![a, b]),
+        },
+        Event::ChoiceMade {
+            player,
+            choice: Choice::YesNo(false),
+        },
+        Event::StepDone {
+            position: vec![2, 0, 1],
+            bound: vec![("found".into(), vec![target])],
+            snapshots: vec![shot],
+        },
+        Event::ResolutionEnded {
+            object: a,
+            outcome: ResolutionOutcome::Resolved,
+        },
+        Event::ResolutionEnded {
+            object: a,
+            outcome: ResolutionOutcome::Fizzled,
+        },
+        Event::ResolutionEnded {
+            object: a,
+            outcome: ResolutionOutcome::Countered,
+        },
+    ]
+}
+
+/// The events of the first primitives: zones, life, counters, tokens and what players learn.
+fn primitive_events() -> Vec<Event> {
+    let (a, b) = (ObjectId(3), ObjectId(4));
+    let player = PlayerId(1);
+    vec![
+        Event::ZoneChanged {
+            object: a,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(player),
+            cause: ZoneCause::Destroyed,
+        },
+        Event::LifeGained { player, amount: 3 },
+        Event::LifeLost { player, amount: 2 },
+        Event::CountersChanged(CountersChanged {
+            on: Target::Player(player),
+            counter: CounterKind::Poison,
+            delta: -1,
+        }),
+        Event::TokenCreated(TokenCreated {
+            object: ObjectId(91),
+            controller: player,
+            name: "Treasure".into(),
+        }),
+        Event::LibraryLooked(LibraryLooked {
+            player,
+            cards: vec![a],
+        }),
+        Event::CardsFound(CardsFound {
+            player,
+            zone: Zone::Library(player),
+            cards: vec![a, b],
+        }),
+        Event::Scried(Scried {
+            player,
+            top: vec![a],
+            bottom: vec![b],
+        }),
+        Event::Revealed(Revealed {
+            player,
+            cards: vec![a],
+        }),
+    ]
+}
+
+#[test]
+fn every_event_of_the_pipeline_round_trips_as_logged_and_in_a_batch() {
+    for event in pipeline_events().into_iter().chain(primitive_events()) {
+        round_trip(&event);
+        round_trip(&EventView::Public(event));
+    }
+}
+
+#[test]
+fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
+    let target = Target::Object(ObjectRef {
+        id: ObjectId(9),
+        counter: 2,
+    });
+    let decision = Decision {
+        player: PlayerId(0),
+        kind: DecisionKind::ChooseTargets(TargetOptions {
+            source: ObjectId(4),
+            spec: 0,
+            legal: vec![Target::Player(PlayerId(1)), target],
+            min: 1,
+            max: 1,
+            can_cancel: true,
+        }),
+    };
+    assert_eq!(
+        serde_json::to_value(&decision).unwrap(),
+        json!({"player": 0, "kind": {"ChooseTargets": {
+            "source": 4, "spec": 0, "min": 1, "max": 1, "can_cancel": true,
+            "legal": [{"Player": 1}, {"Object": {"id": 9, "counter": 2}}]
+        }}})
+    );
+    let shapes = [
+        (
+            Answer::ChooseTargets(TargetChoice::Targets(vec![target])),
+            json!({"ChooseTargets": {"Targets": [{"Object": {"id": 9, "counter": 2}}]}}),
+        ),
+        (
+            Answer::ChooseTargets(TargetChoice::Cancel),
+            json!({"ChooseTargets": "Cancel"}),
+        ),
+        (
+            Answer::ChooseMode(ModeChoice(vec![0, 2])),
+            json!({"ChooseMode": [0, 2]}),
+        ),
+        (
+            Answer::ChooseNumber(NumberChoice(4)),
+            json!({"ChooseNumber": 4}),
+        ),
+        (Answer::YesNo(YesNoChoice(true)), json!({"YesNo": true})),
+        (
+            Answer::ChooseCards(CardsChoice(vec![ObjectId(1)])),
+            json!({"ChooseCards": [1]}),
+        ),
+        (
+            Answer::Priority(PriorityAction::Activate(AbilityRef {
+                object: ObjectId(3),
+                ability: 1,
+            })),
+            json!({"Priority": {"Activate": {"object": 3, "ability": 1}}}),
+        ),
+    ];
+    for (answer, wire) in shapes {
+        assert_eq!(serde_json::to_value(&answer).unwrap(), wire);
+        assert_eq!(serde_json::from_value::<Answer>(wire).unwrap(), answer);
+    }
+}
+
+#[test]
+fn what_a_vanilla_message_never_carried_stays_out_of_it() {
+    let priority = PriorityOptions {
+        playable_lands: vec![ObjectId(1)],
+        castable: Vec::new(),
+        mana_abilities: Vec::new(),
+        abilities: Vec::new(),
+        can_act: true,
+        can_pass: true,
+    };
+    let json = serde_json::to_value(&priority).unwrap();
+    assert!(json.get("abilities").is_none(), "{json}");
+    let with = PriorityOptions {
+        abilities: vec![AbilityRef {
+            object: ObjectId(2),
+            ability: 0,
+        }],
+        ..priority
+    };
+    assert_eq!(
+        serde_json::to_value(&with).unwrap()["abilities"],
+        json!([{"object": 2, "ability": 0}])
+    );
+    // A decision read from a server that predates the field has none.
+    let old: PriorityOptions = serde_json::from_value(json).unwrap();
+    assert_eq!(
+        old.abilities,
+        Vec::<mtg_engine::abilities::AbilityRef>::new()
+    );
 }

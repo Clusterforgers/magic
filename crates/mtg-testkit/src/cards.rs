@@ -3,6 +3,11 @@
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::ability::{Ability, Timing};
+use mtg_cards::cost::{Cost, CostItem};
+use mtg_cards::effect::Effect;
+use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::value::Amount;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::mana::{ManaCost, ManaSymbol};
@@ -174,6 +179,163 @@ pub fn instant(name: &str, generic: u32, colored: &[Color]) -> Arc<CardDefinitio
         CardDefinition::new(name)
             .with_type(CardType::Instant)
             .with_mana_cost(cost(generic, colored)),
+    )
+}
+
+fn one_target(what: Targetable) -> TargetSpec {
+    TargetSpec {
+        what,
+        bounds: Bounds::default(),
+        divide: None,
+    }
+}
+
+fn damage(to: Ref, amount: i32) -> Effect {
+    Effect::DealDamage {
+        source: None,
+        to,
+        amount: Amount::Fixed(amount),
+    }
+}
+
+fn gain_life(amount: i32) -> Effect {
+    Effect::GainLife {
+        who: Ref::You,
+        amount: Amount::Fixed(amount),
+    }
+}
+
+fn draw(count: i32) -> Effect {
+    Effect::Draw {
+        who: Ref::You,
+        count: Amount::Fixed(count),
+    }
+}
+
+/// An ability a player activates by tapping the permanent: `{T}: effects`.
+fn tap_ability(timing: Timing, targets: Vec<TargetSpec>, effects: Vec<Effect>) -> Ability {
+    Ability::Activated {
+        cost: Cost(vec![CostItem::Tap]),
+        timing,
+        limit: None,
+        from: ZoneKind::Battlefield,
+        targets,
+        effects,
+    }
+}
+
+/// An instant for `{R}` that deals `amount` damage to any target, like Lightning Bolt.
+pub fn burn(name: &str, amount: i32) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[Color::Red]))
+            .with_rules(Ability::Spell {
+                targets: vec![one_target(Targetable::AnyTarget)],
+                effects: vec![damage(Ref::Target(0), amount)],
+            }),
+    )
+}
+
+/// An instant for `{1}{G}` with three steps: 2 damage to any target, its controller gains 2 life and draws a card.
+pub fn salve(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(1, &[Color::Green]))
+            .with_rules(Ability::Spell {
+                targets: vec![one_target(Targetable::AnyTarget)],
+                effects: vec![damage(Ref::Target(0), 2), gain_life(2), draw(1)],
+            }),
+    )
+}
+
+/// An instant for `{1}{R}{R}` with two target specifications: 2 damage to one target and 2 damage to another.
+pub fn twin_burn(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(1, &[Color::Red, Color::Red]))
+            .with_rules(Ability::Spell {
+                targets: vec![
+                    one_target(Targetable::AnyTarget),
+                    one_target(Targetable::AnyTarget),
+                ],
+                effects: vec![damage(Ref::Target(0), 2), damage(Ref::Target(1), 2)],
+            }),
+    )
+}
+
+/// An instant for `{R}`: 1 damage to target creature its controller controls, so it is cast only with one.
+pub fn burn_own_creature(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[Color::Red]))
+            .with_rules(Ability::Spell {
+                targets: vec![one_target(Targetable::Object(Selector(vec![
+                    Pred::Type(CardType::Creature),
+                    Pred::ControlledBy(Ref::You),
+                ])))],
+                effects: vec![damage(Ref::Target(0), 1)],
+            }),
+    )
+}
+
+/// A sorcery for `{B}{B}`: target opponent loses 2 life and its controller gains 2.
+pub fn drain(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(0, &[Color::Black, Color::Black]))
+            .with_rules(Ability::Spell {
+                targets: vec![one_target(Targetable::Opponent)],
+                effects: vec![
+                    Effect::LoseLife {
+                        who: Ref::Target(0),
+                        amount: Amount::Fixed(2),
+                    },
+                    gain_life(2),
+                ],
+            }),
+    )
+}
+
+/// A sorcery for `{U}` with no target: its controller draws two cards.
+pub fn study(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(0, &[Color::Blue]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![draw(2)],
+            }),
+    )
+}
+
+/// A 1/1 creature for `{generic}{R}` with "{T}: deals 1 damage to any target".
+pub fn pinger(name: &str, generic: u32) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_mana_cost(cost(generic, &[Color::Red]))
+            .with_power_toughness(1, 1)
+            .with_rules(tap_ability(
+                Timing::Instant,
+                vec![one_target(Targetable::AnyTarget)],
+                vec![damage(Ref::Target(0), 1)],
+            )),
+    )
+}
+
+/// An artifact for `{generic}` with "{T}: Draw a card. Activate only as a sorcery."
+pub fn library_of_cards(name: &str, generic: u32) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Artifact)
+            .with_mana_cost(cost(generic, &[]))
+            .with_rules(tap_ability(Timing::Sorcery, Vec::new(), vec![draw(1)])),
     )
 }
 
