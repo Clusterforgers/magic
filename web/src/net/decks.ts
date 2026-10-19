@@ -1,17 +1,19 @@
 /**
- * The deck endpoints of `mtg-server` (docs/server.md, Cards and decks): list, read, save, replace, import, export and
- * delete.
+ * The deck endpoints of `mtg-server` (docs/server.md, Cards and decks): list, read, save, replace, check, import,
+ * export and delete.
  * The bodies are the generated types of `mtg_protocol::rest`; every answer is checked at runtime before it is
  * returned and every failure is a `DeckError` with a stable code. Every request carries the session cookie
  * (`credentials: 'include'`), since the deck routes need a signed-in account.
  */
 import type {
   CardHit,
+  CheckRequest,
   Counts,
   DeckBody,
   DeckErrorCode,
   DeckLineView,
   DeckListItem,
+  DeckReport,
   DeckState,
   DeckView,
   DeckZone,
@@ -20,6 +22,8 @@ import type {
   ImportResult,
   ImportSource,
   ListProblem,
+  Reason,
+  ReportCard,
   Summary,
   Support,
   UnresolvedLine,
@@ -92,6 +96,8 @@ export interface DecksApi {
   create(deck: DeckBody): Promise<DeckView>
   /** `PUT /api/decks/{id}`: replaces the name, format, notes and every line, and runs the check again. */
   update(id: string, deck: DeckBody): Promise<DeckView>
+  /** `POST /api/decks/check`: the report for an unsaved list or a stored deck, nothing saved; `signal` cancels it. */
+  check(request: CheckRequest, signal?: AbortSignal): Promise<DeckReport>
   /** `POST /api/decks/import`: reads a pasted list into lines without saving anything. */
   importList(request: ImportRequest): Promise<ImportResult>
   /** `DELETE /api/decks/{id}`. */
@@ -190,6 +196,36 @@ function readDeckView(body: unknown): DeckView | null {
   return body as DeckView
 }
 
+const isClause = (value: unknown): value is Reason =>
+  isRecord(value) &&
+  isCount(value.face) &&
+  isText(value.text) &&
+  isRecord(value.span) &&
+  isCount(value.span.start) &&
+  isCount(value.span.end)
+
+const isReportCard = (value: unknown): value is ReportCard =>
+  isRecord(value) &&
+  isText(value.oracle_id) &&
+  isText(value.name) &&
+  isZone(value.zone) &&
+  isCount(value.count) &&
+  isSupport(value.support) &&
+  isListOf(value.reasons, isClause)
+
+const isIssueBody = (value: unknown): boolean =>
+  isRecord(value) && isText(value.code) && isText(value.message)
+
+// The builder draws every card of the report with its mark and reasons, so these are checked line by line.
+function readReport(body: unknown): DeckReport | null {
+  if (!isRecord(body) || !isText(body.deck_hash) || !isText(body.coverage_hash) || !isText(body.format)) {
+    return null
+  }
+  if (!Array.isArray(body.legality) || !body.legality.every(isIssueBody)) return null
+  if (!isListOf(body.cards, isReportCard) || readSummary(body.summary) === null) return null
+  return body as DeckReport
+}
+
 /** Reads a card as the card and deck endpoints send it; null when a field is missing or of another kind. */
 export function readCardHit(value: unknown): CardHit | null {
   if (!isRecord(value) || !isText(value.oracle_id) || !isText(value.name) || !isText(value.mana_cost))
@@ -277,11 +313,12 @@ function failure(response: Response, body: unknown): DeckError {
 
 const GET: RequestInit = { credentials: 'include' }
 const DELETE: RequestInit = { method: 'DELETE', credentials: 'include' }
-const withBody = (method: 'POST' | 'PUT', body: unknown): RequestInit => ({
+const withBody = (method: 'POST' | 'PUT', body: unknown, signal?: AbortSignal): RequestInit => ({
   method,
   credentials: 'include',
   headers: { 'content-type': 'application/json' },
   body: JSON.stringify(body),
+  ...(signal === undefined ? {} : { signal }),
 })
 
 /** Builds the client; call it once, or use the shared `decksApi`. */
@@ -313,6 +350,8 @@ export function createDecksApi(options: DecksOptions = {}): DecksApi {
     get: (id) => call(deckPath(id), readDeckView, GET),
     create: (deck) => call(`${base}/api/decks`, readDeckView, withBody('POST', deck)),
     update: (id, deck) => call(deckPath(id), readDeckView, withBody('PUT', deck)),
+    check: (request, signal) =>
+      call(`${base}/api/decks/check`, readReport, withBody('POST', request, signal)),
     importList: (request) => call(`${base}/api/decks/import`, readImport, withBody('POST', request)),
     remove: async (id) => {
       await call(deckPath(id), () => true, DELETE)

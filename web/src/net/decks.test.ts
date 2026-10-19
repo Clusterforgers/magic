@@ -7,10 +7,13 @@ import {
   deckItem,
   deckView,
   importResult,
+  legalityIssue,
   lineOf,
+  reportCard,
+  reportOf,
   summary,
 } from '@/features/decks/fakeDecks'
-import type { DeckBody, DeckErrorCode, ImportRequest } from '@/protocol/generated'
+import type { CheckRequest, DeckBody, DeckErrorCode, ImportRequest } from '@/protocol/generated'
 import { fakeFetch, jsonResponse } from '@/test-utils/fakeFetch'
 import type { FetchCall } from '@/test-utils/fakeFetch'
 import { createDecksApi, DECK_ERROR_CODES, DeckError, decksApi, isDeckErrorCode } from './decks'
@@ -27,6 +30,7 @@ const BODY: DeckBody = {
   cards: [{ zone: 'main', oracle_id: 'oracle-lightning-bolt', printing_id: null, count: 4 }],
 }
 const REQUEST: ImportRequest = { text: '4 Lightning Bolt', source: null, format: 'modern' }
+const CHECK: CheckRequest = { deck: null, format: 'modern', cards: BODY.cards }
 
 /** The client over a fetch that answers every request with `answer`. */
 function serve(answer: (call: FetchCall) => Response | Promise<Response>, baseUrl?: string) {
@@ -39,6 +43,7 @@ const CALLS: ReadonlyArray<readonly [string, (api: DecksApi) => Promise<unknown>
   ['get', (api) => api.get('deck-1')],
   ['create', (api) => api.create(BODY)],
   ['update', (api) => api.update('deck-1', BODY)],
+  ['check', (api) => api.check(CHECK)],
   ['importList', (api) => api.importList(REQUEST)],
   ['remove', (api) => api.remove('deck-1')],
 ]
@@ -81,6 +86,34 @@ describe('the requests', () => {
     expect(calls[0]?.init?.credentials).toBe('include')
     expect(calls[0]?.init?.headers).toEqual({ 'content-type': 'application/json' })
     expect(JSON.parse(String(calls[0]?.init?.body))).toEqual(BODY)
+  })
+
+  it('checks an unsaved list with POST, the cookie and the list, and returns the report', async () => {
+    const report = reportOf(
+      [
+        reportCard('Lightning Bolt', {
+          count: 4,
+          support: 'partial',
+          reasons: [{ face: 0, span: { start: 0, end: 21 }, text: 'the engine does not run X yet' }],
+        }),
+      ],
+      [legalityIssue('the deck has 4 cards, a Modern deck has at least 60')],
+      { format: 'modern' },
+    )
+    const { api, calls } = serve(() => jsonResponse(200, report))
+    expect(await api.check(CHECK)).toEqual(report)
+    expect(calls).toHaveLength(1)
+    expect(calls[0]?.url).toBe('/api/decks/check')
+    expect(calls[0]?.init).toMatchObject({ method: 'POST', credentials: 'include' })
+    expect(JSON.parse(String(calls[0]?.init?.body))).toEqual(CHECK)
+    expect(calls[0]?.init?.signal).toBeUndefined()
+  })
+
+  it('hands the signal of a check to the request, so a newer list can cancel it', async () => {
+    const controller = new AbortController()
+    const { api, calls } = serve(() => jsonResponse(200, reportOf([reportCard('Lightning Bolt')])))
+    await api.check(CHECK, controller.signal)
+    expect(calls[0]?.init?.signal).toBe(controller.signal)
   })
 
   it('sends a pasted list to the import endpoint and returns what it read', async () => {
@@ -176,6 +209,34 @@ describe('answers that do not match the types', () => {
     await expect(api.get('deck-1')).rejects.toMatchObject({ code: 'bad_response' })
     await expect(api.create(BODY)).rejects.toMatchObject({ code: 'bad_response' })
     await expect(api.update('deck-1', BODY)).rejects.toMatchObject({ code: 'bad_response' })
+  })
+
+  const good = reportOf([reportCard('Lightning Bolt', { count: 4 })])
+  const badCard = (over: object) => ({ ...good, cards: [{ ...good.cards[0], ...over }] })
+  it.each([
+    ['an array', []],
+    ['no hashes', { ...good, deck_hash: undefined }],
+    ['no format', { ...good, format: 3 }],
+    ['legality that is not a list', { ...good, legality: 'none' }],
+    ['a legality issue without a message', { ...good, legality: [{ code: 'not_legal' }] }],
+    ['cards that are not a list', { ...good, cards: {} }],
+    ['a card in a zone that does not exist', badCard({ zone: 'graveyard' })],
+    ['a card with a fractional count', badCard({ count: 1.5 })],
+    ['a card in a support state the server never sends', badCard({ support: 'great' })],
+    ['a card without its reasons', badCard({ reasons: undefined })],
+    ['a reason without a span', badCard({ reasons: [{ face: 0, text: 'why' }] })],
+    [
+      'a reason whose span is not numbers',
+      badCard({ reasons: [{ face: 0, span: { start: 'a', end: 2 }, text: 'why' }] }),
+    ],
+    [
+      'a reason on a face that is not a number',
+      badCard({ reasons: [{ face: 'back', span: { start: 0, end: 2 }, text: 'why' }] }),
+    ],
+    ['no summary', { ...good, summary: undefined }],
+  ])('refuses a report with %s', async (_what, body) => {
+    const { api } = serve(() => jsonResponse(200, body))
+    await expect(api.check(CHECK)).rejects.toMatchObject({ code: 'bad_response', status: 200 })
   })
 
   const line = lineOf('Lightning Bolt', 4)
