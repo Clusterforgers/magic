@@ -30,7 +30,9 @@
 //!   declare attackers and declare blockers steps and any moment an object of another seat is on the stack
 //!   (each when the seat can act), and the steps where it holds a stop (`ClientMessage::SetStop`). Anywhere
 //!   else it is passed for ([`Pace`], `ClientMessage::AutoPass`) through the same path as an answer, and its
-//!   client is never sent that decision. A seat in Full Control (`ClientMessage::FullControl`; turning
+//!   client is never sent that decision. At a window of the table that it cannot use, the pass waits a short
+//!   dwell first (`Pace::dwell`, `MTG_DWELL_MS`) and is a step of its own, so the pace does not show what the
+//!   seat holds. A seat in Full Control (`ClientMessage::FullControl`; turning
 //!   auto-pass off is the same as `Held`) is asked at every window. A seat that yields is passed for as well
 //!   (`ClientMessage::Yield`: until the stack is empty, the turn ends or its own turn begins; an
 //!   opponent's new object, whatever the seat could do about it, or a stop of its own ends it). Stops, modes
@@ -70,6 +72,7 @@ pub mod config;
 mod cookie;
 mod credentials;
 pub mod demo;
+mod dwell;
 mod game_id;
 mod handle;
 mod limit;
@@ -106,6 +109,7 @@ pub use actor::{
 pub use api::{BODY_LIMIT, MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS};
 pub use cards::{CardSource, CatalogError, printed_card};
 pub use config::{AuthConfig, ConfigError, ServerConfig};
+pub use dwell::{Dwell, MAX_DWELL_MS};
 pub use game_id::GameId;
 pub use handle::{GameClosed, GameHandle, GameStatus, JoinError};
 pub use migrations::{MIGRATIONS_TABLE, migrate, migrator};

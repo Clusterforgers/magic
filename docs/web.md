@@ -205,7 +205,7 @@ The `prompt` names are the keys of `DEV_PROMPTS` in `dev/prompts.ts` (`DEV_TABLE
 - Screenshots: `node scripts/ui-shot.mjs <url> <out-prefix>` (options in `CLAUDE.md`) over a dev route. The page loads at the first width, so shoot one width per run: state read at mount, such as the drawer, does not follow a later width.
 ### End-to-end
 
-`pnpm e2e` (`playwright.config.ts`) starts `cargo run -p mtg-server` (an empty `DATABASE_URL` gives the in-memory store and the built-in demo decks) on port 8301 and `pnpm build` plus `vite preview` on port 5301, both new for every run.
+`pnpm e2e` (`playwright.config.ts`) starts `cargo run -p mtg-server` (an empty `DATABASE_URL` gives the in-memory store and the built-in demo decks; `MTG_DWELL_MS=0` passes for idle seats at once, since the default wait would take the full game from about 7 s to about 47 s) on port 8301 and `pnpm build` plus `vite preview` on port 5301, both new for every run.
 
 - `E2E_SERVER_PORT` and `E2E_WEB_PORT` override the ports (defaults 8301 and 5301, `e2e/ports.ts`) to run several suites at once. `E2E_REUSE=1` keeps servers already listening there; `E2E_TRAIL=1` prints every answered decision; `--repeat-each=N` repeats the game.
 - On NixOS Playwright's own browser cannot run. Point `CHROMIUM_PATH` at the Nix chromium with a glob, because the store path changes with every update: `CHROMIUM_PATH=$(ls -d /nix/store/*-chromium-[0-9]*/bin/chromium | head -n 1) pnpm --dir web e2e`.

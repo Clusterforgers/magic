@@ -13,7 +13,7 @@ use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision, Event, GameSetup};
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, FullControlMode, ServerMessage};
 use mtg_server::{
-    EventStore, GameConfig, GameHandle, GameStatus, Pace, resume_game_with, spawn_game_with,
+    Dwell, EventStore, GameConfig, GameHandle, GameStatus, Pace, resume_game_with, spawn_game_with,
 };
 use mtg_testkit::cards::{forest, free_creature, instant};
 use mtg_testkit::{Scenario, ready};
@@ -27,6 +27,7 @@ const DEFAULT: Pace = Pace {
     auto_pass: true,
     response: Some(RESPONSE),
     blocks: Some(BLOCKS),
+    dwell: Dwell::OFF,
 };
 
 fn config(pace: Pace) -> GameConfig {

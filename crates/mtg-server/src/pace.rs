@@ -3,7 +3,8 @@
 //!
 //! All of them work through the same path as a seat's own answer ([`crate::running::Running::answer`]), so what a
 //! pass or a timeout does to the log, the store and every projection is exactly what the seat's click would have done.
-//! When a seat is asked is decided in [`crate::windows`] and when a yield stops in [`crate::yields`], alone.
+//! When a seat is asked is decided in [`crate::windows`] and when a yield stops in [`crate::yields`], alone. A seat that
+//! cannot act at a default window is passed for the same way once its dwell ([`crate::dwell`]) is over.
 
 use std::time::Duration;
 
@@ -14,8 +15,10 @@ use mtg_protocol::{ErrorCode, FullControlMode, ServerMessage, YieldUntil};
 use tokio::time::Instant;
 
 use crate::actor::{Fatal, GameActor, Phase, not_started};
-use crate::running::Rejection;
+use crate::dwell::Dwell;
+use crate::running::{Halt, Rejection};
 use crate::store::EventStore;
+use crate::windows::Verdict;
 use crate::yields::Yields;
 
 /// Longest clock the settings accept, in seconds (a day), so a deadline can never overflow.
@@ -24,7 +27,8 @@ pub const MAX_CLOCK_SECS: u64 = 86_400;
 /// How long after a failed save the server tries again to answer for a seat whose clock ran out.
 const RETRY_AFTER: Duration = Duration::from_secs(1);
 
-/// How a game moves: how seats start out (auto-pass on, or in Full Control), and how long a seat may take to respond.
+/// How a game moves: how seats start out (auto-pass on, or in Full Control), how long a seat may take to respond and how
+/// long the table waits before it passes for a seat that cannot act.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Pace {
     /// Whether each seat starts with auto-pass on (`MTG_AUTO_PASS`): in Full Control mode `Off`, or `Held` when off.
@@ -35,6 +39,8 @@ pub struct Pace {
     pub response: Option<Duration>,
     /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`); `None` is no clock.
     pub blocks: Option<Duration>,
+    /// How long the table waits before it passes for a seat that cannot act at a default window (`MTG_DWELL_MS`).
+    pub dwell: Dwell,
 }
 
 impl Pace {
@@ -43,6 +49,7 @@ impl Pace {
         auto_pass: false,
         response: None,
         blocks: None,
+        dwell: Dwell::OFF,
     };
 
     /// The Full Control mode every seat starts in: `Off` with auto-pass on, `Held` with it off.
@@ -78,6 +85,7 @@ impl Default for Pace {
             auto_pass: true,
             response: Some(Duration::from_secs(10)),
             blocks: Some(Duration::from_secs(45)),
+            dwell: Dwell::DEFAULT,
         }
     }
 }
@@ -112,7 +120,9 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
-    /// Answers for the seat whose clock ran out, with a pass or no blocks, as if the seat had.
+    /// Answers for the seat whose clock ran out, with a pass or no blocks, as if the seat had. The same step passes for a
+    /// seat that cannot act at a default window once its dwell is over: the decision was never sent, and the pass is
+    /// saved, projected and sent like the seat's own, as a batch of its own.
     pub(crate) async fn expire(&mut self) -> Result<(), Fatal> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
@@ -190,7 +200,8 @@ impl<S: EventStore> GameActor<S> {
     }
 
     /// Settles what a game that is starting or resumed from its log left pending: if the windows pass for the seat
-    /// it waits on, it is passed for before any client connects.
+    /// it waits on, it is passed for before any client connects. A seat that cannot act at a default window waits
+    /// for a dwell that starts now, like one that meets such a window while the game runs.
     pub(crate) async fn start_up(&mut self) -> Result<(), Fatal> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
@@ -198,15 +209,19 @@ impl<S: EventStore> GameActor<S> {
         let Some(seat) = running.waiting_on() else {
             return Ok(());
         };
-        if !running.passes_pending(seat, &self.stops, &self.yields) {
-            return Ok(());
-        }
-        match running.fall_back() {
-            Ok(step) => self.publish(step).await,
-            Err(rejection) => {
-                self.refuse(seat, rejection);
+        match running.verdict_pending(seat, &self.stops, &self.yields) {
+            Some(Verdict::Pass) => match running.fall_back() {
+                Ok(step) => self.publish(step).await,
+                Err(rejection) => {
+                    self.refuse(seat, rejection);
+                    Ok(())
+                }
+            },
+            Some(Verdict::Dwell) => {
+                running.settle(false, Halt::Dwell, false);
                 Ok(())
             }
+            Some(Verdict::Ask) | None => Ok(()),
         }
     }
 }
@@ -290,6 +305,7 @@ mod tests {
             auto_pass: true,
             response: Some(Duration::from_secs(10)),
             blocks: Some(Duration::from_secs(45)),
+            dwell: Dwell::OFF,
         }
     }
 
@@ -332,13 +348,18 @@ mod tests {
     }
 
     #[test]
-    fn the_defaults_are_ten_and_forty_five_seconds_with_auto_pass_on() {
+    fn the_defaults_are_ten_and_forty_five_seconds_and_a_dwell_with_auto_pass_on() {
         let pace = Pace::default();
         assert!(pace.auto_pass);
         assert_eq!(pace.response, Some(Duration::from_secs(10)));
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
+        assert_eq!(
+            pace.dwell.range(),
+            (Duration::from_millis(300), Duration::from_millis(900))
+        );
         assert_eq!(Pace::MANUAL.response, None);
         assert!(!std::hint::black_box(Pace::MANUAL).auto_pass);
+        assert!(Pace::MANUAL.dwell.is_off(), "the manual pace never waits");
     }
 
     #[rstest]

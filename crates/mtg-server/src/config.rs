@@ -6,6 +6,7 @@ use std::time::Duration;
 use thiserror::Error;
 
 use crate::actor::GameConfig;
+use crate::dwell::Dwell;
 use crate::pace::MAX_CLOCK_SECS;
 use crate::passwords::HashCost;
 
@@ -39,6 +40,11 @@ pub enum ConfigError {
         "MTG_BLOCK_SECS must be a whole number of seconds, 0 for no clock, at most 86400, got {0:?}"
     )]
     BadBlockSecs(String),
+    /// `MTG_DWELL_MS` is not a range or a number of milliseconds.
+    #[error(
+        "MTG_DWELL_MS must be a range such as 300-900, or one whole number of milliseconds, 0 for no wait, at most 5000, got {0:?}"
+    )]
+    BadDwellMs(String),
     /// `MTG_REGISTRATION` is neither `open` nor `closed`.
     #[error("MTG_REGISTRATION must be open or closed, got {0:?}")]
     BadRegistration(String),
@@ -225,8 +231,8 @@ impl Default for ServerConfig {
 
 impl ServerConfig {
     /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
-    /// `MTG_BLOCK_SECS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE` and `MTG_TRUSTED_PROXIES` from the process
-    /// environment.
+    /// `MTG_BLOCK_SECS`, `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE` and `MTG_TRUSTED_PROXIES` from the
+    /// process environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
             std::env::var_os(key).map(|value| value.to_string_lossy().into_owned())
@@ -271,6 +277,9 @@ impl ServerConfig {
         if let Some(text) = get("MTG_BLOCK_SECS") {
             let seconds = parse_seconds(&text).ok_or(ConfigError::BadBlockSecs(text))?;
             config.game.pace.blocks = clock_of(seconds);
+        }
+        if let Some(text) = get("MTG_DWELL_MS") {
+            config.game.pace.dwell = Dwell::parse(&text).ok_or(ConfigError::BadDwellMs(text))?;
         }
         if let Some(text) = get("MTG_REGISTRATION") {
             config.auth.registration = match text.trim().to_ascii_lowercase().as_str() {
@@ -555,11 +564,12 @@ mod tests {
     }
 
     #[test]
-    fn the_pace_defaults_skip_idle_seats_and_run_the_clocks() {
+    fn the_pace_defaults_skip_idle_seats_run_the_clocks_and_wait_a_dwell() {
         let pace = load(&[]).unwrap().game.pace;
         assert!(pace.auto_pass);
         assert_eq!(pace.response, Some(Duration::from_secs(10)));
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
+        assert_eq!(pace.dwell, Dwell::DEFAULT);
     }
 
     #[rstest]
@@ -636,6 +646,38 @@ mod tests {
         assert_eq!(
             load(&[("MTG_BLOCK_SECS", text)]),
             Err(ConfigError::BadBlockSecs(text.to_owned()))
+        );
+    }
+
+    #[rstest]
+    #[case::unset("", Dwell::DEFAULT)]
+    #[case::the_default("300-900", Dwell::DEFAULT)]
+    #[case::a_range(" 100 - 400 ", Dwell::between(100, 400))]
+    #[case::fixed("500", Dwell::fixed(500))]
+    #[case::off("0", Dwell::OFF)]
+    #[case::the_most("5000", Dwell::fixed(5_000))]
+    fn dwell_setting(#[case] text: &str, #[case] expected: Dwell) {
+        let pace = load(&[("MTG_DWELL_MS", text)]).unwrap().game.pace;
+        assert_eq!(pace.dwell, expected);
+        assert_eq!(
+            (pace.response, pace.blocks),
+            (Some(Duration::from_secs(10)), Some(Duration::from_secs(45))),
+            "the clocks are untouched"
+        );
+    }
+
+    #[rstest]
+    #[case("5001")]
+    #[case("300-5001")]
+    #[case("900-300")]
+    #[case("-1")]
+    #[case("fast")]
+    #[case("0.5")]
+    #[case("300ms")]
+    fn bad_dwell(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_DWELL_MS", text)]),
+            Err(ConfigError::BadDwellMs(text.to_owned()))
         );
     }
 }
