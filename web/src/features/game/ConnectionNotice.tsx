@@ -125,10 +125,10 @@ export function ConnectionNotice({
   if (!alert) {
     return (
       <div role="status" className="flex items-start gap-3 rounded-xl bg-muted p-4 text-sm">
-        <LoaderCircle
-          aria-hidden="true"
-          className="mt-0.5 size-4 shrink-0 animate-spin motion-reduce:animate-none"
-        />
+        {/* One line tall, so the spinner sits beside the first line of the title. */}
+        <span className={cn('flex shrink-0 items-center', standalone ? 'h-8' : 'h-5')}>
+          <LoaderCircle aria-hidden="true" className="size-4 motion-safe:animate-spin" />
+        </span>
         <div className="grid gap-1">
           {heading}
           {body === null ? null : <p className="text-muted-foreground">{body}</p>}

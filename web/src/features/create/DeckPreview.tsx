@@ -19,7 +19,7 @@ export function DeckPreview({ deck }: { deck: DeckInfo }) {
     .join(', ')
   return (
     <div className="grid gap-1 text-xs text-muted-foreground">
-      <p className="flex items-center gap-1.5">
+      <p className="flex items-center gap-2">
         <ColorDot color={deck.color} />
         <span>
           {deck.color}, {deck.size} cards

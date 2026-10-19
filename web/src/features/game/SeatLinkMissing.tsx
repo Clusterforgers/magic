@@ -18,8 +18,8 @@ export function SeatLinkMissing({ gameId }: { gameId?: string }) {
       <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
       <p className="text-muted-foreground">
         This page needs the link made for your seat. It ends in something like{' '}
-        <code className="rounded-sm bg-muted px-1 py-0.5 text-sm">#seat=1&amp;token=…</code>, and the host
-        gets it when the game is created.
+        <code className="rounded-sm bg-muted px-1 py-1 text-sm">#seat=1&amp;token=…</code>, and the host gets
+        it when the game is created.
       </p>
       <p className="text-muted-foreground">
         Open that link, or ask the host to send it again. If you did open a seat link, it may have been cut

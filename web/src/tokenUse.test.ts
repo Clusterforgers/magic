@@ -1,4 +1,4 @@
-// Goal: the shared components and the pages outside the table take colour, text size and focus from the tokens of index.css: no hard-coded colour, no palette colour, no pixel or rem size written inline, no size left out of the type scale, no translucent focus ring.
+// Goal: the shared components and the pages outside the table take colour, text size and focus from the tokens of index.css: no hard-coded colour, no palette colour, no pixel or rem size written inline, no size left out of the type scale, no spacing between the steps of the 4 px scale, no translucent focus ring.
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -22,6 +22,7 @@ const FILES = [
 const PALETTE =
   '(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)'
 const PAINT = '(?:bg|text|border|ring|fill|stroke|outline|from|to|via|divide|shadow|decoration|accent|caret)'
+const SPACED = '(?:p[xytblrse]?|m[xytblrse]?|gap(?:-[xy])?|space-[xy])'
 const SIZED =
   '(?:text|size|w|h|min-w|min-h|max-w|max-h|p[xytblr]?|m[xytblr]?|gap|top|left|right|bottom|inset)'
 
@@ -33,6 +34,11 @@ const RULES: ReadonlyArray<{ name: string; pattern: RegExp }> = [
   { name: 'size written in px, rem or em', pattern: new RegExp(`\\b${SIZED}-\\[[0-9.]+(?:px|rem|em)\\]`) },
   { name: 'text size outside the type scale', pattern: /\btext-(?:xl|3xl|5xl|6xl|7xl|8xl|9xl)\b/ },
   { name: 'translucent focus ring', pattern: /\b(?:ring|outline)-ring\/\d+/ },
+  // The spacing steps are 4, 8, 12, 16, 24, 32, 48 and 64 px; a larger gap is room kept for something else.
+  {
+    name: 'spacing off the 4 px scale',
+    pattern: new RegExp(`(?<![\\w-])-?${SPACED}-(?:\\d+\\.5|5|7|9|10|11|14)(?![\\w.])`),
+  },
 ]
 
 describe('tokens in the shared components and the pages outside the table', () => {

@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 
 // Whole class names, so Tailwind can see them. Tints stay at 12 % so the text keeps its contrast (tokens.test.ts).
 const pillVariants = cva(
-  'inline-flex h-6 w-fit shrink-0 items-center justify-center gap-1 rounded-full border px-2.5 text-xs font-medium whitespace-nowrap transition-colors duration-fast ease-out data-selected:ring-2 data-selected:ring-ring [&>svg]:pointer-events-none [&>svg]:size-4 [&>svg]:shrink-0',
+  'inline-flex h-6 w-fit shrink-0 items-center justify-center gap-1 rounded-full border px-3 text-xs font-medium whitespace-nowrap transition-colors duration-fast ease-out data-selected:ring-2 data-selected:ring-ring [&>svg]:pointer-events-none [&>svg]:size-4 [&>svg]:shrink-0',
   {
     variants: {
       tone: {

@@ -39,7 +39,7 @@ export function GameCreated({ created, request, decks, origin, onOpenSeat, onAno
   const everyLink = seats.map((seat) => `${seat.name}: ${seat.url}`).join('\n')
 
   return (
-    <section aria-labelledby="created-title" className="grid gap-5">
+    <section aria-labelledby="created-title" className="grid gap-6">
       <div>
         <h1
           id="created-title"

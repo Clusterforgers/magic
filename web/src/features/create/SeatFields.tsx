@@ -52,7 +52,7 @@ export function SeatFields({
         </Button>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        <div className="grid content-start gap-1.5">
+        <div className="grid content-start gap-2">
           <Label htmlFor={nameId}>Name</Label>
           <Input
             id={nameId}
@@ -69,7 +69,7 @@ export function SeatFields({
             </p>
           )}
         </div>
-        <div className="grid content-start gap-1.5">
+        <div className="grid content-start gap-2">
           <Label htmlFor={deckId}>Deck</Label>
           <NativeSelect
             id={deckId}

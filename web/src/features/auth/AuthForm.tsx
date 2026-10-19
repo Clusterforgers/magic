@@ -106,7 +106,7 @@ export function AuthForm({ mode, next }: AuthFormProps) {
       noValidate
       aria-labelledby={`${mode}-title`}
       aria-busy={pending}
-      className="grid gap-5"
+      className="grid gap-6"
       onSubmit={(event) => void submit(event)}
     >
       <div>
@@ -123,7 +123,7 @@ export function AuthForm({ mode, next }: AuthFormProps) {
         </Alert>
       )}
 
-      <div className="grid gap-1.5">
+      <div className="grid gap-2">
         <Label htmlFor={usernameId}>Username</Label>
         <Input
           ref={usernameRef}
@@ -152,7 +152,7 @@ export function AuthForm({ mode, next }: AuthFormProps) {
         )}
       </div>
 
-      <div className="grid gap-1.5">
+      <div className="grid gap-2">
         <Label htmlFor={passwordId}>Password</Label>
         <Input
           ref={passwordRef}
