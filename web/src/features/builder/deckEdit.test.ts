@@ -1,9 +1,11 @@
-// Goal: editing a draft keeps one line per card and zone, a line never drops below one copy (the last copy removes it) or pushes the deck over its card limit, a move between zones merges into the line already there, a draft built from a stored deck merges duplicate lines, and the dirty check ignores the order of lines but sees every other difference.
+// Goal: editing a draft keeps one line per card and zone, a line never drops below one copy (the last copy removes it) or pushes the deck over its card limit, a move between zones merges into the line already there, a draft built from a stored deck merges duplicate lines, the dirty check ignores the order of lines but sees every other difference, and the check key ignores the order of lines, the name and the notes but sees every other difference.
 import { describe, expect, it } from 'vitest'
 import { cardHit, deckView, lineOf } from '@/features/decks/fakeDecks'
 import {
   addCard,
   bodyOf,
+  checkKey,
+  checkRequestOf,
   copiesOf,
   decrement,
   draftOf,
@@ -288,5 +290,40 @@ describe('sameDeck', () => {
     ['a missing line', deck(line(bolt, 'main', 4))],
   ])('sees a difference in %s', (_what, other) => {
     expect(sameDeck(base, other)).toBe(false)
+  })
+})
+
+describe('what the deck check sees of a draft', () => {
+  const a = deck(line(bolt, 'main', 4), line(forest, 'main', 20), line(ring, 'sideboard', 1))
+
+  it('has the same key for lines in another order and for another name or notes', () => {
+    const shuffled = { ...a, name: 'Other', notes: 'Notes', lines: [...a.lines].reverse() }
+    expect(checkKey(shuffled)).toBe(checkKey(a))
+  })
+
+  it.each([
+    ['a changed count', deck(line(bolt, 'main', 5), line(forest, 'main', 20), line(ring, 'sideboard', 1))],
+    ['a card in another zone', deck(line(bolt, 'main', 4), line(forest, 'main', 20), line(ring, 'main', 1))],
+    [
+      'another printing',
+      deck(line(bolt, 'main', 4, 'p1'), line(forest, 'main', 20), line(ring, 'sideboard', 1)),
+    ],
+    ['a removed line', deck(line(bolt, 'main', 4), line(forest, 'main', 20))],
+    ['another format', { ...a, format: 'commander' }],
+  ])('has another key for %s', (_what, other) => {
+    expect(checkKey(other)).not.toBe(checkKey(a))
+  })
+
+  it('asks for the list a save would check: the format and the lines, with no name or notes', () => {
+    expect(checkRequestOf(a)).toEqual({
+      deck: null,
+      format: 'modern',
+      cards: [
+        { zone: 'main', oracle_id: bolt.oracle_id, printing_id: null, count: 4 },
+        { zone: 'main', oracle_id: forest.oracle_id, printing_id: null, count: 20 },
+        { zone: 'sideboard', oracle_id: ring.oracle_id, printing_id: null, count: 1 },
+      ],
+    })
+    expect(checkRequestOf(a).cards).toEqual(bodyOf(a).cards)
   })
 })
