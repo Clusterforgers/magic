@@ -1,4 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { CreateGamePage } from '@/features/create/CreateGamePage'
+import { PlayPage } from '@/features/browser/PlayPage'
 
-export const Route = createFileRoute('/')({ component: CreateGamePage })
+export const Route = createFileRoute('/')({ component: () => <PlayPage /> })

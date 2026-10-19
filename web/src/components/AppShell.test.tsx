@@ -1,4 +1,4 @@
-// Goal: the shell frames every page with the brand, a main navigation that marks the current page and offers "Decks" and "My games" only to an account, a theme menu that changes the page's theme and remembers it, a way past the header by keyboard, and a notice while the browser is offline.
+// Goal: the shell frames every page with the brand, a main navigation (Play at /, Create at /new) that marks the current page and offers "Decks" and "My games" only to an account, a window-high frame under the header for a page that fits it, a theme menu that changes the page's theme and remembers it, a way past the header by keyboard, and a notice while the browser is offline.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { appTheme } from '@/hooks/useTheme'
@@ -18,7 +18,7 @@ afterEach(() => {
 const ADA = { username: 'Ada_L', password: 'correct horse battery' }
 const mainNav = () => screen.getByRole('navigation', { name: 'Main' })
 
-async function open(url = '/', signedIn = false) {
+async function open(url = '/new', signedIn = false) {
   const app = await renderApp(url, {
     accounts: {
       users: { [ADA.username]: ADA.password },
@@ -36,14 +36,14 @@ describe('the main navigation', () => {
     expect(screen.getByRole('link', { name: 'Magic' })).toHaveAttribute('href', '/')
     const links = within(mainNav()).getAllByRole('link')
     expect(links.map((link) => link.textContent)).toEqual(['Play', 'Create'])
-    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/'])
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/new'])
   })
 
   it('adds Decks and My games, between Play and Create, for an account', async () => {
     await open('/', true)
     const links = within(mainNav()).getAllByRole('link')
     expect(links.map((link) => link.textContent)).toEqual(['Play', 'Decks', 'My games', 'Create'])
-    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/decks', '/games', '/'])
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/decks', '/games', '/new'])
   })
 
   it('marks the page you are on, and only that one', async () => {
@@ -67,7 +67,7 @@ describe('the main navigation', () => {
 
 describe('the way past the header', () => {
   it('is a first stop that moves the focus into the page, without touching the address', async () => {
-    const app = await open('/')
+    const app = await open('/new')
     await screen.findByRole('form', { name: 'Create a game' })
     await app.user.tab()
     const skip = screen.getByRole('button', { name: 'Skip to content' })
@@ -134,5 +134,33 @@ describe('while the browser is offline', () => {
   it('is silent while the browser is online', async () => {
     await open()
     expect(screen.queryByText('You are offline')).toBeNull()
+  })
+})
+
+describe('the pages of Play and Create', () => {
+  it('marks Create on the create page, and Play on Play', async () => {
+    const app = await open('/new')
+    await screen.findByRole('form', { name: 'Create a game' })
+    expect(within(mainNav()).getByRole('link', { name: 'Create' })).toHaveAttribute('aria-current', 'page')
+    expect(within(mainNav()).getByRole('link', { name: 'Play' })).not.toHaveAttribute('aria-current')
+    await app.user.click(within(mainNav()).getByRole('link', { name: 'Play' }))
+    await screen.findByRole('heading', { level: 1, name: 'Play' })
+    expect(within(mainNav()).getByRole('link', { name: 'Play' })).toHaveAttribute('aria-current', 'page')
+    expect(within(mainNav()).getByRole('link', { name: 'Create' })).not.toHaveAttribute('aria-current')
+  })
+
+  it('is the window high under its header on Play, which fits it, and a growing page elsewhere', async () => {
+    const app = await open('/')
+    await screen.findByRole('heading', { level: 1, name: 'Play' })
+    const shell = screen.getByRole('main').parentElement as HTMLElement
+    expect(shell).toHaveAttribute('data-fit')
+    expect(shell).not.toHaveAttribute('data-bleed')
+    expect(shell).toHaveClass('h-dvh')
+    expect(mainNav()).toBeInTheDocument()
+    await app.user.click(within(mainNav()).getByRole('link', { name: 'Create' }))
+    await screen.findByRole('form', { name: 'Create a game' })
+    expect(shell).not.toHaveAttribute('data-fit')
+    expect(shell).toHaveClass('min-h-dvh')
+    expect(shell).not.toHaveClass('h-dvh')
   })
 })

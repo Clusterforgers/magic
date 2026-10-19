@@ -28,7 +28,7 @@ function FormSkeleton() {
   )
 }
 
-/** `/`: loads the decks, then shows the form for a new game. */
+/** `/new`: loads the decks, then shows the form for a new game. */
 export function CreateGamePage({ api = sharedApi }: { api?: Api }) {
   usePageTitle('Create a game')
   const { state, reload } = useDecks(api)

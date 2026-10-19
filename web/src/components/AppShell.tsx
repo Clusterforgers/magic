@@ -1,7 +1,7 @@
 import { Link, Outlet } from '@tanstack/react-router'
 import { PlusIcon, SparklesIcon } from 'lucide-react'
 import { useRef } from 'react'
-import { useIsFullBleed } from '@/components/appChrome'
+import { useIsFitWindow, useIsFullBleed } from '@/components/appChrome'
 import { OfflineNotice } from '@/components/OfflineNotice'
 import { ThemeMenu } from '@/components/ThemeMenu'
 import { buttonVariants } from '@/components/ui/button'
@@ -44,7 +44,7 @@ function ShellHeader() {
               </Link>
             </>
           ) : null}
-          <Link to="/" className={cn(buttonVariants({ size: 'sm' }), 'my-auto ml-auto')}>
+          <Link to="/new" className={cn(buttonVariants({ size: 'sm' }), 'my-auto ml-auto')}>
             <PlusIcon aria-hidden="true" />
             Create
           </Link>
@@ -61,18 +61,21 @@ function ShellHeader() {
 /**
  * The frame around every page: a header with the brand, the main navigation, the theme and the account, then the page.
  * A page that takes the whole window (the game table, `useFullBleed`) has no header and no scrolling: it is exactly
- * the window, and a notice that must be seen (offline) floats over it.
+ * the window, and a notice that must be seen (offline) floats over it. A page that fits the window (`useFitWindow`)
+ * keeps the header: the shell is the window high and `main` is the rest, which the page fills and scrolls inside.
  */
 export function AppShell() {
   const main = useRef<HTMLElement>(null)
   const bleed = useIsFullBleed()
+  const fit = useIsFitWindow() && !bleed
   return (
     <TooltipProvider>
       <div
         data-bleed={bleed || undefined}
+        data-fit={fit || undefined}
         className={cn(
           'flex flex-col bg-background text-foreground',
-          bleed ? 'h-dvh overflow-hidden' : 'min-h-dvh',
+          bleed ? 'h-dvh overflow-hidden' : fit ? 'h-dvh' : 'min-h-dvh',
         )}
       >
         {/* A button rather than a `#main` link: a hash would replace the seat token in the game address. */}
@@ -96,7 +99,17 @@ export function AppShell() {
             <OfflineNotice />
           </>
         )}
-        <main id="main" ref={main} tabIndex={-1} className={cn('flex-1 outline-none', bleed && 'min-h-0')}>
+        <main
+          id="main"
+          ref={main}
+          tabIndex={-1}
+          // A window too small for the page's own parts scrolls here, not the page.
+          className={cn(
+            'flex-1 outline-none',
+            bleed && 'min-h-0',
+            fit && 'flex min-h-0 flex-col overflow-y-auto',
+          )}
+        >
           <Outlet />
         </main>
       </div>

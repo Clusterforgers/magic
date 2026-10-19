@@ -194,7 +194,7 @@ describe('signing in', () => {
     await waitFor(() => expect(app.store.getState().status).toBe('signed-in'))
     expect(app.accounts.credentials).toEqual([ADA])
     await waitFor(() => expect(here(app)).toBe('/'))
-    expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Play' })).toBeInTheDocument()
     const nav = screen.getByRole('navigation', { name: 'Account' })
     expect(within(nav).getByText(ADA.username)).toBeInTheDocument()
     expect(app.router.state.location.href).toBe('/')
