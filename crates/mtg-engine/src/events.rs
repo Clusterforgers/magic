@@ -4,11 +4,20 @@ use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
+use crate::abilities::PutOnStack;
+use crate::choose::{Choice, Choices, Target};
 use crate::combat::{AttackTarget, DamageTarget};
+use crate::counters::CountersChanged;
 use crate::effects::ContinuousEffect;
+use crate::library::{CardsFound, LibraryLooked, Revealed, Scried};
+use crate::object::ObjectRef;
 use crate::player::LossReason;
+use crate::snapshot::Snapshot;
 use crate::state::GameResult;
+use crate::tokens::TokenCreated;
+use crate::triggers::Triggered;
 use crate::turn::Step;
+use crate::zones::Zone;
 
 /// Why a player was not asked to decide something optional.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -123,6 +132,10 @@ pub enum Event {
         player: PlayerId,
         /// The spell.
         object: ObjectId,
+        /// What the caster announced: targets, modes, X and the like.
+        #[serde(default, skip_serializing_if = "Choices::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Choices>", optional))]
+        choices: Choices,
     },
     /// The top spell of the stack resolved.
     SpellResolved {
@@ -254,6 +267,114 @@ pub enum Event {
         /// The result.
         result: GameResult,
     },
+    /// An ability was put on the stack, activated by its controller or triggered.
+    AbilityPutOnStack(Box<PutOnStack>),
+    /// A player activated an ability; its costs are paid and the ability goes on the stack next.
+    AbilityActivated {
+        /// Who activated it.
+        player: PlayerId,
+        /// The object it comes from.
+        source: ObjectRef,
+        /// Its index among the rules of the source's card.
+        ability: usize,
+    },
+    /// A triggered ability triggered.
+    AbilityTriggered(Triggered),
+    /// The top object of the stack began to resolve.
+    ResolutionBegan {
+        /// The spell or ability.
+        object: ObjectId,
+    },
+    /// A player answered a question put during the resolution.
+    ChoiceMade {
+        /// Who answered.
+        player: PlayerId,
+        /// The answer.
+        choice: Choice,
+    },
+    /// One step of the resolution is done: the effect at the old position happened.
+    StepDone {
+        /// Where the next step runs.
+        position: Vec<usize>,
+        /// Names the step bound, with what they stand for.
+        bound: Vec<(String, Vec<Target>)>,
+        /// Objects the step moved away, as they were.
+        snapshots: Vec<Snapshot>,
+    },
+    /// The resolution of a spell or ability is over.
+    ResolutionEnded {
+        /// The spell or ability.
+        object: ObjectId,
+        /// How it ended.
+        outcome: ResolutionOutcome,
+    },
+    /// An object moved from one zone to another.
+    ZoneChanged {
+        /// The object.
+        object: ObjectId,
+        /// Where it was.
+        from: Zone,
+        /// Where it went.
+        to: Zone,
+        /// Why.
+        cause: ZoneCause,
+    },
+    /// A player gained life.
+    LifeGained {
+        /// Who gained it.
+        player: PlayerId,
+        /// How much, at least 1.
+        amount: u32,
+    },
+    /// A player lost life (damage is its own event).
+    LifeLost {
+        /// Who lost it.
+        player: PlayerId,
+        /// How much, at least 1.
+        amount: u32,
+    },
+    /// Counters were put on or removed from an object or player.
+    CountersChanged(CountersChanged),
+    /// A token was created.
+    TokenCreated(TokenCreated),
+    /// A player looked at cards in a library.
+    LibraryLooked(LibraryLooked),
+    /// A player found cards by searching.
+    CardsFound(CardsFound),
+    /// A player scried.
+    Scried(Scried),
+    /// A player revealed cards.
+    Revealed(Revealed),
+}
+
+/// How the resolution of a spell or ability ended.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum ResolutionOutcome {
+    /// It did what it says.
+    Resolved,
+    /// Every target had become illegal, so it did nothing (CR 608.2b).
+    Fizzled,
+    /// It was countered, or its controller left the game, and it did nothing (CR 701.6).
+    Countered,
+}
+
+/// Why an object moved from one zone to another.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum ZoneCause {
+    /// An effect moved it.
+    Moved,
+    /// It was destroyed (CR 701.8).
+    Destroyed,
+    /// Its controller sacrificed it (CR 701.21).
+    Sacrificed,
+    /// It was exiled (CR 406).
+    Exiled,
+    /// It was countered (CR 701.6).
+    Countered,
+    /// It was milled (CR 701.17).
+    Milled,
 }
 
 impl Event {
@@ -284,10 +405,26 @@ impl Event {
             | Event::DamageAssigned { .. }
             | Event::CombatEnded
             | Event::PlayerLost { .. }
-            | Event::GameEnded { .. } => Vec::new(),
+            | Event::GameEnded { .. }
+            | Event::AbilityActivated { .. }
+            | Event::AbilityTriggered(_)
+            | Event::ResolutionBegan { .. }
+            | Event::ChoiceMade { .. }
+            | Event::StepDone { .. }
+            | Event::ResolutionEnded { .. }
+            | Event::LifeGained { .. }
+            | Event::LifeLost { .. }
+            | Event::CountersChanged(_)
+            | Event::LibraryLooked(_)
+            | Event::CardsFound(_)
+            | Event::Scried(_)
+            | Event::Revealed(_) => Vec::new(),
             Event::HandDealt { cards, .. } | Event::CardsBottomed { cards, .. } => cards.clone(),
+            Event::TokenCreated(token) => vec![token.object],
+            Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
             | Event::SpellCast { object, .. }
+            | Event::ZoneChanged { object, .. }
             | Event::SpellResolved { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
@@ -303,5 +440,54 @@ impl Event {
                 DamageTarget::Player(_) => vec![*source],
             },
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: an event stays small, since the log keeps every one of a game, and the events that changed shape keep the JSON they had when they carry nothing new.
+    use super::*;
+
+    #[test]
+    fn an_event_is_at_most_a_hundred_and_forty_bytes() {
+        // The log is a vector of events, each as big as the biggest, so a heavy payload is boxed.
+        assert!(
+            std::mem::size_of::<Event>() <= 144,
+            "{}",
+            std::mem::size_of::<Event>()
+        );
+    }
+
+    #[test]
+    fn a_cast_without_announcements_has_the_two_fields_it_always_had() {
+        let cast = Event::SpellCast {
+            player: PlayerId(1),
+            object: ObjectId(7),
+            choices: Choices::default(),
+        };
+        assert_eq!(
+            serde_json::to_string(&cast).unwrap(),
+            r#"{"SpellCast":{"player":1,"object":7}}"#
+        );
+        let old: Event = serde_json::from_str(r#"{"SpellCast":{"player":1,"object":7}}"#).unwrap();
+        assert_eq!(old, cast);
+    }
+
+    #[test]
+    fn a_cast_with_targets_says_which() {
+        let cast = Event::SpellCast {
+            player: PlayerId(0),
+            object: ObjectId(3),
+            choices: Choices {
+                targets: vec![vec![Target::Player(PlayerId(1))]],
+                ..Choices::default()
+            },
+        };
+        let json = serde_json::to_string(&cast).unwrap();
+        assert_eq!(
+            json,
+            r#"{"SpellCast":{"player":0,"object":3,"choices":{"targets":[[{"Player":1}]]}}}"#
+        );
+        assert_eq!(serde_json::from_str::<Event>(&json).unwrap(), cast);
     }
 }

@@ -1,6 +1,6 @@
 // Goal: every kind of log event, public and hidden, reads as one plain sentence with the right names, and the quiet ones (priority, mana, untaps) are marked minor.
 import { describe, expect, it } from 'vitest'
-import type { ContinuousEffect, Event, EventView, HiddenEvent } from '@/protocol/generated'
+import type { ContinuousEffect, Event, EventView, HiddenEvent, Snapshot } from '@/protocol/generated'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
 
@@ -105,6 +105,106 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   PlayerLost: [{ PlayerLost: { player: 1, reason: 'ZeroLife' } }, 'Bo ran out of life'],
   ObjectLeftGame: [{ ObjectLeftGame: { object: 2 } }, 'Hill Giant leaves the game'],
   GameEnded: [{ GameEnded: { result: { Winner: 0 } } }, 'Ana wins the game'],
+  AbilityPutOnStack: [
+    {
+      AbilityPutOnStack: {
+        object: 90,
+        source: { id: 5, counter: 0 },
+        snapshot: snapshotOf(5),
+        ability: 0,
+        controller: 1,
+      },
+    },
+    'An ability of Serra Angel goes on the stack',
+  ],
+  AbilityActivated: [
+    { AbilityActivated: { player: 1, source: { id: 5, counter: 0 }, ability: 0 } },
+    'Bo activates an ability of Serra Angel',
+  ],
+  AbilityTriggered: [
+    {
+      AbilityTriggered: {
+        source: { id: 6, counter: 0 },
+        ability: 1,
+        cause: { subjects: [], snapshots: [] },
+      },
+    },
+    'An ability of Jace Beleren triggers',
+  ],
+  ResolutionBegan: [{ ResolutionBegan: { object: 4 } }, 'Lightning Bolt begins to resolve'],
+  ChoiceMade: [
+    { ChoiceMade: { player: 0, choice: { Cards: [1, 2] } } },
+    'Ana chooses Grizzly Bears and Hill Giant',
+  ],
+  StepDone: [{ StepDone: { position: [1], bound: [], snapshots: [] } }, 'A step of the resolution is done'],
+  ResolutionEnded: [
+    { ResolutionEnded: { object: 4, outcome: 'Resolved' } },
+    'Lightning Bolt finishes resolving',
+  ],
+  ZoneChanged: [
+    { ZoneChanged: { object: 1, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'Destroyed' } },
+    'Grizzly Bears is destroyed',
+  ],
+  LifeGained: [{ LifeGained: { player: 0, amount: 3 } }, 'Ana gains 3 life'],
+  LifeLost: [{ LifeLost: { player: 1, amount: 2 } }, 'Bo loses 2 life'],
+  CountersChanged: [
+    { CountersChanged: { on: { Object: { id: 1, counter: 0 } }, counter: '+1/+1', delta: 2 } },
+    'Counters are put on Grizzly Bears',
+  ],
+  TokenCreated: [
+    { TokenCreated: { object: 91, controller: 2, name: 'Treasure' } },
+    'Cy creates a Treasure token',
+  ],
+  LibraryLooked: [
+    { LibraryLooked: { player: 0, cards: [1, 2, 3] } },
+    'Ana looks at 3 cards of their library',
+  ],
+  CardsFound: [{ CardsFound: { player: 1, zone: { Library: 1 }, cards: [3] } }, 'Bo finds 1 card'],
+  Scried: [{ Scried: { player: 0, top: [1], bottom: [2, 3] } }, 'Ana scries 3'],
+  Revealed: [{ Revealed: { player: 0, cards: [1, 2] } }, 'Ana reveals Grizzly Bears and Hill Giant'],
+}
+
+/** The ways the pipeline's events that need more than one sentence differ, each next to its text. */
+const MORE: [Event, string][] = [
+  [
+    { ResolutionEnded: { object: 4, outcome: 'Fizzled' } },
+    'Lightning Bolt does nothing: its targets are gone',
+  ],
+  [{ ResolutionEnded: { object: 4, outcome: 'Countered' } }, 'Lightning Bolt is countered'],
+  [
+    { ZoneChanged: { object: 1, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'Sacrificed' } },
+    'Grizzly Bears is sacrificed',
+  ],
+  [
+    { ZoneChanged: { object: 3, from: { Library: 0 }, to: { Hand: 0 }, cause: 'Moved' } },
+    "Forest moves to Ana's hand",
+  ],
+  [{ ZoneChanged: { object: 3, from: 'Battlefield', to: 'Exile', cause: 'Moved' } }, 'Forest moves to exile'],
+  [
+    { ZoneChanged: { object: 3, from: 'Stack', to: 'Battlefield', cause: 'Moved' } },
+    'Forest moves to the battlefield',
+  ],
+  [{ ChoiceMade: { player: 1, choice: { Cards: [] } } }, 'Bo chooses nothing'],
+  [{ ChoiceMade: { player: 1, choice: { Number: 3 } } }, 'Bo chooses 3'],
+  [{ ChoiceMade: { player: 1, choice: { YesNo: true } } }, 'Bo answers yes'],
+  [{ ChoiceMade: { player: 1, choice: { YesNo: false } } }, 'Bo answers no'],
+  [{ ChoiceMade: { player: 1, choice: { Order: [1, 2] } } }, 'Bo puts 2 cards in order'],
+  [{ ChoiceMade: { player: 1, choice: { Option: 0 } } }, 'Bo chooses option 1'],
+  [{ ChoiceMade: { player: 1, choice: { Replacement: 1 } } }, 'Bo chooses which effect applies first'],
+  [{ CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: -1 } }, 'Counters are removed from Bo'],
+]
+
+function snapshotOf(id: number): Snapshot {
+  return {
+    id,
+    counter: 0,
+    controller: 0,
+    owner: 0,
+    zone: 'Battlefield',
+    characteristics: { types: 4, colors: 0, power: 1, toughness: 1, abilities: [] },
+    counters: [],
+    attachments: [],
+  }
 }
 
 const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
@@ -117,6 +217,15 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
     'Bo puts 1 card on the bottom of their library',
   ],
   ObjectLeftGame: ['ObjectLeftGame', 'A card leaves the game'],
+  LibraryLooked: [{ LibraryLooked: { player: 1, count: 2 } }, 'Bo looks at 2 cards of their library'],
+  CardsFound: [{ CardsFound: { player: 1, count: 1 } }, 'Bo finds 1 card'],
+  Scried: [{ Scried: { player: 1, top: 1, bottom: 1 } }, 'Bo scries 2'],
+  ZoneChanged: [
+    { ZoneChanged: { from: { Library: 1 }, to: { Hand: 1 }, cause: 'Moved' } },
+    "A card moves to Bo's hand",
+  ],
+  ChoiceMade: [{ ChoiceMade: { player: 1 } }, 'Bo chooses'],
+  StepDone: [{ StepDone: { position: [2] } }, 'A step of the resolution is done'],
 }
 
 function effect(
@@ -136,6 +245,18 @@ describe('describeEvent', () => {
 
   it.each(Object.entries(HIDDEN))('says the hidden event %s in one sentence', (_name, [event, text]) => {
     expect(describeEvent({ Hidden: event }, names).text).toBe(text)
+  })
+
+  it.each(MORE)('says the pipeline event %j in the right words', (event, text) => {
+    expect(describeEvent({ Public: event }, names).text).toBe(text)
+  })
+
+  it('marks the bookkeeping of a resolution minor and what happened to the game not', () => {
+    const minor = (event: Event): boolean => describeEvent({ Public: event }, names).minor
+    expect(minor({ StepDone: { position: [1], bound: [], snapshots: [] } })).toBe(true)
+    expect(minor({ ResolutionBegan: { object: 4 } })).toBe(true)
+    expect(minor({ LifeGained: { player: 0, amount: 1 } })).toBe(false)
+    expect(minor({ ResolutionEnded: { object: 4, outcome: 'Fizzled' } })).toBe(false)
   })
 
   it('covers every variant of both unions, one line each', () => {

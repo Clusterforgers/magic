@@ -735,11 +735,32 @@ impl<'a> Walker<'a> {
         self.body_checks(targets, effects, true);
     }
 
+    /// How often and from where an ability works are rules of their own, so an engine that has not got
+    /// them does not run the ability, whatever else it runs.
+    fn where_and_how_often(&mut self, ability: &Ability) {
+        let (limit, from) = match ability {
+            Ability::Activated { limit, from, .. } | Ability::Triggered { limit, from, .. } => {
+                (limit.is_some(), !from.is_battlefield())
+            }
+            Ability::Static { from, .. } | Ability::Replacement { from, .. } => {
+                (false, !from.is_battlefield())
+            }
+            _ => (false, false),
+        };
+        if limit {
+            self.uses("Ability", "Limit");
+        }
+        if from {
+            self.uses("Ability", "From");
+        }
+    }
+
     fn ability(&mut self, ability: &Ability) {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {
             self.uses("Ability", &tag);
         }
+        self.where_and_how_often(ability);
         let saved_x = self.x_free;
         self.at(tag, |w| match ability {
             Ability::Spell { targets, effects }
@@ -865,7 +886,8 @@ impl<'a> Walker<'a> {
 }
 
 /// Every primitive an ability uses, named `Effect.DealDamage`, `Keyword.Flying`, `Trigger.ZoneChange`,
-/// `Cost.Tap`, `Mod.ModifyPT`, `ReplaceWhen.TokenCreation`, `ReplaceBy.Multiply` or `Ability.Loyalty`.
+/// `Cost.Tap`, `Mod.ModifyPT`, `ReplaceWhen.TokenCreation`, `ReplaceBy.Multiply` or `Ability.Loyalty`;
+/// an ability with a `limit` or a zone other than the battlefield also uses `Ability.Limit` or `Ability.From`.
 ///
 /// A plain `{T}: Add {X}` is one primitive, [`PLAIN_MANA_ABILITY`]: the engine runs that exact shape
 /// and not the general ability, cost and effect it is made of.
@@ -1158,6 +1180,22 @@ mod tests {
                 .map(String::from)
                 .into()
         );
+    }
+
+    #[rstest]
+    #[case::plain_activation(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.Draw"])]
+    #[case::at_sorcery_speed(r#"{"Activated":{"cost":["Tap"],"timing":"Sorcery","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.Draw"])]
+    #[case::once_a_turn(r#"{"Activated":{"cost":["Tap"],"limit":"OncePerTurn","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.Limit", "Cost.Tap", "Effect.Draw"])]
+    #[case::from_the_graveyard(r#"{"Activated":{"cost":["Tap"],"from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.Tap", "Effect.Draw"])]
+    #[case::trigger_from_the_graveyard(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"limit":"OncePerTurn","from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Ability.Limit", "Ability.From", "Effect.Draw", "Trigger.StepBegins"])]
+    fn how_often_and_from_where_an_ability_works_counts_as_a_primitive(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(problems(json), Vec::<String>::new());
+        let ability: Ability = serde_json::from_str(json).unwrap();
+        let expected: BTreeSet<String> = expected.iter().map(|name| (*name).to_owned()).collect();
+        assert_eq!(used_primitives(&ability), expected);
     }
 
     #[rstest]

@@ -21,7 +21,7 @@ import { DEV_PROMPTS, DEV_TABLES, DEV_YIELDS } from './prompts'
 export function fixtureState(fixture: Fixture, pending?: PendingDecision | null): PlayState {
   const { view, log, chat } = fixture
   const options = { playable_lands: [], castable: [], mana_abilities: [], can_act: false, can_pass: true }
-  const shown =
+  const shown: PendingDecision | null =
     pending === undefined
       ? { id: 1, decision: { player: view.viewer, kind: { Priority: options } } }
       : pending

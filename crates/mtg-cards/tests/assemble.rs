@@ -5,7 +5,7 @@ mod common;
 
 use std::collections::BTreeSet;
 
-use mtg_cards::assemble::{FACES, PLAIN_MANA_ABILITY, X_COST, assemble, lower};
+use mtg_cards::assemble::{FACES, Lowered, PLAIN_MANA_ABILITY, X_COST, assemble, lower};
 use mtg_cards::load::Library;
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::support::{Caps, Support};
@@ -45,6 +45,12 @@ fn owned_words(text: &str) -> Vec<String> {
 fn words(type_line: &str) -> (BTreeSet<String>, Vec<String>) {
     let (head, tail) = type_line.split_once('\u{2014}').unwrap_or((type_line, ""));
     (owned_words(head).into_iter().collect(), owned_words(tail))
+}
+
+/// The mana ability a definition carries (the only kind it has in `abilities`).
+fn mana_of(ability: AbilityDef) -> ManaAbility {
+    let AbilityDef::Mana(mana) = ability;
+    mana
 }
 
 fn caps_of(names: &[&str]) -> Caps {
@@ -153,6 +159,35 @@ fn only_what_the_engine_runs_is_verified() {
 }
 
 #[test]
+fn a_vanilla_or_basic_card_is_verified_without_a_rules_file() {
+    let no_files = Library::from_sources(&[]).unwrap_or_else(|errors| panic!("{errors}"));
+    for caps in [Caps::none(), caps_of(&[PLAIN_MANA_ABILITY])] {
+        let mut verified = Vec::new();
+        for record in records() {
+            let assembled = no_files.assemble(&printed_of(&record), &caps);
+            if assembled.support.support == Support::Verified {
+                verified.push(record.name.clone());
+            }
+            if record.name == "Forest" {
+                // The land type gives the mana ability, so the card plays with no file at all.
+                assert_eq!(
+                    assembled.definition.abilities,
+                    [AbilityDef::Mana(ManaAbility {
+                        produces: ManaType::Green
+                    })]
+                );
+            }
+        }
+        verified.sort();
+        assert_eq!(
+            verified,
+            ["Forest", "Grizzly Bears"],
+            "every other card of the corpus has rules text"
+        );
+    }
+}
+
+#[test]
 fn rules_are_attached_only_when_the_support_record_says_the_engine_runs_them() {
     let library = library();
     let caps_to_try = [
@@ -172,16 +207,26 @@ fn rules_are_attached_only_when_the_support_record_says_the_engine_runs_them() {
             let state = assembled.support.support;
             if matches!(state, Support::Verified | Support::Partial) {
                 let rules = library.card(&printed.oracle_id).unwrap();
-                let lowered: Vec<AbilityDef> =
+                let lowered: Vec<Lowered> =
                     rules.faces[0].abilities.iter().filter_map(lower).collect();
                 assert!(
-                    carried.iter().all(|a| lowered.contains(a)),
+                    carried
+                        .iter()
+                        .all(|a| lowered.contains(&Lowered::Mana(mana_of(*a)))),
                     "{}: carries more than its rules",
+                    record.name
+                );
+                assert!(
+                    shown
+                        .rules
+                        .iter()
+                        .all(|r| lowered.contains(&Lowered::Rules(r.clone()))),
+                    "{}: carries more rules than it has",
                     record.name
                 );
             } else {
                 assert!(
-                    carried.is_empty(),
+                    carried.is_empty() && shown.rules.is_empty(),
                     "{} is {state:?} and carries rules",
                     record.name
                 );

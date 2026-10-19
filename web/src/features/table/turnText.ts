@@ -38,6 +38,17 @@ export const DECISION_LABEL: Record<DecisionName, string> = {
   DeclareBlockers: 'Declare blockers',
   AssignDamage: 'Assign combat damage',
   Discard: 'Discard',
+  ChooseTargets: 'Choose targets',
+  ChooseMode: 'Choose modes',
+  ChooseNumber: 'Choose a number',
+  DivideAmount: 'Divide the amount',
+  ChooseCards: 'Choose cards',
+  OrderCards: 'Put cards in order',
+  YesNo: 'Yes or no',
+  ChooseOption: 'Choose an option',
+  ChooseCosts: 'Choose costs',
+  OrderTriggers: 'Order triggers',
+  ChooseReplacement: 'Choose which effect applies first',
 }
 
 /** The name of a decision kind; a new kind stops compiling here until it is named. */
@@ -49,6 +60,17 @@ export function decisionName(kind: DecisionKind): DecisionName {
   if ('DeclareAttackers' in kind) return 'DeclareAttackers'
   if ('DeclareBlockers' in kind) return 'DeclareBlockers'
   if ('AssignDamage' in kind) return 'AssignDamage'
+  if ('ChooseTargets' in kind) return 'ChooseTargets'
+  if ('ChooseMode' in kind) return 'ChooseMode'
+  if ('ChooseNumber' in kind) return 'ChooseNumber'
+  if ('DivideAmount' in kind) return 'DivideAmount'
+  if ('ChooseCards' in kind) return 'ChooseCards'
+  if ('OrderCards' in kind) return 'OrderCards'
+  if ('YesNo' in kind) return 'YesNo'
+  if ('ChooseOption' in kind) return 'ChooseOption'
+  if ('ChooseCosts' in kind) return 'ChooseCosts'
+  if ('OrderTriggers' in kind) return 'OrderTriggers'
+  if ('ChooseReplacement' in kind) return 'ChooseReplacement'
   void (kind satisfies { Discard: unknown })
   return 'Discard'
 }

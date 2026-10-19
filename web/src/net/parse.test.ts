@@ -1,6 +1,7 @@
 // Goal: every frame the server could send becomes a typed message or a typed FrameError; nothing malformed throws or slips through.
 import { describe, expect, it } from 'vitest'
 import { isRecord } from '@/net/check'
+import { KINDS } from '@/test-utils/decisions'
 import { lateJoin, transcripts } from '@/test-utils/transcripts'
 import { MAX_FRAME_CHARS, parseFrame, parseMessage } from './parse'
 
@@ -486,5 +487,107 @@ describe('parseFrame checks the fields of each message', () => {
   it('reads decoded JSON the same way as a raw frame', () => {
     expect(parseMessage(samples.Chat)).toEqual({ ok: true, message: samples.Chat })
     expect(parseMessage('Chat')).toMatchObject({ ok: false, error: { kind: 'bad_shape' } })
+  })
+})
+
+describe('parseFrame on what spells and abilities add to the wire', () => {
+  const snapshot = {
+    id: 5,
+    counter: 0,
+    controller: 0,
+    owner: 0,
+    zone: 'Battlefield',
+    characteristics: { types: 4, colors: 0, power: 1, toughness: 1, abilities: [] },
+    counters: [],
+    attachments: [],
+  }
+  const events = [
+    { Public: { SpellCast: { player: 0, object: 4, choices: { targets: [[{ Player: 1 }]] } } } },
+    {
+      Public: {
+        AbilityPutOnStack: {
+          object: 90,
+          source: { id: 5, counter: 0 },
+          snapshot,
+          ability: 0,
+          controller: 1,
+          choices: { targets: [[{ Object: { id: 3, counter: 1 } }]], x: 2 },
+        },
+      },
+    },
+    { Public: { AbilityActivated: { player: 1, source: { id: 5, counter: 0 }, ability: 0 } } },
+    { Public: { ResolutionBegan: { object: 90 } } },
+    { Public: { ChoiceMade: { player: 1, choice: { Cards: [3, 4] } } } },
+    {
+      Public: {
+        StepDone: { position: [1, 0, 2], bound: [['found', [{ Player: 1 }]]], snapshots: [snapshot] },
+      },
+    },
+    { Public: { ResolutionEnded: { object: 90, outcome: 'Fizzled' } } },
+    { Public: { ZoneChanged: { object: 3, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'Destroyed' } } },
+    { Public: { LifeGained: { player: 0, amount: 3 } } },
+    { Public: { LifeLost: { player: 1, amount: 2 } } },
+    { Hidden: { LibraryLooked: { player: 1, count: 2 } } },
+    { Hidden: { Scried: { player: 1, top: 1, bottom: 1 } } },
+    { Hidden: { ZoneChanged: { from: { Library: 1 }, to: { Hand: 1 }, cause: 'Moved' } } },
+    { Hidden: { ChoiceMade: { player: 1 } } },
+    { Hidden: { StepDone: { position: [2] } } },
+  ]
+  const ability = {
+    id: 90,
+    owner: 1,
+    controller: 1,
+    zone: 'Stack',
+    name: 'Pinger',
+    mana_cost: null,
+    supertypes: [],
+    types: [],
+    subtypes: [],
+    colors: [],
+    power: null,
+    toughness: null,
+    abilities: [],
+    permanent: null,
+    kind: 'Ability',
+    source: 5,
+    targets: [[{ Player: 0 }]],
+  }
+
+  it('accepts a decision of every kind, the effects’ ones included, and hands it on unchanged', () => {
+    for (const [name, kind] of Object.entries(KINDS)) {
+      const message = { type: 'Decision', id: 3, decision: { player: 0, kind } }
+      expect(parseFrame(wire(message)), name).toEqual({ ok: true, message })
+    }
+  })
+
+  it('accepts the events of spells and abilities, public and hidden, in a batch', () => {
+    const batch = put(samples.Events, ['events'], events)
+    expect(parseFrame(wire(batch))).toEqual({ ok: true, message: batch })
+  })
+
+  it('accepts an ability on the stack among the objects of a batch, with its source and targets', () => {
+    const batch = put(samples.Events, ['objects'], [ability])
+    expect(parseFrame(wire(batch))).toEqual({ ok: true, message: batch })
+  })
+
+  it('accepts a card without the fields an ability adds, as the server writes it', () => {
+    const card = { ...ability, kind: undefined, source: undefined, targets: undefined }
+    const batch = put(samples.Events, ['objects'], [card])
+    expect(parseFrame(wire(batch))).toMatchObject({ ok: true })
+  })
+
+  it.each([
+    ['a kind that is none of the three', { kind: 'Spell' }],
+    ['a kind that is not text', { kind: 2 }],
+    ['a source that is not an id', { source: -1 }],
+    ['a source that is not a number', { source: 'Pinger' }],
+    ['targets that are not a list of lists', { targets: [{ Player: 0 }] }],
+    ['targets that are not a list', { targets: 'none' }],
+  ])('refuses an object with %s', (_what, change) => {
+    const batch = put(samples.Events, ['objects'], [{ ...ability, ...change }])
+    expect(parseFrame(wire(batch))).toMatchObject({
+      ok: false,
+      error: { kind: 'bad_shape', detail: expect.stringContaining('objects') },
+    })
   })
 })

@@ -4,13 +4,16 @@ use mtg_cards::AbilityDef;
 use mtg_core::card::{CardType, CardTypes};
 use mtg_core::color::ColorSet;
 use mtg_core::ids::ObjectId;
+use serde::{Deserialize, Serialize};
 
 use crate::effects::ContinuousEffect;
+use crate::object::ObjectKind;
 use crate::state::GameState;
 use crate::zones::Zone;
 
 /// The characteristics of an object right now; never stored, always recomputed.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Characteristics {
     /// Card types.
     pub types: CardTypes,
@@ -35,9 +38,18 @@ impl Characteristics {
 ///
 /// Effects apply layer by layer, and by timestamp within a layer; dependencies (CR 613.8) are not
 /// modeled yet. Selectors are evaluated against the characteristics built up to their own layer.
-/// Only objects on the battlefield are affected by effects.
+/// Only objects on the battlefield are affected by effects. An ability on the stack has none.
 pub fn characteristics(state: &GameState, id: ObjectId) -> Option<Characteristics> {
     let object = state.object(id)?;
+    if object.kind() == ObjectKind::Ability {
+        return Some(Characteristics {
+            types: CardTypes::default(),
+            colors: ColorSet::default(),
+            power: None,
+            toughness: None,
+            abilities: Vec::new(),
+        });
+    }
     let card = object.card();
     let mut chars = Characteristics {
         types: object.base_types(),

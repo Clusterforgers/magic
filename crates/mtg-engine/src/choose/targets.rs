@@ -1,0 +1,460 @@
+//! `ChooseTargets`: who and what a target specification may name, the decision that picks them, and the
+//! recheck on resolution that uses the same rule (CR 115, 608.2b).
+
+use mtg_cards::refs::{TargetSpec, Targetable};
+use mtg_cards::value::Amount;
+use mtg_core::ids::{ObjectId, PlayerId};
+use serde::{Deserialize, Serialize};
+
+use super::Target;
+use crate::answers::Outcome;
+use crate::error::{EngineError, IllegalAnswer};
+use crate::keywords;
+use crate::object::{GameObject, ObjectRef};
+use crate::resolve::{ResolveError, Scope};
+use crate::state::GameState;
+use crate::zones::Zone;
+
+/// The targets a player may choose for one target specification of a spell or ability being put on the stack.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct TargetOptions {
+    /// The spell or ability.
+    pub source: ObjectId,
+    /// Which of its target specifications this is, from 0.
+    pub spec: usize,
+    /// Everything that may be chosen.
+    pub legal: Vec<Target>,
+    /// The fewest targets to choose.
+    pub min: u32,
+    /// The most targets to choose, never more than there are to choose from.
+    pub max: u32,
+    /// Whether the cast or activation may still be backed out of: nothing is logged until it is paid for.
+    pub can_cancel: bool,
+}
+
+/// The answer to a target decision.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum TargetChoice {
+    /// These targets, each once, between `min` and `max` of them, all among the legal ones.
+    Targets(Vec<Target>),
+    /// Back out of the cast or activation (when `can_cancel`).
+    Cancel,
+}
+
+fn candidates(scope: &Scope<'_>, what: &Targetable) -> Result<Vec<Target>, ResolveError> {
+    let state = scope.state;
+    let players = || state.alive_players().map(Target::Player);
+    Ok(match what {
+        Targetable::AnyTarget => players()
+            .chain(
+                state
+                    .zone(Zone::Battlefield)
+                    .iter()
+                    .filter_map(|id| state.object(*id))
+                    .filter(|o| scope.can_be_dealt_damage(o.reference()))
+                    .map(|o| Target::Object(o.reference())),
+            )
+            .collect(),
+        Targetable::Player => players().collect(),
+        Targetable::Opponent => players()
+            .filter(|t| t.player() != Some(scope.controller))
+            .collect(),
+        Targetable::Object(selector) => scope
+            .matching(selector)?
+            .into_iter()
+            .map(Target::Object)
+            .collect(),
+        Targetable::Either(kinds) => {
+            let mut all = Vec::new();
+            for kind in kinds {
+                all.extend(candidates(scope, kind)?);
+            }
+            all
+        }
+    })
+}
+
+/// Everything `spec` lets a spell or ability of `source`, controlled by `controller`, target right now.
+///
+/// One rule serves both choosing and the recheck on resolution (CR 608.2b): a target is still legal when it
+/// is still in this list. An object that changed zones is a new object, so it is not. A selector the engine
+/// cannot evaluate matches nothing, so the spell is not offered. Protection (hexproof, ward) joins here.
+pub fn legal_targets(
+    state: &GameState,
+    spec: &TargetSpec,
+    source: ObjectId,
+    controller: PlayerId,
+) -> Vec<Target> {
+    let source = state.object(source).map_or(
+        ObjectRef {
+            id: source,
+            counter: 0,
+        },
+        GameObject::reference,
+    );
+    let scope = Scope::announcing(state, controller, source);
+    let mut legal = candidates(&scope, &spec.what).unwrap_or_default();
+    legal.retain(|target| match target {
+        Target::Object(object) => !keywords::protects(state, object.id, source.id, controller),
+        Target::Player(_) => true,
+    });
+    legal.sort_unstable();
+    legal.dedup();
+    legal
+}
+
+/// Whether `target` is among the legal targets of `spec`.
+pub fn is_legal(
+    state: &GameState,
+    spec: &TargetSpec,
+    target: Target,
+    source: ObjectId,
+    controller: PlayerId,
+) -> bool {
+    legal_targets(state, spec, source, controller).contains(&target)
+}
+
+/// The decision for the specification `index`, or `None` when it cannot be met: fewer legal targets than its minimum.
+pub(crate) fn options_for(
+    state: &GameState,
+    source: ObjectId,
+    controller: PlayerId,
+    index: usize,
+    spec: &TargetSpec,
+    can_cancel: bool,
+) -> Option<TargetOptions> {
+    let legal = legal_targets(state, spec, source, controller);
+    let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
+    if available < spec.bounds.min {
+        return None;
+    }
+    let max = match &spec.bounds.max {
+        None => available,
+        Some(Amount::Fixed(n)) => u32::try_from(*n).unwrap_or(0),
+        Some(other) => {
+            let origin = state.object(source).map_or(
+                ObjectRef {
+                    id: source,
+                    counter: 0,
+                },
+                GameObject::reference,
+            );
+            let amount = Scope::announcing(state, controller, origin)
+                .amount(other)
+                .ok()?;
+            u32::try_from(amount).unwrap_or(0)
+        }
+    };
+    Some(TargetOptions {
+        source,
+        spec: index,
+        legal,
+        min: spec.bounds.min,
+        max: max.min(available),
+        can_cancel,
+    })
+}
+
+/// Whether the specification asks for any choice at all: a specification that allows no targets, or has none
+/// to offer and needs none, is passed over.
+pub(crate) fn asks(options: &TargetOptions) -> bool {
+    options.max > 0 && !options.legal.is_empty()
+}
+
+/// Checks the answer against the options it answers.
+pub(crate) fn answer(
+    _player: PlayerId,
+    options: &TargetOptions,
+    choice: TargetChoice,
+) -> Result<Outcome, EngineError> {
+    let targets = match choice {
+        TargetChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
+        TargetChoice::Cancel => return Err(IllegalAnswer::NotOffered("cancel").into()),
+        TargetChoice::Targets(targets) => targets,
+    };
+    for (at, target) in targets.iter().enumerate() {
+        if targets[..at].contains(target) {
+            return Err(IllegalAnswer::Duplicate("target").into());
+        }
+        if !options.legal.contains(target) {
+            return Err(IllegalAnswer::NotOffered("target").into());
+        }
+    }
+    let count = u32::try_from(targets.len()).unwrap_or(u32::MAX);
+    let wanted = if count < options.min {
+        Some(options.min)
+    } else if count > options.max {
+        Some(options.max)
+    } else {
+        None
+    };
+    if let Some(expected) = wanted {
+        return Err(IllegalAnswer::WrongCount {
+            expected: usize::try_from(expected).unwrap_or(usize::MAX),
+            got: targets.len(),
+        }
+        .into());
+    }
+    Ok(Outcome::Targets(targets))
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: what a specification lets a spell target is the same list for choosing and for the recheck: players and creatures, opponents, selectors, unions, never what has left the game or changed zones, and the answer to a target decision is accepted exactly when it is built from that list within the bounds.
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
+    use mtg_core::card::CardType;
+    use mtg_core::ids::ObjectId;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::events::{Event, ZoneCause};
+    use crate::fixtures::{creature, state};
+    use crate::fold::apply_event;
+    use crate::player::LossReason;
+
+    fn relic() -> Arc<CardDefinition> {
+        Arc::new(CardDefinition::new("Relic").with_type(CardType::Artifact))
+    }
+
+    /// Seat 0: a Bear, a Relic and a spell in hand; seat 1: an Ogre.
+    fn game() -> GameState {
+        state(
+            vec![vec![relic()], vec![]],
+            vec![
+                vec![creature("Bear", 2, 2), relic()],
+                vec![creature("Ogre", 3, 4)],
+            ],
+        )
+    }
+
+    fn spec(json: &str) -> TargetSpec {
+        serde_json::from_str(json).unwrap()
+    }
+
+    fn describe(game: &GameState, targets: &[Target]) -> Vec<String> {
+        targets
+            .iter()
+            .map(|t| match t {
+                Target::Player(p) => format!("player {}", p.get()),
+                Target::Object(o) => game.object(o.id).unwrap().card().name.clone(),
+            })
+            .collect()
+    }
+
+    /// The source is the Relic in seat 0's hand, standing for a spell.
+    fn legal(game: &GameState, json: &str) -> Vec<String> {
+        let spell = game.zone(Zone::Hand(PlayerId(0)))[0];
+        describe(game, &legal_targets(game, &spec(json), spell, PlayerId(0)))
+    }
+
+    #[rstest]
+    #[case::any_target(r#"{"what":"AnyTarget"}"#, &["player 0", "player 1", "Bear", "Ogre"])]
+    #[case::a_player(r#"{"what":"Player"}"#, &["player 0", "player 1"])]
+    #[case::an_opponent(r#"{"what":"Opponent"}"#, &["player 1"])]
+    #[case::creatures(r#"{"what":{"Object":[{"Type":"Creature"}]}}"#, &["Bear", "Ogre"])]
+    #[case::your_creatures(r#"{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#, &["Bear"])]
+    #[case::artifacts(r#"{"what":{"Object":[{"Type":"Artifact"}]}}"#, &["Relic"])]
+    #[case::a_player_or_an_artifact(r#"{"what":{"Either":["Player",{"Object":[{"Type":"Artifact"}]}]}}"#, &["player 0", "player 1", "Relic"])]
+    #[case::a_kind_listed_twice_is_listed_once(r#"{"what":{"Either":["Player","AnyTarget"]}}"#, &["player 0", "player 1", "Bear", "Ogre"])]
+    #[case::cards_in_a_hand(r#"{"what":{"Object":[{"In":"Hand"}]}}"#, &["Relic"])]
+    #[case::a_selector_the_engine_cannot_read_matches_nothing(r#"{"what":{"Object":[{"Compare":{"stat":"Loyalty","op":"Ge","to":1}}]}}"#, &[])]
+    fn a_specification_lists_what_it_lets_a_spell_target(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(legal(&game(), json), expected);
+    }
+
+    #[test]
+    fn a_player_who_lost_is_not_a_target_and_neither_is_an_object_that_changed_zones() {
+        let mut game = game();
+        let ogre = game.zone(Zone::Battlefield)[2];
+        let any = spec(r#"{"what":"AnyTarget"}"#);
+        let spell = game.zone(Zone::Hand(PlayerId(0)))[0];
+        let before = legal_targets(&game, &any, spell, PlayerId(0));
+        assert!(before.contains(&Target::Object(game.object(ogre).unwrap().reference())));
+        let old = game.object(ogre).unwrap().reference();
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: ogre,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(PlayerId(1)),
+                cause: ZoneCause::Destroyed,
+            },
+        )
+        .unwrap();
+        apply_event(
+            &mut game,
+            &Event::PlayerLost {
+                player: PlayerId(1),
+                reason: LossReason::Conceded,
+            },
+        )
+        .unwrap();
+        let after = legal_targets(&game, &any, spell, PlayerId(0));
+        assert_eq!(describe(&game, &after), ["player 0", "Bear"]);
+        assert!(!is_legal(
+            &game,
+            &any,
+            Target::Object(old),
+            spell,
+            PlayerId(0)
+        ));
+        assert!(!is_legal(
+            &game,
+            &any,
+            Target::Player(PlayerId(1)),
+            spell,
+            PlayerId(0)
+        ));
+        assert!(is_legal(
+            &game,
+            &any,
+            Target::Player(PlayerId(0)),
+            spell,
+            PlayerId(0)
+        ));
+    }
+
+    #[test]
+    fn a_stale_reference_is_not_the_object_it_names() {
+        let game = game();
+        let spell = game.zone(Zone::Hand(PlayerId(0)))[0];
+        let any = spec(r#"{"what":"AnyTarget"}"#);
+        let bear = game
+            .object(game.zone(Zone::Battlefield)[0])
+            .unwrap()
+            .reference();
+        assert!(is_legal(
+            &game,
+            &any,
+            Target::Object(bear),
+            spell,
+            PlayerId(0)
+        ));
+        let stale = ObjectRef {
+            counter: bear.counter + 1,
+            ..bear
+        };
+        assert!(!is_legal(
+            &game,
+            &any,
+            Target::Object(stale),
+            spell,
+            PlayerId(0)
+        ));
+    }
+
+    #[rstest]
+    #[case::exactly_one(r#"{"what":"AnyTarget"}"#, Some((1, 1)))]
+    #[case::up_to_two(r#"{"what":"AnyTarget","bounds":{"min":0,"max":2}}"#, Some((0, 2)))]
+    #[case::any_number(r#"{"what":"AnyTarget","bounds":{"min":0,"max":null}}"#, Some((0, 4)))]
+    #[case::more_than_there_are(r#"{"what":"AnyTarget","bounds":{"min":1,"max":9}}"#, Some((1, 4)))]
+    #[case::too_few_to_meet_the_minimum(r#"{"what":"Opponent","bounds":{"min":2,"max":2}}"#, None)]
+    #[case::none_to_choose_from_but_none_needed(r#"{"what":{"Object":[{"Type":"Land"}]},"bounds":{"min":0,"max":1}}"#, Some((0, 0)))]
+    #[case::none_to_choose_from_and_one_needed(r#"{"what":{"Object":[{"Type":"Land"}]}}"#, None)]
+    fn the_decision_offers_the_bounds_within_what_is_legal(
+        #[case] json: &str,
+        #[case] expected: Option<(u32, u32)>,
+    ) {
+        let game = game();
+        let spell = game.zone(Zone::Hand(PlayerId(0)))[0];
+        let options = options_for(&game, spell, PlayerId(0), 0, &spec(json), true);
+        assert_eq!(options.map(|o| (o.min, o.max)), expected);
+    }
+
+    fn options(min: u32, max: u32, can_cancel: bool) -> TargetOptions {
+        TargetOptions {
+            source: ObjectId(0),
+            spec: 0,
+            legal: vec![
+                Target::Player(PlayerId(0)),
+                Target::Player(PlayerId(1)),
+                Target::Object(ObjectRef {
+                    id: ObjectId(5),
+                    counter: 0,
+                }),
+            ],
+            min,
+            max,
+            can_cancel,
+        }
+    }
+
+    fn answered(options: &TargetOptions, choice: TargetChoice) -> Result<Outcome, IllegalAnswer> {
+        match answer(PlayerId(0), options, choice) {
+            Err(EngineError::Illegal(illegal)) => Err(illegal),
+            Err(other) => panic!("{other}"),
+            Ok(outcome) => Ok(outcome),
+        }
+    }
+
+    #[rstest]
+    #[case::one_target(1, 1, vec![0], true)]
+    #[case::the_last_one(1, 1, vec![2], true)]
+    #[case::two_when_two_are_allowed(1, 2, vec![0, 1], true)]
+    #[case::none_when_none_are_needed(0, 1, vec![], true)]
+    #[case::none_when_one_is_needed(1, 1, vec![], false)]
+    #[case::too_many(1, 1, vec![0, 1], false)]
+    #[case::the_same_twice(1, 2, vec![1, 1], false)]
+    fn targets_are_accepted_when_legal_distinct_and_within_the_bounds(
+        #[case] min: u32,
+        #[case] max: u32,
+        #[case] picks: Vec<usize>,
+        #[case] accepted: bool,
+    ) {
+        let options = options(min, max, true);
+        let chosen: Vec<Target> = picks.iter().map(|at| options.legal[*at]).collect();
+        let result = answered(&options, TargetChoice::Targets(chosen.clone()));
+        match (accepted, result) {
+            (true, Ok(Outcome::Targets(taken))) => assert_eq!(taken, chosen),
+            (false, Err(_)) => {}
+            (_, other) => panic!("{other:?}"),
+        }
+    }
+
+    #[test]
+    fn a_target_that_was_not_offered_is_refused() {
+        let options = options(1, 1, true);
+        let stranger = Target::Object(ObjectRef {
+            id: ObjectId(9),
+            counter: 0,
+        });
+        assert_eq!(
+            answered(&options, TargetChoice::Targets(vec![stranger])).unwrap_err(),
+            IllegalAnswer::NotOffered("target")
+        );
+    }
+
+    #[test]
+    fn backing_out_is_free_while_the_cast_can_be_cancelled_and_refused_after() {
+        assert!(matches!(
+            answered(&options(1, 1, true), TargetChoice::Cancel),
+            Ok(Outcome::CancelCast)
+        ));
+        assert_eq!(
+            answered(&options(1, 1, false), TargetChoice::Cancel).unwrap_err(),
+            IllegalAnswer::NotOffered("cancel")
+        );
+    }
+
+    #[rstest]
+    #[case::something_to_choose(1, 1, 3, true)]
+    #[case::nothing_to_choose(0, 0, 3, false)]
+    #[case::nothing_to_choose_from(0, 1, 0, false)]
+    fn a_specification_with_nothing_to_choose_is_passed_over(
+        #[case] min: u32,
+        #[case] max: u32,
+        #[case] legal: usize,
+        #[case] asked: bool,
+    ) {
+        let mut options = options(min, max, true);
+        options.legal.truncate(legal);
+        assert_eq!(asks(&options), asked);
+    }
+}

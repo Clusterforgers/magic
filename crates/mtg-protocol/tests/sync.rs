@@ -10,9 +10,10 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use common::{Step, run_game, unique_setup, visible_ids};
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::object::ObjectKind;
 use mtg_engine::{Event, GameSetup};
 use mtg_protocol::{EventBatch, ObjectView, StateView, project_events};
-use mtg_testkit::symbol_fuzz_setup;
+use mtg_testkit::{spell_fuzz_setup, symbol_fuzz_setup};
 use rstest::rstest;
 
 /// How often (in answers) a snapshot is also checked to survive its JSON form.
@@ -81,6 +82,8 @@ struct Tally {
     gone: usize,
     snapshots: usize,
     life_paid: usize,
+    abilities: usize,
+    targeted: usize,
 }
 
 #[rstest]
@@ -125,6 +128,27 @@ fn folding_batches_reproduces_the_true_view_in_games_of_hybrid_and_phyrexian_cos
     );
 }
 
+/// Spells with targets and activated abilities: abilities on the stack are objects of their own that every seat
+/// sees, with their source and targets, and they come and go through the object diff like any other object.
+#[rstest]
+#[case(2, 81)]
+#[case(3, 82)]
+#[case(4, 83)]
+fn folding_batches_reproduces_the_true_view_in_games_of_spells_and_abilities(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let tally = check_the_fold(spell_fuzz_setup(players, seed), players, seed);
+    assert!(
+        tally.batches > 300 && tally.abilities > 0 && tally.targeted > 0 && tally.gone > 0,
+        "test must not be vacuous: {} batches, {} ability views, {} targeted views, {} gone",
+        tally.batches,
+        tally.abilities,
+        tally.targeted,
+        tally.gone
+    );
+}
+
 fn check_the_fold(setup: GameSetup, players: usize, seed: u64) -> Tally {
     let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
     let mut views: Vec<Option<StateView>> = vec![None; players];
@@ -144,6 +168,16 @@ fn check_the_fold(setup: GameSetup, players: usize, seed: u64) -> Tally {
             tally.batches += 1;
             tally.upserted += batch.objects.len();
             tally.gone += batch.gone.len();
+            tally.abilities += batch
+                .objects
+                .iter()
+                .filter(|o| o.kind == ObjectKind::Ability && o.source.is_some())
+                .count();
+            tally.targeted += batch
+                .objects
+                .iter()
+                .filter(|o| !o.targets.is_empty())
+                .count();
             match &mut views[viewer.index()] {
                 slot @ None => {
                     // A client that joined the lobby has no snapshot and starts from the first batch.

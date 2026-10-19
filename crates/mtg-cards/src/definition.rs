@@ -4,11 +4,14 @@
 //! ([`crate::assemble()`]); the test helpers in [`crate::vanilla`] build the plain ones directly.
 
 use std::collections::BTreeSet;
+use std::sync::Arc;
 
 use mtg_core::card::{CardType, CardTypes, Subtype, Supertype};
 use mtg_core::color::{Color, ColorSet};
 use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
+
+use crate::ability::Ability;
 
 /// `{T}: Add one mana of a fixed type`; shaped so costs and choices can extend it.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -67,6 +70,11 @@ pub struct CardDefinition {
     pub color_indicator: Option<ColorSet>,
     /// Printed abilities.
     pub abilities: Vec<AbilityDef>,
+    /// The rules the effect pipeline runs (spells, activated abilities and the like), shared by every copy of the card.
+    ///
+    /// An ability is named by its index in this list.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub rules: Vec<Arc<Ability>>,
 }
 
 impl CardDefinition {
@@ -85,6 +93,7 @@ impl CardDefinition {
             defense: None,
             color_indicator: None,
             abilities: Vec::new(),
+            rules: Vec::new(),
         }
     }
 
@@ -159,6 +168,13 @@ impl CardDefinition {
         self
     }
 
+    /// Adds a rules ability for the effect pipeline.
+    #[must_use]
+    pub fn with_rules(mut self, ability: Ability) -> Self {
+        self.rules.push(Arc::new(ability));
+        self
+    }
+
     /// The basic land for `color`, or Wastes for `None`.
     pub fn basic_land(color: Option<Color>) -> Self {
         let (name, subtype, mana) = match color {
@@ -211,6 +227,10 @@ mod tests {
     //! Goal: card definition helpers derive colors, values and basic lands consistently.
     use super::*;
     use rstest::rstest;
+
+    use crate::effect::Effect;
+    use crate::refs::Ref;
+    use crate::value::Amount;
 
     #[rstest]
     #[case(Some(Color::White), "Plains", ManaType::White)]
@@ -320,9 +340,22 @@ mod tests {
             .with_x_in_cost(2)
             .with_loyalty(3)
             .with_defense(4)
-            .with_color_indicator(ColorSet::EMPTY.with(Color::Blue));
+            .with_color_indicator(ColorSet::EMPTY.with(Color::Blue))
+            .with_rules(Ability::Spell {
+                targets: vec![],
+                effects: vec![Effect::Draw {
+                    who: Ref::You,
+                    count: Amount::one(),
+                }],
+            });
         let json = serde_json::to_value(&used).unwrap();
-        for key in ["x_in_cost", "loyalty", "defense", "color_indicator"] {
+        for key in [
+            "x_in_cost",
+            "loyalty",
+            "defense",
+            "color_indicator",
+            "rules",
+        ] {
             assert!(json.get(key).is_some(), "{key} is stored once it is used");
         }
         assert_eq!(

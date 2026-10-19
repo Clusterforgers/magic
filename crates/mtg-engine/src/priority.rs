@@ -3,16 +3,24 @@
 use std::collections::BTreeSet;
 
 use mtg_cards::AbilityDef;
+use mtg_cards::ability::{Ability, Timing};
+use mtg_cards::cost::CostItem;
+use mtg_cards::refs::TargetSpec;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
+use crate::abilities::AbilityRef;
 use crate::answers::Outcome;
 use crate::characteristics::characteristics;
+use crate::choose::options_for;
 use crate::decision::{PriorityAction, PriorityOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
+use crate::keywords;
 use crate::mana::{ManaOption, ManaSource, can_afford};
+use crate::object::GameObject;
 use crate::player::Player;
+use crate::resolve::spell_ability;
 use crate::state::GameState;
 use crate::turn::LAND_DROPS_PER_TURN;
 use crate::zones::Zone;
@@ -87,11 +95,75 @@ fn hand_land(state: &GameState, id: ObjectId) -> bool {
         .is_some_and(|o| o.base_types().contains(CardType::Land))
 }
 
-/// Activated abilities of `player`'s permanents that are not mana abilities and could be used now.
+/// Whether every target specification of a spell or ability of `source` has enough legal targets to be announced.
+fn announceable(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectId,
+    specs: &[TargetSpec],
+) -> bool {
+    specs
+        .iter()
+        .enumerate()
+        .all(|(index, spec)| options_for(state, source, player, index, spec, true).is_some())
+}
+
+/// Whether the ability `index` of the permanent `object` could be activated by `player` now.
 ///
-/// No card has one yet (see [`AbilityDef`]); when one does, list it here and [`can_act`] counts it.
-fn other_abilities(_state: &GameState, _player: PlayerId) -> Vec<ObjectId> {
-    Vec::new()
+/// The engine pays `{T}` and nothing else for an ability; `Caps` keeps abilities with other costs out of the game.
+fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index: usize) -> bool {
+    let Some(rules) = object.card().rules.get(index) else {
+        return false;
+    };
+    let Ability::Activated {
+        cost,
+        timing,
+        targets,
+        ..
+    } = &**rules
+    else {
+        return false;
+    };
+    if rules.is_mana_ability() || !cost.0.iter().all(|item| matches!(item, CostItem::Tap)) {
+        return false;
+    }
+    if *timing == Timing::Sorcery && !sorcery_timing(state, player) {
+        return false;
+    }
+    if !cost.0.is_empty() {
+        let Some(permanent) = object.permanent() else {
+            return false;
+        };
+        // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
+        let sick = permanent.summoning_sick()
+            && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
+        if permanent.tapped() || sick {
+            return false;
+        }
+    }
+    announceable(state, player, object.id(), targets)
+}
+
+/// Activated abilities of `player`'s permanents that are not mana abilities and could be used now.
+pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<AbilityRef> {
+    let mut found = Vec::new();
+    for &id in state.zone(Zone::Battlefield) {
+        let Some(object) = state.object(id) else {
+            continue;
+        };
+        if object.controller() != player {
+            continue;
+        }
+        for ability in 0..object.card().rules.len() {
+            if can_activate(state, player, object, ability) {
+                found.push(AbilityRef {
+                    object: id,
+                    ability,
+                });
+            }
+        }
+    }
+    found
 }
 
 /// Whether `player` can do anything worth stopping for: play a land, cast a spell or use an ability that is not a mana ability.
@@ -99,12 +171,11 @@ fn other_abilities(_state: &GameState, _player: PlayerId) -> Vec<ObjectId> {
 /// `castable` already holds only the spells the floating mana and the untapped sources can pay for. Mana
 /// abilities alone never count: tapping a land with nothing to spend the mana on is not an action.
 pub(crate) fn can_act(
-    state: &GameState,
-    player: PlayerId,
     playable_lands: &[ObjectId],
     castable: &[ObjectId],
+    abilities: &[AbilityRef],
 ) -> bool {
-    !playable_lands.is_empty() || !castable.is_empty() || !other_abilities(state, player).is_empty()
+    !playable_lands.is_empty() || !castable.is_empty() || !abilities.is_empty()
 }
 
 /// Everything `player` may do while holding priority.
@@ -141,15 +212,23 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             if object.card().x_in_cost > 0 {
                 return false;
             }
-            let timing = types.contains(CardType::Instant) || sorcery_timing(state, player);
-            timing && can_afford(cost, &pool, &mana_abilities, life)
+            let timing = types.contains(CardType::Instant)
+                || keywords::grants_instant_timing(object)
+                || sorcery_timing(state, player);
+            // CR 601.2c: a spell that needs a target is cast only when it has a legal one.
+            let targets = spell_ability(object).map_or(&[][..], Ability::targets);
+            timing
+                && announceable(state, player, *id, targets)
+                && can_afford(cost, &pool, &mana_abilities, life)
         })
         .collect();
+    let abilities = other_abilities(state, player);
     PriorityOptions {
-        can_act: can_act(state, player, &playable_lands, &castable),
+        can_act: can_act(&playable_lands, &castable, &abilities),
         playable_lands,
         castable,
         mana_abilities,
+        abilities,
         can_pass: true,
     }
 }
@@ -173,6 +252,12 @@ pub(crate) fn answer(
                 return Err(IllegalAnswer::NotOffered("spell").into());
             }
             Ok(Outcome::BeginCast(object))
+        }
+        PriorityAction::Activate(ability) => {
+            if !options.abilities.contains(&ability) {
+                return Err(IllegalAnswer::NotOffered("ability").into());
+            }
+            Ok(Outcome::BeginActivation(ability))
         }
         PriorityAction::ActivateMana(source) => {
             let option = options

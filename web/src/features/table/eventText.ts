@@ -2,6 +2,7 @@
 import { describeLoss } from '@/features/game/outcome'
 import type {
   AttackTarget,
+  Choice,
   ContinuousEffect,
   DamageTarget,
   Event,
@@ -9,6 +10,9 @@ import type {
   HiddenEvent,
   ObjectId,
   PlayerId,
+  Target,
+  Zone,
+  ZoneCause,
 } from '@/protocol/generated'
 import { colorsInSet, manaLetter } from './cardModel'
 import { STEP_LABEL } from './turnText'
@@ -76,6 +80,127 @@ function damageTarget(target: DamageTarget, n: EventNames): string {
   return 'Player' in target ? n.seat(target.Player) : n.card(target.Object)
 }
 
+function targetName(target: Target, n: EventNames): string {
+  return 'Player' in target ? n.seat(target.Player) : n.card(target.Object.id)
+}
+
+function zoneWord(zone: Zone, n: EventNames): string {
+  if (zone === 'Battlefield') return 'the battlefield'
+  if (zone === 'Stack') return 'the stack'
+  if (zone === 'Exile') return 'exile'
+  if ('Library' in zone) return `${n.seat(zone.Library)}'s library`
+  if ('Hand' in zone) return `${n.seat(zone.Hand)}'s hand`
+  if ('Graveyard' in zone) return `${n.seat(zone.Graveyard)}'s graveyard`
+  return `${n.seat(zone.Command)}'s command zone`
+}
+
+/** What a player's answer to a question of a spell or ability says, after their name. */
+function describeChoice(choice: Choice, n: EventNames): string {
+  if ('Number' in choice) return `chooses ${choice.Number}`
+  if ('Cards' in choice) {
+    return choice.Cards.length === 0 ? 'chooses nothing' : `chooses ${joinWords(choice.Cards.map(n.card))}`
+  }
+  if ('Order' in choice) return `puts ${cards(choice.Order.length)} in order`
+  if ('YesNo' in choice) return choice.YesNo ? 'answers yes' : 'answers no'
+  if ('Option' in choice) return `chooses option ${choice.Option + 1}`
+  return 'chooses which effect applies first'
+}
+
+const BECAUSE: Record<ZoneCause, string> = {
+  Moved: 'moves',
+  Destroyed: 'is destroyed',
+  Sacrificed: 'is sacrificed',
+  Exiled: 'is exiled',
+  Countered: 'is countered',
+  Milled: 'is milled',
+}
+
+/** The events of spells and abilities: abilities on the stack, the steps of a resolution, life, zones and what players learn. */
+const PIPELINE = [
+  'AbilityPutOnStack',
+  'AbilityActivated',
+  'AbilityTriggered',
+  'ResolutionBegan',
+  'ChoiceMade',
+  'StepDone',
+  'ResolutionEnded',
+  'ZoneChanged',
+  'LifeGained',
+  'LifeLost',
+  'CountersChanged',
+  'TokenCreated',
+  'LibraryLooked',
+  'CardsFound',
+  'Scried',
+  'Revealed',
+] as const
+type PipelineName = (typeof PIPELINE)[number]
+type PipelineEvent = PipelineName extends infer K
+  ? K extends PipelineName
+    ? Extract<Event, Record<K, unknown>>
+    : never
+  : never
+
+function isPipeline(event: Event): event is PipelineEvent {
+  return typeof event !== 'string' && PIPELINE.some((name) => name in event)
+}
+
+function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
+  if ('AbilityPutOnStack' in event) {
+    return quiet(`An ability of ${n.card(event.AbilityPutOnStack.source.id)} goes on the stack`)
+  }
+  if ('AbilityActivated' in event) {
+    const { player, source } = event.AbilityActivated
+    return line(`${n.seat(player)} activates an ability of ${n.card(source.id)}`)
+  }
+  if ('AbilityTriggered' in event) {
+    return line(`An ability of ${n.card(event.AbilityTriggered.source.id)} triggers`)
+  }
+  if ('ResolutionBegan' in event) return quiet(`${n.card(event.ResolutionBegan.object)} begins to resolve`)
+  if ('ChoiceMade' in event) {
+    const { player, choice } = event.ChoiceMade
+    return quiet(`${n.seat(player)} ${describeChoice(choice, n)}`)
+  }
+  if ('StepDone' in event) return quiet('A step of the resolution is done')
+  if ('ResolutionEnded' in event) {
+    const { object, outcome } = event.ResolutionEnded
+    if (outcome === 'Fizzled') return line(`${n.card(object)} does nothing: its targets are gone`)
+    if (outcome === 'Countered') return line(`${n.card(object)} is countered`)
+    return quiet(`${n.card(object)} finishes resolving`)
+  }
+  if ('ZoneChanged' in event) {
+    const { object, to, cause } = event.ZoneChanged
+    return line(
+      cause === 'Moved'
+        ? `${n.card(object)} moves to ${zoneWord(to, n)}`
+        : `${n.card(object)} ${BECAUSE[cause]}`,
+    )
+  }
+  if ('LifeGained' in event)
+    return line(`${n.seat(event.LifeGained.player)} gains ${event.LifeGained.amount} life`)
+  if ('LifeLost' in event) return line(`${n.seat(event.LifeLost.player)} loses ${event.LifeLost.amount} life`)
+  if ('CountersChanged' in event) {
+    const { on, delta } = event.CountersChanged
+    return quiet(`${delta > 0 ? 'Counters are put on' : 'Counters are removed from'} ${targetName(on, n)}`)
+  }
+  if ('TokenCreated' in event) {
+    return line(`${n.seat(event.TokenCreated.controller)} creates a ${event.TokenCreated.name} token`)
+  }
+  if ('LibraryLooked' in event) {
+    const { player, cards: looked } = event.LibraryLooked
+    return line(`${n.seat(player)} looks at ${cards(looked.length)} of their library`)
+  }
+  if ('CardsFound' in event) {
+    return line(`${n.seat(event.CardsFound.player)} finds ${cards(event.CardsFound.cards.length)}`)
+  }
+  if ('Scried' in event) {
+    const { player, top, bottom } = event.Scried
+    return line(`${n.seat(player)} scries ${top.length + bottom.length}`)
+  }
+  const { player, cards: shown } = event.Revealed
+  return line(`${n.seat(player)} reveals ${joinWords(shown.map(n.card))}`)
+}
+
 // One clause per target, in the order the targets first appear: "Bo with A and B; Cy with C".
 function attackClauses(attackers: readonly [ObjectId, AttackTarget][], n: EventNames): string {
   const byTarget = new Map<string, string[]>()
@@ -87,6 +212,7 @@ function attackClauses(attackers: readonly [ObjectId, AttackTarget][], n: EventN
 }
 
 function describePublic(event: Event, n: EventNames): LogLine {
+  if (isPipeline(event)) return describePipeline(event, n)
   if (typeof event === 'string') {
     switch (event) {
       case 'MulliganPhaseBegan':
@@ -195,8 +321,24 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if ('LibraryShuffled' in event)
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
   if ('MulliganTaken' in event) return line(`${n.seat(event.MulliganTaken.player)} takes a mulligan`)
-  const { player, count } = event.CardsBottomed
-  return line(`${n.seat(player)} puts ${cards(count)} on the bottom of their library`)
+  if ('CardsBottomed' in event) {
+    const { player, count } = event.CardsBottomed
+    return line(`${n.seat(player)} puts ${cards(count)} on the bottom of their library`)
+  }
+  if ('LibraryLooked' in event) {
+    const { player, count } = event.LibraryLooked
+    return line(`${n.seat(player)} looks at ${cards(count)} of their library`)
+  }
+  if ('CardsFound' in event)
+    return line(`${n.seat(event.CardsFound.player)} finds ${cards(event.CardsFound.count)}`)
+  if ('Scried' in event) {
+    const { player, top, bottom } = event.Scried
+    return line(`${n.seat(player)} scries ${top + bottom}`)
+  }
+  if ('ZoneChanged' in event) return quiet(`A card moves to ${zoneWord(event.ZoneChanged.to, n)}`)
+  if ('ChoiceMade' in event) return quiet(`${n.seat(event.ChoiceMade.player)} chooses`)
+  void (event satisfies { StepDone: unknown })
+  return quiet('A step of the resolution is done')
 }
 
 /** The log line for one event as this viewer saw it. */
