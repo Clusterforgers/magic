@@ -5,7 +5,9 @@ use std::net::SocketAddr;
 use std::time::Duration;
 
 use mtg_server::config::SocketLimits;
-use mtg_server::{AuthConfig, Dwell, GameConfig, HashCost, Pace, Registry, Server, ServerConfig};
+use mtg_server::{
+    AuthConfig, CardSource, Dwell, GameConfig, HashCost, Pace, Registry, Server, ServerConfig,
+};
 use sqlx::PgPool;
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
@@ -68,6 +70,16 @@ impl TestServer {
     /// the ones an earlier server left unfinished.
     pub async fn start_on(pool: PgPool, config: ServerConfig) -> TestServer {
         TestServer::serve(Server::open(config, pool).await.unwrap()).await
+    }
+
+    /// Like [`TestServer::start_on`] with the card source given, for tests that need other rules or
+    /// another idea of what the engine runs.
+    pub async fn start_with_cards(
+        pool: PgPool,
+        config: ServerConfig,
+        cards: CardSource,
+    ) -> TestServer {
+        TestServer::serve(Server::open_with(config, pool, cards).await.unwrap()).await
     }
 
     async fn serve(server: Server) -> TestServer {

@@ -80,7 +80,8 @@ fn colors_of(name: &str, value: &str) -> Result<ColorSet, ApiError> {
 
 /// A mana value filter: `3`, `2-4` or `5+`, as `(smallest, largest)`.
 fn mana_values(value: &str) -> Result<(Option<f64>, Option<f64>), ApiError> {
-    let rule = || invalid("cmc is a number such as 3, a range such as 2-4, or a minimum such as 5+");
+    let rule =
+        || invalid("cmc is a number such as 3, a range such as 2-4, or a minimum such as 5+");
     let number = |text: &str| {
         text.parse::<f64>()
             .ok()
@@ -90,13 +91,11 @@ fn mana_values(value: &str) -> Result<(Option<f64>, Option<f64>), ApiError> {
     if let Some(minimum) = value.strip_suffix('+') {
         return Ok((Some(number(minimum)?), None));
     }
-    match value.split_once('-') {
-        Some((low, high)) => Ok((Some(number(low)?), Some(number(high)?))),
-        None => {
-            let exact = number(value)?;
-            Ok((Some(exact), Some(exact)))
-        }
+    if let Some((low, high)) = value.split_once('-') {
+        return Ok((Some(number(low)?), Some(number(high)?)));
     }
+    let exact = number(value)?;
+    Ok((Some(exact), Some(exact)))
 }
 
 fn match_mode(value: &str) -> Result<ColorMatch, ApiError> {
@@ -112,10 +111,14 @@ fn match_mode(value: &str) -> Result<ColorMatch, ApiError> {
 }
 
 fn count(name: &str, value: Option<&String>, default: u32, most: u32) -> Result<u32, ApiError> {
-    let Some(text) = value else { return Ok(default) };
+    let Some(text) = value else {
+        return Ok(default);
+    };
     match text.parse::<u32>() {
         Ok(n) if (1..=most).contains(&n) => Ok(n),
-        _ => Err(invalid(format!("{name} is a whole number from 1 to {most}"))),
+        _ => Err(invalid(format!(
+            "{name} is a whole number from 1 to {most}"
+        ))),
     }
 }
 
@@ -152,7 +155,10 @@ fn parse(params: &HashMap<String, String>) -> Result<Search, ApiError> {
     }
     if let Some(value) = get("type") {
         let terms: Vec<String> = value.split_whitespace().map(str::to_owned).collect();
-        if terms.len() > MAX_TYPE_TERMS || terms.iter().any(|t| t.chars().count() > MAX_TYPE_TERM_CHARS)
+        if terms.len() > MAX_TYPE_TERMS
+            || terms
+                .iter()
+                .any(|t| t.chars().count() > MAX_TYPE_TERM_CHARS)
         {
             return Err(invalid(format!(
                 "type is at most {MAX_TYPE_TERMS} words of at most {MAX_TYPE_TERM_CHARS} characters"
@@ -166,7 +172,9 @@ fn parse(params: &HashMap<String, String>) -> Result<Search, ApiError> {
     if let Some(value) = get("format") {
         let key = value.to_ascii_lowercase();
         let fine = key.len() <= MAX_FORMAT_CHARS
-            && key.bytes().all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'_');
+            && key
+                .bytes()
+                .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'_');
         if !fine {
             return Err(invalid(
                 "format is a format key such as commander or modern",
@@ -454,7 +462,10 @@ mod tests {
     ) {
         let search = ok(&[("cmc", value)]);
         assert_eq!(
-            (search.criteria.min_mana_value, search.criteria.max_mana_value),
+            (
+                search.criteria.min_mana_value,
+                search.criteria.max_mana_value
+            ),
             (low, high)
         );
     }
@@ -485,9 +496,14 @@ mod tests {
 
     #[test]
     fn blank_values_are_absent_and_the_page_size_is_capped() {
-        let search = ok(&[("q", "  "), ("colors", ""), ("type", " "), ("per_page", "100000")]);
+        let search = ok(&[
+            ("q", "  "),
+            ("colors", ""),
+            ("type", " "),
+            ("per_page", "100000"),
+        ]);
         assert!(search.criteria.text.is_none() && search.criteria.colors.is_none());
-        assert!(search.criteria.type_terms.is_empty());
+        assert_eq!(search.criteria.type_terms.len(), 0);
         assert_eq!(search.per_page, MAX_PER_PAGE);
         assert_eq!(ok(&[("per_page", "100")]).per_page, 100);
         assert_eq!(ok(&[("page", "10000")]).page, MAX_PAGE);
@@ -517,9 +533,9 @@ mod tests {
         #[case] fragment: &str,
     ) {
         let error = parse(&params(pairs)).unwrap_err();
-        assert_eq!(error.status, StatusCode::BAD_REQUEST);
-        assert_eq!(error.code, "invalid_request");
-        assert!(error.message.contains(fragment), "{}", error.message);
+        assert_eq!(error.status(), StatusCode::BAD_REQUEST);
+        assert_eq!(error.code(), "invalid_request");
+        assert!(error.message().contains(fragment), "{}", error.message());
     }
 
     #[test]
@@ -527,7 +543,10 @@ mod tests {
         let long = "x".repeat(MAX_TEXT_CHARS + 1);
         assert!(parse(&params(&[("q", &long)])).is_err());
         assert!(parse(&params(&[("q", &long[..MAX_TEXT_CHARS])])).is_ok());
-        let many = (0..=MAX_TYPE_TERMS).map(|n| format!("t{n}")).collect::<Vec<_>>().join(" ");
+        let many = (0..=MAX_TYPE_TERMS)
+            .map(|n| format!("t{n}"))
+            .collect::<Vec<_>>()
+            .join(" ");
         assert!(parse(&params(&[("type", &many)])).is_err());
         let wide = "y".repeat(MAX_TYPE_TERM_CHARS + 1);
         assert!(parse(&params(&[("type", &wide)])).is_err());

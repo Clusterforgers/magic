@@ -60,6 +60,21 @@ impl ApiError {
         self
     }
 
+    #[cfg(test)]
+    pub(crate) fn status(&self) -> StatusCode {
+        self.status
+    }
+
+    #[cfg(test)]
+    pub(crate) fn code(&self) -> &'static str {
+        self.code
+    }
+
+    #[cfg(test)]
+    pub(crate) fn message(&self) -> &str {
+        &self.message
+    }
+
     pub(crate) fn invalid(message: impl Into<String>) -> ApiError {
         ApiError::new(StatusCode::BAD_REQUEST, "invalid_request", message)
     }

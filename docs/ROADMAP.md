@@ -16,7 +16,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - [x] CLI binary `mtg-cli`: download Scryfall bulk + MTGJSON deck index/decks, ingest into Postgres (resumable, polite rate limit; `docs/data-sources.md`)
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
 - [ ] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
-- [ ] Card search HTTP endpoints in `mtg-server` (name, filters, color identity, pagination)
+- [x] Card search HTTP endpoints in `mtg-server` (name, filters, color identity, pagination)
 
 ## M2 Engine and first playable
 - [x] Merge M2a, reviewed against `CLAUDE.md`; design in `docs/engine.md`
