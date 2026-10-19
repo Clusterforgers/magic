@@ -411,7 +411,7 @@ impl<S: EventStore> GameActor<S> {
     fn status(&mut self) -> GameStatus {
         let connected = self.seats.connected();
         match &self.phase {
-            Phase::Lobby { ready, .. } => GameStatus {
+            Phase::Lobby { ready, names } => GameStatus {
                 started: false,
                 events: 0,
                 state_hash: None,
@@ -424,6 +424,12 @@ impl<S: EventStore> GameActor<S> {
                     .filter(|(_, ready)| **ready)
                     .map(|(seat, _)| PlayerId::from_index(seat))
                     .collect(),
+                open: names
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, name)| name.is_empty())
+                    .map(|(seat, _)| PlayerId::from_index(seat))
+                    .collect(),
             },
             Phase::Running(running) => GameStatus {
                 started: true,
@@ -434,6 +440,8 @@ impl<S: EventStore> GameActor<S> {
                 connected,
                 // The game began because every seat was ready (a resumed one began the same way).
                 ready: (0..self.seats.len()).map(PlayerId::from_index).collect(),
+                // A game cannot begin with a seat open.
+                open: Vec::new(),
             },
         }
     }

@@ -48,6 +48,9 @@ const INTERNAL: Goodbye = Goodbye::new(1011, "internal error");
 const TOO_SLOW: Goodbye = Goodbye::new(1013, "too slow; reconnect");
 /// Application code: another connection took this seat, so do not reconnect on your own.
 const REPLACED: Goodbye = Goodbye::new(4000, "replaced by a newer connection");
+/// Application code: the seat was given back or the host removed its player, and its token no
+/// longer opens anything, so do not reconnect.
+const REMOVED: Goodbye = Goodbye::new(4001, "removed from the game");
 
 impl Goodbye {
     const fn new(code: u16, reason: &'static str) -> Goodbye {
@@ -246,11 +249,14 @@ async fn stopped(stop: &mut watch::Receiver<bool>) {
     let _ = stop.wait_for(|stopping| *stopping).await;
 }
 
-/// The actor closed this seat's queue: another socket took the seat, the client was too slow, or the game ended.
+/// The actor closed this seat's queue: another socket took the seat, the seat was emptied, the
+/// client was too slow, or the game ended.
 async fn why_queue_closed(access: &SeatAccess) -> Goodbye {
     match access.handle.status().await {
         Err(_) => GAME_ENDED,
         Ok(status) if status.connected.contains(&access.seat) => REPLACED,
+        // An emptied seat has no connection and nobody's name; a slow client's seat is still held.
+        Ok(status) if status.open.contains(&access.seat) => REMOVED,
         Ok(_) => TOO_SLOW,
     }
 }

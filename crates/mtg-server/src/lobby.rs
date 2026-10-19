@@ -263,6 +263,12 @@ mod tests {
         assert_eq!(drain(&mut second), []);
         assert!(second.recv().await.is_none(), "the queue of the seat ends");
         assert_eq!(handle.status().await.unwrap().ready, []);
+
+        // The status says which seats nobody holds, which is how a socket whose queue ended
+        // learns that its seat was taken away; naming the seat again fills the gap.
+        assert_eq!(handle.status().await.unwrap().open, [PlayerId(1)]);
+        assert_eq!(handle.occupy(PlayerId(1), "Di".to_owned()).await, Ok(true));
+        assert_eq!(handle.status().await.unwrap().open, []);
     }
 
     #[tokio::test]
@@ -290,7 +296,8 @@ mod tests {
         assert_eq!(handle.vacate(PlayerId(1)).await, Ok(false));
         handle.status().await.unwrap();
         assert_eq!(drain(&mut inbox), [], "no roster once the game runs");
-        let connected = handle.status().await.unwrap().connected;
-        assert!(connected.contains(&PlayerId(0)));
+        let status = handle.status().await.unwrap();
+        assert!(status.connected.contains(&PlayerId(0)));
+        assert_eq!(status.open, [], "a game that runs has no open seat");
     }
 }
