@@ -33,7 +33,7 @@ pub use targets::{TargetChoice, TargetOptions, is_legal, legal_targets};
 pub use triggers::{TriggerEntry, TriggersChoice, TriggersOptions};
 pub use yes_no::{YesNoChoice, YesNoOptions};
 
-pub(crate) use targets::{asks, options_for};
+pub(crate) use targets::{asks, legal_for, options_for};
 
 pub(crate) use cards::answer as cards_answer;
 pub(crate) use costs::answer as costs_answer;

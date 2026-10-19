@@ -120,6 +120,10 @@ const PIPELINE = [
   'AbilityPutOnStack',
   'AbilityActivated',
   'AbilityTriggered',
+  'TriggersOrdered',
+  'TriggerRemoved',
+  'DelayedTriggerCreated',
+  'DelayedTriggerExpired',
   'ResolutionBegan',
   'ChoiceMade',
   'StepDone',
@@ -156,6 +160,16 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
   if ('AbilityTriggered' in event) {
     return line(`An ability of ${n.card(event.AbilityTriggered.source.id)} triggers`)
   }
+  if ('TriggersOrdered' in event) {
+    return quiet(`${n.seat(event.TriggersOrdered.player)} puts their triggered abilities in order`)
+  }
+  if ('TriggerRemoved' in event) {
+    return line(`A triggered ability of ${n.card(event.TriggerRemoved.source.id)} is removed`)
+  }
+  if ('DelayedTriggerCreated' in event) {
+    return line(`A delayed ability of ${n.card(event.DelayedTriggerCreated.source.id)} is set up`)
+  }
+  if ('DelayedTriggerExpired' in event) return quiet('A delayed ability ends without triggering')
   if ('ResolutionBegan' in event) return quiet(`${n.card(event.ResolutionBegan.object)} begins to resolve`)
   if ('ChoiceMade' in event) {
     const { player, choice } = event.ChoiceMade
@@ -166,6 +180,7 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
     const { object, outcome } = event.ResolutionEnded
     if (outcome === 'Fizzled') return line(`${n.card(object)} does nothing: its targets are gone`)
     if (outcome === 'Countered') return line(`${n.card(object)} is countered`)
+    if (outcome === 'Lapsed') return line(`${n.card(object)} does nothing: its condition is no longer true`)
     return quiet(`${n.card(object)} finishes resolving`)
   }
   if ('ZoneChanged' in event) {
@@ -337,6 +352,18 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   }
   if ('ZoneChanged' in event) return quiet(`A card moves to ${zoneWord(event.ZoneChanged.to, n)}`)
   if ('ChoiceMade' in event) return quiet(`${n.seat(event.ChoiceMade.player)} chooses`)
+  if ('AbilityTriggered' in event) {
+    return line(`An ability of ${n.card(event.AbilityTriggered.source.id)} triggers`)
+  }
+  if ('AbilityPutOnStack' in event) {
+    return quiet(`An ability of ${n.card(event.AbilityPutOnStack.source.id)} goes on the stack`)
+  }
+  if ('TriggerRemoved' in event) {
+    return line(`A triggered ability of ${n.card(event.TriggerRemoved.source.id)} is removed`)
+  }
+  if ('DelayedTriggerCreated' in event) {
+    return line(`A delayed ability of ${n.card(event.DelayedTriggerCreated.source.id)} is set up`)
+  }
   void (event satisfies { StepDone: unknown })
   return quiet('A step of the resolution is done')
 }

@@ -1,5 +1,6 @@
 //! Folding abilities on the stack and the journal of a resolution.
 
+use mtg_cards::ability::{Ability, Limit};
 use mtg_core::ids::ObjectId;
 
 use super::zones::move_object;
@@ -8,7 +9,7 @@ use crate::abilities::{AbilityObject, PutOnStack};
 use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
 use crate::object::{GameObject, ObjectKind};
-use crate::resolve::Resolving;
+use crate::resolve::{Bindings, Resolving};
 use crate::state::GameState;
 use crate::zones::{Placement, Zone};
 
@@ -22,8 +23,22 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 .objects
                 .get(&source.id)
                 .ok_or_else(|| invalid(format!("{source:?} activated an ability and is gone")))?;
-            if *ability >= card.def.rules.len() {
-                return Err(invalid(format!("{source:?} has no ability {ability}")));
+            let rules = card
+                .def
+                .rules
+                .get(*ability)
+                .ok_or_else(|| invalid(format!("{source:?} has no ability {ability}")))?;
+            let once = matches!(
+                &**rules,
+                Ability::Activated {
+                    limit: Some(Limit::OncePerTurn),
+                    ..
+                }
+            );
+            if once && !state.limits_spent.insert((*source, *ability)) {
+                return Err(invalid(format!(
+                    "ability {ability} of {source:?} was already used this turn"
+                )));
             }
             Ok(())
         }
@@ -72,16 +87,28 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
         return Err(invalid(format!("{id:?} already exists")));
     }
     let source = put.source;
+    // A triggered ability leaves the queue as it goes on the stack and takes what waited with it: the rules of a
+    // delayed trigger and the names it captured.
+    let (rules, bindings) = if put.cause.is_some() {
+        let waiting = crate::triggers::take(state, put)?;
+        (waiting.rules, waiting.bindings)
+    } else {
+        let card = state
+            .objects
+            .get(&source.id)
+            .ok_or_else(|| invalid(format!("the source {source:?} of an ability is gone")))?;
+        let rules = card
+            .def
+            .rules
+            .get(put.ability)
+            .cloned()
+            .ok_or_else(|| invalid(format!("{source:?} has no ability {}", put.ability)))?;
+        (rules, Bindings::new())
+    };
     let card = state
         .objects
         .get(&source.id)
         .ok_or_else(|| invalid(format!("the source {source:?} of an ability is gone")))?;
-    let rules = card
-        .def
-        .rules
-        .get(put.ability)
-        .cloned()
-        .ok_or_else(|| invalid(format!("{source:?} has no ability {}", put.ability)))?;
     let object = GameObject::on_stack(
         id,
         put.controller,
@@ -93,6 +120,8 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
             index: put.ability,
             rules,
             cause: put.cause.clone(),
+            delayed: put.delayed,
+            bindings,
         },
     );
     state.objects.insert(id, object);
@@ -109,7 +138,12 @@ fn begin(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
     if state.zones.get(Zone::Stack).last() != Some(&id) {
         return Err(invalid(format!("{id:?} is not the top of the stack")));
     }
-    state.resolving = Some(Resolving::begin(id));
+    let mut resolving = Resolving::begin(id);
+    // A delayed trigger starts with the names the resolution that set it up had bound.
+    if let Some(ability) = state.objects.get(&id).and_then(|o| o.ability()) {
+        resolving.bindings.clone_from(ability.bindings());
+    }
+    state.resolving = Some(resolving);
     Ok(())
 }
 
@@ -137,7 +171,10 @@ fn end(state: &mut GameState, id: ObjectId, outcome: ResolutionOutcome) -> Resul
             state.zones.remove(Zone::Stack, id);
         }
         (_, ResolutionOutcome::Resolved) => return Ok(()),
-        (_, ResolutionOutcome::Fizzled | ResolutionOutcome::Countered) => {
+        (
+            _,
+            ResolutionOutcome::Fizzled | ResolutionOutcome::Countered | ResolutionOutcome::Lapsed,
+        ) => {
             move_object(state, id, Zone::Graveyard(owner), Placement::Top)?;
         }
     }

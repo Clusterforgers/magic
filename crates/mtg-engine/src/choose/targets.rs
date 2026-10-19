@@ -7,12 +7,14 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use super::Target;
+use crate::abilities::Cause;
 use crate::answers::Outcome;
 use crate::error::{EngineError, IllegalAnswer};
 use crate::keywords;
 use crate::object::{GameObject, ObjectRef};
 use crate::resolve::{ResolveError, Scope};
 use crate::state::GameState;
+use crate::wording;
 use crate::zones::Zone;
 
 /// The targets a player may choose for one target specification of a spell or ability being put on the stack.
@@ -31,6 +33,15 @@ pub struct TargetOptions {
     pub max: u32,
     /// Whether the cast or activation may still be backed out of: nothing is logged until it is paid for.
     pub can_cancel: bool,
+    /// What the specification asks for in the words of a card: "target creature you control".
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
+    pub wording: String,
+    /// Whether the targets are for a triggered ability that goes on the stack, which cannot be backed out of: a player
+    /// who chooses none removes it (CR 603.3d).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub triggered: bool,
 }
 
 /// The answer to a target decision.
@@ -41,6 +52,8 @@ pub enum TargetChoice {
     Targets(Vec<Target>),
     /// Back out of the cast or activation (when `can_cancel`).
     Cancel,
+    /// Choose no target for a triggered ability, which is then removed instead of going on the stack (when `triggered`).
+    Remove,
 }
 
 fn candidates(scope: &Scope<'_>, what: &Targetable) -> Result<Vec<Target>, ResolveError> {
@@ -87,6 +100,17 @@ pub fn legal_targets(
     source: ObjectId,
     controller: PlayerId,
 ) -> Vec<Target> {
+    legal_for(state, spec, source, controller, None)
+}
+
+/// [`legal_targets`] for an ability that triggered: what it triggered on is what "that player" in the specification names.
+pub(crate) fn legal_for(
+    state: &GameState,
+    spec: &TargetSpec,
+    source: ObjectId,
+    controller: PlayerId,
+    cause: Option<&Cause>,
+) -> Vec<Target> {
     let source = state.object(source).map_or(
         ObjectRef {
             id: source,
@@ -94,7 +118,9 @@ pub fn legal_targets(
         },
         GameObject::reference,
     );
-    let scope = Scope::announcing(state, controller, source);
+    let mut scope = Scope::announcing(state, controller, source);
+    scope.cause = cause;
+    scope.snapshots = cause.iter().flat_map(|c| c.snapshots.iter()).collect();
     let mut legal = candidates(&scope, &spec.what).unwrap_or_default();
     legal.retain(|target| match target {
         Target::Object(object) => !keywords::protects(state, object.id, source.id, controller),
@@ -124,8 +150,9 @@ pub(crate) fn options_for(
     index: usize,
     spec: &TargetSpec,
     can_cancel: bool,
+    cause: Option<&Cause>,
 ) -> Option<TargetOptions> {
-    let legal = legal_targets(state, spec, source, controller);
+    let legal = legal_for(state, spec, source, controller, cause);
     let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
     if available < spec.bounds.min {
         return None;
@@ -154,6 +181,8 @@ pub(crate) fn options_for(
         min: spec.bounds.min,
         max: max.min(available),
         can_cancel,
+        wording: wording::spec(spec),
+        triggered: false,
     })
 }
 
@@ -172,6 +201,8 @@ pub(crate) fn answer(
     let targets = match choice {
         TargetChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
         TargetChoice::Cancel => return Err(IllegalAnswer::NotOffered("cancel").into()),
+        TargetChoice::Remove if options.triggered => return Ok(Outcome::DropTrigger),
+        TargetChoice::Remove => return Err(IllegalAnswer::NotOffered("remove").into()),
         TargetChoice::Targets(targets) => targets,
     };
     for (at, target) in targets.iter().enumerate() {
@@ -364,7 +395,7 @@ mod tests {
     ) {
         let game = game();
         let spell = game.zone(Zone::Hand(PlayerId(0)))[0];
-        let options = options_for(&game, spell, PlayerId(0), 0, &spec(json), true);
+        let options = options_for(&game, spell, PlayerId(0), 0, &spec(json), true, None);
         assert_eq!(options.map(|o| (o.min, o.max)), expected);
     }
 
@@ -383,6 +414,8 @@ mod tests {
             min,
             max,
             can_cancel,
+            wording: String::new(),
+            triggered: false,
         }
     }
 

@@ -40,6 +40,8 @@ export type { DeathCause } from "./DeathCause";
 export type { Decision } from "./Decision";
 export type { DecisionId } from "./DecisionId";
 export type { DecisionKind } from "./DecisionKind";
+export type { DelayedCreated } from "./DelayedCreated";
+export type { DelayedId } from "./DelayedId";
 export type { DiscardOptions } from "./DiscardOptions";
 export type { DivideChoice } from "./DivideChoice";
 export type { DivideOptions } from "./DivideOptions";

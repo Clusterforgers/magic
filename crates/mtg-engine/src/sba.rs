@@ -54,7 +54,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
     events
 }
 
-/// Housekeeping that follows stable passes: remove eliminated players' objects, drop ended effects.
+/// Housekeeping that follows stable passes: remove eliminated players' objects, drop ended effects and delayed triggers.
 pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
     let departing: Vec<Event> = state
         .objects()
@@ -64,10 +64,18 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
     if !departing.is_empty() {
         return departing;
     }
-    state
+    let mut expired: Vec<Event> = state
         .effects()
         .iter()
         .filter(|e| !e.is_active(state))
         .map(|e| Event::EffectExpired { id: e.id })
-        .collect()
+        .collect();
+    expired.extend(
+        state
+            .delayed()
+            .iter()
+            .filter(|d| d.lapsed(state))
+            .map(|d| Event::DelayedTriggerExpired { id: d.id() }),
+    );
+    expired
 }

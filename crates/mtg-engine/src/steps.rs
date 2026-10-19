@@ -213,6 +213,10 @@ fn cleanup(state: &GameState) -> Progress {
             }),
         });
     }
+    // CR 514.3a: an ability that triggered during cleanup gets a round of priority, then cleanup begins again.
+    if !state.stack().is_empty() {
+        return Progress::Events(vec![grant(state)]);
+    }
     Progress::Events(end_turn(state))
 }
 

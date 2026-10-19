@@ -12,4 +12,8 @@ source: ObjectRef,
 /**
  * Its ability, by index among the source's rules.
  */
-ability: number, };
+ability: number, 
+/**
+ * The event it waits for in the words of a card: "When it enters the battlefield".
+ */
+when?: string, };

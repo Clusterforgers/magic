@@ -16,6 +16,7 @@ use crate::player::LossReason;
 use crate::preview::preview_forecast;
 use crate::setup::GameSetup;
 use crate::state::{GameResult, GameState};
+use crate::triggers;
 
 /// Internal progress steps allowed between decisions before the engine reports a stall.
 const MAX_INTERNAL_STEPS: usize = 10_000;
@@ -235,11 +236,36 @@ impl Engine {
                 self.pending = None;
                 Ok(())
             }
+            Outcome::DropTrigger => match self.pending.take() {
+                Some(Pending {
+                    what: What::Trigger(waiting),
+                    ..
+                }) => self.commit(vec![triggers::removing(&waiting)]),
+                other => {
+                    self.pending = other;
+                    Err(EngineError::InvalidEvent(
+                        "no triggered ability is being put on the stack".into(),
+                    ))
+                }
+            },
         }
     }
 
+    /// Folds and logs the events, then the triggered abilities they set off (CR 603.2): those are found by comparing
+    /// the state before the events with the state after, and their own events follow in the log.
     fn commit(&mut self, events: Vec<Event>) -> Result<(), EngineError> {
+        let before = self.state.watches().then(|| self.state.clone());
+        let start = self.events.len();
         for event in events {
+            apply_event(&mut self.state, &event)?;
+            self.events.push(event);
+        }
+        let Some(before) = before else {
+            return Ok(());
+        };
+        let triggered = triggers::detect(&before, &self.events[start..], &self.state);
+        for trigger in triggered {
+            let event = Event::AbilityTriggered(Box::new(trigger));
             apply_event(&mut self.state, &event)?;
             self.events.push(event);
         }
@@ -272,6 +298,7 @@ impl Engine {
                     self.decision = None;
                     return Ok(());
                 }
+                Progress::Put(pending) => self.pending = Some(pending),
                 Progress::Events(events) => self.commit(events)?,
                 Progress::Fail(error) => return Err(error),
             }

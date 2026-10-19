@@ -22,7 +22,7 @@ use crate::object::{ObjectKind, ObjectRef};
 use crate::snapshot::snapshot;
 use crate::state::GameState;
 use crate::tokens::TokenCreated;
-use crate::triggers::Triggered;
+use crate::triggers::{DelayedId, Triggered};
 use crate::zones::Zone;
 
 fn zap() -> Arc<CardDefinition> {
@@ -93,6 +93,7 @@ fn put_totem_ability(game: &GameState) -> Event {
         controller: PlayerId(0),
         choices: Choices::default(),
         cause: None,
+        delayed: None,
     }))
 }
 
@@ -310,6 +311,19 @@ fn cause() -> Cause {
     }
 }
 
+/// The event that says ability `ability` of the totem triggered, whether or not it is a triggered ability.
+fn trigger_of(game: &GameState, ability: usize) -> Event {
+    let source = game.object(totem_id(game)).unwrap();
+    Event::AbilityTriggered(Box::new(Triggered {
+        source: source.reference(),
+        ability,
+        controller: PlayerId(0),
+        cause: cause(),
+        snapshot: snapshot(game, source.id()).unwrap(),
+        delayed: None,
+    }))
+}
+
 /// Every event that must be refused in a given state: the events to fold first, then the one that cannot follow.
 #[rstest]
 #[case::an_ability_with_an_id_in_use(
@@ -351,8 +365,23 @@ fn cause() -> Cause {
 #[case::a_gain_for_nobody(
     |_: &GameState| Event::LifeGained { player: PlayerId(7), amount: 1 }
 )]
-#[case::triggers_are_not_in_the_engine_yet(
-    |g: &GameState| Event::AbilityTriggered(Triggered { source: g.object(totem_id(g)).unwrap().reference(), ability: 0, cause: cause() })
+#[case::a_trigger_of_an_ability_that_is_not_triggered(
+    |g: &GameState| trigger_of(g, 0)
+)]
+#[case::a_trigger_of_an_ability_that_is_not_there(
+    |g: &GameState| trigger_of(g, 5)
+)]
+#[case::a_trigger_removed_that_never_waited(
+    |g: &GameState| Event::TriggerRemoved { source: g.object(totem_id(g)).unwrap().reference(), ability: 0, delayed: None, cause: cause() }
+)]
+#[case::a_trigger_put_on_the_stack_that_never_triggered(
+    |g: &GameState| { let Event::AbilityPutOnStack(mut put) = put_totem_ability(g) else { unreachable!() }; put.cause = Some(cause()); Event::AbilityPutOnStack(put) }
+)]
+#[case::an_order_when_nothing_waits(
+    |_: &GameState| Event::TriggersOrdered { player: PlayerId(0), order: vec![0] }
+)]
+#[case::a_delayed_trigger_that_is_not_waiting_expiring(
+    |_: &GameState| Event::DelayedTriggerExpired { id: DelayedId(3) }
 )]
 #[case::tokens_are_not_in_the_engine_yet(
     |_: &GameState| Event::TokenCreated(TokenCreated { object: ObjectId(900), controller: PlayerId(0), name: "Treasure".into() })

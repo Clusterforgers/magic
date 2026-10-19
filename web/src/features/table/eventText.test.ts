@@ -126,11 +126,40 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
       AbilityTriggered: {
         source: { id: 6, counter: 0 },
         ability: 1,
+        controller: 0,
         cause: { subjects: [], snapshots: [] },
+        snapshot: snapshotOf(6),
       },
     },
     'An ability of Jace Beleren triggers',
   ],
+  TriggersOrdered: [
+    { TriggersOrdered: { player: 1, order: [1, 0] } },
+    'Bo puts their triggered abilities in order',
+  ],
+  TriggerRemoved: [
+    {
+      TriggerRemoved: { source: { id: 6, counter: 0 }, ability: 1, cause: { subjects: [], snapshots: [] } },
+    },
+    'A triggered ability of Jace Beleren is removed',
+  ],
+  DelayedTriggerCreated: [
+    {
+      DelayedTriggerCreated: {
+        id: 0,
+        source: { id: 6, counter: 0 },
+        snapshot: snapshotOf(6),
+        controller: 0,
+        ability: 0,
+        when: null,
+        once: true,
+        effects: [],
+        bindings: [],
+      },
+    },
+    'A delayed ability of Jace Beleren is set up',
+  ],
+  DelayedTriggerExpired: [{ DelayedTriggerExpired: { id: 0 } }, 'A delayed ability ends without triggering'],
   ResolutionBegan: [{ ResolutionBegan: { object: 4 } }, 'Lightning Bolt begins to resolve'],
   ChoiceMade: [
     { ChoiceMade: { player: 0, choice: { Cards: [1, 2] } } },
@@ -171,6 +200,10 @@ const MORE: [Event, string][] = [
     'Lightning Bolt does nothing: its targets are gone',
   ],
   [{ ResolutionEnded: { object: 4, outcome: 'Countered' } }, 'Lightning Bolt is countered'],
+  [
+    { ResolutionEnded: { object: 4, outcome: 'Lapsed' } },
+    'Lightning Bolt does nothing: its condition is no longer true',
+  ],
   [
     { ZoneChanged: { object: 1, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'Sacrificed' } },
     'Grizzly Bears is sacrificed',
@@ -226,6 +259,22 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   ],
   ChoiceMade: [{ ChoiceMade: { player: 1 } }, 'Bo chooses'],
   StepDone: [{ StepDone: { position: [2] } }, 'A step of the resolution is done'],
+  AbilityTriggered: [
+    { AbilityTriggered: { source: { id: 6, counter: 0 }, ability: 1, controller: 0 } },
+    'An ability of Jace Beleren triggers',
+  ],
+  AbilityPutOnStack: [
+    { AbilityPutOnStack: { object: 90, source: { id: 6, counter: 0 }, controller: 0 } },
+    'An ability of Jace Beleren goes on the stack',
+  ],
+  TriggerRemoved: [
+    { TriggerRemoved: { source: { id: 6, counter: 0 }, ability: 1 } },
+    'A triggered ability of Jace Beleren is removed',
+  ],
+  DelayedTriggerCreated: [
+    { DelayedTriggerCreated: { source: { id: 6, counter: 0 }, controller: 0 } },
+    'A delayed ability of Jace Beleren is set up',
+  ],
 }
 
 function effect(

@@ -182,7 +182,8 @@ pub fn instant(name: &str, generic: u32, colored: &[Color]) -> Arc<CardDefinitio
     )
 }
 
-fn one_target(what: Targetable) -> TargetSpec {
+/// A target specification for exactly one target of the kind `what`.
+pub fn one_target(what: Targetable) -> TargetSpec {
     TargetSpec {
         what,
         bounds: Bounds::default(),
@@ -190,7 +191,8 @@ fn one_target(what: Targetable) -> TargetSpec {
     }
 }
 
-fn damage(to: Ref, amount: i32) -> Effect {
+/// An effect that deals `amount` damage to what `to` names.
+pub fn damage(to: Ref, amount: i32) -> Effect {
     Effect::DealDamage {
         source: None,
         to,
@@ -198,14 +200,16 @@ fn damage(to: Ref, amount: i32) -> Effect {
     }
 }
 
-fn gain_life(amount: i32) -> Effect {
+/// An effect that makes its controller gain `amount` life.
+pub fn gain_life(amount: i32) -> Effect {
     Effect::GainLife {
         who: Ref::You,
         amount: Amount::Fixed(amount),
     }
 }
 
-fn draw(count: i32) -> Effect {
+/// An effect that makes its controller draw `count` cards.
+pub fn draw(count: i32) -> Effect {
     Effect::Draw {
         who: Ref::You,
         count: Amount::Fixed(count),

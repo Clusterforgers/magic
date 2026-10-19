@@ -26,6 +26,8 @@ pub(crate) enum Outcome {
     Targets(Vec<Target>),
     /// Abandon the cast or activation in progress.
     CancelCast,
+    /// Remove the triggered ability being put on the stack, whose controller chose no target (CR 603.3d).
+    DropTrigger,
 }
 
 /// Checks `answer` against `decision`; the result is only built from legal options.
