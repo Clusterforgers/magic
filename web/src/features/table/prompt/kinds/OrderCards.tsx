@@ -36,7 +36,7 @@ function OrderRow({ id, object, label, place, count, onMove }: OrderRowProps) {
       data-card={id}
       onFocus={preview.onFocus}
       onBlur={preview.onBlur}
-      className="flex items-center justify-between gap-2 text-sm"
+      className="flex min-w-0 items-center justify-between gap-2 text-sm"
     >
       <span
         onPointerEnter={preview.onPointerEnter}
@@ -166,7 +166,7 @@ export const OrderCardsPrompt: PromptComponent<'OrderCards'> = ({ options }) => 
         data-slot="card-order"
         onKeyDown={onKeyDown}
         // What the stack, the sentence, the buttons and the clock leave of the sheet (`--sheet-max`) is the list's.
-        className="grid max-h-[max(4.5rem,calc(var(--sheet-max,20rem)_-_11rem))] basis-full gap-0.5 overflow-y-auto"
+        className="grid max-h-[max(4.5rem,calc(var(--sheet-max,20rem)_-_11rem))] basis-full grid-cols-1 gap-0.5 overflow-y-auto"
       >
         {shown.map((id, place) => (
           <OrderRow
