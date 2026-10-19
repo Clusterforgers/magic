@@ -6,6 +6,7 @@ import {
   boundsWords,
   distinctTargets,
   objectWords,
+  possessive,
   sameTarget,
   subjectWords,
   targetKey,
@@ -77,10 +78,22 @@ describe('targetsSentence', () => {
   })
 })
 
+describe('possessive', () => {
+  it.each([
+    ['Mulldrifter', "Mulldrifter's"],
+    ['Grizzly Bears', "Grizzly Bears'"],
+    ['Bo', "Bo's"],
+    ['Elf 2', "Elf 2's"],
+  ])('turns %s into %s', (name, words) => {
+    expect(possessive(name)).toBe(words)
+  })
+})
+
 describe('subjectWords', () => {
   it.each([
     ['Lightning Bolt', false, 'Lightning Bolt'],
     ['Mulldrifter', true, "Mulldrifter's ability"],
+    ['Grizzly Bears', true, "Grizzly Bears' ability"],
     [undefined, false, 'Your spell'],
     [undefined, true, 'A triggered ability'],
   ])('names %s (triggered: %s) as "%s"', (name, triggered, subject) => {
@@ -105,7 +118,7 @@ describe('objectWords', () => {
     [
       'an ability on the stack',
       card({ zone: 'Stack', kind: 'Ability', power: null, toughness: null, controller: 1 }),
-      "Grizzly Bears's ability (on the stack, Bo)",
+      "Grizzly Bears' ability (on the stack, Bo)",
     ],
   ])('names %s', (_what, view, words) => {
     expect(objectWords(view, view.name, seatName)).toBe(words)

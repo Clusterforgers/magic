@@ -8,6 +8,7 @@ import { startSession } from '@/test-utils/harness'
 import { renderLiveTable } from '@/test-utils/tableHarness'
 import { fixtureLookup } from '../dev/devGame'
 import { buildFixture } from '../dev/fixture'
+import { possessive } from './targetText'
 
 const SEATS = 3
 const fixture = buildFixture({ seats: SEATS })
@@ -119,7 +120,7 @@ describe('a target decision from the server', () => {
     send(targets(34, LEGAL, { can_cancel: false, triggered: true }))
     expect(screen.queryByRole('button', { name: /^Cancel/ })).toBeNull()
     expect(must(prompt()).querySelector('[data-slot="prompt-text"]')?.textContent).toBe(
-      `${spell.name}'s ability: choose target creature you control or player.`,
+      `${possessive(spell.name)} ability: choose target creature you control or player.`,
     )
   })
 

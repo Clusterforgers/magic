@@ -52,10 +52,15 @@ export function targetsSentence({ subject, wording, min, max, chosen }: TargetsA
   return `${head} Confirm the targets, or choose up to ${max - chosen} more.`
 }
 
+/** "Mulldrifter's", and "Grizzly Bears'" for a name that ends in an s. */
+export function possessive(name: string): string {
+  return name.endsWith('s') ? `${name}'` : `${name}'s`
+}
+
 /** Who is asking, as the sentence names it: the spell by its name, a triggered ability as its source's. */
 export function subjectWords(name: string | undefined, triggered: boolean): string {
   if (name === undefined) return triggered ? 'A triggered ability' : 'Your spell'
-  return triggered ? `${name}'s ability` : name
+  return triggered ? `${possessive(name)} ability` : name
 }
 
 /** The name of a seat, as it is given to a button that picks it. */
@@ -79,6 +84,6 @@ function placeWords(object: ObjectView, seatName: SeatNamer): string {
  */
 export function objectWords(object: ObjectView, name: string, seatName: SeatNamer): string {
   const stats = powerToughness(object)
-  const base = `${name}${object.kind === 'Ability' ? "'s ability" : ''}${stats === null ? '' : ` ${stats}`}`
+  const base = `${object.kind === 'Ability' ? `${possessive(name)} ability` : name}${stats === null ? '' : ` ${stats}`}`
   return `${base} (${placeWords(object, seatName)})`
 }

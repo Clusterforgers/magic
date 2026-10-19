@@ -5,6 +5,7 @@ import type { Fixture } from '@/features/table/dev/fixture'
 import type { ObjectId, ObjectView, Target, TargetOptions } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { creaturesOf, fixtureOf, ownOf, renderDecision } from '@/test-utils/combatTable'
+import { possessive } from './targetText'
 
 const objects = (ids: readonly ObjectId[]): Target[] => ids.map((id) => ({ Object: { id, counter: 0 } }))
 const players = (seats: number): Target[] => Array.from({ length: seats }, (_, seat) => ({ Player: seat }))
@@ -250,7 +251,7 @@ describe('the sentence and the way out', () => {
     const fixture = fixtureOf(2)
     const permanent = must(fixture.view.objects.find((o) => o.zone === 'Battlefield' && o.controller === 0))
     const { text } = mount(two, { source: permanent.id, can_cancel: false, triggered: true })
-    expect(text()).toBe(`${permanent.name}'s ability: choose target creature.`)
+    expect(text()).toBe(`${possessive(permanent.name)} ability: choose target creature.`)
     expect(screen.queryByRole('button', { name: /^Cancel/ })).toBeNull()
   })
 
