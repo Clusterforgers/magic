@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils'
 import { useAuth, useAuthStore } from './context'
 
 // Pages that only mean something while signed in: signing out there goes home instead of to the sign-in form.
-const SIGNED_IN_ONLY: ReadonlySet<string> = new Set(['/games'])
+const SIGNED_IN_ONLY: ReadonlySet<string> = new Set(['/games', '/decks'])
 
 /**
  * The account part of the header. Nothing while the server is still being asked or when it has no accounts; "Sign

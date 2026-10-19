@@ -127,7 +127,8 @@ export const importResult = (over: Partial<ImportResult> = {}): ImportResult => 
 export const deckError = (status: number, error: DeckErrorCode, message = 'refused'): Response =>
   jsonResponse(status, { error, message })
 
-type Answer = (call: FetchCall) => Response | Promise<Response>
+/** An answer of the script, or undefined to give the usual one. */
+type Answer = (call: FetchCall) => Response | Promise<Response> | undefined
 
 /** What the fake deck server does beyond the usual; leave a field out for the usual good behaviour. */
 export interface DecksScript {
@@ -177,7 +178,8 @@ export function startDecks(script: DecksScript = {}): DecksServer {
     if (path === '/api/decks' && method === 'POST') {
       const body = bodyOf<DeckBody>(call)
       created.push(body)
-      if (script.override?.create !== undefined) return script.override.create(call)
+      const custom = script.override?.create?.(call)
+      if (custom !== undefined) return custom
       made += 1
       const copies = body.cards.reduce((sum, line) => sum + line.count, 0)
       const state: DeckState = copies === 0 ? 'blocked' : 'verified'
@@ -205,7 +207,8 @@ export function startDecks(script: DecksScript = {}): DecksServer {
       return script.override?.import?.(call) ?? jsonResponse(200, script.importResult ?? importResult())
     }
     if (path.startsWith('/api/decks/') && method === 'DELETE') {
-      if (script.override?.remove !== undefined) return script.override.remove(call)
+      const custom = script.override?.remove?.(call)
+      if (custom !== undefined) return custom
       const id = decodeURIComponent(path.slice('/api/decks/'.length))
       if (!held.some((deck) => deck.id === id)) return deckError(404, 'not_found', 'no such deck')
       held = held.filter((deck) => deck.id !== id)

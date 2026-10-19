@@ -1,4 +1,4 @@
-// Goal: the shell frames every page with the brand, a main navigation that marks the current page and offers "My games" only to an account, a theme menu that changes the page's theme and remembers it, a way past the header by keyboard, and a notice while the browser is offline.
+// Goal: the shell frames every page with the brand, a main navigation that marks the current page and offers "Decks" and "My games" only to an account, a theme menu that changes the page's theme and remembers it, a way past the header by keyboard, and a notice while the browser is offline.
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { appTheme } from '@/hooks/useTheme'
@@ -31,7 +31,7 @@ async function open(url = '/', signedIn = false) {
 }
 
 describe('the main navigation', () => {
-  it('has the brand, Play and Create for a guest, and no My games', async () => {
+  it('has the brand, Play and Create for a guest, and no Decks and no My games', async () => {
     await open()
     expect(screen.getByRole('link', { name: 'Magic' })).toHaveAttribute('href', '/')
     const links = within(mainNav()).getAllByRole('link')
@@ -39,11 +39,11 @@ describe('the main navigation', () => {
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/'])
   })
 
-  it('adds My games, between Play and Create, for an account', async () => {
+  it('adds Decks and My games, between Play and Create, for an account', async () => {
     await open('/', true)
     const links = within(mainNav()).getAllByRole('link')
-    expect(links.map((link) => link.textContent)).toEqual(['Play', 'My games', 'Create'])
-    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/games', '/'])
+    expect(links.map((link) => link.textContent)).toEqual(['Play', 'Decks', 'My games', 'Create'])
+    expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/decks', '/games', '/'])
   })
 
   it('marks the page you are on, and only that one', async () => {
