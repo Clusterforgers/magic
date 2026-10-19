@@ -12,6 +12,8 @@ import {
   costPips,
   costText,
   frameOf,
+  keywordLine,
+  keywordNames,
   manaLetter,
   powerToughness,
   rowOf,
@@ -209,6 +211,27 @@ describe('cardLabel', () => {
 
   it('names a land by its ability and leaves out a cost it does not have', () => {
     expect(cardLabel(forest(), null)).toBe('Forest, Basic Land — Forest, Tap: add green mana')
+  })
+
+  it('names the keywords after the power and toughness', () => {
+    const label = cardLabel(card({ name: 'Serra Angel', keywords: ['Flying', 'First strike'] }), null)
+    expect(label).toBe(
+      'Serra Angel, cost 1 generic, green, Creature — Bear, power 2, toughness 2, flying, first strike',
+    )
+  })
+})
+
+describe('keywordNames and keywordLine', () => {
+  it('list the names the server sends, in its order', () => {
+    const angel = card({ keywords: ['Flying', 'First strike', 'Vigilance'] })
+    expect(keywordNames(angel)).toEqual(['Flying', 'First strike', 'Vigilance'])
+    expect(keywordLine(angel)).toBe('Flying, First strike, Vigilance')
+  })
+
+  it('say nothing for a card without the field, as the server leaves it out, or with an empty one', () => {
+    expect(keywordNames(card())).toEqual([])
+    expect(keywordLine(card())).toBeNull()
+    expect(keywordLine(card({ keywords: [] }))).toBeNull()
   })
 })
 

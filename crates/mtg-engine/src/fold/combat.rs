@@ -1,9 +1,11 @@
 //! Folding combat events: declarations, damage assignment and damage.
 
 use super::{invalid, player_mut};
+use crate::characteristics::characteristics;
 use crate::combat::{Attacker, CombatState, DamageTarget};
 use crate::error::EngineError;
 use crate::events::Event;
+use crate::keywords;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -69,7 +71,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 .ok_or_else(|| invalid(format!("{attacker:?} is not attacking")))?;
             target.assignment = Some(assignment.clone());
         }
-        Event::DamageDealt { target, amount, .. } => match target {
+        Event::DamageDealt {
+            source,
+            target,
+            amount,
+        } => match target {
             DamageTarget::Player(id) => {
                 let player = player_mut(state, *id)?;
                 player.life = player
@@ -77,12 +83,17 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     .saturating_sub(i32::try_from(*amount).unwrap_or(i32::MAX));
             }
             DamageTarget::Object(id) => {
+                // Any damage from a source with deathtouch marks a creature for destruction (CR 704.5h).
+                let deathtouched = *amount > 0
+                    && keywords::damage_rules(state, *source).deathtouch
+                    && characteristics(state, *id).is_some_and(|c| c.is_creature());
                 let perm = state
                     .objects
                     .get_mut(id)
                     .and_then(|o| o.permanent.as_mut())
                     .ok_or_else(|| invalid(format!("{id:?} cannot be dealt damage")))?;
                 perm.damage = perm.damage.saturating_add(*amount);
+                perm.deathtouched |= deathtouched;
             }
         },
         Event::CombatEnded => state.combat = CombatState::default(),
@@ -90,6 +101,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             for object in state.objects.values_mut() {
                 if let Some(perm) = &mut object.permanent {
                     perm.damage = 0;
+                    perm.deathtouched = false;
                 }
             }
         }

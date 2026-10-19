@@ -207,6 +207,7 @@ impl GameState {
                 object.permanent = Some(PermanentState {
                     tapped: preset.tapped,
                     damage: preset.damage,
+                    deathtouched: false,
                     summoning_sick: preset.summoning_sick,
                 });
             }

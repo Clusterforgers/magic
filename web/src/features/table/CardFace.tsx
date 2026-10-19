@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
-import { costPips, frameOf, powerToughness, statusLabels, typeLine } from './cardModel'
+import { costPips, frameOf, keywordLine, powerToughness, statusLabels, typeLine } from './cardModel'
 import type { CombatRole } from './cardModel'
 import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
@@ -27,6 +27,7 @@ export function CardFace({ object, role, size, upright = false, note }: CardFace
   const frame = frameOf(object)
   const full = size !== 'compact'
   const labels = statusLabels(object, role)
+  const keywords = keywordLine(object)
   const pt = powerToughness(object)
   return (
     <span
@@ -83,6 +84,11 @@ export function CardFace({ object, role, size, upright = false, note }: CardFace
       {full ? (
         <span className={cn('line-clamp-2 px-1 leading-tight text-muted-foreground', classes.text)}>
           {typeLine(object)}
+        </span>
+      ) : null}
+      {full && keywords !== null ? (
+        <span data-slot="card-keywords" className={cn('line-clamp-2 px-1 leading-tight', classes.text)}>
+          {keywords}
         </span>
       ) : null}
       {pt === null ? (

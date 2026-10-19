@@ -155,6 +155,14 @@ pub enum IllegalAnswer {
         /// Supplied number.
         got: usize,
     },
+    /// An attacker that needs several blockers (menace) was blocked by fewer.
+    #[error("the attacker needs {needed} blockers together but got {got}")]
+    TooFewBlockers {
+        /// The fewest creatures that may block it.
+        needed: usize,
+        /// Creatures the answer blocks it with.
+        got: usize,
+    },
     /// Combat damage was not fully divided among the blockers.
     #[error("{power} damage must be divided among the blockers but {assigned} was assigned")]
     DamageSplit {
@@ -163,6 +171,9 @@ pub enum IllegalAnswer {
         /// Damage the answer assigned.
         assigned: u32,
     },
+    /// Damage was left for the player or planeswalker attacked before every blocker had lethal damage.
+    #[error("damage may go past the blockers only after each has lethal damage")]
+    ExcessBeforeLethal,
     /// The mana payment is invalid.
     #[error("invalid payment: {0}")]
     Payment(#[from] PaymentError),

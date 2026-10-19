@@ -1,4 +1,6 @@
-//! Vigilance (CR 702.20): the rules are a stub until the keyword task (`docs/cards-dsl.md`, Keywords).
+//! Vigilance (CR 702.20): attacking doesn't cause a creature with vigilance to tap.
+
+use mtg_cards::keyword::Keyword;
 
 use super::KeywordRules;
 
@@ -6,4 +8,8 @@ use super::KeywordRules;
 #[derive(Debug)]
 pub(super) struct Vigilance;
 
-impl KeywordRules for Vigilance {}
+impl KeywordRules for Vigilance {
+    fn attacks_untapped(&self, _keyword: &Keyword) -> bool {
+        true
+    }
+}

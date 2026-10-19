@@ -5,6 +5,7 @@ import type {
   Choice,
   ContinuousEffect,
   DamageTarget,
+  DeathCause,
   Event,
   EventView,
   HiddenEvent,
@@ -298,8 +299,12 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('EffectCreated' in event) return quiet(describeEffect(event.EffectCreated.effect, n))
   if ('EffectExpired' in event) return quiet('An effect ends')
   if ('CreatureDied' in event) {
-    const how = event.CreatureDied.cause === 'LethalDamage' ? 'from lethal damage' : 'with zero toughness'
-    return line(`${n.card(event.CreatureDied.object)} dies ${how}`)
+    const HOW: Record<DeathCause, string> = {
+      LethalDamage: 'from lethal damage',
+      Deathtouch: 'from deathtouch',
+      ZeroToughness: 'with zero toughness',
+    }
+    return line(`${n.card(event.CreatureDied.object)} dies ${HOW[event.CreatureDied.cause]}`)
   }
   if ('PlayerLost' in event) {
     return line(`${n.seat(event.PlayerLost.player)} ${describeLoss(event.PlayerLost.reason)}`)

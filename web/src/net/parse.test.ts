@@ -576,6 +576,20 @@ describe('parseFrame on what spells and abilities add to the wire', () => {
     expect(parseFrame(wire(batch))).toMatchObject({ ok: true })
   })
 
+  it('accepts the names of an object’s keywords, and an object without the field, as the server writes it', () => {
+    const flyer = {
+      ...ability,
+      kind: undefined,
+      source: undefined,
+      targets: undefined,
+      keywords: ['Flying', 'First strike'],
+    }
+    const batch = put(samples.Events, ['objects'], [flyer])
+    expect(parseFrame(wire(batch))).toMatchObject({ ok: true })
+    const none = { ...flyer, keywords: undefined }
+    expect(parseFrame(wire(put(samples.Events, ['objects'], [none])))).toMatchObject({ ok: true })
+  })
+
   it.each([
     ['a kind that is none of the three', { kind: 'Spell' }],
     ['a kind that is not text', { kind: 2 }],
@@ -583,6 +597,9 @@ describe('parseFrame on what spells and abilities add to the wire', () => {
     ['a source that is not a number', { source: 'Pinger' }],
     ['targets that are not a list of lists', { targets: [{ Player: 0 }] }],
     ['targets that are not a list', { targets: 'none' }],
+    ['keywords that are text', { keywords: 'Flying' }],
+    ['keywords that are not all text', { keywords: ['Flying', 2] }],
+    ['keywords that are null', { keywords: null }],
   ])('refuses an object with %s', (_what, change) => {
     const batch = put(samples.Events, ['objects'], [{ ...ability, ...change }])
     expect(parseFrame(wire(batch))).toMatchObject({

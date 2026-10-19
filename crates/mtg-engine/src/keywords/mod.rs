@@ -1,7 +1,8 @@
 //! Keyword abilities: one rules value per keyword, each in its own file (`docs/cards-dsl.md`, Keywords).
 //!
-//! Every file is a stub that changes nothing. A keyword task replaces its stub, adds its `Caps` entry
-//! and reads its hooks where the engine asks for them: blocking, targeting and timing call them today.
+//! A keyword task replaces its stub, adds its `Caps` entry and answers the hooks of [`KeywordRules`] the
+//! engine asks about: blocking, attacking, damage, targeting, timing and destruction. The engine reads the
+//! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
 mod battle_cry;
 mod cascade;
@@ -48,7 +49,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_core::ids::{ObjectId, PlayerId};
 
-use crate::object::GameObject;
+use crate::object::{GameObject, ObjectKind, PermanentState};
 use crate::state::GameState;
 
 /// How a keyword changes the combat damage its holder deals.
@@ -68,6 +69,30 @@ pub struct DamageRules {
     pub lifelink: bool,
 }
 
+impl DamageRules {
+    /// Both sets of rules at once: a creature with two keywords gets what each gives.
+    #[must_use]
+    pub const fn and(self, other: DamageRules) -> DamageRules {
+        DamageRules {
+            first_strike: self.first_strike || other.first_strike,
+            double_strike: self.double_strike || other.double_strike,
+            deathtouch: self.deathtouch || other.deathtouch,
+            trample: self.trample || other.trample,
+            lifelink: self.lifelink || other.lifelink,
+        }
+    }
+
+    /// Whether the holder deals damage in the first-strike step.
+    pub const fn strikes_first(self) -> bool {
+        self.first_strike || self.double_strike
+    }
+
+    /// Whether the holder deals damage in the regular step: always, but for first strike alone (CR 510.4).
+    pub const fn strikes_regularly(self) -> bool {
+        self.double_strike || !self.first_strike
+    }
+}
+
 /// What a keyword does to the rules machinery; every hook defaults to doing nothing.
 pub trait KeywordRules: Debug + Sync {
     /// Whether `blocker` may not block `attacker`, which has the keyword.
@@ -78,6 +103,36 @@ pub trait KeywordRules: Debug + Sync {
         _attacker: ObjectId,
         _blocker: ObjectId,
     ) -> bool {
+        false
+    }
+
+    /// Whether a holder of the keyword may block a creature whose `evasion` keyword restricts blocking.
+    fn answers_evasion(&self, _keyword: &Keyword, _evasion: &Keyword) -> bool {
+        false
+    }
+
+    /// The fewest creatures that may block the holder together, when any block it.
+    fn min_blockers(&self, _keyword: &Keyword) -> usize {
+        1
+    }
+
+    /// Whether the holder cannot be declared as an attacker.
+    fn forbids_attacking(&self, _keyword: &Keyword) -> bool {
+        false
+    }
+
+    /// Whether summoning sickness does not hold the holder back from attacking and from `{T}` abilities.
+    fn ignores_summoning_sickness(&self, _keyword: &Keyword) -> bool {
+        false
+    }
+
+    /// Whether declaring the holder as an attacker leaves it untapped.
+    fn attacks_untapped(&self, _keyword: &Keyword) -> bool {
+        false
+    }
+
+    /// Whether the holder is not destroyed by lethal damage, by deathtouch or by an effect that says destroy.
+    fn is_indestructible(&self, _keyword: &Keyword) -> bool {
         false
     }
 
@@ -153,8 +208,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
     }
 }
 
-/// The keywords an object has, from the rules of its card.
-pub fn held_by(object: &GameObject) -> impl Iterator<Item = &Keyword> {
+/// The keywords printed on a card, in the order of its rules; only [`keywords_of`] starts from them.
+fn printed(object: &GameObject) -> impl Iterator<Item = &Keyword> {
     object
         .card()
         .rules
@@ -165,6 +220,83 @@ pub fn held_by(object: &GameObject) -> impl Iterator<Item = &Keyword> {
         })
 }
 
+/// The keywords object `id` has now, in the order they are listed: the one reader of an object's keywords.
+///
+/// Today these are the printed ones. Layer 6 joins here (`docs/cards-dsl.md`, Triggers, replacement and
+/// layers): the continuous effects that add a keyword append to the list and those that remove one take
+/// it out, in timestamp order, so nothing else in the engine learns where a keyword came from. An ability on
+/// the stack has no keywords of its own.
+pub fn keywords_of(state: &GameState, id: ObjectId) -> Vec<&Keyword> {
+    let Some(object) = state.object(id) else {
+        return Vec::new();
+    };
+    if object.kind() == ObjectKind::Ability {
+        return Vec::new();
+    }
+    printed(object).collect()
+}
+
+/// Whether object `id` has `keyword` now.
+pub fn has_keyword(state: &GameState, id: ObjectId, keyword: &Keyword) -> bool {
+    keywords_of(state, id).contains(&keyword)
+}
+
+/// What the keywords of `id` do to the combat damage it deals.
+pub(crate) fn damage_rules(state: &GameState, id: ObjectId) -> DamageRules {
+    keywords_of(state, id)
+        .into_iter()
+        .fold(DamageRules::default(), |all, keyword| {
+            all.and(rules(keyword).modifies_damage(keyword))
+        })
+}
+
+/// Whether a keyword stops `id` from being declared as an attacker.
+pub(crate) fn forbids_attacking(state: &GameState, id: ObjectId) -> bool {
+    keywords_of(state, id)
+        .into_iter()
+        .any(|keyword| rules(keyword).forbids_attacking(keyword))
+}
+
+/// Whether summoning sickness holds the permanent back from attacking and from `{T}` abilities now.
+///
+/// It has not been under its controller's control since their turn began and no keyword (haste) excuses it.
+pub fn summoning_sick(state: &GameState, id: ObjectId) -> bool {
+    state
+        .object(id)
+        .and_then(GameObject::permanent)
+        .is_some_and(PermanentState::summoning_sick)
+        && !keywords_of(state, id)
+            .into_iter()
+            .any(|keyword| rules(keyword).ignores_summoning_sickness(keyword))
+}
+
+/// Whether declaring `id` as an attacker leaves it untapped.
+pub(crate) fn attacks_untapped(state: &GameState, id: ObjectId) -> bool {
+    keywords_of(state, id)
+        .into_iter()
+        .any(|keyword| rules(keyword).attacks_untapped(keyword))
+}
+
+/// The fewest creatures that may block `id` together, when any do: 1 unless a keyword (menace) asks for more.
+pub(crate) fn min_blockers(state: &GameState, id: ObjectId) -> usize {
+    keywords_of(state, id)
+        .into_iter()
+        .map(|keyword| rules(keyword).min_blockers(keyword))
+        .max()
+        .unwrap_or(1)
+        .max(1)
+}
+
+/// Whether a keyword keeps `id` from being destroyed by lethal damage, deathtouch or an effect that says destroy.
+///
+/// Zero toughness is not destruction (CR 704.5f): the state-based action for it ignores this. The
+/// `Destroy` primitive asks it before it moves a permanent.
+pub fn is_indestructible(state: &GameState, id: ObjectId) -> bool {
+    keywords_of(state, id)
+        .into_iter()
+        .any(|keyword| rules(keyword).is_indestructible(keyword))
+}
+
 /// Whether a keyword of `holder` stops `controller`'s `source` from targeting it.
 pub(crate) fn protects(
     state: &GameState,
@@ -172,29 +304,28 @@ pub(crate) fn protects(
     source: ObjectId,
     controller: PlayerId,
 ) -> bool {
-    state.object(holder).is_some_and(|object| {
-        held_by(object).any(|keyword| {
-            rules(keyword).restricts_targeting(state, keyword, holder, source, controller)
-        })
+    keywords_of(state, holder).into_iter().any(|keyword| {
+        rules(keyword).restricts_targeting(state, keyword, holder, source, controller)
     })
 }
 
 /// Whether a keyword of the attacker stops `blocker` from blocking it.
 pub(crate) fn stops_block(state: &GameState, attacker: ObjectId, blocker: ObjectId) -> bool {
-    state.object(attacker).is_some_and(|object| {
-        held_by(object)
-            .any(|keyword| rules(keyword).restricts_blocking(state, keyword, attacker, blocker))
-    })
+    keywords_of(state, attacker)
+        .into_iter()
+        .any(|keyword| rules(keyword).restricts_blocking(state, keyword, attacker, blocker))
 }
 
 /// Whether a keyword lets the card be cast whenever an instant could be.
-pub(crate) fn grants_instant_timing(object: &GameObject) -> bool {
-    held_by(object).any(|keyword| rules(keyword).grants_timing(keyword))
+pub(crate) fn grants_instant_timing(state: &GameState, id: ObjectId) -> bool {
+    keywords_of(state, id)
+        .into_iter()
+        .any(|keyword| rules(keyword).grants_timing(keyword))
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: every keyword the vocabulary declares has rules, the stubs change nothing, and no keyword is claimed by the capabilities before its task.
+    //! Goal: every keyword the vocabulary declares has rules, the capabilities name exactly the keywords whose rules the engine runs, each keyword answers the hooks its row says and no others, and one function reads what an object has.
     use std::sync::Arc;
 
     use super::*;
@@ -206,6 +337,7 @@ mod tests {
     use mtg_cards::refs::Selector;
     use mtg_cards::validate::used_primitives;
     use mtg_core::card::CardType;
+    use rstest::rstest;
 
     /// One value of every keyword, parameters included.
     fn every_keyword() -> Vec<Keyword> {
@@ -255,59 +387,208 @@ mod tests {
         ]
     }
 
+    /// The keywords whose rules the engine runs, named as the capabilities name them.
+    const RUN: [&str; 12] = [
+        "Keyword.Flying",
+        "Keyword.Reach",
+        "Keyword.FirstStrike",
+        "Keyword.DoubleStrike",
+        "Keyword.Deathtouch",
+        "Keyword.Trample",
+        "Keyword.Lifelink",
+        "Keyword.Vigilance",
+        "Keyword.Haste",
+        "Keyword.Menace",
+        "Keyword.Defender",
+        "Keyword.Indestructible",
+    ];
+
+    /// What a keyword answers to each hook that does not need a game.
+    // One flag per hook, named after it, so a row of the table reads as the hooks it sets.
+    #[allow(clippy::struct_excessive_bools)]
+    #[derive(Debug, PartialEq, Eq)]
+    struct Hooks {
+        answers_flying: bool,
+        min_blockers: usize,
+        forbids_attacking: bool,
+        ignores_sickness: bool,
+        attacks_untapped: bool,
+        indestructible: bool,
+        damage: DamageRules,
+        timing: bool,
+        abilities: usize,
+    }
+
+    impl Hooks {
+        /// A keyword that changes nothing.
+        fn none() -> Hooks {
+            Hooks {
+                answers_flying: false,
+                min_blockers: 1,
+                forbids_attacking: false,
+                ignores_sickness: false,
+                attacks_untapped: false,
+                indestructible: false,
+                damage: DamageRules::default(),
+                timing: false,
+                abilities: 0,
+            }
+        }
+
+        fn of(keyword: &Keyword) -> Hooks {
+            let rules = rules(keyword);
+            Hooks {
+                answers_flying: rules.answers_evasion(keyword, &Keyword::Flying),
+                min_blockers: rules.min_blockers(keyword),
+                forbids_attacking: rules.forbids_attacking(keyword),
+                ignores_sickness: rules.ignores_summoning_sickness(keyword),
+                attacks_untapped: rules.attacks_untapped(keyword),
+                indestructible: rules.is_indestructible(keyword),
+                damage: rules.modifies_damage(keyword),
+                timing: rules.grants_timing(keyword),
+                abilities: rules.adds_abilities(keyword).len(),
+            }
+        }
+    }
+
+    fn damage(f: impl FnOnce(&mut DamageRules)) -> DamageRules {
+        let mut rules = DamageRules::default();
+        f(&mut rules);
+        rules
+    }
+
     #[test]
     fn the_list_has_every_keyword_the_vocabulary_names() {
         let names: Vec<&str> = every_keyword().iter().map(Keyword::name).collect();
         assert_eq!(names, Keyword::NAMES);
     }
 
-    #[test]
-    fn a_stub_changes_nothing() {
-        for keyword in every_keyword() {
-            let rules = rules(&keyword);
-            assert_eq!(rules.modifies_damage(&keyword), DamageRules::default());
-            assert!(!rules.grants_timing(&keyword), "{keyword:?}");
-            assert!(rules.adds_abilities(&keyword).is_empty(), "{keyword:?}");
-        }
+    #[rstest]
+    #[case::flying(Keyword::Flying, Hooks { answers_flying: true, ..Hooks::none() })]
+    #[case::reach(Keyword::Reach, Hooks { answers_flying: true, ..Hooks::none() })]
+    #[case::menace(Keyword::Menace, Hooks { min_blockers: 2, ..Hooks::none() })]
+    #[case::defender(Keyword::Defender, Hooks { forbids_attacking: true, ..Hooks::none() })]
+    #[case::haste(Keyword::Haste, Hooks { ignores_sickness: true, ..Hooks::none() })]
+    #[case::vigilance(Keyword::Vigilance, Hooks { attacks_untapped: true, ..Hooks::none() })]
+    #[case::indestructible(Keyword::Indestructible, Hooks { indestructible: true, ..Hooks::none() })]
+    #[case::first_strike(Keyword::FirstStrike, Hooks { damage: damage(|d| d.first_strike = true), ..Hooks::none() })]
+    #[case::double_strike(Keyword::DoubleStrike, Hooks { damage: damage(|d| d.double_strike = true), ..Hooks::none() })]
+    #[case::deathtouch(Keyword::Deathtouch, Hooks { damage: damage(|d| d.deathtouch = true), ..Hooks::none() })]
+    #[case::trample(Keyword::Trample, Hooks { damage: damage(|d| d.trample = true), ..Hooks::none() })]
+    #[case::lifelink(Keyword::Lifelink, Hooks { damage: damage(|d| d.lifelink = true), ..Hooks::none() })]
+    fn a_combat_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
+        assert_eq!(Hooks::of(&keyword), row);
     }
 
     #[test]
-    fn a_keyword_stub_changes_nothing_where_the_engine_asks_about_blocking_targeting_and_timing() {
+    fn every_other_keyword_changes_nothing() {
         for keyword in every_keyword() {
-            let holder = Arc::new(
-                CardDefinition::new("Holder")
-                    .with_type(CardType::Creature)
-                    .with_power_toughness(2, 2)
-                    .with_rules(Ability::Keyword(keyword.clone())),
-            );
-            let game = state(
-                vec![vec![], vec![]],
-                vec![vec![holder, creature("Other", 1, 1)], vec![]],
-            );
-            let (held, other) = (
-                game.zone(Zone::Battlefield)[0],
-                game.zone(Zone::Battlefield)[1],
-            );
-            let object = game.object(held).unwrap();
-            assert_eq!(held_by(object).collect::<Vec<_>>(), [&keyword]);
-            assert!(!stops_block(&game, held, other), "{keyword:?}");
-            assert!(!protects(&game, held, other, PlayerId(1)), "{keyword:?}");
-            assert!(!grants_instant_timing(object), "{keyword:?}");
-            // A creature without the keyword holds none.
-            assert_eq!(held_by(game.object(other).unwrap()).count(), 0);
+            if RUN.contains(&format!("Keyword.{}", name_of_variant(&keyword)).as_str()) {
+                continue;
+            }
+            assert_eq!(Hooks::of(&keyword), Hooks::none(), "{keyword:?}");
         }
     }
 
+    /// The variant name a capability uses (`FirstStrike`), which is the debug text up to its parameters.
+    fn name_of_variant(keyword: &Keyword) -> String {
+        let text = format!("{keyword:?}");
+        text.split(['(', ' ', '{']).next().unwrap_or("").to_owned()
+    }
+
     #[test]
-    fn the_capabilities_name_no_keyword_yet() {
+    fn the_capabilities_name_exactly_the_keywords_whose_rules_run() {
         let caps = caps();
-        for keyword in every_keyword() {
-            let used = used_primitives(&Ability::Keyword(keyword));
-            let claimed: Vec<_> = used
-                .iter()
-                .filter(|name| name.starts_with("Keyword.") && caps.runs(name))
-                .collect();
-            assert!(claimed.is_empty(), "{claimed:?} is claimed before its task");
+        let claimed: Vec<String> = every_keyword()
+            .into_iter()
+            .flat_map(|keyword| used_primitives(&Ability::Keyword(keyword)))
+            .filter(|name| name.starts_with("Keyword.") && caps.runs(name))
+            .collect();
+        let mut want: Vec<String> = RUN.iter().map(|name| (*name).to_owned()).collect();
+        want.sort();
+        let mut claimed = claimed;
+        claimed.sort();
+        assert_eq!(claimed, want);
+    }
+
+    fn holder(keywords: &[Keyword]) -> Arc<CardDefinition> {
+        let mut card = CardDefinition::new("Holder")
+            .with_type(CardType::Creature)
+            .with_power_toughness(2, 2);
+        for keyword in keywords {
+            card = card.with_rules(Ability::Keyword(keyword.clone()));
         }
+        Arc::new(card)
+    }
+
+    #[test]
+    fn one_function_lists_what_a_card_prints_in_the_order_of_its_rules() {
+        let game = state(
+            vec![vec![], vec![]],
+            vec![
+                vec![
+                    holder(&[Keyword::Haste, Keyword::Flying, Keyword::Trample]),
+                    creature("Plain", 1, 1),
+                ],
+                vec![],
+            ],
+        );
+        let [held, plain] = [0, 1].map(|at| game.zone(Zone::Battlefield)[at]);
+        assert_eq!(
+            keywords_of(&game, held),
+            [&Keyword::Haste, &Keyword::Flying, &Keyword::Trample]
+        );
+        assert!(has_keyword(&game, held, &Keyword::Flying));
+        assert!(!has_keyword(&game, held, &Keyword::Reach));
+        assert_eq!(keywords_of(&game, plain).len(), 0);
+        assert_eq!(keywords_of(&game, ObjectId(u64::MAX)).len(), 0);
+    }
+
+    #[test]
+    fn the_helpers_combine_the_keywords_of_one_object() {
+        let game = state(
+            vec![vec![], vec![]],
+            vec![
+                vec![
+                    holder(&[Keyword::FirstStrike, Keyword::Lifelink, Keyword::Menace]),
+                    holder(&[Keyword::Menace, Keyword::Defender, Keyword::Indestructible]),
+                    creature("Plain", 1, 1),
+                ],
+                vec![],
+            ],
+        );
+        let [mixed, wall, plain] = [0, 1, 2].map(|at| game.zone(Zone::Battlefield)[at]);
+        assert_eq!(
+            damage_rules(&game, mixed),
+            damage(|d| {
+                d.first_strike = true;
+                d.lifelink = true;
+            })
+        );
+        assert_eq!(damage_rules(&game, plain), DamageRules::default());
+        assert_eq!(
+            (min_blockers(&game, mixed), min_blockers(&game, plain)),
+            (2, 1)
+        );
+        assert!(forbids_attacking(&game, wall) && !forbids_attacking(&game, mixed));
+        assert!(is_indestructible(&game, wall) && !is_indestructible(&game, mixed));
+        assert!(!attacks_untapped(&game, wall));
+    }
+
+    #[rstest]
+    #[case::first_strike_alone(damage(|d| d.first_strike = true), true, false)]
+    #[case::double_strike(damage(|d| d.double_strike = true), true, true)]
+    #[case::both(damage(|d| { d.first_strike = true; d.double_strike = true; }), true, true)]
+    #[case::neither(DamageRules::default(), false, true)]
+    #[case::deathtouch_only(damage(|d| d.deathtouch = true), false, true)]
+    fn a_creature_strikes_in_the_steps_its_keywords_allow(
+        #[case] rules: DamageRules,
+        #[case] first: bool,
+        #[case] regular: bool,
+    ) {
+        assert_eq!(
+            (rules.strikes_first(), rules.strikes_regularly()),
+            (first, regular)
+        );
     }
 }
