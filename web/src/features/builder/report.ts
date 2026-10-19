@@ -67,12 +67,14 @@ export function arrange(
   return sort === 'issues' ? shown.sort((a, b) => rank(a) - rank(b)) : shown
 }
 
+/** A phrase with a full stop at the end unless it ends in one already. */
+const stopped = (text: string): string => (/[.!?…]$/.test(text) ? text : `${text}.`)
+
 /** A phrase as a sentence: the first letter capital and a full stop at the end unless it ends in one already. */
 export function sentence(text: string): string {
   const trimmed = text.trim()
   if (trimmed === '') return ''
-  const capital = trimmed.charAt(0).toUpperCase() + trimmed.slice(1)
-  return /[.!?…]$/.test(capital) ? capital : `${capital}.`
+  return stopped(trimmed.charAt(0).toUpperCase() + trimmed.slice(1))
 }
 
 const faceName = (face: number): string =>
@@ -92,7 +94,7 @@ export function reasonLines(reasons: readonly Reason[]): ReasonLine[] {
   const named = reasons.some((reason) => reason.face > 0)
   return reasons.map((reason, index) => ({
     key: `${reason.face}:${reason.span.start}-${reason.span.end}:${index}`,
-    text: named ? `${faceName(reason.face)}: ${sentence(reason.text)}` : sentence(reason.text),
+    text: named ? `${faceName(reason.face)}: ${stopped(reason.text.trim())}` : sentence(reason.text),
   }))
 }
 

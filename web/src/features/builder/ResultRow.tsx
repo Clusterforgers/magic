@@ -40,10 +40,14 @@ export function ResultRow({ card, draft, onAdd }: ResultRowProps) {
         onClick={() => {
           if (!full) onAdd(card, 'main')
         }}
-        className="grid min-h-11 min-w-0 flex-1 rounded-lg px-2 py-1 text-left transition-colors duration-fast ease-out hover:bg-accent aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
+        // The one column may shrink below its longest line (`minmax(0, 1fr)`), so a long name is cut with an ellipsis
+        // instead of pushing the menu button out of the row.
+        className="grid min-h-11 min-w-0 flex-1 grid-cols-[minmax(0,1fr)] rounded-lg px-2 py-1 text-left transition-colors duration-fast ease-out hover:bg-accent aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
       >
         <span className="flex min-w-0 items-center justify-between gap-2">
-          <span className="truncate text-sm font-medium">{card.name}</span>
+          <span className="truncate text-sm font-medium" title={card.name}>
+            {card.name}
+          </span>
           <ManaCost cost={card.mana_cost} />
         </span>
         <span

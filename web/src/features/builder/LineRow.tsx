@@ -138,9 +138,12 @@ export function LineRow({ line, format, room, check, actions }: LineRowProps) {
         >
           <SupportMark support={check.support} />
           {reasons.length === 0 ? null : (
-            <ul aria-label={`Why ${card.name} is not verified`} className="grid min-w-0 flex-1 gap-1 text-xs">
+            <ul
+              aria-label={`Why ${card.name} is not verified`}
+              className="grid min-w-0 flex-1 gap-1 pt-1 text-xs"
+            >
               {reasons.map((reason) => (
-                <li key={reason.key} className="leading-6 text-muted-foreground">
+                <li key={reason.key} className="text-muted-foreground">
                   {reason.text}
                 </li>
               ))}
