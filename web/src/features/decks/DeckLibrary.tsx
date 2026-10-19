@@ -47,6 +47,7 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
   const [announcement, setAnnouncement] = useState('')
   const opened = useRef(0)
   const titleRef = useRef<HTMLHeadingElement>(null)
+  const headingNext = useRef(false)
   const listRef = useRef<HTMLDivElement>(null)
 
   const open = (
@@ -56,7 +57,15 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
     setOverlay({ ...next, key: opened.current })
   }
   // A dialog that finishes closing after another one opened must not take the new one down with it.
-  const closed = (key: number): void => setOverlay((current) => (current?.key === key ? null : current))
+  const closed = (key: number): void => {
+    setOverlay((current) => (current?.key === key ? null : current))
+    // The row that had the focus is gone; the page heading is where the list begins. The dialog hands the focus back
+    // first, so the heading takes it once the dialog has closed.
+    if (headingNext.current) {
+      headingNext.current = false
+      titleRef.current?.focus()
+    }
+  }
 
   const saved = (deck: DeckView): void => {
     setAnnouncement(`Saved “${deck.name}”: ${STATE_LABEL[deck.state]}.`)
@@ -66,8 +75,7 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
   }
   const deleted = (deck: DeckListItem): void => {
     setAnnouncement(`Deleted “${deck.name}”.`)
-    // The row that had the focus is gone; the page heading is where the list begins.
-    titleRef.current?.focus()
+    headingNext.current = true
     reload()
   }
 
