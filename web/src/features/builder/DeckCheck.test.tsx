@@ -75,7 +75,9 @@ function legalityIssues(texts: string[]) {
 }
 
 const mainOrder = (): Array<string | null | undefined> =>
-  [...deckPane().querySelectorAll('li[data-line^="main:"] > span[title]')].map((name) => name.textContent)
+  [...deckPane().querySelectorAll('li[data-line^="main:"] > [data-slot="card-name"]')].map(
+    (name) => name.textContent,
+  )
 
 describe('the counts of the check', () => {
   it('says how many copies the table plays by itself, from the summary of the report', async () => {

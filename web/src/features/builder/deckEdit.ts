@@ -2,7 +2,7 @@
  * The deck as the builder edits it: lines of copies of a card in a zone, changed by pure functions that return a new
  * draft (the same draft when nothing changes). A card has one line per zone.
  */
-import type { CardHit, DeckBody, DeckView, DeckZone } from '@/protocol/generated'
+import type { CardHit, CheckRequest, DeckBody, DeckLineBody, DeckView, DeckZone } from '@/protocol/generated'
 
 /** One line of the draft: `count` copies of `card` in `zone`, in the art of `printingId` (null for the default). */
 export interface Line {
@@ -82,21 +82,38 @@ export function draftOf(view: Pick<DeckView, 'name' | 'format' | 'notes' | 'card
   return { name: view.name, format: view.format, notes: view.notes, lines }
 }
 
+const bodyLines = (lines: readonly Line[]): DeckLineBody[] =>
+  lines.map((line) => ({
+    zone: line.zone,
+    oracle_id: line.card.oracle_id,
+    printing_id: line.printingId,
+    count: line.count,
+  }))
+
 /** The body of `PUT /api/decks/{id}` for a draft: the name trimmed, the lines in the draft's order. */
 export const bodyOf = (draft: Draft): DeckBody => ({
   name: draft.name.trim(),
   format: draft.format,
   notes: draft.notes,
-  cards: draft.lines.map((line) => ({
-    zone: line.zone,
-    oracle_id: line.card.oracle_id,
-    printing_id: line.printingId,
-    count: line.count,
-  })),
+  cards: bodyLines(draft.lines),
+})
+
+/** The body of `POST /api/decks/check` for a draft: the unsaved list a save would check, without name or notes. */
+export const checkRequestOf = ({ format, lines }: Pick<Draft, 'format' | 'lines'>): CheckRequest => ({
+  deck: null,
+  format,
+  cards: bodyLines(lines),
 })
 
 const key = (line: Line): string =>
   `${line.zone}|${line.card.oracle_id}|${line.printingId ?? ''}|${line.count}`
+
+/**
+ * What the deck check sees of a draft, as text: the format and the lines in any order. Drafts with equal keys have
+ * equal reports; the name and the notes are not part of it.
+ */
+export const checkKey = ({ format, lines }: Pick<Draft, 'format' | 'lines'>): string =>
+  [format, ...lines.map(key).sort()].join('\n')
 
 /** True when two drafts would save the same deck: equal fields and the same lines, in any order. */
 export function sameDeck(a: Draft, b: Draft): boolean {

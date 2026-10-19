@@ -29,6 +29,8 @@ interface SearchPaneProps {
   /** The deck being built, for the copies each hit shows and the zones its menu offers. */
   draft: Draft
   onAdd: (card: CardHit, zone: DeckZone) => void
+  /** Opens the preview of a card from its name; `opener` is the control to return focus to. */
+  onPreview: (card: CardHit, opener: HTMLElement) => void
   /** Sets the display of the pane (`flex` or `hidden`), which the page switches under the M breakpoint. */
   className?: string
 }
@@ -87,7 +89,7 @@ function Pager({ page, onGo, busy }: { page: CardSearchPage; onGo: (page: number
  * moment before a search is sent; Enter in the box adds the first hit to the main deck (or searches at once when the
  * hits are for older text). With nothing typed or chosen it says how to start instead of listing every card.
  */
-export function SearchPane({ api, draft, onAdd, className }: SearchPaneProps) {
+export function SearchPane({ api, draft, onAdd, onPreview, className }: SearchPaneProps) {
   const [filters, setFilters] = useState<SearchFilters>(NO_FILTERS)
   const search = useCardSearch(api, filters)
   const hintId = useId()
@@ -162,7 +164,7 @@ export function SearchPane({ api, draft, onAdd, className }: SearchPaneProps) {
         className={cn('grid gap-1 transition-opacity duration-fast ease-out', busy && 'opacity-60')}
       >
         {shown.cards.map((card) => (
-          <ResultRow key={card.oracle_id} card={card} draft={draft} onAdd={onAdd} />
+          <ResultRow key={card.oracle_id} card={card} draft={draft} onAdd={onAdd} onPreview={onPreview} />
         ))}
       </ul>
     )

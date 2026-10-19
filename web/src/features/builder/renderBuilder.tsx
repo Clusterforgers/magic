@@ -5,12 +5,15 @@ import { AuthProvider } from '@/features/auth/AuthProvider'
 import { createAuthStore } from '@/features/auth/store'
 import { deckView, lineOf, startDecks } from '@/features/decks/fakeDecks'
 import type { DecksScript } from '@/features/decks/fakeDecks'
+import { createDecksApi } from '@/net/decks'
 import type { CardHit, DeckView } from '@/protocol/generated'
 import { startAccounts } from '@/test-utils/accountsServer'
 import { renderInRouter } from '@/test-utils/router'
 import { BuilderPage } from './BuilderPage'
 import { cardHit, startCards } from './fakeCards'
 import type { CardsScript } from './fakeCards'
+import { withCheck } from './fakeCheck'
+import type { CheckScript } from './fakeCheck'
 
 export const BOLT = cardHit('Lightning Bolt', { oracle_id: 'oracle-bolt' })
 export const CHAIN = cardHit('Chain Lightning', { type_line: 'Sorcery', oracle_id: 'oracle-chain' })
@@ -58,6 +61,8 @@ export interface BuilderScript {
   view?: Partial<DeckView>
   cards?: CardsScript
   decks?: DecksScript
+  /** What the live check's endpoint knows and does; by default it judges the cards of `POOL` by their support. */
+  check?: CheckScript
   /** False to return before the deck pane is drawn, for a deck that does not load. */
   wait?: boolean
 }
@@ -79,15 +84,17 @@ export async function renderBuilder(script: BuilderScript = {}) {
   })
   const decks = startDecks({ views: [view], pool: POOL, ...script.decks })
   const cards = startCards({ cards: POOL, ...script.cards })
+  const checks = withCheck(decks.fetch, { cards: POOL, ...script.check })
+  const api = createDecksApi({ fetch: checks.fetch })
   const accounts = startAccounts({ users: { Ada_L: 'correct horse battery' }, signedIn: 'Ada_L' })
   const store = createAuthStore({ api: accounts.api })
   const rendered = await renderInRouter(
     <AuthProvider store={store}>
-      <BuilderPage deckId={view.id} api={decks.api} cards={cards.api} />
+      <BuilderPage deckId={view.id} api={api} cards={cards.api} />
     </AuthProvider>,
   )
   if (script.wait !== false) await screen.findByRole('region', { name: 'Deck' })
-  return { ...rendered, decks, cards, view, user: userEvent.setup() }
+  return { ...rendered, decks, cards, checks, view, user: userEvent.setup() }
 }
 
 export const searchBox = (): HTMLElement => screen.getByRole('searchbox', { name: 'Search cards' })

@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
 import { cn } from '@/lib/utils'
-import type { DeckZone } from '@/protocol/generated'
+import type { CardHit, DeckZone } from '@/protocol/generated'
 import type { Line } from './deckEdit'
 import { ManaCost } from './ManaCost'
 import { isIssue, reasonLines } from './report'
@@ -23,6 +23,8 @@ export interface LineActions {
   decrement: (zone: DeckZone, oracleId: string) => void
   remove: (zone: DeckZone, oracleId: string) => void
   move: (zone: DeckZone, oracleId: string, to: DeckZone, count?: number) => void
+  /** Opens the preview of a card; `opener` is the control focus returns to. */
+  preview: (card: CardHit, opener: HTMLElement) => void
 }
 
 interface LineRowProps {
@@ -36,8 +38,8 @@ interface LineRowProps {
 }
 
 /**
- * One line of the deck: the copies with minus and plus (the last copy removed takes the line out), the name, the cost,
- * and a menu to move copies to another zone with Remove beside it. Under 640 px the row wraps to two lines. A card the
+ * One line of the deck: the copies with minus and plus (the last copy removed takes the line out), the name (a button
+ * that opens the card's preview), the cost, and a menu to move copies to another zone with Remove beside it. Under 640 px the row wraps to two lines. A card the
  * game cannot play by itself has an edge in its state's colour and, under the name, its mark and the reasons the check
  * gives.
  */
@@ -84,9 +86,16 @@ export function LineRow({ line, format, room, check, actions }: LineRowProps) {
           <PlusIcon aria-hidden="true" />
         </Button>
       </div>
-      <span className="order-1 min-w-0 truncate text-sm sm:order-none" title={card.name}>
+      <button
+        type="button"
+        aria-haspopup="dialog"
+        title={card.name}
+        data-slot="card-name"
+        onClick={(event) => actions.preview(card, event.currentTarget)}
+        className="order-1 min-h-8 min-w-0 justify-self-start truncate rounded-sm text-left text-sm underline-offset-4 hover:underline pointer-coarse:min-h-11 sm:order-none"
+      >
         {card.name}
-      </span>
+      </button>
       <span className="order-2 justify-self-end sm:order-none">
         <ManaCost cost={card.mana_cost} />
       </span>
