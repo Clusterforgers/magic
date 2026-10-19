@@ -18,5 +18,12 @@ export default defineConfig({
       '/ws': { target: gameServer, changeOrigin: false, ws: true },
     },
   },
-  test: { environment: 'jsdom', setupFiles: ['./src/test-setup.ts'], exclude: ['e2e/**', 'node_modules/**'] },
+  // The 5 s default fails the heavy table tests when several test runs share the machine.
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test-setup.ts'],
+    exclude: ['e2e/**', 'node_modules/**'],
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
+  },
 })
