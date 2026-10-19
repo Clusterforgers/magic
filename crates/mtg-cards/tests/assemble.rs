@@ -5,7 +5,7 @@ mod common;
 
 use std::collections::BTreeSet;
 
-use mtg_cards::assemble::{FACES, PLAIN_MANA_ABILITY, X_COST, assemble, lower};
+use mtg_cards::assemble::{FACES, Lowered, PLAIN_MANA_ABILITY, X_COST, assemble, lower};
 use mtg_cards::load::Library;
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::support::{Caps, Support};
@@ -45,6 +45,12 @@ fn owned_words(text: &str) -> Vec<String> {
 fn words(type_line: &str) -> (BTreeSet<String>, Vec<String>) {
     let (head, tail) = type_line.split_once('\u{2014}').unwrap_or((type_line, ""));
     (owned_words(head).into_iter().collect(), owned_words(tail))
+}
+
+/// The mana ability a definition carries (the only kind it has in `abilities`).
+fn mana_of(ability: AbilityDef) -> ManaAbility {
+    let AbilityDef::Mana(mana) = ability;
+    mana
 }
 
 fn caps_of(names: &[&str]) -> Caps {
@@ -201,16 +207,26 @@ fn rules_are_attached_only_when_the_support_record_says_the_engine_runs_them() {
             let state = assembled.support.support;
             if matches!(state, Support::Verified | Support::Partial) {
                 let rules = library.card(&printed.oracle_id).unwrap();
-                let lowered: Vec<AbilityDef> =
+                let lowered: Vec<Lowered> =
                     rules.faces[0].abilities.iter().filter_map(lower).collect();
                 assert!(
-                    carried.iter().all(|a| lowered.contains(a)),
+                    carried
+                        .iter()
+                        .all(|a| lowered.contains(&Lowered::Mana(mana_of(*a)))),
                     "{}: carries more than its rules",
+                    record.name
+                );
+                assert!(
+                    shown
+                        .rules
+                        .iter()
+                        .all(|r| lowered.contains(&Lowered::Rules(r.clone()))),
+                    "{}: carries more rules than it has",
                     record.name
                 );
             } else {
                 assert!(
-                    carried.is_empty(),
+                    carried.is_empty() && shown.rules.is_empty(),
                     "{} is {state:?} and carries rules",
                     record.name
                 );

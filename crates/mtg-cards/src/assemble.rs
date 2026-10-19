@@ -5,6 +5,7 @@
 //! face; a card with several faces is `Manual` until the engine plays the others.
 
 use std::collections::BTreeSet;
+use std::sync::Arc;
 
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::{Color, ColorSet};
@@ -70,9 +71,12 @@ pub fn assemble(printed: &PrintedCard, rules: Option<&Card>, caps: &Caps) -> Ass
         && let Some(front) = rules.and_then(|card| card.faces.first())
     {
         let runs = |ability: &&Ability| caps.missing(&used_primitives(ability)).is_empty();
-        definition
-            .abilities
-            .extend(front.abilities.iter().filter(runs).filter_map(lower));
+        for lowered in front.abilities.iter().filter(runs).filter_map(lower) {
+            match lowered {
+                Lowered::Mana(mana) => definition.abilities.push(AbilityDef::Mana(mana)),
+                Lowered::Rules(rules) => definition.rules.push(rules),
+            }
+        }
     }
     Assembled {
         definition,
@@ -113,12 +117,25 @@ pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
     (targets.is_empty() && times.is_one()).then_some(*one)
 }
 
-/// The engine-facing form of an ability, if the engine has one: only the plain mana ability so far.
+/// The form an ability takes in a card definition.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Lowered {
+    /// The plain `{T}: Add {X}`, which the engine runs without the stack.
+    Mana(ManaAbility),
+    /// Any other ability, run by the effect pipeline.
+    Rules(Arc<Ability>),
+}
+
+/// The engine-facing form of an ability: the plain mana ability, or the rules of any other; a clause
+/// left to the table has none.
 ///
-/// Every primitive the engine's `Caps` lists must be carried here, or a `Verified` card would lose
-/// the ability on its way into the game.
-pub fn lower(ability: &Ability) -> Option<AbilityDef> {
-    plain_mana_ability(ability).map(|produces| AbilityDef::Mana(ManaAbility { produces }))
+/// What the engine does not run is kept out by its `Caps`, not here: a `Verified` card must not lose
+/// an ability on its way into the game, and one it cannot run must not reach the game at all.
+pub fn lower(ability: &Ability) -> Option<Lowered> {
+    if let Some(produces) = plain_mana_ability(ability) {
+        return Some(Lowered::Mana(ManaAbility { produces }));
+    }
+    (!ability.is_manual()).then(|| Lowered::Rules(Arc::new(ability.clone())))
 }
 
 /// The mana abilities the basic land types of a land give.
@@ -375,6 +392,7 @@ fn printed_side(face: &PrintedFace) -> CardDefinition {
         defense: read.defense,
         color_indicator: (!shown.is_empty() && shown != from_cost).then_some(shown),
         abilities: Vec::new(),
+        rules: Vec::new(),
     }
 }
 
@@ -578,15 +596,54 @@ mod tests {
     ) {
         let parsed = ability(json);
         assert_eq!(plain_mana_ability(&parsed), expected);
-        assert_eq!(
-            lower(&parsed),
-            expected.map(|produces| AbilityDef::Mana(ManaAbility { produces }))
-        );
+        match (expected, lower(&parsed)) {
+            (Some(produces), lowered) => {
+                assert_eq!(lowered, Some(Lowered::Mana(ManaAbility { produces })));
+            }
+            (None, Some(Lowered::Rules(rules))) => {
+                assert_eq!(*rules, parsed, "any other ability keeps its rules whole");
+            }
+            (None, other) => panic!("{other:?}"),
+        }
         let used = used_primitives(&parsed);
         assert_eq!(used.contains(PLAIN_MANA_ABILITY), expected.is_some());
         if expected.is_some() {
             assert_eq!(used.len(), 1, "{used:?}");
         }
+    }
+
+    #[test]
+    fn a_clause_left_to_the_table_has_no_form_in_the_definition() {
+        let clause = Ability::Manual {
+            reason: "needs a rule the data lacks".into(),
+            span: crate::card::Span { start: 0, end: 4 },
+        };
+        assert_eq!(lower(&clause), None);
+    }
+
+    #[test]
+    fn the_rules_of_a_spell_the_engine_runs_reach_the_definition_whole() {
+        let bolt = r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":3}}]}}"#;
+        let text = "Lightning Bolt deals 3 damage to any target.";
+        let mut rules = elf_rules(ImplStatus::Full, vec![ability(bolt)]);
+        rules.faces[0].oracle_fingerprint = oracle_fingerprint(text);
+        let mut printed = elf();
+        printed.faces[0].oracle_text = text.into();
+        let runs = Caps::from_names(["Ability.Spell", "Effect.DealDamage"]);
+        let assembled = assemble(&printed, Some(&rules), &runs);
+        assert_eq!(assembled.support.support, Support::Verified);
+        assert_eq!(assembled.definition.abilities, []);
+        assert_eq!(
+            assembled.definition.rules.len(),
+            1,
+            "a spell is not a mana ability"
+        );
+        assert_eq!(*assembled.definition.rules[0], ability(bolt));
+        let idle = assemble(&printed, Some(&rules), &Caps::none());
+        assert!(
+            idle.definition.rules.is_empty(),
+            "no rules for a Manual card"
+        );
     }
 
     const MANA_TEXT: &str = "{T}: Add {G}.";
