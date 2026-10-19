@@ -5,7 +5,7 @@ import { cn } from 'cn'
 
 // Heights are the target sizes of the design system: 32, 36 and 44 px, and 24 px for dense rows. Under a coarse
 // pointer every control that people press often grows to 44 px.
-const buttonVariants = cva(
+const buttonStyles = cva(
   "group/button inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border border-transparent text-sm font-medium whitespace-nowrap transition-colors duration-fast ease-out select-none motion-safe:active:not-aria-[haspopup]:translate-y-px aria-disabled:cursor-not-allowed aria-disabled:opacity-50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
@@ -35,8 +35,16 @@ const buttonVariants = cva(
   },
 )
 
+/**
+ * The classes of a button for a link or any other element. The variants are merged over the base, so a variant’s border
+ * or text size wins, as it does on a `Button`.
+ */
+function buttonVariants(props?: Parameters<typeof buttonStyles>[0]): string {
+  return cn(buttonStyles(props))
+}
+
 type ButtonProps = ButtonPrimitive.Props &
-  VariantProps<typeof buttonVariants> & {
+  VariantProps<typeof buttonStyles> & {
     /** Shows a spinner and ignores presses, but stays focusable so the busy state is not lost to a keyboard user. */
     loading?: boolean
   }
