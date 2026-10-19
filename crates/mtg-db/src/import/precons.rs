@@ -7,7 +7,7 @@ use sqlx::{PgConnection, Postgres, Transaction};
 use uuid::Uuid;
 
 use super::batches::SkipLog;
-use super::card_payload::{Rejection, iso_date};
+use super::card_payload::{Rejection, iso_date, reject_nul};
 use super::precon_resolve::{CardLookups, UnresolvedReason};
 use super::{ImportError, Importer, StepError};
 use crate::error::DbError;
@@ -67,6 +67,22 @@ struct EntryPayload {
     is_foil: bool,
 }
 
+/// Checks that a deck can be stored and returns its release date in canonical form.
+///
+/// Refused: a NUL byte in any text, a release date that is not `YYYY-MM-DD`, a copy count beyond `i32`.
+pub(super) fn validate_deck(deck: &PreconDeck) -> Result<Option<String>, Rejection> {
+    reject_nul(deck)?;
+    let release_date = deck.release_date.as_deref().map(iso_date).transpose()?;
+    let counts_fit = [&deck.commander, &deck.main_board, &deck.side_board]
+        .into_iter()
+        .flatten()
+        .all(|card| i32::try_from(card.count).is_ok());
+    if !counts_fit {
+        return Err(Rejection::CountTooLarge);
+    }
+    Ok(release_date)
+}
+
 impl Importer {
     /// Stores precon decks, replacing the cards of decks that already exist, and records the run.
     ///
@@ -119,7 +135,7 @@ impl Importer {
         &self,
         deck: &PreconDeck,
     ) -> Result<Result<DeckIngest, Rejection>, DbError> {
-        let release_date = match deck.release_date.as_deref().map(iso_date).transpose() {
+        let release_date = match validate_deck(deck) {
             Ok(date) => date,
             Err(rejection) => return Ok(Err(rejection)),
         };

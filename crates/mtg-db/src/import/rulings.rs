@@ -6,7 +6,7 @@ use sqlx::types::Json;
 use uuid::Uuid;
 
 use super::batches::{Batches, SkipLog};
-use super::card_payload::{Rejection, iso_date};
+use super::card_payload::{Rejection, iso_date, reject_nul};
 use super::{ImportError, Importer, StepError};
 use crate::codec::ruling_source_keyword;
 use crate::error::DbError;
@@ -29,7 +29,7 @@ pub struct RulingImportReport {
 
 /// A `rulings` row in the shape of the insert statement's `jsonb_to_recordset` columns.
 #[derive(Debug, Serialize)]
-struct RulingPayload {
+pub(super) struct RulingPayload {
     // Preserves stream order, so ids of new rulings follow the file.
     seq: u64,
     oracle_id: Uuid,
@@ -38,19 +38,21 @@ struct RulingPayload {
     comment: String,
 }
 
-fn payload(seq: u64, record: &RulingRecord) -> Result<RulingPayload, Rejection> {
+pub(super) fn ruling_row(seq: u64, record: &RulingRecord) -> Result<RulingPayload, Rejection> {
     let oracle_id = Uuid::parse_str(record.oracle_id.as_str())
         .map_err(|_| Rejection::OracleId(record.oracle_id.to_string()))?;
     if record.comment.trim().is_empty() {
         return Err(Rejection::BlankComment);
     }
-    Ok(RulingPayload {
+    let row = RulingPayload {
         seq,
         oracle_id,
         source: ruling_source_keyword(record.source),
         published_at: record.published_at.as_deref().map(iso_date).transpose()?,
         comment: record.comment.clone(),
-    })
+    };
+    reject_nul(&row)?;
+    Ok(row)
 }
 
 impl Importer {
@@ -91,7 +93,7 @@ impl Importer {
             }
             let mut rows = Vec::with_capacity(batch.len());
             for (position, record) in &batch {
-                match payload(*position, record) {
+                match ruling_row(*position, record) {
                     Ok(row) => rows.push(row),
                     Err(rejection) => report.skipped.record(*position, rejection),
                 }

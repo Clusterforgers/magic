@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id AS \"id: _\", source AS \"source: _\", started_at, finished_at,\n                      status AS \"status: _\", counts, error\n               FROM import_runs WHERE id = $1",
+  "query": "SELECT id AS \"id: _\", source AS \"source: _\", started_at, finished_at,\n                      status AS \"status: _\", counts, error, input\n               FROM import_runs WHERE source = $1 AND status = 'succeeded'\n               ORDER BY started_at DESC, id DESC LIMIT 1",
   "describe": {
     "columns": [
       {
@@ -101,11 +101,33 @@
             "name": "error"
           }
         }
+      },
+      {
+        "ordinal": 7,
+        "name": "input",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "import_runs",
+            "name": "input"
+          }
+        }
       }
     ],
     "parameters": {
       "Left": [
-        "Int8"
+        {
+          "Custom": {
+            "name": "import_source",
+            "kind": {
+              "Enum": [
+                "scryfall_cards",
+                "scryfall_rulings",
+                "mtgjson_decks"
+              ]
+            }
+          }
+        }
       ]
     },
     "nullable": [
@@ -115,8 +137,9 @@
       true,
       false,
       false,
+      true,
       true
     ]
   },
-  "hash": "caa6d4c547cba165e2286683080ddef8e6f7eb2b043df98add8172e1a2abd7a1"
+  "hash": "10722ffa907959afb8a489f04ce0d49b86c02a1b9e4bad971a4f027136bf3479"
 }

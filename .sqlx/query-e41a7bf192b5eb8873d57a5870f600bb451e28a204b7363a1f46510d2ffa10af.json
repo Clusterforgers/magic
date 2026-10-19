@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE import_runs\n               SET status = 'failed', finished_at = now(), error = $2\n               WHERE status = 'running' AND started_at < now() - make_interval(secs => $1)\n               RETURNING id AS \"id: RunId\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id: RunId",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "import_runs",
+            "name": "id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Float8",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "e41a7bf192b5eb8873d57a5870f600bb451e28a204b7363a1f46510d2ffa10af"
+}

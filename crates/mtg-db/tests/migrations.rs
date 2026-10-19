@@ -9,7 +9,7 @@ use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 
 use common::db;
 
-const MIGRATION_COUNT: i64 = 5;
+const MIGRATION_COUNT: i64 = 6;
 
 async fn applied_migrations(pool: &PgPool) -> i64 {
     sqlx::query_scalar("SELECT count(*) FROM _sqlx_migrations WHERE success")

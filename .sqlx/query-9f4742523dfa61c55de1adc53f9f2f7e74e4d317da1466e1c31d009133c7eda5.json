@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "INSERT INTO import_runs (source) VALUES ($1) RETURNING id AS \"id: RunId\"",
+  "query": "INSERT INTO import_runs (source, input) VALUES ($1, $2) RETURNING id AS \"id: RunId\"",
   "describe": {
     "columns": [
       {
@@ -28,12 +28,13 @@
               ]
             }
           }
-        }
+        },
+        "Text"
       ]
     },
     "nullable": [
       false
     ]
   },
-  "hash": "ac14a27f88f401a773ad307b0bded786acebbff7ac21e24a5cfbd449de259489"
+  "hash": "9f4742523dfa61c55de1adc53f9f2f7e74e4d317da1466e1c31d009133c7eda5"
 }

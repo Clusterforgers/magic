@@ -3,6 +3,7 @@
 mod batches;
 mod card_payload;
 mod cards;
+mod check;
 mod precon_resolve;
 mod precons;
 mod rulings;
@@ -14,12 +15,13 @@ use thiserror::Error;
 
 pub use batches::{SkipLog, SkippedRecord};
 pub use cards::{CardImportReport, UpsertCounts};
+pub use check::{CheckReport, check_cards, check_precons, check_rulings};
 pub use precon_resolve::UnresolvedReason;
 pub use precons::{DeckIngest, PreconImportReport, UnresolvedCard};
 pub use rulings::RulingImportReport;
 
 use crate::error::DbError;
-use crate::runs::{ImportRuns, ImportSource, RunId};
+use crate::runs::{ImportRuns, ImportSource, RunId, STALE_AFTER};
 
 /// Records written per transaction unless overridden.
 pub const DEFAULT_BATCH_SIZE: usize = 500;
@@ -76,6 +78,7 @@ pub struct Importer {
     pool: PgPool,
     runs: ImportRuns,
     batch_size: usize,
+    input: Option<String>,
 }
 
 impl Importer {
@@ -84,6 +87,7 @@ impl Importer {
             runs: ImportRuns::new(pool.clone()),
             pool,
             batch_size: DEFAULT_BATCH_SIZE,
+            input: None,
         }
     }
 
@@ -94,14 +98,25 @@ impl Importer {
         self
     }
 
+    /// Names the data the import reads, which each run records as its [`crate::ImportRun::input`].
+    #[must_use]
+    pub fn with_input(mut self, input: impl Into<String>) -> Self {
+        self.input = Some(input.into());
+        self
+    }
+
+    /// Reaps runs left behind by dead processes, then opens a run for `source`.
     async fn start(&self, source: ImportSource) -> Result<RunId, ImportError> {
-        self.runs
-            .start(source)
-            .await
-            .map_err(|source| ImportError::Database {
-                run_id: None,
-                source,
-            })
+        let opened = async {
+            self.runs.reap_stale(STALE_AFTER).await?;
+            self.runs
+                .start_with_input(source, self.input.as_deref())
+                .await
+        };
+        opened.await.map_err(|source| ImportError::Database {
+            run_id: None,
+            source,
+        })
     }
 
     /// Closes the run according to `outcome` and returns the report on success.
