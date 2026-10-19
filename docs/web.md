@@ -4,57 +4,58 @@ The browser client of the Magic platform: the net and play layers in `web/src/ne
 
 ## Stack and layout
 
-Routes are file-based in `web/src/routes` and only pick a page; `routeTree.gen.ts` is rewritten by the Vite plugin on `pnpm dev` or `pnpm build`, so commit it with the route change. Pages are in `web/src/features/{create,game,table}`, shared parts in `components/` (`ui/` is shadcn: `pnpm exec shadcn add <name>`), pure helpers in `lib/`.
+React, Vite, Tailwind, shadcn/ui on Base UI, TanStack Router and zustand. Commands are in `CLAUDE.md`.
 
-`vite` proxies `/api` and `/ws` to 127.0.0.1:8080 and keeps `Host`, which the server's Origin check compares with the page's `Origin`.
+- Pages live in `src/features` (`auth`, `create`, `game`, `games`, `table`); `src/routes` only picks them. The Vite plugin rewrites `routeTree.gen.ts` on `pnpm dev` and `pnpm build`; commit it with the route change.
+- `src/net` (REST, socket) and `src/play` (session, store) hold the client. `src/components/ui` is shadcn (`pnpm exec shadcn add <name>`). `src/protocol` has the ts-rs bindings and the transcripts Rust writes.
+- The dev and preview servers proxy `/api` and `/ws` to `MTG_SERVER_URL` (default `http://127.0.0.1:8080`) and keep the browser's `Host`, which the server's Origin check compares with the page's `Origin`.
 
 ## Data flow
 
-### Modules
+- `net/api.ts` checks REST bodies at runtime; a failure is an `ApiError` with a code of `crates/mtg-server/src/api.rs` or a local one. `net/parse.ts`: `parseFrame` is the only door from the wire (JSON, known `type`, required fields, 1 MiB cap); garbage is a `FrameError`, never a throw.
+- `net/socket.ts`: `GameSocket` sends `Join` first and once per connection. `net/pacer.ts` holds sends to a burst of 30, then 15 a second; the server allows 40 and 20 and closes a socket over it with 1008.
+- `play/view.ts`: pure ports of `StateView::apply`; unchanged objects, players and zones keep their identity.
+- `play/session.ts`: `createSession({game, token, name})` owns the socket, applies the client rule of [protocol.md](protocol.md) and writes the zustand store (`play/store.ts`) that screens read with `useStore(session.store, selector)`.
 
-- `net/api.ts`: `api.createGame/getGame/listDecks` over `fetch`; bodies are checked at runtime and a failure is an `ApiError {code, status, message}`. Codes: those of `crates/mtg-server/src/api.rs` (`invalid_request`, `unsupported_format`, `unknown_deck`, `forbidden_origin`, `not_found`, `method_not_allowed`, `payload_too_large`, `unsupported_media_type`, `internal`, `server_full`, `unavailable`) plus local `unknown`, `network`, `bad_response`.
-- `net/parse.ts`: `parseFrame(data)` is the only door from the wire (JSON, known `type`, required fields, 1 MiB cap). Garbage is a `FrameError`, never a throw.
-- `net/socket.ts`: `GameSocket` sends `Join` first and once per connection, retries, and reports `idle | connecting | open | reconnecting | replaced | stopped`. `createSocket`, `timers`, `random`, `origin` are injectable. `net/pacer.ts` holds sends to 30 at once, then 15 a second (the server allows 40 and 20 and closes a socket over it with 1008), so a bot or auto-pass screen is slowed, not dropped.
-- `play/view.ts`: pure `applyBatch`, `fromFirstBatch`, `fromSnapshot` (ports of `StateView::apply`); unchanged objects, players and zones keep their identity.
-- `play/session.ts`, `play/store.ts`: `createSession({game, token, name})` gives `{store, connect, disconnect, ready, notReady, answer, preview, concede, setStop, setFullControl, yieldUntil, cancelYield, chat, resync, dismissNotice}`. Make one per game page (not per render). In React: `useStore(session.store, selector)`, `connect()` in an effect, `disconnect()` in its cleanup.
+The session's rules:
 
-### State flow
+- A Snapshot sets the base and `seq`. A batch whose `from_seq` is not `seq` (or any batch but the one at 0 while there is no view) sends one Resync; nothing is applied and decisions are ignored until the next Snapshot.
+- A `Decision` replaces `pending`. `answer()` sends once per decision id; a Snapshot or a lost connection forgets answered ids, so the server's repeat can be answered.
+- `GameOver` sets `result` and makes a later close final. `StaleDecision` and `IllegalAnswer` give a notice and a Resync; `BadMessage` and `Internal` only a notice.
+- A wrong token is a refused upgrade, which a browser reports as 1006, so the client retries forever (`attempt` counts).
 
-Socket event -> session (the client rule) -> `store.setState`. A Snapshot sets the base and `seq`. A batch with any other `from_seq` (or any batch but the one at 0 while there is no view) sends one Resync; nothing is applied and decisions are ignored until the next Snapshot. `Decision` replaces `pending`; `answer()` sends once per id and clears it. A Snapshot or a lost connection forgets answered ids, so the server's repeat of a decision can be answered again. `GameOver` sets `result` and makes a later close final.
-
-### Reconnect
-
-| Close or message | Result |
-| 1001, 1006, 1013 and any code not listed below | retry after 250 ms doubling to 15 s, less up to 50 % jitter; a Welcome resets it |
+| Close or message | Socket status |
+|---|---|
+| 1001, 1006, 1013 and any code not listed below | `reconnecting`: retry after 250 ms doubling to 15 s, less up to 50 % jitter; a Welcome resets it |
 | 4000 | `replaced`, no retry; `connect()` takes the seat back |
 | 1000, 1002, 1007, 1008, 1009; `Error` UnsupportedVersion or UnknownGame | `stopped`, reason in `notice` |
 | any close after `GameOver` | `stopped`, no notice |
 
-StaleDecision and IllegalAnswer give a notice and a Resync; BadMessage and Internal only a notice. A wrong token is a refused upgrade, which a browser reports as 1006, so the client retries forever (`attempt` counts).
+## Create and game pages
 
-## Game and create pages
+- `/` (`create/CreateGamePage`): decks from `api.listDecks()`, 2 to 12 seats with a name and a deck, format Normal (Commander shown disabled). `create/form.ts` repeats the server's checks; `create/apiErrors.ts` words every `ApiError` code.
+- `/game/$gameId#seat=<n>&token=<token>` (`game/GameRoute`) reads the fragment from the router's raw `location.href`, because its `hash` is percent-decoded.
+- A seat token lives only in the fragment, which a browser never sends. `components/SeatLinkRow` prints it only inside a `data-share-link` anchor, and tests scan the page for tokens outside those (`test-utils/leaks.ts`). `lib/invites.ts` keeps the host's links in `sessionStorage` (every access in try/catch) so the lobby can hand them out after the create page is gone.
+- `game/GamePage` makes one session per (game, seat, token) and connects one microtask after mount, so StrictMode's mount, unmount, mount opens one socket. `game/gameContext` gives `useGame()` (`game`, `session`, `lookup`) and `usePlay(selector)`; `lookup` is `GET /api/games/{id}`, polled every 3 s in the lobby.
 
-- `/` is `create/CreateGamePage`: decks from `api.listDecks()`, 2 to 12 seats (name and deck each, a preview of the deck), format fixed to Normal with Commander shown disabled. `create/form.ts` repeats the server's checks, `create/apiErrors.ts` puts every `ApiError` code in plain words. On success it lists one link per seat with copy buttons, copy all and "Open my seat" (seat 1).
-- `/game/$gameId#seat=<n>&token=<token>` is `game/GameRoute`, which reads the fragment from the router's raw `location.href` (its `hash` is percent-decoded) and renders `game/GamePage`.
-- Seat links (`lib/seatLink.ts`): the token lives only in the fragment, which a browser never sends, and is printed only inside a `data-share-link` anchor (`components/SeatLinkRow`); tests scan the page for tokens outside those (`test-utils/leaks.ts`). `lib/invites.ts` keeps the host's links in `sessionStorage` (every access in try/catch, the app works without it) so the lobby can hand them out after the create page is gone, and it supplies the `Join` name.
-
-| Store | Screen (`game/GamePage`, `connectionOf` in `game/connection.ts`) |
+| Store | Screen (`connectionOf`, `game/connection.ts`) |
 |---|---|
-| no readable seat and token in the address | `SeatLinkMissing`; no session, no socket |
-| `phase` over | `GameOver`: winner, draw or concession (from `view.players[].lost`), each seat's finish, link to `/`; no connection notice afterwards |
-| `status` replaced or stopped | `ConnectionNotice` alone: the reason from `notice` and one button to connect again |
+| no seat link and not signed in | `SeatLinkMissing`; no socket |
+| `phase` over | `GameOver`; no connection notice |
+| `status` replaced or stopped | `ConnectionNotice` alone: the reason and a button to connect again |
 | idle or connecting, never welcomed | "Connecting to the game…" |
 | `reconnecting`, `attempt` below 5 | "Connection lost. Reconnecting… (attempt N)" |
-| `reconnecting`, `attempt` 5 or more | "Cannot reach the game", "Try again now" (`disconnect()` then `connect()`, counting from 1); the socket keeps retrying meanwhile and a Welcome moves the page on |
-| welcomed, `phase` lobby / playing | `Lobby` / `GameTable` |
+| `reconnecting`, `attempt` 5 or more | "Cannot reach the game" and "Try again now"; the socket keeps retrying and a Welcome moves the page on |
+| welcomed | `Lobby` while `phase` is lobby, `GameTable` while playing |
 
-After a Welcome the lobby or table stays under the reconnect notice. A `notice` shows above any screen as a dismissible alert, except on `GameOver` and where a connection notice already prints it.
-
-`GamePage` makes one session per (game, seat, token), connects one microtask after mount and disconnects on unmount, so StrictMode's mount-unmount-mount opens one socket. `game/gameContext` gives every screen `useGame()` (`game`, `session`, `lookup`) and `usePlay(selector)`; `lookup` is REST (`GET /api/games/{id}`): seat names, who is connected and who is ready, fetched once and polled every 3 s in the lobby.
+After a Welcome the lobby or table stays under the reconnect notice. A `notice` shows above any other screen as a dismissible alert, unless a connection notice already prints it.
 
 ## Lobby
 
-Lobby (`game/Lobby.tsx`): the server's roster (`ServerMessage` `Lobby`, `docs/protocol.md`) is kept in the store as `lobby` (`{seats, needed}`), replaced as a whole by each message, and dropped when the connection goes or the game starts (the first batch or a snapshot), so it is only ever what the open socket last heard. `lobbyModel.ts` (pure, `lobbyModel.test.ts`) makes the rows: the roster wins while it exists; without it (before the first one, or while reconnecting) the REST lookup stands in for names, who is connected (`connected`) and who is ready (`ready`, polled every 3 s), and a seat nobody has named is "Seat N" ("not joined yet"); this page's own seat is connected exactly when its socket is open. A row (`LobbySeatRow`) is a dot for the connection (filled when connected, with "Connected" or "Not connected" for a screen reader), "Seat N", the name (long ones wrap, never cut off), a "you" badge on this seat, the account when the list knows it, and the state in words with an icon: "Ready" (check, with "(away)" when its client is gone but its Ready stands), "Not ready yet" (here, not ready) or "Not here". Under the list one sentence sums it up (`summaryText`): "2 of 3 ready, waiting for Cy to join", with "to press Ready" for seats that are here (this seat is "you", four or more are only counted), or "All 3 seats are ready, starting the game". A polite live region (`aria-live="polite"`, no role, because the connection banner is the page's `status`) says what changed between two looks (`announcement`, `useLobbyAnnouncement`): "Bo is ready. 1 of 3 ready, waiting for you to press Ready", "Cy joined", "You are not ready", at most three changes spelled out and the rest counted; nothing is said for this seat's own connection, nor for the step from the stand-in rows to the first real data. The button is "Ready" and, once the server's roster says this seat is ready, "Not ready" (`session.ready()` / `session.notReady()`); the page shows what the server holds and not what it hopes, so the label changes when the roster arrives, a reconnect sends no Ready of its own and the second click of a double click is ignored (`event.detail`), so a fast connection cannot flip the label under it and take the Ready back by accident. It is disabled while the socket is not open. Dev: `/dev/lobby?seats=4&ready=0,2&away=3&me=1&names=long` (`game/dev/`: 2 to 12 seats, `ready` and `away` list seat numbers, `me` is this page's seat, `names=long` gives 32-character names; Ready and Not ready work on this seat as if a server answered, and the production bundle has none of it, `devBuild.test.ts`). Tests: `GameLobby.test.tsx` (the REST stand-in, polling, Ready and Not ready on a fake socket), `LobbyRoster.test.tsx` (2 to 6 seats in every state, this seat marked, the roster against the lookup, announcements, long names), `lobbyModel.test.ts`, `play/lobby.test.ts` (the store), `net/parse.test.ts` (the message), `game/dev/devLobby.test.tsx`, and `e2e/opening.spec.ts` (two browsers: Ready, Not ready, a reload, the start).
+- The `Lobby` message ([protocol.md](protocol.md)) is kept whole as `lobby` (`{seats, needed}`) and dropped when the connection goes or the game starts, so it is only what the open socket last heard.
+- `game/lobbyModel.ts` (pure) makes the rows. The roster wins; before it and while reconnecting the REST lookup stands in, with "Seat N" for an unnamed seat. This page's own seat is connected exactly when its socket is open.
+- A polite live region (`aria-live`, no role, because the connection banner is the page's `status`) announces what changed between two looks (`announcement`): at most three changes, none for this seat's own connection or for the step from stand-in rows to real data.
+- The button follows the server's roster ("Ready", then "Not ready"). A reconnect sends no Ready of its own, and the second click of a double click is ignored (`event.detail`), so a fast connection cannot take the Ready back by accident.
 
 ## The table
 
@@ -161,24 +162,44 @@ Sign-in on top of the server's accounts (`server.md`, Accounts; bodies `protocol
 
 ## Dev routes
 
-- Dev route: with `pnpm dev`, `/dev/table?seats=2|4|12&mode=grid|focus&focus=<seat>&prompt=priority&turn=you&fx=damage&slow=5&preview=1200` (2 to 12 seats; `prompt` optional, see Prompts; `turn=you` makes it the viewer's own turn, which lights the your-turn cue; `fx` and `slow` are in Table feedback, `preview` in Block preview) shows the real table over `features/table/dev/fixture.ts`: about 40 permanents per seat, an attack with blockers, 3 stack items, graveyards, a commander each, 50 log events. The route exists only with `import.meta.env.DEV`; `devBuild.test.ts` builds the app and fails if the fixture's marker or card names reach the production bundle (a DEV build must contain them, so the check can fail). By hand: `pnpm build && ! grep -r dev-table-fixture dist`.
-- Dev: `/dev/table?prompt=priority` faces a priority decision of real fixture cards over the fixture's stack on the opponent's turn ("Resolve Lightning Bolt"), `priority-main` the viewer's main phase ("Next: Combat"), `priority-end` the last window of the viewer's turn ("End turn"), `priority-wait` a quiet window of the opponent's turn ("Continue"), and `yield`, `yield-resolve`, `yield-turn` a seat that is already passing (the quiet line, no decision; `DEV_YIELDS` in `dev/prompts.ts`); the fixture session takes an answer by clearing the decision and a yield as the server would (the prompt gives way to the line, "Stop passing" removes it). `DEV_PROMPTS` has one line per prompt and `DEV_TABLES` the moment of the game it needs. Without `prompt` the table has no decision.
-- Dev: `/dev/table?stops=own:main1,opp:end:keep&fc=next|held` lights stops (side `own` or `opp`, a step such as `upkeep`, `main1`, `attackers`, `damage`, `end`, and `keep` for a lasting one; `dev/stopSpec.ts`) and Full Control. The fixture session answers a press as the server would.
-- Dev: run a real server on a scratch database (accounts need Postgres): `docker compose exec db psql -U magic -c 'create database magic_users_web'`, `DATABASE_URL=postgres://magic:magic@localhost:5432/magic_users_web MTG_BIND=127.0.0.1:8318 cargo run -p mtg-server`, `MTG_SERVER_URL=http://127.0.0.1:8318 pnpm dev --port 5318`, then `node scripts/ui-shot.mjs http://localhost:5318/login out --widths 1400,390` (signed-in screens need a cookie, which the script cannot set: drive them with Playwright and the Nix chromium). Drop the database when done (`drop database magic_users_web`).
+Both exist only with `import.meta.env.DEV`; `devBuild.test.ts` fails if a fixture marker or card name reaches the production bundle (a DEV build must contain them, so the test can fail). By hand: `pnpm build && ! grep -r dev-table-fixture dist`.
+
+| Route | Parameters |
+|---|---|
+| `/dev/table` | `seats` 2 to 12 (default 4); `mode` `grid` or `focus`; `focus` a seat; `turn=you` makes it the viewer's turn; `prompt` a name below; `fx` `attack`, `block`, `damage`, `death`, `life` or `enter` plays that move 600 ms after load, and buttons at the top replay any move; `slow` above 1 up to 20 stretches every effect; `preview` 0 to 10000 ms delays the fixture's preview answer (120 by default); `stops` such as `own:main1,opp:end:keep` (`own` or `opp`, a step name, `keep` for lasting; `dev/stopSpec.ts`); `fc` `next` or `held` |
+| `/dev/lobby` | `seats` 2 to 12 (default 4); `ready` and `away` seat lists (`0,2`); `me` this page's seat; `names=long` gives 32-character names. Ready and Not ready work as if a server answered. |
+
+`/dev/table` shows the real table over `features/table/dev/fixture.ts` (about 40 permanents per seat, an attack, a stack, a log). `fixtureSession` (`dev/devGame.ts`) answers as the server would, and `dev/fxScenarios.ts` builds each `fx` move as a real batch that `applyBatchToStore` folds as the session does.
+
+The `prompt` names are the keys of `DEV_PROMPTS` in `dev/prompts.ts` (`DEV_TABLES` sets the moment of the game each needs): `priority`, `priority-main`, `priority-end`, `priority-wait`, `priority-clock`, `block-clock`, `yield`, `yield-resolve`, `yield-turn`, `forecast` (`turn=you` flips the sides), `attack`, `block`, `mulligan`, `mulligan-free`, `bottom`, `discard`, `damage`, `damage3`, `damage1`, `pay`, `pay-short`, `pay-locked`, `pay-hybrid` and `pay-low-life`.
 
 ## Testing
 
-`scripts/check.sh web`, or `pnpm test` in `web/`. Fakes in `web/src/test-utils`: `FakeNetwork`, `FakeTimers`, `startSession()`, the Rust-generated `transcripts`.
+- vitest on jsdom: `scripts/check.sh web`, or `pnpm test` in `web/`.
+- `src/test-utils` has the fakes (`FakeNetwork`, `FakeTimers`, `startSession()`), the Rust-generated `transcripts` (replayed through the real store by `transcript.test.tsx`) and the harnesses: `renderGame()` (fake sockets, manual clock, in-memory REST), `renderTable` and `renderLiveTable`, and `renderApp(url, {accounts, rest})` with `startAccounts(script)`, an in-memory account server.
+- `test-utils/passControls.ts` finds the primary button by its slot, since its words change. A new prompt copies `Priority.test.tsx` (table-driven) and `PriorityLive.test.tsx` (real session, one Answer per decision).
+- Screenshots: `node scripts/ui-shot.mjs <url> <out-prefix>` (options in `CLAUDE.md`) over a dev route. The page loads at the first width, so shoot one width per run: state read at mount, such as the drawer, does not follow a later width. To freeze an effect, pause it from `--wait` (`document.getAnimations().forEach((a) => { a.pause(); a.currentTime = 2000 })`).
 
-Tests: `test-utils/gameHarness.tsx` `renderGame()` mounts the game page on fake sockets, a manual clock and an in-memory REST server (`fakeServer.ts`); `router.tsx` gives pages a real router on a memory history; `@testing-library/user-event` drives the keyboard; `src/routing.test.tsx` runs the real route tree. Screenshots: `node scripts/ui-shot.mjs <url> <out-prefix> [--widths 1400,390] [--wait <js condition>]` drives headless Firefox over WebDriver BiDi, waits for the page to render (Firefox's own `--screenshot` fires at `load` and gives a blank SPA) and reports horizontal overflow.
+### End-to-end
 
-- Screenshots: `node scripts/ui-shot.mjs "http://127.0.0.1:5173/dev/table?seats=4" out --widths 1400 --full --wait "document.querySelector('[data-seat]')"`. The page loads at the first width, so shoot one width per run; the script prints OVERFLOWS when the page scrolls sideways.
+`pnpm e2e` (`playwright.config.ts`) starts `cargo run -p mtg-server` (an empty `DATABASE_URL` gives the in-memory store and the built-in demo decks) on port 8301 and `pnpm build` plus `vite preview` on port 5301, both new for every run.
 
-- Tests: `test-utils/tableHarness.tsx` (`renderTable` over a fixture game, `renderLiveTable` over a real session) and `test-utils/cards.ts`; `transcript.test.tsx` replays the Rust transcripts through the real store into the table.
+- `E2E_SERVER_PORT` and `E2E_WEB_PORT` override the ports (`e2e/ports.ts`) to run several suites at once. `E2E_REUSE=1` keeps servers already listening there; `E2E_TRAIL=1` prints every answered decision; `--repeat-each=N` repeats the game.
+- On NixOS Playwright's own browser cannot run. Point `CHROMIUM_PATH` at the Nix chromium with a glob, because the store path changes with every update: `CHROMIUM_PATH=$(ls -d /nix/store/*-chromium-[0-9]*/bin/chromium | head -n 1) pnpm --dir web e2e`.
+- `full-game.spec.ts` (`driver.ts`) plays both seats through the real UI. A seat waits for a `[data-decision]` with a new `data-decision-id` (the id tells two Priority prompts apart), reads its legal cards (`data-highlight="legal"`) and answers with real clicks. There are no sleeps: waits are `waitForFunction` polls. The engine seed is random per game.
+- `accounts.spec.ts` needs Postgres. With `E2E_DATABASE_URL` set to an empty scratch database (the server migrates it on boot) the config also starts a second server on port 8302 and a second preview on 5302 (`E2E_ACCOUNTS_SERVER_PORT`, `E2E_ACCOUNTS_WEB_PORT`). Without it `pnpm e2e` stays hermetic and the spec is skipped. Usernames are random per run, so one database serves many runs.
 
-- Tests: `test-utils/decisions.ts` (`KINDS`, `decisionFor`), `Priority.test.tsx` (table-driven, model for a new prompt) and `PriorityLive.test.tsx` (real session, one Answer per decision); `passWords.test.ts` (the labels over every step and both turn owners), `PassControls.test.tsx` (the buttons, the menu and the keyboard) and `PassControlsLive.test.tsx` (a real session: one Yield, the notice, Stop passing), `usePrimaryKey.test.tsx` (what has the keyboard), `YieldIndicator.test.tsx` and `play/yield.test.ts` (the session and the store); `test-utils/passControls.ts` finds the primary button by its slot, since its words change.
+```sh
+docker compose exec db psql -U magic -c 'create database magic_scratch'
+E2E_DATABASE_URL=postgres://magic:magic@localhost:5432/magic_scratch pnpm --dir web e2e e2e/accounts.spec.ts
+docker compose exec db psql -U magic -c 'drop database magic_scratch'
+```
 
-- E2E, full game (`web/e2e`): `pnpm e2e` starts `cargo run -p mtg-server` (in-memory store through an empty `DATABASE_URL`, built-in demo decks) on port 8301 and `pnpm build` + `vite preview` on 5301 (`E2E_SERVER_PORT`, `E2E_WEB_PORT`; `MTG_SERVER_URL` is what `vite.config.ts` proxies to, default 8080), both new for every run; `E2E_REUSE=1` keeps servers already listening there. On NixOS Playwright's own download cannot run, so point it at the Nix chromium: `cd web && CHROMIUM_PATH=$(ls -d /nix/store/*-chromium-[0-9]*/bin/chromium | head -n 1) pnpm e2e` (155 works with Playwright 1.64; `E2E_TRAIL=1` prints every answered decision, `--repeat-each=N` repeats the game). `full-game.spec.ts` creates a game on `/` (Ada, mono-green; Bo, mono-red), has Bo open seat 2's link in a second browser context, presses Ready, and `driver.ts` plays both seats to the game-over screen at once: each seat waits on its page for a `[data-decision]` with a new `data-decision-id` (the id is what tells two Priority prompts apart), reads the prompt and its legal cards (`data-highlight="legal"` in the viewer's hand or battlefield) in one page read, answers with real clicks (lands first, then creatures; Ada taps her lands by hand, Bo uses "Pay automatically"; attack with all; Ada never blocks, Bo puts every blocker on the first attacker; Discard and AssignDamage take what the prompt suggests) and goes on with the primary button otherwise (Bo presses "End turn" instead whenever it has nothing to play and the button is there: `Run.yields`, zero for Ada by the spec). No sleeps: waits are `waitForFunction` polls of 2 s that re-check the run; it fails with the last twelve steps and both screenshots after 2 500 decisions or 30 s with none answered. Before the game Bo holds Full Control and lets it go, and sets a lasting stop at the end step of opponent turns. The driver counts the priority windows each seat is asked about with no land and no spell to offer (`Run.idle`, with the turn banner in `Run.idleAt`); the spec requires none for Ada, and for Bo only the end step of Ada's turn, each answered with "End turn". A game takes about 40 to 400 decisions and 7 to 25 s (the engine seed is random per game); the test ends on "You won" for one seat and "You lost" for the other, each with one "Winner" in "How each seat finished". Not covered: Mulligan taken, BottomCards (both keep), AssignDamage and Discard only when the random game gets there.
+To try the account screens by hand, run the server on that database (`DATABASE_URL=… MTG_BIND=127.0.0.1:8318 cargo run -p mtg-server`) and the dev server in front of it (`MTG_SERVER_URL=http://127.0.0.1:8318 pnpm --dir web dev --port 5318`). `ui-shot.mjs` cannot set a cookie, so a signed-in page needs Playwright.
 
-- Tests: `test-utils/accountsServer.ts` `startAccounts(script)` is an in-memory account server (the server's rules, 401, 429 with `Retry-After`, 503) behind the real client, `listed()` builds a game of the list; `test-utils/appHarness.tsx` `renderApp(url, {accounts, rest})` mounts the real route tree, the header and the store on those fakes with a recording `WebSocket`; `gameHarness` takes `account` and `auth`. Table tests cover the rules, the error words for every code, the `next` cases (open redirects, tab and backslash tricks, fragments), the store transitions, the pages and the header in every state, the rows, and the session join.
-- E2E: `pnpm e2e` stays hermetic (in-memory server, no accounts, so `accounts.spec.ts` is skipped). With `E2E_DATABASE_URL` set to an **empty scratch database** (the server migrates it on boot; use a fresh name per experiment) the config also starts a second server on port 8302 and a second preview on 5302 (`E2E_ACCOUNTS_SERVER_PORT`, `E2E_ACCOUNTS_WEB_PORT`), after the first pair, and `e2e/accounts.spec.ts` runs against them: an account registers, creates a game, closes the page, finds it under My games and rejoins it with no seat link; a second account joins by seat link and both list the game (and see it run); signing out, `/games` asking for a sign-in and coming back to the list. Usernames are random per run, so the database can be reused. Example: `docker compose exec db psql -U magic -c 'create database magic_e2e'`, then `cd web && E2E_DATABASE_URL=postgres://magic:magic@localhost:5432/magic_e2e CHROMIUM_PATH=$(ls -d /nix/store/*-chromium-[0-9]*/bin/chromium | head -n 1) pnpm e2e e2e/accounts.spec.ts`.
+## Conventions
+
+- Server state is shown, not predicted: ready, stops, Full Control and yields change on screen only when the server says so.
+- Colour never carries meaning alone, and live regions are polite. A row of cards, a ladder row or a list is one tab stop (arrows, Home, End); a control that must keep focus when it cannot act is `aria-disabled`, not `disabled`.
+- Every animation sits inside `@media (prefers-reduced-motion: no-preference)` (`fx.css`, `combat.css`, `responseClock.css`, the `your-turn-cue` utility of `index.css`); under `reduce` an effect is a still highlight, the clock bar is not drawn and the tab title does not flash. JS reads `useReducedMotion` or `prefersReducedMotion`. A CSS test per file (`fxCss.test.ts`, `combatCss.test.ts`, `responseClockCss.test.ts`, `yourTurnCss.test.ts`) fails when an animation leaves the media query.
+- A component's stylesheet sits beside it. Colours are tokens with a light and a dark value; Tailwind class names are written whole so Tailwind can see them.
