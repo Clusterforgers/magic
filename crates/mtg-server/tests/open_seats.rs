@@ -7,7 +7,8 @@ use std::collections::HashSet;
 
 use common::{Client, seat, silent};
 use mtg_core::ids::PlayerId;
-use mtg_protocol::{ClientMessage, LobbySeat, ServerMessage};
+use mtg_engine::turn::Step;
+use mtg_protocol::{ClientMessage, FullControlMode, LobbySeat, ServerMessage, StopSide};
 use mtg_server::registry::{
     ClaimError, Created, Entrance, GameOptions, HOST, SeatClaim, SeatRequest, Seated, TableError,
 };
@@ -472,6 +473,57 @@ async fn a_released_seat_loses_its_ready_and_its_token_and_can_be_claimed_by_som
     );
     // Cy does not inherit Bo's Ready.
     assert_eq!(handle.status().await.unwrap().ready, Vec::<PlayerId>::new());
+}
+
+#[tokio::test]
+async fn a_new_holder_starts_from_the_defaults_and_not_from_the_stops_of_the_one_before() {
+    let registry = registry();
+    let created = lobby(&registry, 2, Visibility::Public).await;
+    let game = created.id;
+    let handle = registry.handle(game).unwrap();
+    join(&registry, game, guest("Bo")).await.unwrap();
+
+    // Bo sets a stop and Full Control in the lobby; a client that joins hears of both.
+    let stop = ClientMessage::SetStop {
+        side: StopSide::Own,
+        step: Step::Main1,
+        on: true,
+        keep: true,
+    };
+    handle.send(seat(1), stop).await.unwrap();
+    let mode = FullControlMode::Held;
+    handle
+        .send(seat(1), ClientMessage::FullControl { mode })
+        .await
+        .unwrap();
+    let mut bo = Client::join(&handle, 1).await;
+    let ServerMessage::Welcome {
+        stops,
+        full_control,
+        auto_pass,
+        ..
+    } = bo.next().await
+    else {
+        panic!("the join starts with the welcome");
+    };
+    assert_eq!(stops.len(), 1);
+    assert_eq!((full_control, auto_pass), (FullControlMode::Held, false));
+
+    // Bo leaves and Cy takes the seat: Cy starts from what a new seat starts from.
+    registry.release(game, seat(1), seat(1)).await.unwrap();
+    join(&registry, game, guest("Cy")).await.unwrap();
+    let mut cy = Client::join(&handle, 1).await;
+    let ServerMessage::Welcome {
+        stops,
+        full_control,
+        auto_pass,
+        ..
+    } = cy.next().await
+    else {
+        panic!("the join starts with the welcome");
+    };
+    assert_eq!(stops, []);
+    assert_eq!((full_control, auto_pass), (FullControlMode::Off, true));
 }
 
 #[tokio::test]

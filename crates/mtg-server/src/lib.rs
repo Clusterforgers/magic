@@ -62,6 +62,11 @@
 //! belong to an account ([`Registry::bind_seat`]): its token keeps opening it, and the account
 //! adds a socket without the token (`/ws/{game}` with the cookie) and a list of its games
 //! (`/api/me/games`). Without a database there are no accounts and every game is guest-only.
+//!
+//! A game is [`Visibility::Public`] (listed while it is in its lobby, [`Registry::lobbies`]) or
+//! invite-only, and each of its seats is held from the start or open for a visitor to claim
+//! ([`Registry::claim`], [`Registry::release`]). A join code per game
+//! ([`join_code::JoinCode`], [`Registry::find_by_code`]) lets anybody who has it claim a seat.
 
 mod accounts;
 mod actor;

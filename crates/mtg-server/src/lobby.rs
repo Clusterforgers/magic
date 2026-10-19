@@ -70,6 +70,8 @@ impl<S: EventStore> GameActor<S> {
             listed.clear();
             *flag = false;
             self.seats.detach(seat);
+            // Whoever takes the seat next starts from the server's defaults, not from these stops.
+            self.stops.reset(seat, self.pace.mode());
             if let Some(recorder) = &mut self.recorder {
                 recorder.forget(seat);
             }
@@ -178,5 +180,107 @@ impl<S: EventStore> GameActor<S> {
             Err(error) => self.refuse(trigger, error.into_rejection()),
         }
         Ok(())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the registry can name and empty a seat of the lobby: the table is told each time, emptying closes the seat's connection and takes its Ready back, and once the game runs or for a seat the table does not have nothing changes and nothing is sent.
+    use mtg_core::ids::PlayerId;
+    use mtg_protocol::{ClientMessage, LobbySeat, ServerMessage};
+    use mtg_testkit::fuzz_setup;
+    use tokio::sync::mpsc::Receiver;
+
+    use crate::actor::{GameConfig, spawn_game_with};
+    use crate::game_id::GameId;
+    use crate::handle::GameHandle;
+    use crate::pace::Pace;
+    use crate::store::MemoryStore;
+
+    fn lobby(seats: usize) -> GameHandle {
+        let config = GameConfig {
+            seat_queue: 64,
+            command_queue: 64,
+            pace: Pace::MANUAL,
+        };
+        let setup = fuzz_setup(seats, 3);
+        spawn_game_with(GameId::random(), setup, MemoryStore::new(), config).unwrap()
+    }
+
+    fn drain(inbox: &mut Receiver<ServerMessage>) -> Vec<ServerMessage> {
+        std::iter::from_fn(|| inbox.try_recv().ok()).collect()
+    }
+
+    /// The seats of the one roster in `messages`.
+    fn only_roster(messages: &[ServerMessage]) -> &[LobbySeat] {
+        match messages {
+            [ServerMessage::Lobby { seats, .. }] => seats,
+            other => panic!("expected one roster, got {other:?}"),
+        }
+    }
+
+    #[tokio::test]
+    async fn naming_and_emptying_a_seat_tells_the_table_and_closes_the_seat() {
+        let handle = lobby(3);
+        let (mut first, mut second) = (
+            handle.join(PlayerId(0)).await.unwrap(),
+            handle.join(PlayerId(1)).await.unwrap(),
+        );
+        handle
+            .send(PlayerId(1), ClientMessage::Ready)
+            .await
+            .unwrap();
+        // The actor handles commands in order, so the roster of the `Ready` is queued by now.
+        handle.status().await.unwrap();
+        drain(&mut first);
+        drain(&mut second);
+
+        assert_eq!(handle.occupy(PlayerId(2), "Cy".to_owned()).await, Ok(true));
+        for inbox in [&mut first, &mut second] {
+            let messages = drain(inbox);
+            let roster = only_roster(&messages);
+            assert_eq!(roster[2].name, "Cy");
+            assert!(!roster[2].connected && !roster[2].ready);
+        }
+
+        // Seat 1 is ready and connected; emptying it takes both away.
+        assert_eq!(handle.vacate(PlayerId(1)).await, Ok(true));
+        let messages = drain(&mut first);
+        let roster = only_roster(&messages);
+        assert_eq!(roster[1].name, "");
+        assert!(!roster[1].connected && !roster[1].ready);
+        assert_eq!(roster[2].name, "Cy", "the other seats keep their names");
+        assert_eq!(drain(&mut second), []);
+        assert!(second.recv().await.is_none(), "the queue of the seat ends");
+        assert_eq!(handle.status().await.unwrap().ready, []);
+    }
+
+    #[tokio::test]
+    async fn nothing_changes_for_a_seat_the_table_does_not_have() {
+        let handle = lobby(2);
+        let mut inbox = handle.join(PlayerId(0)).await.unwrap();
+        drain(&mut inbox);
+        assert_eq!(handle.occupy(PlayerId(5), "Cy".to_owned()).await, Ok(false));
+        assert_eq!(handle.vacate(PlayerId(5)).await, Ok(false));
+        handle.status().await.unwrap();
+        assert_eq!(drain(&mut inbox), []);
+    }
+
+    #[tokio::test]
+    async fn once_the_game_runs_a_seat_can_no_longer_be_named_or_emptied() {
+        let handle = lobby(2);
+        let mut inbox = handle.join(PlayerId(0)).await.unwrap();
+        for seat in [PlayerId(0), PlayerId(1)] {
+            handle.send(seat, ClientMessage::Ready).await.unwrap();
+        }
+        assert!(handle.status().await.unwrap().started);
+        drain(&mut inbox);
+
+        assert_eq!(handle.occupy(PlayerId(1), "Cy".to_owned()).await, Ok(false));
+        assert_eq!(handle.vacate(PlayerId(1)).await, Ok(false));
+        handle.status().await.unwrap();
+        assert_eq!(drain(&mut inbox), [], "no roster once the game runs");
+        let connected = handle.status().await.unwrap().connected;
+        assert!(connected.contains(&PlayerId(0)));
     }
 }

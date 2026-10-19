@@ -193,6 +193,7 @@ impl Registry {
             digest: Some(digest),
             user: claim.user,
         };
+        tracing::info!(%game, seat = seat.get(), bound = claim.user.is_some(), "seat claimed");
         Ok(Seated {
             game,
             seat,
@@ -245,6 +246,7 @@ impl Registry {
         {
             *slot = SeatSlot::open();
         }
+        tracing::info!(%game, seat = seat.get(), by = by.get(), "seat released");
         Ok(())
     }
 

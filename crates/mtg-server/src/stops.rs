@@ -148,6 +148,17 @@ impl Stops {
         }
     }
 
+    /// Takes every stop from `seat` and puts it in Full Control mode `mode` (the server's default),
+    /// for a seat that changes hands.
+    pub(crate) fn reset(&mut self, seat: PlayerId, mode: FullControlMode) {
+        if let Some(held) = self.seats.get_mut(seat.index()) {
+            *held = Held {
+                full_control: mode,
+                ..Held::default()
+            };
+        }
+    }
+
     /// Clears the one-turn stops of the steps that `events` left, applied with the game at `at`; lasting stops stay.
     ///
     /// A step is left when the next one begins, so a step the game entered and left in one go (declare attackers
@@ -367,7 +378,7 @@ impl<S: EventStore> GameActor<S> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, and a seat that left the game or a finished game holds nothing.
+    //! Goal: a seat holds one stop per side and step with the `keep` it was last given, only in a step where a player gets priority, a refusal changes nothing, seats are independent, the list is told in a fixed order whenever it changes (a changed `keep` too) and not otherwise, a one-turn stop goes once the game has left its step (and a lasting one never does), a pass ends `NextWindow` and no other mode, auto-pass is every mode but `Held`, a seat that left the game or a finished game holds nothing, and a seat that changes hands in the lobby starts from the defaults again.
     use super::*;
     use mtg_engine::Engine;
     use mtg_testkit::Scenario;
@@ -431,6 +442,31 @@ mod tests {
                 assert_eq!(stops, before);
             }
         }
+    }
+
+    #[rstest]
+    #[case::off(FullControlMode::Off)]
+    #[case::next_window(FullControlMode::NextWindow)]
+    #[case::held(FullControlMode::Held)]
+    fn a_seat_that_changes_hands_starts_from_the_default_mode_with_no_stop(
+        #[case] default: FullControlMode,
+    ) {
+        let mut stops = Stops::with_mode(3, default);
+        for seat in [FOE, ME] {
+            stops.set(seat, own(Step::Main1, true)).unwrap();
+            stops.set(seat, opponent(Step::End, false)).unwrap();
+            stops.set_full_control(seat, FullControlMode::Held);
+        }
+        let others = stops.clone();
+
+        stops.reset(ME, default);
+        assert_eq!(stops.stops(ME), []);
+        assert_eq!(stops.full_control(ME), default);
+        // The seat before it and the seat past the table are untouched.
+        assert_eq!(stops.stops(FOE), others.stops(FOE));
+        assert_eq!(stops.full_control(FOE), FullControlMode::Held);
+        stops.reset(PlayerId(9), default);
+        assert_eq!(stops.stops(FOE), others.stops(FOE));
     }
 
     #[test]
