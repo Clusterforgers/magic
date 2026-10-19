@@ -1,9 +1,10 @@
-// Goal: the header offers exactly what the sign-in state allows (nothing while unknown or without accounts, "Sign in" and "Register" for a guest, the username, "My games" and "Sign out" for an account), signing out clears the account and the games list and leaves a page that needs one, and a sign-out the server did not get is reported, not faked.
+// Goal: the header offers exactly what the sign-in state allows (nothing while unknown or without accounts, "Sign in" and "Register" for a guest, a menu named after the username with "Sign out" for an account, "My games" in the main navigation), signing out clears the account and the games list and leaves a page that needs one, and a sign-out the server did not get is reported, not faked.
 import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { authError, listed } from '@/test-utils/accountsServer'
 import type { AccountsScript } from '@/test-utils/accountsServer'
 import { renderApp } from '@/test-utils/appHarness'
+import type { App } from '@/test-utils/appHarness'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -13,11 +14,23 @@ const ADA = { username: 'Ada_L', password: 'correct horse battery' }
 const users = { [ADA.username]: ADA.password }
 
 const nav = () => screen.queryByRole('navigation', { name: 'Account' })
+const mainNav = () => screen.getByRole('navigation', { name: 'Main' })
+const trigger = () => within(nav()!).getByRole('button', { name: /signed in as/i })
 
 async function open(url = '/', accounts: AccountsScript = {}) {
   const app = await renderApp(url, { accounts: { users, ...accounts } })
   await waitFor(() => expect(app.store.getState().status).not.toBe('loading'))
   return app
+}
+
+/** Opens the account menu; its "Sign out" item. */
+async function signOutItem(app: App): Promise<HTMLElement> {
+  await app.user.click(trigger())
+  return screen.findByRole('menuitem', { name: 'Sign out' })
+}
+
+async function signOut(app: App): Promise<void> {
+  await app.user.click(await signOutItem(app))
 }
 
 describe('while the server is being asked', () => {
@@ -32,6 +45,7 @@ describe('while the server is being asked', () => {
     })
     expect(app.store.getState().status).toBe('loading')
     expect(nav()).toBeNull()
+    expect(screen.queryByRole('link', { name: 'My games' })).toBeNull()
     expect(screen.getByRole('link', { name: 'Magic' })).toHaveAttribute('href', '/')
     answer(new Response(JSON.stringify({ id: 'x', username: ADA.username }), { status: 200 }))
     expect(await screen.findByRole('navigation', { name: 'Account' })).toBeInTheDocument()
@@ -68,27 +82,32 @@ describe('a server without accounts', () => {
     expect(app.store.getState().status).toBe('unavailable')
     expect(nav()).toBeNull()
     expect(screen.queryByRole('link', { name: /sign in|register/i })).toBeNull()
+    expect(screen.queryByRole('link', { name: 'My games' })).toBeNull()
     expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
   })
 })
 
 describe('a signed-in account', () => {
-  it('shows the username, "My games" and "Sign out"', async () => {
+  it('shows a menu named after the username, with "Sign out" in it and no guest links', async () => {
+    const app = await open('/', { signedIn: ADA.username })
+    expect(within(trigger()).getByText('Signed in as', { exact: false })).toHaveClass('sr-only')
+    expect(within(nav()!).queryByRole('link')).toBeNull()
+    expect(within(nav()!).queryByRole('button', { name: 'Sign out' })).toBeNull()
+    expect(await signOutItem(app)).not.toHaveAttribute('aria-disabled', 'true')
+    expect(within(screen.getByRole('menu')).getByText(ADA.username)).toBeInTheDocument()
+  })
+
+  it('offers "My games" in the main navigation', async () => {
     await open('/', { signedIn: ADA.username })
-    const header = within(nav()!)
-    expect(header.getByText(ADA.username)).toBeInTheDocument()
-    expect(header.getByText('Signed in as', { exact: false })).toHaveClass('sr-only')
-    expect(header.getByRole('link', { name: 'My games' })).toHaveAttribute('href', '/games')
-    expect(header.getByRole('button', { name: 'Sign out' })).toBeEnabled()
-    expect(header.queryByRole('link', { name: 'Sign in' })).toBeNull()
-    expect(header.queryByRole('link', { name: 'Register' })).toBeNull()
+    expect(within(mainNav()).getByRole('link', { name: 'My games' })).toHaveAttribute('href', '/games')
   })
 
   it('reaches the list through "My games"', async () => {
     const app = await open('/', { signedIn: ADA.username, games: [listed()] })
-    await app.user.click(within(nav()!).getByRole('link', { name: 'My games' }))
+    await app.user.click(within(mainNav()).getByRole('link', { name: 'My games' }))
     expect(await screen.findByRole('heading', { name: 'My games' })).toBeInTheDocument()
     expect(app.router.state.location.pathname).toBe('/games')
+    expect(within(mainNav()).getByRole('link', { name: 'My games' })).toHaveAttribute('aria-current', 'page')
   })
 
   it('shows a long username cut short, with the whole name available on hover', async () => {
@@ -101,7 +120,7 @@ describe('a signed-in account', () => {
 
   it('signs out: the server is told, the links go back to guest ones, and the user is forgotten', async () => {
     const app = await open('/', { signedIn: ADA.username })
-    await app.user.click(within(nav()!).getByRole('button', { name: 'Sign out' }))
+    await signOut(app)
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
     expect(app.accounts.signedIn).toBeNull()
     expect(app.store.getState()).toMatchObject({ user: null, games: { status: 'idle', games: [] } })
@@ -111,6 +130,7 @@ describe('a signed-in account', () => {
         .map((link) => link.textContent),
     ).toEqual(['Sign in', 'Register'])
     expect(screen.queryByText(ADA.username)).toBeNull()
+    expect(screen.queryByRole('link', { name: 'My games' })).toBeNull()
   })
 
   it('clears the games list of the account, so the next account never sees it', async () => {
@@ -121,7 +141,7 @@ describe('a signed-in account', () => {
       games: [listed({ game: 'ada-game' })],
     })
     expect(await screen.findByRole('list', { name: 'Your games' })).toBeInTheDocument()
-    await app.user.click(within(nav()!).getByRole('button', { name: 'Sign out' }))
+    await signOut(app)
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
     expect(app.store.getState().games.games).toEqual([])
     await app.store.getState().login(bo)
@@ -131,7 +151,7 @@ describe('a signed-in account', () => {
   it('goes home when it signs out on a page that needs an account, not to the sign-in form', async () => {
     const app = await open('/games', { signedIn: ADA.username, games: [listed()] })
     await screen.findByRole('list', { name: 'Your games' })
-    await app.user.click(within(nav()!).getByRole('button', { name: 'Sign out' }))
+    await signOut(app)
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
     await waitFor(() => expect(app.router.state.location.pathname).toBe('/'))
     expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
@@ -141,7 +161,7 @@ describe('a signed-in account', () => {
     const app = await open('/register', { signedIn: ADA.username })
     // Signed in at the register page means the page has already moved on; sign out where we land.
     await waitFor(() => expect(app.router.state.location.pathname).toBe('/'))
-    await app.user.click(within(nav()!).getByRole('button', { name: 'Sign out' }))
+    await signOut(app)
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
     expect(app.router.state.location.pathname).toBe('/')
   })
@@ -151,12 +171,13 @@ describe('a signed-in account', () => {
       signedIn: ADA.username,
       override: { logout: () => Promise.reject(new TypeError('Failed to fetch')) },
     })
-    await app.user.click(within(nav()!).getByRole('button', { name: 'Sign out' }))
+    await signOut(app)
     const alert = await screen.findByRole('alert')
     expect(alert).toHaveTextContent(/could not sign out.*could not reach the server/i)
     expect(app.store.getState().status).toBe('signed-in')
     expect(within(nav()!).getByText(ADA.username)).toBeInTheDocument()
-    expect(within(nav()!).getByRole('button', { name: 'Sign out' })).toBeEnabled()
+    expect(await signOutItem(app)).not.toHaveAttribute('aria-disabled', 'true')
+    await app.user.keyboard('{Escape}')
     await app.user.click(within(alert).getByRole('button', { name: 'Dismiss' }))
     expect(screen.queryByRole('alert')).toBeNull()
   })
@@ -167,8 +188,8 @@ describe('a signed-in account', () => {
       signedIn: ADA.username,
       override: { logout: () => new Promise<Response>((resolve) => (answer = resolve)) },
     })
-    await app.user.click(within(nav()!).getByRole('button', { name: 'Sign out' }))
-    expect(within(nav()!).getByRole('button', { name: 'Sign out' })).toBeDisabled()
+    await signOut(app)
+    expect(await signOutItem(app)).toHaveAttribute('aria-disabled', 'true')
     answer(new Response(null, { status: 204 }))
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
   })

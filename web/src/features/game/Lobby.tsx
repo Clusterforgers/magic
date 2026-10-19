@@ -1,7 +1,10 @@
 import { Link } from '@tanstack/react-router'
+import { CircleAlertIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import type { MouseEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
+import { PageShell } from '@/components/PageShell'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { useGame, usePlay } from './gameContext'
 import { Invites } from './Invites'
@@ -47,19 +50,19 @@ export function Lobby() {
 
   // `grid-cols-1` is `minmax(0, 1fr)`: a long unbroken name or username may not stretch the column past the screen.
   return (
-    <div className="mx-auto grid w-full max-w-2xl grid-cols-1 gap-6 px-4 py-6 sm:px-6">
+    <PageShell className="grid grid-cols-1 gap-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Waiting for players</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-base text-muted-foreground">
           The game starts as soon as every seat has joined and pressed Ready.
         </p>
       </div>
 
       <section aria-labelledby="seats-title" className="grid grid-cols-1 gap-2">
-        <h2 id="seats-title" className="text-sm font-medium">
+        <h2 id="seats-title" className="text-lg font-semibold">
           Seats
         </h2>
-        <ul aria-label="Seats" className="divide-y rounded-xl bg-card ring-1 ring-foreground/10">
+        <ul aria-label="Seats" className="surface divide-y">
           {rows.map((row) => (
             <LobbySeatRow key={row.seat} row={row} account={accounts.bySeat.get(row.seat) ?? null} />
           ))}
@@ -103,13 +106,16 @@ export function Lobby() {
             : 'Press Ready when you are set to play.'}
         </p>
         {refused ? (
-          <p role="alert" className="text-sm text-destructive">
-            That did not go through because the connection is not open. Try again in a moment.
-          </p>
+          <Alert variant="destructive">
+            <CircleAlertIcon aria-hidden="true" />
+            <AlertDescription className="text-foreground">
+              That did not go through because the connection is not open. Try again in a moment.
+            </AlertDescription>
+          </Alert>
         ) : null}
       </div>
 
       <Invites game={game} mine={seat} />
-    </div>
+    </PageShell>
   )
 }

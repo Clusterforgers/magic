@@ -18,7 +18,7 @@ export function Invites({ game, mine }: InvitesProps) {
   return (
     <section aria-labelledby="invites-title" className="grid gap-3">
       <div>
-        <h2 id="invites-title" className="text-sm font-medium">
+        <h2 id="invites-title" className="text-lg font-semibold">
           Invite the other players
         </h2>
         <p className="text-sm text-muted-foreground">

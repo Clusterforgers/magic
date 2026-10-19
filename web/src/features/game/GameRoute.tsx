@@ -1,5 +1,8 @@
 import { getRouteApi, useLocation } from '@tanstack/react-router'
 import { useShallow } from 'zustand/react/shallow'
+import { Loading } from '@/components/Loading'
+import { PageShell } from '@/components/PageShell'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/context'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { fragmentOf, parseSeatFragment } from '@/lib/seatLink'
@@ -11,11 +14,11 @@ const route = getRouteApi('/game/$gameId')
 function CheckingSession() {
   usePageTitle('Checking your sign-in')
   return (
-    <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6">
-      <p role="status" className="text-sm text-muted-foreground">
-        Checking your sign-in…
-      </p>
-    </div>
+    <PageShell>
+      <Loading label="Checking your sign-in…">
+        <Skeleton className="h-8 w-64" />
+      </Loading>
+    </PageShell>
   )
 }
 

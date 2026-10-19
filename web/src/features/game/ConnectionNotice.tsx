@@ -115,7 +115,7 @@ export function ConnectionNotice({
   const heading = (
     <Heading
       className={cn(
-        standalone ? 'text-xl font-semibold tracking-tight' : 'font-medium',
+        standalone ? 'text-2xl font-semibold tracking-tight' : 'font-medium',
         bad === true && 'text-destructive',
       )}
     >
@@ -125,10 +125,10 @@ export function ConnectionNotice({
   if (!alert) {
     return (
       <div role="status" className="flex items-start gap-3 rounded-xl bg-muted p-4 text-sm">
-        <LoaderCircle
-          aria-hidden="true"
-          className="mt-0.5 size-4 shrink-0 animate-spin motion-reduce:animate-none"
-        />
+        {/* One line tall, so the spinner sits beside the first line of the title. */}
+        <span className={cn('flex shrink-0 items-center', standalone ? 'h-8' : 'h-5')}>
+          <LoaderCircle aria-hidden="true" className="size-4 motion-safe:animate-spin" />
+        </span>
         <div className="grid gap-1">
           {heading}
           {body === null ? null : <p className="text-muted-foreground">{body}</p>}
@@ -137,7 +137,7 @@ export function ConnectionNotice({
     )
   }
   return (
-    <Alert className="gap-2 p-4">
+    <Alert variant={bad === true ? 'destructive' : 'default'} className="gap-2 p-4">
       {heading}
       <AlertDescription className="text-foreground">{body}</AlertDescription>
       <div className="mt-2 flex flex-wrap gap-2">
