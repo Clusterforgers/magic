@@ -7,6 +7,7 @@ import { KINDS } from '@/test-utils/decisions'
 import { fixtureState } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import {
+  badgeText,
   bannerText,
   DECISION_LABEL,
   decisionName,
@@ -72,6 +73,37 @@ describe('bannerText', () => {
     ['Finished', 'The game is over'],
   ])('says what the game is doing in stage %s', (stage, text) => {
     expect(bannerText({ stage, turn: 0, active: 0, step: 'Untap' }, name)).toBe(text)
+  })
+})
+
+describe('badgeText', () => {
+  const turn = (active: number, step: Step): BannerInput => ({ stage: 'Turns', turn: 5, active, step })
+
+  it.each(STEPS)('says "Your turn" with the %s step on the viewer\'s own turn', (step) => {
+    expect(badgeText(turn(0, step), 0, name)).toBe(`Your turn · 5 · ${STEP_LABEL[step]}`)
+  })
+
+  it.each(STEPS)("names the other player and the %s step on an opponent's turn", (step) => {
+    expect(badgeText(turn(1, step), 0, name)).toBe(`Bo's turn · 5 · ${STEP_LABEL[step]}`)
+  })
+
+  it.each([0, 1, 2, 3, 4])('says "Your turn" only for the viewer, seat %i', (viewer) => {
+    const words = [0, 1, 2, 3, 4].map((active) => badgeText(turn(active, 'Main1'), viewer, name))
+    expect(words.filter((text) => text.startsWith('Your turn'))).toHaveLength(1)
+    expect(words[viewer]).toBe('Your turn · 5 · Precombat main')
+  })
+
+  it('names the active player when the viewer is not known yet', () => {
+    expect(badgeText(turn(0, 'Main1'), null, name)).toBe("Alice's turn · 5 · Precombat main")
+  })
+
+  it.each<[Stage, string]>([
+    ['PreGame', 'Setting up the game'],
+    ['Mulligan', 'Opening hands'],
+    ['Finished', 'The game is over'],
+  ])('says what the game is doing in stage %s, whoever is looking', (stage, text) => {
+    expect(badgeText({ stage, turn: 0, active: 0, step: 'Untap' }, 0, name)).toBe(text)
+    expect(badgeText({ stage, turn: 0, active: 0, step: 'Untap' }, 1, name)).toBe(text)
   })
 })
 

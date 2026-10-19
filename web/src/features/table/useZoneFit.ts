@@ -27,12 +27,10 @@ function contentBox(zone: HTMLElement): FitBox | null {
 }
 
 /**
- * Fits the rows of a zone to the room it has. A `ResizeObserver` follows the zone's content box, and `fitRows` (pure,
- * `fit.ts`) answers with the largest card width at which every row fits, or the floor with the zone scrolling. Null
- * until the zone has a size, so a page without layout keeps the card sizes it was given. `groups` must be stable
- * between renders unless a row changed.
+ * The room inside `ref`, followed with a `ResizeObserver`. Null until the element has a size, so a page without
+ * layout (a test, a hidden zone) keeps the sizes it was given.
  */
-export function useZoneFit(ref: RefObject<HTMLElement | null>, groups: readonly FitGroup[]): Fit | null {
+export function useContentBox(ref: RefObject<HTMLElement | null>): FitBox | null {
   const [box, setBox] = useState<FitBox | null>(null)
   useLayoutEffect(() => {
     const zone = ref.current
@@ -47,5 +45,15 @@ export function useZoneFit(ref: RefObject<HTMLElement | null>, groups: readonly 
     observer.observe(zone)
     return () => observer.disconnect()
   }, [ref])
+  return box
+}
+
+/**
+ * Fits the rows of a zone to the room it has: `fitRows` (pure, `fit.ts`) answers with the largest card width at which
+ * every row fits the zone's content box, or the floor with the zone scrolling. Null until the zone has a size.
+ * `groups` must be stable between renders unless a row changed.
+ */
+export function useZoneFit(ref: RefObject<HTMLElement | null>, groups: readonly FitGroup[]): Fit | null {
+  const box = useContentBox(ref)
   return useMemo(() => (box === null ? null : fitRows(box, groups)), [box, groups])
 }

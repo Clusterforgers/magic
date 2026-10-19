@@ -100,7 +100,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing }: Bat
     <section
       aria-label={`${owner}'s battlefield`}
       data-battlefield-seat={seat}
-      className="relative flex min-h-0 flex-col"
+      className="relative flex min-h-0 min-w-0 flex-1 flex-col"
     >
       <div
         ref={zone}

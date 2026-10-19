@@ -428,14 +428,9 @@ describe('the words of a button', () => {
 })
 
 describe('the keyboard', () => {
-  it('reaches each row with one Tab stop, then Keep, then Full Control and Concede', async () => {
+  it('reaches each row with one Tab stop, then Keep, then Full Control and its menu', async () => {
     const { user } = ladder()
-    await user.tab()
-    expect(screen.getByRole('button', { name: 'Grid' })).toHaveFocus()
-    await user.tab()
-    expect(screen.getByRole('button', { name: 'Focus' })).toHaveFocus()
-    await user.tab()
-    expect(summary()).toHaveFocus()
+    act(() => summary().focus())
     await user.tab()
     expect(stop('Own', 'Upkeep')).toHaveFocus()
     // The opponent's turn is under way, so its row is entered at the step the game is in.
@@ -445,6 +440,18 @@ describe('the keyboard', () => {
     expect(keepToggle()).toHaveFocus()
     await user.tab()
     expect(screen.getByRole('button', { name: 'Full Control: off' })).toHaveFocus()
+    await user.tab()
+    expect(screen.getByRole('button', { name: 'Full Control options' })).toHaveFocus()
+  })
+
+  it('sits in the controls dock, after the hand and before the side tabs, in the order of reading', () => {
+    ladder()
+    const dock = must(document.querySelector<HTMLElement>('[data-region="controls"]'))
+    expect(dock).toContainElement(summary())
+    const hand = must(document.querySelector<HTMLElement>('[data-region="hand"]'))
+    const side = must(document.querySelector<HTMLElement>('aside[data-side]'))
+    expect(hand.compareDocumentPosition(dock) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(dock.compareDocumentPosition(side) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('has just one button of a row in the tab order, the current step on that side’s turn', () => {

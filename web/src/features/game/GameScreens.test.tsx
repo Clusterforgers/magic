@@ -78,6 +78,26 @@ describe('playing', () => {
     expect(table()).toBeInTheDocument()
   })
 
+  it('floats the message over the table instead of pushing it down, since the table is exactly the window', async () => {
+    const h = await renderGame()
+    h.join()
+    h.deliver(lateJoin.raw[1])
+    h.fail()
+    const notices = must(document.querySelector<HTMLElement>('[data-slot="table-notices"]'))
+    expect(notices).toHaveClass('fixed', 'inset-x-0', 'top-11')
+    expect(notices).toContainElement(screen.getByRole('status'))
+    expect(table().contains(notices)).toBe(false)
+    expect(screen.getByRole('status').closest('[data-slot="page"]')).toBeNull()
+  })
+
+  it('keeps the message in the page, as before, on the lobby', async () => {
+    const h = await renderGame()
+    h.join()
+    h.fail()
+    expect(document.querySelector('[data-slot="table-notices"]')).toBeNull()
+    expect(screen.getByRole('status').closest('[data-slot="page"]')).not.toBeNull()
+  })
+
   it('says it cannot reach the game above the table after five failures', async () => {
     const h = await renderGame()
     h.join()

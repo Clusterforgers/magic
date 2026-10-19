@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { YieldUntil } from '@/protocol/generated'
+import { InControlsDock } from '../ControlsDock'
 import { usePrompt } from './PromptContext'
 import {
   enterYields,
@@ -31,6 +32,7 @@ const KEY_CAP = 'ml-1 hidden rounded border px-1 text-[0.65rem] leading-4 font-n
  * seat and says so, and the prompt goes with its first pass. With nothing holding the keyboard Space passes once and
  * Enter ends the turn (the "End turn" button), or passes once where there is no such button: under Full Control, which
  * the server does not let a yield run beside, and in the last window of the turn, where the primary button ends it.
+ * On the table the buttons are drawn in the controls dock at the bottom right (`InControlsDock`), not in the prompt.
  */
 export function PassControls({ canPass }: { canPass: boolean }) {
   const { session } = useGame()
@@ -55,10 +57,10 @@ export function PassControls({ canPass }: { canPass: boolean }) {
 
   const label = primaryLabel(situation)
   return (
-    <>
+    <InControlsDock>
       <Button
         data-slot="primary-action"
-        className="h-10 px-4 max-sm:basis-full"
+        className="h-11 px-4 max-sm:basis-full"
         disabled={!free}
         title={yieldKey ? 'Space' : 'Space or Enter'}
         aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}
@@ -74,7 +76,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
         <Button
           data-slot="secondary-action"
           variant="outline"
-          className="h-10 px-4"
+          className="h-11 px-4"
           disabled={!free}
           title="Enter"
           aria-keyshortcuts="Enter"
@@ -93,7 +95,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
             data-slot="more-passing"
             aria-label="More ways to pass"
             disabled={!free}
-            render={<Button variant="outline" size="icon" className="size-10" />}
+            render={<Button variant="outline" size="icon" className="size-11" />}
           >
             <EllipsisVertical aria-hidden="true" />
           </DropdownMenuTrigger>
@@ -124,6 +126,6 @@ export function PassControls({ canPass }: { canPass: boolean }) {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : null}
-    </>
+    </InControlsDock>
   )
 }

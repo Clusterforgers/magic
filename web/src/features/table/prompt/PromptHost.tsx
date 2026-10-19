@@ -65,7 +65,7 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
         data-slot="decision-line"
         data-decision={name}
         data-decision-id={id}
-        className="grid max-w-full min-w-0 gap-1.5 rounded-md bg-muted px-3 py-2 sm:max-w-xl"
+        className="grid max-w-full min-w-0 gap-1 rounded-md bg-muted px-3 py-1.5 sm:max-w-3xl"
       >
         <PromptFor kind={decision.kind} />
         <ResponseClock id={id} kind={name} />

@@ -259,6 +259,15 @@ export function gridRows(regions: Pick<Regions, 'phone' | 'landscape'>): string 
   return `${bar}px minmax(0, 1fr) ${clampCss(SHARED_CLAMP)} minmax(0, ${OWN_SHARE}fr) ${hand}`
 }
 
+/** The widest the controls dock gets, in px: room for the stop ladder; a phone's is a column for the pass button. */
+export const CONTROLS_MAX_PX = 448
+export const CONTROLS_MAX_PHONE_PX = 160
+
+/** The `grid-template-columns` of the main area: the controls dock is as wide as its content up to its limit and the hand dock has the rest. */
+export function mainColumns(regions: Pick<Regions, 'phone'>): string {
+  return `minmax(0, 1fr) fit-content(${regions.phone ? CONTROLS_MAX_PHONE_PX : CONTROLS_MAX_PX}px)`
+}
+
 /** The `grid-template-columns` of the table: the main area, then the side column or rail. */
 export function gridColumns(side: SideKind): string {
   if (side === 'column') {
@@ -302,8 +311,8 @@ export function chooseMode({ seatCount, mainWidth, override }: ModeInput): Table
   return gridColumnWidth(seatCount, mainWidth) < MIN_COLUMN_PX ? 'focus' : 'grid'
 }
 
-/** Where a seat's pod goes: beside its board as a column, or above it as one line. */
-export type PodPlace = 'aside' | 'line'
+/** Where a seat's pod goes: beside its board as a column, above it as one line, or nowhere (a tile already says it). */
+export type PodPlace = 'aside' | 'line' | 'none'
 
 /** What `planTable` needs. */
 export interface TableInput extends Omit<SeatInput, 'mode'> {
@@ -316,8 +325,10 @@ export interface TableInput extends Omit<SeatInput, 'mode'> {
 export interface TablePlan {
   regions: Regions
   seats: SeatPlan
-  /** The pod of a seat whose board is drawn large: a column beside the board, or a line over it on a narrow window. */
+  /** Your own pod: a column beside your board, or a line over it on a narrow window. */
   pod: PodPlace
+  /** The pod of the opponent whose board is drawn large: as yours, but none on a phone, where the tile above the board has the figures. */
+  opponentPod: PodPlace
   /** Whether the controls dock has room for the stop ladder and Full Control; otherwise they sit in the menu. */
   stopsInDock: boolean
 }
@@ -328,10 +339,12 @@ export function planTable(input: TableInput): TablePlan {
   const seatCount = wholeSeats(input.seatCount)
   const mode = chooseMode({ seatCount, mainWidth: regions.main.width, override: input.mode })
   const seats = arrangeSeats({ ...input, seatCount, mode })
+  const pod: PodPlace = regions.phone ? 'line' : 'aside'
   return {
     regions,
     seats,
-    pod: regions.phone ? 'line' : 'aside',
+    pod,
+    opponentPod: regions.phone && seats.shape === 'focus' ? 'none' : pod,
     stopsInDock: !regions.phone && regions.hand >= STOPS_DOCK_MIN_PX,
   }
 }

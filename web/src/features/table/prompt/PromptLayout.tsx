@@ -32,7 +32,7 @@ export function PromptLayout({ text, children }: PromptLayoutProps) {
       </p>
       <LiveText>{text}</LiveText>
       {children === undefined ? null : (
-        <div data-slot="prompt-actions" className="flex flex-wrap items-center gap-2">
+        <div data-slot="prompt-actions" className="flex flex-wrap items-center gap-2 empty:hidden">
           {children}
         </div>
       )}
