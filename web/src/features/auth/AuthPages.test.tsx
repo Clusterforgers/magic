@@ -225,7 +225,7 @@ describe('signing in', () => {
     await type(app, ADA.username, ADA.password)
     await app.user.click(submitButton('Sign in'))
     const busy = await screen.findByRole('button', { name: 'Signing in…' })
-    expect(busy).toBeDisabled()
+    expect(busy).toHaveAttribute('aria-disabled', 'true')
     expect(form()).toHaveAttribute('aria-busy', 'true')
     expect(username()).toHaveAttribute('readonly')
     // A second press, or Enter, sends nothing more.

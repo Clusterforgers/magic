@@ -89,11 +89,17 @@ pub enum SortKey {
     Name,
     /// Ascending mana value.
     ManaValue,
+    /// Cards whose name is the free text first, then those whose name starts with it, then those
+    /// that contain it, then those that only match in the rules text; without free text, by name.
+    Relevance,
 }
 
 /// Criteria of a card search; every set criterion must match.
 #[derive(Debug, Clone, Default)]
 pub struct CardSearch {
+    /// Free text, as typed in a search box: the name contains it (ignoring case and accents) or the
+    /// rules text matches it in web-search syntax.
+    pub text: Option<String>,
     /// Text contained in the name, ignoring case and accents.
     pub name: Option<String>,
     /// Full-text query over rules text, in web-search syntax (`"exact phrase"`, `-excluded`, `or`).
@@ -154,6 +160,21 @@ impl CardSearch {
         if !self.include_non_deck {
             query.push(" AND is_deck_card");
         }
+        if let Some(text) = present(self.text.as_ref()) {
+            let key = normalize_name(text);
+            query.push(" AND (");
+            // A text that normalizes to nothing (punctuation) has no name to look for.
+            if !key.is_empty() {
+                query
+                    .push("name_normalized LIKE ")
+                    .push_bind(like_contains(&key))
+                    .push(" OR ");
+            }
+            query
+                .push("oracle_tsv @@ websearch_to_tsquery('english', ")
+                .push_bind(text.to_owned())
+                .push("))");
+        }
         if let Some(name) = present(self.name.as_ref()) {
             let key = normalize_name(name);
             query
@@ -211,9 +232,24 @@ impl CardSearch {
     }
 
     fn push_order(&self, query: &mut QueryBuilder<Postgres>) {
+        let key = match (self.sort, present(self.text.as_ref())) {
+            (SortKey::Relevance, Some(text)) => Some(normalize_name(text)),
+            _ => None,
+        };
+        if let Some(key) = key.filter(|key| !key.is_empty()) {
+            query
+                .push(" ORDER BY CASE WHEN name_normalized = ")
+                .push_bind(key.clone())
+                .push(" THEN 0 WHEN starts_with(name_normalized, ")
+                .push_bind(key.clone())
+                .push(") THEN 1 WHEN name_normalized LIKE ")
+                .push_bind(like_contains(&key))
+                .push(" THEN 2 ELSE 3 END, name_normalized, oracle_id");
+            return;
+        }
         query.push(match self.sort {
-            SortKey::Name => " ORDER BY name_normalized, oracle_id",
             SortKey::ManaValue => " ORDER BY mana_value, name_normalized, oracle_id",
+            SortKey::Name | SortKey::Relevance => " ORDER BY name_normalized, oracle_id",
         });
     }
 }
@@ -295,9 +331,53 @@ mod tests {
         assert_eq!(query.sql().as_str(), "SELECT 1 WHERE true AND is_deck_card");
     }
 
+    #[rstest]
+    #[case::words("lightning bolt", true)]
+    #[case::accents_fold("Æther", true)]
+    #[case::only_invisible_marks("\u{200b}", false)]
+    fn free_text_looks_in_the_name_unless_it_has_no_name_to_look_for(
+        #[case] text: &str,
+        #[case] in_name: bool,
+    ) {
+        let criteria = CardSearch {
+            text: Some(text.into()),
+            ..CardSearch::default()
+        };
+        let mut query = QueryBuilder::<Postgres>::new("SELECT 1");
+        criteria.push_filters(&mut query);
+        let sql = query.sql();
+        assert_eq!(sql.as_str().contains("name_normalized LIKE"), in_name);
+        assert!(
+            sql.as_str().contains("websearch_to_tsquery"),
+            "{}",
+            sql.as_str()
+        );
+    }
+
+    #[test]
+    fn relevance_ranks_the_name_only_when_there_is_text_to_rank_by() {
+        let ranked = |text: Option<&str>, sort| {
+            let criteria = CardSearch {
+                text: text.map(str::to_owned),
+                sort,
+                ..CardSearch::default()
+            };
+            let mut query = QueryBuilder::<Postgres>::new("SELECT 1");
+            criteria.push_order(&mut query);
+            query.sql().as_str().contains("CASE WHEN")
+        };
+        assert!(ranked(Some("bolt"), SortKey::Relevance));
+        assert!(!ranked(None, SortKey::Relevance));
+        assert!(!ranked(Some("  "), SortKey::Relevance));
+        assert!(!ranked(Some("\u{200b}"), SortKey::Relevance));
+        assert!(!ranked(Some("bolt"), SortKey::Name));
+        assert!(!ranked(Some("bolt"), SortKey::ManaValue));
+    }
+
     #[test]
     fn user_text_is_bound_never_spliced_into_sql() {
         let criteria = CardSearch {
+            text: Some("x'; DROP TABLE cards; --".into()),
             name: Some("'; DROP TABLE cards; --".into()),
             oracle_text: Some("x') OR ('1'='1".into()),
             type_terms: vec!["\" OR 1=1 --".into()],

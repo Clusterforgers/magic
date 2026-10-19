@@ -1,6 +1,7 @@
 //! Card queries: lookup by id or name, fuzzy suggestions, filtered search and the name index.
 
 mod lookup;
+mod printings;
 mod search;
 
 use mtg_import::ids::OracleId;

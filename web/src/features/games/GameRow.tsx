@@ -1,10 +1,11 @@
 import { Link } from '@tanstack/react-router'
-import { Badge } from '@/components/ui/badge'
+import { Pill } from '@/components/Pill'
+import type { PillTone } from '@/components/Pill'
 import { buttonVariants } from '@/components/ui/button'
 import type { MyGame } from '@/protocol/generated'
 import { othersText, resultText, STATUS_LABEL, timeSince } from './format'
 
-const BADGE = { lobby: 'secondary', running: 'default', finished: 'outline' } as const
+const TONE: Record<MyGame['status'], PillTone> = { lobby: 'neutral', running: 'success', finished: 'neutral' }
 
 /**
  * One game of the list: its state, how long ago it was made, who else sits at it, how it ended if it did, and a way
@@ -18,11 +19,11 @@ export function GameRow({ game, now }: { game: MyGame; now: number }) {
     <li
       data-game={game.game}
       data-status={game.status}
-      className="grid gap-3 rounded-xl bg-card p-3 ring-1 ring-foreground/10 sm:grid-cols-[1fr_auto] sm:items-center sm:p-4"
+      className="surface grid gap-3 p-4 sm:grid-cols-[1fr_auto] sm:items-center"
     >
-      <div className="grid min-w-0 gap-1.5">
+      <div className="grid min-w-0 gap-2">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <Badge variant={BADGE[game.status]}>{STATUS_LABEL[game.status]}</Badge>
+          <Pill tone={TONE[game.status]}>{STATUS_LABEL[game.status]}</Pill>
           <time dateTime={game.created_at} title={game.created_at} className="text-xs text-muted-foreground">
             {timeSince(game.created_at, now)}
           </time>

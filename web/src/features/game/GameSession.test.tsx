@@ -225,8 +225,11 @@ describe('the game route', () => {
     const app = await open(`/game/${GAME}`, { signedIn: ADA.username })
     await screen.findByRole('heading', { name: 'Connecting to the game…' })
     await app.user.click(
-      within(screen.getByRole('navigation', { name: 'Account' })).getByRole('button', { name: 'Sign out' }),
+      within(screen.getByRole('navigation', { name: 'Account' })).getByRole('button', {
+        name: /signed in as/i,
+      }),
     )
+    await app.user.click(await screen.findByRole('menuitem', { name: 'Sign out' }))
     expect(await screen.findByRole('heading', { name: 'Open your seat link or sign in' })).toBeInTheDocument()
     expect(app.sockets[0]?.closed).toEqual({ code: 1000, reason: 'client closing' })
     expect(app.sockets).toHaveLength(1)

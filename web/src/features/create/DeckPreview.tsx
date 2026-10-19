@@ -19,7 +19,7 @@ export function DeckPreview({ deck }: { deck: DeckInfo }) {
     .join(', ')
   return (
     <div className="grid gap-1 text-xs text-muted-foreground">
-      <p className="flex items-center gap-1.5">
+      <p className="flex items-center gap-2">
         <ColorDot color={deck.color} />
         <span>
           {deck.color}, {deck.size} cards
@@ -30,7 +30,7 @@ export function DeckPreview({ deck }: { deck: DeckInfo }) {
         {hidden > 0 ? `, and ${hidden} more` : ''}
       </p>
       <details>
-        <summary className="w-fit cursor-pointer underline-offset-2 hover:underline">
+        <summary className="w-fit cursor-pointer py-1 underline-offset-2 hover:underline">
           Full list of {deck.name}
         </summary>
         <ul className="mt-1 grid max-h-40 gap-x-4 overflow-y-auto sm:grid-cols-2">

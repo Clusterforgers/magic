@@ -8,7 +8,7 @@ export type DecksState =
 
 type Settled = Exclude<DecksState, { status: 'loading' }>
 
-/** Loads `GET /api/decks` once, and again when `reload` is called. */
+/** Loads `GET /api/demo-decks` once, and again when `reload` is called. */
 export function useDecks(api: Api): { state: DecksState; reload: () => void } {
   const [round, setRound] = useState(0)
   // Tagged with the round it answers, so a new round reads as loading without resetting state inside the effect.

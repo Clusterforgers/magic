@@ -60,6 +60,21 @@ impl ApiError {
         self
     }
 
+    #[cfg(test)]
+    pub(crate) fn status(&self) -> StatusCode {
+        self.status
+    }
+
+    #[cfg(test)]
+    pub(crate) fn code(&self) -> &'static str {
+        self.code
+    }
+
+    #[cfg(test)]
+    pub(crate) fn message(&self) -> &str {
+        &self.message
+    }
+
     pub(crate) fn invalid(message: impl Into<String>) -> ApiError {
         ApiError::new(StatusCode::BAD_REQUEST, "invalid_request", message)
     }
@@ -222,7 +237,7 @@ pub(crate) async fn method_not_allowed() -> ApiError {
     )
 }
 
-/// `GET /api/decks`: the built-in decks.
+/// `GET /api/demo-decks`: the built-in decks.
 pub(crate) async fn decks() -> Json<Vec<DeckBody>> {
     Json(demo::all().iter().map(deck_body).collect())
 }
@@ -305,6 +320,14 @@ pub(crate) async fn create_game(
 pub(crate) async fn read_json<T: serde::de::DeserializeOwned>(
     request: Request,
 ) -> Result<T, ApiError> {
+    read_json_limited(request, BODY_LIMIT).await
+}
+
+/// [`read_json`] for an endpoint whose bodies may be larger than `BODY_LIMIT` bytes.
+pub(crate) async fn read_json_limited<T: serde::de::DeserializeOwned>(
+    request: Request,
+    limit: usize,
+) -> Result<T, ApiError> {
     if !is_json(request.headers()) {
         return Err(ApiError::new(
             StatusCode::UNSUPPORTED_MEDIA_TYPE,
@@ -316,7 +339,7 @@ pub(crate) async fn read_json<T: serde::de::DeserializeOwned>(
         ApiError::new(
             StatusCode::PAYLOAD_TOO_LARGE,
             "payload_too_large",
-            format!("the request body is limited to {BODY_LIMIT} bytes"),
+            format!("the request body is limited to {limit} bytes"),
         )
     };
     let declared = request
@@ -324,10 +347,10 @@ pub(crate) async fn read_json<T: serde::de::DeserializeOwned>(
         .get(axum::http::header::CONTENT_LENGTH)
         .and_then(|v| v.to_str().ok())
         .and_then(|v| v.parse::<usize>().ok());
-    if declared.is_some_and(|n| n > BODY_LIMIT) {
+    if declared.is_some_and(|n| n > limit) {
         return Err(too_large());
     }
-    let bytes = axum::body::to_bytes(request.into_body(), BODY_LIMIT)
+    let bytes = axum::body::to_bytes(request.into_body(), limit)
         .await
         .map_err(|_| too_large())?;
     serde_json::from_slice(&bytes).map_err(|error| {
@@ -374,7 +397,7 @@ fn validate(body: &NewGame) -> Result<Vec<SeatRequest>, ApiError> {
                 ApiError::new(
                     StatusCode::BAD_REQUEST,
                     "unknown_deck",
-                    format!("seat {index}: no such deck; see GET /api/decks"),
+                    format!("seat {index}: no such deck; see GET /api/demo-decks"),
                 )
             })?;
             Ok(SeatRequest {
@@ -387,7 +410,7 @@ fn validate(body: &NewGame) -> Result<Vec<SeatRequest>, ApiError> {
 
 /// Control characters and invisible or direction-changing marks, which could make a name
 /// pose as other text in the game log.
-fn is_unsafe_in_names(c: char) -> bool {
+pub(crate) fn is_unsafe_in_names(c: char) -> bool {
     c.is_control()
         || matches!(
             c,

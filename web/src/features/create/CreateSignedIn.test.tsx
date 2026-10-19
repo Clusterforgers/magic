@@ -61,7 +61,7 @@ describe('a signed-in creator', () => {
       },
     })
     await screen.findByText('Loading the decks…')
-    await waitFor(() => expect(app.rest.count('/api/decks')).toBeGreaterThan(0))
+    await waitFor(() => expect(app.rest.count('/api/demo-decks')).toBeGreaterThan(0))
     await app.settle()
     expect(screen.queryByRole('form', { name: 'Create a game' })).toBeNull()
     answer(new Response(JSON.stringify({ id: 'x', username: ADA.username }), { status: 200 }))
@@ -126,8 +126,11 @@ describe('a signed-in creator', () => {
   it('loses the sentence when the account signs out', async () => {
     const app = await openCreate({ signedIn: ADA.username })
     await app.user.click(
-      within(screen.getByRole('navigation', { name: 'Account' })).getByRole('button', { name: 'Sign out' }),
+      within(screen.getByRole('navigation', { name: 'Account' })).getByRole('button', {
+        name: /signed in as/i,
+      }),
     )
+    await app.user.click(await screen.findByRole('menuitem', { name: 'Sign out' }))
     await waitFor(() => expect(note()).toBeNull())
     expect(seatName(1)).toHaveValue('Ada_L') // what was typed stays
   })

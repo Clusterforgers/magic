@@ -2,7 +2,7 @@ import type { DeckInfo } from '@/net/api'
 
 const creatures = (names: string[]): DeckInfo['cards'] => names.map((name) => ({ name, count: 4 }))
 
-/** The three built-in decks as `GET /api/decks` lists them (crates/mtg-server/src/demo.rs). */
+/** The three built-in decks as `GET /api/demo-decks` lists them (crates/mtg-server/src/demo.rs). */
 export const DECKS: DeckInfo[] = [
   {
     id: 'mono-green',

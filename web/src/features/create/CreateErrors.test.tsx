@@ -101,7 +101,7 @@ describe('a request in flight', () => {
     })
     const { server, user } = await submitWith({ create: () => pending })
     const submit = screen.getByRole('button', { name: 'Creating the game…' })
-    expect(submit).toBeDisabled()
+    expect(submit).toHaveAttribute('aria-disabled', 'true')
     await user.click(submit)
     await user.type(screen.getByLabelText('Name for seat 2'), '{Enter}')
     expect(server.creates).toHaveLength(1)

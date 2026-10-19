@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { ReactElement } from 'react'
 import { useStore } from 'zustand'
 import { useShallow } from 'zustand/react/shallow'
+import { PageShell } from '@/components/PageShell'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { loadInvites } from '@/lib/invites'
 import type { SeatLink } from '@/lib/seatLink'
@@ -143,7 +144,7 @@ function SeatedGame({ gameId, token, name, api, deps }: SeatedGameProps) {
   return (
     <GameContext value={context}>
       {connection.kind !== 'open' && !over ? (
-        <div className="mx-auto w-full max-w-2xl px-4 pt-6 sm:px-6">
+        <PageShell className="pb-0 sm:pb-0">
           <ConnectionNotice
             connection={connection}
             standalone={screen === null}
@@ -151,12 +152,12 @@ function SeatedGame({ gameId, token, name, api, deps }: SeatedGameProps) {
             via={token === undefined ? 'session' : 'link'}
             onRetry={retry}
           />
-        </div>
+        </PageShell>
       ) : null}
       {state.notice !== null && screen !== null && !over ? (
-        <div className="mx-auto w-full max-w-2xl px-4 pt-6 sm:px-6">
+        <PageShell className="pb-0 sm:pb-0">
           <ServerNotice message={state.notice} onDismiss={session.dismissNotice} />
-        </div>
+        </PageShell>
       ) : null}
       {screen}
     </GameContext>

@@ -68,7 +68,7 @@ const StopButton = memo(function StopButton({
         'relative inline-flex size-7 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors outline-none',
         'hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 aria-disabled:opacity-50',
         'aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground',
-        'data-current:ring-2 data-current:ring-(--your-turn)',
+        'data-current:ring-2 data-current:ring-(--turn-you-edge)',
       )}
       onClick={(event) => {
         if (online) onPress(side, step, event.shiftKey)
@@ -128,7 +128,7 @@ function StopRow({ side, steps, stops, step, turn, lasting, online, onPress }: S
       data-turn={turn || undefined}
       className={cn(
         'flex flex-wrap items-center gap-x-1 gap-y-0.5 rounded-md px-1 py-0.5',
-        turn && (side === 'Own' ? 'bg-(--your-turn)/15' : 'bg-muted'),
+        turn && (side === 'Own' ? 'bg-(--turn-you-edge)/15' : 'bg-muted'),
       )}
       onFocus={onFocus}
       onKeyDown={onKeyDown}

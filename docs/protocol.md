@@ -136,14 +136,16 @@ The design is in [arena-flow.md](arena-flow.md).
 
 ## REST bodies
 
-The account endpoints of `mtg-server` take their bodies from `mtg_protocol::rest`, so the web gets them from the bindings.
+The account, card and deck endpoints of `mtg-server` take their bodies from `mtg_protocol::rest`, so the web gets them from the bindings.
 
 - `Credentials {username, password}` is the request of `register` and `login`. Unknown fields are refused and `Debug` prints the password as `<redacted>`.
 - `UserView {id, username}` is the answer of `register`, `login` and `GET /api/auth/me`.
 - `AuthErrorCode` is the snake_case `error` string of a failed account request. `as_str` is the wire text and `ALL` lists every code; a test keeps `as_str`, serde and the generated union equal.
 - The length limits are constants (`USERNAME_MIN_CHARS` 3, `USERNAME_MAX_CHARS` 32, `PASSWORD_MIN_CHARS` 10, `PASSWORD_MAX_CHARS` 128), so server and tests share one number. ts-rs does not export constants, so the web repeats them for its forms and the server stays the judge.
 - `GET /api/me/games` answers `MyGames {games}`: the newest 100 games, newest first. A `MyGame` has `game` (what `GET /api/games/{id}` and the socket take), the user's own `seat` and `name`, `status` (`lobby`, `running` or `finished`), `created_at` (`YYYY-MM-DDTHH:MM:SSZ`, UTC), `others` (`MyGameSeat {seat, name, user}`, `user` null for a guest) and `result` (null until finished).
-- `POST /api/games`, `GET /api/games/{id}` and `GET /api/decks` have hand-written bodies on both sides (`web/src/net/api.ts`). `POST /api/games` binds seat 0 to a signed-in creator.
+- `GET /api/cards` answers `CardSearchPage {cards, total, page, per_page}` and `GET /api/cards/{oracle_id}` a `CardDetail`; a `CardHit` has `oracle_id`, `name`, `mana_cost`, `mana_value`, `type_line`, `colors` and `color_identity` (`CardColor`: `W`, `U`, `B`, `R`, `G`), `images` (`CardImages {card, faces}` of `ImageLinks`) and `support` (`verified`, `partial`, `manual`, `stale`, `unplayable`). A `Reason {face, span, text}` names a clause the game cannot run and the span of the face's oracle text it covers. `DEFAULT_PER_PAGE` (40), `MAX_PER_PAGE` (100) and `MAX_PAGE` (10 000) are constants of `mtg_protocol::rest`.
+- The deck endpoints take and answer `DeckBody {name, format, notes, cards: [DeckLineBody {zone, oracle_id, printing_id, count}]}`, `DeckView` (lines as `DeckLineView {zone, count, printing_id, card}`, the stored `check: StoredCheck`, the `report: DeckReport`, `state: DeckState`, `verified`, `changed`), `DeckList {decks: [DeckListItem]}`, `CheckRequest {deck | format, cards}`, `ImportRequest {text, source, format}` and `ImportResult {source, cards, unresolved, problems, ignored}`. `DeckReport`, `Issue`, `ReportCard`, `Summary`, `Counts`, `DeckZone` (`main`, `sideboard`, `commander`, `companion`), `DeckState` (`verified`, `manual_play`, `blocked`, `unchecked`) and `StoredCheck` come from `mtg-cards` (`docs/deck-check.md`). `DeckErrorCode` is the snake_case `error` string of a failed card or deck request (`as_str` is the wire text, `ALL` lists every code). The limits are constants of `mtg_protocol::rest` (`MAX_DECKS_PER_USER` 100, `MAX_DECK_LINES` 250, `MAX_DECK_CARDS` 250, `MAX_DECK_NAME_CHARS` 100, `MAX_DECK_NOTES_CHARS` 10 000, `MAX_IMPORT_CHARS` 100 000, `MAX_IMPORT_LINES` 1 000).
+- `POST /api/games` and `GET /api/games/{id}` have hand-written bodies on both sides (`web/src/net/api.ts`). `POST /api/games` binds seat 0 to a signed-in creator.
 
 ## Tests
 

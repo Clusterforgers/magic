@@ -16,7 +16,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - [x] CLI binary `mtg-cli`: download Scryfall bulk + MTGJSON deck index/decks, ingest into Postgres (resumable, polite rate limit; `docs/data-sources.md`)
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
 - [ ] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
-- [ ] Card search HTTP endpoints in `mtg-server` (name, filters, color identity, pagination)
+- [x] Card search HTTP endpoints in `mtg-server` (name, filters, color identity, pagination)
 
 ## M2 Engine and first playable
 - [x] Merge M2a, reviewed against `CLAUDE.md`; design in `docs/engine.md`
@@ -69,18 +69,19 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 ## M4 Multiplayer product
 - [x] Invite-link lobbies on top of users
 - [ ] Deck builder UI with card search, import, validation, export
-- [ ] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
+- [x] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
+- [ ] Deck builder UI on the stored decks and the check: highlighting of the cards that are not verified, the Verified marker and the state of each deck in the deck list, the lobby and the precon browser (`docs/deck-check.md`, `docs/server.md`)
 - [ ] Precon browser with one-click play
 - [ ] Choose a deck in the lobby: a stored deck or a precon per seat; the table sees each seat's deck state as a count of manual cards, never their names (`docs/deck-check.md`)
 - [x] N-player layout, game log, stack panel, stop settings
 - [ ] UI rebuild: the table fits the screen, a turn change is unmistakable and games are joined from a list (`docs/ui-design.md`, Tasks). In order:
-  - [ ] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
+  - [x] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
   - [x] (U2) Fit engine: card sizes from the space available and grouping of identical permanents, pure and tested
   - [ ] (U3) Table grid: top bar, opponents, shared strip, own board, hand dock and side tabs in one viewport from 1280x720
   - [ ] (U4) Seat pods, scaled battlefield rows and a hand dock that hold 40 permanents a seat
   - [ ] (U5) Controls dock: a 44 px pass button, a one-row stop ladder and a menu for the rest
-  - [ ] (U6) Turn feedback: turn badge, turn banner, active-seat emphasis and a ticker for automatic passes and skips
-  - [ ] (U7) Server: game visibility, open seats, claim and join code
+  - [ ] (U6) Turn feedback: turn badge, turn banner, active-seat emphasis, a distinct theme for each phase so the current phase is unmistakable, and a ticker for automatic passes and skips
+  - [x] (U7) Server: game visibility, open seats, claim and join code
   - [ ] (U8) Server: public game listing, join, leave and release, with privacy tests
   - [ ] (U9) Game browser page: live list, join dialog, empty, loading and error states
   - [ ] (U10) Create-game visibility, invite link and code, lobby controls for host and guests
@@ -100,6 +101,6 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [ ] Coverage dashboard over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of a chosen set of Commander precons (`docs/deck-check.md`)
 
 ## M7 Polish and deploy
-- [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain (`docs/PLAN.md`, Deployment)
 - [ ] Animations beyond the table feedback (zone moves to hand, exile and library, a spell on the stack; `docs/web.md`), sounds, replays, solo play against bots
+- [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain (`docs/PLAN.md`, Deployment)
 - [ ] Performance profile on real hardware with real card art
