@@ -5,6 +5,7 @@
 @import './features/table/fx/fx.css';
 @import './features/table/prompt/responseClock.css';
 @import './features/table/turn/turn.css';
+@import './features/table/turn/phase.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -73,6 +74,21 @@
   --color-on-turn-them: var(--on-turn-them);
   --color-step-passed: var(--step-passed);
   --color-step-skipped: var(--step-skipped);
+  --color-phase: var(--phase);
+  --color-phase-soft: var(--phase-soft);
+  --color-on-phase: var(--on-phase);
+  --color-phase-beginning: var(--phase-beginning);
+  --color-phase-beginning-soft: var(--phase-beginning-soft);
+  --color-on-phase-beginning: var(--on-phase-beginning);
+  --color-phase-main: var(--phase-main);
+  --color-phase-main-soft: var(--phase-main-soft);
+  --color-on-phase-main: var(--on-phase-main);
+  --color-phase-combat: var(--phase-combat);
+  --color-phase-combat-soft: var(--phase-combat-soft);
+  --color-on-phase-combat: var(--on-phase-combat);
+  --color-phase-ending: var(--phase-ending);
+  --color-phase-ending-soft: var(--phase-ending-soft);
+  --color-on-phase-ending: var(--on-phase-ending);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-destructive: var(--destructive);
@@ -129,6 +145,24 @@
   --warning: oklch(0.5 0.14 55);
   --destructive: oklch(0.5 0.2 27);
   --scrim: oklch(0.2 0.02 265 / 0.4);
+
+  /* The four phase themes, each an accent, a soft tint and the text on the accent (turn/phase.css picks one). */
+  --phase-beginning: oklch(0.54 0.16 250);
+  --phase-beginning-soft: oklch(0.95 0.035 250);
+  --on-phase-beginning: oklch(0.985 0 0);
+  --phase-main: oklch(0.44 0.11 170);
+  --phase-main-soft: oklch(0.95 0.035 170);
+  --on-phase-main: oklch(0.985 0 0);
+  --phase-combat: oklch(0.45 0.147 36);
+  --phase-combat-soft: oklch(0.95 0.035 36);
+  --on-phase-combat: oklch(0.985 0 0);
+  --phase-ending: oklch(0.54 0.097 342);
+  --phase-ending-soft: oklch(0.95 0.035 342);
+  --on-phase-ending: oklch(0.985 0 0);
+  /* The theme in force, neutral until the table root names a phase. */
+  --phase: var(--border);
+  --phase-soft: var(--muted);
+  --on-phase: var(--foreground);
 
   --card: var(--surface);
   --card-foreground: var(--foreground);
@@ -188,6 +222,19 @@
   --warning: oklch(0.8 0.15 70);
   --destructive: oklch(0.72 0.17 25);
   --scrim: oklch(0 0 0 / 0.6);
+
+  --phase-beginning: oklch(0.84 0.09 250);
+  --phase-beginning-soft: oklch(0.3 0.05 250);
+  --on-phase-beginning: oklch(0.17 0.012 265);
+  --phase-main: oklch(0.68 0.157 170);
+  --phase-main-soft: oklch(0.3 0.05 170);
+  --on-phase-main: oklch(0.17 0.012 265);
+  --phase-combat: oklch(0.68 0.16 36);
+  --phase-combat-soft: oklch(0.3 0.05 36);
+  --on-phase-combat: oklch(0.17 0.012 265);
+  --phase-ending: oklch(0.68 0.09 342);
+  --phase-ending-soft: oklch(0.3 0.05 342);
+  --on-phase-ending: oklch(0.17 0.012 265);
 
   --secondary: oklch(0.26 0.016 265);
   --muted: oklch(0.26 0.016 265);

@@ -1,0 +1,52 @@
+/*
+ * The phase themes (docs/ui-design.md, "Phase themes"). The table root carries `data-phase`; each rule below points the
+ * live tokens `--phase`, `--phase-soft` and `--on-phase` at the set of that phase, and whatever takes the theme reads
+ * the live tokens (`bg-phase`, `border-phase`, `text-on-phase`). Without a `data-phase` (before and after the turns)
+ * they stay neutral, as index.css has them. The wash is the accent at 5 % over the table's ground. A change from one
+ * theme to the next fades in the design system's base time, 200 ms, and not at all under reduced motion; the pieces
+ * that fade carry `data-themed`. `phaseCss.test.ts` holds all of this.
+ */
+[data-slot='table-grid'][data-phase='beginning'] {
+  --phase: var(--phase-beginning);
+  --phase-soft: var(--phase-beginning-soft);
+  --on-phase: var(--on-phase-beginning);
+}
+
+[data-slot='table-grid'][data-phase='main'] {
+  --phase: var(--phase-main);
+  --phase-soft: var(--phase-main-soft);
+  --on-phase: var(--on-phase-main);
+}
+
+[data-slot='table-grid'][data-phase='combat'] {
+  --phase: var(--phase-combat);
+  --phase-soft: var(--phase-combat-soft);
+  --on-phase: var(--on-phase-combat);
+}
+
+[data-slot='table-grid'][data-phase='ending'] {
+  --phase: var(--phase-ending);
+  --phase-soft: var(--phase-ending-soft);
+  --on-phase: var(--on-phase-ending);
+}
+
+[data-slot='table-grid'][data-phase] > [data-slot='table-main'] {
+  background-color: color-mix(in srgb, var(--phase) 5%, var(--table));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-slot='table-grid'][data-phase] > [data-slot='table-main'],
+  [data-slot='table-grid'] [data-themed] {
+    transition:
+      background-color var(--duration-base) cubic-bezier(0.2, 0, 0, 1),
+      border-color var(--duration-base) cubic-bezier(0.2, 0, 0, 1),
+      color var(--duration-base) cubic-bezier(0.2, 0, 0, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='table-grid'][data-phase] > [data-slot='table-main'],
+  [data-slot='table-grid'] [data-themed] {
+    transition: none;
+  }
+}
