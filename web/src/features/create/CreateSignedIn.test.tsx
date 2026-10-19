@@ -61,7 +61,7 @@ describe('a signed-in creator', () => {
       },
     })
     await screen.findByText('Loading the decks…')
-    await waitFor(() => expect(app.rest.count('/api/decks')).toBeGreaterThan(0))
+    await waitFor(() => expect(app.rest.count('/api/demo-decks')).toBeGreaterThan(0))
     await app.settle()
     expect(screen.queryByRole('form', { name: 'Create a game' })).toBeNull()
     answer(new Response(JSON.stringify({ id: 'x', username: ADA.username }), { status: 200 }))

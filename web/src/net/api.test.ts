@@ -52,7 +52,7 @@ const calls: [string, (api: Api) => Promise<unknown>, number, unknown][] = [
 const serverErrors: [number, ApiErrorCode, string][] = [
   [400, 'invalid_request', 'a game needs 2 to 12 seats, got 1'],
   [400, 'unsupported_format', 'the only supported format is "normal"'],
-  [400, 'unknown_deck', 'seat 0: no such deck; see GET /api/decks'],
+  [400, 'unknown_deck', 'seat 0: no such deck; see GET /api/demo-decks'],
   [403, 'forbidden_origin', 'origin not allowed'],
   [404, 'not_found', 'no such resource'],
   [405, 'method_not_allowed', 'method not allowed'],
@@ -123,7 +123,7 @@ describe('requests and answers', () => {
   it('lists the decks', async () => {
     const fake = fakeFetch(() => jsonResponse(200, decks))
     expect(await createApi({ fetch: fake.fetch }).listDecks()).toEqual(decks)
-    expect(fake.calls[0]?.url).toBe('/api/decks')
+    expect(fake.calls[0]?.url).toBe('/api/demo-decks')
   })
 
   it('drops fields it does not know and keeps the ones it does', async () => {
@@ -139,7 +139,7 @@ describe('requests and answers', () => {
   it('prefixes every path with the base URL', async () => {
     const fake = fakeFetch(() => jsonResponse(200, decks))
     await createApi({ fetch: fake.fetch, baseUrl: 'http://server:8080' }).listDecks()
-    expect(fake.calls[0]?.url).toBe('http://server:8080/api/decks')
+    expect(fake.calls[0]?.url).toBe('http://server:8080/api/demo-decks')
   })
 
   it('looks the global fetch up when a call is made, not when the client is built', async () => {

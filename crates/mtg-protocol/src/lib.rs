@@ -25,7 +25,10 @@ pub use message::{
     ServerMessage, Stop, StopSide, YieldUntil,
 };
 pub use project::zone_is_visible;
-pub use rest::{AuthErrorCode, Credentials, MyGame, MyGameSeat, MyGameStatus, MyGames, UserView};
+pub use rest::{
+    AuthErrorCode, CardDetail, CardHit, CardSearchPage, Credentials, DeckBody, DeckErrorCode,
+    DeckList, DeckView, MyGame, MyGameSeat, MyGameStatus, MyGames, UserView,
+};
 pub use view::{
     AttackerView, CombatView, ObjectView, PermanentView, PlayerView, PriorityView, StateView,
     TableView, TurnView, ZoneView,

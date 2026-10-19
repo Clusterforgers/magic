@@ -24,6 +24,7 @@ pub enum ImplStatus {
 
 /// A stretch of a face's oracle text: Unicode scalar values from `start` up to, not including, `end`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 #[serde(deny_unknown_fields)]
 pub struct Span {
     /// First character.

@@ -1,0 +1,76 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT deck_id, zone, oracle_id, printing_id, count\n           FROM deck_cards WHERE deck_id = ANY($1) ORDER BY deck_id, position",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "deck_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "deck_cards",
+            "name": "deck_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "zone",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "deck_cards",
+            "name": "zone"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "oracle_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "deck_cards",
+            "name": "oracle_id"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "printing_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "deck_cards",
+            "name": "printing_id"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "count",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "deck_cards",
+            "name": "count"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "UuidArray"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "26c921af907e6e095a46069092c55b7b97bf2e62f8e88ace0f8fd1a7685357b7"
+}

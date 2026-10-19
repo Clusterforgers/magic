@@ -19,8 +19,10 @@ The `mtg-server` crate: one actor per game behind an axum REST and WebSocket tra
 |---|---|
 | `POST /api/games` | `{format: "normal", seats: [{name, deck}]}` gives 201 `{game, seats: [{seat, token}]}`; 2 to 12 seats, `deck` a demo deck id, 16 KiB `application/json` body, unknown fields refused, server-random seed. |
 | `GET /api/games/{id}` | `{started, seats, connected, ready, result}`; a malformed and an unknown id are one 404. |
-| `GET /api/decks`, `GET /healthz` | Demo decks; `ok`. |
+| `GET /api/demo-decks`, `GET /healthz` | The built-in decks; `ok`. |
 | `/api/auth/*`, `GET /api/me/games` | Accounts. |
+| `GET /api/cards`, `GET /api/cards/{oracle_id}` | Card search and one card; public. |
+| `/api/decks`, `/api/decks/{id}`, `/api/decks/import`, `/api/decks/check`, `GET /api/decks/{id}/export` | Stored decks, import, export and the deck check; accounts. |
 | `GET /ws/{game}/{token}` | A seat's link: the token picks the seat before the upgrade. |
 | `GET /ws/{game}` | The seat bound to the session cookie's user. |
 
@@ -95,6 +97,51 @@ Bodies and codes are in [protocol.md](protocol.md), REST bodies. A database fail
 - Binding adds a way in and takes none away: old links keep working, and another signed-in account that uses a bound seat's token plays like a guest and is not bound.
 - `GET /ws/{game}` answers, after the origin check, 404 for an address that is not a game id, 503 `accounts_unavailable`, 401 `unauthenticated` (a bad cookie is cleared), then one 404 for an unknown game and for a game the user holds no seat in, so a stranger learns nothing about which games exist.
 - `GET /api/me/games` lists the user's `lobby`, `running` and `finished` games, newest first, at most 100. It reads the database, so a finished game stays listed after the registry dropped it.
+
+## Cards and decks
+
+`Server::open_with(config, pool, cards)` takes the `CardSource` (database, rules files, `Caps`) that the games, the card endpoints and the deck check share; `Server::open` makes one. A server without a database answers 503 `cards_unavailable` and 503 `decks_unavailable`.
+
+### Cards
+
+Public and read-only (`card_api.rs`).
+
+| Endpoint | Behaviour |
+|---|---|
+| `GET /api/cards` | `CardSearchPage {cards, total, page, per_page}` over the deck cards (tokens and emblems are never listed). |
+| `GET /api/cards/{oracle_id}` | `CardDetail`: the hit, oracle text, keywords, faces, Scryfall's legality per format, printings (newest first), rulings (oldest first) and `reasons`, the clauses the game cannot run, each with a face and a span of that face's oracle text. A malformed and an unknown id are one 404; capitals in the id make no difference. |
+
+| Parameter | Meaning |
+|---|---|
+| `q` | Free text: the name contains it (case and accents ignored) or the rules text matches it in web-search syntax (`"phrase"`, `-word`, `or`). With `q` the order is by relevance (name equal to `q`, name starting with it, name containing it, rules text only), then by name; without it by name. Ties break by oracle id, so every order is total and pages never overlap or skip. |
+| `colors`, `colors_match` | A card's colors as letters of WUBRG in any case, or `C` for colorless cards; `colors_match` is `includes` (default), `exactly`, `within` or `overlaps`. |
+| `identity` | A color identity in the same letters: a card matches when its identity lies within them, so `identity=BG` lists what a black-green commander may play and `identity=C` the colorless identities. |
+| `type` | Words that must each appear in the type line (`legendary creature`). |
+| `cmc` | A mana value (`3`), a range (`2-4`) or a minimum (`5+`). |
+| `format` | A Scryfall format key (`commander`, `modern`): the card is legal or restricted there. |
+| `page`, `per_page` | `page` counts from 1 up to 10 000; `per_page` defaults to 40 and a larger value is lowered to 100. The answer repeats both and carries the total. |
+
+Blank values are no filter; an unknown parameter or a malformed value is 400 `invalid_request` whose message names it. A hit (`CardHit`) carries the oracle id, name, mana cost, mana value, type line, colors, color identity, the art of the card's default printing (the newest paper one; `images` holds the card's links or one entry per face) and `support`: the state `Library::support` gives with the server's rules and `Caps`.
+
+### Decks
+
+`decks.rs`, `deck_cards.rs` and `deck_import.rs`. Every route needs a signed-in account: 503 `decks_unavailable` without a database, then 401 `unauthenticated`. A deck of another account is a 404, like an unknown id. Bodies are `application/json` of at most 64 KiB (640 KiB for an import), the origin guard covers every verb but GET, and CORS allows PUT and DELETE. The tables `decks` and `deck_cards` belong to `mtg-db` (migration `20261019000007_decks.sql`, `DeckRepo`): `owner` is the account id with no foreign key, since `users` is the server's own table, so deleting an account has to delete its decks; a line's card is a foreign key and its printing is set to null if the printing goes.
+
+| Endpoint | Behaviour |
+|---|---|
+| `GET /api/decks` | `DeckList {decks}`, the most recently saved first: id, name, format, timestamps, the derived `state`, `verified`, `changed`, `checked_at` and the `summary` of the check of the moment. |
+| `POST /api/decks` | `{name, format, notes, cards: [{zone, oracle_id, printing_id?, count}]}` stores a deck: 201 `DeckView`. |
+| `GET /api/decks/{id}` | `DeckView`: the lines (each a card as a search hit, in the art of the chosen printing), the `check` stored at the last save, the `report` of the moment and the derived `state`, `verified` and `changed`. |
+| `PUT /api/decks/{id}` | Replaces name, format, notes and every line in one transaction, runs the check again: 200 `DeckView`. |
+| `DELETE /api/decks/{id}` | 204. |
+| `POST /api/decks/check` | `{deck}` (a stored deck) or `{format, cards}` (an unsaved list, under the rules of a save): the `DeckReport`, nothing saved. |
+| `POST /api/decks/import` | `{text, source?, format?}`: `ImportResult`, nothing saved. |
+| `GET /api/decks/{id}/export?format=text\|arena\|mtgo` | The deck as `text/plain` (`text` by default) with a `Content-Disposition` file name. |
+
+- A save is refused with 400 `invalid_deck` for a name outside 1 to 100 characters or with control characters, notes over 10 000 characters, a format outside `SUPPORTED_FORMATS` (`commander`, `freeform` and the constructed formats), more than 250 lines or 250 cards, a count outside 1 to 999, an id that is no id, or a printing that is not the card's; with 400 `unknown_cards` for oracle ids that are no deck cards of the database. An account stores at most 100 decks (409 `deck_limit`); the count and the insert run under an advisory lock of the owner, so racing saves cannot pass it.
+- Saving runs the check (`mtg_cards::deck::deck_report` with the server's rules and `Caps`) and stores `{deck_hash, coverage_hash, checked_at, summary}` in `decks.last_check`. The marker is never stored: every read derives it from that check and the report of the moment (`mtg_cards::deck::marker`, [deck-check.md](deck-check.md)). `verified` is true only when the stored check is clean, both hashes equal the ones computed now and the report of the moment is clean. An edit, other rules for a card of the deck or another `Caps` make the deck `unchecked` with `changed`; a ban or a card the engine no longer plays makes it `blocked` or `manual_play`; a check that was not clean never verifies. Reading writes nothing, so a deck whose cards the engine learned to play is marked by saving it again.
+- Import reads a pasted list in any format `mtg-import` reads (`source`: `text`, `arena`, `mtgo`, `mtgo_dek`, `moxfield`, `archidekt`; detected when absent; `format: commander` makes Moxfield's first line the commander), at most 100 000 characters and 1 000 lines. The answer holds the `cards` it resolved (a printing when the set and number name one of the resolved card), the `unresolved` lines (`unknown_card` or `ambiguous_name`, with suggestions that are never applied), the `problems` (lines that are no entries) and the `ignored` parts (the maybeboard, Moxfield's stickers). Only the names of the list are looked up, so no card index is built per request.
+- Export writes split cards as the format does (`A /// B` for Arena, `A/B` for MTGO) and other multi-faced cards by their front face; printings are written where the format has them. A deck the format cannot hold, MTGO text with a commander and nothing else, answers 422 `export_failed`.
 
 ## Pace of play
 
@@ -175,4 +222,5 @@ Blank values count as unset; any other malformed value refuses to start (`Config
 - `Windows` in `mtg-testkit` is the window rule written plainly and apart from the server; `tests/windows.rs` compares the actor with it for 2 to 4 seats, with stops and modes the bots choose.
 - Clocks, the dwell and the leak test run on tokio's paused time; `tests/pace_leak.rs` plays two games that differ by one hidden card and requires the other seat to be sent the same messages in the same batches.
 - Transport tests (`tests/net`) use a real listener on port 0, raw TCP for hostile HTTP and tokio-tungstenite for sockets; `FlakyStore` fails writes on demand.
+- `tests/pg_cards_api.rs` (Postgres, real HTTP, the importer's Scryfall fixture) checks searches by text, color, identity, type, mana value and format with their exact results and order, paging, the page cap, each kind of 400, the hit, the card page, the support state under an engine that runs everything and one that runs nothing, and the server without a database; `tests/pg_decks.rs` (the rules corpus with assigned legalities) checks access (503, 401, foreign origins, another account's deck), the saved deck read back and verified, manual and illegal decks, the marker removed by an edit that bypasses the check, another engine, other rules and a ban and restored by saving (reads write nothing), the check endpoint, every refused save, the cap of 100 decks, printings, import line by line, and every export read back through the importer. Unit tables cover the query string, the deck rules and the import.
 - Postgres tests (`pg_*.rs`) need `docker compose up -d db` and use `#[sqlx::test(migrations = false)]` with `migrate`, because the default would use `_sqlx_migrations`.
