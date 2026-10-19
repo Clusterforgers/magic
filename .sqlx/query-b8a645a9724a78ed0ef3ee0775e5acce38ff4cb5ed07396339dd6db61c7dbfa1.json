@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id, status, recipe, result, failure,\n                      extract(epoch FROM now() - created_at)::float8 AS \"age_secs!\"\n               FROM games WHERE id = $1",
+  "query": "SELECT id, status, visibility, code_digest, recipe, result, failure,\n                      extract(epoch FROM now() - created_at)::float8 AS \"age_secs!\"\n               FROM games WHERE id = $1",
   "describe": {
     "columns": [
       {
@@ -27,6 +27,28 @@
       },
       {
         "ordinal": 2,
+        "name": "visibility",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "games",
+            "name": "visibility"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "code_digest",
+        "type_info": "Bytea",
+        "origin": {
+          "Table": {
+            "table": "games",
+            "name": "code_digest"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
         "name": "recipe",
         "type_info": "Jsonb",
         "origin": {
@@ -37,7 +59,7 @@
         }
       },
       {
-        "ordinal": 3,
+        "ordinal": 5,
         "name": "result",
         "type_info": "Jsonb",
         "origin": {
@@ -48,7 +70,7 @@
         }
       },
       {
-        "ordinal": 4,
+        "ordinal": 6,
         "name": "failure",
         "type_info": "Text",
         "origin": {
@@ -59,7 +81,7 @@
         }
       },
       {
-        "ordinal": 5,
+        "ordinal": 7,
         "name": "age_secs!",
         "type_info": "Float8",
         "origin": "Expression"
@@ -75,9 +97,11 @@
       false,
       false,
       true,
+      false,
+      true,
       true,
       null
     ]
   },
-  "hash": "e3732f5912604d6575cd133cee82ad1a16fc564e13ad84cdfdfd169e0439d4c9"
+  "hash": "b8a645a9724a78ed0ef3ee0775e5acce38ff4cb5ed07396339dd6db61c7dbfa1"
 }

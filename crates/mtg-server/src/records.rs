@@ -1,8 +1,10 @@
 //! Game and seat records in Postgres: what a restart needs to bring a game back.
 //!
-//! `games` holds the recipe and the game's status, `seats` the display name, the SHA-256 of the
-//! token, whether the seat ever joined and the account it belongs to, if any. The event log lives
-//! apart in `game_events`. Run [`migrate`](crate::migrate) before use.
+//! `games` holds the recipe, the game's status, who may find it ([`Visibility`]) and the SHA-256 of
+//! its join code. `seats` holds each seat's display name, how it is held ([`SeatState`]), the
+//! SHA-256 of its token (none while it is open), whether the seat ever joined and the account it
+//! belongs to, if any. The event log lives apart in `game_events`. Run [`migrate`](crate::migrate)
+//! before use.
 
 mod users;
 
@@ -11,6 +13,7 @@ use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
+use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 use thiserror::Error;
 use uuid::Uuid;
@@ -83,11 +86,78 @@ impl RecordStatus {
     }
 }
 
+/// Who may find and join a game.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Visibility {
+    /// Listed in the game browser while it is in its lobby; its join code works too.
+    Public,
+    /// Reached only through its seat links and its join code; never listed.
+    #[default]
+    Invite,
+}
+
+impl Visibility {
+    /// The text stored in `games.visibility`.
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Visibility::Public => "public",
+            Visibility::Invite => "invite",
+        }
+    }
+
+    fn parse(text: &str) -> Result<Visibility, RecordError> {
+        [Visibility::Public, Visibility::Invite]
+            .into_iter()
+            .find(|visibility| visibility.as_str() == text)
+            .ok_or_else(|| RecordError::Corrupt(format!("unknown game visibility {text:?}")))
+    }
+}
+
+/// How a seat is held.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SeatState {
+    /// Its token was made with the game and handed out in the create response (the seat link).
+    Issued,
+    /// Set aside for a join: nobody holds it and it has no token.
+    Open,
+    /// A join took it and was given its token; it can be released until the game starts.
+    Claimed,
+}
+
+impl SeatState {
+    /// The text stored in `seats.state`.
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            SeatState::Issued => "issued",
+            SeatState::Open => "open",
+            SeatState::Claimed => "claimed",
+        }
+    }
+
+    fn parse(text: &str) -> Result<SeatState, RecordError> {
+        [SeatState::Issued, SeatState::Open, SeatState::Claimed]
+            .into_iter()
+            .find(|state| state.as_str() == text)
+            .ok_or_else(|| RecordError::Corrupt(format!("unknown seat state {text:?}")))
+    }
+}
+
+/// What a new game is stored with besides its recipe and seats.
+#[derive(Debug, Clone, Copy)]
+pub(crate) struct NewGame {
+    pub(crate) visibility: Visibility,
+    /// SHA-256 of the join code.
+    pub(crate) code_digest: Option<[u8; 32]>,
+}
+
 /// A seat to store with a new game.
 #[derive(Debug, Clone)]
 pub(crate) struct NewSeat {
     pub(crate) name: String,
-    pub(crate) digest: [u8; 32],
+    /// SHA-256 of the token; none for an open seat.
+    pub(crate) digest: Option<[u8; 32]>,
+    pub(crate) state: SeatState,
     /// The account the seat belongs to from the start.
     pub(crate) user: Option<UserId>,
 }
@@ -97,10 +167,12 @@ pub(crate) struct NewSeat {
 pub struct SeatRecord {
     /// The seat number.
     pub seat: usize,
-    /// Its display name.
+    /// Its display name; empty while the seat is open.
     pub name: String,
-    /// SHA-256 of its token.
-    pub token_digest: [u8; 32],
+    /// SHA-256 of its token; none while the seat is open.
+    pub token_digest: Option<[u8; 32]>,
+    /// How the seat is held.
+    pub state: SeatState,
     /// Whether anybody ever connected to the seat.
     pub joined: bool,
     /// The account the seat is bound to; guests' seats have none.
@@ -114,6 +186,10 @@ pub struct GameRecord {
     pub id: GameId,
     /// Where it is in its life.
     pub status: RecordStatus,
+    /// Who may find and join it.
+    pub visibility: Visibility,
+    /// SHA-256 of its join code; none for a game stored before codes existed.
+    pub code_digest: Option<[u8; 32]>,
     /// The recipe as stored; decoding it is the caller's business, since it may be damaged.
     pub recipe: serde_json::Value,
     /// How the game ended, once it did.
@@ -136,6 +212,8 @@ pub struct GameRecords {
 struct GameRow {
     id: Uuid,
     status: String,
+    visibility: String,
+    code_digest: Option<Vec<u8>>,
     recipe: serde_json::Value,
     result: Option<serde_json::Value>,
     failure: Option<String>,
@@ -144,9 +222,17 @@ struct GameRow {
 
 impl GameRow {
     fn into_record(self, seats: Vec<SeatRecord>) -> Result<GameRecord, RecordError> {
+        let code_digest = match self.code_digest {
+            None => None,
+            Some(bytes) => Some(<[u8; 32]>::try_from(bytes.as_slice()).map_err(|_| {
+                RecordError::Corrupt("a join code digest is not 32 bytes".to_owned())
+            })?),
+        };
         Ok(GameRecord {
             id: GameId(self.id),
             status: RecordStatus::parse(&self.status)?,
+            visibility: Visibility::parse(&self.visibility)?,
+            code_digest,
             recipe: self.recipe,
             // A result this server cannot read only matters for display, never for resuming.
             result: self.result.and_then(|v| serde_json::from_value(v).ok()),
@@ -176,6 +262,7 @@ impl GameRecords {
         &self,
         id: GameId,
         recipe: &GameRecipe,
+        game: &NewGame,
         seats: &[NewSeat],
     ) -> Result<(), RecordError> {
         let recipe =
@@ -184,30 +271,43 @@ impl GameRecords {
             .map(|seat| i32::try_from(seat).unwrap_or(i32::MAX))
             .collect();
         let names: Vec<String> = seats.iter().map(|seat| seat.name.clone()).collect();
-        let digests: Vec<Vec<u8>> = seats.iter().map(|seat| seat.digest.to_vec()).collect();
+        let digests: Vec<Option<Vec<u8>>> = seats
+            .iter()
+            .map(|seat| seat.digest.map(|digest| digest.to_vec()))
+            .collect();
+        let states: Vec<String> = seats
+            .iter()
+            .map(|seat| seat.state.as_str().to_owned())
+            .collect();
         let users: Vec<Option<Uuid>> = seats
             .iter()
             .map(|seat| seat.user.map(UserId::uuid))
             .collect();
+        let code = game.code_digest.as_ref().map(<[u8; 32]>::as_slice);
 
         let mut tx = self.pool.begin().await?;
         sqlx::query!(
-            "INSERT INTO games (id, status, recipe) VALUES ($1, 'lobby', $2)",
+            "INSERT INTO games (id, status, recipe, visibility, code_digest)
+             VALUES ($1, 'lobby', $2, $3, $4)",
             id.uuid(),
             recipe,
+            game.visibility.as_str(),
+            code,
         )
         .execute(&mut *tx)
         .await?;
         sqlx::query!(
-            "INSERT INTO seats (game_id, seat, name, token_digest, user_id)
-             SELECT $1, t.seat, t.name, t.digest, t.user_id
-             FROM unnest($2::int4[], $3::text[], $4::bytea[], $5::uuid[])
-                  AS t(seat, name, digest, user_id)",
+            "INSERT INTO seats (game_id, seat, name, token_digest, state, user_id)
+             SELECT $1, t.seat, t.name, t.digest, t.state, t.user_id
+             FROM unnest($2::int4[], $3::text[], $4::bytea[], $5::text[], $6::uuid[])
+                  AS t(seat, name, digest, state, user_id)",
             id.uuid(),
             &numbers[..],
             &names[..],
-            &digests[..],
-            // Seats of guests have no account: the macro cannot see that elements may be NULL.
+            // An open seat has no token and a guest's seat no account: the macro cannot see that
+            // elements may be NULL.
+            &digests[..] as _,
+            &states[..],
             &users[..] as _,
         )
         .execute(&mut *tx)
@@ -219,7 +319,7 @@ impl GameRecords {
     pub async fn get(&self, id: GameId) -> Result<Option<GameRecord>, RecordError> {
         let row = sqlx::query_as!(
             GameRow,
-            r#"SELECT id, status, recipe, result, failure,
+            r#"SELECT id, status, visibility, code_digest, recipe, result, failure,
                       extract(epoch FROM now() - created_at)::float8 AS "age_secs!"
                FROM games WHERE id = $1"#,
             id.uuid(),
@@ -238,7 +338,7 @@ impl GameRecords {
     pub async fn unfinished(&self) -> Result<Vec<GameRecord>, RecordError> {
         let rows = sqlx::query_as!(
             GameRow,
-            r#"SELECT id, status, recipe, result, failure,
+            r#"SELECT id, status, visibility, code_digest, recipe, result, failure,
                       extract(epoch FROM now() - created_at)::float8 AS "age_secs!"
                FROM games WHERE status IN ('lobby', 'running') ORDER BY created_at, id"#,
         )
@@ -261,7 +361,7 @@ impl GameRecords {
         games: &[Uuid],
     ) -> Result<HashMap<Uuid, Vec<SeatRecord>>, RecordError> {
         let rows = sqlx::query!(
-            "SELECT game_id, seat, name, token_digest, joined, user_id
+            "SELECT game_id, seat, name, token_digest, state, joined, user_id
              FROM seats WHERE game_id = ANY($1) ORDER BY game_id, seat",
             games,
         )
@@ -269,16 +369,20 @@ impl GameRecords {
         .await?;
         let mut by_game: HashMap<Uuid, Vec<SeatRecord>> = HashMap::new();
         for row in rows {
-            let (Ok(seat), Ok(token_digest)) = (
-                usize::try_from(row.seat),
-                <[u8; 32]>::try_from(row.token_digest.as_slice()),
-            ) else {
+            let token_digest = match row.token_digest.as_deref().map(<[u8; 32]>::try_from) {
+                None => None,
+                Some(Ok(digest)) => Some(digest),
+                Some(Err(_)) => continue,
+            };
+            let (Ok(seat), Ok(state)) = (usize::try_from(row.seat), SeatState::parse(&row.state))
+            else {
                 continue;
             };
             by_game.entry(row.game_id).or_default().push(SeatRecord {
                 seat,
                 name: row.name,
                 token_digest,
+                state,
                 joined: row.joined,
                 user: row.user_id.map(UserId),
             });
@@ -363,9 +467,55 @@ fn age(seconds: f64) -> Duration {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: every status has one stored spelling that parses back, unknown spellings are refused, and a database age never panics.
+    //! Goal: every status, visibility and seat state has one stored spelling that parses back, unknown spellings are refused, a game is invite-only unless it says otherwise, and a database age never panics.
     use super::*;
     use rstest::rstest;
+
+    #[rstest]
+    #[case(Visibility::Public, "public")]
+    #[case(Visibility::Invite, "invite")]
+    fn visibilities_round_trip_and_serialize_as_stored(
+        #[case] visibility: Visibility,
+        #[case] text: &str,
+    ) {
+        assert_eq!(visibility.as_str(), text);
+        assert_eq!(Visibility::parse(text), Ok(visibility));
+        let json = serde_json::to_string(&visibility).unwrap();
+        assert_eq!(json, format!("\"{text}\""));
+        assert_eq!(
+            serde_json::from_str::<Visibility>(&json).unwrap(),
+            visibility
+        );
+    }
+
+    #[test]
+    fn a_game_is_invite_only_unless_it_says_otherwise() {
+        assert_eq!(Visibility::default(), Visibility::Invite);
+    }
+
+    #[rstest]
+    #[case(SeatState::Issued, "issued")]
+    #[case(SeatState::Open, "open")]
+    #[case(SeatState::Claimed, "claimed")]
+    fn seat_states_round_trip(#[case] state: SeatState, #[case] text: &str) {
+        assert_eq!(state.as_str(), text);
+        assert_eq!(SeatState::parse(text), Ok(state));
+    }
+
+    #[rstest]
+    #[case("")]
+    #[case("Public")]
+    #[case("private")]
+    fn unknown_visibilities_and_seat_states_are_corrupt(#[case] text: &str) {
+        assert!(matches!(
+            Visibility::parse(text),
+            Err(RecordError::Corrupt(_))
+        ));
+        assert!(matches!(
+            SeatState::parse(text),
+            Err(RecordError::Corrupt(_))
+        ));
+    }
 
     #[rstest]
     #[case(RecordStatus::Lobby, "lobby")]

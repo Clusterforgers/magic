@@ -122,7 +122,8 @@ pub use recipe::{
     GameRecipe, RecipeError,
 };
 pub use records::{
-    Binding, GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord, UserGame, UserGameSeat,
+    Binding, GameRecord, GameRecords, RecordError, RecordStatus, SeatRecord, SeatState, UserGame,
+    UserGameSeat, Visibility,
 };
 pub use registry::{Registry, ResumeReport};
 pub use seats::MIN_QUEUE;

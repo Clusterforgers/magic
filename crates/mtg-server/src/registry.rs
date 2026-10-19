@@ -8,6 +8,9 @@
 //! in ([`Registry::authenticate_user`]) and puts the game on the account's list
 //! ([`Registry::games_of`]). A seat is bound once, to the first account that claims it
 //! ([`Registry::bind_seat`]), and an account holds one seat per game.
+//!
+//! A game is also made [`Visibility::Public`] or [`Visibility::Invite`], and each of its seats is
+//! held from the start (its token is in the create response) or open ([`SeatState`]).
 
 mod resume;
 
@@ -31,7 +34,9 @@ use crate::game_id::GameId;
 use crate::handle::{GameHandle, GameStatus};
 use crate::recipe::{Catalog, DeckRef, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
-use crate::records::{Binding, GameRecords, NewSeat, RecordError, UserGame};
+use crate::records::{
+    Binding, GameRecords, NewGame, NewSeat, RecordError, SeatState, UserGame, Visibility,
+};
 use crate::secret::{RandomError, SeatToken, TokenDigest, looks_like_token, random_seed};
 use crate::store::MemoryStore;
 use crate::user_id::UserId;
@@ -73,12 +78,25 @@ pub struct SeatRequest {
     pub deck: &'static DemoDeck,
 }
 
-/// A new game and the secret credential of each seat.
+/// What a new game is made with besides its seats.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub struct GameOptions {
+    /// Who may find and join the game; invite-only unless said otherwise.
+    pub visibility: Visibility,
+    /// How many seats, counted from seat 0, are held from the start: each gets its token in the
+    /// create response and the names of the request. The rest are open for a join to claim, their
+    /// requested names are ignored, and the decks are the ones requested. `None` holds them all,
+    /// as [`Registry::create`] does. The creator plays seat 0, so at least that one is held.
+    pub held: Option<usize>,
+}
+
+/// A new game and the secret credential of each seat that is held.
 #[derive(Debug)]
 pub struct Created {
     /// The game.
     pub id: GameId,
-    /// Every seat with its token, in seat order. This is the only time the tokens exist in clear.
+    /// Every held seat with its token, in seat order; open seats have none. This is the only time
+    /// the tokens exist in clear.
     pub seats: Vec<(PlayerId, SeatToken)>,
 }
 
@@ -87,13 +105,17 @@ pub struct Created {
 pub struct SeatSummary {
     /// The seat.
     pub seat: PlayerId,
-    /// Its display name.
+    /// Its display name; empty while the seat is open.
     pub name: String,
+    /// Whether nobody holds the seat and a join may claim it.
+    pub open: bool,
 }
 
 /// What anybody may learn about a game: no tokens, no cards, no seed.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PublicGame {
+    /// Who may find and join the game.
+    pub visibility: Visibility,
     /// Whether every seat is ready and the game began.
     pub started: bool,
     /// The seats and their names.
@@ -119,12 +141,51 @@ pub struct SeatAccess {
     pub removed: watch::Receiver<()>,
 }
 
+/// What the registry knows about one seat.
+#[derive(Debug, Clone)]
+struct SeatSlot {
+    state: SeatState,
+    /// What the lobby calls the seat; empty while it is open.
+    name: String,
+    /// The token's digest; none while the seat is open.
+    digest: Option<TokenDigest>,
+    /// The account the seat is bound to; guests' seats have none.
+    user: Option<UserId>,
+}
+
+impl SeatSlot {
+    /// A seat whose token was made with the game.
+    fn issued(name: String, digest: TokenDigest, user: Option<UserId>) -> SeatSlot {
+        SeatSlot {
+            state: SeatState::Issued,
+            name,
+            digest: Some(digest),
+            user,
+        }
+    }
+
+    /// A seat nobody holds.
+    fn open() -> SeatSlot {
+        SeatSlot {
+            state: SeatState::Open,
+            name: String::new(),
+            digest: None,
+            user: None,
+        }
+    }
+}
+
+/// What an entry starts from.
+struct Parts {
+    visibility: Visibility,
+    seats: Vec<SeatSlot>,
+}
+
 struct Entry {
     handle: GameHandle,
-    names: Vec<String>,
-    digests: Vec<TokenDigest>,
-    /// The account each seat is bound to, in seat order; guests' seats have none.
-    users: Vec<Option<UserId>>,
+    visibility: Visibility,
+    /// Every seat in seat order.
+    seats: Vec<SeatSlot>,
     created: Instant,
     /// When a sweep first saw the game finished.
     finished: Option<Instant>,
@@ -136,19 +197,12 @@ struct Entry {
 
 impl Entry {
     /// An entry for a game created at `created` that nobody has connected to yet.
-    fn new(
-        handle: GameHandle,
-        names: Vec<String>,
-        digests: Vec<TokenDigest>,
-        users: Vec<Option<UserId>>,
-        created: Instant,
-    ) -> Entry {
+    fn new(handle: GameHandle, parts: Parts, created: Instant) -> Entry {
         let (alive, _) = watch::channel(());
         Entry {
             handle,
-            names,
-            digests,
-            users,
+            visibility: parts.visibility,
+            seats: parts.seats,
             created,
             finished: None,
             last_connected: Instant::now(),
@@ -265,6 +319,16 @@ impl Registry {
         seats: &[SeatRequest],
         host: Option<UserId>,
     ) -> Result<Created, CreateError> {
+        self.create_with(seats, GameOptions::default(), host).await
+    }
+
+    /// Like [`Registry::create_for`] with the game's visibility and open seats from `options`.
+    pub async fn create_with(
+        &self,
+        seats: &[SeatRequest],
+        options: GameOptions,
+        host: Option<UserId>,
+    ) -> Result<Created, CreateError> {
         let seed = match self.shared.fixed_seed {
             Some(seed) => seed,
             None => random_seed()?,
@@ -276,7 +340,7 @@ impl Registry {
         let recipe = GameRecipe::normal(seed, decks).with_fingerprints()?;
         let setup = recipe.build()?;
         let names = seats.iter().map(|s| s.name.clone()).collect();
-        self.admit(setup, names, Some(recipe), host).await
+        self.admit(setup, names, Some(recipe), host, options).await
     }
 
     /// Creates a game from a recipe the caller made, whose decks may name cards by oracle id: their
@@ -289,13 +353,25 @@ impl Registry {
         names: Vec<String>,
         host: Option<UserId>,
     ) -> Result<Created, CreateError> {
+        self.create_from_recipe_with(recipe, names, host, GameOptions::default())
+            .await
+    }
+
+    /// Like [`Registry::create_from_recipe`] with the game's visibility and open seats from `options`.
+    pub async fn create_from_recipe_with(
+        &self,
+        recipe: GameRecipe,
+        names: Vec<String>,
+        host: Option<UserId>,
+        options: GameOptions,
+    ) -> Result<Created, CreateError> {
         let catalog = match &self.shared.cards {
             Some(cards) => cards.catalog_for(&recipe).await?,
             None => Catalog::default(),
         };
         let recipe = recipe.with_fingerprints_from(&catalog)?;
         let setup = recipe.build_with(&catalog)?;
-        self.admit(setup, names, Some(recipe), host).await
+        self.admit(setup, names, Some(recipe), host, options).await
     }
 
     /// Registers a game built by the caller (a missing name becomes "Seat N"). Needs a tokio runtime.
@@ -307,7 +383,8 @@ impl Registry {
         setup: GameSetup,
         names: Vec<String>,
     ) -> Result<Created, CreateError> {
-        self.admit(setup, names, None, None).await
+        self.admit(setup, names, None, None, GameOptions::default())
+            .await
     }
 
     /// Gives a validated setup its tokens, records it when it has a recipe and starts its actor.
@@ -318,16 +395,24 @@ impl Registry {
         mut names: Vec<String>,
         recipe: Option<GameRecipe>,
         host: Option<UserId>,
+        options: GameOptions,
     ) -> Result<Created, CreateError> {
         let seats = setup.players.len();
         names.truncate(seats);
         while names.len() < seats {
             names.push(format!("Seat {}", names.len() + 1));
         }
-        let tokens = (0..seats)
+        let held = options.held.map_or(seats, |held| held.max(1).min(seats));
+        // An open seat has no name until a join takes it.
+        for name in names.iter_mut().skip(held) {
+            name.clear();
+        }
+        let tokens = (0..held)
             .map(|_| SeatToken::generate())
             .collect::<Result<Vec<_>, _>>()?;
-        let digests: Vec<TokenDigest> = tokens.iter().map(SeatToken::digest).collect();
+        let digests: Vec<Option<TokenDigest>> = (0..seats)
+            .map(|seat| tokens.get(seat).map(SeatToken::digest))
+            .collect();
         // Before anything is written, so a setup the actor would refuse leaves no record.
         setup.validate().map_err(StartError::Setup)?;
 
@@ -349,19 +434,31 @@ impl Registry {
         let users: Vec<Option<UserId>> = (0..seats)
             .map(|seat| if seat == 0 && persistent { host } else { None })
             .collect();
+        let slots: Vec<SeatSlot> = names
+            .iter()
+            .zip(&digests)
+            .zip(&users)
+            .map(|((name, digest), user)| match digest {
+                Some(digest) => SeatSlot::issued(name.clone(), *digest, *user),
+                None => SeatSlot::open(),
+            })
+            .collect();
         let handle = match (&self.shared.records, &recipe) {
             (Some(records), Some(recipe)) => {
-                let rows: Vec<NewSeat> = names
+                let rows: Vec<NewSeat> = slots
                     .iter()
-                    .zip(&digests)
-                    .zip(&users)
-                    .map(|((name, digest), user)| NewSeat {
-                        name: name.clone(),
-                        digest: *digest.as_bytes(),
-                        user: *user,
+                    .map(|slot| NewSeat {
+                        name: slot.name.clone(),
+                        digest: slot.digest.as_ref().map(|digest| *digest.as_bytes()),
+                        state: slot.state,
+                        user: slot.user,
                     })
                     .collect();
-                records.insert(id, recipe, &rows).await?;
+                let meta = NewGame {
+                    visibility: options.visibility,
+                    code_digest: None,
+                };
+                records.insert(id, recipe, &meta, &rows).await?;
                 let recorder = Recorder::new(records.clone(), id, vec![false; seats]);
                 let game = self.shared.game;
                 let spawned = spawn_named(
@@ -390,10 +487,12 @@ impl Registry {
                 names.clone(),
             )?,
         };
-        self.games().insert(
-            id,
-            Entry::new(handle, names, digests, users, Instant::now()),
-        );
+        let parts = Parts {
+            visibility: options.visibility,
+            seats: slots,
+        };
+        self.games()
+            .insert(id, Entry::new(handle, parts, Instant::now()));
         let seats = tokens
             .into_iter()
             .enumerate()
@@ -407,6 +506,11 @@ impl Registry {
         self.games().get(&id).map(|entry| entry.handle.clone())
     }
 
+    /// Who may find and join a live game; `None` if there is no such game.
+    pub fn visibility(&self, id: GameId) -> Option<Visibility> {
+        self.games().get(&id).map(|entry| entry.visibility)
+    }
+
     /// Maps a presented token to its seat; `None` for an unknown game and a wrong token alike.
     pub fn authenticate(&self, id: GameId, token: &str) -> Option<SeatAccess> {
         if !looks_like_token(token) {
@@ -417,8 +521,12 @@ impl Registry {
         let entry = games.get(&id)?;
         // Check every seat so the time taken does not say which one matched.
         let mut found = None;
-        for (seat, digest) in entry.digests.iter().enumerate() {
-            if digest.matches(&presented) {
+        for (seat, slot) in entry.seats.iter().enumerate() {
+            if slot
+                .digest
+                .as_ref()
+                .is_some_and(|digest| digest.matches(&presented))
+            {
                 found = Some(seat);
             }
         }
@@ -435,7 +543,10 @@ impl Registry {
     pub fn authenticate_user(&self, id: GameId, user: UserId) -> Option<SeatAccess> {
         let games = self.games();
         let entry = games.get(&id)?;
-        let seat = entry.users.iter().position(|bound| *bound == Some(user))?;
+        let seat = entry
+            .seats
+            .iter()
+            .position(|slot| slot.user == Some(user))?;
         Some(SeatAccess {
             game: id,
             handle: entry.handle.clone(),
@@ -461,25 +572,31 @@ impl Registry {
             let Some(entry) = games.get(&game) else {
                 return Ok(Binding::Missing);
             };
-            match entry.users.get(seat.index()) {
+            match entry.seats.get(seat.index()) {
+                // An open seat has no token to bring anybody to it.
                 None => return Ok(Binding::Missing),
-                Some(Some(holder)) => {
+                Some(slot) if slot.state == SeatState::Open => return Ok(Binding::Missing),
+                Some(SeatSlot {
+                    user: Some(holder), ..
+                }) => {
                     return Ok(if *holder == user {
                         Binding::Already
                     } else {
                         Binding::Taken
                     });
                 }
-                Some(None) if entry.users.contains(&Some(user)) => return Ok(Binding::Elsewhere),
-                Some(None) => {}
+                Some(_) if entry.seats.iter().any(|slot| slot.user == Some(user)) => {
+                    return Ok(Binding::Elsewhere);
+                }
+                Some(_) => {}
             }
         }
         let outcome = records.bind_user(game, seat, user).await?;
         if outcome == Binding::Bound
             && let Some(entry) = self.games().get_mut(&game)
-            && let Some(slot) = entry.users.get_mut(seat.index())
+            && let Some(slot) = entry.seats.get_mut(seat.index())
         {
-            *slot = Some(user);
+            slot.user = Some(user);
         }
         Ok(outcome)
     }
@@ -496,22 +613,26 @@ impl Registry {
 
     /// The public facts of a game; `None` if there is no such game or its actor is gone.
     pub async fn describe(&self, id: GameId) -> Option<PublicGame> {
-        let (handle, names) = {
+        let (handle, visibility, seats) = {
             let games = self.games();
             let entry = games.get(&id)?;
-            (entry.handle.clone(), entry.names.clone())
+            let seats: Vec<SeatSummary> = entry
+                .seats
+                .iter()
+                .enumerate()
+                .map(|(seat, slot)| SeatSummary {
+                    seat: PlayerId::from_index(seat),
+                    name: slot.name.clone(),
+                    open: slot.state == SeatState::Open,
+                })
+                .collect();
+            (entry.handle.clone(), entry.visibility, seats)
         };
         let status = handle.status().await.ok()?;
         Some(PublicGame {
+            visibility,
             started: status.started,
-            seats: names
-                .into_iter()
-                .enumerate()
-                .map(|(seat, name)| SeatSummary {
-                    seat: PlayerId::from_index(seat),
-                    name,
-                })
-                .collect(),
+            seats,
             connected: status.connected,
             ready: status.ready,
             result: status.result,
