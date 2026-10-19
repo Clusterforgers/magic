@@ -260,6 +260,7 @@ Errors name the file and the path inside it; all are collected.
 - Hand-written files win over generated ones for the same oracle id. Generated rules are `card_rules` rows (oracle id, JSON, status, fingerprint); hand-written ones are repository files; `Library::from_sources` takes both.
 - A line the compiler cannot read becomes `Ability::Manual { reason, span }` and the card `Partial`; if nothing is read the card is `Manual`. Each compiled card is rendered back to English and compared with its oracle text in the golden tests.
 - A `Manual` card is cast and resolved without automatic effects; the table sees the oracle text with the unsupported spans marked and uses the generic logged actions. Every seat sees the card's support (`deck-check.md`).
+- Prior art for the templates: phase.rs's oracle parser (`crates/engine/src/parser` in its repository; MIT or Apache-2.0) and XMage (MIT). Forge and Magarena are GPL-3.0: study only, copy nothing.
 
 ## Worked example: Archon of Cruelty
 
@@ -398,3 +399,5 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | (k) Layers | Ordering, dependencies, timestamps, characteristic-defining abilities, counters, auras, equipment | (c) |
 
 (d) to (k) run in parallel: each owns its stub files and no two edit one file.
+
+- Scope of (f), the keyword actions of CR 701: draw, discard, mill, shuffle, scry, surveil, fateseal, search, reveal, sacrifice, destroy, exile, counter, create tokens, populate, investigate, fight, explore, proliferate, amass, connive, learn, transform, meld, attach, regenerate, goad, monstrosity, adapt, bolster, support, venture. Arena-only digital actions (conjure, seek, specialize) are out of scope; a card that needs one is `Unplayable` (`deck-check.md`).
