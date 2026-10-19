@@ -3,7 +3,8 @@
 //!
 //! All of them work through the same path as a seat's own answer ([`crate::running::Running::answer`]), so what a
 //! pass or a timeout does to the log, the store and every projection is exactly what the seat's click would have done.
-//! When a seat is asked is decided in [`crate::windows`] and when a yield stops in [`crate::yields`], alone.
+//! When a seat is asked is decided in [`crate::windows`] and when a yield stops in [`crate::yields`], alone. A seat that
+//! cannot act at a default window is passed for the same way once its dwell ([`crate::dwell`]) is over.
 
 use std::time::Duration;
 
