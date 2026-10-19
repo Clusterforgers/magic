@@ -8,6 +8,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { api as sharedApi } from '@/net/api'
 import type { Api } from '@/net/api'
+import { ContinueGames } from './ContinueGames'
 import { GuestJoinDialog } from './GuestJoinDialog'
 import { JoinWithCode } from './JoinWithCode'
 import { OpenGamesPanel } from './OpenGamesPanel'
@@ -42,6 +43,7 @@ export function PlayPage({ api = sharedApi }: PlayPageProps) {
           Create game
         </Link>
       </header>
+      <ContinueGames />
       <JoinWithCode inputRef={code} />
       {failure === null ? null : (
         <Alert variant="destructive">

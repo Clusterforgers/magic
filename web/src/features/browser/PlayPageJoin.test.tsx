@@ -25,7 +25,8 @@ const BO = lobbyRow({ game: 'g1', host: 'Bo', filled: 2, total: 4 })
 
 function accountStore(status: AuthStatus, me?: AccountsApi['me']) {
   return createAuthStore({
-    api: { ...offlineAccounts, ...(me === undefined ? {} : { me }) },
+    // `Continue` asks for the user's games when someone is signed in; an empty list keeps this file about joining.
+    api: { ...offlineAccounts, myGames: () => Promise.resolve([]), ...(me === undefined ? {} : { me }) },
     initial: { status, user: status === 'signed-in' ? ADA : null },
   })
 }
