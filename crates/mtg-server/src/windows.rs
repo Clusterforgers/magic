@@ -419,6 +419,7 @@ mod tests {
             player: ME,
             kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
                 blockers: Vec::new(),
+                min_blockers: Vec::new(),
             }),
         };
         let stops = Stops::new(2);
@@ -703,6 +704,7 @@ mod tests {
             player: FOE,
             kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
                 blockers: Vec::new(),
+                min_blockers: Vec::new(),
             }),
         };
         let verdict = verdict(
@@ -737,5 +739,49 @@ mod tests {
             &mut yields,
             engine.state()
         ));
+    }
+
+    #[test]
+    fn a_triggered_ability_on_the_stack_is_an_object_of_its_controller_to_every_other_seat() {
+        let drifter = mtg_testkit::trigger_cards::watcher(
+            "Drifter",
+            mtg_testkit::trigger_cards::when::this_enters(),
+            vec![mtg_testkit::cards::draw(1)],
+        );
+        let setup = Scenario::new(2).hand(0, [drifter]).setup().unwrap();
+        let mut engine = Engine::new(setup).unwrap();
+        let decision = engine.decision().unwrap().clone();
+        let DecisionKind::Priority(options) = decision.kind else {
+            panic!("seat 0 holds priority");
+        };
+        engine
+            .apply(Answer::Priority(PriorityAction::CastSpell(
+                options.castable[0],
+            )))
+            .unwrap();
+        engine
+            .apply(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))
+            .unwrap();
+        for _ in 0..3 {
+            engine
+                .apply(Answer::Priority(PriorityAction::Pass))
+                .unwrap();
+        }
+        // The creature resolved; its trigger waits on the stack for seat 1, who holds priority after seat 0 passed.
+        let stack = engine.state().stack();
+        assert_eq!(stack.len(), 1);
+        let ability = engine.state().object(stack[0]).unwrap();
+        assert_eq!(ability.kind(), mtg_engine::object::ObjectKind::Ability);
+        assert_eq!(engine.decision().unwrap().player, ME);
+
+        let theirs = Window::at(engine.state(), ME);
+        assert!(theirs.others_object && theirs.stack, "{theirs:?}");
+        assert!(theirs.is_default() && theirs.dwells());
+        let mine = Window::at(engine.state(), FOE);
+        assert!(mine.stack && !mine.others_object, "{mine:?}");
+        // A seat that cannot answer it waits a dwell, one that can is asked: the trigger is a window like a spell.
+        let mode = FullControlMode::Off;
+        assert_eq!(judge(theirs, false, false, mode, false), Verdict::Dwell);
+        assert_eq!(judge(theirs, true, false, mode, false), Verdict::Ask);
     }
 }

@@ -1,17 +1,28 @@
-//! Goal: the table cannot tell a seat with a play from one without by what it is sent or when, at the windows the dwell hides. In two games with the same seed that differ by one card in a hidden hand, an instant the seat can cast against one it cannot afford, and an attack that ends the game, the other seat (able to act or idle) is sent the same kinds of message, batches and views, each batch arriving 250 to 700 ms after the one before it on a paused clock, and nothing that depends on the hand (a yield, a stop, an error); with the dwell switched off the same comparison finds the difference, and so it does in a seat's own main phase with an empty stack, which the dwell leaves alone.
+//! Goal: the table cannot tell a seat with a play from one without by what it is sent or when, at the windows the dwell hides. In two games with the same seed that differ by one card in a hidden hand, an instant the seat can cast against one it cannot afford, an attack that ends the game and a creature spell with the ability that triggers as it enters, the other seat (able to act or idle) is sent the same kinds of message, batches and views, each batch arriving 250 to 700 ms after the one before it on a paused clock, and nothing that depends on the hand (a yield, a stop, an error); with the dwell switched off the same comparison finds the difference, and so it does in a seat's own main phase with an empty stack, which the dwell leaves alone.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
 
+use std::sync::Arc;
 use std::time::Duration;
 
 use common::{Tape, Taped, game_id, kind, ms, passive, roomy, seat};
+use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
+use mtg_cards::effect::Effect;
+use mtg_cards::refs::{Ref, Targetable};
+use mtg_cards::value::Amount;
+use mtg_core::card::CardType;
+use mtg_core::mana::ManaCost;
+use mtg_engine::choose::{Target, TargetChoice};
 use mtg_engine::combat::AttackTarget;
+use mtg_engine::decision::{PayChoice, PriorityAction};
 use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision, DecisionKind, Event, GameSetup};
 use mtg_protocol::{ClientMessage, ServerMessage};
 use mtg_server::{Dwell, EventStore, GameConfig, MemoryStore, Pace, spawn_game_with};
-use mtg_testkit::cards::{free_creature, giant, instant};
+use mtg_testkit::cards::{damage, free_creature, giant, instant};
+use mtg_testkit::trigger_cards::{aimed_at, creature_with, trigger as ability, when};
 use mtg_testkit::{Scenario, ready};
 use rstest::rstest;
 use tokio::time::Instant;
@@ -21,6 +32,10 @@ const THINKING_MS: [[u64; 8]; 2] = [
     [450, 620, 530, 680, 360, 640, 400, 560],
     [610, 380, 660, 500, 560, 340, 690, 460],
 ];
+
+/// The same for the games over the stack, where seat 0 casts: its two answers to a cast (the spell, the payment) come in
+/// one batch, so together they fit the dwell range as well.
+const STACK_THINKING_MS: [[u64; 8]; 2] = [[300; 8], THINKING_MS[1]];
 
 /// Batches the first of the other seats is sent before a game that has not ended is cut.
 const BATCHES: usize = 12;
@@ -123,6 +138,18 @@ fn finished(tape: &Tape) -> bool {
 /// attacks), and `holder` is the one the other seat is watching. It ends with the game, after [`BATCHES`] batches or
 /// after a minute.
 async fn play(setup: GameSetup, holder: usize, dwell: Dwell) -> Run {
+    play_with(setup, holder, dwell, [attacking, passive], THINKING_MS).await
+}
+
+/// [`play`] with the answers of the two seats given (what they do with each decision they are sent) and how long each
+/// takes to give them.
+async fn play_with(
+    setup: GameSetup,
+    holder: usize,
+    dwell: Dwell,
+    brains: [fn(&Decision) -> Answer; 2],
+    thinking: [[u64; 8]; 2],
+) -> Run {
     let since = Instant::now();
     let store = MemoryStore::new();
     let config = GameConfig {
@@ -133,9 +160,8 @@ async fn play(setup: GameSetup, holder: usize, dwell: Dwell) -> Run {
         ..roomy()
     };
     let handle = spawn_game_with(game_id(1), setup, store.clone(), config).unwrap();
-    let brains: [fn(&Decision) -> Answer; 2] = [attacking, passive];
     let mut tapes = Vec::new();
-    for (n, think) in THINKING_MS.iter().enumerate() {
+    for (n, think) in thinking.iter().enumerate() {
         let inbox = handle.join(seat(n)).await.unwrap();
         let think = think
             .iter()
@@ -372,6 +398,143 @@ async fn with_the_dwell_switched_off_the_same_comparison_finds_the_tell(#[case] 
             .iter()
             .any(|difference| difference.contains("messages it is sent differ")),
         "and so does the stream of messages: {found:?}"
+    );
+}
+
+/// A bot that casts whatever it can (at seat 1 when it can aim there, else at the first target, paying automatically)
+/// and answers passively otherwise.
+fn casting(decision: &Decision) -> Answer {
+    match &decision.kind {
+        DecisionKind::Priority(options) => Answer::Priority(match options.castable.first() {
+            Some(spell) => PriorityAction::CastSpell(*spell),
+            None => PriorityAction::Pass,
+        }),
+        DecisionKind::PayMana(_) => Answer::PayMana(PayChoice::Auto),
+        DecisionKind::ChooseTargets(options) => {
+            let foe = options
+                .legal
+                .iter()
+                .copied()
+                .find(|target| matches!(target, Target::Player(p) if p.index() == 1));
+            let first = options.legal.iter().copied().take(options.min as usize);
+            Answer::ChooseTargets(TargetChoice::Targets(
+                foe.map_or_else(|| first.collect(), |foe| vec![foe]),
+            ))
+        }
+        _ => passive(decision),
+    }
+}
+
+/// Seat 0 casts, in its first main phase of turn 2, a spell that makes its opponent lose the three life it has (with
+/// `trigger`, a creature whose ability deals three damage to an opponent as it enters). The spell and, with `trigger`,
+/// then the ability it sets off wait on the stack in the windows of seat 1, and the last of them ends the game. Seat 1
+/// holds the card the two games differ by.
+fn stack_game(card: Card, trigger: bool) -> GameSetup {
+    let spell = if trigger {
+        let enters = aimed_at(
+            ability(when::this_enters(), vec![damage(Ref::Target(0), 3)]),
+            Targetable::Opponent,
+        );
+        creature_with("Drifter", vec![enters])
+    } else {
+        Arc::new(
+            CardDefinition::new("Doom")
+                .with_type(CardType::Instant)
+                .with_mana_cost(ManaCost::default())
+                .with_rules(Ability::Spell {
+                    targets: Vec::new(),
+                    effects: vec![Effect::LoseLife {
+                        who: Ref::Opponents,
+                        amount: Amount::Fixed(3),
+                    }],
+                }),
+        )
+    };
+    quiet()
+        .at(2, 0, Step::Main1)
+        .hand(0, [spell])
+        .hand(1, [trick(card)])
+        .life(1, 3)
+        .setup()
+        .unwrap()
+}
+
+#[rstest]
+#[case::a_spell_waits_on_the_stack(false, 1)]
+#[case::a_spell_and_then_its_trigger_wait_on_the_stack(true, 2)]
+#[tokio::test(start_paused = true)]
+async fn the_table_cannot_tell_a_seat_with_a_play_from_one_without_while_a_spell_or_a_trigger_waits_on_the_stack(
+    #[case] trigger: bool,
+    #[case] windows: usize,
+) {
+    let brains: [fn(&Decision) -> Answer; 2] = [casting, passive];
+    let with_a_play = play_with(
+        stack_game(Card::Castable, trigger),
+        1,
+        Dwell::DEFAULT,
+        brains,
+        STACK_THINKING_MS,
+    )
+    .await;
+    let without = play_with(
+        stack_game(Card::Unaffordable, trigger),
+        1,
+        Dwell::DEFAULT,
+        brains,
+        STACK_THINKING_MS,
+    )
+    .await;
+
+    // Seat 0, which cast the spell, cannot tell what seat 1 held in the windows over the stack...
+    assert_eq!(differences(&with_a_play, &without), Vec::<String>::new());
+    // ...though the games differ in one hidden card and in nothing the log says...
+    assert_eq!(with_a_play.log, without.log);
+    assert_ne!(with_a_play.hash, without.hash);
+    // ...so that seat 1 is asked in each of its windows over the spell or the trigger in one game and in none in the
+    // other.
+    assert_eq!(asked(&with_a_play), vec![true; windows]);
+    assert_eq!(asked(&without), Vec::<bool>::new());
+    let cast = with_a_play
+        .log
+        .iter()
+        .any(|e| matches!(e, Event::SpellCast { .. }));
+    let triggered = with_a_play
+        .log
+        .iter()
+        .any(|e| matches!(e, Event::AbilityPutOnStack(put) if put.cause.is_some()));
+    assert!(cast && triggered == trigger, "the games used the stack");
+}
+
+#[rstest]
+#[case::a_spell_waits_on_the_stack(false)]
+#[case::a_spell_and_then_its_trigger_wait_on_the_stack(true)]
+#[tokio::test(start_paused = true)]
+async fn with_the_dwell_switched_off_the_same_comparison_finds_the_tell_over_the_stack(
+    #[case] trigger: bool,
+) {
+    let brains: [fn(&Decision) -> Answer; 2] = [casting, passive];
+    let with_a_play = play_with(
+        stack_game(Card::Castable, trigger),
+        1,
+        Dwell::OFF,
+        brains,
+        STACK_THINKING_MS,
+    )
+    .await;
+    let without = play_with(
+        stack_game(Card::Unaffordable, trigger),
+        1,
+        Dwell::OFF,
+        brains,
+        STACK_THINKING_MS,
+    )
+    .await;
+    let found = differences(&with_a_play, &without);
+    assert!(
+        found
+            .iter()
+            .any(|difference| difference.contains("batches differ")),
+        "the pace tells the games apart without a dwell: {found:?}"
     );
 }
 

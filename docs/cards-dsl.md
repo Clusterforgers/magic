@@ -2,7 +2,7 @@
 
 Rules data for cards (`mtg-cards`) and the pipeline that runs it (`mtg-engine`).
 
-Scope: the data model, loader, validation, support records, a 40-card corpus and card assembly are implemented in `crates/mtg-cards`, with the engine's capabilities in `mtg-engine` and the card source in `mtg-server`. The pipeline core ("Execution", "Decisions the effects need", "Snapshots") is implemented in `mtg-engine` for targets, drawing, life and damage; "Triggers, replacement and layers" and "Tasks" are the contract of the other M3 engine tasks. Related: `engine.md`, `protocol.md`, `deck-check.md`, `arena-flow.md`.
+Scope: the data model, loader, validation, support records, a 40-card corpus and card assembly are implemented in `crates/mtg-cards`, with the engine's capabilities in `mtg-engine` and the card source in `mtg-server`. The pipeline core ("Execution", "Decisions the effects need", "Snapshots") is implemented in `mtg-engine` for targets, drawing, life and damage; "Triggers, replacement and layers" is implemented for triggers (detection, the queue, order, delayed triggers, the intervening "if" and the limit); its replacement and layer rows and "Tasks" are the contract of the other M3 engine tasks. Related: `engine.md`, `protocol.md`, `deck-check.md`, `arena-flow.md`.
 
 ## Summary
 
@@ -192,7 +192,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 | Topic | Rule |
 |---|---|
-| Primitives | `resolve/prim/<effect>.rs` holds one file per `Effect` variant. Draw, DealDamage, GainLife and LoseLife run and are in `Caps`; every other file is a stub that returns `ResolveError::Unsupported("Effect.<Name>")` and is not in `Caps`, so no game offers a card that uses it. A task replaces its stub and adds its name to `RUNS` in `caps.rs`. |
+| Primitives | `resolve/prim/<effect>.rs` holds one file per `Effect` variant. Draw, DealDamage, GainLife, LoseLife and DelayedTrigger run and are in `Caps`; every other file is a stub that returns `ResolveError::Unsupported("Effect.<Name>")` and is not in `Caps`, so no game offers a card that uses it. A task replaces its stub and adds its name to `RUNS` in `caps.rs`. |
 | Steps | One effect is one step. `If`, `May`, `Pay` and `Modal` are entered by position: `[2, 1, 0]` is the first effect of the second list of the third effect (`resolve/tree.rs`). |
 | Values | `Scope` in `resolve/value.rs` reads `Ref`, `Selector`, `Amount` and `Condition` from the state, the bindings, the choices and the snapshots, and changes nothing. It refuses by name what it cannot read yet: loyalty, counters, X, divided amounts and kicker (`ResolveError::Unsupported`). |
 | Replacement | The events of a step pass through `replace::process(state, proposed)` before they are logged; it returns them unchanged until the replacement task. |
@@ -200,7 +200,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 ### Decisions the effects need
 
-`Decision.player` names who answers, so a decision may go to any seat. Every effect decision carries `source` (the object that asks). Decisions for a seat that is not the active player have a response clock (`server.md`). `ChooseTargets` is asked today; the other kinds in the table, `PayMana` aside, exist as options, answer and wire types in `choose/<kind>.rs` and have a placeholder prompt in the web, which their task replaces.
+`Decision.player` names who answers, so a decision may go to any seat. Every effect decision carries `source` (the object that asks). Decisions for a seat that is not the active player have a response clock (`server.md`). `ChooseTargets` and `OrderTriggers` are asked and have their prompts in the web; the other kinds in the table, `PayMana` aside, exist as options, answer and wire types in `choose/<kind>.rs` and have a placeholder prompt in the web, which their task replaces.
 
 | Decision | Who answers | When | Corpus cards that need it |
 |---|---|---|---|
@@ -213,7 +213,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | `YesNo` | any seat | resolution ("may", pay or not) | Eternal Witness, Jace +2, Rhystic Study (both players), Delver |
 | `ChooseOption` | any seat | resolution | Hero of Bladehold in multiplayer (which defender), Treasure (colour) |
 | `ChooseCosts` | controller | announcement (optional costs; alternative costs are separate `castable` entries) | Burst Lightning, Mulldrifter, Faithless Looting |
-| `OrderTriggers` | controller | two or more triggers of one controller | Hero of Bladehold, Mulldrifter |
+| `OrderTriggers` | controller | two or more triggers of one controller that are not all of one source and ability | a card with two triggers on one event |
 | `ChooseReplacement` | affected player | two or more applicable replacement effects | Anointed Procession with a second token effect |
 | `PayMana` (exists) | any seat | announcement; "pay" effects | all spells; Rhystic Study, Izzet Charm |
 
@@ -233,12 +233,13 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 | Topic | Rule |
 |---|---|
-| Detection | After a batch is folded, `triggers::detect(pre, events, post)` returns `AbilityTriggered { source, ability, cause }`. Look-back patterns (leaves the battlefield, dies, sacrificed) match against `pre`, the rest against `post`. Delayed triggers are registered in `GameState.delayed` with their pattern, the creating resolution's bindings and a duration. |
-| Pattern events | `ZoneChange`: `LandPlayed`, a permanent spell's `SpellResolved`, `CreatureDied`, `CardDiscarded`, `CardDrawn`, and `ZoneChanged` for the rest. `Attacks`: `AttackersDeclared`. `SpellCast`: `SpellCast`. `Sacrificed`: `ZoneChanged` with cause sacrifice. `StepBegins`: `StepBegan`. `BecomesTarget`: a targeting event. A pattern without an event is not in `Caps`. |
-| Queue and order | `GameState.pending_triggers` fills at detection. Before a player would receive priority (CR 117.5, 603.3) the active player's triggers go on the stack, then each other player's in turn order (CR 101.4). A controller with two or more asks `OrderTriggers`; each trigger asks `ChooseTargets`. State-based actions run before each sweep; the sweep repeats until none is pending. |
-| Intervening if | `intervening_if` is checked when the event happens and again on resolution; if false then, the ability does nothing (CR 603.4). |
+| Detection | After a batch is folded, `triggers::detect(pre, events, post)` returns `Triggered { source, ability, controller, cause, snapshot, delayed }`, logged as `AbilityTriggered`. A move out of the battlefield (dies, leaves, sacrificed) is judged against `pre`: the abilities that worked then and the objects as they were (CR 603.10a); every other event against `post`. An ability works from the battlefield (a `from` other than that is not in `Caps`). |
+| Pattern events | `ZoneChange`: `LandPlayed`, `SpellResolved`, `CreatureDied`, `CardDiscarded`, `CardDrawn`, `ZoneChanged` and the end of a spell that did not resolve. `Attacks`: each attacker of `AttackersDeclared`. `SpellCast`: `SpellCast`, with the caster and the spell as subjects. `Sacrificed`: `ZoneChanged` with cause sacrifice, with the permanent and who sacrificed it. `StepBegins`: `StepBegan`, with the active player. `BecomesTarget`: each object among the targets of `SpellCast` and `AbilityPutOnStack`, with the object and what targets it. |
+| Queue and order | `GameState.pending_triggers` fills at detection. Before a player would receive priority (CR 117.5, 603.3) the active player's triggers go on the stack, then each other player's in turn order (CR 101.4). A controller with two or more asks `OrderTriggers` once, unless they are all of one source and ability; otherwise they go on in the order they triggered. Each trigger chooses its targets as it goes on (CR 603.3d, logged) and is removed if it cannot. State-based actions run before each sweep; the sweep repeats until none is pending, and a trigger that triggers during a sweep waits for the next round. |
+| Intervening if | `intervening_if` is checked when the event happens, against the same state as the pattern, and again as the ability begins to resolve; if false then, the ability does nothing and ends `Lapsed` (CR 603.4). |
 | `AnyOf` | Joins patterns ("enters or attacks"); one event triggers the ability once. |
-| `limit` | `OncePerTurn` is counted per object in state and reset at the turn. |
+| `limit` | `OncePerTurn` is kept per object in state, reset at the turn, and holds for triggered and activated abilities. |
+| Delayed triggers | `Effect::DelayedTrigger` logs `DelayedTriggerCreated` and adds a `Delayed` to `GameState.delayed`: its pattern, effects, controller, the names the resolution had bound (the ability starts with them) and a duration. It triggers on the next event its pattern describes and is then gone (`once`), else it lasts until the end of the turn it was set up in. A duration that ran out, or a controller who left the game, drops it. |
 | Replacement step | Effect steps and rules code produce proposed events; `replace::process(state, proposed)` returns the final events or needs a choice. Only "would" events pass through it: damage, life, draw, discard, mill, zone change, counters, tokens, tap. A replacement is data (a `Replacement` ability or a registered shield with a duration) and applies at most once per event (CR 614.5). |
 | Replacement choice | The affected player picks among several (`ChooseReplacement`, CR 616.1), self-replacement first (CR 614.15). The choice is a journal entry, so `process` is a pure function of state and journal. |
 | Prevention | `ReplaceBy::Prevent`. `GameRule::DamageCantBePrevented` wins over any shield. |
@@ -253,8 +254,8 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | Item | Rule |
 |---|---|
 | Data | `{"Keyword": {"Ward": "{2}"}}`. `Keyword` is an enum in `keyword.rs` with `name()` in Scryfall's spelling (compared with the record's `keywords`). It declares every keyword the roadmap lists. |
-| Engine | `keywords/mod.rs` maps each variant to a `KeywordRules` value defined in `keywords/<name>.rs`, all created as stubs. A keyword task replaces its stub and adds its `Caps` entry there. |
-| Hooks | `restricts_blocking`, `restricts_targeting`, `modifies_damage`, `grants_timing`, `adds_abilities`. Blocking (`stops_block`), targeting (`protects`, part of `legal_targets`) and casting at instant speed (`grants_instant_timing`) already call theirs; every stub answers "no", so no keyword changes a game yet. A keyword expressible in the DSL (equip, cycling, prowess, battle cry) returns abilities from `adds_abilities` and is tested like any card; one that bends rules machinery (flying, first strike, trample) is a hook in combat or damage code. |
+| Engine | `keywords/mod.rs` maps each variant to a `KeywordRules` value defined in `keywords/<name>.rs`; a keyword without its task is a stub that changes nothing. A keyword task replaces its stub and adds its `Caps` entry in `caps.rs`. `keywords_of(state, id)` is the one reader of the keywords an object has: the printed ones, with layer 6 (`AddKeyword`, `RemoveKeyword`) joining there. The twelve keywords of combat are built (`engine.md`, Combat and keywords). |
+| Hooks | `restricts_blocking`, `answers_evasion`, `min_blockers`, `forbids_attacking`, `ignores_summoning_sickness`, `attacks_untapped`, `is_indestructible`, `modifies_damage`, `restricts_targeting`, `grants_timing`, `adds_abilities`. Combat, damage, state-based actions, targeting (`protects`, part of `legal_targets`) and casting at instant speed (`grants_instant_timing`) call theirs; a stub answers "no". A keyword expressible in the DSL (equip, cycling, prowess, battle cry) returns abilities from `adds_abilities` and is tested like any card; one that bends rules machinery (flying, first strike, trample) is a hook in combat or damage code. |
 
 ## Validation
 
@@ -327,8 +328,8 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 
 | Phase | Engine behaviour |
 |---|---|
-| Detection | `SpellResolved` or `ZoneChanged { to: Battlefield }` matches the `ZoneChange` arm against the state after the event; `AttackersDeclared` matches `Attacks`. `AbilityTriggered { source, ability: 1, cause }` carries a snapshot of the Archon. One event triggers once. |
-| On the stack | At the next priority sweep: `ChooseTargets` goes to the controller (answered by the engine with one legal opponent and no Full Control); `AbilityPutOnStack` creates the ability object with the chosen player. |
+| Detection | `SpellResolved` or `ZoneChanged { to: Battlefield }` matches the `ZoneChange` arm against the state after the event; `AttackersDeclared` matches `Attacks`. `AbilityTriggered` names the Archon, ability 1, its controller and a snapshot of it. One event triggers once. |
+| On the stack | At the next sweep, before a player receives priority: `ChooseTargets` goes to the controller (`triggered`, with no cancel); `AbilityPutOnStack` creates the ability object with the chosen player. |
 | Recheck | If the opponent is no longer a legal target (left the game, gained hexproof) the ability fizzles and nothing happens, including the controller's draw and life gain (CR 608.2b). |
 | Step 0 `Sacrifice` | `ChooseCards` to the **target** player (not the controller) over their creatures and planeswalkers; none: `NothingToDo`. Then `ChoiceMade`, `ZoneChanged { cause: Sacrificed }`, `StepDone`. |
 | Step 1 `Discard` | `ChooseCards` from the target's hand, addressed and private to them; `CardDiscarded`, `StepDone`. |

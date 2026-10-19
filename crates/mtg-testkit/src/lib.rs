@@ -13,13 +13,16 @@ pub mod harness;
 pub mod invariants;
 pub mod scenario;
 pub mod script_error;
+pub mod trigger_cards;
 pub mod windows;
 
 pub use bot::RandomBot;
-pub use decks::{fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup};
+pub use decks::{
+    fuzz_setup, keyword_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,
+};
 pub use driver::Driver;
 pub use harness::{FailureKind, GameFailure, GameOutcome, PlayOptions, play_game, play_game_with};
-pub use invariants::{InvariantChecker, Violation, check_state};
+pub use invariants::{InvariantChecker, Violation, check_settled, check_state};
 pub use scenario::{Scenario, ScenarioError, damaged, ready, sick, tapped};
 pub use script_error::ScriptError;
 pub use windows::{SeatWindows, Windows};

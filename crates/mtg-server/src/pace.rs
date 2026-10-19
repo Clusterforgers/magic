@@ -9,6 +9,7 @@
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
+use mtg_engine::choose::{TargetChoice, TriggersChoice};
 use mtg_engine::decision::PriorityAction;
 use mtg_engine::{Answer, Decision, DecisionKind};
 use mtg_protocol::{ErrorCode, FullControlMode, ServerMessage, YieldUntil};
@@ -34,8 +35,8 @@ pub struct Pace {
     /// Whether each seat starts with auto-pass on (`MTG_AUTO_PASS`): in Full Control mode `Off`, or `Held` when off.
     /// A seat can change its own with `AutoPass` and `FullControl`.
     pub auto_pass: bool,
-    /// Time a seat that is not the active player has to answer a priority decision, whether it can act or not
-    /// (`MTG_RESPONSE_SECS`); `None` is no clock.
+    /// Time a seat that is not the active player has to answer a priority decision, whether it can act or not, and to
+    /// choose the targets of a spell or ability or order its triggers (`MTG_RESPONSE_SECS`); `None` is no clock.
     pub response: Option<Duration>,
     /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`); `None` is no clock.
     pub blocks: Option<Duration>,
@@ -64,16 +65,20 @@ impl Pace {
 
     /// The clock `decision` runs on, if any.
     ///
-    /// Only a seat that is not the active player is hurried, and only for a priority decision or for
-    /// declaring blockers; every other decision (mulligans, discards, damage division, the active
-    /// player's own turn) waits for as long as it takes. A priority window the seat has nothing to do in
-    /// is hurried too (it is only delivered at a stop or in Full Control): it would hold the table for no reason.
+    /// Only a seat that is not the active player is hurried, and only for a priority decision, for choosing the
+    /// targets of a spell or ability, for ordering its triggers or for declaring blockers; every other decision
+    /// (mulligans, discards, damage division, the active player's own turn) waits for as long as it takes. A priority
+    /// window the seat has nothing to do in is hurried too (it is only delivered at a stop or in Full Control): it
+    /// would hold the table for no reason.
     pub(crate) fn clock_for(&self, decision: &Decision, active: PlayerId) -> Option<Duration> {
         if decision.player == active {
             return None;
         }
         match &decision.kind {
-            DecisionKind::Priority(_) => self.response,
+            // A target or an order is asked of a seat the table waits for just as a priority window is.
+            DecisionKind::Priority(_)
+            | DecisionKind::ChooseTargets(_)
+            | DecisionKind::OrderTriggers(_) => self.response,
             DecisionKind::DeclareBlockers(_) => self.blocks,
             _ => None,
         }
@@ -101,13 +106,25 @@ pub(crate) fn is_priority(decision: &Decision) -> bool {
     matches!(&decision.kind, DecisionKind::Priority(_))
 }
 
-/// What the table answers for a seat whose clock ran out: a pass, or no blockers.
+/// What the table answers for a seat whose clock ran out: a pass, no blockers, no target (a spell is taken back and a
+/// triggered ability removed, as the rules do when a target cannot be chosen) or the triggers in the order they
+/// triggered.
 ///
 /// `None` for a decision that has no clock and no safe default.
 pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
     match &decision.kind {
         DecisionKind::Priority(_) => Some(pass()),
         DecisionKind::DeclareBlockers(_) => Some(Answer::DeclareBlockers(Vec::new())),
+        DecisionKind::ChooseTargets(options) => {
+            Some(Answer::ChooseTargets(if options.can_cancel {
+                TargetChoice::Cancel
+            } else {
+                TargetChoice::Remove
+            }))
+        }
+        DecisionKind::OrderTriggers(options) => Some(Answer::OrderTriggers(TriggersChoice(
+            (0..options.triggers.len()).collect(),
+        ))),
         _ => None,
     }
 }
@@ -232,11 +249,13 @@ mod tests {
     //! Goal: the pace rules give the clock, the safe default and the priority test exactly to the decisions they are meant for, whatever the settings, and a seat starts in the mode its auto-pass default names.
     use super::*;
     use mtg_core::ids::ObjectId;
+    use mtg_engine::choose::{TargetOptions, TriggerEntry, TriggersOptions};
     use mtg_engine::decision::{
         AttackOptions, BlockOptions, BottomOptions, DamageOptions, DiscardOptions, MulliganOptions,
         PayOptions, PriorityOptions,
     };
     use mtg_engine::mana::ManaPool;
+    use mtg_engine::object::ObjectRef;
     use rstest::rstest;
 
     const ACTIVE: PlayerId = PlayerId(0);
@@ -256,6 +275,7 @@ mod tests {
     fn blockers() -> DecisionKind {
         DecisionKind::DeclareBlockers(BlockOptions {
             blockers: Vec::new(),
+            min_blockers: Vec::new(),
         })
     }
 
@@ -290,12 +310,42 @@ mod tests {
                 attacker: ObjectId(1),
                 power: 2,
                 blockers: Vec::new(),
+                excess: None,
+                lethal: Vec::new(),
             }),
             DecisionKind::Discard(DiscardOptions {
                 hand: Vec::new(),
                 count: 1,
             }),
         ]
+    }
+
+    fn targets(can_cancel: bool) -> DecisionKind {
+        DecisionKind::ChooseTargets(TargetOptions {
+            source: ObjectId(1),
+            spec: 0,
+            legal: Vec::new(),
+            min: 1,
+            max: 1,
+            can_cancel,
+            wording: String::new(),
+            triggered: !can_cancel,
+        })
+    }
+
+    fn order(count: usize) -> DecisionKind {
+        DecisionKind::OrderTriggers(TriggersOptions {
+            triggers: (0..count)
+                .map(|n| TriggerEntry {
+                    source: ObjectRef {
+                        id: ObjectId(n as u64),
+                        counter: 0,
+                    },
+                    ability: 0,
+                    when: String::new(),
+                })
+                .collect(),
+        })
     }
 
     fn decision(player: PlayerId, kind: DecisionKind) -> Decision {
@@ -317,6 +367,12 @@ mod tests {
     #[case::the_active_players_own_priority(ACTIVE, priority(true), None)]
     #[case::the_active_player_with_nothing_to_do(ACTIVE, priority(false), None)]
     #[case::a_defender_blocking(OTHER, blockers(), Some(45))]
+    #[case::choosing_the_targets_of_a_spell(OTHER, targets(true), Some(10))]
+    #[case::choosing_the_targets_of_a_trigger(OTHER, targets(false), Some(10))]
+    #[case::ordering_triggers(OTHER, order(2), Some(10))]
+    #[case::the_active_player_choosing_targets(ACTIVE, targets(true), None)]
+    #[case::the_active_player_choosing_the_targets_of_a_trigger(ACTIVE, targets(false), None)]
+    #[case::the_active_player_ordering_triggers(ACTIVE, order(2), None)]
     fn clocks_by_decision(
         #[case] player: PlayerId,
         #[case] kind: DecisionKind,
@@ -344,6 +400,11 @@ mod tests {
             pace.clock_for(&decision(OTHER, priority(true)), ACTIVE),
             None
         );
+        assert_eq!(
+            pace.clock_for(&decision(OTHER, targets(true)), ACTIVE),
+            None
+        );
+        assert_eq!(pace.clock_for(&decision(OTHER, order(2)), ACTIVE), None);
         if pace.blocks.is_none() {
             assert_eq!(pace.clock_for(&decision(OTHER, blockers()), ACTIVE), None);
         }
@@ -368,6 +429,9 @@ mod tests {
     #[case::pass_for_a_priority_holder(priority(true), Some(pass()))]
     #[case::pass_even_when_idle(priority(false), Some(pass()))]
     #[case::no_blocks(blockers(), Some(Answer::DeclareBlockers(Vec::new())))]
+    #[case::a_spell_is_taken_back(targets(true), Some(Answer::ChooseTargets(TargetChoice::Cancel)))]
+    #[case::a_trigger_is_removed(targets(false), Some(Answer::ChooseTargets(TargetChoice::Remove)))]
+    #[case::triggers_go_on_in_the_order_they_triggered(order(3), Some(Answer::OrderTriggers(TriggersChoice(vec![0, 1, 2]))))]
     fn safe_defaults(#[case] kind: DecisionKind, #[case] expected: Option<Answer>) {
         assert_eq!(fallback(&decision(OTHER, kind)), expected);
     }

@@ -286,6 +286,10 @@ function isObjectKindInfo(value: Record<string, unknown>): boolean {
   )
 }
 
+// The names of an object's keywords; the server leaves the field out while there are none.
+const hasKeywordNames = (value: Record<string, unknown>): boolean =>
+  value.keywords === undefined || isListOf(value.keywords, isText)
+
 function isObjectView(value: unknown): value is ObjectView {
   return (
     isRecord(value) &&
@@ -302,6 +306,7 @@ function isObjectView(value: unknown): value is ObjectView {
     (value.power === null || isInt(value.power)) &&
     (value.toughness === null || isInt(value.toughness)) &&
     Array.isArray(value.abilities) &&
+    hasKeywordNames(value) &&
     isObjectKindInfo(value) &&
     (value.permanent === null ||
       (isRecord(value.permanent) &&

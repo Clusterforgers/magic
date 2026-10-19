@@ -4,7 +4,7 @@ use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
-use crate::abilities::PutOnStack;
+use crate::abilities::{Cause, PutOnStack};
 use crate::choose::{Choice, Choices, Target};
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::counters::CountersChanged;
@@ -15,7 +15,7 @@ use crate::player::LossReason;
 use crate::snapshot::Snapshot;
 use crate::state::GameResult;
 use crate::tokens::TokenCreated;
-use crate::triggers::Triggered;
+use crate::triggers::{DelayedCreated, DelayedId, Triggered};
 use crate::turn::Step;
 use crate::zones::Zone;
 
@@ -35,6 +35,8 @@ pub enum NothingToDo {
 pub enum DeathCause {
     /// Damage marked on it was at least its toughness (CR 704.5g).
     LethalDamage,
+    /// A source with deathtouch dealt it damage (CR 704.5h).
+    Deathtouch,
     /// Its toughness was 0 or less (CR 704.5f).
     ZeroToughness,
 }
@@ -278,8 +280,36 @@ pub enum Event {
         /// Its index among the rules of the source's card.
         ability: usize,
     },
-    /// A triggered ability triggered.
-    AbilityTriggered(Triggered),
+    /// A triggered ability triggered and waits to be put on the stack.
+    AbilityTriggered(Box<Triggered>),
+    /// A player put the triggered abilities they would put on the stack together in the order they go on in.
+    TriggersOrdered {
+        /// Who ordered them.
+        player: PlayerId,
+        /// For each place on the stack, bottom first, the position among the triggers waiting of the one that goes there.
+        order: Vec<usize>,
+    },
+    /// A waiting triggered ability was removed without going on the stack: it had no legal target (CR 603.3d), or its
+    /// controller or source had left the game.
+    TriggerRemoved {
+        /// The object with the ability, as it was.
+        source: ObjectRef,
+        /// Its index among the rules of the source's card.
+        ability: usize,
+        /// The delayed trigger it is one of, for a delayed triggered ability.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        delayed: Option<DelayedId>,
+        /// What it triggered on.
+        cause: Cause,
+    },
+    /// A delayed triggered ability was set up (CR 603.7).
+    DelayedTriggerCreated(Box<DelayedCreated>),
+    /// A delayed triggered ability ran out without triggering.
+    DelayedTriggerExpired {
+        /// The delayed trigger.
+        id: DelayedId,
+    },
     /// The top object of the stack began to resolve.
     ResolutionBegan {
         /// The spell or ability.
@@ -357,6 +387,8 @@ pub enum ResolutionOutcome {
     Fizzled,
     /// It was countered, or its controller left the game, and it did nothing (CR 701.6).
     Countered,
+    /// Its intervening "if" was no longer true as it resolved, so it did nothing (CR 603.4).
+    Lapsed,
 }
 
 /// Why an object moved from one zone to another.
@@ -408,6 +440,10 @@ impl Event {
             | Event::GameEnded { .. }
             | Event::AbilityActivated { .. }
             | Event::AbilityTriggered(_)
+            | Event::TriggersOrdered { .. }
+            | Event::TriggerRemoved { .. }
+            | Event::DelayedTriggerCreated(_)
+            | Event::DelayedTriggerExpired { .. }
             | Event::ResolutionBegan { .. }
             | Event::ChoiceMade { .. }
             | Event::StepDone { .. }

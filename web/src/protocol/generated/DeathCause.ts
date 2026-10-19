@@ -3,4 +3,4 @@
 /**
  * Why a creature was put into its owner's graveyard by state-based actions.
  */
-export type DeathCause = "LethalDamage" | "ZeroToughness";
+export type DeathCause = "LethalDamage" | "Deathtouch" | "ZeroToughness";

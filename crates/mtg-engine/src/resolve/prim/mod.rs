@@ -162,7 +162,8 @@ mod tests {
                 "Effect.Draw",
                 "Effect.DealDamage",
                 "Effect.GainLife",
-                "Effect.LoseLife"
+                "Effect.LoseLife",
+                "Effect.DelayedTrigger"
             ]
         );
     }

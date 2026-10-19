@@ -1,6 +1,6 @@
 //! The initial setup of a game and the state it builds.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
@@ -202,11 +202,15 @@ impl GameState {
                 status,
             ));
         }
+        let triggers_possible = objects
+            .values()
+            .any(|object| crate::triggers::can_trigger(object.card()));
         for (id, preset) in presets {
             if let Some(object) = objects.get_mut(&id) {
                 object.permanent = Some(PermanentState {
                     tapped: preset.tapped,
                     damage: preset.damage,
+                    deathtouched: false,
                     summoning_sick: preset.summoning_sick,
                 });
             }
@@ -241,6 +245,12 @@ impl GameState {
             next_timestamp: 0,
             next_object: next_id,
             resolving: None,
+            pending_triggers: Vec::new(),
+            trigger_round: 0,
+            delayed: Vec::new(),
+            next_delayed: 0,
+            limits_spent: BTreeSet::new(),
+            triggers_possible,
             result: None,
         })
     }

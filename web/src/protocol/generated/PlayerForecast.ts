@@ -18,7 +18,7 @@ damage: number,
  */
 life: number, 
 /**
- * Their life total after the damage.
+ * Their life total after the damage and the life it gains (lifelink).
  */
 life_after: number, 
 /**

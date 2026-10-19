@@ -5,11 +5,13 @@ use std::collections::{BTreeMap, BTreeSet};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use mtg_engine::combat::{AttackTarget, DamageTarget};
+use mtg_engine::keywords::is_indestructible;
 use mtg_engine::object::{ObjectKind, PermanentState};
 use mtg_engine::player::Player;
 use mtg_engine::state::Stage;
 use mtg_engine::zones::{Zone, Zones};
-use mtg_engine::{Event, GameSetup, GameState, apply_event, replay};
+use mtg_engine::{Characteristics, characteristics};
+use mtg_engine::{DecisionKind, Engine, Event, GameSetup, GameState, apply_event, replay};
 use thiserror::Error;
 
 /// A broken engine invariant.
@@ -56,6 +58,49 @@ fn zone_error(message: impl Into<String>) -> Violation {
 pub fn check_state(state: &GameState) -> Result<(), Violation> {
     check_zone_index(state)?;
     check_bookkeeping(state)
+}
+
+/// Checks what must hold where the engine has stopped to ask: a player asked for priority has no triggered ability
+/// waiting for the stack, since they go on it before a player would receive priority (CR 117.5, 603.3).
+pub fn check_decision(engine: &Engine) -> Result<(), Violation> {
+    let asked_for_priority = engine
+        .decision()
+        .is_some_and(|d| matches!(d.kind, DecisionKind::Priority(_)));
+    if asked_for_priority && !engine.state().pending_triggers().is_empty() {
+        return Err(Violation::Bookkeeping(
+            "a player has priority while triggered abilities wait for the stack".into(),
+        ));
+    }
+    Ok(())
+}
+
+/// At a decision point no creature that state-based actions would destroy is still on the battlefield:
+/// zero toughness, lethal damage or a mark from deathtouch, the last two unless it is indestructible.
+///
+/// A resolution in progress defers state-based actions (CR 704.3) and a finished game stops them, so neither is judged.
+pub fn check_settled(state: &GameState) -> Result<(), Violation> {
+    if state.stage() != Stage::Turns || state.resolving().is_some() {
+        return Ok(());
+    }
+    for &id in state.zone(Zone::Battlefield) {
+        let Some(object) = state.object(id).filter(|o| state.is_alive(o.controller())) else {
+            continue;
+        };
+        let Some(chars) = characteristics(state, id).filter(Characteristics::is_creature) else {
+            continue;
+        };
+        let toughness = i64::from(chars.toughness.unwrap_or(0));
+        let (damage, marked) = object
+            .permanent()
+            .map_or((0, false), |p| (p.damage(), p.deathtouched()));
+        let destroyed = i64::from(damage) >= toughness || marked;
+        if toughness <= 0 || (destroyed && !is_indestructible(state, id)) {
+            return Err(Violation::Bookkeeping(format!(
+                "{id:?} should have died: toughness {toughness}, damage {damage}, deathtouch mark {marked}"
+            )));
+        }
+    }
+    Ok(())
 }
 
 fn check_zone_index(state: &GameState) -> Result<(), Violation> {
@@ -149,6 +194,17 @@ fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
             out.id()
         )));
     }
+    if state.stage() != Stage::Finished {
+        for waiting in state.pending_triggers() {
+            let t = waiting.trigger();
+            if !state.is_alive(t.controller) || state.object(t.source.id).is_none() {
+                return Err(book(format!(
+                    "a triggered ability of {:?} waits for the stack but its controller or source has left the game",
+                    t.source
+                )));
+            }
+        }
+    }
     if let Some(resolving) = state.resolving() {
         let id = resolving.object();
         if state.stack().last() != Some(&id) {
@@ -212,6 +268,12 @@ impl InvariantChecker {
         })
     }
 
+    /// [`observe`](Self::observe) for a live engine, with the checks that depend on the decision it stands at.
+    pub fn observe_engine(&mut self, engine: &Engine) -> Result<(), Violation> {
+        self.observe(engine.state(), engine.events())?;
+        check_decision(engine)
+    }
+
     /// Runs the whole-state checks only every `n` calls to [`observe`](Self::observe); per-event checks always run.
     #[must_use]
     pub fn with_full_check_every(mut self, n: usize) -> Self {
@@ -236,6 +298,7 @@ impl InvariantChecker {
     pub fn full_check(&mut self, live: &GameState) -> Result<(), Violation> {
         self.since_full = 0;
         check_state(live)?;
+        check_settled(live)?;
         let (live_hash, shadow_hash) = (live.state_hash(), self.shadow.state_hash());
         if live_hash != shadow_hash {
             return Err(Violation::Replay {

@@ -69,6 +69,10 @@ toughness: number | null,
  */
 abilities: Array<AbilityDef>, 
 /**
+ * Names of the keywords it has now, such as `Flying` and `First strike`, in the order of its rules; left out while it has none.
+ */
+keywords?: Array<string>, 
+/**
  * Permanent state when on the battlefield.
  */
 permanent: PermanentView | null, 

@@ -22,6 +22,7 @@ export type Groupable = Pick<
   | 'power'
   | 'toughness'
   | 'abilities'
+  | 'keywords'
   | 'permanent'
 > & {
   /** The counters on it, by kind. */
@@ -77,6 +78,7 @@ function faceOf(permanent: Groupable): string {
     permanent.power,
     permanent.toughness,
     permanent.abilities,
+    permanent.keywords ?? [],
     state?.tapped ?? false,
     state?.summoning_sick ?? false,
     state?.damage ?? 0,

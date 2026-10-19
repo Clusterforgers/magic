@@ -4,15 +4,18 @@ import {
   clampedAmount,
   defaultSplit,
   factsOf,
+  hasDeathtouch,
   judge,
   labelled,
   lethalDamage,
+  lethalEverywhere,
   lethalNote,
+  restOf,
   setAmount,
   toAnswer,
   totalOf,
 } from './damageSplit'
-import type { DamageRecipient } from './damageSplit'
+import type { DamageRecipient, Trample } from './damageSplit'
 
 const blocker = (id: number, toughness: number | null, damage = 0): DamageRecipient => ({
   id,
@@ -233,6 +236,151 @@ describe('judging a split', () => {
         const last = split.length - 1
         split[last] = (split[last] ?? 0) + delta
         if (judge(power, split).legal !== (delta === 0)) wrong.push(`${show(line)} ${delta}`)
+      }
+    }
+    expect(wrong).toEqual([])
+  })
+})
+
+describe('lethal damage', () => {
+  it.each([
+    ['toughness less damage', blocker(1, 4, 1), false, 3],
+    ['nothing when damage already passes the toughness', blocker(1, 2, 5), false, 0],
+    ['one from deathtouch where more is needed', blocker(1, 4, 1), true, 1],
+    ['nothing from deathtouch when lethal damage is already marked', blocker(1, 2, 2), true, 0],
+    ['one from deathtouch against a toughness of one', blocker(1, 1), true, 1],
+  ])('is %s', (_what, recipient, deathtouch, lethal) => {
+    expect(lethalDamage(recipient, deathtouch)).toBe(lethal)
+  })
+
+  it('is unknown without a toughness, deathtouch or not', () => {
+    expect(lethalDamage(blocker(1, null))).toBeNull()
+    expect(lethalDamage(blocker(1, null), true)).toBeNull()
+  })
+
+  it('is the engine’s figure when the decision carries one, whatever the numbers on the creature say', () => {
+    const told = { ...blocker(1, 5, 0), lethal: 1 }
+    expect(lethalDamage(told)).toBe(1)
+    expect(lethalDamage({ ...told, lethal: 0 }, true)).toBe(0)
+    expect(lethalDamage({ ...blocker(1, null), lethal: 2 })).toBe(2)
+  })
+
+  it('names deathtouch where it makes the difference, and only there', () => {
+    expect(factsOf(blocker(1, 4, 1), true)).toBe('Toughness 4, 1 damage marked, lethal: 1 (deathtouch)')
+    expect(factsOf(blocker(1, 1), true)).toBe('Toughness 1, lethal: 1')
+    expect(factsOf(blocker(1, 4, 1), false)).toBe('Toughness 4, 1 damage marked, lethal: 3')
+    expect(factsOf(blocker(1, 2, 2), true)).toBe('Toughness 2, 2 damage marked, lethal damage already marked')
+  })
+
+  it('says how far a share is from lethal with deathtouch counted', () => {
+    expect(lethalNote(blocker(1, 5), 0, true)).toBe('1 short of lethal')
+    expect(lethalNote(blocker(1, 5), 1, true)).toBe('Lethal')
+    expect(lethalNote(blocker(1, 5), 1, false)).toBe('4 short of lethal')
+  })
+
+  it('knows deathtouch from the keyword names of the attacker', () => {
+    expect(hasDeathtouch(['Flying', 'Deathtouch'])).toBe(true)
+    expect(hasDeathtouch(['First strike'])).toBe(false)
+    expect(hasDeathtouch([])).toBe(false)
+    expect(hasDeathtouch(undefined)).toBe(false)
+  })
+})
+
+describe('the split of an attacker with trample', () => {
+  const trampling = { trample: true }
+  const line = (...lethals: number[]): DamageRecipient[] =>
+    lethals.map((lethal, index) => ({ ...blocker(index + 1, 9), lethal }))
+  const rule = (recipients: DamageRecipient[], deathtouch = false): Trample => ({
+    to: 'Bo',
+    recipients,
+    deathtouch,
+  })
+
+  it.each([
+    [7, [2, 3], [2, 3]],
+    [4, [2, 3], [2, 2]],
+    [5, [2, 3], [2, 3]],
+    [3, [0], [0]],
+    [0, [2, 2], [0, 0]],
+    [10, [1, 1, 1], [1, 1, 1]],
+  ])(
+    'starts with lethal damage to each blocker and keeps the rest back: %i over %j is %j',
+    (power, lethals, split) => {
+      expect(defaultSplit(power, line(...lethals), trampling)).toEqual(split)
+    },
+  )
+
+  it.each([
+    [7, [2, 3], 2],
+    [4, [2, 3], 0],
+    [3, [0], 3],
+    [10, [1, 1, 1], 7],
+  ])(
+    'leaves the player or planeswalker attacked what lethal damage does not use: %i over %j leaves %i',
+    (power, lethals, rest) => {
+      expect(restOf(power, defaultSplit(power, line(...lethals), trampling))).toBe(rest)
+    },
+  )
+
+  it('works lethal damage out from the toughness and deathtouch when the decision does not say', () => {
+    const plain = [blocker(1, 5), blocker(2, 5)]
+    expect(defaultSplit(8, plain, trampling)).toEqual([5, 3])
+    expect(defaultSplit(8, plain, { trample: true, deathtouch: true })).toEqual([1, 1])
+    expect(restOf(8, defaultSplit(8, plain, { trample: true, deathtouch: true }))).toBe(6)
+  })
+
+  it('judges a split legal when it falls short only past blockers that all have lethal damage', () => {
+    const blockers = line(2, 3)
+    const trample = rule(blockers)
+    expect(judge(7, [2, 3], trample)).toEqual({
+      legal: true,
+      status: 'Assigned 5 of 7. The other 2 goes to Bo. Ready to confirm.',
+    })
+    expect(judge(7, [3, 4], trample)).toEqual({ legal: true, status: 'Assigned 7 of 7. Ready to confirm.' })
+    const short = judge(7, [1, 3], trample)
+    expect(short.legal).toBe(false)
+    expect(short.status).toBe(
+      'Assigned 4 of 7. Give every blocker its lethal damage to send the rest to Bo, or assign 3 more.',
+    )
+    expect(judge(7, [4, 4], trample)).toEqual({
+      legal: false,
+      status: 'Assigned 8 of 7. Take away 1 to confirm.',
+    })
+  })
+
+  it('judges the same split by the rules of the attacker: short is illegal without trample', () => {
+    expect(judge(7, [2, 3])).toEqual({ legal: false, status: 'Assigned 5 of 7. Assign 2 more to confirm.' })
+  })
+
+  it('counts deathtouch towards lethal for the blockers the decision does not give a figure for', () => {
+    const plain = [blocker(1, 5), blocker(2, 5)]
+    expect(judge(4, [1, 1], rule(plain, true)).legal).toBe(true)
+    expect(judge(4, [1, 1], rule(plain, false)).legal).toBe(false)
+    expect(lethalEverywhere(plain, [1, 0], true)).toBe(false)
+    expect(lethalEverywhere(plain, [1, 1], true)).toBe(true)
+  })
+
+  it('sends everything to the player or planeswalker when there is no blocker left to give to', () => {
+    expect(judge(4, [], rule([]))).toEqual({ legal: true, status: 'All 4 goes to Bo.' })
+    expect(judge(0, [], rule([]))).toEqual({ legal: true, status: 'There is no damage to assign.' })
+  })
+
+  it('is accepted by the engine for every power and lineup: the default split is legal, and any short of lethal is not', () => {
+    const wrong: string[] = []
+    for (const power of POWERS) {
+      for (const lethals of [[1], [2], [0, 3], [2, 2], [1, 1, 1], [3, 0, 2]]) {
+        const blockers = line(...lethals)
+        const split = defaultSplit(power, blockers, trampling)
+        if (!judge(power, split, rule(blockers)).legal) wrong.push(`${power} over ${lethals.join()}`)
+        const needs = lethals.reduce((sum, lethal) => sum + lethal, 0)
+        if (power > needs) {
+          // Taking one point from a blocker that needs it, leaving it for the player, is never legal.
+          const index = lethals.findIndex((lethal) => lethal > 0)
+          if (index >= 0) {
+            const short = split.map((amount, at) => (at === index ? amount - 1 : amount))
+            if (judge(power, short, rule(blockers)).legal) wrong.push(`short ${power} over ${lethals.join()}`)
+          }
+        }
       }
     }
     expect(wrong).toEqual([])

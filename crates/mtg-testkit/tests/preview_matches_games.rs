@@ -4,8 +4,8 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::forecast::{CombatForecast, pending_combat_forecast};
-use mtg_engine::{Decision, Engine, EngineError, Event, PreviewError};
-use mtg_testkit::{RandomBot, fuzz_setup};
+use mtg_engine::{Decision, Engine, EngineError, Event, GameSetup, PreviewError};
+use mtg_testkit::{RandomBot, fuzz_setup, keyword_fuzz_setup};
 use proptest::prelude::*;
 use rstest::rstest;
 
@@ -154,7 +154,26 @@ fn same_as_real(preview: Preview, engine: &Engine, coverage: &mut Coverage) -> R
 
 /// Plays a bot game in `mode`; returns its log, final state hash and what it exercised.
 fn play(players: usize, seed: u64, mode: Mode) -> Result<(Vec<Event>, u64, Coverage), String> {
-    let mut engine = Engine::new(fuzz_setup(players, seed)).map_err(|e| e.to_string())?;
+    play_decks(players, seed, mode, fuzz_setup)
+}
+
+/// A game between creatures with the keywords of combat, played in `mode`.
+fn play_keywords(
+    players: usize,
+    seed: u64,
+    mode: Mode,
+) -> Result<(Vec<Event>, u64, Coverage), String> {
+    play_decks(players, seed, mode, keyword_fuzz_setup)
+}
+
+/// Plays a bot game from `setup(players, seed)` in `mode`; returns its log, final state hash and what it exercised.
+fn play_decks(
+    players: usize,
+    seed: u64,
+    mode: Mode,
+    setup: fn(usize, u64) -> GameSetup,
+) -> Result<(Vec<Event>, u64, Coverage), String> {
+    let mut engine = Engine::new(setup(players, seed)).map_err(|e| e.to_string())?;
     let mut bots: Vec<RandomBot> = (0..players as u64)
         .map(|seat| RandomBot::new(seed, seat))
         .collect();
@@ -281,4 +300,37 @@ fn alternatives_are_tried_too(#[case] players: usize) {
     }
     assert!(total.alternatives > 20, "{total:?}");
     assert!(total.deaths > 0, "{total:?}");
+}
+
+proptest! {
+    #![proptest_config(ProptestConfig::with_cases(24))]
+
+    #[test]
+    fn the_preview_agrees_with_the_forecast_between_creatures_with_keywords(players in 2usize..=4, seed in any::<u64>()) {
+        if let Err(difference) = play_keywords(players, seed, PREVIEWED) {
+            prop_assert!(false, "{}", difference);
+        }
+    }
+}
+
+#[rstest]
+#[case(2)]
+#[case(3)]
+#[case(4)]
+fn a_keyword_game_with_previews_alternatives_and_refusals_is_the_game_without_them(
+    #[case] players: usize,
+) {
+    let mut total = Coverage::default();
+    for seed in 0..10 {
+        let (plain_events, plain_hash, _) =
+            play_keywords(players, seed, PLAIN).unwrap_or_else(|difference| panic!("{difference}"));
+        let (events, hash, coverage) = play_keywords(players, seed, WITH_ALTERNATIVES)
+            .unwrap_or_else(|difference| panic!("{difference}"));
+        assert_eq!(events, plain_events, "seed {seed}: the logs differ");
+        assert_eq!(hash, plain_hash, "seed {seed}: the states differ");
+        total.add(coverage);
+    }
+    assert!(total.alternatives > 10, "{total:?}");
+    assert!(total.deaths > 0, "{total:?}");
+    assert!(total.refusals > 0, "{total:?}");
 }

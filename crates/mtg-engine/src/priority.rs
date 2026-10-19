@@ -3,7 +3,7 @@
 use std::collections::BTreeSet;
 
 use mtg_cards::AbilityDef;
-use mtg_cards::ability::{Ability, Timing};
+use mtg_cards::ability::{Ability, Limit, Timing};
 use mtg_cards::cost::CostItem;
 use mtg_cards::refs::TargetSpec;
 use mtg_core::card::CardType;
@@ -68,7 +68,7 @@ pub(crate) fn mana_options(state: &GameState, player: PlayerId) -> Vec<ManaOptio
             continue;
         };
         // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
-        if chars.is_creature() && perm.summoning_sick() {
+        if chars.is_creature() && keywords::summoning_sick(state, id) {
             continue;
         }
         for (ability, def) in chars.abilities.iter().enumerate() {
@@ -105,7 +105,7 @@ fn announceable(
     specs
         .iter()
         .enumerate()
-        .all(|(index, spec)| options_for(state, source, player, index, spec, true).is_some())
+        .all(|(index, spec)| options_for(state, source, player, index, spec, true, None).is_some())
 }
 
 /// Whether the ability `index` of the permanent `object` could be activated by `player` now.
@@ -118,12 +118,16 @@ fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index:
     let Ability::Activated {
         cost,
         timing,
+        limit,
         targets,
         ..
     } = &**rules
     else {
         return false;
     };
+    if *limit == Some(Limit::OncePerTurn) && state.limit_spent(object.reference(), index) {
+        return false;
+    }
     if rules.is_mana_ability() || !cost.0.iter().all(|item| matches!(item, CostItem::Tap)) {
         return false;
     }
@@ -135,7 +139,7 @@ fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index:
             return false;
         };
         // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
-        let sick = permanent.summoning_sick()
+        let sick = keywords::summoning_sick(state, object.id())
             && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
         if permanent.tapped() || sick {
             return false;
@@ -213,7 +217,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
                 return false;
             }
             let timing = types.contains(CardType::Instant)
-                || keywords::grants_instant_timing(object)
+                || keywords::grants_instant_timing(state, *id)
                 || sorcery_timing(state, player);
             // CR 601.2c: a spell that needs a target is cast only when it has a legal one.
             let targets = spell_ability(object).map_or(&[][..], Ability::targets);

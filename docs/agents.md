@@ -14,6 +14,7 @@ Deliver: <list>
 Tests: each test module starts with `//! Goal:`; table-driven/property tests over single cases.
 Docs you write follow the docs rule in CLAUDE.md.
 Checks before every non-wip commit: scripts/check.sh fast; before the final report: scripts/check.sh
+Context: read line ranges (`grep -n`, `sed -n a,bp`) and each file once; run a check that takes more than a few minutes in the background and end the turn instead of polling.
 Commits: commit after every finished module or green run. Prefix unfinished checkpoints with `wip:`. Never add AI attribution.
 Report (max 15 lines): files added, public API in one line each, test counts, decisions, uncertainties.
 ```
@@ -21,6 +22,7 @@ Report (max 15 lines): files added, public API in one line each, test counts, de
 ## Orchestrator rules
 
 - Isolate each agent in a git worktree; merge only after running `scripts/check.sh` on the merged result.
+- Size a piece to at most about 80 model turns. Every turn re-reads the whole context, so the cost of a session grows with the square of its length, and an idle gap of more than five minutes writes the whole context to the cache again.
 - Never chain checks through pipes without `set -o pipefail`; a lint failure must stop the commit.
 - Validate parsers and importers against real data before calling them done.
 - Keep the root Postgres running (`docker compose up -d db`) while agents work: their `check.sh` reuses it instead of starting a compose project of its own, and a file lock lets one test run at a time use it (`sqlx::test` drops other runs' test databases). Remove a stray `agent-*` project with `docker compose -p <name> down -v`.

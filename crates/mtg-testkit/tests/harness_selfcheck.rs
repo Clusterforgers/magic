@@ -1,13 +1,14 @@
 //! Goal: the invariant checkers and the game harness catch the corruption they exist to catch and report failures with the seed and event log.
 
+use mtg_cards::keyword::Keyword;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use mtg_engine::combat::DamageTarget;
-use mtg_engine::{Engine, Event};
-use mtg_testkit::cards::{forest, free_creature};
+use mtg_engine::{Engine, Event, GameState};
+use mtg_testkit::cards::{forest, free_creature, keyworded};
 use mtg_testkit::{
-    FailureKind, InvariantChecker, PlayOptions, RandomBot, Scenario, Violation, check_state,
-    fuzz_setup, play_game, play_game_with, ready,
+    FailureKind, InvariantChecker, PlayOptions, RandomBot, Scenario, Violation, check_settled,
+    check_state, damaged, fuzz_setup, play_game, play_game_with, ready,
 };
 use rstest::rstest;
 
@@ -135,5 +136,40 @@ fn bots_are_reproducible_and_seed_sensitive() -> Result<(), String> {
         varied.iter().any(|a| a != &varied[0]),
         "different seeds make different keep/mulligan choices"
     );
+    Ok(())
+}
+
+#[rstest]
+#[case::healthy(2, 1, false, true)]
+#[case::one_short_of_lethal(2, 1, true, true)]
+#[case::lethal_damage_left_on_the_battlefield(2, 2, false, false)]
+#[case::indestructible_with_lethal_damage(2, 9, true, true)]
+#[case::zero_toughness(0, 0, false, false)]
+#[case::zero_toughness_is_not_stopped_by_indestructible(0, 0, true, false)]
+fn a_state_with_a_creature_that_should_have_died_is_not_settled(
+    #[case] toughness: i32,
+    #[case] marked: u32,
+    #[case] indestructible: bool,
+    #[case] settled: bool,
+) -> Result<(), String> {
+    let keywords: &[Keyword] = if indestructible {
+        &[Keyword::Indestructible]
+    } else {
+        &[]
+    };
+    let card = keyworded("Subject", 1, toughness, keywords);
+    let setup = Scenario::new(2)
+        .battlefield(0, [damaged(card, marked)])
+        .setup()
+        .map_err(|e| e.to_string())?;
+    let state = GameState::from_setup(&setup).map_err(|e| e.to_string())?;
+    let result = check_settled(&state);
+    assert_eq!(result.is_ok(), settled, "{result:?}");
+    if !settled {
+        assert!(
+            matches!(result, Err(Violation::Bookkeeping(_))),
+            "{result:?}"
+        );
+    }
     Ok(())
 }

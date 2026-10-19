@@ -19,6 +19,7 @@ import type {
 } from '@/protocol/generated'
 import { forecastScene, withBlockForecast } from './combatScene'
 import { assignDamage } from './damagePrompt'
+import { EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
 
 /** Builds the decision the viewer of a fixture faces. */
@@ -373,6 +374,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-locked': payLocked,
   'pay-hybrid': payHybrid,
   'pay-low-life': payLowLife,
+  ...EFFECT_PROMPTS,
 }
 
 /**

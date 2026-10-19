@@ -34,7 +34,7 @@ use mtg_engine::object::ObjectRef;
 use mtg_engine::snapshot::snapshot;
 use mtg_engine::state::GameResult;
 use mtg_engine::tokens::TokenCreated;
-use mtg_engine::triggers::Triggered;
+use mtg_engine::triggers::{DelayedId, Triggered};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Answer, Decision, Engine, Event};
@@ -254,11 +254,28 @@ fn decision_kinds() -> Vec<DecisionKind> {
                 object: a,
                 can_block: vec![b],
             }],
+            min_blockers: Vec::new(),
+        }),
+        DecisionKind::DeclareBlockers(BlockOptions {
+            blockers: vec![BlockerOption {
+                object: a,
+                can_block: vec![b],
+            }],
+            min_blockers: vec![(b, 2)],
         }),
         DecisionKind::AssignDamage(DamageOptions {
             attacker: a,
             power: 3,
             blockers: vec![b],
+            excess: None,
+            lethal: vec![2],
+        }),
+        DecisionKind::AssignDamage(DamageOptions {
+            attacker: a,
+            power: 5,
+            blockers: vec![b],
+            excess: Some(DamageTarget::Player(PlayerId(1))),
+            lethal: vec![1],
         }),
         DecisionKind::Discard(DiscardOptions {
             hand: vec![a, b],
@@ -291,7 +308,9 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             ],
             min: 0,
             max: 2,
-            can_cancel: true,
+            can_cancel: false,
+            wording: "up to two target creatures".into(),
+            triggered: true,
         }),
         DecisionKind::ChooseMode(ModeOptions {
             source: b,
@@ -350,10 +369,12 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                 TriggerEntry {
                     source: ObjectRef { id: a, counter: 1 },
                     ability: 0,
+                    when: "When it enters the battlefield".into(),
                 },
                 TriggerEntry {
                     source: ObjectRef { id: b, counter: 0 },
                     ability: 2,
+                    when: String::new(),
                 },
             ],
         }),
@@ -773,7 +794,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(3),
         decision: Decision {
             player: PlayerId(1),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![] }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], min_blockers: vec![] }),
         },
         deadline_ms: Some(45_000),
     },
@@ -787,7 +808,7 @@ fn client_wire_shape_is_flat_and_tagged(
         id: DecisionId(4),
         decision: Decision {
             player: PlayerId(0),
-            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![] }),
+            kind: DecisionKind::DeclareBlockers(BlockOptions { blockers: vec![], min_blockers: vec![] }),
         },
         deadline_ms: None,
     },
@@ -1154,17 +1175,32 @@ fn pipeline_events() -> Vec<Event> {
                 subjects: vec![target],
                 snapshots: vec![shot.clone()],
             }),
+            delayed: Some(DelayedId(2)),
         })),
         Event::AbilityActivated {
             player,
             source,
             ability: 0,
         },
-        Event::AbilityTriggered(Triggered {
+        Event::AbilityTriggered(Box::new(Triggered {
             source,
             ability: 0,
+            controller: player,
             cause: Cause::default(),
-        }),
+            snapshot: shot.clone(),
+            delayed: None,
+        })),
+        Event::TriggersOrdered {
+            player,
+            order: vec![1, 0],
+        },
+        Event::TriggerRemoved {
+            source,
+            ability: 0,
+            delayed: Some(DelayedId(2)),
+            cause: Cause::default(),
+        },
+        Event::DelayedTriggerExpired { id: DelayedId(2) },
         Event::ResolutionBegan { object: a },
         Event::ChoiceMade {
             player,
@@ -1261,6 +1297,8 @@ fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
             min: 1,
             max: 1,
             can_cancel: true,
+            wording: String::new(),
+            triggered: false,
         }),
     };
     assert_eq!(

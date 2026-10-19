@@ -6,17 +6,20 @@ import { Input } from '@/components/ui/input'
 import { usePlay } from '@/features/game/gameContext'
 import type { ObjectId } from '@/protocol/generated'
 import { joinWords } from '../../eventText'
+import { useSeatNamer } from '../../names'
 import {
   clampedAmount,
   defaultSplit,
   factsOf,
+  hasDeathtouch,
   judge,
   labelled,
   lethalNote,
+  restOf,
   setAmount,
   toAnswer,
 } from '../damageSplit'
-import type { DamageRecipient } from '../damageSplit'
+import type { DamageRecipient, Trample } from '../damageSplit'
 import { markCards, useCardMarks } from '../marks'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
@@ -26,6 +29,7 @@ import type { PromptComponent } from '../types'
 interface RowProps {
   recipient: DamageRecipient
   label: string
+  deathtouch: boolean
   amount: number
   /** The most this row may take given what the others hold. */
   max: number
@@ -37,8 +41,19 @@ interface RowProps {
 }
 
 /** One blocker: its name and numbers, and a stepper (less, a number, more) for the damage it receives. */
-function Row({ recipient, label, amount, max, active, inputRef, onEnter, onLeave, onChange }: RowProps) {
-  const note = lethalNote(recipient, amount)
+function Row({
+  recipient,
+  label,
+  deathtouch,
+  amount,
+  max,
+  active,
+  inputRef,
+  onEnter,
+  onLeave,
+  onChange,
+}: RowProps) {
+  const note = lethalNote(recipient, amount, deathtouch)
   const step = (by: number) => () => onChange(amount + by)
   const key = (event: KeyboardEvent<HTMLInputElement>): void => {
     if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
@@ -59,7 +74,7 @@ function Row({ recipient, label, amount, max, active, inputRef, onEnter, onLeave
       <div className="flex flex-wrap items-baseline justify-between gap-x-3">
         <span className="min-w-0 text-sm font-medium break-words">{label}</span>
         <span data-slot="damage-facts" className="text-xs text-muted-foreground">
-          {factsOf(recipient)}
+          {factsOf(recipient, deathtouch)}
         </span>
       </div>
       <div role="group" aria-label={`Damage to ${label}`} className="flex flex-wrap items-center gap-1.5">
@@ -113,14 +128,21 @@ function Row({ recipient, label, amount, max, active, inputRef, onEnter, onLeave
  * AssignDamage: the attacker divides its combat damage among its blockers. One row per blocker with a stepper, a
  * default split (lethal damage in the offered order, the rest to the last) so the common case is one click, and
  * Confirm once everything is assigned. Blockers are marked legal on the table, the row in use selected; a click on a
- * blocker's card moves focus to its row.
+ * blocker's card moves focus to its row. An attacker with trample may leave damage unassigned: the rest goes to the
+ * player or planeswalker it attacks, which a line below the rows names, once every blocker has lethal damage; the
+ * lethal figures are the engine's, and an attacker's deathtouch is named where it shortens them.
  */
 export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options }) => {
-  const { attacker, power, blockers } = options
+  const { attacker, power, blockers, excess, lethal } = options
   const { answer, selection } = usePrompt()
   const statusId = useId()
   const inputs = useRef(new Map<ObjectId, HTMLInputElement>())
+  const seatName = useSeatNamer()
   const attackerName = usePlay((state) => state.objectsById[attacker]?.name ?? 'the attacker')
+  const deathtouch = hasDeathtouch(usePlay((state) => state.objectsById[attacker]?.keywords))
+  const walker = usePlay((state) =>
+    excess !== undefined && 'Object' in excess ? state.objectsById[excess.Object]?.name : undefined,
+  )
   const objects = usePlay(useShallow((state) => blockers.map((id) => state.objectsById[id])))
 
   const recipients = useMemo<DamageRecipient[]>(
@@ -130,15 +152,29 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
         name: objects[index]?.name ?? 'Blocker',
         toughness: objects[index]?.toughness ?? null,
         damage: objects[index]?.permanent?.damage ?? 0,
+        lethal: lethal?.[index],
       })),
-    [blockers, objects],
+    [blockers, objects, lethal],
+  )
+  const defender =
+    excess === undefined
+      ? undefined
+      : 'Player' in excess
+        ? seatName(excess.Player)
+        : (walker ?? 'the planeswalker')
+  const trample = useMemo<Trample | undefined>(
+    () => (defender === undefined ? undefined : { to: defender, recipients, deathtouch }),
+    [defender, recipients, deathtouch],
   )
   const labels = useMemo(() => labelled(recipients.map((recipient) => recipient.name)), [recipients])
-  const defaults = useMemo(() => defaultSplit(power, recipients), [power, recipients])
+  const defaults = useMemo(
+    () => defaultSplit(power, recipients, { trample: trample !== undefined, deathtouch }),
+    [power, recipients, trample, deathtouch],
+  )
   // Until the player changes a number, the split follows the default for the creatures as they are now.
   const [edited, setEdited] = useState<readonly number[] | null>(null)
   const amounts = edited !== null && edited.length === recipients.length ? edited : defaults
-  const verdict = judge(power, amounts)
+  const verdict = judge(power, amounts, trample)
 
   const change = (index: number) => (wanted: number) => setEdited(setAmount(amounts, index, wanted, power))
 
@@ -168,7 +204,10 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
   const text =
     blockers.length === 0
       ? `${attackerName} has no blocker to assign its ${power} combat damage to.`
-      : `${verb} the ${power} combat damage of ${attackerName} ${where} ${target}: ${joinWords(labels)}.`
+      : `${verb} the ${power} combat damage of ${attackerName} ${where} ${target}: ${joinWords(labels)}.` +
+        (defender === undefined
+          ? ''
+          : ` Damage not given to a blocker goes to ${defender}, once every blocker has lethal damage.`)
 
   return (
     <PromptLayout text={text}>
@@ -181,6 +220,7 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
                 key={recipient.id}
                 recipient={recipient}
                 label={labels[index] ?? recipient.name}
+                deathtouch={deathtouch}
                 amount={amount}
                 max={clampedAmount(amounts, index, power, power)}
                 active={selection.has(recipient.id)}
@@ -195,6 +235,11 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
             )
           })}
         </ul>
+        {defender === undefined ? null : (
+          <p data-slot="damage-excess" className="text-sm">
+            {defender} takes the rest: {restOf(power, amounts)}.
+          </p>
+        )}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
           <Button type="submit" className="h-10 px-4" disabled={!verdict.legal} aria-describedby={statusId}>
             Confirm

@@ -7,6 +7,8 @@ describe('clockText', () => {
     ['Priority', 10, 'Passing for you in 10 s'],
     ['Priority', 1, 'Passing for you in 1 s'],
     ['DeclareBlockers', 45, 'Declaring no blocks in 45 s'],
+    ['ChooseTargets', 10, 'Choosing no targets in 10 s'],
+    ['OrderTriggers', 3, 'Ordering the triggers for you in 3 s'],
   ] as const)('%s with %i s left reads "%s"', (kind, seconds, text) => {
     expect(clockText(kind, seconds)).toBe(text)
   })
@@ -21,6 +23,8 @@ describe('clockAnnouncement', () => {
     ['Priority', 10, 'You have 10 seconds to answer; after that the game passes for you.'],
     ['Priority', 1, 'You have 1 second to answer; after that the game passes for you.'],
     ['DeclareBlockers', 45, 'You have 45 seconds to answer; after that the game declares no blocks for you.'],
+    ['ChooseTargets', 10, 'You have 10 seconds to answer; after that the game chooses no targets for you.'],
+    ['OrderTriggers', 10, 'You have 10 seconds to answer; after that the game orders the triggers for you.'],
   ] as const)('%s with %i s reads "%s"', (kind, seconds, text) => {
     expect(clockAnnouncement(kind, seconds)).toBe(text)
   })

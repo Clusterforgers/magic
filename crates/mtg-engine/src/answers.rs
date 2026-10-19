@@ -26,6 +26,8 @@ pub(crate) enum Outcome {
     Targets(Vec<Target>),
     /// Abandon the cast or activation in progress.
     CancelCast,
+    /// Remove the triggered ability being put on the stack, whose controller chose no target (CR 603.3d).
+    DropTrigger,
 }
 
 /// Checks `answer` against `decision`; the result is only built from legal options.
@@ -53,10 +55,10 @@ pub(crate) fn handle(
         }
         (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
             check_attackers(options, &attackers)?;
-            Ok(Outcome::Events(attack_events(player, &attackers)))
+            Ok(Outcome::Events(attack_events(state, player, &attackers)))
         }
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
-            check_blockers(options, &blocks)?;
+            check_blockers(state, options, &blocks)?;
             Ok(Outcome::Events(vec![Event::BlockersDeclared {
                 player,
                 blocks,

@@ -14,7 +14,8 @@ use thiserror::Error;
 
 use crate::abilities::Cause;
 use crate::characteristics::{Characteristics, characteristics};
-use crate::choose::{Choices, Target, is_legal};
+use crate::choose::legal_for;
+use crate::choose::{Choices, Target};
 use crate::keywords;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::snapshot::Snapshot;
@@ -103,6 +104,20 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// A scope for judging what a trigger found: the event it is about is `cause`, and nothing is announced or bound.
+    pub(crate) fn triggered(
+        state: &'a GameState,
+        controller: PlayerId,
+        source: ObjectRef,
+        cause: &'a Cause,
+    ) -> Self {
+        Scope {
+            cause: Some(cause),
+            snapshots: cause.snapshots.iter().collect(),
+            ..Scope::announcing(state, controller, source)
+        }
+    }
+
     fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
         let live = self.state.object(reference.id);
         if let Some(object) = live.filter(|o| o.counter() == reference.counter) {
@@ -139,9 +154,16 @@ impl<'a> Scope<'a> {
         else {
             return Vec::new();
         };
+        let legal = legal_for(
+            self.state,
+            spec,
+            self.source.id,
+            self.controller,
+            self.cause,
+        );
         set.iter()
             .copied()
-            .filter(|target| is_legal(self.state, spec, *target, self.source.id, self.controller))
+            .filter(|target| legal.contains(target))
             .collect()
     }
 
@@ -152,9 +174,16 @@ impl<'a> Scope<'a> {
             let Some(spec) = self.specs.get(index) else {
                 continue;
             };
+            let legal = legal_for(
+                self.state,
+                spec,
+                self.source.id,
+                self.controller,
+                self.cause,
+            );
             for target in set {
                 any = true;
-                if is_legal(self.state, spec, *target, self.source.id, self.controller) {
+                if legal.contains(target) {
                     return false;
                 }
             }
@@ -322,9 +351,11 @@ impl<'a> Scope<'a> {
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
+            // An object that has changed zones since it was named has the keywords its card prints; keywords
+            // granted before it left are last known information the snapshots do not carry yet.
             Pred::HasKeyword(keyword) => seen
                 .card
-                .is_some_and(|c| keywords::held_by(c).any(|held| held == keyword)),
+                .is_some_and(|card| keywords::has_keyword(state, card.id(), keyword)),
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat)? {
                 Some(value) => op.holds(value, self.amount(to)?),

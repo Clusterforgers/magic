@@ -15,6 +15,7 @@ mod mulligan;
 mod preview;
 mod sba;
 mod steps;
+mod wording;
 
 pub mod abilities;
 pub mod caps;

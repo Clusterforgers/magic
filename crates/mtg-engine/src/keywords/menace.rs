@@ -1,4 +1,6 @@
-//! Menace (CR 702.111): the rules are a stub until the keyword task (`docs/cards-dsl.md`, Keywords).
+//! Menace (CR 702.111): a creature with menace can't be blocked except by two or more creatures.
+
+use mtg_cards::keyword::Keyword;
 
 use super::KeywordRules;
 
@@ -6,4 +8,8 @@ use super::KeywordRules;
 #[derive(Debug)]
 pub(super) struct Menace;
 
-impl KeywordRules for Menace {}
+impl KeywordRules for Menace {
+    fn min_blockers(&self, _keyword: &Keyword) -> usize {
+        2
+    }
+}
