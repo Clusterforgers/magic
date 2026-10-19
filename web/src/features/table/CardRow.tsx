@@ -35,7 +35,15 @@ export interface CardBox {
 }
 
 /** A list of cards with one tab stop: Tab enters it, the arrow keys, Home and End move along it. */
-export function CardRow({ ids, ghosts = NO_GHOSTS, label, size, box, single = false, className }: CardRowProps) {
+export function CardRow({
+  ids,
+  ghosts = NO_GHOSTS,
+  label,
+  size,
+  box,
+  single = false,
+  className,
+}: CardRowProps) {
   const roving = useRoving(ids)
   const width = box?.width
   const height = box?.height
@@ -43,7 +51,7 @@ export function CardRow({ ids, ghosts = NO_GHOSTS, label, size, box, single = fa
     () =>
       width === undefined || height === undefined
         ? undefined
-        : { '--card-w': `${width}px`, '--card-h': `${height}px` },
+        : ({ '--card-w': `${width}px`, '--card-h': `${height}px` } as CSSProperties),
     [width, height],
   )
   if (ids.length === 0 && ghosts.length === 0) return null

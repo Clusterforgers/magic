@@ -68,7 +68,11 @@ export const SeatPanel = memo(function SeatPanel({
     'data-eliminated': eliminated || undefined,
   }
   // The glow carries its own ring, so it stands in for the ring classes instead of adding to them.
-  const ring = flags.cue ? 'your-turn-cue' : flags.active ? 'ring-2 ring-primary' : 'ring-1 ring-foreground/10'
+  const ring = flags.cue
+    ? 'your-turn-cue'
+    : flags.active
+      ? 'ring-2 ring-primary'
+      : 'ring-1 ring-foreground/10'
 
   if (variant === 'line') {
     const floating = player.mana.counts.some((count) => count > 0)
@@ -85,9 +89,7 @@ export const SeatPanel = memo(function SeatPanel({
         <h3 className="min-w-0 truncate text-sm font-semibold">{owner}</h3>
         <LifeFx as="span" seat={seat} className="shrink-0">
           <span className="sr-only">Life </span>
-          <span
-            className={cn('text-lg font-bold tabular-nums', player.life <= 5 && 'text-destructive')}
-          >
+          <span className={cn('text-lg font-bold tabular-nums', player.life <= 5 && 'text-destructive')}>
             {player.life}
           </span>
         </LifeFx>

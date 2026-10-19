@@ -18,8 +18,10 @@ function sameBox(a: FitBox | null, b: FitBox): boolean {
 /** The room inside a zone: its box less its padding, in whole px. Null where nothing is laid out (a test, a hidden zone). */
 function contentBox(zone: HTMLElement): FitBox | null {
   const style = getComputedStyle(zone)
-  const width = zone.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)
-  const height = zone.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom)
+  // An unset padding reads as an empty string, which is no padding.
+  const px = (value: string): number => parseFloat(value) || 0
+  const width = zone.clientWidth - px(style.paddingLeft) - px(style.paddingRight)
+  const height = zone.clientHeight - px(style.paddingTop) - px(style.paddingBottom)
   if (!(width > 0) || !(height > 0)) return null
   return { width: Math.floor(width), height: Math.floor(height) }
 }

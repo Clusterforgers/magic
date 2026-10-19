@@ -48,7 +48,14 @@ interface PermanentRowProps {
 }
 
 /** One row of a seat's permanents; it redraws only when the ids in it or its card size change. */
-const PermanentRow = memo(function PermanentRow({ seat, row, label, size, width, height }: PermanentRowProps) {
+const PermanentRow = memo(function PermanentRow({
+  seat,
+  row,
+  label,
+  size,
+  width,
+  height,
+}: PermanentRowProps) {
   const ids = usePlay(useShallow((state) => battlefieldRow(state, seat, row)))
   const ghosts = useGhosts(seat, row)
   const box = useMemo<CardBox | undefined>(
