@@ -174,7 +174,8 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
         ) : null}
 
         {decks.length > 0 ? (
-          <div ref={listRef} className="min-h-0 flex-1 sm:overflow-y-auto">
+          // The gutter is kept, so the rows do not change width when a deleted deck ends the scrolling.
+          <div ref={listRef} className="min-h-0 flex-1 sm:overflow-y-auto sm:[scrollbar-gutter:stable]">
             <ul
               aria-label="Your decks"
               aria-busy={state.status === 'ready' && state.refreshing}

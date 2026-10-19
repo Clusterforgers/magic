@@ -16,7 +16,7 @@ import { fileProblem, listProblem, nameFromFile, nameProblem } from './rules'
 
 // Whole class names, so Tailwind can see them. The same edge, fill and focus as `Input`, for a block of lines.
 const TEXTAREA =
-  'min-h-40 w-full resize-y rounded-lg border border-input bg-background px-3 py-2 font-mono text-base text-foreground transition-colors duration-fast ease-out placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:bg-muted disabled:opacity-50 aria-invalid:border-destructive'
+  'min-h-28 w-full resize-y rounded-lg border border-input bg-background px-3 py-2 font-mono text-base text-foreground transition-colors duration-fast ease-out placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:bg-muted disabled:opacity-50 aria-invalid:border-destructive'
 
 type Step = { kind: 'list' } | { kind: 'review'; result: ImportResult }
 
@@ -154,7 +154,7 @@ export function ImportDialog({ api, onSaved, onClosed }: ImportDialogProps) {
                 ref={textRef}
                 id="import-text"
                 value={text}
-                rows={10}
+                rows={5}
                 spellCheck={false}
                 readOnly={pending}
                 placeholder={'4 Lightning Bolt\n20 Mountain'}

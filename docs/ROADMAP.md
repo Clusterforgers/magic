@@ -71,7 +71,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 
 ## M4 Multiplayer product
 - [x] Invite-link lobbies on top of users
-- [ ] (B1) Deck list page: the account's decks with name, format, size and check state; new, import (text, Arena, MTGO), export and delete
+- [x] (B1) Deck list page: the account's decks with name, format, size and check state; new, import (text, Arena, MTGO), export and delete
 - [ ] (B2) Deck builder page: card search with filters, add and remove by zone, counts, save with the check on save (`docs/deck-check.md`)
 - [x] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
 - [ ] (B3) Deck check in the builder: cards that are not verified highlighted with icon, word and reason, an issues-only filter, the Verified marker, and each deck's state in the lobby and the precon browser (`docs/deck-check.md`)
