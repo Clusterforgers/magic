@@ -7,8 +7,54 @@ The browser client: game creation, lobby, table, decision prompts and accounts, 
 React, Vite, Tailwind, shadcn/ui on Base UI, TanStack Router and zustand. Commands are in `CLAUDE.md`.
 
 - Pages live in `src/features` (`auth`, `create`, `game`, `games`, `table`); `src/routes` only picks them. The Vite plugin rewrites `routeTree.gen.ts` on `pnpm dev` and `pnpm build`; commit it with the route change.
-- `src/net` (REST, socket) and `src/play` (session, store) hold the client. `src/components/ui` is shadcn (`pnpm exec shadcn add <name>`). `src/protocol` has the ts-rs bindings and the transcripts Rust writes.
+- `src/net` (REST, socket) and `src/play` (session, store) hold the client. `src/components` has the shell and the pieces pages share; `src/components/ui` is shadcn (`pnpm exec shadcn add <name>`) and is edited to the tokens. `src/protocol` has the ts-rs bindings and the transcripts Rust writes.
 - The dev and preview servers proxy `/api` and `/ws` to `MTG_SERVER_URL` (default `http://127.0.0.1:8080`) and keep the browser's `Host`, which the server's Origin check compares with the page's `Origin`.
+
+## Design system and shell
+
+The tokens, scales and pieces of [ui-design.md](ui-design.md). `src/index.css` holds them as CSS variables that `@theme inline` maps to Tailwind classes; the `dark` class on `<html>` swaps the colours.
+
+| Role | Classes | Use |
+|---|---|---|
+| `background`, `surface`, `table`, `raised` | `bg-background`, `bg-surface`, `bg-table`, `bg-raised` | page; panels and rows; sunken boards; menus and dialogs |
+| `foreground`, `muted-foreground` | `text-foreground`, `text-muted-foreground` | text; secondary text |
+| `border`, `border-strong`, `ring` | `border-border`, `border-border-strong`, `outline-ring` | separators; edges of fields and controls (`border-input` is the same colour); focus |
+| `primary`, `on-primary` | `bg-primary text-on-primary` | main action, current page, selection |
+| `turn-you`, `on-turn-you`, `turn-you-edge`, `turn-them` | `bg-turn-you`, `border-turn-you-edge`, `text-turn-them` | your-turn pill; edge of the active seat; an opponent's turn |
+| `success`, `warning`, `destructive` | `text-success`, `bg-warning/12` | ready, urgent, lethal and Concede |
+| `mana-<colour>`, `on-mana-<colour>` | `bg-mana-blue text-on-mana-blue` | pip fill and ink, the same in both themes |
+| `card`, `popover`, `secondary`, `muted`, `accent`, `input`, `scrim` | shadcn's names | aliases of the roles above or a quiet step of them; `scrim` dims the page behind a dialog |
+
+| Scale | Values |
+|---|---|
+| Type | `text-label` 11/16 (card labels only), `text-xs` 12/16, `text-sm` 14/20, `text-base` 16/24, `text-lg` 18/28, `text-2xl` 24/32, `text-life` 36/40 with tabular digits, `text-display` 32 to 48 by width; weights 400, 500, 600 |
+| Radius | `rounded-md` card 6, `rounded-lg` control 8, `rounded-xl` panel 12, `rounded-full` pill |
+| Elevation | `shadow-e1`, `shadow-e2` menus, `shadow-e3` dialogs; the `surface` utility is a panel (fill, hairline, radius) |
+| Motion | `duration-fast`, `duration-base`, `duration-slow` 100, 200, 300 ms; `ease-out` in, `ease-in` out; `popup-motion` fades a popup and scales it only under `no-preference` |
+| Width | `max-w-narrow` 28rem for a form, `max-w-page` 48rem, `max-w-wide` 72rem; `PageShell` sets one with the gutters |
+| Breakpoints | `sm` 640, `lg` 1024, `xl` 1280, `2xl` 1600 |
+
+- `tokens.test.ts` computes the contrast of every text, edge and ring pair from the stylesheet in both themes, with colours outside sRGB cut off and with their chroma lowered: 4.5:1 for text, 3:1 for edges, rings and other non-text parts. A state tint (`bg-success/12`, a hovered `bg-primary/90`) sits on the page, panels and menus, not on the table. The test also holds the scales above. `tokenUse.test.ts` keeps hard-coded and palette colours, sizes written in px or rem, text sizes outside the scale and translucent focus rings out of `components/` and the pages beside the table.
+- Focus is a 2 px outline in `ring` with a 2 px offset, set once for `:focus-visible` in `index.css`; a component does not draw its own.
+- `Button` heights are `xs` 24, `sm` 32, `default` 36 and `lg` 44 px, and 44 under `pointer: coarse`. `loading` shows a spinner and ignores presses while the button stays focusable (`aria-disabled`).
+- `Pill` (neutral, success, warning, turn-you, turn-them; a control when rendered as a button or link, then `selected` rings it), `EmptyState`, `Kbd`, `Tooltip` for icon-only controls and `Skeleton` are the shared pieces. `Loading` is a polite status at once and the skeleton after 300 ms (`useAfterDelay`). An error is an `Alert` with an icon and a title, and a Retry where retrying works.
+
+### Theme
+
+`hooks/useTheme.ts`: `createThemeStore` keeps the choice (`light`, `dark` or `system`) in `localStorage` under `theme` (the system's choice removes the key), puts the `dark` class on `<html>`, and follows `prefers-color-scheme` and other tabs' `storage` events while a component is subscribed. It works when storage or `matchMedia` is missing or throws, keeping the choice for the page. A script in the head of `index.html` sets the class before the first paint; `themeScript.test.ts` holds it equal to the store. `ThemeMenu` in the header sets the choice.
+
+### Shell
+
+`components/AppShell` frames every route: a skip button (it focuses `main`; a `#main` link would replace the seat token in a game address), the header, `AuthNotice` and `OfflineNotice`, then `main`.
+
+| Part | Content |
+|---|---|
+| Brand | "Magic", home |
+| Main navigation | Play, My games (signed in only), Create; `aria-current` marks the page |
+| Theme | `ThemeMenu`: Light, Dark, System |
+| Account | `AccountNav`: Sign in and Register for a guest, a menu named after the username with Sign out for an account; nothing while unknown or without accounts |
+
+Play and Create both open `/` until the game browser moves Create to `/new`. Under 640 px the navigation drops to a second row and Register leaves the header (the sign-in page links to it).
 
 ## Data flow
 
@@ -225,4 +271,4 @@ To try the account screens by hand, run the server on that database (`DATABASE_U
 - Server-held state is shown, never predicted: ready, yields, stops and Full Control change on screen only when the server says so.
 - Colour never carries meaning alone, and live regions are polite. A row of cards, a ladder row or a list is one tab stop (arrows, Home, End); a control that must keep focus when it cannot act is `aria-disabled`, not `disabled`.
 - Every animation sits inside `@media (prefers-reduced-motion: no-preference)` (`fx.css`, `combat.css`, `responseClock.css`, the `your-turn-cue` utility of `index.css`); under `reduce` an effect is a still highlight, the clock bar is not drawn and the tab title does not flash. JS reads `useReducedMotion` or `prefersReducedMotion`. A CSS test per file (`fxCss.test.ts`, `combatCss.test.ts`, `responseClockCss.test.ts`, `yourTurnCss.test.ts`) fails when an animation leaves the media query.
-- Colours are tokens with a light and a dark value; Tailwind class names are written whole so Tailwind can see them.
+- Colours are tokens with a light and a dark value (`tokens.test.ts` checks their contrast); Tailwind class names are written whole so Tailwind can see them.
