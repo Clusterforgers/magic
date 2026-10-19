@@ -8,6 +8,7 @@ import { startSession } from '@/test-utils/harness'
 import { renderLiveTable } from '@/test-utils/tableHarness'
 import { transcripts } from '@/test-utils/transcripts'
 import type { Transcript } from '@/test-utils/transcripts'
+import { zoneLabel } from './podFigures'
 import { describeMulligan } from './turnText'
 
 const lookup: GameLookup = {
@@ -45,9 +46,12 @@ function expectScreenToMatch(container: HTMLElement, state: PlayState, step: str
   expect(container.querySelectorAll('[data-seat]'), step).toHaveLength(view.players.length)
   for (const player of view.players) {
     const panel = must(container.querySelector<HTMLElement>(`[data-seat="${player.seat}"]`), `${step}: panel`)
-    expect(panel, step).toHaveTextContent(`Life${player.life}`)
-    expect(panel, step).toHaveTextContent(`Library ${player.library.count}`)
-    expect(panel, step).toHaveTextContent(`Hand ${player.hand.count}`)
+    expect(panel.querySelector('[data-slot="life"]'), step).toHaveTextContent(`Life ${player.life}`)
+    expect(
+      within(panel).getByRole('img', { name: zoneLabel('library', player.library.count) }),
+      step,
+    ).toBeTruthy()
+    expect(within(panel).getByRole('img', { name: zoneLabel('hand', player.hand.count) }), step).toBeTruthy()
     const mulligan = panel.querySelector('[data-slot="mulligan"]')
     if (view.stage === 'Mulligan') {
       expect(mulligan?.textContent, step).toBe(

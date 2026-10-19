@@ -30,34 +30,35 @@ export function ManaDot({ type }: { type: ManaType }) {
   )
 }
 
-/** The mana a seat has floating, by kind; "empty" when there is none. */
-export function ManaPool({ pool, className }: { pool: ManaPoolValue; className?: string }) {
-  const held = TYPES.flatMap((type, index) => {
+/** The kinds of mana a pool holds, with their counts, in the order of the wire. */
+export function manaHeld(pool: ManaPoolValue): Array<{ type: ManaType; count: number }> {
+  return TYPES.flatMap((type, index) => {
     const count = pool.counts[index] ?? 0
     return count > 0 ? [{ type, count }] : []
   })
+}
+
+/** The mana a seat has floating, by kind, each in words for a screen reader; an empty pool draws nothing. */
+export function ManaPool({ pool, className }: { pool: ManaPoolValue; className?: string }) {
+  const held = manaHeld(pool)
+  if (held.length === 0) return null
   return (
     <div
       role="group"
       aria-label="Mana pool"
       className={cn('flex flex-wrap items-center gap-x-2 gap-y-1 text-sm', className)}
     >
-      <span className="text-xs text-muted-foreground">Mana</span>
-      {held.length === 0 ? (
-        <span className="text-xs text-muted-foreground">empty</span>
-      ) : (
-        held.map(({ type, count }) => (
-          <span key={type} className="inline-flex items-center gap-1">
-            <ManaDot type={type} />
-            <span className="font-semibold tabular-nums" aria-hidden="true">
-              {count}
-            </span>
-            <span className="sr-only">
-              {count} {type.toLowerCase()}
-            </span>
+      {held.map(({ type, count }) => (
+        <span key={type} className="inline-flex items-center gap-1">
+          <ManaDot type={type} />
+          <span className="font-semibold tabular-nums" aria-hidden="true">
+            {count}
           </span>
-        ))
-      )}
+          <span className="sr-only">
+            {count} {type.toLowerCase()}
+          </span>
+        </span>
+      ))}
     </div>
   )
 }

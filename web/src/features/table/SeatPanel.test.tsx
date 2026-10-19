@@ -1,4 +1,4 @@
-// Goal: a seat panel shows a player's name, life, mana pool, library and hand counts, graveyard, exile and command zone, marks the active turn and priority, and says plainly when the player is eliminated, which mulligan step they are on, and where commander damage and tax will go, and keeps to one line (name, life, counts, zones) for a column of boards.
+// Goal: a seat pod, as a panel for a 168 px column and as one line, names its seat with a dot, shows life as the largest figure, draws mana only while some floats, counts hand, library, graveyard and exile in chips that each have an accessible name, shows the command zone only when it holds a card, carries the turn marks as `data-state`, says plainly when the player is out or which mulligan step they are on, and never draws a placeholder for what the views do not carry.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { PlayState } from '@/play/store'
@@ -19,116 +19,144 @@ function edited(edit: (view: StateView) => void): (state: PlayState) => PlayStat
   }
 }
 
-const panel = (name: string): HTMLElement => screen.getByRole('region', { name })
-const show = (seat: number, edit: (view: StateView) => void = () => undefined) =>
-  renderTable({ seats: 4, ui: <SeatPanel seat={seat} size="normal" />, state: edited(edit) })
+type Variant = 'panel' | 'line'
+const VARIANTS: Variant[] = ['panel', 'line']
 
-describe('the basics', () => {
-  it('names the seat and shows its life, library and hand counts and an empty mana pool', () => {
-    show(2)
+const panel = (name: string): HTMLElement => screen.getByRole('region', { name })
+const show = (seat: number, edit: (view: StateView) => void = () => undefined, variant: Variant = 'panel') =>
+  renderTable({ seats: 4, ui: <SeatPanel seat={seat} variant={variant} />, state: edited(edit) })
+const chip = (root: HTMLElement, name: string): HTMLElement => within(root).getByRole('img', { name })
+
+describe.each(VARIANTS)('the %s pod', (variant) => {
+  it('names the seat with a dot, shows life, and counts the four zones in chips with names', () => {
+    show(2, undefined, variant)
     const cy = panel('Cy')
     expect(within(cy).getByRole('heading', { name: 'Cy' })).toBeInTheDocument()
-    expect(cy).toHaveTextContent('Life36')
-    expect(cy).toHaveTextContent('Library 46')
-    expect(cy).toHaveTextContent('Hand 7')
-    expect(within(cy).getByRole('group', { name: 'Mana pool' })).toHaveTextContent('empty')
+    expect(cy.querySelector('[data-slot="seat-dot"]')).toHaveAttribute('aria-hidden', 'true')
+    expect(cy.querySelector('[data-slot="life"]')).toHaveTextContent('Life 36')
+    expect(chip(cy, 'Hand 7 cards')).toHaveTextContent('7')
+    expect(chip(cy, 'Library 46 cards')).toHaveTextContent('46')
+    expect(within(cy).getByRole('button', { name: 'Graveyard 5 cards, opens the list' })).toHaveTextContent(
+      '5',
+    )
+    expect(within(cy).getByRole('button', { name: 'Exile 1 card, opens the list' })).toHaveTextContent('1')
+    expect(within(cy).getByRole('group', { name: "Cy's zones" })).toBeInTheDocument()
   })
 
-  it('carries data-seat for the decision layer', () => {
-    show(3)
+  it('keeps life the largest figure of the pod', () => {
+    show(2, undefined, variant)
+    const life = must(panel('Cy').querySelector<HTMLElement>('[data-slot="life"]'))
+    expect(life).toHaveClass(variant === 'panel' ? 'text-life' : 'text-2xl')
+  })
+
+  it('draws no mana pool while nothing floats, and lists each kind held, in words, when it does', () => {
+    const { unmount } = show(2, undefined, variant)
+    expect(within(panel('Cy')).queryByRole('group', { name: 'Mana pool' })).toBeNull()
+    expect(panel('Cy')).not.toHaveTextContent(/mana|empty/i)
+    unmount()
+    show(
+      0,
+      (view) => {
+        must(view.players[0]).mana = { counts: [1, 0, 0, 3, 0, 2] }
+      },
+      variant,
+    )
+    const pool = within(panel('Alice (you)')).getByRole('group', { name: 'Mana pool' })
+    expect(pool).toHaveTextContent('1 white')
+    expect(pool).toHaveTextContent('3 red')
+    expect(pool).toHaveTextContent('2 colorless')
+    expect(pool).not.toHaveTextContent('blue')
+  })
+
+  it('carries data-seat for the decision layer, marks the viewer, and says nothing for a seat that is not at the table', () => {
+    const { unmount } = show(3, undefined, variant)
     expect(panel('Dee')).toHaveAttribute('data-seat', '3')
-  })
-
-  it('marks this seat "you", the active turn and priority', () => {
-    show(0)
-    const alice = panel('Alice (you)')
-    expect(alice).toHaveAttribute('data-you', 'true')
-    expect(alice).toHaveTextContent('you')
-    expect(alice).toHaveTextContent('Has priority')
-    expect(alice).not.toHaveTextContent('Active turn')
-  })
-
-  it('marks the player whose turn it is', () => {
-    show(1)
-    expect(panel('Bo')).toHaveAttribute('data-active', 'true')
-    expect(panel('Bo')).toHaveTextContent('Active turn')
+    expect(panel('Dee')).toHaveAttribute('data-variant', variant)
+    unmount()
+    const { container, unmount: again } = show(9, undefined, variant)
+    expect(container.querySelector('[data-seat]')).toBeNull()
+    again()
+    show(0, undefined, variant)
+    expect(panel('Alice (you)')).toHaveAttribute('data-you', 'true')
+    expect(panel('Alice (you)')).toHaveTextContent('you')
   })
 
   it('falls back to "Seat n" while the server has not named the seat', () => {
     renderTable({
       seats: 4,
-      ui: <SeatPanel seat={2} size="normal" />,
+      ui: <SeatPanel seat={2} variant={variant} />,
       lookup: { game: null, missing: false, failed: false },
     })
     expect(within(panel('Seat 3')).getByRole('heading', { name: 'Seat 3' })).toBeInTheDocument()
   })
 
-  it('draws nothing for a seat that is not at the table', () => {
-    const { container } = show(9)
-    expect(container.querySelector('[data-seat]')).toBeNull()
-  })
-})
-
-describe('mana pool', () => {
-  it('lists each kind of mana held, by count, in words for a screen reader', () => {
-    show(0, (view) => {
-      must(view.players[0]).mana = { counts: [1, 0, 0, 3, 0, 2] }
-    })
-    const pool = within(panel('Alice (you)')).getByRole('group', { name: 'Mana pool' })
-    expect(pool).toHaveTextContent('1 white')
-    expect(pool).toHaveTextContent('3 red')
-    expect(pool).toHaveTextContent('2 colorless')
-    expect(pool).not.toHaveTextContent('empty')
-    expect(pool).not.toHaveTextContent('blue')
-  })
-})
-
-describe('hands', () => {
-  it('shows the viewer a strip of card faces', () => {
-    show(0)
-    const hand = within(panel('Alice (you)')).getByRole('list', { name: "Alice's hand" })
-    expect(within(hand).getAllByRole('button')).toHaveLength(7)
+  it.each([
+    [0, 'priority', 'Has priority.'],
+    [1, 'active', 'Active turn.'],
+    [2, undefined, ''],
+  ])('marks seat %i with data-state %j, in words for a screen reader', (seat, state, words) => {
+    show(seat, undefined, variant)
+    const root = document.querySelector<HTMLElement>(`section[data-seat="${seat}"]`)
+    expect(root?.getAttribute('data-state') ?? undefined).toBe(state)
+    expect(root?.querySelector('p.sr-only')?.textContent ?? '').toBe(words)
   })
 
-  it('shows an opponent only card backs and the count', () => {
-    show(1)
-    const bo = panel('Bo')
-    expect(within(bo).queryByRole('list', { name: "Bo's hand" })).toBeNull()
-    expect(bo.querySelector('[data-slot="hand-backs"]')).not.toBeNull()
-    expect(bo).toHaveTextContent('Hand 6')
+  it('lists both marks as tokens when the seat is active and holds priority', () => {
+    show(
+      1,
+      (view) => {
+        must(view.priority).holder = 1
+      },
+      variant,
+    )
+    const root = panel('Bo')
+    expect(root).toHaveAttribute('data-state', 'active priority')
+    expect(root).toHaveTextContent('Active turn. Has priority.')
+    expect(root.matches('[data-state~="active"][data-state~="priority"]')).toBe(true)
   })
 
-  it('says when the viewer has no cards in hand', () => {
-    show(0, (view) => {
-      must(view.players[0]).hand = { count: 0, cards: [] }
-    })
-    expect(panel('Alice (you)')).toHaveTextContent('Your hand is empty.')
+  it('draws no hand, neither the viewer’s cards nor card backs: the dock and the chip say it', () => {
+    show(0, undefined, variant)
+    expect(within(panel('Alice (you)')).queryByRole('list', { name: "Alice's hand" })).toBeNull()
+    expect(panel('Alice (you)').querySelector('[data-slot="hand-backs"]')).toBeNull()
+    // The commander of a panel is the only card it draws.
+    expect(panel('Alice (you)').querySelectorAll('button[data-object-id]').length).toBeLessThanOrEqual(1)
   })
-})
 
-describe('eliminated seats', () => {
+  it('shows red life of 5 or less', () => {
+    show(
+      3,
+      (view) => {
+        must(view.players[3]).life = 4
+      },
+      variant,
+    )
+    expect(panel('Dee').querySelector('[data-slot="life"] .text-destructive')).toHaveTextContent('4')
+  })
+
   it.each<[LossReason, string]>([
     ['ZeroLife', 'Eliminated: ran out of life'],
     ['EmptyLibrary', 'Eliminated: could not draw from an empty library'],
     ['Conceded', 'Eliminated: conceded'],
     [{ Format: 'commander damage' }, 'Eliminated: lost: commander damage'],
   ])('says why a player is out: %j', (reason, text) => {
-    show(2, (view) => {
-      must(view.players[2]).lost = reason
-    })
-    const cy = panel('Cy')
-    expect(cy).toHaveTextContent(text)
-    expect(cy).toHaveAttribute('data-eliminated', 'true')
+    show(
+      2,
+      (view) => {
+        must(view.players[2]).lost = reason
+      },
+      variant,
+    )
+    expect(panel('Cy')).toHaveTextContent(text)
+    expect(panel('Cy')).toHaveAttribute('data-eliminated', 'true')
   })
 
   it('shows no elimination for a player still in', () => {
-    show(2)
+    show(2, undefined, variant)
     expect(panel('Cy')).not.toHaveAttribute('data-eliminated')
     expect(panel('Cy')).not.toHaveTextContent('Eliminated')
   })
-})
 
-describe('mulligans', () => {
   it.each<[MulliganStatus, number, string]>([
     ['NeedsHand', 0, 'Mulligan: Waiting for a new hand'],
     ['Deciding', 1, 'Mulligan: Deciding whether to keep · 1 mulligan'],
@@ -136,64 +164,88 @@ describe('mulligans', () => {
     [{ Bottoming: 2 }, 2, 'Mulligan: Putting 2 cards on the bottom · 2 mulligans'],
     ['Kept', 0, 'Mulligan: Kept their hand'],
   ])('shows progress %j during the mulligan stage', (mulligan, mulligans, text) => {
-    show(1, (view) => {
-      view.stage = 'Mulligan'
-      must(view.players[1]).mulligan = mulligan
-      must(view.players[1]).mulligans = mulligans
-    })
+    show(
+      1,
+      (view) => {
+        view.stage = 'Mulligan'
+        must(view.players[1]).mulligan = mulligan
+        must(view.players[1]).mulligans = mulligans
+      },
+      variant,
+    )
     expect(panel('Bo')).toHaveTextContent(text)
   })
 
   it('shows no mulligan line once turns are being played', () => {
-    show(1, (view) => {
-      must(view.players[1]).mulligan = 'Deciding'
-    })
+    show(
+      1,
+      (view) => {
+        must(view.players[1]).mulligan = 'Deciding'
+      },
+      variant,
+    )
     expect(panel('Bo').querySelector('[data-slot="mulligan"]')).toBeNull()
+  })
+
+  it('has the pod of the viewer light up on their own turn, like the banner', () => {
+    renderTable({
+      fixture: buildFixture({ seats: 4, active: 0, permanents: 2 }),
+      ui: <SeatPanel seat={0} variant={variant} />,
+    })
+    expect(panel('Alice (you)')).toHaveClass('your-turn-cue')
   })
 })
 
-describe('commander slot', () => {
-  const SLOT = '[data-slot="commander-stats"]'
+describe('the command zone', () => {
+  const noCommander = (view: StateView): void => {
+    view.format = 'Normal'
+    for (const player of view.players) player.command = { count: 0, cards: [] }
+  }
 
-  it('is always there in a Commander game, with the commander in the command zone', () => {
+  it('shows the commander of the panel as a card beside the chips', () => {
     show(1)
-    const bo = panel('Bo')
-    expect(bo.querySelector(SLOT)).toHaveTextContent('Commander damage and tax: not tracked yet')
-    const zone = within(bo).getByRole('list', { name: "Bo's command zone" })
+    const zone = within(panel('Bo')).getByRole('list', { name: "Bo's command zone" })
     expect(within(zone).getAllByRole('button')).toHaveLength(1)
     expect(zone).toHaveTextContent('Atraxa')
+    expect(zone.style.getPropertyValue('--card-w')).toBe('44px')
   })
 
-  it('is left out of a game with no commanders', () => {
-    show(1, (view) => {
-      view.format = 'Normal'
-      must(view.players[1]).command = { count: 0, cards: [] }
-    })
-    expect(panel('Bo').querySelector(SLOT)).toBeNull()
-    expect(within(panel('Bo')).queryByRole('list', { name: "Bo's command zone" })).toBeNull()
+  it('shows it in the one-line pod as a chip that opens the list', async () => {
+    const { user } = show(1, undefined, 'line')
+    const bo = panel('Bo')
+    expect(within(bo).queryByRole('list', { name: "Bo's command zone" })).toBeNull()
+    await user.click(within(bo).getByRole('button', { name: 'Command zone 1 card, opens the list' }))
+    const dialog = await screen.findByRole('dialog', { name: /command zone/i })
+    expect(dialog).toHaveTextContent('Atraxa')
   })
 
-  it('shows up for a command zone card even when the format is not named Commander', () => {
-    show(1, (view) => {
-      view.format = 'Normal'
-    })
-    expect(panel('Bo').querySelector(SLOT)).not.toBeNull()
+  it.each<Variant>(VARIANTS)('draws nothing for an empty command zone in the %s pod', (variant) => {
+    show(1, noCommander, variant)
+    const bo = panel('Bo')
+    expect(within(bo).queryByRole('list', { name: "Bo's command zone" })).toBeNull()
+    expect(within(bo).queryByRole('button', { name: /^Command zone/ })).toBeNull()
+    expect(bo.querySelector('[data-zone="command"]')).toBeNull()
+  })
+
+  it.each<[string, (view: StateView) => void]>([
+    ['a Commander game', () => undefined],
+    ['a game with no commanders', noCommander],
+    ['a command zone card in a game not named Commander', (view) => (view.format = 'Normal')],
+  ])('never writes a placeholder for commander damage or tax in %s', (_name, edit) => {
+    for (const variant of VARIANTS) {
+      const { unmount, container } = show(1, edit, variant)
+      expect(container.querySelector('[data-slot="commander-stats"]')).toBeNull()
+      expect(container.textContent).not.toMatch(/not tracked|commander damage and tax/i)
+      unmount()
+    }
   })
 })
 
 describe('graveyard and exile', () => {
-  it('shows the top card of the graveyard (the last one) and its count', () => {
-    const { store } = show(1)
-    const bo = panel('Bo')
-    const top = must(must(store.getState().view).players[1]?.graveyard.cards?.at(-1))
-    expect(bo.querySelector(`[data-object-id="${top}"]`)).not.toBeNull()
-    expect(within(bo).getByRole('button', { name: /^Graveyard 5/ })).toBeEnabled()
-  })
-
   it('lists every card of the graveyard, most recent first, in a dialog', async () => {
     const { user, store } = show(1)
     const ids = must(must(store.getState().view).players[1]).graveyard.cards ?? []
-    await user.click(within(panel('Bo')).getByRole('button', { name: /^Graveyard 5/ }))
+    await user.click(within(panel('Bo')).getByRole('button', { name: /^Graveyard 5 cards/ }))
     const dialog = await screen.findByRole('dialog', { name: /graveyard/i })
     expect(dialog).toHaveTextContent('5 cards, most recent first.')
     const shown = within(within(dialog).getByRole('list')).getAllByRole('button')
@@ -202,11 +254,17 @@ describe('graveyard and exile', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
-  it('has a disabled graveyard button when the graveyard is empty', () => {
-    show(1, (view) => {
-      must(view.players[1]).graveyard = { count: 0, cards: [] }
-    })
-    expect(within(panel('Bo')).getByRole('button', { name: /^Graveyard 0/ })).toBeDisabled()
+  it.each<Variant>(VARIANTS)('keeps an empty graveyard as a disabled chip in the %s pod', (variant) => {
+    show(
+      1,
+      (view) => {
+        must(view.players[1]).graveyard = { count: 0, cards: [] }
+      },
+      variant,
+    )
+    const button = within(panel('Bo')).getByRole('button', { name: 'Graveyard 0 cards' })
+    expect(button).toBeDisabled()
+    expect(button).toHaveTextContent('0')
   })
 
   it('counts only the exiled cards the seat owns', () => {
@@ -214,8 +272,8 @@ describe('graveyard and exile', () => {
       seats: 4,
       ui: (
         <>
-          <SeatPanel seat={1} size="normal" />
-          <SeatPanel seat={3} size="normal" />
+          <SeatPanel seat={1} />
+          <SeatPanel seat={3} />
         </>
       ),
       state: edited((view) => {
@@ -228,8 +286,8 @@ describe('graveyard and exile', () => {
         view.exile = { count: view.exile.count + 3, cards: [...(view.exile.cards ?? []), 7001, 7002, 7003] }
       }),
     })
-    expect(within(panel('Bo')).getByRole('button', { name: /^Exile 3/ })).toBeEnabled()
-    expect(within(panel('Dee')).getByRole('button', { name: /^Exile 1/ })).toBeEnabled()
+    expect(within(panel('Bo')).getByRole('button', { name: 'Exile 3 cards, opens the list' })).toBeEnabled()
+    expect(within(panel('Dee')).getByRole('button', { name: 'Exile 1 card, opens the list' })).toBeEnabled()
   })
 
   it('lists the exiled cards of one seat in a dialog, and only those', async () => {
@@ -241,88 +299,51 @@ describe('graveyard and exile', () => {
       ]
       view.exile = { count: view.exile.count + 2, cards: [...(view.exile.cards ?? []), 7001, 7003] }
     })
-    await user.click(within(panel('Bo')).getByRole('button', { name: /^Exile 2/ }))
+    await user.click(within(panel('Bo')).getByRole('button', { name: /^Exile 2 cards/ }))
     const dialog = await screen.findByRole('dialog', { name: /exile/i })
     expect(dialog).toHaveTextContent('Exiled A')
     expect(dialog).not.toHaveTextContent('Exiled C')
   })
 })
 
-describe('the one-line variant', () => {
-  const line = (seat: number, edit: (view: StateView) => void = () => undefined) =>
-    renderTable({ seats: 4, ui: <SeatPanel seat={seat} size="normal" variant="line" />, state: edited(edit) })
-
-  it('keeps the root of a panel: its name, its marks for the decision layer and the data of the seat', () => {
-    line(1)
-    const bo = panel('Bo')
-    expect(bo).toHaveAttribute('data-seat', '1')
-    expect(bo).toHaveAttribute('data-variant', 'line')
-    expect(bo).toHaveAttribute('data-active', 'true')
-    expect(within(bo).getByRole('heading', { name: 'Bo' })).toBeInTheDocument()
-  })
-
-  it('says life, hand and library in one line, with the zones as small buttons', () => {
-    line(2)
+describe('the one-line pod', () => {
+  it('keeps the whole pod in a single row: identity first, then the chips', () => {
+    show(2, undefined, 'line')
     const cy = panel('Cy')
-    expect(cy).toHaveTextContent('Life 36')
-    expect(cy).toHaveTextContent('Hand 7')
-    expect(cy).toHaveTextContent('Library 46')
-    expect(within(cy).getByRole('button', { name: /^Graveyard 5/ })).toBeEnabled()
-    expect(within(cy).getByRole('button', { name: /^Exile 1/ })).toBeEnabled()
-    // No command zone, mana pool or commander note: those are for the whole panel.
-    expect(cy.querySelector('[data-slot="commander-stats"]')).toBeNull()
-    expect(within(cy).queryByRole('group', { name: 'Mana pool' })).toBeNull()
+    const row = must(cy.firstElementChild)
+    expect(row).toContainElement(cy.querySelector('h3'))
+    expect(row).toContainElement(within(cy).getByRole('group', { name: "Cy's zones" }))
+    expect(cy.querySelector('[data-slot="pod-status"]')).toHaveClass('empty:hidden')
+    expect(cy.querySelector('[data-slot="pod-status"]')).toBeEmptyDOMElement()
   })
 
-  it('marks you, the active turn and priority as small badges', () => {
-    line(0)
-    expect(panel('Alice (you)')).toHaveTextContent('you')
-    expect(panel('Alice (you)')).toHaveTextContent('Has priority')
+  it('wraps the chips under the name only when its row is too narrow, never the name away', () => {
+    show(2, undefined, 'line')
+    const row = must(panel('Cy').firstElementChild)
+    expect(row).toHaveClass('flex-wrap')
+    expect(must(row.firstElementChild)).toHaveClass('min-w-24', 'flex-1')
+    expect(within(panel('Cy')).getByRole('group', { name: "Cy's zones" })).toHaveClass('shrink-0')
   })
 
-  it('marks the active turn', () => {
-    line(1)
-    expect(panel('Bo')).toHaveTextContent('Active turn')
-  })
-
-  it('shows the mana pool only while there is mana in it', () => {
-    line(0)
-    expect(within(panel('Alice (you)')).getByRole('group', { name: 'Mana pool' })).toBeInTheDocument()
-  })
-
-  it('shows red life of 5 or less, the elimination and the mulligan step', () => {
-    line(3, (view) => {
-      must(view.players[3]).life = 4
-      must(view.players[3]).lost = 'ZeroLife'
-      view.stage = 'Mulligan'
-    })
-    const dee = panel('Dee')
-    expect(dee).toHaveAttribute('data-eliminated', 'true')
-    expect(dee).toHaveTextContent('Eliminated: ')
-    expect(dee.querySelector('.text-destructive.font-bold')).toHaveTextContent('4')
-    expect(dee.querySelector('[data-slot="mulligan"]')).toHaveTextContent('Mulligan: ')
-  })
-
-  it('has the panel of the viewer light up on their own turn, like the whole panel', () => {
-    renderTable({
-      fixture: buildFixture({ seats: 4, active: 0, permanents: 2 }),
-      ui: <SeatPanel seat={0} size="normal" variant="line" />,
-    })
-    expect(panel('Alice (you)')).toHaveClass('your-turn-cue')
+  it('puts the mana pool and the notes in a row of their own under it, only while there is one', () => {
+    show(
+      0,
+      (view) => {
+        must(view.players[0]).mana = { counts: [0, 0, 0, 1, 0, 0] }
+      },
+      'line',
+    )
+    const status = must(panel('Alice (you)').querySelector<HTMLElement>('[data-slot="pod-status"]'))
+    expect(within(status).getByRole('group', { name: 'Mana pool' })).toBeInTheDocument()
   })
 })
 
-describe('the viewer’s hand', () => {
-  it('is in the panel by default, and left to the hand dock when the table says so', () => {
-    const { unmount } = renderTable({ seats: 2, ui: <SeatPanel seat={0} size="normal" /> })
-    expect(within(panel('Alice (you)')).getByRole('list', { name: "Alice's hand" })).toBeInTheDocument()
-    unmount()
-    renderTable({ seats: 2, ui: <SeatPanel seat={0} size="normal" hand={false} /> })
-    expect(within(panel('Alice (you)')).queryByRole('list', { name: "Alice's hand" })).toBeNull()
-  })
-
-  it('leaves the card backs of another seat alone either way', () => {
-    renderTable({ seats: 2, ui: <SeatPanel seat={1} size="normal" hand={false} /> })
-    expect(panel('Bo').querySelector('[data-slot="hand-backs"]')).not.toBeNull()
+describe('the panel', () => {
+  it('keeps room for the mana pool, so the chips do not move when mana floats', () => {
+    show(2)
+    const slot = must(panel('Cy').querySelector<HTMLElement>('[data-slot="mana-slot"]'))
+    expect(slot).toHaveClass('min-h-5')
+    expect(slot).toBeEmptyDOMElement()
+    expect(slot.previousElementSibling).toBe(panel('Cy').querySelector('h3')?.parentElement)
   })
 })

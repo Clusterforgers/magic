@@ -82,7 +82,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [x] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
   - [x] (U2) Fit engine: card sizes from the space available and grouping of identical permanents, pure and tested
   - [x] (U3) Table grid: top bar, opponents, shared strip, own board, hand dock and side tabs in one viewport from 1280x720
-  - [ ] (U4) A pod panel and a hand dock fan that hold 40 permanents a seat
+  - [x] (U4) A pod panel and a hand dock fan that hold 40 permanents a seat
   - [x] (U5) Controls dock: a 44 px pass button, a one-row stop ladder and a menu for the rest
   - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
   - [ ] (U6) Turn feedback: active-seat cues in the pods, the Focus cross-fade and a distinct theme for each phase
@@ -96,7 +96,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [ ] Account settings: change the password, delete the account (its seats are freed); a game that failed to resume shows in My games with its reason
 
 ## M5 Commander
-- [ ] `Commander` format rules: 100-card singleton, color identity, 40 life, command zone, tax, 21 commander damage; the views carry commander damage and tax so the seat panel's "not tracked yet" slot fills
+- [ ] `Commander` format rules: 100-card singleton, color identity, 40 life, command zone, tax, 21 commander damage; the views carry commander damage and tax so the pod can show them
 - [ ] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
 - [ ] Partner, companion, Commander-specific tests and Commander-format fuzz games with 4-6 players
 
