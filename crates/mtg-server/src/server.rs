@@ -7,7 +7,10 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use axum::Router;
-use axum::http::header::{CACHE_CONTROL, CONTENT_TYPE, X_CONTENT_TYPE_OPTIONS};
+use axum::http::header::{
+    AUTHORIZATION, CACHE_CONTROL, CONTENT_TYPE, ETAG, IF_NONE_MATCH, RETRY_AFTER,
+    X_CONTENT_TYPE_OPTIONS,
+};
 use axum::http::{HeaderValue, Method};
 use axum::middleware;
 use axum::routing::{get, post};
@@ -24,7 +27,7 @@ use crate::cards::CardSource;
 use crate::config::ServerConfig;
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
-use crate::{api, decks, my_games, ws};
+use crate::{api, decks, lobbies, my_games, ws};
 
 struct Inner {
     config: ServerConfig,
@@ -241,8 +244,17 @@ pub(crate) fn router(state: AppState) -> Router {
     // Listed origins are trusted front ends, so they may send the session cookie along.
     let cors = CorsLayer::new()
         .allow_origin(AllowOrigin::list(origins))
-        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
-        .allow_headers([CONTENT_TYPE])
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::PATCH,
+            Method::DELETE,
+        ])
+        // A seat token travels as a bearer token and the lobby list is polled with its `ETag`.
+        .allow_headers([CONTENT_TYPE, AUTHORIZATION, IF_NONE_MATCH])
+        // A page of a listed origin reads the list's tag and how long to wait after a 429.
+        .expose_headers([ETAG, RETRY_AFTER])
         .allow_credentials(true)
         .max_age(Duration::from_secs(600));
     Router::new()
@@ -261,7 +273,18 @@ pub(crate) fn router(state: AppState) -> Router {
         )
         .route("/api/decks/{id}/export", get(decks::export))
         .route("/api/games", post(api::create_game))
-        .route("/api/games/{id}", get(api::game))
+        .route(
+            "/api/games/{id}",
+            get(api::game).patch(lobbies::set_visibility),
+        )
+        .route("/api/games/{id}/join", post(lobbies::join_game))
+        .route("/api/games/{id}/leave", post(lobbies::leave))
+        .route(
+            "/api/games/{id}/seats/{seat}/release",
+            post(lobbies::release),
+        )
+        .route("/api/join", post(lobbies::join_by_code))
+        .route("/api/lobbies", get(lobbies::list))
         .route("/api/auth/register", post(auth::register))
         .route("/api/auth/login", post(auth::login))
         .route("/api/auth/logout", post(auth::logout))
