@@ -17,6 +17,16 @@ impl<S: EventStore> GameActor<S> {
         matches!(self.phase, Phase::Lobby { .. })
     }
 
+    /// Whether nobody holds `seat` of the lobby (its name is empty): nothing it sends counts and
+    /// nobody may join it. A client whose seat was emptied under it can still have a message on
+    /// its way, and a `Ready` from it must not start a game with nobody in that seat.
+    pub(crate) fn seat_is_open(&self, seat: PlayerId) -> bool {
+        matches!(
+            &self.phase,
+            Phase::Lobby { names, .. } if names.get(seat.index()).is_some_and(String::is_empty)
+        )
+    }
+
     /// Marks `seat` ready and starts the game once every seat is; a late `Ready` is harmless.
     pub(crate) async fn ready(&mut self, seat: PlayerId) -> Result<(), Fatal> {
         let Phase::Lobby { ready, .. } = &mut self.phase else {

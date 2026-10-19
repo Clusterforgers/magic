@@ -310,6 +310,12 @@ impl<S: EventStore> GameActor<S> {
         seat: PlayerId,
         reply: oneshot::Sender<Result<mpsc::Receiver<ServerMessage>, JoinError>>,
     ) {
+        // Nobody holds an open seat, so no connection may take it.
+        if self.seat_is_open(seat) {
+            // A caller that stopped waiting needs no answer.
+            let _ = reply.send(Err(JoinError::NoSuchSeat(seat)));
+            return;
+        }
         // A seat that is already connected is taken over by this connection: nobody else's view of the table changes.
         let takeover = self.seats.connected().contains(&seat);
         let Some(inbox) = self.seats.attach(seat) else {
@@ -353,6 +359,9 @@ impl<S: EventStore> GameActor<S> {
     async fn message(&mut self, seat: PlayerId, message: ClientMessage) -> Result<(), Fatal> {
         if seat.index() >= self.seats.len() {
             return Ok(()); // no such seat, so nowhere to send a reply
+        }
+        if self.seat_is_open(seat) {
+            return Ok(()); // nobody holds the seat, so nobody to answer
         }
         match message {
             ClientMessage::Join { .. } => self.refuse(

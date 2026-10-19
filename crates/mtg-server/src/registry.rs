@@ -186,7 +186,8 @@ impl SeatSlot {
 }
 
 /// The slots of a new game with `seats` seats: a seat with a token is issued under its name (a
-/// missing name becomes "Seat N") and `host` owns seat 0; the others are open.
+/// missing or blank name becomes "Seat N", since an empty name marks an open seat) and `host`
+/// owns seat 0; the others are open.
 fn seat_slots(
     mut names: Vec<String>,
     tokens: &[SeatToken],
@@ -201,7 +202,14 @@ fn seat_slots(
         .into_iter()
         .enumerate()
         .map(|(seat, name)| match tokens.get(seat) {
-            Some(token) => SeatSlot::issued(name, token.digest(), host.filter(|_| seat == 0)),
+            Some(token) => {
+                let name = if name.trim().is_empty() {
+                    format!("Seat {}", seat + 1)
+                } else {
+                    name
+                };
+                SeatSlot::issued(name, token.digest(), host.filter(|_| seat == 0))
+            }
             None => SeatSlot::open(),
         })
         .collect()

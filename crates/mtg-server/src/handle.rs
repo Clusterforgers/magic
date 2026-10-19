@@ -11,7 +11,7 @@ use crate::game_id::GameId;
 /// Why a seat could not be joined.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Error)]
 pub enum JoinError {
-    /// The game has no such seat.
+    /// The game has no such seat, or nobody holds it yet (it is open).
     #[error("the game has no seat {0:?}")]
     NoSuchSeat(PlayerId),
     /// The game's task has ended.

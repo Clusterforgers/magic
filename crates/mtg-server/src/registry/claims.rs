@@ -116,7 +116,8 @@ impl Registry {
     ///
     /// `Listing` finds public games only; for any other game it answers [`ClaimError::NotFound`],
     /// as for a game that does not exist. A started game answers [`ClaimError::Started`] before
-    /// anything else, a full lobby [`ClaimError::Full`].
+    /// any seat is looked for (even for an account that holds one), a full lobby
+    /// [`ClaimError::Full`].
     pub async fn claim(
         &self,
         game: GameId,

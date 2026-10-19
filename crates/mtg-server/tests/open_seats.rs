@@ -12,7 +12,9 @@ use mtg_protocol::{ClientMessage, FullControlMode, LobbySeat, ServerMessage, Sto
 use mtg_server::registry::{
     ClaimError, Created, Entrance, GameOptions, HOST, SeatClaim, SeatRequest, Seated, TableError,
 };
-use mtg_server::{GameHandle, GameId, Registry, SeatState, ServerConfig, UserId, Visibility, demo};
+use mtg_server::{
+    GameHandle, GameId, JoinError, Registry, SeatState, ServerConfig, UserId, Visibility, demo,
+};
 use rstest::rstest;
 
 fn requests(seats: usize) -> Vec<SeatRequest> {
@@ -442,6 +444,94 @@ async fn a_claim_is_told_to_the_table_and_a_release_too() {
         bo_client.inbox.recv().await.is_none(),
         "the released seat's connection is closed"
     );
+}
+
+#[tokio::test]
+async fn nobody_can_join_an_open_seat_and_nothing_it_sends_counts() {
+    let registry = registry();
+    let created = lobby(&registry, 2, Visibility::Public).await;
+    let handle = registry.handle(created.id).unwrap();
+    let mut host = host_of(&handle).await;
+
+    let joined = handle.join(seat(1)).await;
+    assert_eq!(joined.unwrap_err(), JoinError::NoSuchSeat(seat(1)));
+    // A Ready or a line of chat as the empty seat changes nothing, and the table hears nothing.
+    handle.send(seat(1), ClientMessage::Ready).await.unwrap();
+    let chat = ClientMessage::Chat {
+        text: "hello".to_owned(),
+    };
+    handle.send(seat(1), chat).await.unwrap();
+    handle.send(seat(0), ClientMessage::Ready).await.unwrap();
+    let status = handle.status().await.unwrap();
+    assert!(!status.started, "the host alone cannot start the game");
+    assert_eq!(status.ready, [seat(0)]);
+    assert_eq!(
+        host.drain(),
+        [roster(&[("Player 0", true, true), ("", false, false)])],
+        "only the host's own Ready is news"
+    );
+}
+
+#[tokio::test]
+async fn a_late_ready_from_a_released_player_cannot_start_the_game() {
+    let registry = registry();
+    let created = lobby(&registry, 2, Visibility::Public).await;
+    let game = created.id;
+    let handle = registry.handle(game).unwrap();
+    let bo = join(&registry, game, guest("Bo")).await.unwrap();
+    let access = registry
+        .authenticate(game, bo.token.as_ref().unwrap().expose())
+        .unwrap();
+    let bo_client = Client::join(&access.handle, 1).await;
+
+    // The host removes Bo; Bo's Ready was already on its way and arrives after.
+    registry.release(game, seat(1), HOST).await.unwrap();
+    bo_client.say(&handle, ClientMessage::Ready).await;
+    handle.send(seat(0), ClientMessage::Ready).await.unwrap();
+    let status = handle.status().await.unwrap();
+    assert!(!status.started);
+    assert_eq!(status.ready, [seat(0)]);
+    assert_eq!(states(&registry, game).await[1], SeatState::Open);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn removing_a_player_and_the_last_ready_never_start_a_game_with_an_empty_seat() {
+    let registry = registry();
+    for round in 0..40 {
+        let created = lobby(&registry, 2, Visibility::Public).await;
+        let game = created.id;
+        let handle = registry.handle(game).unwrap();
+        join(&registry, game, guest("Bo")).await.unwrap();
+        handle.send(seat(0), ClientMessage::Ready).await.unwrap();
+
+        // Bo's Ready and the host's removal of Bo race.
+        let ready = {
+            let handle = handle.clone();
+            tokio::spawn(async move { handle.send(seat(1), ClientMessage::Ready).await })
+        };
+        let remove = {
+            let registry = registry.clone();
+            tokio::spawn(async move { registry.release(game, seat(1), HOST).await })
+        };
+        ready.await.unwrap().unwrap();
+        let answer = remove.await.unwrap();
+
+        let started = handle.status().await.unwrap().started;
+        let state = states(&registry, game).await[1];
+        match answer {
+            // The removal won: Bo's Ready, wherever it arrived, counted for nothing.
+            Ok(()) => {
+                assert!(!started, "round {round}: a game started without Bo");
+                assert_eq!(state, SeatState::Open, "round {round}");
+            }
+            // The Ready won: the game began with Bo in it, so the removal came too late.
+            Err(TableError::Started) => {
+                assert!(started, "round {round}");
+                assert_eq!(state, SeatState::Claimed, "round {round}");
+            }
+            Err(other) => panic!("round {round}: unexpected {other}"),
+        }
+    }
 }
 
 #[tokio::test]

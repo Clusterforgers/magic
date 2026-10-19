@@ -508,6 +508,57 @@ async fn a_release_the_database_cannot_save_leaves_the_seat_claimed(pool: PgPool
 }
 
 #[sqlx::test(migrations = false)]
+async fn an_account_the_record_already_binds_is_handed_that_seat(pool: PgPool) {
+    migrate(&pool).await.unwrap();
+    let registry = Registry::with_database(&config(), pool.clone());
+    let ann = insert_user(&pool, "ann").await;
+    let created = lobby(&registry, 3, None).await;
+    let game = created.id;
+    // Behind the registry's back the record gives Ann seat 2, so claiming seat 1 for her would
+    // be her second seat, which the unique index refuses.
+    sqlx::query(
+        "UPDATE seats SET state = 'claimed', name = 'Ann', token_digest = $2, user_id = $3
+         WHERE game_id = $1 AND seat = 2",
+    )
+    .bind(game.uuid())
+    .bind(vec![9_u8; 32])
+    .bind(ann.uuid())
+    .execute(&pool)
+    .await
+    .unwrap();
+
+    let answer = registry
+        .claim(game, Entrance::Code, claim("Ann", Some(ann)))
+        .await
+        .unwrap();
+    assert_eq!((answer.seat, answer.token), (seat(2), None));
+    // Seat 1 stays open, in the record and at the table.
+    assert_eq!(rows(&pool, game).await[1].0, "open");
+    assert_eq!(
+        registry.describe(game).await.unwrap().seats[1].state,
+        SeatState::Open
+    );
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_game_that_vanished_from_the_database_cannot_change_its_visibility(pool: PgPool) {
+    migrate(&pool).await.unwrap();
+    let registry = Registry::with_database(&config(), pool.clone());
+    let created = lobby(&registry, 2, None).await;
+    sqlx::query("DELETE FROM games WHERE id = $1")
+        .bind(created.id.uuid())
+        .execute(&pool)
+        .await
+        .unwrap();
+
+    let answer = registry
+        .set_visibility(created.id, HOST, Visibility::Invite)
+        .await;
+    assert_eq!(answer, Err(TableError::NotFound));
+    assert_eq!(registry.visibility(created.id), Some(Visibility::Public));
+}
+
+#[sqlx::test(migrations = false)]
 async fn a_game_made_without_open_seats_never_has_a_claimable_seat(pool: PgPool) {
     migrate(&pool).await.unwrap();
     let registry = Registry::with_database(&config(), pool.clone());
