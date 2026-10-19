@@ -195,11 +195,17 @@ pub(crate) fn grants_instant_timing(object: &GameObject) -> bool {
 #[cfg(test)]
 mod tests {
     //! Goal: every keyword the vocabulary declares has rules, the stubs change nothing, and no keyword is claimed by the capabilities before its task.
+    use std::sync::Arc;
+
     use super::*;
     use crate::caps::caps;
+    use crate::fixtures::{creature, state};
+    use crate::zones::Zone;
+    use mtg_cards::CardDefinition;
     use mtg_cards::cost::Cost;
     use mtg_cards::refs::Selector;
     use mtg_cards::validate::used_primitives;
+    use mtg_core::card::CardType;
 
     /// One value of every keyword, parameters included.
     fn every_keyword() -> Vec<Keyword> {
@@ -262,6 +268,33 @@ mod tests {
             assert_eq!(rules.modifies_damage(&keyword), DamageRules::default());
             assert!(!rules.grants_timing(&keyword), "{keyword:?}");
             assert!(rules.adds_abilities(&keyword).is_empty(), "{keyword:?}");
+        }
+    }
+
+    #[test]
+    fn a_keyword_stub_changes_nothing_where_the_engine_asks_about_blocking_targeting_and_timing() {
+        for keyword in every_keyword() {
+            let holder = Arc::new(
+                CardDefinition::new("Holder")
+                    .with_type(CardType::Creature)
+                    .with_power_toughness(2, 2)
+                    .with_rules(Ability::Keyword(keyword.clone())),
+            );
+            let game = state(
+                vec![vec![], vec![]],
+                vec![vec![holder, creature("Other", 1, 1)], vec![]],
+            );
+            let (held, other) = (
+                game.zone(Zone::Battlefield)[0],
+                game.zone(Zone::Battlefield)[1],
+            );
+            let object = game.object(held).unwrap();
+            assert_eq!(held_by(object).collect::<Vec<_>>(), [&keyword]);
+            assert!(!stops_block(&game, held, other), "{keyword:?}");
+            assert!(!protects(&game, held, other, PlayerId(1)), "{keyword:?}");
+            assert!(!grants_instant_timing(object), "{keyword:?}");
+            // A creature without the keyword holds none.
+            assert_eq!(held_by(game.object(other).unwrap()).count(), 0);
         }
     }
 

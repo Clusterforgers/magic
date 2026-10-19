@@ -517,3 +517,148 @@ mod tests {
         assert_eq!(life_paid(&by_hand), [2]);
     }
 }
+
+#[cfg(test)]
+mod announcement_tests {
+    //! Goal: a cast or activation asks its questions in the order of the rules, targets before payment, passes over a specification that needs no choice, gives up on one that cannot be met, and completes an activation that costs only a tap with the events that pay and announce it.
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
+    use mtg_core::card::CardType;
+    use mtg_core::mana::ManaCost;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::choose::Target;
+    use crate::fixtures::{creature, state};
+    use crate::zones::Zone;
+
+    fn spell(targets: &str) -> Arc<CardDefinition> {
+        let rules = format!(r#"{{"Spell":{{"targets":{targets},"effects":[{{"Draw":{{}}}}]}}}}"#);
+        Arc::new(
+            CardDefinition::new("Spell")
+                .with_type(CardType::Instant)
+                .with_mana_cost(ManaCost::parse("{1}").unwrap())
+                .with_rules(serde_json::from_str(&rules).unwrap()),
+        )
+    }
+
+    fn pending_for(game: &GameState) -> Pending {
+        let card = game.zone(Zone::Hand(PlayerId(0)))[0];
+        Pending::new(PlayerId(0), What::Spell(card))
+    }
+
+    fn asks(next: &Next) -> &'static str {
+        match next {
+            Next::Ask(Decision {
+                kind: DecisionKind::ChooseTargets(_),
+                ..
+            }) => "targets",
+            Next::Ask(Decision {
+                kind: DecisionKind::PayMana(_),
+                ..
+            }) => "payment",
+            Next::Ask(_) => "something else",
+            Next::Commit(_) => "commit",
+            Next::Drop => "drop",
+        }
+    }
+
+    #[rstest]
+    #[case::one_specification(r#"[{"what":"Player"}]"#, 1)]
+    #[case::two_specifications(r#"[{"what":"Player"},{"what":"AnyTarget"}]"#, 2)]
+    fn targets_are_asked_one_specification_at_a_time_and_the_payment_follows(
+        #[case] targets: &str,
+        #[case] specs: usize,
+    ) {
+        let game = state(vec![vec![spell(targets)], vec![]], vec![vec![], vec![]]);
+        let mut pending = pending_for(&game);
+        for index in 0..specs {
+            let next = announce(&game, &mut pending);
+            let Next::Ask(Decision {
+                kind: DecisionKind::ChooseTargets(options),
+                player,
+            }) = next
+            else {
+                panic!("a target decision was expected for specification {index}");
+            };
+            assert_eq!((options.spec, player), (index, PlayerId(0)));
+            assert!(options.can_cancel, "the cast has cost nothing yet");
+            pending.choices.targets.push(vec![options.legal[0]]);
+        }
+        assert_eq!(asks(&announce(&game, &mut pending)), "payment");
+    }
+
+    #[test]
+    fn a_specification_that_needs_nothing_is_passed_over_and_one_that_cannot_be_met_ends_the_cast()
+    {
+        // "Up to one target creature" with no creature to target needs no decision.
+        let optional = r#"[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":1}}]"#;
+        let game = state(vec![vec![spell(optional)], vec![]], vec![vec![], vec![]]);
+        let mut pending = pending_for(&game);
+        assert_eq!(asks(&announce(&game, &mut pending)), "payment");
+        assert_eq!(pending.choices.targets, [Vec::<Target>::new()]);
+        // "Target creature" with none to target cannot be announced at all.
+        let required = r#"[{"what":{"Object":[{"Type":"Creature"}]}}]"#;
+        let game = state(vec![vec![spell(required)], vec![]], vec![vec![], vec![]]);
+        let mut pending = pending_for(&game);
+        assert_eq!(asks(&announce(&game, &mut pending)), "drop");
+        // With a creature in play it can.
+        let game = state(
+            vec![vec![spell(required)], vec![]],
+            vec![vec![], vec![creature("Bear", 2, 2)]],
+        );
+        let mut pending = pending_for(&game);
+        assert_eq!(asks(&announce(&game, &mut pending)), "targets");
+    }
+
+    #[test]
+    fn a_spell_without_targets_goes_straight_to_the_payment() {
+        let game = state(vec![vec![spell("[]")], vec![]], vec![vec![], vec![]]);
+        let mut pending = pending_for(&game);
+        assert_eq!(asks(&announce(&game, &mut pending)), "payment");
+    }
+
+    fn tapper() -> Arc<CardDefinition> {
+        let rules = r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#;
+        Arc::new(
+            CardDefinition::new("Tapper")
+                .with_type(CardType::Artifact)
+                .with_rules(serde_json::from_str(rules).unwrap()),
+        )
+    }
+
+    #[test]
+    fn an_activation_that_costs_a_tap_is_completed_by_the_events_that_pay_and_announce_it() {
+        let game = state(vec![vec![], vec![]], vec![vec![tapper()], vec![]]);
+        let source = game.zone(Zone::Battlefield)[0];
+        let mut pending = Pending::new(
+            PlayerId(0),
+            What::Ability(AbilityRef {
+                object: source,
+                ability: 0,
+            }),
+        );
+        let Next::Commit(events) = announce(&game, &mut pending) else {
+            panic!("a tap needs no decision");
+        };
+        let [
+            Event::PermanentTapped { object },
+            Event::AbilityActivated {
+                player,
+                source: activated,
+                ability,
+            },
+            Event::AbilityPutOnStack(put),
+        ] = &events[..]
+        else {
+            panic!("tap, activation, ability on the stack: {events:?}");
+        };
+        assert_eq!((*object, *player, *ability), (source, PlayerId(0), 0));
+        assert_eq!(*activated, game.object(source).unwrap().reference());
+        assert_eq!(put.object, game.next_object());
+        assert_eq!(put.source, *activated);
+        assert_eq!(put.snapshot.zone, Zone::Battlefield);
+        assert!(put.cause.is_none() && put.choices.is_empty());
+    }
+}

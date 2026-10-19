@@ -49,7 +49,11 @@ pub struct Step<'a> {
 
 /// A fuzz setup whose every card has a distinct name, so a leak of any card can be searched for.
 pub fn unique_setup(players: usize, seed: u64) -> GameSetup {
-    let mut setup = fuzz_setup(players, seed);
+    with_unique_names(fuzz_setup(players, seed))
+}
+
+/// `setup` with every card renamed to a name no other card has; what the cards do is left as it was.
+pub fn with_unique_names(mut setup: GameSetup) -> GameSetup {
     for (seat, player) in setup.players.iter_mut().enumerate() {
         player.library = player
             .library

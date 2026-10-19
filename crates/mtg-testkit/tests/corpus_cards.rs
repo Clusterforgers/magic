@@ -1,4 +1,4 @@
-//! Goal: the 40 corpus cards reach the engine as their support records say (Verified with their abilities, Manual with the printed side alone), and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 40 corpus cards reach the engine as their support records say (Verified with their abilities, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -9,6 +9,7 @@ use std::sync::Arc;
 use common::names;
 use mtg_cards::CardDefinition;
 use mtg_cards::support::Support;
+use mtg_cards::validate::used_primitives;
 use mtg_core::card::CardType;
 use mtg_core::mana::{ManaCost, ManaType};
 use mtg_engine::decision::DecisionKind;
@@ -91,6 +92,67 @@ fn each_corpus_card_arrives_as_its_support_record_says() {
         }
     }
     assert!(wrong.is_empty(), "{wrong:#?}");
+}
+
+/// The primitives a clause names as missing: the reason reads "the engine does not run A, B yet".
+fn gaps_named(reason: &str) -> Option<Vec<String>> {
+    let names = reason
+        .strip_prefix("the engine does not run ")?
+        .strip_suffix(" yet")?;
+    Some(names.split(", ").map(str::to_owned).collect())
+}
+
+#[test]
+fn the_gaps_a_record_names_are_the_primitives_the_engine_lacks_and_a_verified_card_has_none() {
+    let caps = mtg_engine::caps();
+    let library = mtg_cards::builtin::library().unwrap();
+    let corpus = corpus().unwrap();
+    for (name, state, _) in CARDS {
+        let record = corpus.support(name).unwrap();
+        // Worked out here from the engine's capabilities and the file alone.
+        let lacking: BTreeSet<String> = library
+            .card_by_name(name)
+            .into_iter()
+            .flat_map(mtg_cards::card::Card::abilities)
+            .filter(|(_, ability)| !ability.is_manual())
+            .flat_map(|(_, ability)| caps.missing(&used_primitives(ability)))
+            .collect();
+        let named: BTreeSet<String> = record
+            .clauses
+            .iter()
+            .filter_map(|clause| gaps_named(&clause.reason))
+            .flatten()
+            .collect();
+        // A card with a printed gap (a second face, X in its cost) is left to the table before its rules are read.
+        if named.is_empty() {
+            assert!(
+                state != Verified || (lacking.is_empty() && record.clauses.is_empty()),
+                "{name}: {lacking:?} {:?}",
+                record.clauses
+            );
+        } else {
+            assert_eq!(named, lacking, "{name}: {:?}", record.clauses);
+        }
+    }
+}
+
+#[test]
+fn what_stands_between_the_other_cards_and_verified_is_named() {
+    let corpus = corpus().unwrap();
+    let reasons = |name: &str| -> String {
+        let record = corpus.support(name).unwrap();
+        let reasons: Vec<&str> = record.clauses.iter().map(|c| c.reason.as_str()).collect();
+        reasons.join("; ")
+    };
+    // Fireball is left to the table because the engine cannot pay X.
+    let fireball = reasons("Fireball");
+    assert!(fireball.contains("{X}"), "{fireball}");
+    // Burst Lightning's damage is covered, its kicker is not.
+    let burst = reasons("Burst Lightning");
+    assert!(burst.contains("Keyword.Kicker"), "{burst}");
+    assert!(!burst.contains("Effect.DealDamage"), "{burst}");
+    // A card whose file models nothing says nothing about the engine.
+    assert_eq!(reasons("Panharmonicon"), "");
 }
 
 fn resolve_the_stack(driver: &mut Driver) -> Result<(), ScriptError> {

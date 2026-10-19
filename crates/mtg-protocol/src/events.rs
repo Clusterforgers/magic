@@ -313,3 +313,279 @@ pub fn project_events(
         })
         .collect())
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: every event of the effect pipeline has its visibility decided: what a player learns by looking or by choosing among cards the others cannot see is shown to that player only (the others get counts or the position), a card moving between places nobody can see into is not named, and everything else is public.
+    #![allow(clippy::unwrap_used, clippy::expect_used)]
+
+    use mtg_cards::value::CounterKind;
+    use mtg_core::ids::ObjectId;
+    use mtg_engine::abilities::{Cause, PutOnStack};
+    use mtg_engine::choose::{Choice, Choices, Target};
+    use mtg_engine::counters::CountersChanged;
+    use mtg_engine::events::{ResolutionOutcome, ZoneCause};
+    use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried};
+    use mtg_engine::snapshot::snapshot;
+    use mtg_engine::tokens::TokenCreated;
+    use mtg_engine::triggers::Triggered;
+    use mtg_testkit::cards::{bear, forest, free_creature, giant};
+    use mtg_testkit::{Scenario, ready};
+
+    use super::*;
+
+    const OWNER: PlayerId = PlayerId(0);
+    const OTHER: PlayerId = PlayerId(1);
+
+    /// Seat 0 has a card in hand and one in the library, and a creature on the battlefield; seat 1 has a creature too.
+    struct Table {
+        state: GameState,
+        hand: ObjectId,
+        library: ObjectId,
+        creature: ObjectId,
+    }
+
+    fn table() -> Table {
+        let state = Scenario::new(2)
+            .hand(0, [bear()])
+            .library(0, [giant(), forest()])
+            .battlefield(0, [ready(free_creature("Mine", 1, 1))])
+            .battlefield(1, [ready(free_creature("Theirs", 2, 2))])
+            .build()
+            .unwrap()
+            .state()
+            .clone();
+        let hand = state.zone(Zone::Hand(OWNER))[0];
+        let library = *state.zone(Zone::Library(OWNER)).last().unwrap();
+        let creature = state.zone(Zone::Battlefield)[0];
+        Table {
+            state,
+            hand,
+            library,
+            creature,
+        }
+    }
+
+    /// What `viewer` is told of `event`: `Err` with the hidden form, `Ok` when it is the event as logged.
+    fn told(state: &GameState, event: &Event, viewer: PlayerId) -> Result<(), HiddenEvent> {
+        redact(state, event, viewer).map_or(Ok(()), Err)
+    }
+
+    #[test]
+    fn what_a_player_learned_by_looking_is_theirs_and_the_others_get_counts() {
+        let t = table();
+        let looked = Event::LibraryLooked(LibraryLooked {
+            player: OWNER,
+            cards: vec![t.library, t.hand],
+        });
+        let found = Event::CardsFound(CardsFound {
+            player: OWNER,
+            zone: Zone::Library(OWNER),
+            cards: vec![t.library],
+        });
+        let scried = Event::Scried(Scried {
+            player: OWNER,
+            top: vec![t.library],
+            bottom: vec![t.hand],
+        });
+        for event in [&looked, &found, &scried] {
+            assert_eq!(told(&t.state, event, OWNER), Ok(()), "{event:?}");
+        }
+        assert_eq!(
+            told(&t.state, &looked, OTHER),
+            Err(HiddenEvent::LibraryLooked {
+                player: OWNER,
+                count: 2
+            })
+        );
+        assert_eq!(
+            told(&t.state, &found, OTHER),
+            Err(HiddenEvent::CardsFound {
+                player: OWNER,
+                count: 1
+            })
+        );
+        assert_eq!(
+            told(&t.state, &scried, OTHER),
+            Err(HiddenEvent::Scried {
+                player: OWNER,
+                top: 1,
+                bottom: 1
+            })
+        );
+    }
+
+    #[test]
+    fn a_card_that_moves_is_named_to_those_who_can_see_either_end_of_the_move() {
+        let t = table();
+        let moved = |object, from, to| Event::ZoneChanged {
+            object,
+            from,
+            to,
+            cause: ZoneCause::Moved,
+        };
+        // Library to hand (a search): only the owner sees where it goes.
+        let found = moved(t.library, Zone::Library(OWNER), Zone::Hand(OWNER));
+        assert_eq!(told(&t.state, &found, OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &found, OTHER),
+            Err(HiddenEvent::ZoneChanged {
+                from: Zone::Library(OWNER),
+                to: Zone::Hand(OWNER),
+                cause: ZoneCause::Moved
+            })
+        );
+        // Hand to library (put back): the owner knows which card; the other seat sees neither zone.
+        let back = moved(t.hand, Zone::Hand(OWNER), Zone::Library(OWNER));
+        assert_eq!(told(&t.state, &back, OWNER), Ok(()));
+        assert!(told(&t.state, &back, OTHER).is_err());
+        // The battlefield and graveyards are open to both.
+        let dies = moved(t.creature, Zone::Battlefield, Zone::Graveyard(OWNER));
+        assert_eq!(told(&t.state, &dies, OWNER), Ok(()));
+        assert_eq!(told(&t.state, &dies, OTHER), Ok(()));
+        // Hand to graveyard (a discard): everyone sees it arrive.
+        let discard = moved(t.hand, Zone::Hand(OWNER), Zone::Graveyard(OWNER));
+        assert_eq!(told(&t.state, &discard, OTHER), Ok(()));
+    }
+
+    #[test]
+    fn an_answer_about_cards_is_shown_to_those_who_can_see_the_cards_and_to_whoever_gave_it() {
+        let t = table();
+        let choose = |player, cards: Vec<ObjectId>| Event::ChoiceMade {
+            player,
+            choice: Choice::Cards(cards),
+        };
+        // Choosing among your own hand: you know, the other seat does not.
+        let hand = choose(OWNER, vec![t.hand]);
+        assert_eq!(told(&t.state, &hand, OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &hand, OTHER),
+            Err(HiddenEvent::ChoiceMade { player: OWNER })
+        );
+        // The other seat choosing among your hand is not told to you either, but the chooser knows what they chose.
+        let order = Event::ChoiceMade {
+            player: OTHER,
+            choice: Choice::Order(vec![t.library]),
+        };
+        assert_eq!(told(&t.state, &order, OTHER), Ok(()));
+        assert!(told(&t.state, &order, OWNER).is_err());
+        // Cards everyone can see, and answers that name no card, are public.
+        assert_eq!(
+            told(&t.state, &choose(OWNER, vec![t.creature]), OTHER),
+            Ok(())
+        );
+        for choice in [
+            Choice::YesNo(true),
+            Choice::Number(3),
+            Choice::Option(1),
+            Choice::Replacement(0),
+        ] {
+            let event = Event::ChoiceMade {
+                player: OWNER,
+                choice,
+            };
+            assert_eq!(told(&t.state, &event, OTHER), Ok(()), "{event:?}");
+        }
+    }
+
+    #[test]
+    fn a_step_is_shown_whole_unless_it_bound_or_moved_cards_the_viewer_cannot_see() {
+        let t = table();
+        let step = |bound: Vec<(String, Vec<Target>)>, snapshots| Event::StepDone {
+            position: vec![2],
+            bound,
+            snapshots,
+        };
+        let named = |object: ObjectId| {
+            vec![(
+                "x".to_owned(),
+                vec![Target::Object(t.state.object(object).unwrap().reference())],
+            )]
+        };
+        assert_eq!(told(&t.state, &step(Vec::new(), Vec::new()), OTHER), Ok(()));
+        assert_eq!(
+            told(&t.state, &step(named(t.creature), Vec::new()), OTHER),
+            Ok(())
+        );
+        let hidden = step(named(t.hand), Vec::new());
+        assert_eq!(told(&t.state, &hidden, OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &hidden, OTHER),
+            Err(HiddenEvent::StepDone { position: vec![2] })
+        );
+        // A player named in a binding is always known.
+        let player = vec![("p".to_owned(), vec![Target::Player(OWNER)])];
+        assert_eq!(told(&t.state, &step(player, Vec::new()), OTHER), Ok(()));
+        // An object moved away from a place the viewer cannot see into is not shown either.
+        let shot = snapshot(&t.state, t.hand).unwrap();
+        assert!(told(&t.state, &step(Vec::new(), vec![shot]), OTHER).is_err());
+        let shot = snapshot(&t.state, t.creature).unwrap();
+        assert_eq!(told(&t.state, &step(Vec::new(), vec![shot]), OTHER), Ok(()));
+    }
+
+    #[test]
+    fn the_rest_of_the_pipeline_is_public() {
+        let t = table();
+        let source = t.state.object(t.creature).unwrap().reference();
+        let events = [
+            Event::AbilityPutOnStack(Box::new(PutOnStack {
+                object: ObjectId(900),
+                source,
+                snapshot: snapshot(&t.state, t.creature).unwrap(),
+                ability: 0,
+                controller: OWNER,
+                choices: Choices::default(),
+                cause: None,
+            })),
+            Event::AbilityActivated {
+                player: OWNER,
+                source,
+                ability: 0,
+            },
+            Event::AbilityTriggered(Triggered {
+                source,
+                ability: 0,
+                cause: Cause::default(),
+            }),
+            Event::ResolutionBegan {
+                object: ObjectId(900),
+            },
+            Event::ResolutionEnded {
+                object: ObjectId(900),
+                outcome: ResolutionOutcome::Fizzled,
+            },
+            Event::LifeGained {
+                player: OWNER,
+                amount: 2,
+            },
+            Event::LifeLost {
+                player: OTHER,
+                amount: 2,
+            },
+            Event::CountersChanged(CountersChanged {
+                on: Target::Player(OTHER),
+                counter: CounterKind::Poison,
+                delta: 1,
+            }),
+            Event::TokenCreated(TokenCreated {
+                object: ObjectId(901),
+                controller: OWNER,
+                name: "Treasure".into(),
+            }),
+            Event::Revealed(Revealed {
+                player: OWNER,
+                cards: vec![t.hand],
+            }),
+            Event::SpellCast {
+                player: OWNER,
+                object: t.hand,
+                choices: Choices::default(),
+            },
+        ];
+        for event in &events {
+            for viewer in [OWNER, OTHER] {
+                assert_eq!(told(&t.state, event, viewer), Ok(()), "{event:?}");
+            }
+        }
+    }
+}

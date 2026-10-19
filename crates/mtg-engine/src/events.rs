@@ -442,3 +442,52 @@ impl Event {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: an event stays small, since the log keeps every one of a game, and the events that changed shape keep the JSON they had when they carry nothing new.
+    use super::*;
+
+    #[test]
+    fn an_event_is_at_most_a_hundred_and_forty_bytes() {
+        // The log is a vector of events, each as big as the biggest, so a heavy payload is boxed.
+        assert!(
+            std::mem::size_of::<Event>() <= 144,
+            "{}",
+            std::mem::size_of::<Event>()
+        );
+    }
+
+    #[test]
+    fn a_cast_without_announcements_has_the_two_fields_it_always_had() {
+        let cast = Event::SpellCast {
+            player: PlayerId(1),
+            object: ObjectId(7),
+            choices: Choices::default(),
+        };
+        assert_eq!(
+            serde_json::to_string(&cast).unwrap(),
+            r#"{"SpellCast":{"player":1,"object":7}}"#
+        );
+        let old: Event = serde_json::from_str(r#"{"SpellCast":{"player":1,"object":7}}"#).unwrap();
+        assert_eq!(old, cast);
+    }
+
+    #[test]
+    fn a_cast_with_targets_says_which() {
+        let cast = Event::SpellCast {
+            player: PlayerId(0),
+            object: ObjectId(3),
+            choices: Choices {
+                targets: vec![vec![Target::Player(PlayerId(1))]],
+                ..Choices::default()
+            },
+        };
+        let json = serde_json::to_string(&cast).unwrap();
+        assert_eq!(
+            json,
+            r#"{"SpellCast":{"player":0,"object":3,"choices":{"targets":[[{"Player":1}]]}}}"#
+        );
+        assert_eq!(serde_json::from_str::<Event>(&json).unwrap(), cast);
+    }
+}

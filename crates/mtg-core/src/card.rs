@@ -37,7 +37,7 @@ impl CardType {
     }
 }
 
-/// A cheap copyable set of card types.
+/// A cheap copyable set of card types; on the wire a number whose bit n is the nth [`CardType`] in declaration order.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 #[serde(transparent)]
