@@ -1,4 +1,6 @@
-//! Haste (CR 702.10): the rules are a stub until the keyword task (`docs/cards-dsl.md`, Keywords).
+//! Haste (CR 702.10): a creature with haste can attack and use `{T}` abilities the turn it comes under its controller's control.
+
+use mtg_cards::keyword::Keyword;
 
 use super::KeywordRules;
 
@@ -6,4 +8,8 @@ use super::KeywordRules;
 #[derive(Debug)]
 pub(super) struct Haste;
 
-impl KeywordRules for Haste {}
+impl KeywordRules for Haste {
+    fn ignores_summoning_sickness(&self, _keyword: &Keyword) -> bool {
+        true
+    }
+}

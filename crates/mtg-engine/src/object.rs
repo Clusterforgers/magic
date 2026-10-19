@@ -48,6 +48,7 @@ pub struct ObjectRef {
 pub struct PermanentState {
     pub(crate) tapped: bool,
     pub(crate) damage: u32,
+    pub(crate) deathtouched: bool,
     pub(crate) summoning_sick: bool,
 }
 
@@ -60,6 +61,11 @@ impl PermanentState {
     /// Damage marked on the permanent this turn (tracked apart from toughness).
     pub const fn damage(&self) -> u32 {
         self.damage
+    }
+
+    /// Whether a source with deathtouch dealt it damage this turn (CR 704.5h).
+    pub const fn deathtouched(&self) -> bool {
+        self.deathtouched
     }
 
     /// Whether the controller has not yet controlled it since their turn began.

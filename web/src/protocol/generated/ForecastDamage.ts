@@ -15,6 +15,6 @@ source: ObjectId,
  */
 target: DamageTarget, 
 /**
- * How much (may be 0 for a creature with no power or a blocker left without a share).
+ * How much in all the damage steps ahead (may be 0 for a creature with no power or a blocker left without a share).
  */
 amount: number, };

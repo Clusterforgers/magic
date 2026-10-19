@@ -13,7 +13,7 @@ use crate::choose::{
     OrderOptions, ReplacementChoice, ReplacementOptions, TargetChoice, TargetOptions,
     TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
 };
-use crate::combat::AttackTarget;
+use crate::combat::{AttackTarget, DamageTarget};
 use crate::mana::{ManaOption, ManaPool, ManaSource, Payment};
 
 /// A question for one player together with all of their legal options.
@@ -202,18 +202,36 @@ pub struct BlockerOption {
 pub struct BlockOptions {
     /// Every creature that may block; choosing none is always legal.
     pub blockers: Vec<BlockerOption>,
+    /// The fewest creatures that may block an attacker together, for each attacker that needs more than one
+    /// (menace): it is blocked by that many or by none. Left out while no attacker needs several.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(ObjectId, usize)>>", optional))]
+    pub min_blockers: Vec<(ObjectId, usize)>,
 }
 
-/// An attacker that must divide its damage among blockers.
+/// An attacker that must divide its damage among blockers and, with trample, the player or planeswalker it attacks.
+///
+/// The answer lists the share of each blocker. Without `excess` the shares add up to `power`. With it they
+/// add up to at most `power` and what is left goes to `excess`, which takes damage only when every blocker has
+/// at least its `lethal` damage.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct DamageOptions {
     /// The attacking creature.
     pub attacker: ObjectId,
-    /// Damage to divide; all of it must be assigned.
+    /// Damage to divide.
     pub power: u32,
     /// The blockers that may receive damage.
     pub blockers: Vec<ObjectId>,
+    /// With trample, the player or planeswalker the attacker attacks, which takes the damage not given to a blocker.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub excess: Option<DamageTarget>,
+    /// Damage that is lethal to each blocker, in the order of `blockers`: what its toughness leaves after the
+    /// damage marked, and at most 1 from a source with deathtouch.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<u32>>", optional))]
+    pub lethal: Vec<u32>,
 }
 
 /// Options for the cleanup discard.

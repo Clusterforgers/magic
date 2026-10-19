@@ -275,6 +275,7 @@ mod tests {
     fn blockers() -> DecisionKind {
         DecisionKind::DeclareBlockers(BlockOptions {
             blockers: Vec::new(),
+            min_blockers: Vec::new(),
         })
     }
 
@@ -309,6 +310,8 @@ mod tests {
                 attacker: ObjectId(1),
                 power: 2,
                 blockers: Vec::new(),
+                excess: None,
+                lethal: Vec::new(),
             }),
             DecisionKind::Discard(DiscardOptions {
                 hand: Vec::new(),

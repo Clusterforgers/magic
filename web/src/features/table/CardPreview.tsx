@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { abilityText, costText, powerToughness, statusWords, typeLine } from './cardModel'
+import { abilityText, costText, keywordLine, powerToughness, statusWords, typeLine } from './cardModel'
 import { CardFace } from './CardFace'
 import { useCreatureOutlook } from './combat/drawn'
 import { outlookText } from './combat/forecastText'
@@ -59,6 +59,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
   const dock = dockOf(target.anchor, { width: window.innerWidth, height: window.innerHeight })
   const wide = dock === 'left' || dock === 'right'
   const pt = powerToughness(object)
+  const keywords = keywordLine(object)
   const status = statusWords(object, role)
   return (
     <div
@@ -81,6 +82,7 @@ function PreviewBody({ target }: { target: PreviewTarget }) {
         {object.mana_cost === null ? null : <p>Mana cost {costText(object.mana_cost)}</p>}
         <p>{typeLine(object)}</p>
         {pt === null ? null : <p>Power/toughness {pt}</p>}
+        {keywords === null ? null : <p data-slot="preview-keywords">Keywords: {keywords}</p>}
         {object.abilities.length === 0 ? (
           <p className="text-muted-foreground">No abilities.</p>
         ) : (

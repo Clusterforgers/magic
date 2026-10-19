@@ -35,6 +35,8 @@ pub enum NothingToDo {
 pub enum DeathCause {
     /// Damage marked on it was at least its toughness (CR 704.5g).
     LethalDamage,
+    /// A source with deathtouch dealt it damage (CR 704.5h).
+    Deathtouch,
     /// Its toughness was 0 or less (CR 704.5f).
     ZeroToughness,
 }

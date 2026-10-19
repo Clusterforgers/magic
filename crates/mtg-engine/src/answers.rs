@@ -55,10 +55,10 @@ pub(crate) fn handle(
         }
         (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
             check_attackers(options, &attackers)?;
-            Ok(Outcome::Events(attack_events(player, &attackers)))
+            Ok(Outcome::Events(attack_events(state, player, &attackers)))
         }
         (DecisionKind::DeclareBlockers(options), Answer::DeclareBlockers(blocks)) => {
-            check_blockers(options, &blocks)?;
+            check_blockers(state, options, &blocks)?;
             Ok(Outcome::Events(vec![Event::BlockersDeclared {
                 player,
                 blocks,

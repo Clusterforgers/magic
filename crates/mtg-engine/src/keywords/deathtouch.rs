@@ -1,9 +1,18 @@
-//! Deathtouch (CR 702.2): the rules are a stub until the keyword task (`docs/cards-dsl.md`, Keywords).
+//! Deathtouch (CR 702.2): any damage the creature deals to a creature is lethal, and destroys it at the next state-based check.
 
-use super::KeywordRules;
+use mtg_cards::keyword::Keyword;
+
+use super::{DamageRules, KeywordRules};
 
 /// The rules of deathtouch.
 #[derive(Debug)]
 pub(super) struct Deathtouch;
 
-impl KeywordRules for Deathtouch {}
+impl KeywordRules for Deathtouch {
+    fn modifies_damage(&self, _keyword: &Keyword) -> DamageRules {
+        DamageRules {
+            deathtouch: true,
+            ..DamageRules::default()
+        }
+    }
+}

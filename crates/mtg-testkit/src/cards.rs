@@ -6,6 +6,7 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::{Ability, Timing};
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::effect::Effect;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::value::Amount;
 use mtg_core::card::CardType;
@@ -74,6 +75,45 @@ pub fn creature(
 /// A creature that costs nothing, handy when a test is about combat rather than mana.
 pub fn free_creature(name: &str, power: i32, toughness: i32) -> Arc<CardDefinition> {
     creature(name, 0, &[], power, toughness)
+}
+
+/// A creature that costs nothing and has these keywords.
+pub fn keyworded(
+    name: &str,
+    power: i32,
+    toughness: i32,
+    keywords: &[Keyword],
+) -> Arc<CardDefinition> {
+    with_keywords(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_power_toughness(power, toughness),
+        keywords,
+    )
+}
+
+/// A creature with a cost and these keywords.
+pub fn keyworded_creature(
+    name: &str,
+    generic: u32,
+    colored: &[Color],
+    power: i32,
+    toughness: i32,
+    keywords: &[Keyword],
+) -> Arc<CardDefinition> {
+    with_keywords(
+        CardDefinition::new(name)
+            .with_type(CardType::Creature)
+            .with_mana_cost(cost(generic, colored))
+            .with_power_toughness(power, toughness),
+        keywords,
+    )
+}
+
+fn with_keywords(card: CardDefinition, keywords: &[Keyword]) -> Arc<CardDefinition> {
+    Arc::new(keywords.iter().fold(card, |card, keyword| {
+        card.with_rules(Ability::Keyword(keyword.clone()))
+    }))
 }
 
 /// A creature whose cost is made of exactly these symbols, hybrid and Phyrexian ones included.
@@ -386,6 +426,26 @@ mod tests {
             colors.chars().filter_map(Color::from_symbol).collect();
         assert_eq!(card.colors(), expected);
         assert!(card.is_type(CardType::Creature));
+    }
+
+    #[test]
+    fn keyword_creatures_carry_their_keywords_in_order() {
+        let free = keyworded("Free", 3, 2, &[Keyword::Flying, Keyword::Trample]);
+        assert_eq!((free.power, free.toughness), (Some(3), Some(2)));
+        assert_eq!(free.mana_value(), 0);
+        let rules: Vec<&Ability> = free.rules.iter().map(|rule| &**rule).collect();
+        assert_eq!(
+            rules,
+            [
+                &Ability::Keyword(Keyword::Flying),
+                &Ability::Keyword(Keyword::Trample)
+            ]
+        );
+        let paid = keyworded_creature("Paid", 1, &[Color::Red], 1, 1, &[Keyword::Haste]);
+        assert_eq!(paid.mana_value(), 2);
+        assert_eq!(paid.rules.len(), 1);
+        assert!(paid.is_type(CardType::Creature));
+        assert_eq!(keyworded("Plain", 1, 1, &[]).rules.len(), 0);
     }
 
     #[rstest]

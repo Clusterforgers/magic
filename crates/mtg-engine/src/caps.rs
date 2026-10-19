@@ -3,7 +3,7 @@
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
 //! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, `{T}` abilities and triggered
-//! abilities made of drawing, life and damage (and delayed triggers), and nothing else.
+//! abilities made of drawing, life and damage (and delayed triggers), the keywords of combat, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -30,6 +30,18 @@ const RUNS: &[&str] = &[
     "Effect.GainLife",
     "Effect.LoseLife",
     "Effect.DelayedTrigger",
+    "Keyword.Flying",
+    "Keyword.Reach",
+    "Keyword.Menace",
+    "Keyword.Defender",
+    "Keyword.Haste",
+    "Keyword.Vigilance",
+    "Keyword.FirstStrike",
+    "Keyword.DoubleStrike",
+    "Keyword.Deathtouch",
+    "Keyword.Trample",
+    "Keyword.Lifelink",
+    "Keyword.Indestructible",
 ];
 
 /// The capabilities of this engine.
@@ -90,7 +102,20 @@ mod tests {
     #[case::either_of_two_events("Trigger.AnyOf", true)]
     #[case::delayed_triggers("Effect.DelayedTrigger", true)]
     #[case::destroy("Effect.Destroy", false)]
-    #[case::flying("Keyword.Flying", false)]
+    #[case::flying("Keyword.Flying", true)]
+    #[case::reach("Keyword.Reach", true)]
+    #[case::menace("Keyword.Menace", true)]
+    #[case::defender("Keyword.Defender", true)]
+    #[case::haste("Keyword.Haste", true)]
+    #[case::vigilance("Keyword.Vigilance", true)]
+    #[case::first_strike("Keyword.FirstStrike", true)]
+    #[case::double_strike("Keyword.DoubleStrike", true)]
+    #[case::deathtouch("Keyword.Deathtouch", true)]
+    #[case::trample("Keyword.Trample", true)]
+    #[case::lifelink("Keyword.Lifelink", true)]
+    #[case::indestructible("Keyword.Indestructible", true)]
+    #[case::hexproof("Keyword.Hexproof", false)]
+    #[case::kicker("Keyword.Kicker", false)]
     #[case::x_costs(X_COST, false)]
     #[case::faces(FACES, false)]
     #[case::variable_stats(VARIABLE_STATS, false)]

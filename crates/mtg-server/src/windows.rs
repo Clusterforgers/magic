@@ -419,6 +419,7 @@ mod tests {
             player: ME,
             kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
                 blockers: Vec::new(),
+                min_blockers: Vec::new(),
             }),
         };
         let stops = Stops::new(2);
@@ -703,6 +704,7 @@ mod tests {
             player: FOE,
             kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
                 blockers: Vec::new(),
+                min_blockers: Vec::new(),
             }),
         };
         let verdict = verdict(

@@ -5,6 +5,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Pred, Ref, Selector, Targetable};
 use mtg_cards::value::{Amount, Cmp, Condition};
 use mtg_core::card::CardType;
@@ -15,8 +16,8 @@ use mtg_engine::format::Normal;
 use mtg_engine::rng::GameRng;
 
 use crate::cards::{
-    burn, cost, creature, creature_costing, damage, drain, draw, gain_life, land, library_of_cards,
-    pinger, salve, wastes,
+    burn, cost, creature, creature_costing, damage, drain, draw, gain_life, keyworded_creature,
+    land, library_of_cards, pinger, salve, wastes,
 };
 use crate::trigger_cards::{
     aimed_at, artifact_costing, hourglass, once_each_turn, only_if, trigger, vigil, when,
@@ -268,7 +269,60 @@ pub fn trigger_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
 pub fn trigger_fuzz_setup(players: usize, seed: u64) -> GameSetup {
     let decks = (0u64..)
         .take(players)
-        .map(|seat| trigger_deck(&mut GameRng::substream(seed, 4_000 + seat)))
+        .map(|seat| trigger_deck(&mut GameRng::substream(seed, 5_000 + seat)))
+        .collect();
+    GameSetup::new(Arc::new(Normal), seed, decks)
+}
+
+/// The keywords of combat, in the order the decks pick from.
+pub fn combat_keywords() -> [Keyword; 12] {
+    [
+        Keyword::Flying,
+        Keyword::Reach,
+        Keyword::Menace,
+        Keyword::Defender,
+        Keyword::Haste,
+        Keyword::Vigilance,
+        Keyword::FirstStrike,
+        Keyword::DoubleStrike,
+        Keyword::Deathtouch,
+        Keyword::Trample,
+        Keyword::Lifelink,
+        Keyword::Indestructible,
+    ]
+}
+
+/// A legal Normal deck in two colors whose creatures hold up to three keywords of combat, derived entirely from `rng`.
+///
+/// It has its own generator, so [`random_deck`] and the games seeded from it stay as they were.
+pub fn keyword_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
+    let first = Color::ALL[rng.index(Color::ALL.len())];
+    let second =
+        Color::ALL[(first.index() + 1 + rng.index(Color::ALL.len() - 1)) % Color::ALL.len()];
+    let colors = [first, second];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 2])).collect();
+    for slot in 0..DISTINCT_CREATURES {
+        let generic = u32::try_from(rng.index(3)).unwrap_or(0);
+        let cost_colors = [colors[rng.index(2)]];
+        let power = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let toughness = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let mut pool = combat_keywords().to_vec();
+        let held: Vec<Keyword> = (0..rng.index(4))
+            .map(|_| pool.remove(rng.index(pool.len())))
+            .collect();
+        let words: Vec<&str> = held.iter().map(Keyword::name).collect();
+        let name = format!("Combat {slot} {power}/{toughness} {}", words.join(" "));
+        let card = keyworded_creature(&name, generic, &cost_colors, power, toughness, &held);
+        deck.extend(std::iter::repeat_n(card, COPIES));
+    }
+    deck
+}
+
+/// A normal game of `players` seats whose decks are [`keyword_deck`]s, fully determined by `seed`.
+pub fn keyword_fuzz_setup(players: usize, seed: u64) -> GameSetup {
+    let decks = (0u64..)
+        .take(players)
+        .map(|seat| keyword_deck(&mut GameRng::substream(seed, 4_000 + seat)))
         .collect();
     GameSetup::new(Arc::new(Normal), seed, decks)
 }
@@ -292,9 +346,42 @@ mod tests {
         }
     }
 
+    proptest! {
+        #[test]
+        fn keyword_decks_are_legal_reproducible_and_hold_keywords(seed in any::<u64>()) {
+            let deck = keyword_deck(&mut GameRng::substream(seed, 0));
+            prop_assert_eq!(deck.len(), 60);
+            prop_assert!(Normal.validate_deck(&deck).is_ok());
+            prop_assert_eq!(&deck, &keyword_deck(&mut GameRng::substream(seed, 0)));
+            for card in deck.iter().filter(|c| c.is_type(mtg_core::card::CardType::Creature)) {
+                prop_assert!(card.rules.len() <= 3);
+            }
+        }
+    }
+
+    #[test]
+    fn across_many_seeds_the_decks_hold_every_combat_keyword() {
+        let mut seen = std::collections::BTreeSet::new();
+        for seed in 0..60 {
+            for card in keyword_deck(&mut GameRng::substream(seed, 0)) {
+                for rule in &card.rules {
+                    if let mtg_cards::ability::Ability::Keyword(keyword) = &**rule {
+                        seen.insert(keyword.name());
+                    }
+                }
+            }
+        }
+        let want: std::collections::BTreeSet<&str> =
+            combat_keywords().iter().map(Keyword::name).collect();
+        assert_eq!(seen, want);
+    }
+
     #[test]
     fn setups_have_one_deck_per_seat() {
         for players in [2, 3, 8] {
+            let setup = keyword_fuzz_setup(players, 5);
+            assert_eq!(setup.players.len(), players);
+            assert!(setup.validate().is_ok());
             let setup = fuzz_setup(players, 5);
             assert_eq!(setup.players.len(), players);
             assert!(setup.validate().is_ok());

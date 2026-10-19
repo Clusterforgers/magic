@@ -351,9 +351,11 @@ impl<'a> Scope<'a> {
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
+            // An object that has changed zones since it was named has the keywords its card prints; keywords
+            // granted before it left are last known information the snapshots do not carry yet.
             Pred::HasKeyword(keyword) => seen
                 .card
-                .is_some_and(|c| keywords::held_by(c).any(|held| held == keyword)),
+                .is_some_and(|card| keywords::has_keyword(state, card.id(), keyword)),
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat)? {
                 Some(value) => op.holds(value, self.amount(to)?),

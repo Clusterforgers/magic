@@ -25,13 +25,13 @@ use Support::{Manual, Partial, Verified};
 
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
-/// `{T}` abilities and triggered abilities made of drawing, life and damage, so the four cards that need no more
-/// are Verified (the Forest's ability comes from its land type). Mulldrifter is Partial: its draw runs, its flying
-/// and evoke do not.
+/// `{T}` abilities and triggered abilities made of drawing, life and damage, and the keywords of combat, so the five
+/// cards that need no more are Verified (the Forest's ability comes from its land type) and a card whose other
+/// abilities are still missing carries what runs as Partial: Mulldrifter's draw and flying, not its evoke.
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
-    ("Archon of Cruelty", Manual, 0),
-    ("Bloodbraid Elf", Manual, 0),
+    ("Archon of Cruelty", Partial, 1),
+    ("Bloodbraid Elf", Partial, 1),
     ("Bonecrusher Giant // Stomp", Manual, 0),
     ("Bonesplitter", Manual, 0),
     ("Brainstorm", Manual, 0),
@@ -43,7 +43,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Doom Blade", Manual, 0),
     ("Eternal Witness", Manual, 0),
     ("Faithless Looting", Manual, 0),
-    ("Felidar Sovereign", Manual, 0),
+    ("Felidar Sovereign", Partial, 2),
     ("Fire // Ice", Manual, 0),
     ("Fireball", Manual, 0),
     ("Flooded Strand", Manual, 0),
@@ -56,14 +56,14 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Jace, the Mind Sculptor", Manual, 0),
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
-    ("Mulldrifter", Partial, 1),
+    ("Mulldrifter", Partial, 2),
     ("Opt", Manual, 0),
     ("Pacifism", Manual, 0),
     ("Panharmonicon", Manual, 0),
-    ("Questing Beast", Manual, 0),
+    ("Questing Beast", Partial, 3),
     ("Rampant Growth", Manual, 0),
     ("Rhystic Study", Manual, 0),
-    ("Serra Angel", Manual, 0),
+    ("Serra Angel", Verified, 2),
     ("Sneak Attack", Manual, 0),
     ("Sol Ring", Manual, 0),
     ("Swords to Plowshares", Manual, 0),
@@ -164,13 +164,13 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         !rhystic.contains("Trigger.SpellCast") && !rhystic.contains("Ability.Triggered"),
         "{rhystic}"
     );
-    // Mulldrifter's draw is covered, its flying and evoke are not.
+    // Mulldrifter's draw and flying are covered, its evoke is not.
     let mulldrifter = reasons("Mulldrifter");
+    assert!(mulldrifter.contains("Keyword.Evoke"), "{mulldrifter}");
     assert!(
-        mulldrifter.contains("Keyword.Flying") && mulldrifter.contains("Keyword.Evoke"),
+        !mulldrifter.contains("Keyword.Flying") && !mulldrifter.contains("Effect.Draw"),
         "{mulldrifter}"
     );
-    assert!(!mulldrifter.contains("Effect.Draw"), "{mulldrifter}");
     // A card whose file models nothing says nothing about the engine.
     assert_eq!(reasons("Panharmonicon"), "");
 }

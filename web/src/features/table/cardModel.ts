@@ -193,6 +193,17 @@ export function powerToughness(object: ObjectView): string | null {
   return object.power === null || object.toughness === null ? null : `${object.power}/${object.toughness}`
 }
 
+/** The names of an object's keywords in the order the server sends them; none for a card that has none. */
+export function keywordNames(object: ObjectView): readonly string[] {
+  return object.keywords ?? []
+}
+
+/** "Flying, First strike" for a card with keywords, else null. */
+export function keywordLine(object: ObjectView): string | null {
+  const names = keywordNames(object)
+  return names.length === 0 ? null : names.join(', ')
+}
+
 /** One ability as the rules text prints it. */
 export function abilityText(ability: AbilityDef): string {
   return `{T}: Add {${LETTER[ability.Mana.produces]}}.`
@@ -243,6 +254,7 @@ export function cardLabel(object: ObjectView, role: CombatRole | null): string {
   if (object.power !== null && object.toughness !== null) {
     parts.push(`power ${object.power}, toughness ${object.toughness}`)
   }
+  parts.push(...keywordNames(object).map((name) => name.toLowerCase()))
   parts.push(...object.abilities.map(abilityWords))
   parts.push(...statusWords(object, role))
   return parts.join(', ')

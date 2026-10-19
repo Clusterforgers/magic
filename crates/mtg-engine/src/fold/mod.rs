@@ -112,6 +112,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::StepBegan { step } => {
             state.turn.step = *step;
             state.priority = None;
+            // Each combat damage step divides its damage afresh: a double striker divides twice.
+            state.combat.clear_assignments();
         }
         Event::NothingToDo { .. } => {}
         Event::PriorityGranted { player } => {
