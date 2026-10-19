@@ -20,6 +20,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
   - `gone`: ids the viewer could see before the batch and cannot see after it.
 - The object diff compares the viewer's objects before and after and is never read off the events, because changes can name no object: a lord leaving changes every creature's power and toughness, `DamageCleared` resets damage everywhere, a new turn lifts summoning sickness. The batch at `from_seq` 0 lists every visible object because no view precedes it.
 - `StateView::apply` is the reference client fold: replace the table, upsert `objects`, remove `gone`, keep `objects` sorted by id. `StateView::from_first_batch` starts a view from the batch at `from_seq` 0. The web ports `apply` to `web/src/play/view.ts`.
+- An ability on the stack is an `ObjectView` of its own with `kind` `Ability`, the `source` id and its `targets` (one list per target specification). It is named after its source and has none of the source's types, colours, cost or abilities. A spell on the stack shows its `targets` too. `kind` (a card when absent), `source` and `targets` are left out of the JSON while they say nothing, so the wire form of a game without spells is unchanged; the web checks them in `net/parse.ts`.
 - `TableView.combat_forecast` is `Some` while combat damage is ahead. Combat is public, so every seat gets the same value, naming only battlefield objects every seat can see. `TableView::of` derives it from `pending_combat_forecast`, so it rides in `table` and `apply` needs no extra rule.
 - A batch carries the whole table (1.2 to 1.8 KB, 11 to 21% of a snapshot of the same moment in seeded games), which keeps the client fold trivial. A snapshot does not grow with libraries or opponents' hands (about 53 KB for a 4-player board with 175 visible objects). Projection builds two full views per seat per batch.
 
@@ -28,6 +29,9 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 - Libraries show a count to everyone; hands list their cards only to the owner; battlefield, stack, exile, graveyards and command zones are public. The view never carries the seed, RNG position or library order.
 - `MulliganTaken` and `LibraryShuffled` are hidden even from their owner because they carry library order. Other seats see draws, opening hands and bottomed cards without ids.
 - `redact` names every `Event` variant, so adding one forces a visibility decision. `EffectCreated` is public; an effect that references a hidden object needs its own rule.
+  - Private to one seat: `LibraryLooked`, `CardsFound` and `Scried` reach the seat that did them as logged and every other seat as `HiddenEvent` with counts. `Revealed` is public.
+  - Whole only when everything it names is visible to the viewer: `ZoneChanged` (when both zones are hidden to the viewer it becomes the `HiddenEvent` with the zones and the cause), `ChoiceMade` (the seat that answers always sees it) and `StepDone` (hidden to the position when it bound or moved a card the viewer cannot see).
+  - Public as logged: the events of abilities and of the resolution (`AbilityPutOnStack`, `AbilityActivated`, `AbilityTriggered`, `ResolutionBegan`, `ResolutionEnded`), life, counters and tokens.
 - `zone_is_visible` is the single zone rule, used for snapshots and for a batch's `table` and `objects` alike. Face-down cards would need their own rule there.
 - `gone` holds only ids the viewer saw before. A hand shuffled into the library (a mulligan) is told as ids in `gone`, a drawn card arrives in full in `objects`, and a card that stays hidden appears nowhere, so another seat's draw changes only a count in `table`.
 
@@ -53,7 +57,10 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 
 ## Decisions
 
-- `PriorityOptions.can_act` says whether the holder can do anything useful; the rule is in [engine.md](engine.md).
+- `PriorityOptions.can_act` says whether the holder can do anything useful; the rule is in [engine.md](engine.md). `PriorityOptions.abilities` lists the abilities (`{ object, ability }`) the holder can activate; it is left out while empty, and a client that does not know it still plays a game of cards without abilities.
+- The decisions of spells and abilities are `ChooseTargets`, `ChooseMode`, `ChooseNumber`, `DivideAmount`, `ChooseCards`, `OrderCards`, `YesNo`, `ChooseOption`, `ChooseCosts`, `OrderTriggers` and `ChooseReplacement`, each with an `Answer` of the same name. Every one carries `source`, the object that asks. A target is `{ Player }` or `{ Object: { id, counter } }`.
+  - `ChooseTargets` is sent today: `spec` is the specification's index, `legal` the targets to pick from, `min` and `max` the count and `can_cancel` whether the answer may be `Cancel`, which backs out of the cast with no event.
+  - The others are types until their tasks; the web shows a placeholder prompt that offers nothing, and the server never sends them.
 - `DecisionKind::Mulligan` carries `free_mulligans`, `bottom_if_keep` and `bottom_if_mulligan` beside `mulligans_taken` and `can_mulligan`, so a client never derives the bottom count. `bottom_if_keep` is the `count` of the `BottomCards` decision that follows a keep.
 - `Decision.deadline_ms` is the time the seat has left, in milliseconds, when the message is sent. It is a duration, so the client starts counting when the message arrives; a decision sent again after a reconnect or `Resync` carries what is left.
   - Present for every priority decision of a seat that is not the active player (10 s, `MTG_RESPONSE_SECS`) and for declaring blockers (45 s, `MTG_BLOCK_SECS`); absent for every other decision.
@@ -133,7 +140,9 @@ The account endpoints of `mtg-server` take their bodies from `mtg_protocol::rest
 
 ## Tests
 
-- `tests/hidden_info.rs` plays seeded 2, 3 and 4-player bot games with unique card names and searches every viewer's batches and snapshots for hidden names and ids. A control test plants a hidden card in each part to prove the scan can fail. JSON keys that hold seat numbers or counters are skipped (`SCALAR_KEYS`), so a new numeric field fails the test until its key is listed.
+- `tests/hidden_info.rs` plays seeded 2, 3 and 4-player bot games, also with decks of spells and abilities, with unique card names and searches every viewer's batches and snapshots for hidden names and ids. A control test plants a hidden card in each part to prove the scan can fail. JSON keys that hold seat numbers or counters are skipped (`SCALAR_KEYS`), so a new numeric field fails the test until its key is listed.
+- `tests/ability_view.rs` checks that an ability on the stack reaches every seat as an object named after its source with its source id and targets, that a spell shows its targets, that a card's JSON has none of the new fields, and that the ability comes and goes through batches.
+- `tests/messages.rs` round-trips a sample of every message, decision, answer and pipeline event; `events.rs` unit tests cover each redaction arm for the acting seat, another seat and a seat that cannot see the cards.
 - `tests/sync.rs` checks that in seeded 2, 3 and 4-seat games every seat's view folded from its batches (after a JSON round trip) equals `StateView::for_player` on the true state after every answer, that `gone` and `objects` match a separate statement of the visibility rule, and that no unchanged object is listed.
 - `tests/transcript.rs` and `tests/preview_fixture.rs` write the fixtures in `web/src/protocol/fixtures/` that the web tests replay, and fail on drift (`MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test transcript`, likewise `--test preview_fixture`).
   - The transcript test's `play()` mirrors the actor's message order, so change them together.

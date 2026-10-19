@@ -1,8 +1,8 @@
- `AbilityDef::Mana` is the lowered plain `{T}: Add {X}`; every other ability the engine runs is an `Arc<Ability>` in `CardDefinition.rules`, named by its index there (`lower` gives `Lowered::Mana` or `Lowered::Rules`). The field is left out of the serde form while empty. |# Card DSL and effect pipeline
+# Card DSL and effect pipeline
 
 Rules data for cards (`mtg-cards`) and the pipeline that runs it (`mtg-engine`).
 
-Scope: the data model, loader, validation, support records, a 40-card corpus and card assembly are implemented in `crates/mtg-cards`, with the engine's capabilities in `mtg-engine` and the card source in `mtg-server`. "Execution", "Triggers, replacement and layers" and "Tasks" are the contract of the M3 engine tasks. Related: `engine.md`, `protocol.md`, `deck-check.md`, `arena-flow.md`.
+Scope: the data model, loader, validation, support records, a 40-card corpus and card assembly are implemented in `crates/mtg-cards`, with the engine's capabilities in `mtg-engine` and the card source in `mtg-server`. The pipeline core ("Execution", "Decisions the effects need", "Snapshots") is implemented in `mtg-engine` for targets, drawing, life and damage; "Triggers, replacement and layers" and "Tasks" are the contract of the other M3 engine tasks. Related: `engine.md`, `protocol.md`, `deck-check.md`, `arena-flow.md`.
 
 ## Summary
 
@@ -179,17 +179,28 @@ State is the fold of events; the engine is a pure function from state to `Progre
 |---|---|
 | Ability objects | `GameObject` has a kind: `Card`, `Token`, `Ability`. An ability lives in `Zone::Stack` with an id from the same counter and holds its source, a `Snapshot` of it, the controller, an `Arc` to its rules (it resolves without its source, CR 113.7a), its `Choices` and, for a trigger, the cause. A spell is the card object. |
 | Identity | Every object has a zone-change counter bumped by the fold (CR 400.7). A stored reference is `(ObjectId, counter)`. |
-| Announcement | Mode, X, targets, division, optional and alternative costs are decisions asked in that order while the cast or activation is pending outside state: nothing is logged until the cast is paid, cancel is free. The final batch carries `Choices { modes, x, targets per spec, division, optional costs }`. A trigger chooses its targets when it goes on the stack (CR 603.3d); those answers are logged. |
+| Announcement | Mode, X, targets, division, optional and alternative costs are decisions asked in that order while the cast or activation is pending outside state: nothing is logged until the cast is paid, cancel is free. The engine asks targets today, one specification at a time and before the payment; a specification that allows no target is skipped, one that cannot be met ends the cast. The final batch carries `Choices { modes, x, targets per spec, division, optional costs }` (a field left out of the wire form while empty). A trigger chooses its targets when it goes on the stack (CR 603.3d); those answers are logged. |
+| Activation | An ability whose cost is `{T}` or nothing is activated from `PriorityOptions.abilities`: `PermanentTapped`, `AbilityActivated`, then `AbilityPutOnStack`, with the source photographed before the tap. Other costs wait for their primitives in `Caps`. |
 | Target recheck | On resolution each target is tested again with the spec that chose it: same object, same zone, selector matches, not protected. If the object had targets and every one is illegal, it does nothing (`ResolutionEnded { Fizzled }`), including parts that do not use the target (CR 608.2b). Otherwise it resolves and ignores the illegal targets. One function, `legal_targets(state, spec, source, controller)`, serves choosing and rechecking. |
 | Journal | `GameState.resolving: Option<Resolving { object, position, bindings, snapshots, journal }>`; `position` is a path of indices into the effect tree. `step(&GameState)` reads state and journal, never mutates, and returns `Done(events)` (ending with `StepDone { position, bound, snapshots }`) or `Ask(decision)`. An answer is validated, logged as `ChoiceMade { player, choice }` and appended to the journal by the fold; the same step runs again and consumes it. `StepDone` folds the next position, bindings and snapshots and clears the journal. A step with k decisions runs k+1 times. Random numbers come from the seeded substream, whose counter moves only when events fold. |
-| Events | `AbilityTriggered`, `AbilityPutOnStack`, `AbilityActivated`, `ResolutionBegan`, `ChoiceMade`, `StepDone`, `ResolutionEnded { Resolved, Fizzled, Countered }`, and one per primitive without an event: `ZoneChanged { object, from, to, cause }`, `LifeGained`, `LifeLost`, `CountersChanged`, `TokenCreated`, `LibraryLooked`, `CardsFound`, `Scried`, `Revealed`. Each needs a visibility arm in the protocol's redaction `match`; library peeks and searches need a visibility class private to one seat. |
-| Spell resolution | `SpellResolved` is the last event: it moves the card after the effect steps. A permanent spell has no steps. |
+| Events | `AbilityTriggered`, `AbilityPutOnStack`, `AbilityActivated`, `ResolutionBegan`, `ChoiceMade`, `StepDone`, `ResolutionEnded { Resolved, Fizzled, Countered }`, and one per primitive without an event: `ZoneChanged { object, from, to, cause }`, `LifeGained`, `LifeLost`, `CountersChanged`, `TokenCreated`, `LibraryLooked`, `CardsFound`, `Scried`, `Revealed`. Each has a fold arm and a redaction arm in the protocol's `redact`: a library peek, a search and a scry are private to the seat that did them, and `ZoneChanged`, `ChoiceMade` and `StepDone` reach a seat whole only when every card they name is visible to it. |
+| Spell resolution | A spell with a `Spell` ability or any ability runs `ResolutionBegan`, its steps and `ResolutionEnded`. For a card `SpellResolved` follows `Resolved` and moves it (a permanent to the battlefield, an instant or sorcery to the graveyard); a fizzled or countered spell goes to the graveyard with `ResolutionEnded`, and an ability ceases to exist with it. A permanent spell has no steps and is only `SpellResolved`. A resolution whose controller has left the game ends `Countered`. |
 | Cast during resolution | The cast sub-procedure runs inside a step; its decisions are journal decisions; the spell goes on the stack above the resolving object. |
 | Nothing to choose | A decision with no legal option is not asked and logs `NothingToDo`. A decision with one legal answer and no "may" is answered by the engine unless the seat has Full Control (`arena-flow.md`). |
 
+### Interpreter
+
+| Topic | Rule |
+|---|---|
+| Primitives | `resolve/prim/<effect>.rs` holds one file per `Effect` variant. Draw, DealDamage, GainLife and LoseLife run and are in `Caps`; every other file is a stub that returns `ResolveError::Unsupported("Effect.<Name>")` and is not in `Caps`, so no game offers a card that uses it. A task replaces its stub and adds its name to `RUNS` in `caps.rs`. |
+| Steps | One effect is one step. `If`, `May`, `Pay` and `Modal` are entered by position: `[2, 1, 0]` is the first effect of the second list of the third effect (`resolve/tree.rs`). |
+| Values | `Scope` in `resolve/value.rs` reads `Ref`, `Selector`, `Amount` and `Condition` from the state, the bindings, the choices and the snapshots, and changes nothing. It refuses by name what it cannot read yet: loyalty, counters, X, divided amounts and kicker (`ResolveError::Unsupported`). |
+| Replacement | The events of a step pass through `replace::process(state, proposed)` before they are logged; it returns them unchanged until the replacement task. |
+| Damage and drawing | `DealDamage` is `DamageDealt` for each recipient that is still a player in the game, or a creature, planeswalker or battle on the battlefield (CR 120.1); other recipients are passed over, and damage of 0 is no event. `Draw` uses the turn code's `draw`, so an empty library is logged as before. |
+
 ### Decisions the effects need
 
-`Decision.player` names who answers, so a decision may go to any seat. Every effect decision carries `source` (the object that asks). Decisions for a seat that is not the active player have a response clock (`server.md`).
+`Decision.player` names who answers, so a decision may go to any seat. Every effect decision carries `source` (the object that asks). Decisions for a seat that is not the active player have a response clock (`server.md`). `ChooseTargets` is asked today; the other kinds in the table, `PayMana` aside, exist as options, answer and wire types in `choose/<kind>.rs` and have a placeholder prompt in the web, which their task replaces.
 
 | Decision | Who answers | When | Corpus cards that need it |
 |---|---|---|---|
@@ -208,7 +219,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 ### Snapshots (last known information)
 
-`Snapshot { id, controller, owner, zone, characteristics, counters, attachments }` is built by `snapshot(state, id)` and kept in three places only.
+`Snapshot { id, counter, controller, owner, zone, characteristics, counters, attachments }` is built by `snapshot(state, id)` and kept in three places only. `counter` names the object it describes, `characteristics` has every continuous effect applied, and `counters` and `attachments` stay empty until those exist.
 
 | Place | Content |
 |---|---|
@@ -243,7 +254,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 |---|---|
 | Data | `{"Keyword": {"Ward": "{2}"}}`. `Keyword` is an enum in `keyword.rs` with `name()` in Scryfall's spelling (compared with the record's `keywords`). It declares every keyword the roadmap lists. |
 | Engine | `keywords/mod.rs` maps each variant to a `KeywordRules` value defined in `keywords/<name>.rs`, all created as stubs. A keyword task replaces its stub and adds its `Caps` entry there. |
-| Hooks | `restricts_blocking`, `modifies_damage`, `grants_timing`, `adds_abilities`. A keyword expressible in the DSL (equip, cycling, prowess, battle cry) returns abilities from `adds_abilities` and is tested like any card; one that bends rules machinery (flying, first strike, trample) is a hook in combat or damage code. |
+| Hooks | `restricts_blocking`, `restricts_targeting`, `modifies_damage`, `grants_timing`, `adds_abilities`. Blocking (`stops_block`), targeting (`protects`, part of `legal_targets`) and casting at instant speed (`grants_instant_timing`) already call theirs; every stub answers "no", so no keyword changes a game yet. A keyword expressible in the DSL (equip, cycling, prowess, battle cry) returns abilities from `adds_abilities` and is tested like any card; one that bends rules machinery (flying, first strike, trample) is a hook in combat or damage code. |
 
 ## Validation
 

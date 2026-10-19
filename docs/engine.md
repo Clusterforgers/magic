@@ -6,9 +6,9 @@ Design notes for `mtg-engine` (the rules engine) and `mtg-testkit` (scenarios, b
 
 - `Engine` offers `new`, `resume`, `apply`, `concede`, `decision`, `state`, `events`, `state_hash`, `add_continuous_effect`, `checkpoint`, `restore` and `preview_forecast`; `replay(setup, events)` rebuilds a state from a log.
 - One `Event` enum and one `apply_event` fold: the state is the fold of the events.
-- Each `Decision` kind carries its own legal options: Mulligan, BottomCards, Priority, PayMana, DeclareAttackers, DeclareBlockers, AssignDamage, Discard. `Answer` mirrors them.
+- Each `Decision` kind carries its own legal options: Mulligan, BottomCards, Priority, PayMana, DeclareAttackers, DeclareBlockers, AssignDamage, Discard, and the questions of spells and abilities: ChooseTargets, ChooseMode, ChooseNumber, DivideAmount, ChooseCards, OrderCards, YesNo, ChooseOption, ChooseCosts, OrderTriggers, ChooseReplacement. `Answer` mirrors them. Only ChooseTargets is asked; the answer to each of the others is refused as `IllegalAnswer::Unsupported` until its task.
 - `FormatRules` is a trait. `Normal` is the only implementation; it skips the starting player's first draw only in two-player games.
-- `caps()` names the primitives the engine runs, in the vocabulary of the card support records (`cards-dsl.md`): today the plain tap-for-mana ability. A spell with `{X}` in its printed cost (`CardDefinition::x_in_cost`) is never castable until X costs land.
+- `caps()` names the primitives the engine runs, in the vocabulary of the card support records (`cards-dsl.md`); `RUNS` in `caps.rs` is the one list. Today: the plain tap-for-mana ability, `Ability.Spell`, `Ability.Activated` with `Cost.Tap`, and the effects Draw, DealDamage, GainLife and LoseLife. A spell with `{X}` in its printed cost (`CardDefinition::x_in_cost`) is never castable until X costs land.
 - `MulliganOptions` states the mulligan costs from `FormatRules::mulligan_rule` (`MulliganRule { hand_size, free_mulligans }`): `free_mulligans`, `bottom_if_keep` (the count the `BottomCards` decision asks for) and `bottom_if_mulligan`. A format with a free mulligan (Commander, CR 103.5c) only sets `free_mulligans`. Clients repeat these counts and never work them out.
 
 ## Determinism and recovery
@@ -43,13 +43,35 @@ Design notes for `mtg-engine` (the rules engine) and `mtg-testkit` (scenarios, b
 
 ## Priority options
 
-`PriorityOptions` lists `playable_lands`, `castable`, `mana_abilities` and `can_pass`, and says in `can_act` whether the holder can do anything useful.
+`PriorityOptions` lists `playable_lands`, `castable`, `mana_abilities`, `abilities` and `can_pass`, and says in `can_act` whether the holder can do anything useful. `abilities` is left out of the wire form while empty.
 
-- `castable` means affordable at the timing the card allows: sorcery timing needs the active player, a main step and an empty stack; an instant waits for nothing. Affordable counts the floating mana plus the untapped sources the player controls, each permanent once (`can_afford`).
-- `can_act` is true with a land to play, a spell to cast or an ability that is not a mana ability. Mana abilities alone never count: tapping a land with nothing to spend the mana on is not an action, so after the last land drop with nothing affordable the holder has nothing to do.
-- One function holds the rule (`priority::can_act`). `other_abilities` beside it is the seam for abilities that are not mana abilities, empty until a card has one.
+- `castable` means affordable at the timing the card allows: sorcery timing needs the active player, a main step and an empty stack; an instant, or a card a keyword gives instant timing, waits for nothing. Affordable counts the floating mana plus the untapped sources the player controls, each permanent once (`can_afford`). A spell that needs targets is castable only when every target specification has enough legal targets (CR 601.2c).
+- `abilities` lists the activated abilities of the player's permanents that are not mana abilities and could be activated now (`priority::other_abilities`): the engine pays `{T}` and nothing else for one, a tapped permanent or a summoning-sick creature cannot, `Timing::Sorcery` waits for sorcery timing, and each target specification needs enough legal targets.
+- `can_act` is true with a land to play, a spell to cast or such an ability. Mana abilities alone never count: tapping a land with nothing to spend the mana on is not an action, so after the last land drop with nothing affordable the holder has nothing to do.
+- One function holds the rule (`priority::can_act`).
 - The server uses the flag only to pass for a seat that asked for it ([server.md](server.md)). The response clock and the yields never read it, so the pace of a table never tells what a hand holds.
 - `PlayOptions::auto_pass` in `mtg-testkit` applies the same rule in a bot game and is the reference the server tests compare with.
+
+## Spells and abilities
+
+The rules of the pipeline are in [cards-dsl.md](cards-dsl.md) (Execution); this section says where the engine keeps them.
+
+- Objects: a `GameObject` has a `kind` (`Card`, `Token`, `Ability`) and a zone-change counter the fold bumps on every move (CR 400.7); `ObjectRef { id, counter }` names one incarnation. An ability on the stack is a `GameObject` that holds an `AbilityObject` (`abilities.rs`): its source, a snapshot of it, its index among the source's rules, an `Arc` to those rules and a trigger's cause. It has no printed side and is dropped when it leaves the stack.
+- Snapshots: `snapshot(state, id)` (`snapshot.rs`) is last known information. `PutOnStack`, `Cause` and `StepDone` carry them, and the value evaluator reads an object live while its counter matches and from the snapshot otherwise.
+- Casting: `cast.rs` keeps a cast or activation that has begun (`Pending`) outside the state. `announce(state, pending)` returns the next question (`Next::Ask`), the events that complete the cast (`Next::Commit`) or `Next::Drop` for a cast that can no longer be made. Targets come first, then the payment; backing out before the payment leaves no event. An activation that costs only `{T}` commits at once.
+- Targets: `legal_targets(state, spec, source, controller)` (`choose/targets.rs`) serves choosing, `priority_options` and the recheck on resolution, and asks the keyword hook `protects`. An answer is checked against the options it answers and each target is chosen once.
+- Resolution: `stack::resolve_top` begins the top object of the stack. While `GameState.resolving` is set, `flow::next_in_turns` takes the next move from `resolve::step` before state-based actions and priority (CR 704.3), so a resolution is never cut by a priority round. A step is a pure function of the state and its journal; the events it returns end with `StepDone`, which clears the journal.
+- Rebuilding: the journal is state, so an engine resumed from a log stands at the same step, and one resumed from the middle of a step asks the same question again.
+
+Seams the other tasks fill in; each is complete as a type and refuses or does nothing until its task:
+
+| Seam | Where | Until its task |
+|---|---|---|
+| Decision kinds | `choose/<kind>.rs`: options and answer types, `answer` | the answer is `IllegalAnswer::Unsupported` |
+| Effects | `resolve/prim/<effect>.rs`, one per `Effect` variant | `ResolveError::Unsupported` and no `Caps` entry, so the card is never offered |
+| Keywords | `keywords/<name>.rs`, read by `stops_block`, `protects` and `grants_instant_timing` | every hook answers "no" |
+| Replacement | `replace::process` in front of the events of every step | the events pass unchanged |
+| Capabilities | `RUNS` in `caps.rs` | what the support records may call Verified |
 
 ## Combat forecast
 
@@ -84,6 +106,12 @@ Design notes for `mtg-engine` (the rules engine) and `mtg-testkit` (scenarios, b
 - Payment: `mana.rs` proptests compare `can_afford`, `auto_payment`, `check_payment` and `complete_payment` with an independent symbol-by-symbol check over costs of every kind, permanents with several abilities and varying life totals. `payment_fuzz.rs` checks that after a cancel the state hash, the log, the next decision and a replay agree.
 - Mana cost parsing: `mtg-import/tests/mana_costs.rs` checks the mana value and colours of every distinct `mana_cost` string of Scryfall's bulk data against Scryfall's own ([data-sources.md](data-sources.md)).
 - Forecast and preview: a proptest in `mtg-testkit` checks the forecast against reality in bot games. `preview_matches_games.rs` checks that every preview equals the forecast read after the real answer, that spoiled answers are refused exactly as `apply` refuses them, and that a game played with previews has the same log and hash as one without.
+- Spells and abilities:
+  - `spell_targets.rs` and `abilities.rs` play Lightning Bolt from the corpus and a `{T}` ability through the whole path: choose, pay, respond, resolve, fizzle (CR 608.2b), cancel for free, and an ability that outlives its source and reads it as it was.
+  - `spell_fuzz.rs` plays `MTG_FUZZ_GAMES` (500) bot games for 2, 3 and 4 players with decks of spells and abilities under every invariant, including zone-change counters that never fall and the replay hash; it checks that the games use the pipeline and that seeded games repeat.
+  - `pipeline_log.rs` replays the log of such games at every point, rebuilds an engine from decision points and from the middle of a resolution, and checks that games without spells never contain a pipeline event.
+  - `resolve/mod.rs` runs a step that asks with a fake primitive to show k + 1 runs, one logged answer each, and a replay equal to the live state; `fold/tests.rs` folds every new event; the protocol tests cover the redaction arms ([protocol.md](protocol.md)).
+  - The corpus table in `corpus_cards.rs` fixes which cards are Verified (Forest, Grizzly Bears, Lightning Bolt, Llanowar Elves) and checks that the gaps a support record names are what `caps()` lacks.
 
 ## Rules coverage
 
@@ -99,4 +127,4 @@ Readings of the rules:
 - An attacker divides damage freely among several blockers. The Foundations rules removed damage assignment order (CR 509.2, 510.1c); lethal damage only matters for trample, which is not implemented.
 - A mana ability resets the passes in a priority round, a literal reading of CR 117.4 (all players pass "without taking any actions in between"). No official ruling exists and the impact is low.
 
-Not implemented: keywords, triggers, targeting, tokens, control change and Commander, and any spell or ability effect beyond permanents entering. Scry, search and the other keyword actions need choice decisions first. Scenarios cannot start in the blockers or damage steps.
+Not implemented: keywords, triggers, tokens, control change and Commander, and any effect beyond drawing, life and damage; costs other than mana and `{T}`; X, modes, divided amounts, kicker and other announcements. Scry, search and the other keyword actions need choice decisions first. Scenarios cannot start in the blockers or damage steps.
