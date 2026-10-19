@@ -12,6 +12,8 @@ export interface TableOptions {
   effects?: boolean
   /** Multiplies the duration of every animation, to look at one slowly; 1 when left out. */
   effectsSlow?: number
+  /** Draw the timed turn cues (`features/table/turn`: banner, ticker, skipped marks); on everywhere but under vitest when left out. */
+  cues?: boolean
   /** Lay the table out for this window size instead of the browser's, which a test has no use for. */
   viewport?: Viewport
 }

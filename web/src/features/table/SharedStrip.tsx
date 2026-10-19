@@ -10,6 +10,8 @@ import { ownDecision } from './prompt/ownDecision'
 import { PromptHost } from './prompt/PromptHost'
 import { isYourTurn } from './selectors'
 import { StackChips } from './StackChips'
+import { TurnBanner } from './turn/TurnBanner'
+import { TurnTicker } from './turn/TurnTicker'
 import { priorityText, waitingOn, waitingText } from './turnText'
 import { useEdgeFade } from './useEdgeFade'
 import { useStable } from './useStable'
@@ -52,38 +54,42 @@ export function SharedStrip({ sheetMax, inset = 0 }: { sheetMax: number; inset?:
           yourTurn ? 'your-turn-cue' : 'ring-1 ring-foreground/10',
         )}
       >
-        <div className="flex min-h-full flex-wrap items-center gap-x-4 gap-y-1">
-          <StackChips />
-          {/* Room for the prompt beside the chips (it takes what they leave, down to 20 rem), so the two share a line. */}
-          <div className="min-w-0 flex-1 basis-80">
-            {mine ? (
-              <PromptHost />
-            ) : (
-              <p
-                data-slot="decision-line"
-                aria-live="polite"
-                aria-atomic="true"
-                className="w-fit rounded-md bg-muted px-2 py-1 text-sm font-medium"
-              >
-                {waitingText(waiting, name)}
+        <div className="flex min-h-full flex-col">
+          <div className="flex min-h-0 flex-1 flex-wrap items-center gap-x-4 gap-y-1">
+            <StackChips />
+            {/* Room for the prompt beside the chips (it takes what they leave, down to 20 rem), so the two share a line. */}
+            <div className="min-w-0 flex-1 basis-80">
+              {mine ? (
+                <PromptHost />
+              ) : (
+                <p
+                  data-slot="decision-line"
+                  aria-live="polite"
+                  aria-atomic="true"
+                  className="w-fit rounded-md bg-muted px-2 py-1 text-sm font-medium"
+                >
+                  {waitingText(waiting, name)}
+                </p>
+              )}
+            </div>
+            {holder === '' ? null : (
+              <p data-slot="priority" className="text-xs text-muted-foreground max-sm:sr-only">
+                {holder}
               </p>
             )}
+            <OpeningStatus />
+            {/* Their own full-width rows are for a strip that is one flex line; here they sit beside the prompt when there is room. */}
+            <div className="min-w-0 empty:hidden">
+              <CombatLegend />
+            </div>
+            <div className="hidden min-w-0 has-data-[slot=nothing-to-do]:block">
+              <NothingToDoBanner />
+            </div>
           </div>
-          {holder === '' ? null : (
-            <p data-slot="priority" className="text-xs text-muted-foreground max-sm:sr-only">
-              {holder}
-            </p>
-          )}
-          <OpeningStatus />
-          {/* Their own full-width rows are for a strip that is one flex line; here they sit beside the prompt when there is room. */}
-          <div className="min-w-0 empty:hidden">
-            <CombatLegend />
-          </div>
-          <div className="hidden min-w-0 has-data-[slot=nothing-to-do]:block">
-            <NothingToDoBanner />
-          </div>
+          <TurnTicker />
         </div>
       </div>
+      <TurnBanner />
     </section>
   )
 }

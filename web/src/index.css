@@ -4,6 +4,7 @@
 @import '@fontsource-variable/geist';
 @import './features/table/fx/fx.css';
 @import './features/table/prompt/responseClock.css';
+@import './features/table/turn/turn.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -69,6 +70,9 @@
   --color-on-turn-you: var(--on-turn-you);
   --color-turn-you-edge: var(--turn-you-edge);
   --color-turn-them: var(--turn-them);
+  --color-on-turn-them: var(--on-turn-them);
+  --color-step-passed: var(--step-passed);
+  --color-step-skipped: var(--step-skipped);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-destructive: var(--destructive);
@@ -118,6 +122,9 @@
   --on-turn-you: oklch(0.2 0.02 265);
   --turn-you-edge: oklch(0.55 0.14 65);
   --turn-them: oklch(0.5 0.09 250);
+  --on-turn-them: oklch(0.985 0 0);
+  --step-passed: oklch(0.55 0.02 265);
+  --step-skipped: oklch(0.42 0.02 265);
   --success: oklch(0.5 0.14 150);
   --warning: oklch(0.5 0.14 55);
   --destructive: oklch(0.5 0.2 27);
@@ -174,6 +181,9 @@
   --on-turn-you: oklch(0.2 0.02 265);
   --turn-you-edge: oklch(0.82 0.15 85);
   --turn-them: oklch(0.74 0.09 250);
+  --on-turn-them: oklch(0.17 0.012 265);
+  --step-passed: oklch(0.6 0.02 265);
+  --step-skipped: oklch(0.8 0.015 265);
   --success: oklch(0.74 0.15 150);
   --warning: oklch(0.8 0.15 70);
   --destructive: oklch(0.72 0.17 25);
