@@ -33,7 +33,7 @@ pub enum ExportError {
 }
 
 /// Formats `entry` as a line and verifies the line reads back as exactly `entry` (section aside).
-fn entry_line(entry: &DeckEntry) -> Result<String, String> {
+pub(super) fn entry_line(entry: &DeckEntry) -> Result<String, String> {
     if !(1..=MAX_COUNT).contains(&entry.count) {
         return Err(format!("count {} is outside 1..={MAX_COUNT}", entry.count));
     }
