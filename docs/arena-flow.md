@@ -61,7 +61,7 @@ The same button is "No Blocks" at declare blockers, All Attack sends every creat
 Hotkeys [community S8, S11, S15, S17]:
 
 - Space passes once and confirms an OK. Enter is "Pass Until Response": through the turn until the opponent acts or you can answer something, with no priority back for triggers; pressed before combat it can skip your own combat.
-- Shift+Enter (left Shift) or Shift-click on the button is "Pass Turn", MTGO's F6: whatever the opponent does; priority comes back only to block.
+- Shift+Enter (left Shift) or Shift-click on the button is "Pass Turn", MTGO's F6: whatever the opponent does, and on the opponent's turn it skips what is left of it; priority comes back only to block.
 - Ctrl is Full Control, Ctrl+Shift holds it, and the same keys release it.
 
 ### 2. Stops
@@ -81,7 +81,7 @@ Hotkeys [community S8, S11, S15, S17]:
 
 ### 4. Yields
 
-- Resolve All and Pass Turn are the yields (section 1) [official S2]. Enter ends when the opponent acts or you can answer something; Shift+Enter only at a stop or a decision that needs you, and on the opponent's turn it skips what is left of it so you are asked only to block [community S8, S11, S15]. Resolve All ends when something new goes on the stack, so a long trigger chain asks again and again, which players dislike [official S2; community S19, S20].
+- Resolve All and Pass Turn are the yields (section 1) [official S2]. Enter ends when the opponent acts or you can answer something; Shift+Enter only at a stop or a decision that needs you [community S8, S11, S15]. Resolve All ends when something new goes on the stack, so a long trigger chain asks again and again, which players dislike [official S2; community S19, S20].
 - Yields live on the server (`autoPassOption`, `stackAutoPassOption`; which key sets which value is [unverified] [community S25, S26]). `AutoYield` is per ability or card title, `AutoAnswer` keeps answers to optional prompts, and trigger order can persist once or always [community S25].
 - MTGO is the checklist: pass until you can respond, yield through the turn, yield to a stack object this turn or always, "no possible play: yield all stops" (our default windows); you still confirm attackers and blockers [official S5].
 
@@ -116,7 +116,7 @@ What ours leaks:
 - Pace. At a default window a seat that can act makes the table wait for a human (10 s as a non-active seat, unbounded as the active one); a seat that cannot waits 250 to 700 ms and passes as a step and batch of its own, so the other seats see the same stream ([server.md](server.md), Dwell). Its own main phase with an empty stack is passed at once, because what it plays is in plain sight.
 - What remains: how long a seat that can act takes (a pause past 700 ms or a pass before 250 ms is its own); a pass at the response-clock deadline, which reads as "was asked and sat on it"; and the choices of stops, Full Control and yields. Arena shows the same choices; constant Full Control is "very obvious" [community S12].
 - The log is uniform: `PriorityGranted` and `PriorityPassed` are public events for every window, skipped or not. Arrival time and batch shape could leak; the text does not.
-- Not leaked: a hover or selection relay does not exist, and clocks, previews, `Welcome` and the `Stops`, `FullControl` and `Yielding` notices reach only their seat. The client's turn feed follows the same rule: public events only, the same for every seat, no mark on another seat's automatic or timed pass ([ui-design.md](ui-design.md), Turn and focus).
+- Not leaked: there is no hover or selection relay, and clocks, previews, `Welcome` and the `Stops`, `FullControl` and `Yielding` notices reach only their seat. The client's turn feed uses public events only, the same for every seat, and never marks another seat's pass as automatic or timed ([ui-design.md](ui-design.md), Turn and focus).
 
 Mitigations, ranked by value for effort:
 
@@ -147,8 +147,7 @@ The client never paces steps: the fx layer must not wait for a cadence, and P3 d
 | No equivalent | dwell for a seat that cannot act at a combat or stack window | done (P3), ours |
 | Smart priority, auto-order triggers, per-ability yield | missing (needs triggers) | open (P10) |
 | Timers: rope, bank, delayed start, inactivity | 10 s on a non-active seat's priority windows, 45 s for blocks, none for the active seat | open (P9) |
-| Auto-tap, Auto-Pay, land preview | "Pay automatically", "Pay the rest for me"; no hover preview | optional, with rules depth |
-| Undo (Z) | payment Undo and Clear, Cancel casting | later |
+| Auto-tap, Auto-Pay, land preview, Undo (Z) | "Pay automatically", "Pay the rest for me", payment Undo and Clear, Cancel casting; no hover preview | optional, later |
 | Hand hover relay; hold priority | no relay; none per spell in either, Full Control and stops cover it | keep |
 | Blocks asked whenever possible, `NothingToDo` otherwise; expiry answers for the player; combat choices validated while clicking; All Attack, No Attack, No Blocks | `fall_back`, `Preview`, "Attack with all", "No attack", "No blocks" | in place |
 
