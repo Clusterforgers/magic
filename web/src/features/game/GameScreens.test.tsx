@@ -129,7 +129,7 @@ describe('game over', () => {
     expect(results[1]).toHaveTextContent('Seat 2Bo')
     expect(results[1]).toHaveTextContent('Lost: ran out of life')
     expect(results[1]).toHaveTextContent('life 0')
-    expect(screen.getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/new')
+    expect(screen.getByRole('link', { name: 'Create another game' })).toHaveAttribute('href', '/new')
     expect(document.title).toBe('Game over · Magic')
   })
 
@@ -137,8 +137,8 @@ describe('game over', () => {
     await finishedGame(0, 1, 'ZeroLife', { Winner: 0 })
     const list = screen.getByRole('list', { name: 'How each seat finished' })
     expect(list).toHaveClass('overflow-y-auto')
-    expect(list.className).toContain('max-h-[min(24rem,45dvh)]')
-    expect(screen.getByRole('link', { name: 'Create a new game' })).not.toBe(list)
+    expect(list).toHaveClass('min-h-0')
+    expect(screen.getByRole('link', { name: 'Create another game' })).not.toBe(list)
   })
 
   it('keeps the result when the server closes the socket afterwards, with no connection notice', async () => {
@@ -183,7 +183,7 @@ describe('game over', () => {
     expect(screen.getByRole('heading', { name: 'The game is a draw' })).toBeInTheDocument()
     expect(screen.getByText('Nobody won.')).toBeInTheDocument()
     expect(screen.queryByRole('list', { name: 'How each seat finished' })).toBeNull()
-    expect(screen.getByRole('link', { name: 'Create a new game' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Create another game' })).toBeInTheDocument()
   })
 
   it('names seats “Seat N” when the server could not be asked for names', async () => {

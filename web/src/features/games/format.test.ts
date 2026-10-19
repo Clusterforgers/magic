@@ -1,7 +1,7 @@
 // Goal: the words of the games list are right for every age, every set of other players and every way a game can end, whoever won and however many seats there were.
 import { describe, expect, it } from 'vitest'
 import { listed } from '@/test-utils/accountsServer'
-import { joinNames, othersText, playerLabel, resultText } from './format'
+import { continueLabel, gamesText, joinNames, othersText, playerLabel, resultText } from './format'
 
 describe('joinNames', () => {
   it.each([
@@ -45,7 +45,7 @@ describe('resultText', () => {
     ['an account won', { seat: 0, result: { Winner: 1 } as const }, 'bo won'],
     ['a guest won', { seat: 0, result: { Winner: 2 } as const }, 'Cy won'],
     ['it was a draw', { seat: 0, result: 'Draw' as const }, 'Draw'],
-    ['the finished game has no result', { seat: 0, result: null }, 'Finished'],
+    ['the finished game has no result', { seat: 0, result: null }, 'Ended without a result'],
     [
       'the winner is a seat the list does not know',
       { seat: 0, result: { Winner: 7 } as const },
@@ -57,5 +57,29 @@ describe('resultText', () => {
 
   it.each(['lobby', 'running'] as const)('says nothing for a game in the %s state', (status) => {
     expect(resultText(listed({ status, others }))).toBeNull()
+  })
+})
+
+describe('gamesText', () => {
+  it.each([
+    [0, 'No games'],
+    [1, '1 game'],
+    [2, '2 games'],
+    [100, '100 games'],
+  ])('counts %i as %j', (count, text) => {
+    expect(gamesText(count)).toBe(text)
+  })
+})
+
+describe('continueLabel', () => {
+  it('names the other players, so the links of two games differ', () => {
+    const bo = { seat: 1, name: 'Bo', user: null }
+    const cy = { seat: 2, name: 'Cy', user: 'cy' }
+    expect(continueLabel(listed({ others: [bo] }))).toBe('Continue your game with Bo')
+    expect(continueLabel(listed({ others: [bo, cy] }))).toBe('Continue your game with Bo and cy')
+  })
+
+  it('does not name nobody', () => {
+    expect(continueLabel(listed({ others: [] }))).toBe('Continue your game')
   })
 })

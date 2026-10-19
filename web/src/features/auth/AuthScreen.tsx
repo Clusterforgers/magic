@@ -1,8 +1,11 @@
 import { Link, useRouter } from '@tanstack/react-router'
+import { LoaderCircleIcon, ServerOffIcon } from 'lucide-react'
 import { useEffect } from 'react'
+import { EmptyState } from '@/components/EmptyState'
 import { PageShell } from '@/components/PageShell'
 import { buttonVariants } from '@/components/ui/button'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import { cn } from '@/lib/utils'
 import { AuthForm } from './AuthForm'
 import { useAuth } from './context'
 import type { AuthMode } from './errors'
@@ -30,23 +33,25 @@ export function AuthScreen({ mode, next }: AuthScreenProps) {
   }, [status, destination, router])
 
   return (
-    <PageShell width="narrow">
+    <PageShell width="narrow" className="sm:pt-12">
       {status === 'unavailable' ? (
-        <section aria-labelledby="no-accounts-title" className="grid justify-items-start gap-3">
-          <h1 id="no-accounts-title" className="text-2xl font-semibold tracking-tight">
-            This server has no accounts
-          </h1>
-          <p className="text-base text-muted-foreground">
-            Games here are played as a guest: one person creates a game and sends every player the link for
-            their seat. There is nothing to sign in to.
-          </p>
-          <Link to="/new" className={buttonVariants({ size: 'lg' })}>
-            Create a game
-          </Link>
-        </section>
+        <EmptyState
+          as="h1"
+          icon={ServerOffIcon}
+          title="This server has no accounts"
+          action={
+            <Link to="/new" className={cn(buttonVariants({ size: 'lg' }))}>
+              Create game
+            </Link>
+          }
+        >
+          Games here are played as a guest: one person creates a game and sends every player the link for
+          their seat. There is nothing to sign in to.
+        </EmptyState>
       ) : null}
       {status === 'signed-in' ? (
-        <p role="status" className="text-sm text-muted-foreground">
+        <p role="status" className="surface flex items-center gap-3 p-4 text-sm text-muted-foreground">
+          <LoaderCircleIcon aria-hidden="true" className="size-4 shrink-0 motion-safe:animate-spin" />
           You are signed in. Taking you on…
         </p>
       ) : null}

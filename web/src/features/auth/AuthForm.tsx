@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router'
 import { CircleAlertIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import type { FormEvent } from 'react'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import type { FormEvent, ReactNode } from 'react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -25,6 +25,7 @@ const WORDS = {
     intro: 'Sign in to find your games again and rejoin a seat without its link.',
     submit: 'Sign in',
     pending: 'Signing in…',
+    failed: 'Could not sign in',
     other: { to: '/register', question: 'No account yet?', action: 'Create one' },
   },
   register: {
@@ -33,9 +34,53 @@ const WORDS = {
       'An account lists your games and lets you rejoin a seat without its link. You can still play as a guest with a seat link.',
     submit: 'Create account',
     pending: 'Creating the account…',
+    failed: 'Could not create the account',
     other: { to: '/login', question: 'Already have an account?', action: 'Sign in' },
   },
 } as const
+
+/** The ids of a field's two notes: the rule that is always there and the problem that comes and goes. */
+const hintId = (field: string): string => `${field}-hint`
+const problemId = (field: string): string => `${field}-problem`
+
+/** What a field's input points its description at: the problem first, so it is the first thing a screen reader says. */
+const describedBy = (field: string): string => `${problemId(field)} ${hintId(field)}`
+
+interface FieldProps {
+  id: string
+  label: string
+  /** The rule the field is held to, in a sentence, shown before it is typed. */
+  rule: string
+  /** What is wrong with the field now, or null. */
+  problem: string | null
+  /** The input. */
+  children: ReactNode
+}
+
+/**
+ * A label, the rule, the input and, under it, the problem. The problem's place is always in the page and announces
+ * itself politely when its words change, so a screen reader hears a problem even when focus stays on the field; it
+ * takes no room while it is empty. A problem carries an icon, so it never rests on its colour alone.
+ */
+function Field({ id, label, rule, problem, children }: FieldProps) {
+  return (
+    <div className="grid gap-2">
+      <Label htmlFor={id}>{label}</Label>
+      <p id={hintId(id)} className="text-sm text-muted-foreground">
+        {rule}
+      </p>
+      {children}
+      <div id={problemId(id)} aria-live="polite" className="empty:sr-only">
+        {problem === null ? null : (
+          <p className="flex items-start gap-2 text-sm text-destructive">
+            <CircleAlertIcon aria-hidden="true" className="size-4 shrink-0 translate-y-0.5" />
+            <span>{problem}</span>
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
 
 interface AuthFormProps {
   mode: AuthMode
@@ -44,9 +89,9 @@ interface AuthFormProps {
 }
 
 /**
- * The sign-in and register form. The fields are uncontrolled, so the password lives only in the input while it is
- * typed: it is read once at submit, sent, and the field is emptied as soon as the answer is in. State holds only
- * the words of the problems.
+ * The sign-in and register form, in a card. The fields are uncontrolled, so the password lives only in the input while
+ * it is typed: it is read once at submit, sent, and the field is emptied as soon as the answer is in. State holds only
+ * the words of the problems. Focus goes to the first field that is wrong, else to the alert about the whole form.
  */
 export function AuthForm({ mode, next }: AuthFormProps) {
   const store = useAuthStore()
@@ -95,8 +140,6 @@ export function AuthForm({ mode, next }: AuthFormProps) {
 
   const usernameId = `${mode}-username`
   const passwordId = `${mode}-password`
-  const describedBy = (id: string, problem: string | null): string =>
-    problem === null ? `${id}-hint` : `${id}-hint ${id}-problem`
 
   return (
     <form
@@ -106,25 +149,25 @@ export function AuthForm({ mode, next }: AuthFormProps) {
       noValidate
       aria-labelledby={`${mode}-title`}
       aria-busy={pending}
-      className="grid gap-6"
+      className="surface grid gap-6 p-4 sm:p-6"
       onSubmit={(event) => void submit(event)}
     >
-      <div>
+      <div className="grid gap-1">
         <h1 id={`${mode}-title`} className="text-2xl font-semibold tracking-tight">
           {words.title}
         </h1>
-        <p className="mt-1 text-base text-muted-foreground">{words.intro}</p>
+        <p className="text-base text-muted-foreground">{words.intro}</p>
       </div>
 
       {problems.form === null ? null : (
         <Alert ref={alertRef} tabIndex={-1} variant="destructive" className="outline-none">
           <CircleAlertIcon aria-hidden="true" />
-          <AlertDescription className="text-foreground">{problems.form}</AlertDescription>
+          <AlertTitle>{words.failed}</AlertTitle>
+          <AlertDescription>{problems.form}</AlertDescription>
         </Alert>
       )}
 
-      <div className="grid gap-2">
-        <Label htmlFor={usernameId}>Username</Label>
+      <Field id={usernameId} label="Username" rule={USERNAME_RULE} problem={problems.username}>
         <Input
           ref={usernameRef}
           id={usernameId}
@@ -135,25 +178,16 @@ export function AuthForm({ mode, next }: AuthFormProps) {
           spellCheck={false}
           readOnly={pending}
           aria-invalid={problems.username !== null}
-          aria-describedby={describedBy(usernameId, problems.username)}
+          aria-describedby={describedBy(usernameId)}
           onChange={(event) => {
             if (problems.username !== null) {
               setProblems((was) => ({ ...was, username: usernameProblem(event.target.value) }))
             }
           }}
         />
-        <p id={`${usernameId}-hint`} className="text-xs text-muted-foreground">
-          {USERNAME_RULE}
-        </p>
-        {problems.username === null ? null : (
-          <p id={`${usernameId}-problem`} className="text-sm text-destructive">
-            {problems.username}
-          </p>
-        )}
-      </div>
+      </Field>
 
-      <div className="grid gap-2">
-        <Label htmlFor={passwordId}>Password</Label>
+      <Field id={passwordId} label="Password" rule={PASSWORD_RULE} problem={problems.password}>
         <Input
           ref={passwordRef}
           id={passwordId}
@@ -162,30 +196,20 @@ export function AuthForm({ mode, next }: AuthFormProps) {
           autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
           readOnly={pending}
           aria-invalid={problems.password !== null}
-          aria-describedby={describedBy(passwordId, problems.password)}
+          aria-describedby={describedBy(passwordId)}
           onChange={(event) => {
             if (problems.password !== null) {
               setProblems((was) => ({ ...was, password: passwordProblem(event.target.value) }))
             }
           }}
         />
-        <p id={`${passwordId}-hint`} className="text-xs text-muted-foreground">
-          {PASSWORD_RULE}
-        </p>
-        {problems.password === null ? null : (
-          <p id={`${passwordId}-problem`} className="text-sm text-destructive">
-            {problems.password}
-          </p>
-        )}
-      </div>
+      </Field>
 
-      <div>
-        <Button type="submit" size="lg" loading={pending}>
-          {pending ? words.pending : words.submit}
-        </Button>
-      </div>
+      <Button type="submit" size="lg" loading={pending} className="w-full">
+        {pending ? words.pending : words.submit}
+      </Button>
 
-      <p className="text-sm text-muted-foreground">
+      <p className="border-t pt-4 text-sm text-muted-foreground">
         {words.other.question}{' '}
         <Link
           to={words.other.to}

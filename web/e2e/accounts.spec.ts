@@ -54,7 +54,7 @@ async function createGame(page: Page): Promise<string[]> {
   return links.evaluateAll((anchors) => anchors.map((anchor) => anchor.getAttribute('href') ?? ''))
 }
 
-const games = (page: Page) => page.getByRole('list', { name: 'Your games' }).getByRole('listitem')
+const games = (page: Page) => page.locator('main [data-game]')
 const gameIdOf = (page: Page): string => new URL(page.url()).pathname.split('/').at(-1) ?? ''
 
 test('an account creates a game, closes the page, finds it under My games and rejoins it without a link', async ({
@@ -85,10 +85,10 @@ test('an account creates a game, closes the page, finds it under My games and re
     await expect(row).toHaveAttribute('data-game', game)
     await expect(row).toHaveAttribute('data-status', 'lobby')
     await expect(row).toContainText('Lobby')
-    await expect(row).toContainText('With Player 2')
-    await expect(row).toContainText(`You play ${ada} in seat 1.`)
+    await expect(row).toContainText('Player 2')
+    await expect(row).toContainText(`${ada}, seat 1`)
 
-    await row.getByRole('link', { name: /rejoin/i }).click()
+    await row.getByRole('link', { name: /continue/i }).click()
     await expect(back.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
     // No seat link: the address is the game and nothing else, and the page is connected all the same.
     expect(new URL(back.url()).pathname).toBe(`/game/${game}`)
@@ -138,13 +138,13 @@ test('a second account joins by seat link, and both accounts list the game, in t
     await expect(games(bo.page)).toHaveCount(1)
     await expect(games(ada.page).first()).toHaveAttribute('data-game', game)
     await expect(games(bo.page).first()).toHaveAttribute('data-game', game)
-    await expect(games(ada.page).first()).toContainText(`With ${boName}`)
-    await expect(games(bo.page).first()).toContainText(`With ${adaName}`)
-    await expect(games(bo.page).first()).toContainText(`You play Player 2 in seat 2.`)
+    await expect(games(ada.page).first()).toContainText(boName)
+    await expect(games(bo.page).first()).toContainText(adaName)
+    await expect(games(bo.page).first()).toContainText('Player 2, seat 2')
 
     // Start it from the two lobbies, which both lists then show as running.
-    await ada.page.getByRole('link', { name: /rejoin/i }).click()
-    await bo.page.getByRole('link', { name: /rejoin/i }).click()
+    await ada.page.getByRole('link', { name: /continue/i }).click()
+    await bo.page.getByRole('link', { name: /continue/i }).click()
     for (const { page } of [ada, bo]) {
       await page.getByRole('button', { name: 'Ready', exact: true }).click()
     }
@@ -161,7 +161,7 @@ test('a second account joins by seat link, and both accounts list the game, in t
     for (const { page } of [ada, bo]) {
       await games(page)
         .first()
-        .getByRole('link', { name: /rejoin/i })
+        .getByRole('link', { name: /continue/i })
         .click()
       await expect(page.getByRole('heading', { name: 'Opening hands' })).toBeVisible()
       expect(new URL(page.url()).hash).toBe('')
