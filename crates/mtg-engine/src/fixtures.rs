@@ -20,12 +20,12 @@ pub(crate) fn creature(name: &str, power: i32, toughness: i32) -> Arc<CardDefini
     )
 }
 
-/// A two-player game at the first main step of turn 1: `hands[i]` and `battlefields[i]` are seat `i`'s cards,
-/// and every library holds five vanilla creatures.
-pub(crate) fn state(
+/// A two-player game starting at the first main step of turn 1: `hands[i]` and `battlefields[i]` are seat
+/// `i`'s cards, and every library holds five vanilla creatures.
+pub(crate) fn setup(
     hands: Vec<Vec<Arc<CardDefinition>>>,
     battlefields: Vec<Vec<Arc<CardDefinition>>>,
-) -> GameState {
+) -> GameSetup {
     let players = hands
         .into_iter()
         .zip(battlefields)
@@ -39,7 +39,7 @@ pub(crate) fn state(
             life: None,
         })
         .collect();
-    let setup = GameSetup {
+    GameSetup {
         format: Arc::new(Normal),
         seed: 7,
         players,
@@ -49,8 +49,15 @@ pub(crate) fn state(
             step: Step::Main1,
         },
         validate_decks: false,
-    };
-    match GameState::from_setup(&setup) {
+    }
+}
+
+/// The state [`setup`] begins in.
+pub(crate) fn state(
+    hands: Vec<Vec<Arc<CardDefinition>>>,
+    battlefields: Vec<Vec<Arc<CardDefinition>>>,
+) -> GameState {
+    match GameState::from_setup(&setup(hands, battlefields)) {
         Ok(state) => state,
         Err(error) => panic!("the fixture setup is valid: {error}"),
     }

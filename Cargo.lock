@@ -1196,6 +1196,7 @@ dependencies = [
  "mtg-import",
  "proptest",
  "rstest",
+ "serde_json",
  "thiserror",
 ]
 

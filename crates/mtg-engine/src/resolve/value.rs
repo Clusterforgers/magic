@@ -449,3 +449,342 @@ impl<'a> Scope<'a> {
             })
     }
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: references, selectors, amounts and conditions read the game as the rules say, an object that changed zones is read as it was when a snapshot of it exists, and what the engine cannot evaluate yet refuses by name.
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
+    use mtg_core::card::{CardType, Supertype};
+    use mtg_core::ids::ObjectId;
+    use mtg_core::mana::ManaCost;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::events::{Event, ZoneCause};
+    use crate::fixtures::state;
+    use crate::fold::apply_event;
+    use crate::snapshot::snapshot;
+
+    fn bear() -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new("Bear")
+                .with_type(CardType::Creature)
+                .with_subtype("Bear")
+                .with_mana_cost(ManaCost::parse("{1}{G}").unwrap())
+                .with_power_toughness(2, 2),
+        )
+    }
+
+    fn ogre() -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new("Ogre")
+                .with_type(CardType::Creature)
+                .with_subtype("Ogre")
+                .with_mana_cost(ManaCost::parse("{3}{R}").unwrap())
+                .with_power_toughness(3, 4),
+        )
+    }
+
+    fn relic() -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new("Relic")
+                .with_type(CardType::Artifact)
+                .with_supertype(Supertype::Legendary)
+                .with_mana_cost(ManaCost::parse("{2}").unwrap()),
+        )
+    }
+
+    /// Seat 0 controls a Bear and a Relic, seat 1 an Ogre and a Bear; seat 0 has a Bear in hand.
+    fn game() -> GameState {
+        state(
+            vec![vec![bear()], vec![]],
+            vec![vec![bear(), relic()], vec![ogre(), bear()]],
+        )
+    }
+
+    fn named(game: &GameState, name: &str, controller: usize) -> ObjectRef {
+        game.zone(Zone::Battlefield)
+            .iter()
+            .filter_map(|id| game.object(*id))
+            .find(|o| o.card().name == name && o.controller() == PlayerId::from_index(controller))
+            .map(GameObject::reference)
+            .unwrap()
+    }
+
+    fn scope(game: &GameState) -> Scope<'_> {
+        Scope::announcing(game, PlayerId(0), named(game, "Relic", 0))
+    }
+
+    fn selector(json: &str) -> Selector {
+        serde_json::from_str(json).unwrap()
+    }
+
+    /// What a selector matches on the battlefield, as names with the seat that controls each.
+    fn matched(game: &GameState, json: &str) -> Vec<String> {
+        scope(game)
+            .matching(&selector(json))
+            .unwrap()
+            .into_iter()
+            .map(|r| {
+                let object = game.object(r.id).unwrap();
+                format!("{} {}", object.card().name, object.controller().get())
+            })
+            .collect()
+    }
+
+    #[rstest]
+    #[case::everything("[]", &["Bear 0", "Relic 0", "Ogre 1", "Bear 1"])]
+    #[case::creatures(r#"[{"Type":"Creature"}]"#, &["Bear 0", "Ogre 1", "Bear 1"])]
+    #[case::artifacts(r#"[{"Type":"Artifact"}]"#, &["Relic 0"])]
+    #[case::controlled_by_you(r#"[{"ControlledBy":"You"}]"#, &["Bear 0", "Relic 0"])]
+    #[case::controlled_by_opponents(r#"[{"ControlledBy":"Opponents"}]"#, &["Ogre 1", "Bear 1"])]
+    #[case::owned_by_you_and_a_creature(r#"[{"OwnedBy":"You"},{"Type":"Creature"}]"#, &["Bear 0"])]
+    #[case::other_than_the_source(r#"["Other"]"#, &["Bear 0", "Ogre 1", "Bear 1"])]
+    #[case::only_the_source(r#"["This"]"#, &["Relic 0"])]
+    #[case::a_subtype(r#"[{"Subtype":"Ogre"}]"#, &["Ogre 1"])]
+    #[case::a_supertype(r#"[{"Supertype":"Legendary"}]"#, &["Relic 0"])]
+    #[case::a_color(r#"[{"Color":"Green"}]"#, &["Bear 0", "Bear 1"])]
+    #[case::colorless(r#"["Colorless"]"#, &["Relic 0"])]
+    #[case::a_name(r#"[{"Named":"Ogre"}]"#, &["Ogre 1"])]
+    #[case::power(r#"[{"Compare":{"stat":"Power","op":"Ge","to":3}}]"#, &["Ogre 1"])]
+    #[case::mana_value(r#"[{"Compare":{"stat":"ManaValue","op":"Eq","to":2}}]"#, &["Bear 0", "Relic 0", "Bear 1"])]
+    #[case::not(r#"[{"Not":{"Type":"Creature"}}]"#, &["Relic 0"])]
+    #[case::any_of(r#"[{"AnyOf":[{"Subtype":"Ogre"},{"Type":"Artifact"}]}]"#, &["Relic 0", "Ogre 1"])]
+    #[case::untapped(r#"["Untapped"]"#, &["Bear 0", "Relic 0", "Ogre 1", "Bear 1"])]
+    #[case::tapped_is_none_here(r#"["Tapped"]"#, &[])]
+    #[case::tokens_do_not_exist_yet(r#"["Token"]"#, &[])]
+    #[case::attacking_is_none_out_of_combat(r#"["Attacking"]"#, &[])]
+    #[case::blocking_is_none_out_of_combat(r#"["Blocking"]"#, &[])]
+    #[case::a_keyword_nothing_has(r#"[{"HasKeyword":"Flying"}]"#, &[])]
+    #[case::the_hand_instead(r#"[{"In":"Hand"}]"#, &["Bear 0"])]
+    #[case::the_graveyard_is_empty(r#"[{"In":"Graveyard"}]"#, &[])]
+    #[case::spells_are_on_the_stack(r#"["Spell"]"#, &[])]
+    fn a_selector_matches_the_objects_that_satisfy_every_predicate(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(matched(&game(), json), expected);
+    }
+
+    fn names(game: &GameState, targets: &[Target]) -> Vec<String> {
+        targets
+            .iter()
+            .map(|t| match t {
+                Target::Player(p) => format!("player {}", p.get()),
+                Target::Object(o) => {
+                    let object = game.object(o.id).unwrap();
+                    format!("{} {}", object.card().name, object.controller().get())
+                }
+            })
+            .collect()
+    }
+
+    #[rstest]
+    #[case::you(r#""You""#, &["player 0"])]
+    #[case::opponents(r#""Opponents""#, &["player 1"])]
+    #[case::each_player(r#""EachPlayer""#, &["player 0", "player 1"])]
+    #[case::this(r#""This""#, &["Relic 0"])]
+    #[case::each(r#"{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}"#, &["Ogre 1", "Bear 1"])]
+    #[case::controller_of(r#"{"ControllerOf":{"Each":[{"Named":"Ogre"}]}}"#, &["player 1"])]
+    #[case::owner_of_several_once(r#"{"OwnerOf":{"Each":[{"Type":"Creature"}]}}"#, &["player 0", "player 1"])]
+    #[case::nothing_is_attached_yet(r#""Attached""#, &[])]
+    fn a_reference_names_its_players_and_objects(#[case] json: &str, #[case] expected: &[&str]) {
+        let game = game();
+        let reference: Ref = serde_json::from_str(json).unwrap();
+        let found = scope(&game).refs(&reference).unwrap();
+        assert_eq!(names(&game, &found), expected);
+    }
+
+    #[test]
+    fn opponents_and_each_player_follow_turn_order_from_the_active_player() {
+        let game = state(vec![vec![], vec![], vec![]], vec![vec![], vec![], vec![]]);
+        let scope = Scope::announcing(
+            &game,
+            PlayerId(1),
+            ObjectRef {
+                id: ObjectId(0),
+                counter: 0,
+            },
+        );
+        let seats = |reference: &str| -> Vec<u64> {
+            scope
+                .players(&serde_json::from_str(reference).unwrap())
+                .unwrap()
+                .iter()
+                .map(|p| p.get())
+                .collect()
+        };
+        // Seat 0 is the active player, so it comes first even for a spell of seat 1's.
+        assert_eq!(seats(r#""EachPlayer""#), [0, 1, 2]);
+        assert_eq!(seats(r#""Opponents""#), [0, 2]);
+        assert_eq!(seats(r#""You""#), [1]);
+    }
+
+    #[rstest]
+    #[case::fixed("3", 3)]
+    #[case::negative("-2", -2)]
+    #[case::count(r#"{"Count":[{"Type":"Creature"}]}"#, 3)]
+    #[case::count_yours(r#"{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#, 1)]
+    #[case::power_of_an_object(r#"{"Stat":{"of":{"Each":[{"Named":"Ogre"}]},"stat":"Power"}}"#, 3)]
+    #[case::toughness_of_the_source_which_has_none(
+        r#"{"Stat":{"of":"This","stat":"Toughness"}}"#,
+        0
+    )]
+    #[case::mana_value(r#"{"Stat":{"of":{"Each":[{"Named":"Ogre"}]},"stat":"ManaValue"}}"#, 4)]
+    #[case::life(r#"{"Life":"You"}"#, 20)]
+    #[case::sum(r#"{"Sum":[2,{"Count":[{"Type":"Artifact"}]},-1]}"#, 2)]
+    #[case::no_targets_chosen(r#"{"TargetCount":0}"#, 0)]
+    fn an_amount_is_the_number_it_stands_for(#[case] json: &str, #[case] expected: i64) {
+        let game = game();
+        let amount: Amount = serde_json::from_str(json).unwrap();
+        assert_eq!(scope(&game).amount(&amount), Ok(expected));
+    }
+
+    #[rstest]
+    #[case::x(r#""X""#, "X")]
+    #[case::counters(r#"{"Counters":{"on":"This","counter":"+1/+1"}}"#, "counters")]
+    #[case::divided(r#""Divided""#, "divided amounts")]
+    #[case::even_share(r#"{"EvenShare":4}"#, "divided amounts")]
+    #[case::loyalty(
+        r#"{"Stat":{"of":{"Each":[{"Named":"Ogre"}]},"stat":"Loyalty"}}"#,
+        "loyalty counters"
+    )]
+    fn what_the_engine_cannot_evaluate_yet_says_what_it_lacks(
+        #[case] json: &str,
+        #[case] lacks: &'static str,
+    ) {
+        let game = game();
+        let amount: Amount = serde_json::from_str(json).unwrap();
+        assert_eq!(
+            scope(&game).amount(&amount),
+            Err(ResolveError::Unsupported(lacks))
+        );
+    }
+
+    #[rstest]
+    #[case::kicked(r#""Kicked""#, Err("kicker"))]
+    #[case::your_turn(r#""YourTurn""#, Ok(true))]
+    #[case::not(r#"{"Not":"YourTurn"}"#, Ok(false))]
+    #[case::all(
+        r#"{"All":["YourTurn",{"Compare":{"left":{"Life":"You"},"op":"Ge","right":20}}]}"#,
+        Ok(true)
+    )]
+    #[case::all_with_one_false(
+        r#"{"All":["YourTurn",{"Compare":{"left":{"Life":"You"},"op":"Gt","right":20}}]}"#,
+        Ok(false)
+    )]
+    #[case::any(
+        r#"{"Any":[{"Not":"YourTurn"},{"Compare":{"left":1,"op":"Lt","right":2}}]}"#,
+        Ok(true)
+    )]
+    #[case::matches(
+        r#"{"Matches":{"subject":{"Each":[{"Named":"Ogre"}]},"selector":[{"Type":"Creature"}]}}"#,
+        Ok(true)
+    )]
+    #[case::does_not_match(
+        r#"{"Matches":{"subject":{"Each":[{"Named":"Ogre"}]},"selector":[{"Color":"Green"}]}}"#,
+        Ok(false)
+    )]
+    fn a_condition_is_true_or_false_or_unsupported(
+        #[case] json: &str,
+        #[case] expected: Result<bool, &'static str>,
+    ) {
+        let game = game();
+        let condition: Condition = serde_json::from_str(json).unwrap();
+        assert_eq!(
+            scope(&game).holds(&condition),
+            expected.map_err(ResolveError::Unsupported)
+        );
+    }
+
+    #[test]
+    fn an_object_that_changed_zones_is_a_new_object_and_the_old_one_is_read_from_its_snapshot() {
+        let mut game = game();
+        let old = named(&game, "Ogre", 1);
+        let mut shot = snapshot(&game, old.id).unwrap();
+        // The ogre was bigger when it died than its card says.
+        shot.characteristics.power = Some(7);
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: old.id,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(PlayerId(1)),
+                cause: ZoneCause::Destroyed,
+            },
+        )
+        .unwrap();
+        assert_eq!(game.object(old.id).unwrap().counter(), 1);
+        let bindings: Bindings = [("ogre".to_owned(), vec![Target::Object(old)])].into();
+        let power = |scope: &Scope<'_>| -> i64 {
+            let amount: Amount =
+                serde_json::from_str(r#"{"Stat":{"of":{"Bound":"ogre"},"stat":"Power"}}"#).unwrap();
+            scope.amount(&amount).unwrap()
+        };
+        let creatures = selector(r#"[{"Type":"Creature"}]"#);
+        let mut scope = scope(&game);
+        scope.bindings = &bindings;
+        assert_eq!(
+            power(&scope),
+            0,
+            "without a snapshot there is nothing to read"
+        );
+        assert!(!scope.selects(&creatures, old).unwrap());
+        scope.snapshots = vec![&shot];
+        assert_eq!(power(&scope), 7, "the snapshot says what it was");
+        assert!(
+            scope.selects(&creatures, old).unwrap(),
+            "it was a creature when it left"
+        );
+        // Its controller as it was, too.
+        let seats: Ref = serde_json::from_str(r#"{"ControllerOf":{"Bound":"ogre"}}"#).unwrap();
+        assert_eq!(scope.players(&seats).unwrap(), [PlayerId(1)]);
+    }
+
+    #[test]
+    fn the_cause_of_a_trigger_is_what_triggering_names() {
+        let game = game();
+        let cause = crate::abilities::Cause {
+            subjects: vec![Target::Player(PlayerId(1))],
+            snapshots: Vec::new(),
+        };
+        let mut scope = scope(&game);
+        let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();
+        assert!(matches!(
+            scope.refs(&triggering),
+            Err(ResolveError::Invalid(_))
+        ));
+        scope.cause = Some(&cause);
+        assert_eq!(scope.players(&triggering).unwrap(), [PlayerId(1)]);
+    }
+
+    #[test]
+    fn a_name_nothing_bound_is_an_error_not_an_empty_set() {
+        let game = game();
+        let ghost: Ref = serde_json::from_str(r#"{"Bound":"ghost"}"#).unwrap();
+        assert!(matches!(
+            scope(&game).refs(&ghost),
+            Err(ResolveError::Invalid(_))
+        ));
+    }
+
+    #[test]
+    fn only_creatures_planeswalkers_and_battles_can_be_dealt_damage() {
+        let game = game();
+        let scope = scope(&game);
+        assert!(scope.can_be_dealt_damage(named(&game, "Bear", 0)));
+        assert!(!scope.can_be_dealt_damage(named(&game, "Relic", 0)));
+        let in_hand = game
+            .object(game.zone(Zone::Hand(PlayerId(0)))[0])
+            .unwrap()
+            .reference();
+        assert!(!scope.can_be_dealt_damage(in_hand));
+        let stale = ObjectRef {
+            counter: 9,
+            ..named(&game, "Bear", 0)
+        };
+        assert!(!scope.can_be_dealt_damage(stale));
+    }
+}

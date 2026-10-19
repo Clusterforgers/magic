@@ -3,6 +3,8 @@
 mod combat;
 mod opening;
 mod resolution;
+#[cfg(test)]
+mod tests;
 mod zones;
 
 use std::collections::BTreeSet;

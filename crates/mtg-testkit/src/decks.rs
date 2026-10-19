@@ -9,7 +9,9 @@ use mtg_engine::GameSetup;
 use mtg_engine::format::Normal;
 use mtg_engine::rng::GameRng;
 
-use crate::cards::{creature, creature_costing, land, wastes};
+use crate::cards::{
+    burn, creature, creature_costing, drain, land, library_of_cards, pinger, salve, wastes,
+};
 
 /// Lands in a generated deck.
 const LANDS: usize = 24;
@@ -108,6 +110,48 @@ pub fn symbol_fuzz_setup(players: usize, seed: u64) -> GameSetup {
     GameSetup::new(Arc::new(Normal), seed, decks)
 }
 
+/// A legal Normal deck in red, green and black whose spells and abilities run through the effect pipeline: burn
+/// at any target, a spell that damages, gains life and draws, one that drains an opponent, creatures that ping
+/// when tapped, an artifact that draws.
+///
+/// It has its own generator, so [`random_deck`] and the games seeded from it stay as they were.
+pub fn spell_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
+    let colors = [Color::Red, Color::Green, Color::Black];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 3])).collect();
+    let spells = [
+        burn("Spell Shock", 2),
+        burn("Spell Bolt", 3),
+        burn("Spell Spark", 1),
+        salve("Spell Salve"),
+        drain("Spell Siphon"),
+        pinger("Spell Pinger", 0),
+        pinger("Spell Prodigy", 1),
+        library_of_cards("Spell Library", 2),
+    ];
+    let distinct_spells = spells.len();
+    for card in spells {
+        deck.extend(std::iter::repeat_n(card, COPIES));
+    }
+    for slot in distinct_spells..DISTINCT_CREATURES {
+        let generic = u32::try_from(rng.index(4)).unwrap_or(0);
+        let power = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let toughness = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let name = format!("Spell Fuzz {slot} {generic} {power}/{toughness}");
+        let card = creature(&name, generic, &[colors[rng.index(3)]], power, toughness);
+        deck.extend(std::iter::repeat_n(card, COPIES));
+    }
+    deck
+}
+
+/// A normal game of `players` seats whose decks are [`spell_deck`]s, fully determined by `seed`.
+pub fn spell_fuzz_setup(players: usize, seed: u64) -> GameSetup {
+    let decks = (0u64..)
+        .take(players)
+        .map(|seat| spell_deck(&mut GameRng::substream(seed, 3_000 + seat)))
+        .collect();
+    GameSetup::new(Arc::new(Normal), seed, decks)
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: generated decks are always legal Normal decks and are reproducible from the seed.
@@ -135,6 +179,21 @@ mod tests {
             let setup = symbol_fuzz_setup(players, 5);
             assert_eq!(setup.players.len(), players);
             assert!(setup.validate().is_ok());
+            let setup = spell_fuzz_setup(players, 5);
+            assert_eq!(setup.players.len(), players);
+            assert!(setup.validate().is_ok());
+        }
+    }
+
+    proptest! {
+        #[test]
+        fn spell_decks_are_legal_reproducible_and_hold_spells_and_abilities(seed in any::<u64>()) {
+            let deck = spell_deck(&mut GameRng::substream(seed, 0));
+            prop_assert_eq!(deck.len(), 60);
+            prop_assert!(Normal.validate_deck(&deck).is_ok());
+            prop_assert_eq!(&deck, &spell_deck(&mut GameRng::substream(seed, 0)));
+            prop_assert!(deck.iter().any(|c| !c.rules.is_empty() && c.is_type(mtg_core::card::CardType::Instant)));
+            prop_assert!(deck.iter().any(|c| !c.rules.is_empty() && c.is_type(mtg_core::card::CardType::Creature)));
         }
     }
 

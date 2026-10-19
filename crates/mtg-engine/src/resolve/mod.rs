@@ -11,6 +11,7 @@ mod tree;
 mod value;
 
 use mtg_cards::ability::Ability;
+use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 pub use value::{Bindings, ResolveError, Scope};
@@ -211,6 +212,14 @@ fn finish(object: &GameObject) -> Vec<Event> {
 
 /// Runs the next step of the resolution in progress.
 pub fn step(state: &GameState) -> Result<Progress, EngineError> {
+    step_with(state, prim::run)
+}
+
+/// [`step`] with the interpreter's primitives replaced by `run`, so the journal can be tried on effects that ask.
+fn step_with(
+    state: &GameState,
+    run: impl Fn(&Cx<'_>, &Effect) -> Result<Run, ResolveError>,
+) -> Result<Progress, EngineError> {
     let resolving = state
         .resolving()
         .ok_or_else(|| EngineError::Resolution("nothing is resolving".into()))?;
@@ -239,7 +248,7 @@ pub fn step(state: &GameState) -> Result<Progress, EngineError> {
         return Ok(Progress::Done(finish(object)));
     };
     let cx = Cx { scope, resolving };
-    match prim::run(&cx, effect)? {
+    match run(&cx, effect)? {
         Run::Ask(decision) => Ok(Progress::Ask(decision)),
         Run::Done {
             events,
@@ -267,5 +276,203 @@ pub(crate) fn next(state: &GameState) -> flow::Progress {
         Ok(Progress::Done(events)) => flow::Progress::Events(events),
         Ok(Progress::Ask(decision)) => flow::Progress::Decide(decision),
         Err(error) => flow::Progress::Fail(error),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a step with k questions runs k + 1 times, each answer is logged and joins the journal until the step is done, and the log of the whole resolution replays to the state it was played to, mid-resolution included.
+    use std::cell::Cell;
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
+    use mtg_cards::ability::Timing;
+    use mtg_cards::cost::Cost;
+    use mtg_cards::refs::{Ref, ZoneKind};
+    use mtg_cards::value::Amount;
+    use mtg_core::card::CardType;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::abilities::PutOnStack;
+    use crate::choose::{Choices, YesNoOptions};
+    use crate::decision::DecisionKind;
+    use crate::engine::replay;
+    use crate::fixtures::{setup, state};
+    use crate::fold::apply_event;
+    use crate::snapshot::snapshot;
+    use crate::zones::Zone;
+
+    fn gain(amount: i32) -> Effect {
+        Effect::GainLife {
+            who: Ref::You,
+            amount: Amount::Fixed(amount),
+        }
+    }
+
+    /// An artifact with a free ability of three steps: gain 1 life, gain 2 life, gain 4 life.
+    fn totem() -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new("Totem")
+                .with_type(CardType::Artifact)
+                .with_rules(Ability::Activated {
+                    cost: Cost(Vec::new()),
+                    timing: Timing::Instant,
+                    limit: None,
+                    from: ZoneKind::Battlefield,
+                    targets: Vec::new(),
+                    effects: vec![gain(1), gain(2), gain(4)],
+                }),
+        )
+    }
+
+    fn start() -> GameState {
+        state(vec![vec![], vec![]], vec![vec![totem()], vec![]])
+    }
+
+    /// The events that put the totem's ability on the stack and begin resolving it.
+    fn begin(state: &GameState) -> Vec<Event> {
+        let source = state.zone(Zone::Battlefield)[0];
+        let object = state.object(source).unwrap();
+        let ability = state.next_object();
+        vec![
+            Event::AbilityPutOnStack(Box::new(PutOnStack {
+                object: ability,
+                source: object.reference(),
+                snapshot: snapshot(state, source).unwrap(),
+                ability: 0,
+                controller: PlayerId(0),
+                choices: Choices::default(),
+                cause: None,
+            })),
+            Event::ResolutionBegan { object: ability },
+        ]
+    }
+
+    /// Plays the resolution to its end, answering `answer` when the second step asks, and returns the log, the
+    /// state, how many questions were asked and how many times the second step ran.
+    fn play(answer: bool) -> (Vec<Event>, GameState, u32, u32) {
+        let mut game = start();
+        let mut log = begin(&game);
+        for event in &log {
+            apply_event(&mut game, event).unwrap();
+        }
+        let (asked, ran) = (Cell::new(0), Cell::new(0));
+        let runner = |cx: &Cx<'_>, effect: &Effect| {
+            if cx.resolving.position() != [1] {
+                return prim::run(cx, effect);
+            }
+            ran.set(ran.get() + 1);
+            match cx.journal() {
+                [] => Ok(Run::Ask(Decision {
+                    player: cx.controller(),
+                    kind: DecisionKind::YesNo(YesNoOptions {
+                        source: cx.scope.source.id,
+                    }),
+                })),
+                [(_, Choice::YesNo(yes))] => Ok(Run::events(if *yes {
+                    vec![Event::LifeGained {
+                        player: cx.controller(),
+                        amount: 2,
+                    }]
+                } else {
+                    Vec::new()
+                })),
+                other => Err(ResolveError::Invalid(format!(
+                    "unexpected journal {other:?}"
+                ))),
+            }
+        };
+        loop {
+            let events = match step_with(&game, runner).unwrap() {
+                Progress::Done(events) => events,
+                Progress::Ask(decision) => {
+                    asked.set(asked.get() + 1);
+                    assert_eq!(game.resolving().unwrap().journal(), []);
+                    vec![Event::ChoiceMade {
+                        player: decision.player,
+                        choice: Choice::YesNo(answer),
+                    }]
+                }
+            };
+            for event in &events {
+                apply_event(&mut game, event).unwrap();
+            }
+            log.extend(events);
+            if game.resolving().is_none() {
+                break;
+            }
+        }
+        (log, game, asked.get(), ran.get())
+    }
+
+    #[rstest]
+    #[case::yes(true, 27)]
+    #[case::no(false, 25)]
+    fn a_question_runs_its_step_twice_and_the_answer_is_used_once(
+        #[case] answer: bool,
+        #[case] life: i32,
+    ) {
+        let (log, game, asked, ran) = play(answer);
+        assert_eq!((asked, ran), (1, 2), "one question, so the step runs twice");
+        assert_eq!(game.player(PlayerId(0)).unwrap().life(), life);
+        let answers = log
+            .iter()
+            .filter(|e| matches!(e, Event::ChoiceMade { .. }))
+            .count();
+        assert_eq!(answers, 1, "the answer is logged");
+        let ability = ObjectId(game.next_object().get() - 1);
+        assert!(
+            game.object(ability).is_none(),
+            "the ability has ceased to exist"
+        );
+        assert_eq!(game.stack(), []);
+    }
+
+    #[test]
+    fn the_journal_holds_the_answer_until_the_step_is_done() {
+        let (log, ..) = play(true);
+        let mut game = start();
+        let mut at_answer = None;
+        let mut steps = 0;
+        for event in &log {
+            apply_event(&mut game, event).unwrap();
+            match event {
+                Event::ChoiceMade { .. } => {
+                    at_answer = Some(game.resolving().unwrap().journal().len());
+                }
+                Event::StepDone { position, .. } if position == &[2] => {
+                    let resolving = game.resolving().unwrap();
+                    assert_eq!(resolving.journal(), []);
+                    assert_eq!(resolving.position(), [2]);
+                    steps += 1;
+                }
+                _ => {}
+            }
+        }
+        assert_eq!((at_answer, steps), (Some(1), 1));
+    }
+
+    #[rstest]
+    #[case::before_the_ability_is_put_on_the_stack(0)]
+    #[case::when_it_begins_to_resolve(2)]
+    #[case::after_the_first_step(4)]
+    #[case::at_the_question_answered(5)]
+    #[case::after_the_second_step(7)]
+    #[case::at_the_end(100)]
+    fn the_log_replays_to_the_state_it_was_played_to_at_every_point(#[case] cut: usize) {
+        let (log, ..) = play(true);
+        let cut = cut.min(log.len());
+        let replayed = replay(
+            &setup(vec![vec![], vec![]], vec![vec![totem()], vec![]]),
+            &log[..cut],
+        )
+        .unwrap();
+        let mut played = start();
+        for event in &log[..cut] {
+            apply_event(&mut played, event).unwrap();
+        }
+        assert_eq!(replayed.state_hash(), played.state_hash());
+        assert_eq!(replayed.resolving(), played.resolving());
     }
 }
