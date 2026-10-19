@@ -72,14 +72,14 @@ const Table = memo(function Table() {
                 <SideProvider kind={regions.side}>
                   <TableGrid
                     regions={regions}
-                    stopsInDock={table.stopsInDock}
+                    stopsRow={table.stopsRow}
                     bar={
                       <TopBar
                         mode={plan.mode}
                         onMode={setMode}
                         pinnedFocus={chosen !== null}
                         onFollow={() => setChosen(null)}
-                        stopsInMenu={!table.stopsInDock}
+                        stopsInMenu={false}
                         compact={regions.landscape}
                       />
                     }
@@ -96,7 +96,7 @@ const Table = memo(function Table() {
                       <SeatArea seat={plan.viewer} size={size} facing="near" pod={table.pod} hand={false} />
                     }
                     hand={<HandDock seat={plan.viewer} />}
-                    controls={<ControlsDock stops={table.stopsInDock} />}
+                    controls={<ControlsDock stopsRow={table.stopsRow} />}
                     side={<SideTabs />}
                     // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
                     overlay={<CombatOverlay />}

@@ -1,7 +1,7 @@
 import { createContext, useContext, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { StopsBar } from './stops/StopsBar'
+import { StopsDock } from './stops/StopsDock'
 import { useEdgeFade } from './useEdgeFade'
 import { YieldIndicator } from './YieldIndicator'
 
@@ -30,11 +30,13 @@ export function InControlsDock({ children }: { children: ReactNode }) {
 }
 
 /**
- * The controls dock at the bottom right: where the pass controls of a Priority prompt are drawn ("Next: Combat", "End
- * turn", the menu of other ways to pass), the line that says the server is passing for this seat, and, when the dock is
- * tall enough, the stop ladder with Full Control. A lower dock leaves the last two to the table menu.
+ * The controls dock at the bottom right, top to bottom in the order of reading: the line that says the server is
+ * passing for this seat, the stops (the ladder and Full Control in one line where the dock has the room, else one
+ * "Stops" button that opens them), and the pass controls of a Priority prompt ("End turn", the menu of other ways to
+ * pass, then the primary button in the corner: "Next: Combat", "Resolve Lightning Bolt"). At most five controls show
+ * at any size.
  */
-export function ControlsDock({ stops }: { stops: boolean }) {
+export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
   const setSlot = useContext(SetSlotContext)
   const dock = useRef<HTMLElement>(null)
   useEdgeFade(dock)
@@ -43,15 +45,17 @@ export function ControlsDock({ stops }: { stops: boolean }) {
       ref={dock}
       aria-label="Pass controls"
       data-region="controls"
-      className="fade-scroll flex min-h-0 min-w-0 flex-col items-end gap-2 border-t border-l bg-surface p-2"
+      className="fade-scroll flex min-h-0 min-w-0 flex-col items-end justify-end-safe gap-2 border-t border-l bg-surface p-2"
     >
       <YieldIndicator />
+      <div data-slot="stops-slot" className="max-w-full empty:hidden">
+        <StopsDock row={stopsRow} />
+      </div>
       <div
         ref={setSlot}
         data-slot="pass-slot"
         className="flex w-full flex-wrap items-center justify-end gap-2 empty:hidden"
       />
-      {stops ? <StopsBar /> : null}
     </section>
   )
 }

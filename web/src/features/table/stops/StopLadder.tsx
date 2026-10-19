@@ -1,5 +1,5 @@
-import { ChevronDown, Pin } from 'lucide-react'
-import { memo, useCallback, useId, useState } from 'react'
+import { Pin } from 'lucide-react'
+import { memo, useCallback, useState } from 'react'
 import type { FocusEvent, KeyboardEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
@@ -11,17 +11,20 @@ import { canSetStops } from '../selectors'
 import { STEP_LABEL } from '../turnText'
 import { rovingTarget } from '../useRoving'
 import { StopIcon } from './StopIcon'
+import { StopSideSwitch } from './StopSideSwitch'
 import {
   ladderSteps,
   pressRequest,
   rowName,
-  stopCount,
   stopDescription,
   stopName,
   stopState,
+  stopsOn,
   turnSide,
 } from './stopModel'
-import type { StopState } from './stopModel'
+import type { StopsLayout, StopState } from './stopModel'
+
+const SIDES: readonly StopSide[] = ['Own', 'Opponent']
 
 interface StopButtonProps {
   side: StopSide
@@ -65,7 +68,7 @@ const StopButton = memo(function StopButton({
       title={description === undefined ? STEP_LABEL[step] : `${STEP_LABEL[step]}. ${description}`}
       tabIndex={tabbable ? 0 : -1}
       className={cn(
-        'relative inline-flex size-7 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors outline-none',
+        'relative inline-flex size-8 items-center justify-center rounded-md border border-border bg-background text-muted-foreground transition-colors outline-none pointer-coarse:size-11',
         'hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 aria-disabled:opacity-50',
         'aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground',
         'data-current:ring-2 data-current:ring-(--turn-you-edge)',
@@ -93,13 +96,16 @@ interface StopRowProps {
   step: Step | null
   /** Whether it is this side's turn now. */
   turn: boolean
+  /** Whether this is the row on show; the other stays in the page, out of sight and out of the tab order. */
+  shown: boolean
+  layout: StopsLayout
   lasting: boolean
   online: boolean
   onPress: StopButtonProps['onPress']
 }
 
 /** The stops of one side as a row of buttons with one tab stop; the arrow keys, Home and End move along it. */
-function StopRow({ side, steps, stops, step, turn, lasting, online, onPress }: StopRowProps) {
+function StopRow({ side, steps, stops, step, turn, shown, layout, lasting, online, onPress }: StopRowProps) {
   const [last, setLast] = useState<StopStep | null>(null)
   const fallback = turn ? steps.find((each) => each === step) : undefined
   const tab = steps.find((each) => each === last) ?? fallback ?? steps[0]
@@ -126,22 +132,15 @@ function StopRow({ side, steps, stops, step, turn, lasting, online, onPress }: S
       data-slot="stop-row"
       data-side={side}
       data-turn={turn || undefined}
+      hidden={!shown}
       className={cn(
-        'flex flex-wrap items-center gap-x-1 gap-y-0.5 rounded-md px-1 py-0.5',
+        'items-center gap-px rounded-md px-0.5 py-0.5',
+        layout === 'row' ? 'flex' : 'grid grid-cols-5 justify-items-center gap-1',
         turn && (side === 'Own' ? 'bg-(--turn-you-edge)/15' : 'bg-muted'),
       )}
       onFocus={onFocus}
       onKeyDown={onKeyDown}
     >
-      <span
-        aria-hidden="true"
-        className="flex w-20 shrink-0 items-center gap-1 text-[0.7rem] font-semibold tracking-wide text-muted-foreground uppercase max-sm:basis-full"
-      >
-        {side === 'Own' ? 'Yours' : 'Theirs'}
-        {turn ? (
-          <span className="rounded bg-foreground px-1 text-[0.6rem] leading-4 text-background">turn</span>
-        ) : null}
-      </span>
       {steps.map((each) => (
         <StopButton
           key={each}
@@ -160,28 +159,29 @@ function StopRow({ side, steps, stops, step, turn, lasting, online, onPress }: S
 }
 
 /**
- * Two rows of step icons, yours and theirs, for the steps that give priority in turn order. A press sets a one-turn
- * stop at that step (and clears one that is held); shift and press, or the Keep toggle, sets a lasting one, which
- * carries a pin. The step the game is in and whose turn it is are marked. The icons show the stops the server holds
- * and change when it says so. Where the screen is narrow the rows fold into one line that counts the stops.
+ * One row of step icons for the steps that give priority, in turn order, and a switch for whose stops it shows: Mine
+ * (your turns) or Theirs (opponents'). The row follows the turn, and a side picked by hand stays until the turn
+ * changes hands. A press sets a one-turn stop at that step (and clears one that is held); shift and press, or the Keep
+ * toggle, sets a lasting one, which carries a pin. The step the game is in and whose turn it is are marked. The icons
+ * show the stops the server holds and change when it says so. Both rows stay in the page, one of them hidden.
  */
-export function StopLadder() {
+export function StopLadder({ layout }: { layout: StopsLayout }) {
   const { session } = useGame()
-  const { shown, online, stops, step, side } = usePlay(
+  const { shown, online, stops, step, turn } = usePlay(
     useShallow((state) => ({
       shown: canSetStops(state),
       online: state.status === 'open',
       stops: state.stops,
       step: state.view?.stage === 'Turns' ? state.view.turn.step : null,
-      side:
+      turn:
         state.view?.stage === 'Turns' && state.seat !== null
           ? turnSide(state.view.turn.active, state.seat)
           : null,
     })),
   )
   const [keep, setKeep] = useState(false)
-  const [open, setOpen] = useState(false)
-  const panel = useId()
+  // A side picked by hand holds only for the turn it was picked in.
+  const [pick, setPick] = useState<{ side: StopSide; turn: StopSide | null } | null>(null)
 
   const press = useCallback(
     (on: StopSide, at: StopStep, shift: boolean): void => {
@@ -193,59 +193,54 @@ export function StopLadder() {
   )
   if (!shown) return null
 
+  const showing: StopSide = pick !== null && pick.turn === turn ? pick.side : (turn ?? 'Own')
   const steps = ladderSteps(step, stops)
-  const row = (of: StopSide) => (
-    <StopRow
-      side={of}
-      steps={steps}
-      stops={stops}
-      step={step}
-      turn={side === of}
-      lasting={keep}
-      online={online}
-      onPress={press}
-    />
-  )
   return (
     <div
       role="group"
       aria-label="Stops"
       data-slot="stop-ladder"
-      data-open={open || undefined}
-      className="flex flex-wrap items-center gap-2"
+      data-layout={layout}
+      className={cn('flex items-center gap-2', layout === 'row' ? 'flex-nowrap' : 'flex-wrap')}
     >
+      <StopSideSwitch
+        shown={showing}
+        turn={turn}
+        counts={{ Own: stopsOn(stops, 'Own'), Opponent: stopsOn(stops, 'Opponent') }}
+        onPick={(side) => setPick({ side, turn })}
+      />
       <Button
-        data-slot="stop-summary"
+        data-slot="keep-stops"
         size="sm"
         variant="outline"
-        className="sm:hidden"
-        aria-expanded={open}
-        aria-controls={panel}
-        onClick={() => setOpen(!open)}
+        className={cn(
+          'px-2 pointer-coarse:px-3 aria-pressed:bg-primary aria-pressed:text-primary-foreground',
+          layout === 'panel' && 'px-3',
+        )}
+        aria-pressed={keep}
+        aria-label="Keep stops"
+        aria-description="While on, pressing a step sets a stop that stays every turn."
+        title="Keep stops: while on, pressing a step sets a stop that stays every turn"
+        onClick={() => setKeep(!keep)}
       >
-        Stops · {stopCount(stops.length)}
-        <ChevronDown aria-hidden="true" className={cn('transition-transform', open && 'rotate-180')} />
+        <Pin aria-hidden="true" />
+        <span className={layout === 'panel' ? undefined : 'hidden pointer-coarse:inline'}>Keep</span>
       </Button>
-      <div id={panel} className={cn('flex flex-wrap items-center gap-2', !open && 'max-sm:hidden')}>
-        <div className="grid gap-0.5">
-          {row('Own')}
-          {row('Opponent')}
-        </div>
-        <Button
-          data-slot="keep-stops"
-          size="sm"
-          variant="outline"
-          aria-pressed={keep}
-          aria-label="Keep stops"
-          aria-description="While on, pressing a step sets a stop that stays every turn."
-          title="Keep stops: while on, pressing a step sets a stop that stays every turn"
-          className="aria-pressed:bg-primary aria-pressed:text-primary-foreground"
-          onClick={() => setKeep(!keep)}
-        >
-          <Pin aria-hidden="true" />
-          Keep
-        </Button>
-      </div>
+      {SIDES.map((of) => (
+        <StopRow
+          key={of}
+          side={of}
+          steps={steps}
+          stops={stops}
+          step={step}
+          turn={turn === of}
+          shown={showing === of}
+          layout={layout}
+          lasting={keep}
+          online={online}
+          onPress={press}
+        />
+      ))}
     </div>
   )
 }

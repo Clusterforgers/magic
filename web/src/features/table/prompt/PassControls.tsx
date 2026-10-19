@@ -58,20 +58,6 @@ export function PassControls({ canPass }: { canPass: boolean }) {
   const label = primaryLabel(situation)
   return (
     <InControlsDock>
-      <Button
-        data-slot="primary-action"
-        className="h-11 min-w-0 px-4 max-sm:basis-full"
-        disabled={!free}
-        title={yieldKey ? 'Space' : 'Space or Enter'}
-        aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}
-        aria-description={primaryDescription(situation)}
-        onClick={pass}
-      >
-        <span className="truncate">{label}</span>
-        <kbd aria-hidden="true" className={`${KEY_CAP} border-primary-foreground/40`}>
-          {yieldKey ? 'Space' : 'Space · Enter'}
-        </kbd>
-      </Button>
       {yieldKey ? (
         <Button
           data-slot="secondary-action"
@@ -126,6 +112,21 @@ export function PassControls({ canPass }: { canPass: boolean }) {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : null}
+      {/* Last, so the primary button is the one in the corner of the dock and the last stop of its row. */}
+      <Button
+        data-slot="primary-action"
+        className="h-11 min-w-0 px-4 max-sm:basis-full"
+        disabled={!free}
+        title={yieldKey ? 'Space' : 'Space or Enter'}
+        aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}
+        aria-description={primaryDescription(situation)}
+        onClick={pass}
+      >
+        <span className="truncate">{label}</span>
+        <kbd aria-hidden="true" className={`${KEY_CAP} border-primary-foreground/40`}>
+          {yieldKey ? 'Space' : 'Space · Enter'}
+        </kbd>
+      </Button>
     </InControlsDock>
   )
 }
