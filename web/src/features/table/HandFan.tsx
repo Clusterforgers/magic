@@ -59,7 +59,8 @@ export function HandFan({ ids, label, size, layout }: HandFanProps) {
             layout !== undefined && '[&:not(:first-child)]:ml-(--card-gap)',
           )}
         >
-          <div className="motion-safe:transition-transform motion-safe:duration-fast motion-safe:ease-out group-hover/slot:-translate-y-[40%] group-has-focus-visible/slot:-translate-y-[40%] pointer-coarse:group-focus-within/slot:-translate-y-[40%]">
+          {/* Faces are tinted and see-through; the backing keeps an overlapped neighbour from showing through. */}
+          <div className="rounded-md bg-table motion-safe:transition-transform motion-safe:duration-fast motion-safe:ease-out group-hover/slot:-translate-y-[40%] group-has-focus-visible/slot:-translate-y-[40%] pointer-coarse:group-focus-within/slot:-translate-y-[40%]">
             <Card id={id} size={size} fit={layout !== undefined} tabbable={id === roving.current} />
           </div>
         </li>

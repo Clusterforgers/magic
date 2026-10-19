@@ -150,6 +150,8 @@ describe('the fan for 1 to 20 cards', () => {
       expect(lifter.className).toContain('group-has-focus-visible/slot:-translate-y-[40%]')
       expect(lifter.className).toContain('pointer-coarse:group-focus-within/slot:-translate-y-[40%]')
       expect(lifter.className).toContain('motion-safe:transition-transform')
+      // An opaque backing, so the face of an overlapped neighbour does not show through a tinted one.
+      expect(lifter).toHaveClass('rounded-md', 'bg-table')
     }
   })
 
