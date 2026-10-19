@@ -42,12 +42,12 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - [ ] Game flow (d), copy MTG Arena's priority, stops and yields so the pace never tells the table what a seat holds (`docs/arena-flow.md`, P1 to P10). In order:
   - [x] (d1) Stops and Full Control on the wire (P1, P4)
   - [x] (d2) Stops in the actor with Arena's default window table (P2)
-  - [ ] (d3) Idle windows as short hidden clocks (P3): a window the seat cannot use waits 0.3 to 0.9 s (`MTG_DWELL_MS`), then passes as its own step and batch
+  - [x] (d3) Idle windows as short hidden clocks (P3): a window the seat cannot use waits 0.3 to 0.9 s (`MTG_DWELL_MS`), then passes as its own step and batch
   - [x] (d4) Full Control in the actor (P4)
   - [x] (d5) Web session for stops and Full Control (P5)
   - [x] (d6) Stop ladder in the table (P6)
   - [x] (d7) Keys like Arena (P7)
-  - [ ] (d8) Leak test (P8): two seeded games equal but for one hidden card send the other seat the same messages at the same times
+  - [x] (d8) Leak test (P8): two seeded games equal but for one hidden card send the other seat the same messages at the same times
   - [ ] (d9) Timer bank (P9): extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
 
 ## M3 Rules depth
@@ -56,7 +56,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
 - [ ] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
 - [ ] (d) Decision kinds the effects need, one task each across engine, protocol and a web prompt (the table in `docs/cards-dsl.md`, Decisions the effects need)
-- [ ] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets (`docs/web.md`)
+- [ ] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets and the views carry keywords, counters and attachments (`docs/web.md`)
 - [ ] (f) Keyword actions (CR 701), one engine primitive each, with a web prompt where the player chooses (scope in `docs/cards-dsl.md`, Tasks)
 - [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
 - [ ] (h) Keyword abilities beyond combat (CR 702), one task each for the other `Keyword` variants (flash, equip, cycling, kicker, flashback, cascade, storm, ...); cost-based ones follow (g)
@@ -84,5 +84,5 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 
 ## M7 Polish and deploy
 - [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain (`docs/PLAN.md`, Deployment)
-- [ ] Animations beyond the table feedback (`docs/web.md`), sounds, replays, solo play against bots
+- [ ] Animations beyond the table feedback (zone moves to hand, exile and library, a spell on the stack; `docs/web.md`), sounds, replays, solo play against bots
 - [ ] Performance profile on real hardware with real card art

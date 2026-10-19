@@ -76,7 +76,7 @@ The payment rules are in [engine.md](engine.md); the wire facts are:
 ### Auto-pass
 
 - `AutoPass { enabled }` is the Full Control mode `Held` when `enabled` is false and `Off` when it is true (a seat in `NextWindow` stays in it). The change is told as a `FullControl` message. `Welcome.auto_pass` is true unless the seat is in `Held` (the server default after a restart).
-- A client must not rely on seeing every priority window: outside Full Control the server asks a seat only at its windows (below). The events of the passes arrive in the batch of the answer that led to them.
+- A client must not rely on seeing every priority window: outside Full Control the server asks a seat only at its windows (below). The events of the passes arrive in the batch of the answer that led to them, except the pass for a seat that cannot act at a default window: it comes in a batch of its own after a wait of 0.3 to 0.9 s (`server.md`, Dwell), so the pace does not tell the table what a seat holds.
 
 ### Yields
 
@@ -112,7 +112,7 @@ The design is in [arena-flow.md](arena-flow.md).
 - The server asks a seat at a priority decision only at its windows and passes for it elsewhere (the rules are in `windows.rs`, see `server.md`):
   - in `NextWindow` and `Held`, at every window;
   - at a stop, whether the seat can act or not;
-  - at the default windows, only if it can act: the seat's own main phases, the declare attackers and declare blockers steps, and any moment an object of another seat is on the stack.
+  - at the default windows, only if it can act: the seat's own main phases, the declare attackers and declare blockers steps, and any moment an object of another seat is on the stack; a seat that cannot act is passed for there after the wait above.
 - A one-turn stop goes once the game has left its step. `NextWindow` goes back to `Off` when the seat has passed.
 - The web checks both messages and the `Welcome` fields in `net/parse.ts` (a step only has to be a step; whether it may hold a stop is the server's rule) and keeps them in the store as `stops` and `fullControl`.
 

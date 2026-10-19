@@ -8,7 +8,7 @@ use mtg_engine::{Engine, GameState};
 use mtg_protocol::{ErrorCode, LobbySeat, ServerMessage};
 
 use crate::actor::{Fatal, GameActor, Phase};
-use crate::running::{Rejection, Running};
+use crate::running::{Halt, Rejection, Running};
 use crate::store::EventStore;
 
 impl<S: EventStore> GameActor<S> {
@@ -134,7 +134,7 @@ impl<S: EventStore> GameActor<S> {
         match self.persist(&before, &opening, 0).await {
             Ok(batches) => {
                 let mut running = Running::new(engine, self.pace);
-                let first = running.settle(false);
+                let first = running.settle(false, Halt::Ask, false);
                 // A game starts in the mulligans, but a scenario can open on a priority decision nobody is asked.
                 let idle = first.as_ref().is_some_and(|issued| {
                     running.passes_pending(issued.decision.player, &self.stops, &self.yields)

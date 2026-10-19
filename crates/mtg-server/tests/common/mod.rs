@@ -3,6 +3,7 @@
 
 pub mod bot;
 pub mod store;
+pub mod tape;
 
 use std::future::Future;
 use std::time::Duration;
@@ -11,7 +12,7 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_engine::{Event, GameSetup};
 use mtg_protocol::{ClientMessage, DecisionId, FullControlMode, ServerMessage, StopSide};
-use mtg_server::{GameConfig, GameHandle, GameId, Pace};
+use mtg_server::{Dwell, GameConfig, GameHandle, GameId, Pace};
 use mtg_testkit::windows::{Mode, SeatWindows, Side};
 use mtg_testkit::{PlayOptions, fuzz_setup, play_game, play_game_with};
 use tokio::sync::mpsc::Receiver;
@@ -19,6 +20,7 @@ use uuid::Uuid;
 
 pub use bot::{Bot, BotReport, Progress, drive, play_bots, play_table};
 pub use store::FlakyStore;
+pub use tape::{Tape, Taped, kind, ms};
 
 /// A game id derived from a number, so tests stay readable.
 pub fn game_id(n: u128) -> GameId {
@@ -55,6 +57,7 @@ pub fn windowed() -> GameConfig {
             auto_pass: true,
             response: None,
             blocks: None,
+            dwell: Dwell::OFF,
         },
         ..roomy()
     }

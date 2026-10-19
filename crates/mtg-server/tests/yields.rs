@@ -16,7 +16,7 @@ use mtg_protocol::{
     ClientMessage, DecisionId, ErrorCode, FullControlMode, ServerMessage, YieldUntil,
 };
 use mtg_server::{
-    EventStore, GameConfig, GameHandle, MemoryStore, Pace, resume_game_with, spawn_game_with,
+    Dwell, EventStore, GameConfig, GameHandle, MemoryStore, Pace, resume_game_with, spawn_game_with,
 };
 use mtg_testkit::cards::{forest, free_creature, instant};
 use mtg_testkit::{Scenario, ready};
@@ -28,6 +28,7 @@ const OFF: Pace = Pace {
     auto_pass: true,
     response: None,
     blocks: None,
+    dwell: Dwell::OFF,
 };
 
 /// The server defaults: auto-pass on, 10 s to respond, 45 s to block.
@@ -35,6 +36,7 @@ const DEFAULT: Pace = Pace {
     auto_pass: true,
     response: Some(Duration::from_secs(10)),
     blocks: Some(Duration::from_secs(45)),
+    dwell: Dwell::OFF,
 };
 
 const FOE: usize = 0;

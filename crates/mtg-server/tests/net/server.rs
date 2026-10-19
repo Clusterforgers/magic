@@ -5,7 +5,7 @@ use std::net::SocketAddr;
 use std::time::Duration;
 
 use mtg_server::config::SocketLimits;
-use mtg_server::{AuthConfig, GameConfig, HashCost, Pace, Registry, Server, ServerConfig};
+use mtg_server::{AuthConfig, Dwell, GameConfig, HashCost, Pace, Registry, Server, ServerConfig};
 use sqlx::PgPool;
 use tokio::net::TcpListener;
 use tokio::sync::oneshot;
@@ -42,6 +42,7 @@ pub fn windowed_config() -> ServerConfig {
                 auto_pass: true,
                 response: None,
                 blocks: None,
+                dwell: Dwell::OFF,
             },
             ..config.game
         },

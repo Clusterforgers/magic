@@ -17,7 +17,7 @@ use crate::handle::{Command, GameHandle, GameStatus, JoinError};
 use crate::pace::Pace;
 use crate::preview::PreviewLimits;
 use crate::recorder::Recorder;
-use crate::running::{Rejection, Running, count};
+use crate::running::{Halt, Rejection, Running, count};
 use crate::seats::Seats;
 use crate::stops::Stops;
 use crate::store::{EventStore, StoreError};
@@ -171,7 +171,7 @@ pub(crate) async fn resume_named<S: EventStore>(
         store.append(id, count(stored_len), fresh).await?;
     }
     let mut running = Running::new(engine, config.pace);
-    running.settle(false);
+    running.settle(false, Halt::Ask, false);
     Ok(launch(
         id,
         setup,
@@ -371,7 +371,7 @@ impl<S: EventStore> GameActor<S> {
                 step,
                 on,
                 keep,
-            } => self.set_stop(seat, Stop { side, step, keep }, on),
+            } => return self.set_stop(seat, Stop { side, step, keep }, on).await,
             ClientMessage::FullControl { mode } => return self.set_full_control(seat, mode).await,
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),

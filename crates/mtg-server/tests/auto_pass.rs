@@ -13,7 +13,7 @@ use mtg_engine::state::GameResult;
 use mtg_engine::{Answer, Decision, Event, GameSetup, replay};
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, FullControlMode, ServerMessage};
 use mtg_server::{
-    EventStore, GameConfig, GameHandle, MemoryStore, Pace, resume_game_with, spawn_game_with,
+    Dwell, EventStore, GameConfig, GameHandle, MemoryStore, Pace, resume_game_with, spawn_game_with,
 };
 use mtg_testkit::cards::{bear, forest, free_creature, giant};
 use mtg_testkit::{Scenario, ready};
@@ -24,6 +24,7 @@ const ON: Pace = Pace {
     auto_pass: true,
     response: None,
     blocks: None,
+    dwell: Dwell::OFF,
 };
 
 fn config(pace: Pace) -> GameConfig {
@@ -102,10 +103,14 @@ async fn set(handle: &GameHandle, from: &Client, enabled: bool) {
     handle.status().await.unwrap();
 }
 
-/// Plays a bot game with the server defaults (auto-pass on, clocks running) and checks it against the bare engine.
+/// Plays a bot game with the server defaults (auto-pass on, clocks running, no dwell) and checks it against the bare engine.
 async fn bot_game_matches_the_bare_engine_under_the_same_rule(players: usize, seed: u64) {
     // The bots answer at once, so no clock ever runs out.
-    let (handle, store) = spawn(table_setup(players, seed), Pace::default());
+    let pace = Pace {
+        dwell: Dwell::OFF,
+        ..Pace::default()
+    };
+    let (handle, store) = spawn(table_setup(players, seed), pace);
     let reports = play_table(&handle, players, seed).await;
 
     let straight = reference_auto_pass(table_setup(players, seed), seed);

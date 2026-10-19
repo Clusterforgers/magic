@@ -7,19 +7,22 @@ mod net;
 use mtg_core::ids::PlayerId;
 use mtg_engine::turn::Step;
 use mtg_protocol::{ClientMessage, ErrorCode, ServerMessage, StopSide};
-use mtg_server::{GameConfig, Pace, ServerConfig};
+use mtg_server::{Dwell, GameConfig, Pace, ServerConfig};
 use mtg_testkit::Scenario;
 use mtg_testkit::cards::instant;
 use net::{Frame, TestServer, WsClient, bot_config, connect, create_game, two_seats};
 use serde_json::Value;
 
-/// Bot-sized queues and rate limits with the default pace: auto-pass on, clocks running.
+/// Bot-sized queues and rate limits with the default pace: auto-pass on, clocks running and no dwell, so a pass never waits.
 fn paced() -> ServerConfig {
     let bots = bot_config();
     ServerConfig {
         fixed_seed: Some(1),
         game: GameConfig {
-            pace: Pace::default(),
+            pace: Pace {
+                dwell: Dwell::OFF,
+                ..Pace::default()
+            },
             ..bots.game
         },
         ..bots

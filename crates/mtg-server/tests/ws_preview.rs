@@ -16,8 +16,8 @@ use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Event, GameSetup};
 use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, EventView, ServerMessage};
 use mtg_server::{
-    EventStore, GameConfig, GameHandle, MemoryStore, PREVIEW_BURST, PREVIEWS_PER_SECOND, Pace,
-    ServerConfig, spawn_game_with,
+    Dwell, EventStore, GameConfig, GameHandle, MemoryStore, PREVIEW_BURST, PREVIEWS_PER_SECOND,
+    Pace, ServerConfig, spawn_game_with,
 };
 use mtg_testkit::cards::free_creature;
 use mtg_testkit::{Scenario, ready};
@@ -291,7 +291,10 @@ async fn at_the_default_pace_the_preview_is_still_the_damage_that_then_happens()
     // both seats and the damage is dealt before the batch is cut.
     let config = ServerConfig {
         game: GameConfig {
-            pace: Pace::default(),
+            pace: Pace {
+                dwell: Dwell::OFF,
+                ..Pace::default()
+            },
             ..bot_config().game
         },
         ..bot_config()

@@ -16,6 +16,10 @@ import {
 // keep servers that are already listening on the two ports, which saves the build while a spec is being written.
 const reuseExistingServer = process.env.E2E_REUSE === '1'
 
+// The servers pass for an idle seat at once. Their default wait of 0.3 to 0.9 s per idle window (`MTG_DWELL_MS`) would
+// take the full game from about 7 s to about 47 s of the 60 s a test has.
+const NO_DWELL = '0'
+
 // With `E2E_DATABASE_URL` set to an empty scratch database a second pair starts: a server on that database (accounts
 // need Postgres) and a web preview in front of it, which `e2e/accounts.spec.ts` uses. They start after the first
 // pair, so the preview finds the build the first one made. Without it nothing here touches a database.
@@ -30,6 +34,7 @@ const accountServers: Extract<PlaywrightTestConfig['webServer'], unknown[]> =
             MTG_BIND: `127.0.0.1:${ACCOUNTS_SERVER_PORT}`,
             RUST_LOG: 'warn',
             DATABASE_URL: ACCOUNTS_DATABASE_URL,
+            MTG_DWELL_MS: NO_DWELL,
           },
           url: `${ACCOUNTS_SERVER_URL}/healthz`,
           reuseExistingServer,
@@ -62,7 +67,12 @@ export default defineConfig({
       command: 'cargo run --quiet -p mtg-server',
       cwd: '..',
       // An empty DATABASE_URL beats the default in .cargo/config.toml: the e2e server keeps its games in memory.
-      env: { MTG_BIND: `127.0.0.1:${SERVER_PORT}`, RUST_LOG: 'warn', DATABASE_URL: '' },
+      env: {
+        MTG_BIND: `127.0.0.1:${SERVER_PORT}`,
+        RUST_LOG: 'warn',
+        DATABASE_URL: '',
+        MTG_DWELL_MS: NO_DWELL,
+      },
       url: `${SERVER_URL}/healthz`,
       reuseExistingServer,
       gracefulShutdown: { signal: 'SIGTERM', timeout: 5_000 },
