@@ -30,7 +30,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - [x] Playwright e2e: full 2-player vanilla game in the browser (`pnpm e2e`)
 - [x] `mtg-server` persistence (a): Postgres `EventStore` and migration table
 - [x] `mtg-server` persistence (b): game and seat records, resume running games on boot
-- [x] Game flow, from the first hands-on test: auto-pass, response clocks, a pass button that names what passing does, yields
+- [x] Game flow (a) to (c): auto-pass, response clocks, a pass button that names what passing does, yields
 - [x] Combat readability: engine `combat_forecast`, attack and block lines with outcome marks in the table
 - [x] Block preview: the engine's outcome of a pending attack or block, shown while it is chosen
 - [x] Table feedback: animations for attacks, blocks, damage, deaths, entries and life changes
