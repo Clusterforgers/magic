@@ -19,15 +19,19 @@ use tower_http::cors::{AllowOrigin, CorsLayer};
 use tower_http::set_header::SetResponseHeaderLayer;
 
 use crate::auth::{self, Auth};
+use crate::card_api;
+use crate::cards::CardSource;
 use crate::config::ServerConfig;
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
-use crate::{api, my_games, ws};
+use crate::{api, decks, my_games, ws};
 
 struct Inner {
     config: ServerConfig,
     registry: Registry,
     auth: Auth,
+    /// The card database with the rules and what the engine runs; `None` without a database.
+    cards: Option<CardSource>,
     stop: watch::Receiver<bool>,
     sessions: mpsc::Sender<()>,
 }
@@ -50,6 +54,11 @@ impl AppState {
     /// The accounts: sign-in, sessions and the limits around them.
     pub(crate) fn auth(&self) -> &Auth {
         &self.inner.auth
+    }
+
+    /// The card database, for the card and deck endpoints; `None` on a server without a database.
+    pub(crate) fn cards(&self) -> Option<&CardSource> {
+        self.inner.cards.as_ref()
     }
 
     /// Whether shutdown has begun.
@@ -83,7 +92,7 @@ impl Server {
     pub fn new(config: ServerConfig) -> Server {
         let registry = Registry::new(&config);
         let auth = Auth::new(&config.auth, None);
-        Server::with_registry(config, registry, auth, ResumeReport::default())
+        Server::with_registry(config, registry, auth, None, ResumeReport::default())
     }
 
     /// Builds a server that records its games and accounts in `pool` (already migrated by
@@ -92,8 +101,19 @@ impl Server {
     /// A game that cannot be loaded is marked failed and skipped; only an unreachable database
     /// is an error.
     pub async fn open(config: ServerConfig, pool: PgPool) -> Result<Server, RecordError> {
+        let cards = CardSource::new(pool.clone());
+        Server::open_with(config, pool, cards).await
+    }
+
+    /// Like [`Server::open`] with the card source given, so the games, the card endpoints and the
+    /// deck check share one set of rules and one idea of what the engine runs.
+    pub async fn open_with(
+        config: ServerConfig,
+        pool: PgPool,
+        cards: CardSource,
+    ) -> Result<Server, RecordError> {
         let auth = Auth::new(&config.auth, Some(pool.clone()));
-        let registry = Registry::with_database(&config, pool);
+        let registry = Registry::with_card_source(&config, pool, cards.clone());
         let resumed = registry.resume().await?;
         tracing::info!(
             resumed = resumed.resumed,
@@ -103,7 +123,13 @@ impl Server {
             failed = resumed.failed.len(),
             "stored games loaded"
         );
-        Ok(Server::with_registry(config, registry, auth, resumed))
+        Ok(Server::with_registry(
+            config,
+            registry,
+            auth,
+            Some(cards),
+            resumed,
+        ))
     }
 
     /// What loading the stored games did; empty for a server without a database.
@@ -115,6 +141,7 @@ impl Server {
         config: ServerConfig,
         registry: Registry,
         auth: Auth,
+        cards: Option<CardSource>,
         resumed: ResumeReport,
     ) -> Server {
         let (stop, stop_receiver) = watch::channel(false);
@@ -124,6 +151,7 @@ impl Server {
                 config,
                 registry,
                 auth,
+                cards,
                 stop: stop_receiver,
                 sessions,
             }),
@@ -213,13 +241,25 @@ pub(crate) fn router(state: AppState) -> Router {
     // Listed origins are trusted front ends, so they may send the session cookie along.
     let cors = CorsLayer::new()
         .allow_origin(AllowOrigin::list(origins))
-        .allow_methods([Method::GET, Method::POST])
+        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_headers([CONTENT_TYPE])
         .allow_credentials(true)
         .max_age(Duration::from_secs(600));
     Router::new()
         .route("/healthz", get(api::healthz))
-        .route("/api/decks", get(api::decks))
+        .route("/api/demo-decks", get(api::decks))
+        .route("/api/cards", get(card_api::search))
+        .route("/api/cards/{oracle_id}", get(card_api::detail))
+        .route("/api/decks", get(decks::list).post(decks::create))
+        .route("/api/decks/import", post(decks::import))
+        .route("/api/decks/check", post(decks::check))
+        .route(
+            "/api/decks/{id}",
+            get(decks::get_one)
+                .put(decks::replace)
+                .delete(decks::remove),
+        )
+        .route("/api/decks/{id}/export", get(decks::export))
         .route("/api/games", post(api::create_game))
         .route("/api/games/{id}", get(api::game))
         .route("/api/auth/register", post(auth::register))

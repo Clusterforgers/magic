@@ -202,7 +202,7 @@ async fn a_failing_database_write_rolls_back_its_batch_but_not_earlier_ones(pool
 
 #[sqlx::test]
 async fn a_missing_table_fails_the_run_without_partial_rows(pool: PgPool) {
-    sqlx::raw_sql("DROP TABLE printings")
+    sqlx::raw_sql("DROP TABLE printings CASCADE")
         .execute(&pool)
         .await
         .unwrap();

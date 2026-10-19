@@ -7,6 +7,7 @@ use sqlx::migrate::Migrator;
 use sqlx::postgres::PgPoolOptions;
 
 use crate::cards::CardRepo;
+use crate::decks::DeckRepo;
 use crate::error::DbError;
 use crate::import::Importer;
 use crate::precons::PreconRepo;
@@ -57,6 +58,11 @@ impl Database {
     /// Card queries: lookup, suggestions, search and the name index.
     pub fn cards(&self) -> CardRepo {
         CardRepo::new(self.pool.clone())
+    }
+
+    /// Decks stored by accounts.
+    pub fn decks(&self) -> DeckRepo {
+        DeckRepo::new(self.pool.clone())
     }
 
     /// Precon deck listing and loading.

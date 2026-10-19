@@ -170,7 +170,7 @@ async fn bodies_that_are_not_text_or_that_never_stop_are_refused() {
 #[case("PUT", "/api/games", 405)]
 #[case("DELETE", "/api/games", 405)]
 #[case("GET", "/api/games", 405)]
-#[case("POST", "/api/decks", 405)]
+#[case("POST", "/api/demo-decks", 405)]
 #[case("POST", "/healthz", 405)]
 #[case("POST", "/api/games/00000000-0000-0000-0000-000000000000", 405)]
 #[case("GET", "/", 404)]
@@ -204,7 +204,7 @@ async fn health_decks_and_game_lookup() {
     let health = net::get(server.addr, "/healthz").await;
     assert_eq!((health.status, health.text().as_str()), (200, "ok"));
 
-    let decks = net::get(server.addr, "/api/decks").await;
+    let decks = net::get(server.addr, "/api/demo-decks").await;
     assert_eq!(decks.status, 200);
     let decks = decks.json();
     let decks = decks.as_array().unwrap();

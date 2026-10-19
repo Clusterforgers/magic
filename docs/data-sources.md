@@ -60,7 +60,7 @@ Figures come from the oracle-cards file (38,753 cards).
 - `crates/mtg-import/tests/fixtures/corpus/` holds 29 public decks (16 Moxfield, 13 Archidekt) as 183 export files, each deck with the card lists its own site reports; its README gives the provenance.
   - `tests/corpus_parse.rs` parses every export with the format a user would name and compares the cards with the site's lists.
   - `corpus_detect.rs` pins what `detect` can and cannot know.
-  - `corpus_export.rs` writes every parsed deck out and reads it back.
+  - `corpus_export.rs` writes every parsed deck out and reads it back, as text, as an Arena export and as MTGO text.
 - The ignored test in `real_exports.rs` checks that every name of the eight real files, except the flavor name `The Ball`, resolves against Scryfall (needs `MTG_REAL_DATA_DIR`).
 
 ## Deck export formats
@@ -81,6 +81,13 @@ Figures come from the oracle-cards file (38,753 cards).
   - Detected by an all-caps header with no printing anywhere. A text without such a header is plain `N Name` lines, and plain text reads the trailing block as the sideboard.
 - Collector numbers are free text (`1492★`, `187p`, `2023-8`, `NPH-123`, `TMP-315`, `2026-2`, `2016`, `we313`, `tvdl345`) and set codes may start with a digit or hold five characters (`40K`, `PAL00`). Flags, categories and tags never reach names; `_____ Goblin` is a card.
 - **Stickers are not deck cards.** Moxfield lists its sticker sheets (set `SUNF`) in a `STICKERS:` section. The parser keeps them out of every section and reports `ParsedDeck::ignored`, one `IgnoredSection { name, count }` per section name (as written, count = copies), never a line error. `export` does not write them. Only `STICKERS` is known: other all-caps lines such as `LANDS:` stay what they were, because plain lists use them as group labels.
+
+## Writers
+
+`decklist::export_as(format, deck)` writes plain text (`export`), the Arena export or MTGO text, and returns text only after reading it back through the parser of that dialect as the deck the format can hold.
+
+- **Arena**: `Commander`, `Companion`, `Deck` and `Sideboard` sections in that order, printings kept, no maybeboard.
+- **MTGO text**: names only, the main deck, a `SIDEBOARD:` block (a companion goes there, since MTGO has no companion zone) and the commanders in a last block with no header. A list of commanders alone cannot be written, because the block after the main deck is what marks the command zone; the writer refuses it. Plain-text detection reads a list without the `SIDEBOARD:` header as plain text, so MTGO text is read back with the format named.
 
 ## Commander promotion and detection
 

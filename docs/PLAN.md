@@ -53,7 +53,7 @@ Details are in [engine.md](engine.md).
 - The Comprehensive Rules text is vendored so tests can cite rules (`CR 702.7`).
 - Deck import parses plain text (set and collector variants, sideboard and commander sections), MTGO `.dek`, Arena export and Moxfield or Archidekt text; exporters round-trip. Name resolution gives fuzzy suggestions and per-line errors.
 - The import job is idempotent and resumable (`import_runs`) and runs from the CLI or scheduled in the cluster.
-- Schema (sqlx migrations, compile-time-checked queries): `cards`, `printings`, `rulings`, `precon_decks`, `precon_deck_cards`, `import_runs`, `users`, `sessions`, `games`, `seats`, `game_events`; `decks` and `deck_cards` are planned. Search uses `pg_trgm` and `tsvector`, with indexed colour, type and mana-value filters.
+- Schema (sqlx migrations, compile-time-checked queries): `cards`, `printings`, `rulings`, `precon_decks`, `precon_deck_cards`, `import_runs`, `users`, `sessions`, `games`, `seats`, `game_events`, `decks` and `deck_cards`. Search uses `pg_trgm` and `tsvector`, with indexed colour, type and mana-value filters.
 - Auth: username and password (argon2) with a session cookie; games are joined through per-seat invite links.
 
 ### UX principles

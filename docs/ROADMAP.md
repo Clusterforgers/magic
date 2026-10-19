@@ -16,7 +16,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - [x] CLI binary `mtg-cli`: download Scryfall bulk + MTGJSON deck index/decks, ingest into Postgres (resumable, polite rate limit; `docs/data-sources.md`)
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
 - [ ] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
-- [ ] Card search HTTP endpoints in `mtg-server` (name, filters, color identity, pagination)
+- [x] Card search HTTP endpoints in `mtg-server` (name, filters, color identity, pagination)
 
 ## M2 Engine and first playable
 - [x] Merge M2a, reviewed against `CLAUDE.md`; design in `docs/engine.md`
@@ -69,7 +69,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 ## M4 Multiplayer product
 - [x] Invite-link lobbies on top of users
 - [ ] Deck builder UI with card search, import, validation, export
-- [ ] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
+- [x] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
+- [ ] Deck builder UI on the stored decks and the check: highlighting of the cards that are not verified, the Verified marker and the state of each deck in the deck list, the lobby and the precon browser (`docs/deck-check.md`, `docs/server.md`)
 - [ ] Precon browser with one-click play
 - [ ] Choose a deck in the lobby: a stored deck or a precon per seat; the table sees each seat's deck state as a count of manual cards, never their names (`docs/deck-check.md`)
 - [x] N-player layout, game log, stack panel, stop settings

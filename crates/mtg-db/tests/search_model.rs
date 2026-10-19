@@ -69,6 +69,23 @@ const LEGALITIES: [Legality; 4] = [
     Legality::Restricted,
 ];
 const FORMATS: [&str; 3] = ["commander", "modern", "pauper"];
+/// Free texts: name fragments, which no rules text holds, and words the rules texts are made of.
+const TEXTS: [&str; 14] = [
+    "angel",
+    "bolt",
+    "dragon of",
+    "e",
+    "_",
+    "%",
+    "cat 1",
+    "OAK",
+    "alpha",
+    "bravo",
+    "charlie",
+    "delta",
+    "hotel",
+    "alpha bravo",
+];
 
 #[derive(Debug, Clone)]
 struct Spec {
@@ -86,6 +103,7 @@ struct Spec {
 
 #[derive(Debug, Clone)]
 struct Criteria {
+    text: Option<&'static str>,
     name: Option<&'static str>,
     oracle_words: Vec<&'static str>,
     type_terms: Vec<&'static str>,
@@ -95,7 +113,8 @@ struct Criteria {
     max: Option<f64>,
     legal_in: Option<&'static str>,
     include_non_deck: bool,
-    by_mana_value: bool,
+    /// 0 name, 1 mana value, 2 relevance.
+    sort: u8,
 }
 
 fn spec() -> impl Strategy<Value = Spec> {
@@ -140,6 +159,7 @@ fn spec() -> impl Strategy<Value = Spec> {
 
 fn criteria() -> impl Strategy<Value = Criteria> {
     (
+        prop::option::weighted(0.3, prop::sample::select(TEXTS.to_vec())),
         prop::option::weighted(0.3, prop::sample::select(NAME_FRAGMENTS.to_vec())),
         prop::collection::vec(prop::sample::select(VOCABULARY.to_vec()), 0..3),
         prop::collection::vec(prop::sample::select(TYPE_TERMS.to_vec()), 0..3),
@@ -149,10 +169,11 @@ fn criteria() -> impl Strategy<Value = Criteria> {
         prop::option::weighted(0.3, prop::sample::select(MANA_VALUES.to_vec())),
         prop::option::weighted(0.3, prop::sample::select(FORMATS.to_vec())),
         prop::bool::weighted(0.2),
-        prop::bool::ANY,
+        0u8..3,
     )
         .prop_map(
             |(
+                text,
                 name,
                 oracle_words,
                 type_terms,
@@ -162,8 +183,9 @@ fn criteria() -> impl Strategy<Value = Criteria> {
                 max,
                 legal_in,
                 include_non_deck,
-                by_mana_value,
+                sort,
             )| Criteria {
+                text,
                 name,
                 oracle_words,
                 type_terms,
@@ -173,7 +195,7 @@ fn criteria() -> impl Strategy<Value = Criteria> {
                 max,
                 legal_in,
                 include_non_deck,
-                by_mana_value,
+                sort,
             },
         )
 }
@@ -222,6 +244,7 @@ fn color_filter(colors: u8, mode: u8) -> ColorFilter {
 
 fn search_for(criteria: &Criteria) -> CardSearch {
     CardSearch {
+        text: criteria.text.map(str::to_owned),
         name: criteria.name.map(str::to_owned),
         oracle_text: (!criteria.oracle_words.is_empty()).then(|| criteria.oracle_words.join(" ")),
         type_terms: criteria.type_terms.iter().map(|&t| t.to_owned()).collect(),
@@ -233,10 +256,10 @@ fn search_for(criteria: &Criteria) -> CardSearch {
         max_mana_value: criteria.max,
         legal_in: criteria.legal_in.map(str::to_owned),
         include_non_deck: criteria.include_non_deck,
-        sort: if criteria.by_mana_value {
-            SortKey::ManaValue
-        } else {
-            SortKey::Name
+        sort: match criteria.sort {
+            0 => SortKey::Name,
+            1 => SortKey::ManaValue,
+            _ => SortKey::Relevance,
         },
     }
 }
@@ -256,7 +279,15 @@ fn matches(card: &CardRecord, criteria: &Criteria) -> bool {
             _ => overlaps,
         }
     });
+    let text_ok = criteria.text.is_none_or(|text| {
+        let key = normalize_name(text);
+        // Rules texts hold only vocabulary words, so the other fragments can match a name alone.
+        (!key.is_empty() && normalize_name(&card.name).contains(&key))
+            || (VOCABULARY.contains(&text) && words.contains(text))
+            || (text == "alpha bravo" && words.contains("alpha") && words.contains("bravo"))
+    });
     (criteria.include_non_deck || card.layout.is_deck_card())
+        && text_ok
         && criteria
             .name
             .is_none_or(|fragment| normalize_name(&card.name).contains(&normalize_name(fragment)))
@@ -281,13 +312,34 @@ fn matches(card: &CardRecord, criteria: &Criteria) -> bool {
 
 fn expected_order(cards: &[CardRecord], criteria: &Criteria) -> Vec<OracleId> {
     let mut found: Vec<&CardRecord> = cards.iter().filter(|c| matches(c, criteria)).collect();
+    // Relevance ranks the name against the normalized free text; without a usable text it is name order.
+    let key = criteria
+        .text
+        .map(normalize_name)
+        .filter(|key| !key.is_empty() && criteria.sort == 2);
+    let rank = |card: &CardRecord| match &key {
+        None => 0,
+        Some(key) => {
+            let name = normalize_name(&card.name);
+            if name == *key {
+                0
+            } else if name.starts_with(key.as_str()) {
+                1
+            } else if name.contains(key.as_str()) {
+                2
+            } else {
+                3
+            }
+        }
+    };
     found.sort_by(|a, b| {
-        let by_value = if criteria.by_mana_value {
+        let by_value = if criteria.sort == 1 {
             a.mana_value.total_cmp(&b.mana_value)
         } else {
             std::cmp::Ordering::Equal
         };
         by_value
+            .then_with(|| rank(a).cmp(&rank(b)))
             .then_with(|| normalize_name(&a.name).cmp(&normalize_name(&b.name)))
             .then_with(|| a.oracle_id.cmp(&b.oracle_id))
     });
