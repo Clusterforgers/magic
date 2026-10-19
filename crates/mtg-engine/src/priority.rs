@@ -68,7 +68,7 @@ pub(crate) fn mana_options(state: &GameState, player: PlayerId) -> Vec<ManaOptio
             continue;
         };
         // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
-        if chars.is_creature() && perm.summoning_sick() {
+        if chars.is_creature() && keywords::summoning_sick(state, id) {
             continue;
         }
         for (ability, def) in chars.abilities.iter().enumerate() {
@@ -135,7 +135,7 @@ fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index:
             return false;
         };
         // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
-        let sick = permanent.summoning_sick()
+        let sick = keywords::summoning_sick(state, object.id())
             && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
         if permanent.tapped() || sick {
             return false;
@@ -213,7 +213,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
                 return false;
             }
             let timing = types.contains(CardType::Instant)
-                || keywords::grants_instant_timing(object)
+                || keywords::grants_instant_timing(state, *id)
                 || sorcery_timing(state, player);
             // CR 601.2c: a spell that needs a target is cast only when it has a legal one.
             let targets = spell_ability(object).map_or(&[][..], Ability::targets);

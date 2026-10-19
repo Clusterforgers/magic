@@ -8,15 +8,21 @@ use mtg_engine::forecast::CombatForecast;
 use mtg_engine::turn::Step;
 use mtg_engine::{Event, GameState};
 
-/// Whether `events` (produced from a state in `step_before`) include the dealing of combat damage.
+/// Whether `events` (produced from a state in `step_before`) include the dealing of regular combat damage.
 ///
 /// Damage and the priority grant that follows it are one batch, so a grant inside the damage step
 /// marks the batch even when every creature had 0 power and no `DamageDealt` exists.
 pub fn damage_was_dealt(step_before: Step, events: &[Event]) -> bool {
-    let mut in_damage_step = step_before == Step::CombatDamage;
+    damage_was_dealt_in(Step::CombatDamage, step_before, events)
+}
+
+/// Whether `events` (produced from a state in `step_before`) include the dealing of the damage of `damage_step`,
+/// the first-strike step or the regular one.
+pub fn damage_was_dealt_in(damage_step: Step, step_before: Step, events: &[Event]) -> bool {
+    let mut in_damage_step = step_before == damage_step;
     for event in events {
         match event {
-            Event::StepBegan { step } => in_damage_step = *step == Step::CombatDamage,
+            Event::StepBegan { step } => in_damage_step = *step == damage_step,
             Event::PriorityGranted { .. } if in_damage_step => return true,
             _ => {}
         }
@@ -26,13 +32,14 @@ pub fn damage_was_dealt(step_before: Step, events: &[Event]) -> bool {
 
 /// Compares `forecast` (taken right before the answer) with the events that answer produced.
 ///
-/// Returns the first difference as text.
+/// A creature that strikes in two steps deals damage in two events, which the forecast holds as one packet,
+/// so the events are totalled by source and recipient first. Returns the first difference as text.
 pub fn disagreement(
     forecast: &CombatForecast,
     events: &[Event],
     after: &GameState,
 ) -> Option<String> {
-    let mut dealt: Vec<(ObjectId, DamageTarget, u32)> = Vec::new();
+    let mut totals: BTreeMap<(ObjectId, DamageTarget), u32> = BTreeMap::new();
     let mut to_players: BTreeMap<PlayerId, u32> = BTreeMap::new();
     let mut to_objects: BTreeMap<ObjectId, u32> = BTreeMap::new();
     let mut died: BTreeSet<ObjectId> = BTreeSet::new();
@@ -43,7 +50,7 @@ pub fn disagreement(
                 target,
                 amount,
             } => {
-                dealt.push((*source, *target, *amount));
+                *totals.entry((*source, *target)).or_default() += amount;
                 match target {
                     DamageTarget::Player(p) => *to_players.entry(*p).or_default() += amount,
                     DamageTarget::Object(o) => *to_objects.entry(*o).or_default() += amount,
@@ -64,7 +71,10 @@ pub fn disagreement(
         .map(|hit| (hit.source, hit.target, hit.amount))
         .collect();
     expected.sort();
-    dealt.sort();
+    let dealt: Vec<(ObjectId, DamageTarget, u32)> = totals
+        .into_iter()
+        .map(|((source, target), amount)| (source, target, amount))
+        .collect();
     if expected != dealt {
         return Some(format!(
             "damage packets: forecast {expected:?}, real {dealt:?}"

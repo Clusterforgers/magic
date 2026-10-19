@@ -36,7 +36,7 @@ pub struct PermanentView {
     pub tapped: bool,
     /// Damage marked on it this turn.
     pub damage: u32,
-    /// Whether it has not been under its controller's control since their turn began.
+    /// Whether summoning sickness holds it back: it has not been under its controller's control since their turn began and has no haste.
     pub summoning_sick: bool,
 }
 
@@ -69,6 +69,10 @@ pub struct ObjectView {
     pub toughness: Option<i32>,
     /// Current abilities.
     pub abilities: Vec<AbilityDef>,
+    /// Names of the keywords it has now, such as `Flying` and `First strike`, in the order of its rules; left out while it has none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<String>>", optional)]
+    pub keywords: Vec<String>,
     /// Permanent state when on the battlefield.
     pub permanent: Option<PermanentView>,
     /// What the object is; a card when absent. An ability on the stack is named after its source and has no

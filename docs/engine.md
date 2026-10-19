@@ -8,7 +8,7 @@ Design notes for `mtg-engine` (the rules engine) and `mtg-testkit` (scenarios, b
 - One `Event` enum and one `apply_event` fold: the state is the fold of the events.
 - Each `Decision` kind carries its own legal options: Mulligan, BottomCards, Priority, PayMana, DeclareAttackers, DeclareBlockers, AssignDamage, Discard, and the questions of spells and abilities: ChooseTargets, ChooseMode, ChooseNumber, DivideAmount, ChooseCards, OrderCards, YesNo, ChooseOption, ChooseCosts, OrderTriggers, ChooseReplacement. `Answer` mirrors them. Only ChooseTargets is asked; the answer to each of the others is refused as `IllegalAnswer::Unsupported` until its task.
 - `FormatRules` is a trait. `Normal` is the only implementation; it skips the starting player's first draw only in two-player games.
-- `caps()` names the primitives the engine runs, in the vocabulary of the card support records (`cards-dsl.md`); `RUNS` in `caps.rs` is the one list. Today: the plain tap-for-mana ability, `Ability.Spell`, `Ability.Activated` with `Cost.Tap`, and the effects Draw, DealDamage, GainLife and LoseLife. A spell with `{X}` in its printed cost (`CardDefinition::x_in_cost`) is never castable until X costs land.
+- `caps()` names the primitives the engine runs, in the vocabulary of the card support records (`cards-dsl.md`); `RUNS` in `caps.rs` is the one list. Today: the plain tap-for-mana ability, `Ability.Spell`, `Ability.Activated` with `Cost.Tap`, the effects Draw, DealDamage, GainLife and LoseLife, and the twelve keywords of combat ([Combat and keywords](#combat-and-keywords)). A spell with `{X}` in its printed cost (`CardDefinition::x_in_cost`) is never castable until X costs land.
 - `MulliganOptions` states the mulligan costs from `FormatRules::mulligan_rule` (`MulliganRule { hand_size, free_mulligans }`): `free_mulligans`, `bottom_if_keep` (the count the `BottomCards` decision asks for) and `bottom_if_mulligan`. A format with a free mulligan (Commander, CR 103.5c) only sets `free_mulligans`. Clients repeat these counts and never work them out.
 
 ## Determinism and recovery
@@ -69,20 +69,42 @@ Seams the other tasks fill in; each is complete as a type and refuses or does no
 |---|---|---|
 | Decision kinds | `choose/<kind>.rs`: options and answer types, `answer` | the answer is `IllegalAnswer::Unsupported` |
 | Effects | `resolve/prim/<effect>.rs`, one per `Effect` variant | `ResolveError::Unsupported` and no `Caps` entry, so the card is never offered |
-| Keywords | `keywords/<name>.rs`, read by `stops_block`, `protects` and `grants_instant_timing` | every hook answers "no" |
+| Keywords | `keywords/<name>.rs`, read through `keywords_of` by combat, damage, state-based actions, priority and targeting | the stub of a keyword without its task answers "no" |
 | Replacement | `replace::process` in front of the events of every step | the events pass unchanged |
 | Capabilities | `RUNS` in `caps.rs` | what the support records may call Verified |
 
+## Combat and keywords
+
+`keywords::keywords_of(state, id)` is the one reader of the keywords an object has: the printed ones in the order of its rules, none for an ability on the stack. Layer 6 adds and removes keywords there (task (k)); `has_keyword`, `damage_rules`, `summoning_sick` and the other helpers of `keywords/mod.rs` are built on it. Each keyword is a `KeywordRules` value in `keywords/<name>.rs` with its entry in `RUNS`.
+
+| Hook | Keyword | Read by |
+|---|---|---|
+| `restricts_blocking`, `answers_evasion` | flying, reach | `stops_block` in `block_options` |
+| `min_blockers` | menace | `block_options`, `check_blockers` |
+| `forbids_attacking` | defender | `can_attack` |
+| `ignores_summoning_sickness` | haste | `can_attack`, mana and `{T}` abilities, the views |
+| `attacks_untapped` | vigilance | `attack_events` |
+| `modifies_damage` (`DamageRules`) | first strike, double strike, deathtouch, trample, lifelink | `damage.rs`, the fold of `DamageDealt` |
+| `is_indestructible` | indestructible | state-based actions; a `Destroy` primitive asks `keywords::is_indestructible` |
+
+- Blocking: a creature that needs several blockers is offered in `BlockOptions.min_blockers` only while that many of the defender's creatures could block it, and `check_blockers` refuses fewer (`IllegalAnswer::TooFewBlockers`).
+- Damage steps: the first-strike step occurs when an attacker or a blocker has first strike or double strike as blockers are declared (`damage::first_strike_step_needed`). A creature with first strike alone deals damage in it, one with double strike in both steps and any other in the regular step (`strike_power`, CR 510.4). State-based actions run between the steps, because damage and the priority grant are one batch and the next move checks them first. Entering a step (`StepBegan`) forgets the attackers' divisions, so a double striker divides twice.
+- Dividing (`damage::division`): an unblocked attacker deals all its damage to what it attacks and a blocked one to its blockers, all to the only one or as its controller divides among several. With trample the player or planeswalker attacked also receives the damage beyond lethal to every blocker, and all of it when no blocker is left. A controller is asked (`DamageOptions`) only when more than one division exists; the default is lethal damage to each blocker in order and the rest on the player attacked or else the last blocker (`default_shares`).
+- `DamageOptions.lethal` is the lethal damage of each blocker: its toughness less the damage marked, and at most 1 from a deathtouch source (CR 702.2c). `excess` is the player or planeswalker attacked, with trample. The answer lists the share of each blocker only: without trample the shares add up to the power; with it they add up to at most the power, the rest goes to `excess`, and that needs at least `lethal` on every blocker (`IllegalAnswer::ExcessBeforeLethal`, CR 702.19b).
+- Deathtouch: the fold marks a creature (`PermanentState::deathtouched`) when a source with deathtouch deals it damage, combat or not, and the state-based action destroys it (`DeathCause::Deathtouch` when lethal damage would not have). Indestructible: lethal damage and the mark do not destroy it; zero toughness does (CR 704.5f).
+- Lifelink: `damage::dealt` follows each `DamageDealt` of a source with lifelink with `LifeGained` for its controller, in the same batch; combat and the `DealDamage` primitive both use it.
+- The views show `summoning_sick` as `keywords::summoning_sick`, so a creature with haste is not shown as sick.
+
 ## Combat forecast
 
-`forecast::combat_forecast(&GameState) -> CombatForecast` says what combat damage would do if dealt now. It is derived from the state on every call and never stored.
+`forecast::combat_forecast(&GameState) -> CombatForecast` says what the combat damage still ahead would do if dealt now. It is derived from the state on every call and never stored.
 
-- Per attacker: the damage it assigns (one packet per blocker in declared order, or one to the defender when unblocked) and the damage its blockers deal back.
-- Per creature in combat: the damage it takes and whether it dies (damage marked plus expected damage against derived toughness, as in the state-based action).
-- Per attacked player: the damage, the life after and whether that is lethal.
-- Several blockers on one attacker: until the controller divides, the default is lethal damage to each blocker in turn and the rest on the last. Once `DamageAssigned` is recorded the forecast uses the recorded division.
-- `pending_combat_forecast` is the guarded form views use. It returns `None` before attackers are declared, with no attacker left, and once damage has been dealt (the combat state lingers until the end of combat, and a damage step that has granted priority is past its damage).
-- Keywords join in `damage::strike_power` (first/double strike, power), `forecast::lethal_damage` (deathtouch) and `forecast::divide` (trample). `damage::damage_events` is the real counterpart; change both together.
+- It plays the damage steps on a copy of the state with the code of the real game: `damage_events` deals a step, the events fold, and state-based actions, the game-end check and housekeeping settle before the next step. A keyword is in the forecast because it is in the damage, and the forecast cannot drift from it. An attacker whose controller has not divided yet deals the default division; once `DamageAssigned` is recorded the forecast uses the recorded one.
+- Per attacker: the damage it assigns (one packet per blocker in declared order, or one to the defender when unblocked, and with trample one to the defender after the blockers) and the damage its blockers deal back. A creature that deals damage in both steps has both in one packet.
+- Per creature in combat: the damage it takes and whether state-based actions destroy it (lethal damage or deathtouch, unless indestructible).
+- Per attacked player: the damage, the life after, with the life a lifelink blocker gains counted, and whether that is lethal. The life an attacker's controller gains from lifelink is not listed.
+- Steps ahead (`damage::passes_ahead`): both when a first or double striker is in combat and none is dealt yet, the regular one alone in the first-strike step once it has granted priority and in the regular step.
+- `pending_combat_forecast` is the guarded form views use. It returns `None` before attackers are declared, with no attacker left, and once the last damage has been dealt (the combat state lingers until the end of combat, and a regular damage step that has granted priority is past its damage).
 
 ### Preview
 
@@ -105,6 +127,11 @@ Seams the other tasks fill in; each is complete as a type and refuses or does no
 - `RandomBot::new` keeps its choices fixed (cancel when allowed, automatic and exact payments) because seeded fixtures such as the web transcript replay its games. `with_partial_payments` and `with_symbol_choices` (`PlayOptions::partial_payments`, `symbol_choices`) opt into `Complete` and into choosing how to pay hybrid and Phyrexian symbols.
 - Payment: `mana.rs` proptests compare `can_afford`, `auto_payment`, `check_payment` and `complete_payment` with an independent symbol-by-symbol check over costs of every kind, permanents with several abilities and varying life totals. `payment_fuzz.rs` checks that after a cancel the state hash, the log, the next decision and a replay agree.
 - Mana cost parsing: `mtg-import/tests/mana_costs.rs` checks the mana value and colours of every distinct `mana_cost` string of Scryfall's bulk data against Scryfall's own ([data-sources.md](data-sources.md)).
+- Keywords of combat:
+  - `keywords_attack.rs` and `keywords_damage.rs` are tables over attacker and blocker mixes: the flying, reach and menace matrices, defender, haste with `{T}` and mana abilities, vigilance, first and double strike, deathtouch, indestructible, lifelink and trample with prior damage, deathtouch and several blockers; refused answers leave the state hash as it was.
+  - `keywords_fuzz.rs` plays 500 bot games for 2, 3, 4 and 6 players between creatures with up to three combat keywords under every invariant, state-based actions settled at each decision included (`check_settled`), and checks that the games use them.
+  - `keywords_forecast.rs` checks the forecast taken before the first damage against everything that combat dealt, across both steps, in bot games, and that the games reach every keyword; `preview_matches_games.rs` runs its checks on these games too.
+  - The bot (`RandomBot`) leaves a menace attacker unblocked unless it has enough blockers (`BlockOptions.min_blockers`) and gives a trampler lethal damage before the rest at random.
 - Forecast and preview: a proptest in `mtg-testkit` checks the forecast against reality in bot games. `preview_matches_games.rs` checks that every preview equals the forecast read after the real answer, that spoiled answers are refused exactly as `apply` refuses them, and that a game played with previews has the same log and hash as one without.
 - Spells and abilities:
   - `spell_targets.rs` and `abilities.rs` play Lightning Bolt from the corpus and a `{T}` ability through the whole path: choose, pay, respond, resolve, fizzle (CR 608.2b), cancel for free, and an ability that outlives its source and reads it as it was.
@@ -119,12 +146,14 @@ Deviations from the Comprehensive Rules:
 
 - When the active player leaves mid-turn, the engine ends the turn at once. CR 800.4 lets the turn continue without an active player: priority goes to the next player in turn order, or the top object resolves, or the step ends.
 - Damage to a planeswalker is only marked. CR 120.3c turns it into removed loyalty counters, which need loyalty counters first.
-- The first-strike step exists but never occurs.
+- The deathtouch mark lasts until damage wears off at cleanup. CR 704.5h looks at damage dealt since the last state-based check, so a creature that is indestructible when checked and loses it later in the turn would not die; here it does. No effect removes a keyword yet.
+- A creature deals damage in the regular step when it has double strike or no first strike at that step. CR 510.4 reads the keywords as the first step began, which differs only when a keyword is gained or lost between the steps.
 - Layer dependencies (CR 613.8) are not modelled; only type, colour and power/toughness modifications work.
 
 Readings of the rules:
 
-- An attacker divides damage freely among several blockers. The Foundations rules removed damage assignment order (CR 509.2, 510.1c); lethal damage only matters for trample, which is not implemented.
+- An attacker divides damage freely among several blockers. The Foundations rules removed damage assignment order (CR 509.2, 510.1c); lethal damage only matters for trample, whose excess needs lethal damage on every blocker.
+- Lethal damage for trample counts the damage marked and deathtouch; it does not count damage other creatures assign in the same step, since a blocker blocks one attacker.
 - A mana ability resets the passes in a priority round, a literal reading of CR 117.4 (all players pass "without taking any actions in between"). No official ruling exists and the impact is low.
 
-Not implemented: keywords, triggers, tokens, control change and Commander, and any effect beyond drawing, life and damage; costs other than mana and `{T}`; X, modes, divided amounts, kicker and other announcements. Scry, search and the other keyword actions need choice decisions first. Scenarios cannot start in the blockers or damage steps.
+Not implemented: keywords other than those of combat, triggers, tokens, control change and Commander, and any effect beyond drawing, life and damage; costs other than mana and `{T}`; X, modes, divided amounts, kicker and other announcements. Scry, search and the other keyword actions need choice decisions first. Scenarios cannot start in the blockers or damage steps.

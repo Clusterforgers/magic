@@ -546,6 +546,7 @@ mod tests {
             player: ME,
             kind: DecisionKind::DeclareBlockers(BlockOptions {
                 blockers: Vec::new(),
+                min_blockers: Vec::new(),
             }),
         };
         assert!(!passes_for(

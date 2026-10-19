@@ -64,6 +64,7 @@ mod tests {
             power: Some(power),
             toughness: Some(power),
             abilities: Vec::new(),
+            keywords: Vec::new(),
             permanent: (zone == Zone::Battlefield).then_some(PermanentView {
                 tapped: false,
                 damage: 0,
