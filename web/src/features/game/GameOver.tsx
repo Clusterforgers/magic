@@ -114,7 +114,7 @@ export function GameOver() {
             Back to Play
           </Link>
           {signedIn ? (
-            <Link to="/games" className={buttonVariants({ size: 'lg', variant: 'outline' })}>
+            <Link to="/games" className={cn(buttonVariants({ size: 'lg', variant: 'outline' }))}>
               My games
             </Link>
           ) : null}

@@ -140,7 +140,7 @@ describe('a signed-in account', () => {
       signedIn: ADA.username,
       games: [listed({ game: 'ada-game' })],
     })
-    expect(await screen.findByRole('list', { name: 'Your games' })).toBeInTheDocument()
+    expect(await screen.findByRole('table', { name: 'Your games, newest first' })).toBeInTheDocument()
     await signOut(app)
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
     expect(app.store.getState().games.games).toEqual([])
@@ -151,7 +151,7 @@ describe('a signed-in account', () => {
 
   it('goes home when it signs out on a page that needs an account, not to the sign-in form', async () => {
     const app = await open('/games', { signedIn: ADA.username, games: [listed()] })
-    await screen.findByRole('list', { name: 'Your games' })
+    await screen.findByRole('table', { name: 'Your games, newest first' })
     await signOut(app)
     await waitFor(() => expect(app.store.getState().status).toBe('signed-out'))
     await waitFor(() => expect(app.router.state.location.pathname).toBe('/'))

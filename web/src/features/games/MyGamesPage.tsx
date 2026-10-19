@@ -12,6 +12,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth, useAuthStore } from '@/features/auth/context'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import { cn } from '@/lib/utils'
 import { gamesText } from './format'
 import { GameRows } from './GameRows'
 
@@ -43,7 +44,7 @@ function Header() {
   return (
     <header className="flex flex-wrap items-center justify-between gap-3">
       <h1 className="text-2xl font-semibold tracking-tight">My games</h1>
-      <Link to="/new" className={buttonVariants({ size: 'lg' })}>
+      <Link to="/new" className={cn(buttonVariants({ size: 'lg' }))}>
         <PlusIcon aria-hidden="true" />
         Create game
       </Link>
@@ -158,7 +159,7 @@ export function MyGamesPage({ clock = Date.now }: { clock?: () => number }) {
                 <PlusIcon aria-hidden="true" />
                 Create game
               </Link>
-              <Link to="/" className={buttonVariants({ variant: 'outline' })}>
+              <Link to="/" className={cn(buttonVariants({ variant: 'outline' }))}>
                 Find an open game
               </Link>
             </>

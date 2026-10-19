@@ -5,6 +5,7 @@ import { EmptyState } from '@/components/EmptyState'
 import { PageShell } from '@/components/PageShell'
 import { buttonVariants } from '@/components/ui/button'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import { cn } from '@/lib/utils'
 import { AuthForm } from './AuthForm'
 import { useAuth } from './context'
 import type { AuthMode } from './errors'
@@ -39,7 +40,7 @@ export function AuthScreen({ mode, next }: AuthScreenProps) {
           icon={ServerOffIcon}
           title="This server has no accounts"
           action={
-            <Link to="/new" className={buttonVariants({ size: 'lg' })}>
+            <Link to="/new" className={cn(buttonVariants({ size: 'lg' }))}>
               Create game
             </Link>
           }

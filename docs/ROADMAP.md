@@ -92,7 +92,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [x] (U9) Game browser join flow: a Join takes a seat in one click for an account and after a name for a guest, opens the game and says "Someone took that seat"
   - [x] (U9) Join with a code: `POST /api/join` names the game in `Joined`, and the Play page's code field joins through the same flow
   - [ ] (U10) Create-game visibility and the lobby page: invite link, code, visibility toggle, Leave, Close, and the socket stopping on close code 4002 (`GET /api/games/{id}` carries `visibility`, `DELETE /api/games/{id}` closes the game; `docs/server.md`, Open games)
-  - [ ] (U11) Page polish: game over, My games, sign-in and one page width scale
+  - [x] (U11) Page polish: game over, My games, sign-in and one page width scale
   - [ ] (U12) Layout gate at six sizes in both themes; the audit leaves `docs/ui-design.md`
 - [ ] Spectators and reconnect polish: a spectator seat, a face-down card rule in `zone_is_visible`, a "waiting on" message for tables of three or more
 - [ ] Account settings: change the password, delete the account (its seats are freed); a game that failed to resume shows in My games with its reason
