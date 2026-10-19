@@ -322,7 +322,7 @@ describe('planTable', () => {
 
   it('makes the controls dock wider while it holds the ladder row, and a column on a phone', () => {
     expect(mainColumns({ phone: false }, false)).toBe('minmax(0, 1fr) fit-content(480px)')
-    expect(mainColumns({ phone: false }, true)).toBe('minmax(0, 1fr) fit-content(720px)')
+    expect(mainColumns({ phone: false }, true)).toBe('minmax(0, 1fr) fit-content(760px)')
     expect(mainColumns({ phone: true }, false)).toBe('minmax(0, 1fr) fit-content(160px)')
     expect(mainColumns({ phone: true }, true)).toBe('minmax(0, 1fr) fit-content(160px)')
   })

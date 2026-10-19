@@ -270,7 +270,7 @@ export function gridRows(regions: Pick<Regions, 'phone' | 'landscape'>): string 
  * row of their own above them; a phone's is a column for the pass button.
  */
 export const CONTROLS_MAX_PX = 480
-export const CONTROLS_STOPS_MAX_PX = 720
+export const CONTROLS_STOPS_MAX_PX = 760
 export const CONTROLS_MAX_PHONE_PX = 160
 
 /** The `grid-template-columns` of the main area: the controls dock is as wide as its content up to its limit and the hand dock has the rest. */
