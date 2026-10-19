@@ -38,7 +38,8 @@
 //!   opponent's new object, whatever the seat could do about it, or a stop of its own ends it). Stops, modes
 //!   and yields are held in memory per seat and reported back.
 //!   A seat that is not the active player has a clock on every priority decision, on the targets of a spell
-//!   or ability, on ordering triggers and on the questions of effects (yes or no, an option, modes) (10 s)
+//!   or ability, on ordering triggers and on the questions of effects (yes or no, an option, modes, cards, an
+//!   order of cards) (10 s)
 //!   and on declaring blockers (45 s); at the deadline the server answers for the seat (a pass, no blocks,
 //!   the safe answer to the question) the same way, so a late answer is stale. Every other decision waits
 //!   as long as it takes.
