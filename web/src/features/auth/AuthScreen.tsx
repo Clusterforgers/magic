@@ -36,7 +36,7 @@ export function AuthScreen({ mode, next }: AuthScreenProps) {
           <h1 id="no-accounts-title" className="text-2xl font-semibold tracking-tight">
             This server has no accounts
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             Games here are played as a guest: one person creates a game and sends every player the link for
             their seat. There is nothing to sign in to.
           </p>

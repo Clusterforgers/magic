@@ -38,7 +38,7 @@ export interface ThemeEvents {
   removeEventListener(type: 'storage', listener: (event: Event) => void): void
 }
 
-/** What a theme store reads and writes; every part may be missing, and the theme then follows the system for the session. */
+/** What a theme store reads and writes; any part may be missing. */
 export interface ThemeDeps {
   storage: ThemeStorage | null
   /** The `prefers-color-scheme: dark` query, or null where the browser has no `matchMedia`. */
@@ -66,11 +66,9 @@ function guarded<T>(read: () => T, fallback: T): T {
   }
 }
 
-/**
- * The browser's own parts. Each is looked up in a guard, because `localStorage` itself can throw on access and jsdom
- * has no `matchMedia`.
- */
+/** The browser's storage, dark-scheme query, root element and window. */
 export function browserThemeDeps(): ThemeDeps {
+  // Each is looked up in a guard: `localStorage` itself can throw on access, and jsdom has no `matchMedia`.
   return {
     storage: guarded(() => window.localStorage, null),
     media: guarded(
@@ -82,11 +80,7 @@ export function browserThemeDeps(): ThemeDeps {
   }
 }
 
-/**
- * A store for the theme. The choice is kept in `storage` when it can be (the system's choice by removing the key), the
- * `dark` class is on `root` whenever the theme is dark, and a change of the system's preference or of another tab's
- * choice is followed while anything is subscribed. Without storage the choice lasts until the page closes.
- */
+/** A theme store: keeps the choice, sets the `dark` class, and follows the system and other tabs while subscribed. */
 export function createThemeStore(deps: ThemeDeps = browserThemeDeps()): ThemeStore {
   const { storage, media, root, events } = deps
   const listeners = new Set<() => void>()

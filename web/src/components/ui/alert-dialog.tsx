@@ -13,7 +13,7 @@ function AlertDialogContent({
     <AlertDialogPrimitive.Portal>
       <AlertDialogPrimitive.Backdrop
         data-slot="alert-dialog-overlay"
-        className="fixed inset-0 z-50 bg-scrim duration-fast ease-out data-ending-style:opacity-0 data-starting-style:opacity-0 motion-safe:transition-opacity"
+        className="fixed inset-0 z-50 bg-scrim transition-opacity duration-fast ease-out data-ending-style:opacity-0 data-starting-style:opacity-0"
       />
       <AlertDialogPrimitive.Popup
         data-slot="alert-dialog-content"

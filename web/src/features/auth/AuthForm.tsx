@@ -113,7 +113,7 @@ export function AuthForm({ mode, next }: AuthFormProps) {
         <h1 id={`${mode}-title`} className="text-2xl font-semibold tracking-tight">
           {words.title}
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">{words.intro}</p>
+        <p className="mt-1 text-base text-muted-foreground">{words.intro}</p>
       </div>
 
       {problems.form === null ? null : (

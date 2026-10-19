@@ -53,13 +53,13 @@ export function Lobby() {
     <PageShell className="grid grid-cols-1 gap-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Waiting for players</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-base text-muted-foreground">
           The game starts as soon as every seat has joined and pressed Ready.
         </p>
       </div>
 
       <section aria-labelledby="seats-title" className="grid grid-cols-1 gap-2">
-        <h2 id="seats-title" className="text-sm font-medium">
+        <h2 id="seats-title" className="text-lg font-semibold">
           Seats
         </h2>
         <ul aria-label="Seats" className="surface divide-y">

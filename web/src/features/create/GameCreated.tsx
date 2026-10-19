@@ -49,7 +49,7 @@ export function GameCreated({ created, request, decks, origin, onOpenSeat, onAno
         >
           Game created
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-base text-muted-foreground">
           Each link is the key to one seat: anyone who has it can play that seat. Send every player only their
           own link.
         </p>

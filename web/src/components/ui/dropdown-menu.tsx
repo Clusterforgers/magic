@@ -45,7 +45,7 @@ function DropdownMenuContent({
 }
 
 const ITEM =
-  "relative flex min-h-9 cursor-default items-center gap-3 rounded-md px-3 py-2 text-sm select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-accent data-highlighted:text-accent-foreground pointer-coarse:min-h-11 [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-5"
+  "relative flex min-h-9 cursor-default items-center gap-3 rounded-md px-3 py-2 text-sm select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:bg-accent data-highlighted:text-accent-foreground pointer-coarse:min-h-11 [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-6"
 
 function DropdownMenuItem({
   className,

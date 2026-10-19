@@ -31,10 +31,7 @@ interface PillProps extends useRender.ComponentProps<'span'> {
   selected?: boolean
 }
 
-/**
- * A short status or label in a rounded capsule. Its words carry the meaning and the tone only underlines it. Pass a
- * button or link as `render` to make it a control; only then does it answer hover.
- */
+/** A short status or label in a capsule; render it as a button or link to make it a control that answers hover. */
 export function Pill({ tone = 'neutral', selected = false, className, render, ...props }: PillProps) {
   return useRender({
     defaultTagName: 'span',

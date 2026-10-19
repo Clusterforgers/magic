@@ -149,7 +149,7 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         <h1 id="create-title" className="text-2xl font-semibold tracking-tight">
           Create a game
         </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-base text-muted-foreground">
           Choose how many seats there are, then give each a name and a deck. You get one link per seat to send
           to your friends.
         </p>
@@ -183,7 +183,7 @@ export function CreateForm({ api, decks }: CreateFormProps) {
 
       <section aria-labelledby="seats-title" className="grid gap-3">
         <div className="flex items-center justify-between gap-2">
-          <h2 id="seats-title" className="text-sm font-medium">
+          <h2 id="seats-title" className="text-lg font-semibold">
             Seats
           </h2>
           <p className="text-sm text-muted-foreground" aria-live="polite">

@@ -71,7 +71,7 @@ export function MyGamesPage({ clock = Date.now }: { clock?: () => number }) {
           <h1 id="games-title" className="text-2xl font-semibold tracking-tight">
             My games
           </h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             This server has no accounts, so it keeps no list of games. Open your seat link to get back into a
             game.
           </p>
