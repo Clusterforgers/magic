@@ -42,7 +42,7 @@ describe('loading the deck', () => {
     expect(pane().getByRole('combobox', { name: 'Format' })).toHaveValue('modern')
     expect(pane().getByText('Manual play')).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 1, name: 'Edit Burn' })).toBeInTheDocument()
-    expect(document.title).toBe('Edit Burn · Magic')
+    await waitFor(() => expect(document.title).toBe('Edit Burn · Magic'))
   })
 
   it('says it is loading while the deck is on its way', async () => {

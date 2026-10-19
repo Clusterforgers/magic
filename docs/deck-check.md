@@ -2,7 +2,7 @@
 
 Design of the deck check: when a deck is chosen or built, a check finds the cards the game cannot play without manual steps and highlights them, and a saved deck that passes shows a Verified marker until it changes.
 
-The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mtg_cards::deck::deck_report`), the deck endpoints and the derived marker are implemented (`server.md`, "Cards and decks"); the highlighting and the interface below are design. A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
+The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mtg_cards::deck::deck_report`), the deck endpoints and the derived marker are implemented (`server.md`, "Cards and decks"); the highlighting in the builder and the list, the card preview and the live check are implemented (`web.md`); the states in the lobby and the precon browser, and the table note, are design. A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
 
 ## Terms
 
@@ -43,22 +43,20 @@ The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mt
 ## Highlighting
 
 - Deck list and builder: every card that is not `Verified` gets an icon, a word (Manual, Partial, Stale, Unplayable) and a coloured edge, never colour alone. The header counts them ("96 of 100 verified, 3 manual, 1 partial") with an "issues only" filter and a sort that puts them first.
-- Card preview: the oracle text with the unsupported clauses underlined and the reason beside it (needs spans from the card data).
+- Card preview: the oracle text with the unsupported clauses underlined and the reason beside it.
 - Game: a card in play with manual text carries a small "manual" badge for every seat, and its prompt quotes only the unsupported clause.
 - Lobby and precon browser: each seat's deck and each precon shows its state, so the coverage target (100% of the chosen precons) is a visible list.
 
 ## Extensions
 
-In order of value:
+Not built yet, in order of value:
 
-1. Live counter while building: the check is a pure lookup, so "N issues" updates as cards are added or removed.
-2. Clause-level highlighting with plain reasons (above).
-3. Smoke test: run the deck through bot games in the engine (the testkit harness) and cache the result by `deck_hash`. "Tested in 20 bot games" backs the static label and catches crashes in card combinations.
-4. Swap suggestions: for a flagged card, verified cards of the same type, mana value and colour identity, one click to swap.
-5. Demand-ranked backlog: every flagged card in every saved deck counts toward the coverage dashboard, so implementation follows what the table plays.
-6. Table setting "verified decks only" for friends who want no manual steps; the default allows manual play with a visible note to all seats.
-7. History: the last few checks per deck (date, engine version, result), which explains why a marker went away.
-8. Paste-a-list check without an account, and `mtg-cli check <file>` for the same report.
+1. Smoke test: run the deck through bot games in the engine (the testkit harness) and cache the result by `deck_hash`. "Tested in 20 bot games" backs the static label and catches crashes in card combinations.
+2. Swap suggestions: for a flagged card, verified cards of the same type, mana value and colour identity, one click to swap.
+3. Demand-ranked backlog: every flagged card in every saved deck counts toward the coverage dashboard, so implementation follows what the table plays.
+4. Table setting "verified decks only" for friends who want no manual steps; the default allows manual play with a visible note to all seats.
+5. History: the last few checks per deck (date, engine version, result), which explains why a marker went away.
+6. Paste-a-list check without an account, and `mtg-cli check <file>` for the same report.
 
 ## Rollout
 
