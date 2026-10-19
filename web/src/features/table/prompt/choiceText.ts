@@ -64,7 +64,8 @@ export function modeLabel(mode: ModeOption): string {
 
 const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
 
-const numberWord = (n: number): string => WORDS[n] ?? String(n)
+/** A small number in words, "two"; larger ones as digits. */
+export const numberWord = (n: number): string => WORDS[n] ?? String(n)
 
 /** How many modes are asked for: "one mode", "two modes", "up to two modes", "1 to 3 modes". */
 export function modeBounds(min: number, max: number): string {

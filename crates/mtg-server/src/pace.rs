@@ -10,7 +10,8 @@ use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::choose::{
-    ModeChoice, ModeOptions, OptionChoice, TargetChoice, TriggersChoice, YesNoChoice,
+    CardsChoice, CardsOptions, ModeChoice, ModeOptions, OptionChoice, OrderChoice, TargetChoice,
+    TriggersChoice, YesNoChoice,
 };
 use mtg_engine::decision::PriorityAction;
 use mtg_engine::{Answer, Decision, DecisionKind};
@@ -38,8 +39,8 @@ pub struct Pace {
     /// A seat can change its own with `AutoPass` and `FullControl`.
     pub auto_pass: bool,
     /// Time a seat that is not the active player has to answer a priority decision, whether it can act or not, and to
-    /// choose the targets of a spell or ability, order its triggers, answer a yes-or-no question, choose an option or
-    /// choose modes (`MTG_RESPONSE_SECS`); `None` is no clock.
+    /// choose the targets of a spell or ability, order its triggers, answer a yes-or-no question, choose an option,
+    /// choose modes, choose cards or put cards in order (`MTG_RESPONSE_SECS`); `None` is no clock.
     pub response: Option<Duration>,
     /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`); `None` is no clock.
     pub blocks: Option<Duration>,
@@ -70,8 +71,8 @@ impl Pace {
     ///
     /// Only a seat that is not the active player is hurried, and only for a priority decision, for choosing the
     /// targets of a spell or ability, for ordering its triggers, for answering a question of an effect (yes or no, an
-    /// option, modes) or for declaring blockers; every other decision (mulligans, discards, damage division, the
-    /// active player's own turn) waits for as long as it takes. A priority window the seat has nothing to do in is
+    /// option, modes, cards, an order of cards) or for declaring blockers; every other decision (mulligans, discards,
+    /// damage division, the active player's own turn) waits for as long as it takes. A priority window the seat has nothing to do in is
     /// hurried too (it is only delivered at a stop or in Full Control): it would hold the table for no reason. The
     /// rule reads the kind alone, never the options, the seat or the hand, so it shows nothing about them.
     pub(crate) fn clock_for(&self, decision: &Decision, active: PlayerId) -> Option<Duration> {
@@ -85,7 +86,9 @@ impl Pace {
             | DecisionKind::OrderTriggers(_)
             | DecisionKind::YesNo(_)
             | DecisionKind::ChooseOption(_)
-            | DecisionKind::ChooseMode(_) => self.response,
+            | DecisionKind::ChooseMode(_)
+            | DecisionKind::ChooseCards(_)
+            | DecisionKind::OrderCards(_) => self.response,
             DecisionKind::DeclareBlockers(_) => self.blocks,
             _ => None,
         }
@@ -115,8 +118,8 @@ pub(crate) fn is_priority(decision: &Decision) -> bool {
 
 /// What the table answers for a seat whose clock ran out: a pass, no blockers, no target (a spell is taken back and a
 /// triggered ability removed, as the rules do when a target cannot be chosen), the triggers in the order they
-/// triggered, No to a question, the first option, or for modes the cast taken back when the options allow it and the
-/// first mode otherwise.
+/// triggered, No to a question, the first option, for modes the cast taken back when the options allow it and the
+/// first mode otherwise, the first cards of the list for a choice of cards and the order given for an order of cards.
 ///
 /// The answer is read from the decision alone. `None` for a decision that has no clock and no safe default.
 pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
@@ -139,8 +142,19 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
             (!options.options.is_empty()).then_some(Answer::ChooseOption(OptionChoice(0)))
         }
         DecisionKind::ChooseMode(options) => first_modes(options).map(Answer::ChooseMode),
+        DecisionKind::ChooseCards(options) => Some(Answer::ChooseCards(first_cards(options))),
+        DecisionKind::OrderCards(options) => {
+            Some(Answer::OrderCards(OrderChoice(options.cards.clone())))
+        }
         _ => None,
     }
+}
+
+/// The first `min` cards of the list in the order it was offered, all of them when fewer are offered. `min <= max`, so
+/// the answer never has more than the most.
+fn first_cards(options: &CardsOptions) -> CardsChoice {
+    let wanted = usize::try_from(options.min).unwrap_or(usize::MAX);
+    CardsChoice(options.from.iter().copied().take(wanted).collect())
 }
 
 /// Backing out of the cast when the options allow it, else the first modes of the list: one, or as many as the
@@ -293,8 +307,8 @@ mod tests {
     use super::*;
     use mtg_core::ids::ObjectId;
     use mtg_engine::choose::{
-        ChoiceOption, ModeOption, OptionOptions, TargetOptions, TriggerEntry, TriggersOptions,
-        YesNoOptions,
+        CardsOptions, ChoiceOption, ModeOption, OptionOptions, OrderOptions, TargetOptions,
+        TriggerEntry, TriggersOptions, YesNoOptions,
     };
     use mtg_engine::decision::{
         AttackOptions, BlockOptions, BottomOptions, DamageOptions, DiscardOptions, MulliganOptions,
@@ -428,6 +442,39 @@ mod tests {
         })
     }
 
+    /// `count` cards on offer whose ids run down, so the first cards offered are not the ones with the lowest ids.
+    fn offered(count: usize) -> Vec<ObjectId> {
+        (0..count).map(|n| ObjectId(100 - 3 * n as u64)).collect()
+    }
+
+    fn cards(count: usize, min: u32, max: u32) -> DecisionKind {
+        DecisionKind::ChooseCards(CardsOptions {
+            source: ObjectId(1),
+            from: offered(count),
+            min,
+            max,
+            text: String::new(),
+        })
+    }
+
+    fn ordering(count: usize) -> DecisionKind {
+        DecisionKind::OrderCards(OrderOptions {
+            source: ObjectId(1),
+            cards: offered(count),
+            text: String::new(),
+        })
+    }
+
+    /// The answer that chooses `ids`.
+    fn chosen(ids: &[u64]) -> Answer {
+        Answer::ChooseCards(CardsChoice(ids.iter().copied().map(ObjectId).collect()))
+    }
+
+    /// The answer that puts the cards in the order `ids`.
+    fn ordered(ids: &[u64]) -> Answer {
+        Answer::OrderCards(OrderChoice(ids.iter().copied().map(ObjectId).collect()))
+    }
+
     fn decision(player: PlayerId, kind: DecisionKind) -> Decision {
         Decision { player, kind }
     }
@@ -460,6 +507,13 @@ mod tests {
     #[case::the_active_player_answering_a_question(ACTIVE, question(), None)]
     #[case::the_active_player_choosing_an_option(ACTIVE, options(3), None)]
     #[case::the_active_player_choosing_modes(ACTIVE, modes(3, 1, 1, false, true), None)]
+    #[case::choosing_a_card(OTHER, cards(3, 1, 1), Some(10))]
+    #[case::choosing_up_to_some_cards(OTHER, cards(5, 0, 3), Some(10))]
+    #[case::choosing_from_nothing(OTHER, cards(0, 0, 1), Some(10))]
+    #[case::putting_cards_in_order(OTHER, ordering(3), Some(10))]
+    #[case::putting_one_card_in_order(OTHER, ordering(1), Some(10))]
+    #[case::the_active_player_choosing_cards(ACTIVE, cards(3, 1, 1), None)]
+    #[case::the_active_player_putting_cards_in_order(ACTIVE, ordering(3), None)]
     fn clocks_by_decision(
         #[case] player: PlayerId,
         #[case] kind: DecisionKind,
@@ -492,7 +546,13 @@ mod tests {
             None
         );
         assert_eq!(pace.clock_for(&decision(OTHER, order(2)), ACTIVE), None);
-        for kind in [question(), options(2), modes(2, 1, 1, false, true)] {
+        for kind in [
+            question(),
+            options(2),
+            modes(2, 1, 1, false, true),
+            cards(2, 1, 1),
+            ordering(2),
+        ] {
             assert_eq!(pace.clock_for(&decision(OTHER, kind), ACTIVE), None);
         }
         if pace.blocks.is_none() {
@@ -541,6 +601,19 @@ mod tests {
     #[case::a_repeating_choice_with_too_few_modes_repeats_the_first(modes(1, 3, 3, true, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1, 1, 1]))))]
     #[case::too_few_modes_that_may_not_repeat_have_no_answer(modes(1, 2, 2, false, false), None)]
     #[case::no_modes_to_choose(modes(0, 1, 1, false, false), None)]
+    #[case::the_first_card_offered(cards(4, 1, 1), Some(chosen(&[100])))]
+    #[case::the_first_two_cards_not_the_lowest_ids(cards(4, 2, 2), Some(chosen(&[100, 97])))]
+    #[case::at_least_one_takes_one(cards(4, 1, 3), Some(chosen(&[100])))]
+    #[case::at_least_two_takes_two(cards(5, 2, 5), Some(chosen(&[100, 97])))]
+    #[case::up_to_some_takes_none(cards(4, 0, 3), Some(chosen(&[])))]
+    #[case::any_number_takes_none(cards(4, 0, 4), Some(chosen(&[])))]
+    #[case::all_of_them_when_all_are_wanted(cards(3, 3, 3), Some(chosen(&[100, 97, 94])))]
+    #[case::all_of_the_cards_when_fewer_are_offered_than_wanted(cards(2, 3, 3), Some(chosen(&[100, 97])))]
+    #[case::nothing_to_choose_from_when_none_is_wanted(cards(0, 0, 2), Some(chosen(&[])))]
+    #[case::nothing_to_choose_from_when_one_is_wanted(cards(0, 1, 1), Some(chosen(&[])))]
+    #[case::the_order_given(ordering(3), Some(ordered(&[100, 97, 94])))]
+    #[case::one_card_is_its_own_order(ordering(1), Some(ordered(&[100])))]
+    #[case::no_cards_are_an_empty_order(ordering(0), Some(ordered(&[])))]
     fn safe_defaults(#[case] kind: DecisionKind, #[case] expected: Option<Answer>) {
         assert_eq!(fallback(&decision(OTHER, kind)), expected);
     }
@@ -553,6 +626,12 @@ mod tests {
             options(11),
             modes(1, 1, 1, false, true),
             modes(5, 2, 3, true, false),
+            cards(1, 1, 1),
+            cards(12, 0, 12),
+            cards(5, 2, 3),
+            cards(0, 0, 1),
+            ordering(1),
+            ordering(7),
         ];
         for kind in kinds {
             let want = (
@@ -593,6 +672,38 @@ mod tests {
             let mut once = chosen.clone();
             once.dedup();
             assert!(repeat || once.len() == chosen.len(), "{chosen:?} repeats");
+        }
+    }
+
+    #[test]
+    fn the_card_fallback_is_the_first_cards_offered_in_every_shape() {
+        for count in 0..=6 {
+            for min in 0..=4 {
+                for max in min..=5 {
+                    let kind = cards(count, min, max);
+                    let Some(Answer::ChooseCards(CardsChoice(picked))) =
+                        fallback(&decision(OTHER, kind.clone()))
+                    else {
+                        panic!("{kind:?} has an answer to give");
+                    };
+                    let wanted = usize::try_from(min).unwrap().min(count);
+                    assert_eq!(picked, offered(count)[..wanted], "{kind:?}");
+                    assert!(
+                        picked.len() <= max as usize,
+                        "{kind:?} gave more than the most"
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn the_order_fallback_puts_every_card_once_in_the_order_given() {
+        for count in 0..=7 {
+            assert_eq!(
+                fallback(&decision(OTHER, ordering(count))),
+                Some(Answer::OrderCards(OrderChoice(offered(count))))
+            );
         }
     }
 

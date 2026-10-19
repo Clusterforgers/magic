@@ -19,7 +19,7 @@ import type {
 } from '@/protocol/generated'
 import { forecastScene, withBlockForecast } from './combatScene'
 import { assignDamage } from './damagePrompt'
-import { EFFECT_PROMPTS } from './effectPrompts'
+import { EFFECT_MOMENTS, EFFECT_PROMPTS } from './effectPrompts'
 import type { Fixture } from './fixture'
 
 /** Builds the decision the viewer of a fixture faces. */
@@ -416,6 +416,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'yield-resolve': (fixture) =>
     withView(fixture, { priority: { holder: fixture.view.turn.active, passed: [] } }),
   'yield-turn': quietMoment('Upkeep', false, false),
+  ...EFFECT_MOMENTS,
 }
 
 /**

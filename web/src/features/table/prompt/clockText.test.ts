@@ -15,6 +15,9 @@ describe('clockText', () => {
     ['ChooseOption', 4, 'Choosing the first option for you in 4 s'],
     ['ChooseMode', 10, 'Choosing the first mode for you in 10 s'],
     ['ChooseModeCancel', 2, 'Cancelling for you in 2 s'],
+    ['ChooseCards', 10, 'Choosing the first cards for you in 10 s'],
+    ['ChooseCardsNone', 6, 'Choosing no cards for you in 6 s'],
+    ['OrderCards', 10, 'Keeping the order for you in 10 s'],
   ] as const)('%s with %i s left reads "%s"', (kind, seconds, text) => {
     expect(clockText(kind, seconds)).toBe(text)
   })
@@ -39,6 +42,13 @@ describe('clockAnnouncement', () => {
     ],
     ['ChooseMode', 10, 'You have 10 seconds to answer; after that the game chooses the first mode for you.'],
     ['ChooseModeCancel', 1, 'You have 1 second to answer; after that the game cancels for you.'],
+    [
+      'ChooseCards',
+      10,
+      'You have 10 seconds to answer; after that the game chooses the first cards for you.',
+    ],
+    ['ChooseCardsNone', 10, 'You have 10 seconds to answer; after that the game chooses no cards for you.'],
+    ['OrderCards', 10, 'You have 10 seconds to answer; after that the game keeps the order for you.'],
   ] as const)('%s with %i s reads "%s"', (kind, seconds, text) => {
     expect(clockAnnouncement(kind, seconds)).toBe(text)
   })
@@ -48,6 +58,9 @@ describe('clockKind', () => {
   const modes = (can_cancel: boolean): DecisionKind => ({
     ChooseMode: { source: 1, modes: [], min: 1, max: 1, repeat: false, can_cancel },
   })
+  const cards = (min: number, max: number): DecisionKind => ({
+    ChooseCards: { source: 1, from: [2, 3, 4], min, max },
+  })
 
   it.each([
     ['a mode choice of a spell, which the server takes back', modes(true), 'ChooseModeCancel'],
@@ -55,6 +68,14 @@ describe('clockKind', () => {
     ['a question', KINDS.YesNo, 'YesNo'],
     ['an option', KINDS.ChooseOption, 'ChooseOption'],
     ['a target choice, whichever way it can be answered', KINDS.ChooseTargets, 'ChooseTargets'],
+    [
+      'a choice of at least one card, which the server answers with the first cards',
+      cards(1, 1),
+      'ChooseCards',
+    ],
+    ['a choice of two cards', cards(2, 3), 'ChooseCards'],
+    ['a choice of up to some cards, which the server answers with none', cards(0, 2), 'ChooseCardsNone'],
+    ['an order of cards', KINDS.OrderCards, 'OrderCards'],
   ])('tells %s as %s', (_what, kind, expected) => {
     expect(clockKind(kind)).toBe(expected)
   })
