@@ -83,7 +83,7 @@ The payment rules are in [engine.md](engine.md); the wire facts are:
 ### Auto-pass
 
 - `AutoPass { enabled }` is the Full Control mode `Held` when `enabled` is false and `Off` when it is true (a seat in `NextWindow` stays in it). The change is told as a `FullControl` message. `Welcome.auto_pass` is true unless the seat is in `Held` (the server default after a restart).
-- A client must not rely on seeing every priority window: outside Full Control the server asks a seat only at its windows (below). The events of the passes arrive in the batch of the answer that led to them, except the pass for a seat that cannot act in a combat window or while a spell waits on the stack: it comes in a batch of its own after a wait of 0.3 to 0.9 s (`server.md`, Dwell), so the pace does not tell the table what a seat holds.
+- A client must not rely on seeing every priority window: outside Full Control the server asks a seat only at its windows (below). The events of the passes arrive in the batch of the answer that led to them, except the pass for a seat that cannot act in a combat window or while a spell waits on the stack: it comes in a batch of its own after a wait of 0.25 to 0.7 s (`server.md`, Dwell), so the pace does not tell the table what a seat holds.
 
 ### Yields
 

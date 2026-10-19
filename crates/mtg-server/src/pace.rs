@@ -219,7 +219,7 @@ impl<S: EventStore> GameActor<S> {
                 }
             },
             Some(Verdict::Dwell) => {
-                running.settle(false, Halt::Dwell, false);
+                running.settle(false, Halt::Dwell);
                 Ok(())
             }
             Some(Verdict::Ask) | None => Ok(()),
@@ -357,7 +357,7 @@ mod tests {
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
         assert_eq!(
             pace.dwell.range(),
-            (Duration::from_millis(300), Duration::from_millis(900))
+            (Duration::from_millis(250), Duration::from_millis(700))
         );
         assert_eq!(Pace::MANUAL.response, None);
         assert!(!std::hint::black_box(Pace::MANUAL).auto_pass);

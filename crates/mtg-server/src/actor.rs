@@ -171,7 +171,7 @@ pub(crate) async fn resume_named<S: EventStore>(
         store.append(id, count(stored_len), fresh).await?;
     }
     let mut running = Running::new(engine, config.pace);
-    running.settle(false, Halt::Ask, false);
+    running.settle(false, Halt::Ask);
     Ok(launch(
         id,
         setup,
