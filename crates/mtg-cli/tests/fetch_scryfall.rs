@@ -40,6 +40,11 @@ fn lock(state: &Mutex<State>) -> MutexGuard<'_, State> {
 impl Remote {
     /// Publishes version `version` of both bulk files and a listing that points to them.
     fn publish(&self, version: u32, cards: &[u8], rulings: &[u8]) {
+        self.publish_as(version, version, cards, rulings);
+    }
+
+    /// Like `publish`, but the file names carry `files` while `updated_at` carries `version`.
+    fn publish_as(&self, version: u32, files: u32, cards: &[u8], rulings: &[u8]) {
         let mut state = lock(&self.0);
         let base = state.base.clone();
         let entry = |kind: &str, file: String, bytes: &[u8]| {
@@ -51,8 +56,8 @@ impl Remote {
                 "compressed_size": bytes.len(),
             })
         };
-        let cards_file = format!("oracle-cards-{version}.jsonl.gz");
-        let rulings_file = format!("rulings-{version}.jsonl.gz");
+        let cards_file = format!("oracle-cards-{files}.jsonl.gz");
+        let rulings_file = format!("rulings-{files}.jsonl.gz");
         state.listing = json!({
             "object": "list",
             "has_more": false,
@@ -262,6 +267,42 @@ async fn a_new_updated_at_downloads_the_new_file_and_removes_the_old_one() {
     assert_eq!(
         cache.manifest().unwrap().scryfall["rulings"].file.sha256,
         sha256_hex(&new_rulings)
+    );
+}
+
+#[tokio::test]
+async fn a_newer_updated_at_downloads_again_even_when_the_file_name_stays_the_same() {
+    let (old_cards, old_rulings) = (gzip_file_of(50_000, 31), gzip_file_of(10_000, 32));
+    let (server, remote) = scryfall(1, &old_cards, &old_rulings, standard).await;
+    let dir = tempfile::tempdir().unwrap();
+    let cache = Cache::new(dir.path());
+    let (progress, _) = progress();
+    let http = client(&progress, FAST, 3, FAST);
+    let listing = server.url("/bulk-data");
+    fetch_scryfall(&http, &cache, &listing, false, &progress)
+        .await
+        .unwrap();
+
+    let (new_cards, new_rulings) = (gzip_file_of(52_000, 33), gzip_file_of(11_000, 34));
+    remote.publish_as(2, 1, &new_cards, &new_rulings);
+    let second = fetch_scryfall(&http, &cache, &listing, false, &progress)
+        .await
+        .unwrap();
+
+    assert!(
+        second
+            .iter()
+            .all(|o| matches!(o.action, BulkAction::Downloaded { .. }))
+    );
+    let path = cache.path("scryfall/oracle-cards-1.jsonl.gz");
+    assert_eq!(
+        fs::read(&path).unwrap(),
+        new_cards,
+        "the file was replaced, not removed"
+    );
+    assert_eq!(
+        cache.manifest().unwrap().scryfall["oracle_cards"].updated_at,
+        "2026-10-18T21:02:00.002+00:00"
     );
 }
 
