@@ -43,7 +43,7 @@ pub enum ErrorCode {
 pub struct LobbySeat {
     /// The seat.
     pub seat: PlayerId,
-    /// The name the seat was given when the game was made.
+    /// The name at the seat; empty for an open seat that nobody holds yet.
     pub name: String,
     /// Whether a client is connected to the seat right now.
     pub connected: bool,

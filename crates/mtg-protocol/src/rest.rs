@@ -1,12 +1,13 @@
 //! Bodies of the account endpoints of `mtg-server` (`/api/auth/*`), of the signed-in user's game
-//! list (`/api/me/games`), of the card endpoints (`/api/cards`) and of the deck endpoints
-//! (`/api/decks`), with TypeScript bindings.
+//! list (`/api/me/games`), of the card endpoints (`/api/cards`), of the deck endpoints
+//! (`/api/decks`) and of the game browser (`/api/lobbies`, joining), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The game bodies
 //! (`POST /api/games`, `GET /api/games/{id}`) are still written by hand on the web side.
 
 mod cards;
 mod decks;
+mod lobbies;
 
 use std::fmt;
 
@@ -24,6 +25,10 @@ pub use decks::{
     DeckListItem, DeckView, IgnoredCards, ImportRequest, ImportResult, ImportSource, ListProblem,
     MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS, MAX_DECK_NOTES_CHARS, MAX_DECKS_PER_USER,
     MAX_IMPORT_CHARS, MAX_IMPORT_LINES, UnresolvedLine, UnresolvedReason,
+};
+pub use lobbies::{
+    JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, Visibility,
+    VisibilityBody,
 };
 
 /// Fewest characters in a username.
