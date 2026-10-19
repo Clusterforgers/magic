@@ -12,10 +12,12 @@ interface ZoneButtonProps {
   owner: string
   /** The cards in the zone, oldest first. */
   ids: readonly ObjectId[]
+  /** A smaller button, for a one-line pod. */
+  compact?: boolean
 }
 
 /** A button that opens the list of every card in a zone, most recent first. */
-export function ZoneButton({ zone, owner, ids }: ZoneButtonProps) {
+export function ZoneButton({ zone, owner, ids, compact = false }: ZoneButtonProps) {
   const [open, setOpen] = useState(false)
   const preview = usePreviewStore()
   const noun = ids.length === 1 ? 'card' : 'cards'
@@ -23,7 +25,7 @@ export function ZoneButton({ zone, owner, ids }: ZoneButtonProps) {
     <>
       <Button
         variant="outline"
-        size="sm"
+        size={compact ? 'xs' : 'sm'}
         disabled={ids.length === 0}
         aria-haspopup="dialog"
         onClick={() => setOpen(true)}

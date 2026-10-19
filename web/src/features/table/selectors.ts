@@ -55,6 +55,31 @@ export function battlefieldCounts(state: PlayState, seat: PlayerId): Record<RowK
   }
 }
 
+/** How many permanents a seat has in each row, and how many of those are tapped. */
+export interface BattlefieldLoad {
+  creatures: number
+  other: number
+  lands: number
+  creaturesTapped: number
+  otherTapped: number
+  landsTapped: number
+}
+
+/** What the fit of a seat's battlefield needs (`useZoneFit`): plain numbers, so wrap in `useShallow`. */
+export function battlefieldLoad(state: PlayState, seat: PlayerId): BattlefieldLoad {
+  const rows = state.view === null ? undefined : splitBattlefield(state.view, state.objectsById).get(seat)
+  const tapped = (ids: readonly ObjectId[] | undefined): number =>
+    ids?.reduce((sum, id) => sum + (state.objectsById[id]?.permanent?.tapped === true ? 1 : 0), 0) ?? 0
+  return {
+    creatures: rows?.creatures.length ?? 0,
+    other: rows?.other.length ?? 0,
+    lands: rows?.lands.length ?? 0,
+    creaturesTapped: tapped(rows?.creatures),
+    otherTapped: tapped(rows?.other),
+    landsTapped: tapped(rows?.lands),
+  }
+}
+
 /** Whether a seat controls nothing on the battlefield. */
 export function isBattlefieldEmpty(state: PlayState, seat: PlayerId): boolean {
   const { creatures, other, lands } = battlefieldCounts(state, seat)
