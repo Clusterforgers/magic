@@ -1,10 +1,11 @@
-//! Goal: the game browser lists exactly the public games that are still in their lobby, newest first and at most fifty, with the host, the format, how many seats are filled and when the game was made, follows claims, releases, the visibility and the start, and never holds a token, a join code or a seat link.
+//! Goal: the game browser lists exactly the public games that are still in their lobby, newest first and at most fifty, with the host, the format, how many seats are filled and when the game was made, follows claims, releases, the visibility and the start, never holds a token, a join code or a seat link, and may be asked for thirty times a minute from one address.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
 
 use std::fmt::Write;
-use std::time::Duration;
+use std::net::IpAddr;
+use std::time::{Duration, Instant};
 
 use common::seat;
 use mtg_protocol::ClientMessage;
@@ -270,4 +271,30 @@ async fn a_listing_holds_no_token_no_code_and_no_digest() {
         created_at: _,
         age: _,
     } = &listed[0];
+}
+
+#[tokio::test]
+async fn an_address_may_ask_for_the_list_thirty_times_a_minute() {
+    let registry = registry();
+    let me: IpAddr = "192.0.2.7".parse().unwrap();
+    let t0 = Instant::now();
+    for n in 0..30 {
+        let asked = registry.admit_listing(me, t0 + Duration::from_secs(n));
+        assert_eq!(asked, Ok(()), "request {n}");
+    }
+    // The window began with the first request and lasts a minute.
+    let blocked = registry
+        .admit_listing(me, t0 + Duration::from_secs(40))
+        .unwrap_err();
+    assert_eq!(blocked.retry_after, Duration::from_secs(20));
+    assert_eq!(blocked.seconds(), 20);
+    // Another address has a budget of its own, and the first one is free again a minute on.
+    assert_eq!(
+        registry.admit_listing("192.0.2.8".parse().unwrap(), t0),
+        Ok(())
+    );
+    assert_eq!(
+        registry.admit_listing(me, t0 + Duration::from_secs(60)),
+        Ok(())
+    );
 }

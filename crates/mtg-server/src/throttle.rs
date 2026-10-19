@@ -1,12 +1,13 @@
-//! Limits on guessing: how many failed logins one address and one username may cause, how many
-//! accounts one address may try to register and how many join codes one address may miss, per
-//! window. Kept in memory, per process.
+//! Limits on guessing and polling: how many failed logins one address and one username may cause,
+//! how many accounts one address may try to register, how many join codes one address may miss and
+//! how often it may ask for the lobby list, per window. Kept in memory, per process.
 //!
 //! Fixed windows: a counter starts at the first attempt and is forgotten one window later. A
 //! login or a code lookup is counted when it starts, so concurrent guesses cannot all slip under
 //! the limit, and handed back when it succeeds. A blocked attempt is not counted, so waiting out
 //! the window is enough. The username counter exists whether or not the account does, so the limit
-//! reveals nothing about it. Code misses have a window of their own, shorter than the others.
+//! reveals nothing about it. Code misses and the lobby list have windows of their own, shorter
+//! than the others.
 
 use std::collections::HashMap;
 use std::fmt;
@@ -34,12 +35,15 @@ enum Key {
     RegisterAddress(IpAddr),
     /// Join code lookups from one network that were started and did not (yet) find a game.
     CodeAddress(IpAddr),
+    /// Requests for the lobby list from one network, answered or not.
+    ListAddress(IpAddr),
 }
 
 /// How long a counter of this kind lasts.
 fn window_of(limits: &AttemptLimits, key: &Key) -> Duration {
     match key {
         Key::CodeAddress(_) => limits.code_window,
+        Key::ListAddress(_) => limits.lobby_window,
         Key::LoginAddress(_) | Key::LoginName(_) | Key::RegisterAddress(_) => limits.window,
     }
 }
@@ -171,6 +175,16 @@ impl Throttle {
             .map(|(counted, exhausted)| Attempt { counted, exhausted })
     }
 
+    /// Counts a request for the lobby list from `address`, or says to wait. Every request counts,
+    /// whatever the answer was, and nothing hands it back.
+    pub(crate) fn begin_listing(&self, now: Instant, address: IpAddr) -> Result<(), Blocked> {
+        let wanted = [(
+            Key::ListAddress(network(address)),
+            self.limits.lobby_requests_per_ip,
+        )];
+        self.admit(now, &wanted).map(|_| ())
+    }
+
     /// Takes back the count of a login that turned out right (the address keeps its other
     /// failures, the username starts afresh) or of a code that found its game.
     pub(crate) fn succeeded(&self, attempt: Attempt) {
@@ -275,7 +289,7 @@ fn network(address: IpAddr) -> IpAddr {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: each limit blocks exactly at its count and lifts exactly one window after the first attempt, blocked attempts cost nothing, a success hands its count back, addresses are grouped the way one client controls them, usernames and addresses do not share budgets, join code misses follow a window of their own, and the table stays bounded.
+    //! Goal: each limit blocks exactly at its count and lifts exactly one window after the first attempt, blocked attempts cost nothing, a success hands its count back, addresses are grouped the way one client controls them, usernames and addresses do not share budgets, join code misses follow a window of their own, the lobby list follows another, and the table stays bounded.
     use std::net::Ipv4Addr;
 
     use super::*;
@@ -284,6 +298,8 @@ mod tests {
     const WINDOW: Duration = Duration::from_secs(60);
     /// Shorter than `WINDOW`, so a test can tell which window a counter follows.
     const CODE_WINDOW: Duration = Duration::from_secs(20);
+    /// Shorter than both, so a test can tell the lobby list has a window of its own.
+    const LOBBY_WINDOW: Duration = Duration::from_secs(10);
 
     fn limits() -> AttemptLimits {
         AttemptLimits {
@@ -293,6 +309,8 @@ mod tests {
             register_per_ip: 2,
             code_window: CODE_WINDOW,
             code_misses_per_ip: 4,
+            lobby_window: LOBBY_WINDOW,
+            lobby_requests_per_ip: 6,
         }
     }
 
@@ -725,6 +743,70 @@ mod tests {
                 .is_err(),
             "the username still has its three tries counted"
         );
+    }
+
+    #[test]
+    fn lobby_requests_block_at_their_count_and_lift_after_their_own_window() {
+        let throttle = Throttle::new(limits());
+        let t0 = Instant::now();
+        for n in 0..6 {
+            assert!(throttle.begin_listing(t0 + secs(n), ip("10.0.0.1")).is_ok());
+        }
+        // The window began at the first request and is 10 s long, not the 20 s of the code misses.
+        let blocked = throttle
+            .begin_listing(t0 + secs(6), ip("10.0.0.1"))
+            .unwrap_err();
+        assert_eq!(blocked.retry_after, secs(4));
+        // Blocked requests are free and do not push the end of the window out.
+        let blocked = throttle
+            .begin_listing(t0 + secs(9), ip("10.0.0.1"))
+            .unwrap_err();
+        assert_eq!(blocked.retry_after, secs(1));
+        assert!(throttle.begin_listing(t0 + secs(6), ip("10.0.0.2")).is_ok());
+        assert!(
+            throttle
+                .begin_listing(t0 + secs(10), ip("10.0.0.1"))
+                .is_ok()
+        );
+    }
+
+    #[test]
+    fn the_lobby_list_shares_no_budget_with_logins_registrations_or_code_misses() {
+        let throttle = Throttle::new(limits());
+        let t0 = Instant::now();
+        for _ in 0..6 {
+            throttle.begin_listing(t0, ip("10.0.0.1")).unwrap();
+        }
+        assert!(throttle.begin_listing(t0, ip("10.0.0.1")).is_err());
+        assert!(throttle.begin_login(t0, ip("10.0.0.1"), "ann").is_ok());
+        assert!(throttle.begin_register(t0, ip("10.0.0.1")).is_ok());
+        assert!(throttle.begin_code(t0, ip("10.0.0.1")).is_ok());
+        // And the other way round: a spent code budget leaves the list alone.
+        for _ in 0..4 {
+            throttle.begin_code(t0, ip("10.0.0.3")).unwrap();
+        }
+        assert!(throttle.begin_code(t0, ip("10.0.0.3")).is_err());
+        assert!(throttle.begin_listing(t0, ip("10.0.0.3")).is_ok());
+    }
+
+    #[rstest]
+    #[case::same_v4("10.0.0.1", "10.0.0.1", true)]
+    #[case::other_v4("10.0.0.1", "10.0.0.2", false)]
+    #[case::same_v6_64("2001:db8:1:2::1", "2001:db8:1:2:ffff:ffff:ffff:ffff", true)]
+    #[case::other_v6_64("2001:db8:1:2::1", "2001:db8:1:3::1", false)]
+    #[case::mapped_v4("10.0.0.1", "::ffff:10.0.0.1", true)]
+    fn lobby_requests_are_counted_per_network(
+        #[case] first: &str,
+        #[case] second: &str,
+        #[case] same: bool,
+    ) {
+        let throttle = Throttle::new(AttemptLimits {
+            lobby_requests_per_ip: 1,
+            ..limits()
+        });
+        let t0 = Instant::now();
+        assert!(throttle.begin_listing(t0, ip(first)).is_ok());
+        assert_eq!(throttle.begin_listing(t0, ip(second)).is_err(), same);
     }
 
     #[test]
