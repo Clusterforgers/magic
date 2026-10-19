@@ -393,8 +393,9 @@ async fn idle_seats_in_one_round_wait_one_dwell_then_staggers_and_the_round_stop
         arrivals[seats], 1_200,
         "and the whole round waits 1200 at most: {arrivals:?}"
     );
+    // Four staggers of 80 or more use the 300 ms left after a dwell of 900 up, so each one after the fourth is 0.
     assert!(
-        gaps.contains(&0),
+        gaps.iter().skip(4).all(|gap| *gap == 0),
         "past the cap the passes follow at once: {gaps:?}"
     );
     assert_eq!(

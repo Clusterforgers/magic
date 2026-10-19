@@ -243,7 +243,10 @@ async fn the_table_cannot_tell_a_seat_with_a_play_from_one_without(
     let with_a_play = play(seats, holder, Card::Castable, Dwell::DEFAULT).await;
     let without = play(seats, holder, Card::Unaffordable, Dwell::DEFAULT).await;
 
-    // The games differ in one hidden card and in nothing the log says...
+    // What the other seats can see of the two games is nothing that tells them apart...
+    assert_eq!(differences(&with_a_play, &without), Vec::<String>::new());
+
+    // ...though the games differ in one hidden card and in nothing the log says...
     assert_eq!(with_a_play.log, without.log);
     assert_ne!(with_a_play.hash, without.hash);
     // ...so that the holder is asked at its windows in one game and at none in the other.
@@ -266,9 +269,6 @@ async fn the_table_cannot_tell_a_seat_with_a_play_from_one_without(
             "every game was followed for {BATCHES} batches"
         );
     }
-
-    // What the other seats can see of that is nothing.
-    assert_eq!(differences(&with_a_play, &without), Vec::<String>::new());
 }
 
 #[rstest]
