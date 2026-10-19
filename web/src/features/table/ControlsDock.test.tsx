@@ -1,4 +1,4 @@
-// Goal: the controls dock is where the pass controls of a Priority prompt are drawn, wherever the prompt itself is: in the dock while the table has one, in place where it has none, never twice, with the prompt still owning them (its state and its answers); the dock says that the server is passing for the seat, and holds the stop ladder only when the table says it has room.
+// Goal: the controls dock is where the pass controls of a Priority prompt are drawn, wherever the prompt itself is: in the dock while the table has one, in place where it has none, never twice, with the prompt still owning them (its state and its answers); the dock says that the server is passing for the seat, and holds the stop ladder as one row where the table says it has room and behind one Stops button where it has not.
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { useState } from 'react'
@@ -49,7 +49,7 @@ describe('InControlsDock', () => {
               <Counter />
             </InControlsDock>
           </div>
-          <ControlsDock stops={false} />
+          <ControlsDock stopsRow={false} />
         </ControlsSlotProvider>
       ),
     })
@@ -66,7 +66,7 @@ describe('InControlsDock', () => {
           <InControlsDock>
             <Counter />
           </InControlsDock>
-          <ControlsDock stops={false} />
+          <ControlsDock stopsRow={false} />
         </ControlsSlotProvider>
       ),
     })
@@ -130,26 +130,28 @@ describe('the dock of the table', () => {
     expect(dock.querySelector('[data-slot="primary-action"]')).toBeNull()
   })
 
-  it('has the stop ladder when the table says it has room, and not otherwise', () => {
+  it('draws the stop ladder as a row when the table says it has room, and one Stops button otherwise', () => {
     const { unmount } = renderTable({
       seats: 2,
       ui: (
         <ControlsSlotProvider>
-          <ControlsDock stops />
+          <ControlsDock stopsRow />
         </ControlsSlotProvider>
       ),
     })
     expect(document.querySelector('[data-region="controls"] [data-slot="stop-ladder"]')).not.toBeNull()
+    expect(document.querySelector('[data-slot="stops-button"]')).toBeNull()
     unmount()
     renderTable({
       seats: 2,
       ui: (
         <ControlsSlotProvider>
-          <ControlsDock stops={false} />
+          <ControlsDock stopsRow={false} />
         </ControlsSlotProvider>
       ),
     })
-    expect(document.querySelector('[data-slot="stop-ladder"]')).toBeNull()
+    expect(document.querySelector('[data-region="controls"] [data-slot="stop-ladder"]')).toBeNull()
+    expect(document.querySelector('[data-region="controls"] [data-slot="stops-button"]')).not.toBeNull()
   })
 
   it('scrolls inside itself when it holds more than it has room for, with the edge fade, never the page', () => {

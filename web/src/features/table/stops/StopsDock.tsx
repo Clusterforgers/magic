@@ -26,7 +26,12 @@ export function StopsDock({ row }: { row: boolean }) {
     <Popover>
       <PopoverTrigger
         render={
-          <Button data-slot="stops-button" variant="outline" size="sm" aria-label={stopsButtonName(count, mode)} />
+          <Button
+            data-slot="stops-button"
+            variant="outline"
+            size="sm"
+            aria-label={stopsButtonName(count, mode)}
+          />
         }
       >
         <span aria-hidden="true">Stops</span>
@@ -37,7 +42,12 @@ export function StopsDock({ row }: { row: boolean }) {
         ) : null}
         {mode === 'Off' ? null : <Gamepad2 aria-hidden="true" />}
       </PopoverTrigger>
-      <PopoverContent keepMounted side="top" align="end" className="w-auto max-w-[calc(100vw-1rem)] gap-0 p-2">
+      <PopoverContent
+        keepMounted
+        side="top"
+        align="end"
+        className="w-auto max-w-[calc(100vw-1rem)] gap-0 p-2"
+      >
         <PopoverTitle className="sr-only">Stops and Full Control</PopoverTitle>
         <StopsBar layout="panel" />
       </PopoverContent>

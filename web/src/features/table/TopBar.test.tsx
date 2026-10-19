@@ -1,4 +1,4 @@
-// Goal: the top bar of the table has home, a turn badge that says whose turn it is and which step (gold on your own turn, outlined on another's), the button of the side sheet where the side area is a sheet, and a table menu with the layout, the theme and Concede, and with the stop ladder and Full Control where the controls dock has no room for them, so that no control is lost at any window size and the Control keys work with the menu shut.
+// Goal: the top bar of the table has home, a turn badge that says whose turn it is and which step (gold on your own turn, outlined on another's), the button of the side sheet where the side area is a sheet, and a table menu with the layout, the theme and Concede only, at every window size, since the stop ladder and Full Control live in the controls dock, and the Control keys work with the menu shut.
 import { act, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { appTheme } from '@/hooks/useTheme'
@@ -20,7 +20,6 @@ const badge = (): HTMLElement => must(document.querySelector<HTMLElement>('[data
 const bar = (): HTMLElement => must(document.querySelector<HTMLElement>('[data-region="bar"]'))
 const menuButton = () => screen.getByRole('button', { name: 'Table menu' })
 const menu = () => screen.getByRole('dialog', { name: 'Table menu' })
-const dock = (): HTMLElement => must(document.querySelector<HTMLElement>('[data-region="controls"]'))
 
 describe('the bar', () => {
   it('has home, the turn badge and the table menu, in that order', () => {
@@ -155,33 +154,25 @@ describe('the table menu', () => {
 })
 
 describe('the stop ladder and Full Control', () => {
-  const ladder = () => document.querySelector('[data-slot="stop-ladder"]')
-
-  it('sit in the controls dock where it is tall enough, and not in the menu', async () => {
-    const { user } = renderTable({ seats: 2, options: { viewport: WIDE } })
-    expect(dock()).toContainElement(ladder() as HTMLElement)
-    expect(within(dock()).getByRole('button', { name: 'Full Control: off' })).toBeInTheDocument()
+  it.each([
+    ['a wide window', WIDE],
+    ['a laptop', LAPTOP],
+    ['a phone', PHONE],
+  ])('are never in the menu, which keeps the layout, the theme and Concede: %s', async (_name, viewport) => {
+    const { user } = renderTable({ seats: 2, options: { viewport } })
     await user.click(menuButton())
     expect(within(menu()).queryByRole('region', { name: 'Stops and Full Control' })).toBeNull()
+    expect(within(menu()).queryByRole('group', { name: 'Stops' })).toBeNull()
+    expect(within(menu()).queryByRole('button', { name: /Full Control|^Stops/ })).toBeNull()
+    expect(menu().querySelector('[data-slot="stop-ladder"]')).toBeNull()
+    expect(
+      [...menu().querySelectorAll('[role="group"][aria-label]')].map((group) =>
+        group.getAttribute('aria-label'),
+      ),
+    ).toEqual(['Layout', 'Theme'])
+    expect(within(menu()).getByRole('button', { name: 'Concede' })).toBeInTheDocument()
+    // They are in the dock instead, once.
     expect(document.querySelectorAll('[data-slot="stop-ladder"]')).toHaveLength(1)
-  })
-
-  it('are in the menu, and only there, where the dock is too low for them', async () => {
-    const { user } = renderTable({ seats: 2, options: { viewport: LAPTOP } })
-    expect(dock().querySelector('[data-slot="stop-ladder"]')).toBeNull()
-    // The menu keeps them in the page while it is shut (hidden), so that the Control keys go on working.
-    expect(screen.queryByRole('region', { name: 'Stops and Full Control' })).toBeNull()
-    await user.click(menuButton())
-    const stops = within(within(menu()).getByRole('region', { name: 'Stops and Full Control' }))
-    expect(stops.getByRole('group', { name: 'Stops' })).toBeInTheDocument()
-    expect(stops.getByRole('button', { name: 'Full Control: off' })).toBeInTheDocument()
-    expect(document.querySelectorAll('[data-slot="stop-ladder"]')).toHaveLength(1)
-  })
-
-  it('are in the menu on a phone too, folded to a line that counts the stops', async () => {
-    const { user } = renderTable({ seats: 2, options: { viewport: PHONE } })
-    await user.click(menuButton())
-    expect(within(menu()).getByRole('button', { name: /^Stops · / })).toBeInTheDocument()
   })
 
   it('answer Control from the keyboard with the menu shut, wherever they are', async () => {

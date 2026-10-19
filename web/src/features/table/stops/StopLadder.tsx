@@ -180,8 +180,9 @@ export function StopLadder({ layout }: { layout: StopsLayout }) {
     })),
   )
   const [keep, setKeep] = useState(false)
-  // A side picked by hand holds only for the turn it was picked in.
+  // A side picked by hand holds until the turn changes hands, then the row follows the turn again.
   const [pick, setPick] = useState<{ side: StopSide; turn: StopSide | null } | null>(null)
+  if (pick !== null && pick.turn !== turn) setPick(null)
 
   const press = useCallback(
     (on: StopSide, at: StopStep, shift: boolean): void => {
@@ -193,7 +194,7 @@ export function StopLadder({ layout }: { layout: StopsLayout }) {
   )
   if (!shown) return null
 
-  const showing: StopSide = pick !== null && pick.turn === turn ? pick.side : (turn ?? 'Own')
+  const showing: StopSide = pick?.side ?? turn ?? 'Own'
   const steps = ladderSteps(step, stops)
   return (
     <div

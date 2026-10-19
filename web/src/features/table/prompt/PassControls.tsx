@@ -11,6 +11,7 @@ import {
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { YieldUntil } from '@/protocol/generated'
 import { InControlsDock } from '../ControlsDock'
+import { useCompactDock } from '../dockLayout'
 import { usePrompt } from './PromptContext'
 import {
   enterYields,
@@ -53,12 +54,14 @@ export function PassControls({ canPass }: { canPass: boolean }) {
     if (session.yieldUntil(until)) setAsked(true)
   }
   const yieldKey = enterYields(situation, !canYield)
+  // The dock of a phone has no room for "End turn" beside the primary button, so the menu holds it.
+  const compact = useCompactDock()
   usePrimaryKey({ space: pass, enter: yieldKey ? () => yieldTo('EndOfTurn') : pass }, free)
 
   const label = primaryLabel(situation)
   return (
     <InControlsDock>
-      {yieldKey ? (
+      {yieldKey && !compact ? (
         <Button
           data-slot="secondary-action"
           variant="outline"
@@ -86,6 +89,15 @@ export function PassControls({ canPass }: { canPass: boolean }) {
             <EllipsisVertical aria-hidden="true" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            {yieldKey && compact ? (
+              <DropdownMenuItem
+                data-yield="EndOfTurn"
+                aria-description={YIELD_WORDS.EndOfTurn.description}
+                onClick={() => yieldTo('EndOfTurn')}
+              >
+                {YIELD_WORDS.EndOfTurn.action}
+              </DropdownMenuItem>
+            ) : null}
             {stacked ? (
               <DropdownMenuItem
                 data-yield="Resolve"

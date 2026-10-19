@@ -17,8 +17,7 @@ import {
   planTable,
   regionSizes,
   SHARED_CLAMP,
-  STOPS_DOCK_MIN_MAIN_PX,
-  STOPS_DOCK_MIN_PX,
+  STOPS_ROW_MIN_WIDTH_PX,
 } from './layout'
 import type { Breakpoint, TableMode, Viewport } from './layout'
 
@@ -296,32 +295,32 @@ describe('planTable', () => {
     expect(plan.pod).toBe(viewport.width < 640 ? 'line' : 'aside')
   })
 
-  it('keeps the stop ladder in the controls dock only when the dock is high enough and the hand dock keeps its room', () => {
+  it('draws the stop ladder as one row in the controls dock from the L breakpoint up, at any height', () => {
     for (const [, viewport] of SIZES) {
       const plan = planTable({ viewport, seatCount: 2, viewer: 0 })
-      const room =
-        plan.regions.hand >= STOPS_DOCK_MIN_PX &&
-        plan.regions.main.width >= STOPS_DOCK_MIN_MAIN_PX &&
-        !plan.regions.phone
-      expect(plan.stopsInDock).toBe(room)
+      expect(plan.stopsRow).toBe(viewport.width >= STOPS_ROW_MIN_WIDTH_PX)
     }
+    expect(STOPS_ROW_MIN_WIDTH_PX).toBe(1280)
   })
 
   it.each([
     [1920, 1080, true],
     [1600, 1000, true],
-    // High enough, but too narrow to leave the hand dock its room beside the wide dock.
-    [1440, 900, false],
-    [1366, 768, false],
-    [1280, 720, false],
+    [1440, 900, true],
+    [1366, 768, true],
+    [1280, 720, true],
+    [1280, 480, true],
+    // One pixel short of L: the same content opens from the dock's "Stops" button.
+    [1279, 720, false],
     [1024, 768, false],
     [768, 1024, false],
+    [844, 390, false],
     [390, 844, false],
-  ])('puts the ladder in a %ix%i window in the %s dock', (width, height, inDock) => {
-    expect(planTable({ viewport: { width, height }, seatCount: 2, viewer: 0 }).stopsInDock).toBe(inDock)
+  ])('draws the ladder of a %ix%i window as a row: %s', (width, height, row) => {
+    expect(planTable({ viewport: { width, height }, seatCount: 2, viewer: 0 }).stopsRow).toBe(row)
   })
 
-  it('makes the controls dock wider while it holds the ladder, and a column on a phone', () => {
+  it('makes the controls dock wider while it holds the ladder row, and a column on a phone', () => {
     expect(mainColumns({ phone: false }, false)).toBe('minmax(0, 1fr) fit-content(480px)')
     expect(mainColumns({ phone: false }, true)).toBe('minmax(0, 1fr) fit-content(720px)')
     expect(mainColumns({ phone: true }, false)).toBe('minmax(0, 1fr) fit-content(160px)')

@@ -56,11 +56,11 @@ describe('the frame', () => {
 
   it.each(SIZES)('writes the rows and columns of the layout code at %s', (_name, viewport) => {
     const { container } = renderTable({ seats: 2, options: { viewport } })
-    const { regions, stopsInDock } = planTable({ viewport, seatCount: 2, viewer: 0 })
+    const { regions, stopsRow } = planTable({ viewport, seatCount: 2, viewer: 0 })
     const main = must(container.querySelector<HTMLElement>('[data-slot="table-main"]'))
     const style = main.getAttribute('style') ?? ''
     expect(style).toContain(`grid-template-rows: ${gridRows(regions)}`)
-    expect(style).toContain(`grid-template-columns: ${mainColumns(regions, stopsInDock)}`)
+    expect(style).toContain(`grid-template-columns: ${mainColumns(regions, stopsRow)}`)
     expect(grid(container).getAttribute('style') ?? '').toContain(
       `grid-template-columns: ${gridColumns(regions.side)}`,
     )

@@ -17,10 +17,7 @@ export function StopsBar({ layout }: { layout: StopsLayout }) {
       aria-label="Stops and Full Control"
       data-slot="stops-bar"
       data-layout={layout}
-      className={cn(
-        'flex items-center gap-2',
-        layout === 'row' ? 'flex-nowrap' : 'flex-wrap justify-end',
-      )}
+      className={cn('flex items-center gap-2', layout === 'row' ? 'flex-nowrap' : 'flex-wrap justify-end')}
     >
       <StopLadder layout={layout} />
       <FullControlToggle />
