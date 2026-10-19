@@ -343,9 +343,23 @@ impl RandomBot {
     }
 
     /// Splits combat damage randomly among blockers, one point at a time.
+    ///
+    /// With trample half the divisions give every blocker its lethal damage first (when the power covers it) and
+    /// leave a random part of the rest for the player or planeswalker attacked.
     fn divide(&mut self, options: &DamageOptions) -> Vec<(ObjectId, u32)> {
         let mut shares: Vec<(ObjectId, u32)> = options.blockers.iter().map(|b| (*b, 0)).collect();
-        for _ in 0..options.power {
+        let needed: u32 = options.lethal.iter().sum();
+        let past_the_blockers = options.excess.is_some() && needed <= options.power;
+        let mut to_spread = options.power;
+        if past_the_blockers && self.rng.below(2) == 0 {
+            for (share, lethal) in shares.iter_mut().zip(&options.lethal) {
+                share.1 = *lethal;
+            }
+            let spare = options.power - needed;
+            let kept = u32::try_from(self.rng.index(spare as usize + 1)).unwrap_or(0);
+            to_spread = spare - kept;
+        }
+        for _ in 0..to_spread {
             let pick = self.rng.index(shares.len());
             shares[pick].1 += 1;
         }

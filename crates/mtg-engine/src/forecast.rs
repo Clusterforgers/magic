@@ -1,10 +1,10 @@
 //! The combat forecast: what combat damage would do if it were dealt right now.
 //!
-//! The forecast is derived data, recomputed from the state whenever it is asked for and never
-//! stored. It mirrors `damage::damage_events` but divides damage by a default rule where the
-//! attacker's controller has not chosen yet. Keywords join in three small functions: `strike_power`
-//! in `damage` (first strike, double strike, power changes), [`lethal_damage`] (deathtouch) and
-//! [`divide`] (trample, other assignment rules). None of them exists yet.
+//! The forecast is derived data, recomputed from the state whenever it is asked for and never stored. It
+//! plays the damage steps still ahead on a copy of the state with the engine's own code: `damage_events`
+//! deals a step, the events fold, and state-based actions settle before the next step, so keywords (first
+//! strike, deathtouch, trample, lifelink, indestructible) are in the forecast because they are in the
+//! damage. An attacker whose controller has not divided its damage yet deals the default division.
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -13,13 +13,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::characteristics::{Characteristics, characteristics};
 use crate::combat::{AttackTarget, Attacker, DamageTarget};
-use crate::damage::{DamagePass, strike_power};
-use crate::object::PermanentState;
+use crate::damage::{DamagePass, damage_events, passes_ahead};
+use crate::events::Event;
+use crate::fold::apply_event;
+use crate::keywords;
+use crate::sba;
 use crate::state::{GameState, Stage};
 use crate::turn::Step;
-
-/// The damage pass the forecast describes; first strike will add a second forecast pass.
-const PASS: DamagePass = DamagePass::Regular;
 
 /// One expected packet of combat damage.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -29,7 +29,7 @@ pub struct ForecastDamage {
     pub source: ObjectId,
     /// Who or what receives it.
     pub target: DamageTarget,
-    /// How much (may be 0 for a creature with no power or a blocker left without a share).
+    /// How much in all the damage steps ahead (may be 0 for a creature with no power or a blocker left without a share).
     pub amount: u32,
 }
 
@@ -45,7 +45,8 @@ pub struct AttackerForecast {
     pub blocked: bool,
     /// Creatures blocking it, in declared order.
     pub blockers: Vec<ObjectId>,
-    /// Damage it assigns: one packet per blocker in declared order, or one to the defender when unblocked.
+    /// Damage it assigns: one packet per blocker in declared order, or one to the defender when unblocked, and
+    /// with trample one to the defender after the blockers. A creature that strikes twice has both in one packet.
     pub deals: Vec<ForecastDamage>,
     /// Damage its blockers deal to it, one packet per blocker.
     pub receives: Vec<ForecastDamage>,
@@ -59,7 +60,7 @@ pub struct CreatureForecast {
     pub object: ObjectId,
     /// Combat damage it is expected to receive, from all sources together.
     pub damage: u32,
-    /// Whether the damage already marked plus this damage reaches its toughness.
+    /// Whether state-based actions destroy it once the damage is dealt: lethal damage or deathtouch, unless it is indestructible.
     pub dies: bool,
 }
 
@@ -67,13 +68,13 @@ pub struct CreatureForecast {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct PlayerForecast {
-    /// The player under attack.
+    /// The player under attack, or one who gains life from the damage.
     pub player: PlayerId,
     /// Combat damage they are expected to take (0 when every attacker aimed at them is blocked).
     pub damage: u32,
     /// Their life total now.
     pub life: i32,
-    /// Their life total after the damage.
+    /// Their life total after the damage and the life it gains (lifelink).
     pub life_after: i32,
     /// Whether the damage takes them to 0 life or less.
     pub lethal: bool,
@@ -87,7 +88,7 @@ pub struct CombatForecast {
     pub attackers: Vec<AttackerForecast>,
     /// Every creature in combat, by id, with its expected damage and fate.
     pub creatures: Vec<CreatureForecast>,
-    /// Every player an attacker is aimed at, by seat.
+    /// Every player an attacker is aimed at or whose life the damage changes, by seat.
     pub players: Vec<PlayerForecast>,
 }
 
@@ -99,10 +100,11 @@ impl CombatForecast {
 }
 
 /// The forecast while combat damage is still to come, or `None` before attackers are declared, once no
-/// attacker is left and after damage has been dealt.
+/// attacker is left and after the last damage has been dealt.
 ///
 /// After the damage step has dealt its damage the combat state still exists until the end of combat,
-/// so this is the function a view uses; [`combat_forecast`] alone would count the damage twice.
+/// so this is the function a view uses; [`combat_forecast`] alone would count the damage twice. While
+/// the first-strike step holds priority its damage is done and the regular step is still ahead.
 pub fn pending_combat_forecast(state: &GameState) -> Option<CombatForecast> {
     let combat = state.combat();
     if state.stage() != Stage::Turns
@@ -112,9 +114,9 @@ pub fn pending_combat_forecast(state: &GameState) -> Option<CombatForecast> {
         return None;
     }
     let pending = match state.turn().step() {
-        Step::DeclareAttackers | Step::DeclareBlockers => true,
+        Step::DeclareAttackers | Step::DeclareBlockers | Step::FirstStrikeDamage => true,
         // A damage step that has not granted priority yet is waiting on a damage assignment.
-        Step::FirstStrikeDamage | Step::CombatDamage => state.priority().is_none(),
+        Step::CombatDamage => state.priority().is_none(),
         _ => false,
     };
     pending.then(|| combat_forecast(state))
@@ -125,164 +127,202 @@ pub fn pending_combat_forecast(state: &GameState) -> Option<CombatForecast> {
 /// Meaningful while an attack is declared and damage has not been dealt; see
 /// [`pending_combat_forecast`] for the guarded version.
 pub fn combat_forecast(state: &GameState) -> CombatForecast {
-    let mut to_objects: BTreeMap<ObjectId, u32> = BTreeMap::new();
-    let mut to_players: BTreeMap<PlayerId, u32> = BTreeMap::new();
+    let run = Run::of(state);
+    let attackers: Vec<AttackerForecast> = state
+        .combat()
+        .attackers()
+        .iter()
+        .map(|attacker| attacker_forecast(state, attacker, &run))
+        .collect();
+
     let mut involved: BTreeSet<ObjectId> = BTreeSet::new();
     let mut attacked: BTreeSet<PlayerId> = BTreeSet::new();
-    let mut attackers = Vec::new();
     for attacker in state.combat().attackers() {
-        let deals = deals_of(state, attacker);
-        let receives = receives_of(state, attacker);
         involved.insert(attacker.object());
         involved.extend(attacker.blockers());
         if let AttackTarget::Player(player) = attacker.target() {
             attacked.insert(player);
         }
-        for hit in deals.iter().chain(&receives) {
-            match hit.target {
-                DamageTarget::Player(p) => add(to_players.entry(p).or_default(), hit.amount),
-                DamageTarget::Object(o) => add(to_objects.entry(o).or_default(), hit.amount),
+    }
+    for (_, target) in run.dealt.keys() {
+        match *target {
+            DamageTarget::Object(object) => {
+                involved.insert(object);
+            }
+            DamageTarget::Player(player) => {
+                attacked.insert(player);
             }
         }
-        attackers.push(AttackerForecast {
-            attacker: attacker.object(),
-            target: attacker.target(),
-            blocked: attacker.blocked(),
-            blockers: attacker.blockers().to_vec(),
-            deals,
-            receives,
-        });
     }
-    involved.extend(to_objects.keys());
-    attacked.extend(to_players.keys());
+    // Lifelink changes the life of players nobody attacks.
+    attacked.extend(
+        state
+            .players()
+            .iter()
+            .map(crate::player::Player::id)
+            .filter(|id| {
+                state.player(*id).map(crate::player::Player::life)
+                    != run.after.player(*id).map(crate::player::Player::life)
+            }),
+    );
+
     CombatForecast {
         attackers,
         creatures: involved
             .into_iter()
-            .filter_map(|id| {
-                creature_forecast(state, id, to_objects.get(&id).copied().unwrap_or(0))
-            })
+            .filter_map(|id| creature_forecast(state, id, &run))
             .collect(),
         players: attacked
             .into_iter()
-            .filter_map(|id| player_forecast(state, id, to_players.get(&id).copied().unwrap_or(0)))
+            .filter_map(|id| player_forecast(state, id, &run))
             .collect(),
     }
 }
 
-fn add(total: &mut u32, amount: u32) {
-    *total = total.saturating_add(amount);
+/// The damage steps still ahead played out on a copy of the state.
+struct Run {
+    /// The copy after the last step and the state-based actions that follow it.
+    after: GameState,
+    /// Damage dealt over all the steps, by source and recipient.
+    dealt: BTreeMap<(ObjectId, DamageTarget), u32>,
+    /// Creatures destroyed or put into the graveyard by state-based actions along the way.
+    died: BTreeSet<ObjectId>,
 }
 
-/// Damage the attacker assigns, using the controller's recorded division when there is one.
-fn deals_of(state: &GameState, attacker: &Attacker) -> Vec<ForecastDamage> {
-    let Some(power) = strike_power(state, attacker.object(), PASS) else {
-        return Vec::new();
-    };
+/// State-based actions that follow a step repeat until none is left; this bounds a bug, not a game.
+const MAX_SETTLE_ROUNDS: usize = 64;
+
+impl Run {
+    fn of(state: &GameState) -> Run {
+        let mut run = Run {
+            after: state.clone(),
+            dealt: BTreeMap::new(),
+            died: BTreeSet::new(),
+        };
+        for &pass in passes_ahead(state) {
+            let step = match pass {
+                DamagePass::FirstStrike => Step::FirstStrikeDamage,
+                DamagePass::Regular => Step::CombatDamage,
+            };
+            // Entering a step is what forgets the last step's divisions of damage; a step under way keeps its own.
+            let entered = run.after.turn().step() == step || run.fold(&[Event::StepBegan { step }]);
+            let events = damage_events(&run.after, pass);
+            if !entered || !run.fold(&events) || !run.settle() {
+                break;
+            }
+        }
+        run
+    }
+
+    /// Folds `events` onto the copy and notes the damage and deaths among them; `false` if one cannot be folded.
+    fn fold(&mut self, events: &[Event]) -> bool {
+        for event in events {
+            if apply_event(&mut self.after, event).is_err() {
+                return false;
+            }
+            match event {
+                Event::DamageDealt {
+                    source,
+                    target,
+                    amount,
+                } => {
+                    let total = self.dealt.entry((*source, *target)).or_default();
+                    *total = total.saturating_add(*amount);
+                }
+                Event::CreatureDied { object, .. } => {
+                    self.died.insert(*object);
+                }
+                _ => {}
+            }
+        }
+        true
+    }
+
+    /// Plays the state-based actions the real game runs between steps; `false` once the game is over.
+    fn settle(&mut self) -> bool {
+        for _ in 0..MAX_SETTLE_ROUNDS {
+            let mut events = sba::check(&self.after);
+            if events.is_empty() {
+                if let Some(result) = self.after.format().game_result(&self.after) {
+                    events = vec![Event::GameEnded { result }];
+                } else {
+                    events = sba::housekeeping(&self.after);
+                }
+            }
+            if events.is_empty() {
+                return true;
+            }
+            if !self.fold(&events) || self.after.stage() == Stage::Finished {
+                return false;
+            }
+        }
+        false
+    }
+
+    fn dealt_to(&self, source: ObjectId, target: DamageTarget) -> u32 {
+        self.dealt.get(&(source, target)).copied().unwrap_or(0)
+    }
+
+    fn total_to(&self, target: DamageTarget) -> u32 {
+        self.dealt
+            .iter()
+            .filter(|((_, to), _)| *to == target)
+            .fold(0u32, |sum, (_, amount)| sum.saturating_add(*amount))
+    }
+}
+
+fn attacker_forecast(state: &GameState, attacker: &Attacker, run: &Run) -> AttackerForecast {
     let source = attacker.object();
-    let hit = |target, amount| ForecastDamage {
+    let hit = |source, target| ForecastDamage {
         source,
         target,
-        amount,
+        amount: run.dealt_to(source, target),
     };
-    if !attacker.blocked() {
-        let target = match attacker.target() {
-            AttackTarget::Player(p) => DamageTarget::Player(p),
-            AttackTarget::Planeswalker(o) => DamageTarget::Object(o),
-        };
-        return vec![hit(target, power)];
-    }
-    let blockers = attacker.blockers();
-    if let [only] = blockers {
-        return vec![hit(DamageTarget::Object(*only), power)];
-    }
-    let shares = match &attacker.assignment {
-        Some(recorded) => blockers
+    let defender = match attacker.target() {
+        AttackTarget::Player(p) => DamageTarget::Player(p),
+        AttackTarget::Planeswalker(o) => DamageTarget::Object(o),
+    };
+    let mut deals: Vec<ForecastDamage> = if attacker.blocked() {
+        attacker
+            .blockers()
             .iter()
-            .map(|b| {
-                recorded
-                    .iter()
-                    .filter(|(r, _)| r == b)
-                    .fold(0, |sum, (_, n)| u32::saturating_add(sum, *n))
-            })
-            .collect(),
-        None => divide(state, blockers, power),
+            .map(|blocker| hit(source, DamageTarget::Object(*blocker)))
+            .collect()
+    } else {
+        vec![hit(source, defender)]
     };
-    blockers
-        .iter()
-        .zip(shares)
-        .map(|(b, share)| hit(DamageTarget::Object(*b), share))
-        .collect()
-}
-
-/// Damage the attacker's blockers deal back to it.
-fn receives_of(state: &GameState, attacker: &Attacker) -> Vec<ForecastDamage> {
-    attacker
+    // A blocked trampler may also assign to what it attacks, even when no blocker is left.
+    if attacker.blocked() && keywords::damage_rules(state, source).trample {
+        deals.push(hit(source, defender));
+    }
+    let receives = attacker
         .blockers()
         .iter()
-        .filter_map(|&blocker| {
-            Some(ForecastDamage {
-                source: blocker,
-                target: DamageTarget::Object(attacker.object()),
-                amount: strike_power(state, blocker, PASS)?,
-            })
-        })
-        .collect()
-}
-
-/// Damage that would destroy `id` given what is already marked on it (deathtouch will change this).
-fn lethal_damage(state: &GameState, id: ObjectId) -> u32 {
-    let toughness = characteristics(state, id)
-        .and_then(|c| c.toughness)
-        .unwrap_or(0);
-    let marked = marked_damage(state, id);
-    u32::try_from((i64::from(toughness) - i64::from(marked)).max(0)).unwrap_or(u32::MAX)
-}
-
-fn marked_damage(state: &GameState, id: ObjectId) -> u32 {
-    state
-        .object(id)
-        .and_then(|o| o.permanent())
-        .map_or(0, PermanentState::damage)
-}
-
-/// The default division of `power` among several blockers: lethal damage to each in declared order,
-/// the rest on the last (trample and other rules will change this).
-fn divide(state: &GameState, blockers: &[ObjectId], power: u32) -> Vec<u32> {
-    let lethal: Vec<u32> = blockers.iter().map(|b| lethal_damage(state, *b)).collect();
-    divide_in_order(power, &lethal)
-}
-
-/// Lethal damage to each entry in turn, then everything left over to the last one.
-fn divide_in_order(power: u32, lethal: &[u32]) -> Vec<u32> {
-    let mut left = power;
-    let mut shares = Vec::with_capacity(lethal.len());
-    for (i, needed) in lethal.iter().enumerate() {
-        let share = if i + 1 == lethal.len() {
-            left
-        } else {
-            left.min(*needed)
-        };
-        left -= share;
-        shares.push(share);
+        .map(|&blocker| hit(blocker, DamageTarget::Object(source)))
+        .collect();
+    AttackerForecast {
+        attacker: source,
+        target: attacker.target(),
+        blocked: attacker.blocked(),
+        blockers: attacker.blockers().to_vec(),
+        deals,
+        receives,
     }
-    shares
 }
 
-fn creature_forecast(state: &GameState, id: ObjectId, damage: u32) -> Option<CreatureForecast> {
-    let chars = characteristics(state, id).filter(Characteristics::is_creature)?;
-    let toughness = i64::from(chars.toughness.unwrap_or(0));
-    let total = i64::from(marked_damage(state, id)) + i64::from(damage);
+fn creature_forecast(state: &GameState, id: ObjectId, run: &Run) -> Option<CreatureForecast> {
+    characteristics(state, id).filter(Characteristics::is_creature)?;
     Some(CreatureForecast {
         object: id,
-        damage,
-        dies: toughness <= 0 || total >= toughness,
+        damage: run.total_to(DamageTarget::Object(id)),
+        dies: run.died.contains(&id),
     })
 }
 
-fn player_forecast(state: &GameState, id: PlayerId, damage: u32) -> Option<PlayerForecast> {
+fn player_forecast(state: &GameState, id: PlayerId, run: &Run) -> Option<PlayerForecast> {
     let life = state.player(id)?.life();
-    let life_after = life.saturating_sub(i32::try_from(damage).unwrap_or(i32::MAX));
+    let life_after = run.after.player(id)?.life();
+    let damage = run.total_to(DamageTarget::Player(id));
     Some(PlayerForecast {
         player: id,
         damage,
@@ -290,47 +330,4 @@ fn player_forecast(state: &GameState, id: PlayerId, damage: u32) -> Option<Playe
         life_after,
         lethal: damage > 0 && life_after <= 0,
     })
-}
-
-#[cfg(test)]
-mod tests {
-    //! Goal: the default division of damage among blockers gives each lethal damage in order and the rest to the last, for any power and toughness mix.
-
-    use super::divide_in_order;
-    use proptest::prelude::*;
-    use rstest::rstest;
-
-    #[rstest]
-    #[case::one_blocker(5, &[3], &[5])]
-    #[case::exact_fit(5, &[2, 3], &[2, 3])]
-    #[case::leftover_on_last(7, &[2, 3], &[2, 5])]
-    #[case::short_of_first(1, &[2, 3], &[1, 0])]
-    #[case::short_of_second(4, &[2, 3, 3], &[2, 2, 0])]
-    #[case::three_way(9, &[2, 2, 2], &[2, 2, 5])]
-    #[case::no_power(0, &[2, 2], &[0, 0])]
-    #[case::already_dead_first(3, &[0, 3], &[0, 3])]
-    #[case::nobody(3, &[], &[])]
-    fn damage_goes_lethal_in_order(
-        #[case] power: u32,
-        #[case] lethal: &[u32],
-        #[case] expected: &[u32],
-    ) {
-        assert_eq!(divide_in_order(power, lethal), expected);
-    }
-
-    proptest! {
-        #[test]
-        fn division_conserves_power_and_never_overfeeds_early_blockers(
-            power in 0u32..40,
-            lethal in prop::collection::vec(0u32..10, 1..6),
-        ) {
-            let shares = divide_in_order(power, &lethal);
-            prop_assert_eq!(shares.len(), lethal.len());
-            prop_assert_eq!(shares.iter().sum::<u32>(), power);
-            let (_, early) = shares.split_last().expect("at least one blocker");
-            for (share, needed) in early.iter().zip(&lethal) {
-                prop_assert!(share <= needed);
-            }
-        }
-    }
 }

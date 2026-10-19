@@ -14,6 +14,6 @@ object: ObjectId,
  */
 damage: number, 
 /**
- * Whether the damage already marked plus this damage reaches its toughness.
+ * Whether state-based actions destroy it once the damage is dealt: lethal damage or deathtouch, unless it is indestructible.
  */
 dies: boolean, };

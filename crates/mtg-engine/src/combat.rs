@@ -104,6 +104,13 @@ impl CombatState {
     pub(crate) fn remove_attackers_targeting(&mut self, target: AttackTarget) {
         self.attackers.retain(|a| a.target != target);
     }
+
+    /// Forgets how attackers divided their damage: each damage step starts with every attacker undivided.
+    pub(crate) fn clear_assignments(&mut self) {
+        for attacker in &mut self.attackers {
+            attacker.assignment = None;
+        }
+    }
 }
 
 /// The player an attack is aimed at, i.e. who may block it.
@@ -125,9 +132,10 @@ fn is_untapped_creature(state: &GameState, id: ObjectId) -> bool {
 
 /// Whether `id` may be declared as an attacker by `player` now.
 pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> bool {
-    state.object(id).is_some_and(|o| {
-        o.controller() == player && o.permanent().is_some_and(|p| !p.summoning_sick())
-    }) && is_untapped_creature(state, id)
+    state.object(id).is_some_and(|o| o.controller() == player)
+        && !keywords::summoning_sick(state, id)
+        && !keywords::forbids_attacking(state, id)
+        && is_untapped_creature(state, id)
 }
 
 fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTarget> {
@@ -184,6 +192,9 @@ pub(crate) fn defending_players(state: &GameState) -> Vec<PlayerId> {
 }
 
 /// Every creature `player` may block with and what each may block.
+///
+/// An attacker that needs several blockers (menace) is offered only while enough of `player`'s creatures could
+/// block it, so a creature that could only join a block that cannot be made is not offered for it.
 pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions {
     let blockable: Vec<ObjectId> = state
         .combat()
@@ -192,7 +203,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .filter(|a| defending_player(state, a.target) == Some(player))
         .map(Attacker::object)
         .collect();
-    let blockers = state
+    let candidates: Vec<(ObjectId, Vec<ObjectId>)> = state
         .zone(Zone::Battlefield)
         .iter()
         .copied()
@@ -200,13 +211,34 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             state.object(*id).is_some_and(|o| o.controller() == player)
                 && is_untapped_creature(state, *id)
         })
-        .filter_map(|object| {
+        .map(|object| {
             let can_block: Vec<ObjectId> = blockable
                 .iter()
                 .copied()
                 .filter(|attacker| !keywords::stops_block(state, *attacker, object))
                 .collect();
-            (!can_block.is_empty()).then_some(BlockerOption { object, can_block })
+            (object, can_block)
+        })
+        .collect();
+    let blockable_together = |attacker: ObjectId| {
+        let able = candidates
+            .iter()
+            .filter(|(_, can_block)| can_block.contains(&attacker))
+            .count();
+        able >= keywords::min_blockers(state, attacker)
+    };
+    let blockers = candidates
+        .iter()
+        .filter_map(|(object, can_block)| {
+            let can_block: Vec<ObjectId> = can_block
+                .iter()
+                .copied()
+                .filter(|attacker| blockable_together(*attacker))
+                .collect();
+            (!can_block.is_empty()).then_some(BlockerOption {
+                object: *object,
+                can_block,
+            })
         })
         .collect();
     BlockOptions { blockers }
@@ -233,8 +265,9 @@ pub(crate) fn check_attackers(
     Ok(())
 }
 
-/// Checks declared blocks against the options.
+/// Checks declared blocks against the options, and that an attacker that needs several blockers gets them.
 pub(crate) fn check_blockers(
+    state: &GameState,
     options: &BlockOptions,
     answer: &[(ObjectId, ObjectId)],
 ) -> Result<(), IllegalAnswer> {
@@ -251,11 +284,19 @@ pub(crate) fn check_blockers(
             return Err(IllegalAnswer::NotOffered("attacker to block"));
         }
     }
+    for (_, attacker) in answer {
+        let got = answer.iter().filter(|(_, a)| a == attacker).count();
+        let needed = keywords::min_blockers(state, *attacker);
+        if got < needed {
+            return Err(IllegalAnswer::TooFewBlockers { needed, got });
+        }
+    }
     Ok(())
 }
 
-/// Events for a validated attack declaration: the declaration and tapping the attackers.
+/// Events for a validated attack declaration: the declaration and tapping the attackers that tap to attack.
 pub(crate) fn attack_events(
+    state: &GameState,
     player: PlayerId,
     attackers: &[(ObjectId, AttackTarget)],
 ) -> Vec<Event> {
@@ -266,6 +307,7 @@ pub(crate) fn attack_events(
     events.extend(
         attackers
             .iter()
+            .filter(|(object, _)| !keywords::attacks_untapped(state, *object))
             .map(|(object, _)| Event::PermanentTapped { object: *object }),
     );
     events

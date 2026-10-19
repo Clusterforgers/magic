@@ -1,9 +1,18 @@
-//! First strike (CR 702.7): the rules are a stub until the keyword task (`docs/cards-dsl.md`, Keywords).
+//! First strike (CR 702.7): the creature deals combat damage in the first-strike step, before creatures without it.
 
-use super::KeywordRules;
+use mtg_cards::keyword::Keyword;
+
+use super::{DamageRules, KeywordRules};
 
 /// The rules of first strike.
 #[derive(Debug)]
 pub(super) struct FirstStrike;
 
-impl KeywordRules for FirstStrike {}
+impl KeywordRules for FirstStrike {
+    fn modifies_damage(&self, _keyword: &Keyword) -> DamageRules {
+        DamageRules {
+            first_strike: true,
+            ..DamageRules::default()
+        }
+    }
+}

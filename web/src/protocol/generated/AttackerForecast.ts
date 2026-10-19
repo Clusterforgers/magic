@@ -24,7 +24,8 @@ blocked: boolean,
  */
 blockers: Array<ObjectId>, 
 /**
- * Damage it assigns: one packet per blocker in declared order, or one to the defender when unblocked.
+ * Damage it assigns: one packet per blocker in declared order, or one to the defender when unblocked, and
+ * with trample one to the defender after the blockers. A creature that strikes twice has both in one packet.
  */
 deals: Array<ForecastDamage>, 
 /**

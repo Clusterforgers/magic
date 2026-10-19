@@ -19,16 +19,17 @@ use mtg_engine::{Event, GameSetup};
 use mtg_testkit::corpus::{card, corpus};
 use mtg_testkit::{Driver, Scenario, ScriptError, play_game};
 
-use Support::{Manual, Verified};
+use Support::{Manual, Partial, Verified};
 
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
-/// its definition carries (mana abilities and rules together). The engine runs the plain mana ability
-/// and spells and `{T}` abilities made of drawing, life and damage, so the four cards that need no more
-/// are Verified (the Forest's ability comes from its land type).
+/// its definition carries (mana abilities and rules together). The engine runs the plain mana ability,
+/// spells and `{T}` abilities made of drawing, life and damage, and the keywords of combat, so the five
+/// cards that need no more are Verified (the Forest's ability comes from its land type) and a card whose
+/// other abilities are still missing carries its keywords as Partial.
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
-    ("Archon of Cruelty", Manual, 0),
-    ("Bloodbraid Elf", Manual, 0),
+    ("Archon of Cruelty", Partial, 1),
+    ("Bloodbraid Elf", Partial, 1),
     ("Bonecrusher Giant // Stomp", Manual, 0),
     ("Bonesplitter", Manual, 0),
     ("Brainstorm", Manual, 0),
@@ -40,7 +41,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Doom Blade", Manual, 0),
     ("Eternal Witness", Manual, 0),
     ("Faithless Looting", Manual, 0),
-    ("Felidar Sovereign", Manual, 0),
+    ("Felidar Sovereign", Partial, 2),
     ("Fire // Ice", Manual, 0),
     ("Fireball", Manual, 0),
     ("Flooded Strand", Manual, 0),
@@ -53,14 +54,14 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Jace, the Mind Sculptor", Manual, 0),
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
-    ("Mulldrifter", Manual, 0),
+    ("Mulldrifter", Partial, 1),
     ("Opt", Manual, 0),
     ("Pacifism", Manual, 0),
     ("Panharmonicon", Manual, 0),
-    ("Questing Beast", Manual, 0),
+    ("Questing Beast", Partial, 3),
     ("Rampant Growth", Manual, 0),
     ("Rhystic Study", Manual, 0),
-    ("Serra Angel", Manual, 0),
+    ("Serra Angel", Verified, 2),
     ("Sneak Attack", Manual, 0),
     ("Sol Ring", Manual, 0),
     ("Swords to Plowshares", Manual, 0),

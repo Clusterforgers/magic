@@ -6,7 +6,7 @@ import type { PlayerId } from "./PlayerId";
  */
 export type PlayerForecast = { 
 /**
- * The player under attack.
+ * The player under attack, or one who gains life from the damage.
  */
 player: PlayerId, 
 /**
@@ -18,7 +18,7 @@ damage: number,
  */
 life: number, 
 /**
- * Their life total after the damage.
+ * Their life total after the damage and the life it gains (lifelink).
  */
 life_after: number, 
 /**

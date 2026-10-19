@@ -16,6 +16,6 @@ attackers: Array<AttackerForecast>,
  */
 creatures: Array<CreatureForecast>, 
 /**
- * Every player an attacker is aimed at, by seat.
+ * Every player an attacker is aimed at or whose life the damage changes, by seat.
  */
 players: Array<PlayerForecast>, };

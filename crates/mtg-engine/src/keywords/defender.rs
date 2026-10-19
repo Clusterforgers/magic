@@ -1,4 +1,6 @@
-//! Defender (CR 702.3): the rules are a stub until the keyword task (`docs/cards-dsl.md`, Keywords).
+//! Defender (CR 702.3): a creature with defender can't attack.
+
+use mtg_cards::keyword::Keyword;
 
 use super::KeywordRules;
 
@@ -6,4 +8,8 @@ use super::KeywordRules;
 #[derive(Debug)]
 pub(super) struct Defender;
 
-impl KeywordRules for Defender {}
+impl KeywordRules for Defender {
+    fn forbids_attacking(&self, _keyword: &Keyword) -> bool {
+        true
+    }
+}

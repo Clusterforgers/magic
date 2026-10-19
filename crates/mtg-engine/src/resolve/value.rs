@@ -322,9 +322,14 @@ impl<'a> Scope<'a> {
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
-            Pred::HasKeyword(keyword) => seen
-                .card
-                .is_some_and(|c| keywords::held_by(c).any(|held| held == keyword)),
+            // An object that has changed zones since it was named keeps the keywords its card prints.
+            Pred::HasKeyword(keyword) => seen.card.is_some_and(|card| {
+                if card.counter() == reference.counter {
+                    keywords::has_keyword(state, reference.id, keyword)
+                } else {
+                    keywords::printed(card).any(|held| held == keyword)
+                }
+            }),
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat)? {
                 Some(value) => op.holds(value, self.amount(to)?),

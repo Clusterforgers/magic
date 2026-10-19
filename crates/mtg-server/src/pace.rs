@@ -290,6 +290,8 @@ mod tests {
                 attacker: ObjectId(1),
                 power: 2,
                 blockers: Vec::new(),
+                excess: None,
+                lethal: Vec::new(),
             }),
             DecisionKind::Discard(DiscardOptions {
                 hand: Vec::new(),

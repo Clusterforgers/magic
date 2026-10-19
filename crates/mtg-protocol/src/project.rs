@@ -5,6 +5,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::combat::Attacker;
 use mtg_engine::forecast::pending_combat_forecast;
+use mtg_engine::keywords::{keywords_of, summoning_sick};
 use mtg_engine::object::ObjectKind;
 use mtg_engine::player::{Player, PlayerStatus};
 use mtg_engine::state::GameState;
@@ -69,6 +70,18 @@ fn zone_view(state: &GameState, viewer: PlayerId, zone: Zone) -> ZoneView {
     }
 }
 
+/// The names of the keywords of `id`, each once, in the order the object lists them.
+fn keyword_names(state: &GameState, id: ObjectId) -> Vec<String> {
+    let mut names: Vec<String> = Vec::new();
+    for keyword in keywords_of(state, id) {
+        let name = keyword.name();
+        if !names.iter().any(|seen| seen == name) {
+            names.push(name.to_owned());
+        }
+    }
+    names
+}
+
 fn type_list(types: CardTypes) -> Vec<CardType> {
     ALL_TYPES
         .into_iter()
@@ -109,10 +122,12 @@ impl ObjectView {
             power: chars.power,
             toughness: chars.toughness,
             abilities: chars.abilities,
+            keywords: keyword_names(state, id),
             permanent: object.permanent().map(|p| PermanentView {
                 tapped: p.tapped(),
                 damage: p.damage(),
-                summoning_sick: p.summoning_sick(),
+                // Haste excuses it, so the view says whether sickness holds it back, not only when it arrived.
+                summoning_sick: summoning_sick(state, id),
             }),
             kind: object.kind(),
             source: object.ability().map(|ability| ability.source().id),
