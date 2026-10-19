@@ -11,11 +11,12 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use common::{Step, is_hidden, run_game, unique_setup, with_unique_names};
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::choose::Choice;
 use mtg_engine::object::GameObject;
 use mtg_engine::zones::Zone;
-use mtg_engine::{Engine, GameState};
+use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
-use mtg_testkit::spell_fuzz_setup;
+use mtg_testkit::{archon_fuzz_setup, spell_fuzz_setup};
 use rstest::rstest;
 use serde_json::Value;
 
@@ -213,6 +214,89 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_spells_and_abilities(
     });
     assert!(engine.result().is_some(), "game should finish");
     assert!(checked > 500 && abilities > 0, "test must not be vacuous");
+}
+
+/// The order of triggers that go on the stack is a list of positions among them, not of objects.
+fn without_trigger_orders(events: Value) -> Value {
+    match events {
+        Value::Array(items) => Value::Array(
+            items
+                .into_iter()
+                .filter(|event| event.pointer("/Public/TriggersOrdered").is_none())
+                .collect(),
+        ),
+        other => other,
+    }
+}
+
+/// The choice of cards: the player asked sees every card they choose among (their own hand to discard, the
+/// battlefield to sacrifice), no other seat sees a card of that hand, and nothing in the batches that follow names
+/// a hidden card, the answer about a hand included.
+#[rstest]
+#[case(2, 31)]
+#[case(3, 32)]
+#[case(4, 33)]
+fn the_chooser_sees_the_cards_to_choose_among_and_no_other_seat_learns_a_hand(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut asked, mut from_hands, mut answers_about_hands) = (0usize, 0usize, 0usize);
+    let setup = with_unique_names(archon_fuzz_setup(players, seed).unwrap());
+    let engine = run_game(setup, seed, |step: &Step| {
+        answers_about_hands += step
+            .events
+            .iter()
+            .filter(|event| matches!(event, mtg_engine::Event::ChoiceMade { choice: Choice::Cards(cards), .. } if cards.iter().any(|c| step.before.object(*c).is_some_and(|o| matches!(o.zone(), Zone::Hand(_))))))
+            .count();
+        if let Some(Decision {
+            player,
+            kind: DecisionKind::ChooseCards(options),
+        }) = step.decision
+        {
+            asked += 1;
+            for viewer in &viewers {
+                let view = StateView::for_player(step.after, *viewer);
+                for card in &options.from {
+                    let in_hand = step
+                        .after
+                        .object(*card)
+                        .is_some_and(|o| matches!(o.zone(), Zone::Hand(_)));
+                    from_hands += usize::from(in_hand);
+                    let shown = view.objects.iter().any(|o| o.id == *card);
+                    assert_eq!(
+                        shown,
+                        !in_hand || viewer == player,
+                        "seed {seed} viewer {viewer:?}: {card:?} of the choice of {player:?}"
+                    );
+                }
+            }
+        }
+        let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+        for (viewer, batch) in viewers.iter().zip(&batches) {
+            let mut hidden = hidden_across(step.before, step.after, *viewer);
+            // A discarded card is shown to the table as it reaches the graveyard, even when its owner leaves the
+            // game later in the same batch.
+            for event in step.events {
+                if let mtg_engine::Event::CardDiscarded { object, .. } = event {
+                    hidden.remove(object);
+                }
+            }
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&without_trigger_orders(value), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
+        }
+    });
+    assert!(engine.result().is_some(), "game should finish");
+    assert!(
+        asked > 0 && from_hands > 0 && answers_about_hands > 0,
+        "test must not be vacuous: {asked} questions, {from_hands} cards from hands, {answers_about_hands} answers about hands"
+    );
 }
 
 #[rstest]
