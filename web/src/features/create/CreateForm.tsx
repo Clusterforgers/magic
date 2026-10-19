@@ -1,29 +1,33 @@
 import { Link, useNavigate } from '@tanstack/react-router'
-import { CircleAlertIcon, Plus } from 'lucide-react'
+import { CircleAlertIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Pill } from '@/components/Pill'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { useAuth, useAuthStore } from '@/features/auth/context'
 import { saveInvites } from '@/lib/invites'
-import { MAX_SEATS } from '@/lib/limits'
 import { fragmentOf, seatLinkPath } from '@/lib/seatLink'
 import type { Api, CreatedGame, CreateGameRequest, DeckInfo } from '@/net/api'
+import { AdvancedOptions } from './AdvancedOptions'
 import { describeApiError } from './apiErrors'
 import {
   addSeat,
+  chooseLinks,
+  chooseVisibility,
   defaultDraft,
   editSeat,
   nameFieldId,
   problemCount,
   problemsOf,
   removeSeat,
+  resizeSeats,
   toRequest,
 } from './form'
 import type { Draft } from './form'
 import { GameCreated } from './GameCreated'
-import { SeatFields } from './SeatFields'
+import { HostFields } from './HostFields'
+import { SeatList } from './SeatList'
+import { VisibilityField } from './VisibilityField'
 
 interface CreateFormProps {
   api: Api
@@ -35,7 +39,7 @@ interface Made {
   request: CreateGameRequest
 }
 
-/** The form for a new game, and, once the server has made it, the links to its seats. */
+/** The form for a new game; once the server has made it, the game's lobby, or the links to every seat. */
 export function CreateForm({ api, decks }: CreateFormProps) {
   const navigate = useNavigate()
   const auth = useAuthStore()
@@ -86,6 +90,17 @@ export function CreateForm({ api, decks }: CreateFormProps) {
     setDraft(next)
   }
 
+  function openLobby(created: CreatedGame): boolean {
+    const mine = created.seats.find((seat) => seat.seat === 0)
+    if (mine === undefined) return false
+    void navigate({
+      to: '/game/$gameId',
+      params: { gameId: created.game },
+      hash: fragmentOf(seatLinkPath(created.game, mine.seat, mine.token)),
+    })
+    return true
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
     if (pending) return
@@ -99,18 +114,20 @@ export function CreateForm({ api, decks }: CreateFormProps) {
     setFailure(null)
     try {
       const created = await api.createGame(request)
+      // The server shows the code once. A game with a link per seat has no open seat to take by it, so none is kept.
       saveInvites({
         game: created.game,
+        ...(draft.links || created.code === undefined ? {} : { code: created.code }),
         seats: created.seats.map((seat) => ({
           seat: seat.seat,
           name: request.seats[seat.seat]?.name ?? `Seat ${seat.seat + 1}`,
           token: seat.token,
         })),
       })
-      setMade({ created, request })
       // The new game is on the account's list now; asking also finds out if the session ended, which would have
       // made this a guest's game.
       if (account !== null) void auth.getState().loadGames()
+      if (draft.links || !openLobby(created)) setMade({ created, request })
     } catch (error) {
       setFailure(describeApiError(error))
     } finally {
@@ -137,6 +154,8 @@ export function CreateForm({ api, decks }: CreateFormProps) {
     )
   }
 
+  const shown = showProblems ? problems : null
+  const hostName = draft.seats[0]?.name.trim() || account
   return (
     <form
       ref={formRef}
@@ -150,14 +169,15 @@ export function CreateForm({ api, decks }: CreateFormProps) {
           Create a game
         </h1>
         <p className="mt-1 text-base text-muted-foreground">
-          Choose how many seats there are, then give each a name and a deck. You get one link per seat to send
-          to your friends.
+          {draft.links
+            ? 'Choose how many seats there are, then give each a name and a deck. You get one link per seat to send to your friends.'
+            : 'Choose how many seats there are and who can find the game. Your friends take the other seats from the game browser or with a link or code.'}
         </p>
         {account === null ? null : (
           <p data-slot="signed-in-note" className="mt-2 text-sm break-words">
             Signed in as <strong className="font-medium">{account}</strong>. You will play as{' '}
-            <strong className="font-medium">{draft.seats[0]?.name.trim() || account}</strong> in seat 1; the
-            other links are for your friends. The game will be listed under{' '}
+            <strong className="font-medium">{hostName}</strong> in seat 1
+            {draft.links ? '; the other links are for your friends' : ''}. The game will be listed under{' '}
             <Link to="/games" className="font-medium underline underline-offset-3">
               My games
             </Link>
@@ -166,58 +186,46 @@ export function CreateForm({ api, decks }: CreateFormProps) {
         )}
       </div>
 
-      <fieldset className="grid gap-2">
-        <legend className="mb-1 text-sm font-medium">Format</legend>
-        <div className="flex flex-wrap gap-2">
-          <label className="flex min-h-9 items-center gap-2 rounded-lg border border-border-strong px-3 py-2 text-sm has-checked:border-primary has-checked:bg-muted pointer-coarse:min-h-11">
-            <input type="radio" name="format" value="normal" defaultChecked className="accent-primary" />
-            Normal
-          </label>
-          <label className="flex min-h-9 items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground pointer-coarse:min-h-11">
-            <input type="radio" name="format" value="commander" disabled />
-            Commander
-            <Pill>coming soon</Pill>
-          </label>
-        </div>
-      </fieldset>
-
-      <section aria-labelledby="seats-title" className="grid gap-3">
-        <div className="flex items-center justify-between gap-2">
-          <h2 id="seats-title" className="text-lg font-semibold">
-            Seats
-          </h2>
-          <p className="text-sm text-muted-foreground" aria-live="polite">
-            {draft.seats.length} of {MAX_SEATS} seats
-          </p>
-        </div>
-        <ol className="grid gap-3">
-          {draft.seats.map((seat, index) => (
-            <SeatFields
-              key={seat.id}
-              position={index + 1}
-              seat={seat}
-              decks={decks}
-              problems={showProblems ? (problems.get(seat.id) ?? null) : null}
-              canRemove={draft.seats.length > 2}
-              onEdit={(id, change) => setDraft((current) => editSeat(current, id, change))}
-              onRemove={remove}
+      <div className="grid gap-6 md:grid-cols-2 md:items-start">
+        {draft.links ? (
+          <SeatList
+            draft={draft}
+            decks={decks}
+            problems={shown}
+            onEdit={(id, change) => setDraft((current) => editSeat(current, id, change))}
+            onAdd={add}
+            onRemove={remove}
+          />
+        ) : (
+          <HostFields
+            draft={draft}
+            decks={decks}
+            problems={shown?.get(draft.seats[0]?.id ?? -1) ?? null}
+            onEdit={(id, change) => setDraft((current) => editSeat(current, id, change))}
+            onCount={(count) => setDraft((current) => resizeSeats(current, decks, count))}
+          />
+        )}
+        <div className="grid content-start gap-6">
+          {draft.links ? null : (
+            <VisibilityField
+              value={draft.visibility}
+              onChange={(visibility) => setDraft((current) => chooseVisibility(current, visibility))}
             />
-          ))}
-        </ol>
-        <div>
-          <Button type="button" variant="outline" disabled={draft.seats.length >= MAX_SEATS} onClick={add}>
-            <Plus aria-hidden="true" />
-            Add seat
-          </Button>
+          )}
+          <AdvancedOptions
+            links={draft.links}
+            onLinks={(links) => setDraft((current) => chooseLinks(current, links))}
+          />
         </div>
-      </section>
+      </div>
 
       {showProblems && troubled > 0 ? (
         <Alert variant="destructive">
           <CircleAlertIcon aria-hidden="true" />
           <AlertDescription className="text-foreground">
-            {troubled === 1 ? 'One seat needs' : `${troubled} seats need`} fixing before the game can be
-            created.
+            {draft.links
+              ? `${troubled === 1 ? 'One seat needs' : `${troubled} seats need`} fixing before the game can be created.`
+              : 'Fix your name or deck before the game can be created.'}
           </AlertDescription>
         </Alert>
       ) : null}

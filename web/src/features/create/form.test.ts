@@ -4,12 +4,15 @@ import { MAX_NAME_CHARS, MAX_SEATS, MIN_SEATS } from '@/lib/limits'
 import { DECKS } from '@/test-utils/decks'
 import {
   addSeat,
+  chooseLinks,
+  chooseVisibility,
   defaultDraft,
   editSeat,
   nameProblem,
   problemCount,
   problemsOf,
   removeSeat,
+  resizeSeats,
   toRequest,
 } from './form'
 import type { Draft } from './form'
@@ -37,7 +40,15 @@ describe('the starting form', () => {
   it('leaves the deck empty, and so invalid, when the server has none', () => {
     const draft = defaultDraft([])
     expect(draft.seats.map((seat) => seat.deck)).toEqual(['', ''])
-    expect(problemCount(problemsOf(draft, []))).toBe(2)
+    // Only the creator's seat is filled in; the open seat is judged once it gets a link of its own.
+    expect(problemCount(problemsOf(draft, []))).toBe(1)
+    expect(problemCount(problemsOf(chooseLinks(draft, true), []))).toBe(2)
+  })
+
+  it('lists the game and gives every seat a link only when asked', () => {
+    const draft = defaultDraft(DECKS)
+    expect(draft.visibility).toBe('public')
+    expect(draft.links).toBe(false)
   })
 
   it('has no problems', () => {
@@ -162,7 +173,7 @@ describe('nameProblem', () => {
 
 describe('problemsOf', () => {
   it('marks only the seats that are wrong, by id', () => {
-    let draft = grown(3)
+    let draft = chooseLinks(grown(3), true)
     const [a, b, c] = draft.seats
     draft = editSeat(draft, a?.id ?? -1, { name: '' })
     draft = editSeat(draft, c?.id ?? -1, { deck: 'gone' })
@@ -179,16 +190,87 @@ describe('problemsOf', () => {
   })
 })
 
+describe('resizeSeats', () => {
+  it.each(seatCounts)('makes exactly %i seats, from either side', (count) => {
+    expect(resizeSeats(defaultDraft(DECKS), DECKS, count).seats).toHaveLength(count)
+    expect(resizeSeats(grown(MAX_SEATS), DECKS, count).seats).toHaveLength(count)
+  })
+
+  it.each([-3, 0, 1, 99, 2.9, Number.NaN])('keeps %s between the fewest and the most seats', (count) => {
+    const seats = resizeSeats(defaultDraft(DECKS), DECKS, count).seats.length
+    expect(seats).toBeGreaterThanOrEqual(MIN_SEATS)
+    expect(seats).toBeLessThanOrEqual(MAX_SEATS)
+  })
+
+  it('keeps what was typed in the seats that stay, and drops the last ones', () => {
+    let draft = grown(4)
+    draft = editSeat(draft, draft.seats[0]?.id ?? -1, { name: 'Ana', deck: 'mono-white' })
+    draft = resizeSeats(draft, DECKS, 2)
+    expect(draft.seats.map((seat) => [seat.name, seat.deck])).toEqual([
+      ['Ana', 'mono-white'],
+      ['Player 2', 'mono-red'],
+    ])
+    expect(resizeSeats(draft, DECKS, 3).seats.map((seat) => seat.name)).toEqual([
+      'Ana',
+      'Player 2',
+      'Player 1',
+    ])
+  })
+
+  it('returns the same draft when the count is already right', () => {
+    const draft = defaultDraft(DECKS)
+    expect(resizeSeats(draft, DECKS, 2)).toBe(draft)
+  })
+})
+
+describe('choosing', () => {
+  it('changes only the visibility, and only the link switch', () => {
+    const start = defaultDraft(DECKS)
+    expect(chooseVisibility(start, 'invite')).toEqual({ ...start, visibility: 'invite' })
+    expect(chooseLinks(start, true)).toEqual({ ...start, links: true })
+    expect(start.visibility).toBe('public')
+    expect(start.links).toBe(false)
+  })
+})
+
 describe('toRequest', () => {
-  it.each(seatCounts)('builds the exact body for %i seats', (count) => {
+  it.each(seatCounts)('builds the exact body for %i seats, only the creator’s held', (count) => {
     const draft = grown(count)
     expect(toRequest(draft)).toEqual({
       format: 'normal',
-      seats: draft.seats.map((seat) => ({ name: seat.name, deck: seat.deck })),
+      seats: draft.seats.map((seat, index) => ({
+        name: index === 0 ? seat.name : `Player ${index + 1}`,
+        deck: seat.deck,
+      })),
+      visibility: 'public',
+      held: 1,
     })
-    expect(Object.keys(toRequest(draft)).sort()).toEqual(['format', 'seats'])
+    expect(Object.keys(toRequest(draft)).sort()).toEqual(['format', 'held', 'seats', 'visibility'])
     for (const seat of toRequest(draft).seats) expect(Object.keys(seat).sort()).toEqual(['deck', 'name'])
   })
+
+  it('sends the visibility that was chosen', () => {
+    expect(toRequest(chooseVisibility(defaultDraft(DECKS), 'invite')).visibility).toBe('invite')
+  })
+
+  it('sends the open seats as Player N whatever their fields hold, since the server never reads them', () => {
+    let draft = grown(3)
+    draft = editSeat(draft, draft.seats[1]?.id ?? -1, { name: '' })
+    expect(toRequest(draft).seats.map((seat) => seat.name)).toEqual(['Player 1', 'Player 2', 'Player 3'])
+  })
+
+  it.each(seatCounts)(
+    'builds the body of a link for every seat for %i seats: all held, invite only',
+    (count) => {
+      const draft = chooseLinks(chooseVisibility(grown(count), 'public'), true)
+      expect(toRequest(draft)).toEqual({
+        format: 'normal',
+        seats: draft.seats.map((seat) => ({ name: seat.name, deck: seat.deck })),
+        visibility: 'invite',
+      })
+      expect('held' in toRequest(draft)).toBe(false)
+    },
+  )
 
   it('trims names, as the server does', () => {
     const draft = editSeat(defaultDraft(DECKS), 0, { name: '  Ana \t' })
@@ -196,7 +278,7 @@ describe('toRequest', () => {
   })
 
   it('keeps seat order', () => {
-    let draft = grown(3)
+    let draft = chooseLinks(grown(3), true)
     draft = editSeat(draft, draft.seats[0]?.id ?? -1, { name: 'first' })
     draft = editSeat(draft, draft.seats[2]?.id ?? -1, { name: 'third' })
     expect(toRequest(draft).seats.map((seat) => seat.name)).toEqual(['first', 'Player 2', 'third'])

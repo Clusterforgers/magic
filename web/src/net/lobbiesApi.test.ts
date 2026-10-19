@@ -57,6 +57,7 @@ const calls: [string, (api: Api) => Promise<unknown>, () => Response][] = [
     (api) => api.setVisibility(GAME, 'invite', { token: TOKEN }),
     () => jsonResponse(200, { visibility: 'invite' }),
   ],
+  ['closeGame', (api) => api.closeGame(GAME, { token: TOKEN }), () => empty(204)],
 ]
 
 /** Every error the game browser endpoints send, with its status and a real message. */

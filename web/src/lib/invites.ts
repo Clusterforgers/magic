@@ -1,7 +1,7 @@
 /**
- * The seat links of the game this tab created, kept in `sessionStorage` so the host can hand them out again from the
- * lobby after leaving the create page (the server shows a token only once). Every access can fail (blocked storage,
- * private windows, a full quota) and the app works without it.
+ * The seat links and the join code of the game this tab created, kept in `sessionStorage` so the host can hand them
+ * out again from the lobby after leaving the create page (the server shows a token and a code only once). Every access
+ * can fail (blocked storage, private windows, a full quota) and the app works without it.
  */
 import { isCount, isListOf, isRecord, isText } from '@/net/check'
 
@@ -12,9 +12,12 @@ export interface Invite {
   token: string
 }
 
-/** All the seats of one created game. */
+/** What this tab keeps of one created game. */
 export interface Invites {
   game: string
+  /** The join code the server answered, when the game has open seats to hand out by it. */
+  code?: string
+  /** The seats this tab holds a token for: the creator's, and the rest in a game made with a link per seat. */
   seats: Invite[]
 }
 
@@ -54,7 +57,9 @@ export function loadInvites(game: string, store: KeyValueStore | null = sessionS
     if (text === null || text === undefined) return null
     const value: unknown = JSON.parse(text)
     if (!isRecord(value) || value.game !== game || !isListOf(value.seats, isInvite)) return null
-    return { game, seats: value.seats }
+    return isText(value.code) && value.code !== ''
+      ? { game, code: value.code, seats: value.seats }
+      : { game, seats: value.seats }
   } catch {
     return null
   }

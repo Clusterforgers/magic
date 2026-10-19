@@ -44,6 +44,9 @@ async function register(page: Page, username: string): Promise<void> {
 
 /** Creates a two-seat game on `/` as the signed-in user and returns the seat links, `/game/<id>#seat=<n>&token=<t>`. */
 async function createGame(page: Page): Promise<string[]> {
+  // A link for every seat, so the page lists the links this helper returns.
+  await page.getByText('Advanced', { exact: true }).click()
+  await page.getByRole('checkbox', { name: 'Give every seat its own link' }).check()
   await page.getByRole('button', { name: 'Create game' }).click()
   await expect(page.getByRole('heading', { name: 'Game created' })).toBeVisible()
   const links = page.getByRole('list', { name: 'Seat links' }).locator('a[data-share-link]')

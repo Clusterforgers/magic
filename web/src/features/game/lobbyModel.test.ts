@@ -1,7 +1,7 @@
 // Goal: the lobby rows come from the server's roster when there is one and from the REST lookup otherwise, the summary line and the spoken announcement say the right thing for every mix of present, away, ready and waiting seats at tables of 2 to 12, and a seat's state follows from its two flags.
 import { describe, expect, it } from 'vitest'
-import type { GameInfo } from '@/net/api'
 import type { LobbyRoster } from '@/play/store'
+import type { GameInfo } from '@/protocol/generated'
 import { emptyTable, lobbyMessage, withSeats } from '@/test-utils/lobbyFrames'
 import { announcement, lobbyRows, seatState, summaryText } from './lobbyModel'
 import type { LobbyRow } from './lobbyModel'
@@ -38,6 +38,7 @@ const info = (over: Partial<GameInfo> = {}): GameInfo => ({
   connected: [],
   ready: [],
   result: null,
+  visibility: 'invite',
   ...over,
 })
 

@@ -2,8 +2,8 @@
  * The lobby as words and rows: which seats there are, who is here and who is ready, the sentence that sums it up and
  * the sentence a screen reader hears when it changes. Pure, so the rules are tested without a page.
  */
-import type { GameInfo } from '@/net/api'
 import type { LobbyRoster } from '@/play/store'
+import type { GameInfo } from '@/protocol/generated'
 
 /** One seat of the lobby as the page shows it. */
 export interface LobbyRow {
@@ -25,7 +25,7 @@ export interface LobbySources {
   /** What the open socket last said (the store clears it when the socket closes). */
   roster: LobbyRoster | null
   /** The last REST lookup, which names the seats before the socket opens and says who is here while it is down. */
-  info: GameInfo | null
+  info: Pick<GameInfo, 'seats' | 'connected' | 'ready'> | null
   /** This page's socket is open. */
   open: boolean
   /** This page's seat, once welcomed. */
@@ -33,6 +33,8 @@ export interface LobbySources {
   /** How many seats the Welcome said the table has. */
   seatCount: number | null
 }
+
+const filled = (name: string | undefined): string | undefined => (name === '' ? undefined : name)
 
 /**
  * The seats to show. The roster is the server's latest word and wins while the socket is open; without it (before
@@ -43,7 +45,8 @@ export function lobbyRows({ roster, info, open, seat, seatCount }: LobbySources)
   return Array.from({ length: count }, (_, index): LobbyRow => {
     const pushed = roster?.seats[index]
     const listed = info?.seats.find((entry) => entry.seat === index)?.name
-    const name = pushed?.name ?? listed
+    // An open seat has an empty name until somebody takes it; it reads as a seat nobody has joined yet.
+    const name = filled(pushed?.name) ?? filled(listed)
     const you = index === seat
     // A page knows best whether its own socket is open.
     const connected = you ? open : (pushed?.connected ?? info?.connected.includes(index) ?? false)

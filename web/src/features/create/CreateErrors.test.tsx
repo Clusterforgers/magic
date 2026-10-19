@@ -1,22 +1,17 @@
 // Goal: whatever goes wrong while creating a game reaches the player as one plain-words message with keyboard focus on it, leaves the form as it was, and can be retried; a request in flight cannot be sent twice.
 import { screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
+import { openCreateForm } from '@/test-utils/createForm'
 import { jsonResponse } from '@/test-utils/fakeFetch'
-import { createdReply, startServer } from '@/test-utils/fakeServer'
+import { createdReply } from '@/test-utils/fakeServer'
 import type { ServerScript } from '@/test-utils/fakeServer'
-import { renderInRouter } from '@/test-utils/router'
-import { CreateGamePage } from './CreateGamePage'
 
 async function submitWith(script: ServerScript) {
-  const server = startServer(script)
-  const user = userEvent.setup()
-  await renderInRouter(<CreateGamePage api={server.api} />)
-  await screen.findByRole('form', { name: 'Create a game' })
-  await user.clear(screen.getByLabelText('Name for seat 1'))
-  await user.type(screen.getByLabelText('Name for seat 1'), 'Ana')
-  await user.click(screen.getByRole('button', { name: 'Create game' }))
-  return { server, user }
+  const page = await openCreateForm(script)
+  await page.user.clear(screen.getByLabelText('Your name'))
+  await page.user.type(screen.getByLabelText('Your name'), 'Ana')
+  await page.user.click(screen.getByRole('button', { name: 'Create game' }))
+  return page
 }
 
 /** What the server sends for each of its error codes, and the words the page must answer with. */
@@ -44,8 +39,9 @@ describe('a game the server refuses', () => {
       expect(alert).not.toHaveTextContent(code)
       expect(alert).not.toHaveTextContent('raw server words')
       expect(alert).toHaveFocus()
-      expect(screen.getByLabelText('Name for seat 1')).toHaveValue('Ana')
+      expect(screen.getByLabelText('Your name')).toHaveValue('Ana')
       expect(screen.getByRole('button', { name: 'Create game' })).toBeEnabled()
+      expect(screen.queryByTestId('game-stub')).toBeNull()
       expect(screen.queryByRole('heading', { name: 'Game created' })).toBeNull()
     },
   )
@@ -74,6 +70,27 @@ describe('a game the server refuses', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('It said "short and stout".')
   })
 
+  it('keeps the visibility that was chosen when the server refuses, and sends it again', async () => {
+    let answers = 0
+    const page = await openCreateForm({
+      create: (body) => {
+        answers += 1
+        return answers === 1
+          ? jsonResponse(503, { error: 'server_full', message: 'full' })
+          : createdReply(body)
+      },
+    })
+    await page.user.click(screen.getByRole('radio', { name: 'Invite only' }))
+    await page.user.click(screen.getByRole('button', { name: 'Create game' }))
+    await screen.findByRole('alert')
+    expect(screen.getByRole('radio', { name: 'Invite only' })).toBeChecked()
+    await page.user.click(screen.getByRole('button', { name: 'Create game' }))
+    await screen.findByTestId('game-stub')
+    expect(page.server.creates).toHaveLength(2)
+    expect(page.server.creates[1]).toEqual(page.server.creates[0])
+    expect(page.server.creates[1]).toMatchObject({ visibility: 'invite', held: 1 })
+  })
+
   it('lets the player fix nothing and simply try again, replacing the message', async () => {
     let answers = 0
     const { server, user } = await submitWith({
@@ -86,7 +103,7 @@ describe('a game the server refuses', () => {
     })
     expect(await screen.findByRole('alert')).toHaveTextContent(/as many games as it allows/i)
     await user.click(screen.getByRole('button', { name: 'Create game' }))
-    expect(await screen.findByRole('heading', { name: 'Game created' })).toBeInTheDocument()
+    expect(await screen.findByTestId('game-stub')).toBeInTheDocument()
     expect(server.creates).toHaveLength(2)
     expect(server.creates[1]).toEqual(server.creates[0])
     expect(screen.queryByRole('alert')).toBeNull()
@@ -103,10 +120,10 @@ describe('a request in flight', () => {
     const submit = screen.getByRole('button', { name: 'Creating the game…' })
     expect(submit).toHaveAttribute('aria-disabled', 'true')
     await user.click(submit)
-    await user.type(screen.getByLabelText('Name for seat 2'), '{Enter}')
+    await user.type(screen.getByLabelText('Your name'), '{Enter}')
     expect(server.creates).toHaveLength(1)
     answer(createdReply(server.creates[0]))
-    expect(await screen.findByRole('heading', { name: 'Game created' })).toBeInTheDocument()
+    expect(await screen.findByTestId('game-stub')).toBeInTheDocument()
   })
 
   it('sends the body that was valid when the button was pressed, not whatever is typed while it waits', async () => {
@@ -115,10 +132,10 @@ describe('a request in flight', () => {
       answer = resolve
     })
     const { server, user } = await submitWith({ create: () => pending })
-    await user.type(screen.getByLabelText('Name for seat 1'), ' Banks')
+    await user.type(screen.getByLabelText('Your name'), ' Banks')
     await waitFor(() => expect(server.creates).toHaveLength(1))
     expect(server.creates[0]).toMatchObject({ seats: [{ name: 'Ana' }, { name: 'Player 2' }] })
     answer(createdReply(server.creates[0]))
-    await screen.findByRole('heading', { name: 'Game created' })
+    await screen.findByTestId('game-stub')
   })
 })

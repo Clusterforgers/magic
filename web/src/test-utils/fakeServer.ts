@@ -34,12 +34,20 @@ export interface FakeServer {
   count(path: string): number
 }
 
-/** The reply a real server gives to a good `POST /api/games`: a game and one token per seat. */
+/** The join code the fake server hands out. */
+export const MADE_CODE = 'K7M29QXA'
+
+/**
+ * The reply a real server gives to a good `POST /api/games`: a game, its join code and a token for each seat that is
+ * held (every seat unless the request says `held`).
+ */
 export function createdReply(body: unknown): Response {
   const seats = isRecord(body) && Array.isArray(body.seats) ? body.seats : []
+  const held = isRecord(body) && typeof body.held === 'number' ? body.held : seats.length
   return jsonResponse(201, {
     game: MADE_GAME,
-    seats: seats.map((_, seat) => ({ seat, token: tokenOf(seat) })),
+    code: MADE_CODE,
+    seats: seats.slice(0, held).map((_, seat) => ({ seat, token: tokenOf(seat) })),
   })
 }
 

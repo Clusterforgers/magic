@@ -1,13 +1,12 @@
 /**
- * The REST client for `mtg-server` (docs/server.md). The game bodies are not generated, so their types are written
- * here; the game browser's are generated (`mtg_protocol::rest`) and read in `parseLobbies.ts`. Every response is
- * checked at runtime before it is returned.
+ * The REST client for `mtg-server` (docs/server.md). The bodies of creating a game and of the demo decks are written
+ * here; the game browser's and the game lookup's are generated (`mtg_protocol::rest`) and read in `parseLobbies.ts`.
+ * Every response is checked at runtime before it is returned.
  */
-import type { Color, GameResult, Joined, LobbyGame, PlayerId, Visibility } from '@/protocol/generated'
-import { isCount, isFlag, isListOf, isRecord, isText } from './check'
+import type { Color, GameInfo, Joined, LobbyGame, PlayerId, Visibility } from '@/protocol/generated'
+import { isCount, isRecord, isText } from './check'
 import { LobbyError, lobbyFailure } from './lobbyErrors'
-import { isGameResult } from './parse'
-import { readJoined, readLobbyList, readVisibility } from './parseLobbies'
+import { readGameInfo, readJoined, readLobbyList, readVisibility } from './parseLobbies'
 
 /** One seat of a new game: the name shown to others and a deck id from `listDecks`. */
 export interface SeatRequest {
@@ -59,16 +58,6 @@ export interface LobbyListing {
   /** The answer's `ETag`, sent back as `If-None-Match`; null when the server sent none. */
   etag: string | null
   fetchedAt: number
-}
-
-/** The public facts about a game; never a secret. */
-export interface GameInfo {
-  started: boolean
-  seats: { seat: PlayerId; name: string }[]
-  connected: PlayerId[]
-  /** The seats that pressed Ready and did not take it back; every seat once the game runs. */
-  ready: PlayerId[]
-  result: GameResult | null
 }
 
 /** A built-in deck with its card list. */
@@ -146,11 +135,11 @@ export interface ApiOptions {
   now?: () => number
 }
 
-/** The REST calls. The first three reject with an `ApiError`, the game browser's with a `LobbyError`. */
+/** The REST calls. The first three reject with an `ApiError`, the game browser's and the host's with a `LobbyError`. */
 export interface Api {
   /** `POST /api/games`: makes a game and returns each held seat's token and the join code. */
   createGame(request: CreateGameRequest): Promise<CreatedGame>
-  /** `GET /api/games/{id}`: public facts about a game. */
+  /** `GET /api/games/{id}`: the public facts about a game, its visibility included; never a token or a code. */
   getGame(id: string): Promise<GameInfo>
   /** `GET /api/demo-decks`: the built-in decks. */
   listDecks(): Promise<DeckInfo[]>
@@ -170,6 +159,8 @@ export interface Api {
   releaseSeat(game: string, seat: number, as?: SeatCredential): Promise<void>
   /** `PATCH /api/games/{id}`: the host lists the game or hides it again; resolves with the visibility now in force. */
   setVisibility(game: string, visibility: Visibility, as?: SeatCredential): Promise<Visibility>
+  /** `DELETE /api/games/{id}`: the host closes a game that is still in its lobby; every socket of it ends with 4002. */
+  closeGame(game: string, as?: SeatCredential): Promise<void>
 }
 
 const isServerCode = (value: string): value is ServerCode => Object.hasOwn(SERVER_CODES, value)
@@ -207,22 +198,6 @@ function readCreated(body: unknown): CreatedGame | null {
     seats.push({ seat: item.seat, token: item.token })
   }
   return body.code === undefined ? { game: body.game, seats } : { game: body.game, code: body.code, seats }
-}
-
-function readGame(body: unknown): GameInfo | null {
-  if (!isRecord(body) || !isFlag(body.started) || !Array.isArray(body.seats)) return null
-  if (!isListOf(body.connected, isCount)) return null
-  // A server from before the lobby showed readiness sends no `ready`: nobody is known to be ready then.
-  const ready = body.ready === undefined ? [] : body.ready
-  if (!isListOf(ready, isCount)) return null
-  const result = body.result === null || isGameResult(body.result) ? body.result : undefined
-  if (result === undefined) return null
-  const seats: GameInfo['seats'] = []
-  for (const item of body.seats) {
-    if (!isRecord(item) || !isCount(item.seat) || !isText(item.name)) return null
-    seats.push({ seat: item.seat, name: item.name })
-  }
-  return { started: body.started, seats, connected: body.connected, ready, result }
 }
 
 function readDeck(item: unknown): DeckInfo | null {
@@ -329,7 +304,7 @@ export function createApi(options: ApiOptions = {}): Api {
         // The session cookie is what binds the creator's seat to their account.
         credentials: 'include',
       }),
-    getGame: (id) => call(`/api/games/${encodeURIComponent(id)}`, readGame),
+    getGame: (id) => call(game(id), readGameInfo),
     listDecks: () => call('/api/demo-decks', readDecks),
     listLobbies: async (previous) => {
       const known = previous?.etag ?? null
@@ -361,6 +336,9 @@ export function createApi(options: ApiOptions = {}): Api {
     // `async` so that a token that cannot go into a header rejects like every other failure.
     setVisibility: async (id, visibility, as = {}) =>
       lobbyCall(game(id), readVisibility, change('PATCH', as, { visibility })),
+    closeGame: async (id, as = {}) => {
+      await lobbyCall(game(id), () => true, change('DELETE', as), 204)
+    },
   }
 }
 
