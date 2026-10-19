@@ -408,3 +408,230 @@ pub(crate) async fn set_visibility(
         .await?;
     Ok(Json(body))
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the small rules that decide what a game browser request means are exact: which text is a seat number, which header is a seat token, which `If-None-Match` names a listing, what the listing's tag does and does not depend on, and which names a table may show.
+    use std::time::Duration;
+
+    use axum::http::HeaderValue;
+    use rstest::rstest;
+    use uuid::Uuid;
+
+    use super::*;
+    use crate::recipe::FormatKind;
+
+    #[rstest]
+    #[case("0", Some(0))]
+    #[case("1", Some(1))]
+    #[case("9", Some(9))]
+    #[case("10", Some(10))]
+    #[case("11", Some(11))]
+    #[case("12", None)]
+    #[case("99", None)]
+    #[case("00", None)]
+    #[case("01", None)]
+    #[case("001", None)]
+    #[case("+1", None)]
+    #[case("-1", None)]
+    #[case("1.5", None)]
+    #[case(" 1", None)]
+    #[case("1 ", None)]
+    #[case("", None)]
+    #[case("one", None)]
+    #[case("１", None)]
+    fn a_seat_number_is_one_or_two_plain_digits_of_a_seat_a_game_can_have(
+        #[case] text: &str,
+        #[case] seat: Option<usize>,
+    ) {
+        assert_eq!(seat_number(text), seat.map(PlayerId::from_index));
+    }
+
+    fn with(name: &'static str, value: &'static str) -> HeaderMap {
+        let mut headers = HeaderMap::new();
+        headers.append(
+            axum::http::HeaderName::from_static(name),
+            HeaderValue::from_static(value),
+        );
+        headers
+    }
+
+    #[rstest]
+    #[case::bearer("Bearer abc", Some("abc"))]
+    #[case::any_case("bEARer abc", Some("abc"))]
+    #[case::padded("Bearer   abc  ", Some("abc"))]
+    #[case::no_token("Bearer", None)]
+    #[case::empty_token("Bearer ", Some(""))]
+    #[case::basic("Basic dXNlcjpwYXNz", None)]
+    #[case::digest("Digest abc", None)]
+    #[case::a_bare_token("abc", None)]
+    #[case::no_space("Bearerabc", None)]
+    #[case::empty("", None)]
+    fn only_a_bearer_header_carries_a_seat_token(
+        #[case] value: &'static str,
+        #[case] token: Option<&str>,
+    ) {
+        assert_eq!(bearer(&with("authorization", value)), token);
+    }
+
+    #[test]
+    fn a_request_without_an_authorization_header_has_no_token() {
+        assert_eq!(bearer(&HeaderMap::new()), None);
+    }
+
+    const TAG: &str = "\"0123456789abcdef0123456789abcdef\"";
+
+    #[rstest]
+    #[case::the_tag(TAG, true)]
+    #[case::weak("W/\"0123456789abcdef0123456789abcdef\"", true)]
+    #[case::any("*", true)]
+    #[case::in_a_list("\"x\", \"0123456789abcdef0123456789abcdef\"", true)]
+    #[case::in_a_list_without_spaces("\"x\",\"0123456789abcdef0123456789abcdef\",\"y\"", true)]
+    #[case::weak_in_a_list("\"x\", W/\"0123456789abcdef0123456789abcdef\"", true)]
+    #[case::padded("  \"0123456789abcdef0123456789abcdef\"  ", true)]
+    #[case::another("\"fedcba9876543210fedcba9876543210\"", false)]
+    #[case::unquoted("0123456789abcdef0123456789abcdef", false)]
+    #[case::a_prefix("\"0123456789abcdef\"", false)]
+    #[case::lower_case_weak("w/\"0123456789abcdef0123456789abcdef\"", false)]
+    #[case::empty("", false)]
+    #[case::only_commas(",,", false)]
+    fn if_none_match_names_the_listing_as_a_get_reads_it(
+        #[case] value: &'static str,
+        #[case] matched: bool,
+    ) {
+        assert_eq!(tag_matches(&with("if-none-match", value), TAG), matched);
+    }
+
+    #[test]
+    fn several_if_none_match_headers_are_read_together() {
+        let mut headers = with("if-none-match", "\"x\"");
+        headers.append(IF_NONE_MATCH, HeaderValue::from_static(TAG));
+        assert!(tag_matches(&headers, TAG));
+        assert!(!tag_matches(&HeaderMap::new(), TAG));
+    }
+
+    fn game(host: &str, filled: usize) -> ListedGame {
+        ListedGame {
+            game: GameId(Uuid::from_u128(7)),
+            host: host.to_owned(),
+            format: FormatKind::Normal,
+            filled,
+            total: 4,
+            created_at: "2026-10-19T12:30:00Z".to_owned(),
+            age: Duration::from_secs(5),
+        }
+    }
+
+    #[test]
+    fn the_tag_is_a_quoted_128_bit_hex_digest() {
+        let tag = listing_tag(&[game("Ann", 1)]);
+        assert_eq!(tag.len(), 34);
+        assert!(tag.starts_with('"') && tag.ends_with('"'));
+        assert!(
+            tag[1..33]
+                .bytes()
+                .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
+        );
+        // The empty list has a tag too.
+        assert_ne!(listing_tag(&[]), tag);
+        assert_eq!(listing_tag(&[]), listing_tag(&[]));
+    }
+
+    #[test]
+    fn the_tag_follows_every_field_of_a_row_except_its_age() {
+        let base = game("Ann", 1);
+        let tag = listing_tag(std::slice::from_ref(&base));
+        let older = ListedGame {
+            age: Duration::from_mins(50),
+            ..base.clone()
+        };
+        assert_eq!(listing_tag(&[older]), tag, "age must not move the tag");
+
+        let changes = [
+            ListedGame {
+                game: GameId(Uuid::from_u128(8)),
+                ..base.clone()
+            },
+            ListedGame {
+                host: "Bo".to_owned(),
+                ..base.clone()
+            },
+            ListedGame {
+                filled: 2,
+                ..base.clone()
+            },
+            ListedGame {
+                total: 5,
+                ..base.clone()
+            },
+            ListedGame {
+                created_at: "2026-10-19T12:30:01Z".to_owned(),
+                ..base.clone()
+            },
+        ];
+        for changed in changes {
+            assert_ne!(
+                listing_tag(std::slice::from_ref(&changed)),
+                tag,
+                "{changed:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn the_tag_follows_the_order_and_the_number_of_rows() {
+        let (ann, bo) = (game("Ann", 1), game("Bo", 2));
+        let tags = [
+            listing_tag(&[ann.clone(), bo.clone()]),
+            listing_tag(&[bo.clone(), ann.clone()]),
+            listing_tag(std::slice::from_ref(&ann)),
+            listing_tag(&[ann.clone(), ann]),
+            listing_tag(&[bo]),
+        ];
+        let distinct: std::collections::HashSet<&String> = tags.iter().collect();
+        assert_eq!(distinct.len(), tags.len());
+    }
+
+    #[test]
+    fn neighbouring_fields_cannot_run_into_each_other() {
+        // "Ann" + "1" and "Ann1" + "" would hash alike without a length in front of each field.
+        let one = ListedGame {
+            host: "Ann".to_owned(),
+            created_at: "1x".to_owned(),
+            ..game("", 1)
+        };
+        let other = ListedGame {
+            host: "Ann1".to_owned(),
+            created_at: "x".to_owned(),
+            ..game("", 1)
+        };
+        assert_ne!(listing_tag(&[one]), listing_tag(&[other]));
+    }
+
+    #[rstest]
+    #[case::plain("Bo", Some("Bo"))]
+    #[case::trimmed("  Bo\t", Some("Bo"))]
+    #[case::one_character("B", Some("B"))]
+    #[case::the_longest(
+        "nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",
+        Some("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+    )]
+    #[case::counted_in_characters(
+        "éééééééééééééééééééééééééééééééé",
+        Some("éééééééééééééééééééééééééééééééé")
+    )]
+    #[case::too_long("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn", None)]
+    #[case::empty("", None)]
+    #[case::blank(" \t\n", None)]
+    #[case::newline_inside("A\nB", None)]
+    #[case::nul("A\0B", None)]
+    #[case::bidi_override("A\u{202e}B", None)]
+    #[case::zero_width("A\u{200b}B", None)]
+    fn a_name_is_trimmed_and_judged_by_its_characters(
+        #[case] given: &str,
+        #[case] shown: Option<&str>,
+    ) {
+        let checked = checked_name(given).ok();
+        assert_eq!(checked.as_deref(), shown);
+    }
+}

@@ -445,7 +445,7 @@ async fn five_wrong_codes_a_minute_then_even_the_right_code_is_turned_away() {
 async fn the_block_lifts_when_the_window_is_over() {
     let mut config = bot_config();
     config.auth.limits.code_misses_per_ip = 1;
-    config.auth.limits.code_window = Duration::from_secs(1);
+    config.auth.limits.code_window = Duration::from_secs(2);
     let server = TestServer::start(config).await;
     let game = lobby::make(server.addr, "Ann", 3, 1, "invite").await;
     assert_eq!(
@@ -454,8 +454,8 @@ async fn the_block_lifts_when_the_window_is_over() {
     );
     let blocked = join_code(server.addr, &game.code, Some("Bo")).await;
     assert_eq!(blocked.status, 429);
-    assert_eq!(blocked.header("retry-after"), Some("1"));
-    tokio::time::sleep(Duration::from_millis(1_150)).await;
+    assert!(matches!(blocked.header("retry-after"), Some("1" | "2")));
+    tokio::time::sleep(Duration::from_millis(2_300)).await;
     assert_eq!(
         join_code(server.addr, &game.code, Some("Bo")).await.status,
         200

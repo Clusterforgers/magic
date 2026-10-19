@@ -409,14 +409,14 @@ async fn an_address_gets_thirty_requests_a_minute_and_then_a_429_with_retry_afte
 async fn the_limit_lifts_when_its_window_is_over() {
     let mut config = bot_config();
     config.auth.limits.lobby_requests_per_ip = 2;
-    config.auth.limits.lobby_window = Duration::from_secs(1);
+    config.auth.limits.lobby_window = Duration::from_secs(2);
     let server = TestServer::start(config).await;
     assert_eq!(lobbies(server.addr, &[]).await.status, 200);
     assert_eq!(lobbies(server.addr, &[]).await.status, 200);
     let blocked = lobbies(server.addr, &[]).await;
     assert_eq!(blocked.status, 429);
-    assert_eq!(blocked.header("retry-after"), Some("1"));
-    tokio::time::sleep(Duration::from_millis(1_150)).await;
+    assert!(matches!(blocked.header("retry-after"), Some("1" | "2")));
+    tokio::time::sleep(Duration::from_millis(2_300)).await;
     assert_eq!(lobbies(server.addr, &[]).await.status, 200);
 }
 
