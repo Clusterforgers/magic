@@ -2,11 +2,10 @@
 import { act, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { RowKind } from './cardModel'
-import { fitRows, LAND_SCALE } from './fit'
+import { LAND_SCALE } from './fit'
 import type { FitBox } from './fit'
-import { battlefieldLoad } from './selectors'
+import { battlefieldStacks, layoutSeat } from './rowStacks'
 import { fadeOf } from './useEdgeFade'
-import { stacksOf } from './useZoneFit'
 import { renderTable } from '@/test-utils/tableHarness'
 import type { TableHarness } from '@/test-utils/tableHarness'
 
@@ -55,19 +54,13 @@ const resized = (): void => {
 
 const NEAR: readonly RowKind[] = ['creatures', 'other', 'lands']
 const FAR: readonly RowKind[] = ['lands', 'other', 'creatures']
-const TAPPED = { creatures: 'creaturesTapped', other: 'otherTapped', lands: 'landsTapped' } as const
 
-/** What the fit engine says for a seat's battlefield in a box, rows in the order the zone draws them. */
+/** What the layout says for a seat's battlefield in a box, rows in the order the zone draws them. */
 function expected(table: TableHarness, seat: number, facing: 'near' | 'far', box: FitBox) {
-  const load = battlefieldLoad(table.store.getState(), seat)
   const order = facing === 'near' ? NEAR : FAR
-  const fit = fitRows(
-    box,
-    order.map((row) => ({
-      stacks: stacksOf(load[row], load[TAPPED[row]]),
-      ...(row === 'lands' ? { scale: LAND_SCALE } : {}),
-    })),
-  )
+  const stacks = battlefieldStacks(table.store.getState(), seat, false)
+  const fit = layoutSeat({ box, stacks, order, opened: new Set(), marked: new Set() }).fit
+  if (fit === null) throw new Error('a box was given, so the layout fits')
   return { fit, order }
 }
 
@@ -80,21 +73,6 @@ const widthOf = (element: HTMLElement): string => element.style.getPropertyValue
 const heightOf = (element: HTMLElement): string => element.style.getPropertyValue('--card-h')
 const sizesIn = (element: HTMLElement): Set<string | null> =>
   new Set([...element.querySelectorAll('[data-size]')].map((card) => card.getAttribute('data-size')))
-
-describe('stacksOf', () => {
-  it.each([
-    [10, 0, 10],
-    [10, 1, 11],
-    [10, 2, 11],
-    [10, 3, 12],
-    [10, 5, 12],
-    [10, 10, 14],
-    [0, 0, 0],
-    [4, -2, 4],
-  ])('counts %i permanents with %i tapped as %i boxes of room', (count, tapped, boxes) => {
-    expect(stacksOf(count, tapped)).toBe(boxes)
-  })
-})
 
 describe('a battlefield without layout', () => {
   it('keeps the sizes the cards were given and writes no box', () => {

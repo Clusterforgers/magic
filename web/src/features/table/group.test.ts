@@ -19,7 +19,7 @@ function mulberry32(seed: number): () => number {
 }
 
 /** A permanent as the wire sends it, plus the counters and attachments the wire will send. */
-type Perm = ObjectView & Pick<Groupable, 'counters' | 'attachments'>
+type Perm = ObjectView & Pick<Groupable, 'counters' | 'attachments' | 'role'>
 
 const land = (id: number, over: Partial<Perm> = {}): Perm => ({ ...forest({ id }), ...over })
 const bear = (id: number, over: Partial<Perm> = {}): Perm => ({ ...card({ id }), ...over })
@@ -80,6 +80,9 @@ describe('what merges and what stays apart', () => {
       (base) => ({ abilities: [...base.abilities, { Mana: { produces: 'Black' } }] }),
       false,
     ],
+    ['a part in combat', none, () => ({ role: 'attacking' }), false],
+    ['the same part in combat', () => ({ role: 'blocking' }), () => ({ role: 'blocking' }), false],
+    ['no part in combat on either', () => ({ role: null }), () => ({ role: null }), true],
     ['a keyword', none, () => ({ keywords: ['Flying'] }), false],
     ['other keywords', () => ({ keywords: ['Flying'] }), () => ({ keywords: ['Reach'] }), false],
     ['the same keywords', () => ({ keywords: ['Flying'] }), () => ({ keywords: ['Flying'] }), true],

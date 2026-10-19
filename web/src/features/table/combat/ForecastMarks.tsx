@@ -5,7 +5,7 @@ import './combat.css'
 
 interface ForecastMarksProps {
   outlook: CreatureOutlook
-  /** The card is turned a quarter, so the card as seen is a band across the middle of its (square) button. */
+  /** The card lies on its side, so the card as seen is a band, five sevenths of its width high, across the middle of its button. */
   tapped: boolean
   /** A compact card has room for the skull only. */
   compact: boolean
@@ -31,7 +31,7 @@ export function ForecastMarks({ outlook, tapped, compact }: ForecastMarksProps) 
       aria-hidden="true"
       className={cn(
         'pointer-events-none absolute inset-x-0 overflow-hidden rounded-md',
-        tapped ? 'top-[calc((var(--card-h)-var(--card-w))/2)] h-(--card-w)' : 'inset-y-0',
+        tapped ? 'top-[calc((var(--card-h)-var(--card-w)*5/7)/2)] h-[calc(var(--card-w)*5/7)]' : 'inset-y-0',
       )}
     >
       {dies ? (

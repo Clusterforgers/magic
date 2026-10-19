@@ -92,9 +92,12 @@ describe('card face', () => {
 })
 
 describe('permanent state is drawn as words, not colour alone', () => {
-  it('turns a tapped card a quarter turn and says "Tapped"', () => {
+  it('lays a tapped card on its side inside the box of an upright one and says "Tapped"', () => {
     const { container } = renderCard({ object: permanent({ tapped: true }) })
-    expect(face(container)).toHaveClass('rotate-90')
+    expect(face(container)).toHaveAttribute('data-turned', 'true')
+    expect(face(container)).toHaveClass('h-[calc(var(--card-w)*5/7)]')
+    expect(button()).toHaveClass('w-(--card-w)', 'h-(--card-h)')
+    expect(button().className).not.toContain('w-(--card-h)')
     expect(within(face(container)).getByText('Tapped')).toBeInTheDocument()
     expect(button()).toHaveAttribute('data-tapped', 'true')
     expect(button()).toHaveAccessibleName(expect.stringContaining('tapped'))
@@ -102,7 +105,8 @@ describe('permanent state is drawn as words, not colour alone', () => {
 
   it('leaves an untapped card upright with no tapped label', () => {
     const { container } = renderCard({ object: permanent({}) })
-    expect(face(container)).not.toHaveClass('rotate-90')
+    expect(face(container)).not.toHaveAttribute('data-turned')
+    expect(face(container)).toHaveClass('h-(--card-h)')
     expect(within(face(container)).queryByText('Tapped')).toBeNull()
     expect(button()).not.toHaveAttribute('data-tapped')
   })

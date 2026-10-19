@@ -1,12 +1,13 @@
 /** Pure grouping of identical permanents into stacks, so a battlefield row draws one box for many of a kind. */
 import type { CounterKind, ObjectId, ObjectView } from '@/protocol/generated'
+import type { CombatRole } from './cardModel'
 
 /** A zone whose cards would fall under this many px also merges identical cards that are no lands or tokens. */
 export const GROUP_OTHERS_BELOW = 64
 
 /**
  * What grouping reads from a permanent: the parts of an `ObjectView` that its face draws, plus counters and
- * attachments, which the wire does not carry yet.
+ * attachments, which the wire does not carry yet, and the part it takes in combat.
  */
 export type Groupable = Pick<
   ObjectView,
@@ -29,6 +30,8 @@ export type Groupable = Pick<
   counters?: readonly (readonly [CounterKind, number])[]
   /** The objects attached to it. */
   attachments?: readonly ObjectId[]
+  /** What it does in the current combat. One that takes part is never merged, so its marks and lines stay its own. */
+  role?: CombatRole | null
 }
 
 /** How `groupPermanents` merges. */
@@ -88,13 +91,14 @@ function faceOf(permanent: Groupable): string {
 }
 
 const merges = (permanent: Groupable, options: GroupOptions): boolean =>
-  options.groupOthers === true || permanent.kind === 'Token' || permanent.types.includes('Land')
+  (permanent.role ?? null) === null &&
+  (options.groupOthers === true || permanent.kind === 'Token' || permanent.types.includes('Land'))
 
 /**
  * Merges permanents with the same face into stacks, in the order of each stack's first member. Lands and tokens
- * always merge, other cards only with `groupOthers`; tapped and untapped permanents are never in one stack. A merged
- * stack is keyed by its face and a permanent that stays alone by its id, so a key survives members joining and
- * leaving and no other stack's key moves.
+ * always merge, other cards only with `groupOthers`; tapped and untapped permanents are never in one stack, and one
+ * that takes part in combat (`role`) stays alone. A merged stack is keyed by its face and a permanent that stays alone
+ * by its id, so a key survives members joining and leaving and no other stack's key moves.
  */
 export function groupPermanents<T extends Groupable>(
   permanents: readonly T[],

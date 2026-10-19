@@ -1,15 +1,6 @@
-import { useLayoutEffect, useMemo, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import type { RefObject } from 'react'
-import { fitRows } from './fit'
-import type { Fit, FitBox, FitGroup } from './fit'
-
-/** A tapped card takes a square box one card high, which is this many cards wide. */
-const TAPPED_WIDTH = 7 / 5
-
-/** The stacks a row counts as in the fit: a tapped one needs the room of 1.4 cards, rounded up. */
-export function stacksOf(count: number, tapped: number): number {
-  return count + Math.ceil(Math.max(0, tapped) * (TAPPED_WIDTH - 1))
-}
+import type { FitBox } from './fit'
 
 function sameBox(a: FitBox | null, b: FitBox): boolean {
   return a !== null && a.width === b.width && a.height === b.height
@@ -28,7 +19,7 @@ function contentBox(zone: HTMLElement): FitBox | null {
 
 /**
  * The room inside `ref`, followed with a `ResizeObserver`. Null until the element has a size, so a page without
- * layout (a test, a hidden zone) keeps the sizes it was given.
+ * layout (a test, a hidden zone) keeps the sizes it was given. The fit itself is `layoutSeat` (`rowStacks.ts`) for a battlefield.
  */
 export function useContentBox(ref: RefObject<HTMLElement | null>): FitBox | null {
   const [box, setBox] = useState<FitBox | null>(null)
@@ -46,14 +37,4 @@ export function useContentBox(ref: RefObject<HTMLElement | null>): FitBox | null
     return () => observer.disconnect()
   }, [ref])
   return box
-}
-
-/**
- * Fits the rows of a zone to the room it has: `fitRows` (pure, `fit.ts`) answers with the largest card width at which
- * every row fits the zone's content box, or the floor with the zone scrolling. Null until the zone has a size.
- * `groups` must be stable between renders unless a row changed.
- */
-export function useZoneFit(ref: RefObject<HTMLElement | null>, groups: readonly FitGroup[]): Fit | null {
-  const box = useContentBox(ref)
-  return useMemo(() => (box === null ? null : fitRows(box, groups)), [box, groups])
 }
