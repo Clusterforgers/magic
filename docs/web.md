@@ -114,6 +114,17 @@ After a Welcome the lobby or table stays under the reconnect notice. A `notice` 
 - Rendering: a `Card` reads only its own object and combat role and is `memo`; rows read ids through `useShallow(battlefieldRow)`; `selectors.ts` splits the shared battlefield by controller once per view. A batch that taps one permanent redraws that card and no row (`perf.test.tsx`, 12 seats with 40 permanents).
 - Cards carry `data-object-id` and panels `data-seat`; the prompt mounts in `[data-slot="decision-line"]`.
 
+## Fit and grouping
+
+`features/table/fit.ts` and `group.ts` are pure (no DOM, no store) and decide how big a zone's cards are and which permanents share a box.
+
+- `fitRows(box, groups, limits)`: `box` is the zone's width and height in px; a group is a row with its `stacks` and its card shape (`aspect` 7/5; `scale` of the zone's card width, 1, or `LAND_SCALE` 0.8 for lands). It tries card widths from 112 px down to the 44 px floor in steps of 2 and answers with the first at which every row wraps inside the width and all lines fit the height. A width that fits keeps fitting at a smaller one, so a bigger box never gives a smaller card.
+- Whole pixels: the box is floored; a row's box is the card width times `scale`, rounded to the nearest px (halves up), and its height that width times `aspect`, rounded the same way. `layout` carries each row's box, `perLine` and `lines`; components draw exactly those sizes. Every stack takes one box of its row's size, tapped or not. `FIT_LIMITS` puts 6 px between boxes and 4 between lines, wrapped or of different rows; a box narrower than one card still takes one card a line.
+- When the floor does not fit the height, `scrolls` is true at the floor and `hidden` counts the stacks on lines cut off at the bottom of the box, the "+N" of the zone's edge fade. `rows` and `lines` count the rows with stacks and all wrapped lines.
+- `groupPermanents(permanents, { groupOthers })` merges permanents with the same face into a `Stack` (`key`, `count`, `members`): name, owner, controller, token or card, types, colors, power, toughness, abilities, tapped, summoning sick, damage, counters and attachments (the last two once the views carry them). Tapped and untapped never share a stack. Lands and tokens always merge; other cards only with `groupOthers`, which the caller sets when a zone's fit is under `GROUP_OTHERS_BELOW` (64 px).
+- Stacks come in the order of their first member. A merged stack's key is its face and a card that stays alone has its id, so a key survives members joining and leaving, and one member joining or leaving changes no other stack's key, count or place. `expandStack(stack)` returns the members, for opening a stack in place and for prompts that need each one; regrouping them gives the same stacks.
+- Use: the table grid measures each zone with a `ResizeObserver`, calls `fitRows` and writes `--card-w`; a battlefield row fits with every card alone and, when that is under 64 px, again with `groupOthers`; a stack draws one card with a ×N badge ([ui-design.md](ui-design.md), Table layout). `fitPerf.test.ts` holds grouping and fitting 40 permanents a seat for 6 and 12 seats to a few milliseconds.
+
 ## Prompts
 
 `features/table/prompt/` answers the decision this seat faces.
