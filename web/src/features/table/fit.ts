@@ -8,7 +8,9 @@ export const LAND_SCALE = 0.8
 
 /** The room a zone has, in CSS px. */
 export interface FitBox {
+  /** The width in px. */
   width: number
+  /** The height in px. */
   height: number
 }
 

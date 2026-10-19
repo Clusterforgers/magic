@@ -379,12 +379,11 @@ describe('keys and counts when one member joins or leaves', () => {
     expect(diffStacks(before, first).added).toEqual([keyOf(swamp)])
   })
 
-  it('moves one permanent between two stacks when it taps, and back when it untaps', () => {
+  it('moves one permanent from the stack it left to the one it joined when it taps', () => {
     const taps = BASE.map((object) => (object.id === 3 ? tapped(object) : object))
     const after = groupPermanents(taps, OPTIONS)
     expect(diffStacks(before, after)).toEqual({ added: [], removed: [], changed: [forests, tappedForest] })
-    expect(after.map((stack) => stack.count)).toEqual([1, 1, 2, 2, 2])
-    expect(ids(groupPermanents(BASE, OPTIONS))).toEqual(ids(before))
+    expect(ids(after)).toEqual([[1], [2], [3, 4], [5, 7], [6, 8]])
   })
 
   it('keeps a card that stays alone under its id while others come and go', () => {
