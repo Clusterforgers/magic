@@ -275,10 +275,12 @@ describe('the cards', () => {
     const attacker = table.card(must(attackers[0]).object)
     expect(attacker).toHaveAttribute('data-tapped', 'true')
     const marks = must(attacker.querySelector('[data-slot="forecast"]'))
-    expect(marks.className).toContain('h-(--card-w)')
+    expect(marks.className).toContain('h-[calc(var(--card-w)*5/7)]')
     const untapped = table.card(must(must(attackers[0]).blockers[0]))
     expect(untapped).not.toHaveAttribute('data-tapped')
-    expect(untapped.querySelector('[data-slot="forecast"]')?.className).not.toContain('h-(--card-w)')
+    expect(untapped.querySelector('[data-slot="forecast"]')?.className).not.toContain(
+      'h-[calc(var(--card-w)*5/7)]',
+    )
   })
 
   it('go when the forecast does', () => {

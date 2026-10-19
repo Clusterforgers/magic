@@ -82,7 +82,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [x] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
   - [x] (U2) Fit engine: card sizes from the space available and grouping of identical permanents, pure and tested
   - [x] (U3) Table grid: top bar, opponents, shared strip, own board, hand dock and side tabs in one viewport from 1280x720
-  - [ ] (U4) Seat pods, scaled battlefield rows and a hand dock that hold 40 permanents a seat
+  - [ ] (U4) A pod panel and a hand dock fan that hold 40 permanents a seat
   - [ ] (U5) Controls dock: a 44 px pass button, a one-row stop ladder and a menu for the rest
   - [ ] (U6) Turn feedback: turn badge, turn banner, active-seat emphasis, a distinct theme for each phase so the current phase is unmistakable, and a ticker for automatic passes and skips
   - [x] (U7) Server: game visibility, open seats, claim and join code

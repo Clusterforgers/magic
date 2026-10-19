@@ -12,9 +12,17 @@ export interface TableOptions {
   effects?: boolean
   /** Multiplies the duration of every animation, to look at one slowly; 1 when left out. */
   effectsSlow?: number
+  /**
+   * Draw equal permanents as one box with a "×N" chip (`group.ts`). On everywhere but under vitest when left out, so
+   * that other tests see every card; a test of stacks turns it on.
+   */
+  stacks?: boolean
   /** Lay the table out for this window size instead of the browser's, which a test has no use for. */
   viewport?: Viewport
 }
+
+/** Whether battlefields stack equal permanents when `TableOptions.stacks` is left out. */
+export const STACKS_BY_DEFAULT = import.meta.env.MODE !== 'test'
 
 /** Provide a `TableOptions` around `GameTable`; without one the table picks its own start. */
 export const TableOptionsContext = createContext<TableOptions>({})

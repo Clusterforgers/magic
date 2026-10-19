@@ -13,16 +13,14 @@ import type { Ghost } from './model'
  */
 export function GhostCard({ ghost, size, fit = false }: { ghost: Ghost; size: CardSize; fit?: boolean }) {
   const { object } = ghost
-  const tapped = object.permanent?.tapped === true
   return (
     <li
       aria-hidden="true"
       data-ghost={object.id}
       data-fx="died"
       className={cn(
-        'flex w-(--ghost-w) shrink-0 overflow-hidden',
+        'flex w-(--ghost-w) shrink-0 overflow-hidden [--ghost-w:var(--card-w)]',
         fit ? null : SIZE[size].vars,
-        tapped ? '[--ghost-w:var(--card-h)]' : '[--ghost-w:var(--card-w)]',
       )}
     >
       <span className="relative grid h-(--card-h) w-full place-items-center">

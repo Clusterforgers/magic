@@ -1,4 +1,4 @@
-// Goal: a batch redraws only what it changed, at the worst case of 12 seats with 40 permanents each (480 cards on screen): tapping one permanent renders that card and no battlefield row, a change to the turn renders no card, a change of controller renders that card and the two rows it leaves and joins; a decision arriving, being replaced or answered renders only the viewer's own marked cards (once each) and no row, and while one is on screen a tap still renders one card.
+// Goal: a batch redraws only what it changed, at the worst case of 12 seats with 40 permanents each (480 cards on screen): tapping one permanent renders that card and no battlefield row, a change to the turn renders no card, a change of controller renders that card and the two rows it leaves and joins; a decision arriving, being replaced or answered renders only the viewer's own marked cards (once each) and no row, and while one is on screen a tap still renders one card; with stacks on, 4 seats of 40 permanents mount inside a time budget as one face a box, the tap of a lone creature renders its card and no row, and a land that leaves its stack redraws that row only.
 import { act } from '@testing-library/react'
 import type { ComponentProps } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -8,8 +8,9 @@ import { batchOf, clone, must, tableOf, withTapped } from '@/test-utils/batches'
 import { startSession } from '@/test-utils/harness'
 import type { Harness } from '@/test-utils/harness'
 import { renderLiveTable } from '@/test-utils/tableHarness'
-import { fixtureLookup } from './dev/devGame'
+import { fixtureLookup, fixtureState } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
+import { battlefieldStacks } from './rowStacks'
 import { splitBattlefield } from './selectors'
 
 // The probe sits on two seams: every render of a card face is one render of a card, and every render of a
@@ -316,5 +317,101 @@ describe('a decision at the same table', () => {
     act(() => h.deliver(priority(5, options(view()), 3)))
     expect(probe.faces.size).toBe(0)
     expect(probe.rows.size).toBe(0)
+  })
+})
+
+// ---- Stacked boards: 4 seats with 40 permanents each -------------------------------------------------------------
+
+/** What mounting 4 seats, 160 permanents and the pods around them may cost, in ms; five times what it takes here. */
+const MOUNT_BUDGET_MS = 1500
+const FOUR = buildFixture({ seats: 4 })
+
+/** The whole table in grid mode with stacks on, 4 seats, on a real session fed a Snapshot of the fixture. */
+function mountStacked(): Mounted {
+  const h = startSession()
+  h.join(0, 4)
+  act(() => h.deliver({ type: 'Snapshot', seq: 1, state: FOUR.view }))
+  renderLiveTable(h.session, fixtureLookup(FOUR), { mode: 'grid', stacks: true })
+  const view = (): StateView => must(h.state().view)
+  return {
+    h,
+    view,
+    send(over) {
+      const from = must(h.state().seq)
+      act(() => h.deliver({ type: 'Events', ...batchOf(view(), { from_seq: from, ...over }) }))
+    },
+  }
+}
+
+describe('a table of 4 seats with 40 permanents each, stacked', () => {
+  beforeEach(reset)
+
+  it(`draws all 160 permanents as one face a box inside ${MOUNT_BUDGET_MS} ms`, () => {
+    const started = performance.now()
+    const { view } = mountStacked()
+    const elapsed = performance.now() - started
+    expect(elapsed).toBeLessThan(MOUNT_BUDGET_MS)
+    const onBattlefield = must(view().battlefield.cards)
+    expect(onBattlefield).toHaveLength(160)
+    const boxes = [0, 1, 2, 3].reduce((sum, seat) => {
+      const rows = battlefieldStacks(fixtureState(FOUR), seat).plain
+      return sum + rows.creatures.length + rows.other.length + rows.lands.length
+    }, 0)
+    expect(boxes).toBeLessThan(160)
+    expect(onBattlefield.filter((id) => probe.faces.has(id))).toHaveLength(boxes)
+    for (const id of onBattlefield) expect(probe.faces.get(id) ?? 1, `card ${id}`).toBe(1)
+  })
+
+  it('redraws only the card of a lone creature that taps, and no battlefield row', () => {
+    const { send, view } = mountStacked()
+    const creature = must(
+      view().objects.find(
+        (object) =>
+          object.controller === 2 &&
+          object.types.includes('Creature') &&
+          object.permanent?.tapped === false &&
+          object.zone === 'Battlefield',
+      ),
+    )
+    reset()
+    send({
+      events: [{ Public: { PermanentTapped: { object: creature.id } } }],
+      objects: [withTapped(creature, true)],
+    })
+    expect([...probe.faces]).toEqual([[creature.id, 1]])
+    expect(battlefieldRows()).toEqual([])
+  })
+
+  it('redraws the one row whose stacks changed when a land leaves its stack by tapping, and no other row', () => {
+    const { send, view } = mountStacked()
+    const state = fixtureState(FOUR)
+    const pile = must(
+      battlefieldStacks(state, 2).plain.lands.find(
+        (stack) => stack.ids.length > 1 && state.objectsById[must(stack.ids[0])]?.permanent?.tapped === false,
+      ),
+    )
+    const land = must(view().objects.find((object) => object.id === pile.ids[0]))
+    reset()
+    send({
+      events: [{ Public: { PermanentTapped: { object: land.id } } }],
+      objects: [withTapped(land, true)],
+    })
+    expect(battlefieldRows()).toHaveLength(1)
+    expect(battlefieldRows()[0]).toMatch(/'s lands$/)
+  })
+
+  it('stays inside a time budget over a run of 40 single taps', () => {
+    const { send, view } = mountStacked()
+    const lands = view()
+      .objects.filter((object) => object.types.includes('Land') && object.permanent?.tapped === false)
+      .slice(0, 40)
+    const started = performance.now()
+    for (const land of lands) {
+      send({
+        events: [{ Public: { PermanentTapped: { object: land.id } } }],
+        objects: [withTapped(land, true)],
+      })
+    }
+    expect(performance.now() - started).toBeLessThan(MOUNT_BUDGET_MS)
   })
 })

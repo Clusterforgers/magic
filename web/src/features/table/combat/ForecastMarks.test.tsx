@@ -45,13 +45,13 @@ describe('ForecastMarks', () => {
     expect(damage).toHaveTextContent('-3')
   })
 
-  it('covers the whole card when it stands, and only the band the card occupies when it is turned a quarter', () => {
+  it('covers the whole card when it stands, and only the band the card occupies when it lies on its side', () => {
     const upright = mark({ damage: 1, dies: true })
     expect(upright.root).toHaveClass('inset-y-0')
-    expect(upright.root.className).not.toContain('h-(--card-w)')
+    expect(upright.root.className).not.toContain('h-[calc(var(--card-w)*5/7)]')
     const turned = mark({ damage: 1, dies: true }, { tapped: true })
-    expect(turned.root.className).toContain('h-(--card-w)')
-    expect(turned.root.className).toContain('top-[calc((var(--card-h)-var(--card-w))/2)]')
+    expect(turned.root.className).toContain('h-[calc(var(--card-w)*5/7)]')
+    expect(turned.root.className).toContain('top-[calc((var(--card-h)-var(--card-w)*5/7)/2)]')
     expect(turned.root).not.toHaveClass('inset-y-0')
   })
 

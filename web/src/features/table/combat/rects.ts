@@ -28,9 +28,9 @@ export function selectorsOf(anchor: Anchor): string[] {
   return anchor.seat === undefined ? [card] : [card, ...seat(anchor.seat)]
 }
 
-// A tapped card is a quarter turn of its face inside a square button, so the face (whose bounding box is the card as
-// seen) is measured, not the button. Only a card button has a face of its own: a seat panel holds cards, and the
-// first of those is not the panel.
+// A tapped card lies on its side inside its box, so the face (whose bounding box is the card as seen) is measured,
+// not the button. Only a card button has a face of its own: a seat panel holds cards, and the first of those is not
+// the panel.
 const FACE = '[data-slot="card-face"]'
 const faceOf = (element: Element): Element =>
   (element.hasAttribute('data-object-id') ? element.querySelector(FACE) : null) ?? element

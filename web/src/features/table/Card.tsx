@@ -84,9 +84,9 @@ export const Card = memo(function Card({
       tabIndex={tabbable ? 0 : -1}
       {...handlers}
       className={cn(
-        'relative grid h-(--card-h) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
+        // The box is the same tapped or not (the face lies down inside it), so a row counts one box per card.
+        'relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
         fit ? null : SIZE[size].vars,
-        tapped ? 'w-(--card-h)' : 'w-(--card-w)',
         highlight === undefined ? null : HIGHLIGHT[highlight],
       )}
     >

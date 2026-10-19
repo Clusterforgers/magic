@@ -11,25 +11,28 @@ interface SizeClasses {
   pip: string
 }
 
+/** The smallest text on a card face, in rem (11 px): the box shrinks with the zone, the type never does. */
+export const MIN_TEXT_REM = 0.6875
+
 /** The box and text classes of each card size. Whole class names, so Tailwind can see them. */
 export const SIZE: Record<CardSize, SizeClasses> = {
   compact: {
     vars: '[--card-w:3.75rem] [--card-h:5.25rem]',
-    name: 'text-[0.62rem]',
-    text: 'text-[0.56rem]',
-    pip: 'size-3 text-[0.5rem]',
+    name: 'text-[0.6875rem]',
+    text: 'text-[0.6875rem]',
+    pip: 'size-3 text-[0.6875rem]',
   },
   normal: {
     vars: '[--card-w:6rem] [--card-h:8.4rem]',
     name: 'text-[0.72rem]',
-    text: 'text-[0.62rem]',
-    pip: 'size-3.5 text-[0.56rem]',
+    text: 'text-[0.6875rem]',
+    pip: 'size-4 text-[0.6875rem]',
   },
   medium: {
     vars: '[--card-w:10rem] [--card-h:14rem]',
     name: 'text-sm',
     text: 'text-[0.7rem]',
-    pip: 'size-4 text-[0.65rem]',
+    pip: 'size-4 text-[0.6875rem]',
   },
   large: {
     vars: '[--card-w:15rem] [--card-h:21rem]',
