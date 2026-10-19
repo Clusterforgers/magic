@@ -138,8 +138,14 @@ export interface DecksScript {
   unavailable?: boolean
   /** What `POST /api/decks/import` reads the pasted list as. */
   importResult?: ImportResult
+  /** The decks `GET` and `PUT /api/decks/{id}` know, as the server shows them. */
+  views?: DeckView[]
+  /** The cards a `PUT` can resolve besides those already in the stored deck. */
+  pool?: CardHit[]
+  /** The state a `PUT` answers; verified by default. */
+  saveState?: DeckState
   /** Replaces the answer of one endpoint. */
-  override?: Partial<Record<'list' | 'create' | 'import' | 'remove', Answer>>
+  override?: Partial<Record<'list' | 'create' | 'import' | 'remove' | 'get' | 'update', Answer>>
 }
 
 /** A deck server in memory, with a record of what it was asked. */
@@ -155,6 +161,8 @@ export interface DecksServer {
   imports: ImportRequest[]
   /** The ids of the decks deleted. */
   removed: string[]
+  /** The id and parsed body of every `PUT`. */
+  updated: Array<{ id: string; body: DeckBody }>
 }
 
 /** A deck server in memory: saving puts a deck first, deleting removes it, importing answers `importResult`. */
@@ -163,6 +171,8 @@ export function startDecks(script: DecksScript = {}): DecksServer {
   const created: DeckBody[] = []
   const imports: ImportRequest[] = []
   const removed: string[] = []
+  const updated: Array<{ id: string; body: DeckBody }> = []
+  const views = new Map((script.views ?? []).map((view) => [view.id, view]))
   let made = 0
   // The tests send well-formed bodies; the generic names what the parsed JSON is taken to be.
   const bodyOf = <T>(call: FetchCall): T =>
@@ -206,6 +216,46 @@ export function startDecks(script: DecksScript = {}): DecksServer {
       imports.push(bodyOf<ImportRequest>(call))
       return script.override?.import?.(call) ?? jsonResponse(200, script.importResult ?? importResult())
     }
+    if (path.startsWith('/api/decks/') && method === 'GET') {
+      const custom = script.override?.get?.(call)
+      if (custom !== undefined) return custom
+      const view = views.get(decodeURIComponent(path.slice('/api/decks/'.length)))
+      return view === undefined ? deckError(404, 'not_found', 'no such deck') : jsonResponse(200, view)
+    }
+    if (path.startsWith('/api/decks/') && method === 'PUT') {
+      const id = decodeURIComponent(path.slice('/api/decks/'.length))
+      const body = bodyOf<DeckBody>(call)
+      updated.push({ id, body })
+      const custom = script.override?.update?.(call)
+      if (custom !== undefined) return custom
+      const before = views.get(id)
+      if (before === undefined) return deckError(404, 'not_found', 'no such deck')
+      const known = new Map<string, CardHit>()
+      for (const card of [...(script.pool ?? []), ...before.cards.map((line) => line.card)]) {
+        known.set(card.oracle_id, card)
+      }
+      const lines = body.cards.flatMap((line) => {
+        const card = known.get(line.oracle_id)
+        return card === undefined
+          ? []
+          : [{ zone: line.zone, count: line.count, printing_id: line.printing_id, card }]
+      })
+      const state = script.saveState ?? 'verified'
+      const after = deckView({
+        ...before,
+        name: body.name,
+        format: body.format,
+        notes: body.notes,
+        cards: lines,
+        state,
+        verified: state === 'verified',
+        changed: false,
+        updated_at: '2026-10-18T12:00:00Z',
+        report: { ...before.report, format: body.format, summary: summary({ format: body.format, state }) },
+      })
+      views.set(id, after)
+      return jsonResponse(200, after)
+    }
     if (path.startsWith('/api/decks/') && method === 'DELETE') {
       const custom = script.override?.remove?.(call)
       if (custom !== undefined) return custom
@@ -228,5 +278,6 @@ export function startDecks(script: DecksScript = {}): DecksServer {
     created,
     imports,
     removed,
+    updated,
   }
 }

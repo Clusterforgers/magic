@@ -131,7 +131,11 @@ describe('the list', () => {
     const name = 'Atraxa Praetors Voice Superfriends '.repeat(3).trim()
     await renderDecks({ decks: [deckItem({ name })] })
     await screen.findByRole('list', { name: 'Your decks' })
-    expect(within(deckRows()[0] as HTMLElement).getByText(name)).toHaveClass('break-words')
+    expect(
+      within(deckRows()[0] as HTMLElement)
+        .getByText(name)
+        .closest('p'),
+    ).toHaveClass('break-words')
   })
 
   it('says it is loading while the first answer is awaited', async () => {

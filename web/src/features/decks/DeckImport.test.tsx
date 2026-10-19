@@ -3,7 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { deckError, deckItem, importResult, lineOf } from './fakeDecks'
 import { MAX_IMPORT_FILE_BYTES, MAX_IMPORT_LINES } from './rules'
-import { deckRows, listed, renderDecks, requests } from './renderDecks'
+import { listed, renderDecks, requests } from './renderDecks'
 
 type App = Awaited<ReturnType<typeof renderDecks>>
 
@@ -255,7 +255,7 @@ describe('saving', () => {
     expect(app.server.created).toEqual([])
   })
 
-  it('saves the resolved cards zone by zone, with their printings, under the trimmed name, then lists the deck first', async () => {
+  it('saves the resolved cards zone by zone, with their printings, under the trimmed name, then opens the deck in the builder', async () => {
     const app = await openImport({
       importResult: importResult({
         cards: [
@@ -283,16 +283,11 @@ describe('saving', () => {
         ],
       },
     ])
-    await waitFor(() => expect(deckRows()).toHaveLength(2))
-    expect(deckRows()[0]).toHaveTextContent('Imported Burn')
-    expect(deckRows()[0]).toHaveTextContent('Commander · 27 cards')
-    expect(deckRows()[0]).toHaveTextContent('Verified')
-    expect(await screen.findByText('Saved “Imported Burn”: Verified.')).toBeInTheDocument()
+    await waitFor(() => expect(app.router.state.location.pathname).toBe('/decks/made-1'))
     expect(requests(app.server.calls)).toEqual([
       'GET /api/decks',
       'POST /api/decks/import',
       'POST /api/decks',
-      'GET /api/decks',
     ])
   })
 
@@ -302,8 +297,7 @@ describe('saving', () => {
     await review(app)
     await app.user.type(nameField(), 'Legacy Burn{Enter}')
     await waitFor(() => expect(app.server.created[0]?.format).toBe('legacy'))
-    await waitFor(() => expect(dialog()).toBeNull())
-    expect(deckRows()[0]).toHaveTextContent('Legacy')
+    await waitFor(() => expect(app.router.state.location.pathname).toBe('/decks/made-1'))
   })
 
   it('does not replace a name the user typed with the file name when the list is read again', async () => {

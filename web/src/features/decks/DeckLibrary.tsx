@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { CircleAlertIcon, LibraryIcon, PlusIcon, TriangleAlertIcon, UploadIcon } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { EmptyState } from '@/components/EmptyState'
@@ -11,7 +11,6 @@ import type { DecksApi } from '@/net/decks'
 import type { DeckListItem, DeckView } from '@/protocol/generated'
 import { DeckRow } from './DeckRow'
 import { DeleteDeckDialog } from './DeleteDeckDialog'
-import { STATE_LABEL } from './format'
 import { ImportDialog } from './ImportDialog'
 import { NewDeckDialog } from './NewDeckDialog'
 import { useDeckList } from './useDeckList'
@@ -47,7 +46,7 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
   const [announcement, setAnnouncement] = useState('')
   const opened = useRef(0)
   const titleRef = useRef<HTMLHeadingElement>(null)
-  const listRef = useRef<HTMLDivElement>(null)
+  const navigate = useNavigate()
 
   const open = (
     next: { kind: 'new' } | { kind: 'import' } | { kind: 'delete'; deck: DeckListItem },
@@ -58,11 +57,9 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
   // A dialog that finishes closing after another one opened must not take the new one down with it.
   const closed = (key: number): void => setOverlay((current) => (current?.key === key ? null : current))
 
+  // A new or imported deck opens in the builder, where its cards and its check are.
   const saved = (deck: DeckView): void => {
-    setAnnouncement(`Saved “${deck.name}”: ${STATE_LABEL[deck.state]}.`)
-    // The newest deck is first, so the list goes back to the top to show it.
-    if (listRef.current !== null) listRef.current.scrollTop = 0
-    reload()
+    void navigate({ to: '/decks/$deckId', params: { deckId: deck.id } })
   }
   const deleted = (deck: DeckListItem): void => {
     setAnnouncement(`Deleted “${deck.name}”.`)
@@ -175,7 +172,7 @@ export function DeckLibrary({ api, clock }: DeckLibraryProps) {
 
         {decks.length > 0 ? (
           // The gutter is kept, so the rows do not change width when a deleted deck ends the scrolling.
-          <div ref={listRef} className="min-h-0 flex-1 sm:overflow-y-auto sm:[scrollbar-gutter:stable]">
+          <div className="min-h-0 flex-1 sm:overflow-y-auto sm:[scrollbar-gutter:stable]">
             <ul
               aria-label="Your decks"
               aria-busy={state.status === 'ready' && state.refreshing}

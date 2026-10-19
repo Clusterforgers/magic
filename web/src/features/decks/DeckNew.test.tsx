@@ -1,10 +1,10 @@
-// Goal: New deck asks for a name and a format, refuses a name the server would refuse before sending anything, saves a deck without cards under the trimmed name and the chosen format and then lists it first, puts the server's reason in the dialog when a save fails, and sends nothing on Cancel or Escape.
+// Goal: New deck asks for a name and a format, refuses a name the server would refuse before sending anything, saves a deck without cards under the trimmed name and the chosen format and then opens it in the builder, puts the server's reason in the dialog when a save fails, and sends nothing on Cancel or Escape.
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { DECK_FORMATS, formatLabel } from './format'
 import { deckError, deckItem } from './fakeDecks'
 import { MAX_DECK_NAME_CHARS } from './rules'
-import { deckRows, listed, renderDecks, requests } from './renderDecks'
+import { listed, renderDecks, requests } from './renderDecks'
 
 const dialog = () => screen.queryByRole('dialog')
 const nameField = () => screen.getByLabelText('Deck name')
@@ -85,27 +85,26 @@ describe('a name the server would refuse', () => {
 })
 
 describe('saving', () => {
-  it('sends the trimmed name, the chosen format and no cards, then lists the new deck first', async () => {
-    const { user, form, server } = await openNew()
+  it('sends the trimmed name, the chosen format and no cards, then opens the new deck in the builder', async () => {
+    const { user, form, server, router } = await openNew()
     await user.type(nameField(), '  Burn  ')
     await user.selectOptions(within(form).getByLabelText('Format'), 'modern')
     await user.click(createButton())
-    await waitFor(() => expect(dialog()).toBeNull())
+    await waitFor(() => expect(router.state.location.pathname).toBe('/decks/made-1'))
     expect(server.created).toEqual([{ name: 'Burn', format: 'modern', notes: '', cards: [] }])
     expect(server.calls[1]?.init?.credentials).toBe('include')
-    await waitFor(() => expect(deckRows()).toHaveLength(2))
-    expect(deckRows()[0]).toHaveTextContent('Burn')
-    expect(deckRows()[0]).toHaveTextContent('Modern')
-    expect(deckRows()[0]).toHaveTextContent('Blocked')
-    expect(deckRows()[1]).toHaveTextContent('Atraxa')
-    expect(requests(server.calls)).toEqual(['GET /api/decks', 'POST /api/decks', 'GET /api/decks'])
+    expect(requests(server.calls)).toEqual(['GET /api/decks', 'POST /api/decks'])
   })
 
-  it('says what was saved and how it checked, aloud', async () => {
-    const { user } = await openNew()
+  it('stays on the list when the save fails, so nothing is opened', async () => {
+    const { user, router } = await openNew({
+      decks: [],
+      override: { create: () => deckError(500, 'internal', 'boom') },
+    })
     await user.type(nameField(), 'Burn')
     await user.click(createButton())
-    expect(await screen.findByText('Saved “Burn”: Blocked.')).toBeInTheDocument()
+    expect(await screen.findByText(/the server ran into a problem/i)).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/')
   })
 
   it('is sent by Enter in the name field', async () => {
@@ -156,7 +155,7 @@ describe('a save the server refuses', () => {
 
   it('puts a lost connection in the dialog too, and a second try can succeed', async () => {
     let attempts = 0
-    const { user, form, server } = await openNew({
+    const { user, form, server, router } = await openNew({
       decks: [],
       override: {
         create: () => {
@@ -168,9 +167,9 @@ describe('a save the server refuses', () => {
     await user.type(nameField(), 'Burn')
     await user.click(createButton())
     expect(await within(form).findByRole('alert')).toHaveTextContent(/could not reach the server/i)
+    expect(router.state.location.pathname).toBe('/')
     await user.click(createButton())
-    await waitFor(() => expect(dialog()).toBeNull())
+    await waitFor(() => expect(router.state.location.pathname).toBe('/decks/made-1'))
     expect(server.created).toHaveLength(2)
-    await waitFor(() => expect(deckRows()).toHaveLength(1))
   })
 })
