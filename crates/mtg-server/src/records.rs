@@ -14,7 +14,6 @@ use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
-use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 use thiserror::Error;
 use uuid::Uuid;
@@ -25,6 +24,8 @@ use crate::recipe::GameRecipe;
 use crate::user_id::UserId;
 
 pub(crate) use claims::Claimed;
+/// Who may find and join a game; the wire type, stored as its `as_str` text.
+pub use mtg_protocol::rest::Visibility;
 pub use users::{Binding, UserGame, UserGameSeat};
 
 /// Why the records could not be read or written.
@@ -88,32 +89,12 @@ impl RecordStatus {
     }
 }
 
-/// Who may find and join a game.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum Visibility {
-    /// Listed in the game browser while it is in its lobby; its join code works too.
-    Public,
-    /// Reached only through its seat links and its join code; never listed.
-    #[default]
-    Invite,
-}
-
-impl Visibility {
-    /// The text stored in `games.visibility`.
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Visibility::Public => "public",
-            Visibility::Invite => "invite",
-        }
-    }
-
-    fn parse(text: &str) -> Result<Visibility, RecordError> {
-        [Visibility::Public, Visibility::Invite]
-            .into_iter()
-            .find(|visibility| visibility.as_str() == text)
-            .ok_or_else(|| RecordError::Corrupt(format!("unknown game visibility {text:?}")))
-    }
+/// The visibility stored in `games.visibility`; text no visibility is spelled as is corrupt.
+fn parse_visibility(text: &str) -> Result<Visibility, RecordError> {
+    Visibility::ALL
+        .into_iter()
+        .find(|visibility| visibility.as_str() == text)
+        .ok_or_else(|| RecordError::Corrupt(format!("unknown game visibility {text:?}")))
 }
 
 /// How a seat is held.
@@ -233,7 +214,7 @@ impl GameRow {
         Ok(GameRecord {
             id: GameId(self.id),
             status: RecordStatus::parse(&self.status)?,
-            visibility: Visibility::parse(&self.visibility)?,
+            visibility: parse_visibility(&self.visibility)?,
             code_digest,
             recipe: self.recipe,
             // A result this server cannot read only matters for display, never for resuming.
@@ -481,7 +462,7 @@ mod tests {
         #[case] text: &str,
     ) {
         assert_eq!(visibility.as_str(), text);
-        assert_eq!(Visibility::parse(text), Ok(visibility));
+        assert_eq!(parse_visibility(text), Ok(visibility));
         let json = serde_json::to_string(&visibility).unwrap();
         assert_eq!(json, format!("\"{text}\""));
         assert_eq!(
@@ -510,7 +491,7 @@ mod tests {
     #[case("private")]
     fn unknown_visibilities_and_seat_states_are_corrupt(#[case] text: &str) {
         assert!(matches!(
-            Visibility::parse(text),
+            parse_visibility(text),
             Err(RecordError::Corrupt(_))
         ));
         assert!(matches!(

@@ -1,5 +1,6 @@
 //! What the game browser may see of the registry: public games that are still in their lobby.
 
+use std::net::IpAddr;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 use super::Registry;
@@ -7,6 +8,7 @@ use crate::game_id::GameId;
 use crate::handle::GameHandle;
 use crate::recipe::FormatKind;
 use crate::records::{SeatState, Visibility};
+use crate::throttle::Blocked;
 
 /// Most games [`Registry::lobbies`] returns: the newest.
 pub const MAX_LISTED_LOBBIES: usize = 50;
@@ -32,6 +34,14 @@ pub struct ListedGame {
 }
 
 impl Registry {
+    /// Counts a request for the lobby list from client `address` at time `now`. An address that
+    /// has asked `AttemptLimits::lobby_requests_per_ip` times inside `lobby_window` is turned away
+    /// with [`Blocked`] until the window, which began at its first request, is over. Every request
+    /// counts, answered or not.
+    pub fn admit_listing(&self, address: IpAddr, now: Instant) -> Result<(), Blocked> {
+        self.shared.throttle.begin_listing(now, address)
+    }
+
     /// The public games that are still in their lobby, newest first, at most
     /// [`MAX_LISTED_LOBBIES`]. Invite games, started games and games whose actor is gone are
     /// never in it.

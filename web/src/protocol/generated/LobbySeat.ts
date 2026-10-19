@@ -10,7 +10,7 @@ export type LobbySeat = {
  */
 seat: PlayerId, 
 /**
- * The name the seat was given when the game was made.
+ * The name at the seat; empty for an open seat that nobody holds yet.
  */
 name: string, 
 /**

@@ -6,6 +6,7 @@ mod net;
 
 use std::collections::BTreeSet;
 
+use mtg_server::join_code::JoinCode;
 use mtg_server::{BODY_LIMIT, MAX_NAME_CHARS, ServerConfig};
 use net::{TestServer, bot_config};
 use rstest::rstest;
@@ -62,6 +63,24 @@ async fn server() -> TestServer {
 #[case::format_case_matters(json!({"format":"Normal","seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "unsupported_format")]
 #[case::no_format(json!({"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
 #[case::no_seats_field(json!({"format":"normal"}).to_string(), 400, "invalid_request")]
+#[case::a_public_game(json!({"format":"normal","visibility":"public","seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 201, "")]
+#[case::an_invite_game(json!({"format":"normal","visibility":"invite","seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 201, "")]
+#[case::unknown_visibility(json!({"format":"normal","visibility":"private","seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
+#[case::visibility_case_matters(json!({"format":"normal","visibility":"Public","seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
+#[case::visibility_is_null(json!({"format":"normal","visibility":null,"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
+#[case::visibility_is_a_flag(json!({"format":"normal","visibility":true,"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
+#[case::only_the_creator_holds_a_seat(json!({"format":"normal","held":1,"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 201, "")]
+#[case::every_seat_held(json!({"format":"normal","held":2,"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 201, "")]
+#[case::an_open_seat_needs_no_name(json!({"format":"normal","held":1,"seats":[seat("A","mono-red"),{"deck":"mono-red"}]}).to_string(), 201, "")]
+#[case::an_open_seat_name_is_never_judged(json!({"format":"normal","held":1,"seats":[seat("A","mono-red"),seat("A\nB","mono-red")]}).to_string(), 201, "")]
+#[case::an_open_seat_still_needs_a_deck(json!({"format":"normal","held":1,"seats":[seat("A","mono-red"),seat("B","mono-purple")]}).to_string(), 400, "unknown_deck")]
+#[case::a_held_seat_needs_a_name(json!({"format":"normal","held":2,"seats":[seat("A","mono-red"),{"deck":"mono-red"}]}).to_string(), 400, "invalid_request")]
+#[case::a_held_seat_name_is_judged(json!({"format":"normal","held":2,"seats":[seat("A","mono-red"),seat("A\nB","mono-red")]}).to_string(), 400, "invalid_request")]
+#[case::no_seat_held(json!({"format":"normal","held":0,"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
+#[case::more_held_than_seats(json!({"format":"normal","held":3,"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
+#[case::held_is_negative(json!({"format":"normal","held":-1,"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
+#[case::held_is_a_fraction(json!({"format":"normal","held":1.5,"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
+#[case::held_is_text(json!({"format":"normal","held":"1","seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
 #[case::client_chosen_seed(json!({"format":"normal","seed":7,"seats":[seat("A","mono-red"),seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
 #[case::unknown_seat_field(json!({"format":"normal","seats":[{"name":"A","deck":"mono-red","token":"x"},seat("B","mono-red")]}).to_string(), 400, "invalid_request")]
 #[case::duplicate_key(r#"{"format":"normal","format":"normal","seats":[{"name":"A","deck":"mono-red"},{"name":"B","deck":"mono-red"}]}"#.to_owned(), 400, "invalid_request")]
@@ -96,7 +115,12 @@ async fn creating_a_game_validates_every_request(
     assert_eq!(reply.header("x-content-type-options"), Some("nosniff"));
     let json = reply.json();
     if status == 201 {
-        assert_eq!(keys(&json), BTreeSet::from(["game", "seats"]));
+        assert_eq!(keys(&json), BTreeSet::from(["code", "game", "seats"]));
+        let code = json["code"].as_str().unwrap();
+        assert!(
+            JoinCode::parse(code).is_some_and(|c| c.expose() == code),
+            "{code}"
+        );
         let seats = json["seats"].as_array().unwrap();
         let tokens: BTreeSet<&str> = seats.iter().map(|s| s["token"].as_str().unwrap()).collect();
         assert_eq!(tokens.len(), seats.len(), "tokens are distinct");

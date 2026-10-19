@@ -62,6 +62,9 @@ A page that takes the whole window calls `useFullBleed` (`components/appChrome`,
 ## Data flow
 
 - `net/api.ts` checks REST bodies at runtime; a failure is an `ApiError` with a code of `crates/mtg-server/src/api.rs` or a local `unknown`, `network` or `bad_response`. `net/parse.ts`: `parseFrame` is the only door from the wire (JSON, known `type`, required fields, 1 MiB cap); garbage is a `FrameError`, never a throw.
+- The game browser calls are on the same client (`net/api.ts`): `listLobbies`, `joinGame`, `joinByCode`, `leaveGame`, `releaseSeat` and `setVisibility` ([server.md](server.md), Game browser endpoints). They reject with a `LobbyError {code, status, retryAfter}` whose code is the server's `LobbyErrorCode` or a local `unknown`, `network` or `bad_response`; `describeLobbyError` (`net/lobbyErrors.ts`) has words for every code, and `net/parseLobbies.ts` reads each body down to its leaves.
+  - `listLobbies(previous)` sends the `ETag` of the listing it is given and, on a 304, resolves with that very object, so `result === previous` means nothing changed. A listing carries `fetchedAt`; a row's age now is `age_secs` plus the time since then.
+  - A seat token goes in `Authorization: Bearer` and the session cookie rides along, so a call with no token acts for the signed-in user's own seat. `createGame` takes `visibility` and `held` and reads the join `code`.
 - `net/socket.ts`: `GameSocket` sends `Join` first and once per connection. `net/pacer.ts` holds sends to a burst of 30, then 15 a second; the server allows 40 and 20 and closes a socket over it with 1008.
 - `play/view.ts`: pure ports of `StateView::apply`; unchanged objects, players and zones keep their identity.
 - `play/session.ts`: `createSession({game, token, name})` owns the socket, applies the client rule of [protocol.md](protocol.md) and writes the zustand store (`play/store.ts`) that screens read with `useStore(session.store, selector)`.
@@ -77,6 +80,7 @@ The session's rules:
 |---|---|
 | 1001, 1006, 1013 and any code not listed below | `reconnecting`: retry after 250 ms doubling to 15 s, less up to 50 % jitter; a Welcome resets it |
 | 4000 | `replaced`, no retry; `connect()` takes the seat back |
+| 4001 | `stopped`, no retry, notice "You were removed from this game."; the seat was given back or the host removed the player |
 | 1000, 1002, 1007, 1008, 1009; `Error` UnsupportedVersion or UnknownGame | `stopped`, reason in `notice` |
 | any close after `GameOver` | `stopped`, no notice |
 

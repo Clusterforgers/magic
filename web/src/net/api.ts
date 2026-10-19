@@ -1,13 +1,17 @@
 /**
- * The REST client for `mtg-server` (docs/server.md). The bodies are not generated, so their types are written here
- * and every response is checked at runtime before it is returned.
+ * The REST client for `mtg-server` (docs/server.md). The game bodies are not generated, so their types are written
+ * here; the game browser's are generated (`mtg_protocol::rest`) and read in `parseLobbies.ts`. Every response is
+ * checked at runtime before it is returned.
  */
-import type { Color, GameResult, PlayerId } from '@/protocol/generated'
+import type { Color, GameResult, Joined, LobbyGame, PlayerId, Visibility } from '@/protocol/generated'
 import { isCount, isFlag, isListOf, isRecord, isText } from './check'
+import { LobbyError, lobbyFailure } from './lobbyErrors'
 import { isGameResult } from './parse'
+import { readJoined, readLobbyList, readVisibility } from './parseLobbies'
 
 /** One seat of a new game: the name shown to others and a deck id from `listDecks`. */
 export interface SeatRequest {
+  /** Not read for an open seat (one past `held`): it is named by whoever takes it. */
   name: string
   deck: string
 }
@@ -16,6 +20,10 @@ export interface SeatRequest {
 export interface CreateGameRequest {
   format: 'normal'
   seats: SeatRequest[]
+  /** Who may find and join the game; invite-only when left out. */
+  visibility?: Visibility
+  /** How many seats from seat 0 get a token (1 to the seat count); the rest are open. Every seat when left out. */
+  held?: number
 }
 
 /** A seat's secret token, shown once at creation; it opens that seat's WebSocket. */
@@ -24,10 +32,33 @@ export interface CreatedSeat {
   token: string
 }
 
-/** A new game and the token of each seat. */
+/** A new game, the token of each seat that is held and, from a server that makes them, the join code. */
 export interface CreatedGame {
   game: string
+  /** The join code, shown once; absent from a server that predates join codes. */
+  code?: string
   seats: CreatedSeat[]
+}
+
+/** The seat a request speaks for: its token, or nothing to rely on the session cookie (a signed-in user's own seat). */
+export interface SeatCredential {
+  token?: string
+}
+
+/** What a visitor says about themselves when they join: a guest must give a name, a signed-in user need not. */
+export interface JoinOptions {
+  name?: string
+}
+
+/**
+ * The lobby list as of one answer. `fetchedAt` (ms, the client's clock) is when the rows arrived, so a row's age now is
+ * `age_secs` plus the time since then; a `304` keeps the listing, and its `fetchedAt`, as it was.
+ */
+export interface LobbyListing {
+  games: LobbyGame[]
+  /** The answer's `ETag`, sent back as `If-None-Match`; null when the server sent none. */
+  etag: string | null
+  fetchedAt: number
 }
 
 /** The public facts about a game; never a secret. */
@@ -111,16 +142,34 @@ export interface ApiOptions {
   fetch?: Fetch
   /** Prefix for every path; empty means the page origin, which Vite proxies to the server in development. */
   baseUrl?: string
+  /** The clock `listLobbies` stamps a listing with, in milliseconds; defaults to `Date.now`. */
+  now?: () => number
 }
 
-/** The three REST calls; each rejects with an `ApiError`. */
+/** The REST calls. The first three reject with an `ApiError`, the game browser's with a `LobbyError`. */
 export interface Api {
-  /** `POST /api/games`: makes a game and returns each seat's token. */
+  /** `POST /api/games`: makes a game and returns each held seat's token and the join code. */
   createGame(request: CreateGameRequest): Promise<CreatedGame>
   /** `GET /api/games/{id}`: public facts about a game. */
   getGame(id: string): Promise<GameInfo>
   /** `GET /api/demo-decks`: the built-in decks. */
   listDecks(): Promise<DeckInfo[]>
+  /**
+   * `GET /api/lobbies`: the public games still in their lobby. Pass the listing you hold and the request carries its
+   * `ETag`; when nothing changed the server answers 304 and the result is `previous` itself, so `result === previous`
+   * says "no change" and costs a caller no new rows.
+   */
+  listLobbies(previous?: LobbyListing): Promise<LobbyListing>
+  /** `POST /api/games/{id}/join`: takes the first open seat of a public game. */
+  joinGame(game: string, join?: JoinOptions): Promise<Joined>
+  /** `POST /api/join`: takes the first open seat of the game a join code names. */
+  joinByCode(code: string, join?: JoinOptions): Promise<Joined>
+  /** `POST /api/games/{id}/leave`: the holder of a claimed seat gives it back before the game starts. */
+  leaveGame(game: string, as?: SeatCredential): Promise<void>
+  /** `POST /api/games/{id}/seats/{n}/release`: the host removes the player in seat `n` before the game starts. */
+  releaseSeat(game: string, seat: number, as?: SeatCredential): Promise<void>
+  /** `PATCH /api/games/{id}`: the host lists the game or hides it again; resolves with the visibility now in force. */
+  setVisibility(game: string, visibility: Visibility, as?: SeatCredential): Promise<Visibility>
 }
 
 const isServerCode = (value: string): value is ServerCode => Object.hasOwn(SERVER_CODES, value)
@@ -150,12 +199,14 @@ const unreadable = (status: number): ApiError =>
 
 function readCreated(body: unknown): CreatedGame | null {
   if (!isRecord(body) || !isText(body.game) || !Array.isArray(body.seats)) return null
+  // A server from before join codes sends none; one that sends a code sends text.
+  if (body.code !== undefined && !isText(body.code)) return null
   const seats: CreatedSeat[] = []
   for (const item of body.seats) {
     if (!isRecord(item) || !isCount(item.seat) || !isText(item.token)) return null
     seats.push({ seat: item.seat, token: item.token })
   }
-  return { game: body.game, seats }
+  return body.code === undefined ? { game: body.game, seats } : { game: body.game, code: body.code, seats }
 }
 
 function readGame(body: unknown): GameInfo | null {
@@ -196,9 +247,35 @@ function readDecks(body: unknown): DeckInfo[] | null {
   return decks
 }
 
+const JSON_HEADERS = { 'content-type': 'application/json' }
+
+// A seat token goes into a header, so it must be plain visible characters; anything else cannot be a token.
+function bearer(as: SeatCredential): Record<string, string> {
+  if (as.token === undefined) return {}
+  if (!/^[\x21-\x7e]+$/.test(as.token)) {
+    throw new LobbyError('invalid_request', 0, 'That seat link has a token the server cannot accept.')
+  }
+  return { authorization: `Bearer ${as.token}` }
+}
+
+const lobbyUnreadable = (status: number): LobbyError =>
+  new LobbyError('bad_response', status, 'The server sent an answer this page cannot read.')
+
+const joinBody = (join: JoinOptions): { name?: string } =>
+  join.name === undefined ? {} : { name: join.name }
+
+/** A game browser request that changes something, with the session cookie and, if there is one, the seat's token. */
+const change = (method: string, as: SeatCredential, body?: unknown): RequestInit => ({
+  method,
+  credentials: 'include',
+  headers: body === undefined ? bearer(as) : { ...JSON_HEADERS, ...bearer(as) },
+  ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+})
+
 /** Builds the client; call it once, or use the shared `api`. */
 export function createApi(options: ApiOptions = {}): Api {
   const base = options.baseUrl ?? ''
+  const now = options.now ?? Date.now
 
   async function call<T>(path: string, read: (body: unknown) => T | null, init?: RequestInit): Promise<T> {
     const send: Fetch = options.fetch ?? ((url, request) => globalThis.fetch(url, request))
@@ -217,6 +294,32 @@ export function createApi(options: ApiOptions = {}): Api {
     return value
   }
 
+  async function lobbySend(path: string, init: RequestInit): Promise<{ response: Response; body: unknown }> {
+    const send: Fetch = options.fetch ?? ((url, request) => globalThis.fetch(url, request))
+    try {
+      const response = await send(`${base}${path}`, init)
+      return { response, body: parseJson(await response.text()) }
+    } catch {
+      throw new LobbyError('network', 0, 'Could not reach the server. Check your connection and try again.')
+    }
+  }
+
+  // The answer must be the documented success status and must read, else it is not what the server sends.
+  async function lobbyCall<T>(
+    path: string,
+    read: (body: unknown) => T | null,
+    init: RequestInit,
+    success = 200,
+  ): Promise<T> {
+    const { response, body } = await lobbySend(path, init)
+    if (!response.ok) throw lobbyFailure(response, body)
+    const value = response.status === success ? read(body) : null
+    if (value === null) throw lobbyUnreadable(response.status)
+    return value
+  }
+
+  const game = (id: string): string => `/api/games/${encodeURIComponent(id)}`
+
   return {
     createGame: (request) =>
       call('/api/games', readCreated, {
@@ -228,6 +331,36 @@ export function createApi(options: ApiOptions = {}): Api {
       }),
     getGame: (id) => call(`/api/games/${encodeURIComponent(id)}`, readGame),
     listDecks: () => call('/api/demo-decks', readDecks),
+    listLobbies: async (previous) => {
+      const known = previous?.etag ?? null
+      const { response, body } = await lobbySend(
+        '/api/lobbies',
+        known === null ? {} : { headers: { 'if-none-match': known } },
+      )
+      if (response.status === 304) {
+        // A 304 answers a conditional request, so one that was not is not an answer this client asked for.
+        if (previous === undefined || known === null) throw lobbyUnreadable(304)
+        return previous
+      }
+      if (!response.ok) throw lobbyFailure(response, body)
+      const games = readLobbyList(body)
+      if (games === null) throw lobbyUnreadable(response.status)
+      return { games, etag: response.headers.get('etag'), fetchedAt: now() }
+    },
+    joinGame: (id, join = {}) =>
+      lobbyCall(`${game(id)}/join`, readJoined, change('POST', {}, joinBody(join))),
+    joinByCode: (code, join = {}) =>
+      lobbyCall('/api/join', readJoined, change('POST', {}, { code, ...joinBody(join) })),
+    leaveGame: async (id, as = {}) => {
+      await lobbyCall(`${game(id)}/leave`, () => true, change('POST', as), 204)
+    },
+    releaseSeat: async (id, seat, as = {}) => {
+      if (!isCount(seat)) throw new LobbyError('invalid_request', 0, 'That is not a seat number.')
+      await lobbyCall(`${game(id)}/seats/${seat}/release`, () => true, change('POST', as), 204)
+    },
+    // `async` so that a token that cannot go into a header rejects like every other failure.
+    setVisibility: async (id, visibility, as = {}) =>
+      lobbyCall(game(id), readVisibility, change('PATCH', as, { visibility })),
   }
 }
 

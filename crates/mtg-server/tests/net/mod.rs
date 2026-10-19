@@ -4,6 +4,7 @@
 pub mod accounts;
 pub mod bot;
 pub mod http;
+pub mod lobby;
 pub mod server;
 pub mod table;
 pub mod ws;

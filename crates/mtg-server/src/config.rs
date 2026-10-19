@@ -68,7 +68,8 @@ pub enum Registration {
     Closed,
 }
 
-/// How many tries the account endpoints and the join code lookup allow inside one window.
+/// How many tries the account endpoints, the join code lookup and the lobby list allow inside one
+/// window.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct AttemptLimits {
     /// Length of one counting window; a counter starts at the first try and ends a window later.
@@ -84,6 +85,11 @@ pub struct AttemptLimits {
     /// Join codes one address may miss inside `code_window` before it is turned away (a code that
     /// finds its game does not count).
     pub code_misses_per_ip: u32,
+    /// Length of the window in which requests for the lobby list are counted.
+    pub lobby_window: Duration,
+    /// Requests for the lobby list one address may make inside `lobby_window` before it is turned
+    /// away; every request counts, a cached answer (`304`) too.
+    pub lobby_requests_per_ip: u32,
 }
 
 impl Default for AttemptLimits {
@@ -95,6 +101,8 @@ impl Default for AttemptLimits {
             register_per_ip: 10,
             code_window: Duration::from_mins(1),
             code_misses_per_ip: 5,
+            lobby_window: Duration::from_mins(1),
+            lobby_requests_per_ip: 30,
         }
     }
 }

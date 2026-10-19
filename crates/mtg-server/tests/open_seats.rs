@@ -1,4 +1,4 @@
-//! Goal: an open seat is claimed by the first visitor who asks and never by two, an account holds one seat per game and is handed its own again, the entrance decides which games a visitor can reach, a claim names the seat at the table and a release empties it again (token, connection, Ready and account), only the holder and the host may release, and once the game starts claims, releases and the visibility are refused.
+//! Goal: an open seat is claimed by the first visitor who asks and never by two, an account holds one seat per game and is handed its own again, the entrance decides which games a visitor can reach, a claim names the seat at the table and a release empties it again (token, connection, Ready and account), only the holder and the host may release, once the game starts claims, releases and the visibility are refused, and the actor reports which seats nobody holds.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -769,4 +769,33 @@ async fn only_the_host_changes_who_may_find_the_game(
     let now = if expected.is_ok() { to } else { from };
     assert_eq!(registry.visibility(created.id), Some(now));
     assert_eq!(registry.describe(created.id).await.unwrap().visibility, now);
+}
+
+/// A socket whose queue ended asks the actor whether its seat is open to tell a seat taken away
+/// from one that was only cut off, so the status must follow every change of hands.
+#[tokio::test]
+async fn the_actor_reports_which_seats_nobody_holds() {
+    let registry = registry();
+    let created = lobby(&registry, 3, Visibility::Public).await;
+    let handle = registry.handle(created.id).unwrap();
+    let open = || async { handle.status().await.unwrap().open };
+    assert_eq!(open().await, [seat(1), seat(2)]);
+
+    join(&registry, created.id, guest("Bo")).await.unwrap();
+    assert_eq!(open().await, [seat(2)]);
+    join(&registry, created.id, guest("Cy")).await.unwrap();
+    assert_eq!(open().await, []);
+
+    registry.release(created.id, seat(1), HOST).await.unwrap();
+    assert_eq!(open().await, [seat(1)]);
+    registry
+        .release(created.id, seat(2), seat(2))
+        .await
+        .unwrap();
+    assert_eq!(open().await, [seat(1), seat(2)]);
+
+    // A seat that is only cut off, not given back, is not open.
+    join(&registry, created.id, guest("Di")).await.unwrap();
+    handle.leave(seat(1)).await;
+    assert_eq!(open().await, [seat(2)]);
 }

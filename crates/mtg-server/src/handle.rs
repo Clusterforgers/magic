@@ -41,6 +41,9 @@ pub struct GameStatus {
     pub connected: Vec<PlayerId>,
     /// Seats that pressed Ready and did not take it back, in seat order; every seat once the game runs.
     pub ready: Vec<PlayerId>,
+    /// Seats nobody holds (open for a join to claim, or given back), in seat order; none once the
+    /// game runs.
+    pub open: Vec<PlayerId>,
 }
 
 /// What a handle asks of the actor.

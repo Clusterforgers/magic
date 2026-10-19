@@ -86,7 +86,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [ ] (U5) Controls dock: a 44 px pass button, a one-row stop ladder and a menu for the rest
   - [ ] (U6) Turn feedback: turn badge, turn banner, active-seat emphasis, a distinct theme for each phase so the current phase is unmistakable, and a ticker for automatic passes and skips
   - [x] (U7) Server: game visibility, open seats, claim and join code
-  - [ ] (U8) Server: public game listing, join, leave and release, with privacy tests
+  - [x] (U8) Server: public game listing, join, leave and release, with privacy tests
   - [ ] (U9) Game browser page: live list, join dialog, empty, loading and error states
   - [ ] (U10) Create-game visibility, invite link and code, lobby controls for host and guests
   - [ ] (U11) Page polish: game over, My games, sign-in and one page width scale

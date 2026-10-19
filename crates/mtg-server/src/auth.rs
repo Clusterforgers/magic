@@ -373,7 +373,7 @@ fn internal(reason: &dyn std::fmt::Display) -> ApiError {
 
 /// The address a request comes from, for counting: the socket's peer, or with
 /// `trusted_proxies > 0` the entry `X-Forwarded-For` has that many places from its right end.
-fn client_address(request: &Request, trusted_proxies: usize) -> IpAddr {
+pub(crate) fn client_address(request: &Request, trusted_proxies: usize) -> IpAddr {
     let peer = request
         .extensions()
         .get::<ConnectInfo<SocketAddr>>()

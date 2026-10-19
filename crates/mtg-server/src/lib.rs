@@ -86,6 +86,7 @@ mod game_id;
 mod handle;
 pub mod join_code;
 mod limit;
+mod lobbies;
 mod lobby;
 mod migrations;
 mod my_games;

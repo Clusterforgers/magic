@@ -15,7 +15,8 @@ use serde_json::json;
 use crate::demo::{self, DemoDeck};
 use crate::game_id::GameId;
 use crate::origin::origin_allowed;
-use crate::registry::{CreateError, SeatRequest};
+use crate::records::Visibility;
+use crate::registry::{CreateError, GameOptions, SeatRequest};
 use crate::server::AppState;
 
 /// Largest request body, in bytes.
@@ -167,11 +168,20 @@ impl From<CreateError> for ApiError {
 struct NewGame {
     format: String,
     seats: Vec<NewSeat>,
+    /// Who may find and join the game; invite-only when absent.
+    #[serde(default)]
+    visibility: Visibility,
+    /// How many seats, from seat 0, are handed out with a token; every seat when absent. The
+    /// rest are open for a join to take.
+    #[serde(default)]
+    held: Option<usize>,
 }
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct NewSeat {
+    /// Judged for held seats only: an open seat is named by whoever takes it.
+    #[serde(default)]
     name: String,
     deck: String,
 }
@@ -179,6 +189,9 @@ struct NewSeat {
 #[derive(Debug, Serialize)]
 pub(crate) struct CreatedBody {
     game: String,
+    /// The join code, shown here and never again.
+    code: String,
+    /// The seats that are held, each with its token; open seats have none.
     seats: Vec<CreatedSeat>,
 }
 
@@ -297,10 +310,17 @@ pub(crate) async fn create_game(
     }
     let headers = request.headers().clone();
     let body = read_json::<NewGame>(request).await?;
-    let seats = validate(&body)?;
+    let (seats, options) = validate(&body)?;
     let host = app.auth().session_user(&headers).await?.map(|user| user.id);
-    let created = app.registry().create_for(&seats, host).await?;
-    tracing::info!(game = %created.id, seats = seats.len(), bound = host.is_some(), "game created");
+    let created = app.registry().create_with(&seats, options, host).await?;
+    tracing::info!(
+        game = %created.id,
+        seats = seats.len(),
+        held = created.seats.len(),
+        visibility = options.visibility.as_str(),
+        bound = host.is_some(),
+        "game created"
+    );
     let seats = created
         .seats
         .iter()
@@ -311,6 +331,7 @@ pub(crate) async fn create_game(
         .collect();
     let body = CreatedBody {
         game: created.id.to_string(),
+        code: created.code.expose().to_owned(),
         seats,
     };
     Ok((StatusCode::CREATED, Json(body)))
@@ -367,8 +388,9 @@ fn is_json(headers: &HeaderMap) -> bool {
         .is_some_and(|mime| mime.trim().eq_ignore_ascii_case("application/json"))
 }
 
-/// Checks a creation request and resolves its decks.
-fn validate(body: &NewGame) -> Result<Vec<SeatRequest>, ApiError> {
+/// Checks a creation request and resolves its decks; returns the seats and what the game is made
+/// with besides them.
+fn validate(body: &NewGame) -> Result<(Vec<SeatRequest>, GameOptions), ApiError> {
     if body.format != "normal" {
         return Err(ApiError::new(
             StatusCode::BAD_REQUEST,
@@ -376,23 +398,36 @@ fn validate(body: &NewGame) -> Result<Vec<SeatRequest>, ApiError> {
             "the only supported format is \"normal\"",
         ));
     }
-    if !(MIN_SEATS..=MAX_SEATS).contains(&body.seats.len()) {
+    let count = body.seats.len();
+    if !(MIN_SEATS..=MAX_SEATS).contains(&count) {
         return Err(ApiError::invalid(format!(
-            "a game needs {MIN_SEATS} to {MAX_SEATS} seats, got {}",
-            body.seats.len()
+            "a game needs {MIN_SEATS} to {MAX_SEATS} seats, got {count}"
         )));
     }
-    body.seats
+    let held = body.held.unwrap_or(count);
+    if !(1..=count).contains(&held) {
+        return Err(ApiError::invalid(format!(
+            "held must be 1 to {count}: the creator's seat is always held"
+        )));
+    }
+    let seats = body
+        .seats
         .iter()
         .enumerate()
         .map(|(index, seat)| {
-            let name = seat.name.trim();
-            let length = name.chars().count();
-            if length == 0 || length > MAX_NAME_CHARS || name.chars().any(is_unsafe_in_names) {
-                return Err(ApiError::invalid(format!(
-                    "seat {index}: the name must be 1 to {MAX_NAME_CHARS} characters without control characters"
-                )));
-            }
+            // An open seat takes the name of whoever joins it; what was sent is never used.
+            let name = if index < held {
+                let name = seat.name.trim();
+                let length = name.chars().count();
+                if length == 0 || length > MAX_NAME_CHARS || name.chars().any(is_unsafe_in_names) {
+                    return Err(ApiError::invalid(format!(
+                        "seat {index}: the name must be 1 to {MAX_NAME_CHARS} characters without control characters"
+                    )));
+                }
+                name.to_owned()
+            } else {
+                String::new()
+            };
             let deck = demo::find(&seat.deck).ok_or_else(|| {
                 ApiError::new(
                     StatusCode::BAD_REQUEST,
@@ -400,12 +435,14 @@ fn validate(body: &NewGame) -> Result<Vec<SeatRequest>, ApiError> {
                     format!("seat {index}: no such deck; see GET /api/demo-decks"),
                 )
             })?;
-            Ok(SeatRequest {
-                name: name.to_owned(),
-                deck,
-            })
+            Ok(SeatRequest { name, deck })
         })
-        .collect()
+        .collect::<Result<Vec<_>, ApiError>>()?;
+    let options = GameOptions {
+        visibility: body.visibility,
+        held: Some(held),
+    };
+    Ok((seats, options))
 }
 
 /// Control characters and invisible or direction-changing marks, which could make a name

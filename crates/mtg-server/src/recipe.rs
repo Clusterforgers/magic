@@ -39,6 +39,15 @@ pub enum FormatKind {
     Normal,
 }
 
+impl FormatKind {
+    /// The format key on the wire, as `POST /api/games` takes it and `GET /api/lobbies` lists it.
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            FormatKind::Normal => "normal",
+        }
+    }
+}
+
 /// Where one seat's cards come from.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
