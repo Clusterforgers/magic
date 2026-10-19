@@ -8,7 +8,7 @@ use axum::http::{HeaderMap, HeaderName, HeaderValue, Method, StatusCode};
 use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
 use mtg_core::ids::PlayerId;
-use mtg_engine::state::GameResult;
+use mtg_protocol::rest::{GameInfo, GameSeat};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
@@ -202,21 +202,6 @@ struct CreatedSeat {
 }
 
 #[derive(Debug, Serialize)]
-struct SeatBody {
-    seat: PlayerId,
-    name: String,
-}
-
-#[derive(Debug, Serialize)]
-pub(crate) struct GameBody {
-    started: bool,
-    seats: Vec<SeatBody>,
-    connected: Vec<PlayerId>,
-    ready: Vec<PlayerId>,
-    result: Option<GameResult>,
-}
-
-#[derive(Debug, Serialize)]
 pub(crate) struct DeckBody {
     id: &'static str,
     name: &'static str,
@@ -273,7 +258,7 @@ fn deck_body(deck: &DemoDeck) -> DeckBody {
 pub(crate) async fn game(
     State(app): State<AppState>,
     path: Result<Path<String>, PathRejection>,
-) -> Result<Json<GameBody>, ApiError> {
+) -> Result<Json<GameInfo>, ApiError> {
     let Path(id) = path.map_err(|_| ApiError::not_found())?;
     let id: GameId = id.parse().map_err(|_| ApiError::not_found())?;
     let game = app
@@ -281,12 +266,12 @@ pub(crate) async fn game(
         .describe(id)
         .await
         .ok_or_else(ApiError::not_found)?;
-    Ok(Json(GameBody {
+    Ok(Json(GameInfo {
         started: game.started,
         seats: game
             .seats
             .into_iter()
-            .map(|s| SeatBody {
+            .map(|s| GameSeat {
                 seat: s.seat,
                 name: s.name,
             })
@@ -294,6 +279,7 @@ pub(crate) async fn game(
         connected: game.connected,
         ready: game.ready,
         result: game.result,
+        visibility: game.visibility,
     }))
 }
 

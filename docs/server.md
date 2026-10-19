@@ -19,7 +19,7 @@ The `mtg-server` crate: one actor per game behind an axum REST and WebSocket tra
 | Route | Behaviour |
 |---|---|
 | `POST /api/games` | `{format: "normal", seats: [{name, deck}], visibility?, held?}` gives 201 `{game, code, seats: [{seat, token}]}`; 2 to 12 seats, `deck` a demo deck id, 16 KiB `application/json` body, unknown fields refused, server-random seed. `visibility` is `public` or `invite` (the default); `held` is how many seats from seat 0 get a token (1 to the seat count, every seat by default): the others are open, their `name` is never read and `seats` lists only the held ones. |
-| `GET /api/games/{id}` | `{started, seats, connected, ready, result}`; a malformed and an unknown id are one 404. |
+| `GET /api/games/{id}` | `{started, seats, connected, ready, result, visibility}`; a malformed and an unknown id are one 404. |
 | `/api/lobbies`, `/api/join`, `/api/games/{id}/join`, `/leave`, `/seats/{n}/release`, `PATCH /api/games/{id}` | The game browser: [Open games](#open-games). |
 | `GET /api/demo-decks`, `GET /healthz` | The built-in decks; `ok`. |
 | `/api/auth/*`, `GET /api/me/games` | Accounts. |

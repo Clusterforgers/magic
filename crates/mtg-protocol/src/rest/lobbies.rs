@@ -1,10 +1,12 @@
 //! Bodies of the game browser's endpoints of `mtg-server`: the public listing (`GET /api/lobbies`),
-//! joining by a game's id or its join code, the host's visibility switch (`PATCH /api/games/{id}`)
-//! and the error codes of all of them, with TypeScript bindings.
+//! joining by a game's id or its join code, the look-up of one game (`GET /api/games/{id}`), the
+//! host's visibility switch (`PATCH /api/games/{id}`) and the error codes of all of them, with
+//! TypeScript bindings.
 
 use std::fmt;
 
 use mtg_core::ids::PlayerId;
+use mtg_engine::state::GameResult;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
@@ -57,6 +59,33 @@ pub struct LobbyGame {
 pub struct LobbyList {
     /// The games.
     pub games: Vec<LobbyGame>,
+}
+
+/// One seat of a game, as `GET /api/games/{id}` lists it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct GameSeat {
+    /// The seat number.
+    pub seat: PlayerId,
+    /// What the table calls the seat; empty while nobody holds it.
+    pub name: String,
+}
+
+/// The answer of `GET /api/games/{id}`: what anybody who knows a game's id may learn. It holds no
+/// seat token, join code or link.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct GameInfo {
+    /// Whether every seat was ready and the game began.
+    pub started: bool,
+    /// Every seat, in seat order.
+    pub seats: Vec<GameSeat>,
+    /// The seats with a live connection.
+    pub connected: Vec<PlayerId>,
+    /// The seats that pressed Ready and did not take it back; every seat once the game began.
+    pub ready: Vec<PlayerId>,
+    /// How the game ended; null until it has.
+    pub result: Option<GameResult>,
+    /// Who may find the game; the host changes it with `PATCH /api/games/{id}` before the start.
+    pub visibility: Visibility,
 }
 
 /// The body of `POST /api/games/{id}/join`.
@@ -132,7 +161,8 @@ pub enum LobbyErrorCode {
     NotFound,
     /// 409: every seat of the game is taken.
     Full,
-    /// 409: the game has started, so its seats and visibility no longer change.
+    /// 409: the game has started, so its seats and visibility no longer change and the host can no
+    /// longer close it.
     Started,
     /// 409: the seat was made with the game, not taken by a join, so it cannot be given back.
     NotClaimed,

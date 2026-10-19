@@ -1,4 +1,4 @@
-//! Goal: giving a seat back, removing a player and listing or hiding the game over real HTTP: the holder of a claimed seat leaves with its token, only the host removes a player or switches the visibility, a stranger learns nothing (one 404 whatever is wrong), a seat made with the game cannot be given back, after the start every change answers 409 started, the old token dies with the seat, and a foreign origin is refused on every call that changes something while a listed origin may use the new methods and headers.
+//! Goal: giving a seat back, removing a player and listing or hiding the game over real HTTP: the holder of a claimed seat leaves with its token, only the host removes a player or switches the visibility (which the lookup of the game then reports), a stranger learns nothing (one 404 whatever is wrong), a seat made with the game cannot be given back, after the start every change answers 409 started, the old token dies with the seat, and a foreign origin is refused on every call that changes something while a listed origin may use the new methods and headers.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -51,6 +51,13 @@ async fn names(server: &TestServer, game: &str) -> Vec<String> {
         .iter()
         .map(|seat| seat["name"].as_str().unwrap().to_owned())
         .collect()
+}
+
+/// What `GET /api/games/{id}` says about who may find the game.
+async fn shown_visibility(server: &TestServer, game: &str) -> Value {
+    let reply = call(server.addr, "GET", &format!("/api/games/{game}"), None, &[]).await;
+    assert_eq!(reply.status, 200, "{}", reply.text());
+    reply.json()["visibility"].clone()
 }
 
 fn leave_path(game: &str) -> String {
@@ -335,6 +342,7 @@ async fn the_host_lists_and_hides_the_game() {
     let table = table(&server).await;
     let id = &table.game.id;
     let host = table.game.host();
+    assert_eq!(shown_visibility(&server, id).await, "public");
 
     for (visibility, shown) in [
         ("invite", false),
@@ -349,6 +357,8 @@ async fn the_host_lists_and_hides_the_game() {
         assert_eq!(reply.header("cache-control"), Some("no-store"));
         let ids = listed(&lobbies(server.addr, &[]).await);
         assert_eq!(ids == [id.clone()], shown, "{visibility}");
+        // A lobby page that reloads reads the same word from the lookup.
+        assert_eq!(shown_visibility(&server, id).await, visibility);
     }
     // Hidden, the game is reached by its code and no longer by its id.
     patch(&server, id, host, r#"{"visibility":"invite"}"#).await;

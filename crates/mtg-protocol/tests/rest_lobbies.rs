@@ -1,14 +1,15 @@
-//! Goal: the game browser bodies keep their documented JSON shape and refuse anything else, a seat token never reaches `Debug` output, visibility is invite-only unless it says otherwise, every error code has one spelling shared by serde and `as_str`, and the TypeScript bindings carry all of it.
+//! Goal: the game browser bodies keep their documented JSON shape and refuse anything else, the lookup of a game says who may find it, a seat token never reaches `Debug` output, visibility is invite-only unless it says otherwise, every error code has one spelling shared by serde and `as_str`, and the TypeScript bindings carry all of it.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::{BTreeMap, BTreeSet};
 
 use mtg_core::ids::PlayerId;
+use mtg_engine::state::GameResult;
 use mtg_protocol::bindings::export_to;
 use mtg_protocol::rest::{
-    JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, Visibility,
-    VisibilityBody,
+    GameInfo, GameSeat, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList,
+    Visibility, VisibilityBody,
 };
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -74,6 +75,81 @@ fn the_listing_has_the_documented_wire_shape() {
 fn an_empty_listing_is_an_empty_list() {
     let empty = LobbyList { games: vec![] };
     assert_eq!(serde_json::to_value(&empty).unwrap(), json!({"games": []}));
+}
+
+/// A game of two seats of which the second is open, as the lookup shows it.
+fn lookup(started: bool, result: Option<GameResult>, visibility: Visibility) -> GameInfo {
+    GameInfo {
+        started,
+        seats: vec![
+            GameSeat {
+                seat: PlayerId(0),
+                name: "Ann".into(),
+            },
+            GameSeat {
+                seat: PlayerId(1),
+                name: String::new(),
+            },
+        ],
+        connected: vec![PlayerId(0)],
+        ready: vec![PlayerId(0)],
+        result,
+        visibility,
+    }
+}
+
+#[test]
+fn the_game_lookup_has_the_documented_wire_shape() {
+    let waiting = lookup(false, None, Visibility::Public);
+    let value = serde_json::to_value(&waiting).unwrap();
+    assert_eq!(
+        value,
+        json!({
+            "started": false,
+            "seats": [{"seat": 0, "name": "Ann"}, {"seat": 1, "name": ""}],
+            "connected": [0],
+            "ready": [0],
+            "result": null,
+            "visibility": "public",
+        })
+    );
+    assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), waiting);
+
+    let over = lookup(
+        true,
+        Some(GameResult::Winner(PlayerId(1))),
+        Visibility::Invite,
+    );
+    let value = serde_json::to_value(&over).unwrap();
+    assert_eq!(value["result"], json!({"Winner": 1}));
+    assert_eq!(value["visibility"], "invite");
+    assert_eq!(serde_json::from_value::<GameInfo>(value).unwrap(), over);
+}
+
+#[rstest]
+#[case(Visibility::Public, "public")]
+#[case(Visibility::Invite, "invite")]
+fn the_lookup_carries_the_visibility_in_force(#[case] visibility: Visibility, #[case] text: &str) {
+    for started in [false, true] {
+        let value = serde_json::to_value(lookup(started, None, visibility)).unwrap();
+        assert_eq!(value["visibility"], json!(text));
+    }
+}
+
+#[rstest]
+#[case::missing(None)]
+#[case::null(Some(json!(null)))]
+#[case::wrong_case(Some(json!("Public")))]
+#[case::unknown_word(Some(json!("private")))]
+#[case::a_flag(Some(json!(true)))]
+fn a_lookup_must_name_a_visibility_it_knows(#[case] visibility: Option<Value>) {
+    let mut value = serde_json::to_value(lookup(false, None, Visibility::Invite)).unwrap();
+    let body = value.as_object_mut().unwrap();
+    match visibility {
+        Some(other) => body.insert("visibility".into(), other),
+        None => body.remove("visibility"),
+    };
+    assert!(serde_json::from_value::<GameInfo>(value).is_err());
 }
 
 #[rstest]
@@ -280,6 +356,8 @@ fn the_bindings_carry_the_game_browser_types() {
     for needed in [
         "LobbyList.ts",
         "LobbyGame.ts",
+        "GameInfo.ts",
+        "GameSeat.ts",
         "JoinRequest.ts",
         "JoinCodeRequest.ts",
         "Joined.ts",
@@ -310,6 +388,18 @@ fn the_bindings_carry_the_game_browser_types() {
     assert!(files["Joined.ts"].contains("seat: PlayerId"));
     assert!(files["Joined.ts"].contains("token: string | null"));
     assert!(files["VisibilityBody.ts"].contains("visibility: Visibility"));
+    for field in [
+        "started: boolean",
+        "seats: Array<GameSeat>",
+        "connected: Array<PlayerId>",
+        "ready: Array<PlayerId>",
+        "result: GameResult | null",
+        "visibility: Visibility",
+    ] {
+        assert!(files["GameInfo.ts"].contains(field), "{field}");
+    }
+    assert!(files["GameSeat.ts"].contains("seat: PlayerId"));
+    assert!(files["GameSeat.ts"].contains("name: string"));
     for code in LobbyErrorCode::ALL {
         assert!(
             files["LobbyErrorCode.ts"].contains(&format!("\"{}\"", code.as_str())),
