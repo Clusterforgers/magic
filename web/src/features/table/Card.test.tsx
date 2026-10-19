@@ -45,6 +45,20 @@ describe('card face', () => {
     expect(text).toHaveAttribute('data-frame', 'red')
   })
 
+  it('lists the keywords as plain text under the type line, and nothing for a card without any', () => {
+    const { container } = renderCard({
+      object: card({ name: 'Serra Angel', keywords: ['Flying', 'Vigilance'] }),
+    })
+    const keywords = must(container.querySelector('[data-slot="card-keywords"]'))
+    expect(keywords).toHaveTextContent('Flying, Vigilance')
+    expect(button()).toHaveAccessibleName(expect.stringContaining('flying, vigilance'))
+  })
+
+  it('has no keyword line for a card with no keywords', () => {
+    const { container } = renderCard({ object: card() })
+    expect(container.querySelector('[data-slot="card-keywords"]')).toBeNull()
+  })
+
   it('has one obvious slot for card art', () => {
     const { container } = renderCard({ object: card() })
     expect(container.querySelectorAll('[data-slot="card-art"]')).toHaveLength(1)
@@ -254,6 +268,27 @@ describe('the preview', () => {
     expect(preview).toHaveTextContent('Attacking Alice, blocked')
     expect(preview).toHaveTextContent('Status: tapped, attacking, blocked')
     expect(preview).toHaveTextContent('No abilities.')
+    expect(preview.querySelector('[data-slot="preview-keywords"]')).toBeNull()
+  })
+
+  it('lists the keywords of a creature in words', async () => {
+    const { container, user, fixture } = renderTable({
+      seats: 2,
+      state: (state) => {
+        const view = clone(must(state.view))
+        const attacker = must(view.combat.attackers[0]).object
+        view.objects = view.objects.map((object) =>
+          object.id === attacker ? { ...object, keywords: ['Flying', 'First strike'] } : object,
+        )
+        return { ...state, view, objectsById: indexById(view.objects) }
+      },
+    })
+    const attacker = must(fixture.view.combat.attackers[0]).object
+    await user.hover(must(container.querySelector<HTMLElement>(`button[data-object-id="${attacker}"]`)))
+    const preview = screen.getByTestId('card-preview')
+    expect(preview.querySelector('[data-slot="preview-keywords"]')).toHaveTextContent(
+      'Keywords: Flying, First strike',
+    )
   })
 
   it('docks on the side away from the card', async () => {

@@ -356,6 +356,14 @@ describe('events with more than one shape', () => {
   })
 
   it.each([
+    ['LethalDamage', 'Grizzly Bears dies from lethal damage'],
+    ['Deathtouch', 'Grizzly Bears dies from deathtouch'],
+    ['ZeroToughness', 'Grizzly Bears dies with zero toughness'],
+  ] as const)('says why a creature died of %s', (cause, text) => {
+    expect(say({ CreatureDied: { object: 1, cause } })).toBe(text)
+  })
+
+  it.each([
     ['ZeroLife', 'Bo ran out of life'],
     ['EmptyLibrary', 'Bo could not draw from an empty library'],
     ['Conceded', 'Bo conceded'],

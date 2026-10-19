@@ -26,6 +26,7 @@ interface Stat {
   toughness?: number | null
   damage?: number
   name?: string
+  keywords?: string[]
 }
 
 /** `state` with the creatures changed as `stats` says; the view and the by-id index stay in step. */
@@ -36,6 +37,7 @@ function withStats(state: PlayState, stats: Record<ObjectId, Stat>): PlayState {
     if (stat === undefined) continue
     if (stat.toughness !== undefined) object.toughness = stat.toughness
     if (stat.name !== undefined) object.name = stat.name
+    if (stat.keywords !== undefined) object.keywords = stat.keywords
     if (stat.damage !== undefined && object.permanent !== null) object.permanent.damage = stat.damage
   }
   return { ...state, view, objectsById: indexById(view.objects) }
@@ -722,6 +724,120 @@ describe('the table while deciding', () => {
     expect(marks().size).toBe(3)
     update(() => ({ pending: null }))
     expect(marks().size).toBe(0)
+  })
+})
+
+describe('an attacker with trample', () => {
+  const trample = (power: number, blockers: ObjectId[], lethal?: number[]): DamageOptions => ({
+    ...options(power, blockers),
+    excess: { Player: 1 },
+    ...(lethal === undefined ? {} : { lethal }),
+  })
+  const toughTwo = statsOf([
+    [2, 0],
+    [2, 0],
+  ])
+
+  it('starts at lethal damage to each blocker and names who takes the rest', async () => {
+    const { amounts, confirm, status, answer, user, text, container } = renderAssign(
+      trample(6, [b1, b2], [2, 2]),
+      { stats: toughTwo },
+    )
+    expect(amounts()).toEqual([2, 2])
+    expect(confirm()).toBeEnabled()
+    expect(status()).toBe('Assigned 4 of 6. The other 2 goes to Bo. Ready to confirm.')
+    expect(container.querySelector('[data-slot="damage-excess"]')).toHaveTextContent('Bo takes the rest: 2.')
+    expect(text()).toBe(
+      `Divide the 6 combat damage of ${attacker.name} among its blockers: ${nameOf(b1)} and ${nameOf(b2)}. Damage not given to a blocker goes to Bo, once every blocker has lethal damage.`,
+    )
+    await user.click(confirm())
+    expect(answer.mock.calls).toEqual([[sharesOf([b1, b2], [2, 2])]])
+  })
+
+  it('does not let the rest go past a blocker that is short of lethal damage, and says what to do', async () => {
+    const { amounts, confirm, status, less, user, answer, container } = renderAssign(
+      trample(6, [b1, b2], [2, 2]),
+      { stats: toughTwo },
+    )
+    await user.click(less(b1))
+    expect(amounts()).toEqual([1, 2])
+    expect(confirm()).toBeDisabled()
+    expect(status()).toBe(
+      'Assigned 3 of 6. Give every blocker its lethal damage to send the rest to Bo, or assign 3 more.',
+    )
+    expect(container.querySelector('[data-slot="damage-excess"]')).toHaveTextContent('Bo takes the rest: 3.')
+    await user.click(confirm())
+    expect(answer).not.toHaveBeenCalled()
+  })
+
+  it('may give everything to the blockers, and then there is no rest', async () => {
+    const { amounts, more, confirm, status, user, container } = renderAssign(trample(6, [b1, b2], [2, 2]), {
+      stats: toughTwo,
+    })
+    await user.click(more(b1))
+    await user.click(more(b2))
+    expect(amounts()).toEqual([3, 3])
+    expect(status()).toBe('Assigned 6 of 6. Ready to confirm.')
+    expect(confirm()).toBeEnabled()
+    expect(container.querySelector('[data-slot="damage-excess"]')).toHaveTextContent('Bo takes the rest: 0.')
+  })
+
+  it('names a planeswalker that is attacked', () => {
+    const { container, status } = renderAssign(
+      { ...trample(5, [b1], [2]), excess: { Object: b3 } },
+      {
+        stats: statsOf([[2, 0]]),
+      },
+    )
+    expect(container.querySelector('[data-slot="damage-excess"]')).toHaveTextContent(
+      `${nameOf(b3)} takes the rest: 3.`,
+    )
+    expect(status()).toBe(`Assigned 2 of 5. The other 3 goes to ${nameOf(b3)}. Ready to confirm.`)
+  })
+
+  it('takes the lethal damage the engine states over what the creature shows', () => {
+    const { amounts, rows, status } = renderAssign(trample(8, [b1, b2], [1, 1]), {
+      stats: statsOf([
+        [5, 0],
+        [5, 0],
+      ]),
+    })
+    expect(amounts()).toEqual([1, 1])
+    expect(rows().map((row) => row.querySelector('[data-slot="damage-facts"]')?.textContent)).toEqual([
+      'Toughness 5, lethal: 1',
+      'Toughness 5, lethal: 1',
+    ])
+    expect(status()).toBe('Assigned 2 of 8. The other 6 goes to Bo. Ready to confirm.')
+  })
+
+  it('works lethal damage out from deathtouch when the engine does not state it, and names the keyword', () => {
+    const { amounts, rows, status } = renderAssign(trample(8, [b1, b2]), {
+      stats: {
+        ...statsOf([
+          [5, 0],
+          [5, 1],
+        ]),
+        [attacker.id]: { keywords: ['Trample', 'Deathtouch'] },
+      },
+    })
+    expect(amounts()).toEqual([1, 1])
+    expect(rows().map((row) => row.querySelector('[data-slot="damage-facts"]')?.textContent)).toEqual([
+      'Toughness 5, lethal: 1 (deathtouch)',
+      'Toughness 5, 1 damage marked, lethal: 1 (deathtouch)',
+    ])
+    expect(status()).toBe('Assigned 2 of 8. The other 6 goes to Bo. Ready to confirm.')
+  })
+
+  it('sends only the blockers’ shares: what is left for the player is not in the answer', async () => {
+    const { answer, user, confirm } = renderAssign(trample(5, [b1], [2]), { stats: statsOf([[2, 0]]) })
+    await user.click(confirm())
+    expect(answer.mock.calls).toEqual([[sharesOf([b1], [2])]])
+  })
+
+  it('draws no line for the rest when the attacker has no trample', () => {
+    const { container, text } = renderAssign(options(5, [b1, b2]), { stats: toughTwo })
+    expect(container.querySelector('[data-slot="damage-excess"]')).toBeNull()
+    expect(text()).not.toContain('Damage not given to a blocker')
   })
 })
 
