@@ -2,8 +2,8 @@
  * The lobby as words and rows: which seats there are, who is here and who is ready, the sentence that sums it up and
  * the sentence a screen reader hears when it changes. Pure, so the rules are tested without a page.
  */
-import type { GameInfo } from '@/net/api'
 import type { LobbyRoster } from '@/play/store'
+import type { GameInfo } from '@/protocol/generated'
 
 /** One seat of the lobby as the page shows it. */
 export interface LobbyRow {
@@ -25,7 +25,7 @@ export interface LobbySources {
   /** What the open socket last said (the store clears it when the socket closes). */
   roster: LobbyRoster | null
   /** The last REST lookup, which names the seats before the socket opens and says who is here while it is down. */
-  info: GameInfo | null
+  info: Pick<GameInfo, 'seats' | 'connected' | 'ready'> | null
   /** This page's socket is open. */
   open: boolean
   /** This page's seat, once welcomed. */

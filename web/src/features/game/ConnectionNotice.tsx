@@ -99,6 +99,12 @@ function wordsFor(
         alert: true,
         bad: true,
       }
+    case 'closed':
+      return {
+        title: 'The host closed this game.',
+        body: 'Nobody can join it any more. Go back to Play to join another game, or create your own.',
+        alert: true,
+      }
   }
 }
 
@@ -151,9 +157,19 @@ export function ConnectionNotice({
             My games
           </Link>
         ) : null}
+        {connection.kind === 'closed' ? (
+          <Link to="/" className={buttonVariants()}>
+            Back to Play
+          </Link>
+        ) : null}
         {connection.kind === 'unreachable' ? (
           <Link to="/new" className={buttonVariants({ variant: 'outline' })}>
             Create a new game
+          </Link>
+        ) : null}
+        {connection.kind === 'closed' ? (
+          <Link to="/new" className={buttonVariants({ variant: 'outline' })}>
+            Create a game
           </Link>
         ) : null}
       </div>

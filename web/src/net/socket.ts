@@ -11,7 +11,14 @@ import { browserTimers } from './timers'
 import type { Timers } from './timers'
 
 /** Where the connection stands: `open` means the server answered `Join` with `Welcome`. */
-export type ConnectionStatus = 'idle' | 'connecting' | 'open' | 'reconnecting' | 'replaced' | 'stopped'
+export type ConnectionStatus =
+  | 'idle'
+  | 'connecting'
+  | 'open'
+  | 'reconnecting'
+  | 'replaced'
+  | 'stopped'
+  | 'closed'
 
 /** What a `GameSocket` reports to its owner. */
 export type SocketEvent =
@@ -75,6 +82,7 @@ const JITTER = 0.5
 const NORMAL_CLOSE = 1000
 const REPLACED_CODE = 4000
 const REMOVED_CODE = 4001
+const CLOSED_CODE = 4002
 
 /** The wait before retry number `failures` (1 is the first): 250 ms doubling to 15 s, minus up to half as jitter. */
 export function retryDelay(failures: number, random: number): number {
@@ -97,6 +105,8 @@ export function socketUrl(game: string, token: string | undefined, origin: strin
 const REPLACED_TEXT = 'This seat was opened in another window or tab, which took it over.'
 // The seat was given back or the host removed its player: its token opens nothing now, so retrying cannot help.
 const REMOVED_TEXT = 'You were removed from this game.'
+// The host ended the lobby: its links and code open nothing any more, so the game cannot come back either.
+const CLOSED_TEXT = 'The host closed this game.'
 
 // Close codes after which retrying cannot help; any other code is treated as a lost connection.
 const STOP_REASONS: Readonly<Record<number, string>> = {
@@ -242,6 +252,10 @@ export class GameSocket {
       this.halt('stopped', REMOVED_TEXT)
       return
     }
+    if (code === CLOSED_CODE) {
+      this.halt('closed', CLOSED_TEXT)
+      return
+    }
     const stopped = STOP_REASONS[code]
     if (stopped !== undefined) {
       this.halt('stopped', `${stopped}${reason === '' ? '' : ` (${reason})`}.`)
@@ -263,7 +277,7 @@ export class GameSocket {
   }
 
   // Ends the connection for good (until `connect` is called again) and says why.
-  private halt(status: 'stopped' | 'replaced', reason: string | null): void {
+  private halt(status: 'stopped' | 'replaced' | 'closed', reason: string | null): void {
     if (this.state === 'idle') return
     this.cancelRetry()
     this.generation += 1

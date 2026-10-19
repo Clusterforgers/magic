@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react'
 import { ApiError } from '@/net/api'
-import type { Api, GameInfo } from '@/net/api'
+import type { Api } from '@/net/api'
 import type { Timers } from '@/net/timers'
+import type { GameInfo } from '@/protocol/generated'
 
 /** How often the lobby asks who is there, in milliseconds. */
 export const LOBBY_POLL_MS = 3000
 
+/** What a lookup keeps of the answer: all of `GameInfo`, though a stand-in lookup (a table fixture) may omit `visibility`. */
+export type KnownGame = Omit<GameInfo, 'visibility'> & Partial<Pick<GameInfo, 'visibility'>>
+
 /** What REST knows about the game: the public facts, and whether the last look worked. */
 export interface GameLookup {
-  /** Seat names and who is connected, or null until the first answer. Kept when a later look fails. */
-  game: GameInfo | null
+  /** Seat names, who is connected and the visibility, or null until the first answer. Kept when a later look fails. */
+  game: KnownGame | null
   /** The server says there is no such game. */
   missing: boolean
   /** The last look could not be completed (network or server trouble). */

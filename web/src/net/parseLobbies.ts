@@ -1,9 +1,11 @@
 /**
- * The answers of the game browser endpoints, checked down to their leaves. Each reader returns `null` for a body that
- * does not have the documented shape, so a caller never holds a half-typed value; unknown extra fields are dropped.
+ * The answers of the game browser endpoints and of the game lookup, checked down to their leaves. Each reader returns
+ * `null` for a body that does not have the documented shape, so a caller never holds a half-typed value; unknown extra
+ * fields are dropped.
  */
-import type { Joined, LobbyGame, Visibility } from '@/protocol/generated'
-import { isCount, isListOf, isRecord, isText } from './check'
+import type { GameInfo, GameSeat, Joined, LobbyGame, Visibility } from '@/protocol/generated'
+import { isCount, isFlag, isListOf, isRecord, isText } from './check'
+import { isGameResult } from './parse'
 
 const VISIBILITIES: Record<Visibility, true> = { public: true, invite: true }
 
@@ -50,4 +52,31 @@ export function readJoined(body: unknown): Joined | null {
 /** The visibility `PATCH /api/games/{id}` answers with. */
 export function readVisibility(body: unknown): Visibility | null {
   return isRecord(body) && isVisibility(body.visibility) ? body.visibility : null
+}
+
+function readGameSeat(item: unknown): GameSeat | null {
+  return isRecord(item) && isCount(item.seat) && isText(item.name) ? { seat: item.seat, name: item.name } : null
+}
+
+/**
+ * The answer of `GET /api/games/{id}`. A server from before the lobby showed readiness sends no `ready` (nobody is
+ * known to be ready then) and one from before visibility sends no `visibility` (it listed nothing, so its games were
+ * invite-only); a field that is there must be right.
+ */
+export function readGameInfo(body: unknown): GameInfo | null {
+  if (!isRecord(body) || !isFlag(body.started) || !Array.isArray(body.seats)) return null
+  if (!isListOf(body.connected, isCount)) return null
+  const ready = body.ready === undefined ? [] : body.ready
+  if (!isListOf(ready, isCount)) return null
+  const visibility = body.visibility === undefined ? 'invite' : body.visibility
+  if (!isVisibility(visibility)) return null
+  const result = body.result === null || isGameResult(body.result) ? body.result : undefined
+  if (result === undefined) return null
+  const seats: GameSeat[] = []
+  for (const item of body.seats) {
+    const seat = readGameSeat(item)
+    if (seat === null) return null
+    seats.push(seat)
+  }
+  return { started: body.started, seats, connected: body.connected, ready, result, visibility }
 }
