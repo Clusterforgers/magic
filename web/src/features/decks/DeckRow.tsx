@@ -4,7 +4,7 @@ import { Button, buttonVariants } from '@/components/ui/button'
 import { timeSince } from '@/lib/timeSince'
 import type { DecksApi } from '@/net/decks'
 import type { DeckListItem } from '@/protocol/generated'
-import { DeckStateBadge } from './DeckStateBadge'
+import { DeckMarker } from './DeckMarker'
 import { ExportMenu } from './ExportMenu'
 import { cardsText, checkNote, formatLabel } from './format'
 
@@ -17,8 +17,9 @@ interface DeckRowProps {
 }
 
 /**
- * One deck of the list: its name (a link to the builder), check state (an icon and a word), format, card count and age,
- * a line that says what the state means for this deck, and the actions Edit, Export and Delete.
+ * One deck of the list: its name (a link to the builder), the marker beside it (an icon and a word, or "Changed since
+ * the last check"), format, card count and age, a line that says what the state means for this deck, and the actions
+ * Edit, Export and Delete.
  */
 export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
   const note = checkNote(deck)
@@ -39,7 +40,7 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
               {deck.name}
             </Link>
           </p>
-          <DeckStateBadge state={deck.state} />
+          <DeckMarker state={deck.state} changed={deck.changed} />
         </div>
         <p className="text-sm text-muted-foreground">
           {formatLabel(deck.format)} · {cardsText(deck.summary.counts.total)} · Saved{' '}

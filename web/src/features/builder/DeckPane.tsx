@@ -1,5 +1,5 @@
-import { LibraryIcon, PencilIcon, SaveIcon, CircleAlertIcon } from 'lucide-react'
-import { useId } from 'react'
+import { CircleAlertIcon, LibraryIcon, PencilIcon, SaveIcon, ShieldCheckIcon } from 'lucide-react'
+import { useId, useMemo, useState } from 'react'
 import type { Ref } from 'react'
 import { Link } from '@tanstack/react-router'
 import { EmptyState } from '@/components/EmptyState'
@@ -8,14 +8,18 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
-import { DeckStateBadge } from '@/features/decks/DeckStateBadge'
+import { DeckMarker } from '@/features/decks/DeckMarker'
 import { cardsText, DECK_FORMATS, formatLabel } from '@/features/decks/format'
 import { cn } from '@/lib/utils'
-import type { DeckState, DeckZone } from '@/protocol/generated'
+import type { DeckReport, DeckState, DeckZone } from '@/protocol/generated'
+import { CheckBar } from './CheckBar'
 import { hasRoom, linesIn, totalOf } from './deckEdit'
 import type { Draft } from './deckEdit'
+import { LegalitySection } from './LegalitySection'
 import { LineRow } from './LineRow'
 import type { LineActions } from './LineRow'
+import { arrange, checkOf, checksOf } from './report'
+import type { SortKey } from './report'
 import { ZONE_TITLE, ZONES } from './zones'
 
 /** What the deck pane can ask of the builder. */
@@ -29,6 +33,10 @@ interface DeckPaneProps {
   draft: Draft
   /** The check state of the deck as last saved. */
   state: DeckState
+  /** A check is stored but the deck, the rules of its cards or the engine changed since it. */
+  changed: boolean
+  /** The check of the deck as last saved: its legality issues and the support of each card. */
+  report: DeckReport
   /** The draft differs from what is saved. */
   dirty: boolean
   saving: boolean
@@ -42,12 +50,15 @@ interface DeckPaneProps {
 }
 
 /**
- * The deck half of the builder: the name, format and Save (with the saved state, or "Unsaved changes" while the draft
- * differs), then the lines by zone with a total each. Only the lines scroll.
+ * The deck half of the builder: the name, format and Save, the marker of the deck's check ("Unsaved changes" joins it
+ * while the draft differs), the check's counts with the Issues only switch and the sort, then the legality issues and
+ * the lines by zone with a total each. Only the lines scroll.
  */
 export function DeckPane({
   draft,
   state,
+  changed,
+  report,
   dirty,
   saving,
   nameProblem,
@@ -57,12 +68,21 @@ export function DeckPane({
   className,
 }: DeckPaneProps) {
   const id = useId()
+  const [issuesOnly, setIssuesOnly] = useState(false)
+  const [sort, setSort] = useState<SortKey>('name')
+  const checks = useMemo(() => checksOf(report), [report])
   const total = totalOf(draft)
   const room = hasRoom(draft)
   const zones: readonly DeckZone[] = ZONES.filter(
     (zone) =>
       zone === 'main' || totalOf(draft, zone) > 0 || (zone === 'commander' && draft.format === 'commander'),
   )
+  const arranged = zones.map((zone) => ({
+    zone,
+    lines: arrange(linesIn(draft, zone), checks, { issuesOnly, sort }),
+  }))
+  // With only the issues shown, a zone without any has nothing to list.
+  const shown = issuesOnly ? arranged.filter(({ lines }) => lines.length > 0) : arranged
   return (
     <section aria-label="Deck" className={cn('surface min-h-0 flex-col', className)}>
       <header className="grid gap-2 border-b p-3">
@@ -110,16 +130,25 @@ export function DeckPane({
               </NativeSelectOption>
             ))}
           </NativeSelect>
+          <DeckMarker state={state} changed={changed} dirty={dirty} />
           {dirty ? (
             <Pill tone="warning">
               <PencilIcon aria-hidden="true" />
               Unsaved changes
             </Pill>
-          ) : (
-            <DeckStateBadge state={state} />
-          )}
+          ) : null}
           <p className="text-sm text-muted-foreground tabular-nums">{cardsText(total)}</p>
         </div>
+        {total === 0 ? null : (
+          <CheckBar
+            counts={report.summary.counts}
+            stale={dirty}
+            issuesOnly={issuesOnly}
+            onIssuesOnly={setIssuesOnly}
+            sort={sort}
+            onSort={setSort}
+          />
+        )}
         {saveError === null ? null : (
           <Alert variant="destructive">
             <CircleAlertIcon aria-hidden="true" />
@@ -151,8 +180,14 @@ export function DeckPane({
           </EmptyState>
         ) : (
           <div className="grid gap-4">
-            {zones.map((zone) => {
-              const lines = linesIn(draft, zone)
+            <LegalitySection issues={report.legality} format={report.format} stale={dirty} />
+            {shown.length === 0 ? (
+              <EmptyState icon={ShieldCheckIcon} as="h3" title="No cards with issues">
+                Every card in this deck plays without manual steps. Turn off Issues only to see the whole
+                deck.
+              </EmptyState>
+            ) : null}
+            {shown.map(({ zone, lines }) => {
               return (
                 <section key={zone} aria-labelledby={`${id}-${zone}`} className="grid gap-1">
                   <h3
@@ -178,6 +213,7 @@ export function DeckPane({
                           line={line}
                           format={draft.format}
                           room={room}
+                          check={checkOf(checks, line)}
                           actions={actions}
                         />
                       ))}

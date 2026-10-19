@@ -1,4 +1,4 @@
-// Goal: the design tokens of index.css keep the contrast the design system promises in the light and the dark theme (4.5:1 for text, 3:1 for edges, rings and other non-text parts), both themes define every colour, and the type, radius, elevation, motion and width scales hold their documented values, all computed from the stylesheet itself.
+// Goal: the design tokens of index.css keep the contrast the design system promises in the light and the dark theme (4.5:1 for text, 3:1 for edges, rings and other non-text parts), including the five support marks of the deck check as text, edge and tinted pill, both themes define every colour, and the type, radius, elevation, motion and width scales hold their documented values, all computed from the stylesheet itself.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -48,6 +48,7 @@ const SURFACES = ['background', 'surface', 'table', 'raised'] as const
 const FILLS = [...SURFACES, 'muted', 'secondary', 'accent'] as const
 const STATUS = ['success', 'warning', 'destructive'] as const
 const MANA = ['white', 'blue', 'black', 'red', 'green', 'gold', 'colorless'] as const
+const SUPPORT = ['verified', 'partial', 'manual', 'stale', 'unplayable'] as const
 
 const TEXT_MIN = 4.5
 const EDGE_MIN = 3
@@ -83,6 +84,7 @@ text('state', 'success', SURFACES)
 text('state', 'warning', SURFACES)
 text('state', 'destructive', SURFACES)
 for (const name of MANA) text(`${name} mana symbol`, `on-mana-${name}`, [`mana-${name}`])
+for (const name of SUPPORT) text(`${name} support mark`, `support-${name}`, SURFACES)
 
 edge('field and control', 'border-strong', SURFACES)
 edge('field', 'input', SURFACES)
@@ -93,6 +95,7 @@ edge('opponent turn', 'turn-them', SURFACES)
 edge('state', 'success', SURFACES)
 edge('state', 'warning', SURFACES)
 edge('state', 'destructive', SURFACES)
+for (const name of SUPPORT) edge(`${name} support mark`, `support-${name}`, FILLS)
 
 describe.each(['light', 'dark'] as const)('contrast in the %s theme', (themeName) => {
   it.each(pairs)('$use: $fg on $bg is at least $min:1', ({ fg, bg, min }) => {
@@ -110,7 +113,17 @@ describe.each(['light', 'dark'] as const)('contrast in the %s theme', (themeName
     ...STATUS.map((name) => ({ use: `${name} tint`, fg: name, of: name, share: 0.12 })),
     { use: 'destructive tint hovered', fg: 'destructive', of: 'destructive', share: 0.15 },
   ]
-  const cases = TINTS.flatMap((tint) => GROUNDS.map((ground) => ({ ...tint, ground })))
+  // A support mark also sits on the highlighted (hovered) row of the deck pane.
+  const SUPPORT_TINTS = SUPPORT.map((name) => ({
+    use: `${name} support mark`,
+    fg: `support-${name}`,
+    of: `support-${name}`,
+    share: 0.12,
+  }))
+  const cases = [
+    ...TINTS.flatMap((tint) => GROUNDS.map((ground) => ({ ...tint, ground }))),
+    ...SUPPORT_TINTS.flatMap((tint) => [...GROUNDS, 'accent'].map((ground) => ({ ...tint, ground }))),
+  ]
   it.each(cases)('$use: $fg on $of at $share over $ground is at least 4.5:1', ({ fg, of, share, ground }) => {
     for (const mapping of MAPPINGS) {
       const tinted = over(paint(themeName, of, mapping), paint(themeName, ground, mapping), share)

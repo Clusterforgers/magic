@@ -8,9 +8,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { SupportMark, supportEdge } from '@/features/decks/SupportMark'
+import { cn } from '@/lib/utils'
 import type { DeckZone } from '@/protocol/generated'
 import type { Line } from './deckEdit'
 import { ManaCost } from './ManaCost'
+import { isIssue, reasonLines } from './report'
+import type { LineCheck } from './report'
 import { ZONE_THE, ZONE_TO, zonesFor } from './zones'
 
 /** What a line can do; each takes the line's zone and card, so the pane passes one set for all lines. */
@@ -26,21 +30,31 @@ interface LineRowProps {
   format: string
   /** False when the deck is at its card limit, so another copy cannot be added. */
   room: boolean
+  /** What the deck check says of the card. */
+  check: LineCheck
   actions: LineActions
 }
 
 /**
  * One line of the deck: the copies with minus and plus (the last copy removed takes the line out), the name, the cost,
- * and a menu to move copies to another zone with Remove beside it. Under 640 px the row wraps to two lines.
+ * and a menu to move copies to another zone with Remove beside it. Under 640 px the row wraps to two lines. A card the
+ * game cannot play by itself has an edge in its state's colour and, under the name, its mark and the reasons the check
+ * gives.
  */
-export function LineRow({ line, format, room, actions }: LineRowProps) {
+export function LineRow({ line, format, room, check, actions }: LineRowProps) {
   const { zone, card, count } = line
   const id = card.oracle_id
   const targets = zonesFor(format).filter((to) => to !== zone)
+  const issue = isIssue(check.support)
+  const reasons = reasonLines(check.reasons)
   return (
     <li
       data-line={`${zone}:${id}`}
-      className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 rounded-lg px-1 py-1 hover:bg-accent sm:grid-cols-[auto_minmax(0,1fr)_auto_auto]"
+      data-support={check.support}
+      className={cn(
+        'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 rounded-lg border-l-4 px-1 py-1 hover:bg-accent sm:grid-cols-[auto_minmax(0,1fr)_auto_auto]',
+        issue ? supportEdge(check.support) : 'border-transparent',
+      )}
     >
       <div
         role="group"
@@ -117,6 +131,26 @@ export function LineRow({ line, format, room, actions }: LineRowProps) {
           <Trash2Icon aria-hidden="true" />
         </Button>
       </div>
+      {issue ? (
+        <div
+          data-slot="line-check"
+          className="order-5 col-span-full flex items-start gap-2 sm:order-none sm:col-span-3 sm:col-start-2"
+        >
+          <SupportMark support={check.support} />
+          {reasons.length === 0 ? null : (
+            <ul
+              aria-label={`Why ${card.name} is not verified`}
+              className="grid min-w-0 flex-1 gap-1 pt-1 text-xs"
+            >
+              {reasons.map((reason) => (
+                <li key={reason.key} className="text-muted-foreground">
+                  {reason.text}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ) : null}
     </li>
   )
 }

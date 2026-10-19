@@ -9,10 +9,13 @@ import type {
   DeckErrorCode,
   DeckLineView,
   DeckListItem,
+  DeckReport,
   DeckState,
   DeckView,
   ImportRequest,
   ImportResult,
+  Issue,
+  ReportCard,
   Summary,
 } from '@/protocol/generated'
 import { fakeFetch, jsonResponse } from '@/test-utils/fakeFetch'
@@ -66,9 +69,71 @@ export function deckIn(state: DeckState, over: Partial<DeckListItem> = {}): Deck
   })
 }
 
+/** The oracle id that `cardHit` and `reportCard` give the card called `name`. */
+export const oracleIdOf = (name: string): string => `oracle-${name.toLowerCase().replace(/\W+/g, '-')}`
+
+/** A card of a report: one copy in the main deck, verified, with no reasons unless told otherwise. */
+export const reportCard = (name: string, over: Partial<ReportCard> = {}): ReportCard => ({
+  oracle_id: oracleIdOf(name),
+  name,
+  zone: 'main',
+  count: 1,
+  support: 'verified',
+  reasons: [],
+  ...over,
+})
+
+/** A way a deck breaks its format's rules, about the deck as a whole unless told otherwise. */
+export const legalityIssue = (message: string, over: Partial<Issue> = {}): Issue => ({
+  code: 'not_legal',
+  message,
+  zone: null,
+  oracle_id: null,
+  name: null,
+  ...over,
+})
+
+const tally = (cards: readonly ReportCard[]): Counts => {
+  const found = counts({ total: 0, verified: 0 })
+  for (const card of cards) {
+    found.total += card.count
+    found[card.support] += card.count
+  }
+  return found
+}
+
+/** The report of `cards` and `legality` as the server works it out: the counts by state and zone, and the state. */
+export function reportOf(
+  cards: readonly ReportCard[],
+  legality: Issue[] = [],
+  over: Partial<DeckReport> = {},
+): DeckReport {
+  const format = over.format ?? 'commander'
+  const all = tally(cards)
+  const zones = (['main', 'sideboard', 'commander', 'companion'] as const).flatMap((zone) => {
+    const inZone = cards.filter((card) => card.zone === zone)
+    return inZone.length === 0 ? [] : [{ zone, counts: tally(inZone) }]
+  })
+  const state: DeckState =
+    legality.length > 0 || all.unplayable > 0
+      ? 'blocked'
+      : all.verified < all.total
+        ? 'manual_play'
+        : 'verified'
+  return {
+    deck_hash: 'a'.repeat(64),
+    coverage_hash: 'b'.repeat(64),
+    format,
+    legality,
+    cards: [...cards],
+    summary: { format, state, counts: all, zones, issues: legality.length },
+    ...over,
+  }
+}
+
 /** A card as a search shows it. */
 export const cardHit = (name: string, over: Partial<CardHit> = {}): CardHit => ({
-  oracle_id: `oracle-${name.toLowerCase().replace(/\W+/g, '-')}`,
+  oracle_id: oracleIdOf(name),
   name,
   mana_cost: '{R}',
   mana_value: 1,
