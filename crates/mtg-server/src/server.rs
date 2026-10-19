@@ -24,7 +24,7 @@ use crate::cards::CardSource;
 use crate::config::ServerConfig;
 use crate::records::RecordError;
 use crate::registry::{Registry, ResumeReport};
-use crate::{api, my_games, ws};
+use crate::{api, decks, my_games, ws};
 
 struct Inner {
     config: ServerConfig,
@@ -241,15 +241,25 @@ pub(crate) fn router(state: AppState) -> Router {
     // Listed origins are trusted front ends, so they may send the session cookie along.
     let cors = CorsLayer::new()
         .allow_origin(AllowOrigin::list(origins))
-        .allow_methods([Method::GET, Method::POST])
+        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_headers([CONTENT_TYPE])
         .allow_credentials(true)
         .max_age(Duration::from_secs(600));
     Router::new()
         .route("/healthz", get(api::healthz))
-        .route("/api/decks", get(api::decks))
+        .route("/api/demo-decks", get(api::decks))
         .route("/api/cards", get(card_api::search))
         .route("/api/cards/{oracle_id}", get(card_api::detail))
+        .route("/api/decks", get(decks::list).post(decks::create))
+        .route("/api/decks/import", post(decks::import))
+        .route("/api/decks/check", post(decks::check))
+        .route(
+            "/api/decks/{id}",
+            get(decks::get_one)
+                .put(decks::replace)
+                .delete(decks::remove),
+        )
+        .route("/api/decks/{id}/export", get(decks::export))
         .route("/api/games", post(api::create_game))
         .route("/api/games/{id}", get(api::game))
         .route("/api/auth/register", post(auth::register))

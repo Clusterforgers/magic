@@ -43,7 +43,7 @@ describe('loading the decks', () => {
   it('asks for the decks once, even when React mounts everything twice', async () => {
     const { server } = await openPage({}, true)
     await screen.findByRole('form', { name: 'Create a game' })
-    expect(server.count('/api/decks')).toBeLessThanOrEqual(2)
+    expect(server.count('/api/demo-decks')).toBeLessThanOrEqual(2)
     expect(screen.getAllByRole('form')).toHaveLength(1)
   })
 

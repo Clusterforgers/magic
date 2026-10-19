@@ -1,10 +1,12 @@
 //! Bodies of the account endpoints of `mtg-server` (`/api/auth/*`), of the signed-in user's game
-//! list (`/api/me/games`) and of the card endpoints (`/api/cards`), with TypeScript bindings.
+//! list (`/api/me/games`), of the card endpoints (`/api/cards`) and of the deck endpoints
+//! (`/api/decks`), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The game bodies
 //! (`POST /api/games`, `GET /api/games/{id}`) are still written by hand on the web side.
 
 mod cards;
+mod decks;
 
 use std::fmt;
 
@@ -16,6 +18,12 @@ use ts_rs::TS;
 pub use cards::{
     CardColor, CardDetail, CardFaceView, CardHit, CardImages, CardSearchPage, DEFAULT_PER_PAGE,
     ImageLinks, MAX_PAGE, MAX_PER_PAGE, PrintingView, RulingView,
+};
+pub use decks::{
+    CardSuggestion, CheckRequest, DeckBody, DeckErrorCode, DeckLineBody, DeckLineView, DeckList,
+    DeckListItem, DeckView, IgnoredCards, ImportRequest, ImportResult, ImportSource, ListProblem,
+    MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS, MAX_DECK_NOTES_CHARS, MAX_DECKS_PER_USER,
+    MAX_IMPORT_CHARS, MAX_IMPORT_LINES, UnresolvedLine, UnresolvedReason,
 };
 
 /// Fewest characters in a username.

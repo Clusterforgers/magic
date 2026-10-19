@@ -119,7 +119,7 @@ export interface Api {
   createGame(request: CreateGameRequest): Promise<CreatedGame>
   /** `GET /api/games/{id}`: public facts about a game. */
   getGame(id: string): Promise<GameInfo>
-  /** `GET /api/decks`: the built-in decks. */
+  /** `GET /api/demo-decks`: the built-in decks. */
   listDecks(): Promise<DeckInfo[]>
 }
 
@@ -227,7 +227,7 @@ export function createApi(options: ApiOptions = {}): Api {
         credentials: 'include',
       }),
     getGame: (id) => call(`/api/games/${encodeURIComponent(id)}`, readGame),
-    listDecks: () => call('/api/decks', readDecks),
+    listDecks: () => call('/api/demo-decks', readDecks),
   }
 }
 

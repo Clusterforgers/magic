@@ -46,7 +46,7 @@ export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS
   const creates: unknown[] = []
   const fake = fakeFetch((call) => {
     const path = call.url.split('?')[0] ?? call.url
-    if (path === '/api/decks') return script.decks?.(call) ?? jsonResponse(200, decks)
+    if (path === '/api/demo-decks') return script.decks?.(call) ?? jsonResponse(200, decks)
     if (path === '/api/games' && call.init?.method === 'POST') {
       const body: unknown = typeof call.init.body === 'string' ? JSON.parse(call.init.body) : null
       creates.push(body)

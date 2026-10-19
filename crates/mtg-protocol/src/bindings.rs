@@ -10,7 +10,10 @@ use thiserror::Error;
 use ts_rs::{Config, ExportError, TS};
 
 use crate::message::{ClientMessage, PROTOCOL_VERSION, ServerMessage};
-use crate::rest::{AuthErrorCode, CardDetail, CardSearchPage, Credentials, MyGames, UserView};
+use crate::rest::{
+    AuthErrorCode, CardDetail, CardSearchPage, CheckRequest, Credentials, DeckBody, DeckErrorCode,
+    DeckList, DeckView, ImportRequest, ImportResult, MyGames, UserView,
+};
 
 /// Where the committed bindings live, relative to the workspace root.
 pub const GENERATED_DIR: &str = "web/src/protocol/generated";
@@ -46,6 +49,13 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     MyGames::export_all(&config)?;
     CardSearchPage::export_all(&config)?;
     CardDetail::export_all(&config)?;
+    DeckBody::export_all(&config)?;
+    DeckView::export_all(&config)?;
+    DeckList::export_all(&config)?;
+    CheckRequest::export_all(&config)?;
+    ImportRequest::export_all(&config)?;
+    ImportResult::export_all(&config)?;
+    DeckErrorCode::export_all(&config)?;
     fs::write(dir.join("index.ts"), index(dir)?)?;
     Ok(())
 }

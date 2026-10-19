@@ -64,6 +64,33 @@ impl Browser {
         request(addr, "POST", path, &headers, body.as_bytes()).await
     }
 
+    /// `PUT path` with a JSON body and this browser's cookie.
+    pub async fn put(&self, addr: SocketAddr, path: &str, body: &str) -> Reply {
+        self.send(addr, "PUT", path, body, &[]).await
+    }
+
+    /// `DELETE path` with this browser's cookie.
+    pub async fn delete(&self, addr: SocketAddr, path: &str) -> Reply {
+        request(addr, "DELETE", path, &[("Cookie", &self.cookie)], b"").await
+    }
+
+    /// Any request with this browser's cookie, a JSON body and the extra headers given.
+    pub async fn send(
+        &self,
+        addr: SocketAddr,
+        method: &str,
+        path: &str,
+        body: &str,
+        extra: &[(&str, &str)],
+    ) -> Reply {
+        let mut headers = vec![
+            ("Content-Type", "application/json"),
+            ("Cookie", self.cookie.as_str()),
+        ];
+        headers.extend_from_slice(extra);
+        request(addr, method, path, &headers, body.as_bytes()).await
+    }
+
     /// Creates a game as this user, which must succeed; returns its id and the seat tokens.
     pub async fn create_game(&self, addr: SocketAddr, body: &Value) -> (String, Vec<String>) {
         let reply = self.post(addr, "/api/games", &body.to_string()).await;

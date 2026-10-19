@@ -67,7 +67,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 ## M4 Multiplayer product
 - [x] Invite-link lobbies on top of users
 - [ ] Deck builder UI with card search, import, validation, export
-- [ ] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
+- [x] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
+- [ ] Deck builder UI on the stored decks and the check: the builder panel with card search, import and export, highlighting of the cards that are not verified, and the state of each deck in the deck list, the lobby and the precon browser (`docs/deck-check.md`, `docs/server.md`)
 - [ ] Precon browser with one-click play
 - [ ] Choose a deck in the lobby: a stored deck or a precon per seat; the table sees each seat's deck state as a count of manual cards, never their names (`docs/deck-check.md`)
 - [x] N-player layout, game log, stack panel, stop settings
