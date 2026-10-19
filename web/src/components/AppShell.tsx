@@ -35,9 +35,14 @@ function ShellHeader() {
             Play
           </Link>
           {signedIn ? (
-            <Link to="/games" className={TAB}>
-              My games
-            </Link>
+            <>
+              <Link to="/decks" className={TAB}>
+                Decks
+              </Link>
+              <Link to="/games" className={TAB}>
+                My games
+              </Link>
+            </>
           ) : null}
           <Link to="/" className={cn(buttonVariants({ size: 'sm' }), 'my-auto ml-auto')}>
             <PlusIcon aria-hidden="true" />

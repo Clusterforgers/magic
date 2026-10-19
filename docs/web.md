@@ -6,7 +6,7 @@ The browser client: game creation, lobby, table, decision prompts and accounts, 
 
 React, Vite, Tailwind, shadcn/ui on Base UI, TanStack Router and zustand. Commands are in `CLAUDE.md`.
 
-- Pages live in `src/features` (`auth`, `create`, `game`, `games`, `table`); `src/routes` only picks them. The Vite plugin rewrites `routeTree.gen.ts` on `pnpm dev` and `pnpm build`; commit it with the route change.
+- Pages live in `src/features` (`auth`, `create`, `decks`, `game`, `games`, `table`); `src/routes` only picks them. The Vite plugin rewrites `routeTree.gen.ts` on `pnpm dev` and `pnpm build`; commit it with the route change.
 - `src/net` (REST, socket) and `src/play` (session, store) hold the client. `src/components` has the shell and the pieces pages share; `src/components/ui` is shadcn (`pnpm exec shadcn add <name>`) and is edited to the tokens. `src/protocol` has the ts-rs bindings and the transcripts Rust writes.
 - The dev and preview servers proxy `/api` and `/ws` to `MTG_SERVER_URL` (default `http://127.0.0.1:8080`) and keep the browser's `Host`, which the server's Origin check compares with the page's `Origin`.
 
@@ -51,7 +51,7 @@ The tokens, scales and pieces of [ui-design.md](ui-design.md). `src/index.css` h
 | Part | Content |
 |---|---|
 | Brand | "Magic", home |
-| Main navigation | Play, My games (signed in only), Create; `aria-current` marks the page |
+| Main navigation | Play, Decks and My games (signed in only), Create; `aria-current` marks the page |
 | Theme | `ThemeMenu`: Light, Dark, System |
 | Account | `AccountNav`: Sign in and Register for a guest, a menu named after the username with Sign out for an account; nothing while unknown or without accounts |
 
@@ -281,6 +281,9 @@ Sign-in uses the server's accounts ([server.md](server.md); bodies in [protocol.
 - `/login` and `/register` (`AuthScreen`, `AuthForm`) check a username of 3 to 32 letters, digits, `_` and `-` and a password of 10 to 128 characters (`rules.ts`, copies of the Rust constants) before sending. The password is in no React state: the field is uncontrolled, read at submit, sent, and emptied once the answer is in. Every `AuthErrorCode` has a sentence and a field (`errors.ts`; a wrong sign-in names neither half).
 - `next`: `sanitizeNext` (`features/auth/next.ts`) accepts only a path on this site: one leading `/`, no backslash or control character (a tab inside `/<tab>/host` is deleted by URL parsing and gives `//host`), no `//` after dot segments, not `/login` or `/register`, and no fragment, because a seat token must not travel in a query string. `parseAuthSearch` always names the key (`next: undefined` when refused): the router merges what a route validates over the raw address, so leaving the key out would let the unchecked value through.
 - `/games` (`features/games/MyGamesPage`): signed out goes to `/login?next=/games`. A row (`GameRow`) offers "Rejoin" for an open game, a link to `/game/<id>` with no fragment, which connects through the session. A finished game has no link: the server drops it from memory ten minutes after it ends, so the row is the record.
+
+- `/decks` (`features/decks/DecksPage`): signed out goes to `/login?next=/decks`. `net/decks.ts` `createDecksApi({fetch, baseUrl})` is the typed client of the deck endpoints; a failure is a `DeckError {code, status}` with the server's `DeckErrorCode` or a local `unknown`, `network` or `bad_response`, and 503 `decks_unavailable` shows a notice in place of the list. A row (`DeckRow`) shows name, format, card count and the check state as a pill with an icon and a word (Verified, Manual play, Blocked, Unchecked) over one line that counts what needs manual steps or blocks the deck. Export links to `GET /api/decks/{id}/export` in three formats; Delete asks first. New deck saves a name and a format; Import reads a pasted list or a file, lists what it ignored or could not find, and saves the cards under a name. From `sm` up the page is as tall as the window under the header and only the list scrolls.
+
 - The create page waits until it is known who is signed in; a signed-in creator gets seat 1 named after the account. The lobby shows "signed in as" on seats with an account (`useSeatAccounts`).
 - Game page: with a seat link, `GamePage` joins by token whoever is signed in (the server binds an unbound seat to the signed-in visitor). Without one and signed in, `GamePage account=<username>` opens `/ws/{game}` (no `GameSocketOptions.token`) and the cookie of the upgrade picks the seat; `Join` carries the username (the server ignores `name`). `ConnectionNotice` words this session connection (`via="session"`).
 
