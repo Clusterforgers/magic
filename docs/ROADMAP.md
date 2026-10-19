@@ -75,7 +75,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 ## M5 Commander
 - [ ] `Commander` format rules: 100-card singleton, color identity, 40 life, command zone, tax, 21 commander damage; the views carry commander damage and tax so the seat panel's "not tracked yet" slot fills
 - [ ] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
-- [ ] Partner, companion, Commander-specific tests and fuzz games with 4-6 players
+- [ ] Partner, companion, Commander-specific tests and Commander-format fuzz games with 4-6 players
 
 ## M6 Coverage
 - [ ] Manual-resolve fallback mode for unimplemented cards (`docs/cards-dsl.md`, Compiler and Manual fallback)
