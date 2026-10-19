@@ -2,8 +2,8 @@
 //! list (`/api/me/games`), of the card endpoints (`/api/cards`), of the deck endpoints
 //! (`/api/decks`) and of the game browser (`/api/lobbies`, joining), with TypeScript bindings.
 //!
-//! These are the REST types the web takes from the generated bindings. The game bodies
-//! (`POST /api/games`, `GET /api/games/{id}`) are still written by hand on the web side.
+//! These are the REST types the web takes from the generated bindings. The body of
+//! `POST /api/games` is still written by hand on both sides.
 
 mod cards;
 mod decks;
@@ -27,8 +27,8 @@ pub use decks::{
     MAX_IMPORT_CHARS, MAX_IMPORT_LINES, UnresolvedLine, UnresolvedReason,
 };
 pub use lobbies::{
-    JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, Visibility,
-    VisibilityBody,
+    GameInfo, GameSeat, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList,
+    Visibility, VisibilityBody,
 };
 
 /// Fewest characters in a username.

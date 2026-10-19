@@ -201,6 +201,7 @@ fn launch<S: EventStore>(
         pace: config.pace,
         setup,
         phase,
+        closing: false,
         recorder,
     };
     tokio::spawn(actor.run(inbox));
@@ -238,6 +239,8 @@ pub(crate) struct GameActor<S> {
     /// game starts every seat at the server default mode with no stop; kept across reconnects. Read by `windows`.
     pub(crate) stops: Stops,
     pub(crate) phase: Phase,
+    /// Set while the registry closes the lobby: no `Ready` starts the game any more.
+    pub(crate) closing: bool,
     /// Where a persistent game notes its milestones; `None` for a game that lives in memory only.
     pub(crate) recorder: Option<Recorder>,
 }
@@ -296,6 +299,10 @@ impl<S: EventStore> GameActor<S> {
             Command::Seat { seat, name, reply } => {
                 // A caller that stopped waiting needs no answer.
                 let _ = reply.send(self.seat_at(seat, name));
+            }
+            Command::Closing { on, reply } => {
+                // A caller that stopped waiting needs no answer.
+                let _ = reply.send(self.set_closing(on));
             }
             Command::Status { reply } => {
                 // A caller that stopped waiting needs no answer.

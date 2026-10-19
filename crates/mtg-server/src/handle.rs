@@ -68,6 +68,13 @@ pub(crate) enum Command {
         /// Whether the lobby took the change (not once the game runs).
         reply: oneshot::Sender<bool>,
     },
+    /// Stops the lobby from starting, or lets it start again.
+    Closing {
+        /// True to stop it, false to take that back.
+        on: bool,
+        /// Whether the lobby took the change (not once the game runs).
+        reply: oneshot::Sender<bool>,
+    },
     Status {
         reply: oneshot::Sender<GameStatus>,
     },
@@ -136,6 +143,27 @@ impl GameHandle {
         let (reply, answer) = oneshot::channel();
         self.commands
             .send(Command::Seat { seat, name, reply })
+            .await
+            .map_err(|_| GameClosed)?;
+        answer.await.map_err(|_| GameClosed)
+    }
+
+    /// Stops the lobby from starting, because the registry is closing the game. The actor
+    /// decides, in its own order of commands: true means no `Ready` has started the game and none
+    /// will; false, with nothing changed, means the game runs.
+    pub(crate) async fn close_lobby(&self) -> Result<bool, GameClosed> {
+        self.closing(true).await
+    }
+
+    /// Lets the lobby start again after a close that could not be saved. False once the game runs.
+    pub(crate) async fn reopen_lobby(&self) -> Result<bool, GameClosed> {
+        self.closing(false).await
+    }
+
+    async fn closing(&self, on: bool) -> Result<bool, GameClosed> {
+        let (reply, answer) = oneshot::channel();
+        self.commands
+            .send(Command::Closing { on, reply })
             .await
             .map_err(|_| GameClosed)?;
         answer.await.map_err(|_| GameClosed)

@@ -263,9 +263,20 @@ async fn health_decks_and_game_lookup() {
     let view = reply.json();
     assert_eq!(
         keys(&view),
-        BTreeSet::from(["connected", "ready", "result", "seats", "started"])
+        BTreeSet::from([
+            "connected",
+            "ready",
+            "result",
+            "seats",
+            "started",
+            "visibility"
+        ])
     );
     assert_eq!(view["started"], false);
+    assert_eq!(
+        view["visibility"], "invite",
+        "games are invite-only unless asked"
+    );
     assert_eq!(view["connected"], json!([]));
     assert_eq!(
         view["ready"],

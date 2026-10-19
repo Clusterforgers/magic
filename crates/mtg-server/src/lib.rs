@@ -68,7 +68,9 @@
 //! A game is [`Visibility::Public`] (listed while it is in its lobby, [`Registry::lobbies`]) or
 //! invite-only, and each of its seats is held from the start or open for a visitor to claim
 //! ([`Registry::claim`], [`Registry::release`]). A join code per game
-//! ([`join_code::JoinCode`], [`Registry::find_by_code`]) lets anybody who has it claim a seat.
+//! ([`join_code::JoinCode`], [`Registry::find_by_code`]) lets anybody who has it claim a seat. The
+//! host can close a game that is still in its lobby ([`Registry::close`]), which ends every socket of
+//! the game with close code 4002.
 
 mod accounts;
 mod actor;
