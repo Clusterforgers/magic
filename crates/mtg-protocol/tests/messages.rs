@@ -346,10 +346,12 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             from: vec![a, b],
             min: 1,
             max: 1,
+            text: String::new(),
         }),
         DecisionKind::OrderCards(OrderOptions {
             source: b,
             cards: vec![a, b],
+            text: String::new(),
         }),
         DecisionKind::YesNo(YesNoOptions {
             source: b,

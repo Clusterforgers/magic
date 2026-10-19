@@ -12,4 +12,8 @@ source: ObjectId,
 /**
  * The cards, in their current order.
  */
-cards: Array<ObjectId>, };
+cards: Array<ObjectId>, 
+/**
+ * What the order is for, in the words of a card ("Put the cards on the bottom in any order."); empty when the engine gave none.
+ */
+text?: string, };

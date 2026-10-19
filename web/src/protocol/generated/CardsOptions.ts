@@ -20,4 +20,8 @@ min: number,
 /**
  * The most to choose.
  */
-max: number, };
+max: number, 
+/**
+ * What the choice is for, in the words of a card ("Discard a card."); empty when the engine gave none.
+ */
+text?: string, };

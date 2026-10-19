@@ -16,6 +16,10 @@ pub struct OrderOptions {
     pub source: ObjectId,
     /// The cards, in their current order.
     pub cards: Vec<ObjectId>,
+    /// What the order is for, in the words of a card ("Put the cards on the bottom in any order."); empty when the engine gave none.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
+    pub text: String,
 }
 
 /// Every card once, in the order chosen.
