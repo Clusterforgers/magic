@@ -83,7 +83,7 @@ describe('a signed-in account on an address without a seat link', () => {
     expect(alert()).toHaveTextContent(/no seat in this game is saved to your account/i)
     expect(alert()).not.toHaveTextContent(/seat link may be wrong/i)
     expect(within(alert()).getByRole('link', { name: 'My games' })).toHaveAttribute('href', '/games')
-    expect(within(alert()).getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/')
+    expect(within(alert()).getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/new')
   })
 
   it('adds that the game is gone when the server says it does not exist', async () => {
@@ -135,7 +135,7 @@ describe('a guest on an address without a seat link', () => {
     expect(document.title).toBe('Open your seat link or sign in · Magic')
     const signIn = screen.getByRole('link', { name: 'Sign in' })
     expect(signIn.getAttribute('href')).toMatch(new RegExp(`^/login\\?next=(%2F|/)game(%2F|/)${GAME_ID}$`))
-    expect(screen.getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: 'Create a new game' })).toHaveAttribute('href', '/new')
     expect(h.net.sockets).toHaveLength(0)
   })
 

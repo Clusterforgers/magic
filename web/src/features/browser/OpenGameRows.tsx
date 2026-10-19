@@ -4,8 +4,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { cn } from '@/lib/utils'
 import type { LobbyGame } from '@/protocol/generated'
 import { ageNow, ageText, formatName, isFull, joinLabel, seatsText } from './format'
-import { JOIN_NOTE_ID } from './joinTarget'
-import type { OnJoin } from './joinTarget'
+import type { OnJoin } from './useJoinGame'
 
 /** The window from which the open games are a table with columns; under it each game is a stacked row. */
 export const TABLE_FROM = '(min-width: 64rem)'
@@ -18,8 +17,10 @@ export interface RowsProps {
   now: number
   /** The rows are an old listing, shown dimmed beside an error. */
   stale: boolean
-  /** Joins a game; without it every Join is disabled. */
-  onJoin: OnJoin | undefined
+  /** Starts joining a game. */
+  onJoin: OnJoin
+  /** The id of the game whose join is on its way, or null: every Join is disabled while one is. */
+  joining: string | null
 }
 
 const fullId = (game: LobbyGame): string => `full-${game.game}`
@@ -65,19 +66,20 @@ function Age({ game, fetchedAt, now }: { game: LobbyGame; fetchedAt: number; now
   return <time dateTime={game.created_at}>{ageText(ageNow(game, fetchedAt, now))}</time>
 }
 
-/** The one primary button of a row; a full game, or a page that cannot join yet, keeps it in place, disabled and explained. */
-function JoinButton({ game, onJoin }: { game: LobbyGame; onJoin: OnJoin | undefined }) {
+/** The one primary button of a row; a full game keeps it in place, disabled and explained, and the row being joined spins. */
+function JoinButton({ game, joining, onJoin }: Pick<RowsProps, 'joining' | 'onJoin'> & { game: LobbyGame }) {
   const full = isFull(game)
   return (
     <Button
       type="button"
       data-join={game.game}
       aria-label={joinLabel(game)}
-      aria-describedby={onJoin === undefined ? JOIN_NOTE_ID : full ? fullId(game) : undefined}
-      disabled={full || onJoin === undefined}
+      aria-describedby={full ? fullId(game) : undefined}
+      disabled={full || joining !== null}
+      loading={joining === game.game}
       // A disabled button that keeps focus does not drop it when a game fills while it is the one in hand.
       focusableWhenDisabled
-      onClick={() => onJoin?.({ kind: 'game', game })}
+      onClick={(event) => onJoin(game, event.currentTarget)}
     >
       Join
     </Button>
@@ -91,7 +93,7 @@ const HEAD =
 const CELL = 'border-b px-4 py-3 align-middle text-sm'
 
 /** From the M breakpoint up: a real table, its header kept in view while the rows scroll. */
-function GamesTable({ rows, fetchedAt, now, stale, onJoin }: RowsProps) {
+function GamesTable({ rows, fetchedAt, now, stale, onJoin, joining }: RowsProps) {
   return (
     <table className="w-full border-separate border-spacing-0 text-left">
       <caption className="sr-only">Open games, newest first</caption>
@@ -143,7 +145,7 @@ function GamesTable({ rows, fetchedAt, now, stale, onJoin }: RowsProps) {
                 <Age game={game} fetchedAt={fetchedAt} now={now} />
               </td>
               <td className={cn(CELL, 'text-right')}>
-                <JoinButton game={game} onJoin={onJoin} />
+                <JoinButton game={game} onJoin={onJoin} joining={joining} />
               </td>
             </tr>
           )
@@ -154,7 +156,7 @@ function GamesTable({ rows, fetchedAt, now, stale, onJoin }: RowsProps) {
 }
 
 /** Under the M breakpoint: one stacked row a game, the Join button at its right. */
-function GamesList({ rows, fetchedAt, now, stale, onJoin }: RowsProps) {
+function GamesList({ rows, fetchedAt, now, stale, onJoin, joining }: RowsProps) {
   return (
     <ul aria-label="Open games, newest first" className="grid">
       {rows.map((game) => {
@@ -183,7 +185,7 @@ function GamesList({ rows, fetchedAt, now, stale, onJoin }: RowsProps) {
                 <Seats game={game} dim={dim} />
               </p>
             </div>
-            <JoinButton game={game} onJoin={onJoin} />
+            <JoinButton game={game} onJoin={onJoin} joining={joining} />
           </li>
         )
       })}

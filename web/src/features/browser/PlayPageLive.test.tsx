@@ -27,7 +27,7 @@ afterEach(() => {
 const user = () => userEvent.setup({ delay: null })
 
 async function open(lobbies: FakeLobbies) {
-  const view = await renderInRouter(<PlayPage api={lobbies.api} onJoin={vi.fn()} />)
+  const view = await renderInRouter(<PlayPage api={lobbies.api} />)
   await settle()
   return { ...view, user: user() }
 }

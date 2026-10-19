@@ -91,7 +91,7 @@ describe('a server without accounts', () => {
     expect(
       await screen.findByText(/this server has no accounts, so it keeps no list of games/i),
     ).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Create a game' })).toHaveAttribute('href', '/')
+    expect(screen.getByRole('link', { name: 'Create a game' })).toHaveAttribute('href', '/new')
     expect(app.accounts.calls.map((call) => call.url)).toEqual(['/api/auth/me'])
     expect(screen.queryByRole('navigation', { name: 'Account' })).toBeNull()
   })
@@ -150,16 +150,14 @@ describe('the list', () => {
     expect(await screen.findByRole('heading', { name: 'You have no games yet' })).toBeInTheDocument()
     expect(screen.queryByRole('list', { name: 'Your games' })).toBeNull()
     const create = screen.getByRole('link', { name: 'Create a game' })
-    expect(create).toHaveAttribute('href', '/')
+    expect(create).toHaveAttribute('href', '/new')
     expect(screen.queryByRole('status')).toBeNull()
   })
 
-  it('opens Play from the empty state, where the create button is', async () => {
+  it('opens the create page from the empty state', async () => {
     const app = await openApp({ games: [] })
     await app.user.click(await screen.findByRole('link', { name: 'Create a game' }))
-    expect(await screen.findByRole('heading', { level: 1, name: 'Play' })).toBeInTheDocument()
-    const create = await screen.findAllByRole('link', { name: 'Create game' })
-    expect(create.map((link) => link.getAttribute('href'))).toEqual(['/new', '/new'])
+    expect(await screen.findByRole('form', { name: 'Create a game' })).toBeInTheDocument()
   })
 
   it('asks for the games at most twice when React mounts everything twice', async () => {

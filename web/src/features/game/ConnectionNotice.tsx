@@ -152,7 +152,7 @@ export function ConnectionNotice({
           </Link>
         ) : null}
         {connection.kind === 'unreachable' ? (
-          <Link to="/" className={buttonVariants({ variant: 'outline' })}>
+          <Link to="/new" className={buttonVariants({ variant: 'outline' })}>
             Create a new game
           </Link>
         ) : null}

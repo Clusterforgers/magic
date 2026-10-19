@@ -75,7 +75,7 @@ export function MyGamesPage({ clock = Date.now }: { clock?: () => number }) {
             This server has no accounts, so it keeps no list of games. Open your seat link to get back into a
             game.
           </p>
-          <Link to="/" className={buttonVariants({ size: 'lg' })}>
+          <Link to="/new" className={buttonVariants({ size: 'lg' })}>
             Create a game
           </Link>
         </section>
@@ -97,7 +97,7 @@ export function MyGamesPage({ clock = Date.now }: { clock?: () => number }) {
               {busy ? null : <RefreshCwIcon aria-hidden="true" />}
               {busy ? 'Reloading…' : 'Reload'}
             </Button>
-            <Link to="/" className={buttonVariants()}>
+            <Link to="/new" className={buttonVariants()}>
               <PlusIcon aria-hidden="true" />
               New game
             </Link>
@@ -128,7 +128,7 @@ export function MyGamesPage({ clock = Date.now }: { clock?: () => number }) {
             icon={SwordsIcon}
             title="You have no games yet"
             action={
-              <Link to="/" className={buttonVariants({ size: 'lg' })}>
+              <Link to="/new" className={buttonVariants({ size: 'lg' })}>
                 Create a game
               </Link>
             }

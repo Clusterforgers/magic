@@ -1,14 +1,14 @@
-// Goal: the Play page lists the open games as a table of host, format, seats, decks, age and a Join named after the game, counts them in a polite status, dims and explains a full game, waits 300 ms before it draws a skeleton, shows an empty list with both ways forward, keeps the old rows dimmed beside an error with Retry, filters a long list, takes a typed join code, and disables every join (and says so) while the page has no handler for one.
+// Goal: the Play page lists the open games as a table of host, format, seats, decks, age and a Join named after the game, counts them in a polite status, dims and explains a full game, waits 300 ms before it draws a skeleton, shows an empty list with both ways forward, keeps the old rows dimmed beside an error with Retry, filters a long list, and keeps the join code field disabled and explained.
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { installFakeClock, removeFakeClock, settle } from '@/test-utils/fakeClock'
 import { LobbyError } from '@/net/lobbyErrors'
 import { fakeLobbies, lobbyRow, lobbyRows } from '@/test-utils/lobbies'
 import type { FakeLobbies } from '@/test-utils/lobbies'
 import { renderInRouter } from '@/test-utils/router'
+import { CODE_NOTE } from './JoinWithCode'
 import { PlayPage } from './PlayPage'
-import type { PlayPageProps } from './PlayPage'
 
 beforeEach(installFakeClock)
 afterEach(removeFakeClock)
@@ -16,11 +16,10 @@ afterEach(removeFakeClock)
 const user = () => userEvent.setup({ delay: null })
 const codeField = () => screen.getByRole('textbox', { name: 'Join with a code' })
 
-async function open(lobbies: FakeLobbies, props: PlayPageProps = {}) {
-  const join = vi.fn()
-  const view = await renderInRouter(<PlayPage api={lobbies.api} onJoin={join} {...props} />)
+async function open(lobbies: FakeLobbies) {
+  const view = await renderInRouter(<PlayPage api={lobbies.api} />)
   await settle()
-  return { ...view, join, user: user() }
+  return { ...view, user: user() }
 }
 
 const table = () => screen.getByRole('table', { name: 'Open games, newest first' })
@@ -57,21 +56,21 @@ describe('the open games', () => {
     expect(within(table()).getByText('3 min ago').tagName).toBe('TIME')
   })
 
-  it("names each Join after the game's host and its seats, and calls the handler with the game", async () => {
+  it("names each Join after the game's host and its seats, and leaves it enabled", async () => {
     const rows = [
       lobbyRow({ game: 'a', host: 'Bo', filled: 2, total: 4 }),
       lobbyRow({ game: 'b', host: 'Cy', filled: 1, total: 2 }),
     ]
-    const { join, user } = await open(fakeLobbies(rows))
-    await user.click(screen.getByRole('button', { name: "Join Cy's game, 1 of 2 seats" }))
-    expect(join).toHaveBeenCalledExactlyOnceWith({ kind: 'game', game: rows[1] })
+    await open(fakeLobbies(rows))
+    expect(screen.getByRole('button', { name: "Join Cy's game, 1 of 2 seats" })).toBeEnabled()
     expect(screen.getByRole('button', { name: "Join Bo's game, 2 of 4 seats" })).toBeEnabled()
+    expect(screen.queryByText(/next piece/)).not.toBeInTheDocument()
   })
 
   it('counts the games in a polite status that is in the page before any game is', async () => {
     const lobbies = fakeLobbies(lobbyRows(3))
     const release = lobbies.hold()
-    await renderInRouter(<PlayPage api={lobbies.api} onJoin={vi.fn()} />)
+    await renderInRouter(<PlayPage api={lobbies.api} />)
     const status = screen.getAllByRole('status').find((node) => node.tagName === 'P')
     expect(status).toHaveTextContent('')
     release()
@@ -92,7 +91,7 @@ describe('the open games', () => {
       lobbyRow({ game: 'a', host: 'Bo', filled: 4, total: 4 }),
       lobbyRow({ game: 'b', host: 'Cy', filled: 1, total: 4 }),
     ])
-    const { join, user } = await open(lobbies)
+    const { user } = await open(lobbies)
     const row = within(rowOf('Bo'))
     expect(row.getByText('Full')).toBeInTheDocument()
     expect(row.getByRole('rowheader')).toHaveClass('text-muted-foreground')
@@ -103,7 +102,8 @@ describe('the open games', () => {
     button.focus()
     expect(button).toHaveFocus()
     await user.click(button)
-    expect(join).not.toHaveBeenCalled()
+    expect(lobbies.joinGame).not.toHaveBeenCalled()
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(within(rowOf('Cy')).queryByText('Full')).not.toBeInTheDocument()
   })
 
@@ -132,68 +132,29 @@ describe('the open games', () => {
   })
 })
 
-describe('a page that cannot join yet', () => {
-  it('disables every Join, and the code button, and points each at the note', async () => {
+describe('the code form', () => {
+  it('is disabled and says why, while every row can be joined', async () => {
     const lobbies = fakeLobbies(lobbyRows(2))
-    await renderInRouter(<PlayPage api={lobbies.api} />)
-    await settle()
-    const note = screen.getByText('Joining is the next piece')
-    expect(note).toBeVisible()
-    const buttons = [
-      ...within(table()).getAllByRole('button'),
-      within(screen.getByRole('form', { name: 'Join with a code' })).getByRole('button', { name: 'Join' }),
-    ]
-    expect(buttons).toHaveLength(3)
-    for (const button of buttons) {
-      expect(button).toHaveAttribute('aria-disabled', 'true')
-      expect(button).toHaveAccessibleDescription('Joining is the next piece')
+    await open(lobbies)
+    expect(screen.getByText(CODE_NOTE)).toBeVisible()
+    const button = within(screen.getByRole('form', { name: 'Join with a code' })).getByRole('button', {
+      name: 'Join',
+    })
+    expect(button).toHaveAttribute('aria-disabled', 'true')
+    expect(button).toHaveAccessibleDescription(CODE_NOTE)
+    for (const join of within(table()).getAllByRole('button')) {
+      expect(join).toBeEnabled()
+      expect(join).not.toHaveAttribute('aria-disabled', 'true')
     }
   })
 
-  it('does nothing when a code is typed and Enter is pressed', async () => {
-    await renderInRouter(<PlayPage api={fakeLobbies([]).api} />)
-    await settle()
-    const field = codeField()
-    await user().type(field, 'K7M29QXA{Enter}')
+  it('sends nothing when a code is typed and Enter is pressed', async () => {
+    const lobbies = fakeLobbies([])
+    const { user } = await open(lobbies)
+    await user.type(codeField(), 'K7M29QXA{Enter}')
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-  })
-
-  it('shows no note once there is a handler', async () => {
-    await open(fakeLobbies(lobbyRows(1)))
-    expect(screen.queryByText('Joining is the next piece')).not.toBeInTheDocument()
-  })
-})
-
-describe('joining with a code', () => {
-  it.each([
-    ['k7m2-9qxa', 'K7M29QXA'],
-    [' K7M2 9QXA ', 'K7M29QXA'],
-    ['abcd2345', 'ABCD2345'],
-  ])('sends "%s" as %s', async (typed, code) => {
-    const { join, user } = await open(fakeLobbies([]))
-    await user.type(codeField(), typed)
-    await user.click(screen.getByRole('button', { name: 'Join' }))
-    expect(join).toHaveBeenCalledExactlyOnceWith({ kind: 'code', code })
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-  })
-
-  it.each([
-    ['', 'Type the code the host gave you.'],
-    ['K7M29QX', 'A code is 8 letters and digits, like K7M2-9QXA.'],
-    ['K7M29QXAB', 'A code is 8 letters and digits, like K7M2-9QXA.'],
-    ['K7M2OQXA', 'A code is 8 letters and digits, like K7M2-9QXA.'],
-  ])('refuses "%s" with a reason on the field, and sends nothing', async (typed, reason) => {
-    const { join, user } = await open(fakeLobbies([]))
-    const field = codeField()
-    await user.click(field)
-    if (typed !== '') await user.keyboard(typed)
-    await user.keyboard('{Enter}')
-    expect(screen.getByRole('alert')).toHaveTextContent(reason)
-    expect(field).toBeInvalid()
-    expect(field).toHaveAccessibleDescription(reason)
-    expect(join).not.toHaveBeenCalled()
-    await user.type(field, 'x')
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(lobbies.joinGame).not.toHaveBeenCalled()
   })
 })
 
@@ -201,7 +162,7 @@ describe('waiting', () => {
   it('says it is loading at once and draws the skeleton only after 300 ms', async () => {
     const lobbies = fakeLobbies(lobbyRows(2))
     const release = lobbies.hold()
-    await renderInRouter(<PlayPage api={lobbies.api} onJoin={vi.fn()} />)
+    await renderInRouter(<PlayPage api={lobbies.api} />)
     expect(screen.getByText('Loading the open games…')).toBeInTheDocument()
     const skeletons = () => document.querySelectorAll('[data-slot="skeleton"]')
     await settle(299)

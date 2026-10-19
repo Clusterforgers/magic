@@ -1,0 +1,26 @@
+/** What a failed join says to the player, and whether the seat is gone for good. */
+import { describeLobbyError, LobbyError } from '@/net/lobbyErrors'
+
+/** Why a join failed, in words, and whether asking again could help. */
+export interface JoinFailure {
+  text: string
+  /** The seat cannot be had any more (taken, game started or gone): the dialog closes and the list is read again. */
+  final: boolean
+}
+
+/**
+ * The server answers one 404 for an unknown game, a game that is not public and a wrong code, so this one sentence
+ * is all a row's 404 gets: it must not say which of them it was.
+ */
+export const NOT_OPEN = 'That game is not open any more. The list shows the games that are.'
+
+/** The words for a failed `joinGame`; every other code keeps its sentence from `describeLobbyError`. */
+export function joinFailure(error: unknown): JoinFailure {
+  if (error instanceof LobbyError) {
+    if (error.code === 'not_found') return { text: NOT_OPEN, final: true }
+    if (error.code === 'full' || error.code === 'started') {
+      return { text: describeLobbyError(error), final: true }
+    }
+  }
+  return { text: describeLobbyError(error), final: false }
+}

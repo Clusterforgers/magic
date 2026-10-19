@@ -4,14 +4,19 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { isJoinCode, normalizeCode } from './format'
-import { JOIN_NOTE, JOIN_NOTE_ID } from './joinTarget'
-import type { OnJoin } from './joinTarget'
 
 const PROBLEM_ID = 'join-code-problem'
+const NOTE_ID = 'join-code-note'
+
+/**
+ * Said while the form cannot join: `POST /api/join` answers a seat and a token without the id of the game, so the page
+ * has no game to open for the seat it would take.
+ */
+export const CODE_NOTE = 'Joining with a code is not available yet'
 
 interface Props {
-  /** Joins the game a code names; without it the button is disabled and the note says why. */
-  onJoin: OnJoin | undefined
+  /** Joins the game a code names, given the code as the server reads it; without it the button is disabled and the note says why. */
+  onJoin?: (code: string) => void
   /** The field, so the empty list can send people to it. */
   inputRef?: Ref<HTMLInputElement>
 }
@@ -33,7 +38,7 @@ export function JoinWithCode({ onJoin, inputRef }: Props) {
       return
     }
     setProblem(null)
-    onJoin?.({ kind: 'code', code })
+    onJoin(code)
   }
 
   return (
@@ -70,15 +75,15 @@ export function JoinWithCode({ onJoin, inputRef }: Props) {
             variant="secondary"
             disabled={onJoin === undefined}
             focusableWhenDisabled
-            aria-describedby={onJoin === undefined ? JOIN_NOTE_ID : undefined}
+            aria-describedby={onJoin === undefined ? NOTE_ID : undefined}
           >
             Join
           </Button>
         </div>
       </div>
       {onJoin === undefined ? (
-        <p id={JOIN_NOTE_ID} className="pb-2 text-sm text-muted-foreground">
-          {JOIN_NOTE}
+        <p id={NOTE_ID} className="pb-2 text-sm text-muted-foreground">
+          {CODE_NOTE}
         </p>
       ) : null}
       {problem === null ? null : (
