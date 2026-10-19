@@ -11,6 +11,7 @@ import {
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { YieldUntil } from '@/protocol/generated'
 import { InControlsDock } from '../ControlsDock'
+import { useCompactDock } from '../dockLayout'
 import { usePrompt } from './PromptContext'
 import {
   enterYields,
@@ -53,26 +54,14 @@ export function PassControls({ canPass }: { canPass: boolean }) {
     if (session.yieldUntil(until)) setAsked(true)
   }
   const yieldKey = enterYields(situation, !canYield)
+  // The dock of a phone has no room for "End turn" beside the primary button, so the menu holds it.
+  const compact = useCompactDock()
   usePrimaryKey({ space: pass, enter: yieldKey ? () => yieldTo('EndOfTurn') : pass }, free)
 
   const label = primaryLabel(situation)
   return (
     <InControlsDock>
-      <Button
-        data-slot="primary-action"
-        className="h-11 min-w-0 px-4 max-sm:basis-full"
-        disabled={!free}
-        title={yieldKey ? 'Space' : 'Space or Enter'}
-        aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}
-        aria-description={primaryDescription(situation)}
-        onClick={pass}
-      >
-        <span className="truncate">{label}</span>
-        <kbd aria-hidden="true" className={`${KEY_CAP} border-primary-foreground/40`}>
-          {yieldKey ? 'Space' : 'Space · Enter'}
-        </kbd>
-      </Button>
-      {yieldKey ? (
+      {yieldKey && !compact ? (
         <Button
           data-slot="secondary-action"
           variant="outline"
@@ -100,6 +89,15 @@ export function PassControls({ canPass }: { canPass: boolean }) {
             <EllipsisVertical aria-hidden="true" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            {yieldKey && compact ? (
+              <DropdownMenuItem
+                data-yield="EndOfTurn"
+                aria-description={YIELD_WORDS.EndOfTurn.description}
+                onClick={() => yieldTo('EndOfTurn')}
+              >
+                {YIELD_WORDS.EndOfTurn.action}
+              </DropdownMenuItem>
+            ) : null}
             {stacked ? (
               <DropdownMenuItem
                 data-yield="Resolve"
@@ -126,6 +124,21 @@ export function PassControls({ canPass }: { canPass: boolean }) {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : null}
+      {/* Last, so the primary button is the one in the corner of the dock and the last stop of its row. */}
+      <Button
+        data-slot="primary-action"
+        className="h-11 min-w-0 px-4 max-sm:basis-full"
+        disabled={!free}
+        title={yieldKey ? 'Space' : 'Space or Enter'}
+        aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}
+        aria-description={primaryDescription(situation)}
+        onClick={pass}
+      >
+        <span className="truncate">{label}</span>
+        <kbd aria-hidden="true" className={`${KEY_CAP} border-primary-foreground/40`}>
+          {yieldKey ? 'Space' : 'Space · Enter'}
+        </kbd>
+      </Button>
     </InControlsDock>
   )
 }

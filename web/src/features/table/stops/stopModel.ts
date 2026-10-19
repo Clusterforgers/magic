@@ -1,8 +1,9 @@
 /** What the stop ladder shows and says: the steps it draws, how a stop is held, what a press asks for, the spoken words. */
 import { STOP_STEPS } from '@/play/stops'
 import type { StopStep } from '@/play/stops'
-import type { PlayerId, Step, Stop, StopSide } from '@/protocol/generated'
+import type { FullControlMode, PlayerId, Step, Stop, StopSide } from '@/protocol/generated'
 import { STEP_LABEL } from '../turnText'
+import { FULL_CONTROL_STATE } from './fullControlWords'
 
 const WITHOUT_FIRST_STRIKE: readonly StopStep[] = STOP_STEPS.filter((step) => step !== 'FirstStrikeDamage')
 
@@ -24,6 +25,12 @@ export function stopState(stops: readonly Stop[], side: StopSide, step: Step): S
   if (held === undefined) return 'off'
   return held.keep ? 'lasting' : 'turn'
 }
+
+/** Where the ladder is drawn: `row` is one line in the controls dock, `panel` wraps the steps for a popover. */
+export type StopsLayout = 'row' | 'panel'
+
+/** The two sides of the ladder, in the words of the switch that picks the row on show. */
+export const SIDE_WORD: Record<StopSide, string> = { Own: 'Mine', Opponent: 'Theirs' }
 
 /** The side whose turn it is, seen from `seat`: the viewer's own turns are `Own`, any other seat's `Opponent`. */
 export function turnSide(active: PlayerId, seat: PlayerId): StopSide {
@@ -100,4 +107,25 @@ export function rowName(side: StopSide, turn: boolean): string {
 /** What the collapsed ladder says about the stops held: "none set", "3 set". */
 export function stopCount(count: number): string {
   return count === 0 ? 'none set' : `${count} set`
+}
+
+/** How many stops the server holds on `side`. */
+export function stopsOn(stops: readonly Stop[], side: StopSide): number {
+  return stops.filter((stop) => stop.side === side).length
+}
+
+/** The spoken name of a side of the switch: "Mine, 2 set". */
+export function sideName(side: StopSide, count: number): string {
+  return `${SIDE_WORD[side]}, ${stopCount(count)}`
+}
+
+/** What a side of the switch shows when pressed, for the tooltip. */
+export function sideTitle(side: StopSide): string {
+  return side === 'Own' ? 'Show the stops for your own turns' : "Show the stops for opponents' turns"
+}
+
+/** The name of the "Stops" button that opens the ladder where the dock has no room for a row: "Stops, 2 set, Full Control held". */
+export function stopsButtonName(count: number, fullControl: FullControlMode): string {
+  const held = fullControl === 'Off' ? '' : `, Full Control ${FULL_CONTROL_STATE[fullControl]}`
+  return `Stops, ${stopCount(count)}${held}`
 }

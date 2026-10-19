@@ -1,5 +1,5 @@
-// Goal: the stop ladder draws a row for your turns and one for opponents' turns with a button for each step that gives priority, lit when the server holds a stop (pinned when it lasts), marks the current step and whose turn it is, sends the right SetStop for every state and kind of press (click, shift-click, the Keep toggle, keyboard), shows only what the server says, cannot be used offline, folds into one line when narrow, and says every button in words.
-import { act, screen } from '@testing-library/react'
+// Goal: the stop ladder draws one row of buttons, a button for each step that gives priority, for the side on show (Mine, your turns, or Theirs, opponents') with a switch that follows the turn and holds a side picked by hand until the turn changes hands, keeps both rows in the page with the other one hidden, lights a button when the server holds a stop (pinned when it lasts), marks the current step and whose turn it is, sends the right SetStop for every state and kind of press (click, shift-click, the Keep toggle, keyboard), shows only what the server says, cannot be used offline, and says every button in words.
+import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ConnectionStatus } from '@/net/socket'
 import type { Session } from '@/play/session'
@@ -67,22 +67,30 @@ const lit = (): string[] =>
     (button) => `${button.dataset['side']}:${button.dataset['step']}:${button.dataset['keep']}`,
   )
 const keepToggle = (): HTMLElement => screen.getByRole('button', { name: 'Keep stops' })
-const summary = (): HTMLElement => must(document.querySelector<HTMLElement>('[data-slot="stop-summary"]'))
+/** The segment of the Mine or Theirs switch of a side. */
+const segment = (side: StopSide): HTMLElement =>
+  must(document.querySelector<HTMLElement>(`[data-slot="stop-side"] [data-side="${side}"]`))
+/** The row on show: the one of the side the switch has pressed. */
+const shownSide = (): StopSide[] =>
+  SIDES.filter((side) => segment(side).getAttribute('aria-pressed') === 'true')
 const held = (side: StopSide, step: Step, state: StopState): Stop[] =>
   state === 'off' ? [] : [{ side, step, keep: state === 'lasting' }]
 
 describe('the rows', () => {
-  it('are a group for your turns and one for opponents’, each with the ten steps in turn order', () => {
+  it('are a group for your turns and one for opponents’, each with the ten steps in turn order, one on show', () => {
     ladder()
     expect(screen.getByRole('group', { name: 'Stops' })).toBeInTheDocument()
     for (const side of SIDES) {
       expect(buttons(side).map((button) => button.dataset['step'])).toEqual(TEN)
       expect(buttons(side).every((button) => button.dataset['side'] === side)).toBe(true)
     }
-    expect(screen.getByRole('group', { name: 'Stops on your turns' })).toBe(row('Own'))
+    // An opponent's turn is under way, so its row is on show and yours is out of sight and out of the page for a screen reader.
     expect(
       screen.getByRole('group', { name: "Stops on opponents' turns, an opponent's turn is under way" }),
     ).toBe(row('Opponent'))
+    expect(row('Opponent')).not.toHaveAttribute('hidden')
+    expect(row('Own')).toHaveAttribute('hidden')
+    expect(screen.queryByRole('group', { name: 'Stops on your turns' })).toBeNull()
   })
 
   it('light nothing while the server holds no stop', () => {
@@ -91,10 +99,14 @@ describe('the rows', () => {
     expect(document.querySelectorAll('[data-slot="stop"]')).toHaveLength(20)
   })
 
-  it('are labelled Yours and Theirs', () => {
-    ladder()
-    expect(row('Own')).toHaveTextContent('Yours')
-    expect(row('Opponent')).toHaveTextContent('Theirs')
+  it('are chosen with a switch of Mine and Theirs, which names the side and says how many stops it holds', () => {
+    ladder({ stops: [{ side: 'Own', step: 'Main1', keep: false }] })
+    const switchGroup = screen.getByRole('group', { name: 'Stops for' })
+    expect(within(switchGroup).getAllByRole('button')).toEqual([segment('Own'), segment('Opponent')])
+    expect(segment('Own')).toHaveAccessibleName('Mine, 1 set')
+    expect(segment('Opponent')).toHaveAccessibleName('Theirs, none set')
+    expect(segment('Own')).toHaveTextContent('Mine')
+    expect(segment('Opponent')).toHaveTextContent('Theirs')
   })
 
   it('sit beside the Full Control toggle in one region', () => {
@@ -187,9 +199,12 @@ describe('the current step and whose turn it is', () => {
     expect(row(side)).toHaveAttribute('data-turn', 'true')
     expect(row(side)).toHaveAccessibleName(rowName(side, true))
     expect(row(OTHER[side])).not.toHaveAttribute('data-turn')
-    expect(row(OTHER[side])).toHaveAccessibleName(rowName(OTHER[side], false))
-    expect(row(side)).toHaveTextContent('turn')
-    expect(row(OTHER[side])).not.toHaveTextContent('turn')
+    // The other row is out of sight, so a screen reader is not told its name; the page still holds it.
+    expect(row(OTHER[side])).toHaveAttribute('aria-label', rowName(OTHER[side], false))
+    // The row of the turn is the one on show, and its segment of the switch is marked.
+    expect(shownSide()).toEqual([side])
+    expect(segment(side)).toHaveAttribute('data-turn', 'true')
+    expect(segment(OTHER[side])).not.toHaveAttribute('data-turn')
   })
 
   it('marks first-strike damage when that is the step', () => {
@@ -393,7 +408,7 @@ describe('the Keep toggle', () => {
 
 describe('the words of a button', () => {
   it('say, for your upkeep, what the player was promised', () => {
-    ladder()
+    ladder({ active: 0 })
     expect(screen.getByRole('button', { name: 'Your upkeep stop: off. Press to stop here this turn' })).toBe(
       stop('Own', 'Upkeep'),
     )
@@ -428,16 +443,16 @@ describe('the words of a button', () => {
 })
 
 describe('the keyboard', () => {
-  it('reaches each row with one Tab stop, then Keep, then Full Control and its menu', async () => {
+  it('reaches the switch, then Keep, then the row on show with one Tab stop, then Full Control and its menu', async () => {
     const { user } = ladder()
-    act(() => summary().focus())
+    act(() => segment('Own').focus())
     await user.tab()
-    expect(stop('Own', 'Upkeep')).toHaveFocus()
-    // The opponent's turn is under way, so its row is entered at the step the game is in.
-    await user.tab()
-    expect(stop('Opponent', 'Main1')).toHaveFocus()
+    expect(segment('Opponent')).toHaveFocus()
     await user.tab()
     expect(keepToggle()).toHaveFocus()
+    // The opponent's turn is under way, so its row is entered at the step the game is in; the row out of sight has no stop.
+    await user.tab()
+    expect(stop('Opponent', 'Main1')).toHaveFocus()
     await user.tab()
     expect(screen.getByRole('button', { name: 'Full Control: off' })).toHaveFocus()
     await user.tab()
@@ -447,7 +462,7 @@ describe('the keyboard', () => {
   it('sits in the controls dock, after the hand and before the side tabs, in the order of reading', () => {
     ladder()
     const dock = must(document.querySelector<HTMLElement>('[data-region="controls"]'))
-    expect(dock).toContainElement(summary())
+    expect(dock).toContainElement(segment('Own'))
     const hand = must(document.querySelector<HTMLElement>('[data-region="hand"]'))
     const side = must(document.querySelector<HTMLElement>('aside[data-side]'))
     expect(hand.compareDocumentPosition(dock) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
@@ -465,7 +480,7 @@ describe('the keyboard', () => {
   })
 
   it('moves along a row with the arrow keys, Home and End, and stops at the ends', async () => {
-    const { user } = ladder()
+    const { user } = ladder({ active: 0 })
     act(() => stop('Own', 'Upkeep').focus())
     await user.keyboard('{ArrowRight}')
     expect(stop('Own', 'Draw')).toHaveFocus()
@@ -491,12 +506,12 @@ describe('the keyboard', () => {
   })
 
   it('comes back to the button it left when Tab returns to the row', async () => {
-    const { user } = ladder()
+    const { user } = ladder({ active: 0 })
     act(() => stop('Own', 'Upkeep').focus())
     await user.keyboard('{ArrowRight}{ArrowRight}')
     expect(stop('Own', 'Main1')).toHaveFocus()
     await user.tab({ shift: true })
-    expect(summary()).toHaveFocus()
+    expect(keepToggle()).toHaveFocus()
     await user.tab()
     expect(stop('Own', 'Main1')).toHaveFocus()
     expect(stop('Own', 'Main1').tabIndex).toBe(0)
@@ -508,7 +523,7 @@ describe('the keyboard', () => {
     ['Space', ' '],
   ])('presses a stop with %s', async (_name, keys) => {
     const setStop = vi.fn((_side: StopSide, _step: Step, _on: boolean, _keep: boolean) => true)
-    const { user } = ladder({ session: { setStop } })
+    const { user } = ladder({ active: 0, session: { setStop } })
     act(() => stop('Own', 'Draw').focus())
     await user.keyboard(keys)
     expect(setStop).toHaveBeenCalledExactlyOnceWith('Own', 'Draw', true, false)
@@ -529,7 +544,7 @@ describe('the keyboard', () => {
     const answer = vi.fn(() => true)
     const setStop = vi.fn((_side: StopSide, _step: Step, _on: boolean, _keep: boolean) => true)
     const { user } = renderTable({ session: { answer, setStop } })
-    act(() => stop('Own', 'Draw').focus())
+    act(() => stop('Opponent', 'Draw').focus())
     await user.keyboard(' {Enter}')
     expect(answer).not.toHaveBeenCalled()
     expect(setStop).toHaveBeenCalledTimes(2)
@@ -583,57 +598,75 @@ describe('who sees it', () => {
   })
 })
 
-describe('on a narrow screen', () => {
-  it('folds into one line that counts the stops held, closed to start with', () => {
-    ladder()
-    expect(summary()).toHaveTextContent('Stops · none set')
-    expect(summary()).toHaveAttribute('aria-expanded', 'false')
-    expect(screen.getByRole('group', { name: 'Stops' })).not.toHaveAttribute('data-open')
-  })
-
+describe('the Mine or Theirs switch', () => {
   it.each([
-    [[], 'Stops · none set'],
-    [[{ side: 'Own', step: 'Main1', keep: false }], 'Stops · 1 set'],
-    [
-      [
-        { side: 'Own', step: 'Main1', keep: false },
-        { side: 'Opponent', step: 'End', keep: true },
-        { side: 'Own', step: 'End', keep: true },
-      ],
-      'Stops · 3 set',
-    ],
-  ] satisfies [Stop[], string][])('counts the stops: %j', (stops, words) => {
-    ladder({ stops })
-    expect(summary()).toHaveTextContent(words)
+    ['an opponent’s turn', { active: 1 }, 'Opponent'],
+    ['your own turn', { active: 0 }, 'Own'],
+    ['a table not yet in its turns', { stage: 'Mulligan' as const }, 'Own'],
+  ] satisfies [string, Setup, StopSide][])('starts on the side of the turn: %s', (_name, setup, side) => {
+    ladder(setup)
+    expect(shownSide()).toEqual([side])
+    expect(row(side)).not.toHaveAttribute('hidden')
+    expect(row(OTHER[side])).toHaveAttribute('hidden')
   })
 
-  it('opens and closes the rows, saying so, and controls the element that holds them', async () => {
-    const { user } = ladder()
-    const panel = must(document.getElementById(must(summary().getAttribute('aria-controls'))))
-    expect(panel).toContainElement(row('Own'))
-    expect(panel).toContainElement(row('Opponent'))
-    expect(panel).toContainElement(keepToggle())
-    expect(panel.className).toContain('max-sm:hidden')
-
-    await user.click(summary())
-    expect(summary()).toHaveAttribute('aria-expanded', 'true')
-    expect(screen.getByRole('group', { name: 'Stops' })).toHaveAttribute('data-open', 'true')
-    expect(panel.className).not.toContain('max-sm:hidden')
-
-    await user.click(summary())
-    expect(summary()).toHaveAttribute('aria-expanded', 'false')
-    expect(panel.className).toContain('max-sm:hidden')
+  it('shows the other row when pressed, and says which side is on show', async () => {
+    const { user } = ladder({ active: 1 })
+    await user.click(segment('Own'))
+    expect(shownSide()).toEqual(['Own'])
+    expect(segment('Own')).toHaveAttribute('aria-pressed', 'true')
+    expect(segment('Opponent')).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByRole('group', { name: 'Stops on your turns' })).toBe(row('Own'))
+    expect(row('Opponent')).toHaveAttribute('hidden')
   })
 
-  it('stays out of the way on a wide screen, where the rows are always shown', () => {
-    ladder()
-    expect(summary().className).toContain('sm:hidden')
+  it('holds a side picked by hand while the turn stays where it was, and follows the turn again once it changes hands', async () => {
+    const { user, update } = ladder({ active: 1 })
+    await user.click(segment('Own'))
+    // Another step of the same turn: the pick stands.
+    update((state) => ({
+      view: state.view && { ...state.view, turn: { ...state.view.turn, step: 'Main2' } },
+    }))
+    expect(shownSide()).toEqual(['Own'])
+    // The turn passes to the viewer: the row follows it.
+    update((state) => ({ view: state.view && { ...state.view, turn: { ...state.view.turn, active: 0 } } }))
+    expect(shownSide()).toEqual(['Own'])
+    update((state) => ({ view: state.view && { ...state.view, turn: { ...state.view.turn, active: 1 } } }))
+    expect(shownSide()).toEqual(['Opponent'])
   })
 
-  it('counts the stops as the server changes them', () => {
-    const { update } = ladder()
-    update(() => ({ stops: [{ side: 'Own', step: 'Main1', keep: false }] }))
-    expect(summary()).toHaveTextContent('Stops · 1 set')
+  it('counts the stops of the side out of sight on its segment, and the names count every stop', async () => {
+    const stops = [
+      { side: 'Own', step: 'Main1', keep: false },
+      { side: 'Opponent', step: 'End', keep: true },
+      { side: 'Opponent', step: 'Upkeep', keep: false },
+    ] satisfies Stop[]
+    const { user } = ladder({ stops, active: 0 })
+    expect(segment('Own')).toHaveTextContent('Mine')
+    expect(segment('Own')).not.toHaveTextContent('1')
+    expect(segment('Opponent')).toHaveTextContent('Theirs2')
+    expect(segment('Own')).toHaveAccessibleName('Mine, 1 set')
+    expect(segment('Opponent')).toHaveAccessibleName('Theirs, 2 set')
+    await user.click(segment('Opponent'))
+    expect(segment('Opponent')).not.toHaveTextContent('2')
+    expect(segment('Own')).toHaveTextContent('Mine1')
+  })
+
+  it('does not press a stop or ask the server for anything', async () => {
+    const setStop = vi.fn((_side: StopSide, _step: Step, _on: boolean, _keep: boolean) => true)
+    const { user } = ladder({ session: { setStop } })
+    await user.click(segment('Own'))
+    await user.click(segment('Opponent'))
+    expect(setStop).not.toHaveBeenCalled()
+  })
+
+  it('keeps the Keep toggle and the row it shows across a switch', async () => {
+    const setStop = vi.fn((_side: StopSide, _step: Step, _on: boolean, _keep: boolean) => true)
+    const { user } = ladder({ active: 0, session: { setStop } })
+    await user.click(keepToggle())
+    await user.click(segment('Opponent'))
+    await user.click(stop('Opponent', 'End'))
+    expect(setStop).toHaveBeenCalledExactlyOnceWith('Opponent', 'End', true, true)
   })
 })
 

@@ -113,7 +113,7 @@ Arena puts the opponent on top, your hand on the bottom edge rising on hover, th
 
 | Region | Content | Size |
 |---|---|---|
-| top bar | home, turn badge, mini phase pips, menu (layout, stops, Full Control, theme, Concede) | 44 px |
+| top bar | home, turn badge, mini phase pips, menu (layout, theme, Concede) | 44 px |
 | opponents | a pod and board per opponent | `minmax(0, 1fr)` |
 | shared | stack chips, ticker, prompt line; a long prompt grows up into a sheet of at most 40 dvh over the opponents' board, beside the pod column, never over your board (its cards are what a prompt asks you to click), the hand or the controls | `clamp(56px, 9dvh, 88px)` |
 | own | pod, then creatures, other, lands | `minmax(0, 1.15fr)` |

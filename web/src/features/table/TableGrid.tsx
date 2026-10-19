@@ -8,8 +8,8 @@ const AREAS = '"bar bar" "opponents opponents" "shared shared" "own own" "hand c
 
 interface TableGridProps {
   regions: Regions
-  /** The controls dock holds the stop ladder, which makes it wider. */
-  stopsInDock: boolean
+  /** The controls dock draws the stop ladder as one row, which makes it wider. */
+  stopsRow: boolean
   /** The top bar. */
   bar: ReactNode
   /** The opponents' area. */
@@ -49,7 +49,7 @@ function Area({ area, className, children }: { area: string; className?: string;
  */
 export function TableGrid({
   regions,
-  stopsInDock,
+  stopsRow,
   bar,
   opponents,
   shared,
@@ -72,7 +72,7 @@ export function TableGrid({
         style={
           {
             gridTemplateRows: gridRows(regions),
-            gridTemplateColumns: mainColumns(regions, stopsInDock),
+            gridTemplateColumns: mainColumns(regions, stopsRow),
             gridTemplateAreas: AREAS,
           } as CSSProperties
         }

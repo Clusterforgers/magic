@@ -7,7 +7,6 @@ import type { ThemeChoice } from '@/hooks/useTheme'
 import { usePlay } from '@/features/game/gameContext'
 import type { TableMode } from './layout'
 import { canConcede } from './selectors'
-import { StopsBar } from './stops/StopsBar'
 
 const THEMES: ReadonlyArray<{ value: ThemeChoice; label: string }> = [
   { value: 'light', label: 'Light' },
@@ -34,8 +33,8 @@ interface TableMenuProps {
   /** True while an opponent has been picked by hand, so "Follow the turn" has something to undo. */
   pinnedFocus: boolean
   onFollow: () => void
-  /** The stop ladder and Full Control are here, because the controls dock has no room for them. */
-  stops: boolean
+  /** Ignored: the stop ladder and Full Control are in the controls dock at every size, never in this menu. */
+  stops?: boolean
   /** Asks the table to put the question "Concede the game?" up. */
   onConcede: () => void
   open: boolean
@@ -45,16 +44,14 @@ interface TableMenuProps {
 }
 
 /**
- * The table menu at the right of the top bar: the layout (grid or focus, and following the turn), the stop ladder and
- * Full Control where the dock has no room for them, the theme, and Concede. A panel, not a list of commands, since
- * it holds controls that keep their state.
+ * The table menu at the right of the top bar: the layout (grid or focus, and following the turn), the theme, and
+ * Concede. A panel, not a list of commands, since it holds controls that keep their state.
  */
 export function TableMenu({
   mode,
   onMode,
   pinnedFocus,
   onFollow,
-  stops,
   onConcede,
   open,
   onOpenChange,
@@ -69,8 +66,7 @@ export function TableMenu({
       >
         <MenuIcon aria-hidden="true" />
       </PopoverTrigger>
-      {/* Kept in the page while closed when it holds the ladder, whose Control key handlers must go on working. */}
-      <PopoverContent keepMounted={stops} className={stops ? 'w-auto min-w-80' : undefined}>
+      <PopoverContent>
         <PopoverTitle className="sr-only">Table menu</PopoverTitle>
         <Section title="Layout">
           <div role="toolbar" aria-label="Table layout" className="flex flex-wrap items-center gap-2">
@@ -94,7 +90,6 @@ export function TableMenu({
             ) : null}
           </div>
         </Section>
-        {stops ? <StopsBar /> : null}
         <Section title="Theme">
           <div className="inline-flex gap-0.5 rounded-lg bg-muted p-0.5">
             {THEMES.map(({ value, label }) => (

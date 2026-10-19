@@ -67,7 +67,7 @@ export function FullControlToggle() {
         aria-keyshortcuts="Control Control+Shift"
         aria-disabled={online ? undefined : true}
         title={`${FULL_CONTROL_DESCRIPTION[mode]} ${FULL_CONTROL_KEYS.NextWindow} asks for the next window, ${FULL_CONTROL_KEYS.Held} holds it.`}
-        className="aria-disabled:pointer-events-none aria-disabled:opacity-50"
+        className="gap-1.5 px-2 text-xs aria-disabled:pointer-events-none aria-disabled:opacity-50"
         onClick={() => ask(toggledMode(mode))}
       >
         <Gamepad2 aria-hidden="true" />
