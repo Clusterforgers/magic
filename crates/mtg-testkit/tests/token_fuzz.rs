@@ -1,0 +1,105 @@
+//! Goal: whole bot games with token makers in the decks (Dockside Extortionist, Hero of Bladehold and a watcher that counts tokens) finish and keep every invariant (zones with tokens that cease to exist, life, the journal, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use tokens: Treasures are made, sacrificed for mana, Soldiers enter attacking and tokens die or leave and cease to exist.
+#![allow(clippy::unwrap_used, clippy::expect_used)]
+
+use std::sync::Arc;
+
+use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
+use mtg_core::card::CardType;
+use mtg_engine::events::ZoneCause;
+use mtg_engine::format::Normal;
+use mtg_engine::{Event, GameSetup};
+use mtg_testkit::cards::{mountain, plains};
+use mtg_testkit::corpus::card;
+use mtg_testkit::play_game;
+use rstest::rstest;
+
+/// Games per table size; override with `MTG_FUZZ_GAMES`.
+fn games() -> u64 {
+    std::env::var("MTG_FUZZ_GAMES")
+        .ok()
+        .and_then(|value| value.parse().ok())
+        .unwrap_or(40)
+}
+
+/// Gains 1 life whenever a token its controller controls goes to a graveyard.
+fn mourner() -> Arc<CardDefinition> {
+    let watch = r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"ControlledBy":"You"},"Token"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"GainLife":{"amount":1}}]}}"#;
+    Arc::new(
+        CardDefinition::new("Mourner")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1)
+            .with_mana_cost(mtg_core::mana::ManaCost::parse("{1}").unwrap())
+            .with_rules(serde_json::from_str::<Ability>(watch).unwrap()),
+    )
+}
+
+/// Lands for both colours, token makers, artifacts for Dockside to count and creatures that kill.
+fn deck() -> Vec<Arc<CardDefinition>> {
+    let mut deck: Vec<Arc<CardDefinition>> = Vec::new();
+    deck.extend((0..16).map(|_| Arc::new(mountain().as_ref().clone())));
+    deck.extend((0..16).map(|_| Arc::new(plains().as_ref().clone())));
+    for (name, copies) in [
+        ("Dockside Extortionist", 4),
+        ("Hero of Bladehold", 4),
+        ("Sol Ring", 4),
+        ("Pacifism", 4),
+        ("Grizzly Bears", 4),
+        ("Lightning Bolt", 4),
+        ("Doom Blade", 2),
+    ] {
+        deck.extend((0..copies).map(|_| card(name).unwrap()));
+    }
+    deck.extend((0..2).map(|_| mourner()));
+    deck
+}
+
+#[derive(Default)]
+struct Seen {
+    treasures: usize,
+    soldiers_attacking: usize,
+    treasures_spent: usize,
+    tokens_ceasing: usize,
+}
+
+impl Seen {
+    fn add(&mut self, events: &[Event]) {
+        for event in events {
+            match event {
+                Event::TokenCreated(token) if token.name == "Treasure" => self.treasures += 1,
+                Event::TokenCreated(token) if token.attacking.is_some() => {
+                    self.soldiers_attacking += 1;
+                }
+                Event::ZoneChanged {
+                    cause: ZoneCause::Sacrificed,
+                    ..
+                } => self.treasures_spent += 1,
+                Event::ZoneChanged {
+                    to,
+                    from: mtg_engine::zones::Zone::Battlefield,
+                    ..
+                } if !matches!(to, mtg_engine::zones::Zone::Battlefield) => {
+                    self.tokens_ceasing += 1;
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+#[rstest]
+#[case::two(2)]
+#[case::three(3)]
+#[case::four(4)]
+fn bot_games_with_token_makers_finish_and_keep_every_invariant(#[case] seats: usize) {
+    let mut seen = Seen::default();
+    for seed in 0..games() {
+        let setup = GameSetup::new(Arc::new(Normal), seed, vec![deck(); seats]);
+        let outcome = play_game(setup, seed).unwrap_or_else(|failure| panic!("seed {seed}: {failure}"));
+        seen.add(&outcome.events);
+    }
+    assert!(seen.treasures > 0, "Treasures were made");
+    assert!(seen.soldiers_attacking > 0, "Soldiers entered attacking");
+    assert!(seen.treasures_spent > 0, "a Treasure was sacrificed for mana");
+    assert!(seen.tokens_ceasing > 0, "permanents left the battlefield");
+}

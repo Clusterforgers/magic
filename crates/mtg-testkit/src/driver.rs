@@ -166,6 +166,26 @@ impl Driver {
         self.answer(Answer::Priority(PriorityAction::ActivateMana(source)))
     }
 
+    /// The player holding priority activates the mana ability of the named permanent that adds `mana`: a Treasure
+    /// offers one source for each colour.
+    pub fn tap_for_mana_of(
+        &mut self,
+        name: &str,
+        mana: mtg_core::mana::ManaType,
+    ) -> Result<Vec<Event>, ScriptError> {
+        let (_, options) = self.priority()?;
+        let source = options
+            .mana_abilities
+            .iter()
+            .find(|m| m.produces == mana && self.name_of(m.source.object) == name)
+            .map(|m| m.source)
+            .ok_or_else(|| ScriptError::NoSuchCard {
+                name: name.to_owned(),
+                place: "mana abilities",
+            })?;
+        self.answer(Answer::Priority(PriorityAction::ActivateMana(source)))
+    }
+
     /// Starts casting the named spell and pays automatically.
     pub fn cast(&mut self, name: &str) -> Result<Vec<Event>, ScriptError> {
         self.begin_cast(name)?;

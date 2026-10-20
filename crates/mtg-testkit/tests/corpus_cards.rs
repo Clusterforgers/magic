@@ -27,10 +27,11 @@ use Support::{Manual, Partial, Verified};
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
 /// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
-/// countering, scrying, looking at and revealing cards, choosing and moving them, shuffling, life and damage, and the
-/// keywords of combat, so the thirteen cards that need no more are Verified (the Forest's ability comes from its land
-/// type) and a card whose other abilities are still missing carries what runs as Partial: Mulldrifter's draw and
-/// flying, not its evoke; Faithless Looting's draw and discard, not its flashback. Jace, the Mind Sculptor stays with
+/// countering, scrying, looking at and revealing cards, choosing and moving them, shuffling, life and damage, creating tokens
+/// and adding mana, and the keywords of combat, so the fourteen cards that need no more are Verified (the Forest's
+/// ability comes from its land type) and a card whose other abilities are still missing carries what runs as Partial:
+/// Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback; Hero of
+/// Bladehold's tokens, not its battle cry; Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays with
 /// the table for its loyalty costs; Rampant Growth, Cultivate and Flooded Strand for `Search` and a move to the
 /// battlefield.
 const CARDS: [(&str, Support, usize); 40] = [
@@ -44,7 +45,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Counterspell", Verified, 1),
     ("Cultivate", Manual, 0),
     ("Delver of Secrets // Insectile Aberration", Manual, 0),
-    ("Dockside Extortionist", Manual, 0),
+    ("Dockside Extortionist", Verified, 1),
     ("Doom Blade", Verified, 1),
     ("Eternal Witness", Verified, 1),
     ("Faithless Looting", Partial, 1),
@@ -56,7 +57,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Gaea's Cradle", Manual, 0),
     ("Giant Growth", Manual, 0),
     ("Grizzly Bears", Verified, 0),
-    ("Hero of Bladehold", Manual, 0),
+    ("Hero of Bladehold", Partial, 1),
     ("Izzet Charm", Manual, 0),
     ("Jace, the Mind Sculptor", Manual, 0),
     ("Lightning Bolt", Verified, 1),
@@ -72,7 +73,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Sneak Attack", Manual, 0),
     ("Sol Ring", Manual, 0),
     ("Swords to Plowshares", Verified, 1),
-    ("Tireless Tracker", Manual, 0),
+    ("Tireless Tracker", Partial, 1),
     ("Wrath of God", Verified, 1),
 ];
 
@@ -192,6 +193,29 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         "Wrath of God",
     ] {
         assert_eq!(reasons(name), "", "{name}");
+    }
+    // Dockside Extortionist is covered whole: its Treasures are made and their mana ability runs.
+    assert_eq!(reasons("Dockside Extortionist"), "");
+    // Hero of Bladehold's tokens are made attacking; its battle cry is a keyword of a later task.
+    let hero = reasons("Hero of Bladehold");
+    assert!(hero.contains("Keyword.BattleCry"), "{hero}");
+    assert!(
+        !hero.contains("Effect.CreateToken") && !hero.contains("Trigger.Attacks"),
+        "{hero}"
+    );
+    // Tireless Tracker makes its Clues; putting the counter on itself is not played yet.
+    let tracker = reasons("Tireless Tracker");
+    assert!(tracker.contains("Effect.PutCounters"), "{tracker}");
+    assert!(
+        !tracker.contains("Effect.CreateToken") && !tracker.contains("Trigger.Sacrificed"),
+        "{tracker}"
+    );
+    // Sol Ring and Gaea's Cradle add mana from an activated ability of a shape the engine does not activate yet:
+    // two mana at once, and as many as there are creatures.
+    for name in ["Sol Ring", "Gaea's Cradle"] {
+        let reason = reasons(name);
+        assert!(reason.contains("Ability.ManaAbility.Complex"), "{name}: {reason}");
+        assert!(!reason.contains("Effect.AddMana"), "{name}: {reason}");
     }
     // A card whose file models nothing says nothing about the engine.
     assert_eq!(reasons("Panharmonicon"), "");

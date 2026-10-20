@@ -347,12 +347,26 @@ impl InvariantChecker {
         // An ability ceases to exist when its resolution ends, and the fold removes it, so look first.
         let ability_ends = matches!(event, Event::ResolutionEnded { object, .. }
             if self.shadow.object(*object).is_some_and(|o| o.kind() == ObjectKind::Ability));
+        // A token ceases to exist the moment it is anywhere but the battlefield (CR 111.7), and the fold removes it.
+        let is_token = |id: &ObjectId| {
+            self.shadow
+                .object(*id)
+                .is_some_and(|o| o.kind() == ObjectKind::Token)
+        };
+        let token_ends = match event {
+            Event::ZoneChanged { object, to, .. } => *to != Zone::Battlefield && is_token(object),
+            Event::CreatureDied { object, .. } => is_token(object),
+            _ => false,
+        };
         apply_event(&mut self.shadow, event)
             .map_err(|e| Violation::Fold(format!("{event:?}: {e}")))?;
         self.account(event)?;
         let touched = event.touched_objects();
-        if matches!(event, Event::ObjectLeftGame { .. }) || ability_ends {
+        if matches!(event, Event::ObjectLeftGame { .. }) || ability_ends || token_ends {
             self.expected_objects -= 1;
+        }
+        if matches!(event, Event::TokenCreated(_)) {
+            self.expected_objects += 1;
         }
         if matches!(event, Event::AbilityPutOnStack(_)) {
             self.expected_objects += 1;
@@ -382,7 +396,7 @@ impl InvariantChecker {
 
     fn check_touched(&self, id: ObjectId, event: &Event) -> Result<(), Violation> {
         match self.shadow.object(id) {
-            None if matches!(event, Event::ObjectLeftGame { .. }) => Ok(()),
+            None if matches!(event, Event::ObjectLeftGame { .. }) || self.shadow.has_ceased(id) => Ok(()),
             None => Err(zone_error(format!("{id:?} vanished after {event:?}"))),
             Some(object) => {
                 let listed = self
