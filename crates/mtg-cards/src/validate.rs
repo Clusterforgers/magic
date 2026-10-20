@@ -1095,10 +1095,7 @@ pub(crate) fn check_printed(
     }
     if live {
         for keyword in &printed.keywords {
-            let modelled = card.abilities().any(
-                |(_, a)| matches!(a, Ability::Keyword(k) if k.name().eq_ignore_ascii_case(keyword)),
-            );
-            if Keyword::is_known_name(keyword) && !modelled {
+            if Keyword::is_known_name(keyword) && !has_keyword(card, printed, keyword) {
                 walker.at("faces", |w| {
                     w.problem(format!(
                         "the imported card has the keyword `{keyword}` but no face has it"
@@ -1120,6 +1117,38 @@ pub(crate) fn check_printed(
         }
     }
     walker.problems
+}
+
+/// Whether some face has the keyword as an ability, or a `Manual` clause names it in that face's
+/// printed text (a granted keyword, a typecycling form).
+fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
+    card.abilities().any(|(face, ability)| match ability {
+        Ability::Keyword(k) => {
+            k.name().eq_ignore_ascii_case(keyword)
+                // Scryfall lists `Partner` as well for a "Partner with" card (CR 702.124).
+                || (matches!(k, Keyword::PartnerWith(_))
+                    && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
+        }
+        Ability::Manual { span, .. } => printed
+            .faces
+            .get(face)
+            .and_then(|shown| span.slice(&shown.oracle_text))
+            .is_some_and(|clause| names_keyword(clause, keyword)),
+        _ => false,
+    })
+}
+
+/// Whether the clause holds the keyword (any case) at the end of a word: no letter or digit
+/// follows it inside the clause. No word has to start there, so `Plainscycling` names `Cycling`
+/// but `Flashback` does not name `Flash`.
+fn names_keyword(clause: &str, keyword: &str) -> bool {
+    let (clause, keyword) = (clause.to_ascii_lowercase(), keyword.to_ascii_lowercase());
+    clause.match_indices(&keyword).any(|(at, found)| {
+        let after = clause
+            .get(at + found.len()..)
+            .and_then(|rest| rest.chars().next());
+        !after.is_some_and(char::is_alphanumeric)
+    })
 }
 
 fn check_face_printed(
@@ -1393,5 +1422,256 @@ mod tests {
         );
         bad.impl_status = ImplStatus::Manual;
         assert_eq!(check_card(&bad, &BTreeSet::new()), Vec::<Problem>::new());
+    }
+}
+
+#[cfg(test)]
+mod printed_keywords {
+    //! Goal: a Scryfall keyword counts as present when an ability has it (a "Partner with" card has `Partner` too) or a `Manual` clause names it at the end of a word in its face's printed text, and as missing otherwise.
+    use super::*;
+    use rstest::rstest;
+
+    const ID: &str = "4457ed35-7c10-48c8-9776-456485fdf070";
+    const BIRD: &str = "Creature \u{2014} Bird";
+    const AURA: &str = "Enchantment \u{2014} Aura";
+    /// The one other imported card: the partner a "Partner with" card names.
+    const PARTNER: &str = "Pir, Imaginative Rascal";
+
+    /// Every problem of a rules file against its imported card, one `(type line, oracle text, abilities)` per face.
+    fn problems(status: &str, faces: &[(&str, &str, &str)], keywords: &[&str]) -> Vec<String> {
+        let names: Vec<String> = (0..faces.len()).map(|i| format!("Face {i}")).collect();
+        let name = names.join(" // ");
+        let rules: Vec<String> = faces
+            .iter()
+            .zip(&names)
+            .map(|((_, text, abilities), face)| {
+                let fingerprint = oracle_fingerprint(text);
+                format!(
+                    r#"{{"name":"{face}","oracle_fingerprint":"{fingerprint}","abilities":[{abilities}]}}"#
+                )
+            })
+            .collect();
+        let json = format!(
+            r#"{{"oracle_id":"{ID}","name":"{name}","impl_status":"{status}","faces":[{}]}}"#,
+            rules.join(",")
+        );
+        let card: Card = serde_json::from_str(&json).unwrap();
+        let shown = PrintedCard {
+            oracle_id: ID.into(),
+            name,
+            keywords: keywords.iter().map(|k| (*k).to_owned()).collect(),
+            faces: faces
+                .iter()
+                .zip(&names)
+                .map(|((type_line, text, _), face)| PrintedFace {
+                    name: face.clone(),
+                    type_line: (*type_line).into(),
+                    oracle_text: (*text).into(),
+                    ..PrintedFace::default()
+                })
+                .collect(),
+        };
+        let known = BTreeSet::from([PARTNER.to_lowercase()]);
+        check_printed(&card, &shown, &known, &BTreeSet::new())
+            .into_iter()
+            .map(|problem| problem.message)
+            .collect()
+    }
+
+    #[rstest]
+    #[case::a_clause_names_the_keyword(
+        "Partial",
+        &[(BIRD, "Flying", r#"{"Manual":{"reason":"x","span":{"start":0,"end":6}}}"#)],
+        &["Flying"],
+        &[]
+    )]
+    #[case::the_clause_is_longer_than_the_keyword(
+        "Partial",
+        &[(BIRD, "Flying\nDraw a card.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":19}}}"#)],
+        &["Flying"],
+        &[]
+    )]
+    #[case::capitals_differ_from_scryfalls(
+        "Partial",
+        &[(BIRD, "Gets first strike.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":18}}}"#)],
+        &["First strike"],
+        &[]
+    )]
+    #[case::the_keyword_is_named_nowhere(
+        "Partial",
+        &[(BIRD, "Draw a card.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":12}}}"#)],
+        &["Flying"],
+        &["Flying"]
+    )]
+    #[case::a_full_card_has_no_clause_to_name_it(
+        "Full",
+        &[(BIRD, "Flying", r#"{"Keyword":"Reach"}"#)],
+        &["Flying"],
+        &["Flying"]
+    )]
+    #[case::a_full_card_with_the_ability_passes(
+        "Full",
+        &[(BIRD, "Flying", r#"{"Keyword":"Flying"}"#)],
+        &["Flying"],
+        &[]
+    )]
+    #[case::plainscycling_is_cycling(
+        "Partial",
+        &[(BIRD, "Plainscycling {2}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":17}}}"#)],
+        &["Plainscycling", "Cycling"],
+        &[]
+    )]
+    #[case::an_aura_grants_a_keyword(
+        "Partial",
+        &[(
+            AURA,
+            "Enchant creature\nEnchanted creature has flying.",
+            r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Manual":{"reason":"x","span":{"start":17,"end":47}}}"#
+        )],
+        &["Enchant", "Flying"],
+        &[]
+    )]
+    #[case::the_clause_is_over_another_span(
+        "Partial",
+        &[(BIRD, "Flying\nDraw a card.", r#"{"Manual":{"reason":"x","span":{"start":7,"end":19}}}"#)],
+        &["Flying"],
+        &["Flying"]
+    )]
+    #[case::the_span_ends_before_the_keyword_does(
+        "Partial",
+        &[(BIRD, "Flying", r#"{"Manual":{"reason":"x","span":{"start":0,"end":5}}}"#)],
+        &["Flying"],
+        &["Flying"]
+    )]
+    #[case::offsets_count_characters_not_bytes(
+        "Partial",
+        &[(BIRD, "\u{2022} Flying", r#"{"Manual":{"reason":"x","span":{"start":2,"end":8}}}"#)],
+        &["Flying"],
+        &[]
+    )]
+    #[case::a_clause_is_read_in_its_own_face(
+        "Partial",
+        &[
+            (BIRD, "Draw a card.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":12}}}"#),
+            (BIRD, "Flying", r#"{"Manual":{"reason":"x","span":{"start":0,"end":6}}}"#),
+        ],
+        &["Flying"],
+        &[]
+    )]
+    #[case::a_clause_is_not_read_in_another_face(
+        "Partial",
+        &[
+            (BIRD, "Flying", ""),
+            (BIRD, "Draw a card.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":6}}}"#),
+        ],
+        &["Flying"],
+        &["Flying"]
+    )]
+    #[case::an_ability_on_the_other_face_counts(
+        "Partial",
+        &[
+            (BIRD, "Flying", r#"{"Keyword":"Flying"}"#),
+            (BIRD, "Draw a card.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":12}}}"#),
+        ],
+        &["Flying"],
+        &[]
+    )]
+    #[case::a_full_partner_with_card_has_partner(
+        "Full",
+        &[(BIRD, "Partner with Pir, Imaginative Rascal", r#"{"Keyword":{"PartnerWith":"Pir, Imaginative Rascal"}}"#)],
+        &["Partner with", "Partner"],
+        &[]
+    )]
+    #[case::a_partial_partner_with_card_has_partner(
+        "Partial",
+        &[(
+            BIRD,
+            "Partner with Pir, Imaginative Rascal\nHaste",
+            r#"{"Keyword":{"PartnerWith":"Pir, Imaginative Rascal"}},{"Manual":{"reason":"x","span":{"start":37,"end":42}}}"#
+        )],
+        &["Partner with", "Partner"],
+        &[]
+    )]
+    #[case::partner_is_not_partner_with(
+        "Full",
+        &[(BIRD, "Partner", r#"{"Keyword":"Partner"}"#)],
+        &["Partner with"],
+        &["Partner with"]
+    )]
+    #[case::flashback_is_not_flash(
+        "Partial",
+        &[(BIRD, "Flashback {2}{R}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":16}}}"#)],
+        &["Flash"],
+        &["Flash"]
+    )]
+    #[case::the_keyword_ends_at_punctuation(
+        "Partial",
+        &[(BIRD, "Gains flash.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":12}}}"#)],
+        &["Flash"],
+        &[]
+    )]
+    #[case::the_keyword_ends_at_a_dash(
+        "Partial",
+        &[(BIRD, "Ward\u{2014}Pay 3 life.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":16}}}"#)],
+        &["Ward"],
+        &[]
+    )]
+    #[case::the_keyword_ends_at_a_space(
+        "Partial",
+        &[(BIRD, "Gains flash until end of turn.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":30}}}"#)],
+        &["Flash"],
+        &[]
+    )]
+    #[case::the_span_ends_where_the_keyword_does(
+        "Partial",
+        &[(BIRD, "Flashback {2}{R}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":5}}}"#)],
+        &["Flash"],
+        &[]
+    )]
+    #[case::a_later_occurrence_counts(
+        "Partial",
+        &[(BIRD, "Flashback and flash", r#"{"Manual":{"reason":"x","span":{"start":0,"end":19}}}"#)],
+        &["Flash"],
+        &[]
+    )]
+    #[case::enchanted_is_not_enchant(
+        "Partial",
+        &[(AURA, "Enchanted creature has flying.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":30}}}"#)],
+        &["Enchant"],
+        &["Enchant"]
+    )]
+    fn a_keyword_is_present_when_an_ability_has_it_or_a_clause_names_it(
+        #[case] status: &str,
+        #[case] faces: &[(&str, &str, &str)],
+        #[case] keywords: &[&str],
+        #[case] missing: &[&str],
+    ) {
+        let expected: Vec<String> = missing
+            .iter()
+            .map(|keyword| {
+                format!("the imported card has the keyword `{keyword}` but no face has it")
+            })
+            .collect();
+        assert_eq!(problems(status, faces, keywords), expected);
+    }
+
+    #[test]
+    fn a_clause_past_the_text_names_nothing() {
+        let found = problems(
+            "Partial",
+            &[(
+                BIRD,
+                "Flying",
+                r#"{"Manual":{"reason":"x","span":{"start":0,"end":99}}}"#,
+            )],
+            &["Flying"],
+        );
+        assert_eq!(
+            found,
+            [
+                "the span ends past the oracle text (6 characters)",
+                "the imported card has the keyword `Flying` but no face has it",
+            ]
+        );
     }
 }
