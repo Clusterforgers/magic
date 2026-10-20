@@ -1261,6 +1261,9 @@ fn primitive_events() -> Vec<Event> {
             object: ObjectId(91),
             controller: player,
             name: "Treasure".into(),
+            tapped: true,
+            attacking: Some(AttackTarget::Player(player)),
+            definition: std::sync::Arc::new(mtg_cards::CardDefinition::new("Treasure")),
         }),
         Event::LibraryLooked(LibraryLooked {
             player,

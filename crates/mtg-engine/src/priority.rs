@@ -383,3 +383,218 @@ pub(crate) fn answer(
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a mana ability in the rules of a permanent (a Treasure) is offered at priority as one source for each colour it can add, only while its cost can be paid, is activated with its costs and its mana in one batch and without the stack, and never counts toward what a spell can be paid with; the plain tap-for-mana of a land is unchanged.
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
+    use mtg_cards::ability::Ability;
+    use mtg_core::mana::ManaCost;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::fixtures::state;
+    use crate::fold::apply_event;
+
+    const ME: PlayerId = PlayerId(0);
+
+    fn ability(json: &str) -> Ability {
+        serde_json::from_str(json).unwrap()
+    }
+
+    const TREASURE: &str = r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#;
+    const PETAL: &str = r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#;
+    const BATTERY: &str = r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}}"#;
+
+    fn artifact(name: &str, json: &str) -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new(name)
+                .with_type(mtg_core::card::CardType::Artifact)
+                .with_rules(ability(json)),
+        )
+    }
+
+    fn spark() -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new("Spark")
+                .with_type(mtg_core::card::CardType::Instant)
+                .with_mana_cost(ManaCost::parse("{R}").unwrap()),
+        )
+    }
+
+    fn game(permanent: Arc<CardDefinition>) -> GameState {
+        state(vec![vec![spark()], vec![]], vec![vec![permanent], vec![]])
+    }
+
+    fn produced(options: &[ManaOption]) -> Vec<ManaType> {
+        options.iter().map(|o| o.produces).collect()
+    }
+
+    #[test]
+    fn a_treasure_is_one_source_for_each_color() {
+        let game = game(artifact("Treasure", TREASURE));
+        let options = rule_mana_options(&game, ME);
+        assert_eq!(produced(&options), COLORS);
+        let id = game.zone(Zone::Battlefield)[0];
+        assert!(options.iter().all(|o| o.source.object == id));
+        let mut keys: Vec<usize> = options.iter().map(|o| o.source.ability).collect();
+        keys.dedup();
+        assert_eq!(keys.len(), 5, "every colour has its own source");
+        assert!(rule_mana_options(&game, PlayerId(1)).is_empty(), "only its controller's");
+    }
+
+    #[rstest]
+    #[case::treasure_that_is_tapped(TREASURE, true, 0)]
+    #[case::treasure_that_is_ready(TREASURE, false, 5)]
+    #[case::a_tap_without_a_sacrifice_that_is_tapped(BATTERY, true, 0)]
+    #[case::a_sacrifice_needs_no_untapped_source(PETAL, true, 1)]
+    fn the_cost_of_the_ability_decides_whether_it_is_offered(
+        #[case] json: &str,
+        #[case] tapped: bool,
+        #[case] offered: usize,
+    ) {
+        let mut game = game(artifact("Gem", json));
+        let id = game.zone(Zone::Battlefield)[0];
+        if tapped {
+            apply_event(&mut game, &Event::PermanentTapped { object: id }).unwrap();
+        }
+        assert_eq!(rule_mana_options(&game, ME).len(), offered);
+    }
+
+    #[rstest]
+    #[case::a_tap_cost_waits_for_the_next_turn(TREASURE, 0)]
+    #[case::a_sacrifice_alone_does_not(PETAL, 1)]
+    fn a_creature_that_just_entered_is_held_back_by_summoning_sickness_only_for_a_tap_cost(
+        #[case] json: &str,
+        #[case] offered: usize,
+    ) {
+        let mut game = game(spark());
+        let gem = Arc::new(
+            CardDefinition::new("Gem Elf")
+                .with_type(mtg_core::card::CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_rules(ability(json)),
+        );
+        let entered = crate::tokens::TokenCreated {
+            object: game.next_object(),
+            controller: ME,
+            name: "Gem Elf".into(),
+            tapped: false,
+            attacking: None,
+            definition: gem,
+        };
+        apply_event(&mut game, &Event::TokenCreated(entered)).unwrap();
+        assert_eq!(rule_mana_options(&game, ME).len(), offered);
+    }
+
+    fn activate(game: &GameState, colour: usize) -> Vec<Event> {
+        let options = priority_options(game, ME);
+        let source = options.mana_abilities[colour].source;
+        let Outcome::Events(events) = answer(
+            game,
+            ME,
+            &options,
+            PriorityAction::ActivateMana(source),
+        )
+        .unwrap() else {
+            panic!("a mana ability is not a cast");
+        };
+        events
+    }
+
+    #[rstest]
+    #[case::white(0, ManaType::White)]
+    #[case::red(3, ManaType::Red)]
+    #[case::green(4, ManaType::Green)]
+    fn a_treasure_taps_sacrifices_and_adds_the_color_chosen_in_one_batch(
+        #[case] colour: usize,
+        #[case] mana: ManaType,
+    ) {
+        let game = game(artifact("Treasure", TREASURE));
+        let id = game.zone(Zone::Battlefield)[0];
+        assert_eq!(
+            activate(&game, colour),
+            [
+                Event::PermanentTapped { object: id },
+                Event::ZoneChanged {
+                    object: id,
+                    from: Zone::Battlefield,
+                    to: Zone::Graveyard(ME),
+                    cause: ZoneCause::Sacrificed,
+                },
+                Event::ManaAdded {
+                    player: ME,
+                    mana,
+                    source: Some(id)
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn an_ability_without_a_tap_cost_does_not_tap() {
+        let game = game(artifact("Petal", PETAL));
+        let id = game.zone(Zone::Battlefield)[0];
+        let events = activate(&game, 0);
+        assert_eq!(events.len(), 2);
+        assert!(matches!(
+            events[0],
+            Event::ZoneChanged { object, cause: ZoneCause::Sacrificed, .. } if object == id
+        ));
+        assert!(matches!(events[1], Event::ManaAdded { mana: ManaType::Red, .. }));
+    }
+
+    #[test]
+    fn a_land_still_taps_for_its_mana_and_is_not_sacrificed() {
+        let game = state(
+            vec![vec![], vec![]],
+            vec![vec![Arc::new(CardDefinition::basic_land(Some(mtg_core::color::Color::Green)))], vec![]],
+        );
+        let id = game.zone(Zone::Battlefield)[0];
+        assert_eq!(
+            activate(&game, 0),
+            [
+                Event::PermanentTapped { object: id },
+                Event::ManaAdded { player: ME, mana: ManaType::Green, source: Some(id) },
+            ]
+        );
+    }
+
+    #[test]
+    fn a_source_that_is_not_offered_is_refused() {
+        let game = game(artifact("Treasure", TREASURE));
+        let options = priority_options(&game, ME);
+        let id = game.zone(Zone::Battlefield)[0];
+        let unknown = ManaSource { object: id, ability: 99 };
+        let error = answer(&game, ME, &options, PriorityAction::ActivateMana(unknown));
+        assert!(error.is_err());
+    }
+
+    #[test]
+    fn the_mana_of_a_treasure_is_made_first_and_never_counts_toward_a_spell() {
+        let game = game(artifact("Treasure", TREASURE));
+        let options = priority_options(&game, ME);
+        assert_eq!(options.mana_abilities.len(), 5);
+        assert!(options.castable.is_empty(), "{{R}} is not paid by a source the payment cannot sacrifice");
+        assert!(!options.can_act, "a mana ability alone is not an action");
+    }
+
+    #[test]
+    fn a_land_and_a_treasure_are_listed_together_and_the_spell_is_paid_by_the_land() {
+        let game = state(
+            vec![vec![spark()], vec![]],
+            vec![
+                vec![
+                    Arc::new(CardDefinition::basic_land(Some(mtg_core::color::Color::Red))),
+                    artifact("Treasure", TREASURE),
+                ],
+                vec![],
+            ],
+        );
+        let options = priority_options(&game, ME);
+        assert_eq!(options.mana_abilities.len(), 6);
+        assert_eq!(options.castable.len(), 1);
+    }
+}

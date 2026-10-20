@@ -92,3 +92,175 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     }
     Ok(Run::events(events))
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: adding mana puts the printed mana in the pool of each player named, once for every time it is added; "any color" asks for a colour each time and adds every mana of that addition in it, a fixed mana asks nothing, and a count of nothing adds nothing.
+    use rstest::rstest;
+
+    use super::*;
+    use crate::choose::Choice;
+    use crate::decision::DecisionKind;
+    use crate::fixtures::{creature, state};
+    use crate::resolve::{Resolving, Scope};
+    use crate::state::GameState;
+    use crate::zones::Zone;
+
+    const ME: PlayerId = PlayerId(0);
+    const FOE: PlayerId = PlayerId(1);
+
+    fn game() -> GameState {
+        state(
+            vec![vec![], vec![]],
+            vec![vec![creature("Source", 1, 1)], vec![]],
+        )
+    }
+
+    fn effect(json: &str) -> Effect {
+        serde_json::from_str(json).unwrap()
+    }
+
+    fn run_with(
+        game: &GameState,
+        journal: Vec<(PlayerId, Choice)>,
+        effect: &Effect,
+    ) -> Result<Run, ResolveError> {
+        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+        let resolving = Resolving {
+            journal,
+            ..Resolving::begin(source.id())
+        };
+        let cx = Cx {
+            scope: Scope::announcing(game, ME, source.reference()),
+            resolving: &resolving,
+        };
+        run(&cx, effect)
+    }
+
+    /// The mana a finished run adds, as (player, mana).
+    fn added(run: Run) -> Vec<(PlayerId, ManaType)> {
+        let Run::Done { events, .. } = run else {
+            panic!("the effect is done");
+        };
+        events
+            .into_iter()
+            .map(|event| match event {
+                Event::ManaAdded { player, mana, .. } => (player, mana),
+                other => panic!("only mana was expected, got {other:?}"),
+            })
+            .collect()
+    }
+
+    #[rstest]
+    #[case::one_green(r#"{"AddMana":{"mana":{"Fixed":["Green"]}}}"#, &[(ME, ManaType::Green)])]
+    #[case::two_colorless(r#"{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}"#, &[(ME, ManaType::Colorless), (ME, ManaType::Colorless)])]
+    #[case::three_times(r#"{"AddMana":{"mana":{"Fixed":["Red"]},"times":3}}"#, &[(ME, ManaType::Red), (ME, ManaType::Red), (ME, ManaType::Red)])]
+    #[case::each_time_the_whole_list(r#"{"AddMana":{"mana":{"Fixed":["Black","Red"]},"times":2}}"#, &[(ME, ManaType::Black), (ME, ManaType::Red), (ME, ManaType::Black), (ME, ManaType::Red)])]
+    #[case::for_an_opponent(r#"{"AddMana":{"who":"Opponents","mana":{"Fixed":["Blue"]}}}"#, &[(FOE, ManaType::Blue)])]
+    #[case::counting_creatures(r#"{"AddMana":{"mana":{"Fixed":["Green"]},"times":{"Count":[{"Type":"Creature"}]}}}"#, &[(ME, ManaType::Green)])]
+    #[case::nothing(r#"{"AddMana":{"mana":{"Fixed":["Green"]},"times":0}}"#, &[])]
+    fn a_fixed_mana_is_added_as_printed_without_a_question(
+        #[case] json: &str,
+        #[case] expected: &[(PlayerId, ManaType)],
+    ) {
+        assert_eq!(
+            added(run_with(&game(), Vec::new(), &effect(json)).unwrap()),
+            expected
+        );
+    }
+
+    #[test]
+    fn the_mana_is_credited_to_the_source_that_is_in_the_game() {
+        let game = game();
+        let fixed = effect(r#"{"AddMana":{"mana":{"Fixed":["Green"]}}}"#);
+        let Run::Done { events, .. } = run_with(&game, Vec::new(), &fixed).unwrap() else {
+            panic!("done");
+        };
+        let source = game.zone(Zone::Battlefield)[0];
+        assert_eq!(
+            events,
+            [Event::ManaAdded {
+                player: ME,
+                mana: ManaType::Green,
+                source: Some(source)
+            }]
+        );
+    }
+
+    #[test]
+    fn any_color_asks_for_a_color_and_adds_it() {
+        let game = game();
+        let any = effect(r#"{"AddMana":{"mana":{"AnyColor":1}}}"#);
+        let Run::Ask(decision) = run_with(&game, Vec::new(), &any).unwrap() else {
+            panic!("the player chooses");
+        };
+        assert_eq!(decision.player, ME);
+        let DecisionKind::ChooseOption(options) = decision.kind else {
+            panic!("a choice of option");
+        };
+        assert_eq!(
+            options.options,
+            COLORS.map(ChoiceOption::Color).to_vec(),
+            "all five colours, white first"
+        );
+        for (index, expected) in [
+            ManaType::White,
+            ManaType::Blue,
+            ManaType::Black,
+            ManaType::Red,
+            ManaType::Green,
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            let run = run_with(&game, vec![(ME, Choice::Option(index))], &any).unwrap();
+            assert_eq!(added(run), [(ME, expected)]);
+        }
+    }
+
+    #[test]
+    fn several_mana_of_any_one_color_share_one_choice() {
+        let game = game();
+        let three = effect(r#"{"AddMana":{"mana":{"AnyColor":3}}}"#);
+        assert!(matches!(
+            run_with(&game, Vec::new(), &three).unwrap(),
+            Run::Ask(_)
+        ));
+        let run = run_with(&game, vec![(ME, Choice::Option(3))], &three).unwrap();
+        assert_eq!(added(run), [(ME, ManaType::Red); 3]);
+    }
+
+    #[test]
+    fn each_time_it_is_added_a_color_is_chosen() {
+        let game = game();
+        let twice = effect(r#"{"AddMana":{"mana":{"AnyColor":1},"times":2}}"#);
+        assert!(matches!(
+            run_with(&game, Vec::new(), &twice).unwrap(),
+            Run::Ask(_)
+        ));
+        assert!(matches!(
+            run_with(&game, vec![(ME, Choice::Option(0))], &twice).unwrap(),
+            Run::Ask(_)
+        ));
+        let run = run_with(
+            &game,
+            vec![(ME, Choice::Option(0)), (ME, Choice::Option(4))],
+            &twice,
+        )
+        .unwrap();
+        assert_eq!(added(run), [(ME, ManaType::White), (ME, ManaType::Green)]);
+    }
+
+    #[test]
+    fn a_count_of_nothing_asks_nothing() {
+        let none = effect(r#"{"AddMana":{"mana":{"AnyColor":1},"times":0}}"#);
+        assert_eq!(added(run_with(&game(), Vec::new(), &none).unwrap()), []);
+    }
+
+    #[test]
+    fn an_answer_that_names_no_color_is_refused() {
+        let any = effect(r#"{"AddMana":{"mana":{"AnyColor":1}}}"#);
+        let error = run_with(&game(), vec![(ME, Choice::Option(9))], &any).unwrap_err();
+        assert!(matches!(error, ResolveError::Invalid(_)));
+    }
+}
