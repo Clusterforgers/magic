@@ -178,6 +178,7 @@ mod tests {
                 "Effect.LoseLife",
                 "Effect.DelayedTrigger",
                 "Effect.May",
+                "Effect.Pay",
                 "Effect.Modal"
             ]
         );

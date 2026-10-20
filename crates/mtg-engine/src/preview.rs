@@ -7,7 +7,6 @@
 //! which the server already pays for every step.
 
 use crate::answers::{Outcome, handle};
-use crate::choose::Choices;
 use crate::decision::{Answer, Decision, DecisionKind};
 use crate::error::{EngineError, PreviewError};
 use crate::fold::apply_event;
@@ -26,7 +25,7 @@ pub(crate) fn preview_forecast(
     ) {
         return Err(PreviewError::NotPreviewable(decision.kind.name()));
     }
-    let events = match handle(state, &Choices::default(), decision, answer.clone()) {
+    let events = match handle(state, None, decision, answer.clone()) {
         Ok(Outcome::Events(events)) => events,
         Ok(_) => return Err(PreviewError::NotPreviewable(decision.kind.name())),
         Err(EngineError::Illegal(illegal)) => return Err(PreviewError::Illegal(illegal)),
