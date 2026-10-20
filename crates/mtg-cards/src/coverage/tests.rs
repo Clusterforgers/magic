@@ -284,6 +284,57 @@ fn the_embedded_library_is_the_hand_written_rules() {
 }
 
 #[test]
+fn compiled_rules_may_create_the_predefined_tokens_of_the_hand_written_library() {
+    let text = "When Test Card enters, create a Treasure token.";
+    let card = printed(8, "Test Card", "Creature \u{2014} Pirate", text);
+    let entries = [in_decks(card, &[("deck", 1)])];
+    let seen = |report: &Report| (report.cards[0].support, labels(&report.cards[0]));
+
+    let with_tokens = analyze(&entries, &Caps::everything());
+    let without = analyze_with(&entries, &Library::default(), &Caps::everything());
+
+    assert_eq!(seen(&with_tokens), (Support::Verified, vec![]));
+    assert_eq!(
+        seen(&without),
+        (Support::Manual, vec!["rules: invalid".to_owned()])
+    );
+}
+
+#[test]
+fn compiled_rules_may_name_another_analyzed_card() {
+    let partner = |n: u32, name: &str, other: &str| {
+        let text = format!("Partner with {other}");
+        printed(n, name, "Legendary Creature \u{2014} Elf", &text)
+    };
+    let (silvar, trynn) = (
+        partner(1, "Test Silvar", "Test Trynn"),
+        partner(2, "Test Trynn", "Test Silvar"),
+    );
+    let both = analyze_with(
+        &[
+            in_decks(silvar.clone(), &[("deck", 1)]),
+            in_decks(trynn, &[("deck", 1)]),
+        ],
+        &Library::default(),
+        &Caps::everything(),
+    );
+    let alone = analyze_with(
+        &[in_decks(silvar, &[("deck", 1)])],
+        &Library::default(),
+        &Caps::everything(),
+    );
+
+    assert_eq!(
+        both.cards
+            .iter()
+            .map(|card| card.support)
+            .collect::<Vec<_>>(),
+        [Support::Verified, Support::Verified]
+    );
+    assert_eq!(labels(&alone.cards[0]), ["rules: invalid"]);
+}
+
+#[test]
 fn copies_add_up_by_deck_and_one_oracle_id_is_one_card() {
     let card = printed(1, "Test Draw", "Sorcery", "Draw a card.");
     let entries = [

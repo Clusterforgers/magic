@@ -149,7 +149,7 @@ pub async fn database_report(db: &Database, target: &str) -> String {
 }
 
 /// Whether the database answered that a table does not exist.
-fn missing_table(error: &DbError) -> bool {
+pub(crate) fn missing_table(error: &DbError) -> bool {
     matches!(
         error,
         DbError::Query(sqlx::Error::Database(e)) if e.code().as_deref() == Some("42P01")

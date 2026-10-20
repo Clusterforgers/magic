@@ -20,7 +20,7 @@ use crate::card::{Card, ImplStatus};
 use crate::compile::{Compiled, compile};
 use crate::load::{Library, Source, canonical, slug};
 use crate::support::{Caps, PrintedCard, Support, support};
-use crate::validate::used_primitives;
+use crate::validate::{check_printed, used_primitives};
 
 /// What the report says of a printed gap that lies on a face the engine does not play.
 const FACES_GAP: &str = "the engine plays only the front face of a card";
@@ -302,6 +302,17 @@ pub fn analyze(cards: &[PreconCard], caps: &Caps) -> Report {
     }
 }
 
+/// What a judgment reads besides the card: the engine, the hand-written rules and what compiled
+/// rules are validated against.
+struct Context<'a> {
+    hand_written: &'a Library,
+    caps: &'a Caps,
+    /// The names of the analyzed cards and their faces, lowercase: what a rule may name (`Partner with`).
+    names: BTreeSet<String>,
+    /// The predefined tokens of the hand-written library, as files.
+    tokens: Vec<Source>,
+}
+
 /// [`analyze`] with the hand-written rules given.
 pub fn analyze_with(cards: &[PreconCard], hand_written: &Library, caps: &Caps) -> Report {
     let mut distinct: BTreeMap<&str, (&PrintedCard, BTreeMap<String, u32>)> = BTreeMap::new();
@@ -313,9 +324,27 @@ pub fn analyze_with(cards: &[PreconCard], hand_written: &Library, caps: &Caps) -
             *entry.1.entry(deck.clone()).or_default() += copies;
         }
     }
+    let context = Context {
+        hand_written,
+        caps,
+        names: distinct
+            .values()
+            .flat_map(|(printed, _)| {
+                std::iter::once(&printed.name).chain(printed.faces.iter().map(|face| &face.name))
+            })
+            .map(|name| name.to_lowercase())
+            .collect(),
+        tokens: hand_written
+            .tokens()
+            .map(|token| Source {
+                path: format!("cards/tokens/{}.json", token.id),
+                text: canonical(token),
+            })
+            .collect(),
+    };
     let mut results: Vec<CardResult> = distinct
         .into_values()
-        .map(|(printed, copies)| judge(printed, copies, hand_written, caps))
+        .map(|(printed, copies)| judge(printed, copies, &context))
         .collect();
     results.sort_by(|a, b| {
         a.name
@@ -328,16 +357,16 @@ pub fn analyze_with(cards: &[PreconCard], hand_written: &Library, caps: &Caps) -
 fn judge(
     printed: &PrintedCard,
     copies: BTreeMap<String, u32>,
-    hand_written: &Library,
-    caps: &Caps,
+    context: &Context<'_>,
 ) -> CardResult {
+    let (hand_written, caps) = (context.hand_written, context.caps);
     let compiled = compile(printed);
     let (rules, state, blockers) = if let Some(card) = hand_written.card(&printed.oracle_id) {
         let state = hand_written.support(printed, caps).support;
         let blockers = blockers_of(Some(card), state, printed, &compiled, caps);
         (RulesSource::HandWritten, state, blockers)
     } else if let Some(card) = &compiled.card {
-        match checked_library(card, printed) {
+        match checked_library(card, printed, context) {
             Some(library) => {
                 let state = library.support(printed, caps).support;
                 let blockers = blockers_of(Some(card), state, printed, &compiled, caps);
@@ -364,16 +393,17 @@ fn judge(
     }
 }
 
-/// The library of one compiled card, as the server would load its stored rules; `None` when the
-/// rules do not validate or do not match the imported card.
-fn checked_library(card: &Card, printed: &PrintedCard) -> Option<Library> {
-    let source = Source {
+/// The library of one compiled card next to the predefined tokens, as the server would load its
+/// stored rules; `None` when the rules do not validate or do not match the imported card.
+fn checked_library(card: &Card, printed: &PrintedCard, context: &Context<'_>) -> Option<Library> {
+    let mut sources = context.tokens.clone();
+    sources.push(Source {
         path: format!("cards/{}.json", slug(&card.name)),
         text: canonical(card),
-    };
-    let library = Library::from_sources(&[source]).ok()?;
-    library
-        .check_printed(std::slice::from_ref(printed))
+    });
+    let library = Library::from_sources(&sources).ok()?;
+    let tokens: BTreeSet<String> = library.tokens().map(|token| token.id.clone()).collect();
+    check_printed(card, printed, &context.names, &tokens)
         .is_empty()
         .then_some(library)
 }

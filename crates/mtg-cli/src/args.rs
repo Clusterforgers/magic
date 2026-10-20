@@ -40,6 +40,8 @@ pub enum Command {
     Ingest(IngestArgs),
     /// Show what is cached, the latest import runs and the row counts.
     Status,
+    /// Report how well the compiler and the engine cover the stored precons, and what would free the most cards.
+    Coverage(CoverageArgs),
 }
 
 /// What `fetch` downloads.
@@ -77,6 +79,18 @@ pub struct DecksArgs {
     /// Download even when the cached files are current.
     #[arg(long)]
     pub force: bool,
+}
+
+/// Options of `coverage`.
+#[derive(Debug, Args)]
+pub struct CoverageArgs {
+    /// Only the precons whose code is this (any case) or whose name contains it (any case).
+    #[arg(long, value_name = "CODE_OR_NAME", value_parser = clap::builder::NonEmptyStringValueParser::new())]
+    pub deck: Option<String>,
+
+    /// How many blockers each of the two rankings shows.
+    #[arg(long, value_name = "N", default_value_t = mtg_cards::coverage::DEFAULT_TOP)]
+    pub top: usize,
 }
 
 /// Options of `ingest`.
@@ -118,6 +132,10 @@ mod tests {
     #[case(&["mtg-cli", "fetch", "decks", "--type", "all", "--type", "Theme Deck"])]
     #[case(&["mtg-cli", "--cache", "/tmp/c", "status"])]
     #[case(&["mtg-cli", "status", "--cache", "/tmp/c", "--database-url", "postgres://x/y"])]
+    #[case(&["mtg-cli", "coverage"])]
+    #[case(&["mtg-cli", "coverage", "--deck", "C21", "--top", "5"])]
+    #[case(&["mtg-cli", "coverage", "--top", "0", "--deck", "Quantum Quandrix"])]
+    #[case(&["mtg-cli", "--database-url", "postgres://x/y", "coverage"])]
     fn documented_invocations_parse(#[case] args: &[&str]) {
         assert!(Cli::try_parse_from(args).is_ok(), "{args:?}");
     }
@@ -129,6 +147,11 @@ mod tests {
     #[case(&["mtg-cli", "fetch", "decks", "--limit", "many"])]
     #[case(&["mtg-cli", "ingest", "--batch-size", "-1"])]
     #[case(&["mtg-cli", "status", "--frobnicate"])]
+    #[case(&["mtg-cli", "coverage", "--top", "many"])]
+    #[case(&["mtg-cli", "coverage", "--top", "-1"])]
+    #[case(&["mtg-cli", "coverage", "--deck"])]
+    #[case(&["mtg-cli", "coverage", "--deck", ""])]
+    #[case(&["mtg-cli", "coverage", "C21"])]
     fn bad_invocations_are_refused(#[case] args: &[&str]) {
         assert!(Cli::try_parse_from(args).is_err(), "{args:?}");
     }
@@ -151,5 +174,22 @@ mod tests {
             (args.limit, args.only, args.deck_type),
             (Some(5), vec!["A".into()], vec!["all".into()])
         );
+    }
+
+    #[rstest]
+    #[case(&["mtg-cli", "coverage"], None, 20)]
+    #[case(&["mtg-cli", "coverage", "--deck", "C21"], Some("C21"), 20)]
+    #[case(&["mtg-cli", "coverage", "--top", "7"], None, 7)]
+    #[case(&["mtg-cli", "coverage", "--top", "3", "--deck", "Quantum Quandrix"], Some("Quantum Quandrix"), 3)]
+    fn coverage_options_land_in_their_fields(
+        #[case] args: &[&str],
+        #[case] deck: Option<&str>,
+        #[case] top: usize,
+    ) {
+        let cli = Cli::try_parse_from(args).unwrap();
+        let Command::Coverage(args) = cli.command else {
+            panic!("expected coverage");
+        };
+        assert_eq!((args.deck.as_deref(), args.top), (deck, top));
     }
 }
