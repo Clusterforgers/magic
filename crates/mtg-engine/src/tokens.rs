@@ -75,7 +75,20 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         summoning_sick: true,
         counters: BTreeMap::new(),
         attached_to: None,
+        timestamp: state.next_timestamp,
+        observed: None,
     });
+    state.next_timestamp += 1;
+    // A token can bring what no card of the game had: a triggered ability, a static ability.
+    if crate::ability_reader::definition_triggers(&event.definition) {
+        state.triggers_possible = true;
+    }
+    if crate::ability_reader::static_abilities(&token)
+        .next()
+        .is_some()
+    {
+        state.statics_possible = true;
+    }
     state.objects.insert(id, token);
     state.zones.insert(Zone::Battlefield, id, Placement::Top);
     state.next_object = state.next_object.max(id.get() + 1);

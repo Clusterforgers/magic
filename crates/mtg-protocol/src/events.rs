@@ -650,6 +650,7 @@ mod tests {
         let source = t.state.object(t.creature).unwrap().reference();
         let events = [
             Event::AbilityPutOnStack(Box::new(PutOnStack {
+                origin: mtg_engine::abilities::AbilitySource::default(),
                 object: ObjectId(900),
                 source,
                 snapshot: snapshot(&t.state, t.creature).unwrap(),
@@ -663,8 +664,10 @@ mod tests {
                 player: OWNER,
                 source,
                 ability: 0,
+                origin: mtg_engine::abilities::AbilitySource::default(),
             },
             Event::AbilityTriggered(Box::new(Triggered {
+                origin: mtg_engine::abilities::AbilitySource::default(),
                 source,
                 ability: 0,
                 controller: OWNER,
@@ -727,6 +730,7 @@ mod tests {
         let source = t.state.object(t.creature).unwrap().reference();
         let reference = t.state.object(subject).unwrap().reference();
         Triggered {
+            origin: mtg_engine::abilities::AbilitySource::default(),
             source,
             ability: 1,
             controller: OWNER,
@@ -763,6 +767,7 @@ mod tests {
 
         let put = |trigger: &Triggered| {
             Event::AbilityPutOnStack(Box::new(PutOnStack {
+                origin: mtg_engine::abilities::AbilitySource::default(),
                 object: ObjectId(900),
                 source,
                 snapshot: trigger.snapshot.clone(),
@@ -787,6 +792,7 @@ mod tests {
         let removed = |trigger: &Triggered| Event::TriggerRemoved {
             source,
             ability: 1,
+            origin: mtg_engine::abilities::AbilitySource::default(),
             delayed: None,
             cause: trigger.cause.clone(),
         };

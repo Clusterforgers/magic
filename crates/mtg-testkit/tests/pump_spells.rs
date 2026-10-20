@@ -128,7 +128,7 @@ fn giant_growth_gives_plus_three_until_the_end_of_the_turn(
     let created = effects_created(&driver.engine().events()[begun..]);
     assert_eq!(created.len(), 1, "one modification, one effect");
     let effect = created[0];
-    assert_eq!(effect.layer, Layer::PtModify);
+    assert_eq!(effect.layer, Some(Layer::PtModify));
     assert_eq!(
         effect.modification,
         Modification::ModifyPowerToughness {
@@ -432,7 +432,11 @@ fn a_second_pump_comes_after_the_first_in_timestamp_order(
             .windows(2)
             .all(|pair| pair[0].timestamp < pair[1].timestamp && pair[0].id < pair[1].id)
     );
-    assert!(effects.iter().all(|effect| effect.layer == Layer::PtModify));
+    assert!(
+        effects
+            .iter()
+            .all(|effect| effect.layer == Some(Layer::PtModify))
+    );
     Ok(())
 }
 
@@ -568,7 +572,7 @@ fn two_changes_of_one_set_of_creatures_are_fixed_when_the_spell_resolves(
     let created = effects_created(&driver.engine().events()[begun..]);
     assert_eq!(
         created.iter().map(|e| e.layer).collect::<Vec<_>>(),
-        [Layer::PtModify, Layer::Ability],
+        [Some(Layer::PtModify), Some(Layer::Ability)],
         "one effect for each change, in the order of the text"
     );
     assert_eq!(created[0].timestamp + 1, created[1].timestamp);

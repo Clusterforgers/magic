@@ -6,7 +6,8 @@
 //! mana, and triggered abilities made of drawing, discarding, milling, sacrificing, destroying, exiling, countering,
 //! scrying, looking at, revealing, searching for, moving and shuffling cards, tapping and untapping, winning the
 //! game, life and damage (and delayed triggers), conditions, "may" and "pay" and choices and modal spells, continuous
-//! effects that pump power and toughness or grant a keyword, the keywords of combat, flash and hexproof, and nothing
+//! effects and static abilities of every modification (types, subtypes, colours, power and toughness, keywords, abilities,
+//! control, attack and block restrictions), the keywords of combat, flash and hexproof, and nothing
 //! else.
 
 use mtg_cards::Caps;
@@ -54,8 +55,21 @@ const RUNS: &[&str] = &[
     "Effect.WinGame",
     "Effect.CreateToken",
     "Effect.Continuous",
+    "Ability.Static",
     "Mod.ModifyPT",
     "Mod.AddKeyword",
+    "Mod.SetPT",
+    "Mod.SwitchPT",
+    "Mod.AddType",
+    "Mod.RemoveType",
+    "Mod.AddSubtype",
+    "Mod.SetColors",
+    "Mod.RemoveKeyword",
+    "Mod.GrantAbility",
+    "Mod.LoseAbilities",
+    "Mod.SetController",
+    "Mod.CantAttack",
+    "Mod.CantBlock",
     "Effect.DelayedTrigger",
     "Effect.If",
     "Effect.May",
@@ -155,8 +169,19 @@ mod tests {
     #[case::continuous_effects("Effect.Continuous", true)]
     #[case::pumps("Mod.ModifyPT", true)]
     #[case::granted_keywords("Mod.AddKeyword", true)]
-    #[case::setting_power_and_toughness("Mod.SetPT", false)]
-    #[case::removed_keywords("Mod.RemoveKeyword", false)]
+    #[case::setting_power_and_toughness("Mod.SetPT", true)]
+    #[case::switching_power_and_toughness("Mod.SwitchPT", true)]
+    #[case::types("Mod.AddType", true)]
+    #[case::removed_types("Mod.RemoveType", true)]
+    #[case::subtypes("Mod.AddSubtype", true)]
+    #[case::colours("Mod.SetColors", true)]
+    #[case::granted_abilities("Mod.GrantAbility", true)]
+    #[case::lost_abilities("Mod.LoseAbilities", true)]
+    #[case::changes_of_control("Mod.SetController", true)]
+    #[case::attack_restrictions("Mod.CantAttack", true)]
+    #[case::block_restrictions("Mod.CantBlock", true)]
+    #[case::static_abilities("Ability.Static", true)]
+    #[case::removed_keywords("Mod.RemoveKeyword", true)]
     #[case::conditions("Effect.If", true)]
     #[case::counters_in_a_value("Amount.Counters", false)]
     #[case::divided_amounts("Amount.Divided", false)]

@@ -15,6 +15,7 @@ mod mulligan;
 mod preview;
 mod price;
 mod sba;
+mod statics;
 mod steps;
 mod wording;
 

@@ -359,6 +359,7 @@ mod tests {
         apply_event(&mut state, &Event::DelayedTriggerCreated(Box::new(event))).unwrap();
         let object = state.object(source).unwrap();
         let triggered = Triggered {
+            origin: crate::abilities::AbilitySource::default(),
             source: object.reference(),
             ability: 0,
             controller: ME,
@@ -372,6 +373,7 @@ mod tests {
         )
         .unwrap();
         let put = PutOnStack {
+            origin: crate::abilities::AbilitySource::default(),
             object: state.next_object(),
             source: triggered.source,
             snapshot: triggered.snapshot.clone(),

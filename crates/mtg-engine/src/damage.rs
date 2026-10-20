@@ -4,7 +4,7 @@
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::answers::Outcome;
-use crate::characteristics::characteristics;
+use crate::characteristics::{characteristics, controller_of};
 use crate::combat::{AttackTarget, Attacker, DamageTarget};
 use crate::decision::DamageOptions;
 use crate::error::IllegalAnswer;
@@ -208,7 +208,7 @@ pub(crate) fn pending_assignment(
         let rules = keywords::damage_rules(state, attacker.object());
         match division(state, attacker, power, rules) {
             Division::Choose(options) => {
-                let controller = state.object(attacker.object())?.controller();
+                let controller = controller_of(state, attacker.object())?;
                 Some((controller, options))
             }
             Division::Fixed(_) => None,
@@ -283,10 +283,7 @@ pub(crate) fn dealt(
         target,
         amount,
     }];
-    let controller = state
-        .object(source)
-        .map(GameObject::controller)
-        .filter(|controller| state.is_alive(*controller));
+    let controller = controller_of(state, source).filter(|controller| state.is_alive(*controller));
     if let Some(player) = controller
         && keywords::damage_rules(state, source).lifelink
     {

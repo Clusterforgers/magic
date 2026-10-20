@@ -273,6 +273,7 @@ mod tests {
         let totem = named(&game, "Totem");
         let ability = game.next_object();
         let put = PutOnStack {
+            origin: crate::abilities::AbilitySource::default(),
             object: ability,
             source: totem,
             snapshot: crate::snapshot::snapshot(&game, totem.id).unwrap(),

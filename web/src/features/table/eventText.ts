@@ -9,6 +9,7 @@ import type {
   Event,
   EventView,
   HiddenEvent,
+  Modification,
   ObjectId,
   PlayerId,
   Target,
@@ -47,6 +48,38 @@ function keywordWords(keyword: unknown): string {
   return tag.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase()
 }
 
+/** What a change does to what it changes, as a verb phrase ("becomes an artifact too", "gets +1/+1"). */
+function modificationWords(modification: Modification, group: boolean): string {
+  const becomes = group ? 'become' : 'becomes'
+  const gains = group ? 'gain' : 'gains'
+  const loses = group ? 'lose' : 'loses'
+  if (typeof modification === 'string') {
+    return {
+      LoseAbilities: `${loses} all abilities`,
+      SwitchPowerToughness: `${group ? 'have' : 'has'} power and toughness switched`,
+      CantAttack: "can't attack",
+      CantBlock: "can't block",
+    }[modification]
+  }
+  if ('AddType' in modification) return `${becomes} ${modification.AddType.toLowerCase()} too`
+  if ('RemoveType' in modification) return `${loses} ${modification.RemoveType.toLowerCase()} as a type`
+  if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
+  if ('SetColors' in modification) {
+    const colors = colorsInSet(modification.SetColors).map((color) => color.toLowerCase())
+    return `${becomes} ${colors.length === 0 ? 'colorless' : joinWords(colors)}`
+  }
+  if ('AddKeyword' in modification) return `${gains} ${keywordWords(modification.AddKeyword)}`
+  if ('RemoveKeyword' in modification) return `${loses} ${keywordWords(modification.RemoveKeyword)}`
+  if ('GrantAbility' in modification) return `${gains} an ability`
+  if ('SetController' in modification) return `${group ? 'change' : 'changes'} controller`
+  if ('SetPowerToughness' in modification) {
+    const { power, toughness } = modification.SetPowerToughness
+    return `${becomes} ${power}/${toughness}`
+  }
+  const { power, toughness } = modification.ModifyPowerToughness
+  return `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
+}
+
 function describeEffect(effect: ContinuousEffect, n: EventNames): string {
   const { selector, modification, duration, source } = effect
   let who = 'All creatures'
@@ -59,21 +92,7 @@ function describeEffect(effect: ContinuousEffect, n: EventNames): string {
   // One card "becomes" and "gets"; a group of creatures "become" and "get".
   const group =
     typeof selector === 'string' || 'CreaturesControlledBy' in selector || selector.Objects.length !== 1
-  const becomes = group ? 'become' : 'becomes'
-  let what = 'changes'
-  if ('AddType' in modification) what = `${becomes} ${modification.AddType.toLowerCase()} too`
-  else if ('SetColors' in modification) {
-    const colors = colorsInSet(modification.SetColors).map((color) => color.toLowerCase())
-    what = `${becomes} ${colors.length === 0 ? 'colorless' : joinWords(colors)}`
-  } else if ('AddKeyword' in modification) {
-    what = `${group ? 'gain' : 'gains'} ${keywordWords(modification.AddKeyword)}`
-  } else if ('SetPowerToughness' in modification) {
-    const { power, toughness } = modification.SetPowerToughness
-    what = `${becomes} ${power}/${toughness}`
-  } else {
-    const { power, toughness } = modification.ModifyPowerToughness
-    what = `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
-  }
+  const what = modificationWords(modification, group)
   const UNTIL: Record<ContinuousEffect['duration'], string> = {
     UntilEndOfTurn: ' until end of turn',
     UntilEndOfCombat: ' until end of combat',

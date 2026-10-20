@@ -8,7 +8,7 @@ mod common;
 use std::collections::BTreeSet;
 
 use common::{Step, run_game, unique_setup};
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::effects::{Duration, Modification};
@@ -238,6 +238,39 @@ fn snapshot_mirrors_the_public_table_and_derives_characteristics() {
     assert!(!permanent.tapped);
     let tapped_land = view.objects.iter().find(|o| o.name == "Plains").unwrap();
     assert!(tapped_land.permanent.as_ref().unwrap().tapped);
+}
+
+#[test]
+fn a_permanent_shows_the_controller_and_the_subtypes_the_layers_give_it() {
+    let mut driver = table();
+    let giant_id = driver.id_of("Craw Wurm").unwrap();
+    let shown = |driver: &Driver| {
+        let view = StateView::for_player(driver.state(), PlayerId(1));
+        let object = view.objects.iter().find(|o| o.id == giant_id).unwrap();
+        (
+            object.owner,
+            object.controller,
+            object
+                .subtypes
+                .iter()
+                .map(|s| s.0.clone())
+                .collect::<Vec<_>>(),
+        )
+    };
+    assert_eq!(shown(&driver), (PlayerId(0), PlayerId(0), Vec::new()));
+    for modification in [
+        Modification::SetController(PlayerId(1)),
+        Modification::AddSubtype(Subtype("Elf".into())),
+    ] {
+        driver
+            .add_effect(driver.on(giant_id), modification, Duration::UntilEndOfTurn)
+            .unwrap();
+    }
+    assert_eq!(
+        shown(&driver),
+        (PlayerId(0), PlayerId(1), vec!["Elf".to_owned()]),
+        "the owner is the same, the controller and a subtype are what the effects made them"
+    );
 }
 
 #[test]

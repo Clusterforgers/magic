@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e3886fe8-9b76-4613-8891-4ec74657c087",
+  "name": "Glorious Anthem",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glorious Anthem",
+      "oracle_fingerprint": "ce0bb963a8a090d56153734aa724b38c",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

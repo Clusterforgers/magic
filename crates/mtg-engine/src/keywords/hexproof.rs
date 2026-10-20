@@ -23,7 +23,8 @@ impl KeywordRules for Hexproof {
         // A static ability works on the battlefield only (CR 113.6): a hexproof creature spell can be countered
         // and a hexproof card in a graveyard can be returned.
         state.object(holder).is_some_and(|object| {
-            object.zone() == Zone::Battlefield && object.controller() != controller
+            object.zone() == Zone::Battlefield
+                && crate::characteristics::controller_of(state, holder) != Some(controller)
         })
     }
 

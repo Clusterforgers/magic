@@ -2,7 +2,7 @@
 
 Rules data for cards (`mtg-cards`) and the pipeline that runs it (`mtg-engine`).
 
-Scope: the data model, loader, validation, support records, a 40-card corpus and card assembly are implemented in `crates/mtg-cards`, with the engine's capabilities in `mtg-engine` and the card source in `mtg-server`. The pipeline core ("Execution", "Decisions the effects need", "Snapshots") is implemented in `mtg-engine` for targets, modes, cards chosen by a player and put in an order, yes or no, payments, options, drawing, discarding, sacrificing, destroying, exiling, countering, scrying, looking at, revealing, searching for, moving (onto the battlefield too) and shuffling cards, life, damage, mana and tokens; "Triggers, replacement and layers" is implemented for triggers (detection, the queue, order, delayed triggers, the intervening "if" and the limit) and for the layer rows of continuous effects that pump power and toughness or grant a keyword (durations, timestamps, derivation); its replacement rows, the other layer rows and "Tasks" are the contract of the other M3 engine tasks. Related: `engine.md`, `protocol.md`, `deck-check.md`, `arena-flow.md`.
+Scope: the data model, loader, validation, support records, a 47-card corpus and card assembly are implemented in `crates/mtg-cards`, with the engine's capabilities in `mtg-engine` and the card source in `mtg-server`. The pipeline core ("Execution", "Decisions the effects need", "Snapshots") is implemented in `mtg-engine` for targets, modes, cards chosen by a player and put in an order, yes or no, payments, options, drawing, discarding, sacrificing, destroying, exiling, countering, scrying, looking at, revealing, searching for, moving (onto the battlefield too) and shuffling cards, life, damage, mana and tokens; "Triggers, replacement and layers" is implemented for triggers (detection, the queue, order, delayed triggers, the intervening "if" and the limit) and for the layer rows of continuous effects that pump power and toughness or grant a keyword (durations, timestamps, derivation); its replacement rows, the other layer rows and "Tasks" are the contract of the other M3 engine tasks. Related: `engine.md`, `protocol.md`, `deck-check.md`, `arena-flow.md`.
 
 ## Summary
 
@@ -248,8 +248,8 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | Replacement step | Effect steps and rules code produce proposed events; `replace::process(state, proposed)` returns the final events or needs a choice. Only "would" events pass through it: damage, life, draw, discard, mill, zone change, counters, tokens, tap. A replacement is data (a `Replacement` ability or a registered shield with a duration) and applies at most once per event (CR 614.5). |
 | Replacement choice | The affected player picks among several (`ChooseReplacement`, CR 616.1), self-replacement first (CR 614.15). The choice is a journal entry, so `process` is a pure function of state and journal. |
 | Prevention | `ReplaceBy::Prevent`. `GameRule::DamageCantBePrevented` wins over any shield. |
-| Derived statics | `characteristics(state, id)` gathers the `Static` abilities of everything that functions in its zone plus the registered `ContinuousEffect`s, layer by layer. Today it gathers the registered effects only (`engine.md`, Continuous effects). |
-| Layers | `SetController` 2; `AddType`, `AddSubtype` 4; `SetColors` 5; `AddKeyword`, `RemoveKeyword` 6; `SetPT` 7b; `ModifyPT` 7c; `SwitchPT` 7d; `CantAttack`, `CantBlock` are restrictions without a layer. `Modification::layer()` returns it. `ModifyPT` and `AddKeyword` run from `Effect::Continuous`; the other modifications refuse by name (`Mod.SetPT`, ...) and are not in `Caps`. |
+| Derived statics | `characteristics::derive` walks the effects of resolved spells and abilities and the `Static` abilities of the permanents, found through `ability_reader`, in one order of layer, timestamp and id. A static ability works while its source is on the battlefield (`from` other than that is `Ability.From`) and its `condition` holds; when all its modifications come after layer 6 (7b and later, restrictions) it works only while its source still has it once layer 6 is through, so Humility stops a lord's pump but not "creatures you control are artifacts and get +1/+1" (CR 613.6). `affected` is `This`, `Attached` (the host) or `Each`, tested against the characteristics built so far; the amounts and the player of `SetController` are worked out for each state. A static's condition, amount and selector read other objects without the effects of static abilities until the dependencies of (k4) (`engine.md`, Continuous effects). |
+| Layers | `SetController` 2; `AddType`, `RemoveType`, `AddSubtype` 4; `SetColors` 5; `AddKeyword`, `RemoveKeyword`, `GrantAbility`, `LoseAbilities` 6; `SetPT` 7b; `ModifyPT` 7c; `SwitchPT` 7d; `CantAttack`, `CantBlock` are restrictions without a layer. `Modification::layer()` returns it. Every modification runs from `Effect::Continuous` and from a `Static`, each with its name in `Caps` (`Mod.SetPT`, ...). `GrantAbility` gives an activated or a triggered ability, validated as the ability it is in a scope of its own; a keyword is `AddKeyword`. `LoseAbilities` takes away what the object has so far, the plain mana abilities and keywords included, and what is granted after it stays. |
 | Locked or live | A resolving spell or ability that modifies characteristics or control fixes its object set when it begins (CR 611.2c): `Effect::Continuous` evaluates `affected` once, to the permanents it names then, each as the incarnation named (a permanent that leaves and returns is a new object, CR 400.7), and works out its amounts then. A `Static` evaluates its selector at every derivation. |
 | Timestamps | A static ability takes its permanent's entry time (an Aura's or Equipment's effects, the time it became attached); a resolved effect takes its creation time (CR 613.7), one for each modification in the order of the card's text. Both are counters assigned by the fold. |
 | Durations | `UntilEndOfTurn` ends in the cleanup step with the damage (CR 514.2); `UntilEndOfCombat` after the end of combat step; `UntilYourNextTurn` when the controller's next turn begins; `WhileSourceOnBattlefield` follows the source named on the effect; `Forever` ends only when every object it names is gone. All five run. |
@@ -260,7 +260,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | Item | Rule |
 |---|---|
 | Data | `{"Keyword": {"Ward": "{2}"}}`. `Keyword` is an enum in `keyword.rs` with `name()` in Scryfall's spelling (compared with the record's `keywords`). It declares every keyword the roadmap lists. |
-| Engine | `keywords/mod.rs` maps each variant to a `KeywordRules` value defined in `keywords/<name>.rs`; a keyword without its task is a stub that changes nothing. A keyword task replaces its stub and adds its `Caps` entry in `caps.rs`. `keywords_of(state, id)` is the one reader of the keywords an object has: the keyword abilities `ability_reader` lists, with layer 6 joining there: the keywords continuous effects grant (`AddKeyword`) follow in timestamp order, never twice; `RemoveKeyword` joins with its task. The keywords of combat, hexproof and flash are built (`engine.md`, Combat and keywords). `player_keywords(state, player)` is the same reader for a player (hexproof, CR 702.11d). |
+| Engine | `keywords/mod.rs` maps each variant to a `KeywordRules` value defined in `keywords/<name>.rs`; a keyword without its task is a stub that changes nothing. A keyword task replaces its stub and adds its `Caps` entry in `caps.rs`. `keywords_of(state, id)` is the one reader of the keywords an object has: the keyword abilities `ability_reader` lists, with layer 6 joining there: the keywords continuous effects grant (`AddKeyword`) follow in timestamp order, never twice; `RemoveKeyword` removes one and `LoseAbilities` every keyword so far, in the same order, so a keyword granted after them stays. The keywords of combat, hexproof and flash are built (`engine.md`, Combat and keywords). `player_keywords(state, player)` is the same reader for a player (hexproof, CR 702.11d). |
 | Hooks | `restricts_blocking`, `answers_evasion`, `min_blockers`, `forbids_attacking`, `ignores_summoning_sickness`, `attacks_untapped`, `is_indestructible`, `modifies_damage`, `restricts_targeting`, `restricts_player_targeting`, `grants_timing`, `adds_abilities`. Combat, damage, state-based actions, targeting (`protects` and `protects_player`, part of `legal_targets`) and casting at instant speed (`grants_instant_timing`) call theirs; a stub answers "no". A keyword expressible in the DSL (equip, cycling, prowess, battle cry) returns abilities from `adds_abilities` and is tested like any card; one that bends rules machinery (flying, first strike, trample) is a hook in combat or damage code. |
 
 ## Validation
@@ -363,18 +363,19 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 
 ## Corpus
 
-`crates/mtg-cards/cards/` holds 40 cards and 3 tokens.
+`crates/mtg-cards/cards/` holds 47 cards and 3 tokens.
 
 | Feature | Cards |
 |---|---|
 | Targets, damage | Lightning Bolt, Burst Lightning (kicker), Fireball (X, even split, cost per extra target), Fire // Ice (split, divided damage, Fuse) |
 | Counter, destroy, exile, mass removal | Counterspell, Doom Blade, Swords to Plowshares, Wrath of God (Verified) |
-| Pump with duration | Giant Growth (Verified) |
+| Pump and control with duration | Giant Growth, Act of Treason (Verified) |
 | Library | Rampant Growth, Cultivate, Opt, Brainstorm, Flooded Strand (fetchland), Jace, the Mind Sculptor (planeswalker) |
 | Modes | Izzet Charm |
 | Triggers | Mulldrifter (evoke), Eternal Witness, Dockside Extortionist (Treasure), Tireless Tracker (Clue), Hero of Bladehold (attack, tokens, battle cry), Archon of Cruelty, Delver of Secrets // Insectile Aberration (transform), Felidar Sovereign (intervening if), Rhystic Study, Bonecrusher Giant // Stomp (adventure), Sneak Attack (delayed trigger) |
 | Replacement | Anointed Procession |
-| Static, Aura, Equipment | Pacifism, Bonesplitter |
+| Static abilities (Verified) | Glorious Anthem, Levitation, Goblin Chieftain (a lord that gives a keyword), Humility (loses abilities, sets power and toughness), Favorable Winds (a keyword in the selector), Jungle Lion (can't block) |
+| Static, Aura, Equipment | Pacifism, Bonesplitter (their statics run; `Enchant` and `Equip` do not) |
 | Mana abilities | Llanowar Elves, Sol Ring, Gaea's Cradle |
 | Keywords | Serra Angel, Bloodbraid Elf (cascade), Faithless Looting (flashback) |
 | No abilities | Forest, Grizzly Bears |
@@ -404,7 +405,10 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | Batch ("one or more"), first time each turn, nth card drawn; state triggers (CR 603.8) | P, X, F | (i4); state triggers (i3) |
 | `Pred` and `Amount` over turn history (entered, attacked, spells cast this turn, life gained), event amount ("that much"), size of a bound set ("that many") | P, X | (i4) |
 | `Amount`: kicker count, spells cast this turn (Storm) | P, X | (g), (o) |
-| Statics: must attack or block, can't be countered, can't gain life or draw, trigger doubling, can't search, reveal top, characteristic-defining flag, remove abilities or types, exchange control | P, X, F | (k) |
+| Statics: remove abilities or types, grant abilities, change control, can't attack or block | P, X, F | DSL |
+| Statics: must attack or block, can't be countered, can't gain life or draw, trigger doubling, can't search, reveal top | P, X, F | (k3b) |
+| Statics: characteristic-defining flag | P, X | (k4) |
+| Exchange control | P, X, F | (h) |
 | Shields (`PreventDamage`, damage and draw replacement), redirection; replaced events: draw, life, destroy, discard, mill, counters, tap, untap, enters tapped or with counters | P, X, F | (j) |
 | Emblems, extra turns, skip turn, additional phase, set or exchange life totals, `LoseGame`, dice, coin, clash, vote, separate into piles, devotion | P, X, F | M6 |
 | Saga chapters, class levels, level up, opening-hand actions, special actions | P, X | M6 |

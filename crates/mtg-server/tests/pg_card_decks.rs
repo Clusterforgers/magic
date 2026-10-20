@@ -16,12 +16,12 @@ use mtg_server::{
     CardSource, CatalogError, DeckFingerprint, DeckRef, GameId, GameRecipe, GameRecords,
     RecipeError, RecordStatus, Registry, ServerConfig, migrate, printed_card,
 };
-use mtg_testkit::corpus::{card, printed_card as printed_record};
+use mtg_testkit::corpus::{card, corpus, printed_card as printed_record};
 use mtg_testkit::play_game;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-/// Scryfall objects (trimmed) of the 40 corpus cards, as the importer reads them.
+/// Scryfall objects (trimmed) of the corpus cards, as the importer reads them.
 const SCRYFALL: &str = include_str!("../../mtg-cards/tests/fixtures/corpus_scryfall.json");
 
 fn records() -> Vec<CardRecord> {
@@ -98,7 +98,7 @@ async fn a_deck_of_oracle_ids_becomes_the_definitions_the_corpus_gives(pool: PgP
 async fn a_stored_card_adapts_to_what_its_import_record_gives(pool: PgPool) {
     let db = seeded(&pool).await;
     let records = records();
-    assert_eq!(records.len(), 40);
+    assert_eq!(records.len(), corpus().unwrap().names().count());
     for record in records {
         let row = db.cards().get(&record.oracle_id).await.unwrap().unwrap();
         assert_eq!(

@@ -1,5 +1,7 @@
 //! `Effect::Continuous`: a continuous effect begins (CR 611.2).
 
+use std::sync::Arc;
+
 use mtg_cards::effect::Effect;
 use mtg_cards::modify::Modification as Wanted;
 use mtg_cards::value::Amount;
@@ -9,7 +11,7 @@ use super::wrong_effect;
 use crate::effects::{ContinuousEffect, Modification, Selector};
 use crate::events::Event;
 use crate::object::{GameObject, ObjectRef};
-use crate::resolve::{Cx, ResolveError, Run};
+use crate::resolve::{Cx, ResolveError, Run, Scope};
 use crate::zones::Zone;
 
 /// Each modification becomes one effect that applies to the permanents the reference names now and to no other object,
@@ -38,7 +40,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     }
     let mut events = Vec::new();
     for (made, wanted) in (0u64..).zip(mods) {
-        let modification = lower(cx, wanted)?;
+        let modification = lower(&cx.scope, wanted)?;
         events.push(Event::EffectCreated {
             effect: ContinuousEffect::new(
                 EffectId(state.next_effect + made),
@@ -54,10 +56,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(Run::events(events))
 }
 
-/// What the engine applies for a modification of the card, with its amounts worked out.
-fn lower(cx: &Cx<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
+/// What the engine applies for a modification of the card: its amounts worked out and the player it names found in
+/// `scope`. An effect of a spell or ability does this as it begins and a static ability whenever the state changes, so
+/// both run the same modification.
+pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
     let amount = |amount: &Amount| -> Result<i32, ResolveError> {
-        i32::try_from(cx.scope.amount(amount)?).map_err(|_| {
+        i32::try_from(scope.amount(amount)?).map_err(|_| {
             ResolveError::Invalid("a change of power or toughness is out of range".into())
         })
     };
@@ -66,16 +70,27 @@ fn lower(cx: &Cx<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
             power: amount(power)?,
             toughness: amount(toughness)?,
         },
+        Wanted::SetPT { power, toughness } => Modification::SetPowerToughness {
+            power: amount(power)?,
+            toughness: amount(toughness)?,
+        },
+        Wanted::SwitchPT => Modification::SwitchPowerToughness,
+        Wanted::AddType(ty) => Modification::AddType(*ty),
+        Wanted::RemoveType(ty) => Modification::RemoveType(*ty),
+        Wanted::AddSubtype(subtype) => Modification::AddSubtype(subtype.clone()),
+        Wanted::SetColors(colors) => Modification::SetColors(colors.iter().copied().collect()),
         Wanted::AddKeyword(keyword) => Modification::AddKeyword(keyword.clone()),
-        Wanted::SetPT { .. } => return Err(ResolveError::Unsupported("Mod.SetPT")),
-        Wanted::SwitchPT => return Err(ResolveError::Unsupported("Mod.SwitchPT")),
-        Wanted::AddType(_) => return Err(ResolveError::Unsupported("Mod.AddType")),
-        Wanted::AddSubtype(_) => return Err(ResolveError::Unsupported("Mod.AddSubtype")),
-        Wanted::SetColors(_) => return Err(ResolveError::Unsupported("Mod.SetColors")),
-        Wanted::RemoveKeyword(_) => return Err(ResolveError::Unsupported("Mod.RemoveKeyword")),
-        Wanted::SetController(_) => return Err(ResolveError::Unsupported("Mod.SetController")),
-        Wanted::CantAttack => return Err(ResolveError::Unsupported("Mod.CantAttack")),
-        Wanted::CantBlock => return Err(ResolveError::Unsupported("Mod.CantBlock")),
+        Wanted::RemoveKeyword(keyword) => Modification::RemoveKeyword(keyword.clone()),
+        Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
+        Wanted::LoseAbilities => Modification::LoseAbilities,
+        // A reference that names several players names the first in turn order from the active player.
+        Wanted::SetController(who) => {
+            Modification::SetController(*scope.players(who)?.first().ok_or_else(|| {
+                ResolveError::Invalid("a change of control names no player".into())
+            })?)
+        }
+        Wanted::CantAttack => Modification::CantAttack,
+        Wanted::CantBlock => Modification::CantBlock,
     })
 }
 
@@ -187,7 +202,7 @@ mod tests {
                     toughness: 3
                 },
                 mtg_cards::modify::Duration::UntilEndOfTurn,
-                0,
+                1,
             )
             .from_source(source)
             .begun(ME, 4)]
@@ -214,19 +229,19 @@ mod tests {
                 (
                     7,
                     40,
-                    crate::effects::Layer::Ability,
+                    Some(crate::effects::Layer::Ability),
                     Selector::Objects(vec![wolf])
                 ),
                 (
                     8,
                     41,
-                    crate::effects::Layer::PtModify,
+                    Some(crate::effects::Layer::PtModify),
                     Selector::Objects(vec![wolf])
                 ),
                 (
                     9,
                     42,
-                    crate::effects::Layer::Ability,
+                    Some(crate::effects::Layer::Ability),
                     Selector::Objects(vec![wolf])
                 ),
             ]
@@ -296,27 +311,86 @@ mod tests {
         );
     }
 
+    fn granted() -> Arc<mtg_cards::ability::Ability> {
+        Arc::new(
+            serde_json::from_str(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#)
+                .unwrap(),
+        )
+    }
+
     #[rstest]
-    #[case(r#"{"SetPT":{"power":1,"toughness":1}}"#, "Mod.SetPT")]
-    #[case(r#""SwitchPT""#, "Mod.SwitchPT")]
-    #[case(r#"{"AddType":"Artifact"}"#, "Mod.AddType")]
-    #[case(r#"{"AddSubtype":"Elf"}"#, "Mod.AddSubtype")]
-    #[case(r#"{"SetColors":["Blue"]}"#, "Mod.SetColors")]
-    #[case(r#"{"RemoveKeyword":"Flying"}"#, "Mod.RemoveKeyword")]
-    #[case(r#"{"SetController":"You"}"#, "Mod.SetController")]
-    #[case(r#""CantAttack""#, "Mod.CantAttack")]
-    #[case(r#""CantBlock""#, "Mod.CantBlock")]
-    fn a_modification_the_engine_does_not_run_refuses_by_its_name(
+    #[case::set(r#"{"SetPT":{"power":1,"toughness":2}}"#, Modification::SetPowerToughness { power: 1, toughness: 2 })]
+    #[case::set_from_an_amount(r#"{"SetPT":{"power":{"Count":[{"Type":"Creature"}]},"toughness":0}}"#, Modification::SetPowerToughness { power: 4, toughness: 0 })]
+    #[case::switch(r#""SwitchPT""#, Modification::SwitchPowerToughness)]
+    #[case::a_type(
+        r#"{"AddType":"Artifact"}"#,
+        Modification::AddType(mtg_core::card::CardType::Artifact)
+    )]
+    #[case::a_type_removed(
+        r#"{"RemoveType":"Creature"}"#,
+        Modification::RemoveType(mtg_core::card::CardType::Creature)
+    )]
+    #[case::a_subtype(r#"{"AddSubtype":"Elf"}"#, Modification::AddSubtype(mtg_core::card::Subtype("Elf".into())))]
+    #[case::colours(r#"{"SetColors":["Blue","Red"]}"#, Modification::SetColors(mtg_core::color::ColorSet::EMPTY.with(mtg_core::color::Color::Blue).with(mtg_core::color::Color::Red)))]
+    #[case::no_colour(
+        r#"{"SetColors":[]}"#,
+        Modification::SetColors(mtg_core::color::ColorSet::EMPTY)
+    )]
+    #[case::a_keyword(
+        r#"{"AddKeyword":"Haste"}"#,
+        Modification::AddKeyword(mtg_cards::keyword::Keyword::Haste)
+    )]
+    #[case::a_keyword_removed(
+        r#"{"RemoveKeyword":"Flying"}"#,
+        Modification::RemoveKeyword(mtg_cards::keyword::Keyword::Flying)
+    )]
+    #[case::a_granted_ability(
+        r#"{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}"#,
+        Modification::GrantAbility(granted())
+    )]
+    #[case::every_ability_lost(r#""LoseAbilities""#, Modification::LoseAbilities)]
+    #[case::control_to_the_controller(
+        r#"{"SetController":"You"}"#,
+        Modification::SetController(ME)
+    )]
+    #[case::control_to_the_opponent(
+        r#"{"SetController":"Opponents"}"#,
+        Modification::SetController(PlayerId(1))
+    )]
+    #[case::control_to_the_owner(
+        r#"{"SetController":{"OwnerOf":{"Target":0}}}"#,
+        Modification::SetController(PlayerId(1))
+    )]
+    #[case::not_attacking(r#""CantAttack""#, Modification::CantAttack)]
+    #[case::not_blocking(r#""CantBlock""#, Modification::CantBlock)]
+    fn every_modification_of_the_card_becomes_the_one_the_engine_applies(
         #[case] modification: &str,
-        #[case] name: &'static str,
+        #[case] expected: Modification,
     ) {
         let game = game();
+        let bear = named(&game, "Bear");
         let asked = effect(&format!(
-            r#"{{"Continuous":{{"affected":"This","mods":[{modification}],"duration":"UntilEndOfTurn"}}}}"#
+            r#"{{"Continuous":{{"affected":{{"Target":0}},"mods":[{modification}],"duration":"UntilEndOfTurn"}}}}"#
         ));
+        let made = begun(run_with(&game, vec![Target::Object(bear)], &asked).unwrap());
+        assert_eq!(made.len(), 1);
+        assert_eq!(made[0].modification, expected);
         assert_eq!(
-            run_with(&game, Vec::new(), &asked),
-            Err(ResolveError::Unsupported(name))
+            made[0].layer,
+            expected.layer(),
+            "the layer follows the modification"
         );
+    }
+
+    #[test]
+    fn a_change_of_control_that_names_no_player_is_refused() {
+        let game = game();
+        let asked = effect(
+            r#"{"Continuous":{"affected":"This","mods":[{"SetController":{"Each":[{"Type":"Land"}]}}],"duration":"UntilEndOfTurn"}}"#,
+        );
+        assert!(matches!(
+            run_with(&game, Vec::new(), &asked),
+            Err(ResolveError::Invalid(_))
+        ));
     }
 }

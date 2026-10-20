@@ -1,0 +1,19 @@
+{
+  "oracle_id": "94b703c4-5584-4913-8365-7e9f2f535c2d",
+  "name": "Levitation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Levitation",
+      "oracle_fingerprint": "be69b7beb011e4fc07ca5edec543f337",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Flying" }]
+          }
+        }
+      ]
+    }
+  ]
+}

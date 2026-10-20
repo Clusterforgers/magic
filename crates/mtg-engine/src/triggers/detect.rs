@@ -12,8 +12,9 @@ use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{DelayedId, Triggered};
-use crate::abilities::Cause;
+use crate::abilities::{AbilitySource, Cause};
 use crate::ability_reader::abilities_of;
+use crate::characteristics::{controller_of, controller_of_object};
 use crate::choose::{Choices, Target};
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
@@ -166,7 +167,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
 /// What the batch has used up so far, so that two events of one batch cannot use an ability up twice.
 #[derive(Debug, Default)]
 struct Used {
-    limits: BTreeSet<(ObjectRef, usize)>,
+    limits: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     delayed: BTreeSet<DelayedId>,
 }
 
@@ -247,7 +248,7 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             },
         ) => {
             let reference = object(*moved)?;
-            let sacrificer = state.object(*moved)?.controller();
+            let sacrificer = controller_of(state, *moved)?;
             let subjects = vec![Target::Object(reference), Target::Player(sacrificer)];
             (scope.players(by).ok()?.contains(&sacrificer)
                 && scope.selects(what, reference).ok()?)
@@ -303,7 +304,7 @@ fn permanents(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>
         };
         // Most permanents have no triggered ability, and a snapshot costs the layers, so it is only taken for a trigger.
         let mut shot = None;
-        let (source, controller) = (object.reference(), object.controller());
+        let (source, controller) = (object.reference(), controller_of_object(state, object));
         if !state.is_alive(controller) {
             continue;
         }
@@ -330,8 +331,10 @@ fn permanents(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>
                 }
             }
             if *limit == Some(Limit::OncePerTurn)
-                && (state.limit_spent(source, address.ability)
-                    || !used.limits.insert((source, address.ability)))
+                && (state.limit_spent(source, address.source, address.ability)
+                    || !used
+                        .limits
+                        .insert((source, address.source, address.ability)))
             {
                 continue;
             }
@@ -344,6 +347,7 @@ fn permanents(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>
             found.push(Triggered {
                 source,
                 ability: address.ability,
+                origin: address.source,
                 controller,
                 cause,
                 snapshot: shot.clone(),
@@ -380,6 +384,7 @@ fn delayed(
         found.push(Triggered {
             source,
             ability: waiting.ability,
+            origin: AbilitySource::Printed,
             controller,
             cause,
             snapshot: live.unwrap_or_else(|| waiting.snapshot.clone()),
@@ -942,6 +947,7 @@ mod tests {
         );
         let pre = state(vec![vec![], vec![]], vec![vec![pinger, guarded], vec![]]);
         let put = Event::AbilityPutOnStack(Box::new(PutOnStack {
+            origin: crate::abilities::AbilitySource::default(),
             object: pre.next_object(),
             source: reference(&pre, "Pinger"),
             snapshot: snapshot(&pre, id(&pre, "Pinger")).unwrap(),
@@ -1014,7 +1020,7 @@ mod tests {
             &post,
             &[Event::AbilityTriggered(Box::new(found[0].clone()))],
         );
-        assert!(spent.limit_spent(found[0].source, found[0].ability));
+        assert!(spent.limit_spent(found[0].source, found[0].origin, found[0].ability));
         let next = fold(
             &spent,
             &[Event::TurnBegan {
@@ -1023,7 +1029,7 @@ mod tests {
             }],
         );
         assert!(
-            !next.limit_spent(found[0].source, found[0].ability),
+            !next.limit_spent(found[0].source, found[0].origin, found[0].ability),
             "the new turn gives it back"
         );
     }

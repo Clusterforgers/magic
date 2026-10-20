@@ -17,6 +17,7 @@ pub mod pump_cards;
 pub mod scenario;
 pub mod script_error;
 pub mod small_cards;
+pub mod static_cards;
 pub mod trigger_cards;
 pub mod windows;
 
@@ -36,4 +37,5 @@ pub use scenario::{
 };
 pub use script_error::ScriptError;
 pub use small_cards::small_fuzz_setup;
+pub use static_cards::statics_fuzz_setup;
 pub use windows::{SeatWindows, Windows};

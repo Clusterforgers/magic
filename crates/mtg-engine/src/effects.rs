@@ -1,8 +1,11 @@
 //! Continuous effects: what they change, which objects they touch and how long they last.
 
+use std::sync::Arc;
+
+use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 pub use mtg_cards::modify::Duration;
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, CardTypes, Subtype};
 use mtg_core::color::ColorSet;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -62,13 +65,18 @@ impl Selector {
         )
     }
 
-    /// Whether the effect touches `object` given its characteristics so far.
-    pub(crate) fn matches(&self, object: &GameObject, so_far: &Characteristics) -> bool {
+    /// Whether the effect touches `object` given its characteristics and its controller so far.
+    pub(crate) fn matches(
+        &self,
+        object: &GameObject,
+        so_far: &Characteristics,
+        controller: PlayerId,
+    ) -> bool {
         match self {
             Selector::Objects(named) => named.contains(&object.reference()),
             Selector::AllCreatures => so_far.types.contains(CardType::Creature),
             Selector::CreaturesControlledBy(player) => {
-                so_far.types.contains(CardType::Creature) && object.controller() == *player
+                so_far.types.contains(CardType::Creature) && controller == *player
             }
         }
     }
@@ -80,10 +88,23 @@ impl Selector {
 pub enum Modification {
     /// Adds a card type (layer 4).
     AddType(CardType),
+    /// Removes a card type (layer 4).
+    RemoveType(CardType),
+    /// Adds a subtype (layer 4).
+    AddSubtype(Subtype),
     /// Replaces the colors (layer 5).
     SetColors(ColorSet),
     /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
     AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
+    /// Removes a keyword ability (layer 6), printed or granted before it; `keywords_of` reads it.
+    RemoveKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
+    /// Gives an activated or a triggered ability (layer 6); `ability_reader` lists it under an address of its own.
+    GrantAbility(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Arc<Ability>),
+    /// Takes away every ability the object has so far (layer 6): the printed ones, the plain mana abilities and
+    /// those granted earlier. What is granted after it still counts.
+    LoseAbilities,
+    /// Changes the controller (layer 2).
+    SetController(PlayerId),
     /// Sets power and toughness (layer 7b).
     SetPowerToughness {
         /// New power.
@@ -98,36 +119,89 @@ pub enum Modification {
         /// Toughness delta.
         toughness: i32,
     },
+    /// Switches power and toughness (layer 7d).
+    SwitchPowerToughness,
+    /// The object can't attack: a restriction with no layer that `can_attack` reads.
+    CantAttack,
+    /// The object can't block: a restriction with no layer that `block_options` reads.
+    CantBlock,
 }
 
 impl Modification {
-    /// The layer this kind of modification belongs to.
-    pub const fn layer(&self) -> Layer {
-        match self {
-            Modification::AddType(_) => Layer::Type,
+    /// The layer this kind of modification belongs to, or `None` for a restriction, which changes no characteristic.
+    pub const fn layer(&self) -> Option<Layer> {
+        Some(match self {
+            Modification::SetController(_) => Layer::Control,
+            Modification::AddType(_)
+            | Modification::RemoveType(_)
+            | Modification::AddSubtype(_) => Layer::Type,
             Modification::SetColors(_) => Layer::Color,
-            Modification::AddKeyword(_) => Layer::Ability,
+            Modification::AddKeyword(_)
+            | Modification::RemoveKeyword(_)
+            | Modification::GrantAbility(_)
+            | Modification::LoseAbilities => Layer::Ability,
             Modification::SetPowerToughness { .. } => Layer::PtSet,
             Modification::ModifyPowerToughness { .. } => Layer::PtModify,
-        }
+            Modification::SwitchPowerToughness => Layer::PtSwitch,
+            Modification::CantAttack | Modification::CantBlock => return None,
+        })
     }
 
     pub(crate) fn apply(&self, chars: &mut Characteristics) {
-        match *self {
-            Modification::AddType(ty) => chars.types = chars.types.with(ty),
-            Modification::SetColors(colors) => chars.colors = colors,
-            // Keywords are not part of `Characteristics`; `keywords_of` joins them to the printed ones.
-            Modification::AddKeyword(_) => {}
+        match self {
+            Modification::AddType(ty) => chars.types = chars.types.with(*ty),
+            Modification::RemoveType(ty) => chars.types = without(chars.types, *ty),
+            Modification::AddSubtype(subtype) => {
+                if !chars.subtypes.contains(subtype) {
+                    chars.subtypes.push(subtype.clone());
+                }
+            }
+            Modification::SetColors(colors) => chars.colors = *colors,
+            Modification::LoseAbilities => chars.abilities.clear(),
             Modification::SetPowerToughness { power, toughness } => {
-                chars.power = Some(power);
-                chars.toughness = Some(toughness);
+                chars.power = Some(*power);
+                chars.toughness = Some(*toughness);
             }
             Modification::ModifyPowerToughness { power, toughness } => {
                 chars.power = chars.power.map(|p| p + power);
                 chars.toughness = chars.toughness.map(|t| t + toughness);
             }
+            Modification::SwitchPowerToughness => {
+                std::mem::swap(&mut chars.power, &mut chars.toughness);
+            }
+            // Abilities are not part of `Characteristics` but for the plain mana abilities: `keywords_of` and
+            // `ability_reader` read them off the order the effects applied in. The attack and block rules read the
+            // restrictions the same way.
+            // The controller is walked with the characteristics (`characteristics::walk`).
+            Modification::SetController(_)
+            | Modification::AddKeyword(_)
+            | Modification::RemoveKeyword(_)
+            | Modification::GrantAbility(_)
+            | Modification::CantAttack
+            | Modification::CantBlock => {}
         }
     }
+}
+
+/// The card types, so one can be taken out of a set of them.
+const CARD_TYPES: [CardType; 9] = [
+    CardType::Artifact,
+    CardType::Battle,
+    CardType::Creature,
+    CardType::Enchantment,
+    CardType::Instant,
+    CardType::Kindred,
+    CardType::Land,
+    CardType::Planeswalker,
+    CardType::Sorcery,
+];
+
+/// `types` without `ty`.
+fn without(types: CardTypes, ty: CardType) -> CardTypes {
+    CARD_TYPES
+        .into_iter()
+        .filter(|kept| *kept != ty && types.contains(*kept))
+        .collect()
 }
 
 /// A continuous effect from a resolved spell or ability (CR 611): characteristics are always derived from these.
@@ -139,8 +213,10 @@ impl Modification {
 pub struct ContinuousEffect {
     /// Unique id.
     pub id: EffectId,
-    /// Layer it applies in; always `modification.layer()`.
-    pub layer: Layer,
+    /// Layer it applies in; always `modification.layer()`, and none for a restriction.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub layer: Option<Layer>,
     /// Affected objects.
     pub selector: Selector,
     /// The change.
@@ -407,9 +483,9 @@ mod tests {
         let selector = Selector::objects(&game, [wolf.id, ObjectId(u64::MAX)]);
         assert_eq!(selector, Selector::Objects(vec![wolf]));
         let chars = crate::characteristics(&game, wolf.id).unwrap();
-        assert!(selector.matches(game.object(wolf.id).unwrap(), &chars));
+        assert!(selector.matches(game.object(wolf.id).unwrap(), &chars, ME));
         game.objects.get_mut(&wolf.id).unwrap().counter += 1;
-        assert!(!selector.matches(game.object(wolf.id).unwrap(), &chars));
+        assert!(!selector.matches(game.object(wolf.id).unwrap(), &chars, ME));
     }
 
     #[test]
@@ -447,7 +523,7 @@ mod tests {
         let hash = game.state_hash();
         let mut wrong_layer = made.clone();
         wrong_layer.id = EffectId(1);
-        wrong_layer.layer = Layer::Type;
+        wrong_layer.layer = Some(Layer::Type);
         let mut same_id = made.clone();
         same_id.timestamp = 5;
         let mut no_source = effect(&game, Duration::WhileSourceOnBattlefield, ME);

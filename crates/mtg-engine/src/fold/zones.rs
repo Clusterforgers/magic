@@ -26,6 +26,11 @@ pub(super) fn move_object(
     if !state.zones.exists(to) {
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
+    // A permanent that enters takes the next timestamp, which its static abilities carry (CR 613.7).
+    let timestamp = state.next_timestamp;
+    if to == Zone::Battlefield {
+        state.next_timestamp += 1;
+    }
     let object = state
         .objects
         .get_mut(&id)
@@ -57,6 +62,8 @@ pub(super) fn move_object(
             summoning_sick: true,
             counters: BTreeMap::new(),
             attached_to: None,
+            timestamp,
+            observed: None,
         });
     } else if to != Zone::Stack {
         object.controller = object.owner;

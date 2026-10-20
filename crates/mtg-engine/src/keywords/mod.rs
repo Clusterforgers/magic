@@ -50,9 +50,9 @@ use mtg_cards::keyword::Keyword;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::ability_reader::keyword_abilities;
-use crate::characteristics::derive;
-use crate::effects::Modification;
-use crate::object::{GameObject, ObjectKind, PermanentState};
+use crate::characteristics::{controller_of_object, derive_to};
+use crate::effects::{Layer, Modification};
+use crate::object::ObjectKind;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -237,12 +237,19 @@ pub fn keywords_of(state: &GameState, id: ObjectId) -> Vec<&Keyword> {
         return Vec::new();
     }
     let mut keywords = keyword_abilities(state, id);
-    if object.zone() == Zone::Battlefield && !state.effects().is_empty() {
-        for effect in derive(state, object).1 {
-            if let Modification::AddKeyword(keyword) = &effect.modification
-                && !keywords.contains(&keyword)
-            {
-                keywords.push(keyword);
+    if object.zone() == Zone::Battlefield
+        && (!state.effects().is_empty() || !state.statics().is_empty())
+    {
+        for effect in derive_to(state, object, Layer::Ability).applied {
+            match effect.modification {
+                Modification::AddKeyword(keyword) if !keywords.contains(&keyword) => {
+                    keywords.push(keyword);
+                }
+                Modification::RemoveKeyword(keyword) => keywords.retain(|held| *held != keyword),
+                // Everything the object has so far goes, the keywords it printed among them; what is granted
+                // after it still counts.
+                Modification::LoseAbilities => keywords.clear(),
+                _ => {}
             }
         }
     }
@@ -274,10 +281,12 @@ pub(crate) fn forbids_attacking(state: &GameState, id: ObjectId) -> bool {
 ///
 /// It has not been under its controller's control since their turn began and no keyword (haste) excuses it.
 pub fn summoning_sick(state: &GameState, id: ObjectId) -> bool {
-    state
-        .object(id)
-        .and_then(GameObject::permanent)
-        .is_some_and(PermanentState::summoning_sick)
+    let Some(object) = state.object(id) else {
+        return false;
+    };
+    object
+        .permanent()
+        .is_some_and(|permanent| permanent.sick_for(controller_of_object(state, object)))
         && !keywords_of(state, id)
             .into_iter()
             .any(|keyword| rules(keyword).ignores_summoning_sickness(keyword))

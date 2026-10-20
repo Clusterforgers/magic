@@ -16,6 +16,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
+pub(crate) use prim::lower;
 pub(crate) use value::zone_kind;
 pub use value::{Bindings, ResolveError, Scope};
 
@@ -375,6 +376,7 @@ mod tests {
         let ability = state.next_object();
         vec![
             Event::AbilityPutOnStack(Box::new(PutOnStack {
+                origin: crate::abilities::AbilitySource::default(),
                 object: ability,
                 source: object.reference(),
                 snapshot: snapshot(state, source).unwrap(),

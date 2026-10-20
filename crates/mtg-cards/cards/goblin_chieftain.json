@@ -1,0 +1,27 @@
+{
+  "oracle_id": "368b4052-174e-4458-a6e6-eaf8093aa0fe",
+  "name": "Goblin Chieftain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Chieftain",
+      "oracle_fingerprint": "08c85feda1ad20f5e4a9cd6f9c3fc117",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Goblin" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Haste" }]
+          }
+        }
+      ]
+    }
+  ]
+}

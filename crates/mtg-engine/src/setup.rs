@@ -14,6 +14,7 @@ use crate::format::FormatRules;
 use crate::object::{GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
 use crate::state::{GameState, Stage};
+use crate::statics::StaticsCache;
 use crate::turn::{Step, TurnState};
 use crate::zones::{Zone, Zones};
 
@@ -182,7 +183,11 @@ impl GameSetup {
 }
 
 /// The permanent state a starting permanent begins with; `host` is the object it starts attached to.
-fn preset_state(preset: &PresetPermanent, host: Option<ObjectId>) -> PermanentState {
+fn preset_state(
+    preset: &PresetPermanent,
+    host: Option<ObjectId>,
+    owner: PlayerId,
+) -> PermanentState {
     let mut counters: BTreeMap<CounterKind, u32> = BTreeMap::new();
     for (kind, count) in &preset.counters {
         if *count > 0 {
@@ -197,6 +202,9 @@ fn preset_state(preset: &PresetPermanent, host: Option<ObjectId>) -> PermanentSt
         counters,
         // Every object of a fresh game is on its first incarnation (counter 0).
         attached_to: host.map(|id| ObjectRef { id, counter: 0 }),
+        // The permanents of a starting position share one time; a game begins with them in play.
+        timestamp: 0,
+        observed: (!preset.summoning_sick).then_some(owner),
     }
 }
 
@@ -249,7 +257,8 @@ impl GameState {
         for (id, preset) in presets {
             if let Some(object) = objects.get_mut(&id) {
                 let host = preset.attached_to.and_then(|place| placed.get(&place));
-                object.permanent = Some(preset_state(&preset, host.copied()));
+                let owner = object.owner();
+                object.permanent = Some(preset_state(&preset, host.copied(), owner));
             }
         }
         let (stage, turn, first_player) = match setup.start {
@@ -280,7 +289,8 @@ impl GameState {
             combat: CombatState::default(),
             effects: Vec::new(),
             next_effect: 0,
-            next_timestamp: 0,
+            // The permanents of a starting position have timestamp 0; what enters or begins later is after them.
+            next_timestamp: 1,
             next_object: next_id,
             resolving: None,
             pending_triggers: Vec::new(),
@@ -289,13 +299,26 @@ impl GameState {
             next_delayed: 0,
             limits_spent: BTreeSet::new(),
             triggers_possible: false,
+            statics_possible: false,
+            statics: StaticsCache::default(),
             result: None,
         };
-        let possible = game
-            .objects()
-            .any(|object| crate::triggers::can_trigger(&game, object.id()));
-        game.triggers_possible = possible;
+        game.note_what_cards_can_do();
         Ok(game)
+    }
+
+    /// Whether any card of the game can trigger something or has a static ability, which the state then watches for.
+    fn note_what_cards_can_do(&mut self) {
+        let triggers = self
+            .objects()
+            .any(|object| crate::triggers::can_trigger(self, object.id()));
+        let statics = self.objects().any(|object| {
+            crate::ability_reader::static_abilities(object)
+                .next()
+                .is_some()
+        });
+        self.triggers_possible = triggers;
+        self.statics_possible = statics;
     }
 }
 

@@ -10,11 +10,13 @@ mod queue;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
+use mtg_cards::modify::Modification;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
-use crate::abilities::Cause;
-use crate::ability_reader::abilities_of;
+use crate::abilities::{AbilitySource, Cause};
+use crate::ability_reader::{abilities_of, definition_triggers};
+use crate::events::Event;
 use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
@@ -33,8 +35,13 @@ pub(crate) use queue::{fold_ordered, fold_removed, fold_triggered, next as sweep
 pub struct Triggered {
     /// The object with the ability, as it was.
     pub source: ObjectRef,
-    /// Its index among the rules of the source's card; for a delayed trigger, the ability that set it up.
+    /// Its index among the rules of the source's card; for a delayed trigger, the ability that set it up; 0 for a
+    /// granted ability.
     pub ability: usize,
+    /// Where the ability comes from: the card, or an effect that granted it.
+    #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
+    pub origin: AbilitySource,
     /// Who controls it: whoever controlled the source as the ability triggered (CR 603.3a).
     pub controller: PlayerId,
     /// What it triggered on.
@@ -47,23 +54,56 @@ pub struct Triggered {
     pub delayed: Option<DelayedId>,
 }
 
-/// Whether effects set up a delayed trigger anywhere in `effects`.
-fn sets_up_delayed(effects: &[Effect]) -> bool {
+/// Whether anything in `effects` can make something trigger: it sets up a delayed trigger or gives an ability that
+/// triggers.
+fn effects_trigger(effects: &[Effect]) -> bool {
     effects.iter().any(|effect| match effect {
         Effect::DelayedTrigger { .. } => true,
+        Effect::Continuous { mods, .. } => grants_trigger(mods),
         Effect::If {
             then, otherwise, ..
-        } => sets_up_delayed(then) || sets_up_delayed(otherwise),
-        Effect::May { effects, .. } => sets_up_delayed(effects),
-        Effect::Pay { paid, unpaid, .. } => sets_up_delayed(paid) || sets_up_delayed(unpaid),
-        Effect::Modal { modes, .. } => modes.iter().any(|mode| sets_up_delayed(&mode.effects)),
+        } => effects_trigger(then) || effects_trigger(otherwise),
+        Effect::May { effects, .. } => effects_trigger(effects),
+        Effect::Pay { paid, unpaid, .. } => effects_trigger(paid) || effects_trigger(unpaid),
+        Effect::Modal { modes, .. } => modes.iter().any(|mode| effects_trigger(&mode.effects)),
         _ => false,
     })
 }
 
-/// Whether `id` can ever trigger something: it has a triggered ability or an effect that sets one up.
-pub(crate) fn can_trigger(state: &GameState, id: ObjectId) -> bool {
-    abilities_of(state, id).iter().any(|(_, rules)| {
-        matches!(**rules, Ability::Triggered { .. }) || sets_up_delayed(rules.effects())
+/// Whether one of the modifications gives an ability that can make something trigger.
+fn grants_trigger(mods: &[Modification]) -> bool {
+    mods.iter().any(|modification| {
+        matches!(modification, Modification::GrantAbility(granted) if triggers_something(granted))
     })
+}
+
+/// Whether an ability can make something trigger: it is a triggered ability, or sets up a delayed one, or gives an
+/// ability that triggers.
+pub(crate) fn triggers_something(ability: &Ability) -> bool {
+    match ability {
+        Ability::Triggered { .. } => true,
+        Ability::Static { mods, .. } => grants_trigger(mods),
+        other => effects_trigger(other.effects()),
+    }
+}
+
+/// Whether the events bring in something that can trigger where nothing could before: a token with a triggered
+/// ability, an effect that gives one. The state notes it as it folds them, and this tells `commit` to look for what
+/// the batch itself triggers.
+pub(crate) fn introduces(events: &[Event]) -> bool {
+    events.iter().any(|event| match event {
+        Event::TokenCreated(created) => definition_triggers(&created.definition),
+        Event::EffectCreated { effect } => matches!(
+            &effect.modification,
+            crate::effects::Modification::GrantAbility(granted) if triggers_something(granted)
+        ),
+        _ => false,
+    })
+}
+
+/// Whether `id` can ever trigger something: it has a triggered ability or an effect that sets one up or gives one.
+pub(crate) fn can_trigger(state: &GameState, id: ObjectId) -> bool {
+    abilities_of(state, id)
+        .iter()
+        .any(|(_, rules)| triggers_something(rules))
 }

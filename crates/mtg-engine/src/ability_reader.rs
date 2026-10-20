@@ -7,13 +7,18 @@
 
 use std::sync::Arc;
 
+use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_core::ids::ObjectId;
 
-use crate::abilities::{AbilityRef, AbilitySource};
+use crate::abilities::{AbilityRef, AbilitySource, Grant};
+use crate::characteristics::derive_to;
+use crate::effects::{Layer, Modification};
 use crate::object::{GameObject, ObjectKind};
 use crate::state::GameState;
+use crate::triggers::triggers_something;
+use crate::zones::Zone;
 
 /// The object whose card the abilities of `id` are read from: the object itself, or the token it was before it
 /// ceased to exist, since an ability it put on the stack still needs the rules it was printed with (CR 113.7a). An
@@ -34,30 +39,108 @@ fn printed(object: &GameObject) -> impl Iterator<Item = (AbilityRef, &Arc<Abilit
         .map(|(index, rules)| (AbilityRef::printed(object.id(), index), rules))
 }
 
-/// The abilities `id` has, each with the address that names it, in the order of their indices.
+/// The static abilities printed on the card of `object`, each with its index among the card's rules: what
+/// `statics` gathers the effects of.
+pub(crate) fn static_abilities(
+    object: &GameObject,
+) -> impl Iterator<Item = (usize, &Arc<Ability>)> {
+    printed(object)
+        .filter(|(_, rules)| matches!(***rules, Ability::Static { .. }))
+        .map(|(address, rules)| (address.ability, rules))
+}
+
+/// Whether anything a card with this definition does can make something trigger (`GameState::watches`): it prints a
+/// triggered ability, sets up a delayed one or grants one.
+pub(crate) fn definition_triggers(definition: &CardDefinition) -> bool {
+    definition
+        .rules
+        .iter()
+        .any(|rules| triggers_something(rules))
+}
+
+/// The abilities `id` has, each with the address that names it: those printed on its card in the order of its rules,
+/// less the ones other effects took away, then the ones they gave it in the order the layers applied them.
 ///
-/// These are the abilities printed on its card, shared with the card (`Arc`). Where the object is does not matter
-/// here: whether an ability works from a zone is for the caller to ask. An object that is not in the game, and an
+/// Printed abilities are shared with the card (`Arc`) and a granted one with the effect that grants it. An effect
+/// that takes every ability away (`LoseAbilities`) empties the list as it stands where it applies, and a keyword taken
+/// away is no longer listed. Only a permanent has effects: for any other object, wherever it is, these are the printed
+/// abilities, and whether one works from a zone is for the caller to ask. An object that is not in the game, and an
 /// ability on the stack, have none.
 pub fn abilities_of(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Arc<Ability>)> {
-    holder(state, id).map_or_else(Vec::new, |object| {
-        printed(object)
-            .map(|(address, rules)| (address, Arc::clone(rules)))
-            .collect()
-    })
+    let Some(object) = holder(state, id) else {
+        return Vec::new();
+    };
+    let mut listed: Vec<(AbilityRef, Arc<Ability>)> = printed(object)
+        .map(|(address, rules)| (address, Arc::clone(rules)))
+        .collect();
+    if object.zone() != Zone::Battlefield
+        || (state.effects().is_empty() && state.statics().is_empty())
+    {
+        return listed;
+    }
+    for applied in derive_to(state, object, Layer::Ability).applied {
+        match applied.modification {
+            Modification::LoseAbilities => listed.clear(),
+            Modification::RemoveKeyword(keyword) => listed.retain(
+                |(_, rules)| !matches!(&**rules, Ability::Keyword(held) if held == keyword),
+            ),
+            Modification::GrantAbility(granted) => {
+                listed.push((AbilityRef::granted(id, applied.origin), Arc::clone(granted)));
+            }
+            _ => {}
+        }
+    }
+    listed
 }
 
 /// The ability `address` names, or `None` when it names nothing in the game: the object is not there (an ability that
 /// resolved, an id that was never used) or has no such ability.
+///
+/// A name is read from the data: a printed ability from the card, a granted one from the effect or the static ability
+/// that grants it, which stays readable after the effect has ended or the object with the static ability has left, so an
+/// ability that is on its way (a cost sacrificed its source) is still the one that was named. Whether the object has
+/// the ability now is for [`abilities_of`] to say.
 pub fn ability(state: &GameState, address: AbilityRef) -> Option<Arc<Ability>> {
     let object = holder(state, address.object)?;
     match address.source {
         AbilitySource::Printed => object.def.rules.get(address.ability).cloned(),
+        AbilitySource::Granted(_) if address.ability != 0 => None,
+        AbilitySource::Granted(Grant::Effect(id)) => state
+            .effects()
+            .iter()
+            .find(|effect| effect.id == id)
+            .and_then(|effect| granted_by(&effect.modification)),
+        AbilitySource::Granted(Grant::Static {
+            source,
+            rule,
+            index,
+        }) => {
+            let giver = holder(state, source)?;
+            match giver.def.rules.get(rule).map(|rules| &**rules) {
+                Some(Ability::Static { mods, .. }) => {
+                    mods.get(index).and_then(|wanted| match wanted {
+                        mtg_cards::modify::Modification::GrantAbility(granted) => {
+                            Some(Arc::clone(granted))
+                        }
+                        _ => None,
+                    })
+                }
+                _ => None,
+            }
+        }
+    }
+}
+
+/// The ability a modification gives, if it gives one.
+fn granted_by(modification: &Modification) -> Option<Arc<Ability>> {
+    match modification {
+        Modification::GrantAbility(granted) => Some(Arc::clone(granted)),
+        _ => None,
     }
 }
 
 /// The keyword abilities of `id` in the order of their indices, borrowed from the state: the keywords `keywords_of`
-/// starts from, before the ones continuous effects grant.
+/// starts from, before the ones continuous effects grant and take away.
 pub(crate) fn keyword_abilities(state: &GameState, id: ObjectId) -> Vec<&Keyword> {
     holder(state, id).map_or_else(Vec::new, |object| {
         printed(object)
@@ -217,6 +300,7 @@ mod tests {
     fn put_on_stack(game: &mut GameState, source: ObjectId, ability: usize) -> ObjectId {
         let object = game.next_object();
         let put = PutOnStack {
+            origin: crate::abilities::AbilitySource::default(),
             object,
             source: game.object(source).unwrap().reference(),
             snapshot: snapshot(game, source).unwrap(),

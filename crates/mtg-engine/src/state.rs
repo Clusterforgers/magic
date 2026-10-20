@@ -7,6 +7,7 @@ use std::sync::Arc;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
+use crate::abilities::AbilitySource;
 use crate::combat::CombatState;
 use crate::effects::ContinuousEffect;
 use crate::format::FormatRules;
@@ -15,6 +16,7 @@ use crate::object::{GameObject, ObjectRef};
 use crate::player::Player;
 use crate::priority::PriorityState;
 use crate::resolve::Resolving;
+use crate::statics::StaticsCache;
 use crate::triggers::{Delayed, PendingTrigger};
 use crate::turn::TurnState;
 use crate::zones::{Zone, Zones};
@@ -68,9 +70,13 @@ pub struct GameState {
     pub(crate) trigger_round: u32,
     pub(crate) delayed: Vec<Delayed>,
     pub(crate) next_delayed: u64,
-    pub(crate) limits_spent: BTreeSet<(ObjectRef, usize)>,
+    pub(crate) limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// Whether any card of the game has a triggered ability or sets up a delayed one; derived from the setup.
     pub(crate) triggers_possible: bool,
+    /// Whether any card of the game has a static ability; derived from the setup and the tokens made.
+    pub(crate) statics_possible: bool,
+    /// The effects of the static abilities that work, built when first asked for and dropped at the next event.
+    pub(crate) statics: StaticsCache,
     pub(crate) result: Option<GameResult>,
 }
 
@@ -216,8 +222,13 @@ impl GameState {
     }
 
     /// Whether the once-each-turn ability `ability` of `source` has been used this turn.
-    pub(crate) fn limit_spent(&self, source: ObjectRef, ability: usize) -> bool {
-        self.limits_spent.contains(&(source, ability))
+    pub(crate) fn limit_spent(
+        &self,
+        source: ObjectRef,
+        origin: AbilitySource,
+        ability: usize,
+    ) -> bool {
+        self.limits_spent.contains(&(source, origin, ability))
     }
 
     /// The id the next object created during the game gets (abilities on the stack, and tokens later).

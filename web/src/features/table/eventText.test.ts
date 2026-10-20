@@ -483,6 +483,24 @@ describe('events with more than one shape', () => {
     ],
     [effect(objects(2), { AddKeyword: { Ward: '{2}' } }, 'Forever'), 'Hill Giant gains ward'],
     [
+      effect(objects(2), { RemoveKeyword: 'Flying' }, 'UntilEndOfTurn'),
+      'Hill Giant loses flying until end of turn',
+    ],
+    [effect('AllCreatures', 'LoseAbilities', 'Forever'), 'All creatures lose all abilities'],
+    [
+      effect(objects(2), 'SwitchPowerToughness', 'UntilEndOfTurn'),
+      'Hill Giant has power and toughness switched until end of turn',
+    ],
+    [effect(objects(2), 'CantBlock', 'UntilEndOfTurn'), "Hill Giant can't block until end of turn"],
+    [
+      effect(objects(2), { AddSubtype: 'Elf' }, 'UntilEndOfTurn'),
+      'Hill Giant becomes Elf too until end of turn',
+    ],
+    [
+      effect(objects(2), { SetController: 1 }, 'UntilEndOfTurn'),
+      'Hill Giant changes controller until end of turn',
+    ],
+    [
       effect(objects(1, 2), { ModifyPowerToughness: { power: 3, toughness: 3 } }, 'UntilYourNextTurn'),
       "Grizzly Bears and Hill Giant get +3/+3 until their controller's next turn",
     ],
