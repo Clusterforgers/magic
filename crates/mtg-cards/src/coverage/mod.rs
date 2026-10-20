@@ -270,7 +270,7 @@ impl Report {
         counts
     }
 
-    /// The `n` blockers that alone hold back the most cards, then those that hold back the most in all.
+    /// The `n` blockers that alone hold back the most cards (ties: the most in all, then by name).
     pub fn top_alone(&self, n: usize) -> Vec<BlockerCount> {
         let mut counts: Vec<BlockerCount> = self
             .blocker_counts()
@@ -283,7 +283,7 @@ impl Report {
         counts
     }
 
-    /// The `n` blockers that hold back the most cards in all.
+    /// The `n` blockers that hold back the most cards in all (ties: the most alone, then by name).
     pub fn top_all(&self, n: usize) -> Vec<BlockerCount> {
         let mut counts = self.blocker_counts();
         counts.truncate(n);

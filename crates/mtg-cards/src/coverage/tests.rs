@@ -1,8 +1,9 @@
 //! Goal: every card lands in the state its rules and the engine's capabilities earn, with the blockers behind it; hand-written rules win over the compiler's; and the report's counts, shares and rankings follow the cards, their copies and their blockers, ties broken the same way every time.
 use super::*;
-use crate::card::Face;
+use crate::card::{Face, Span};
 use crate::compile::compile;
-use crate::support::PrintedFace;
+use crate::keyword::Keyword;
+use crate::support::{PrintedFace, oracle_fingerprint};
 use rstest::rstest;
 
 fn id(n: u32) -> String {
@@ -204,6 +205,42 @@ fn hand_written_rules_win_over_the_compilers() {
         (Support::Manual, RulesSource::HandWritten)
     );
     assert_eq!(labels(result), ["spell: Draw a card."]);
+}
+
+#[test]
+fn a_hand_written_clause_is_named_by_the_shape_of_the_text_it_covers_or_by_its_reason() {
+    let text = "Flying\nWhen Test Card enters, tap target creature.";
+    let card = printed(6, "Test Card", "Creature \u{2014} Angel", text);
+    let by_shape = analyze_with(
+        &[in_decks(card.clone(), &[("deck", 1)])],
+        &library_of(&filed(6, "Test Card", ImplStatus::Partial, Some(&card))),
+        &small_caps(),
+    );
+    assert_eq!(by_shape.cards[0].support, Support::Partial);
+    assert_eq!(
+        labels(&by_shape.cards[0]),
+        ["triggered: When ~ enters, tap target creature."]
+    );
+
+    // A clause over text the compiler lists no clause for (a reminder) has only its reason.
+    let reminder = "(Remember this.)";
+    let odd = printed(7, "Test Odd", "Creature \u{2014} Angel", reminder);
+    let mut file = filed(7, "Test Odd", ImplStatus::Partial, None);
+    file.faces[0].oracle_fingerprint = oracle_fingerprint(reminder);
+    file.faces[0].abilities = vec![
+        Ability::Keyword(Keyword::Flying),
+        Ability::Manual {
+            reason: "the table decides".into(),
+            span: Span { start: 1, end: 9 },
+        },
+    ];
+    let by_reason = analyze_with(
+        &[in_decks(odd, &[("deck", 1)])],
+        &library_of(&file),
+        &small_caps(),
+    );
+    assert_eq!(by_reason.cards[0].support, Support::Partial);
+    assert_eq!(labels(&by_reason.cards[0]), ["manual: the table decides"]);
 }
 
 #[test]
