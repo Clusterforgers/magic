@@ -12,7 +12,7 @@ use mtg_core::color::{Color, ColorSet};
 use mtg_core::mana::{ManaCost, ManaType, ParseManaCostError};
 
 use crate::ability::{Ability, Timing};
-use crate::card::Card;
+use crate::card::{Card, TokenSpec};
 use crate::cost::CostItem;
 use crate::definition::{AbilityDef, CardDefinition, ManaAbility};
 use crate::effect::{Effect, Produce};
@@ -115,6 +115,103 @@ pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
         return None;
     };
     (targets.is_empty() && times.is_one()).then_some(*one)
+}
+
+/// What a mana ability the engine runs without the stack adds.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ManaProduced {
+    /// One mana of this type.
+    Fixed(ManaType),
+    /// One mana of a colour its controller picks when the ability is activated.
+    AnyColor,
+}
+
+/// A mana ability of the shape the engine activates at priority: no targets, no limit, instant speed from the
+/// battlefield, a cost of `{T}` and/or sacrificing the source, and one mana added once to its controller's pool.
+///
+/// The plain `{T}: Add {X}` has this shape and is carried as an [`AbilityDef`]; the others (Treasure, Lotus Petal)
+/// stay in the rules of the card.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct SimpleManaAbility {
+    /// The mana it adds.
+    pub produces: ManaProduced,
+    /// The source is tapped.
+    pub tap: bool,
+    /// The source is sacrificed.
+    pub sacrifice: bool,
+}
+
+/// The shape of a mana ability the engine activates at priority, if `ability` has it.
+pub fn simple_mana_ability(ability: &Ability) -> Option<SimpleManaAbility> {
+    let Ability::Activated {
+        cost,
+        timing: Timing::Instant,
+        limit: None,
+        from: ZoneKind::Battlefield,
+        targets,
+        effects,
+    } = ability
+    else {
+        return None;
+    };
+    let (mut tap, mut sacrifice) = (false, false);
+    for item in &cost.0 {
+        let seen = match item {
+            CostItem::Tap => &mut tap,
+            CostItem::SacrificeSelf => &mut sacrifice,
+            _ => return None,
+        };
+        if std::mem::replace(seen, true) {
+            return None;
+        }
+    }
+    let [
+        Effect::AddMana {
+            who: Ref::You,
+            mana,
+            times,
+        },
+    ] = effects.as_slice()
+    else {
+        return None;
+    };
+    let produces = match mana {
+        Produce::Fixed(list) => match list.as_slice() {
+            [one] => ManaProduced::Fixed(*one),
+            _ => return None,
+        },
+        Produce::AnyColor(1) => ManaProduced::AnyColor,
+        Produce::AnyColor(_) => return None,
+    };
+    (targets.is_empty() && times.is_one() && (tap || sacrifice)).then_some(SimpleManaAbility {
+        produces,
+        tap,
+        sacrifice,
+    })
+}
+
+/// The definition of a token from the description of what creates it.
+///
+/// Its colours are a colour indicator (a token has no mana cost), and it keeps the abilities `caps` says the engine
+/// runs, as a card does ([`assemble()`]).
+pub fn token_definition(spec: &TokenSpec, caps: &Caps) -> CardDefinition {
+    let mut definition = CardDefinition::new(spec.name.clone());
+    if !spec.colors.is_empty() {
+        definition.color_indicator = Some(spec.colors.iter().copied().collect());
+    }
+    definition.supertypes = spec.supertypes.iter().copied().collect();
+    definition.types = spec.types.iter().copied().collect();
+    definition.subtypes.clone_from(&spec.subtypes);
+    definition.power = spec.power;
+    definition.toughness = spec.toughness;
+    let runs = |ability: &&Ability| caps.missing(&used_primitives(ability)).is_empty();
+    for lowered in spec.abilities.iter().filter(runs).filter_map(lower) {
+        match lowered {
+            Lowered::Mana(mana) => definition.abilities.push(AbilityDef::Mana(mana)),
+            Lowered::Rules(rules) => definition.rules.push(rules),
+        }
+    }
+    definition
 }
 
 /// The form an ability takes in a card definition.
@@ -610,6 +707,138 @@ mod tests {
         if expected.is_some() {
             assert_eq!(used.len(), 1, "{used:?}");
         }
+    }
+
+    #[rstest]
+    #[case::treasure(
+        r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some(SimpleManaAbility { produces: ManaProduced::AnyColor, tap: true, sacrifice: true })
+    )]
+    #[case::lotus_petal_without_the_tap(
+        r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
+        Some(SimpleManaAbility { produces: ManaProduced::Fixed(ManaType::Red), tap: false, sacrifice: true })
+    )]
+    #[case::the_plain_ability_has_the_shape_too(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        Some(SimpleManaAbility { produces: ManaProduced::Fixed(ManaType::Green), tap: true, sacrifice: false })
+    )]
+    #[case::costs_nothing(
+        r#"{"Activated":{"cost":[],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        None
+    )]
+    #[case::tap_twice(
+        r#"{"Activated":{"cost":["Tap","Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        None
+    )]
+    #[case::three_of_one_color(
+        r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":3}}}]}}"#,
+        None
+    )]
+    #[case::two_fixed_mana(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#,
+        None
+    )]
+    #[case::counted_times(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1},"times":2}}]}}"#,
+        None
+    )]
+    #[case::sacrifices_another(
+        r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        None
+    )]
+    #[case::costs_mana(
+        r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        None
+    )]
+    #[case::draws(
+        r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"Draw":{}}]}}"#,
+        None
+    )]
+    fn a_mana_ability_the_engine_activates_at_priority_has_one_mana_and_costs_of_tap_and_sacrifice(
+        #[case] json: &str,
+        #[case] expected: Option<SimpleManaAbility>,
+    ) {
+        assert_eq!(simple_mana_ability(&ability(json)), expected);
+    }
+
+    #[rstest]
+    #[case::treasure(
+        r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        false
+    )]
+    #[case::sol_ring(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#,
+        true
+    )]
+    #[case::gaeas_cradle(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"times":{"Count":[{"Type":"Creature"}]}}}]}}"#,
+        true
+    )]
+    #[case::black_lotus(
+        r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":3}}}]}}"#,
+        true
+    )]
+    #[case::not_a_mana_ability(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#,
+        false
+    )]
+    #[case::a_spell_that_adds_mana(
+        r#"{"Spell":{"effects":[{"AddMana":{"mana":{"Fixed":["Black","Black","Black"]}}}]}}"#,
+        false
+    )]
+    fn only_a_mana_ability_of_a_shape_the_engine_does_not_activate_is_named_complex(
+        #[case] json: &str,
+        #[case] complex: bool,
+    ) {
+        let used = used_primitives(&ability(json));
+        assert_eq!(
+            used.contains("Ability.ManaAbility.Complex"),
+            complex,
+            "{used:?}"
+        );
+    }
+
+    #[test]
+    fn a_token_has_its_characteristics_and_the_abilities_the_engine_runs() {
+        let spec: TokenSpec = serde_json::from_str(
+            r#"{"name":"Soldier","colors":["White"],"types":["Creature"],"subtypes":["Soldier"],
+                "power":1,"toughness":1,"abilities":[{"Keyword":"Flying"},
+                {"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}},
+                {"Activated":{"cost":"{2}","effects":[{"Draw":{}}]}}]}"#,
+        )
+        .unwrap();
+        let runs = Caps::from_names([PLAIN_MANA_ABILITY, "Keyword.Flying"]);
+        let made = token_definition(&spec, &runs);
+        assert_eq!(made.name, "Soldier");
+        assert!(made.is_type(CardType::Creature));
+        assert_eq!(made.subtypes, [Subtype("Soldier".into())]);
+        assert_eq!((made.power, made.toughness), (Some(1), Some(1)));
+        assert_eq!(made.mana_cost, None);
+        assert_eq!(made.colors(), ColorSet::EMPTY.with(Color::White));
+        assert_eq!(
+            made.abilities,
+            [AbilityDef::Mana(ManaAbility {
+                produces: ManaType::Green
+            })]
+        );
+        assert_eq!(
+            made.rules.len(),
+            1,
+            "the flying; the {{2}} ability is left out"
+        );
+        let none = token_definition(&spec, &Caps::none());
+        assert!(none.abilities.is_empty() && none.rules.is_empty());
+    }
+
+    #[test]
+    fn a_colorless_token_has_no_color_indicator() {
+        let spec: TokenSpec = serde_json::from_str(
+            r#"{"name":"Treasure","types":["Artifact"],"subtypes":["Treasure"]}"#,
+        )
+        .unwrap();
+        let made = token_definition(&spec, &Caps::none());
+        assert_eq!(made.color_indicator, None);
+        assert!(made.colors().is_empty());
     }
 
     #[test]

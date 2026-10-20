@@ -176,6 +176,8 @@ mod tests {
                 "Effect.DealDamage",
                 "Effect.GainLife",
                 "Effect.LoseLife",
+                "Effect.AddMana",
+                "Effect.CreateToken",
                 "Effect.DelayedTrigger",
                 "Effect.May",
                 "Effect.Modal"

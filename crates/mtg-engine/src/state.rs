@@ -53,6 +53,8 @@ pub struct GameState {
     pub(crate) first_player: PlayerId,
     pub(crate) players: Vec<Player>,
     pub(crate) objects: BTreeMap<ObjectId, GameObject>,
+    /// Tokens that left the battlefield and so cease to exist, kept for the abilities of theirs still to come.
+    pub(crate) ceased: BTreeMap<ObjectId, GameObject>,
     pub(crate) zones: Zones,
     pub(crate) turn: TurnState,
     pub(crate) priority: Option<PriorityState>,
@@ -116,6 +118,17 @@ impl GameState {
     /// Every object in the game, in id order.
     pub fn objects(&self) -> impl Iterator<Item = &GameObject> {
         self.objects.values()
+    }
+
+    /// Whether `id` was a token that has left the battlefield and so ceased to exist (CR 111.7).
+    pub fn has_ceased(&self, id: ObjectId) -> bool {
+        self.ceased.contains_key(&id)
+    }
+
+    /// The object an ability comes from: `id` in the game, or the token it was before it ceased to exist. An ability
+    /// outlives its source (CR 113.7a), and it needs the card the source was printed on.
+    pub(crate) fn source_object(&self, id: ObjectId) -> Option<&GameObject> {
+        self.objects.get(&id).or_else(|| self.ceased.get(&id))
     }
 
     /// The permanent `id` is attached to (it is an Aura or Equipment), if that host is still the very object it was
@@ -264,6 +277,7 @@ impl Hash for GameState {
         self.first_player.hash(state);
         self.players.hash(state);
         self.objects.hash(state);
+        self.ceased.hash(state);
         self.zones.hash(state);
         self.turn.hash(state);
         self.priority.hash(state);

@@ -27,6 +27,7 @@ const RUNS: &[&str] = &[
     "Trigger.BecomesTarget",
     "Trigger.AnyOf",
     "Cost.Tap",
+    "Cost.SacrificeSelf",
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Scry",
@@ -41,6 +42,8 @@ const RUNS: &[&str] = &[
     "Effect.DealDamage",
     "Effect.GainLife",
     "Effect.LoseLife",
+    "Effect.AddMana",
+    "Effect.CreateToken",
     "Effect.DelayedTrigger",
     "Effect.May",
     "Effect.Choose",
@@ -134,6 +137,12 @@ mod tests {
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]
+    #[case::adding_mana("Effect.AddMana", true)]
+    #[case::creating_tokens("Effect.CreateToken", true)]
+    #[case::creating_copies("Effect.CreateToken.Copy", false)]
+    #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
+    #[case::sacrificing_a_permanent("Cost.Sacrifice", false)]
+    #[case::mana_abilities_of_other_shapes("Ability.ManaAbility.Complex", false)]
     #[case::paying_or_not("Effect.Pay", false)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]

@@ -4,9 +4,11 @@ use std::collections::BTreeSet;
 
 use mtg_cards::AbilityDef;
 use mtg_cards::ability::{Ability, Limit, Timing};
+use mtg_cards::assemble::{ManaProduced, SimpleManaAbility, simple_mana_ability};
 use mtg_cards::cost::CostItem;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaType;
 
 use crate::abilities::AbilityRef;
 use crate::answers::Outcome;
@@ -14,7 +16,7 @@ use crate::characteristics::characteristics;
 use crate::choose::announceable;
 use crate::decision::{PriorityAction, PriorityOptions};
 use crate::error::{EngineError, IllegalAnswer};
-use crate::events::Event;
+use crate::events::{Event, ZoneCause};
 use crate::keywords;
 use crate::mana::{ManaOption, ManaSource, can_afford};
 use crate::object::GameObject;
@@ -84,6 +86,98 @@ pub(crate) fn mana_options(state: &GameState, player: PlayerId) -> Vec<ManaOptio
     options
 }
 
+/// The five colours "any color" offers, in the order of the wheel.
+const COLORS: [ManaType; 5] = [
+    ManaType::White,
+    ManaType::Blue,
+    ManaType::Black,
+    ManaType::Red,
+    ManaType::Green,
+];
+
+/// A mana ability from the rules of a permanent that is activated at priority, such as a Treasure's, with the option
+/// that stands for each way to use it.
+struct RuleMana {
+    /// What it costs and adds.
+    shape: SimpleManaAbility,
+    /// One option for the mana it adds, or one for each colour when it adds any.
+    options: Vec<ManaOption>,
+}
+
+/// The mana abilities in the rules of `object` that the engine activates at priority (`simple_mana_ability`).
+///
+/// An option is named by the object and an index past its printed mana abilities: rule `r` takes `r` times five and
+/// then one more for each colour of an ability that adds any, so every colour is a distinct source of one permanent
+/// and a client taps for the colour it wants.
+fn rule_mana(object: &GameObject, printed: usize) -> Vec<RuleMana> {
+    let mut found = Vec::new();
+    for (index, rules) in object.card().rules.iter().enumerate() {
+        let Some(shape) = simple_mana_ability(rules) else {
+            continue;
+        };
+        let source = |colour: usize| ManaSource {
+            object: object.id(),
+            ability: printed + index * COLORS.len() + colour,
+        };
+        let options = match shape.produces {
+            ManaProduced::Fixed(mana) => vec![ManaOption {
+                source: source(0),
+                produces: mana,
+            }],
+            ManaProduced::AnyColor => COLORS
+                .iter()
+                .enumerate()
+                .map(|(colour, &mana)| ManaOption {
+                    source: source(colour),
+                    produces: mana,
+                })
+                .collect(),
+        };
+        found.push(RuleMana { shape, options });
+    }
+    found
+}
+
+/// The mana abilities of the rules of `player`'s permanents that they can activate now: a Treasure that is untapped,
+/// or any permanent whose ability does not tap it. They are activated at priority and never offered to pay a spell:
+/// the mana floats in the pool, so a source that sacrifices itself is never used up by an automatic payment.
+pub(crate) fn rule_mana_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
+    let mut options = Vec::new();
+    for &id in state.zone(Zone::Battlefield) {
+        let Some(object) = state.object(id) else {
+            continue;
+        };
+        let Some(perm) = object.permanent() else {
+            continue;
+        };
+        if object.controller() != player {
+            continue;
+        }
+        let Some(chars) = characteristics(state, id) else {
+            continue;
+        };
+        // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
+        let sick = chars.is_creature() && keywords::summoning_sick(state, id);
+        for mana in rule_mana(object, chars.abilities.len()) {
+            if mana.shape.tap && (perm.tapped() || sick) {
+                continue;
+            }
+            options.extend(mana.options);
+        }
+    }
+    options
+}
+
+/// The costs of the rule-based mana ability `source` stands for, if it is one.
+fn rule_mana_costs(state: &GameState, source: ManaSource) -> Option<SimpleManaAbility> {
+    let object = state.object(source.object)?;
+    let printed = characteristics(state, source.object)?.abilities.len();
+    rule_mana(object, printed)
+        .into_iter()
+        .find(|mana| mana.options.iter().any(|option| option.source == source))
+        .map(|mana| mana.shape)
+}
+
 fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
     state.turn().active() == player && state.turn().step().is_main() && state.stack().is_empty()
 }
@@ -96,7 +190,8 @@ fn hand_land(state: &GameState, id: ObjectId) -> bool {
 
 /// Whether the ability `index` of the permanent `object` could be activated by `player` now.
 ///
-/// The engine pays `{T}` and nothing else for an ability; `Caps` keeps abilities with other costs out of the game.
+/// The engine pays `{T}` and the sacrifice of the source for an ability; `Caps` keeps abilities with other costs out of
+/// the game.
 fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index: usize) -> bool {
     let Some(rules) = object.card().rules.get(index) else {
         return false;
@@ -113,13 +208,18 @@ fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index:
     if *limit == Some(Limit::OncePerTurn) && state.limit_spent(object.reference(), index) {
         return false;
     }
-    if rules.is_mana_ability() || !cost.0.iter().all(|item| matches!(item, CostItem::Tap)) {
+    if rules.is_mana_ability()
+        || !cost
+            .0
+            .iter()
+            .all(|item| matches!(item, CostItem::Tap | CostItem::SacrificeSelf))
+    {
         return false;
     }
     if *timing == Timing::Sorcery && !sorcery_timing(state, player) {
         return false;
     }
-    if !cost.0.is_empty() {
+    if cost.0.contains(&CostItem::Tap) {
         let Some(permanent) = object.permanent() else {
             return false;
         };
@@ -170,7 +270,7 @@ pub(crate) fn can_act(
 /// Everything `player` may do while holding priority.
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
-    let mana_abilities = mana_options(state, player);
+    let plain_mana = mana_options(state, player);
     let pool = state.player(player).map(|p| *p.mana()).unwrap_or_default();
     let life = state.player(player).map_or(0, Player::life);
     let may_play_land =
@@ -208,10 +308,12 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             // spell only when enough of its modes can be chosen.
             timing
                 && spell_ability(object).is_none_or(|rules| announceable(state, player, *id, rules))
-                && can_afford(cost, &pool, &mana_abilities, life)
+                && can_afford(cost, &pool, &plain_mana, life)
         })
         .collect();
     let abilities = other_abilities(state, player);
+    let mut mana_abilities = plain_mana;
+    mana_abilities.extend(rule_mana_options(state, player));
     PriorityOptions {
         can_act: can_act(&playable_lands, &castable, &abilities),
         playable_lands,
@@ -224,6 +326,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
 
 /// Validates a priority action and turns it into events (or a cast in progress).
 pub(crate) fn answer(
+    state: &GameState,
     player: PlayerId,
     options: &PriorityOptions,
     action: PriorityAction,
@@ -254,16 +357,29 @@ pub(crate) fn answer(
                 .iter()
                 .find(|o| o.source == source)
                 .ok_or(IllegalAnswer::NotOffered("mana ability"))?;
-            Ok(Outcome::Events(vec![
-                Event::PermanentTapped {
+            let mut events = Vec::new();
+            let costs = rule_mana_costs(state, source);
+            if costs.is_none_or(|costs| costs.tap) {
+                events.push(Event::PermanentTapped {
                     object: source.object,
-                },
-                Event::ManaAdded {
-                    player,
-                    mana: option.produces,
-                    source: Some(source.object),
-                },
-            ]))
+                });
+            }
+            if costs.is_some_and(|costs| costs.sacrifice)
+                && let Some(owner) = state.object(source.object).map(GameObject::owner)
+            {
+                events.push(Event::ZoneChanged {
+                    object: source.object,
+                    from: Zone::Battlefield,
+                    to: Zone::Graveyard(owner),
+                    cause: ZoneCause::Sacrificed,
+                });
+            }
+            events.push(Event::ManaAdded {
+                player,
+                mana: option.produces,
+                source: Some(source.object),
+            });
+            Ok(Outcome::Events(events))
         }
     }
 }
