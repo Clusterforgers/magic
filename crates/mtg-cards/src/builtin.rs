@@ -37,7 +37,7 @@ mod tests {
     #[test]
     fn the_embedded_files_are_the_corpus() {
         let library = library().unwrap_or_else(|errors| panic!("{errors}"));
-        assert_eq!(library.cards().count(), 65);
+        assert_eq!(library.cards().count(), 72);
         assert_eq!(library.tokens().count(), 3);
         assert!(library.card_by_name("Lightning Bolt").is_some());
         assert!(std::ptr::eq(library, self::library().unwrap()));
@@ -47,7 +47,7 @@ mod tests {
     fn the_sources_are_named_like_the_directory_and_equal_its_files() {
         let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
         let sources = sources();
-        assert_eq!(sources.len(), 68);
+        assert_eq!(sources.len(), 75);
         for source in &sources {
             assert!(source.path.starts_with("cards/"), "{}", source.path);
             let text = std::fs::read_to_string(root.join(&source.path)).unwrap();

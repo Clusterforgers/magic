@@ -23,6 +23,33 @@
     "keywords": []
   },
   {
+    "id": "e886a604-e3ce-4c6a-b63e-2c7f910a177a",
+    "oracle_id": "eaabd151-2160-4bff-82c0-3fa88659be98",
+    "name": "Anger",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "235",
+    "rarity": "uncommon",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{3}{R}",
+    "cmc": 4.0,
+    "type_line": "Creature — Incarnation",
+    "oracle_text": "Haste\nAs long as this card is in your graveyard and you control a Mountain, creatures you control have haste.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Haste"
+    ]
+  },
+  {
     "id": "9a52c265-6920-4929-ba0a-70da08df01f1",
     "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
     "name": "Anointed Procession",
@@ -164,6 +191,33 @@
     ]
   },
   {
+    "id": "55a3a094-48c5-4da5-8626-e30a0e8d8f3a",
+    "oracle_id": "eef40ab2-9e17-4e8d-9e58-1a82ab871b5b",
+    "name": "Boneyard Scourge",
+    "lang": "en",
+    "layout": "normal",
+    "set": "c17",
+    "collector_number": "15",
+    "rarity": "rare",
+    "released_at": "2017-08-25",
+    "digital": false,
+    "mana_cost": "{2}{B}{B}",
+    "cmc": 4.0,
+    "type_line": "Creature — Zombie Dragon",
+    "oracle_text": "Flying\nWhenever a Dragon you control dies while this card is in your graveyard, you may pay {1}{B}. If you do, return this card from your graveyard to the battlefield.",
+    "power": "4",
+    "toughness": "3",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Flying"
+    ]
+  },
+  {
     "id": "ec7d6864-7b6b-4f74-8474-9b9ec96b1d33",
     "oracle_id": "36cd2364-d113-47d1-b2c4-b088d9eb88dd",
     "name": "Brainstorm",
@@ -286,6 +340,33 @@
     "keywords": [],
     "power": "1",
     "toughness": "1"
+  },
+  {
+    "id": "c5f37e36-c004-4b89-a668-5cd984c59019",
+    "oracle_id": "bf7710cb-70cb-42fb-b840-cc4f385daa7a",
+    "name": "Covetous Dragon",
+    "lang": "en",
+    "layout": "normal",
+    "set": "uds",
+    "collector_number": "80",
+    "rarity": "rare",
+    "released_at": "1999-06-07",
+    "digital": false,
+    "mana_cost": "{4}{R}",
+    "cmc": 5.0,
+    "type_line": "Creature — Dragon",
+    "oracle_text": "Flying\nWhen you control no artifacts, sacrifice this creature.",
+    "power": "6",
+    "toughness": "5",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Flying"
+    ]
   },
   {
     "id": "e60deb92-f7dd-4f4e-9036-e47dd586f985",
@@ -434,6 +515,33 @@
       "B"
     ],
     "keywords": []
+  },
+  {
+    "id": "4331a7a6-e98e-4517-b0f9-ace379426a94",
+    "oracle_id": "e9f5f87d-a485-4e69-9beb-49a51230bd53",
+    "name": "Elemental Masterpiece",
+    "lang": "en",
+    "layout": "normal",
+    "set": "stx",
+    "collector_number": "182",
+    "rarity": "common",
+    "released_at": "2021-04-23",
+    "digital": false,
+    "mana_cost": "{5}{U}{R}",
+    "cmc": 7.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Create two 4/4 blue and red Elemental creature tokens.\n{U/R}{U/R}, Discard this card: Create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+    "colors": [
+      "U",
+      "R"
+    ],
+    "color_identity": [
+      "U",
+      "R"
+    ],
+    "keywords": [
+      "Treasure"
+    ]
   },
   {
     "id": "39704000-65d3-4d39-849e-a3b617376bbc",
@@ -1361,6 +1469,31 @@
     "keywords": []
   },
   {
+    "id": "4d431445-d7db-4ce1-b422-41494d9be1b4",
+    "oracle_id": "9dbc3530-b278-4c8d-b2cc-a09dfac9d5e5",
+    "name": "Reassembling Skeleton",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tdc",
+    "collector_number": "195",
+    "rarity": "uncommon",
+    "released_at": "2025-04-11",
+    "digital": false,
+    "mana_cost": "{1}{B}",
+    "cmc": 2.0,
+    "type_line": "Creature — Skeleton Warrior",
+    "oracle_text": "{1}{B}: Return this card from your graveyard to the battlefield tapped.",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
     "id": "9f37c5b6-a59c-45cd-9a99-e9357fe9ea1b",
     "oracle_id": "53236dd7-845a-444c-96d5-f41ed7325d8f",
     "name": "Rhystic Study",
@@ -1457,6 +1590,33 @@
     ]
   },
   {
+    "id": "108a4330-d9dd-429d-a2f8-c355ff914883",
+    "oracle_id": "87217160-0687-4482-b9a3-91bad8527675",
+    "name": "Soul of Zendikar",
+    "lang": "en",
+    "layout": "normal",
+    "set": "c19",
+    "collector_number": "182",
+    "rarity": "mythic",
+    "released_at": "2019-08-23",
+    "digital": false,
+    "mana_cost": "{4}{G}{G}",
+    "cmc": 6.0,
+    "type_line": "Creature — Avatar",
+    "oracle_text": "Reach\n{3}{G}{G}: Create a 3/3 green Beast creature token.\n{3}{G}{G}, Exile this card from your graveyard: Create a 3/3 green Beast creature token.",
+    "power": "6",
+    "toughness": "6",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Reach"
+    ]
+  },
+  {
     "id": "b8f73857-8bfb-400a-8c33-47c85276fb2a",
     "oracle_id": "cba07472-7212-4411-a9f9-38a48870ad69",
     "name": "Spellbreaker Behemoth",
@@ -1482,6 +1642,31 @@
     "keywords": [],
     "power": "5",
     "toughness": "5"
+  },
+  {
+    "id": "8aabc541-ff2a-416f-a973-44eda8ec4706",
+    "oracle_id": "0ef760f4-bbec-4735-8d60-fc24d973452a",
+    "name": "Squee, Goblin Nabob",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "254",
+    "rarity": "uncommon",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{2}{R}",
+    "cmc": 3.0,
+    "type_line": "Legendary Creature — Goblin",
+    "oracle_text": "At the beginning of your upkeep, you may return this card from your graveyard to your hand.",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
   },
   {
     "id": "3892f1c5-937e-4ef4-b6f9-e0c0ded070d0",

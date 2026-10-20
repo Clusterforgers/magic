@@ -1,0 +1,34 @@
+{
+  "oracle_id": "eef40ab2-9e17-4e8d-9e58-1a82ab871b5b",
+  "name": "Boneyard Scourge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boneyard Scourge",
+      "oracle_fingerprint": "fba0768b92ee9ffb5a1265540927221f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Dragon" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{B}",
+                  "paid": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

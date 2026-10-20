@@ -1,0 +1,57 @@
+{
+  "oracle_id": "87217160-0687-4482-b9a3-91bad8527675",
+  "name": "Soul of Zendikar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul of Zendikar",
+      "oracle_fingerprint": "f942bcdcd915822642c20bff2306c76f",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Activated": {
+            "cost": "{3}{G}{G}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}{G}" }, "ExileSelf"],
+            "from": "Graveyard",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
