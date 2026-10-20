@@ -93,7 +93,8 @@ fn candidates(scope: &Scope<'_>, what: &Targetable) -> Result<Vec<Target>, Resol
 ///
 /// One rule serves both choosing and the recheck on resolution (CR 608.2b): a target is still legal when it
 /// is still in this list. An object that changed zones is a new object, so it is not. A selector the engine
-/// cannot evaluate matches nothing, so the spell is not offered. Protection (hexproof, ward) joins here.
+/// cannot evaluate matches nothing, so the spell is not offered. A target its keywords protect from `controller`
+/// (hexproof) is left out, so a recheck on resolution drops it too.
 pub fn legal_targets(
     state: &GameState,
     spec: &TargetSpec,
@@ -124,7 +125,7 @@ pub(crate) fn legal_for(
     let mut legal = candidates(&scope, &spec.what).unwrap_or_default();
     legal.retain(|target| match target {
         Target::Object(object) => !keywords::protects(state, object.id, source.id, controller),
-        Target::Player(_) => true,
+        Target::Player(player) => !keywords::protects_player(state, *player, controller),
     });
     legal.sort_unstable();
     legal.dedup();

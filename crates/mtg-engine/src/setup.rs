@@ -4,6 +4,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::keyword::Keyword;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::combat::CombatState;
@@ -59,6 +60,8 @@ pub struct PlayerSetup {
     pub graveyard: Vec<Arc<CardDefinition>>,
     /// Starting life; the format's default when `None`.
     pub life: Option<i32>,
+    /// Keywords the player has from the start, such as hexproof (CR 702.11d).
+    pub keywords: Vec<Keyword>,
 }
 
 /// Where the game starts.
@@ -200,6 +203,7 @@ impl GameState {
                 owner,
                 setup_player.life.unwrap_or(life),
                 status,
+                setup_player.keywords.clone(),
             ));
         }
         let triggers_possible = objects
