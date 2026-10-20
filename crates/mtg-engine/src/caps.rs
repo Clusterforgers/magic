@@ -2,10 +2,10 @@
 //!
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
-//! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, `{T}` abilities and triggered
-//! abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, scrying, looking at, revealing,
-//! moving and shuffling cards, life and damage (and delayed triggers), "may" and choices and modal spells, the
-//! keywords of combat and hexproof, and nothing else.
+//! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, abilities that cost `{T}` and
+//! mana, and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, scrying,
+//! looking at, revealing, moving and shuffling cards, life and damage (and delayed triggers), "may" and "pay" and
+//! choices and modal spells, the keywords of combat and hexproof, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -27,6 +27,7 @@ const RUNS: &[&str] = &[
     "Trigger.BecomesTarget",
     "Trigger.AnyOf",
     "Cost.Tap",
+    "Cost.Mana",
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Scry",
@@ -43,6 +44,7 @@ const RUNS: &[&str] = &[
     "Effect.LoseLife",
     "Effect.DelayedTrigger",
     "Effect.May",
+    "Effect.Pay",
     "Effect.Choose",
     "Effect.Modal",
     "Keyword.Flying",
@@ -116,7 +118,10 @@ mod tests {
     #[case::damage("Effect.DealDamage", true)]
     #[case::gaining_life("Effect.GainLife", true)]
     #[case::losing_life("Effect.LoseLife", true)]
-    #[case::mana_costs_of_abilities("Cost.Mana", false)]
+    #[case::mana_costs("Cost.Mana", true)]
+    #[case::x_in_a_mana_cost("Cost.Mana.X", false)]
+    #[case::paying_life("Cost.PayLife", false)]
+    #[case::sacrificing_as_a_cost("Cost.SacrificeSelf", false)]
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_zones("Ability.From", false)]
     #[case::triggers("Ability.Triggered", true)]
@@ -134,7 +139,7 @@ mod tests {
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]
-    #[case::paying_or_not("Effect.Pay", false)]
+    #[case::paying_or_not("Effect.Pay", true)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]
     #[case::menace("Keyword.Menace", true)]

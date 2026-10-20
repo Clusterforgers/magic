@@ -4,7 +4,6 @@ use mtg_core::ids::{EffectId, PlayerId};
 
 use crate::answers::{Outcome, handle};
 use crate::cast::{Next, Pending, What, announce};
-use crate::choose::Choices;
 use crate::decision::{Answer, Decision};
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::error::{EngineError, PreviewError};
@@ -104,11 +103,7 @@ impl Engine {
     /// event produced, including the automatic steps that followed the answer.
     pub fn apply(&mut self, answer: Answer) -> Result<Vec<Event>, EngineError> {
         let decision = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
-        let announced = self
-            .pending
-            .as_ref()
-            .map_or_else(Choices::default, |pending| pending.choices.clone());
-        let outcome = handle(&self.state, &announced, decision, answer)?;
+        let outcome = handle(&self.state, self.pending.as_ref(), decision, answer)?;
         let player = decision.player;
         let checkpoint = self.checkpoint();
         let result = self.run(outcome, player).and_then(|()| self.advance());
