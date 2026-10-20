@@ -95,11 +95,15 @@ fn bot_games_with_token_makers_finish_and_keep_every_invariant(#[case] seats: us
     let mut seen = Seen::default();
     for seed in 0..games() {
         let setup = GameSetup::new(Arc::new(Normal), seed, vec![deck(); seats]);
-        let outcome = play_game(setup, seed).unwrap_or_else(|failure| panic!("seed {seed}: {failure}"));
+        let outcome =
+            play_game(setup, seed).unwrap_or_else(|failure| panic!("seed {seed}: {failure}"));
         seen.add(&outcome.events);
     }
     assert!(seen.treasures > 0, "Treasures were made");
     assert!(seen.soldiers_attacking > 0, "Soldiers entered attacking");
-    assert!(seen.treasures_spent > 0, "a Treasure was sacrificed for mana");
+    assert!(
+        seen.treasures_spent > 0,
+        "a Treasure was sacrificed for mana"
+    );
     assert!(seen.tokens_ceasing > 0, "permanents left the battlefield");
 }

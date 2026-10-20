@@ -107,7 +107,8 @@ fn stored_check(deck: &StoredDeck) -> Option<StoredCheck> {
     }
 }
 
-fn lines_of(deck: &StoredDeck) -> Vec<Line> {
+/// The lines of a stored deck in the form the endpoints work with.
+pub(crate) fn lines_of(deck: &StoredDeck) -> Vec<Line> {
     deck.lines.iter().map(Line::from_stored).collect()
 }
 

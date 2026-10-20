@@ -173,6 +173,7 @@ fn lobby_rosters() -> Vec<ServerMessage> {
             name: name.to_owned(),
             connected,
             ready,
+            deck: None,
         };
         let seats = vec![seat(0, "Ana", true, false), seat(1, "Bo", here, ready)];
         let needed = if ready { 1 } else { 2 };

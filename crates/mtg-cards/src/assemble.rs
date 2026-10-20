@@ -778,10 +778,7 @@ mod tests {
         r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":3}}}]}}"#,
         true
     )]
-    #[case::not_a_mana_ability(
-        r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#,
-        false
-    )]
+    #[case::not_a_mana_ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, false)]
     #[case::a_spell_that_adds_mana(
         r#"{"Spell":{"effects":[{"AddMana":{"mana":{"Fixed":["Black","Black","Black"]}}}]}}"#,
         false

@@ -215,8 +215,14 @@ mod tests {
         assert!(!game.zone(to).contains(&id));
         assert_ne!(game.state_hash(), hash);
         // An ability of it that is already on its way still finds the card it came from.
-        assert_eq!(game.source_object(id).map(|o| o.card().name.clone()), Some("Soldier".into()));
-        assert!(apply_event(&mut game, &leave).is_err(), "it cannot move again");
+        assert_eq!(
+            game.source_object(id).map(|o| o.card().name.clone()),
+            Some("Soldier".into())
+        );
+        assert!(
+            apply_event(&mut game, &leave).is_err(),
+            "it cannot move again"
+        );
     }
 
     #[test]

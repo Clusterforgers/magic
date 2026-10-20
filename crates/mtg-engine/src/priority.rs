@@ -442,7 +442,10 @@ mod tests {
         let mut keys: Vec<usize> = options.iter().map(|o| o.source.ability).collect();
         keys.dedup();
         assert_eq!(keys.len(), 5, "every colour has its own source");
-        assert!(rule_mana_options(&game, PlayerId(1)).is_empty(), "only its controller's");
+        assert!(
+            rule_mana_options(&game, PlayerId(1)).is_empty(),
+            "only its controller's"
+        );
     }
 
     #[rstest]
@@ -492,13 +495,9 @@ mod tests {
     fn activate(game: &GameState, colour: usize) -> Vec<Event> {
         let options = priority_options(game, ME);
         let source = options.mana_abilities[colour].source;
-        let Outcome::Events(events) = answer(
-            game,
-            ME,
-            &options,
-            PriorityAction::ActivateMana(source),
-        )
-        .unwrap() else {
+        let Outcome::Events(events) =
+            answer(game, ME, &options, PriorityAction::ActivateMana(source)).unwrap()
+        else {
             panic!("a mana ability is not a cast");
         };
         events
@@ -543,21 +542,36 @@ mod tests {
             events[0],
             Event::ZoneChanged { object, cause: ZoneCause::Sacrificed, .. } if object == id
         ));
-        assert!(matches!(events[1], Event::ManaAdded { mana: ManaType::Red, .. }));
+        assert!(matches!(
+            events[1],
+            Event::ManaAdded {
+                mana: ManaType::Red,
+                ..
+            }
+        ));
     }
 
     #[test]
     fn a_land_still_taps_for_its_mana_and_is_not_sacrificed() {
         let game = state(
             vec![vec![], vec![]],
-            vec![vec![Arc::new(CardDefinition::basic_land(Some(mtg_core::color::Color::Green)))], vec![]],
+            vec![
+                vec![Arc::new(CardDefinition::basic_land(Some(
+                    mtg_core::color::Color::Green,
+                )))],
+                vec![],
+            ],
         );
         let id = game.zone(Zone::Battlefield)[0];
         assert_eq!(
             activate(&game, 0),
             [
                 Event::PermanentTapped { object: id },
-                Event::ManaAdded { player: ME, mana: ManaType::Green, source: Some(id) },
+                Event::ManaAdded {
+                    player: ME,
+                    mana: ManaType::Green,
+                    source: Some(id)
+                },
             ]
         );
     }
@@ -567,7 +581,10 @@ mod tests {
         let game = game(artifact("Treasure", TREASURE));
         let options = priority_options(&game, ME);
         let id = game.zone(Zone::Battlefield)[0];
-        let unknown = ManaSource { object: id, ability: 99 };
+        let unknown = ManaSource {
+            object: id,
+            ability: 99,
+        };
         let error = answer(&game, ME, &options, PriorityAction::ActivateMana(unknown));
         assert!(error.is_err());
     }
@@ -577,7 +594,10 @@ mod tests {
         let game = game(artifact("Treasure", TREASURE));
         let options = priority_options(&game, ME);
         assert_eq!(options.mana_abilities.len(), 5);
-        assert!(options.castable.is_empty(), "{{R}} is not paid by a source the payment cannot sacrifice");
+        assert!(
+            options.castable.is_empty(),
+            "{{R}} is not paid by a source the payment cannot sacrifice"
+        );
         assert!(!options.can_act, "a mana ability alone is not an action");
     }
 
@@ -587,7 +607,9 @@ mod tests {
             vec![vec![spark()], vec![]],
             vec![
                 vec![
-                    Arc::new(CardDefinition::basic_land(Some(mtg_core::color::Color::Red))),
+                    Arc::new(CardDefinition::basic_land(Some(
+                        mtg_core::color::Color::Red,
+                    ))),
                     artifact("Treasure", TREASURE),
                 ],
                 vec![],

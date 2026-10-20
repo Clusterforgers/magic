@@ -396,7 +396,9 @@ impl InvariantChecker {
 
     fn check_touched(&self, id: ObjectId, event: &Event) -> Result<(), Violation> {
         match self.shadow.object(id) {
-            None if matches!(event, Event::ObjectLeftGame { .. }) || self.shadow.has_ceased(id) => Ok(()),
+            None if matches!(event, Event::ObjectLeftGame { .. }) || self.shadow.has_ceased(id) => {
+                Ok(())
+            }
             None => Err(zone_error(format!("{id:?} vanished after {event:?}"))),
             Some(object) => {
                 let listed = self

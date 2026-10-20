@@ -131,6 +131,7 @@ fn tokens_named(driver: &Driver, name: &str) -> Vec<mtg_core::ids::ObjectId> {
 }
 
 /// The log replays to the live state, and an engine rebuilt from it stands at the same decision.
+#[allow(clippy::unnecessary_wraps)] // the tests end with it, as they end with their last script step
 fn assert_replays(driver: &Driver, setup: &GameSetup) -> Result<(), ScriptError> {
     let log = driver.engine().events().to_vec();
     let replayed = replay(setup, &log).unwrap();
@@ -152,7 +153,10 @@ fn dockside_table(
     mine.extend(extra);
     mine.extend(own.iter().map(|name| ready(card(name).unwrap())));
     let mut scenario = Scenario::new(foes.len() + 1)
-        .hand(0, [vec![card("Dockside Extortionist").unwrap()], hand].concat())
+        .hand(
+            0,
+            [vec![card("Dockside Extortionist").unwrap()], hand].concat(),
+        )
         .battlefield(0, mine);
     for (at, list) in foes.iter().enumerate() {
         scenario = scenario.battlefield_named(at + 1, list.iter().copied());
@@ -171,7 +175,9 @@ fn dockside_extortionist_makes_a_treasure_for_each_artifact_and_enchantment_its_
     #[case] own: &[&str],
     #[case] treasures: usize,
 ) -> Result<(), ScriptError> {
-    let setup = dockside_table(foes, own, Vec::new(), Vec::new()).setup().unwrap();
+    let setup = dockside_table(foes, own, Vec::new(), Vec::new())
+        .setup()
+        .unwrap();
     let mut driver = Driver::from_scenario(dockside_table(foes, own, Vec::new(), Vec::new()))?;
     driver.cast_tapping("Dockside Extortionist", &["Mountain", "Mountain"])?;
     resolve_the_stack(&mut driver)?;
@@ -204,9 +210,12 @@ fn a_watcher_sees_every_token_enter_together(#[case] seats: usize) -> Result<(),
     let foes: Vec<&[&str]> = std::iter::once(&["Sol Ring", "Sol Ring", "Pacifism"][..])
         .chain(std::iter::repeat_n(&[][..], seats - 2))
         .collect();
-    let mut driver = Driver::from_scenario(
-        dockside_table(&foes, &[], Vec::new(), vec![ready(cheerer())]),
-    )?;
+    let mut driver = Driver::from_scenario(dockside_table(
+        &foes,
+        &[],
+        Vec::new(),
+        vec![ready(cheerer())],
+    ))?;
     let before = life(&driver, 0);
     driver.cast_tapping("Dockside Extortionist", &["Mountain", "Mountain"])?;
     resolve_the_stack(&mut driver)?;
@@ -245,11 +254,17 @@ fn a_treasure_is_spent_for_any_color(
     let DecisionKind::Priority(options) = &driver.decision()?.kind else {
         panic!("priority was expected");
     };
-    assert!(options.castable.is_empty());
+    assert_eq!(options.castable.len(), 0);
     let colors: Vec<ManaType> = options.mana_abilities.iter().map(|m| m.produces).collect();
     assert_eq!(
         colors,
-        [ManaType::White, ManaType::Blue, ManaType::Black, ManaType::Red, ManaType::Green],
+        [
+            ManaType::White,
+            ManaType::Blue,
+            ManaType::Black,
+            ManaType::Red,
+            ManaType::Green
+        ],
         "one source for each color"
     );
     let events = driver.tap_for_mana_of("Treasure", mana)?;
@@ -257,13 +272,19 @@ fn a_treasure_is_spent_for_any_color(
         events.as_slice(),
         [
             Event::PermanentTapped { .. },
-            Event::ZoneChanged { cause: ZoneCause::Sacrificed, .. },
+            Event::ZoneChanged {
+                cause: ZoneCause::Sacrificed,
+                ..
+            },
             Event::ManaAdded { .. },
             ..
         ]
     ));
-    assert!(driver.state().has_ceased(treasure), "the Treasure is gone, not in a graveyard");
-    assert!(names(driver.state(), Zone::Graveyard(pid(0))).is_empty());
+    assert!(
+        driver.state().has_ceased(treasure),
+        "the Treasure is gone, not in a graveyard"
+    );
+    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))).len(), 0);
     assert_eq!(driver.state().player(pid(0)).unwrap().mana().get(mana), 1);
     driver.cast("Sprite")?;
     resolve_the_stack(&mut driver)?;
@@ -273,16 +294,27 @@ fn a_treasure_is_spent_for_any_color(
 }
 
 /// Seat 0 controls Hero of Bladehold, ready to attack on turn 2, and `extra`.
-fn hero_table(seats: usize, extra: Vec<mtg_engine::PresetPermanent>, hand: Vec<Arc<CardDefinition>>) -> Scenario {
+fn hero_table(
+    seats: usize,
+    extra: Vec<mtg_engine::PresetPermanent>,
+    hand: Vec<Arc<CardDefinition>>,
+) -> Scenario {
     Scenario::new(seats)
         .at(2, 0, Step::DeclareAttackers)
-        .battlefield(0, [vec![ready(card("Hero of Bladehold").unwrap())], extra].concat())
+        .battlefield(
+            0,
+            [vec![ready(card("Hero of Bladehold").unwrap())], extra].concat(),
+        )
         .hand(0, hand)
 }
 
 /// Passes until the stack is empty, choosing option `option` when the controller is asked, and checks that an engine
 /// rebuilt from the log asks the same at each of those decisions.
-fn resolve_choosing(driver: &mut Driver, setup: &GameSetup, option: usize) -> Result<usize, ScriptError> {
+fn resolve_choosing(
+    driver: &mut Driver,
+    setup: &GameSetup,
+    option: usize,
+) -> Result<usize, ScriptError> {
     let mut asked = 0;
     for _ in 0..60 {
         let decision = driver.decision()?.clone();
@@ -325,7 +357,11 @@ fn hero_of_bladeholds_soldiers_enter_tapped_and_attacking_the_defender_chosen(
         .collect();
     assert_eq!(declared, [1]);
     let asked = resolve_choosing(&mut driver, &setup, option)?;
-    assert_eq!(asked, usize::from(seats > 2), "asked only when there is a choice");
+    assert_eq!(
+        asked,
+        usize::from(seats > 2),
+        "asked only when there is a choice"
+    );
     let soldiers = tokens_named(&driver, "Soldier");
     assert_eq!(soldiers.len(), 2);
     for soldier in &soldiers {
@@ -345,8 +381,16 @@ fn hero_of_bladeholds_soldiers_enter_tapped_and_attacking_the_defender_chosen(
     // Damage: Hero's three at the player it was declared at, the Soldiers' one each at the one chosen.
     driver.pass_until(Step::Main2)?;
     let hero_at_defender = if defender == 1 { 3 } else { 0 };
-    assert_eq!(life(&driver, 1), 20 - hero_at_defender - if defender == 1 { 2 } else { 0 } - if defender == 1 { 0 } else { 3 });
-    assert_eq!(life(&driver, defender), 20 - if defender == 1 { 5 } else { 2 });
+    assert_eq!(
+        life(&driver, 1),
+        20 - hero_at_defender
+            - if defender == 1 { 2 } else { 0 }
+            - if defender == 1 { 0 } else { 3 }
+    );
+    assert_eq!(
+        life(&driver, defender),
+        20 - if defender == 1 { 5 } else { 2 }
+    );
     assert_replays(&driver, &setup)
 }
 
@@ -370,14 +414,19 @@ fn a_token_that_dies_is_seen_by_its_watchers_and_then_ceases_to_exist(
     let soldiers = tokens_named(&driver, "Soldier");
     assert_eq!(soldiers.len(), 2);
     let before = life(&driver, 0);
-    let target = mtg_engine::choose::Target::Object(driver.state().object(soldiers[0]).unwrap().reference());
+    let target =
+        mtg_engine::choose::Target::Object(driver.state().object(soldiers[0]).unwrap().reference());
     let events = driver.cast_at("Doom Blade", &[target])?;
     drop(events);
     resolve_the_stack(&mut driver)?;
     assert!(driver.state().has_ceased(soldiers[0]));
     assert!(driver.state().object(soldiers[0]).is_none());
     assert_eq!(tokens_named(&driver, "Soldier").len(), 1);
-    assert_eq!(life(&driver, 0), before + 1, "the watcher saw it go to the graveyard");
+    assert_eq!(
+        life(&driver, 0),
+        before + 1,
+        "the watcher saw it go to the graveyard"
+    );
     assert!(
         !names(driver.state(), Zone::Graveyard(pid(0))).contains(&"Soldier".to_owned()),
         "a token is no card in the graveyard"
@@ -390,11 +439,21 @@ fn a_token_that_dies_is_seen_by_its_watchers_and_then_ceases_to_exist(
 #[rstest]
 #[case::two(2)]
 #[case::three(3)]
-fn a_token_with_a_trigger_of_its_own_still_sees_itself_die(#[case] seats: usize) -> Result<(), ScriptError> {
+fn a_token_with_a_trigger_of_its_own_still_sees_itself_die(
+    #[case] seats: usize,
+) -> Result<(), ScriptError> {
     let table = || {
         Scenario::new(seats)
             .hand(0, [hatcher(), card("Doom Blade").unwrap()])
-            .battlefield(0, [ready(mountain()), ready(swamp()), ready(swamp()), ready(swamp())])
+            .battlefield(
+                0,
+                [
+                    ready(mountain()),
+                    ready(swamp()),
+                    ready(swamp()),
+                    ready(swamp()),
+                ],
+            )
     };
     let setup = table().setup().unwrap();
     let mut driver = Driver::from_scenario(table())?;
@@ -417,9 +476,15 @@ fn a_token_with_a_trigger_of_its_own_still_sees_itself_die(#[case] seats: usize)
 #[case::two(2)]
 #[case::three(3)]
 #[case::four(4)]
-fn a_token_bounced_to_its_owners_hand_ceases_to_exist(#[case] seats: usize) -> Result<(), ScriptError> {
+fn a_token_bounced_to_its_owners_hand_ceases_to_exist(
+    #[case] seats: usize,
+) -> Result<(), ScriptError> {
     let table = || {
-        hero_table(seats, vec![ready(island()), ready(mourner())], vec![unsummon()])
+        hero_table(
+            seats,
+            vec![ready(island()), ready(mourner())],
+            vec![unsummon()],
+        )
     };
     let setup = table().setup().unwrap();
     let mut driver = Driver::from_scenario(table())?;
@@ -427,7 +492,8 @@ fn a_token_bounced_to_its_owners_hand_ceases_to_exist(#[case] seats: usize) -> R
     resolve_choosing(&mut driver, &setup, 0)?;
     let soldier = tokens_named(&driver, "Soldier")[0];
     let hand = names(driver.state(), Zone::Hand(pid(0)));
-    let target = mtg_engine::choose::Target::Object(driver.state().object(soldier).unwrap().reference());
+    let target =
+        mtg_engine::choose::Target::Object(driver.state().object(soldier).unwrap().reference());
     driver.cast_at("Unsummon", &[target])?;
     resolve_the_stack(&mut driver)?;
     assert!(driver.state().has_ceased(soldier));
@@ -469,7 +535,8 @@ fn a_token_sacrificed_for_its_own_ability_still_resolves_it() -> Result<(), Scri
 }
 
 #[test]
-fn a_treasure_sacrificed_as_mana_is_seen_leaving_by_a_sacrifice_trigger() -> Result<(), ScriptError> {
+fn a_treasure_sacrificed_as_mana_is_seen_leaving_by_a_sacrifice_trigger() -> Result<(), ScriptError>
+{
     let watcher = Arc::new(
         CardDefinition::new("Collector")
             .with_type(CardType::Creature)
@@ -479,7 +546,12 @@ fn a_treasure_sacrificed_as_mana_is_seen_leaving_by_a_sacrifice_trigger() -> Res
             )),
     );
     let table = || {
-        dockside_table(&[&["Sol Ring"][..]], &[], Vec::new(), vec![ready(watcher.clone())])
+        dockside_table(
+            &[&["Sol Ring"][..]],
+            &[],
+            Vec::new(),
+            vec![ready(watcher.clone())],
+        )
     };
     let setup = table().setup().unwrap();
     let mut driver = Driver::from_scenario(table())?;
@@ -494,14 +566,24 @@ fn a_treasure_sacrificed_as_mana_is_seen_leaving_by_a_sacrifice_trigger() -> Res
 
 #[test]
 fn only_the_controller_sees_a_treasure_as_a_source_of_mana() -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(dockside_table(&[&["Sol Ring"][..]], &[], Vec::new(), Vec::new()))?;
+    let mut driver = Driver::from_scenario(dockside_table(
+        &[&["Sol Ring"][..]],
+        &[],
+        Vec::new(),
+        Vec::new(),
+    ))?;
     driver.cast_tapping("Dockside Extortionist", &["Mountain", "Mountain"])?;
     resolve_the_stack(&mut driver)?;
     let treasure = tokens_named(&driver, "Treasure")[0];
     let DecisionKind::Priority(options) = &driver.decision()?.kind else {
         panic!("priority was expected");
     };
-    assert!(options.mana_abilities.iter().any(|m| m.source.object == treasure));
+    assert!(
+        options
+            .mana_abilities
+            .iter()
+            .any(|m| m.source.object == treasure)
+    );
     // The opponent holds priority after seat 0 passes and is offered nothing of it.
     driver.pass()?;
     let decision = driver.decision()?;
@@ -509,6 +591,11 @@ fn only_the_controller_sees_a_treasure_as_a_source_of_mana() -> Result<(), Scrip
     let DecisionKind::Priority(options) = &decision.kind else {
         panic!("priority was expected");
     };
-    assert!(options.mana_abilities.iter().all(|m| m.source.object != treasure));
+    assert!(
+        options
+            .mana_abilities
+            .iter()
+            .all(|m| m.source.object != treasure)
+    );
     Ok(())
 }

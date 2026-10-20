@@ -214,7 +214,10 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     // two mana at once, and as many as there are creatures.
     for name in ["Sol Ring", "Gaea's Cradle"] {
         let reason = reasons(name);
-        assert!(reason.contains("Ability.ManaAbility.Complex"), "{name}: {reason}");
+        assert!(
+            reason.contains("Ability.ManaAbility.Complex"),
+            "{name}: {reason}"
+        );
         assert!(!reason.contains("Effect.AddMana"), "{name}: {reason}");
     }
     // A card whose file models nothing says nothing about the engine.

@@ -68,7 +68,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let spec = match token {
         TokenRef::Named(id) => predefined(id)?,
         TokenRef::Custom(spec) => &**spec,
-        TokenRef::CopyOf { .. } => return Err(ResolveError::Unsupported("Effect.CreateToken.Copy")),
+        TokenRef::CopyOf { .. } => {
+            return Err(ResolveError::Unsupported("Effect.CreateToken.Copy"));
+        }
     };
     let state = cx.state();
     let number = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
@@ -277,8 +279,7 @@ mod tests {
 
     #[test]
     fn an_unknown_token_is_refused() {
-        let error =
-            run_with(&game(2), Vec::new(), &effect(r#"{"Named":"gold"}"#, "")).unwrap_err();
+        let error = run_with(&game(2), Vec::new(), &effect(r#"{"Named":"gold"}"#, "")).unwrap_err();
         assert!(matches!(error, ResolveError::Invalid(_)), "{error:?}");
     }
 
@@ -301,9 +302,8 @@ mod tests {
         let mut game = game(3);
         game.players[2].status =
             crate::player::PlayerStatus::Lost(crate::player::LossReason::Conceded);
-        let made = tokens(
-            run_with(&game, Vec::new(), &effect(SOLDIER, r#","who":"Opponents""#)).unwrap(),
-        );
+        let made =
+            tokens(run_with(&game, Vec::new(), &effect(SOLDIER, r#","who":"Opponents""#)).unwrap());
         assert_eq!(made.iter().map(|t| t.controller).collect::<Vec<_>>(), [FOE]);
     }
 

@@ -18,6 +18,7 @@ use crate::pace::Pace;
 use crate::preview::PreviewLimits;
 use crate::recorder::Recorder;
 use crate::running::{Halt, Rejection, Running, count};
+use crate::seat_deck::SeatDecks;
 use crate::seats::Seats;
 use crate::stops::Stops;
 use crate::store::{EventStore, StoreError};
@@ -88,10 +89,12 @@ pub(crate) fn spawn_recorded<S: EventStore>(
     config: GameConfig,
     recorder: Option<Recorder>,
 ) -> Result<GameHandle, StartError> {
-    spawn_named(id, setup, store, config, recorder, Vec::new())
+    spawn_named(id, setup, store, config, recorder, Vec::new(), None)
 }
 
-/// Like [`spawn_recorded`] with the names the lobby lists for the seats (a missing one becomes "Seat N").
+/// Like [`spawn_recorded`] with the names the lobby lists for the seats (a missing one becomes "Seat N")
+/// and, for a game made from a recipe, the decks its seats play: with them a seat cannot press
+/// Ready until it has a deck, and the lobby tells the table which.
 pub(crate) fn spawn_named<S: EventStore>(
     id: GameId,
     setup: GameSetup,
@@ -99,6 +102,7 @@ pub(crate) fn spawn_named<S: EventStore>(
     config: GameConfig,
     recorder: Option<Recorder>,
     names: Vec<String>,
+    decks: Option<SeatDecks>,
 ) -> Result<GameHandle, StartError> {
     setup.validate()?;
     let seats = setup.players.len();
@@ -106,7 +110,7 @@ pub(crate) fn spawn_named<S: EventStore>(
         ready: vec![false; seats],
         names: seat_names(names, seats),
     };
-    Ok(launch(id, setup, store, config, phase, recorder))
+    Ok(launch(id, setup, store, config, phase, recorder, decks))
 }
 
 /// `names` cut or filled up with "Seat N" to exactly `seats` entries.
@@ -147,10 +151,11 @@ pub(crate) async fn resume_recorded<S: EventStore>(
     config: GameConfig,
     recorder: Option<Recorder>,
 ) -> Result<GameHandle, StartError> {
-    resume_named(store, id, setup, config, recorder, Vec::new()).await
+    resume_named(store, id, setup, config, recorder, Vec::new(), None).await
 }
 
-/// Like [`resume_recorded`]; a game with nothing stored returns to a lobby that lists `names` (nobody is ready in it).
+/// Like [`resume_recorded`]; a game with nothing stored returns to a lobby that lists `names` (nobody
+/// is ready in it) and plays `decks`.
 pub(crate) async fn resume_named<S: EventStore>(
     store: S,
     id: GameId,
@@ -158,10 +163,11 @@ pub(crate) async fn resume_named<S: EventStore>(
     config: GameConfig,
     recorder: Option<Recorder>,
     names: Vec<String>,
+    decks: Option<SeatDecks>,
 ) -> Result<GameHandle, StartError> {
     let stored = store.load(id).await?;
     if stored.is_empty() {
-        return spawn_named(id, setup, store, config, recorder, names);
+        return spawn_named(id, setup, store, config, recorder, names, decks);
     }
     let stored_len = stored.len();
     let engine = Engine::resume(setup.clone(), stored)?;
@@ -179,6 +185,7 @@ pub(crate) async fn resume_named<S: EventStore>(
         config,
         Phase::Running(Box::new(running)),
         recorder,
+        None,
     ))
 }
 
@@ -189,6 +196,7 @@ fn launch<S: EventStore>(
     config: GameConfig,
     phase: Phase,
     recorder: Option<Recorder>,
+    decks: Option<SeatDecks>,
 ) -> GameHandle {
     let (commands, inbox) = mpsc::channel(config.command_queue.max(1));
     let actor = GameActor {
@@ -203,6 +211,7 @@ fn launch<S: EventStore>(
         phase,
         closing: false,
         recorder,
+        decks,
     };
     tokio::spawn(actor.run(inbox));
     GameHandle::new(id, commands)
@@ -243,6 +252,9 @@ pub(crate) struct GameActor<S> {
     pub(crate) closing: bool,
     /// Where a persistent game notes its milestones; `None` for a game that lives in memory only.
     pub(crate) recorder: Option<Recorder>,
+    /// The deck of every seat while the game is in its lobby; `None` for a game made from a bare
+    /// setup, whose seats need no choice.
+    pub(crate) decks: Option<SeatDecks>,
 }
 
 impl<S: EventStore> GameActor<S> {
@@ -296,9 +308,18 @@ impl<S: EventStore> GameActor<S> {
                     self.push_roster();
                 }
             }
-            Command::Seat { seat, name, reply } => {
+            Command::Seat {
+                seat,
+                name,
+                deck,
+                reply,
+            } => {
                 // A caller that stopped waiting needs no answer.
-                let _ = reply.send(self.seat_at(seat, name));
+                let _ = reply.send(self.seat_at(seat, name, deck));
+            }
+            Command::Deck { seat, deck, reply } => {
+                // A caller that stopped waiting needs no answer.
+                let _ = reply.send(self.choose_deck(seat, deck));
             }
             Command::Closing { on, reply } => {
                 // A caller that stopped waiting needs no answer.

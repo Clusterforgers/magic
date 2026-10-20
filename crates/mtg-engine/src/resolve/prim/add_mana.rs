@@ -61,7 +61,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             }
         }
         Produce::AnyColor(each) => {
-            let options: Vec<ChoiceOption> = COLORS.iter().copied().map(ChoiceOption::Color).collect();
+            let options: Vec<ChoiceOption> =
+                COLORS.iter().copied().map(ChoiceOption::Color).collect();
             let choosers: Vec<OptionChooser> = players
                 .iter()
                 .flat_map(|player| std::iter::repeat_n(*player, times))
