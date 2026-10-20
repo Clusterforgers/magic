@@ -17,6 +17,7 @@ fn seat(index: u64, name: &str, connected: bool, ready: bool) -> LobbySeat {
         name: name.to_owned(),
         connected,
         ready,
+        deck: None,
     }
 }
 

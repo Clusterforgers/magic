@@ -5,10 +5,12 @@
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::{Engine, GameState};
-use mtg_protocol::{ErrorCode, LobbySeat, ServerMessage};
+use mtg_protocol::{ErrorCode, LobbySeat, SeatDeck, ServerMessage};
 
 use crate::actor::{Fatal, GameActor, Phase};
+use crate::handle::DeckRefusal;
 use crate::running::{Halt, Rejection, Running};
+use crate::seat_deck::{ChosenDeck, SeatDecks};
 use crate::store::EventStore;
 
 impl<S: EventStore> GameActor<S> {
@@ -31,6 +33,17 @@ impl<S: EventStore> GameActor<S> {
     /// so is one that reaches a lobby the registry is closing, which starts nothing.
     pub(crate) async fn ready(&mut self, seat: PlayerId) -> Result<(), Fatal> {
         if self.closing {
+            return Ok(());
+        }
+        // A seat plays the deck it has, so it has to have one: it is told, and the table is not.
+        if self.in_lobby()
+            && self
+                .decks
+                .as_ref()
+                .is_some_and(|decks| !decks.has(seat.index()))
+        {
+            let reason = "choose a deck before you press Ready";
+            self.refuse(seat, Rejection::new(ErrorCode::BadMessage, reason));
             return Ok(());
         }
         let Phase::Lobby { ready, .. } = &mut self.phase else {
@@ -68,9 +81,15 @@ impl<S: EventStore> GameActor<S> {
     /// Puts `name` at `seat` of the lobby, or empties the seat for `None`, and tells the table.
     ///
     /// Emptying a seat closes its connection and takes its `Ready` back, so nothing of the person
-    /// who left stays at the table. Returns false, with nothing changed, once the game runs or for
-    /// a seat the table does not have.
-    pub(crate) fn seat_at(&mut self, seat: PlayerId, name: Option<String>) -> bool {
+    /// who left stays at the table, and its deck goes back to the one the game was made with. A
+    /// person who comes with a `deck` plays it. Returns false, with nothing changed, once the game
+    /// runs or for a seat the table does not have.
+    pub(crate) fn seat_at(
+        &mut self,
+        seat: PlayerId,
+        name: Option<String>,
+        deck: Option<ChosenDeck>,
+    ) -> bool {
         let Phase::Lobby { ready, names } = &mut self.phase else {
             return false;
         };
@@ -80,18 +99,65 @@ impl<S: EventStore> GameActor<S> {
         };
         if let Some(name) = name {
             *listed = name;
+            if let Some(deck) = deck {
+                self.play(seat, deck);
+            }
         } else {
             listed.clear();
             *flag = false;
             self.seats.detach(seat);
-            // Whoever takes the seat next starts from the server's defaults, not from these stops.
+            // Whoever takes the seat next starts from the server's defaults, not from these stops
+            // or from the deck of the person who left.
             self.stops.reset(seat, self.pace.mode());
             if let Some(recorder) = &mut self.recorder {
                 recorder.forget(seat);
             }
+            let default = self
+                .decks
+                .as_mut()
+                .and_then(|decks| decks.reset(seat.index()))
+                .map(|deck| deck.cards().to_vec());
+            if let (Some(cards), Some(player)) = (default, self.setup.players.get_mut(seat.index()))
+            {
+                player.library = cards;
+            }
         }
         self.push_roster();
         true
+    }
+
+    /// Makes `deck` the one `seat` plays: the table's note and the library the engine will be given.
+    fn play(&mut self, seat: PlayerId, deck: ChosenDeck) {
+        let (Some(decks), Some(player)) = (
+            self.decks.as_mut(),
+            self.setup.players.get_mut(seat.index()),
+        ) else {
+            return;
+        };
+        player.library = deck.cards().to_vec();
+        decks.choose(seat.index(), deck);
+    }
+
+    /// Sets the deck `seat` plays and tells the table. A seat that pressed Ready takes that back
+    /// before it changes its deck; once the game runs, or for a seat nobody holds, nothing changes.
+    pub(crate) fn choose_deck(
+        &mut self,
+        seat: PlayerId,
+        deck: ChosenDeck,
+    ) -> Result<SeatDeck, DeckRefusal> {
+        let Phase::Lobby { ready, .. } = &self.phase else {
+            return Err(DeckRefusal::Started);
+        };
+        if self.decks.is_none() || self.seat_is_open(seat) {
+            return Err(DeckRefusal::Gone);
+        }
+        if ready.get(seat.index()).copied().unwrap_or(false) {
+            return Err(DeckRefusal::Ready);
+        }
+        let note = deck.note().clone();
+        self.play(seat, deck);
+        self.push_roster();
+        Ok(note)
     }
 
     /// Stops the lobby from starting (`on`) or lets it start again; nobody at the table is told.
@@ -156,11 +222,19 @@ impl<S: EventStore> GameActor<S> {
             .enumerate()
             .map(|(index, (name, ready))| {
                 let seat = PlayerId::from_index(index);
+                // Nobody holds an open seat, so it plays nothing the table should hear about.
+                let deck = self
+                    .decks
+                    .as_ref()
+                    .filter(|_| !name.is_empty())
+                    .and_then(|decks| decks.note(index))
+                    .cloned();
                 LobbySeat {
                     seat,
                     name: name.clone(),
                     connected: connected.contains(&seat),
                     ready: *ready,
+                    deck,
                 }
             })
             .collect();
@@ -183,6 +257,22 @@ impl<S: EventStore> GameActor<S> {
             self.refuse(trigger, Rejection::new(ErrorCode::Internal, reason));
             return Ok(());
         };
+        // The decks the seats chose go into the recipe before the first event is stored, so a log
+        // can never be replayed under the decks the game was made with. A recipe that already
+        // names them is left alone.
+        let recipe = self
+            .decks
+            .as_ref()
+            .filter(|decks| decks.changed())
+            .and_then(SeatDecks::recipe);
+        if let (Some(recipe), Some(recorder)) = (recipe, &self.recorder)
+            && let Err(error) = recorder.decks(&recipe).await
+        {
+            tracing::error!(game = %self.id, %error, "could not store the decks the game starts with");
+            let reason = "the game could not be started";
+            self.refuse(trigger, Rejection::new(ErrorCode::Internal, reason));
+            return Ok(());
+        }
         let opening = engine.events().to_vec();
         match self.persist(&before, &opening, 0).await {
             Ok(batches) => {

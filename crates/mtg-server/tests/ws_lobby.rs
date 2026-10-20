@@ -7,7 +7,7 @@ mod net;
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
-use mtg_protocol::{ClientMessage, ErrorCode, LobbySeat, ServerMessage};
+use mtg_protocol::{ClientMessage, ErrorCode, LobbySeat, SeatDeck, ServerMessage};
 use net::{
     Frame, TestServer, WsClient, bot_config, connect, create_game, get, refused, try_connect,
 };
@@ -37,6 +37,11 @@ fn lobby(flags: [(bool, bool); 3]) -> ServerMessage {
             name: NAMES[index].to_owned(),
             connected: *connected,
             ready: *ready,
+            deck: Some(SeatDeck {
+                name: "Mono Green Stompers".to_owned(),
+                format: "normal".to_owned(),
+                manual_cards: 0,
+            }),
         })
         .collect();
     let needed = flags.iter().filter(|(_, ready)| !ready).count();
@@ -75,15 +80,17 @@ async fn the_roster_follows_the_welcome_and_every_change_in_the_documented_wire_
         ada.message().await,
         lobby([(true, false), (false, false), (false, false)])
     );
-    // The exact text on the wire: a flat tagged object, seats in seat order, names as given.
+    // The exact text on the wire: a flat tagged object, seats in seat order, names as given, and
+    // the deck each seat was made with as three facts.
+    let deck = json!({"name": "Mono Green Stompers", "format": "normal", "manual_cards": 0});
     assert_eq!(
         serde_json::from_str::<Value>(ada.texts.last().unwrap()).unwrap(),
         json!({
             "type": "Lobby",
             "seats": [
-                {"seat": 0, "name": "Ada", "connected": true, "ready": false},
-                {"seat": 1, "name": "Bo", "connected": false, "ready": false},
-                {"seat": 2, "name": NAMES[2], "connected": false, "ready": false},
+                {"seat": 0, "name": "Ada", "connected": true, "ready": false, "deck": deck},
+                {"seat": 1, "name": "Bo", "connected": false, "ready": false, "deck": deck},
+                {"seat": 2, "name": NAMES[2], "connected": false, "ready": false, "deck": deck},
             ],
             "needed": 3,
         })

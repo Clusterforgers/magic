@@ -95,6 +95,12 @@ pub fn find(id: &str) -> Option<&'static DemoDeck> {
     DECKS.iter().find(|deck| deck.id == id)
 }
 
+/// The deck a seat made without one holds in its game's recipe until its holder chooses: the seat
+/// cannot press Ready before that, so the deck is never played.
+pub fn stand_in() -> &'static DemoDeck {
+    &DECKS[0]
+}
+
 impl DemoDeck {
     /// Number of cards in the deck.
     pub fn size(&self) -> usize {

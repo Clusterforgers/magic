@@ -4,7 +4,7 @@
 mod common;
 
 use common::{Client, seat};
-use mtg_protocol::{LobbySeat, ServerMessage};
+use mtg_protocol::{LobbySeat, SeatDeck, ServerMessage};
 use mtg_server::registry::{GameOptions, SeatRequest};
 use mtg_server::{GameId, Registry, SeatState, ServerConfig, Visibility, demo};
 use rstest::rstest;
@@ -160,6 +160,7 @@ async fn the_lobby_shows_an_open_seat_with_no_name_and_counts_it_as_needed() {
         name: String::new(),
         connected: false,
         ready: false,
+        deck: None,
     };
     assert_eq!(
         seats,
@@ -169,6 +170,11 @@ async fn the_lobby_shows_an_open_seat_with_no_name_and_counts_it_as_needed() {
                 name: "Player 0".to_owned(),
                 connected: true,
                 ready: false,
+                deck: Some(SeatDeck {
+                    name: "Mono Green Stompers".to_owned(),
+                    format: "normal".to_owned(),
+                    manual_cards: 0,
+                }),
             },
             open(1),
             open(2),

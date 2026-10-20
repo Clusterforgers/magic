@@ -187,11 +187,15 @@ fn a_join_code_request_needs_a_text_code_and_refuses_unknown_fields(#[case] body
 
 #[test]
 fn an_absent_name_is_left_out_of_a_request() {
-    let request = JoinRequest { name: None };
+    let request = JoinRequest {
+        name: None,
+        deck: None,
+    };
     assert_eq!(serde_json::to_value(&request).unwrap(), json!({}));
     let named = JoinCodeRequest {
         code: "ABCD2345".into(),
         name: Some("Bo".into()),
+        deck: None,
     };
     assert_eq!(
         serde_json::to_value(&named).unwrap(),
@@ -200,6 +204,7 @@ fn an_absent_name_is_left_out_of_a_request() {
     let bare = JoinCodeRequest {
         code: "ABCD2345".into(),
         name: None,
+        deck: None,
     };
     assert_eq!(
         serde_json::to_value(&bare).unwrap(),

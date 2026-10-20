@@ -49,6 +49,24 @@ pub struct LobbySeat {
     pub connected: bool,
     /// Whether the seat has pressed Ready and not taken it back. It stays set when the client goes away.
     pub ready: bool,
+    /// The deck the seat plays, as the table may know it. Left out while the seat has none, which
+    /// includes an open seat: the seat cannot press Ready until its holder chooses one.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub deck: Option<SeatDeck>,
+}
+
+/// What the whole table is told of a seat's deck: its name and format and how many of its cards the
+/// game cannot run on its own, never the name of a card (`docs/deck-check.md`, Decisions).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct SeatDeck {
+    /// The deck's name, as its owner wrote it or as a built-in deck is called.
+    pub name: String,
+    /// The deck's format key, such as `modern` or `commander`; `normal` for a built-in deck.
+    pub format: String,
+    /// Copies of the main deck's cards that are not verified, which the table resolves by hand in
+    /// part or in whole. Zero for a deck the game plays entirely.
+    pub manual_cards: u32,
 }
 
 /// How long a seat asks the server to pass priority for it (see [`ClientMessage::Yield`]).

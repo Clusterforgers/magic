@@ -256,6 +256,7 @@ pub fn roster(flags: &[(bool, bool)]) -> ServerMessage {
             name: format!("Seat {}", index + 1),
             connected: *connected,
             ready: *ready,
+            deck: None,
         })
         .collect();
     let needed = flags.iter().filter(|(_, ready)| !ready).count();
