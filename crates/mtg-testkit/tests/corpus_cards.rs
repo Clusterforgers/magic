@@ -215,7 +215,7 @@ fn lacking(name: &str) -> Vec<String> {
 #[case::eternal_witness("Eternal Witness", &["Effect.Move"])]
 #[case::brainstorm("Brainstorm", &["Effect.Move"])]
 #[case::cultivate("Cultivate", &["Effect.Move", "Effect.Search", "Effect.Shuffle"])]
-#[case::izzet_charm("Izzet Charm", &["Cost.Mana", "Effect.Counter", "Effect.Pay"])]
+#[case::izzet_charm("Izzet Charm", &["Cost.Mana", "Effect.Pay"])]
 #[case::rhystic_study("Rhystic Study", &["Cost.Mana", "Effect.Pay"])]
 #[case::delver(
     "Delver of Secrets // Insectile Aberration",
@@ -227,7 +227,7 @@ fn lacking(name: &str) -> Vec<String> {
 )]
 #[case::jace(
     "Jace, the Mind Sculptor",
-    &["Ability.Loyalty", "Effect.Exile", "Effect.LookAtTop", "Effect.Move"]
+    &["Ability.Loyalty", "Effect.LookAtTop", "Effect.Move"]
 )]
 fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(
     #[case] name: &str,
