@@ -56,6 +56,23 @@ fn reads_as(text: &str, kind: ClauseKind, x_free: bool, json: &str) {
 )]
 #[case::hyphen_inside_a_word("non-token", &[Token::Word("non-token".into())])]
 #[case::curly_apostrophe("don\u{2019}t", &[Token::Word("don't".into())])]
+#[case::a_name_inside_a_sentence(
+    "create a Treasure token",
+    &[Token::Word("create".into()), Token::Word("a".into()), Token::Name("Treasure".into()), Token::Word("token".into())]
+)]
+#[case::a_capital_opening_a_sentence(
+    "Draw a card. Then scry 1.\nGain 2",
+    &[Token::Word("draw".into()), Token::Word("a".into()), Token::Word("card".into()), Token::Punct('.'),
+      Token::Word("then".into()), Token::Word("scry".into()), Token::Number(1), Token::Punct('.'),
+      Token::Word("gain".into()), Token::Number(2)]
+)]
+#[case::a_capital_after_a_colon_or_a_dash(
+    "{T}: Add {G}. \u{2014} Draw",
+    &[Token::Symbol("T".into()), Token::Punct(':'), Token::Word("add".into()), Token::Symbol("G".into()),
+      Token::Punct('.'), Token::Punct('\u{2014}'), Token::Word("draw".into())]
+)]
+#[case::the_variable_is_not_a_name("create X tokens", &[Token::Word("create".into()), Token::Word("x".into()), Token::Word("tokens".into())])]
+#[case::this_aura("Destroy this Aura", &[Token::Word("destroy".into()), Token::Source])]
 fn the_tokens_of_a_clause(#[case] text: &str, #[case] expected: &[Token]) {
     assert_eq!(tokenize(text), expected);
 }
@@ -86,11 +103,15 @@ fn a_reading_that_does_not_write_back_as_the_text_stays_unread(#[case] text: &st
 #[rstest]
 #[case::spell_kind_only(ClauseKind::Static)]
 #[case::keyword(ClauseKind::Keyword)]
-#[case::triggered(ClauseKind::Triggered)]
 #[case::modal(ClauseKind::Modal)]
 #[case::loyalty(ClauseKind::Loyalty)]
-fn only_spell_and_activated_clauses_are_read(#[case] kind: ClauseKind) {
+fn only_spell_triggered_and_activated_clauses_are_read(#[case] kind: ClauseKind) {
     assert_eq!(clause("Draw a card.", kind, false), None);
+    assert_eq!(
+        clause("When ~ enters, draw a card.", kind, false),
+        None,
+        "{kind:?}"
+    );
 }
 
 #[test]
@@ -103,6 +124,8 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
     let tilde = golden("~ deals 1 damage to any target.", ClauseKind::Spell, false);
     assert_eq!(read, tilde);
 }
+
+mod triggers;
 
 mod mana {
     //! Goal: a plain mana ability reads in the shapes of the cards, and a cost, a choice or a count it does not model stays with the table.
@@ -319,6 +342,7 @@ mod damage {
     #[case("~ deals 1 damage to each player.")]
     #[case("~ deals 2 damage to target creature or planeswalker.")]
     #[case("~ deals 6 damage to target creature with mana value 3 or less.")]
+    #[case("~ deals 3 damage to target Goblin.")]
     fn more_oracle_wordings_read_and_write_back(#[case] text: &str) {
         golden(text, ClauseKind::Spell, false);
     }
@@ -337,7 +361,7 @@ mod damage {
         "~ deals 3 damage to any target. If you control a Goblin, ~ deals 5 damage instead."
     )]
     #[case::unless("~ deals 3 damage to target creature unless its controller pays {2}.")]
-    #[case::subtype("~ deals 3 damage to target Goblin.")]
+    #[case::two_subtypes("~ deals 3 damage to each Goblin and each Elf.")]
     #[case::any_number("~ deals 1 damage to any number of targets.")]
     #[case::x_without_an_x_cost("~ deals X damage to any target.")]
     #[case::no_amount("~ deals damage to any target.")]
@@ -403,6 +427,8 @@ mod removal {
     #[case("Exile target nonland permanent.")]
     #[case("Exile target artifact or enchantment.")]
     #[case("Exile target creature or planeswalker.")]
+    #[case("Destroy target Goblin.")]
+    #[case("Exile target Clue.")]
     #[case("Exile all creatures.")]
     #[case("Exile all nonland permanents.")]
     #[case("Counter target creature spell.")]
@@ -421,7 +447,7 @@ mod removal {
     #[case::a_second_target("Destroy target creature and target land.")]
     #[case::each("Destroy each creature.")]
     #[case::that("Destroy target creature that was dealt damage this turn.")]
-    #[case::subtype("Destroy target Goblin.")]
+    #[case::a_plural_subtype("Destroy all Goblins.")]
     #[case::a_zone("Exile target card from a graveyard.")]
     #[case::until("Exile target creature until ~ leaves the battlefield.")]
     #[case::an_ability("Counter target activated ability.")]

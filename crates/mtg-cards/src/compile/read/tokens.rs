@@ -8,6 +8,8 @@ use crate::refs::{Ref, TargetSpec};
 pub enum Token {
     /// A word in lowercase; apostrophes and hyphens inside it stay (`can't`).
     Word(String),
+    /// A capitalized word inside a sentence, as written: a subtype ("Soldier") or a name.
+    Name(String),
     /// A run of digits.
     Number(u32),
     /// A symbol in braces, without the braces (`T`, `G`, `2`).
@@ -87,11 +89,17 @@ pub fn without_period(text: &str) -> &str {
     text.strip_suffix('.').unwrap_or(text)
 }
 
-fn word_or_number(run: &str) -> Token {
+/// A run of letters or digits as a token; `opens` says it begins a sentence, where a capital is
+/// grammar, and a single capital ("X") is never a name.
+fn word_or_number(run: &str, opens: bool) -> Token {
     if run.chars().all(|c| c.is_ascii_digit())
         && let Ok(number) = run.parse()
     {
         return Token::Number(number);
+    }
+    let capital = run.chars().next().is_some_and(char::is_uppercase);
+    if capital && !opens && run.chars().count() > 1 {
+        return Token::Name(run.replace('\u{2019}', "'"));
     }
     Token::Word(run.replace('\u{2019}', "'").to_lowercase())
 }
@@ -101,8 +109,11 @@ pub fn tokenize(text: &str) -> Vec<Token> {
     let chars: Vec<char> = text.chars().collect();
     let mut tokens: Vec<Token> = Vec::new();
     let mut at = 0;
+    // A sentence opens at the start of the text, after a period, a colon, a dash or a bullet and on a new line.
+    let mut opens = true;
     while let Some(&c) = chars.get(at) {
         if c.is_whitespace() {
+            opens |= c == '\n';
             at += 1;
         } else if c == '{'
             && let Some(len) = chars.iter().skip(at).position(|&x| x == '}')
@@ -111,9 +122,11 @@ pub fn tokenize(text: &str) -> Vec<Token> {
                 chars.iter().skip(at + 1).take(len - 1).collect(),
             ));
             at += len + 1;
+            opens = false;
         } else if c == '~' {
             tokens.push(Token::Source);
             at += 1;
+            opens = false;
         } else if c.is_alphanumeric() {
             let start = at;
             while let Some(&x) = chars.get(at) {
@@ -127,23 +140,29 @@ pub fn tokenize(text: &str) -> Vec<Token> {
                 }
             }
             let run: String = chars.iter().skip(start).take(at - start).collect();
-            tokens.push(word_or_number(&run));
+            tokens.push(word_or_number(&run, opens));
+            opens = false;
         } else {
             tokens.push(Token::Punct(c));
+            opens = matches!(c, '.' | ':' | '\u{2014}' | '\u{2022}');
             at += 1;
         }
     }
     merge_source(tokens)
 }
 
-/// "this" and a noun for the card become the source token.
+/// "this" and a noun for the card ("this creature", "this Aura") become the source token.
 fn merge_source(tokens: Vec<Token>) -> Vec<Token> {
     let mut merged = Vec::with_capacity(tokens.len());
     let mut iter = tokens.into_iter().peekable();
     while let Some(token) = iter.next() {
         let this = matches!(&token, Token::Word(word) if word == "this");
-        let noun =
-            matches!(iter.peek(), Some(Token::Word(word)) if SOURCE_NOUNS.contains(&word.as_str()));
+        let noun = match iter.peek() {
+            Some(Token::Word(word) | Token::Name(word)) => {
+                SOURCE_NOUNS.contains(&word.to_lowercase().as_str())
+            }
+            _ => false,
+        };
         if this && noun {
             iter.next();
             merged.push(Token::Source);
@@ -199,6 +218,15 @@ impl<'a> Reader<'a> {
     /// Moves past one token.
     pub fn skip(&mut self) {
         self.at += 1;
+    }
+
+    /// Reads a capitalized word inside a sentence, as written.
+    pub fn name(&mut self) -> Option<&'a str> {
+        let Some(Token::Name(name)) = self.tokens.get(self.at) else {
+            return None;
+        };
+        self.at += 1;
+        Some(name.as_str())
     }
 
     /// Reads any word.

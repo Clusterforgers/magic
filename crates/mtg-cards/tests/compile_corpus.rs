@@ -16,7 +16,7 @@ use common::{cards_dir, printed};
 /// The corpus cards whose compiled abilities are the hand-written file's, face by face. A card joins
 /// the list when the templates reach it and never leaves; a card that matches but is not listed fails
 /// the test too, so the list is the ratchet.
-const REPRODUCED: [&str; 12] = [
+const REPRODUCED: [&str; 13] = [
     "Bloodbraid Elf",
     "Counterspell",
     "Doom Blade",
@@ -24,6 +24,7 @@ const REPRODUCED: [&str; 12] = [
     "Giant Growth",
     "Lightning Bolt",
     "Llanowar Elves",
+    "Mulldrifter",
     "Opt",
     "Serra Angel",
     "Sol Ring",
@@ -123,8 +124,18 @@ fn the_frontier_of_the_compiler() {
     );
 }
 
-/// Every spell or mana ability of a hand-written file that the renderer can write is written as the
-/// text of the card: the clauses of its kind, on the same face.
+/// The clause without its ability word ("Landfall — "), which is flavor.
+fn without_ability_word(text: &str) -> &str {
+    match text.split_once(" \u{2014} ") {
+        Some((word, rest)) if !word.contains(['~', ',', '.']) && word.split(' ').count() <= 3 => {
+            rest
+        }
+        _ => text,
+    }
+}
+
+/// Every spell, triggered or mana ability of a hand-written file that the renderer can write is
+/// written as the text of the card: the clauses of its kind, on the same face.
 #[test]
 fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
     let library = hand_written();
@@ -137,13 +148,14 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
             };
             let kind = match ability {
                 Ability::Spell { .. } => ClauseKind::Spell,
+                Ability::Triggered { .. } => ClauseKind::Triggered,
                 _ => ClauseKind::Activated,
             };
             let lines: Vec<&str> = compiled
                 .clauses
                 .iter()
                 .filter(|clause| clause.face == face && clause.kind == kind)
-                .map(|clause| clause.text.as_str())
+                .map(|clause| without_ability_word(&clause.text))
                 .collect();
             let wanted = if kind == ClauseKind::Spell {
                 vec![lines.join("\n")]

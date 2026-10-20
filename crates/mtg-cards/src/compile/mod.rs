@@ -103,7 +103,9 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
                 // `check_printed` accepts Enchant on an Aura only.
                 .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
                 .map(Ability::Keyword),
-            ClauseKind::Activated => read::clause(&clause_text, kind, x_free),
+            ClauseKind::Triggered | ClauseKind::Activated => {
+                read::clause(&clause_text, kind, x_free)
+            }
             _ => None,
         };
         pending.push(Pending {
@@ -298,7 +300,17 @@ mod tests {
     #[case::keyword_and_trigger(
         "Creature \u{2014} Elf",
         "Haste\nWhen ~ enters, draw a card.",
+        Some(ImplStatus::Full)
+    )]
+    #[case::keyword_and_unread_trigger(
+        "Creature \u{2014} Elf",
+        "Haste\nWhen ~ enters, tap target creature.",
         Some(ImplStatus::Partial)
+    )]
+    #[case::trigger_with_an_ability_word(
+        "Creature \u{2014} Elf",
+        "Landfall \u{2014} Whenever a land you control enters, draw a card.",
+        Some(ImplStatus::Full)
     )]
     #[case::keyword_and_static(
         "Artifact \u{2014} Equipment",
@@ -365,7 +377,7 @@ mod tests {
 
     #[test]
     fn a_partial_card_keeps_a_manual_ability_for_each_unread_clause_in_order() {
-        let text = "Flying\nWhenever ~ attacks, draw a card.\n{T}: Draw a card.\nVigilance";
+        let text = "Flying\nWhenever ~ attacks, tap target creature.\n{T}: Draw a card.\nVigilance";
         let compiled = one("Test Card", "Creature \u{2014} Bird", text);
         let card = compiled.card.unwrap();
         let abilities = &card.faces[0].abilities;
@@ -376,12 +388,15 @@ mod tests {
             panic!("{:?}", abilities[1]);
         };
         assert_eq!(reason, "a triggered ability the compiler does not read yet");
-        assert_eq!(span.slice(text), Some("Whenever ~ attacks, draw a card."));
+        assert_eq!(
+            span.slice(text),
+            Some("Whenever ~ attacks, tap target creature.")
+        );
         assert_eq!(
             abilities[2],
             Ability::Manual {
                 reason: "an activated ability the compiler does not read yet".into(),
-                span: Span { start: 40, end: 57 }
+                span: Span { start: 48, end: 65 }
             }
         );
         let kinds: Vec<_> = compiled.clauses.iter().map(|clause| clause.kind).collect();
