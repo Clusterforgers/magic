@@ -3,8 +3,9 @@
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
 //! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, `{T}` abilities and triggered
-//! abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, life and damage (and delayed
-//! triggers), "may" and choices and modal spells, the keywords of combat and hexproof, and nothing else.
+//! abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, scrying, looking at, revealing,
+//! moving and shuffling cards, life and damage (and delayed triggers), "may" and choices and modal spells, the
+//! keywords of combat and hexproof, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -28,6 +29,11 @@ const RUNS: &[&str] = &[
     "Cost.Tap",
     "Effect.Draw",
     "Effect.Discard",
+    "Effect.Scry",
+    "Effect.LookAtTop",
+    "Effect.Reveal",
+    "Effect.Shuffle",
+    "Effect.Move",
     "Effect.Destroy",
     "Effect.Exile",
     "Effect.Sacrifice",
@@ -98,6 +104,14 @@ mod tests {
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", false)]
+    #[case::scrying("Effect.Scry", true)]
+    #[case::looking_at_the_top("Effect.LookAtTop", true)]
+    #[case::revealing("Effect.Reveal", true)]
+    #[case::shuffling("Effect.Shuffle", true)]
+    #[case::moving("Effect.Move", true)]
+    #[case::moving_to_the_battlefield("Effect.Move.Battlefield", false)]
+    #[case::moving_in_a_random_order("Effect.Move.Random", false)]
+    #[case::searching("Effect.Search", false)]
     #[case::sacrificing("Effect.Sacrifice", true)]
     #[case::damage("Effect.DealDamage", true)]
     #[case::gaining_life("Effect.GainLife", true)]
@@ -117,7 +131,6 @@ mod tests {
     #[case::destroying("Effect.Destroy", true)]
     #[case::exiling("Effect.Exile", true)]
     #[case::countering("Effect.Counter", true)]
-    #[case::moving_cards("Effect.Move", false)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]

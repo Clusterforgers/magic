@@ -3,7 +3,9 @@ import type { ObjectId } from "./ObjectId";
 import type { PlayerId } from "./PlayerId";
 
 /**
- * A player scried: some of the cards looked at stay on top, the others go to the bottom.
+ * A player scried: some of the cards looked at stay on top, the others go to the bottom (CR 701.22).
+ *
+ * Together the two lists are the top cards of the library, so the event reorders it. Both read from the top down.
  */
 export type Scried = { 
 /**
@@ -11,10 +13,10 @@ export type Scried = {
  */
 player: PlayerId, 
 /**
- * The cards that stay on top, first to last.
+ * The cards that stay on top, the next card drawn first.
  */
 top: Array<ObjectId>, 
 /**
- * The cards put on the bottom.
+ * The cards put on the bottom, the last of them the bottom card.
  */
 bottom: Array<ObjectId>, };

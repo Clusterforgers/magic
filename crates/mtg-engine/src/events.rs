@@ -375,6 +375,13 @@ pub enum Event {
     Scried(Scried),
     /// A player revealed cards.
     Revealed(Revealed),
+    /// Cards of a library were put on its bottom.
+    LibraryBottomed {
+        /// Whose library.
+        player: PlayerId,
+        /// The cards, top to bottom as they lie after the move: the last is the bottom card.
+        cards: Vec<ObjectId>,
+    },
 }
 
 /// How the resolution of a spell or ability ended.
@@ -453,9 +460,11 @@ impl Event {
             | Event::CountersChanged(_)
             | Event::LibraryLooked(_)
             | Event::CardsFound(_)
-            | Event::Scried(_)
             | Event::Revealed(_) => Vec::new(),
-            Event::HandDealt { cards, .. } | Event::CardsBottomed { cards, .. } => cards.clone(),
+            Event::HandDealt { cards, .. }
+            | Event::CardsBottomed { cards, .. }
+            | Event::LibraryBottomed { cards, .. } => cards.clone(),
+            Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
             Event::TokenCreated(token) => vec![token.object],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }

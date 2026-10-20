@@ -18,8 +18,9 @@ use mtg_engine::format::Normal;
 use mtg_engine::rng::GameRng;
 
 use crate::cards::{
-    burn, cost, creature, creature_costing, damage, drain, draw, edict, gain_life,
-    keyworded_creature, land, library_of_cards, mind_rot, pinger, salve, walker, wastes,
+    bottomer, burn, cost, creature, creature_costing, damage, drain, draw, edict, gain_life,
+    keyworded_creature, land, library_of_cards, mind_rot, pinger, revealer, salve, scryer, stirrer,
+    walker, wastes,
 };
 use crate::corpus::{self, CorpusError};
 use crate::trigger_cards::{
@@ -316,6 +317,43 @@ pub fn archon_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusE
     let mut decks = Vec::with_capacity(players);
     for seat in 0u64..players as u64 {
         decks.push(archon_deck(&mut GameRng::substream(seed, 6_000 + seat))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+}
+
+/// A legal Normal deck in blue and green of Opt, Brainstorm and spells that scry, look at the top of libraries, put
+/// cards on the bottom of them, shuffle and reveal, with creatures to fill it, derived entirely from `rng`.
+pub fn library_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    let colors = [Color::Blue, Color::Green];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS - 2).map(|i| land(colors[i % 2])).collect();
+    for card in [
+        corpus::card("Opt")?,
+        corpus::card("Brainstorm")?,
+        scryer("Library Scry", 1, 3),
+        bottomer("Library Bottom"),
+        stirrer("Library Stir"),
+        revealer("Library Reveal"),
+    ] {
+        deck.extend(std::iter::repeat_n(card, 3));
+    }
+    // Twenty creatures make the 60 cards.
+    for slot in 0..10 {
+        let generic = u32::try_from(rng.index(3)).unwrap_or(0);
+        let power = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let toughness = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let name = format!("Library Fodder {slot} {generic} {power}/{toughness}");
+        let card = creature(&name, generic, &[colors[rng.index(2)]], power, toughness);
+        deck.extend(std::iter::repeat_n(card, 2));
+    }
+    rng.shuffle(&mut deck);
+    Ok(deck)
+}
+
+/// A normal game of `players` seats whose decks are [`library_deck`]s, fully determined by `seed`.
+pub fn library_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(library_deck(&mut GameRng::substream(seed, 9_000 + seat))?);
     }
     Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }

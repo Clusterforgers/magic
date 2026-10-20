@@ -33,6 +33,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { CardsBottomed: { player: 0, cards: [1, 2] } },
     'Ana puts 2 cards on the bottom of their library',
   ],
+  LibraryBottomed: [
+    { LibraryBottomed: { player: 0, cards: [1, 2] } },
+    'Ana puts 2 cards on the bottom of their library',
+  ],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   StepBegan: [{ StepBegan: { step: 'DeclareAttackers' } }, 'Declare attackers begins'],

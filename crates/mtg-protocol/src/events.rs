@@ -184,6 +184,12 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::ObjectLeftGame { object } => {
             (!knows(before, *object, viewer)).then_some(HiddenEvent::ObjectLeftGame)
         }
+        // The cards are in a library by now, which nobody sees into: the seat that put them there learned which
+        // from the events that moved or showed them, the others learn how many.
+        Event::LibraryBottomed { player, cards } => Some(HiddenEvent::CardsBottomed {
+            player: *player,
+            count: count(cards.len()),
+        }),
         // What the effects of spells and abilities make known: some of it is private to a player or to cards.
         Event::LibraryLooked(_)
         | Event::CardsFound(_)

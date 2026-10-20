@@ -27,23 +27,26 @@ use Support::{Manual, Partial, Verified};
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
 /// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
-/// countering, life and damage, and the keywords of combat, so the ten cards that need no more are Verified (the
-/// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs
-/// as Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
+/// countering, scrying, looking at and revealing cards, choosing and moving them, shuffling, life and damage, and the
+/// keywords of combat, so the thirteen cards that need no more are Verified (the Forest's ability comes from its land
+/// type) and a card whose other abilities are still missing carries what runs as Partial: Mulldrifter's draw and
+/// flying, not its evoke; Faithless Looting's draw and discard, not its flashback. Jace, the Mind Sculptor stays with
+/// the table for its loyalty costs; Rampant Growth, Cultivate and Flooded Strand for `Search` and a move to the
+/// battlefield.
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
     ("Bloodbraid Elf", Partial, 1),
     ("Bonecrusher Giant // Stomp", Manual, 0),
     ("Bonesplitter", Manual, 0),
-    ("Brainstorm", Manual, 0),
+    ("Brainstorm", Verified, 1),
     ("Burst Lightning", Manual, 0),
     ("Counterspell", Verified, 1),
     ("Cultivate", Manual, 0),
     ("Delver of Secrets // Insectile Aberration", Manual, 0),
     ("Dockside Extortionist", Manual, 0),
     ("Doom Blade", Verified, 1),
-    ("Eternal Witness", Manual, 0),
+    ("Eternal Witness", Verified, 1),
     ("Faithless Looting", Partial, 1),
     ("Felidar Sovereign", Partial, 2),
     ("Fire // Ice", Manual, 0),
@@ -59,7 +62,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
     ("Mulldrifter", Partial, 2),
-    ("Opt", Manual, 0),
+    ("Opt", Verified, 1),
     ("Pacifism", Manual, 0),
     ("Panharmonicon", Manual, 0),
     ("Questing Beast", Partial, 3),
@@ -208,27 +211,22 @@ fn lacking(name: &str) -> Vec<String> {
     missing.into_iter().collect()
 }
 
-/// A "may", a choice and modes run now, so none of the corpus cards that use them changes state: each is still
-/// held back by another primitive, which this table names. The cards that need a payment or a counter wait for the
-/// tasks that build those.
+/// A "may", a choice, modes and the library effects run now, so the corpus cards that use only those are Verified
+/// (Brainstorm, Eternal Witness, Opt); each of these is still held back by another primitive, which this table names.
+/// The cards that need a payment, a search or a move onto the battlefield wait for the tasks that build those.
 #[rstest]
-#[case::eternal_witness("Eternal Witness", &["Effect.Move"])]
-#[case::brainstorm("Brainstorm", &["Effect.Move"])]
-#[case::cultivate("Cultivate", &["Effect.Move", "Effect.Search", "Effect.Shuffle"])]
+#[case::cultivate("Cultivate", &["Effect.Move.Battlefield", "Effect.Search"])]
 #[case::izzet_charm("Izzet Charm", &["Cost.Mana", "Effect.Pay"])]
 #[case::rhystic_study("Rhystic Study", &["Cost.Mana", "Effect.Pay"])]
 #[case::delver(
     "Delver of Secrets // Insectile Aberration",
-    &["Effect.If", "Effect.LookAtTop", "Effect.Reveal", "Effect.Transform"]
+    &["Effect.If", "Effect.Transform"]
 )]
 #[case::sneak_attack(
     "Sneak Attack",
-    &["Cost.Mana", "Effect.Continuous", "Effect.Move", "Mod.AddKeyword"]
+    &["Cost.Mana", "Effect.Continuous", "Effect.Move.Battlefield", "Mod.AddKeyword"]
 )]
-#[case::jace(
-    "Jace, the Mind Sculptor",
-    &["Ability.Loyalty", "Effect.LookAtTop", "Effect.Move"]
-)]
+#[case::jace("Jace, the Mind Sculptor", &["Ability.Loyalty"])]
 fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(
     #[case] name: &str,
     #[case] expected: &[&str],

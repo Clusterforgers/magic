@@ -9,7 +9,7 @@ use crate::player::MulliganStatus;
 use crate::state::{GameState, Stage};
 use crate::zones::{Placement, Zone};
 
-fn same_cards(a: &[ObjectId], b: &[ObjectId]) -> bool {
+pub(super) fn same_cards(a: &[ObjectId], b: &[ObjectId]) -> bool {
     let (mut a, mut b) = (a.to_vec(), b.to_vec());
     a.sort_unstable();
     b.sort_unstable();

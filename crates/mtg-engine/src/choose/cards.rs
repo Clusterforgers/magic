@@ -38,7 +38,7 @@ pub struct CardsOptions {
 pub struct CardsChoice(pub Vec<ObjectId>);
 
 /// Checks that `cards` are all among the cards offered, each once, and between `min` and `max` of them.
-fn check(options: &CardsOptions, cards: &[ObjectId]) -> Result<(), IllegalAnswer> {
+pub(super) fn check(options: &CardsOptions, cards: &[ObjectId]) -> Result<(), IllegalAnswer> {
     for (at, card) in cards.iter().enumerate() {
         if cards[..at].contains(card) {
             return Err(IllegalAnswer::Duplicate("card"));

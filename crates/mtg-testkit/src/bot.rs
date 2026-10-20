@@ -178,7 +178,10 @@ impl RandomBot {
                 Answer::ChooseCards(CardsChoice(self.subset(&options.from, wanted)))
             }
             DecisionKind::OrderCards(options) => {
-                Answer::OrderCards(OrderChoice(options.cards.clone()))
+                // Every card once, in a random order.
+                Answer::OrderCards(OrderChoice(
+                    self.subset(&options.cards, options.cards.len()),
+                ))
             }
             DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(self.rng.below(2) == 0)),
             DecisionKind::ChooseOption(options) => {

@@ -14,8 +14,9 @@ use crate::state::GameState;
 use crate::turn::Step;
 use crate::zones::Zone;
 
-/// Library order after shuffling `cards` with the `offset`-th RNG substream of this batch of events.
-fn shuffled(state: &GameState, offset: u64, mut cards: Vec<ObjectId>) -> Vec<ObjectId> {
+/// Library order after shuffling `cards` with the `offset`-th RNG substream of this batch of events: the batch's k-th
+/// shuffle uses `rng_index + k`, since each folded shuffle moves the index on.
+pub(crate) fn shuffled(state: &GameState, offset: u64, mut cards: Vec<ObjectId>) -> Vec<ObjectId> {
     GameRng::substream(state.seed, state.rng_index + offset).shuffle(&mut cards);
     cards
 }
