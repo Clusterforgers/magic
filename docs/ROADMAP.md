@@ -34,9 +34,10 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (r2) Reader framework and renderer: a template reads a clause into the DSL and renders it back as English; goldens for each template, and a ratchet over the corpus (every ability the compiler reads equals the hand-written one, and the cards it reproduces whole never shrink in number)
 - [x] (r3a) Templates: plain mana abilities and spell effects (draw, life, damage, destroy, exile, counter, scry, pump) with their common targets and amounts
 - [x] (r3b) Templates: triggers (enters, dies, leaves, attacks, cast, step, sacrifice) and "you may"; a line without a period no longer blocks the effects of its spell
-- [ ] (r3b2) Templates: modes ("choose one") and "pay" ("unless its controller pays"), and the effects "exile ~", "return target creature to its owner's hand" and "all creatures get -N/-N"
-- [ ] (r3c) Templates: activated abilities with `{T}`, mana and sacrifice costs, and the wordings of tokens, counters and search
+- [ ] (r3b2) Templates: modes ("choose one"), "pay" ("unless its controller pays"), compound predicates ("discards a card and loses 3 life"), the older "enters the battlefield" wording, and the effects "exile ~", "return target creature to its owner's hand" and "all creatures get -N/-N"
+- [ ] (r3c) Templates: activated abilities with `{T}`, mana and sacrifice costs, and the wordings of search and the library effects
 - [ ] (r4) `mtg-cli coverage`: states, reasons and clause spans for every precon card, with the missing primitives and unreadable wordings ranked by the cards each holds back
+- [ ] (r4b) Audit before any compiled rule reaches a game: 100 random compiled cards are listed as oracle text beside the rendered reading and the JSON, and each disagreement fixes a template
 - [ ] (r5) The vocabulary the report ranks highest and the DSL lacks (value nodes such as devotion, energy and chosen colour; effects; costs; trigger patterns) is added in one pass, each with its `Caps` name and a stub
 - [ ] (r1c) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes the ones that validate
 
