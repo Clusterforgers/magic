@@ -12,6 +12,7 @@ pub mod driver;
 pub mod expect;
 pub mod harness;
 pub mod invariants;
+pub mod pump_cards;
 pub mod scenario;
 pub mod script_error;
 pub mod trigger_cards;
@@ -26,6 +27,7 @@ pub use decks::{
 pub use driver::Driver;
 pub use harness::{FailureKind, GameFailure, GameOutcome, PlayOptions, play_game, play_game_with};
 pub use invariants::{InvariantChecker, Violation, check_settled, check_state};
+pub use pump_cards::pump_fuzz_setup;
 pub use scenario::{
     Scenario, ScenarioError, attached_to, damaged, ready, sick, tapped, with_counters,
 };

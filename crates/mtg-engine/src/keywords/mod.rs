@@ -649,4 +649,101 @@ mod tests {
             (first, regular)
         );
     }
+
+    fn grant(game: &mut GameState, id: ObjectId, keyword: Keyword, timestamp: u64) {
+        use crate::effects::{ContinuousEffect, Duration, Selector};
+        use crate::events::Event;
+        use crate::fold::apply_event;
+        use mtg_core::ids::EffectId;
+        let effect = ContinuousEffect::new(
+            EffectId(timestamp),
+            Selector::objects(game, [id]),
+            Modification::AddKeyword(keyword),
+            Duration::UntilEndOfTurn,
+            timestamp,
+        );
+        apply_event(game, &Event::EffectCreated { effect }).unwrap();
+    }
+
+    fn board() -> (GameState, ObjectId, ObjectId) {
+        let game = state(
+            vec![vec![creature("Idle", 1, 1)], vec![]],
+            vec![
+                vec![holder(&[Keyword::Haste]), creature("Plain", 1, 1)],
+                vec![],
+            ],
+        );
+        let [held, plain] = [0, 1].map(|at| game.zone(Zone::Battlefield)[at]);
+        (game, held, plain)
+    }
+
+    #[test]
+    fn granted_keywords_follow_the_printed_ones_in_timestamp_order_and_are_not_listed_twice() {
+        let (mut game, held, plain) = board();
+        // Stored out of order on purpose: the order is the timestamps', not the order of creation events.
+        grant(&mut game, held, Keyword::Trample, 9);
+        grant(&mut game, held, Keyword::Flying, 4);
+        grant(&mut game, held, Keyword::Haste, 6);
+        grant(&mut game, plain, Keyword::Flying, 5);
+        assert_eq!(
+            keywords_of(&game, held),
+            [&Keyword::Haste, &Keyword::Flying, &Keyword::Trample],
+            "printed first, then granted by timestamp; haste is not listed again"
+        );
+        assert_eq!(keywords_of(&game, plain), [&Keyword::Flying]);
+        assert!(has_keyword(&game, plain, &Keyword::Flying));
+        assert!(!has_keyword(&game, plain, &Keyword::Trample));
+    }
+
+    #[test]
+    fn a_granted_keyword_reaches_every_reader_the_printed_one_does() {
+        let (mut game, _, plain) = board();
+        for (keyword, timestamp) in [
+            (Keyword::FirstStrike, 1),
+            (Keyword::Defender, 2),
+            (Keyword::Indestructible, 3),
+            (Keyword::Menace, 4),
+            (Keyword::Vigilance, 5),
+        ] {
+            grant(&mut game, plain, keyword, timestamp);
+        }
+        assert!(damage_rules(&game, plain).first_strike);
+        assert!(forbids_attacking(&game, plain));
+        assert!(is_indestructible(&game, plain));
+        assert_eq!(min_blockers(&game, plain), 2);
+        assert!(attacks_untapped(&game, plain));
+    }
+
+    #[test]
+    fn granted_haste_excuses_summoning_sickness() {
+        let (mut game, _, plain) = board();
+        if let Some(permanent) = game
+            .objects
+            .get_mut(&plain)
+            .and_then(|o| o.permanent.as_mut())
+        {
+            permanent.summoning_sick = true;
+        }
+        assert!(summoning_sick(&game, plain));
+        grant(&mut game, plain, Keyword::Haste, 1);
+        assert!(!summoning_sick(&game, plain));
+    }
+
+    #[test]
+    fn a_granted_keyword_belongs_to_the_object_named_while_the_effect_lasts() {
+        let (mut game, held, plain) = board();
+        let idle = game.zone(Zone::Hand(PlayerId(0)))[0];
+        grant(&mut game, plain, Keyword::Flying, 1);
+        assert_eq!(
+            keywords_of(&game, held),
+            [&Keyword::Haste],
+            "another permanent"
+        );
+        // Effects touch permanents only; the keyword is not on a card in a hand.
+        grant(&mut game, idle, Keyword::Flying, 2);
+        assert_eq!(keywords_of(&game, idle).len(), 0);
+        // A new object does not keep what the old one was given (CR 400.7).
+        game.objects.get_mut(&plain).unwrap().counter += 1;
+        assert_eq!(keywords_of(&game, plain).len(), 0);
+    }
 }
