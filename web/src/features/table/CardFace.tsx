@@ -1,7 +1,16 @@
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
-import { costPips, frameOf, keywordLine, powerToughness, statusLabels, typeLine } from './cardModel'
-import type { CombatRole } from './cardModel'
+import {
+  costPips,
+  counterLabels,
+  frameOf,
+  keywordLine,
+  loyaltyOf,
+  powerToughness,
+  statusLabels,
+  typeLine,
+} from './cardModel'
+import type { CombatRole, Links } from './cardModel'
 import { FRAME, SIZE } from './cardSize'
 import type { CardSize } from './cardSize'
 import { ManaPips } from './ManaPips'
@@ -19,6 +28,8 @@ interface CardFaceProps {
   note?: CardNote | undefined
   /** The face tops a pile of equal permanents: two edges peek out behind it. */
   stacked?: boolean
+  /** What it is attached to and what is attached to it, by name: a cue beside the counters. */
+  links?: Links | undefined
 }
 
 /** The lines of name a face can spare: a face on its side is low, and a compact one has no cost or type line. */
@@ -44,6 +55,7 @@ export function CardFace({
   upright = false,
   note,
   stacked = false,
+  links,
 }: CardFaceProps) {
   const classes = SIZE[size]
   const turned = object.permanent?.tapped === true && !upright
@@ -52,6 +64,8 @@ export function CardFace({
   const labels = statusLabels(object, role)
   const keywords = keywordLine(object)
   const pt = powerToughness(object)
+  const counters = counterLabels(object)
+  const loyalty = loyaltyOf(object)
   const nameLines = nameLinesOf(turned, full, size)
   return (
     <span
@@ -93,6 +107,42 @@ export function CardFace({
             {label}
           </span>
         ))}
+        {counters.map((label) => (
+          <span
+            key={`counter-${label}`}
+            data-slot="card-counter"
+            className={cn(
+              'h-fit rounded-sm border border-foreground bg-background px-1 leading-snug font-semibold text-foreground',
+              classes.text,
+            )}
+          >
+            {label}
+          </span>
+        ))}
+        {links?.host === undefined ? null : (
+          <span
+            data-slot="card-attached-to"
+            className={cn(
+              'h-fit max-w-full rounded-sm border border-dashed border-foreground bg-background px-1 leading-snug break-words text-foreground',
+              classes.text,
+            )}
+          >
+            On {links.host}
+          </span>
+        )}
+        {(links?.attached ?? []).map((name, index) => (
+          <span
+            // eslint-disable-next-line react/no-array-index-key -- names repeat and the list never reorders
+            key={`attached-${index}`}
+            data-slot="card-attachment"
+            className={cn(
+              'h-fit max-w-full rounded-sm border border-dashed border-foreground bg-background px-1 leading-snug break-words text-foreground',
+              classes.text,
+            )}
+          >
+            + {name}
+          </span>
+        ))}
         {note === undefined ? null : (
           <span
             data-slot="card-note"
@@ -115,16 +165,17 @@ export function CardFace({
           {keywords}
         </span>
       ) : null}
-      {pt === null ? (
+      {pt === null && loyalty === null ? (
         <span className="h-1" />
       ) : (
         <span
+          data-slot={pt === null ? 'card-loyalty' : undefined}
           className={cn(
             'self-end rounded-tl-md bg-foreground px-1.5 leading-snug font-bold text-background tabular-nums',
             classes.name,
           )}
         >
-          {pt}
+          {pt ?? loyalty}
         </span>
       )}
     </span>

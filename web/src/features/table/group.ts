@@ -6,8 +6,8 @@ import type { CombatRole } from './cardModel'
 export const GROUP_OTHERS_BELOW = 64
 
 /**
- * What grouping reads from a permanent: the parts of an `ObjectView` that its face draws, plus counters and
- * attachments, which the wire does not carry yet, and the part it takes in combat.
+ * What grouping reads from a permanent: the parts of an `ObjectView` that its face draws, counters and attachments
+ * included, and the part it takes in combat.
  */
 export type Groupable = Pick<
   ObjectView,
@@ -25,6 +25,7 @@ export type Groupable = Pick<
   | 'abilities'
   | 'keywords'
   | 'permanent'
+  | 'attached_to'
 > & {
   /** The counters on it, by kind. */
   counters?: readonly (readonly [CounterKind, number])[]
@@ -87,6 +88,7 @@ function faceOf(permanent: Groupable): string {
     state?.damage ?? 0,
     countersOf(permanent.counters),
     attachmentsOf(permanent.attachments),
+    permanent.attached_to ?? null,
   ])
 }
 

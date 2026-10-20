@@ -60,7 +60,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [ ] Engine side of YesNo, ChooseOption and ChooseMode: the answer checks and the effects that ask them (`May`, an option effect, modal spells), then a response-clock test through the actor (`docs/server.md`, Response clocks)
 - [ ] Response clocks for the choice decisions still without one (numbers, divisions, costs, replacements, mana payments), each with a fallback answer, so one seat cannot hold the table; targets, trigger orders, yes or no, options, modes, cards and orders of cards have theirs (`docs/server.md`, Response clocks)
 - [x] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets and the views carry keywords, counters and attachments (`docs/web.md`)
-- [ ] (e2) Keywords hexproof and ward, one task each; counters and attachments on the object views; the blockers prompt reads `BlockOptions.min_blockers` so menace is explained before Confirm (`docs/web.md`)
+- [ ] (e2) Keyword ward, which needs the counter effect and a payment decision; attachments drawn tucked beside their host; counters and attachments in the `/dev/table` fixture with screenshots (`docs/web.md`)
 - [ ] (f) Keyword actions (CR 701), one engine primitive each, with a web prompt where the player chooses (scope in `docs/cards-dsl.md`, Tasks)
   - [x] Discard and Sacrifice with the ChooseCards engine side; Archon of Cruelty is Verified
 - [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
