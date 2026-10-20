@@ -412,30 +412,37 @@ fn a_given_static_ability_is_lost_with_the_abilities_that_come_after_it(
     assert_eq!(pump(&game, "Mouse"), Some(mouse));
 }
 
-#[test]
-fn a_given_static_ability_takes_the_time_of_the_effect_that_gives_it() {
-    // "Creatures get +0/+4 sets" (an older effect) and the given ability that sets 3/3: the later of the Mouse's own time
-    // and the grant's decides (CR 613.7a), so the given ability comes after an effect made between the two.
+#[rstest]
+#[case::the_grant_is_newer_than_the_set_so_what_is_given_comes_last(20, (3, 3))]
+#[case::the_grant_is_older_than_the_set_so_the_set_comes_last(5, (9, 9))]
+fn a_given_static_ability_takes_the_time_of_the_effect_that_gives_it(
+    #[case] granted_at: u64,
+    #[case] mouse: (i32, i32),
+) {
+    // The Mouse has been there since the start (timestamp 0), "it is 9/9" was made at 10 and the ability "this is 3/3" is
+    // given at `granted_at`: the later of the Mouse's own time and the grant's decides when it applies (CR 613.7a).
     let sets = r#"{"Static":{"affected":"This","mods":[{"SetPT":{"power":3,"toughness":3}}]}}"#;
-    let mut game = game(vec![creature("Mouse", 1, 1)], vec![giver(sets)], &["Giver"]);
-    let mouse = named(&game, "Mouse");
-    let stamp = game.next_timestamp + 10;
+    let mut game = game(vec![creature("Mouse", 1, 1)], vec![], &[]);
+    let object = named(&game, "Mouse");
     game.effects.push(ContinuousEffect::new(
         EffectId(0),
-        Selector::Objects(vec![mouse]),
+        Selector::Objects(vec![object]),
         Modification::SetPowerToughness {
             power: 9,
             toughness: 9,
         },
         Duration::Forever,
-        1,
+        10,
+    ));
+    game.effects.push(ContinuousEffect::new(
+        EffectId(1),
+        Selector::Objects(vec![object]),
+        Modification::GrantAbility(Arc::new(rules(sets))),
+        Duration::Forever,
+        granted_at,
     ));
     game.layers.reset();
-    // The Giver entered after timestamp 1, so what it gives applies after the effect of timestamp 1.
-    assert_eq!(pump(&game, "Mouse"), Some((3, 3)));
-    game.effects[0].timestamp = stamp;
-    game.layers.reset();
-    assert_eq!(pump(&game, "Mouse"), Some((9, 9)));
+    assert_eq!(pump(&game, "Mouse"), Some(mouse));
 }
 
 mod properties {
