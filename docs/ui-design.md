@@ -11,7 +11,7 @@ Tags: [official] a standard, vendor or Nielsen Norman Group (NN/g) page; [commun
 | Visibility of system status | Turn, phase, connection and automatic passes are always on screen | S1 |
 | Consistency, real-world words | One token set, button hierarchy and row pattern; Magic's words, Arena's pass labels | S1 |
 | Control and freedom | Concede, Stop passing, Not ready and Leave are one reversible step | S1 |
-| Error prevention | Confirm only Concede; a disabled Join says why; illegal cards dim | S1 S11 |
+| Error prevention | Confirm only what cannot be taken back: Concede, and in the lobby Close game, Leave game and Remove; a disabled Join says why; illegal cards dim | S1 S11 |
 | Minimalism, disclosure | One primary action per region; the rest one menu level down, never two; key hints on buttons | S1 S8 |
 | Visual hierarchy | Hand, pass button and life are biggest; state colour only for turn, phase, priority, legal | S2 |
 | Proximity | A seat pod groups name, life, zones; 8 px inside a group, 16 between | S3 |

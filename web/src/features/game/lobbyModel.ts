@@ -45,8 +45,9 @@ export function lobbyRows({ roster, info, open, seat, seatCount }: LobbySources)
   return Array.from({ length: count }, (_, index): LobbyRow => {
     const pushed = roster?.seats[index]
     const listed = info?.seats.find((entry) => entry.seat === index)?.name
-    // An open seat has an empty name until somebody takes it; it reads as a seat nobody has joined yet.
-    const name = filled(pushed?.name) ?? filled(listed)
+    // An open seat has an empty name until somebody takes it; it reads as a seat nobody has joined yet. The roster is
+    // newer than the lookup, so its empty name is not filled from the name the lookup still has for a seat just given back.
+    const name = filled(pushed === undefined ? listed : pushed.name)
     const you = index === seat
     // A page knows best whether its own socket is open.
     const connected = you ? open : (pushed?.connected ?? info?.connected.includes(index) ?? false)
@@ -128,4 +129,16 @@ export type SeatState = 'ready' | 'waiting' | 'away'
 export function seatState(row: Pick<LobbyRow, 'connected' | 'ready'>): SeatState {
   if (row.ready) return 'ready'
   return row.connected ? 'waiting' : 'away'
+}
+
+/**
+ * Whether the host may take the player in `row` out of the game: a seat somebody took (it has a name), not the host's
+ * own, and not one the game came with (`issued`: the seats this tab holds a token for, which the server cannot give back).
+ */
+export function removable(
+  row: Pick<LobbyRow, 'seat' | 'named'>,
+  hostSeat: number,
+  issued: ReadonlySet<number>,
+): boolean {
+  return row.named && row.seat !== hostSeat && !issued.has(row.seat)
 }

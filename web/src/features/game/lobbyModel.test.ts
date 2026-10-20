@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { LobbyRoster } from '@/play/store'
 import type { GameInfo } from '@/protocol/generated'
 import { emptyTable, lobbyMessage, withSeats } from '@/test-utils/lobbyFrames'
-import { announcement, lobbyRows, seatState, summaryText } from './lobbyModel'
+import { announcement, lobbyRows, removable, seatState, summaryText } from './lobbyModel'
 import type { LobbyRow } from './lobbyModel'
 
 const NAMES = ['Ann', 'Bea', 'Cy', 'Di', 'Ed', 'Flo', 'Gus', 'Hal', 'Ivy', 'Jo', 'Kit', 'Lu']
@@ -60,6 +60,20 @@ describe('lobbyRows', () => {
       [true, false], // this page's own socket is open
       [true, false],
       [false, false],
+    ])
+  })
+
+  it('reads a seat the roster calls open as open, though the lookup still has the name of the player just removed', () => {
+    const { seats, needed } = lobbyMessage([
+      ['Ann', true, false],
+      ['Bea', true, false],
+      ['', false, false],
+    ])
+    const rows = lobbyRows({ roster: { seats, needed }, info: info(), open: true, seat: 0, seatCount: 3 })
+    expect(rows.map((row) => [row.name, row.named])).toEqual([
+      ['Ann', true],
+      ['Bea', true],
+      ['Seat 3', false],
     ])
   })
 
@@ -245,5 +259,23 @@ describe('seatState', () => {
     [false, false, 'away'],
   ] as const)('connected %s, ready %s is %s', (connected, ready, expected) => {
     expect(seatState({ connected, ready })).toBe(expected)
+  })
+})
+
+describe('removable', () => {
+  it.each([
+    ['a player who joined', 1, true, [], true],
+    ['a player in a later seat', 5, true, [0], true],
+    ['the host’s own seat', 0, true, [], false],
+    ['an open seat', 2, false, [], false],
+    ['a seat the game came with', 1, true, [1], false],
+    ['an open seat that came with the game', 3, false, [3], false],
+  ] as const)('%s (seat %i, named %s, issued %j) is %s', (_what, seat, named, issued, expected) => {
+    expect(removable({ seat, named }, 0, new Set(issued))).toBe(expected)
+  })
+
+  it('takes the host seat as given', () => {
+    expect(removable({ seat: 2, named: true }, 2, new Set())).toBe(false)
+    expect(removable({ seat: 0, named: true }, 2, new Set())).toBe(true)
   })
 })

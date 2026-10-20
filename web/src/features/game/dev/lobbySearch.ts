@@ -10,6 +10,8 @@ export interface DevLobbySearch {
   me: number
   /** `long` gives the seats names of the longest length the server accepts. */
   names?: 'long'
+  /** `invite` makes the game invite only; a listed game when missing. */
+  visibility?: 'invite'
 }
 
 const FEWEST_SEATS = 2
@@ -32,7 +34,7 @@ function seatList(value: unknown, seats: number): number[] {
   return [...new Set(found)].sort((a, b) => a - b)
 }
 
-/** Reads `?seats=&ready=&away=&me=&names=`; the router has already parsed numbers and lists. */
+/** Reads `?seats=&ready=&away=&me=&names=&visibility=`; the router has already parsed numbers and lists. */
 export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySearch {
   const asked = whole(search.seats)
   const seats = asked === undefined || asked < FEWEST_SEATS || asked > MOST_SEATS ? 4 : asked
@@ -43,5 +45,6 @@ export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySe
     away: seatList(search.away, seats),
     me: me === undefined || me >= seats ? 0 : me,
     names: search.names === 'long' ? 'long' : undefined,
+    visibility: search.visibility === 'invite' ? 'invite' : undefined,
   }
 }

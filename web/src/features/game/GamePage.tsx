@@ -133,7 +133,7 @@ function SeatedGame({ gameId, token, name, api, deps }: SeatedGameProps) {
     screen = <GameOver />
     title = 'Game over'
   } else if (state.seat !== null && !ended) {
-    screen = state.phase === 'playing' ? <GameTable /> : <Lobby />
+    screen = state.phase === 'playing' ? <GameTable /> : <Lobby api={api} token={token} />
     title = state.phase === 'playing' ? 'Game' : 'Lobby'
   }
   usePageTitle(useTurnTitle(session.store, title, screen !== null && state.phase === 'playing'))

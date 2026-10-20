@@ -1,5 +1,7 @@
 /** A lobby around a fixture, with no server: a store holding a roster and a session that answers Ready itself. */
 import type { GameContextValue } from '@/features/game/gameContext'
+import type { LobbyApi } from '@/features/game/useLobbyControls'
+import type { KnownGame } from '@/features/game/useGameInfo'
 import { createSession } from '@/play/session'
 import type { Session } from '@/play/session'
 import { initialPlayState } from '@/play/store'
@@ -51,7 +53,10 @@ function lobbySession(me: number): Session {
   return { ...inert, ready: () => setReady(true), notReady: () => setReady(false) }
 }
 
-/** A game context holding a lobby: the roster of `options`, this page seated at `me`, the socket open. */
+/**
+ * A game context holding a lobby: the roster of `options`, this page seated at `me`, the socket open. The lookup says
+ * only the visibility (the roster names the seats), so the host's toggle and the controls have something to draw.
+ */
 export function lobbyGame(options: DevLobbySearch): GameContextValue {
   const session = lobbySession(options.me)
   session.store.setState({
@@ -61,5 +66,34 @@ export function lobbyGame(options: DevLobbySearch): GameContextValue {
     seatCount: options.seats,
     lobby: fixtureRoster(options),
   })
-  return { game: 'dev-lobby', session, lookup: { game: null, missing: false, failed: false } }
+  const game: KnownGame = {
+    started: false,
+    seats: [],
+    connected: [],
+    ready: [],
+    result: null,
+    visibility: options.visibility ?? 'public',
+  }
+  return { game: 'dev-lobby', session, lookup: { game, missing: false, failed: false } }
+}
+
+/**
+ * The calls of the lobby's controls with no server behind them: every one succeeds, and a removal opens the seat in the
+ * roster as the server's next `Lobby` message would. Close and Leave then take the page to Play, as in the app.
+ */
+export function lobbyApi(session: Session): LobbyApi {
+  return {
+    setVisibility: async (_game, visibility) => visibility,
+    closeGame: async () => undefined,
+    leaveGame: async () => undefined,
+    releaseSeat: async (_game, seat) => {
+      session.store.setState((state) => {
+        if (state.lobby === null) return {}
+        const seats = state.lobby.seats.map((entry) =>
+          entry.seat === seat ? { ...entry, name: '', connected: false, ready: false } : entry,
+        )
+        return { lobby: { seats, needed: seats.filter((entry) => !entry.ready).length } }
+      })
+    },
+  }
 }

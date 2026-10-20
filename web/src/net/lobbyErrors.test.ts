@@ -7,7 +7,7 @@ import {
   isLobbyErrorCode,
   lobbyFailure,
 } from './lobbyErrors'
-import type { LobbyFailureCode } from './lobbyErrors'
+import type { LobbyAbout, LobbyFailureCode } from './lobbyErrors'
 
 /** The codes of `crates/mtg-protocol/src/rest/lobbies.rs`, in the order Rust declares them. */
 const SERVER_CODES = [
@@ -162,5 +162,44 @@ describe('describeLobbyError', () => {
     ['undefined', undefined],
   ])('apologises for %s', (_what, error) => {
     expect(describeLobbyError(error)).toBe('Something unexpected went wrong. Try again.')
+  })
+})
+
+describe('describeLobbyError for a lobby control', () => {
+  const words = (code: LobbyFailureCode, about?: LobbyAbout): string =>
+    describeLobbyError(new LobbyError(code, 409, 'server message'), about)
+  const controls: LobbyAbout[] = ['visibility', 'close', 'remove', 'leave']
+
+  it.each<[LobbyAbout, LobbyFailureCode, RegExp]>([
+    ['visibility', 'forbidden', /Only the host/],
+    ['visibility', 'not_found', /no longer open/],
+    ['visibility', 'started', /already started/],
+    ['close', 'forbidden', /Only the host can close/],
+    ['close', 'not_found', /already closed/],
+    ['close', 'started', /already started/],
+    ['remove', 'forbidden', /Only the host can remove/],
+    ['remove', 'not_found', /no longer open/],
+    ['remove', 'started', /no longer be removed/],
+    ['remove', 'not_claimed', /cannot be removed/],
+    ['leave', 'not_found', /no longer have a seat/],
+    ['leave', 'started', /no longer be given back/],
+    ['leave', 'not_claimed', /own link/],
+  ])('says %s / %s in its own words', (about, code, expected) => {
+    expect(words(code, about)).toMatch(expected)
+    expect(words(code, about)).not.toBe(words(code))
+  })
+
+  it.each(controls)('keeps the general sentence for the failures every control shares (%s)', (about) => {
+    for (const code of ['network', 'internal', 'unavailable', 'bad_response', 'unauthenticated'] as const) {
+      expect(words(code, about)).toBe(words(code))
+    }
+  })
+
+  it.each(controls)('has only whole sentences without machine codes for %s', (about) => {
+    for (const code of [...SERVER_CODES, ...LOCAL_CODES]) {
+      const text = words(code, about)
+      expect(text).toMatch(/[.!?]$/)
+      expect(text).not.toMatch(/[a-z]+_[a-z]+/)
+    }
   })
 })

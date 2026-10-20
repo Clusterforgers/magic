@@ -91,7 +91,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [x] (U8) Server: public game listing, join, leave and release, with privacy tests
   - [x] (U9) Game browser join flow: a Join takes a seat in one click for an account and after a name for a guest, opens the game and says "Someone took that seat"
   - [x] (U9) Join with a code: `POST /api/join` names the game in `Joined`, and the Play page's code field joins through the same flow
-  - [ ] (U10) Lobby controls: the host's visibility toggle, Close, Leave and removing a player (`docs/server.md`, Open games)
+  - [x] (U10) Create-game visibility and the lobby: the invite link and code, the host's visibility toggle, Close and removing a player, Leave, and the page an invite link opens
   - [x] (U11) Page polish: game over, My games, sign-in and one page width scale
   - [ ] (U12) Layout gate at six sizes in both themes; the audit leaves `docs/ui-design.md`
 - [ ] Spectators and reconnect polish: a spectator seat, a face-down card rule in `zone_is_visible`, a "waiting on" message for tables of three or more

@@ -2,6 +2,7 @@ import { Link, Outlet } from '@tanstack/react-router'
 import { PlusIcon, SparklesIcon } from 'lucide-react'
 import { useRef } from 'react'
 import { useIsFitWindow, useIsFullBleed } from '@/components/appChrome'
+import { FlashNotice } from '@/components/FlashNotice'
 import { OfflineNotice } from '@/components/OfflineNotice'
 import { ThemeMenu } from '@/components/ThemeMenu'
 import { buttonVariants } from '@/components/ui/button'
@@ -97,6 +98,7 @@ export function AppShell() {
             <ShellHeader />
             <AuthNotice />
             <OfflineNotice />
+            <FlashNotice />
           </>
         )}
         <main

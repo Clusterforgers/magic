@@ -1,7 +1,8 @@
-import { Circle, CircleCheck, CircleDashed } from 'lucide-react'
+import { Circle, CircleCheck, CircleDashed, UserMinus } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Pill } from '@/components/Pill'
 import type { PillTone } from '@/components/Pill'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { seatState } from './lobbyModel'
 import type { LobbyRow, SeatState } from './lobbyModel'
@@ -22,14 +23,21 @@ interface LobbySeatRowProps {
   row: LobbyRow
   /** The username of the account sitting at the seat, when the signed-in user's list says so. */
   account: string | null
+  /** The host's way to take this player out: present only on a seat that may be removed. */
+  remove?: {
+    /** A request is out, so the button waits. */
+    disabled: boolean
+    /** Asks the question; gets the button, where focus goes back to on No. */
+    onPress(opener: HTMLElement): void
+  }
 }
 
 /**
  * One seat of the lobby: a dot for whether a client is connected, the seat and its name (long ones wrap), a mark on
  * this page's own seat, and in words whether the seat is ready, not ready yet or not here. The words carry
- * everything the dot and the icon show.
+ * everything the dot and the icon show. The host's rows of joined players also have a Remove button.
  */
-export function LobbySeatRow({ row, account }: LobbySeatRowProps) {
+export function LobbySeatRow({ row, account, remove }: LobbySeatRowProps) {
   const state = seatState(row)
   const { label, Icon, tone } = STATES[state]
   return (
@@ -69,11 +77,28 @@ export function LobbySeatRow({ row, account }: LobbySeatRowProps) {
           {row.named ? null : <span className="text-xs text-muted-foreground">not joined yet</span>}
         </span>
       </span>
-      <Pill tone={tone} data-slot="seat-state" className="shrink-0">
-        <Icon aria-hidden="true" />
-        {label}
-        {state === 'ready' && !row.connected ? <span className="font-normal">(away)</span> : null}
-      </Pill>
+      {/* Remove comes first so the state pills end at the same edge in every row; on a phone, where the name needs the width, the pill is above it. */}
+      <span className="flex shrink-0 flex-col-reverse items-end gap-1 sm:flex-row sm:items-center sm:gap-2">
+        {remove === undefined ? null : (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            data-slot="remove-player"
+            disabled={remove.disabled}
+            aria-label={`Remove ${row.name} from the game`}
+            onClick={(event) => remove.onPress(event.currentTarget)}
+          >
+            <UserMinus aria-hidden="true" />
+            Remove
+          </Button>
+        )}
+        <Pill tone={tone} data-slot="seat-state" className="shrink-0">
+          <Icon aria-hidden="true" />
+          {label}
+          {state === 'ready' && !row.connected ? <span className="font-normal">(away)</span> : null}
+        </Pill>
+      </span>
     </li>
   )
 }

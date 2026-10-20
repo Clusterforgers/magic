@@ -2,6 +2,7 @@
 import { act, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { appTheme } from '@/hooks/useTheme'
+import { clearFlash, showFlash } from '@/lib/flash'
 import { listed } from '@/test-utils/accountsServer'
 import { renderApp } from '@/test-utils/appHarness'
 
@@ -29,6 +30,19 @@ async function open(url = '/new', signedIn = false) {
   await waitFor(() => expect(app.store.getState().status).not.toBe('loading'))
   return app
 }
+
+describe('a notice another page left behind', () => {
+  afterEach(() => act(() => clearFlash()))
+
+  it('shows under the header on the page that is open, and goes with Dismiss', async () => {
+    const app = await open('/')
+    expect(screen.queryByRole('alert')).toBeNull()
+    act(() => showFlash('You left the game.'))
+    expect(screen.getByRole('alert')).toHaveTextContent('You left the game.')
+    await app.user.click(screen.getByRole('button', { name: 'Dismiss' }))
+    expect(screen.queryByRole('alert')).toBeNull()
+  })
+})
 
 describe('the main navigation', () => {
   it('has the brand, Play and Create for a guest, and no Decks and no My games', async () => {

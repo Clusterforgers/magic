@@ -1,8 +1,9 @@
 // Goal: /dev/lobby reads seats, ready, away, me and names from the address (shrugging off nonsense), serves the real lobby over a fixture roster whose Ready and Not ready work, and answers "not found" with no fixture in a production build; the fixture's long names are as long as the server allows.
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
-import { act, cleanup, render, screen, within } from '@testing-library/react'
+import { act, cleanup, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { clearFlash } from '@/lib/flash'
 import { fixtureRoster, LOBBY_FIXTURE_MARKER } from './lobbyGame'
 import { parseDevLobbySearch } from './lobbySearch'
 
@@ -25,6 +26,8 @@ const states = (): (string | null)[] => seatRows().map((row) => row.getAttribute
 afterEach(() => {
   cleanup()
   vi.unstubAllEnvs()
+  vi.unstubAllGlobals()
+  clearFlash()
 })
 
 describe('parseDevLobbySearch', () => {
@@ -46,6 +49,14 @@ describe('parseDevLobbySearch', () => {
     [
       { seats: 3, ready: '2,2,1', names: 'long' },
       { seats: 3, ready: [1, 2], away: [], me: 0, names: 'long' },
+    ],
+    [
+      { seats: 2, visibility: 'invite' },
+      { seats: 2, ready: [], away: [], me: 0, names: undefined, visibility: 'invite' },
+    ],
+    [
+      { seats: 2, visibility: 'secret' },
+      { seats: 2, ready: [], away: [], me: 0, names: undefined, visibility: undefined },
     ],
   ])('reads %j', (search, expected) => {
     expect(parseDevLobbySearch(search)).toEqual(expected)
@@ -143,6 +154,54 @@ describe('/dev/lobby in development', () => {
     const region = document.querySelector('[data-slot="lobby-announcement"]')
     expect(region).toHaveAttribute('aria-live', 'polite')
     expect(region).toHaveTextContent('You are ready. 1 of 2 ready, waiting for Bo to press Ready')
+  })
+
+  it('gives seat 0 the host’s controls and every other seat a Leave game', async () => {
+    await visit('/dev/lobby?seats=3')
+    await screen.findByRole('heading', { name: 'Waiting for players' })
+    expect(screen.getByRole('button', { name: 'Close game' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Remove Bo from the game' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Leave game' })).toBeNull()
+    cleanup()
+    await visit('/dev/lobby?seats=3&me=1')
+    await screen.findByRole('heading', { name: 'Waiting for players' })
+    expect(screen.getByRole('button', { name: 'Leave game' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Close game' })).toBeNull()
+  })
+
+  it('lets the host try the toggle and Remove: the fixture answers like a server', async () => {
+    await visit('/dev/lobby?seats=3&visibility=invite')
+    await screen.findByRole('heading', { name: 'Waiting for players' })
+    const user = userEvent.setup()
+    expect(screen.getByRole('button', { name: 'Invite only' })).toHaveAttribute('aria-pressed', 'true')
+    await user.click(screen.getByRole('button', { name: 'Listed in the game browser' }))
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Listed in the game browser' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      ),
+    )
+    await user.click(screen.getByRole('button', { name: 'Remove Bo from the game' }))
+    const question = await screen.findByRole('alertdialog', { name: 'Remove Bo?' })
+    await user.click(within(question).getByRole('button', { name: 'Remove Bo' }))
+    await waitFor(() => expect(seatRows()[1]).toHaveTextContent('not joined yet'))
+    expect(screen.queryByRole('button', { name: 'Remove Bo from the game' })).toBeNull()
+  })
+
+  it('takes Close game to Play, where the notice says what happened', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response(JSON.stringify({ games: [] }), { status: 200 })),
+    )
+    const router = await visit('/dev/lobby?seats=2')
+    await screen.findByRole('heading', { name: 'Waiting for players' })
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: 'Close game' }))
+    const question = await screen.findByRole('alertdialog', { name: 'Close this game?' })
+    await user.click(within(question).getByRole('button', { name: 'Close game' }))
+    await waitFor(() => expect(router.state.location.pathname).toBe('/'))
+    expect(await screen.findByRole('heading', { name: 'Play' })).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toHaveTextContent('You closed the game.')
   })
 
   it.each(['?seats=99', '?seats=1', '?seats=abc', '?ready=zz&away=!', '?me=40&seats=3'])(
