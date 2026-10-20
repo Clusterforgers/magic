@@ -47,7 +47,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ### Abilities and characteristics
 - [x] (k1) One reader of an object's abilities with stable addresses: `abilities_of` and `ability` in `ability_reader` read the printed abilities of an object
 - [x] (k2) Priority options, trigger detection, casting and resolution read abilities through it
-- [ ] (k3) Static abilities gathered at every derivation; every `Modification` runs as an effect and as a static (types, subtypes, colours, set and switched power and toughness, abilities added and lost, control, can't attack or block); `Effect::Rule` with its game rules
+- [ ] (k3) Static abilities gathered at every derivation; every `Modification` runs as an effect and as a static (types, subtypes, colours, set and switched power and toughness, abilities added and lost, control, can't attack or block); the reader lists granted and lost abilities, and the can-anything-trigger flag follows abilities that appear in play (tokens, granted abilities)
+- [ ] (k3b) `Effect::Rule` with its game rules (must attack or block, can't be countered, can't gain life, draw or search, trigger doubling, reveal top)
 - [ ] (k4) The derivation of CR 613 as one pass: timestamps, dependencies, characteristic-defining abilities, keywords in snapshots and removing a keyword; the deviations in `docs/engine.md` (Rules coverage) for layers and removed keywords close here
 - [ ] (e2) Keyword abilities built from triggers: ward, prowess and battle cry; Hero of Bladehold is Verified
 - [ ] (i3) State triggers (CR 603.8) and abilities that work from a zone other than the battlefield (`from`)
