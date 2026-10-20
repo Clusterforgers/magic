@@ -27,14 +27,13 @@ use Support::{Manual, Partial, Verified};
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
 /// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
-/// countering, scrying, looking at and revealing cards, choosing and moving them, shuffling, life and damage, paying
-/// mana as an effect, creating tokens, adding mana, continuous effects that pump or grant a keyword, and the keywords of
-/// combat, so the seventeen cards that need no more are Verified (the Forest's ability comes from its land type) and a
-/// card whose other abilities are still missing carries what runs as Partial: Mulldrifter's draw and flying, not its
-/// evoke; Faithless Looting's draw and discard, not its flashback; Hero of Bladehold's tokens, not its battle cry;
-/// Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays with
-/// the table for its loyalty costs; Rampant Growth, Cultivate and Flooded Strand for `Search` and a move to the
-/// battlefield.
+/// countering, scrying, looking at, revealing and searching for cards, choosing and moving them (onto the battlefield
+/// included), shuffling, life and damage, paying mana as an effect, creating tokens, adding mana, continuous effects
+/// that pump or grant a keyword, and the keywords of combat, so the twenty cards that need no more are Verified (the
+/// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
+/// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback; Hero
+/// of Bladehold's tokens, not its battle cry; Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays
+/// with the table for its loyalty costs and Flooded Strand for the life it costs.
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
@@ -44,7 +43,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Brainstorm", Verified, 1),
     ("Burst Lightning", Manual, 0),
     ("Counterspell", Verified, 1),
-    ("Cultivate", Manual, 0),
+    ("Cultivate", Verified, 1),
     ("Delver of Secrets // Insectile Aberration", Manual, 0),
     ("Dockside Extortionist", Verified, 1),
     ("Doom Blade", Verified, 1),
@@ -68,10 +67,10 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Pacifism", Manual, 0),
     ("Panharmonicon", Manual, 0),
     ("Questing Beast", Partial, 3),
-    ("Rampant Growth", Manual, 0),
+    ("Rampant Growth", Verified, 1),
     ("Rhystic Study", Verified, 1),
     ("Serra Angel", Verified, 2),
-    ("Sneak Attack", Manual, 0),
+    ("Sneak Attack", Verified, 1),
     ("Sol Ring", Manual, 0),
     ("Swords to Plowshares", Verified, 1),
     ("Tireless Tracker", Partial, 1),
@@ -235,19 +234,14 @@ fn lacking(name: &str) -> Vec<String> {
     missing.into_iter().collect()
 }
 
-/// A "may", a choice, modes, a payment and the library effects run now, so the corpus cards that use only those are
-/// Verified (Brainstorm, Eternal Witness, Izzet Charm, Opt, Rhystic Study); each of these is still held back by another
-/// primitive, which this table names. The cards that need a search or a move onto the battlefield wait for the tasks
-/// that build those.
+/// A "may", a choice, modes, a payment, a search and the library effects run now, so the corpus cards that use only
+/// those are Verified (Brainstorm, Cultivate, Eternal Witness, Izzet Charm, Opt, Rampant Growth, Rhystic Study); each of
+/// the others here is still held back by another primitive, which this table names.
 #[rstest]
-#[case::cultivate("Cultivate", &["Effect.Move.Battlefield", "Effect.Search"])]
+#[case::flooded_strand("Flooded Strand", &["Cost.PayLife"])]
 #[case::delver(
     "Delver of Secrets // Insectile Aberration",
     &["Effect.If", "Effect.Transform"]
-)]
-#[case::sneak_attack(
-    "Sneak Attack",
-    &["Effect.Move.Battlefield"]
 )]
 #[case::jace("Jace, the Mind Sculptor", &["Ability.Loyalty"])]
 fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(

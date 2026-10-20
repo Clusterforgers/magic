@@ -506,6 +506,142 @@ fn what_a_player_learned_changes_nothing_in_the_game() {
     assert_eq!(game.state_hash(), before);
 }
 
+#[rstest]
+#[case::the_same_object_after_a_move(vec![(7, 0)], vec![(7, 1)], true)]
+#[case::the_same_binding_twice(vec![(7, 0)], vec![(7, 0)], false)]
+#[case::an_empty_binding_twice(vec![], vec![], false)]
+#[case::two_objects_each_moved_on(vec![(7, 0), (8, 2)], vec![(7, 1), (8, 3)], true)]
+#[case::another_object(vec![(7, 0)], vec![(8, 1)], false)]
+#[case::an_older_incarnation(vec![(7, 2)], vec![(7, 1)], false)]
+#[case::another_count(vec![(7, 0)], vec![(7, 1), (8, 0)], false)]
+#[case::nothing_for_something(vec![(7, 0)], vec![], false)]
+fn a_name_is_bound_again_only_to_the_objects_it_named_after_they_moved_on(
+    #[case] first: Vec<(u64, u32)>,
+    #[case] again: Vec<(u64, u32)>,
+    #[case] allowed: bool,
+) {
+    let mut game = game();
+    game.resolving = Some(crate::resolve::Resolving::begin(totem_id(&game)));
+    let targets = |list: &[(u64, u32)]| -> Vec<Target> {
+        list.iter()
+            .map(|(id, counter)| {
+                Target::Object(ObjectRef {
+                    id: ObjectId(*id),
+                    counter: *counter,
+                })
+            })
+            .collect()
+    };
+    let bind = |bound: Vec<Target>| Event::StepDone {
+        position: vec![1],
+        bound: vec![("cards".to_owned(), bound)],
+        snapshots: Vec::new(),
+    };
+    fold(&mut game, &[bind(targets(&first))]);
+    assert_eq!(
+        apply_event(&mut game, &bind(targets(&again))).is_ok(),
+        allowed
+    );
+}
+
+#[rstest]
+#[case::untapped_under_its_owner(false, 0)]
+#[case::tapped_under_its_owner(true, 0)]
+#[case::untapped_under_another(false, 1)]
+#[case::tapped_under_another(true, 1)]
+fn a_card_put_onto_the_battlefield_enters_tapped_or_under_another_player_and_keeps_its_owner(
+    #[case] tapped: bool,
+    #[case] controller: usize,
+) {
+    let mut game = game();
+    let card = game.zone(Zone::Library(PlayerId(0)))[0];
+    let controller = PlayerId::from_index(controller);
+    fold(
+        &mut game,
+        &[
+            Event::ZoneChanged {
+                object: card,
+                from: Zone::Library(PlayerId(0)),
+                to: Zone::Battlefield,
+                cause: ZoneCause::Moved,
+            },
+            Event::Entered {
+                object: card,
+                tapped,
+                controller,
+            },
+        ],
+    );
+    let object = game.object(card).unwrap();
+    assert_eq!(
+        (object.owner(), object.controller()),
+        (PlayerId(0), controller)
+    );
+    assert_eq!(object.permanent().unwrap().tapped(), tapped);
+    // Leaving the battlefield hands the card back to its owner (CR 108.3).
+    fold(
+        &mut game,
+        &[Event::ZoneChanged {
+            object: card,
+            from: Zone::Battlefield,
+            to: Zone::Hand(PlayerId(0)),
+            cause: ZoneCause::Moved,
+        }],
+    );
+    assert_eq!(game.object(card).unwrap().controller(), PlayerId(0));
+}
+
+#[test]
+fn entering_what_is_not_on_the_battlefield_or_under_nobody_is_refused() {
+    let mut game = game();
+    let card = game.zone(Zone::Library(PlayerId(0)))[0];
+    let in_library = Event::Entered {
+        object: card,
+        tapped: true,
+        controller: PlayerId(0),
+    };
+    assert!(apply_event(&mut game, &in_library).is_err());
+    let moved = Event::ZoneChanged {
+        object: card,
+        from: Zone::Library(PlayerId(0)),
+        to: Zone::Battlefield,
+        cause: ZoneCause::Moved,
+    };
+    fold(&mut game, &[moved]);
+    let under_nobody = Event::Entered {
+        object: card,
+        tapped: false,
+        controller: PlayerId(9),
+    };
+    assert!(apply_event(&mut game, &under_nobody).is_err());
+}
+
+#[test]
+fn what_a_resolution_showed_is_part_of_the_state_until_the_resolution_ends() {
+    let mut game = game();
+    let source = totem_id(&game);
+    let card = game.zone(Zone::Library(PlayerId(1)))[0];
+    let before = game.state_hash();
+    game.resolving = Some(crate::resolve::Resolving::begin(source));
+    let began = game.state_hash();
+    fold(
+        &mut game,
+        &[Event::Revealed(Revealed {
+            player: PlayerId(0),
+            cards: vec![card],
+        })],
+    );
+    assert_ne!(
+        game.state_hash(),
+        began,
+        "the state hash sees what was shown"
+    );
+    assert!(game.is_shown_to(PlayerId(1), card));
+    game.resolving = None;
+    assert!(!game.is_shown_to(PlayerId(1), card));
+    assert_ne!(before, began);
+}
+
 /// The library of seat 0 as five names from the bottom up.
 fn library_names(game: &GameState) -> Vec<String> {
     game.zone(Zone::Library(PlayerId(0)))

@@ -1,13 +1,15 @@
-//! `Effect::Move`: objects change zones, to a hand, a graveyard or a library.
+//! `Effect::Move`: objects change zones, to a hand, a graveyard, a library or the battlefield.
 
 use mtg_cards::effect::{Destination, Effect, Order, Place};
+use mtg_cards::refs::Ref;
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{unsupported, wrong_effect};
-use crate::choose::{Questions, Stop};
+use crate::choose::{Questions, Stop, Target};
 use crate::events::{Event, ZoneCause};
 use crate::mulligan::shuffled;
-use crate::object::{GameObject, ObjectKind};
+use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::snapshot::{Snapshot, snapshot};
 use crate::state::GameState;
@@ -51,12 +53,28 @@ fn moved(state: &GameState, object: ObjectId, from: Zone, to: Zone) -> (Event, O
     (event, shot)
 }
 
+/// The player an object enters the battlefield under when the effect names one; `None` leaves it to its owner.
+fn entering_under(cx: &Cx<'_>, under: Option<&Ref>) -> Result<Option<PlayerId>, ResolveError> {
+    let Some(who) = under else {
+        return Ok(None);
+    };
+    match cx.scope.players(who)?.as_slice() {
+        [] => Ok(None),
+        [player] => Ok(Some(*player)),
+        _ => Err(ResolveError::Invalid(
+            "a permanent enters under the control of one player".into(),
+        )),
+    }
+}
+
 /// Each object the reference names goes to its owner's hand or graveyard, or into its owner's library on top, on
-/// the bottom or shuffled in. Cards put into one library together are put in the order the controller chooses ("in any
-/// order"), asked as an `OrderCards` per library unless there is one card, and the first of them is nearest the top; a
-/// shuffle needs no order.
+/// the bottom or shuffled in, or onto the battlefield. Cards put into one library together are put in the order the
+/// controller chooses ("in any order"), asked as an `OrderCards` per library unless there is one card, and the first
+/// of them is nearest the top; a shuffle needs no order.
 /// An object already where it would go stays. Moves from the battlefield carry a snapshot of the object as it was.
-/// A destination of the battlefield and a random order are not played yet; `Caps` keeps those cards out.
+/// A card put onto the battlefield is one `ZoneChanged`, so what triggers on entering sees it, and an `Entered` after
+/// it when the card comes in tapped or under a player other than its owner; an instant or a sorcery card stays where it
+/// is (CR 304.4, 307.4). A random order is not played yet; `Caps` keeps those cards out.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Move { what, to } = effect else {
         return Err(wrong_effect("Move"));
@@ -98,7 +116,35 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             }
             return Stop::settle(into_libraries(cx, *place, &owners));
         }
-        Destination::Battlefield { .. } => return unsupported("Effect.Move.Battlefield"),
+        Destination::Battlefield { tapped, under } => {
+            let under = entering_under(cx, under.as_ref())?;
+            let mut entered = Vec::new();
+            for object in objects {
+                let spell = object.base_types().contains(CardType::Instant)
+                    || object.base_types().contains(CardType::Sorcery);
+                if object.zone() == Zone::Battlefield || spell {
+                    continue;
+                }
+                let (event, shot) = moved(state, object.id(), object.zone(), Zone::Battlefield);
+                events.push(event);
+                snapshots.extend(shot);
+                entered.push(object.id());
+                let controller = under.unwrap_or_else(|| object.owner());
+                if *tapped || controller != object.owner() {
+                    events.push(Event::Entered {
+                        object: object.id(),
+                        tapped: *tapped,
+                        controller,
+                    });
+                }
+            }
+            return Ok(Run::Done {
+                events,
+                bound: arrived_as(cx, what, &entered),
+                snapshots,
+                next: Next::Sibling,
+            });
+        }
     }
     Ok(Run::Done {
         events,
@@ -106,6 +152,40 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots,
         next: Next::Sibling,
     })
+}
+
+/// The name that named the cards, bound again to the permanents that `entered`: a card that changes zones is a new
+/// object (CR 400.7), and "that creature" in the steps after the move is the one that arrived. A name that is not the
+/// reference stays as it is, and so does whatever the name held that did not enter.
+fn arrived_as(cx: &Cx<'_>, what: &Ref, entered: &[ObjectId]) -> Vec<(String, Vec<Target>)> {
+    let Ref::Bound(name) = what else {
+        return Vec::new();
+    };
+    let Ok(named) = cx.scope.refs(what) else {
+        return Vec::new();
+    };
+    let state = cx.state();
+    let renewed: Vec<Target> = named
+        .iter()
+        .map(|target| match *target {
+            Target::Object(object)
+                if entered.contains(&object.id)
+                    && state
+                        .object(object.id)
+                        .is_some_and(|live| live.counter() == object.counter) =>
+            {
+                Target::Object(ObjectRef {
+                    id: object.id,
+                    counter: object.counter + 1,
+                })
+            }
+            other => other,
+        })
+        .collect();
+    if renewed == named {
+        return Vec::new();
+    }
+    vec![(name.clone(), renewed)]
 }
 
 /// The events that put each owner's cards into their library at `place`.
@@ -174,8 +254,13 @@ fn into_libraries(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a move sends each object named to its owner's hand or graveyard or into its owner's library on top, on the bottom or shuffled in; cards put into one library together are put in the order their owner chooses, asked only when there are two or more, and the log leaves the library in exactly that order; an object already in place stays, a stale one or a spell on the stack is passed over, a move from the battlefield carries what it was, and a destination or order the engine does not play is refused by name.
+    //! Goal: a move sends each object named to its owner's hand or graveyard or into its owner's library on top, on the bottom or shuffled in; cards put into one library together are put in the order their owner chooses, asked only when there are two or more, and the log leaves the library in exactly that order; an object already in place stays, a stale one or a spell on the stack is passed over, a move from the battlefield carries what it was, a card put onto the battlefield enters untapped or tapped under its owner or the player named while an instant or sorcery card and a permanent already there stay, and an order the engine does not play is refused by name.
     use rstest::rstest;
+
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
+    use mtg_core::card::Supertype;
 
     use super::*;
     use crate::choose::{Choice, Target};
@@ -266,8 +351,28 @@ mod tests {
         else {
             panic!("the move is done");
         };
-        assert!(bound.is_empty() && next == Next::Sibling);
+        let onto_the_battlefield = events.iter().any(|event| {
+            matches!(
+                event,
+                Event::ZoneChanged {
+                    to: Zone::Battlefield,
+                    ..
+                }
+            )
+        });
+        assert!(
+            (bound.is_empty() || onto_the_battlefield) && next == Next::Sibling,
+            "only cards put onto the battlefield bind their name again"
+        );
         (events, snapshots)
+    }
+
+    /// What a finished move binds.
+    fn bound_by(run: Run) -> Vec<(String, Vec<Target>)> {
+        let Run::Done { bound, .. } = run else {
+            panic!("the move is done");
+        };
+        bound
     }
 
     fn asked(run: Run) -> Decision {
@@ -507,8 +612,207 @@ mod tests {
         assert_eq!(events, []);
     }
 
+    /// Seat 0 holds a basic land, seat 1 a sorcery; the Source is on the battlefield of seat 0.
+    fn lands_and_a_spell() -> GameState {
+        let land = CardDefinition::new("Forest")
+            .with_type(CardType::Land)
+            .with_supertype(Supertype::Basic);
+        let sorcery = CardDefinition::new("Sorcery").with_type(CardType::Sorcery);
+        state(
+            vec![vec![Arc::new(land)], vec![Arc::new(sorcery)]],
+            vec![vec![creature("Source", 1, 1)], vec![]],
+        )
+    }
+
+    fn to_the_battlefield(object: ObjectId, from: Zone) -> Event {
+        to(object, from, Zone::Battlefield)
+    }
+
+    /// The events of moving one card of seat 0's hand to the battlefield as `destination` says, with the name `nobody`
+    /// bound to no one.
+    fn entering(game: &GameState, card: ObjectId, destination: &str) -> Vec<Event> {
+        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+        let mut resolving = Resolving::begin(source.id());
+        resolving
+            .bindings
+            .insert("cards".into(), named(game, &[card]));
+        resolving.bindings.insert("nobody".into(), Vec::new());
+        let cx = Cx {
+            scope: Scope {
+                bindings: &resolving.bindings,
+                ..Scope::announcing(game, ME, source.reference())
+            },
+            resolving: &resolving,
+        };
+        let (events, snapshots) = done(run(&cx, &moving(destination)).unwrap());
+        assert_eq!(snapshots, []);
+        events
+    }
+
     #[rstest]
-    #[case::the_battlefield(r#"{"Battlefield":{}}"#, "Effect.Move.Battlefield")]
+    #[case::untapped_under_its_owner(r#"{"Battlefield":{}}"#, false, ME)]
+    #[case::tapped_under_its_owner(r#"{"Battlefield":{"tapped":true}}"#, true, ME)]
+    #[case::under_an_opponent(r#"{"Battlefield":{"under":"Opponents"}}"#, false, FOE)]
+    #[case::tapped_under_an_opponent(
+        r#"{"Battlefield":{"tapped":true,"under":"Opponents"}}"#,
+        true,
+        FOE
+    )]
+    #[case::under_the_controller(r#"{"Battlefield":{"under":"You"}}"#, false, ME)]
+    #[case::under_no_one_it_is_the_owner(
+        r#"{"Battlefield":{"under":{"Bound":"nobody"}}}"#,
+        false,
+        ME
+    )]
+    fn a_card_enters_the_battlefield_as_the_effect_says(
+        #[case] destination: &str,
+        #[case] tapped: bool,
+        #[case] controller: PlayerId,
+    ) {
+        let game = game();
+        let card = hand(&game, ME)[0];
+        let events = entering(&game, card, destination);
+        let moved = to_the_battlefield(card, Zone::Hand(ME));
+        let entered = Event::Entered {
+            object: card,
+            tapped,
+            controller,
+        };
+        let expected = if tapped || controller != ME {
+            vec![moved, entered]
+        } else {
+            vec![moved]
+        };
+        assert_eq!(events, expected);
+        let folded = after(&game, &events);
+        let object = folded.object(card).unwrap();
+        assert_eq!(
+            (object.zone(), object.controller(), object.owner()),
+            (Zone::Battlefield, controller, ME)
+        );
+        let permanent = object.permanent().unwrap();
+        assert_eq!(permanent.tapped(), tapped);
+        assert!(permanent.summoning_sick());
+    }
+
+    #[test]
+    fn a_card_comes_to_the_battlefield_from_a_library_or_a_graveyard_as_from_a_hand() {
+        let mut game = game();
+        let from_hand = hand(&game, ME)[0];
+        let from_library = *library(&game, FOE).last().unwrap();
+        let discarded = hand(&game, ME)[1];
+        apply_event(
+            &mut game,
+            &Event::CardDiscarded {
+                player: ME,
+                object: discarded,
+            },
+        )
+        .unwrap();
+        let cards = [from_hand, from_library, discarded];
+        let (events, _) =
+            done(run_with(&game, &cards, Vec::new(), &moving(r#"{"Battlefield":{}}"#)).unwrap());
+        assert_eq!(
+            events,
+            [
+                to_the_battlefield(from_hand, Zone::Hand(ME)),
+                to_the_battlefield(from_library, Zone::Library(FOE)),
+                to_the_battlefield(discarded, Zone::Graveyard(ME)),
+            ]
+        );
+        let folded = after(&game, &events);
+        assert_eq!(folded.object(from_library).unwrap().controller(), FOE);
+    }
+
+    #[test]
+    fn an_instant_or_sorcery_card_and_a_permanent_already_there_stay_where_they_are() {
+        let game = lands_and_a_spell();
+        let (sorcery, on_the_field, land) = (
+            hand(&game, FOE)[0],
+            game.zone(Zone::Battlefield)[0],
+            hand(&game, ME)[0],
+        );
+        let tapped = moving(r#"{"Battlefield":{"tapped":true}}"#);
+        let (events, _) =
+            done(run_with(&game, &[sorcery, on_the_field, land], Vec::new(), &tapped).unwrap());
+        assert_eq!(
+            events,
+            [
+                to_the_battlefield(land, Zone::Hand(ME)),
+                Event::Entered {
+                    object: land,
+                    tapped: true,
+                    controller: ME
+                }
+            ]
+        );
+    }
+
+    #[test]
+    fn the_name_of_cards_put_onto_the_battlefield_names_the_permanents_that_arrived() {
+        let game = game();
+        let (first, second) = (hand(&game, ME)[0], hand(&game, ME)[1]);
+        let on_the_field = game.zone(Zone::Battlefield)[0];
+        let mut cards = named(&game, &[first, second, on_the_field]);
+        let stale = ObjectRef {
+            id: first,
+            counter: 99,
+        };
+        cards.push(Target::Object(stale));
+        let run = run_bound(&game, cards, Vec::new(), &moving(r#"{"Battlefield":{}}"#)).unwrap();
+        let renewed = |id: ObjectId| {
+            let live = game.object(id).unwrap();
+            Target::Object(ObjectRef {
+                id,
+                counter: live.counter() + 1,
+            })
+        };
+        let unmoved = Target::Object(game.object(on_the_field).unwrap().reference());
+        assert_eq!(
+            bound_by(run),
+            [(
+                "cards".to_owned(),
+                vec![
+                    renewed(first),
+                    renewed(second),
+                    unmoved,
+                    Target::Object(stale)
+                ]
+            )],
+            "what arrived is named again, what stayed or was stale is not"
+        );
+        let stays = named(&game, &[on_the_field]);
+        let run = run_bound(&game, stays, Vec::new(), &moving(r#"{"Battlefield":{}}"#)).unwrap();
+        assert_eq!(
+            bound_by(run),
+            [],
+            "nothing arrived, so the name is left alone"
+        );
+    }
+
+    #[test]
+    fn cards_moved_anywhere_else_keep_the_name_they_had() {
+        let game = game();
+        let card = hand(&game, ME)[0];
+        for to in [r#""Graveyard""#, TOP, BOTTOM, SHUFFLED] {
+            let run = run_with(&game, &[card], Vec::new(), &moving(to)).unwrap();
+            assert_eq!(bound_by(run), [], "{to}");
+        }
+    }
+
+    #[test]
+    fn entering_under_several_players_is_refused() {
+        let game = game();
+        let card = hand(&game, ME)[0];
+        let to = r#"{"Battlefield":{"under":"EachPlayer"}}"#;
+        let refused = run_with(&game, &[card], Vec::new(), &moving(to));
+        assert!(
+            matches!(refused, Err(ResolveError::Invalid(_))),
+            "{refused:?}"
+        );
+    }
+
+    #[rstest]
     #[case::a_random_order_on_top(
         r#"{"Library":{"place":"Top","order":"Random"}}"#,
         "Effect.Move.Random"

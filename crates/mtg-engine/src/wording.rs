@@ -91,11 +91,16 @@ fn phrase(selector: &Selector) -> (String, String) {
                 op,
                 to: Amount::Fixed(to),
             } => tail.push(comparison(*stat, *op, *to)),
-            Pred::AnyOf(any) if any.iter().all(|p| matches!(p, Pred::Type(_))) => {
+            Pred::AnyOf(any)
+                if any
+                    .iter()
+                    .all(|p| matches!(p, Pred::Type(_) | Pred::Subtype(_))) =>
+            {
                 let words: Vec<String> = any
                     .iter()
                     .filter_map(|p| match p {
                         Pred::Type(card_type) => Some(lower(card_type)),
+                        Pred::Subtype(subtype) => Some(subtype.0.clone()),
                         _ => None,
                     })
                     .collect();
@@ -327,6 +332,53 @@ pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
     format!("Sacrifice {count} {}.", join(&plural(&head), &tail))
 }
 
+/// What a search asks of the player who chooses, as a card says it: "Search your library for a basic land card.",
+/// "Search your library for up to 2 basic land cards." `most` is `usize::MAX` for any number.
+pub(crate) fn search(zone: ZoneKind, filter: &Selector, min: usize, most: usize) -> String {
+    let place = match zone {
+        ZoneKind::Library => "your library",
+        ZoneKind::Hand => "your hand",
+        ZoneKind::Graveyard => "your graveyard",
+        ZoneKind::Exile => "exile",
+        ZoneKind::Battlefield => "the battlefield",
+        ZoneKind::Stack => "the stack",
+        ZoneKind::Command => "your command zone",
+    };
+    let described = Selector(
+        filter
+            .0
+            .iter()
+            .filter(|pred| !matches!(pred, Pred::In(_)))
+            .cloned()
+            .collect(),
+    );
+    let (head, tail) = phrase(&described);
+    let kind = if head == "permanent" {
+        "card".to_owned()
+    } else if head.contains("card named") {
+        head
+    } else {
+        format!("{head} card")
+    };
+    let what = if most == 1 {
+        format!("{} {}", article(&kind), join(&kind, &tail))
+    } else {
+        let several = match kind.strip_prefix("card named ") {
+            Some(named) => format!("cards named {named}"),
+            None => format!("{kind}s"),
+        };
+        let several = join(&several, &tail);
+        if most == usize::MAX {
+            format!("any number of {several}")
+        } else if min == most {
+            format!("{most} {several}")
+        } else {
+            format!("up to {most} {several}")
+        }
+    };
+    format!("Search {place} for {what}.")
+}
+
 /// What a scry asks about the cards looked at.
 pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your library.";
 
@@ -464,6 +516,97 @@ mod tests {
     #[case::many(7, "Discard 7 cards.")]
     fn a_discard_asks_for_the_cards_it_takes(#[case] count: usize, #[case] expected: &str) {
         assert_eq!(discard(count), expected);
+    }
+
+    #[rstest]
+    #[case::a_basic_land(
+        "Library",
+        r#"[{"Supertype":"Basic"},{"Type":"Land"}]"#,
+        1,
+        1,
+        "Search your library for a basic land card."
+    )]
+    #[case::up_to_two(
+        "Library",
+        r#"[{"Supertype":"Basic"},{"Type":"Land"}]"#,
+        0,
+        2,
+        "Search your library for up to 2 basic land cards."
+    )]
+    #[case::exactly_two(
+        "Library",
+        r#"[{"Supertype":"Basic"},{"Type":"Land"}]"#,
+        2,
+        2,
+        "Search your library for 2 basic land cards."
+    )]
+    #[case::any_number(
+        "Library",
+        r#"[{"Type":"Creature"}]"#,
+        0,
+        usize::MAX,
+        "Search your library for any number of creature cards."
+    )]
+    #[case::land_types(
+        "Library",
+        r#"[{"AnyOf":[{"Subtype":"Plains"},{"Subtype":"Island"}]}]"#,
+        1,
+        1,
+        "Search your library for a Plains or Island card."
+    )]
+    #[case::a_supertype(
+        "Library",
+        r#"[{"Supertype":"Legendary"},{"Type":"Creature"}]"#,
+        1,
+        1,
+        "Search your library for a legendary creature card."
+    )]
+    #[case::a_name(
+        "Library",
+        r#"[{"Named":"Wolf"}]"#,
+        1,
+        1,
+        "Search your library for a card named Wolf."
+    )]
+    #[case::several_names(
+        "Library",
+        r#"[{"Named":"Wolf"}]"#,
+        0,
+        4,
+        "Search your library for up to 4 cards named Wolf."
+    )]
+    #[case::any_card("Library", "[]", 1, 1, "Search your library for a card.")]
+    #[case::the_zone_in_the_filter_is_the_zone_searched(
+        "Library",
+        r#"[{"In":"Library"},{"Type":"Land"}]"#,
+        1,
+        1,
+        "Search your library for a land card."
+    )]
+    #[case::a_graveyard(
+        "Graveyard",
+        r#"[{"Type":"Creature"}]"#,
+        1,
+        1,
+        "Search your graveyard for a creature card."
+    )]
+    #[case::a_hand(
+        "Hand",
+        r#"[{"Type":"Instant"}]"#,
+        1,
+        1,
+        "Search your hand for an instant card."
+    )]
+    fn a_search_asks_for_the_cards_it_looks_for(
+        #[case] zone: &str,
+        #[case] filter: &str,
+        #[case] min: usize,
+        #[case] most: usize,
+        #[case] expected: &str,
+    ) {
+        let zone = serde_json::from_str(&format!("\"{zone}\"")).unwrap();
+        let filter = serde_json::from_str(filter).unwrap();
+        assert_eq!(search(zone, &filter, min, most), expected);
     }
 
     #[rstest]

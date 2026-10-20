@@ -358,6 +358,36 @@ pub fn library_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, Corpus
     Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }
 
+/// A legal Normal deck in green and blue of Rampant Growth and Cultivate (the corpus cards, as printed) with creatures
+/// to fill it, derived entirely from `rng`.
+pub fn ramp_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    let colors = [Color::Green, Color::Blue];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 2])).collect();
+    for name in ["Rampant Growth", "Cultivate"] {
+        deck.extend(std::iter::repeat_n(corpus::card(name)?, 4));
+    }
+    // Twenty-eight creatures make the 60 cards.
+    for slot in 0..14 {
+        let generic = u32::try_from(rng.index(3)).unwrap_or(0);
+        let power = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let toughness = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let name = format!("Ramp Fodder {slot} {generic} {power}/{toughness}");
+        let card = creature(&name, generic, &[colors[rng.index(2)]], power, toughness);
+        deck.extend(std::iter::repeat_n(card, 2));
+    }
+    rng.shuffle(&mut deck);
+    Ok(deck)
+}
+
+/// A normal game of `players` seats whose decks are [`ramp_deck`]s, fully determined by `seed`.
+pub fn ramp_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(ramp_deck(&mut GameRng::substream(seed, 11_000 + seat))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+}
+
 /// A legal Normal deck in white, blue and black whose cards remove and counter: four each of Doom Blade, Swords to
 /// Plowshares and Counterspell and two Wrath of God (the corpus cards, as printed), creatures that watch deaths, die
 /// with a trigger aimed at an opponent or leave the battlefield with one, creatures that cannot be destroyed, and lands.

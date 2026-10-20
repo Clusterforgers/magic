@@ -1284,6 +1284,11 @@ fn primitive_events() -> Vec<Event> {
             player,
             cards: vec![a],
         }),
+        Event::Entered {
+            object: a,
+            tapped: true,
+            controller: player,
+        },
     ]
 }
 

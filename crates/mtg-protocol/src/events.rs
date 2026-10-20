@@ -247,6 +247,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::LifeLost { .. }
         | Event::CountersChanged(_)
         | Event::TokenCreated(_)
+        | Event::Entered { .. }
         | Event::Revealed(_) => None,
     }
 }
@@ -379,6 +380,7 @@ fn knows(before: &GameState, object: ObjectId, viewer: PlayerId) -> bool {
     before
         .object(object)
         .is_some_and(|o| zone_is_visible(o.zone(), viewer))
+        || before.is_shown_to(viewer, object)
 }
 
 /// Projects `events` (which `before` has not yet seen) for each of `viewers`, one batch per viewer.

@@ -166,6 +166,7 @@ mod tests {
                 "Effect.Scry",
                 "Effect.LookAtTop",
                 "Effect.Reveal",
+                "Effect.Search",
                 "Effect.Choose",
                 "Effect.Shuffle",
                 "Effect.Move",

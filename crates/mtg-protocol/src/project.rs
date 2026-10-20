@@ -6,8 +6,9 @@ use mtg_engine::characteristics::characteristics;
 use mtg_engine::combat::Attacker;
 use mtg_engine::forecast::pending_combat_forecast;
 use mtg_engine::keywords::{keywords_of, summoning_sick};
-use mtg_engine::object::ObjectKind;
+use mtg_engine::object::{GameObject, ObjectKind};
 use mtg_engine::player::{Player, PlayerStatus};
+use mtg_engine::sight::offered_cards;
 use mtg_engine::state::GameState;
 use mtg_engine::zones::Zone;
 
@@ -58,6 +59,35 @@ pub fn zone_is_visible(zone: Zone, viewer: PlayerId) -> bool {
     }
 }
 
+/// What `viewer` may identify in a state: the cards of the zones they see into, the cards the resolution in progress
+/// showed them (looked at, found, revealed) and the cards they are asked to choose among or to put in an order.
+pub(crate) struct Sight<'a> {
+    state: &'a GameState,
+    viewer: PlayerId,
+    offered: Vec<ObjectId>,
+}
+
+impl<'a> Sight<'a> {
+    pub(crate) fn new(state: &'a GameState, viewer: PlayerId) -> Self {
+        let offered = offered_cards(state)
+            .filter(|(seat, _)| *seat == viewer)
+            .map(|(_, cards)| cards)
+            .unwrap_or_default();
+        Sight {
+            state,
+            viewer,
+            offered,
+        }
+    }
+
+    /// Whether the viewer may identify the object.
+    pub(crate) fn sees(&self, object: &GameObject) -> bool {
+        zone_is_visible(object.zone(), self.viewer)
+            || self.offered.contains(&object.id())
+            || self.state.is_shown_to(self.viewer, object.id())
+    }
+}
+
 fn count(len: usize) -> u32 {
     u32::try_from(len).unwrap_or(u32::MAX)
 }
@@ -92,19 +122,20 @@ fn type_list(types: CardTypes) -> Vec<CardType> {
 impl ObjectView {
     /// The view of `id` for `viewer`, or `None` when the object is unknown or hidden from them.
     pub fn of(state: &GameState, viewer: PlayerId, id: ObjectId) -> Option<ObjectView> {
-        Self::with_attachments(state, viewer, id, || state.attachments_of(id))
+        let sight = Sight::new(state, viewer);
+        Self::with_attachments(state, &sight, id, || state.attachments_of(id))
     }
 
     /// [`ObjectView::of`] with the attachments of `id` given by `attachments`, which is asked only for a permanent: a whole
     /// view works them out once for every object (`GameState::attachment_index`).
     fn with_attachments(
         state: &GameState,
-        viewer: PlayerId,
+        sight: &Sight<'_>,
         id: ObjectId,
         attachments: impl FnOnce() -> Vec<ObjectId>,
     ) -> Option<ObjectView> {
         let object = state.object(id)?;
-        if !zone_is_visible(object.zone(), viewer) {
+        if !sight.sees(object) {
             return None;
         }
         let chars = characteristics(state, id)?;
@@ -235,10 +266,11 @@ impl TableView {
 /// Every object `viewer` may identify, in id order.
 pub(crate) fn visible_objects(state: &GameState, viewer: PlayerId) -> Vec<ObjectView> {
     let attached = state.attachment_index();
+    let sight = Sight::new(state, viewer);
     state
         .objects()
         .filter_map(|o| {
-            ObjectView::with_attachments(state, viewer, o.id(), || {
+            ObjectView::with_attachments(state, &sight, o.id(), || {
                 attached.get(&o.id()).cloned().unwrap_or_default()
             })
         })

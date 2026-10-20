@@ -4,9 +4,9 @@
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
 //! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, abilities that cost `{T}` and
 //! mana, and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, scrying,
-//! looking at, revealing, moving and shuffling cards, life and damage (and delayed triggers), "may" and "pay" and
-//! choices and modal spells, continuous effects that pump power and toughness or grant a keyword, the keywords of
-//! combat and hexproof, and nothing else.
+//! looking at, revealing, searching for, moving and shuffling cards, life and damage (and delayed triggers), "may"
+//! and "pay" and choices and modal spells, continuous effects that pump power and toughness or grant a keyword, the
+//! keywords of combat and hexproof, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -35,8 +35,10 @@ const RUNS: &[&str] = &[
     "Effect.Scry",
     "Effect.LookAtTop",
     "Effect.Reveal",
+    "Effect.Search",
     "Effect.Shuffle",
     "Effect.Move",
+    "Effect.Move.Battlefield",
     "Effect.Destroy",
     "Effect.Exile",
     "Effect.Sacrifice",
@@ -118,9 +120,9 @@ mod tests {
     #[case::revealing("Effect.Reveal", true)]
     #[case::shuffling("Effect.Shuffle", true)]
     #[case::moving("Effect.Move", true)]
-    #[case::moving_to_the_battlefield("Effect.Move.Battlefield", false)]
+    #[case::moving_to_the_battlefield("Effect.Move.Battlefield", true)]
     #[case::moving_in_a_random_order("Effect.Move.Random", false)]
-    #[case::searching("Effect.Search", false)]
+    #[case::searching("Effect.Search", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]
     #[case::damage("Effect.DealDamage", true)]
     #[case::gaining_life("Effect.GainLife", true)]

@@ -370,4 +370,16 @@ player: PlayerId,
 /**
  * The cards, top to bottom as they lie after the move: the last is the bottom card.
  */
-cards: Array<ObjectId>, } };
+cards: Array<ObjectId>, } } | { "Entered": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, 
+/**
+ * Whether it entered tapped.
+ */
+tapped: boolean, 
+/**
+ * Who controls it.
+ */
+controller: PlayerId, } };

@@ -67,7 +67,9 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [x] LookAtTop, Scry, Reveal, Move and Shuffle with the OrderCards engine side; Opt and Brainstorm are Verified
   - [x] Destroy, Exile and Counter (a spell) on targets and "all" selectors; Doom Blade, Swords to Plowshares, Counterspell and Wrath of God are Verified
   - [x] Pay ("unless that player pays", "you may pay") and mana costs on activated abilities; Izzet Charm and Rhystic Study are Verified
-  - [ ] Looked-at and revealed cards reach the viewer's views so the prompts can show their names
+  - [x] Looked-at and revealed cards reach the viewer's views so the prompts can show their names
+  - [x] Search and Move onto the battlefield: Rampant Growth, Cultivate and Sneak Attack are Verified; Flooded Strand waits for `Cost.PayLife`
+  - [ ] A card revealed and moved to a hidden zone with no question in between is named in the views of no other seat (the batch lists what is visible after its last event)
   - [ ] Web prompts for scry and the order of cards put back (ChooseCards and OrderCards already draw candidates from the views)
   - [ ] A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
   - [ ] The support walker names `Cost.Mana.X` for an `{X}` ability cost, so such a card is not Verified before X costs run

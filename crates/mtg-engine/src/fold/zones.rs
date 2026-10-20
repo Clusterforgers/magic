@@ -116,6 +116,11 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             move_object(state, *object, *to, Placement::Top)?;
         }
+        Event::Entered {
+            object,
+            tapped,
+            controller,
+        } => enter(state, *object, *tapped, *controller)?,
         Event::CardDrawn { player, object } => {
             if state.zones.get(Zone::Library(*player)).last() != Some(object) {
                 return Err(invalid("drawn card is not on top of the library"));
@@ -135,6 +140,28 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         Event::ObjectLeftGame { object } => leave_game(state, *object)?,
         other => return Err(invalid(format!("not a zone event: {other:?}"))),
     }
+    Ok(())
+}
+
+/// Sets how a permanent that an effect put onto the battlefield entered: tapped or not, under whose control.
+fn enter(
+    state: &mut GameState,
+    id: ObjectId,
+    tapped: bool,
+    controller: PlayerId,
+) -> Result<(), EngineError> {
+    player_mut(state, controller)?;
+    let object = state
+        .objects
+        .get_mut(&id)
+        .ok_or_else(|| invalid(format!("unknown object {id:?}")))?;
+    let Some(permanent) = object.permanent.as_mut() else {
+        return Err(invalid(format!(
+            "{id:?} entered but is not on the battlefield"
+        )));
+    };
+    permanent.tapped = tapped;
+    object.controller = controller;
     Ok(())
 }
 
