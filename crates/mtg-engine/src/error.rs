@@ -73,6 +73,16 @@ pub enum SetupError {
     /// The requested starting turn or active player does not exist.
     #[error("invalid starting point: {0}")]
     InvalidStart(&'static str),
+    /// A starting permanent is attached to itself or to a place that holds no starting permanent.
+    #[error(
+        "the permanent at place {index} of seat {seat} is attached to nothing it can be attached to"
+    )]
+    BadAttachment {
+        /// The seat whose battlefield lists it.
+        seat: usize,
+        /// Its place there.
+        index: usize,
+    },
 }
 
 /// Why a mana payment was rejected.

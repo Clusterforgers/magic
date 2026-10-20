@@ -57,6 +57,7 @@ Design notes for `mtg-engine` (the rules engine) and `mtg-testkit` (scenarios, b
 The rules of the pipeline are in [cards-dsl.md](cards-dsl.md) (Execution); this section says where the engine keeps them.
 
 - Objects: a `GameObject` has a `kind` (`Card`, `Token`, `Ability`) and a zone-change counter the fold bumps on every move (CR 400.7); `ObjectRef { id, counter }` names one incarnation. An ability on the stack is a `GameObject` that holds an `AbilityObject` (`abilities.rs`): its source, a snapshot of it, its index among the source's rules, an `Arc` to those rules and a trigger's cause. It has no printed side and is dropped when it leaves the stack.
+- Counters and attachments: a permanent holds its counters by kind and the `ObjectRef` of the permanent it is attached to (`PermanentState`). `GameState::host_of` names that host only while it is still the very object on the battlefield (CR 400.7), `attachments_of` and `attachment_index` are its inverse, and `Snapshot` carries both. A starting permanent gets them from `PresetPermanent` (`attached_to` is a seat and a place in its battlefield; `SetupError::BadAttachment` refuses a place that holds nothing).
 - Snapshots: `snapshot(state, id)` (`snapshot.rs`) is last known information. `PutOnStack`, `Cause` and `StepDone` carry them, and the value evaluator reads an object live while its counter matches and from the snapshot otherwise.
 - Casting: `cast.rs` keeps a cast or activation that has begun (`Pending`) outside the state. `announce(state, pending)` returns the next question (`Next::Ask`), the events that complete the cast (`Next::Commit`) or `Next::Drop` for a cast that can no longer be made. Targets come first, then the payment; backing out before the payment leaves no event. An activation that costs only `{T}` commits at once.
 - Targets: `legal_targets(state, spec, source, controller)` (`choose/targets.rs`) serves choosing, `priority_options` and the recheck on resolution, and asks the keyword hook `protects`. An answer is checked against the options it answers and each target is chosen once.
@@ -74,6 +75,7 @@ Seams the other tasks fill in; each is complete as a type and refuses or does no
 | Keywords | `keywords/<name>.rs`, read through `keywords_of` by combat, damage, state-based actions, priority and targeting | the stub of a keyword without its task answers "no" |
 | Replacement | `replace::process` in front of the events of every step | the events pass unchanged |
 | Capabilities | `RUNS` in `caps.rs` | what the support records may call Verified |
+| Counters, attachments | `PermanentState.counters`, `attached_to` | set by `PresetPermanent` only; `CountersChanged` still refuses to fold and nothing attaches |
 
 ## Triggered abilities
 

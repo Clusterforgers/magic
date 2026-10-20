@@ -34,10 +34,10 @@ zone: Zone,
  */
 characteristics: Characteristics, 
 /**
- * The counters on it, by kind (none until counters exist).
+ * The counters on it, by kind.
  */
 counters: Array<[CounterKind, number]>, 
 /**
- * The objects attached to it (none until attachments exist).
+ * The objects attached to it, in id order.
  */
 attachments: Array<ObjectId>, };

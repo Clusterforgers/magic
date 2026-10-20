@@ -219,7 +219,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 ### Snapshots (last known information)
 
-`Snapshot { id, counter, controller, owner, zone, characteristics, counters, attachments }` is built by `snapshot(state, id)` and kept in three places only. `counter` names the object it describes, `characteristics` has every continuous effect applied, and `counters` and `attachments` stay empty until those exist.
+`Snapshot { id, counter, controller, owner, zone, characteristics, counters, attachments }` is built by `snapshot(state, id)` and kept in three places only. `counter` names the object it describes, `characteristics` has every continuous effect applied, and `counters` and `attachments` are the permanent's own (empty off the battlefield).
 
 | Place | Content |
 |---|---|

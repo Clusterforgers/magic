@@ -4,6 +4,7 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::PlayerId;
 use mtg_engine::PlayerSetup;
 use mtg_engine::format::{FormatRules, Normal};
@@ -58,6 +59,22 @@ pub fn damaged(card: Arc<CardDefinition>, damage: u32) -> PresetPermanent {
         damage,
         ..PresetPermanent::new(card)
     }
+}
+
+/// `permanent` with `count` more counters of `kind` on it.
+pub fn with_counters(
+    mut permanent: PresetPermanent,
+    kind: CounterKind,
+    count: u32,
+) -> PresetPermanent {
+    permanent.counters.push((kind, count));
+    permanent
+}
+
+/// `permanent` attached to the permanent at `place` of `seat`'s battlefield (an Aura or an Equipment).
+pub fn attached_to(mut permanent: PresetPermanent, seat: usize, place: usize) -> PresetPermanent {
+    permanent.attached_to = Some((seat, place));
+    permanent
 }
 
 /// Builds a game state directly instead of playing to it.

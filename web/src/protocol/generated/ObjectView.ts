@@ -2,6 +2,7 @@
 import type { AbilityDef } from "./AbilityDef";
 import type { CardType } from "./CardType";
 import type { Color } from "./Color";
+import type { CounterKind } from "./CounterKind";
 import type { ManaCost } from "./ManaCost";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectKind } from "./ObjectKind";
@@ -88,4 +89,16 @@ source?: ObjectId,
 /**
  * What a spell or ability on the stack targets, one list for each target specification.
  */
-targets?: Array<Array<Target>>, };
+targets?: Array<Array<Target>>, 
+/**
+ * The counters on a permanent, by kind and number in a fixed order; left out while there are none.
+ */
+counters?: Array<[CounterKind, number]>, 
+/**
+ * The permanent this one is attached to, when it is an Aura or Equipment on the battlefield.
+ */
+attached_to?: ObjectId, 
+/**
+ * The permanents attached to this one, in id order; left out while there are none.
+ */
+attachments?: Array<ObjectId>, };

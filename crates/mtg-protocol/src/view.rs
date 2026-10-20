@@ -4,6 +4,7 @@
 //! library order, and an object appears only when its viewer may see which card it is.
 
 use mtg_cards::AbilityDef;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -88,6 +89,18 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<Vec<Target>>>", optional)]
     pub targets: Vec<Vec<Target>>,
+    /// The counters on a permanent, by kind and number in a fixed order; left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<(CounterKind, u32)>>", optional)]
+    pub counters: Vec<(CounterKind, u32)>,
+    /// The permanent this one is attached to, when it is an Aura or Equipment on the battlefield.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub attached_to: Option<ObjectId>,
+    /// The permanents attached to this one, in id order; left out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ObjectId>>", optional)]
+    pub attachments: Vec<ObjectId>,
 }
 
 /// One seat as a viewer sees it.

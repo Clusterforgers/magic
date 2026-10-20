@@ -73,6 +73,9 @@ mod tests {
             kind: ObjectKind::Card,
             source: None,
             targets: Vec::new(),
+            counters: Vec::new(),
+            attached_to: None,
+            attachments: Vec::new(),
         }
     }
 

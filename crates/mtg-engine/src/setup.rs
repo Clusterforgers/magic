@@ -5,12 +5,13 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::combat::CombatState;
 use crate::error::SetupError;
 use crate::format::FormatRules;
-use crate::object::{GameObject, PermanentState};
+use crate::object::{GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
 use crate::state::{GameState, Stage};
 use crate::turn::{Step, TurnState};
@@ -27,6 +28,10 @@ pub struct PresetPermanent {
     pub summoning_sick: bool,
     /// Damage already marked.
     pub damage: u32,
+    /// Counters already on it, by kind; a kind listed twice adds up.
+    pub counters: Vec<(CounterKind, u32)>,
+    /// The permanent it starts attached to, as (seat, place in that seat's `battlefield`).
+    pub attached_to: Option<(usize, usize)>,
 }
 
 impl PresetPermanent {
@@ -37,6 +42,8 @@ impl PresetPermanent {
             tapped: false,
             summoning_sick: false,
             damage: 0,
+            counters: Vec::new(),
+            attached_to: None,
         }
     }
 }
@@ -140,6 +147,20 @@ impl GameSetup {
                     })?;
             }
         }
+        for (seat, player) in self.players.iter().enumerate() {
+            for (index, preset) in player.battlefield.iter().enumerate() {
+                let host = preset.attached_to;
+                if host.is_some_and(|(host_seat, place)| {
+                    (host_seat, place) == (seat, index)
+                        || self
+                            .players
+                            .get(host_seat)
+                            .is_none_or(|p| place >= p.battlefield.len())
+                }) {
+                    return Err(SetupError::BadAttachment { seat, index });
+                }
+            }
+        }
         if let Start::At { turn, active, step } = self.start {
             if turn == 0 {
                 return Err(SetupError::InvalidStart("turns start at 1"));
@@ -157,6 +178,25 @@ impl GameSetup {
             }
         }
         Ok(())
+    }
+}
+
+/// The permanent state a starting permanent begins with; `host` is the object it starts attached to.
+fn preset_state(preset: &PresetPermanent, host: Option<ObjectId>) -> PermanentState {
+    let mut counters: BTreeMap<CounterKind, u32> = BTreeMap::new();
+    for (kind, count) in &preset.counters {
+        if *count > 0 {
+            *counters.entry(kind.clone()).or_default() += count;
+        }
+    }
+    PermanentState {
+        tapped: preset.tapped,
+        damage: preset.damage,
+        deathtouched: false,
+        summoning_sick: preset.summoning_sick,
+        counters,
+        // Every object of a fresh game is on its first incarnation (counter 0).
+        attached_to: host.map(|id| ObjectRef { id, counter: 0 }),
     }
 }
 
@@ -178,6 +218,7 @@ impl GameState {
             id
         };
         let mut presets = Vec::new();
+        let mut placed: BTreeMap<(usize, usize), ObjectId> = BTreeMap::new();
         for (seat, setup_player) in setup.players.iter().enumerate() {
             let owner = PlayerId::from_index(seat);
             for card in setup_player.library.iter().rev() {
@@ -186,11 +227,10 @@ impl GameState {
             for card in &setup_player.hand {
                 create(owner, card, Zone::Hand(owner));
             }
-            for preset in &setup_player.battlefield {
-                presets.push((
-                    create(owner, &preset.card, Zone::Battlefield),
-                    preset.clone(),
-                ));
+            for (index, preset) in setup_player.battlefield.iter().enumerate() {
+                let id = create(owner, &preset.card, Zone::Battlefield);
+                placed.insert((seat, index), id);
+                presets.push((id, preset.clone()));
             }
             for card in &setup_player.graveyard {
                 create(owner, card, Zone::Graveyard(owner));
@@ -211,12 +251,8 @@ impl GameState {
             .any(|object| crate::triggers::can_trigger(object.card()));
         for (id, preset) in presets {
             if let Some(object) = objects.get_mut(&id) {
-                object.permanent = Some(PermanentState {
-                    tapped: preset.tapped,
-                    damage: preset.damage,
-                    deathtouched: false,
-                    summoning_sick: preset.summoning_sick,
-                });
+                let host = preset.attached_to.and_then(|place| placed.get(&place));
+                object.permanent = Some(preset_state(&preset, host.copied()));
             }
         }
         let (stage, turn, first_player) = match setup.start {
@@ -257,5 +293,122 @@ impl GameState {
             triggers_possible,
             result: None,
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a starting permanent can hold counters and start attached to a permanent of any seat, a bad attachment is refused by name, and the state names a permanent's host and attachments only while the host is the very object it was attached to; a snapshot carries both.
+    use mtg_core::card::CardType;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::events::{Event, ZoneCause};
+    use crate::fixtures::{creature, setup};
+    use crate::fold::apply_event;
+    use crate::snapshot::snapshot;
+
+    fn aura() -> Arc<CardDefinition> {
+        Arc::new(CardDefinition::new("Halo").with_type(CardType::Enchantment))
+    }
+
+    fn halo_on(host: (usize, usize)) -> PresetPermanent {
+        PresetPermanent {
+            attached_to: Some(host),
+            ..PresetPermanent::new(aura())
+        }
+    }
+
+    /// Seat 0: a Bear with counters, a Halo on the Bear and a Halo on seat 1's Ogre; seat 1: the Ogre.
+    fn game() -> GameState {
+        let mut setup = setup(vec![vec![], vec![]], vec![vec![], vec![]]);
+        setup.players[0].battlefield = vec![
+            PresetPermanent {
+                counters: vec![
+                    (CounterKind::Charge, 1),
+                    (CounterKind::PlusOnePlusOne, 1),
+                    (CounterKind::PlusOnePlusOne, 1),
+                    (CounterKind::Poison, 0),
+                ],
+                ..PresetPermanent::new(creature("Bear", 2, 2))
+            },
+            halo_on((0, 0)),
+            halo_on((1, 0)),
+        ];
+        setup.players[1].battlefield = vec![PresetPermanent::new(creature("Ogre", 4, 4))];
+        GameState::from_setup(&setup).unwrap()
+    }
+
+    /// The Bear, the Halo on it, the Halo on the Ogre and the Ogre, in battlefield order.
+    fn cast(game: &GameState) -> [ObjectId; 4] {
+        [0, 1, 2, 3].map(|at| game.zone(Zone::Battlefield)[at])
+    }
+
+    #[test]
+    fn counters_add_up_and_attachments_find_their_hosts_across_seats() {
+        let game = game();
+        let [bear, on_bear, on_ogre, ogre] = cast(&game);
+        let counters: Vec<_> = game
+            .object(bear)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .counters()
+            .map(|(kind, count)| (kind.clone(), count))
+            .collect();
+        // Equal kinds add up, a count of zero is no counter, and the order is the kind's.
+        assert_eq!(
+            counters,
+            [(CounterKind::PlusOnePlusOne, 2), (CounterKind::Charge, 1)]
+        );
+        assert_eq!(game.host_of(on_bear), Some(bear));
+        assert_eq!(game.host_of(on_ogre), Some(ogre));
+        assert_eq!(game.host_of(bear), None);
+        assert_eq!(game.attachments_of(bear), [on_bear]);
+        assert_eq!(game.attachments_of(ogre), [on_ogre]);
+        assert_eq!(game.attachment_index().len(), 2);
+        let shot = snapshot(&game, bear).unwrap();
+        assert_eq!(shot.counters, counters);
+        assert_eq!(shot.attachments, [on_bear]);
+    }
+
+    #[test]
+    fn a_host_that_left_or_returned_as_a_new_object_holds_nothing() {
+        let mut game = game();
+        let [bear, on_bear, on_ogre, ogre] = cast(&game);
+        let moved = |object, from, to| Event::ZoneChanged {
+            object,
+            from,
+            to,
+            cause: ZoneCause::Moved,
+        };
+        let home = Zone::Graveyard(PlayerId(1));
+        apply_event(&mut game, &moved(ogre, Zone::Battlefield, home)).unwrap();
+        assert_eq!(game.attachments_of(ogre), []);
+        assert_eq!(game.host_of(on_ogre), None);
+        // It returns as a new object: the Halo was attached to the old one.
+        apply_event(&mut game, &moved(ogre, home, Zone::Battlefield)).unwrap();
+        assert_eq!(game.attachments_of(ogre), []);
+        assert_eq!(game.host_of(on_ogre), None);
+        // The other host is untouched.
+        assert_eq!(game.host_of(on_bear), Some(bear));
+    }
+
+    #[rstest]
+    #[case::to_itself((0, 0), 0, 0)]
+    #[case::to_a_seat_that_is_not_there((7, 0), 0, 0)]
+    #[case::to_a_place_that_is_not_there((1, 5), 0, 0)]
+    fn a_bad_attachment_is_refused_by_name(
+        #[case] host: (usize, usize),
+        #[case] seat: usize,
+        #[case] index: usize,
+    ) {
+        let mut setup = setup(vec![vec![], vec![]], vec![vec![], vec![]]);
+        setup.players[0].battlefield = vec![halo_on(host)];
+        setup.players[1].battlefield = vec![PresetPermanent::new(creature("Ogre", 4, 4))];
+        assert_eq!(
+            GameState::from_setup(&setup).unwrap_err(),
+            SetupError::BadAttachment { seat, index }
+        );
     }
 }
