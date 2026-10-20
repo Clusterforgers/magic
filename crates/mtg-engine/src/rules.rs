@@ -348,32 +348,32 @@ impl GameState {
 }
 
 /// Whether the creature `id` attacks each combat if able: the one place the attack declaration reads this requirement.
-pub(crate) fn must_attack(state: &GameState, id: ObjectId) -> bool {
+pub fn must_attack(state: &GameState, id: ObjectId) -> bool {
     state.rules().must_attack.contains(&id)
 }
 
 /// Whether the creature `id` blocks each combat if able: the one place the block declaration reads this requirement.
-pub(crate) fn must_block(state: &GameState, id: ObjectId) -> bool {
+pub fn must_block(state: &GameState, id: ObjectId) -> bool {
     state.rules().must_block.contains(&id)
 }
 
 /// Whether the spell `id` can't be countered: the one place a counter reads this rule.
-pub(crate) fn cant_be_countered(state: &GameState, id: ObjectId) -> bool {
+pub fn cant_be_countered(state: &GameState, id: ObjectId) -> bool {
     state.rules().uncounterable.contains(&id)
 }
 
 /// Whether `player` can't gain life: the one place a gain of life reads this rule.
-pub(crate) fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
+pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_life_gain.contains(&player)
 }
 
 /// Whether `player` can't draw cards: the one place a draw reads this rule.
-pub(crate) fn cant_draw(state: &GameState, player: PlayerId) -> bool {
+pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_draw.contains(&player)
 }
 
 /// Whether `player` can't search libraries: the one place a search reads this rule.
-pub(crate) fn cant_search(state: &GameState, player: PlayerId) -> bool {
+pub fn cant_search(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_search.contains(&player)
 }
 

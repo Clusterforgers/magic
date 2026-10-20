@@ -16,6 +16,7 @@ pub mod keyword_cards;
 pub mod layer_cards;
 pub mod pay_cards;
 pub mod pump_cards;
+pub mod rule_cards;
 pub mod scenario;
 pub mod script_error;
 pub mod small_cards;
@@ -36,6 +37,7 @@ pub use keyword_cards::keyword_triggers_fuzz_setup;
 pub use layer_cards::layers_fuzz_setup;
 pub use pay_cards::pay_fuzz_setup;
 pub use pump_cards::pump_fuzz_setup;
+pub use rule_cards::rules_fuzz_setup;
 pub use scenario::{
     Scenario, ScenarioError, attached_to, damaged, ready, sick, tapped, with_counters,
 };
