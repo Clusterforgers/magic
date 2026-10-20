@@ -20,6 +20,8 @@ export interface ServerScript {
   game?: (id: string, call: FetchCall) => Response | Promise<Response>
   /** Answers `GET /api/lobbies`; an empty list by default. */
   lobbies?: (call: FetchCall) => Response | Promise<Response>
+  /** Answers `POST /api/join`; gets the parsed JSON body. Seat 1 of `MADE_GAME` by default. */
+  join?: (body: unknown, call: FetchCall) => Response | Promise<Response>
 }
 
 /** A REST server in memory, with a record of what was asked of it. */
@@ -30,6 +32,8 @@ export interface FakeServer {
   calls: FetchCall[]
   /** The parsed bodies of every `POST /api/games`. */
   creates: unknown[]
+  /** The parsed bodies of every `POST /api/join`. */
+  joins: unknown[]
   /** How many times each path was asked for. */
   count(path: string): number
 }
@@ -54,6 +58,7 @@ export function createdReply(body: unknown): Response {
 /** Builds a REST client whose `fetch` is answered by `script`; unknown paths get the server's 404. */
 export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS): FakeServer {
   const creates: unknown[] = []
+  const joins: unknown[] = []
   const fake = fakeFetch((call) => {
     const path = call.url.split('?')[0] ?? call.url
     if (path === '/api/demo-decks') return script.decks?.(call) ?? jsonResponse(200, decks)
@@ -62,6 +67,11 @@ export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS
       const body: unknown = typeof call.init.body === 'string' ? JSON.parse(call.init.body) : null
       creates.push(body)
       return script.create?.(body, call) ?? createdReply(body)
+    }
+    if (path === '/api/join' && call.init?.method === 'POST') {
+      const body: unknown = typeof call.init.body === 'string' ? JSON.parse(call.init.body) : null
+      joins.push(body)
+      return script.join?.(body, call) ?? jsonResponse(200, { game: MADE_GAME, seat: 1, token: tokenOf(1) })
     }
     if (path.startsWith('/api/games/') && call.init?.method === undefined) {
       const id = decodeURIComponent(path.slice('/api/games/'.length))
@@ -74,6 +84,7 @@ export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS
     fetch: fake.fetch,
     calls: fake.calls,
     creates,
+    joins,
     count: (path) => fake.calls.filter((call) => call.url === path).length,
   }
 }

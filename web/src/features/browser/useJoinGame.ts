@@ -10,8 +10,11 @@ import type { JoinFailure } from './joinErrors'
 /** Starts joining `game`; `opener` is the button that asked, which takes focus back if the question is cancelled. */
 export type OnJoin = (game: LobbyGame, opener: HTMLElement | null) => void
 
-/** Starts joining the game `code` names (as `normalizeCode` leaves it); `opener` is as for `OnJoin`. */
-export type OnJoinCode = (code: string, opener: HTMLElement | null) => void
+/**
+ * Starts joining the game `code` names (as `normalizeCode` leaves it); `opener` is as for `OnJoin`. A guest who has
+ * already given `name`, on the page of an invite link, is not asked again; a signed-in visitor joins as the account.
+ */
+export type OnJoinCode = (code: string, opener: HTMLElement | null, name?: string) => void
 
 /** What a join is for: a row of the list, or the game a typed code names. */
 export type JoinTarget = { kind: 'game'; game: LobbyGame } | { kind: 'code'; code: string }
@@ -48,6 +51,8 @@ export interface JoinGame {
   failure: PageFailure | null
   /** Why a join with a code failed and could not go on in a dialog: shown under the code field. */
   codeProblem: string | null
+  /** The same failure with whether the code is spent for good (no open game has it, or the game is full or started). */
+  codeFailure: JoinFailure | null
   /** The guest's answer: the name to join under. */
   submit(name: string): void
   /** The guest backs out. */
@@ -65,16 +70,20 @@ export interface JoinGame {
  * the seat binds to the account; a guest is asked for a name first. Success opens the game page, whose id the answer
  * gives. A seat that is gone (taken, started, closed) or a code no open game has is shown beside the list or under the
  * code field and, for a row, the list is asked for again; any other failure leaves the form as it was so it can be
- * sent again. One request at a time: a press while one is out does nothing.
+ * sent again. One request at a time: a press while one is out does nothing. A page with no list passes no
+ * `refreshList`.
  */
-export function useJoinGame(api: Pick<Api, 'joinGame' | 'joinByCode'>, refreshList: () => void): JoinGame {
+export function useJoinGame(
+  api: Pick<Api, 'joinGame' | 'joinByCode'>,
+  refreshList: () => void = () => undefined,
+): JoinGame {
   const navigate = useNavigate()
   const auth = useAuthStore()
   const [joining, setJoining] = useState<JoinTarget | null>(null)
   const [asking, setAsking] = useState<Asking | null>(null)
   const [dialogFailure, setDialogFailure] = useState<string | null>(null)
   const [failure, setFailure] = useState<PageFailure | null>(null)
-  const [codeProblem, setCodeProblem] = useState<string | null>(null)
+  const [codeCause, setCodeCause] = useState<JoinFailure | null>(null)
   // Set before the first await, so two presses in one tick cannot both send.
   const busy = useRef(false)
 
@@ -111,32 +120,33 @@ export function useJoinGame(api: Pick<Api, 'joinGame' | 'joinByCode'>, refreshLi
   // Said where the player is looking: beside the list for a row, under the field for a code.
   function showOnPage(target: JoinTarget, problem: JoinFailure): void {
     if (target.kind === 'code') {
-      setCodeProblem(problem.text)
+      setCodeCause(problem)
       return
     }
     setFailure({ game: target.game, text: problem.text })
     if (problem.final) refreshList()
   }
 
-  async function begin(target: JoinTarget, opener: HTMLElement | null): Promise<void> {
+  async function begin(target: JoinTarget, opener: HTMLElement | null, name?: string): Promise<void> {
     // The first answer about the session may still be on its way; a signed-in visitor must not be asked for a name.
     if (auth.getState().status === 'loading') await auth.getState().start()
-    if (auth.getState().status !== 'signed-in') {
+    const signedIn = auth.getState().status === 'signed-in'
+    if (!signedIn && name === undefined) {
       release()
       setAsking({ target, opener, open: true })
       return
     }
-    const problem = await send(target, undefined)
+    const problem = await send(target, signedIn ? undefined : name)
     if (problem !== null) showOnPage(target, problem)
   }
 
-  function startOn(target: JoinTarget, opener: HTMLElement | null): void {
+  function startOn(target: JoinTarget, opener: HTMLElement | null, name?: string): void {
     if (busy.current) return
     busy.current = true
     setFailure(null)
-    setCodeProblem(null)
+    setCodeCause(null)
     setJoining(target)
-    void begin(target, opener)
+    void begin(target, opener, name)
   }
 
   function submit(name: string): void {
@@ -158,14 +168,15 @@ export function useJoinGame(api: Pick<Api, 'joinGame' | 'joinByCode'>, refreshLi
 
   return {
     start: (game, opener) => startOn({ kind: 'game', game }, opener),
-    startCode: (code, opener) => startOn({ kind: 'code', code }, opener),
+    startCode: (code, opener, name) => startOn({ kind: 'code', code }, opener, name),
     joining: joining?.kind === 'game' ? joining.game.game : null,
     joiningCode: joining?.kind === 'code',
     busy: joining !== null,
     asking,
     dialogFailure,
     failure,
-    codeProblem,
+    codeProblem: codeCause?.text ?? null,
+    codeFailure: codeCause,
     submit,
     cancel: () => {
       // A request in flight may already hold the seat, and its token is only ever shown to this page.
@@ -176,6 +187,6 @@ export function useJoinGame(api: Pick<Api, 'joinGame' | 'joinByCode'>, refreshLi
       setDialogFailure(null)
     },
     dismiss: () => setFailure(null),
-    dismissCode: () => setCodeProblem(null),
+    dismissCode: () => setCodeCause(null),
   }
 }
