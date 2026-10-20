@@ -17,6 +17,7 @@ use mtg_engine::decision::DecisionKind;
 use mtg_engine::effects::{Layer, Modification, Selector};
 use mtg_engine::events::{DeathCause, ResolutionOutcome};
 use mtg_engine::keywords::{has_keyword, keywords_of, summoning_sick};
+use mtg_engine::object::PermanentState;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, PresetPermanent, characteristics};
@@ -31,13 +32,13 @@ fn table(
     hands: [Vec<Arc<CardDefinition>>; 2],
     boards: [Vec<PresetPermanent>; 2],
 ) -> Scenario {
-    let [hand0, hand1] = hands;
-    let [board0, board1] = boards;
+    let [mine, theirs] = hands;
+    let [my_board, their_board] = boards;
     let mut scenario = Scenario::new(seats)
-        .hand(0, hand0)
-        .hand(1, hand1)
-        .battlefield(0, board0)
-        .battlefield(1, board1);
+        .hand(0, mine)
+        .hand(1, theirs)
+        .battlefield(0, my_board)
+        .battlefield(1, their_board);
     for seat in 2..seats {
         scenario = scenario.battlefield(
             seat,
@@ -68,7 +69,7 @@ fn damage_on(driver: &Driver, name: &str) -> u32 {
         .state()
         .object(id)
         .and_then(|o| o.permanent())
-        .map_or(0, |p| p.damage())
+        .map_or(0, PermanentState::damage)
 }
 
 fn effects_created(events: &[Event]) -> Vec<&mtg_engine::effects::ContinuousEffect> {
@@ -181,7 +182,7 @@ fn the_pump_lasts_through_the_turn_and_ends_at_cleanup(
     let begun = driver.engine().events().len();
     driver.idle_until(2, Step::Upkeep)?;
     assert_eq!(stats(&driver, "Wolf"), (3, 3));
-    assert!(driver.state().effects().is_empty());
+    assert_eq!(driver.state().effects(), []);
     let expired = driver.engine().events()[begun..]
         .iter()
         .filter(|event| matches!(event, Event::EffectExpired { .. }))
@@ -533,7 +534,7 @@ fn a_keyword_is_granted_for_the_turn_only(
     driver.idle_until(1, Step::End)?;
     assert!(has_keyword(driver.state(), id, &Keyword::Flying));
     driver.idle_until(2, Step::Upkeep)?;
-    assert!(keywords_of(driver.state(), id).is_empty());
+    assert_eq!(keywords_of(driver.state(), id).len(), 0);
     Ok(())
 }
 
@@ -582,7 +583,7 @@ fn two_changes_of_one_set_of_creatures_are_fixed_when_the_spell_resolves(
     resolve_the_stack(&mut driver)?;
     assert_eq!(stats(&driver, "Latecomer"), (2, 2));
     let latecomer = driver.id_of("Latecomer")?;
-    assert!(keywords_of(driver.state(), latecomer).is_empty());
+    assert_eq!(keywords_of(driver.state(), latecomer).len(), 0);
     Ok(())
 }
 
@@ -761,8 +762,8 @@ fn giant_growth_does_nothing_when_its_target_is_gone(
     resolve_the_stack(&mut driver)?;
     let events = &driver.engine().events()[begun..];
     assert!(!on_battlefield(&driver, "Wolf"), "3 damage on a 3/3");
-    assert!(effects_created(events).is_empty());
-    assert!(driver.state().effects().is_empty());
+    assert_eq!(effects_created(events).len(), 0);
+    assert_eq!(driver.state().effects(), []);
     assert!(events.iter().any(|event| matches!(
         event,
         Event::ResolutionEnded {
@@ -786,7 +787,7 @@ fn giant_growth_is_not_offered_without_a_creature_to_target(
     let DecisionKind::Priority(options) = &driver.decision()?.kind else {
         panic!("priority is asked");
     };
-    assert!(options.castable.is_empty());
+    assert_eq!(options.castable.len(), 0);
     assert!(driver.begin_cast("Giant Growth").is_err());
     Ok(())
 }
