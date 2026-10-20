@@ -13,6 +13,7 @@ import { useAuth } from '@/features/auth/context'
 import { nameProblem } from '@/features/create/form'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { codeText } from '@/lib/joinCode'
+import { cn } from '@/lib/utils'
 import { api as sharedApi } from '@/net/api'
 import type { Api } from '@/net/api'
 import { isJoinCode, normalizeCode } from './format'
@@ -55,10 +56,11 @@ function DeadEnd({ title, children }: { title: string; children: ReactNode }) {
         <AlertDescription id={said}>{children}</AlertDescription>
       </Alert>
       <div className="flex flex-wrap gap-2">
-        <Link ref={play} to="/" aria-describedby={said} className={buttonVariants({ size: 'lg' })}>
+        {/* `cn` settles the classes a variant overrides (the text size, the outline's border), as `Button` does. */}
+        <Link ref={play} to="/" aria-describedby={said} className={cn(buttonVariants({ size: 'lg' }))}>
           Play
         </Link>
-        <Link to="/new" className={buttonVariants({ size: 'lg', variant: 'outline' })}>
+        <Link to="/new" className={cn(buttonVariants({ size: 'lg', variant: 'outline' }))}>
           Create a game
         </Link>
       </div>
