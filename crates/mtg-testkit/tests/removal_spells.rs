@@ -10,7 +10,7 @@ use common::{name_of, names, pid};
 use mtg_core::ids::ObjectId;
 use mtg_engine::choose::{Target, TargetChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
-use mtg_engine::effects::{Duration, Modification, Selector};
+use mtg_engine::effects::{Duration, Modification};
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::zones::Zone;
@@ -237,7 +237,7 @@ fn swords_exiles_the_creature_and_its_controller_gains_the_power_it_had(
     if bonus != 0 {
         // The creature is bigger or smaller than its card when it is exiled, and its controller gains what it was.
         driver.add_effect(
-            Selector::Object(id),
+            driver.on(id),
             Modification::ModifyPowerToughness {
                 power: bonus,
                 toughness: bonus.max(0),
@@ -306,7 +306,7 @@ fn swords_gains_nothing_for_a_creature_without_power(
     let target = driver.target_named("Serra Angel")?;
     driver.cast_at("Swords to Plowshares", &[target])?;
     driver.add_effect(
-        Selector::Object(id),
+        driver.on(id),
         Modification::SetPowerToughness {
             power: set_power,
             toughness: 4,

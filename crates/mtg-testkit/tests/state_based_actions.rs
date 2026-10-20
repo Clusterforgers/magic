@@ -3,7 +3,7 @@
 mod common;
 
 use common::{names, pid};
-use mtg_engine::effects::{Duration, Modification, Selector};
+use mtg_engine::effects::{Duration, Modification};
 use mtg_engine::events::DeathCause;
 use mtg_engine::player::LossReason;
 use mtg_engine::turn::Step;
@@ -78,7 +78,7 @@ fn debuffs_that_zero_toughness_kill_without_damage(
     )?;
     let subject = driver.id_of("Subject")?;
     driver.add_effect(
-        Selector::Object(subject),
+        driver.on(subject),
         Modification::ModifyPowerToughness {
             power: delta,
             toughness: delta,
@@ -122,13 +122,14 @@ fn a_death_can_cause_another_death_in_the_next_pass() -> Result<(), ScriptError>
             ),
     )?;
     let (source, t) = (driver.id_of("Source")?, driver.id_of("T")?);
-    driver.add_effect(
-        Selector::Object(t),
+    driver.add_effect_from(
+        source,
+        driver.on(t),
         Modification::ModifyPowerToughness {
             power: 0,
             toughness: 2,
         },
-        Duration::WhileSourceOnBattlefield(source),
+        Duration::WhileSourceOnBattlefield,
     )?;
     driver.attack(&[("Source", 1), ("T", 1)])?;
     driver.pass()?;

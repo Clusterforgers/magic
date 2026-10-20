@@ -49,8 +49,11 @@ use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_core::ids::{ObjectId, PlayerId};
 
+use crate::characteristics::derive;
+use crate::effects::Modification;
 use crate::object::{GameObject, ObjectKind, PermanentState};
 use crate::state::GameState;
+use crate::zones::Zone;
 
 /// How a keyword changes the combat damage its holder deals.
 // Independent switches the keyword tasks set by name, not the states of one machine.
@@ -232,10 +235,10 @@ fn printed(object: &GameObject) -> impl Iterator<Item = &Keyword> {
 
 /// The keywords object `id` has now, in the order they are listed: the one reader of an object's keywords.
 ///
-/// Today these are the printed ones. Layer 6 joins here (`docs/cards-dsl.md`, Triggers, replacement and
-/// layers): the continuous effects that add a keyword append to the list and those that remove one take
-/// it out, in timestamp order, so nothing else in the engine learns where a keyword came from. An ability on
-/// the stack has no keywords of its own.
+/// The printed ones come first, in the order of the card's rules. Layer 6 joins here (`docs/cards-dsl.md`,
+/// Triggers, replacement and layers): the continuous effects that add a keyword append to the list in timestamp
+/// order, and a keyword the object already has is not listed twice, so nothing else in the engine learns where a
+/// keyword came from. Effects apply to permanents only. An ability on the stack has no keywords of its own.
 pub fn keywords_of(state: &GameState, id: ObjectId) -> Vec<&Keyword> {
     let Some(object) = state.object(id) else {
         return Vec::new();
@@ -243,7 +246,17 @@ pub fn keywords_of(state: &GameState, id: ObjectId) -> Vec<&Keyword> {
     if object.kind() == ObjectKind::Ability {
         return Vec::new();
     }
-    printed(object).collect()
+    let mut keywords: Vec<&Keyword> = printed(object).collect();
+    if object.zone() == Zone::Battlefield && !state.effects().is_empty() {
+        for effect in derive(state, object).1 {
+            if let Modification::AddKeyword(keyword) = &effect.modification
+                && !keywords.contains(&keyword)
+            {
+                keywords.push(keyword);
+            }
+        }
+    }
+    keywords
 }
 
 /// Whether object `id` has `keyword` now.

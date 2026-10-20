@@ -57,7 +57,7 @@ fn power_and_toughness_follow_layer_then_timestamp(
 ) -> Result<(), ScriptError> {
     let (mut driver, id) = with_subject((6, 6))?;
     for modification in effects {
-        driver.add_effect(Selector::Object(id), modification, Duration::UntilEndOfTurn)?;
+        driver.add_effect(driver.on(id), modification, Duration::UntilEndOfTurn)?;
     }
     assert_eq!(stats(&driver, id), Some(expected));
     Ok(())
@@ -96,15 +96,15 @@ fn a_type_change_in_an_earlier_layer_makes_later_power_toughness_effects_apply()
     let mut driver = Driver::from_scenario(Scenario::new(2).battlefield(0, [ready(forest())]))?;
     let land = driver.id_of("Forest")?;
     // Registered in the "wrong" order on purpose: pump first, then the set, then the type change.
-    driver.add_effect(Selector::Object(land), pump(1, 1), Duration::UntilEndOfTurn)?;
+    driver.add_effect(driver.on(land), pump(1, 1), Duration::UntilEndOfTurn)?;
     assert_eq!(
         stats(&driver, land),
         None,
         "a plain land has no power or toughness to modify"
     );
-    driver.add_effect(Selector::Object(land), set(3, 3), Duration::UntilEndOfTurn)?;
+    driver.add_effect(driver.on(land), set(3, 3), Duration::UntilEndOfTurn)?;
     driver.add_effect(
-        Selector::Object(land),
+        driver.on(land),
         Modification::AddType(CardType::Creature),
         Duration::UntilEndOfTurn,
     )?;
@@ -138,14 +138,14 @@ fn creature_selectors_see_types_added_by_earlier_layers() -> Result<(), ScriptEr
         (Some((3, 3)), Some((2, 2)), None)
     );
     // Power and toughness are set first: a creature without a toughness would die to state-based actions.
-    driver.add_effect(Selector::Object(land), set(0, 1), Duration::UntilEndOfTurn)?;
+    driver.add_effect(driver.on(land), set(0, 1), Duration::UntilEndOfTurn)?;
     assert_eq!(
         stats(&driver, land),
         Some((0, 1)),
         "not a creature yet, so the all-creatures pump skips it"
     );
     driver.add_effect(
-        Selector::Object(land),
+        driver.on(land),
         Modification::AddType(CardType::Creature),
         Duration::UntilEndOfTurn,
     )?;
@@ -178,7 +178,7 @@ fn color_changing_effects_replace_colors(#[case] colors: ColorSet) -> Result<(),
         Some(ColorSet::EMPTY.with(Color::Green))
     );
     driver.add_effect(
-        Selector::Object(id),
+        driver.on(id),
         Modification::SetColors(colors),
         Duration::UntilEndOfTurn,
     )?;
@@ -202,7 +202,7 @@ fn until_end_of_turn_effects_last_exactly_until_cleanup(
             .battlefield(0, [ready(free_creature("Subject", 2, 2))]),
     )?;
     let id = driver.id_of("Subject")?;
-    driver.add_effect(Selector::Object(id), pump(1, 1), Duration::UntilEndOfTurn)?;
+    driver.add_effect(driver.on(id), pump(1, 1), Duration::UntilEndOfTurn)?;
     assert_eq!(stats(&driver, id), Some((3, 3)));
     driver.idle_until(2, still_active_in)?;
     assert_eq!(
@@ -226,9 +226,9 @@ fn effects_created_in_different_turns_expire_with_their_own_turn() -> Result<(),
             .battlefield(0, [ready(free_creature("Subject", 2, 2))]),
     )?;
     let id = driver.id_of("Subject")?;
-    driver.add_effect(Selector::Object(id), pump(1, 1), Duration::UntilEndOfTurn)?;
+    driver.add_effect(driver.on(id), pump(1, 1), Duration::UntilEndOfTurn)?;
     driver.idle_until(3, Step::Main1)?;
-    driver.add_effect(Selector::Object(id), pump(5, 5), Duration::UntilEndOfTurn)?;
+    driver.add_effect(driver.on(id), pump(5, 5), Duration::UntilEndOfTurn)?;
     assert_eq!(
         stats(&driver, id),
         Some((7, 7)),
@@ -253,23 +253,20 @@ fn while_source_on_battlefield_ends_when_the_source_leaves(
         ],
     ))?;
     let (subject, lord) = (driver.id_of("Subject")?, driver.id_of("Lord")?);
-    driver.add_effect(
-        Selector::Object(subject),
+    driver.add_effect_from(
+        lord,
+        driver.on(subject),
         pump(2, 2),
-        Duration::WhileSourceOnBattlefield(lord),
+        Duration::WhileSourceOnBattlefield,
     )?;
     assert_eq!(stats(&driver, subject), Some((4, 4)));
     if source_dies {
-        driver.add_effect(
-            Selector::Object(lord),
-            pump(-1, -1),
-            Duration::UntilEndOfTurn,
-        )?;
+        driver.add_effect(driver.on(lord), pump(-1, -1), Duration::UntilEndOfTurn)?;
         assert_eq!(names(driver.state(), Zone::Battlefield), ["Subject"]);
         assert_eq!(
             driver.state().effects().len(),
-            1,
-            "the lapsed buff was pruned, the debuff remains"
+            0,
+            "the lapsed buff was pruned, and so was the debuff of the Lord that is gone"
         );
     }
     // The buff outlives turns for as long as its source does.
@@ -284,15 +281,15 @@ fn a_buff_can_keep_a_damaged_creature_alive_only_while_it_lasts() -> Result<(), 
         Scenario::new(2).battlefield(0, [damaged(free_creature("Subject", 2, 3), 2)]),
     )?;
     let id = driver.id_of("Subject")?;
-    driver.add_effect(Selector::Object(id), pump(0, 1), Duration::UntilEndOfTurn)?;
+    driver.add_effect(driver.on(id), pump(0, 1), Duration::UntilEndOfTurn)?;
     assert_eq!(stats(&driver, id), Some((2, 4)));
-    driver.add_effect(Selector::Object(id), pump(0, -1), Duration::UntilEndOfTurn)?;
+    driver.add_effect(driver.on(id), pump(0, -1), Duration::UntilEndOfTurn)?;
     assert_eq!(
         names(driver.state(), Zone::Battlefield),
         ["Subject"],
         "2 damage on toughness 3 survives"
     );
-    driver.add_effect(Selector::Object(id), pump(0, -1), Duration::UntilEndOfTurn)?;
+    driver.add_effect(driver.on(id), pump(0, -1), Duration::UntilEndOfTurn)?;
     assert!(
         names(driver.state(), Zone::Battlefield).is_empty(),
         "damage 2 on toughness 2 is lethal"
@@ -304,7 +301,7 @@ fn a_buff_can_keep_a_damaged_creature_alive_only_while_it_lasts() -> Result<(), 
 fn effect_ids_and_timestamps_strictly_increase() -> Result<(), ScriptError> {
     let (mut driver, id) = with_subject((1, 1))?;
     for _ in 0..4 {
-        driver.add_effect(Selector::Object(id), pump(1, 1), Duration::UntilEndOfTurn)?;
+        driver.add_effect(driver.on(id), pump(1, 1), Duration::UntilEndOfTurn)?;
     }
     let effects = driver.state().effects();
     assert!(

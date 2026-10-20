@@ -156,10 +156,11 @@ fn a_lord_leaving_changes_creatures_whose_events_never_name_them() {
         toughness: 1,
     };
     let run = table.run(|d| {
-        d.add_effect(
+        d.add_effect_from(
+            lord_id,
             Selector::AllCreatures,
             boost,
-            Duration::WhileSourceOnBattlefield(lord_id),
+            Duration::WhileSourceOnBattlefield,
         )
     });
     for batch in &run.batches {

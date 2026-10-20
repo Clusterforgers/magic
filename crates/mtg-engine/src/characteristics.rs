@@ -7,7 +7,7 @@ use mtg_core::ids::ObjectId;
 use serde::{Deserialize, Serialize};
 
 use crate::effects::ContinuousEffect;
-use crate::object::ObjectKind;
+use crate::object::{GameObject, ObjectKind};
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -50,6 +50,17 @@ pub fn characteristics(state: &GameState, id: ObjectId) -> Option<Characteristic
             abilities: Vec::new(),
         });
     }
+    Some(derive(state, object).0)
+}
+
+/// The characteristics of a card or token and the effects that changed them, in the order they applied.
+///
+/// This is the one place the layers are walked: `characteristics` keeps the first part and `keywords_of` the
+/// second, so nothing reads an effect another way.
+pub(crate) fn derive<'a>(
+    state: &'a GameState,
+    object: &'a GameObject,
+) -> (Characteristics, Vec<&'a ContinuousEffect>) {
     let card = object.card();
     let mut chars = Characteristics {
         types: object.base_types(),
@@ -58,8 +69,9 @@ pub fn characteristics(state: &GameState, id: ObjectId) -> Option<Characteristic
         toughness: card.toughness,
         abilities: card.abilities.clone(),
     };
+    let mut applied = Vec::new();
     if object.zone() != Zone::Battlefield || state.effects().is_empty() {
-        return Some(chars);
+        return (chars, applied);
     }
     let mut active: Vec<&ContinuousEffect> = state
         .effects()
@@ -70,7 +82,8 @@ pub fn characteristics(state: &GameState, id: ObjectId) -> Option<Characteristic
     for effect in active {
         if effect.selector.matches(object, &chars) {
             effect.modification.apply(&mut chars);
+            applied.push(effect);
         }
     }
-    Some(chars)
+    (chars, applied)
 }
