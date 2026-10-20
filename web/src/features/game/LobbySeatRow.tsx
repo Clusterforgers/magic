@@ -77,13 +77,8 @@ export function LobbySeatRow({ row, account, remove }: LobbySeatRowProps) {
           {row.named ? null : <span className="text-xs text-muted-foreground">not joined yet</span>}
         </span>
       </span>
-      {/* Stacked on a phone, where the name needs the width; side by side from `sm`. */}
-      <span className="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2">
-        <Pill tone={tone} data-slot="seat-state" className="shrink-0">
-          <Icon aria-hidden="true" />
-          {label}
-          {state === 'ready' && !row.connected ? <span className="font-normal">(away)</span> : null}
-        </Pill>
+      {/* Remove comes first so the state pills end at the same edge in every row; on a phone, where the name needs the width, the pill is above it. */}
+      <span className="flex shrink-0 flex-col-reverse items-end gap-1 sm:flex-row sm:items-center sm:gap-2">
         {remove === undefined ? null : (
           <Button
             type="button"
@@ -98,6 +93,11 @@ export function LobbySeatRow({ row, account, remove }: LobbySeatRowProps) {
             Remove
           </Button>
         )}
+        <Pill tone={tone} data-slot="seat-state" className="shrink-0">
+          <Icon aria-hidden="true" />
+          {label}
+          {state === 'ready' && !row.connected ? <span className="font-normal">(away)</span> : null}
+        </Pill>
       </span>
     </li>
   )

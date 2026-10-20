@@ -1,6 +1,7 @@
 import { CheckIcon, CircleAlertIcon, Globe, Lock } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { VISIBILITY_CHOICES, VISIBILITY_WORDS } from '@/lib/visibility'
 import type { Visibility } from '@/protocol/generated'
 import type { VisibilityControl } from './useVisibility'
@@ -37,7 +38,8 @@ export function VisibilityToggle({ shown, control, busy }: VisibilityToggleProps
         <span id="visibility-title" className="text-sm text-muted-foreground">
           Who can find this game
         </span>
-        <div className="flex flex-wrap gap-1 rounded-lg bg-muted p-1">
+        {/* Two rows on a phone, where both words do not fit one line; side by side from `sm`. */}
+        <div className="grid w-full grid-cols-1 gap-1 rounded-lg bg-muted p-1 sm:inline-flex sm:w-auto">
           {VISIBILITY_CHOICES.map((choice) => {
             const selected = shown === choice
             const Icon = selected ? CheckIcon : ICONS[choice]
@@ -50,7 +52,7 @@ export function VisibilityToggle({ shown, control, busy }: VisibilityToggleProps
                 aria-pressed={selected}
                 loading={pending === choice}
                 disabled={busy && pending !== choice}
-                className={selected ? 'border-primary' : undefined}
+                className={cn('justify-start sm:justify-center', selected && 'border-primary')}
                 onClick={() => choose(choice)}
               >
                 {pending === choice ? null : <Icon aria-hidden="true" />}

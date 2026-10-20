@@ -226,6 +226,30 @@ describe('who gets which button', () => {
     expect(screen.queryByRole('button', { name: 'Invite only' })).toBeNull()
   })
 
+  it.each([
+    ['the host', 0],
+    ['a guest', 1],
+  ])('gives every button of %s a 32 px target, and 44 px under a coarse pointer', async (_who, seat) => {
+    await openLobby({ seat, names: ['Ana', 'Bo', 'Cy', ''] })
+    const sizes = (buttons: HTMLElement[]): string[] =>
+      buttons.map((button) => {
+        const tall = /\bh-(8|9|11)\b/.exec(button.className)?.[1]
+        const coarse = /\bpointer-coarse:h-11\b/.test(button.className) || tall === '11'
+        return `${button.textContent}:${tall === undefined ? 'none' : 'ok'}:${coarse ? 'coarse' : 'small'}`
+      })
+    for (const entry of sizes(screen.getAllByRole('button'))) expect(entry).toMatch(/:ok:coarse$/)
+  })
+
+  it('gives the buttons of the question the same targets', async () => {
+    const h = await openLobby()
+    await h.user.click(screen.getByRole('button', { name: 'Close game' }))
+    const question = await screen.findByRole('alertdialog', { name: 'Close this game?' })
+    for (const button of within(question).getAllByRole('button')) {
+      expect(button.className).toMatch(/\bh-9\b/)
+      expect(button.className).toMatch(/pointer-coarse:h-11/)
+    }
+  })
+
   it('puts Leave game after Ready in the reading order', async () => {
     await openLobby({ seat: 1 })
     expect(screen.getAllByRole('button').map((button) => button.textContent)).toEqual(['Ready', 'Leave game'])
