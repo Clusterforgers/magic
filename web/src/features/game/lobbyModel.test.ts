@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import type { LobbyRoster } from '@/play/store'
 import type { GameInfo } from '@/protocol/generated'
-import { emptyTable, lobbyMessage, withSeats } from '@/test-utils/lobbyFrames'
+import { emptyTable, lobbyMessage, SEAT_DECK, withSeats } from '@/test-utils/lobbyFrames'
 import { announcement, lobbyRows, removable, seatState, summaryText } from './lobbyModel'
 import type { LobbyRow } from './lobbyModel'
 
@@ -20,6 +20,7 @@ function picture(seats: string, you = -1): LobbyRow[] {
     you: seat === you,
     connected: letter === 'R' || letter === 'p',
     ready: letter === 'R' || letter === 'r',
+    deck: SEAT_DECK,
   }))
 }
 
@@ -46,9 +47,9 @@ describe('lobbyRows', () => {
   it('lists the seats of the roster with its names and flags, and takes this page for the seat it plays', () => {
     const pushed = roster({ 0: [true, true], 1: [true, false], 2: [false, true] })
     expect(lobbyRows({ roster: pushed, info: null, open: true, seat: 1, seatCount: 3 })).toEqual([
-      { seat: 0, name: 'Ann', named: true, you: false, connected: true, ready: true },
-      { seat: 1, name: 'Bea', named: true, you: true, connected: true, ready: false },
-      { seat: 2, name: 'Cy', named: true, you: false, connected: false, ready: true },
+      { seat: 0, name: 'Ann', named: true, you: false, connected: true, ready: true, deck: SEAT_DECK },
+      { seat: 1, name: 'Bea', named: true, you: true, connected: true, ready: false, deck: SEAT_DECK },
+      { seat: 2, name: 'Cy', named: true, you: false, connected: false, ready: true, deck: SEAT_DECK },
     ])
   })
 

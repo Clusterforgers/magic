@@ -252,7 +252,10 @@ describe('who gets which button', () => {
 
   it('puts Leave game after Ready in the reading order', async () => {
     await openLobby({ seat: 1 })
-    expect(screen.getAllByRole('button').map((button) => button.textContent)).toEqual(['Ready', 'Leave game'])
+    const outsideChooser = screen
+      .getAllByRole('button')
+      .filter((button) => button.closest('[data-slot="deck-chooser"]') === null)
+    expect(outsideChooser.map((button) => button.textContent)).toEqual(['Ready', 'Leave game'])
   })
 
   it('shows the same result in a lobby whose server answers 200 with a body to a close', async () => {

@@ -8,6 +8,7 @@ use mtg_cards::effect::Effect;
 use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, Cmp, StatKind};
+use mtg_core::mana::ManaCost;
 
 /// "a" or "an" ahead of `word`.
 fn article(word: &str) -> &'static str {
@@ -396,6 +397,11 @@ pub(crate) fn may(effects: &[Effect]) -> String {
     format!("{text}?")
 }
 
+/// The question of a payment an effect offers, as a card says it: "Pay {2}?"
+pub(crate) fn pay(cost: &ManaCost) -> String {
+    format!("Pay {cost}?")
+}
+
 /// What a choice among players asks: "Choose an opponent." or "Choose a player."
 pub(crate) fn choose_player(from: &Ref) -> String {
     match from {
@@ -434,6 +440,14 @@ mod tests {
         #[case] expected: &str,
     ) {
         assert_eq!(library_order(bottom), expected);
+    }
+
+    #[rstest]
+    #[case::generic("{2}", "Pay {2}?")]
+    #[case::coloured("{1}{R}", "Pay {1}{R}?")]
+    #[case::hybrid("{G/W}{G/W}", "Pay {G/W}{G/W}?")]
+    fn a_payment_is_offered_with_its_cost_as_printed(#[case] cost: &str, #[case] expected: &str) {
+        assert_eq!(pay(&ManaCost::parse(cost).unwrap()), expected);
     }
 
     fn target(json: &str) -> String {

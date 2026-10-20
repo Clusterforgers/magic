@@ -12,7 +12,7 @@ use mtg_cards::refs::{Selector as Matching, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_core::color::{Color, ColorSet};
 use mtg_core::ids::ObjectId;
-use mtg_engine::effects::{Duration, Modification, Selector};
+use mtg_engine::effects::{Duration, Modification};
 use mtg_engine::events::{DeathCause, ResolutionOutcome, ZoneCause};
 use mtg_engine::zones::Zone;
 use mtg_engine::{EngineError, Event, replay};
@@ -122,7 +122,7 @@ fn a_creature_that_becomes_black_in_response_is_no_longer_a_legal_target(
     driver.cast_at("Doom Blade", &[target])?;
     let blade = driver.state().stack()[0];
     driver.add_effect(
-        Selector::Object(id),
+        driver.on(id),
         Modification::SetColors(ColorSet::EMPTY.with(Color::Black)),
         Duration::UntilEndOfTurn,
     )?;
@@ -526,13 +526,14 @@ fn the_creature_the_destroyed_one_kept_alive_dies_to_state_based_actions_right_a
     )?;
     let (lord, squire) = (driver.id_of("Lord")?, driver.id_of("Squire")?);
     // While the Lord is there the Squire is a 3/3; two damage does not kill it.
-    driver.add_effect(
-        Selector::Object(squire),
+    driver.add_effect_from(
+        lord,
+        driver.on(squire),
         Modification::ModifyPowerToughness {
             power: 2,
             toughness: 2,
         },
-        Duration::WhileSourceOnBattlefield(lord),
+        Duration::WhileSourceOnBattlefield,
     )?;
     let target = driver.target_named("Squire")?;
     driver.cast_at("Shock", &[target])?;

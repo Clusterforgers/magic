@@ -138,6 +138,26 @@ impl Driver {
         Ok(events)
     }
 
+    /// Registers a continuous effect as if a spell or ability of `source` had created it, and checks invariants.
+    pub fn add_effect_from(
+        &mut self,
+        source: ObjectId,
+        selector: Selector,
+        modification: Modification,
+        duration: Duration,
+    ) -> Result<Vec<Event>, ScriptError> {
+        let events =
+            self.engine
+                .add_continuous_effect_from(source, selector, modification, duration)?;
+        self.checker.observe_engine(&self.engine)?;
+        Ok(events)
+    }
+
+    /// The selector that names the object `id` as it is now: a new object it becomes later is not named.
+    pub fn on(&self, id: ObjectId) -> Selector {
+        Selector::objects(self.state(), [id])
+    }
+
     /// The player holding priority passes.
     pub fn pass(&mut self) -> Result<Vec<Event>, ScriptError> {
         self.priority()?;

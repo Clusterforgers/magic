@@ -65,7 +65,14 @@ export async function renderGame(options: GameOptions = {}): Promise<GameHarness
   const link = options.link === undefined ? { seat: 0, token: tokenOf(0) } : options.link
   const deps = { createSocket: net.factory, timers, random: () => 0, origin: 'http://localhost:5173' }
   const page = (
-    <GamePage gameId={GAME_ID} link={link} account={options.account ?? null} api={server.api} deps={deps} />
+    <GamePage
+      gameId={GAME_ID}
+      link={link}
+      account={options.account ?? null}
+      api={server.api}
+      decks={server.decks}
+      deps={deps}
+    />
   )
   const view = await renderInRouter(
     options.auth === undefined ? page : <AuthProvider store={options.auth}>{page}</AuthProvider>,

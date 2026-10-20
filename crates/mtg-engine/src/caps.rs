@@ -2,10 +2,11 @@
 //!
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
-//! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, `{T}` abilities and triggered
-//! abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, scrying, looking at, revealing,
-//! moving and shuffling cards, life and damage (and delayed triggers), "may" and choices and modal spells, the
-//! keywords of combat and hexproof, and nothing else.
+//! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, abilities that cost `{T}` and
+//! mana, and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, scrying,
+//! looking at, revealing, moving and shuffling cards, life and damage (and delayed triggers), "may" and "pay" and
+//! choices and modal spells, continuous effects that pump power and toughness or grant a keyword, the keywords of
+//! combat and hexproof, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -27,6 +28,7 @@ const RUNS: &[&str] = &[
     "Trigger.BecomesTarget",
     "Trigger.AnyOf",
     "Cost.Tap",
+    "Cost.Mana",
     "Cost.SacrificeSelf",
     "Effect.Draw",
     "Effect.Discard",
@@ -44,8 +46,12 @@ const RUNS: &[&str] = &[
     "Effect.LoseLife",
     "Effect.AddMana",
     "Effect.CreateToken",
+    "Effect.Continuous",
+    "Mod.ModifyPT",
+    "Mod.AddKeyword",
     "Effect.DelayedTrigger",
     "Effect.May",
+    "Effect.Pay",
     "Effect.Choose",
     "Effect.Modal",
     "Keyword.Flying",
@@ -119,7 +125,9 @@ mod tests {
     #[case::damage("Effect.DealDamage", true)]
     #[case::gaining_life("Effect.GainLife", true)]
     #[case::losing_life("Effect.LoseLife", true)]
-    #[case::mana_costs_of_abilities("Cost.Mana", false)]
+    #[case::mana_costs("Cost.Mana", true)]
+    #[case::x_in_a_mana_cost("Cost.Mana.X", false)]
+    #[case::paying_life("Cost.PayLife", false)]
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_zones("Ability.From", false)]
     #[case::triggers("Ability.Triggered", true)]
@@ -134,6 +142,11 @@ mod tests {
     #[case::destroying("Effect.Destroy", true)]
     #[case::exiling("Effect.Exile", true)]
     #[case::countering("Effect.Counter", true)]
+    #[case::continuous_effects("Effect.Continuous", true)]
+    #[case::pumps("Mod.ModifyPT", true)]
+    #[case::granted_keywords("Mod.AddKeyword", true)]
+    #[case::setting_power_and_toughness("Mod.SetPT", false)]
+    #[case::removed_keywords("Mod.RemoveKeyword", false)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]
@@ -142,8 +155,9 @@ mod tests {
     #[case::creating_copies("Effect.CreateToken.Copy", false)]
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
     #[case::sacrificing_a_permanent("Cost.Sacrifice", false)]
+    #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
     #[case::mana_abilities_of_other_shapes("Ability.ManaAbility.Complex", false)]
-    #[case::paying_or_not("Effect.Pay", false)]
+    #[case::paying_or_not("Effect.Pay", true)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]
     #[case::menace("Keyword.Menace", true)]

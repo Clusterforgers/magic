@@ -5,7 +5,6 @@ use std::collections::BTreeSet;
 use mtg_cards::AbilityDef;
 use mtg_cards::ability::{Ability, Limit, Timing};
 use mtg_cards::assemble::{ManaProduced, SimpleManaAbility, simple_mana_ability};
-use mtg_cards::cost::CostItem;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
@@ -21,6 +20,7 @@ use crate::keywords;
 use crate::mana::{ManaOption, ManaSource, can_afford};
 use crate::object::GameObject;
 use crate::player::Player;
+use crate::price::Price;
 use crate::resolve::spell_ability;
 use crate::state::GameState;
 use crate::turn::LAND_DROPS_PER_TURN;
@@ -190,8 +190,9 @@ fn hand_land(state: &GameState, id: ObjectId) -> bool {
 
 /// Whether the ability `index` of the permanent `object` could be activated by `player` now.
 ///
-/// The engine pays `{T}` and the sacrifice of the source for an ability; `Caps` keeps abilities with other costs out of
-/// the game.
+/// The engine pays `{T}`, mana and the sacrifice of the source for an ability (`Price`) and nothing else; `Caps` keeps
+/// abilities with other costs out of the game. The mana must be affordable with the floating mana and the other
+/// permanents the player taps.
 fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index: usize) -> bool {
     let Some(rules) = object.card().rules.get(index) else {
         return false;
@@ -208,18 +209,16 @@ fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index:
     if *limit == Some(Limit::OncePerTurn) && state.limit_spent(object.reference(), index) {
         return false;
     }
-    if rules.is_mana_ability()
-        || !cost
-            .0
-            .iter()
-            .all(|item| matches!(item, CostItem::Tap | CostItem::SacrificeSelf))
-    {
+    let Ok(price) = Price::of(cost) else {
+        return false;
+    };
+    if rules.is_mana_ability() {
         return false;
     }
     if *timing == Timing::Sorcery && !sorcery_timing(state, player) {
         return false;
     }
-    if cost.0.contains(&CostItem::Tap) {
+    if price.tap {
         let Some(permanent) = object.permanent() else {
             return false;
         };
@@ -227,6 +226,15 @@ fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index:
         let sick = keywords::summoning_sick(state, object.id())
             && characteristics(state, object.id()).is_some_and(|c| c.is_creature());
         if permanent.tapped() || sick {
+            return false;
+        }
+    }
+    if let Some(mana) = &price.mana {
+        let Some(seat) = state.player(player) else {
+            return false;
+        };
+        let sources = price.sources(state, player, object.id());
+        if !can_afford(mana, seat.mana(), &sources, seat.life()) {
             return false;
         }
     }
@@ -386,6 +394,113 @@ pub(crate) fn answer(
 
 #[cfg(test)]
 mod tests {
+    //! Goal: an activated ability is offered when its whole price can be paid now: a `{T}` needs an untapped source, mana needs floating mana or untapped mana sources (the source of an ability that taps it is none of them), and an `{X}` or a part the engine does not pay is never offered.
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
+    use mtg_cards::definition::ManaAbility;
+    use mtg_core::card::CardType;
+    use mtg_core::color::Color;
+    use mtg_core::mana::ManaType;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::fixtures::state;
+    use crate::fold::apply_event;
+
+    fn gadget(cost: &str, makes_mana: bool) -> Arc<CardDefinition> {
+        let rules = format!(r#"{{"Activated":{{"cost":{cost},"effects":[{{"Draw":{{}}}}]}}}}"#);
+        let card = CardDefinition::new("Gadget")
+            .with_type(CardType::Artifact)
+            .with_rules(serde_json::from_str(&rules).unwrap());
+        Arc::new(if makes_mana {
+            card.with_ability(AbilityDef::Mana(ManaAbility {
+                produces: ManaType::Colorless,
+            }))
+        } else {
+            card
+        })
+    }
+
+    fn forest() -> Arc<CardDefinition> {
+        Arc::new(CardDefinition::basic_land(Some(Color::Green)))
+    }
+
+    fn offered(game: &GameState) -> bool {
+        !other_abilities(game, PlayerId(0)).is_empty()
+    }
+
+    #[rstest]
+    #[case::free("[]", 0, true)]
+    #[case::a_tap("[\"Tap\"]", 0, true)]
+    #[case::mana_without_a_land("\"{1}\"", 0, false)]
+    #[case::mana_with_a_land("\"{1}\"", 1, true)]
+    #[case::two_mana_with_one_land("\"{2}\"", 1, false)]
+    #[case::two_mana_with_two_lands("\"{2}\"", 2, true)]
+    #[case::a_colour_the_lands_do_not_make("\"{R}\"", 3, false)]
+    #[case::mana_and_a_tap("[{\"Mana\":\"{1}\"},\"Tap\"]", 1, true)]
+    #[case::mana_and_a_tap_without_a_land("[{\"Mana\":\"{1}\"},\"Tap\"]", 0, false)]
+    #[case::x("[{\"Mana\":\"{X}\"}]", 3, false)]
+    #[case::life_as_well("[{\"Mana\":\"{1}\"},{\"PayLife\":1}]", 3, false)]
+    fn an_ability_is_offered_when_its_price_can_be_paid(
+        #[case] cost: &str,
+        #[case] lands: usize,
+        #[case] expected: bool,
+    ) {
+        let mut cards = vec![gadget(cost, false)];
+        cards.extend(vec![forest(); lands]);
+        let game = state(vec![vec![], vec![]], vec![cards, vec![]]);
+        assert_eq!(offered(&game), expected);
+    }
+
+    #[rstest]
+    #[case::taps_itself_for_its_own_ability("\"{1}\"", true)]
+    #[case::cannot_tap_twice("[{\"Mana\":\"{1}\"},\"Tap\"]", false)]
+    fn the_source_pays_for_its_ability_only_when_it_is_not_tapped_for_the_cost(
+        #[case] cost: &str,
+        #[case] expected: bool,
+    ) {
+        let game = state(vec![vec![], vec![]], vec![vec![gadget(cost, true)], vec![]]);
+        assert_eq!(offered(&game), expected);
+    }
+
+    #[test]
+    fn floating_mana_pays_and_a_tapped_source_cannot_tap() {
+        let mut game = state(
+            vec![vec![], vec![]],
+            vec![vec![gadget("[{\"Mana\":\"{1}\"},\"Tap\"]", false)], vec![]],
+        );
+        assert!(!offered(&game));
+        apply_event(
+            &mut game,
+            &Event::ManaAdded {
+                player: PlayerId(0),
+                mana: ManaType::Red,
+                source: None,
+            },
+        )
+        .unwrap();
+        assert!(offered(&game));
+        let gadget = game.zone(Zone::Battlefield)[0];
+        apply_event(&mut game, &Event::PermanentTapped { object: gadget }).unwrap();
+        assert!(!offered(&game));
+    }
+
+    #[test]
+    fn the_other_seat_is_not_offered_the_ability() {
+        let game = state(
+            vec![vec![], vec![]],
+            vec![vec![gadget("[]", false)], vec![forest()]],
+        );
+        assert_eq!(
+            other_abilities(&game, PlayerId(1)),
+            Vec::<AbilityRef>::new()
+        );
+    }
+}
+
+#[cfg(test)]
+mod rule_mana_tests {
     //! Goal: a mana ability in the rules of a permanent (a Treasure) is offered at priority as one source for each colour it can add, only while its cost can be paid, is activated with its costs and its mana in one batch and without the stack, and never counts toward what a spell can be paid with; the plain tap-for-mana of a land is unchanged.
     use std::sync::Arc;
 

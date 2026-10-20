@@ -338,7 +338,13 @@ function isLobbySeat(value: unknown): value is LobbySeat {
     isCount(value.seat) &&
     isText(value.name) &&
     isFlag(value.connected) &&
-    isFlag(value.ready)
+    isFlag(value.ready) &&
+    // The deck is left out while the seat has none; one that is there must be the three facts the table may know.
+    (value.deck === undefined ||
+      (isRecord(value.deck) &&
+        isText(value.deck.name) &&
+        isText(value.deck.format) &&
+        isCount(value.deck.manual_cards)))
   )
 }
 

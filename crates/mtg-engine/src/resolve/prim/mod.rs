@@ -178,8 +178,10 @@ mod tests {
                 "Effect.LoseLife",
                 "Effect.AddMana",
                 "Effect.CreateToken",
+                "Effect.Continuous",
                 "Effect.DelayedTrigger",
                 "Effect.May",
+                "Effect.Pay",
                 "Effect.Modal"
             ]
         );

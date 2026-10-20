@@ -696,6 +696,10 @@ impl<'a> Walker<'a> {
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("cost", |w| w.cost(cost));
+                // Sacrificing the source is paid as part of an ability's cost; no effect asks for it yet.
+                if cost.0.contains(&CostItem::SacrificeSelf) {
+                    w.uses("Effect", "Pay.SacrificeSelf");
+                }
                 w.effect_list("paid", paid, false);
                 w.effect_list("unpaid", unpaid, false);
             }
@@ -1229,6 +1233,8 @@ mod tests {
     #[case::a_copy_of_an_object(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This"}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy"])]
     #[case::a_cost_that_sacrifices_a_permanent(r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Sacrifice", "Effect.Draw"])]
     #[case::a_cost_that_sacrifices_the_source(r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Effect.Draw"])]
+    #[case::a_clue_pays_mana_and_sacrifices_itself(r#"{"Activated":{"cost":[{"Mana":"{2}"},"SacrificeSelf"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.SacrificeSelf", "Effect.Draw"])]
+    #[case::a_payment_that_sacrifices_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["SacrificeSelf"]}}]}}"#, &["Ability.Triggered", "Cost.SacrificeSelf", "Effect.Pay", "Effect.Pay.SacrificeSelf", "Trigger.StepBegins"])]
     #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
     #[case::sol_ring(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#, &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana"])]
     fn how_often_from_where_and_by_what_chance_an_ability_works_counts_as_a_primitive(

@@ -72,6 +72,18 @@ export async function createAndJoin(browser: Browser, plans: readonly SeatPlan[]
 /** The rows of the lobby's seat list, in seat order. */
 export const seatRows = (page: Page) => page.getByRole('list', { name: 'Seats' }).getByRole('listitem')
 
+/** What each named seat shows the table of its deck, in seat order: "Deck: Burn, Modern, 3 cards need manual steps". */
+export const deckLines = (page: Page) => page.locator('[data-slot="seat-deck"]')
+
+/**
+ * Chooses a built-in deck for this page's seat, by the name on its button, and waits for the server's answer. A seat
+ * made with no deck (an open seat that was taken) cannot press Ready before this.
+ */
+export async function chooseDeck(page: Page, deck: string): Promise<void> {
+  await page.getByRole('button', { name: deck }).click()
+  await expect(page.locator('[data-slot="deck-note"]')).toContainText(`Your deck is now ${deck}`)
+}
+
 /** Presses Ready on every page; the game starts when the last one has. */
 export async function everyoneReady(players: readonly Player[]): Promise<void> {
   for (const [index, { page }] of players.entries()) {

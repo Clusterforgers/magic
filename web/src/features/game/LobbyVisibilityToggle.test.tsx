@@ -39,11 +39,20 @@ describe('what the host sees', () => {
     expect(line()).toBeNull()
   })
 
-  it('reads the lobby in order: the toggle, the players, Ready, then Close game', async () => {
+  it('reads the lobby in order: the toggle, the players, the decks to choose, Ready, then Close game', async () => {
     await openLobby()
     expect(
       screen.getAllByRole('button').map((button) => button.getAttribute('aria-label') ?? button.textContent),
-    ).toEqual([LISTED, INVITE, 'Remove Bo from the game', 'Ready', 'Close game'])
+    ).toEqual([
+      LISTED,
+      INVITE,
+      'Remove Bo from the game',
+      'Mono Green StompersNormal, Green, 60 cards',
+      'Mono Red GiantsNormal, Red, 60 cards',
+      'Mono White WeeniesNormal, White, 60 cards',
+      'Ready',
+      'Close game',
+    ])
   })
 })
 

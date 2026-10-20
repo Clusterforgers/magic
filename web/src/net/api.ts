@@ -3,16 +3,17 @@
  * here; the game browser's and the game lookup's are generated (`mtg_protocol::rest`) and read in `parseLobbies.ts`.
  * Every response is checked at runtime before it is returned.
  */
-import type { Color, GameInfo, Joined, LobbyGame, PlayerId, Visibility } from '@/protocol/generated'
+import type { Color, GameInfo, Joined, LobbyGame, PlayerId, SeatDeck, Visibility } from '@/protocol/generated'
 import { isCount, isRecord, isText } from './check'
 import { LobbyError, lobbyFailure } from './lobbyErrors'
-import { readGameInfo, readJoined, readLobbyList, readVisibility } from './parseLobbies'
+import { readGameInfo, readJoined, readLobbyList, readSeatDeck, readVisibility } from './parseLobbies'
 
-/** One seat of a new game: the name shown to others and a deck id from `listDecks`. */
+/** One seat of a new game: the name shown to others and, for a seat that starts with one, a deck id from `listDecks`. */
 export interface SeatRequest {
   /** Not read for an open seat (one past `held`): it is named by whoever takes it. */
   name: string
-  deck: string
+  /** The deck the seat starts with; left out, the seat has none until its holder chooses one in the lobby. */
+  deck?: string
 }
 
 /** The body of `createGame`; the server only plays "normal" for now. */
@@ -47,6 +48,8 @@ export interface SeatCredential {
 /** What a visitor says about themselves when they join: a guest must give a name, a signed-in user need not. */
 export interface JoinOptions {
   name?: string
+  /** The deck the seat plays, when one is already chosen; left out, the player chooses in the lobby. */
+  deck?: string
 }
 
 /**
@@ -161,6 +164,12 @@ export interface Api {
   setVisibility(game: string, visibility: Visibility, as?: SeatCredential): Promise<Visibility>
   /** `DELETE /api/games/{id}`: the host closes a game that is still in its lobby; every socket of it ends with 4002. */
   closeGame(game: string, as?: SeatCredential): Promise<void>
+  /**
+   * `PUT /api/games/{id}/seats/{n}/deck`: the holder of seat `n` chooses the deck it plays (a demo deck's id, or the id
+   * of a stored deck of the signed-in account) until the seat is ready; resolves with what the table now sees of it. A
+   * refused deck rejects with a `LobbyError` of code `deck_blocked` that carries the issues.
+   */
+  chooseDeck(game: string, seat: number, deck: string, as?: SeatCredential): Promise<SeatDeck>
 }
 
 const isServerCode = (value: string): value is ServerCode => Object.hasOwn(SERVER_CODES, value)
@@ -236,8 +245,10 @@ function bearer(as: SeatCredential): Record<string, string> {
 const lobbyUnreadable = (status: number): LobbyError =>
   new LobbyError('bad_response', status, 'The server sent an answer this page cannot read.')
 
-const joinBody = (join: JoinOptions): { name?: string } =>
-  join.name === undefined ? {} : { name: join.name }
+const joinBody = (join: JoinOptions): { name?: string; deck?: string } => ({
+  ...(join.name === undefined ? {} : { name: join.name }),
+  ...(join.deck === undefined ? {} : { deck: join.deck }),
+})
 
 /** A game browser request that changes something, with the session cookie and, if there is one, the seat's token. */
 const change = (method: string, as: SeatCredential, body?: unknown): RequestInit => ({
@@ -338,6 +349,10 @@ export function createApi(options: ApiOptions = {}): Api {
       lobbyCall(game(id), readVisibility, change('PATCH', as, { visibility })),
     closeGame: async (id, as = {}) => {
       await lobbyCall(game(id), () => true, change('DELETE', as), 204)
+    },
+    chooseDeck: async (id, seat, deck, as = {}) => {
+      if (!isCount(seat)) throw new LobbyError('invalid_request', 0, 'That is not a seat number.')
+      return lobbyCall(`${game(id)}/seats/${seat}/deck`, readSeatDeck, change('PUT', as, { deck }))
     },
   }
 }

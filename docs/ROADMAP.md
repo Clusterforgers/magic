@@ -66,11 +66,15 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [x] Discard and Sacrifice with the ChooseCards engine side; Archon of Cruelty is Verified
   - [x] LookAtTop, Scry, Reveal, Move and Shuffle with the OrderCards engine side; Opt and Brainstorm are Verified
   - [x] Destroy, Exile and Counter (a spell) on targets and "all" selectors; Doom Blade, Swords to Plowshares, Counterspell and Wrath of God are Verified
+  - [x] Pay ("unless that player pays", "you may pay") and mana costs on activated abilities; Izzet Charm and Rhystic Study are Verified
   - [ ] Looked-at and revealed cards reach the viewer's views so the prompts can show their names
   - [ ] Web prompts for scry and the order of cards put back (ChooseCards and OrderCards already draw candidates from the views)
+  - [ ] A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
+  - [ ] The support walker names `Cost.Mana.X` for an `{X}` ability cost, so such a card is not Verified before X costs run
 - [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
   - [x] Tokens: CreateToken, AddMana of any colour and a sacrificed source as a cost; Treasure is a mana ability, Dockside Extortionist is Verified and Hero of Bladehold's Soldiers enter tapped and attacking
-  - [ ] Costs of activated abilities beyond `{T}` and sacrificing the source: a mana cost (Clue, Food), sacrificing a chosen permanent, life, discard
+  - [x] Clue (`{2}`, sacrifice) and Food (`{2}`, `{T}`, sacrifice) are paid through the payment decision of an ability, the sacrifice among the events that announce it
+  - [ ] Costs of activated abilities beyond `{T}`, mana and sacrificing the source: sacrificing a chosen permanent (the choice is made when the ability is announced), life, discard
   - [ ] Treasure and other sacrifice sources offered while paying a spell, and mana abilities of several mana (Sol Ring, Gaea's Cradle)
   - [ ] Tokens that copy an object, and a card's support counting the abilities of the predefined tokens it makes
 - [ ] (h) Keyword abilities beyond combat (CR 702), one task each for the other `Keyword` variants (flash, equip, cycling, kicker, flashback, cascade, storm, ...); cost-based ones follow (g)
@@ -79,15 +83,17 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [ ] (i3) State triggers (CR 603.8) and abilities that work from a zone other than the battlefield (`from`) (`docs/engine.md`)
 - [ ] (j) Replacement and prevention effects (CR 614 to 616)
 - [ ] (k) Layers: full CR 613 ordering with dependencies, timestamps, counters, auras, equipment
+  - [x] `Effect::Continuous` with `ModifyPT` and `AddKeyword`: effects with a source, timestamp and duration in the state, derived through layers 6 and 7c and `keywords_of`, ended by their duration; Giant Growth is Verified
+  - [ ] Left of (k): the other modifications as effects (`SetPT`, `SwitchPT`, `AddType`, `AddSubtype`, `SetColors`, `RemoveKeyword`, `SetController`, `CantAttack`, `CantBlock`), static abilities with dependencies (CR 613.8), characteristic-defining abilities, counters, auras and equipment, and keywords in snapshots
 
 ## M4 Multiplayer product
 - [x] Invite-link lobbies on top of users
 - [x] (B1) Deck list page: the account's decks with name, format, size and check state; new, import (text, Arena, MTGO), export and delete
 - [x] (B2) Deck builder page: card search with filters, add and remove by zone, counts, save with the check on save (`docs/deck-check.md`)
 - [x] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
-- [ ] (B3) Deck check, remaining: each deck's state in the lobby and the precon browser (`docs/deck-check.md`)
+- [ ] (B3) Deck check, remaining: each precon's state in the precon browser (`docs/deck-check.md`)
 - [ ] Precon browser with one-click play
-- [ ] Choose a deck in the lobby, remaining: the web prompt over `PUT /api/games/{id}/seats/{n}/deck` (a stored deck or a demo deck per seat, each seat's count of manual cards shown to the table) and precons as a third kind of deck (`docs/server.md`, `docs/deck-check.md`)
+- [ ] Choose a deck in the lobby, remaining: precons as a third kind of deck (`docs/server.md`, `docs/deck-check.md`)
 - [x] N-player layout, game log, stack panel, stop settings
 - [ ] UI rebuild: the table fits the screen, a turn change is unmistakable and games are joined from a list (`docs/ui-design.md`, Tasks). In order:
   - [x] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
