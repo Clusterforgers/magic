@@ -1,5 +1,6 @@
 // Goal: a join by code that is given the guest's name up front sends it for a guest without a question, sends none for a signed-in account whatever it was given, waits for a session that is still loading before it decides, and still asks a guest who gave no name; the failure it keeps says whether the code is spent for good.
 import { act, waitFor } from '@testing-library/react'
+import { useEffect } from 'react'
 import { describe, expect, it } from 'vitest'
 import { AuthProvider } from '@/features/auth/AuthProvider'
 import { createAuthStore, offlineAccounts } from '@/features/auth/store'
@@ -23,7 +24,11 @@ async function mount(status: AuthStatus, me?: () => Promise<UserView>) {
   })
   const hook: { current: JoinGame | null } = { current: null }
   function Probe() {
-    hook.current = useJoinGame(lobbies.api)
+    const join = useJoinGame(lobbies.api)
+    // Written after the render: a render must not change what lives outside it.
+    useEffect(() => {
+      hook.current = join
+    })
     return null
   }
   await renderInRouter(
