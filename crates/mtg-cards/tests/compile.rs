@@ -35,7 +35,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 40] = [
     ("Eternal Witness", Some(Full), 1, 1),
     ("Faithless Looting", Some(Full), 2, 2),
     ("Felidar Sovereign", Some(Full), 3, 3),
-    ("Fire // Ice", Some(Manual), 0, 3),
+    ("Fire // Ice", Some(Partial), 2, 3),
     ("Fireball", Some(Manual), 0, 2),
     ("Flooded Strand", Some(Manual), 0, 1),
     ("Forest", None, 0, 0),
