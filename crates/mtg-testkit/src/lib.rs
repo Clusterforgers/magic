@@ -16,6 +16,7 @@ pub mod pay_cards;
 pub mod pump_cards;
 pub mod scenario;
 pub mod script_error;
+pub mod small_cards;
 pub mod trigger_cards;
 pub mod windows;
 
@@ -34,4 +35,5 @@ pub use scenario::{
     Scenario, ScenarioError, attached_to, damaged, ready, sick, tapped, with_counters,
 };
 pub use script_error::ScriptError;
+pub use small_cards::small_fuzz_setup;
 pub use windows::{SeatWindows, Windows};
