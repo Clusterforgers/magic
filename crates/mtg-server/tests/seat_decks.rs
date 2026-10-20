@@ -174,7 +174,10 @@ async fn ready_is_refused_without_a_deck_and_a_ready_seat_keeps_its_deck_until_i
         }
     }
     let handle = server.registry.handle(made.id.parse().unwrap()).unwrap();
-    assert!(handle.status().await.unwrap().ready.is_empty());
+    assert_eq!(
+        handle.status().await.unwrap().ready,
+        Vec::<mtg_core::ids::PlayerId>::new()
+    );
 
     // With a deck the same Ready counts; then the deck is fixed until Ready is taken back.
     assert_eq!(
