@@ -1,5 +1,7 @@
 //! Folding events that move objects between zones.
 
+use std::collections::BTreeMap;
+
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -53,6 +55,8 @@ pub(super) fn move_object(
             damage: 0,
             deathtouched: false,
             summoning_sick: true,
+            counters: BTreeMap::new(),
+            attached_to: None,
         });
     } else if to != Zone::Stack {
         object.controller = object.owner;

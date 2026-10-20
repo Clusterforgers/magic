@@ -3,8 +3,9 @@
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
 //! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, `{T}` abilities and triggered
-//! abilities made of drawing, discarding, sacrificing, scrying, looking at, revealing, choosing, moving and shuffling
-//! cards, life and damage (and delayed triggers), the keywords of combat, and nothing else.
+//! abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, scrying, looking at, revealing,
+//! moving and shuffling cards, life and damage (and delayed triggers), "may" and choices and modal spells, the
+//! keywords of combat and hexproof, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -31,14 +32,19 @@ const RUNS: &[&str] = &[
     "Effect.Scry",
     "Effect.LookAtTop",
     "Effect.Reveal",
-    "Effect.Choose",
     "Effect.Shuffle",
     "Effect.Move",
+    "Effect.Destroy",
+    "Effect.Exile",
     "Effect.Sacrifice",
+    "Effect.Counter",
     "Effect.DealDamage",
     "Effect.GainLife",
     "Effect.LoseLife",
     "Effect.DelayedTrigger",
+    "Effect.May",
+    "Effect.Choose",
+    "Effect.Modal",
     "Keyword.Flying",
     "Keyword.Reach",
     "Keyword.Menace",
@@ -51,6 +57,7 @@ const RUNS: &[&str] = &[
     "Keyword.Trample",
     "Keyword.Lifelink",
     "Keyword.Indestructible",
+    "Keyword.Hexproof",
 ];
 
 /// The capabilities of this engine.
@@ -100,7 +107,6 @@ mod tests {
     #[case::scrying("Effect.Scry", true)]
     #[case::looking_at_the_top("Effect.LookAtTop", true)]
     #[case::revealing("Effect.Reveal", true)]
-    #[case::choosing("Effect.Choose", true)]
     #[case::shuffling("Effect.Shuffle", true)]
     #[case::moving("Effect.Move", true)]
     #[case::moving_to_the_battlefield("Effect.Move.Battlefield", false)]
@@ -122,7 +128,13 @@ mod tests {
     #[case::becoming_a_target("Trigger.BecomesTarget", true)]
     #[case::either_of_two_events("Trigger.AnyOf", true)]
     #[case::delayed_triggers("Effect.DelayedTrigger", true)]
-    #[case::destroy("Effect.Destroy", false)]
+    #[case::destroying("Effect.Destroy", true)]
+    #[case::exiling("Effect.Exile", true)]
+    #[case::countering("Effect.Counter", true)]
+    #[case::may("Effect.May", true)]
+    #[case::choosing("Effect.Choose", true)]
+    #[case::modes("Effect.Modal", true)]
+    #[case::paying_or_not("Effect.Pay", false)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]
     #[case::menace("Keyword.Menace", true)]
@@ -135,7 +147,8 @@ mod tests {
     #[case::trample("Keyword.Trample", true)]
     #[case::lifelink("Keyword.Lifelink", true)]
     #[case::indestructible("Keyword.Indestructible", true)]
-    #[case::hexproof("Keyword.Hexproof", false)]
+    #[case::hexproof("Keyword.Hexproof", true)]
+    #[case::ward("Keyword.Ward", false)]
     #[case::kicker("Keyword.Kicker", false)]
     #[case::x_costs(X_COST, false)]
     #[case::faces(FACES, false)]

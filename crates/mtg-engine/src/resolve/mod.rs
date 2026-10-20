@@ -18,7 +18,7 @@ pub(crate) use value::zone_kind;
 pub use value::{Bindings, ResolveError, Scope};
 
 use crate::abilities::AbilityObject;
-use crate::choose::{Choice, Target};
+use crate::choose::{Choice, Target, announced_specs, targets_before};
 use crate::decision::Decision;
 use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
@@ -185,14 +185,21 @@ fn scope_of<'a>(
         snapshots.push(ability.snapshot());
         snapshots.extend(ability.cause().iter().flat_map(|c| c.snapshots.iter()));
     }
+    // A modal ability announced the targets of the modes it chose, one mode after the other; inside a mode
+    // `Target(0)` is that mode's first.
+    let chosen = &object.choices().modes;
+    let target_base = tree::mode_at(rules.effects(), chosen, &resolving.position)
+        .map_or(0, |ordinal| targets_before(rules, chosen, ordinal));
     Scope {
         state,
         controller: object.controller(),
         source: ability.map_or_else(|| object.reference(), AbilityObject::source),
         choices: object.choices(),
-        specs: rules.targets(),
+        specs: announced_specs(rules, chosen),
+        target_base,
         bindings: &resolving.bindings,
         snapshots,
+        departed: &resolving.snapshots,
         cause: ability.and_then(|a| a.cause()),
     }
 }
@@ -258,7 +265,8 @@ fn step_with(
         }]));
     }
     let effects = rules.effects();
-    let Some(effect) = tree::effect_at(effects, &resolving.position) else {
+    let chosen = &object.choices().modes;
+    let Some(effect) = tree::effect_at(effects, chosen, &resolving.position) else {
         return Ok(Progress::Done(finish(object)));
     };
     let cx = Cx { scope, resolving };
@@ -275,7 +283,7 @@ fn step_with(
                 Processed::Ask(decision) => return Ok(Progress::Ask(decision)),
             };
             events.push(Event::StepDone {
-                position: tree::after(effects, &resolving.position, next),
+                position: tree::after(effects, chosen, &resolving.position, next),
                 bound,
                 snapshots,
             });

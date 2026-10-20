@@ -57,13 +57,17 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
 - [x] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
 - [ ] (d) Decision kinds still open, one task each across engine, protocol and a web prompt: ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement (the table in `docs/cards-dsl.md`, Decisions the effects need)
-- [ ] Engine side of YesNo, ChooseOption and ChooseMode: the answer checks and the effects that ask them (`May`, an option effect, modal spells), then a response-clock test through the actor (`docs/server.md`, Response clocks)
+- [x] Engine side of YesNo, ChooseOption and ChooseMode: the answer checks and the effects that ask them (`May`, `Choose`, modal spells)
+- [ ] A response-clock test through the actor for YesNo, ChooseOption and ChooseMode (`docs/server.md`, Response clocks)
 - [ ] Response clocks for the choice decisions still without one (numbers, divisions, costs, replacements, mana payments), each with a fallback answer, so one seat cannot hold the table; targets, trigger orders, yes or no, options, modes, cards and orders of cards have theirs (`docs/server.md`, Response clocks)
 - [x] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets and the views carry keywords, counters and attachments (`docs/web.md`)
-- [ ] (e2) Keywords hexproof and ward, one task each; counters and attachments on the object views; the blockers prompt reads `BlockOptions.min_blockers` so menace is explained before Confirm (`docs/web.md`)
+- [ ] (e2) Keyword ward, which needs the counter effect and a payment decision; attachments drawn tucked beside their host; counters and attachments in the `/dev/table` fixture with screenshots (`docs/web.md`)
 - [ ] (f) Keyword actions (CR 701), one engine primitive each, with a web prompt where the player chooses (scope in `docs/cards-dsl.md`, Tasks)
   - [x] Discard and Sacrifice with the ChooseCards engine side; Archon of Cruelty is Verified
-  - [x] LookAtTop, Scry, Reveal, Choose, Move and Shuffle with the OrderCards engine side; Opt and Brainstorm are Verified
+  - [x] LookAtTop, Scry, Reveal, Move and Shuffle with the OrderCards engine side; Opt and Brainstorm are Verified
+  - [x] Destroy, Exile and Counter (a spell) on targets and "all" selectors; Doom Blade, Swords to Plowshares, Counterspell and Wrath of God are Verified
+  - [ ] Looked-at and revealed cards reach the viewer's views so the prompts can show their names
+  - [ ] Web prompts for scry and the order of cards put back (ChooseCards and OrderCards already draw candidates from the views)
 - [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
 - [ ] (h) Keyword abilities beyond combat (CR 702), one task each for the other `Keyword` variants (flash, equip, cycling, kicker, flashback, cascade, storm, ...); cost-based ones follow (g)
 - [x] (i) Triggered abilities: APNAP ordering, delayed triggers, intervening if, with the target and trigger-order prompts and their response clocks (`docs/engine.md`)

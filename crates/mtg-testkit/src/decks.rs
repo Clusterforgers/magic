@@ -7,7 +7,8 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::{Pred, Ref, Selector, Targetable};
+use mtg_cards::refs::{Pred, Ref, Selector, Targetable, ZoneKind};
+use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::{Amount, Cmp, Condition};
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
@@ -352,7 +353,90 @@ pub fn library_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corpu
 pub fn library_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
     let mut decks = Vec::with_capacity(players);
     for seat in 0u64..players as u64 {
-        decks.push(library_deck(&mut GameRng::substream(seed, 7_000 + seat))?);
+        decks.push(library_deck(&mut GameRng::substream(seed, 9_000 + seat))?);
+    }
+    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+}
+
+/// A legal Normal deck in white, blue and black whose cards remove and counter: four each of Doom Blade, Swords to
+/// Plowshares and Counterspell and two Wrath of God (the corpus cards, as printed), creatures that watch deaths, die
+/// with a trigger aimed at an opponent or leave the battlefield with one, creatures that cannot be destroyed, and lands.
+///
+/// It has its own generator, so the other decks and the games seeded from them stay as they were.
+pub fn removal_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    let colors = [Color::White, Color::Blue, Color::Black];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 3])).collect();
+    for (name, copies) in [
+        ("Doom Blade", 4),
+        ("Swords to Plowshares", 4),
+        ("Counterspell", 4),
+        ("Wrath of God", 2),
+    ] {
+        deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
+    }
+    let small = |name: &str, color: Color, rules: Vec<Ability>| {
+        with_rules(&creature(name, 1, &[color], 2, 2), rules)
+    };
+    let leaves = TriggerPattern::ZoneChange {
+        what: Selector::this(),
+        from: Some(ZoneKind::Battlefield),
+        to: None,
+    };
+    let cards = [
+        small(
+            "Removal Mourner",
+            Color::White,
+            vec![trigger(when::any_creature_dies(), vec![gain_life(1)])],
+        ),
+        small(
+            "Removal Shade",
+            Color::Black,
+            vec![aimed_at(
+                trigger(
+                    when::this_dies(),
+                    vec![Effect::LoseLife {
+                        who: Ref::Target(0),
+                        amount: Amount::Fixed(1),
+                    }],
+                ),
+                Targetable::Opponent,
+            )],
+        ),
+        small(
+            "Removal Wisp",
+            Color::Blue,
+            vec![trigger(leaves, vec![draw(1)])],
+        ),
+        keyworded_creature(
+            "Removal Rock",
+            2,
+            &[Color::Black],
+            3,
+            3,
+            &[Keyword::Indestructible],
+        ),
+    ];
+    for card in cards {
+        deck.extend(std::iter::repeat_n(card, 3));
+    }
+    // Ten plain creatures make the 60 cards.
+    for slot in 0..5 {
+        let generic = u32::try_from(rng.index(3)).unwrap_or(0);
+        let power = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let toughness = i32::try_from(1 + rng.index(4)).unwrap_or(1);
+        let name = format!("Removal Fodder {slot} {generic} {power}/{toughness}");
+        let card = creature(&name, generic, &[colors[rng.index(3)]], power, toughness);
+        deck.extend(std::iter::repeat_n(card, 2));
+    }
+    rng.shuffle(&mut deck);
+    Ok(deck)
+}
+
+/// A normal game of `players` seats whose decks are [`removal_deck`]s, fully determined by `seed`.
+pub fn removal_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        decks.push(removal_deck(&mut GameRng::substream(seed, 7_000 + seat))?);
     }
     Ok(GameSetup::new(Arc::new(Normal), seed, decks))
 }

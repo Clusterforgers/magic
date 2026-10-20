@@ -148,14 +148,24 @@ impl RandomBot {
                 let wanted = options.min as usize + self.rng.index(spread);
                 Answer::ChooseTargets(TargetChoice::Targets(self.pick(&options.legal, wanted)))
             }
-            DecisionKind::ChooseMode(options) => Answer::ChooseMode(ModeChoice::Modes(
-                options
-                    .modes
-                    .iter()
-                    .take(options.min as usize)
-                    .map(|mode| mode.index)
-                    .collect(),
-            )),
+            DecisionKind::ChooseMode(options) => {
+                // Any number of the modes offered between the bounds, in no particular order, a mode more than
+                // once only where it may repeat; a bot never backs out of a cast it began.
+                let offered: Vec<usize> = options.modes.iter().map(|mode| mode.index).collect();
+                let spread =
+                    usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
+                let wanted = options.min as usize + self.rng.index(spread);
+                let chosen = if offered.is_empty() {
+                    Vec::new()
+                } else if options.repeat {
+                    (0..wanted)
+                        .map(|_| offered[self.rng.index(offered.len())])
+                        .collect()
+                } else {
+                    self.pick(&offered, wanted)
+                };
+                Answer::ChooseMode(ModeChoice::Modes(chosen))
+            }
             DecisionKind::ChooseNumber(options) => Answer::ChooseNumber(NumberChoice(options.min)),
             DecisionKind::DivideAmount(options) => {
                 Answer::DivideAmount(DivideChoice(even_division(options)))
@@ -174,7 +184,9 @@ impl RandomBot {
                 ))
             }
             DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(self.rng.below(2) == 0)),
-            DecisionKind::ChooseOption(_) => Answer::ChooseOption(OptionChoice(0)),
+            DecisionKind::ChooseOption(options) => {
+                Answer::ChooseOption(OptionChoice(self.rng.index(options.options.len().max(1))))
+            }
             DecisionKind::ChooseCosts(_) => Answer::ChooseCosts(CostsChoice(Vec::new())),
             DecisionKind::OrderTriggers(options) => {
                 Answer::OrderTriggers(TriggersChoice((0..options.triggers.len()).collect()))

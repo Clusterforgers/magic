@@ -290,6 +290,16 @@ function isObjectKindInfo(value: Record<string, unknown>): boolean {
 const hasKeywordNames = (value: Record<string, unknown>): boolean =>
   value.keywords === undefined || isListOf(value.keywords, isText)
 
+// A counter is its kind (a word, or `{ Other: name }`) and a number.
+const isCounter = (value: unknown): value is [unknown, number] =>
+  Array.isArray(value) && value.length === 2 && (isText(value[0]) || isRecord(value[0])) && isCount(value[1])
+
+// The counters on a permanent and what it is attached to or has attached; the server leaves each out while it says nothing.
+const hasPermanentLinks = (value: Record<string, unknown>): boolean =>
+  (value.counters === undefined || isListOf(value.counters, isCounter)) &&
+  (value.attached_to === undefined || isCount(value.attached_to)) &&
+  (value.attachments === undefined || isIdList(value.attachments))
+
 function isObjectView(value: unknown): value is ObjectView {
   return (
     isRecord(value) &&
@@ -307,6 +317,7 @@ function isObjectView(value: unknown): value is ObjectView {
     (value.toughness === null || isInt(value.toughness)) &&
     Array.isArray(value.abilities) &&
     hasKeywordNames(value) &&
+    hasPermanentLinks(value) &&
     isObjectKindInfo(value) &&
     (value.permanent === null ||
       (isRecord(value.permanent) &&

@@ -5,14 +5,13 @@ use std::collections::BTreeSet;
 use mtg_cards::AbilityDef;
 use mtg_cards::ability::{Ability, Limit, Timing};
 use mtg_cards::cost::CostItem;
-use mtg_cards::refs::TargetSpec;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::abilities::AbilityRef;
 use crate::answers::Outcome;
 use crate::characteristics::characteristics;
-use crate::choose::options_for;
+use crate::choose::announceable;
 use crate::decision::{PriorityAction, PriorityOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
@@ -95,19 +94,6 @@ fn hand_land(state: &GameState, id: ObjectId) -> bool {
         .is_some_and(|o| o.base_types().contains(CardType::Land))
 }
 
-/// Whether every target specification of a spell or ability of `source` has enough legal targets to be announced.
-fn announceable(
-    state: &GameState,
-    player: PlayerId,
-    source: ObjectId,
-    specs: &[TargetSpec],
-) -> bool {
-    specs
-        .iter()
-        .enumerate()
-        .all(|(index, spec)| options_for(state, source, player, index, spec, true, None).is_some())
-}
-
 /// Whether the ability `index` of the permanent `object` could be activated by `player` now.
 ///
 /// The engine pays `{T}` and nothing else for an ability; `Caps` keeps abilities with other costs out of the game.
@@ -119,7 +105,6 @@ fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index:
         cost,
         timing,
         limit,
-        targets,
         ..
     } = &**rules
     else {
@@ -145,7 +130,7 @@ fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index:
             return false;
         }
     }
-    announceable(state, player, object.id(), targets)
+    announceable(state, player, object.id(), rules)
 }
 
 /// Activated abilities of `player`'s permanents that are not mana abilities and could be used now.
@@ -219,10 +204,10 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             let timing = types.contains(CardType::Instant)
                 || keywords::grants_instant_timing(state, *id)
                 || sorcery_timing(state, player);
-            // CR 601.2c: a spell that needs a target is cast only when it has a legal one.
-            let targets = spell_ability(object).map_or(&[][..], Ability::targets);
+            // CR 601.2c: a spell that needs a target is cast only when it has a legal one; CR 700.2a: a modal
+            // spell only when enough of its modes can be chosen.
             timing
-                && announceable(state, player, *id, targets)
+                && spell_ability(object).is_none_or(|rules| announceable(state, player, *id, rules))
                 && can_afford(cost, &pool, &mana_abilities, life)
         })
         .collect();

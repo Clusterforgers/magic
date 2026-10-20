@@ -1,19 +1,20 @@
-//! `Effect::Choose`: a player chooses some of a set of objects and binds the choice.
+//! `Effect::Choose`: a player chooses some of a set of players or objects and binds what they chose.
 
 use mtg_cards::effect::Effect;
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
-use crate::choose::{Questions, Stop, Target};
-use crate::object::ObjectRef;
+use crate::choose::{
+    ChoiceOption, OptionChooser, Optioned, Picked, Selection, Target, pick_options, pick_selections,
+};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::wording;
 
-/// Each player the effect names who is still in the game chooses, in turn order, between `min` and `max` of the
-/// objects the reference stands for that no earlier player took; the choices are bound to the name and what was left
-/// to the second one. Only objects that are still the ones named count. A player is asked when the answer can differ:
-/// not when nothing is left to take, nor when they must take every object left. The question is a `ChooseCards`
-/// addressed to that player.
+/// The player `who` names (the controller by default) chooses between `count.min` and `count.max` of what `from`
+/// names, and the choice is bound to `as`; what was not chosen is bound to `rest_as` when it has a name. Players are
+/// chosen one at a time from a `ChooseOption` (a defending player, an opponent), objects from a `ChooseCards`. A
+/// player with nothing to choose between (the only opponent, or as many candidates as they must take) is not asked.
+/// Several players who choose each choose from the same set, and what they chose is bound together.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Choose {
         who,
@@ -25,108 +26,135 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     else {
         return Err(wrong_effect("Choose"));
     };
-    let state = cx.state();
-    let min = usize::try_from(count.min).unwrap_or(usize::MAX);
-    let max = match &count.max {
-        Some(amount) => usize::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(usize::MAX),
-        None => usize::MAX,
-    };
-    let mut left: Vec<ObjectRef> = Vec::new();
-    for named in cx.scope.objects(from)? {
-        let here = state
-            .object(named.id)
-            .is_some_and(|object| object.counter() == named.counter);
-        if here && !left.contains(&named) {
-            left.push(named);
-        }
-    }
-    let choosers: Vec<_> = cx
+    let candidates = cx.scope.refs(from)?;
+    let choosers: Vec<PlayerId> = cx
         .scope
         .players(who)?
         .into_iter()
-        .filter(|player| state.is_alive(*player))
+        .filter(|player| cx.state().is_alive(*player))
         .collect();
-    Stop::settle(
-        choices(cx, &choosers, left, (min, max)).map(|(chosen, rest)| {
-            let objects = |list: &[ObjectRef]| list.iter().copied().map(Target::Object).collect();
-            let mut bound = vec![(bind.clone(), objects(&chosen))];
-            if let Some(name) = rest_as {
-                bound.push((name.clone(), objects(&rest)));
-            }
-            Run::Done {
-                events: Vec::new(),
-                bound,
-                snapshots: Vec::new(),
-                next: Next::Sibling,
-            }
-        }),
-    )
-}
-
-/// What each chooser takes of `left` in turn, and what is left after them.
-fn choices(
-    cx: &Cx<'_>,
-    choosers: &[PlayerId],
-    mut left: Vec<ObjectRef>,
-    (min, max): (usize, usize),
-) -> Result<(Vec<ObjectRef>, Vec<ObjectRef>), Stop> {
-    let mut questions = Questions::new(cx);
-    let mut chosen: Vec<ObjectRef> = Vec::new();
-    for player in choosers {
-        let (lo, hi) = (min.min(left.len()), max.min(left.len()));
-        let taken = if hi == 0 {
-            Vec::new()
-        } else if lo == left.len() {
-            // Every object left must be taken, so there is nothing to choose.
-            left.iter().map(|object| object.id).collect()
-        } else {
-            let offered = left.iter().map(|object| object.id).collect();
-            questions.cards(*player, offered, (lo, hi), wording::choose(lo, hi))?
-        };
-        let (now, rest): (Vec<_>, Vec<_>) =
-            left.iter().partition(|object| taken.contains(&object.id));
-        chosen.extend(now);
-        left = rest;
+    let total = candidates.len();
+    let min = usize::try_from(count.min).unwrap_or(usize::MAX).min(total);
+    let most = match &count.max {
+        None => total,
+        Some(amount) => usize::try_from(cx.scope.amount(amount)?.max(0))
+            .unwrap_or(usize::MAX)
+            .min(total),
     }
-    questions.end()?;
-    Ok((chosen, left))
+    .max(min);
+    let players: Vec<PlayerId> = candidates.iter().filter_map(|t| t.player()).collect();
+    let objects: Vec<_> = candidates.iter().filter_map(|t| t.object()).collect();
+    let mut chosen: Vec<Target> = if total == 0 {
+        Vec::new()
+    } else if objects.is_empty() {
+        if (min, most) != (1, 1) {
+            return Err(ResolveError::Invalid(
+                "a choice among players takes exactly one".into(),
+            ));
+        }
+        let options: Vec<ChoiceOption> = players.iter().map(|p| ChoiceOption::Player(*p)).collect();
+        let text = wording::choose_player(from);
+        let choosers: Vec<OptionChooser> = choosers
+            .iter()
+            .map(|player| OptionChooser {
+                player: *player,
+                options: options.clone(),
+                text: text.clone(),
+            })
+            .collect();
+        match pick_options(cx, &choosers)? {
+            Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
+            Optioned::Done(taken) => taken
+                .into_iter()
+                .filter_map(|(_, index)| players.get(index).copied().map(Target::Player))
+                .collect(),
+        }
+    } else if players.is_empty() {
+        let ids: Vec<ObjectId> = objects.iter().map(|o| o.id).collect();
+        let text = wording::choose_objects(from, min, most);
+        let selections: Vec<Selection> = choosers
+            .iter()
+            .map(|player| Selection {
+                player: *player,
+                from: ids.clone(),
+                min,
+                max: most,
+                text: text.clone(),
+            })
+            .collect();
+        match pick_selections(cx, &selections)? {
+            Picked::Ask(decision) => return Ok(Run::Ask(decision)),
+            Picked::Done(taken) => taken
+                .into_iter()
+                .flat_map(|(_, cards)| cards)
+                .filter_map(|id| objects.iter().find(|o| o.id == id).copied())
+                .map(Target::Object)
+                .collect(),
+        }
+    } else {
+        return Err(ResolveError::Invalid(
+            "a choice is among players or among objects, not both".into(),
+        ));
+    };
+    // Players who chose alike chose once.
+    let mut seen = Vec::with_capacity(chosen.len());
+    chosen.retain(|target| {
+        let fresh = !seen.contains(target);
+        seen.push(*target);
+        fresh
+    });
+    let mut bound = vec![(bind.clone(), chosen.clone())];
+    if let Some(rest) = rest_as {
+        let others = candidates
+            .into_iter()
+            .filter(|target| !chosen.contains(target))
+            .collect();
+        bound.push((rest.clone(), others));
+    }
+    Ok(Run::Done {
+        events: Vec::new(),
+        bound,
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: choosing takes between the fewest and the most of the objects named, asks the player only when the answer can differ (nothing left, or all of it forced, is taken without a question), binds the choice and the rest to their names, counts only objects that are still the ones named, goes through the players in turn order from what is left, and the question is a choice of cards addressed to the chooser.
-    use mtg_core::ids::{ObjectId, PlayerId};
+    //! Goal: a choice binds what the player chose and, when asked, the rest: players are chosen from a choice of options and objects from a choice of cards, both in the words of the card; the player asked is the one named, anyone with nothing to choose between is not asked, bounds are kept and clamped to what there is, and a choice that mixes players with objects or takes more than one player is refused.
     use rstest::rstest;
 
     use super::*;
-    use crate::choose::{CardsOptions, Choice};
-    use crate::decision::{Decision, DecisionKind};
-    use crate::events::Event;
+    use crate::choose::Choice;
+    use crate::decision::DecisionKind;
     use crate::fixtures::{creature, state};
     use crate::resolve::{Resolving, Scope};
     use crate::state::GameState;
     use crate::zones::Zone;
 
     const ME: PlayerId = PlayerId(0);
-    const FOE: PlayerId = PlayerId(1);
 
-    /// Seat 0 holds A, B, C and D, seat 1 holds E and F; the Source is on the battlefield.
-    fn game() -> GameState {
-        let hand = |names: &[&str]| names.iter().map(|n| creature(n, 1, 1)).collect();
-        state(
-            vec![hand(&["A", "B", "C", "D"]), hand(&["E", "F"])],
-            vec![vec![creature("Source", 1, 1)], vec![]],
-        )
+    /// Seat 0 holds A, B and C; every seat but 0 holds nothing; the Source is on seat 0's battlefield.
+    fn game(seats: usize) -> GameState {
+        let mut hands = vec![vec![
+            creature("A", 1, 1),
+            creature("B", 1, 1),
+            creature("C", 1, 1),
+        ]];
+        hands.extend((1..seats).map(|_| Vec::new()));
+        let mut battlefield = vec![vec![creature("Source", 1, 1)]];
+        battlefield.extend((1..seats).map(|_| Vec::new()));
+        state(hands, battlefield)
     }
 
-    fn hand(game: &GameState, player: PlayerId) -> Vec<ObjectId> {
-        game.zone(Zone::Hand(player)).to_vec()
+    fn effect(json: &str) -> Effect {
+        serde_json::from_str(json).unwrap()
     }
 
     fn run_with(
         game: &GameState,
         journal: Vec<(PlayerId, Choice)>,
-        json: &str,
+        effect: &Effect,
     ) -> Result<Run, ResolveError> {
         let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
         let resolving = Resolving {
@@ -137,193 +165,212 @@ mod tests {
             scope: Scope::announcing(game, ME, source.reference()),
             resolving: &resolving,
         };
-        run(&cx, &serde_json::from_str(json).unwrap())
+        run(&cx, effect)
     }
 
-    const MINE: &str = r#"{"Each":[{"In":"Hand"},{"OwnedBy":"You"}]}"#;
+    fn bound(run: Run) -> Vec<(String, Vec<Target>)> {
+        match run {
+            Run::Done { bound, next, .. } => {
+                assert_eq!(next, Next::Sibling);
+                bound
+            }
+            Run::Ask(decision) => panic!("nothing was to be asked: {decision:?}"),
+        }
+    }
 
-    fn bound(run: Run) -> Vec<(String, Vec<ObjectId>)> {
-        let Run::Done {
-            events,
-            bound,
-            snapshots,
-            next,
-        } = run
-        else {
-            panic!("the choice is made");
-        };
-        assert!(events.is_empty() && snapshots.is_empty() && next == Next::Sibling);
-        bound
-            .into_iter()
-            .map(|(name, targets)| {
-                (
-                    name,
-                    targets.iter().map(|t| t.object().unwrap().id).collect(),
-                )
-            })
+    fn players(list: &[usize]) -> Vec<Target> {
+        list.iter()
+            .map(|seat| Target::Player(PlayerId::from_index(*seat)))
             .collect()
     }
 
-    fn asked(run: Run) -> Decision {
-        let Run::Ask(decision) = run else {
-            panic!("the effect asks");
+    const DEFENDER: &str = r#"{"Choose":{"from":"Opponents","as":"defender"}}"#;
+
+    #[test]
+    fn the_only_opponent_is_chosen_without_a_question() {
+        let done = bound(run_with(&game(2), vec![], &effect(DEFENDER)).unwrap());
+        assert_eq!(done, [("defender".to_owned(), players(&[1]))]);
+    }
+
+    #[rstest]
+    #[case::three_seats(3, &[1, 2])]
+    #[case::four_seats(4, &[1, 2, 3])]
+    fn several_opponents_are_asked_which_in_the_words_of_the_card(
+        #[case] seats: usize,
+        #[case] offered: &[usize],
+    ) {
+        let Run::Ask(decision) = run_with(&game(seats), vec![], &effect(DEFENDER)).unwrap() else {
+            panic!("the controller is asked which opponent");
         };
-        decision
+        assert_eq!(decision.player, ME);
+        let DecisionKind::ChooseOption(options) = decision.kind else {
+            panic!("a choice of option was expected");
+        };
+        let expected: Vec<ChoiceOption> = offered
+            .iter()
+            .map(|seat| ChoiceOption::Player(PlayerId::from_index(*seat)))
+            .collect();
+        assert_eq!(options.options, expected);
+        assert_eq!(options.text, "Choose an opponent.");
+    }
+
+    #[rstest]
+    #[case::the_first(0, 1)]
+    #[case::the_last(1, 2)]
+    fn the_option_chosen_is_what_is_bound(#[case] index: usize, #[case] seat: usize) {
+        let journal = vec![(ME, Choice::Option(index))];
+        let done = bound(run_with(&game(3), journal, &effect(DEFENDER)).unwrap());
+        assert_eq!(done, [("defender".to_owned(), players(&[seat]))]);
     }
 
     #[test]
-    fn the_player_is_asked_with_the_cards_the_bounds_and_the_words() {
-        let game = game();
-        let json =
-            format!(r#"{{"Choose":{{"from":{MINE},"count":{{"min":2,"max":2}},"as":"back"}}}}"#);
-        let decision = asked(run_with(&game, Vec::new(), &json).unwrap());
-        assert_eq!(
-            decision,
-            Decision {
-                player: ME,
-                kind: DecisionKind::ChooseCards(CardsOptions {
-                    source: game.zone(Zone::Battlefield)[0],
-                    from: hand(&game, ME),
-                    min: 2,
-                    max: 2,
-                    text: "Choose 2 cards.".into(),
-                })
-            }
-        );
+    fn another_player_chooses_when_the_effect_says_so() {
+        let json = r#"{"Choose":{"who":{"Target":0},"from":"EachPlayer","as":"one"}}"#;
+        // Nobody was targeted, so nobody chooses and nothing is bound but the empty name.
+        let done = bound(run_with(&game(3), vec![], &effect(json)).unwrap());
+        assert_eq!(done, [("one".to_owned(), Vec::new())]);
+        let json = r#"{"Choose":{"who":"Opponents","from":"EachPlayer","as":"one"}}"#;
+        let Run::Ask(decision) = run_with(&game(3), vec![], &effect(json)).unwrap() else {
+            panic!("the opponent is asked");
+        };
+        assert_eq!(decision.player, PlayerId(1));
+        let DecisionKind::ChooseOption(options) = decision.kind else {
+            panic!("a choice of option was expected");
+        };
+        assert_eq!(options.text, "Choose a player.");
+        assert_eq!(options.options.len(), 3);
+    }
+
+    const FROM_HAND: &str = r#"[{"In":"Hand"},{"OwnedBy":"You"}]"#;
+
+    fn cards(game: &GameState) -> Vec<ObjectId> {
+        game.zone(Zone::Hand(ME)).to_vec()
+    }
+
+    fn objects(game: &GameState, picks: &[usize]) -> Vec<Target> {
+        let hand = cards(game);
+        picks
+            .iter()
+            .map(|at| Target::Object(game.object(hand[*at]).unwrap().reference()))
+            .collect()
     }
 
     #[test]
-    fn the_answer_is_bound_and_the_rest_is_bound_when_a_name_is_given() {
-        let game = game();
-        let cards = hand(&game, ME);
+    fn cards_are_asked_for_within_the_bounds_and_the_rest_is_bound_too() {
+        let game = game(2);
         let json = format!(
-            r#"{{"Choose":{{"from":{MINE},"count":{{"min":2,"max":2}},"as":"back","rest_as":"kept"}}}}"#
+            r#"{{"Choose":{{"from":{{"Each":{FROM_HAND}}},"count":{{"min":2,"max":2}},"as":"back","rest_as":"kept"}}}}"#
         );
-        let journal = vec![(ME, Choice::Cards(vec![cards[3], cards[1]]))];
-        let done = bound(run_with(&game, journal, &json).unwrap());
+        let choose = effect(&json);
+        let Run::Ask(decision) = run_with(&game, vec![], &choose).unwrap() else {
+            panic!("the controller is asked");
+        };
+        let DecisionKind::ChooseCards(options) = decision.kind else {
+            panic!("a choice of cards was expected");
+        };
+        assert_eq!(options.from, cards(&game));
+        assert_eq!((options.min, options.max), (2, 2));
+        assert_eq!(options.text, "Choose 2 cards in your hand.");
+        let journal = vec![(ME, Choice::Cards(vec![cards(&game)[2], cards(&game)[0]]))];
+        let done = bound(run_with(&game, journal, &choose).unwrap());
         assert_eq!(
             done,
             [
-                ("back".to_owned(), vec![cards[1], cards[3]]),
-                ("kept".to_owned(), vec![cards[0], cards[2]]),
+                ("back".to_owned(), objects(&game, &[2, 0])),
+                ("kept".to_owned(), objects(&game, &[1]))
             ]
         );
     }
 
     #[rstest]
-    #[case::exactly_all_of_them(r#"{"min":4,"max":4}"#, 4)]
-    #[case::at_least_all_of_them(r#"{"min":6,"max":6}"#, 4)]
-    #[case::none_at_most(r#"{"min":0,"max":0}"#, 0)]
-    fn nothing_to_choose_is_taken_without_a_question(#[case] bounds: &str, #[case] taken: usize) {
-        let game = game();
-        let json = format!(r#"{{"Choose":{{"from":{MINE},"count":{bounds},"as":"back"}}}}"#);
-        let done = bound(run_with(&game, Vec::new(), &json).unwrap());
-        assert_eq!(done[0].1, hand(&game, ME)[..taken]);
+    #[case::the_default_is_one("", (1, 1))]
+    #[case::one_of_three(r#""count":{"min":1,"max":1},"#, (1, 1))]
+    #[case::up_to_two(r#""count":{"min":0,"max":2},"#, (0, 2))]
+    #[case::any_number(r#""count":{"min":0,"max":null},"#, (0, 3))]
+    #[case::more_than_there_are(r#""count":{"min":1,"max":9},"#, (1, 3))]
+    fn the_bounds_are_clamped_to_the_cards_there_are(
+        #[case] count: &str,
+        #[case] expected: (u32, u32),
+    ) {
+        let json = format!(r#"{{"Choose":{{"from":{{"Each":{FROM_HAND}}},{count}"as":"some"}}}}"#);
+        let game = game(2);
+        let Run::Ask(decision) = run_with(&game, vec![], &effect(&json)).unwrap() else {
+            panic!("the controller is asked");
+        };
+        let DecisionKind::ChooseCards(options) = decision.kind else {
+            panic!("a choice of cards was expected");
+        };
+        assert_eq!((options.min, options.max), expected);
     }
 
     #[rstest]
-    #[case::up_to_all_of_them(r#"{"min":0,"max":4}"#, 0, 4, "Choose up to 4 cards.")]
-    #[case::any_number(r#"{"min":0,"max":null}"#, 0, 4, "Choose up to 4 cards.")]
-    #[case::one_card("{}", 1, 1, "Choose a card.")]
-    #[case::a_range(r#"{"min":1,"max":3}"#, 1, 3, "Choose 1 to 3 cards.")]
-    fn a_choice_that_can_differ_is_asked_with_the_bounds_clamped_to_what_there_is(
-        #[case] bounds: &str,
-        #[case] min: u32,
-        #[case] max: u32,
-        #[case] text: &str,
+    #[case::all_of_them(r#""count":{"min":3,"max":3}"#, 3)]
+    #[case::more_than_there_are(r#""count":{"min":5,"max":5}"#, 3)]
+    #[case::none(r#""count":{"min":0,"max":0}"#, 0)]
+    fn what_there_is_no_choice_about_is_bound_without_a_question(
+        #[case] count: &str,
+        #[case] taken: usize,
     ) {
-        let game = game();
-        let json = format!(r#"{{"Choose":{{"from":{MINE},"count":{bounds},"as":"back"}}}}"#);
-        let decision = asked(run_with(&game, Vec::new(), &json).unwrap());
-        let DecisionKind::ChooseCards(options) = decision.kind else {
-            panic!("cards are chosen");
-        };
+        let json = format!(
+            r#"{{"Choose":{{"from":{{"Each":{FROM_HAND}}},{count},"as":"some","rest_as":"left"}}}}"#
+        );
+        let game = game(2);
+        let done = bound(run_with(&game, vec![], &effect(&json)).unwrap());
+        let all: Vec<usize> = (0..taken).collect();
+        let rest: Vec<usize> = (taken..3).collect();
         assert_eq!(
-            (options.min, options.max, options.text.as_str()),
-            (min, max, text)
+            done,
+            [
+                ("some".to_owned(), objects(&game, &all)),
+                ("left".to_owned(), objects(&game, &rest))
+            ]
         );
     }
 
     #[test]
-    fn every_player_named_chooses_in_turn_order_from_what_is_left() {
-        let game = game();
-        let from = r#"{"Each":[{"In":"Hand"}]}"#;
-        let json = format!(r#"{{"Choose":{{"who":"EachPlayer","from":{from},"as":"picked"}}}}"#);
-        let first = asked(run_with(&game, Vec::new(), &json).unwrap());
-        assert_eq!(first.player, ME);
-        let ours = hand(&game, ME)[0];
-        let second = asked(run_with(&game, vec![(ME, Choice::Cards(vec![ours]))], &json).unwrap());
-        assert_eq!(second.player, FOE);
-        let DecisionKind::ChooseCards(options) = second.kind else {
-            panic!("cards are chosen");
-        };
-        assert!(!options.from.contains(&ours), "what the first took is gone");
-        assert_eq!(options.from.len(), 5);
-    }
-
-    #[test]
-    fn a_stale_object_is_not_offered() {
-        let mut game = game();
-        let gone = hand(&game, ME)[0];
-        let named = game.object(gone).unwrap().reference();
-        crate::fold::apply_event(
-            &mut game,
-            &Event::CardDiscarded {
-                player: ME,
-                object: gone,
-            },
-        )
-        .unwrap();
-        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
-        let mut resolving = Resolving::begin(source.id());
-        let mut stale = hand(&game, ME)
-            .into_iter()
-            .filter_map(|id| game.object(id))
-            .map(|o| Target::Object(o.reference()))
-            .collect::<Vec<_>>();
-        stale.push(Target::Object(named));
-        resolving.bindings.insert("seen".into(), stale);
-        let cx = Cx {
-            scope: Scope {
-                bindings: &resolving.bindings,
-                ..Scope::announcing(&game, ME, source.reference())
-            },
-            resolving: &resolving,
-        };
-        let effect: Effect = serde_json::from_str(
-            r#"{"Choose":{"from":{"Bound":"seen"},"count":{"min":0,"max":9},"as":"back"}}"#,
-        )
-        .unwrap();
-        let decision = asked(run(&cx, &effect).unwrap());
-        let DecisionKind::ChooseCards(options) = decision.kind else {
-            panic!("cards are chosen");
-        };
-        assert_eq!(options.from, hand(&game, ME));
-    }
-
-    #[test]
-    fn an_answer_the_step_cannot_use_is_a_bug() {
-        let game = game();
+    fn nothing_to_choose_from_binds_nothing() {
         let json =
-            format!(r#"{{"Choose":{{"from":{MINE},"count":{{"min":2,"max":2}},"as":"back"}}}}"#);
-        let one = hand(&game, ME)[0];
-        for journal in [
-            vec![(ME, Choice::Cards(vec![one]))],
-            vec![(ME, Choice::Cards(vec![ObjectId(999), one]))],
-            vec![(FOE, Choice::Cards(hand(&game, ME)[..2].to_vec()))],
-            vec![(ME, Choice::YesNo(true))],
-        ] {
-            let refused = run_with(&game, journal.clone(), &json);
-            assert!(
-                matches!(refused, Err(ResolveError::Invalid(_))),
-                "{journal:?}: {refused:?}"
-            );
-        }
+            r#"{"Choose":{"from":{"Each":[{"In":"Graveyard"}]},"as":"some","rest_as":"left"}}"#;
+        let done = bound(run_with(&game(2), vec![], &effect(json)).unwrap());
+        assert_eq!(
+            done,
+            [
+                ("some".to_owned(), Vec::new()),
+                ("left".to_owned(), Vec::new())
+            ]
+        );
+    }
+
+    #[rstest]
+    #[case::two_players(
+        r#"{"Choose":{"from":"EachPlayer","count":{"min":2,"max":2},"as":"x"}}"#,
+        "a choice among players takes exactly one"
+    )]
+    #[case::players_or_no_one(
+        r#"{"Choose":{"from":"EachPlayer","count":{"min":0,"max":1},"as":"x"}}"#,
+        "a choice among players takes exactly one"
+    )]
+    fn a_choice_the_options_cannot_express_is_refused(#[case] json: &str, #[case] why: &str) {
+        assert_eq!(
+            run_with(&game(3), vec![], &effect(json)).unwrap_err(),
+            ResolveError::Invalid(why.into())
+        );
     }
 
     #[test]
-    fn another_effect_is_a_bug_in_the_dispatch() {
-        let refused = run_with(&game(), Vec::new(), r#"{"Draw":{}}"#);
-        assert!(matches!(refused, Err(ResolveError::Invalid(_))));
+    fn a_wrong_answer_in_the_journal_is_refused() {
+        let journal = vec![(ME, Choice::Option(7))];
+        assert!(matches!(
+            run_with(&game(3), journal, &effect(DEFENDER)),
+            Err(ResolveError::Invalid(_))
+        ));
+    }
+
+    #[test]
+    fn another_effect_is_refused_by_name() {
+        assert_eq!(
+            run_with(&game(2), vec![], &effect(r#"{"Draw":{}}"#)).unwrap_err(),
+            ResolveError::Invalid("the Choose primitive was given another effect".into())
+        );
     }
 }

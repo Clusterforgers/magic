@@ -1,4 +1,4 @@
-//! Goal: Opt, Brainstorm and the other library effects play whole at tables of two, three and four seats, as their cards say: a scry shows the top cards and asks which go to the bottom (none, some or all, from a library of any length, and not at all for a count of nothing or an empty library) and the order of the cards on each side; Brainstorm draws three and takes two from the hand back on top in the order its player chooses; a shuffle comes from the game's random stream, the same for the same seed; a reveal, a look and a move to the bottom work in the order of the card, the owner of the cards chooses their order, answers to an order of cards are checked by name, an engine rebuilt from the log asks the same question at each decision, and the log replays to the state it was played to.
+//! Goal: Opt, Brainstorm and the other library effects play whole at tables of two, three and four seats, as their cards say: a scry shows the top cards and asks which go to the bottom (none, some or all, from a library of any length, and not at all for a count of nothing or an empty library) and the order of the cards on each side; Brainstorm draws three and takes two from the hand back on top in the order its player chooses; a shuffle comes from the game's random stream, the same for the same seed; a reveal, a look and a move to the bottom work in the order of the card, Eternal Witness returns a card from the graveyard only when its controller says yes, the controller of the spell chooses the order of the cards it puts into a library, answers to an order of cards are checked by name, an engine rebuilt from the log asks the same question at each decision, and the log replays to the state it was played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -8,14 +8,14 @@ use std::sync::Arc;
 use common::{name_of, names, pid};
 use mtg_cards::CardDefinition;
 use mtg_core::ids::ObjectId;
-use mtg_engine::choose::{CardsChoice, Choice, OrderChoice};
+use mtg_engine::choose::{CardsChoice, Choice, OrderChoice, Target, YesNoChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::events::ResolutionOutcome;
 use mtg_engine::library::{LibraryLooked, Revealed, Scried};
 use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, Engine, EngineError, Event, GameSetup, replay};
-use mtg_testkit::cards::{bottomer, island, revealer, scryer, stirrer};
+use mtg_testkit::cards::{bottomer, forest, island, revealer, scryer, stirrer};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -351,7 +351,7 @@ fn brainstorm_draws_three_and_puts_two_back_on_top_in_the_order_chosen(
         driver.state().zone(Zone::Hand(pid(0))).len()
     );
     assert_eq!((options.min, options.max), (2, 2));
-    assert_eq!(options.text, "Choose 2 cards.");
+    assert_eq!(options.text, "Choose 2 cards in your hand.");
     let begun = driver.engine().events().len() - 3 - 1;
     let from = options.from.clone();
     driver.answer(cards(&ids_named(&driver, &from, back)))?;
@@ -718,6 +718,37 @@ fn an_answer_to_the_choice_of_cards_for_the_bottom_is_checked_like_any_choice_of
         cards(&[options.from[0], options.from[1], third]),
         IllegalAnswer::NotOffered("card"),
     );
+    Ok(())
+}
+
+#[rstest]
+fn eternal_witness_returns_a_card_from_the_graveyard_to_the_hand_only_when_its_controller_says_yes(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(false, true)] yes: bool,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats)
+        .hand_named(0, ["Eternal Witness"])
+        .graveyard_named(0, ["Lightning Bolt"])
+        .battlefield(0, [forest(), forest(), forest()].map(ready));
+    let mut driver = Driver::from_scenario(scenario)?;
+    let bolt = driver.state().zone(Zone::Graveyard(pid(0)))[0];
+    resolve(&mut driver, "Eternal Witness")?;
+    // The trigger asks for the card, then whether to return it.
+    let aimed = Target::Object(driver.state().object(bolt).unwrap().reference());
+    driver.choose_targets(&[aimed])?;
+    passes_until_asked(&mut driver)?;
+    let decision = driver.decision()?.clone();
+    assert_eq!(decision.player, pid(0));
+    assert!(matches!(decision.kind, DecisionKind::YesNo(_)));
+    driver.answer(Answer::YesNo(YesNoChoice(yes)))?;
+    passes_until_asked(&mut driver)?;
+    let (hand, graveyard) = if yes {
+        (vec!["Lightning Bolt"], Vec::new())
+    } else {
+        (Vec::new(), vec!["Lightning Bolt"])
+    };
+    assert_eq!(names(driver.state(), Zone::Hand(pid(0))), hand);
+    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))), graveyard);
     Ok(())
 }
 

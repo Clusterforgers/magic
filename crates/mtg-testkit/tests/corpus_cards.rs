@@ -20,17 +20,19 @@ use mtg_engine::{Event, GameSetup};
 use mtg_testkit::cards::{forest, island};
 use mtg_testkit::corpus::{card, corpus};
 use mtg_testkit::{Driver, Scenario, ScriptError, play_game, ready};
+use rstest::rstest;
 
 use Support::{Manual, Partial, Verified};
 
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
-/// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, scrying, looking at and
-/// revealing cards, choosing and moving them, shuffling, life and damage, and the keywords of combat, so the eight
-/// cards that need no more are Verified (the Forest's ability comes from its land type) and a card whose other
-/// abilities are still missing carries what runs as Partial: Mulldrifter's draw and flying, not its evoke; Faithless
-/// Looting's draw and discard, not its flashback. Jace, the Mind Sculptor stays with the table for its loyalty
-/// costs and `May`; Rampant Growth, Cultivate and Flooded Strand for `Search` and a move to the battlefield.
+/// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
+/// countering, scrying, looking at and revealing cards, choosing and moving them, shuffling, life and damage, and the
+/// keywords of combat, so the thirteen cards that need no more are Verified (the Forest's ability comes from its land
+/// type) and a card whose other abilities are still missing carries what runs as Partial: Mulldrifter's draw and
+/// flying, not its evoke; Faithless Looting's draw and discard, not its flashback. Jace, the Mind Sculptor stays with
+/// the table for its loyalty costs; Rampant Growth, Cultivate and Flooded Strand for `Search` and a move to the
+/// battlefield.
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
@@ -39,12 +41,12 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Bonesplitter", Manual, 0),
     ("Brainstorm", Verified, 1),
     ("Burst Lightning", Manual, 0),
-    ("Counterspell", Manual, 0),
+    ("Counterspell", Verified, 1),
     ("Cultivate", Manual, 0),
     ("Delver of Secrets // Insectile Aberration", Manual, 0),
     ("Dockside Extortionist", Manual, 0),
-    ("Doom Blade", Manual, 0),
-    ("Eternal Witness", Manual, 0),
+    ("Doom Blade", Verified, 1),
+    ("Eternal Witness", Verified, 1),
     ("Faithless Looting", Partial, 1),
     ("Felidar Sovereign", Partial, 2),
     ("Fire // Ice", Manual, 0),
@@ -69,9 +71,9 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Serra Angel", Verified, 2),
     ("Sneak Attack", Manual, 0),
     ("Sol Ring", Manual, 0),
-    ("Swords to Plowshares", Manual, 0),
+    ("Swords to Plowshares", Verified, 1),
     ("Tireless Tracker", Manual, 0),
-    ("Wrath of God", Manual, 0),
+    ("Wrath of God", Verified, 1),
 ];
 
 #[test]
@@ -157,14 +159,13 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     let burst = reasons("Burst Lightning");
     assert!(burst.contains("Keyword.Kicker"), "{burst}");
     assert!(!burst.contains("Effect.DealDamage"), "{burst}");
-    // Rhystic Study's trigger is there; the payment and the choice it ends in are not.
+    // Rhystic Study's trigger and its "may" are there; the payment the opponent is offered is not.
     let rhystic = reasons("Rhystic Study");
+    assert!(rhystic.contains("Effect.Pay"), "{rhystic}");
     assert!(
-        rhystic.contains("Effect.Pay") && rhystic.contains("Effect.May"),
-        "{rhystic}"
-    );
-    assert!(
-        !rhystic.contains("Trigger.SpellCast") && !rhystic.contains("Ability.Triggered"),
+        !rhystic.contains("Effect.May")
+            && !rhystic.contains("Trigger.SpellCast")
+            && !rhystic.contains("Ability.Triggered"),
         "{rhystic}"
     );
     // Mulldrifter's draw and flying are covered, its evoke is not.
@@ -183,8 +184,68 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     );
     // Archon of Cruelty is covered whole: its sacrifice and discard are played now.
     assert_eq!(reasons("Archon of Cruelty"), "");
+    // The removal and the counterspell are covered whole: destroy, exile and counter are played now.
+    for name in [
+        "Doom Blade",
+        "Swords to Plowshares",
+        "Counterspell",
+        "Wrath of God",
+    ] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // A card whose file models nothing says nothing about the engine.
     assert_eq!(reasons("Panharmonicon"), "");
+}
+
+/// The primitives of the card's rules the engine does not run.
+fn lacking(name: &str) -> Vec<String> {
+    let caps = mtg_engine::caps();
+    let library = mtg_cards::builtin::library().unwrap();
+    let missing: BTreeSet<String> = library
+        .card_by_name(name)
+        .into_iter()
+        .flat_map(mtg_cards::card::Card::abilities)
+        .filter(|(_, ability)| !ability.is_manual())
+        .flat_map(|(_, ability)| caps.missing(&used_primitives(ability)))
+        .collect();
+    missing.into_iter().collect()
+}
+
+/// A "may", a choice, modes and the library effects run now, so the corpus cards that use only those are Verified
+/// (Brainstorm, Eternal Witness, Opt); each of these is still held back by another primitive, which this table names.
+/// The cards that need a payment, a search or a move onto the battlefield wait for the tasks that build those.
+#[rstest]
+#[case::cultivate("Cultivate", &["Effect.Move.Battlefield", "Effect.Search"])]
+#[case::izzet_charm("Izzet Charm", &["Cost.Mana", "Effect.Pay"])]
+#[case::rhystic_study("Rhystic Study", &["Cost.Mana", "Effect.Pay"])]
+#[case::delver(
+    "Delver of Secrets // Insectile Aberration",
+    &["Effect.If", "Effect.Transform"]
+)]
+#[case::sneak_attack(
+    "Sneak Attack",
+    &["Cost.Mana", "Effect.Continuous", "Effect.Move.Battlefield", "Mod.AddKeyword"]
+)]
+#[case::jace("Jace, the Mind Sculptor", &["Ability.Loyalty"])]
+fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(
+    #[case] name: &str,
+    #[case] expected: &[&str],
+) {
+    assert_eq!(lacking(name), expected, "{name}");
+    let corpus = corpus().unwrap();
+    let record = corpus.support(name).unwrap();
+    let (state, _) = CARDS
+        .iter()
+        .find_map(|(card, state, abilities)| (*card == name).then_some((*state, *abilities)))
+        .unwrap();
+    assert_eq!(record.support, state, "{name}");
+    assert_ne!(record.support, Verified, "{name}");
+    for runs in ["Effect.May", "Effect.Choose", "Effect.Modal"] {
+        assert!(
+            !lacking(name).iter().any(|gap| gap == runs),
+            "{name} is not held back by {runs}"
+        );
+    }
 }
 
 fn resolve_the_stack(driver: &mut Driver) -> Result<(), ScriptError> {

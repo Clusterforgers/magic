@@ -5,6 +5,7 @@
 
 pub mod bot;
 pub mod cards;
+pub mod choice_cards;
 pub mod corpus;
 pub mod decks;
 pub mod driver;
@@ -17,13 +18,16 @@ pub mod trigger_cards;
 pub mod windows;
 
 pub use bot::RandomBot;
+pub use choice_cards::choice_fuzz_setup;
 pub use decks::{
-    archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, spell_fuzz_setup,
-    symbol_fuzz_setup, trigger_fuzz_setup,
+    archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, removal_fuzz_setup,
+    spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,
 };
 pub use driver::Driver;
 pub use harness::{FailureKind, GameFailure, GameOutcome, PlayOptions, play_game, play_game_with};
 pub use invariants::{InvariantChecker, Violation, check_settled, check_state};
-pub use scenario::{Scenario, ScenarioError, damaged, ready, sick, tapped};
+pub use scenario::{
+    Scenario, ScenarioError, attached_to, damaged, ready, sick, tapped, with_counters,
+};
 pub use script_error::ScriptError;
 pub use windows::{SeatWindows, Windows};

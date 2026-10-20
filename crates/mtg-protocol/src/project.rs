@@ -92,6 +92,17 @@ fn type_list(types: CardTypes) -> Vec<CardType> {
 impl ObjectView {
     /// The view of `id` for `viewer`, or `None` when the object is unknown or hidden from them.
     pub fn of(state: &GameState, viewer: PlayerId, id: ObjectId) -> Option<ObjectView> {
+        Self::with_attachments(state, viewer, id, || state.attachments_of(id))
+    }
+
+    /// [`ObjectView::of`] with the attachments of `id` given by `attachments`, which is asked only for a permanent: a whole
+    /// view works them out once for every object (`GameState::attachment_index`).
+    fn with_attachments(
+        state: &GameState,
+        viewer: PlayerId,
+        id: ObjectId,
+        attachments: impl FnOnce() -> Vec<ObjectId>,
+    ) -> Option<ObjectView> {
         let object = state.object(id)?;
         if !zone_is_visible(object.zone(), viewer) {
             return None;
@@ -132,6 +143,22 @@ impl ObjectView {
             kind: object.kind(),
             source: object.ability().map(|ability| ability.source().id),
             targets: object.choices().targets.clone(),
+            // Counters and attachments are public facts of a permanent, shown to every seat that sees the permanent.
+            counters: object
+                .permanent()
+                .map(|permanent| {
+                    permanent
+                        .counters()
+                        .map(|(kind, count)| (kind.clone(), count))
+                        .collect()
+                })
+                .unwrap_or_default(),
+            attached_to: state.host_of(id),
+            attachments: if object.permanent().is_some() {
+                attachments()
+            } else {
+                Vec::new()
+            },
         })
     }
 }
@@ -207,9 +234,14 @@ impl TableView {
 
 /// Every object `viewer` may identify, in id order.
 pub(crate) fn visible_objects(state: &GameState, viewer: PlayerId) -> Vec<ObjectView> {
+    let attached = state.attachment_index();
     state
         .objects()
-        .filter_map(|o| ObjectView::of(state, viewer, o.id()))
+        .filter_map(|o| {
+            ObjectView::with_attachments(state, viewer, o.id(), || {
+                attached.get(&o.id()).cloned().unwrap_or_default()
+            })
+        })
         .collect()
 }
 

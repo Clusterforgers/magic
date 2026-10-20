@@ -1,9 +1,11 @@
 //! Game objects: cards, tokens and abilities on the stack, with their zone and permanent state.
 
+use std::collections::BTreeMap;
 use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardTypes;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -50,6 +52,8 @@ pub struct PermanentState {
     pub(crate) damage: u32,
     pub(crate) deathtouched: bool,
     pub(crate) summoning_sick: bool,
+    pub(crate) counters: BTreeMap<CounterKind, u32>,
+    pub(crate) attached_to: Option<ObjectRef>,
 }
 
 impl PermanentState {
@@ -71,6 +75,16 @@ impl PermanentState {
     /// Whether the controller has not yet controlled it since their turn began.
     pub const fn summoning_sick(&self) -> bool {
         self.summoning_sick
+    }
+
+    /// The counters on the permanent, by kind in a fixed order; a kind it has none of is not listed.
+    pub fn counters(&self) -> impl Iterator<Item = (&CounterKind, u32)> {
+        self.counters.iter().map(|(kind, count)| (kind, *count))
+    }
+
+    /// The permanent it is attached to, named as it was when attached (an Aura or Equipment); `GameState::host_of` says whether that is still so.
+    pub const fn attached_to(&self) -> Option<ObjectRef> {
+        self.attached_to
     }
 }
 
