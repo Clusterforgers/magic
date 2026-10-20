@@ -162,7 +162,7 @@ fn a_creature_that_is_summoning_sick_cannot_pay_a_tap_cost_whatever_its_player_h
             ready(mountain()),
         ],
     ))?;
-    assert!(offered(&driver).is_empty());
+    assert_eq!(offered(&driver), Vec::<String>::new());
     Ok(())
 }
 

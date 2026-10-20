@@ -169,7 +169,7 @@ fn a_player_who_cannot_pay_is_not_asked_and_the_spell_is_countered(
         "the Bolt was countered without a word"
     );
     assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack().len(), 0);
     Ok(())
 }
 

@@ -66,6 +66,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [x] Discard and Sacrifice with the ChooseCards engine side; Archon of Cruelty is Verified
   - [x] LookAtTop, Scry, Reveal, Move and Shuffle with the OrderCards engine side; Opt and Brainstorm are Verified
   - [x] Destroy, Exile and Counter (a spell) on targets and "all" selectors; Doom Blade, Swords to Plowshares, Counterspell and Wrath of God are Verified
+  - [x] Pay ("unless that player pays", "you may pay") and mana costs on activated abilities; Izzet Charm and Rhystic Study are Verified
   - [ ] Looked-at and revealed cards reach the viewer's views so the prompts can show their names
   - [ ] Web prompts for scry and the order of cards put back (ChooseCards and OrderCards already draw candidates from the views)
 - [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
