@@ -94,13 +94,18 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         let Some(span) = text.span(raw.range, raw.ends_line) else {
             continue;
         };
-        let kind = classify::classify(&clause_text, spell);
+        let mut kind = classify::classify(&clause_text, spell);
+        if is_unread_keyword_line(&clause_text, kind, x_free) {
+            kind = ClauseKind::Keyword;
+        }
         let ability = match kind {
             ClauseKind::Keyword => keywords::read(&clause_text)
                 // `check_printed` accepts Enchant on an Aura only.
                 .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
                 .map(Ability::Keyword),
-            ClauseKind::Activated => read::clause(&clause_text, kind, x_free),
+            ClauseKind::Triggered | ClauseKind::Activated => {
+                read::clause(&clause_text, kind, x_free)
+            }
             _ => None,
         };
         pending.push(Pending {
@@ -147,6 +152,16 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         });
     }
     abilities
+}
+
+/// Whether a spell or static clause is a keyword line the keyword reader does not know
+/// (`Mayhem {1}{B}`): one line without a closing period that no template reads. It is kept as a
+/// keyword clause so that it does not stand in the way of the effect lines around it.
+fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool) -> bool {
+    matches!(kind, ClauseKind::Spell | ClauseKind::Static)
+        && !text.contains('\n')
+        && !text.trim_end().ends_with(['.', '"', '\u{201d}'])
+        && read::clause(text, kind, x_free).is_none()
 }
 
 /// The face name, and for a legendary face the part of the name before the comma.
@@ -285,7 +300,17 @@ mod tests {
     #[case::keyword_and_trigger(
         "Creature \u{2014} Elf",
         "Haste\nWhen ~ enters, draw a card.",
+        Some(ImplStatus::Full)
+    )]
+    #[case::keyword_and_unread_trigger(
+        "Creature \u{2014} Elf",
+        "Haste\nWhen ~ enters, tap target creature.",
         Some(ImplStatus::Partial)
+    )]
+    #[case::trigger_with_an_ability_word(
+        "Creature \u{2014} Elf",
+        "Landfall \u{2014} Whenever a land you control enters, draw a card.",
+        Some(ImplStatus::Full)
     )]
     #[case::keyword_and_static(
         "Artifact \u{2014} Equipment",
@@ -352,7 +377,7 @@ mod tests {
 
     #[test]
     fn a_partial_card_keeps_a_manual_ability_for_each_unread_clause_in_order() {
-        let text = "Flying\nWhenever ~ attacks, draw a card.\n{T}: Draw a card.\nVigilance";
+        let text = "Flying\nWhenever ~ attacks, tap target creature.\n{T}: Draw a card.\nVigilance";
         let compiled = one("Test Card", "Creature \u{2014} Bird", text);
         let card = compiled.card.unwrap();
         let abilities = &card.faces[0].abilities;
@@ -363,12 +388,15 @@ mod tests {
             panic!("{:?}", abilities[1]);
         };
         assert_eq!(reason, "a triggered ability the compiler does not read yet");
-        assert_eq!(span.slice(text), Some("Whenever ~ attacks, draw a card."));
+        assert_eq!(
+            span.slice(text),
+            Some("Whenever ~ attacks, tap target creature.")
+        );
         assert_eq!(
             abilities[2],
             Ability::Manual {
                 reason: "an activated ability the compiler does not read yet".into(),
-                span: Span { start: 40, end: 57 }
+                span: Span { start: 48, end: 65 }
             }
         );
         let kinds: Vec<_> = compiled.clauses.iter().map(|clause| clause.kind).collect();
@@ -400,6 +428,76 @@ mod tests {
         assert_eq!(effects.len(), 3);
         assert_eq!(compiled.clauses.len(), 4);
         assert!(compiled.clauses.iter().all(|clause| clause.read));
+    }
+
+    #[rstest]
+    #[case::mayhem("Mayhem {1}{B}")]
+    #[case::with_a_number("Squad 2")]
+    #[case::with_a_word("Gift a card")]
+    #[case::with_a_dash("Impending 4\u{2014}{2}{U}")]
+    #[case::alone("Surge")]
+    fn an_unknown_keyword_line_does_not_block_the_effect_lines_of_its_spell(#[case] line: &str) {
+        for text in [
+            format!("{line}\nDestroy target creature."),
+            format!("Destroy target creature.\n{line}"),
+        ] {
+            let compiled = one("Test Card", "Sorcery", &text);
+            let card = compiled.card.unwrap();
+            assert_eq!(card.impl_status, ImplStatus::Partial, "{text}");
+            let abilities = &card.faces[0].abilities;
+            assert_eq!(abilities.len(), 2, "{text}");
+            assert_eq!(
+                abilities
+                    .iter()
+                    .filter(|ability| ability.is_manual())
+                    .count(),
+                1
+            );
+            assert!(
+                abilities
+                    .iter()
+                    .any(|ability| matches!(ability, Ability::Spell { .. }))
+            );
+            let found: Vec<_> = compiled
+                .clauses
+                .iter()
+                .map(|clause| (clause.kind, clause.read))
+                .collect();
+            let wanted = if text.starts_with(line) {
+                [(ClauseKind::Keyword, false), (ClauseKind::Spell, true)]
+            } else {
+                [(ClauseKind::Spell, true), (ClauseKind::Keyword, false)]
+            };
+            assert_eq!(found, wanted, "{text}");
+        }
+    }
+
+    #[rstest]
+    #[case::a_sentence("Sorcery", "Tap target creature.", ClauseKind::Spell)]
+    #[case::a_readable_line("Sorcery", "Draw a card", ClauseKind::Spell)]
+    #[case::a_closing_quote("Sorcery", "Tap target creature named \"A.\"", ClauseKind::Spell)]
+    #[case::a_static_sentence(
+        "Creature \u{2014} Elf",
+        "Elves you control get +1/+1.",
+        ClauseKind::Static
+    )]
+    #[case::a_static_keyword_like_line(
+        "Creature \u{2014} Elf",
+        "Mayhem {1}{B}",
+        ClauseKind::Keyword
+    )]
+    #[case::a_level_block(
+        "Creature \u{2014} Wizard",
+        "LEVEL 2-3\n2/4\nFlying",
+        ClauseKind::Static
+    )]
+    fn only_a_line_without_a_period_that_nothing_reads_becomes_a_keyword_line(
+        #[case] type_line: &str,
+        #[case] text: &str,
+        #[case] kind: ClauseKind,
+    ) {
+        let compiled = one("Test Card", type_line, text);
+        assert_eq!(compiled.clauses[0].kind, kind, "{text}");
     }
 
     #[test]

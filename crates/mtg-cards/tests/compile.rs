@@ -10,7 +10,7 @@ use mtg_cards::compile::{Compiled, compile};
 use mtg_cards::load::{Library, Source, canonical, slug};
 use mtg_cards::support::{PrintedCard, oracle_fingerprint};
 
-use common::{cards_dir, printed};
+use common::{cards_dir, printed, token_sources};
 
 /// Every corpus card with the status it compiles to (`None` when its text is only reminder text) and
 /// how many of its clauses are read out of how many.
@@ -30,11 +30,11 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 40] = [
         1,
         2,
     ),
-    ("Dockside Extortionist", Some(Manual), 0, 1),
+    ("Dockside Extortionist", Some(Full), 1, 1),
     ("Doom Blade", Some(Full), 1, 1),
-    ("Eternal Witness", Some(Manual), 0, 1),
+    ("Eternal Witness", Some(Full), 1, 1),
     ("Faithless Looting", Some(Full), 2, 2),
-    ("Felidar Sovereign", Some(Partial), 2, 3),
+    ("Felidar Sovereign", Some(Full), 3, 3),
     ("Fire // Ice", Some(Manual), 0, 3),
     ("Fireball", Some(Manual), 0, 2),
     ("Flooded Strand", Some(Manual), 0, 1),
@@ -42,12 +42,12 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 40] = [
     ("Gaea's Cradle", Some(Manual), 0, 1),
     ("Giant Growth", Some(Full), 1, 1),
     ("Grizzly Bears", None, 0, 0),
-    ("Hero of Bladehold", Some(Partial), 1, 2),
+    ("Hero of Bladehold", Some(Full), 2, 2),
     ("Izzet Charm", Some(Manual), 0, 1),
     ("Jace, the Mind Sculptor", Some(Manual), 0, 4),
     ("Lightning Bolt", Some(Full), 1, 1),
     ("Llanowar Elves", Some(Full), 1, 1),
-    ("Mulldrifter", Some(Partial), 2, 3),
+    ("Mulldrifter", Some(Full), 3, 3),
     ("Opt", Some(Full), 2, 2),
     ("Pacifism", Some(Partial), 1, 2),
     ("Panharmonicon", Some(Manual), 0, 1),
@@ -58,7 +58,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 40] = [
     ("Sneak Attack", Some(Manual), 0, 1),
     ("Sol Ring", Some(Full), 1, 1),
     ("Swords to Plowshares", Some(Full), 1, 1),
-    ("Tireless Tracker", Some(Manual), 0, 2),
+    ("Tireless Tracker", Some(Full), 2, 2),
     ("Wrath of God", Some(Full), 1, 1),
 ];
 
@@ -92,28 +92,33 @@ fn the_table_lists_every_corpus_card_once() {
 fn all_forty_cards_earn_the_status_in_the_table() {
     let corpus = compiled_corpus();
     assert_eq!(corpus.len(), 40);
+    let mut differing = Vec::new();
     for (card, compiled) in &corpus {
         let row = EXPECTED.iter().find(|row| row.0 == card.name).unwrap();
         let status = compiled.card.as_ref().map(|card| card.impl_status);
         let read = compiled.clauses.iter().filter(|clause| clause.read).count();
-        assert_eq!(
-            (status, read, compiled.clauses.len()),
-            (row.1, row.2, row.3),
-            "{}",
-            card.name
-        );
+        let found = (status, read, compiled.clauses.len());
+        if found != (row.1, row.2, row.3) {
+            differing.push(format!(
+                "{}: {found:?}, expected {:?}",
+                card.name,
+                (row.1, row.2, row.3)
+            ));
+        }
     }
+    assert!(differing.is_empty(), "{differing:#?}");
 }
 
 #[test]
 fn every_compiled_card_loads_and_matches_the_imported_text() {
     let corpus = compiled_corpus();
-    let sources: Vec<Source> = corpus
+    let mut sources: Vec<Source> = corpus
         .iter()
         .filter_map(|(_, compiled)| compiled.card.as_ref())
         .map(source_of)
         .collect();
     assert_eq!(sources.len(), 38);
+    sources.extend(token_sources());
     let library = Library::from_sources(&sources).unwrap_or_else(|errors| panic!("{errors}"));
     let imported: Vec<PrintedCard> = corpus.into_iter().map(|(card, _)| card).collect();
     let problems = library.check_printed(&imported);

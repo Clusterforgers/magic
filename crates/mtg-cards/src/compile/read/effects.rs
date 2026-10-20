@@ -1,19 +1,33 @@
 //! Effects: a sentence is read into the effects of one template. A template reads the whole
 //! sentence or nothing; to add a wording, write a template and list it in [`TEMPLATES`].
 
-use super::amounts::{cards, its_stat, points};
+use super::amounts::{cards, its_stat, number_word, points};
+use super::create;
 use super::selectors::{Form, all, each, keyword, phrase, target};
 use super::tokens::Reader;
-use crate::effect::Effect;
+use crate::effect::{Destination, Effect};
 use crate::modify::{Duration, Modification};
-use crate::refs::{Pred, Ref, Targetable};
-use crate::value::Amount;
+use crate::refs::{Pred, Ref, Targetable, ZoneKind};
+use crate::value::{Amount, CounterKind};
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 5] = [chain, player_effect, damage, removal, pump];
+const TEMPLATES: [Template; 9] = [
+    may,
+    chain,
+    player_effect,
+    damage,
+    removal,
+    pump,
+    return_card,
+    create::tokens,
+    put_counters,
+];
+
+/// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
+const IMPERATIVES: [Template; 5] = [chain, removal, return_card, create::tokens, put_counters];
 
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the
 /// templates read.
@@ -50,6 +64,23 @@ fn regeneration(r: &mut Reader<'_>, effects: &mut [Effect]) -> Option<()> {
     }
     *regenerate = false;
     Some(())
+}
+
+/// "You may draw a card.": one step that the controller may do.
+fn may(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("you may")?;
+    IMPERATIVES.iter().find_map(|template| {
+        r.attempt(|r| {
+            let found = template(r)?;
+            // A chain of steps is not one choice: "may" would have to say which steps it covers.
+            (found.len() == 1).then(|| {
+                vec![Effect::May {
+                    who: Ref::You,
+                    effects: found,
+                }]
+            })
+        })
+    })
 }
 
 /// Steps of "you" joined by ", then": "Scry 1, then draw a card."
@@ -146,9 +177,71 @@ fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             who,
             amount: life(r)?,
         },
+        "win" | "wins" => {
+            r.need("the game")?;
+            Effect::WinGame { who }
+        }
         _ => return None,
     };
     Some(vec![effect])
+}
+
+/// "Return target card from your graveyard to your hand."
+fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("return")?;
+    let what = target_object(r)?;
+    // "your hand" is the owner's hand only for a card in your own graveyard.
+    let yours = r.targets.first().is_some_and(|spec| {
+        matches!(&spec.what, Targetable::Object(selector)
+            if selector.0.contains(&Pred::In(ZoneKind::Graveyard))
+                && selector.0.contains(&Pred::OwnedBy(Ref::You)))
+    });
+    r.need("to your hand")?;
+    yours.then(|| {
+        vec![Effect::Move {
+            what,
+            to: Destination::Hand,
+        }]
+    })
+}
+
+/// "+1/+1" or "-1/-1": the counters that change a creature's size.
+fn counter_kind(r: &mut Reader<'_>) -> Option<CounterKind> {
+    r.attempt(|r| {
+        let plus = r.punct('+');
+        if !plus {
+            r.punct('-').then_some(())?;
+        }
+        (r.number()? == 1).then_some(())?;
+        r.punct('/').then_some(())?;
+        r.punct(if plus { '+' } else { '-' }).then_some(())?;
+        (r.number()? == 1).then_some(())?;
+        Some(if plus {
+            CounterKind::PlusOnePlusOne
+        } else {
+            CounterKind::MinusOneMinusOne
+        })
+    })
+}
+
+/// "Put a +1/+1 counter on ~.", "Put two -1/-1 counters on target creature."
+fn put_counters(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("put")?;
+    let number = number_word(r.take_word()?)?;
+    let counter = counter_kind(r)?;
+    r.word(if number == 1 { "counter" } else { "counters" })
+        .then_some(())?;
+    r.need("on")?;
+    let on = if r.source() {
+        Ref::This
+    } else {
+        target_object(r)?
+    };
+    Some(vec![Effect::PutCounters {
+        on,
+        counter,
+        count: Amount::Fixed(i32::try_from(number).ok()?),
+    }])
 }
 
 /// Who or what takes damage: a single target, "each opponent", "each creature".

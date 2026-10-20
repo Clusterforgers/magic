@@ -85,7 +85,7 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
 }
 
 /// The byte length of an ability word and its dash ("Landfall — "), when the line starts with one.
-fn ability_word_len(line: &str) -> Option<usize> {
+pub(super) fn ability_word_len(line: &str) -> Option<usize> {
     const DASH: &str = " \u{2014} ";
     let (at, _) = line.match_indices(DASH).next()?;
     let word = line.get(..at)?;

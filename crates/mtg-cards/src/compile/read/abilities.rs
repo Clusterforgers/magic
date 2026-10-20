@@ -1,9 +1,10 @@
-//! Abilities: a clause's sentences become a spell ability, and a cost, a colon and mana a mana ability.
+//! Abilities: a clause's sentences become a spell ability, an event, a comma and sentences a
+//! triggered ability, and a cost, a colon and mana a mana ability.
 
 use mtg_core::mana::ManaType;
 
-use super::effects;
 use super::tokens::Reader;
+use super::{effects, triggers};
 use crate::ability::{Ability, Timing};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Effect, Produce};
@@ -22,6 +23,35 @@ pub fn spell(r: &mut Reader<'_>) -> Option<Ability> {
         return None;
     }
     Some(Ability::Spell {
+        targets: std::mem::take(&mut r.targets),
+        effects,
+    })
+}
+
+/// A triggered ability: an event, a comma, an optional intervening "if" and then sentences, every
+/// one of which must be read.
+pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
+    let when = triggers::pattern(r)?;
+    r.punct(',').then_some(())?;
+    let intervening_if = r.attempt(|r| {
+        r.word("if").then_some(())?;
+        let condition = triggers::condition(r)?;
+        r.punct(',').then_some(condition)
+    });
+    let mut effects = Vec::new();
+    while !r.end() {
+        if !effects::sentence(r, &mut effects) {
+            return None;
+        }
+    }
+    if effects.is_empty() {
+        return None;
+    }
+    Some(Ability::Triggered {
+        when,
+        intervening_if,
+        limit: None,
+        from: ZoneKind::Battlefield,
         targets: std::mem::take(&mut r.targets),
         effects,
     })

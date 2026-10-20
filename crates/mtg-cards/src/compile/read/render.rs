@@ -2,19 +2,30 @@
 //! checked against the text it came from. Every effect is a sentence of its own; the readers take
 //! ", then" between two steps as the same sequence.
 
-use super::amounts::{cards_text, points_text, stat_name};
+use super::amounts::{cards_text, count_word, points_text, stat_name};
+use super::create;
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
+use super::triggers::{condition_text, pattern_text};
 use crate::ability::{Ability, Timing};
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Effect, Produce};
+use crate::effect::{Destination, Effect, Produce};
 use crate::modify::{Duration, Modification};
-use crate::refs::{Ref, TargetSpec, Targetable, ZoneKind};
-use crate::value::Amount;
+use crate::refs::{Pred, Ref, TargetSpec, Targetable, ZoneKind};
+use crate::trigger::TriggerPattern;
+use crate::value::{Amount, Condition, CounterKind};
 
 /// The oracle wording of an ability the readers produce; `None` for any other ability.
 pub fn ability(ability: &Ability) -> Option<String> {
     match ability {
         Ability::Spell { targets, effects } => spell(targets, effects),
+        Ability::Triggered {
+            when,
+            intervening_if,
+            limit: None,
+            from: ZoneKind::Battlefield,
+            targets,
+            effects,
+        } => triggered(when, intervening_if.as_ref(), targets, effects),
         Ability::Activated {
             cost,
             timing: Timing::Instant,
@@ -34,8 +45,8 @@ fn capitalize(text: &str) -> String {
     })
 }
 
-/// The sentences of a spell, one for each effect.
-fn spell(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
+/// The sentences of an ability, one for each effect, without their first capital and period.
+fn sentences(targets: &[TargetSpec], effects: &[Effect]) -> Option<Vec<String>> {
     if targets.len() > 1 || effects.is_empty() {
         return None;
     }
@@ -45,24 +56,67 @@ fn spell(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
     };
     let mut sentences: Vec<String> = Vec::new();
     for effect in effects {
-        sentences.push(capitalize(&writer.effect(effect)?));
+        sentences.push(writer.effect(effect)?);
         if let Effect::Destroy {
             what,
             regenerate: false,
         } = effect
         {
-            let pronoun = if writer.single(what) { "It" } else { "They" };
+            let pronoun = if writer.single(what) { "it" } else { "they" };
             sentences.push(format!("{pronoun} can't be regenerated"));
         }
     }
-    if !targets.is_empty() && !writer.named {
-        return None;
-    }
-    let closed: Vec<String> = sentences
-        .into_iter()
-        .map(|sentence| format!("{sentence}."))
+    (targets.is_empty() || writer.named).then_some(sentences)
+}
+
+/// The sentences of a spell, one for each effect.
+fn spell(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
+    let closed: Vec<String> = sentences(targets, effects)?
+        .iter()
+        .map(|sentence| format!("{}.", capitalize(sentence)))
         .collect();
     Some(closed.join(" "))
+}
+
+/// The event, an intervening "if" and the sentences of a triggered ability.
+fn triggered(
+    when: &TriggerPattern,
+    condition: Option<&Condition>,
+    targets: &[TargetSpec],
+    effects: &[Effect],
+) -> Option<String> {
+    let mut parts = vec![format!("{},", pattern_text(when)?)];
+    if let Some(condition) = condition {
+        parts.push(format!("if {},", condition_text(condition)?));
+    }
+    for (at, sentence) in sentences(targets, effects)?.iter().enumerate() {
+        parts.push(if at == 0 {
+            format!("{sentence}.")
+        } else {
+            format!("{}.", capitalize(sentence))
+        });
+    }
+    Some(parts.join(" "))
+}
+
+/// Whether the effect is written as a verb with "you" understood ("draw a card"), which "you may" can precede.
+fn is_imperative(effect: &Effect) -> bool {
+    matches!(
+        effect,
+        Effect::Scry { who: Ref::You, .. }
+            | Effect::Draw { who: Ref::You, .. }
+            | Effect::Mill { who: Ref::You, .. }
+            | Effect::Discard { who: Ref::You, .. }
+            | Effect::Destroy {
+                regenerate: true,
+                ..
+            }
+            | Effect::Exile { .. }
+            | Effect::Counter { .. }
+            | Effect::Move { .. }
+            | Effect::CreateToken { who: Ref::You, .. }
+            | Effect::PutCounters { .. }
+    )
 }
 
 /// `{T}: Add {G}.`
@@ -143,6 +197,44 @@ impl Writer<'_> {
         self.targets.first().is_some_and(|spec| wanted(&spec.what))
     }
 
+    /// Whether the reference is the one target and it is a card in the controller's graveyard.
+    fn in_your_graveyard(&self, what: &Ref) -> bool {
+        *what == Ref::Target(0)
+            && self.target_is(|kind| {
+                matches!(kind, Targetable::Object(selector)
+                    if selector.0.contains(&Pred::In(ZoneKind::Graveyard))
+                        && selector.0.contains(&Pred::OwnedBy(Ref::You)))
+            })
+    }
+
+    /// "put a +1/+1 counter on ~", "put two -1/-1 counters on target creature".
+    fn counters(&mut self, on: &Ref, counter: &CounterKind, count: &Amount) -> Option<String> {
+        let kind = match counter {
+            CounterKind::PlusOnePlusOne => "+1/+1",
+            CounterKind::MinusOneMinusOne => "-1/-1",
+            _ => return None,
+        };
+        let Amount::Fixed(number) = count else {
+            return None;
+        };
+        let (many, noun) = match number {
+            ..=0 => return None,
+            1 => ("a", "counter"),
+            _ => (count_word(u32::try_from(*number).ok()?)?, "counters"),
+        };
+        let place = match on {
+            Ref::This => "~".to_owned(),
+            Ref::Target(0)
+                if self.single(on)
+                    && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
+            {
+                self.name_target()?
+            }
+            _ => return None,
+        };
+        Some(format!("put {many} {kind} {noun} on {place}"))
+    }
+
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
@@ -177,6 +269,19 @@ impl Writer<'_> {
             ),
             Effect::GainLife { who, amount } => self.life(who, amount, "gain")?,
             Effect::LoseLife { who, amount } => self.life(who, amount, "lose")?,
+            Effect::WinGame { who } => format!(
+                "{} {} the game",
+                self.player(who)?,
+                if *who == Ref::You { "win" } else { "wins" }
+            ),
+            Effect::Move {
+                what,
+                to: Destination::Hand,
+            } if self.in_your_graveyard(what) => {
+                format!("return {} to your hand", self.object(what)?)
+            }
+            Effect::PutCounters { on, counter, count } => self.counters(on, counter, count)?,
+            Effect::CreateToken { .. } => create::text(effect)?,
             Effect::DealDamage {
                 source: None,
                 to,
@@ -194,6 +299,13 @@ impl Writer<'_> {
                 mods,
                 duration: Duration::UntilEndOfTurn,
             } => self.pump(affected, mods)?,
+            Effect::May {
+                who: Ref::You,
+                effects,
+            } => match effects.as_slice() {
+                [inner] if is_imperative(inner) => format!("you may {}", self.effect(inner)?),
+                _ => return None,
+            },
             _ => return None,
         })
     }
