@@ -1,0 +1,29 @@
+{
+  "oracle_id": "4893a301-29a8-4a0e-845c-8ddb5cb8db25",
+  "name": "Darksteel Juggernaut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Darksteel Juggernaut",
+      "oracle_fingerprint": "39b933fca81bdec6ae3616032b01ab66",
+      "abilities": [
+        { "Keyword": "Indestructible" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        { "Rule": { "rule": { "MustAttack": "This" } } }
+      ]
+    }
+  ]
+}

@@ -11,6 +11,7 @@ use mtg_engine::decision::{
 };
 use mtg_engine::effects::{Duration, Modification, Selector};
 use mtg_engine::mana::{ManaSource, Payment};
+use mtg_engine::rules::Rule;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, Engine, EngineError, Event, GameState};
@@ -149,6 +150,25 @@ impl Driver {
         let events =
             self.engine
                 .add_continuous_effect_from(source, selector, modification, duration)?;
+        self.checker.observe_engine(&self.engine)?;
+        Ok(events)
+    }
+
+    /// Registers a change to a rule of the game through the engine's hook and checks invariants.
+    pub fn add_rule(&mut self, rule: Rule, duration: Duration) -> Result<Vec<Event>, ScriptError> {
+        let events = self.engine.add_rule(rule, duration)?;
+        self.checker.observe_engine(&self.engine)?;
+        Ok(events)
+    }
+
+    /// Registers a change to a rule of the game as if a spell or ability of `source` had made it, and checks invariants.
+    pub fn add_rule_from(
+        &mut self,
+        source: ObjectId,
+        rule: Rule,
+        duration: Duration,
+    ) -> Result<Vec<Event>, ScriptError> {
+        let events = self.engine.add_rule_from(source, rule, duration)?;
         self.checker.observe_engine(&self.engine)?;
         Ok(events)
     }

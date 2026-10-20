@@ -1,4 +1,4 @@
-//! Goal: the 53 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 65 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -32,12 +32,12 @@ use Support::{Manual, Partial, Verified};
 /// and untapping, winning the game, continuous effects and static abilities of every modification (types, subtypes, colours,
 /// power and toughness, keywords, abilities, control and attack and block restrictions), characteristic-defining abilities
 /// (power and toughness from a count, colours) and the keywords of combat and
-/// flash, hexproof and the keywords that are triggers (battle cry, prowess, ward), so the thirty-five cards that need no more are Verified (the
+/// flash, hexproof and the keywords that are triggers (battle cry, prowess, ward), so the fifty cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
 /// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback;
 /// Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays
 /// with the table for its loyalty costs and Flooded Strand for the life it costs.
-const CARDS: [(&str, Support, usize); 53] = [
+const CARDS: [(&str, Support, usize); 65] = [
     ("Act of Treason", Verified, 1),
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
@@ -80,7 +80,19 @@ const CARDS: [(&str, Support, usize); 53] = [
     ("Nightmare", Verified, 2),
     ("Opt", Verified, 1),
     ("Pacifism", Partial, 1),
-    ("Panharmonicon", Manual, 0),
+    ("Panharmonicon", Verified, 1),
+    ("Carnage Tyrant", Verified, 3),
+    ("Courtly Provocateur", Verified, 2),
+    ("Darksteel Juggernaut", Verified, 3),
+    ("Goblin Spy", Verified, 1),
+    ("Maralen of the Mornsong", Verified, 2),
+    ("Mindlock Orb", Verified, 1),
+    ("Naban, Dean of Iteration", Verified, 1),
+    ("Rampaging Ferocidon", Verified, 3),
+    ("Spellbreaker Behemoth", Verified, 2),
+    ("Supreme Verdict", Verified, 2),
+    ("Teysa Karlov", Verified, 2),
+    ("Warmonger Hellkite", Verified, 3),
     ("Questing Beast", Partial, 3),
     ("Rampant Growth", Verified, 1),
     ("Rhystic Study", Verified, 1),
@@ -97,7 +109,7 @@ const CARDS: [(&str, Support, usize); 53] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 53);
+    assert_eq!(in_table.len(), 65);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -234,8 +246,24 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         );
         assert!(!reason.contains("Effect.AddMana"), "{name}: {reason}");
     }
-    // A card whose file models nothing says nothing about the engine.
-    assert_eq!(reasons("Panharmonicon"), "");
+    // The rules of the game run as static abilities and as effects: the cards that change one are covered whole.
+    for name in [
+        "Carnage Tyrant",
+        "Courtly Provocateur",
+        "Darksteel Juggernaut",
+        "Goblin Spy",
+        "Maralen of the Mornsong",
+        "Mindlock Orb",
+        "Naban, Dean of Iteration",
+        "Panharmonicon",
+        "Rampaging Ferocidon",
+        "Spellbreaker Behemoth",
+        "Supreme Verdict",
+        "Teysa Karlov",
+        "Warmonger Hellkite",
+    ] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
 }
 
 /// The primitives of the card's rules the engine does not run.

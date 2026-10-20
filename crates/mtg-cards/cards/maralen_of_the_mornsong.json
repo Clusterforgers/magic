@@ -1,0 +1,25 @@
+{
+  "oracle_id": "0b40032b-711d-499f-8bb9-87855f1fce9e",
+  "name": "Maralen of the Mornsong",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maralen of the Mornsong",
+      "oracle_fingerprint": "765b83a7907516c5b5eaffca8758eaca",
+      "abilities": [
+        { "Rule": { "rule": { "CantDraw": "EachPlayer" } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw" } },
+            "effects": [
+              { "LoseLife": { "who": "Triggering", "amount": 3 } },
+              { "Search": { "who": "Triggering", "filter": [], "as": "found" } },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              { "Shuffle": { "who": "Triggering" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

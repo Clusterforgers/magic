@@ -1,0 +1,29 @@
+{
+  "oracle_id": "746d4445-f28d-41af-827a-2b613b9b84ee",
+  "name": "Warmonger Hellkite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warmonger Hellkite",
+      "oracle_fingerprint": "6638f4f7b1a53c5439963d5662a13b54",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "MustAttack": { "Each": [{ "Type": "Creature" }] } } } },
+        {
+          "Activated": {
+            "cost": "{1}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": ["Attacking"] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

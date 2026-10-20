@@ -1,0 +1,17 @@
+{
+  "oracle_id": "0230de18-8d15-4cfa-9d42-7ccddd9f9570",
+  "name": "Supreme Verdict",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Supreme Verdict",
+      "oracle_fingerprint": "d3ee91b20ebd44207ce4fbf187821033",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": { "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }] }
+        }
+      ]
+    }
+  ]
+}

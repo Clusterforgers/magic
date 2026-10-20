@@ -1,0 +1,12 @@
+{
+  "oracle_id": "5f1e8aa2-6b85-4e2e-92e4-876470447d6f",
+  "name": "Goblin Spy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Spy",
+      "oracle_fingerprint": "b33d8601fb7800a5df3fd72ab0253b68",
+      "abilities": [{ "Rule": { "rule": { "RevealTop": "You" } } }]
+    }
+  ]
+}

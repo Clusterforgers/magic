@@ -1,0 +1,34 @@
+{
+  "oracle_id": "644eeefd-e684-4ca8-8aef-a892ca130c07",
+  "name": "Teysa Karlov",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Teysa Karlov",
+      "oracle_fingerprint": "774ed5dc5c1b544ecf47c244780de788",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Vigilance" }, { "AddKeyword": "Lifelink" }]
+          }
+        }
+      ]
+    }
+  ]
+}

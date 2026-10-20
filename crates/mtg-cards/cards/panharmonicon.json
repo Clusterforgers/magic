@@ -1,7 +1,27 @@
 {
   "oracle_id": "76678885-3674-443d-b9a2-2a460cf6aac0",
   "name": "Panharmonicon",
-  "impl_status": "Manual",
-  "faces": [{ "name": "Panharmonicon" }],
-  "notes": "Trigger doubling needs a static rule that changes how often abilities trigger; the vocabulary has none yet."
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Panharmonicon",
+      "oracle_fingerprint": "d6b545031266801f65f628c5dc46983b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "ZoneChange": {
+                    "what": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                    "to": "Battlefield"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
 }
