@@ -163,6 +163,12 @@ mod tests {
             [
                 "Effect.Draw",
                 "Effect.Discard",
+                "Effect.Scry",
+                "Effect.LookAtTop",
+                "Effect.Reveal",
+                "Effect.Choose",
+                "Effect.Shuffle",
+                "Effect.Move",
                 "Effect.Sacrifice",
                 "Effect.DealDamage",
                 "Effect.GainLife",

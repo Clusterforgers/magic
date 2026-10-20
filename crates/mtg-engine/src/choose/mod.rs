@@ -2,8 +2,9 @@
 //!
 //! Each decision the effects need has its own file with its options, its answer and the check that turns
 //! the answer into what the engine does with it (`docs/cards-dsl.md`, "Decisions the effects need"). Targets
-//! and cards are built; the other kinds hold their types and refuse their answers until their task.
+//! and cards and their order are built; the other kinds hold their types and refuse their answers until their task.
 
+mod ask;
 mod cards;
 mod costs;
 mod divide;
@@ -33,6 +34,7 @@ pub use targets::{TargetChoice, TargetOptions, is_legal, legal_targets};
 pub use triggers::{TriggerEntry, TriggersChoice, TriggersOptions};
 pub use yes_no::{YesNoChoice, YesNoOptions};
 
+pub(crate) use ask::{Questions, Stop};
 pub(crate) use cards::{Chooser, Picked, pick_cards};
 pub(crate) use targets::{asks, legal_for, options_for};
 

@@ -479,11 +479,6 @@ fn what_a_player_learned_changes_nothing_in_the_game() {
                 zone: Zone::Library(PlayerId(0)),
                 cards: vec![card],
             }),
-            Event::Scried(Scried {
-                player: PlayerId(0),
-                top: vec![card],
-                bottom: Vec::new(),
-            }),
             Event::Revealed(Revealed {
                 player: PlayerId(0),
                 cards: vec![card],
@@ -491,6 +486,112 @@ fn what_a_player_learned_changes_nothing_in_the_game() {
         ],
     );
     assert_eq!(game.state_hash(), before);
+}
+
+/// The library of seat 0 as five names from the bottom up.
+fn library_names(game: &GameState) -> Vec<String> {
+    game.zone(Zone::Library(PlayerId(0)))
+        .iter()
+        .map(|id| game.object(*id).unwrap().card().name.clone())
+        .collect()
+}
+
+/// The five cards of the library of seat 0 from the top down: "Library 0" is the top card.
+fn from_the_top(game: &GameState, numbers: &[usize]) -> Vec<ObjectId> {
+    let library = game.zone(Zone::Library(PlayerId(0)));
+    numbers
+        .iter()
+        .map(|n| library[library.len() - 1 - n])
+        .collect()
+}
+
+#[rstest]
+#[case::all_stay_in_the_same_order(&[0, 1, 2], &[], &["Library 4", "Library 3", "Library 2", "Library 1", "Library 0"])]
+#[case::two_stay_reversed(&[1, 0], &[], &["Library 4", "Library 3", "Library 2", "Library 0", "Library 1"])]
+#[case::the_top_card_goes_to_the_bottom(&[], &[0], &["Library 0", "Library 4", "Library 3", "Library 2", "Library 1"])]
+#[case::some_stay_and_some_go(&[1], &[0, 2], &["Library 2", "Library 0", "Library 4", "Library 3", "Library 1"])]
+#[case::the_last_of_the_bottom_is_the_bottom_card(&[], &[2, 0, 1], &["Library 1", "Library 0", "Library 2", "Library 4", "Library 3"])]
+#[case::all_go_to_the_bottom(&[], &[0, 1, 2, 3, 4], &["Library 4", "Library 3", "Library 2", "Library 1", "Library 0"])]
+#[case::a_scry_of_nothing(&[], &[], &["Library 4", "Library 3", "Library 2", "Library 1", "Library 0"])]
+fn a_scry_puts_the_cards_looked_at_back_on_top_and_on_the_bottom_each_from_the_top_down(
+    #[case] top: &[usize],
+    #[case] bottom: &[usize],
+    #[case] expected: &[&str],
+) {
+    let mut game = game();
+    assert_eq!(library_names(&game)[4], "Library 0");
+    let event = Event::Scried(Scried {
+        player: PlayerId(0),
+        top: from_the_top(&game, top),
+        bottom: from_the_top(&game, bottom),
+    });
+    fold(&mut game, &[event]);
+    assert_eq!(library_names(&game), expected);
+}
+
+#[rstest]
+#[case::more_than_the_library_holds(&[0, 1, 2, 3, 4, 5], &[])]
+#[case::cards_that_are_not_the_top_ones(&[1, 2], &[])]
+#[case::the_same_card_twice(&[0], &[0])]
+#[case::a_card_from_below(&[0], &[4])]
+fn a_scry_of_cards_that_are_not_the_top_of_the_library_is_refused(
+    #[case] top: &[usize],
+    #[case] bottom: &[usize],
+) {
+    let mut game = game();
+    let before = game.state_hash();
+    let pick = |numbers: &[usize]| {
+        let library = game.zone(Zone::Library(PlayerId(0)));
+        numbers
+            .iter()
+            .map(|n| {
+                library
+                    .len()
+                    .checked_sub(1 + n)
+                    .map_or(ObjectId(900), |at| library[at])
+            })
+            .collect::<Vec<_>>()
+    };
+    let event = Event::Scried(Scried {
+        player: PlayerId(0),
+        top: pick(top),
+        bottom: pick(bottom),
+    });
+    assert!(apply_event(&mut game, &event).is_err());
+    assert_eq!(game.state_hash(), before);
+}
+
+#[rstest]
+#[case::one_card(&[2], &["Library 2", "Library 4", "Library 3", "Library 1", "Library 0"])]
+#[case::two_cards_the_last_is_the_bottom(&[0, 3], &["Library 3", "Library 0", "Library 4", "Library 2", "Library 1"])]
+#[case::the_bottom_card_stays(&[4], &["Library 4", "Library 3", "Library 2", "Library 1", "Library 0"])]
+fn cards_put_on_the_bottom_of_a_library_go_under_the_others_with_the_last_of_them_lowest(
+    #[case] cards: &[usize],
+    #[case] expected: &[&str],
+) {
+    let mut game = game();
+    let event = Event::LibraryBottomed {
+        player: PlayerId(0),
+        cards: from_the_top(&game, cards),
+    };
+    fold(&mut game, &[event]);
+    assert_eq!(library_names(&game), expected);
+}
+
+#[test]
+fn cards_that_are_not_in_the_library_cannot_be_put_on_its_bottom() {
+    let mut game = game();
+    let before = game.state_hash();
+    let in_hand = game.zone(Zone::Hand(PlayerId(0)))[0];
+    let top = from_the_top(&game, &[0])[0];
+    for cards in [vec![in_hand], vec![top, top]] {
+        let event = Event::LibraryBottomed {
+            player: PlayerId(0),
+            cards,
+        };
+        assert!(apply_event(&mut game, &event).is_err());
+        assert_eq!(game.state_hash(), before);
+    }
 }
 
 /// The state hash must tell a game that did something from one that did not, event by event.

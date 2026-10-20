@@ -325,12 +325,56 @@ pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
     format!("Sacrifice {count} {}.", join(&plural(&head), &tail))
 }
 
+/// What a scry asks about the cards looked at.
+pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your library.";
+
+/// What a choice among cards asks: "Choose a card.", "Choose 2 cards.", "Choose up to 2 cards.", "Choose 1 to 3 cards."
+pub(crate) fn choose(min: usize, max: usize) -> String {
+    match (min, max) {
+        (1, 1) => "Choose a card.".to_owned(),
+        (min, max) if min == max => format!("Choose {max} cards."),
+        (0, 1) => "Choose up to one card.".to_owned(),
+        (0, max) => format!("Choose up to {max} cards."),
+        (min, max) => format!("Choose {min} to {max} cards."),
+    }
+}
+
+/// What the order of cards put into a library asks: "Put the cards on top of your library in any order."
+pub(crate) fn library_order(bottom: bool) -> String {
+    let place = if bottom { "the bottom" } else { "top" };
+    format!("Put the cards on {place} of your library in any order.")
+}
+
 #[cfg(test)]
 mod tests {
-    //! Goal: target specifications, trigger patterns and the questions of discards and sacrifices read as the cards say them, for the shapes the corpus and the prompts use, and a predicate with no phrase is left out instead of breaking the sentence.
+    //! Goal: target specifications, trigger patterns and the questions of discards, sacrifices, choices and library orders read as the cards say them, for the shapes the corpus and the prompts use, and a predicate with no phrase is left out instead of breaking the sentence.
     use rstest::rstest;
 
     use super::*;
+
+    #[rstest]
+    #[case::one(1, 1, "Choose a card.")]
+    #[case::two(2, 2, "Choose 2 cards.")]
+    #[case::at_most_one(0, 1, "Choose up to one card.")]
+    #[case::at_most_three(0, 3, "Choose up to 3 cards.")]
+    #[case::a_range(1, 3, "Choose 1 to 3 cards.")]
+    fn a_choice_among_cards_says_how_many(
+        #[case] min: usize,
+        #[case] max: usize,
+        #[case] expected: &str,
+    ) {
+        assert_eq!(choose(min, max), expected);
+    }
+
+    #[rstest]
+    #[case::on_top(false, "Put the cards on top of your library in any order.")]
+    #[case::on_the_bottom(true, "Put the cards on the bottom of your library in any order.")]
+    fn the_order_of_cards_put_into_a_library_says_where(
+        #[case] bottom: bool,
+        #[case] expected: &str,
+    ) {
+        assert_eq!(library_order(bottom), expected);
+    }
 
     fn target(json: &str) -> String {
         spec(&serde_json::from_str(json).unwrap())

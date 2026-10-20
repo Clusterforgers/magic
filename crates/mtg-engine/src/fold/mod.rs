@@ -83,10 +83,10 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         Event::DelayedTriggerExpired { id } => crate::triggers::fold_expired(state, *id),
         Event::CountersChanged(counters) => crate::counters::fold(state, counters),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
+        Event::Scried(scried) => zones::scry(state, scried),
+        Event::LibraryBottomed { player, cards } => zones::bottom(state, *player, cards),
         // What a player learned changes nothing in the game; the protocol decides who may see it.
-        Event::LibraryLooked(_) | Event::CardsFound(_) | Event::Scried(_) | Event::Revealed(_) => {
-            Ok(())
-        }
+        Event::LibraryLooked(_) | Event::CardsFound(_) | Event::Revealed(_) => Ok(()),
         _ => apply_misc(state, event),
     }
 }

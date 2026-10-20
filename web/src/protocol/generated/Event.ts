@@ -362,4 +362,12 @@ player: PlayerId,
 /**
  * How much, at least 1.
  */
-amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated": TokenCreated } | { "LibraryLooked": LibraryLooked } | { "CardsFound": CardsFound } | { "Scried": Scried } | { "Revealed": Revealed };
+amount: number, } } | { "CountersChanged": CountersChanged } | { "TokenCreated": TokenCreated } | { "LibraryLooked": LibraryLooked } | { "CardsFound": CardsFound } | { "Scried": Scried } | { "Revealed": Revealed } | { "LibraryBottomed": { 
+/**
+ * Whose library.
+ */
+player: PlayerId, 
+/**
+ * The cards, top to bottom as they lie after the move: the last is the bottom card.
+ */
+cards: Array<ObjectId>, } };

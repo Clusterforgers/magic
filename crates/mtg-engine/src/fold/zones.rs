@@ -3,11 +3,13 @@
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
+use super::opening::same_cards;
 use super::{invalid, player_mut, priority_to_active, reset_passes};
 use crate::choose::Choices;
 use crate::combat::AttackTarget;
 use crate::error::EngineError;
 use crate::events::Event;
+use crate::library::Scried;
 use crate::object::{GameObject, ObjectKind, PermanentState};
 use crate::state::GameState;
 use crate::zones::{Placement, Zone};
@@ -125,6 +127,62 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         Event::ObjectLeftGame { object } => leave_game(state, *object)?,
         other => return Err(invalid(format!("not a zone event: {other:?}"))),
     }
+    Ok(())
+}
+
+/// Puts the cards a scry looked at back: they are the top cards of the library, `top` goes on top and `bottom`
+/// under everything else, each list as it lies from the top down.
+pub(super) fn scry(state: &mut GameState, scried: &Scried) -> Result<(), EngineError> {
+    let zone = Zone::Library(scried.player);
+    let library = state.zones.get(zone);
+    let looked: Vec<ObjectId> = scried.top.iter().chain(&scried.bottom).copied().collect();
+    let Some(split) = library.len().checked_sub(looked.len()) else {
+        return Err(invalid(
+            "a scry looked at more cards than the library holds",
+        ));
+    };
+    let (rest, on_top) = library.split_at(split);
+    if !same_cards(on_top, &looked) {
+        return Err(invalid(
+            "a scry did not put back the top cards of the library",
+        ));
+    }
+    let arranged = scried
+        .bottom
+        .iter()
+        .rev()
+        .chain(rest)
+        .chain(scried.top.iter().rev())
+        .copied()
+        .collect();
+    state.zones.set(zone, arranged);
+    Ok(())
+}
+
+/// Moves cards that are in a library to its bottom, in the order given from the top down.
+pub(super) fn bottom(
+    state: &mut GameState,
+    player: PlayerId,
+    cards: &[ObjectId],
+) -> Result<(), EngineError> {
+    let zone = Zone::Library(player);
+    let library = state.zones.get(zone);
+    let distinct = cards
+        .iter()
+        .enumerate()
+        .all(|(at, card)| !cards[..at].contains(card));
+    if !distinct || !cards.iter().all(|card| library.contains(card)) {
+        return Err(invalid(
+            "bottomed cards are not all in the library, once each",
+        ));
+    }
+    let arranged = cards
+        .iter()
+        .rev()
+        .chain(library.iter().filter(|card| !cards.contains(card)))
+        .copied()
+        .collect();
+    state.zones.set(zone, arranged);
     Ok(())
 }
 

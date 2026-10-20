@@ -28,6 +28,12 @@ const RUNS: &[&str] = &[
     "Cost.Tap",
     "Effect.Draw",
     "Effect.Discard",
+    "Effect.Scry",
+    "Effect.LookAtTop",
+    "Effect.Reveal",
+    "Effect.Choose",
+    "Effect.Shuffle",
+    "Effect.Move",
     "Effect.Sacrifice",
     "Effect.DealDamage",
     "Effect.GainLife",
@@ -91,6 +97,15 @@ mod tests {
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", false)]
+    #[case::scrying("Effect.Scry", true)]
+    #[case::looking_at_the_top("Effect.LookAtTop", true)]
+    #[case::revealing("Effect.Reveal", true)]
+    #[case::choosing("Effect.Choose", true)]
+    #[case::shuffling("Effect.Shuffle", true)]
+    #[case::moving("Effect.Move", true)]
+    #[case::moving_to_the_battlefield("Effect.Move.Battlefield", false)]
+    #[case::moving_in_a_random_order("Effect.Move.Random", false)]
+    #[case::searching("Effect.Search", false)]
     #[case::sacrificing("Effect.Sacrifice", true)]
     #[case::damage("Effect.DealDamage", true)]
     #[case::gaining_life("Effect.GainLife", true)]
