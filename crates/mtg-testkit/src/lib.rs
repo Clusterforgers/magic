@@ -12,6 +12,7 @@ pub mod driver;
 pub mod expect;
 pub mod harness;
 pub mod invariants;
+pub mod layer_cards;
 pub mod pay_cards;
 pub mod pump_cards;
 pub mod scenario;
@@ -30,6 +31,7 @@ pub use decks::{
 pub use driver::Driver;
 pub use harness::{FailureKind, GameFailure, GameOutcome, PlayOptions, play_game, play_game_with};
 pub use invariants::{InvariantChecker, Violation, check_settled, check_state};
+pub use layer_cards::layers_fuzz_setup;
 pub use pay_cards::pay_fuzz_setup;
 pub use pump_cards::pump_fuzz_setup;
 pub use scenario::{

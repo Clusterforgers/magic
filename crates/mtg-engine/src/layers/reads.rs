@@ -46,14 +46,15 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         Modification::AddSubtype(_) => Traits::SUBTYPES,
         Modification::SetColors(_) => Traits::COLORS,
         Modification::AddKeyword(_) | Modification::RemoveKeyword(_) => Traits::KEYWORDS,
-        // An ability that is given adds effects (the pass finds them as they come) and changes none that exist.
-        Modification::GrantAbility(_) => Traits::NONE,
         Modification::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
         Modification::SetController(_) => Traits::CONTROL,
         Modification::SetPowerToughness { .. }
         | Modification::ModifyPowerToughness { .. }
         | Modification::SwitchPowerToughness => Traits::POWER.or(Traits::TOUGHNESS),
-        Modification::CantAttack | Modification::CantBlock => Traits::NONE,
+        // An ability that is given adds effects (the pass finds them as they come) and changes none that exist.
+        Modification::GrantAbility(_) | Modification::CantAttack | Modification::CantBlock => {
+            Traits::NONE
+        }
     }
 }
 
@@ -64,13 +65,12 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::AddSubtype(_) => Traits::SUBTYPES,
         Wanted::SetColors(_) => Traits::COLORS,
         Wanted::AddKeyword(_) | Wanted::RemoveKeyword(_) => Traits::KEYWORDS,
-        Wanted::GrantAbility(_) => Traits::NONE,
         Wanted::LoseAbilities => Traits::KEYWORDS.or(Traits::RULES),
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. } | Wanted::ModifyPT { .. } | Wanted::SwitchPT => {
             Traits::POWER.or(Traits::TOUGHNESS)
         }
-        Wanted::CantAttack | Wanted::CantBlock => Traits::NONE,
+        Wanted::GrantAbility(_) | Wanted::CantAttack | Wanted::CantBlock => Traits::NONE,
     }
 }
 

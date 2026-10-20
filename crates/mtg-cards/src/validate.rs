@@ -458,15 +458,28 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// An ability a modification grants is checked as the ability it is, in a scope of its own. Only an activated or
-    /// a triggered one can be granted: a keyword is `AddKeyword`, and the others work only as printed.
+    /// An ability a modification grants is checked as the ability it is, in a scope of its own. Only an activated, a
+    /// triggered or a static one can be granted: a keyword is `AddKeyword`, and the others work only as printed.
     fn granted(&mut self, granted: &Ability) {
         if !matches!(
             granted,
-            Ability::Activated { .. } | Ability::Triggered { .. }
+            Ability::Activated { .. } | Ability::Triggered { .. } | Ability::Static { .. }
         ) {
-            self.problem("only an activated or a triggered ability can be granted (a keyword is `AddKeyword`)");
+            self.problem("only an activated, a triggered or a static ability can be granted (a keyword is `AddKeyword`)");
             return;
+        }
+        // A given static ability is named by what gives it, so it cannot give abilities in turn, and a characteristic-defining
+        // ability is printed on the card it defines (CR 604.3a).
+        if let Ability::Static { mods, defining, .. } = granted {
+            if *defining {
+                self.problem("a static ability that is granted cannot be characteristic-defining");
+            }
+            if mods
+                .iter()
+                .any(|modification| matches!(modification, Modification::GrantAbility(_)))
+            {
+                self.problem("a static ability that is granted cannot grant abilities in turn");
+            }
         }
         let scope = std::mem::take(&mut self.scope);
         self.at("GrantAbility", |w| w.ability(granted));
@@ -1396,6 +1409,11 @@ mod tests {
         r#"{"GrantAbility":{"Triggered":{"when":{"Attacks":{"what":[{"This":null}]}},"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]}}}"#,
         &["Ability.Triggered", "Effect.DealDamage", "Mod.GrantAbility", "Trigger.Attacks"]
     )]
+    #[case::a_static_ability(
+        ALL_MINE,
+        r#"{"GrantAbility":{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}]}}}"#,
+        &["Mod.GrantAbility", "Mod.ModifyPT"]
+    )]
     fn a_static_ability_names_the_modifications_it_uses(
         #[case] affected: &str,
         #[case] modification: &str,
@@ -1415,11 +1433,19 @@ mod tests {
     #[rstest]
     #[case::a_spell_is_not_granted(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Spell":{"effects":[{"Draw":{}}]}}}]}}"#,
-        "abilities[0].Static.mods[0]: only an activated or a triggered ability can be granted"
+        "abilities[0].Static.mods[0]: only an activated, a triggered or a static ability can be granted"
     )]
     #[case::a_keyword_is_not_granted_this_way(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Keyword":"Flying"}}]}}"#,
-        "abilities[0].Static.mods[0]: only an activated or a triggered ability can be granted"
+        "abilities[0].Static.mods[0]: only an activated, a triggered or a static ability can be granted"
+    )]
+    #[case::a_granted_static_cannot_grant_in_turn(
+        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Static":{"affected":"This","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}]}}}]}}"#,
+        "a static ability that is granted cannot grant abilities in turn"
+    )]
+    #[case::a_granted_static_is_not_characteristic_defining(
+        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Static":{"affected":"This","mods":[{"SetColors":["Blue"]}],"defining":true}}}]}}"#,
+        "a static ability that is granted cannot be characteristic-defining"
     )]
     #[case::a_granted_ability_has_a_scope_of_its_own(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"who":{"Target":0}}}]}}}]}}"#,

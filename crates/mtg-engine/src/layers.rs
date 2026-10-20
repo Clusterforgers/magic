@@ -447,7 +447,7 @@ impl<'a> Pass<'a> {
     /// from what is left once the one before has applied (CR 613.8c).
     fn run(&mut self, layer: Option<Layer>) {
         let mut waiting = self.candidates(layer);
-        self.order(&mut waiting);
+        Self::order(&mut waiting);
         while !waiting.is_empty() {
             let at = self.next(&waiting);
             let chosen = waiting.remove(at);
@@ -458,18 +458,18 @@ impl<'a> Pass<'a> {
                         waiting.push(found);
                     }
                 }
-                self.order(&mut waiting);
+                Self::order(&mut waiting);
             }
         }
     }
 
     /// Puts the waiting effects in the order they apply in when nothing depends on anything, and finds out what each
     /// reads and writes when there are several.
-    fn order(&self, waiting: &mut [Cand<'a>]) {
+    fn order(waiting: &mut [Cand<'a>]) {
         waiting.sort_by_key(Cand::order);
         if waiting.len() > 1 {
             for cand in waiting.iter_mut().filter(|cand| !cand.known) {
-                cand.reads = self.reads(cand);
+                cand.reads = Self::reads(cand);
                 cand.writes = writes_of(cand);
                 cand.known = true;
             }
@@ -646,33 +646,32 @@ impl<'a> Pass<'a> {
         }
         let scope =
             Scope::announcing(self.state, source.controller, cand.holder).with_layered(view);
-        let set = match started {
-            Some(started) => started.set.clone(),
-            None => {
-                if let Some(condition) = condition
-                    && !scope.holds(condition).unwrap_or(false)
-                {
-                    return None;
+        let set = if let Some(started) = started {
+            started.set.clone()
+        } else {
+            if let Some(condition) = condition
+                && !scope.holds(condition).unwrap_or(false)
+            {
+                return None;
+            }
+            match affected {
+                Ref::This => BTreeSet::from([cand.holder.id]),
+                Ref::Attached => {
+                    let host = self.state.host_of(cand.holder.id)?;
+                    view.get(host)?;
+                    BTreeSet::from([host])
                 }
-                match affected {
-                    Ref::This => BTreeSet::from([cand.holder.id]),
-                    Ref::Attached => {
-                        let host = self.state.host_of(cand.holder.id)?;
-                        view.get(host)?;
-                        BTreeSet::from([host])
-                    }
-                    Ref::Each(selector) => view
-                        .iter()
-                        .filter(|(id, held)| {
-                            self.state.object(*id).is_some_and(|object| {
-                                scope.selects_with(selector, object, held).unwrap_or(false)
-                            })
+                Ref::Each(selector) => view
+                    .iter()
+                    .filter(|(id, held)| {
+                        self.state.object(*id).is_some_and(|object| {
+                            scope.selects_with(selector, object, held).unwrap_or(false)
                         })
-                        .map(|(id, _)| id)
-                        .collect(),
-                    // The data check keeps every other reference out of a static ability.
-                    _ => BTreeSet::new(),
-                }
+                    })
+                    .map(|(id, _)| id)
+                    .collect(),
+                // The data check keeps every other reference out of a static ability.
+                _ => BTreeSet::new(),
             }
         };
         let modification = lower(&scope, mods.get(cand.index)?).ok()?;
@@ -780,12 +779,11 @@ impl<'a> Pass<'a> {
         // timestamp (CR 613.8b).
         let mut reach = depends.clone();
         for k in 0..n {
-            for i in 0..n {
-                if reach[i][k] {
-                    for j in 0..n {
-                        if reach[k][j] {
-                            reach[i][j] = true;
-                        }
+            let through = reach[k].clone();
+            for row in &mut reach {
+                if row[k] {
+                    for (cell, via) in row.iter_mut().zip(&through) {
+                        *cell |= *via;
                     }
                 }
             }
@@ -796,7 +794,7 @@ impl<'a> Pass<'a> {
     }
 
     /// What the effect reads of the game to work out whether it exists, what it applies to and what it does.
-    fn reads(&self, cand: &Cand<'_>) -> Traits {
+    fn reads(cand: &Cand<'_>) -> Traits {
         match &cand.what {
             Source::Registered(effect) => match &effect.selector {
                 Selector::Objects(_) => Traits::NONE,

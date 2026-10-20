@@ -58,7 +58,8 @@ pub enum CostChange {
     Reduce,
 }
 
-/// Whether a flag is off, so serialization can leave it out.
+/// Whether a flag is off, so serialization can leave it out (serde calls it with a reference).
+#[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_false(flag: &bool) -> bool {
     !*flag
 }

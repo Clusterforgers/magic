@@ -761,7 +761,7 @@ fn the_abilities_that_are_lost_are_not_listed_and_a_keyword_taken_away_goes_with
 fn a_state_without_an_effect_or_a_static_ability_works_out_no_layers() {
     let game = game_with(idle_totem());
     assert!(!game.statics_possible);
-    assert!(game.effects().is_empty());
+    assert_eq!(game.effects(), []);
     assert!(game.layers().get(named(&game, "Bear").id).is_none());
     let with = game_with(totem(&on_the_bear(
         r#"{"ModifyPT":{"power":5,"toughness":5}}"#,

@@ -2,12 +2,15 @@
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::ids::EffectId;
 use rstest::rstest;
 
 use super::tests::{bear, fold, named, pump, rules};
 use super::*;
+use crate::abilities::AbilitySource;
+use crate::ability_reader::{abilities_of, ability};
 use crate::characteristics::characteristics;
 use crate::effects::{ContinuousEffect, Duration, Selector};
 use crate::events::{Event, ZoneCause};
@@ -353,6 +356,88 @@ fn an_effect_whose_source_keeps_its_ability_applies() {
     assert_eq!(pump(&game, "Mouse"), Some((2, 2)));
 }
 
+/// "Creatures have 'this creature gets +1/+1'", or whatever static ability `given` is.
+fn giver(given: &str) -> Arc<CardDefinition> {
+    enchantment(
+        "Giver",
+        r#"{"Each":[{"Type":"Creature"}]}"#,
+        &format!(r#"[{{"GrantAbility":{given}}}]"#),
+    )
+}
+
+const PUMP_ITSELF: &str =
+    r#"{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}]}}"#;
+
+#[test]
+fn a_static_ability_that_is_given_applies_in_its_layer_and_is_listed_under_the_grant() {
+    let game = game(
+        vec![creature("Mouse", 1, 1)],
+        vec![giver(PUMP_ITSELF)],
+        &["Giver"],
+    );
+    assert_eq!(pump(&game, "Mouse"), Some((2, 2)));
+    let given = abilities_of(&game, named(&game, "Mouse").id);
+    assert_eq!(given.len(), 1);
+    assert!(matches!(*given[0].1, Ability::Static { .. }));
+    assert!(matches!(given[0].0.source, AbilitySource::Granted(_)));
+    assert!(ability(&game, given[0].0).is_some());
+}
+
+#[test]
+fn a_given_static_ability_does_nothing_in_a_layer_that_has_passed() {
+    // Given in layer 6, it cannot make the Mouse an artifact in layer 4, but its power in layer 7c still counts.
+    let both = r#"{"Static":{"affected":"This","mods":[{"AddType":"Artifact"},{"ModifyPT":{"power":1,"toughness":1}}]}}"#;
+    let game = game(vec![creature("Mouse", 1, 1)], vec![giver(both)], &["Giver"]);
+    assert!(!is_artifact(&game, "Mouse"));
+    assert_eq!(pump(&game, "Mouse"), Some((2, 2)));
+}
+
+#[rstest]
+#[case::the_loss_is_older_so_what_is_given_after_it_stays(&["Humility", "Giver"], (2, 2))]
+#[case::the_loss_is_newer_so_it_takes_what_was_given(&["Giver", "Humility"], (1, 1))]
+fn a_given_static_ability_is_lost_with_the_abilities_that_come_after_it(
+    #[case] order: &[&str],
+    #[case] mouse: (i32, i32),
+) {
+    let humility = enchantment(
+        "Humility",
+        r#"{"Each":[{"Type":"Creature"}]}"#,
+        r#"["LoseAbilities",{"SetPT":{"power":1,"toughness":1}}]"#,
+    );
+    let game = game(
+        vec![creature("Mouse", 1, 1)],
+        vec![giver(PUMP_ITSELF), humility],
+        order,
+    );
+    assert_eq!(pump(&game, "Mouse"), Some(mouse));
+}
+
+#[test]
+fn a_given_static_ability_takes_the_time_of_the_effect_that_gives_it() {
+    // "Creatures get +0/+4 sets" (an older effect) and the given ability that sets 3/3: the later of the Mouse's own time
+    // and the grant's decides (CR 613.7a), so the given ability comes after an effect made between the two.
+    let sets = r#"{"Static":{"affected":"This","mods":[{"SetPT":{"power":3,"toughness":3}}]}}"#;
+    let mut game = game(vec![creature("Mouse", 1, 1)], vec![giver(sets)], &["Giver"]);
+    let mouse = named(&game, "Mouse");
+    let stamp = game.next_timestamp + 10;
+    game.effects.push(ContinuousEffect::new(
+        EffectId(0),
+        Selector::Objects(vec![mouse]),
+        Modification::SetPowerToughness {
+            power: 9,
+            toughness: 9,
+        },
+        Duration::Forever,
+        1,
+    ));
+    game.layers.reset();
+    // The Giver entered after timestamp 1, so what it gives applies after the effect of timestamp 1.
+    assert_eq!(pump(&game, "Mouse"), Some((3, 3)));
+    game.effects[0].timestamp = stamp;
+    game.layers.reset();
+    assert_eq!(pump(&game, "Mouse"), Some((9, 9)));
+}
+
 mod properties {
     //! Goal: however the effects of a state are stored, the characteristics, the controller and the keywords the layers make are the same, and a clone of the state agrees.
     use proptest::collection::vec;
@@ -408,7 +493,10 @@ mod properties {
         )
     }
 
-    fn view(game: &GameState) -> Vec<(Option<i32>, Option<i32>, bool, usize, PlayerId)> {
+    /// Power, toughness, whether it is an artifact, how many keywords and subtypes it has, and who controls it.
+    type Shown = (Option<i32>, Option<i32>, bool, usize, PlayerId);
+
+    fn view(game: &GameState) -> Vec<Shown> {
         ["Gem", "Bear"]
             .iter()
             .map(|name| {
