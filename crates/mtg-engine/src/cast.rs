@@ -204,8 +204,8 @@ fn trigger_event(state: &GameState, waiting: &PendingTrigger, choices: &Choices)
     }))
 }
 
-/// The events of activating an ability: the tap and the sacrifice of its cost, the activation and the ability on the
-/// stack. The mana of its cost is paid around them by [`pay_answer`].
+/// The events of activating an ability: the tap and the sacrifice, discard or exile of the source that its cost asks,
+/// the activation and the ability on the stack. The mana of its cost is paid around them by [`pay_answer`].
 ///
 /// The source is photographed before the costs, so the ability knows what it was (CR 113.7a); a token sacrificed
 /// for it has ceased to exist by then, and the ability still has the rules it was activated from.
@@ -227,12 +227,28 @@ fn activation_events(
             object: ability.object,
         });
     }
+    // The costs that move the source come before the activation, which names the source as it was (CR 113.7a): it is
+    // sacrificed from the battlefield, discarded from the hand, or exiled from the zone it is in.
     if cost.0.contains(&CostItem::SacrificeSelf) {
         events.push(Event::ZoneChanged {
             object: ability.object,
             from: Zone::Battlefield,
             to: Zone::Graveyard(source.owner()),
             cause: ZoneCause::Sacrificed,
+        });
+    }
+    if cost.0.contains(&CostItem::DiscardSelf) {
+        events.push(Event::CardDiscarded {
+            player,
+            object: ability.object,
+        });
+    }
+    if cost.0.contains(&CostItem::ExileSelf) {
+        events.push(Event::ZoneChanged {
+            object: ability.object,
+            from: source.zone(),
+            to: Zone::Exile,
+            cause: ZoneCause::Exiled,
         });
     }
     events.push(Event::AbilityActivated {

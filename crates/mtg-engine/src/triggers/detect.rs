@@ -5,6 +5,7 @@
 //! the abilities that worked, and the objects as they were. Every other event is judged against the state after.
 
 use std::collections::BTreeSet;
+use std::sync::Arc;
 
 use mtg_cards::ability::{Ability, Limit};
 use mtg_cards::refs::ZoneKind;
@@ -12,8 +13,8 @@ use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{DelayedId, Triggered};
-use crate::abilities::{AbilitySource, Cause};
-use crate::ability_reader::abilities_of;
+use crate::abilities::{AbilityRef, AbilitySource, Cause};
+use crate::ability_reader::{abilities_of, working_here};
 use crate::characteristics::{controller_of, controller_of_object};
 use crate::choose::{Choices, Target};
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
@@ -301,71 +302,121 @@ fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool {
     )
 }
 
+/// The triggered abilities of `object`, which is in the zone `zone`, that trigger on `happened`: `abilities` are those
+/// that work there. A permanent's abilities may trigger again (`repeats`); a card elsewhere's do not.
+fn object_triggers(
+    state: &GameState,
+    object: &GameObject,
+    zone: ZoneKind,
+    abilities: impl IntoIterator<Item = (AbilityRef, Arc<Ability>)>,
+    happened: &Happened,
+    found: &mut Vec<Triggered>,
+    used: &mut Used,
+) {
+    // Most objects have no triggered ability, and a snapshot costs the layers, so it is only taken for a trigger.
+    let mut shot = None;
+    let (source, controller) = (object.reference(), controller_of_object(state, object));
+    if !state.is_alive(controller) {
+        return;
+    }
+    for (address, rules) in abilities {
+        let Ability::Triggered {
+            when,
+            intervening_if,
+            limit,
+            from,
+            ..
+        } = &*rules
+        else {
+            continue;
+        };
+        if *from != zone {
+            continue;
+        }
+        let scope = Scope::announcing(state, controller, source);
+        let Some(cause) = matching(when, happened, &scope) else {
+            continue;
+        };
+        // CR 603.4: an "if" in the trigger is checked as the event happens.
+        if let Some(condition) = intervening_if {
+            let scope = Scope::triggered(state, controller, source, &cause);
+            if !scope.holds(condition).unwrap_or(false) {
+                continue;
+            }
+        }
+        if *limit == Some(Limit::OncePerTurn)
+            && (state.limit_spent(source, address.source, address.ability)
+                || !used
+                    .limits
+                    .insert((source, address.source, address.ability)))
+        {
+            continue;
+        }
+        if shot.is_none() {
+            shot = snapshot(state, object.id());
+        }
+        let Some(shot) = &shot else {
+            continue;
+        };
+        let trigger = Triggered {
+            source,
+            ability: address.ability,
+            origin: address.source,
+            controller,
+            cause,
+            snapshot: shot.clone(),
+            delayed: None,
+        };
+        // An ability that triggers only once each turn does so once, whatever else is said of it.
+        if limit.is_none() && zone == ZoneKind::Battlefield {
+            for _ in 0..repeats(state, happened, controller) {
+                found.push(trigger.clone());
+            }
+        }
+        found.push(trigger);
+    }
+}
+
 /// The triggered abilities of the permanents of `state` that trigger on `happened`.
 fn permanents(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, used: &mut Used) {
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id) else {
             continue;
         };
-        // Most permanents have no triggered ability, and a snapshot costs the layers, so it is only taken for a trigger.
-        let mut shot = None;
-        let (source, controller) = (object.reference(), controller_of_object(state, object));
-        if !state.is_alive(controller) {
+        object_triggers(
+            state,
+            object,
+            ZoneKind::Battlefield,
+            abilities_of(state, id),
+            happened,
+            found,
+            used,
+        );
+    }
+}
+
+/// The triggered abilities of the cards of `state` that are not on the battlefield and work from the zone they are in
+/// (a graveyard, a hand, exile, the command zone, a library, the stack) that trigger on `happened`, in id order. They
+/// are judged against the same state as the permanents, so a card in the graveyard before a creature dies is there when
+/// that death is looked back at (CR 603.10a).
+fn elsewhere(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, used: &mut Used) {
+    if !state.zone_abilities_possible {
+        return;
+    }
+    for object in state.objects() {
+        if object.zone() == Zone::Battlefield || object.kind() == ObjectKind::Ability {
             continue;
         }
-        for (address, rules) in abilities_of(state, id) {
-            let Ability::Triggered {
-                when,
-                intervening_if,
-                limit,
-                from: ZoneKind::Battlefield,
-                ..
-            } = &*rules
-            else {
-                continue;
-            };
-            let scope = Scope::announcing(state, controller, source);
-            let Some(cause) = matching(when, happened, &scope) else {
-                continue;
-            };
-            // CR 603.4: an "if" in the trigger is checked as the event happens.
-            if let Some(condition) = intervening_if {
-                let scope = Scope::triggered(state, controller, source, &cause);
-                if !scope.holds(condition).unwrap_or(false) {
-                    continue;
-                }
-            }
-            if *limit == Some(Limit::OncePerTurn)
-                && (state.limit_spent(source, address.source, address.ability)
-                    || !used
-                        .limits
-                        .insert((source, address.source, address.ability)))
-            {
-                continue;
-            }
-            if shot.is_none() {
-                shot = snapshot(state, id);
-            }
-            let Some(shot) = &shot else {
-                continue;
-            };
-            let trigger = Triggered {
-                source,
-                ability: address.ability,
-                origin: address.source,
-                controller,
-                cause,
-                snapshot: shot.clone(),
-                delayed: None,
-            };
-            // An ability that triggers only once each turn does so once, whatever else is said of it.
-            if limit.is_none() {
-                for _ in 0..repeats(state, happened, controller) {
-                    found.push(trigger.clone());
-                }
-            }
-            found.push(trigger);
-        }
+        let here = working_here(object).map(|(address, rules)| (address, Arc::clone(rules)));
+        object_triggers(
+            state,
+            object,
+            zone_kind(object.zone()),
+            here,
+            happened,
+            found,
+            used,
+        );
     }
 }
 
@@ -445,6 +496,7 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
     for happened in happenings(pre, events, post) {
         let state = if happened.looks_back() { pre } else { post };
         permanents(state, &happened, &mut found, &mut used);
+        elsewhere(state, &happened, &mut found, &mut used);
         delayed(state, post, &happened, &mut found, &mut used);
     }
     found

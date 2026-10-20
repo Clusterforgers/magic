@@ -84,6 +84,11 @@ pub struct GameState {
     pub(crate) rules_possible: bool,
     /// The rules in force, gathered when first asked for and dropped at the next event that can change them.
     pub(crate) rules_cache: RulesCache,
+    /// Whether any card of the game has an ability that works from a zone other than the battlefield; derived from the
+    /// setup.
+    pub(crate) zone_abilities_possible: bool,
+    /// Whether any card of the game has a state trigger or gives one; derived from the setup and the tokens made.
+    pub(crate) state_triggers_possible: bool,
     pub(crate) result: Option<GameResult>,
 }
 

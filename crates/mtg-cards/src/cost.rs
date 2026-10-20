@@ -24,6 +24,10 @@ pub enum CostItem {
     PayLife(Amount),
     /// Sacrifice the source.
     SacrificeSelf,
+    /// Exile the source from the zone it is in ("Exile this card from your graveyard").
+    ExileSelf,
+    /// Discard the source from the hand ("Discard this card").
+    DiscardSelf,
     /// Sacrifice permanents the payer controls that match.
     Sacrifice {
         /// Which permanents may be chosen.
@@ -121,6 +125,14 @@ mod tests {
         r#"["Tap",{"PayLife":1},"SacrificeSelf"]"#
     )]
     #[case::mana_and_tap(Cost(vec![mana("{2}"), CostItem::Tap]), r#"[{"Mana":"{2}"},"Tap"]"#)]
+    #[case::exiling_the_source(
+        Cost(vec![mana("{3}{G}{G}"), CostItem::ExileSelf]),
+        r#"[{"Mana":"{3}{G}{G}"},"ExileSelf"]"#
+    )]
+    #[case::discarding_the_source(
+        Cost(vec![mana("{U/R}{U/R}"), CostItem::DiscardSelf]),
+        r#"[{"Mana":"{U/R}{U/R}"},"DiscardSelf"]"#
+    )]
     #[case::sacrifice(
         Cost(vec![CostItem::Sacrifice { filter: Selector(vec![Pred::Type(CardType::Creature)]), count: Amount::Fixed(2) }]),
         r#"[{"Sacrifice":{"filter":[{"Type":"Creature"}],"count":2}}]"#

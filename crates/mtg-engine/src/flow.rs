@@ -38,8 +38,8 @@ pub(crate) fn next(state: &GameState) -> Progress {
 }
 
 /// A resolution first (state-based actions wait for it to end, CR 704.3), then state-based actions to a
-/// fixpoint, then the game-end check, then the triggered abilities waiting for the stack (CR 603.3), then the turn
-/// structure.
+/// fixpoint, then the game-end check, then the state triggers whose state is true (CR 603.8), then the triggered
+/// abilities waiting for the stack (CR 603.3), then the turn structure.
 fn next_in_turns(state: &GameState) -> Progress {
     if state.resolving().is_some() {
         return resolve::next(state);
@@ -50,6 +50,16 @@ fn next_in_turns(state: &GameState) -> Progress {
     }
     if let Some(progress) = settle(state) {
         return progress;
+    }
+    // A state is true where a player would receive priority, after state-based actions (CR 603.8).
+    let states = triggers::state_triggers(state);
+    if !states.is_empty() {
+        return Progress::Events(
+            states
+                .into_iter()
+                .map(|trigger| Event::AbilityTriggered(Box::new(trigger)))
+                .collect(),
+        );
     }
     triggers::sweep(state).unwrap_or_else(|| steps::next(state))
 }

@@ -157,6 +157,7 @@ pub struct AbilityObject {
     pub(crate) source: ObjectRef,
     pub(crate) snapshot: Snapshot,
     pub(crate) index: usize,
+    pub(crate) origin: AbilitySource,
     pub(crate) rules: Arc<Ability>,
     pub(crate) cause: Option<Cause>,
     pub(crate) delayed: Option<DelayedId>,
@@ -177,6 +178,11 @@ impl AbilityObject {
     /// Its index among the rules of the source's card.
     pub const fn index(&self) -> usize {
         self.index
+    }
+
+    /// Where the ability comes from: the card, an effect that granted it, or a keyword.
+    pub const fn origin(&self) -> AbilitySource {
+        self.origin
     }
 
     /// The rules it runs; the ability needs no source to resolve.
@@ -212,6 +218,10 @@ impl Hash for AbilityObject {
         self.source.hash(state);
         self.snapshot.hash(state);
         self.index.hash(state);
+        // A printed ability hashes as it did before the origin was kept.
+        if !self.origin.is_printed() {
+            self.origin.hash(state);
+        }
         self.cause.hash(state);
         self.delayed.hash(state);
         self.bindings.hash(state);

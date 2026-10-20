@@ -403,9 +403,34 @@ impl<'a> Walker<'a> {
                     CostItem::Mana(_)
                     | CostItem::Tap
                     | CostItem::Untap
-                    | CostItem::SacrificeSelf => {}
+                    | CostItem::SacrificeSelf
+                    | CostItem::ExileSelf
+                    | CostItem::DiscardSelf => {}
                 }
             });
+        }
+    }
+
+    /// An ability is activated from the battlefield, a hand, a graveyard, exile or the command zone, and a cost that
+    /// needs its source in a place is only paid from there: `{T}`, `{Q}` and sacrificing it on the battlefield,
+    /// discarding it from a hand.
+    fn activated_zone(&mut self, cost: &Cost, from: ZoneKind) {
+        if matches!(from, ZoneKind::Library | ZoneKind::Stack) {
+            self.problem(
+                "an activated ability works from the battlefield, a hand, a graveyard, exile or the command zone",
+            );
+        }
+        for item in &cost.0 {
+            let (needs, place) = match item {
+                CostItem::Tap | CostItem::Untap | CostItem::SacrificeSelf => {
+                    (ZoneKind::Battlefield, "the battlefield")
+                }
+                CostItem::DiscardSelf => (ZoneKind::Hand, "a hand"),
+                _ => continue,
+            };
+            if from != needs {
+                self.problem(format!("`{}` is paid from {place}", tag_of(item)));
+            }
         }
     }
 
@@ -563,6 +588,9 @@ impl<'a> Walker<'a> {
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
+            TriggerPattern::State { .. } => {
+                self.problem("a state is the whole pattern of a triggered ability");
+            }
             TriggerPattern::AnyOf(patterns) => {
                 if patterns.len() < 2 {
                     self.problem("`AnyOf` needs at least two patterns");
@@ -572,6 +600,19 @@ impl<'a> Walker<'a> {
                 }
             }
         }
+    }
+
+    /// The pattern of a triggered ability, the only place a state may stand. No event is behind a state, so nothing in
+    /// it is the triggering one.
+    fn trigger_when(&mut self, when: &TriggerPattern) {
+        let TriggerPattern::State { condition } = when else {
+            self.trigger_pattern(when);
+            return;
+        };
+        self.uses("Trigger", "State");
+        let saved = std::mem::replace(&mut self.scope.in_trigger, false);
+        self.at("State", |w| w.at("condition", |w| w.condition(condition)));
+        self.scope.in_trigger = saved;
     }
 
     fn target_spec(&mut self, spec: &TargetSpec) {
@@ -881,6 +922,8 @@ impl<'a> Walker<'a> {
             Ability::Static { from, .. } | Ability::Replacement { from, .. } => {
                 (false, !from.is_battlefield())
             }
+            // A spell that can't be countered says so from the stack, which every spell is on.
+            Ability::Rule { from, .. } => (false, !matches!(from, ZoneKind::Battlefield | ZoneKind::Stack)),
             _ => (false, false),
         };
         if limit {
@@ -888,6 +931,10 @@ impl<'a> Walker<'a> {
         }
         if from {
             self.uses("Ability", "From");
+            // A mana ability is activated at priority from the battlefield alone.
+            if ability.is_mana_ability() {
+                self.uses("Ability", "ManaAbility.From");
+            }
         }
     }
 
@@ -913,9 +960,11 @@ impl<'a> Walker<'a> {
                 cost,
                 targets,
                 effects,
+                from,
                 ..
             } => {
                 w.at("cost", |w| w.cost(cost));
+                w.at("from", |w| w.activated_zone(cost, *from));
                 w.x_free = cost.has_x();
                 w.body(targets, effects, false);
             }
@@ -927,11 +976,15 @@ impl<'a> Walker<'a> {
                 ..
             } => {
                 w.scope = Scope::new(&[], true);
-                w.at("when", |w| w.trigger_pattern(when));
+                w.at("when", |w| w.trigger_when(when));
                 if let Some(condition) = intervening_if {
                     w.at("if", |w| w.condition(condition));
                 }
-                w.body(targets, effects, true);
+                w.body(
+                    targets,
+                    effects,
+                    !matches!(when, TriggerPattern::State { .. }),
+                );
             }
             Ability::Static {
                 affected,
@@ -942,6 +995,14 @@ impl<'a> Walker<'a> {
             } => {
                 w.scope = Scope::new(&[], false);
                 w.at("affected", |w| w.reference(affected, Kind::Object));
+                // The layers change permanents, and the source of this one is not on the battlefield.
+                if !from.is_battlefield() && !matches!(affected, Ref::Each(_)) {
+                    w.at("affected", |w| {
+                        w.problem(
+                            "a static ability that works from another zone affects the objects a selector names",
+                        );
+                    });
+                }
                 w.at("mods", |w| w.mods(mods));
                 if let Some(condition) = condition {
                     w.at("condition", |w| w.condition(condition));
@@ -1412,7 +1473,15 @@ mod tests {
     #[case::plain_activation(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.Draw"])]
     #[case::at_sorcery_speed(r#"{"Activated":{"cost":["Tap"],"timing":"Sorcery","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.Draw"])]
     #[case::once_a_turn(r#"{"Activated":{"cost":["Tap"],"limit":"OncePerTurn","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.Limit", "Cost.Tap", "Effect.Draw"])]
-    #[case::from_the_graveyard(r#"{"Activated":{"cost":["Tap"],"from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.Tap", "Effect.Draw"])]
+    #[case::from_the_graveyard(r#"{"Activated":{"cost":"{1}","from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.Mana", "Effect.Draw"])]
+    #[case::exiling_the_source_from_the_graveyard(r#"{"Activated":{"cost":[{"Mana":"{3}{G}{G}"},"ExileSelf"],"from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.ExileSelf", "Cost.Mana", "Effect.Draw"])]
+    #[case::exiling_the_source_from_the_battlefield(r#"{"Activated":{"cost":["ExileSelf"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.ExileSelf", "Effect.Draw"])]
+    #[case::discarding_the_source_from_a_hand(r#"{"Activated":{"cost":[{"Mana":"{U/R}{U/R}"},"DiscardSelf"],"from":"Hand","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.DiscardSelf", "Cost.Mana", "Effect.Draw"])]
+    #[case::from_the_command_zone(r#"{"Activated":{"cost":"{2}","from":"Command","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.Mana", "Effect.Draw"])]
+    #[case::a_mana_ability_from_the_graveyard(r#"{"Activated":{"cost":"{1}","from":"Graveyard","effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#, &["Ability.Activated", "Ability.From", "Ability.ManaAbility.Complex", "Ability.ManaAbility.From", "Cost.Mana", "Effect.AddMana"])]
+    #[case::a_state_trigger(r#"{"Triggered":{"when":{"State":{"condition":{"Compare":{"left":{"Count":[{"Subtype":"Island"},{"ControlledBy":"You"}]},"op":"Eq","right":0}}}},"effects":[{"Sacrifice":{"filter":["This"]}}]}}"#, &["Ability.Triggered", "Effect.Sacrifice", "Trigger.State"])]
+    #[case::a_state_trigger_from_a_hand(r#"{"Triggered":{"when":{"State":{"condition":{"Compare":{"left":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"op":"Eq","right":0}}}},"from":"Hand","effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Ability.From", "Effect.Draw", "Trigger.State"])]
+    #[case::a_static_ability_from_the_graveyard(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Haste"}],"condition":{"Compare":{"left":{"Count":[{"Subtype":"Mountain"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"from":"Graveyard"}}"#, &["Ability.Static", "Ability.From", "Keyword.Haste", "Mod.AddKeyword"])]
     #[case::trigger_from_the_graveyard(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"limit":"OncePerTurn","from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Ability.Limit", "Ability.From", "Effect.Draw", "Trigger.StepBegins"])]
     #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
     #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
@@ -1600,6 +1669,50 @@ mod tests {
         r#"{"Rule":{"rule":{"TriggerAgain":{"cause":{"ZoneChange":{"what":[{"Is":"Triggering"}]}}}}}}"#,
         "`Triggering` is only valid in a triggered ability"
     )]
+    #[case::tapping_from_the_graveyard(
+        r#"{"Activated":{"cost":["Tap"],"from":"Graveyard","effects":[{"Draw":{}}]}}"#,
+        "abilities[0].Activated.from: `Tap` is paid from the battlefield"
+    )]
+    #[case::sacrificing_the_source_from_a_hand(
+        r#"{"Activated":{"cost":["SacrificeSelf"],"from":"Hand","effects":[{"Draw":{}}]}}"#,
+        "abilities[0].Activated.from: `SacrificeSelf` is paid from the battlefield"
+    )]
+    #[case::discarding_the_source_from_the_battlefield(
+        r#"{"Activated":{"cost":["DiscardSelf"],"effects":[{"Draw":{}}]}}"#,
+        "abilities[0].Activated.from: `DiscardSelf` is paid from a hand"
+    )]
+    #[case::activated_from_the_library(
+        r#"{"Activated":{"cost":"{1}","from":"Library","effects":[{"Draw":{}}]}}"#,
+        "abilities[0].Activated.from: an activated ability works from the battlefield, a hand"
+    )]
+    #[case::activated_from_the_stack(
+        r#"{"Activated":{"cost":"{1}","from":"Stack","effects":[{"Draw":{}}]}}"#,
+        "abilities[0].Activated.from: an activated ability works from the battlefield, a hand"
+    )]
+    #[case::a_state_among_events(
+        r#"{"Triggered":{"when":{"AnyOf":[{"Attacks":{"what":["This"]}},{"State":{"condition":"YourTurn"}}]},"effects":[{"Draw":{}}]}}"#,
+        "abilities[0].Triggered.when[1]: a state is the whole pattern of a triggered ability"
+    )]
+    #[case::a_state_in_a_delayed_trigger(
+        r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"State":{"condition":"YourTurn"}},"effects":[{"Draw":{}}]}}]}}"#,
+        "a state is the whole pattern of a triggered ability"
+    )]
+    #[case::a_state_in_the_cause_of_a_rule(
+        r#"{"Rule":{"rule":{"TriggerAgain":{"cause":{"State":{"condition":"YourTurn"}}}}}}"#,
+        "a state is the whole pattern of a triggered ability"
+    )]
+    #[case::the_triggering_event_in_a_state(
+        r#"{"Triggered":{"when":{"State":{"condition":{"Matches":{"subject":"Triggering","selector":[]}}}},"effects":[{"Draw":{}}]}}"#,
+        "`Triggering` is only valid in a triggered ability"
+    )]
+    #[case::the_triggering_event_in_what_a_state_does(
+        r#"{"Triggered":{"when":{"State":{"condition":"YourTurn"}},"effects":[{"Draw":{"who":"Triggering"}}]}}"#,
+        "`Triggering` is only valid in a triggered ability"
+    )]
+    #[case::a_static_ability_from_the_graveyard_that_affects_itself(
+        r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"from":"Graveyard"}}"#,
+        "abilities[0].Static.affected: a static ability that works from another zone affects the objects a selector names"
+    )]
     #[case::from_a_hand(
         r#"{"Rule":{"rule":{"CantDraw":"You"},"from":"Hand"}}"#,
         "abilities[0].Rule.from: a rule works from the battlefield"
@@ -1616,7 +1729,10 @@ mod tests {
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Rule":{"rule":{"CantDraw":"You"}}}}]}}"#,
         "only an activated, a triggered or a static ability can be granted"
     )]
-    fn a_bad_rule_is_named_where_it_is_wrong(#[case] json: &str, #[case] message: &str) {
+    fn a_bad_rule_zone_cost_or_state_is_named_where_it_is_wrong(
+        #[case] json: &str,
+        #[case] message: &str,
+    ) {
         let found = problems(json);
         assert!(
             found.iter().any(|problem| problem.contains(message)),

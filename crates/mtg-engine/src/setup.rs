@@ -305,6 +305,8 @@ impl GameState {
             layers: LayersCache::default(),
             rules_possible: false,
             rules_cache: RulesCache::default(),
+            zone_abilities_possible: false,
+            state_triggers_possible: false,
             result: None,
         };
         game.note_what_cards_can_do();
@@ -327,6 +329,14 @@ impl GameState {
             .objects()
             .any(|object| crate::ability_reader::definition_has_rule(&object.def));
         self.rules_possible = rules;
+        let elsewhere = self
+            .objects()
+            .any(|object| crate::ability_reader::definition_works_elsewhere(&object.def));
+        self.zone_abilities_possible = elsewhere;
+        let states = self
+            .objects()
+            .any(|object| crate::ability_reader::definition_has_state_trigger(&object.def));
+        self.state_triggers_possible = states;
     }
 }
 

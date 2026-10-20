@@ -7,11 +7,13 @@
 mod delayed;
 mod detect;
 mod queue;
+mod state;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification;
+use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
@@ -29,6 +31,7 @@ pub(crate) use detect::needs_before;
 pub use queue::PendingTrigger;
 
 pub(crate) use delayed::{fold_created, fold_expired};
+pub(crate) use state::detect as state_triggers;
 pub(crate) use queue::{fold_ordered, fold_removed, fold_triggered, next as sweep, removing, take};
 
 /// A triggered ability that triggered and waits to be put on the stack: what the `AbilityTriggered` event says.
@@ -99,6 +102,41 @@ pub(crate) fn triggers_something(ability: &Ability) -> bool {
         Ability::Static { mods, .. } => grants_trigger(mods),
         other => effects_trigger(other.effects()),
     }
+}
+
+/// Whether an ability is a state trigger (CR 603.8) or gives one, as an ability or through the effects of a spell.
+pub(crate) fn has_state_trigger(ability: &Ability) -> bool {
+    match ability {
+        Ability::Triggered {
+            when: TriggerPattern::State { .. },
+            ..
+        } => true,
+        Ability::Static { mods, .. } => grants_state_trigger(mods),
+        other => effects_state_trigger(other.effects()),
+    }
+}
+
+/// Whether one of the modifications gives a state trigger.
+fn grants_state_trigger(mods: &[Modification]) -> bool {
+    mods.iter().any(|modification| {
+        matches!(modification, Modification::GrantAbility(granted) if has_state_trigger(granted))
+    })
+}
+
+/// Whether anything in `effects` gives a state trigger.
+fn effects_state_trigger(effects: &[Effect]) -> bool {
+    effects.iter().any(|effect| match effect {
+        Effect::Continuous { mods, .. } => grants_state_trigger(mods),
+        Effect::If {
+            then, otherwise, ..
+        } => effects_state_trigger(then) || effects_state_trigger(otherwise),
+        Effect::May { effects, .. } => effects_state_trigger(effects),
+        Effect::Pay { paid, unpaid, .. } => {
+            effects_state_trigger(paid) || effects_state_trigger(unpaid)
+        }
+        Effect::Modal { modes, .. } => modes.iter().any(|mode| effects_state_trigger(&mode.effects)),
+        _ => false,
+    })
 }
 
 /// Whether the events bring in something that can trigger where nothing could before: a token with a triggered

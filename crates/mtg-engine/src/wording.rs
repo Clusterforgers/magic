@@ -7,7 +7,7 @@
 use mtg_cards::effect::Effect;
 use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
-use mtg_cards::value::{Amount, Cmp, StatKind};
+use mtg_cards::value::{Amount, Cmp, Condition, StatKind};
 use mtg_core::mana::ManaCost;
 
 /// "a" or "an" ahead of `word`.
@@ -229,9 +229,43 @@ fn step_words(step: Step) -> &'static str {
     }
 }
 
+/// The state a state trigger waits for, as a card says it after "When": "you control no Islands", "you have no cards
+/// in hand", "you have 10 or less life"; a state with no short phrase is "its state is true".
+fn state_words(condition: &Condition) -> String {
+    match condition {
+        Condition::Compare {
+            left: Amount::Count(selector),
+            op: Cmp::Eq,
+            right: Amount::Fixed(0),
+        } => {
+            if selector.0.contains(&Pred::In(ZoneKind::Hand))
+                && selector.0.contains(&Pred::OwnedBy(Ref::You))
+            {
+                return "you have no cards in hand".to_owned();
+            }
+            let (head, tail) = phrase(selector);
+            if tail == "you control" {
+                format!("you control no {}", plural(&head))
+            } else {
+                format!("there are no {}", join(&plural(&head), &tail))
+            }
+        }
+        Condition::Compare {
+            left: Amount::Life(Ref::You),
+            op: op @ (Cmp::Le | Cmp::Ge),
+            right: Amount::Fixed(life),
+        } => format!(
+            "you have {life} or {} life",
+            if *op == Cmp::Le { "less" } else { "more" }
+        ),
+        _ => "its state is true".to_owned(),
+    }
+}
+
 /// The clause of one pattern, such as "it enters the battlefield", and whether it speaks of the source itself.
 fn clause(pattern: &TriggerPattern) -> (String, bool) {
     match pattern {
+        TriggerPattern::State { condition } => (state_words(condition), true),
         TriggerPattern::ZoneChange { what, from, to } => {
             let moves = match (from, to) {
                 (_, Some(ZoneKind::Battlefield)) => "enters the battlefield".to_owned(),
@@ -768,6 +802,27 @@ mod tests {
         r#"{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"Attacks":{"what":["This"]}}]}"#,
         "When it enters the battlefield or it attacks"
     )]
+    #[case::no_islands(
+        r#"{"State":{"condition":{"Compare":{"left":{"Count":[{"Subtype":"Island"},{"ControlledBy":"You"}]},"op":"Eq","right":0}}}}"#,
+        "When you control no Islands"
+    )]
+    #[case::no_other_creatures(
+        r#"{"State":{"condition":{"Compare":{"left":{"Count":[{"Type":"Creature"},"Other",{"ControlledBy":"You"}]},"op":"Eq","right":0}}}}"#,
+        "When you control no other creatures"
+    )]
+    #[case::no_cards_in_hand(
+        r#"{"State":{"condition":{"Compare":{"left":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"op":"Eq","right":0}}}}"#,
+        "When you have no cards in hand"
+    )]
+    #[case::no_creatures_at_all(
+        r#"{"State":{"condition":{"Compare":{"left":{"Count":[{"Type":"Creature"}]},"op":"Eq","right":0}}}}"#,
+        "When there are no creatures"
+    )]
+    #[case::little_life(
+        r#"{"State":{"condition":{"Compare":{"left":{"Life":"You"},"op":"Le","right":10}}}}"#,
+        "When you have 10 or less life"
+    )]
+    #[case::a_state_with_no_phrase(r#"{"State":{"condition":"YourTurn"}}"#, "When its state is true")]
     fn a_trigger_pattern_reads_as_a_card_says_it(#[case] json: &str, #[case] expected: &str) {
         assert_eq!(words(json), expected);
     }
