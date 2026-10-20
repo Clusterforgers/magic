@@ -651,6 +651,29 @@ mod tests {
     }
 
     #[test]
+    fn a_seat_that_ran_out_of_time_blocks_only_where_a_rule_requires_it() {
+        use mtg_engine::decision::BlockerOption;
+        let kind = DecisionKind::DeclareBlockers(BlockOptions {
+            blockers: vec![
+                BlockerOption {
+                    object: ObjectId(1),
+                    can_block: vec![ObjectId(9)],
+                },
+                BlockerOption {
+                    object: ObjectId(2),
+                    can_block: vec![ObjectId(9)],
+                },
+            ],
+            min_blockers: Vec::new(),
+            required: vec![ObjectId(2)],
+        });
+        assert_eq!(
+            fallback(&decision(OTHER, kind)),
+            Some(Answer::DeclareBlockers(vec![(ObjectId(2), ObjectId(9))]))
+        );
+    }
+
+    #[test]
     fn the_mode_fallback_is_a_choice_the_options_allow_whenever_it_gives_one() {
         for (count, min, max, repeat) in mode_shapes() {
             let kind = modes(count, min, max, repeat, false);

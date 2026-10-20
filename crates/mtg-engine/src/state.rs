@@ -306,7 +306,10 @@ impl Hash for GameState {
         self.priority.hash(state);
         self.combat.hash(state);
         self.effects.hash(state);
-        self.rule_effects.hash(state);
+        // A game with no change to a rule hashes as it did before they existed.
+        if !self.rule_effects.is_empty() {
+            self.rule_effects.hash(state);
+        }
         self.next_effect.hash(state);
         self.next_timestamp.hash(state);
         self.next_object.hash(state);

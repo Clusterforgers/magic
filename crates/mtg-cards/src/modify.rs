@@ -165,6 +165,32 @@ mod tests {
         );
     }
 
+    #[rstest]
+    #[case(GameRule::DamageCantBePrevented, r#""DamageCantBePrevented""#)]
+    #[case(GameRule::MustAttack(Ref::This), r#"{"MustAttack":"This"}"#)]
+    #[case(GameRule::MustBlock(Ref::This), r#"{"MustBlock":"This"}"#)]
+    #[case(GameRule::CantBeCountered(Ref::This), r#"{"CantBeCountered":"This"}"#)]
+    #[case(
+        GameRule::CantGainLife(Ref::EachPlayer),
+        r#"{"CantGainLife":"EachPlayer"}"#
+    )]
+    #[case(GameRule::CantDraw(Ref::Opponents), r#"{"CantDraw":"Opponents"}"#)]
+    #[case(GameRule::CantSearch(Ref::You), r#"{"CantSearch":"You"}"#)]
+    #[case(GameRule::RevealTop(Ref::You), r#"{"RevealTop":"You"}"#)]
+    #[case(
+        GameRule::TriggerAgain {
+            cause: TriggerPattern::Attacks { what: crate::refs::Selector::this() }
+        },
+        r#"{"TriggerAgain":{"cause":{"Attacks":{"what":["This"]}}}}"#
+    )]
+    fn a_rule_is_written_with_the_players_or_objects_it_names(
+        #[case] rule: GameRule,
+        #[case] json: &str,
+    ) {
+        assert_eq!(serde_json::to_string(&rule).unwrap(), json);
+        assert_eq!(serde_json::from_str::<GameRule>(json).unwrap(), rule);
+    }
+
     #[test]
     fn a_pump_is_written_with_bare_numbers() {
         let pump = Modification::ModifyPT {

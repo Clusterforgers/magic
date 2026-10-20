@@ -136,7 +136,7 @@ fn a_creature_that_cannot_attack_is_not_required_to(
     )?;
     let (able, required) = attackers(&driver);
     assert_eq!(able.len(), 1, "only the Wolf can attack");
-    assert!(required.is_empty());
+    assert_eq!(required, Vec::<mtg_core::ids::ObjectId>::new());
     driver.attack(&[])?;
     Ok(())
 }

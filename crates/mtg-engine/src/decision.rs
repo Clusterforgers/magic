@@ -457,3 +457,125 @@ impl Answer {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the declaration that does only what the rules require attacks with each creature that must, at the first defender it may attack, and blocks with each creature that must, at an attacker that is blocked already or needs one blocker if there is one and with free creatures to join an attacker that needs several; a creature left out of a declaration could join it exactly when some attacker it can block is blocked already, needs one blocker or has enough free creatures to join.
+    use rstest::rstest;
+
+    use super::*;
+    use crate::combat::AttackTarget;
+
+    fn id(n: u64) -> ObjectId {
+        ObjectId(n)
+    }
+
+    /// Blockers as (creature, attackers it can block), the attackers that need several as (attacker, fewest), and the
+    /// creatures a rule requires.
+    fn blocking(
+        blockers: &[(u64, &[u64])],
+        menace: &[(u64, usize)],
+        required: &[u64],
+    ) -> BlockOptions {
+        BlockOptions {
+            blockers: blockers
+                .iter()
+                .map(|(object, can_block)| BlockerOption {
+                    object: id(*object),
+                    can_block: can_block.iter().map(|attacker| id(*attacker)).collect(),
+                })
+                .collect(),
+            min_blockers: menace.iter().map(|(a, n)| (id(*a), *n)).collect(),
+            required: required.iter().map(|object| id(*object)).collect(),
+        }
+    }
+
+    fn pairs(blocks: &[(u64, u64)]) -> Vec<(ObjectId, ObjectId)> {
+        blocks.iter().map(|(b, a)| (id(*b), id(*a))).collect()
+    }
+
+    #[rstest]
+    #[case::nothing_is_required(&[(1, &[10][..])], &[], &[], &[])]
+    #[case::one_blocker_one_attacker(&[(1, &[10][..])], &[], &[1], &[(1, 10)])]
+    #[case::the_first_attacker_that_needs_one(&[(1, &[10, 11][..])], &[(10, 2)], &[1], &[(1, 11)])]
+    #[case::an_attacker_blocked_already(&[(1, &[10][..]), (2, &[10, 11][..])], &[(10, 2)], &[1, 2], &[(1, 10), (2, 10)])]
+    #[case::a_free_creature_joins_a_menace_attacker(&[(1, &[10][..]), (2, &[10][..])], &[(10, 2)], &[1], &[(1, 10), (2, 10)])]
+    #[case::two_required_meet_on_one(&[(1, &[10][..]), (2, &[10][..])], &[(10, 2)], &[1, 2], &[(1, 10), (2, 10)])]
+    #[case::too_few_free_creatures(&[(1, &[10][..])], &[(10, 2)], &[1], &[(1, 10)])]
+    fn the_required_blocks_are_the_least_the_rules_ask(
+        #[case] blockers: &[(u64, &[u64])],
+        #[case] menace: &[(u64, usize)],
+        #[case] required: &[u64],
+        #[case] expected: &[(u64, u64)],
+    ) {
+        let options = blocking(blockers, menace, required);
+        assert_eq!(options.required_blocks(), pairs(expected));
+    }
+
+    #[rstest]
+    #[case::an_attacker_that_needs_one(&[(1, &[10][..])], &[], &[], true)]
+    #[case::an_attacker_blocked_already(&[(1, &[10][..]), (2, &[10][..])], &[(10, 2)], &[(2, 10), (3, 10)], true)]
+    #[case::a_menace_attacker_with_a_free_creature(&[(1, &[10][..]), (2, &[10][..])], &[(10, 2)], &[], true)]
+    #[case::a_menace_attacker_with_no_free_creature(&[(1, &[10][..]), (2, &[10][..])], &[(10, 2)], &[(2, 11)], false)]
+    #[case::a_menace_attacker_alone(&[(1, &[10][..])], &[(10, 2)], &[], false)]
+    fn a_creature_left_out_could_join_when_an_attacker_it_can_block_can_take_it(
+        #[case] blockers: &[(u64, &[u64])],
+        #[case] menace: &[(u64, usize)],
+        #[case] blocks: &[(u64, u64)],
+        #[case] could: bool,
+    ) {
+        let options = blocking(blockers, menace, &[1]);
+        assert_eq!(options.could_join(id(1), &pairs(blocks)), could);
+    }
+
+    #[test]
+    fn a_creature_that_is_not_offered_cannot_join() {
+        let options = blocking(&[(2, &[10][..])], &[], &[]);
+        assert!(!options.could_join(id(1), &[]));
+    }
+
+    #[test]
+    fn the_required_attack_names_each_required_creature_at_its_first_defender() {
+        let attack = |object: u64, defenders: &[u64]| AttackerOption {
+            object: id(object),
+            defenders: defenders
+                .iter()
+                .map(|player| AttackTarget::Player(PlayerId(*player)))
+                .collect(),
+        };
+        let options = AttackOptions {
+            attackers: vec![attack(1, &[2, 3]), attack(2, &[3]), attack(3, &[])],
+            required: vec![id(1), id(3)],
+        };
+        assert_eq!(
+            options.required_attack(),
+            [(id(1), AttackTarget::Player(PlayerId(2)))],
+            "a creature with no defender cannot be declared"
+        );
+    }
+
+    #[test]
+    fn the_new_fields_are_left_out_of_the_json_while_empty() {
+        let plain = AttackOptions {
+            attackers: Vec::new(),
+            required: Vec::new(),
+        };
+        assert_eq!(
+            serde_json::to_string(&plain).unwrap(),
+            r#"{"attackers":[]}"#
+        );
+        let blocks = blocking(&[], &[], &[]);
+        assert_eq!(
+            serde_json::to_string(&blocks).unwrap(),
+            r#"{"blockers":[]}"#
+        );
+        let required = AttackOptions {
+            required: vec![id(4)],
+            ..plain
+        };
+        assert_eq!(
+            serde_json::to_string(&required).unwrap(),
+            r#"{"attackers":[],"required":[4]}"#
+        );
+    }
+}

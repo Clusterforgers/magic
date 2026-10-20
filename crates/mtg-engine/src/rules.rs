@@ -21,6 +21,8 @@ use serde::{Deserialize, Serialize};
 use crate::ability_reader::{abilities_of, definition_has_rule};
 use crate::characteristics::controller_of_object;
 use crate::effects::{Duration, lasts};
+use crate::error::EngineError;
+use crate::fold::invalid;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{ResolveError, Scope};
 use crate::state::GameState;
@@ -90,11 +92,10 @@ impl RuleEffect {
 
     /// Whether every object the rule names has become a new object or is gone: it can never apply to anything again.
     fn spent(&self, state: &GameState) -> bool {
-        let named = match &self.rule {
-            Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named) => {
-                named
-            }
-            _ => return false,
+        let (Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named)) =
+            &self.rule
+        else {
+            return false;
         };
         named
             .iter()
@@ -345,6 +346,32 @@ impl GameState {
         }
         self.zone(Zone::Library(player)).last().copied()
     }
+}
+
+/// Folds `RuleCreated`: the change joins those in state; a duration that follows the source needs one, and an id is
+/// used once.
+pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result<(), EngineError> {
+    if effect.duration == Duration::WhileSourceOnBattlefield && effect.source.is_none() {
+        return Err(invalid(
+            "a rule that lasts while its source stays has a source",
+        ));
+    }
+    if state.rule_effects.iter().any(|e| e.id == effect.id) {
+        return Err(invalid(format!("duplicate rule {:?}", effect.id)));
+    }
+    state.next_effect = state.next_effect.max(effect.id.0 + 1);
+    state.rule_effects.push(effect.clone());
+    Ok(())
+}
+
+/// Folds `RuleExpired`: the change leaves the state.
+pub(crate) fn fold_expired(state: &mut GameState, id: EffectId) -> Result<(), EngineError> {
+    let before = state.rule_effects.len();
+    state.rule_effects.retain(|e| e.id != id);
+    if state.rule_effects.len() == before {
+        return Err(invalid(format!("unknown rule {id:?}")));
+    }
+    Ok(())
 }
 
 /// Whether the creature `id` attacks each combat if able: the one place the attack declaration reads this requirement.
@@ -622,7 +649,7 @@ mod tests {
         for event in &ended {
             apply_event(&mut game, event).unwrap();
         }
-        assert!(game.rule_effects().is_empty());
+        assert_eq!(game.rule_effects(), []);
     }
 
     #[test]
@@ -779,7 +806,7 @@ mod tests {
     fn a_game_whose_cards_change_no_rule_gathers_nothing() {
         let game = game(Vec::new());
         assert!(!game.rules_possible && game.rule_effects().is_empty());
-        assert!(std::ptr::eq(game.rules(), &NONE));
+        assert!(std::ptr::eq(game.rules(), &raw const NONE));
     }
 
     #[test]

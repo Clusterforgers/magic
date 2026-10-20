@@ -353,3 +353,248 @@ pub(crate) fn attack_events(
     );
     events
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a creature a rule requires to attack or block is named by the options only while it is able to, a declaration that leaves it out is refused by name and one that names it is accepted, a creature that cannot attack or block is not required, a blocker is required only while it could still be added to the declaration (menace included), and a game with no such rule offers no requirement.
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
+    use mtg_cards::ability::Ability;
+    use mtg_cards::keyword::Keyword;
+    use mtg_core::card::CardType;
+    use mtg_core::ids::EffectId;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::effects::Duration;
+    use crate::fixtures::{creature, state};
+    use crate::fold::apply_event;
+    use crate::rules::{Rule, RuleEffect};
+    use crate::turn::Step;
+
+    const ME: PlayerId = PlayerId(0);
+    const FOE: PlayerId = PlayerId(1);
+
+    fn menacing(name: &str) -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new(name)
+                .with_type(CardType::Creature)
+                .with_power_toughness(2, 2)
+                .with_rules(Ability::Keyword(Keyword::Menace)),
+        )
+    }
+
+    /// Seat 0 controls a Wolf and a Fox, seat 1 a Bear, a Cub and a menacing Brute; it is seat 0's declare attackers step.
+    fn game() -> GameState {
+        let mut game = state(
+            vec![vec![], vec![]],
+            vec![
+                vec![creature("Wolf", 2, 2), creature("Fox", 1, 1)],
+                vec![
+                    creature("Bear", 2, 2),
+                    creature("Cub", 1, 1),
+                    menacing("Brute"),
+                ],
+            ],
+        );
+        game.turn.step = Step::DeclareAttackers;
+        game
+    }
+
+    fn id(game: &GameState, name: &str) -> ObjectId {
+        game.objects()
+            .find(|o| o.card().name == name)
+            .map(crate::object::GameObject::id)
+            .unwrap()
+    }
+
+    fn require(
+        game: &mut GameState,
+        rule: fn(Vec<crate::object::ObjectRef>) -> Rule,
+        cards: &[&str],
+    ) {
+        let refs = cards
+            .iter()
+            .map(|name| game.object(id(game, name)).unwrap().reference())
+            .collect();
+        let effect = RuleEffect {
+            id: EffectId(game.next_effect),
+            rule: rule(refs),
+            duration: Duration::Forever,
+            source: None,
+            controller: ME,
+            turn: 1,
+        };
+        apply_event(game, &Event::RuleCreated { effect }).unwrap();
+    }
+
+    fn attacks(game: &GameState, names: &[&str]) -> Vec<(ObjectId, AttackTarget)> {
+        names
+            .iter()
+            .map(|name| (id(game, name), AttackTarget::Player(FOE)))
+            .collect()
+    }
+
+    #[rstest]
+    #[case::the_one_named(&["Wolf"], &["Wolf"])]
+    #[case::both(&["Wolf", "Fox"], &["Wolf", "Fox"])]
+    #[case::one_that_is_not_ours(&["Bear"], &[])]
+    fn attackers_that_must_attack_are_named_and_the_declaration_names_them(
+        #[case] ruled: &[&str],
+        #[case] required: &[&str],
+    ) {
+        let mut game = game();
+        require(&mut game, Rule::MustAttack, ruled);
+        let options = attack_options(&game, ME);
+        let mut named: Vec<ObjectId> = options.required.clone();
+        named.sort();
+        let mut expected: Vec<ObjectId> = required.iter().map(|name| id(&game, name)).collect();
+        expected.sort();
+        assert_eq!(named, expected);
+        if !required.is_empty() {
+            assert_eq!(
+                check_attackers(&options, &[]),
+                Err(IllegalAnswer::Required("attacker"))
+            );
+            assert_eq!(check_attackers(&options, &attacks(&game, required)), Ok(()));
+            assert_eq!(
+                check_attackers(&options, &attacks(&game, &["Wolf", "Fox"])),
+                Ok(())
+            );
+        }
+    }
+
+    #[test]
+    fn a_creature_that_cannot_attack_is_not_required_to() {
+        let mut game = game();
+        require(&mut game, Rule::MustAttack, &["Wolf", "Fox"]);
+        let fox = id(&game, "Fox");
+        apply_event(&mut game, &Event::PermanentTapped { object: fox }).unwrap();
+        let options = attack_options(&game, ME);
+        assert_eq!(options.required, [id(&game, "Wolf")]);
+        assert_eq!(
+            check_attackers(&options, &attacks(&game, &["Fox"])),
+            Err(IllegalAnswer::NotOffered("attacker"))
+        );
+    }
+
+    #[test]
+    fn a_game_without_the_rule_requires_nothing() {
+        let game = game();
+        let options = attack_options(&game, ME);
+        assert_eq!(options.required, []);
+        assert_eq!(check_attackers(&options, &[]), Ok(()));
+    }
+
+    /// The Wolf and the Fox attack seat 1; seat 1 may block with the Bear, the Cub and the Brute.
+    fn attacked() -> GameState {
+        let mut game = game();
+        let attackers = attacks(&game, &["Wolf", "Fox"]);
+        apply_event(
+            &mut game,
+            &Event::AttackersDeclared {
+                player: ME,
+                attackers,
+            },
+        )
+        .unwrap();
+        game.turn.step = Step::DeclareBlockers;
+        game
+    }
+
+    fn blocks(game: &GameState, pairs: &[(&str, &str)]) -> Vec<(ObjectId, ObjectId)> {
+        pairs
+            .iter()
+            .map(|(blocker, attacker)| (id(game, blocker), id(game, attacker)))
+            .collect()
+    }
+
+    #[rstest]
+    #[case::nothing(&[], false)]
+    #[case::the_wrong_creature(&[("Cub", "Fox")], false)]
+    #[case::the_creature(&[("Bear", "Wolf")], true)]
+    #[case::the_creature_at_the_other_attacker(&[("Bear", "Fox")], true)]
+    #[case::with_others(&[("Bear", "Wolf"), ("Cub", "Fox")], true)]
+    fn a_blocker_that_must_block_is_in_every_declaration(
+        #[case] declared: &[(&str, &str)],
+        #[case] legal: bool,
+    ) {
+        let mut game = attacked();
+        require(&mut game, Rule::MustBlock, &["Bear"]);
+        let options = block_options(&game, FOE);
+        assert_eq!(options.required, [id(&game, "Bear")]);
+        let result = check_blockers(&game, &options, &blocks(&game, declared));
+        assert_eq!(result.is_ok(), legal, "{result:?}");
+        if !legal {
+            assert!(matches!(
+                result,
+                Err(IllegalAnswer::Required("blocker") | IllegalAnswer::NotOffered(_))
+            ));
+        }
+    }
+
+    #[test]
+    fn a_blocker_that_cannot_block_what_attacks_is_not_required_to() {
+        let mut game = attacked();
+        require(&mut game, Rule::MustBlock, &["Bear"]);
+        let wolf = id(&game, "Wolf");
+        let fox = id(&game, "Fox");
+        // Nothing attacks them any more: the declaration is made against an empty attack.
+        game.combat.remove_object(wolf);
+        game.combat.remove_object(fox);
+        let options = block_options(&game, FOE);
+        assert_eq!(options.required, []);
+        assert_eq!(check_blockers(&game, &options, &[]), Ok(()));
+    }
+
+    /// Seat 1's Brute (menace) attacks seat 0, whose Wolf must block and whose Fox is tapped or not.
+    fn brute_attacks(fox_tapped: bool) -> GameState {
+        let mut game = game();
+        if fox_tapped {
+            let fox = id(&game, "Fox");
+            apply_event(&mut game, &Event::PermanentTapped { object: fox }).unwrap();
+        }
+        game.turn.active = FOE;
+        let declared = vec![(id(&game, "Brute"), AttackTarget::Player(ME))];
+        let event = Event::AttackersDeclared {
+            player: FOE,
+            attackers: declared,
+        };
+        apply_event(&mut game, &event).unwrap();
+        game.turn.step = Step::DeclareBlockers;
+        require(&mut game, Rule::MustBlock, &["Wolf"]);
+        game
+    }
+
+    #[test]
+    fn a_creature_that_must_block_is_not_required_to_break_a_restriction() {
+        // The Wolf alone may not block a menace attacker, so nothing is required of it.
+        let game = brute_attacks(true);
+        let options = block_options(&game, ME);
+        assert_eq!(options.required, []);
+        assert_eq!(check_blockers(&game, &options, &[]), Ok(()));
+    }
+
+    #[test]
+    fn a_creature_that_must_block_a_menace_attacker_is_joined_by_a_free_creature() {
+        let game = brute_attacks(false);
+        let options = block_options(&game, ME);
+        assert_eq!(options.required, [id(&game, "Wolf")]);
+        assert_eq!(
+            check_blockers(&game, &options, &[]),
+            Err(IllegalAnswer::Required("blocker"))
+        );
+        assert_eq!(
+            check_blockers(&game, &options, &blocks(&game, &[("Wolf", "Brute")])),
+            Err(IllegalAnswer::TooFewBlockers { needed: 2, got: 1 })
+        );
+        let pair = blocks(&game, &[("Wolf", "Brute"), ("Fox", "Brute")]);
+        assert_eq!(check_blockers(&game, &options, &pair), Ok(()));
+        assert_eq!(
+            options.required_blocks().len(),
+            2,
+            "the least the rules ask is the pair"
+        );
+    }
+}

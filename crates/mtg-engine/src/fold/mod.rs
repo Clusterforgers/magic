@@ -105,6 +105,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         } => crate::triggers::fold_removed(state, *source, *origin, *ability, *delayed, cause),
         Event::DelayedTriggerCreated(created) => crate::triggers::fold_created(state, created),
         Event::DelayedTriggerExpired { id } => crate::triggers::fold_expired(state, *id),
+        Event::RuleCreated { effect } => crate::rules::fold_created(state, effect),
+        Event::RuleExpired { id } => crate::rules::fold_expired(state, *id),
         Event::CountersChanged(counters) => crate::counters::fold(state, counters),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
         Event::Scried(scried) => {
@@ -225,27 +227,6 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.effects.retain(|e| e.id != *id);
             if state.effects.len() == before {
                 return Err(invalid(format!("unknown effect {id:?}")));
-            }
-        }
-        Event::RuleCreated { effect } => {
-            if effect.duration == mtg_cards::modify::Duration::WhileSourceOnBattlefield
-                && effect.source.is_none()
-            {
-                return Err(invalid(
-                    "a rule that lasts while its source stays has a source",
-                ));
-            }
-            if state.rule_effects.iter().any(|e| e.id == effect.id) {
-                return Err(invalid(format!("duplicate rule {:?}", effect.id)));
-            }
-            state.next_effect = state.next_effect.max(effect.id.0 + 1);
-            state.rule_effects.push(effect.clone());
-        }
-        Event::RuleExpired { id } => {
-            let before = state.rule_effects.len();
-            state.rule_effects.retain(|e| e.id != *id);
-            if state.rule_effects.len() == before {
-                return Err(invalid(format!("unknown rule {id:?}")));
             }
         }
         Event::PlayerLost { player, reason } => player_lost(state, *player, reason)?,
