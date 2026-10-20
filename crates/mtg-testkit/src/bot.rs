@@ -160,14 +160,13 @@ impl RandomBot {
             DecisionKind::DivideAmount(options) => {
                 Answer::DivideAmount(DivideChoice(even_division(options)))
             }
-            DecisionKind::ChooseCards(options) => Answer::ChooseCards(CardsChoice(
-                options
-                    .from
-                    .iter()
-                    .copied()
-                    .take(options.min as usize)
-                    .collect(),
-            )),
+            DecisionKind::ChooseCards(options) => {
+                // Any cards among those offered, as many as the bounds allow.
+                let spread =
+                    usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
+                let wanted = options.min as usize + self.rng.index(spread);
+                Answer::ChooseCards(CardsChoice(self.subset(&options.from, wanted)))
+            }
             DecisionKind::OrderCards(options) => {
                 Answer::OrderCards(OrderChoice(options.cards.clone()))
             }

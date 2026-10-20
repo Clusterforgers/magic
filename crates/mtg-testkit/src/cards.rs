@@ -1,4 +1,4 @@
-//! Synthetic cards for tests: basic lands and vanilla creatures with chosen costs and stats.
+//! Synthetic cards for tests: basic lands and vanilla creatures with chosen costs and stats, and small spells.
 
 use std::sync::Arc;
 
@@ -358,6 +358,50 @@ pub fn study(name: &str) -> Arc<CardDefinition> {
     )
 }
 
+/// A sorcery for `{1}{B}`: target opponent sacrifices a creature of their choice.
+pub fn edict(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(1, &[Color::Black]))
+            .with_rules(Ability::Spell {
+                targets: vec![one_target(Targetable::Opponent)],
+                effects: vec![Effect::Sacrifice {
+                    who: Ref::Target(0),
+                    filter: Selector(vec![Pred::Type(CardType::Creature)]),
+                    count: Amount::Fixed(1),
+                }],
+            }),
+    )
+}
+
+/// A sorcery for `{B}{B}`: target opponent discards two cards of their choice.
+pub fn mind_rot(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(0, &[Color::Black, Color::Black]))
+            .with_rules(Ability::Spell {
+                targets: vec![one_target(Targetable::Opponent)],
+                effects: vec![Effect::Discard {
+                    who: Ref::Target(0),
+                    count: Amount::Fixed(2),
+                    random: false,
+                }],
+            }),
+    )
+}
+
+/// A planeswalker for `{generic}` with no abilities, which is a permanent a player can be made to sacrifice.
+pub fn walker(name: &str, generic: u32) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Planeswalker)
+            .with_mana_cost(cost(generic, &[]))
+            .with_loyalty(3),
+    )
+}
+
 /// A 1/1 creature for `{generic}{R}` with "{T}: deals 1 damage to any target".
 pub fn pinger(name: &str, generic: u32) -> Arc<CardDefinition> {
     Arc::new(
@@ -426,6 +470,31 @@ mod tests {
             colors.chars().filter_map(Color::from_symbol).collect();
         assert_eq!(card.colors(), expected);
         assert!(card.is_type(CardType::Creature));
+    }
+
+    #[rstest]
+    #[case::edict(edict("Edict"), CardType::Sorcery, "{1}{B}")]
+    #[case::mind_rot(mind_rot("Rot"), CardType::Sorcery, "{B}{B}")]
+    #[case::walker(walker("Walker", 2), CardType::Planeswalker, "{2}")]
+    fn the_small_spells_have_the_types_and_costs_the_tables_assume(
+        #[case] card: Arc<CardDefinition>,
+        #[case] card_type: CardType,
+        #[case] cost: &str,
+    ) {
+        assert!(card.is_type(card_type));
+        assert_eq!(card.mana_cost, Some(ManaCost::parse(cost).unwrap()));
+    }
+
+    #[test]
+    fn the_edict_and_the_discard_spell_aim_at_an_opponent() {
+        for card in [edict("Edict"), mind_rot("Rot")] {
+            let Some(Ability::Spell { targets, effects }) = card.rules.first().map(|rule| &**rule)
+            else {
+                panic!("a spell");
+            };
+            assert_eq!(targets, &[one_target(Targetable::Opponent)]);
+            assert_eq!(effects.len(), 1);
+        }
     }
 
     #[test]

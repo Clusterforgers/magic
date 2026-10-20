@@ -549,6 +549,10 @@ impl<'a> Walker<'a> {
     fn effect(&mut self, effect: &Effect, only_effect: bool) {
         let tag = tag_of(effect);
         self.uses("Effect", &tag);
+        // A discard at random needs the engine's randomness, which a discard of the player's choice does not.
+        if matches!(effect, Effect::Discard { random: true, .. }) {
+            self.uses("Effect", "Discard.Random");
+        }
         self.at(tag, |w| match effect {
             Effect::Draw { who, count }
             | Effect::Mill { who, count }
@@ -1188,7 +1192,9 @@ mod tests {
     #[case::once_a_turn(r#"{"Activated":{"cost":["Tap"],"limit":"OncePerTurn","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.Limit", "Cost.Tap", "Effect.Draw"])]
     #[case::from_the_graveyard(r#"{"Activated":{"cost":["Tap"],"from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.Tap", "Effect.Draw"])]
     #[case::trigger_from_the_graveyard(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"limit":"OncePerTurn","from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Ability.Limit", "Ability.From", "Effect.Draw", "Trigger.StepBegins"])]
-    fn how_often_and_from_where_an_ability_works_counts_as_a_primitive(
+    #[case::a_discard_of_your_choice(r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Discard"])]
+    #[case::a_discard_at_random(r#"{"Spell":{"effects":[{"Discard":{"random":true}}]}}"#, &["Ability.Spell", "Effect.Discard", "Effect.Discard.Random"])]
+    fn how_often_from_where_and_by_what_chance_an_ability_works_counts_as_a_primitive(
         #[case] json: &str,
         #[case] expected: &[&str],
     ) {

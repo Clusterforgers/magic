@@ -14,6 +14,7 @@ use rstest::rstest;
 use super::apply_event;
 use crate::abilities::{Cause, PutOnStack};
 use crate::choose::{Choice, Choices, Target};
+use crate::combat::AttackTarget;
 use crate::counters::CountersChanged;
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::fixtures::{creature, state};
@@ -538,4 +539,52 @@ fn the_state_hash_sees_the_journal_the_position_and_what_was_announced() {
     distinct.sort_unstable();
     distinct.dedup();
     assert_eq!(distinct.len(), hashes.len(), "{hashes:?}");
+}
+
+#[test]
+fn a_planeswalker_that_leaves_the_battlefield_takes_the_attackers_aimed_at_it_out_of_combat() {
+    let walker = Arc::new(
+        CardDefinition::new("Walker")
+            .with_type(CardType::Planeswalker)
+            .with_loyalty(3),
+    );
+    let mut game = state(
+        vec![vec![], vec![]],
+        vec![
+            vec![walker],
+            vec![creature("Raider", 2, 2), creature("Bear", 2, 2)],
+        ],
+    );
+    let battlefield = game.zone(Zone::Battlefield).to_vec();
+    let (walker, raider, bear) = (battlefield[0], battlefield[1], battlefield[2]);
+    fold(
+        &mut game,
+        &[Event::AttackersDeclared {
+            player: PlayerId(1),
+            attackers: vec![
+                (raider, AttackTarget::Planeswalker(walker)),
+                (bear, AttackTarget::Player(PlayerId(0))),
+            ],
+        }],
+    );
+    fold(
+        &mut game,
+        &[Event::ZoneChanged {
+            object: walker,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(PlayerId(0)),
+            cause: ZoneCause::Sacrificed,
+        }],
+    );
+    let attackers: Vec<ObjectId> = game
+        .combat()
+        .attackers()
+        .iter()
+        .map(crate::combat::Attacker::object)
+        .collect();
+    assert_eq!(
+        attackers,
+        [bear],
+        "only the attacker aimed at a player is left"
+    );
 }

@@ -40,6 +40,10 @@ pub(super) fn move_object(
     if from == Zone::Battlefield {
         object.permanent = None;
         state.combat.remove_object(id);
+        // Creatures attacking a planeswalker that is gone are out of combat, as when its owner leaves the game.
+        state
+            .combat
+            .remove_attackers_targeting(AttackTarget::Planeswalker(id));
     }
     if to == Zone::Battlefield {
         object.permanent = Some(PermanentState {

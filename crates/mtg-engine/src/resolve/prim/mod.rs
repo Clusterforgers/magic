@@ -1,7 +1,9 @@
 //! The primitives of the interpreter: one file per `Effect` variant.
 //!
 //! A file whose effect the engine plays runs it and `Caps` names it (`caps.rs`); the others are stubs that
-//! refuse, and a card that uses one is never offered, so a game never meets the refusal.
+//! refuse, and a card that uses one is never offered, so a game never meets the refusal. An effect that asks a
+//! player (discard, sacrifice) returns the question while its journal lacks the answer and reads the answer
+//! when its step runs again.
 
 mod add_mana;
 mod choose;
@@ -160,6 +162,8 @@ mod tests {
             running,
             [
                 "Effect.Draw",
+                "Effect.Discard",
+                "Effect.Sacrifice",
                 "Effect.DealDamage",
                 "Effect.GainLife",
                 "Effect.LoseLife",
