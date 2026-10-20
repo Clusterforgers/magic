@@ -196,6 +196,7 @@ fn trigger_event(state: &GameState, waiting: &PendingTrigger, choices: &Choices)
         source: t.source,
         snapshot: t.snapshot.clone(),
         ability: t.ability,
+        origin: t.origin,
         controller: t.controller,
         choices: choices.clone(),
         cause: Some(t.cause.clone()),
@@ -238,12 +239,14 @@ fn activation_events(
         player,
         source: source.reference(),
         ability: ability.ability,
+        origin: ability.source,
     });
     events.push(Event::AbilityPutOnStack(Box::new(PutOnStack {
         object: state.next_object(),
         source: source.reference(),
         snapshot: before,
         ability: ability.ability,
+        origin: ability.source,
         controller: player,
         choices: choices.clone(),
         cause: None,
@@ -812,6 +815,7 @@ mod announcement_tests {
                 player,
                 source: activated,
                 ability,
+                ..
             },
             Event::AbilityPutOnStack(put),
         ] = &events[..]

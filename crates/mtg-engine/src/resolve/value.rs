@@ -4,6 +4,7 @@
 //! is a `ResolveError::Unsupported` with the name of what is missing; `Caps` keeps the cards that need
 //! them from being offered, so the error is not met in a game.
 
+use std::borrow::Cow;
 use std::collections::BTreeMap;
 
 use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, ZoneKind};
@@ -13,7 +14,7 @@ use mtg_core::ids::PlayerId;
 use thiserror::Error;
 
 use crate::abilities::Cause;
-use crate::characteristics::{Characteristics, characteristics};
+use crate::characteristics::{Characteristics, characteristics, seen_as};
 use crate::choose::legal_for;
 use crate::choose::{Choices, Target};
 use crate::keywords;
@@ -75,7 +76,7 @@ struct Seen<'a> {
     controller: PlayerId,
     zone: Zone,
     kind: ObjectKind,
-    chars: Characteristics,
+    chars: Cow<'a, Characteristics>,
     tapped: Option<bool>,
     /// The same card, whichever zone it has moved to since: its printed side does not change.
     card: Option<&'a GameObject>,
@@ -128,12 +129,13 @@ impl<'a> Scope<'a> {
     fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
         let live = self.state.object(reference.id);
         if let Some(object) = live.filter(|o| o.counter() == reference.counter) {
+            let (chars, controller) = seen_as(self.state, reference.id)?;
             return Some(Seen {
                 owner: object.owner(),
-                controller: object.controller(),
+                controller,
                 zone: object.zone(),
                 kind: object.kind(),
-                chars: characteristics(self.state, reference.id)?,
+                chars: Cow::Owned(chars),
                 tapped: object
                     .permanent()
                     .map(crate::object::PermanentState::tapped),
@@ -143,16 +145,45 @@ impl<'a> Scope<'a> {
         let shot = self
             .snapshots
             .iter()
+            .copied()
             .find(|s| s.id == reference.id && s.counter == reference.counter)?;
         Some(Seen {
             owner: shot.owner,
             controller: shot.controller,
             zone: shot.zone,
             kind: live.map_or(ObjectKind::Card, GameObject::kind),
-            chars: shot.characteristics.clone(),
+            chars: Cow::Borrowed(&shot.characteristics),
             tapped: None,
             card: live,
         })
+    }
+
+    /// Whether the permanent `object`, which has the characteristics `so_far` and `controller` as the layers are being
+    /// applied, satisfies every predicate of the selector: the way a static ability tests what it affects.
+    pub(crate) fn selects_with(
+        &self,
+        selector: &Selector,
+        object: &GameObject,
+        so_far: &Characteristics,
+        controller: PlayerId,
+    ) -> Result<bool, ResolveError> {
+        let seen = Seen {
+            owner: object.owner(),
+            controller,
+            zone: object.zone(),
+            kind: object.kind(),
+            chars: Cow::Borrowed(so_far),
+            tapped: object
+                .permanent()
+                .map(crate::object::PermanentState::tapped),
+            card: Some(object),
+        };
+        for pred in &selector.0 {
+            if !self.pred(pred, object.reference(), &seen)? {
+                return Ok(false);
+            }
+        }
+        Ok(true)
     }
 
     /// The targets chosen for the specification `index` of the running effect that still count: a legal one, or one an earlier step of this
@@ -366,9 +397,12 @@ impl<'a> Scope<'a> {
             Pred::Supertype(supertype) => seen
                 .card
                 .is_some_and(|c| c.card().supertypes.contains(supertype)),
-            Pred::Subtype(subtype) => seen
-                .card
-                .is_some_and(|c| c.card().subtypes.contains(subtype)),
+            Pred::Subtype(subtype) => {
+                seen.chars.subtypes.contains(subtype)
+                    || seen
+                        .card
+                        .is_some_and(|c| c.card().subtypes.contains(subtype))
+            }
             Pred::Color(color) => seen.chars.colors.contains(*color),
             Pred::Colorless => seen.chars.colors.is_empty(),
             Pred::Token => seen.kind == ObjectKind::Token,

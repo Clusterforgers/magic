@@ -87,6 +87,7 @@ fn totem_id(game: &GameState) -> ObjectId {
 fn put_totem_ability(game: &GameState) -> Event {
     let source = game.object(totem_id(game)).unwrap();
     Event::AbilityPutOnStack(Box::new(PutOnStack {
+        origin: crate::abilities::AbilitySource::default(),
         object: game.next_object(),
         source: source.reference(),
         snapshot: snapshot(game, source.id()).unwrap(),
@@ -328,6 +329,7 @@ fn cause() -> Cause {
 fn trigger_of(game: &GameState, ability: usize) -> Event {
     let source = game.object(totem_id(game)).unwrap();
     Event::AbilityTriggered(Box::new(Triggered {
+        origin: crate::abilities::AbilitySource::default(),
         source: source.reference(),
         ability,
         controller: PlayerId(0),
@@ -349,7 +351,7 @@ fn trigger_of(game: &GameState, ability: usize) -> Event {
     |g: &GameState| { let Event::AbilityPutOnStack(mut put) = put_totem_ability(g) else { unreachable!() }; put.ability = 4; Event::AbilityPutOnStack(put) }
 )]
 #[case::an_activation_of_an_ability_that_is_not_there(
-    |g: &GameState| Event::AbilityActivated { player: PlayerId(0), source: g.object(totem_id(g)).unwrap().reference(), ability: 3 }
+    |g: &GameState| Event::AbilityActivated { player: PlayerId(0), source: g.object(totem_id(g)).unwrap().reference(), ability: 3, origin: crate::abilities::AbilitySource::default() }
 )]
 #[case::a_resolution_with_nothing_on_the_stack(
     |g: &GameState| Event::ResolutionBegan { object: totem_id(g) }
@@ -385,7 +387,7 @@ fn trigger_of(game: &GameState, ability: usize) -> Event {
     |g: &GameState| trigger_of(g, 5)
 )]
 #[case::a_trigger_removed_that_never_waited(
-    |g: &GameState| Event::TriggerRemoved { source: g.object(totem_id(g)).unwrap().reference(), ability: 0, delayed: None, cause: cause() }
+    |g: &GameState| Event::TriggerRemoved { source: g.object(totem_id(g)).unwrap().reference(), ability: 0, origin: crate::abilities::AbilitySource::default(), delayed: None, cause: cause() }
 )]
 #[case::a_trigger_put_on_the_stack_that_never_triggered(
     |g: &GameState| { let Event::AbilityPutOnStack(mut put) = put_totem_ability(g) else { unreachable!() }; put.cause = Some(cause()); Event::AbilityPutOnStack(put) }

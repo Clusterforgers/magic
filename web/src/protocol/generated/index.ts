@@ -78,6 +78,7 @@ export type { FullControlMode } from "./FullControlMode";
 export type { GameInfo } from "./GameInfo";
 export type { GameResult } from "./GameResult";
 export type { GameSeat } from "./GameSeat";
+export type { Grant } from "./Grant";
 export type { HiddenEvent } from "./HiddenEvent";
 export type { IgnoredCards } from "./IgnoredCards";
 export type { ImageLinks } from "./ImageLinks";

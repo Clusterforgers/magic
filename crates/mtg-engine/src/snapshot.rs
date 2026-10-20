@@ -4,7 +4,7 @@ use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
-use crate::characteristics::{Characteristics, characteristics};
+use crate::characteristics::{Characteristics, seen_as};
 use crate::object::ObjectRef;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -44,13 +44,14 @@ impl Snapshot {
 /// The object `id` as it is now, or `None` when there is no such object.
 pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
     let object = state.object(id)?;
+    let (characteristics, controller) = seen_as(state, id)?;
     Some(Snapshot {
         id,
         counter: object.counter(),
-        controller: object.controller(),
+        controller,
         owner: object.owner(),
         zone: object.zone(),
-        characteristics: characteristics(state, id)?,
+        characteristics,
         counters: object
             .permanent()
             .map(|permanent| {

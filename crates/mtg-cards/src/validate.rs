@@ -446,8 +446,31 @@ impl<'a> Walker<'a> {
                 self.keyword(keyword);
             }
             Modification::SetController(who) => self.reference(who, Kind::Player),
-            _ => {}
+            Modification::GrantAbility(granted) => self.granted(granted),
+            Modification::SwitchPT
+            | Modification::AddType(_)
+            | Modification::RemoveType(_)
+            | Modification::AddSubtype(_)
+            | Modification::SetColors(_)
+            | Modification::LoseAbilities
+            | Modification::CantAttack
+            | Modification::CantBlock => {}
         }
+    }
+
+    /// An ability a modification grants is checked as the ability it is, in a scope of its own. Only an activated or
+    /// a triggered one can be granted: a keyword is `AddKeyword`, and the others work only as printed.
+    fn granted(&mut self, granted: &Ability) {
+        if !matches!(
+            granted,
+            Ability::Activated { .. } | Ability::Triggered { .. }
+        ) {
+            self.problem("only an activated or a triggered ability can be granted (a keyword is `AddKeyword`)");
+            return;
+        }
+        let scope = std::mem::take(&mut self.scope);
+        self.at("GrantAbility", |w| w.ability(granted));
+        self.scope = scope;
     }
 
     fn mods(&mut self, mods: &[Modification]) {
@@ -1296,6 +1319,98 @@ mod tests {
         let ability: Ability = serde_json::from_str(json).unwrap();
         let expected: BTreeSet<String> = expected.iter().map(|name| (*name).to_owned()).collect();
         assert_eq!(used_primitives(&ability), expected);
+    }
+
+    const ALL_MINE: &str = r#"{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#;
+
+    #[rstest]
+    #[case::an_anthem(ALL_MINE, r#"{"ModifyPT":{"power":1,"toughness":1}}"#, &["Mod.ModifyPT"])]
+    #[case::set_power_and_toughness(ALL_MINE, r#"{"SetPT":{"power":1,"toughness":1}}"#, &["Mod.SetPT"])]
+    #[case::switching_them(r#""This""#, r#""SwitchPT""#, &["Mod.SwitchPT"])]
+    #[case::a_type(ALL_MINE, r#"{"AddType":"Artifact"}"#, &["Mod.AddType"])]
+    #[case::a_type_removed(ALL_MINE, r#"{"RemoveType":"Creature"}"#, &["Mod.RemoveType"])]
+    #[case::a_subtype(ALL_MINE, r#"{"AddSubtype":"Elf"}"#, &["Mod.AddSubtype"])]
+    #[case::colours(ALL_MINE, r#"{"SetColors":["Blue"]}"#, &["Mod.SetColors"])]
+    #[case::a_keyword(ALL_MINE, r#"{"AddKeyword":"Flying"}"#, &["Keyword.Flying", "Mod.AddKeyword"])]
+    #[case::a_keyword_taken_away(ALL_MINE, r#"{"RemoveKeyword":"Flying"}"#, &["Keyword.Flying", "Mod.RemoveKeyword"])]
+    #[case::every_ability_lost(ALL_MINE, r#""LoseAbilities""#, &["Mod.LoseAbilities"])]
+    #[case::control_of_the_enchanted_creature(r#""Attached""#, r#"{"SetController":"You"}"#, &["Mod.SetController"])]
+    #[case::not_attacking(ALL_MINE, r#""CantAttack""#, &["Mod.CantAttack"])]
+    #[case::not_blocking(r#""This""#, r#""CantBlock""#, &["Mod.CantBlock"])]
+    #[case::an_activated_ability(
+        ALL_MINE,
+        r#"{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}"#,
+        &["Ability.Activated", "Cost.Tap", "Effect.Draw", "Mod.GrantAbility"]
+    )]
+    #[case::a_triggered_ability_with_a_target(
+        ALL_MINE,
+        r#"{"GrantAbility":{"Triggered":{"when":{"Attacks":{"what":[{"This":null}]}},"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]}}}"#,
+        &["Ability.Triggered", "Effect.DealDamage", "Mod.GrantAbility", "Trigger.Attacks"]
+    )]
+    fn a_static_ability_names_the_modifications_it_uses(
+        #[case] affected: &str,
+        #[case] modification: &str,
+        #[case] names: &[&str],
+    ) {
+        let json = format!(r#"{{"Static":{{"affected":{affected},"mods":[{modification}]}}}}"#);
+        assert_eq!(problems(&json), Vec::<String>::new());
+        let ability: Ability = serde_json::from_str(&json).unwrap();
+        let expected: BTreeSet<String> = ["Ability.Static"]
+            .iter()
+            .chain(names)
+            .map(|name| (*name).to_owned())
+            .collect();
+        assert_eq!(used_primitives(&ability), expected);
+    }
+
+    #[rstest]
+    #[case::a_spell_is_not_granted(
+        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Spell":{"effects":[{"Draw":{}}]}}}]}}"#,
+        "abilities[0].Static.mods[0]: only an activated or a triggered ability can be granted"
+    )]
+    #[case::a_keyword_is_not_granted_this_way(
+        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Keyword":"Flying"}}]}}"#,
+        "abilities[0].Static.mods[0]: only an activated or a triggered ability can be granted"
+    )]
+    #[case::a_granted_ability_has_a_scope_of_its_own(
+        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"who":{"Target":0}}}]}}}]}}"#,
+        "mods[0].GrantAbility.Activated.effects[0].Draw.who: target 0 does not exist"
+    )]
+    #[case::a_player_is_not_an_affected_object(
+        r#"{"Static":{"affected":"You","mods":[{"AddType":"Artifact"}]}}"#,
+        "abilities[0].Static.affected: expected an object but this is a player"
+    )]
+    #[case::a_target_is_not_chosen_by_a_static(
+        r#"{"Static":{"affected":{"Target":0},"mods":[{"AddType":"Artifact"}]}}"#,
+        "abilities[0].Static.affected: target 0 does not exist"
+    )]
+    #[case::a_static_changes_something(
+        r#"{"Static":{"affected":"This","mods":[]}}"#,
+        "abilities[0].Static.mods: needs at least one modification"
+    )]
+    #[case::control_goes_to_a_player(
+        r#"{"Static":{"affected":"This","mods":[{"SetController":"This"}]}}"#,
+        "abilities[0].Static.mods[0]: expected a player but this is an object"
+    )]
+    fn a_bad_static_ability_is_named_where_it_is_wrong(#[case] json: &str, #[case] message: &str) {
+        let found = problems(json);
+        assert!(
+            found.iter().any(|problem| problem.contains(message)),
+            "{message:?} is not among {found:#?}"
+        );
+    }
+
+    #[test]
+    fn a_granted_triggered_ability_leaves_the_scope_of_the_static_as_it_was() {
+        // The granted ability is a trigger, where `Triggering` is valid; the condition after it is not.
+        let json = r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Triggered":{"when":{"Attacks":{"what":[{"This":null}]}},"effects":[{"Draw":{}}]}}}],"condition":{"Matches":{"subject":"Triggering","selector":[]}}}}"#;
+        let found = problems(json);
+        assert!(
+            found
+                .iter()
+                .any(|p| p.contains("`Triggering` is only valid in a triggered ability")),
+            "{found:#?}"
+        );
     }
 
     #[rstest]

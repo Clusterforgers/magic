@@ -1,0 +1,35 @@
+{
+  "oracle_id": "9d08af23-9f4a-4097-9abc-3b17475ab744",
+  "name": "Act of Treason",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Act of Treason",
+      "oracle_fingerprint": "0ade38d4cd197e84a4331daaeb1044d2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1169,6 +1169,7 @@ fn pipeline_events() -> Vec<Event> {
             choices: choices.clone(),
         },
         Event::AbilityPutOnStack(Box::new(PutOnStack {
+            origin: mtg_engine::abilities::AbilitySource::default(),
             object: ObjectId(90),
             source,
             snapshot: shot.clone(),
@@ -1185,8 +1186,10 @@ fn pipeline_events() -> Vec<Event> {
             player,
             source,
             ability: 0,
+            origin: mtg_engine::abilities::AbilitySource::default(),
         },
         Event::AbilityTriggered(Box::new(Triggered {
+            origin: mtg_engine::abilities::AbilitySource::default(),
             source,
             ability: 0,
             controller: player,
@@ -1201,6 +1204,7 @@ fn pipeline_events() -> Vec<Event> {
         Event::TriggerRemoved {
             source,
             ability: 0,
+            origin: mtg_engine::abilities::AbilitySource::default(),
             delayed: Some(DelayedId(2)),
             cause: Cause::default(),
         },

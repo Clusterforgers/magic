@@ -1,0 +1,12 @@
+{
+  "oracle_id": "45b42694-9ee8-44f3-9de3-aa2c0f1b6a13",
+  "name": "Jungle Lion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jungle Lion",
+      "oracle_fingerprint": "6789c3591d527fd5afdf867fd8025deb",
+      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+    }
+  ]
+}

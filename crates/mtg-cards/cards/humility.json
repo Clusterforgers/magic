@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ed7bdb3e-5c51-4547-9266-76a791e0b2b0",
+  "name": "Humility",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Humility",
+      "oracle_fingerprint": "bee4b269512f82aaa34b5fe9f4a51018",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }] },
+            "mods": ["LoseAbilities", { "SetPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

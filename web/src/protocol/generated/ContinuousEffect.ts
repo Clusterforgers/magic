@@ -18,9 +18,9 @@ export type ContinuousEffect = {
  */
 id: EffectId, 
 /**
- * Layer it applies in; always `modification.layer()`.
+ * Layer it applies in; always `modification.layer()`, and none for a restriction.
  */
-layer: Layer, 
+layer?: Layer, 
 /**
  * Affected objects.
  */

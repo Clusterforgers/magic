@@ -2,13 +2,14 @@
 
 use mtg_core::ids::PlayerId;
 
+use crate::characteristics::controller_of;
 use crate::combat::{attack_options, block_options, defending_players};
 use crate::damage::{DamagePass, damage_events, first_strike_step_needed, pending_assignment};
 use crate::decision::{Decision, DecisionKind, DiscardOptions};
 use crate::effects::Duration;
 use crate::events::{Event, NothingToDo};
 use crate::flow::Progress;
-use crate::object::PermanentState;
+use crate::object::{GameObject, PermanentState};
 use crate::priority::{all_passed, priority_options};
 use crate::stack::resolve_top;
 use crate::state::GameState;
@@ -41,10 +42,11 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
                 .zone(Zone::Battlefield)
                 .iter()
                 .filter(|id| {
-                    state.object(**id).is_some_and(|o| {
-                        o.controller() == active
-                            && o.permanent().is_some_and(PermanentState::tapped)
-                    })
+                    controller_of(state, **id) == Some(active)
+                        && state
+                            .object(**id)
+                            .and_then(GameObject::permanent)
+                            .is_some_and(PermanentState::tapped)
                 })
                 .map(|id| Event::PermanentUntapped { object: *id })
                 .collect();

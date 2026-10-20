@@ -1,0 +1,25 @@
+{
+  "oracle_id": "2361ca87-6352-4ba3-8d91-b3d71242914d",
+  "name": "Favorable Winds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Favorable Winds",
+      "oracle_fingerprint": "cab986a7ea897797cade518bb014e713",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                { "HasKeyword": "Flying" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

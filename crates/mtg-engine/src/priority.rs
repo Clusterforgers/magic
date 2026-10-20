@@ -9,10 +9,10 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 
-use crate::abilities::{AbilityRef, AbilitySource};
+use crate::abilities::AbilityRef;
 use crate::ability_reader::abilities_of;
 use crate::answers::Outcome;
-use crate::characteristics::characteristics;
+use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::announceable;
 use crate::decision::{PriorityAction, PriorityOptions};
 use crate::error::{EngineError, IllegalAnswer};
@@ -63,7 +63,7 @@ pub(crate) fn mana_options(state: &GameState, player: PlayerId) -> Vec<ManaOptio
         let Some(perm) = object.permanent() else {
             continue;
         };
-        if object.controller() != player || perm.tapped() {
+        if controller_of_object(state, object) != player || perm.tapped() {
             continue;
         }
         let Some(chars) = characteristics(state, id) else {
@@ -105,15 +105,13 @@ struct RuleMana {
     options: Vec<ManaOption>,
 }
 
-/// The mana source for the `colour`th option of the ability `address`, which an object with `printed` plain mana
-/// abilities has: its number follows the printed ones with five for each ability the reader lists, one for each
-/// colour it can add, so every colour is a distinct source of one permanent and a client taps for the colour it wants.
-const fn rule_source(printed: usize, address: AbilityRef, colour: usize) -> ManaSource {
-    let place = match address.source {
-        AbilitySource::Printed => address.ability,
-    };
+/// The mana source for the `colour`th option of the ability at position `place` among those the reader lists for
+/// `object`, which has `printed` plain mana abilities: its number follows the printed ones with five for each ability the
+/// reader lists, one for each colour it can add, so every colour is a distinct source of one permanent and a client taps
+/// for the colour it wants.
+const fn rule_source(printed: usize, object: ObjectId, place: usize, colour: usize) -> ManaSource {
     ManaSource {
-        object: address.object,
+        object,
         ability: printed + place * COLORS.len() + colour,
     }
 }
@@ -122,11 +120,11 @@ const fn rule_source(printed: usize, address: AbilityRef, colour: usize) -> Mana
 /// an object with `printed` plain mana abilities.
 fn rule_mana(state: &GameState, id: ObjectId, printed: usize) -> Vec<RuleMana> {
     let mut found = Vec::new();
-    for (address, rules) in abilities_of(state, id) {
+    for (place, (_, rules)) in abilities_of(state, id).into_iter().enumerate() {
         let Some(shape) = simple_mana_ability(&rules) else {
             continue;
         };
-        let source = |colour: usize| rule_source(printed, address, colour);
+        let source = |colour: usize| rule_source(printed, id, place, colour);
         let options = match shape.produces {
             ManaProduced::Fixed(mana) => vec![ManaOption {
                 source: source(0),
@@ -158,7 +156,7 @@ pub(crate) fn rule_mana_options(state: &GameState, player: PlayerId) -> Vec<Mana
         let Some(perm) = object.permanent() else {
             continue;
         };
-        if object.controller() != player {
+        if controller_of_object(state, object) != player {
             continue;
         }
         let Some(chars) = characteristics(state, id) else {
@@ -217,7 +215,8 @@ fn can_activate(
     else {
         return false;
     };
-    if *limit == Some(Limit::OncePerTurn) && state.limit_spent(object.reference(), address.ability)
+    if *limit == Some(Limit::OncePerTurn)
+        && state.limit_spent(object.reference(), address.source, address.ability)
     {
         return false;
     }
@@ -260,7 +259,7 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
         let Some(object) = state.object(id) else {
             continue;
         };
-        if object.controller() != player {
+        if controller_of_object(state, object) != player {
             continue;
         }
         for (address, rules) in abilities_of(state, id) {

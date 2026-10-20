@@ -9,7 +9,7 @@ use mtg_cards::ability::{Ability, Limit};
 use mtg_core::ids::PlayerId;
 
 use super::{DelayedId, Triggered};
-use crate::abilities::{AbilityRef, Cause, PutOnStack};
+use crate::abilities::{AbilityRef, AbilitySource, Cause, PutOnStack};
 use crate::ability_reader;
 use crate::cast::Pending;
 use crate::choose::{TriggerEntry, TriggersOptions};
@@ -55,12 +55,17 @@ impl PendingTrigger {
     fn is(
         &self,
         source: ObjectRef,
+        origin: AbilitySource,
         ability: usize,
         delayed: Option<DelayedId>,
         cause: &Cause,
     ) -> bool {
         let t = &self.trigger;
-        t.source == source && t.ability == ability && t.delayed == delayed && t.cause == *cause
+        t.source == source
+            && t.origin == origin
+            && t.ability == ability
+            && t.delayed == delayed
+            && t.cause == *cause
     }
 
     /// The words of the event it waits for, such as "When it enters the battlefield".
@@ -79,7 +84,12 @@ pub(crate) fn fold_triggered(state: &mut GameState, t: &Triggered) -> Result<(),
             if state.source_object(t.source.id).is_none() {
                 return Err(invalid(format!("{:?} triggered and is gone", t.source)));
             }
-            let rules = ability_reader::ability(state, AbilityRef::printed(t.source.id, t.ability))
+            let address = AbilityRef {
+                object: t.source.id,
+                ability: t.ability,
+                source: t.origin,
+            };
+            let rules = ability_reader::ability(state, address)
                 .ok_or_else(|| invalid(format!("{:?} has no ability {}", t.source, t.ability)))?;
             (rules, Bindings::new())
         }
@@ -98,7 +108,9 @@ pub(crate) fn fold_triggered(state: &mut GameState, t: &Triggered) -> Result<(),
             t.ability, t.source
         )));
     };
-    if limit == &Some(Limit::OncePerTurn) && !state.limits_spent.insert((t.source, t.ability)) {
+    if limit == &Some(Limit::OncePerTurn)
+        && !state.limits_spent.insert((t.source, t.origin, t.ability))
+    {
         return Err(invalid(format!(
             "ability {} of {:?} already triggered this turn",
             t.ability, t.source
@@ -175,7 +187,7 @@ pub(crate) fn take(state: &mut GameState, put: &PutOnStack) -> Result<PendingTri
     let at = state
         .pending_triggers
         .iter()
-        .position(|e| e.is(put.source, put.ability, put.delayed, cause))
+        .position(|e| e.is(put.source, put.origin, put.ability, put.delayed, cause))
         .ok_or_else(|| invalid(format!("no trigger of {:?} is waiting", put.source)))?;
     // Whatever triggers from here on waits for the next round.
     state.trigger_round += 1;
@@ -186,6 +198,7 @@ pub(crate) fn take(state: &mut GameState, put: &PutOnStack) -> Result<PendingTri
 pub(crate) fn fold_removed(
     state: &mut GameState,
     source: ObjectRef,
+    origin: AbilitySource,
     ability: usize,
     delayed: Option<DelayedId>,
     cause: &Cause,
@@ -193,7 +206,7 @@ pub(crate) fn fold_removed(
     let at = state
         .pending_triggers
         .iter()
-        .position(|e| e.is(source, ability, delayed, cause))
+        .position(|e| e.is(source, origin, ability, delayed, cause))
         .ok_or_else(|| invalid(format!("no trigger of {source:?} is waiting")))?;
     state.pending_triggers.remove(at);
     Ok(())
@@ -205,6 +218,7 @@ pub(crate) fn removing(entry: &PendingTrigger) -> Event {
     Event::TriggerRemoved {
         source: t.source,
         ability: t.ability,
+        origin: t.origin,
         delayed: t.delayed,
         cause: t.cause.clone(),
     }
@@ -212,7 +226,7 @@ pub(crate) fn removing(entry: &PendingTrigger) -> Event {
 
 /// Whether the order the controller puts `group` on the stack in can matter.
 ///
-/// Triggers of one source and ability do the same whichever goes first. Every other group is the controller's to
+/// Triggers of one source, one origin and one ability do the same whichever goes first. Every other group is the controller's to
 /// order, once.
 fn order_matters(state: &GameState, group: &[usize]) -> bool {
     let entries = || group.iter().map(|at| &state.pending_triggers[*at]);
@@ -221,12 +235,17 @@ fn order_matters(state: &GameState, group: &[usize]) -> bool {
         && entries().any(|e| !e.ordered)
         && entries().any(|e| {
             first.is_some_and(|first| {
-                (e.trigger.source.id, e.trigger.ability, e.trigger.delayed)
-                    != (
-                        first.trigger.source.id,
-                        first.trigger.ability,
-                        first.trigger.delayed,
-                    )
+                (
+                    e.trigger.source.id,
+                    e.trigger.origin,
+                    e.trigger.ability,
+                    e.trigger.delayed,
+                ) != (
+                    first.trigger.source.id,
+                    first.trigger.origin,
+                    first.trigger.ability,
+                    first.trigger.delayed,
+                )
             })
         })
 }
@@ -349,6 +368,7 @@ mod tests {
     fn trigger_of(state: &GameState, name: &str, ability: usize, subject: PlayerId) -> Triggered {
         let object = state.object(id(state, name)).unwrap();
         Triggered {
+            origin: crate::abilities::AbilitySource::default(),
             source: object.reference(),
             ability,
             controller: object.controller(),
@@ -447,6 +467,7 @@ mod tests {
         queue(&mut state, &[("Alpha", 0), ("Beta", 0)]);
         let first = state.pending_triggers()[0].trigger().clone();
         let put = crate::abilities::PutOnStack {
+            origin: crate::abilities::AbilitySource::default(),
             object: state.next_object(),
             source: first.source,
             snapshot: first.snapshot.clone(),
@@ -468,10 +489,26 @@ mod tests {
             "Gamma waits for its round"
         );
         let beta = state.pending_triggers()[0].trigger().clone();
-        fold_removed(&mut state, beta.source, beta.ability, None, &beta.cause).unwrap();
+        fold_removed(
+            &mut state,
+            beta.source,
+            beta.origin,
+            beta.ability,
+            None,
+            &beta.cause,
+        )
+        .unwrap();
         assert_eq!(group(&state, FOE), [0], "now it is Gamma's round");
         assert!(
-            fold_removed(&mut state, beta.source, beta.ability, None, &beta.cause).is_err(),
+            fold_removed(
+                &mut state,
+                beta.source,
+                beta.origin,
+                beta.ability,
+                None,
+                &beta.cause
+            )
+            .is_err(),
             "it is gone"
         );
     }

@@ -4,12 +4,11 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
-use crate::characteristics::characteristics;
+use crate::characteristics::{cant_attack, cant_block, characteristics, controller_of};
 use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption};
 use crate::error::IllegalAnswer;
 use crate::events::Event;
 use crate::keywords;
-use crate::object::GameObject;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -117,7 +116,7 @@ impl CombatState {
 pub fn defending_player(state: &GameState, target: AttackTarget) -> Option<PlayerId> {
     match target {
         AttackTarget::Player(p) => Some(p),
-        AttackTarget::Planeswalker(id) => state.object(id).map(GameObject::controller),
+        AttackTarget::Planeswalker(id) => controller_of(state, id),
     }
 }
 
@@ -132,7 +131,8 @@ fn is_untapped_creature(state: &GameState, id: ObjectId) -> bool {
 
 /// Whether `id` may be declared as an attacker by `player` now.
 pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> bool {
-    state.object(id).is_some_and(|o| o.controller() == player)
+    controller_of(state, id) == Some(player)
+        && !cant_attack(state, id)
         && !keywords::summoning_sick(state, id)
         && !keywords::forbids_attacking(state, id)
         && is_untapped_creature(state, id)
@@ -148,9 +148,7 @@ pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTa
     for &id in state.zone(Zone::Battlefield) {
         let is_walker =
             characteristics(state, id).is_some_and(|c| c.types.contains(CardType::Planeswalker));
-        let hostile = state
-            .object(id)
-            .is_some_and(|o| o.controller() != player && state.is_alive(o.controller()));
+        let hostile = controller_of(state, id).is_some_and(|c| c != player && state.is_alive(c));
         if is_walker && hostile {
             targets.push(AttackTarget::Planeswalker(id));
         }
@@ -208,8 +206,9 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .iter()
         .copied()
         .filter(|id| {
-            state.object(*id).is_some_and(|o| o.controller() == player)
+            controller_of(state, *id) == Some(player)
                 && is_untapped_creature(state, *id)
+                && !cant_block(state, *id)
         })
         .map(|object| {
             let can_block: Vec<ObjectId> = blockable

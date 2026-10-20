@@ -8,6 +8,7 @@
 mod add_mana;
 mod choose;
 mod continuous;
+pub(crate) use continuous::lower;
 mod counter;
 mod create_token;
 mod deal_damage;

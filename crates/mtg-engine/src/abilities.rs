@@ -4,7 +4,7 @@ use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
-use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::choose::{Choices, Target};
@@ -12,6 +12,27 @@ use crate::object::ObjectRef;
 use crate::resolve::Bindings;
 use crate::snapshot::Snapshot;
 use crate::triggers::DelayedId;
+
+/// What gives an object an ability it does not print: a continuous effect, or one modification of a static ability.
+///
+/// The name holds as long as the grant does, and it resolves to the very ability the effect grants whether or not the
+/// object that has it is still there: a registered effect by its id, a static by the card it is printed on.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Grant {
+    /// A continuous effect that a resolved spell or ability began (`Effect::Continuous`), named by its id.
+    Effect(EffectId),
+    /// The modification `index` of the static ability `rule` printed on the card of `source`, where `rule` is the
+    /// static's index among the rules of that card.
+    Static {
+        /// The object with the static ability.
+        source: ObjectId,
+        /// The static's index among the rules of its card.
+        rule: usize,
+        /// The modification's index among the static's modifications.
+        index: usize,
+    },
+}
 
 /// Where an ability of an object comes from, which with the object and an index names it (`ability_reader`).
 #[derive(
@@ -22,6 +43,8 @@ pub enum AbilitySource {
     /// Printed on the object's card: the index is the ability's index among the card's rules.
     #[default]
     Printed,
+    /// Given to the object by an effect: the index is 0, since a modification grants one ability.
+    Granted(Grant),
 }
 
 impl AbilitySource {
@@ -56,6 +79,15 @@ impl AbilityRef {
             source: AbilitySource::Printed,
         }
     }
+
+    /// The address of the ability `object` has because of `grant`.
+    pub const fn granted(object: ObjectId, grant: Grant) -> Self {
+        AbilityRef {
+            object,
+            ability: 0,
+            source: AbilitySource::Granted(grant),
+        }
+    }
 }
 
 /// What made a triggered ability trigger: the objects and players the event was about.
@@ -80,8 +112,12 @@ pub struct PutOnStack {
     pub source: ObjectRef,
     /// The source as it was when the ability was put on the stack (a cost may have moved it since).
     pub snapshot: Snapshot,
-    /// Its index among the rules of the source's card.
+    /// Its index among the rules of the source's card; 0 for a granted ability.
     pub ability: usize,
+    /// Where the ability comes from: the card, or an effect that granted it.
+    #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
+    pub origin: AbilitySource,
     /// Who controls it.
     pub controller: PlayerId,
     /// What the controller announced: targets, modes and the like.

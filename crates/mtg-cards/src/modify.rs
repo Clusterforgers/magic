@@ -1,9 +1,12 @@
 //! Modifications of objects and rules, and how long an effect lasts.
 
+use std::sync::Arc;
+
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
+use crate::ability::Ability;
 use crate::keyword::Keyword;
 use crate::refs::Ref;
 use crate::value::Amount;
@@ -31,6 +34,8 @@ pub enum Modification {
     SwitchPT,
     /// Adds a card type (layer 4).
     AddType(CardType),
+    /// Removes a card type (layer 4).
+    RemoveType(CardType),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
     /// Replaces the colors (layer 5).
@@ -39,6 +44,10 @@ pub enum Modification {
     AddKeyword(Keyword),
     /// Removes a keyword ability (layer 6).
     RemoveKeyword(Keyword),
+    /// Gives the object an activated or a triggered ability (layer 6); a keyword is `AddKeyword`.
+    GrantAbility(Arc<Ability>),
+    /// The object loses all its abilities (layer 6); abilities granted after it still count.
+    LoseAbilities,
     /// Changes the controller to the player (layer 2).
     SetController(Ref),
     /// The object can't attack (a restriction, no layer).
@@ -52,9 +61,14 @@ impl Modification {
     pub const fn layer(&self) -> Option<&'static str> {
         match self {
             Modification::SetController(_) => Some("2"),
-            Modification::AddType(_) | Modification::AddSubtype(_) => Some("4"),
+            Modification::AddType(_)
+            | Modification::RemoveType(_)
+            | Modification::AddSubtype(_) => Some("4"),
             Modification::SetColors(_) => Some("5"),
-            Modification::AddKeyword(_) | Modification::RemoveKeyword(_) => Some("6"),
+            Modification::AddKeyword(_)
+            | Modification::RemoveKeyword(_)
+            | Modification::GrantAbility(_)
+            | Modification::LoseAbilities => Some("6"),
             Modification::SetPT { .. } => Some("7b"),
             Modification::ModifyPT { .. } => Some("7c"),
             Modification::SwitchPT => Some("7d"),
@@ -89,11 +103,28 @@ pub enum GameRule {
 mod tests {
     //! Goal: every modification belongs to the layer CR 613 gives it, and the JSON forms are stable.
     use super::*;
+    use crate::ability::Timing;
+    use crate::cost::Cost;
+    use crate::refs::ZoneKind;
     use rstest::rstest;
+
+    fn granted() -> Arc<Ability> {
+        Arc::new(Ability::Activated {
+            cost: Cost(Vec::new()),
+            timing: Timing::Instant,
+            limit: None,
+            from: ZoneKind::Battlefield,
+            targets: Vec::new(),
+            effects: Vec::new(),
+        })
+    }
 
     #[rstest]
     #[case(Modification::SetController(Ref::You), Some("2"))]
     #[case(Modification::AddType(CardType::Artifact), Some("4"))]
+    #[case(Modification::RemoveType(CardType::Creature), Some("4"))]
+    #[case(Modification::GrantAbility(granted()), Some("6"))]
+    #[case(Modification::LoseAbilities, Some("6"))]
     #[case(Modification::AddSubtype(Subtype("Elf".into())), Some("4"))]
     #[case(Modification::SetColors(vec![Color::Blue]), Some("5"))]
     #[case(Modification::AddKeyword(Keyword::Flying), Some("6"))]

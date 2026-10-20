@@ -54,6 +54,8 @@ pub struct PermanentState {
     pub(crate) summoning_sick: bool,
     pub(crate) counters: BTreeMap<CounterKind, u32>,
     pub(crate) attached_to: Option<ObjectRef>,
+    pub(crate) timestamp: u64,
+    pub(crate) observed: Option<PlayerId>,
 }
 
 impl PermanentState {
@@ -80,6 +82,17 @@ impl PermanentState {
     /// The counters on the permanent, by kind in a fixed order; a kind it has none of is not listed.
     pub fn counters(&self) -> impl Iterator<Item = (&CounterKind, u32)> {
         self.counters.iter().map(|(kind, count)| (kind, *count))
+    }
+
+    /// The time the permanent entered the battlefield: the timestamp of its static abilities (CR 613.7).
+    pub const fn timestamp(&self) -> u64 {
+        self.timestamp
+    }
+
+    /// Whether summoning sickness holds it back for `controller`: it has not been under their control since their turn
+    /// began, because it entered since, or because it was under another player's control when it last was.
+    pub fn sick_for(&self, controller: PlayerId) -> bool {
+        self.summoning_sick || self.observed.is_some_and(|seen| seen != controller)
     }
 
     /// The permanent it is attached to, named as it was when attached (an Aura or Equipment); `GameState::host_of` says whether that is still so.

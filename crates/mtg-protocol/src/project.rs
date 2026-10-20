@@ -2,7 +2,7 @@
 
 use mtg_core::card::{CardType, CardTypes};
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_engine::characteristics::characteristics;
+use mtg_engine::characteristics::{characteristics, controller_of};
 use mtg_engine::combat::Attacker;
 use mtg_engine::forecast::pending_combat_forecast;
 use mtg_engine::keywords::{keywords_of, summoning_sick};
@@ -145,7 +145,7 @@ impl ObjectView {
         Some(ObjectView {
             id,
             owner: object.owner(),
-            controller: object.controller(),
+            controller: controller_of(state, id).unwrap_or_else(|| object.controller()),
             zone: object.zone(),
             name: card.name.clone(),
             mana_cost: card.mana_cost.clone().filter(|_| printed),
@@ -155,8 +155,15 @@ impl ObjectView {
                 Vec::new()
             },
             types: type_list(chars.types),
+            // What the card prints, then what effects gave it.
             subtypes: if printed {
-                card.subtypes.clone()
+                let mut all = card.subtypes.clone();
+                let given = chars
+                    .subtypes
+                    .iter()
+                    .filter(|subtype| !all.contains(subtype));
+                all.extend(given.cloned().collect::<Vec<_>>());
+                all
             } else {
                 Vec::new()
             },

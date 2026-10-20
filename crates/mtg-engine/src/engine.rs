@@ -4,6 +4,7 @@ use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::answers::{Outcome, handle};
 use crate::cast::{Next, Pending, What, announce};
+use crate::characteristics::controller_of_object;
 use crate::decision::{Answer, Decision};
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::error::{EngineError, PreviewError};
@@ -222,7 +223,10 @@ impl Engine {
         }
         let controller = source
             .and_then(|source| self.state.object(source.id))
-            .map_or_else(|| self.state.turn().active(), GameObject::controller);
+            .map_or_else(
+                || self.state.turn().active(),
+                |object| controller_of_object(&self.state, object),
+            );
         let mut effect = ContinuousEffect::new(
             EffectId(self.state.next_effect),
             selector,
@@ -291,7 +295,8 @@ impl Engine {
     /// Folds and logs the events, then the triggered abilities they set off (CR 603.2): those are found by comparing
     /// the state before the events with the state after, and their own events follow in the log.
     fn commit(&mut self, events: Vec<Event>) -> Result<(), EngineError> {
-        let watching = self.state.watches();
+        // A batch that brings in the first thing that can trigger (a token, a granted ability) is watched too.
+        let watching = self.state.watches() || triggers::introduces(&events);
         let before = (watching && triggers::needs_before(&events)).then(|| self.state.clone());
         let start = self.events.len();
         for event in events {

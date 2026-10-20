@@ -11,6 +11,8 @@ use std::collections::BTreeSet;
 
 use mtg_core::ids::{ObjectId, PlayerId};
 
+use crate::characteristics::controller_of;
+use crate::effects::Modification;
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::mana::ManaPool;
@@ -18,7 +20,9 @@ use crate::player::{LossReason, Player, PlayerStatus};
 use crate::priority::PriorityState;
 use crate::sight;
 use crate::state::{GameResult, GameState, Stage};
+use crate::triggers::triggers_something;
 use crate::turn::Step;
+use crate::zones::Zone;
 
 pub(crate) fn invalid(message: impl Into<String>) -> EngineError {
     EngineError::InvalidEvent(message.into())
@@ -40,6 +44,8 @@ fn pool_mut(state: &mut GameState, id: PlayerId) -> Result<&mut ManaPool, Engine
 /// Returns an error (leaving the state possibly part-way changed) only for events that cannot
 /// follow from the current state, which indicates an engine bug or a corrupt log.
 pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
+    // What the static abilities do is read from the state, which this event changes.
+    state.statics.reset();
     match event {
         Event::FirstPlayerChosen { .. }
         | Event::LibraryShuffled { .. }
@@ -78,9 +84,10 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         Event::TriggerRemoved {
             source,
             ability,
+            origin,
             delayed,
             cause,
-        } => crate::triggers::fold_removed(state, *source, *ability, *delayed, cause),
+        } => crate::triggers::fold_removed(state, *source, *origin, *ability, *delayed, cause),
         Event::DelayedTriggerCreated(created) => crate::triggers::fold_created(state, created),
         Event::DelayedTriggerExpired { id } => crate::triggers::fold_expired(state, *id),
         Event::CountersChanged(counters) => crate::counters::fold(state, counters),
@@ -119,11 +126,22 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.limits_spent.clear();
             state.priority = None;
             state.combat = crate::combat::CombatState::default();
-            for object in state.objects.values_mut() {
-                if object.controller == *active
-                    && let Some(perm) = &mut object.permanent
+            // A permanent its controller has held since this turn began is no longer held back (CR 302.6): who
+            // controls it is read under the effects as they are now.
+            let rested: Vec<ObjectId> = state
+                .zone(Zone::Battlefield)
+                .iter()
+                .copied()
+                .filter(|id| controller_of(state, *id) == Some(*active))
+                .collect();
+            for id in rested {
+                if let Some(perm) = state
+                    .objects
+                    .get_mut(&id)
+                    .and_then(|o| o.permanent.as_mut())
                 {
                     perm.summoning_sick = false;
+                    perm.observed = Some(*active);
                 }
             }
         }
@@ -180,6 +198,11 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
             state.next_effect = state.next_effect.max(effect.id.0 + 1);
             state.next_timestamp = state.next_timestamp.max(effect.timestamp + 1);
+            if let Modification::GrantAbility(granted) = &effect.modification
+                && triggers_something(granted)
+            {
+                state.triggers_possible = true;
+            }
             state.effects.push(effect.clone());
         }
         Event::EffectExpired { id } => {

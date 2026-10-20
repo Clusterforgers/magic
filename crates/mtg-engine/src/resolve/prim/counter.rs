@@ -109,6 +109,7 @@ mod tests {
         cast(&mut game, FOE, "Charm");
         let totem = named(&game, "Totem");
         let put = PutOnStack {
+            origin: crate::abilities::AbilitySource::default(),
             object: game.next_object(),
             source: totem,
             snapshot: crate::snapshot::snapshot(&game, totem.id).unwrap(),

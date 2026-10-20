@@ -29,18 +29,20 @@ use Support::{Manual, Partial, Verified};
 /// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
 /// countering, scrying, looking at, revealing and searching for cards, choosing and moving them (onto the battlefield
 /// included), shuffling, life and damage, paying mana as an effect, creating tokens, adding mana, conditions, tapping
-/// and untapping, winning the game, continuous effects that pump or grant a keyword, and the keywords of combat and
-/// flash, so the twenty-one cards that need no more are Verified (the
+/// and untapping, winning the game, continuous effects and static abilities of every modification (types, subtypes, colours,
+/// power and toughness, keywords, abilities, control and attack and block restrictions), and the keywords of combat and
+/// flash, so the twenty-eight cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
 /// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback; Hero
 /// of Bladehold's tokens, not its battle cry; Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays
 /// with the table for its loyalty costs and Flooded Strand for the life it costs.
-const CARDS: [(&str, Support, usize); 40] = [
+const CARDS: [(&str, Support, usize); 47] = [
+    ("Act of Treason", Verified, 1),
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
     ("Bloodbraid Elf", Partial, 1),
     ("Bonecrusher Giant // Stomp", Manual, 0),
-    ("Bonesplitter", Manual, 0),
+    ("Bonesplitter", Partial, 1),
     ("Brainstorm", Verified, 1),
     ("Burst Lightning", Manual, 0),
     ("Counterspell", Verified, 1),
@@ -50,6 +52,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Doom Blade", Verified, 1),
     ("Eternal Witness", Verified, 1),
     ("Faithless Looting", Partial, 1),
+    ("Favorable Winds", Verified, 1),
     ("Felidar Sovereign", Verified, 3),
     ("Fire // Ice", Manual, 0),
     ("Fireball", Manual, 0),
@@ -57,15 +60,20 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Forest", Verified, 1),
     ("Gaea's Cradle", Manual, 0),
     ("Giant Growth", Verified, 1),
+    ("Glorious Anthem", Verified, 1),
+    ("Goblin Chieftain", Verified, 2),
     ("Grizzly Bears", Verified, 0),
     ("Hero of Bladehold", Partial, 1),
+    ("Humility", Verified, 1),
     ("Izzet Charm", Verified, 1),
     ("Jace, the Mind Sculptor", Manual, 0),
+    ("Jungle Lion", Verified, 1),
+    ("Levitation", Verified, 1),
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
     ("Mulldrifter", Partial, 2),
     ("Opt", Verified, 1),
-    ("Pacifism", Manual, 0),
+    ("Pacifism", Partial, 1),
     ("Panharmonicon", Manual, 0),
     ("Questing Beast", Partial, 3),
     ("Rampant Growth", Verified, 1),
@@ -82,7 +90,7 @@ const CARDS: [(&str, Support, usize); 40] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 40);
+    assert_eq!(in_table.len(), 47);
     assert_eq!(in_table, in_corpus);
 }
 

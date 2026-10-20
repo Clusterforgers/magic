@@ -300,9 +300,44 @@ fn modification() -> impl Strategy<Value = Modification> {
         vec(color(), 0..3).prop_map(Modification::SetColors),
         keyword().prop_map(Modification::AddKeyword),
         keyword().prop_map(Modification::RemoveKeyword),
+        card_type().prop_map(Modification::RemoveType),
+        Just(Modification::LoseAbilities),
+        granted().prop_map(|ability| Modification::GrantAbility(std::sync::Arc::new(ability))),
         reference().prop_map(Modification::SetController),
         Just(Modification::CantAttack),
         Just(Modification::CantBlock),
+    ]
+}
+
+/// An activated or a triggered ability built without the strategy of an effect, which a modification would call back.
+fn granted() -> impl Strategy<Value = Ability> {
+    let gain = || {
+        vec![Effect::GainLife {
+            who: Ref::You,
+            amount: Amount::Fixed(1),
+        }]
+    };
+    prop_oneof![
+        (cost(), any::<bool>()).prop_map(move |(cost, sorcery)| Ability::Activated {
+            cost,
+            timing: if sorcery {
+                Timing::Sorcery
+            } else {
+                Timing::Instant
+            },
+            limit: None,
+            from: ZoneKind::Battlefield,
+            targets: Vec::new(),
+            effects: gain(),
+        }),
+        trigger_pattern().prop_map(move |when| Ability::Triggered {
+            when,
+            intervening_if: None,
+            limit: None,
+            from: ZoneKind::Battlefield,
+            targets: Vec::new(),
+            effects: gain(),
+        }),
     ]
 }
 

@@ -80,14 +80,14 @@ fn effects_are_applied_in_cr_613_layer_order() {
     assert!(order.windows(2).all(|w| w[0] < w[1]));
     assert_eq!(
         Modification::AddType(CardType::Creature).layer(),
-        Layer::Type
+        Some(Layer::Type)
     );
     assert_eq!(
         Modification::SetColors(ColorSet::EMPTY).layer(),
-        Layer::Color
+        Some(Layer::Color)
     );
-    assert_eq!(set(1, 1).layer(), Layer::PtSet);
-    assert_eq!(pump(1, 1).layer(), Layer::PtModify);
+    assert_eq!(set(1, 1).layer(), Some(Layer::PtSet));
+    assert_eq!(pump(1, 1).layer(), Some(Layer::PtModify));
 }
 
 #[test]
@@ -309,7 +309,7 @@ fn effect_ids_and_timestamps_strictly_increase() -> Result<(), ScriptError> {
             .windows(2)
             .all(|w| w[0].id < w[1].id && w[0].timestamp < w[1].timestamp)
     );
-    assert!(effects.iter().all(|e| e.layer == Layer::PtModify));
+    assert!(effects.iter().all(|e| e.layer == Some(Layer::PtModify)));
     Ok(())
 }
 

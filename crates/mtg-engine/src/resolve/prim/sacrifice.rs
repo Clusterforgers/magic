@@ -3,6 +3,7 @@
 use mtg_cards::effect::Effect;
 
 use super::wrong_effect;
+use crate::characteristics::controller_of;
 use crate::choose::{Chooser, Picked, pick_cards};
 use crate::events::{Event, ZoneCause};
 use crate::resolve::{Cx, Next, ResolveError, Run};
@@ -32,7 +33,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 .iter()
                 .filter(|permanent| {
                     state.object(permanent.id).is_some_and(|object| {
-                        object.zone() == Zone::Battlefield && object.controller() == player
+                        object.zone() == Zone::Battlefield
+                            && controller_of(state, permanent.id) == Some(player)
                     })
                 })
                 .map(|permanent| permanent.id)

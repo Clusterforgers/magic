@@ -4,7 +4,7 @@ use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
-use crate::abilities::{Cause, PutOnStack};
+use crate::abilities::{AbilitySource, Cause, PutOnStack};
 use crate::choose::{Choice, Choices, Target};
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::counters::CountersChanged;
@@ -277,8 +277,12 @@ pub enum Event {
         player: PlayerId,
         /// The object it comes from.
         source: ObjectRef,
-        /// Its index among the rules of the source's card.
+        /// Its index among the rules of the source's card; 0 for a granted ability.
         ability: usize,
+        /// Where the ability comes from: the card, or an effect that granted it.
+        #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
+        origin: AbilitySource,
     },
     /// A triggered ability triggered and waits to be put on the stack.
     AbilityTriggered(Box<Triggered>),
@@ -294,8 +298,12 @@ pub enum Event {
     TriggerRemoved {
         /// The object with the ability, as it was.
         source: ObjectRef,
-        /// Its index among the rules of the source's card.
+        /// Its index among the rules of the source's card; 0 for a granted ability.
         ability: usize,
+        /// Where the ability comes from: the card, or an effect that granted it.
+        #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
+        origin: AbilitySource,
         /// The delayed trigger it is one of, for a delayed triggered ability.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]

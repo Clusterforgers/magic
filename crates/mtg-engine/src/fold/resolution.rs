@@ -19,14 +19,22 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
     match event {
         Event::AbilityPutOnStack(put) => put_on_stack(state, put),
         Event::AbilityActivated {
-            source, ability, ..
+            source,
+            ability,
+            origin,
+            ..
         } => {
             if state.source_object(source.id).is_none() {
                 return Err(invalid(format!(
                     "{source:?} activated an ability and is gone"
                 )));
             }
-            let rules = ability_reader::ability(state, AbilityRef::printed(source.id, *ability))
+            let address = AbilityRef {
+                object: source.id,
+                ability: *ability,
+                source: *origin,
+            };
+            let rules = ability_reader::ability(state, address)
                 .ok_or_else(|| invalid(format!("{source:?} has no ability {ability}")))?;
             let once = matches!(
                 &*rules,
@@ -35,7 +43,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     ..
                 }
             );
-            if once && !state.limits_spent.insert((*source, *ability)) {
+            if once && !state.limits_spent.insert((*source, *origin, *ability)) {
                 return Err(invalid(format!(
                     "ability {ability} of {source:?} was already used this turn"
                 )));
@@ -109,7 +117,12 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
                 "the source {source:?} of an ability is gone"
             )));
         }
-        let rules = ability_reader::ability(state, AbilityRef::printed(source.id, put.ability))
+        let address = AbilityRef {
+            object: source.id,
+            ability: put.ability,
+            source: put.origin,
+        };
+        let rules = ability_reader::ability(state, address)
             .ok_or_else(|| invalid(format!("{source:?} has no ability {}", put.ability)))?;
         (rules, Bindings::new())
     };
