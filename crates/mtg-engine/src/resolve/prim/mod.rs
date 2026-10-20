@@ -178,6 +178,8 @@ mod tests {
                 "Effect.GainLife",
                 "Effect.LoseLife",
                 "Effect.AddMana",
+                "Effect.Tap",
+                "Effect.Untap",
                 "Effect.CreateToken",
                 "Effect.Continuous",
                 "Effect.DelayedTrigger",

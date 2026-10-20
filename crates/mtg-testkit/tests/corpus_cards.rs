@@ -241,7 +241,7 @@ fn lacking(name: &str) -> Vec<String> {
 #[case::flooded_strand("Flooded Strand", &["Cost.PayLife"])]
 #[case::delver(
     "Delver of Secrets // Insectile Aberration",
-    &["Effect.If", "Effect.Transform"]
+    &["Effect.Transform"]
 )]
 #[case::jace("Jace, the Mind Sculptor", &["Ability.Loyalty"])]
 fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(

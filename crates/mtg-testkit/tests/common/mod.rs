@@ -78,6 +78,26 @@ pub fn on_battlefield(state: &GameState, name: &str) -> Option<mtg_core::ids::Ob
         .find(|id| state.object(*id).is_some_and(|o| o.card().name == name))
 }
 
+/// A card of `card_type` for `{0}` whose one ability is a spell with these targets and effects, both written as JSON.
+#[allow(clippy::expect_used)]
+pub fn spell(
+    name: &str,
+    card_type: mtg_core::card::CardType,
+    targets: &str,
+    effects: &str,
+) -> std::sync::Arc<mtg_cards::CardDefinition> {
+    let rules: mtg_cards::ability::Ability = serde_json::from_str(&format!(
+        r#"{{"Spell":{{"targets":{targets},"effects":{effects}}}}}"#
+    ))
+    .expect("the spell is written in the card DSL");
+    std::sync::Arc::new(
+        mtg_cards::CardDefinition::new(name)
+            .with_type(card_type)
+            .with_mana_cost(mtg_testkit::cards::cost(0, &[]))
+            .with_rules(rules),
+    )
+}
+
 pub mod combat;
 pub mod forecast;
 pub mod keywords;

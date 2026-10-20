@@ -13,22 +13,13 @@ use mtg_core::card::CardType;
 use mtg_engine::caps;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{cost, free_creature};
+use mtg_testkit::cards::free_creature;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
 /// An instant for `{0}` whose one ability is a spell with these targets and effects, both as JSON.
 fn spell(name: &str, targets: &str, effects: &str) -> Arc<CardDefinition> {
-    let rules: Ability = serde_json::from_str(&format!(
-        r#"{{"Spell":{{"targets":{targets},"effects":{effects}}}}}"#
-    ))
-    .unwrap();
-    Arc::new(
-        CardDefinition::new(name)
-            .with_type(CardType::Instant)
-            .with_mana_cost(cost(0, &[]))
-            .with_rules(rules),
-    )
+    common::spell(name, CardType::Instant, targets, effects)
 }
 
 /// `seats` seats; seat 0 holds `card` and `creatures` free 2/2s, and the turn is its own or seat 1's. Whoever holds
