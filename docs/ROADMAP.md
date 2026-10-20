@@ -22,7 +22,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - Game flow: auto-pass, response clocks, yields, stops and Full Control, idle windows as short hidden clocks, leak tests (`docs/arena-flow.md`, P1 to P8)
 - Web: core client, game UI with prompts for all eight decision kinds, N-seat table with log and stack panel, table animations, concede, lobby, account pages, Playwright e2e; the UI rebuild U1 to U12 (tokens, fit engine, grid, controls dock, turn feedback, game browser, layout gate)
 - Decks: list, import, export, builder, and the deck check with the Verified marker
-- Card system so far: the DSL, card assembly and effect pipeline (`docs/cards-dsl.md`); the keywords of combat and hexproof; triggers with APNAP order, delayed triggers and intervening if; pumps and keyword grants through layers 6 and 7c; discard, sacrifice, the library effects, destroy, exile, counter, pay, search, tokens (Treasure, Clue, Food), modes, yes or no and options
+- Card system so far: the DSL, card assembly and effect pipeline (`docs/cards-dsl.md`); the keywords of combat, hexproof and flash; triggers with APNAP order, delayed triggers and intervening if; pumps and keyword grants through layers 6 and 7c; discard, sacrifice, mill, the library effects, destroy, exile, counter, tap, untap, conditions, winning the game, pay, search, tokens (Treasure, Clue, Food), modes, yes or no and options
 
 ## M3 Card system
 
@@ -42,7 +42,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (r1c) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes the ones that validate; a compiled mode without a label shows its rendered text in the mode prompt
 
 ### Small effects
-- [ ] (q) `Effect::If` with its conditions, `Tap`, `Untap`, `Mill`, `WinGame` and the keyword Flash; Felidar Sovereign is Verified
+- [x] (q) `Effect::If` with its conditions, `Tap`, `Untap`, `Mill`, `WinGame` and the keyword Flash; Felidar Sovereign is Verified
 
 ### Abilities and characteristics
 - [ ] (k1) One reader of an object's abilities (printed, keyword-provided, granted, lost, from the zone they work in) with stable addresses

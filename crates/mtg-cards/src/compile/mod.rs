@@ -315,7 +315,7 @@ mod tests {
     )]
     #[case::keyword_and_unread_trigger(
         "Creature \u{2014} Elf",
-        "Haste\nWhen ~ enters, tap target creature.",
+        "Haste\nWhen ~ enters, goad target creature.",
         Some(ImplStatus::Partial)
     )]
     #[case::trigger_with_an_ability_word(
@@ -328,7 +328,7 @@ mod tests {
         "Equipped creature gets +2/+0.\nEquip {1}",
         Some(ImplStatus::Partial)
     )]
-    #[case::nothing_read("Instant", "Tap target creature.", Some(ImplStatus::Manual))]
+    #[case::nothing_read("Instant", "Goad target creature.", Some(ImplStatus::Manual))]
     #[case::spell_read_whole("Instant", "~ deals 3 damage to any target.", Some(ImplStatus::Full))]
     #[case::mana_ability_read("Creature \u{2014} Elf", "{T}: Add {G}.", Some(ImplStatus::Full))]
     #[case::spell_lines_read_as_one_ability(
@@ -338,7 +338,7 @@ mod tests {
     )]
     #[case::one_unread_spell_line_leaves_every_line(
         "Sorcery",
-        "Draw a card.\nTap target creature.",
+        "Draw a card.\nGoad target creature.",
         Some(ImplStatus::Manual)
     )]
     #[case::unreadable_keyword_only("Creature \u{2014} Elf", "Undying", Some(ImplStatus::Manual))]
@@ -353,7 +353,7 @@ mod tests {
     )]
     #[case::spell_with_keyword_and_unread_effect(
         "Instant",
-        "Kicker {1}\nTap target creature.",
+        "Kicker {1}\nGoad target creature.",
         Some(ImplStatus::Partial)
     )]
     #[case::modes_are_the_whole_spell(
@@ -368,7 +368,7 @@ mod tests {
     )]
     #[case::an_unread_mode(
         "Instant",
-        "Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} Tap target creature.",
+        "Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} Goad target creature.",
         Some(ImplStatus::Manual)
     )]
     #[case::modes_beside_spell_lines(
@@ -418,7 +418,8 @@ mod tests {
 
     #[test]
     fn a_partial_card_keeps_a_manual_ability_for_each_unread_clause_in_order() {
-        let text = "Flying\nWhenever ~ attacks, tap target creature.\n{T}: Draw a card.\nVigilance";
+        let text =
+            "Flying\nWhenever ~ attacks, goad target creature.\n{T}: Draw a card.\nVigilance";
         let compiled = one("Test Card", "Creature \u{2014} Bird", text);
         let card = compiled.card.unwrap();
         let abilities = &card.faces[0].abilities;
@@ -431,13 +432,13 @@ mod tests {
         assert_eq!(reason, "a triggered ability the compiler does not read yet");
         assert_eq!(
             span.slice(text),
-            Some("Whenever ~ attacks, tap target creature.")
+            Some("Whenever ~ attacks, goad target creature.")
         );
         assert_eq!(
             abilities[2],
             Ability::Manual {
                 reason: "an activated ability the compiler does not read yet".into(),
-                span: Span { start: 48, end: 65 }
+                span: Span { start: 49, end: 66 }
             }
         );
         let kinds: Vec<_> = compiled.clauses.iter().map(|clause| clause.kind).collect();
@@ -514,9 +515,9 @@ mod tests {
     }
 
     #[rstest]
-    #[case::a_sentence("Sorcery", "Tap target creature.", ClauseKind::Spell)]
+    #[case::a_sentence("Sorcery", "Goad target creature.", ClauseKind::Spell)]
     #[case::a_readable_line("Sorcery", "Draw a card", ClauseKind::Spell)]
-    #[case::a_closing_quote("Sorcery", "Tap target creature named \"A.\"", ClauseKind::Spell)]
+    #[case::a_closing_quote("Sorcery", "Goad target creature named \"A.\"", ClauseKind::Spell)]
     #[case::a_static_sentence(
         "Creature \u{2014} Elf",
         "Elves you control get +1/+1.",
@@ -546,7 +547,7 @@ mod tests {
         let compiled = one(
             "Test Card",
             "Instant",
-            "Tap target creature.\nUntap target land.",
+            "Goad target creature.\nGoad target land.",
         );
         let card = compiled.card.unwrap();
         assert_eq!(card.impl_status, ImplStatus::Manual);

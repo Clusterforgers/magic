@@ -163,6 +163,7 @@ mod tests {
             [
                 "Effect.Draw",
                 "Effect.Discard",
+                "Effect.Mill",
                 "Effect.Scry",
                 "Effect.LookAtTop",
                 "Effect.Reveal",
@@ -178,9 +179,13 @@ mod tests {
                 "Effect.GainLife",
                 "Effect.LoseLife",
                 "Effect.AddMana",
+                "Effect.Tap",
+                "Effect.Untap",
+                "Effect.WinGame",
                 "Effect.CreateToken",
                 "Effect.Continuous",
                 "Effect.DelayedTrigger",
+                "Effect.If",
                 "Effect.May",
                 "Effect.Pay",
                 "Effect.Modal"

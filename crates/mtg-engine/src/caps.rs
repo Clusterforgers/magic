@@ -3,10 +3,11 @@
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
 //! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, abilities that cost `{T}` and
-//! mana, and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, scrying,
-//! looking at, revealing, searching for, moving and shuffling cards, life and damage (and delayed triggers), "may"
-//! and "pay" and choices and modal spells, continuous effects that pump power and toughness or grant a keyword, the
-//! keywords of combat and hexproof, and nothing else.
+//! mana, and triggered abilities made of drawing, discarding, milling, sacrificing, destroying, exiling, countering,
+//! scrying, looking at, revealing, searching for, moving and shuffling cards, tapping and untapping, winning the
+//! game, life and damage (and delayed triggers), conditions, "may" and "pay" and choices and modal spells, continuous
+//! effects that pump power and toughness or grant a keyword, the keywords of combat, flash and hexproof, and nothing
+//! else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -32,6 +33,7 @@ const RUNS: &[&str] = &[
     "Cost.SacrificeSelf",
     "Effect.Draw",
     "Effect.Discard",
+    "Effect.Mill",
     "Effect.Scry",
     "Effect.LookAtTop",
     "Effect.Reveal",
@@ -47,15 +49,20 @@ const RUNS: &[&str] = &[
     "Effect.GainLife",
     "Effect.LoseLife",
     "Effect.AddMana",
+    "Effect.Tap",
+    "Effect.Untap",
+    "Effect.WinGame",
     "Effect.CreateToken",
     "Effect.Continuous",
     "Mod.ModifyPT",
     "Mod.AddKeyword",
     "Effect.DelayedTrigger",
+    "Effect.If",
     "Effect.May",
     "Effect.Pay",
     "Effect.Choose",
     "Effect.Modal",
+    "Keyword.Flash",
     "Keyword.Flying",
     "Keyword.Reach",
     "Keyword.Menace",
@@ -115,6 +122,7 @@ mod tests {
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", false)]
+    #[case::milling("Effect.Mill", true)]
     #[case::scrying("Effect.Scry", true)]
     #[case::looking_at_the_top("Effect.LookAtTop", true)]
     #[case::revealing("Effect.Reveal", true)]
@@ -149,10 +157,19 @@ mod tests {
     #[case::granted_keywords("Mod.AddKeyword", true)]
     #[case::setting_power_and_toughness("Mod.SetPT", false)]
     #[case::removed_keywords("Mod.RemoveKeyword", false)]
+    #[case::conditions("Effect.If", true)]
+    #[case::counters_in_a_value("Amount.Counters", false)]
+    #[case::divided_amounts("Amount.Divided", false)]
+    #[case::even_shares("Amount.EvenShare", false)]
+    #[case::loyalty_in_a_value("Stat.Loyalty", false)]
+    #[case::being_kicked("Condition.Kicked", false)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]
     #[case::adding_mana("Effect.AddMana", true)]
+    #[case::tapping_permanents("Effect.Tap", true)]
+    #[case::untapping_permanents("Effect.Untap", true)]
+    #[case::winning_the_game("Effect.WinGame", true)]
     #[case::creating_tokens("Effect.CreateToken", true)]
     #[case::creating_copies("Effect.CreateToken.Copy", false)]
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
@@ -160,6 +177,7 @@ mod tests {
     #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
     #[case::mana_abilities_of_other_shapes("Ability.ManaAbility.Complex", false)]
     #[case::paying_or_not("Effect.Pay", true)]
+    #[case::flash("Keyword.Flash", true)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]
     #[case::menace("Keyword.Menace", true)]

@@ -428,7 +428,8 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 13] = [
+    const RUN: [&str; 14] = [
+        "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
         "Keyword.FirstStrike",
@@ -508,6 +509,7 @@ mod tests {
     }
 
     #[rstest]
+    #[case::flash(Keyword::Flash, Hooks { timing: true, ..Hooks::none() })]
     #[case::flying(Keyword::Flying, Hooks { answers_flying: true, ..Hooks::none() })]
     #[case::reach(Keyword::Reach, Hooks { answers_flying: true, ..Hooks::none() })]
     #[case::menace(Keyword::Menace, Hooks { min_blockers: 2, ..Hooks::none() })]

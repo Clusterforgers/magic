@@ -161,6 +161,7 @@ mod modes;
 mod pay;
 mod put_back;
 mod returns;
+mod tap_and_mill;
 mod triggers;
 
 mod mana {
@@ -660,8 +661,8 @@ mod sentences {
 
     #[rstest]
     #[case::a_second_target("Exile target creature. Target player draws a card.")]
-    #[case::unread_second("Destroy target creature. Tap target land.")]
-    #[case::unread_first("Tap target creature. Draw a card.")]
+    #[case::unread_second("Destroy target creature. Goad target land.")]
+    #[case::unread_first("Goad target creature. Draw a card.")]
     #[case::garbled("Destroy target creature. Draw")]
     #[case::empty("")]
     #[case::only_a_period(".")]

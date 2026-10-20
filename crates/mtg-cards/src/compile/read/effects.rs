@@ -455,14 +455,17 @@ fn object(r: &mut Reader<'_>) -> Option<Ref> {
     })
 }
 
-/// "Destroy target creature.", "Exile all creatures.", "Counter target spell."
+/// "Destroy target creature.", "Exile all creatures.", "Counter target spell.", "Tap target creature.", "Untap
+/// target land."
 fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let verb = r.take_word()?;
-    if !matches!(verb, "destroy" | "exile" | "counter") {
+    if !matches!(verb, "destroy" | "exile" | "counter" | "tap" | "untap") {
         return None;
     }
-    // "Exile ~" is the card itself leaving; nothing else of the card is destroyed or countered this way.
-    let what = if verb == "exile" && r.source() {
+    let turns = matches!(verb, "tap" | "untap");
+    // "Exile ~" is the card itself leaving, "Untap ~" the card turning over; nothing else of the card is destroyed or
+    // countered this way.
+    let what = if matches!(verb, "exile" | "tap" | "untap") && r.source() {
         Ref::This
     } else {
         object(r)?
@@ -471,6 +474,10 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         matches!(&spec.what, Targetable::Object(selector) if selector.0.first() == Some(&Pred::Spell))
     });
     if verb == "counter" && !spell {
+        return None;
+    }
+    // Only permanents are tapped: not a spell on the stack and not a card in a graveyard, a hand or a library.
+    if turns && (spell || !is_on_the_battlefield(r, &what)) {
         return None;
     }
     if matches!(what, Ref::Target(_)) && r.targets.first()?.bounds.is_one() && !spell {
@@ -482,8 +489,23 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             regenerate: true,
         },
         "exile" => Effect::Exile { what },
+        "tap" => Effect::Tap { what },
+        "untap" => Effect::Untap { what },
         _ => Effect::Counter { what },
     }])
+}
+
+/// Whether what a verb acts on is named by a selector that looks only at the battlefield: no zone is named.
+fn is_on_the_battlefield(r: &Reader<'_>, what: &Ref) -> bool {
+    let looks_elsewhere =
+        |selector: &Selector| selector.0.iter().any(|pred| matches!(pred, Pred::In(_)));
+    match what {
+        Ref::Target(index) => r.targets.get(usize::from(*index)).is_some_and(
+            |spec| matches!(&spec.what, Targetable::Object(selector) if !looks_elsewhere(selector)),
+        ),
+        Ref::Each(selector) => !looks_elsewhere(selector),
+        _ => true,
+    }
 }
 
 /// The object a pump changes and whether it is several: "target creature", "~", "creatures you control".

@@ -84,20 +84,20 @@ fn filed(n: u32, name: &str, status: ImplStatus, from: Option<&PrintedCard>) -> 
 #[case::read_whole("Sorcery", "Draw a card.", &[], Support::Verified, RulesSource::Compiled, &[])]
 #[case::keyword_and_unread_trigger(
     "Creature \u{2014} Angel",
-    "Flying\nWhen Test Card enters, tap target creature.",
+    "Flying\nWhen Test Card enters, goad target creature.",
     &["Flying"],
     Support::Partial,
     RulesSource::Compiled,
-    &["triggered: When ~ enters, tap target creature."]
+    &["triggered: When ~ enters, goad target creature."]
 )]
-#[case::nothing_read("Instant", "Tap target creature.", &[], Support::Manual, RulesSource::Compiled, &["spell: Tap target creature."])]
+#[case::nothing_read("Instant", "Goad target creature.", &[], Support::Manual, RulesSource::Compiled, &["spell: Goad target creature."])]
 #[case::unread_spell_line_leaves_every_line(
     "Sorcery",
-    "Draw a card.\nTap target creature.",
+    "Draw a card.\nGoad target creature.",
     &[],
     Support::Manual,
     RulesSource::Compiled,
-    &["spell: Draw a card.", "spell: Tap target creature."]
+    &["spell: Draw a card.", "spell: Goad target creature."]
 )]
 #[case::numbers_and_mana_are_abstracted(
     "Instant",
@@ -169,7 +169,7 @@ fn an_x_cost_is_a_blocker_until_the_engine_pays_it(
 
 #[test]
 fn a_card_with_an_unread_clause_and_a_missing_primitive_has_both_blockers() {
-    let text = "Flying\nReach\nWhen Test Card enters, tap target creature.";
+    let text = "Flying\nReach\nWhen Test Card enters, goad target creature.";
     let result = analyzed_alone(
         printed(5, "Test Card", "Creature \u{2014} Spider", text),
         &small_caps(),
@@ -178,7 +178,7 @@ fn a_card_with_an_unread_clause_and_a_missing_primitive_has_both_blockers() {
     assert_eq!(
         labels(&result),
         [
-            "triggered: When ~ enters, tap target creature.",
+            "triggered: When ~ enters, goad target creature.",
             "engine: Keyword.Reach"
         ]
     );
@@ -209,7 +209,7 @@ fn hand_written_rules_win_over_the_compilers() {
 
 #[test]
 fn a_hand_written_clause_is_named_by_the_shape_of_the_text_it_covers_or_by_its_reason() {
-    let text = "Flying\nWhen Test Card enters, tap target creature.";
+    let text = "Flying\nWhen Test Card enters, goad target creature.";
     let card = printed(6, "Test Card", "Creature \u{2014} Angel", text);
     let by_shape = analyze_with(
         &[in_decks(card.clone(), &[("deck", 1)])],
@@ -219,7 +219,7 @@ fn a_hand_written_clause_is_named_by_the_shape_of_the_text_it_covers_or_by_its_r
     assert_eq!(by_shape.cards[0].support, Support::Partial);
     assert_eq!(
         labels(&by_shape.cards[0]),
-        ["triggered: When ~ enters, tap target creature."]
+        ["triggered: When ~ enters, goad target creature."]
     );
 
     // A clause over text the compiler lists no clause for (a reminder) has only its reason.
@@ -389,7 +389,7 @@ fn copies_add_up_by_deck_and_one_oracle_id_is_one_card() {
 
 /// Cards in three decks: two verified, one partial, one manual, one unplayable.
 fn sample_entries() -> Vec<PreconCard> {
-    let angel = "Flying\nWhen Test Angel enters, tap target creature.";
+    let angel = "Flying\nWhen Test Angel enters, goad target creature.";
     vec![
         in_decks(
             printed(1, "Test Bears", "Creature \u{2014} Bear", ""),
@@ -400,7 +400,7 @@ fn sample_entries() -> Vec<PreconCard> {
             &[("C1 Alpha", 1)],
         ),
         in_decks(
-            printed(3, "Test Freeze", "Instant", "Tap target creature."),
+            printed(3, "Test Freeze", "Instant", "Goad target creature."),
             &[("C1 Alpha", 2), ("C2 Beta", 1), ("C3 Gamma", 3)],
         ),
         in_decks(
@@ -607,14 +607,14 @@ worst precons by the share of their cards that are verified
 
 blockers that alone hold back the most cards (alone: cards with no other blocker)
    alone    all  blocker
-       1      1  spell: Tap target creature.
-       1      1  triggered: When ~ enters, tap target creature.
+       1      1  spell: Goad target creature.
+       1      1  triggered: When ~ enters, goad target creature.
        1      1  rules: unplayable
 
 blockers that hold back the most cards in all (all: with or without others)
    alone    all  blocker
-       1      1  spell: Tap target creature.
-       1      1  triggered: When ~ enters, tap target creature.
+       1      1  spell: Goad target creature.
+       1      1  triggered: When ~ enters, goad target creature.
        1      1  rules: unplayable
 ";
     assert_eq!(sample_report().render(3), expected);

@@ -558,6 +558,15 @@ mod tests {
         // Hand to graveyard (a discard): everyone sees it arrive.
         let discard = moved(t.hand, Zone::Hand(OWNER), Zone::Graveyard(OWNER));
         assert_eq!(told(&t.state, &discard, OTHER), Ok(()));
+        // Library to graveyard (a mill): the graveyard is open, so every seat sees which card was milled.
+        let milled = Event::ZoneChanged {
+            object: t.library,
+            from: Zone::Library(OWNER),
+            to: Zone::Graveyard(OWNER),
+            cause: ZoneCause::Milled,
+        };
+        assert_eq!(told(&t.state, &milled, OWNER), Ok(()));
+        assert_eq!(told(&t.state, &milled, OTHER), Ok(()));
     }
 
     #[test]
