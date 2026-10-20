@@ -53,6 +53,17 @@ pub fn canonical(text: &str) -> String {
         {
             out.push(format!("~{}", next.get(noun.len()..).unwrap_or_default()));
             at += 2;
+        } else if word == "of"
+            && words.get(at + 1) == Some(&"their")
+            && let Some(choice) = words.get(at + 2)
+            && choice.trim_end_matches(|c: char| !c.is_alphanumeric()) == "choice"
+        {
+            // The player who sacrifices or discards chooses anyway; what follows the words stays.
+            let tail = choice.trim_start_matches(|c: char| c.is_alphanumeric());
+            if let Some(last) = out.last_mut() {
+                last.push_str(tail);
+            }
+            at += 3;
         } else if investigate.eq_ignore_ascii_case("investigate") {
             // The keyword action is the same as its reminder text.
             let create = if investigate.starts_with('I') {

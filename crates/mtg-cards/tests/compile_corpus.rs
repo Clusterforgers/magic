@@ -9,7 +9,7 @@ use serde_json::Value;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
-use mtg_cards::compile::{ClauseKind, Compiled, compile, render_ability, same_text};
+use mtg_cards::compile::{ClauseKind, Compiled, compile, render_variants, same_text};
 use mtg_cards::load::Library;
 use mtg_cards::support::PrintedCard;
 
@@ -18,7 +18,8 @@ use common::{cards_dir, printed};
 /// The corpus cards whose compiled abilities are the hand-written file's, face by face. A card joins
 /// the list when the templates reach it and never leaves; a card that matches but is not listed fails
 /// the test too, so the list is the ratchet.
-const REPRODUCED: [&str; 20] = [
+const REPRODUCED: [&str; 21] = [
+    "Archon of Cruelty",
     "Bloodbraid Elf",
     "Counterspell",
     "Dockside Extortionist",
@@ -189,9 +190,10 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
     for (printed, compiled) in compiled_corpus() {
         let by_hand = library.card(&printed.oracle_id).unwrap();
         for (face, ability) in by_hand.abilities() {
-            let Some(written) = render_ability(ability) else {
+            let written = render_variants(ability);
+            if written.is_empty() {
                 continue;
-            };
+            }
             // The spell ability is the spell lines of the face, or its list of modes.
             let kinds: &[ClauseKind] = match ability {
                 Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
@@ -210,8 +212,10 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
                 lines.iter().map(|line| (*line).to_owned()).collect()
             };
             assert!(
-                wanted.iter().any(|text| same_text(&written, text)),
-                "{}: `{written}` is not in {wanted:?}",
+                wanted
+                    .iter()
+                    .any(|text| written.iter().any(|variant| same_text(variant, text))),
+                "{}: none of {written:?} is in {wanted:?}",
                 printed.name
             );
             rendered += 1;

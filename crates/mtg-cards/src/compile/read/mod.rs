@@ -23,7 +23,7 @@ mod tests;
 mod tokens;
 mod triggers;
 
-pub use render::ability as render_ability;
+pub use render::{ability as render_ability, variants as render_variants};
 pub use tokens::same_text;
 
 use super::{ClauseKind, classify};
@@ -55,5 +55,8 @@ pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
     if !reader.end() {
         return None;
     }
-    same_text(&render::ability(&ability)?, text).then_some(ability)
+    render::variants(&ability)
+        .iter()
+        .any(|written| same_text(written, text))
+        .then_some(ability)
 }

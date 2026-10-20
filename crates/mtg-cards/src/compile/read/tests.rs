@@ -16,14 +16,17 @@ fn ability(json: &str) -> Ability {
     serde_json::from_str(json).unwrap_or_else(|error| panic!("{json}: {error}"))
 }
 
-/// Reads the wording and checks that the renderer writes the same text back.
+/// Reads the wording and checks that the renderer writes the same text back, in one of its wordings.
 fn golden(text: &str, kind: ClauseKind, x_free: bool) -> Ability {
     let read = clause(text, kind, x_free).unwrap_or_else(|| panic!("not read: {text}"));
-    let written = render_ability(&read).unwrap_or_else(|| panic!("not written: {text}"));
-    assert_eq!(
-        without_period(&canonical(&written)),
-        without_period(&canonical(text)),
-        "{text}"
+    let wordings = render_variants(&read);
+    assert!(!wordings.is_empty(), "not written: {text}");
+    assert_eq!(render_ability(&read).as_ref(), wordings.first(), "{text}");
+    assert!(
+        wordings.iter().any(|written| {
+            without_period(&canonical(written)) == without_period(&canonical(text))
+        }),
+        "{text}: {wordings:?}"
     );
     read
 }
@@ -84,6 +87,15 @@ fn the_tokens_of_a_clause(#[case] text: &str, #[case] expected: &[Token]) {
 #[case::then("Scry 1, then draw a card.", "Scry 1. Draw a card.")]
 #[case::then_twice("Draw a card, then scry 1, then draw.", "Draw a card. Scry 1. Draw.")]
 #[case::lines("Scry 1.\nDraw a card.", "Scry 1. Draw a card.")]
+#[case::of_their_choice(
+    "Each player sacrifices a creature of their choice.",
+    "Each player sacrifices a creature."
+)]
+#[case::of_their_choice_in_a_list(
+    "Target opponent sacrifices a creature of their choice, discards a card.",
+    "Target opponent sacrifices a creature, discards a card."
+)]
+#[case::of_their_own("Pick a card of their own choice.", "Pick a card of their own choice.")]
 #[case::this_alone("Do this.", "Do this.")]
 #[case::this_other_noun("Do this thing.", "Do this thing.")]
 fn canonical_text_collapses_spaces_and_names_the_card(#[case] text: &str, #[case] expected: &str) {
@@ -125,6 +137,7 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
     assert_eq!(read, tilde);
 }
 
+mod compound;
 mod counters;
 mod create;
 mod life;
@@ -282,7 +295,6 @@ mod cards_and_life {
     #[rstest]
     #[case::for_each("Draw a card for each creature you control.")]
     #[case::equal_to("Draw cards equal to the number of creatures you control.")]
-    #[case::and_lose("Target player draws two cards and loses 2 life.")]
     #[case::you_and_you("You draw two cards and you lose 2 life.")]
     #[case::life_for_each("You gain 2 life for each creature you control.")]
     #[case::unless("Target player draws a card unless they discard a card.")]

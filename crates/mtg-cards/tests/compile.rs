@@ -16,7 +16,7 @@ use common::{cards_dir, printed, token_sources};
 /// how many of its clauses are read out of how many.
 const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 40] = [
     ("Anointed Procession", Some(Manual), 0, 1),
-    ("Archon of Cruelty", Some(Partial), 1, 2),
+    ("Archon of Cruelty", Some(Full), 2, 2),
     ("Bloodbraid Elf", Some(Full), 2, 2),
     ("Bonecrusher Giant // Stomp", Some(Manual), 0, 2),
     ("Bonesplitter", Some(Partial), 1, 2),

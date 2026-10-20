@@ -202,10 +202,27 @@ fn life(r: &mut Reader<'_>) -> Option<Amount> {
     r.word("life").then_some(amount)
 }
 
-/// A player draws, discards, mills, gains or loses.
+/// A player draws, discards, mills, gains, loses or sacrifices; one subject may have several verb
+/// phrases, joined by "and" or in a list: "target opponent sacrifices a creature, discards a card,
+/// and loses 3 life". The effects are those of the sentence, in order.
 fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let who = player(r)?;
-    let effect = match r.take_word()? {
+    let mut effects = vec![predicate(r, &who)?];
+    while let Some(next) = r.attempt(|r| {
+        let listed = r.punct(',');
+        let joined = r.word("and");
+        (listed || joined).then_some(())?;
+        predicate(r, &who)
+    }) {
+        effects.push(next);
+    }
+    Some(effects)
+}
+
+/// What a player does: the verb and its object, without the subject.
+fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
+    let who = who.clone();
+    Some(match r.take_word()? {
         "draw" | "draws" => Effect::Draw {
             who,
             count: cards(r)?,
@@ -231,9 +248,43 @@ fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             r.need("the game")?;
             Effect::WinGame { who }
         }
+        "sacrifice" | "sacrifices" => sacrifice(r, who)?,
         _ => return None,
-    };
-    Some(vec![effect])
+    })
+}
+
+/// "a creature or planeswalker" and "of their choice": the player chooses, as they always do.
+fn sacrifice(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    let filter = phrase(r, Form::Subject)?;
+    filter.0.iter().all(describes_a_kind).then_some(())?;
+    r.words("of their choice");
+    Some(Effect::Sacrifice {
+        who,
+        filter,
+        count: Amount::one(),
+    })
+}
+
+/// Whether a predicate says what kind of permanent it is, and nothing of who has it or where.
+fn describes_a_kind(pred: &Pred) -> bool {
+    match pred {
+        Pred::Type(_)
+        | Pred::Supertype(_)
+        | Pred::Subtype(_)
+        | Pred::Color(_)
+        | Pred::Colorless
+        | Pred::Token
+        | Pred::Tapped
+        | Pred::Untapped
+        | Pred::Attacking
+        | Pred::Blocking
+        | Pred::HasKeyword(_)
+        | Pred::Compare { .. } => true,
+        Pred::Not(inner) => describes_a_kind(inner),
+        Pred::AnyOf(preds) => preds.iter().all(describes_a_kind),
+        _ => false,
+    }
 }
 
 /// "Return target card from your graveyard to your hand."

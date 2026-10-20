@@ -21,7 +21,7 @@ use crate::keyword::Keyword;
 use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprint};
 
 pub use classify::ClauseKind;
-pub use read::{render_ability, same_text};
+pub use read::{render_ability, render_variants, same_text};
 
 /// One clause of a face's oracle text, read or not.
 #[derive(Debug, Clone, PartialEq, Eq)]
