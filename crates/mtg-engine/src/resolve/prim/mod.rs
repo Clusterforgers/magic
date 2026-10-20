@@ -180,6 +180,7 @@ mod tests {
                 "Effect.AddMana",
                 "Effect.Tap",
                 "Effect.Untap",
+                "Effect.WinGame",
                 "Effect.CreateToken",
                 "Effect.Continuous",
                 "Effect.DelayedTrigger",

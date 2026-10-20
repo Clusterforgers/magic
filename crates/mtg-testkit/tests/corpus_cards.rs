@@ -28,8 +28,9 @@ use Support::{Manual, Partial, Verified};
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
 /// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
 /// countering, scrying, looking at, revealing and searching for cards, choosing and moving them (onto the battlefield
-/// included), shuffling, life and damage, paying mana as an effect, creating tokens, adding mana, continuous effects
-/// that pump or grant a keyword, and the keywords of combat, so the twenty cards that need no more are Verified (the
+/// included), shuffling, life and damage, paying mana as an effect, creating tokens, adding mana, conditions, tapping
+/// and untapping, winning the game, continuous effects that pump or grant a keyword, and the keywords of combat and
+/// flash, so the twenty-one cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
 /// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback; Hero
 /// of Bladehold's tokens, not its battle cry; Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays
@@ -49,7 +50,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Doom Blade", Verified, 1),
     ("Eternal Witness", Verified, 1),
     ("Faithless Looting", Partial, 1),
-    ("Felidar Sovereign", Partial, 2),
+    ("Felidar Sovereign", Verified, 3),
     ("Fire // Ice", Manual, 0),
     ("Fireball", Manual, 0),
     ("Flooded Strand", Manual, 0),

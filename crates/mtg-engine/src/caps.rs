@@ -49,6 +49,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana",
     "Effect.Tap",
     "Effect.Untap",
+    "Effect.WinGame",
     "Effect.CreateToken",
     "Effect.Continuous",
     "Mod.ModifyPT",
@@ -165,6 +166,7 @@ mod tests {
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]
     #[case::untapping_permanents("Effect.Untap", true)]
+    #[case::winning_the_game("Effect.WinGame", true)]
     #[case::creating_tokens("Effect.CreateToken", true)]
     #[case::creating_copies("Effect.CreateToken.Copy", false)]
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
