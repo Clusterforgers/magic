@@ -5,7 +5,6 @@ use crate::characteristics::characteristics;
 use crate::combat::{Attacker, CombatState, DamageTarget};
 use crate::error::EngineError;
 use crate::events::Event;
-use crate::keywords;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -72,9 +71,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             target.assignment = Some(assignment.clone());
         }
         Event::DamageDealt {
-            source,
             target,
             amount,
+            deathtouch,
+            ..
         } => match target {
             DamageTarget::Player(id) => {
                 let player = player_mut(state, *id)?;
@@ -85,7 +85,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             DamageTarget::Object(id) => {
                 // Any damage from a source with deathtouch marks a creature for destruction (CR 704.5h).
                 let deathtouched = *amount > 0
-                    && keywords::damage_rules(state, *source).deathtouch
+                    && *deathtouch
                     && characteristics(state, *id).is_some_and(|c| c.is_creature());
                 let perm = state
                     .objects

@@ -412,8 +412,14 @@ impl<'a> Walker<'a> {
     fn keyword(&mut self, keyword: &Keyword) {
         self.uses("Keyword", &tag_of(keyword));
         match keyword {
-            Keyword::Ward(cost)
-            | Keyword::Equip(cost)
+            Keyword::Ward(cost) => {
+                self.at("cost", |w| w.cost(cost));
+                // Ward asks the player for its cost through a payment, which no effect makes by sacrificing the source.
+                if cost.0.contains(&CostItem::SacrificeSelf) {
+                    self.uses("Effect", "Pay.SacrificeSelf");
+                }
+            }
+            Keyword::Equip(cost)
             | Keyword::Reconfigure(cost)
             | Keyword::Cycling(cost)
             | Keyword::Kicker(cost)
@@ -1370,6 +1376,8 @@ mod tests {
     #[case::a_cost_that_sacrifices_a_permanent(r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Sacrifice", "Effect.Draw"])]
     #[case::a_cost_that_sacrifices_the_source(r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Effect.Draw"])]
     #[case::a_clue_pays_mana_and_sacrifices_itself(r#"{"Activated":{"cost":[{"Mana":"{2}"},"SacrificeSelf"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.SacrificeSelf", "Effect.Draw"])]
+    #[case::ward_paid_with_mana(r#"{"Keyword":{"Ward":"{2}"}}"#, &["Cost.Mana", "Keyword.Ward"])]
+    #[case::ward_paid_by_sacrificing_the_source(r#"{"Keyword":{"Ward":["SacrificeSelf"]}}"#, &["Cost.SacrificeSelf", "Effect.Pay.SacrificeSelf", "Keyword.Ward"])]
     #[case::a_payment_that_sacrifices_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["SacrificeSelf"]}}]}}"#, &["Ability.Triggered", "Cost.SacrificeSelf", "Effect.Pay", "Effect.Pay.SacrificeSelf", "Trigger.StepBegins"])]
     #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
     #[case::sol_ring(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#, &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana"])]

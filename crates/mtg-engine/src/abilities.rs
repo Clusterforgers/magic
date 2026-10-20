@@ -45,6 +45,12 @@ pub enum AbilitySource {
     Printed,
     /// Given to the object by an effect: the index is 0, since a modification grants one ability.
     Granted(Grant),
+    /// Added by a keyword ability printed on the object's card (`KeywordRules::adds_abilities`): the keyword is the
+    /// card's rule with this index, and the address's index is the ability's place among those the keyword adds.
+    PrintedKeyword(usize),
+    /// Added by a keyword an effect gave the object: the grant names the effect or the static ability that gave
+    /// the keyword, and the address's index is the ability's place among those the keyword adds.
+    GrantedKeyword(Grant),
 }
 
 impl AbilitySource {
@@ -62,7 +68,8 @@ impl AbilitySource {
 pub struct AbilityRef {
     /// The object with the ability.
     pub object: ObjectId,
-    /// For a printed ability the index into the rules of its card (`CardDefinition::rules`).
+    /// For a printed ability the index into the rules of its card (`CardDefinition::rules`); for one a keyword adds,
+    /// its place among those the keyword adds.
     pub ability: usize,
     /// Where the ability comes from.
     #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
@@ -86,6 +93,15 @@ impl AbilityRef {
             object,
             ability: 0,
             source: AbilitySource::Granted(grant),
+        }
+    }
+
+    /// The address of the ability at `index` among those the keyword `source` names adds to `object`.
+    pub const fn keyword(object: ObjectId, source: AbilitySource, index: usize) -> Self {
+        AbilityRef {
+            object,
+            ability: index,
+            source,
         }
     }
 }
@@ -112,9 +128,10 @@ pub struct PutOnStack {
     pub source: ObjectRef,
     /// The source as it was when the ability was put on the stack (a cost may have moved it since).
     pub snapshot: Snapshot,
-    /// Its index among the rules of the source's card; 0 for a granted ability.
+    /// Its index among the rules of the source's card; 0 for a granted ability; its place among those its keyword
+    /// adds for one a keyword added.
     pub ability: usize,
-    /// Where the ability comes from: the card, or an effect that granted it.
+    /// Where the ability comes from: the card, an effect that granted it, or a keyword.
     #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
     #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
     pub origin: AbilitySource,

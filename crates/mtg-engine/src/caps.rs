@@ -8,7 +8,7 @@
 //! game, life and damage (and delayed triggers), conditions, "may" and "pay" and choices and modal spells, continuous
 //! effects and static abilities of every modification (types, subtypes, colours, power and toughness, keywords, abilities,
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
-//! keywords of combat, flash and hexproof, and nothing else.
+//! keywords of combat, flash and hexproof and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS};
@@ -92,6 +92,9 @@ const RUNS: &[&str] = &[
     "Keyword.Lifelink",
     "Keyword.Indestructible",
     "Keyword.Hexproof",
+    "Keyword.Prowess",
+    "Keyword.BattleCry",
+    "Keyword.Ward",
 ];
 
 /// The capabilities of this engine.
@@ -219,7 +222,9 @@ mod tests {
     #[case::lifelink("Keyword.Lifelink", true)]
     #[case::indestructible("Keyword.Indestructible", true)]
     #[case::hexproof("Keyword.Hexproof", true)]
-    #[case::ward("Keyword.Ward", false)]
+    #[case::prowess("Keyword.Prowess", true)]
+    #[case::battle_cry("Keyword.BattleCry", true)]
+    #[case::ward("Keyword.Ward", true)]
     #[case::kicker("Keyword.Kicker", false)]
     #[case::x_costs(X_COST, false)]
     #[case::faces(FACES, false)]

@@ -27,7 +27,7 @@ use mtg_cards::refs::Ref;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
-use crate::ability_reader::printed;
+use crate::ability_reader::{printed, provided};
 use crate::characteristics::{Characteristics, base};
 use crate::effects::{ContinuousEffect, Layer, Modification, Selector};
 use crate::events::Event;
@@ -95,6 +95,8 @@ pub(crate) struct HeldAbility {
     pub(crate) body: Arc<Ability>,
     /// The timestamp it was given at: 0 for a printed ability, the grant's for one that was given (CR 613.7a).
     since: u64,
+    /// The keyword that adds it, for an ability a keyword adds: it goes when the keyword does.
+    keyword: Option<Keyword>,
 }
 
 /// One effect that changed a permanent, in the order the layers applied them.
@@ -137,9 +139,19 @@ impl Held {
                 address,
                 body: Arc::clone(rules),
                 since: 0,
+                keyword: None,
             });
             if let Ability::Keyword(keyword) = &**rules {
                 keywords.push(keyword.clone());
+                let source = AbilitySource::PrintedKeyword(address.ability);
+                abilities.extend(provided(id, keyword, source).into_iter().map(
+                    |(address, body)| HeldAbility {
+                        address,
+                        body,
+                        since: 0,
+                        keyword: Some(keyword.clone()),
+                    },
+                ));
             }
         }
         Held {
@@ -169,12 +181,25 @@ impl Held {
                 if !self.keywords.contains(keyword) {
                     self.keywords.push(keyword.clone());
                 }
+                // Each instance of a keyword adds its abilities, which trigger separately (CR 702.21c, 702.91b,
+                // 702.108b), so a keyword the object already has adds them again.
+                let source = AbilitySource::GrantedKeyword(origin);
+                self.abilities
+                    .extend(provided(self.id, keyword, source).into_iter().map(
+                        |(address, body)| HeldAbility {
+                            address,
+                            body,
+                            since: stamp,
+                            keyword: Some(keyword.clone()),
+                        },
+                    ));
             }
             Modification::RemoveKeyword(keyword) => {
                 self.keywords.retain(|held| held != keyword);
-                self.abilities.retain(
-                    |held| !matches!(&*held.body, Ability::Keyword(named) if named == keyword),
-                );
+                self.abilities.retain(|held| {
+                    held.keyword.as_ref() != Some(keyword)
+                        && !matches!(&*held.body, Ability::Keyword(named) if named == keyword)
+                });
             }
             Modification::LoseAbilities => {
                 self.keywords.clear();
@@ -184,6 +209,7 @@ impl Held {
                 address: AbilityRef::granted(self.id, origin),
                 body: Arc::clone(granted),
                 since: stamp,
+                keyword: None,
             }),
             Modification::AddType(_)
             | Modification::RemoveType(_)
@@ -532,6 +558,7 @@ impl<'a> Pass<'a> {
                     address: *address,
                     body: Arc::clone(&started.body),
                     since: 0,
+                    keyword: None,
                 };
                 self.static_candidates(&mut found, layer, started.holder, started.stamp, &kept);
             }
@@ -573,6 +600,8 @@ impl<'a> Pass<'a> {
                     index,
                 },
                 AbilitySource::Granted(grant) => grant,
+                // No keyword adds a static ability, so none is applied; one that did would need a grant of its own.
+                AbilitySource::PrintedKeyword(_) | AbilitySource::GrantedKeyword(_) => continue,
             };
             found.push(Cand {
                 key,

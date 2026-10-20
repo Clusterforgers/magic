@@ -49,6 +49,7 @@ pub fn disagreement(
                 source,
                 target,
                 amount,
+                ..
             } => {
                 *totals.entry((*source, *target)).or_default() += amount;
                 match target {

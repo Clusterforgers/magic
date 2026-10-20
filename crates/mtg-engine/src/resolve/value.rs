@@ -85,7 +85,7 @@ struct Seen<'a> {
     tapped: Option<bool>,
     /// The same card, whichever zone it has moved to since: its printed side does not change.
     card: Option<&'a GameObject>,
-    /// The keywords it has, where the layers have worked them out.
+    /// The keywords it has: where the layers have worked them out, or as its snapshot holds them.
     keywords: Option<&'a [Keyword]>,
 }
 
@@ -140,6 +140,22 @@ impl<'a> Scope<'a> {
             snapshots: cause.snapshots.iter().collect(),
             ..Scope::announcing(state, controller, source)
         }
+    }
+
+    /// How `reference` was, when it is no longer the object that was named (it has changed zones since) and this
+    /// scope holds a snapshot of it: last known information (CR 608.2h).
+    pub(crate) fn snapshot_of(&self, reference: ObjectRef) -> Option<&'a Snapshot> {
+        let live = self
+            .state
+            .object(reference.id)
+            .is_some_and(|object| object.counter() == reference.counter);
+        if live {
+            return None;
+        }
+        self.snapshots
+            .iter()
+            .copied()
+            .find(|shot| shot.id == reference.id && shot.counter == reference.counter)
     }
 
     fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
@@ -197,7 +213,7 @@ impl<'a> Scope<'a> {
             chars: Cow::Borrowed(&shot.characteristics),
             tapped: None,
             card: live,
-            keywords: None,
+            keywords: Some(shot.keywords.as_slice()),
         })
     }
 
@@ -465,8 +481,7 @@ impl<'a> Scope<'a> {
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
-            // An object that has changed zones since it was named has the keywords its card prints; keywords
-            // granted before it left are last known information the snapshots do not carry yet.
+            // An object that has changed zones since it was named has the keywords its snapshot holds (CR 608.2h).
             Pred::HasKeyword(keyword) => match seen.keywords {
                 Some(held) => held.contains(keyword),
                 None => seen

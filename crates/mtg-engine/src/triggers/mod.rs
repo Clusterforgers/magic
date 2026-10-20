@@ -10,6 +10,7 @@ mod queue;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -17,6 +18,7 @@ use serde::{Deserialize, Serialize};
 use crate::abilities::{AbilitySource, Cause};
 use crate::ability_reader::{abilities_of, definition_triggers};
 use crate::events::Event;
+use crate::keywords;
 use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
@@ -36,9 +38,9 @@ pub struct Triggered {
     /// The object with the ability, as it was.
     pub source: ObjectRef,
     /// Its index among the rules of the source's card; for a delayed trigger, the ability that set it up; 0 for a
-    /// granted ability.
+    /// granted ability; its place among those its keyword adds for one a keyword added.
     pub ability: usize,
-    /// Where the ability comes from: the card, or an effect that granted it.
+    /// Where the ability comes from: the card, an effect that granted it, or a keyword.
     #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
     #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
     pub origin: AbilitySource,
@@ -70,18 +72,30 @@ fn effects_trigger(effects: &[Effect]) -> bool {
     })
 }
 
-/// Whether one of the modifications gives an ability that can make something trigger.
+/// Whether one of the modifications gives an ability that can make something trigger: a triggered ability, or a
+/// keyword that adds one.
 fn grants_trigger(mods: &[Modification]) -> bool {
-    mods.iter().any(|modification| {
-        matches!(modification, Modification::GrantAbility(granted) if triggers_something(granted))
+    mods.iter().any(|modification| match modification {
+        Modification::GrantAbility(granted) => triggers_something(granted),
+        Modification::AddKeyword(keyword) => keyword_triggers(keyword),
+        _ => false,
     })
 }
 
+/// Whether the keyword adds an ability that can make something trigger (ward, prowess, battle cry).
+fn keyword_triggers(keyword: &Keyword) -> bool {
+    keywords::rules(keyword)
+        .adds_abilities(keyword)
+        .iter()
+        .any(triggers_something)
+}
+
 /// Whether an ability can make something trigger: it is a triggered ability, or sets up a delayed one, or gives an
-/// ability that triggers.
+/// ability that triggers, or is a keyword that adds one.
 pub(crate) fn triggers_something(ability: &Ability) -> bool {
     match ability {
         Ability::Triggered { .. } => true,
+        Ability::Keyword(keyword) => keyword_triggers(keyword),
         Ability::Static { mods, .. } => grants_trigger(mods),
         other => effects_trigger(other.effects()),
     }
@@ -93,10 +107,11 @@ pub(crate) fn triggers_something(ability: &Ability) -> bool {
 pub(crate) fn introduces(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
         Event::TokenCreated(created) => definition_triggers(&created.definition),
-        Event::EffectCreated { effect } => matches!(
-            &effect.modification,
-            crate::effects::Modification::GrantAbility(granted) if triggers_something(granted)
-        ),
+        Event::EffectCreated { effect } => match &effect.modification {
+            crate::effects::Modification::GrantAbility(granted) => triggers_something(granted),
+            crate::effects::Modification::AddKeyword(keyword) => keyword_triggers(keyword),
+            _ => false,
+        },
         _ => false,
     })
 }

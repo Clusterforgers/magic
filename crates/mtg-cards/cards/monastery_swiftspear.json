@@ -1,0 +1,12 @@
+{
+  "oracle_id": "dafd2713-d1bc-474b-b390-d2ff20b5375e",
+  "name": "Monastery Swiftspear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Monastery Swiftspear",
+      "oracle_fingerprint": "24c6fe54607364423e3c142b8904d63b",
+      "abilities": [{ "Keyword": "Haste" }, { "Keyword": "Prowess" }]
+    }
+  ]
+}

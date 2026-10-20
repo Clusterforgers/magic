@@ -34,6 +34,8 @@ mod multikicker;
 mod overload;
 mod partner;
 mod partner_with;
+#[cfg(test)]
+mod provided;
 mod prowess;
 mod reach;
 mod reconfigure;
@@ -250,7 +252,12 @@ pub fn has_keyword(state: &GameState, id: ObjectId, keyword: &Keyword) -> bool {
 
 /// What the keywords of `id` do to the combat damage it deals.
 pub(crate) fn damage_rules(state: &GameState, id: ObjectId) -> DamageRules {
-    keywords_of(state, id)
+    damage_rules_of(keywords_of(state, id))
+}
+
+/// What `keywords` do to the damage their holder deals: those of an object now, or those its snapshot holds.
+pub(crate) fn damage_rules_of<'a>(keywords: impl IntoIterator<Item = &'a Keyword>) -> DamageRules {
+    keywords
         .into_iter()
         .fold(DamageRules::default(), |all, keyword| {
             all.and(rules(keyword).modifies_damage(keyword))
@@ -415,7 +422,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 14] = [
+    const RUN: [&str; 17] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -430,6 +437,9 @@ mod tests {
         "Keyword.Defender",
         "Keyword.Indestructible",
         "Keyword.Hexproof",
+        "Keyword.Prowess",
+        "Keyword.BattleCry",
+        "Keyword.Ward",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -510,6 +520,9 @@ mod tests {
     #[case::deathtouch(Keyword::Deathtouch, Hooks { damage: damage(|d| d.deathtouch = true), ..Hooks::none() })]
     #[case::trample(Keyword::Trample, Hooks { damage: damage(|d| d.trample = true), ..Hooks::none() })]
     #[case::lifelink(Keyword::Lifelink, Hooks { damage: damage(|d| d.lifelink = true), ..Hooks::none() })]
+    #[case::prowess(Keyword::Prowess, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::battle_cry(Keyword::BattleCry, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::ward(Keyword::Ward(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
     }

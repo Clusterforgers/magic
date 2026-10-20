@@ -11,6 +11,7 @@ use crate::error::IllegalAnswer;
 use crate::events::Event;
 use crate::keywords::{self, DamageRules};
 use crate::object::GameObject;
+use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::turn::Step;
 use crate::zones::Zone;
@@ -267,11 +268,52 @@ pub(crate) fn assignment_answer(
     }]))
 }
 
-/// The events of `source` dealing `amount` damage to `target`: the damage, then the life its controller gains
-/// when it has lifelink (CR 702.15), in the same batch. Damage of nothing is no event.
+/// What deals damage and what its keywords make of the damage: the source as it is, or as it was when it has since
+/// left the place it was named in (last known information, CR 608.2h).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct Dealer {
+    id: ObjectId,
+    /// Who controls the source, as the lifelink gain reads it.
+    controller: Option<PlayerId>,
+    /// What its keywords do to the damage.
+    keywords: DamageRules,
+}
+
+impl Dealer {
+    /// The source `id` as it is now.
+    pub(crate) fn live(state: &GameState, id: ObjectId) -> Dealer {
+        Dealer {
+            id,
+            controller: controller_of(state, id),
+            keywords: keywords::damage_rules(state, id),
+        }
+    }
+
+    /// The source as its snapshot holds it: under the controller and with the keywords it had.
+    pub(crate) fn known(shot: &Snapshot) -> Dealer {
+        Dealer {
+            id: shot.id,
+            controller: Some(shot.controller),
+            keywords: keywords::damage_rules_of(&shot.keywords),
+        }
+    }
+}
+
+/// The events of `source` dealing `amount` damage to `target`, with the source read as it is now.
 pub(crate) fn dealt(
     state: &GameState,
     source: ObjectId,
+    target: DamageTarget,
+    amount: u32,
+) -> Vec<Event> {
+    dealt_by(state, &Dealer::live(state, source), target, amount)
+}
+
+/// The events of `dealer` dealing `amount` damage to `target`: the damage, then the life its controller gains
+/// when it has lifelink (CR 702.15), in the same batch. Damage of nothing is no event.
+pub(crate) fn dealt_by(
+    state: &GameState,
+    dealer: &Dealer,
     target: DamageTarget,
     amount: u32,
 ) -> Vec<Event> {
@@ -279,13 +321,16 @@ pub(crate) fn dealt(
         return Vec::new();
     }
     let mut events = vec![Event::DamageDealt {
-        source,
+        source: dealer.id,
         target,
         amount,
+        deathtouch: dealer.keywords.deathtouch,
     }];
-    let controller = controller_of(state, source).filter(|controller| state.is_alive(*controller));
+    let controller = dealer
+        .controller
+        .filter(|controller| state.is_alive(*controller));
     if let Some(player) = controller
-        && keywords::damage_rules(state, source).lifelink
+        && dealer.keywords.lifelink
     {
         events.push(Event::LifeGained { player, amount });
     }
@@ -509,6 +554,219 @@ mod tests {
                 assignment_answer(&options, assignment).err(),
                 Some(IllegalAnswer::ExcessBeforeLethal)
             );
+        }
+    }
+
+    mod leaving {
+        //! Goal: damage from a source that has left is dealt as the source was: the keywords of its snapshot decide the deathtouch of the event and the life its controller of then gains, not the card it has become.
+        use std::sync::Arc;
+
+        use mtg_cards::CardDefinition;
+        use mtg_cards::ability::Ability;
+        use mtg_cards::keyword::Keyword;
+        use mtg_core::card::CardType;
+        use mtg_core::ids::EffectId;
+
+        use super::*;
+        use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
+        use crate::events::ZoneCause;
+        use crate::fixtures::state;
+        use crate::fold::apply_event;
+        use crate::snapshot::snapshot;
+
+        const FOE: PlayerId = PlayerId(1);
+
+        fn printing(keywords: &[Keyword]) -> Arc<CardDefinition> {
+            let mut card = CardDefinition::new("Source")
+                .with_type(CardType::Creature)
+                .with_power_toughness(3, 3);
+            for keyword in keywords {
+                card = card.with_rules(Ability::Keyword(keyword.clone()));
+            }
+            Arc::new(card)
+        }
+
+        /// Seat 0 controls a creature that prints `keywords`.
+        fn game(keywords: &[Keyword]) -> (GameState, ObjectId) {
+            let game = state(vec![vec![], vec![]], vec![vec![printing(keywords)], vec![]]);
+            let id = game.zone(Zone::Battlefield)[0];
+            (game, id)
+        }
+
+        fn change(game: &mut GameState, id: ObjectId, modification: Modification, n: u64) {
+            let effect = ContinuousEffect::new(
+                EffectId(n),
+                Selector::objects(game, [id]),
+                modification,
+                Duration::UntilEndOfTurn,
+                n,
+            );
+            apply_event(game, &Event::EffectCreated { effect }).unwrap();
+        }
+
+        /// Sacrifices the creature, so the card in the graveyard is a new object.
+        fn sacrifice(game: &mut GameState, id: ObjectId) {
+            apply_event(
+                game,
+                &Event::ZoneChanged {
+                    object: id,
+                    from: Zone::Battlefield,
+                    to: Zone::Graveyard(PlayerId(0)),
+                    cause: ZoneCause::Sacrificed,
+                },
+            )
+            .unwrap();
+        }
+
+        /// What the damage of 3 to the foe is: whether it deathtouches, and who gains how much life.
+        fn outcome(events: &[Event]) -> (bool, Vec<(PlayerId, u32)>) {
+            let touched = events.iter().any(|event| {
+                matches!(
+                    event,
+                    Event::DamageDealt {
+                        deathtouch: true,
+                        amount: 3,
+                        ..
+                    }
+                )
+            });
+            let gains = events
+                .iter()
+                .filter_map(|event| match event {
+                    Event::LifeGained { player, amount } => Some((*player, *amount)),
+                    _ => None,
+                })
+                .collect();
+            (touched, gains)
+        }
+
+        #[rstest]
+        #[case::given_nothing(&[], false, false)]
+        #[case::lifelink(&[Keyword::Lifelink], false, true)]
+        #[case::deathtouch(&[Keyword::Deathtouch], true, false)]
+        #[case::both(&[Keyword::Lifelink, Keyword::Deathtouch], true, true)]
+        fn a_source_that_left_deals_damage_with_the_keywords_an_effect_gave_it(
+            #[case] given: &[Keyword],
+            #[case] deathtouch: bool,
+            #[case] lifelink: bool,
+        ) {
+            let (mut game, id) = game(&[]);
+            for (n, keyword) in given.iter().enumerate() {
+                change(
+                    &mut game,
+                    id,
+                    Modification::AddKeyword(keyword.clone()),
+                    n as u64 + 1,
+                );
+            }
+            let shot = snapshot(&game, id).unwrap();
+            sacrifice(&mut game, id);
+            let target = DamageTarget::Player(FOE);
+            let known = dealt_by(&game, &Dealer::known(&shot), target, 3);
+            assert_eq!(
+                outcome(&known),
+                (
+                    deathtouch,
+                    if lifelink {
+                        vec![(PlayerId(0), 3)]
+                    } else {
+                        vec![]
+                    }
+                )
+            );
+            // Read as the card it has become, the source has none of them: the card prints no keyword.
+            assert_eq!(outcome(&dealt(&game, id, target, 3)), (false, vec![]));
+        }
+
+        #[rstest]
+        #[case::lost_every_ability(Modification::LoseAbilities)]
+        #[case::lost_both_one_by_one(Modification::RemoveKeyword(Keyword::Lifelink))]
+        fn a_source_that_left_without_its_printed_keywords_deals_plain_damage(
+            #[case] taken: Modification,
+        ) {
+            let (mut game, id) = game(&[Keyword::Lifelink, Keyword::Deathtouch]);
+            change(&mut game, id, taken.clone(), 1);
+            if matches!(taken, Modification::RemoveKeyword(_)) {
+                change(
+                    &mut game,
+                    id,
+                    Modification::RemoveKeyword(Keyword::Deathtouch),
+                    2,
+                );
+            }
+            let shot = snapshot(&game, id).unwrap();
+            sacrifice(&mut game, id);
+            let target = DamageTarget::Player(FOE);
+            assert_eq!(
+                outcome(&dealt_by(&game, &Dealer::known(&shot), target, 3)),
+                (false, vec![])
+            );
+            // The card in the graveyard prints them again, which is what the snapshot keeps from being read.
+            assert_eq!(
+                outcome(&dealt(&game, id, target, 3)),
+                (true, vec![(PlayerId(0), 3)])
+            );
+        }
+
+        #[test]
+        fn the_life_goes_to_the_player_who_controlled_the_source_then() {
+            let (mut game, id) = game(&[Keyword::Lifelink]);
+            change(&mut game, id, Modification::SetController(FOE), 1);
+            let shot = snapshot(&game, id).unwrap();
+            assert_eq!(shot.controller, FOE);
+            sacrifice(&mut game, id);
+            let events = dealt_by(
+                &game,
+                &Dealer::known(&shot),
+                DamageTarget::Player(PlayerId(0)),
+                3,
+            );
+            assert_eq!(outcome(&events).1, [(FOE, 3)], "its owner is seat 0");
+        }
+
+        #[rstest]
+        #[case::the_event_says_deathtouch_of_a_source_without_it(&[], true, true)]
+        #[case::the_event_says_none_of_a_source_with_it(&[Keyword::Deathtouch], false, false)]
+        #[case::both_agree_on_deathtouch(&[Keyword::Deathtouch], true, true)]
+        #[case::both_agree_on_none(&[], false, false)]
+        fn the_event_decides_the_deathtouch_mark_not_the_keywords_the_source_has_when_it_is_folded(
+            #[case] source_has: &[Keyword],
+            #[case] event_says: bool,
+            #[case] marked: bool,
+        ) {
+            let mut game = state(
+                vec![vec![], vec![]],
+                vec![
+                    vec![printing(source_has)],
+                    vec![crate::fixtures::creature("Victim", 5, 5)],
+                ],
+            );
+            let [source, victim] = [
+                game.zone(Zone::Battlefield)[0],
+                game.zone(Zone::Battlefield)[1],
+            ];
+            apply_event(
+                &mut game,
+                &Event::DamageDealt {
+                    source,
+                    target: DamageTarget::Object(victim),
+                    amount: 1,
+                    deathtouch: event_says,
+                },
+            )
+            .unwrap();
+            let permanent = game.object(victim).unwrap().permanent().unwrap();
+            assert_eq!(permanent.deathtouched(), marked);
+            assert_eq!(permanent.damage(), 1);
+        }
+
+        #[test]
+        fn damage_of_nothing_is_no_event_for_a_source_that_left_either() {
+            let (mut game, id) = game(&[Keyword::Lifelink]);
+            let shot = snapshot(&game, id).unwrap();
+            sacrifice(&mut game, id);
+            let events = dealt_by(&game, &Dealer::known(&shot), DamageTarget::Player(FOE), 0);
+            assert_eq!(events.len(), 0);
         }
     }
 }

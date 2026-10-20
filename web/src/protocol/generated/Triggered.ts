@@ -16,11 +16,11 @@ export type Triggered = {
 source: ObjectRef, 
 /**
  * Its index among the rules of the source's card; for a delayed trigger, the ability that set it up; 0 for a
- * granted ability.
+ * granted ability; its place among those its keyword adds for one a keyword added.
  */
 ability: number, 
 /**
- * Where the ability comes from: the card, or an effect that granted it.
+ * Where the ability comes from: the card, an effect that granted it, or a keyword.
  */
 origin?: AbilitySource, 
 /**

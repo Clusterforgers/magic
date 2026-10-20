@@ -10,10 +10,12 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::modify::Modification as WantedModification;
 use mtg_core::ids::ObjectId;
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
 use crate::effects::Modification;
+use crate::keywords;
 use crate::object::{GameObject, ObjectKind};
 use crate::state::GameState;
 use crate::triggers::triggers_something;
@@ -57,14 +59,49 @@ pub(crate) fn definition_triggers(definition: &CardDefinition) -> bool {
         .any(|rules| triggers_something(rules))
 }
 
+/// What the keyword `keyword` of `object`, which comes from `source`, stands for: the abilities it adds
+/// (`KeywordRules::adds_abilities`), each with its address. `source` is `PrintedKeyword` or `GrantedKeyword`, and the
+/// index of an address is the ability's place among those the keyword adds, so the name holds wherever the list
+/// stands.
+pub(crate) fn provided(
+    object: ObjectId,
+    keyword: &Keyword,
+    source: AbilitySource,
+) -> Vec<(AbilityRef, Arc<Ability>)> {
+    keywords::rules(keyword)
+        .adds_abilities(keyword)
+        .into_iter()
+        .enumerate()
+        .map(|(index, added)| (AbilityRef::keyword(object, source, index), Arc::new(added)))
+        .collect()
+}
+
+/// The abilities printed on the card of `object` and the ones its keywords add, each after the keyword that adds
+/// it, with their addresses.
+pub(crate) fn printed_and_provided(object: &GameObject) -> Vec<(AbilityRef, Arc<Ability>)> {
+    let mut found = Vec::new();
+    for (address, rules) in printed(object) {
+        found.push((address, Arc::clone(rules)));
+        if let Ability::Keyword(keyword) = &**rules {
+            found.extend(provided(
+                object.id(),
+                keyword,
+                AbilitySource::PrintedKeyword(address.ability),
+            ));
+        }
+    }
+    found
+}
+
 /// The abilities `id` has, each with the address that names it: those printed on its card in the order of its rules,
-/// less the ones other effects took away, then the ones they gave it in the order the layers applied them.
+/// each keyword followed by the abilities it adds, less the ones other effects took away, then the ones they gave it
+/// (a keyword with the abilities it adds) in the order the layers applied them.
 ///
 /// Printed abilities are shared with the card (`Arc`) and a granted one with the effect that grants it. An effect
 /// that takes every ability away (`LoseAbilities`) empties the list as it stands where it applies, and a keyword taken
-/// away is no longer listed. Only a permanent has effects: for any other object, wherever it is, these are the printed
-/// abilities, and whether one works from a zone is for the caller to ask. An object that is not in the game, and an
-/// ability on the stack, have none.
+/// away is no longer listed, nor what it added. Only a permanent has effects: for any other object, wherever it is,
+/// these are the printed abilities, and whether one works from a zone is for the caller to ask. An object that is not
+/// in the game, and an ability on the stack, have none.
 pub fn abilities_of(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Arc<Ability>)> {
     let Some(object) = holder(state, id) else {
         return Vec::new();
@@ -78,16 +115,24 @@ pub fn abilities_of(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Arc<Abi
             .map(|held| (held.address, Arc::clone(&held.body)))
             .collect();
     }
-    printed(object)
-        .map(|(address, rules)| (address, Arc::clone(rules)))
-        .collect()
+    printed_and_provided(object)
+}
+
+/// The ability at `index` among those the keyword adds, rebuilt from the keyword alone.
+fn provided_at(keyword: &Keyword, index: usize) -> Option<Arc<Ability>> {
+    keywords::rules(keyword)
+        .adds_abilities(keyword)
+        .into_iter()
+        .nth(index)
+        .map(Arc::new)
 }
 
 /// The ability `address` names, or `None` when it names nothing in the game: the object is not there (an ability that
 /// resolved, an id that was never used) or has no such ability.
 ///
 /// A name is read from the data: a printed ability from the card, a granted one from the effect or the static ability
-/// that grants it, which stays readable after the effect has ended or the object with the static ability has left, so an
+/// that grants it, one a keyword adds from the keyword (the card's rule, or the effect or static ability that gave
+/// it). All of these stay readable after the effect has ended or the object with the static ability has left, so an
 /// ability that is on its way (a cost sacrificed its source) is still the one that was named. Whether the object has
 /// the ability now is for [`abilities_of`] to say.
 pub fn ability(state: &GameState, address: AbilityRef) -> Option<Arc<Ability>> {
@@ -95,37 +140,88 @@ pub fn ability(state: &GameState, address: AbilityRef) -> Option<Arc<Ability>> {
     match address.source {
         AbilitySource::Printed => object.def.rules.get(address.ability).cloned(),
         AbilitySource::Granted(_) if address.ability != 0 => None,
-        AbilitySource::Granted(Grant::Effect(id)) => state
-            .effects()
-            .iter()
-            .find(|effect| effect.id == id)
-            .and_then(|effect| granted_by(&effect.modification)),
-        AbilitySource::Granted(Grant::Static {
-            source,
-            rule,
-            index,
-        }) => {
-            let giver = holder(state, source)?;
-            match giver.def.rules.get(rule).map(|rules| &**rules) {
-                Some(Ability::Static { mods, .. }) => {
-                    mods.get(index).and_then(|wanted| match wanted {
-                        mtg_cards::modify::Modification::GrantAbility(granted) => {
-                            Some(Arc::clone(granted))
-                        }
-                        _ => None,
-                    })
-                }
-                _ => None,
-            }
+        AbilitySource::Granted(grant) => granted_ability(state, grant),
+        AbilitySource::PrintedKeyword(_) | AbilitySource::GrantedKeyword(_) => {
+            provided_at(&keyword_adding(state, address)?, address.ability)
         }
     }
 }
 
-/// The ability a modification gives, if it gives one.
-fn granted_by(modification: &Modification) -> Option<Arc<Ability>> {
-    match modification {
-        Modification::GrantAbility(granted) => Some(Arc::clone(granted)),
+/// The keyword that adds the ability `address` names, when a keyword does: the card's rule, or the keyword the
+/// effect or static ability gave.
+pub(crate) fn keyword_adding(state: &GameState, address: AbilityRef) -> Option<Keyword> {
+    match address.source {
+        AbilitySource::PrintedKeyword(rule) => {
+            let object = holder(state, address.object)?;
+            match object.def.rules.get(rule).map(|rules| &**rules) {
+                Some(Ability::Keyword(keyword)) => Some(keyword.clone()),
+                _ => None,
+            }
+        }
+        AbilitySource::GrantedKeyword(grant) => granted_keyword(state, grant),
+        AbilitySource::Printed | AbilitySource::Granted(_) => None,
+    }
+}
+
+/// The modification `index` of the static ability `rule` printed on the card of `source`.
+fn static_mod(
+    state: &GameState,
+    source: ObjectId,
+    rule: usize,
+    index: usize,
+) -> Option<&WantedModification> {
+    match holder(state, source)?
+        .def
+        .rules
+        .get(rule)
+        .map(|rules| &**rules)
+    {
+        Some(Ability::Static { mods, .. }) => mods.get(index),
         _ => None,
+    }
+}
+
+/// The ability `grant` gives, if it gives one.
+fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
+    match grant {
+        Grant::Effect(id) => state
+            .effects()
+            .iter()
+            .find(|effect| effect.id == id)
+            .and_then(|effect| match &effect.modification {
+                Modification::GrantAbility(granted) => Some(Arc::clone(granted)),
+                _ => None,
+            }),
+        Grant::Static {
+            source,
+            rule,
+            index,
+        } => match static_mod(state, source, rule, index)? {
+            WantedModification::GrantAbility(granted) => Some(Arc::clone(granted)),
+            _ => None,
+        },
+    }
+}
+
+/// The keyword `grant` gives, if it gives one.
+fn granted_keyword(state: &GameState, grant: Grant) -> Option<Keyword> {
+    match grant {
+        Grant::Effect(id) => state
+            .effects()
+            .iter()
+            .find(|effect| effect.id == id)
+            .and_then(|effect| match &effect.modification {
+                Modification::AddKeyword(keyword) => Some(keyword.clone()),
+                _ => None,
+            }),
+        Grant::Static {
+            source,
+            rule,
+            index,
+        } => match static_mod(state, source, rule, index)? {
+            WantedModification::AddKeyword(keyword) => Some(keyword.clone()),
+            _ => None,
+        },
     }
 }
 

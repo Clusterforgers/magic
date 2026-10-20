@@ -267,7 +267,11 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 return None;
             };
             let targeting = object(*caster)?;
-            let subjects = vec![Target::Object(*targeted), Target::Object(targeting)];
+            let subjects = vec![
+                Target::Object(*targeted),
+                Target::Object(targeting),
+                Target::Player(controller_of(state, *caster)?),
+            ];
             (scope.selects(what, *targeted).ok()? && scope.selects(by, targeting).ok()?)
                 .then(|| cause(state, subjects))
         }
@@ -890,7 +894,8 @@ mod tests {
     }
 
     #[test]
-    fn becoming_the_target_of_a_spell_triggers_the_object_and_names_both() {
+    fn becoming_the_target_of_a_spell_triggers_the_object_and_names_what_targets_it_and_who_controls_that()
+     {
         let guarded = with(
             "Guarded",
             vec![triggered(r#"{"BecomesTarget":{"what":["This"]}}"#)],
@@ -901,8 +906,12 @@ mod tests {
         assert_eq!(who(&post, &found), [("Guarded".to_owned(), 0)]);
         assert_eq!(
             found[0].cause.subjects,
-            [at("Guarded"), Target::Object(reference(&post, "Spell"))],
-            "what was targeted and what targets it"
+            [
+                at("Guarded"),
+                Target::Object(reference(&post, "Spell")),
+                Target::Player(ME)
+            ],
+            "what was targeted, what targets it and who controls that"
         );
         assert_eq!(
             fire(&pre, &[cast(&pre, ME, "Spell", vec![at("Ogre")])]).1,

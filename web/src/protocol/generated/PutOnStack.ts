@@ -25,11 +25,12 @@ source: ObjectRef,
  */
 snapshot: Snapshot, 
 /**
- * Its index among the rules of the source's card; 0 for a granted ability.
+ * Its index among the rules of the source's card; 0 for a granted ability; its place among those its keyword
+ * adds for one a keyword added.
  */
 ability: number, 
 /**
- * Where the ability comes from: the card, or an effect that granted it.
+ * Where the ability comes from: the card, an effect that granted it, or a keyword.
  */
 origin?: AbilitySource, 
 /**

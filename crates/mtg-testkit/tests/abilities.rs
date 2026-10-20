@@ -328,6 +328,7 @@ fn an_ability_whose_source_died_in_response_still_resolves_with_the_source_as_it
                 source,
                 amount,
                 target,
+                ..
             } if *source == thumper
                 && matches!(target, mtg_engine::combat::DamageTarget::Player(_)) =>
             {

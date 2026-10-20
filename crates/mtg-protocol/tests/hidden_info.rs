@@ -16,7 +16,7 @@ use mtg_engine::object::GameObject;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
-use mtg_testkit::{archon_fuzz_setup, spell_fuzz_setup};
+use mtg_testkit::{archon_fuzz_setup, keyword_triggers_fuzz_setup, spell_fuzz_setup};
 use rstest::rstest;
 use serde_json::Value;
 
@@ -58,6 +58,12 @@ const SCALAR_KEYS: &[&str] = &[
     "Player",
     "Winner",
     "Generic",
+    "timestamp",
+    "turn",
+    "rule",
+    "index",
+    "Effect",
+    "PrintedKeyword",
     "max_life",
     "Hand",
     "Library",
@@ -117,7 +123,14 @@ fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<String> {
                 }
             }
             Value::Array(items) => items.iter().for_each(|v| walk(v, key, hidden, out)),
-            Value::Object(map) => map.iter().for_each(|(k, v)| walk(v, k, hidden, out)),
+            Value::Object(map) => {
+                // A continuous effect, and the event that ends one, name it by an effect id, which is no object's.
+                let names_an_effect = key == "EffectExpired"
+                    || (map.contains_key("duration") && map.contains_key("timestamp"));
+                map.iter()
+                    .filter(|(k, _)| !(names_an_effect && *k == "id"))
+                    .for_each(|(k, v)| walk(v, k, hidden, out));
+            }
             Value::Null | Value::Bool(_) => {}
         }
     }
@@ -214,6 +227,56 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_spells_and_abilities(
     });
     assert!(engine.result().is_some(), "game should finish");
     assert!(checked > 500 && abilities > 0, "test must not be vacuous");
+}
+
+/// Ward, prowess and battle cry trigger on spells and abilities that target and on attackers, and the triggers, the
+/// payments of the ward and what the countered spells and abilities were name only things every seat may see.
+#[rstest]
+#[case(2, 31)]
+#[case(3, 32)]
+#[case(4, 33)]
+fn no_hidden_object_reaches_any_viewer_in_games_of_the_keywords_that_are_triggers(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut keyword_triggers) = (0usize, 0usize);
+    let setup = with_unique_names(keyword_triggers_fuzz_setup(players, seed).unwrap());
+    let engine = run_game(setup, seed, |step: &Step| {
+        keyword_triggers += step
+            .events
+            .iter()
+            .filter(|event| {
+                matches!(
+                    event,
+                    mtg_engine::Event::AbilityTriggered(trigger)
+                        if matches!(
+                            trigger.origin,
+                            mtg_engine::abilities::AbilitySource::PrintedKeyword(_)
+                                | mtg_engine::abilities::AbilitySource::GrantedKeyword(_)
+                        )
+                )
+            })
+            .count();
+        let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+        for (viewer, batch) in viewers.iter().zip(&batches) {
+            let hidden = hidden_across(step.before, step.after, *viewer);
+            checked += hidden.len();
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&without_trigger_orders(value), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
+        }
+    });
+    assert!(engine.result().is_some(), "game should finish");
+    assert!(
+        checked > 500 && keyword_triggers > 0,
+        "test must not be vacuous"
+    );
 }
 
 /// The order of triggers that go on the stack is a list of positions among them, not of objects.
