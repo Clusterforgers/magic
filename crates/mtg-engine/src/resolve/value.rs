@@ -515,10 +515,11 @@ impl<'a> Scope<'a> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: references, selectors, amounts and conditions read the game as the rules say, an object that changed zones is read as it was when a snapshot of it exists, and what the engine cannot evaluate yet refuses by name.
+    //! Goal: references, selectors, amounts and conditions read the game as the rules say, an object that changed zones is read as it was when a snapshot of it exists, a target that an earlier step of the resolution moved away stays named while any other illegal target is ignored, and what the engine cannot evaluate yet refuses by name.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
+    use mtg_cards::refs::{Bounds, Targetable};
     use mtg_core::card::{CardType, Supertype};
     use mtg_core::ids::ObjectId;
     use mtg_core::mana::ManaCost;
@@ -804,6 +805,94 @@ mod tests {
         // Its controller as it was, too.
         let seats: Ref = serde_json::from_str(r#"{"ControllerOf":{"Bound":"ogre"}}"#).unwrap();
         assert_eq!(scope.players(&seats).unwrap(), [PlayerId(1)]);
+    }
+
+    #[test]
+    fn a_target_an_earlier_step_moved_stays_named_and_is_read_as_it_was() {
+        let mut game = game();
+        let (ogre, bear) = (named(&game, "Ogre", 1), named(&game, "Bear", 1));
+        let mut shot = snapshot(&game, ogre.id).unwrap();
+        shot.characteristics.power = Some(7);
+        let choices = Choices {
+            targets: vec![vec![Target::Object(ogre), Target::Object(bear)]],
+            ..Choices::default()
+        };
+        let specs = [TargetSpec {
+            what: Targetable::Object(selector(r#"[{"Type":"Creature"}]"#)),
+            bounds: Bounds::default(),
+            divide: None,
+        }];
+        for object in [ogre, bear] {
+            apply_event(
+                &mut game,
+                &Event::ZoneChanged {
+                    object: object.id,
+                    from: Zone::Battlefield,
+                    to: Zone::Exile,
+                    cause: ZoneCause::Exiled,
+                },
+            )
+            .unwrap();
+        }
+        let mut scope = scope(&game);
+        scope.choices = &choices;
+        scope.specs = &specs;
+        let first = Ref::Target(0);
+        assert_eq!(
+            scope.refs(&first).unwrap(),
+            [],
+            "both left the battlefield, so neither is a legal target now"
+        );
+        let departed = [shot];
+        scope.departed = &departed;
+        scope.snapshots = vec![&departed[0]];
+        assert_eq!(
+            scope.refs(&first).unwrap(),
+            [Target::Object(ogre)],
+            "the step that moved the Ogre keeps it named; the Bear is only illegal"
+        );
+        let power: Amount =
+            serde_json::from_str(r#"{"Stat":{"of":{"Target":0},"stat":"Power"}}"#).unwrap();
+        assert_eq!(scope.amount(&power), Ok(7), "its power as it was");
+        let seats: Ref = serde_json::from_str(r#"{"ControllerOf":{"Target":0}}"#).unwrap();
+        assert_eq!(scope.players(&seats).unwrap(), [PlayerId(1)]);
+        assert_eq!(scope.amount(&Amount::TargetCount(0)), Ok(1));
+    }
+
+    #[test]
+    fn live_objects_are_the_named_objects_still_there_each_once() {
+        let mut game = game();
+        let (ogre, bear) = (named(&game, "Ogre", 1), named(&game, "Bear", 1));
+        let bindings: Bindings = [(
+            "them".to_owned(),
+            vec![
+                Target::Object(ogre),
+                Target::Object(bear),
+                Target::Object(ogre),
+                Target::Player(PlayerId(1)),
+            ],
+        )]
+        .into();
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: bear.id,
+                from: Zone::Battlefield,
+                to: Zone::Exile,
+                cause: ZoneCause::Exiled,
+            },
+        )
+        .unwrap();
+        let mut scope = scope(&game);
+        scope.bindings = &bindings;
+        let them: Ref = serde_json::from_str(r#"{"Bound":"them"}"#).unwrap();
+        let live: Vec<ObjectId> = scope
+            .live_objects(&them)
+            .unwrap()
+            .iter()
+            .map(|object| object.id())
+            .collect();
+        assert_eq!(live, [ogre.id]);
     }
 
     #[test]

@@ -105,7 +105,7 @@ mod tests {
     fn named(game: &GameState, name: &str) -> ObjectRef {
         game.objects()
             .find(|o| o.card().name == name)
-            .map(|o| o.reference())
+            .map(crate::object::GameObject::reference)
             .unwrap()
     }
 
@@ -249,7 +249,11 @@ mod tests {
         let bindings: Bindings = [
             (
                 "gone".to_owned(),
-                vec![Target::Object(bear), Target::Object(ogre), Target::Object(ogre)],
+                vec![
+                    Target::Object(bear),
+                    Target::Object(ogre),
+                    Target::Object(ogre),
+                ],
             ),
             ("players".to_owned(), vec![Target::Player(FOE)]),
         ]
@@ -277,7 +281,10 @@ mod tests {
     #[rstest]
     #[case::a_legal_target(r#"[{"Type":"Creature"}]"#, true)]
     #[case::a_target_that_is_not_what_the_spec_asks_for(r#"[{"Type":"Land"}]"#, false)]
-    fn a_target_is_destroyed_only_while_it_is_legal(#[case] spec: &str, #[case] destroyed_it: bool) {
+    fn a_target_is_destroyed_only_while_it_is_legal(
+        #[case] spec: &str,
+        #[case] destroyed_it: bool,
+    ) {
         let game = game();
         let ogre = named(&game, "Ogre");
         let destroy = effect(r#"{"Destroy":{"what":{"Target":0}}}"#);
