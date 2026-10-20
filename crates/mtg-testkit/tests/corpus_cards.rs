@@ -25,10 +25,10 @@ use Support::{Manual, Partial, Verified};
 
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
-/// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, life and damage, and the
-/// keywords of combat, so the six cards that need no more are Verified (the Forest's ability comes from its land
-/// type) and a card whose other abilities are still missing carries what runs as Partial: Mulldrifter's draw and
-/// flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
+/// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
+/// countering, life and damage, and the keywords of combat, so the ten cards that need no more are Verified (the
+/// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs
+/// as Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
@@ -37,11 +37,11 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Bonesplitter", Manual, 0),
     ("Brainstorm", Manual, 0),
     ("Burst Lightning", Manual, 0),
-    ("Counterspell", Manual, 0),
+    ("Counterspell", Verified, 1),
     ("Cultivate", Manual, 0),
     ("Delver of Secrets // Insectile Aberration", Manual, 0),
     ("Dockside Extortionist", Manual, 0),
-    ("Doom Blade", Manual, 0),
+    ("Doom Blade", Verified, 1),
     ("Eternal Witness", Manual, 0),
     ("Faithless Looting", Partial, 1),
     ("Felidar Sovereign", Partial, 2),
@@ -67,9 +67,9 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Serra Angel", Verified, 2),
     ("Sneak Attack", Manual, 0),
     ("Sol Ring", Manual, 0),
-    ("Swords to Plowshares", Manual, 0),
+    ("Swords to Plowshares", Verified, 1),
     ("Tireless Tracker", Manual, 0),
-    ("Wrath of God", Manual, 0),
+    ("Wrath of God", Verified, 1),
 ];
 
 #[test]
@@ -181,6 +181,15 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     );
     // Archon of Cruelty is covered whole: its sacrifice and discard are played now.
     assert_eq!(reasons("Archon of Cruelty"), "");
+    // The removal and the counterspell are covered whole: destroy, exile and counter are played now.
+    for name in [
+        "Doom Blade",
+        "Swords to Plowshares",
+        "Counterspell",
+        "Wrath of God",
+    ] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // A card whose file models nothing says nothing about the engine.
     assert_eq!(reasons("Panharmonicon"), "");
 }
