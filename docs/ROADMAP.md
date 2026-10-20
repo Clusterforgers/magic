@@ -66,7 +66,9 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [x] Discard and Sacrifice with the ChooseCards engine side; Archon of Cruelty is Verified
   - [x] LookAtTop, Scry, Reveal, Move and Shuffle with the OrderCards engine side; Opt and Brainstorm are Verified
   - [x] Destroy, Exile and Counter (a spell) on targets and "all" selectors; Doom Blade, Swords to Plowshares, Counterspell and Wrath of God are Verified
-  - [ ] Looked-at and revealed cards reach the viewer's views so the prompts can show their names
+  - [x] Looked-at and revealed cards reach the viewer's views so the prompts can show their names
+  - [x] Search and Move onto the battlefield: Rampant Growth and Cultivate are Verified; Flooded Strand waits for the costs of its ability
+  - [ ] A card revealed and moved to a hidden zone with no question in between is named in the views of no other seat (the batch lists what is visible after its last event)
   - [ ] Web prompts for scry and the order of cards put back (ChooseCards and OrderCards already draw candidates from the views)
 - [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
 - [ ] (h) Keyword abilities beyond combat (CR 702), one task each for the other `Keyword` variants (flash, equip, cycling, kicker, flashback, cascade, storm, ...); cost-based ones follow (g)

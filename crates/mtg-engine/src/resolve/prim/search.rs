@@ -391,20 +391,17 @@ mod tests {
             r#"{{"Search":{{"zone":"Graveyard","filter":{filter},"count":{{"min":{min},"max":{max}}},"as":"found"}}}}"#
         ));
         let result = run_with(&game, Vec::new(), &effect).unwrap();
-        match asked_for {
-            Some(bounds) => {
-                let decision = asked(result);
-                let options = options_of(&decision);
-                assert_eq!((options.min, options.max), bounds);
-                assert_eq!(options.from.len(), 2);
-            }
-            None => {
-                let (events, found) = done(result);
-                assert_eq!(found.len(), taken);
-                assert!(
-                    matches!(&events[0], Event::CardsFound(f) if f.zone == Zone::Graveyard(ME) && f.cards.len() == taken)
-                );
-            }
+        if let Some(bounds) = asked_for {
+            let decision = asked(result);
+            let options = options_of(&decision);
+            assert_eq!((options.min, options.max), bounds);
+            assert_eq!(options.from.len(), 2);
+        } else {
+            let (events, found) = done(result);
+            assert_eq!(found.len(), taken);
+            assert!(
+                matches!(&events[0], Event::CardsFound(f) if f.zone == Zone::Graveyard(ME) && f.cards.len() == taken)
+            );
         }
     }
 

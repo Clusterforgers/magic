@@ -618,3 +618,314 @@ fn a_reveal_shows_the_cards_to_every_seat(#[values(2, 3, 4)] seats: usize) {
         assert_clean(batch, &hidden);
     }
 }
+
+/// Seat 0 holds `spell` and the Forests that pay for it; its library is `library` (top first), the others' are the same.
+fn search_table(seats: usize, spell: &str, library: &[&str]) -> mtg_testkit::Scenario {
+    let pick = |name: &str| match name {
+        "Plains" => mtg_testkit::cards::plains(),
+        "Swamp" => mtg_testkit::cards::swamp(),
+        "Mountain" => mtg_testkit::cards::mountain(),
+        other => mtg_testkit::corpus::card(other).unwrap(),
+    };
+    let forests = if spell == "Cultivate" { 3 } else { 2 };
+    let mut scenario = mtg_testkit::Scenario::new(seats)
+        .hand(0, [mtg_testkit::corpus::card(spell).unwrap()])
+        .battlefield(
+            0,
+            (0..forests).map(|_| mtg_testkit::ready(mtg_testkit::cards::forest())),
+        );
+    for seat in 0..seats {
+        scenario = scenario.library(seat, library.iter().map(|name| pick(name)));
+    }
+    scenario
+}
+
+/// Casts the spell of seat 0 and passes until a decision other than priority waits. Returns the driver and each seat's
+/// batch of everything since the cast.
+fn cast_until_asked(
+    scenario: mtg_testkit::Scenario,
+    seats: usize,
+    spell: &str,
+) -> (mtg_testkit::Driver, Vec<EventBatch>) {
+    let mut driver = mtg_testkit::Driver::from_scenario(scenario).unwrap();
+    let (before, from) = (driver.state().clone(), driver.engine().events().len());
+    driver.cast(spell).unwrap();
+    while matches!(driver.decision().unwrap().kind, DecisionKind::Priority(_))
+        && !driver.state().stack().is_empty()
+    {
+        driver.pass().unwrap();
+    }
+    let viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
+    let events = driver.engine().events()[from..].to_vec();
+    let batches = project_events(&before, &events, &viewers, from as u64).unwrap();
+    (driver, batches)
+}
+
+/// Whether the view of `seat` lists each of `cards`.
+fn listed(driver: &mtg_testkit::Driver, seat: usize, cards: &[ObjectId]) -> Vec<bool> {
+    let view = StateView::for_player(driver.state(), PlayerId::from_index(seat));
+    cards
+        .iter()
+        .map(|card| view.objects.iter().any(|o| o.id == *card))
+        .collect()
+}
+
+fn name(driver: &mtg_testkit::Driver, card: ObjectId) -> String {
+    driver.state().object(card).unwrap().card().name.clone()
+}
+
+/// The ids and names of `cards`, for the scan of a batch.
+fn named_hidden(driver: &mtg_testkit::Driver, cards: &[ObjectId]) -> BTreeMap<ObjectId, String> {
+    cards.iter().map(|c| (*c, name(driver, *c))).collect()
+}
+
+/// Seat 0's library from the top down: three basic lands that are not Forests, so no name is also in play.
+const SEARCHED: [&str; 5] = [
+    "Grizzly Bears",
+    "Plains",
+    "Serra Angel",
+    "Swamp",
+    "Mountain",
+];
+
+fn choose_answer(cards: &[ObjectId]) -> mtg_engine::decision::Answer {
+    mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(cards.to_vec()))
+}
+
+fn batches_of(
+    before: &GameState,
+    driver: &mtg_testkit::Driver,
+    from: usize,
+    seats: usize,
+) -> Vec<EventBatch> {
+    let viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
+    project_events(
+        before,
+        &driver.engine().events()[from..],
+        &viewers,
+        from as u64,
+    )
+    .unwrap()
+}
+
+#[rstest]
+fn the_seat_that_searches_sees_the_cards_it_chooses_among_and_no_other_seat_learns_what_the_library_holds(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let scenario = search_table(seats, "Rampant Growth", &SEARCHED);
+    let (mut driver, batches) = cast_until_asked(scenario, seats, "Rampant Growth");
+    let Some(Decision {
+        player,
+        kind: DecisionKind::ChooseCards(options),
+    }) = driver.decision().ok().cloned()
+    else {
+        panic!("the search asks for cards");
+    };
+    assert_eq!(player, PlayerId(0));
+    assert_eq!(options.from.len(), 3, "the three basic lands");
+    let library: Vec<ObjectId> = driver.state().zone(Zone::Library(PlayerId(0))).to_vec();
+    for seat in 0..seats {
+        let expected: Vec<bool> = library
+            .iter()
+            .map(|card| seat == 0 && options.from.contains(card))
+            .collect();
+        assert_eq!(
+            listed(&driver, seat, &library),
+            expected,
+            "seat {seat} lists exactly the cards it is choosing among"
+        );
+    }
+    // The batch that ended in the question says the same, and nothing else reaches the others.
+    let in_library = |batch: &EventBatch| {
+        batch
+            .objects
+            .iter()
+            .filter(|o| o.zone == Zone::Library(PlayerId(0)))
+            .count()
+    };
+    assert_eq!(
+        in_library(&batches[0]),
+        3,
+        "the searcher's batch lists the candidates"
+    );
+    let hidden = named_hidden(&driver, &library);
+    for batch in &batches[1..] {
+        assert_eq!(in_library(batch), 0);
+        assert_clean(batch, &hidden);
+    }
+    // Choosing one: it enters the battlefield for everyone and the others learn nothing of the rest.
+    let swamp = *options
+        .from
+        .iter()
+        .find(|c| name(&driver, **c) == "Swamp")
+        .unwrap();
+    let (before, from) = (driver.state().clone(), driver.engine().events().len());
+    driver.answer(choose_answer(&[swamp])).unwrap();
+    let after = batches_of(&before, &driver, from, seats);
+    let rest: Vec<ObjectId> = library.iter().copied().filter(|c| *c != swamp).collect();
+    let hidden = named_hidden(&driver, &rest);
+    for (seat, batch) in after.iter().enumerate() {
+        let found = batch.events.iter().find_map(|event| match event {
+            mtg_protocol::EventView::Public(mtg_engine::Event::CardsFound(f)) => {
+                Some(f.cards.clone())
+            }
+            _ => None,
+        });
+        let counted = batch.events.iter().any(|event| {
+            matches!(
+                event,
+                mtg_protocol::EventView::Hidden(mtg_protocol::HiddenEvent::CardsFound {
+                    player: PlayerId(0),
+                    count: 1
+                })
+            )
+        });
+        if seat == 0 {
+            assert_eq!(
+                found,
+                Some(vec![swamp]),
+                "the searcher is told what it found"
+            );
+        } else {
+            assert!(
+                found.is_none() && counted,
+                "seat {seat} learns that a card was found"
+            );
+            assert_clean(batch, &hidden);
+        }
+        assert!(
+            !batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::Revealed(_))
+            )),
+            "Rampant Growth reveals nothing"
+        );
+        assert!(
+            batch.objects.iter().any(|o| o.id == swamp),
+            "seat {seat} sees the Swamp enter"
+        );
+    }
+    for seat in 0..seats {
+        let expected: Vec<bool> = library.iter().map(|card| *card == swamp).collect();
+        assert_eq!(
+            listed(&driver, seat, &library),
+            expected,
+            "after the search only the land that entered is listed"
+        );
+    }
+}
+
+#[rstest]
+fn cultivate_shows_every_seat_the_lands_it_reveals_while_they_matter_and_not_the_rest(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let scenario = search_table(seats, "Cultivate", &SEARCHED);
+    let (mut driver, _) = cast_until_asked(scenario, seats, "Cultivate");
+    let Some(DecisionKind::ChooseCards(options)) = driver.decision().ok().map(|d| d.kind.clone())
+    else {
+        panic!("the search asks for cards");
+    };
+    let find = |driver: &mtg_testkit::Driver, wanted: &str| {
+        *options
+            .from
+            .iter()
+            .find(|card| name(driver, **card) == wanted)
+            .unwrap()
+    };
+    let (plains, mountain) = (find(&driver, "Plains"), find(&driver, "Mountain"));
+    let (before, from) = (driver.state().clone(), driver.engine().events().len());
+    driver.answer(choose_answer(&[plains, mountain])).unwrap();
+    // Which of the two enters is asked now; both were revealed.
+    let Some(DecisionKind::ChooseCards(second)) = driver.decision().ok().map(|d| d.kind.clone())
+    else {
+        panic!("the player chooses which land enters");
+    };
+    assert_eq!(second.from.len(), 2);
+    let library: Vec<ObjectId> = driver.state().zone(Zone::Library(PlayerId(0))).to_vec();
+    let revealed = vec![plains, mountain];
+    let batches = batches_of(&before, &driver, from, seats);
+    for (seat, batch) in batches.iter().enumerate() {
+        for (card, shown) in library.iter().zip(listed(&driver, seat, &library)) {
+            assert_eq!(
+                shown,
+                revealed.contains(card),
+                "seat {seat}, {}",
+                name(&driver, *card)
+            );
+        }
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::Revealed(r)) if r.cards == revealed
+            )),
+            "seat {seat} sees what was revealed"
+        );
+    }
+    let rest: Vec<ObjectId> = library
+        .iter()
+        .copied()
+        .filter(|c| !revealed.contains(c))
+        .collect();
+    let hidden = named_hidden(&driver, &rest);
+    for batch in &batches[1..] {
+        assert_clean(batch, &hidden);
+    }
+    // One enters the battlefield and the other goes to the hand: the others now see only the one in play.
+    let (before, from) = (driver.state().clone(), driver.engine().events().len());
+    driver.answer(choose_answer(&[mountain])).unwrap();
+    let after = batches_of(&before, &driver, from, seats);
+    for (seat, batch) in after.iter().enumerate() {
+        let in_view = |card: ObjectId| batch.objects.iter().any(|o| o.id == card);
+        assert!(in_view(mountain), "seat {seat} sees the Mountain enter");
+        assert_eq!(
+            in_view(plains),
+            seat == 0,
+            "only its owner sees the Plains in hand"
+        );
+        if seat != 0 {
+            assert!(
+                batch.gone.contains(&plains),
+                "the others lose sight of the Plains"
+            );
+        }
+    }
+    for seat in 1..seats {
+        assert_eq!(listed(&driver, seat, &[plains, mountain]), [false, true]);
+    }
+}
+
+#[rstest]
+fn the_seat_that_looked_at_libraries_lists_the_cards_while_it_orders_them_and_their_owners_do_not(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let scenario = library_table(seats, mtg_testkit::cards::bottomer("Sink"), &[]);
+    let (driver, batches) = cast_until_asked(scenario, seats, "Sink");
+    let Some(DecisionKind::OrderCards(options)) = driver.decision().ok().map(|d| d.kind.clone())
+    else {
+        panic!("the cards are put in order");
+    };
+    // The cards of one library are ordered at a time; every library was looked at before the first question.
+    assert_eq!(options.cards.len(), 2);
+    let looked: Vec<ObjectId> = driver
+        .engine()
+        .events()
+        .iter()
+        .filter_map(|event| match event {
+            mtg_engine::Event::LibraryLooked(looked) => Some(looked.cards.clone()),
+            _ => None,
+        })
+        .flatten()
+        .collect();
+    assert_eq!(looked.len(), 2 * (seats - 1));
+    for seat in 0..seats {
+        assert_eq!(
+            listed(&driver, seat, &looked),
+            vec![seat == 0; looked.len()],
+            "seat {seat}: no owner sees the cards of their library that another looked at"
+        );
+    }
+    let hidden = named_hidden(&driver, &looked);
+    for batch in &batches[1..] {
+        assert_clean(batch, &hidden);
+    }
+}
