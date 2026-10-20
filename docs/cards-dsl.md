@@ -409,6 +409,7 @@ The order of the M3 work; `ROADMAP.md` lists the pieces. A structural task chang
 | (e) Keywords | One task each with a table test | (c) |
 | (f) Keyword actions | One `Effect` each; discard, sacrifice, the library effects, destroy, exile, counter, pay, search and tokens are built | (c) |
 | (i) Triggers | Detection, queue, APNAP, delayed, intervening if | (c) |
+| (r) Compiler | Core, renderer and goldens, `card_rules` rows, templates for the vocabulary the engine runs, the coverage report, the missing vocabulary added in one pass | (a), (c) |
 | (q) Small effects | `If`, `Tap`, `Untap`, `Mill`, `WinGame`, `Flash` | (c) |
 | (k) Abilities and layers | One reader of an object's abilities with stable addresses (printed, keyword-provided, granted, lost, by zone), static abilities, every `Modification`, `Rule`, the CR 613 derivation (timestamps, dependencies, characteristic-defining abilities), ward, prowess and battle cry (e2), state triggers and abilities from other zones (i3) | (c) |
 | (l) Counters and planeswalkers | Counters on permanents and players with their effects, layer 7c, state-based actions, loyalty abilities | (k) |
@@ -423,6 +424,6 @@ The order of the M3 work; `ROADMAP.md` lists the pieces. A structural task chang
 
 (d) Decision kinds are built with the first task that asks for them: `ChooseNumber`, `ChooseCosts` and `DivideAmount` with (g), `ChooseReplacement` with (j). Their web prompts follow in M5.
 
-The tasks run one at a time in the order of the table; (h) fills stub files and may run in any order.
+The tasks run one at a time in the order of the table; (h) fills stub files and may run in any order. Rules data leads the engine: a compiled card is `Partial` until the engine runs its primitives. From (q) on, a task ends with the templates and goldens for its wordings, and tasks that do not need each other run in the order of the cards the coverage report says they free.
 
 - Scope of (f), the keyword actions of CR 701: draw, discard, mill, shuffle, scry, surveil, fateseal, search, reveal, sacrifice, destroy, exile, counter, create tokens, populate, investigate, fight, explore, proliferate, amass, connive, learn, transform, meld, attach, regenerate, goad, monstrosity, adapt, bolster, support, venture. Arena-only digital actions (conjure, seek, specialize) are out of scope; a card that needs one is `Unplayable` (`deck-check.md`). An action that belongs to a cluster is built there: attach (m), regenerate (j), proliferate (l), transform and meld (n), populate (o); the others are (h).

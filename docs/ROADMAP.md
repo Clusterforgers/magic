@@ -9,7 +9,8 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - Structure before additions: work that changes how abilities, characteristics, events, costs or views are shaped runs first and alone; work that fills one stub (a keyword, an effect) follows in any order.
 - A cluster is the items that touch one area of code. They run back to back, and a decision kind is built with the first task that asks it.
 - The card system (M3) and Commander (M4) are complete in the DSL, engine and protocol types before the web shows them (M5), so each screen is built once. Until then a new event, decision or view field gets a placeholder in the web that keeps typecheck and e2e green.
-- A cluster ends with its corpus cards Verified, a fuzz deck under every invariant, hidden-information tests for its events and current generated bindings.
+- Rules data leads the engine: support is computed, so a compiled card is Partial until the engine runs its primitives and then Verified without an edit. The coverage report ranks what holds cards back, and clusters that do not need each other (`docs/cards-dsl.md`, Tasks) run in that order.
+- A cluster ends with its corpus cards Verified, the compiler templates and goldens for its wordings, a fuzz deck under every invariant, hidden-information tests for its events and current generated bindings.
 - Items that depend on nothing (import checks, account settings, deploy) wait in their milestone and can be taken at any time without rework.
 
 ## Done
@@ -26,6 +27,14 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 ## M3 Card system
 
 Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the order listed.
+
+### Compiler and coverage
+- [ ] (r1) Compiler core in `mtg-cards`: reminder text and the card's name stripped, clauses split and classified (keyword line, spell, triggered, activated, loyalty, static, modal), keyword lines read, an unreadable clause kept as `Ability::Manual` with its span (`docs/cards-dsl.md`, Compiler and Manual fallback)
+- [ ] (r1b) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes them
+- [ ] (r2) Renderer and goldens: every compiled card is written back as English and compared with its oracle text; the corpus files are the first goldens
+- [ ] (r3) Templates for what the engine runs today: keyword lines, spell effects, the trigger patterns, activated abilities with `{T}`, mana and sacrifice costs, modes, "may" and "pay", and the selectors, amounts and conditions in their common wordings
+- [ ] (r4) `mtg-cli coverage`: states, reasons and clause spans for every precon card, with the missing primitives and unreadable wordings ranked by the cards each holds back
+- [ ] (r5) The vocabulary the report ranks highest and the DSL lacks (value nodes such as devotion, energy and chosen colour; effects; costs; trigger patterns) is added in one pass, each with its `Caps` name and a stub
 
 ### Small effects
 - [ ] (q) `Effect::If` with its conditions, `Tap`, `Untap`, `Mill`, `WinGame` and the keyword Flash; Felidar Sovereign is Verified
@@ -91,10 +100,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Playwright games with corpus decks that ask every decision kind
 
 ## M6 Coverage
-- [ ] Choose the set of Commander precons that is the coverage target (`docs/deck-check.md`)
-- [ ] Oracle-text compiler for common templates with golden tests (`docs/cards-dsl.md`, Compiler and Manual fallback)
-- [ ] Coverage dashboard over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of the chosen precons (`docs/deck-check.md`)
-- [ ] (h) Keywords and keyword actions the DSL does not declare, sagas, classes, designations, extra turns and the other long-tail mechanics: one task each, in the order of the dashboard's demand
+- [ ] Choose the set of Commander precons that is the coverage target; `mtg-cli coverage` ranks over all stored precons until then (`docs/deck-check.md`)
+- [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of the chosen precons (`docs/deck-check.md`)
+- [ ] (h) Keywords, keyword actions and wordings the DSL and the compiler lack, sagas, classes, designations, extra turns and the other long-tail mechanics: one task each (primitive, template, golden), in the order of the report's demand
 
 ## M7 Product
 - [ ] (B3) Deck check, remaining: each precon's state in the precon browser (`docs/deck-check.md`)

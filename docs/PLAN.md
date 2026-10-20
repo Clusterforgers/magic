@@ -96,10 +96,10 @@ Vertical slices, each with its tests.
 - **M0 Foundations**: workspace, CI, `CLAUDE.md`, lint and test tooling, Postgres dev setup, frontend spike.
 - **M1 Card data**: schema and migrations, Scryfall and MTGJSON import, card search API, deck parsers and validation, precon listing.
 - **M2 Engine core and first playable**: zones, turns, priority, stack, mana, state-based actions, lands and spells, basic combat, testkit; a 2-player vanilla game playable in the browser with highlight and pass UX; auth, lobbies, N players, reconnect, the deck builder, game log and stack UI.
-- **M3 Card system**: abilities and layers, counters, planeswalkers, attachments, replacement effects, costs and casting, triggers, faces, copies and manual cards, complete in the DSL, engine and protocol types before the web shows them.
+- **M3 Card system**: the oracle-text compiler and coverage report, abilities and layers, counters, planeswalkers, attachments, replacement effects, costs and casting, triggers, faces, copies and manual cards, complete in the DSL, engine and protocol types before the web shows them.
 - **M4 Commander**: format rules, command zone, tax, commander damage, partner; Commander-specific tests.
 - **M5 Table and prompts**: response clocks and game flow, then one pass over the web so it shows every state and asks every decision.
-- **M6 Coverage**: oracle-text compiler, coverage dashboard, long-tail keywords by demand; 100% of a chosen set of precons.
+- **M6 Coverage**: coverage dashboard, long-tail keywords and wordings by demand; 100% of a chosen set of precons.
 - **M7 Product**: precon browser, spectators, account settings, import checks.
 - **M8 Polish and deploy**: animations, sounds, replays, solo bots, deployment hardening.
 
