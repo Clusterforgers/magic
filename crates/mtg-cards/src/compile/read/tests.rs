@@ -87,6 +87,19 @@ fn the_tokens_of_a_clause(#[case] text: &str, #[case] expected: &[Token]) {
 #[case::then("Scry 1, then draw a card.", "Scry 1. Draw a card.")]
 #[case::then_twice("Draw a card, then scry 1, then draw.", "Draw a card. Scry 1. Draw.")]
 #[case::lines("Scry 1.\nDraw a card.", "Scry 1. Draw a card.")]
+#[case::the_older_enters(
+    "When ~ enters the battlefield, draw a card.",
+    "When ~ enters, draw a card."
+)]
+#[case::the_older_enters_tapped("~ enters the battlefield tapped.", "~ enters tapped.")]
+#[case::leaves_is_not_enters(
+    "When ~ leaves the battlefield, draw a card.",
+    "When ~ leaves the battlefield, draw a card."
+)]
+#[case::to_the_battlefield(
+    "Put it onto the battlefield. Return it to the battlefield.",
+    "Put it onto the battlefield. Return it to the battlefield."
+)]
 #[case::of_their_choice(
     "Each player sacrifices a creature of their choice.",
     "Each player sacrifices a creature."
@@ -140,6 +153,7 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
 mod compound;
 mod counters;
 mod create;
+mod enters;
 mod life;
 mod may;
 mod modes;

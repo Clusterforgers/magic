@@ -53,6 +53,15 @@ pub fn canonical(text: &str) -> String {
         {
             out.push(format!("~{}", next.get(noun.len()..).unwrap_or_default()));
             at += 2;
+        } else if word == "enters"
+            && words.get(at + 1) == Some(&"the")
+            && let Some(field) = words.get(at + 2)
+            && field.trim_end_matches(|c: char| !c.is_alphanumeric()) == "battlefield"
+        {
+            // The older wording of "enters"; what follows (a comma, a period) stays.
+            let tail = field.trim_start_matches(|c: char| c.is_alphanumeric());
+            out.push(format!("enters{tail}"));
+            at += 3;
         } else if word == "of"
             && words.get(at + 1) == Some(&"their")
             && let Some(choice) = words.get(at + 2)

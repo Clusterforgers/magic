@@ -237,7 +237,6 @@ fn an_ability_word_is_flavor_and_the_rest_is_read(#[case] text: &str, #[case] re
 #[case::cast_this_spell("When you cast this spell, draw a card.")]
 #[case::cast_a_named_spell("Whenever you cast a spell named Bolt, draw a card.")]
 #[case::cast_another("Whenever you cast another spell, draw a card.")]
-#[case::an_old_wording("When ~ enters the battlefield, draw a card.")]
 #[case::enters_under_your_control(
     "Whenever a creature enters the battlefield under your control, scry 1."
 )]
