@@ -2,6 +2,7 @@
 import type { LossReason } from "./LossReason";
 import type { ManaPool } from "./ManaPool";
 import type { MulliganStatus } from "./MulliganStatus";
+import type { ObjectId } from "./ObjectId";
 import type { PlayerId } from "./PlayerId";
 import type { ZoneView } from "./ZoneView";
 
@@ -38,9 +39,13 @@ mulligan: MulliganStatus,
  */
 hand: ZoneView, 
 /**
- * Library; the count only, never the cards.
+ * Library; the count only, never the cards but the top one while a rule has it revealed to every seat.
  */
 library: ZoneView, 
+/**
+ * The top card of the library while a rule has it revealed; left out otherwise.
+ */
+revealed_top?: ObjectId, 
 /**
  * Graveyard (public).
  */

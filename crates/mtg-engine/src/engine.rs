@@ -15,6 +15,7 @@ use crate::forecast::CombatForecast;
 use crate::object::{GameObject, ObjectRef};
 use crate::player::LossReason;
 use crate::preview::preview_forecast;
+use crate::rules::{Rule, RuleEffect};
 use crate::setup::GameSetup;
 use crate::state::{GameResult, GameState};
 use crate::triggers;
@@ -209,6 +210,59 @@ impl Engine {
             .map(GameObject::reference)
             .ok_or_else(|| EngineError::InvalidEvent(format!("{source:?} is not in the game")))?;
         self.register(Some(source), selector, modification, duration)
+    }
+
+    /// Registers a change to a rule of the game as if a spell or ability had made it, and logs it: the hook tests use to
+    /// prove the rules and their durations. It belongs to the active player. A duration that follows the source
+    /// (`WhileSourceOnBattlefield`) needs [`add_rule_from`](Engine::add_rule_from).
+    pub fn add_rule(&mut self, rule: Rule, duration: Duration) -> Result<Vec<Event>, EngineError> {
+        self.register_rule(None, rule, duration)
+    }
+
+    /// Registers a change to a rule of the game as if a spell or ability of the object `source` had made it, and logs it.
+    pub fn add_rule_from(
+        &mut self,
+        source: ObjectId,
+        rule: Rule,
+        duration: Duration,
+    ) -> Result<Vec<Event>, EngineError> {
+        let source = self
+            .state
+            .object(source)
+            .map(GameObject::reference)
+            .ok_or_else(|| EngineError::InvalidEvent(format!("{source:?} is not in the game")))?;
+        self.register_rule(Some(source), rule, duration)
+    }
+
+    fn register_rule(
+        &mut self,
+        source: Option<ObjectRef>,
+        rule: Rule,
+        duration: Duration,
+    ) -> Result<Vec<Event>, EngineError> {
+        if self.decision.is_none() {
+            return Err(EngineError::NoDecision);
+        }
+        let controller = source
+            .and_then(|source| self.state.object(source.id))
+            .map_or_else(
+                || self.state.turn().active(),
+                |object| controller_of_object(&self.state, object),
+            );
+        let effect = RuleEffect {
+            id: EffectId(self.state.next_effect),
+            rule,
+            duration,
+            source,
+            controller,
+            turn: self.state.turn().number(),
+        };
+        let checkpoint = self.checkpoint();
+        self.pending = None;
+        let result = self
+            .commit(vec![Event::RuleCreated { effect }])
+            .and_then(|()| self.advance());
+        self.finish(checkpoint, result)
     }
 
     fn register(

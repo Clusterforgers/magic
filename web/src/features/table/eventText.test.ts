@@ -1,6 +1,13 @@
 // Goal: every kind of log event, public and hidden, reads as one plain sentence with the right names, and the quiet ones (priority, mana, untaps) are marked minor.
 import { describe, expect, it } from 'vitest'
-import type { ContinuousEffect, Event, EventView, HiddenEvent, Snapshot } from '@/protocol/generated'
+import type {
+  ContinuousEffect,
+  Event,
+  EventView,
+  HiddenEvent,
+  RuleEffect,
+  Snapshot,
+} from '@/protocol/generated'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
 
@@ -102,6 +109,11 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Grizzly Bears gets +2/-1 until end of turn',
   ],
   EffectExpired: [{ EffectExpired: { id: 1 } }, 'An effect ends'],
+  RuleCreated: [
+    { RuleCreated: { effect: ruleEffect({ CantGainLife: [0, 1] }, 'UntilEndOfTurn') } },
+    "Ana and Bo can't gain life until end of turn",
+  ],
+  RuleExpired: [{ RuleExpired: { id: 1 } }, 'A rule change ends'],
   CreatureDied: [
     { CreatureDied: { object: 1, cause: 'LethalDamage' } },
     'Grizzly Bears dies from lethal damage',
@@ -283,6 +295,14 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
 
 function objects(...ids: number[]): ContinuousEffect['selector'] {
   return { Objects: ids.map((id) => ({ id, counter: 0 })) }
+}
+
+function ruleEffect(
+  rule: RuleEffect['rule'],
+  duration: RuleEffect['duration'],
+  source: RuleEffect['source'] = null,
+): RuleEffect {
+  return { id: 1, rule, duration, source, controller: 0, turn: 3 }
 }
 
 function effect(
@@ -506,6 +526,44 @@ describe('events with more than one shape', () => {
     ],
   ])('says what an effect does (%#)', (created, text) => {
     expect(say({ EffectCreated: { effect: created } })).toBe(text)
+  })
+
+  it.each([
+    [
+      ruleEffect({ MustAttack: [{ id: 1, counter: 0 }] }, 'UntilEndOfTurn'),
+      'Grizzly Bears must attack if able until end of turn',
+    ],
+    [
+      ruleEffect(
+        {
+          MustBlock: [
+            { id: 1, counter: 0 },
+            { id: 2, counter: 0 },
+          ],
+        },
+        'UntilEndOfCombat',
+      ),
+      'Grizzly Bears and Hill Giant must block if able until end of combat',
+    ],
+    [
+      ruleEffect({ CantBeCountered: [{ id: 4, counter: 0 }] }, 'Forever'),
+      "Lightning Bolt can't be countered",
+    ],
+    [
+      ruleEffect({ CantDraw: [1] }, 'UntilYourNextTurn'),
+      "Bo can't draw cards until their controller's next turn",
+    ],
+    [
+      ruleEffect({ CantSearch: [0, 1, 2] }, 'WhileSourceOnBattlefield', { id: 6, counter: 0 }),
+      "Ana, Bo and Cy can't search libraries while Jace Beleren stays",
+    ],
+    [
+      ruleEffect({ RevealTop: [2] }, 'UntilEndOfTurn'),
+      'Cy play with the top card of their library revealed until end of turn',
+    ],
+    [ruleEffect({ TriggerAgain: null }, 'Forever'), 'Triggered abilities trigger an additional time'],
+  ])('says what a change to a rule does (%#)', (created, text) => {
+    expect(say({ RuleCreated: { effect: created } })).toBe(text)
   })
 })
 

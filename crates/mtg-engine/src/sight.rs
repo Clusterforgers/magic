@@ -11,16 +11,25 @@ use crate::decision::{Decision, DecisionKind};
 use crate::object::GameObject;
 use crate::resolve::{Progress, Shown, step};
 use crate::state::GameState;
+use crate::zones::Zone;
 
 impl GameState {
-    /// Whether the resolution in progress has shown `viewer` the object, which is still the card it was shown: a new
-    /// zone makes a new object (CR 400.7), and that one is judged by its zone alone.
+    /// Whether `viewer` may identify the object beyond what its zone shows: the top card of a library that a rule
+    /// reveals is shown to every seat, and the resolution in progress may have shown it to them, which holds while it is
+    /// still the card it was shown: a new zone makes a new object (CR 400.7), and that one is judged by its zone alone.
     pub fn is_shown_to(&self, viewer: PlayerId, id: ObjectId) -> bool {
-        let (Some(resolving), Some(object)) = (self.resolving(), self.object(id)) else {
+        let Some(object) = self.object(id) else {
             return false;
         };
-        resolving.shown().iter().any(|shown| {
-            shown.card == object.reference() && shown.to.is_none_or(|seat| seat == viewer)
+        if let Zone::Library(owner) = object.zone()
+            && self.revealed_top(owner) == Some(id)
+        {
+            return true;
+        }
+        self.resolving().is_some_and(|resolving| {
+            resolving.shown().iter().any(|shown| {
+                shown.card == object.reference() && shown.to.is_none_or(|seat| seat == viewer)
+            })
         })
     }
 }

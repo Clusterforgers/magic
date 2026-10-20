@@ -14,7 +14,7 @@ use common::{cards_dir, printed, token_sources};
 
 /// Every corpus card with the status it compiles to (`None` when its text is only reminder text) and
 /// how many of its clauses are read out of how many.
-const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 53] = [
+const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 65] = [
     ("Act of Treason", Some(Manual), 0, 1),
     ("Anointed Procession", Some(Manual), 0, 1),
     ("Archon of Cruelty", Some(Full), 2, 2),
@@ -23,8 +23,11 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 53] = [
     ("Bonesplitter", Some(Partial), 1, 2),
     ("Brainstorm", Some(Full), 1, 1),
     ("Burst Lightning", Some(Partial), 1, 2),
+    ("Carnage Tyrant", Some(Partial), 2, 3),
     ("Counterspell", Some(Full), 1, 1),
+    ("Courtly Provocateur", Some(Manual), 0, 2),
     ("Cultivate", Some(Manual), 0, 1),
+    ("Darksteel Juggernaut", Some(Partial), 1, 3),
     (
         "Delver of Secrets // Insectile Aberration",
         Some(Partial),
@@ -45,6 +48,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 53] = [
     ("Giant Growth", Some(Full), 1, 1),
     ("Glorious Anthem", Some(Manual), 0, 1),
     ("Goblin Chieftain", Some(Partial), 1, 2),
+    ("Goblin Spy", Some(Manual), 0, 1),
     ("Grizzly Bears", None, 0, 0),
     ("Hero of Bladehold", Some(Full), 2, 2),
     ("Hulking Raptor", Some(Partial), 1, 2),
@@ -56,22 +60,30 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 53] = [
     ("Levitation", Some(Manual), 0, 1),
     ("Lightning Bolt", Some(Full), 1, 1),
     ("Llanowar Elves", Some(Full), 1, 1),
+    ("Maralen of the Mornsong", Some(Manual), 0, 2),
     ("Maro", Some(Manual), 0, 1),
+    ("Mindlock Orb", Some(Manual), 0, 1),
     ("Monastery Swiftspear", Some(Full), 2, 2),
     ("Mulldrifter", Some(Full), 3, 3),
+    ("Naban, Dean of Iteration", Some(Manual), 0, 1),
     ("Nightmare", Some(Partial), 1, 2),
     ("Opt", Some(Full), 2, 2),
     ("Pacifism", Some(Partial), 1, 2),
     ("Panharmonicon", Some(Manual), 0, 1),
     ("Questing Beast", Some(Partial), 3, 6),
+    ("Rampaging Ferocidon", Some(Partial), 1, 3),
     ("Rampant Growth", Some(Manual), 0, 1),
     ("Rhystic Study", Some(Full), 1, 1),
     ("Serra Angel", Some(Full), 2, 2),
     ("Sneak Attack", Some(Manual), 0, 1),
     ("Sol Ring", Some(Full), 1, 1),
+    ("Spellbreaker Behemoth", Some(Manual), 0, 2),
+    ("Supreme Verdict", Some(Partial), 1, 2),
     ("Swords to Plowshares", Some(Full), 1, 1),
+    ("Teysa Karlov", Some(Manual), 0, 2),
     ("Tireless Tracker", Some(Full), 2, 2),
     ("Transguild Courier", Some(Manual), 0, 1),
+    ("Warmonger Hellkite", Some(Partial), 1, 3),
     ("Wrath of God", Some(Full), 1, 1),
 ];
 
@@ -104,7 +116,7 @@ fn the_table_lists_every_corpus_card_once() {
 #[test]
 fn every_corpus_card_earns_the_status_in_the_table() {
     let corpus = compiled_corpus();
-    assert_eq!(corpus.len(), 53);
+    assert_eq!(corpus.len(), 65);
     let mut differing = Vec::new();
     for (card, compiled) in &corpus {
         let row = EXPECTED.iter().find(|row| row.0 == card.name).unwrap();
@@ -130,7 +142,7 @@ fn every_compiled_card_loads_and_matches_the_imported_text() {
         .filter_map(|(_, compiled)| compiled.card.as_ref())
         .map(source_of)
         .collect();
-    assert_eq!(sources.len(), 51);
+    assert_eq!(sources.len(), 63);
     sources.extend(token_sources());
     let library = Library::from_sources(&sources).unwrap_or_else(|errors| panic!("{errors}"));
     let imported: Vec<PrintedCard> = corpus.into_iter().map(|(card, _)| card).collect();

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3752277a-5b3c-4902-90a1-63acdac66dc9",
+  "name": "Courtly Provocateur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Courtly Provocateur",
+      "oracle_fingerprint": "d0062acbdd77cde0cbb084b02543ff06",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Rule": { "rule": { "MustAttack": { "Target": 0 } }, "duration": "UntilEndOfTurn" }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Rule": { "rule": { "MustBlock": { "Target": 0 } }, "duration": "UntilEndOfTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

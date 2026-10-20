@@ -50,6 +50,14 @@ pub(crate) fn static_abilities(
         .map(|(address, rules)| (address.ability, rules))
 }
 
+/// Whether a card with this definition prints a rule of the game as an ability (`GameState::rules`).
+pub(crate) fn definition_has_rule(definition: &CardDefinition) -> bool {
+    definition
+        .rules
+        .iter()
+        .any(|rules| matches!(**rules, Ability::Rule { .. }))
+}
+
 /// Whether anything a card with this definition does can make something trigger (`GameState::watches`): it prints a
 /// triggered ability, sets up a delayed one or grants one.
 pub(crate) fn definition_triggers(definition: &CardDefinition) -> bool {

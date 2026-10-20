@@ -9,6 +9,7 @@ use crate::choose::{Picked, Selection, Target, pick_selections};
 use crate::events::Event;
 use crate::library::{CardsFound, Revealed};
 use crate::resolve::{Cx, Next, ResolveError, Run};
+use crate::rules::cant_search;
 use crate::wording;
 use crate::zones::Zone;
 
@@ -32,6 +33,7 @@ fn zone_of(kind: ZoneKind, player: PlayerId) -> Result<Zone, ResolveError> {
 /// none even when cards match; a public zone gives up as many as `count.min` asks. Nothing matching is no question.
 /// Everyone chooses before anything is logged. Each search is one `CardsFound`, private to the searcher whether
 /// or not a card was found, and the cards are revealed to every seat in one `Revealed` after it when the effect says so.
+/// A player who can't search libraries does not search one.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Search {
         who,
@@ -64,6 +66,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .into_iter()
         .filter(|player| state.is_alive(*player))
     {
+        // A player who can't search libraries does not search: no question and no event.
+        if *zone == ZoneKind::Library && cant_search(state, player) {
+            continue;
+        }
         let place = zone_of(*zone, player)?;
         let mut matches: Vec<ObjectId> = Vec::new();
         for id in state.zone(place) {

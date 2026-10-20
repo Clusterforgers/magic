@@ -8,7 +8,9 @@
 //! game, life and damage (and delayed triggers), conditions, "may" and "pay" and choices and modal spells, continuous
 //! effects and static abilities of every modification (types, subtypes, colours, power and toughness, keywords, abilities,
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
-//! keywords of combat, flash and hexproof and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
+//! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
+//! combat, flash and hexproof and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS};
@@ -55,8 +57,18 @@ const RUNS: &[&str] = &[
     "Effect.WinGame",
     "Effect.CreateToken",
     "Effect.Continuous",
+    "Effect.Rule",
     "Ability.Static",
     "Ability.Static.Defining",
+    "Ability.Rule",
+    "Rule.MustAttack",
+    "Rule.MustBlock",
+    "Rule.CantBeCountered",
+    "Rule.CantGainLife",
+    "Rule.CantDraw",
+    "Rule.CantSearch",
+    "Rule.RevealTop",
+    "Rule.TriggerAgain",
     VARIABLE_STATS,
     "Mod.ModifyPT",
     "Mod.AddKeyword",
@@ -187,6 +199,17 @@ mod tests {
     #[case::block_restrictions("Mod.CantBlock", true)]
     #[case::static_abilities("Ability.Static", true)]
     #[case::characteristic_defining_abilities("Ability.Static.Defining", true)]
+    #[case::rules_as_effects("Effect.Rule", true)]
+    #[case::rules_as_static_abilities("Ability.Rule", true)]
+    #[case::attack_requirements("Rule.MustAttack", true)]
+    #[case::block_requirements("Rule.MustBlock", true)]
+    #[case::spells_that_cant_be_countered("Rule.CantBeCountered", true)]
+    #[case::no_life_gain("Rule.CantGainLife", true)]
+    #[case::no_drawing("Rule.CantDraw", true)]
+    #[case::no_searching("Rule.CantSearch", true)]
+    #[case::a_revealed_top("Rule.RevealTop", true)]
+    #[case::triggers_again("Rule.TriggerAgain", true)]
+    #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", false)]
     #[case::removed_keywords("Mod.RemoveKeyword", true)]
     #[case::conditions("Effect.If", true)]
     #[case::counters_in_a_value("Amount.Counters", false)]

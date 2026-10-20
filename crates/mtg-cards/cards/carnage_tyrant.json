@@ -1,0 +1,16 @@
+{
+  "oracle_id": "8c411f4e-a091-447c-9450-d895b10b4985",
+  "name": "Carnage Tyrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carnage Tyrant",
+      "oracle_fingerprint": "c5b53a4c25bb46428b0f70bae2ae2b28",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        { "Keyword": "Trample" },
+        { "Keyword": "Hexproof" }
+      ]
+    }
+  ]
+}

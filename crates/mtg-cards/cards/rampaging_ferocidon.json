@@ -1,0 +1,23 @@
+{
+  "oracle_id": "3e5ca524-8dd1-4f7f-a467-5210d768b8a1",
+  "name": "Rampaging Ferocidon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampaging Ferocidon",
+      "oracle_fingerprint": "5da42d0e992fb7aad75512d57c4b1dc0",
+      "abilities": [
+        { "Keyword": "Menace" },
+        { "Rule": { "rule": { "CantGainLife": "EachPlayer" } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["Other", { "Type": "Creature" }], "to": "Battlefield" }
+            },
+            "effects": [{ "DealDamage": { "to": { "ControllerOf": "Triggering" }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -351,6 +351,20 @@ fn duration() -> impl Strategy<Value = Duration> {
     ])
 }
 
+fn game_rule() -> impl Strategy<Value = GameRule> {
+    prop_oneof![
+        Just(GameRule::DamageCantBePrevented),
+        reference().prop_map(GameRule::MustAttack),
+        reference().prop_map(GameRule::MustBlock),
+        reference().prop_map(GameRule::CantBeCountered),
+        reference().prop_map(GameRule::CantGainLife),
+        reference().prop_map(GameRule::CantDraw),
+        reference().prop_map(GameRule::CantSearch),
+        reference().prop_map(GameRule::RevealTop),
+        trigger_pattern().prop_map(|cause| GameRule::TriggerAgain { cause }),
+    ]
+}
+
 fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
     let leaf = prop_oneof![
         (
@@ -542,10 +556,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     duration
                 }
             ),
-            duration().prop_map(|duration| Effect::Rule {
-                rule: GameRule::DamageCantBePrevented,
-                duration
-            }),
+            (game_rule(), duration()).prop_map(|(rule, duration)| Effect::Rule { rule, duration }),
         ];
     prop_oneof![part1, part2]
 }
@@ -649,6 +660,11 @@ fn ability() -> impl Strategy<Value = Ability> {
                 effects
             }
         ),
+        (game_rule(), tail()).prop_map(|(rule, (condition, from))| Ability::Rule {
+            rule,
+            condition,
+            from
+        }),
         (
             reference(),
             vec(modification(), 1..3),

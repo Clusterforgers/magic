@@ -547,6 +547,7 @@ mod tests {
             kind: DecisionKind::DeclareBlockers(BlockOptions {
                 blockers: Vec::new(),
                 min_blockers: Vec::new(),
+                required: Vec::new(),
             }),
         };
         assert!(!passes_for(

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "cffb9b7f-d52c-43e0-a4a6-b06dea83eb53",
+  "name": "Naban, Dean of Iteration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Naban, Dean of Iteration",
+      "oracle_fingerprint": "122f0e27f2abc7b44a2807b9530d5c2b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "TriggerAgain": {
+                "cause": {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Wizard" }, { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -13,8 +13,8 @@ use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::keyword::Keyword;
-use crate::modify::Modification;
-use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable};
+use crate::modify::{GameRule, Modification};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, Condition, StatKind};
@@ -775,7 +775,7 @@ impl<'a> Walker<'a> {
                 w.at("affected", |w| w.reference(affected, Kind::Object));
                 w.at("mods", |w| w.mods(mods));
             }
-            Effect::Rule { .. } => {}
+            Effect::Rule { rule, .. } => w.at("rule", |w| w.rule(rule)),
             Effect::DelayedTrigger { when, effects, .. } => {
                 w.at("when", |w| w.trigger_pattern(when));
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
@@ -950,6 +950,11 @@ impl<'a> Walker<'a> {
                     w.defining(affected, mods, condition.is_some(), *from);
                 }
             }
+            Ability::Rule {
+                rule,
+                condition,
+                from,
+            } => w.rule_ability(rule, condition.as_ref(), *from),
             Ability::Replacement {
                 when,
                 by,
@@ -988,6 +993,52 @@ impl<'a> Walker<'a> {
             }
         });
         self.x_free = saved_x;
+    }
+
+    /// A rule of the game names what it is about: players or objects, and for the one that triggers again the event that
+    /// causes the trigger, which is judged without a target, a triggering event or a name bound earlier.
+    fn rule(&mut self, rule: &GameRule) {
+        let tag = tag_of(rule);
+        self.uses("Rule", &tag);
+        match rule {
+            GameRule::DamageCantBePrevented => {}
+            GameRule::MustAttack(who)
+            | GameRule::MustBlock(who)
+            | GameRule::CantBeCountered(who) => self.at(tag, |w| w.reference(who, Kind::Object)),
+            GameRule::CantGainLife(who)
+            | GameRule::CantDraw(who)
+            | GameRule::CantSearch(who)
+            | GameRule::RevealTop(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::TriggerAgain { cause } => {
+                let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
+                self.at(tag, |w| w.at("cause", |w| w.trigger_pattern(cause)));
+                self.scope = saved;
+            }
+        }
+    }
+
+    /// A static ability that changes a rule: the rule, the condition it works under and where its source must be.
+    fn rule_ability(&mut self, rule: &GameRule, condition: Option<&Condition>, from: ZoneKind) {
+        self.scope = Scope::new(&[], false);
+        self.at("rule", |w| w.rule(rule));
+        if let Some(condition) = condition {
+            self.at("condition", |w| w.condition(condition));
+        }
+        self.rule_zone(rule, from);
+    }
+
+    /// A rule works from the battlefield, and "this spell can't be countered" from the stack (CR 113.6b).
+    fn rule_zone(&mut self, rule: &GameRule, from: ZoneKind) {
+        let spell = matches!(rule, GameRule::CantBeCountered(Ref::This));
+        match from {
+            ZoneKind::Battlefield => {}
+            ZoneKind::Stack if spell => {}
+            _ => self.at("from", |w| {
+                w.problem(
+                    "a rule works from the battlefield, or from the stack when it says this spell can't be countered",
+                );
+            }),
+        }
     }
 
     fn replace_when(&mut self, when: &ReplaceWhen) {
@@ -1481,6 +1532,108 @@ mod tests {
             found.iter().any(|problem| problem.contains(message)),
             "{message:?} is not among {found:#?}"
         );
+    }
+
+    #[rstest]
+    #[case::must_attack(r#"{"MustAttack":"This"}"#, "MustAttack")]
+    #[case::must_block(r#"{"MustBlock":{"Each":[{"Type":"Creature"}]}}"#, "MustBlock")]
+    #[case::not_countered(
+        r#"{"CantBeCountered":{"Each":["Spell",{"ControlledBy":"You"}]}}"#,
+        "CantBeCountered"
+    )]
+    #[case::no_life_gain(r#"{"CantGainLife":"EachPlayer"}"#, "CantGainLife")]
+    #[case::no_draw(r#"{"CantDraw":"Opponents"}"#, "CantDraw")]
+    #[case::no_search(r#"{"CantSearch":"You"}"#, "CantSearch")]
+    #[case::a_revealed_top(r#"{"RevealTop":"You"}"#, "RevealTop")]
+    #[case::triggers_again(
+        r#"{"TriggerAgain":{"cause":{"ZoneChange":{"what":[{"Type":"Creature"}],"to":"Battlefield"}}}}"#,
+        "TriggerAgain"
+    )]
+    fn a_rule_names_itself_and_the_patterns_it_uses_as_a_static_ability_and_as_an_effect(
+        #[case] rule: &str,
+        #[case] name: &str,
+    ) {
+        let pattern = rule.contains("TriggerAgain");
+        for (json, head) in [
+            (format!(r#"{{"Rule":{{"rule":{rule}}}}}"#), "Ability.Rule"),
+            (
+                format!(
+                    r#"{{"Spell":{{"effects":[{{"Rule":{{"rule":{rule},"duration":"UntilEndOfTurn"}}}}]}}}}"#
+                ),
+                "Effect.Rule",
+            ),
+        ] {
+            assert_eq!(problems(&json), Vec::<String>::new(), "{json}");
+            let ability: Ability = serde_json::from_str(&json).unwrap();
+            let mut expected: BTreeSet<String> = [head, &format!("Rule.{name}")]
+                .iter()
+                .map(|name| (*name).to_owned())
+                .collect();
+            if head == "Effect.Rule" {
+                expected.insert("Ability.Spell".to_owned());
+            }
+            if pattern {
+                expected.insert("Trigger.ZoneChange".to_owned());
+            }
+            assert_eq!(used_primitives(&ability), expected, "{json}");
+        }
+    }
+
+    #[rstest]
+    #[case::life_of_an_object(
+        r#"{"Rule":{"rule":{"CantGainLife":"This"}}}"#,
+        "abilities[0].Rule.rule.CantGainLife: expected a player but this is an object"
+    )]
+    #[case::attack_of_a_player(
+        r#"{"Rule":{"rule":{"MustAttack":"You"}}}"#,
+        "abilities[0].Rule.rule.MustAttack: expected an object but this is a player"
+    )]
+    #[case::a_target_in_a_static_rule(
+        r#"{"Rule":{"rule":{"MustAttack":{"Target":0}}}}"#,
+        "abilities[0].Rule.rule.MustAttack: target 0 does not exist"
+    )]
+    #[case::a_target_in_the_cause(
+        r#"{"Rule":{"rule":{"TriggerAgain":{"cause":{"ZoneChange":{"what":[{"Is":{"Target":0}}]}}}}}}"#,
+        "abilities[0].Rule.rule.TriggerAgain.cause.what[0]: target 0 does not exist"
+    )]
+    #[case::the_triggering_event_in_the_cause(
+        r#"{"Rule":{"rule":{"TriggerAgain":{"cause":{"ZoneChange":{"what":[{"Is":"Triggering"}]}}}}}}"#,
+        "`Triggering` is only valid in a triggered ability"
+    )]
+    #[case::from_a_hand(
+        r#"{"Rule":{"rule":{"CantDraw":"You"},"from":"Hand"}}"#,
+        "abilities[0].Rule.from: a rule works from the battlefield"
+    )]
+    #[case::from_the_stack_for_another_rule(
+        r#"{"Rule":{"rule":{"CantDraw":"You"},"from":"Stack"}}"#,
+        "abilities[0].Rule.from: a rule works from the battlefield"
+    )]
+    #[case::from_the_stack_for_another_spell(
+        r#"{"Rule":{"rule":{"CantBeCountered":{"Each":["Spell"]}},"from":"Stack"}}"#,
+        "abilities[0].Rule.from: a rule works from the battlefield"
+    )]
+    #[case::a_rule_is_not_granted(
+        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Rule":{"rule":{"CantDraw":"You"}}}}]}}"#,
+        "only an activated, a triggered or a static ability can be granted"
+    )]
+    fn a_bad_rule_is_named_where_it_is_wrong(#[case] json: &str, #[case] message: &str) {
+        let found = problems(json);
+        assert!(
+            found.iter().any(|problem| problem.contains(message)),
+            "{message:?} is not among {found:#?}"
+        );
+    }
+
+    #[test]
+    fn this_spell_cant_be_countered_works_from_the_stack_and_names_no_zone_gap() {
+        let json = r#"{"Rule":{"rule":{"CantBeCountered":"This"},"from":"Stack"}}"#;
+        assert_eq!(problems(json), Vec::<String>::new());
+        let ability: Ability = serde_json::from_str(json).unwrap();
+        let expected: BTreeSet<String> = ["Ability.Rule", "Rule.CantBeCountered"]
+            .iter()
+            .map(|name| (*name).to_owned())
+            .collect();
+        assert_eq!(used_primitives(&ability), expected, "no `Ability.From`");
     }
 
     const SWAMPS: &str = r#"{"Count":[{"Subtype":"Swamp"},{"ControlledBy":"You"}]}"#;

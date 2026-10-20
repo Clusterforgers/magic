@@ -212,6 +212,34 @@
     ]
   },
   {
+    "id": "3bd78731-949c-464a-826a-92f86d784911",
+    "oracle_id": "8c411f4e-a091-447c-9450-d895b10b4985",
+    "name": "Carnage Tyrant",
+    "lang": "en",
+    "layout": "normal",
+    "set": "xln",
+    "collector_number": "179",
+    "rarity": "mythic",
+    "released_at": "2017-09-29",
+    "digital": false,
+    "mana_cost": "{4}{G}{G}",
+    "cmc": 6.0,
+    "type_line": "Creature — Dinosaur",
+    "oracle_text": "This spell can't be countered.\nTrample, hexproof",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Hexproof",
+      "Trample"
+    ],
+    "power": "7",
+    "toughness": "6"
+  },
+  {
     "id": "4f616706-ec97-4923-bb1e-11a69fbaa1f8",
     "oracle_id": "cc187110-1148-4090-bbb8-e205694a39f5",
     "name": "Counterspell",
@@ -235,6 +263,31 @@
     "keywords": []
   },
   {
+    "id": "ba912207-a8bf-4ffb-9967-34029cb09f7f",
+    "oracle_id": "3752277a-5b3c-4902-90a1-63acdac66dc9",
+    "name": "Courtly Provocateur",
+    "lang": "en",
+    "layout": "normal",
+    "set": "m13",
+    "collector_number": "46",
+    "rarity": "uncommon",
+    "released_at": "2012-07-13",
+    "digital": false,
+    "mana_cost": "{2}{U}",
+    "cmc": 3.0,
+    "type_line": "Creature — Human Wizard",
+    "oracle_text": "{T}: Target creature attacks this turn if able.\n{T}: Target creature blocks this turn if able.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [],
+    "power": "1",
+    "toughness": "1"
+  },
+  {
     "id": "e60deb92-f7dd-4f4e-9036-e47dd586f985",
     "oracle_id": "8b755881-a72d-4e21-a369-d2924eb4585a",
     "name": "Cultivate",
@@ -256,6 +309,29 @@
       "G"
     ],
     "keywords": []
+  },
+  {
+    "id": "22c4148a-477d-419e-8d6b-5d558048e0db",
+    "oracle_id": "4893a301-29a8-4a0e-845c-8ddb5cb8db25",
+    "name": "Darksteel Juggernaut",
+    "lang": "en",
+    "layout": "normal",
+    "set": "c18",
+    "collector_number": "202",
+    "rarity": "rare",
+    "released_at": "2018-08-10",
+    "digital": false,
+    "mana_cost": "{5}",
+    "cmc": 5.0,
+    "type_line": "Artifact Creature — Juggernaut",
+    "oracle_text": "Indestructible\nDarksteel Juggernaut's power and toughness are each equal to the number of artifacts you control.\nThis creature attacks each combat if able.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Indestructible"
+    ],
+    "power": "*",
+    "toughness": "*"
   },
   {
     "id": "6904ea20-e504-47da-95a0-08739fdde260",
@@ -662,6 +738,31 @@
     ]
   },
   {
+    "id": "2a89a099-8805-4b26-babd-5d9f48ee406a",
+    "oracle_id": "5f1e8aa2-6b85-4e2e-92e4-876470447d6f",
+    "name": "Goblin Spy",
+    "lang": "en",
+    "layout": "normal",
+    "set": "inv",
+    "collector_number": "145",
+    "rarity": "uncommon",
+    "released_at": "2000-10-02",
+    "digital": false,
+    "mana_cost": "{R}",
+    "cmc": 1.0,
+    "type_line": "Creature — Goblin Rogue",
+    "oracle_text": "Play with the top card of your library revealed.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [],
+    "power": "1",
+    "toughness": "1"
+  },
+  {
     "id": "409f9b88-f03e-40b6-9883-68c14c37c0de",
     "oracle_id": "14c8f55d-d177-4c25-a931-ebeb9e6062a0",
     "name": "Grizzly Bears",
@@ -931,6 +1032,31 @@
     ]
   },
   {
+    "id": "ba98d363-194b-4bc0-b9fe-987c498ab6fa",
+    "oracle_id": "0b40032b-711d-499f-8bb9-87855f1fce9e",
+    "name": "Maralen of the Mornsong",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mor",
+    "collector_number": "65",
+    "rarity": "rare",
+    "released_at": "2008-02-01",
+    "digital": false,
+    "mana_cost": "{1}{B}{B}",
+    "cmc": 3.0,
+    "type_line": "Legendary Creature — Elf Wizard",
+    "oracle_text": "Players can't draw cards.\nAt the beginning of each player's draw step, that player loses 3 life, searches their library for a card, puts it into their hand, then shuffles.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [],
+    "power": "2",
+    "toughness": "3"
+  },
+  {
     "id": "9159e250-4eec-4ec4-80e1-42259331b3b9",
     "oracle_id": "ef32258a-d567-4fbc-ab85-8c00080f5b36",
     "name": "Maro",
@@ -952,6 +1078,29 @@
     ],
     "color_identity": [
       "G"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "55c84e9f-ccbb-4fbc-98e1-4072968a1f8a",
+    "oracle_id": "5794b58e-f3b6-4637-b288-283b3a72a718",
+    "name": "Mindlock Orb",
+    "lang": "en",
+    "layout": "normal",
+    "set": "ala",
+    "collector_number": "51",
+    "rarity": "rare",
+    "released_at": "2008-10-03",
+    "digital": false,
+    "mana_cost": "{3}{U}",
+    "cmc": 4.0,
+    "type_line": "Artifact",
+    "oracle_text": "Players can't search libraries.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
     ],
     "keywords": []
   },
@@ -1010,6 +1159,31 @@
       "Flying",
       "Evoke"
     ]
+  },
+  {
+    "id": "88f41175-880f-491e-96c3-bf52f3c0db5d",
+    "oracle_id": "cffb9b7f-d52c-43e0-a4a6-b06dea83eb53",
+    "name": "Naban, Dean of Iteration",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dom",
+    "collector_number": "58",
+    "rarity": "rare",
+    "released_at": "2018-04-27",
+    "digital": false,
+    "mana_cost": "{1}{U}",
+    "cmc": 2.0,
+    "type_line": "Legendary Creature — Human Wizard",
+    "oracle_text": "If a Wizard you control entering causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [],
+    "power": "2",
+    "toughness": "1"
   },
   {
     "id": "052022ff-795f-4f50-a45c-91cf8be9fbe9",
@@ -1137,6 +1311,33 @@
     ]
   },
   {
+    "id": "53c38f4e-81ec-45b3-a6cf-06a65b674978",
+    "oracle_id": "3e5ca524-8dd1-4f7f-a467-5210d768b8a1",
+    "name": "Rampaging Ferocidon",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dsc",
+    "collector_number": "167",
+    "rarity": "rare",
+    "released_at": "2024-09-27",
+    "digital": false,
+    "mana_cost": "{2}{R}",
+    "cmc": 3.0,
+    "type_line": "Creature — Dinosaur",
+    "oracle_text": "Menace\nPlayers can't gain life.\nWhenever another creature enters, this creature deals 1 damage to that creature's controller.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Menace"
+    ],
+    "power": "3",
+    "toughness": "3"
+  },
+  {
     "id": "b7c47024-5e08-4b17-b41a-7647f8b814b9",
     "oracle_id": "8539f295-5d58-4436-a73a-b9277c4c7795",
     "name": "Rampant Growth",
@@ -1256,6 +1457,58 @@
     ]
   },
   {
+    "id": "b8f73857-8bfb-400a-8c33-47c85276fb2a",
+    "oracle_id": "cba07472-7212-4411-a9f9-38a48870ad69",
+    "name": "Spellbreaker Behemoth",
+    "lang": "en",
+    "layout": "normal",
+    "set": "c13",
+    "collector_number": "216",
+    "rarity": "rare",
+    "released_at": "2013-11-01",
+    "digital": false,
+    "mana_cost": "{1}{R}{G}{G}",
+    "cmc": 4.0,
+    "type_line": "Creature — Beast",
+    "oracle_text": "This spell can't be countered.\nCreature spells you control with power 5 or greater can't be countered.",
+    "colors": [
+      "G",
+      "R"
+    ],
+    "color_identity": [
+      "G",
+      "R"
+    ],
+    "keywords": [],
+    "power": "5",
+    "toughness": "5"
+  },
+  {
+    "id": "3892f1c5-937e-4ef4-b6f9-e0c0ded070d0",
+    "oracle_id": "0230de18-8d15-4cfa-9d42-7ccddd9f9570",
+    "name": "Supreme Verdict",
+    "lang": "en",
+    "layout": "normal",
+    "set": "clu",
+    "collector_number": "211",
+    "rarity": "rare",
+    "released_at": "2024-02-23",
+    "digital": false,
+    "mana_cost": "{1}{W}{W}{U}",
+    "cmc": 4.0,
+    "type_line": "Sorcery",
+    "oracle_text": "This spell can't be countered.\nDestroy all creatures.",
+    "colors": [
+      "U",
+      "W"
+    ],
+    "color_identity": [
+      "U",
+      "W"
+    ],
+    "keywords": []
+  },
+  {
     "id": "f7e12477-d59f-442b-a678-1be746d0b7be",
     "oracle_id": "b1544f21-7e98-461b-aed5-e748b0168c52",
     "name": "Swords to Plowshares",
@@ -1277,6 +1530,33 @@
       "W"
     ],
     "keywords": []
+  },
+  {
+    "id": "cd14f1ce-7fcd-485c-b7ca-01c5b45fdc01",
+    "oracle_id": "644eeefd-e684-4ca8-8aef-a892ca130c07",
+    "name": "Teysa Karlov",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmm",
+    "collector_number": "359",
+    "rarity": "rare",
+    "released_at": "2023-08-04",
+    "digital": false,
+    "mana_cost": "{2}{W}{B}",
+    "cmc": 4.0,
+    "type_line": "Legendary Creature — Human Advisor",
+    "oracle_text": "If a creature dying causes a triggered ability of a permanent you control to trigger, that ability triggers an additional time.\nCreature tokens you control have vigilance and lifelink.",
+    "colors": [
+      "B",
+      "W"
+    ],
+    "color_identity": [
+      "B",
+      "W"
+    ],
+    "keywords": [],
+    "power": "2",
+    "toughness": "4"
   },
   {
     "id": "66444549-ad9b-49c6-a7c6-34e977c1085d",
@@ -1338,6 +1618,33 @@
       "W"
     ],
     "keywords": []
+  },
+  {
+    "id": "bbedbf64-cd51-4f40-9735-272bd86fdf84",
+    "oracle_id": "746d4445-f28d-41af-827a-2b613b9b84ee",
+    "name": "Warmonger Hellkite",
+    "lang": "en",
+    "layout": "normal",
+    "set": "clb",
+    "collector_number": "814",
+    "rarity": "rare",
+    "released_at": "2022-06-10",
+    "digital": false,
+    "mana_cost": "{4}{R}{R}",
+    "cmc": 6.0,
+    "type_line": "Creature — Dragon",
+    "oracle_text": "Flying\nAll creatures attack each combat if able.\n{1}{R}: Attacking creatures get +1/+0 until end of turn.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Flying"
+    ],
+    "power": "5",
+    "toughness": "5"
   },
   {
     "id": "537d2b05-3f52-45d6-8fe3-26282085d0c6",

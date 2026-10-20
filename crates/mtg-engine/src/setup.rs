@@ -14,6 +14,7 @@ use crate::format::FormatRules;
 use crate::layers::LayersCache;
 use crate::object::{GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
+use crate::rules::RulesCache;
 use crate::state::{GameState, Stage};
 use crate::turn::{Step, TurnState};
 use crate::zones::{Zone, Zones};
@@ -288,6 +289,7 @@ impl GameState {
             priority: None,
             combat: CombatState::default(),
             effects: Vec::new(),
+            rule_effects: Vec::new(),
             next_effect: 0,
             // The permanents of a starting position have timestamp 0; what enters or begins later is after them.
             next_timestamp: 1,
@@ -301,6 +303,8 @@ impl GameState {
             triggers_possible: false,
             statics_possible: false,
             layers: LayersCache::default(),
+            rules_possible: false,
+            rules_cache: RulesCache::default(),
             result: None,
         };
         game.note_what_cards_can_do();
@@ -319,6 +323,10 @@ impl GameState {
         });
         self.triggers_possible = triggers;
         self.statics_possible = statics;
+        let rules = self
+            .objects()
+            .any(|object| crate::ability_reader::definition_has_rule(&object.def));
+        self.rules_possible = rules;
     }
 }
 

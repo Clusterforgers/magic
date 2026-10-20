@@ -91,6 +91,7 @@ Activated  { cost: Cost, timing = Instant|Sorcery, limit?, from = Battlefield, t
 Loyalty    { cost: Plus(n) | Minus(n) | Zero | MinusX, targets, effects }     planeswalkers only
 Triggered  { when: TriggerPattern, intervening_if?: Condition, limit?, from = Battlefield, targets, effects }
 Static     { affected: Ref, mods: [Modification], condition?, defining = false, from = Battlefield }
+Rule       { rule: GameRule, condition?, from = Battlefield }   a static ability that changes a rule of the game
 Replacement{ when: ReplaceWhen, by: ReplaceBy, condition?, from = Battlefield }
 CostModifier{ applies_to: Selector, change: Increase|Reduce, mana: ManaCostX, per = 1, condition? }
 Keyword(Keyword)
@@ -123,7 +124,8 @@ CostItem    = Mana(ManaCostX) | Tap | Untap | PayLife(Amount) | SacrificeSelf
 Modification= ModifyPT{power,toughness} SetPT{..} SwitchPT AddType AddSubtype SetColors
             | AddKeyword RemoveKeyword SetController(Ref) CantAttack CantBlock
 Duration    = UntilEndOfTurn | UntilEndOfCombat | UntilYourNextTurn | WhileSourceOnBattlefield | Forever
-GameRule    = DamageCantBePrevented
+GameRule    = DamageCantBePrevented | MustAttack(Ref) | MustBlock(Ref) | CantBeCountered(Ref)
+            | CantGainLife(Ref) | CantDraw(Ref) | CantSearch(Ref) | RevealTop(Ref) | TriggerAgain{cause: TriggerPattern}
 Keyword     = Flying | Reach | FirstStrike | ... | Ward(Cost) | Equip(Cost) | Enchant(Selector) | Kicker(Cost) | ...
 ```
 
@@ -247,6 +249,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | Delayed triggers | `Effect::DelayedTrigger` logs `DelayedTriggerCreated` and adds a `Delayed` to `GameState.delayed`: its pattern, effects, controller, the names the resolution had bound (the ability starts with them) and a duration. It triggers on the next event its pattern describes and is then gone (`once`), else it lasts until the end of the turn it was set up in. A duration that ran out, or a controller who left the game, drops it. |
 | Replacement step | Effect steps and rules code produce proposed events; `replace::process(state, proposed)` returns the final events or needs a choice. Only "would" events pass through it: damage, life, draw, discard, mill, zone change, counters, tokens, tap. A replacement is data (a `Replacement` ability or a registered shield with a duration) and applies at most once per event (CR 614.5). |
 | Replacement choice | The affected player picks among several (`ChooseReplacement`, CR 616.1), self-replacement first (CR 614.15). The choice is a journal entry, so `process` is a pure function of state and journal. |
+| Rules of the game | `Effect::Rule` (with a duration) and `Ability::Rule` (while its source has it) change a rule through a `GameRule`. `MustAttack` and `MustBlock` name creatures that attack or block each combat if able (CR 508.1d, 509.1c: a requirement on the declaration, so only a creature that can attack or block is required). `CantBeCountered` names spells, `CantGainLife`, `CantDraw`, `CantSearch` (libraries) and `RevealTop` (play with the top card of the library revealed to every seat) players. `TriggerAgain` makes a triggered ability of a permanent the rule's controller controls trigger an additional time when the event `cause` describes (a pattern as a triggered ability writes it: "an artifact or creature entering", "a creature dying", "a Wizard you control entering") makes it trigger; one limited to once each turn is not repeated. "This spell can't be countered" is `Ability::Rule` with `from: Stack`; any other rule works from the battlefield. An effect fixes the players and objects it names when it resolves; a static ability finds them whenever the state changes. A rule is not granted by `GrantAbility`. Each rule is in `Caps` as `Rule.<Name>`, with `Effect.Rule` and `Ability.Rule`; `DamageCantBePrevented` is not, so a card that uses it stays `Partial`. |
 | Prevention | `ReplaceBy::Prevent`. `GameRule::DamageCantBePrevented` wins over any shield. |
 | Derived statics | `layers.rs` works through the layers once for a state: the effects of resolved spells and abilities and the `Static` abilities the permanents have at that point of the pass, found through `ability_reader`, apply layer by layer to every permanent at once, so a static's `affected`, `condition` and amounts read the other objects as the earlier layers and earlier effects left them (Favorable Winds finds the flying Levitation gives). A static ability works while its source is on the battlefield (`from` other than that is `Ability.From`) and its `condition` holds; one whose first modification comes after layer 6 (7b and later, restrictions) is dropped when its source has lost it by then, and one that has begun to apply goes on applying to the permanents it began with, so Humility stops a lord's pump but not "creatures you control are artifacts and get +1/+1" (CR 613.6). `affected` is `This`, `Attached` (the host) or `Each`, tested against the characteristics built so far; the amounts and the player of `SetController` are worked out when the modification applies. |
 | Layers | `SetController` 2; `AddType`, `RemoveType`, `AddSubtype` 4; `SetColors` 5; `AddKeyword`, `RemoveKeyword`, `GrantAbility`, `LoseAbilities` 6; `SetPT` 7b, or 7a in a characteristic-defining `Static`; `ModifyPT` 7c; `SwitchPT` 7d; `CantAttack`, `CantBlock` are restrictions without a layer. `Modification::layer()` returns it. Every modification runs from `Effect::Continuous` and from a `Static`, each with its name in `Caps` (`Mod.SetPT`, ...). `GrantAbility` gives an activated, a triggered or a static ability, validated as the ability it is in a scope of its own (a given static ability gives no abilities in turn and does not define characteristics); a keyword is `AddKeyword`. A given static ability applies in the layers after layer 6. `LoseAbilities` takes away what the object has so far, the plain mana abilities and keywords included, and what is granted after it stays. |
@@ -271,7 +274,7 @@ Errors name the file and the path inside it; all are collected.
 | Level | Checks | Runs in |
 |---|---|---|
 | 1 Parse | Syntax, types, unknown fields, unknown variants (a keyword typo reads `cards/serra_angel.json: faces[0].abilities[1].Keyword: unknown variant ...`) | `Library::from_sources`, `load_dir` |
-| 2 Structure | File name is the slug of the name; oracle id is a UUID; unique ids and names; token id is its file name; face names unique and joined by ` // ` to the name; `impl_status` fits the abilities; a fingerprint on every face of a `Full` or `Partial` card; clause spans non-empty and disjoint; `Target(i)` in range and used; `Bound` bound earlier on the path (not visible after its branch, no duplicates); `Triggering` only in triggers; `Divided` and `EvenShare` only with a divided or multi-target spec; `TargetCount` in range; `Kicked` only with a kicker keyword; `Modal` the only effect of its ability; `CreateToken::Named` exists; reference kinds fit (`Draw.who` is a player); bounds minimum not above maximum | `Library::from_sources`, `load_dir` |
+| 2 Structure | File name is the slug of the name; oracle id is a UUID; unique ids and names; token id is its file name; face names unique and joined by ` // ` to the name; `impl_status` fits the abilities; a fingerprint on every face of a `Full` or `Partial` card; clause spans non-empty and disjoint; `Target(i)` in range and used; `Bound` bound earlier on the path (not visible after its branch, no duplicates); `Triggering` only in triggers; `Divided` and `EvenShare` only with a divided or multi-target spec; `TargetCount` in range; `Kicked` only with a kicker keyword; `Modal` the only effect of its ability; `CreateToken::Named` exists; reference kinds fit (`Draw.who` is a player); bounds minimum not above maximum; a rule names players (`CantGainLife`, `CantDraw`, `CantSearch`, `RevealTop`) or objects (`MustAttack`, `MustBlock`, `CantBeCountered`), the `cause` of `TriggerAgain` has no target, `Triggering` or bound name, and `from: Stack` is only for `CantBeCountered` of `This` | `Library::from_sources`, `load_dir` |
 | 3 Printed | Oracle id, name, face count and names; fingerprints (drift); Scryfall keywords of ours present on some face, as an ability (a `Partner with` card has `Partner`) or ending a word in the text a `Manual` clause covers (a granted keyword; `Plainscycling` names `Cycling`, `Flashback` does not name `Flash`); `X` against the printed cost (an ability whose own cost has X is exempt); `Spell` only on instants and sorceries and required on a `Full` one; `Loyalty` only on planeswalkers; `Enchant` only on Auras; spans inside the text; card names in `Pred::Named` and `PartnerWith` exist | `Library::check_printed(&[PrintedCard])` |
 
 ## Compiler and Manual fallback
@@ -364,7 +367,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 
 ## Corpus
 
-`crates/mtg-cards/cards/` holds 53 cards and 3 tokens.
+`crates/mtg-cards/cards/` holds 65 cards and 3 tokens.
 
 | Feature | Cards |
 |---|---|
@@ -377,11 +380,12 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 | Replacement | Anointed Procession |
 | Static abilities (Verified) | Glorious Anthem, Levitation, Goblin Chieftain (a lord that gives a keyword), Humility (loses abilities, sets power and toughness), Favorable Winds (a keyword in the selector), Jungle Lion (can't block) |
 | Layers (Verified) | Nightmare (power and toughness from a count of Swamps, a characteristic-defining ability), Maro (from the cards in hand), Transguild Courier (all colours), Kormus Bell (types, colours and power and toughness of the Swamps); Favorable Winds with Levitation and Goblin Chieftain with Humility are dependencies |
+| Rules of the game (Verified) | Darksteel Juggernaut (attacks each combat, power and toughness from a count), Warmonger Hellkite (all creatures attack), Courtly Provocateur (an attack or a block this turn), Supreme Verdict, Carnage Tyrant and Spellbreaker Behemoth (can't be countered, and the creature spells of its controller with power 5 or more), Rampaging Ferocidon (no life gain), Maralen of the Mornsong (no drawing, a search at the draw step), Mindlock Orb (no searching), Goblin Spy (top revealed), Panharmonicon, Teysa Karlov and Naban (triggers again) |
 | Static, Aura, Equipment | Pacifism, Bonesplitter (their statics run; `Enchant` and `Equip` do not) |
 | Mana abilities | Llanowar Elves, Sol Ring, Gaea's Cradle |
 | Keywords | Serra Angel, Bloodbraid Elf (cascade), Faithless Looting (flashback), Monastery Swiftspear (prowess) and Hulking Raptor (ward), Verified |
 | No abilities | Forest, Grizzly Bears |
-| `Partial`, `Manual` | Questing Beast (three clauses), Panharmonicon |
+| `Partial`, `Manual` | Questing Beast (three clauses) |
 | Tokens | Treasure (a mana ability, made by Dockside Extortionist), Clue (made by Tireless Tracker) and Food (`{2}` and a sacrifice, paid as any ability with mana) |
 
 ## Cross-check
@@ -408,7 +412,7 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | `Pred` and `Amount` over turn history (entered, attacked, spells cast this turn, life gained), event amount ("that much"), size of a bound set ("that many") | P, X | (i4) |
 | `Amount`: kicker count, spells cast this turn (Storm) | P, X | (g), (o) |
 | Statics: remove abilities or types, grant abilities, change control, can't attack or block | P, X, F | DSL |
-| Statics: must attack or block, can't be countered, can't gain life or draw, trigger doubling, can't search, reveal top | P, X, F | (k3b) |
+| Statics: must attack or block, can't be countered, can't gain life or draw, trigger doubling, can't search, reveal top | P, X, F | DSL |
 | Statics: characteristic-defining flag | P, X | DSL |
 | Exchange control | P, X, F | (h) |
 | Shields (`PreventDamage`, damage and draw replacement), redirection; replaced events: draw, life, destroy, discard, mill, counters, tap, untap, enters tapped or with counters | P, X, F | (j) |

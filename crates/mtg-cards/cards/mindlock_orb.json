@@ -1,0 +1,12 @@
+{
+  "oracle_id": "5794b58e-f3b6-4637-b288-283b3a72a718",
+  "name": "Mindlock Orb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mindlock Orb",
+      "oracle_fingerprint": "38078afb28bf4f45ef31fca3736c6416",
+      "abilities": [{ "Rule": { "rule": { "CantSearch": "EachPlayer" } } }]
+    }
+  ]
+}

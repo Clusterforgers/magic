@@ -48,7 +48,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (k1) One reader of an object's abilities with stable addresses: `abilities_of` and `ability` in `ability_reader` read the printed abilities of an object
 - [x] (k2) Priority options, trigger detection, casting and resolution read abilities through it
 - [x] (k3) Static abilities gathered at every derivation; every `Modification` runs as an effect and as a static (types, subtypes, colours, set and switched power and toughness, abilities added and lost, control, can't attack or block); the reader lists granted and lost abilities, and the can-anything-trigger flag follows abilities that appear in play (tokens, granted abilities)
-- [ ] (k3b) `Effect::Rule` with its game rules (must attack or block, can't be countered, can't gain life, draw or search, trigger doubling, reveal top)
+- [x] (k3b) `Effect::Rule` and `Ability::Rule` with the rules of the game (must attack or block, can't be countered, can't gain life, draw or search, trigger doubling, reveal top), gathered once for a state; Darksteel Juggernaut, Supreme Verdict, Rampaging Ferocidon, Maralen of the Mornsong, Mindlock Orb, Goblin Spy and Panharmonicon are Verified
 - [x] (k4a) The derivation of CR 613 as one pass: dependencies (CR 613.8), characteristic-defining abilities in every zone (the `defining` flag of `Static`), static abilities that read the other objects as the earlier layers leave them, static abilities that effects give; Nightmare, Maro, Transguild Courier and Kormus Bell are Verified
 - [x] (k4) Keywords in snapshots (those after layer 6, none that an effect removed), read by last-known information: the damage of a source that has left, conditions on a keyword
 - [x] (e2) Keyword abilities built from triggers: ward, prowess and battle cry come from `adds_abilities`, listed by the reader under their own addresses; Hero of Bladehold, Monastery Swiftspear and Hulking Raptor are Verified
@@ -101,6 +101,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
 - [ ] Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and the order of cards put back; the payment prompt for X and restricted mana
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
+- [ ] Attack and block prompts mark the creatures a rule requires (`AttackOptions.required`, `BlockOptions.required`) as chosen and locked, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] Table states: counters, attachments tucked beside their host, loyalty, faces and face-down cards, copies, command zone and commander damage, support marks; each in the `/dev/table` fixture with screenshots at six sizes in both themes
 - [ ] Manual actions on any card: a menu and log entries
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes

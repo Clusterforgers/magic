@@ -112,7 +112,8 @@ fn the_options_of_blocks_and_damage_keep_their_json_until_they_carry_something_n
     assert_eq!(
         serde_json::to_value(BlockOptions {
             blockers: blockers.clone(),
-            min_blockers: Vec::new()
+            min_blockers: Vec::new(),
+            required: Vec::new()
         })
         .unwrap(),
         json!({"blockers": [{"object": 1, "can_block": [2]}]})
@@ -120,7 +121,8 @@ fn the_options_of_blocks_and_damage_keep_their_json_until_they_carry_something_n
     assert_eq!(
         serde_json::to_value(BlockOptions {
             blockers,
-            min_blockers: vec![(b, 2)]
+            min_blockers: vec![(b, 2)],
+            required: Vec::new()
         })
         .unwrap(),
         json!({"blockers": [{"object": 1, "can_block": [2]}], "min_blockers": [[2, 2]]})

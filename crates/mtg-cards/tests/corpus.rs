@@ -76,9 +76,9 @@ fn files_are_canonical_and_carry_current_fingerprints() {
 }
 
 #[test]
-fn the_corpus_loads_with_fifty_three_cards_and_three_tokens() {
+fn the_corpus_loads_with_sixty_five_cards_and_three_tokens() {
     let library = library();
-    assert_eq!(library.cards().count(), 53);
+    assert_eq!(library.cards().count(), 65);
     let tokens: Vec<_> = library.tokens().map(|t| t.id.as_str()).collect();
     assert_eq!(tokens, ["clue", "food", "treasure"]);
 }
@@ -179,7 +179,6 @@ fn declared_status_decides_the_support_when_the_engine_runs_everything(#[case] c
         let record = library.support(&shown, &caps);
         let expected = match shown.name.as_str() {
             "Questing Beast" => Support::Partial,
-            "Panharmonicon" => Support::Manual,
             _ => Support::Verified,
         };
         assert_eq!(
@@ -198,7 +197,6 @@ fn an_engine_that_runs_nothing_leaves_every_card_with_abilities_to_the_table() {
         let record = library.support(&shown, &Caps::none());
         let abilities: usize = library.card(&shown.oracle_id).unwrap().abilities().count();
         let expected = match (shown.name.as_str(), abilities) {
-            (_, 0) if shown.name == "Panharmonicon" => Support::Manual,
             (_, 0) => Support::Verified,
             _ => Support::Manual,
         };

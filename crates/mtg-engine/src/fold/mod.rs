@@ -45,14 +45,17 @@ fn pool_mut(state: &mut GameState, id: PlayerId) -> Result<&mut ManaPool, Engine
 /// follow from the current state, which indicates an engine bug or a corrupt log.
 pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     // What the layers make of the permanents is read from the state, which this event changes.
+    // The rules in force read the same things, so they go with the layers.
     let changes_layers = !crate::layers::leaves_alone(event);
     if changes_layers {
         state.layers.reset();
+        state.rules_cache.reset();
     }
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
         state.layers.reset_if_built();
+        state.rules_cache.reset_if_built();
     }
     folded
 }
@@ -102,6 +105,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         } => crate::triggers::fold_removed(state, *source, *origin, *ability, *delayed, cause),
         Event::DelayedTriggerCreated(created) => crate::triggers::fold_created(state, created),
         Event::DelayedTriggerExpired { id } => crate::triggers::fold_expired(state, *id),
+        Event::RuleCreated { effect } => crate::rules::fold_created(state, effect),
+        Event::RuleExpired { id } => crate::rules::fold_expired(state, *id),
         Event::CountersChanged(counters) => crate::counters::fold(state, counters),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
         Event::Scried(scried) => {

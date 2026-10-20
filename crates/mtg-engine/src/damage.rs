@@ -11,6 +11,7 @@ use crate::error::IllegalAnswer;
 use crate::events::Event;
 use crate::keywords::{self, DamageRules};
 use crate::object::GameObject;
+use crate::rules::cant_gain_life;
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::turn::Step;
@@ -331,6 +332,7 @@ pub(crate) fn dealt_by(
         .filter(|controller| state.is_alive(*controller));
     if let Some(player) = controller
         && dealer.keywords.lifelink
+        && !cant_gain_life(state, player)
     {
         events.push(Event::LifeGained { player, amount });
     }

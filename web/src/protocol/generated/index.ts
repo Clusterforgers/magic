@@ -147,6 +147,8 @@ export type { ReplacementOptions } from "./ReplacementOptions";
 export type { ReportCard } from "./ReportCard";
 export type { ResolutionOutcome } from "./ResolutionOutcome";
 export type { Revealed } from "./Revealed";
+export type { Rule } from "./Rule";
+export type { RuleEffect } from "./RuleEffect";
 export type { RulingView } from "./RulingView";
 export type { Scried } from "./Scried";
 export type { SeatDeck } from "./SeatDeck";

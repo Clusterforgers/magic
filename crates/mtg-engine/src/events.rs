@@ -12,6 +12,7 @@ use crate::effects::ContinuousEffect;
 use crate::library::{CardsFound, LibraryLooked, Revealed, Scried};
 use crate::object::ObjectRef;
 use crate::player::LossReason;
+use crate::rules::RuleEffect;
 use crate::snapshot::Snapshot;
 use crate::state::GameResult;
 use crate::tokens::TokenCreated;
@@ -255,6 +256,16 @@ pub enum Event {
         /// The effect.
         id: EffectId,
     },
+    /// A change to a rule of the game was registered.
+    RuleCreated {
+        /// The change.
+        effect: RuleEffect,
+    },
+    /// A change to a rule of the game ended and was removed.
+    RuleExpired {
+        /// The change.
+        id: EffectId,
+    },
     /// A creature was put into its owner's graveyard by state-based actions.
     CreatureDied {
         /// The creature.
@@ -455,6 +466,8 @@ impl Event {
             | Event::DamageCleared
             | Event::EffectCreated { .. }
             | Event::EffectExpired { .. }
+            | Event::RuleCreated { .. }
+            | Event::RuleExpired { .. }
             | Event::FirstPlayerChosen { .. }
             | Event::MulliganPhaseBegan
             | Event::MulliganDeclared { .. }

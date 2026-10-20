@@ -1,0 +1,821 @@
+//! The rules of the game that spells, abilities and permanents change: attack and block requirements, spells that can't
+//! be countered, players who can't gain life, draw or search, library tops that are revealed, and triggers that trigger
+//! an additional time (`docs/engine.md`, Rules of the game).
+//!
+//! The rules in force are gathered like the layers: from the `Effect::Rule`s that resolved and still last, and from the
+//! `Ability::Rule`s that permanents have (read through `ability_reader`, so a permanent that lost its abilities lost
+//! its rules) and that spells on the stack have for themselves. The result is kept with the state until an event that
+//! can change it (`GameState::rules`), and each rule is read by one function that the one place deciding it asks.
+
+use std::cell::Cell;
+use std::collections::BTreeSet;
+use std::sync::OnceLock;
+
+use mtg_cards::ability::Ability;
+use mtg_cards::modify::GameRule;
+use mtg_cards::refs::{Ref, ZoneKind};
+use mtg_cards::trigger::TriggerPattern;
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
+use serde::{Deserialize, Serialize};
+
+use crate::ability_reader::{abilities_of, definition_has_rule};
+use crate::characteristics::controller_of_object;
+use crate::effects::{Duration, lasts};
+use crate::error::EngineError;
+use crate::fold::invalid;
+use crate::object::{GameObject, ObjectKind, ObjectRef};
+use crate::resolve::{ResolveError, Scope};
+use crate::state::GameState;
+use crate::zones::Zone;
+
+/// A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
+/// began (an effect) or whenever the state changes (a static ability).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Rule {
+    /// The creatures attack each combat if able (CR 508.1d).
+    MustAttack(Vec<ObjectRef>),
+    /// The creatures block each combat if able (CR 509.1c).
+    MustBlock(Vec<ObjectRef>),
+    /// The spells can't be countered.
+    CantBeCountered(Vec<ObjectRef>),
+    /// The players can't gain life.
+    CantGainLife(Vec<PlayerId>),
+    /// The players can't draw cards.
+    CantDraw(Vec<PlayerId>),
+    /// The players can't search libraries.
+    CantSearch(Vec<PlayerId>),
+    /// The players play with the top card of their library revealed.
+    RevealTop(Vec<PlayerId>),
+    /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
+    /// the pattern describes causes it.
+    TriggerAgain(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<TriggerPattern>),
+}
+
+/// A rule of the game that a resolved spell or ability changed for a while (CR 611).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct RuleEffect {
+    /// Unique id, from the counter that continuous effects share.
+    pub id: EffectId,
+    /// The rule.
+    pub rule: Rule,
+    /// How long it lasts.
+    #[cfg_attr(
+        feature = "ts",
+        ts(
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+        )
+    )]
+    pub duration: Duration,
+    /// The object whose spell or ability made it, as it was then; `WhileSourceOnBattlefield` follows this object.
+    pub source: Option<ObjectRef>,
+    /// Who controlled that spell or ability: whose next turn `UntilYourNextTurn` waits for, and whose permanents a rule
+    /// that triggers again is about.
+    pub controller: PlayerId,
+    /// The number of the turn it began in.
+    pub turn: u32,
+}
+
+impl RuleEffect {
+    /// Whether the rule still applies in `state`: its duration has not ended and an object it names is still the object
+    /// it named. A rule that does not stops applying at once; the `RuleExpired` event only removes it.
+    pub fn is_active(&self, state: &GameState) -> bool {
+        lasts(
+            state,
+            self.duration,
+            self.turn,
+            self.controller,
+            self.source,
+        ) && !self.spent(state)
+    }
+
+    /// Whether every object the rule names has become a new object or is gone: it can never apply to anything again.
+    fn spent(&self, state: &GameState) -> bool {
+        let (Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named)) =
+            &self.rule
+        else {
+            return false;
+        };
+        named
+            .iter()
+            .all(|r| state.object(r.id).is_none_or(|o| o.counter() != r.counter))
+    }
+}
+
+/// A trigger that triggers an additional time: whose permanents, and the event that causes it.
+#[derive(Debug, Clone)]
+pub(crate) struct Again {
+    /// The player whose permanents' abilities trigger again.
+    pub(crate) controller: PlayerId,
+    /// The object that has the rule, for the pattern's `This`.
+    pub(crate) source: ObjectRef,
+    pub(crate) cause: TriggerPattern,
+}
+
+/// The rules in force in a state.
+#[derive(Debug, Default)]
+pub(crate) struct RulesInForce {
+    must_attack: BTreeSet<ObjectId>,
+    must_block: BTreeSet<ObjectId>,
+    uncounterable: BTreeSet<ObjectId>,
+    no_life_gain: BTreeSet<PlayerId>,
+    no_draw: BTreeSet<PlayerId>,
+    no_search: BTreeSet<PlayerId>,
+    reveal_top: BTreeSet<PlayerId>,
+    again: Vec<Again>,
+}
+
+impl RulesInForce {
+    /// Puts a rule in force. `controller` and `source` are those of the effect or the permanent that has the rule.
+    fn put(&mut self, rule: &Rule, controller: PlayerId, source: Option<ObjectRef>) {
+        let ids = |named: &[ObjectRef]| named.iter().map(|r| r.id).collect::<Vec<_>>();
+        match rule {
+            Rule::MustAttack(named) => self.must_attack.extend(ids(named)),
+            Rule::MustBlock(named) => self.must_block.extend(ids(named)),
+            Rule::CantBeCountered(named) => self.uncounterable.extend(ids(named)),
+            Rule::CantGainLife(players) => self.no_life_gain.extend(players),
+            Rule::CantDraw(players) => self.no_draw.extend(players),
+            Rule::CantSearch(players) => self.no_search.extend(players),
+            Rule::RevealTop(players) => self.reveal_top.extend(players),
+            Rule::TriggerAgain(cause) => {
+                if let Some(source) = source {
+                    self.again.push(Again {
+                        controller,
+                        source,
+                        cause: (**cause).clone(),
+                    });
+                }
+            }
+        }
+    }
+}
+
+/// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
+/// A rule the engine does not play refuses by name.
+pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveError> {
+    let objects = |who: &Ref, zone: Zone| -> Result<Vec<ObjectRef>, ResolveError> {
+        let named = if matches!(who, Ref::Attached) {
+            scope
+                .state
+                .host_of(scope.source.id)
+                .and_then(|host| scope.state.object(host))
+                .map(GameObject::reference)
+                .into_iter()
+                .collect()
+        } else {
+            scope.objects(who)?
+        };
+        // An object that has changed zones since it was named is a new object (CR 400.7).
+        Ok(named
+            .into_iter()
+            .filter(|named| {
+                scope
+                    .state
+                    .object(named.id)
+                    .is_some_and(|o| o.counter() == named.counter && o.zone() == zone)
+            })
+            .collect())
+    };
+    Ok(match wanted {
+        GameRule::DamageCantBePrevented => {
+            return Err(ResolveError::Unsupported("Rule.DamageCantBePrevented"));
+        }
+        GameRule::MustAttack(who) => Rule::MustAttack(objects(who, Zone::Battlefield)?),
+        GameRule::MustBlock(who) => Rule::MustBlock(objects(who, Zone::Battlefield)?),
+        GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
+        GameRule::CantGainLife(who) => Rule::CantGainLife(scope.players(who)?),
+        GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
+        GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
+        GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
+        GameRule::TriggerAgain { cause } => Rule::TriggerAgain(Box::new(cause.clone())),
+    })
+}
+
+/// Whether a rule names no player and no object, so putting it in force changes nothing.
+pub(crate) fn names_nothing(rule: &Rule) -> bool {
+    match rule {
+        Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named) => {
+            named.is_empty()
+        }
+        Rule::CantGainLife(players)
+        | Rule::CantDraw(players)
+        | Rule::CantSearch(players)
+        | Rule::RevealTop(players) => players.is_empty(),
+        Rule::TriggerAgain(_) => false,
+    }
+}
+
+thread_local! {
+    /// Whether the rules of a state are being gathered on this thread.
+    static GATHERING: Cell<bool> = const { Cell::new(false) };
+}
+
+/// Ends the gathering of this thread, whether it returned or unwound.
+struct Gathering;
+
+impl Gathering {
+    fn enter() -> Gathering {
+        GATHERING.with(|gathering| gathering.set(true));
+        Gathering
+    }
+}
+
+impl Drop for Gathering {
+    fn drop(&mut self) {
+        GATHERING.with(|gathering| gathering.set(false));
+    }
+}
+
+/// Gathers the rules in force in `state`.
+fn gather(state: &GameState) -> RulesInForce {
+    let mut found = RulesInForce::default();
+    for effect in state
+        .rule_effects()
+        .iter()
+        .filter(|effect| effect.is_active(state))
+    {
+        found.put(&effect.rule, effect.controller, effect.source);
+    }
+    if !state.rules_possible {
+        return found;
+    }
+    // A rule that a permanent has works from the battlefield, and one a spell has for itself from the stack.
+    for (zone, from) in [
+        (Zone::Battlefield, ZoneKind::Battlefield),
+        (Zone::Stack, ZoneKind::Stack),
+    ] {
+        for &id in state.zone(zone) {
+            let Some(object) = state.object(id).filter(|o| o.kind() != ObjectKind::Ability) else {
+                continue;
+            };
+            // A rule can only be printed, so a card that prints none has none whatever the layers did.
+            if !definition_has_rule(&object.def) {
+                continue;
+            }
+            let controller = controller_of_object(state, object);
+            if !state.is_alive(controller) {
+                continue;
+            }
+            let scope = Scope::announcing(state, controller, object.reference());
+            for (_, ability) in abilities_of(state, id) {
+                let Ability::Rule {
+                    rule,
+                    condition,
+                    from: works_from,
+                } = &*ability
+                else {
+                    continue;
+                };
+                if *works_from != from
+                    || condition
+                        .as_ref()
+                        .is_some_and(|condition| !scope.holds(condition).unwrap_or(false))
+                {
+                    continue;
+                }
+                if let Ok(lowered) = lower_rule(&scope, rule) {
+                    found.put(&lowered, controller, Some(object.reference()));
+                }
+            }
+        }
+    }
+    found
+}
+
+/// The rules of a game in which none can be in force, and of one whose rules are being gathered (the gathering reads
+/// objects, never the rules).
+static NONE: RulesInForce = RulesInForce {
+    must_attack: BTreeSet::new(),
+    must_block: BTreeSet::new(),
+    uncounterable: BTreeSet::new(),
+    no_life_gain: BTreeSet::new(),
+    no_draw: BTreeSet::new(),
+    no_search: BTreeSet::new(),
+    reveal_top: BTreeSet::new(),
+    again: Vec::new(),
+};
+
+/// The rules of a state, built when first asked for and dropped when the state changes.
+#[derive(Default)]
+pub(crate) struct RulesCache(OnceLock<RulesInForce>);
+
+impl RulesCache {
+    /// Forgets the result: the state it was built for has changed.
+    pub(crate) fn reset(&mut self) {
+        self.0 = OnceLock::new();
+    }
+
+    /// Forgets the result if there is one.
+    pub(crate) fn reset_if_built(&mut self) {
+        if self.0.get().is_some() {
+            self.reset();
+        }
+    }
+}
+
+// A clone is a state of its own that gathers its own rules when it first needs them.
+impl Clone for RulesCache {
+    fn clone(&self) -> Self {
+        RulesCache::default()
+    }
+}
+
+impl std::fmt::Debug for RulesCache {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("RulesCache")
+    }
+}
+
+impl GameState {
+    /// The rules in force now: none while no rule can be (a game of cards that change none costs nothing).
+    pub(crate) fn rules(&self) -> &RulesInForce {
+        if (self.rule_effects.is_empty() && !self.rules_possible) || GATHERING.with(Cell::get) {
+            return &NONE;
+        }
+        self.rules_cache.0.get_or_init(|| {
+            let _gathering = Gathering::enter();
+            gather(self)
+        })
+    }
+
+    /// The top card of `player`'s library while a rule has it revealed to every seat.
+    pub fn revealed_top(&self, player: PlayerId) -> Option<ObjectId> {
+        if !self.rules().reveal_top.contains(&player) {
+            return None;
+        }
+        self.zone(Zone::Library(player)).last().copied()
+    }
+}
+
+/// Folds `RuleCreated`: the change joins those in state; a duration that follows the source needs one, and an id is
+/// used once.
+pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result<(), EngineError> {
+    if effect.duration == Duration::WhileSourceOnBattlefield && effect.source.is_none() {
+        return Err(invalid(
+            "a rule that lasts while its source stays has a source",
+        ));
+    }
+    if state.rule_effects.iter().any(|e| e.id == effect.id) {
+        return Err(invalid(format!("duplicate rule {:?}", effect.id)));
+    }
+    state.next_effect = state.next_effect.max(effect.id.0 + 1);
+    state.rule_effects.push(effect.clone());
+    Ok(())
+}
+
+/// Folds `RuleExpired`: the change leaves the state.
+pub(crate) fn fold_expired(state: &mut GameState, id: EffectId) -> Result<(), EngineError> {
+    let before = state.rule_effects.len();
+    state.rule_effects.retain(|e| e.id != id);
+    if state.rule_effects.len() == before {
+        return Err(invalid(format!("unknown rule {id:?}")));
+    }
+    Ok(())
+}
+
+/// Whether the creature `id` attacks each combat if able: the one place the attack declaration reads this requirement.
+pub fn must_attack(state: &GameState, id: ObjectId) -> bool {
+    state.rules().must_attack.contains(&id)
+}
+
+/// Whether the creature `id` blocks each combat if able: the one place the block declaration reads this requirement.
+pub fn must_block(state: &GameState, id: ObjectId) -> bool {
+    state.rules().must_block.contains(&id)
+}
+
+/// Whether the spell `id` can't be countered: the one place a counter reads this rule.
+pub fn cant_be_countered(state: &GameState, id: ObjectId) -> bool {
+    state.rules().uncounterable.contains(&id)
+}
+
+/// Whether `player` can't gain life: the one place a gain of life reads this rule.
+pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_life_gain.contains(&player)
+}
+
+/// Whether `player` can't draw cards: the one place a draw reads this rule.
+pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_draw.contains(&player)
+}
+
+/// Whether `player` can't search libraries: the one place a search reads this rule.
+pub fn cant_search(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_search.contains(&player)
+}
+
+/// The triggers that trigger an additional time: the one place trigger detection reads this rule.
+pub(crate) fn triggers_again(state: &GameState) -> &[Again] {
+    &state.rules().again
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a rule of the game is in force for the players and objects its references name and for as long as its source has it or its duration lasts: a static rule stops with its source, with its condition and with the abilities its source loses, an effect ends by the rule of its duration or when the objects it named are gone, two rules of one kind together name whoever either names and each ends alone, the order the rules began in changes nothing, and a rule the engine does not play refuses by name.
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
+    use mtg_core::card::CardType;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::effects::{ContinuousEffect, Modification, Selector};
+    use crate::events::{Event, ZoneCause};
+    use crate::fixtures::{creature, state};
+    use crate::fold::apply_event;
+    use crate::turn::Step;
+
+    const ME: PlayerId = PlayerId(0);
+    const FOE: PlayerId = PlayerId(1);
+
+    /// What a table asks of the rules in force.
+    #[derive(Debug, Clone, Copy)]
+    enum Probe {
+        Life(PlayerId),
+        Draw(PlayerId),
+        Search(PlayerId),
+        Top(PlayerId),
+        Attack(&'static str),
+        Block(&'static str),
+    }
+
+    use Probe::{Attack, Block, Draw, Life, Search, Top};
+
+    fn ability(json: &str) -> Ability {
+        serde_json::from_str(json).unwrap()
+    }
+
+    fn rule_ability(rule: &str) -> Ability {
+        ability(&format!(r#"{{"Rule":{{"rule":{rule}}}}}"#))
+    }
+
+    /// A creature of seat 0 that has the abilities.
+    fn holder(rules: Vec<Ability>) -> Arc<CardDefinition> {
+        let card = CardDefinition::new("Holder")
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1);
+        Arc::new(rules.into_iter().fold(card, CardDefinition::with_rules))
+    }
+
+    /// Seat 0 controls the holder and a Wolf, seat 1 a Bear.
+    fn game(rules: Vec<Ability>) -> GameState {
+        state(
+            vec![vec![], vec![]],
+            vec![
+                vec![holder(rules), creature("Wolf", 2, 2)],
+                vec![creature("Bear", 2, 2)],
+            ],
+        )
+    }
+
+    fn id(game: &GameState, name: &str) -> ObjectId {
+        game.objects()
+            .find(|o| o.card().name == name)
+            .map(GameObject::id)
+            .unwrap()
+    }
+
+    fn named(game: &GameState, name: &str) -> ObjectRef {
+        game.object(id(game, name)).unwrap().reference()
+    }
+
+    fn holds(game: &GameState, probe: Probe) -> bool {
+        match probe {
+            Life(player) => cant_gain_life(game, player),
+            Draw(player) => cant_draw(game, player),
+            Search(player) => cant_search(game, player),
+            Top(player) => game.revealed_top(player).is_some(),
+            Attack(name) => must_attack(game, id(game, name)),
+            Block(name) => must_block(game, id(game, name)),
+        }
+    }
+
+    fn leaves(game: &mut GameState, name: &str) {
+        let object = id(game, name);
+        let owner = game.object(object).unwrap().owner();
+        let event = Event::ZoneChanged {
+            object,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(owner),
+            cause: ZoneCause::Moved,
+        };
+        apply_event(game, &event).unwrap();
+    }
+
+    /// A rule of an effect of seat 0 that began in turn 3, with the holder as its source.
+    fn effect(game: &GameState, rule: Rule, duration: Duration) -> RuleEffect {
+        RuleEffect {
+            id: EffectId(game.next_effect),
+            rule,
+            duration,
+            source: Some(named(game, "Holder")),
+            controller: ME,
+            turn: 3,
+        }
+    }
+
+    fn put_in_force(game: &mut GameState, rule: Rule) {
+        let effect = effect(game, rule, Duration::Forever);
+        apply_event(game, &Event::RuleCreated { effect }).unwrap();
+    }
+
+    #[rstest]
+    #[case::my_life(r#"{"CantGainLife":"You"}"#, &[(Life(ME), true), (Life(FOE), false)])]
+    #[case::their_life(r#"{"CantGainLife":"Opponents"}"#, &[(Life(ME), false), (Life(FOE), true)])]
+    #[case::everyones_life(r#"{"CantGainLife":"EachPlayer"}"#, &[(Life(ME), true), (Life(FOE), true)])]
+    #[case::my_draws(r#"{"CantDraw":"You"}"#, &[(Draw(ME), true), (Draw(FOE), false)])]
+    #[case::their_draws(r#"{"CantDraw":"Opponents"}"#, &[(Draw(ME), false), (Draw(FOE), true)])]
+    #[case::everyones_draws(r#"{"CantDraw":"EachPlayer"}"#, &[(Draw(ME), true), (Draw(FOE), true)])]
+    #[case::my_searches(r#"{"CantSearch":"You"}"#, &[(Search(ME), true), (Search(FOE), false)])]
+    #[case::their_searches(r#"{"CantSearch":"Opponents"}"#, &[(Search(ME), false), (Search(FOE), true)])]
+    #[case::everyones_searches(r#"{"CantSearch":"EachPlayer"}"#, &[(Search(ME), true), (Search(FOE), true)])]
+    #[case::my_top(r#"{"RevealTop":"You"}"#, &[(Top(ME), true), (Top(FOE), false)])]
+    #[case::their_top(r#"{"RevealTop":"Opponents"}"#, &[(Top(ME), false), (Top(FOE), true)])]
+    #[case::every_top(r#"{"RevealTop":"EachPlayer"}"#, &[(Top(ME), true), (Top(FOE), true)])]
+    #[case::this_attacks(r#"{"MustAttack":"This"}"#, &[(Attack("Holder"), true), (Attack("Wolf"), false), (Attack("Bear"), false)])]
+    #[case::my_creatures_attack(r#"{"MustAttack":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#, &[(Attack("Holder"), true), (Attack("Wolf"), true), (Attack("Bear"), false)])]
+    #[case::their_creatures_attack(r#"{"MustAttack":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}"#, &[(Attack("Holder"), false), (Attack("Wolf"), false), (Attack("Bear"), true)])]
+    #[case::all_creatures_attack(r#"{"MustAttack":{"Each":[{"Type":"Creature"}]}}"#, &[(Attack("Holder"), true), (Attack("Wolf"), true), (Attack("Bear"), true)])]
+    #[case::this_blocks(r#"{"MustBlock":"This"}"#, &[(Block("Holder"), true), (Block("Wolf"), false)])]
+    #[case::all_creatures_block(r#"{"MustBlock":{"Each":[{"Type":"Creature"}]}}"#, &[(Block("Holder"), true), (Block("Wolf"), true), (Block("Bear"), true)])]
+    #[case::attacking_is_not_blocking(r#"{"MustAttack":"This"}"#, &[(Block("Holder"), false)])]
+    fn a_static_rule_names_the_players_and_objects_its_references_name(
+        #[case] rule: &str,
+        #[case] probes: &[(Probe, bool)],
+    ) {
+        let game = game(vec![rule_ability(rule)]);
+        for (probe, expected) in probes {
+            assert_eq!(holds(&game, *probe), *expected, "{probe:?}");
+        }
+    }
+
+    #[rstest]
+    #[case::life(r#"{"CantGainLife":"EachPlayer"}"#, Life(ME))]
+    #[case::draws(r#"{"CantDraw":"EachPlayer"}"#, Draw(FOE))]
+    #[case::searches(r#"{"CantSearch":"EachPlayer"}"#, Search(ME))]
+    #[case::top(r#"{"RevealTop":"EachPlayer"}"#, Top(FOE))]
+    #[case::attack(r#"{"MustAttack":"This"}"#, Attack("Holder"))]
+    #[case::block(r#"{"MustBlock":"This"}"#, Block("Holder"))]
+    fn a_static_rule_stops_with_its_source(#[case] rule: &str, #[case] probe: Probe) {
+        let mut game = game(vec![rule_ability(rule)]);
+        assert!(holds(&game, probe));
+        let holder = id(&game, "Holder");
+        leaves(&mut game, "Holder");
+        assert_ne!(game.object(holder).unwrap().zone(), Zone::Battlefield);
+        assert!(!holds(&game, probe));
+    }
+
+    #[test]
+    fn a_static_rule_with_a_condition_applies_while_it_holds() {
+        let rule = ability(r#"{"Rule":{"rule":{"CantGainLife":"You"},"condition":"YourTurn"}}"#);
+        let mut game = game(vec![rule]);
+        assert!(holds(&game, Life(ME)), "it is the holder's turn");
+        game.turn.active = FOE;
+        game.rules_cache.reset();
+        assert!(!holds(&game, Life(ME)), "it is another seat's turn");
+        game.turn.active = ME;
+        game.rules_cache.reset();
+        assert!(holds(&game, Life(ME)));
+    }
+
+    #[test]
+    fn a_permanent_that_lost_its_abilities_has_no_rule() {
+        let mut game = game(vec![rule_ability(r#"{"CantDraw":"EachPlayer"}"#)]);
+        assert!(holds(&game, Draw(ME)));
+        let holder = named(&game, "Holder");
+        let lost = ContinuousEffect::new(
+            EffectId(game.next_effect),
+            Selector::Objects(vec![holder]),
+            Modification::LoseAbilities,
+            Duration::Forever,
+            game.next_timestamp,
+        );
+        apply_event(&mut game, &Event::EffectCreated { effect: lost }).unwrap();
+        assert!(!holds(&game, Draw(ME)));
+    }
+
+    #[test]
+    fn a_card_in_a_hand_has_no_rule() {
+        let game = state(
+            vec![
+                vec![holder(vec![rule_ability(r#"{"CantDraw":"EachPlayer"}"#)])],
+                vec![],
+            ],
+            vec![vec![], vec![]],
+        );
+        assert!(game.rules_possible);
+        assert!(!holds(&game, Draw(ME)) && !holds(&game, Draw(FOE)));
+    }
+
+    #[rstest]
+    #[case::end_of_turn_stays_through_the_turn(Duration::UntilEndOfTurn, (3, ME, Step::End), true)]
+    #[case::end_of_turn_waits_for_the_cleanup_event(Duration::UntilEndOfTurn, (4, FOE, Step::Main1), true)]
+    #[case::forever(Duration::Forever, (9, FOE, Step::Main2), true)]
+    #[case::combat_before_it(Duration::UntilEndOfCombat, (3, ME, Step::Main1), true)]
+    #[case::combat_to_its_last_step(Duration::UntilEndOfCombat, (3, ME, Step::EndCombat), true)]
+    #[case::combat_after_it(Duration::UntilEndOfCombat, (3, ME, Step::Main2), false)]
+    #[case::combat_of_another_turn(Duration::UntilEndOfCombat, (4, FOE, Step::Main1), false)]
+    #[case::your_turn_still_going(Duration::UntilYourNextTurn, (3, ME, Step::End), true)]
+    #[case::your_turn_when_another_seat_plays(Duration::UntilYourNextTurn, (4, FOE, Step::Main1), true)]
+    #[case::your_turn_when_it_comes_again(Duration::UntilYourNextTurn, (5, ME, Step::Upkeep), false)]
+    #[case::while_the_source_stays(Duration::WhileSourceOnBattlefield, (3, ME, Step::Main1), true)]
+    fn a_rule_of_an_effect_lasts_as_long_as_its_duration(
+        #[case] duration: Duration,
+        #[case] now: (u32, PlayerId, Step),
+        #[case] active: bool,
+    ) {
+        let mut game = game(Vec::new());
+        let rule = effect(&game, Rule::CantGainLife(vec![ME]), duration);
+        (game.turn.number, game.turn.active, game.turn.step) = now;
+        assert_eq!(rule.is_active(&game), active);
+        apply_event(&mut game, &Event::RuleCreated { effect: rule }).unwrap();
+        assert_eq!(holds(&game, Life(ME)), active);
+    }
+
+    #[test]
+    fn a_rule_that_lasts_while_its_source_stays_ends_when_it_leaves() {
+        let mut game = game(Vec::new());
+        let rule = effect(
+            &game,
+            Rule::CantDraw(vec![ME, FOE]),
+            Duration::WhileSourceOnBattlefield,
+        );
+        apply_event(&mut game, &Event::RuleCreated { effect: rule }).unwrap();
+        assert!(holds(&game, Draw(FOE)));
+        leaves(&mut game, "Holder");
+        assert!(!holds(&game, Draw(FOE)));
+        let ended = crate::sba::housekeeping(&game);
+        assert!(matches!(ended.as_slice(), [Event::RuleExpired { .. }]));
+        for event in &ended {
+            apply_event(&mut game, event).unwrap();
+        }
+        assert_eq!(game.rule_effects(), []);
+    }
+
+    #[test]
+    fn a_rule_that_names_objects_is_spent_when_they_are_gone() {
+        let mut game = game(Vec::new());
+        let wolf = named(&game, "Wolf");
+        put_in_force(&mut game, Rule::MustAttack(vec![wolf]));
+        assert!(holds(&game, Attack("Wolf")));
+        leaves(&mut game, "Wolf");
+        assert!(!holds(&game, Attack("Wolf")));
+        assert!(
+            game.rule_effects()
+                .iter()
+                .all(|rule| !rule.is_active(&game))
+        );
+    }
+
+    #[test]
+    fn two_rules_of_one_kind_name_whoever_either_names_and_each_ends_alone() {
+        let mut game = game(vec![rule_ability(r#"{"CantGainLife":"You"}"#)]);
+        let mut fresh = effect(
+            &game,
+            Rule::CantGainLife(vec![FOE]),
+            Duration::UntilEndOfTurn,
+        );
+        fresh.turn = game.turn().number();
+        apply_event(
+            &mut game,
+            &Event::RuleCreated {
+                effect: fresh.clone(),
+            },
+        )
+        .unwrap();
+        assert!(holds(&game, Life(ME)) && holds(&game, Life(FOE)));
+        apply_event(&mut game, &Event::RuleExpired { id: fresh.id }).unwrap();
+        assert!(holds(&game, Life(ME)) && !holds(&game, Life(FOE)));
+        leaves(&mut game, "Holder");
+        assert!(!holds(&game, Life(ME)));
+    }
+
+    #[test]
+    fn the_same_rule_twice_is_one_rule() {
+        let mut game = game(vec![rule_ability(r#"{"CantDraw":"You"}"#)]);
+        put_in_force(&mut game, Rule::CantDraw(vec![ME]));
+        put_in_force(&mut game, Rule::CantDraw(vec![ME]));
+        assert!(holds(&game, Draw(ME)) && !holds(&game, Draw(FOE)));
+        let ids: Vec<EffectId> = game.rule_effects().iter().map(|rule| rule.id).collect();
+        for id in ids {
+            apply_event(&mut game, &Event::RuleExpired { id }).unwrap();
+        }
+        assert!(holds(&game, Draw(ME)), "the static rule is still in force");
+    }
+
+    #[rstest]
+    #[case::in_the_order_listed(false)]
+    #[case::in_the_reverse_order(true)]
+    fn the_order_rules_began_in_changes_nothing(#[case] reversed: bool) {
+        let mut game = game(vec![rule_ability(r#"{"CantSearch":"You"}"#)]);
+        let wolf = named(&game, "Wolf");
+        let mut rules = vec![
+            Rule::CantDraw(vec![FOE]),
+            Rule::MustBlock(vec![wolf]),
+            Rule::RevealTop(vec![ME, FOE]),
+        ];
+        if reversed {
+            rules.reverse();
+        }
+        for rule in rules {
+            put_in_force(&mut game, rule);
+        }
+        let probes = [
+            Search(ME),
+            Search(FOE),
+            Draw(ME),
+            Draw(FOE),
+            Block("Wolf"),
+            Block("Bear"),
+            Top(ME),
+            Top(FOE),
+        ];
+        let seen: Vec<bool> = probes.iter().map(|probe| holds(&game, *probe)).collect();
+        assert_eq!(
+            seen,
+            [true, false, false, true, true, false, true, true],
+            "the same rules in force whichever began first"
+        );
+    }
+
+    #[test]
+    fn a_rule_the_engine_does_not_play_refuses_by_name() {
+        let game = game(Vec::new());
+        let scope = Scope::announcing(&game, ME, named(&game, "Holder"));
+        assert_eq!(
+            lower_rule(&scope, &GameRule::DamageCantBePrevented),
+            Err(ResolveError::Unsupported("Rule.DamageCantBePrevented"))
+        );
+    }
+
+    #[rstest]
+    #[case::creatures_that_exist(r#"{"MustAttack":{"Each":[{"Type":"Creature"}]}}"#, false)]
+    #[case::no_such_creature(r#"{"MustAttack":{"Each":[{"Type":"Planeswalker"}]}}"#, true)]
+    #[case::no_spell_on_the_stack(
+        r#"{"CantBeCountered":{"Each":[{"Type":"Creature"},"Spell"]}}"#,
+        true
+    )]
+    #[case::players(r#"{"RevealTop":"Opponents"}"#, false)]
+    fn a_rule_that_names_nothing_is_not_begun(#[case] rule: &str, #[case] nothing: bool) {
+        let game = game(Vec::new());
+        let scope = Scope::announcing(&game, ME, named(&game, "Holder"));
+        let wanted: GameRule = serde_json::from_str(rule).unwrap();
+        assert_eq!(
+            names_nothing(&lower_rule(&scope, &wanted).unwrap()),
+            nothing
+        );
+    }
+
+    #[test]
+    fn a_rule_that_triggers_again_holds_a_pattern_and_the_player_whose_permanents_it_is_about() {
+        let cause = r#"{"ZoneChange":{"what":[{"Type":"Creature"}],"to":"Battlefield"}}"#;
+        let rule = format!(r#"{{"TriggerAgain":{{"cause":{cause}}}}}"#);
+        let game = game(vec![rule_ability(&rule)]);
+        let again = triggers_again(&game);
+        assert_eq!(again.len(), 1);
+        assert_eq!(again[0].controller, ME);
+        assert_eq!(again[0].source, named(&game, "Holder"));
+        assert_eq!(
+            again[0].cause,
+            serde_json::from_str::<TriggerPattern>(cause).unwrap()
+        );
+    }
+
+    #[test]
+    fn the_top_of_a_revealed_library_is_shown_to_every_seat_and_nothing_below_it() {
+        let mut game = game(vec![rule_ability(r#"{"RevealTop":"You"}"#)]);
+        let library = game.zone(Zone::Library(ME)).to_vec();
+        let (top, second) = (library[library.len() - 1], library[library.len() - 2]);
+        assert_eq!(game.revealed_top(ME), Some(top));
+        assert_eq!(game.revealed_top(FOE), None);
+        for viewer in [ME, FOE] {
+            assert!(game.is_shown_to(viewer, top));
+            assert!(!game.is_shown_to(viewer, second));
+        }
+        // Drawing the card shows the next one; the drawn card is in a hand, which only its owner sees.
+        let drawn = Event::CardDrawn {
+            player: ME,
+            object: top,
+        };
+        apply_event(&mut game, &drawn).unwrap();
+        assert_eq!(game.revealed_top(ME), Some(second));
+        assert!(game.is_shown_to(FOE, second) && !game.is_shown_to(FOE, top));
+    }
+
+    #[test]
+    fn a_game_whose_cards_change_no_rule_gathers_nothing() {
+        let game = game(Vec::new());
+        assert!(!game.rules_possible && game.rule_effects().is_empty());
+        assert!(std::ptr::eq(game.rules(), &raw const NONE));
+    }
+
+    #[test]
+    fn a_clone_gathers_its_own_rules() {
+        let mut game = game(vec![rule_ability(r#"{"CantDraw":"You"}"#)]);
+        assert!(holds(&game, Draw(ME)));
+        let copy = game.clone();
+        leaves(&mut game, "Holder");
+        assert!(!holds(&game, Draw(ME)));
+        assert!(holds(&copy, Draw(ME)), "the copy still has the holder");
+    }
+}

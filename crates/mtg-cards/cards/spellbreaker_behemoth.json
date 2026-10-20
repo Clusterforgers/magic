@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cba07472-7212-4411-a9f9-38a48870ad69",
+  "name": "Spellbreaker Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellbreaker Behemoth",
+      "oracle_fingerprint": "986f539166693ec1749f0eb6657bceda",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Rule": {
+            "rule": {
+              "CantBeCountered": {
+                "Each": [
+                  "Spell",
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 5 } }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

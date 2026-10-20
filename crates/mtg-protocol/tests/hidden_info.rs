@@ -9,14 +9,16 @@ mod common;
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use common::{Step, is_hidden, run_game, unique_setup, with_unique_names};
+use common::{Step, is_hidden, revealed_tops, run_game, unique_setup, with_unique_names};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::Choice;
 use mtg_engine::object::GameObject;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
-use mtg_testkit::{archon_fuzz_setup, keyword_triggers_fuzz_setup, spell_fuzz_setup};
+use mtg_testkit::{
+    archon_fuzz_setup, keyword_triggers_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup,
+};
 use rstest::rstest;
 use serde_json::Value;
 
@@ -75,9 +77,10 @@ const SCALAR_KEYS: &[&str] = &[
 const SNAPSHOT_EVERY: usize = 20;
 
 fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectId, String> {
+    let tops: Vec<ObjectId> = revealed_tops(state).into_values().collect();
     state
         .objects()
-        .filter(|o| is_hidden(o.zone(), viewer))
+        .filter(|o| is_hidden(o.zone(), viewer) && !tops.contains(&o.id()))
         .map(|o| (o.id(), o.card().name.clone()))
         .collect()
 }
@@ -88,12 +91,13 @@ fn hidden_across(
     after: &GameState,
     viewer: PlayerId,
 ) -> BTreeMap<ObjectId, String> {
+    let tops: Vec<ObjectId> = revealed_tops(after).into_values().collect();
     hidden_in(before, viewer)
         .into_iter()
         .filter(|(id, _)| {
             after
                 .object(*id)
-                .is_none_or(|o| is_hidden(o.zone(), viewer))
+                .is_none_or(|o| is_hidden(o.zone(), viewer) && !tops.contains(id))
         })
         .collect()
 }
@@ -126,7 +130,9 @@ fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<String> {
             Value::Object(map) => {
                 // A continuous effect, and the event that ends one, name it by an effect id, which is no object's.
                 let names_an_effect = key == "EffectExpired"
-                    || (map.contains_key("duration") && map.contains_key("timestamp"));
+                    || key == "RuleExpired"
+                    || (map.contains_key("duration")
+                        && (map.contains_key("timestamp") || map.contains_key("turn")));
                 map.iter()
                     .filter(|(k, _)| !(names_an_effect && *k == "id"))
                     .for_each(|(k, v)| walk(v, k, hidden, out));
@@ -290,6 +296,111 @@ fn without_trigger_orders(events: Value) -> Value {
         ),
         other => other,
     }
+}
+
+/// The cards the pending decision puts before `viewer` to choose among or to put in an order.
+fn offered_to(decision: Option<&Decision>, viewer: PlayerId) -> Vec<ObjectId> {
+    match decision {
+        Some(Decision {
+            player,
+            kind: DecisionKind::ChooseCards(options),
+        }) if *player == viewer => options.from.clone(),
+        Some(Decision {
+            player,
+            kind: DecisionKind::OrderCards(options),
+        }) if *player == viewer => options.cards.clone(),
+        _ => Vec::new(),
+    }
+}
+
+/// Games of the rules of the game include a Goblin Spy that reveals the top card of its controller's library: every
+/// seat's view lists that card and names it as the library's top, the view of the seat that is not shown it as well,
+/// and no card below it, in a hand or in another library is named by any batch or snapshot.
+#[rstest]
+#[case(2, 41)]
+#[case(3, 42)]
+#[case(4, 43)]
+fn a_revealed_library_top_reaches_every_viewer_and_nothing_below_it_does(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut tops_seen, mut tops_gone) = (0usize, 0usize, 0usize);
+    let mut previous: Option<Decision> = None;
+    let setup = with_unique_names(rules_fuzz_setup(players, seed).unwrap());
+    let engine = run_game(setup, seed, |step: &Step| {
+        let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+        for (viewer, batch) in viewers.iter().zip(&batches) {
+            let mut hidden = hidden_across(step.before, step.after, *viewer);
+            // The seat asked to choose among cards of its library sees them.
+            hidden.retain(|id, _| {
+                !offered_to(step.decision, *viewer).contains(id)
+                    && !offered_to(previous.as_ref(), *viewer).contains(id)
+            });
+            checked += hidden.len();
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&without_trigger_orders(value), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
+        }
+        for viewer in &viewers {
+            let view = StateView::for_player(step.after, *viewer);
+            let tops = revealed_tops(step.after);
+            for player in &view.table.players {
+                let top = tops.get(&player.seat).copied();
+                assert_eq!(
+                    player.revealed_top, top,
+                    "seed {seed} answer {} viewer {viewer:?}: the top of {:?}'s library",
+                    step.answers, player.seat
+                );
+                if let Some(top) = top {
+                    tops_seen += 1;
+                    assert!(
+                        view.objects.iter().any(|o| o.id == top),
+                        "seed {seed} answer {}: {viewer:?} is not shown the revealed top",
+                        step.answers
+                    );
+                    assert_eq!(
+                        player.library.cards, None,
+                        "the rest of the library stays hidden"
+                    );
+                }
+            }
+            let mut hidden = hidden_in(step.after, *viewer);
+            hidden.retain(|id, _| !offered_to(step.decision, *viewer).contains(id));
+            let found = leaks(&serde_json::to_value(&view).unwrap(), &hidden);
+            assert!(
+                found.is_empty(),
+                "seed {seed} answer {} viewer {viewer:?}: snapshot leaks {found:?}",
+                step.answers
+            );
+        }
+        // A card that stops being the top (drawn, shuffled away) disappears from the views that were shown it.
+        for viewer in &viewers {
+            let was = revealed_tops(step.before);
+            let now = revealed_tops(step.after);
+            for (seat, top) in &was {
+                if now.get(seat) != Some(top) {
+                    tops_gone += 1;
+                    let view = StateView::for_player(step.after, *viewer);
+                    let seen = view.objects.iter().any(|o| o.id == *top);
+                    let still_visible =
+                        !is_hidden(step.after.object(*top).unwrap().zone(), *viewer);
+                    assert_eq!(seen, still_visible, "seed {seed} answer {}", step.answers);
+                }
+            }
+        }
+        previous = step.decision.cloned();
+    });
+    assert!(engine.result().is_some(), "game should finish");
+    assert!(
+        checked > 500 && tops_seen > 0 && tops_gone > 0,
+        "test must not be vacuous: {checked} hidden objects, {tops_seen} tops seen, {tops_gone} tops gone"
+    );
 }
 
 /// The choice of cards: the player asked sees every card they choose among (their own hand to discard, the
