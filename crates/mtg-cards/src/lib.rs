@@ -10,6 +10,7 @@ pub mod builtin;
 pub mod card;
 pub mod compile;
 pub mod cost;
+pub mod coverage;
 pub mod deck;
 pub mod definition;
 pub mod effect;

@@ -18,6 +18,7 @@ cargo run -p mtg-cli -- fetch scryfall   # Oracle Cards and rulings, about 30 Mi
 cargo run -p mtg-cli -- fetch decks      # the 198 Commander precons, about 100 MiB
 cargo run -p mtg-cli -- ingest           # applies the migrations, then loads the cache
 cargo run -p mtg-cli -- status           # cache, row counts, latest import runs
+cargo run -p mtg-cli -- coverage         # compiler and engine coverage of the precons, ranked blockers (--deck, --top)
 ```
 
 - **`fetch scryfall`** reads the `bulk-data` listing and downloads `oracle_cards` and `rulings` (`jsonl_download_uri`, else `download_uri`). A file is skipped while the manifest holds it under the listing's `updated_at`; `--force` downloads anyway.

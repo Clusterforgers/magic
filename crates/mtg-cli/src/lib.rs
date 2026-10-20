@@ -8,6 +8,7 @@ use mtg_db::Database;
 pub mod args;
 pub mod bulk;
 pub mod cache;
+pub mod coverage;
 pub mod error;
 pub mod fetch;
 pub mod files;
@@ -83,6 +84,11 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         Command::Status => status::status(&cache, cli.database_url.as_deref())
             .await
             .map(|text| text.trim_end().to_owned()),
+        Command::Coverage(args) => {
+            let url = cli.database_url.ok_or_else(missing_database_url)?;
+            let db = Database::connect(&url).await?;
+            coverage::coverage(&db, &args).await
+        }
     }
 }
 
