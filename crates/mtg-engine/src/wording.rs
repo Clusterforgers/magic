@@ -822,7 +822,10 @@ mod tests {
         r#"{"State":{"condition":{"Compare":{"left":{"Life":"You"},"op":"Le","right":10}}}}"#,
         "When you have 10 or less life"
     )]
-    #[case::a_state_with_no_phrase(r#"{"State":{"condition":"YourTurn"}}"#, "When its state is true")]
+    #[case::a_state_with_no_phrase(
+        r#"{"State":{"condition":"YourTurn"}}"#,
+        "When its state is true"
+    )]
     fn a_trigger_pattern_reads_as_a_card_says_it(#[case] json: &str, #[case] expected: &str) {
         assert_eq!(words(json), expected);
     }

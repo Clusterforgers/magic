@@ -23,6 +23,7 @@ pub mod small_cards;
 pub mod static_cards;
 pub mod trigger_cards;
 pub mod windows;
+pub mod zone_cards;
 
 pub use bot::RandomBot;
 pub use choice_cards::choice_fuzz_setup;
@@ -45,3 +46,4 @@ pub use script_error::ScriptError;
 pub use small_cards::small_fuzz_setup;
 pub use static_cards::statics_fuzz_setup;
 pub use windows::{SeatWindows, Windows};
+pub use zone_cards::zones_fuzz_setup;

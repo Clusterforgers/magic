@@ -452,7 +452,8 @@ fn compute(state: &GameState) -> Layers {
             && state.objects().any(|object| {
                 object.zone() != Zone::Battlefield
                     && object.kind() != ObjectKind::Ability
-                    && working_here(object).any(|(_, rules)| matches!(**rules, Ability::Static { .. }))
+                    && working_here(object)
+                        .any(|(_, rules)| matches!(**rules, Ability::Static { .. }))
             }));
     if registered.is_empty() && !statics_in_play {
         return Layers {

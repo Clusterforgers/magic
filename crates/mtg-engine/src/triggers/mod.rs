@@ -31,8 +31,8 @@ pub(crate) use detect::needs_before;
 pub use queue::PendingTrigger;
 
 pub(crate) use delayed::{fold_created, fold_expired};
-pub(crate) use state::detect as state_triggers;
 pub(crate) use queue::{fold_ordered, fold_removed, fold_triggered, next as sweep, removing, take};
+pub(crate) use state::detect as state_triggers;
 
 /// A triggered ability that triggered and waits to be put on the stack: what the `AbilityTriggered` event says.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -134,7 +134,9 @@ fn effects_state_trigger(effects: &[Effect]) -> bool {
         Effect::Pay { paid, unpaid, .. } => {
             effects_state_trigger(paid) || effects_state_trigger(unpaid)
         }
-        Effect::Modal { modes, .. } => modes.iter().any(|mode| effects_state_trigger(&mode.effects)),
+        Effect::Modal { modes, .. } => modes
+            .iter()
+            .any(|mode| effects_state_trigger(&mode.effects)),
         _ => false,
     })
 }

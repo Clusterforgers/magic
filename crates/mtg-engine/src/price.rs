@@ -162,7 +162,12 @@ mod tests {
     #[rstest]
     #[case::exiling_the_source(r#"[{"Mana":"{3}{G}{G}"},"ExileSelf"]"#, true, false, "{3}{G}{G}")]
     #[case::exiling_the_source_for_free(r#"["ExileSelf"]"#, true, false, "")]
-    #[case::discarding_the_source(r#"[{"Mana":"{U/R}{U/R}"},"DiscardSelf"]"#, false, true, "{U/R}{U/R}")]
+    #[case::discarding_the_source(
+        r#"[{"Mana":"{U/R}{U/R}"},"DiscardSelf"]"#,
+        false,
+        true,
+        "{U/R}{U/R}"
+    )]
     fn a_cost_that_exiles_or_discards_the_source_is_a_price(
         #[case] json: &str,
         #[case] exile_self: bool,

@@ -18,6 +18,8 @@ mod price;
 mod sba;
 mod steps;
 mod wording;
+#[cfg(test)]
+mod zone_abilities;
 
 pub mod abilities;
 pub mod ability_reader;

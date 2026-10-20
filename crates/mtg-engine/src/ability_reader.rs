@@ -103,7 +103,10 @@ pub(crate) fn definition_triggers(definition: &CardDefinition) -> bool {
 
 /// Whether a card with this definition prints a state trigger or gives one (`GameState::state_triggers_possible`).
 pub(crate) fn definition_has_state_trigger(definition: &CardDefinition) -> bool {
-    definition.rules.iter().any(|rules| has_state_trigger(rules))
+    definition
+        .rules
+        .iter()
+        .any(|rules| has_state_trigger(rules))
 }
 
 /// What the keyword `keyword` of `object`, which comes from `source`, stands for: the abilities it adds
