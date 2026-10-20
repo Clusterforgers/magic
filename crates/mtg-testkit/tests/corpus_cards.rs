@@ -28,7 +28,7 @@ use Support::{Manual, Partial, Verified};
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
 /// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
 /// countering, scrying, looking at and revealing cards, choosing and moving them, shuffling, life and damage, paying
-/// mana as an effect, and the keywords of combat, so the fifteen cards that need no more are Verified (the Forest's
+/// mana as an effect, continuous effects that pump or grant a keyword, and the keywords of combat, so the sixteen cards that need no more are Verified (the Forest's
 /// ability comes from its land type) and a card whose other abilities are still missing carries what runs as Partial: Mulldrifter's draw and
 /// flying, not its evoke; Faithless Looting's draw and discard, not its flashback. Jace, the Mind Sculptor stays with
 /// the table for its loyalty costs; Rampant Growth, Cultivate and Flooded Strand for `Search` and a move to the
@@ -54,7 +54,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Flooded Strand", Manual, 0),
     ("Forest", Verified, 1),
     ("Gaea's Cradle", Manual, 0),
-    ("Giant Growth", Manual, 0),
+    ("Giant Growth", Verified, 1),
     ("Grizzly Bears", Verified, 0),
     ("Hero of Bladehold", Manual, 0),
     ("Izzet Charm", Verified, 1),
@@ -219,7 +219,7 @@ fn lacking(name: &str) -> Vec<String> {
 )]
 #[case::sneak_attack(
     "Sneak Attack",
-    &["Effect.Continuous", "Effect.Move.Battlefield", "Mod.AddKeyword"]
+    &["Effect.Move.Battlefield"]
 )]
 #[case::jace("Jace, the Mind Sculptor", &["Ability.Loyalty"])]
 fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(
@@ -372,7 +372,7 @@ fn a_spell_with_x_in_its_cost_is_never_offered() -> Result<(), ScriptError> {
     Ok(())
 }
 
-/// 40 Forests and four each of four cards a Forest can pay for (two of them Verified, two Manual)
+/// 40 Forests and four each of four cards a Forest can pay for (three of them Verified, one Manual)
 /// and Fireball, which needs red mana and X and so stays dead in the draw: 60 in all.
 fn corpus_deck() -> Vec<Arc<CardDefinition>> {
     let mut deck: Vec<Arc<CardDefinition>> = (0..40).map(|_| card("Forest").unwrap()).collect();

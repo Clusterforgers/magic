@@ -5,7 +5,7 @@ import type { ColorSet } from "./ColorSet";
 /**
  * What an effect changes.
  */
-export type Modification = { "AddType": CardType } | { "SetColors": ColorSet } | { "SetPowerToughness": { 
+export type Modification = { "AddType": CardType } | { "SetColors": ColorSet } | { "AddKeyword": unknown } | { "SetPowerToughness": { 
 /**
  * New power.
  */

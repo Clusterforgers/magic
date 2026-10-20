@@ -14,7 +14,7 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::combat::{AttackTarget, DamageTarget};
 use mtg_engine::decision::{Answer, DamageOptions, DecisionKind};
-use mtg_engine::effects::{Duration, Modification, Selector};
+use mtg_engine::effects::{Duration, Modification};
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::events::DeathCause;
 use mtg_engine::turn::Step;
@@ -529,7 +529,7 @@ fn indestructible_still_dies_to_zero_toughness_and_a_deathtouch_mark_does_not_ou
     assert_eq!(mark(&driver), Some((1, true)), "it survived, marked");
     // Zero toughness is not destruction: the same creature dies to a -2/-2 effect.
     driver.add_effect(
-        Selector::Object(b),
+        driver.on(b),
         Modification::ModifyPowerToughness {
             power: -2,
             toughness: -2,

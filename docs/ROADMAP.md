@@ -78,6 +78,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [ ] (i3) State triggers (CR 603.8) and abilities that work from a zone other than the battlefield (`from`) (`docs/engine.md`)
 - [ ] (j) Replacement and prevention effects (CR 614 to 616)
 - [ ] (k) Layers: full CR 613 ordering with dependencies, timestamps, counters, auras, equipment
+  - [x] `Effect::Continuous` with `ModifyPT` and `AddKeyword`: effects with a source, timestamp and duration in the state, derived through layers 6 and 7c and `keywords_of`, ended by their duration; Giant Growth is Verified
+  - [ ] Left of (k): the other modifications as effects (`SetPT`, `SwitchPT`, `AddType`, `AddSubtype`, `SetColors`, `RemoveKeyword`, `SetController`, `CantAttack`, `CantBlock`), static abilities with dependencies (CR 613.8), characteristic-defining abilities, counters, auras and equipment, and keywords in snapshots
 
 ## M4 Multiplayer product
 - [x] Invite-link lobbies on top of users

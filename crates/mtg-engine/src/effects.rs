@@ -1,13 +1,16 @@
 //! Continuous effects: what they change, which objects they touch and how long they last.
 
+use mtg_cards::keyword::Keyword;
+pub use mtg_cards::modify::Duration;
 use mtg_core::card::CardType;
 use mtg_core::color::ColorSet;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::characteristics::Characteristics;
-use crate::object::GameObject;
+use crate::object::{GameObject, ObjectRef};
 use crate::state::GameState;
+use crate::turn::Step;
 use crate::zones::Zone;
 
 /// A layer of the continuous-effect system (CR 613.1); effects apply in this order.
@@ -37,11 +40,12 @@ pub enum Layer {
 }
 
 /// Which objects an effect applies to.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Selector {
-    /// Exactly this object.
-    Object(ObjectId),
+    /// Exactly these objects, named when the effect began (CR 611.2c). One that has changed zones since is a new
+    /// object (CR 400.7) and is not among them.
+    Objects(Vec<ObjectRef>),
     /// Every creature, judged by the characteristics built up to the effect's layer.
     AllCreatures,
     /// Every creature a player controls.
@@ -49,26 +53,37 @@ pub enum Selector {
 }
 
 impl Selector {
+    /// The objects with these ids as they are now; an id no object answers to is left out.
+    pub fn objects(state: &GameState, ids: impl IntoIterator<Item = ObjectId>) -> Selector {
+        Selector::Objects(
+            ids.into_iter()
+                .filter_map(|id| state.object(id).map(GameObject::reference))
+                .collect(),
+        )
+    }
+
     /// Whether the effect touches `object` given its characteristics so far.
     pub(crate) fn matches(&self, object: &GameObject, so_far: &Characteristics) -> bool {
-        match *self {
-            Selector::Object(id) => object.id() == id,
+        match self {
+            Selector::Objects(named) => named.contains(&object.reference()),
             Selector::AllCreatures => so_far.types.contains(CardType::Creature),
             Selector::CreaturesControlledBy(player) => {
-                so_far.types.contains(CardType::Creature) && object.controller() == player
+                so_far.types.contains(CardType::Creature) && object.controller() == *player
             }
         }
     }
 }
 
 /// What an effect changes.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Modification {
     /// Adds a card type (layer 4).
     AddType(CardType),
     /// Replaces the colors (layer 5).
     SetColors(ColorSet),
+    /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
+    AddKeyword(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Keyword),
     /// Sets power and toughness (layer 7b).
     SetPowerToughness {
         /// New power.
@@ -91,6 +106,7 @@ impl Modification {
         match self {
             Modification::AddType(_) => Layer::Type,
             Modification::SetColors(_) => Layer::Color,
+            Modification::AddKeyword(_) => Layer::Ability,
             Modification::SetPowerToughness { .. } => Layer::PtSet,
             Modification::ModifyPowerToughness { .. } => Layer::PtModify,
         }
@@ -100,6 +116,8 @@ impl Modification {
         match *self {
             Modification::AddType(ty) => chars.types = chars.types.with(ty),
             Modification::SetColors(colors) => chars.colors = colors,
+            // Keywords are not part of `Characteristics`; `keywords_of` joins them to the printed ones.
+            Modification::AddKeyword(_) => {}
             Modification::SetPowerToughness { power, toughness } => {
                 chars.power = Some(power);
                 chars.toughness = Some(toughness);
@@ -112,17 +130,10 @@ impl Modification {
     }
 }
 
-/// How long an effect lasts.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
-pub enum Duration {
-    /// Until the cleanup step of the current turn (CR 514.2).
-    UntilEndOfTurn,
-    /// For as long as the source stays on the battlefield.
-    WhileSourceOnBattlefield(ObjectId),
-}
-
-/// A registered continuous effect; characteristics are always derived from these.
+/// A continuous effect from a resolved spell or ability (CR 611): characteristics are always derived from these.
+///
+/// An effect that came from a spell or ability names the objects it changes when it begins (CR 611.2c) and keeps
+/// its place in the timestamp order for as long as it lasts (CR 613.7).
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct ContinuousEffect {
@@ -135,13 +146,26 @@ pub struct ContinuousEffect {
     /// The change.
     pub modification: Modification,
     /// How long it lasts.
+    #[cfg_attr(
+        feature = "ts",
+        ts(
+            type = "\"UntilEndOfTurn\" | \"UntilEndOfCombat\" | \"UntilYourNextTurn\" | \"WhileSourceOnBattlefield\" | \"Forever\""
+        )
+    )]
     pub duration: Duration,
     /// Order of creation; later effects apply after earlier ones within a layer.
     pub timestamp: u64,
+    /// The object whose spell or ability created it, as it was then; `WhileSourceOnBattlefield` follows this object.
+    pub source: Option<ObjectRef>,
+    /// Who controlled that spell or ability: whose next turn `UntilYourNextTurn` waits for.
+    pub controller: PlayerId,
+    /// The number of the turn it began in, which `UntilEndOfCombat` and `UntilYourNextTurn` measure from.
+    pub turn: u32,
 }
 
 impl ContinuousEffect {
-    /// Builds an effect, deriving its layer from the modification.
+    /// Builds an effect with no source, deriving its layer from the modification; it began in no turn and belongs to
+    /// the first seat until [`begun`](Self::begun) says otherwise.
     pub fn new(
         id: EffectId,
         selector: Selector,
@@ -156,16 +180,282 @@ impl ContinuousEffect {
             modification,
             duration,
             timestamp,
+            source: None,
+            controller: PlayerId(0),
+            turn: 0,
         }
     }
 
-    /// Whether the duration has not yet ended in `state`.
+    /// The same effect created by a spell or ability of `source`.
+    #[must_use]
+    pub fn from_source(mut self, source: ObjectRef) -> Self {
+        self.source = Some(source);
+        self
+    }
+
+    /// The same effect, begun in turn `turn` for `controller`.
+    #[must_use]
+    pub fn begun(mut self, controller: PlayerId, turn: u32) -> Self {
+        self.controller = controller;
+        self.turn = turn;
+        self
+    }
+
+    /// Whether the effect still applies in `state`: its duration has not ended and an object it names is still the
+    /// object it named. An effect that does not stops applying at once; the `EffectExpired` event only removes it.
     pub fn is_active(&self, state: &GameState) -> bool {
-        match self.duration {
-            Duration::UntilEndOfTurn => true,
-            Duration::WhileSourceOnBattlefield(source) => state
-                .object(source)
-                .is_some_and(|o| o.zone() == Zone::Battlefield),
+        let turn = state.turn();
+        let lasts = match self.duration {
+            // `UntilEndOfTurn` ends with the cleanup step, which logs the expiry (CR 514.2).
+            Duration::UntilEndOfTurn | Duration::Forever => true,
+            Duration::UntilEndOfCombat => {
+                turn.number() == self.turn && turn.step() <= Step::EndCombat
+            }
+            Duration::UntilYourNextTurn => {
+                state.is_alive(self.controller)
+                    && !(turn.number() != self.turn && turn.active() == self.controller)
+            }
+            Duration::WhileSourceOnBattlefield => self.source.is_some_and(|source| {
+                state
+                    .object(source.id)
+                    .is_some_and(|o| o.counter() == source.counter && o.zone() == Zone::Battlefield)
+            }),
+        };
+        lasts && !self.spent(state)
+    }
+
+    /// Whether every object the effect names has become a new object or is gone, so it can never change anything again.
+    fn spent(&self, state: &GameState) -> bool {
+        match &self.selector {
+            Selector::Objects(named) => named
+                .iter()
+                .all(|r| state.object(r.id).is_none_or(|o| o.counter() != r.counter)),
+            Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: an effect applies while its duration lasts and no longer, each duration ends by its own rule (end of turn by the cleanup step's event, end of combat by the step, "your next turn" by the controller's turn, "while the source stays" by that very object, for ever not at all), and an effect that names objects is spent when none of them is the object it named.
+    use mtg_core::ids::PlayerId;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::events::{Event, ZoneCause};
+    use crate::fixtures::{creature, state};
+    use crate::fold::apply_event;
+    use crate::player::LossReason;
+
+    const ME: PlayerId = PlayerId(0);
+    const FOE: PlayerId = PlayerId(1);
+
+    fn game() -> GameState {
+        state(
+            vec![vec![], vec![]],
+            vec![
+                vec![creature("Source", 1, 1), creature("Wolf", 2, 2)],
+                vec![creature("Bear", 2, 2)],
+            ],
+        )
+    }
+
+    fn named(game: &GameState, name: &str) -> ObjectRef {
+        game.objects()
+            .find(|o| o.card().name == name)
+            .map(GameObject::reference)
+            .unwrap()
+    }
+
+    /// An effect of `controller` that began in turn 3, on the Wolf, with the Source as its source.
+    fn effect(game: &GameState, duration: Duration, controller: PlayerId) -> ContinuousEffect {
+        ContinuousEffect::new(
+            EffectId(0),
+            Selector::Objects(vec![named(game, "Wolf")]),
+            Modification::ModifyPowerToughness {
+                power: 1,
+                toughness: 1,
+            },
+            duration,
+            0,
+        )
+        .from_source(named(game, "Source"))
+        .begun(controller, 3)
+    }
+
+    fn at(game: &mut GameState, number: u32, active: PlayerId, step: Step) {
+        game.turn.number = number;
+        game.turn.active = active;
+        game.turn.step = step;
+    }
+
+    fn leaves(game: &mut GameState, object: ObjectRef) {
+        let owner = game.object(object.id).unwrap().owner();
+        let event = Event::ZoneChanged {
+            object: object.id,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(owner),
+            cause: ZoneCause::Moved,
+        };
+        apply_event(game, &event).unwrap();
+    }
+
+    #[rstest]
+    #[case::end_of_turn_ends_by_event_not_by_state(Duration::UntilEndOfTurn, (3, ME, Step::End), true)]
+    #[case::end_of_turn_stays_until_the_cleanup_event(Duration::UntilEndOfTurn, (4, FOE, Step::Main1), true)]
+    #[case::forever(Duration::Forever, (9, FOE, Step::Main2), true)]
+    #[case::combat_before_it(Duration::UntilEndOfCombat, (3, ME, Step::Main1), true)]
+    #[case::combat_through_damage(Duration::UntilEndOfCombat, (3, ME, Step::CombatDamage), true)]
+    #[case::combat_to_its_last_step(Duration::UntilEndOfCombat, (3, ME, Step::EndCombat), true)]
+    #[case::combat_after_it(Duration::UntilEndOfCombat, (3, ME, Step::Main2), false)]
+    #[case::combat_of_another_turn(Duration::UntilEndOfCombat, (4, FOE, Step::Main1), false)]
+    #[case::your_turn_still_going(Duration::UntilYourNextTurn, (3, ME, Step::End), true)]
+    #[case::your_turn_when_another_seat_plays(Duration::UntilYourNextTurn, (4, FOE, Step::Main1), true)]
+    #[case::your_turn_when_it_comes_again(Duration::UntilYourNextTurn, (5, ME, Step::Upkeep), false)]
+    #[case::source_stays(Duration::WhileSourceOnBattlefield, (3, ME, Step::Main1), true)]
+    fn each_duration_lasts_as_long_as_its_rule_says(
+        #[case] duration: Duration,
+        #[case] now: (u32, PlayerId, Step),
+        #[case] active: bool,
+    ) {
+        let mut game = game();
+        let effect = effect(&game, duration, ME);
+        at(&mut game, now.0, now.1, now.2);
+        assert_eq!(effect.is_active(&game), active);
+    }
+
+    #[test]
+    fn an_effect_waiting_for_the_next_turn_of_a_player_who_left_is_over() {
+        let mut game = game();
+        let effect = effect(&game, Duration::UntilYourNextTurn, FOE);
+        at(&mut game, 3, ME, Step::Main1);
+        assert!(effect.is_active(&game));
+        let lost = Event::PlayerLost {
+            player: FOE,
+            reason: LossReason::Conceded,
+        };
+        apply_event(&mut game, &lost).unwrap();
+        assert!(!effect.is_active(&game));
+    }
+
+    #[rstest]
+    #[case::stays_away(false)]
+    #[case::returns_as_a_new_object(true)]
+    fn an_effect_that_follows_its_source_ends_when_the_source_leaves(#[case] returns: bool) {
+        let mut game = game();
+        let effect = effect(&game, Duration::WhileSourceOnBattlefield, ME);
+        let source = named(&game, "Source");
+        leaves(&mut game, source);
+        assert!(!effect.is_active(&game));
+        if returns {
+            let back = Event::ZoneChanged {
+                object: source.id,
+                from: Zone::Graveyard(ME),
+                to: Zone::Battlefield,
+                cause: ZoneCause::Moved,
+            };
+            apply_event(&mut game, &back).unwrap();
+            assert_eq!(game.object(source.id).unwrap().zone(), Zone::Battlefield);
+            assert!(
+                !effect.is_active(&game),
+                "the permanent that came back is a new object (CR 400.7)"
+            );
+        }
+    }
+
+    #[test]
+    fn an_effect_without_a_source_does_not_follow_one() {
+        let game = game();
+        let mut effect = effect(&game, Duration::WhileSourceOnBattlefield, ME);
+        effect.source = None;
+        assert!(!effect.is_active(&game));
+    }
+
+    #[rstest]
+    #[case::the_object_is_still_there(&[false], true)]
+    #[case::it_changed_zones(&[true], false)]
+    #[case::one_of_two_is_still_there(&[true, false], true)]
+    #[case::both_changed_zones(&[true, true], false)]
+    fn an_effect_is_spent_when_no_object_it_named_is_the_object_it_named(
+        #[case] moved: &[bool],
+        #[case] active: bool,
+    ) {
+        let mut game = game();
+        let named_by_it = [named(&game, "Wolf"), named(&game, "Bear")];
+        let effect = ContinuousEffect::new(
+            EffectId(0),
+            Selector::Objects(named_by_it[..moved.len()].to_vec()),
+            Modification::ModifyPowerToughness {
+                power: 1,
+                toughness: 1,
+            },
+            Duration::Forever,
+            0,
+        );
+        for (object, gone) in named_by_it.iter().zip(moved) {
+            if *gone {
+                leaves(&mut game, *object);
+            }
+        }
+        assert_eq!(effect.is_active(&game), active);
+    }
+
+    #[test]
+    fn a_selector_names_the_incarnation_it_was_given() {
+        let mut game = game();
+        let wolf = named(&game, "Wolf");
+        let selector = Selector::objects(&game, [wolf.id, ObjectId(u64::MAX)]);
+        assert_eq!(selector, Selector::Objects(vec![wolf]));
+        let chars = crate::characteristics(&game, wolf.id).unwrap();
+        assert!(selector.matches(game.object(wolf.id).unwrap(), &chars));
+        game.objects.get_mut(&wolf.id).unwrap().counter += 1;
+        assert!(!selector.matches(game.object(wolf.id).unwrap(), &chars));
+    }
+
+    #[test]
+    fn folding_an_effect_advances_the_counters_and_expiring_it_removes_it() {
+        let mut game = game();
+        let mut later = effect(&game, Duration::UntilEndOfTurn, ME);
+        later.id = EffectId(6);
+        later.timestamp = 20;
+        apply_event(&mut game, &Event::EffectCreated { effect: later }).unwrap();
+        assert_eq!((game.next_effect, game.next_timestamp), (7, 21));
+        let earlier = effect(&game, Duration::UntilEndOfTurn, ME);
+        apply_event(&mut game, &Event::EffectCreated { effect: earlier }).unwrap();
+        assert_eq!(
+            (game.next_effect, game.next_timestamp),
+            (7, 21),
+            "an older effect does not move the counters back"
+        );
+        assert_eq!(game.effects().len(), 2);
+        apply_event(&mut game, &Event::EffectExpired { id: EffectId(6) }).unwrap();
+        assert_eq!(game.effects().len(), 1);
+        assert!(apply_event(&mut game, &Event::EffectExpired { id: EffectId(6) }).is_err());
+    }
+
+    #[test]
+    fn an_effect_that_cannot_follow_from_the_state_is_refused() {
+        let mut game = game();
+        let made = effect(&game, Duration::UntilEndOfTurn, ME);
+        apply_event(
+            &mut game,
+            &Event::EffectCreated {
+                effect: made.clone(),
+            },
+        )
+        .unwrap();
+        let hash = game.state_hash();
+        let mut wrong_layer = made.clone();
+        wrong_layer.id = EffectId(1);
+        wrong_layer.layer = Layer::Type;
+        let mut same_id = made.clone();
+        same_id.timestamp = 5;
+        let mut no_source = effect(&game, Duration::WhileSourceOnBattlefield, ME);
+        no_source.id = EffectId(2);
+        no_source.source = None;
+        for refused in [wrong_layer, same_id, no_source] {
+            assert!(apply_event(&mut game, &Event::EffectCreated { effect: refused }).is_err());
+        }
+        assert_eq!(game.state_hash(), hash, "a refused event changes nothing");
     }
 }

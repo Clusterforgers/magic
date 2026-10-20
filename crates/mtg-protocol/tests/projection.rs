@@ -11,7 +11,7 @@ use common::{Step, run_game, unique_setup};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::characteristics;
-use mtg_engine::effects::{Duration, Modification, Selector};
+use mtg_engine::effects::{Duration, Modification};
 use mtg_engine::turn::Step as TurnStep;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, GameState};
@@ -173,7 +173,7 @@ fn snapshot_mirrors_the_public_table_and_derives_characteristics() {
     let buffed_id = driver.id_of("Craw Wurm").unwrap();
     driver
         .add_effect(
-            Selector::Object(buffed_id),
+            driver.on(buffed_id),
             Modification::ModifyPowerToughness {
                 power: 2,
                 toughness: 2,

@@ -5,6 +5,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use mtg_engine::combat::{AttackTarget, DamageTarget};
+use mtg_engine::effects::Duration;
 use mtg_engine::keywords::is_indestructible;
 use mtg_engine::object::{ObjectKind, PermanentState};
 use mtg_engine::player::Player;
@@ -75,12 +76,23 @@ pub fn check_decision(engine: &Engine) -> Result<(), Violation> {
 }
 
 /// At a decision point no creature that state-based actions would destroy is still on the battlefield:
-/// zero toughness, lethal damage or a mark from deathtouch, the last two unless it is indestructible.
+/// zero toughness, lethal damage or a mark from deathtouch, the last two unless it is indestructible; and no
+/// continuous effect is listed whose duration has ended, one that lasts until the end of the turn included (CR 514.2).
 ///
 /// A resolution in progress defers state-based actions (CR 704.3) and a finished game stops them, so neither is judged.
 pub fn check_settled(state: &GameState) -> Result<(), Violation> {
     if state.stage() != Stage::Turns || state.resolving().is_some() {
         return Ok(());
+    }
+    for effect in state.effects() {
+        let from_an_earlier_turn =
+            effect.duration == Duration::UntilEndOfTurn && effect.turn != state.turn().number();
+        if from_an_earlier_turn || !effect.is_active(state) {
+            return Err(Violation::Bookkeeping(format!(
+                "{:?} is over but still listed",
+                effect.id
+            )));
+        }
     }
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id).filter(|o| state.is_alive(o.controller())) else {
@@ -148,6 +160,16 @@ fn check_zone_index(state: &GameState) -> Result<(), Violation> {
 
 fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
     let book = |message: String| Violation::Bookkeeping(message);
+    if let Some(pair) = state
+        .effects()
+        .windows(2)
+        .find(|pair| pair[0].id >= pair[1].id || pair[0].timestamp >= pair[1].timestamp)
+    {
+        return Err(book(format!(
+            "effects {:?} and {:?} are not in the order of their ids and timestamps",
+            pair[0].id, pair[1].id
+        )));
+    }
     let seats = state.players().len();
     if state.turn().active().index() >= seats {
         return Err(book("active player does not exist".into()));

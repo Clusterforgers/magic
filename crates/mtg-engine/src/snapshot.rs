@@ -124,7 +124,7 @@ mod tests {
         let id = bear(&game);
         let effect = ContinuousEffect::new(
             EffectId(0),
-            Selector::Object(id),
+            Selector::objects(&game, [id]),
             Modification::ModifyPowerToughness {
                 power: 3,
                 toughness: 3,

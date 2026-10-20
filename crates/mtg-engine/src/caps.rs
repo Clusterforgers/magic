@@ -5,7 +5,8 @@
 //! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, abilities that cost `{T}` and
 //! mana, and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, scrying,
 //! looking at, revealing, moving and shuffling cards, life and damage (and delayed triggers), "may" and "pay" and
-//! choices and modal spells, the keywords of combat and hexproof, and nothing else.
+//! choices and modal spells, continuous effects that pump power and toughness or grant a keyword, the keywords of
+//! combat and hexproof, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -42,6 +43,9 @@ const RUNS: &[&str] = &[
     "Effect.DealDamage",
     "Effect.GainLife",
     "Effect.LoseLife",
+    "Effect.Continuous",
+    "Mod.ModifyPT",
+    "Mod.AddKeyword",
     "Effect.DelayedTrigger",
     "Effect.May",
     "Effect.Pay",
@@ -136,6 +140,11 @@ mod tests {
     #[case::destroying("Effect.Destroy", true)]
     #[case::exiling("Effect.Exile", true)]
     #[case::countering("Effect.Counter", true)]
+    #[case::continuous_effects("Effect.Continuous", true)]
+    #[case::pumps("Mod.ModifyPT", true)]
+    #[case::granted_keywords("Mod.AddKeyword", true)]
+    #[case::setting_power_and_toughness("Mod.SetPT", false)]
+    #[case::removed_keywords("Mod.RemoveKeyword", false)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]
