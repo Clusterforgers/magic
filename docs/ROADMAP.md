@@ -31,8 +31,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ### Compiler and coverage
 - [x] (r1) Compiler core in `mtg-cards`: reminder text and the card's name stripped, clauses split and classified (keyword line, spell, triggered, activated, loyalty, static, modal), keyword lines read, an unreadable clause kept as `Ability::Manual` with its span (`docs/cards-dsl.md`, Compiler and Manual fallback)
 - [x] (r1b) A Scryfall keyword counts as present in `check_printed` when an ability has it or a `Manual` clause names it, so compiled cards that grant a keyword or use a typecycling form validate (`docs/cards-dsl.md`, Validation)
-- [ ] (r2) Reader framework and renderer: a template reads a clause into the DSL and renders it back as English; goldens for each template, and a ratchet over the corpus (every ability the compiler reads equals the hand-written one, and the cards it reproduces whole never shrink in number)
-- [ ] (r3a) Templates: plain mana abilities and spell effects (draw, life, damage, destroy, exile, counter, scry, pump) with their common targets and amounts
+- [x] (r2) Reader framework and renderer: a template reads a clause into the DSL and renders it back as English; goldens for each template, and a ratchet over the corpus (every ability the compiler reads equals the hand-written one, and the cards it reproduces whole never shrink in number)
+- [x] (r3a) Templates: plain mana abilities and spell effects (draw, life, damage, destroy, exile, counter, scry, pump) with their common targets and amounts
 - [ ] (r3b) Templates: modes, "may" and "pay", and triggers (enters, dies, attacks, cast, step, sacrifice)
 - [ ] (r3c) Templates: activated abilities with `{T}`, mana and sacrifice costs, and the wordings of tokens, counters and search
 - [ ] (r4) `mtg-cli coverage`: states, reasons and clause spans for every precon card, with the missing primitives and unreadable wordings ranked by the cards each holds back

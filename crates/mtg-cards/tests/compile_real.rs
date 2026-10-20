@@ -9,6 +9,47 @@ use std::io::BufReader;
 use mtg_cards::compile::{ClauseKind, compile};
 use mtg_cards::load::{Library, Source, canonical, slug};
 
+/// A clause with its numbers as N, its mana symbols as {M} and its lines as " / " (the name is `~` already).
+fn shape(text: &str) -> String {
+    let mut out = String::new();
+    let mut chars = text.chars().peekable();
+    while let Some(c) = chars.next() {
+        if c == '{' {
+            let symbol: String = chars.by_ref().take_while(|next| *next != '}').collect();
+            out.push_str(if matches!(symbol.as_str(), "T" | "Q") {
+                "{T}"
+            } else {
+                "{M}"
+            });
+        } else if c.is_ascii_digit() {
+            while chars.next_if(char::is_ascii_digit).is_some() {}
+            out.push('N');
+        } else if c == '\n' {
+            out.push_str(" / ");
+        } else {
+            out.push(c);
+        }
+    }
+    out
+}
+
+/// Prints, without asserting, the share of clauses read for each kind and the 15 most common
+/// unread spell-clause shapes.
+fn print_shares(kinds: &BTreeMap<String, (usize, usize)>, unread_spells: BTreeMap<String, usize>) {
+    eprintln!("share of clauses read, by kind:");
+    for (kind, (total, read)) in kinds {
+        let share = 100.0 * f64::from(u32::try_from(*read).unwrap())
+            / f64::from(u32::try_from(*total).unwrap().max(1));
+        eprintln!("  {kind:<10} {read:>6} of {total:>6} ({share:.1}%)");
+    }
+    let mut shapes: Vec<_> = unread_spells.into_iter().collect();
+    shapes.sort_by_key(|(_, count)| std::cmp::Reverse(*count));
+    eprintln!("the 15 most common unread spell-clause shapes:");
+    for (shape, count) in shapes.iter().take(15) {
+        eprintln!("  {count:>5}  {shape}");
+    }
+}
+
 /// Ignored by default (needs a download). Set `MTG_REAL_DATA_DIR` to a directory holding
 /// `oracle-cards-*.jsonl.gz` and run `cargo test -p mtg-cards --test compile_real -- --ignored --nocapture`.
 #[test]
@@ -36,6 +77,7 @@ fn every_card_of_a_full_download_compiles_to_rules_that_load() {
     let mut kinds: BTreeMap<String, (usize, usize)> = BTreeMap::new();
     let mut problems: BTreeMap<String, Vec<String>> = BTreeMap::new();
     let mut unread_keywords: BTreeMap<String, usize> = BTreeMap::new();
+    let mut unread_spells: BTreeMap<String, usize> = BTreeMap::new();
     for printed in &cards {
         let compiled = compile(printed);
         for clause in &compiled.clauses {
@@ -44,6 +86,9 @@ fn every_card_of_a_full_download_compiles_to_rules_that_load() {
             entry.1 += usize::from(clause.read);
             if clause.kind == ClauseKind::Keyword && !clause.read {
                 *unread_keywords.entry(clause.text.clone()).or_default() += 1;
+            }
+            if clause.kind == ClauseKind::Spell && !clause.read {
+                *unread_spells.entry(shape(&clause.text)).or_default() += 1;
             }
             let text = &printed.faces[clause.face].oracle_text;
             assert!(clause.span.slice(text).is_some(), "{}", printed.name);
@@ -99,6 +144,7 @@ fn every_card_of_a_full_download_compiles_to_rules_that_load() {
     let mut top: Vec<_> = unread_keywords.into_iter().collect();
     top.sort_by_key(|(_, count)| std::cmp::Reverse(*count));
     eprintln!("unread keyword lines {:#?}", &top[..top.len().min(40)]);
+    print_shares(&kinds, unread_spells);
     let unexpected: Vec<_> = problems
         .keys()
         .filter(|message| *message != "partner not in the batch")

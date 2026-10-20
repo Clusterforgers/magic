@@ -1,7 +1,6 @@
 //! Goal: over many wordings and generated texts, the compiler's output loads, matches the imported text, and keeps its clauses, abilities and status consistent.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use mtg_cards::ability::Ability;
 use mtg_cards::card::ImplStatus;
 use mtg_cards::compile::ClauseKind::{
     self, Activated, Keyword, Loyalty, Modal, Spell, Static, Triggered,
@@ -60,9 +59,9 @@ fn check(printed: &PrintedCard) -> Compiled {
     };
     let read = compiled.clauses.iter().filter(|clause| clause.read).count();
     let unread = compiled.clauses.len() - read;
-    let keywords = card
+    let read_abilities = card
         .abilities()
-        .filter(|(_, ability)| matches!(ability, Ability::Keyword(_)))
+        .filter(|(_, ability)| !ability.is_manual())
         .count();
     let manual = card
         .abilities()
@@ -71,11 +70,13 @@ fn check(printed: &PrintedCard) -> Compiled {
     match card.impl_status {
         ImplStatus::Full => assert!(unread == 0 && read > 0, "{compiled:?}"),
         ImplStatus::Partial => assert!(read > 0 && unread > 0, "{compiled:?}"),
-        ImplStatus::Manual => assert_eq!((read, keywords, manual), (0, 0, 0), "{compiled:?}"),
+        ImplStatus::Manual => assert_eq!((read, read_abilities, manual), (0, 0, 0), "{compiled:?}"),
         ImplStatus::Unplayable => panic!("the compiler never gives a card up: {compiled:?}"),
     }
     if card.impl_status != ImplStatus::Manual {
-        assert_eq!((keywords, manual), (read, unread), "{compiled:?}");
+        // The spell clauses of a face read into one ability, the others one each.
+        assert_eq!(manual, unread, "{compiled:?}");
+        assert!(read_abilities <= read, "{compiled:?}");
     }
     let source = Source {
         path: format!("cards/{}.json", slug(&card.name)),

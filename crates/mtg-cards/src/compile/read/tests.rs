@@ -1,0 +1,629 @@
+//! Goal: every template family reads the oracle wordings it models into the DSL, writes each back as the same text, and leaves every near-miss to the table.
+use rstest::rstest;
+
+use super::tokens::{Token, canonical, tokenize, without_period};
+use super::*;
+
+fn spell(text: &str) -> Option<Ability> {
+    clause(text, ClauseKind::Spell, false)
+}
+
+fn spell_x(text: &str) -> Option<Ability> {
+    clause(text, ClauseKind::Spell, true)
+}
+
+fn ability(json: &str) -> Ability {
+    serde_json::from_str(json).unwrap_or_else(|error| panic!("{json}: {error}"))
+}
+
+/// Reads the wording and checks that the renderer writes the same text back.
+fn golden(text: &str, kind: ClauseKind, x_free: bool) -> Ability {
+    let read = clause(text, kind, x_free).unwrap_or_else(|| panic!("not read: {text}"));
+    let written = render_ability(&read).unwrap_or_else(|| panic!("not written: {text}"));
+    assert_eq!(
+        without_period(&canonical(&written)),
+        without_period(&canonical(text)),
+        "{text}"
+    );
+    read
+}
+
+fn reads_as(text: &str, kind: ClauseKind, x_free: bool, json: &str) {
+    assert_eq!(golden(text, kind, x_free), ability(json), "{text}");
+}
+
+#[rstest]
+#[case::words(
+    "Draw a card.",
+    &[Token::Word("draw".into()), Token::Word("a".into()), Token::Word("card".into()), Token::Punct('.')]
+)]
+#[case::symbols_and_numbers(
+    "{T}: Add {G}{G}. Scry 12",
+    &[Token::Symbol("T".into()), Token::Punct(':'), Token::Word("add".into()), Token::Symbol("G".into()),
+      Token::Symbol("G".into()), Token::Punct('.'), Token::Word("scry".into()), Token::Number(12)]
+)]
+#[case::the_card_itself(
+    "~ deals 3 damage",
+    &[Token::Source, Token::Word("deals".into()), Token::Number(3), Token::Word("damage".into())]
+)]
+#[case::this_creature(
+    "This creature can't attack",
+    &[Token::Source, Token::Word("can't".into()), Token::Word("attack".into())]
+)]
+#[case::sign_and_slash(
+    "+2/-3",
+    &[Token::Punct('+'), Token::Number(2), Token::Punct('/'), Token::Punct('-'), Token::Number(3)]
+)]
+#[case::hyphen_inside_a_word("non-token", &[Token::Word("non-token".into())])]
+#[case::curly_apostrophe("don\u{2019}t", &[Token::Word("don't".into())])]
+fn the_tokens_of_a_clause(#[case] text: &str, #[case] expected: &[Token]) {
+    assert_eq!(tokenize(text), expected);
+}
+
+#[rstest]
+#[case::spaces("Draw  a   card. ", "Draw a card.")]
+#[case::this_creature("This creature deals 1 damage to you.", "~ deals 1 damage to you.")]
+#[case::this_spell("Counter this spell, and draw.", "Counter ~, and draw.")]
+#[case::then("Scry 1, then draw a card.", "Scry 1. Draw a card.")]
+#[case::then_twice("Draw a card, then scry 1, then draw.", "Draw a card. Scry 1. Draw.")]
+#[case::lines("Scry 1.\nDraw a card.", "Scry 1. Draw a card.")]
+#[case::this_alone("Do this.", "Do this.")]
+#[case::this_other_noun("Do this thing.", "Do this thing.")]
+fn canonical_text_collapses_spaces_and_names_the_card(#[case] text: &str, #[case] expected: &str) {
+    assert_eq!(canonical(text), expected);
+}
+
+#[rstest]
+#[case::another_word_order("You draw a card.")]
+#[case::digits_for_a_count("Draw 2 cards.")]
+#[case::lowercase_start("draw a card.")]
+#[case::a_plural_count("Draw a cards.")]
+#[case::trailing_words("Draw a card now.")]
+fn a_reading_that_does_not_write_back_as_the_text_stays_unread(#[case] text: &str) {
+    assert_eq!(spell(text), None, "{text}");
+}
+
+#[rstest]
+#[case::spell_kind_only(ClauseKind::Static)]
+#[case::keyword(ClauseKind::Keyword)]
+#[case::triggered(ClauseKind::Triggered)]
+#[case::modal(ClauseKind::Modal)]
+#[case::loyalty(ClauseKind::Loyalty)]
+fn only_spell_and_activated_clauses_are_read(#[case] kind: ClauseKind) {
+    assert_eq!(clause("Draw a card.", kind, false), None);
+}
+
+#[test]
+fn a_card_calling_itself_this_creature_reads_as_the_source() {
+    let read = golden(
+        "This creature deals 1 damage to any target.",
+        ClauseKind::Spell,
+        false,
+    );
+    let tilde = golden("~ deals 1 damage to any target.", ClauseKind::Spell, false);
+    assert_eq!(read, tilde);
+}
+
+mod mana {
+    //! Goal: a plain mana ability reads in the shapes of the cards, and a cost, a choice or a count it does not model stays with the table.
+    use super::*;
+
+    #[rstest]
+    #[case::green(
+        "{T}: Add {G}.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#
+    )]
+    #[case::colorless_pair("{T}: Add {C}{C}.", r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#)]
+    #[case::two_colors("{T}: Add {W}{U}.", r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["White","Blue"]}}}]}}"#)]
+    #[case::any_color(
+        "{T}: Add one mana of any color.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#
+    )]
+    fn a_plain_mana_ability_reads_in_the_shape_of_the_hand_written_files(
+        #[case] text: &str,
+        #[case] json: &str,
+    ) {
+        reads_as(text, ClauseKind::Activated, false, json);
+    }
+
+    #[rstest]
+    #[case("{T}: Add {W}.")]
+    #[case("{T}: Add {U}.")]
+    #[case("{T}: Add {B}.")]
+    #[case("{T}: Add {R}.")]
+    #[case("{T}: Add {C}.")]
+    #[case("{T}: Add {G}{G}.")]
+    #[case("{T}: Add {R}{G}{W}.")]
+    fn every_colour_and_colourless_mana_reads(#[case] text: &str) {
+        golden(text, ClauseKind::Activated, false);
+    }
+
+    #[rstest]
+    #[case::a_choice("{T}: Add {R} or {G}.")]
+    #[case::life_in_the_cost("{T}, Pay 1 life: Add {B}.")]
+    #[case::mana_in_the_cost("{1}, {T}: Add {G}{G}.")]
+    #[case::sacrifice_in_the_cost("{T}, Sacrifice ~: Add {C}{C}{C}.")]
+    #[case::for_each("{T}: Add {G} for each creature you control.")]
+    #[case::x("{T}: Add {X}.")]
+    #[case::generic("{T}: Add {2}.")]
+    #[case::snow("{T}: Add {S}.")]
+    #[case::any_one_colour("{T}: Add two mana of any one color.")]
+    #[case::identity("{T}: Add one mana of any color in your commander's color identity.")]
+    #[case::a_second_sentence("{T}: Add {G}. ~ deals 1 damage to you.")]
+    #[case::no_mana("{T}: Add")]
+    #[case::untap("{Q}: Add {G}.")]
+    #[case::not_a_cost("Draw a card: Add {G}.")]
+    fn a_cost_a_choice_or_a_count_the_template_does_not_model_stays_unread(#[case] text: &str) {
+        assert_eq!(clause(text, ClauseKind::Activated, false), None, "{text}");
+    }
+}
+
+mod cards_and_life {
+    //! Goal: drawing, discarding, gaining and losing life read for you, a target player and each opponent, and "for each", "unless", "if" and a second effect on another subject stay unread.
+    use super::*;
+
+    #[rstest]
+    #[case::one("Draw a card.", false, r#"{"Spell":{"effects":[{"Draw":{}}]}}"#)]
+    #[case::three(
+        "Draw three cards.",
+        false,
+        r#"{"Spell":{"effects":[{"Draw":{"count":3}}]}}"#
+    )]
+    #[case::x(
+        "Draw X cards.",
+        true,
+        r#"{"Spell":{"effects":[{"Draw":{"count":"X"}}]}}"#
+    )]
+    #[case::target_player("Target player draws two cards.", false, r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Draw":{"who":{"Target":0},"count":2}}]}}"#)]
+    #[case::each_opponent(
+        "Each opponent draws a card.",
+        false,
+        r#"{"Spell":{"effects":[{"Draw":{"who":"Opponents"}}]}}"#
+    )]
+    #[case::each_player(
+        "Each player draws a card.",
+        false,
+        r#"{"Spell":{"effects":[{"Draw":{"who":"EachPlayer"}}]}}"#
+    )]
+    #[case::gain(
+        "You gain 3 life.",
+        false,
+        r#"{"Spell":{"effects":[{"GainLife":{"amount":3}}]}}"#
+    )]
+    #[case::gain_x(
+        "You gain X life.",
+        true,
+        r#"{"Spell":{"effects":[{"GainLife":{"amount":"X"}}]}}"#
+    )]
+    #[case::target_gains("Target player gains 5 life.", false, r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"GainLife":{"who":{"Target":0},"amount":5}}]}}"#)]
+    #[case::lose(
+        "You lose 2 life.",
+        false,
+        r#"{"Spell":{"effects":[{"LoseLife":{"amount":2}}]}}"#
+    )]
+    #[case::target_opponent_loses("Target opponent loses 3 life.", false, r#"{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"LoseLife":{"who":{"Target":0},"amount":3}}]}}"#)]
+    #[case::each_opponent_loses(
+        "Each opponent loses 2 life.",
+        false,
+        r#"{"Spell":{"effects":[{"LoseLife":{"who":"Opponents","amount":2}}]}}"#
+    )]
+    #[case::discard(
+        "Discard two cards.",
+        false,
+        r#"{"Spell":{"effects":[{"Discard":{"count":2}}]}}"#
+    )]
+    #[case::random_discard("Target player discards a card at random.", false, r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Discard":{"who":{"Target":0},"random":true}}]}}"#)]
+    #[case::mill("Target player mills three cards.", false, r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"Mill":{"who":{"Target":0},"count":3}}]}}"#)]
+    #[case::loot(
+        "Draw two cards, then discard two cards.",
+        false,
+        r#"{"Spell":{"effects":[{"Draw":{"count":2}},{"Discard":{"count":2}}]}}"#
+    )]
+    fn the_wordings_read_into_the_dsl(
+        #[case] text: &str,
+        #[case] x_free: bool,
+        #[case] json: &str,
+    ) {
+        reads_as(text, ClauseKind::Spell, x_free, json);
+    }
+
+    #[rstest]
+    #[case("Draw a card.")]
+    #[case("Draw two cards.")]
+    #[case("Draw four cards.")]
+    #[case("Draw seven cards.")]
+    #[case("Target player draws a card.")]
+    #[case("Target player draws three cards.")]
+    #[case("You gain 1 life.")]
+    #[case("You gain 4 life.")]
+    #[case("You gain 7 life.")]
+    #[case("You lose 1 life.")]
+    #[case("Each opponent loses 1 life.")]
+    #[case("Each player loses 3 life.")]
+    #[case("Each player gains 2 life.")]
+    #[case("Target opponent loses 5 life.")]
+    #[case("Target opponent discards a card.")]
+    #[case("Each opponent discards a card.")]
+    #[case("Draw a card, then discard a card.")]
+    fn more_oracle_wordings_read_and_write_back(#[case] text: &str) {
+        golden(text, ClauseKind::Spell, false);
+    }
+
+    #[rstest]
+    #[case::for_each("Draw a card for each creature you control.")]
+    #[case::equal_to("Draw cards equal to the number of creatures you control.")]
+    #[case::and_lose("Target player draws two cards and loses 2 life.")]
+    #[case::you_and_you("You draw two cards and you lose 2 life.")]
+    #[case::life_for_each("You gain 2 life for each creature you control.")]
+    #[case::unless("Target player draws a card unless they discard a card.")]
+    #[case::if_you_do("Draw a card. If you do, gain 1 life.")]
+    #[case::if_first("If you control a creature, draw a card.")]
+    #[case::may("You may draw a card.")]
+    #[case::then_a_player("Each player draws a card, then discards a card.")]
+    #[case::x_without_an_x_cost("Draw X cards.")]
+    #[case::lose_half("You lose half your life, rounded up.")]
+    #[case::a_second_target("Target player draws a card. Target player loses 1 life.")]
+    #[case::zero("You gain 0 life.")]
+    #[case::life_equal_to_a_creature("You gain life equal to its power.")]
+    #[case::each_creature_draws("Each creature draws a card.")]
+    #[case::its_controller_without_an_object("Its controller gains 3 life.")]
+    fn near_misses_stay_unread(#[case] text: &str) {
+        assert_eq!(spell(text), None, "{text}");
+    }
+
+    #[test]
+    fn x_reads_only_when_the_mana_cost_has_one() {
+        assert!(spell_x("Draw X cards.").is_some());
+        assert!(spell("Draw X cards.").is_none());
+    }
+}
+
+mod damage {
+    //! Goal: "deals N damage" reads for any target, one creature, a player or planeswalker, each opponent and each creature, and divided damage, a second target, "for each" and "equal to" stay unread.
+    use super::*;
+
+    #[rstest]
+    #[case::bolt("~ deals 3 damage to any target.", false, r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":3}}]}}"#)]
+    #[case::creature("~ deals 4 damage to target creature.", false, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":4}}]}}"#)]
+    #[case::creature_or_planeswalker("~ deals 4 damage to target creature or planeswalker.", false, r#"{"Spell":{"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":4}}]}}"#)]
+    #[case::player_or_planeswalker("~ deals 3 damage to target player or planeswalker.", false, r#"{"Spell":{"targets":[{"what":{"Either":["Player",{"Object":[{"Type":"Planeswalker"}]}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":3}}]}}"#)]
+    #[case::opponent("~ deals 1 damage to target opponent.", false, r#"{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":1}}]}}"#)]
+    #[case::each_opponent(
+        "~ deals 1 damage to each opponent.",
+        false,
+        r#"{"Spell":{"effects":[{"DealDamage":{"to":"Opponents","amount":1}}]}}"#
+    )]
+    #[case::each_creature("~ deals 2 damage to each creature.", false, r#"{"Spell":{"effects":[{"DealDamage":{"to":{"Each":[{"Type":"Creature"}]},"amount":2}}]}}"#)]
+    #[case::x("~ deals X damage to any target.", true, r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}"#)]
+    fn the_wordings_read_into_the_dsl(
+        #[case] text: &str,
+        #[case] x_free: bool,
+        #[case] json: &str,
+    ) {
+        reads_as(text, ClauseKind::Spell, x_free, json);
+    }
+
+    #[rstest]
+    #[case("~ deals 1 damage to any target.")]
+    #[case("~ deals 2 damage to any target.")]
+    #[case("~ deals 5 damage to any target.")]
+    #[case("~ deals 2 damage to target creature.")]
+    #[case("~ deals 5 damage to target creature.")]
+    #[case("~ deals 3 damage to target attacking creature.")]
+    #[case("~ deals 3 damage to target creature you don't control.")]
+    #[case("~ deals 2 damage to target creature an opponent controls.")]
+    #[case("~ deals 3 damage to target creature with flying.")]
+    #[case("~ deals 2 damage to each opponent.")]
+    #[case("~ deals 3 damage to each creature your opponents control.")]
+    #[case("~ deals 2 damage to you.")]
+    #[case("~ deals 1 damage to each player.")]
+    #[case("~ deals 2 damage to target creature or planeswalker.")]
+    #[case("~ deals 6 damage to target creature with mana value 3 or less.")]
+    fn more_oracle_wordings_read_and_write_back(#[case] text: &str) {
+        golden(text, ClauseKind::Spell, false);
+    }
+
+    #[rstest]
+    #[case::divided("~ deals 2 damage divided as you choose among one or two targets.")]
+    #[case::two_targets("~ deals 2 damage to target creature and 1 damage to target player.")]
+    #[case::and_each_player("~ deals 3 damage to each creature and each player.")]
+    #[case::for_each("~ deals 1 damage to any target for each creature you control.")]
+    #[case::equal_to("~ deals damage equal to its power to target creature.")]
+    #[case::equal_to_the_number(
+        "~ deals damage to any target equal to the number of lands you control."
+    )]
+    #[case::each_of_up_to("~ deals 2 damage to each of up to two target creatures.")]
+    #[case::if_clause(
+        "~ deals 3 damage to any target. If you control a Goblin, ~ deals 5 damage instead."
+    )]
+    #[case::unless("~ deals 3 damage to target creature unless its controller pays {2}.")]
+    #[case::subtype("~ deals 3 damage to target Goblin.")]
+    #[case::any_number("~ deals 1 damage to any number of targets.")]
+    #[case::x_without_an_x_cost("~ deals X damage to any target.")]
+    #[case::no_amount("~ deals damage to any target.")]
+    #[case::not_the_card("Target creature deals 3 damage to any target.")]
+    #[case::it("It deals 3 damage to any target.")]
+    #[case::fights(
+        "Target creature you control deals damage equal to its power to target creature you don't control."
+    )]
+    fn near_misses_stay_unread(#[case] text: &str) {
+        assert_eq!(spell(text), None, "{text}");
+    }
+}
+
+mod removal {
+    //! Goal: destroy, exile and counter read with the common targets, "all" and the regeneration sentence, and "unless", "if", a second target, a subtype and a zone stay unread.
+    use super::*;
+
+    #[rstest]
+    #[case::doom_blade("Destroy target nonblack creature.", r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"Not":{"Color":"Black"}}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#)]
+    #[case::counterspell("Counter target spell.", r#"{"Spell":{"targets":[{"what":{"Object":["Spell"]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}"#)]
+    #[case::wrath("Destroy all creatures. They can't be regenerated.", r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"}]},"regenerate":false}}]}}"#)]
+    #[case::swords("Exile target creature. Its controller gains life equal to its power.", r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Exile":{"what":{"Target":0}}},{"GainLife":{"who":{"ControllerOf":{"Target":0}},"amount":{"Stat":{"of":{"Target":0},"stat":"Power"}}}}]}}"#)]
+    #[case::no_regeneration("Destroy target creature. It can't be regenerated.", r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#)]
+    #[case::any_permanent("Destroy target permanent.", r#"{"Spell":{"targets":[{"what":{"Object":[]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#)]
+    #[case::artifact_or_enchantment("Destroy target artifact or enchantment.", r#"{"Spell":{"targets":[{"what":{"Object":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Enchantment"}]}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#)]
+    #[case::an_opponent_controls("Destroy target creature an opponent controls.", r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#)]
+    #[case::up_to_two("Exile up to two target creatures.", r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":2}}],"effects":[{"Exile":{"what":{"Target":0}}}]}}"#)]
+    #[case::noncreature_spell("Counter target noncreature spell.", r#"{"Spell":{"targets":[{"what":{"Object":["Spell",{"Not":{"Type":"Creature"}}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}"#)]
+    #[case::creature_spell("Counter target creature spell.", r#"{"Spell":{"targets":[{"what":{"Object":["Spell",{"Type":"Creature"}]}}],"effects":[{"Counter":{"what":{"Target":0}}}]}}"#)]
+    #[case::all_you_control("Exile all creatures you control.", r#"{"Spell":{"effects":[{"Exile":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}]}}"#)]
+    fn the_wordings_read_into_the_dsl(#[case] text: &str, #[case] json: &str) {
+        reads_as(text, ClauseKind::Spell, false, json);
+    }
+
+    #[rstest]
+    #[case("Destroy target creature.")]
+    #[case("Destroy target artifact.")]
+    #[case("Destroy target enchantment.")]
+    #[case("Destroy target land.")]
+    #[case("Destroy target planeswalker.")]
+    #[case("Destroy target nonland permanent.")]
+    #[case("Destroy target nonartifact creature.")]
+    #[case("Destroy target creature or planeswalker.")]
+    #[case("Destroy target tapped creature.")]
+    #[case("Destroy target untapped creature.")]
+    #[case("Destroy target attacking creature.")]
+    #[case("Destroy target creature with flying.")]
+    #[case("Destroy target creature you don't control.")]
+    #[case("Destroy target red creature.")]
+    #[case("Destroy target legendary creature.")]
+    #[case("Destroy target creature with power 4 or greater.")]
+    #[case("Destroy target creature with mana value 3 or less.")]
+    #[case("Destroy all creatures.")]
+    #[case("Destroy all lands.")]
+    #[case("Destroy all artifacts.")]
+    #[case("Destroy all nonland permanents.")]
+    #[case("Destroy all artifacts and enchantments.")]
+    #[case("Destroy all creatures your opponents control.")]
+    #[case("Destroy all creatures. They can't be regenerated.")]
+    #[case("Destroy all lands. They can't be regenerated.")]
+    #[case("Destroy target land. It can't be regenerated.")]
+    #[case("Exile target creature.")]
+    #[case("Exile target nonland permanent.")]
+    #[case("Exile target artifact or enchantment.")]
+    #[case("Exile target creature or planeswalker.")]
+    #[case("Exile all creatures.")]
+    #[case("Exile all nonland permanents.")]
+    #[case("Counter target creature spell.")]
+    #[case("Counter target instant or sorcery spell.")]
+    #[case("Counter target red spell.")]
+    #[case("Counter target spell with mana value 3 or less.")]
+    #[case("Counter target artifact spell.")]
+    fn more_oracle_wordings_read_and_write_back(#[case] text: &str) {
+        golden(text, ClauseKind::Spell, false);
+    }
+
+    #[rstest]
+    #[case::unless("Counter target spell unless its controller pays {3}.")]
+    #[case::unless_destroy("Destroy target creature unless its controller pays {3}.")]
+    #[case::if_clause("Destroy target creature if it's attacking.")]
+    #[case::a_second_target("Destroy target creature and target land.")]
+    #[case::each("Destroy each creature.")]
+    #[case::that("Destroy target creature that was dealt damage this turn.")]
+    #[case::subtype("Destroy target Goblin.")]
+    #[case::a_zone("Exile target card from a graveyard.")]
+    #[case::until("Exile target creature until ~ leaves the battlefield.")]
+    #[case::an_ability("Counter target activated ability.")]
+    #[case::a_player("Destroy target player.")]
+    #[case::any_target("Destroy any target.")]
+    #[case::counter_a_creature("Counter target creature.")]
+    #[case::counter_all("Counter all spells.")]
+    #[case::regeneration_without_destroy("Exile target creature. It can't be regenerated.")]
+    #[case::regeneration_twice(
+        "Destroy target creature. It can't be regenerated. It can't be regenerated."
+    )]
+    #[case::wrong_pronoun("Destroy all creatures. It can't be regenerated.")]
+    #[case::controller_of_all("Destroy all creatures. Its controller gains 3 life.")]
+    #[case::exile_all_gain("Exile all creatures. Its controller gains life equal to its power.")]
+    #[case::life_for_spell("Counter target spell. Its controller gains life equal to its power.")]
+    #[case::a_second_sentence(
+        "Destroy target creature. Draw a card, then discard two cards at will."
+    )]
+    #[case::and_gain("Destroy target creature and gain 3 life.")]
+    #[case::mixed_connector("Destroy all artifacts or enchantments.")]
+    #[case::two_types_adjective("Destroy target artifact creature.")]
+    fn near_misses_stay_unread(#[case] text: &str) {
+        assert_eq!(spell(text), None, "{text}");
+    }
+}
+
+mod scry {
+    //! Goal: "Scry N" reads alone and chained with "then" to the steps of "you", and a scry for another player, a second sentence or a following choice stays unread.
+    use super::*;
+
+    #[rstest]
+    #[case::opt(
+        "Scry 1, then draw a card.",
+        false,
+        r#"{"Spell":{"effects":[{"Scry":{}},{"Draw":{}}]}}"#
+    )]
+    #[case::two("Scry 2.", false, r#"{"Spell":{"effects":[{"Scry":{"count":2}}]}}"#)]
+    #[case::preordain(
+        "Scry 2, then draw a card.",
+        false,
+        r#"{"Spell":{"effects":[{"Scry":{"count":2}},{"Draw":{}}]}}"#
+    )]
+    #[case::x("Scry X.", true, r#"{"Spell":{"effects":[{"Scry":{"count":"X"}}]}}"#)]
+    fn the_wordings_read_into_the_dsl(
+        #[case] text: &str,
+        #[case] x_free: bool,
+        #[case] json: &str,
+    ) {
+        reads_as(text, ClauseKind::Spell, x_free, json);
+    }
+
+    #[rstest]
+    #[case("Scry 1.")]
+    #[case("Scry 3.")]
+    #[case("Scry 4.")]
+    #[case("Scry 2, then draw two cards.")]
+    #[case("Draw a card, then scry 1.")]
+    #[case("Scry 1, then scry 1.")]
+    #[case("Scry 1. Draw a card.")]
+    #[case("Scry 1.\nDraw a card.")]
+    #[case("Draw two cards.\nDiscard a card.")]
+    #[case("Scry 1, then draw a card, then discard a card.")]
+    #[case("Draw a card, then discard a card.")]
+    fn more_oracle_wordings_read_and_write_back(#[case] text: &str) {
+        golden(text, ClauseKind::Spell, false);
+    }
+
+    #[rstest]
+    #[case::zero("Scry 0.")]
+    #[case::another_player("Target player scries 2.")]
+    #[case::each_player("Each player scries 1.")]
+    #[case::then_a_choice("Scry 2, then you may sacrifice a creature.")]
+    #[case::then_for_each("Scry 1, then draw a card for each creature you control.")]
+    #[case::a_second_sentence(
+        "Scry 2. You may put a card from your hand on the bottom of your library."
+    )]
+    #[case::a_comma("Scry 2, draw a card.")]
+    #[case::then_alone("Scry 2, then.")]
+    #[case::x_without_an_x_cost("Scry X.")]
+    #[case::no_number("Scry.")]
+    fn near_misses_stay_unread(#[case] text: &str) {
+        assert_eq!(spell(text), None, "{text}");
+    }
+}
+
+mod pump {
+    //! Goal: "gets +N/+N" and "gains a keyword until end of turn" read for a target creature, the card itself and the creatures you control, and "for each", a different duration, a second target and a conditional stay unread.
+    use super::*;
+
+    #[rstest]
+    #[case::giant_growth("Target creature gets +3/+3 until end of turn.", false, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":3,"toughness":3}}],"duration":"UntilEndOfTurn"}}]}}"#)]
+    #[case::negative("Target creature gets -2/-2 until end of turn.", false, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":-2,"toughness":-2}}],"duration":"UntilEndOfTurn"}}]}}"#)]
+    #[case::mixed("Target creature gets +3/-3 until end of turn.", false, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":3,"toughness":-3}}],"duration":"UntilEndOfTurn"}}]}}"#)]
+    #[case::x("Target creature gets +X/+X until end of turn.", true, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":"X","toughness":"X"}}],"duration":"UntilEndOfTurn"}}]}}"#)]
+    #[case::flying("Target creature gains flying until end of turn.", false, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"AddKeyword":"Flying"}],"duration":"UntilEndOfTurn"}}]}}"#)]
+    #[case::both("Target creature gets +1/+1 and gains trample until end of turn.", false, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":1,"toughness":1}},{"AddKeyword":"Trample"}],"duration":"UntilEndOfTurn"}}]}}"#)]
+    #[case::your_creatures("Creatures you control get +1/+1 until end of turn.", false, r#"{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}}]}}"#)]
+    #[case::the_card("~ gets +2/+2 until end of turn.", false, r#"{"Spell":{"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":2,"toughness":2}}],"duration":"UntilEndOfTurn"}}]}}"#)]
+    fn the_wordings_read_into_the_dsl(
+        #[case] text: &str,
+        #[case] x_free: bool,
+        #[case] json: &str,
+    ) {
+        reads_as(text, ClauseKind::Spell, x_free, json);
+    }
+
+    #[rstest]
+    #[case("Target creature gets +2/+2 until end of turn.")]
+    #[case("Target creature gets +4/+4 until end of turn.")]
+    #[case("Target creature gets +2/+0 until end of turn.")]
+    #[case("Target creature gets +0/+3 until end of turn.")]
+    #[case("Target creature gets -1/-1 until end of turn.")]
+    #[case("Target creature gets +1/-1 until end of turn.")]
+    #[case("Target creature gains first strike until end of turn.")]
+    #[case("Target creature gains double strike until end of turn.")]
+    #[case("Target creature gains lifelink until end of turn.")]
+    #[case("Target creature gains indestructible until end of turn.")]
+    #[case("Target creature gains flying and haste until end of turn.")]
+    #[case("Target creature you control gets +2/+2 until end of turn.")]
+    #[case("Target attacking creature gets +1/+1 until end of turn.")]
+    #[case("Target creature gets +2/+2 and gains flying until end of turn.")]
+    #[case("Target creature gets +1/+1 and gains first strike until end of turn.")]
+    #[case("Creatures you control get +2/+0 until end of turn.")]
+    #[case("Creatures you control gain trample until end of turn.")]
+    #[case("Creatures you control get +1/+1 and gain vigilance until end of turn.")]
+    #[case("Other creatures you control get +1/+1 until end of turn.")]
+    #[case("Attacking creatures get +1/+0 until end of turn.")]
+    #[case("~ gains flying until end of turn.")]
+    fn more_oracle_wordings_read_and_write_back(#[case] text: &str) {
+        golden(text, ClauseKind::Spell, false);
+    }
+
+    #[rstest]
+    #[case::for_each("Target creature gets +1/+1 for each creature you control until end of turn.")]
+    #[case::where_x("Target creature gets +X/+X until end of turn, where X is its toughness.")]
+    #[case::no_duration("Target creature gets +2/+2.")]
+    #[case::next_turn("Target creature gets +2/+2 until your next turn.")]
+    #[case::end_of_combat("Target creature gets +2/+2 until end of combat.")]
+    #[case::then_untap("Target creature gets +2/+2 until end of turn. Untap it.")]
+    #[case::second_target(
+        "Target creature gets +2/+2 until end of turn and target creature gets -2/-2 until end of turn."
+    )]
+    #[case::second_target_sentence(
+        "Target creature gets +2/+2 until end of turn. Target creature gets -2/-2 until end of turn."
+    )]
+    #[case::conditional("If you control a Goblin, target creature gets +2/+2 until end of turn.")]
+    #[case::a_protection_keyword("Target creature gains protection from red until end of turn.")]
+    #[case::a_keyword_list("Target creature gains flying, trample, and haste until end of turn.")]
+    #[case::a_cost_keyword("Target creature gains ward {2} until end of turn.")]
+    #[case::x_without_an_x_cost("Target creature gets +X/+X until end of turn.")]
+    #[case::negative_x("Target creature gets -X/-X until end of turn.")]
+    #[case::not_a_number("Target creature gets +a/+b until end of turn.")]
+    #[case::one_number("Target creature gets +2 until end of turn.")]
+    #[case::a_player("Target player gets +2/+2 until end of turn.")]
+    #[case::nothing("Target creature gets until end of turn.")]
+    #[case::a_subtype("Goblins you control get +1/+1 until end of turn.")]
+    #[case::with_an_ability("Target creature gains \"{T}: Add {G}.\" until end of turn.")]
+    fn near_misses_stay_unread(#[case] text: &str) {
+        assert_eq!(spell(text), None, "{text}");
+    }
+}
+
+mod sentences {
+    //! Goal: a clause is one or more sentences read in order, with one target and the pronouns that refer to it, and a clause with an unread sentence is not read at all.
+    use super::*;
+
+    #[rstest]
+    #[case::two_templates("Destroy target creature. You gain 3 life.")]
+    #[case::pump_then_draw("Target creature gets +2/+2 until end of turn. Draw a card.")]
+    #[case::damage_then_life("~ deals 2 damage to any target. You gain 2 life.")]
+    #[case::three_sentences("Destroy all creatures. They can't be regenerated. You gain 3 life.")]
+    fn sentences_read_in_order_when_each_one_reads(#[case] text: &str) {
+        let read = golden(text, ClauseKind::Spell, false);
+        assert!(read.effects().len() >= 2, "{read:?}");
+    }
+
+    #[rstest]
+    #[case::a_second_target("Exile target creature. Target player draws a card.")]
+    #[case::unread_second("Destroy target creature. Tap target land.")]
+    #[case::unread_first("Tap target creature. Draw a card.")]
+    #[case::garbled("Destroy target creature. Draw")]
+    #[case::empty("")]
+    #[case::only_a_period(".")]
+    #[case::a_conditional("Destroy target creature. If you do, draw a card.")]
+    fn one_unread_sentence_leaves_the_whole_clause_unread(#[case] text: &str) {
+        assert_eq!(spell(text), None, "{text:?}");
+    }
+
+    #[test]
+    fn a_missing_closing_period_is_accepted() {
+        assert!(spell("Draw a card").is_some());
+        assert!(spell("Destroy target creature. Draw a card").is_some());
+    }
+
+    #[test]
+    fn the_target_is_the_clauses_first_and_only_target() {
+        let Some(Ability::Spell { targets, effects }) =
+            spell("Exile target creature. Its controller gains life equal to its power.")
+        else {
+            panic!("not read");
+        };
+        assert_eq!(targets.len(), 1);
+        assert_eq!(effects.len(), 2);
+    }
+}

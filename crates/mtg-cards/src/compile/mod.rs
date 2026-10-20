@@ -1,15 +1,17 @@
 //! The oracle-text compiler: an imported card's text becomes rules data, and what the compiler
 //! cannot read stays a `Manual` clause with its span (`docs/cards-dsl.md`, Compiler and Manual fallback).
 //!
-//! Five pure stages, one file each: `normalize` strips reminder text and the card's own name,
-//! `clauses` splits the text, `classify` names each clause's shape, `keywords` reads keyword
-//! lines and `manual` leaves every other clause to the table.
+//! Six pure stages: `normalize` strips reminder text and the card's own name, `clauses` splits the
+//! text, `classify` names each clause's shape, `keywords` reads keyword lines, `read` holds the
+//! templates that read spell effects and mana abilities (with the renderer that checks them) and
+//! `manual` leaves every other clause to the table.
 
 mod classify;
 mod clauses;
 mod keywords;
 mod manual;
 mod normalize;
+mod read;
 
 use std::collections::BTreeSet;
 
@@ -19,6 +21,7 @@ use crate::keyword::Keyword;
 use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprint};
 
 pub use classify::ClauseKind;
+pub use read::{render_ability, same_text};
 
 /// One clause of a face's oracle text, read or not.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -53,35 +56,10 @@ pub fn compile(printed: &PrintedCard) -> Compiled {
     let mut listed = Vec::new();
     let mut faces = Vec::with_capacity(printed.faces.len());
     for (index, shown) in printed.faces.iter().enumerate() {
-        let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
-        let spell = is_spell(shown);
-        let aura = is_aura(shown);
-        let mut abilities = Vec::new();
-        for raw in clauses::split(&text) {
-            let clause_text = text.slice(raw.range.clone());
-            let Some(span) = text.span(raw.range, raw.ends_line) else {
-                continue;
-            };
-            let kind = classify::classify(&clause_text, spell);
-            let keyword = (kind == ClauseKind::Keyword)
-                .then(|| keywords::read(&clause_text))
-                .flatten()
-                // `check_printed` accepts Enchant on an Aura only.
-                .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)));
-            let read = keyword.is_some();
-            abilities.push(keyword.map_or_else(|| manual::manual(kind, span), Ability::Keyword));
-            listed.push(Clause {
-                face: index,
-                span,
-                text: clause_text,
-                kind,
-                read,
-            });
-        }
         faces.push(Face {
             name: shown.name.clone(),
             oracle_fingerprint: oracle_fingerprint(&shown.oracle_text),
-            abilities,
+            abilities: read_face(index, shown, &mut listed),
         });
     }
     let card = build(printed, faces, &mut listed);
@@ -89,6 +67,86 @@ pub fn compile(printed: &PrintedCard) -> Compiled {
         card,
         clauses: listed,
     }
+}
+
+/// A clause of a face, before its ability is placed.
+struct Pending {
+    span: Span,
+    text: String,
+    kind: ClauseKind,
+    /// The ability it is read into; none for a clause left to the table and for a spell line
+    /// that belongs to the spell ability of an earlier line.
+    ability: Option<Ability>,
+    read: bool,
+}
+
+/// The abilities of one face; its clauses are appended to `listed`.
+///
+/// The spell clauses of an instant or sorcery are one `Spell` ability (the engine resolves the
+/// first one of a face): read together when every one of them reads, left to the table otherwise.
+fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec<Ability> {
+    let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
+    let (spell, aura) = (is_spell(shown), is_aura(shown));
+    let x_free = shown.mana_cost.contains("{X}");
+    let mut pending = Vec::new();
+    for raw in clauses::split(&text) {
+        let clause_text = text.slice(raw.range.clone());
+        let Some(span) = text.span(raw.range, raw.ends_line) else {
+            continue;
+        };
+        let kind = classify::classify(&clause_text, spell);
+        let ability = match kind {
+            ClauseKind::Keyword => keywords::read(&clause_text)
+                // `check_printed` accepts Enchant on an Aura only.
+                .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
+                .map(Ability::Keyword),
+            ClauseKind::Activated => read::clause(&clause_text, kind, x_free),
+            _ => None,
+        };
+        pending.push(Pending {
+            span,
+            text: clause_text,
+            kind,
+            read: ability.is_some(),
+            ability,
+        });
+    }
+    let lines: Vec<&str> = pending
+        .iter()
+        .filter(|clause| clause.kind == ClauseKind::Spell)
+        .map(|clause| clause.text.as_str())
+        .collect();
+    let spell_ability = if lines.is_empty() {
+        None
+    } else {
+        read::clause(&lines.join("\n"), ClauseKind::Spell, x_free)
+    };
+    if let Some(ability) = spell_ability {
+        let mut ability = Some(ability);
+        for clause in pending
+            .iter_mut()
+            .filter(|clause| clause.kind == ClauseKind::Spell)
+        {
+            clause.read = true;
+            clause.ability = ability.take();
+        }
+    }
+    let mut abilities = Vec::new();
+    for clause in pending {
+        match clause.ability {
+            Some(ability) => abilities.push(ability),
+            None if !clause.read => abilities.push(manual::manual(clause.kind, clause.span)),
+            None => {}
+        }
+        listed.push(Clause {
+            face: index,
+            span: clause.span,
+            text: clause.text,
+            kind: clause.kind,
+            read: clause.read,
+        });
+    }
+    abilities
 }
 
 /// The face name, and for a legendary face the part of the name before the comma.
@@ -234,7 +292,19 @@ mod tests {
         "Equipped creature gets +2/+0.\nEquip {1}",
         Some(ImplStatus::Partial)
     )]
-    #[case::nothing_read("Instant", "~ deals 3 damage to any target.", Some(ImplStatus::Manual))]
+    #[case::nothing_read("Instant", "Tap target creature.", Some(ImplStatus::Manual))]
+    #[case::spell_read_whole("Instant", "~ deals 3 damage to any target.", Some(ImplStatus::Full))]
+    #[case::mana_ability_read("Creature \u{2014} Elf", "{T}: Add {G}.", Some(ImplStatus::Full))]
+    #[case::spell_lines_read_as_one_ability(
+        "Sorcery",
+        "Draw a card.\nYou gain 2 life.",
+        Some(ImplStatus::Full)
+    )]
+    #[case::one_unread_spell_line_leaves_every_line(
+        "Sorcery",
+        "Draw a card.\nTap target creature.",
+        Some(ImplStatus::Manual)
+    )]
     #[case::unreadable_keyword_only("Creature \u{2014} Elf", "Undying", Some(ImplStatus::Manual))]
     #[case::reminder_only("Basic Land \u{2014} Forest", "({T}: Add {G}.)", None)]
     #[case::vanilla("Creature \u{2014} Bear", "", None)]
@@ -243,6 +313,11 @@ mod tests {
     #[case::spell_with_keyword_and_effect(
         "Instant",
         "Kicker {1}\nDraw a card.",
+        Some(ImplStatus::Full)
+    )]
+    #[case::spell_with_keyword_and_unread_effect(
+        "Instant",
+        "Kicker {1}\nTap target creature.",
         Some(ImplStatus::Partial)
     )]
     fn the_status_follows_the_clauses(
@@ -277,7 +352,7 @@ mod tests {
 
     #[test]
     fn a_partial_card_keeps_a_manual_ability_for_each_unread_clause_in_order() {
-        let text = "Flying\nWhenever ~ attacks, draw a card.\n{T}: Add {G}.\nVigilance";
+        let text = "Flying\nWhenever ~ attacks, draw a card.\n{T}: Draw a card.\nVigilance";
         let compiled = one("Test Card", "Creature \u{2014} Bird", text);
         let card = compiled.card.unwrap();
         let abilities = &card.faces[0].abilities;
@@ -293,7 +368,7 @@ mod tests {
             abilities[2],
             Ability::Manual {
                 reason: "an activated ability the compiler does not read yet".into(),
-                span: Span { start: 40, end: 53 }
+                span: Span { start: 40, end: 57 }
             }
         );
         let kinds: Vec<_> = compiled.clauses.iter().map(|clause| clause.kind).collect();
@@ -311,11 +386,28 @@ mod tests {
     }
 
     #[test]
+    fn the_spell_lines_of_a_face_are_one_spell_ability_and_every_line_is_read() {
+        let text = "Kicker {1}\nScry 1.\nDraw a card.\nYou gain 2 life.";
+        let compiled = one("Test Card", "Instant", text);
+        let card = compiled.card.unwrap();
+        assert_eq!(card.impl_status, ImplStatus::Full);
+        let abilities = &card.faces[0].abilities;
+        assert_eq!(abilities.len(), 2, "{abilities:?}");
+        assert!(matches!(abilities[0], Ability::Keyword(_)));
+        let Ability::Spell { effects, .. } = &abilities[1] else {
+            panic!("{:?}", abilities[1]);
+        };
+        assert_eq!(effects.len(), 3);
+        assert_eq!(compiled.clauses.len(), 4);
+        assert!(compiled.clauses.iter().all(|clause| clause.read));
+    }
+
+    #[test]
     fn a_manual_card_has_no_abilities_and_lists_its_clauses() {
         let compiled = one(
             "Test Card",
             "Instant",
-            "Counter target spell.\nDraw a card.",
+            "Tap target creature.\nUntap target land.",
         );
         let card = compiled.card.unwrap();
         assert_eq!(card.impl_status, ImplStatus::Manual);
