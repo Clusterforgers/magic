@@ -283,6 +283,15 @@ fn signed_text(amount: &Amount) -> Option<String> {
     }
 }
 
+/// Whether the predicate names card types and nothing else.
+fn is_a_type(pred: &Pred) -> bool {
+    match pred {
+        Pred::Type(_) => true,
+        Pred::AnyOf(types) => types.iter().all(is_a_type),
+        _ => false,
+    }
+}
+
 /// The mana of a payment as the card prints it: `{2}`, `{U}{R}`.
 fn cost_text(cost: &Cost) -> Option<String> {
     match cost.0.as_slice() {
@@ -332,6 +341,15 @@ impl Writer<'_> {
                 matches!(kind, Targetable::Object(selector)
                     if selector.0.contains(&Pred::In(ZoneKind::Graveyard))
                         && selector.0.contains(&Pred::OwnedBy(Ref::You)))
+            })
+    }
+
+    /// Whether the reference is the one target and it is a permanent: not a spell, not a card in a zone.
+    fn is_a_permanent(&self, what: &Ref) -> bool {
+        self.single(what)
+            && self.target_is(|kind| {
+                matches!(kind, Targetable::Object(selector)
+                    if !selector.0.iter().any(|pred| matches!(pred, Pred::In(_) | Pred::Spell)))
             })
     }
 
@@ -402,6 +420,12 @@ impl Writer<'_> {
                 to: Destination::Hand,
             } if self.in_your_graveyard(what) => {
                 format!("return {} to your hand", self.object(what)?)
+            }
+            Effect::Move {
+                what,
+                to: Destination::Hand,
+            } if self.is_a_permanent(what) => {
+                format!("return {} to its owner's hand", self.object(what)?)
             }
             Effect::PutCounters { on, counter, count } => self.counters(on, counter, count)?,
             Effect::CreateToken { .. } => create::text(effect)?,
@@ -521,6 +545,7 @@ impl Writer<'_> {
                 self.name_target()
             }
             Ref::Each(selector) => Some(format!("all {}", phrase_text(selector, Form::All)?)),
+            Ref::This => Some("~".to_owned()),
             _ => None,
         }
     }
@@ -547,7 +572,12 @@ impl Writer<'_> {
             {
                 (self.name_target()?, false)
             }
-            Ref::Each(selector) => (phrase_text(selector, Form::All)?, true),
+            Ref::Each(selector) => {
+                let phrase = phrase_text(selector, Form::All)?;
+                // "All creatures get", but "Creatures you control get" and "Attacking creatures get".
+                let all = selector.0.iter().all(is_a_type);
+                (if all { format!("all {phrase}") } else { phrase }, true)
+            }
             _ => return None,
         };
         let (gets, gains) = if plural {

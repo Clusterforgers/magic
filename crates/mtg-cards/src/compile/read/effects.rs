@@ -287,23 +287,34 @@ fn describes_a_kind(pred: &Pred) -> bool {
     }
 }
 
-/// "Return target card from your graveyard to your hand."
+/// "Return target card from your graveyard to your hand.", "Return target creature to its owner's
+/// hand.": a move to the owner's hand.
 fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("return")?;
     let what = target_object(r)?;
+    let Some(Targetable::Object(selector)) = r.targets.first().map(|spec| &spec.what) else {
+        return None;
+    };
     // "your hand" is the owner's hand only for a card in your own graveyard.
-    let yours = r.targets.first().is_some_and(|spec| {
-        matches!(&spec.what, Targetable::Object(selector)
-            if selector.0.contains(&Pred::In(ZoneKind::Graveyard))
-                && selector.0.contains(&Pred::OwnedBy(Ref::You)))
-    });
-    r.need("to your hand")?;
-    yours.then(|| {
-        vec![Effect::Move {
-            what,
-            to: Destination::Hand,
-        }]
-    })
+    let yours = selector.0.contains(&Pred::In(ZoneKind::Graveyard))
+        && selector.0.contains(&Pred::OwnedBy(Ref::You));
+    // A permanent goes to "its owner's hand"; a spell or a card in a zone would say more.
+    let permanent = !selector
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::In(_) | Pred::Spell));
+    if yours {
+        r.need("to your hand")?;
+    } else if permanent {
+        r.need("to its owner's hand")?;
+        r.it = Some(what.clone());
+    } else {
+        return None;
+    }
+    Some(vec![Effect::Move {
+        what,
+        to: Destination::Hand,
+    }])
 }
 
 /// "+1/+1" or "-1/-1": the counters that change a creature's size.
@@ -406,7 +417,12 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if !matches!(verb, "destroy" | "exile" | "counter") {
         return None;
     }
-    let what = object(r)?;
+    // "Exile ~" is the card itself leaving; nothing else of the card is destroyed or countered this way.
+    let what = if verb == "exile" && r.source() {
+        Ref::This
+    } else {
+        object(r)?
+    };
     let spell = r.targets.first().is_some_and(|spec| {
         matches!(&spec.what, Targetable::Object(selector) if selector.0.first() == Some(&Pred::Spell))
     });
@@ -433,6 +449,9 @@ fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     }
     if let Some(what) = target_object(r) {
         return Some((what, false));
+    }
+    if let Some(objects) = all(r) {
+        return Some((objects, true));
     }
     phrase(r, Form::All).map(|selector| (Ref::Each(selector), true))
 }

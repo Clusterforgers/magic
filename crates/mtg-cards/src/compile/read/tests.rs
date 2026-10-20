@@ -154,6 +154,7 @@ mod compound;
 mod counters;
 mod create;
 mod enters;
+mod exile_bounce_shrink;
 mod life;
 mod may;
 mod modes;
