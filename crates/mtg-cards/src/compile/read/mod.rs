@@ -14,6 +14,7 @@ mod abilities;
 mod amounts;
 mod create;
 mod effects;
+mod modal;
 mod render;
 mod selectors;
 mod subtypes;
@@ -29,9 +30,10 @@ use super::{ClauseKind, classify};
 use crate::ability::Ability;
 use tokens::{Reader, tokenize};
 
-/// Reads a spell, a triggered or an activated clause into an ability, or `None` when it is not a
-/// wording the templates know. The text of a spell may run over several lines, which are its
-/// sentences in order. An ability word before a dash ("Landfall — ") is flavor and left out.
+/// Reads a spell, a modal, a triggered or an activated clause into an ability, or `None` when it
+/// is not a wording the templates know. The text of a spell may run over several lines, which are
+/// its sentences in order; a modal's lines are its bullets. An ability word before a dash
+/// ("Landfall — ") is flavor and left out.
 /// `x_free` says the card's mana cost has an `{X}`, which an amount may use.
 pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
     let text = match kind {
@@ -45,6 +47,7 @@ pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
     let mut reader = Reader::new(&tokens, x_free);
     let ability = match kind {
         ClauseKind::Spell => abilities::spell(&mut reader)?,
+        ClauseKind::Modal => abilities::modal_spell(&mut reader)?,
         ClauseKind::Triggered => abilities::triggered(&mut reader)?,
         ClauseKind::Activated => abilities::mana_ability(&mut reader)?,
         _ => return None,

@@ -271,6 +271,11 @@ impl<'a> Reader<'a> {
         self.words(phrase).then_some(())
     }
 
+    /// Whether this punctuation mark is next, without reading it.
+    pub fn at_punct(&self, mark: char) -> bool {
+        self.tokens.get(self.at) == Some(&Token::Punct(mark))
+    }
+
     /// Reads this punctuation mark if it is next.
     pub fn punct(&mut self, mark: char) -> bool {
         if self.tokens.get(self.at) == Some(&Token::Punct(mark)) {

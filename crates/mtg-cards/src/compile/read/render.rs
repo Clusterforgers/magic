@@ -4,11 +4,12 @@
 
 use super::amounts::{cards_text, count_word, points_text, stat_name};
 use super::create;
+use super::modal::{BULLET, DASH};
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
 use super::triggers::{condition_text, pattern_text};
 use crate::ability::{Ability, Timing};
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Destination, Effect, Produce};
+use crate::effect::{Destination, Effect, Mode, Produce};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, TargetSpec, Targetable, ZoneKind};
 use crate::trigger::TriggerPattern;
@@ -163,6 +164,21 @@ fn signed_text(amount: &Amount) -> Option<String> {
     }
 }
 
+/// "choose one —" and a bullet line for each mode, written with the targets of its own; the last
+/// bullet has no period, which the sentence that holds the text adds.
+fn modal_text(modes: &[Mode]) -> Option<String> {
+    let mut bullets = Vec::with_capacity(modes.len());
+    for mode in modes {
+        let sentences = sentences(&mode.targets, &mode.effects)?;
+        let capitalized: Vec<String> = sentences.iter().map(|text| capitalize(text)).collect();
+        bullets.push(capitalized.join(". "));
+    }
+    Some(format!(
+        "choose one {DASH}\n{BULLET} {}",
+        bullets.join(&format!(".\n{BULLET} "))
+    ))
+}
+
 /// The mana of a payment as the card prints it: `{2}`, `{U}{R}`.
 fn cost_text(cost: &Cost) -> Option<String> {
     match cost.0.as_slice() {
@@ -314,6 +330,11 @@ impl Writer<'_> {
                 [inner] if is_imperative(inner) => format!("you may {}", self.effect(inner)?),
                 _ => return None,
             },
+            Effect::Modal {
+                choose,
+                repeat: false,
+                modes,
+            } if choose.is_one() && modes.len() >= 2 => modal_text(modes)?,
             Effect::Pay {
                 who,
                 cost,

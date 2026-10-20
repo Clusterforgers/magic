@@ -5,6 +5,8 @@ mod common;
 
 use std::collections::BTreeSet;
 
+use serde_json::Value;
+
 use mtg_cards::ability::Ability;
 use mtg_cards::card::{Card, ImplStatus};
 use mtg_cards::compile::{ClauseKind, Compiled, compile, render_ability, same_text};
@@ -16,7 +18,7 @@ use common::{cards_dir, printed};
 /// The corpus cards whose compiled abilities are the hand-written file's, face by face. A card joins
 /// the list when the templates reach it and never leaves; a card that matches but is not listed fails
 /// the test too, so the list is the ratchet.
-const REPRODUCED: [&str; 19] = [
+const REPRODUCED: [&str; 20] = [
     "Bloodbraid Elf",
     "Counterspell",
     "Dockside Extortionist",
@@ -26,6 +28,7 @@ const REPRODUCED: [&str; 19] = [
     "Felidar Sovereign",
     "Giant Growth",
     "Hero of Bladehold",
+    "Izzet Charm",
     "Lightning Bolt",
     "Llanowar Elves",
     "Mulldrifter",
@@ -52,6 +55,33 @@ fn compiled_corpus() -> Vec<(PrintedCard, Compiled)> {
         .collect()
 }
 
+/// An ability as data without its mode labels: a label is a short name for a prompt that a hand-written
+/// file gives ("Counter", "Loot") and the compiler cannot know.
+fn unlabeled(ability: &Ability) -> Value {
+    fn strip(value: &mut Value) {
+        match value {
+            Value::Object(map) => {
+                if let Some(Value::Array(modes)) = map.get_mut("modes") {
+                    for mode in modes.iter_mut().filter_map(Value::as_object_mut) {
+                        mode.remove("label");
+                    }
+                }
+                map.values_mut().for_each(strip);
+            }
+            Value::Array(items) => items.iter_mut().for_each(strip),
+            _ => {}
+        }
+    }
+    let mut value = serde_json::to_value(ability).unwrap();
+    strip(&mut value);
+    value
+}
+
+/// Whether two abilities are the same up to the labels of their modes.
+fn same_ability(left: &Ability, right: &Ability) -> bool {
+    unlabeled(left) == unlabeled(right)
+}
+
 /// Whether every clause is read and the compiled abilities are the file's, face by face.
 fn reproduces(compiled: &Compiled, by_hand: &Card) -> bool {
     compiled.card.as_ref().is_some_and(|card| {
@@ -61,7 +91,14 @@ fn reproduces(compiled: &Compiled, by_hand: &Card) -> bool {
                 .faces
                 .iter()
                 .zip(&by_hand.faces)
-                .all(|(made, written)| made.abilities == written.abilities)
+                .all(|(made, written)| {
+                    made.abilities.len() == written.abilities.len()
+                        && made
+                            .abilities
+                            .iter()
+                            .zip(&written.abilities)
+                            .all(|(made, written)| same_ability(made, written))
+                })
     })
 }
 
@@ -74,7 +111,10 @@ fn every_ability_the_compiler_reads_is_in_the_hand_written_file() {
         for (face, ability) in card.abilities() {
             if !ability.is_manual() {
                 assert!(
-                    by_hand.faces[face].abilities.contains(ability),
+                    by_hand.faces[face]
+                        .abilities
+                        .iter()
+                        .any(|written| same_ability(written, ability)),
                     "{} (face {face}): {ability:?} is not in the hand-written file",
                     printed.name
                 );
@@ -152,18 +192,19 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
             let Some(written) = render_ability(ability) else {
                 continue;
             };
-            let kind = match ability {
-                Ability::Spell { .. } => ClauseKind::Spell,
-                Ability::Triggered { .. } => ClauseKind::Triggered,
-                _ => ClauseKind::Activated,
+            // The spell ability is the spell lines of the face, or its list of modes.
+            let kinds: &[ClauseKind] = match ability {
+                Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
+                Ability::Triggered { .. } => &[ClauseKind::Triggered],
+                _ => &[ClauseKind::Activated],
             };
             let lines: Vec<&str> = compiled
                 .clauses
                 .iter()
-                .filter(|clause| clause.face == face && clause.kind == kind)
+                .filter(|clause| clause.face == face && kinds.contains(&clause.kind))
                 .map(|clause| without_ability_word(&clause.text))
                 .collect();
-            let wanted = if kind == ClauseKind::Spell {
+            let wanted = if matches!(ability, Ability::Spell { .. }) {
                 vec![lines.join("\n")]
             } else {
                 lines.iter().map(|line| (*line).to_owned()).collect()

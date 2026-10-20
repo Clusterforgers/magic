@@ -43,7 +43,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 40] = [
     ("Giant Growth", Some(Full), 1, 1),
     ("Grizzly Bears", None, 0, 0),
     ("Hero of Bladehold", Some(Full), 2, 2),
-    ("Izzet Charm", Some(Manual), 0, 1),
+    ("Izzet Charm", Some(Full), 1, 1),
     ("Jace, the Mind Sculptor", Some(Manual), 0, 4),
     ("Lightning Bolt", Some(Full), 1, 1),
     ("Llanowar Elves", Some(Full), 1, 1),

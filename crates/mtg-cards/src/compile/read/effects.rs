@@ -3,6 +3,7 @@
 
 use super::amounts::{cards, its_stat, number_word, points};
 use super::create;
+use super::modal;
 use super::selectors::{Form, all, each, keyword, phrase, target};
 use super::tokens::Reader;
 use crate::cost::Cost;
@@ -16,7 +17,8 @@ use crate::value::{Amount, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 9] = [
+const TEMPLATES: [Template; 10] = [
+    modal::modal,
     may,
     chain,
     player_effect,

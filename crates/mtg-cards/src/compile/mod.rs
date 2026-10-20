@@ -121,10 +121,11 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         .filter(|clause| clause.kind == ClauseKind::Spell)
         .map(|clause| clause.text.as_str())
         .collect();
-    let spell_ability = if lines.is_empty() {
+    let spell_text = lines.join("\n");
+    let spell_ability = if spell_text.is_empty() {
         None
     } else {
-        read::clause(&lines.join("\n"), ClauseKind::Spell, x_free)
+        read::clause(&spell_text, ClauseKind::Spell, x_free)
     };
     if let Some(ability) = spell_ability {
         let mut ability = Some(ability);
@@ -134,6 +135,16 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         {
             clause.read = true;
             clause.ability = ability.take();
+        }
+    }
+    if spell && spell_text.is_empty() {
+        // The modes of an instant or sorcery are its whole spell ability when no other line is.
+        let mut modals = pending
+            .iter_mut()
+            .filter(|clause| clause.kind == ClauseKind::Modal);
+        if let (Some(only), None) = (modals.next(), modals.next()) {
+            only.ability = read::clause(&only.text, ClauseKind::Modal, x_free);
+            only.read = only.ability.is_some();
         }
     }
     let mut abilities = Vec::new();
@@ -344,6 +355,36 @@ mod tests {
         "Instant",
         "Kicker {1}\nTap target creature.",
         Some(ImplStatus::Partial)
+    )]
+    #[case::modes_are_the_whole_spell(
+        "Instant",
+        "Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.",
+        Some(ImplStatus::Full)
+    )]
+    #[case::modes_after_a_keyword(
+        "Sorcery",
+        "Kicker {2}\nChoose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.",
+        Some(ImplStatus::Full)
+    )]
+    #[case::an_unread_mode(
+        "Instant",
+        "Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} Tap target creature.",
+        Some(ImplStatus::Manual)
+    )]
+    #[case::modes_beside_spell_lines(
+        "Instant",
+        "Draw a card.\nChoose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.",
+        Some(ImplStatus::Partial)
+    )]
+    #[case::two_modal_lists(
+        "Instant",
+        "Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.\nChoose one \u{2014}\n\u{2022} Scry 1.\n\u{2022} Draw a card.",
+        Some(ImplStatus::Manual)
+    )]
+    #[case::modes_on_a_permanent(
+        "Enchantment",
+        "Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.",
+        Some(ImplStatus::Manual)
     )]
     fn the_status_follows_the_clauses(
         #[case] type_line: &str,

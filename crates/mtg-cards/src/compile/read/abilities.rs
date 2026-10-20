@@ -4,7 +4,7 @@
 use mtg_core::mana::ManaType;
 
 use super::tokens::Reader;
-use super::{effects, triggers};
+use super::{effects, modal, triggers};
 use crate::ability::{Ability, Timing};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Effect, Produce};
@@ -30,6 +30,15 @@ pub fn spell(r: &mut Reader<'_>) -> Option<Ability> {
     let effects = sentences(r)?;
     Some(Ability::Spell {
         targets: std::mem::take(&mut r.targets),
+        effects,
+    })
+}
+
+/// The modes of an instant or sorcery: "Choose one —" and its bullets, as the only effect.
+pub fn modal_spell(r: &mut Reader<'_>) -> Option<Ability> {
+    let effects = modal::modal(r)?;
+    r.end().then_some(Ability::Spell {
+        targets: Vec::new(),
         effects,
     })
 }
