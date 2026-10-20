@@ -414,6 +414,7 @@ fn lobby_seats() -> Vec<LobbySeat> {
         name: name.to_owned(),
         connected,
         ready,
+        deck: None,
     };
     vec![
         seat(0, "Ana", true, true),
@@ -750,7 +751,7 @@ fn client_wire_shape_is_flat_and_tagged(
 )]
 #[case(
     ServerMessage::Lobby {
-        seats: vec![LobbySeat { seat: PlayerId(0), name: "Ana".into(), connected: true, ready: false }],
+        seats: vec![LobbySeat { seat: PlayerId(0), name: "Ana".into(), connected: true, ready: false, deck: None }],
         needed: 1,
     },
     json!({

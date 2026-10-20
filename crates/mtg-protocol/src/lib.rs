@@ -21,7 +21,7 @@ pub mod view;
 pub use error::ProtocolError;
 pub use events::{EventBatch, EventView, HiddenEvent, project_events};
 pub use message::{
-    ClientMessage, DecisionId, ErrorCode, FullControlMode, LobbySeat, PROTOCOL_VERSION,
+    ClientMessage, DecisionId, ErrorCode, FullControlMode, LobbySeat, PROTOCOL_VERSION, SeatDeck,
     ServerMessage, Stop, StopSide, YieldUntil,
 };
 pub use project::zone_is_visible;

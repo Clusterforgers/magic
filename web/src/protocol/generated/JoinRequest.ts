@@ -8,4 +8,10 @@ export type JoinRequest = {
  * The name the table sees, 1 to 32 characters. A guest needs one; a signed-in visitor is named
  * after the account when it is absent.
  */
-name?: string, };
+name?: string, 
+/**
+ * The deck the seat plays: the id of a built-in deck, or of one of the signed-in visitor's stored
+ * decks. Absent, the seat keeps the deck it was made with, if any, and its holder chooses one with
+ * `PUT /api/games/{id}/seats/{n}/deck`.
+ */
+deck?: string, };
