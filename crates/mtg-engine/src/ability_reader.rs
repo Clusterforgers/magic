@@ -71,7 +71,7 @@ pub(crate) fn keyword_abilities(state: &GameState, id: ObjectId) -> Vec<&Keyword
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an object has the abilities printed on its card, in the order of its rules, each under the address that names it, wherever it is (battlefield, hand, stack, graveyard) and whether it is a card or a token; an address resolves to the very ability it was read with and to nothing when the object is not in the game, is an ability on the stack or has no such ability; and no code outside this module indexes the rules of a card.
+    //! Goal: an object has the abilities printed on its card, in the order of its rules, each under the address that names it, wherever it is (battlefield, hand, stack, graveyard) and whether it is a card or a token; an address resolves to the very ability it was read with and to nothing when the object is not in the game, is an ability on the stack or has no such ability; and no module other than this one reads the rules of a card, or other than `characteristics` its plain mana abilities, directly.
     use std::fs;
     use std::path::{Path, PathBuf};
 
@@ -384,9 +384,9 @@ mod tests {
         assert_eq!(found, expected.iter().collect::<Vec<_>>(), "{place:?}");
     }
 
-    /// The receivers of the reads of a `.rules` field in `source`, with the comments taken out and a method chain split
-    /// over several lines joined. A call (`.rules()`) and a longer name are not reads.
-    fn rules_readers(source: &str) -> Vec<String> {
+    /// The receivers of the reads of the field `field` in `source`, with the comments taken out and a method chain
+    /// split over several lines joined. A call (`.rules()`) and a longer name are not reads.
+    fn field_readers(source: &str, field: &str) -> Vec<String> {
         let code = source
             .lines()
             .map(|line| line.split("//").next().unwrap_or_default())
@@ -405,9 +405,10 @@ mod tests {
                 .last()
                 .map_or(text.len(), |(at, _)| at)
         };
-        code.match_indices(".rules")
-            .filter(|(at, field)| {
-                let next = code[at + field.len()..].chars().next();
+        let dotted = format!(".{field}");
+        code.match_indices(&dotted)
+            .filter(|(at, name)| {
+                let next = code[at + name.len()..].chars().next();
                 next.is_none_or(|c| c != '(' && c != '_' && !c.is_alphanumeric())
             })
             .map(|(at, _)| {
@@ -422,21 +423,33 @@ mod tests {
     }
 
     #[rstest]
-    #[case::the_card_of_an_object("let r = object.card().rules.get(0);", &["card()"])]
-    #[case::a_definition("let r = object.def.rules.iter();", &["def"])]
-    #[case::a_bound_card("for r in card.rules.iter() {}", &["card"])]
-    #[case::a_chain_over_several_lines("object\n    .card()\n    .rules\n    .iter()", &["card()"])]
-    #[case::an_index("made[0].definition.rules[0]", &["definition"])]
-    #[case::several_reads("a.def.rules.len() + b.card().rules.len()", &["def", "card()"])]
-    #[case::a_call_is_not_a_read("ability.rules()", &[])]
-    #[case::a_builder_is_not_a_read("CardDefinition::new(n).with_rules(r)", &[])]
-    #[case::a_longer_name_is_not_a_read("x.rules_of(y)", &[])]
-    #[case::a_comment_is_not_code("// object.card().rules.len()\nlet x = 1; // y.def.rules", &[])]
-    fn the_search_for_reads_of_a_cards_rules_finds_them_however_the_code_is_laid_out(
+    #[case::the_rules_of_an_object("let r = object.card().rules.get(0);", "rules", &["card()"])]
+    #[case::a_definition("let r = object.def.rules.iter();", "rules", &["def"])]
+    #[case::a_bound_card("for r in card.rules.iter() {}", "rules", &["card"])]
+    #[case::a_chain_over_several_lines(
+        "object\n    .card()\n    .rules\n    .iter()",
+        "rules",
+        &["card()"]
+    )]
+    #[case::an_index("made[0].definition.rules[0]", "rules", &["definition"])]
+    #[case::several_reads("a.def.rules.len() + b.card().rules.len()", "rules", &["def", "card()"])]
+    #[case::the_plain_mana_abilities_of_a_card("let a = card.abilities.clone();", "abilities", &["card"])]
+    #[case::the_result_of_a_call("characteristics(s, id)?.abilities.len()", "abilities", &[""])]
+    #[case::the_other_field_is_not_read("object.card().rules.len()", "abilities", &[])]
+    #[case::a_call_is_not_a_read("ability.rules()", "rules", &[])]
+    #[case::a_builder_is_not_a_read("CardDefinition::new(n).with_rules(r)", "rules", &[])]
+    #[case::a_longer_name_is_not_a_read("x.rules_of(y)", "rules", &[])]
+    #[case::a_comment_is_not_code(
+        "// object.card().rules.len()\nlet x = 1; // y.def.rules",
+        "rules",
+        &[]
+    )]
+    fn the_search_for_reads_of_a_cards_printed_side_finds_them_however_the_code_is_laid_out(
         #[case] source: &str,
+        #[case] field: &str,
         #[case] expected: &[&str],
     ) {
-        assert_eq!(rules_readers(source), expected);
+        assert_eq!(field_readers(source, field), expected);
     }
 
     fn rust_files(dir: &Path, found: &mut Vec<PathBuf>) {
@@ -453,35 +466,53 @@ mod tests {
         }
     }
 
+    /// The modules that read the `rules` of a card directly: the reader, and no other.
+    const RULES_OWNERS: [&str; 1] = ["ability_reader.rs"];
+
+    /// The modules that read the plain mana abilities (`abilities`) of a card directly: the reader, and the derivation of
+    /// characteristics, through which every other module reads them.
+    const ABILITIES_OWNERS: [&str; 2] = ["ability_reader.rs", "characteristics.rs"];
+
     /// The receivers of a `rules` field that is not a card's: a pending trigger, a delayed trigger and an ability on
     /// the stack each hold the one ability they are.
     const OTHER_RULES: [&str; 3] = ["self", "waiting", "delayed"];
 
+    /// What a card is called where its `abilities` are read; `chars.abilities` and `options.abilities` are not a card's.
+    const CARDS: [&str; 4] = ["card()", "card", "def", "definition"];
+
     #[test]
-    fn nothing_but_the_reader_indexes_the_rules_of_a_card() {
+    fn no_module_but_the_owners_reads_the_rules_or_the_plain_mana_abilities_of_a_card() {
         let src = Path::new(env!("CARGO_MANIFEST_DIR")).join("src");
         let mut files = Vec::new();
         rust_files(&src, &mut files);
         assert!(files.len() > 40, "the sources were found: {}", files.len());
         let mut offenders = Vec::new();
         for file in files {
-            if file
-                .file_name()
-                .is_some_and(|name| name == "ability_reader.rs")
-            {
-                continue;
-            }
+            let relative = file.strip_prefix(&src).unwrap_or(&file);
+            let owns = |owners: &[&str]| owners.iter().any(|owner| relative == Path::new(owner));
             let text =
                 fs::read_to_string(&file).unwrap_or_else(|error| panic!("{file:?}: {error}"));
-            for receiver in rules_readers(&text) {
-                if !OTHER_RULES.contains(&receiver.as_str()) {
-                    offenders.push(format!("{} reads `{receiver}.rules`", file.display()));
+            if !owns(&RULES_OWNERS) {
+                for receiver in field_readers(&text, "rules") {
+                    if !OTHER_RULES.contains(&receiver.as_str()) {
+                        offenders.push(format!(
+                            "{} reads `{receiver}.rules`: read abilities through `ability_reader`",
+                            relative.display()
+                        ));
+                    }
+                }
+            }
+            if !owns(&ABILITIES_OWNERS) {
+                for receiver in field_readers(&text, "abilities") {
+                    if CARDS.contains(&receiver.as_str()) {
+                        offenders.push(format!(
+                            "{} reads `{receiver}.abilities`: read plain mana abilities through `characteristics`",
+                            relative.display()
+                        ));
+                    }
                 }
             }
         }
-        assert!(
-            offenders.is_empty(),
-            "read abilities through `ability_reader`: {offenders:#?}"
-        );
+        assert!(offenders.is_empty(), "{offenders:#?}");
     }
 }
