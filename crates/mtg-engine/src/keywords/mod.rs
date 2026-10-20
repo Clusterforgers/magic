@@ -331,9 +331,9 @@ pub(crate) fn protects(
 
 /// Whether a keyword of the player `holder` stops `controller`'s spell or ability from targeting them.
 pub(crate) fn protects_player(state: &GameState, holder: PlayerId, controller: PlayerId) -> bool {
-    player_keywords(state, holder).into_iter().any(|keyword| {
-        rules(keyword).restricts_player_targeting(keyword, holder, controller)
-    })
+    player_keywords(state, holder)
+        .into_iter()
+        .any(|keyword| rules(keyword).restricts_player_targeting(keyword, holder, controller))
 }
 
 /// Whether a keyword of the attacker stops `blocker` from blocking it.
@@ -352,7 +352,7 @@ pub(crate) fn grants_instant_timing(state: &GameState, id: ObjectId) -> bool {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: every keyword the vocabulary declares has rules, the capabilities name exactly the keywords whose rules the engine runs, each keyword answers the hooks its row says and no others, and one function reads what an object has.
+    //! Goal: every keyword the vocabulary declares has rules, the capabilities name exactly the keywords whose rules the engine runs, each keyword answers the hooks its row says and no others, and one function reads what an object has and one what a player has.
     use std::sync::Arc;
 
     use super::*;
@@ -574,6 +574,19 @@ mod tests {
         assert!(!has_keyword(&game, held, &Keyword::Reach));
         assert_eq!(keywords_of(&game, plain).len(), 0);
         assert_eq!(keywords_of(&game, ObjectId(u64::MAX)).len(), 0);
+    }
+
+    #[test]
+    fn one_function_lists_the_keywords_a_player_has() {
+        let mut setup = crate::fixtures::setup(vec![vec![], vec![]], vec![vec![], vec![]]);
+        setup.players[1].keywords = vec![Keyword::Hexproof];
+        let game = GameState::from_setup(&setup).unwrap();
+        assert_eq!(player_keywords(&game, PlayerId(1)), [&Keyword::Hexproof]);
+        assert_eq!(player_keywords(&game, PlayerId(0)).len(), 0);
+        assert_eq!(player_keywords(&game, PlayerId(9)).len(), 0);
+        assert!(protects_player(&game, PlayerId(1), PlayerId(0)));
+        assert!(!protects_player(&game, PlayerId(1), PlayerId(1)));
+        assert!(!protects_player(&game, PlayerId(0), PlayerId(1)));
     }
 
     #[test]

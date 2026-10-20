@@ -3,6 +3,7 @@
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::keyword::Keyword;
 use mtg_core::ids::PlayerId;
 use mtg_engine::PlayerSetup;
 use mtg_engine::format::{FormatRules, Normal};
@@ -243,6 +244,19 @@ impl Scenario {
         self
     }
 
+    /// Gives a player keywords from the start, such as hexproof (CR 702.11d).
+    #[must_use]
+    pub fn player_keywords(
+        mut self,
+        player: usize,
+        keywords: impl IntoIterator<Item = Keyword>,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.keywords = keywords.into_iter().collect();
+        }
+        self
+    }
+
     /// The setup this scenario describes (decks are not validated).
     pub fn setup(self) -> Result<GameSetup, ScenarioError> {
         if let Some(error) = self.error {
@@ -375,6 +389,32 @@ mod tests {
         assert!(perms[0].tapped() && !perms[0].summoning_sick());
         assert!(perms[1].summoning_sick() && !perms[1].tapped());
         assert_eq!(perms[2].damage(), 1);
+    }
+
+    #[test]
+    fn a_seat_can_start_with_keywords() {
+        let engine = Scenario::new(3)
+            .player_keywords(1, [Keyword::Hexproof])
+            .build()
+            .unwrap();
+        let state = engine.state();
+        let held: Vec<usize> = (0..3)
+            .map(|seat| {
+                state
+                    .player(PlayerId::from_index(seat))
+                    .unwrap()
+                    .keywords()
+                    .len()
+            })
+            .collect();
+        assert_eq!(held, [0, 1, 0]);
+        assert_eq!(
+            Scenario::new(2)
+                .player_keywords(4, [Keyword::Hexproof])
+                .setup()
+                .unwrap_err(),
+            ScenarioError::NoSuchPlayer(4)
+        );
     }
 
     #[test]
