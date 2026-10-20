@@ -56,6 +56,7 @@ const RUNS: &[&str] = &[
     "Effect.Pay",
     "Effect.Choose",
     "Effect.Modal",
+    "Keyword.Flash",
     "Keyword.Flying",
     "Keyword.Reach",
     "Keyword.Menace",
@@ -160,6 +161,7 @@ mod tests {
     #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
     #[case::mana_abilities_of_other_shapes("Ability.ManaAbility.Complex", false)]
     #[case::paying_or_not("Effect.Pay", true)]
+    #[case::flash("Keyword.Flash", true)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]
     #[case::menace("Keyword.Menace", true)]

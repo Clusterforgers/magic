@@ -1,4 +1,6 @@
-//! Flash (CR 702.36): the rules are a stub until the keyword task (`docs/cards-dsl.md`, Keywords).
+//! Flash (CR 702.36): a spell with flash is cast whenever its controller has priority, as an instant is.
+
+use mtg_cards::keyword::Keyword;
 
 use super::KeywordRules;
 
@@ -6,4 +8,8 @@ use super::KeywordRules;
 #[derive(Debug)]
 pub(super) struct Flash;
 
-impl KeywordRules for Flash {}
+impl KeywordRules for Flash {
+    fn grants_timing(&self, _keyword: &Keyword) -> bool {
+        true
+    }
+}
