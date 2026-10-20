@@ -66,8 +66,8 @@ fn a_second_doom_blade_destroys_the_creature_and_the_first_fizzles(
     let mut driver = Driver::from_scenario(table(
         seats,
         &["Doom Blade", "Doom Blade"],
-        vec![swamp(), swamp(), swamp(), swamp()],
-        Vec::new(),
+        &[swamp(), swamp(), swamp(), swamp()],
+        &[],
     ))?;
     let owner = owner_of(&driver, victim);
     let begun = driver.engine().events().len();
@@ -114,12 +114,8 @@ fn a_creature_that_becomes_black_in_response_is_no_longer_a_legal_target(
     #[values((2, "Grizzly Bears"), (3, "Serra Angel"), (4, "Llanowar Elves"))] case: (usize, &str),
 ) -> Result<(), ScriptError> {
     let (seats, victim) = case;
-    let mut driver = Driver::from_scenario(table(
-        seats,
-        &["Doom Blade"],
-        vec![swamp(), swamp()],
-        Vec::new(),
-    ))?;
+    let mut driver =
+        Driver::from_scenario(table(seats, &["Doom Blade"], &[swamp(), swamp()], &[]))?;
     let begun = driver.engine().events().len();
     let id = driver.id_of(victim)?;
     let target = driver.target_named(victim)?;
@@ -152,8 +148,8 @@ fn a_second_swords_exiles_the_creature_and_the_first_fizzles_and_gains_nothing(
     let mut driver = Driver::from_scenario(table(
         seats,
         &["Swords to Plowshares", "Swords to Plowshares"],
-        vec![plains(), plains()],
-        Vec::new(),
+        &[plains(), plains()],
+        &[],
     ))?;
     let owner = owner_of(&driver, victim);
     let begun = driver.engine().events().len();
@@ -367,8 +363,8 @@ fn mourning(seats: usize) -> Scenario {
     table(
         seats,
         &["Wrath of God"],
-        vec![plains(), plains(), plains(), plains()],
-        extra,
+        &[plains(), plains(), plains(), plains()],
+        &extra,
     )
 }
 
@@ -447,6 +443,57 @@ fn every_creature_that_dies_in_a_wrath_is_seen_by_every_watcher_and_the_triggers
             .count(),
         1
     );
+    Ok(())
+}
+
+/// A 1/1 that gains its controller 2 life when it leaves the battlefield, wherever it goes.
+fn leaver() -> std::sync::Arc<mtg_cards::CardDefinition> {
+    let leaves = TriggerPattern::ZoneChange {
+        what: Matching::this(),
+        from: Some(ZoneKind::Battlefield),
+        to: None,
+    };
+    watcher("Leaver", leaves, vec![gain_life(2)])
+}
+
+/// A 1/1 that gains its controller 3 life when it dies.
+fn dier() -> std::sync::Arc<mtg_cards::CardDefinition> {
+    watcher("Dier", when::this_dies(), vec![gain_life(3)])
+}
+
+#[rstest]
+fn a_destroyed_creature_dies_and_leaves_and_an_exiled_one_only_leaves(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(
+        ("Doom Blade", "Leaver", 2, 1),
+        ("Doom Blade", "Dier", 3, 1),
+        ("Swords to Plowshares", "Leaver", 3, 1),
+        ("Swords to Plowshares", "Dier", 1, 0)
+    )]
+    case: (&str, &str, i32, usize),
+) -> Result<(), ScriptError> {
+    let (spell, victim, gain, triggers) = case;
+    let last = seats - 1;
+    let mut driver = Driver::from_scenario(table(
+        seats,
+        &[spell],
+        &[swamp(), swamp(), plains()],
+        &[(last, leaver()), (last, dier())],
+    ))?;
+    let begun = driver.engine().events().len();
+    let target = driver.target_named(victim)?;
+    driver.cast_at(spell, &[target])?;
+    resolve_the_stack(&mut driver)?;
+
+    let triggered = driver.engine().events()[begun..]
+        .iter()
+        .filter(|event| matches!(event, Event::AbilityTriggered(_)))
+        .count();
+    assert_eq!(triggered, triggers);
+    // The controller gains what the trigger of the creature that left gives, and from Swords its power.
+    let mut expected = vec![20; seats];
+    expected[last] += gain;
+    assert_eq!(lives(&driver, seats), expected);
     Ok(())
 }
 

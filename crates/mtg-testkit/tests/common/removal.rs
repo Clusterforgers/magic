@@ -51,8 +51,8 @@ pub fn creatures(seats: usize) -> Vec<Vec<Arc<CardDefinition>>> {
 pub fn table(
     seats: usize,
     hand: &[&str],
-    lands: Vec<Arc<CardDefinition>>,
-    extra: Vec<(usize, Arc<CardDefinition>)>,
+    lands: &[Arc<CardDefinition>],
+    extra: &[(usize, Arc<CardDefinition>)],
 ) -> Scenario {
     let mut scenario = Scenario::new(seats).hand(0, hand.iter().map(|name| corpus(name)));
     for (seat, board) in creatures(seats).into_iter().enumerate() {

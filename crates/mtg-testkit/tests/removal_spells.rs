@@ -39,7 +39,7 @@ fn offered(driver: &Driver) -> Vec<String> {
 // Doom Blade
 
 fn blade(seats: usize) -> Scenario {
-    table(seats, &["Doom Blade"], vec![swamp(), swamp()], Vec::new())
+    table(seats, &["Doom Blade"], &[swamp(), swamp()], &[])
 }
 
 #[rstest]
@@ -165,8 +165,8 @@ fn an_indestructible_creature_survives_doom_blade_which_still_resolves(
     let mut driver = Driver::from_scenario(table(
         seats,
         &["Doom Blade"],
-        vec![swamp(), swamp()],
-        vec![(seats - 1, titan())],
+        &[swamp(), swamp()],
+        &[(seats - 1, titan())],
     ))?;
     let begun = driver.engine().events().len();
     let target = driver.target_named("Titan")?;
@@ -196,8 +196,8 @@ fn swords(seats: usize) -> Scenario {
     table(
         seats,
         &["Swords to Plowshares"],
-        vec![plains()],
-        vec![(seats - 1, titan())],
+        &[plains()],
+        &[(seats - 1, titan())],
     )
 }
 
@@ -205,10 +205,9 @@ fn swords(seats: usize) -> Scenario {
 fn power(name: &str) -> i32 {
     match name {
         "Wolf" => 3,
-        "Grizzly Bears" => 2,
+        "Grizzly Bears" | "Gravedigger" => 2,
         "Serra Angel" => 4,
         "Llanowar Elves" => 1,
-        "Gravedigger" => 2,
         "Titan" => 5,
         other => panic!("no power for {other}"),
     }
@@ -459,8 +458,8 @@ fn wrath(seats: usize) -> Scenario {
     table(
         seats,
         &["Wrath of God"],
-        vec![plains(), plains(), plains(), plains()],
-        vec![(seats - 1, titan()), (0, corpus("Sol Ring")), (1, forest())],
+        &[plains(), plains(), plains(), plains()],
+        &[(seats - 1, titan()), (0, corpus("Sol Ring")), (1, forest())],
     )
 }
 
