@@ -20,7 +20,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 40] = [
     ("Bloodbraid Elf", Some(Full), 2, 2),
     ("Bonecrusher Giant // Stomp", Some(Manual), 0, 2),
     ("Bonesplitter", Some(Partial), 1, 2),
-    ("Brainstorm", Some(Manual), 0, 1),
+    ("Brainstorm", Some(Full), 1, 1),
     ("Burst Lightning", Some(Partial), 1, 2),
     ("Counterspell", Some(Full), 1, 1),
     ("Cultivate", Some(Manual), 0, 1),

@@ -5,12 +5,13 @@
 
 use super::amounts::{cards_text, count_word, points_text, stat_name};
 use super::create;
+use super::effects::BACK;
 use super::modal::{BULLET, DASH};
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
 use super::triggers::{article, condition_text, pattern_text};
 use crate::ability::{Ability, Timing};
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Destination, Effect, Mode, Produce};
+use crate::effect::{Destination, Effect, Mode, Order, Place, Produce};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::trigger::TriggerPattern;
@@ -111,6 +112,21 @@ fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
     while start < effects.len() {
+        // A choice of cards and the move of what was chosen are one sentence, which no joint splits.
+        if let [
+            choose @ Effect::Choose { .. },
+            moved @ Effect::Move { .. },
+            ..,
+        ] = &effects[start..]
+            && let Some(text) = put_back_text(choose, moved)
+        {
+            if (mask >> start) & 0b11 != 0 {
+                return None;
+            }
+            sentences.push(text);
+            start += 2;
+            continue;
+        }
         let mut end = start + 1;
         while end < effects.len() && mask & (1 << (end - 1)) != 0 {
             end += 1;
@@ -158,6 +174,54 @@ fn modal_texts(modes: &[Mode]) -> Vec<String> {
             .collect();
     }
     texts
+}
+
+/// "put two cards from your hand on top of your library in any order": the choice of cards of the
+/// hand, bound as `back`, and the move of them.
+fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
+    let (
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(from),
+            count,
+            bind,
+            rest_as: None,
+        },
+        Effect::Move {
+            what: Ref::Bound(name),
+            to:
+                Destination::Library {
+                    place: Place::Top,
+                    order,
+                },
+        },
+    ) = (choose, moved)
+    else {
+        return None;
+    };
+    if bind != BACK || name != BACK || from.0 != [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]
+    {
+        return None;
+    }
+    let Some(Amount::Fixed(most)) = &count.max else {
+        return None;
+    };
+    let number = u32::try_from(*most)
+        .ok()
+        .filter(|most| *most == count.min)?;
+    let tail = match (number, order) {
+        (1, None) => String::new(),
+        (2.., Some(Order::Chosen)) => " in any order".to_owned(),
+        _ => return None,
+    };
+    let cards = if number == 1 {
+        "a card".to_owned()
+    } else {
+        format!("{} cards", count_word(number)?)
+    };
+    Some(format!(
+        "put {cards} from your hand on top of your library{tail}"
+    ))
 }
 
 /// The sentences with their capitals and periods; the first of a triggered ability follows the

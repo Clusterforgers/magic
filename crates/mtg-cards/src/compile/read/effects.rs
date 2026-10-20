@@ -7,20 +7,21 @@ use super::modal;
 use super::selectors::{Form, all, each, keyword, phrase, target};
 use super::tokens::Reader;
 use crate::cost::Cost;
-use crate::effect::{Destination, Effect};
+use crate::effect::{Destination, Effect, Order, Place};
 use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
-use crate::refs::{Pred, Ref, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::value::{Amount, CounterKind};
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 10] = [
+const TEMPLATES: [Template; 11] = [
     modal::modal,
     may,
     chain,
+    put_back,
     player_effect,
     damage,
     removal,
@@ -139,12 +140,55 @@ fn chain(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     while let Some(next) = r.attempt(|r| {
         r.punct(',').then_some(())?;
         r.need("then")?;
-        imperative(r)
+        match r.attempt(imperative) {
+            Some(step) => Some(vec![step]),
+            None => put_back(r),
+        }
     }) {
-        effects.push(next);
+        effects.extend(next);
     }
     Some(effects)
 }
+
+/// "Put two cards from your hand on top of your library in any order.": the player chooses cards
+/// of their hand, bound as `back`, and puts them on their library. One card has no order to choose.
+fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("put")?;
+    let number = number_word(r.take_word()?)?;
+    r.word(if number == 1 { "card" } else { "cards" })
+        .then_some(())?;
+    r.need("from your hand on top of your library")?;
+    let order = if number == 1 {
+        None
+    } else {
+        r.need("in any order")?;
+        Some(Order::Chosen)
+    };
+    let count = Bounds {
+        min: number,
+        max: Some(Amount::Fixed(i32::try_from(number).ok()?)),
+    };
+    let from = Selector(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
+    Some(vec![
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(from),
+            count,
+            bind: BACK.to_owned(),
+            rest_as: None,
+        },
+        Effect::Move {
+            what: Ref::Bound(BACK.to_owned()),
+            to: Destination::Library {
+                place: Place::Top,
+                order,
+            },
+        },
+    ])
+}
+
+/// The name the cards put back are bound to.
+pub const BACK: &str = "back";
 
 fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
     let who = Ref::You;

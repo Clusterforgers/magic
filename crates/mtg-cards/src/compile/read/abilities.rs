@@ -22,7 +22,19 @@ fn sentences(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         }
     }
     let alone = effects.len() == 1 || !effects.iter().any(|e| matches!(e, Effect::Modal { .. }));
-    (!effects.is_empty() && alone).then_some(effects)
+    // A name an effect binds is bound once in an ability.
+    let binds: Vec<&str> = effects
+        .iter()
+        .filter_map(|effect| match effect {
+            Effect::Choose { bind, .. } => Some(bind.as_str()),
+            _ => None,
+        })
+        .collect();
+    let unique = binds
+        .iter()
+        .enumerate()
+        .all(|(at, name)| !binds[..at].contains(name));
+    (!effects.is_empty() && alone && unique).then_some(effects)
 }
 
 /// The sentences of an instant or sorcery, in order; every one must be read.
