@@ -1,4 +1,4 @@
-//! Counters: what the `CountersChanged` event says (storage and the effects that change them are tasks (f) and (k)).
+//! Counters: what the `CountersChanged` event says (the fold and the effects that change them are task (l)).
 
 use mtg_cards::value::CounterKind;
 use serde::{Deserialize, Serialize};

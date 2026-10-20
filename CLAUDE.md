@@ -28,6 +28,7 @@ Browser-hosted Magic: The Gathering for friends. Rust backend + engine, React/Ty
 ## Workflow
 - Keep context small: short tool output (`-q`, `tail`, `grep`), never re-read files already seen, delegate big work to agents with short briefs (`docs/agents.md`), suggest `/compact` between roadmap items.
 - Delegate in pieces of about 15 minutes; agents commit after every finished module (`wip:` prefix for unfinished checkpoints).
+- Build in roadmap order (`docs/ROADMAP.md`, Order of work): structure before additions, and web work only against final engine and protocol types.
 - Tick the roadmap item in the commit that finishes it. After a restart, run `git worktree list` and read each worktree's status before resuming work.
 - Review agent output against these rules and run `scripts/check.sh` on the merged result before accepting it.
 

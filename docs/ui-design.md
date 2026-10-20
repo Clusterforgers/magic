@@ -145,7 +145,7 @@ Each theme has `phase-<id>` (accent), `phase-<id>-soft` (tint, lightness 0.95 li
 | Column | Content |
 |---|---|
 | Host | account or guest name |
-| Format | Normal (Commander with M5) |
+| Format | Normal (Commander with M4) |
 | Seats | "2 of 4" with dots; a full row dims and says "Full" |
 | Decks | "Your own deck"; a rule column once deck rules exist |
 | Age | "3 min ago" in a `<time>`, refreshed every 30 s |

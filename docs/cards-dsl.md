@@ -378,18 +378,18 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | `DelayedTrigger`, `Rule`, `CostModifier`, `If`, `May`, `Modal` with per-mode targets | P, X, F | DSL |
 | `limit` and `from` zone on abilities | P, X, F | DSL |
 | A `Modification` for every layer, `CopyOf` token, `WinGame` | P, X | DSL |
-| Keyword actions: Fight, Explore, Proliferate, Populate, Amass, Connive, Learn, Goad, Detain, Monstrosity, Adapt, Bolster, Support, Venture, Manifest, Cloak, Incubate, Suspect | P, X, F | (f) |
-| `RevealUntil`, `ExileTop`, `Dig` (look at N and take some is `LookAtTop` + `Choose` + `Move`) | P, X, F | (f) |
-| `Exile` with a duration (Oblivion Ring), `Duration` until host leaves, until a player's next turn, until an event | P | (f) |
+| Keyword actions: Fight, Explore, Proliferate, Populate, Amass, Connive, Learn, Goad, Detain, Monstrosity, Adapt, Bolster, Support, Venture, Manifest, Cloak, Incubate, Suspect | P, X, F | (h); Proliferate (l), Populate (o), Manifest and Cloak (n) |
+| `RevealUntil`, `ExileTop`, `Dig` (look at N and take some is `LookAtTop` + `Choose` + `Move`) | P, X, F | (h) |
+| `Exile` with a duration (Oblivion Ring), `Duration` until host leaves, until a player's next turn, until an event | P | (h) |
 | `CastFromZone`, free cast, `AsThough` (flash, play from graveyard or library), cast permissions | P, X | (g) |
-| `CopySpell`, `BecomeCopy` | P, X, F | (g) |
+| `CopySpell`, `BecomeCopy` | P, X, F | (o) |
 | Costs: Exile, TapUntapped (crew), RemoveCounters (also X), PayEnergy, ReturnToHand, Mill, Reveal, Exert, Unattach, OneOf | P, X, F | (g) |
-| `ChooseOption` effect (colour, type, name, player) with a remembered choice | P, X, F | (d) |
+| `ChooseOption` effect (colour, type, name, player) with a remembered choice | P, X, F | (j) |
 | `Condition::Performed` ("if you do") | P, F | (c) |
-| Trigger families: damage, life, draw, discard, mill, cycle, exile, reveal, shuffle, search, tap, untap, mana, counters, attach, blocks, unblocked, copy, counter, activate, transform, token created, monarch, initiative | P, X, F | (i) |
-| Batch ("one or more"), first time each turn, nth card drawn; state triggers (CR 603.8) | P, X, F | (i) |
-| `Pred` and `Amount` over turn history (entered, attacked, spells cast this turn, life gained), event amount ("that much"), size of a bound set ("that many") | P, X | (i) |
-| `Amount`: kicker count, spells cast this turn (Storm) | P, X | (h) |
+| Trigger families: damage, life, draw, discard, mill, cycle, exile, reveal, shuffle, search, tap, untap, mana, counters, attach, blocks, unblocked, copy, counter, activate, transform, token created, monarch, initiative | P, X, F | (i4) |
+| Batch ("one or more"), first time each turn, nth card drawn; state triggers (CR 603.8) | P, X, F | (i4); state triggers (i3) |
+| `Pred` and `Amount` over turn history (entered, attacked, spells cast this turn, life gained), event amount ("that much"), size of a bound set ("that many") | P, X | (i4) |
+| `Amount`: kicker count, spells cast this turn (Storm) | P, X | (g), (o) |
 | Statics: must attack or block, can't be countered, can't gain life or draw, trigger doubling, can't search, reveal top, characteristic-defining flag, remove abilities or types, exchange control | P, X, F | (k) |
 | Shields (`PreventDamage`, damage and draw replacement), redirection; replaced events: draw, life, destroy, discard, mill, counters, tap, untap, enters tapped or with counters | P, X, F | (j) |
 | Emblems, extra turns, skip turn, additional phase, set or exchange life totals, `LoseGame`, dice, coin, clash, vote, separate into piles, devotion | P, X, F | M6 |
@@ -399,20 +399,30 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 
 ## Tasks
 
+The order of the M3 work; `ROADMAP.md` lists the pieces. A structural task changes how abilities, characteristics, events, costs or views are shaped, so it runs alone and before the tasks that fill one stub. The rows after (c) are in build order.
+
 | Item | Delivers | Needs |
 |---|---|---|
 | (a) DSL | Data model, loader, validation, support records, corpus | |
 | (b) Card assembly | `PrintedCard` adapter, `assemble`, `CardDefinition` in `mtg-cards`, corpus cards in the testkit; the deck fingerprint keeps version 1 | (a) |
 | (c) Pipeline core | Ability objects, zone-change counter, `Snapshot`, journal and its events, interpreter with one stub file per `Effect` variant, value evaluator, replacement seam, `ChooseTargets` with recheck and fizzle, every new `DecisionKind`, `Answer`, `Event` and redaction arm as types, keyword stubs, engine `Caps` | (b) |
-| (d) Decision kinds | One task each: engine, protocol, web prompt, tests | (c) |
 | (e) Keywords | One task each with a table test | (c) |
-| (f) Keyword actions | One `Effect` each with a web prompt where a player chooses | (c); (d) for its decision |
-| (g) Tokens, copy, X costs, alternative and additional costs, modal spells | `ManaSymbol::X`, `ChooseNumber`, PayMana prompt and `payment.ts`, any-colour sources | (c), (d) |
-| (h) Keyword abilities beyond combat | One task each | (c); (g) for cost-based ones |
-| (i) Triggers | Detection, queue, APNAP, delayed, intervening if, stops, holding priority | (c); (d) `OrderTriggers` |
-| (j) Replacement | The step, the choice, one `ReplaceWhen` per replaceable event | (c); (d) `ChooseReplacement` |
-| (k) Layers | Ordering, dependencies, timestamps, characteristic-defining abilities, counters, auras, equipment | (c) |
+| (f) Keyword actions | One `Effect` each; discard, sacrifice, the library effects, destroy, exile, counter, pay, search and tokens are built | (c) |
+| (i) Triggers | Detection, queue, APNAP, delayed, intervening if | (c) |
+| (q) Small effects | `If`, `Tap`, `Untap`, `Mill`, `WinGame`, `Flash` | (c) |
+| (k) Abilities and layers | One reader of an object's abilities with stable addresses (printed, keyword-provided, granted, lost, by zone), static abilities, every `Modification`, `Rule`, the CR 613 derivation (timestamps, dependencies, characteristic-defining abilities), ward, prowess and battle cry (e2), state triggers and abilities from other zones (i3) | (c) |
+| (l) Counters and planeswalkers | Counters on permanents and players with their effects, layer 7c, state-based actions, loyalty abilities | (k) |
+| (m) Attachments | `Attach`, Auras (`Enchant`), Equipment (`Equip`, `Reconfigure`), their state-based actions | (k), (l) |
+| (j) Replacement | The step, `ChooseReplacement`, one `ReplaceWhen` per replaceable event, enters tapped or with counters, prevention shields, regeneration | (k), (l) |
+| (g) Costs and casting | The announcement procedure, X, optional, alternative and additional costs, cost modifiers, cast permissions, costs of activated abilities, complex and restricted mana, `ChooseNumber`, `ChooseCosts`, `DivideAmount` | (k), (j) |
+| (i4) Trigger families | Patterns for every event, batches, first time each turn, event amounts | (g), (l), (m) |
+| (n) Faces | Multi-face cards, `Effect::Transform`, face-down objects | (g), (k) |
+| (o) Copies | Copy effects, spell copies, enters as a copy, populate, storm | (k), (j), (n) |
+| (p) Manual cards | A card the engine does not run is cast and resolves without effects; generic logged actions through the primitives | (l), (g) |
+| (h) By demand | Keywords and keyword actions the DSL does not declare, sagas, classes, designations, extra turns: one task each, in the order of the coverage dashboard | the rows above |
 
-(d) to (k) run in parallel: each owns its stub files and no two edit one file.
+(d) Decision kinds are built with the first task that asks for them: `ChooseNumber`, `ChooseCosts` and `DivideAmount` with (g), `ChooseReplacement` with (j). Their web prompts follow in M5.
 
-- Scope of (f), the keyword actions of CR 701: draw, discard, mill, shuffle, scry, surveil, fateseal, search, reveal, sacrifice, destroy, exile, counter, create tokens, populate, investigate, fight, explore, proliferate, amass, connive, learn, transform, meld, attach, regenerate, goad, monstrosity, adapt, bolster, support, venture. Arena-only digital actions (conjure, seek, specialize) are out of scope; a card that needs one is `Unplayable` (`deck-check.md`).
+The tasks run one at a time in the order of the table; (h) fills stub files and may run in any order.
+
+- Scope of (f), the keyword actions of CR 701: draw, discard, mill, shuffle, scry, surveil, fateseal, search, reveal, sacrifice, destroy, exile, counter, create tokens, populate, investigate, fight, explore, proliferate, amass, connive, learn, transform, meld, attach, regenerate, goad, monstrosity, adapt, bolster, support, venture. Arena-only digital actions (conjure, seek, specialize) are out of scope; a card that needs one is `Unplayable` (`deck-check.md`). An action that belongs to a cluster is built there: attach (m), regenerate (j), proliferate (l), transform and meld (n), populate (o); the others are (h).

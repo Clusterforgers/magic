@@ -1,132 +1,112 @@
 # Roadmap
 
-Progress record by milestone: what is built and what comes next, in build order.
+Build order of the platform: what is built and what comes next. Continue with the first unchecked item.
 
 One item is one piece of about 15 minutes; tick it in the commit that finishes it; designs are in `docs/`.
 
+## Order of work
+
+- Structure before additions: work that changes how abilities, characteristics, events, costs or views are shaped runs first and alone; work that fills one stub (a keyword, an effect) follows in any order.
+- A cluster is the items that touch one area of code. They run back to back, and a decision kind is built with the first task that asks it.
+- The card system (M3) and Commander (M4) are complete in the DSL, engine and protocol types before the web shows them (M5), so each screen is built once. Until then a new event, decision or view field gets a placeholder in the web that keeps typecheck and e2e green.
+- A cluster ends with its corpus cards Verified, a fuzz deck under every invariant, hidden-information tests for its events and current generated bindings.
+- Items that depend on nothing (import checks, account settings, deploy) wait in their milestone and can be taken at any time without rework.
+
 ## Done
-- [x] M0 Workspace, lint rules, CI, `CLAUDE.md`, local Postgres compose
-- [x] M0 Frontend spike: React stack locked in (`docs/spike-react.md`)
-- [x] M1a `mtg-import`: Scryfall (array + JSONL), MTGJSON decks and index, deck-list parsers, name resolution; validated on real data (`docs/data-sources.md`)
-- [x] M1b `mtg-db`: schema, upserts, card search, precon storage
-- [x] M2a Engine core + `mtg-testkit`: zones, turns, priority, stack, combat, layers skeleton, bots
 
-## M1 Card data
-- [x] `mtg-db` follow-ups: reap stale `running` import runs, skip NUL-containing records instead of failing the batch
-- [x] CLI binary `mtg-cli`: download Scryfall bulk + MTGJSON deck index/decks, ingest into Postgres (resumable, polite rate limit; `docs/data-sources.md`)
-- [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
-- [ ] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
-- [x] Card search HTTP endpoints in `mtg-server` (name, filters, color identity, pagination)
+- Foundations: workspace, lint rules, CI, `CLAUDE.md`, local Postgres, the React stack (`docs/spike-react.md`)
+- Card data: `mtg-import` (Scryfall, MTGJSON decks, deck-list parsers, name resolution), `mtg-db` (schema, upserts, card search, precons), `mtg-cli` (fetch, ingest) and the card search endpoints
+- Engine: zones, turns, priority, stack, combat, bots and `mtg-testkit`; combat forecast and block preview
+- Protocol and server: wire types with generated bindings and a drift test, the game actor, axum transport with a WebSocket per seat, table-state sync, persistence and resume with deck fingerprints, accounts, "my games", invite-link lobbies, open games and join by code
+- Game flow: auto-pass, response clocks, yields, stops and Full Control, idle windows as short hidden clocks, leak tests (`docs/arena-flow.md`, P1 to P8)
+- Web: core client, game UI with prompts for all eight decision kinds, N-seat table with log and stack panel, table animations, concede, lobby, account pages, Playwright e2e; the UI rebuild U1 to U12 (tokens, fit engine, grid, controls dock, turn feedback, game browser, layout gate)
+- Decks: list, import, export, builder, and the deck check with the Verified marker
+- Card system so far: the DSL, card assembly and effect pipeline (`docs/cards-dsl.md`); the keywords of combat and hexproof; triggers with APNAP order, delayed triggers and intervening if; pumps and keyword grants through layers 6 and 7c; discard, sacrifice, the library effects, destroy, exile, counter, pay, search, tokens (Treasure, Clue, Food), modes, yes or no and options
 
-## M2 Engine and first playable
-- [x] Merge M2a, reviewed against `CLAUDE.md`; design in `docs/engine.md`
-- [x] `mtg-protocol`: Decision/Event/State-view wire types, generated TypeScript bindings, drift test
-- [x] `mtg-server` actor (no network): per-seat channels, projected events and decisions, stale-answer and reconnect handling, `EventStore` trait; bots play full games
-- [x] `mtg-server` transport: axum binary, create-game REST with seat tokens, one WebSocket per seat, demo decks, graceful shutdown
-- [x] Protocol sync: each `Events` batch carries the table state and an object diff, so the client never folds engine events
-- [x] Web core: typed REST and WebSocket client with reconnect and resync, zustand store
-- [x] Web game UI: routes, create-game page, lobby and game-over screens, N-seat table, prompts for all eight decision kinds
-- [x] Protocol and engine gaps the prompts exposed: mulligan counts, payment cancel and complete, hybrid and Phyrexian mana costs paid with mana or life
-- [x] Playwright e2e: full 2-player vanilla game in the browser (`pnpm e2e`)
-- [x] `mtg-server` persistence (a): Postgres `EventStore` and migration table
-- [x] `mtg-server` persistence (b): game and seat records, resume running games on boot
-- [x] Game flow (a) to (c): auto-pass, response clocks, a pass button that names what passing does, yields
-- [x] Combat readability: engine `combat_forecast`, attack and block lines with outcome marks in the table
-- [x] Block preview: the engine's outcome of a pending attack or block, shown while it is chosen
-- [x] Table feedback: animations for attacks, blocks, damage, deaths, entries and life changes
-- [x] Concede: a button with a confirm step
-- [x] Lobby shows who has pressed Ready
-- [x] Users, (a) server: accounts, session cookie, auth endpoints, seats bound to users, "my games", rejoin by session
-- [x] Users, (b) web: login and register pages, account header, "My games" with rejoin
-- [x] Resume checks the deck contents: a deck fingerprint per seat fails a game whose cards changed
-- [ ] Game flow (d), copy MTG Arena's priority, stops and yields so the pace never tells the table what a seat holds (`docs/arena-flow.md`, P1 to P10). In order:
-  - [x] (d1) Stops and Full Control on the wire (P1, P4)
-  - [x] (d2) Stops in the actor with Arena's default window table (P2)
-  - [x] (d3) Idle windows as short hidden clocks (P3): a window the seat cannot use waits 0.25 to 0.7 s (`MTG_DWELL_MS`), then passes as its own step and batch
-  - [x] (d4) Full Control in the actor (P4)
-  - [x] (d5) Web session for stops and Full Control (P5)
-  - [x] (d6) Stop ladder in the table (P6)
-  - [x] (d7) Keys like Arena (P7)
-  - [x] (d8) Leak test (P8): two seeded games equal but for one hidden card send the other seat the same messages at the same times
-  - [ ] (d9) Timer bank (P9): extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
-  - [x] (d10) The leak test covers a spell and a trigger on the stack as well as combat windows
+## M3 Card system
 
-## M3 Rules depth
-Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d) to (k) in parallel.
-- [x] (a) `mtg-cards` DSL: data model for every ability kind, loader, validation, support records and a 40-card corpus
-- [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
-- [x] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
-- [ ] (d) Decision kinds still open, one task each across engine, protocol and a web prompt: ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement (the table in `docs/cards-dsl.md`, Decisions the effects need)
-- [x] Engine side of YesNo, ChooseOption and ChooseMode: the answer checks and the effects that ask them (`May`, `Choose`, modal spells)
-- [ ] A response-clock test through the actor for YesNo, ChooseOption and ChooseMode (`docs/server.md`, Response clocks)
-- [ ] Response clocks for the choice decisions still without one (numbers, divisions, costs, replacements, mana payments), each with a fallback answer, so one seat cannot hold the table; targets, trigger orders, yes or no, options, modes, cards and orders of cards have theirs (`docs/server.md`, Response clocks)
-- [x] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets and the views carry keywords, counters and attachments (`docs/web.md`)
-- [ ] (e2) Keyword ward, which needs the counter effect and a payment decision; attachments drawn tucked beside their host; counters and attachments in the `/dev/table` fixture with screenshots (`docs/web.md`)
-- [ ] (f) Keyword actions (CR 701), one engine primitive each, with a web prompt where the player chooses (scope in `docs/cards-dsl.md`, Tasks)
-  - [x] Discard and Sacrifice with the ChooseCards engine side; Archon of Cruelty is Verified
-  - [x] LookAtTop, Scry, Reveal, Move and Shuffle with the OrderCards engine side; Opt and Brainstorm are Verified
-  - [x] Destroy, Exile and Counter (a spell) on targets and "all" selectors; Doom Blade, Swords to Plowshares, Counterspell and Wrath of God are Verified
-  - [x] Pay ("unless that player pays", "you may pay") and mana costs on activated abilities; Izzet Charm and Rhystic Study are Verified
-  - [x] Looked-at and revealed cards reach the viewer's views so the prompts can show their names
-  - [x] Search and Move onto the battlefield: Rampant Growth, Cultivate and Sneak Attack are Verified; Flooded Strand waits for `Cost.PayLife`
-  - [ ] A card revealed and moved to a hidden zone with no question in between is named in the views of no other seat (the batch lists what is visible after its last event)
-  - [ ] Web prompts for scry and the order of cards put back (ChooseCards and OrderCards already draw candidates from the views)
-  - [ ] A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
-  - [ ] The support walker names `Cost.Mana.X` for an `{X}` ability cost, so such a card is not Verified before X costs run
-- [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
-  - [x] Tokens: CreateToken, AddMana of any colour and a sacrificed source as a cost; Treasure is a mana ability, Dockside Extortionist is Verified and Hero of Bladehold's Soldiers enter tapped and attacking
-  - [x] Clue (`{2}`, sacrifice) and Food (`{2}`, `{T}`, sacrifice) are paid through the payment decision of an ability, the sacrifice among the events that announce it
-  - [ ] Costs of activated abilities beyond `{T}`, mana and sacrificing the source: sacrificing a chosen permanent (the choice is made when the ability is announced), life, discard
-  - [ ] Treasure and other sacrifice sources offered while paying a spell, and mana abilities of several mana (Sol Ring, Gaea's Cradle)
-  - [ ] Tokens that copy an object, and a card's support counting the abilities of the predefined tokens it makes
-- [ ] (h) Keyword abilities beyond combat (CR 702), one task each for the other `Keyword` variants (flash, equip, cycling, kicker, flashback, cascade, storm, ...); cost-based ones follow (g)
-- [x] (i) Triggered abilities: APNAP ordering, delayed triggers, intervening if, with the target and trigger-order prompts and their response clocks (`docs/engine.md`)
-- [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
-- [ ] (i3) State triggers (CR 603.8) and abilities that work from a zone other than the battlefield (`from`) (`docs/engine.md`)
-- [ ] (j) Replacement and prevention effects (CR 614 to 616)
-- [ ] (k) Layers: full CR 613 ordering with dependencies, timestamps, counters, auras, equipment
-  - [x] `Effect::Continuous` with `ModifyPT` and `AddKeyword`: effects with a source, timestamp and duration in the state, derived through layers 6 and 7c and `keywords_of`, ended by their duration; Giant Growth is Verified
-  - [ ] Left of (k): the other modifications as effects (`SetPT`, `SwitchPT`, `AddType`, `AddSubtype`, `SetColors`, `RemoveKeyword`, `SetController`, `CantAttack`, `CantBlock`), static abilities with dependencies (CR 613.8), characteristic-defining abilities, counters, auras and equipment, and keywords in snapshots
+Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the order listed.
 
-## M4 Multiplayer product
-- [x] Invite-link lobbies on top of users
-- [x] (B1) Deck list page: the account's decks with name, format, size and check state; new, import (text, Arena, MTGO), export and delete
-- [x] (B2) Deck builder page: card search with filters, add and remove by zone, counts, save with the check on save (`docs/deck-check.md`)
-- [x] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
-- [ ] (B3) Deck check, remaining: each precon's state in the precon browser (`docs/deck-check.md`)
-- [ ] Precon browser with one-click play
-- [ ] Choose a deck in the lobby, remaining: precons as a third kind of deck (`docs/server.md`, `docs/deck-check.md`)
-- [x] N-player layout, game log, stack panel, stop settings
-- [ ] UI rebuild: the table fits the screen, a turn change is unmistakable and games are joined from a list (`docs/ui-design.md`, Tasks). In order:
-  - [x] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
-  - [x] (U2) Fit engine: card sizes from the space available and grouping of identical permanents, pure and tested
-  - [x] (U3) Table grid: top bar, opponents, shared strip, own board, hand dock and side tabs in one viewport from 1280x720
-  - [x] (U4) A pod panel and a hand dock fan that hold 40 permanents a seat
-  - [x] (U5) Controls dock: a 44 px pass button, a one-row stop ladder and a menu for the rest
-  - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
-  - [x] (U6) Turn feedback: badge, banner, ticker, step ladder and phase themes, an edge on the active seat and a dot on the priority holder, and a Focus board that follows the turn with a cross-fade
-  - [x] (U7) Server: game visibility, open seats, claim and join code
-  - [x] (U8) Server: public game listing, join, leave and release, with privacy tests
-  - [x] (U9) Game browser join flow: a Join takes a seat in one click for an account and after a name for a guest, opens the game and says "Someone took that seat"
-  - [x] (U9) Join with a code: `POST /api/join` names the game in `Joined`, and the Play page's code field joins through the same flow
-  - [x] (U10) Create-game visibility and the lobby: the invite link and code, the host's visibility toggle, Close and removing a player, Leave, and the page an invite link opens
-  - [x] (U11) Page polish: game over, My games, sign-in and one page width scale
-  - [x] (U12) Layout gate at six sizes in both themes; the audit leaves `docs/ui-design.md`
-  - [ ] Layout gate for the pages that need an account (Decks, My games, the builder with a real deck), in `accounts.spec.ts`
-- [ ] Spectators and reconnect polish: a spectator seat, a face-down card rule in `zone_is_visible`, a "waiting on" message for tables of three or more
-- [ ] Account settings: change the password, delete the account (its seats are freed); a game that failed to resume shows in My games with its reason
+### Small effects
+- [ ] (q) `Effect::If` with its conditions, `Tap`, `Untap`, `Mill`, `WinGame` and the keyword Flash; Felidar Sovereign is Verified
 
-## M5 Commander
-- [ ] `Commander` format rules: 100-card singleton, color identity, 40 life, command zone, tax, 21 commander damage; the views carry commander damage and tax so the pod can show them
+### Abilities and characteristics
+- [ ] (k1) One reader of an object's abilities (printed, keyword-provided, granted, lost, from the zone they work in) with stable addresses
+- [ ] (k2) Priority options, trigger detection, casting and resolution read abilities through it
+- [ ] (k3) Static abilities gathered at every derivation; every `Modification` runs as an effect and as a static (types, subtypes, colours, set and switched power and toughness, abilities added and lost, control, can't attack or block); `Effect::Rule` with its game rules
+- [ ] (k4) The derivation of CR 613 as one pass: timestamps, dependencies, characteristic-defining abilities, keywords in snapshots and removing a keyword; the deviations in `docs/engine.md` (Rules coverage) for layers and removed keywords close here
+- [ ] (e2) Keyword abilities built from triggers: ward, prowess and battle cry; Hero of Bladehold is Verified
+- [ ] (i3) State triggers (CR 603.8) and abilities that work from a zone other than the battlefield (`from`)
+
+### Counters, planeswalkers and attachments
+- [ ] (l1) Counters on permanents and players: the fold, put, remove and move, `Amount::Counters`, +1/+1 and -1/-1 counters in layer 7c with their state-based actions, views; Tireless Tracker is Verified
+- [ ] (l2) Planeswalkers: loyalty abilities (once a turn, at sorcery speed), damage removes loyalty (CR 120.3c), zero loyalty dies, an attacker keeps attacking a planeswalker that left (CR 506.4c); Jace, the Mind Sculptor is Verified
+- [ ] (m1) `Attach`, Aura spells that target through `Enchant`, and the state-based actions of attachments (CR 704.5m to 704.5p); Pacifism is Verified
+- [ ] (m2) Equipment with `Equip` and `Reconfigure`; Bonesplitter is Verified
+
+### Replacement and prevention
+- [ ] (j1) The replacement step: `Ability::Replacement` found through the reader, one `ReplaceWhen` for each event it can replace, self-replacement first, once per event (CR 614 to 616), and `ChooseReplacement` in engine and protocol; Anointed Procession is Verified
+- [ ] (j2) Enters tapped or with counters; a choice made as it enters and remembered on the permanent
+- [ ] (j3) Damage prevention shields, regeneration and `GameRule::DamageCantBePrevented`
+
+### Costs and casting
+- [ ] (g1) One announcement procedure (CR 601.2): modes, X, optional, alternative and additional costs, targets and division, then the total cost; `ChooseNumber`, `ChooseCosts` and `DivideAmount` are built with it
+- [ ] (g2) `{X}` in spell and ability costs; the support walker names `Cost.Mana.X`
+- [ ] (g3) Optional and additional costs: kicker and multikicker; Burst Lightning is Verified
+- [ ] (g4) Alternative costs and cast permissions: flashback, evoke, overload, madness, suspend, casting from another zone, without paying the cost or as though it had flash, cascade; Mulldrifter, Faithless Looting and Bloodbraid Elf are Verified
+- [ ] (g5) Cost modifiers (`Ability::CostModifier`): reductions, increases, convoke, delve; Fireball is Verified
+- [ ] (g6) Costs of activated abilities beyond `{T}`, mana and sacrificing the source: a chosen permanent (chosen when the ability is announced), life, discard, counters removed, a card exiled from a graveyard, untapped creatures tapped; cycling; a card's support counts the abilities of the predefined tokens it makes; Flooded Strand is Verified
+- [ ] (g7) Mana: abilities of several mana or counting something, restrictions on how mana is spent, Treasure and other sacrifice sources offered while paying a spell; Sol Ring and Gaea's Cradle are Verified
+- [ ] (g8) A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
+
+### Trigger families
+- [ ] (i4) Patterns for every event the engine logs (damage, life, draw, discard, mill, tap, untap, counters, attach, cast, cycle), batches ("one or more"), first time each turn, the nth card, event amounts ("that much")
+
+### Faces and copies
+- [ ] (n1) Multi-face cards: split, adventure, modal double-faced, transform and meld; the face is chosen at announcement, `Card.Faces` is lifted, `Effect::Transform`; Delver of Secrets, Bonecrusher Giant and Fire // Ice (fuse) are Verified
+- [ ] (n2) Face-down objects (morph, disguise, manifest, cloak) and the face-down rule in `zone_is_visible`
+- [ ] (o) Copies: a token that copies an object, spell copies, enters as a copy, populate, storm; copiable values as the first layer
+
+### Manual cards and views
+- [ ] (p) Manual cards: a card the engine does not run is cast and resolves without effects, and its controller applies generic logged actions (move, counters, life, token, tap) through the same primitives, visible to every seat
+- [ ] Views complete: they carry every state of an object (counters, attachments, face, face-down, copies, support), a spectator audience sees public information, and a card revealed and then moved to a hidden zone in one batch reaches the other seats' views (`docs/protocol.md`)
+- [ ] Gate: every corpus card is Verified except the two kept Partial and Manual by design, and fuzz games with a deck from each cluster pass every invariant
+
+## M4 Commander
+- [ ] `Commander` format rules: 100-card singleton, colour identity, 40 life, command zone, tax as a cost modifier, return to the command zone (CR 903.9), 21 commander damage; the views carry commander damage and tax so the pod can show them
 - [ ] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
 - [ ] Partner, companion, Commander-specific tests and Commander-format fuzz games with 4-6 players
 
-## M6 Coverage
-- [ ] Manual-resolve fallback mode for unimplemented cards (`docs/cards-dsl.md`, Compiler and Manual fallback)
-- [ ] Oracle-text compiler for common templates with golden tests (`docs/cards-dsl.md`, Compiler and Manual fallback)
-- [ ] Coverage dashboard over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of a chosen set of Commander precons (`docs/deck-check.md`)
+## M5 Table and prompts
 
-## M7 Polish and deploy
+The server is settled first, then the web is built once against the final types.
+- [ ] Response clocks for every decision kind without one, each with a fallback answer, and a clock test through the actor for YesNo, ChooseOption and ChooseMode (`docs/server.md`, Response clocks)
+- [ ] (d9) Timer bank: extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
+- [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
+- [ ] Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and the order of cards put back; the payment prompt for X and restricted mana
+- [ ] Cast options in the table: face, optional and alternative costs, modes, X
+- [ ] Table states: counters, attachments tucked beside their host, loyalty, faces and face-down cards, copies, command zone and commander damage, support marks; each in the `/dev/table` fixture with screenshots at six sizes in both themes
+- [ ] Manual actions on any card: a menu and log entries
+- [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes
+- [ ] Playwright games with corpus decks that ask every decision kind
+
+## M6 Coverage
+- [ ] Choose the set of Commander precons that is the coverage target (`docs/deck-check.md`)
+- [ ] Oracle-text compiler for common templates with golden tests (`docs/cards-dsl.md`, Compiler and Manual fallback)
+- [ ] Coverage dashboard over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand; target: 100% of the chosen precons (`docs/deck-check.md`)
+- [ ] (h) Keywords and keyword actions the DSL does not declare, sagas, classes, designations, extra turns and the other long-tail mechanics: one task each, in the order of the dashboard's demand
+
+## M7 Product
+- [ ] (B3) Deck check, remaining: each precon's state in the precon browser (`docs/deck-check.md`)
+- [ ] Precon browser with one-click play
+- [ ] Choose a deck in the lobby, remaining: precons as a third kind of deck (`docs/server.md`, `docs/deck-check.md`)
+- [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
+- [ ] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
+- [ ] Spectators in the web and a "waiting on" message for tables of three or more
+- [ ] Account settings: change the password, delete the account (its seats are freed); a game that failed to resume shows in My games with its reason
+- [ ] Layout gate for the pages that need an account (Decks, My games, the builder with a real deck), in `accounts.spec.ts`
+
+## M8 Polish and deploy
 - [ ] Animations beyond the table feedback (zone moves to hand, exile and library, a spell on the stack; `docs/web.md`), sounds, replays, solo play against bots
 - [ ] Dockerfile, Kustomize manifests for k3s, Postgres, ingress + TLS on the user's domain (`docs/PLAN.md`, Deployment)
 - [ ] Performance profile on real hardware with real card art
