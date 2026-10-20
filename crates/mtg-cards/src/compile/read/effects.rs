@@ -5,7 +5,9 @@ use super::amounts::{cards, its_stat, number_word, points};
 use super::create;
 use super::selectors::{Form, all, each, keyword, phrase, target};
 use super::tokens::Reader;
+use crate::cost::Cost;
 use crate::effect::{Destination, Effect};
+use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, Targetable, ZoneKind};
 use crate::value::{Amount, CounterKind};
@@ -35,7 +37,7 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     if r.attempt(|r| regeneration(r, effects)).is_some() {
         return true;
     }
-    for template in TEMPLATES {
+    for template in TEMPLATES.into_iter().chain([unless_pays as Template]) {
         let read = r.attempt(|r| {
             let found = template(r)?;
             r.sentence_end().then_some(found)
@@ -46,6 +48,52 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         }
     }
     false
+}
+
+/// "Counter target spell unless its controller pays {2}.", "You may draw a card unless that player
+/// pays {1}.": the sentence before "unless" is what happens when the player does not pay.
+fn unless_pays(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    TEMPLATES.into_iter().find_map(|template| {
+        r.attempt(|r| {
+            let unpaid = template(r)?;
+            r.need("unless")?;
+            let who = payer(r, &unpaid)?;
+            r.need("pays")?;
+            let cost = mana_cost(r)?;
+            Some(vec![Effect::Pay {
+                who,
+                cost,
+                paid: Vec::new(),
+                unpaid,
+            }])
+        })
+    })
+}
+
+/// Who may pay: the controller of the spell that is countered, or the player the trigger is about.
+fn payer(r: &mut Reader<'_>, unpaid: &[Effect]) -> Option<Ref> {
+    if r.words("its controller") {
+        let countered = matches!(
+            unpaid,
+            [Effect::Counter {
+                what: Ref::Target(0)
+            }]
+        );
+        return countered.then(|| Ref::ControllerOf(Box::new(Ref::Target(0))));
+    }
+    (r.that_player && r.words("that player")).then_some(Ref::Triggering)
+}
+
+/// The mana of a payment: `{2}`, `{U}{R}`; an `{X}` is not the payer's to choose.
+fn mana_cost(r: &mut Reader<'_>) -> Option<Cost> {
+    let mut text = String::new();
+    while let Some(symbol) = r.symbol() {
+        text.push('{');
+        text.push_str(symbol);
+        text.push('}');
+    }
+    let cost: ManaCostX = text.parse().ok()?;
+    (!text.is_empty() && !cost.has_x()).then(|| Cost::mana(cost))
 }
 
 /// "It can't be regenerated." changes the destruction before it.

@@ -194,6 +194,8 @@ pub struct Reader<'a> {
     pub x_free: bool,
     /// What "it" and "its" mean: the object the last sentence acted on.
     pub it: Option<Ref>,
+    /// Whether the event of the trigger is about a player: "that player" is who cast the spell.
+    pub that_player: bool,
 }
 
 impl<'a> Reader<'a> {
@@ -205,6 +207,7 @@ impl<'a> Reader<'a> {
             targets: Vec::new(),
             x_free,
             it: None,
+            that_player: false,
         }
     }
 

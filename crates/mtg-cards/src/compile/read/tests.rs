@@ -129,6 +129,7 @@ mod counters;
 mod create;
 mod life;
 mod may;
+mod pay;
 mod returns;
 mod triggers;
 
@@ -446,7 +447,6 @@ mod removal {
     }
 
     #[rstest]
-    #[case::unless("Counter target spell unless its controller pays {3}.")]
     #[case::unless_destroy("Destroy target creature unless its controller pays {3}.")]
     #[case::if_clause("Destroy target creature if it's attacking.")]
     #[case::a_second_target("Destroy target creature and target land.")]

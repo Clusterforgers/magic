@@ -53,7 +53,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 40] = [
     ("Panharmonicon", Some(Manual), 0, 1),
     ("Questing Beast", Some(Partial), 3, 6),
     ("Rampant Growth", Some(Manual), 0, 1),
-    ("Rhystic Study", Some(Manual), 0, 1),
+    ("Rhystic Study", Some(Full), 1, 1),
     ("Serra Angel", Some(Full), 2, 2),
     ("Sneak Attack", Some(Manual), 0, 1),
     ("Sol Ring", Some(Full), 1, 1),

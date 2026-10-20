@@ -16,7 +16,7 @@ use common::{cards_dir, printed};
 /// The corpus cards whose compiled abilities are the hand-written file's, face by face. A card joins
 /// the list when the templates reach it and never leaves; a card that matches but is not listed fails
 /// the test too, so the list is the ratchet.
-const REPRODUCED: [&str; 18] = [
+const REPRODUCED: [&str; 19] = [
     "Bloodbraid Elf",
     "Counterspell",
     "Dockside Extortionist",
@@ -30,6 +30,7 @@ const REPRODUCED: [&str; 18] = [
     "Llanowar Elves",
     "Mulldrifter",
     "Opt",
+    "Rhystic Study",
     "Serra Angel",
     "Sol Ring",
     "Swords to Plowshares",

@@ -163,6 +163,14 @@ fn signed_text(amount: &Amount) -> Option<String> {
     }
 }
 
+/// The mana of a payment as the card prints it: `{2}`, `{U}{R}`.
+fn cost_text(cost: &Cost) -> Option<String> {
+    match cost.0.as_slice() {
+        [CostItem::Mana(mana)] if !mana.has_x() => Some(mana.to_string()),
+        _ => None,
+    }
+}
+
 fn at_random(random: bool) -> &'static str {
     if random { " at random" } else { "" }
 }
@@ -306,6 +314,19 @@ impl Writer<'_> {
                 [inner] if is_imperative(inner) => format!("you may {}", self.effect(inner)?),
                 _ => return None,
             },
+            Effect::Pay {
+                who,
+                cost,
+                paid,
+                unpaid,
+            } if paid.is_empty() => {
+                let [inner] = unpaid.as_slice() else {
+                    return None;
+                };
+                let happens = self.effect(inner)?;
+                let payer = self.player(who)?;
+                format!("{happens} unless {payer} pays {}", cost_text(cost)?)
+            }
             _ => return None,
         })
     }
@@ -330,6 +351,7 @@ impl Writer<'_> {
             {
                 "its controller".to_owned()
             }
+            Ref::Triggering => "that player".to_owned(),
             _ => return None,
         })
     }

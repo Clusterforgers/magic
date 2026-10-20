@@ -113,9 +113,6 @@ fn near_misses_stay_unread(#[case] text: &str) {
 #[rstest]
 #[case::a_chain("When ~ enters, you may draw a card, then discard a card.")]
 #[case::if_you_do("When ~ enters, you may draw a card. If you do, discard a card.")]
-#[case::unless(
-    "Whenever an opponent casts a spell, you may draw a card unless that player pays {1}."
-)]
 #[case::another_player("When ~ enters, target player may draw a card.")]
 #[case::each_player("At the beginning of your upkeep, each player may draw a card.")]
 fn near_misses_in_a_trigger_stay_unread(#[case] text: &str) {
