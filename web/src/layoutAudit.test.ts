@@ -391,6 +391,17 @@ describe('measure, on a page whose boxes and styles are given', () => {
     expect(measure(ask({ actions: { Join: '#go' } })).actions['Join']?.free).toBe(false)
   })
 
+  it('hit-tests a disabled control as if its pointer events were on, and puts them back', () => {
+    document.body.innerHTML = '<main><button id="go" disabled>Confirm</button><div id="row"></div></main>'
+    const go = put('#go', 10, 10, 110, 50) as HTMLElement
+    go.style.pointerEvents = 'none'
+    const row = document.querySelector('#row')
+    // The page's hit test skips an element while its pointer events are off, as the browser's does.
+    document.elementFromPoint = vi.fn(() => (go.style.pointerEvents === 'none' ? row : go))
+    expect(measure(ask({ actions: { Confirm: '#go' } })).actions['Confirm']?.free).toBe(true)
+    expect(go.style.pointerEvents).toBe('none')
+  })
+
   it('scrolls an action into view only when asked, and puts the scroll back', () => {
     document.body.innerHTML = '<main><button id="go">Create</button></main>'
     const button = put('#go', 10, 900, 110, 940)

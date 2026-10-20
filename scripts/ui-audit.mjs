@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Audits pages of a running dev server against the layout rules of docs/ui-design.md in Chromium, the browser the e2e
 // uses: no sideways scroll, nothing cut off, no text under 11 px, every action given is in view and not covered, and,
-// with --fit, no scroll down. It loads the TypeScript helper of web/e2e/layout.spec.ts as it is, so it needs Node 22.18+.
+// with --fit, no scroll down. It loads web/e2e/layoutAudit.ts, the helper of layout.spec.ts, as it is: Node 22.18+.
 // Usage: node scripts/ui-audit.mjs <url or /path>... [--base http://127.0.0.1:5173] [--sizes 1280x720,390x844]
 //          [--themes light,dark] [--fit] [--action "<css>"]... [--exempt "<css>"]... [--wait "<js condition>"] [--problems]
 // --action names a primary action to find in view and uncovered; --exempt names a region whose contents may run past

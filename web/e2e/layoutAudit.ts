@@ -205,6 +205,10 @@ export function measure(ask: Ask): Look {
       element.scrollIntoView({ block: 'center', inline: 'nearest' })
       box = boxOf(element)
     }
+    // A disabled control has its pointer events off, so the hit test would skip it: it is tested as if they were on.
+    const target = element as HTMLElement
+    const kept = target.style.pointerEvents
+    target.style.pointerEvents = 'auto'
     // A point outside the window has nothing to hit; the action being outside is a finding of its own.
     const free = spots.every((spot) => {
       const top = document.elementFromPoint(
@@ -213,6 +217,7 @@ export function measure(ask: Ask): Look {
       )
       return top === null || element.contains(top)
     })
+    target.style.pointerEvents = kept
     actions[name] = { box, free }
   }
   if (ask.reveal) window.scrollTo(was.x, was.y)

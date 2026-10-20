@@ -84,6 +84,28 @@ async function signedOut(context: BrowserContext): Promise<void> {
   )
 }
 
+/** The development table at a moment of a game: the hand and your life are always in view, and so is `primary`. */
+function tableStop(name: string, query: string, primary: 'pass' | 'keep' | 'prompt' | null): Stop {
+  const main = '[data-region="controls"] [data-slot="primary-action"]'
+  return {
+    name,
+    fitsFrom: 0,
+    actions: {
+      ...(primary === 'pass' ? { 'pass button': main } : {}),
+      ...(primary === 'keep' ? { Keep: '[data-decision="Mulligan"] button' } : {}),
+      ...(primary === 'prompt' ? { 'prompt button': '[data-slot="prompt-actions"] button' } : {}),
+      // The last card of the fan lies over no other card.
+      hand: '[data-region="hand"] ul li:last-child button[data-object-id]',
+      life: '[data-you] [data-slot="life"]',
+    },
+    exempt: TABLE_EXEMPT,
+    async open(page) {
+      await page.goto(`${DEV_WEB_URL}/dev/table?${query}`)
+      await page.locator('[data-region="controls"]').waitFor()
+    },
+  }
+}
+
 const STOPS: readonly Stop[] = [
   {
     name: 'Play, with open games',
@@ -160,21 +182,12 @@ const STOPS: readonly Stop[] = [
       await expect(page.getByRole('button', { name: 'Create account' })).toBeVisible()
     },
   },
-  {
-    name: 'The table (dev), 4 seats, your priority',
-    fitsFrom: 0,
-    actions: {
-      'pass button': '[data-region="controls"] [data-slot="primary-action"]',
-      // The last card of the fan lies over no other card.
-      hand: '[data-region="hand"] ul li:last-child button[data-object-id]',
-      life: '[data-you] [data-slot="life"]',
-    },
-    exempt: TABLE_EXEMPT,
-    async open(page) {
-      await page.goto(`${DEV_WEB_URL}/dev/table?seats=4&prompt=priority&turn=you`)
-      await page.locator('[data-slot="primary-action"]').waitFor()
-    },
-  },
+  tableStop('The table (dev), 4 seats, your priority', 'seats=4&prompt=priority&turn=you', 'pass'),
+  tableStop('The table (dev), 2 seats, the opening hand', 'seats=2&prompt=mulligan', 'keep'),
+  tableStop('The table (dev), 4 seats, declaring attackers', 'seats=4&prompt=attack&turn=you', 'prompt'),
+  tableStop('The table (dev), 4 seats, declaring blockers', 'seats=4&prompt=block', 'prompt'),
+  tableStop('The table (dev), 6 seats, paying a cost', 'seats=6&prompt=pay', null),
+  tableStop('The table (dev), 12 seats, in focus mode', 'seats=12&prompt=priority&turn=you', 'pass'),
   {
     name: 'A lobby (dev) of six seats',
     fitsFrom: Infinity,

@@ -1,6 +1,6 @@
 # UI design
 
-The rules, audit and design the web client is rebuilt to: principles, design system, a fit-to-viewport table, turn feedback, the game browser and the task order. Game flow stays as in [arena-flow.md](arena-flow.md).
+The rules and design the web client is built to: principles, design system, a fit-to-viewport table, turn feedback, the game browser, the definition of done and the task order. Game flow stays as in [arena-flow.md](arena-flow.md).
 
 Tags: [official] a standard, vendor or Nielsen Norman Group (NN/g) page; [community] a guide, wiki or forum. `Sn` is a source below.
 
@@ -18,38 +18,6 @@ Tags: [official] a standard, vendor or Nielsen Norman Group (NN/g) page; [commun
 | Fitts's law | Pass is the largest target, bottom right; frequent controls 32 px or more, 44 on touch | S4 S5 |
 | Contrast and focus | 4.5:1 text, 3:1 edges and rings, focus never covered, colour never alone | S12 to S15 S30 |
 | Motion and timing | 100 to 300 ms, ease-out in; nothing delays an answer; a working state past 1 s | S6 S7 S16 |
-
-## Audit
-
-Measured with `scripts/ui-shot.mjs` on the dev table and a real two-seat game. Page overflow in px at 16 permanents a seat; your own seat panel starts at y 1361 to 2515 (2 seats) and 1455 to 4616 (4 and 6):
-
-| Size | 2 seats | 4 seats | 6 seats |
-|---|---|---|---|
-| 1920x1080 | +598 | +864 | +708 |
-| 1440x900 | +778 | +1274 | +872 |
-| 1366x768 | +910 | +1547 | +1004 |
-| 1280x720 | +958 | +1687 | +1052 |
-| 1024x768 | +1461 | +3347 | +1637 |
-| 390x844 | +2157 | +4258 | +2279 |
-
-The table fits at no size: fixed chrome (toolbar 100, two panels near 300 each, banner, stack) exceeds 720 px before any card. The dev fixture's 40 permanents a seat add 140 to 1,500 px.
-
-| Screen | Size | Defect | Sev | Fix |
-|---|---|---|---|---|
-| Table | all | Your hand, the stack and the pass button are below the fold; cards are 96x134 and most of the width is empty | Blocker | Fit grid |
-| Table | 390x844 | 4,765 px tall at 40 permanents; pass button at y 2253 | Blocker | Phone stack |
-| Mulligan | 1440x900 | Empty boards still scroll 182 px; the opening hand is off screen while you decide | High | Fit grid |
-| Turn change | all | The banner text changes in place and scrolls away; no transition, ticker or skipped-step mark | Blocker | Turn feedback |
-| Toolbar | all | About 25 equal controls, 28 px high (stops 28x28); pass is not the loudest | High | Controls dock |
-| Type | table | 91 text nodes under 12 px (9, 9.9, 11.5); 8 arbitrary rem sizes | High | Type scale |
-| Contrast | light | Border and input 1.26:1; ring 2.59:1 (buttons use ring/50); muted on muted 4.34:1; pip ink 3.9:1; white frame 1.12:1 | High | Tokens |
-| Dark theme | all | `.dark` tokens exist; nothing sets the class or reads `prefers-color-scheme` | Medium | Theme hook (S10) |
-| Placeholder | table | "Commander damage and tax: not tracked yet" shows in every game | Medium | Commander only |
-| Sidebar | 1024x768 | Log starts open at 320 px (31%); chat has no unread mark | Medium | Side tabs |
-| Browser | `/` | No game list; a join needs a 140-character seat link from the host | Blocker | Browser |
-| Create, lobby, game over | `/` | No visibility choice; invite links live only in the creating tab; Ready is 36 px; no rematch | Medium | Create, polish |
-| Shell | all | No nav; pages are 624, 720 and 400 px wide | Medium | Shell |
-| States | create, My games | Loading is grey text with no skeleton; errors are bare alerts | Low | States |
 
 ## Design system
 
@@ -193,13 +161,14 @@ Each theme has `phase-<id>` (accent), `phase-<id>-soft` (tint, lightness 0.95 li
 
 ## Definition of done
 
-- Fits: the table never scrolls the page at the six sizes; other pages never scroll sideways; nothing is cut at 390 px.
+- Fits: the table never scrolls the page at the six sizes; other pages never scroll sideways; nothing is cut at 390 px; no text is under 11 px; every primary action is in the window and not covered.
 - Contrast: token pairs pass in both themes; focus is visible and uncovered.
 - Targets: 24 px floor, 32 px on desktop, 44 px under `pointer: coarse`.
 - Keyboard: tab order follows reading order; every action works without a mouse; no trap.
 - States: empty, loading, error and offline are designed.
 - Motion: inside `no-preference`, a CSS test per file, nothing delays an answer.
 - Evidence: screenshots at 1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and 390x844 in both themes, looked at, not committed; tests; `docs/web.md` updated.
+- Gate: `web/e2e/layout.spec.ts` holds every page that needs no account, and the dev routes that stand for the pages that do, to Fits at the six sizes in both themes in Chromium; `scripts/ui-audit.mjs` takes the same measurements on any URL of a running dev server. A changed page runs the script and a new page joins the spec. The rules and the regions allowed to scroll are in `docs/web.md`, End-to-end.
 
 ## Tasks
 
@@ -218,7 +187,7 @@ Each is 45 to 60 minutes; "After" names what must be done first and what runs al
 | U9 | Browser page | `features/browser/*`, `routes/index.tsx`, `net/api.ts` | U1, U8 | the browser section, tested and photographed |
 | U10 | Create and lobby | `features/create/*`, `game/{Lobby,Invites}.tsx`, `routes/{new,join.$code}.tsx` | U9 | visibility, code and link, leave and close; `pnpm e2e` follows `/new` |
 | U11 | Page polish | `GameOver.tsx`, `MyGamesPage.tsx`, auth pages, `PageShell` | U1; with U3 | one width scale; designed states; rematch and way back |
-| U12 | Gate, cleanup | `scripts/ui-audit.mjs`, `e2e/layout.spec.ts`, `docs/web.md`, `docs/PLAN.md` | all | six sizes, both themes pass; the Audit section is deleted |
+| U12 | Gate, cleanup | `scripts/ui-audit.mjs`, `e2e/layout.spec.ts`, `e2e/layoutAudit.ts`, `docs/web.md` | all | six sizes, both themes pass in Chromium |
 
 ## Sources
 
