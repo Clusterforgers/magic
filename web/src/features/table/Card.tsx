@@ -1,4 +1,5 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
@@ -53,6 +54,16 @@ export const Card = memo(function Card({
   onSelect: givenSelect,
 }: CardProps) {
   const object = usePlay((state) => state.objectsById[id])
+  // The names of what it is attached to and of what is attached to it, for its cue and its spoken name.
+  const hostName = usePlay((state) =>
+    object?.attached_to === undefined ? undefined : state.objectsById[object.attached_to]?.name,
+  )
+  const attachedNames = usePlay(
+    useShallow((state) =>
+      (object?.attachments ?? []).map((at) => state.objectsById[at]?.name ?? 'a permanent'),
+    ),
+  )
+  const links = useMemo(() => ({ host: hostName, attached: attachedNames }), [hostName, attachedNames])
   const role = usePlay((state) => combatRoleIn(state, id))
   const marks = useMarksStore()
   const { highlight: marked, toggles, note } = useCardMark(id)
@@ -79,7 +90,7 @@ export const Card = memo(function Card({
       data-doomed={outlook?.dies || undefined}
       data-fx={fxAttr(fx)}
       data-fx-side={fxSide(fx)}
-      aria-label={cardLabel(object, role) + words + outlookWords(outlook)}
+      aria-label={cardLabel(object, role, links) + words + outlookWords(outlook)}
       aria-pressed={highlight === undefined || !pressable ? undefined : highlight === 'selected'}
       tabIndex={tabbable ? 0 : -1}
       {...handlers}
@@ -90,7 +101,7 @@ export const Card = memo(function Card({
         highlight === undefined ? null : HIGHLIGHT[highlight],
       )}
     >
-      <CardFace object={object} role={role} size={size} fit={fit} note={note} />
+      <CardFace object={object} role={role} size={size} fit={fit} note={note} links={links} />
       {outlook === null ? null : (
         <ForecastMarks outlook={outlook} tapped={tapped} compact={size === 'compact'} />
       )}

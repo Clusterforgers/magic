@@ -37,6 +37,7 @@ pub(crate) fn setup(
             battlefield: battlefield.into_iter().map(PresetPermanent::new).collect(),
             graveyard: Vec::new(),
             life: None,
+            keywords: Vec::new(),
         })
         .collect();
     GameSetup {

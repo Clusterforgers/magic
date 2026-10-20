@@ -1,5 +1,6 @@
 //! Per-player state: life, status, mana pool and mulligan progress.
 
+use mtg_cards::keyword::Keyword;
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
@@ -54,10 +55,16 @@ pub struct Player {
     pub(crate) drew_from_empty: bool,
     pub(crate) mulligans: u32,
     pub(crate) mulligan: MulliganStatus,
+    pub(crate) keywords: Vec<Keyword>,
 }
 
 impl Player {
-    pub(crate) fn new(id: PlayerId, life: i32, mulligan: MulliganStatus) -> Self {
+    pub(crate) fn new(
+        id: PlayerId,
+        life: i32,
+        mulligan: MulliganStatus,
+        keywords: Vec<Keyword>,
+    ) -> Self {
         Player {
             id,
             life,
@@ -66,6 +73,7 @@ impl Player {
             drew_from_empty: false,
             mulligans: 0,
             mulligan,
+            keywords,
         }
     }
 
@@ -102,5 +110,10 @@ impl Player {
     /// Opening-hand progress.
     pub const fn mulligan_status(&self) -> MulliganStatus {
         self.mulligan
+    }
+
+    /// The keywords the player's setup gives them (hexproof, CR 702.11d); `keywords::player_keywords` is the reader.
+    pub fn keywords(&self) -> &[Keyword] {
+        &self.keywords
     }
 }

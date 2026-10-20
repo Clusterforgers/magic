@@ -86,3 +86,10 @@ export function blockersByAttacker(pairs: ReadonlyMap<ObjectId, ObjectId>): Map<
   }
   return grouped
 }
+
+const COUNT_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten']
+
+/** What an attacker that needs several blockers asks for: "two or more blockers". */
+export function blockersNeeded(count: number): string {
+  return `${COUNT_WORDS[count] ?? String(count)} or more blockers`
+}

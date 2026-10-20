@@ -220,7 +220,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 ### Snapshots (last known information)
 
-`Snapshot { id, counter, controller, owner, zone, characteristics, counters, attachments }` is built by `snapshot(state, id)` and kept in three places only. `counter` names the object it describes, `characteristics` has every continuous effect applied, and `counters` and `attachments` stay empty until those exist.
+`Snapshot { id, counter, controller, owner, zone, characteristics, counters, attachments }` is built by `snapshot(state, id)` and kept in three places only. `counter` names the object it describes, `characteristics` has every continuous effect applied, and `counters` and `attachments` are the permanent's own (empty off the battlefield).
 
 | Place | Content |
 |---|---|
@@ -255,8 +255,8 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | Item | Rule |
 |---|---|
 | Data | `{"Keyword": {"Ward": "{2}"}}`. `Keyword` is an enum in `keyword.rs` with `name()` in Scryfall's spelling (compared with the record's `keywords`). It declares every keyword the roadmap lists. |
-| Engine | `keywords/mod.rs` maps each variant to a `KeywordRules` value defined in `keywords/<name>.rs`; a keyword without its task is a stub that changes nothing. A keyword task replaces its stub and adds its `Caps` entry in `caps.rs`. `keywords_of(state, id)` is the one reader of the keywords an object has: the printed ones, with layer 6 (`AddKeyword`, `RemoveKeyword`) joining there. The twelve keywords of combat are built (`engine.md`, Combat and keywords). |
-| Hooks | `restricts_blocking`, `answers_evasion`, `min_blockers`, `forbids_attacking`, `ignores_summoning_sickness`, `attacks_untapped`, `is_indestructible`, `modifies_damage`, `restricts_targeting`, `grants_timing`, `adds_abilities`. Combat, damage, state-based actions, targeting (`protects`, part of `legal_targets`) and casting at instant speed (`grants_instant_timing`) call theirs; a stub answers "no". A keyword expressible in the DSL (equip, cycling, prowess, battle cry) returns abilities from `adds_abilities` and is tested like any card; one that bends rules machinery (flying, first strike, trample) is a hook in combat or damage code. |
+| Engine | `keywords/mod.rs` maps each variant to a `KeywordRules` value defined in `keywords/<name>.rs`; a keyword without its task is a stub that changes nothing. A keyword task replaces its stub and adds its `Caps` entry in `caps.rs`. `keywords_of(state, id)` is the one reader of the keywords an object has: the printed ones, with layer 6 (`AddKeyword`, `RemoveKeyword`) joining there. The twelve keywords of combat and hexproof are built (`engine.md`, Combat and keywords). `player_keywords(state, player)` is the same reader for a player (hexproof, CR 702.11d). |
+| Hooks | `restricts_blocking`, `answers_evasion`, `min_blockers`, `forbids_attacking`, `ignores_summoning_sickness`, `attacks_untapped`, `is_indestructible`, `modifies_damage`, `restricts_targeting`, `restricts_player_targeting`, `grants_timing`, `adds_abilities`. Combat, damage, state-based actions, targeting (`protects` and `protects_player`, part of `legal_targets`) and casting at instant speed (`grants_instant_timing`) call theirs; a stub answers "no". A keyword expressible in the DSL (equip, cycling, prowess, battle cry) returns abilities from `adds_abilities` and is tested like any card; one that bends rules machinery (flying, first strike, trample) is a hook in combat or damage code. |
 
 ## Validation
 

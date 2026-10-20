@@ -118,6 +118,34 @@ impl GameState {
         self.objects.values()
     }
 
+    /// The permanent `id` is attached to (it is an Aura or Equipment), if that host is still the very object it was
+    /// attached to and on the battlefield: a host that left is a new object (CR 400.7).
+    pub fn host_of(&self, id: ObjectId) -> Option<ObjectId> {
+        let attached = self.object(id)?.permanent()?.attached_to()?;
+        let host = self.object(attached.id)?;
+        (host.zone() == Zone::Battlefield && host.counter() == attached.counter)
+            .then_some(attached.id)
+    }
+
+    /// The permanents attached to `id`, in id order.
+    pub fn attachments_of(&self, id: ObjectId) -> Vec<ObjectId> {
+        self.objects()
+            .map(GameObject::id)
+            .filter(|attached| self.host_of(*attached) == Some(id))
+            .collect()
+    }
+
+    /// Every host with the permanents attached to it, each list in id order: `attachments_of` for all hosts in one pass.
+    pub fn attachment_index(&self) -> BTreeMap<ObjectId, Vec<ObjectId>> {
+        let mut index: BTreeMap<ObjectId, Vec<ObjectId>> = BTreeMap::new();
+        for attached in self.objects().map(GameObject::id) {
+            if let Some(host) = self.host_of(attached) {
+                index.entry(host).or_default().push(attached);
+            }
+        }
+        index
+    }
+
     /// Number of objects in the game.
     pub fn object_count(&self) -> usize {
         self.objects.len()

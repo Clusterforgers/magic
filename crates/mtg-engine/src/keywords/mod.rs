@@ -148,6 +148,16 @@ pub trait KeywordRules: Debug + Sync {
         false
     }
 
+    /// Whether `holder`, a player who has the keyword, may not be targeted by a spell or ability that `controller` controls.
+    fn restricts_player_targeting(
+        &self,
+        _keyword: &Keyword,
+        _holder: PlayerId,
+        _controller: PlayerId,
+    ) -> bool {
+        false
+    }
+
     /// How the keyword changes the combat damage its holder deals.
     fn modifies_damage(&self, _keyword: &Keyword) -> DamageRules {
         DamageRules::default()
@@ -297,6 +307,16 @@ pub fn is_indestructible(state: &GameState, id: ObjectId) -> bool {
         .any(|keyword| rules(keyword).is_indestructible(keyword))
 }
 
+/// The keywords player `id` has now: the one reader of a player's keywords.
+///
+/// Today these are the ones their setup gives them; the continuous effects of layer 6 that name a player join
+/// here, as they join [`keywords_of`].
+pub fn player_keywords(state: &GameState, id: PlayerId) -> Vec<&Keyword> {
+    state
+        .player(id)
+        .map_or_else(Vec::new, |player| player.keywords().iter().collect())
+}
+
 /// Whether a keyword of `holder` stops `controller`'s `source` from targeting it.
 pub(crate) fn protects(
     state: &GameState,
@@ -307,6 +327,13 @@ pub(crate) fn protects(
     keywords_of(state, holder).into_iter().any(|keyword| {
         rules(keyword).restricts_targeting(state, keyword, holder, source, controller)
     })
+}
+
+/// Whether a keyword of the player `holder` stops `controller`'s spell or ability from targeting them.
+pub(crate) fn protects_player(state: &GameState, holder: PlayerId, controller: PlayerId) -> bool {
+    player_keywords(state, holder)
+        .into_iter()
+        .any(|keyword| rules(keyword).restricts_player_targeting(keyword, holder, controller))
 }
 
 /// Whether a keyword of the attacker stops `blocker` from blocking it.
@@ -325,7 +352,7 @@ pub(crate) fn grants_instant_timing(state: &GameState, id: ObjectId) -> bool {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: every keyword the vocabulary declares has rules, the capabilities name exactly the keywords whose rules the engine runs, each keyword answers the hooks its row says and no others, and one function reads what an object has.
+    //! Goal: every keyword the vocabulary declares has rules, the capabilities name exactly the keywords whose rules the engine runs, each keyword answers the hooks its row says and no others, and one function reads what an object has and one what a player has.
     use std::sync::Arc;
 
     use super::*;
@@ -388,7 +415,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 12] = [
+    const RUN: [&str; 13] = [
         "Keyword.Flying",
         "Keyword.Reach",
         "Keyword.FirstStrike",
@@ -401,6 +428,7 @@ mod tests {
         "Keyword.Menace",
         "Keyword.Defender",
         "Keyword.Indestructible",
+        "Keyword.Hexproof",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -414,6 +442,7 @@ mod tests {
         ignores_sickness: bool,
         attacks_untapped: bool,
         indestructible: bool,
+        shields_player: bool,
         damage: DamageRules,
         timing: bool,
         abilities: usize,
@@ -429,6 +458,7 @@ mod tests {
                 ignores_sickness: false,
                 attacks_untapped: false,
                 indestructible: false,
+                shields_player: false,
                 damage: DamageRules::default(),
                 timing: false,
                 abilities: 0,
@@ -444,6 +474,7 @@ mod tests {
                 ignores_sickness: rules.ignores_summoning_sickness(keyword),
                 attacks_untapped: rules.attacks_untapped(keyword),
                 indestructible: rules.is_indestructible(keyword),
+                shields_player: rules.restricts_player_targeting(keyword, PlayerId(0), PlayerId(1)),
                 damage: rules.modifies_damage(keyword),
                 timing: rules.grants_timing(keyword),
                 abilities: rules.adds_abilities(keyword).len(),
@@ -471,12 +502,13 @@ mod tests {
     #[case::haste(Keyword::Haste, Hooks { ignores_sickness: true, ..Hooks::none() })]
     #[case::vigilance(Keyword::Vigilance, Hooks { attacks_untapped: true, ..Hooks::none() })]
     #[case::indestructible(Keyword::Indestructible, Hooks { indestructible: true, ..Hooks::none() })]
+    #[case::hexproof(Keyword::Hexproof, Hooks { shields_player: true, ..Hooks::none() })]
     #[case::first_strike(Keyword::FirstStrike, Hooks { damage: damage(|d| d.first_strike = true), ..Hooks::none() })]
     #[case::double_strike(Keyword::DoubleStrike, Hooks { damage: damage(|d| d.double_strike = true), ..Hooks::none() })]
     #[case::deathtouch(Keyword::Deathtouch, Hooks { damage: damage(|d| d.deathtouch = true), ..Hooks::none() })]
     #[case::trample(Keyword::Trample, Hooks { damage: damage(|d| d.trample = true), ..Hooks::none() })]
     #[case::lifelink(Keyword::Lifelink, Hooks { damage: damage(|d| d.lifelink = true), ..Hooks::none() })]
-    fn a_combat_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
+    fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
     }
 
@@ -542,6 +574,19 @@ mod tests {
         assert!(!has_keyword(&game, held, &Keyword::Reach));
         assert_eq!(keywords_of(&game, plain).len(), 0);
         assert_eq!(keywords_of(&game, ObjectId(u64::MAX)).len(), 0);
+    }
+
+    #[test]
+    fn one_function_lists_the_keywords_a_player_has() {
+        let mut setup = crate::fixtures::setup(vec![vec![], vec![]], vec![vec![], vec![]]);
+        setup.players[1].keywords = vec![Keyword::Hexproof];
+        let game = GameState::from_setup(&setup).unwrap();
+        assert_eq!(player_keywords(&game, PlayerId(1)), [&Keyword::Hexproof]);
+        assert_eq!(player_keywords(&game, PlayerId(0)).len(), 0);
+        assert_eq!(player_keywords(&game, PlayerId(9)).len(), 0);
+        assert!(protects_player(&game, PlayerId(1), PlayerId(0)));
+        assert!(!protects_player(&game, PlayerId(1), PlayerId(1)));
+        assert!(!protects_player(&game, PlayerId(0), PlayerId(1)));
     }
 
     #[test]

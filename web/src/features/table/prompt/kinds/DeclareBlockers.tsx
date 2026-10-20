@@ -10,7 +10,7 @@ import { usePublishPending } from '../../combat/pending'
 import { usePreviewRequest } from '../../combat/usePreviewRequest'
 import { useSeatNamer } from '../../names'
 import { NO_IDS } from '../../selectors'
-import { blockersByAttacker, blockSummary, uniqueNames } from '../combatText'
+import { blockersByAttacker, blockersNeeded, blockSummary, uniqueNames } from '../combatText'
 import { markCards, useCardMarks, useCardNotes } from '../marks'
 import type { CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
@@ -106,6 +106,14 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
   }, [options.blockers])
   const legal = useMemo(() => [...offered.keys()], [offered])
   const attackers = useMemo(() => [...new Set([...offered.values()].flat())], [offered])
+  // Attackers that need several blockers (menace) are blocked by that many or by none.
+  const minimums = useMemo(() => {
+    const needed = new Map<ObjectId, number>()
+    for (const [attacker, count] of options.min_blockers ?? []) {
+      if (count > 1 && attackers.includes(attacker)) needed.set(attacker, count)
+    }
+    return needed
+  }, [options.min_blockers, attackers])
   // Attackers that are aimed elsewhere are dimmed while an attacker is being chosen, so the ones to click stand out.
   const inCombat = usePlay(useShallow((state) => state.view?.combat.attackers.map((a) => a.object) ?? NO_IDS))
   const attackersShown = useMemo(() => [...new Set([...attackers, ...inCombat])], [attackers, inCombat])
@@ -129,6 +137,16 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
   const [pairs, setPairs] = useState<ReadonlyMap<ObjectId, ObjectId>>(new Map())
   // The blocks are drawn as lines while they are only a choice, and they put the table's forecast out of date.
   usePublishPending({ blocks: pairs })
+  // The attackers with some blockers but fewer than they need: Confirm waits for them.
+  const blockerLists = useMemo(() => blockersByAttacker(pairs), [pairs])
+  const short = useMemo(
+    () =>
+      [...minimums].filter(([attacker, needed]) => {
+        const have = blockerLists.get(attacker)?.length ?? 0
+        return have > 0 && have < needed
+      }),
+    [minimums, blockerLists],
+  )
   // The engine is asked what the blocks would do each time they change; its forecast comes back through the seam.
   const blocksMade = useMemo(() => blocksAnswer(pairs), [pairs])
   const previewStatus = usePreviewRequest(id, blocksMade)
@@ -168,19 +186,36 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
         words: `blocking ${name}, ${controllerOf(attacker)}'s`,
       })
     }
-    for (const [attacker, blockers] of blockersByAttacker(pairs)) {
+    for (const [attacker, blockers] of blockerLists) {
       const names = blockers.map((id) => byId.get(id)?.name ?? 'a creature')
       const [only] = names
-      written.set(attacker, {
-        label: names.length === 1 && only !== undefined ? `Blocked by ${only}` : `Blocked by ${names.length}`,
-        words: `blocked by ${names.join(' and ')}`,
-      })
+      const lacking = (minimums.get(attacker) ?? 0) - blockers.length
+      written.set(
+        attacker,
+        lacking > 0
+          ? {
+              label: `Needs ${lacking} more`,
+              words: `blocked by ${names.join(' and ')}, needs ${lacking} more ${lacking === 1 ? 'blocker' : 'blockers'}`,
+            }
+          : {
+              label:
+                names.length === 1 && only !== undefined
+                  ? `Blocked by ${only}`
+                  : `Blocked by ${names.length}`,
+              words: `blocked by ${names.join(' and ')}`,
+            },
+      )
+    }
+    // An attacker that needs several blockers says so before anyone is put on it.
+    for (const [attacker, needed] of minimums) {
+      if (blockerLists.has(attacker)) continue
+      written.set(attacker, { label: `Needs ${needed}+ blockers`, words: `needs ${blockersNeeded(needed)}` })
     }
     if (choosing !== undefined && !pairs.has(choosing)) {
       written.set(choosing, { label: 'Pick attacker', words: 'choose the attacker it blocks' })
     }
     return written
-  }, [pairs, byId, choosing, controllerOf])
+  }, [pairs, blockerLists, minimums, byId, choosing, controllerOf])
 
   const pair = (blocker: ObjectId, attacker: ObjectId): void => {
     setPairs((current) => {
@@ -215,20 +250,23 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
     focusCard(blocker)
   }
 
+  const [firstShort] = short
   const text =
     legal.length === 0
       ? 'None of your creatures can block. Choose No blocks to go on.'
       : choosing !== undefined
         ? `Choose the attacker ${blockerName(choosing)} blocks.`
-        : pairs.size === 0
-          ? 'Choose a creature to block with, then the attacker it blocks, or choose No blocks.'
-          : `${blockSummary(pairs.size, new Set(pairs.values()).size)}. Confirm the blocks, or choose another creature.`
+        : firstShort !== undefined
+          ? `${attackerName(firstShort[0])} needs ${blockersNeeded(firstShort[1])}. Choose another creature to block it, or take its block back.`
+          : pairs.size === 0
+            ? 'Choose a creature to block with, then the attacker it blocks, or choose No blocks.'
+            : `${blockSummary(pairs.size, new Set(pairs.values()).size)}. Confirm the blocks, or choose another creature.`
 
   return (
     <PromptLayout text={text}>
       <Button
         className="h-10 px-4"
-        disabled={pairs.size === 0}
+        disabled={pairs.size === 0 || short.length > 0}
         onClick={() => answer({ DeclareBlockers: [...pairs] })}
       >
         Confirm blocks
@@ -236,6 +274,23 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
       <Button variant="outline" className="h-10 px-4" onClick={() => answer({ DeclareBlockers: [] })}>
         No blocks
       </Button>
+      {minimums.size === 0 ? null : (
+        <ul
+          aria-label="Attackers that need several blockers"
+          data-slot="block-minimums"
+          className="grid basis-full gap-0.5 text-sm"
+        >
+          {[...minimums].map(([attacker, needed]) => {
+            const have = blockerLists.get(attacker)?.length ?? 0
+            return (
+              <li key={attacker} data-short={(have > 0 && have < needed) || undefined}>
+                {attackerLabel(attacker)} needs {blockersNeeded(needed)}
+                {have > 0 && have < needed ? `: ${have} of ${needed} chosen` : ''}
+              </li>
+            )
+          })}
+        </ul>
+      )}
       {choosing === undefined ? null : (
         <AttackerPicker
           blocker={blockerName(choosing)}

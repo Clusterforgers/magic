@@ -4,7 +4,7 @@
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
 //! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, `{T}` abilities and triggered
 //! abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, life and damage (and delayed
-//! triggers), "may" and choices and modal spells, the keywords of combat, and nothing else.
+//! triggers), "may" and choices and modal spells, the keywords of combat and hexproof, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -51,6 +51,7 @@ const RUNS: &[&str] = &[
     "Keyword.Trample",
     "Keyword.Lifelink",
     "Keyword.Indestructible",
+    "Keyword.Hexproof",
 ];
 
 /// The capabilities of this engine.
@@ -133,7 +134,8 @@ mod tests {
     #[case::trample("Keyword.Trample", true)]
     #[case::lifelink("Keyword.Lifelink", true)]
     #[case::indestructible("Keyword.Indestructible", true)]
-    #[case::hexproof("Keyword.Hexproof", false)]
+    #[case::hexproof("Keyword.Hexproof", true)]
+    #[case::ward("Keyword.Ward", false)]
     #[case::kicker("Keyword.Kicker", false)]
     #[case::x_costs(X_COST, false)]
     #[case::faces(FACES, false)]

@@ -25,9 +25,9 @@ pub struct Snapshot {
     pub zone: Zone,
     /// What it was, with every continuous effect applied.
     pub characteristics: Characteristics,
-    /// The counters on it, by kind (none until counters exist).
+    /// The counters on it, by kind.
     pub counters: Vec<(CounterKind, u32)>,
-    /// The objects attached to it (none until attachments exist).
+    /// The objects attached to it, in id order.
     pub attachments: Vec<ObjectId>,
 }
 
@@ -51,8 +51,16 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         owner: object.owner(),
         zone: object.zone(),
         characteristics: characteristics(state, id)?,
-        counters: Vec::new(),
-        attachments: Vec::new(),
+        counters: object
+            .permanent()
+            .map(|permanent| {
+                permanent
+                    .counters()
+                    .map(|(kind, count)| (kind.clone(), count))
+                    .collect()
+            })
+            .unwrap_or_default(),
+        attachments: state.attachments_of(id),
     })
 }
 

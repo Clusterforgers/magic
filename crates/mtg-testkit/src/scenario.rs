@@ -3,6 +3,8 @@
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::keyword::Keyword;
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::PlayerId;
 use mtg_engine::PlayerSetup;
 use mtg_engine::format::{FormatRules, Normal};
@@ -57,6 +59,22 @@ pub fn damaged(card: Arc<CardDefinition>, damage: u32) -> PresetPermanent {
         damage,
         ..PresetPermanent::new(card)
     }
+}
+
+/// `permanent` with `count` more counters of `kind` on it.
+pub fn with_counters(
+    mut permanent: PresetPermanent,
+    kind: CounterKind,
+    count: u32,
+) -> PresetPermanent {
+    permanent.counters.push((kind, count));
+    permanent
+}
+
+/// `permanent` attached to the permanent at `place` of `seat`'s battlefield (an Aura or an Equipment).
+pub fn attached_to(mut permanent: PresetPermanent, seat: usize, place: usize) -> PresetPermanent {
+    permanent.attached_to = Some((seat, place));
+    permanent
 }
 
 /// Builds a game state directly instead of playing to it.
@@ -243,6 +261,19 @@ impl Scenario {
         self
     }
 
+    /// Gives a player keywords from the start, such as hexproof (CR 702.11d).
+    #[must_use]
+    pub fn player_keywords(
+        mut self,
+        player: usize,
+        keywords: impl IntoIterator<Item = Keyword>,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.keywords = keywords.into_iter().collect();
+        }
+        self
+    }
+
     /// The setup this scenario describes (decks are not validated).
     pub fn setup(self) -> Result<GameSetup, ScenarioError> {
         if let Some(error) = self.error {
@@ -375,6 +406,32 @@ mod tests {
         assert!(perms[0].tapped() && !perms[0].summoning_sick());
         assert!(perms[1].summoning_sick() && !perms[1].tapped());
         assert_eq!(perms[2].damage(), 1);
+    }
+
+    #[test]
+    fn a_seat_can_start_with_keywords() {
+        let engine = Scenario::new(3)
+            .player_keywords(1, [Keyword::Hexproof])
+            .build()
+            .unwrap();
+        let state = engine.state();
+        let held: Vec<usize> = (0..3)
+            .map(|seat| {
+                state
+                    .player(PlayerId::from_index(seat))
+                    .unwrap()
+                    .keywords()
+                    .len()
+            })
+            .collect();
+        assert_eq!(held, [0, 1, 0]);
+        assert_eq!(
+            Scenario::new(2)
+                .player_keywords(4, [Keyword::Hexproof])
+                .setup()
+                .unwrap_err(),
+            ScenarioError::NoSuchPlayer(4)
+        );
     }
 
     #[test]

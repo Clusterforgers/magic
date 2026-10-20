@@ -3,6 +3,7 @@ import type {
   AbilityDef,
   CombatView,
   Color,
+  CounterKind,
   ManaCost,
   ManaSymbol,
   ManaType,
@@ -204,6 +205,51 @@ export function keywordLine(object: ObjectView): string | null {
   return names.length === 0 ? null : names.join(', ')
 }
 
+/** A kind of counter by its name: "+1/+1", "loyalty", "charge". */
+export function counterName(kind: CounterKind): string {
+  return typeof kind === 'string' ? kind : kind.Other
+}
+
+const countersOf = (object: ObjectView): readonly (readonly [CounterKind, number])[] => object.counters ?? []
+
+/** The loyalty of a planeswalker, which its face shows as a number of its own, or null when it has none. */
+export function loyaltyOf(object: ObjectView): number | null {
+  const found = countersOf(object).find(([kind]) => kind === 'loyalty')
+  return found === undefined ? null : found[1]
+}
+
+/** The counters a face shows as badges, such as "+1/+1 ×2" and "charge"; loyalty is not among them. */
+export function counterLabels(object: ObjectView): string[] {
+  return countersOf(object)
+    .filter(([kind]) => kind !== 'loyalty')
+    .map(([kind, count]) => (count === 1 ? counterName(kind) : `${counterName(kind)} ×${count}`))
+}
+
+/** The same counters in words, loyalty included, for a screen reader: "2 +1/+1 counters", "loyalty 3". */
+export function counterWords(object: ObjectView): string[] {
+  return countersOf(object).map(([kind, count]) =>
+    kind === 'loyalty'
+      ? `loyalty ${count}`
+      : `${count} ${counterName(kind)} ${count === 1 ? 'counter' : 'counters'}`,
+  )
+}
+
+/** What a permanent is attached to and what is attached to it, by name. */
+export interface Links {
+  /** The permanent an Aura or Equipment is attached to. */
+  host?: string | undefined
+  /** The permanents attached to it. */
+  attached?: readonly string[] | undefined
+}
+
+/** "attached to Grizzly Bears" for an Aura or Equipment; "Pacifism and Bonesplitter attached" for its host. */
+export function linkWords({ host, attached = [] }: Links): string[] {
+  const words: string[] = []
+  if (host !== undefined) words.push(`attached to ${host}`)
+  if (attached.length > 0) words.push(`${attached.join(' and ')} attached`)
+  return words
+}
+
 /** One ability as the rules text prints it. */
 export function abilityText(ability: AbilityDef): string {
   return `{T}: Add {${LETTER[ability.Mana.produces]}}.`
@@ -241,7 +287,7 @@ export function statusWords(object: ObjectView, role: CombatRole | null): string
 }
 
 /** Everything a screen reader needs from a card face. */
-export function cardLabel(object: ObjectView, role: CombatRole | null): string {
+export function cardLabel(object: ObjectView, role: CombatRole | null, links: Links = {}): string {
   const parts = [object.name]
   if (object.mana_cost !== null) {
     parts.push(
@@ -257,5 +303,6 @@ export function cardLabel(object: ObjectView, role: CombatRole | null): string {
   parts.push(...keywordNames(object).map((name) => name.toLowerCase()))
   parts.push(...object.abilities.map(abilityWords))
   parts.push(...statusWords(object, role))
+  parts.push(...counterWords(object), ...linkWords(links))
   return parts.join(', ')
 }
