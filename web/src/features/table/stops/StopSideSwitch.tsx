@@ -39,7 +39,7 @@ export function StopSideSwitch({ shown, turn, counts, onPick }: StopSideSwitchPr
           {SIDE_WORD[side]}
           {/* The row on show lights its own stops; the count is for the side that is out of sight. */}
           {shown !== side && counts[side] > 0 ? (
-            <span aria-hidden="true" className="rounded bg-foreground/15 px-1 text-[0.65rem] leading-4">
+            <span aria-hidden="true" className="rounded bg-foreground/15 px-1 text-[0.6875rem] leading-4">
               {counts[side]}
             </span>
           ) : null}
