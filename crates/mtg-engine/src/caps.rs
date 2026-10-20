@@ -52,6 +52,7 @@ const RUNS: &[&str] = &[
     "Mod.ModifyPT",
     "Mod.AddKeyword",
     "Effect.DelayedTrigger",
+    "Effect.If",
     "Effect.May",
     "Effect.Pay",
     "Effect.Choose",
@@ -150,6 +151,12 @@ mod tests {
     #[case::granted_keywords("Mod.AddKeyword", true)]
     #[case::setting_power_and_toughness("Mod.SetPT", false)]
     #[case::removed_keywords("Mod.RemoveKeyword", false)]
+    #[case::conditions("Effect.If", true)]
+    #[case::counters_in_a_value("Amount.Counters", false)]
+    #[case::divided_amounts("Amount.Divided", false)]
+    #[case::even_shares("Amount.EvenShare", false)]
+    #[case::loyalty_in_a_value("Stat.Loyalty", false)]
+    #[case::being_kicked("Condition.Kicked", false)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]

@@ -181,6 +181,7 @@ mod tests {
                 "Effect.CreateToken",
                 "Effect.Continuous",
                 "Effect.DelayedTrigger",
+                "Effect.If",
                 "Effect.May",
                 "Effect.Pay",
                 "Effect.Modal"

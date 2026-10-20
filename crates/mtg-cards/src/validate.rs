@@ -17,7 +17,7 @@ use crate::modify::Modification;
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use crate::value::{Amount, Condition};
+use crate::value::{Amount, Condition, StatKind};
 
 /// One problem found in a file: where, and what.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -254,7 +254,10 @@ impl<'a> Walker<'a> {
             Pred::Named(name) => self
                 .names
                 .push((self.face, self.current_path(), name.clone())),
-            Pred::Compare { to, .. } => self.at("to", |w| w.amount(to)),
+            Pred::Compare { stat, to, .. } => {
+                self.stat(*stat);
+                self.at("to", |w| w.amount(to));
+            }
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
                 if preds.is_empty() {
@@ -281,6 +284,13 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A characteristic the value evaluator reads. It cannot read loyalty yet, and a card that needs it waits.
+    fn stat(&mut self, stat: StatKind) {
+        if stat == StatKind::Loyalty {
+            self.uses("Stat", "Loyalty");
+        }
+    }
+
     fn amount(&mut self, amount: &Amount) {
         match amount {
             Amount::Fixed(_) => {}
@@ -290,20 +300,29 @@ impl<'a> Walker<'a> {
                 }
             }
             Amount::Count(selector) => self.selector(selector),
-            Amount::Stat { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
+            Amount::Stat { of, stat } => {
+                self.stat(*stat);
+                self.at("of", |w| w.reference(of, Kind::Object));
+            }
             Amount::Life(who) => self.reference(who, Kind::Player),
-            Amount::Counters { on, .. } => self.at("on", |w| w.reference(on, Kind::Either)),
+            // The value evaluator cannot read counters or divided amounts yet, and a card that needs them waits.
+            Amount::Counters { on, .. } => {
+                self.uses("Amount", "Counters");
+                self.at("on", |w| w.reference(on, Kind::Either));
+            }
             Amount::Sum(parts) => {
                 for (i, part) in parts.iter().enumerate() {
                     self.at(format!("[{i}]"), |w| w.amount(part));
                 }
             }
             Amount::Divided => {
+                self.uses("Amount", "Divided");
                 if !self.scope.targets.iter().any(|t| t.1) {
                     self.problem("`Divided` needs a target specification with `divide`");
                 }
             }
             Amount::EvenShare(total) => {
+                self.uses("Amount", "EvenShare");
                 if !self.scope.targets.iter().any(|t| t.2) {
                     self.problem(
                         "`EvenShare` needs a target specification with more than one target",
@@ -356,6 +375,7 @@ impl<'a> Walker<'a> {
                 self.at("selector", |w| w.selector(selector));
             }
             Condition::Kicked => {
+                self.uses("Condition", "Kicked");
                 if !self.has_kicker {
                     self.problem("`Kicked` needs a Kicker or Multikicker keyword on the card");
                 }
@@ -921,6 +941,8 @@ impl<'a> Walker<'a> {
 /// Every primitive an ability uses, named `Effect.DealDamage`, `Keyword.Flying`, `Trigger.ZoneChange`,
 /// `Cost.Tap`, `Mod.ModifyPT`, `ReplaceWhen.TokenCreation`, `ReplaceBy.Multiply` or `Ability.Loyalty`;
 /// an ability with a `limit` or a zone other than the battlefield also uses `Ability.Limit` or `Ability.From`.
+/// A value the engine cannot read yet is named too, wherever it stands (a condition, an amount, a selector):
+/// `Amount.Counters`, `Amount.Divided`, `Amount.EvenShare`, `Stat.Loyalty` and `Condition.Kicked`.
 ///
 /// A plain `{T}: Add {X}` is one primitive, [`PLAIN_MANA_ABILITY`]: the engine runs that exact shape
 /// and not the general ability, cost and effect it is made of.
@@ -1274,6 +1296,66 @@ mod tests {
         let ability: Ability = serde_json::from_str(json).unwrap();
         let expected: BTreeSet<String> = expected.iter().map(|name| (*name).to_owned()).collect();
         assert_eq!(used_primitives(&ability), expected);
+    }
+
+    #[rstest]
+    #[case::counters_in_a_condition(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"Compare":{"left":{"Counters":{"on":"This","counter":"+1/+1"}},"op":"Ge","right":1}},"then":[{"Draw":{}}]}}]}}"#,
+        &["Ability.Spell", "Amount.Counters", "Effect.Draw", "Effect.If"]
+    )]
+    #[case::counters_as_an_amount(
+        r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"Counters":{"on":"This","counter":"+1/+1"}}}}]}}"#,
+        &["Ability.Spell", "Amount.Counters", "Effect.DealDamage"]
+    )]
+    #[case::counters_inside_a_sum_inside_a_negation(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"Not":{"Compare":{"left":{"Sum":[1,{"Counters":{"on":"This","counter":"+1/+1"}}]},"op":"Lt","right":3}}},"then":[]}}]}}"#,
+        &["Ability.Spell", "Amount.Counters", "Effect.If"]
+    )]
+    #[case::loyalty_as_a_stat(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"Compare":{"left":{"Stat":{"of":"This","stat":"Loyalty"}},"op":"Ge","right":1}},"then":[]}}]}}"#,
+        &["Ability.Spell", "Effect.If", "Stat.Loyalty"]
+    )]
+    #[case::loyalty_in_a_selector(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"Matches":{"subject":"This","selector":[{"Compare":{"stat":"Loyalty","op":"Ge","to":3}}]}},"then":[]}}]}}"#,
+        &["Ability.Spell", "Effect.If", "Stat.Loyalty"]
+    )]
+    #[case::power_and_mana_value_are_read(
+        r#"{"Spell":{"effects":[{"If":{"condition":{"All":[{"Compare":{"left":{"Stat":{"of":"This","stat":"Power"}},"op":"Ge","right":3}},{"Matches":{"subject":"This","selector":[{"Compare":{"stat":"ManaValue","op":"Le","to":2}}]}}]},"then":[]}}]}}"#,
+        &["Ability.Spell", "Effect.If"]
+    )]
+    #[case::a_divided_amount(
+        r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":2},"divide":2}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}"#,
+        &["Ability.Spell", "Amount.Divided", "Effect.DealDamage"]
+    )]
+    #[case::an_even_share(
+        r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":null}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"EvenShare":3}}}]}}"#,
+        &["Ability.Spell", "Amount.EvenShare", "Effect.DealDamage"]
+    )]
+    fn a_value_the_engine_cannot_read_yet_counts_as_a_primitive(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(problems(json), Vec::<String>::new());
+        let ability: Ability = serde_json::from_str(json).unwrap();
+        let expected: BTreeSet<String> = expected.iter().map(|name| (*name).to_owned()).collect();
+        assert_eq!(used_primitives(&ability), expected);
+    }
+
+    #[test]
+    fn being_kicked_counts_as_a_primitive_beside_the_keyword() {
+        let json = r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#;
+        let ability: Ability = serde_json::from_str(json).unwrap();
+        assert_eq!(
+            used_primitives(&ability),
+            [
+                "Ability.Spell",
+                "Condition.Kicked",
+                "Effect.Draw",
+                "Effect.If"
+            ]
+            .map(String::from)
+            .into()
+        );
     }
 
     #[rstest]
