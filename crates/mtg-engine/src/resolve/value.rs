@@ -61,6 +61,8 @@ pub struct Scope<'a> {
     pub(crate) specs: &'a [TargetSpec],
     pub(crate) bindings: &'a Bindings,
     pub(crate) snapshots: Vec<&'a Snapshot>,
+    /// What earlier steps of this resolution moved away, as it was: a target among them stays named.
+    pub(crate) departed: &'a [Snapshot],
     pub(crate) cause: Option<&'a Cause>,
 }
 
@@ -100,6 +102,7 @@ impl<'a> Scope<'a> {
             specs: &[],
             bindings: &NO_BINDINGS,
             snapshots: Vec::new(),
+            departed: &[],
             cause: None,
         }
     }
@@ -148,7 +151,9 @@ impl<'a> Scope<'a> {
         })
     }
 
-    /// The legal targets chosen for the specification `index`: an illegal one is ignored (CR 608.2b).
+    /// The targets chosen for the specification `index` that still count: a legal one, or one an earlier step of this
+    /// resolution moved away, whose last known information the later steps read (CR 608.2h). Any other illegal one is
+    /// ignored (CR 608.2b).
     fn chosen(&self, index: usize) -> Vec<Target> {
         let (Some(set), Some(spec)) = (self.choices.targets.get(index), self.specs.get(index))
         else {
@@ -163,8 +168,15 @@ impl<'a> Scope<'a> {
         );
         set.iter()
             .copied()
-            .filter(|target| legal.contains(target))
+            .filter(|target| legal.contains(target) || self.departed(*target))
             .collect()
+    }
+
+    /// Whether an earlier step of this resolution moved the target away.
+    fn departed(&self, target: Target) -> bool {
+        target
+            .object()
+            .is_some_and(|object| self.departed.iter().any(|shot| shot.reference() == object))
     }
 
     /// CR 608.2b: whether targets were chosen and every one of them is illegal now, so the spell or ability does nothing.
@@ -262,6 +274,26 @@ impl<'a> Scope<'a> {
             .into_iter()
             .filter_map(Target::object)
             .collect())
+    }
+
+    /// The objects a reference names that are still the objects it named, each once: one that has changed zones since
+    /// is a new object (CR 400.7) and is passed over, so is a name that repeats.
+    pub(crate) fn live_objects(
+        &self,
+        reference: &Ref,
+    ) -> Result<Vec<&'a GameObject>, ResolveError> {
+        let state = self.state;
+        let mut found: Vec<&'a GameObject> = Vec::new();
+        for named in self.objects(reference)? {
+            if let Some(object) = state
+                .object(named.id)
+                .filter(|object| object.counter() == named.counter)
+                && !found.iter().any(|seen| seen.id() == object.id())
+            {
+                found.push(object);
+            }
+        }
+        Ok(found)
     }
 
     /// The zones a selector looks in: the one it names, the stack for spells, else the battlefield.
