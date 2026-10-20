@@ -179,15 +179,7 @@ fn every_card_of_a_full_download_compiles_to_rules_that_load() {
     let mut unread_keywords: BTreeMap<String, usize> = BTreeMap::new();
     let mut unread_spells: BTreeMap<String, usize> = BTreeMap::new();
     let mut unread_triggers: BTreeMap<String, usize> = BTreeMap::new();
-    // Predefined tokens a compiled card may name.
-    let tokens: Vec<Source> = ["clue", "food", "treasure"]
-        .iter()
-        .map(|id| Source {
-            path: format!("cards/tokens/{id}.json"),
-            text: std::fs::read_to_string(common::cards_dir().join(format!("tokens/{id}.json")))
-                .unwrap(),
-        })
-        .collect();
+    let tokens = common::token_sources();
     for printed in &cards {
         let compiled = compile(printed);
         for clause in &compiled.clauses {

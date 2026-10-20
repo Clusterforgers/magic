@@ -89,28 +89,28 @@ impl Form {
     }
 }
 
-fn color(word: &str) -> Option<Color> {
+pub(super) fn color(word: &str) -> Option<Color> {
     COLORS
         .iter()
         .find(|(name, _)| *name == word)
         .map(|(_, color)| *color)
 }
 
-fn color_name(color: Color) -> &'static str {
+pub(super) fn color_name(color: Color) -> &'static str {
     COLORS
         .iter()
         .find(|(_, candidate)| *candidate == color)
         .map_or("", |(name, _)| name)
 }
 
-fn card_type(word: &str) -> Option<CardType> {
+pub(super) fn card_type(word: &str) -> Option<CardType> {
     TYPES
         .iter()
         .find(|(name, _)| *name == word)
         .map(|(_, card_type)| *card_type)
 }
 
-fn type_name(card_type: CardType) -> &'static str {
+pub(super) fn type_name(card_type: CardType) -> &'static str {
     TYPES
         .iter()
         .find(|(_, candidate)| *candidate == card_type)

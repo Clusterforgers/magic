@@ -182,13 +182,18 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
     Some(format!("you have {number} or {more} life"))
 }
 
-/// "a" or "an" for the words after it.
-fn article(words: &str) -> &'static str {
+/// "a" or "an" for the words after it ("an Elf", "an 8/8 token", "a 1/1 token").
+pub fn article(words: &str) -> &'static str {
     let vowel = words
         .chars()
         .next()
         .is_some_and(|first| "aeiou".contains(first.to_ascii_lowercase()));
-    if vowel { "an" } else { "a" }
+    let eight = ["8", "11", "18"].iter().any(|number| {
+        words
+            .strip_prefix(number)
+            .is_some_and(|rest| !rest.starts_with(|c: char| c.is_ascii_digit()))
+    });
+    if vowel || eight { "an" } else { "a" }
 }
 
 /// A subject with its article: "~", "a creature you control", "another Elf".

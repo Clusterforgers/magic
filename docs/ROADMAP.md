@@ -33,7 +33,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (r1b) A Scryfall keyword counts as present in `check_printed` when an ability has it or a `Manual` clause names it, so compiled cards that grant a keyword or use a typecycling form validate (`docs/cards-dsl.md`, Validation)
 - [x] (r2) Reader framework and renderer: a template reads a clause into the DSL and renders it back as English; goldens for each template, and a ratchet over the corpus (every ability the compiler reads equals the hand-written one, and the cards it reproduces whole never shrink in number)
 - [x] (r3a) Templates: plain mana abilities and spell effects (draw, life, damage, destroy, exile, counter, scry, pump) with their common targets and amounts
-- [ ] (r3b) Templates: triggers (enters, dies, leaves, attacks, cast, step, sacrifice) and "you may"; a line without a period no longer blocks the effects of its spell
+- [x] (r3b) Templates: triggers (enters, dies, leaves, attacks, cast, step, sacrifice) and "you may"; a line without a period no longer blocks the effects of its spell
 - [ ] (r3b2) Templates: modes ("choose one") and "pay" ("unless its controller pays"), and the effects "exile ~", "return target creature to its owner's hand" and "all creatures get -N/-N"
 - [ ] (r3c) Templates: activated abilities with `{T}`, mana and sacrifice costs, and the wordings of tokens, counters and search
 - [ ] (r4) `mtg-cli coverage`: states, reasons and clause spans for every precon card, with the missing primitives and unreadable wordings ranked by the cards each holds back

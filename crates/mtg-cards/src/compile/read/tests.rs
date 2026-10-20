@@ -125,7 +125,11 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
     assert_eq!(read, tilde);
 }
 
+mod counters;
+mod create;
+mod life;
 mod may;
+mod returns;
 mod triggers;
 
 mod mana {

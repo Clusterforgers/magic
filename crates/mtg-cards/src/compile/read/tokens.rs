@@ -45,6 +45,7 @@ pub fn canonical(text: &str) -> String {
         let noun = words
             .get(at + 1)
             .map(|next| next.trim_end_matches(|c: char| !c.is_alphanumeric()));
+        let investigate = word.trim_end_matches(|c: char| !c.is_alphanumeric());
         if word.eq_ignore_ascii_case("this")
             && let Some(noun) = noun
             && let Some(next) = words.get(at + 1)
@@ -52,6 +53,16 @@ pub fn canonical(text: &str) -> String {
         {
             out.push(format!("~{}", next.get(noun.len()..).unwrap_or_default()));
             at += 2;
+        } else if investigate.eq_ignore_ascii_case("investigate") {
+            // The keyword action is the same as its reminder text.
+            let create = if investigate.starts_with('I') {
+                "Create"
+            } else {
+                "create"
+            };
+            let tail = word.get(investigate.len()..).unwrap_or_default();
+            out.push(format!("{create} a Clue token{tail}"));
+            at += 1;
         } else {
             out.push(word.to_owned());
             at += 1;

@@ -3,6 +3,7 @@
 
 use std::path::{Path, PathBuf};
 
+use mtg_cards::load::Source;
 use mtg_cards::support::{PrintedCard, PrintedFace};
 use mtg_core::mana::ManaType;
 use mtg_import::scryfall::{CardRecord, cards};
@@ -13,6 +14,18 @@ const FIXTURE: &str = include_str!("../fixtures/corpus_scryfall.json");
 /// The directory of rules files.
 pub fn cards_dir() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("cards")
+}
+
+/// The predefined tokens (`cards/tokens/`) that a compiled card may name.
+pub fn token_sources() -> Vec<Source> {
+    ["clue", "food", "treasure"]
+        .iter()
+        .map(|id| Source {
+            path: format!("cards/tokens/{id}.json"),
+            text: std::fs::read_to_string(cards_dir().join(format!("tokens/{id}.json")))
+                .expect("a predefined token file"),
+        })
+        .collect()
 }
 
 /// An imported record as the strings validation compares with.

@@ -2,16 +2,17 @@
 //! checked against the text it came from. Every effect is a sentence of its own; the readers take
 //! ", then" between two steps as the same sequence.
 
-use super::amounts::{cards_text, points_text, stat_name};
+use super::amounts::{cards_text, count_word, points_text, stat_name};
+use super::create;
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
 use super::triggers::{condition_text, pattern_text};
 use crate::ability::{Ability, Timing};
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Effect, Produce};
+use crate::effect::{Destination, Effect, Produce};
 use crate::modify::{Duration, Modification};
-use crate::refs::{Ref, TargetSpec, Targetable, ZoneKind};
+use crate::refs::{Pred, Ref, TargetSpec, Targetable, ZoneKind};
 use crate::trigger::TriggerPattern;
-use crate::value::{Amount, Condition};
+use crate::value::{Amount, Condition, CounterKind};
 
 /// The oracle wording of an ability the readers produce; `None` for any other ability.
 pub fn ability(ability: &Ability) -> Option<String> {
@@ -112,6 +113,9 @@ fn is_imperative(effect: &Effect) -> bool {
             }
             | Effect::Exile { .. }
             | Effect::Counter { .. }
+            | Effect::Move { .. }
+            | Effect::CreateToken { who: Ref::You, .. }
+            | Effect::PutCounters { .. }
     )
 }
 
@@ -193,6 +197,44 @@ impl Writer<'_> {
         self.targets.first().is_some_and(|spec| wanted(&spec.what))
     }
 
+    /// Whether the reference is the one target and it is a card in the controller's graveyard.
+    fn in_your_graveyard(&self, what: &Ref) -> bool {
+        *what == Ref::Target(0)
+            && self.target_is(|kind| {
+                matches!(kind, Targetable::Object(selector)
+                    if selector.0.contains(&Pred::In(ZoneKind::Graveyard))
+                        && selector.0.contains(&Pred::OwnedBy(Ref::You)))
+            })
+    }
+
+    /// "put a +1/+1 counter on ~", "put two -1/-1 counters on target creature".
+    fn counters(&mut self, on: &Ref, counter: &CounterKind, count: &Amount) -> Option<String> {
+        let kind = match counter {
+            CounterKind::PlusOnePlusOne => "+1/+1",
+            CounterKind::MinusOneMinusOne => "-1/-1",
+            _ => return None,
+        };
+        let Amount::Fixed(number) = count else {
+            return None;
+        };
+        let (many, noun) = match number {
+            ..=0 => return None,
+            1 => ("a", "counter"),
+            _ => (count_word(u32::try_from(*number).ok()?)?, "counters"),
+        };
+        let place = match on {
+            Ref::This => "~".to_owned(),
+            Ref::Target(0)
+                if self.single(on)
+                    && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
+            {
+                self.name_target()?
+            }
+            _ => return None,
+        };
+        Some(format!("put {many} {kind} {noun} on {place}"))
+    }
+
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
@@ -227,6 +269,19 @@ impl Writer<'_> {
             ),
             Effect::GainLife { who, amount } => self.life(who, amount, "gain")?,
             Effect::LoseLife { who, amount } => self.life(who, amount, "lose")?,
+            Effect::WinGame { who } => format!(
+                "{} {} the game",
+                self.player(who)?,
+                if *who == Ref::You { "win" } else { "wins" }
+            ),
+            Effect::Move {
+                what,
+                to: Destination::Hand,
+            } if self.in_your_graveyard(what) => {
+                format!("return {} to your hand", self.object(what)?)
+            }
+            Effect::PutCounters { on, counter, count } => self.counters(on, counter, count)?,
+            Effect::CreateToken { .. } => create::text(effect)?,
             Effect::DealDamage {
                 source: None,
                 to,
