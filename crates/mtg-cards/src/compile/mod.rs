@@ -11,6 +11,8 @@ mod keywords;
 mod manual;
 mod normalize;
 
+use std::collections::BTreeSet;
+
 use crate::ability::Ability;
 use crate::card::{Card, Face, ImplStatus, Span};
 use crate::keyword::Keyword;
@@ -36,7 +38,8 @@ pub struct Clause {
 /// What the compiler made of one card.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Compiled {
-    /// The rules, or `None` when no face has rules text once reminder text is removed.
+    /// The rules, or `None` when no face has rules text once reminder text is removed, or the data
+    /// cannot hold the card (over four faces, or two faces with one name).
     pub card: Option<Card>,
     /// Every clause of every face in text order, read or not, for the coverage report.
     pub clauses: Vec<Clause>,
@@ -116,13 +119,25 @@ fn is_spell(face: &PrintedFace) -> bool {
         .any(|word| matches!(word, "Instant" | "Sorcery"))
 }
 
-/// The card with its status, or `None` when no face has rules text.
-fn build(printed: &PrintedCard, mut faces: Vec<Face>, listed: &mut [Clause]) -> Option<Card> {
-    if !printed
+/// Whether there is something to write and the data can hold it: some face has rules text, there
+/// are at most four faces, and no two faces share a name.
+fn is_writable(printed: &PrintedCard) -> bool {
+    let names: BTreeSet<&str> = printed
+        .faces
+        .iter()
+        .map(|face| face.name.as_str())
+        .collect();
+    printed
         .faces
         .iter()
         .any(|face| has_rules_text(&face.oracle_text))
-    {
+        && printed.faces.len() <= 4
+        && names.len() == printed.faces.len()
+}
+
+/// The card with its status, or `None` when it is not writable.
+fn build(printed: &PrintedCard, mut faces: Vec<Face>, listed: &mut [Clause]) -> Option<Card> {
+    if !is_writable(printed) {
         return None;
     }
     let read = listed.iter().filter(|clause| clause.read).count();

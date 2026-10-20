@@ -141,6 +141,19 @@ fn a_spell_of_only_keywords_is_left_to_the_table(#[case] type_line: &str, #[case
     assert!(compiled.clauses.iter().all(|clause| !clause.read));
 }
 
+#[rstest]
+#[case::five_faces(&["A", "B", "C", "D", "E"])]
+#[case::repeated_name(&["Soldier", "Soldier"])]
+fn a_card_the_data_cannot_hold_lists_its_clauses_but_has_no_rules(#[case] names: &[&str]) {
+    let faces = names
+        .iter()
+        .map(|name| face(name, "Creature \u{2014} Elf", "Flying"))
+        .collect();
+    let compiled = compile(&card_of(faces));
+    assert_eq!(compiled.card, None);
+    assert_eq!(compiled.clauses.len(), names.len());
+}
+
 #[test]
 fn a_partner_card_names_a_card_that_must_exist() {
     let text = "Partner with Pir, Imaginative Rascal (When this creature enters, target player may search.)\nHaste";
