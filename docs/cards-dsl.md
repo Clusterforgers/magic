@@ -224,7 +224,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 ### Snapshots (last known information)
 
-`Snapshot { id, counter, controller, owner, zone, characteristics, counters, attachments }` is built by `snapshot(state, id)` and kept in three places only. `counter` names the object it describes, `characteristics` has every continuous effect applied, and `counters` and `attachments` are the permanent's own (empty off the battlefield).
+`Snapshot { id, counter, controller, owner, zone, characteristics, keywords, counters, attachments }` is built by `snapshot(state, id)` and kept in three places only. `counter` names the object it describes, `characteristics` has every continuous effect applied, `keywords` are those it had after layer 6 (none that an effect removed), and `counters` and `attachments` are the permanent's own (empty off the battlefield).
 
 | Place | Content |
 |---|---|
@@ -232,14 +232,14 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | Resolution | Every object a step moves off the battlefield or stack, carried by `StepDone`, so "its power" and "its controller" in Swords to Plowshares read the creature as it was when exiled (CR 608.2h). `Target(i)` still names a target that an earlier step moved, so those later steps find it. |
 | `Choices` | The value of X, which outlives the spell. |
 
-`Amount::Stat`, `ControllerOf` and `Matches` read the live object when its counter matches and the snapshot otherwise.
+`Amount::Stat`, `ControllerOf`, `Matches` and `HasKeyword` read the live object when its counter matches and the snapshot otherwise; the damage a source that has left deals reads the keywords and the controller of its snapshot.
 
 ## Triggers, replacement and layers
 
 | Topic | Rule |
 |---|---|
 | Detection | After a batch is folded, `triggers::detect(pre, events, post)` returns `Triggered { source, ability, controller, cause, snapshot, delayed }`, logged as `AbilityTriggered`. A move out of the battlefield (dies, leaves, sacrificed) is judged against `pre`: the abilities that worked then and the objects as they were (CR 603.10a); every other event against `post`. An ability works from the battlefield (a `from` other than that is not in `Caps`). |
-| Pattern events | `ZoneChange`: `LandPlayed`, `SpellResolved`, `CreatureDied`, `CardDiscarded`, `CardDrawn`, `ZoneChanged` and the end of a spell that did not resolve. `Attacks`: each attacker of `AttackersDeclared`. `SpellCast`: `SpellCast`, with the caster and the spell as subjects. `Sacrificed`: `ZoneChanged` with cause sacrifice, with the permanent and who sacrificed it. `StepBegins`: `StepBegan`, with the active player. `BecomesTarget`: each object among the targets of `SpellCast` and `AbilityPutOnStack`, with the object and what targets it. |
+| Pattern events | `ZoneChange`: `LandPlayed`, `SpellResolved`, `CreatureDied`, `CardDiscarded`, `CardDrawn`, `ZoneChanged` and the end of a spell that did not resolve. `Attacks`: each attacker of `AttackersDeclared`. `SpellCast`: `SpellCast`, with the caster and the spell as subjects. `Sacrificed`: `ZoneChanged` with cause sacrifice, with the permanent and who sacrificed it. `StepBegins`: `StepBegan`, with the active player. `BecomesTarget`: each object among the targets of `SpellCast` and `AbilityPutOnStack`, with the object, what targets it and the controller of that. |
 | Queue and order | `GameState.pending_triggers` fills at detection. Before a player would receive priority (CR 117.5, 603.3) the active player's triggers go on the stack, then each other player's in turn order (CR 101.4). A controller with two or more asks `OrderTriggers` once, unless they are all of one source and ability; otherwise they go on in the order they triggered. Each trigger chooses its targets as it goes on (CR 603.3d, logged) and is removed if it cannot. State-based actions run before each sweep; the sweep repeats until none is pending, and a trigger that triggers during a sweep waits for the next round. |
 | Intervening if | `intervening_if` is checked when the event happens, against the same state as the pattern, and again as the ability begins to resolve; if false then, the ability does nothing and ends `Lapsed` (CR 603.4). |
 | `AnyOf` | Joins patterns ("enters or attacks"); one event triggers the ability once. |
@@ -261,8 +261,8 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | Item | Rule |
 |---|---|
 | Data | `{"Keyword": {"Ward": "{2}"}}`. `Keyword` is an enum in `keyword.rs` with `name()` in Scryfall's spelling (compared with the record's `keywords`). It declares every keyword the roadmap lists. |
-| Engine | `keywords/mod.rs` maps each variant to a `KeywordRules` value defined in `keywords/<name>.rs`; a keyword without its task is a stub that changes nothing. A keyword task replaces its stub and adds its `Caps` entry in `caps.rs`. `keywords_of(state, id)` is the one reader of the keywords an object has: the keyword abilities `ability_reader` lists, with layer 6 joining there: the keywords continuous effects grant (`AddKeyword`) follow in timestamp order, never twice; `RemoveKeyword` removes one and `LoseAbilities` every keyword so far, in the same order, so a keyword granted after them stays. The keywords of combat, hexproof and flash are built (`engine.md`, Combat and keywords). `player_keywords(state, player)` is the same reader for a player (hexproof, CR 702.11d). |
-| Hooks | `restricts_blocking`, `answers_evasion`, `min_blockers`, `forbids_attacking`, `ignores_summoning_sickness`, `attacks_untapped`, `is_indestructible`, `modifies_damage`, `restricts_targeting`, `restricts_player_targeting`, `grants_timing`, `adds_abilities`. Combat, damage, state-based actions, targeting (`protects` and `protects_player`, part of `legal_targets`) and casting at instant speed (`grants_instant_timing`) call theirs; a stub answers "no". A keyword expressible in the DSL (equip, cycling, prowess, battle cry) returns abilities from `adds_abilities` and is tested like any card; one that bends rules machinery (flying, first strike, trample) is a hook in combat or damage code. |
+| Engine | `keywords/mod.rs` maps each variant to a `KeywordRules` value defined in `keywords/<name>.rs`; a keyword without its task is a stub that changes nothing. A keyword task replaces its stub and adds its `Caps` entry in `caps.rs`. `keywords_of(state, id)` is the one reader of the keywords an object has: the keyword abilities `ability_reader` lists, with layer 6 joining there: the keywords continuous effects grant (`AddKeyword`) follow in timestamp order, never twice; `RemoveKeyword` removes one and `LoseAbilities` every keyword so far, in the same order, so a keyword granted after them stays. The keywords of combat, hexproof and flash are built, and ward, prowess and battle cry as triggered abilities (`engine.md`, Combat and keywords). `player_keywords(state, player)` is the same reader for a player (hexproof, CR 702.11d). |
+| Hooks | `restricts_blocking`, `answers_evasion`, `min_blockers`, `forbids_attacking`, `ignores_summoning_sickness`, `attacks_untapped`, `is_indestructible`, `modifies_damage`, `restricts_targeting`, `restricts_player_targeting`, `grants_timing`, `adds_abilities`. Combat, damage, state-based actions, targeting (`protects` and `protects_player`, part of `legal_targets`) and casting at instant speed (`grants_instant_timing`) call theirs; a stub answers "no". A keyword expressible in the DSL (ward, prowess, battle cry) returns abilities from `adds_abilities`, which `ability_reader` lists after the keyword under `AbilitySource::PrintedKeyword` or `GrantedKeyword`, and is tested like any card; one that bends rules machinery (flying, first strike, trample) is a hook in combat or damage code. |
 
 ## Validation
 
@@ -364,7 +364,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 
 ## Corpus
 
-`crates/mtg-cards/cards/` holds 51 cards and 3 tokens.
+`crates/mtg-cards/cards/` holds 53 cards and 3 tokens.
 
 | Feature | Cards |
 |---|---|
@@ -373,13 +373,13 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 | Pump and control with duration | Giant Growth, Act of Treason (Verified) |
 | Library | Rampant Growth, Cultivate, Opt, Brainstorm, Flooded Strand (fetchland), Jace, the Mind Sculptor (planeswalker) |
 | Modes | Izzet Charm |
-| Triggers | Mulldrifter (evoke), Eternal Witness, Dockside Extortionist (Treasure), Tireless Tracker (Clue), Hero of Bladehold (attack, tokens, battle cry), Archon of Cruelty, Delver of Secrets // Insectile Aberration (transform), Felidar Sovereign (intervening if), Rhystic Study, Bonecrusher Giant // Stomp (adventure), Sneak Attack (delayed trigger) |
+| Triggers | Mulldrifter (evoke), Eternal Witness, Dockside Extortionist (Treasure), Tireless Tracker (Clue), Hero of Bladehold (attack, tokens, battle cry; Verified), Archon of Cruelty, Delver of Secrets // Insectile Aberration (transform), Felidar Sovereign (intervening if), Rhystic Study, Bonecrusher Giant // Stomp (adventure), Sneak Attack (delayed trigger) |
 | Replacement | Anointed Procession |
 | Static abilities (Verified) | Glorious Anthem, Levitation, Goblin Chieftain (a lord that gives a keyword), Humility (loses abilities, sets power and toughness), Favorable Winds (a keyword in the selector), Jungle Lion (can't block) |
 | Layers (Verified) | Nightmare (power and toughness from a count of Swamps, a characteristic-defining ability), Maro (from the cards in hand), Transguild Courier (all colours), Kormus Bell (types, colours and power and toughness of the Swamps); Favorable Winds with Levitation and Goblin Chieftain with Humility are dependencies |
 | Static, Aura, Equipment | Pacifism, Bonesplitter (their statics run; `Enchant` and `Equip` do not) |
 | Mana abilities | Llanowar Elves, Sol Ring, Gaea's Cradle |
-| Keywords | Serra Angel, Bloodbraid Elf (cascade), Faithless Looting (flashback) |
+| Keywords | Serra Angel, Bloodbraid Elf (cascade), Faithless Looting (flashback), Monastery Swiftspear (prowess) and Hulking Raptor (ward), Verified |
 | No abilities | Forest, Grizzly Bears |
 | `Partial`, `Manual` | Questing Beast (three clauses), Panharmonicon |
 | Tokens | Treasure (a mana ability, made by Dockside Extortionist), Clue (made by Tireless Tracker) and Food (`{2}` and a sacrifice, paid as any ability with mana) |

@@ -251,10 +251,21 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Attacks { what } => {
             (format!("{} attacks", subject(what)), what.0 == [Pred::This])
         }
-        TriggerPattern::BecomesTarget { what, .. } => (
-            format!("{} becomes the target of a spell or ability", subject(what)),
-            what.0 == [Pred::This],
-        ),
+        TriggerPattern::BecomesTarget { what, by } => {
+            let by_opponents = by.0 == [Pred::ControlledBy(Ref::Opponents)];
+            (
+                format!(
+                    "{} becomes the target of a spell or ability{}",
+                    subject(what),
+                    if by_opponents {
+                        " an opponent controls"
+                    } else {
+                        ""
+                    }
+                ),
+                what.0 == [Pred::This],
+            )
+        }
         TriggerPattern::SpellCast { what, by } => {
             let (who, s) = who(by);
             let spell = if what.is_empty() {
@@ -304,6 +315,17 @@ pub(crate) fn pattern(pattern: &TriggerPattern) -> String {
         return format!("At {text}");
     }
     format!("{} {text}", if itself { "When" } else { "Whenever" })
+}
+
+/// The words of a trigger that a keyword adds: the keyword's name, then the event as a card would say it in the
+/// middle of a sentence ("Ward: whenever it becomes the target of a spell or ability").
+pub(crate) fn keyword_trigger(keyword: &str, said: &str) -> String {
+    let mut letters = said.chars();
+    let rest: String = letters
+        .next()
+        .map(|first| first.to_lowercase().chain(letters).collect())
+        .unwrap_or_default();
+    format!("{keyword}: {rest}")
 }
 
 /// The plural of a noun phrase made of one or more alternatives: "creatures or planeswalkers".
@@ -738,12 +760,32 @@ mod tests {
         r#"{"BecomesTarget":{"what":["This"]}}"#,
         "When it becomes the target of a spell or ability"
     )]
+    #[case::target_of_an_opponent(
+        r#"{"BecomesTarget":{"what":["This"],"by":[{"ControlledBy":"Opponents"}]}}"#,
+        "When it becomes the target of a spell or ability an opponent controls"
+    )]
     #[case::either(
         r#"{"AnyOf":[{"ZoneChange":{"what":["This"],"to":"Battlefield"}},{"Attacks":{"what":["This"]}}]}"#,
         "When it enters the battlefield or it attacks"
     )]
     fn a_trigger_pattern_reads_as_a_card_says_it(#[case] json: &str, #[case] expected: &str) {
         assert_eq!(words(json), expected);
+    }
+
+    #[rstest]
+    #[case::attacks("Battle cry", "Whenever it attacks", "Battle cry: whenever it attacks")]
+    #[case::cast(
+        "Prowess",
+        "Whenever you cast a noncreature spell",
+        "Prowess: whenever you cast a noncreature spell"
+    )]
+    #[case::nothing("Ward", "", "Ward: ")]
+    fn a_keywords_trigger_is_told_by_the_keyword(
+        #[case] keyword: &str,
+        #[case] said: &str,
+        #[case] expected: &str,
+    ) {
+        assert_eq!(keyword_trigger(keyword, said), expected);
     }
 
     fn may_words(json: &str) -> String {

@@ -4,4 +4,4 @@ import type { Grant } from "./Grant";
 /**
  * Where an ability of an object comes from, which with the object and an index names it (`ability_reader`).
  */
-export type AbilitySource = "Printed" | { "Granted": Grant };
+export type AbilitySource = "Printed" | { "Granted": Grant } | { "PrintedKeyword": number } | { "GrantedKeyword": Grant };

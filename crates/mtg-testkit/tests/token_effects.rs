@@ -378,19 +378,16 @@ fn hero_of_bladeholds_soldiers_enter_tapped_and_attacking_the_defender_chosen(
         assert_eq!(attacker.target(), AttackTarget::Player(pid(defender)));
         assert!(!attacker.blocked());
     }
-    // Damage: Hero's three at the player it was declared at, the Soldiers' one each at the one chosen.
+    // Damage: Hero's three at the player it was declared at, the Soldiers' two each at the one chosen (the default
+    // order puts Hero's battle cry on the stack first, so it resolves after the Soldiers have entered).
     driver.pass_until(Step::Main2)?;
-    let hero_at_defender = if defender == 1 { 3 } else { 0 };
-    assert_eq!(
-        life(&driver, 1),
-        20 - hero_at_defender
-            - if defender == 1 { 2 } else { 0 }
-            - if defender == 1 { 0 } else { 3 }
-    );
-    assert_eq!(
-        life(&driver, defender),
-        20 - if defender == 1 { 5 } else { 2 }
-    );
+    let soldiers = 4;
+    if defender == 1 {
+        assert_eq!(life(&driver, 1), 20 - 3 - soldiers);
+    } else {
+        assert_eq!(life(&driver, 1), 20 - 3);
+        assert_eq!(life(&driver, defender), 20 - soldiers);
+    }
     assert_replays(&driver, &setup)
 }
 

@@ -13,7 +13,8 @@ export type AbilityRef = {
  */
 object: ObjectId, 
 /**
- * For a printed ability the index into the rules of its card (`CardDefinition::rules`).
+ * For a printed ability the index into the rules of its card (`CardDefinition::rules`); for one a keyword adds,
+ * its place among those the keyword adds.
  */
 ability: number, 
 /**

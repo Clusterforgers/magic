@@ -227,7 +227,11 @@ target: DamageTarget,
 /**
  * Amount (never zero).
  */
-amount: number, } } | "CombatEnded" | "DamageCleared" | { "EffectCreated": { 
+amount: number, 
+/**
+ * The source had deathtouch as it dealt the damage (CR 702.2): a creature it hurts is marked for destruction.
+ */
+deathtouch?: boolean, } } | "CombatEnded" | "DamageCleared" | { "EffectCreated": { 
 /**
  * The effect.
  */
@@ -269,11 +273,12 @@ player: PlayerId,
  */
 source: ObjectRef, 
 /**
- * Its index among the rules of the source's card; 0 for a granted ability.
+ * Its index among the rules of the source's card; 0 for a granted ability; its place among those its keyword
+ * adds for one a keyword added.
  */
 ability: number, 
 /**
- * Where the ability comes from: the card, or an effect that granted it.
+ * Where the ability comes from: the card, an effect that granted it, or a keyword.
  */
 origin?: AbilitySource, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
 /**
@@ -289,11 +294,12 @@ order: Array<number>, } } | { "TriggerRemoved": {
  */
 source: ObjectRef, 
 /**
- * Its index among the rules of the source's card; 0 for a granted ability.
+ * Its index among the rules of the source's card; 0 for a granted ability; its place among those its keyword
+ * adds for one a keyword added.
  */
 ability: number, 
 /**
- * Where the ability comes from: the card, or an effect that granted it.
+ * Where the ability comes from: the card, an effect that granted it, or a keyword.
  */
 origin?: AbilitySource, 
 /**

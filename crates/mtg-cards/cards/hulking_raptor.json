@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9f2e7533-cfc1-4dd8-a9b8-09cdc712ef2f",
+  "name": "Hulking Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hulking Raptor",
+      "oracle_fingerprint": "4ce7f627bc202eb45a574f0bacca2349",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

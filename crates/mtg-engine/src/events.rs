@@ -19,6 +19,12 @@ use crate::triggers::{DelayedCreated, DelayedId, Triggered};
 use crate::turn::Step;
 use crate::zones::Zone;
 
+/// Whether a flag is off, so serialization can leave it out (serde hands over a reference).
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_false(flag: &bool) -> bool {
+    !*flag
+}
+
 /// Why a player was not asked to decide something optional.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -230,6 +236,10 @@ pub enum Event {
         target: DamageTarget,
         /// Amount (never zero).
         amount: u32,
+        /// The source had deathtouch as it dealt the damage (CR 702.2): a creature it hurts is marked for destruction.
+        #[serde(default, skip_serializing_if = "is_false")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        deathtouch: bool,
     },
     /// Combat ended and its state was cleared.
     CombatEnded,
@@ -277,9 +287,10 @@ pub enum Event {
         player: PlayerId,
         /// The object it comes from.
         source: ObjectRef,
-        /// Its index among the rules of the source's card; 0 for a granted ability.
+        /// Its index among the rules of the source's card; 0 for a granted ability; its place among those its keyword
+        /// adds for one a keyword added.
         ability: usize,
-        /// Where the ability comes from: the card, or an effect that granted it.
+        /// Where the ability comes from: the card, an effect that granted it, or a keyword.
         #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
         #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
         origin: AbilitySource,
@@ -298,9 +309,10 @@ pub enum Event {
     TriggerRemoved {
         /// The object with the ability, as it was.
         source: ObjectRef,
-        /// Its index among the rules of the source's card; 0 for a granted ability.
+        /// Its index among the rules of the source's card; 0 for a granted ability; its place among those its keyword
+        /// adds for one a keyword added.
         ability: usize,
-        /// Where the ability comes from: the card, or an effect that granted it.
+        /// Where the ability comes from: the card, an effect that granted it, or a keyword.
         #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
         #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
         origin: AbilitySource,
@@ -553,5 +565,34 @@ mod tests {
             r#"{"SpellCast":{"player":0,"object":3,"choices":{"targets":[[{"Player":1}]]}}}"#
         );
         assert_eq!(serde_json::from_str::<Event>(&json).unwrap(), cast);
+    }
+
+    #[test]
+    fn damage_without_deathtouch_has_the_three_fields_it_always_had() {
+        let plain = Event::DamageDealt {
+            source: ObjectId(4),
+            target: DamageTarget::Player(PlayerId(1)),
+            amount: 3,
+            deathtouch: false,
+        };
+        let json = r#"{"DamageDealt":{"source":4,"target":{"Player":1},"amount":3}}"#;
+        assert_eq!(serde_json::to_string(&plain).unwrap(), json);
+        assert_eq!(serde_json::from_str::<Event>(json).unwrap(), plain);
+    }
+
+    #[test]
+    fn damage_from_a_source_with_deathtouch_says_so() {
+        let touched = Event::DamageDealt {
+            source: ObjectId(4),
+            target: DamageTarget::Object(ObjectId(9)),
+            amount: 1,
+            deathtouch: true,
+        };
+        let json = serde_json::to_string(&touched).unwrap();
+        assert_eq!(
+            json,
+            r#"{"DamageDealt":{"source":4,"target":{"Object":9},"amount":1,"deathtouch":true}}"#
+        );
+        assert_eq!(serde_json::from_str::<Event>(&json).unwrap(), touched);
     }
 }

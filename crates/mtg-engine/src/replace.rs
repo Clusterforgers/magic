@@ -53,6 +53,7 @@ mod tests {
                 source: ObjectId(1),
                 target: DamageTarget::Player(PlayerId(0)),
                 amount: 3,
+                deathtouch: false,
             },
             Event::LifeLost {
                 player: PlayerId(1),

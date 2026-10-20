@@ -253,6 +253,7 @@ fn a_losing_players_spells_leave_the_stack_with_them() -> Result<(), ScriptError
             source: striker,
             target: DamageTarget::Player(pid(1)),
             amount: 3,
+            deathtouch: false,
         },
     ];
     let mut log: Vec<Event> = probe.events().to_vec();

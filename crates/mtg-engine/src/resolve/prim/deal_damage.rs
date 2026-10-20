@@ -5,7 +5,7 @@ use mtg_cards::effect::Effect;
 use super::wrong_effect;
 use crate::choose::Target;
 use crate::combat::DamageTarget;
-use crate::damage;
+use crate::damage::{self, Dealer};
 use crate::resolve::{Cx, ResolveError, Run};
 
 /// The source deals the amount to each recipient still there to take it; damage of nothing is no event.
@@ -19,15 +19,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let amount = u32::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(u32::MAX);
     let source = match source {
-        None => cx.scope.source.id,
-        Some(named) => cx
-            .scope
-            .objects(named)?
-            .first()
-            .map(|object| object.id)
-            .ok_or_else(|| {
-                ResolveError::Invalid("the source of the damage is not an object".into())
-            })?,
+        None => cx.scope.source,
+        Some(named) => cx.scope.objects(named)?.first().copied().ok_or_else(|| {
+            ResolveError::Invalid("the source of the damage is not an object".into())
+        })?,
+    };
+    // A source that has left deals its damage as it was: with the keywords and under the controller it had.
+    let dealer = match cx.scope.snapshot_of(source) {
+        Some(shot) => Dealer::known(shot),
+        None => Dealer::live(cx.state(), source.id),
     };
     let mut events = Vec::new();
     if amount > 0 {
@@ -41,7 +41,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 }
                 _ => continue,
             };
-            events.extend(damage::dealt(cx.state(), source, target, amount));
+            events.extend(damage::dealt_by(cx.state(), &dealer, target, amount));
         }
     }
     Ok(Run::events(events))

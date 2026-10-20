@@ -714,6 +714,33 @@
     ]
   },
   {
+    "id": "45f763af-5a6a-404c-8e8c-4dbed71277bc",
+    "oracle_id": "9f2e7533-cfc1-4dd8-a9b8-09cdc712ef2f",
+    "name": "Hulking Raptor",
+    "lang": "en",
+    "layout": "normal",
+    "set": "lci",
+    "collector_number": "191",
+    "rarity": "rare",
+    "released_at": "2023-11-17",
+    "digital": false,
+    "mana_cost": "{2}{G}{G}",
+    "cmc": 4.0,
+    "type_line": "Creature — Dinosaur",
+    "oracle_text": "Ward {2}\nAt the beginning of your first main phase, add {G}{G}.",
+    "power": "5",
+    "toughness": "3",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Ward"
+    ]
+  },
+  {
     "id": "55ad6a45-a840-45ba-89ad-066e20e983f3",
     "oracle_id": "ed7bdb3e-5c51-4547-9266-76a791e0b2b0",
     "name": "Humility",
@@ -927,6 +954,34 @@
       "G"
     ],
     "keywords": []
+  },
+  {
+    "id": "d6bfa227-4309-40ed-952c-279595eab17e",
+    "oracle_id": "dafd2713-d1bc-474b-b390-d2ff20b5375e",
+    "name": "Monastery Swiftspear",
+    "lang": "en",
+    "layout": "normal",
+    "set": "bro",
+    "collector_number": "144",
+    "rarity": "uncommon",
+    "released_at": "2022-11-18",
+    "digital": false,
+    "mana_cost": "{R}",
+    "cmc": 1.0,
+    "type_line": "Creature — Human Monk",
+    "oracle_text": "Haste\nProwess (Whenever you cast a noncreature spell, this creature gets +1/+1 until end of turn.)",
+    "power": "1",
+    "toughness": "2",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Prowess",
+      "Haste"
+    ]
   },
   {
     "id": "3de308cc-14ac-407e-99e7-568572ecd0e7",

@@ -214,6 +214,7 @@ impl Run {
                     source,
                     target,
                     amount,
+                    ..
                 } => {
                     let total = self.dealt.entry((*source, *target)).or_default();
                     *total = total.saturating_add(*amount);

@@ -34,6 +34,11 @@ zone: Zone,
  */
 characteristics: Characteristics, 
 /**
+ * The keywords it had once layer 6 was through with it: those it prints and those effects gave, less those
+ * effects took away (CR 613.1f), which last-known information reads (CR 608.2h).
+ */
+keywords?: Array<unknown>, 
+/**
  * The counters on it, by kind.
  */
 counters: Array<[CounterKind, number]>, 

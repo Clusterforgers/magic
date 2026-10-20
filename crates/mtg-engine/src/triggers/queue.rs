@@ -68,11 +68,21 @@ impl PendingTrigger {
             && t.cause == *cause
     }
 
-    /// The words of the event it waits for, such as "When it enters the battlefield".
-    fn words(&self) -> String {
-        match &*self.rules {
-            Ability::Triggered { when, .. } => wording::pattern(when),
-            _ => String::new(),
+    /// The words of the event it waits for, such as "When it enters the battlefield"; a keyword's trigger is
+    /// introduced by the keyword ("Battle cry: whenever it attacks"), so it is told from the others of its source.
+    fn words(&self, state: &GameState) -> String {
+        let Ability::Triggered { when, .. } = &*self.rules else {
+            return String::new();
+        };
+        let said = wording::pattern(when);
+        let address = AbilityRef {
+            object: self.trigger.source.id,
+            ability: self.trigger.ability,
+            source: self.trigger.origin,
+        };
+        match ability_reader::keyword_adding(state, address) {
+            Some(keyword) => wording::keyword_trigger(keyword.name(), &said),
+            None => said,
         }
     }
 }
@@ -226,8 +236,8 @@ pub(crate) fn removing(entry: &PendingTrigger) -> Event {
 
 /// Whether the order the controller puts `group` on the stack in can matter.
 ///
-/// Triggers of one source, one origin and one ability do the same whichever goes first. Every other group is the controller's to
-/// order, once.
+/// Triggers of one source that run the same rules do the same whichever goes first: those of one ability, and the
+/// instances of a keyword (two ward, two prowess). Every other group is the controller's to order, once.
 fn order_matters(state: &GameState, group: &[usize]) -> bool {
     let entries = || group.iter().map(|at| &state.pending_triggers[*at]);
     let first = entries().next();
@@ -235,17 +245,11 @@ fn order_matters(state: &GameState, group: &[usize]) -> bool {
         && entries().any(|e| !e.ordered)
         && entries().any(|e| {
             first.is_some_and(|first| {
-                (
-                    e.trigger.source.id,
-                    e.trigger.origin,
-                    e.trigger.ability,
-                    e.trigger.delayed,
-                ) != (
-                    first.trigger.source.id,
-                    first.trigger.origin,
-                    first.trigger.ability,
-                    first.trigger.delayed,
-                )
+                let same_ability = (e.trigger.origin, e.trigger.ability)
+                    == (first.trigger.origin, first.trigger.ability);
+                e.trigger.source.id != first.trigger.source.id
+                    || e.trigger.delayed != first.trigger.delayed
+                    || !(same_ability || e.rules() == first.rules())
             })
         })
 }
@@ -282,7 +286,7 @@ pub(crate) fn next(state: &GameState) -> Option<Progress> {
                     TriggerEntry {
                         source: e.trigger.source,
                         ability: e.trigger.ability,
-                        when: e.words(),
+                        when: e.words(state),
                     }
                 })
                 .collect();
@@ -321,7 +325,8 @@ mod tests {
     const ME: PlayerId = PlayerId(0);
     const FOE: PlayerId = PlayerId(1);
 
-    fn watching() -> Ability {
+    /// "Whenever this attacks, you gain `life` life."
+    fn watching(life: i32) -> Ability {
         Ability::Triggered {
             when: TriggerPattern::Attacks {
                 what: Selector::this(),
@@ -332,7 +337,7 @@ mod tests {
             targets: Vec::new(),
             effects: vec![Effect::GainLife {
                 who: Ref::You,
-                amount: Amount::Fixed(1),
+                amount: Amount::Fixed(life),
             }],
         }
     }
@@ -343,17 +348,29 @@ mod tests {
             let mut card = CardDefinition::new(name)
                 .with_type(CardType::Creature)
                 .with_power_toughness(1, 1);
-            for _ in 0..abilities {
-                card = card.with_rules(watching());
+            // The abilities of one card differ, as those of two sources do not need to.
+            for life in 1..=abilities {
+                card = card.with_rules(watching(i32::try_from(life).unwrap()));
             }
             Arc::new(card)
         };
         state(
             vec![vec![], vec![]],
             vec![
-                vec![card("Alpha", 2), card("Beta", 1)],
+                vec![card("Alpha", 2), card("Beta", 1), same_twice("Delta")],
                 vec![card("Gamma", 1)],
             ],
+        )
+    }
+
+    /// A card with the very same ability printed twice: two instances of one keyword.
+    fn same_twice(name: &str) -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new(name)
+                .with_type(CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_rules(watching(1))
+                .with_rules(watching(1)),
         )
     }
 
@@ -517,6 +534,7 @@ mod tests {
     #[case::one_trigger(&[("Alpha", 0)], false)]
     #[case::one_source_and_ability_twice(&[("Beta", 0), ("Beta", 0)], false)]
     #[case::two_abilities_of_a_source(&[("Alpha", 0), ("Alpha", 1)], true)]
+    #[case::two_instances_of_one_ability_under_two_names(&[("Delta", 0), ("Delta", 1)], false)]
     #[case::two_sources(&[("Alpha", 0), ("Beta", 0)], true)]
     #[case::three_of_which_two_are_alike(&[("Beta", 0), ("Beta", 0), ("Alpha", 0)], true)]
     fn the_order_is_asked_for_only_when_it_can_matter(

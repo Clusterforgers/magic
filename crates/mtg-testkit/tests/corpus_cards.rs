@@ -1,4 +1,4 @@
-//! Goal: the 51 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 53 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -32,12 +32,12 @@ use Support::{Manual, Partial, Verified};
 /// and untapping, winning the game, continuous effects and static abilities of every modification (types, subtypes, colours,
 /// power and toughness, keywords, abilities, control and attack and block restrictions), characteristic-defining abilities
 /// (power and toughness from a count, colours) and the keywords of combat and
-/// flash, so the thirty-two cards that need no more are Verified (the
+/// flash, hexproof and the keywords that are triggers (battle cry, prowess, ward), so the thirty-five cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
-/// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback; Hero
-/// of Bladehold's tokens, not its battle cry; Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays
+/// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback;
+/// Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays
 /// with the table for its loyalty costs and Flooded Strand for the life it costs.
-const CARDS: [(&str, Support, usize); 51] = [
+const CARDS: [(&str, Support, usize); 53] = [
     ("Act of Treason", Verified, 1),
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
@@ -64,7 +64,8 @@ const CARDS: [(&str, Support, usize); 51] = [
     ("Glorious Anthem", Verified, 1),
     ("Goblin Chieftain", Verified, 2),
     ("Grizzly Bears", Verified, 0),
-    ("Hero of Bladehold", Partial, 1),
+    ("Hero of Bladehold", Verified, 2),
+    ("Hulking Raptor", Verified, 2),
     ("Humility", Verified, 1),
     ("Izzet Charm", Verified, 1),
     ("Jace, the Mind Sculptor", Manual, 0),
@@ -74,6 +75,7 @@ const CARDS: [(&str, Support, usize); 51] = [
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
     ("Maro", Verified, 1),
+    ("Monastery Swiftspear", Verified, 2),
     ("Mulldrifter", Partial, 2),
     ("Nightmare", Verified, 2),
     ("Opt", Verified, 1),
@@ -95,7 +97,7 @@ const CARDS: [(&str, Support, usize); 51] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 51);
+    assert_eq!(in_table.len(), 53);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -206,13 +208,15 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     }
     // Dockside Extortionist is covered whole: its Treasures are made and their mana ability runs.
     assert_eq!(reasons("Dockside Extortionist"), "");
-    // Hero of Bladehold's tokens are made attacking; its battle cry is a keyword of a later task.
-    let hero = reasons("Hero of Bladehold");
-    assert!(hero.contains("Keyword.BattleCry"), "{hero}");
-    assert!(
-        !hero.contains("Effect.CreateToken") && !hero.contains("Trigger.Attacks"),
-        "{hero}"
-    );
+    // Hero of Bladehold, Monastery Swiftspear and Hulking Raptor are covered whole: the keywords that are triggers
+    // (battle cry, prowess, ward) run beside the tokens, the haste and the mana.
+    for name in [
+        "Hero of Bladehold",
+        "Monastery Swiftspear",
+        "Hulking Raptor",
+    ] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // Tireless Tracker makes its Clues; putting the counter on itself is not played yet.
     let tracker = reasons("Tireless Tracker");
     assert!(tracker.contains("Effect.PutCounters"), "{tracker}");
