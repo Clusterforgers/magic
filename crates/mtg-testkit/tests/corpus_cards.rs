@@ -25,17 +25,19 @@ use Support::{Manual, Partial, Verified};
 
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
-/// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, life and damage, and the
-/// keywords of combat, so the six cards that need no more are Verified (the Forest's ability comes from its land
-/// type) and a card whose other abilities are still missing carries what runs as Partial: Mulldrifter's draw and
-/// flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
+/// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, scrying, looking at and
+/// revealing cards, choosing and moving them, shuffling, life and damage, and the keywords of combat, so the eight
+/// cards that need no more are Verified (the Forest's ability comes from its land type) and a card whose other
+/// abilities are still missing carries what runs as Partial: Mulldrifter's draw and flying, not its evoke; Faithless
+/// Looting's draw and discard, not its flashback. Jace, the Mind Sculptor stays with the table for its loyalty
+/// costs and `May`; Rampant Growth, Cultivate and Flooded Strand for `Search` and a move to the battlefield.
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
     ("Bloodbraid Elf", Partial, 1),
     ("Bonecrusher Giant // Stomp", Manual, 0),
     ("Bonesplitter", Manual, 0),
-    ("Brainstorm", Manual, 0),
+    ("Brainstorm", Verified, 1),
     ("Burst Lightning", Manual, 0),
     ("Counterspell", Manual, 0),
     ("Cultivate", Manual, 0),
@@ -58,7 +60,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
     ("Mulldrifter", Partial, 2),
-    ("Opt", Manual, 0),
+    ("Opt", Verified, 1),
     ("Pacifism", Manual, 0),
     ("Panharmonicon", Manual, 0),
     ("Questing Beast", Partial, 3),

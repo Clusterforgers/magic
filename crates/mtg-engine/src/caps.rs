@@ -3,8 +3,8 @@
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
 //! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, `{T}` abilities and triggered
-//! abilities made of drawing, discarding, sacrificing, life and damage (and delayed triggers), the keywords of
-//! combat, and nothing else.
+//! abilities made of drawing, discarding, sacrificing, scrying, looking at, revealing, choosing, moving and shuffling
+//! cards, life and damage (and delayed triggers), the keywords of combat, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;

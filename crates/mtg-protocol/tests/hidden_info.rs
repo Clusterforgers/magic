@@ -382,3 +382,239 @@ fn the_scan_flags_a_hidden_card_in_each_part_of_a_batch() {
         assert!(flagged, "a hidden card in {part} went unnoticed");
     }
 }
+
+/// Seat 0's library, top first, in the tables below.
+const LIBRARY: [&str; 6] = [
+    "Grizzly Bears",
+    "Serra Angel",
+    "Lightning Bolt",
+    "Giant Growth",
+    "Counterspell",
+    "Wrath of God",
+];
+
+/// Seat 0 holds `spell` and then the cards named in `hand`, controls an Island, and every seat has the library above.
+fn library_table(
+    seats: usize,
+    spell: std::sync::Arc<mtg_cards::CardDefinition>,
+    hand: &[&str],
+) -> mtg_testkit::Scenario {
+    let mut cards = vec![spell];
+    cards.extend(
+        hand.iter()
+            .map(|name| mtg_testkit::corpus::card(name).unwrap()),
+    );
+    let mut scenario = mtg_testkit::Scenario::new(seats)
+        .hand(0, cards)
+        .battlefield(0, [mtg_testkit::ready(mtg_testkit::cards::island())]);
+    for seat in 0..seats {
+        scenario = scenario.library_named(seat, LIBRARY);
+    }
+    scenario
+}
+
+/// Casts `spell` from seat 0 and plays the resolution out, `answer` giving each question; returns the state at the end,
+/// the log, and the whole log projected for each seat from the start.
+fn play_spell(
+    scenario: mtg_testkit::Scenario,
+    seats: usize,
+    spell: &str,
+    answer: impl Fn(&Decision) -> mtg_engine::decision::Answer,
+) -> (GameState, Vec<mtg_engine::Event>, Vec<EventBatch>) {
+    let before = GameState::from_setup(&scenario.clone().setup().unwrap()).unwrap();
+    let mut driver = mtg_testkit::Driver::from_scenario(scenario).unwrap();
+    driver.cast(spell).unwrap();
+    for _ in 0..100 {
+        let decision = driver.decision().unwrap().clone();
+        match decision.kind {
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            DecisionKind::Priority(_) => driver.pass().map(|_| ()).unwrap(),
+            _ => driver.answer(answer(&decision)).map(|_| ()).unwrap(),
+        }
+    }
+    let viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
+    let events = driver.engine().events().to_vec();
+    let batches = project_events(&before, &events, &viewers, 0).unwrap();
+    (driver.state().clone(), events, batches)
+}
+
+/// The batch has none of the hidden cards in any part.
+fn assert_clean(batch: &EventBatch, hidden: &BTreeMap<ObjectId, String>) {
+    for (part, value) in batch_parts(batch) {
+        assert!(
+            leaks(&value, hidden).is_empty(),
+            "{part} leaks {:?}",
+            leaks(&value, hidden)
+        );
+    }
+}
+
+#[rstest]
+fn the_seat_that_scries_sees_the_cards_and_no_other_seat_does(#[values(2, 3, 4)] seats: usize) {
+    let scenario = library_table(seats, mtg_testkit::corpus::card("Opt").unwrap(), &[]);
+    let keep = |_: &Decision| {
+        mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(Vec::new()))
+    };
+    let (after, events, batches) = play_spell(scenario, seats, "Opt", keep);
+    let scried = events
+        .iter()
+        .find_map(|event| match event {
+            mtg_engine::Event::Scried(scried) => Some(scried.clone()),
+            _ => None,
+        })
+        .expect("Opt scried");
+    let top = scried.top[0];
+    let hidden = BTreeMap::from([(top, after.object(top).unwrap().card().name.clone())]);
+    assert!(
+        batches[0].events.iter().any(|event| matches!(
+            event,
+            mtg_protocol::EventView::Public(mtg_engine::Event::Scried(s)) if *s == scried
+        )),
+        "the seat that scried is told which card it looked at"
+    );
+    for batch in &batches[1..] {
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Hidden(mtg_protocol::HiddenEvent::Scried {
+                    player: PlayerId(0),
+                    top: 1,
+                    bottom: 0
+                })
+            )),
+            "the others are told that one card stayed on top"
+        );
+        assert!(!batch.events.iter().any(|event| matches!(
+            event,
+            mtg_protocol::EventView::Public(mtg_engine::Event::Scried(_))
+        )));
+        assert_clean(batch, &hidden);
+    }
+}
+
+#[rstest]
+fn the_seat_that_looks_at_libraries_sees_the_cards_and_no_other_seat_does_not_even_the_owner(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let scenario = library_table(seats, mtg_testkit::cards::bottomer("Sink"), &[]);
+    let reversed = |decision: &Decision| match &decision.kind {
+        DecisionKind::OrderCards(options) => mtg_engine::decision::Answer::OrderCards(
+            mtg_engine::choose::OrderChoice(options.cards.iter().rev().copied().collect()),
+        ),
+        other => panic!("unexpected {}", other.name()),
+    };
+    let (after, events, batches) = play_spell(scenario, seats, "Sink", reversed);
+    // The two top cards of each opponent's library are what was looked at.
+    let mut hidden = BTreeMap::new();
+    let looked: Vec<_> = events
+        .iter()
+        .filter_map(|event| match event {
+            mtg_engine::Event::LibraryLooked(looked) => Some(looked.clone()),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(looked.len(), seats - 1);
+    for each in &looked {
+        assert_eq!((each.player, each.cards.len()), (PlayerId(0), 2));
+        for card in &each.cards {
+            hidden.insert(*card, after.object(*card).unwrap().card().name.clone());
+        }
+    }
+    for (seat, batch) in batches.iter().enumerate() {
+        let count = |wanted: fn(&mtg_protocol::EventView) -> bool| {
+            batch.events.iter().filter(|event| wanted(event)).count()
+        };
+        let public = count(|event| {
+            matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::LibraryLooked(_))
+            )
+        });
+        let counted = count(|event| {
+            matches!(
+                event,
+                mtg_protocol::EventView::Hidden(mtg_protocol::HiddenEvent::LibraryLooked {
+                    player: PlayerId(0),
+                    count: 2
+                })
+            )
+        });
+        if seat == 0 {
+            assert_eq!(
+                (public, counted),
+                (seats - 1, 0),
+                "the looker sees every card"
+            );
+        } else {
+            assert_eq!(
+                (public, counted),
+                (0, seats - 1),
+                "seat {seat} learns only how many"
+            );
+            assert_clean(batch, &hidden);
+        }
+        // The order the cards were put in is told to the one who chose it and to nobody else.
+        let ordered = count(|event| {
+            matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::ChoiceMade {
+                    choice: mtg_engine::choose::Choice::Order(_),
+                    ..
+                })
+            )
+        });
+        assert_eq!(
+            ordered,
+            if seat == 0 { seats - 1 } else { 0 },
+            "seat {seat}"
+        );
+        let bottomed = count(|event| {
+            matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::LibraryBottomed { .. })
+            )
+        });
+        assert_eq!(bottomed, 0, "no seat is told which cards went down");
+    }
+}
+
+#[rstest]
+fn a_reveal_shows_the_cards_to_every_seat(#[values(2, 3, 4)] seats: usize) {
+    let scenario = library_table(
+        seats,
+        mtg_testkit::cards::revealer("Show"),
+        &["Lightning Bolt", "Giant Growth"],
+    );
+    let (after, events, batches) = play_spell(scenario, seats, "Show", |decision| {
+        panic!("a reveal asks nothing, not {}", decision.kind.name())
+    });
+    let revealed = events
+        .iter()
+        .find_map(|event| match event {
+            mtg_engine::Event::Revealed(revealed) => Some(revealed.clone()),
+            _ => None,
+        })
+        .expect("the hand was revealed");
+    assert_eq!(revealed.cards.len(), 2);
+    for (seat, batch) in batches.iter().enumerate() {
+        assert!(
+            batch.events.iter().any(|event| matches!(
+                event,
+                mtg_protocol::EventView::Public(mtg_engine::Event::Revealed(r)) if *r == revealed
+            )),
+            "seat {seat} sees what was revealed"
+        );
+    }
+    // The card looked at afterwards is the controller's alone.
+    let top = events
+        .iter()
+        .find_map(|event| match event {
+            mtg_engine::Event::LibraryLooked(looked) => Some(looked.cards[0]),
+            _ => None,
+        })
+        .expect("the top card was looked at");
+    let hidden = BTreeMap::from([(top, after.object(top).unwrap().card().name.clone())]);
+    for batch in &batches[1..] {
+        assert_clean(batch, &hidden);
+    }
+}

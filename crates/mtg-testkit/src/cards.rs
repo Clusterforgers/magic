@@ -5,7 +5,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::{Ability, Timing};
 use mtg_cards::cost::{Cost, CostItem};
-use mtg_cards::effect::Effect;
+use mtg_cards::effect::{Destination, Effect, Order, Place};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::value::Amount;
@@ -414,6 +414,96 @@ pub fn pinger(name: &str, generic: u32) -> Arc<CardDefinition> {
                 vec![one_target(Targetable::AnyTarget)],
                 vec![damage(Ref::Target(0), 1)],
             )),
+    )
+}
+
+/// A sorcery for `{generic}{U}` with "Scry `count`."
+pub fn scryer(name: &str, generic: u32, count: i32) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(generic, &[Color::Blue]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![Effect::Scry {
+                    who: Ref::You,
+                    count: Amount::Fixed(count),
+                }],
+            }),
+    )
+}
+
+/// An instant for `{U}` with "Look at the top two cards of each opponent's library, then put them on the bottom of
+/// it in any order."
+pub fn bottomer(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[Color::Blue]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![
+                    Effect::LookAtTop {
+                        who: Ref::Opponents,
+                        count: Amount::Fixed(2),
+                        bind: "peeked".into(),
+                    },
+                    Effect::Move {
+                        what: Ref::Bound("peeked".into()),
+                        to: Destination::Library {
+                            place: Place::Bottom,
+                            order: Some(Order::Chosen),
+                        },
+                    },
+                ],
+            }),
+    )
+}
+
+/// An instant for `{U}` with "Each player shuffles their library."
+pub fn stirrer(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[Color::Blue]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![Effect::Shuffle {
+                    who: Ref::EachPlayer,
+                }],
+            }),
+    )
+}
+
+/// A sorcery for `{U}` with "Reveal your hand. Put the top card of your library on the bottom of it."
+pub fn revealer(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(0, &[Color::Blue]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![
+                    Effect::Reveal {
+                        what: Ref::Each(Selector(vec![
+                            Pred::In(ZoneKind::Hand),
+                            Pred::OwnedBy(Ref::You),
+                        ])),
+                    },
+                    Effect::LookAtTop {
+                        who: Ref::You,
+                        count: Amount::Fixed(1),
+                        bind: "top".into(),
+                    },
+                    Effect::Move {
+                        what: Ref::Bound("top".into()),
+                        to: Destination::Library {
+                            place: Place::Bottom,
+                            order: None,
+                        },
+                    },
+                ],
+            }),
     )
 }
 
