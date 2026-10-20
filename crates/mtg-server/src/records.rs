@@ -386,6 +386,32 @@ impl GameRecords {
         Ok(())
     }
 
+    /// Replaces the recipe of a game that is still in its lobby, which is how the decks its seats
+    /// chose are kept. An error if the game is not in its lobby, since a game that began runs under
+    /// the recipe it began with.
+    pub(crate) async fn set_recipe(
+        &self,
+        id: GameId,
+        recipe: &GameRecipe,
+    ) -> Result<(), RecordError> {
+        let recipe =
+            serde_json::to_value(recipe).map_err(|e| RecordError::Encode(e.to_string()))?;
+        let updated = sqlx::query!(
+            "UPDATE games SET recipe = $2 WHERE id = $1 AND status = 'lobby'",
+            id.uuid(),
+            recipe,
+        )
+        .execute(&self.pool)
+        .await?;
+        if updated.rows_affected() == 1 {
+            Ok(())
+        } else {
+            Err(RecordError::Unavailable(
+                "the game is not in its lobby".to_owned(),
+            ))
+        }
+    }
+
     /// Notes that the lobby is over and the engine runs.
     pub(crate) async fn mark_running(&self, id: GameId) -> Result<(), RecordError> {
         sqlx::query!(

@@ -8,7 +8,7 @@ use std::collections::HashSet;
 use common::{Client, seat, silent};
 use mtg_core::ids::PlayerId;
 use mtg_engine::turn::Step;
-use mtg_protocol::{ClientMessage, FullControlMode, LobbySeat, ServerMessage, StopSide};
+use mtg_protocol::{ClientMessage, FullControlMode, LobbySeat, SeatDeck, ServerMessage, StopSide};
 use mtg_server::registry::{
     ClaimError, Created, Entrance, GameOptions, HOST, SeatClaim, SeatRequest, Seated, TableError,
 };
@@ -72,7 +72,7 @@ async fn names(registry: &Registry, game: GameId) -> Vec<String> {
     public.seats.into_iter().map(|seat| seat.name).collect()
 }
 
-/// The roster a lobby sends: each seat's name, whether a client is connected and whether it is ready.
+/// The roster a lobby sends: each seat's name, whether a client is connected and whether it is ready, and the deck a held seat starts with.
 fn roster(rows: &[(&str, bool, bool)]) -> ServerMessage {
     let seats = rows
         .iter()
@@ -82,6 +82,16 @@ fn roster(rows: &[(&str, bool, bool)]) -> ServerMessage {
             name: (*name).to_owned(),
             connected: *connected,
             ready: *ready,
+            // A held seat plays the deck its request named (`requests` cycles through the decks);
+            // nobody holds an open seat, so the table hears nothing of one.
+            deck: (!name.is_empty()).then(|| {
+                let deck = &demo::all()[index % demo::all().len()];
+                SeatDeck {
+                    name: deck.name.to_owned(),
+                    format: "normal".to_owned(),
+                    manual_cards: 0,
+                }
+            }),
         })
         .collect();
     let needed = rows.iter().filter(|(_, _, ready)| !ready).count();

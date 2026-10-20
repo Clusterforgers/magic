@@ -10,6 +10,7 @@ use crate::game_id::GameId;
 use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
 use crate::records::{GameRecord, GameRecords, RecordError, RecordStatus, SeatState};
+use crate::seat_deck::SeatDecks;
 use crate::secret::TokenDigest;
 
 /// What [`Registry::resume`] did with the games it found.
@@ -43,6 +44,8 @@ struct Unpacked {
     /// Whether the decks were compared with fingerprints stored in the recipe; false for a recipe
     /// that predates them.
     checked: bool,
+    /// The decks of the seats if the game turns out to be in its lobby.
+    decks: SeatDecks,
 }
 
 /// Why a stored game cannot be loaded, and the seat the reason is about when it is about one.
@@ -104,6 +107,7 @@ impl Registry {
             format,
             seats,
             checked,
+            decks,
         } = match unpacked {
             Ok(unpacked) => unpacked,
             Err(Unloadable { reason, seat }) => return give_up(records, id, seat, &reason).await,
@@ -119,6 +123,7 @@ impl Registry {
             self.shared.game,
             Some(recorder),
             names,
+            Some(decks),
         ));
         let handle = match resuming.await {
             Ok(Ok(handle)) => handle,
@@ -227,6 +232,7 @@ fn unpack(
     }
     Ok(Unpacked {
         checked: recipe.is_fingerprinted(),
+        decks: SeatDecks::of_recipe(recipe),
         format: recipe.format,
         seats: record
             .seats

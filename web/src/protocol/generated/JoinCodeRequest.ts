@@ -11,4 +11,8 @@ code: string,
 /**
  * The name the table sees; see [`JoinRequest::name`].
  */
-name?: string, };
+name?: string, 
+/**
+ * The deck the seat plays; see [`JoinRequest::deck`].
+ */
+deck?: string, };

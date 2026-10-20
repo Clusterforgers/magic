@@ -5,7 +5,7 @@ mod common;
 mod net;
 
 use mtg_core::ids::PlayerId;
-use mtg_protocol::{ClientMessage, LobbySeat, ServerMessage};
+use mtg_protocol::{ClientMessage, LobbySeat, SeatDeck, ServerMessage};
 use mtg_server::{ServerConfig, migrate};
 use net::{TestServer, bot_config, connect, create_game, get, two_seats};
 use serde_json::json;
@@ -18,6 +18,9 @@ fn seeded() -> ServerConfig {
     }
 }
 
+/// The decks of the two-seat game, which the roster names.
+const DECKS: [&str; 2] = ["Mono Green Stompers", "Mono Red Giants"];
+
 /// The roster of the two-seat game "Ann" and "Bo" from each seat's (connected, ready).
 fn roster(flags: [(bool, bool); 2]) -> ServerMessage {
     let seats = flags
@@ -29,6 +32,11 @@ fn roster(flags: [(bool, bool); 2]) -> ServerMessage {
             name: name.to_owned(),
             connected: *connected,
             ready: *ready,
+            deck: Some(SeatDeck {
+                name: DECKS[index].to_owned(),
+                format: "normal".to_owned(),
+                manual_cards: 0,
+            }),
         })
         .collect();
     let needed = flags.iter().filter(|(_, ready)| !ready).count();
