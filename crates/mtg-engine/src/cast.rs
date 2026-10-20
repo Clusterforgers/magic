@@ -6,12 +6,15 @@
 //! other announcements (mode, X, division, optional costs) join before and after the targets
 //! (`docs/cards-dsl.md`, Execution).
 
+use std::sync::Arc;
+
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::CostItem;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
 use crate::abilities::{AbilityRef, PutOnStack};
+use crate::ability_reader;
 use crate::answers::Outcome;
 use crate::choose::{Choice, Choices, announced_specs, asks, modal_of, mode_options, options_for};
 use crate::decision::{Decision, DecisionKind, PayChoice, PayOptions};
@@ -87,14 +90,14 @@ const fn source_of(what: &What) -> ObjectId {
 }
 
 /// The rules of the spell or ability being announced.
-fn rules_of<'a>(state: &'a GameState, what: &'a What) -> Option<&'a Ability> {
+fn rules_of(state: &GameState, what: &What) -> Option<Arc<Ability>> {
     let object = state.object(source_of(what));
     match what {
-        What::Spell(_) => object.and_then(spell_ability),
-        What::Ability(ability) => object
-            .and_then(|o| o.card().rules.get(ability.ability))
-            .map(|rules| &**rules),
-        What::Trigger(waiting) => Some(&*waiting.rules),
+        What::Spell(spell) => object
+            .and_then(|_| spell_ability(state, *spell))
+            .map(|(_, rules)| rules),
+        What::Ability(address) => object.and_then(|_| ability_reader::ability(state, *address)),
+        What::Trigger(waiting) => Some(Arc::clone(&waiting.rules)),
     }
 }
 
@@ -109,7 +112,8 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         _ => None,
     };
     let cause = triggered.map(|waiting| &waiting.trigger.cause);
-    let rules = rules_of(state, &pending.what);
+    let held = rules_of(state, &pending.what);
+    let rules = held.as_deref();
     if !pending.modes_chosen {
         if let Some(modal) = rules.and_then(modal_of) {
             let Some(options) = mode_options(
@@ -211,7 +215,8 @@ fn activation_events(
     choices: &Choices,
 ) -> Option<Vec<Event>> {
     let source = state.object(ability.object)?;
-    let Ability::Activated { cost, .. } = &**source.card().rules.get(ability.ability)? else {
+    let rules = ability_reader::ability(state, ability)?;
+    let Ability::Activated { cost, .. } = &*rules else {
         return None;
     };
     let before = snapshot(state, ability.object)?;
@@ -253,8 +258,9 @@ fn activation_payment(
     player: PlayerId,
     ability: AbilityRef,
 ) -> Option<PayOptions> {
-    let source = state.object(ability.object)?;
-    let Ability::Activated { cost, .. } = &**source.card().rules.get(ability.ability)? else {
+    state.object(ability.object)?;
+    let rules = ability_reader::ability(state, ability)?;
+    let Ability::Activated { cost, .. } = &*rules else {
         return None;
     };
     let price = Price::of(cost).ok()?;

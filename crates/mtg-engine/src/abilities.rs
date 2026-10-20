@@ -131,6 +131,11 @@ impl AbilityObject {
         &self.rules
     }
 
+    /// The rules it runs, shared with the ability object.
+    pub(crate) fn shared_rules(&self) -> Arc<Ability> {
+        Arc::clone(&self.rules)
+    }
+
     /// What triggered it, for a triggered ability.
     pub const fn cause(&self) -> Option<&Cause> {
         self.cause.as_ref()

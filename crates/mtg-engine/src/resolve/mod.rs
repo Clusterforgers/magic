@@ -10,6 +10,8 @@ mod prim;
 mod tree;
 mod value;
 
+use std::sync::Arc;
+
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -17,7 +19,8 @@ use mtg_core::ids::{ObjectId, PlayerId};
 pub(crate) use value::zone_kind;
 pub use value::{Bindings, ResolveError, Scope};
 
-use crate::abilities::AbilityObject;
+use crate::abilities::{AbilityObject, AbilityRef};
+use crate::ability_reader::abilities_of;
 use crate::choose::{Choice, Target, announced_specs, targets_before};
 use crate::decision::Decision;
 use crate::error::EngineError;
@@ -166,27 +169,24 @@ impl Cx<'_> {
     }
 }
 
-/// The `Spell` ability of a card: what it does as an instant or sorcery.
-pub(crate) fn spell_ability(object: &GameObject) -> Option<&Ability> {
-    object
-        .card()
-        .rules
-        .iter()
-        .map(|rules| &**rules)
-        .find(|rules| matches!(rules, Ability::Spell { .. }))
+/// The `Spell` ability of `id` with its address: what the card does as an instant or sorcery.
+pub(crate) fn spell_ability(state: &GameState, id: ObjectId) -> Option<(AbilityRef, Arc<Ability>)> {
+    abilities_of(state, id)
+        .into_iter()
+        .find(|(_, rules)| matches!(**rules, Ability::Spell { .. }))
 }
 
 /// The rules a stack object runs: those of the ability it is, or the `Spell` ability of its card.
-fn rules_of(object: &GameObject) -> Option<&Ability> {
-    object
-        .ability()
-        .map(AbilityObject::rules)
-        .or_else(|| spell_ability(object))
+fn rules_of(state: &GameState, object: &GameObject) -> Option<Arc<Ability>> {
+    match object.ability() {
+        Some(ability) => Some(ability.shared_rules()),
+        None => spell_ability(state, object.id()).map(|(_, rules)| rules),
+    }
 }
 
 /// Whether resolving the object runs effects; a permanent spell, or a card whose text is left to the table, does not.
-pub(crate) fn runs_effects(object: &GameObject) -> bool {
-    rules_of(object).is_some()
+pub(crate) fn runs_effects(state: &GameState, object: &GameObject) -> bool {
+    rules_of(state, object).is_some()
 }
 
 fn scope_of<'a>(
@@ -256,16 +256,16 @@ fn step_with(
             outcome: ResolutionOutcome::Countered,
         }]));
     }
-    let Some(rules) = rules_of(object) else {
+    let Some(rules) = rules_of(state, object) else {
         return Ok(Progress::Done(finish(object)));
     };
-    let scope = scope_of(state, object, resolving, rules);
+    let scope = scope_of(state, object, resolving, &rules);
     // CR 603.4: a triggered ability whose "if" is no longer true as it resolves does nothing.
     if resolving.position == START
         && let Ability::Triggered {
             intervening_if: Some(condition),
             ..
-        } = rules
+        } = &*rules
         && !scope.holds(condition)?
     {
         return Ok(Progress::Done(vec![Event::ResolutionEnded {

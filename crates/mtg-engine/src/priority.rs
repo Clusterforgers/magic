@@ -9,7 +9,8 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 
-use crate::abilities::AbilityRef;
+use crate::abilities::{AbilityRef, AbilitySource};
+use crate::ability_reader::abilities_of;
 use crate::answers::Outcome;
 use crate::characteristics::characteristics;
 use crate::choose::announceable;
@@ -104,21 +105,28 @@ struct RuleMana {
     options: Vec<ManaOption>,
 }
 
-/// The mana abilities in the rules of `object` that the engine activates at priority (`simple_mana_ability`).
-///
-/// An option is named by the object and an index past its printed mana abilities: rule `r` takes `r` times five and
-/// then one more for each colour of an ability that adds any, so every colour is a distinct source of one permanent
-/// and a client taps for the colour it wants.
-fn rule_mana(object: &GameObject, printed: usize) -> Vec<RuleMana> {
+/// The mana source for the `colour`th option of the ability `address`, which an object with `printed` plain mana
+/// abilities has: its number follows the printed ones with five for each ability the reader lists, one for each
+/// colour it can add, so every colour is a distinct source of one permanent and a client taps for the colour it wants.
+const fn rule_source(printed: usize, address: AbilityRef, colour: usize) -> ManaSource {
+    let place = match address.source {
+        AbilitySource::Printed => address.ability,
+    };
+    ManaSource {
+        object: address.object,
+        ability: printed + place * COLORS.len() + colour,
+    }
+}
+
+/// The mana abilities among the abilities of `id` that the engine activates at priority (`simple_mana_ability`), for
+/// an object with `printed` plain mana abilities.
+fn rule_mana(state: &GameState, id: ObjectId, printed: usize) -> Vec<RuleMana> {
     let mut found = Vec::new();
-    for (index, rules) in object.card().rules.iter().enumerate() {
-        let Some(shape) = simple_mana_ability(rules) else {
+    for (address, rules) in abilities_of(state, id) {
+        let Some(shape) = simple_mana_ability(&rules) else {
             continue;
         };
-        let source = |colour: usize| ManaSource {
-            object: object.id(),
-            ability: printed + index * COLORS.len() + colour,
-        };
+        let source = |colour: usize| rule_source(printed, address, colour);
         let options = match shape.produces {
             ManaProduced::Fixed(mana) => vec![ManaOption {
                 source: source(0),
@@ -158,7 +166,7 @@ pub(crate) fn rule_mana_options(state: &GameState, player: PlayerId) -> Vec<Mana
         };
         // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
         let sick = chars.is_creature() && keywords::summoning_sick(state, id);
-        for mana in rule_mana(object, chars.abilities.len()) {
+        for mana in rule_mana(state, id, chars.abilities.len()) {
             if mana.shape.tap && (perm.tapped() || sick) {
                 continue;
             }
@@ -170,9 +178,8 @@ pub(crate) fn rule_mana_options(state: &GameState, player: PlayerId) -> Vec<Mana
 
 /// The costs of the rule-based mana ability `source` stands for, if it is one.
 fn rule_mana_costs(state: &GameState, source: ManaSource) -> Option<SimpleManaAbility> {
-    let object = state.object(source.object)?;
     let printed = characteristics(state, source.object)?.abilities.len();
-    rule_mana(object, printed)
+    rule_mana(state, source.object, printed)
         .into_iter()
         .find(|mana| mana.options.iter().any(|option| option.source == source))
         .map(|mana| mana.shape)
@@ -188,25 +195,30 @@ fn hand_land(state: &GameState, id: ObjectId) -> bool {
         .is_some_and(|o| o.base_types().contains(CardType::Land))
 }
 
-/// Whether the ability `index` of the permanent `object` could be activated by `player` now.
+/// Whether the ability `rules`, which `address` names among the abilities of the permanent `object`, could be
+/// activated by `player` now.
 ///
 /// The engine pays `{T}`, mana and the sacrifice of the source for an ability (`Price`) and nothing else; `Caps` keeps
 /// abilities with other costs out of the game. The mana must be affordable with the floating mana and the other
 /// permanents the player taps.
-fn can_activate(state: &GameState, player: PlayerId, object: &GameObject, index: usize) -> bool {
-    let Some(rules) = object.card().rules.get(index) else {
-        return false;
-    };
+fn can_activate(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    address: AbilityRef,
+    rules: &Ability,
+) -> bool {
     let Ability::Activated {
         cost,
         timing,
         limit,
         ..
-    } = &**rules
+    } = rules
     else {
         return false;
     };
-    if *limit == Some(Limit::OncePerTurn) && state.limit_spent(object.reference(), index) {
+    if *limit == Some(Limit::OncePerTurn) && state.limit_spent(object.reference(), address.ability)
+    {
         return false;
     }
     let Ok(price) = Price::of(cost) else {
@@ -251,9 +263,9 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
         if object.controller() != player {
             continue;
         }
-        for ability in 0..object.card().rules.len() {
-            if can_activate(state, player, object, ability) {
-                found.push(AbilityRef::printed(id, ability));
+        for (address, rules) in abilities_of(state, id) {
+            if can_activate(state, player, object, address, &rules) {
+                found.push(address);
             }
         }
     }
@@ -312,7 +324,8 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             // CR 601.2c: a spell that needs a target is cast only when it has a legal one; CR 700.2a: a modal
             // spell only when enough of its modes can be chosen.
             timing
-                && spell_ability(object).is_none_or(|rules| announceable(state, player, *id, rules))
+                && spell_ability(state, *id)
+                    .is_none_or(|(_, rules)| announceable(state, player, *id, &rules))
                 && can_afford(cost, &pool, &plain_mana, life)
         })
         .collect();
