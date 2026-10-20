@@ -225,6 +225,13 @@ impl LayersCache {
     pub(crate) fn reset(&mut self) {
         self.0 = OnceLock::new();
     }
+
+    /// Forgets the result if there is one.
+    pub(crate) fn reset_if_built(&mut self) {
+        if self.0.get().is_some() {
+            self.reset();
+        }
+    }
 }
 
 // A clone is a state of its own that works out its own layers when it first needs them.

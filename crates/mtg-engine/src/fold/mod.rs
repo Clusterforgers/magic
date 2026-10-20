@@ -45,9 +45,19 @@ fn pool_mut(state: &mut GameState, id: PlayerId) -> Result<&mut ManaPool, Engine
 /// follow from the current state, which indicates an engine bug or a corrupt log.
 pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     // What the layers make of the permanents is read from the state, which this event changes.
-    if !crate::layers::leaves_alone(event) {
+    let changes_layers = !crate::layers::leaves_alone(event);
+    if changes_layers {
         state.layers.reset();
     }
+    let folded = fold_event(state, event);
+    // A read in the middle of the fold saw the state before the rest of the event: forget it.
+    if changes_layers {
+        state.layers.reset_if_built();
+    }
+    folded
+}
+
+fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::FirstPlayerChosen { .. }
         | Event::LibraryShuffled { .. }
