@@ -31,11 +31,13 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ### Compiler and coverage
 - [x] (r1) Compiler core in `mtg-cards`: reminder text and the card's name stripped, clauses split and classified (keyword line, spell, triggered, activated, loyalty, static, modal), keyword lines read, an unreadable clause kept as `Ability::Manual` with its span (`docs/cards-dsl.md`, Compiler and Manual fallback)
 - [x] (r1b) A Scryfall keyword counts as present in `check_printed` when an ability has it or a `Manual` clause names it, so compiled cards that grant a keyword or use a typecycling form validate (`docs/cards-dsl.md`, Validation)
-- [ ] (r1c) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes the ones that validate
-- [ ] (r2) Renderer and goldens: every compiled card is written back as English and compared with its oracle text; the corpus files are the first goldens
-- [ ] (r3) Templates for what the engine runs today: keyword lines, spell effects, the trigger patterns, activated abilities with `{T}`, mana and sacrifice costs, modes, "may" and "pay", and the selectors, amounts and conditions in their common wordings
+- [ ] (r2) Reader framework and renderer: a template reads a clause into the DSL and renders it back as English; goldens for each template, and a ratchet over the corpus (every ability the compiler reads equals the hand-written one, and the cards it reproduces whole never shrink in number)
+- [ ] (r3a) Templates: plain mana abilities and spell effects (draw, life, damage, destroy, exile, counter, scry, pump) with their common targets and amounts
+- [ ] (r3b) Templates: modes, "may" and "pay", and triggers (enters, dies, attacks, cast, step, sacrifice)
+- [ ] (r3c) Templates: activated abilities with `{T}`, mana and sacrifice costs, and the wordings of tokens, counters and search
 - [ ] (r4) `mtg-cli coverage`: states, reasons and clause spans for every precon card, with the missing primitives and unreadable wordings ranked by the cards each holds back
 - [ ] (r5) The vocabulary the report ranks highest and the DSL lacks (value nodes such as devotion, energy and chosen colour; effects; costs; trigger patterns) is added in one pass, each with its `Caps` name and a stub
+- [ ] (r1c) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes the ones that validate
 
 ### Small effects
 - [ ] (q) `Effect::If` with its conditions, `Tap`, `Untap`, `Mill`, `WinGame` and the keyword Flash; Felidar Sovereign is Verified
