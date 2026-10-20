@@ -277,7 +277,7 @@ export function DeckChooser({ api, decks, signedIn, current, ready, busy, choice
               problem.issues.length === 0 ? (
                 <span>{NO_ISSUES}</span>
               ) : (
-                <ul aria-label="What breaks the rules" className="list-disc pl-5">
+                <ul aria-label="What breaks the rules" className="list-disc pl-4">
                   {problem.issues.map((issue, index) => (
                     <li
                       key={`${issue.code}-${issue.oracle_id ?? ''}-${index}`}

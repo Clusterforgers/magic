@@ -1,7 +1,7 @@
 // Goal: the session keeps the newest lobby roster the open connection pushed, replaces it as a whole each time, drops it when the connection goes or the game starts, sends Ready and NotReady as messages of their own, and ignores a roster it cannot read.
 import { describe, expect, it } from 'vitest'
 import { startSession } from '@/test-utils/harness'
-import { emptyTable, lobbyMessage, withSeats } from '@/test-utils/lobbyFrames'
+import { emptyTable, lobbyMessage, SEAT_DECK, withSeats } from '@/test-utils/lobbyFrames'
 import { lateJoin, lobbyBatchAt, lobbyStart } from '@/test-utils/transcripts'
 
 const table = emptyTable(3)
@@ -20,9 +20,9 @@ describe('the roster', () => {
     h.deliver(lobbyMessage(withSeats(table, { 0: [true, false] })))
     expect(h.state().lobby).toEqual({
       seats: [
-        { seat: 0, name: 'Ann', connected: true, ready: false },
-        { seat: 1, name: 'Bea', connected: false, ready: false },
-        { seat: 2, name: 'Cy', connected: false, ready: false },
+        { seat: 0, name: 'Ann', connected: true, ready: false, deck: SEAT_DECK },
+        { seat: 1, name: 'Bea', connected: false, ready: false, deck: SEAT_DECK },
+        { seat: 2, name: 'Cy', connected: false, ready: false, deck: SEAT_DECK },
       ],
       needed: 3,
     })

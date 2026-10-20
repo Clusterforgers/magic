@@ -26,7 +26,8 @@ export function DevLobbyRoute() {
   const auth = useMemo(
     () =>
       createAuthStore({
-        api: offlineAccounts,
+        // The signed-in page asks for its games, which an account-less client would answer by ending the sign-in.
+        api: { ...offlineAccounts, myGames: async () => [] },
         initial:
           account === true
             ? { status: 'signed-in', user: { id: 'dev-ada', username: 'Ada_L' } }

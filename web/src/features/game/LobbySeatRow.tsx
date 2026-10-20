@@ -61,7 +61,7 @@ export function LobbySeatRow({ row, account, remove }: LobbySeatRowProps) {
             <span className="sr-only">{row.connected ? 'Connected' : 'Not connected'}</span>
           </span>
         </span>
-        <span className="grid min-w-0 gap-0.5">
+        <span className="grid min-w-0 gap-1">
           <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
             <span className="shrink-0 text-muted-foreground">Seat {row.seat + 1}</span>
             <span data-slot="seat-name" className="min-w-0 font-medium [overflow-wrap:anywhere]">

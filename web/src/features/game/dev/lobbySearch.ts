@@ -52,6 +52,7 @@ export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySe
     names: search.names === 'long' ? 'long' : undefined,
     visibility: search.visibility === 'invite' ? 'invite' : undefined,
     nodeck: nodeck.length > 0 ? nodeck : undefined,
-    account: search.account === 1 || search.account === '1' ? true : undefined,
+    // The router feeds its own answer back in, so what this returns must read as itself (`true`).
+    account: search.account === true || search.account === 1 || search.account === '1' ? true : undefined,
   }
 }

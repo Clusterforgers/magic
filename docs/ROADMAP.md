@@ -81,9 +81,9 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [x] (B1) Deck list page: the account's decks with name, format, size and check state; new, import (text, Arena, MTGO), export and delete
 - [x] (B2) Deck builder page: card search with filters, add and remove by zone, counts, save with the check on save (`docs/deck-check.md`)
 - [x] Deck check and the Verified marker: legality and manual-step cards reported and highlighted; a saved deck with a clean check carries a marker until it or the engine changes (`docs/deck-check.md`)
-- [ ] (B3) Deck check, remaining: each deck's state in the lobby and the precon browser (`docs/deck-check.md`)
+- [ ] (B3) Deck check, remaining: each precon's state in the precon browser (`docs/deck-check.md`)
 - [ ] Precon browser with one-click play
-- [ ] Choose a deck in the lobby, remaining: the web prompt over `PUT /api/games/{id}/seats/{n}/deck` (a stored deck or a demo deck per seat, each seat's count of manual cards shown to the table) and precons as a third kind of deck (`docs/server.md`, `docs/deck-check.md`)
+- [ ] Choose a deck in the lobby, remaining: precons as a third kind of deck (`docs/server.md`, `docs/deck-check.md`)
 - [x] N-player layout, game log, stack panel, stop settings
 - [ ] UI rebuild: the table fits the screen, a turn change is unmistakable and games are joined from a list (`docs/ui-design.md`, Tasks). In order:
   - [x] (U1) Design tokens for both themes with a contrast test, a theme switch and an app shell with navigation
