@@ -294,7 +294,7 @@ pub fn split_items(line: &str) -> Option<Vec<Range<usize>>> {
     if is_list {
         Some(items)
     } else if is_item(line) {
-        Some(vec![0..chars.len()])
+        Some(std::iter::once(0..chars.len()).collect())
     } else {
         None
     }
@@ -474,7 +474,9 @@ mod tests {
     #[case::enchant_with_a_condition("Enchant creature you control")]
     #[case::enchant_two_types("Enchant creature or planeswalker")]
     #[case::partner_friends("Partner\u{2014}Friends forever")]
-    #[case::companion("Companion \u{2014} Each nonland card in your starting deck has a different name.")]
+    #[case::companion(
+        "Companion \u{2014} Each nonland card in your starting deck has a different name."
+    )]
     #[case::undeclared("Undying")]
     #[case::level_up("Level up {1}{U}")]
     #[case::typecycling("Plainscycling {2}")]
@@ -543,26 +545,61 @@ mod tests {
     #[test]
     fn a_keyword_read_carries_the_name_it_was_printed_with() {
         let samples = [
-            "Flash", "Flying", "Reach", "First strike", "Double strike", "Deathtouch", "Trample",
-            "Lifelink", "Vigilance", "Haste", "Menace", "Defender", "Indestructible", "Hexproof",
-            "Prowess", "Convoke", "Delve", "Cascade", "Storm", "Partner", "Battle cry", "Fuse",
-            "Ward {1}", "Equip {1}", "Reconfigure {1}", "Enchant creature", "Cycling {1}",
-            "Kicker {1}", "Multikicker {1}", "Flashback {1}", "Madness {1}", "Morph {1}",
-            "Disguise {1}", "Suspend 2\u{2014}{1}", "Evoke {1}", "Overload {1}",
+            "Flash",
+            "Flying",
+            "Reach",
+            "First strike",
+            "Double strike",
+            "Deathtouch",
+            "Trample",
+            "Lifelink",
+            "Vigilance",
+            "Haste",
+            "Menace",
+            "Defender",
+            "Indestructible",
+            "Hexproof",
+            "Prowess",
+            "Convoke",
+            "Delve",
+            "Cascade",
+            "Storm",
+            "Partner",
+            "Battle cry",
+            "Fuse",
+            "Ward {1}",
+            "Equip {1}",
+            "Reconfigure {1}",
+            "Enchant creature",
+            "Cycling {1}",
+            "Kicker {1}",
+            "Multikicker {1}",
+            "Flashback {1}",
+            "Madness {1}",
+            "Morph {1}",
+            "Disguise {1}",
+            "Suspend 2\u{2014}{1}",
+            "Evoke {1}",
+            "Overload {1}",
             "Partner with Someone",
         ];
         let mut seen = Vec::new();
         for sample in samples {
             let keyword = read(sample).unwrap_or_else(|| panic!("{sample} is not read"));
             assert!(
-                sample.to_ascii_lowercase().starts_with(&keyword.name().to_ascii_lowercase()),
+                sample
+                    .to_ascii_lowercase()
+                    .starts_with(&keyword.name().to_ascii_lowercase()),
                 "{sample} read as {}",
                 keyword.name()
             );
             seen.push(keyword.name());
         }
         // Companion is the one declared keyword the compiler leaves to the table.
-        let unread: Vec<_> = Keyword::NAMES.iter().filter(|name| !seen.contains(name)).collect();
+        let unread: Vec<_> = Keyword::NAMES
+            .iter()
+            .filter(|name| !seen.contains(name))
+            .collect();
         assert_eq!(unread, [&"Companion"]);
     }
 }

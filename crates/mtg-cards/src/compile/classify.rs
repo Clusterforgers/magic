@@ -66,7 +66,9 @@ pub fn classify(text: &str, spell: bool) -> ClauseKind {
     if is_chapter(head) {
         return ClauseKind::Triggered;
     }
-    let body = head.get(ability_word_len(head).unwrap_or(0)..).unwrap_or(head);
+    let body = head
+        .get(ability_word_len(head).unwrap_or(0)..)
+        .unwrap_or(head);
     if is_loyalty(body) {
         ClauseKind::Loyalty
     } else if is_triggered(body) {
@@ -168,7 +170,11 @@ mod tests {
     #[case::unread_keyword("Undying", false, Keyword)]
     #[case::level_up("Level up {1}{U}", false, Keyword)]
     #[case::cost_in_words("Ward\u{2014}Pay 3 life.", false, Keyword)]
-    #[case::companion("Companion \u{2014} Each nonland card in your starting deck has a different name.", false, Keyword)]
+    #[case::companion(
+        "Companion \u{2014} Each nonland card in your starting deck has a different name.",
+        false,
+        Keyword
+    )]
     #[case::choose_a_background("Choose a Background", false, Keyword)]
     #[case::keyword_as_a_subject("Flying creatures you control get +1/+1.", false, Static)]
     #[case::enchanted_creature("Enchanted creature gets +2/+2.", false, Static)]
@@ -182,11 +188,17 @@ mod tests {
     #[case::at("At the beginning of your upkeep, you win the game.", Triggered)]
     #[case::at_the_end("At the beginning of the next end step, sacrifice it.", Triggered)]
     #[case::at_least("At least two creatures must attack each combat if able.", Static)]
-    #[case::ability_word("Landfall \u{2014} Whenever a land you control enters, investigate.", Triggered)]
+    #[case::ability_word(
+        "Landfall \u{2014} Whenever a land you control enters, investigate.",
+        Triggered
+    )]
     #[case::two_word_ability_word("Spell mastery \u{2014} When ~ enters, draw a card.", Triggered)]
     #[case::chapter("I \u{2014} Create a 1/1 token.", Triggered)]
     #[case::chapters("II, III \u{2014} Draw a card.", Triggered)]
-    #[case::modal_trigger("Whenever ~ attacks, choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} Gain 2 life.", Triggered)]
+    #[case::modal_trigger(
+        "Whenever ~ attacks, choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} Gain 2 life.",
+        Triggered
+    )]
     #[case::word_when_later("You may cast ~ whenever you could cast an instant.", Static)]
     fn triggered_abilities(#[case] text: &str, #[case] expected: ClauseKind) {
         assert_eq!(classify(text, false), expected);
@@ -202,11 +214,17 @@ mod tests {
     #[case::ability_word("Boast \u{2014} {1}: Draw a card.", Activated)]
     #[case::activate_only("{2}: Draw a card. Activate only as a sorcery.", Activated)]
     #[case::quoted_colon_is_static("Enchanted land has \"{T}: Add {G}.\"", Static)]
-    #[case::quoted_colon_after_text("Creatures you control have \"{T}: Add one mana of any color.\"", Static)]
+    #[case::quoted_colon_after_text(
+        "Creatures you control have \"{T}: Add one mana of any color.\"",
+        Static
+    )]
     #[case::curly_quotes("Equipped creature has \u{201c}{T}: Add {C}.\u{201d}", Static)]
     #[case::colon_in_prose("Draw a card: it is great.", Static)]
     #[case::colon_after_a_sentence("Foo bar baz. Tap: draw", Static)]
-    #[case::colon_on_a_later_line_of_modes("Choose one \u{2014}\n\u{2022} {T}: Draw a card.\n\u{2022} Gain 2 life.", Modal)]
+    #[case::colon_on_a_later_line_of_modes(
+        "Choose one \u{2014}\n\u{2022} {T}: Draw a card.\n\u{2022} Gain 2 life.",
+        Modal
+    )]
     fn activated_abilities(#[case] text: &str, #[case] expected: ClauseKind) {
         assert_eq!(classify(text, false), expected);
     }
@@ -220,7 +238,10 @@ mod tests {
     #[case::plus_x("+X: Draw X cards.", Loyalty)]
     #[case::ascii_minus("-3: Destroy target creature.", Loyalty)]
     #[case::en_dash("\u{2013}2: Draw two cards.", Loyalty)]
-    #[case::with_modes("\u{2212}2: Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} Gain 2 life.", Loyalty)]
+    #[case::with_modes(
+        "\u{2212}2: Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} Gain 2 life.",
+        Loyalty
+    )]
     #[case::plus_without_a_colon("+1/+1 counters are great.", Static)]
     #[case::number_is_not_loyalty("2: Draw a card.", Static)]
     #[case::minus_words("\u{2212}X is a number.", Static)]
@@ -231,8 +252,14 @@ mod tests {
     #[rstest]
     #[case::choose_one("Choose one \u{2014}\n\u{2022} A.\n\u{2022} B.", Modal)]
     #[case::choose_both("Choose one or both \u{2014}\n\u{2022} A.\n\u{2022} B.", Modal)]
-    #[case::choose_up_to("Choose up to two \u{2014}\n\u{2022} A.\n\u{2022} B.\n\u{2022} C.", Modal)]
-    #[case::spree("Spree\n+ {1} \u{2014} Draw a card.\n+ {2} \u{2014} Gain 2 life.", Modal)]
+    #[case::choose_up_to(
+        "Choose up to two \u{2014}\n\u{2022} A.\n\u{2022} B.\n\u{2022} C.",
+        Modal
+    )]
+    #[case::spree(
+        "Spree\n+ {1} \u{2014} Draw a card.\n+ {2} \u{2014} Gain 2 life.",
+        Modal
+    )]
     fn modal_spells(#[case] text: &str, #[case] expected: ClauseKind) {
         assert_eq!(classify(text, true), expected);
         assert_eq!(classify(text, false), expected);
@@ -240,14 +267,30 @@ mod tests {
 
     #[rstest]
     #[case::damage("~ deals 3 damage to any target.", true, Spell)]
-    #[case::two_sentences("Damage can't be prevented this turn. ~ deals 2 damage to any target.", true, Spell)]
+    #[case::two_sentences(
+        "Damage can't be prevented this turn. ~ deals 2 damage to any target.",
+        true,
+        Spell
+    )]
     #[case::scry("Scry 1.", true, Spell)]
-    #[case::cost_increase("This spell costs {1} more to cast for each target beyond the first.", true, Static)]
+    #[case::cost_increase(
+        "This spell costs {1} more to cast for each target beyond the first.",
+        true,
+        Static
+    )]
     #[case::cost_with_name("~ costs {1} less to cast.", true, Static)]
     #[case::uncounterable("~ can't be countered.", true, Static)]
-    #[case::additional_cost("As an additional cost to cast this spell, discard a card.", true, Static)]
+    #[case::additional_cost(
+        "As an additional cost to cast this spell, discard a card.",
+        true,
+        Static
+    )]
     #[case::same_words_on_a_permanent("~ deals 3 damage to any target.", false, Static)]
-    #[case::replacement("If an effect would create one or more tokens under your control, it creates twice that many.", false, Static)]
+    #[case::replacement(
+        "If an effect would create one or more tokens under your control, it creates twice that many.",
+        false,
+        Static
+    )]
     #[case::level_block("LEVEL 2-3\n2/4\n{U}{U}, {T}: Copy target spell.", false, Static)]
     #[case::static_ability("Equipped creature gets +2/+0.", false, Static)]
     #[case::spell_text_with_a_trigger("When you cast this spell, draw a card.", true, Triggered)]

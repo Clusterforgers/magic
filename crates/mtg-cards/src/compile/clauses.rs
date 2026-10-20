@@ -137,7 +137,12 @@ mod tests {
             .collect();
         assert_eq!(
             spans,
-            ["Vigilance", "deathtouch", "haste (Reminders.)", "Flying (It flies.)"]
+            [
+                "Vigilance",
+                "deathtouch",
+                "haste (Reminders.)",
+                "Flying (It flies.)"
+            ]
         );
     }
 
@@ -153,7 +158,7 @@ mod tests {
             .into_iter()
             .map(|clause| text.span(clause.range, clause.ends_line).unwrap())
             .collect();
-        assert!(!spans.is_empty());
+        assert!(!spans.is_empty(), "{original}");
         for (at, span) in spans.iter().enumerate() {
             assert!(span.start < span.end && span.end <= length, "{span:?}");
             assert!(span.slice(original).is_some());

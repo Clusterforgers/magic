@@ -88,7 +88,10 @@ pub fn normalize(oracle_text: &str, names: &[String]) -> Normalized {
     let mut at = 0;
     while let Some(&ch) = original.get(at) {
         if let Some(range) = removed.next_if(|range| range.start == at) {
-            while pieces.last().is_some_and(|piece| matches!(piece.ch, ' ' | '\t')) {
+            while pieces
+                .last()
+                .is_some_and(|piece| matches!(piece.ch, ' ' | '\t'))
+            {
                 pieces.pop();
             }
             at = range.end;
@@ -109,7 +112,7 @@ pub fn normalize(oracle_text: &str, names: &[String]) -> Normalized {
         .collect();
     line_ends.push(original.len());
     Normalized {
-        pieces: replace_names(trim_lines(pieces), names),
+        pieces: replace_names(&trim_lines(pieces), names),
         line_ends,
     }
 }
@@ -161,7 +164,7 @@ fn trim_lines(pieces: Vec<Piece>) -> Vec<Piece> {
 }
 
 /// Replaces whole-word occurrences of the names, the longest first, by one `~` each.
-fn replace_names(pieces: Vec<Piece>, names: &[String]) -> Vec<Piece> {
+fn replace_names(pieces: &[Piece], names: &[String]) -> Vec<Piece> {
     let mut names: Vec<Vec<char>> = names
         .iter()
         .filter(|name| !name.is_empty())
@@ -171,7 +174,7 @@ fn replace_names(pieces: Vec<Piece>, names: &[String]) -> Vec<Piece> {
     let mut out = Vec::with_capacity(pieces.len());
     let mut at = 0;
     while let Some(piece) = pieces.get(at) {
-        let hit = names.iter().find(|name| name_at(&pieces, at, name));
+        let hit = names.iter().find(|name| name_at(pieces, at, name));
         if let Some(name) = hit {
             let last = pieces.get(at + name.len() - 1).unwrap_or(piece);
             out.push(Piece {
@@ -220,7 +223,10 @@ mod tests {
         "Haste\nCascade"
     )]
     #[case::only_reminder("({T}: Add {G}.)", "")]
-    #[case::before_a_sentence("Scry 1. (Look at the top card.)\nDraw a card.", "Scry 1.\nDraw a card.")]
+    #[case::before_a_sentence(
+        "Scry 1. (Look at the top card.)\nDraw a card.",
+        "Scry 1.\nDraw a card."
+    )]
     #[case::quotes_inside(
         "Create a Treasure. (It's an artifact with \"{T}, Sacrifice this token: Add one mana.\")",
         "Create a Treasure."
@@ -263,14 +269,18 @@ mod tests {
 
     #[test]
     fn spans_slice_the_original_text_in_scalar_values() {
-        let original = "Flying (This can fly.)\n\u{2212}1: Questing Beast deals 1 damage \u{2022} now.";
+        let original =
+            "Flying (This can fly.)\n\u{2212}1: Questing Beast deals 1 damage \u{2022} now.";
         let normalized = normalize(original, &names(&["Questing Beast"]));
         let lines = normalized.lines();
         assert_eq!(lines.len(), 2);
         let first = normalized.span(lines[0].clone(), false).unwrap();
         assert_eq!(first.slice(original), Some("Flying"));
         let with_reminder = normalized.span(lines[0].clone(), true).unwrap();
-        assert_eq!(with_reminder.slice(original), Some("Flying (This can fly.)"));
+        assert_eq!(
+            with_reminder.slice(original),
+            Some("Flying (This can fly.)")
+        );
         let second = normalized.span(lines[1].clone(), true).unwrap();
         assert_eq!(
             second.slice(original),
@@ -280,12 +290,15 @@ mod tests {
         let tilde = lines[1].start + 4;
         let name = normalized.span(tilde..tilde + 1, false).unwrap();
         assert_eq!(name.slice(original), Some("Questing Beast"));
-        assert_eq!(normalized.slice(lines[1].clone()), "\u{2212}1: ~ deals 1 damage \u{2022} now.");
+        assert_eq!(
+            normalized.slice(lines[1].clone()),
+            "\u{2212}1: ~ deals 1 damage \u{2022} now."
+        );
     }
 
     #[rstest]
     #[case::empty(0..0)]
-    #[case::backwards(3..2)]
+    #[case::backwards(Range { start: 3, end: 2 })]
     #[case::past_the_end(4..99)]
     fn empty_and_outside_ranges_have_no_span(#[case] range: Range<usize>) {
         let normalized = normalize("Flying", &[]);

@@ -188,17 +188,37 @@ mod tests {
     }
 
     #[rstest]
-    #[case::only_keywords("Creature \u{2014} Angel", "Flying\nVigilance (Attacking doesn't cause this creature to tap.)", Some(ImplStatus::Full))]
-    #[case::keyword_list("Creature \u{2014} Beast", "Vigilance, deathtouch, haste", Some(ImplStatus::Full))]
-    #[case::keyword_and_trigger("Creature \u{2014} Elf", "Haste\nWhen ~ enters, draw a card.", Some(ImplStatus::Partial))]
-    #[case::keyword_and_static("Artifact \u{2014} Equipment", "Equipped creature gets +2/+0.\nEquip {1}", Some(ImplStatus::Partial))]
+    #[case::only_keywords(
+        "Creature \u{2014} Angel",
+        "Flying\nVigilance (Attacking doesn't cause this creature to tap.)",
+        Some(ImplStatus::Full)
+    )]
+    #[case::keyword_list(
+        "Creature \u{2014} Beast",
+        "Vigilance, deathtouch, haste",
+        Some(ImplStatus::Full)
+    )]
+    #[case::keyword_and_trigger(
+        "Creature \u{2014} Elf",
+        "Haste\nWhen ~ enters, draw a card.",
+        Some(ImplStatus::Partial)
+    )]
+    #[case::keyword_and_static(
+        "Artifact \u{2014} Equipment",
+        "Equipped creature gets +2/+0.\nEquip {1}",
+        Some(ImplStatus::Partial)
+    )]
     #[case::nothing_read("Instant", "~ deals 3 damage to any target.", Some(ImplStatus::Manual))]
     #[case::unreadable_keyword_only("Creature \u{2014} Elf", "Undying", Some(ImplStatus::Manual))]
     #[case::reminder_only("Basic Land \u{2014} Forest", "({T}: Add {G}.)", None)]
     #[case::vanilla("Creature \u{2014} Bear", "", None)]
     #[case::whitespace_only("Creature \u{2014} Bear", "  \n ", None)]
     #[case::spell_with_only_a_keyword("Instant", "Flash", Some(ImplStatus::Manual))]
-    #[case::spell_with_keyword_and_effect("Instant", "Kicker {1}\nDraw a card.", Some(ImplStatus::Partial))]
+    #[case::spell_with_keyword_and_effect(
+        "Instant",
+        "Kicker {1}\nDraw a card.",
+        Some(ImplStatus::Partial)
+    )]
     fn the_status_follows_the_clauses(
         #[case] type_line: &str,
         #[case] text: &str,
@@ -266,22 +286,29 @@ mod tests {
 
     #[test]
     fn a_manual_card_has_no_abilities_and_lists_its_clauses() {
-        let compiled = one("Test Card", "Instant", "Counter target spell.\nDraw a card.");
+        let compiled = one(
+            "Test Card",
+            "Instant",
+            "Counter target spell.\nDraw a card.",
+        );
         let card = compiled.card.unwrap();
         assert_eq!(card.impl_status, ImplStatus::Manual);
-        assert!(card.faces[0].abilities.is_empty());
-        assert!(card.faces[0].oracle_fingerprint.is_empty());
+        assert!(card.faces[0].abilities.is_empty(), "{card:?}");
+        assert!(card.faces[0].oracle_fingerprint.is_empty(), "{card:?}");
         assert_eq!(compiled.clauses.len(), 2);
-        assert!(compiled.clauses.iter().all(|clause| {
-            !clause.read && clause.kind == ClauseKind::Spell
-        }));
+        assert!(
+            compiled
+                .clauses
+                .iter()
+                .all(|clause| { !clause.read && clause.kind == ClauseKind::Spell })
+        );
     }
 
     #[test]
     fn a_text_with_only_reminder_text_has_no_card_and_no_clauses() {
         let compiled = one("Forest", "Basic Land \u{2014} Forest", "({T}: Add {G}.)");
         assert_eq!(compiled.card, None);
-        assert!(compiled.clauses.is_empty());
+        assert!(compiled.clauses.is_empty(), "{compiled:?}");
     }
 
     #[test]
@@ -290,7 +317,11 @@ mod tests {
         let back = "Flying";
         let compiled = compile(&card(vec![
             face("Delver of Secrets", "Creature \u{2014} Human Wizard", front),
-            face("Insectile Aberration", "Creature \u{2014} Human Insect", back),
+            face(
+                "Insectile Aberration",
+                "Creature \u{2014} Human Insect",
+                back,
+            ),
         ]));
         let card = compiled.card.unwrap();
         assert_eq!(card.name, "Delver of Secrets // Insectile Aberration");
@@ -299,7 +330,11 @@ mod tests {
         assert_eq!(card.faces[1].oracle_fingerprint, oracle_fingerprint(back));
         assert_eq!(card.faces[1].abilities, [Ability::Keyword(Keyword::Flying)]);
         assert_eq!(
-            compiled.clauses.iter().map(|clause| clause.face).collect::<Vec<_>>(),
+            compiled
+                .clauses
+                .iter()
+                .map(|clause| clause.face)
+                .collect::<Vec<_>>(),
             [0, 0, 1]
         );
         assert_eq!(
@@ -317,14 +352,34 @@ mod tests {
         let card = compiled.card.unwrap();
         assert_eq!(card.impl_status, ImplStatus::Full);
         assert_eq!(card.faces[0].oracle_fingerprint, oracle_fingerprint(""));
-        assert!(card.faces[0].abilities.is_empty());
+        assert!(card.faces[0].abilities.is_empty(), "{card:?}");
     }
 
     #[rstest]
-    #[case::full_name("Atraxa, Praetors' Voice", "Legendary Creature \u{2014} Phyrexian", "Atraxa, Praetors' Voice has flying.", "~ has flying.")]
-    #[case::short_name("Atraxa, Praetors' Voice", "Legendary Creature \u{2014} Phyrexian", "Whenever Atraxa attacks, draw a card.", "Whenever ~ attacks, draw a card.")]
-    #[case::not_legendary("Fire, Ice", "Instant", "Fire deals 2 damage. Fire, Ice deals 1.", "Fire deals 2 damage. ~ deals 1.")]
-    #[case::no_comma("Questing Beast", "Legendary Creature \u{2014} Beast", "Questing Beast can't be blocked.", "~ can't be blocked.")]
+    #[case::full_name(
+        "Atraxa, Praetors' Voice",
+        "Legendary Creature \u{2014} Phyrexian",
+        "Atraxa, Praetors' Voice has flying.",
+        "~ has flying."
+    )]
+    #[case::short_name(
+        "Atraxa, Praetors' Voice",
+        "Legendary Creature \u{2014} Phyrexian",
+        "Whenever Atraxa attacks, draw a card.",
+        "Whenever ~ attacks, draw a card."
+    )]
+    #[case::not_legendary(
+        "Fire, Ice",
+        "Instant",
+        "Fire deals 2 damage. Fire, Ice deals 1.",
+        "Fire deals 2 damage. ~ deals 1."
+    )]
+    #[case::no_comma(
+        "Questing Beast",
+        "Legendary Creature \u{2014} Beast",
+        "Questing Beast can't be blocked.",
+        "~ can't be blocked."
+    )]
     fn the_card_names_become_tildes_in_the_clause_text(
         #[case] name: &str,
         #[case] type_line: &str,
