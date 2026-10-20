@@ -20,8 +20,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             source, ability, ..
         } => {
             let card = state
-                .objects
-                .get(&source.id)
+                .source_object(source.id)
                 .ok_or_else(|| invalid(format!("{source:?} activated an ability and is gone")))?;
             let rules = card
                 .def
@@ -94,8 +93,7 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
         (waiting.rules, waiting.bindings)
     } else {
         let card = state
-            .objects
-            .get(&source.id)
+            .source_object(source.id)
             .ok_or_else(|| invalid(format!("the source {source:?} of an ability is gone")))?;
         let rules = card
             .def
@@ -106,8 +104,7 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
         (rules, Bindings::new())
     };
     let card = state
-        .objects
-        .get(&source.id)
+        .source_object(source.id)
         .ok_or_else(|| invalid(format!("the source {source:?} of an ability is gone")))?;
     let object = GameObject::on_stack(
         id,

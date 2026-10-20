@@ -1,4 +1,5 @@
-//! What a cost asks of a player: the `{T}` and the mana the engine pays, and the mana sources that may pay it.
+//! What a cost asks of a player: the `{T}`, the sacrifice of the source and the mana the engine pays, and the mana
+//! sources that may pay it.
 
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -13,6 +14,8 @@ use crate::state::GameState;
 pub(crate) struct Price {
     /// The source is tapped.
     pub(crate) tap: bool,
+    /// The source is sacrificed.
+    pub(crate) sacrifice: bool,
     /// Every mana part together; `None` for a cost without mana.
     pub(crate) mana: Option<ManaCost>,
 }
@@ -35,11 +38,13 @@ impl Price {
     /// `{X}`, which waits for the choice of X (`Cost.Mana.X`).
     pub(crate) fn of(cost: &Cost) -> Result<Price, &'static str> {
         let mut tap = false;
+        let mut sacrifice = false;
         let mut symbols = Vec::new();
         let mut mana = false;
         for item in &cost.0 {
             match item {
                 CostItem::Tap => tap = true,
+                CostItem::SacrificeSelf => sacrifice = true,
                 CostItem::Mana(part) if part.has_x() => return Err("Cost.Mana.X"),
                 CostItem::Mana(part) => {
                     mana = true;
@@ -50,12 +55,14 @@ impl Price {
         }
         Ok(Price {
             tap,
+            sacrifice,
             mana: mana.then(|| ManaCost::from_symbols(symbols)),
         })
     }
 
     /// The mana abilities `player` may tap to pay the mana of an ability of `source`: the source itself is not one of
-    /// them when its `{T}` is part of the cost, since a permanent is tapped once.
+    /// them when its `{T}` is part of the cost, since a permanent is tapped once, or when it is sacrificed for it,
+    /// since it is gone by the time the mana is paid.
     pub(crate) fn sources(
         &self,
         state: &GameState,
@@ -63,7 +70,7 @@ impl Price {
         source: ObjectId,
     ) -> Vec<ManaOption> {
         let mut sources = mana_options(state, player);
-        if self.tap {
+        if self.tap || self.sacrifice {
             sources.retain(|option| option.source.object != source);
         }
         sources
@@ -93,21 +100,41 @@ mod tests {
     }
 
     #[rstest]
-    #[case::free("[]", false, "")]
-    #[case::tapping(r#"["Tap"]"#, true, "")]
-    #[case::mana("\"{1}{R}\"", false, "{1}{R}")]
-    #[case::mana_and_tap(r#"[{"Mana":"{2}"},"Tap"]"#, true, "{2}")]
-    #[case::two_mana_parts_add_up(r#"[{"Mana":"{1}"},{"Mana":"{1}{G}"}]"#, false, "{2}{G}")]
-    #[case::hybrid(r#""{G/W}{G/W}""#, false, "{G/W}{G/W}")]
-    fn a_cost_of_tapping_and_mana_is_a_price(
+    #[case::free("[]", false, false, "")]
+    #[case::tapping(r#"["Tap"]"#, true, false, "")]
+    #[case::mana("\"{1}{R}\"", false, false, "{1}{R}")]
+    #[case::mana_and_tap(r#"[{"Mana":"{2}"},"Tap"]"#, true, false, "{2}")]
+    #[case::two_mana_parts_add_up(r#"[{"Mana":"{1}"},{"Mana":"{1}{G}"}]"#, false, false, "{2}{G}")]
+    #[case::hybrid(r#""{G/W}{G/W}""#, false, false, "{G/W}{G/W}")]
+    #[case::a_clue_pays_mana_and_sacrifices_itself(
+        r#"[{"Mana":"{2}"},"SacrificeSelf"]"#,
+        false,
+        true,
+        "{2}"
+    )]
+    #[case::food_pays_mana_taps_and_sacrifices_itself(
+        r#"[{"Mana":"{2}"},"Tap","SacrificeSelf"]"#,
+        true,
+        true,
+        "{2}"
+    )]
+    #[case::a_treasure_sacrifices_itself_for_nothing_else(
+        r#"["Tap","SacrificeSelf"]"#,
+        true,
+        true,
+        ""
+    )]
+    fn a_cost_of_tapping_sacrificing_the_source_and_mana_is_a_price(
         #[case] json: &str,
         #[case] tap: bool,
+        #[case] sacrifice: bool,
         #[case] expected: &str,
     ) {
         assert_eq!(
             Price::of(&cost(json)),
             Ok(Price {
                 tap,
+                sacrifice,
                 mana: mana(expected)
             })
         );
@@ -115,7 +142,10 @@ mod tests {
 
     #[rstest]
     #[case::life(r#"[{"Mana":"{1}"},{"PayLife":2}]"#, "Cost.PayLife")]
-    #[case::sacrificing_the_source(r#"[{"Mana":"{2}"},"SacrificeSelf"]"#, "Cost.SacrificeSelf")]
+    #[case::sacrificing_another_permanent(
+        r#"[{"Mana":"{2}"},{"Sacrifice":{"filter":[]}}]"#,
+        "Cost.Sacrifice"
+    )]
     #[case::sacrificing(r#"[{"Sacrifice":{"filter":[]}}]"#, "Cost.Sacrifice")]
     #[case::discarding(r#"[{"Discard":{}}]"#, "Cost.Discard")]
     #[case::untapping(r#"["Untap"]"#, "Cost.Untap")]
@@ -144,5 +174,19 @@ mod tests {
         assert_eq!(sources(&not_tapping).len(), 2);
         assert_eq!(sources(&tapping).len(), 1);
         assert!(!sources(&tapping).contains(&rock));
+    }
+
+    #[test]
+    fn the_source_of_an_ability_that_sacrifices_it_is_not_one_of_the_sources_of_its_mana_either() {
+        let game = state(vec![vec![], vec![]], vec![vec![forest(), forest()], vec![]]);
+        let rock = game.zone(Zone::Battlefield)[0];
+        let price = Price::of(&cost(r#"[{"Mana":"{1}"},"SacrificeSelf"]"#)).unwrap();
+        let sources: Vec<ObjectId> = price
+            .sources(&game, PlayerId(0), rock)
+            .iter()
+            .map(|option| option.source.object)
+            .collect();
+        assert_eq!(sources.len(), 1);
+        assert!(!sources.contains(&rock));
     }
 }

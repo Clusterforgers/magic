@@ -16,7 +16,7 @@ use crate::answers::Outcome;
 use crate::choose::{Choice, Choices, announced_specs, asks, modal_of, mode_options, options_for};
 use crate::decision::{Decision, DecisionKind, PayChoice, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
-use crate::events::Event;
+use crate::events::{Event, ZoneCause};
 use crate::mana::{
     ManaOption, Payment, auto_payment, check_payment, complete_payment, max_life_payment,
 };
@@ -27,6 +27,7 @@ use crate::resolve::spell_ability;
 use crate::snapshot::snapshot;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
+use crate::zones::Zone;
 
 /// What is being put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -198,10 +199,11 @@ fn trigger_event(state: &GameState, waiting: &PendingTrigger, choices: &Choices)
     }))
 }
 
-/// The events of activating an ability: the tap of its cost, the activation and the ability on the stack. The mana of
-/// its cost is paid around them by [`pay_answer`].
+/// The events of activating an ability: the tap and the sacrifice of its cost, the activation and the ability on the
+/// stack. The mana of its cost is paid around them by [`pay_answer`].
 ///
-/// The source is photographed before the tap, so the ability knows what it was (CR 113.7a).
+/// The source is photographed before the costs, so the ability knows what it was (CR 113.7a); a token sacrificed
+/// for it has ceased to exist by then, and the ability still has the rules it was activated from.
 fn activation_events(
     state: &GameState,
     player: PlayerId,
@@ -217,6 +219,14 @@ fn activation_events(
     if cost.0.contains(&CostItem::Tap) {
         events.push(Event::PermanentTapped {
             object: ability.object,
+        });
+    }
+    if cost.0.contains(&CostItem::SacrificeSelf) {
+        events.push(Event::ZoneChanged {
+            object: ability.object,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(source.owner()),
+            cause: ZoneCause::Sacrificed,
         });
     }
     events.push(Event::AbilityActivated {

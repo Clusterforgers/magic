@@ -29,6 +29,7 @@ const RUNS: &[&str] = &[
     "Trigger.AnyOf",
     "Cost.Tap",
     "Cost.Mana",
+    "Cost.SacrificeSelf",
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Scry",
@@ -43,6 +44,8 @@ const RUNS: &[&str] = &[
     "Effect.DealDamage",
     "Effect.GainLife",
     "Effect.LoseLife",
+    "Effect.AddMana",
+    "Effect.CreateToken",
     "Effect.Continuous",
     "Mod.ModifyPT",
     "Mod.AddKeyword",
@@ -125,7 +128,6 @@ mod tests {
     #[case::mana_costs("Cost.Mana", true)]
     #[case::x_in_a_mana_cost("Cost.Mana.X", false)]
     #[case::paying_life("Cost.PayLife", false)]
-    #[case::sacrificing_as_a_cost("Cost.SacrificeSelf", false)]
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_zones("Ability.From", false)]
     #[case::triggers("Ability.Triggered", true)]
@@ -148,6 +150,13 @@ mod tests {
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]
+    #[case::adding_mana("Effect.AddMana", true)]
+    #[case::creating_tokens("Effect.CreateToken", true)]
+    #[case::creating_copies("Effect.CreateToken.Copy", false)]
+    #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
+    #[case::sacrificing_a_permanent("Cost.Sacrifice", false)]
+    #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
+    #[case::mana_abilities_of_other_shapes("Ability.ManaAbility.Complex", false)]
     #[case::paying_or_not("Effect.Pay", true)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]

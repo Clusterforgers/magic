@@ -8,7 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::Serialize;
 
 use crate::ability::Ability;
-use crate::assemble::{PLAIN_MANA_ABILITY, plain_mana_ability};
+use crate::assemble::{PLAIN_MANA_ABILITY, plain_mana_ability, simple_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -659,6 +659,10 @@ impl<'a> Walker<'a> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("token", |w| w.token(token));
                 w.at("count", |w| w.amount(count));
+                // A token that copies an object waits for the copy effects.
+                if matches!(token, TokenRef::CopyOf { .. }) {
+                    w.uses("Effect", "CreateToken.Copy");
+                }
             }
             Effect::Continuous { affected, mods, .. } => {
                 w.at("affected", |w| w.reference(affected, Kind::Object));
@@ -692,6 +696,10 @@ impl<'a> Walker<'a> {
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("cost", |w| w.cost(cost));
+                // Sacrificing the source is paid as part of an ability's cost; no effect asks for it yet.
+                if cost.0.contains(&CostItem::SacrificeSelf) {
+                    w.uses("Effect", "Pay.SacrificeSelf");
+                }
                 w.effect_list("paid", paid, false);
                 w.effect_list("unpaid", unpaid, false);
             }
@@ -780,6 +788,10 @@ impl<'a> Walker<'a> {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {
             self.uses("Ability", &tag);
+        }
+        // The engine activates a mana ability of one mana at priority; any other waits for its own task.
+        if ability.is_mana_ability() && simple_mana_ability(ability).is_none() {
+            self.uses("Ability", "ManaAbility.Complex");
         }
         self.where_and_how_often(ability);
         let saved_x = self.x_free;
@@ -1216,6 +1228,15 @@ mod tests {
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
     #[case::a_move_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Bottom","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random"])]
+    #[case::a_named_token(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}"#, &["Ability.Spell", "Effect.CreateToken"])]
+    #[case::an_inline_token_with_an_ability(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}]}},"count":2,"tapped":true}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]
+    #[case::a_copy_of_an_object(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This"}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy"])]
+    #[case::a_cost_that_sacrifices_a_permanent(r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Sacrifice", "Effect.Draw"])]
+    #[case::a_cost_that_sacrifices_the_source(r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Effect.Draw"])]
+    #[case::a_clue_pays_mana_and_sacrifices_itself(r#"{"Activated":{"cost":[{"Mana":"{2}"},"SacrificeSelf"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.SacrificeSelf", "Effect.Draw"])]
+    #[case::a_payment_that_sacrifices_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["SacrificeSelf"]}}]}}"#, &["Ability.Triggered", "Cost.SacrificeSelf", "Effect.Pay", "Effect.Pay.SacrificeSelf", "Trigger.StepBegins"])]
+    #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
+    #[case::sol_ring(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#, &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana"])]
     fn how_often_from_where_and_by_what_chance_an_ability_works_counts_as_a_primitive(
         #[case] json: &str,
         #[case] expected: &[&str],

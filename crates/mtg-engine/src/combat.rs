@@ -138,7 +138,7 @@ pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> b
         && is_untapped_creature(state, id)
 }
 
-fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTarget> {
+pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTarget> {
     let mut targets: Vec<AttackTarget> = state
         .turn_order_from(player)
         .into_iter()

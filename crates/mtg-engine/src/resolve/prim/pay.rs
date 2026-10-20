@@ -79,9 +79,14 @@ fn unexpected(answer: &Choice, player: PlayerId) -> ResolveError {
 /// The mana of a cost that is only mana: the one cost an effect can ask for today.
 fn mana_of(cost: &Cost) -> Result<ManaCost, ResolveError> {
     match Price::of(cost) {
+        // Sacrificing the source is a cost of an ability; no effect asks a player to pay it yet.
+        Ok(Price {
+            sacrifice: true, ..
+        }) => Err(ResolveError::Unsupported("Effect.Pay.SacrificeSelf")),
         Ok(Price {
             tap: false,
             mana: Some(mana),
+            ..
         }) => Ok(mana),
         Ok(_) => Err(ResolveError::Invalid(
             "a payment is mana and nothing else".into(),
@@ -412,7 +417,15 @@ mod tests {
     )]
     #[case::sacrifice(
         r#"["SacrificeSelf"]"#,
-        ResolveError::Unsupported("Cost.SacrificeSelf")
+        ResolveError::Unsupported("Effect.Pay.SacrificeSelf")
+    )]
+    #[case::mana_and_sacrifice(
+        r#"[{"Mana":"{2}"},"SacrificeSelf"]"#,
+        ResolveError::Unsupported("Effect.Pay.SacrificeSelf")
+    )]
+    #[case::sacrificing_another(
+        r#"[{"Sacrifice":{"filter":[]}}]"#,
+        ResolveError::Unsupported("Cost.Sacrifice")
     )]
     #[case::x(r#""{X}""#, ResolveError::Unsupported("Cost.Mana.X"))]
     #[case::tapping(

@@ -72,6 +72,11 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
   - [ ] A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
   - [ ] The support walker names `Cost.Mana.X` for an `{X}` ability cost, so such a card is not Verified before X costs run
 - [ ] (g) Tokens, copy effects, X costs, alternative and additional costs, modal spells
+  - [x] Tokens: CreateToken, AddMana of any colour and a sacrificed source as a cost; Treasure is a mana ability, Dockside Extortionist is Verified and Hero of Bladehold's Soldiers enter tapped and attacking
+  - [x] Clue (`{2}`, sacrifice) and Food (`{2}`, `{T}`, sacrifice) are paid through the payment decision of an ability, the sacrifice among the events that announce it
+  - [ ] Costs of activated abilities beyond `{T}`, mana and sacrificing the source: sacrificing a chosen permanent (the choice is made when the ability is announced), life, discard
+  - [ ] Treasure and other sacrifice sources offered while paying a spell, and mana abilities of several mana (Sol Ring, Gaea's Cradle)
+  - [ ] Tokens that copy an object, and a card's support counting the abilities of the predefined tokens it makes
 - [ ] (h) Keyword abilities beyond combat (CR 702), one task each for the other `Keyword` variants (flash, equip, cycling, kicker, flashback, cascade, storm, ...); cost-based ones follow (g)
 - [x] (i) Triggered abilities: APNAP ordering, delayed triggers, intervening if, with the target and trigger-order prompts and their response clocks (`docs/engine.md`)
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)

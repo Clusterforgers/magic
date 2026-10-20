@@ -51,7 +51,7 @@ pub(crate) fn handle(
             bottom_answer(player, options, cards)
         }
         (DecisionKind::Priority(options), Answer::Priority(action)) => {
-            priority::answer(player, options, action)
+            priority::answer(state, player, options, action)
         }
         (DecisionKind::PayMana(options), Answer::PayMana(choice)) => {
             cast::pay_answer(state, player, options, choice, pending)
