@@ -1,4 +1,4 @@
-//! Goal: payments an effect offers play whole at tables of two, three and four seats, as their cards say: Izzet Charm counters a noncreature spell unless its controller pays {2} (yes, no, cannot pay), deals 2 damage to a creature and loots; Rhystic Study asks the opponent who cast a spell, whichever seat that is, to pay {1} and only then lets its controller draw; a seat that is not the active one decides; a payment may use several sources, a partial choice finished by the engine and floating mana; an effect that names several opponents asks them in turn order until one pays, skipping those who cannot; a player is never asked what they cannot pay; the payment cannot be backed out of; an engine rebuilt from the log asks the same question at every decision, including the payments, and the log replays to the state it was played to.
+//! Goal: payments an effect offers play whole at tables of two, three and four seats, as their cards say: Izzet Charm counters a noncreature spell unless its controller pays {2} (yes, no, cannot pay), deals 2 damage to a creature and loots; Rhystic Study asks the opponent who cast a spell, whichever seat that is, to pay {1} and only then lets its controller draw; a seat that is not the active one decides; a payment may use several sources, a partial choice finished by the engine and floating mana; an effect that names several opponents asks them in turn order until one pays, skipping those who cannot; a player is never asked what they cannot pay; the payment cannot be backed out of; a seat that concedes while asked to pay leaves and the resolution goes on; an engine rebuilt from the log asks the same question at every decision, including the payments, and the log replays to the state it was played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -195,6 +195,30 @@ fn a_payment_the_player_said_yes_to_cannot_be_backed_out_of_or_paid_wrongly()
     assert!(driver.pay_tapping(&["Island"], 0).is_err());
     assert_eq!(driver.engine().events().len(), log, "nothing was logged");
     assert_eq!(waiting(&driver), (pid(1), "pay-mana"));
+    Ok(())
+}
+
+#[rstest]
+fn a_seat_that_concedes_while_it_is_asked_to_pay_leaves_and_the_resolution_goes_on(
+    #[values(3, 4)] seats: usize,
+    #[values("at the question", "at the payment")] when: &str,
+) -> Result<(), ScriptError> {
+    let mut driver = bolt_on_the_stack(seats, 2)?;
+    charm_the_bolt(&mut driver)?;
+    assert_eq!(waiting(&driver), (pid(1), "yes-no"));
+    if when == "at the payment" {
+        driver.answer(yes_no(true))?;
+        assert_eq!(waiting(&driver), (pid(1), "pay-mana"));
+    }
+    driver.concede(pid(1))?;
+    assert!(!driver.state().is_alive(pid(1)));
+    passes_until_asked(&mut driver)?;
+    assert_eq!(
+        life(&driver, 0),
+        20,
+        "the Bolt left the game with its controller"
+    );
+    assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
     Ok(())
 }
 
