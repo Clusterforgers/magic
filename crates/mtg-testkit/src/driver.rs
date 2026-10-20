@@ -138,6 +138,26 @@ impl Driver {
         Ok(events)
     }
 
+    /// Registers a continuous effect as if a spell or ability of `source` had created it, and checks invariants.
+    pub fn add_effect_from(
+        &mut self,
+        source: ObjectId,
+        selector: Selector,
+        modification: Modification,
+        duration: Duration,
+    ) -> Result<Vec<Event>, ScriptError> {
+        let events =
+            self.engine
+                .add_continuous_effect_from(source, selector, modification, duration)?;
+        self.checker.observe_engine(&self.engine)?;
+        Ok(events)
+    }
+
+    /// The selector that names the object `id` as it is now: a new object it becomes later is not named.
+    pub fn on(&self, id: ObjectId) -> Selector {
+        Selector::objects(self.state(), [id])
+    }
+
     /// The player holding priority passes.
     pub fn pass(&mut self) -> Result<Vec<Event>, ScriptError> {
         self.priority()?;
@@ -158,6 +178,26 @@ impl Driver {
             .mana_abilities
             .iter()
             .find(|m| self.name_of(m.source.object) == name)
+            .map(|m| m.source)
+            .ok_or_else(|| ScriptError::NoSuchCard {
+                name: name.to_owned(),
+                place: "mana abilities",
+            })?;
+        self.answer(Answer::Priority(PriorityAction::ActivateMana(source)))
+    }
+
+    /// The player holding priority activates the mana ability of the named permanent that adds `mana`: a Treasure
+    /// offers one source for each colour.
+    pub fn tap_for_mana_of(
+        &mut self,
+        name: &str,
+        mana: mtg_core::mana::ManaType,
+    ) -> Result<Vec<Event>, ScriptError> {
+        let (_, options) = self.priority()?;
+        let source = options
+            .mana_abilities
+            .iter()
+            .find(|m| m.produces == mana && self.name_of(m.source.object) == name)
             .map(|m| m.source)
             .ok_or_else(|| ScriptError::NoSuchCard {
                 name: name.to_owned(),

@@ -6,10 +6,10 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{unsupported, wrong_effect};
-use crate::choose::{Questions, Stop};
+use crate::choose::{Questions, Stop, Target};
 use crate::events::{Event, ZoneCause};
 use crate::mulligan::shuffled;
-use crate::object::{GameObject, ObjectKind};
+use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::snapshot::{Snapshot, snapshot};
 use crate::state::GameState;
@@ -118,6 +118,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Destination::Battlefield { tapped, under } => {
             let under = entering_under(cx, under.as_ref())?;
+            let mut entered = Vec::new();
             for object in objects {
                 let spell = object.base_types().contains(CardType::Instant)
                     || object.base_types().contains(CardType::Sorcery);
@@ -127,6 +128,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 let (event, shot) = moved(state, object.id(), object.zone(), Zone::Battlefield);
                 events.push(event);
                 snapshots.extend(shot);
+                entered.push(object.id());
                 let controller = under.unwrap_or_else(|| object.owner());
                 if *tapped || controller != object.owner() {
                     events.push(Event::Entered {
@@ -136,6 +138,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     });
                 }
             }
+            return Ok(Run::Done {
+                events,
+                bound: arrived_as(cx, what, &entered),
+                snapshots,
+                next: Next::Sibling,
+            });
         }
     }
     Ok(Run::Done {
@@ -144,6 +152,40 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots,
         next: Next::Sibling,
     })
+}
+
+/// The name that named the cards, bound again to the permanents that `entered`: a card that changes zones is a new
+/// object (CR 400.7), and "that creature" in the steps after the move is the one that arrived. A name that is not the
+/// reference stays as it is, and so does whatever the name held that did not enter.
+fn arrived_as(cx: &Cx<'_>, what: &Ref, entered: &[ObjectId]) -> Vec<(String, Vec<Target>)> {
+    let Ref::Bound(name) = what else {
+        return Vec::new();
+    };
+    let Ok(named) = cx.scope.refs(what) else {
+        return Vec::new();
+    };
+    let state = cx.state();
+    let renewed: Vec<Target> = named
+        .iter()
+        .map(|target| match *target {
+            Target::Object(object)
+                if entered.contains(&object.id)
+                    && state
+                        .object(object.id)
+                        .is_some_and(|live| live.counter() == object.counter) =>
+            {
+                Target::Object(ObjectRef {
+                    id: object.id,
+                    counter: object.counter + 1,
+                })
+            }
+            other => other,
+        })
+        .collect();
+    if renewed == named {
+        return Vec::new();
+    }
+    vec![(name.clone(), renewed)]
 }
 
 /// The events that put each owner's cards into their library at `place`.
@@ -309,8 +351,28 @@ mod tests {
         else {
             panic!("the move is done");
         };
-        assert!(bound.is_empty() && next == Next::Sibling);
+        let onto_the_battlefield = events.iter().any(|event| {
+            matches!(
+                event,
+                Event::ZoneChanged {
+                    to: Zone::Battlefield,
+                    ..
+                }
+            )
+        });
+        assert!(
+            (bound.is_empty() || onto_the_battlefield) && next == Next::Sibling,
+            "only cards put onto the battlefield bind their name again"
+        );
         (events, snapshots)
+    }
+
+    /// What a finished move binds.
+    fn bound_by(run: Run) -> Vec<(String, Vec<Target>)> {
+        let Run::Done { bound, .. } = run else {
+            panic!("the move is done");
+        };
+        bound
     }
 
     fn asked(run: Run) -> Decision {
@@ -684,6 +746,58 @@ mod tests {
                 }
             ]
         );
+    }
+
+    #[test]
+    fn the_name_of_cards_put_onto_the_battlefield_names_the_permanents_that_arrived() {
+        let game = game();
+        let (first, second) = (hand(&game, ME)[0], hand(&game, ME)[1]);
+        let on_the_field = game.zone(Zone::Battlefield)[0];
+        let mut cards = named(&game, &[first, second, on_the_field]);
+        let stale = ObjectRef {
+            id: first,
+            counter: 99,
+        };
+        cards.push(Target::Object(stale));
+        let run = run_bound(&game, cards, Vec::new(), &moving(r#"{"Battlefield":{}}"#)).unwrap();
+        let renewed = |id: ObjectId| {
+            let live = game.object(id).unwrap();
+            Target::Object(ObjectRef {
+                id,
+                counter: live.counter() + 1,
+            })
+        };
+        let unmoved = Target::Object(game.object(on_the_field).unwrap().reference());
+        assert_eq!(
+            bound_by(run),
+            [(
+                "cards".to_owned(),
+                vec![
+                    renewed(first),
+                    renewed(second),
+                    unmoved,
+                    Target::Object(stale)
+                ]
+            )],
+            "what arrived is named again, what stayed or was stale is not"
+        );
+        let stays = named(&game, &[on_the_field]);
+        let run = run_bound(&game, stays, Vec::new(), &moving(r#"{"Battlefield":{}}"#)).unwrap();
+        assert_eq!(
+            bound_by(run),
+            [],
+            "nothing arrived, so the name is left alone"
+        );
+    }
+
+    #[test]
+    fn cards_moved_anywhere_else_keep_the_name_they_had() {
+        let game = game();
+        let card = hand(&game, ME)[0];
+        for to in [r#""Graveyard""#, TOP, BOTTOM, SHUFFLED] {
+            let run = run_with(&game, &[card], Vec::new(), &moving(to)).unwrap();
+            assert_eq!(bound_by(run), [], "{to}");
+        }
     }
 
     #[test]

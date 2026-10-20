@@ -42,23 +42,31 @@ export function joinWords(items: readonly string[]): string {
   return items.length === 1 ? last : `${items.slice(0, -1).join(', ')} and ${last}`
 }
 
+function keywordWords(keyword: unknown): string {
+  const tag = typeof keyword === 'string' ? keyword : (Object.keys(Object(keyword))[0] ?? '')
+  return tag.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase()
+}
+
 function describeEffect(effect: ContinuousEffect, n: EventNames): string {
-  const { selector, modification, duration } = effect
+  const { selector, modification, duration, source } = effect
   let who = 'All creatures'
-  if (selector !== 'AllCreatures') {
+  if (typeof selector !== 'string') {
     who =
-      'Object' in selector
-        ? n.card(selector.Object)
+      'Objects' in selector
+        ? joinWords(selector.Objects.map((object) => n.card(object.id)))
         : `Creatures controlled by ${n.seat(selector.CreaturesControlledBy)}`
   }
   // One card "becomes" and "gets"; a group of creatures "become" and "get".
-  const group = typeof selector === 'string' || 'CreaturesControlledBy' in selector
+  const group =
+    typeof selector === 'string' || 'CreaturesControlledBy' in selector || selector.Objects.length !== 1
   const becomes = group ? 'become' : 'becomes'
   let what = 'changes'
   if ('AddType' in modification) what = `${becomes} ${modification.AddType.toLowerCase()} too`
   else if ('SetColors' in modification) {
     const colors = colorsInSet(modification.SetColors).map((color) => color.toLowerCase())
     what = `${becomes} ${colors.length === 0 ? 'colorless' : joinWords(colors)}`
+  } else if ('AddKeyword' in modification) {
+    what = `${group ? 'gain' : 'gains'} ${keywordWords(modification.AddKeyword)}`
   } else if ('SetPowerToughness' in modification) {
     const { power, toughness } = modification.SetPowerToughness
     what = `${becomes} ${power}/${toughness}`
@@ -66,11 +74,15 @@ function describeEffect(effect: ContinuousEffect, n: EventNames): string {
     const { power, toughness } = modification.ModifyPowerToughness
     what = `${group ? 'get' : 'gets'} ${power >= 0 ? '+' : ''}${power}/${toughness >= 0 ? '+' : ''}${toughness}`
   }
-  const until =
-    duration === 'UntilEndOfTurn'
-      ? ' until end of turn'
-      : ` while ${n.card(duration.WhileSourceOnBattlefield)} stays`
-  return `${who} ${what}${until}`
+  const UNTIL: Record<ContinuousEffect['duration'], string> = {
+    UntilEndOfTurn: ' until end of turn',
+    UntilEndOfCombat: ' until end of combat',
+    UntilYourNextTurn: " until their controller's next turn",
+    WhileSourceOnBattlefield:
+      source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
+    Forever: '',
+  }
+  return `${who} ${what}${UNTIL[duration]}`
 }
 
 function attackTarget(target: AttackTarget, n: EventNames): string {

@@ -3,7 +3,8 @@
 use mtg_core::ids::ObjectId;
 
 use crate::abilities::AbilityRef;
-use crate::choose::{self, Choices, Target};
+use crate::cast::Pending;
+use crate::choose::{self, Target};
 use crate::combat::{attack_events, check_attackers, check_blockers};
 use crate::damage::assignment_answer;
 use crate::decision::{Answer, Decision, DecisionKind};
@@ -34,10 +35,10 @@ pub(crate) enum Outcome {
 
 /// Checks `answer` against `decision`; the result is only built from legal options.
 ///
-/// `announced` is what the cast in progress has announced so far, which its payment puts on the spell.
+/// `pending` is the cast or activation in progress, whose announcements its payment puts on the spell or ability.
 pub(crate) fn handle(
     state: &GameState,
-    announced: &Choices,
+    pending: Option<&Pending>,
     decision: &Decision,
     answer: Answer,
 ) -> Result<Outcome, EngineError> {
@@ -50,10 +51,10 @@ pub(crate) fn handle(
             bottom_answer(player, options, cards)
         }
         (DecisionKind::Priority(options), Answer::Priority(action)) => {
-            priority::answer(player, options, action)
+            priority::answer(state, player, options, action)
         }
         (DecisionKind::PayMana(options), Answer::PayMana(choice)) => {
-            cast::pay_answer(state, player, options, choice, announced)
+            cast::pay_answer(state, player, options, choice, pending)
         }
         (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attackers)) => {
             check_attackers(options, &attackers)?;

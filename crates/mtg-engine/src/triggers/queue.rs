@@ -76,8 +76,7 @@ pub(crate) fn fold_triggered(state: &mut GameState, t: &Triggered) -> Result<(),
     let (rules, bindings) = match t.delayed {
         None => {
             let card = state
-                .objects
-                .get(&t.source.id)
+                .source_object(t.source.id)
                 .ok_or_else(|| invalid(format!("{:?} triggered and is gone", t.source)))?;
             let rules =
                 card.def.rules.get(t.ability).cloned().ok_or_else(|| {
@@ -244,7 +243,7 @@ pub(crate) fn next(state: &GameState) -> Option<Progress> {
     }
     // A trigger of a player who left the game, or of an object that left with them, is gone.
     if let Some(gone) = state.pending_triggers.iter().find(|e| {
-        !state.is_alive(e.trigger.controller) || state.object(e.trigger.source.id).is_none()
+        !state.is_alive(e.trigger.controller) || state.source_object(e.trigger.source.id).is_none()
     }) {
         return Some(Progress::Events(vec![removing(gone)]));
     }

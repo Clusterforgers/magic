@@ -3,7 +3,7 @@
  * `null` for a body that does not have the documented shape, so a caller never holds a half-typed value; unknown extra
  * fields are dropped.
  */
-import type { GameInfo, GameSeat, Joined, LobbyGame, Visibility } from '@/protocol/generated'
+import type { GameInfo, GameSeat, Joined, LobbyGame, SeatDeck, Visibility } from '@/protocol/generated'
 import { isCount, isFlag, isListOf, isRecord, isText } from './check'
 import { isGameResult } from './parse'
 
@@ -47,6 +47,15 @@ export function readJoined(body: unknown): Joined | null {
   const { token } = body
   if (token !== null && !isText(token)) return null
   return { game: body.game, seat: body.seat, token }
+}
+
+/** True for the deck a seat shows the table: its name and format and how many cards need manual steps. */
+export const isSeatDeck = (value: unknown): value is SeatDeck =>
+  isRecord(value) && isText(value.name) && isText(value.format) && isCount(value.manual_cards)
+
+/** What `PUT /api/games/{id}/seats/{n}/deck` answers: the three facts the table now knows of the seat's deck. */
+export function readSeatDeck(body: unknown): SeatDeck | null {
+  return isSeatDeck(body) ? { name: body.name, format: body.format, manual_cards: body.manual_cards } : null
 }
 
 /** The visibility `PATCH /api/games/{id}` answers with. */

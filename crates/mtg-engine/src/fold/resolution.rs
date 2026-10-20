@@ -6,6 +6,7 @@ use mtg_core::ids::ObjectId;
 use super::zones::move_object;
 use super::{invalid, priority_to_active, reset_passes};
 use crate::abilities::{AbilityObject, PutOnStack};
+use crate::choose::Target;
 use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
 use crate::object::{GameObject, ObjectKind};
@@ -20,8 +21,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             source, ability, ..
         } => {
             let card = state
-                .objects
-                .get(&source.id)
+                .source_object(source.id)
                 .ok_or_else(|| invalid(format!("{source:?} activated an ability and is gone")))?;
             let rules = card
                 .def
@@ -57,10 +57,8 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             let resolving = resolving_mut(state)?;
             resolving.position.clone_from(position);
             for (name, targets) in bound {
-                if resolving
-                    .bindings
-                    .insert(name.clone(), targets.clone())
-                    .is_some()
+                if let Some(old) = resolving.bindings.insert(name.clone(), targets.clone())
+                    && !renews(&old, targets)
                 {
                     return Err(invalid(format!("`{name}` was bound twice")));
                 }
@@ -72,6 +70,19 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         Event::ResolutionEnded { object, outcome } => end(state, *object, *outcome),
         other => Err(invalid(format!("not a resolution event: {other:?}"))),
     }
+}
+
+/// Whether `new` names the same things as `old` with the objects that have moved on since: the only way a name is bound
+/// again, when the step that moved its cards onto the battlefield names the new objects (CR 400.7).
+fn renews(old: &[Target], new: &[Target]) -> bool {
+    old.len() == new.len()
+        && old != new
+        && old.iter().zip(new).all(|pair| match pair {
+            (Target::Object(old), Target::Object(new)) => {
+                old.id == new.id && old.counter <= new.counter
+            }
+            (old, new) => old == new,
+        })
 }
 
 fn resolving_mut(state: &mut GameState) -> Result<&mut Resolving, EngineError> {
@@ -94,8 +105,7 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
         (waiting.rules, waiting.bindings)
     } else {
         let card = state
-            .objects
-            .get(&source.id)
+            .source_object(source.id)
             .ok_or_else(|| invalid(format!("the source {source:?} of an ability is gone")))?;
         let rules = card
             .def
@@ -106,8 +116,7 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
         (rules, Bindings::new())
     };
     let card = state
-        .objects
-        .get(&source.id)
+        .source_object(source.id)
         .ok_or_else(|| invalid(format!("the source {source:?} of an ability is gone")))?;
     let object = GameObject::on_stack(
         id,

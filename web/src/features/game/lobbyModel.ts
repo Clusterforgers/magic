@@ -3,7 +3,7 @@
  * the sentence a screen reader hears when it changes. Pure, so the rules are tested without a page.
  */
 import type { LobbyRoster } from '@/play/store'
-import type { GameInfo } from '@/protocol/generated'
+import type { GameInfo, SeatDeck } from '@/protocol/generated'
 
 /** One seat of the lobby as the page shows it. */
 export interface LobbyRow {
@@ -18,6 +18,11 @@ export interface LobbyRow {
   connected: boolean
   /** The seat pressed Ready and did not take it back. It stays set when the client goes away. */
   ready: boolean
+  /**
+   * The deck the table is told of: null while the seat has none, undefined while the page does not know (only the
+   * roster carries decks, so the lookup stands in for everything else but this).
+   */
+  deck: SeatDeck | null | undefined
 }
 
 /** What the rows are made from. */
@@ -58,9 +63,13 @@ export function lobbyRows({ roster, info, open, seat, seatCount }: LobbySources)
       you,
       connected,
       ready: pushed?.ready ?? info?.ready.includes(index) ?? false,
+      deck: pushed === undefined ? undefined : (pushed.deck ?? null),
     }
   })
 }
+
+/** Whether the seat of `row` may press Ready: a seat the roster shows without a deck may not (the server refuses it). */
+export const mayReady = (row: Pick<LobbyRow, 'deck'>): boolean => row.deck !== null
 
 /** "Ana", "Ana and Bo", "Ana, Bo and Cy"; four or more are only counted. */
 function whom(rows: readonly LobbyRow[]): string {
@@ -72,15 +81,19 @@ function whom(rows: readonly LobbyRow[]): string {
 
 /**
  * The line under the seats: "2 of 3 ready, waiting for Cy to join". Seats that are here and not ready are waited
- * on to press Ready, seats that are not here to join; a ready seat whose client is away is not waited on.
+ * on to press Ready (or, with no deck, to choose one first), seats that are not here to join; a ready seat whose
+ * client is away is not waited on.
  */
 export function summaryText(rows: readonly LobbyRow[]): string {
   if (rows.length === 0) return ''
   const ready = rows.filter((row) => row.ready).length
   if (ready === rows.length) return `All ${rows.length} seats are ready, starting the game`
-  const toPress = rows.filter((row) => !row.ready && row.connected)
+  const here = rows.filter((row) => !row.ready && row.connected)
+  const toChoose = here.filter((row) => !mayReady(row))
+  const toPress = here.filter(mayReady)
   const toJoin = rows.filter((row) => !row.ready && !row.connected)
   const waiting = [
+    toChoose.length > 0 ? `${whom(toChoose)} to choose a deck` : null,
     toPress.length > 0 ? `${whom(toPress)} to press Ready` : null,
     toJoin.length > 0 ? `${whom(toJoin)} to join` : null,
   ].filter((part) => part !== null)

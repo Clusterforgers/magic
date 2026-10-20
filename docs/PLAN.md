@@ -76,7 +76,7 @@ Each test module opens with a one-line `Goal:`. Tests assert mechanics rather th
 7. Import: recorded fixtures with no live network, round trips `parse(export(d)) == d`, malformed input.
 8. Server integration: real Postgres (`sqlx::test`), WebSocket clients, bot-vs-bot games, reconnect and restart-resume.
 9. Frontend: Vitest and Testing Library for components and stores; Playwright end-to-end on the full stack.
-10. CI (GitHub Actions): fmt, clippy `-D warnings`, `cargo test --workspace`, a check that `.sqlx/` is current, and the web typecheck, lint, format, tests and e2e. No change merges without tests that justify it.
+10. CI (GitHub Actions), run when a release is published and not on pushes or pull requests: fmt, clippy `-D warnings`, `cargo test --workspace`, a check that `.sqlx/` is current, and the web typecheck, lint, format, tests and e2e. `scripts/check.sh` is the gate before a change merges, and no change merges without tests that justify it.
 
 ## Code standards
 

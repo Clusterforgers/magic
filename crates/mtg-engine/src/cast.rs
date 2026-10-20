@@ -9,20 +9,25 @@
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::CostItem;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaCost;
 
 use crate::abilities::{AbilityRef, PutOnStack};
 use crate::answers::Outcome;
-use crate::choose::{Choices, announced_specs, asks, modal_of, mode_options, options_for};
+use crate::choose::{Choice, Choices, announced_specs, asks, modal_of, mode_options, options_for};
 use crate::decision::{Decision, DecisionKind, PayChoice, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
-use crate::events::Event;
-use crate::mana::{Payment, auto_payment, check_payment, complete_payment, max_life_payment};
+use crate::events::{Event, ZoneCause};
+use crate::mana::{
+    ManaOption, Payment, auto_payment, check_payment, complete_payment, max_life_payment,
+};
 use crate::object::PermanentState;
+use crate::price::Price;
 use crate::priority::mana_options;
 use crate::resolve::spell_ability;
 use crate::snapshot::snapshot;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
+use crate::zones::Zone;
 
 /// What is being put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -165,10 +170,14 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             }),
             None => Next::Drop,
         },
-        What::Ability(ability) => {
-            activation_events(state, pending.player, *ability, &pending.choices)
-                .map_or(Next::Drop, Next::Commit)
-        }
+        What::Ability(ability) => match activation_payment(state, pending.player, *ability) {
+            Some(options) => Next::Ask(Decision {
+                player: pending.player,
+                kind: DecisionKind::PayMana(options),
+            }),
+            None => activation_events(state, pending.player, *ability, &pending.choices)
+                .map_or(Next::Drop, Next::Commit),
+        },
         What::Trigger(waiting) => {
             Next::Commit(vec![trigger_event(state, waiting, &pending.choices)])
         }
@@ -190,9 +199,11 @@ fn trigger_event(state: &GameState, waiting: &PendingTrigger, choices: &Choices)
     }))
 }
 
-/// The events of activating an ability whose only cost is `{T}`: the tap, the activation and the ability on the stack.
+/// The events of activating an ability: the tap and the sacrifice of its cost, the activation and the ability on the
+/// stack. The mana of its cost is paid around them by [`pay_answer`].
 ///
-/// The source is photographed before the tap, so the ability knows what it was (CR 113.7a).
+/// The source is photographed before the costs, so the ability knows what it was (CR 113.7a); a token sacrificed
+/// for it has ceased to exist by then, and the ability still has the rules it was activated from.
 fn activation_events(
     state: &GameState,
     player: PlayerId,
@@ -208,6 +219,14 @@ fn activation_events(
     if cost.0.contains(&CostItem::Tap) {
         events.push(Event::PermanentTapped {
             object: ability.object,
+        });
+    }
+    if cost.0.contains(&CostItem::SacrificeSelf) {
+        events.push(Event::ZoneChanged {
+            object: ability.object,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(source.owner()),
+            cause: ZoneCause::Sacrificed,
         });
     }
     events.push(Event::AbilityActivated {
@@ -228,6 +247,22 @@ fn activation_events(
     Some(events)
 }
 
+/// The payment decision for activating `ability`, or `None` when its cost has no mana to pay.
+fn activation_payment(
+    state: &GameState,
+    player: PlayerId,
+    ability: AbilityRef,
+) -> Option<PayOptions> {
+    let source = state.object(ability.object)?;
+    let Ability::Activated { cost, .. } = &**source.card().rules.get(ability.ability)? else {
+        return None;
+    };
+    let price = Price::of(cost).ok()?;
+    let sources = price.sources(state, player, ability.object);
+    // Nothing is paid until the payment is accepted, so backing out of the activation is free.
+    payment_decision(state, player, ability.object, price.mana?, sources, true)
+}
+
 /// The payment decision for casting `spell`, or `None` if it has no cost to pay.
 pub(crate) fn pay_options(
     state: &GameState,
@@ -235,14 +270,33 @@ pub(crate) fn pay_options(
     spell: ObjectId,
 ) -> Option<PayOptions> {
     let cost = state.object(spell)?.card().mana_cost.clone()?;
+    // The cast only starts to change the game when the payment is accepted, so backing out is free.
+    payment_decision(
+        state,
+        player,
+        spell,
+        cost,
+        mana_options(state, player),
+        true,
+    )
+}
+
+/// The payment decision for `cost`, which `player` pays with `sources` for `object`: the spell cast, the source of
+/// the ability activated or the source of the effect that asks. `None` when the player is not in the game.
+pub(crate) fn payment_decision(
+    state: &GameState,
+    player: PlayerId,
+    object: ObjectId,
+    cost: ManaCost,
+    sources: Vec<ManaOption>,
+    can_cancel: bool,
+) -> Option<PayOptions> {
     let seat = state.player(player)?;
     let (pool, life) = (*seat.mana(), seat.life());
-    let sources = mana_options(state, player);
     Some(PayOptions {
-        spell,
+        spell: object,
         auto_available: auto_payment(&cost, &pool, &sources, life).is_some(),
-        // The cast only starts to change the game when the payment is accepted, so backing out is free.
-        can_cancel: true,
+        can_cancel,
         life,
         max_life: max_life_payment(&cost, life),
         cost,
@@ -266,13 +320,13 @@ fn unusable(state: &GameState, options: &PayOptions) -> Vec<ObjectId> {
         .collect()
 }
 
+/// The events of a valid payment, with the `announced` events of what it is for between the life and the mana.
 fn payment_events(
     player: PlayerId,
-    spell: ObjectId,
     options: &PayOptions,
     tapped: &[ObjectId],
     payment: &Payment,
-    choices: &Choices,
+    announced: Vec<Event>,
 ) -> Result<Vec<Event>, IllegalAnswer> {
     let spent = check_payment(
         &options.cost,
@@ -290,11 +344,7 @@ fn payment_events(
             amount: payment.life,
         });
     }
-    events.push(Event::SpellCast {
-        player,
-        object: spell,
-        choices: choices.clone(),
-    });
+    events.extend(announced);
     for tap in &payment.taps {
         let produces = options
             .sources
@@ -318,14 +368,21 @@ fn payment_events(
     Ok(events)
 }
 
-/// Validates a payment choice and produces the casting events.
+/// Validates a payment choice and produces the events of the cast, the activation or the effect it pays for.
+///
+/// `pending` is the cast or activation in progress; with none, an effect of the resolution under way asked for the
+/// payment and its answer joins the journal (`resolve/prim/pay.rs`).
 pub(crate) fn pay_answer(
     state: &GameState,
     player: PlayerId,
     options: &PayOptions,
     choice: PayChoice,
-    announced: &Choices,
+    pending: Option<&Pending>,
 ) -> Result<Outcome, EngineError> {
+    let announced = match choice {
+        PayChoice::Cancel => Vec::new(),
+        _ => announcement(state, player, pending)?,
+    };
     pay_choice(
         player,
         options,
@@ -335,13 +392,48 @@ pub(crate) fn pay_answer(
     )
 }
 
-/// [`pay_answer`] with the tapped permanents already worked out, so it needs no game state.
+/// The events that say what a payment is for, which come between the life paid and the mana: the cast of the spell,
+/// the activation of the ability, or the answer "paid" to the effect that asked.
+fn announcement(
+    state: &GameState,
+    player: PlayerId,
+    pending: Option<&Pending>,
+) -> Result<Vec<Event>, EngineError> {
+    let unexpected = || EngineError::InvalidEvent("a payment was made for nothing".into());
+    match pending {
+        Some(Pending {
+            what: What::Spell(spell),
+            choices,
+            ..
+        }) => Ok(vec![Event::SpellCast {
+            player,
+            object: *spell,
+            choices: choices.clone(),
+        }]),
+        Some(Pending {
+            what: What::Ability(ability),
+            choices,
+            ..
+        }) => activation_events(state, player, *ability, choices).ok_or_else(unexpected),
+        None if state.resolving().is_some() => Ok(vec![Event::ChoiceMade {
+            player,
+            choice: Choice::YesNo(true),
+        }]),
+        Some(Pending {
+            what: What::Trigger(_),
+            ..
+        })
+        | None => Err(unexpected()),
+    }
+}
+
+/// [`pay_answer`] with the tapped permanents and the announcing events already worked out, so it needs no game state.
 fn pay_choice(
     player: PlayerId,
     options: &PayOptions,
     tapped: &[ObjectId],
     choice: PayChoice,
-    announced: &Choices,
+    announced: Vec<Event>,
 ) -> Result<Outcome, EngineError> {
     let payment = match choice {
         PayChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
@@ -361,7 +453,7 @@ fn pay_choice(
                 .ok_or(IllegalAnswer::NotOffered("automatic payment"))?
         }
     };
-    let events = payment_events(player, options.spell, options, tapped, &payment, announced)?;
+    let events = payment_events(player, options, tapped, &payment, announced)?;
     Ok(Outcome::Events(events))
 }
 
@@ -432,7 +524,12 @@ mod tests {
         choice: PayChoice,
     ) -> Result<Outcome, EngineError> {
         let tapped: Vec<ObjectId> = tapped.iter().map(|o| ObjectId(*o)).collect();
-        pay_choice(PlayerId(0), options, &tapped, choice, &Choices::default())
+        let cast = Event::SpellCast {
+            player: PlayerId(0),
+            object: options.spell,
+            choices: Choices::default(),
+        };
+        pay_choice(PlayerId(0), options, &tapped, choice, vec![cast])
     }
 
     fn events_of(outcome: Result<Outcome, EngineError>) -> Vec<Event> {
@@ -587,7 +684,7 @@ mod tests {
 
 #[cfg(test)]
 mod announcement_tests {
-    //! Goal: a cast or activation asks its questions in the order of the rules, targets before payment, passes over a specification that needs no choice, gives up on one that cannot be met, and completes an activation that costs only a tap with the events that pay and announce it.
+    //! Goal: a cast or activation asks its questions in the order of the rules, targets before payment, passes over a specification that needs no choice, gives up on one that cannot be met, completes an activation that costs only a tap with the events that pay and announce it, asks the payment of one that costs mana (never from its own source when it taps it, announcing between the life and the mana), and pays for an effect with no way back.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -727,5 +824,148 @@ mod announcement_tests {
         assert_eq!(put.source, *activated);
         assert_eq!(put.snapshot.zone, Zone::Battlefield);
         assert!(put.cause.is_none() && put.choices.is_empty());
+    }
+
+    fn gadget(cost: &str) -> Arc<CardDefinition> {
+        let rules = format!(r#"{{"Activated":{{"cost":{cost},"effects":[{{"Draw":{{}}}}]}}}}"#);
+        Arc::new(
+            CardDefinition::new("Gadget")
+                .with_type(CardType::Artifact)
+                .with_rules(serde_json::from_str(&rules).unwrap()),
+        )
+    }
+
+    fn forest() -> Arc<CardDefinition> {
+        Arc::new(CardDefinition::basic_land(Some(
+            mtg_core::color::Color::Green,
+        )))
+    }
+
+    /// Seat 0 controls a Gadget with this cost and two Forests.
+    fn with_gadget(cost: &str) -> (GameState, Pending) {
+        let game = state(
+            vec![vec![], vec![]],
+            vec![vec![gadget(cost), forest(), forest()], vec![]],
+        );
+        let source = game.zone(Zone::Battlefield)[0];
+        let ability = AbilityRef {
+            object: source,
+            ability: 0,
+        };
+        (game, Pending::new(PlayerId(0), What::Ability(ability)))
+    }
+
+    #[test]
+    fn an_activation_that_costs_mana_asks_for_the_payment_and_cannot_use_its_own_source_when_it_taps()
+     {
+        for (cost, sources) in [(r#""{1}""#, 2), (r#"[{"Mana":"{1}"},"Tap"]"#, 2)] {
+            let (game, mut pending) = with_gadget(cost);
+            let Next::Ask(Decision {
+                player,
+                kind: DecisionKind::PayMana(options),
+            }) = announce(&game, &mut pending)
+            else {
+                panic!("a payment was expected for {cost}");
+            };
+            assert_eq!(player, PlayerId(0));
+            assert_eq!(options.cost, ManaCost::parse("{1}").unwrap());
+            assert_eq!(options.sources.len(), sources, "{cost}");
+            assert!(options.can_cancel && options.auto_available);
+            assert_eq!(options.spell, game.zone(Zone::Battlefield)[0]);
+        }
+    }
+
+    #[rstest]
+    #[case::only_mana(r#""{1}""#, false)]
+    #[case::mana_and_tap(r#"[{"Mana":"{1}"},"Tap"]"#, true)]
+    fn the_payment_of_an_activation_announces_it_between_the_life_and_the_mana(
+        #[case] cost: &str,
+        #[case] taps: bool,
+    ) {
+        let (game, mut pending) = with_gadget(cost);
+        let Next::Ask(Decision {
+            kind: DecisionKind::PayMana(options),
+            ..
+        }) = announce(&game, &mut pending)
+        else {
+            panic!("a payment was expected");
+        };
+        let Ok(Outcome::Events(events)) = pay_answer(
+            &game,
+            PlayerId(0),
+            &options,
+            PayChoice::Auto,
+            Some(&pending),
+        ) else {
+            panic!("the payment must be accepted");
+        };
+        let kinds: Vec<&str> = events
+            .iter()
+            .map(|event| match event {
+                Event::PermanentTapped { .. } => "tapped",
+                Event::AbilityActivated { .. } => "activated",
+                Event::AbilityPutOnStack(_) => "on the stack",
+                Event::ManaAdded { .. } => "mana",
+                Event::ManaSpent { .. } => "spent",
+                other => panic!("unexpected {other:?}"),
+            })
+            .collect();
+        let mut expected = if taps { vec!["tapped"] } else { Vec::new() };
+        expected.extend(["activated", "on the stack", "tapped", "mana", "spent"]);
+        assert_eq!(kinds, expected);
+        // The source is photographed before anything is tapped.
+        let put = events.iter().find_map(|event| match event {
+            Event::AbilityPutOnStack(put) => Some(put),
+            _ => None,
+        });
+        assert!(put.is_some_and(|put| put.snapshot.zone == Zone::Battlefield));
+    }
+
+    #[test]
+    fn a_payment_for_an_effect_is_logged_as_an_answer_and_cannot_be_cancelled() {
+        let (game, _) = with_gadget(r#""{1}""#);
+        let tapped = Vec::new();
+        let options = payment_decision(
+            &game,
+            PlayerId(0),
+            game.zone(Zone::Battlefield)[0],
+            ManaCost::parse("{1}").unwrap(),
+            mana_options(&game, PlayerId(0)),
+            false,
+        )
+        .unwrap();
+        // Nothing resolves here, so no effect asked for it.
+        assert!(matches!(
+            pay_answer(&game, PlayerId(0), &options, PayChoice::Auto, None),
+            Err(EngineError::InvalidEvent(_))
+        ));
+        let announced = vec![Event::ChoiceMade {
+            player: PlayerId(0),
+            choice: Choice::YesNo(true),
+        }];
+        assert_eq!(
+            pay_choice(
+                PlayerId(0),
+                &options,
+                &tapped,
+                PayChoice::Cancel,
+                announced.clone()
+            )
+            .unwrap_err(),
+            EngineError::Illegal(IllegalAnswer::NotOffered("cancel"))
+        );
+        let Ok(Outcome::Events(events)) =
+            pay_choice(PlayerId(0), &options, &tapped, PayChoice::Auto, announced)
+        else {
+            panic!("the payment must be accepted");
+        };
+        assert!(matches!(
+            events[0],
+            Event::ChoiceMade {
+                choice: Choice::YesNo(true),
+                ..
+            }
+        ));
+        assert!(matches!(events.last(), Some(Event::ManaSpent { .. })));
     }
 }

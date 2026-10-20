@@ -1,10 +1,9 @@
 //! The public driver: advance until a player must decide, then validate and apply answers.
 
-use mtg_core::ids::{EffectId, PlayerId};
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::answers::{Outcome, handle};
 use crate::cast::{Next, Pending, What, announce};
-use crate::choose::Choices;
 use crate::decision::{Answer, Decision};
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::error::{EngineError, PreviewError};
@@ -12,6 +11,7 @@ use crate::events::Event;
 use crate::flow::{Progress, next};
 use crate::fold::apply_event;
 use crate::forecast::CombatForecast;
+use crate::object::{GameObject, ObjectRef};
 use crate::player::LossReason;
 use crate::preview::preview_forecast;
 use crate::setup::GameSetup;
@@ -104,11 +104,7 @@ impl Engine {
     /// event produced, including the automatic steps that followed the answer.
     pub fn apply(&mut self, answer: Answer) -> Result<Vec<Event>, EngineError> {
         let decision = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
-        let announced = self
-            .pending
-            .as_ref()
-            .map_or_else(Choices::default, |pending| pending.choices.clone());
-        let outcome = handle(&self.state, &announced, decision, answer)?;
+        let outcome = handle(&self.state, self.pending.as_ref(), decision, answer)?;
         let player = decision.player;
         let checkpoint = self.checkpoint();
         let result = self.run(outcome, player).and_then(|()| self.advance());
@@ -184,12 +180,39 @@ impl Engine {
         Ok(())
     }
 
-    /// Registers a continuous effect and logs it.
+    /// Registers a continuous effect that has no source and logs it.
     ///
-    /// This is the entry point effect sources (spells, abilities) will use; until they exist it is
-    /// the hook tests use to prove buffs, debuffs, durations and layering.
+    /// Spells and abilities create their effects when they resolve (`Effect::Continuous`); this is the hook tests
+    /// use to prove buffs, debuffs, durations and layering. It belongs to the active player. A duration that follows
+    /// the source (`WhileSourceOnBattlefield`) needs [`add_continuous_effect_from`](Engine::add_continuous_effect_from).
     pub fn add_continuous_effect(
         &mut self,
+        selector: Selector,
+        modification: Modification,
+        duration: Duration,
+    ) -> Result<Vec<Event>, EngineError> {
+        self.register(None, selector, modification, duration)
+    }
+
+    /// Registers a continuous effect as if a spell or ability of the object `source` had created it, and logs it.
+    pub fn add_continuous_effect_from(
+        &mut self,
+        source: ObjectId,
+        selector: Selector,
+        modification: Modification,
+        duration: Duration,
+    ) -> Result<Vec<Event>, EngineError> {
+        let source = self
+            .state
+            .object(source)
+            .map(GameObject::reference)
+            .ok_or_else(|| EngineError::InvalidEvent(format!("{source:?} is not in the game")))?;
+        self.register(Some(source), selector, modification, duration)
+    }
+
+    fn register(
+        &mut self,
+        source: Option<ObjectRef>,
         selector: Selector,
         modification: Modification,
         duration: Duration,
@@ -197,13 +220,20 @@ impl Engine {
         if self.decision.is_none() {
             return Err(EngineError::NoDecision);
         }
-        let effect = ContinuousEffect::new(
+        let controller = source
+            .and_then(|source| self.state.object(source.id))
+            .map_or_else(|| self.state.turn().active(), GameObject::controller);
+        let mut effect = ContinuousEffect::new(
             EffectId(self.state.next_effect),
             selector,
             modification,
             duration,
             self.state.next_timestamp,
-        );
+        )
+        .begun(controller, self.state.turn().number());
+        if let Some(source) = source {
+            effect = effect.from_source(source);
+        }
         let checkpoint = self.checkpoint();
         self.pending = None;
         let result = self

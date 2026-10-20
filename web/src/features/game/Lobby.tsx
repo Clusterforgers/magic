@@ -6,14 +6,18 @@ import { useShallow } from 'zustand/react/shallow'
 import { PageShell } from '@/components/PageShell'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/features/auth/context'
 import { loadInvites } from '@/lib/invites'
+import type { DecksApi } from '@/net/decks'
+import { DeckChooser } from './DeckChooser'
 import { useGame, usePlay } from './gameContext'
 import { Invites } from './Invites'
 import { JoinInvite } from './JoinInvite'
-import { lobbyRows, removable, summaryText } from './lobbyModel'
+import { lobbyRows, mayReady, removable, summaryText } from './lobbyModel'
 import { LobbyQuestion } from './LobbyQuestion'
 import { LobbySeatRow } from './LobbySeatRow'
 import { LobbyVisibility } from './LobbyVisibility'
+import { useDeckChoice } from './useDeckChoice'
 import { useLobbyAnnouncement } from './useLobbyAnnouncement'
 import { useLobbyControls } from './useLobbyControls'
 import type { LobbyApi } from './useLobbyControls'
@@ -28,19 +32,22 @@ const HOST_SEAT = 0
 export interface LobbyProps {
   /** The calls of the controls: the shared client in the app. */
   api: LobbyApi
+  /** The signed-in account's decks, for the deck chooser: the shared client in the app. */
+  decks: DecksApi
   /** This seat's token, or undefined when the page acts through the signed-in session. */
   token: string | undefined
 }
 
 /**
- * Who is at the table before the game starts: every seat with its name, whether it is here and whether it is ready,
- * a line that sums it up, who may find the game, and this seat's Ready, which can be taken back until the game
+ * Who is at the table before the game starts: every seat with its name, its deck (name, format and how many cards
+ * need manual steps), whether it is here and whether it is ready, a line that sums it up, who may find the game, this
+ * seat's deck chooser until it is ready, and this seat's Ready, which needs a deck and can be taken back until the game
  * starts. The host also gets the invite link and the code, a toggle for who may find the game, a Remove button on
  * every player who joined and Close game; everyone else gets Leave game. Each of those that cannot be undone asks
  * first. The server pushes the roster at every change; before the socket opens (and while it is down) the REST
  * lookup stands in.
  */
-export function Lobby({ api, token }: LobbyProps) {
+export function Lobby({ api, decks, token }: LobbyProps) {
   const { game, session, lookup } = useGame()
   const { seat, seatCount, status, roster } = usePlay(
     useShallow((state) => ({
@@ -79,8 +86,21 @@ export function Lobby({ api, token }: LobbyProps) {
     .map((row) => row.seat)
     .join(',')
   const accounts = useSeatAccounts(game, seat, `${status}|${here}`)
-  const ready = rows.find((row) => row.you)?.ready ?? false
+  const mine = rows.find((row) => row.you)
+  const ready = mine?.ready ?? false
+  // A seat the roster shows without a deck cannot press Ready: the server would refuse it, so the button says why.
+  const needsDeck = !ready && mine !== undefined && !mayReady(mine)
   const editable = controls.stopped === null
+  const signedIn = useAuth((state) => state.status === 'signed-in')
+  const deckChoice = useDeckChoice({
+    api,
+    game,
+    seat: seat ?? 0,
+    credential: controls.credential,
+    current: mine?.deck,
+    run: controls.run,
+    stop: controls.stop,
+  })
 
   // A request that found the game started has taken the buttons away: the words that say so take the focus.
   const { stoppedByRequest, asking } = controls
@@ -170,13 +190,26 @@ export function Lobby({ api, token }: LobbyProps) {
             </p>
           </section>
 
+          {seat === null || !editable ? null : (
+            <DeckChooser
+              api={api}
+              decks={decks}
+              signedIn={signedIn}
+              current={mine?.deck}
+              ready={ready}
+              busy={controls.busy}
+              choice={deckChoice}
+            />
+          )}
+
           <div className="grid justify-items-start gap-2">
             <div className="flex flex-wrap items-center gap-3">
               <Button
                 type="button"
                 size="lg"
                 variant={ready ? 'outline' : 'default'}
-                disabled={!open || controls.busy}
+                disabled={!open || controls.busy || needsDeck}
+                aria-describedby={needsDeck ? 'ready-reason' : undefined}
                 onClick={toggleReady}
               >
                 {ready ? 'Not ready' : 'Ready'}
@@ -203,10 +236,12 @@ export function Lobby({ api, token }: LobbyProps) {
                 </Button>
               )}
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p id="ready-reason" data-slot="ready-hint" className="text-sm text-muted-foreground">
               {ready
                 ? 'You are ready. You can take it back until the game starts.'
-                : 'Press Ready when you are set to play.'}
+                : needsDeck
+                  ? 'Ready needs a deck. Choose one under Your deck.'
+                  : 'Press Ready when you are set to play.'}
             </p>
             {refused ? (
               <Alert variant="destructive">

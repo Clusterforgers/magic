@@ -168,6 +168,13 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             if effect.layer != effect.modification.layer() {
                 return Err(invalid("effect layer does not match its modification"));
             }
+            if effect.duration == mtg_cards::modify::Duration::WhileSourceOnBattlefield
+                && effect.source.is_none()
+            {
+                return Err(invalid(
+                    "an effect that lasts while its source stays has a source",
+                ));
+            }
             if state.effects.iter().any(|e| e.id == effect.id) {
                 return Err(invalid(format!("duplicate effect {:?}", effect.id)));
             }

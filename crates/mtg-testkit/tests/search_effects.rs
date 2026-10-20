@@ -431,6 +431,45 @@ fn a_creature_put_onto_the_battlefield_tapped_triggers_what_watches_it_enter(
     Ok(())
 }
 
+#[rstest]
+fn sneak_attack_puts_a_creature_from_the_hand_onto_the_battlefield_with_haste_and_it_is_sacrificed_at_the_end(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let scenario = Scenario::new(seats)
+        .hand(0, [pick("Grizzly Bears")])
+        .battlefield(0, [ready(card("Sneak Attack").unwrap()), ready(mountain())]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_activation("Sneak Attack")?;
+    driver.pay_tapping(&["Mountain"], 0)?;
+    passes_until_asked(&mut driver)?;
+    driver.answer(Answer::YesNo(mtg_engine::choose::YesNoChoice(true)))?;
+    passes_until_asked(&mut driver)?;
+    let bears = common::on_battlefield(driver.state(), "Grizzly Bears")
+        .expect("the creature came in from the hand");
+    assert_eq!(
+        permanent(&driver, bears),
+        (Zone::Battlefield, 0, Some(false))
+    );
+    assert!(
+        mtg_engine::keywords::has_keyword(
+            driver.state(),
+            bears,
+            &mtg_cards::keyword::Keyword::Haste
+        ),
+        "that creature gains haste"
+    );
+    // The turn goes on without an attack, to the end step, where the creature is sacrificed.
+    while driver.state().turn().step() != mtg_engine::turn::Step::End {
+        driver.answer_passively()?;
+    }
+    passes_until_asked(&mut driver)?;
+    assert_eq!(
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        ["Grizzly Bears"]
+    );
+    Ok(())
+}
+
 fn refused(driver: &mut Driver, answer: Answer, expected: IllegalAnswer) {
     let (hash, pending) = (
         driver.engine().state_hash(),

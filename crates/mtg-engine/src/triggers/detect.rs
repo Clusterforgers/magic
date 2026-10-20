@@ -32,6 +32,8 @@ enum Happened {
         to: Zone,
         cause: Option<ZoneCause>,
     },
+    /// A token was created: it enters the battlefield from no zone.
+    Created { object: ObjectId },
     /// A creature was declared as an attacker.
     Attacked { attacker: ObjectId },
     /// A player cast a spell.
@@ -130,6 +132,9 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
             continue;
         }
         match event {
+            Event::TokenCreated(token) => found.push(Happened::Created {
+                object: token.object,
+            }),
             Event::AttackersDeclared { attackers, .. } => {
                 found.extend(attackers.iter().map(|(attacker, _)| Happened::Attacked {
                     attacker: *attacker,
@@ -204,6 +209,19 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             let reference = object(*moved)?;
             (named(left, *from) && named(entered, *to) && scope.selects(what, reference).ok()?)
                 .then(|| cause(state, vec![Target::Object(reference)]))
+        }
+        (
+            TriggerPattern::ZoneChange {
+                what,
+                from: None,
+                to: entered,
+            },
+            Happened::Created { object: made },
+        ) => {
+            let reference = object(*made)?;
+            (entered.is_none_or(|kind| kind == ZoneKind::Battlefield)
+                && scope.selects(what, reference).ok()?)
+            .then(|| cause(state, vec![Target::Object(reference)]))
         }
         (TriggerPattern::Attacks { what }, Happened::Attacked { attacker }) => {
             let reference = object(*attacker)?;

@@ -61,6 +61,10 @@ pub(super) fn move_object(
     } else if to != Zone::Stack {
         object.controller = object.owner;
     }
+    // A token is a token only on the battlefield (CR 111.7): anywhere else it ceases to exist.
+    if object.kind == ObjectKind::Token && to != Zone::Battlefield {
+        crate::tokens::cease(state, id);
+    }
     Ok(())
 }
 

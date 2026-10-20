@@ -89,10 +89,7 @@ describe('a signed-in creator', () => {
     expect(app.rest.creates).toEqual([
       {
         format: 'normal',
-        seats: [
-          { name: 'Ada_L', deck: 'mono-green' },
-          { name: 'Player 2', deck: 'mono-red' },
-        ],
+        seats: [{ name: 'Ada_L', deck: 'mono-green' }, { name: 'Player 2' }],
         visibility: 'public',
         held: 1,
       },

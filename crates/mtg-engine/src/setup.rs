@@ -271,6 +271,7 @@ impl GameState {
             first_player,
             players,
             objects,
+            ceased: BTreeMap::new(),
             zones,
             turn: TurnState {
                 number: turn.0,

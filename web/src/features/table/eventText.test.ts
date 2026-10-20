@@ -96,11 +96,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   EffectCreated: [
     {
       EffectCreated: {
-        effect: effect(
-          { Object: 1 },
-          { ModifyPowerToughness: { power: 2, toughness: -1 } },
-          'UntilEndOfTurn',
-        ),
+        effect: effect(objects(1), { ModifyPowerToughness: { power: 2, toughness: -1 } }, 'UntilEndOfTurn'),
       },
     },
     'Grizzly Bears gets +2/-1 until end of turn',
@@ -285,12 +281,27 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   ],
 }
 
+function objects(...ids: number[]): ContinuousEffect['selector'] {
+  return { Objects: ids.map((id) => ({ id, counter: 0 })) }
+}
+
 function effect(
   selector: ContinuousEffect['selector'],
   modification: ContinuousEffect['modification'],
   duration: ContinuousEffect['duration'],
+  source: ContinuousEffect['source'] = null,
 ): ContinuousEffect {
-  return { id: 1, layer: 'PtModify', selector, modification, duration, timestamp: 1 }
+  return {
+    id: 1,
+    layer: 'PtModify',
+    selector,
+    modification,
+    duration,
+    timestamp: 1,
+    source,
+    controller: 0,
+    turn: 1,
+  }
 }
 
 const say = (event: Event): string => describeEvent({ Public: event }, names).text
@@ -444,20 +455,36 @@ describe('events with more than one shape', () => {
       'All creatures become artifact too until end of turn',
     ],
     [
-      effect({ CreaturesControlledBy: 1 }, { SetColors: 0b00101 }, { WhileSourceOnBattlefield: 6 }),
+      effect({ CreaturesControlledBy: 1 }, { SetColors: 0b00101 }, 'WhileSourceOnBattlefield', {
+        id: 6,
+        counter: 0,
+      }),
       'Creatures controlled by Bo become white and black while Jace Beleren stays',
     ],
     [
-      effect({ Object: 2 }, { SetColors: 0 }, 'UntilEndOfTurn'),
+      effect(objects(2), { SetColors: 0 }, 'UntilEndOfTurn'),
       'Hill Giant becomes colorless until end of turn',
     ],
     [
-      effect({ Object: 2 }, { SetPowerToughness: { power: 0, toughness: 1 } }, 'UntilEndOfTurn'),
+      effect(objects(2), { SetPowerToughness: { power: 0, toughness: 1 } }, 'UntilEndOfTurn'),
       'Hill Giant becomes 0/1 until end of turn',
     ],
     [
-      effect({ Object: 2 }, { ModifyPowerToughness: { power: 1, toughness: 1 } }, 'UntilEndOfTurn'),
+      effect(objects(2), { ModifyPowerToughness: { power: 1, toughness: 1 } }, 'UntilEndOfTurn'),
       'Hill Giant gets +1/+1 until end of turn',
+    ],
+    [
+      effect(objects(2), { AddKeyword: 'Haste' }, 'UntilEndOfTurn'),
+      'Hill Giant gains haste until end of turn',
+    ],
+    [
+      effect(objects(1, 2), { AddKeyword: 'FirstStrike' }, 'UntilEndOfCombat'),
+      'Grizzly Bears and Hill Giant gain first strike until end of combat',
+    ],
+    [effect(objects(2), { AddKeyword: { Ward: '{2}' } }, 'Forever'), 'Hill Giant gains ward'],
+    [
+      effect(objects(1, 2), { ModifyPowerToughness: { power: 3, toughness: 3 } }, 'UntilYourNextTurn'),
+      "Grizzly Bears and Hill Giant get +3/+3 until their controller's next turn",
     ],
   ])('says what an effect does (%#)', (created, text) => {
     expect(say({ EffectCreated: { effect: created } })).toBe(text)

@@ -27,12 +27,13 @@ use Support::{Manual, Partial, Verified};
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
 /// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
-/// countering, scrying, looking at, revealing and searching for cards, choosing and moving them (onto the
-/// battlefield included), shuffling, life and damage, and the keywords of combat, so the fifteen cards that need no more
-/// are Verified (the Forest's ability comes from its land type) and a card whose other abilities are still missing
-/// carries what runs as Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard,
-/// not its flashback. Jace, the Mind Sculptor stays with the table for its loyalty costs and Flooded Strand for the
-/// life and the sacrifice it costs.
+/// countering, scrying, looking at, revealing and searching for cards, choosing and moving them (onto the battlefield
+/// included), shuffling, life and damage, paying mana as an effect, creating tokens, adding mana, continuous effects
+/// that pump or grant a keyword, and the keywords of combat, so the twenty cards that need no more are Verified (the
+/// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
+/// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback; Hero
+/// of Bladehold's tokens, not its battle cry; Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays
+/// with the table for its loyalty costs and Flooded Strand for the life it costs.
 const CARDS: [(&str, Support, usize); 40] = [
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
@@ -44,7 +45,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Counterspell", Verified, 1),
     ("Cultivate", Verified, 1),
     ("Delver of Secrets // Insectile Aberration", Manual, 0),
-    ("Dockside Extortionist", Manual, 0),
+    ("Dockside Extortionist", Verified, 1),
     ("Doom Blade", Verified, 1),
     ("Eternal Witness", Verified, 1),
     ("Faithless Looting", Partial, 1),
@@ -54,10 +55,10 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Flooded Strand", Manual, 0),
     ("Forest", Verified, 1),
     ("Gaea's Cradle", Manual, 0),
-    ("Giant Growth", Manual, 0),
+    ("Giant Growth", Verified, 1),
     ("Grizzly Bears", Verified, 0),
-    ("Hero of Bladehold", Manual, 0),
-    ("Izzet Charm", Manual, 0),
+    ("Hero of Bladehold", Partial, 1),
+    ("Izzet Charm", Verified, 1),
     ("Jace, the Mind Sculptor", Manual, 0),
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
@@ -67,12 +68,12 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Panharmonicon", Manual, 0),
     ("Questing Beast", Partial, 3),
     ("Rampant Growth", Verified, 1),
-    ("Rhystic Study", Manual, 0),
+    ("Rhystic Study", Verified, 1),
     ("Serra Angel", Verified, 2),
-    ("Sneak Attack", Manual, 0),
+    ("Sneak Attack", Verified, 1),
     ("Sol Ring", Manual, 0),
     ("Swords to Plowshares", Verified, 1),
-    ("Tireless Tracker", Manual, 0),
+    ("Tireless Tracker", Partial, 1),
     ("Wrath of God", Verified, 1),
 ];
 
@@ -159,15 +160,11 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     let burst = reasons("Burst Lightning");
     assert!(burst.contains("Keyword.Kicker"), "{burst}");
     assert!(!burst.contains("Effect.DealDamage"), "{burst}");
-    // Rhystic Study's trigger and its "may" are there; the payment the opponent is offered is not.
-    let rhystic = reasons("Rhystic Study");
-    assert!(rhystic.contains("Effect.Pay"), "{rhystic}");
-    assert!(
-        !rhystic.contains("Effect.May")
-            && !rhystic.contains("Trigger.SpellCast")
-            && !rhystic.contains("Ability.Triggered"),
-        "{rhystic}"
-    );
+    // Rhystic Study and Izzet Charm are covered whole: the payment the opponent or the spell's controller is offered
+    // is played now, with the "may", the trigger, the modes, the counter and the damage around it.
+    for name in ["Rhystic Study", "Izzet Charm"] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // Mulldrifter's draw and flying are covered, its evoke is not.
     let mulldrifter = reasons("Mulldrifter");
     assert!(mulldrifter.contains("Keyword.Evoke"), "{mulldrifter}");
@@ -193,6 +190,32 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     ] {
         assert_eq!(reasons(name), "", "{name}");
     }
+    // Dockside Extortionist is covered whole: its Treasures are made and their mana ability runs.
+    assert_eq!(reasons("Dockside Extortionist"), "");
+    // Hero of Bladehold's tokens are made attacking; its battle cry is a keyword of a later task.
+    let hero = reasons("Hero of Bladehold");
+    assert!(hero.contains("Keyword.BattleCry"), "{hero}");
+    assert!(
+        !hero.contains("Effect.CreateToken") && !hero.contains("Trigger.Attacks"),
+        "{hero}"
+    );
+    // Tireless Tracker makes its Clues; putting the counter on itself is not played yet.
+    let tracker = reasons("Tireless Tracker");
+    assert!(tracker.contains("Effect.PutCounters"), "{tracker}");
+    assert!(
+        !tracker.contains("Effect.CreateToken") && !tracker.contains("Trigger.Sacrificed"),
+        "{tracker}"
+    );
+    // Sol Ring and Gaea's Cradle add mana from an activated ability of a shape the engine does not activate yet:
+    // two mana at once, and as many as there are creatures.
+    for name in ["Sol Ring", "Gaea's Cradle"] {
+        let reason = reasons(name);
+        assert!(
+            reason.contains("Ability.ManaAbility.Complex"),
+            "{name}: {reason}"
+        );
+        assert!(!reason.contains("Effect.AddMana"), "{name}: {reason}");
+    }
     // A card whose file models nothing says nothing about the engine.
     assert_eq!(reasons("Panharmonicon"), "");
 }
@@ -211,20 +234,14 @@ fn lacking(name: &str) -> Vec<String> {
     missing.into_iter().collect()
 }
 
-/// A "may", a choice, modes and the library effects run now, so the corpus cards that use only those are Verified
-/// (Brainstorm, Eternal Witness, Opt); each of these is still held back by another primitive, which this table names.
-/// The cards that need a payment or the costs of an ability wait for the tasks that build those.
+/// A "may", a choice, modes, a payment, a search and the library effects run now, so the corpus cards that use only
+/// those are Verified (Brainstorm, Cultivate, Eternal Witness, Izzet Charm, Opt, Rampant Growth, Rhystic Study); each of
+/// the others here is still held back by another primitive, which this table names.
 #[rstest]
-#[case::flooded_strand("Flooded Strand", &["Cost.PayLife", "Cost.SacrificeSelf"])]
-#[case::izzet_charm("Izzet Charm", &["Cost.Mana", "Effect.Pay"])]
-#[case::rhystic_study("Rhystic Study", &["Cost.Mana", "Effect.Pay"])]
+#[case::flooded_strand("Flooded Strand", &["Cost.PayLife"])]
 #[case::delver(
     "Delver of Secrets // Insectile Aberration",
     &["Effect.If", "Effect.Transform"]
-)]
-#[case::sneak_attack(
-    "Sneak Attack",
-    &["Cost.Mana", "Effect.Continuous", "Mod.AddKeyword"]
 )]
 #[case::jace("Jace, the Mind Sculptor", &["Ability.Loyalty"])]
 fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(
@@ -377,7 +394,7 @@ fn a_spell_with_x_in_its_cost_is_never_offered() -> Result<(), ScriptError> {
     Ok(())
 }
 
-/// 40 Forests and four each of four cards a Forest can pay for (two of them Verified, two Manual)
+/// 40 Forests and four each of four cards a Forest can pay for (three of them Verified, one Manual)
 /// and Fireball, which needs red mana and X and so stays dead in the draw: 60 in all.
 fn corpus_deck() -> Vec<Arc<CardDefinition>> {
     let mut deck: Vec<Arc<CardDefinition>> = (0..40).map(|_| card("Forest").unwrap()).collect();

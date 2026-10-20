@@ -67,7 +67,6 @@ export type { DelayedId } from "./DelayedId";
 export type { DiscardOptions } from "./DiscardOptions";
 export type { DivideChoice } from "./DivideChoice";
 export type { DivideOptions } from "./DivideOptions";
-export type { Duration } from "./Duration";
 export type { EffectId } from "./EffectId";
 export type { ErrorCode } from "./ErrorCode";
 export type { Event } from "./Event";

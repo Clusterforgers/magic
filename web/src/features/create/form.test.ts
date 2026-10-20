@@ -234,20 +234,25 @@ describe('choosing', () => {
 })
 
 describe('toRequest', () => {
-  it.each(seatCounts)('builds the exact body for %i seats, only the creator’s held', (count) => {
-    const draft = grown(count)
-    expect(toRequest(draft)).toEqual({
-      format: 'normal',
-      seats: draft.seats.map((seat, index) => ({
-        name: index === 0 ? seat.name : `Player ${index + 1}`,
-        deck: seat.deck,
-      })),
-      visibility: 'public',
-      held: 1,
-    })
-    expect(Object.keys(toRequest(draft)).sort()).toEqual(['format', 'held', 'seats', 'visibility'])
-    for (const seat of toRequest(draft).seats) expect(Object.keys(seat).sort()).toEqual(['deck', 'name'])
-  })
+  it.each(seatCounts)(
+    'builds the exact body for %i seats, only the creator’s held and only the creator’s with a deck',
+    (count) => {
+      const draft = grown(count)
+      expect(toRequest(draft)).toEqual({
+        format: 'normal',
+        seats: draft.seats.map((seat, index) =>
+          index === 0 ? { name: seat.name, deck: seat.deck } : { name: `Player ${index + 1}` },
+        ),
+        visibility: 'public',
+        held: 1,
+      })
+      expect(Object.keys(toRequest(draft)).sort()).toEqual(['format', 'held', 'seats', 'visibility'])
+      const [creator, ...open] = toRequest(draft).seats
+      expect(Object.keys(creator ?? {}).sort()).toEqual(['deck', 'name'])
+      // Open seats name no deck at all, so the server gives them none until their player chooses.
+      for (const seat of open) expect(Object.keys(seat)).toEqual(['name'])
+    },
+  )
 
   it('sends the visibility that was chosen', () => {
     expect(toRequest(chooseVisibility(defaultDraft(DECKS), 'invite')).visibility).toBe('invite')

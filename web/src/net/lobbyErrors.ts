@@ -1,8 +1,9 @@
 /**
- * Failures of the game browser calls (`docs/server.md`, Game browser endpoints): the server's `LobbyErrorCode`, plus
- * `unknown`, `network` and `bad_response` raised locally, and a sentence for each that a player can read.
+ * Failures of the game browser calls (`docs/server.md`, Game browser endpoints): the server's `LobbyErrorCode`, the
+ * `DeckChoiceErrorCode` of a request that names a deck, plus `unknown`, `network` and `bad_response` raised locally, and
+ * a sentence for each that a player can read.
  */
-import type { LobbyErrorCode } from '@/protocol/generated'
+import type { DeckChoiceErrorCode, Issue, LobbyErrorCode } from '@/protocol/generated'
 import { isRecord, isText } from './check'
 
 // A `Record` over every code, so a code added in Rust (and so to the generated union) stops this file compiling.
@@ -26,14 +27,29 @@ const LOBBY_CODES: Record<LobbyErrorCode, true> = {
   internal: true,
 }
 
+// The codes of a request that names a deck, a type of their own on the server so that older clients keep working.
+const DECK_CHOICE_CODES: Record<DeckChoiceErrorCode, true> = {
+  unknown_deck: true,
+  deck_blocked: true,
+  seat_ready: true,
+}
+
 /** True for a code the game browser endpoints send. */
 export const isLobbyErrorCode = (value: string): value is LobbyErrorCode => Object.hasOwn(LOBBY_CODES, value)
 
 /** Every `error` code the game browser endpoints send (`LobbyErrorCode`). */
 export const LOBBY_ERROR_CODES: readonly LobbyErrorCode[] = Object.keys(LOBBY_CODES).filter(isLobbyErrorCode)
 
+/** True for a code that only a request naming a deck sends: a join, the creation of a game, `PUT .../deck`. */
+export const isDeckChoiceErrorCode = (value: string): value is DeckChoiceErrorCode =>
+  Object.hasOwn(DECK_CHOICE_CODES, value)
+
+/** Every `error` code that only a request naming a deck sends (`DeckChoiceErrorCode`). */
+export const DECK_CHOICE_ERROR_CODES: readonly DeckChoiceErrorCode[] =
+  Object.keys(DECK_CHOICE_CODES).filter(isDeckChoiceErrorCode)
+
 /** The codes of a `LobbyError`: the server's, plus `unknown`, `network` and `bad_response` raised locally. */
-export type LobbyFailureCode = LobbyErrorCode | 'unknown' | 'network' | 'bad_response'
+export type LobbyFailureCode = LobbyErrorCode | DeckChoiceErrorCode | 'unknown' | 'network' | 'bad_response'
 
 /** A failed game browser call. `message` is the server's own sentence or ours; show `describeLobbyError` instead. */
 export class LobbyError extends Error {
@@ -43,13 +59,22 @@ export class LobbyError extends Error {
   readonly status: number
   /** Seconds the server asked the client to wait (`Retry-After` of a 429), or null. */
   readonly retryAfter: number | null
+  /** What breaks the rules, for a refused deck (422 `deck_blocked`); empty for every other failure. */
+  readonly issues: readonly Issue[]
 
-  constructor(code: LobbyFailureCode, status: number, message: string, retryAfter: number | null = null) {
+  constructor(
+    code: LobbyFailureCode,
+    status: number,
+    message: string,
+    retryAfter: number | null = null,
+    issues: readonly Issue[] = [],
+  ) {
     super(message)
     this.name = 'LobbyError'
     this.code = code
     this.status = status
     this.retryAfter = retryAfter
+    this.issues = issues
   }
 }
 
@@ -59,11 +84,31 @@ function waitOf(response: Response): number | null {
   return value !== null && /^\d{1,9}$/.test(value.trim()) ? Number(value.trim()) : null
 }
 
-/** The error for a non-success answer: the server's code and message if it sent `{error, message}`, else `bad_response`. */
+const isNullableText = (value: unknown): value is string | null => value === null || isText(value)
+
+// The issues of a refused deck (`DeckBlockedBody`); an item that is not an issue is left out, never half-read.
+function issuesOf(body: Record<string, unknown>): Issue[] {
+  if (!Array.isArray(body.issues)) return []
+  return body.issues.filter(
+    (item): item is Issue =>
+      isRecord(item) &&
+      isText(item.code) &&
+      isText(item.message) &&
+      isNullableText(item.zone) &&
+      isNullableText(item.oracle_id) &&
+      isNullableText(item.name),
+  )
+}
+
+/**
+ * The error for a non-success answer: the server's code and message if it sent `{error, message}`, else
+ * `bad_response`. A refused deck (`deck_blocked`) keeps its issue list.
+ */
 export function lobbyFailure(response: Response, body: unknown): LobbyError {
   if (isRecord(body) && isText(body.error) && isText(body.message)) {
-    const code = isLobbyErrorCode(body.error) ? body.error : 'unknown'
-    return new LobbyError(code, response.status, body.message, waitOf(response))
+    const code = isLobbyErrorCode(body.error) || isDeckChoiceErrorCode(body.error) ? body.error : 'unknown'
+    const issues = code === 'deck_blocked' ? issuesOf(body) : []
+    return new LobbyError(code, response.status, body.message, waitOf(response), issues)
   }
   return new LobbyError(
     'bad_response',
@@ -106,6 +151,10 @@ const MESSAGES: Record<LobbyFailureCode, (error: LobbyError) => string> = {
   lobbies_unavailable: () => 'The server cannot list its games right now. Try again in a moment.',
   unavailable: () => 'The server is busy or restarting. Wait a minute, then try again.',
   internal: () => 'The server ran into a problem. Try again in a moment.',
+  unknown_deck: () =>
+    'That deck is not available: it was deleted, or it is not in the account you are signed in with. Choose another.',
+  deck_blocked: () => 'That deck cannot be played in this game.',
+  seat_ready: () => 'This seat is ready, so its deck cannot change. Take Ready back first.',
   unknown: (error) =>
     `The server refused the request, and this page does not know why. It said "${error.message}".`,
   network: () =>
@@ -115,7 +164,7 @@ const MESSAGES: Record<LobbyFailureCode, (error: LobbyError) => string> = {
 }
 
 /** What a lobby control was doing when it failed; a few codes read better with that said. */
-export type LobbyAbout = 'visibility' | 'close' | 'remove' | 'leave'
+export type LobbyAbout = 'visibility' | 'close' | 'remove' | 'leave' | 'deck'
 
 const GONE = 'This game is no longer open. The host may have closed it, or it may have started.'
 
@@ -145,6 +194,15 @@ const ABOUT: Record<LobbyAbout, Partial<Record<LobbyFailureCode, string>>> = {
     started: 'The game has already started, so a seat can no longer be given back.',
     not_claimed:
       "This seat came with the game's own link, so it cannot be given back. Close this tab to stop playing it.",
+  },
+  deck: {
+    forbidden: 'You can only choose the deck of your own seat.',
+    not_found:
+      'You no longer have a seat in this game. It may have been closed, or the host may have removed you.',
+    started: 'The game has already started, so the deck can no longer change.',
+    unknown_deck:
+      'That deck is no longer there, or it is not in the account you are signed in with. Reload the page to see the current decks, then choose again.',
+    seat_ready: 'You are ready, so your deck cannot change. Press Not ready, then choose again.',
   },
 }
 

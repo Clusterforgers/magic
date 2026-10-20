@@ -692,6 +692,9 @@ mod tests {
                 object: ObjectId(901),
                 controller: OWNER,
                 name: "Treasure".into(),
+                tapped: false,
+                attacking: None,
+                definition: std::sync::Arc::new(mtg_cards::CardDefinition::new("Treasure")),
             }),
             Event::Revealed(Revealed {
                 player: OWNER,

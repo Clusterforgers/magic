@@ -305,6 +305,18 @@ fn the_journal_collects_answers_and_every_step_clears_it_and_binds_names() {
     assert_eq!(resolving.snapshots(), [shot]);
 }
 
+/// A token of the given id for `controller`, as the event says it.
+fn token(id: u64, controller: PlayerId, attacking: Option<AttackTarget>) -> TokenCreated {
+    TokenCreated {
+        object: ObjectId(id),
+        controller,
+        name: "Treasure".into(),
+        tapped: false,
+        attacking,
+        definition: Arc::new(CardDefinition::new("Treasure").with_type(CardType::Artifact)),
+    }
+}
+
 fn cause() -> Cause {
     Cause {
         subjects: vec![Target::Player(PlayerId(1))],
@@ -384,8 +396,14 @@ fn trigger_of(game: &GameState, ability: usize) -> Event {
 #[case::a_delayed_trigger_that_is_not_waiting_expiring(
     |_: &GameState| Event::DelayedTriggerExpired { id: DelayedId(3) }
 )]
-#[case::tokens_are_not_in_the_engine_yet(
-    |_: &GameState| Event::TokenCreated(TokenCreated { object: ObjectId(900), controller: PlayerId(0), name: "Treasure".into() })
+#[case::a_token_that_reuses_an_id(
+    |g: &GameState| Event::TokenCreated(token(totem_id(g).get(), PlayerId(0), None))
+)]
+#[case::a_token_for_nobody(
+    |_: &GameState| Event::TokenCreated(token(900, PlayerId(7), None))
+)]
+#[case::a_token_attacking_before_attackers_are_declared(
+    |_: &GameState| Event::TokenCreated(token(900, PlayerId(0), Some(AttackTarget::Player(PlayerId(1)))))
 )]
 #[case::counters_are_not_in_the_engine_yet(
     |_: &GameState| Event::CountersChanged(CountersChanged { on: Target::Player(PlayerId(0)), counter: CounterKind::Poison, delta: 1 })
@@ -486,6 +504,44 @@ fn what_a_player_learned_changes_nothing_in_the_game() {
         ],
     );
     assert_eq!(game.state_hash(), before);
+}
+
+#[rstest]
+#[case::the_same_object_after_a_move(vec![(7, 0)], vec![(7, 1)], true)]
+#[case::the_same_binding_twice(vec![(7, 0)], vec![(7, 0)], false)]
+#[case::an_empty_binding_twice(vec![], vec![], false)]
+#[case::two_objects_each_moved_on(vec![(7, 0), (8, 2)], vec![(7, 1), (8, 3)], true)]
+#[case::another_object(vec![(7, 0)], vec![(8, 1)], false)]
+#[case::an_older_incarnation(vec![(7, 2)], vec![(7, 1)], false)]
+#[case::another_count(vec![(7, 0)], vec![(7, 1), (8, 0)], false)]
+#[case::nothing_for_something(vec![(7, 0)], vec![], false)]
+fn a_name_is_bound_again_only_to_the_objects_it_named_after_they_moved_on(
+    #[case] first: Vec<(u64, u32)>,
+    #[case] again: Vec<(u64, u32)>,
+    #[case] allowed: bool,
+) {
+    let mut game = game();
+    game.resolving = Some(crate::resolve::Resolving::begin(totem_id(&game)));
+    let targets = |list: &[(u64, u32)]| -> Vec<Target> {
+        list.iter()
+            .map(|(id, counter)| {
+                Target::Object(ObjectRef {
+                    id: ObjectId(*id),
+                    counter: *counter,
+                })
+            })
+            .collect()
+    };
+    let bind = |bound: Vec<Target>| Event::StepDone {
+        position: vec![1],
+        bound: vec![("cards".to_owned(), bound)],
+        snapshots: Vec::new(),
+    };
+    fold(&mut game, &[bind(targets(&first))]);
+    assert_eq!(
+        apply_event(&mut game, &bind(targets(&again))).is_ok(),
+        allowed
+    );
 }
 
 #[rstest]
