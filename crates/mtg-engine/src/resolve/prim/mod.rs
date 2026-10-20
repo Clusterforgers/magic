@@ -163,6 +163,7 @@ mod tests {
             [
                 "Effect.Draw",
                 "Effect.Discard",
+                "Effect.Mill",
                 "Effect.Scry",
                 "Effect.LookAtTop",
                 "Effect.Reveal",

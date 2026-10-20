@@ -32,6 +32,7 @@ const RUNS: &[&str] = &[
     "Cost.SacrificeSelf",
     "Effect.Draw",
     "Effect.Discard",
+    "Effect.Mill",
     "Effect.Scry",
     "Effect.LookAtTop",
     "Effect.Reveal",
@@ -120,6 +121,7 @@ mod tests {
     #[case::drawing("Effect.Draw", true)]
     #[case::discarding("Effect.Discard", true)]
     #[case::discarding_at_random("Effect.Discard.Random", false)]
+    #[case::milling("Effect.Mill", true)]
     #[case::scrying("Effect.Scry", true)]
     #[case::looking_at_the_top("Effect.LookAtTop", true)]
     #[case::revealing("Effect.Reveal", true)]
