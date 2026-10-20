@@ -382,6 +382,16 @@ pub enum Event {
         /// The cards, top to bottom as they lie after the move: the last is the bottom card.
         cards: Vec<ObjectId>,
     },
+    /// A card an effect put onto the battlefield entered tapped or under another player's control; it follows the
+    /// `ZoneChanged` that moved it, in the same batch.
+    Entered {
+        /// The permanent.
+        object: ObjectId,
+        /// Whether it entered tapped.
+        tapped: bool,
+        /// Who controls it.
+        controller: PlayerId,
+    },
 }
 
 /// How the resolution of a spell or ability ended.
@@ -471,6 +481,7 @@ impl Event {
             | Event::SpellCast { object, .. }
             | Event::ZoneChanged { object, .. }
             | Event::SpellResolved { object }
+            | Event::Entered { object, .. }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::CardDrawn { object, .. }

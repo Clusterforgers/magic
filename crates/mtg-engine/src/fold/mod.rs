@@ -16,6 +16,7 @@ use crate::events::Event;
 use crate::mana::ManaPool;
 use crate::player::{LossReason, Player, PlayerStatus};
 use crate::priority::PriorityState;
+use crate::sight;
 use crate::state::{GameResult, GameState, Stage};
 use crate::turn::Step;
 
@@ -56,6 +57,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         | Event::CardDiscarded { .. }
         | Event::CreatureDied { .. }
         | Event::ZoneChanged { .. }
+        | Event::Entered { .. }
         | Event::ObjectLeftGame { .. } => zones::apply(state, event),
         Event::AttackersDeclared { .. }
         | Event::BlockersDeclared { .. }
@@ -83,10 +85,26 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
         Event::DelayedTriggerExpired { id } => crate::triggers::fold_expired(state, *id),
         Event::CountersChanged(counters) => crate::counters::fold(state, counters),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
-        Event::Scried(scried) => zones::scry(state, scried),
+        Event::Scried(scried) => {
+            zones::scry(state, scried)?;
+            let seen: Vec<ObjectId> = scried.top.iter().chain(&scried.bottom).copied().collect();
+            sight::show(state, Some(scried.player), &seen);
+            Ok(())
+        }
         Event::LibraryBottomed { player, cards } => zones::bottom(state, *player, cards),
-        // What a player learned changes nothing in the game; the protocol decides who may see it.
-        Event::LibraryLooked(_) | Event::CardsFound(_) | Event::Revealed(_) => Ok(()),
+        // What a player learned changes nothing in the game but who may identify the cards until the resolution ends.
+        Event::LibraryLooked(looked) => {
+            sight::show(state, Some(looked.player), &looked.cards);
+            Ok(())
+        }
+        Event::CardsFound(found) => {
+            sight::show(state, Some(found.player), &found.cards);
+            Ok(())
+        }
+        Event::Revealed(revealed) => {
+            sight::show(state, None, &revealed.cards);
+            Ok(())
+        }
         _ => apply_misc(state, event),
     }
 }

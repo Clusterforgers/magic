@@ -258,6 +258,10 @@ function describePublic(event: Event, n: EventNames): LogLine {
     const { player, cards: bottomed } = event.LibraryBottomed
     return line(`${n.seat(player)} puts ${cards(bottomed.length)} on the bottom of their library`)
   }
+  if ('Entered' in event) {
+    const { object, tapped, controller } = event.Entered
+    return quiet(`${n.card(object)} enters${tapped ? ' tapped' : ''} under ${n.seat(controller)}'s control`)
+  }
   if ('TurnBegan' in event) {
     return line(`Turn ${event.TurnBegan.number} begins: ${n.seat(event.TurnBegan.active)}'s turn`)
   }

@@ -23,13 +23,22 @@ use crate::decision::Decision;
 use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
 use crate::flow;
-use crate::object::{GameObject, ObjectKind};
+use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::replace::{self, Processed};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
 
 /// The position of the first effect: a path of indices into the effect tree.
 const START: [usize; 1] = [0];
+
+/// A card a resolution showed to one seat, or to every seat, for as long as the resolution lasts.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct Shown {
+    /// The seat that may identify the card; every seat when `None`.
+    pub to: Option<PlayerId>,
+    /// The card as it was when it was shown: a new zone makes it another object (CR 400.7).
+    pub card: ObjectRef,
+}
 
 /// A spell or ability that is resolving: how far it is, what it bound and the answers waiting to be used.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -39,6 +48,7 @@ pub struct Resolving {
     pub(crate) bindings: Bindings,
     pub(crate) snapshots: Vec<Snapshot>,
     pub(crate) journal: Vec<(PlayerId, Choice)>,
+    pub(crate) shown: Vec<Shown>,
 }
 
 impl Resolving {
@@ -49,7 +59,13 @@ impl Resolving {
             bindings: Bindings::new(),
             snapshots: Vec::new(),
             journal: Vec::new(),
+            shown: Vec::new(),
         }
+    }
+
+    /// The cards looked at, found or revealed so far in this resolution, and to whom.
+    pub fn shown(&self) -> &[Shown] {
+        &self.shown
     }
 
     /// The spell or ability.
