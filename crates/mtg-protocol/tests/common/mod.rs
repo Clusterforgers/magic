@@ -4,7 +4,7 @@
 
 pub mod table;
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::zones::Zone;
@@ -20,6 +20,42 @@ pub fn is_hidden(zone: Zone, viewer: PlayerId) -> bool {
         Zone::Hand(owner) => owner != viewer,
         _ => false,
     }
+}
+
+/// The top card of each library whose owner controls a permanent that prints "play with the top card of your library
+/// revealed": every seat knows these cards. Stated here from the printed rules alone, as a second opinion on
+/// `GameState::revealed_top`.
+pub fn revealed_tops(state: &GameState) -> BTreeMap<PlayerId, ObjectId> {
+    use mtg_cards::ability::Ability;
+    use mtg_cards::modify::GameRule;
+    use mtg_cards::refs::Ref;
+
+    let reveals = |seat: PlayerId| {
+        state.zone(Zone::Battlefield).iter().any(|id| {
+            state.object(*id).is_some_and(|o| {
+                o.controller() == seat
+                    && o.card().rules.iter().any(|rules| {
+                        matches!(
+                            **rules,
+                            Ability::Rule {
+                                rule: GameRule::RevealTop(Ref::You),
+                                ..
+                            }
+                        )
+                    })
+            })
+        })
+    };
+    state
+        .alive_players()
+        .filter(|seat| reveals(*seat))
+        .filter_map(|seat| {
+            state
+                .zone(Zone::Library(seat))
+                .last()
+                .map(|top| (seat, *top))
+        })
+        .collect()
 }
 
 /// Ids of the objects `viewer` may identify in `state`.
