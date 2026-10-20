@@ -20,6 +20,7 @@ use mtg_engine::{Event, GameSetup};
 use mtg_testkit::cards::{forest, island};
 use mtg_testkit::corpus::{card, corpus};
 use mtg_testkit::{Driver, Scenario, ScriptError, play_game, ready};
+use rstest::rstest;
 
 use Support::{Manual, Partial, Verified};
 
@@ -155,14 +156,13 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     let burst = reasons("Burst Lightning");
     assert!(burst.contains("Keyword.Kicker"), "{burst}");
     assert!(!burst.contains("Effect.DealDamage"), "{burst}");
-    // Rhystic Study's trigger is there; the payment and the choice it ends in are not.
+    // Rhystic Study's trigger and its "may" are there; the payment the opponent is offered is not.
     let rhystic = reasons("Rhystic Study");
+    assert!(rhystic.contains("Effect.Pay"), "{rhystic}");
     assert!(
-        rhystic.contains("Effect.Pay") && rhystic.contains("Effect.May"),
-        "{rhystic}"
-    );
-    assert!(
-        !rhystic.contains("Trigger.SpellCast") && !rhystic.contains("Ability.Triggered"),
+        !rhystic.contains("Effect.May")
+            && !rhystic.contains("Trigger.SpellCast")
+            && !rhystic.contains("Ability.Triggered"),
         "{rhystic}"
     );
     // Mulldrifter's draw and flying are covered, its evoke is not.
@@ -192,6 +192,62 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     }
     // A card whose file models nothing says nothing about the engine.
     assert_eq!(reasons("Panharmonicon"), "");
+}
+
+/// The primitives of the card's rules the engine does not run.
+fn lacking(name: &str) -> Vec<String> {
+    let caps = mtg_engine::caps();
+    let library = mtg_cards::builtin::library().unwrap();
+    let missing: BTreeSet<String> = library
+        .card_by_name(name)
+        .into_iter()
+        .flat_map(mtg_cards::card::Card::abilities)
+        .filter(|(_, ability)| !ability.is_manual())
+        .flat_map(|(_, ability)| caps.missing(&used_primitives(ability)))
+        .collect();
+    missing.into_iter().collect()
+}
+
+/// A "may", a choice and modes run now, so none of the corpus cards that use them changes state: each is still
+/// held back by another primitive, which this table names. The cards that need a payment or a counter wait for the
+/// tasks that build those.
+#[rstest]
+#[case::eternal_witness("Eternal Witness", &["Effect.Move"])]
+#[case::brainstorm("Brainstorm", &["Effect.Move"])]
+#[case::cultivate("Cultivate", &["Effect.Move", "Effect.Search", "Effect.Shuffle"])]
+#[case::izzet_charm("Izzet Charm", &["Cost.Mana", "Effect.Counter", "Effect.Pay"])]
+#[case::rhystic_study("Rhystic Study", &["Cost.Mana", "Effect.Pay"])]
+#[case::delver(
+    "Delver of Secrets // Insectile Aberration",
+    &["Effect.If", "Effect.LookAtTop", "Effect.Reveal", "Effect.Transform"]
+)]
+#[case::sneak_attack(
+    "Sneak Attack",
+    &["Cost.Mana", "Effect.Continuous", "Effect.Move", "Mod.AddKeyword"]
+)]
+#[case::jace(
+    "Jace, the Mind Sculptor",
+    &["Ability.Loyalty", "Effect.Exile", "Effect.LookAtTop", "Effect.Move"]
+)]
+fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(
+    #[case] name: &str,
+    #[case] expected: &[&str],
+) {
+    assert_eq!(lacking(name), expected, "{name}");
+    let corpus = corpus().unwrap();
+    let record = corpus.support(name).unwrap();
+    let (state, _) = CARDS
+        .iter()
+        .find_map(|(card, state, abilities)| (*card == name).then_some((*state, *abilities)))
+        .unwrap();
+    assert_eq!(record.support, state, "{name}");
+    assert_ne!(record.support, Verified, "{name}");
+    for runs in ["Effect.May", "Effect.Choose", "Effect.Modal"] {
+        assert!(
+            !lacking(name).iter().any(|gap| gap == runs),
+            "{name} is not held back by {runs}"
+        );
+    }
 }
 
 fn resolve_the_stack(driver: &mut Driver) -> Result<(), ScriptError> {

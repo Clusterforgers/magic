@@ -58,7 +58,10 @@ pub struct Scope<'a> {
     pub(crate) controller: PlayerId,
     pub(crate) source: ObjectRef,
     pub(crate) choices: &'a Choices,
-    pub(crate) specs: &'a [TargetSpec],
+    /// The target specifications that were announced, in the order they were asked.
+    pub(crate) specs: Vec<&'a TargetSpec>,
+    /// How many of them come before the ones the running effect refers to: `Target(0)` is `specs[target_base]`.
+    pub(crate) target_base: usize,
     pub(crate) bindings: &'a Bindings,
     pub(crate) snapshots: Vec<&'a Snapshot>,
     /// What earlier steps of this resolution moved away, as it was: a target among them stays named.
@@ -99,7 +102,8 @@ impl<'a> Scope<'a> {
             controller,
             source,
             choices: &NO_CHOICES,
-            specs: &[],
+            specs: Vec::new(),
+            target_base: 0,
             bindings: &NO_BINDINGS,
             snapshots: Vec::new(),
             departed: &[],
@@ -151,10 +155,11 @@ impl<'a> Scope<'a> {
         })
     }
 
-    /// The targets chosen for the specification `index` that still count: a legal one, or one an earlier step of this
+    /// The targets chosen for the specification `index` of the running effect that still count: a legal one, or one an earlier step of this
     /// resolution moved away, whose last known information the later steps read (CR 608.2h). Any other illegal one is
     /// ignored (CR 608.2b).
     fn chosen(&self, index: usize) -> Vec<Target> {
+        let index = self.target_base + index;
         let (Some(set), Some(spec)) = (self.choices.targets.get(index), self.specs.get(index))
         else {
             return Vec::new();
@@ -836,7 +841,7 @@ mod tests {
         }
         let mut scope = scope(&game);
         scope.choices = &choices;
-        scope.specs = &specs;
+        scope.specs = specs.iter().collect();
         let first = Ref::Target(0);
         assert_eq!(
             scope.refs(&first).unwrap(),

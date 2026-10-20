@@ -22,6 +22,8 @@ pub(crate) enum Outcome {
     BeginCast(ObjectId),
     /// Start activating this ability; its announcement is decided next.
     BeginActivation(AbilityRef),
+    /// These are the modes, in the order they are printed, of the cast or activation in progress.
+    Modes(Vec<usize>),
     /// These are the targets of the next specification of the cast or activation in progress.
     Targets(Vec<Target>),
     /// Abandon the cast or activation in progress.
@@ -95,7 +97,7 @@ pub(crate) fn handle(
             choose::order_answer(player, options, choice)
         }
         (DecisionKind::YesNo(options), Answer::YesNo(choice)) => {
-            choose::yes_no_answer(player, options, choice)
+            Ok(choose::yes_no_answer(player, options, choice))
         }
         (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice)) => {
             choose::option_answer(player, options, choice)

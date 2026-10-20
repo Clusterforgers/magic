@@ -2,8 +2,8 @@
 //!
 //! A file whose effect the engine plays runs it and `Caps` names it (`caps.rs`); the others are stubs that
 //! refuse, and a card that uses one is never offered, so a game never meets the refusal. An effect that asks a
-//! player (discard, sacrifice) returns the question while its journal lacks the answer and reads the answer
-//! when its step runs again.
+//! player (discard, sacrifice, "may", a choice) returns the question while its journal lacks the answer and reads
+//! the answer when its step runs again; a modal effect asks nothing, its modes were chosen when it was announced.
 
 mod add_mana;
 mod choose;
@@ -165,12 +165,15 @@ mod tests {
                 "Effect.Discard",
                 "Effect.Destroy",
                 "Effect.Exile",
+                "Effect.Choose",
                 "Effect.Sacrifice",
                 "Effect.Counter",
                 "Effect.DealDamage",
                 "Effect.GainLife",
                 "Effect.LoseLife",
-                "Effect.DelayedTrigger"
+                "Effect.DelayedTrigger",
+                "Effect.May",
+                "Effect.Modal"
             ]
         );
     }

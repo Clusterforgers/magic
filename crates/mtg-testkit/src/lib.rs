@@ -5,6 +5,7 @@
 
 pub mod bot;
 pub mod cards;
+pub mod choice_cards;
 pub mod corpus;
 pub mod decks;
 pub mod driver;
@@ -17,6 +18,7 @@ pub mod trigger_cards;
 pub mod windows;
 
 pub use bot::RandomBot;
+pub use choice_cards::choice_fuzz_setup;
 pub use decks::{
     archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, removal_fuzz_setup, spell_fuzz_setup,
     symbol_fuzz_setup, trigger_fuzz_setup,

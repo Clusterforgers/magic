@@ -134,7 +134,7 @@ mod tests {
         let mut scope = Scope::announcing(game, ME, source);
         scope.bindings = bindings;
         scope.choices = &choices;
-        scope.specs = specs;
+        scope.specs = specs.iter().collect();
         let cx = Cx {
             scope,
             resolving: &resolving,
