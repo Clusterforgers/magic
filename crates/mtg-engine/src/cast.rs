@@ -796,13 +796,7 @@ mod announcement_tests {
     fn an_activation_that_costs_a_tap_is_completed_by_the_events_that_pay_and_announce_it() {
         let game = state(vec![vec![], vec![]], vec![vec![tapper()], vec![]]);
         let source = game.zone(Zone::Battlefield)[0];
-        let mut pending = Pending::new(
-            PlayerId(0),
-            What::Ability(AbilityRef {
-                object: source,
-                ability: 0,
-            }),
-        );
+        let mut pending = Pending::new(PlayerId(0), What::Ability(AbilityRef::printed(source, 0)));
         let Next::Commit(events) = announce(&game, &mut pending) else {
             panic!("a tap needs no decision");
         };
@@ -848,10 +842,7 @@ mod announcement_tests {
             vec![vec![gadget(cost), forest(), forest()], vec![]],
         );
         let source = game.zone(Zone::Battlefield)[0];
-        let ability = AbilityRef {
-            object: source,
-            ability: 0,
-        };
+        let ability = AbilityRef::printed(source, 0);
         (game, Pending::new(PlayerId(0), What::Ability(ability)))
     }
 

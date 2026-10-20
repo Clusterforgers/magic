@@ -218,10 +218,7 @@ fn an_ability_that_is_not_offered_cannot_be_activated() -> Result<(), ScriptErro
     let pinger = driver.id_of("Pinger")?;
     let before = driver.engine().state_hash();
     let attempt = driver.answer(Answer::Priority(PriorityAction::Activate(
-        mtg_engine::abilities::AbilityRef {
-            object: pinger,
-            ability: 0,
-        },
+        mtg_engine::abilities::AbilityRef::printed(pinger, 0),
     )));
     assert!(attempt.is_err());
     assert_eq!(driver.engine().state_hash(), before);

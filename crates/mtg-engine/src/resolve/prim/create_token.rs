@@ -270,11 +270,17 @@ mod tests {
 
     #[test]
     fn a_treasure_carries_its_mana_ability() {
-        let game = game(2);
+        let mut game = game(2);
         let made =
             tokens(run_with(&game, Vec::new(), &effect(r#"{"Named":"treasure"}"#, "")).unwrap());
-        assert_eq!(made[0].definition.rules.len(), 1);
-        assert!(made[0].definition.rules[0].is_mana_ability());
+        crate::fold::apply_event(
+            &mut game,
+            &crate::events::Event::TokenCreated(made[0].clone()),
+        )
+        .unwrap();
+        let abilities = crate::ability_reader::abilities_of(&game, made[0].object);
+        assert_eq!(abilities.len(), 1);
+        assert!(abilities[0].1.is_mana_ability());
     }
 
     #[test]

@@ -167,10 +167,7 @@ fn answers() -> Vec<Answer> {
         Answer::DeclareBlockers(vec![(a, b)]),
         Answer::AssignDamage(vec![(a, 2), (b, 1)]),
         Answer::Discard(vec![a]),
-        Answer::Priority(PriorityAction::Activate(AbilityRef {
-            object: a,
-            ability: 1,
-        })),
+        Answer::Priority(PriorityAction::Activate(AbilityRef::printed(a, 1))),
         Answer::ChooseTargets(TargetChoice::Targets(vec![
             Target::Player(PlayerId(1)),
             Target::Object(ObjectRef { id: b, counter: 2 }),
@@ -294,10 +291,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             playable_lands: Vec::new(),
             castable: Vec::new(),
             mana_abilities: Vec::new(),
-            abilities: vec![AbilityRef {
-                object: a,
-                ability: 0,
-            }],
+            abilities: vec![AbilityRef::printed(a, 0)],
             can_act: true,
             can_pass: true,
         }),
@@ -1415,10 +1409,10 @@ fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
             json!({"ChooseCards": [1]}),
         ),
         (
-            Answer::Priority(PriorityAction::Activate(AbilityRef {
-                object: ObjectId(3),
-                ability: 1,
-            })),
+            Answer::Priority(PriorityAction::Activate(AbilityRef::printed(
+                ObjectId(3),
+                1,
+            ))),
             json!({"Priority": {"Activate": {"object": 3, "ability": 1}}}),
         ),
     ];
@@ -1441,10 +1435,7 @@ fn what_a_vanilla_message_never_carried_stays_out_of_it() {
     let json = serde_json::to_value(&priority).unwrap();
     assert!(json.get("abilities").is_none(), "{json}");
     let with = PriorityOptions {
-        abilities: vec![AbilityRef {
-            object: ObjectId(2),
-            ability: 0,
-        }],
+        abilities: vec![AbilityRef::printed(ObjectId(2), 0)],
         ..priority
     };
     assert_eq!(

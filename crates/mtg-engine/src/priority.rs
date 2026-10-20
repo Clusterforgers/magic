@@ -253,10 +253,7 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
         }
         for ability in 0..object.card().rules.len() {
             if can_activate(state, player, object, ability) {
-                found.push(AbilityRef {
-                    object: id,
-                    ability,
-                });
+                found.push(AbilityRef::printed(id, ability));
             }
         }
     }
