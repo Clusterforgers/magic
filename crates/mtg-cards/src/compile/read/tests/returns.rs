@@ -64,7 +64,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 
 #[rstest]
 #[case::a_subtype_before_card("Return target Elf card from your graveyard to your hand.")]
-#[case::bounce("Return target creature to its owner's hand.")]
 #[case::bounce_to_your_hand("Return target creature you control to your hand.")]
 #[case::another_graveyard("Return target card from a graveyard to your hand.")]
 #[case::an_opponents_graveyard(

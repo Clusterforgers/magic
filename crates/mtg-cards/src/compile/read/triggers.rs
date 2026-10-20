@@ -128,6 +128,8 @@ fn verbs(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
 
 fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     let (from, to) = if r.word("enters") {
+        // The older wording, "enters the battlefield", says the same.
+        r.words("the battlefield");
         (None, Some(ZoneKind::Battlefield))
     } else if r.word("dies") {
         (Some(ZoneKind::Battlefield), Some(ZoneKind::Graveyard))

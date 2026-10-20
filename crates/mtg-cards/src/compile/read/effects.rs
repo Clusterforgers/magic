@@ -3,20 +3,25 @@
 
 use super::amounts::{cards, its_stat, number_word, points};
 use super::create;
+use super::modal;
 use super::selectors::{Form, all, each, keyword, phrase, target};
 use super::tokens::Reader;
-use crate::effect::{Destination, Effect};
+use crate::cost::Cost;
+use crate::effect::{Destination, Effect, Order, Place};
+use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
-use crate::refs::{Pred, Ref, Targetable, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
 use crate::value::{Amount, CounterKind};
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 9] = [
+const TEMPLATES: [Template; 11] = [
+    modal::modal,
     may,
     chain,
+    put_back,
     player_effect,
     damage,
     removal,
@@ -35,7 +40,7 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
     if r.attempt(|r| regeneration(r, effects)).is_some() {
         return true;
     }
-    for template in TEMPLATES {
+    for template in TEMPLATES.into_iter().chain([unless_pays as Template]) {
         let read = r.attempt(|r| {
             let found = template(r)?;
             r.sentence_end().then_some(found)
@@ -46,6 +51,52 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         }
     }
     false
+}
+
+/// "Counter target spell unless its controller pays {2}.", "You may draw a card unless that player
+/// pays {1}.": the sentence before "unless" is what happens when the player does not pay.
+fn unless_pays(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    TEMPLATES.into_iter().find_map(|template| {
+        r.attempt(|r| {
+            let unpaid = template(r)?;
+            r.need("unless")?;
+            let who = payer(r, &unpaid)?;
+            r.need("pays")?;
+            let cost = mana_cost(r)?;
+            Some(vec![Effect::Pay {
+                who,
+                cost,
+                paid: Vec::new(),
+                unpaid,
+            }])
+        })
+    })
+}
+
+/// Who may pay: the controller of the spell that is countered, or the player the trigger is about.
+fn payer(r: &mut Reader<'_>, unpaid: &[Effect]) -> Option<Ref> {
+    if r.words("its controller") {
+        let countered = matches!(
+            unpaid,
+            [Effect::Counter {
+                what: Ref::Target(0)
+            }]
+        );
+        return countered.then(|| Ref::ControllerOf(Box::new(Ref::Target(0))));
+    }
+    (r.that_player && r.words("that player")).then_some(Ref::Triggering)
+}
+
+/// The mana of a payment: `{2}`, `{U}{R}`; an `{X}` is not the payer's to choose.
+fn mana_cost(r: &mut Reader<'_>) -> Option<Cost> {
+    let mut text = String::new();
+    while let Some(symbol) = r.symbol() {
+        text.push('{');
+        text.push_str(symbol);
+        text.push('}');
+    }
+    let cost: ManaCostX = text.parse().ok()?;
+    (!text.is_empty() && !cost.has_x()).then(|| Cost::mana(cost))
 }
 
 /// "It can't be regenerated." changes the destruction before it.
@@ -89,12 +140,55 @@ fn chain(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     while let Some(next) = r.attempt(|r| {
         r.punct(',').then_some(())?;
         r.need("then")?;
-        imperative(r)
+        match r.attempt(imperative) {
+            Some(step) => Some(vec![step]),
+            None => put_back(r),
+        }
     }) {
-        effects.push(next);
+        effects.extend(next);
     }
     Some(effects)
 }
+
+/// "Put two cards from your hand on top of your library in any order.": the player chooses cards
+/// of their hand, bound as `back`, and puts them on their library. One card has no order to choose.
+fn put_back(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("put")?;
+    let number = number_word(r.take_word()?)?;
+    r.word(if number == 1 { "card" } else { "cards" })
+        .then_some(())?;
+    r.need("from your hand on top of your library")?;
+    let order = if number == 1 {
+        None
+    } else {
+        r.need("in any order")?;
+        Some(Order::Chosen)
+    };
+    let count = Bounds {
+        min: number,
+        max: Some(Amount::Fixed(i32::try_from(number).ok()?)),
+    };
+    let from = Selector(vec![Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]);
+    Some(vec![
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(from),
+            count,
+            bind: BACK.to_owned(),
+            rest_as: None,
+        },
+        Effect::Move {
+            what: Ref::Bound(BACK.to_owned()),
+            to: Destination::Library {
+                place: Place::Top,
+                order,
+            },
+        },
+    ])
+}
+
+/// The name the cards put back are bound to.
+pub const BACK: &str = "back";
 
 fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
     let who = Ref::You;
@@ -152,10 +246,27 @@ fn life(r: &mut Reader<'_>) -> Option<Amount> {
     r.word("life").then_some(amount)
 }
 
-/// A player draws, discards, mills, gains or loses.
+/// A player draws, discards, mills, gains, loses or sacrifices; one subject may have several verb
+/// phrases, joined by "and" or in a list: "target opponent sacrifices a creature, discards a card,
+/// and loses 3 life". The effects are those of the sentence, in order.
 fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let who = player(r)?;
-    let effect = match r.take_word()? {
+    let mut effects = vec![predicate(r, &who)?];
+    while let Some(next) = r.attempt(|r| {
+        let listed = r.punct(',');
+        let joined = r.word("and");
+        (listed || joined).then_some(())?;
+        predicate(r, &who)
+    }) {
+        effects.push(next);
+    }
+    Some(effects)
+}
+
+/// What a player does: the verb and its object, without the subject.
+fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
+    let who = who.clone();
+    Some(match r.take_word()? {
         "draw" | "draws" => Effect::Draw {
             who,
             count: cards(r)?,
@@ -181,28 +292,73 @@ fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             r.need("the game")?;
             Effect::WinGame { who }
         }
+        "sacrifice" | "sacrifices" => sacrifice(r, who)?,
         _ => return None,
-    };
-    Some(vec![effect])
+    })
 }
 
-/// "Return target card from your graveyard to your hand."
+/// "a creature or planeswalker" and "of their choice": the player chooses, as they always do.
+fn sacrifice(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    let filter = phrase(r, Form::Subject)?;
+    filter.0.iter().all(describes_a_kind).then_some(())?;
+    r.words("of their choice");
+    Some(Effect::Sacrifice {
+        who,
+        filter,
+        count: Amount::one(),
+    })
+}
+
+/// Whether a predicate says what kind of permanent it is, and nothing of who has it or where.
+fn describes_a_kind(pred: &Pred) -> bool {
+    match pred {
+        Pred::Type(_)
+        | Pred::Supertype(_)
+        | Pred::Subtype(_)
+        | Pred::Color(_)
+        | Pred::Colorless
+        | Pred::Token
+        | Pred::Tapped
+        | Pred::Untapped
+        | Pred::Attacking
+        | Pred::Blocking
+        | Pred::HasKeyword(_)
+        | Pred::Compare { .. } => true,
+        Pred::Not(inner) => describes_a_kind(inner),
+        Pred::AnyOf(preds) => preds.iter().all(describes_a_kind),
+        _ => false,
+    }
+}
+
+/// "Return target card from your graveyard to your hand.", "Return target creature to its owner's
+/// hand.": a move to the owner's hand.
 fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("return")?;
     let what = target_object(r)?;
+    let Some(Targetable::Object(selector)) = r.targets.first().map(|spec| &spec.what) else {
+        return None;
+    };
     // "your hand" is the owner's hand only for a card in your own graveyard.
-    let yours = r.targets.first().is_some_and(|spec| {
-        matches!(&spec.what, Targetable::Object(selector)
-            if selector.0.contains(&Pred::In(ZoneKind::Graveyard))
-                && selector.0.contains(&Pred::OwnedBy(Ref::You)))
-    });
-    r.need("to your hand")?;
-    yours.then(|| {
-        vec![Effect::Move {
-            what,
-            to: Destination::Hand,
-        }]
-    })
+    let yours = selector.0.contains(&Pred::In(ZoneKind::Graveyard))
+        && selector.0.contains(&Pred::OwnedBy(Ref::You));
+    // A permanent goes to "its owner's hand"; a spell or a card in a zone would say more.
+    let permanent = !selector
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::In(_) | Pred::Spell));
+    if yours {
+        r.need("to your hand")?;
+    } else if permanent {
+        r.need("to its owner's hand")?;
+        r.it = Some(what.clone());
+    } else {
+        return None;
+    }
+    Some(vec![Effect::Move {
+        what,
+        to: Destination::Hand,
+    }])
 }
 
 /// "+1/+1" or "-1/-1": the counters that change a creature's size.
@@ -305,7 +461,12 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if !matches!(verb, "destroy" | "exile" | "counter") {
         return None;
     }
-    let what = object(r)?;
+    // "Exile ~" is the card itself leaving; nothing else of the card is destroyed or countered this way.
+    let what = if verb == "exile" && r.source() {
+        Ref::This
+    } else {
+        object(r)?
+    };
     let spell = r.targets.first().is_some_and(|spec| {
         matches!(&spec.what, Targetable::Object(selector) if selector.0.first() == Some(&Pred::Spell))
     });
@@ -332,6 +493,9 @@ fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     }
     if let Some(what) = target_object(r) {
         return Some((what, false));
+    }
+    if let Some(objects) = all(r) {
+        return Some((objects, true));
     }
     phrase(r, Form::All).map(|selector| (Ref::Each(selector), true))
 }

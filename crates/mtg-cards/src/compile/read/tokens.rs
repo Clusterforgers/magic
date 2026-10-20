@@ -53,6 +53,26 @@ pub fn canonical(text: &str) -> String {
         {
             out.push(format!("~{}", next.get(noun.len()..).unwrap_or_default()));
             at += 2;
+        } else if word == "enters"
+            && words.get(at + 1) == Some(&"the")
+            && let Some(field) = words.get(at + 2)
+            && field.trim_end_matches(|c: char| !c.is_alphanumeric()) == "battlefield"
+        {
+            // The older wording of "enters"; what follows (a comma, a period) stays.
+            let tail = field.trim_start_matches(|c: char| c.is_alphanumeric());
+            out.push(format!("enters{tail}"));
+            at += 3;
+        } else if word == "of"
+            && words.get(at + 1) == Some(&"their")
+            && let Some(choice) = words.get(at + 2)
+            && choice.trim_end_matches(|c: char| !c.is_alphanumeric()) == "choice"
+        {
+            // The player who sacrifices or discards chooses anyway; what follows the words stays.
+            let tail = choice.trim_start_matches(|c: char| c.is_alphanumeric());
+            if let Some(last) = out.last_mut() {
+                last.push_str(tail);
+            }
+            at += 3;
         } else if investigate.eq_ignore_ascii_case("investigate") {
             // The keyword action is the same as its reminder text.
             let create = if investigate.starts_with('I') {
@@ -194,6 +214,8 @@ pub struct Reader<'a> {
     pub x_free: bool,
     /// What "it" and "its" mean: the object the last sentence acted on.
     pub it: Option<Ref>,
+    /// Whether the event of the trigger is about a player: "that player" is who cast the spell.
+    pub that_player: bool,
 }
 
 impl<'a> Reader<'a> {
@@ -205,6 +227,7 @@ impl<'a> Reader<'a> {
             targets: Vec::new(),
             x_free,
             it: None,
+            that_player: false,
         }
     }
 
@@ -266,6 +289,11 @@ impl<'a> Reader<'a> {
     /// Reads these words or fails.
     pub fn need(&mut self, phrase: &str) -> Option<()> {
         self.words(phrase).then_some(())
+    }
+
+    /// Whether this punctuation mark is next, without reading it.
+    pub fn at_punct(&self, mark: char) -> bool {
+        self.tokens.get(self.at) == Some(&Token::Punct(mark))
     }
 
     /// Reads this punctuation mark if it is next.

@@ -4,26 +4,53 @@
 use mtg_core::mana::ManaType;
 
 use super::tokens::Reader;
-use super::{effects, triggers};
+use super::{effects, modal, triggers};
 use crate::ability::{Ability, Timing};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Effect, Produce};
 use crate::refs::{Ref, ZoneKind};
+use crate::trigger::TriggerPattern;
 use crate::value::Amount;
 
-/// The sentences of an instant or sorcery, in order; every one must be read.
-pub fn spell(r: &mut Reader<'_>) -> Option<Ability> {
+/// The sentences of an ability, in order, every one read; `None` when one is not, or when a `Modal`
+/// is not the only effect (the modes keep their own targets, so the ability has none).
+fn sentences(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let mut effects = Vec::new();
     while !r.end() {
         if !effects::sentence(r, &mut effects) {
             return None;
         }
     }
-    if effects.is_empty() {
-        return None;
-    }
+    let alone = effects.len() == 1 || !effects.iter().any(|e| matches!(e, Effect::Modal { .. }));
+    // A name an effect binds is bound once in an ability.
+    let binds: Vec<&str> = effects
+        .iter()
+        .filter_map(|effect| match effect {
+            Effect::Choose { bind, .. } => Some(bind.as_str()),
+            _ => None,
+        })
+        .collect();
+    let unique = binds
+        .iter()
+        .enumerate()
+        .all(|(at, name)| !binds[..at].contains(name));
+    (!effects.is_empty() && alone && unique).then_some(effects)
+}
+
+/// The sentences of an instant or sorcery, in order; every one must be read.
+pub fn spell(r: &mut Reader<'_>) -> Option<Ability> {
+    let effects = sentences(r)?;
     Some(Ability::Spell {
         targets: std::mem::take(&mut r.targets),
+        effects,
+    })
+}
+
+/// The modes of an instant or sorcery: "Choose one —" and its bullets, as the only effect.
+pub fn modal_spell(r: &mut Reader<'_>) -> Option<Ability> {
+    let effects = modal::modal(r)?;
+    r.end().then_some(Ability::Spell {
+        targets: Vec::new(),
         effects,
     })
 }
@@ -32,21 +59,14 @@ pub fn spell(r: &mut Reader<'_>) -> Option<Ability> {
 /// one of which must be read.
 pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let when = triggers::pattern(r)?;
+    r.that_player = matches!(when, TriggerPattern::SpellCast { .. });
     r.punct(',').then_some(())?;
     let intervening_if = r.attempt(|r| {
         r.word("if").then_some(())?;
         let condition = triggers::condition(r)?;
         r.punct(',').then_some(condition)
     });
-    let mut effects = Vec::new();
-    while !r.end() {
-        if !effects::sentence(r, &mut effects) {
-            return None;
-        }
-    }
-    if effects.is_empty() {
-        return None;
-    }
+    let effects = sentences(r)?;
     Some(Ability::Triggered {
         when,
         intervening_if,

@@ -1,23 +1,37 @@
 //! The renderer: rules data back to the oracle wording the readers read, so a reading can be
-//! checked against the text it came from. Every effect is a sentence of its own; the readers take
-//! ", then" between two steps as the same sequence.
+//! checked against the text it came from. An effect is a sentence of its own, or the effects of one
+//! player in a row are one compound sentence; the readers take ", then" between two steps as the
+//! same sequence.
 
 use super::amounts::{cards_text, count_word, points_text, stat_name};
 use super::create;
+use super::effects::BACK;
+use super::modal::{BULLET, DASH};
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
-use super::triggers::{condition_text, pattern_text};
+use super::triggers::{article, condition_text, pattern_text};
 use crate::ability::{Ability, Timing};
 use crate::cost::{Cost, CostItem};
-use crate::effect::{Destination, Effect, Produce};
+use crate::effect::{Destination, Effect, Mode, Order, Place, Produce};
 use crate::modify::{Duration, Modification};
-use crate::refs::{Pred, Ref, TargetSpec, Targetable, ZoneKind};
+use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition, CounterKind};
 
-/// The oracle wording of an ability the readers produce; `None` for any other ability.
+/// The oracle wording of an ability the readers produce, in the first way its effects can be
+/// written (see [`variants`]); `None` for any other ability.
 pub fn ability(ability: &Ability) -> Option<String> {
+    variants(ability).into_iter().next()
+}
+
+/// Every wording of an ability the readers produce. The effects of one player in a row are one
+/// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
+/// the data does not say which a card used, so each way is written. Empty for any other ability.
+pub fn variants(ability: &Ability) -> Vec<String> {
     match ability {
-        Ability::Spell { targets, effects } => spell(targets, effects),
+        Ability::Spell { targets, effects } => alternatives(targets, effects)
+            .iter()
+            .map(|sentences| spell(sentences))
+            .collect(),
         Ability::Triggered {
             when,
             intervening_if,
@@ -25,7 +39,15 @@ pub fn ability(ability: &Ability) -> Option<String> {
             from: ZoneKind::Battlefield,
             targets,
             effects,
-        } => triggered(when, intervening_if.as_ref(), targets, effects),
+        } => {
+            let Some(head) = trigger_head(when, intervening_if.as_ref()) else {
+                return Vec::new();
+            };
+            alternatives(targets, effects)
+                .iter()
+                .map(|sentences| [head.clone(), closed(sentences, false)].concat().join(" "))
+                .collect()
+        }
         Ability::Activated {
             cost,
             timing: Timing::Instant,
@@ -33,8 +55,8 @@ pub fn ability(ability: &Ability) -> Option<String> {
             from: ZoneKind::Battlefield,
             targets,
             effects,
-        } if targets.is_empty() => mana_ability(cost, effects),
-        _ => None,
+        } if targets.is_empty() => mana_ability(cost, effects).into_iter().collect(),
+        _ => Vec::new(),
     }
 }
 
@@ -45,58 +67,220 @@ fn capitalize(text: &str) -> String {
     })
 }
 
-/// The sentences of an ability, one for each effect, without their first capital and period.
-fn sentences(targets: &[TargetSpec], effects: &[Effect]) -> Option<Vec<String>> {
+/// The ways the effects can be written as sentences, without their first capital and period: the
+/// effects of one player in a row may be joined into one sentence, in any run of them.
+fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> {
     if targets.len() > 1 || effects.is_empty() {
-        return None;
+        return Vec::new();
     }
+    if let [
+        Effect::Modal {
+            choose,
+            repeat: false,
+            modes,
+        },
+    ] = effects
+    {
+        if !targets.is_empty() || !choose.is_one() || modes.len() < 2 {
+            return Vec::new();
+        }
+        return modal_texts(modes)
+            .into_iter()
+            .map(|text| vec![text])
+            .collect();
+    }
+    // Bit `at` of a mask joins the effect after the one at `at` to it; a long list is tried whole
+    // and apart only.
+    let joints = effects.len() - 1;
+    let masks: Vec<u32> = if joints <= 8 {
+        (0..1u32 << joints).collect()
+    } else {
+        vec![0, u32::MAX >> 1]
+    };
+    masks
+        .into_iter()
+        .filter_map(|mask| written(targets, effects, mask))
+        .collect()
+}
+
+/// The sentences of the effects with the joints of the mask closed into compound sentences.
+fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<String>> {
     let mut writer = Writer {
         targets,
         named: false,
     };
     let mut sentences: Vec<String> = Vec::new();
-    for effect in effects {
-        sentences.push(writer.effect(effect)?);
-        if let Effect::Destroy {
-            what,
-            regenerate: false,
-        } = effect
+    let mut start = 0;
+    while start < effects.len() {
+        // A choice of cards and the move of what was chosen are one sentence, which no joint splits.
+        if let [
+            choose @ Effect::Choose { .. },
+            moved @ Effect::Move { .. },
+            ..,
+        ] = &effects[start..]
+            && let Some(text) = put_back_text(choose, moved)
         {
-            let pronoun = if writer.single(what) { "it" } else { "they" };
-            sentences.push(format!("{pronoun} can't be regenerated"));
+            if (mask >> start) & 0b11 != 0 {
+                return None;
+            }
+            sentences.push(text);
+            start += 2;
+            continue;
         }
+        let mut end = start + 1;
+        while end < effects.len() && mask & (1 << (end - 1)) != 0 {
+            end += 1;
+        }
+        match &effects[start..end] {
+            [effect] => {
+                sentences.push(writer.effect(effect)?);
+                if let Effect::Destroy {
+                    what,
+                    regenerate: false,
+                } = effect
+                {
+                    let pronoun = if writer.single(what) { "it" } else { "they" };
+                    sentences.push(format!("{pronoun} can't be regenerated"));
+                }
+            }
+            group => sentences.push(writer.compound(group)?),
+        }
+        start = end;
     }
     (targets.is_empty() || writer.named).then_some(sentences)
 }
 
-/// The sentences of a spell, one for each effect.
-fn spell(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
-    let closed: Vec<String> = sentences(targets, effects)?
-        .iter()
-        .map(|sentence| format!("{}.", capitalize(sentence)))
-        .collect();
-    Some(closed.join(" "))
+/// "choose one —" and a bullet line for each mode, in every wording of each mode; the last bullet
+/// has no period, which the sentence that holds the text adds.
+fn modal_texts(modes: &[Mode]) -> Vec<String> {
+    let mut texts = vec![format!("choose one {DASH}")];
+    for (at, mode) in modes.iter().enumerate() {
+        let bullets: Vec<String> = alternatives(&mode.targets, &mode.effects)
+            .iter()
+            .map(|sentences| {
+                let capitalized: Vec<String> = sentences.iter().map(|s| capitalize(s)).collect();
+                capitalized.join(". ")
+            })
+            .collect();
+        let stop = if at + 1 == modes.len() { "" } else { "." };
+        texts = texts
+            .iter()
+            .flat_map(|so_far| {
+                bullets
+                    .iter()
+                    .map(move |bullet| format!("{so_far}\n{BULLET} {bullet}{stop}"))
+            })
+            .take(64)
+            .collect();
+    }
+    texts
 }
 
-/// The event, an intervening "if" and the sentences of a triggered ability.
-fn triggered(
-    when: &TriggerPattern,
-    condition: Option<&Condition>,
-    targets: &[TargetSpec],
-    effects: &[Effect],
-) -> Option<String> {
+/// "put two cards from your hand on top of your library in any order": the choice of cards of the
+/// hand, bound as `back`, and the move of them.
+fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
+    let (
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(from),
+            count,
+            bind,
+            rest_as: None,
+        },
+        Effect::Move {
+            what: Ref::Bound(name),
+            to:
+                Destination::Library {
+                    place: Place::Top,
+                    order,
+                },
+        },
+    ) = (choose, moved)
+    else {
+        return None;
+    };
+    if bind != BACK || name != BACK || from.0 != [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)]
+    {
+        return None;
+    }
+    let Some(Amount::Fixed(most)) = &count.max else {
+        return None;
+    };
+    let number = u32::try_from(*most)
+        .ok()
+        .filter(|most| *most == count.min)?;
+    let tail = match (number, order) {
+        (1, None) => String::new(),
+        (2.., Some(Order::Chosen)) => " in any order".to_owned(),
+        _ => return None,
+    };
+    let cards = if number == 1 {
+        "a card".to_owned()
+    } else {
+        format!("{} cards", count_word(number)?)
+    };
+    Some(format!(
+        "put {cards} from your hand on top of your library{tail}"
+    ))
+}
+
+/// The sentences with their capitals and periods; the first of a triggered ability follows the
+/// comma of its event and keeps its lowercase.
+fn closed(sentences: &[String], capital_first: bool) -> Vec<String> {
+    sentences
+        .iter()
+        .enumerate()
+        .map(|(at, sentence)| {
+            if at == 0 && !capital_first {
+                format!("{sentence}.")
+            } else {
+                format!("{}.", capitalize(sentence))
+            }
+        })
+        .collect()
+}
+
+/// The sentences of a spell.
+fn spell(sentences: &[String]) -> String {
+    closed(sentences, true).join(" ")
+}
+
+/// The event and an intervening "if" of a triggered ability, each ending in a comma.
+fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<Vec<String>> {
     let mut parts = vec![format!("{},", pattern_text(when)?)];
     if let Some(condition) = condition {
         parts.push(format!("if {},", condition_text(condition)?));
     }
-    for (at, sentence) in sentences(targets, effects)?.iter().enumerate() {
-        parts.push(if at == 0 {
-            format!("{sentence}.")
-        } else {
-            format!("{}.", capitalize(sentence))
-        });
+    Some(parts)
+}
+
+/// The player a verb of the compound sentences is about.
+fn player_of(effect: &Effect) -> Option<&Ref> {
+    match effect {
+        Effect::Draw { who, .. }
+        | Effect::Mill { who, .. }
+        | Effect::Discard { who, .. }
+        | Effect::GainLife { who, .. }
+        | Effect::LoseLife { who, .. }
+        | Effect::Sacrifice { who, .. } => Some(who),
+        _ => None,
     }
-    Some(parts.join(" "))
+}
+
+/// "a", "a and b", "a, b, and c".
+fn join_list(items: &[String]) -> String {
+    match items {
+        [] => String::new(),
+        [only] => only.clone(),
+        [first, second] => format!("{first} and {second}"),
+        [rest @ .., last] => format!("{}, and {last}", rest.join(", ")),
+    }
+}
+
+/// "a creature or planeswalker", "an artifact": what a player sacrifices.
+fn sacrifice_text(filter: &Selector) -> Option<String> {
+    let text = phrase_text(filter, Form::Subject)?;
+    Some(format!("{} {text}", article(&text)))
 }
 
 /// Whether the effect is written as a verb with "you" understood ("draw a card"), which "you may" can precede.
@@ -163,6 +347,23 @@ fn signed_text(amount: &Amount) -> Option<String> {
     }
 }
 
+/// Whether the predicate names card types and nothing else.
+fn is_a_type(pred: &Pred) -> bool {
+    match pred {
+        Pred::Type(_) => true,
+        Pred::AnyOf(types) => types.iter().all(is_a_type),
+        _ => false,
+    }
+}
+
+/// The mana of a payment as the card prints it: `{2}`, `{U}{R}`.
+fn cost_text(cost: &Cost) -> Option<String> {
+    match cost.0.as_slice() {
+        [CostItem::Mana(mana)] if !mana.has_x() => Some(mana.to_string()),
+        _ => None,
+    }
+}
+
 fn at_random(random: bool) -> &'static str {
     if random { " at random" } else { "" }
 }
@@ -204,6 +405,15 @@ impl Writer<'_> {
                 matches!(kind, Targetable::Object(selector)
                     if selector.0.contains(&Pred::In(ZoneKind::Graveyard))
                         && selector.0.contains(&Pred::OwnedBy(Ref::You)))
+            })
+    }
+
+    /// Whether the reference is the one target and it is a permanent: not a spell, not a card in a zone.
+    fn is_a_permanent(&self, what: &Ref) -> bool {
+        self.single(what)
+            && self.target_is(|kind| {
+                matches!(kind, Targetable::Object(selector)
+                    if !selector.0.iter().any(|pred| matches!(pred, Pred::In(_) | Pred::Spell)))
             })
     }
 
@@ -255,20 +465,15 @@ impl Writer<'_> {
                 count,
                 random,
             } => format!("discard {}{}", cards_text(count)?, at_random(*random)),
-            Effect::Draw { who, count } => {
-                format!("{} draws {}", self.player(who)?, cards_text(count)?)
+            Effect::Draw { who, .. }
+            | Effect::Mill { who, .. }
+            | Effect::Discard { who, .. }
+            | Effect::GainLife { who, .. }
+            | Effect::LoseLife { who, .. }
+            | Effect::Sacrifice { who, .. } => {
+                let subject = self.player(who)?;
+                format!("{subject} {}", self.predicate(effect, *who != Ref::You)?)
             }
-            Effect::Mill { who, count } => {
-                format!("{} mills {}", self.player(who)?, cards_text(count)?)
-            }
-            Effect::Discard { who, count, random } => format!(
-                "{} discards {}{}",
-                self.player(who)?,
-                cards_text(count)?,
-                at_random(*random)
-            ),
-            Effect::GainLife { who, amount } => self.life(who, amount, "gain")?,
-            Effect::LoseLife { who, amount } => self.life(who, amount, "lose")?,
             Effect::WinGame { who } => format!(
                 "{} {} the game",
                 self.player(who)?,
@@ -279,6 +484,12 @@ impl Writer<'_> {
                 to: Destination::Hand,
             } if self.in_your_graveyard(what) => {
                 format!("return {} to your hand", self.object(what)?)
+            }
+            Effect::Move {
+                what,
+                to: Destination::Hand,
+            } if self.is_a_permanent(what) => {
+                format!("return {} to its owner's hand", self.object(what)?)
             }
             Effect::PutCounters { on, counter, count } => self.counters(on, counter, count)?,
             Effect::CreateToken { .. } => create::text(effect)?,
@@ -306,6 +517,19 @@ impl Writer<'_> {
                 [inner] if is_imperative(inner) => format!("you may {}", self.effect(inner)?),
                 _ => return None,
             },
+            Effect::Pay {
+                who,
+                cost,
+                paid,
+                unpaid,
+            } if paid.is_empty() => {
+                let [inner] = unpaid.as_slice() else {
+                    return None;
+                };
+                let happens = self.effect(inner)?;
+                let payer = self.player(who)?;
+                format!("{happens} unless {payer} pays {}", cost_text(cost)?)
+            }
             _ => return None,
         })
     }
@@ -330,25 +554,52 @@ impl Writer<'_> {
             {
                 "its controller".to_owned()
             }
+            Ref::Triggering => "that player".to_owned(),
             _ => return None,
         })
     }
 
-    /// "gain 3 life", "lose X life", "gain life equal to its power".
-    fn life(&mut self, who: &Ref, amount: &Amount, verb: &str) -> Option<String> {
-        let subject = self.player(who)?;
-        let verb = if *who == Ref::You {
-            verb.to_owned()
-        } else {
-            format!("{verb}s")
-        };
-        let what = match amount {
+    /// "3 life", "X life", "life equal to its power": what is gained or lost.
+    fn life(&self, amount: &Amount) -> Option<String> {
+        Some(match amount {
             Amount::Stat { of, stat } if *of == Ref::Target(0) && self.named => {
                 format!("life equal to its {}", stat_name(*stat)?)
             }
             _ => format!("{} life", points_text(amount)?),
-        };
-        Some(format!("{subject} {verb} {what}"))
+        })
+    }
+
+    /// What a player does, without the subject: "draws a card", "sacrifice a creature"; `third` is
+    /// the verb that follows "target opponent" rather than "you".
+    fn predicate(&mut self, effect: &Effect, third: bool) -> Option<String> {
+        let s = if third { "s" } else { "" };
+        Some(match effect {
+            Effect::Draw { count, .. } => format!("draw{s} {}", cards_text(count)?),
+            Effect::Mill { count, .. } => format!("mill{s} {}", cards_text(count)?),
+            Effect::Discard { count, random, .. } => {
+                format!("discard{s} {}{}", cards_text(count)?, at_random(*random))
+            }
+            Effect::GainLife { amount, .. } => format!("gain{s} {}", self.life(amount)?),
+            Effect::LoseLife { amount, .. } => format!("lose{s} {}", self.life(amount)?),
+            Effect::Sacrifice { filter, count, .. } if count.is_one() => {
+                format!("sacrifice{s} {}", sacrifice_text(filter)?)
+            }
+            _ => return None,
+        })
+    }
+
+    /// Several effects of one player as one sentence: "target opponent discards a card and loses 3 life".
+    fn compound(&mut self, group: &[Effect]) -> Option<String> {
+        let who = player_of(group.first()?)?;
+        if group.iter().any(|effect| player_of(effect) != Some(who)) {
+            return None;
+        }
+        let subject = self.player(who)?;
+        let mut phrases = Vec::with_capacity(group.len());
+        for effect in group {
+            phrases.push(self.predicate(effect, *who != Ref::You)?);
+        }
+        Some(format!("{subject} {}", join_list(&phrases)))
     }
 
     /// The objects a verb acts on: the target in full, or "all creatures".
@@ -358,6 +609,7 @@ impl Writer<'_> {
                 self.name_target()
             }
             Ref::Each(selector) => Some(format!("all {}", phrase_text(selector, Form::All)?)),
+            Ref::This => Some("~".to_owned()),
             _ => None,
         }
     }
@@ -384,7 +636,12 @@ impl Writer<'_> {
             {
                 (self.name_target()?, false)
             }
-            Ref::Each(selector) => (phrase_text(selector, Form::All)?, true),
+            Ref::Each(selector) => {
+                let phrase = phrase_text(selector, Form::All)?;
+                // "All creatures get", but "Creatures you control get" and "Attacking creatures get".
+                let all = selector.0.iter().all(is_a_type);
+                (if all { format!("all {phrase}") } else { phrase }, true)
+            }
             _ => return None,
         };
         let (gets, gains) = if plural {

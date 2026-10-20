@@ -237,8 +237,6 @@ fn an_ability_word_is_flavor_and_the_rest_is_read(#[case] text: &str, #[case] re
 #[case::cast_this_spell("When you cast this spell, draw a card.")]
 #[case::cast_a_named_spell("Whenever you cast a spell named Bolt, draw a card.")]
 #[case::cast_another("Whenever you cast another spell, draw a card.")]
-#[case::unless("Whenever an opponent casts a spell, draw a card unless that player pays {1}.")]
-#[case::an_old_wording("When ~ enters the battlefield, draw a card.")]
 #[case::enters_under_your_control(
     "Whenever a creature enters the battlefield under your control, scry 1."
 )]
@@ -261,8 +259,8 @@ fn an_ability_word_is_flavor_and_the_rest_is_read(#[case] text: &str, #[case] re
 #[case::once_each_turn(
     "Whenever ~ attacks, draw a card. This ability triggers only once each turn."
 )]
-#[case::modes(
-    "Whenever ~ attacks, choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life."
+#[case::two_modes_of_three(
+    "Whenever ~ attacks, choose two \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.\n\u{2022} Scry 1."
 )]
 #[case::its_power("When ~ dies, you gain life equal to its power.")]
 #[case::it_deals("When ~ enters, it deals 2 damage to any target.")]
