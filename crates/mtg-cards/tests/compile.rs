@@ -14,7 +14,7 @@ use common::{cards_dir, printed, token_sources};
 
 /// Every corpus card with the status it compiles to (`None` when its text is only reminder text) and
 /// how many of its clauses are read out of how many.
-const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 47] = [
+const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 51] = [
     ("Act of Treason", Some(Manual), 0, 1),
     ("Anointed Procession", Some(Manual), 0, 1),
     ("Archon of Cruelty", Some(Full), 2, 2),
@@ -51,10 +51,13 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 47] = [
     ("Izzet Charm", Some(Full), 1, 1),
     ("Jace, the Mind Sculptor", Some(Manual), 0, 4),
     ("Jungle Lion", Some(Manual), 0, 1),
+    ("Kormus Bell", Some(Manual), 0, 1),
     ("Levitation", Some(Manual), 0, 1),
     ("Lightning Bolt", Some(Full), 1, 1),
     ("Llanowar Elves", Some(Full), 1, 1),
+    ("Maro", Some(Manual), 0, 1),
     ("Mulldrifter", Some(Full), 3, 3),
+    ("Nightmare", Some(Partial), 1, 2),
     ("Opt", Some(Full), 2, 2),
     ("Pacifism", Some(Partial), 1, 2),
     ("Panharmonicon", Some(Manual), 0, 1),
@@ -66,6 +69,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 47] = [
     ("Sol Ring", Some(Full), 1, 1),
     ("Swords to Plowshares", Some(Full), 1, 1),
     ("Tireless Tracker", Some(Full), 2, 2),
+    ("Transguild Courier", Some(Manual), 0, 1),
     ("Wrath of God", Some(Full), 1, 1),
 ];
 
@@ -98,7 +102,7 @@ fn the_table_lists_every_corpus_card_once() {
 #[test]
 fn every_corpus_card_earns_the_status_in_the_table() {
     let corpus = compiled_corpus();
-    assert_eq!(corpus.len(), 47);
+    assert_eq!(corpus.len(), 51);
     let mut differing = Vec::new();
     for (card, compiled) in &corpus {
         let row = EXPECTED.iter().find(|row| row.0 == card.name).unwrap();
@@ -124,7 +128,7 @@ fn every_compiled_card_loads_and_matches_the_imported_text() {
         .filter_map(|(_, compiled)| compiled.card.as_ref())
         .map(source_of)
         .collect();
-    assert_eq!(sources.len(), 45);
+    assert_eq!(sources.len(), 49);
     sources.extend(token_sources());
     let library = Library::from_sources(&sources).unwrap_or_else(|errors| panic!("{errors}"));
     let imported: Vec<PrintedCard> = corpus.into_iter().map(|(card, _)| card).collect();

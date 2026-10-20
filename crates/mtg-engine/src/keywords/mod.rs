@@ -50,8 +50,7 @@ use mtg_cards::keyword::Keyword;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::ability_reader::keyword_abilities;
-use crate::characteristics::{controller_of_object, derive_to};
-use crate::effects::{Layer, Modification};
+use crate::characteristics::controller_of_object;
 use crate::object::ObjectKind;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -236,24 +235,12 @@ pub fn keywords_of(state: &GameState, id: ObjectId) -> Vec<&Keyword> {
     if object.kind() == ObjectKind::Ability {
         return Vec::new();
     }
-    let mut keywords = keyword_abilities(state, id);
     if object.zone() == Zone::Battlefield
-        && (!state.effects().is_empty() || !state.statics().is_empty())
+        && let Some(held) = state.layers().get(id)
     {
-        for effect in derive_to(state, object, Layer::Ability).applied {
-            match effect.modification {
-                Modification::AddKeyword(keyword) if !keywords.contains(&keyword) => {
-                    keywords.push(keyword);
-                }
-                Modification::RemoveKeyword(keyword) => keywords.retain(|held| *held != keyword),
-                // Everything the object has so far goes, the keywords it printed among them; what is granted
-                // after it still counts.
-                Modification::LoseAbilities => keywords.clear(),
-                _ => {}
-            }
-        }
+        return held.keywords.iter().collect();
     }
-    keywords
+    keyword_abilities(state, id)
 }
 
 /// Whether object `id` has `keyword` now.
@@ -369,6 +356,7 @@ mod tests {
 
     use super::*;
     use crate::caps::caps;
+    use crate::effects::Modification;
     use crate::fixtures::{creature, state};
     use crate::zones::Zone;
     use mtg_cards::CardDefinition;

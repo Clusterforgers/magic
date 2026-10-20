@@ -13,7 +13,7 @@ use rstest::rstest;
 use super::*;
 use crate::abilities::{AbilityRef, AbilitySource};
 use crate::ability_reader::{abilities_of, ability};
-use crate::characteristics::{cant_attack, cant_block, characteristics};
+use crate::characteristics::{cant_attack, cant_block, characteristics, controller_of};
 use crate::effects::{ContinuousEffect, Duration, Selector};
 use crate::events::{Event, ZoneCause};
 use crate::fixtures::{creature, state};
@@ -26,12 +26,12 @@ const TRIGGER: &str =
     r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"GainLife":{"amount":1}}]}}"#;
 const ACTIVATED: &str = r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#;
 
-fn rules(json: &str) -> Ability {
+pub(super) fn rules(json: &str) -> Ability {
     serde_json::from_str(json).unwrap()
 }
 
 /// A 2/3 with flying, a triggered ability and a plain mana ability: everything there is to lose.
-fn bear() -> Arc<CardDefinition> {
+pub(super) fn bear() -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new("Bear")
             .with_type(CardType::Creature)
@@ -65,7 +65,7 @@ fn on_the_bear(modification: &str) -> String {
     )
 }
 
-fn named(game: &GameState, name: &str) -> ObjectRef {
+pub(super) fn named(game: &GameState, name: &str) -> ObjectRef {
     game.objects()
         .find(|o| o.card().name == name)
         .map(GameObject::reference)
@@ -106,13 +106,13 @@ fn view(game: &GameState, name: &str) -> View {
     }
 }
 
-fn pump(game: &GameState, name: &str) -> Option<(i32, i32)> {
+pub(super) fn pump(game: &GameState, name: &str) -> Option<(i32, i32)> {
     let chars = characteristics(game, named(game, name).id)?;
     Some((chars.power?, chars.toughness?))
 }
 
 /// A registered effect with `modification` on the object `name`.
-fn effect(game: &mut GameState, name: &str, modification: Modification, timestamp: u64) {
+pub(super) fn effect(game: &mut GameState, name: &str, modification: Modification, timestamp: u64) {
     let id = EffectId(game.effects.len() as u64);
     let on = Selector::Objects(vec![named(game, name)]);
     game.effects.push(ContinuousEffect::new(
@@ -122,10 +122,10 @@ fn effect(game: &mut GameState, name: &str, modification: Modification, timestam
         Duration::Forever,
         timestamp,
     ));
-    game.statics.reset();
+    game.layers.reset();
 }
 
-fn fold(game: &mut GameState, events: &[Event]) {
+pub(super) fn fold(game: &mut GameState, events: &[Event]) {
     for event in events {
         apply_event(game, event).unwrap_or_else(|error| panic!("{event:?}: {error}"));
     }
@@ -758,27 +758,16 @@ fn the_abilities_that_are_lost_are_not_listed_and_a_keyword_taken_away_goes_with
 }
 
 #[test]
-fn a_state_without_a_static_ability_reads_no_effect_and_gathers_nothing() {
+fn a_state_without_an_effect_or_a_static_ability_works_out_no_layers() {
     let game = game_with(idle_totem());
     assert!(!game.statics_possible);
-    assert!(game.statics().is_empty());
-}
-
-#[test]
-fn a_reading_without_static_abilities_sees_the_game_as_it_is_before_them() {
-    let game = game_with(totem(&on_the_bear(
+    assert!(game.effects().is_empty());
+    assert!(game.layers().get(named(&game, "Bear").id).is_none());
+    let with = game_with(totem(&on_the_bear(
         r#"{"ModifyPT":{"power":5,"toughness":5}}"#,
     )));
-    assert_eq!(pump(&game, "Bear"), Some((7, 8)));
-    assert_eq!(without_statics(|| pump(&game, "Bear")), Some((2, 3)));
-    assert_eq!(pump(&game, "Bear"), Some((7, 8)), "and the reading ends");
-    let unwound = std::panic::catch_unwind(|| without_statics(|| panic!("a reading that fails")));
-    assert!(unwound.is_err());
-    assert_eq!(
-        pump(&game, "Bear"),
-        Some((7, 8)),
-        "a reading that unwound ends too"
-    );
+    assert!(with.layers().get(named(&with, "Bear").id).is_some());
+    assert_eq!(pump(&with, "Bear"), Some((7, 8)));
 }
 
 #[test]
@@ -931,7 +920,7 @@ mod properties {
                     0,
                 ));
             }
-            by_effect.statics.reset();
+            by_effect.layers.reset();
             let mut battlefield = vec![bear_card()];
             battlefield.extend(which.iter().map(|index| totem(&on_the_bear(MODIFICATIONS[*index]))));
             let by_static = state(

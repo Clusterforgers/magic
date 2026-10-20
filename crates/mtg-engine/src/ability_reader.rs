@@ -13,8 +13,7 @@ use mtg_cards::keyword::Keyword;
 use mtg_core::ids::ObjectId;
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
-use crate::characteristics::derive_to;
-use crate::effects::{Layer, Modification};
+use crate::effects::Modification;
 use crate::object::{GameObject, ObjectKind};
 use crate::state::GameState;
 use crate::triggers::triggers_something;
@@ -30,7 +29,7 @@ fn holder(state: &GameState, id: ObjectId) -> Option<&GameObject> {
 }
 
 /// The abilities printed on the card of `object`, each with its address, in the order of the card's rules.
-fn printed(object: &GameObject) -> impl Iterator<Item = (AbilityRef, &Arc<Ability>)> {
+pub(crate) fn printed(object: &GameObject) -> impl Iterator<Item = (AbilityRef, &Arc<Ability>)> {
     object
         .def
         .rules
@@ -70,27 +69,18 @@ pub fn abilities_of(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, Arc<Abi
     let Some(object) = holder(state, id) else {
         return Vec::new();
     };
-    let mut listed: Vec<(AbilityRef, Arc<Ability>)> = printed(object)
-        .map(|(address, rules)| (address, Arc::clone(rules)))
-        .collect();
-    if object.zone() != Zone::Battlefield
-        || (state.effects().is_empty() && state.statics().is_empty())
+    if object.zone() == Zone::Battlefield
+        && let Some(held) = state.layers().get(object.id())
     {
-        return listed;
+        return held
+            .abilities
+            .iter()
+            .map(|held| (held.address, Arc::clone(&held.body)))
+            .collect();
     }
-    for applied in derive_to(state, object, Layer::Ability).applied {
-        match applied.modification {
-            Modification::LoseAbilities => listed.clear(),
-            Modification::RemoveKeyword(keyword) => listed.retain(
-                |(_, rules)| !matches!(&**rules, Ability::Keyword(held) if held == keyword),
-            ),
-            Modification::GrantAbility(granted) => {
-                listed.push((AbilityRef::granted(id, applied.origin), Arc::clone(granted)));
-            }
-            _ => {}
-        }
-    }
-    listed
+    printed(object)
+        .map(|(address, rules)| (address, Arc::clone(rules)))
+        .collect()
 }
 
 /// The ability `address` names, or `None` when it names nothing in the game: the object is not there (an ability that

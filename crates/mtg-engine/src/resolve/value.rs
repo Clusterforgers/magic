@@ -7,6 +7,7 @@
 use std::borrow::Cow;
 use std::collections::BTreeMap;
 
+use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, ZoneKind};
 use mtg_cards::value::{Amount, Condition, StatKind};
 use mtg_core::card::CardType;
@@ -18,6 +19,7 @@ use crate::characteristics::{Characteristics, characteristics, seen_as};
 use crate::choose::legal_for;
 use crate::choose::{Choices, Target};
 use crate::keywords;
+use crate::layers::{Held, View, outside};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
@@ -68,6 +70,9 @@ pub struct Scope<'a> {
     /// What earlier steps of this resolution moved away, as it was: a target among them stays named.
     pub(crate) departed: &'a [Snapshot],
     pub(crate) cause: Option<&'a Cause>,
+    /// The permanents as the layers have left them so far, for a value that a pass over the layers works out: the
+    /// effects that apply before it are in what it reads (`layers.rs`). None reads the game as it is now.
+    pub(crate) layered: Option<View<'a>>,
 }
 
 /// What is known of an object: the object itself if it is still the one that was named, else how it was.
@@ -80,6 +85,8 @@ struct Seen<'a> {
     tapped: Option<bool>,
     /// The same card, whichever zone it has moved to since: its printed side does not change.
     card: Option<&'a GameObject>,
+    /// The keywords it has, where the layers have worked them out.
+    keywords: Option<&'a [Keyword]>,
 }
 
 /// The kind of zone a zone is.
@@ -109,6 +116,15 @@ impl<'a> Scope<'a> {
             snapshots: Vec::new(),
             departed: &[],
             cause: None,
+            layered: None,
+        }
+    }
+
+    /// The same scope reading the permanents as the layers have left them so far.
+    pub(crate) fn with_layered(self, view: View<'a>) -> Self {
+        Scope {
+            layered: Some(view),
+            ..self
         }
     }
 
@@ -129,6 +145,33 @@ impl<'a> Scope<'a> {
     fn seen(&self, reference: ObjectRef) -> Option<Seen<'a>> {
         let live = self.state.object(reference.id);
         if let Some(object) = live.filter(|o| o.counter() == reference.counter) {
+            let tapped = object
+                .permanent()
+                .map(crate::object::PermanentState::tapped);
+            if let Some(view) = self.layered {
+                return Some(match view.get(object.id()) {
+                    Some(held) => Seen {
+                        owner: object.owner(),
+                        controller: held.controller,
+                        zone: object.zone(),
+                        kind: object.kind(),
+                        chars: Cow::Borrowed(&held.chars),
+                        tapped,
+                        card: Some(object),
+                        keywords: Some(&held.keywords),
+                    },
+                    None => Seen {
+                        owner: object.owner(),
+                        controller: object.controller(),
+                        zone: object.zone(),
+                        kind: object.kind(),
+                        chars: Cow::Owned(outside(self.state, object, Some(view))),
+                        tapped,
+                        card: Some(object),
+                        keywords: None,
+                    },
+                });
+            }
             let (chars, controller) = seen_as(self.state, reference.id)?;
             return Some(Seen {
                 owner: object.owner(),
@@ -136,10 +179,9 @@ impl<'a> Scope<'a> {
                 zone: object.zone(),
                 kind: object.kind(),
                 chars: Cow::Owned(chars),
-                tapped: object
-                    .permanent()
-                    .map(crate::object::PermanentState::tapped),
+                tapped,
                 card: Some(object),
+                keywords: None,
             });
         }
         let shot = self
@@ -155,28 +197,29 @@ impl<'a> Scope<'a> {
             chars: Cow::Borrowed(&shot.characteristics),
             tapped: None,
             card: live,
+            keywords: None,
         })
     }
 
-    /// Whether the permanent `object`, which has the characteristics `so_far` and `controller` as the layers are being
-    /// applied, satisfies every predicate of the selector: the way a static ability tests what it affects.
+    /// Whether the permanent `object`, which the layers have made `held` so far, satisfies every predicate of the
+    /// selector: the way a static ability tests what it affects.
     pub(crate) fn selects_with(
         &self,
         selector: &Selector,
         object: &GameObject,
-        so_far: &Characteristics,
-        controller: PlayerId,
+        held: &Held,
     ) -> Result<bool, ResolveError> {
         let seen = Seen {
             owner: object.owner(),
-            controller,
+            controller: held.controller,
             zone: object.zone(),
             kind: object.kind(),
-            chars: Cow::Borrowed(so_far),
+            chars: Cow::Borrowed(&held.chars),
             tapped: object
                 .permanent()
                 .map(crate::object::PermanentState::tapped),
             card: Some(object),
+            keywords: Some(&held.keywords),
         };
         for pred in &selector.0 {
             if !self.pred(pred, object.reference(), &seen)? {
@@ -424,9 +467,12 @@ impl<'a> Scope<'a> {
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
             // An object that has changed zones since it was named has the keywords its card prints; keywords
             // granted before it left are last known information the snapshots do not carry yet.
-            Pred::HasKeyword(keyword) => seen
-                .card
-                .is_some_and(|card| keywords::has_keyword(state, card.id(), keyword)),
+            Pred::HasKeyword(keyword) => match seen.keywords {
+                Some(held) => held.contains(keyword),
+                None => seen
+                    .card
+                    .is_some_and(|card| keywords::has_keyword(state, card.id(), keyword)),
+            },
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat)? {
                 Some(value) => op.holds(value, self.amount(to)?),

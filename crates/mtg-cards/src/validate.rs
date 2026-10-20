@@ -473,6 +473,51 @@ impl<'a> Walker<'a> {
         self.scope = scope;
     }
 
+    /// A characteristic-defining ability (CR 604.3a) defines the power and toughness, colours, types or subtypes of its own
+    /// object with no condition, and works in every zone, so it names no zone.
+    fn defining(
+        &mut self,
+        affected: &Ref,
+        mods: &[Modification],
+        conditional: bool,
+        from: crate::refs::ZoneKind,
+    ) {
+        self.uses("Ability", "Static.Defining");
+        if !matches!(affected, Ref::This) {
+            self.at("affected", |w| {
+                w.problem("a characteristic-defining ability affects only its own object (`This`)");
+            });
+        }
+        if conditional {
+            self.at("condition", |w| {
+                w.problem("a characteristic-defining ability has no condition (CR 604.3a)");
+            });
+        }
+        if !from.is_battlefield() {
+            self.at("from", |w| {
+                w.problem(
+                    "a characteristic-defining ability works in every zone, so it names none",
+                );
+            });
+        }
+        for (i, modification) in mods.iter().enumerate() {
+            let defines = matches!(
+                modification,
+                Modification::SetPT { .. }
+                    | Modification::SetColors(_)
+                    | Modification::AddType(_)
+                    | Modification::AddSubtype(_)
+            );
+            if !defines {
+                self.at("mods", |w| {
+                    w.at(format!("[{i}]"), |w| {
+                        w.problem("a characteristic-defining ability only sets power and toughness, colours, types or subtypes");
+                    });
+                });
+            }
+        }
+    }
+
     fn mods(&mut self, mods: &[Modification]) {
         if mods.is_empty() {
             self.problem("needs at least one modification");
@@ -873,13 +918,17 @@ impl<'a> Walker<'a> {
                 affected,
                 mods,
                 condition,
-                ..
+                defining,
+                from,
             } => {
                 w.scope = Scope::new(&[], false);
                 w.at("affected", |w| w.reference(affected, Kind::Object));
                 w.at("mods", |w| w.mods(mods));
                 if let Some(condition) = condition {
                     w.at("condition", |w| w.condition(condition));
+                }
+                if *defining {
+                    w.defining(affected, mods, condition.is_some(), *from);
                 }
             }
             Ability::Replacement {
@@ -1393,6 +1442,72 @@ mod tests {
         "abilities[0].Static.mods[0]: expected a player but this is an object"
     )]
     fn a_bad_static_ability_is_named_where_it_is_wrong(#[case] json: &str, #[case] message: &str) {
+        let found = problems(json);
+        assert!(
+            found.iter().any(|problem| problem.contains(message)),
+            "{message:?} is not among {found:#?}"
+        );
+    }
+
+    const SWAMPS: &str = r#"{"Count":[{"Subtype":"Swamp"},{"ControlledBy":"You"}]}"#;
+
+    #[rstest]
+    #[case::power_and_toughness_from_a_count(
+        format!(r#"{{"SetPT":{{"power":{SWAMPS},"toughness":{SWAMPS}}}}}"#),
+        &["Mod.SetPT"]
+    )]
+    #[case::colours(r#"{"SetColors":["Blue","Red"]}"#.to_owned(), &["Mod.SetColors"])]
+    #[case::a_type(r#"{"AddType":"Artifact"}"#.to_owned(), &["Mod.AddType"])]
+    #[case::a_subtype(r#"{"AddSubtype":"Elf"}"#.to_owned(), &["Mod.AddSubtype"])]
+    fn a_characteristic_defining_ability_names_that_it_defines(
+        #[case] modification: String,
+        #[case] names: &[&str],
+    ) {
+        let json = format!(
+            r#"{{"Static":{{"affected":"This","mods":[{modification}],"defining":true}}}}"#
+        );
+        assert_eq!(problems(&json), Vec::<String>::new());
+        let ability: Ability = serde_json::from_str(&json).unwrap();
+        let expected: BTreeSet<String> = ["Ability.Static", "Ability.Static.Defining"]
+            .iter()
+            .chain(names)
+            .map(|name| (*name).to_owned())
+            .collect();
+        assert_eq!(used_primitives(&ability), expected);
+        // The flag is part of the data and stays off when it is not set.
+        let plain = json.replace(r#","defining":true"#, "");
+        assert!(
+            !used_primitives(&serde_json::from_str(&plain).unwrap())
+                .contains("Ability.Static.Defining")
+        );
+        assert_eq!(serde_json::to_string(&ability).unwrap(), json);
+    }
+
+    #[rstest]
+    #[case::only_its_own_object(
+        r#"{"Static":{"affected":{"Each":[{"Type":"Creature"}]},"mods":[{"SetColors":["Blue"]}],"defining":true}}"#,
+        "abilities[0].Static.affected: a characteristic-defining ability affects only its own object"
+    )]
+    #[case::no_condition(
+        r#"{"Static":{"affected":"This","mods":[{"SetColors":["Blue"]}],"condition":"YourTurn","defining":true}}"#,
+        "abilities[0].Static.condition: a characteristic-defining ability has no condition"
+    )]
+    #[case::every_zone(
+        r#"{"Static":{"affected":"This","mods":[{"SetColors":["Blue"]}],"defining":true,"from":"Graveyard"}}"#,
+        "abilities[0].Static.from: a characteristic-defining ability works in every zone"
+    )]
+    #[case::not_a_pump(
+        r#"{"Static":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"defining":true}}"#,
+        "abilities[0].Static.mods[0]: a characteristic-defining ability only sets"
+    )]
+    #[case::not_abilities(
+        r#"{"Static":{"affected":"This","mods":[{"SetColors":["Blue"]},{"AddKeyword":"Flying"}],"defining":true}}"#,
+        "abilities[0].Static.mods[1]: a characteristic-defining ability only sets"
+    )]
+    fn a_characteristic_defining_ability_that_defines_more_than_its_own_characteristics_is_refused(
+        #[case] json: &str,
+        #[case] message: &str,
+    ) {
         let found = problems(json);
         assert!(
             found.iter().any(|problem| problem.contains(message)),

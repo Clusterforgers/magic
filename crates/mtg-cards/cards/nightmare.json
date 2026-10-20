@@ -1,0 +1,28 @@
+{
+  "oracle_id": "375932e6-1b3e-48dc-8154-9b664c3add34",
+  "name": "Nightmare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nightmare",
+      "oracle_fingerprint": "5512707756ca954169f6e3c141f7d341",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

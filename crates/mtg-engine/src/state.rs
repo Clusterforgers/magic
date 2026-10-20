@@ -12,11 +12,11 @@ use crate::combat::CombatState;
 use crate::effects::ContinuousEffect;
 use crate::format::FormatRules;
 use crate::hash::stable_hash;
+use crate::layers::LayersCache;
 use crate::object::{GameObject, ObjectRef};
 use crate::player::Player;
 use crate::priority::PriorityState;
 use crate::resolve::Resolving;
-use crate::statics::StaticsCache;
 use crate::triggers::{Delayed, PendingTrigger};
 use crate::turn::TurnState;
 use crate::zones::{Zone, Zones};
@@ -75,8 +75,8 @@ pub struct GameState {
     pub(crate) triggers_possible: bool,
     /// Whether any card of the game has a static ability; derived from the setup and the tokens made.
     pub(crate) statics_possible: bool,
-    /// The effects of the static abilities that work, built when first asked for and dropped at the next event.
-    pub(crate) statics: StaticsCache,
+    /// What the layers make of every permanent, worked out when first asked for and dropped at the next event.
+    pub(crate) layers: LayersCache,
     pub(crate) result: Option<GameResult>,
 }
 

@@ -649,14 +649,21 @@ fn ability() -> impl Strategy<Value = Ability> {
                 effects
             }
         ),
-        (reference(), vec(modification(), 1..3), tail()).prop_map(
-            |(affected, mods, (condition, from))| Ability::Static {
-                affected,
-                mods,
-                condition,
-                from
-            }
-        ),
+        (
+            reference(),
+            vec(modification(), 1..3),
+            tail(),
+            any::<bool>()
+        )
+            .prop_map(
+                |(affected, mods, (condition, from), defining)| Ability::Static {
+                    affected,
+                    mods,
+                    condition,
+                    defining,
+                    from
+                }
+            ),
         (
             prop_oneof![
                 reference().prop_map(|controller| ReplaceWhen::TokenCreation { controller }),

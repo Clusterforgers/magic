@@ -239,6 +239,7 @@ mod tests {
                 bindings: &bindings,
                 snapshots: Vec::new(),
                 cause: None,
+                layered: None,
             };
             (
                 scope.all_targets_illegal(),
