@@ -5,6 +5,7 @@
 
 use std::fmt;
 
+use mtg_cards::deck::Issue;
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use serde::{Deserialize, Serialize};
@@ -97,6 +98,12 @@ pub struct JoinRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub name: Option<String>,
+    /// The deck the seat plays: the id of a built-in deck, or of one of the signed-in visitor's stored
+    /// decks. Absent, the seat keeps the deck it was made with, if any, and its holder chooses one with
+    /// `PUT /api/games/{id}/seats/{n}/deck`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub deck: Option<String>,
 }
 
 /// The body of `POST /api/join`: a join code and, like [`JoinRequest`], a name.
@@ -109,6 +116,10 @@ pub struct JoinCodeRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub name: Option<String>,
+    /// The deck the seat plays; see [`JoinRequest::deck`].
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub deck: Option<String>,
 }
 
 /// The seat a join gives the visitor, and the game it is in.
@@ -142,6 +153,59 @@ impl fmt::Debug for Joined {
 pub struct VisibilityBody {
     /// The visibility to set, or the one now in force.
     pub visibility: Visibility,
+}
+
+/// The body of `PUT /api/games/{id}/seats/{n}/deck`: the deck the seat plays.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct ChooseDeck {
+    /// The id of a built-in deck (`GET /api/demo-decks`), or of one of the signed-in holder's stored
+    /// decks. A stored deck of another account is the same `unknown_deck` as one that does not exist.
+    pub deck: String,
+}
+
+/// The `error` code of a request that names a deck for a seat (the creation of a game, a join and
+/// `PUT .../deck`); the other failures of those requests keep the codes of [`LobbyErrorCode`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(rename_all = "snake_case")]
+pub enum DeckChoiceErrorCode {
+    /// 404 (400 when a game is created): the id is no built-in deck and no deck of the caller's.
+    UnknownDeck,
+    /// 422: the deck check refuses the deck; the body also lists the `issues`.
+    DeckBlocked,
+    /// 409: the seat pressed Ready; it takes that back before it changes its deck.
+    SeatReady,
+}
+
+impl DeckChoiceErrorCode {
+    /// Every code, in declaration order.
+    pub const ALL: [DeckChoiceErrorCode; 3] = [
+        DeckChoiceErrorCode::UnknownDeck,
+        DeckChoiceErrorCode::DeckBlocked,
+        DeckChoiceErrorCode::SeatReady,
+    ];
+
+    /// The text on the wire.
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            DeckChoiceErrorCode::UnknownDeck => "unknown_deck",
+            DeckChoiceErrorCode::DeckBlocked => "deck_blocked",
+            DeckChoiceErrorCode::SeatReady => "seat_ready",
+        }
+    }
+}
+
+/// The body of a refused deck (422 `deck_blocked`): why the deck check will not let it be played in
+/// this game. The issues name cards, and go only to the account whose deck it is.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct DeckBlockedBody {
+    /// Always `deck_blocked`.
+    pub error: DeckChoiceErrorCode,
+    /// The refusal in plain words.
+    pub message: String,
+    /// What breaks the rules of the deck's format or of the game; empty when the deck is blocked
+    /// only because it holds cards the game cannot play.
+    pub issues: Vec<Issue>,
 }
 
 /// The `error` code of a failed game browser request; the body is `{error, message}`.

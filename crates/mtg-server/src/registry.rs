@@ -23,6 +23,7 @@ use std::time::Instant;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::GameSetup;
+use mtg_engine::format::Normal;
 use mtg_engine::state::GameResult;
 use sqlx::PgPool;
 use thiserror::Error;
@@ -32,15 +33,16 @@ use tokio::task::JoinHandle;
 use crate::actor::{GameConfig, StartError, spawn_named};
 use crate::cards::{CardSource, CatalogError};
 use crate::config::{Retention, ServerConfig};
-use crate::demo::DemoDeck;
+use crate::demo::{self, DemoDeck};
 use crate::game_id::GameId;
 use crate::handle::{GameHandle, GameStatus};
 use crate::join_code::JoinCode;
-use crate::recipe::{Catalog, DeckRef, FormatKind, GameRecipe, RecipeError};
+use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError};
 use crate::recorder::Recorder;
 use crate::records::{
     Binding, GameRecords, NewGame, NewSeat, RecordError, SeatState, UserGame, Visibility,
 };
+use crate::seat_deck::SeatDecks;
 use crate::secret::{RandomError, SeatToken, TokenDigest, looks_like_token, random_seed};
 use crate::store::MemoryStore;
 use crate::throttle::{Blocked, Throttle};
@@ -52,6 +54,8 @@ pub const MAX_LISTED_GAMES: usize = 100;
 pub use claims::{ClaimError, Entrance, HOST, SeatClaim, Seated, TableError};
 pub use listing::{ListedGame, MAX_LISTED_LOBBIES};
 pub use resume::ResumeReport;
+
+pub use crate::seat_deck::ChosenDeck;
 
 /// Why a game could not be created.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -397,18 +401,52 @@ impl Registry {
         options: GameOptions,
         host: Option<UserId>,
     ) -> Result<Created, CreateError> {
+        let names = seats.iter().map(|s| s.name.clone()).collect();
+        let decks = seats
+            .iter()
+            .map(|seat| ChosenDeck::demo(seat.deck).map(Some))
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(RecipeError::from)?;
+        self.create_decked(names, decks, options, host).await
+    }
+
+    /// Creates a Normal game whose seats start with `decks`, one entry per seat: the deck a seat
+    /// plays until its holder chooses another, which is also the deck it returns to when a player
+    /// gives it back. A seat with `None` has no deck and cannot press Ready until it chooses one;
+    /// the recipe holds [`demo::stand_in`] for it meanwhile.
+    ///
+    /// The recipe names the decks as given, with the fingerprint of their cards, and the seed is
+    /// server-chosen. A game made this way tells the table each seat's deck and holds back a `Ready`
+    /// without one.
+    pub async fn create_decked(
+        &self,
+        names: Vec<String>,
+        decks: Vec<Option<ChosenDeck>>,
+        options: GameOptions,
+        host: Option<UserId>,
+    ) -> Result<Created, CreateError> {
         let seed = match self.shared.fixed_seed {
             Some(seed) => seed,
             None => random_seed()?,
         };
-        let decks = seats.iter().map(|seat| DeckRef::Demo {
-            id: seat.deck.id.to_owned(),
-        });
+        let stand_in = ChosenDeck::demo(demo::stand_in()).map_err(RecipeError::from)?;
+        let held: Vec<&ChosenDeck> = decks
+            .iter()
+            .map(|deck| deck.as_ref().unwrap_or(&stand_in))
+            .collect();
         // The decks as they are now, kept so that a later boot can tell when a deploy changed one.
-        let recipe = GameRecipe::normal(seed, decks).with_fingerprints()?;
-        let setup = recipe.build()?;
-        let names = seats.iter().map(|s| s.name.clone()).collect();
-        self.admit(setup, names, Some(recipe), host, options).await
+        let recipe = GameRecipe {
+            format: FormatKind::Normal,
+            seed,
+            decks: held.iter().map(|deck| deck.reference().clone()).collect(),
+            fingerprints: held.iter().map(|deck| *deck.fingerprint()).collect(),
+        };
+        let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
+        let setup = GameSetup::new(Arc::new(Normal), seed, libraries);
+        // Refused like a recipe that does not build: too few seats, a deck the format does not allow.
+        setup.validate().map_err(RecipeError::from)?;
+        self.admit(setup, names, Some(recipe), host, options, Some(decks))
+            .await
     }
 
     /// Creates a game from a recipe the caller made, whose decks may name cards by oracle id: their
@@ -439,7 +477,8 @@ impl Registry {
         };
         let recipe = recipe.with_fingerprints_from(&catalog)?;
         let setup = recipe.build_with(&catalog)?;
-        self.admit(setup, names, Some(recipe), host, options).await
+        self.admit(setup, names, Some(recipe), host, options, None)
+            .await
     }
 
     /// Registers a game built by the caller (a missing name becomes "Seat N"). Needs a tokio runtime.
@@ -451,12 +490,13 @@ impl Registry {
         setup: GameSetup,
         names: Vec<String>,
     ) -> Result<Created, CreateError> {
-        self.admit(setup, names, None, None, GameOptions::default())
+        self.admit(setup, names, None, None, GameOptions::default(), None)
             .await
     }
 
     /// Gives a validated setup its tokens, records it when it has a recipe and starts its actor.
-    /// `host` owns seat 0 when the game is recorded.
+    /// `host` owns seat 0 when the game is recorded. `decks`, one entry per seat, makes the game
+    /// one whose seats choose their decks in the lobby.
     async fn admit(
         &self,
         setup: GameSetup,
@@ -464,6 +504,7 @@ impl Registry {
         recipe: Option<GameRecipe>,
         host: Option<UserId>,
         options: GameOptions,
+        decks: Option<Vec<Option<ChosenDeck>>>,
     ) -> Result<Created, CreateError> {
         let seats = setup.players.len();
         let held = options.held.map_or(seats, |held| held.max(1).min(seats));
@@ -483,8 +524,9 @@ impl Registry {
             visibility: options.visibility,
             code_digest: Some(*code.digest().as_bytes()),
         };
+        let decks = decks.map(|defaults| SeatDecks::new(FormatKind::Normal, setup.seed, defaults));
         let handle = self
-            .start(id, setup, recipe.as_ref(), &meta, &slots)
+            .start(id, setup, recipe.as_ref(), &meta, &slots, decks)
             .await?;
         let parts = Parts {
             visibility: options.visibility,
@@ -537,6 +579,7 @@ impl Registry {
         recipe: Option<&GameRecipe>,
         meta: &NewGame,
         slots: &[SeatSlot],
+        decks: Option<SeatDecks>,
     ) -> Result<GameHandle, CreateError> {
         let names: Vec<String> = slots.iter().map(|slot| slot.name.clone()).collect();
         let (Some(records), Some(recipe)) = (&self.shared.records, recipe) else {
@@ -547,6 +590,7 @@ impl Registry {
                 self.shared.game,
                 None,
                 names,
+                decks,
             )?);
         };
         let rows: Vec<NewSeat> = slots
@@ -567,6 +611,7 @@ impl Registry {
             self.shared.game,
             Some(recorder),
             names,
+            decks,
         );
         match spawned {
             Ok(handle) => Ok(handle),

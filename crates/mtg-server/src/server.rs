@@ -13,7 +13,7 @@ use axum::http::header::{
 };
 use axum::http::{HeaderValue, Method};
 use axum::middleware;
-use axum::routing::{get, post};
+use axum::routing::{get, post, put};
 use axum::serve::ListenerExt;
 use sqlx::PgPool;
 use tokio::net::TcpListener;
@@ -284,6 +284,10 @@ pub(crate) fn router(state: AppState) -> Router {
         .route(
             "/api/games/{id}/seats/{seat}/release",
             post(lobbies::release),
+        )
+        .route(
+            "/api/games/{id}/seats/{seat}/deck",
+            put(lobbies::choose_deck),
         )
         .route("/api/join", post(lobbies::join_by_code))
         .route("/api/lobbies", get(lobbies::list))

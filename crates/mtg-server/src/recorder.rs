@@ -7,7 +7,8 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 
 use crate::game_id::GameId;
-use crate::records::GameRecords;
+use crate::recipe::GameRecipe;
+use crate::records::{GameRecords, RecordError};
 
 /// The actor's hook into the `games` and `seats` tables.
 #[derive(Debug)]
@@ -48,6 +49,13 @@ impl Recorder {
         if let Some(flag) = self.joined.get_mut(seat.index()) {
             *flag = false;
         }
+    }
+
+    /// Stores the recipe with the decks the seats chose. Unlike the notes below, the game must not
+    /// start without it: a stored log replays under the recipe, so the caller refuses the start
+    /// when this fails.
+    pub(crate) async fn decks(&self, recipe: &GameRecipe) -> Result<(), RecordError> {
+        self.records.set_recipe(self.game, recipe).await
     }
 
     /// Notes that the lobby is over.

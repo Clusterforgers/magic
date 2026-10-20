@@ -11,13 +11,15 @@
 use std::sync::Arc;
 
 use mtg_core::ids::PlayerId;
+use mtg_protocol::SeatDeck;
 use thiserror::Error;
 
 use super::{Entry, Registry, Removal, SeatSlot};
 use crate::api::MAX_NAME_CHARS;
 use crate::game_id::GameId;
-use crate::handle::GameHandle;
+use crate::handle::{DeckRefusal, GameHandle};
 use crate::records::{Claimed, GameRecords, RecordError, SeatState, Visibility};
+use crate::seat_deck::ChosenDeck;
 use crate::secret::{RandomError, SeatToken};
 use crate::user_id::UserId;
 
@@ -96,6 +98,9 @@ pub enum TableError {
     /// The game has begun.
     #[error("the game has started")]
     Started,
+    /// The seat pressed Ready; it takes that back before it changes its deck.
+    #[error("the seat is ready")]
+    Ready,
     /// The change could not be saved.
     #[error(transparent)]
     Record(#[from] RecordError),
@@ -124,6 +129,19 @@ impl Registry {
         game: GameId,
         entrance: Entrance,
         claim: SeatClaim,
+    ) -> Result<Seated, ClaimError> {
+        self.claim_with(game, entrance, claim, None).await
+    }
+
+    /// Like [`Registry::claim`], with the visitor bringing `deck`: the seat plays it instead of the
+    /// deck the game was made with. A signed-in visitor who already holds a seat of the game is
+    /// handed it back as it is, the deck included.
+    pub async fn claim_with(
+        &self,
+        game: GameId,
+        entrance: Entrance,
+        claim: SeatClaim,
+        deck: Option<ChosenDeck>,
     ) -> Result<Seated, ClaimError> {
         let name = claim.name.trim().to_owned();
         if name.is_empty() || name.chars().count() > MAX_NAME_CHARS {
@@ -175,7 +193,7 @@ impl Registry {
                 }
             }
         }
-        let refusal = match table.handle.occupy(seat, name.clone()).await {
+        let refusal = match table.handle.occupy_with(seat, name.clone(), deck).await {
             Ok(true) => None,
             Ok(false) => Some(ClaimError::Started),
             Err(_) => Some(ClaimError::NotFound),
@@ -250,6 +268,30 @@ impl Registry {
         }
         tracing::info!(%game, seat = seat.get(), by = by.get(), "seat released");
         Ok(())
+    }
+
+    /// Sets the deck `seat` plays while the game is in its lobby, and tells the table. Only the
+    /// seat's own holder may (`by`, whom the caller has authenticated, must be `seat`). A seat that
+    /// pressed Ready answers [`TableError::Ready`] and keeps its deck; once the game runs the answer
+    /// is [`TableError::Started`]. The actor decides, so a deck and a `Ready` of one seat have one
+    /// winner. Returns what the table now knows of the deck.
+    pub async fn choose_deck(
+        &self,
+        game: GameId,
+        seat: PlayerId,
+        by: PlayerId,
+        deck: ChosenDeck,
+    ) -> Result<SeatDeck, TableError> {
+        let table = self.table(game, |_| true).ok_or(TableError::NotFound)?;
+        if by != seat {
+            return Err(TableError::NotAllowed);
+        }
+        match table.handle.choose_deck(seat, deck).await {
+            Ok(Ok(note)) => Ok(note),
+            Ok(Err(DeckRefusal::Started)) => Err(TableError::Started),
+            Ok(Err(DeckRefusal::Ready)) => Err(TableError::Ready),
+            Ok(Err(DeckRefusal::Gone)) | Err(_) => Err(TableError::NotFound),
+        }
     }
 
     /// Lists the game, or hides it again, before it starts. Only the host ([`HOST`], as `by`) may.

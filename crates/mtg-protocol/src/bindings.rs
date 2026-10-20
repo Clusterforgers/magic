@@ -11,9 +11,10 @@ use ts_rs::{Config, ExportError, TS};
 
 use crate::message::{ClientMessage, PROTOCOL_VERSION, ServerMessage};
 use crate::rest::{
-    AuthErrorCode, CardDetail, CardSearchPage, CheckRequest, Credentials, DeckBody, DeckErrorCode,
-    DeckList, DeckView, GameInfo, ImportRequest, ImportResult, JoinCodeRequest, JoinRequest,
-    Joined, LobbyErrorCode, LobbyList, MyGames, UserView, VisibilityBody,
+    AuthErrorCode, CardDetail, CardSearchPage, CheckRequest, ChooseDeck, Credentials,
+    DeckBlockedBody, DeckBody, DeckChoiceErrorCode, DeckErrorCode, DeckList, DeckView, GameInfo,
+    ImportRequest, ImportResult, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyList,
+    MyGames, UserView, VisibilityBody,
 };
 
 /// Where the committed bindings live, relative to the workspace root.
@@ -64,6 +65,9 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     Joined::export_all(&config)?;
     VisibilityBody::export_all(&config)?;
     LobbyErrorCode::export_all(&config)?;
+    ChooseDeck::export_all(&config)?;
+    DeckChoiceErrorCode::export_all(&config)?;
+    DeckBlockedBody::export_all(&config)?;
     fs::write(dir.join("index.ts"), index(dir)?)?;
     Ok(())
 }
