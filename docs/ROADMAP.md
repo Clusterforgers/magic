@@ -30,7 +30,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 ### Compiler and coverage
 - [x] (r1) Compiler core in `mtg-cards`: reminder text and the card's name stripped, clauses split and classified (keyword line, spell, triggered, activated, loyalty, static, modal), keyword lines read, an unreadable clause kept as `Ability::Manual` with its span (`docs/cards-dsl.md`, Compiler and Manual fallback)
-- [ ] (r1b) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes them
+- [ ] (r1b) A Scryfall keyword counts as present in `check_printed` when an ability has it or a `Manual` clause names it, so compiled cards that grant a keyword or use a typecycling form validate (`docs/cards-dsl.md`, Validation)
+- [ ] (r1c) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes the ones that validate
 - [ ] (r2) Renderer and goldens: every compiled card is written back as English and compared with its oracle text; the corpus files are the first goldens
 - [ ] (r3) Templates for what the engine runs today: keyword lines, spell effects, the trigger patterns, activated abilities with `{T}`, mana and sacrifice costs, modes, "may" and "pay", and the selectors, amounts and conditions in their common wordings
 - [ ] (r4) `mtg-cli coverage`: states, reasons and clause spans for every precon card, with the missing primitives and unreadable wordings ranked by the cards each holds back
