@@ -57,7 +57,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). (a) to (c) in order, then (d
 - [x] (b) Card assembly: a deck of oracle ids becomes `CardDefinition`s, printed side from the import and rules from the DSL
 - [x] (c) Effect pipeline core: ability objects on the stack, snapshots, the resolution journal, interpreter stubs, the replacement seam and `ChooseTargets` with the CR 608.2b recheck
 - [ ] (d) Decision kinds still open, one task each across engine, protocol and a web prompt: ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement (the table in `docs/cards-dsl.md`, Decisions the effects need)
-- [ ] Engine side of YesNo, ChooseOption and ChooseMode: the answer checks and the effects that ask them (`May`, an option effect, modal spells), then a response-clock test through the actor (`docs/server.md`, Response clocks)
+- [x] Engine side of YesNo, ChooseOption and ChooseMode: the answer checks and the effects that ask them (`May`, `Choose`, modal spells)
+- [ ] A response-clock test through the actor for YesNo, ChooseOption and ChooseMode (`docs/server.md`, Response clocks)
 - [ ] Response clocks for the choice decisions still without one (numbers, divisions, costs, replacements, mana payments), each with a fallback answer, so one seat cannot hold the table; targets, trigger orders, yes or no, options, modes, cards and orders of cards have theirs (`docs/server.md`, Response clocks)
 - [x] (e) Keywords, one task each: flying, reach, first/double strike, deathtouch, trample, lifelink, vigilance, haste, menace, defender, indestructible, hexproof, ward; the damage prompt gets trample targets and the views carry keywords, counters and attachments (`docs/web.md`)
 - [ ] (e2) Keywords hexproof and ward, one task each; counters and attachments on the object views; the blockers prompt reads `BlockOptions.min_blockers` so menace is explained before Confirm (`docs/web.md`)
