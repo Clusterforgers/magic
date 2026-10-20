@@ -1,4 +1,4 @@
-//! Goal: the 40 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 51 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -30,13 +30,14 @@ use Support::{Manual, Partial, Verified};
 /// countering, scrying, looking at, revealing and searching for cards, choosing and moving them (onto the battlefield
 /// included), shuffling, life and damage, paying mana as an effect, creating tokens, adding mana, conditions, tapping
 /// and untapping, winning the game, continuous effects and static abilities of every modification (types, subtypes, colours,
-/// power and toughness, keywords, abilities, control and attack and block restrictions), and the keywords of combat and
-/// flash, so the twenty-eight cards that need no more are Verified (the
+/// power and toughness, keywords, abilities, control and attack and block restrictions), characteristic-defining abilities
+/// (power and toughness from a count, colours) and the keywords of combat and
+/// flash, so the thirty-two cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
 /// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback; Hero
 /// of Bladehold's tokens, not its battle cry; Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays
 /// with the table for its loyalty costs and Flooded Strand for the life it costs.
-const CARDS: [(&str, Support, usize); 47] = [
+const CARDS: [(&str, Support, usize); 51] = [
     ("Act of Treason", Verified, 1),
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
@@ -68,10 +69,13 @@ const CARDS: [(&str, Support, usize); 47] = [
     ("Izzet Charm", Verified, 1),
     ("Jace, the Mind Sculptor", Manual, 0),
     ("Jungle Lion", Verified, 1),
+    ("Kormus Bell", Verified, 1),
     ("Levitation", Verified, 1),
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
+    ("Maro", Verified, 1),
     ("Mulldrifter", Partial, 2),
+    ("Nightmare", Verified, 2),
     ("Opt", Verified, 1),
     ("Pacifism", Partial, 1),
     ("Panharmonicon", Manual, 0),
@@ -83,6 +87,7 @@ const CARDS: [(&str, Support, usize); 47] = [
     ("Sol Ring", Manual, 0),
     ("Swords to Plowshares", Verified, 1),
     ("Tireless Tracker", Partial, 1),
+    ("Transguild Courier", Verified, 1),
     ("Wrath of God", Verified, 1),
 ];
 
@@ -90,7 +95,7 @@ const CARDS: [(&str, Support, usize); 47] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 47);
+    assert_eq!(in_table.len(), 51);
     assert_eq!(in_table, in_corpus);
 }
 

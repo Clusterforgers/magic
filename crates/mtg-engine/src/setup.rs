@@ -11,10 +11,10 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use crate::combat::CombatState;
 use crate::error::SetupError;
 use crate::format::FormatRules;
+use crate::layers::LayersCache;
 use crate::object::{GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
 use crate::state::{GameState, Stage};
-use crate::statics::StaticsCache;
 use crate::turn::{Step, TurnState};
 use crate::zones::{Zone, Zones};
 
@@ -300,7 +300,7 @@ impl GameState {
             limits_spent: BTreeSet::new(),
             triggers_possible: false,
             statics_possible: false,
-            statics: StaticsCache::default(),
+            layers: LayersCache::default(),
             result: None,
         };
         game.note_what_cards_can_do();

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "ef32258a-d567-4fbc-ab85-8c00080f5b36",
+  "name": "Maro",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maro",
+      "oracle_fingerprint": "10ecc91c54ac821bdeeb728817e3cda0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

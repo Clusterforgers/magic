@@ -63,7 +63,7 @@ fn caps_of(names: &[&str]) -> Caps {
 #[case::everything(Caps::everything())]
 fn the_printed_side_of_every_corpus_card_equals_its_record(#[case] caps: Caps) {
     let records = records();
-    assert_eq!(records.len(), 47);
+    assert_eq!(records.len(), 51);
     for record in records {
         let name = &record.name;
         let front = &record.front;
@@ -95,14 +95,16 @@ fn the_printed_side_of_every_corpus_card_equals_its_record(#[case] caps: Caps) {
         assert_eq!(subtypes, tail, "{name}: subtypes");
 
         let text = |value: Option<u32>| value.map(|n| n.to_string());
+        // A `*` is no number: a characteristic-defining ability gives it its value.
+        let number = |stat: &Option<String>| stat.clone().filter(|stat| stat != "*");
         assert_eq!(
             shown.power.map(|n| n.to_string()),
-            front.power,
+            number(&front.power),
             "{name}: power"
         );
         assert_eq!(
             shown.toughness.map(|n| n.to_string()),
-            front.toughness,
+            number(&front.toughness),
             "{name}: toughness"
         );
         assert_eq!(text(shown.loyalty), front.loyalty, "{name}: loyalty");

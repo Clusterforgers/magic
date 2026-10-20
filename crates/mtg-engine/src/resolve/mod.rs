@@ -218,6 +218,7 @@ fn scope_of<'a>(
         snapshots,
         departed: &resolving.snapshots,
         cause: ability.and_then(|a| a.cause()),
+        layered: None,
     }
 }
 

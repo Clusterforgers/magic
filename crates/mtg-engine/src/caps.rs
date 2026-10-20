@@ -7,11 +7,11 @@
 //! scrying, looking at, revealing, searching for, moving and shuffling cards, tapping and untapping, winning the
 //! game, life and damage (and delayed triggers), conditions, "may" and "pay" and choices and modal spells, continuous
 //! effects and static abilities of every modification (types, subtypes, colours, power and toughness, keywords, abilities,
-//! control, attack and block restrictions), the keywords of combat, flash and hexproof, and nothing
-//! else.
+//! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
+//! keywords of combat, flash and hexproof, and nothing else.
 
 use mtg_cards::Caps;
-use mtg_cards::assemble::PLAIN_MANA_ABILITY;
+use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS};
 
 /// The primitives the engine runs, and the only list of them. A task that teaches the engine one adds its
 /// name here in the same change as the code: the test of the interpreter fails when a name is listed for an
@@ -56,6 +56,8 @@ const RUNS: &[&str] = &[
     "Effect.CreateToken",
     "Effect.Continuous",
     "Ability.Static",
+    "Ability.Static.Defining",
+    VARIABLE_STATS,
     "Mod.ModifyPT",
     "Mod.AddKeyword",
     "Mod.SetPT",
@@ -181,6 +183,7 @@ mod tests {
     #[case::attack_restrictions("Mod.CantAttack", true)]
     #[case::block_restrictions("Mod.CantBlock", true)]
     #[case::static_abilities("Ability.Static", true)]
+    #[case::characteristic_defining_abilities("Ability.Static.Defining", true)]
     #[case::removed_keywords("Mod.RemoveKeyword", true)]
     #[case::conditions("Effect.If", true)]
     #[case::counters_in_a_value("Amount.Counters", false)]
@@ -220,7 +223,7 @@ mod tests {
     #[case::kicker("Keyword.Kicker", false)]
     #[case::x_costs(X_COST, false)]
     #[case::faces(FACES, false)]
-    #[case::variable_stats(VARIABLE_STATS, false)]
+    #[case::variable_stats(VARIABLE_STATS, true)]
     fn the_engine_runs_what_it_runs_today(#[case] name: &str, #[case] runs: bool) {
         assert_eq!(caps().runs(name), runs);
     }

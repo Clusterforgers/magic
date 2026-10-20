@@ -1,0 +1,23 @@
+{
+  "oracle_id": "d2d477a5-f055-4d47-a852-26e8239f2a01",
+  "name": "Kormus Bell",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kormus Bell",
+      "oracle_fingerprint": "3af8fa71fa570f880ca8721027e76be1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Swamp" }] },
+            "mods": [
+              { "AddType": "Creature" },
+              { "SetColors": ["Black"] },
+              { "SetPT": { "power": 1, "toughness": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

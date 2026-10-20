@@ -1,0 +1,20 @@
+{
+  "oracle_id": "86f94f8e-f45e-42fc-8ad6-e9bdfaaa997d",
+  "name": "Transguild Courier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Transguild Courier",
+      "oracle_fingerprint": "6fa29aee93a8b7a621583e884ca244a5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetColors": ["White", "Blue", "Black", "Red", "Green"] }],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

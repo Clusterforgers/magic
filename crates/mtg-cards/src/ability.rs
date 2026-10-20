@@ -58,6 +58,12 @@ pub enum CostChange {
     Reduce,
 }
 
+/// Whether a flag is off, so serialization can leave it out (serde calls it with a reference).
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_false(flag: &bool) -> bool {
+    !*flag
+}
+
 /// One ability of a card face.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -127,6 +133,10 @@ pub enum Ability {
         /// It applies only while this holds.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         condition: Option<Condition>,
+        /// Whether this is a characteristic-defining ability (CR 604.3): it defines the power and toughness, colours,
+        /// types or subtypes of its own object, works in every zone and applies first in its layer.
+        #[serde(default, skip_serializing_if = "is_false")]
+        defining: bool,
         /// The zone the source must be in.
         #[serde(default, skip_serializing_if = "ZoneKind::is_battlefield")]
         from: ZoneKind,

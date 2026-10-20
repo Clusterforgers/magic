@@ -811,6 +811,25 @@
     "keywords": []
   },
   {
+    "id": "40f826b8-9e92-4e0e-aa2f-c3f5e3061432",
+    "oracle_id": "d2d477a5-f055-4d47-a852-26e8239f2a01",
+    "name": "Kormus Bell",
+    "lang": "en",
+    "layout": "normal",
+    "set": "me4",
+    "collector_number": "210",
+    "rarity": "rare",
+    "released_at": "2011-01-10",
+    "digital": true,
+    "mana_cost": "{4}",
+    "cmc": 4.0,
+    "type_line": "Artifact",
+    "oracle_text": "All Swamps are 1/1 black creatures that are still lands.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": []
+  },
+  {
     "id": "63e5124a-67c0-44ed-8085-28bf37816423",
     "oracle_id": "94b703c4-5584-4913-8365-7e9f2f535c2d",
     "name": "Levitation",
@@ -885,6 +904,31 @@
     ]
   },
   {
+    "id": "9159e250-4eec-4ec4-80e1-42259331b3b9",
+    "oracle_id": "ef32258a-d567-4fbc-ab85-8c00080f5b36",
+    "name": "Maro",
+    "lang": "en",
+    "layout": "normal",
+    "set": "9ed",
+    "collector_number": "254",
+    "rarity": "rare",
+    "released_at": "2005-07-29",
+    "digital": false,
+    "mana_cost": "{2}{G}{G}",
+    "cmc": 4.0,
+    "type_line": "Creature — Elemental",
+    "oracle_text": "Maro's power and toughness are each equal to the number of cards in your hand.",
+    "power": "*",
+    "toughness": "*",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
     "id": "3de308cc-14ac-407e-99e7-568572ecd0e7",
     "oracle_id": "24d0f5e7-0d9e-4b76-900e-a7274e80312d",
     "name": "Mulldrifter",
@@ -910,6 +954,33 @@
     "keywords": [
       "Flying",
       "Evoke"
+    ]
+  },
+  {
+    "id": "052022ff-795f-4f50-a45c-91cf8be9fbe9",
+    "oracle_id": "375932e6-1b3e-48dc-8154-9b664c3add34",
+    "name": "Nightmare",
+    "lang": "en",
+    "layout": "normal",
+    "set": "w17",
+    "collector_number": "17",
+    "rarity": "rare",
+    "released_at": "2017-04-15",
+    "digital": false,
+    "mana_cost": "{5}{B}",
+    "cmc": 6.0,
+    "type_line": "Creature — Nightmare Horse",
+    "oracle_text": "Flying (This creature can't be blocked except by creatures with flying or reach.)\nNightmare's power and toughness are each equal to the number of Swamps you control.",
+    "power": "*",
+    "toughness": "*",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Flying"
     ]
   },
   {
@@ -1179,6 +1250,39 @@
       "Investigate",
       "Landfall"
     ]
+  },
+  {
+    "id": "2496ab15-2a88-43fd-8d79-74758879157b",
+    "oracle_id": "86f94f8e-f45e-42fc-8ad6-e9bdfaaa997d",
+    "name": "Transguild Courier",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dmc",
+    "collector_number": "194",
+    "rarity": "uncommon",
+    "released_at": "2022-09-09",
+    "digital": false,
+    "mana_cost": "{4}",
+    "cmc": 4.0,
+    "type_line": "Artifact Creature — Golem",
+    "oracle_text": "Transguild Courier is all colors.",
+    "power": "3",
+    "toughness": "3",
+    "colors": [
+      "B",
+      "G",
+      "R",
+      "U",
+      "W"
+    ],
+    "color_identity": [
+      "B",
+      "G",
+      "R",
+      "U",
+      "W"
+    ],
+    "keywords": []
   },
   {
     "id": "537d2b05-3f52-45d6-8fe3-26282085d0c6",

@@ -6,11 +6,10 @@ use mtg_core::color::ColorSet;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
-use crate::abilities::Grant;
-use crate::effects::{ContinuousEffect, Layer, Modification, Selector};
+use crate::effects::Modification;
+use crate::layers::outside;
 use crate::object::{GameObject, ObjectKind};
 use crate::state::GameState;
-use crate::statics::StaticEffect;
 use crate::zones::Zone;
 
 /// The characteristics of an object right now; never stored, always recomputed.
@@ -40,7 +39,7 @@ impl Characteristics {
     }
 
     /// What nothing has: no types, colors, power, toughness or abilities.
-    fn empty() -> Characteristics {
+    pub(crate) fn empty() -> Characteristics {
         Characteristics {
             types: CardTypes::default(),
             subtypes: Vec::new(),
@@ -55,26 +54,28 @@ impl Characteristics {
 /// The characteristics of `id` from its card and the effects that apply to it, the static abilities of the permanents
 /// among them (CR 613).
 ///
-/// Effects apply layer by layer, and by timestamp within a layer; dependencies (CR 613.8) are not modeled yet. Selectors
-/// are evaluated against the characteristics built up to their own layer. Only objects on the battlefield are
-/// affected by effects. An ability on the stack has none.
+/// The layers are worked through once for the whole state (`layers.rs`): effects apply layer by layer, the
+/// characteristic-defining abilities first and then by timestamp, an effect that depends on others after them (CR
+/// 613.8). Only a permanent is affected by effects; an object elsewhere has the characteristics its card prints, with
+/// those its characteristic-defining abilities define (CR 604.3). An ability on the stack has none.
 pub fn characteristics(state: &GameState, id: ObjectId) -> Option<Characteristics> {
-    let object = state.object(id)?;
-    if object.kind() == ObjectKind::Ability {
-        return Some(Characteristics::empty());
-    }
-    Some(derive(state, object).chars)
+    seen_as(state, id).map(|(chars, _)| chars)
 }
 
-/// The characteristics and the controller of `id` from one walk of the layers: what the value evaluator and the snapshots
-/// read an object as.
+/// The characteristics and the controller of `id` from one reading of the layers: what the value evaluator and the
+/// snapshots read an object as.
 pub(crate) fn seen_as(state: &GameState, id: ObjectId) -> Option<(Characteristics, PlayerId)> {
     let object = state.object(id)?;
     if object.kind() == ObjectKind::Ability {
         return Some((Characteristics::empty(), object.controller()));
     }
-    let derived = derive(state, object);
-    Some((derived.chars, derived.controller))
+    if object.zone() == Zone::Battlefield {
+        return Some(match state.layers().get(id) {
+            Some(held) => (held.chars.clone(), held.controller),
+            None => (base(object), object.controller()),
+        });
+    }
+    Some((outside(state, object, None), object.controller()))
 }
 
 /// Who controls `id` now: for a permanent the controller after the control-changing effects of layer 2 (CR 613.1b), for
@@ -87,12 +88,13 @@ pub fn controller_of(state: &GameState, id: ObjectId) -> Option<PlayerId> {
 
 /// Who controls `object`, as [`controller_of`] says, for a caller that has the object at hand.
 pub(crate) fn controller_of_object(state: &GameState, object: &GameObject) -> PlayerId {
-    // Most games change no control, and this is asked for every permanent on every decision.
-    if object.zone() != Zone::Battlefield || (state.effects().is_empty() && !state.statics_possible)
-    {
+    if object.zone() != Zone::Battlefield {
         return object.controller();
     }
-    derive_to(state, object, Layer::Control).controller
+    state
+        .layers()
+        .get(object.id())
+        .map_or_else(|| object.controller(), |held| held.controller)
 }
 
 /// Whether an effect that applies to `id` says it can't attack: the one place the attack rules read this restriction.
@@ -111,109 +113,15 @@ pub(crate) fn cant_block(state: &GameState, id: ObjectId) -> bool {
 
 /// Whether a modification that `is` applies to the permanent `id` once the layers are through with it.
 fn restricted(state: &GameState, id: ObjectId, is: impl Fn(&Modification) -> bool) -> bool {
-    let Some(object) = state.object(id) else {
-        return false;
-    };
-    if object.zone() != Zone::Battlefield
-        || (state.effects().is_empty() && state.statics().is_empty())
-    {
-        return false;
-    }
-    derive(state, object)
-        .applied
-        .iter()
-        .any(|applied| is(applied.modification))
-}
-
-/// One effect that changed an object, in the order the layers applied them.
-#[derive(Debug, Clone, Copy)]
-// `layer` and `timestamp` are what the dependency pass of the derivation reads; the tests read them today.
-#[allow(dead_code)]
-pub(crate) struct Applied<'a> {
-    /// What the effect is: a resolved spell or ability's, or one modification of a static ability.
-    pub(crate) origin: Grant,
-    /// The layer it applies in, or none for a restriction.
-    pub(crate) layer: Option<Layer>,
-    /// Its place in the order of the layer.
-    pub(crate) timestamp: u64,
-    /// The change.
-    pub(crate) modification: &'a Modification,
-}
-
-/// What the layers made of an object: its characteristics, its controller and the effects that changed it.
-#[derive(Debug, Clone)]
-pub(crate) struct Derived<'a> {
-    pub(crate) chars: Characteristics,
-    pub(crate) controller: PlayerId,
-    pub(crate) applied: Vec<Applied<'a>>,
-}
-
-/// An effect waiting its turn in the walk: a registered one or a static ability's.
-struct Candidate<'a> {
-    origin: Grant,
-    layer: Option<Layer>,
-    timestamp: u64,
-    chosen: Chosen<'a>,
-    modification: &'a Modification,
-}
-
-/// How a candidate says which objects it applies to.
-enum Chosen<'a> {
-    Registered(&'a Selector),
-    Static(&'a StaticEffect),
-}
-
-impl<'a> Candidate<'a> {
-    fn registered(effect: &'a ContinuousEffect) -> Self {
-        Candidate {
-            origin: Grant::Effect(effect.id),
-            layer: effect.layer,
-            timestamp: effect.timestamp,
-            chosen: Chosen::Registered(&effect.selector),
-            modification: &effect.modification,
-        }
-    }
-
-    fn of_static(effect: &'a StaticEffect) -> Self {
-        Candidate {
-            origin: effect.grant,
-            layer: effect.layer,
-            timestamp: effect.timestamp,
-            chosen: Chosen::Static(effect),
-            modification: &effect.modification,
-        }
-    }
-
-    /// The order the walk applies effects in: layer (a restriction after them all), timestamp, then registered
-    /// effects by id before static ones by source, ability and modification.
-    fn key(&self) -> (bool, Option<Layer>, u64, (u8, u64, u64)) {
-        let tie = match self.origin {
-            Grant::Effect(id) => (0, id.0, 0),
-            Grant::Static {
-                source,
-                rule,
-                index,
-            } => (1, source.get(), (rule as u64) << 32 | index as u64),
-        };
-        (self.layer.is_none(), self.layer, self.timestamp, tie)
-    }
-
-    fn affects(
-        &self,
-        state: &GameState,
-        object: &GameObject,
-        so_far: &Characteristics,
-        controller: PlayerId,
-    ) -> bool {
-        match self.chosen {
-            Chosen::Registered(selector) => selector.matches(object, so_far, controller),
-            Chosen::Static(effect) => effect.affects(state, object, so_far, controller),
-        }
-    }
+    state
+        .object(id)
+        .filter(|object| object.zone() == Zone::Battlefield)
+        .and_then(|object| state.layers().get(object.id()))
+        .is_some_and(|held| held.applied.iter().any(|applied| is(&applied.modification)))
 }
 
 /// The characteristics of a card or token on its own, before any effect.
-fn base(object: &GameObject) -> Characteristics {
+pub(crate) fn base(object: &GameObject) -> Characteristics {
     let card = object.card();
     Characteristics {
         types: object.base_types(),
@@ -225,76 +133,6 @@ fn base(object: &GameObject) -> Characteristics {
     }
 }
 
-/// The characteristics of a card or token, its controller and the effects that changed them, in the order they applied.
-///
-/// This is the one place the layers are walked: `characteristics` keeps the first part, `controller_of` the second and
-/// `keywords_of`, `ability_reader` and the attack and block rules the third, so nothing reads an effect another way.
-pub(crate) fn derive<'a>(state: &'a GameState, object: &'a GameObject) -> Derived<'a> {
-    walk(state, object, None, state.statics())
-}
-
-/// The same walk, stopped after `until`: what the layers up to it made of the object.
-pub(crate) fn derive_to<'a>(
-    state: &'a GameState,
-    object: &'a GameObject,
-    until: Layer,
-) -> Derived<'a> {
-    walk(state, object, Some(until), state.statics())
-}
-
-/// The walk, with the static effects to apply given: registered effects and `statics` in order of layer, timestamp
-/// and id, each applying to the object when its selector matches the characteristics built so far.
-pub(crate) fn walk<'a>(
-    state: &'a GameState,
-    object: &'a GameObject,
-    until: Option<Layer>,
-    statics: &'a [StaticEffect],
-) -> Derived<'a> {
-    let mut chars = base(object);
-    let mut controller = object.controller();
-    let mut applied = Vec::new();
-    if object.zone() != Zone::Battlefield || (state.effects().is_empty() && statics.is_empty()) {
-        return Derived {
-            chars,
-            controller,
-            applied,
-        };
-    }
-    let mut candidates: Vec<Candidate<'a>> = state
-        .effects()
-        .iter()
-        .filter(|effect| effect.is_active(state))
-        .map(Candidate::registered)
-        .chain(statics.iter().map(Candidate::of_static))
-        .collect();
-    candidates.sort_unstable_by_key(Candidate::key);
-    for candidate in candidates {
-        // A restriction has no layer and comes after every layer, so the walk is over at the first one past `until`.
-        if let Some(limit) = until
-            && candidate.layer.is_none_or(|layer| layer > limit)
-        {
-            break;
-        }
-        if candidate.affects(state, object, &chars, controller) {
-            candidate.modification.apply(&mut chars);
-            if let Modification::SetController(player) = candidate.modification {
-                controller = *player;
-            }
-            applied.push(Applied {
-                origin: candidate.origin,
-                layer: candidate.layer,
-                timestamp: candidate.timestamp,
-                modification: candidate.modification,
-            });
-        }
-    }
-    Derived {
-        chars,
-        controller,
-        applied,
-    }
-}
-
 #[cfg(test)]
 mod tests {
     //! Goal: characteristics are the printed values with the active effects applied layer by layer and by timestamp within a layer, whatever order the effects are stored in; only permanents change, only the objects an effect names, and an effect that is over changes nothing; every modification changes what its layer says, in the order of the layers (a type before a colour, a set before a pump before a switch), and a restriction changes no characteristic.
@@ -302,7 +140,7 @@ mod tests {
     use rstest::rstest;
 
     use super::*;
-    use crate::effects::{Duration, Layer, Modification, Selector};
+    use crate::effects::{ContinuousEffect, Duration, Layer, Modification, Selector};
     use crate::fixtures::{creature, state};
     use crate::object::ObjectRef;
 
@@ -379,14 +217,15 @@ mod tests {
     ) {
         let game = on_the_bear(changes);
         assert_eq!(stats(&game, "Bear"), (Some(expected.0), Some(expected.1)));
-        let derived = derive(&game, game.object(named(&game, "Bear").id).unwrap());
-        let order: Vec<(Option<Layer>, u64)> = derived
-            .applied
-            .iter()
-            .map(|e| (e.layer, e.timestamp))
-            .collect();
+        // A state with no effect works out no layers.
+        let applied = game
+            .layers()
+            .get(named(&game, "Bear").id)
+            .map_or_else(Vec::new, |held| held.applied.clone());
+        let order: Vec<(Option<Layer>, u64)> =
+            applied.iter().map(|e| (e.layer, e.timestamp)).collect();
         assert!(order.windows(2).all(|w| w[0].0 <= w[1].0), "{order:?}");
-        assert_eq!(derived.applied.len(), changes.len());
+        assert_eq!(applied.len(), changes.len());
     }
 
     #[test]
@@ -443,6 +282,7 @@ mod tests {
             .get_mut(&named(&game, "Bear").id)
             .unwrap()
             .counter += 1;
+        game.layers.reset();
         assert_eq!(stats(&game, "Bear"), (Some(2), Some(2)));
         assert_eq!(stats(&game, "Wolf"), (Some(4), Some(4)));
     }
@@ -457,9 +297,8 @@ mod tests {
             Duration::UntilEndOfTurn,
             0,
         ));
-        let object = game.object(bear.id).unwrap();
-        let derived = derive(&game, object);
-        (derived.chars, derived.controller)
+        let held = game.layers().get(bear.id).unwrap();
+        (held.chars.clone(), held.controller)
     }
 
     #[rstest]
@@ -529,18 +368,12 @@ mod tests {
                 timestamp,
             ));
         }
-        let derived = derive(&game, game.object(bear.id).unwrap());
+        let derived = game.layers().get(bear.id).unwrap();
         let layers: Vec<Option<Layer>> = derived.applied.iter().map(|e| e.layer).collect();
         assert_eq!(
             layers,
             [Some(Layer::Type), Some(Layer::PtSwitch), None],
             "a restriction has no layer and applies last"
-        );
-        let until_abilities = derive_to(&game, game.object(bear.id).unwrap(), Layer::Ability);
-        assert_eq!(
-            until_abilities.applied.len(),
-            1,
-            "the walk stops after the layer asked for"
         );
     }
 }
