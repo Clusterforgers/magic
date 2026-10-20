@@ -163,7 +163,10 @@ mod tests {
             [
                 "Effect.Draw",
                 "Effect.Discard",
+                "Effect.Destroy",
+                "Effect.Exile",
                 "Effect.Sacrifice",
+                "Effect.Counter",
                 "Effect.DealDamage",
                 "Effect.GainLife",
                 "Effect.LoseLife",

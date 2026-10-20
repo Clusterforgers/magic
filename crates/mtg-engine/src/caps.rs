@@ -3,8 +3,8 @@
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
 //! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, `{T}` abilities and triggered
-//! abilities made of drawing, discarding, sacrificing, life and damage (and delayed triggers), the keywords of
-//! combat, and nothing else.
+//! abilities made of drawing, discarding, sacrificing, destroying, exiling, countering, life and damage (and delayed
+//! triggers), the keywords of combat, and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::PLAIN_MANA_ABILITY;
@@ -28,7 +28,10 @@ const RUNS: &[&str] = &[
     "Cost.Tap",
     "Effect.Draw",
     "Effect.Discard",
+    "Effect.Destroy",
+    "Effect.Exile",
     "Effect.Sacrifice",
+    "Effect.Counter",
     "Effect.DealDamage",
     "Effect.GainLife",
     "Effect.LoseLife",
@@ -107,7 +110,10 @@ mod tests {
     #[case::becoming_a_target("Trigger.BecomesTarget", true)]
     #[case::either_of_two_events("Trigger.AnyOf", true)]
     #[case::delayed_triggers("Effect.DelayedTrigger", true)]
-    #[case::destroy("Effect.Destroy", false)]
+    #[case::destroying("Effect.Destroy", true)]
+    #[case::exiling("Effect.Exile", true)]
+    #[case::countering("Effect.Counter", true)]
+    #[case::moving_cards("Effect.Move", false)]
     #[case::flying("Keyword.Flying", true)]
     #[case::reach("Keyword.Reach", true)]
     #[case::menace("Keyword.Menace", true)]

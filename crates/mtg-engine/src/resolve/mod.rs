@@ -193,6 +193,7 @@ fn scope_of<'a>(
         specs: rules.targets(),
         bindings: &resolving.bindings,
         snapshots,
+        departed: &resolving.snapshots,
         cause: ability.and_then(|a| a.cause()),
     }
 }

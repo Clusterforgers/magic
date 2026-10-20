@@ -81,3 +81,4 @@ pub fn on_battlefield(state: &GameState, name: &str) -> Option<mtg_core::ids::Ob
 pub mod combat;
 pub mod forecast;
 pub mod keywords;
+pub mod removal;
