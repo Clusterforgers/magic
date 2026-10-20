@@ -329,12 +329,13 @@ pub fn read(item: &str) -> Option<Keyword> {
         "suspend" => suspend(rest),
         "enchant" => enchant(rest).map(Keyword::Enchant),
         "partner with" => Some(Keyword::PartnerWith(rest.to_owned())),
+        "companion" => Some(Keyword::Companion),
         name if rest.is_empty() => plain(name),
         _ => None,
     }
 }
 
-/// A keyword without parameters; `companion` stays unread because its restriction has no place in the data.
+/// A keyword without parameters.
 fn plain(name: &str) -> Option<Keyword> {
     Some(match name {
         "flash" => Keyword::Flash,
@@ -456,6 +457,10 @@ mod tests {
     #[case::suspend("Suspend 4\u{2014}{U}", Keyword::Suspend { time: 4, cost: mana("{U}") })]
     #[case::enchant("Enchant creature", Keyword::Enchant(creature()))]
     #[case::enchant_land("Enchant land", Keyword::Enchant(Selector(vec![Pred::Type(CardType::Land)])))]
+    #[case::companion(
+        "Companion \u{2014} Each nonland card in your starting deck has a different name.",
+        Keyword::Companion
+    )]
     #[case::partner_with(
         "Partner with Pir, Imaginative Rascal",
         Keyword::PartnerWith("Pir, Imaginative Rascal".into())
@@ -474,9 +479,6 @@ mod tests {
     #[case::enchant_with_a_condition("Enchant creature you control")]
     #[case::enchant_two_types("Enchant creature or planeswalker")]
     #[case::partner_friends("Partner\u{2014}Friends forever")]
-    #[case::companion(
-        "Companion \u{2014} Each nonland card in your starting deck has a different name."
-    )]
     #[case::undeclared("Undying")]
     #[case::level_up("Level up {1}{U}")]
     #[case::typecycling("Plainscycling {2}")]
@@ -582,6 +584,7 @@ mod tests {
             "Evoke {1}",
             "Overload {1}",
             "Partner with Someone",
+            "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();
         for sample in samples {
@@ -595,11 +598,10 @@ mod tests {
             );
             seen.push(keyword.name());
         }
-        // Companion is the one declared keyword the compiler leaves to the table.
-        let unread: Vec<_> = Keyword::NAMES
+        let missing: Vec<_> = Keyword::NAMES
             .iter()
             .filter(|name| !seen.contains(name))
             .collect();
-        assert_eq!(unread, [&"Companion"]);
+        assert!(missing.is_empty(), "{missing:?}");
     }
 }

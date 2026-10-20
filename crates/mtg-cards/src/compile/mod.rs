@@ -13,6 +13,7 @@ mod normalize;
 
 use crate::ability::Ability;
 use crate::card::{Card, Face, ImplStatus, Span};
+use crate::keyword::Keyword;
 use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprint};
 
 pub use classify::ClauseKind;
@@ -51,6 +52,7 @@ pub fn compile(printed: &PrintedCard) -> Compiled {
     for (index, shown) in printed.faces.iter().enumerate() {
         let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
         let spell = is_spell(shown);
+        let aura = is_aura(shown);
         let mut abilities = Vec::new();
         for raw in clauses::split(&text) {
             let clause_text = text.slice(raw.range.clone());
@@ -60,7 +62,9 @@ pub fn compile(printed: &PrintedCard) -> Compiled {
             let kind = classify::classify(&clause_text, spell);
             let keyword = (kind == ClauseKind::Keyword)
                 .then(|| keywords::read(&clause_text))
-                .flatten();
+                .flatten()
+                // `check_printed` accepts Enchant on an Aura only.
+                .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)));
             let read = keyword.is_some();
             abilities.push(keyword.map_or_else(|| manual::manual(kind, span), Ability::Keyword));
             listed.push(Clause {
@@ -95,6 +99,13 @@ fn own_names(face: &PrintedFace) -> Vec<String> {
         names.push(short.trim().to_owned());
     }
     names
+}
+
+/// Whether the face is an Aura.
+fn is_aura(face: &PrintedFace) -> bool {
+    face.type_line
+        .split_once('\u{2014}')
+        .is_some_and(|(_, subtypes)| subtypes.split_whitespace().any(|word| word == "Aura"))
 }
 
 /// Whether the face is an instant or a sorcery.
