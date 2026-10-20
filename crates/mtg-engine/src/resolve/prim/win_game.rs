@@ -12,8 +12,8 @@ const OPPONENT_WON: &str = "an opponent won the game";
 
 /// Every opponent of each player the effect names, who is in the game, loses at once, in turn order from the
 /// active player; the engine's check after the resolution then ends the game when one player is left (and as a draw
-/// when none is). A winner who has left the game, or one nobody names, makes no one lose. Winning is losing for a
-/// player another winner plays against, so naming two players leaves neither standing.
+/// when none is). A winner who has left the game, or one nobody names, makes no one lose. Two winners are opponents
+/// of each other, so naming two players leaves neither standing.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::WinGame { who } = effect else {
         return Err(wrong_effect("WinGame"));

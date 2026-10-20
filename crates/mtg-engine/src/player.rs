@@ -16,7 +16,7 @@ pub enum LossReason {
     EmptyLibrary,
     /// The player gave up (CR 104.3a).
     Conceded,
-    /// A format-specific condition, such as commander damage.
+    /// A reason in words: a format's own condition, such as commander damage, or an opponent who won by an effect.
     Format(String),
 }
 
