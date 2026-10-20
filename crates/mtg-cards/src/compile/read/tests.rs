@@ -125,6 +125,7 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
     assert_eq!(read, tilde);
 }
 
+mod may;
 mod triggers;
 
 mod mana {
@@ -281,7 +282,7 @@ mod cards_and_life {
     #[case::unless("Target player draws a card unless they discard a card.")]
     #[case::if_you_do("Draw a card. If you do, gain 1 life.")]
     #[case::if_first("If you control a creature, draw a card.")]
-    #[case::may("You may draw a card.")]
+    #[case::may_for_a_player("Target player may draw a card.")]
     #[case::then_a_player("Each player draws a card, then discards a card.")]
     #[case::x_without_an_x_cost("Draw X cards.")]
     #[case::lose_half("You lose half your life, rounded up.")]

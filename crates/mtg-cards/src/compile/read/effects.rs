@@ -13,7 +13,10 @@ use crate::value::Amount;
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 5] = [chain, player_effect, damage, removal, pump];
+const TEMPLATES: [Template; 6] = [may, chain, player_effect, damage, removal, pump];
+
+/// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
+const IMPERATIVES: [Template; 2] = [chain, removal];
 
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the
 /// templates read.
@@ -50,6 +53,23 @@ fn regeneration(r: &mut Reader<'_>, effects: &mut [Effect]) -> Option<()> {
     }
     *regenerate = false;
     Some(())
+}
+
+/// "You may draw a card.": one step that the controller may do.
+fn may(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("you may")?;
+    IMPERATIVES.iter().find_map(|template| {
+        r.attempt(|r| {
+            let found = template(r)?;
+            // A chain of steps is not one choice: "may" would have to say which steps it covers.
+            (found.len() == 1).then(|| {
+                vec![Effect::May {
+                    who: Ref::You,
+                    effects: found,
+                }]
+            })
+        })
+    })
 }
 
 /// Steps of "you" joined by ", then": "Scry 1, then draw a card."
