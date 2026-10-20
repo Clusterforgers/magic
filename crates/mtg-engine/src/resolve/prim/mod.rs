@@ -163,9 +163,9 @@ mod tests {
             [
                 "Effect.Draw",
                 "Effect.Discard",
+                "Effect.Choose",
                 "Effect.Destroy",
                 "Effect.Exile",
-                "Effect.Choose",
                 "Effect.Sacrifice",
                 "Effect.Counter",
                 "Effect.DealDamage",
