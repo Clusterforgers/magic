@@ -1095,10 +1095,7 @@ pub(crate) fn check_printed(
     }
     if live {
         for keyword in &printed.keywords {
-            let modelled = card.abilities().any(
-                |(_, a)| matches!(a, Ability::Keyword(k) if k.name().eq_ignore_ascii_case(keyword)),
-            );
-            if Keyword::is_known_name(keyword) && !modelled {
+            if Keyword::is_known_name(keyword) && !has_keyword(card, printed, keyword) {
                 walker.at("faces", |w| {
                     w.problem(format!(
                         "the imported card has the keyword `{keyword}` but no face has it"
@@ -1120,6 +1117,21 @@ pub(crate) fn check_printed(
         }
     }
     walker.problems
+}
+
+/// Whether some face has the keyword as an ability, or a `Manual` clause names it in that face's
+/// printed text (a granted keyword, a typecycling form).
+fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
+    let needle = keyword.to_ascii_lowercase();
+    card.abilities().any(|(face, ability)| match ability {
+        Ability::Keyword(k) => k.name().eq_ignore_ascii_case(keyword),
+        Ability::Manual { span, .. } => printed
+            .faces
+            .get(face)
+            .and_then(|shown| span.slice(&shown.oracle_text))
+            .is_some_and(|clause| clause.to_ascii_lowercase().contains(&needle)),
+        _ => false,
+    })
 }
 
 fn check_face_printed(
