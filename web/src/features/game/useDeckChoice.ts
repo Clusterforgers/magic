@@ -47,8 +47,14 @@ interface Options {
 
 interface Chosen {
   id: string
+  /** What the answer said the table now sees. */
   deck: SeatDeck
+  /** What the roster showed when the choice was made. */
+  before: SeatDeck | null | undefined
 }
+
+const agrees = (a: SeatDeck | null | undefined, b: SeatDeck | null | undefined): boolean =>
+  a === b || (a != null && b != null && sameDeck(a, b))
 
 /**
  * Sends the player's choice through `chooseDeck`. The choice shows at once with the request's pending state; a refusal
@@ -62,8 +68,10 @@ export function useDeckChoice({ api, game, seat, credential, current, run, stop 
   const [problem, setProblem] = useState<DeckProblem | null>(null)
 
   // The id marks an option only while it still describes the seat's deck: a roster that shows another one has moved on.
+  // Until the roster has caught up with the answer it still shows the deck from before it, which does not take the id away.
   const chosenId =
-    chosen !== null && (current === undefined || (current !== null && sameDeck(current, chosen.deck)))
+    chosen !== null &&
+    (current === undefined || agrees(current, chosen.deck) || agrees(current, chosen.before))
       ? chosen.id
       : null
 
@@ -76,7 +84,7 @@ export function useDeckChoice({ api, game, seat, credential, current, run, stop 
         setPending(null)
         if (outcome.kind === 'busy') return
         if (outcome.kind === 'done') {
-          setChosen({ id: pick.id, deck: outcome.value })
+          setChosen({ id: pick.id, deck: outcome.value, before: current })
           setResult(`Your deck is now ${deckWords(outcome.value)}.`)
           return
         }
