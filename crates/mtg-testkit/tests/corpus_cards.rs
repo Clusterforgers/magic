@@ -27,9 +27,9 @@ use Support::{Manual, Partial, Verified};
 /// Every corpus card with the state the engine's capabilities give it and the number of abilities
 /// its definition carries (mana abilities and rules together). The engine runs the plain mana ability, spells,
 /// `{T}` abilities and triggered abilities made of drawing, discarding, sacrificing, destroying, exiling,
-/// countering, scrying, looking at and revealing cards, choosing and moving them, shuffling, life and damage, and the
-/// keywords of combat, so the thirteen cards that need no more are Verified (the Forest's ability comes from its land
-/// type) and a card whose other abilities are still missing carries what runs as Partial: Mulldrifter's draw and
+/// countering, scrying, looking at and revealing cards, choosing and moving them, shuffling, life and damage, paying
+/// mana as an effect, and the keywords of combat, so the fifteen cards that need no more are Verified (the Forest's
+/// ability comes from its land type) and a card whose other abilities are still missing carries what runs as Partial: Mulldrifter's draw and
 /// flying, not its evoke; Faithless Looting's draw and discard, not its flashback. Jace, the Mind Sculptor stays with
 /// the table for its loyalty costs; Rampant Growth, Cultivate and Flooded Strand for `Search` and a move to the
 /// battlefield.
@@ -57,7 +57,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Giant Growth", Manual, 0),
     ("Grizzly Bears", Verified, 0),
     ("Hero of Bladehold", Manual, 0),
-    ("Izzet Charm", Manual, 0),
+    ("Izzet Charm", Verified, 1),
     ("Jace, the Mind Sculptor", Manual, 0),
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
@@ -67,7 +67,7 @@ const CARDS: [(&str, Support, usize); 40] = [
     ("Panharmonicon", Manual, 0),
     ("Questing Beast", Partial, 3),
     ("Rampant Growth", Manual, 0),
-    ("Rhystic Study", Manual, 0),
+    ("Rhystic Study", Verified, 1),
     ("Serra Angel", Verified, 2),
     ("Sneak Attack", Manual, 0),
     ("Sol Ring", Manual, 0),
@@ -159,15 +159,11 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     let burst = reasons("Burst Lightning");
     assert!(burst.contains("Keyword.Kicker"), "{burst}");
     assert!(!burst.contains("Effect.DealDamage"), "{burst}");
-    // Rhystic Study's trigger and its "may" are there; the payment the opponent is offered is not.
-    let rhystic = reasons("Rhystic Study");
-    assert!(rhystic.contains("Effect.Pay"), "{rhystic}");
-    assert!(
-        !rhystic.contains("Effect.May")
-            && !rhystic.contains("Trigger.SpellCast")
-            && !rhystic.contains("Ability.Triggered"),
-        "{rhystic}"
-    );
+    // Rhystic Study and Izzet Charm are covered whole: the payment the opponent or the spell's controller is offered
+    // is played now, with the "may", the trigger, the modes, the counter and the damage around it.
+    for name in ["Rhystic Study", "Izzet Charm"] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // Mulldrifter's draw and flying are covered, its evoke is not.
     let mulldrifter = reasons("Mulldrifter");
     assert!(mulldrifter.contains("Keyword.Evoke"), "{mulldrifter}");
@@ -211,20 +207,19 @@ fn lacking(name: &str) -> Vec<String> {
     missing.into_iter().collect()
 }
 
-/// A "may", a choice, modes and the library effects run now, so the corpus cards that use only those are Verified
-/// (Brainstorm, Eternal Witness, Opt); each of these is still held back by another primitive, which this table names.
-/// The cards that need a payment, a search or a move onto the battlefield wait for the tasks that build those.
+/// A "may", a choice, modes, a payment and the library effects run now, so the corpus cards that use only those are
+/// Verified (Brainstorm, Eternal Witness, Izzet Charm, Opt, Rhystic Study); each of these is still held back by another
+/// primitive, which this table names. The cards that need a search or a move onto the battlefield wait for the tasks
+/// that build those.
 #[rstest]
 #[case::cultivate("Cultivate", &["Effect.Move.Battlefield", "Effect.Search"])]
-#[case::izzet_charm("Izzet Charm", &["Cost.Mana", "Effect.Pay"])]
-#[case::rhystic_study("Rhystic Study", &["Cost.Mana", "Effect.Pay"])]
 #[case::delver(
     "Delver of Secrets // Insectile Aberration",
     &["Effect.If", "Effect.Transform"]
 )]
 #[case::sneak_attack(
     "Sneak Attack",
-    &["Cost.Mana", "Effect.Continuous", "Effect.Move.Battlefield", "Mod.AddKeyword"]
+    &["Effect.Continuous", "Effect.Move.Battlefield", "Mod.AddKeyword"]
 )]
 #[case::jace("Jace, the Mind Sculptor", &["Ability.Loyalty"])]
 fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(
