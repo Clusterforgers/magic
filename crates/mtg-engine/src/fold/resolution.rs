@@ -5,7 +5,8 @@ use mtg_core::ids::ObjectId;
 
 use super::zones::move_object;
 use super::{invalid, priority_to_active, reset_passes};
-use crate::abilities::{AbilityObject, PutOnStack};
+use crate::abilities::{AbilityObject, AbilityRef, PutOnStack};
+use crate::ability_reader;
 use crate::choose::Target;
 use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
@@ -20,16 +21,15 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         Event::AbilityActivated {
             source, ability, ..
         } => {
-            let card = state
-                .source_object(source.id)
-                .ok_or_else(|| invalid(format!("{source:?} activated an ability and is gone")))?;
-            let rules = card
-                .def
-                .rules
-                .get(*ability)
+            if state.source_object(source.id).is_none() {
+                return Err(invalid(format!(
+                    "{source:?} activated an ability and is gone"
+                )));
+            }
+            let rules = ability_reader::ability(state, AbilityRef::printed(source.id, *ability))
                 .ok_or_else(|| invalid(format!("{source:?} has no ability {ability}")))?;
             let once = matches!(
-                &**rules,
+                &*rules,
                 Ability::Activated {
                     limit: Some(Limit::OncePerTurn),
                     ..
@@ -104,14 +104,12 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
         let waiting = crate::triggers::take(state, put)?;
         (waiting.rules, waiting.bindings)
     } else {
-        let card = state
-            .source_object(source.id)
-            .ok_or_else(|| invalid(format!("the source {source:?} of an ability is gone")))?;
-        let rules = card
-            .def
-            .rules
-            .get(put.ability)
-            .cloned()
+        if state.source_object(source.id).is_none() {
+            return Err(invalid(format!(
+                "the source {source:?} of an ability is gone"
+            )));
+        }
+        let rules = ability_reader::ability(state, AbilityRef::printed(source.id, put.ability))
             .ok_or_else(|| invalid(format!("{source:?} has no ability {}", put.ability)))?;
         (rules, Bindings::new())
     };

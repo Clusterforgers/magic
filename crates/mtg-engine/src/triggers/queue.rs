@@ -9,7 +9,8 @@ use mtg_cards::ability::{Ability, Limit};
 use mtg_core::ids::PlayerId;
 
 use super::{DelayedId, Triggered};
-use crate::abilities::{Cause, PutOnStack};
+use crate::abilities::{AbilityRef, Cause, PutOnStack};
+use crate::ability_reader;
 use crate::cast::Pending;
 use crate::choose::{TriggerEntry, TriggersOptions};
 use crate::decision::{Decision, DecisionKind};
@@ -75,13 +76,11 @@ impl PendingTrigger {
 pub(crate) fn fold_triggered(state: &mut GameState, t: &Triggered) -> Result<(), EngineError> {
     let (rules, bindings) = match t.delayed {
         None => {
-            let card = state
-                .source_object(t.source.id)
-                .ok_or_else(|| invalid(format!("{:?} triggered and is gone", t.source)))?;
-            let rules =
-                card.def.rules.get(t.ability).cloned().ok_or_else(|| {
-                    invalid(format!("{:?} has no ability {}", t.source, t.ability))
-                })?;
+            if state.source_object(t.source.id).is_none() {
+                return Err(invalid(format!("{:?} triggered and is gone", t.source)));
+            }
+            let rules = ability_reader::ability(state, AbilityRef::printed(t.source.id, t.ability))
+                .ok_or_else(|| invalid(format!("{:?} has no ability {}", t.source, t.ability)))?;
             (rules, Bindings::new())
         }
         Some(id) => {
