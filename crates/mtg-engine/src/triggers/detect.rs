@@ -13,6 +13,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{DelayedId, Triggered};
 use crate::abilities::Cause;
+use crate::ability_reader::abilities_of;
 use crate::choose::{Choices, Target};
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
@@ -294,8 +295,8 @@ fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool {
     )
 }
 
-/// The printed triggered abilities of the permanents of `state` that trigger on `happened`.
-fn printed(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, used: &mut Used) {
+/// The triggered abilities of the permanents of `state` that trigger on `happened`.
+fn permanents(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, used: &mut Used) {
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id) else {
             continue;
@@ -306,14 +307,14 @@ fn printed(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, u
         if !state.is_alive(controller) {
             continue;
         }
-        for (index, rules) in object.card().rules.iter().enumerate() {
+        for (address, rules) in abilities_of(state, id) {
             let Ability::Triggered {
                 when,
                 intervening_if,
                 limit,
                 from: ZoneKind::Battlefield,
                 ..
-            } = &**rules
+            } = &*rules
             else {
                 continue;
             };
@@ -329,7 +330,8 @@ fn printed(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, u
                 }
             }
             if *limit == Some(Limit::OncePerTurn)
-                && (state.limit_spent(source, index) || !used.limits.insert((source, index)))
+                && (state.limit_spent(source, address.ability)
+                    || !used.limits.insert((source, address.ability)))
             {
                 continue;
             }
@@ -341,7 +343,7 @@ fn printed(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, u
             };
             found.push(Triggered {
                 source,
-                ability: index,
+                ability: address.ability,
                 controller,
                 cause,
                 snapshot: shot.clone(),
@@ -412,7 +414,7 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
     let mut used = Used::default();
     for happened in happenings(pre, events, post) {
         let state = if happened.looks_back() { pre } else { post };
-        printed(state, &happened, &mut found, &mut used);
+        permanents(state, &happened, &mut found, &mut used);
         delayed(state, post, &happened, &mut found, &mut used);
     }
     found
