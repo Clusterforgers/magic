@@ -1,0 +1,275 @@
+[
+  {
+    "id": "95ff951b-a098-409c-86c8-373b6c9f8331",
+    "oracle_id": "aa1a6646-c1e6-4bff-9092-43ee3e137914",
+    "name": "Archon of Cruelty",
+    "lang": "en",
+    "layout": "normal",
+    "set": "frc",
+    "collector_number": "47",
+    "rarity": "mythic",
+    "released_at": "2026-10-02",
+    "digital": false,
+    "mana_cost": "{6}{B}{B}",
+    "cmc": 8.0,
+    "type_line": "Creature — Archon",
+    "oracle_text": "Flying\nWhenever this creature enters or attacks, target opponent sacrifices a creature or planeswalker of their choice, discards a card, and loses 3 life. You draw a card and gain 3 life.",
+    "power": "6",
+    "toughness": "6",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Flying"
+    ]
+  },
+  {
+    "id": "ec7d6864-7b6b-4f74-8474-9b9ec96b1d33",
+    "oracle_id": "36cd2364-d113-47d1-b2c4-b088d9eb88dd",
+    "name": "Brainstorm",
+    "lang": "en",
+    "layout": "normal",
+    "set": "frc",
+    "collector_number": "39",
+    "rarity": "common",
+    "released_at": "2026-10-02",
+    "digital": false,
+    "mana_cost": "{U}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Draw three cards, then put two cards from your hand on top of your library in any order.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "4f616706-ec97-4923-bb1e-11a69fbaa1f8",
+    "oracle_id": "cc187110-1148-4090-bbb8-e205694a39f5",
+    "name": "Counterspell",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dsc",
+    "collector_number": "114",
+    "rarity": "uncommon",
+    "released_at": "2024-09-27",
+    "digital": false,
+    "mana_cost": "{U}{U}",
+    "cmc": 2.0,
+    "type_line": "Instant",
+    "oracle_text": "Counter target spell.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "5dcd0c4e-4047-47a2-8969-c62616d457c2",
+    "oracle_id": "59e7f2ae-4535-4191-98be-3e65b6b2befa",
+    "name": "Doom Blade",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msc",
+    "collector_number": "576",
+    "rarity": "uncommon",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{1}{B}",
+    "cmc": 2.0,
+    "type_line": "Instant",
+    "oracle_text": "Destroy target nonblack creature.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "39704000-65d3-4d39-849e-a3b617376bbc",
+    "oracle_id": "30b24e8e-3b0e-4d8e-90f3-f66eb7c1858c",
+    "name": "Eternal Witness",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmm",
+    "collector_number": "286",
+    "rarity": "uncommon",
+    "released_at": "2023-08-04",
+    "digital": false,
+    "mana_cost": "{1}{G}{G}",
+    "cmc": 3.0,
+    "type_line": "Creature — Human Shaman",
+    "oracle_text": "When this creature enters, you may return target card from your graveyard to your hand.",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "409f9b88-f03e-40b6-9883-68c14c37c0de",
+    "oracle_id": "14c8f55d-d177-4c25-a931-ebeb9e6062a0",
+    "name": "Grizzly Bears",
+    "lang": "en",
+    "layout": "normal",
+    "set": "10e",
+    "collector_number": "268",
+    "rarity": "common",
+    "released_at": "2007-07-13",
+    "digital": false,
+    "mana_cost": "{1}{G}",
+    "cmc": 2.0,
+    "type_line": "Creature — Bear",
+    "oracle_text": "",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "6a0b230b-d391-4998-a3f7-7b158a0ec2cd",
+    "oracle_id": "68954295-54e3-4303-a6bc-fc4547a4e3a3",
+    "name": "Llanowar Elves",
+    "lang": "en",
+    "layout": "normal",
+    "set": "fdn",
+    "collector_number": "227",
+    "rarity": "common",
+    "released_at": "2024-11-15",
+    "digital": false,
+    "mana_cost": "{G}",
+    "cmc": 1.0,
+    "type_line": "Creature — Elf Druid",
+    "oracle_text": "{T}: Add {G}.",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "G"
+    ]
+  },
+  {
+    "id": "bbc99a51-1501-4525-a3cc-f48249b64bed",
+    "oracle_id": "713332c1-5bd8-400f-bfff-c1ca0697a043",
+    "name": "Opt",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tdc",
+    "collector_number": "158",
+    "rarity": "common",
+    "released_at": "2025-04-11",
+    "digital": false,
+    "mana_cost": "{U}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Scry 1. (Look at the top card of your library. You may put that card on the bottom.)\nDraw a card.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Scry"
+    ]
+  },
+  {
+    "id": "b8c5e74c-96e7-4a1f-93b7-14d776fe4b2d",
+    "oracle_id": "4b7ac066-e5c7-43e6-9e7e-2739b24a905d",
+    "name": "Serra Angel",
+    "lang": "en",
+    "layout": "normal",
+    "set": "fdn",
+    "collector_number": "740",
+    "rarity": "uncommon",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{3}{W}{W}",
+    "cmc": 5.0,
+    "type_line": "Creature — Angel",
+    "oracle_text": "Flying\nVigilance (Attacking doesn't cause this creature to tap.)",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Flying",
+      "Vigilance"
+    ]
+  },
+  {
+    "id": "f7e12477-d59f-442b-a678-1be746d0b7be",
+    "oracle_id": "b1544f21-7e98-461b-aed5-e748b0168c52",
+    "name": "Swords to Plowshares",
+    "lang": "en",
+    "layout": "normal",
+    "set": "frc",
+    "collector_number": "37",
+    "rarity": "uncommon",
+    "released_at": "2026-10-02",
+    "digital": false,
+    "mana_cost": "{W}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Exile target creature. Its controller gains life equal to its power.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "537d2b05-3f52-45d6-8fe3-26282085d0c6",
+    "oracle_id": "34515b16-c9a4-4f98-8c77-416a7a523407",
+    "name": "Wrath of God",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmm",
+    "collector_number": "70",
+    "rarity": "rare",
+    "released_at": "2023-08-04",
+    "digital": false,
+    "mana_cost": "{2}{W}{W}",
+    "cmc": 4.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Destroy all creatures. They can't be regenerated.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  }
+]

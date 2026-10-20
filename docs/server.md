@@ -22,7 +22,7 @@ The `mtg-server` crate: one actor per game behind an axum REST and WebSocket tra
 | `POST /api/games` | `{format: "normal", seats: [{name, deck?}], visibility?, held?}` gives 201 `{game, code, seats: [{seat, token}]}`; 2 to 12 seats, `deck` the seat's starting deck (a demo deck id, or for seat 0 the id of one of the creator's stored decks; none leaves the seat to choose), 16 KiB `application/json` body, unknown fields refused, server-random seed. `visibility` is `public` or `invite` (the default); `held` is how many seats from seat 0 get a token (1 to the seat count, every seat by default): the others are open, their `name` is never read and `seats` lists only the held ones. A deck nobody has is 400 `unknown_deck`, a blocked one 422 `deck_blocked`. |
 | `GET /api/games/{id}` | `{started, seats, connected, ready, result, visibility}`; a malformed and an unknown id are one 404. |
 | `/api/lobbies`, `/api/join`, `/api/games/{id}/join`, `/leave`, `/seats/{n}/release`, `PUT /seats/{n}/deck`, `PATCH` and `DELETE /api/games/{id}` | The game browser: [Open games](#open-games); the deck of a seat: [Choosing a deck](#choosing-a-deck). |
-| `GET /api/demo-decks`, `GET /healthz` | The built-in decks; `ok`. |
+| `GET /api/demo-decks`, `GET /healthz` | The built-in decks (three mono-colour vanilla decks, `green-black` and `white-blue` with the corpus cards the engine fully supports); `ok`. |
 | `/api/auth/*`, `GET /api/me/games` | Accounts. |
 | `GET /api/cards`, `GET /api/cards/{oracle_id}` | Card search and one card; public. |
 | `/api/decks`, `/api/decks/{id}`, `/api/decks/import`, `/api/decks/check`, `GET /api/decks/{id}/export` | Stored decks, import, export and the deck check; accounts. |

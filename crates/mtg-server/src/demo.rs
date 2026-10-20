@@ -1,15 +1,18 @@
-//! Built-in decks for games without a deck builder: mono-colour basics plus vanilla creatures.
+//! Built-in decks for games without a deck builder: basics plus vanilla creatures, and in two decks the corpus cards the engine fully supports.
 //!
-//! Every creature is a real card without rules text; names, costs and stats were checked against Scryfall.
+//! Every vanilla creature is a real card without rules text; names, costs and stats were checked against Scryfall. The corpus cards are assembled from `demo/scryfall.json` and the rules files, as a stored deck's are.
 
-use std::sync::Arc;
+use std::collections::BTreeMap;
+use std::sync::{Arc, OnceLock};
 
-use mtg_cards::CardDefinition;
 use mtg_cards::vanilla::{basic_land, creature};
+use mtg_cards::{CardDefinition, PrintedCard, PrintedFace, builtin};
 use mtg_core::color::Color;
+use mtg_core::mana::ManaType;
+use mtg_import::scryfall::{CardRecord, cards};
 
-/// Basic lands in every demo deck.
-const LANDS: usize = 24;
+/// Scryfall objects (trimmed) of the corpus cards the demo decks play.
+const SCRYFALL: &str = include_str!("demo/scryfall.json");
 /// Copies of each creature in a demo deck.
 const COPIES: usize = 4;
 
@@ -23,9 +26,13 @@ pub struct DemoDeck {
     pub id: &'static str,
     /// Display name.
     pub name: &'static str,
-    /// The deck's only colour.
+    /// The deck's main colour, the one of its vanilla creatures.
     pub color: Color,
+    /// Basic lands by colour and copies.
+    lands: &'static [(Color, usize)],
     creatures: &'static [Line],
+    /// Corpus cards by name and copies.
+    spells: &'static [(&'static str, usize)],
 }
 
 const GREEN: &[Line] = &[
@@ -64,24 +71,75 @@ const WHITE: &[Line] = &[
     ("Siege Mastodon", 4, 1, 3, 5),
 ];
 
-static DECKS: [DemoDeck; 3] = [
+const GREEN_BLACK_CREATURES: &[Line] = &[
+    ("Elvish Warrior", 0, 2, 2, 3),
+    ("Kalonian Tusker", 0, 2, 3, 3),
+    ("Centaur Courser", 2, 1, 3, 3),
+    ("Alpine Grizzly", 2, 1, 4, 2),
+    ("Leatherback Baloth", 0, 3, 4, 5),
+];
+
+const WHITE_BLUE_CREATURES: &[Line] = &[
+    ("Silvercoat Lion", 1, 1, 2, 2),
+    ("Pearled Unicorn", 2, 1, 2, 2),
+    ("Border Guard", 2, 1, 1, 4),
+    ("Pillarfield Ox", 3, 1, 2, 4),
+    ("Siege Mastodon", 4, 1, 3, 5),
+];
+
+static DECKS: [DemoDeck; 5] = [
     DemoDeck {
         id: "mono-green",
         name: "Mono Green Stompers",
         color: Color::Green,
+        lands: &[(Color::Green, 24)],
         creatures: GREEN,
+        spells: &[],
     },
     DemoDeck {
         id: "mono-red",
         name: "Mono Red Giants",
         color: Color::Red,
+        lands: &[(Color::Red, 24)],
         creatures: RED,
+        spells: &[],
     },
     DemoDeck {
         id: "mono-white",
         name: "Mono White Weenies",
         color: Color::White,
+        lands: &[(Color::White, 24)],
         creatures: WHITE,
+        spells: &[],
+    },
+    DemoDeck {
+        id: "green-black",
+        name: "Green-Black Midrange",
+        color: Color::Green,
+        lands: &[(Color::Green, 12), (Color::Black, 12)],
+        creatures: GREEN_BLACK_CREATURES,
+        spells: &[
+            ("Llanowar Elves", 4),
+            ("Grizzly Bears", 4),
+            ("Doom Blade", 4),
+            ("Eternal Witness", 2),
+            ("Archon of Cruelty", 2),
+        ],
+    },
+    DemoDeck {
+        id: "white-blue",
+        name: "White-Blue Control",
+        color: Color::White,
+        lands: &[(Color::White, 12), (Color::Blue, 12)],
+        creatures: WHITE_BLUE_CREATURES,
+        spells: &[
+            ("Serra Angel", 4),
+            ("Swords to Plowshares", 4),
+            ("Counterspell", 3),
+            ("Brainstorm", 2),
+            ("Opt", 2),
+            ("Wrath of God", 1),
+        ],
     },
 ];
 
@@ -101,31 +159,93 @@ pub fn stand_in() -> &'static DemoDeck {
     &DECKS[0]
 }
 
+/// The imported record as the strings assembly reads.
+fn printed_card(record: &CardRecord) -> PrintedCard {
+    PrintedCard {
+        oracle_id: record.oracle_id.to_string(),
+        name: record.name.clone(),
+        keywords: record.keywords.clone(),
+        faces: record
+            .faces()
+            .map(|face| PrintedFace {
+                name: face.name.clone(),
+                mana_cost: face.mana_cost.clone(),
+                type_line: face.type_line.clone(),
+                oracle_text: face.oracle_text.clone(),
+                power: face.power.clone(),
+                toughness: face.toughness.clone(),
+                loyalty: face.loyalty.clone(),
+                defense: face.defense.clone(),
+                colors: face
+                    .colors
+                    .iter()
+                    .map(|color| ManaType::from(color).symbol().to_string())
+                    .collect(),
+            })
+            .collect(),
+    }
+}
+
+/// The corpus cards the decks play, by name, as this engine runs them; empty if the embedded data does not load (a test fails then).
+fn corpus() -> &'static BTreeMap<String, Arc<CardDefinition>> {
+    static CORPUS: OnceLock<BTreeMap<String, Arc<CardDefinition>>> = OnceLock::new();
+    CORPUS.get_or_init(|| {
+        let (Ok(rules), caps) = (builtin::library(), mtg_engine::caps()) else {
+            return BTreeMap::new();
+        };
+        cards(SCRYFALL.as_bytes())
+            .filter_map(Result::ok)
+            .map(|record| {
+                let assembled = rules.assemble(&printed_card(&record), &caps);
+                (record.name, Arc::new(assembled.definition))
+            })
+            .collect()
+    })
+}
+
 impl DemoDeck {
     /// Number of cards in the deck.
     pub fn size(&self) -> usize {
-        LANDS + COPIES * self.creatures.len()
+        let lands: usize = self.lands.iter().map(|&(_, copies)| copies).sum();
+        let spells: usize = self.spells.iter().map(|&(_, copies)| copies).sum();
+        lands + spells + COPIES * self.creatures.len()
     }
 
     /// The deck as a list of `(card name, copies)`, lands first.
     pub fn list(&self) -> Vec<(String, usize)> {
-        let mut list = vec![(basic_land(self.color).name.clone(), LANDS)];
+        let mut list: Vec<(String, usize)> = self
+            .lands
+            .iter()
+            .map(|&(color, copies)| (basic_land(color).name.clone(), copies))
+            .collect();
         list.extend(
             self.creatures
                 .iter()
                 .map(|line| (line.0.to_owned(), COPIES)),
+        );
+        list.extend(
+            self.spells
+                .iter()
+                .map(|&(name, copies)| (name.to_owned(), copies)),
         );
         list
     }
 
     /// Builds the 60 cards.
     pub fn cards(&self) -> Vec<Arc<CardDefinition>> {
-        let mut cards: Vec<Arc<CardDefinition>> =
-            std::iter::repeat_n(basic_land(self.color), LANDS).collect();
+        let mut cards: Vec<Arc<CardDefinition>> = Vec::new();
+        for &(color, copies) in self.lands {
+            cards.extend(std::iter::repeat_n(basic_land(color), copies));
+        }
         for &(name, generic, pips, power, toughness) in self.creatures {
             let colored = vec![self.color; pips];
             let card = creature(name, generic, &colored, power, toughness);
             cards.extend(std::iter::repeat_n(card, COPIES));
+        }
+        for &(name, copies) in self.spells {
+            if let Some(card) = corpus().get(name) {
+                cards.extend(std::iter::repeat_n(Arc::clone(card), copies));
+            }
         }
         cards
     }
@@ -137,6 +257,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
+    use mtg_cards::support::Support;
     use mtg_core::card::{CardType, Supertype};
     use mtg_engine::GameSetup;
     use mtg_engine::format::{FormatRules, Normal};
@@ -175,6 +296,66 @@ mod tests {
         }
     }
 
+    #[rstest]
+    #[case("green-black", Color::Green, Color::Black)]
+    #[case("white-blue", Color::White, Color::Blue)]
+    fn two_colour_decks_are_legal_and_use_their_colours(
+        #[case] id: &str,
+        #[case] first: Color,
+        #[case] second: Color,
+    ) {
+        let deck = find(id).unwrap();
+        let cards = deck.cards();
+        assert_eq!(cards.len(), 60);
+        assert_eq!(cards.len(), deck.size());
+        assert!(Normal.validate_deck(&cards).is_ok());
+        for card in &cards {
+            assert!(
+                card.colors().iter().all(|c| c == first || c == second),
+                "{} strays from {first:?} and {second:?}",
+                card.name
+            );
+        }
+        let spells = cards
+            .iter()
+            .filter(|c| !c.abilities.is_empty() || !c.rules.is_empty())
+            .count();
+        assert!(spells >= 16, "{id} plays {spells} cards with abilities");
+    }
+
+    #[test]
+    fn every_corpus_card_is_one_the_engine_fully_supports() {
+        let rules = builtin::library().unwrap();
+        let caps = mtg_engine::caps();
+        let records: BTreeMap<String, CardRecord> = cards(SCRYFALL.as_bytes())
+            .map(|record| record.unwrap())
+            .map(|record| (record.name.clone(), record))
+            .collect();
+        for deck in all() {
+            for &(name, _) in deck.spells {
+                let record = records
+                    .get(name)
+                    .unwrap_or_else(|| panic!("{name} missing"));
+                let assembled = rules.assemble(&printed_card(record), &caps);
+                assert_eq!(assembled.support.support, Support::Verified, "{name}");
+            }
+        }
+    }
+
+    #[test]
+    fn the_decks_play_each_other_to_the_end() {
+        let green_black = find("green-black").unwrap();
+        let white_blue = find("white-blue").unwrap();
+        for seed in 0..6 {
+            let setup = GameSetup::new(
+                Arc::new(Normal),
+                seed,
+                vec![green_black.cards(), white_blue.cards()],
+            );
+            let outcome = mtg_testkit::play_game(setup, seed).unwrap_or_else(|e| panic!("{e}"));
+            assert!(outcome.turns > 1, "seed {seed}");
+        }
+    }
     #[test]
     fn list_matches_cards() {
         for deck in all() {

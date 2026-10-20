@@ -27,7 +27,7 @@ pub struct ChosenDeck {
 }
 
 impl ChosenDeck {
-    /// A built-in deck. Its cards are vanilla, so the table has nothing to resolve by hand.
+    /// A built-in deck. Every card is one the engine fully supports, so the table has nothing to resolve by hand.
     pub fn demo(deck: &DemoDeck) -> Result<ChosenDeck, FingerprintError> {
         let cards = deck.cards();
         Ok(ChosenDeck {
