@@ -12,11 +12,12 @@ use mtg_protocol::rest::{GameInfo, GameSeat};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
+use crate::deck_choice;
 use crate::demo::{self, DemoDeck};
 use crate::game_id::GameId;
 use crate::origin::origin_allowed;
 use crate::records::Visibility;
-use crate::registry::{CreateError, GameOptions, SeatRequest};
+use crate::registry::{ChosenDeck, CreateError, GameOptions};
 use crate::server::AppState;
 
 /// Largest request body, in bytes.
@@ -39,6 +40,8 @@ pub(crate) struct ApiError {
     message: String,
     /// Kept as a list, not a map, so the error stays small enough to return by value.
     headers: Vec<(HeaderName, HeaderValue)>,
+    /// Members of the body besides `error` and `message`.
+    fields: Vec<(&'static str, serde_json::Value)>,
 }
 
 impl ApiError {
@@ -52,6 +55,7 @@ impl ApiError {
             code,
             message: message.into(),
             headers: Vec::new(),
+            fields: Vec::new(),
         }
     }
 
@@ -59,6 +63,20 @@ impl ApiError {
     pub(crate) fn with_header(mut self, name: HeaderName, value: HeaderValue) -> ApiError {
         self.headers.push((name, value));
         self
+    }
+
+    /// The same error with one more member in the body of its answer.
+    pub(crate) fn with_field(mut self, name: &'static str, value: serde_json::Value) -> ApiError {
+        self.fields.push((name, value));
+        self
+    }
+
+    #[cfg(test)]
+    pub(crate) fn field(&self, name: &str) -> Option<&serde_json::Value> {
+        self.fields
+            .iter()
+            .find(|(field, _)| *field == name)
+            .map(|(_, value)| value)
     }
 
     #[cfg(test)]
@@ -103,7 +121,14 @@ impl ApiError {
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
-        let body = json!({ "error": self.code, "message": self.message });
+        let mut body = json!({ "error": self.code, "message": self.message });
+        if let Some(members) = body.as_object_mut() {
+            members.extend(
+                self.fields
+                    .into_iter()
+                    .map(|(name, value)| (name.to_owned(), value)),
+            );
+        }
         let mut response = (self.status, Json(body)).into_response();
         for (name, value) in self.headers {
             response.headers_mut().append(name, value);
@@ -183,7 +208,11 @@ struct NewSeat {
     /// Judged for held seats only: an open seat is named by whoever takes it.
     #[serde(default)]
     name: String,
-    deck: String,
+    /// The deck the seat starts with: a built-in deck's id, or, for the creator's seat, the id of
+    /// one of their stored decks. The seat's holder may change it before the game starts; a seat
+    /// made without one has none until its holder chooses.
+    #[serde(default)]
+    deck: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -296,12 +325,23 @@ pub(crate) async fn create_game(
     }
     let headers = request.headers().clone();
     let body = read_json::<NewGame>(request).await?;
-    let (seats, options) = validate(&body)?;
+    let (names, options) = validate(&body)?;
     let host = app.auth().session_user(&headers).await?.map(|user| user.id);
-    let created = app.registry().create_with(&seats, options, host).await?;
+    let mut decks = Vec::with_capacity(names.len());
+    for (index, seat) in body.seats.iter().enumerate() {
+        decks.push(match seat.deck.as_deref() {
+            Some(id) => Some(starting_deck(&app, &headers, index, id).await?),
+            None => None,
+        });
+    }
+    let seats = names.len();
+    let created = app
+        .registry()
+        .create_decked(names, decks, options, host)
+        .await?;
     tracing::info!(
         game = %created.id,
-        seats = seats.len(),
+        seats,
         held = created.seats.len(),
         visibility = options.visibility.as_str(),
         bound = host.is_some(),
@@ -374,9 +414,30 @@ fn is_json(headers: &HeaderMap) -> bool {
         .is_some_and(|mime| mime.trim().eq_ignore_ascii_case("application/json"))
 }
 
-/// Checks a creation request and resolves its decks; returns the seats and what the game is made
-/// with besides them.
-fn validate(body: &NewGame) -> Result<(Vec<SeatRequest>, GameOptions), ApiError> {
+/// The deck seat `index` of a new game starts with. Only the creator's seat may name a stored deck,
+/// and only the creator's own; every other seat starts with a built-in deck or none.
+async fn starting_deck(
+    app: &AppState,
+    headers: &HeaderMap,
+    index: usize,
+    id: &str,
+) -> Result<ChosenDeck, ApiError> {
+    let found = if index == 0 {
+        deck_choice::resolve(app, headers, id).await
+    } else {
+        deck_choice::built_in(id)
+    };
+    found.map_err(|refused| {
+        refused.into_error_with(
+            StatusCode::BAD_REQUEST,
+            &format!("seat {index}: no such deck; see GET /api/demo-decks"),
+        )
+    })
+}
+
+/// Checks a creation request; returns the names of the seats and what the game is made with
+/// besides them.
+fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
     if body.format != "normal" {
         return Err(ApiError::new(
             StatusCode::BAD_REQUEST,
@@ -414,14 +475,7 @@ fn validate(body: &NewGame) -> Result<(Vec<SeatRequest>, GameOptions), ApiError>
             } else {
                 String::new()
             };
-            let deck = demo::find(&seat.deck).ok_or_else(|| {
-                ApiError::new(
-                    StatusCode::BAD_REQUEST,
-                    "unknown_deck",
-                    format!("seat {index}: no such deck; see GET /api/demo-decks"),
-                )
-            })?;
-            Ok(SeatRequest { name, deck })
+            Ok(name)
         })
         .collect::<Result<Vec<_>, ApiError>>()?;
     let options = GameOptions {

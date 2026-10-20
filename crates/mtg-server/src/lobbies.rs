@@ -16,15 +16,20 @@ use axum::http::header::{AUTHORIZATION, ETAG, IF_NONE_MATCH, RETRY_AFTER};
 use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use mtg_core::ids::PlayerId;
+use mtg_protocol::SeatDeck;
 use mtg_protocol::rest::{
-    JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, VisibilityBody,
+    ChooseDeck, DeckChoiceErrorCode, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode,
+    LobbyGame, LobbyList, VisibilityBody,
 };
 use sha2::{Digest, Sha256};
 
 use crate::api::{ApiError, MAX_NAME_CHARS, MAX_SEATS, is_unsafe_in_names, read_json};
 use crate::auth::client_address;
+use crate::deck_choice::{self, Refused};
 use crate::game_id::GameId;
-use crate::registry::{ClaimError, Entrance, HOST, ListedGame, SeatClaim, Seated, TableError};
+use crate::registry::{
+    ChosenDeck, ClaimError, Entrance, HOST, ListedGame, SeatClaim, Seated, TableError,
+};
 use crate::server::AppState;
 use crate::throttle::Blocked;
 
@@ -114,6 +119,11 @@ impl From<TableError> for ApiError {
                 StatusCode::CONFLICT,
                 LobbyErrorCode::Started,
                 "that game has already started",
+            ),
+            TableError::Ready => ApiError::new(
+                StatusCode::CONFLICT,
+                DeckChoiceErrorCode::SeatReady.as_str(),
+                "the seat is ready; take Ready back to change its deck",
             ),
             TableError::Record(_) => {
                 tracing::error!(%error, "a change to a table could not be saved");
@@ -255,8 +265,28 @@ pub(crate) async fn join_game(
     let headers = request.headers().clone();
     let body = read_json::<JoinRequest>(request).await?;
     let claim = visitor(&app, &headers, body.name).await?;
-    let seated = app.registry().claim(id, Entrance::Listing, claim).await?;
+    // Before the game is looked at, so a refused deck says nothing about the game.
+    let deck = brought(&app, &headers, body.deck.as_deref()).await?;
+    let seated = app
+        .registry()
+        .claim_with(id, Entrance::Listing, claim, deck)
+        .await?;
     Ok(joined(seated))
+}
+
+/// The deck a joining visitor brings, if they name one.
+async fn brought(
+    app: &AppState,
+    headers: &HeaderMap,
+    id: Option<&str>,
+) -> Result<Option<ChosenDeck>, ApiError> {
+    match id {
+        Some(id) => deck_choice::resolve(app, headers, id)
+            .await
+            .map(Some)
+            .map_err(Refused::into_error),
+        None => Ok(None),
+    }
 }
 
 /// `POST /api/join`: takes a seat of the game a join code names, public or not.
@@ -273,12 +303,16 @@ pub(crate) async fn join_by_code(
     // The name is judged first: a visitor must not be able to tell a right code from a wrong one
     // by whether the name was asked for.
     let claim = visitor(&app, &headers, body.name).await?;
+    let deck = brought(&app, &headers, body.deck.as_deref()).await?;
     let found = app
         .registry()
         .find_by_code(&body.code, address, Instant::now())
         .map_err(|blocked| turned_away(blocked, LobbyErrorCode::TooManyAttempts, "wrong codes"))?;
     let id = found.ok_or_else(ApiError::not_found)?;
-    let seated = app.registry().claim(id, Entrance::Code, claim).await?;
+    let seated = app
+        .registry()
+        .claim_with(id, Entrance::Code, claim, deck)
+        .await?;
     Ok(joined(seated))
 }
 
@@ -389,6 +423,34 @@ fn seat_number(text: &str) -> Option<PlayerId> {
         && (text.len() == 1 || !text.starts_with('0'));
     let number: usize = text.parse().ok().filter(|_| plain)?;
     (number < MAX_SEATS).then(|| PlayerId::from_index(number))
+}
+
+/// `PUT /api/games/{id}/seats/{n}/deck`: the holder of seat `n` chooses the deck it plays, until
+/// the seat is ready. Answers what the table now knows of the deck.
+pub(crate) async fn choose_deck(
+    State(app): State<AppState>,
+    path: Result<Path<(String, String)>, PathRejection>,
+    request: Request,
+) -> Result<Json<SeatDeck>, ApiError> {
+    let Path((game, seat)) = path.map_err(|_| ApiError::not_found())?;
+    let game: GameId = game.parse().map_err(|_| ApiError::not_found())?;
+    let seat = seat_number(&seat).ok_or_else(ApiError::not_found)?;
+    if app.stopping() {
+        return Err(shutting_down());
+    }
+    let headers = request.headers().clone();
+    let body = read_json::<ChooseDeck>(request).await?;
+    let by = holder(&app, &headers, game).await?;
+    if by != seat {
+        return Err(forbidden("only the holder of a seat chooses its deck"));
+    }
+    // Only the holder gets this far, so the answer to a deck that is not theirs tells nothing to a
+    // stranger.
+    let deck = deck_choice::resolve(&app, &headers, &body.deck)
+        .await
+        .map_err(Refused::into_error)?;
+    let note = app.registry().choose_deck(game, seat, by, deck).await?;
+    Ok(Json(note))
 }
 
 /// `PATCH /api/games/{id}`: the host lists the game or hides it again before it starts.

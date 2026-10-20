@@ -2,7 +2,7 @@
 
 Design of the deck check: when a deck is chosen or built, a check finds the cards the game cannot play without manual steps and highlights them, and a saved deck that passes shows a Verified marker until it changes.
 
-The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mtg_cards::deck::deck_report`), the deck endpoints and the derived marker are implemented (`server.md`, "Cards and decks"); the highlighting in the builder and the list, the card preview and the live check are implemented (`web.md`); the states in the lobby and the precon browser, and the table note, are design. A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
+The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mtg_cards::deck::deck_report`), the deck endpoints and the derived marker are implemented (`server.md`, "Cards and decks"); the highlighting in the builder and the list, the card preview and the live check are implemented (`web.md`); the table note, a seat's deck name, format and count of manual cards in the lobby roster, is implemented in the server (`server.md`, "Choosing a deck"); its display in the lobby and the precon browser are design. A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
 
 ## Terms
 
