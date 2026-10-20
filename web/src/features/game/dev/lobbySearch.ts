@@ -12,6 +12,10 @@ export interface DevLobbySearch {
   names?: 'long'
   /** `invite` makes the game invite only; a listed game when missing. */
   visibility?: 'invite'
+  /** The seats that have chosen no deck yet (everybody else plays one). */
+  nodeck?: number[]
+  /** `1` makes this page a signed-in player, whose chooser lists stored decks beside the built-in ones. */
+  account?: true
 }
 
 const FEWEST_SEATS = 2
@@ -34,11 +38,12 @@ function seatList(value: unknown, seats: number): number[] {
   return [...new Set(found)].sort((a, b) => a - b)
 }
 
-/** Reads `?seats=&ready=&away=&me=&names=&visibility=`; the router has already parsed numbers and lists. */
+/** Reads `?seats=&ready=&away=&me=&names=&visibility=&nodeck=&account=`; the router has already parsed numbers and lists. */
 export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySearch {
   const asked = whole(search.seats)
   const seats = asked === undefined || asked < FEWEST_SEATS || asked > MOST_SEATS ? 4 : asked
   const me = whole(search.me)
+  const nodeck = seatList(search.nodeck, seats)
   return {
     seats,
     ready: seatList(search.ready, seats),
@@ -46,5 +51,7 @@ export function parseDevLobbySearch(search: Record<string, unknown>): DevLobbySe
     me: me === undefined || me >= seats ? 0 : me,
     names: search.names === 'long' ? 'long' : undefined,
     visibility: search.visibility === 'invite' ? 'invite' : undefined,
+    nodeck: nodeck.length > 0 ? nodeck : undefined,
+    account: search.account === 1 || search.account === '1' ? true : undefined,
   }
 }

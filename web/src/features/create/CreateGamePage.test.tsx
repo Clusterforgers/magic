@@ -151,10 +151,10 @@ describe('the number of seats', () => {
     await waitFor(() => expect(server.creates).toHaveLength(1))
     expect(server.creates[0]).toEqual({
       format: 'normal',
-      seats: Array.from({ length: count }, (_, i) => ({
-        name: `Player ${i + 1}`,
-        deck: DECKS[i % DECKS.length]?.id,
-      })),
+      // The creator's seat plays the deck the form shows; an open seat names none, its player chooses in the lobby.
+      seats: Array.from({ length: count }, (_, i) =>
+        i === 0 ? { name: 'Player 1', deck: DECKS[0]?.id } : { name: `Player ${i + 1}` },
+      ),
       visibility: 'public',
       held: 1,
     })

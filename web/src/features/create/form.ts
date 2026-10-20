@@ -139,8 +139,9 @@ export function problemCount(problems: ReadonlyMap<number, SeatProblems>): numbe
 
 /**
  * The body for `POST /api/games`: the format is always "normal" and names go out trimmed. A link per seat holds every
- * seat and is invite only; otherwise only the creator's seat is held and the others, which the server never reads a
- * name for, go out as `Player N` on the deck the form gave them.
+ * seat, each with the deck the form gave it, and is invite only; otherwise only the creator's seat is held, with its
+ * deck, and the others, which the server never reads a name for, go out as `Player N` and with no deck: whoever takes
+ * a seat chooses its deck in the lobby.
  */
 export function toRequest(draft: Draft): CreateGameRequest {
   if (draft.links) {
@@ -152,10 +153,9 @@ export function toRequest(draft: Draft): CreateGameRequest {
   }
   return {
     format: 'normal',
-    seats: draft.seats.map((seat, index) => ({
-      name: index === 0 ? seat.name.trim() : `Player ${index + 1}`,
-      deck: seat.deck,
-    })),
+    seats: draft.seats.map((seat, index) =>
+      index === 0 ? { name: seat.name.trim(), deck: seat.deck } : { name: `Player ${index + 1}` },
+    ),
     visibility: draft.visibility,
     held: 1,
   }

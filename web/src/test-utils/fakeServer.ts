@@ -1,6 +1,8 @@
 import { isRecord } from '@/net/check'
 import { createApi } from '@/net/api'
 import type { Api, DeckInfo, Fetch } from '@/net/api'
+import { createDecksApi } from '@/net/decks'
+import type { DecksApi } from '@/net/decks'
 import { fakeFetch, jsonResponse } from './fakeFetch'
 import type { FetchCall } from './fakeFetch'
 import { DECKS } from './decks'
@@ -27,11 +29,20 @@ export interface ServerScript {
    * `POST .../seats/{n}/release`. The good answer by default (`changedReply`).
    */
   change?: (call: FetchCall) => Response | Promise<Response>
+  /** Answers `GET /api/decks`, the signed-in account's stored decks; none by default. */
+  myDecks?: (call: FetchCall) => Response | Promise<Response>
+  /**
+   * Answers `PUT /api/games/{id}/seats/{n}/deck`; gets the parsed JSON body. By default a built-in deck is answered
+   * with its facts (`demoDeckReply`) and any other id with the server's 404 `unknown_deck`.
+   */
+  chooseDeck?: (body: unknown, call: FetchCall) => Response | Promise<Response>
 }
 
 /** A REST server in memory, with a record of what was asked of it. */
 export interface FakeServer {
   api: Api
+  /** The deck endpoints on the same fake `fetch`, for the stored decks of a signed-in player. */
+  decks: DecksApi
   /** The `fetch` behind `api`, for tests that stub the global one. */
   fetch: Fetch
   calls: FetchCall[]
@@ -67,6 +78,16 @@ export function changedReply(call: FetchCall): Response {
   return jsonResponse(200, { visibility: isRecord(body) ? body.visibility : 'invite' })
 }
 
+/** The reply of a real server to a good choice of a built-in deck: its name, `normal` and no manual cards. */
+export function demoDeckReply(body: unknown, decks: readonly DeckInfo[] = DECKS): Response {
+  const asked = isRecord(body) ? body.deck : undefined
+  const deck = decks.find((candidate) => candidate.id === asked)
+  if (deck === undefined) {
+    return jsonResponse(404, { error: 'unknown_deck', message: 'no such deck' })
+  }
+  return jsonResponse(200, { name: deck.name, format: 'normal', manual_cards: 0 })
+}
+
 const isChange = (path: string, method: string | undefined): boolean =>
   method === 'PATCH' ||
   method === 'DELETE' ||
@@ -80,6 +101,13 @@ export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS
     const path = call.url.split('?')[0] ?? call.url
     if (path === '/api/demo-decks') return script.decks?.(call) ?? jsonResponse(200, decks)
     if (path === '/api/lobbies') return script.lobbies?.(call) ?? jsonResponse(200, { games: [] })
+    if (path === '/api/decks' && call.init?.method === undefined) {
+      return script.myDecks?.(call) ?? jsonResponse(200, { decks: [] })
+    }
+    if (call.init?.method === 'PUT' && /^\/api\/games\/[^/]+\/seats\/\d+\/deck$/.test(path)) {
+      const body: unknown = typeof call.init.body === 'string' ? JSON.parse(call.init.body) : null
+      return script.chooseDeck?.(body, call) ?? demoDeckReply(body, decks)
+    }
     if (path === '/api/games' && call.init?.method === 'POST') {
       const body: unknown = typeof call.init.body === 'string' ? JSON.parse(call.init.body) : null
       creates.push(body)
@@ -101,6 +129,7 @@ export function startServer(script: ServerScript = {}, decks: DeckInfo[] = DECKS
   })
   return {
     api: createApi({ fetch: fake.fetch }),
+    decks: createDecksApi({ fetch: fake.fetch }),
     fetch: fake.fetch,
     calls: fake.calls,
     creates,

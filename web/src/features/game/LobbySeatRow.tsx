@@ -4,6 +4,7 @@ import { Pill } from '@/components/Pill'
 import type { PillTone } from '@/components/Pill'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { deckWords } from './deckWords'
 import { seatState } from './lobbyModel'
 import type { LobbyRow, SeatState } from './lobbyModel'
 
@@ -60,21 +61,34 @@ export function LobbySeatRow({ row, account, remove }: LobbySeatRowProps) {
             <span className="sr-only">{row.connected ? 'Connected' : 'Not connected'}</span>
           </span>
         </span>
-        <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-          <span className="shrink-0 text-muted-foreground">Seat {row.seat + 1}</span>
-          <span data-slot="seat-name" className="min-w-0 font-medium [overflow-wrap:anywhere]">
-            {row.name}
+        <span className="grid min-w-0 gap-0.5">
+          <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="shrink-0 text-muted-foreground">Seat {row.seat + 1}</span>
+            <span data-slot="seat-name" className="min-w-0 font-medium [overflow-wrap:anywhere]">
+              {row.name}
+            </span>
+            {row.you ? <Pill>you</Pill> : null}
+            {account === null ? null : (
+              <span
+                data-slot="seat-account"
+                className="min-w-0 text-xs text-muted-foreground [overflow-wrap:anywhere]"
+              >
+                signed in as {account}
+              </span>
+            )}
+            {row.named ? null : <span className="text-xs text-muted-foreground">not joined yet</span>}
           </span>
-          {row.you ? <Pill>you</Pill> : null}
-          {account === null ? null : (
+          {/* What the whole table is told of the deck: its name, format and a count, never a card. An open seat has none to tell. */}
+          {!row.named || row.deck === undefined ? null : (
             <span
-              data-slot="seat-account"
+              data-slot="seat-deck"
+              data-deck={row.deck === null ? 'none' : 'chosen'}
               className="min-w-0 text-xs text-muted-foreground [overflow-wrap:anywhere]"
             >
-              signed in as {account}
+              <span className="sr-only">Deck: </span>
+              {row.deck === null ? 'no deck yet' : deckWords(row.deck)}
             </span>
           )}
-          {row.named ? null : <span className="text-xs text-muted-foreground">not joined yet</span>}
         </span>
       </span>
       {/* Remove comes first so the state pills end at the same edge in every row; on a phone, where the name needs the width, the pill is above it. */}
