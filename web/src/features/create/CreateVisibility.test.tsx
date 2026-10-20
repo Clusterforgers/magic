@@ -50,10 +50,7 @@ describe('the visibility choice', () => {
     await waitFor(() => expect(server.creates).toHaveLength(1))
     expect(server.creates[0]).toEqual({
       format: 'normal',
-      seats: [
-        { name: 'Player 1', deck: 'mono-green' },
-        { name: 'Player 2', deck: 'mono-red' },
-      ],
+      seats: [{ name: 'Player 1', deck: 'mono-green' }, { name: 'Player 2' }],
       visibility,
       held: 1,
     })

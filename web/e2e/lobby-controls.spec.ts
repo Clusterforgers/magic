@@ -1,7 +1,7 @@
 // Goal: the host makes a public game on /new and a guest in another browser context joins it from the open games list; the host's toggle takes the game out of the list and back (the guest's lobby follows), and Close game, after its question, sends the host to Play with a notice and shows the guest "The host closed this game."; the host can also remove the guest, who is told so, and a guest who joins again can leave from the lobby and lands on Play.
 import { expect, test } from '@playwright/test'
 import type { Browser, BrowserContext, Page } from '@playwright/test'
-import { seatRows } from './lobby'
+import { deckLines, seatRows } from './lobby'
 
 /** A host name no earlier run used, so a server that is kept between runs lists exactly one such game. */
 const unique = (prefix: string): string => `${prefix}${Math.random().toString(36).slice(2, 7)}`
@@ -60,6 +60,9 @@ test('the host lists, hides and closes a game, and the guest in another browser 
 
     await join(guestPage, host, 'Ivy')
     await expect(seatRows(hostPage).filter({ hasText: 'Ivy' })).toHaveCount(1)
+    // The form sent the host's deck and none for the open seat, so the guest chooses theirs in the lobby.
+    await expect(deckLines(hostPage).nth(0)).toHaveText('Deck: Mono Green Stompers, Normal, no manual steps')
+    await expect(deckLines(hostPage).nth(1)).toHaveText('Deck: no deck yet')
     // The guest sees who may find the game and cannot change it; the host's controls are not on their page.
     await expect(guestPage.locator('[data-slot="lobby-visibility"]')).toContainText(
       'Listed in the game browser',

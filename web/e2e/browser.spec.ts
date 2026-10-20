@@ -1,6 +1,6 @@
-// Goal: a guest finds a public game in the open games list on /, answers the name question in the dialog, lands in the game's lobby on the seat the server gave them (the seat link in the address fragment survives a reload), and the host's lobby shows the new name; a guest reaches an invite game, which no list shows, by typing its code, hears one sentence for a code no game has with the typed code kept, and lands in the lobby the answer names.
+// Goal: a guest finds a public game in the open games list on /, answers the name question in the dialog, lands in the game's lobby on the seat the server gave them (the seat link in the address fragment survives a reload), and the host's lobby shows the new name; the taken seat has no deck, which both lobbies say, and Ready waits until the guest chooses one there and the host's lobby shows its name, format and manual cards; a guest reaches an invite game, which no list shows, by typing its code, hears one sentence for a code no game has with the typed code kept, and lands in the lobby the answer names.
 import { expect, test } from '@playwright/test'
-import { seatRows } from './lobby'
+import { chooseDeck, deckLines, seatRows } from './lobby'
 import { WEB_URL } from './ports'
 
 /** A host name no earlier run used, so a server that is kept between runs lists exactly one such game. */
@@ -18,10 +18,8 @@ test('a guest joins a public game from the open games list and lands in its lobb
       format: 'normal',
       visibility: 'public',
       held: 1,
-      seats: [
-        { name: host, deck: 'mono-green' },
-        { name: 'Open seat', deck: 'mono-red' },
-      ],
+      // The open seat names no deck: whoever takes it chooses one in the lobby, as the create form leaves it.
+      seats: [{ name: host, deck: 'mono-green' }, { name: 'Open seat' }],
     },
   })
   expect(made.ok()).toBe(true)
@@ -54,6 +52,21 @@ test('a guest joins a public game from the open games list and lands in its lobb
     await expect(seatRows(guestPage).filter({ hasText: 'Ivy' })).toHaveCount(1)
     await expect(seatRows(hostPage).filter({ hasText: 'Ivy' })).toHaveCount(1)
 
+    // The host's seat shows its deck to both lobbies; the taken seat has none, and Ready waits for a choice.
+    await expect(deckLines(hostPage).nth(0)).toHaveText('Deck: Mono Green Stompers, Normal, no manual steps')
+    await expect(deckLines(guestPage).nth(1)).toHaveText('Deck: no deck yet')
+    await expect(deckLines(hostPage).nth(1)).toHaveText('Deck: no deck yet')
+    const guestReady = guestPage.getByRole('button', { name: 'Ready', exact: true })
+    await expect(guestReady).toBeDisabled()
+    await expect(guestPage.getByText('Ready needs a deck. Choose one under Your deck.')).toBeVisible()
+    await chooseDeck(guestPage, 'Mono Red Giants')
+    await expect(deckLines(hostPage).nth(1)).toHaveText('Deck: Mono Red Giants, Normal, no manual steps')
+    await expect(guestReady).toBeEnabled()
+    await guestReady.click()
+    await expect(guestPage.getByRole('button', { name: 'Not ready', exact: true })).toBeVisible()
+    await expect(guestPage.getByText(/Your deck is locked while you are ready/)).toBeVisible()
+    await guestPage.getByRole('button', { name: 'Not ready', exact: true }).click()
+
     await guestPage.reload()
     await expect(guestPage.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
     await expect(seatRows(guestPage).filter({ hasText: 'Ivy' })).toHaveCount(1)
@@ -75,10 +88,7 @@ test('a guest joins an invite game with its code, which no list shows, and a wro
       format: 'normal',
       visibility: 'invite',
       held: 1,
-      seats: [
-        { name: host, deck: 'mono-green' },
-        { name: 'Open seat', deck: 'mono-red' },
-      ],
+      seats: [{ name: host, deck: 'mono-green' }, { name: 'Open seat' }],
     },
   })
   expect(made.ok()).toBe(true)

@@ -2,10 +2,15 @@
 import type { GameContextValue } from '@/features/game/gameContext'
 import type { LobbyApi } from '@/features/game/useLobbyControls'
 import type { KnownGame } from '@/features/game/useGameInfo'
+import type { DeckInfo } from '@/net/api'
+import { createDecksApi } from '@/net/decks'
+import type { DecksApi } from '@/net/decks'
+import { LobbyError } from '@/net/lobbyErrors'
 import { createSession } from '@/play/session'
 import type { Session } from '@/play/session'
 import { initialPlayState } from '@/play/store'
 import type { LobbyRoster } from '@/play/store'
+import type { Counts, DeckListItem, DeckState, SeatDeck } from '@/protocol/generated'
 import type { DevLobbySearch } from './lobbySearch'
 
 /** The text the dev page prints, so a production bundle can be searched for any trace of the fixture. */
@@ -24,14 +29,86 @@ const LONG = [
   'Hubert Blaine Wolfeschlegelstein',
 ]
 
+/** The decks the fixture's seats play, in turn: built-in ones and stored ones with cards to resolve by hand. */
+const SEAT_DECKS: readonly SeatDeck[] = [
+  { name: 'Mono Green Stompers', format: 'normal', manual_cards: 0 },
+  { name: 'Burn', format: 'modern', manual_cards: 3 },
+  { name: 'Mono White Weenies', format: 'normal', manual_cards: 0 },
+  { name: 'Graveyard Pauper with a Very Long Deck Name That Wraps', format: 'pauper', manual_cards: 1 },
+]
+
+/** The built-in decks the chooser lists. */
+const DEMO_DECKS: DeckInfo[] = [
+  { id: 'mono-green', name: 'Mono Green Stompers', color: 'Green', size: 60, cards: [] },
+  { id: 'mono-red', name: 'Mono Red Giants', color: 'Red', size: 60, cards: [] },
+  { id: 'mono-white', name: 'Mono White Weenies', color: 'White', size: 60, cards: [] },
+]
+
+const counts = (over: Partial<Counts>): Counts => ({
+  total: 60,
+  verified: 60,
+  partial: 0,
+  manual: 0,
+  stale: 0,
+  unplayable: 0,
+  ...over,
+})
+
+function storedDeck(
+  id: string,
+  name: string,
+  format: string,
+  state: DeckState,
+  tally: Counts,
+  issues = 0,
+): DeckListItem {
+  return {
+    id,
+    name,
+    format,
+    created_at: '2026-10-10T09:00:00Z',
+    updated_at: '2026-10-17T12:00:00Z',
+    state,
+    verified: state === 'verified',
+    changed: false,
+    checked_at: '2026-10-17T12:00:00Z',
+    summary: { format, state, counts: tally, zones: [{ zone: 'main', counts: tally }], issues },
+  }
+}
+
+/** The signed-in player's stored decks: verified, with cards to resolve by hand, blocked, and one the game refuses. */
+const STORED_DECKS: DeckListItem[] = [
+  storedDeck('stored-burn', 'Burn', 'modern', 'manual_play', counts({ verified: 57, manual: 3 })),
+  storedDeck(
+    'stored-pauper',
+    'Pauper Affinity',
+    'pauper',
+    'blocked',
+    counts({ verified: 58, unplayable: 2 }),
+    2,
+  ),
+  storedDeck('stored-rakdos', 'Rakdos Midrange', 'standard', 'verified', counts({})),
+  storedDeck(
+    'stored-atraxa',
+    'Atraxa Superfriends',
+    'commander',
+    'verified',
+    counts({ total: 100, verified: 100 }),
+  ),
+]
+
 /** The roster `options` describe: everybody connected unless away, and the ready seats ready. */
-export function fixtureRoster({ seats, ready, away, names }: DevLobbySearch): LobbyRoster {
-  const listed = Array.from({ length: seats }, (_, seat) => ({
-    seat,
-    name: (names === 'long' ? LONG[seat % LONG.length] : SHORT[seat]) ?? `Seat ${seat + 1}`,
-    connected: !away.includes(seat),
-    ready: ready.includes(seat),
-  }))
+export function fixtureRoster({ seats, ready, away, names, nodeck }: DevLobbySearch): LobbyRoster {
+  const listed = Array.from({ length: seats }, (_, seat) => {
+    const deck = SEAT_DECKS[seat % SEAT_DECKS.length]
+    return {
+      seat,
+      name: (names === 'long' ? LONG[seat % LONG.length] : SHORT[seat]) ?? `Seat ${seat + 1}`,
+      connected: !away.includes(seat),
+      ready: ready.includes(seat),
+      ...(deck === undefined || nodeck?.includes(seat) === true ? {} : { deck }),
+    }
+  })
   return { seats: listed, needed: listed.filter((entry) => !entry.ready).length }
 }
 
@@ -77,9 +154,30 @@ export function lobbyGame(options: DevLobbySearch): GameContextValue {
   return { game: 'dev-lobby', session, lookup: { game, missing: false, failed: false } }
 }
 
+/** What the table is told of a stored deck: the cards that are not verified are the ones to resolve by hand. */
+const factsOf = (deck: DeckListItem): SeatDeck => ({
+  name: deck.name,
+  format: deck.format,
+  manual_cards:
+    deck.summary.counts.manual +
+    deck.summary.counts.partial +
+    deck.summary.counts.stale +
+    deck.summary.counts.unplayable,
+})
+
+/** Setting a seat's deck in the roster, as the server's next `Lobby` message would. */
+function setDeck(session: Session, seat: number, deck: SeatDeck): void {
+  session.store.setState((state) => {
+    if (state.lobby === null) return {}
+    const seats = state.lobby.seats.map((entry) => (entry.seat === seat ? { ...entry, deck } : entry))
+    return { lobby: { seats, needed: state.lobby.needed } }
+  })
+}
+
 /**
  * The calls of the lobby's controls with no server behind them: every one succeeds, and a removal opens the seat in the
- * roster as the server's next `Lobby` message would. Close and Leave then take the page to Play, as in the app.
+ * roster as the server's next `Lobby` message would. A deck is chosen after a short wait and shows in the roster; the
+ * Commander deck is refused with its issues, as a Normal game refuses it. Close and Leave then take the page to Play.
  */
 export function lobbyApi(session: Session): LobbyApi {
   return {
@@ -95,5 +193,49 @@ export function lobbyApi(session: Session): LobbyApi {
         return { lobby: { seats, needed: seats.filter((entry) => !entry.ready).length } }
       })
     },
+    listDecks: async () => DEMO_DECKS,
+    chooseDeck: async (_game, seat, id) => {
+      await new Promise((resolve) => setTimeout(resolve, 400))
+      const demo = DEMO_DECKS.find((deck) => deck.id === id)
+      const stored = STORED_DECKS.find((deck) => deck.id === id)
+      if (stored?.format === 'commander') {
+        throw new LobbyError('deck_blocked', 422, 'The deck cannot be played in this game.', null, [
+          {
+            code: 'no_commander_zone',
+            message: 'a Normal game has no command zone, but this deck has a commander',
+            zone: 'commander',
+            oracle_id: null,
+            name: null,
+          },
+          {
+            code: 'copies',
+            message: 'Sol Ring: 4 copies is the most a Normal deck may hold, and this deck has 5',
+            zone: 'main',
+            oracle_id: 'dev-sol-ring',
+            name: 'Sol Ring',
+          },
+        ])
+      }
+      const facts =
+        demo === undefined
+          ? stored === undefined
+            ? undefined
+            : factsOf(stored)
+          : { name: demo.name, format: 'normal', manual_cards: 0 }
+      if (facts === undefined) throw new LobbyError('unknown_deck', 404, 'no such deck')
+      setDeck(session, seat, facts)
+      return facts
+    },
   }
+}
+
+/** The signed-in player's deck calls: the list of stored decks, from memory. */
+export function lobbyDecks(): DecksApi {
+  return createDecksApi({
+    fetch: async () =>
+      new Response(JSON.stringify({ decks: STORED_DECKS }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      }),
+  })
 }
