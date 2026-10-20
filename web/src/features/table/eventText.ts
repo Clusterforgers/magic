@@ -11,7 +11,9 @@ import type {
   HiddenEvent,
   Modification,
   ObjectId,
+  ObjectRef,
   PlayerId,
+  RuleEffect,
   Target,
   Zone,
   ZoneCause,
@@ -93,6 +95,15 @@ function describeEffect(effect: ContinuousEffect, n: EventNames): string {
   const group =
     typeof selector === 'string' || 'CreaturesControlledBy' in selector || selector.Objects.length !== 1
   const what = modificationWords(modification, group)
+  return `${who} ${what}${durationWords(duration, source, n)}`
+}
+
+/** How long a change lasts, as the end of a sentence (nothing for a change that never ends). */
+function durationWords(
+  duration: ContinuousEffect['duration'],
+  source: ObjectRef | null,
+  n: EventNames,
+): string {
   const UNTIL: Record<ContinuousEffect['duration'], string> = {
     UntilEndOfTurn: ' until end of turn',
     UntilEndOfCombat: ' until end of combat',
@@ -101,7 +112,26 @@ function describeEffect(effect: ContinuousEffect, n: EventNames): string {
       source === null ? ' while its source stays' : ` while ${n.card(source.id)} stays`,
     Forever: '',
   }
-  return `${who} ${what}${UNTIL[duration]}`
+  return UNTIL[duration]
+}
+
+/** What a change to a rule of the game says, for the players or cards it names. */
+function describeRule(effect: RuleEffect, n: EventNames): string {
+  const { rule, duration, source } = effect
+  const named = (objects: readonly ObjectRef[]): string =>
+    joinWords(objects.map((object) => n.card(object.id)))
+  const seats = (players: readonly PlayerId[]): string => joinWords(players.map((player) => n.seat(player)))
+  let what: string
+  if ('MustAttack' in rule) what = `${named(rule.MustAttack)} must attack if able`
+  else if ('MustBlock' in rule) what = `${named(rule.MustBlock)} must block if able`
+  else if ('CantBeCountered' in rule) what = `${named(rule.CantBeCountered)} can't be countered`
+  else if ('CantGainLife' in rule) what = `${seats(rule.CantGainLife)} can't gain life`
+  else if ('CantDraw' in rule) what = `${seats(rule.CantDraw)} can't draw cards`
+  else if ('CantSearch' in rule) what = `${seats(rule.CantSearch)} can't search libraries`
+  else if ('RevealTop' in rule)
+    what = `${seats(rule.RevealTop)} play with the top card of their library revealed`
+  else what = 'Triggered abilities trigger an additional time'
+  return `${what}${durationWords(duration, source, n)}`
 }
 
 function attackTarget(target: AttackTarget, n: EventNames): string {
@@ -352,6 +382,8 @@ function describePublic(event: Event, n: EventNames): LogLine {
   }
   if ('EffectCreated' in event) return quiet(describeEffect(event.EffectCreated.effect, n))
   if ('EffectExpired' in event) return quiet('An effect ends')
+  if ('RuleCreated' in event) return quiet(describeRule(event.RuleCreated.effect, n))
+  if ('RuleExpired' in event) return quiet('A rule change ends')
   if ('CreatureDied' in event) {
     const HOW: Record<DeathCause, string> = {
       LethalDamage: 'from lethal damage',

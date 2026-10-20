@@ -23,6 +23,7 @@ import type { PlayerId } from "./PlayerId";
 import type { PutOnStack } from "./PutOnStack";
 import type { ResolutionOutcome } from "./ResolutionOutcome";
 import type { Revealed } from "./Revealed";
+import type { RuleEffect } from "./RuleEffect";
 import type { Scried } from "./Scried";
 import type { Snapshot } from "./Snapshot";
 import type { Step } from "./Step";
@@ -238,6 +239,14 @@ deathtouch?: boolean, } } | "CombatEnded" | "DamageCleared" | { "EffectCreated":
 effect: ContinuousEffect, } } | { "EffectExpired": { 
 /**
  * The effect.
+ */
+id: EffectId, } } | { "RuleCreated": { 
+/**
+ * The change.
+ */
+effect: RuleEffect, } } | { "RuleExpired": { 
+/**
+ * The change.
  */
 id: EffectId, } } | { "CreatureDied": { 
 /**

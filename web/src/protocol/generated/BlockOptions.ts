@@ -14,4 +14,9 @@ blockers: Array<BlockerOption>,
  * The fewest creatures that may block an attacker together, for each attacker that needs more than one
  * (menace): it is blocked by that many or by none. Left out while no attacker needs several.
  */
-min_blockers?: Array<[ObjectId, number]>, };
+min_blockers?: Array<[ObjectId, number]>, 
+/**
+ * The creatures among `blockers` that a rule requires to block (CR 509.1c); the declaration names each of them,
+ * together with the creatures an attacker that needs several blockers must have. Left out while there are none.
+ */
+required?: Array<ObjectId>, };
