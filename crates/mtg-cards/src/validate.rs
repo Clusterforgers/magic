@@ -1122,15 +1122,32 @@ pub(crate) fn check_printed(
 /// Whether some face has the keyword as an ability, or a `Manual` clause names it in that face's
 /// printed text (a granted keyword, a typecycling form).
 fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
-    let needle = keyword.to_ascii_lowercase();
     card.abilities().any(|(face, ability)| match ability {
-        Ability::Keyword(k) => k.name().eq_ignore_ascii_case(keyword),
+        Ability::Keyword(k) => {
+            k.name().eq_ignore_ascii_case(keyword)
+                // Scryfall lists `Partner` as well for a "Partner with" card (CR 702.124).
+                || (matches!(k, Keyword::PartnerWith(_))
+                    && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
+        }
         Ability::Manual { span, .. } => printed
             .faces
             .get(face)
             .and_then(|shown| span.slice(&shown.oracle_text))
-            .is_some_and(|clause| clause.to_ascii_lowercase().contains(&needle)),
+            .is_some_and(|clause| names_keyword(clause, keyword)),
         _ => false,
+    })
+}
+
+/// Whether the clause holds the keyword (any case) at the end of a word: no letter or digit
+/// follows it inside the clause. No word has to start there, so `Plainscycling` names `Cycling`
+/// but `Flashback` does not name `Flash`.
+fn names_keyword(clause: &str, keyword: &str) -> bool {
+    let (clause, keyword) = (clause.to_ascii_lowercase(), keyword.to_ascii_lowercase());
+    clause.match_indices(&keyword).any(|(at, found)| {
+        let after = clause
+            .get(at + found.len()..)
+            .and_then(|rest| rest.chars().next());
+        !after.is_some_and(char::is_alphanumeric)
     })
 }
 
@@ -1410,13 +1427,15 @@ mod tests {
 
 #[cfg(test)]
 mod printed_keywords {
-    //! Goal: a Scryfall keyword counts as present when an ability has it or a `Manual` clause names it in its face's printed text, and as missing otherwise.
+    //! Goal: a Scryfall keyword counts as present when an ability has it (a "Partner with" card has `Partner` too) or a `Manual` clause names it at the end of a word in its face's printed text, and as missing otherwise.
     use super::*;
     use rstest::rstest;
 
     const ID: &str = "4457ed35-7c10-48c8-9776-456485fdf070";
     const BIRD: &str = "Creature \u{2014} Bird";
     const AURA: &str = "Enchantment \u{2014} Aura";
+    /// The one other imported card: the partner a "Partner with" card names.
+    const PARTNER: &str = "Pir, Imaginative Rascal";
 
     /// Every problem of a rules file against its imported card, one `(type line, oracle text, abilities)` per face.
     fn problems(status: &str, faces: &[(&str, &str, &str)], keywords: &[&str]) -> Vec<String> {
@@ -1452,7 +1471,8 @@ mod printed_keywords {
                 })
                 .collect(),
         };
-        check_printed(&card, &shown, &BTreeSet::new(), &BTreeSet::new())
+        let known = BTreeSet::from([PARTNER.to_lowercase()]);
+        check_printed(&card, &shown, &known, &BTreeSet::new())
             .into_iter()
             .map(|problem| problem.message)
             .collect()
@@ -1555,6 +1575,70 @@ mod printed_keywords {
         ],
         &["Flying"],
         &[]
+    )]
+    #[case::a_full_partner_with_card_has_partner(
+        "Full",
+        &[(BIRD, "Partner with Pir, Imaginative Rascal", r#"{"Keyword":{"PartnerWith":"Pir, Imaginative Rascal"}}"#)],
+        &["Partner with", "Partner"],
+        &[]
+    )]
+    #[case::a_partial_partner_with_card_has_partner(
+        "Partial",
+        &[(
+            BIRD,
+            "Partner with Pir, Imaginative Rascal\nHaste",
+            r#"{"Keyword":{"PartnerWith":"Pir, Imaginative Rascal"}},{"Manual":{"reason":"x","span":{"start":37,"end":42}}}"#
+        )],
+        &["Partner with", "Partner"],
+        &[]
+    )]
+    #[case::partner_is_not_partner_with(
+        "Full",
+        &[(BIRD, "Partner", r#"{"Keyword":"Partner"}"#)],
+        &["Partner with"],
+        &["Partner with"]
+    )]
+    #[case::flashback_is_not_flash(
+        "Partial",
+        &[(BIRD, "Flashback {2}{R}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":16}}}"#)],
+        &["Flash"],
+        &["Flash"]
+    )]
+    #[case::the_keyword_ends_at_punctuation(
+        "Partial",
+        &[(BIRD, "Gains flash.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":12}}}"#)],
+        &["Flash"],
+        &[]
+    )]
+    #[case::the_keyword_ends_at_a_dash(
+        "Partial",
+        &[(BIRD, "Ward\u{2014}Pay 3 life.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":16}}}"#)],
+        &["Ward"],
+        &[]
+    )]
+    #[case::the_keyword_ends_at_a_space(
+        "Partial",
+        &[(BIRD, "Gains flash until end of turn.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":30}}}"#)],
+        &["Flash"],
+        &[]
+    )]
+    #[case::the_span_ends_where_the_keyword_does(
+        "Partial",
+        &[(BIRD, "Flashback {2}{R}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":5}}}"#)],
+        &["Flash"],
+        &[]
+    )]
+    #[case::a_later_occurrence_counts(
+        "Partial",
+        &[(BIRD, "Flashback and flash", r#"{"Manual":{"reason":"x","span":{"start":0,"end":19}}}"#)],
+        &["Flash"],
+        &[]
+    )]
+    #[case::enchanted_is_not_enchant(
+        "Partial",
+        &[(AURA, "Enchanted creature has flying.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":30}}}"#)],
+        &["Enchant"],
+        &["Enchant"]
     )]
     fn a_keyword_is_present_when_an_ability_has_it_or_a_clause_names_it(
         #[case] status: &str,
