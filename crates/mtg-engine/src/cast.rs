@@ -8,12 +8,11 @@
 
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::CostItem;
-use mtg_cards::refs::TargetSpec;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::abilities::{AbilityRef, PutOnStack};
 use crate::answers::Outcome;
-use crate::choose::{Choices, asks, options_for};
+use crate::choose::{Choices, announced_specs, asks, modal_of, mode_options, options_for};
 use crate::decision::{Decision, DecisionKind, PayChoice, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
@@ -43,6 +42,8 @@ pub(crate) struct Pending {
     pub(crate) what: What,
     /// What the player has announced so far.
     pub(crate) choices: Choices,
+    /// Whether the modes are settled: chosen, or there are none to choose. Choosing none is a choice too.
+    pub(crate) modes_chosen: bool,
 }
 
 impl Pending {
@@ -51,6 +52,7 @@ impl Pending {
             player,
             what,
             choices: Choices::default(),
+            modes_chosen: false,
         }
     }
 
@@ -79,30 +81,57 @@ const fn source_of(what: &What) -> ObjectId {
     }
 }
 
-/// The target specifications of the spell or ability.
-fn specs_of<'a>(state: &'a GameState, what: &'a What) -> &'a [TargetSpec] {
+/// The rules of the spell or ability being announced.
+fn rules_of<'a>(state: &'a GameState, what: &'a What) -> Option<&'a Ability> {
     let object = state.object(source_of(what));
     match what {
-        What::Spell(_) => object
-            .and_then(spell_ability)
-            .map_or(&[][..], Ability::targets),
+        What::Spell(_) => object.and_then(spell_ability),
         What::Ability(ability) => object
             .and_then(|o| o.card().rules.get(ability.ability))
-            .map_or(&[][..], |rules| rules.targets()),
-        What::Trigger(waiting) => waiting.rules.targets(),
+            .map(|rules| &**rules),
+        What::Trigger(waiting) => Some(&*waiting.rules),
     }
 }
 
 /// The next decision of a pending cast or activation, or the events that complete it.
 ///
-/// A target specification that allows no targets, or has none to offer and needs none, is passed over. A triggered
-/// ability that cannot be given the targets it needs is removed (CR 603.3d).
+/// A modal spell or ability asks its modes first (CR 700.2) and then the targets of the modes chosen only. A target
+/// specification that allows no targets, or has none to offer and needs none, is passed over. A triggered ability
+/// that cannot be given the modes or targets it needs is removed (CR 603.3d).
 pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
-    let specs = specs_of(state, &pending.what);
     let triggered = match &pending.what {
         What::Trigger(waiting) => Some(waiting),
         _ => None,
     };
+    let cause = triggered.map(|waiting| &waiting.trigger.cause);
+    let rules = rules_of(state, &pending.what);
+    if !pending.modes_chosen {
+        if let Some(modal) = rules.and_then(modal_of) {
+            let Some(options) = mode_options(
+                state,
+                source_of(&pending.what),
+                pending.player,
+                &modal,
+                triggered.is_none(),
+                cause,
+            ) else {
+                return triggered.map_or(Next::Drop, |waiting| {
+                    Next::Commit(vec![crate::triggers::removing(waiting)])
+                });
+            };
+            // Nothing to choose between when no mode may be chosen.
+            if options.max > 0 {
+                return Next::Ask(Decision {
+                    player: pending.player,
+                    kind: DecisionKind::ChooseMode(options),
+                });
+            }
+        }
+        pending.modes_chosen = true;
+    }
+    let specs = rules.map_or_else(Vec::new, |rules| {
+        announced_specs(rules, &pending.choices.modes)
+    });
     while pending.choices.targets.len() < specs.len() {
         let index = pending.choices.targets.len();
         let Some(mut options) = options_for(
@@ -110,9 +139,9 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             source_of(&pending.what),
             pending.player,
             index,
-            &specs[index],
+            specs[index],
             triggered.is_none(),
-            triggered.map(|waiting| &waiting.trigger.cause),
+            cause,
         ) else {
             return triggered.map_or(Next::Drop, |waiting| {
                 Next::Commit(vec![crate::triggers::removing(waiting)])

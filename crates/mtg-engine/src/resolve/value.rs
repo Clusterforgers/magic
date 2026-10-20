@@ -58,7 +58,10 @@ pub struct Scope<'a> {
     pub(crate) controller: PlayerId,
     pub(crate) source: ObjectRef,
     pub(crate) choices: &'a Choices,
-    pub(crate) specs: &'a [TargetSpec],
+    /// The target specifications that were announced, in the order they were asked.
+    pub(crate) specs: Vec<&'a TargetSpec>,
+    /// How many of them come before the ones the running effect refers to: `Target(0)` is `specs[target_base]`.
+    pub(crate) target_base: usize,
     pub(crate) bindings: &'a Bindings,
     pub(crate) snapshots: Vec<&'a Snapshot>,
     pub(crate) cause: Option<&'a Cause>,
@@ -97,7 +100,8 @@ impl<'a> Scope<'a> {
             controller,
             source,
             choices: &NO_CHOICES,
-            specs: &[],
+            specs: Vec::new(),
+            target_base: 0,
             bindings: &NO_BINDINGS,
             snapshots: Vec::new(),
             cause: None,
@@ -148,8 +152,10 @@ impl<'a> Scope<'a> {
         })
     }
 
-    /// The legal targets chosen for the specification `index`: an illegal one is ignored (CR 608.2b).
+    /// The legal targets chosen for the specification `index` of the running effect: an illegal one is ignored
+    /// (CR 608.2b).
     fn chosen(&self, index: usize) -> Vec<Target> {
+        let index = self.target_base + index;
         let (Some(set), Some(spec)) = (self.choices.targets.get(index), self.specs.get(index))
         else {
             return Vec::new();

@@ -1,9 +1,10 @@
 //! Words for what the rules data says, for the prompts of players: a target specification ("up to two target
-//! creatures you control"), the event a triggered ability waits for ("When it enters the battlefield") and what a
-//! discard or a sacrifice asks ("Discard a card.").
+//! creatures you control"), the event a triggered ability waits for ("When it enters the battlefield"), what a
+//! discard or a sacrifice asks ("Discard a card."), a "may" ("Draw a card?") and a choice ("Choose an opponent.").
 //!
 //! They are hints for a person choosing, not rules: a predicate with no short phrase is left out.
 
+use mtg_cards::effect::Effect;
 use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, Cmp, StatKind};
@@ -325,6 +326,90 @@ pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
     format!("Sacrifice {count} {}.", join(&plural(&head), &tail))
 }
 
+/// "a card" or "3 cards".
+fn cards(count: i32) -> String {
+    if count == 1 {
+        "a card".to_owned()
+    } else {
+        format!("{count} cards")
+    }
+}
+
+/// What one effect that the player who decides does to themselves reads like as a verb phrase: "draw a card", "gain 3
+/// life". An effect with no short phrase yet, or one done to or by someone else, has none.
+fn verb_phrase(effect: &Effect) -> Option<String> {
+    Some(match effect {
+        Effect::Draw {
+            who: Ref::You,
+            count: Amount::Fixed(n),
+        } => format!("draw {}", cards(*n)),
+        Effect::Discard {
+            who: Ref::You,
+            count: Amount::Fixed(n),
+            random: false,
+        } => format!("discard {}", cards(*n)),
+        Effect::Mill {
+            who: Ref::You,
+            count: Amount::Fixed(n),
+        } => format!("mill {}", cards(*n)),
+        Effect::Scry {
+            who: Ref::You,
+            count: Amount::Fixed(n),
+        } => format!("scry {n}"),
+        Effect::GainLife {
+            who: Ref::You,
+            amount: Amount::Fixed(n),
+        } => format!("gain {n} life"),
+        Effect::LoseLife {
+            who: Ref::You,
+            amount: Amount::Fixed(n),
+        } => format!("lose {n} life"),
+        _ => return None,
+    })
+}
+
+/// The question of a "may": what the effects do as a card says it ("Draw a card?", "Draw a card and gain 3 life?").
+/// It is empty when an effect has no phrase yet, and the prompt then asks in general words.
+pub(crate) fn may(effects: &[Effect]) -> String {
+    let phrases: Option<Vec<String>> = effects.iter().map(verb_phrase).collect();
+    let Some(mut phrases) = phrases.filter(|phrases| !phrases.is_empty()) else {
+        return String::new();
+    };
+    let last = phrases.pop().unwrap_or_default();
+    let mut text = if phrases.is_empty() {
+        last
+    } else {
+        format!("{} and {last}", phrases.join(", "))
+    };
+    if let Some(first) = text.get_mut(..1) {
+        first.make_ascii_uppercase();
+    }
+    format!("{text}?")
+}
+
+/// What a choice among players asks: "Choose an opponent." or "Choose a player."
+pub(crate) fn choose_player(from: &Ref) -> String {
+    match from {
+        Ref::Opponents => "Choose an opponent.".to_owned(),
+        _ => "Choose a player.".to_owned(),
+    }
+}
+
+/// What a choice of objects asks, from the fewest to the most: "Choose a creature in your hand.", "Choose 2 cards in
+/// your hand.", "Choose up to 2 cards."
+pub(crate) fn choose_objects(from: &Ref, min: usize, most: usize) -> String {
+    let (head, tail) = match from {
+        Ref::Each(selector) => phrase(selector),
+        _ => ("card".to_owned(), String::new()),
+    };
+    if most == 1 && min == 1 {
+        let noun = join(&head, &tail);
+        return format!("Choose {} {noun}.", article(&noun));
+    }
+    let up_to = if min == most { "" } else { "up to " };
+    format!("Choose {up_to}{most} {}.", join(&plural(&head), &tail))
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: target specifications, trigger patterns and the questions of discards and sacrifices read as the cards say them, for the shapes the corpus and the prompts use, and a predicate with no phrase is left out instead of breaking the sentence.
@@ -483,5 +568,85 @@ mod tests {
     )]
     fn a_trigger_pattern_reads_as_a_card_says_it(#[case] json: &str, #[case] expected: &str) {
         assert_eq!(words(json), expected);
+    }
+
+    fn may_words(json: &str) -> String {
+        may(&serde_json::from_str::<Vec<Effect>>(json).unwrap())
+    }
+
+    #[rstest]
+    #[case::draw("[{\"Draw\":{}}]", "Draw a card?")]
+    #[case::draw_more("[{\"Draw\":{\"count\":3}}]", "Draw 3 cards?")]
+    #[case::discard("[{\"Discard\":{}}]", "Discard a card?")]
+    #[case::mill("[{\"Mill\":{\"count\":2}}]", "Mill 2 cards?")]
+    #[case::scry("[{\"Scry\":{\"count\":2}}]", "Scry 2?")]
+    #[case::life("[{\"GainLife\":{\"amount\":4}}]", "Gain 4 life?")]
+    #[case::lose("[{\"LoseLife\":{\"amount\":1}}]", "Lose 1 life?")]
+    #[case::two(
+        "[{\"Draw\":{}},{\"GainLife\":{\"amount\":1}}]",
+        "Draw a card and gain 1 life?"
+    )]
+    #[case::three(
+        "[{\"Draw\":{}},{\"Discard\":{}},{\"LoseLife\":{\"amount\":1}}]",
+        "Draw a card, discard a card and lose 1 life?"
+    )]
+    #[case::done_to_another("[{\"Draw\":{\"who\":\"Opponents\"}}]", "")]
+    #[case::a_random_discard("[{\"Discard\":{\"random\":true}}]", "")]
+    #[case::an_amount_that_is_not_a_number("[{\"Draw\":{\"count\":\"X\"}}]", "")]
+    #[case::one_effect_without_words("[{\"Draw\":{}},{\"Untap\":{\"what\":\"This\"}}]", "")]
+    #[case::no_effect("[]", "")]
+    fn a_may_asks_what_its_effects_do_or_nothing(#[case] json: &str, #[case] expected: &str) {
+        assert_eq!(may_words(json), expected);
+    }
+
+    #[rstest]
+    #[case::opponents(r#""Opponents""#, "Choose an opponent.")]
+    #[case::everyone(r#""EachPlayer""#, "Choose a player.")]
+    #[case::a_target(r#"{"Target":0}"#, "Choose a player.")]
+    fn a_choice_among_players_asks_for_one(#[case] from: &str, #[case] expected: &str) {
+        assert_eq!(
+            choose_player(&serde_json::from_str(from).unwrap()),
+            expected
+        );
+    }
+
+    fn objects(from: &str, min: usize, most: usize) -> String {
+        choose_objects(&serde_json::from_str(from).unwrap(), min, most)
+    }
+
+    #[rstest]
+    #[case::a_card_in_hand(
+        r#"{"Each":[{"In":"Hand"},{"OwnedBy":"You"}]}"#,
+        1,
+        1,
+        "Choose a card in your hand."
+    )]
+    #[case::two_cards(
+        r#"{"Each":[{"In":"Hand"},{"OwnedBy":"You"}]}"#,
+        2,
+        2,
+        "Choose 2 cards in your hand."
+    )]
+    #[case::up_to_two(
+        r#"{"Each":[{"In":"Hand"},{"OwnedBy":"You"}]}"#,
+        0,
+        2,
+        "Choose up to 2 cards in your hand."
+    )]
+    #[case::a_creature(
+        r#"{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#,
+        1,
+        1,
+        "Choose a creature you control."
+    )]
+    #[case::of_what_was_found(r#"{"Bound":"found"}"#, 1, 1, "Choose a card.")]
+    #[case::some_of_what_was_found(r#"{"Bound":"found"}"#, 2, 2, "Choose 2 cards.")]
+    fn a_choice_of_objects_asks_for_what_it_takes(
+        #[case] from: &str,
+        #[case] min: usize,
+        #[case] most: usize,
+        #[case] expected: &str,
+    ) {
+        assert_eq!(objects(from, min, most), expected);
     }
 }

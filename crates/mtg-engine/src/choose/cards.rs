@@ -100,38 +100,74 @@ pub(crate) enum Picked {
 /// A chooser who takes nothing, or has no more cards than they take, takes them all and is not asked. The others
 /// are asked one at a time, so a step with k questions runs k + 1 times and finds the same candidates every time.
 pub(crate) fn pick_cards(cx: &Cx<'_>, choosers: &[Chooser]) -> Result<Picked, ResolveError> {
+    let selections: Vec<Selection> = choosers
+        .iter()
+        .map(|chooser| Selection {
+            player: chooser.player,
+            from: chooser.from.clone(),
+            min: chooser.take,
+            max: chooser.take,
+            text: chooser.text.clone(),
+        })
+        .collect();
+    pick_selections(cx, &selections)
+}
+
+/// One player who takes between `min` and `max` of the cards in a list, and what the choice is for.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct Selection {
+    /// Who chooses; any seat.
+    pub(crate) player: PlayerId,
+    /// The cards they may take.
+    pub(crate) from: Vec<ObjectId>,
+    /// The fewest they take.
+    pub(crate) min: usize,
+    /// The most they take.
+    pub(crate) max: usize,
+    /// The question in the words of a card.
+    pub(crate) text: String,
+}
+
+/// [`pick_cards`] for players who take a number of cards within bounds.
+///
+/// A selection that takes nothing, or whose list has no more cards than the fewest to take, takes them all and is
+/// not asked; the others are asked for between `min` and as many as `max` and the list allow.
+pub(crate) fn pick_selections(
+    cx: &Cx<'_>,
+    selections: &[Selection],
+) -> Result<Picked, ResolveError> {
     let mut answers = cx.journal().iter();
-    let mut taken = Vec::with_capacity(choosers.len());
-    for chooser in choosers {
-        if chooser.take == 0 {
-            taken.push((chooser.player, Vec::new()));
-        } else if chooser.from.len() <= chooser.take {
-            taken.push((chooser.player, chooser.from.clone()));
+    let mut taken = Vec::with_capacity(selections.len());
+    for selection in selections {
+        let most = selection.max.min(selection.from.len());
+        if most == 0 {
+            taken.push((selection.player, Vec::new()));
+        } else if selection.from.len() <= selection.min {
+            taken.push((selection.player, selection.from.clone()));
         } else {
-            let take = u32::try_from(chooser.take).unwrap_or(u32::MAX);
             let options = CardsOptions {
                 source: cx.scope.source.id,
-                from: chooser.from.clone(),
-                min: take,
-                max: take,
-                text: chooser.text.clone(),
+                from: selection.from.clone(),
+                min: u32::try_from(selection.min).unwrap_or(u32::MAX),
+                max: u32::try_from(most).unwrap_or(u32::MAX),
+                text: selection.text.clone(),
             };
             match answers.next() {
                 None => {
                     return Ok(Picked::Ask(Decision {
-                        player: chooser.player,
+                        player: selection.player,
                         kind: DecisionKind::ChooseCards(options),
                     }));
                 }
                 Some((player, Choice::Cards(cards)))
-                    if *player == chooser.player && check(&options, cards).is_ok() =>
+                    if *player == selection.player && check(&options, cards).is_ok() =>
                 {
-                    taken.push((chooser.player, cards.clone()));
+                    taken.push((selection.player, cards.clone()));
                 }
                 Some(other) => {
                     return Err(ResolveError::Invalid(format!(
                         "{other:?} is no answer to the choice of cards of {:?}",
-                        chooser.player
+                        selection.player
                     )));
                 }
             }

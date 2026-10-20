@@ -226,6 +226,13 @@ impl Engine {
                 self.pending = Some(Pending::new(player, What::Ability(ability)));
                 Ok(())
             }
+            Outcome::Modes(modes) => {
+                if let Some(pending) = &mut self.pending {
+                    pending.choices.modes = modes;
+                    pending.modes_chosen = true;
+                }
+                Ok(())
+            }
             Outcome::Targets(targets) => {
                 if let Some(pending) = &mut self.pending {
                     pending.choices.targets.push(targets);
