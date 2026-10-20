@@ -1407,3 +1407,187 @@ mod tests {
         assert_eq!(check_card(&bad, &BTreeSet::new()), Vec::<Problem>::new());
     }
 }
+
+#[cfg(test)]
+mod printed_keywords {
+    //! Goal: a Scryfall keyword counts as present when an ability has it or a `Manual` clause names it in its face's printed text, and as missing otherwise.
+    use super::*;
+    use rstest::rstest;
+
+    const ID: &str = "4457ed35-7c10-48c8-9776-456485fdf070";
+    const BIRD: &str = "Creature \u{2014} Bird";
+    const AURA: &str = "Enchantment \u{2014} Aura";
+
+    /// Every problem of a rules file against its imported card, one `(type line, oracle text, abilities)` per face.
+    fn problems(status: &str, faces: &[(&str, &str, &str)], keywords: &[&str]) -> Vec<String> {
+        let names: Vec<String> = (0..faces.len()).map(|i| format!("Face {i}")).collect();
+        let name = names.join(" // ");
+        let rules: Vec<String> = faces
+            .iter()
+            .zip(&names)
+            .map(|((_, text, abilities), face)| {
+                let fingerprint = oracle_fingerprint(text);
+                format!(
+                    r#"{{"name":"{face}","oracle_fingerprint":"{fingerprint}","abilities":[{abilities}]}}"#
+                )
+            })
+            .collect();
+        let json = format!(
+            r#"{{"oracle_id":"{ID}","name":"{name}","impl_status":"{status}","faces":[{}]}}"#,
+            rules.join(",")
+        );
+        let card: Card = serde_json::from_str(&json).unwrap();
+        let shown = PrintedCard {
+            oracle_id: ID.into(),
+            name,
+            keywords: keywords.iter().map(|k| (*k).to_owned()).collect(),
+            faces: faces
+                .iter()
+                .zip(&names)
+                .map(|((type_line, text, _), face)| PrintedFace {
+                    name: face.clone(),
+                    type_line: (*type_line).into(),
+                    oracle_text: (*text).into(),
+                    ..PrintedFace::default()
+                })
+                .collect(),
+        };
+        check_printed(&card, &shown, &BTreeSet::new(), &BTreeSet::new())
+            .into_iter()
+            .map(|problem| problem.message)
+            .collect()
+    }
+
+    #[rstest]
+    #[case::a_clause_names_the_keyword(
+        "Partial",
+        &[(BIRD, "Flying", r#"{"Manual":{"reason":"x","span":{"start":0,"end":6}}}"#)],
+        &["Flying"],
+        &[]
+    )]
+    #[case::the_clause_is_longer_than_the_keyword(
+        "Partial",
+        &[(BIRD, "Flying\nDraw a card.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":19}}}"#)],
+        &["Flying"],
+        &[]
+    )]
+    #[case::capitals_differ_from_scryfalls(
+        "Partial",
+        &[(BIRD, "Gets first strike.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":18}}}"#)],
+        &["First strike"],
+        &[]
+    )]
+    #[case::the_keyword_is_named_nowhere(
+        "Partial",
+        &[(BIRD, "Draw a card.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":12}}}"#)],
+        &["Flying"],
+        &["Flying"]
+    )]
+    #[case::a_full_card_has_no_clause_to_name_it(
+        "Full",
+        &[(BIRD, "Flying", r#"{"Keyword":"Reach"}"#)],
+        &["Flying"],
+        &["Flying"]
+    )]
+    #[case::a_full_card_with_the_ability_passes(
+        "Full",
+        &[(BIRD, "Flying", r#"{"Keyword":"Flying"}"#)],
+        &["Flying"],
+        &[]
+    )]
+    #[case::plainscycling_is_cycling(
+        "Partial",
+        &[(BIRD, "Plainscycling {2}", r#"{"Manual":{"reason":"x","span":{"start":0,"end":17}}}"#)],
+        &["Plainscycling", "Cycling"],
+        &[]
+    )]
+    #[case::an_aura_grants_a_keyword(
+        "Partial",
+        &[(
+            AURA,
+            "Enchant creature\nEnchanted creature has flying.",
+            r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Manual":{"reason":"x","span":{"start":17,"end":47}}}"#
+        )],
+        &["Enchant", "Flying"],
+        &[]
+    )]
+    #[case::the_clause_is_over_another_span(
+        "Partial",
+        &[(BIRD, "Flying\nDraw a card.", r#"{"Manual":{"reason":"x","span":{"start":7,"end":19}}}"#)],
+        &["Flying"],
+        &["Flying"]
+    )]
+    #[case::the_span_ends_before_the_keyword_does(
+        "Partial",
+        &[(BIRD, "Flying", r#"{"Manual":{"reason":"x","span":{"start":0,"end":5}}}"#)],
+        &["Flying"],
+        &["Flying"]
+    )]
+    #[case::offsets_count_characters_not_bytes(
+        "Partial",
+        &[(BIRD, "\u{2022} Flying", r#"{"Manual":{"reason":"x","span":{"start":2,"end":8}}}"#)],
+        &["Flying"],
+        &[]
+    )]
+    #[case::a_clause_is_read_in_its_own_face(
+        "Partial",
+        &[
+            (BIRD, "Draw a card.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":12}}}"#),
+            (BIRD, "Flying", r#"{"Manual":{"reason":"x","span":{"start":0,"end":6}}}"#),
+        ],
+        &["Flying"],
+        &[]
+    )]
+    #[case::a_clause_is_not_read_in_another_face(
+        "Partial",
+        &[
+            (BIRD, "Flying", ""),
+            (BIRD, "Draw a card.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":6}}}"#),
+        ],
+        &["Flying"],
+        &["Flying"]
+    )]
+    #[case::an_ability_on_the_other_face_counts(
+        "Partial",
+        &[
+            (BIRD, "Flying", r#"{"Keyword":"Flying"}"#),
+            (BIRD, "Draw a card.", r#"{"Manual":{"reason":"x","span":{"start":0,"end":12}}}"#),
+        ],
+        &["Flying"],
+        &[]
+    )]
+    fn a_keyword_is_present_when_an_ability_has_it_or_a_clause_names_it(
+        #[case] status: &str,
+        #[case] faces: &[(&str, &str, &str)],
+        #[case] keywords: &[&str],
+        #[case] missing: &[&str],
+    ) {
+        let expected: Vec<String> = missing
+            .iter()
+            .map(|keyword| {
+                format!("the imported card has the keyword `{keyword}` but no face has it")
+            })
+            .collect();
+        assert_eq!(problems(status, faces, keywords), expected);
+    }
+
+    #[test]
+    fn a_clause_past_the_text_names_nothing() {
+        let found = problems(
+            "Partial",
+            &[(
+                BIRD,
+                "Flying",
+                r#"{"Manual":{"reason":"x","span":{"start":0,"end":99}}}"#,
+            )],
+            &["Flying"],
+        );
+        assert_eq!(
+            found,
+            [
+                "the span ends past the oracle text (6 characters)",
+                "the imported card has the keyword `Flying` but no face has it",
+            ]
+        );
+    }
+}

@@ -99,13 +99,9 @@ fn every_card_of_a_full_download_compiles_to_rules_that_load() {
     let mut top: Vec<_> = unread_keywords.into_iter().collect();
     top.sort_by_key(|(_, count)| std::cmp::Reverse(*count));
     eprintln!("unread keyword lines {:#?}", &top[..top.len().min(40)]);
-    // The one known gap: Scryfall lists keywords a card grants or spells with a cost the data cannot hold.
     let unexpected: Vec<_> = problems
         .keys()
-        .filter(|message| {
-            !message.starts_with("the imported card has the keyword")
-                && *message != "partner not in the batch"
-        })
+        .filter(|message| *message != "partner not in the batch")
         .collect();
     assert!(unexpected.is_empty(), "{unexpected:?}");
 }
