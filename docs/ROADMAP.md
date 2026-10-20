@@ -45,8 +45,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (q) `Effect::If` with its conditions, `Tap`, `Untap`, `Mill`, `WinGame` and the keyword Flash; Felidar Sovereign is Verified
 
 ### Abilities and characteristics
-- [ ] (k1) One reader of an object's abilities (printed, keyword-provided, granted, lost, from the zone they work in) with stable addresses
-- [ ] (k2) Priority options, trigger detection, casting and resolution read abilities through it
+- [x] (k1) One reader of an object's abilities with stable addresses: `abilities_of` and `ability` in `ability_reader` read the printed abilities of an object
+- [x] (k2) Priority options, trigger detection, casting and resolution read abilities through it
 - [ ] (k3) Static abilities gathered at every derivation; every `Modification` runs as an effect and as a static (types, subtypes, colours, set and switched power and toughness, abilities added and lost, control, can't attack or block); `Effect::Rule` with its game rules
 - [ ] (k4) The derivation of CR 613 as one pass: timestamps, dependencies, characteristic-defining abilities, keywords in snapshots and removing a keyword; the deviations in `docs/engine.md` (Rules coverage) for layers and removed keywords close here
 - [ ] (e2) Keyword abilities built from triggers: ward, prowess and battle cry; Hero of Bladehold is Verified

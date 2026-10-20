@@ -19,6 +19,7 @@ mod steps;
 mod wording;
 
 pub mod abilities;
+pub mod ability_reader;
 pub mod caps;
 pub mod characteristics;
 pub mod choose;

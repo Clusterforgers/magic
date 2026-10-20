@@ -1,11 +1,10 @@
 //! `Effect::DelayedTrigger`: a delayed triggered ability is set up (CR 603.7).
 
-use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 
 use super::wrong_effect;
 use crate::events::Event;
-use crate::resolve::{Cx, ResolveError, Run};
+use crate::resolve::{Cx, ResolveError, Run, spell_ability};
 use crate::snapshot::snapshot;
 use crate::triggers::{DelayedCreated, DelayedId};
 
@@ -37,14 +36,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let object = state.object(cx.resolving.object()).ok_or_else(gone)?;
     // The ability whose resolution this is: the one an ability object came from, else the spell ability of the card.
     let ability = object.ability().map_or_else(
-        || {
-            object
-                .card()
-                .rules
-                .iter()
-                .position(|rules| matches!(**rules, Ability::Spell { .. }))
-                .unwrap_or(0)
-        },
+        || spell_ability(state, object.id()).map_or(0, |(address, _)| address.ability),
         crate::abilities::AbilityObject::index,
     );
     let bindings = cx

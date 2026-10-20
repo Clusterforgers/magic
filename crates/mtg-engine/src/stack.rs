@@ -19,7 +19,7 @@ pub fn apnap_order(state: &GameState) -> Vec<PlayerId> {
 /// other spell (a permanent, or a card whose text is left to the table) has no steps and just resolves.
 pub(crate) fn resolve_top(state: &GameState) -> Option<Event> {
     let object = state.object(*state.stack().last()?)?;
-    Some(if resolve::runs_effects(object) {
+    Some(if resolve::runs_effects(state, object) {
         Event::ResolutionBegan {
             object: object.id(),
         }

@@ -13,14 +13,49 @@ use crate::resolve::Bindings;
 use crate::snapshot::Snapshot;
 use crate::triggers::DelayedId;
 
-/// An ability of a permanent, named by the permanent and the ability's index among its card's rules.
+/// Where an ability of an object comes from, which with the object and an index names it (`ability_reader`).
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum AbilitySource {
+    /// Printed on the object's card: the index is the ability's index among the card's rules.
+    #[default]
+    Printed,
+}
+
+impl AbilitySource {
+    /// Whether this is the printed source, which a serialized [`AbilityRef`] leaves out.
+    pub const fn is_printed(&self) -> bool {
+        matches!(self, AbilitySource::Printed)
+    }
+}
+
+/// An ability of an object, named by the object, where the ability comes from and an index.
+///
+/// A printed ability is serialized as `{"object", "ability"}`; the source is left out while it is `Printed`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct AbilityRef {
-    /// The permanent with the ability.
+    /// The object with the ability.
     pub object: ObjectId,
-    /// Index into the rules of its card (`CardDefinition::rules`).
+    /// For a printed ability the index into the rules of its card (`CardDefinition::rules`).
     pub ability: usize,
+    /// Where the ability comes from.
+    #[serde(default, skip_serializing_if = "AbilitySource::is_printed")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<AbilitySource>", optional))]
+    pub source: AbilitySource,
+}
+
+impl AbilityRef {
+    /// The address of the ability at `ability` among the rules printed on the card of `object`.
+    pub const fn printed(object: ObjectId, ability: usize) -> Self {
+        AbilityRef {
+            object,
+            ability,
+            source: AbilitySource::Printed,
+        }
+    }
 }
 
 /// What made a triggered ability trigger: the objects and players the event was about.
@@ -96,6 +131,11 @@ impl AbilityObject {
         &self.rules
     }
 
+    /// The rules it runs, shared with the ability object.
+    pub(crate) fn shared_rules(&self) -> Arc<Ability> {
+        Arc::clone(&self.rules)
+    }
+
     /// What triggered it, for a triggered ability.
     pub const fn cause(&self) -> Option<&Cause> {
         self.cause.as_ref()
@@ -122,5 +162,56 @@ impl Hash for AbilityObject {
         self.cause.hash(state);
         self.delayed.hash(state);
         self.bindings.hash(state);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the address of a printed ability is written as `{"object", "ability"}` and read from it, whatever the object and the index, exactly as before it had a source; a source spelled out as `Printed` reads the same and is left out when written.
+    use rstest::rstest;
+
+    use super::*;
+
+    #[rstest]
+    #[case::the_first_ability(r#"{"object":3,"ability":0}"#, 3, 0)]
+    #[case::a_later_ability(r#"{"object":3,"ability":4}"#, 3, 4)]
+    #[case::the_first_object(r#"{"object":0,"ability":1}"#, 0, 1)]
+    #[case::the_largest_ids(
+        r#"{"object":18446744073709551615,"ability":9007199254740991}"#,
+        u64::MAX,
+        9_007_199_254_740_991
+    )]
+    fn an_address_of_a_printed_ability_reads_and_writes_as_it_always_did(
+        #[case] old: &str,
+        #[case] object: u64,
+        #[case] ability: usize,
+    ) {
+        let read: AbilityRef = serde_json::from_str(old).unwrap();
+        assert_eq!(read, AbilityRef::printed(ObjectId(object), ability));
+        assert_eq!(serde_json::to_string(&read).unwrap(), old);
+    }
+
+    #[test]
+    fn a_source_spelled_out_as_printed_reads_the_same_and_is_not_written() {
+        let spelled = r#"{"object":7,"ability":2,"source":"Printed"}"#;
+        let read: AbilityRef = serde_json::from_str(spelled).unwrap();
+        assert_eq!(read, AbilityRef::printed(ObjectId(7), 2));
+        assert_eq!(
+            serde_json::to_string(&read).unwrap(),
+            r#"{"object":7,"ability":2}"#
+        );
+    }
+
+    #[test]
+    fn a_source_that_is_not_known_is_refused() {
+        let read =
+            serde_json::from_str::<AbilityRef>(r#"{"object":7,"ability":2,"source":"Gone"}"#);
+        assert!(read.is_err());
+    }
+
+    #[test]
+    fn the_default_source_is_the_printed_one() {
+        assert_eq!(AbilitySource::default(), AbilitySource::Printed);
+        assert!(AbilitySource::default().is_printed());
     }
 }

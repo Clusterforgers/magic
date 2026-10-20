@@ -8,15 +8,16 @@ mod delayed;
 mod detect;
 mod queue;
 
-use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::abilities::Cause;
+use crate::ability_reader::abilities_of;
 use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
+use crate::state::GameState;
 
 pub use delayed::{Delayed, DelayedCreated, DelayedId};
 pub use detect::detect;
@@ -60,9 +61,9 @@ fn sets_up_delayed(effects: &[Effect]) -> bool {
     })
 }
 
-/// Whether `card` can ever trigger something: it has a triggered ability or an effect that sets one up.
-pub(crate) fn can_trigger(card: &CardDefinition) -> bool {
-    card.rules.iter().any(|rules| {
+/// Whether `id` can ever trigger something: it has a triggered ability or an effect that sets one up.
+pub(crate) fn can_trigger(state: &GameState, id: ObjectId) -> bool {
+    abilities_of(state, id).iter().any(|(_, rules)| {
         matches!(**rules, Ability::Triggered { .. }) || sets_up_delayed(rules.effects())
     })
 }

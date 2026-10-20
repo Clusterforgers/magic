@@ -246,9 +246,6 @@ impl GameState {
                 setup_player.keywords.clone(),
             ));
         }
-        let triggers_possible = objects
-            .values()
-            .any(|object| crate::triggers::can_trigger(object.card()));
         for (id, preset) in presets {
             if let Some(object) = objects.get_mut(&id) {
                 let host = preset.attached_to.and_then(|place| placed.get(&place));
@@ -263,7 +260,7 @@ impl GameState {
                 (Stage::Turns, (turn, active, step), first)
             }
         };
-        Ok(GameState {
+        let mut game = GameState {
             format: Arc::clone(&setup.format),
             seed: setup.seed,
             rng_index: 0,
@@ -291,9 +288,14 @@ impl GameState {
             delayed: Vec::new(),
             next_delayed: 0,
             limits_spent: BTreeSet::new(),
-            triggers_possible,
+            triggers_possible: false,
             result: None,
-        })
+        };
+        let possible = game
+            .objects()
+            .any(|object| crate::triggers::can_trigger(&game, object.id()));
+        game.triggers_possible = possible;
+        Ok(game)
     }
 }
 

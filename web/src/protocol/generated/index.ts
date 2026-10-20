@@ -2,6 +2,7 @@
 export const PROTOCOL_VERSION = 1;
 export type { AbilityDef } from "./AbilityDef";
 export type { AbilityRef } from "./AbilityRef";
+export type { AbilitySource } from "./AbilitySource";
 export type { Answer } from "./Answer";
 export type { AttackOptions } from "./AttackOptions";
 export type { AttackTarget } from "./AttackTarget";
