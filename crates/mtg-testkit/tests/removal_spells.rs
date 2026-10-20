@@ -3,12 +3,10 @@
 
 mod common;
 
-use std::sync::Arc;
-
+use common::removal::{
+    corpus, gravedigger, moves, owner_of, pass_to, resolve_the_stack, sorted, strings, table, titan,
+};
 use common::{name_of, names, pid};
-use mtg_cards::CardDefinition;
-use mtg_cards::keyword::Keyword;
-use mtg_core::color::Color;
 use mtg_core::ids::ObjectId;
 use mtg_engine::choose::{Target, TargetChoice};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
@@ -17,78 +15,9 @@ use mtg_engine::error::IllegalAnswer;
 use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::zones::Zone;
 use mtg_engine::{EngineError, Event};
-use mtg_testkit::cards::{
-    creature, forest, free_creature, island, keyworded, mountain, plains, swamp,
-};
-use mtg_testkit::corpus::card;
+use mtg_testkit::cards::{forest, free_creature, island, mountain, plains, swamp};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
-
-fn corpus(name: &str) -> Arc<CardDefinition> {
-    card(name).unwrap()
-}
-
-fn titan() -> Arc<CardDefinition> {
-    keyworded("Titan", 5, 5, &[Keyword::Indestructible])
-}
-
-fn gravedigger() -> Arc<CardDefinition> {
-    creature("Gravedigger", 0, &[Color::Black], 2, 2)
-}
-
-/// Seat 0 controls a Wolf; the other seats have one creature or two each, the last of them a black one.
-fn creatures(seats: usize) -> Vec<Vec<Arc<CardDefinition>>> {
-    let all = [
-        vec![corpus("Grizzly Bears"), gravedigger()],
-        vec![corpus("Serra Angel")],
-        vec![corpus("Llanowar Elves")],
-    ];
-    std::iter::once(vec![free_creature("Wolf", 3, 3)])
-        .chain(all.into_iter().take(seats - 1))
-        .collect()
-}
-
-/// A table where seat 0 holds `hand` and controls `lands`, and every seat controls the creatures of [`creatures`].
-fn table(
-    seats: usize,
-    hand: &[&str],
-    lands: Vec<Arc<CardDefinition>>,
-    extra: Vec<(usize, Arc<CardDefinition>)>,
-) -> Scenario {
-    let mut scenario = Scenario::new(seats).hand(0, hand.iter().map(|name| corpus(name)));
-    for (seat, board) in creatures(seats).into_iter().enumerate() {
-        let mut permanents: Vec<_> = board.into_iter().map(ready).collect();
-        if seat == 0 {
-            permanents.extend(lands.iter().cloned().map(ready));
-        }
-        permanents.extend(
-            extra
-                .iter()
-                .filter(|(at, _)| *at == seat)
-                .map(|(_, card)| ready(card.clone())),
-        );
-        scenario = scenario.battlefield(seat, permanents);
-    }
-    scenario
-}
-
-fn resolve_the_stack(driver: &mut Driver) -> Result<(), ScriptError> {
-    while !driver.state().stack().is_empty() {
-        driver.pass()?;
-    }
-    Ok(())
-}
-
-/// Passes until `seat` holds priority.
-fn pass_to(driver: &mut Driver, seat: usize) -> Result<(), ScriptError> {
-    for _ in 0..16 {
-        if driver.decision()?.player == pid(seat) {
-            return Ok(());
-        }
-        driver.pass()?;
-    }
-    panic!("seat {seat} never received priority");
-}
 
 /// What the pending target decision offers, as sorted card names.
 fn offered(driver: &Driver) -> Vec<String> {
@@ -107,36 +36,6 @@ fn offered(driver: &Driver) -> Vec<String> {
     found
 }
 
-/// The moves of objects between zones that the events since `from` describe: (name, from, to, cause).
-fn moves(driver: &Driver, from: usize) -> Vec<(String, Zone, Zone, ZoneCause)> {
-    driver.engine().events()[from..]
-        .iter()
-        .filter_map(|event| match event {
-            Event::ZoneChanged {
-                object,
-                from,
-                to,
-                cause,
-            } => Some((name_of(driver.state(), *object), *from, *to, *cause)),
-            _ => None,
-        })
-        .collect()
-}
-
-fn owner_of(driver: &Driver, name: &str) -> usize {
-    let id = driver.id_of(name).unwrap();
-    driver.state().object(id).unwrap().owner().index()
-}
-
-fn sorted(mut names: Vec<String>) -> Vec<String> {
-    names.sort();
-    names
-}
-
-fn strings(names: &[&str]) -> Vec<String> {
-    names.iter().map(|name| (*name).to_owned()).collect()
-}
-
 // Doom Blade
 
 fn blade(seats: usize) -> Scenario {
@@ -146,9 +45,9 @@ fn blade(seats: usize) -> Scenario {
 #[rstest]
 fn doom_blade_destroys_the_target_creature_and_offers_no_black_one(
     #[values((2, "Grizzly Bears"), (2, "Wolf"), (3, "Serra Angel"), (4, "Llanowar Elves"), (4, "Grizzly Bears"))]
-    table: (usize, &str),
+    case: (usize, &str),
 ) -> Result<(), ScriptError> {
-    let (seats, victim) = table;
+    let (seats, victim) = case;
     let mut driver = Driver::from_scenario(blade(seats))?;
     let owner = owner_of(&driver, victim);
     let before = names(driver.state(), Zone::Battlefield);
