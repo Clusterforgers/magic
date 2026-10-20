@@ -44,6 +44,7 @@ pub mod priority;
 pub mod replace;
 pub mod resolve;
 pub mod rng;
+pub mod rules;
 pub mod setup;
 pub mod sight;
 pub mod snapshot;

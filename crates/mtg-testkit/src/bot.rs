@@ -115,7 +115,9 @@ impl RandomBot {
             DecisionKind::DeclareAttackers(options) => {
                 let mut attackers = Vec::new();
                 for option in &options.attackers {
-                    if self.rng.below(2) == 0 && !option.defenders.is_empty() {
+                    // A creature a rule requires to attack always does; the others at random.
+                    let required = options.required.contains(&option.object);
+                    if (self.rng.below(2) == 0 || required) && !option.defenders.is_empty() {
                         let target = option.defenders[self.rng.index(option.defenders.len())];
                         attackers.push((option.object, target));
                     }
@@ -137,6 +139,15 @@ impl RandomBot {
                     if got < *needed {
                         blocks.retain(|(_, a)| a != attacker);
                     }
+                }
+                // A creature a rule requires to block that the random choice left out: the bot blocks as the rules
+                // require and no more.
+                if options
+                    .required
+                    .iter()
+                    .any(|required| !blocks.iter().any(|(blocker, _)| blocker == required))
+                {
+                    blocks = options.required_blocks();
                 }
                 Answer::DeclareBlockers(blocks)
             }

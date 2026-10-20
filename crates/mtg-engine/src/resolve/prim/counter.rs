@@ -5,14 +5,15 @@ use mtg_cards::effect::Effect;
 use super::wrong_effect;
 use crate::events::{Event, ResolutionOutcome};
 use crate::resolve::{Cx, Next, ResolveError, Run};
+use crate::rules::cant_be_countered;
 use crate::snapshot::snapshot;
 use crate::zones::Zone;
 
 /// Each spell or ability on the stack the effect names is countered, all together: it leaves the stack and does
 /// nothing. The fold sends a spell to its owner's graveyard and an ability ceases to exist, and triggers see the end of
 /// a countered spell as a move from the stack with `ZoneCause::Countered`. The step carries what each was. The
-/// resolving spell, an object that is not on the stack, one that has left it since it was named and a name that
-/// repeats are passed over.
+/// resolving spell, an object that is not on the stack, one that has left it since it was named, a spell that can't be
+/// countered and a name that repeats are passed over.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Counter { what } = effect else {
         return Err(wrong_effect("Counter"));
@@ -21,7 +22,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = Vec::new();
     let mut snapshots = Vec::new();
     for object in cx.scope.live_objects(what)? {
-        if object.zone() != Zone::Stack || object.id() == cx.resolving.object() {
+        if object.zone() != Zone::Stack
+            || object.id() == cx.resolving.object()
+            || cant_be_countered(state, object.id())
+        {
             continue;
         }
         snapshots.extend(snapshot(state, object.id()));

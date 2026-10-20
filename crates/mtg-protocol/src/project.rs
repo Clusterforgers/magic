@@ -216,6 +216,7 @@ impl PlayerView {
             mulligan: player.mulligan_status(),
             hand: zone_view(state, viewer, Zone::Hand(seat)),
             library: zone_view(state, viewer, Zone::Library(seat)),
+            revealed_top: state.revealed_top(seat),
             graveyard: zone_view(state, viewer, Zone::Graveyard(seat)),
             command: zone_view(state, viewer, Zone::Command(seat)),
         }

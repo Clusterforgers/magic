@@ -204,6 +204,31 @@ fn without(types: CardTypes, ty: CardType) -> CardTypes {
         .collect()
 }
 
+/// Whether an effect of a spell or ability that `controller` controlled, made by `source` in turn `began`, still lasts
+/// in `state` by its duration (CR 611.2): the one rule for the durations of continuous effects and of rules.
+pub(crate) fn lasts(
+    state: &GameState,
+    duration: Duration,
+    began: u32,
+    controller: PlayerId,
+    source: Option<ObjectRef>,
+) -> bool {
+    let turn = state.turn();
+    match duration {
+        // `UntilEndOfTurn` ends with the cleanup step, which logs the expiry (CR 514.2).
+        Duration::UntilEndOfTurn | Duration::Forever => true,
+        Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
+        Duration::UntilYourNextTurn => {
+            state.is_alive(controller) && !(turn.number() != began && turn.active() == controller)
+        }
+        Duration::WhileSourceOnBattlefield => source.is_some_and(|source| {
+            state
+                .object(source.id)
+                .is_some_and(|o| o.counter() == source.counter && o.zone() == Zone::Battlefield)
+        }),
+    }
+}
+
 /// A continuous effect from a resolved spell or ability (CR 611): characteristics are always derived from these.
 ///
 /// An effect that came from a spell or ability names the objects it changes when it begins (CR 611.2c) and keeps
@@ -280,24 +305,13 @@ impl ContinuousEffect {
     /// Whether the effect still applies in `state`: its duration has not ended and an object it names is still the
     /// object it named. An effect that does not stops applying at once; the `EffectExpired` event only removes it.
     pub fn is_active(&self, state: &GameState) -> bool {
-        let turn = state.turn();
-        let lasts = match self.duration {
-            // `UntilEndOfTurn` ends with the cleanup step, which logs the expiry (CR 514.2).
-            Duration::UntilEndOfTurn | Duration::Forever => true,
-            Duration::UntilEndOfCombat => {
-                turn.number() == self.turn && turn.step() <= Step::EndCombat
-            }
-            Duration::UntilYourNextTurn => {
-                state.is_alive(self.controller)
-                    && !(turn.number() != self.turn && turn.active() == self.controller)
-            }
-            Duration::WhileSourceOnBattlefield => self.source.is_some_and(|source| {
-                state
-                    .object(source.id)
-                    .is_some_and(|o| o.counter() == source.counter && o.zone() == Zone::Battlefield)
-            }),
-        };
-        lasts && !self.spent(state)
+        lasts(
+            state,
+            self.duration,
+            self.turn,
+            self.controller,
+            self.source,
+        ) && !self.spent(state)
     }
 
     /// Whether every object the effect names has become a new object or is gone, so it can never change anything again.

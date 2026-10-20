@@ -112,7 +112,7 @@ mod tests {
         {"Untap":{"what":"This"}}, {"Transform":{"what":"This"}}, {"WinGame":{}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
-        {"Rule":{"rule":"DamageCantBePrevented","duration":"UntilEndOfTurn"}},
+        {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
         {"Modal":{"modes":[]}}
@@ -185,6 +185,7 @@ mod tests {
                 "Effect.WinGame",
                 "Effect.CreateToken",
                 "Effect.Continuous",
+                "Effect.Rule",
                 "Effect.DelayedTrigger",
                 "Effect.If",
                 "Effect.May",

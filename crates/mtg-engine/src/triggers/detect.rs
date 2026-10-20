@@ -19,6 +19,7 @@ use crate::choose::{Choices, Target};
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{Scope, zone_kind};
+use crate::rules::triggers_again;
 use crate::snapshot::snapshot;
 use crate::state::GameState;
 use crate::turn::Step;
@@ -348,7 +349,7 @@ fn permanents(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>
             let Some(shot) = &shot else {
                 continue;
             };
-            found.push(Triggered {
+            let trigger = Triggered {
                 source,
                 ability: address.ability,
                 origin: address.source,
@@ -356,9 +357,29 @@ fn permanents(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>
                 cause,
                 snapshot: shot.clone(),
                 delayed: None,
-            });
+            };
+            // An ability that triggers only once each turn does so once, whatever else is said of it.
+            if limit.is_none() {
+                for _ in 0..repeats(state, happened, controller) {
+                    found.push(trigger.clone());
+                }
+            }
+            found.push(trigger);
         }
     }
+}
+
+/// How many additional times a triggered ability of a permanent `controller` controls triggers on `happened`: once for
+/// each rule in force that says so and whose event this is.
+fn repeats(state: &GameState, happened: &Happened, controller: PlayerId) -> usize {
+    triggers_again(state)
+        .iter()
+        .filter(|again| again.controller == controller)
+        .filter(|again| {
+            let scope = Scope::announcing(state, again.controller, again.source);
+            matching(&again.cause, happened, &scope).is_some()
+        })
+        .count()
 }
 
 /// The delayed triggered abilities of `post` that trigger on `happened`, judged in `state`.

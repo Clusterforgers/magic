@@ -120,8 +120,12 @@ pub struct PlayerView {
     pub mulligan: MulliganStatus,
     /// Hand; cards listed only for its owner.
     pub hand: ZoneView,
-    /// Library; the count only, never the cards.
+    /// Library; the count only, never the cards but the top one while a rule has it revealed to every seat.
     pub library: ZoneView,
+    /// The top card of the library while a rule has it revealed; left out otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub revealed_top: Option<ObjectId>,
     /// Graveyard (public).
     pub graveyard: ZoneView,
     /// Command zone (public).

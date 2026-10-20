@@ -17,6 +17,7 @@ use crate::object::{GameObject, ObjectRef};
 use crate::player::Player;
 use crate::priority::PriorityState;
 use crate::resolve::Resolving;
+use crate::rules::{RuleEffect, RulesCache};
 use crate::triggers::{Delayed, PendingTrigger};
 use crate::turn::TurnState;
 use crate::zones::{Zone, Zones};
@@ -62,6 +63,8 @@ pub struct GameState {
     pub(crate) priority: Option<PriorityState>,
     pub(crate) combat: CombatState,
     pub(crate) effects: Vec<ContinuousEffect>,
+    /// The rules of the game that resolved spells and abilities changed and that still last.
+    pub(crate) rule_effects: Vec<RuleEffect>,
     pub(crate) next_effect: u64,
     pub(crate) next_timestamp: u64,
     pub(crate) next_object: u64,
@@ -77,6 +80,10 @@ pub struct GameState {
     pub(crate) statics_possible: bool,
     /// What the layers make of every permanent, worked out when first asked for and dropped at the next event.
     pub(crate) layers: LayersCache,
+    /// Whether any card of the game has a rule of the game as an ability; derived from the setup and the tokens made.
+    pub(crate) rules_possible: bool,
+    /// The rules in force, gathered when first asked for and dropped at the next event that can change them.
+    pub(crate) rules_cache: RulesCache,
     pub(crate) result: Option<GameResult>,
 }
 
@@ -200,6 +207,11 @@ impl GameState {
         &self.effects
     }
 
+    /// Registered changes to the rules of the game.
+    pub fn rule_effects(&self) -> &[RuleEffect] {
+        &self.rule_effects
+    }
+
     /// The spell or ability that is resolving, with its journal.
     pub const fn resolving(&self) -> Option<&Resolving> {
         self.resolving.as_ref()
@@ -294,6 +306,7 @@ impl Hash for GameState {
         self.priority.hash(state);
         self.combat.hash(state);
         self.effects.hash(state);
+        self.rule_effects.hash(state);
         self.next_effect.hash(state);
         self.next_timestamp.hash(state);
         self.next_object.hash(state);

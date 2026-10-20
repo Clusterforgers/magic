@@ -11,6 +11,7 @@ use crate::events::{Event, NothingToDo};
 use crate::flow::Progress;
 use crate::object::{GameObject, PermanentState};
 use crate::priority::{all_passed, priority_options};
+use crate::rules::cant_draw;
 use crate::stack::resolve_top;
 use crate::state::GameState;
 use crate::turn::{MAX_HAND_SIZE, Step};
@@ -78,8 +79,12 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
     }
 }
 
-/// Events for `player` drawing `count` cards, or failing to on an empty library.
+/// Events for `player` drawing `count` cards, or failing to on an empty library. A player who can't draw cards neither
+/// draws nor fails to.
 pub(crate) fn draw(state: &GameState, player: PlayerId, count: usize) -> Vec<Event> {
+    if cant_draw(state, player) {
+        return Vec::new();
+    }
     let library = state.zone(Zone::Library(player));
     (0..count)
         .map(|i| match library.iter().rev().nth(i) {
@@ -239,6 +244,13 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             .iter()
             .filter(|e| e.duration == Duration::UntilEndOfTurn)
             .map(|e| Event::EffectExpired { id: e.id }),
+    );
+    events.extend(
+        state
+            .rule_effects()
+            .iter()
+            .filter(|e| e.duration == Duration::UntilEndOfTurn)
+            .map(|e| Event::RuleExpired { id: e.id }),
     );
     events.extend(pool_emptying(state));
     let active = state.turn().active();

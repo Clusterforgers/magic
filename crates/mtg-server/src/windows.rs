@@ -420,6 +420,7 @@ mod tests {
             kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
                 blockers: Vec::new(),
                 min_blockers: Vec::new(),
+                required: Vec::new(),
             }),
         };
         let stops = Stops::new(2);
@@ -705,6 +706,7 @@ mod tests {
             kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
                 blockers: Vec::new(),
                 min_blockers: Vec::new(),
+                required: Vec::new(),
             }),
         };
         let verdict = verdict(

@@ -293,6 +293,7 @@ mod tests {
             kind: DecisionKind::DeclareBlockers(mtg_engine::decision::BlockOptions {
                 blockers: Vec::new(),
                 min_blockers: Vec::new(),
+                required: Vec::new(),
             }),
         };
         assert!(!windows.passes(engine.state(), &blocks));

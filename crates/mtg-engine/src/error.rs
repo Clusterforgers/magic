@@ -157,6 +157,9 @@ pub enum IllegalAnswer {
     /// An item was chosen more than once.
     #[error("{0} was chosen more than once")]
     Duplicate(&'static str),
+    /// A rule requires an item that the answer leaves out.
+    #[error("a rule requires the {0}")]
+    Required(&'static str),
     /// The wrong number of items was chosen.
     #[error("expected {expected} items but got {got}")]
     WrongCount {

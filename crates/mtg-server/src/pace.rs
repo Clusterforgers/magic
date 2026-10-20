@@ -116,7 +116,7 @@ pub(crate) fn is_priority(decision: &Decision) -> bool {
     matches!(&decision.kind, DecisionKind::Priority(_))
 }
 
-/// What the table answers for a seat whose clock ran out: a pass, no blockers, no target (a spell is taken back and a
+/// What the table answers for a seat whose clock ran out: a pass, only the blockers a rule requires, no target (a spell is taken back and a
 /// triggered ability removed, as the rules do when a target cannot be chosen), the triggers in the order they
 /// triggered, No to a question, the first option, for modes the cast taken back when the options allow it and the
 /// first mode otherwise, the first cards of the list for a choice of cards and the order given for an order of cards.
@@ -125,7 +125,9 @@ pub(crate) fn is_priority(decision: &Decision) -> bool {
 pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
     match &decision.kind {
         DecisionKind::Priority(_) => Some(pass()),
-        DecisionKind::DeclareBlockers(_) => Some(Answer::DeclareBlockers(Vec::new())),
+        DecisionKind::DeclareBlockers(options) => {
+            Some(Answer::DeclareBlockers(options.required_blocks()))
+        }
         DecisionKind::ChooseTargets(options) => {
             Some(Answer::ChooseTargets(if options.can_cancel {
                 TargetChoice::Cancel
@@ -336,6 +338,7 @@ mod tests {
         DecisionKind::DeclareBlockers(BlockOptions {
             blockers: Vec::new(),
             min_blockers: Vec::new(),
+            required: Vec::new(),
         })
     }
 
@@ -365,6 +368,7 @@ mod tests {
             }),
             DecisionKind::DeclareAttackers(AttackOptions {
                 attackers: Vec::new(),
+                required: Vec::new(),
             }),
             DecisionKind::AssignDamage(DamageOptions {
                 attacker: ObjectId(1),

@@ -13,8 +13,8 @@ use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::keyword::Keyword;
-use crate::modify::Modification;
-use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable};
+use crate::modify::{GameRule, Modification};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, Condition, StatKind};
@@ -775,7 +775,7 @@ impl<'a> Walker<'a> {
                 w.at("affected", |w| w.reference(affected, Kind::Object));
                 w.at("mods", |w| w.mods(mods));
             }
-            Effect::Rule { .. } => {}
+            Effect::Rule { rule, .. } => w.at("rule", |w| w.rule(rule)),
             Effect::DelayedTrigger { when, effects, .. } => {
                 w.at("when", |w| w.trigger_pattern(when));
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
@@ -950,6 +950,18 @@ impl<'a> Walker<'a> {
                     w.defining(affected, mods, condition.is_some(), *from);
                 }
             }
+            Ability::Rule {
+                rule,
+                condition,
+                from,
+            } => {
+                w.scope = Scope::new(&[], false);
+                w.at("rule", |w| w.rule(rule));
+                if let Some(condition) = condition {
+                    w.at("condition", |w| w.condition(condition));
+                }
+                w.rule_zone(rule, *from);
+            }
             Ability::Replacement {
                 when,
                 by,
@@ -988,6 +1000,42 @@ impl<'a> Walker<'a> {
             }
         });
         self.x_free = saved_x;
+    }
+
+    /// A rule of the game names what it is about: players or objects, and for the one that triggers again the event that
+    /// causes the trigger, which is judged without a target, a triggering event or a name bound earlier.
+    fn rule(&mut self, rule: &GameRule) {
+        let tag = tag_of(rule);
+        self.uses("Rule", &tag);
+        match rule {
+            GameRule::DamageCantBePrevented => {}
+            GameRule::MustAttack(who)
+            | GameRule::MustBlock(who)
+            | GameRule::CantBeCountered(who) => self.at(tag, |w| w.reference(who, Kind::Object)),
+            GameRule::CantGainLife(who)
+            | GameRule::CantDraw(who)
+            | GameRule::CantSearch(who)
+            | GameRule::RevealTop(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::TriggerAgain { cause } => {
+                let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
+                self.at(tag, |w| w.at("cause", |w| w.trigger_pattern(cause)));
+                self.scope = saved;
+            }
+        }
+    }
+
+    /// A rule works from the battlefield, and "this spell can't be countered" from the stack (CR 113.6b).
+    fn rule_zone(&mut self, rule: &GameRule, from: ZoneKind) {
+        let spell = matches!(rule, GameRule::CantBeCountered(Ref::This));
+        match from {
+            ZoneKind::Battlefield => {}
+            ZoneKind::Stack if spell => {}
+            _ => self.at("from", |w| {
+                w.problem(
+                    "a rule works from the battlefield, or from the stack when it says this spell can't be countered",
+                );
+            }),
+        }
     }
 
     fn replace_when(&mut self, when: &ReplaceWhen) {

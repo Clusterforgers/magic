@@ -45,14 +45,17 @@ fn pool_mut(state: &mut GameState, id: PlayerId) -> Result<&mut ManaPool, Engine
 /// follow from the current state, which indicates an engine bug or a corrupt log.
 pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     // What the layers make of the permanents is read from the state, which this event changes.
+    // The rules in force read the same things, so they go with the layers.
     let changes_layers = !crate::layers::leaves_alone(event);
     if changes_layers {
         state.layers.reset();
+        state.rules_cache.reset();
     }
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
         state.layers.reset_if_built();
+        state.rules_cache.reset_if_built();
     }
     folded
 }
@@ -222,6 +225,27 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.effects.retain(|e| e.id != *id);
             if state.effects.len() == before {
                 return Err(invalid(format!("unknown effect {id:?}")));
+            }
+        }
+        Event::RuleCreated { effect } => {
+            if effect.duration == mtg_cards::modify::Duration::WhileSourceOnBattlefield
+                && effect.source.is_none()
+            {
+                return Err(invalid(
+                    "a rule that lasts while its source stays has a source",
+                ));
+            }
+            if state.rule_effects.iter().any(|e| e.id == effect.id) {
+                return Err(invalid(format!("duplicate rule {:?}", effect.id)));
+            }
+            state.next_effect = state.next_effect.max(effect.id.0 + 1);
+            state.rule_effects.push(effect.clone());
+        }
+        Event::RuleExpired { id } => {
+            let before = state.rule_effects.len();
+            state.rule_effects.retain(|e| e.id != *id);
+            if state.rule_effects.len() == before {
+                return Err(invalid(format!("unknown rule {id:?}")));
             }
         }
         Event::PlayerLost { player, reason } => player_lost(state, *player, reason)?,

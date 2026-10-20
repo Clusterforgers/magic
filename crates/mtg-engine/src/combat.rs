@@ -9,6 +9,7 @@ use crate::decision::{AttackOptions, AttackerOption, BlockOptions, BlockerOption
 use crate::error::IllegalAnswer;
 use crate::events::Event;
 use crate::keywords;
+use crate::rules::{must_attack, must_block};
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -168,8 +169,17 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
             object,
             defenders: defenders.clone(),
         })
+        .collect::<Vec<_>>();
+    // A creature that can't attack any defender is not required to (it is "able" only with one to attack).
+    let required = attackers
+        .iter()
+        .filter(|option| !option.defenders.is_empty() && must_attack(state, option.object))
+        .map(|option| option.object)
         .collect();
-    AttackOptions { attackers }
+    AttackOptions {
+        attackers,
+        required,
+    }
 }
 
 /// Players being attacked, in turn order after the active player.
@@ -226,7 +236,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
             .count();
         able >= keywords::min_blockers(state, attacker)
     };
-    let blockers = candidates
+    let blockers: Vec<BlockerOption> = candidates
         .iter()
         .filter_map(|(object, can_block)| {
             let can_block: Vec<ObjectId> = can_block
@@ -247,9 +257,15 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .map(|attacker| (attacker, keywords::min_blockers(state, attacker)))
         .filter(|(_, needed)| *needed > 1)
         .collect();
+    let required = blockers
+        .iter()
+        .map(|option| option.object)
+        .filter(|object| must_block(state, *object))
+        .collect();
     BlockOptions {
         blockers,
         min_blockers,
+        required,
     }
 }
 
@@ -270,6 +286,14 @@ pub(crate) fn check_attackers(
         if !allowed.defenders.contains(target) {
             return Err(IllegalAnswer::NotOffered("defender"));
         }
+    }
+    // CR 508.1d: every requirement that can be obeyed is; a creature that is able to attack must.
+    if options
+        .required
+        .iter()
+        .any(|required| !answer.iter().any(|(object, _)| object == required))
+    {
+        return Err(IllegalAnswer::Required("attacker"));
     }
     Ok(())
 }
@@ -299,6 +323,14 @@ pub(crate) fn check_blockers(
         if got < needed {
             return Err(IllegalAnswer::TooFewBlockers { needed, got });
         }
+    }
+    // CR 509.1c: every requirement that can be obeyed is; a creature that must block does, unless every block it could
+    // make would break a restriction (menace) that no creature free to join could mend.
+    if options.required.iter().any(|required| {
+        !answer.iter().any(|(blocker, _)| blocker == required)
+            && options.could_join(*required, answer)
+    }) {
+        return Err(IllegalAnswer::Required("blocker"));
     }
     Ok(())
 }

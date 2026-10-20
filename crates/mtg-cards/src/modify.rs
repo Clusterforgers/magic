@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 use crate::ability::Ability;
 use crate::keyword::Keyword;
 use crate::refs::Ref;
+use crate::trigger::TriggerPattern;
 use crate::value::Amount;
 
 /// A change to an object. Static abilities apply them continuously; `Effect::Continuous` applies
@@ -92,11 +93,32 @@ pub enum Duration {
     Forever,
 }
 
-/// A change to the rules of the game rather than to an object.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+/// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
+/// `Ability::Rule` for as long as its source has the ability; the references name the players or objects it is about.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum GameRule {
     /// Damage can't be prevented, and prevention shields do nothing.
     DamageCantBePrevented,
+    /// The creatures attack each combat if able: a requirement on the declaration (CR 508.1d), not a restriction.
+    MustAttack(Ref),
+    /// The creatures block each combat if able: a requirement on the declaration (CR 509.1c).
+    MustBlock(Ref),
+    /// The spells can't be countered.
+    CantBeCountered(Ref),
+    /// The players can't gain life.
+    CantGainLife(Ref),
+    /// The players can't draw cards.
+    CantDraw(Ref),
+    /// The players can't search libraries.
+    CantSearch(Ref),
+    /// The players play with the top card of their library revealed to every seat.
+    RevealTop(Ref),
+    /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
+    /// `cause` describes makes it trigger ("if a creature dying causes a triggered ability ... to trigger").
+    TriggerAgain {
+        /// The event that causes the trigger, as a triggered ability describes it.
+        cause: TriggerPattern,
+    },
 }
 
 #[cfg(test)]

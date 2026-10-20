@@ -7,7 +7,7 @@ use crate::cost::Cost;
 use crate::effect::Effect;
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
-use crate::modify::Modification;
+use crate::modify::{GameRule, Modification};
 use crate::refs::{Ref, Selector, TargetSpec, ZoneKind};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, Condition};
@@ -138,6 +138,18 @@ pub enum Ability {
         #[serde(default, skip_serializing_if = "is_false")]
         defining: bool,
         /// The zone the source must be in.
+        #[serde(default, skip_serializing_if = "ZoneKind::is_battlefield")]
+        from: ZoneKind,
+    },
+    /// A static ability that changes a rule of the game (CR 604): "players can't gain life", "this creature attacks
+    /// each combat if able".
+    Rule {
+        /// The rule.
+        rule: GameRule,
+        /// It applies only while this holds.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
+        /// The zone the source must be in: the battlefield, or the stack for a spell that can't be countered.
         #[serde(default, skip_serializing_if = "ZoneKind::is_battlefield")]
         from: ZoneKind,
     },
