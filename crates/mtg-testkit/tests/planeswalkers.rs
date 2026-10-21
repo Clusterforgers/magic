@@ -401,6 +401,44 @@ fn trample_puts_the_damage_beyond_the_blocker_on_the_planeswalker_and_none_on_th
     Ok(())
 }
 
+#[rstest]
+fn only_the_opponents_of_its_controller_may_attack_a_planeswalker(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut scenario = Scenario::new(seats)
+        .at(2, 0, Step::DeclareAttackers)
+        .battlefield(
+            0,
+            [
+                ready(free_creature("A", 2, 2)),
+                ready(pyre_walker().unwrap()),
+            ],
+        );
+    for seat in 1..seats {
+        scenario = scenario.battlefield(seat, [ready(dawn_walker().unwrap())]);
+    }
+    let driver = Driver::from_scenario(scenario)?;
+    let mine = driver.id_of("Pyre Walker")?;
+    let mtg_engine::DecisionKind::DeclareAttackers(options) = &driver.decision()?.kind else {
+        panic!("attackers were expected");
+    };
+    let defenders = &options.attackers[0].defenders;
+    assert!(
+        !defenders.contains(&mtg_engine::combat::AttackTarget::Planeswalker(mine)),
+        "a player does not attack their own planeswalker"
+    );
+    let theirs = defenders
+        .iter()
+        .filter(|defender| matches!(defender, mtg_engine::combat::AttackTarget::Planeswalker(_)))
+        .count();
+    assert_eq!(
+        theirs,
+        seats - 1,
+        "each opponent's planeswalker is a defender"
+    );
+    Ok(())
+}
+
 // A planeswalker that leaves during combat
 
 /// Seat 0 attacks the Pyre Walker of seat 1 with `A`, and holds a Lightning Bolt and a Mountain; seat 1 has a Bear to
