@@ -1,10 +1,21 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT position, board, card_name, oracle_id, printing_id, set_code,\n                    collector_number, count, is_foil\n             FROM precon_deck_cards WHERE deck_id = $1 ORDER BY position",
+  "query": "SELECT deck_id AS \"deck_id: _\", position, board, card_name, oracle_id, printing_id, set_code,\n                    collector_number, count, is_foil\n             FROM precon_deck_cards ORDER BY deck_id, position",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
+        "name": "deck_id: _",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "deck_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
         "name": "position",
         "type_info": "Int4",
         "origin": {
@@ -15,7 +26,7 @@
         }
       },
       {
-        "ordinal": 1,
+        "ordinal": 2,
         "name": "board",
         "type_info": "Text",
         "origin": {
@@ -26,7 +37,7 @@
         }
       },
       {
-        "ordinal": 2,
+        "ordinal": 3,
         "name": "card_name",
         "type_info": "Text",
         "origin": {
@@ -37,7 +48,7 @@
         }
       },
       {
-        "ordinal": 3,
+        "ordinal": 4,
         "name": "oracle_id",
         "type_info": "Uuid",
         "origin": {
@@ -48,7 +59,7 @@
         }
       },
       {
-        "ordinal": 4,
+        "ordinal": 5,
         "name": "printing_id",
         "type_info": "Uuid",
         "origin": {
@@ -59,7 +70,7 @@
         }
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "set_code",
         "type_info": "Text",
         "origin": {
@@ -70,7 +81,7 @@
         }
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "collector_number",
         "type_info": "Text",
         "origin": {
@@ -81,7 +92,7 @@
         }
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "count",
         "type_info": "Int4",
         "origin": {
@@ -92,7 +103,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "is_foil",
         "type_info": "Bool",
         "origin": {
@@ -104,11 +115,10 @@
       }
     ],
     "parameters": {
-      "Left": [
-        "Int8"
-      ]
+      "Left": []
     },
     "nullable": [
+      false,
       false,
       false,
       false,
@@ -120,5 +130,5 @@
       false
     ]
   },
-  "hash": "f8ffca538e33f19ddf82cfdcf6250a84bd39c3c05068fb2367a02f26f7896c2d"
+  "hash": "a2815f8e8a3d101ed6593caa059a9ee90aabb3a3ca49aa073914d95a534108cd"
 }
