@@ -68,9 +68,17 @@ pub struct PermanentState {
     pub(crate) timestamp: u64,
     pub(crate) observed: Option<PlayerId>,
     pub(crate) chosen: Option<Chosen>,
+    /// The optional costs paid as the spell was cast, by index, a repeatable cost once for each payment.
+    pub(crate) paid: Vec<usize>,
 }
 
 impl PermanentState {
+    /// The optional costs (kicker) paid as the spell that became the permanent was cast, by index, a repeatable cost
+    /// once for each payment; its abilities read them.
+    pub fn paid(&self) -> &[usize] {
+        &self.paid
+    }
+
     /// What its controller chose as it entered, if it asked for a choice.
     pub const fn chosen(&self) -> Option<&Chosen> {
         self.chosen.as_ref()
@@ -208,6 +216,18 @@ impl GameObject {
     /// What was announced for the spell or ability while it is on the stack; empty elsewhere.
     pub const fn choices(&self) -> &Choices {
         &self.choices
+    }
+
+    /// The optional costs paid as this card was cast, by index: what the spell announced while it is on the stack and
+    /// what the permanent remembers after; none elsewhere.
+    pub fn paid_costs(&self) -> &[usize] {
+        match &self.permanent {
+            Some(permanent) => permanent.paid(),
+            None if self.kind == ObjectKind::Card && self.zone == Zone::Stack => {
+                &self.choices.optional_costs
+            }
+            None => &[],
+        }
     }
 
     /// The ability this object is, if it is one on the stack.

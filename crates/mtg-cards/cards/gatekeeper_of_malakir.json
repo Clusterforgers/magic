@@ -1,0 +1,24 @@
+{
+  "oracle_id": "6781f8ae-2a86-4e3d-bc43-48809c9d6c26",
+  "name": "Gatekeeper of Malakir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gatekeeper of Malakir",
+      "oracle_fingerprint": "c2263dab8483fb21a40175010cc2fc16",
+      "abilities": [
+        { "Keyword": { "Kicker": "{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": "Kicked",
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Sacrifice": { "who": { "Target": 0 }, "filter": [{ "Type": "Creature" }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

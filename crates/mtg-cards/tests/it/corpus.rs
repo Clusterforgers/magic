@@ -78,7 +78,7 @@ fn files_are_canonical_and_carry_current_fingerprints() {
 #[test]
 fn the_corpus_loads_with_one_hundred_and_sixteen_cards_and_three_tokens() {
     let library = library();
-    assert_eq!(library.cards().count(), 116);
+    assert_eq!(library.cards().count(), 118);
     let tokens: Vec<_> = library.tokens().map(|t| t.id.as_str()).collect();
     assert_eq!(tokens, ["clue", "food", "treasure"]);
 }
@@ -302,6 +302,9 @@ fn the_corpus_exercises_the_range_of_the_vocabulary() {
         "ReplaceWhen.TokenCreation",
         "Keyword.Equip",
         "Keyword.Kicker",
+        "Keyword.Multikicker",
+        "Condition.Kicked",
+        "Amount.Kicks",
         "Keyword.Flashback",
         "Keyword.Evoke",
         "Keyword.Cascade",

@@ -144,6 +144,9 @@ pub enum Amount {
     },
     /// How many card types there are among the objects that match the selector.
     CardTypes(Selector),
+    /// How many times the kicker costs of the spell were paid, a multikicker once for each payment (CR 702.33); a
+    /// permanent and its abilities read the spell it came from, and zero is no kicker paid.
+    Kicks,
 }
 
 impl Amount {
@@ -175,6 +178,7 @@ enum Tagged {
     Greatest { of: Selector, stat: StatKind },
     Total { of: Selector, stat: StatKind },
     CardTypes(Selector),
+    Kicks,
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -205,6 +209,7 @@ enum TaggedRef<'a> {
         stat: StatKind,
     },
     CardTypes(&'a Selector),
+    Kicks,
 }
 
 impl From<Tagged> for Amount {
@@ -223,6 +228,7 @@ impl From<Tagged> for Amount {
             Tagged::Greatest { of, stat } => Amount::Greatest { of, stat },
             Tagged::Total { of, stat } => Amount::Total { of, stat },
             Tagged::CardTypes(of) => Amount::CardTypes(of),
+            Tagged::Kicks => Amount::Kicks,
         }
     }
 }
@@ -250,6 +256,7 @@ impl Serialize for Amount {
                 TaggedRef::Total { of, stat: *stat }.serialize(serializer)
             }
             Amount::CardTypes(of) => TaggedRef::CardTypes(of).serialize(serializer),
+            Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
         }
     }
 }
@@ -316,7 +323,7 @@ pub enum Condition {
         /// The predicates it must satisfy.
         selector: Selector,
     },
-    /// The spell was kicked (any kicker cost was paid).
+    /// The spell was kicked (any kicker cost was paid); a permanent and its abilities read the spell it came from.
     Kicked,
     /// It is the controller's turn.
     YourTurn,

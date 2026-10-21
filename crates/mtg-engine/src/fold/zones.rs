@@ -42,6 +42,12 @@ pub(super) fn move_object(
     object.zone = to;
     // A new zone makes it a new object (CR 400.7); what was announced for it on the stack goes with the stack.
     object.counter += 1;
+    // What the spell paid for stays with the permanent it becomes, for its abilities to read.
+    let paid = if from == Zone::Stack && to == Zone::Battlefield {
+        std::mem::take(&mut object.choices.optional_costs)
+    } else {
+        Vec::new()
+    };
     if from == Zone::Stack {
         object.choices = Choices::default();
     }
@@ -62,6 +68,7 @@ pub(super) fn move_object(
             timestamp,
             observed: None,
             chosen: None,
+            paid,
         });
     } else if to != Zone::Stack {
         object.controller = object.owner;

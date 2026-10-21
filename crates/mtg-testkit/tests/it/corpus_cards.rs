@@ -1,4 +1,4 @@
-//! Goal: the 116 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 118 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -37,7 +37,7 @@ use Support::{Manual, Partial, Verified};
 /// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
-const CARDS: [(&str, Support, usize); 116] = [
+const CARDS: [(&str, Support, usize); 118] = [
     ("Act of Treason", Verified, 1),
     ("Ajani, Caller of the Pride", Verified, 3),
     ("Anger", Verified, 2),
@@ -60,7 +60,7 @@ const CARDS: [(&str, Support, usize); 116] = [
     ("Idyllic Beachfront", Verified, 3),
     ("Lizard Blades", Verified, 3),
     ("Brainstorm", Verified, 1),
-    ("Burst Lightning", Manual, 0),
+    ("Burst Lightning", Verified, 2),
     ("Caress of Phyrexia", Verified, 1),
     ("Carnage Tyrant", Verified, 3),
     ("Cathars' Crusade", Verified, 1),
@@ -86,6 +86,7 @@ const CARDS: [(&str, Support, usize); 116] = [
     ("Forest", Verified, 1),
     ("Gaea's Cradle", Manual, 0),
     ("Garruk Wildspeaker", Verified, 3),
+    ("Gatekeeper of Malakir", Verified, 2),
     ("Giant Growth", Verified, 1),
     ("Glorious Anthem", Verified, 1),
     ("Goblin Chieftain", Verified, 2),
@@ -142,6 +143,7 @@ const CARDS: [(&str, Support, usize); 116] = [
     ("Tireless Tracker", Verified, 2),
     ("Transguild Courier", Verified, 1),
     ("Warmonger Hellkite", Verified, 3),
+    ("Wolfbriar Elemental", Verified, 2),
     ("Wrath of God", Verified, 1),
     ("Arvad the Cursed", Verified, 3),
     ("Control Magic", Verified, 2),
@@ -160,7 +162,7 @@ const CARDS: [(&str, Support, usize); 116] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 116);
+    assert_eq!(in_table.len(), 118);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -239,10 +241,14 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         "{fireball}"
     );
     assert!(!fireball.contains("{X}"), "{fireball}");
-    // Burst Lightning's damage is covered, its kicker is not.
-    let burst = reasons("Burst Lightning");
-    assert!(burst.contains("Keyword.Kicker"), "{burst}");
-    assert!(!burst.contains("Effect.DealDamage"), "{burst}");
+    // The kicker and multikicker cards are covered whole: the costs are paid at announcement and read at resolution.
+    for name in [
+        "Burst Lightning",
+        "Gatekeeper of Malakir",
+        "Wolfbriar Elemental",
+    ] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // Rhystic Study and Izzet Charm are covered whole: the payment the opponent or the spell's controller is offered
     // is played now, with the "may", the trigger, the modes, the counter and the damage around it.
     for name in ["Rhystic Study", "Izzet Charm"] {

@@ -41,6 +41,7 @@ mod keywords_hexproof;
 mod keywords_snapshots;
 mod keywords_triggers;
 mod keywords_triggers_fuzz;
+mod kicker;
 mod lands_and_sickness;
 mod layers;
 mod layers_fuzz;
