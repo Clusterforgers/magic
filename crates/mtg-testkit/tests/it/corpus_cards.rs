@@ -1,4 +1,4 @@
-//! Goal: the 114 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 118 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -37,7 +37,7 @@ use Support::{Manual, Partial, Verified};
 /// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
-const CARDS: [(&str, Support, usize); 114] = [
+const CARDS: [(&str, Support, usize); 118] = [
     ("Act of Treason", Verified, 1),
     ("Ajani, Caller of the Pride", Verified, 3),
     ("Anger", Verified, 2),
@@ -152,13 +152,17 @@ const CARDS: [(&str, Support, usize); 114] = [
     ("Shielded by Faith", Verified, 3),
     ("Squirrel Nest", Verified, 2),
     ("Sram, Senior Edificer", Verified, 1),
+    ("Blaze", Verified, 1),
+    ("Stroke of Genius", Verified, 1),
+    ("Kessig Wolf Run", Verified, 2),
+    ("Tezzeret the Seeker", Verified, 3),
 ];
 
 #[test]
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 114);
+    assert_eq!(in_table.len(), 118);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -230,9 +234,13 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         let reasons: Vec<&str> = record.clauses.iter().map(|c| c.reason.as_str()).collect();
         reasons.join("; ")
     };
-    // Fireball is left to the table because the engine cannot pay X.
+    // Fireball waits for its cost modifier and the even split of its damage, not for X.
     let fireball = reasons("Fireball");
-    assert!(fireball.contains("{X}"), "{fireball}");
+    assert!(
+        fireball.contains("Ability.CostModifier") && fireball.contains("Amount.EvenShare"),
+        "{fireball}"
+    );
+    assert!(!fireball.contains("{X}"), "{fireball}");
     // The kicker and multikicker cards are covered whole: the costs are paid at announcement and read at resolution.
     for name in [
         "Burst Lightning",
@@ -479,7 +487,8 @@ fn a_manual_artifact_resolves_without_its_ability() -> Result<(), ScriptError> {
 }
 
 #[test]
-fn a_spell_with_x_in_its_cost_is_never_offered() -> Result<(), ScriptError> {
+fn a_spell_with_x_in_its_cost_is_offered_when_x_of_nothing_can_be_paid() -> Result<(), ScriptError>
+{
     let hydra = |x: u8| -> Arc<CardDefinition> {
         Arc::new(
             CardDefinition::new("Hydra")
@@ -489,20 +498,26 @@ fn a_spell_with_x_in_its_cost_is_never_offered() -> Result<(), ScriptError> {
                 .with_x_in_cost(x),
         )
     };
-    let castable = |x: u8| -> Result<usize, ScriptError> {
+    let castable = |x: u8, forests: usize| -> Result<usize, ScriptError> {
         let driver = Driver::from_scenario(
             Scenario::new(2)
                 .hand(0, [hydra(x)])
-                .battlefield_named(0, ["Forest", "Forest"]),
+                .battlefield_named(0, vec!["Forest"; forests]),
         )?;
         let DecisionKind::Priority(options) = &driver.decision()?.kind else {
             panic!("priority was expected");
         };
         Ok(options.castable.len())
     };
-    assert_eq!(castable(0)?, 1, "the control costs {{G}} and is affordable");
-    assert_eq!(castable(1)?, 0, "{{X}}{{G}} is not paid as {{G}}");
-    assert_eq!(castable(2)?, 0);
+    assert_eq!(
+        castable(0, 2)?,
+        1,
+        "the control costs {{G}} and is affordable"
+    );
+    assert_eq!(castable(1, 2)?, 1, "{{X}}{{G}} is cast for X = 0 or 1");
+    assert_eq!(castable(2, 2)?, 1);
+    assert_eq!(castable(1, 1)?, 1, "X = 0 leaves just the {{G}}");
+    assert_eq!(castable(1, 0)?, 0, "the {{G}} is not paid for");
     Ok(())
 }
 

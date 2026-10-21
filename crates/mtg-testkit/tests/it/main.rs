@@ -100,5 +100,8 @@ mod triggers_targets;
 mod turn_structure;
 mod win_effects;
 mod windows_games;
+mod x_corpus;
+mod x_costs;
+mod x_fuzz;
 mod zone_abilities;
 mod zones_fuzz;

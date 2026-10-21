@@ -117,7 +117,7 @@ impl Phase {
 /// What the rules of the spell or ability ask its player to announce beyond modes and targets, read from the rules
 /// when the announcement begins.
 ///
-/// The keywords of a spell fill `optional` (kicker, multikicker); (g2) fills `x` and (g4) `alternative`.
+/// The keywords of a spell fill `optional` (kicker, multikicker), the cost and rules of a card fill `x`; (g4) fills `alternative`.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub(crate) struct Needs {
     /// The cost the spell is cast for instead of its mana cost.
@@ -130,11 +130,11 @@ pub(crate) struct Needs {
 
 impl Needs {
     /// What `what` asks for; its rules are `rules`.
-    fn of(state: &GameState, what: &What, _rules: Option<&Ability>) -> Self {
+    fn of(state: &GameState, what: &What, rules: Option<&Ability>) -> Self {
         Needs {
             alternative: None,
             optional: optional::read(state, what),
-            x: None,
+            x: XCost::of(state, what, rules),
         }
     }
 

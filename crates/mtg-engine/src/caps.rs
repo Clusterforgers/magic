@@ -14,7 +14,7 @@
 //! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
-use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS};
+use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
 
 /// The primitives the engine runs, and the only list of them. A task that teaches the engine one adds its
 /// name here in the same change as the code: the test of the interpreter fails when a name is listed for an
@@ -39,6 +39,9 @@ const RUNS: &[&str] = &[
     "Trigger.AnyOf",
     "Cost.Tap",
     "Cost.Mana",
+    "Cost.Mana.X",
+    "Cost.Loyalty.X",
+    X_COST,
     "Cost.SacrificeSelf",
     "Cost.ExileSelf",
     "Cost.DiscardSelf",
@@ -211,7 +214,7 @@ mod tests {
     #[case::gaining_life("Effect.GainLife", true)]
     #[case::losing_life("Effect.LoseLife", true)]
     #[case::mana_costs("Cost.Mana", true)]
-    #[case::x_in_a_mana_cost("Cost.Mana.X", false)]
+    #[case::x_in_a_mana_cost("Cost.Mana.X", true)]
     #[case::paying_life("Cost.PayLife", false)]
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_zones("Ability.From", true)]
@@ -295,7 +298,7 @@ mod tests {
     #[case::divided_amounts("Amount.Divided", false)]
     #[case::even_shares("Amount.EvenShare", false)]
     #[case::loyalty_abilities("Ability.Loyalty", true)]
-    #[case::loyalty_costs_with_an_x("Cost.Loyalty.X", false)]
+    #[case::loyalty_costs_with_an_x("Cost.Loyalty.X", true)]
     #[case::being_kicked("Condition.Kicked", true)]
     #[case::the_number_of_kicks("Amount.Kicks", true)]
     #[case::may("Effect.May", true)]
@@ -395,7 +398,9 @@ mod tests {
     #[case::mutate("Keyword.Mutate", false)]
     #[case::encore("Keyword.Encore", false)]
     #[case::squad("Keyword.Squad", false)]
-    #[case::x_costs(X_COST, false)]
+    #[case::x_costs(X_COST, true)]
+    #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
+    #[case::paying_x_in_an_effect("Effect.Pay.X", false)]
     #[case::faces(FACES, false)]
     #[case::variable_stats(VARIABLE_STATS, true)]
     fn the_engine_runs_what_it_runs_today(#[case] name: &str, #[case] runs: bool) {

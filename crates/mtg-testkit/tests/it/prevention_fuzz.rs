@@ -15,7 +15,7 @@ fn games() -> u64 {
     std::env::var("MTG_FUZZ_GAMES")
         .ok()
         .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+        .unwrap_or(80)
 }
 
 /// What a campaign saw the shields do.
