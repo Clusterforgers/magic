@@ -107,10 +107,11 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ## M5 Table and prompts
 
 The server is settled first, then the web is built once against the final types.
-- [ ] Response clocks for every decision kind without one, each with a fallback answer, and a clock test through the actor for YesNo, ChooseOption and ChooseMode (`docs/server.md`, Response clocks)
+- [x] Response clocks for every decision kind without one, each with a fallback answer, and a clock test through the actor for YesNo, ChooseOption and ChooseMode (`docs/server.md`, Response clocks)
 - [ ] (d9) Timer bank: extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
 - [ ] Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and the order of cards put back; the payment prompt for X and restricted mana
+- [ ] Clock words in the web (`clockText.ts`) for every decision with a clock the web does not name: number, optional costs, division, replacement, keep, bottoming, payment, damage, attackers and discard
 - [ ] The `YesNo` prompt disables Yes and its key when `YesNoOptions.only_no` is set (a payment the seat cannot make)
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts mark the creatures a rule requires (`AttackOptions.required`, `BlockOptions.required`) as chosen and locked, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
