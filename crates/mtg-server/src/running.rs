@@ -4,6 +4,7 @@ use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::forecast::CombatForecast;
+use mtg_engine::state::Stage;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState};
 use mtg_protocol::{DecisionId, ErrorCode, ServerMessage, StateView};
 use tokio::time::Instant;
@@ -241,9 +242,12 @@ impl Running {
             });
             return None;
         }
-        let clock = self
-            .pace
-            .clock_for(&decision, self.engine.state().turn().active());
+        let state = self.engine.state();
+        let clock = if state.stage() == Stage::Mulligan {
+            self.pace.opening_clock()
+        } else {
+            self.pace.clock_for(&decision, state.turn().active())
+        };
         let due = clock.and_then(|span| Instant::now().checked_add(span));
         self.pending = Some(Pending {
             id,
