@@ -407,8 +407,11 @@ fn trigger_of(game: &GameState, ability: usize) -> Event {
 #[case::a_token_attacking_before_attackers_are_declared(
     |_: &GameState| Event::TokenCreated(token(900, PlayerId(0), Some(AttackTarget::Player(PlayerId(1)))))
 )]
-#[case::counters_are_not_in_the_engine_yet(
-    |_: &GameState| Event::CountersChanged(CountersChanged { on: Target::Player(PlayerId(0)), counter: CounterKind::Poison, delta: 1 })
+#[case::counters_taken_off_a_player_who_has_none(
+    |_: &GameState| Event::CountersChanged(CountersChanged { on: Target::Player(PlayerId(0)), counter: CounterKind::Poison, delta: -1 })
+)]
+#[case::counters_for_nobody(
+    |_: &GameState| Event::CountersChanged(CountersChanged { on: Target::Player(PlayerId(7)), counter: CounterKind::Poison, delta: 1 })
 )]
 fn an_event_that_cannot_follow_from_the_state_is_refused(
     #[case] event: impl Fn(&GameState) -> Event,

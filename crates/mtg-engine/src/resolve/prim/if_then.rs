@@ -208,10 +208,6 @@ mod tests {
 
     #[rstest]
     #[case::kicked(r#""Kicked""#, "kicker")]
-    #[case::counters(
-        r#"{"Compare":{"left":{"Counters":{"on":"This","counter":"+1/+1"}},"op":"Ge","right":1}}"#,
-        "counters"
-    )]
     #[case::x(r#"{"Compare":{"left":"X","op":"Ge","right":1}}"#, "X")]
     #[case::loyalty(
         r#"{"Compare":{"left":{"Stat":{"of":"This","stat":"Loyalty"}},"op":"Ge","right":1}}"#,

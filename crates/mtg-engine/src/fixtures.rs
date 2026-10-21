@@ -38,6 +38,7 @@ pub(crate) fn setup(
             graveyard: Vec::new(),
             life: None,
             keywords: Vec::new(),
+            counters: Vec::new(),
         })
         .collect();
     GameSetup {

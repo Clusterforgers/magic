@@ -2,9 +2,12 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
+use mtg_engine::choose::Target;
 use mtg_engine::combat::{AttackTarget, DamageTarget};
+use mtg_engine::counters::CountersChanged;
 use mtg_engine::effects::Duration;
 use mtg_engine::keywords::is_indestructible;
 use mtg_engine::object::{ObjectKind, PermanentState};
@@ -49,6 +52,9 @@ pub enum Violation {
     /// Turn, priority or combat bookkeeping is inconsistent.
     #[error("bookkeeping inconsistency: {0}")]
     Bookkeeping(String),
+    /// The counters on a permanent or a player disagree with the counters put on and removed.
+    #[error("counter mismatch: {0}")]
+    Counters(String),
 }
 
 fn zone_error(message: impl Into<String>) -> Violation {
@@ -94,6 +100,7 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
             )));
         }
     }
+    check_counters_settled(state)?;
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id).filter(|o| state.is_alive(o.controller())) else {
             continue;
@@ -109,6 +116,34 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
         if toughness <= 0 || (destroyed && !is_indestructible(state, id)) {
             return Err(Violation::Bookkeeping(format!(
                 "{id:?} should have died: toughness {toughness}, damage {damage}, deathtouch mark {marked}"
+            )));
+        }
+    }
+    Ok(())
+}
+
+/// At a decision point no permanent holds both a +1/+1 and a -1/-1 counter (CR 704.5q) and no player in the game holds ten
+/// poison counters (CR 704.5c): state-based actions took them off, or the player out.
+fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
+    for &id in state.zone(Zone::Battlefield) {
+        let held = |kind: &CounterKind| {
+            state
+                .object(id)
+                .and_then(|o| o.permanent())
+                .map_or(0, |p| p.counters_of(kind))
+        };
+        if held(&CounterKind::PlusOnePlusOne) > 0 && held(&CounterKind::MinusOneMinusOne) > 0 {
+            return Err(Violation::Counters(format!(
+                "{id:?} holds +1/+1 and -1/-1 counters at a decision point"
+            )));
+        }
+    }
+    for player in state.players().iter().filter(|p| p.is_in_game()) {
+        if player.counters_of(&CounterKind::Poison) >= 10 {
+            return Err(Violation::Counters(format!(
+                "{:?} holds {} poison counters and is still in the game",
+                player.id(),
+                player.counters_of(&CounterKind::Poison)
             )));
         }
     }
@@ -261,6 +296,8 @@ pub struct InvariantChecker {
     expected_life: Vec<i32>,
     expected_pool: Vec<[i64; 6]>,
     expected_damage: BTreeMap<ObjectId, u32>,
+    expected_object_counters: BTreeMap<ObjectId, BTreeMap<CounterKind, i64>>,
+    expected_player_counters: BTreeMap<PlayerId, BTreeMap<CounterKind, i64>>,
     zones_seen: BTreeMap<ObjectId, (Zone, u32)>,
     events_seen: usize,
     full_every: usize,
@@ -276,12 +313,37 @@ impl InvariantChecker {
             .filter_map(|o| Some((o.id(), o.permanent()?.damage())))
             .filter(|(_, damage)| *damage > 0)
             .collect();
+        let expected_object_counters = shadow
+            .objects()
+            .filter_map(|o| {
+                let held: BTreeMap<CounterKind, i64> = o
+                    .permanent()?
+                    .counters()
+                    .map(|(kind, count)| (kind.clone(), i64::from(count)))
+                    .collect();
+                (!held.is_empty()).then_some((o.id(), held))
+            })
+            .collect();
+        let expected_player_counters = shadow
+            .players()
+            .iter()
+            .map(|p| {
+                let held: BTreeMap<CounterKind, i64> = p
+                    .counters()
+                    .map(|(kind, count)| (kind.clone(), i64::from(count)))
+                    .collect();
+                (p.id(), held)
+            })
+            .filter(|(_, held)| !held.is_empty())
+            .collect();
         Ok(InvariantChecker {
             setup: setup.clone(),
             expected_objects: shadow.object_count(),
             expected_life: shadow.players().iter().map(Player::life).collect(),
             expected_pool: vec![[0; 6]; shadow.players().len()],
             expected_damage,
+            expected_object_counters,
+            expected_player_counters,
             zones_seen: BTreeMap::new(),
             shadow,
             events_seen: 0,
@@ -329,7 +391,8 @@ impl InvariantChecker {
             });
         }
         self.check_zone_changes()?;
-        self.check_damage_totals()
+        self.check_damage_totals()?;
+        self.check_counter_totals()
     }
 
     /// An object that is in another zone than when last seen has a higher zone-change counter, and no counter ever falls (CR 400.7).
@@ -486,10 +549,101 @@ impl InvariantChecker {
             }
             | Event::CreatureDied { object, .. } => {
                 self.expected_damage.remove(object);
+                // Counters stay with the object that held them, so a permanent that comes back holds none (CR 400.7).
+                self.expected_object_counters.remove(object);
                 Ok(())
             }
+            Event::CountersChanged(changed) => self.adjust_counters(changed),
             _ => Ok(()),
         }
+    }
+
+    /// Moves the independent history of the counters on `changed.on` by the change and fails when it would hold fewer
+    /// than none.
+    fn adjust_counters(&mut self, changed: &CountersChanged) -> Result<(), Violation> {
+        let held = match changed.on {
+            Target::Object(named) => self.expected_object_counters.entry(named.id).or_default(),
+            Target::Player(player) => self.expected_player_counters.entry(player).or_default(),
+        };
+        let slot = held.entry(changed.counter.clone()).or_default();
+        *slot += i64::from(changed.delta);
+        if *slot < 0 {
+            return Err(Violation::Counters(format!(
+                "{:?} would hold {slot} {:?} counters",
+                changed.on, changed.counter
+            )));
+        }
+        if *slot == 0 {
+            held.remove(&changed.counter);
+        }
+        self.expected_object_counters
+            .retain(|_, held| !held.is_empty());
+        self.expected_player_counters
+            .retain(|_, held| !held.is_empty());
+        Ok(())
+    }
+
+    /// The counters on every permanent and player must equal those put on less those taken off, and no kind is held in a
+    /// quantity of none.
+    fn check_counter_totals(&self) -> Result<(), Violation> {
+        // Nothing was put on anything: nothing may hold any, which a game without counters sees without allocating.
+        if self.expected_object_counters.is_empty() && self.expected_player_counters.is_empty() {
+            let held = self
+                .shadow
+                .zone(Zone::Battlefield)
+                .iter()
+                .filter_map(|id| self.shadow.object(*id)?.permanent())
+                .any(|permanent| permanent.counters().next().is_some())
+                || self
+                    .shadow
+                    .players()
+                    .iter()
+                    .any(|player| player.counters().next().is_some());
+            return if held {
+                Err(Violation::Counters(
+                    "counters are held that nothing put on".into(),
+                ))
+            } else {
+                Ok(())
+            };
+        }
+        let listed = |held: &BTreeMap<CounterKind, i64>| -> Vec<(CounterKind, i64)> {
+            held.iter().map(|(kind, n)| (kind.clone(), *n)).collect()
+        };
+        let none = BTreeMap::new();
+        for &id in self.shadow.zone(Zone::Battlefield) {
+            let Some(permanent) = self.shadow.object(id).and_then(|o| o.permanent()) else {
+                continue;
+            };
+            let state: Vec<(CounterKind, i64)> = permanent
+                .counters()
+                .map(|(kind, count)| (kind.clone(), i64::from(count)))
+                .collect();
+            let expected = listed(self.expected_object_counters.get(&id).unwrap_or(&none));
+            if state.iter().any(|(_, count)| *count == 0) || state != expected {
+                return Err(Violation::Counters(format!(
+                    "{id:?} holds {state:?} but {expected:?} were put on"
+                )));
+            }
+        }
+        for player in self.shadow.players() {
+            let state: Vec<(CounterKind, i64)> = player
+                .counters()
+                .map(|(kind, count)| (kind.clone(), i64::from(count)))
+                .collect();
+            let expected = listed(
+                self.expected_player_counters
+                    .get(&player.id())
+                    .unwrap_or(&none),
+            );
+            if state.iter().any(|(_, count)| *count == 0) || state != expected {
+                return Err(Violation::Counters(format!(
+                    "{:?} holds {state:?} but {expected:?} were put on",
+                    player.id()
+                )));
+            }
+        }
+        Ok(())
     }
 
     /// Takes `amount` off the independent life history of `player` and compares it with the shadow state.

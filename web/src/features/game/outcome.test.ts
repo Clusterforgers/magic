@@ -19,6 +19,7 @@ describe('describeLoss', () => {
   it.each<[LossReason, string]>([
     ['ZeroLife', 'ran out of life'],
     ['EmptyLibrary', 'could not draw from an empty library'],
+    ['Poison', 'had ten poison counters'],
     ['Conceded', 'conceded'],
     [{ Format: 'commander damage' }, 'lost: commander damage'],
   ])('puts %j as "%s"', (reason, words) => {

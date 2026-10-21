@@ -4,6 +4,7 @@ import type {
   AttackTarget,
   Choice,
   ContinuousEffect,
+  CounterKind,
   DamageTarget,
   DeathCause,
   Event,
@@ -146,6 +147,12 @@ function targetName(target: Target, n: EventNames): string {
   return 'Player' in target ? n.seat(target.Player) : n.card(target.Object.id)
 }
 
+/** "a +1/+1 counter", "3 poison counters". */
+function counterPhrase(count: number, kind: CounterKind): string {
+  const name = typeof kind === 'string' ? kind : kind.Other
+  return count === 1 ? `a ${name} counter` : `${count} ${name} counters`
+}
+
 function zoneWord(zone: Zone, n: EventNames): string {
   if (zone === 'Battlefield') return 'the battlefield'
   if (zone === 'Stack') return 'the stack'
@@ -257,8 +264,9 @@ function describePipeline(event: PipelineEvent, n: EventNames): LogLine {
     return line(`${n.seat(event.LifeGained.player)} gains ${event.LifeGained.amount} life`)
   if ('LifeLost' in event) return line(`${n.seat(event.LifeLost.player)} loses ${event.LifeLost.amount} life`)
   if ('CountersChanged' in event) {
-    const { on, delta } = event.CountersChanged
-    return quiet(`${delta > 0 ? 'Counters are put on' : 'Counters are removed from'} ${targetName(on, n)}`)
+    const { on, counter, delta } = event.CountersChanged
+    const phrase = counterPhrase(Math.abs(delta), counter)
+    return line(`${targetName(on, n)} ${delta > 0 ? 'gets' : 'loses'} ${phrase}`)
   }
   if ('TokenCreated' in event) {
     return line(`${n.seat(event.TokenCreated.controller)} creates a ${event.TokenCreated.name} token`)

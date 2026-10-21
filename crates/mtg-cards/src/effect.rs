@@ -303,6 +303,28 @@ pub enum Effect {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Removes counters from an object or player; one that has fewer loses what it has.
+    RemoveCounters {
+        /// Where they come from.
+        from: Ref,
+        /// The kind.
+        counter: CounterKind,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// Moves counters from one object onto another (CR 122.5); the first object gives up what it has, up to the count.
+    MoveCounters {
+        /// The object they leave.
+        from: Ref,
+        /// The object they go onto.
+        to: Ref,
+        /// The kind.
+        counter: CounterKind,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// Taps permanents.
     Tap {
         /// What is tapped.
@@ -450,6 +472,18 @@ mod tests {
     #[case::pay(
         Effect::Pay { who: Ref::Triggering, cost: Cost::mana("{1}".parse().unwrap()), paid: vec![], unpaid: vec![Effect::Draw { who: Ref::You, count: Amount::one() }] },
         r#"{"Pay":{"who":"Triggering","cost":"{1}","unpaid":[{"Draw":{}}]}}"#
+    )]
+    #[case::put_a_poison_counter_on_a_player(
+        Effect::PutCounters { on: Ref::Target(0), counter: CounterKind::Poison, count: Amount::one() },
+        r#"{"PutCounters":{"on":{"Target":0},"counter":"poison"}}"#
+    )]
+    #[case::remove_all_the_counters_of_a_kind(
+        Effect::RemoveCounters { from: Ref::This, counter: CounterKind::Other("energy".into()), count: Amount::Counters { on: Ref::This, counter: CounterKind::Other("energy".into()) } },
+        r#"{"RemoveCounters":{"from":"This","counter":{"Other":"energy"},"count":{"Counters":{"on":"This","counter":{"Other":"energy"}}}}}"#
+    )]
+    #[case::move_two_counters(
+        Effect::MoveCounters { from: Ref::Target(0), to: Ref::Target(1), counter: CounterKind::PlusOnePlusOne, count: Amount::Fixed(2) },
+        r#"{"MoveCounters":{"from":{"Target":0},"to":{"Target":1},"counter":"+1/+1","count":2}}"#
     )]
     fn effects_have_stable_json(#[case] value: Effect, #[case] json: &str) {
         assert_eq!(serde_json::to_string(&value).unwrap(), json);

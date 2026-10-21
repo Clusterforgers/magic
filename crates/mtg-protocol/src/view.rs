@@ -114,6 +114,11 @@ pub struct PlayerView {
     pub lost: Option<LossReason>,
     /// Mana floating in the pool.
     pub mana: ManaPool,
+    /// The counters on the player (poison, energy, experience and the like), by kind in a fixed order; public, and left
+    /// out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<(CounterKind, u32)>>", optional)]
+    pub counters: Vec<(CounterKind, u32)>,
     /// Mulligans taken.
     pub mulligans: u32,
     /// Opening-hand progress.

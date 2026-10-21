@@ -71,6 +71,8 @@ pub struct PlayerSetup {
     pub life: Option<i32>,
     /// Keywords the player has from the start, such as hexproof (CR 702.11d).
     pub keywords: Vec<Keyword>,
+    /// Counters on the player from the start, by kind; a kind listed twice adds up.
+    pub counters: Vec<(CounterKind, u32)>,
 }
 
 /// Where the game starts.
@@ -209,6 +211,27 @@ fn preset_state(
     }
 }
 
+/// The seat `owner` as its setup describes it: its life (the format's unless it names one), keywords and counters.
+fn starting_player(
+    owner: PlayerId,
+    setup: &PlayerSetup,
+    life: i32,
+    status: MulliganStatus,
+) -> Player {
+    let mut player = Player::new(
+        owner,
+        setup.life.unwrap_or(life),
+        status,
+        setup.keywords.clone(),
+    );
+    for (kind, count) in &setup.counters {
+        if *count > 0 {
+            *player.counters.entry(kind.clone()).or_default() += count;
+        }
+    }
+    player
+}
+
 impl GameState {
     /// Builds the initial state; objects get sequential ids per seat: library, hand, battlefield, graveyard.
     pub fn from_setup(setup: &GameSetup) -> Result<GameState, SetupError> {
@@ -248,12 +271,7 @@ impl GameState {
                 Start::Mulligan => MulliganStatus::NeedsHand,
                 Start::At { .. } => MulliganStatus::Kept,
             };
-            players.push(Player::new(
-                owner,
-                setup_player.life.unwrap_or(life),
-                status,
-                setup_player.keywords.clone(),
-            ));
+            players.push(starting_player(owner, setup_player, life, status));
         }
         for (id, preset) in presets {
             if let Some(object) = objects.get_mut(&id) {
@@ -336,6 +354,14 @@ impl GameState {
             .objects()
             .any(|object| crate::ability_reader::definition_has_state_trigger(&object.def));
         self.possible.states = states;
+        let counters = self.objects().any(|object| {
+            object.permanent().is_some_and(|permanent| {
+                permanent
+                    .counters()
+                    .any(|(kind, _)| crate::counters::changes_power_toughness(kind))
+            })
+        });
+        self.possible.counters = counters;
     }
 }
 

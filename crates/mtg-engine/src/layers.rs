@@ -24,6 +24,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification as Wanted;
 use mtg_cards::refs::{Ref, ZoneKind};
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
@@ -31,7 +32,7 @@ use crate::ability_reader::{printed, provided, working_here};
 use crate::characteristics::{Characteristics, base};
 use crate::effects::{ContinuousEffect, Layer, Modification, Selector};
 use crate::events::Event;
-use crate::object::{GameObject, ObjectKind, ObjectRef};
+use crate::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::resolve::{Scope, lower, zone_kind};
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -274,10 +275,13 @@ impl fmt::Debug for LayersCache {
 }
 
 impl GameState {
-    /// What the layers make of every permanent now: nothing while no effect and no static ability can be in play (a game
-    /// of cards with none costs nothing) and while the pass itself is under way, which reads its own objects.
+    /// What the layers make of every permanent now: nothing while no effect, no static ability and no +1/+1 or -1/-1 counter
+    /// can be in play (a game of cards with none costs nothing) and while the pass itself is under way, which reads its own
+    /// objects.
     pub(crate) fn layers(&self) -> &Layers {
-        if (self.effects.is_empty() && !self.statics_possible) || COMPUTING.with(Cell::get) {
+        let nothing_to_derive =
+            self.effects.is_empty() && !self.statics_possible && !self.possible.counters;
+        if nothing_to_derive || COMPUTING.with(Cell::get) {
             return &EMPTY;
         }
         self.layers.0.get_or_init(|| {
@@ -455,7 +459,13 @@ fn compute(state: &GameState) -> Layers {
                     && working_here(object)
                         .any(|(_, rules)| matches!(**rules, Ability::Static { .. }))
             }));
-    if registered.is_empty() && !statics_in_play {
+    let counters_in_play = state.possible.counters
+        && state
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter_map(|id| state.object(*id)?.permanent())
+            .any(|permanent| power_toughness_from_counters(permanent) != 0);
+    if registered.is_empty() && !statics_in_play && !counters_in_play {
         return Layers {
             held: BTreeMap::new(),
         };
@@ -486,6 +496,9 @@ impl<'a> Pass<'a> {
     /// Applies the effects of one layer (none: the restrictions, which come last), one at a time, each chosen again
     /// from what is left once the one before has applied (CR 613.8c).
     fn run(&mut self, layer: Option<Layer>) {
+        if layer == Some(Layer::PtModify) {
+            self.apply_counters();
+        }
         let mut waiting = self.candidates(layer);
         Self::order(&mut waiting);
         while !waiting.is_empty() {
@@ -499,6 +512,25 @@ impl<'a> Pass<'a> {
                     }
                 }
                 Self::order(&mut waiting);
+            }
+        }
+    }
+
+    /// The power and toughness the counters give the permanents (CR 613.4c): they apply before the other effects of layer
+    /// 7c, which then read the result, and after everything that sets power and toughness in layers 7a and 7b.
+    fn apply_counters(&mut self) {
+        let state = self.state;
+        for (id, held) in &mut self.held {
+            let Some(permanent) = state.object(*id).and_then(GameObject::permanent) else {
+                continue;
+            };
+            let net = power_toughness_from_counters(permanent);
+            if net != 0 {
+                held.chars.power = held.chars.power.map(|power| power.saturating_add(net));
+                held.chars.toughness = held
+                    .chars
+                    .toughness
+                    .map(|toughness| toughness.saturating_add(net));
             }
         }
     }
@@ -905,6 +937,14 @@ impl<'a> Pass<'a> {
     }
 }
 
+/// What the +1/+1 and -1/-1 counters on a permanent add to its power and to its toughness: one for each +1/+1 counter and
+/// minus one for each -1/-1 counter.
+fn power_toughness_from_counters(permanent: &PermanentState) -> i32 {
+    let plus = i64::from(permanent.counters_of(&CounterKind::PlusOnePlusOne));
+    let minus = i64::from(permanent.counters_of(&CounterKind::MinusOneMinusOne));
+    i32::try_from(plus - minus).unwrap_or(if plus > minus { i32::MAX } else { i32::MIN })
+}
+
 /// What the effect changes in the objects it applies to.
 fn writes_of(cand: &Cand<'_>) -> Traits {
     match &cand.what {
@@ -963,6 +1003,8 @@ pub(crate) fn outside(
     chars
 }
 
+#[cfg(test)]
+mod counters;
 #[cfg(test)]
 mod defining;
 #[cfg(test)]

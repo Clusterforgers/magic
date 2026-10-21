@@ -1,6 +1,6 @@
 //! The values of the DSL read from the game: references, selectors, amounts and conditions.
 //!
-//! Nothing here changes state. What the engine cannot evaluate yet (counters, X, divided amounts, kicker)
+//! Nothing here changes state. What the engine cannot evaluate yet (loyalty, X, divided amounts, kicker)
 //! is a `ResolveError::Unsupported` with the name of what is missing; `Caps` keeps the cards that need
 //! them from being offered, so the error is not met in a game.
 
@@ -9,7 +9,7 @@ use std::collections::BTreeMap;
 
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, ZoneKind};
-use mtg_cards::value::{Amount, Condition, StatKind};
+use mtg_cards::value::{Amount, Condition, CounterKind, StatKind};
 use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
 use thiserror::Error;
@@ -20,7 +20,7 @@ use crate::choose::legal_for;
 use crate::choose::{Choices, Target};
 use crate::keywords;
 use crate::layers::{Held, View, outside};
-use crate::object::{GameObject, ObjectKind, ObjectRef};
+use crate::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -87,6 +87,33 @@ struct Seen<'a> {
     card: Option<&'a GameObject>,
     /// The keywords it has: where the layers have worked them out, or as its snapshot holds them.
     keywords: Option<&'a [Keyword]>,
+    /// The counters on it: its own while it is the object that was named, else those its snapshot holds.
+    counters: Counted<'a>,
+}
+
+/// The counters of an object that was seen.
+#[derive(Clone, Copy)]
+enum Counted<'a> {
+    /// The permanent still is the object that was named.
+    Live(&'a PermanentState),
+    /// How a snapshot recorded them.
+    Shot(&'a [(CounterKind, u32)]),
+    /// An object that is not a permanent holds none.
+    None,
+}
+
+impl Counted<'_> {
+    /// How many counters of `kind` there are.
+    fn of(self, kind: &CounterKind) -> u32 {
+        match self {
+            Counted::Live(permanent) => permanent.counters_of(kind),
+            Counted::Shot(held) => held
+                .iter()
+                .find(|(found, _)| found == kind)
+                .map_or(0, |(_, count)| *count),
+            Counted::None => 0,
+        }
+    }
 }
 
 /// The kind of zone a zone is.
@@ -164,6 +191,7 @@ impl<'a> Scope<'a> {
             let tapped = object
                 .permanent()
                 .map(crate::object::PermanentState::tapped);
+            let counters = object.permanent().map_or(Counted::None, Counted::Live);
             if let Some(view) = self.layered {
                 return Some(match view.get(object.id()) {
                     Some(held) => Seen {
@@ -175,6 +203,7 @@ impl<'a> Scope<'a> {
                         tapped,
                         card: Some(object),
                         keywords: Some(&held.keywords),
+                        counters,
                     },
                     None => Seen {
                         owner: object.owner(),
@@ -185,6 +214,7 @@ impl<'a> Scope<'a> {
                         tapped,
                         card: Some(object),
                         keywords: None,
+                        counters,
                     },
                 });
             }
@@ -198,6 +228,7 @@ impl<'a> Scope<'a> {
                 tapped,
                 card: Some(object),
                 keywords: None,
+                counters,
             });
         }
         let shot = self
@@ -214,6 +245,7 @@ impl<'a> Scope<'a> {
             tapped: None,
             card: live,
             keywords: Some(shot.keywords.as_slice()),
+            counters: Counted::Shot(&shot.counters),
         })
     }
 
@@ -236,6 +268,7 @@ impl<'a> Scope<'a> {
                 .map(crate::object::PermanentState::tapped),
             card: Some(object),
             keywords: Some(&held.keywords),
+            counters: object.permanent().map_or(Counted::None, Counted::Live),
         };
         for pred in &selector.0 {
             if !self.pred(pred, object.reference(), &seen)? {
@@ -488,6 +521,7 @@ impl<'a> Scope<'a> {
                     .card
                     .is_some_and(|card| keywords::has_keyword(state, card.id(), keyword)),
             },
+            Pred::HasCounter(kind) => seen.counters.of(kind) > 0,
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat)? {
                 Some(value) => op.holds(value, self.amount(to)?),
@@ -541,7 +575,21 @@ impl<'a> Scope<'a> {
                 .first()
                 .and_then(|p| self.state.player(*p))
                 .map_or(0, |p| i64::from(p.life())),
-            Amount::Counters { .. } => return Err(ResolveError::Unsupported("counters")),
+            Amount::Counters { on, counter } => {
+                let mut total = 0i64;
+                for named in self.refs(on)? {
+                    total += match named {
+                        Target::Player(player) => self
+                            .state
+                            .player(player)
+                            .map_or(0, |held| i64::from(held.counters_of(counter))),
+                        Target::Object(object) => self
+                            .seen(object)
+                            .map_or(0, |seen| i64::from(seen.counters.of(counter))),
+                    };
+                }
+                total
+            }
             Amount::Sum(parts) => {
                 let mut sum = 0i64;
                 for part in parts {
@@ -626,6 +674,7 @@ mod tests {
     use rstest::rstest;
 
     use super::*;
+    use crate::counters::CountersChanged;
     use crate::events::{Event, ZoneCause};
     use crate::fixtures::state;
     use crate::fold::apply_event;
@@ -808,7 +857,6 @@ mod tests {
 
     #[rstest]
     #[case::x(r#""X""#, "X")]
-    #[case::counters(r#"{"Counters":{"on":"This","counter":"+1/+1"}}"#, "counters")]
     #[case::divided(r#""Divided""#, "divided amounts")]
     #[case::even_share(r#"{"EvenShare":4}"#, "divided amounts")]
     #[case::loyalty(
@@ -1038,5 +1086,107 @@ mod tests {
             ..named(&game, "Bear", 0)
         };
         assert!(!scope.can_be_dealt_damage(stale));
+    }
+
+    /// Seat 0's Bear has two +1/+1 counters and a charge counter, seat 1's Ogre a -1/-1 counter; seat 0 has three poison
+    /// counters and seat 1 four energy counters.
+    fn counted() -> GameState {
+        let mut game = game();
+        let (bear, ogre) = (named(&game, "Bear", 0), named(&game, "Ogre", 1));
+        for (on, counter, delta) in [
+            (Target::Object(bear), CounterKind::PlusOnePlusOne, 2),
+            (Target::Object(bear), CounterKind::Charge, 1),
+            (Target::Object(ogre), CounterKind::MinusOneMinusOne, 1),
+            (Target::Player(PlayerId(0)), CounterKind::Poison, 3),
+            (
+                Target::Player(PlayerId(1)),
+                CounterKind::Other("energy".into()),
+                4,
+            ),
+        ] {
+            let event = Event::CountersChanged(CountersChanged { on, counter, delta });
+            apply_event(&mut game, &event).unwrap();
+        }
+        game
+    }
+
+    const MY_BEAR: &str = r#"{"Each":[{"Named":"Bear"},{"ControlledBy":"You"}]}"#;
+
+    #[rstest]
+    #[case::the_object_has_two(MY_BEAR, r#""+1/+1""#, 2)]
+    #[case::of_another_kind(MY_BEAR, r#""charge""#, 1)]
+    #[case::of_a_kind_it_lacks(MY_BEAR, r#""-1/-1""#, 0)]
+    #[case::another_object(r#"{"Each":[{"Named":"Ogre"}]}"#, r#""-1/-1""#, 1)]
+    #[case::the_source_holds_none("\"This\"", r#""+1/+1""#, 0)]
+    #[case::all_the_objects_named_add_up(r#"{"Each":[{"Type":"Creature"}]}"#, r#""+1/+1""#, 2)]
+    #[case::a_player_you(r#""You""#, r#""poison""#, 3)]
+    #[case::a_named_kind(r#""Opponents""#, r#"{"Other":"energy"}"#, 4)]
+    #[case::each_player_adds_up(r#""EachPlayer""#, r#""poison""#, 3)]
+    #[case::a_player_without_any(r#""Opponents""#, r#""poison""#, 0)]
+    #[case::nothing_named(r#"{"Each":[{"Named":"Nobody"}]}"#, r#""poison""#, 0)]
+    fn counters_are_the_number_the_object_or_player_holds(
+        #[case] on: &str,
+        #[case] counter: &str,
+        #[case] expected: i64,
+    ) {
+        let game = counted();
+        let json = format!(r#"{{"Counters":{{"on":{on},"counter":{counter}}}}}"#);
+        let amount: Amount = serde_json::from_str(&json).unwrap();
+        assert_eq!(scope(&game).amount(&amount), Ok(expected));
+        let condition = format!(r#"{{"Compare":{{"left":{json},"op":"Ge","right":1}}}}"#);
+        let condition: Condition = serde_json::from_str(&condition).unwrap();
+        assert_eq!(scope(&game).holds(&condition), Ok(expected >= 1));
+    }
+
+    #[rstest]
+    #[case::a_plus_counter(r#"[{"HasCounter":"+1/+1"}]"#, &["Bear 0"])]
+    #[case::a_charge_counter(r#"[{"HasCounter":"charge"}]"#, &["Bear 0"])]
+    #[case::a_minus_counter(r#"[{"HasCounter":"-1/-1"}]"#, &["Ogre 1"])]
+    #[case::a_kind_nothing_has(r#"[{"HasCounter":"loyalty"}]"#, &[])]
+    #[case::no_plus_counter(r#"[{"Type":"Creature"},{"Not":{"HasCounter":"+1/+1"}}]"#, &["Ogre 1", "Bear 1"])]
+    #[case::either_kind(r#"[{"AnyOf":[{"HasCounter":"+1/+1"},{"HasCounter":"-1/-1"}]}]"#, &["Bear 0", "Ogre 1"])]
+    #[case::with_the_rest_of_the_selector(r#"[{"ControlledBy":"Opponents"},{"HasCounter":"+1/+1"}]"#, &[])]
+    fn a_selector_over_counters_matches_the_permanents_that_hold_some(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(matched(&counted(), json), expected);
+    }
+
+    #[test]
+    fn the_counters_of_an_object_that_left_are_read_from_its_snapshot() {
+        let mut game = counted();
+        let old = named(&game, "Bear", 0);
+        let shot = snapshot(&game, old.id).unwrap();
+        assert_eq!(
+            shot.counters,
+            [(CounterKind::PlusOnePlusOne, 2), (CounterKind::Charge, 1)]
+        );
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: old.id,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(PlayerId(0)),
+                cause: ZoneCause::Destroyed,
+            },
+        )
+        .unwrap();
+        let bindings: Bindings = [("bear".to_owned(), vec![Target::Object(old)])].into();
+        let plus: Amount =
+            serde_json::from_str(r#"{"Counters":{"on":{"Bound":"bear"},"counter":"+1/+1"}}"#)
+                .unwrap();
+        let selector = selector(r#"[{"HasCounter":"charge"}]"#);
+        let mut scope = scope(&game);
+        scope.bindings = &bindings;
+        assert_eq!(
+            scope.amount(&plus),
+            Ok(0),
+            "the new object holds none and nothing says otherwise"
+        );
+        assert!(!scope.selects(&selector, old).unwrap());
+        scope.snapshots = vec![&shot];
+        assert_eq!(scope.amount(&plus), Ok(2), "the snapshot says what it held");
+        assert!(scope.selects(&selector, old).unwrap());
     }
 }

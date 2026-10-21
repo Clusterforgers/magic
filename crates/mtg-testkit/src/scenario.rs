@@ -261,6 +261,15 @@ impl Scenario {
         self
     }
 
+    /// Gives a player `count` more counters of `kind` from the start.
+    #[must_use]
+    pub fn counters(mut self, player: usize, kind: CounterKind, count: u32) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.counters.push((kind, count));
+        }
+        self
+    }
+
     /// Gives a player keywords from the start, such as hexproof (CR 702.11d).
     #[must_use]
     pub fn player_keywords(

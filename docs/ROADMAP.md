@@ -22,7 +22,7 @@ One item is one piece of about 15 minutes; tick it in the commit that finishes i
 - Game flow: auto-pass, response clocks, yields, stops and Full Control, idle windows as short hidden clocks, leak tests (`docs/arena-flow.md`, P1 to P8)
 - Web: core client, game UI with prompts for all eight decision kinds, N-seat table with log and stack panel, table animations, concede, lobby, account pages, Playwright e2e; the UI rebuild U1 to U12 (tokens, fit engine, grid, controls dock, turn feedback, game browser, layout gate)
 - Decks: list, import, export, builder, and the deck check with the Verified marker
-- Card system so far: the DSL, card assembly and effect pipeline (`docs/cards-dsl.md`); the keywords of combat, hexproof and flash; triggers with APNAP order, delayed triggers and intervening if; pumps and keyword grants through layers 6 and 7c; discard, sacrifice, mill, the library effects, destroy, exile, counter, tap, untap, conditions, winning the game, pay, search, tokens (Treasure, Clue, Food), modes, yes or no and options
+- Card system so far: the DSL, card assembly and effect pipeline (`docs/cards-dsl.md`); the keywords of combat, hexproof and flash; triggers with APNAP order, delayed triggers and intervening if; pumps and keyword grants through layers 6 and 7c; discard, sacrifice, mill, the library effects, destroy, exile, counter, tap, untap, conditions, winning the game, pay, search, tokens (Treasure, Clue, Food), counters on permanents and players (+1/+1 and -1/-1 in layer 7c, poison, energy, experience), modes, yes or no and options
 
 ## M3 Card system
 
@@ -35,7 +35,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (r3a) Templates: plain mana abilities and spell effects (draw, life, damage, destroy, exile, counter, scry, pump) with their common targets and amounts
 - [x] (r3b) Templates: triggers (enters, dies, leaves, attacks, cast, step, sacrifice) and "you may"; a line without a period no longer blocks the effects of its spell
 - [x] (r3b2) Templates: modes ("choose one"), "pay" ("unless its controller pays"), compound predicates ("discards a card and loses 3 life"), the older "enters the battlefield" wording, and the effects "exile ~", "return target creature to its owner's hand" and "all creatures get -N/-N"
-- [ ] (r3c) Templates: activated abilities with `{T}`, mana and sacrifice costs, and the wordings of search and the library effects
+- [ ] (r3c) Templates: activated abilities with `{T}`, mana and sacrifice costs, and the wordings of search and the library effects, and of removing and moving counters
 - [x] (r4) `mtg-cli coverage`: the state of every precon card (and of each precon) from its compiled rules and the engine's `Caps`, with the unread wordings and missing primitives ranked by the cards each holds back and by the cards it alone holds back
 - [ ] (r4b) Audit before any compiled rule reaches a game: 100 random compiled cards are listed as oracle text beside the rendered reading and the JSON, and each disagreement fixes a template
 - [ ] (r5) The vocabulary the report ranks highest and the DSL lacks (value nodes such as devotion, energy and chosen colour; effects; costs; trigger patterns) is added in one pass, each with its `Caps` name and a stub
@@ -55,7 +55,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (i3) State triggers (CR 603.8) and abilities that work from a zone other than the battlefield (`from`); Reassembling Skeleton, Soul of Zendikar, Elemental Masterpiece, Squee, Boneyard Scourge, Anger and Covetous Dragon are Verified
 
 ### Counters, planeswalkers and attachments
-- [ ] (l1) Counters on permanents and players: the fold, put, remove and move, `Amount::Counters`, +1/+1 and -1/-1 counters in layer 7c with their state-based actions, views; Tireless Tracker is Verified
+- [x] (l1) Counters on permanents and players: the fold, put, remove and move, `Amount::Counters`, +1/+1 and -1/-1 counters in layer 7c with their state-based actions, views; Tireless Tracker, Cathars' Crusade, Inspiring Call and Caress of Phyrexia are Verified
 - [ ] (l2) Planeswalkers: loyalty abilities (once a turn, at sorcery speed), damage removes loyalty (CR 120.3c), zero loyalty dies, an attacker keeps attacking a planeswalker that left (CR 506.4c); Jace, the Mind Sculptor is Verified
 - [ ] (m1) `Attach`, Aura spells that target through `Enchant`, and the state-based actions of attachments (CR 704.5m to 704.5p); Pacifism is Verified
 - [ ] (m2) Equipment with `Equip` and `Reconfigure`; Bonesplitter is Verified

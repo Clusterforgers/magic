@@ -84,6 +84,11 @@ impl PermanentState {
         self.counters.iter().map(|(kind, count)| (kind, *count))
     }
 
+    /// How many counters of `kind` are on the permanent.
+    pub fn counters_of(&self, kind: &CounterKind) -> u32 {
+        self.counters.get(kind).copied().unwrap_or(0)
+    }
+
     /// The time the permanent entered the battlefield: the timestamp of its static abilities (CR 613.7).
     pub const fn timestamp(&self) -> u64 {
         self.timestamp

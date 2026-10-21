@@ -280,6 +280,7 @@ impl<'a> Walker<'a> {
             | Pred::Untapped
             | Pred::Attacking
             | Pred::Blocking
+            | Pred::HasCounter(_)
             | Pred::In(_) => {}
         }
     }
@@ -305,11 +306,7 @@ impl<'a> Walker<'a> {
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
             Amount::Life(who) => self.reference(who, Kind::Player),
-            // The value evaluator cannot read counters or divided amounts yet, and a card that needs them waits.
-            Amount::Counters { on, .. } => {
-                self.uses("Amount", "Counters");
-                self.at("on", |w| w.reference(on, Kind::Either));
-            }
+            Amount::Counters { on, .. } => self.at("on", |w| w.reference(on, Kind::Either)),
             Amount::Sum(parts) => {
                 for (i, part) in parts.iter().enumerate() {
                     self.at(format!("[{i}]"), |w| w.amount(part));
@@ -813,6 +810,17 @@ impl<'a> Walker<'a> {
                 w.at("on", |w| w.reference(on, Kind::Either));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::RemoveCounters { from, count, .. } => {
+                w.at("from", |w| w.reference(from, Kind::Either));
+                w.at("count", |w| w.amount(count));
+            }
+            Effect::MoveCounters {
+                from, to, count, ..
+            } => {
+                w.at("from", |w| w.reference(from, Kind::Object));
+                w.at("to", |w| w.reference(to, Kind::Object));
+                w.at("count", |w| w.amount(count));
+            }
             Effect::CreateToken {
                 who, token, count, ..
             } => {
@@ -1167,7 +1175,7 @@ impl<'a> Walker<'a> {
 /// `Cost.Tap`, `Mod.ModifyPT`, `ReplaceWhen.TokenCreation`, `ReplaceBy.Multiply` or `Ability.Loyalty`;
 /// an ability with a `limit` or a zone other than the battlefield also uses `Ability.Limit` or `Ability.From`.
 /// A value the engine cannot read yet is named too, wherever it stands (a condition, an amount, a selector):
-/// `Amount.Counters`, `Amount.Divided`, `Amount.EvenShare`, `Stat.Loyalty` and `Condition.Kicked`.
+/// `Amount.Divided`, `Amount.EvenShare`, `Stat.Loyalty` and `Condition.Kicked`.
 ///
 /// A plain `{T}: Add {X}` is one primitive, [`PLAIN_MANA_ABILITY`]: the engine runs that exact shape
 /// and not the general ability, cost and effect it is made of.
@@ -1858,16 +1866,71 @@ mod tests {
     #[rstest]
     #[case::counters_in_a_condition(
         r#"{"Spell":{"effects":[{"If":{"condition":{"Compare":{"left":{"Counters":{"on":"This","counter":"+1/+1"}},"op":"Ge","right":1}},"then":[{"Draw":{}}]}}]}}"#,
-        &["Ability.Spell", "Amount.Counters", "Effect.Draw", "Effect.If"]
+        &["Ability.Spell", "Effect.Draw", "Effect.If"]
     )]
     #[case::counters_as_an_amount(
         r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"Counters":{"on":"This","counter":"+1/+1"}}}}]}}"#,
-        &["Ability.Spell", "Amount.Counters", "Effect.DealDamage"]
+        &["Ability.Spell", "Effect.DealDamage"]
     )]
     #[case::counters_inside_a_sum_inside_a_negation(
-        r#"{"Spell":{"effects":[{"If":{"condition":{"Not":{"Compare":{"left":{"Sum":[1,{"Counters":{"on":"This","counter":"+1/+1"}}]},"op":"Lt","right":3}}},"then":[]}}]}}"#,
-        &["Ability.Spell", "Amount.Counters", "Effect.If"]
+        r#"{"Spell":{"effects":[{"If":{"condition":{"Not":{"Compare":{"left":{"Sum":[1,{"Counters":{"on":"You","counter":"poison"}}]},"op":"Lt","right":3}}},"then":[]}}]}}"#,
+        &["Ability.Spell", "Effect.If"]
     )]
+    #[case::a_selector_over_counters(
+        r#"{"Spell":{"effects":[{"Draw":{"count":{"Count":[{"Type":"Creature"},{"HasCounter":"+1/+1"}]}}}]}}"#,
+        &["Ability.Spell", "Effect.Draw"]
+    )]
+    #[case::putting_counters_on_a_player(
+        r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"poison","count":3}}]}}"#,
+        &["Ability.Spell", "Effect.PutCounters"]
+    )]
+    #[case::removing_counters(
+        r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"RemoveCounters":{"from":{"Target":0},"counter":"-1/-1"}}]}}"#,
+        &["Ability.Spell", "Effect.RemoveCounters"]
+    )]
+    #[case::moving_counters(
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}},{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"MoveCounters":{"from":{"Target":0},"to":{"Target":1},"counter":"+1/+1","count":2}}]}}"#,
+        &["Ability.Spell", "Effect.MoveCounters"]
+    )]
+    fn counters_are_read_like_any_other_value_and_the_effects_that_change_them_are_primitives(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(problems(json), Vec::<String>::new());
+        let ability: Ability = serde_json::from_str(json).unwrap();
+        let expected: BTreeSet<String> = expected.iter().map(|name| (*name).to_owned()).collect();
+        assert_eq!(used_primitives(&ability), expected);
+    }
+
+    #[rstest]
+    #[case::removing_counters_from_a_name_nothing_bound(
+        r#"{"Spell":{"effects":[{"RemoveCounters":{"from":{"Bound":"nothing"},"counter":"+1/+1"}}]}}"#,
+        "`nothing` is not bound by an earlier step"
+    )]
+    #[case::moving_counters_from_a_player(
+        r#"{"Spell":{"effects":[{"MoveCounters":{"from":"You","to":"This","counter":"poison"}}]}}"#,
+        "expected an object"
+    )]
+    #[case::moving_counters_onto_a_player(
+        r#"{"Spell":{"effects":[{"MoveCounters":{"from":"This","to":"You","counter":"poison"}}]}}"#,
+        "expected an object"
+    )]
+    #[case::counters_of_a_target_that_does_not_exist(
+        r#"{"Spell":{"effects":[{"Draw":{"count":{"Counters":{"on":{"Target":0},"counter":"charge"}}}}]}}"#,
+        "target 0 does not exist"
+    )]
+    fn the_references_of_counter_effects_and_amounts_are_checked(
+        #[case] json: &str,
+        #[case] message: &str,
+    ) {
+        let found = problems(json);
+        assert!(
+            found.iter().any(|problem| problem.contains(message)),
+            "{message:?} is not among {found:#?}"
+        );
+    }
+
+    #[rstest]
     #[case::loyalty_as_a_stat(
         r#"{"Spell":{"effects":[{"If":{"condition":{"Compare":{"left":{"Stat":{"of":"This","stat":"Loyalty"}},"op":"Ge","right":1}},"then":[]}}]}}"#,
         &["Ability.Spell", "Effect.If", "Stat.Loyalty"]

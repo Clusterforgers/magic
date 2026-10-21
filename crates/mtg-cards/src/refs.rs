@@ -5,7 +5,7 @@ use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
 use crate::keyword::Keyword;
-use crate::value::{Amount, Cmp, StatKind};
+use crate::value::{Amount, Cmp, CounterKind, StatKind};
 
 /// A zone a selector or a pattern can name.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
@@ -134,6 +134,8 @@ pub enum Pred {
     In(ZoneKind),
     /// Has the keyword.
     HasKeyword(Keyword),
+    /// Has at least one counter of the kind on it.
+    HasCounter(CounterKind),
     /// Has exactly this card name.
     Named(String),
     /// Its power, toughness, mana value or loyalty compares to the amount.
@@ -257,6 +259,24 @@ mod tests {
     fn refs_have_stable_json(#[case] value: Ref, #[case] json: &str) {
         assert_eq!(serde_json::to_string(&value).unwrap(), json);
         assert_eq!(serde_json::from_str::<Ref>(json).unwrap(), value);
+    }
+
+    #[rstest]
+    #[case::a_plus_counter(
+        Pred::HasCounter(CounterKind::PlusOnePlusOne),
+        r#"{"HasCounter":"+1/+1"}"#
+    )]
+    #[case::a_named_counter(
+        Pred::HasCounter(CounterKind::Other("quest".into())),
+        r#"{"HasCounter":{"Other":"quest"}}"#
+    )]
+    #[case::no_counter(
+        Pred::Not(Box::new(Pred::HasCounter(CounterKind::Poison))),
+        r#"{"Not":{"HasCounter":"poison"}}"#
+    )]
+    fn predicates_over_counters_have_stable_json(#[case] value: Pred, #[case] json: &str) {
+        assert_eq!(serde_json::to_string(&value).unwrap(), json);
+        assert_eq!(serde_json::from_str::<Pred>(json).unwrap(), value);
     }
 
     #[test]

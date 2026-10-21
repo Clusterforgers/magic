@@ -86,6 +86,7 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::HasKeyword(keyword) => {
                 tail.push(format!("with {}", keyword.name().to_lowercase()));
             }
+            Pred::HasCounter(kind) => tail.push(format!("with a {} counter on it", kind.name())),
             Pred::Compare {
                 stat,
                 op,
@@ -726,6 +727,14 @@ mod tests {
     #[case::two_kinds(
         r#"{"what":{"Object":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]}}"#,
         "target creature or planeswalker"
+    )]
+    #[case::with_a_counter(
+        r#"{"what":{"Object":[{"Type":"Creature"},{"HasCounter":"+1/+1"}]}}"#,
+        "target creature with a +1/+1 counter on it"
+    )]
+    #[case::with_a_named_counter_you_control(
+        r#"{"what":{"Object":[{"Type":"Enchantment"},{"ControlledBy":"You"},{"HasCounter":{"Other":"quest"}}]}}"#,
+        "target enchantment you control with a quest counter on it"
     )]
     #[case::up_to_one(
         r#"{"what":"Player","bounds":{"min":0,"max":1}}"#,

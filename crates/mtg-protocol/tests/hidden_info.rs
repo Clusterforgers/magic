@@ -17,8 +17,8 @@ use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
 use mtg_testkit::{
-    archon_fuzz_setup, keyword_triggers_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup,
-    zones_fuzz_setup,
+    archon_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup, rules_fuzz_setup,
+    spell_fuzz_setup, zones_fuzz_setup,
 };
 use rstest::rstest;
 use serde_json::Value;
@@ -39,6 +39,8 @@ const SCALAR_KEYS: &[&str] = &[
     "from_seq",
     "ability",
     "counter",
+    "counters",
+    "delta",
     "types",
     "colors",
     "position",
@@ -236,6 +238,97 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_spells_and_abilities(
     });
     assert!(engine.result().is_some(), "game should finish");
     assert!(checked > 500 && abilities > 0, "test must not be vacuous");
+}
+
+/// Counters on permanents and players are public: the events that put them on and take them off, and the counters of
+/// every permanent and seat in a snapshot, name only things every seat may see, and a hidden card never holds any.
+#[rstest]
+#[case(2, 61)]
+#[case(3, 62)]
+#[case(4, 63)]
+fn no_hidden_object_reaches_any_viewer_in_games_of_counters(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut counter_events, mut counted_views) = (0usize, 0usize, 0usize);
+    let setup = with_unique_names(counters_fuzz_setup(players, seed).unwrap());
+    let engine = run_game(setup, seed, |step: &Step| {
+        counter_events += step
+            .events
+            .iter()
+            .filter(|event| matches!(event, mtg_engine::Event::CountersChanged(_)))
+            .count();
+        let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+        for (viewer, batch) in viewers.iter().zip(&batches) {
+            let hidden = hidden_across(step.before, step.after, *viewer);
+            checked += hidden.len();
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&without_trigger_orders(value), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
+            // Every counter event reaches every viewer whole: counters are never hidden.
+            let seen = batch
+                .events
+                .iter()
+                .filter(|view| {
+                    matches!(
+                        view,
+                        mtg_protocol::EventView::Public(mtg_engine::Event::CountersChanged(_))
+                    )
+                })
+                .count();
+            let logged = step
+                .events
+                .iter()
+                .filter(|event| matches!(event, mtg_engine::Event::CountersChanged(_)))
+                .count();
+            assert_eq!(seen, logged, "seed {seed} viewer {viewer:?}");
+        }
+        if step.answers.is_multiple_of(SNAPSHOT_EVERY) {
+            for viewer in &viewers {
+                let hidden = hidden_in(step.after, *viewer);
+                let view = StateView::for_player(step.after, *viewer);
+                let found = leaks(&serde_json::to_value(&view).unwrap(), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: snapshot leaks {found:?}",
+                    step.answers
+                );
+                // A permanent shows its counters and a seat shows its own to every viewer alike.
+                for object in &view.objects {
+                    if object.zone != Zone::Battlefield {
+                        assert!(
+                            object.counters.is_empty(),
+                            "{} off the battlefield",
+                            object.name
+                        );
+                    }
+                }
+                for player in &view.table.players {
+                    let state = step.after.player(player.seat).unwrap();
+                    let held: Vec<_> = state
+                        .counters()
+                        .map(|(kind, count)| (kind.clone(), count))
+                        .collect();
+                    assert_eq!(player.counters, held, "seed {seed} seat {:?}", player.seat);
+                }
+                counted_views += usize::from(
+                    view.objects.iter().any(|o| !o.counters.is_empty())
+                        || view.table.players.iter().any(|p| !p.counters.is_empty()),
+                );
+            }
+        }
+    });
+    assert!(engine.result().is_some(), "game should finish");
+    assert!(
+        checked > 500 && counter_events > 0 && counted_views > 0,
+        "test must not be vacuous: {checked} hidden, {counter_events} counter events, {counted_views} views with counters"
+    );
 }
 
 /// Ward, prowess and battle cry trigger on spells and abilities that target and on attackers, and the triggers, the

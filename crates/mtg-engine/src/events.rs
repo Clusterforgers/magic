@@ -500,10 +500,15 @@ impl Event {
             | Event::ResolutionEnded { .. }
             | Event::LifeGained { .. }
             | Event::LifeLost { .. }
-            | Event::CountersChanged(_)
             | Event::LibraryLooked(_)
             | Event::CardsFound(_)
             | Event::Revealed(_) => Vec::new(),
+            Event::CountersChanged(changed) => changed
+                .on
+                .object()
+                .map(|named| named.id)
+                .into_iter()
+                .collect(),
             Event::HandDealt { cards, .. }
             | Event::CardsBottomed { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),

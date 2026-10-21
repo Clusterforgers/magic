@@ -54,6 +54,8 @@ pub(crate) struct Possible {
     pub(crate) elsewhere: bool,
     /// Some card has a state trigger or gives one.
     pub(crate) states: bool,
+    /// A +1/+1 or -1/-1 counter has been on a permanent, so the layers work out its power and toughness (CR 613.4c).
+    pub(crate) counters: bool,
 }
 
 /// The state of one game; a pure fold of events over the initial setup.
