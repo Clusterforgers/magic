@@ -4,6 +4,9 @@
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
+use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::{Pred, Selector};
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -16,12 +19,24 @@ use mtg_testkit::{Driver, Scenario, attached_to, ready, with_counters};
 use rstest::rstest;
 use serde_json::json;
 
+/// An Aura that enchants a creature.
 fn aura(name: &str) -> Arc<CardDefinition> {
-    Arc::new(CardDefinition::new(name).with_type(CardType::Enchantment))
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Enchantment)
+            .with_subtype("Aura")
+            .with_rules(Ability::Keyword(Keyword::Enchant(Selector(vec![
+                Pred::Type(CardType::Creature),
+            ])))),
+    )
 }
 
 fn equipment(name: &str) -> Arc<CardDefinition> {
-    Arc::new(CardDefinition::new(name).with_type(CardType::Artifact))
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Artifact)
+            .with_subtype("Equipment"),
+    )
 }
 
 /// Seat 0 has a Bear with two +1/+1 counters and a charge counter, a Blade attached to it, a Jace with three loyalty
