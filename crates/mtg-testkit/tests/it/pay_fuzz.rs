@@ -1,8 +1,9 @@
-//! Goal: whole bot games with decks of Izzet Charm, Rhystic Study, spells that ask a player to pay and abilities that cost mana finish and keep every invariant (zones, life, mana, the journal, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use the payments: players are asked whether to pay and pay, with one source or several, on a turn that is not theirs, and activate abilities by paying their mana; an engine rebuilt from the log at each decision asks the same question, payments included, and a seeded game is the same game every time.
+//! Goal: whole bot games with decks of Izzet Charm, Rhystic Study, spells that ask a player to pay and abilities that cost mana finish and keep every invariant (zones, life, mana, the journal, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use the payments: players are asked whether to pay and pay, with one source or several, on a turn that is not theirs, and activate abilities by paying their mana; a player who cannot pay is asked all the same and a Yes from them is refused without a change (the bots say No); an engine rebuilt from the log at each decision asks the same question, payments included, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use mtg_engine::choose::Choice;
-use mtg_engine::decision::DecisionKind;
+use mtg_engine::choose::{Choice, YesNoChoice};
+use mtg_engine::decision::{Answer, DecisionKind};
+use mtg_engine::error::IllegalAnswer;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, EngineError, Event};
 use mtg_testkit::{RandomBot, pay_fuzz_setup, play_game};
@@ -96,7 +97,7 @@ fn seeded_payment_games_finish_and_keep_every_invariant(#[case] players: usize) 
 fn a_rebuilt_engine_asks_what_the_original_asks_including_every_payment(
     #[values(2, 3, 4)] players: usize,
 ) -> Result<(), EngineError> {
-    let (mut questions, mut payments) = (0, 0);
+    let (mut questions, mut payments, mut unable) = (0, 0, 0);
     for seed in 0..8 {
         let setup = pay_fuzz_setup(players, seed).unwrap();
         let mut engine = Engine::new(setup.clone())?;
@@ -113,17 +114,36 @@ fn a_rebuilt_engine_asks_what_the_original_asks_including_every_payment(
                 engine.state_hash(),
                 "seed {seed} step {step}"
             );
-            // A cast or activation that is not paid for yet lives outside the state; what an effect asks does not.
+            // A cast or activation that is not paid for yet, and a land played that waits for the life its replacement asks
+            // for, live outside the state; what an effect asks does not.
             let resolving = engine.state().resolving().is_some();
-            let outside = !resolving
-                && matches!(
-                    &decision.kind,
-                    DecisionKind::PayMana(_)
-                        | DecisionKind::ChooseTargets(_)
-                        | DecisionKind::ChooseMode(_)
-                );
+            let outside = engine.replacing()
+                || !resolving
+                    && matches!(
+                        &decision.kind,
+                        DecisionKind::PayMana(_)
+                            | DecisionKind::ChooseTargets(_)
+                            | DecisionKind::ChooseMode(_)
+                    );
             if let DecisionKind::YesNo(options) = &decision.kind {
                 questions += u64::from(options.text.starts_with("Pay "));
+                if options.only_no {
+                    // A payment that cannot be made is asked all the same; a Yes is refused and changes nothing.
+                    assert!(options.text.starts_with("Pay "), "seed {seed} step {step}");
+                    unable += 1;
+                    let (log, hash) = (engine.events().len(), engine.state_hash());
+                    let refused = engine.apply(Answer::YesNo(YesNoChoice(true)));
+                    assert!(
+                        matches!(
+                            refused,
+                            Err(EngineError::Illegal(IllegalAnswer::NotOffered("yes")))
+                        ),
+                        "seed {seed} step {step}: {refused:?}"
+                    );
+                    assert_eq!(engine.events().len(), log, "seed {seed} step {step}");
+                    assert_eq!(engine.state_hash(), hash, "seed {seed} step {step}");
+                    assert_eq!(engine.decision(), Some(&decision));
+                }
             }
             if let DecisionKind::PayMana(options) = &decision.kind
                 && resolving
@@ -151,6 +171,7 @@ fn a_rebuilt_engine_asks_what_the_original_asks_including_every_payment(
         }
     }
     assert!(questions > 0, "no payment was offered");
+    assert!(unable > 0, "nobody was asked to pay what they cannot");
     assert!(payments > 0, "no payment was asked for");
     Ok(())
 }

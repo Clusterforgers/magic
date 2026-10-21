@@ -381,7 +381,10 @@ fn ward_counters_a_spell_unless_its_controller_pays(
             let DecisionKind::YesNo(options) = &driver.decision()?.kind else {
                 panic!("a question was expected");
             };
-            assert!(options.only_no, "a Yes is not an answer to what they cannot pay");
+            assert!(
+                options.only_no,
+                "a Yes is not an answer to what they cannot pay"
+            );
             assert!(driver.answer(yes_no(true)).is_err());
             events.extend(driver.answer(yes_no(false))?);
             events.extend(resolve_everything(&mut driver)?);

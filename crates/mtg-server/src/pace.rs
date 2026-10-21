@@ -718,7 +718,10 @@ mod tests {
     #[case::a_trigger_is_removed(targets(false), Some(Answer::ChooseTargets(TargetChoice::Remove)))]
     #[case::triggers_go_on_in_the_order_they_triggered(order(3), Some(Answer::OrderTriggers(TriggersChoice(vec![0, 1, 2]))))]
     #[case::no_to_a_question(question(), Some(Answer::YesNo(YesNoChoice(false))))]
-    #[case::no_to_a_payment_that_cannot_be_made(unaffordable(), Some(Answer::YesNo(YesNoChoice(false))))]
+    #[case::no_to_a_payment_that_cannot_be_made(
+        unaffordable(),
+        Some(Answer::YesNo(YesNoChoice(false)))
+    )]
     #[case::the_first_replacement_effect(
         replacements(3),
         Some(Answer::ChooseReplacement(ReplacementChoice(0)))

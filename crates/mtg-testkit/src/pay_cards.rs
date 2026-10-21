@@ -138,11 +138,13 @@ pub fn mana_pinger(name: &str) -> Arc<CardDefinition> {
     )
 }
 
-/// A deck of lands in the three colours, Izzet Charm and Rhystic Study from the corpus, Lightning Bolts to aim them at,
-/// spells that ask for a payment, permanents with abilities that cost mana, and creatures, derived entirely from `rng`.
+/// A deck of lands in the three colours, two Steam Vents (pay 2 life or enter tapped), Izzet Charm and Rhystic Study
+/// from the corpus, Lightning Bolts to aim them at, spells that ask for a payment, permanents with abilities that cost
+/// mana, and creatures, derived entirely from `rng`.
 pub fn pay_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let colors = [Color::Blue, Color::Red, Color::White];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..24).map(|i| land(colors[i % 3])).collect();
+    let mut deck: Vec<Arc<CardDefinition>> = (0..22).map(|i| land(colors[i % 3])).collect();
+    deck.extend(std::iter::repeat_n(corpus::card("Steam Vents")?, 2));
     for (name, copies) in [
         ("Izzet Charm", 4),
         ("Rhystic Study", 3),
