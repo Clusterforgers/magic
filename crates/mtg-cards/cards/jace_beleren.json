@@ -1,0 +1,28 @@
+{
+  "oracle_id": "cc2b6e58-2d6f-495e-95f3-9496105c4cba",
+  "name": "Jace Beleren",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jace Beleren",
+      "oracle_fingerprint": "c74c71db5d64ee3dc6cc8d1070b049fb",
+      "abilities": [
+        { "Loyalty": { "cost": { "Plus": 2 }, "effects": [{ "Draw": { "who": "EachPlayer" } }] } },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 10 },
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Mill": { "who": { "Target": 0 }, "count": 20 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

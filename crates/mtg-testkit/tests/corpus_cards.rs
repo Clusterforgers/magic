@@ -1,4 +1,4 @@
-//! Goal: the 75 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 78 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -35,10 +35,11 @@ use Support::{Manual, Partial, Verified};
 /// flash, hexproof and the keywords that are triggers (battle cry, prowess, ward), so the fifty cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
 /// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
-/// Counters on permanents and players are played, so Tireless Tracker is Verified. Jace, the Mind Sculptor stays
-/// with the table for its loyalty costs and Flooded Strand for the life it costs.
-const CARDS: [(&str, Support, usize); 75] = [
+/// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
+/// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
+const CARDS: [(&str, Support, usize); 78] = [
     ("Act of Treason", Verified, 1),
+    ("Ajani, Caller of the Pride", Verified, 3),
     ("Anger", Verified, 2),
     ("Anointed Procession", Manual, 0),
     ("Archon of Cruelty", Verified, 2),
@@ -69,6 +70,7 @@ const CARDS: [(&str, Support, usize); 75] = [
     ("Flooded Strand", Manual, 0),
     ("Forest", Verified, 1),
     ("Gaea's Cradle", Manual, 0),
+    ("Garruk Wildspeaker", Verified, 3),
     ("Giant Growth", Verified, 1),
     ("Glorious Anthem", Verified, 1),
     ("Goblin Chieftain", Verified, 2),
@@ -79,7 +81,8 @@ const CARDS: [(&str, Support, usize); 75] = [
     ("Humility", Verified, 1),
     ("Inspiring Call", Verified, 1),
     ("Izzet Charm", Verified, 1),
-    ("Jace, the Mind Sculptor", Manual, 0),
+    ("Jace Beleren", Verified, 3),
+    ("Jace, the Mind Sculptor", Verified, 4),
     ("Jungle Lion", Verified, 1),
     ("Kormus Bell", Verified, 1),
     ("Levitation", Verified, 1),
@@ -119,7 +122,7 @@ const CARDS: [(&str, Support, usize); 75] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 75);
+    assert_eq!(in_table.len(), 78);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -250,6 +253,16 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     ] {
         assert_eq!(reasons(name), "", "{name}");
     }
+    // Planeswalkers are played now: their loyalty abilities run with the draws, the library effects, the bounce,
+    // the exile, the mill, the counters, the pump, the untap and the tokens around them.
+    for name in [
+        "Jace, the Mind Sculptor",
+        "Jace Beleren",
+        "Ajani, Caller of the Pride",
+        "Garruk Wildspeaker",
+    ] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // Sol Ring and Gaea's Cradle add mana from an activated ability of a shape the engine does not activate yet:
     // two mana at once, and as many as there are creatures.
     for name in ["Sol Ring", "Gaea's Cradle"] {
@@ -303,7 +316,6 @@ fn lacking(name: &str) -> Vec<String> {
     "Delver of Secrets // Insectile Aberration",
     &["Effect.Transform"]
 )]
-#[case::jace("Jace, the Mind Sculptor", &["Ability.Loyalty"])]
 fn the_cards_with_a_may_a_choice_or_modes_still_lack_other_primitives(
     #[case] name: &str,
     #[case] expected: &[&str],

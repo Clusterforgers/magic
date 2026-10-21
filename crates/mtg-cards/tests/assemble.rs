@@ -63,7 +63,7 @@ fn caps_of(names: &[&str]) -> Caps {
 #[case::everything(Caps::everything())]
 fn the_printed_side_of_every_corpus_card_equals_its_record(#[case] caps: Caps) {
     let records = records();
-    assert_eq!(records.len(), 75);
+    assert_eq!(records.len(), 78);
     for record in records {
         let name = &record.name;
         let front = &record.front;

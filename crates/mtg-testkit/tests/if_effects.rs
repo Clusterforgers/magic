@@ -1,4 +1,4 @@
-//! Goal: an `If` runs the effects of its `then` when its condition holds and those of its `otherwise` when it does not, reading the state the earlier steps left, at tables of two, three and four seats, for conditions on life, the board, whose turn it is and a chosen target, for conditions inside conditions and for effects before and after it; and a condition the engine cannot read (loyalty, being kicked) puts its card outside what the capabilities cover, wherever the condition stands, so no game offers it.
+//! Goal: an `If` runs the effects of its `then` when its condition holds and those of its `otherwise` when it does not, reading the state the earlier steps left, at tables of two, three and four seats, for conditions on life, the board, whose turn it is and a chosen target, for conditions inside conditions and for effects before and after it; and a condition the engine cannot read (being kicked) puts its card outside what the capabilities cover, wherever the condition stands, so no game offers it.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -253,19 +253,19 @@ const LOYALTY_OF_A_MATCH: &str = r#"{"Matches":{"subject":"This","selector":[{"C
 #[case::life(with_condition(r#"{"Compare":{"left":{"Life":"You"},"op":"Ge","right":20}}"#), &[])]
 #[case::a_match_on_power(with_condition(r#"{"Matches":{"subject":"This","selector":[{"Compare":{"stat":"Power","op":"Ge","to":3}}]}}"#), &[])]
 #[case::counters(with_condition(COUNTERS), &[])]
-#[case::loyalty(with_condition(LOYALTY), &["Stat.Loyalty"])]
-#[case::loyalty_of_a_match(with_condition(LOYALTY_OF_A_MATCH), &["Stat.Loyalty"])]
+#[case::loyalty(with_condition(LOYALTY), &[])]
+#[case::loyalty_of_a_match(with_condition(LOYALTY_OF_A_MATCH), &[])]
 #[case::kicked(with_condition(r#""Kicked""#), &["Condition.Kicked"])]
 #[case::not_kicked(with_condition(r#"{"Not":"Kicked"}"#), &["Condition.Kicked"])]
 #[case::one_of_all(with_condition(&format!(r#"{{"All":["YourTurn",{COUNTERS}]}}"#)), &[])]
-#[case::one_of_any(with_condition(&format!(r#"{{"Any":[{LOYALTY},"Kicked"]}}"#)), &["Condition.Kicked", "Stat.Loyalty"])]
+#[case::one_of_any(with_condition(&format!(r#"{{"Any":[{LOYALTY},"Kicked"]}}"#)), &["Condition.Kicked"])]
 #[case::inside_the_then_of_another_if(
     format!(r#"{{"Spell":{{"effects":[{{"If":{{"condition":"YourTurn","then":[{{"If":{{"condition":{COUNTERS},"then":[]}}}}]}}}}]}}}}"#),
     &[]
 )]
 #[case::inside_the_otherwise_of_another_if(
     format!(r#"{{"Spell":{{"effects":[{{"If":{{"condition":"YourTurn","then":[],"otherwise":[{{"If":{{"condition":{LOYALTY},"then":[]}}}}]}}}}]}}}}"#),
-    &["Stat.Loyalty"]
+    &[]
 )]
 #[case::inside_a_may(
     format!(r#"{{"Spell":{{"effects":[{{"May":{{"effects":[{{"If":{{"condition":{COUNTERS},"then":[]}}}}]}}}}]}}}}"#),

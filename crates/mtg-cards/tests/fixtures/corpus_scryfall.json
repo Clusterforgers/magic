@@ -23,6 +23,30 @@
     "keywords": []
   },
   {
+    "id": "59793f1c-8c7e-433e-9c09-40aa3ce931a1",
+    "oracle_id": "1d5ff280-7f4d-4801-aefd-9b6e6b1f2818",
+    "name": "Ajani, Caller of the Pride",
+    "lang": "en",
+    "layout": "normal",
+    "set": "fdn",
+    "collector_number": "134",
+    "rarity": "mythic",
+    "released_at": "2024-11-15",
+    "digital": false,
+    "mana_cost": "{1}{W}{W}",
+    "cmc": 3.0,
+    "type_line": "Legendary Planeswalker — Ajani",
+    "oracle_text": "+1: Put a +1/+1 counter on up to one target creature.\n−3: Target creature gains flying and double strike until end of turn.\n−8: Create X 2/2 white Cat creature tokens, where X is your life total.",
+    "loyalty": "4",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
     "id": "e886a604-e3ce-4c6a-b63e-2c7f910a177a",
     "oracle_id": "eaabd151-2160-4bff-82c0-3fa88659be98",
     "name": "Anger",
@@ -819,6 +843,30 @@
     ]
   },
   {
+    "id": "08cf7ee6-ba30-42cd-a5b3-fd2fe7252f11",
+    "oracle_id": "186b4def-4fff-4a2b-bcbf-5318b0ac5fa9",
+    "name": "Garruk Wildspeaker",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmd",
+    "collector_number": "157",
+    "rarity": "mythic",
+    "released_at": "2011-06-17",
+    "digital": false,
+    "mana_cost": "{2}{G}{G}",
+    "cmc": 4.0,
+    "type_line": "Legendary Planeswalker — Garruk",
+    "oracle_text": "+1: Untap two target lands.\n−1: Create a 3/3 green Beast creature token.\n−4: Creatures you control get +3/+3 and gain trample until end of turn.",
+    "loyalty": "3",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
     "id": "fd1f95bf-48ea-455a-8a6c-0249b11c8900",
     "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
     "name": "Giant Growth",
@@ -1065,6 +1113,32 @@
       "U"
     ],
     "keywords": []
+  },
+  {
+    "id": "806d4e61-004f-4e52-b2e8-ba11b922cc7d",
+    "oracle_id": "cc2b6e58-2d6f-495e-95f3-9496105c4cba",
+    "name": "Jace Beleren",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmm",
+    "collector_number": "850",
+    "rarity": "mythic",
+    "released_at": "2023-08-04",
+    "digital": false,
+    "mana_cost": "{1}{U}{U}",
+    "cmc": 3.0,
+    "type_line": "Legendary Planeswalker — Jace",
+    "oracle_text": "+2: Each player draws a card.\n−1: Target player draws a card.\n−10: Target player mills twenty cards.",
+    "loyalty": "3",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Mill"
+    ]
   },
   {
     "id": "c8817585-0d32-4d56-9142-0d29512e86a9",

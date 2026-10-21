@@ -1937,6 +1937,18 @@ mod tests {
         r#"{"Spell":{"effects":[{"If":{"condition":{"Matches":{"subject":"This","selector":[{"Compare":{"stat":"Loyalty","op":"Ge","to":3}}]}},"then":[]}}]}}"#,
         &["Ability.Spell", "Effect.If"]
     )]
+    #[case::a_loyalty_ability(
+        r#"{"Loyalty":{"cost":{"Plus":1},"effects":[{"Draw":{}}]}}"#,
+        &["Ability.Loyalty", "Effect.Draw"]
+    )]
+    #[case::a_loyalty_ability_that_reads_loyalty(
+        r#"{"Loyalty":{"cost":{"Minus":3},"effects":[{"GainLife":{"amount":{"Stat":{"of":"This","stat":"Loyalty"}}}}]}}"#,
+        &["Ability.Loyalty", "Effect.GainLife"]
+    )]
+    #[case::a_loyalty_ability_that_removes_x_counters_waits_for_x(
+        r#"{"Loyalty":{"cost":"MinusX","targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}"#,
+        &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.DealDamage"]
+    )]
     #[case::power_and_mana_value_are_read(
         r#"{"Spell":{"effects":[{"If":{"condition":{"All":[{"Compare":{"left":{"Stat":{"of":"This","stat":"Power"}},"op":"Ge","right":3}},{"Matches":{"subject":"This","selector":[{"Compare":{"stat":"ManaValue","op":"Le","to":2}}]}}]},"then":[]}}]}}"#,
         &["Ability.Spell", "Effect.If"]
