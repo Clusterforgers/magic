@@ -87,7 +87,7 @@ pub(crate) fn decision(state: &GameState) -> Option<Decision> {
 pub(crate) fn answer(
     state: &GameState,
     options: &CardsOptions,
-    choice: CardsChoice,
+    choice: &CardsChoice,
 ) -> Result<Outcome, EngineError> {
     check_cards(options, &choice.0)?;
     let events = options

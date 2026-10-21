@@ -88,8 +88,10 @@ pub(crate) fn legal_host(state: &GameState, attachment: ObjectId, host: ObjectId
     {
         return false;
     }
-    let (Some(chars), Some(host_chars)) = (characteristics(state, attachment), characteristics(state, host))
-    else {
+    let (Some(chars), Some(host_chars)) = (
+        characteristics(state, attachment),
+        characteristics(state, host),
+    ) else {
         return false;
     };
     match kind_of(state, attachment) {
@@ -205,13 +207,21 @@ pub(crate) fn fold_attached(
         .object(to)
         .filter(|host| host.zone() == Zone::Battlefield)
         .map(GameObject::reference)
-        .ok_or_else(|| invalid(format!("{to:?} is not on the battlefield to be attached to")))?;
+        .ok_or_else(|| {
+            invalid(format!(
+                "{to:?} is not on the battlefield to be attached to"
+            ))
+        })?;
     let stamp = state.next_timestamp;
     let permanent = state
         .objects
         .get_mut(&object)
         .and_then(|o| o.permanent.as_mut())
-        .ok_or_else(|| invalid(format!("{object:?} is not on the battlefield to be attached")))?;
+        .ok_or_else(|| {
+            invalid(format!(
+                "{object:?} is not on the battlefield to be attached"
+            ))
+        })?;
     if permanent.attached_to == Some(host) {
         return Err(invalid(format!("{object:?} is attached to {to:?} already")));
     }
@@ -228,7 +238,11 @@ pub(crate) fn fold_unattached(state: &mut GameState, object: ObjectId) -> Result
         .objects
         .get_mut(&object)
         .and_then(|o| o.permanent.as_mut())
-        .ok_or_else(|| invalid(format!("{object:?} is not on the battlefield to be unattached")))?;
+        .ok_or_else(|| {
+            invalid(format!(
+                "{object:?} is not on the battlefield to be unattached"
+            ))
+        })?;
     if permanent.attached_to.take().is_none() {
         return Err(invalid(format!("{object:?} is not attached to anything")));
     }
@@ -238,7 +252,6 @@ pub(crate) fn fold_unattached(state: &mut GameState, object: ObjectId) -> Result
 /// The state-based actions of attachments, all at once (CR 704.5m to 704.5p): an Aura attached to nothing or to what it may
 /// not enchant goes to its owner's graveyard, an Equipment or Fortification attached to what it may not be becomes
 /// unattached, and any other permanent attached to something becomes unattached. A host that left is no host (CR 400.7).
-
 pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event> {
     let mut events = Vec::new();
     if !state.possible.attachments {

@@ -38,7 +38,6 @@ struct Seen {
     fell_off: u64,
     legend_puts: u64,
     unattached: u64,
-    chose_a_host: u64,
 }
 
 impl Seen {
@@ -51,7 +50,8 @@ impl Seen {
                 }
                 Event::SpellResolved { object } if is_aura(game, *object) => {
                     // The host comes in the same batch: the event right after the spell.
-                    if matches!(events.get(n + 1), Some(Event::Attached { object: o, .. }) if o == object) {
+                    if matches!(events.get(n + 1), Some(Event::Attached { object: o, .. }) if o == object)
+                    {
                         self.entered_attached += 1;
                     }
                 }
@@ -76,19 +76,6 @@ impl Seen {
                     }
                 }
                 Event::Unattached { .. } => self.unattached += 1,
-                Event::ChoiceMade { .. } => {
-                    // A host chosen as an Aura comes in: the answer is followed by the move of an Aura.
-                    if events[n..]
-                        .iter()
-                        .take(6)
-                        .any(|next| matches!(next, Event::Attached { object, .. } if is_aura(game, *object)))
-                        && events[n..].iter().take(6).any(|next| {
-                            matches!(next, Event::ZoneChanged { object, to: Zone::Battlefield, .. } if is_aura(game, *object))
-                        })
-                    {
-                        self.chose_a_host += 1;
-                    }
-                }
                 _ => {}
             }
         }
@@ -108,18 +95,29 @@ fn seeded_aura_games_finish_and_keep_every_invariant(#[case] players: usize) {
         seen.add(&end, &outcome.events);
     }
     let campaign = format!("{} games of {players} seats", games());
-    for name in ["Pacifism", "Control Magic", "Squirrel Nest", "Shielded by Faith"]
-        .into_iter()
-        .chain(["Mighty Aura", "Hex Aura"])
+    for name in [
+        "Pacifism",
+        "Control Magic",
+        "Squirrel Nest",
+        "Shielded by Faith",
+    ]
+    .into_iter()
+    .chain(["Mighty Aura", "Hex Aura"])
     {
         assert!(
             seen.cast.get(name).copied().unwrap_or(0) > 0,
             "{name} was never cast in {campaign}"
         );
     }
-    assert!(seen.entered_attached > 0, "no Aura entered attached in {campaign}");
+    assert!(
+        seen.entered_attached > 0,
+        "no Aura entered attached in {campaign}"
+    );
     assert!(seen.fell_off > 0, "no Aura lost its host in {campaign}");
-    assert!(seen.legend_puts > 0, "the legend rule never applied in {campaign}");
+    assert!(
+        seen.legend_puts > 0,
+        "the legend rule never applied in {campaign}"
+    );
     assert!(
         seen.entered_without_being_cast > 0,
         "no Aura was put onto the battlefield without being cast in {campaign}"

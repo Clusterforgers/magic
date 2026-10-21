@@ -46,9 +46,7 @@ pub fn mighty_aura() -> Result<Arc<CardDefinition>, CorpusError> {
         "Mighty Aura",
         (1, &[Color::Green]),
         r#"[{"Type":"Creature"}]"#,
-        &[
-            r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":2,"toughness":2}}]}}"#,
-        ],
+        &[r#"{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":2,"toughness":2}}]}}"#],
     )
 }
 
@@ -244,11 +242,7 @@ mod tests {
         for card in [mighty_aura().unwrap(), winged_aura().unwrap()] {
             assert!(card.subtypes.iter().any(|subtype| subtype.0 == "Aura"));
         }
-        assert!(
-            legendary_bear()
-                .supertypes
-                .contains(&Supertype::Legendary)
-        );
+        assert!(legendary_bear().supertypes.contains(&Supertype::Legendary));
     }
 
     #[test]

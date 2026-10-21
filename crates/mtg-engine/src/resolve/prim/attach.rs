@@ -30,7 +30,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .live_objects(what)?
         .into_iter()
         .filter(|object| {
-            state.host_of(object.id()) != Some(host.id()) && legal_host(state, object.id(), host.id())
+            state.host_of(object.id()) != Some(host.id())
+                && legal_host(state, object.id(), host.id())
         })
         .map(|object| Event::Attached {
             object: object.id(),
@@ -86,7 +87,12 @@ mod tests {
                 vec![
                     card("Bear", &[CardType::Creature], "", &[]),
                     card("Forest", &[CardType::Land], "", &[]),
-                    card("Halo", &[CardType::Enchantment], "Aura", &[ENCHANT_CREATURE]),
+                    card(
+                        "Halo",
+                        &[CardType::Enchantment],
+                        "Aura",
+                        &[ENCHANT_CREATURE],
+                    ),
                     card("Blade", &[CardType::Artifact], "Equipment", &[]),
                     card("Crusher", &[CardType::Artifact], "Fortification", &[]),
                     card("Rune", &[CardType::Enchantment], "Aura", &[ENCHANT_LAND]),
@@ -115,7 +121,9 @@ mod tests {
                 name.into(),
                 names
                     .iter()
-                    .map(|n| crate::choose::Target::Object(game.object(id(game, n)).unwrap().reference()))
+                    .map(|n| {
+                        crate::choose::Target::Object(game.object(id(game, n)).unwrap().reference())
+                    })
                     .collect(),
             );
         }
@@ -184,7 +192,14 @@ mod tests {
     #[test]
     fn an_aura_already_on_the_host_is_not_attached_again() {
         let game = game();
-        let run = attach(&game, &effect(r#"{"Each":[{"Subtype":"Aura"},{"Type":"Enchantment"}]}"#, r#"{"Each":[{"Named":"Bear"}]}"#)).unwrap();
+        let run = attach(
+            &game,
+            &effect(
+                r#"{"Each":[{"Subtype":"Aura"},{"Type":"Enchantment"}]}"#,
+                r#"{"Each":[{"Named":"Bear"}]}"#,
+            ),
+        )
+        .unwrap();
         // Halo starts on the Bear; Rune may not enchant a creature.
         assert_eq!(attached(run, &game), []);
     }

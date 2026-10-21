@@ -10,19 +10,21 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use mtg_engine::abilities::AbilityRef;
 use mtg_engine::ability_reader;
+use mtg_engine::characteristics::controller_of;
 use mtg_engine::choose::Target;
 use mtg_engine::combat::{AttackTarget, DamageTarget};
 use mtg_engine::counters::CountersChanged;
 use mtg_engine::effects::Duration;
-use mtg_engine::characteristics::controller_of;
 use mtg_engine::keywords::{is_indestructible, keywords_of};
-use mtg_engine::resolve::Scope;
 use mtg_engine::object::{ObjectKind, ObjectRef, PermanentState};
 use mtg_engine::player::Player;
+use mtg_engine::resolve::Scope;
 use mtg_engine::state::Stage;
 use mtg_engine::zones::{Zone, Zones};
 use mtg_engine::{Characteristics, characteristics};
-use mtg_engine::{Decision, DecisionKind, Engine, Event, GameSetup, GameState, apply_event, replay};
+use mtg_engine::{
+    Decision, DecisionKind, Engine, Event, GameSetup, GameState, apply_event, replay,
+};
 use thiserror::Error;
 
 /// A broken engine invariant.
@@ -173,7 +175,9 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
                 return Err(bad("is attached to what it may not be"));
             }
         } else if attached.is_some() {
-            return Err(bad("is attached though it is no Aura, Equipment or Fortification"));
+            return Err(bad(
+                "is attached though it is no Aura, Equipment or Fortification",
+            ));
         }
     }
     Ok(())

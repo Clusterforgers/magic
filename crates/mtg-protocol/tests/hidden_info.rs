@@ -17,8 +17,8 @@ use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
 use mtg_testkit::{
-    archon_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup, loyalty_fuzz_setup,
-    rules_fuzz_setup, spell_fuzz_setup, zones_fuzz_setup,
+    archon_fuzz_setup, attach_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup,
+    loyalty_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup, zones_fuzz_setup,
 };
 use rstest::rstest;
 use serde_json::Value;
@@ -1369,4 +1369,98 @@ fn the_seat_that_looked_at_libraries_lists_the_cards_while_it_orders_them_and_th
     for batch in &batches[1..] {
         assert_clean(batch, &hidden);
     }
+}
+
+/// Attachments and the legend rule are public: the events that attach and unattach, the cards the rule puts into a graveyard
+/// and the question it asks name only things every seat may see; an Aura on the battlefield shows its host to every viewer.
+#[rstest]
+#[case(2, 81)]
+#[case(3, 82)]
+#[case(4, 83)]
+fn no_hidden_object_reaches_any_viewer_in_games_of_auras_and_legends(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut attach_events, mut attached_views, mut questions) = (0usize, 0, 0, 0);
+    for seed in seed..seed + 2 {
+        let setup = with_unique_names(attach_fuzz_setup(players, seed).unwrap());
+        let engine = run_game(setup, seed, |step: &Step| {
+            let logged = step
+                .events
+                .iter()
+                .filter(|event| {
+                    matches!(
+                        event,
+                        mtg_engine::Event::Attached { .. } | mtg_engine::Event::Unattached { .. }
+                    )
+                })
+                .count();
+            attach_events += logged;
+            let batches =
+                project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+            for (viewer, batch) in viewers.iter().zip(&batches) {
+                let hidden = hidden_across(step.before, step.after, *viewer);
+                checked += hidden.len();
+                for (part, value) in batch_parts(batch) {
+                    let found = leaks(&without_trigger_orders(value), &hidden);
+                    assert!(
+                        found.is_empty(),
+                        "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                        step.answers
+                    );
+                }
+                // Every attach and unattach reaches every viewer whole.
+                let seen = batch
+                    .events
+                    .iter()
+                    .filter(|view| {
+                        matches!(
+                            view,
+                            mtg_protocol::EventView::Public(
+                                mtg_engine::Event::Attached { .. }
+                                    | mtg_engine::Event::Unattached { .. }
+                            )
+                        )
+                    })
+                    .count();
+                assert_eq!(seen, logged, "seed {seed} viewer {viewer:?}");
+            }
+            if let Some(decision) = step.decision
+                && let DecisionKind::ChooseCards(options) = &decision.kind
+                && step.after.resolving().is_none()
+            {
+                // The legend rule names permanents on the battlefield: every seat may see them.
+                questions += 1;
+                for id in &options.from {
+                    assert_eq!(
+                        step.after.object(*id).map(GameObject::zone),
+                        Some(Zone::Battlefield)
+                    );
+                }
+            }
+            if step.answers.is_multiple_of(SNAPSHOT_EVERY) {
+                for viewer in &viewers {
+                    let hidden = hidden_in(step.after, *viewer);
+                    let view = StateView::for_player(step.after, *viewer);
+                    let found = leaks(&serde_json::to_value(&view).unwrap(), &hidden);
+                    assert!(
+                        found.is_empty(),
+                        "seed {seed} answer {} viewer {viewer:?}: snapshot leaks {found:?}",
+                        step.answers
+                    );
+                    for object in &view.objects {
+                        let host = step.after.host_of(object.id);
+                        assert_eq!(object.attached_to, host, "seed {seed} {}", object.name);
+                        attached_views += usize::from(host.is_some());
+                    }
+                }
+            }
+        });
+        assert!(engine.result().is_some(), "game should finish");
+    }
+    assert!(
+        checked > 500 && attach_events > 0 && attached_views > 0,
+        "test must not be vacuous: {checked} hidden, {attach_events} attach events, {attached_views} views with a host, {questions} legend questions"
+    );
 }

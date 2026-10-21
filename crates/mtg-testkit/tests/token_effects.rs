@@ -165,11 +165,11 @@ fn dockside_table(
 }
 
 #[rstest]
-#[case::two_seats_an_artifact_and_an_enchantment(&[&["Sol Ring", "Pacifism"][..]], &[], 2)]
+#[case::two_seats_an_artifact_and_an_enchantment(&[&["Sol Ring", "Glorious Anthem"][..]], &[], 2)]
 #[case::creatures_do_not_count(&[&["Grizzly Bears"][..]], &[], 0)]
 #[case::nothing_to_count(&[&[][..]], &[], 0)]
-#[case::three_seats_the_opponents_add_up(&[&["Sol Ring"][..], &["Pacifism", "Sol Ring"][..]], &[], 3)]
-#[case::four_seats_and_your_own_do_not_count(&[&["Sol Ring"][..], &[][..], &["Pacifism"][..]], &["Sol Ring"], 2)]
+#[case::three_seats_the_opponents_add_up(&[&["Sol Ring"][..], &["Glorious Anthem", "Sol Ring"][..]], &[], 3)]
+#[case::four_seats_and_your_own_do_not_count(&[&["Sol Ring"][..], &[][..], &["Glorious Anthem"][..]], &["Sol Ring"], 2)]
 fn dockside_extortionist_makes_a_treasure_for_each_artifact_and_enchantment_its_opponents_control(
     #[case] foes: &[&[&str]],
     #[case] own: &[&str],
@@ -207,7 +207,7 @@ fn dockside_extortionist_makes_a_treasure_for_each_artifact_and_enchantment_its_
 #[case::three(3)]
 #[case::four(4)]
 fn a_watcher_sees_every_token_enter_together(#[case] seats: usize) -> Result<(), ScriptError> {
-    let foes: Vec<&[&str]> = std::iter::once(&["Sol Ring", "Sol Ring", "Pacifism"][..])
+    let foes: Vec<&[&str]> = std::iter::once(&["Sol Ring", "Sol Ring", "Glorious Anthem"][..])
         .chain(std::iter::repeat_n(&[][..], seats - 2))
         .collect();
     let mut driver = Driver::from_scenario(dockside_table(

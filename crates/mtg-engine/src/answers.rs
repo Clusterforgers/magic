@@ -95,7 +95,7 @@ pub(crate) fn handle(
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice))
             if state.resolving().is_none() && pending.is_none() =>
         {
-            crate::legend::answer(state, options, choice)
+            crate::legend::answer(state, options, &choice)
         }
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice)) => {
             choose::cards_answer(player, options, choice)

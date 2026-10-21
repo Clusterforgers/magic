@@ -48,6 +48,8 @@ pub enum Stage {
 
 /// What the cards of a game can do that the engine looks for only when they can, so a game of plain cards pays nothing
 /// for it; derived from the setup and the tokens made.
+// Independent facts the setup and the folds note by name, not the states of one machine.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Copy, Default)]
 pub(crate) struct Possible {
     /// Some card has an ability that works from a zone other than the battlefield.
