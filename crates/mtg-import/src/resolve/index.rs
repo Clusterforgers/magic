@@ -65,7 +65,17 @@ pub struct CardIndex {
     by_alias: HashMap<String, Vec<usize>>,
     by_alias_front: HashMap<String, Vec<usize>>,
     by_printing: HashMap<(String, String), Vec<usize>>,
+    alias_printings: HashMap<String, Vec<NamedPrinting>>,
+    alias_front_printings: HashMap<String, Vec<NamedPrinting>>,
     fuzzy_keys: Vec<FuzzyKey>,
+}
+
+/// A printing that carries an alias, with the slot of its card.
+#[derive(Debug, Clone)]
+struct NamedPrinting {
+    slot: usize,
+    set: String,
+    number: String,
 }
 
 /// Adds `slot` to the list under `key` unless it is already there.
@@ -86,11 +96,43 @@ fn printing_part(text: &str) -> String {
     text.trim().to_lowercase()
 }
 
+/// Adds `printing` under `key` unless the same printing (set and number, any case) of that card is there.
+fn add_named(
+    table: &mut HashMap<String, Vec<NamedPrinting>>,
+    key: String,
+    printing: &NamedPrinting,
+) {
+    let printings = table.entry(key).or_default();
+    let known = printings.iter().any(|other| {
+        other.slot == printing.slot
+            && other.set == printing.set
+            && printing_part(&other.number) == printing_part(&printing.number)
+    });
+    if !known {
+        printings.push(printing.clone());
+    }
+}
+
+/// The printings of the card in `slot` that carry the alias `key`.
+fn named_of<'a>(
+    table: &'a HashMap<String, Vec<NamedPrinting>>,
+    key: &str,
+    slot: usize,
+) -> Vec<&'a NamedPrinting> {
+    let printings = table.get(key).map(Vec::as_slice).unwrap_or_default();
+    printings.iter().filter(|p| p.slot == slot).collect()
+}
+
+/// The cards behind `slots`; several come sorted by name, so the order of insertion never shows.
 fn lookup_in<'a>(cards: &'a [IndexedCard], slots: Option<&Vec<usize>>) -> Lookup<'a> {
     match slots.map(Vec::as_slice) {
         Some([only]) => Lookup::Found(&cards[*only]),
         Some([]) | None => Lookup::Missing,
-        Some(many) => Lookup::Ambiguous(many.iter().map(|&s| &cards[s]).collect()),
+        Some(many) => {
+            let mut found: Vec<&IndexedCard> = many.iter().map(|&s| &cards[s]).collect();
+            found.sort_by(|a, b| (&a.name, &a.oracle_id).cmp(&(&b.name, &b.oracle_id)));
+            Lookup::Ambiguous(found)
+        }
     }
 }
 
@@ -122,15 +164,15 @@ impl CardIndex {
         self.insert(record.oracle_id.clone(), &record.name);
         self.add_printing(&record.oracle_id, &record.set, &record.collector_number);
         if let Some(result) = &record.melds_into {
-            // MTGJSON names a meld piece after both halves of the meld.
-            self.add_alias(&record.oracle_id, &format!("{} // {result}", record.name));
+            self.add_melds_into(&record.oracle_id, result);
         }
         if record.lang == "en" {
-            for alias in [&record.flavor_name, &record.printed_name]
+            for name in [&record.flavor_name, &record.printed_name]
                 .into_iter()
                 .flatten()
             {
-                self.add_alias(&record.oracle_id, alias);
+                let (set, number) = (&record.set, &record.collector_number);
+                self.add_printing_name(&record.oracle_id, set, number, name);
             }
         }
     }
@@ -167,6 +209,46 @@ impl CardIndex {
         }
         self.push_fuzzy_key(&key, slot);
         add_slot(&mut self.by_alias, key, slot);
+        true
+    }
+
+    /// Adds `A // B` as a name of the meld piece `A` that melds into `B`; false when the card is unknown or the name is known.
+    ///
+    /// MTGJSON names a meld piece after both halves of the meld. The name belongs to the card, not to one of its printings.
+    pub fn add_melds_into(&mut self, oracle_id: &OracleId, result: &str) -> bool {
+        let Some(&slot) = self.seen.get(oracle_id) else {
+            return false;
+        };
+        let name = format!("{} // {result}", self.cards[slot].name);
+        self.add_alias(oracle_id, &name)
+    }
+
+    /// Adds `name` as the flavor name or digital name of the printing `number` of the set `set`; false when the card is unknown or the name blank or the card's own.
+    ///
+    /// The name finds the card as [`CardIndex::add_alias`] does and also selects this printing: [`CardIndex::find_named_printing`] reads it back.
+    pub fn add_printing_name(
+        &mut self,
+        oracle_id: &OracleId,
+        set: &str,
+        number: &str,
+        name: &str,
+    ) -> bool {
+        let Some(&slot) = self.seen.get(oracle_id) else {
+            return false;
+        };
+        let key = normalize_name(name);
+        if key.is_empty() || key == normalize_name(&self.cards[slot].name) {
+            return false;
+        }
+        self.add_alias(oracle_id, name);
+        let (set, number) = (printing_part(set), number.trim().to_owned());
+        if !set.is_empty() && !number.is_empty() {
+            let printing = NamedPrinting { slot, set, number };
+            if let Some(front) = front_face(&key) {
+                add_named(&mut self.alias_front_printings, front.to_owned(), &printing);
+            }
+            add_named(&mut self.alias_printings, key, &printing);
+        }
         true
     }
 
@@ -220,6 +302,24 @@ impl CardIndex {
     pub fn find_alias(&self, name: &str) -> Lookup<'_> {
         let key = normalize_name(name);
         self.first_hit(&[&self.by_alias, &self.by_alias_front], &key)
+    }
+
+    /// The printing (set in lower case, number as added) of the card `oracle_id` that carries `name` as its flavor or digital name, when exactly one does.
+    pub fn find_named_printing(
+        &self,
+        name: &str,
+        oracle_id: &OracleId,
+    ) -> Option<(String, String)> {
+        let slot = *self.seen.get(oracle_id)?;
+        let key = normalize_name(name);
+        let mut printings = named_of(&self.alias_printings, &key, slot);
+        if printings.is_empty() {
+            printings = named_of(&self.alias_front_printings, &key, slot);
+        }
+        match printings.as_slice() {
+            [only] => Some((only.set.clone(), only.number.clone())),
+            _ => None,
+        }
     }
 
     /// Finds the card of the printing numbered `number` in the set `set`, ignoring case.
@@ -573,6 +673,112 @@ mod tests {
         assert_eq!(found, ["Lightning Bolt", "Lightning Helix"]);
     }
 
+    /// `pool()` plus names that printings carry (oracle-0 is Lightning Bolt, oracle-2 Fire // Ice, oracle-3 Delver, oracle-5 Æther Vial, oracle-9 Jace).
+    fn named_pool() -> CardIndex {
+        let mut index = pool();
+        for (card, set, number, name) in [
+            (0, "SLD", "1100", "Bolt of the Kitten"),
+            (2, "apc", "128", "Frost // Flame"),
+            (3, "ISD", "51★", "Bug Catcher // Big Bug"),
+            (5, "ima", "1", "Vial of Aether"),
+            (5, "ima", "2", "Vial of Aether"),
+            (9, "uma", "56", "Mind Sculptor"),
+            (9, "UMA", "56", "mind sculptor"),
+        ] {
+            assert!(index.add_printing_name(&id(card), set, number, name));
+        }
+        index
+    }
+
+    #[rstest]
+    #[case::flavor(0, "Bolt of the Kitten", Some(("sld", "1100")))]
+    #[case::lowercase(0, "bolt of the kitten", Some(("sld", "1100")))]
+    #[case::split_in_full(2, "Frost // Flame", Some(("apc", "128")))]
+    #[case::split_front_only(2, "Frost", Some(("apc", "128")))]
+    #[case::number_keeps_its_case(3, "Bug Catcher", Some(("isd", "51★")))]
+    #[case::same_printing_twice(9, "Mind Sculptor", Some(("uma", "56")))]
+    #[case::two_printings_leave_the_choice(5, "Vial of Aether", None)]
+    #[case::name_of_another_card(1, "Bolt of the Kitten", None)]
+    #[case::card_name(0, "Lightning Bolt", None)]
+    #[case::unknown_name(0, "Black Lotus", None)]
+    fn a_name_of_a_printing_selects_that_printing(
+        #[case] card: usize,
+        #[case] query: &str,
+        #[case] expected: Option<(&str, &str)>,
+    ) {
+        let expected = expected.map(|(set, number)| (set.to_owned(), number.to_owned()));
+        assert_eq!(named_pool().find_named_printing(query, &id(card)), expected);
+    }
+
+    #[test]
+    fn names_of_printings_without_a_usable_printing_still_find_the_card() {
+        let mut index = pool();
+        assert!(index.add_printing_name(&id(0), "", "1", "Bolt of the Kitten"));
+        assert!(index.add_printing_name(&id(0), "sld", " ", "Bolt of the Kitten"));
+        assert_eq!(
+            named(index.find_alias("Bolt of the Kitten")),
+            ["Lightning Bolt"]
+        );
+        assert_eq!(
+            index.find_named_printing("Bolt of the Kitten", &id(0)),
+            None
+        );
+        assert!(!index.add_printing_name(&OracleId("nobody".into()), "sld", "1", "Frost"));
+        assert!(!index.add_printing_name(&id(0), "sld", "1", "  "));
+        assert!(!index.add_printing_name(&id(0), "sld", "1", "lightning BOLT"));
+        assert_eq!(index.find_named_printing("lightning bolt", &id(0)), None);
+    }
+
+    #[test]
+    fn a_meld_name_belongs_to_the_card_and_to_none_of_its_printings() {
+        let mut index = pool();
+        assert!(index.add_melds_into(&id(0), "Lightning Storm"));
+        assert!(!index.add_melds_into(&id(0), "lightning storm"), "known");
+        assert!(!index.add_melds_into(&OracleId("nobody".into()), "Lightning Storm"));
+        for query in [
+            "Lightning Bolt // Lightning Storm",
+            "lightning bolt/lightning storm",
+        ] {
+            assert_eq!(
+                named(index.find_alias(query)),
+                ["Lightning Bolt"],
+                "{query}"
+            );
+            assert_eq!(index.find_named_printing(query, &id(0)), None, "{query}");
+        }
+        assert_eq!(
+            index.find("Lightning Bolt // Lightning Storm"),
+            Lookup::Missing
+        );
+    }
+
+    #[test]
+    fn ambiguous_cards_come_in_the_same_order_whatever_was_inserted_first() {
+        let build = |ids: [usize; 3]| {
+            let mut index = CardIndex::new();
+            for n in ids {
+                index.insert(id(n), "Shared Name");
+                index.add_alias(&id(n), "Other Shared");
+            }
+            index
+        };
+        let first = build([3, 1, 2]);
+        let second = build([2, 3, 1]);
+        for (a, b) in [
+            (first.find("shared name"), second.find("shared name")),
+            (
+                first.find_alias("other shared"),
+                second.find_alias("other shared"),
+            ),
+        ] {
+            assert!(
+                matches!(&a, Lookup::Ambiguous(cards) if cards.len() == 3),
+                "{a:?}"
+            );
+            assert_eq!(a, b);
+        }
+    }
+
     #[test]
     fn suggestions_include_other_names_under_the_card_name() {
         let suggestions = printed_pool().suggest("Bolt of the Kiten", 3);
@@ -614,6 +820,16 @@ mod tests {
             named(index.find_alias("Phenomena Recorder")),
             ["Peter Parker's Camera"]
         );
+        let printing = |name, card: &str| index.find_named_printing(name, &OracleId(card.into()));
+        assert_eq!(
+            printing("The Ball", "o1"),
+            Some(("sld".to_owned(), "1040".to_owned()))
+        );
+        assert_eq!(
+            printing("Phenomena Recorder", "o2"),
+            Some(("om1".to_owned(), "171".to_owned()))
+        );
+        assert_eq!(printing(meld, "o4"), None);
         assert_eq!(index.find_alias("Peter Parkers Kamera"), Lookup::Missing);
         assert_eq!(index.find_alias("Gobbo"), Lookup::Missing);
         assert_eq!(index.find_printing("tc21", "1"), Lookup::Missing);

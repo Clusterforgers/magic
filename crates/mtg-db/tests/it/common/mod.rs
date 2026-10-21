@@ -2,6 +2,7 @@
 // Every test binary uses a different subset of these helpers.
 #![allow(dead_code)]
 
+pub mod corpus;
 pub mod precon;
 pub mod search;
 
@@ -52,6 +53,15 @@ pub fn alias_records() -> Vec<CardRecord> {
     cards(file)
         .collect::<Result<_, _>>()
         .unwrap_or_else(|e| panic!("alias fixture parses: {e}"))
+}
+
+/// The recorded meld pair (Bruna, the Fading Light, Gisela, the Broken Blade and Brisela, Voice of Nightmares), as Oracle Cards has them.
+pub fn meld_records() -> Vec<CardRecord> {
+    let file = File::open(fixture_path("scryfall_meld_pair.json"))
+        .unwrap_or_else(|e| panic!("meld fixture opens: {e}"));
+    cards(file)
+        .collect::<Result<_, _>>()
+        .unwrap_or_else(|e| panic!("meld fixture parses: {e}"))
 }
 
 /// The fixture record named `name`.

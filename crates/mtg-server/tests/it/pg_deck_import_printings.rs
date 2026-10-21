@@ -1,4 +1,4 @@
-//! Goal: a pasted list resolves by printing and by the flavor and digital names of printings through the stored index: lines of the real export corpus tie to their cards, a set and number win over a name that is no card, the index follows later imports, and an emptied printings table leaves plain names resolving as before.
+//! Goal: a pasted list resolves by printing and by the flavor and digital names of printings through the stored index: lines of the real export corpus tie to their cards (a flavor or digital name with no set also to the printing that carries it), a set and number win over a name that is no card, the index follows later imports, and an emptied printings table leaves plain names resolving as before.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -113,7 +113,7 @@ async fn lines_of_the_export_corpus_resolve_by_flavor_name_digital_name_and_prin
         (
             line_of(FLAVOR_NAME_ONLY, "Plankton"),
             "Skrelv, Defector Mite",
-            Value::Null,
+            json!(printing_id("sld", "1926")),
         ),
         (
             line_of(DIGITAL_WITH_PRINTING, "Skittering Kitten"),
@@ -123,12 +123,12 @@ async fn lines_of_the_export_corpus_resolve_by_flavor_name_digital_name_and_prin
         (
             line_of(DIGITAL_NAME_ONLY, "Skittering Kitten"),
             "Masked Meower",
-            Value::Null,
+            json!(printing_id("om1", "96")),
         ),
         (
             line_of(OWNER_EXPORT, "The Ball"),
             "Fellwar Stone",
-            Value::Null,
+            json!(printing_id("sld", "1040")),
         ),
         (
             "1 A Name Nobody Prints (SLD) 1040".to_owned(),

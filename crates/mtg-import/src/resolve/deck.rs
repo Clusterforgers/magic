@@ -52,9 +52,9 @@ pub struct ResolvedEntry {
     pub name: String,
     /// Section of the deck.
     pub section: Section,
-    /// Requested set code, passed through unchecked.
+    /// Requested set code, passed through unchecked; for an entry with no set and no number that matched a flavor or digital name, the set of the one printing that carries it.
     pub set: Option<String>,
-    /// Requested collector number, passed through unchecked.
+    /// Requested collector number, passed through unchecked; the number of that printing for such an entry.
     pub collector_number: Option<String>,
     /// What tied the entry to the card.
     pub matched: MatchKind,
@@ -182,6 +182,7 @@ fn decide<'a>(index: &'a CardIndex, entry: &DeckEntry) -> Verdict<'a> {
 /// Resolves every entry of `deck` against `index`: the printing (set and collector number) first, then the name, then the other names of printings.
 ///
 /// A printing and a name that point at different cards are reported, not chosen between; fuzzy matches are suggested, never applied.
+/// An entry with no printing that matched the flavor or digital name of exactly one printing of its card takes that printing's set and number.
 pub fn resolve_deck(index: &CardIndex, deck: &ParsedDeck) -> Resolution {
     let mut resolution = Resolution::default();
     for (position, entry) in deck.entries.iter().enumerate() {
@@ -190,15 +191,28 @@ pub fn resolve_deck(index: &CardIndex, deck: &ParsedDeck) -> Resolution {
                 card,
                 matched,
                 set_was_part_of_name,
-            } => resolution.resolved.push(ResolvedEntry {
-                count: entry.count,
-                oracle_id: card.oracle_id.clone(),
-                name: card.name.clone(),
-                section: entry.section,
-                set: entry.set.clone().filter(|_| !set_was_part_of_name),
-                collector_number: entry.collector_number.clone(),
-                matched,
-            }),
+            } => {
+                let mut set = entry.set.clone().filter(|_| !set_was_part_of_name);
+                let mut collector_number = entry.collector_number.clone();
+                let unprinted = set.is_none() && collector_number.is_none();
+                if unprinted && matched == MatchKind::OtherName {
+                    // The name belongs to one printing: take that one.
+                    if let Some((named_set, named_number)) =
+                        index.find_named_printing(&entry.name, &card.oracle_id)
+                    {
+                        (set, collector_number) = (Some(named_set), Some(named_number));
+                    }
+                }
+                resolution.resolved.push(ResolvedEntry {
+                    count: entry.count,
+                    oracle_id: card.oracle_id.clone(),
+                    name: card.name.clone(),
+                    section: entry.section,
+                    set,
+                    collector_number,
+                    matched,
+                });
+            }
             Verdict::Ambiguous(cards) => resolution.unresolved.push(UnresolvedEntry {
                 index: position,
                 entry: entry.clone(),

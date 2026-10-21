@@ -144,7 +144,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
 - [x] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
 - [x] Deck import by printing in the server: fetch and ingest Scryfall Default Cards (every printing, with flavor and printed names stored on `printings`) and resolve imports with `CardRepo::card_index`, which already holds the stored printings (`docs/data-sources.md`, `docs/server.md`)
-- [ ] The stored card index equals the index built from records: meld names (a `cards.melds_into` column) resolve, and a line matched by a flavor or digital name selects that printing (`docs/data-sources.md`)
+- [x] The stored card index equals the index built from records: meld names (a `cards.melds_into` column) resolve, and a line matched by a flavor or digital name selects that printing (`docs/data-sources.md`)
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 - [x] Account settings: change the password, delete the account (its seats are freed)
 - [x] A game that failed to resume shows in My games with its reason
