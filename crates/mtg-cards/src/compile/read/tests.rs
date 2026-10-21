@@ -157,6 +157,7 @@ mod compound;
 mod counters;
 mod create;
 mod enters;
+mod event_batches;
 mod events;
 mod exile_bounce_shrink;
 mod library;

@@ -115,6 +115,18 @@ pub struct MulliganOptions {
     pub bottom_if_keep: usize,
     /// Cards put on the bottom if the hand drawn by one more mulligan is kept (equals `bottom_if_keep` when it is free).
     pub bottom_if_mulligan: usize,
+    /// Cards in the hand one more mulligan draws, as the table's mulligan style sizes it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub hand_if_mulligan: Option<usize>,
+    /// Cards scried after keeping this hand; left out when none are.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub scry_if_keep: Option<usize>,
+    /// Cards scried after keeping the hand one more mulligan draws; left out when none are.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub scry_if_mulligan: Option<usize>,
 }
 
 /// Options for choosing cards to bottom.

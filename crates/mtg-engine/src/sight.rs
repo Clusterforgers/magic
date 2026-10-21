@@ -10,7 +10,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use crate::decision::{Decision, DecisionKind};
 use crate::object::GameObject;
 use crate::resolve::{Progress, Shown, step};
-use crate::state::GameState;
+use crate::state::{GameState, Stage};
 use crate::zones::Zone;
 
 impl GameState {
@@ -55,6 +55,16 @@ pub(crate) fn show(state: &mut GameState, to: Option<PlayerId>, cards: &[ObjectI
 /// cards in an order: that seat may identify them wherever they are. It is read from the step itself, which asks
 /// the same question until it is answered, so it holds for a state rebuilt from the log as for the live one.
 pub fn offered_cards(state: &GameState) -> Option<(PlayerId, Vec<ObjectId>)> {
+    if state.stage() == Stage::Mulligan {
+        // The seat that scries after keeping its hand is asked about the top card of its library.
+        return match crate::mulligan::scry_decision(state)? {
+            Decision {
+                player,
+                kind: DecisionKind::ChooseCards(options),
+            } => Some((player, options.from)),
+            _ => None,
+        };
+    }
     state.resolving()?;
     match step(state) {
         Ok(Progress::Ask(Decision { player, kind })) => match kind {

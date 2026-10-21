@@ -61,6 +61,32 @@ pub enum EmptyLibrary {
     ReshuffleGraveyard,
 }
 
+/// Which players an attacker may attack, in place of the format's rule.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+#[serde(rename_all = "snake_case")]
+pub enum AttackRange {
+    /// Every opponent in the game.
+    Any,
+    /// The players next to the attacker in turn order, one on each side.
+    Neighbours,
+    /// Only the next player in turn order.
+    Left,
+}
+
+/// How a player who takes a mulligan gets the next hand, in place of the format's rule.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+#[serde(rename_all = "snake_case")]
+pub enum MulliganStyle {
+    /// Draw the full hand, then put one card on the bottom for each mulligan taken beyond the free ones.
+    London,
+    /// Draw one card fewer for each mulligan taken beyond the free ones, with nothing to bottom.
+    Paris,
+    /// As Paris, and a player who keeps a hand after a mulligan scries 1.
+    Vancouver,
+}
+
 /// What one seat starts with in place of the table's values; a value that is left out keeps the table's.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -136,6 +162,26 @@ pub struct HouseRules {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub poison_threshold: Option<u32>,
+    /// Which players an attacker may attack, with the planeswalkers those players control.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub attack_range: Option<AttackRange>,
+    /// Whether every seat sees every hand.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub open_hands: Option<bool>,
+    /// Whether every seat sees the top card of every library.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub revealed_library_top: Option<bool>,
+    /// Whether each opening hand is the better of two draws by its share of lands.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub opening_hand_smoothing: Option<bool>,
+    /// How a mulligan gets the next hand.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub mulligan_style: Option<MulliganStyle>,
     /// What single seats start with, at most one entry for each seat.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(optional, as = "Option<Vec<Handicap>>"))]
@@ -411,6 +457,60 @@ mod tests {
         );
     }
 
+    #[rstest]
+    #[case::any("attack_range", json!("any"))]
+    #[case::neighbours("attack_range", json!("neighbours"))]
+    #[case::left("attack_range", json!("left"))]
+    #[case::open_on("open_hands", json!(true))]
+    #[case::open_off("open_hands", json!(false))]
+    #[case::top_on("revealed_library_top", json!(true))]
+    #[case::smoothing_on("opening_hand_smoothing", json!(true))]
+    #[case::london("mulligan_style", json!("london"))]
+    #[case::paris("mulligan_style", json!("paris"))]
+    #[case::vancouver("mulligan_style", json!("vancouver"))]
+    fn a_rule_of_the_table_is_a_switch_or_a_name_that_always_validates(
+        #[case] field: &str,
+        #[case] value: serde_json::Value,
+    ) {
+        let parsed = rules(field, &value).unwrap();
+        assert_eq!(parsed.validate(), Ok(()));
+        assert_eq!(parsed.validate_for(2), Ok(()));
+        assert!(!parsed.is_empty());
+    }
+
+    #[rstest]
+    #[case::range("attack_range", json!("right"))]
+    #[case::range_number("attack_range", json!(1))]
+    #[case::style("mulligan_style", json!("mulligan"))]
+    #[case::style_case("mulligan_style", json!("London"))]
+    #[case::open_text("open_hands", json!("yes"))]
+    #[case::top_number("revealed_library_top", json!(1))]
+    #[case::smoothing_text("opening_hand_smoothing", json!("on"))]
+    fn a_name_or_switch_of_the_wrong_kind_is_not_a_rule(
+        #[case] field: &str,
+        #[case] value: serde_json::Value,
+    ) {
+        assert!(rules(field, &value).is_err());
+    }
+
+    #[test]
+    fn the_wire_form_of_the_rules_of_the_table() {
+        let set = HouseRules {
+            attack_range: Some(AttackRange::Neighbours),
+            open_hands: Some(true),
+            revealed_library_top: Some(false),
+            opening_hand_smoothing: Some(true),
+            mulligan_style: Some(MulliganStyle::Vancouver),
+            ..HouseRules::default()
+        };
+        let wire = json!({
+            "attack_range": "neighbours", "open_hands": true, "revealed_library_top": false,
+            "opening_hand_smoothing": true, "mulligan_style": "vancouver"
+        });
+        assert_eq!(serde_json::to_value(&set).unwrap(), wire);
+        assert_eq!(serde_json::from_value::<HouseRules>(wire).unwrap(), set);
+    }
+
     #[test]
     fn the_wire_form_of_the_turn_and_life_rules() {
         let set = HouseRules {
@@ -526,10 +626,26 @@ mod tests {
             proptest::option::of(0..=102u32),
             proptest::collection::vec(any_handicap(), 0..4),
         );
-        (scalars, turn).prop_map(
+        let table = (
+            proptest::option::of(prop_oneof![
+                Just(AttackRange::Any),
+                Just(AttackRange::Neighbours),
+                Just(AttackRange::Left)
+            ]),
+            proptest::option::of(any::<bool>()),
+            proptest::option::of(any::<bool>()),
+            proptest::option::of(any::<bool>()),
+            proptest::option::of(prop_oneof![
+                Just(MulliganStyle::London),
+                Just(MulliganStyle::Paris),
+                Just(MulliganStyle::Vancouver)
+            ]),
+        );
+        (scalars, turn, table).prop_map(
             |(
                 (life, hand, free, cap, first, limit),
                 (draws, lands, burn, library, turns, wins, poison, handicaps),
+                (range, open, top, smoothing, style),
             )| HouseRules {
                 starting_life: life,
                 opening_hand_size: hand,
@@ -544,6 +660,11 @@ mod tests {
                 turn_limit: turns,
                 winning_life: wins,
                 poison_threshold: poison,
+                attack_range: range,
+                open_hands: open,
+                revealed_library_top: top,
+                opening_hand_smoothing: smoothing,
+                mulligan_style: style,
                 handicaps,
             },
         )

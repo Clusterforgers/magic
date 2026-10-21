@@ -112,17 +112,20 @@ fn place(r: &mut Reader<'_>) -> Option<Ref> {
 /// on each creature you control."
 pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("put")?;
-    let (counter, number) = counters(r)?;
+    let (counter, count) = if r.words("that many") {
+        let counter = kind(r)?;
+        r.need("counters")?;
+        (counter, Amount::Triggering)
+    } else {
+        let (counter, number) = counters(r)?;
+        (counter, Amount::Fixed(i32::try_from(number).ok()?))
+    };
     r.need("on")?;
     let on = match each(r) {
         Some(objects) => objects,
         None => place(r)?,
     };
-    Some(vec![Effect::PutCounters {
-        on,
-        counter,
-        count: Amount::Fixed(i32::try_from(number).ok()?),
-    }])
+    Some(vec![Effect::PutCounters { on, counter, count }])
 }
 
 /// "Remove a +1/+1 counter from ~.", "Remove two charge counters from target permanent."
@@ -192,6 +195,9 @@ pub fn entering_text(counter: &CounterKind, count: &Amount) -> Option<String> {
 
 /// "a +1/+1 counter", "two charge counters": a number of counters of one kind.
 pub fn text(counter: &CounterKind, count: &Amount) -> Option<String> {
+    if *count == Amount::Triggering {
+        return Some(format!("that many {} counters", kind_text(counter)?));
+    }
     let Amount::Fixed(number) = count else {
         return None;
     };

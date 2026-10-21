@@ -124,6 +124,8 @@ async fn a_game_without_rules_lists_none(#[case] rules: Option<Value>) {
 #[case::life(json!({ "starting_life": 20 }))]
 #[case::hand(json!({ "opening_hand_size": 7, "free_mulligans": 0 }))]
 #[case::limit(json!({ "max_hand_size": { "cards": 7 } }))]
+#[case::the_formats_range_and_style(json!({ "attack_range": "any", "mulligan_style": "london", "open_hands": false }))]
+#[case::the_rules_of_the_table(json!({ "attack_range": "left", "open_hands": true, "revealed_library_top": true, "opening_hand_smoothing": true, "mulligan_style": "vancouver" }))]
 #[tokio::test]
 async fn a_value_equal_to_the_formats_is_kept_as_given(#[case] rules: Value) {
     let server = server().await;
@@ -180,6 +182,10 @@ async fn a_value_out_of_range_is_refused_naming_the_rule(
 #[case::unknown_rule(json!({ "banana": true }))]
 #[case::a_switch_that_is_not_one(json!({ "mana_burn": "yes" }))]
 #[case::unknown_library_rule(json!({ "empty_library": "explode" }))]
+#[case::unknown_attack_range(json!({ "attack_range": "right" }))]
+#[case::unknown_mulligan_style(json!({ "mulligan_style": "Paris" }))]
+#[case::open_hands_that_is_not_a_switch(json!({ "open_hands": "yes" }))]
+#[case::smoothing_that_is_a_number(json!({ "opening_hand_smoothing": 1 }))]
 #[case::a_handicap_with_an_unknown_value(json!({ "handicaps": [{ "seat": 0, "mana": 3 }] }))]
 #[case::a_handicap_for_a_negative_seat(json!({ "handicaps": [{ "seat": -1, "starting_life": 3 }] }))]
 #[case::a_handicap_without_a_seat(json!({ "handicaps": [{ "starting_life": 3 }] }))]

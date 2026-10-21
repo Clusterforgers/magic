@@ -26,10 +26,10 @@ use crate::triggers::Triggered;
 use crate::turn::Step;
 use crate::zones::Zone;
 
-const ME: PlayerId = PlayerId(0);
-const FOE: PlayerId = PlayerId(1);
+pub(super) const ME: PlayerId = PlayerId(0);
+pub(super) const FOE: PlayerId = PlayerId(1);
 
-fn pattern(json: &str) -> TriggerPattern {
+pub(super) fn pattern(json: &str) -> TriggerPattern {
     serde_json::from_str(json).unwrap()
 }
 
@@ -67,7 +67,7 @@ fn aura(name: &str) -> Arc<CardDefinition> {
 
 /// Seat 0 holds a Spell and controls the Watcher of `when`, a Bear, a Forest and a Cloak (an Aura); seat 1 holds a
 /// Their Spell and controls an Ogre, a Wolf and a Their Forest.
-fn board(when: &str) -> GameState {
+pub(super) fn board(when: &str) -> GameState {
     state(
         vec![
             vec![named("Spell", CardType::Instant)],
@@ -89,7 +89,7 @@ fn board(when: &str) -> GameState {
     )
 }
 
-fn id(state: &GameState, name: &str) -> ObjectId {
+pub(super) fn id(state: &GameState, name: &str) -> ObjectId {
     state
         .objects()
         .find(|o| o.card().name == name)
@@ -97,11 +97,11 @@ fn id(state: &GameState, name: &str) -> ObjectId {
         .unwrap()
 }
 
-fn target(state: &GameState, name: &str) -> Target {
+pub(super) fn target(state: &GameState, name: &str) -> Target {
     Target::Object(state.object(id(state, name)).unwrap().reference())
 }
 
-fn fold(state: &GameState, events: &[Event]) -> GameState {
+pub(super) fn fold(state: &GameState, events: &[Event]) -> GameState {
     let mut next = state.clone();
     for event in events {
         apply_event(&mut next, event).unwrap();
@@ -110,12 +110,12 @@ fn fold(state: &GameState, events: &[Event]) -> GameState {
 }
 
 /// The abilities `events` trigger on top of `pre`, once they are folded.
-fn fires(pre: &GameState, events: &[Event]) -> Vec<Triggered> {
+pub(super) fn fires(pre: &GameState, events: &[Event]) -> Vec<Triggered> {
     detect(pre, events, &fold(pre, events))
 }
 
 /// How many abilities `events` trigger on top of `pre`.
-fn fired(pre: &GameState, events: &[Event]) -> usize {
+pub(super) fn fired(pre: &GameState, events: &[Event]) -> usize {
     fires(pre, events).len()
 }
 
@@ -124,7 +124,7 @@ fn fired_unfolded(pre: &GameState, events: &[Event]) -> usize {
     detect(pre, events, pre).len()
 }
 
-fn damage(state: &GameState, source: &str, to: DamageTarget) -> Event {
+pub(super) fn damage(state: &GameState, source: &str, to: DamageTarget) -> Event {
     Event::DamageDealt {
         source: id(state, source),
         target: to,
@@ -133,7 +133,7 @@ fn damage(state: &GameState, source: &str, to: DamageTarget) -> Event {
     }
 }
 
-fn in_combat_damage(state: &GameState) -> GameState {
+pub(super) fn in_combat_damage(state: &GameState) -> GameState {
     fold(
         state,
         &[Event::StepBegan {

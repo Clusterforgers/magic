@@ -60,6 +60,12 @@ pub fn zone_is_visible(zone: Zone, viewer: PlayerId) -> bool {
     }
 }
 
+/// Whether `viewer` may see which cards are in `zone` of the game `state`: [`zone_is_visible`], and every hand when the
+/// table has open hands.
+pub fn zone_is_visible_in(state: &GameState, zone: Zone, viewer: PlayerId) -> bool {
+    zone_is_visible(zone, viewer) || (matches!(zone, Zone::Hand(_)) && state.ruleset().open_hands())
+}
+
 /// What `viewer` may identify in a state: the cards of the zones they see into, the cards the resolution in progress
 /// showed them (looked at, found, revealed) and the cards they are asked to choose among or to put in an order.
 pub(crate) struct Sight<'a> {
@@ -83,7 +89,7 @@ impl<'a> Sight<'a> {
 
     /// Whether the viewer may identify the object.
     pub(crate) fn sees(&self, object: &GameObject) -> bool {
-        zone_is_visible(object.zone(), self.viewer)
+        zone_is_visible_in(self.state, object.zone(), self.viewer)
             || self.offered.contains(&object.id())
             || self.state.is_shown_to(self.viewer, object.id())
     }
@@ -97,7 +103,7 @@ fn zone_view(state: &GameState, viewer: PlayerId, zone: Zone) -> ZoneView {
     let ids = state.zone(zone);
     ZoneView {
         count: count(ids.len()),
-        cards: zone_is_visible(zone, viewer).then(|| ids.to_vec()),
+        cards: zone_is_visible_in(state, zone, viewer).then(|| ids.to_vec()),
     }
 }
 
