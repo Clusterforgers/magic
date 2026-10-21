@@ -23,6 +23,7 @@ use thiserror::Error;
 use tokio::sync::Mutex;
 use uuid::Uuid;
 
+use crate::precons::{PreconCache, PreconError, PreconIndex};
 use crate::recipe::{Catalog, GameRecipe};
 
 /// Why the cards of a deck could not be had.
@@ -99,6 +100,7 @@ pub struct CardSource {
     rules: Option<Arc<Library>>,
     caps: Caps,
     names: Arc<NameIndex>,
+    precons: Arc<PreconCache>,
 }
 
 /// The index that ties the names and printings of a pasted list to cards, built from the stored
@@ -117,6 +119,7 @@ impl CardSource {
             rules: None,
             caps: mtg_engine::caps(),
             names: Arc::default(),
+            precons: Arc::default(),
         }
     }
 
@@ -124,6 +127,8 @@ impl CardSource {
     #[must_use]
     pub fn with_rules(mut self, rules: Library) -> CardSource {
         self.rules = Some(Arc::new(rules));
+        // What the index holds was judged under the old rules.
+        self.precons = Arc::default();
         self
     }
 
@@ -131,6 +136,7 @@ impl CardSource {
     #[must_use]
     pub fn with_caps(mut self, caps: Caps) -> CardSource {
         self.caps = caps;
+        self.precons = Arc::default();
         self
     }
 
@@ -168,6 +174,12 @@ impl CardSource {
         let index = Arc::new(repo.card_index().await?);
         *built = Some((version, index.clone()));
         Ok(index)
+    }
+
+    /// The index of every stored precon with its deck check, kept until the precons, the cards or
+    /// the printings change (`precons.rs`).
+    pub(crate) async fn precon_index(&self) -> Result<Arc<PreconIndex>, PreconError> {
+        self.precons.index(self).await
     }
 
     /// How far the game plays a stored card: the pure lookup the deck check calls.

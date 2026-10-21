@@ -3,7 +3,7 @@
 //!
 //! A phrase is adjectives, a noun (card types, "permanent" or "spell") and suffixes. The selector
 //! lists the noun's predicate first (a spell's is `Spell`, then its adjectives and types), then the
-//! adjectives in the order they are printed, then the suffixes.
+//! adjectives in the order they are printed ("other" last, where the files put it), then the suffixes.
 
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
@@ -374,6 +374,8 @@ pub fn phrase(r: &mut Reader<'_>, form: Form) -> Option<Selector> {
             r.skip();
             adjectives.push(pred);
         }
+        // The files put "other" after the adjectives it is printed before ("other legendary creatures").
+        adjectives.sort_by_key(|pred| *pred == Pred::Other);
         let (types, noun) = head(r, form)?;
         let type_pred = match types.as_slice() {
             [] => None,
@@ -432,7 +434,11 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
                 return None;
             }
         } else if let Some(word) = adjective_text(pred, form) {
-            adjectives.push(word);
+            if *pred == Pred::Other {
+                adjectives.insert(0, word);
+            } else {
+                adjectives.push(word);
+            }
         } else if let Some(found) = type_preds(pred) {
             if !types.is_empty() {
                 return None;

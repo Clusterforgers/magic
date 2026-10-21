@@ -1,4 +1,4 @@
-//! Goal: a permanent that enters the battlefield changes as its replacement effects say, at tables of two, three and four seats, whichever way it comes in (a land played, a permanent spell that resolves, a card an effect puts onto the battlefield): a shock land asks its controller whether to pay 2 life and enters untapped when they do and tapped when they decline or cannot pay, with the life paid and not lost and nothing applied before the answer; a land that enters tapped does, and one that enters tapped unless its controller controls two basic lands enters untapped with two basic lands and tapped with fewer or with nonbasic lands; a permanent that chooses a color or a creature type as it enters asks its controller (the five colors, the creature types of the creature cards in the game), remembers the choice on the permanent and its ability reads it, so only the creatures its controller controls of that color or type get the bonus, those that come in later too; a creature that enters with counters has them put by an event of its own that a counter doubler or adder changes in the order its controller chooses; and the log of such games replays to the live state.
+//! Goal: a permanent that enters the battlefield changes as its replacement effects say, at tables of two, three and four seats, whichever way it comes in (a land played, a permanent spell that resolves, a card an effect puts onto the battlefield): a shock land asks its controller whether to pay 2 life and enters untapped when they do and tapped when they decline or cannot pay (asked all the same then, with No the only answer), with the life paid and not lost and nothing applied before the answer; a land that enters tapped does, and one that enters tapped unless its controller controls two basic lands enters untapped with two basic lands and tapped with fewer or with nonbasic lands; a permanent that chooses a color or a creature type as it enters asks its controller (the five colors, the creature types of the creature cards in the game), remembers the choice on the permanent and its ability reads it, so only the creatures its controller controls of that color or type get the bonus, those that come in later too; a creature that enters with counters has them put by an event of its own that a counter doubler or adder changes in the order its controller chooses; and the log of such games replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -155,44 +155,44 @@ fn in_graveyard(driver: &Driver, seat: usize) -> Target {
 // A shock land
 
 #[rstest]
-#[case::pays(Some(true), 18, false)]
-#[case::declines(Some(false), 20, true)]
-#[case::cannot_pay(None, 1, true)]
+#[case::pays(true, 20, 18, false)]
+#[case::declines(false, 20, 20, true)]
+#[case::cannot_pay(false, 1, 1, true)]
 fn a_shock_land_asks_whether_to_pay_two_life_and_enters_untapped_only_when_they_do(
     #[values(2, 3, 4)] seats: usize,
-    #[case] pays: Option<bool>,
+    #[case] pays: bool,
+    #[case] life_before: i32,
     #[case] life_after: i32,
     #[case] tapped_after: bool,
 ) -> Result<(), ScriptError> {
     let scenario = || {
-        let scenario = Scenario::new(seats).hand(0, [card("Steam Vents").unwrap()]);
-        if pays.is_none() {
-            scenario.life(0, 1)
-        } else {
-            scenario
-        }
+        Scenario::new(seats)
+            .hand(0, [card("Steam Vents").unwrap()])
+            .life(0, life_before)
     };
     let setup = scenario().setup().unwrap();
     let mut driver = Driver::from_scenario(scenario())?;
     let begun = driver.engine().events().len();
     driver.play_land("Steam Vents")?;
-    if let Some(pays) = pays {
-        // The play waits for the answer: nothing is logged, applied or paid yet.
-        let decision = driver.decision()?.clone();
-        assert_eq!(decision.player, pid(0));
-        let DecisionKind::YesNo(question) = &decision.kind else {
-            panic!("a question was expected, got {:?}", decision.kind);
-        };
-        assert_eq!(question.text, "Pay 2 life?");
-        assert!(driver.engine().replacing());
+    // The play waits for the answer, whether or not the life can be paid: nothing is logged, applied or paid yet.
+    let decision = driver.decision()?.clone();
+    assert_eq!(decision.player, pid(0));
+    let DecisionKind::YesNo(question) = &decision.kind else {
+        panic!("a question was expected, got {:?}", decision.kind);
+    };
+    assert_eq!(question.text, "Pay 2 life?");
+    assert_eq!(question.only_no, life_before < 2);
+    assert!(driver.engine().replacing());
+    assert_eq!(driver.engine().events().len(), begun);
+    assert_eq!(names(driver.state(), Zone::Hand(pid(0))), ["Steam Vents"]);
+    assert_eq!(life(&driver, 0), life_before);
+    if question.only_no {
+        // A yes to what cannot be paid is refused and changes nothing.
+        assert!(driver.answer(Answer::YesNo(YesNoChoice(true))).is_err());
+        assert_eq!(driver.decision()?, &decision);
         assert_eq!(driver.engine().events().len(), begun);
-        assert_eq!(names(driver.state(), Zone::Hand(pid(0))), ["Steam Vents"]);
-        assert_eq!(life(&driver, 0), 20);
-        driver.answer(Answer::YesNo(YesNoChoice(pays)))?;
-    } else {
-        // Too little life to pay: nothing to ask.
-        assert!(!driver.engine().replacing());
     }
+    driver.answer(Answer::YesNo(YesNoChoice(pays)))?;
     assert_eq!(names(driver.state(), Zone::Battlefield), ["Steam Vents"]);
     assert_eq!(is_tapped(&driver, "Steam Vents"), tapped_after);
     assert_eq!(life(&driver, 0), life_after);
@@ -204,7 +204,7 @@ fn a_shock_land_asks_whether_to_pay_two_life_and_enters_untapped_only_when_they_
     let played = log
         .iter()
         .position(|event| matches!(event, Event::LandPlayed { .. }));
-    assert_eq!(paid.is_some(), pays == Some(true));
+    assert_eq!(paid.is_some(), pays);
     if let (Some(paid), Some(played)) = (paid, played) {
         assert!(paid < played);
     }

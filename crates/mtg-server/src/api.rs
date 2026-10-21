@@ -208,8 +208,8 @@ struct NewSeat {
     /// Judged for held seats only: an open seat is named by whoever takes it.
     #[serde(default)]
     name: String,
-    /// The deck the seat starts with: a built-in deck's id, or, for the creator's seat, the id of
-    /// one of their stored decks. The seat's holder may change it before the game starts; a seat
+    /// The deck the seat starts with: a built-in deck's id, `precon:<code>`, or, for the creator's
+    /// seat, the id of one of their stored decks. The seat's holder may change it before the game starts; a seat
     /// made without one has none until its holder chooses.
     #[serde(default)]
     deck: Option<String>,
@@ -415,14 +415,15 @@ fn is_json(headers: &HeaderMap) -> bool {
 }
 
 /// The deck seat `index` of a new game starts with. Only the creator's seat may name a stored deck,
-/// and only the creator's own; every other seat starts with a built-in deck or none.
+/// and only the creator's own; every other seat starts with a built-in deck, a precon (public
+/// data, so any seat may take one) or none.
 async fn starting_deck(
     app: &AppState,
     headers: &HeaderMap,
     index: usize,
     id: &str,
 ) -> Result<ChosenDeck, ApiError> {
-    let found = if index == 0 {
+    let found = if index == 0 || deck_choice::precon_code(id).is_some() {
         deck_choice::resolve(app, headers, id).await
     } else {
         deck_choice::built_in(id)

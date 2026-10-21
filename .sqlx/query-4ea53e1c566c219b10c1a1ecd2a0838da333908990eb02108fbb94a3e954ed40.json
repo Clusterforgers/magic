@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT (SELECT count(*) FROM precon_decks) AS \"decks!\",\n                      (SELECT count(*) FROM precon_deck_cards) AS \"entries!\",\n                      md5(COALESCE((SELECT string_agg(\n                          id::text || ':' || code || ':' || name || ':' || COALESCE(deck_type, '')\n                              || ':' || COALESCE(release_date::text, ''), ',' ORDER BY id)\n                          FROM precon_decks), '')) AS \"decks_digest!\",\n                      md5(COALESCE((SELECT string_agg(\n                          deck_id::text || ':' || position::text || ':' || board || ':' || card_name\n                              || ':' || count::text || ':' || COALESCE(oracle_id::text, '') || ':'\n                              || COALESCE(printing_id::text, ''), ',' ORDER BY deck_id, position)\n                          FROM precon_deck_cards), '')) AS \"entries_digest!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "decks!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "entries!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "decks_digest!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "entries_digest!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "4ea53e1c566c219b10c1a1ecd2a0838da333908990eb02108fbb94a3e954ed40"
+}

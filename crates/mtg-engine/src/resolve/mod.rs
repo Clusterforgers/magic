@@ -403,10 +403,7 @@ mod tests {
             match cx.journal() {
                 [] => Ok(Run::Ask(Decision {
                     player: cx.controller(),
-                    kind: DecisionKind::YesNo(YesNoOptions {
-                        source: cx.scope.source.id,
-                        text: String::new(),
-                    }),
+                    kind: DecisionKind::YesNo(YesNoOptions::new(cx.scope.source.id, "")),
                 })),
                 [(_, Choice::YesNo(yes))] => Ok(Run::events(if *yes {
                     vec![Event::LifeGained {

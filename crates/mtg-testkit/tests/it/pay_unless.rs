@@ -1,4 +1,4 @@
-//! Goal: payments an effect offers play whole at tables of two, three and four seats, as their cards say: Izzet Charm counters a noncreature spell unless its controller pays {2} (yes, no, cannot pay), deals 2 damage to a creature and loots; Rhystic Study asks the opponent who cast a spell, whichever seat that is, to pay {1} and only then lets its controller draw; a seat that is not the active one decides; a payment may use several sources, a partial choice finished by the engine and floating mana; an effect that names several opponents asks them in turn order until one pays, skipping those who cannot; a player is never asked what they cannot pay; the payment cannot be backed out of; a seat that concedes while asked to pay leaves and the resolution goes on; an engine rebuilt from the log asks the same question at every decision, including the payments, and the log replays to the state it was played to.
+//! Goal: payments an effect offers play whole at tables of two, three and four seats, as their cards say: Izzet Charm counters a noncreature spell unless its controller pays {2} (yes, no, cannot pay), deals 2 damage to a creature and loots; Rhystic Study asks the opponent who cast a spell, whichever seat that is, to pay {1} and only then lets its controller draw; a seat that is not the active one decides; a payment may use several sources, a partial choice finished by the engine and floating mana; an effect that names several opponents asks them in turn order until one pays, those who cannot pay saying no; a player who cannot pay is asked in the same words and at the same time, with No the only answer (a Yes is refused and changes nothing), and a player who can is asked as before; the payment cannot be backed out of; a seat that concedes while asked to pay leaves and the resolution goes on; an engine rebuilt from the log asks the same question at every decision, including the payments, and the log replays to the state it was played to.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -68,6 +68,32 @@ fn question(driver: &Driver) -> String {
         DecisionKind::YesNo(options) => options.text.clone(),
         other => panic!("a yes-or-no question was expected, not {}", other.name()),
     }
+}
+
+/// Whether the question the table waits on can only be answered No.
+fn only_no(driver: &Driver) -> bool {
+    match &driver.decision().unwrap().kind {
+        DecisionKind::YesNo(options) => options.only_no,
+        other => panic!("a yes-or-no question was expected, not {}", other.name()),
+    }
+}
+
+/// A Yes to the question is refused as an illegal answer and changes nothing: no event, no state, the same question.
+fn refuses_yes(driver: &mut Driver) {
+    let log = driver.engine().events().len();
+    let hash = driver.engine().state_hash();
+    let asked = driver.decision().unwrap().clone();
+    let refused = driver.answer(yes_no(true)).unwrap_err();
+    assert!(
+        matches!(
+            refused,
+            ScriptError::Engine(EngineError::Illegal(IllegalAnswer::NotOffered("yes")))
+        ),
+        "{refused:?}"
+    );
+    assert_eq!(driver.engine().events().len(), log, "nothing was logged");
+    assert_eq!(driver.engine().state_hash(), hash, "nothing changed");
+    assert_eq!(driver.decision().unwrap(), &asked, "the question stands");
 }
 
 /// Seat 0 holds Izzet Charm with an Island and a Mountain; seat 1 holds a Lightning Bolt (aimed at seat 0) with a
@@ -157,19 +183,61 @@ fn izzet_charm_counters_a_spell_unless_its_controller_pays_two(
 }
 
 #[rstest]
-fn a_player_who_cannot_pay_is_not_asked_and_the_spell_is_countered(
+fn a_player_who_cannot_pay_is_asked_all_the_same_and_only_no_is_accepted(
     #[values(2, 3, 4)] seats: usize,
     #[values(0, 1)] spare: usize,
 ) -> Result<(), ScriptError> {
     let mut driver = bolt_on_the_stack(seats, spare)?;
     charm_the_bolt(&mut driver)?;
-    assert_eq!(
-        life(&driver, 0),
-        20,
-        "the Bolt was countered without a word"
-    );
+    assert_eq!(waiting(&driver), (pid(1), "yes-no"));
+    assert_eq!(question(&driver), "Pay {2}?");
+    assert!(only_no(&driver));
+    refuses_yes(&mut driver);
+    driver.answer(yes_no(false))?;
+    passes_until_asked(&mut driver)?;
+    assert_eq!(life(&driver, 0), 20, "the Bolt was countered");
     assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
     assert_eq!(driver.state().stack().len(), 0);
+    Ok(())
+}
+
+#[rstest]
+fn the_question_and_the_log_before_it_are_the_same_whether_or_not_the_player_can_pay(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(0, 1)] short: usize,
+) -> Result<(), ScriptError> {
+    let mut able = bolt_on_the_stack(seats, 2)?;
+    charm_the_bolt(&mut able)?;
+    let mut unable = bolt_on_the_stack(seats, short)?;
+    charm_the_bolt(&mut unable)?;
+    // The same events and the same question for the same seat, apart from the one flag only that seat is sent.
+    assert_eq!(able.engine().events(), unable.engine().events());
+    let (mut able_asked, mut unable_asked) = (able.decision()?.clone(), unable.decision()?.clone());
+    assert!(!only_no(&able) && only_no(&unable));
+    for asked in [&mut able_asked, &mut unable_asked] {
+        let DecisionKind::YesNo(options) = &mut asked.kind else {
+            panic!("a question was expected");
+        };
+        options.only_no = false;
+    }
+    assert_eq!(able_asked, unable_asked);
+    // Saying no gives the same events too, and the same next decision.
+    let (a, b) = (able.answer(yes_no(false))?, unable.answer(yes_no(false))?);
+    assert_eq!(a, b);
+    assert_eq!(able.engine().events(), unable.engine().events());
+    assert_eq!(able.decision()?, unable.decision()?);
+    Ok(())
+}
+
+#[rstest]
+fn a_player_who_could_pay_is_asked_as_before_and_may_say_yes(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = bolt_on_the_stack(seats, 2)?;
+    charm_the_bolt(&mut driver)?;
+    assert!(!only_no(&driver));
+    driver.answer(yes_no(true))?;
+    assert_eq!(waiting(&driver), (pid(1), "pay-mana"));
     Ok(())
 }
 
@@ -370,9 +438,15 @@ fn rhystic_study_draws_only_when_its_controller_wants_to_and_the_opponent_cannot
     #[values(2, 3, 4)] seats: usize,
     #[values(true, false)] draws: bool,
 ) -> Result<(), ScriptError> {
-    // The opponent has no land left after the Bolt, so is not asked: the controller is asked at once.
+    // The opponent has no land left after the Bolt, so can only say no; the controller is asked after it.
     let mut driver = rhystic_trigger(seats, 0, 1, 0)?;
+    assert_eq!(waiting(&driver), (pid(1), "yes-no"));
+    assert_eq!(question(&driver), "Pay {1}?");
+    assert!(only_no(&driver));
+    refuses_yes(&mut driver);
+    driver.answer(yes_no(false))?;
     assert_eq!(waiting(&driver), (pid(0), "yes-no"));
+    assert!(!only_no(&driver));
     assert_eq!(question(&driver), "Draw a card?");
     driver.answer(yes_no(draws))?;
     passes_until_asked(&mut driver)?;
@@ -527,12 +601,12 @@ fn a_payment_may_use_several_sources_a_partial_choice_the_engine_finishes_and_fl
 }
 
 #[rstest]
-fn an_effect_that_names_the_opponents_asks_them_in_turn_order_skipping_those_who_cannot_pay_until_one_does(
+fn an_effect_that_names_the_opponents_asks_them_in_turn_order_those_who_cannot_pay_only_say_no_until_one_does(
     #[values(3, 4)] seats: usize,
     #[values("nobody pays", "the first able pays", "the last pays")] how: &str,
 ) -> Result<(), ScriptError> {
-    // "Unless an opponent pays {1}, you draw a card; if one does, you gain 1 life." Seat 1 has no land, so is never
-    // asked; the seats after it have one Forest each.
+    // "Unless an opponent pays {1}, you draw a card; if one does, you gain 1 life." Seat 1 has no land, so is asked
+    // like the others and can only say no; the seats after it have one Forest each.
     let mut scenario = Scenario::new(seats)
         .hand(0, [toll("Toll")])
         .battlefield(0, [ready(island())]);
@@ -548,9 +622,13 @@ fn an_effect_that_names_the_opponents_asks_them_in_turn_order_skipping_those_who
         "the first able pays" => able.first().copied(),
         _ => able.last().copied(),
     };
-    for &seat in &able {
+    for seat in 1..seats {
         assert_eq!(waiting(&driver), (pid(seat), "yes-no"), "{how}");
         assert_eq!(question(&driver), "Pay {1}?");
+        assert_eq!(only_no(&driver), !able.contains(&seat), "{how}");
+        if !able.contains(&seat) {
+            refuses_yes(&mut driver);
+        }
         if payer == Some(seat) {
             driver.answer(yes_no(true))?;
             driver.pay_tapping(&["Forest"], 0)?;
@@ -576,7 +654,7 @@ fn a_may_pay_needs_the_colours_and_pays_with_the_right_sources(
     #[values(2, 3, 4)] seats: usize,
     #[values(true, false)] white: bool,
 ) -> Result<(), ScriptError> {
-    // "You may pay {1}{W}": without a white source the controller is not asked.
+    // "You may pay {1}{W}": without a white source the controller is asked all the same and can only say no.
     let lands = if white {
         vec![ready(plains()), ready(plains()), ready(forest())]
     } else {
@@ -589,14 +667,18 @@ fn a_may_pay_needs_the_colours_and_pays_with_the_right_sources(
     )?;
     driver.cast("Tithe")?;
     passes_until_asked(&mut driver)?;
+    assert_eq!(waiting(&driver), (pid(0), "yes-no"));
+    assert_eq!(question(&driver), "Pay {1}{W}?");
+    assert_eq!(only_no(&driver), !white);
     if white {
-        assert_eq!(waiting(&driver), (pid(0), "yes-no"));
-        assert_eq!(question(&driver), "Pay {1}{W}?");
         driver.answer(yes_no(true))?;
         driver.pay_tapping(&["Plains", "Forest"], 0)?;
         passes_until_asked(&mut driver)?;
         assert_eq!(life(&driver, 0), 23);
     } else {
+        refuses_yes(&mut driver);
+        driver.answer(yes_no(false))?;
+        passes_until_asked(&mut driver)?;
         assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
         assert_eq!(life(&driver, 0), 20);
     }
