@@ -8,8 +8,8 @@ use std::borrow::Cow;
 use std::collections::BTreeMap;
 
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, ZoneKind};
-use mtg_cards::value::{Amount, Condition, CounterKind, StatKind};
+use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, StatKind};
 use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
 use thiserror::Error;
@@ -52,6 +52,7 @@ static NO_CHOICES: Choices = Choices {
     targets: Vec::new(),
     division: Vec::new(),
     optional_costs: Vec::new(),
+    way: None,
 };
 static NO_BINDINGS: Bindings = BTreeMap::new();
 
@@ -302,6 +303,22 @@ impl<'a> Scope<'a> {
             .collect()
     }
 
+    /// What an overloaded spell reads instead of the target `index`: each object or player that specification could
+    /// target ("each" for "target", CR 702.96a), whatever protects it.
+    fn each_target(&self, index: usize) -> Result<Vec<Target>, ResolveError> {
+        let Some(spec) = self.specs.get(self.target_base + index) else {
+            return Ok(Vec::new());
+        };
+        match &spec.what {
+            Targetable::Object(selector) => self.refs(&Ref::Each(selector.clone())),
+            Targetable::Player => self.refs(&Ref::EachPlayer),
+            Targetable::Opponent => self.refs(&Ref::Opponents),
+            Targetable::AnyTarget | Targetable::Either(_) => Err(ResolveError::Unsupported(
+                "overload of a target that is not an object or a player",
+            )),
+        }
+    }
+
     /// Whether an earlier step of this resolution moved the target away.
     fn departed(&self, target: Target) -> bool {
         target
@@ -351,6 +368,9 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .collect(),
             Ref::This => vec![Target::Object(self.source)],
+            Ref::Target(index) if self.choices.way == Some(CastWay::Overload) => {
+                self.each_target(usize::from(*index))?
+            }
             Ref::Target(index) => self.chosen(usize::from(*index)),
             Ref::Triggering => self
                 .cause
@@ -682,6 +702,17 @@ impl<'a> Scope<'a> {
             .map_or(&[], GameObject::paid_costs)
     }
 
+    /// The alternative cost the spell was cast for: what the spell or ability announced, else what the spell its source is
+    /// or came from was cast for while that is still the object named.
+    fn cast_way(&self) -> Option<CastWay> {
+        self.choices.way.or_else(|| {
+            self.state
+                .object(self.source.id)
+                .filter(|object| object.counter() == self.source.counter)
+                .and_then(GameObject::cast_way)
+        })
+    }
+
     /// Whether a condition is true now.
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
@@ -720,6 +751,7 @@ impl<'a> Scope<'a> {
                 holds
             }
             Condition::Kicked => !self.paid_costs().is_empty(),
+            Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Monarch(_) => return Err(ResolveError::Unsupported("the monarch")),
             Condition::CitysBlessing(_) => {

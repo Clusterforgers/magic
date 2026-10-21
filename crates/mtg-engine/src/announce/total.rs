@@ -35,7 +35,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
 /// is gone or its cost has a part the engine does not pay.
 pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let (printed, sources) = printed(ctx)?;
-    let mana = alternative::replace(ctx, printed);
+    let mana = alternative::replace(ctx, choices, printed);
     let mana = optional::add(ctx, choices, mana);
     let mana = x::add(ctx, choices, mana);
     let mana = modifiers::apply(ctx, choices, mana);

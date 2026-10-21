@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ability::Ability;
 use crate::keyword::Keyword;
-use crate::refs::{Ref, Selector};
+use crate::refs::{Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
 use crate::value::Amount;
 
@@ -104,6 +104,27 @@ pub enum Duration {
     Forever,
 }
 
+/// A permission to cast cards (CR 601.3): which cards, from where, and what is waived.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CastPermission {
+    /// The players who may cast; the controller of the rule when absent.
+    #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+    pub who: Ref,
+    /// The cards they may cast; every card when empty.
+    #[serde(default, skip_serializing_if = "Selector::is_empty")]
+    pub what: Selector,
+    /// The zone the cards are cast from: a hand when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<ZoneKind>,
+    /// They are cast without paying their mana costs.
+    #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+    pub free: bool,
+    /// They are cast as though they had flash.
+    #[serde(default, skip_serializing_if = "crate::effect::is_false")]
+    pub flash: bool,
+}
+
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
 /// `Ability::Rule` for as long as its source has the ability; the references name the players or objects it is about.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -131,6 +152,9 @@ pub enum GameRule {
     CantSearch(Ref),
     /// The players play with the top card of their library revealed to every seat.
     RevealTop(Ref),
+    /// Players may cast cards the ordinary rules do not let them cast: from another zone, without paying their mana
+    /// costs, or as though they had flash (CR 601.3).
+    MayCast(CastPermission),
     /// The players may look at the top card of their own library any time; no one else sees it.
     LookAtTopAnyTime(Ref),
     /// The players have no maximum hand size (CR 402.2).

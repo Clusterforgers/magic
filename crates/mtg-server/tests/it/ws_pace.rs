@@ -14,13 +14,18 @@ use serde_json::Value;
 
 /// Bot-sized queues and rate limits with the default pace: auto-pass on, clocks running and no dwell, so a pass never waits.
 fn paced() -> ServerConfig {
+    paced_with(Pace::default())
+}
+
+/// [`paced`] with the clocks `pace` names.
+fn paced_with(pace: Pace) -> ServerConfig {
     let bots = bot_config();
     ServerConfig {
         fixed_seed: Some(1),
         game: GameConfig {
             pace: Pace {
                 dwell: Dwell::OFF,
-                ..Pace::default()
+                ..pace
             },
             ..bots.game
         },
@@ -111,7 +116,12 @@ async fn next_decision(socket: &mut WsClient) -> Value {
 
 #[tokio::test]
 async fn a_decision_without_a_clock_leaves_the_field_out() {
-    let server = TestServer::start(paced()).await;
+    // The mulligan is the first decision, and it has no clock when the think clock is off.
+    let off = Pace {
+        think: None,
+        ..Pace::default()
+    };
+    let server = TestServer::start(paced_with(off)).await;
     let (game, tokens) = create_game(server.addr, two_seats()).await;
     let handle = server.registry.handle(game.parse().unwrap()).unwrap();
     let (mut first, _, _) = welcomed(&server, &game, &tokens[0]).await;

@@ -337,6 +337,7 @@ impl Engine {
                 Ok(())
             }
             Outcome::Modes(modes) => self.announced(Answered::Modes(modes)),
+            Outcome::Way(pick) => self.announced(Answered::Way(pick)),
             Outcome::Targets(targets) => self.announced(Answered::Targets(targets)),
             Outcome::Number(number) => self.announced(Answered::Number(number)),
             Outcome::Costs(costs) => self.announced(Answered::Costs(costs)),

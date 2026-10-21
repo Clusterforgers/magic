@@ -1,0 +1,12 @@
+{
+  "oracle_id": "730e39e6-c61d-48b5-8827-bfd952bf1be7",
+  "name": "Omniscience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Omniscience",
+      "oracle_fingerprint": "f16eef51ac626925e2d8761cab0d1f3d",
+      "abilities": [{ "Rule": { "rule": { "MayCast": { "from": "Hand", "free": true } } } }]
+    }
+  ]
+}

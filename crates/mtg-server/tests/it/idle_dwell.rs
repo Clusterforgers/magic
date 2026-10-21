@@ -74,6 +74,7 @@ fn config(dwell: Dwell) -> GameConfig {
             auto_pass: true,
             response: None,
             blocks: None,
+            think: None,
             dwell,
         },
         ..roomy()

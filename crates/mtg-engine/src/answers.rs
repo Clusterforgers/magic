@@ -25,6 +25,8 @@ pub(crate) enum Outcome {
     BeginActivation(AbilityRef),
     /// These are the modes, in the order they are printed, of the cast or activation in progress.
     Modes(Vec<usize>),
+    /// This is the way, by position among those offered, the spell in progress is cast.
+    Way(usize),
     /// These are the targets of the next specification of the cast or activation in progress.
     Targets(Vec<Target>),
     /// This is the value of X of the cast or activation in progress.
@@ -113,7 +115,7 @@ pub(crate) fn handle(
             choose::yes_no_answer(player, options, choice)
         }
         (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice)) => {
-            choose::option_answer(player, options, choice)
+            choose::option_answer(player, options, choice, pending.is_some())
         }
         (DecisionKind::ChooseCosts(options), Answer::ChooseCosts(choice)) => {
             choose::costs_answer(player, options, choice)

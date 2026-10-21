@@ -26,6 +26,7 @@ const DEFAULT: Pace = Pace {
     auto_pass: true,
     response: Some(RESPONSE),
     blocks: Some(Duration::from_secs(45)),
+    think: Some(Duration::from_secs(60)),
     dwell: Dwell::OFF,
 };
 

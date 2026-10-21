@@ -26,6 +26,7 @@ export type { CardTypes } from "./CardTypes";
 export type { CardsChoice } from "./CardsChoice";
 export type { CardsFound } from "./CardsFound";
 export type { CardsOptions } from "./CardsOptions";
+export type { CastWay } from "./CastWay";
 export type { Cause } from "./Cause";
 export type { Characteristics } from "./Characteristics";
 export type { CheckRequest } from "./CheckRequest";

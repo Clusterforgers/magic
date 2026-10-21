@@ -1,4 +1,4 @@
-//! Goal: a seat that is not the active player has a response clock on every priority decision (even with nothing to do), a defender has a longer one for blocking, and nothing else is hurried; at the deadline the server answers for the seat (a pass, or no blocks) through the normal path so a late answer is stale, a reconnect is told the time that is left, the clock runs while the seat is away, and a failing store neither loses the move nor makes the server spin.
+//! Goal: a seat that is not the active player has a response clock on every priority decision (even with nothing to do), a defender has a longer one for blocking, the active player is never hurried and the opening decisions run on the think clock when it is on; at the deadline the server answers for the seat (a pass, or no blocks) through the normal path so a late answer is stale, a reconnect is told the time that is left, the clock runs while the seat is away, and a failing store neither loses the move nor makes the server spin.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -21,12 +21,14 @@ use rstest::rstest;
 
 const RESPONSE: Duration = Duration::from_secs(10);
 const BLOCKS: Duration = Duration::from_secs(45);
+const THINK: Duration = Duration::from_secs(60);
 
-/// The server defaults: auto-pass on, 10 s to respond, 45 s to block.
+/// The server defaults: auto-pass on, 10 s to respond, 45 s to block, 60 s to think.
 const DEFAULT: Pace = Pace {
     auto_pass: true,
     response: Some(RESPONSE),
     blocks: Some(BLOCKS),
+    think: Some(THINK),
     dwell: Dwell::OFF,
 };
 
@@ -438,6 +440,7 @@ async fn clocks_can_be_switched_off() {
     let pace = Pace {
         response: None,
         blocks: None,
+        think: None,
         ..DEFAULT
     };
     let (handle, _) = spawn(instant_table(), pace);
@@ -450,8 +453,12 @@ async fn clocks_can_be_switched_off() {
 }
 
 #[tokio::test(start_paused = true)]
-async fn the_opening_decisions_are_never_hurried() {
-    let (handle, _) = spawn(table_setup(3, 5), DEFAULT);
+async fn the_opening_decisions_run_on_the_think_clock_unless_it_is_switched_off() {
+    let off = Pace {
+        think: None,
+        ..DEFAULT
+    };
+    let (handle, _) = spawn(table_setup(3, 5), off);
     let mut clients = Vec::new();
     for n in 0..3 {
         clients.push(Client::join(&handle, n).await);

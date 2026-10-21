@@ -53,6 +53,22 @@ impl Cmp {
     }
 }
 
+/// The alternative cost a spell is cast for (CR 118.9): what a permanent and its abilities remember of how it was cast.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum CastWay {
+    /// Flashback (CR 702.34): from a graveyard, exiled when it leaves the stack.
+    Flashback,
+    /// Evoke (CR 702.74): sacrificed as it enters.
+    Evoke,
+    /// Overload (CR 702.96): every "target" reads "each".
+    Overload,
+    /// Madness (CR 702.35): from exile after it was discarded.
+    Madness,
+    /// Without paying its mana cost, by a permission or an effect (CR 118.9).
+    Free,
+}
+
 /// A kind of counter.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -337,6 +353,8 @@ pub enum Condition {
     },
     /// The spell was kicked (any kicker cost was paid); a permanent and its abilities read the spell it came from.
     Kicked,
+    /// The spell was cast for this alternative cost; a permanent and its abilities read the spell it came from.
+    CastWith(CastWay),
     /// It is the controller's turn.
     YourTurn,
     /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was

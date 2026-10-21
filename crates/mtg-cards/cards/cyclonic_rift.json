@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d75b9c82-1b49-4c3e-a1b5-aeef57d6644b",
+  "name": "Cyclonic Rift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cyclonic Rift",
+      "oracle_fingerprint": "c6622e2c086f9a84b9efddd4fb5cd111",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "Not": { "ControlledBy": "You" } }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": { "Overload": "{6}{U}" } }
+      ]
+    }
+  ]
+}

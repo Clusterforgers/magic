@@ -27,7 +27,7 @@ use std::sync::Arc;
 use mtg_cards::ability::Ability;
 use mtg_cards::refs::{Ref, ZoneKind};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
-use mtg_cards::value::CounterKind;
+use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
@@ -85,6 +85,9 @@ pub fn process(
         && !proposed
             .iter()
             .any(|event| entering(state, event).is_some())
+        && !proposed
+            .iter()
+            .any(|event| leaves_stack_by_flashback(state, &Item::One(event.clone())))
     {
         return Ok(Processed::Events(proposed));
     }
@@ -236,6 +239,22 @@ enum Origin {
     Shield(EffectId),
     /// The protection of the permanent or player the damage is dealt to (CR 702.16e).
     Protection,
+    /// The spell cast for its flashback cost, which is exiled instead of going anywhere else from the stack (CR 702.34a).
+    Flashback,
+}
+
+/// Whether the item moves a spell cast for its flashback cost from the stack to any zone but exile.
+fn leaves_stack_by_flashback(state: &GameState, item: &Item) -> bool {
+    let Item::One(event) = item else {
+        return false;
+    };
+    moving(state, event).is_some_and(|(object, from, to)| {
+        from == Zone::Stack
+            && to != Zone::Exile
+            && state
+                .object(object)
+                .is_some_and(|spell| spell.choices().way == Some(CastWay::Flashback))
+    })
 }
 
 /// The shields in play: prevention and regeneration shields that still last, in the order they began.
@@ -764,6 +783,19 @@ impl Pass<'_> {
         if !unpreventable {
             found.extend(self.shield_candidates(slot, &unit)?);
         }
+        if let Unit::Move { object, .. } = &unit
+            && !slot.applied.contains(&Origin::Flashback)
+            && leaves_stack_by_flashback(self.state, &slot.item)
+            && let Some(spell) = self.state.object(*object)
+        {
+            found.push(Candidate {
+                origin: Origin::Flashback,
+                object: spell.reference(),
+                controller: spell.controller(),
+                action: Action::Replace(ReplaceBy::MoveTo(ZoneKind::Exile)),
+                is_self: true,
+            });
+        }
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
     }
@@ -983,11 +1015,15 @@ impl Pass<'_> {
                                             source: c.object.id,
                                             ability: match c.origin {
                                                 Origin::Ability(address) => address.ability,
-                                                Origin::Shield(_) | Origin::Protection => 0,
+                                                Origin::Shield(_)
+                                                | Origin::Protection
+                                                | Origin::Flashback => 0,
                                             },
                                             shield: match c.origin {
                                                 Origin::Shield(id) => Some(id),
-                                                Origin::Ability(_) | Origin::Protection => None,
+                                                Origin::Ability(_)
+                                                | Origin::Protection
+                                                | Origin::Flashback => None,
                                             },
                                         })
                                         .collect(),

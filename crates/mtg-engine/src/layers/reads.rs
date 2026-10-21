@@ -200,7 +200,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
         Condition::YourTurn => Traits::CONTROL,
-        Condition::Kicked | Condition::Performed => Traits::NONE,
+        Condition::Kicked | Condition::CastWith(_) | Condition::Performed => Traits::NONE,
         Condition::Monarch(who) | Condition::CitysBlessing(who) => reads_of_ref(who),
     }
 }

@@ -12,7 +12,6 @@ use mtg_core::mana::ManaType;
 use crate::abilities::AbilityRef;
 use crate::ability_reader::{abilities_of, working_here};
 use crate::answers::Outcome;
-use crate::attach;
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::announceable;
 use crate::decision::{PriorityAction, PriorityOptions};
@@ -24,9 +23,10 @@ use crate::mana::{ManaOption, ManaSource, can_afford};
 use crate::object::GameObject;
 use crate::player::Player;
 use crate::price::{Leaves, Price};
-use crate::resolve::{Scope, spell_ability, zone_kind};
+use crate::resolve::{Scope, zone_kind};
 use crate::state::GameState;
 use crate::turn::LAND_DROPS_PER_TURN;
+use crate::ways;
 use crate::zones::Zone;
 
 /// Who holds priority and who has passed since the last action.
@@ -354,31 +354,13 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     } else {
         Vec::new()
     };
+    // CR 601.2c: a spell that needs a target is cast only when it has a legal one; CR 700.2a: a modal spell only when
+    // enough of its modes can be chosen. A card is offered when some way to cast it can be used now (`ways`).
     let castable: Vec<ObjectId> = hand
         .iter()
         .copied()
-        .filter(|id| {
-            let Some(object) = state.object(*id) else {
-                return false;
-            };
-            let types = object.base_types();
-            let Some(cost) = object.card().mana_cost.as_ref() else {
-                return false;
-            };
-            if types.contains(CardType::Land) {
-                return false;
-            }
-            let timing = types.contains(CardType::Instant)
-                || keywords::grants_instant_timing(state, *id)
-                || sorcery_timing(state, player);
-            // CR 601.2c: a spell that needs a target is cast only when it has a legal one; CR 700.2a: a modal
-            // spell only when enough of its modes can be chosen.
-            timing
-                && spell_ability(state, *id)
-                    .is_none_or(|(_, rules)| announceable(state, player, *id, &rules))
-                && attach::announceable(state, player, *id)
-                && can_afford(cost, &pool, &plain_mana, life)
-        })
+        .chain(ways::elsewhere(state, player))
+        .filter(|id| ways::castable_now(state, player, *id, &pool, &plain_mana, life))
         .collect();
     let abilities = other_abilities(state, player);
     let mut mana_abilities = plain_mana;

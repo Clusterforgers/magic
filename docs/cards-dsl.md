@@ -137,6 +137,7 @@ Modification= ModifyPT{power,toughness} SetPT{..} SwitchPT AddType AddSubtype Se
 Duration    = UntilEndOfTurn | UntilEndOfCombat | UntilYourNextTurn | WhileSourceOnBattlefield | Forever
 GameRule    = DamageCantBePrevented{source?,combat?} | MustAttack(Ref) | MustBlock(Ref) | CantBeCountered(Ref)
             | CantGainLife(Ref) | CantDraw(Ref) | CantSearch(Ref) | RevealTop(Ref) | TriggerAgain{cause: TriggerPattern}
+            | MayCast{who = You, what?, from?, free?, flash?}
             | LookAtTopAnyTime(Ref) | NoMaxHandSize(Ref) | AdditionalLandPlays{who,count} | CanBeCommander
 Keyword     = Flying | Reach | FirstStrike | ... | Shroud | Protection(Selector) | Ward(Cost) | Equip(Cost) | Enchant(Selector) | Kicker(Cost) | ...
             | Crew(n) | Mutate(Cost) | Encore(Cost) | Squad(Cost) | Changeling | Devoid | Myriad | Infect
@@ -154,7 +155,7 @@ TargetSpec{ what: AnyTarget | Player | Opponent | Object(Selector) | Either([..]
 Amount    = n | X | Kicks | Count(Selector) | Stat{of,stat} | Life(Ref) | Counters{on,counter} | Sum([Amount])
           | Divided | EvenShare(Amount) | TargetCount(i) | Devotion([Color]) | Greatest{of,stat} | Total{of,stat}
           | CardTypes(Selector) | Players(Ref) | LowestLife(Ref)
-Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | Kicked | YourTurn | Performed
+Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | Kicked | CastWith(Flashback|Evoke|Overload|Madness|Free) | YourTurn | Performed
           | Monarch(Ref) | CitysBlessing(Ref)
 ```
 
@@ -400,12 +401,13 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 
 ## Corpus
 
-`crates/mtg-cards/cards/` holds 114 cards and 3 tokens.
+`crates/mtg-cards/cards/` holds 122 cards and 3 tokens.
 
 | Feature | Cards |
 |---|---|
 | Targets, damage | Lightning Bolt, Burst Lightning (kicker), Fireball (X, even split, cost per extra target), Fire // Ice (split, divided damage, Fuse) |
 | Optional costs | Burst Lightning and Gatekeeper of Malakir (kicker, the second with an enters trigger that reads it), Wolfbriar Elemental (multikicker, a Wolf for each payment) (Verified) |
+| Alternative costs and cast permissions (Verified) | Faithless Looting (flashback), Mulldrifter (evoke, with the enters trigger), Cyclonic Rift and Mizzium Mortars (overload), Omniscience (cast from the hand without paying) and Vedalken Orrery (as though flash) |
 | Counter, destroy, exile, mass removal | Counterspell, Doom Blade, Swords to Plowshares, Wrath of God (Verified) |
 | Pump and control with duration | Giant Growth, Act of Treason (Verified) |
 | Library | Rampant Growth, Cultivate, Opt, Brainstorm, Flooded Strand (fetchland), Jace, the Mind Sculptor (planeswalker, Verified) |
@@ -424,7 +426,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 | Equipment (Verified) | Bonesplitter (a pump through `Attached`, `Equip {1}`), Swiftfoot Boots (two keywords through `Attached`), Batterskull (living weapon, a pump with two keywords, a bounce to hand) and the Equipment creatures with `Reconfigure`: Lizard Blades (double strike), Bronzeplate Boar (a pump and trample) and Armguard Familiar (a pump and ward, a keyword that brings its own trigger) |
 | Legends (Verified) | Arvad the Cursed and Kongming, "Sleeping Dragon" (lords) and Sram, Senior Edificer (a trigger on Aura spells); two of a name meet the legend rule |
 | Mana abilities | Llanowar Elves, Sol Ring, Gaea's Cradle |
-| Keywords | Serra Angel, Bloodbraid Elf (cascade), Faithless Looting (flashback), Monastery Swiftspear (prowess), Hulking Raptor (ward), Black Knight and Kor Firewalker (protection from a colour) and Mother of Runes (protection from a colour chosen as the ability resolves), Verified |
+| Keywords | Serra Angel, Bloodbraid Elf (cascade), Monastery Swiftspear (prowess), Hulking Raptor (ward), Black Knight and Kor Firewalker (protection from a colour) and Mother of Runes (protection from a colour chosen as the ability resolves), Verified |
 | No abilities | Forest, Grizzly Bears |
 | `Partial`, `Manual` | Questing Beast (three clauses) |
 | Tokens | Treasure (a mana ability, made by Dockside Extortionist), Clue (made by Tireless Tracker) and Food (`{2}` and a sacrifice, paid as any ability with mana) |
@@ -444,7 +446,8 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | Keyword actions: Populate, Learn, Detain, Support, Venture, Manifest, Cloak, Incubate, Suspect | P, X, F | (h); Populate (o), Manifest and Cloak (n) |
 | `RevealUntil`, `ExileTop`, `Dig` (look at N and take some is `LookAtTop` + `Choose` + `Move`) | P, X, F | (h) |
 | `Exile` with a duration (Oblivion Ring), `Duration` until host leaves, until a player's next turn, until an event | P | (h) |
-| `CastFromZone`, free cast, `AsThough` (flash, play from graveyard or library), cast permissions | P, X | (g) |
+| Cast permissions (`GameRule::MayCast`: cast from a graveyard, exile or a library, without paying, as though with flash); `Condition::CastWith` | P, X | (g4) |
+| `CastFromZone` as an effect (cascade, discover, suspend, madness) | P, X | (g4) |
 | `CopySpell`, `BecomeCopy` | P, X, F | (o) |
 | Costs: ExileFromGraveyard, TapPermanents, RemoveCounters, PayEnergy, ReturnToHand | P, X, F | DSL (stubs); the engine pays them in (g6) |
 | Costs: RemoveCounters with X, Mill, Reveal, Exert, Unattach, OneOf | P, X, F | (g) |

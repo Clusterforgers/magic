@@ -1185,6 +1185,7 @@ fn pipeline_events() -> Vec<Event> {
         targets: vec![vec![target, Target::Player(player)]],
         division: vec![(target, 2)],
         optional_costs: vec![0],
+        way: Some(mtg_cards::value::CastWay::Evoke),
     };
     vec![
         Event::SpellCast {

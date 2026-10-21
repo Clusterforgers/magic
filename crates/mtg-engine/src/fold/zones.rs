@@ -2,6 +2,7 @@
 
 use std::collections::BTreeMap;
 
+use mtg_cards::value::CastWay;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -48,6 +49,11 @@ pub(super) fn move_object(
     } else {
         Vec::new()
     };
+    let way = if from == Zone::Stack && to == Zone::Battlefield {
+        object.choices.way
+    } else {
+        None
+    };
     if from == Zone::Stack {
         object.choices = Choices::default();
     }
@@ -69,6 +75,7 @@ pub(super) fn move_object(
             observed: None,
             chosen: None,
             paid,
+            way,
         });
     } else if to != Zone::Stack {
         object.controller = object.owner;
@@ -108,9 +115,23 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             object,
             choices,
         } => {
-            expect_in(state, *object, Zone::Hand(*player))?;
+            // A card is cast from its hand, or from the zone a permission names (CR 601.3): never from play.
+            let from = state
+                .objects
+                .get(object)
+                .map(|spell| spell.zone)
+                .ok_or_else(|| invalid(format!("unknown object {object:?}")))?;
+            if matches!(from, Zone::Stack | Zone::Battlefield) {
+                return Err(invalid(format!(
+                    "{object:?} is in {from:?}, not a card to cast"
+                )));
+            }
+            expect_in(state, *object, from)?;
             move_object(state, *object, Zone::Stack, Placement::Top)?;
             set_controller(state, *object, *player);
+            if choices.way == Some(CastWay::Flashback) {
+                state.possible.replacements = true;
+            }
             if let Some(spell) = state.objects.get_mut(object) {
                 spell.choices.clone_from(choices);
             }
