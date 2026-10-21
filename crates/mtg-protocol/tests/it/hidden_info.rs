@@ -1516,7 +1516,7 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_auras_and_legends(
 }
 
 #[rstest]
-#[case(2, 310)]
+#[case(2, 311)]
 #[case(3, 308)]
 #[case(4, 320)]
 fn no_hidden_object_reaches_any_viewer_in_games_of_prevention_and_regeneration(
