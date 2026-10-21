@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0d5a1870-6d26-47e7-a86c-f3ff15cb0707",
+  "name": "Lat-Nam Adept",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lat-Nam Adept",
+      "oracle_fingerprint": "66bf9dacc76b1b4c87ee130fda391fdd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
