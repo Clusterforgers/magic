@@ -418,8 +418,7 @@ mod tests {
 
     #[test]
     fn a_partial_card_keeps_a_manual_ability_for_each_unread_clause_in_order() {
-        let text =
-            "Flying\nWhenever ~ attacks, goad target creature.\n{T}: Draw a card.\nVigilance";
+        let text = "Flying\nWhenever ~ attacks, goad target creature.\n{T}: Goad target creature.\nVigilance";
         let compiled = one("Test Card", "Creature \u{2014} Bird", text);
         let card = compiled.card.unwrap();
         let abilities = &card.faces[0].abilities;
@@ -438,7 +437,7 @@ mod tests {
             abilities[2],
             Ability::Manual {
                 reason: "an activated ability the compiler does not read yet".into(),
-                span: Span { start: 49, end: 66 }
+                span: Span { start: 49, end: 75 }
             }
         );
         let kinds: Vec<_> = compiled.clauses.iter().map(|clause| clause.kind).collect();

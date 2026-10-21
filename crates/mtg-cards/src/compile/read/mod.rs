@@ -7,11 +7,12 @@
 //! per part: `tokens` (the words, numbers and symbols of a clause and the reader that walks them),
 //! `selectors` (what a clause targets or counts), `subtypes` (the capitalized words that are
 //! types, not names), `amounts`, `effects` (a sentence is an effect), `modal` (the modes of a choice),
-//! `triggers` (the event of a triggered ability), `abilities` (a spell ability, a triggered
-//! ability, a plain mana ability) and `render`.
+//! `triggers` (the event of a triggered ability), `costs` (what is paid before the colon), `abilities` (a spell ability, a triggered
+//! ability, an activated ability) and `render`.
 
 mod abilities;
 mod amounts;
+mod costs;
 mod create;
 mod effects;
 mod modal;
@@ -49,7 +50,7 @@ pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
         ClauseKind::Spell => abilities::spell(&mut reader)?,
         ClauseKind::Modal => abilities::modal_spell(&mut reader)?,
         ClauseKind::Triggered => abilities::triggered(&mut reader)?,
-        ClauseKind::Activated => abilities::mana_ability(&mut reader)?,
+        ClauseKind::Activated => abilities::activated(&mut reader)?,
         _ => return None,
     };
     if !reader.end() {

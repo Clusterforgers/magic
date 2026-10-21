@@ -77,7 +77,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 112] = [
     ("Goblin Spy", Some(Manual), 0, 1),
     ("Grizzly Bears", None, 0, 0),
     ("Hero of Bladehold", Some(Full), 2, 2),
-    ("Hulking Raptor", Some(Partial), 1, 2),
+    ("Hulking Raptor", Some(Full), 2, 2),
     ("Humility", Some(Manual), 0, 1),
     ("Inspiring Call", Some(Manual), 0, 1),
     ("Izzet Charm", Some(Full), 1, 1),
@@ -116,7 +116,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 112] = [
     ("Sneak Attack", Some(Manual), 0, 1),
     ("Sodden Verdure", Some(Manual), 0, 1),
     ("Sol Ring", Some(Full), 1, 1),
-    ("Soul of Zendikar", Some(Partial), 1, 3),
+    ("Soul of Zendikar", Some(Partial), 2, 3),
     ("Shielded by Faith", Some(Partial), 1, 3),
     ("Spellbreaker Behemoth", Some(Manual), 0, 2),
     ("Sram, Senior Edificer", Some(Manual), 0, 1),
@@ -130,7 +130,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 112] = [
     ("Thought Reflection", Some(Manual), 0, 1),
     ("Tireless Tracker", Some(Full), 2, 2),
     ("Transguild Courier", Some(Manual), 0, 1),
-    ("Warmonger Hellkite", Some(Partial), 1, 3),
+    ("Warmonger Hellkite", Some(Partial), 2, 3),
     ("Wrath of God", Some(Full), 1, 1),
 ];
 

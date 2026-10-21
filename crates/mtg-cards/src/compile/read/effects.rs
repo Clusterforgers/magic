@@ -1,13 +1,15 @@
 //! Effects: a sentence is read into the effects of one template. A template reads the whole
 //! sentence or nothing; to add a wording, write a template and list it in [`TEMPLATES`].
 
+use mtg_core::mana::ManaType;
+
 use super::amounts::{cards, its_stat, number_word, points};
 use super::create;
 use super::modal;
 use super::selectors::{Form, all, each, keyword, phrase, target};
 use super::tokens::Reader;
 use crate::cost::Cost;
-use crate::effect::{Destination, Effect, Order, Place};
+use crate::effect::{Destination, Effect, Order, Place, Produce};
 use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
@@ -17,7 +19,7 @@ use crate::value::{Amount, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 11] = [
+const TEMPLATES: [Template; 12] = [
     modal::modal,
     may,
     chain,
@@ -29,6 +31,7 @@ const TEMPLATES: [Template; 11] = [
     return_card,
     create::tokens,
     put_counters,
+    add_mana,
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
@@ -311,7 +314,7 @@ fn sacrifice(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
 }
 
 /// Whether a predicate says what kind of permanent it is, and nothing of who has it or where.
-fn describes_a_kind(pred: &Pred) -> bool {
+pub(super) fn describes_a_kind(pred: &Pred) -> bool {
     match pred {
         Pred::Type(_)
         | Pred::Supertype(_)
@@ -579,5 +582,34 @@ fn pump(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         affected,
         mods,
         duration: Duration::UntilEndOfTurn,
+    }])
+}
+
+/// The mana of a symbol, when it is one a land or creature can produce.
+fn mana_type(symbol: &str) -> Option<ManaType> {
+    ManaType::ALL
+        .into_iter()
+        .find(|mana| symbol.len() == 1 && symbol.starts_with(mana.symbol()))
+}
+
+/// "Add {G}{G}." or "Add one mana of any color."
+fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("add")?;
+    let mana = if r.words("one mana of any color") {
+        Produce::AnyColor(1)
+    } else {
+        let mut list = Vec::new();
+        while let Some(mana) = r.attempt(|r| mana_type(r.symbol()?)) {
+            list.push(mana);
+        }
+        if list.is_empty() {
+            return None;
+        }
+        Produce::Fixed(list)
+    };
+    Some(vec![Effect::AddMana {
+        who: Ref::You,
+        mana,
+        times: Amount::one(),
     }])
 }

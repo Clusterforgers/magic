@@ -73,6 +73,34 @@ pub fn canonical(text: &str) -> String {
                 last.push_str(tail);
             }
             at += 3;
+        } else if matches!(word, "first" | "second")
+            && words.get(at + 1) == Some(&"main")
+            && let Some(phase) = words.get(at + 2)
+            && phase.trim_end_matches(|c: char| !c.is_alphanumeric()) == "phase"
+        {
+            // The newer wording of the main phases.
+            let older = if word == "first" {
+                "precombat"
+            } else {
+                "postcombat"
+            };
+            out.push(format!("{older} main {phase}"));
+            at += 3;
+        } else if matches!(word, "that" | "those")
+            && let Some(card) = words.get(at + 1)
+            && let Some(tail) = card
+                .strip_prefix(if word == "that" { "card" } else { "cards" })
+                .filter(|tail| !tail.starts_with(|c: char| c.is_alphanumeric()))
+            && out.last().is_some_and(|last| {
+                last.eq_ignore_ascii_case("put") || last.eq_ignore_ascii_case("reveal")
+            })
+        {
+            // "put that card into your hand" says what "put it into your hand" says.
+            out.push(format!(
+                "{}{tail}",
+                if word == "that" { "it" } else { "them" }
+            ));
+            at += 2;
         } else if investigate.eq_ignore_ascii_case("investigate") {
             // The keyword action is the same as its reminder text.
             let create = if investigate.starts_with('I') {
@@ -129,7 +157,9 @@ fn word_or_number(run: &str, opens: bool) -> Token {
         return Token::Number(number);
     }
     let capital = run.chars().next().is_some_and(char::is_uppercase);
-    if capital && !opens && run.chars().count() > 1 {
+    // The verbs of a cost follow a comma: "{T}, Pay 1 life, Sacrifice ~".
+    let cost_verb = matches!(run, "Pay" | "Sacrifice" | "Discard");
+    if capital && !opens && !cost_verb && run.chars().count() > 1 {
         return Token::Name(run.replace('\u{2019}', "'"));
     }
     Token::Word(run.replace('\u{2019}', "'").to_lowercase())

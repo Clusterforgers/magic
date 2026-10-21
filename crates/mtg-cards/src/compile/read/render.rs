@@ -4,12 +4,13 @@
 //! same sequence.
 
 use super::amounts::{cards_text, count_word, points_text, stat_name};
+use super::costs;
 use super::create;
 use super::effects::BACK;
 use super::modal::{BULLET, DASH};
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
 use super::triggers::{article, condition_text, pattern_text};
-use crate::ability::{Ability, Timing};
+use crate::ability::{Ability, Limit, Timing};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce};
 use crate::modify::{Duration, Modification};
@@ -50,13 +51,31 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         }
         Ability::Activated {
             cost,
-            timing: Timing::Instant,
+            timing,
             condition: None,
-            limit: None,
+            limit,
             from: ZoneKind::Battlefield,
             targets,
             effects,
-        } if targets.is_empty() => mana_ability(cost, effects).into_iter().collect(),
+        } => {
+            let Some(head) = costs::text(cost) else {
+                return Vec::new();
+            };
+            let tails = restriction_texts(*timing, *limit);
+            alternatives(targets, effects)
+                .iter()
+                .flat_map(|sentences| {
+                    let body = format!("{head}: {}", closed(sentences, true).join(" "));
+                    tails.iter().map(move |tail| {
+                        if tail.is_empty() {
+                            body.clone()
+                        } else {
+                            format!("{body} {tail}")
+                        }
+                    })
+                })
+                .collect()
+        }
         _ => Vec::new(),
     }
 }
@@ -306,25 +325,9 @@ fn is_imperative(effect: &Effect) -> bool {
     )
 }
 
-/// `{T}: Add {G}.`
-fn mana_ability(cost: &Cost, effects: &[Effect]) -> Option<String> {
-    if cost.0.as_slice() != [CostItem::Tap] {
-        return None;
-    }
-    let [
-        Effect::AddMana {
-            who: Ref::You,
-            mana,
-            times,
-        },
-    ] = effects
-    else {
-        return None;
-    };
-    if !times.is_one() {
-        return None;
-    }
-    let added = match mana {
+/// "{G}{G}", "one mana of any color": the mana an effect adds.
+fn mana_text(mana: &Produce) -> Option<String> {
+    Some(match mana {
         Produce::Fixed(list) if !list.is_empty() => {
             let mut symbols = String::new();
             for mana in list {
@@ -336,8 +339,22 @@ fn mana_ability(cost: &Cost, effects: &[Effect]) -> Option<String> {
         }
         Produce::AnyColor(1) => "one mana of any color".to_owned(),
         _ => return None,
-    };
-    Some(format!("{{T}}: Add {added}."))
+    })
+}
+
+/// The sentence that restricts when an ability may be activated, in every wording of it; empty
+/// text for none.
+fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
+    let words = |text: &str| vec![text.to_owned()];
+    match (timing, limit) {
+        (Timing::Instant, None) => words(""),
+        (Timing::Sorcery, None) => words("Activate only as a sorcery."),
+        (Timing::Instant, Some(Limit::OncePerTurn)) => words("Activate only once each turn."),
+        (Timing::Sorcery, Some(Limit::OncePerTurn)) => vec![
+            "Activate only as a sorcery and only once each turn.".to_owned(),
+            "Activate only once each turn and only as a sorcery.".to_owned(),
+        ],
+    }
 }
 
 /// "+2", "-3", "+X": a change of power or toughness.
@@ -494,6 +511,11 @@ impl Writer<'_> {
             } if self.is_a_permanent(what) => {
                 format!("return {} to its owner's hand", self.object(what)?)
             }
+            Effect::AddMana {
+                who: Ref::You,
+                mana,
+                times,
+            } if times.is_one() => format!("add {}", mana_text(mana)?),
             Effect::PutCounters { on, counter, count } => self.counters(on, counter, count)?,
             Effect::CreateToken { .. } => create::text(effect)?,
             Effect::DealDamage {
