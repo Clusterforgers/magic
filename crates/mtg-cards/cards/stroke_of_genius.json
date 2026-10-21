@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0cc6d683-366f-4ae4-be60-20ad9621fdaf",
+  "name": "Stroke of Genius",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stroke of Genius",
+      "oracle_fingerprint": "131db5b13968a1fc7a8c70083b1bf08f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 }, "count": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

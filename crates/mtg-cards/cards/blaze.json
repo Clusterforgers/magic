@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0596920f-9946-42f4-a03b-24aab67f9f1b",
+  "name": "Blaze",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blaze",
+      "oracle_fingerprint": "093cd6cda2a8fa892af781eeb0b088dc",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "X" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2851,5 +2851,100 @@
       "W"
     ],
     "keywords": []
+  },
+  {
+    "id": "b16d0422-61ea-4039-b1c1-e590ace9156e",
+    "oracle_id": "0596920f-9946-42f4-a03b-24aab67f9f1b",
+    "name": "Blaze",
+    "lang": "en",
+    "layout": "normal",
+    "set": "bbd",
+    "collector_number": "167",
+    "rarity": "uncommon",
+    "released_at": "2018-06-08",
+    "digital": false,
+    "mana_cost": "{X}{R}",
+    "cmc": 1.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Blaze deals X damage to any target.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "beeb5419-828e-4a84-b4f3-87bc6f4cc594",
+    "oracle_id": "0cc6d683-366f-4ae4-be60-20ad9621fdaf",
+    "name": "Stroke of Genius",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "203",
+    "rarity": "rare",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{X}{2}{U}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Target player draws X cards.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "cf339735-eb1a-46f0-8c3e-eae06f278eca",
+    "oracle_id": "4aeafdf3-7828-4114-8c74-3bd46357caec",
+    "name": "Tezzeret the Seeker",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mm2",
+    "collector_number": "62",
+    "rarity": "mythic",
+    "released_at": "2015-05-22",
+    "digital": false,
+    "mana_cost": "{3}{U}{U}",
+    "cmc": 5.0,
+    "type_line": "Legendary Planeswalker — Tezzeret",
+    "oracle_text": "+1: Untap up to two target artifacts.\n−X: Search your library for an artifact card with mana value X or less, put it onto the battlefield, then shuffle.\n−5: Artifacts you control become artifact creatures with base power and toughness 5/5 until end of turn.",
+    "loyalty": "4",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "32da0d6c-64dd-4aec-b63e-953e96164603",
+    "oracle_id": "c6911265-54ef-4c16-bcf2-1ffb24b7d426",
+    "name": "Kessig Wolf Run",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tdc",
+    "collector_number": "375",
+    "rarity": "rare",
+    "released_at": "2025-04-11",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Land",
+    "oracle_text": "{T}: Add {C}.\n{X}{R}{G}, {T}: Target creature gets +X/+0 and gains trample until end of turn.",
+    "colors": [],
+    "color_identity": [
+      "G",
+      "R"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "C"
+    ]
   }
 ]
