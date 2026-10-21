@@ -78,7 +78,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (g5) Cost modifiers (`Ability::CostModifier`): reductions, increases, convoke, delve; Fireball is Verified
 - [ ] (g6) Costs of activated abilities beyond `{T}`, mana and sacrificing the source: a chosen permanent (chosen when the ability is announced), life, discard, counters removed, a card exiled from a graveyard, untapped creatures tapped; cycling; a card's support counts the abilities of the predefined tokens it makes; Flooded Strand is Verified
 - [ ] (g7) Mana: abilities of several mana or counting something, a mana ability with further effects (painlands, Eggs; `is_mana_ability`, then the compiler reads them again), restrictions on how mana is spent, Treasure and other sacrifice sources offered while paying a spell; Sol Ring and Gaea's Cradle are Verified
-- [ ] (g8) A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
+- [x] (g8) A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
 - [ ] (g9) Divided amounts at resolution: `Amount.Divided` and `Amount.EvenShare` read `Choices.division` (`DealDamage` and `PutCounters` give each target its share) and the support walker stops naming them; Fire // Ice (n1) needs it
 
 ### Trigger families
@@ -107,6 +107,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (d9) Timer bank: extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
 - [ ] Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and the order of cards put back; the payment prompt for X and restricted mana
+- [ ] The `YesNo` prompt disables Yes and its key when `YesNoOptions.only_no` is set (a payment the seat cannot make)
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts mark the creatures a rule requires (`AttackOptions.required`, `BlockOptions.required`) as chosen and locked, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] Table states: counters, attachments tucked beside their host, loyalty, faces and face-down cards, copies, command zone and commander damage, support marks; each in the `/dev/table` fixture with screenshots at six sizes in both themes

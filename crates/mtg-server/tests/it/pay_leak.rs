@@ -140,7 +140,9 @@ async fn play(tax: u32, brain: fn(&Decision) -> Answer, first: u64, dwell: Dwell
         .iter()
         .rev()
         .find_map(|(_, message)| match message {
-            ServerMessage::Events(batch) => Some(batch.from_seq as usize + batch.events.len()),
+            ServerMessage::Events(batch) => {
+                Some(usize::try_from(batch.from_seq).unwrap() + batch.events.len())
+            }
             _ => None,
         })
         .unwrap();
@@ -317,7 +319,7 @@ async fn a_yes_from_a_player_who_cannot_pay_is_refused_to_that_seat_alone_and_th
     let late = play(2, declining, TOO_LONG, Dwell::OFF).await;
 
     assert_eq!(errors(&eager_then_late.payer), [ErrorCode::IllegalAnswer]);
-    assert!(errors(&eager_then_late.watcher).is_empty());
+    assert_eq!(errors(&eager_then_late.watcher), Vec::<ErrorCode>::new());
     // Nobody else is sent anything for it: the watcher hears what it hears when the payer says nothing at all.
     assert_eq!(told(&eager_then_late.watcher), told(&late.watcher));
     assert_eq!(moments(&eager_then_late.watcher), moments(&late.watcher));
@@ -345,5 +347,5 @@ async fn a_player_who_can_pay_and_says_yes_shows_it_so_the_comparison_can_see_a_
         "the yes and the yes of the payment"
     );
     assert_eq!(said(&cannot), [false]);
-    assert!(errors(&pays.payer).is_empty());
+    assert_eq!(errors(&pays.payer), Vec::<ErrorCode>::new());
 }
