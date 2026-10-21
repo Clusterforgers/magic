@@ -2,7 +2,7 @@
 
 Rules data for cards (`mtg-cards`) and the pipeline that runs it (`mtg-engine`).
 
-Scope: the data model, loader, validation, support records, a 72-card corpus and card assembly are implemented in `crates/mtg-cards`, with the engine's capabilities in `mtg-engine` and the card source in `mtg-server`. The pipeline core ("Execution", "Decisions the effects need", "Snapshots") is implemented in `mtg-engine` for targets, modes, cards chosen by a player and put in an order, yes or no, payments, options, drawing, discarding, sacrificing, destroying, exiling, countering, scrying, looking at, revealing, searching for, moving (onto the battlefield too) and shuffling cards, life, damage, mana, tokens and counters (put, removed and moved on permanents and players); "Triggers, replacement and layers" is implemented for triggers (detection, the queue, order, delayed triggers, the intervening "if" and the limit) and for the layer rows of continuous effects that pump power and toughness or grant a keyword (durations, timestamps, derivation); its replacement rows, the other layer rows and "Tasks" are the contract of the other M3 engine tasks. Related: `engine.md`, `protocol.md`, `deck-check.md`, `arena-flow.md`.
+Scope: the data model, loader, validation, support records, a 75-card corpus and card assembly are implemented in `crates/mtg-cards`, with the engine's capabilities in `mtg-engine` and the card source in `mtg-server`. The pipeline core ("Execution", "Decisions the effects need", "Snapshots") is implemented in `mtg-engine` for targets, modes, cards chosen by a player and put in an order, yes or no, payments, options, drawing, discarding, sacrificing, destroying, exiling, countering, scrying, looking at, revealing, searching for, moving (onto the battlefield too) and shuffling cards, life, damage, mana, tokens and counters (put, removed and moved on permanents and players); "Triggers, replacement and layers" is implemented for triggers (detection, the queue, order, delayed triggers, the intervening "if" and the limit) and for the layer rows of continuous effects that pump power and toughness or grant a keyword (durations, timestamps, derivation); its replacement rows, the other layer rows and "Tasks" are the contract of the other M3 engine tasks. Related: `engine.md`, `protocol.md`, `deck-check.md`, `arena-flow.md`.
 
 ## Summary
 
@@ -370,7 +370,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 
 ## Corpus
 
-`crates/mtg-cards/cards/` holds 72 cards and 3 tokens.
+`crates/mtg-cards/cards/` holds 75 cards and 3 tokens.
 
 | Feature | Cards |
 |---|---|
@@ -385,6 +385,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 | Layers (Verified) | Nightmare (power and toughness from a count of Swamps, a characteristic-defining ability), Maro (from the cards in hand), Transguild Courier (all colours), Kormus Bell (types, colours and power and toughness of the Swamps); Favorable Winds with Levitation and Goblin Chieftain with Humility are dependencies |
 | Rules of the game (Verified) | Darksteel Juggernaut (attacks each combat, power and toughness from a count), Warmonger Hellkite (all creatures attack), Courtly Provocateur (an attack or a block this turn), Supreme Verdict, Carnage Tyrant and Spellbreaker Behemoth (can't be countered, and the creature spells of its controller with power 5 or more), Rampaging Ferocidon (no life gain), Maralen of the Mornsong (no drawing, a search at the draw step), Mindlock Orb (no searching), Goblin Spy (top revealed), Panharmonicon, Teysa Karlov and Naban (triggers again) |
 | Abilities from other zones and state triggers (Verified) | Reassembling Skeleton (returns from the graveyard for mana), Soul of Zendikar (exiles itself from the graveyard as a cost), Elemental Masterpiece (discards itself from the hand as a cost), Squee, Goblin Nabob (an upkeep trigger from the graveyard) and Boneyard Scourge (a Dragon dying, with a payment, from the graveyard), Anger (a static ability from the graveyard) and Covetous Dragon (a state trigger) |
+| Counters (Verified) | Tireless Tracker (a +1/+1 counter on itself when a Clue is sacrificed), Cathars' Crusade (a counter on each creature you control), Inspiring Call (a count and a selector over +1/+1 counters), Caress of Phyrexia (poison counters on a player) |
 | Static, Aura, Equipment | Pacifism, Bonesplitter (their statics run; `Enchant` and `Equip` do not) |
 | Mana abilities | Llanowar Elves, Sol Ring, Gaea's Cradle |
 | Keywords | Serra Angel, Bloodbraid Elf (cascade), Faithless Looting (flashback), Monastery Swiftspear (prowess) and Hulking Raptor (ward), Verified |

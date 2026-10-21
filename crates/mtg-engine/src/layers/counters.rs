@@ -4,6 +4,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
+use proptest::prelude::*;
 use rstest::rstest;
 
 use super::tests::{effect, fold, named, pump, rules};
@@ -216,6 +217,37 @@ fn a_permanent_without_power_and_toughness_is_not_given_any() {
     put(&mut game, "Relic", PLUS, 2);
     let chars = characteristics(&game, named(&game, "Relic").id).unwrap();
     assert_eq!((chars.power, chars.toughness), (None, None));
+}
+
+proptest! {
+    /// Whatever the counters, a creature's power and toughness are its card's plus its +1/+1 counters less its -1/-1
+    /// counters, with or without a set before them and a pump beside them.
+    #[test]
+    fn power_and_toughness_are_the_card_plus_the_pluses_less_the_minuses(
+        pluses in 0u32..30,
+        minuses in 0u32..30,
+        set in proptest::option::of((-3i32..8, -3i32..8)),
+        pump_by in -5i32..=5,
+        timestamp in 0u64..6,
+    ) {
+        let mut game = game_with(&[(PLUS, pluses), (MINUS, minuses)], vec![]);
+        let net = i32::try_from(pluses).unwrap() - i32::try_from(minuses).unwrap();
+        let (mut power, mut toughness) = (2, 2);
+        if let Some((p, t)) = set {
+            effect(&mut game, "Bear", Modification::SetPowerToughness { power: p, toughness: t }, timestamp);
+            (power, toughness) = (p, t);
+        }
+        effect(
+            &mut game,
+            "Bear",
+            Modification::ModifyPowerToughness { power: pump_by, toughness: pump_by },
+            timestamp + 1,
+        );
+        prop_assert_eq!(
+            pump(&game, "Bear"),
+            Some((power + net + pump_by, toughness + net + pump_by))
+        );
+    }
 }
 
 #[test]

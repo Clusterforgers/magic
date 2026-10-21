@@ -103,6 +103,7 @@ pub(crate) fn held_by(state: &GameState, target: Target, kind: &CounterKind) -> 
 mod tests {
     //! Goal: counters are put on and taken off permanents and players by the fold, never fewer than none and never on what cannot hold them (a card elsewhere, an object that has since changed zones, a player who is out); a kind that falls to none is no longer listed; counters leave with the object, so a permanent that comes back holds none (CR 400.7); and only +1/+1 and -1/-1 counters make the layers look at the power and toughness.
     use mtg_core::ids::PlayerId;
+    use proptest::prelude::*;
     use rstest::rstest;
 
     use super::*;
@@ -372,5 +373,46 @@ mod tests {
             &[put(Target::Player(ME), CounterKind::PlusOnePlusOne, 1)],
         );
         assert!(!game.possible.counters);
+    }
+
+    proptest! {
+        /// Any run of changes keeps the totals of a model: a change the model allows folds and gives the same totals
+        /// whoever holds them, one it does not allow is refused and changes nothing, and no kind with none is listed.
+        #[test]
+        fn the_fold_keeps_the_totals_of_a_model_and_refuses_what_the_model_refuses(
+            changes in proptest::collection::vec((0usize..3, any::<bool>(), -4i32..=4), 0..60)
+        ) {
+            let kinds = [
+                CounterKind::Poison,
+                CounterKind::Other("energy".into()),
+                CounterKind::PlusOnePlusOne,
+            ];
+            let mut game = game();
+            let holders = [Target::Player(ME), Target::Object(bear(&game))];
+            let mut model = [[0u32; 3]; 2];
+            for (kind, on_the_bear, delta) in changes {
+                let holder = usize::from(on_the_bear);
+                let event = put(holders[holder], kinds[kind].clone(), delta);
+                let allowed =
+                    delta > 0 || (delta < 0 && model[holder][kind] >= delta.unsigned_abs());
+                let before = game.state_hash();
+                let folded = apply_event(&mut game, &event).is_ok();
+                prop_assert_eq!(folded, allowed, "{:?}", event);
+                if folded {
+                    model[holder][kind] = model[holder][kind].checked_add_signed(delta).unwrap();
+                } else {
+                    prop_assert_eq!(game.state_hash(), before);
+                }
+                for (at, holds) in holders.iter().enumerate() {
+                    for (k, counter) in kinds.iter().enumerate() {
+                        prop_assert_eq!(held_by(&game, *holds, counter), model[at][k]);
+                    }
+                }
+            }
+            let listed = game.player(ME).unwrap().counters().count();
+            prop_assert_eq!(listed, model[0].iter().filter(|n| **n > 0).count());
+            let on_the_bear = game.object(bear(&game).id).unwrap().permanent().unwrap().counters().count();
+            prop_assert_eq!(on_the_bear, model[1].iter().filter(|n| **n > 0).count());
+        }
     }
 }

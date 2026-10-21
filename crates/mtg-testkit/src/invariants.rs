@@ -576,12 +576,37 @@ impl InvariantChecker {
         if *slot == 0 {
             held.remove(&changed.counter);
         }
+        self.expected_object_counters
+            .retain(|_, held| !held.is_empty());
+        self.expected_player_counters
+            .retain(|_, held| !held.is_empty());
         Ok(())
     }
 
     /// The counters on every permanent and player must equal those put on less those taken off, and no kind is held in a
     /// quantity of none.
     fn check_counter_totals(&self) -> Result<(), Violation> {
+        // Nothing was put on anything: nothing may hold any, which a game without counters sees without allocating.
+        if self.expected_object_counters.is_empty() && self.expected_player_counters.is_empty() {
+            let held = self
+                .shadow
+                .zone(Zone::Battlefield)
+                .iter()
+                .filter_map(|id| self.shadow.object(*id)?.permanent())
+                .any(|permanent| permanent.counters().next().is_some())
+                || self
+                    .shadow
+                    .players()
+                    .iter()
+                    .any(|player| player.counters().next().is_some());
+            return if held {
+                Err(Violation::Counters(
+                    "counters are held that nothing put on".into(),
+                ))
+            } else {
+                Ok(())
+            };
+        }
         let listed = |held: &BTreeMap<CounterKind, i64>| -> Vec<(CounterKind, i64)> {
             held.iter().map(|(kind, n)| (kind.clone(), *n)).collect()
         };
