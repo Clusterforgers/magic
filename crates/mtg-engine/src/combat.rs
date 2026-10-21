@@ -504,6 +504,24 @@ mod tests {
     }
 
     #[test]
+    fn a_creature_that_must_attack_with_no_player_to_attack_is_not_forced() {
+        let mut game = game();
+        require(&mut game, Rule::MustAttack, &["Wolf", "Fox"]);
+        apply_event(
+            &mut game,
+            &Event::PlayerLost {
+                player: FOE,
+                reason: crate::player::LossReason::Conceded,
+            },
+        )
+        .unwrap();
+        let options = attack_options(&game, ME);
+        assert!(options.attackers.iter().all(|a| a.defenders.is_empty()));
+        assert_eq!(options.required, []);
+        assert_eq!(check_attackers(&options, &[]), Ok(()));
+    }
+
+    #[test]
     fn a_game_without_the_rule_requires_nothing() {
         let game = game();
         let options = attack_options(&game, ME);
