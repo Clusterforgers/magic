@@ -121,6 +121,19 @@ mod tests {
     }
 
     #[rstest]
+    #[case::below_the_gap(1, true)]
+    #[case::an_excepted_number(2, false)]
+    #[case::another_excepted_number(3, false)]
+    #[case::above_the_gap(4, true)]
+    #[case::the_highest(5, true)]
+    fn a_number_that_is_excepted_is_refused(#[case] picked: u32, #[case] accepted: bool) {
+        let mut offered = options(1, Some(5), true);
+        offered.except = vec![2, 3];
+        let result = answer(PlayerId(0), &offered, NumberChoice::Number(picked), true);
+        assert_eq!(result.is_ok(), accepted, "{picked}: {result:?}");
+    }
+
+    #[rstest]
     #[case::before_the_payment(true)]
     #[case::for_a_trigger(false)]
     fn backing_out_follows_the_flag(#[case] can_cancel: bool) {

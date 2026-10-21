@@ -233,17 +233,21 @@ fn disembowel_destroys_only_a_creature_whose_mana_value_is_x(
 }
 
 #[test]
-fn disembowel_is_offered_before_x_is_chosen_and_only_the_creature_of_that_value_is_a_target()
--> Result<(), ScriptError> {
+fn disembowel_asks_no_x_when_one_creature_is_a_target_for_one_value_only() -> Result<(), ScriptError>
+{
     let scenario = Scenario::new(2)
         .hand(0, [card("Disembowel").unwrap()])
         .battlefield(0, lands(4, swamp))
         .battlefield(1, [ready(free_creature_of("Bear", "{1}{G}"))]);
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_cast("Disembowel")?;
-    say(&mut driver, 0)?;
-    // No creature has mana value 0: the cast is backed out of as it would be for any spell without a target.
-    assert!(driver.expect_decision(0, "priority").is_ok());
+    // X is 2, the mana value of the only creature, so the targets are asked at once.
+    driver.expect_decision(0, "choose-targets")?;
+    let bear = driver.target_named("Bear")?;
+    driver.choose_targets(&[bear])?;
+    pay(&mut driver)?;
+    settle(&mut driver)?;
+    assert_eq!(count(&driver, Zone::Battlefield, "Bear"), 0);
     Ok(())
 }
 

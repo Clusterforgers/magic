@@ -375,4 +375,88 @@ mod tests {
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         assert!(matches!(announce(&game, &mut pending), Next::Drop));
     }
+
+    /// What the announcement does with X for a spell whose target is a creature with a mana value compared to X.
+    #[derive(Debug, PartialEq, Eq)]
+    enum Asked {
+        /// A number between the bounds, less the numbers excepted.
+        Number(u32, u32, Vec<u32>),
+        /// X is the one value left and the targets are asked.
+        Settled(u32),
+        /// No value of X leaves a target: the cast is rewound.
+        Rewound,
+    }
+
+    fn creature_costing(cost: &str) -> Arc<CardDefinition> {
+        let card = CardDefinition::new(format!("Creature {cost}"))
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1);
+        Arc::new(if cost.is_empty() {
+            card
+        } else {
+            card.with_mana_cost(ManaCost::parse(cost).unwrap())
+        })
+    }
+
+    /// The announcement of `{X}` for "destroy target creature with mana value `op` X" against creatures costing
+    /// `costs` (an empty cost has mana value 0) when the player has `lands` Forests.
+    fn asked(op: &str, costs: &[&str], lands: usize) -> Asked {
+        let json = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"OP","to":"X"}}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#
+            .replace("OP", op);
+        let destroyer = Arc::new(
+            CardDefinition::new("Destroyer")
+                .with_type(CardType::Instant)
+                .with_x_in_cost(1)
+                .with_rules(rules(&json)),
+        );
+        let game = state(
+            vec![vec![destroyer], vec![]],
+            vec![
+                vec![forest(); lands],
+                costs.iter().map(|cost| creature_costing(cost)).collect(),
+            ],
+        );
+        let card = game.zone(Zone::Hand(SEAT))[0];
+        let needs = Needs {
+            ways: Vec::new(),
+            optional: Vec::new(),
+            x: XCost::of(&game, &What::Spell(card), None),
+            price: None,
+        };
+        let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
+        match announce(&game, &mut pending) {
+            Next::Ask(Decision {
+                kind: DecisionKind::ChooseNumber(options),
+                ..
+            }) => Asked::Number(options.min, options.max.unwrap(), options.except),
+            Next::Ask(Decision {
+                kind: DecisionKind::ChooseTargets(_),
+                ..
+            }) => Asked::Settled(pending.choices.x.unwrap()),
+            Next::Drop => Asked::Rewound,
+            _ => panic!("the announcement asked something else"),
+        }
+    }
+
+    #[rstest]
+    #[case::the_values_that_have_a_target("Eq", &["{1}", "{2}", "{4}"], 5, Asked::Number(1, 4, vec![3]))]
+    #[case::far_apart("Eq", &["{1}", "{1}", "{6}"], 7, Asked::Number(1, 6, vec![2, 3, 4, 5]))]
+    #[case::nothing_among_them("Eq", &["", "{2}"], 3, Asked::Number(0, 2, vec![1]))]
+    #[case::one_value_is_no_question("Eq", &["{2}", "{2}"], 4, Asked::Settled(2))]
+    #[case::the_most_that_can_be_paid("Eq", &["{5}"], 5, Asked::Settled(5))]
+    #[case::a_value_that_cannot_be_paid_is_not_offered("Eq", &["{1}", "{6}"], 4, Asked::Settled(1))]
+    #[case::only_nothing("Eq", &[""], 3, Asked::Settled(0))]
+    #[case::no_value_has_a_target("Eq", &["{5}"], 4, Asked::Rewound)]
+    #[case::no_creature_at_all("Eq", &[], 3, Asked::Rewound)]
+    #[case::x_or_less_from_the_least("Le", &["{3}", "{4}"], 5, Asked::Number(3, 5, vec![]))]
+    #[case::x_or_less_that_cannot_be_paid("Le", &["{4}"], 3, Asked::Rewound)]
+    #[case::x_or_less_with_a_free_creature("Le", &["", "{4}"], 3, Asked::Number(0, 3, vec![]))]
+    fn only_the_values_of_x_with_a_legal_target_are_offered(
+        #[case] op: &str,
+        #[case] creatures: &[&str],
+        #[case] lands: usize,
+        #[case] expected: Asked,
+    ) {
+        assert_eq!(asked(op, creatures, lands), expected);
+    }
 }

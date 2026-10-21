@@ -132,5 +132,6 @@ mod x_after;
 mod x_corpus;
 mod x_costs;
 mod x_fuzz;
+mod x_places;
 mod zone_abilities;
 mod zones_fuzz;
