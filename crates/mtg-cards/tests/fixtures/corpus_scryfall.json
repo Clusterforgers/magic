@@ -3852,5 +3852,118 @@
     "keywords": [
       "Delve"
     ]
+  },
+  {
+    "id": "36eae0e1-7100-449d-a259-7abfcd429117",
+    "oracle_id": "457dc141-bc72-42ad-b482-c78183462e34",
+    "name": "Forced March",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mmq",
+    "collector_number": "136",
+    "rarity": "rare",
+    "released_at": "1999-10-04",
+    "digital": false,
+    "mana_cost": "{X}{B}{B}{B}",
+    "cmc": 3.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Destroy all creatures with mana value X or less.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "5272436e-74f0-44c4-a291-ea8ebc3f1525",
+    "oracle_id": "4b515bb0-f275-4400-8032-3173b799ab40",
+    "name": "Walking Ballista",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2xm",
+    "collector_number": "306",
+    "rarity": "rare",
+    "released_at": "2020-08-07",
+    "digital": false,
+    "mana_cost": "{X}{X}",
+    "cmc": 0.0,
+    "type_line": "Artifact Creature — Construct",
+    "oracle_text": "This creature enters with X +1/+1 counters on it.\n{4}: Put a +1/+1 counter on this creature.\nRemove a +1/+1 counter from this creature: It deals 1 damage to any target.",
+    "power": "0",
+    "toughness": "0",
+    "colors": [],
+    "color_identity": [],
+    "keywords": []
+  },
+  {
+    "id": "149576b0-d571-4f70-a58b-847ae4fb0173",
+    "oracle_id": "6fa90258-3c9f-4723-880f-31871c0772e0",
+    "name": "Disembowel",
+    "lang": "en",
+    "layout": "normal",
+    "set": "rvr",
+    "collector_number": "74",
+    "rarity": "common",
+    "released_at": "2024-01-12",
+    "digital": false,
+    "mana_cost": "{X}{B}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Destroy target creature with mana value X.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "62ddce0d-f22a-4fcd-9a4a-d71938750ba1",
+    "oracle_id": "c7530ecd-e22f-41e7-a76b-de32809901c8",
+    "name": "Gadwick, the Wizened",
+    "lang": "en",
+    "layout": "normal",
+    "set": "eld",
+    "collector_number": "48",
+    "rarity": "rare",
+    "released_at": "2019-10-04",
+    "digital": false,
+    "mana_cost": "{X}{U}{U}{U}",
+    "cmc": 3.0,
+    "type_line": "Legendary Creature — Human Wizard",
+    "oracle_text": "When Gadwick enters, draw X cards.\nWhenever you cast a blue spell, tap target nonland permanent an opponent controls.",
+    "power": "3",
+    "toughness": "3",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "cc387ccf-f746-4855-81e5-64f5a5e0fdda",
+    "oracle_id": "dde55256-5259-44e7-a267-fca45a7f0d04",
+    "name": "Hangarback Walker",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "348",
+    "rarity": "rare",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{X}{X}",
+    "cmc": 0.0,
+    "type_line": "Artifact Creature — Construct",
+    "oracle_text": "This creature enters with X +1/+1 counters on it.\nWhen this creature dies, create a 1/1 colorless Thopter artifact creature token with flying for each +1/+1 counter on this creature.\n{1}, {T}: Put a +1/+1 counter on this creature.",
+    "power": "0",
+    "toughness": "0",
+    "colors": [],
+    "color_identity": [],
+    "keywords": []
   }
 ]

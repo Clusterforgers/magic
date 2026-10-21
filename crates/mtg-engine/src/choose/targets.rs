@@ -1,7 +1,7 @@
 //! `ChooseTargets`: who and what a target specification may name, the decision that picks them, and the
 //! recheck on resolution that uses the same rule (CR 115, 608.2b).
 
-use mtg_cards::refs::{TargetSpec, Targetable};
+use mtg_cards::refs::{Pred, Selector, TargetSpec, Targetable};
 use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -18,9 +18,40 @@ use crate::state::GameState;
 use crate::wording;
 use crate::zones::Zone;
 
-/// The X a check of whether a spell or ability can be announced assumes while its player has not chosen one: the
-/// largest there is, so a filter that reads X ("mana value X or less") offers what some X allows.
-pub(crate) const ANY_X: u32 = 1_000;
+/// [`options_for`] before X is chosen: a comparison with X is left out of the specification, since some X may allow
+/// what the rest of it allows. The announcement asks the real question once X is known.
+pub(crate) fn options_before_x(
+    state: &GameState,
+    source: ObjectId,
+    controller: PlayerId,
+    index: usize,
+    spec: &TargetSpec,
+    cause: Option<&Cause>,
+) -> Option<TargetOptions> {
+    let relaxed = TargetSpec {
+        what: without_x(&spec.what),
+        ..spec.clone()
+    };
+    options_for(
+        state, source, controller, index, &relaxed, true, cause, None,
+    )
+}
+
+/// `what` without the comparisons against X among its predicates.
+fn without_x(what: &Targetable) -> Targetable {
+    match what {
+        Targetable::Object(selector) => Targetable::Object(Selector(
+            selector
+                .0
+                .iter()
+                .filter(|pred| !matches!(pred, Pred::Compare { to: Amount::X, .. }))
+                .cloned()
+                .collect(),
+        )),
+        Targetable::Either(kinds) => Targetable::Either(kinds.iter().map(without_x).collect()),
+        other => other.clone(),
+    }
+}
 
 /// The targets a player may choose for one target specification of a spell or ability being put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

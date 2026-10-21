@@ -1,0 +1,32 @@
+{
+  "oracle_id": "c7530ecd-e22f-41e7-a76b-de32809901c8",
+  "name": "Gadwick, the Wizened",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gadwick, the Wizened",
+      "oracle_fingerprint": "e9ccc60bbe9d784f9ff7d546ddf8a095",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": { "count": "X" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Blue" }], "by": "You" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
