@@ -363,7 +363,7 @@ fn an_overloaded_spell_asks_for_no_targets() {
     let (asked, end) = walk(&game, &mut pending, greedy);
     assert_eq!(asked, ["pay-mana"]);
     assert!(matches!(end, End::Paying(_)));
-    assert!(pending.choices.targets.is_empty());
+    assert_eq!(pending.choices.targets, Vec::<Vec<Target>>::new());
 }
 
 #[rstest]

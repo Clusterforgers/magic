@@ -40,7 +40,7 @@ fn a_flashed_back_spell_asks_nothing_but_the_payment_and_is_exiled_after_it_reso
     assert_eq!(driver.pay_options()?.cost.to_string(), "{2}{R}");
     pay(&mut driver)?;
     assert_eq!(driver.state().stack().len(), 1);
-    assert!(names(driver.state(), Zone::Graveyard(pid(0))).is_empty());
+    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))).len(), 0);
     resolve(&mut driver)?;
     discard(&mut driver, 2)?;
     assert_eq!(
@@ -49,7 +49,7 @@ fn a_flashed_back_spell_asks_nothing_but_the_payment_and_is_exiled_after_it_reso
         "exiled instead of the graveyard"
     );
     assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))).len(), 2);
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     Ok(())
 }
 
@@ -72,7 +72,7 @@ fn a_flashed_back_spell_that_is_countered_is_exiled_too() -> Result<(), ScriptEr
         names(driver.state(), Zone::Graveyard(pid(1))),
         ["Counterspell"]
     );
-    assert!(names(driver.state(), Zone::Graveyard(pid(0))).is_empty());
+    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))).len(), 0);
     Ok(())
 }
 

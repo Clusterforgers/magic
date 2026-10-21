@@ -64,7 +64,7 @@ fn an_overloaded_spell_asks_no_target_and_affects_each_object_it_could_target()
     let events = pay(&mut driver)?;
     let choices = announced(&events);
     assert_eq!(choices.way, Some(CastWay::Overload));
-    assert!(choices.targets.is_empty());
+    assert_eq!(choices.targets.len(), 0);
     resolve(&mut driver)?;
     let mut hand = names(driver.state(), Zone::Hand(pid(1)));
     hand.sort();
@@ -140,7 +140,7 @@ fn nothing_to_affect_is_no_fizzle_and_a_spell_with_no_target_and_no_overload_is_
         names(driver.state(), Zone::Graveyard(pid(0))),
         ["Cyclonic Rift"]
     );
-    assert!(names(driver.state(), Zone::Hand(pid(1))).is_empty());
+    assert_eq!(names(driver.state(), Zone::Hand(pid(1))).len(), 0);
     // Two Islands cannot overload and there is no target.
     let mut driver = Driver::from_scenario(rift(2, Vec::new()))?;
     assert!(driver.begin_cast("Cyclonic Rift").is_err());

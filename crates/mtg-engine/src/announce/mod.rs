@@ -150,6 +150,8 @@ impl Needs {
 }
 
 /// The steps of the announcement that are done and the decision it waits for.
+// One flag for each step that is settled, named after it.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub(crate) struct Done {
     /// The modes are settled: chosen, or there are none to choose. Choosing none is a choice too.
