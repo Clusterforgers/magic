@@ -91,7 +91,7 @@ const SNAPSHOT_EVERY: usize = 20;
 /// Games per table size in the prevention campaign.
 const PREVENTION_GAMES: u64 = 1;
 
-fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectId, String> {
+pub(crate) fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectId, String> {
     let tops: Vec<ObjectId> = revealed_tops(state).into_values().collect();
     state
         .objects()
@@ -1017,7 +1017,7 @@ fn play_spell(
 }
 
 /// The batch has none of the hidden cards in any part.
-fn assert_clean(batch: &EventBatch, hidden: &BTreeMap<ObjectId, String>) {
+pub(crate) fn assert_clean(batch: &EventBatch, hidden: &BTreeMap<ObjectId, String>) {
     for (part, value) in batch_parts(batch) {
         assert!(
             leaks(&value, hidden).is_empty(),

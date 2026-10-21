@@ -5,6 +5,7 @@ mod attachment_view;
 mod batch_diff;
 mod batch_size;
 mod batch_visibility;
+mod cast_hidden;
 mod bindings;
 mod combat_forecast;
 mod common;

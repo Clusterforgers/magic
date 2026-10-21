@@ -186,7 +186,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         }
         // The cards are in a library by now, which nobody sees into: the seat that put them there learned which
         // from the events that moved or showed them, the others learn how many.
-        Event::LibraryBottomed { player, cards } => Some(HiddenEvent::CardsBottomed {
+        Event::LibraryBottomed { player, cards, .. } => Some(HiddenEvent::CardsBottomed {
             player: *player,
             count: count(cards.len()),
         }),
