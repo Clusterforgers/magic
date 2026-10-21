@@ -147,6 +147,12 @@ impl Running {
         self.pending.as_ref().and_then(|p| p.due)
     }
 
+    /// The seat and kind of the pending decision when it was sent (so its clock is a response clock, not a dwell).
+    pub(crate) fn sent_decision(&self) -> Option<(PlayerId, &'static str)> {
+        let pending = self.pending.as_ref().filter(|p| !p.hidden)?;
+        Some((pending.decision.player, pending.decision.kind.name()))
+    }
+
     /// Moves the clock of the pending decision to `due` (nothing happens for a decision without one).
     pub(crate) fn postpone(&mut self, due: Instant) {
         if let Some(pending) = self.pending.as_mut().filter(|p| p.due.is_some()) {

@@ -24,6 +24,7 @@ const ON: Pace = Pace {
     auto_pass: true,
     response: None,
     blocks: None,
+    think: None,
     dwell: Dwell::OFF,
 };
 

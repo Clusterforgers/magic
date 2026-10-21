@@ -59,6 +59,7 @@ pub fn windowed() -> GameConfig {
             auto_pass: true,
             response: None,
             blocks: None,
+            think: None,
             dwell: Dwell::OFF,
         },
         ..roomy()
