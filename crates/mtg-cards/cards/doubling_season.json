@@ -1,0 +1,21 @@
+{
+  "oracle_id": "01546b7d-a233-4176-8843-d732074dc5b6",
+  "name": "Doubling Season",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Doubling Season",
+      "oracle_fingerprint": "807fb987063ce97f10f0412a28a9fd06",
+      "abilities": [
+        { "Replacement": { "when": { "TokenCreation": {} }, "by": { "Multiply": 2 } } },
+        {
+          "Replacement": {
+            "when": { "CountersPut": { "on": { "Each": [{ "ControlledBy": "You" }] } } },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ],
+  "notes": "The loyalty counters a planeswalker enters with are put by an effect too, so they are doubled; the loyalty a planeswalker pays as a cost is not."
+}

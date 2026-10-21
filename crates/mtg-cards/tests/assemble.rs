@@ -63,7 +63,7 @@ fn caps_of(names: &[&str]) -> Caps {
 #[case::everything(Caps::everything())]
 fn the_printed_side_of_every_corpus_card_equals_its_record(#[case] caps: Caps) {
     let records = records();
-    assert_eq!(records.len(), 90);
+    assert_eq!(records.len(), 104);
     for record in records {
         let name = &record.name;
         let front = &record.front;
@@ -204,7 +204,17 @@ fn rules_are_attached_only_when_the_support_record_says_the_engine_runs_them() {
             let assembled = library.assemble(&printed, caps);
             let shown = &assembled.definition;
             // What the land types give is part of the printed side, with or without rules.
-            let intrinsic = usize::from(record.name == "Forest");
+            let types = &printed.faces[0].type_line;
+            let intrinsic = if types.contains("Land") {
+                types
+                    .split(|c: char| !c.is_alphabetic())
+                    .filter(|word| {
+                        ["Plains", "Island", "Swamp", "Mountain", "Forest"].contains(word)
+                    })
+                    .count()
+            } else {
+                0
+            };
             let carried = &shown.abilities[intrinsic..];
             let state = assembled.support.support;
             if matches!(state, Support::Verified | Support::Partial) {

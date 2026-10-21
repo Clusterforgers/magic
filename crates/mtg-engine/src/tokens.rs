@@ -77,6 +77,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         attached_to: None,
         timestamp: state.next_timestamp,
         observed: None,
+        chosen: None,
     });
     state.next_timestamp += 1;
     // A token can bring what no card of the game had: a triggered ability, a static ability, a legend.
@@ -101,6 +102,9 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
     }
     if crate::ability_reader::definition_has_state_trigger(&event.definition) {
         state.possible.states = true;
+    }
+    if crate::ability_reader::definition_has_replacement(&event.definition) {
+        state.possible.replacements = true;
     }
     state.objects.insert(id, token);
     state.zones.insert(Zone::Battlefield, id, Placement::Top);

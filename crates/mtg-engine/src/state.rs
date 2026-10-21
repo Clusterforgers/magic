@@ -60,6 +60,8 @@ pub(crate) struct Possible {
     pub(crate) counters: bool,
     /// Some card is an Aura, an Equipment or a Fortification, or a permanent starts attached.
     pub(crate) attachments: bool,
+    /// Some card has a replacement effect, printed, given or added by a keyword, or a token made has one.
+    pub(crate) replacements: bool,
     /// Some card is legendary.
     pub(crate) legends: bool,
 }

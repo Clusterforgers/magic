@@ -5,6 +5,7 @@ use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use crate::answers::{Outcome, handle};
 use crate::cast::{Next, Pending, What, announce};
 use crate::characteristics::controller_of_object;
+use crate::choose::Choice;
 use crate::decision::{Answer, Decision};
 use crate::effects::{ContinuousEffect, Duration, Modification, Selector};
 use crate::error::{EngineError, PreviewError};
@@ -15,6 +16,7 @@ use crate::forecast::CombatForecast;
 use crate::object::{GameObject, ObjectRef};
 use crate::player::LossReason;
 use crate::preview::preview_forecast;
+use crate::replace::{self, Processed};
 use crate::rules::{Rule, RuleEffect};
 use crate::setup::GameSetup;
 use crate::state::{GameResult, GameState};
@@ -29,6 +31,15 @@ pub struct Checkpoint {
     mark: usize,
     decision: Option<Decision>,
     pending: Option<Pending>,
+    held: Option<Held>,
+}
+
+/// A batch of events the replacement step has questions about: the batch waits, and the answers so far are kept, until
+/// the step needs no more (`replace::process`).
+#[derive(Debug, Clone)]
+struct Held {
+    proposed: Vec<Event>,
+    journal: Vec<(PlayerId, Choice)>,
 }
 
 /// Replays `events` over the initial state of `setup`.
@@ -48,6 +59,7 @@ pub struct Engine {
     events: Vec<Event>,
     decision: Option<Decision>,
     pending: Option<Pending>,
+    held: Option<Held>,
 }
 
 impl Engine {
@@ -65,6 +77,7 @@ impl Engine {
             events,
             decision: None,
             pending: None,
+            held: None,
         };
         engine.advance()?;
         Ok(engine)
@@ -88,6 +101,12 @@ impl Engine {
     /// The setup the game was created from.
     pub fn setup(&self) -> &GameSetup {
         &self.setup
+    }
+
+    /// Whether the pending decision is a question of the replacement step: the events it is about are not applied yet, so
+    /// the state is not settled (a creature that is to die is still in play).
+    pub const fn replacing(&self) -> bool {
+        self.held.is_some()
     }
 
     /// The pending decision; `None` once the game is over.
@@ -159,6 +178,7 @@ impl Engine {
             mark: self.events.len(),
             decision: self.decision.clone(),
             pending: self.pending.clone(),
+            held: self.held.clone(),
         }
     }
 
@@ -179,6 +199,7 @@ impl Engine {
         self.state = state;
         self.decision = checkpoint.decision;
         self.pending = checkpoint.pending;
+        self.held = checkpoint.held;
         Ok(())
     }
 
@@ -302,6 +323,7 @@ impl Engine {
 
     fn run(&mut self, outcome: Outcome, player: PlayerId) -> Result<(), EngineError> {
         match outcome {
+            Outcome::Events(events) if self.held.is_some() => self.answer_held(events),
             Outcome::Events(events) => {
                 self.pending = None;
                 self.commit(events)
@@ -346,9 +368,50 @@ impl Engine {
         }
     }
 
+    /// Passes the events through the replacement step and commits what comes out. When the step has a question, the
+    /// batch is held and the question is the decision; the answer reruns the step (`answer_held`).
+    fn commit(&mut self, events: Vec<Event>) -> Result<(), EngineError> {
+        self.replace_and_commit(events, Vec::new())
+    }
+
+    fn replace_and_commit(
+        &mut self,
+        events: Vec<Event>,
+        journal: Vec<(PlayerId, Choice)>,
+    ) -> Result<(), EngineError> {
+        match replace::process(&self.state, events, &journal)? {
+            Processed::Events(events) => {
+                self.held = None;
+                self.fold_and_log(events)
+            }
+            Processed::Ask { decision, proposed } => {
+                self.held = Some(Held { proposed, journal });
+                self.decision = Some(decision);
+                Ok(())
+            }
+        }
+    }
+
+    /// Takes the answer to a question of the replacement step and reruns the step with it.
+    fn answer_held(&mut self, answers: Vec<Event>) -> Result<(), EngineError> {
+        let Some(Held {
+            proposed,
+            mut journal,
+        }) = self.held.take()
+        else {
+            return Err(EngineError::NoDecision);
+        };
+        for answer in answers {
+            if let Event::ChoiceMade { player, choice } = answer {
+                journal.push((player, choice));
+            }
+        }
+        self.replace_and_commit(proposed, journal)
+    }
+
     /// Folds and logs the events, then the triggered abilities they set off (CR 603.2): those are found by comparing
     /// the state before the events with the state after, and their own events follow in the log.
-    fn commit(&mut self, events: Vec<Event>) -> Result<(), EngineError> {
+    fn fold_and_log(&mut self, events: Vec<Event>) -> Result<(), EngineError> {
         // A batch that brings in the first thing that can trigger (a token, a granted ability) is watched too.
         let watching = self.state.watches() || triggers::introduces(&events);
         let before = (watching && triggers::needs_before(&events)).then(|| self.state.clone());
@@ -376,6 +439,10 @@ impl Engine {
     /// Runs the game until a decision is needed or the game ends.
     fn advance(&mut self) -> Result<(), EngineError> {
         for _ in 0..MAX_INTERNAL_STEPS {
+            // A batch waits for the answer to a question of the replacement step: that question is the decision.
+            if self.held.is_some() {
+                return Ok(());
+            }
             if let Some(pending) = self.pending.as_mut() {
                 match announce(&self.state, pending) {
                     Next::Ask(decision) => {

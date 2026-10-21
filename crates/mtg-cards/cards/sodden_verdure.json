@@ -1,0 +1,35 @@
+{
+  "oracle_id": "0070db93-142b-4d04-afd3-836792dc134b",
+  "name": "Sodden Verdure",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sodden Verdure",
+      "oracle_fingerprint": "3c7d8956f40c899dd41db025b3793c45",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Supertype": "Basic" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "notes": "The mana ability comes from the Forest and Island subtypes (CR 305.6), not from data."
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "692a6833-3014-42f6-b1ad-333bb3292c65",
+  "name": "Thought Reflection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Reflection",
+      "oracle_fingerprint": "e6a9c7dbae663370144064519261569e",
+      "abilities": [{ "Replacement": { "when": { "Draw": {} }, "by": { "Multiply": 2 } } }]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "ca0cc02b-b106-4eca-9388-d4b48dd3be49",
+  "name": "Corpsejack Menace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Corpsejack Menace",
+      "oracle_fingerprint": "c171c922dd761ad299aa569429b3ec8e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

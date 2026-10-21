@@ -19,6 +19,7 @@ pub mod layer_cards;
 pub mod loyalty_cards;
 pub mod pay_cards;
 pub mod pump_cards;
+pub mod replace_cards;
 pub mod rule_cards;
 pub mod scenario;
 pub mod script_error;
@@ -44,6 +45,7 @@ pub use layer_cards::layers_fuzz_setup;
 pub use loyalty_cards::loyalty_fuzz_setup;
 pub use pay_cards::pay_fuzz_setup;
 pub use pump_cards::pump_fuzz_setup;
+pub use replace_cards::replace_fuzz_setup;
 pub use rule_cards::rules_fuzz_setup;
 pub use scenario::{
     Scenario, ScenarioError, attached_to, damaged, ready, sick, tapped, with_counters,

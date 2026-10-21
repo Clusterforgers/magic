@@ -216,6 +216,7 @@ fn preset_state(
         // The permanents of a starting position share one time; a game begins with them in play.
         timestamp: 0,
         observed: (!preset.summoning_sick).then_some(owner),
+        chosen: None,
     }
 }
 
@@ -380,6 +381,10 @@ impl GameState {
             .objects()
             .any(|object| object.def.supertypes.contains(&Supertype::Legendary));
         self.possible.legends = legends;
+        let replacements = self
+            .objects()
+            .any(|object| crate::ability_reader::definition_has_replacement(&object.def));
+        self.possible.replacements = replacements;
     }
 }
 

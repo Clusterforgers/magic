@@ -1,0 +1,15 @@
+{
+  "oracle_id": "2abe9303-d498-4aad-b6b2-8b5064bd2ffd",
+  "name": "Rhox Faithmender",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhox Faithmender",
+      "oracle_fingerprint": "440992ecf0e141203e35c9666b28039b",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        { "Replacement": { "when": { "LifeGain": {} }, "by": { "Multiply": 2 } } }
+      ]
+    }
+  ]
+}

@@ -45,6 +45,17 @@ pub struct ObjectRef {
     pub counter: u32,
 }
 
+/// What the controller of a permanent chose as it entered the battlefield, which the permanent remembers for its
+/// abilities to read (CR 614.1c).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Chosen {
+    /// A colour.
+    Color(mtg_core::color::Color),
+    /// A creature type.
+    CreatureType(mtg_core::card::Subtype),
+}
+
 /// State that only exists while an object is on the battlefield.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PermanentState {
@@ -56,9 +67,15 @@ pub struct PermanentState {
     pub(crate) attached_to: Option<ObjectRef>,
     pub(crate) timestamp: u64,
     pub(crate) observed: Option<PlayerId>,
+    pub(crate) chosen: Option<Chosen>,
 }
 
 impl PermanentState {
+    /// What its controller chose as it entered, if it asked for a choice.
+    pub const fn chosen(&self) -> Option<&Chosen> {
+        self.chosen.as_ref()
+    }
+
     /// Whether the permanent is tapped.
     pub const fn tapped(&self) -> bool {
         self.tapped

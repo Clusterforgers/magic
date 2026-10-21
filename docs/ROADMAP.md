@@ -62,8 +62,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (m2) Equipment with `Equip`, `Reconfigure` and living weapon; Bonesplitter, Swiftfoot Boots, Batterskull, Lizard Blades, Bronzeplate Boar and Armguard Familiar are Verified
 
 ### Replacement and prevention
-- [ ] (j1) The replacement step: `Ability::Replacement` found through the reader, one `ReplaceWhen` for each event it can replace, self-replacement first, once per event (CR 614 to 616), and `ChooseReplacement` in engine and protocol; Anointed Procession is Verified
-- [ ] (j2) Enters tapped or with counters; a choice made as it enters and remembered on the permanent
+- [x] (j1) The replacement step: `Ability::Replacement` found through the reader, one `ReplaceWhen` for each event it can replace, self-replacement first, once per event (CR 614 to 616), and `ChooseReplacement` in engine, protocol, bots and the server's pace; Anointed Procession, Parallel Lives, Doubling Season, Hardened Scales, Corpsejack Menace, Rhox Faithmender, Thought Reflection, Furnace of Rath and Rest in Peace are Verified
+- [x] (j2) Enters tapped or with counters; a choice made as it enters and remembered on the permanent; Idyllic Beachfront, Sodden Verdure, Steam Vents, Faithful Watchdog, Hall of Triumph and Rally the Ranks are Verified
 - [ ] (j3) Damage prevention shields, regeneration and `GameRule::DamageCantBePrevented`
 - [ ] (j4) Protection from a quality (colour, card type, player, everything) with its four checks (damage prevented, no Aura or Equipment attaches, no blocking by it, no targeting) and shroud; Black Knight, Kor Firewalker and Mother of Runes are Verified
 
@@ -88,6 +88,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ### Manual cards and views
 - [ ] (p) Manual cards: a card the engine does not run is cast and resolves without effects, and its controller applies generic logged actions (move, counters, life, token, tap) through the same primitives, visible to every seat
 - [ ] Views complete: they carry every state of an object (counters, attachments, face, face-down, copies, support) and the abilities a player may activate with their cost and target wording (Equip, Reconfigure, loyalty and other activated abilities in one list), a spectator audience sees public information, and a card revealed and then moved to a hidden zone in one batch reaches the other seats' views (`docs/protocol.md`)
+- [ ] The combat forecast and block preview apply replacement and prevention effects (`forecast.rs` and `preview.rs` skip `replace::process` today), so Furnace of Rath, a life doubler and a damage shield show in the numbers they preview
 - [ ] Gate: every corpus card is Verified except the two kept Partial and Manual by design, and fuzz games with a deck from each cluster pass every invariant
 
 ## M4 Commander

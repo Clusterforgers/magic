@@ -497,6 +497,33 @@
     ]
   },
   {
+    "id": "29538ff4-e28f-44d9-af23-6796edd56268",
+    "oracle_id": "ca0cc02b-b106-4eca-9388-d4b48dd3be49",
+    "name": "Corpsejack Menace",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cm2",
+    "collector_number": "152",
+    "rarity": "rare",
+    "released_at": "2018-06-08",
+    "digital": false,
+    "mana_cost": "{2}{B}{G}",
+    "cmc": 4.0,
+    "type_line": "Creature — Fungus",
+    "oracle_text": "If one or more +1/+1 counters would be put on a creature you control, twice that many +1/+1 counters are put on it instead.",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+      "B",
+      "G"
+    ],
+    "color_identity": [
+      "B",
+      "G"
+    ],
+    "keywords": []
+  },
+  {
     "id": "4f616706-ec97-4923-bb1e-11a69fbaa1f8",
     "oracle_id": "cc187110-1148-4090-bbb8-e205694a39f5",
     "name": "Counterspell",
@@ -720,6 +747,29 @@
     "keywords": []
   },
   {
+    "id": "f2c4f80e-84a0-463b-82c3-5c6503809351",
+    "oracle_id": "01546b7d-a233-4176-8843-d732074dc5b6",
+    "name": "Doubling Season",
+    "lang": "en",
+    "layout": "normal",
+    "set": "fdn",
+    "collector_number": "216",
+    "rarity": "mythic",
+    "released_at": "2024-11-15",
+    "digital": false,
+    "mana_cost": "{4}{G}",
+    "cmc": 5.0,
+    "type_line": "Enchantment",
+    "oracle_text": "If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.\nIf an effect would put one or more counters on a permanent you control, it puts twice that many of those counters on that permanent instead.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
     "id": "4331a7a6-e98e-4517-b0f9-ace379426a94",
     "oracle_id": "e9f5f87d-a485-4e69-9beb-49a51230bd53",
     "name": "Elemental Masterpiece",
@@ -796,6 +846,35 @@
       "G"
     ],
     "keywords": []
+  },
+  {
+    "id": "b9afac99-a094-41a8-8323-90dec29691c4",
+    "oracle_id": "139fb542-89fd-4b9e-87e6-ec925bcca93a",
+    "name": "Faithful Watchdog",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mh3",
+    "collector_number": "185",
+    "rarity": "common",
+    "released_at": "2024-06-14",
+    "digital": false,
+    "mana_cost": "{G}{W}",
+    "cmc": 2.0,
+    "type_line": "Creature — Dog",
+    "oracle_text": "Vigilance\nThis creature enters with three +1/+1 counters on it.",
+    "power": "0",
+    "toughness": "0",
+    "colors": [
+      "G",
+      "W"
+    ],
+    "color_identity": [
+      "G",
+      "W"
+    ],
+    "keywords": [
+      "Vigilance"
+    ]
   },
   {
     "id": "fc019ffa-4461-4f3d-ab8d-e4d20e77ca0c",
@@ -978,6 +1057,31 @@
     ]
   },
   {
+    "id": "d7f0e720-3c32-4040-b663-7f99ad5bc810",
+    "oracle_id": "68715465-6cf9-4006-87e9-31f227fe9ed3",
+    "name": "Furnace of Rath",
+    "lang": "en",
+    "layout": "normal",
+    "set": "hop",
+    "collector_number": "55",
+    "rarity": "rare",
+    "released_at": "2009-09-04",
+    "digital": false,
+    "mana_cost": "{1}{R}{R}{R}",
+    "cmc": 4.0,
+    "type_line": "Enchantment",
+    "oracle_text": "If a source would deal damage to a permanent or player, it deals double that damage to that permanent or player instead.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Double"
+    ]
+  },
+  {
     "id": "25b0b816-0583-44aa-9dc5-f3ff48993a51",
     "oracle_id": "7c427c3d-ecd8-45ef-bebd-8f10f4a311db",
     "name": "Gaea's Cradle",
@@ -1149,6 +1253,48 @@
     "keywords": []
   },
   {
+    "id": "634fd988-5d5c-4637-b7fd-05a41798ead8",
+    "oracle_id": "716632dd-2947-4641-a1db-50e0a2b0b4e8",
+    "name": "Hall of Triumph",
+    "lang": "en",
+    "layout": "normal",
+    "set": "jou",
+    "collector_number": "162",
+    "rarity": "rare",
+    "released_at": "2014-05-02",
+    "digital": false,
+    "mana_cost": "{3}",
+    "cmc": 3.0,
+    "type_line": "Legendary Artifact",
+    "oracle_text": "As Hall of Triumph enters, choose a color.\nCreatures you control of the chosen color get +1/+1.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": []
+  },
+  {
+    "id": "99cfd1a8-49fd-4cc0-96f2-f9f159ce5d55",
+    "oracle_id": "a1f3da21-af6d-450e-bf0b-985d158418e6",
+    "name": "Hardened Scales",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "272",
+    "rarity": "rare",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{G}",
+    "cmc": 1.0,
+    "type_line": "Enchantment",
+    "oracle_text": "If one or more +1/+1 counters would be put on a creature you control, that many plus one +1/+1 counters are put on it instead.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
     "id": "8ca58965-1dfa-40ac-b6c8-f957167ff066",
     "oracle_id": "454a8902-8120-4373-96ee-bbf352b04e8d",
     "name": "Hero of Bladehold",
@@ -1224,6 +1370,32 @@
       "W"
     ],
     "keywords": []
+  },
+  {
+    "id": "c50ec22c-decb-419f-ae52-78ea1706eb11",
+    "oracle_id": "0aea7e5d-40d7-46c7-a8a6-479cb8061e49",
+    "name": "Idyllic Beachfront",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dmu",
+    "collector_number": "249",
+    "rarity": "common",
+    "released_at": "2022-09-09",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Land — Plains Island",
+    "oracle_text": "({T}: Add {W} or {U}.)\nThis land enters tapped.",
+    "colors": [],
+    "color_identity": [
+      "U",
+      "W"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "U",
+      "W"
+    ]
   },
   {
     "id": "2555ec7b-5cc2-4ffd-9344-6368019feff9",
@@ -1745,6 +1917,29 @@
     "keywords": []
   },
   {
+    "id": "01033dae-fec1-41f2-b7f2-cc6a43331790",
+    "oracle_id": "84dc94b2-95fb-4d53-aaa2-191cb645639f",
+    "name": "Parallel Lives",
+    "lang": "en",
+    "layout": "normal",
+    "set": "isd",
+    "collector_number": "199",
+    "rarity": "rare",
+    "released_at": "2011-09-30",
+    "digital": false,
+    "mana_cost": "{3}{G}",
+    "cmc": 4.0,
+    "type_line": "Enchantment",
+    "oracle_text": "If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
     "id": "e41cf82d-3213-47ce-a015-6e51a8b07e4f",
     "oracle_id": "b685757b-521e-4353-a233-97052359723d",
     "name": "Questing Beast",
@@ -1772,6 +1967,29 @@
       "Haste",
       "Deathtouch"
     ]
+  },
+  {
+    "id": "03595195-3be2-4d18-b5c0-43b2dcc1c0f5",
+    "oracle_id": "eeb07c8a-21d1-43fa-a5f3-ee3fe328a671",
+    "name": "Rally the Ranks",
+    "lang": "en",
+    "layout": "normal",
+    "set": "khm",
+    "collector_number": "20",
+    "rarity": "rare",
+    "released_at": "2021-02-05",
+    "digital": false,
+    "mana_cost": "{1}{W}",
+    "cmc": 2.0,
+    "type_line": "Enchantment",
+    "oracle_text": "As this enchantment enters, choose a creature type.\nCreatures you control of the chosen type get +1/+1.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
   },
   {
     "id": "53c38f4e-81ec-45b3-a6cf-06a65b674978",
@@ -1847,6 +2065,56 @@
       "B"
     ],
     "keywords": []
+  },
+  {
+    "id": "d108c2b1-236e-4b8d-8445-d9749ccc4fea",
+    "oracle_id": "087f9ad7-e74f-40e2-8102-1ed2925d0418",
+    "name": "Rest in Peace",
+    "lang": "en",
+    "layout": "normal",
+    "set": "big",
+    "collector_number": "4",
+    "rarity": "mythic",
+    "released_at": "2024-04-19",
+    "digital": false,
+    "mana_cost": "{1}{W}",
+    "cmc": 2.0,
+    "type_line": "Enchantment",
+    "oracle_text": "When this enchantment enters, exile all graveyards.\nIf a card or token would be put into a graveyard from anywhere, exile it instead.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "c79a8938-aae6-42ff-888c-2783e11a8d4f",
+    "oracle_id": "2abe9303-d498-4aad-b6b2-8b5064bd2ffd",
+    "name": "Rhox Faithmender",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tdc",
+    "collector_number": "128",
+    "rarity": "rare",
+    "released_at": "2025-04-11",
+    "digital": false,
+    "mana_cost": "{3}{W}",
+    "cmc": 4.0,
+    "type_line": "Creature — Rhino Monk",
+    "oracle_text": "Lifelink (Damage dealt by this creature also causes you to gain that much life.)\nIf you would gain life, you gain twice that much life instead.",
+    "power": "1",
+    "toughness": "5",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Lifelink"
+    ]
   },
   {
     "id": "9f37c5b6-a59c-45cd-9a99-e9357fe9ea1b",
@@ -1946,6 +2214,32 @@
       "R"
     ],
     "keywords": []
+  },
+  {
+    "id": "0a451ab5-6244-48a0-a638-07da72b156b5",
+    "oracle_id": "0070db93-142b-4d04-afd3-836792dc134b",
+    "name": "Sodden Verdure",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msc",
+    "collector_number": "267",
+    "rarity": "rare",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Land — Forest Island",
+    "oracle_text": "({T}: Add {G} or {U}.)\nThis land enters tapped unless you control two or more basic lands.",
+    "colors": [],
+    "color_identity": [
+      "G",
+      "U"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "G",
+      "U"
+    ]
   },
   {
     "id": "8ee443cc-e17a-493b-9c93-1f9e141a30e4",
@@ -2099,6 +2393,32 @@
     "toughness": "2"
   },
   {
+    "id": "a83903c7-fd51-4526-aed2-359e946fea36",
+    "oracle_id": "17039058-822d-409f-938c-b727a366ba63",
+    "name": "Steam Vents",
+    "lang": "en",
+    "layout": "normal",
+    "set": "trk",
+    "collector_number": "298",
+    "rarity": "rare",
+    "released_at": "2026-11-13",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Land — Island Mountain",
+    "oracle_text": "({T}: Add {U} or {R}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+    "colors": [],
+    "color_identity": [
+      "R",
+      "U"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "R",
+      "U"
+    ]
+  },
+  {
     "id": "3892f1c5-937e-4ef4-b6f9-e0c0ded070d0",
     "oracle_id": "0230de18-8d15-4cfa-9d42-7ccddd9f9570",
     "name": "Supreme Verdict",
@@ -2193,6 +2513,29 @@
     "keywords": [],
     "power": "2",
     "toughness": "4"
+  },
+  {
+    "id": "e169e197-5ef4-454d-a31f-fcadedb74cfc",
+    "oracle_id": "692a6833-3014-42f6-b1ad-333bb3292c65",
+    "name": "Thought Reflection",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2xm",
+    "collector_number": "72",
+    "rarity": "rare",
+    "released_at": "2020-08-07",
+    "digital": false,
+    "mana_cost": "{4}{U}{U}{U}",
+    "cmc": 7.0,
+    "type_line": "Enchantment",
+    "oracle_text": "If you would draw a card, draw two cards instead.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
   },
   {
     "id": "66444549-ad9b-49c6-a7c6-34e977c1085d",

@@ -575,6 +575,7 @@ fn a_card_put_onto_the_battlefield_enters_tapped_or_under_another_player_and_kee
                 object: card,
                 tapped,
                 controller,
+                chosen: None,
             },
         ],
     );
@@ -605,6 +606,7 @@ fn entering_what_is_not_on_the_battlefield_or_under_nobody_is_refused() {
         object: card,
         tapped: true,
         controller: PlayerId(0),
+        chosen: None,
     };
     assert!(apply_event(&mut game, &in_library).is_err());
     let moved = Event::ZoneChanged {
@@ -618,6 +620,7 @@ fn entering_what_is_not_on_the_battlefield_or_under_nobody_is_refused() {
         object: card,
         tapped: false,
         controller: PlayerId(9),
+        chosen: None,
     };
     assert!(apply_event(&mut game, &under_nobody).is_err());
 }

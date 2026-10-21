@@ -20,7 +20,7 @@ use crate::choose::legal_for;
 use crate::choose::{Choices, Target};
 use crate::keywords;
 use crate::layers::{Held, View, outside};
-use crate::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
+use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -528,6 +528,14 @@ impl<'a> Scope<'a> {
             },
             Pred::HasCounter(kind) => seen.counters.of(kind) > 0,
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
+            Pred::ChosenColor => {
+                matches!(self.entered_choice(), Some(Chosen::Color(color)) if seen.chars.colors.contains(*color))
+            }
+            Pred::ChosenSubtype => {
+                matches!(self.entered_choice(), Some(Chosen::CreatureType(subtype))
+                    if seen.chars.subtypes.contains(subtype)
+                        || seen.card.is_some_and(|c| c.card().subtypes.contains(subtype)))
+            }
             Pred::Compare { stat, op, to } => match Self::stat(seen, *stat) {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
@@ -544,6 +552,14 @@ impl<'a> Scope<'a> {
                 holds
             }
         })
+    }
+
+    /// What the source of the scope chose as it entered, if it is on the battlefield and asked for a choice.
+    fn entered_choice(&self) -> Option<&'a Chosen> {
+        self.state
+            .object(self.source.id)
+            .and_then(|object| object.permanent())
+            .and_then(|permanent| permanent.chosen())
     }
 
     fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {

@@ -124,6 +124,21 @@ const RUNS: &[&str] = &[
     "Keyword.Equip",
     "Keyword.Reconfigure",
     "Keyword.LivingWeapon",
+    "Ability.Replacement",
+    "ReplaceWhen.TokenCreation",
+    "ReplaceWhen.Damage",
+    "ReplaceWhen.ZoneChange",
+    "ReplaceWhen.CountersPut",
+    "ReplaceWhen.LifeGain",
+    "ReplaceWhen.Draw",
+    "ReplaceWhen.Enters",
+    "ReplaceBy.Multiply",
+    "ReplaceBy.Add",
+    "ReplaceBy.MoveTo",
+    "ReplaceBy.Tapped",
+    "ReplaceBy.WithCounters",
+    "ReplaceBy.Choose",
+    "ReplaceBy.PayLifeOrTapped",
 ];
 
 /// The capabilities of this engine.
@@ -194,6 +209,23 @@ mod tests {
     #[case::reconfigure("Keyword.Reconfigure", true)]
     #[case::living_weapon("Keyword.LivingWeapon", true)]
     #[case::unattaching("Effect.Unattach", true)]
+    #[case::replacement_effects("Ability.Replacement", true)]
+    #[case::replacing_token_creation("ReplaceWhen.TokenCreation", true)]
+    #[case::replacing_damage("ReplaceWhen.Damage", true)]
+    #[case::replacing_zone_changes("ReplaceWhen.ZoneChange", true)]
+    #[case::replacing_counters_put("ReplaceWhen.CountersPut", true)]
+    #[case::replacing_life_gain("ReplaceWhen.LifeGain", true)]
+    #[case::replacing_draws("ReplaceWhen.Draw", true)]
+    #[case::replacing_entering("ReplaceWhen.Enters", true)]
+    #[case::multiplying("ReplaceBy.Multiply", true)]
+    #[case::adding("ReplaceBy.Add", true)]
+    #[case::moving_instead("ReplaceBy.MoveTo", true)]
+    #[case::entering_tapped("ReplaceBy.Tapped", true)]
+    #[case::entering_with_counters("ReplaceBy.WithCounters", true)]
+    #[case::choosing_as_it_enters("ReplaceBy.Choose", true)]
+    #[case::paying_life_or_entering_tapped("ReplaceBy.PayLifeOrTapped", true)]
+    #[case::preventing("ReplaceBy.Prevent", false)]
+    #[case::doing_something_instead("ReplaceBy.Instead", false)]
     #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", false)]
     #[case::states("Trigger.State", true)]
     #[case::exiling_the_source("Cost.ExileSelf", true)]

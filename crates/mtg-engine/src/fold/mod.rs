@@ -201,32 +201,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::DrewFromEmptyLibrary { player } => {
             player_mut(state, *player)?.drew_from_empty = true;
         }
-        Event::EffectCreated { effect } => {
-            if effect.layer != effect.modification.layer() {
-                return Err(invalid("effect layer does not match its modification"));
-            }
-            if effect.duration == mtg_cards::modify::Duration::WhileSourceOnBattlefield
-                && effect.source.is_none()
-            {
-                return Err(invalid(
-                    "an effect that lasts while its source stays has a source",
-                ));
-            }
-            if state.effects.iter().any(|e| e.id == effect.id) {
-                return Err(invalid(format!("duplicate effect {:?}", effect.id)));
-            }
-            state.next_effect = state.next_effect.max(effect.id.0 + 1);
-            state.next_timestamp = state.next_timestamp.max(effect.timestamp + 1);
-            if let Modification::GrantAbility(granted) = &effect.modification {
-                if triggers_something(granted) {
-                    state.triggers_possible = true;
-                }
-                if has_state_trigger(granted) {
-                    state.possible.states = true;
-                }
-            }
-            state.effects.push(effect.clone());
-        }
+        Event::EffectCreated { effect } => create_effect(state, effect)?,
         Event::EffectExpired { id } => {
             let before = state.effects.len();
             state.effects.retain(|e| e.id != *id);
@@ -238,6 +213,41 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::GameEnded { result } => end_game(state, *result),
         other => return Err(invalid(format!("unhandled event {other:?}"))),
     }
+    Ok(())
+}
+
+/// Registers a continuous effect, noting what an ability it grants can do to the game.
+fn create_effect(
+    state: &mut GameState,
+    effect: &crate::effects::ContinuousEffect,
+) -> Result<(), EngineError> {
+    if effect.layer != effect.modification.layer() {
+        return Err(invalid("effect layer does not match its modification"));
+    }
+    if effect.duration == mtg_cards::modify::Duration::WhileSourceOnBattlefield
+        && effect.source.is_none()
+    {
+        return Err(invalid(
+            "an effect that lasts while its source stays has a source",
+        ));
+    }
+    if state.effects.iter().any(|e| e.id == effect.id) {
+        return Err(invalid(format!("duplicate effect {:?}", effect.id)));
+    }
+    state.next_effect = state.next_effect.max(effect.id.0 + 1);
+    state.next_timestamp = state.next_timestamp.max(effect.timestamp + 1);
+    if let Modification::GrantAbility(granted) = &effect.modification {
+        if matches!(**granted, mtg_cards::ability::Ability::Replacement { .. }) {
+            state.possible.replacements = true;
+        }
+        if triggers_something(granted) {
+            state.triggers_possible = true;
+        }
+        if has_state_trigger(granted) {
+            state.possible.states = true;
+        }
+    }
+    state.effects.push(effect.clone());
     Ok(())
 }
 

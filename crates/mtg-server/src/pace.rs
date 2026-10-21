@@ -10,8 +10,8 @@ use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::choose::{
-    CardsChoice, CardsOptions, ModeChoice, ModeOptions, OptionChoice, OrderChoice, TargetChoice,
-    TriggersChoice, YesNoChoice,
+    CardsChoice, CardsOptions, ModeChoice, ModeOptions, OptionChoice, OrderChoice,
+    ReplacementChoice, TargetChoice, TriggersChoice, YesNoChoice,
 };
 use mtg_engine::decision::PriorityAction;
 use mtg_engine::{Answer, Decision, DecisionKind};
@@ -70,8 +70,8 @@ impl Pace {
     /// The clock `decision` runs on, if any.
     ///
     /// Only a seat that is not the active player is hurried, and only for a priority decision, for choosing the
-    /// targets of a spell or ability, for ordering its triggers, for answering a question of an effect (yes or no, an
-    /// option, modes, cards, an order of cards) or for declaring blockers; every other decision (mulligans, discards,
+    /// targets of a spell or ability, for ordering its triggers or the replacement effects that apply to an event, for
+    /// answering a question of an effect (yes or no, an option, modes, cards, an order of cards) or for declaring blockers; every other decision (mulligans, discards,
     /// damage division, the active player's own turn) waits for as long as it takes. A priority window the seat has nothing to do in is
     /// hurried too (it is only delivered at a stop or in Full Control): it would hold the table for no reason. The
     /// rule reads the kind alone, never the options, the seat or the hand, so it shows nothing about them.
@@ -84,6 +84,7 @@ impl Pace {
             DecisionKind::Priority(_)
             | DecisionKind::ChooseTargets(_)
             | DecisionKind::OrderTriggers(_)
+            | DecisionKind::ChooseReplacement(_)
             | DecisionKind::YesNo(_)
             | DecisionKind::ChooseOption(_)
             | DecisionKind::ChooseMode(_)
@@ -139,6 +140,9 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
             (0..options.triggers.len()).collect(),
         ))),
         DecisionKind::YesNo(_) => Some(Answer::YesNo(YesNoChoice(false))),
+        // The first effect on offer, which the rules let the player choose; the effects that are left apply after it.
+        DecisionKind::ChooseReplacement(options) => (!options.candidates.is_empty())
+            .then_some(Answer::ChooseReplacement(ReplacementChoice(0))),
         // A list with nothing in it has no answer to give; the engine does not ask one.
         DecisionKind::ChooseOption(options) => {
             (!options.options.is_empty()).then_some(Answer::ChooseOption(OptionChoice(0)))
@@ -309,8 +313,8 @@ mod tests {
     use super::*;
     use mtg_core::ids::ObjectId;
     use mtg_engine::choose::{
-        CardsOptions, ChoiceOption, ModeOption, OptionOptions, OrderOptions, TargetOptions,
-        TriggerEntry, TriggersOptions, YesNoOptions,
+        CardsOptions, ChoiceOption, ModeOption, OptionOptions, OrderOptions, ReplacementCandidate,
+        ReplacementOptions, TargetOptions, TriggerEntry, TriggersOptions, YesNoOptions,
     };
     use mtg_engine::decision::{
         AttackOptions, BlockOptions, BottomOptions, DamageOptions, DiscardOptions, MulliganOptions,
@@ -409,6 +413,19 @@ mod tests {
                     when: String::new(),
                 })
                 .collect(),
+        })
+    }
+
+    /// `count` replacement effects that apply to one event.
+    fn replacements(count: usize) -> DecisionKind {
+        DecisionKind::ChooseReplacement(ReplacementOptions {
+            candidates: (0..count)
+                .map(|n| ReplacementCandidate {
+                    source: ObjectId(n as u64 + 1),
+                    ability: 0,
+                })
+                .collect(),
+            text: "Create 2 token(s).".into(),
         })
     }
 
@@ -515,6 +532,8 @@ mod tests {
     #[case::choosing_up_to_some_cards(OTHER, cards(5, 0, 3), Some(10))]
     #[case::choosing_from_nothing(OTHER, cards(0, 0, 1), Some(10))]
     #[case::putting_cards_in_order(OTHER, ordering(3), Some(10))]
+    #[case::ordering_replacement_effects(OTHER, replacements(2), Some(10))]
+    #[case::the_active_player_ordering_replacement_effects(ACTIVE, replacements(2), None)]
     #[case::putting_one_card_in_order(OTHER, ordering(1), Some(10))]
     #[case::the_active_player_choosing_cards(ACTIVE, cards(3, 1, 1), None)]
     #[case::the_active_player_putting_cards_in_order(ACTIVE, ordering(3), None)]
@@ -552,6 +571,7 @@ mod tests {
         assert_eq!(pace.clock_for(&decision(OTHER, order(2)), ACTIVE), None);
         for kind in [
             question(),
+            replacements(2),
             options(2),
             modes(2, 1, 1, false, true),
             cards(2, 1, 1),
@@ -587,6 +607,11 @@ mod tests {
     #[case::a_trigger_is_removed(targets(false), Some(Answer::ChooseTargets(TargetChoice::Remove)))]
     #[case::triggers_go_on_in_the_order_they_triggered(order(3), Some(Answer::OrderTriggers(TriggersChoice(vec![0, 1, 2]))))]
     #[case::no_to_a_question(question(), Some(Answer::YesNo(YesNoChoice(false))))]
+    #[case::the_first_replacement_effect(
+        replacements(3),
+        Some(Answer::ChooseReplacement(ReplacementChoice(0)))
+    )]
+    #[case::no_replacement_effect_to_choose(replacements(0), None)]
     #[case::the_first_of_the_options(options(4), Some(Answer::ChooseOption(OptionChoice(0))))]
     #[case::the_only_option(options(1), Some(Answer::ChooseOption(OptionChoice(0))))]
     #[case::no_option_to_choose(options(0), None)]
@@ -626,6 +651,7 @@ mod tests {
     fn the_clock_and_the_fallback_are_the_same_for_every_seat_and_every_shape_of_options() {
         let kinds = [
             question(),
+            replacements(2),
             options(1),
             options(11),
             modes(1, 1, 1, false, true),

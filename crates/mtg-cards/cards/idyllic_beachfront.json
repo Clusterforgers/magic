@@ -1,0 +1,15 @@
+{
+  "oracle_id": "0aea7e5d-40d7-46c7-a8a6-479cb8061e49",
+  "name": "Idyllic Beachfront",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Idyllic Beachfront",
+      "oracle_fingerprint": "a09c380640bf6bc612bf1080ab4c201b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } }
+      ]
+    }
+  ],
+  "notes": "The mana ability comes from the Plains and Island subtypes (CR 305.6), not from data."
+}

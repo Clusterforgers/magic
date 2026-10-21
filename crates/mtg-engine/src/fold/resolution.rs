@@ -177,12 +177,14 @@ fn begin(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
 /// Takes the object off the stack. An ability ceases to exist (CR 113.7a); a spell that resolved is moved by
 /// `SpellResolved`, which follows, and a spell that did not goes to its owner's graveyard.
 fn end(state: &mut GameState, id: ObjectId, outcome: ResolutionOutcome) -> Result<(), EngineError> {
-    let (kind, owner) = state
+    let (kind, owner, zone) = state
         .objects
         .get(&id)
-        .map(|o| (o.kind, o.owner))
+        .map(|o| (o.kind, o.owner, o.zone))
         .ok_or_else(|| invalid(format!("unknown object {id:?}")))?;
-    if !state.zones.get(Zone::Stack).contains(&id) {
+    // A spell that a replacement effect sent elsewhere (exile instead of the graveyard) is off the stack already.
+    let on_stack = state.zones.get(Zone::Stack).contains(&id);
+    if !on_stack && (kind == ObjectKind::Ability || zone == Zone::Battlefield) {
         return Err(invalid(format!("{id:?} is not on the stack")));
     }
     let resolving_it = state.resolving.as_ref().is_some_and(|r| r.object == id);
@@ -202,7 +204,9 @@ fn end(state: &mut GameState, id: ObjectId, outcome: ResolutionOutcome) -> Resul
             _,
             ResolutionOutcome::Fizzled | ResolutionOutcome::Countered | ResolutionOutcome::Lapsed,
         ) => {
-            move_object(state, id, Zone::Graveyard(owner), Placement::Top)?;
+            if on_stack {
+                move_object(state, id, Zone::Graveyard(owner), Placement::Top)?;
+            }
         }
     }
     priority_to_active(state);

@@ -280,6 +280,8 @@ impl<'a> Walker<'a> {
             | Pred::Attacking
             | Pred::Blocking
             | Pred::HasCounter(_)
+            | Pred::ChosenColor
+            | Pred::ChosenSubtype
             | Pred::In(_) => {}
         }
     }
@@ -1112,7 +1114,7 @@ impl<'a> Walker<'a> {
             } => {
                 w.scope = Scope::new(&[], false);
                 w.at("when", |w| w.replace_when(when));
-                w.at("by", |w| w.replace_by(by));
+                w.at("by", |w| w.replace_by(when, by));
                 if let Some(condition) = condition {
                     w.at("condition", |w| w.condition(condition));
                 }
@@ -1196,22 +1198,59 @@ impl<'a> Walker<'a> {
             ReplaceWhen::TokenCreation { controller } => {
                 self.at("controller", |w| w.reference(controller, Kind::Player));
             }
-            ReplaceWhen::Damage { to, .. } => self.at("to", |w| w.reference(to, Kind::Either)),
-            ReplaceWhen::ZoneChange { what, .. } => self.at("what", |w| w.selector(what)),
+            ReplaceWhen::Damage { to, source, .. } => {
+                if let Some(to) = to {
+                    self.at("to", |w| w.reference(to, Kind::Either));
+                }
+                self.at("source", |w| w.selector(source));
+            }
+            ReplaceWhen::ZoneChange { what, .. } | ReplaceWhen::Enters { what } => {
+                self.at("what", |w| w.selector(what));
+            }
+            ReplaceWhen::CountersPut { on, .. } => {
+                if let Some(on) = on {
+                    self.at("on", |w| w.reference(on, Kind::Either));
+                }
+            }
+            ReplaceWhen::LifeGain { who } | ReplaceWhen::Draw { who } => {
+                self.at("who", |w| w.reference(who, Kind::Player));
+            }
         }
     }
 
-    fn replace_by(&mut self, by: &ReplaceBy) {
+    fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
+        let enters = matches!(when, ReplaceWhen::Enters { .. });
         match by {
             ReplaceBy::Multiply(0) => self.problem("multiplying by zero is `Prevent`"),
             ReplaceBy::Add(0) => self.problem("adding nothing changes nothing"),
+            ReplaceBy::Multiply(_) | ReplaceBy::Add(_)
+                if matches!(
+                    when,
+                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Enters { .. }
+                ) =>
+            {
+                self.problem("a zone change has no number to change");
+            }
             ReplaceBy::Instead(effects) => {
                 if effects.is_empty() {
                     self.problem("needs at least one effect");
                 }
                 self.effect_list("Instead", effects, false);
             }
+            ReplaceBy::MoveTo(_) if !matches!(when, ReplaceWhen::ZoneChange { .. }) => {
+                self.problem("`MoveTo` replaces a `ZoneChange`");
+            }
+            ReplaceBy::WithCounters { count, .. } => {
+                if !enters {
+                    self.problem("`WithCounters` replaces an `Enters`");
+                }
+                self.at("count", |w| w.amount(count));
+            }
+            ReplaceBy::Tapped | ReplaceBy::Choose(_) | ReplaceBy::PayLifeOrTapped(_) if !enters => {
+                self.problem("only an `Enters` event is entered tapped, chosen on or paid for");
+            }
+            ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
             _ => {}
         }
     }

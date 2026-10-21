@@ -183,6 +183,7 @@ const BECAUSE: Record<ZoneCause, string> = {
   Countered: 'is countered',
   Milled: 'is milled',
   StateBased: 'is put into the graveyard',
+  Discarded: 'is discarded',
 }
 
 /** The events of spells and abilities: abilities on the stack, the steps of a resolution, life, zones and what players learn. */
@@ -329,8 +330,14 @@ function describePublic(event: Event, n: EventNames): LogLine {
     return line(`${n.seat(player)} puts ${cards(bottomed.length)} on the bottom of their library`)
   }
   if ('Entered' in event) {
-    const { object, tapped, controller } = event.Entered
-    return quiet(`${n.card(object)} enters${tapped ? ' tapped' : ''} under ${n.seat(controller)}'s control`)
+    const { object, tapped, controller, chosen } = event.Entered
+    const chose =
+      chosen === undefined
+        ? ''
+        : `, choosing ${'Color' in chosen ? chosen.Color.toLowerCase() : chosen.CreatureType}`
+    return quiet(
+      `${n.card(object)} enters${tapped ? ' tapped' : ''} under ${n.seat(controller)}'s control${chose}`,
+    )
   }
   if ('Attached' in event) {
     return line(`${n.card(event.Attached.object)} becomes attached to ${n.card(event.Attached.to)}`)

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "eeb07c8a-21d1-43fa-a5f3-ee3fe328a671",
+  "name": "Rally the Ranks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rally the Ranks",
+      "oracle_fingerprint": "05e563261d3bd3abbdd667291e0d99d0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

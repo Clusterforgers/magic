@@ -8,4 +8,8 @@ export type ReplacementOptions = {
 /**
  * The effects that apply, any of which may be chosen first.
  */
-candidates: Array<ReplacementCandidate>, };
+candidates: Array<ReplacementCandidate>, 
+/**
+ * The event they replace in words ("Create 2 token(s)."); empty when the engine gave none.
+ */
+text?: string, };

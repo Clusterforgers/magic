@@ -448,6 +448,8 @@ pub struct InvariantChecker {
     events_seen: usize,
     full_every: usize,
     since_full: usize,
+    /// The engine is asking about events it has not applied: what state-based actions would do is still to come.
+    replacing: bool,
 }
 
 impl InvariantChecker {
@@ -500,13 +502,18 @@ impl InvariantChecker {
             shadow,
             events_seen: 0,
             full_every: 1,
+            replacing: false,
             since_full: 0,
         })
     }
 
     /// [`observe`](Self::observe) for a live engine, with the checks that depend on the decision it stands at.
     pub fn observe_engine(&mut self, engine: &Engine) -> Result<(), Violation> {
+        self.replacing = engine.replacing();
         self.observe(engine.state(), engine.events())?;
+        if self.replacing {
+            return Ok(());
+        }
         check_decision(engine)
     }
 
@@ -534,7 +541,9 @@ impl InvariantChecker {
     pub fn full_check(&mut self, live: &GameState) -> Result<(), Violation> {
         self.since_full = 0;
         check_state(live)?;
-        check_settled(live)?;
+        if !self.replacing {
+            check_settled(live)?;
+        }
         let (live_hash, shadow_hash) = (live.state_hash(), self.shadow.state_hash());
         if live_hash != shadow_hash {
             return Err(Violation::Replay {
