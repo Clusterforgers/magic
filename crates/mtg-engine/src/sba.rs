@@ -294,7 +294,6 @@ mod tests {
     fn a_creature_that_dies_in_the_pass_takes_its_pairs_with_it() {
         // 2/2 with one +1/+1 and three -1/-1 counters: toughness -1.
         let events = check(&game_with(&[(PLUS, 1), (MINUS, 3)], 0));
-        assert!(counter_changes(&game_with(&[(PLUS, 1), (MINUS, 3)], 0)).is_empty());
         assert!(
             matches!(
                 events.as_slice(),

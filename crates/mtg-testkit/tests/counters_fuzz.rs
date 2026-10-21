@@ -149,7 +149,9 @@ impl Walk {
     fn look(&mut self, state: &GameState) {
         for &id in state.zone(Zone::Battlefield) {
             let object = state.object(id).unwrap();
-            let Some(chars) = characteristics(state, id).filter(|c| c.is_creature()) else {
+            let Some(chars) =
+                characteristics(state, id).filter(mtg_engine::Characteristics::is_creature)
+            else {
                 continue;
             };
             let permanent = object.permanent().unwrap();

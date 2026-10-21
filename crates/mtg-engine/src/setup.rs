@@ -211,6 +211,27 @@ fn preset_state(
     }
 }
 
+/// The seat `owner` as its setup describes it: its life (the format's unless it names one), keywords and counters.
+fn starting_player(
+    owner: PlayerId,
+    setup: &PlayerSetup,
+    life: i32,
+    status: MulliganStatus,
+) -> Player {
+    let mut player = Player::new(
+        owner,
+        setup.life.unwrap_or(life),
+        status,
+        setup.keywords.clone(),
+    );
+    for (kind, count) in &setup.counters {
+        if *count > 0 {
+            *player.counters.entry(kind.clone()).or_default() += count;
+        }
+    }
+    player
+}
+
 impl GameState {
     /// Builds the initial state; objects get sequential ids per seat: library, hand, battlefield, graveyard.
     pub fn from_setup(setup: &GameSetup) -> Result<GameState, SetupError> {
@@ -250,18 +271,7 @@ impl GameState {
                 Start::Mulligan => MulliganStatus::NeedsHand,
                 Start::At { .. } => MulliganStatus::Kept,
             };
-            let mut player = Player::new(
-                owner,
-                setup_player.life.unwrap_or(life),
-                status,
-                setup_player.keywords.clone(),
-            );
-            for (kind, count) in &setup_player.counters {
-                if *count > 0 {
-                    *player.counters.entry(kind.clone()).or_default() += count;
-                }
-            }
-            players.push(player);
+            players.push(starting_player(owner, setup_player, life, status));
         }
         for (id, preset) in presets {
             if let Some(object) = objects.get_mut(&id) {
