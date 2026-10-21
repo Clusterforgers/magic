@@ -2,15 +2,19 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use mtg_cards::ability::Ability;
 use mtg_cards::value::CounterKind;
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
+use mtg_engine::abilities::AbilityRef;
+use mtg_engine::ability_reader;
 use mtg_engine::choose::Target;
 use mtg_engine::combat::{AttackTarget, DamageTarget};
 use mtg_engine::counters::CountersChanged;
 use mtg_engine::effects::Duration;
 use mtg_engine::keywords::is_indestructible;
-use mtg_engine::object::{ObjectKind, PermanentState};
+use mtg_engine::object::{ObjectKind, ObjectRef, PermanentState};
 use mtg_engine::player::Player;
 use mtg_engine::state::Stage;
 use mtg_engine::zones::{Zone, Zones};
@@ -137,6 +141,18 @@ fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
                 "{id:?} holds +1/+1 and -1/-1 counters at a decision point"
             )));
         }
+        // A planeswalker with no loyalty went to its owner's graveyard (CR 704.5i).
+        let walker = state
+            .object(id)
+            .is_some_and(|o| o.base_types().contains(CardType::Planeswalker));
+        if walker
+            && held(&CounterKind::Loyalty) == 0
+            && state.is_alive(state.object(id).map_or(PlayerId(0), |o| o.controller()))
+        {
+            return Err(Violation::Counters(format!(
+                "{id:?} is a planeswalker with no loyalty at a decision point"
+            )));
+        }
     }
     for player in state.players().iter().filter(|p| p.is_in_game()) {
         if player.counters_of(&CounterKind::Poison) >= 10 {
@@ -237,8 +253,20 @@ fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
             AttackTarget::Player(p) if !state.is_alive(p) => {
                 return Err(book(format!("attacking eliminated {p:?}")));
             }
-            AttackTarget::Planeswalker(o) if !on_battlefield(o) => {
+            // A planeswalker that left leaves its attackers attacking nothing (CR 506.4c), with no one to block them.
+            AttackTarget::Planeswalker(o) if !on_battlefield(o) && !attacker.attacks_nothing() => {
                 return Err(book(format!("attacking missing planeswalker {o:?}")));
+            }
+            AttackTarget::Planeswalker(o) if attacker.attacks_nothing() => {
+                if attacker.defender(state).is_some() {
+                    return Err(book(format!(
+                        "{:?} attacks nothing but has a defending player",
+                        attacker.object()
+                    )));
+                }
+                if attacker.blockers().iter().any(|b| !on_battlefield(*b)) {
+                    return Err(book(format!("a blocker of the attacker of {o:?} left")));
+                }
             }
             _ => {}
         }
@@ -298,6 +326,7 @@ pub struct InvariantChecker {
     expected_damage: BTreeMap<ObjectId, u32>,
     expected_object_counters: BTreeMap<ObjectId, BTreeMap<CounterKind, i64>>,
     expected_player_counters: BTreeMap<PlayerId, BTreeMap<CounterKind, i64>>,
+    loyalty_turns: BTreeMap<ObjectRef, u32>,
     zones_seen: BTreeMap<ObjectId, (Zone, u32)>,
     events_seen: usize,
     full_every: usize,
@@ -344,6 +373,7 @@ impl InvariantChecker {
             expected_damage,
             expected_object_counters,
             expected_player_counters,
+            loyalty_turns: BTreeMap::new(),
             zones_seen: BTreeMap::new(),
             shadow,
             events_seen: 0,
@@ -526,12 +556,16 @@ impl InvariantChecker {
             Event::DamageDealt { target, amount, .. } => {
                 match target {
                     DamageTarget::Player(p) => self.lose_life(*p, *amount, "damage")?,
-                    DamageTarget::Object(o) => {
-                        *self.expected_damage.entry(*o).or_default() += amount;
-                    }
+                    DamageTarget::Object(o) => self.damage_object(*o, *amount),
                 }
                 Ok(())
             }
+            Event::AbilityActivated {
+                player,
+                source,
+                ability,
+                origin,
+            } => self.check_loyalty_activation(*player, *source, *ability, *origin),
             Event::LifePaid { player, amount } => self.lose_life(*player, *amount, "life paid"),
             Event::LifeLost { player, amount } => self.lose_life(*player, *amount, "life lost"),
             Event::LifeGained { player, amount } => {
@@ -556,6 +590,65 @@ impl InvariantChecker {
             Event::CountersChanged(changed) => self.adjust_counters(changed),
             _ => Ok(()),
         }
+    }
+
+    /// Damage to a permanent is marked on a creature (CR 120.3e) and removes that many loyalty counters from a
+    /// planeswalker, no more than it holds (CR 120.3c); one that is both takes both.
+    fn damage_object(&mut self, object: ObjectId, amount: u32) {
+        let printed = self.shadow.object(object).map(|o| o.base_types());
+        let walker = printed.is_some_and(|types| types.contains(CardType::Planeswalker));
+        let creature = printed.is_some_and(|types| types.contains(CardType::Creature));
+        if !walker || creature {
+            *self.expected_damage.entry(object).or_default() += amount;
+        }
+        if walker && let Some(held) = self.expected_object_counters.get_mut(&object) {
+            if let Some(loyalty) = held.get_mut(&CounterKind::Loyalty) {
+                *loyalty = (*loyalty - i64::from(amount)).max(0);
+                if *loyalty == 0 {
+                    held.remove(&CounterKind::Loyalty);
+                }
+            }
+            if held.is_empty() {
+                self.expected_object_counters.remove(&object);
+            }
+        }
+    }
+
+    /// A loyalty ability is activated by the active player in a main step with an empty stack (CR 606.3), and once for each
+    /// planeswalker each turn.
+    fn check_loyalty_activation(
+        &mut self,
+        player: PlayerId,
+        source: ObjectRef,
+        ability: usize,
+        origin: mtg_engine::abilities::AbilitySource,
+    ) -> Result<(), Violation> {
+        let address = AbilityRef {
+            object: source.id,
+            ability,
+            source: origin,
+        };
+        let loyalty = ability_reader::ability(&self.shadow, address)
+            .is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. }));
+        if !loyalty {
+            return Ok(());
+        }
+        let turn = self.shadow.turn();
+        if turn.active() != player || !turn.step().is_main() || !self.shadow.stack().is_empty() {
+            return Err(Violation::Bookkeeping(format!(
+                "{player:?} activated a loyalty ability of {source:?} in {:?} of {:?}'s turn with {} on the stack",
+                turn.step(),
+                turn.active(),
+                self.shadow.stack().len()
+            )));
+        }
+        let number = turn.number();
+        if self.loyalty_turns.insert(source, number) == Some(number) {
+            return Err(Violation::Bookkeeping(format!(
+                "{source:?} had a second loyalty ability activated in turn {number}"
+            )));
+        }
+        Ok(())
     }
 
     /// Moves the independent history of the counters on `changed.on` by the change and fails when it would hold fewer

@@ -6,6 +6,7 @@ use mtg_engine::characteristics::{characteristics, controller_of};
 use mtg_engine::combat::Attacker;
 use mtg_engine::forecast::pending_combat_forecast;
 use mtg_engine::keywords::{keywords_of, summoning_sick};
+use mtg_engine::loyalty::loyalty_abilities;
 use mtg_engine::object::{GameObject, ObjectKind};
 use mtg_engine::player::{Player, PlayerStatus};
 use mtg_engine::sight::offered_cards;
@@ -13,8 +14,8 @@ use mtg_engine::state::GameState;
 use mtg_engine::zones::Zone;
 
 use crate::view::{
-    AttackerView, CombatView, ObjectView, PermanentView, PlayerView, PriorityView, StateView,
-    TableView, TurnView, ZoneView,
+    AttackerView, CombatView, LoyaltyAbilityView, ObjectView, PermanentView, PlayerView,
+    PriorityView, StateView, TableView, TurnView, ZoneView,
 };
 
 /// Every card type, for expanding a [`CardTypes`] set into a list.
@@ -191,6 +192,11 @@ impl ObjectView {
                         .collect()
                 })
                 .unwrap_or_default(),
+            // The abilities of a planeswalker on the battlefield are printed on the card every seat can read.
+            loyalty_abilities: loyalty_abilities(state, id)
+                .into_iter()
+                .map(|(ability, cost)| LoyaltyAbilityView { ability, cost })
+                .collect(),
             attached_to: state.host_of(id),
             attachments: if object.permanent().is_some() {
                 attachments()

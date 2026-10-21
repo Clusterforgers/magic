@@ -3,6 +3,7 @@ import type { AbilityDef } from "./AbilityDef";
 import type { CardType } from "./CardType";
 import type { Color } from "./Color";
 import type { CounterKind } from "./CounterKind";
+import type { LoyaltyAbilityView } from "./LoyaltyAbilityView";
 import type { ManaCost } from "./ManaCost";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectKind } from "./ObjectKind";
@@ -91,9 +92,15 @@ source?: ObjectId,
  */
 targets?: Array<Array<Target>>, 
 /**
- * The counters on a permanent, by kind and number in a fixed order; left out while there are none.
+ * The counters on a permanent, by kind and number in a fixed order; left out while there are none. A planeswalker's
+ * loyalty is its loyalty counters, public like the rest.
  */
 counters?: Array<[CounterKind, number]>, 
+/**
+ * The loyalty abilities of a planeswalker on the battlefield with their costs, in the order of its abilities; left
+ * out while there are none.
+ */
+loyalty_abilities?: Array<LoyaltyAbilityView>, 
 /**
  * The permanent this one is attached to, when it is an Aura or Equipment on the battlefield.
  */

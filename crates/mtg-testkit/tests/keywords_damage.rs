@@ -452,8 +452,11 @@ fn a_double_striker_divides_its_damage_in_each_step() -> Result<(), ScriptError>
 
 #[test]
 fn trample_reaches_a_planeswalker_when_that_is_what_is_attacked() -> Result<(), ScriptError> {
-    let walker =
-        std::sync::Arc::new(CardDefinition::new("Walker").with_type(CardType::Planeswalker));
+    let walker = std::sync::Arc::new(
+        CardDefinition::new("Walker")
+            .with_type(CardType::Planeswalker)
+            .with_loyalty(5),
+    );
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .at(2, 0, Step::DeclareAttackers)
@@ -474,12 +477,16 @@ fn trample_reaches_a_planeswalker_when_that_is_what_is_attacked() -> Result<(), 
         Some(DamageTarget::Object(walker_id))
     );
     driver.assign_damage(&[("B", 1)])?;
-    let marked = driver
-        .state()
-        .object(walker_id)
-        .and_then(|o| o.permanent())
-        .map(mtg_engine::object::PermanentState::damage);
-    assert_eq!(marked, Some(3));
+    let walker_now = driver.state().object(walker_id).and_then(|o| o.permanent());
+    assert_eq!(
+        walker_now.map(|p| p.counters_of(&mtg_cards::value::CounterKind::Loyalty)),
+        Some(2),
+        "3 of the 4 damage went to the planeswalker, which lost that many loyalty counters"
+    );
+    assert_eq!(
+        walker_now.map(mtg_engine::object::PermanentState::damage),
+        Some(0)
+    );
     driver.expect_life(1, 20)
 }
 

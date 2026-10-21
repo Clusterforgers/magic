@@ -74,6 +74,7 @@ mod tests {
             source: None,
             targets: Vec::new(),
             counters: Vec::new(),
+            loyalty_abilities: Vec::new(),
             attached_to: None,
             attachments: Vec::new(),
         }

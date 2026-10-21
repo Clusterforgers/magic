@@ -84,10 +84,10 @@ pub(crate) fn after_payment(counters: &mut Vec<(CounterKind, u32)>, delta: i32) 
 /// The loyalty abilities `id` has now, each with its address and cost, in the order of its abilities. Nothing for an
 /// object that is not on the battlefield.
 pub fn loyalty_abilities(state: &GameState, id: ObjectId) -> Vec<(AbilityRef, LoyaltyCost)> {
-    if !state
-        .object(id)
-        .is_some_and(|object| object.zone() == Zone::Battlefield)
-    {
+    // Only a planeswalker card has them, so a view of every other permanent costs nothing.
+    if !state.object(id).is_some_and(|object| {
+        object.zone() == Zone::Battlefield && object.base_types().contains(CardType::Planeswalker)
+    }) {
         return Vec::new();
     }
     abilities_of(state, id)
