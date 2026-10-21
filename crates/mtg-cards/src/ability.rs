@@ -38,6 +38,7 @@ pub enum Limit {
 
 /// The loyalty cost of a planeswalker ability (CR 606.4).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum LoyaltyCost {
     /// Put this many loyalty counters on the planeswalker.
     Plus(u32),
@@ -47,6 +48,19 @@ pub enum LoyaltyCost {
     Zero,
     /// Remove X loyalty counters.
     MinusX,
+}
+
+impl LoyaltyCost {
+    /// The change the cost makes to the loyalty counters of its planeswalker: positive when it puts counters on, negative
+    /// when it removes them. `None` for `-X`, whose X is chosen when the ability is announced.
+    pub fn change(self) -> Option<i32> {
+        match self {
+            LoyaltyCost::Plus(n) => i32::try_from(n).ok(),
+            LoyaltyCost::Minus(n) => i32::try_from(n).ok().map(i32::wrapping_neg),
+            LoyaltyCost::Zero => Some(0),
+            LoyaltyCost::MinusX => None,
+        }
+    }
 }
 
 /// Whether a cost modifier makes spells cost more or less.
@@ -310,6 +324,19 @@ mod tests {
             serde_json::to_string(&LoyaltyCost::Zero).unwrap(),
             r#""Zero""#
         );
+    }
+
+    #[rstest]
+    #[case::plus(LoyaltyCost::Plus(2), Some(2))]
+    #[case::zero(LoyaltyCost::Zero, Some(0))]
+    #[case::minus(LoyaltyCost::Minus(3), Some(-3))]
+    #[case::minus_twelve(LoyaltyCost::Minus(12), Some(-12))]
+    #[case::minus_x(LoyaltyCost::MinusX, None)]
+    fn a_loyalty_cost_changes_the_counters_by_its_sign(
+        #[case] cost: LoyaltyCost,
+        #[case] change: Option<i32>,
+    ) {
+        assert_eq!(cost.change(), change);
     }
 
     #[test]

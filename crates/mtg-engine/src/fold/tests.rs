@@ -802,7 +802,7 @@ fn the_state_hash_sees_the_journal_the_position_and_what_was_announced() {
 }
 
 #[test]
-fn a_planeswalker_that_leaves_the_battlefield_takes_the_attackers_aimed_at_it_out_of_combat() {
+fn a_planeswalker_that_leaves_the_battlefield_leaves_the_attackers_aimed_at_it_attacking_nothing() {
     let walker = Arc::new(
         CardDefinition::new("Walker")
             .with_type(CardType::Planeswalker)
@@ -836,15 +836,216 @@ fn a_planeswalker_that_leaves_the_battlefield_takes_the_attackers_aimed_at_it_ou
             cause: ZoneCause::Sacrificed,
         }],
     );
-    let attackers: Vec<ObjectId> = game
+    let attackers: Vec<(ObjectId, bool)> = game
         .combat()
         .attackers()
         .iter()
-        .map(crate::combat::Attacker::object)
+        .map(|a| (a.object(), a.attacks_nothing()))
         .collect();
     assert_eq!(
         attackers,
-        [bear],
-        "only the attacker aimed at a player is left"
+        [(raider, true), (bear, false)],
+        "both go on attacking and only the one aimed at the walker is aimed at nothing"
     );
+    let defenders: Vec<Option<PlayerId>> = game
+        .combat()
+        .attackers()
+        .iter()
+        .map(|a| a.defender(&game))
+        .collect();
+    assert_eq!(
+        defenders,
+        [None, Some(PlayerId(0))],
+        "nobody may block an attacker aimed at nothing"
+    );
+}
+
+/// A Walker holding `loyalty` loyalty counters (and 2/2 as a creature too when `creature`), a Raider that is another
+/// seat's and a Bear, on seat 0's side.
+fn walker_game(loyalty: u32, also_a_creature: bool) -> (GameState, ObjectId) {
+    let mut card = CardDefinition::new("Walker")
+        .with_type(CardType::Planeswalker)
+        .with_loyalty(loyalty);
+    if also_a_creature {
+        card = card
+            .with_type(CardType::Creature)
+            .with_power_toughness(2, 2);
+    }
+    let game = state(
+        vec![vec![], vec![]],
+        vec![
+            vec![Arc::new(card), creature("Bear", 2, 2)],
+            vec![creature("Raider", 4, 4)],
+        ],
+    );
+    let walker = game.zone(Zone::Battlefield)[0];
+    (game, walker)
+}
+
+fn damage(source: ObjectId, to: ObjectId, amount: u32, deathtouch: bool) -> Event {
+    Event::DamageDealt {
+        source,
+        target: crate::combat::DamageTarget::Object(to),
+        amount,
+        deathtouch,
+    }
+}
+
+fn loyalty_of(game: &GameState, id: ObjectId) -> u32 {
+    game.object(id)
+        .and_then(|o| o.permanent())
+        .map_or(0, |p| p.counters_of(&CounterKind::Loyalty))
+}
+
+#[rstest]
+#[case::less_than_it_holds(5, 2, 3)]
+#[case::exactly_what_it_holds(5, 5, 0)]
+#[case::more_than_it_holds(3, 7, 0)]
+fn damage_to_a_planeswalker_removes_that_many_loyalty_counters_and_marks_nothing(
+    #[case] loyalty: u32,
+    #[case] dealt: u32,
+    #[case] left: u32,
+) {
+    let (mut game, walker) = walker_game(loyalty, false);
+    let raider = game.zone(Zone::Battlefield)[2];
+    fold(&mut game, &[damage(raider, walker, dealt, false)]);
+    assert_eq!(loyalty_of(&game, walker), left);
+    let marked = game
+        .object(walker)
+        .and_then(|o| o.permanent())
+        .map(|p| p.damage());
+    assert_eq!(
+        marked,
+        Some(0),
+        "damage to a planeswalker is not marked (CR 120.3c)"
+    );
+}
+
+#[test]
+fn damage_to_a_planeswalker_that_is_a_creature_too_marks_damage_and_removes_loyalty() {
+    let (mut game, walker) = walker_game(4, true);
+    let raider = game.zone(Zone::Battlefield)[2];
+    fold(&mut game, &[damage(raider, walker, 3, true)]);
+    let permanent = game.object(walker).and_then(|o| o.permanent()).unwrap();
+    assert_eq!(
+        (
+            permanent.counters_of(&CounterKind::Loyalty),
+            permanent.damage(),
+            permanent.deathtouched()
+        ),
+        (1, 3, true)
+    );
+}
+
+#[test]
+fn damage_to_a_creature_marks_damage_and_leaves_its_counters_alone() {
+    let (mut game, _) = walker_game(4, false);
+    let (bear, raider) = (
+        game.zone(Zone::Battlefield)[1],
+        game.zone(Zone::Battlefield)[2],
+    );
+    fold(&mut game, &[damage(raider, bear, 3, false)]);
+    let permanent = game.object(bear).and_then(|o| o.permanent()).unwrap();
+    assert_eq!((permanent.damage(), permanent.counters().count()), (3, 0));
+}
+
+#[test]
+fn a_loyalty_ability_is_activated_once_for_each_planeswalker_each_turn() {
+    let ability = |cost: &str| -> Ability {
+        serde_json::from_str(&format!(
+            r#"{{"Loyalty":{{"cost":{cost},"effects":[{{"Draw":{{}}}}]}}}}"#
+        ))
+        .unwrap()
+    };
+    let card = Arc::new(
+        CardDefinition::new("Walker")
+            .with_type(CardType::Planeswalker)
+            .with_loyalty(5)
+            .with_rules(ability(r#"{"Plus":1}"#))
+            .with_rules(ability(r#"{"Minus":2}"#)),
+    );
+    let mut game = state(vec![vec![], vec![]], vec![vec![card], vec![]]);
+    let walker = game
+        .object(game.zone(Zone::Battlefield)[0])
+        .unwrap()
+        .reference();
+    let activate = |ability: usize| Event::AbilityActivated {
+        player: PlayerId(0),
+        source: walker,
+        ability,
+        origin: crate::abilities::AbilitySource::Printed,
+    };
+    assert!(!game.loyalty_spent(walker));
+    fold(&mut game, &[activate(0)]);
+    assert!(game.loyalty_spent(walker));
+    for second in [0, 1] {
+        assert!(
+            apply_event(&mut game, &activate(second)).is_err(),
+            "ability {second} is a second loyalty ability of the turn"
+        );
+    }
+    let hash = game.state_hash();
+    fold(
+        &mut game,
+        &[Event::TurnBegan {
+            number: 2,
+            active: PlayerId(1),
+        }],
+    );
+    assert!(!game.loyalty_spent(walker), "a new turn allows one more");
+    assert_ne!(game.state_hash(), hash);
+    fold(
+        &mut game,
+        &[
+            Event::TurnBegan {
+                number: 3,
+                active: PlayerId(0),
+            },
+            activate(1),
+        ],
+    );
+    assert!(game.loyalty_spent(walker));
+}
+
+#[test]
+fn a_planeswalker_that_changes_zones_is_a_new_object_that_may_activate_again() {
+    let card = Arc::new(
+        CardDefinition::new("Walker")
+            .with_type(CardType::Planeswalker)
+            .with_loyalty(5)
+            .with_rules(
+                serde_json::from_str(r#"{"Loyalty":{"cost":"Zero","effects":[{"Draw":{}}]}}"#)
+                    .unwrap(),
+            ),
+    );
+    let mut game = state(vec![vec![], vec![]], vec![vec![card], vec![]]);
+    let id = game.zone(Zone::Battlefield)[0];
+    let old = game.object(id).unwrap().reference();
+    fold(
+        &mut game,
+        &[
+            Event::AbilityActivated {
+                player: PlayerId(0),
+                source: old,
+                ability: 0,
+                origin: crate::abilities::AbilitySource::Printed,
+            },
+            Event::ZoneChanged {
+                object: id,
+                from: Zone::Battlefield,
+                to: Zone::Hand(PlayerId(0)),
+                cause: ZoneCause::Moved,
+            },
+            Event::ZoneChanged {
+                object: id,
+                from: Zone::Hand(PlayerId(0)),
+                to: Zone::Battlefield,
+                cause: ZoneCause::Moved,
+            },
+        ],
+    );
+    let now = game.object(id).unwrap().reference();
+    assert_ne!(now, old);
+    assert!(game.loyalty_spent(old));
+    assert!(!game.loyalty_spent(now));
 }

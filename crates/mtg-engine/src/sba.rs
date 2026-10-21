@@ -1,12 +1,13 @@
 //! State-based actions (CR 704), applied in passes until nothing changes.
 
 use mtg_cards::value::CounterKind;
+use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
 
-use crate::characteristics::{Characteristics, characteristics};
+use crate::characteristics::characteristics;
 use crate::choose::Target;
 use crate::counters::CountersChanged;
-use crate::events::{DeathCause, Event};
+use crate::events::{DeathCause, Event, ZoneCause};
 use crate::keywords;
 use crate::object::PermanentState;
 use crate::player::{LossReason, Player};
@@ -48,9 +49,27 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
         if !state.is_alive(object.controller()) {
             continue;
         }
-        let Some(chars) = characteristics(state, id).filter(Characteristics::is_creature) else {
+        let Some(chars) = characteristics(state, id) else {
             continue;
         };
+        // A planeswalker with no loyalty is put into its owner's graveyard (CR 704.5i); one that is a creature too
+        // goes once, whatever else would happen to it.
+        if chars.types.contains(CardType::Planeswalker)
+            && object
+                .permanent()
+                .is_some_and(|permanent| permanent.counters_of(&CounterKind::Loyalty) == 0)
+        {
+            events.push(Event::ZoneChanged {
+                object: id,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(object.owner()),
+                cause: ZoneCause::StateBased,
+            });
+            continue;
+        }
+        if !chars.is_creature() {
+            continue;
+        }
         let toughness = chars.toughness.unwrap_or(0);
         let damage = object.permanent().map_or(0, PermanentState::damage);
         let deathtouched = object.permanent().is_some_and(PermanentState::deathtouched);
@@ -64,7 +83,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
     let died: Vec<ObjectId> = events
         .iter()
         .filter_map(|event| match event {
-            Event::CreatureDied { object, .. } => Some(*object),
+            Event::CreatureDied { object, .. } | Event::ZoneChanged { object, .. } => Some(*object),
             _ => None,
         })
         .collect();
@@ -168,6 +187,9 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
 #[cfg(test)]
 mod tests {
     //! Goal: a creature dies to state-based actions for zero toughness always, and for lethal damage or a deathtouch mark unless it is indestructible, and the cause named is the one that applies; a permanent with both +1/+1 and -1/-1 counters loses a pair of each until it has only one kind; a player with ten or more poison counters loses, and life is named first.
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
@@ -319,6 +341,94 @@ mod tests {
         };
         assert_eq!(events.contains(&lost), loses, "{events:?}");
         assert_eq!(events.len(), usize::from(loses));
+    }
+
+    /// Seat 0 controls a Walker (printed loyalty 3) that has lost `lost` of its loyalty counters, and seat 1 a Bear; the
+    /// Walker is also a 2/2 creature when `creature`, with `damage` damage marked on it.
+    fn walker_game(lost: u32, creature: bool, damage: u32) -> GameState {
+        let mut card = CardDefinition::new("Walker")
+            .with_type(CardType::Planeswalker)
+            .with_loyalty(3);
+        if creature {
+            card = card
+                .with_type(CardType::Creature)
+                .with_power_toughness(2, 2);
+        }
+        let mut setup = setup(
+            vec![vec![], vec![]],
+            vec![vec![Arc::new(card)], vec![creature_card("Bear")]],
+        );
+        setup.players[0].battlefield[0].damage = damage;
+        let mut game = GameState::from_setup(&setup).unwrap();
+        if lost > 0 {
+            let walker = game.zone(Zone::Battlefield)[0];
+            let event = Event::CountersChanged(CountersChanged {
+                on: Target::Object(game.object(walker).unwrap().reference()),
+                counter: CounterKind::Loyalty,
+                delta: -i32::try_from(lost).unwrap(),
+            });
+            crate::fold::apply_event(&mut game, &event).unwrap();
+        }
+        game
+    }
+
+    fn creature_card(name: &str) -> Arc<CardDefinition> {
+        creature(name, 2, 2)
+    }
+
+    #[rstest]
+    #[case::three_left(0, false, 0, false)]
+    #[case::one_left(2, false, 0, false)]
+    #[case::none_left(3, false, 0, true)]
+    #[case::damage_marked_on_a_planeswalker_kills_nothing(2, false, 9, false)]
+    #[case::a_creature_and_planeswalker_with_loyalty_dies_as_a_creature(0, true, 9, false)]
+    #[case::a_creature_and_planeswalker_with_no_loyalty_goes_once(3, true, 9, true)]
+    fn a_planeswalker_with_no_loyalty_goes_to_the_graveyard_once(
+        #[case] lost: u32,
+        #[case] creature: bool,
+        #[case] damage: u32,
+        #[case] goes_for_loyalty: bool,
+    ) {
+        let game = walker_game(lost, creature, damage);
+        let walker = game.zone(Zone::Battlefield)[0];
+        let events = check(&game);
+        let for_loyalty = Event::ZoneChanged {
+            object: walker,
+            from: Zone::Battlefield,
+            to: Zone::Graveyard(PlayerId(0)),
+            cause: ZoneCause::StateBased,
+        };
+        assert_eq!(
+            events.contains(&for_loyalty),
+            goes_for_loyalty,
+            "{events:?}"
+        );
+        let about_the_walker = events
+            .iter()
+            .filter(|event| match event {
+                Event::ZoneChanged { object, .. } | Event::CreatureDied { object, .. } => {
+                    *object == walker
+                }
+                _ => false,
+            })
+            .count();
+        let dies_as_a_creature = creature && damage >= 2 && !goes_for_loyalty;
+        assert_eq!(
+            about_the_walker,
+            usize::from(goes_for_loyalty || dies_as_a_creature)
+        );
+    }
+
+    #[test]
+    fn a_starting_planeswalker_has_its_printed_loyalty_and_no_state_based_action_follows() {
+        let game = walker_game(0, false, 0);
+        let walker = game.zone(Zone::Battlefield)[0];
+        let held = game
+            .object(walker)
+            .and_then(|o| o.permanent())
+            .map(|p| p.counters_of(&CounterKind::Loyalty));
+        assert_eq!(held, Some(3));
+        assert_eq!(check(&game), []);
     }
 
     #[test]

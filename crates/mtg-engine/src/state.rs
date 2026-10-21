@@ -86,6 +86,8 @@ pub struct GameState {
     pub(crate) delayed: Vec<Delayed>,
     pub(crate) next_delayed: u64,
     pub(crate) limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
+    /// The planeswalkers that had a loyalty ability activated this turn: no more than one for each (CR 606.3).
+    pub(crate) loyalty_used: BTreeSet<ObjectRef>,
     /// Whether any card of the game has a triggered ability or sets up a delayed one; derived from the setup.
     pub(crate) triggers_possible: bool,
     /// Whether any card of the game has a static ability; derived from the setup and the tokens made.
@@ -257,6 +259,11 @@ impl GameState {
         self.limits_spent.contains(&(source, origin, ability))
     }
 
+    /// Whether a loyalty ability of the planeswalker `permanent` has been activated this turn (CR 606.3).
+    pub(crate) fn loyalty_spent(&self, permanent: ObjectRef) -> bool {
+        self.loyalty_used.contains(&permanent)
+    }
+
     /// The id the next object created during the game gets (abilities on the stack, and tokens later).
     pub const fn next_object(&self) -> ObjectId {
         ObjectId(self.next_object)
@@ -333,6 +340,10 @@ impl Hash for GameState {
         self.delayed.hash(state);
         self.next_delayed.hash(state);
         self.limits_spent.hash(state);
+        // A game with no planeswalker hashes as it did before they existed.
+        if !self.loyalty_used.is_empty() {
+            self.loyalty_used.hash(state);
+        }
         self.result.hash(state);
     }
 }

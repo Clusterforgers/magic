@@ -1,8 +1,12 @@
 //! Folding combat events: declarations, damage assignment and damage.
 
+use mtg_cards::value::CounterKind;
+use mtg_core::card::CardType;
+
 use super::{invalid, player_mut};
 use crate::characteristics::characteristics;
 use crate::combat::{Attacker, CombatState, DamageTarget};
+use crate::counters::change;
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::state::GameState;
@@ -33,6 +37,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     blocked: false,
                     blockers: Vec::new(),
                     assignment: None,
+                    target_left: false,
                 })
                 .collect();
             state.combat.attackers_declared = true;
@@ -83,6 +88,14 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     .saturating_sub(i32::try_from(*amount).unwrap_or(i32::MAX));
             }
             DamageTarget::Object(id) => {
+                // Damage to a planeswalker removes that many loyalty counters instead (CR 120.3c); one that is a
+                // creature too has both done to it. A planeswalker is told by the card it prints, so a creature that
+                // takes damage never asks the layers.
+                let walker = state
+                    .object(*id)
+                    .is_some_and(|o| o.base_types().contains(CardType::Planeswalker));
+                let creature =
+                    !walker || characteristics(state, *id).is_some_and(|c| c.is_creature());
                 // Any damage from a source with deathtouch marks a creature for destruction (CR 704.5h).
                 let deathtouched = *amount > 0
                     && *deathtouch
@@ -92,8 +105,19 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     .get_mut(id)
                     .and_then(|o| o.permanent.as_mut())
                     .ok_or_else(|| invalid(format!("{id:?} cannot be dealt damage")))?;
-                perm.damage = perm.damage.saturating_add(*amount);
-                perm.deathtouched |= deathtouched;
+                if creature {
+                    perm.damage = perm.damage.saturating_add(*amount);
+                    perm.deathtouched |= deathtouched;
+                }
+                if walker {
+                    // The damage dealt is all of it; the counters that go are as many as there are.
+                    let removed = (*amount).min(perm.counters_of(&CounterKind::Loyalty));
+                    if removed > 0 {
+                        let delta = -i32::try_from(removed)
+                            .map_err(|_| invalid("too many loyalty counters removed"))?;
+                        change(&mut perm.counters, &CounterKind::Loyalty, delta)?;
+                    }
+                }
             }
         },
         Event::CombatEnded => state.combat = CombatState::default(),

@@ -24,6 +24,7 @@ const RUNS: &[&str] = &[
     "Ability.Spell",
     "Ability.Activated",
     "Ability.Triggered",
+    "Ability.Loyalty",
     "Ability.Limit",
     "Ability.From",
     "Trigger.ZoneChange",
@@ -229,7 +230,8 @@ mod tests {
     #[case::moving_counters("Effect.MoveCounters", true)]
     #[case::divided_amounts("Amount.Divided", false)]
     #[case::even_shares("Amount.EvenShare", false)]
-    #[case::loyalty_in_a_value("Stat.Loyalty", false)]
+    #[case::loyalty_abilities("Ability.Loyalty", true)]
+    #[case::loyalty_costs_with_an_x("Cost.Loyalty.X", false)]
     #[case::being_kicked("Condition.Kicked", false)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]

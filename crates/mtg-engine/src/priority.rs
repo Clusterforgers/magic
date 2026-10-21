@@ -18,6 +18,7 @@ use crate::decision::{PriorityAction, PriorityOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::{Event, ZoneCause};
 use crate::keywords;
+use crate::loyalty;
 use crate::mana::{ManaOption, ManaSource, can_afford};
 use crate::object::GameObject;
 use crate::player::Player;
@@ -183,7 +184,8 @@ fn rule_mana_costs(state: &GameState, source: ManaSource) -> Option<SimpleManaAb
         .map(|mana| mana.shape)
 }
 
-fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
+/// Whether `player` could cast a sorcery now: their own turn, a main step and an empty stack (CR 307.1).
+pub(crate) fn sorcery_timing(state: &GameState, player: PlayerId) -> bool {
     state.turn().active() == player && state.turn().step().is_main() && state.stack().is_empty()
 }
 
@@ -206,6 +208,11 @@ fn can_activate(
     address: AbilityRef,
     rules: &Ability,
 ) -> bool {
+    // A loyalty ability costs counters, not a cost the price below knows (CR 606).
+    if let Ability::Loyalty { cost, .. } = rules {
+        return loyalty::can_activate(state, player, object, *cost)
+            && announceable(state, player, object.id(), rules);
+    }
     let Ability::Activated {
         cost,
         timing,

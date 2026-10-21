@@ -61,7 +61,7 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
 }
 
 /// Adds `delta` counters of `kind` to what is held, or takes them off; a kind that falls to none is no longer listed.
-fn change(
+pub(crate) fn change(
     held: &mut BTreeMap<CounterKind, u32>,
     kind: &CounterKind,
     delta: i32,

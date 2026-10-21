@@ -455,6 +455,8 @@ pub enum ZoneCause {
     Countered,
     /// It was milled (CR 701.17).
     Milled,
+    /// A state-based action put it into its owner's graveyard (CR 704.5i).
+    StateBased,
 }
 
 impl Event {

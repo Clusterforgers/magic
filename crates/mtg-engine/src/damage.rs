@@ -95,12 +95,16 @@ pub(crate) enum Division {
     Choose(DamageOptions),
 }
 
-/// What the attacker attacks, as a recipient of damage.
-fn defender_of(attacker: &Attacker) -> DamageTarget {
-    match attacker.target() {
+/// What the attacker attacks, as a recipient of damage; nothing once the planeswalker it attacked has left the
+/// battlefield (CR 506.4c).
+fn defender_of(attacker: &Attacker) -> Option<DamageTarget> {
+    if attacker.attacks_nothing() {
+        return None;
+    }
+    Some(match attacker.target() {
         AttackTarget::Player(p) => DamageTarget::Player(p),
         AttackTarget::Planeswalker(o) => DamageTarget::Object(o),
-    }
+    })
 }
 
 /// How the attacker's `power` is shared among its blockers and the player or planeswalker it attacks.
@@ -117,14 +121,13 @@ pub(crate) fn division(
 ) -> Division {
     let defender = defender_of(attacker);
     if !attacker.blocked() {
-        return Division::Fixed(vec![(defender, power)]);
+        return Division::Fixed(defender.map_or_else(Vec::new, |defender| vec![(defender, power)]));
     }
     let blockers = attacker.blockers();
     if blockers.is_empty() {
-        return Division::Fixed(if rules.trample {
-            vec![(defender, power)]
-        } else {
-            Vec::new()
+        return Division::Fixed(match defender {
+            Some(defender) if rules.trample => vec![(defender, power)],
+            _ => Vec::new(),
         });
     }
     if let Some(recorded) = &attacker.assignment {
@@ -141,7 +144,10 @@ pub(crate) fn division(
         let assigned = shares
             .iter()
             .fold(0u32, |sum, (_, n)| sum.saturating_add(*n));
-        if rules.trample && power > assigned {
+        if rules.trample
+            && power > assigned
+            && let Some(defender) = defender
+        {
             shares.push((defender, power - assigned));
         }
         return Division::Fixed(shares);
@@ -150,7 +156,7 @@ pub(crate) fn division(
         attacker: attacker.object(),
         power,
         blockers: blockers.to_vec(),
-        excess: rules.trample.then_some(defender),
+        excess: defender.filter(|_| rules.trample),
         lethal: blockers
             .iter()
             .map(|blocker| lethal_damage(state, *blocker, rules.deathtouch))

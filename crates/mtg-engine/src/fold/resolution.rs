@@ -48,6 +48,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     "ability {ability} of {source:?} was already used this turn"
                 )));
             }
+            // A planeswalker has one loyalty ability activated each turn, whichever it is (CR 606.3).
+            if matches!(&*rules, Ability::Loyalty { .. }) && !state.loyalty_used.insert(*source) {
+                return Err(invalid(format!(
+                    "a loyalty ability of {source:?} was already activated this turn"
+                )));
+            }
             Ok(())
         }
         Event::ResolutionBegan { object } => begin(state, *object),

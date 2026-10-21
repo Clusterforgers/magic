@@ -8,6 +8,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use super::{unsupported, wrong_effect};
 use crate::choose::{Questions, Stop, Target};
 use crate::events::{Event, ZoneCause};
+use crate::loyalty;
 use crate::mulligan::shuffled;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
@@ -137,6 +138,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                         controller,
                     });
                 }
+                // A planeswalker comes in with its loyalty, proposed with the move so a rule that changes what
+                // enters with counters can reach it (CR 306.5b).
+                events.extend(loyalty::entering(state, object.id()));
             }
             return Ok(Run::Done {
                 events,

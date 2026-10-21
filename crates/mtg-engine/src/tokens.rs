@@ -105,6 +105,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
             blocked: false,
             blockers: Vec::new(),
             assignment: None,
+            target_left: false,
         });
     }
     reset_passes(state);

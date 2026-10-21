@@ -20,6 +20,7 @@ use crate::choose::{Choice, Choices, announced_specs, asks, modal_of, mode_optio
 use crate::decision::{Decision, DecisionKind, PayChoice, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::{Event, ZoneCause};
+use crate::loyalty;
 use crate::mana::{
     ManaOption, Payment, auto_payment, check_payment, complete_payment, max_life_payment,
 };
@@ -217,39 +218,50 @@ fn activation_events(
 ) -> Option<Vec<Event>> {
     let source = state.object(ability.object)?;
     let rules = ability_reader::ability(state, ability)?;
-    let Ability::Activated { cost, .. } = &*rules else {
-        return None;
-    };
-    let before = snapshot(state, ability.object)?;
+    let mut before = snapshot(state, ability.object)?;
     let mut events = Vec::new();
-    if cost.0.contains(&CostItem::Tap) {
-        events.push(Event::PermanentTapped {
-            object: ability.object,
-        });
-    }
-    // The costs that move the source come before the activation, which names the source as it was (CR 113.7a): it is
-    // sacrificed from the battlefield, discarded from the hand, or exiled from the zone it is in.
-    if cost.0.contains(&CostItem::SacrificeSelf) {
-        events.push(Event::ZoneChanged {
-            object: ability.object,
-            from: Zone::Battlefield,
-            to: Zone::Graveyard(source.owner()),
-            cause: ZoneCause::Sacrificed,
-        });
-    }
-    if cost.0.contains(&CostItem::DiscardSelf) {
-        events.push(Event::CardDiscarded {
-            player,
-            object: ability.object,
-        });
-    }
-    if cost.0.contains(&CostItem::ExileSelf) {
-        events.push(Event::ZoneChanged {
-            object: ability.object,
-            from: source.zone(),
-            to: Zone::Exile,
-            cause: ZoneCause::Exiled,
-        });
+    match &*rules {
+        Ability::Activated { cost, .. } => {
+            if cost.0.contains(&CostItem::Tap) {
+                events.push(Event::PermanentTapped {
+                    object: ability.object,
+                });
+            }
+            // The costs that move the source come before the activation, which names the source as it was (CR 113.7a): it is
+            // sacrificed from the battlefield, discarded from the hand, or exiled from the zone it is in.
+            if cost.0.contains(&CostItem::SacrificeSelf) {
+                events.push(Event::ZoneChanged {
+                    object: ability.object,
+                    from: Zone::Battlefield,
+                    to: Zone::Graveyard(source.owner()),
+                    cause: ZoneCause::Sacrificed,
+                });
+            }
+            if cost.0.contains(&CostItem::DiscardSelf) {
+                events.push(Event::CardDiscarded {
+                    player,
+                    object: ability.object,
+                });
+            }
+            if cost.0.contains(&CostItem::ExileSelf) {
+                events.push(Event::ZoneChanged {
+                    object: ability.object,
+                    from: source.zone(),
+                    to: Zone::Exile,
+                    cause: ZoneCause::Exiled,
+                });
+            }
+        }
+        // The loyalty counters of the cost are paid first (CR 606.4); the source stays, and the ability remembers it as it
+        // stands once they are paid.
+        Ability::Loyalty { cost, .. } => {
+            let delta = cost.change()?;
+            if let Some(paid) = loyalty::payment(source, *cost) {
+                events.push(paid);
+                loyalty::after_payment(&mut before.counters, delta);
+            }
+        }
+        _ => return None,
     }
     events.push(Event::AbilityActivated {
         player,
