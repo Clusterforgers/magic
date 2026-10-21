@@ -13,7 +13,7 @@ use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 
-use super::{DelayedId, Triggered};
+use super::{DelayedId, Triggered, x_read};
 use crate::abilities::{AbilityRef, AbilitySource, Cause};
 use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::characteristics::{controller_of, controller_of_object};
@@ -746,7 +746,19 @@ fn object_triggers(
         for cause in causes(when, happened, &scope) {
             // CR 603.4: an "if" in the trigger is checked as the event happens.
             if let Some(condition) = intervening_if {
-                let scope = Scope::triggered(state, controller, source, &cause);
+                if shot.is_none() {
+                    shot = snapshot(state, object.id());
+                }
+                let Some(held) = &shot else {
+                    continue;
+                };
+                // The "if" reads the X the trigger will remember as it goes on the stack.
+                let announced = Choices {
+                    x: x_read(when, false, held, &cause),
+                    ..Choices::default()
+                };
+                let mut scope = Scope::triggered(state, controller, source, &cause);
+                scope.choices = &announced;
                 if !scope.holds(condition).unwrap_or(false) {
                     continue;
                 }

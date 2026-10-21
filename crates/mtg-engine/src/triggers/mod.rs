@@ -11,6 +11,7 @@ mod detect_batches;
 #[cfg(test)]
 mod detect_events;
 mod queue;
+mod reads_x;
 mod state;
 
 use mtg_cards::ability::Ability;
@@ -33,6 +34,7 @@ pub use delayed::{Delayed, DelayedCreated, DelayedId};
 pub use detect::detect;
 pub(crate) use detect::needs_before;
 pub use queue::PendingTrigger;
+pub(crate) use reads_x::read as x_read;
 
 pub(crate) use delayed::{fold_created, fold_expired};
 pub(crate) use queue::{fold_ordered, fold_removed, fold_triggered, next as sweep, removing, take};

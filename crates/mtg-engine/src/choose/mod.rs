@@ -40,7 +40,7 @@ pub(crate) use cards::check as check_cards;
 pub(crate) use cards::{Chooser, Picked, Selection, pick_cards, pick_selections};
 pub(crate) use mode::{announceable, announced_specs, modal_of, mode_options, targets_before};
 pub(crate) use option::{OptionChooser, Optioned, pick_options};
-pub(crate) use targets::{asks, legal_for, legal_from, options_for};
+pub(crate) use targets::{asks, legal_for, legal_from, options_for, reads_x, targets_met};
 pub(crate) use yes_no::{Said, pick_yes_no};
 
 pub(crate) use cards::answer as cards_answer;

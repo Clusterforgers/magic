@@ -651,6 +651,7 @@ mod tests {
             source: ObjectId(1),
             min,
             max,
+            except: Vec::new(),
             text: "Choose a value for X.".into(),
             can_cancel,
         })

@@ -1503,11 +1503,14 @@ impl<'a> Walker<'a> {
             } => {
                 w.scope = Scope::new(&[], true);
                 w.at("when", |w| w.trigger_when(when));
+                // The permanent remembers the X of the spell it came from for its own enters trigger (CR 107.3m); a
+                // trigger on a spell being cast reads the X that spell was cast with, which another card's trigger
+                // finds in a spell whose cost this card does not print.
+                w.x_now = enters_itself(when) || casts_a_spell(when);
+                w.x_free |= casts_another_spell(when);
                 if let Some(condition) = intervening_if {
                     w.at("if", |w| w.condition(condition));
                 }
-                // The permanent remembers the X of the spell it came from for its own enters trigger (CR 107.3m).
-                w.x_now = enters_itself(when);
                 w.body(
                     targets,
                     effects,
@@ -1741,7 +1744,6 @@ impl<'a> Walker<'a> {
     }
 }
 
-/// Whether a cost has an `{X}` in its mana.
 /// Whether the trigger is "when this enters": the one trigger of a permanent that reads the X its spell was cast with.
 fn enters_itself(when: &TriggerPattern) -> bool {
     matches!(
@@ -1754,6 +1756,17 @@ fn enters_itself(when: &TriggerPattern) -> bool {
     )
 }
 
+/// Whether the trigger is on a spell being cast: it reads the X of that spell.
+const fn casts_a_spell(when: &TriggerPattern) -> bool {
+    matches!(when, TriggerPattern::SpellCast { .. })
+}
+
+/// Whether the trigger is on a spell other than the card itself being cast, whose X the card does not print.
+fn casts_another_spell(when: &TriggerPattern) -> bool {
+    matches!(when, TriggerPattern::SpellCast { what, .. } if !what.0.contains(&Pred::This))
+}
+
+/// Whether a cost has an `{X}` in its mana.
 fn has_x_mana(cost: &Cost) -> bool {
     cost.0
         .iter()
@@ -2141,6 +2154,11 @@ mod tests {
     #[case::an_x_in_the_enters_trigger_of_the_card(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Effect.Draw", "Trigger.ZoneChange"])]
     #[case::an_x_in_the_dies_trigger_of_the_card(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.ZoneChange"])]
     #[case::an_x_in_the_enters_trigger_of_another_card(r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Other"],"to":"Battlefield"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.ZoneChange"])]
+    #[case::an_x_in_the_intervening_if_of_the_enters_trigger(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"Compare":{"left":"X","op":"Ge","right":5}},"effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Effect.Draw", "Trigger.ZoneChange"])]
+    #[case::an_x_in_the_intervening_if_of_another_trigger(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":"X","op":"Ge","right":5}},"effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.StepBegins"])]
+    #[case::an_x_in_the_intervening_if_of_the_dies_trigger(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"if":{"Compare":{"left":"X","op":"Ge","right":5}},"effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.ZoneChange"])]
+    #[case::an_x_in_the_cast_trigger_of_the_spell(r#"{"Triggered":{"when":{"SpellCast":{"what":["This"],"by":"You"}},"from":"Stack","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.From", "Ability.Triggered", "Effect.Draw", "Trigger.SpellCast"])]
+    #[case::an_x_in_the_trigger_on_another_spell_cast(r#"{"Triggered":{"when":{"SpellCast":{"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Effect.Draw", "Trigger.SpellCast"])]
     #[case::an_x_in_the_counters_the_card_enters_with(r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"+1/+1","count":"X"}}}}"#, &["Ability.Replacement", "ReplaceBy.WithCounters", "ReplaceWhen.Enters"])]
     #[case::an_x_in_the_counters_another_card_enters_with(r#"{"Replacement":{"when":{"Enters":{"what":[{"Type":"Creature"},"Other"]}},"by":{"WithCounters":{"counter":"+1/+1","count":"X"}}}}"#, &["Ability.Replacement", "Amount.X.Elsewhere", "ReplaceBy.WithCounters", "ReplaceWhen.Enters"])]
     #[case::an_x_in_what_a_spell_targets(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#, &["Ability.Spell", "Effect.Destroy"])]

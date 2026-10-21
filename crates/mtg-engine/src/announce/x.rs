@@ -6,17 +6,17 @@
 //! the same question, from 0 to the loyalty counters of the planeswalker, and removes that many.
 
 use mtg_cards::ability::{Ability, LoyaltyCost};
-use mtg_cards::refs::{Pred, ZoneKind};
-use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::CounterKind;
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
-use super::{Ctx, Next, What, Work, total};
-use crate::choose::{Choices, NumberOptions};
+use super::{Ctx, Next, What, Work, cheapest, targets, total};
+use crate::choose::{Choices, NumberOptions, modal_of, reads_x, targets_met};
 use crate::decision::DecisionKind;
 use crate::price::Price;
+use crate::resolve::spell_ability;
 use crate::state::GameState;
-use crate::triggers::PendingTrigger;
+use crate::triggers::{PendingTrigger, x_read};
 
 /// The most the search for the largest X goes on: a payment this large is more mana than any game has.
 const MOST_X: u32 = 1_000;
@@ -73,39 +73,115 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     let Some(max) = largest(ctx, work.choices) else {
         return Some(Next::Drop);
     };
-    // Nothing to choose between: X is 0.
-    if max == 0 {
-        work.choices.x = Some(0);
+    // A value of X that leaves a target specification without a target cannot be announced (CR 601.2b, 601.2c).
+    let Some(offer) = Offer::of(ctx, work.choices, max) else {
+        return Some(Next::Drop);
+    };
+    // Nothing to choose between: X is the one value left.
+    if offer.min == offer.max {
+        work.choices.x = Some(offer.min);
         work.done.x = true;
         return None;
     }
     Some(ctx.ask(DecisionKind::ChooseNumber(NumberOptions {
         source: ctx.source,
-        min: 0,
-        max: Some(max),
+        min: offer.min,
+        max: Some(offer.max),
+        except: offer.except,
         text: "Choose a value for X.".to_owned(),
         can_cancel: ctx.can_cancel(),
     })))
 }
 
-/// The X a waiting trigger reads: that of the spell or ability that set it up (a delayed trigger) or, when it triggers on its own permanent entering,
-/// of the spell that permanent came from (CR 107.3m). Any
-/// other trigger of a permanent reads X as 0.
+/// Whether `pays` accepts the total cost of casting the spell `id` for `cost` (the cost modifiers applied), choosing
+/// the least X that leaves each target specification with a legal target (CR 601.2b, 601.2c): more X only costs more.
+/// `fixed` is a cast that pays an alternative cost, where X is 0. A spell whose targets do not read X, and a modal
+/// spell, whose modes are chosen first, are paid for as they are.
+pub(crate) fn payable(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    fixed: bool,
+    cost: &ManaCost,
+    pays: impl Fn(&ManaCost) -> bool,
+) -> bool {
+    let specs = spell_ability(state, id)
+        .filter(|(_, rules)| modal_of(rules).is_none())
+        .map(|(_, rules)| rules.targets().to_vec())
+        .filter(|specs| specs.iter().any(reads_x));
+    let Some(specs) = specs else {
+        return pays(&cheapest(state, player, id, cost));
+    };
+    let symbols = state
+        .object(id)
+        .map_or(0, |card| u32::from(card.card().x_in_cost));
+    let most = if fixed || symbols == 0 { 0 } else { MOST_X };
+    for x in 0..=most {
+        let total = cost
+            .clone()
+            .with(ManaSymbol::Generic(x.saturating_mul(symbols)));
+        if !pays(&cheapest(state, player, id, &total)) {
+            return false;
+        }
+        if targets_met(state, id, player, &specs, None, Some(x)) {
+            return true;
+        }
+    }
+    false
+}
+
+/// The values of X a player may announce: from `min` to `max`, less the `except` between them.
+struct Offer {
+    min: u32,
+    max: u32,
+    except: Vec<u32>,
+}
+
+impl Offer {
+    /// The values of X from 0 to `most` for which every target specification can be met, or `None` when there are
+    /// none. A target specification that does not read X is the same for every value.
+    fn of(ctx: &Ctx<'_>, choices: &Choices, most: u32) -> Option<Offer> {
+        let specs = targets::specs(ctx, choices);
+        if !specs.iter().any(reads_x) {
+            return Some(Offer {
+                min: 0,
+                max: most,
+                except: Vec::new(),
+            });
+        }
+        let met: Vec<u32> = (0..=most)
+            .filter(|x| {
+                targets_met(
+                    ctx.state,
+                    ctx.source,
+                    ctx.player,
+                    &specs,
+                    ctx.cause(),
+                    Some(*x),
+                )
+            })
+            .collect();
+        let (min, max) = (*met.first()?, *met.last()?);
+        let except = (min..=max)
+            .filter(|x| met.binary_search(x).is_err())
+            .collect();
+        Some(Offer { min, max, except })
+    }
+}
+
+/// The X a waiting trigger reads (`triggers::x_read`): that of the spell or ability that set it up, of the spell its
+/// permanent came from or of the spell cast; 0 for any other trigger.
 fn remembered(waiting: &PendingTrigger) -> Option<u32> {
     let trigger = waiting.trigger();
-    let reads = trigger.delayed.is_some()
-        || matches!(
-            waiting.rules(),
-            Ability::Triggered {
-                when: TriggerPattern::ZoneChange {
-                    what,
-                    to: Some(ZoneKind::Battlefield),
-                    ..
-                },
-                ..
-            } if what.0.contains(&Pred::This)
-        );
-    reads.then_some(trigger.snapshot.x).flatten()
+    let Ability::Triggered { when, .. } = waiting.rules() else {
+        return trigger.delayed.and(trigger.snapshot.x);
+    };
+    x_read(
+        when,
+        trigger.delayed.is_some(),
+        &trigger.snapshot,
+        &trigger.cause,
+    )
 }
 
 /// `mana` with X paid: X generic mana for each `{X}` of the cost.

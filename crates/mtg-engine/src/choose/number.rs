@@ -22,6 +22,10 @@ pub struct NumberOptions {
     pub min: u32,
     /// The largest allowed number; no limit when absent.
     pub max: Option<u32>,
+    /// Numbers between `min` and `max` that are not allowed (an X with no legal target); empty when every one is.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<u32>>", optional))]
+    pub except: Vec<u32>,
     /// What the number is for in the words of a card ("Choose a value for X."); empty when the engine gave none.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
@@ -55,7 +59,10 @@ pub(crate) fn answer(
         NumberChoice::Cancel => return Err(IllegalAnswer::NotOffered("cancel").into()),
         NumberChoice::Number(number) => number,
     };
-    if number < options.min || options.max.is_some_and(|max| number > max) {
+    if number < options.min
+        || options.max.is_some_and(|max| number > max)
+        || options.except.contains(&number)
+    {
         return Err(IllegalAnswer::NotOffered("number").into());
     }
     Ok(if announcing {
@@ -80,6 +87,7 @@ mod tests {
             source: ObjectId(5),
             min,
             max,
+            except: Vec::new(),
             text: String::new(),
             can_cancel,
         }

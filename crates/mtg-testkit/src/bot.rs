@@ -561,12 +561,16 @@ impl RandomBot {
         Answer::YesNo(YesNoChoice(yes && !options.only_no))
     }
 
-    /// Any number in range; with no upper bound, a few above the lowest. A bot never backs out of a cast.
+    /// Any number in range that is allowed; with no upper bound, a few above the lowest. A bot never backs out of a
+    /// cast.
     fn number(&mut self, options: &NumberOptions) -> Answer {
         let top = options.max.unwrap_or_else(|| options.min.saturating_add(3));
-        let spread = usize::try_from(top.saturating_sub(options.min)).unwrap_or(0) + 1;
-        let offset = u32::try_from(self.rng.index(spread)).unwrap_or(0);
-        Answer::ChooseNumber(NumberChoice::Number(options.min.saturating_add(offset)))
+        let allowed: Vec<u32> = (options.min..=top)
+            .filter(|number| !options.except.contains(number))
+            .collect();
+        let at = self.rng.index(allowed.len().max(1));
+        let picked = allowed.get(at).copied().unwrap_or(options.min);
+        Answer::ChooseNumber(NumberChoice::Number(picked))
     }
 
     /// Any of the optional costs on offer, none included.

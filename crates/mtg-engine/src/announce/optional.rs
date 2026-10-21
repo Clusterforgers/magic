@@ -94,6 +94,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             source: ctx.source,
             min: 0,
             max: u32::try_from(most).ok(),
+            except: Vec::new(),
             text: format!("Choose how many times to pay {label}."),
             can_cancel: ctx.can_cancel(),
         })));

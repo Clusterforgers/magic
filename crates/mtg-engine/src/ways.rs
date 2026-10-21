@@ -258,14 +258,22 @@ pub(crate) fn grantable(
             && way
                 .cost(card.card().mana_cost.as_ref())
                 .is_some_and(|cost| {
-                    let cost = announce::cheapest(state, player, id, &cost);
-                    can_afford_with(
+                    announce::payable(
+                        state,
+                        player,
+                        id,
+                        way.alternative.is_some(),
                         &cost,
-                        seat.mana(),
-                        &sources,
-                        help.help(),
-                        seat.life(),
-                        &spend,
+                        |total| {
+                            can_afford_with(
+                                total,
+                                seat.mana(),
+                                &sources,
+                                help.help(),
+                                seat.life(),
+                                &spend,
+                            )
+                        },
                     )
                 })
     })
@@ -305,8 +313,14 @@ pub(crate) fn castable_now(
             && way
                 .cost(card.card().mana_cost.as_ref())
                 .is_some_and(|cost| {
-                    let cost = announce::cheapest(state, player, id, &cost);
-                    can_afford_with(&cost, pool, sources, help.help(), life, &spend)
+                    announce::payable(
+                        state,
+                        player,
+                        id,
+                        way.alternative.is_some(),
+                        &cost,
+                        |total| can_afford_with(total, pool, sources, help.help(), life, &spend),
+                    )
                 })
     })
 }

@@ -37,6 +37,25 @@ pub(crate) fn options_before_x(
     )
 }
 
+/// Whether what `spec` may target depends on X: a comparison against X among its predicates.
+pub(crate) fn reads_x(spec: &TargetSpec) -> bool {
+    without_x(&spec.what) != spec.what
+}
+
+/// Whether every one of `specs` can be met when the X announced is `x` (CR 601.2c): each has enough legal targets.
+pub(crate) fn targets_met(
+    state: &GameState,
+    source: ObjectId,
+    controller: PlayerId,
+    specs: &[TargetSpec],
+    cause: Option<&Cause>,
+    x: Option<u32>,
+) -> bool {
+    specs.iter().enumerate().all(|(index, spec)| {
+        options_for(state, source, controller, index, spec, false, cause, x).is_some()
+    })
+}
+
 /// `what` without the comparisons against X among its predicates.
 fn without_x(what: &Targetable) -> Targetable {
     match what {

@@ -39,7 +39,7 @@ use crate::ways::Way;
 
 pub(crate) use modifiers::cheapest;
 pub(crate) use optional::Optional;
-pub(crate) use x::XCost;
+pub(crate) use x::{XCost, payable};
 
 /// What is being put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq)]
