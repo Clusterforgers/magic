@@ -5,7 +5,7 @@
  */
 export type ChooseDeck = { 
 /**
- * The id of a built-in deck (`GET /api/demo-decks`), or of one of the signed-in holder's stored
+ * The id of a built-in deck (`GET /api/demo-decks`), `precon:<code>` (`GET /api/precons`) or the id of one of the signed-in holder's stored
  * decks. A stored deck of another account is the same `unknown_deck` as one that does not exist.
  */
 deck: string, };

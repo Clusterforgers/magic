@@ -10,7 +10,7 @@ export type JoinRequest = {
  */
 name?: string, 
 /**
- * The deck the seat plays: the id of a built-in deck, or of one of the signed-in visitor's stored
+ * The deck the seat plays: the id of a built-in deck, `precon:<code>` (`GET /api/precons`) or the id of one of the signed-in visitor's stored
  * decks. Absent, the seat keeps the deck it was made with, if any, and its holder chooses one with
  * `PUT /api/games/{id}/seats/{n}/deck`.
  */

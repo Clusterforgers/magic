@@ -2,7 +2,7 @@
 
 Design of the deck check: when a deck is chosen or built, a check finds the cards the game cannot play without manual steps and highlights them, and a saved deck that passes shows a Verified marker until it changes.
 
-The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mtg_cards::deck::deck_report`), the deck endpoints and the derived marker are implemented (`server.md`, "Cards and decks"); the highlighting in the builder and the list, the card preview and the live check are implemented (`web.md`); the table note, a seat's deck name, format and count of manual cards in the lobby roster, is implemented in the server (`server.md`, "Choosing a deck"); its display in the lobby and the precon browser are design. A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
+The per-card support lookup (`Library::support` in `mtg-cards`), the report (`mtg_cards::deck::deck_report`), the deck endpoints and the derived marker are implemented (`server.md`, "Cards and decks"); the highlighting in the builder and the list, the card preview and the live check are implemented (`web.md`); the table note, a seat's deck name, format and count of manual cards in the lobby roster, is implemented in the server (`server.md`, "Choosing a deck"), and so is each precon's state, judged by the same report (`server.md`, "Precons"); their display in the lobby and the precon browser is design. A card without an implementation counts as `Manual` unless it has no rules text, so the report always says how much of the deck the table resolves by hand.
 
 ## Terms
 
@@ -69,3 +69,4 @@ Not built yet, in order of value:
 1. Saving runs the check automatically; the button stays for unsaved decks and pasted lists.
 2. A deck with manual cards may be played, with a note to everyone at the table. The note is a count ("Bo's deck has 3 manual cards"), never the names, because names would reveal the deck. A card's name, badge and the clause to resolve appear when it becomes public (cast or in play).
 3. The sideboard counts toward the marker: one manual card there keeps the deck unmarked. The report still shows it under its zone.
+4. A precon is checked as `commander` when it has a commander and as `freeform` otherwise, since it is a product and not an entry in a tournament format. Its state is the report of the moment, kept in an index until the cards, the precons, the rules or the engine change; nothing is stored, so it is `verified`, `manual_play` or `blocked` and never `unchecked`. Whether a game takes the deck is a separate flag (`playable`) with its own issues.
