@@ -344,7 +344,7 @@ mod tests {
     )]
     #[case::keyword_and_an_unread_static(
         "Artifact \u{2014} Equipment",
-        "Equipped creature can't be blocked.\nEquip {1}",
+        "Equipped creature can't be blocked except by creatures with flying.\nEquip {1}",
         Some(ImplStatus::Partial)
     )]
     #[case::nothing_read("Instant", "Goad target creature.", Some(ImplStatus::Manual))]

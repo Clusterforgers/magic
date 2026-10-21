@@ -104,7 +104,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 114] = [
     ("Pacifism", Some(Full), 2, 2),
     ("Panharmonicon", Some(Manual), 0, 1),
     ("Parallel Lives", Some(Manual), 0, 1),
-    ("Questing Beast", Some(Partial), 3, 6),
+    ("Questing Beast", Some(Partial), 4, 6),
     ("Rally the Ranks", Some(Full), 2, 2),
     ("Rampaging Ferocidon", Some(Partial), 1, 3),
     ("Rampant Growth", Some(Full), 1, 1),

@@ -408,7 +408,6 @@ fn clause_spans_cut_out_the_sentences_they_name() {
         }
     }
     let expected = [
-        "Questing Beast can't be blocked by creatures with power 2 or less.",
         "Combat damage that would be dealt by creatures you control can't be prevented.",
         "Whenever Questing Beast deals combat damage to an opponent, it deals that much damage to target planeswalker that player controls.",
     ];
