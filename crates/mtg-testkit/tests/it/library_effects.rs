@@ -536,6 +536,7 @@ fn a_reveal_names_the_hand_and_a_look_and_a_move_put_the_top_card_on_the_bottom(
         Event::LibraryBottomed {
             player: pid(0),
             cards: vec![top],
+            random: false,
         },
     ];
     let seen: Vec<&Event> = played

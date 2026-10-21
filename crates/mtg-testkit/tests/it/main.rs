@@ -10,6 +10,7 @@ mod announce_division;
 mod archon_fuzz;
 mod attach_fuzz;
 mod attachments;
+mod cascade;
 mod cast_permissions;
 mod checkpoint;
 mod choice_fuzz;
