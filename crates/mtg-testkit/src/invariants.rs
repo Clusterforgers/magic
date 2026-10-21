@@ -19,6 +19,7 @@ use mtg_engine::keywords::{is_indestructible, keywords_of};
 use mtg_engine::object::{ObjectKind, ObjectRef, PermanentState};
 use mtg_engine::player::Player;
 use mtg_engine::resolve::Scope;
+use mtg_engine::spend::{Restricted, Spend};
 use mtg_engine::state::Stage;
 use mtg_engine::zones::{Zone, Zones};
 use mtg_engine::{Characteristics, characteristics};
@@ -457,6 +458,8 @@ pub struct InvariantChecker {
     expected_objects: usize,
     expected_life: Vec<i32>,
     expected_pool: Vec<[i64; 6]>,
+    /// The restricted mana each pool holds, by the history of what was added and spent.
+    expected_restricted: Vec<Vec<Restricted>>,
     expected_damage: BTreeMap<ObjectId, u32>,
     expected_object_counters: BTreeMap<ObjectId, BTreeMap<CounterKind, i64>>,
     expected_player_counters: BTreeMap<PlayerId, BTreeMap<CounterKind, i64>>,
@@ -512,6 +515,7 @@ impl InvariantChecker {
             expected_objects: shadow.object_count(),
             expected_life: shadow.players().iter().map(Player::life).collect(),
             expected_pool: vec![[0; 6]; shadow.players().len()],
+            expected_restricted: vec![Vec::new(); shadow.players().len()],
             expected_damage,
             expected_object_counters,
             expected_player_counters,
@@ -714,13 +718,36 @@ impl InvariantChecker {
     /// Updates the independent accumulators from the event and compares them to the shadow state.
     fn account(&mut self, event: &Event) -> Result<(), Violation> {
         match event {
-            Event::ManaAdded { player, mana, .. } => {
+            Event::ManaAdded {
+                player, mana, only, ..
+            } => {
                 self.adjust_pool(*player, *mana, 1)?;
+                if !only.is_empty() {
+                    self.held_restricted(*player)?.push(Restricted {
+                        mana: *mana,
+                        only: only.clone(),
+                    });
+                }
                 self.check_pool(*player)
             }
-            Event::ManaSpent { player, mana } => {
+            Event::ManaSpent {
+                player,
+                mana,
+                restricted,
+            } => {
                 for m in mana {
                     self.adjust_pool(*player, *m, -1)?;
+                }
+                self.check_restrictions_honoured(restricted)?;
+                for unit in restricted {
+                    let held = self.held_restricted(*player)?;
+                    let Some(at) = held.iter().position(|h| h == unit) else {
+                        return Err(Violation::Mana(format!(
+                            "{player:?} spent {:?} mana restricted to something they did not hold",
+                            unit.mana
+                        )));
+                    };
+                    held.remove(at);
                 }
                 self.check_pool(*player)
             }
@@ -728,6 +755,7 @@ impl InvariantChecker {
                 if let Some(cells) = self.expected_pool.get_mut(player.index()) {
                     *cells = [0; 6];
                 }
+                self.held_restricted(*player)?.clear();
                 self.check_pool(*player)
             }
             Event::DamageDealt { target, amount, .. } => {
@@ -990,19 +1018,60 @@ impl InvariantChecker {
         Ok(())
     }
 
+    /// The restricted mana the history says `player` holds.
+    fn held_restricted(&mut self, player: PlayerId) -> Result<&mut Vec<Restricted>, Violation> {
+        self.expected_restricted
+            .get_mut(player.index())
+            .ok_or_else(|| Violation::Mana(format!("unknown {player:?}")))
+    }
+
+    /// Restricted mana spent for a spell is mana its restriction allows: the spell is the top of the stack once its cast
+    /// events have folded, which come before the mana it is paid with is spent.
+    fn check_restrictions_honoured(&self, units: &[Restricted]) -> Result<(), Violation> {
+        let top = self
+            .shadow
+            .zone(Zone::Stack)
+            .last()
+            .and_then(|id| self.shadow.object(*id));
+        let Some(spell) = top.filter(|o| o.kind() == ObjectKind::Card) else {
+            return Ok(());
+        };
+        let spend = Spend::for_spell(&self.shadow, spell.id(), spell.card().x_in_cost > 0);
+        match units.iter().find(|unit| !spend.allows(&unit.only)) {
+            Some(unit) => Err(Violation::Mana(format!(
+                "{:?} mana restricted to {:?} was spent on {}",
+                unit.mana,
+                unit.only,
+                spell.card().name
+            ))),
+            None => Ok(()),
+        }
+    }
+
     fn check_pool(&self, player: PlayerId) -> Result<(), Violation> {
         let expected = self.expected_pool.get(player.index());
         let actual = self.shadow.player(player).map(Player::mana);
         match (expected, actual) {
             (Some(expected), Some(pool)) => {
                 for mana in ManaType::ALL {
+                    let held = pool.get(mana)
+                        + u32::try_from(
+                            pool.restricted().iter().filter(|u| u.mana == mana).count(),
+                        )
+                        .unwrap_or(u32::MAX);
                     let want = expected[mana.index()];
-                    if want < 0 || i64::from(pool.get(mana)) != want {
+                    if want < 0 || i64::from(held) != want {
                         return Err(Violation::Mana(format!(
-                            "{player:?} {mana:?}: pool has {}, history says {want}",
-                            pool.get(mana)
+                            "{player:?} {mana:?}: pool has {held}, history says {want}"
                         )));
                     }
+                }
+                let history = self.expected_restricted.get(player.index());
+                if history.is_none_or(|h| h.as_slice() != pool.restricted()) {
+                    return Err(Violation::Mana(format!(
+                        "{player:?}: the pool holds {:?} restricted, history says {history:?}",
+                        pool.restricted()
+                    )));
                 }
                 Ok(())
             }

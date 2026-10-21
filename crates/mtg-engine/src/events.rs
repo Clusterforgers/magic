@@ -1,5 +1,6 @@
 //! The event log vocabulary: every change to game state is exactly one of these.
 
+use mtg_cards::spend::SpendOn;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
@@ -14,6 +15,7 @@ use crate::object::{Chosen, ObjectRef};
 use crate::player::LossReason;
 use crate::rules::RuleEffect;
 use crate::snapshot::Snapshot;
+use crate::spend::Restricted;
 use crate::state::GameResult;
 use crate::tokens::TokenCreated;
 use crate::triggers::{DelayedCreated, DelayedId, Triggered};
@@ -169,6 +171,10 @@ pub enum Event {
         mana: ManaType,
         /// The producing permanent.
         source: Option<ObjectId>,
+        /// What the mana may be spent on; left out means anything.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<SpendOn>>", optional))]
+        only: Vec<SpendOn>,
     },
     /// Mana was spent from a pool.
     ManaSpent {
@@ -176,6 +182,10 @@ pub enum Event {
         player: PlayerId,
         /// The mana spent.
         mana: Vec<ManaType>,
+        /// The part of it that was restricted, each also in `mana`; left out means none.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Restricted>>", optional))]
+        restricted: Vec<Restricted>,
     },
     /// Unspent mana disappeared at the end of a step or phase.
     ManaPoolEmptied {

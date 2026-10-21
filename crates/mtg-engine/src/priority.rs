@@ -23,6 +23,7 @@ use crate::object::GameObject;
 use crate::player::Player;
 use crate::price::{Leaves, Price};
 use crate::resolve::{Scope, zone_kind};
+use crate::spend::Spend;
 use crate::state::GameState;
 use crate::turn::LAND_DROPS_PER_TURN;
 use crate::ways;
@@ -158,7 +159,8 @@ fn can_activate(
         let life = seat
             .life()
             .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
-        if !can_afford(mana, seat.mana(), &sources, life) {
+        let spend = Spend::for_ability(state, object.id(), price.x > 0);
+        if !can_afford(mana, seat.mana(), &sources, life, &spend) {
             return false;
         }
     }
@@ -226,7 +228,10 @@ pub(crate) fn can_act(
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
     let all_mana = mana_options(state, player);
-    let pool = state.player(player).map(|p| *p.mana()).unwrap_or_default();
+    let pool = state
+        .player(player)
+        .map(|p| p.mana().clone())
+        .unwrap_or_default();
     let life = state.player(player).map_or(0, Player::life);
     let may_play_land =
         sorcery_timing(state, player) && state.turn().lands_played() < LAND_DROPS_PER_TURN;
@@ -388,6 +393,7 @@ mod tests {
                 player: PlayerId(0),
                 mana: ManaType::Red,
                 source: None,
+                only: Vec::new(),
             },
         )
         .unwrap();

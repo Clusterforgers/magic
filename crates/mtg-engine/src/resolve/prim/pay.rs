@@ -13,6 +13,7 @@ use crate::mana::can_afford;
 use crate::price::{Leaves, Price};
 use crate::priority::mana_options;
 use crate::resolve::{Cx, Next, ResolveError, Run};
+use crate::spend::Spend;
 use crate::state::GameState;
 use crate::wording;
 
@@ -107,7 +108,13 @@ fn mana_of(cost: &Cost) -> Result<ManaCost, ResolveError> {
 /// Whether the player has the mana and the life for `cost`: floating or from the permanents they may tap.
 fn can_pay(state: &GameState, player: PlayerId, cost: &ManaCost) -> bool {
     state.player(player).is_some_and(|seat| {
-        can_afford(cost, seat.mana(), &mana_options(state, player), seat.life())
+        can_afford(
+            cost,
+            seat.mana(),
+            &mana_options(state, player),
+            seat.life(),
+            &Spend::other(),
+        )
     })
 }
 
@@ -131,6 +138,7 @@ fn payment(cx: &Cx<'_>, player: PlayerId, cost: ManaCost) -> Result<Decision, Re
         cx.scope.source.id,
         cost,
         mana_options(state, player),
+        Spend::other(),
         false,
         0,
     )
@@ -350,6 +358,7 @@ mod tests {
                 player: ME,
                 mana: ManaType::Green,
                 source: None,
+                only: Vec::new(),
             }))
             .chain((means.life_lost > 0).then_some(Event::LifeLost {
                 player: ME,

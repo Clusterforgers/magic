@@ -15,6 +15,7 @@ use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::keyword::Keyword;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::spend::SpendOn;
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, Condition};
@@ -1035,8 +1036,19 @@ impl<'a> Walker<'a> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("amount", |w| w.amount(amount));
             }
-            Effect::AddMana { who, mana, times } => {
+            Effect::AddMana {
+                who,
+                mana,
+                times,
+                only,
+            } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                if only.iter().any(|on| matches!(on, SpendOn::Spell(f) | SpendOn::Ability(f) if f.types.iter().any(|t| f.without.contains(t)))) {
+                    w.problem("a restriction names a card type it also excludes");
+                }
+                if !only.is_empty() {
+                    w.uses("Effect", "AddMana.Restricted");
+                }
                 match mana {
                     Produce::Fixed(list) if list.is_empty() => w.problem("adds no mana"),
                     Produce::AnyColor(0)
@@ -1334,6 +1346,29 @@ impl<'a> Walker<'a> {
         self.body(targets, effects, false);
     }
 
+    /// A cost modifier: fixed mana changes the cost as many times as `per` counts, over the spells `applies_to`
+    /// selects; its own target counts read the targets of the spell ability beside it.
+    fn cost_modifier(
+        &mut self,
+        applies_to: &Selector,
+        mana: &crate::mana::ManaCostX,
+        per: &Amount,
+        condition: Option<&Condition>,
+    ) {
+        if mana.has_x() {
+            self.problem(
+                "a cost modifier changes the cost by fixed mana, repeated by `per`, not by an {X}",
+            );
+        }
+        let specs = self.spell_targets.clone();
+        self.scope = Scope::new(&specs, false);
+        self.at("applies_to", |w| w.selector(applies_to));
+        self.at("per", |w| w.amount(per));
+        if let Some(condition) = condition {
+            self.at("condition", |w| w.condition(condition));
+        }
+    }
+
     /// The engine activates a mana ability of the shape `mana_shape` reads at priority (the plain one is its own
     /// primitive, a Treasure's needs no more than its parts); one of any other shape (a mana cost, a limit, mixed mana)
     /// waits for its own task.
@@ -1420,18 +1455,11 @@ impl<'a> Walker<'a> {
             }
             Ability::CostModifier {
                 applies_to,
+                mana,
                 per,
                 condition,
                 ..
-            } => {
-                let specs = w.spell_targets.clone();
-                w.scope = Scope::new(&specs, false);
-                w.at("applies_to", |w| w.selector(applies_to));
-                w.at("per", |w| w.amount(per));
-                if let Some(condition) = condition {
-                    w.at("condition", |w| w.condition(condition));
-                }
-            }
+            } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
             Ability::Keyword(keyword) => w.keyword(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {
@@ -1950,6 +1978,14 @@ mod tests {
         );
     }
 
+    #[test]
+    fn a_cost_modifier_changes_the_cost_by_fixed_mana_and_never_by_an_x() {
+        let json = r#"{"CostModifier":{"applies_to":["Spell"],"change":"Reduce","mana":"{X}"}}"#;
+        let found = problems(json);
+        assert_eq!(found.len(), 1, "{found:?}");
+        assert!(found[0].contains("not by an {X}"), "{found:?}");
+    }
+
     #[rstest]
     #[case::plain_activation(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.Draw"])]
     #[case::at_sorcery_speed(r#"{"Activated":{"cost":["Tap"],"timing":"Sorcery","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.Sorcery", "Cost.Tap", "Effect.Draw"])]
@@ -2000,6 +2036,10 @@ mod tests {
     #[case::an_aura_that_enchants_a_card_in_a_graveyard(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Elsewhere"])]
     #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
     #[case::sol_ring(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#, &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana"])]
+    #[case::mana_for_creature_spells_only(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1},"only":[{"Spell":{"types":["Creature"]}}]}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.Restricted"])]
+    #[case::a_cost_increase(r#"{"CostModifier":{"applies_to":["Spell",{"Not":{"Type":"Creature"}}],"change":"Increase","mana":"{1}"}}"#, &["Ability.CostModifier"])]
+    #[case::a_cost_reduction_for_each_creature(r#"{"CostModifier":{"applies_to":["Spell",{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}","per":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}"#, &["Ability.CostModifier"])]
+    #[case::a_condition_on_a_cost_modifier(r#"{"CostModifier":{"applies_to":["Spell"],"change":"Reduce","mana":"{1}","condition":"YourTurn"}}"#, &["Ability.CostModifier"])]
     fn how_often_from_where_and_by_what_chance_an_ability_works_counts_as_a_primitive(
         #[case] json: &str,
         #[case] expected: &[&str],

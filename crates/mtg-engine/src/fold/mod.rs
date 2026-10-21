@@ -182,13 +182,31 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
-        Event::ManaAdded { player, mana, .. } => {
-            pool_mut(state, *player)?.add(*mana);
+        Event::ManaAdded {
+            player, mana, only, ..
+        } => {
+            pool_mut(state, *player)?.add_restricted(*mana, only.clone());
             reset_passes(state);
         }
-        Event::ManaSpent { player, mana } => {
+        Event::ManaSpent {
+            player,
+            mana,
+            restricted,
+        } => {
             let pool = pool_mut(state, *player)?;
-            for m in mana {
+            let mut plain = mana.clone();
+            for unit in restricted {
+                if let Some(at) = plain.iter().position(|m| *m == unit.mana) {
+                    plain.remove(at);
+                }
+                if !pool.spend_restricted(unit) {
+                    return Err(invalid(format!(
+                        "{player:?} spent {:?} mana restricted to something they do not have",
+                        unit.mana
+                    )));
+                }
+            }
+            for m in &plain {
                 if !pool.spend(*m) {
                     return Err(invalid(format!(
                         "{player:?} spent {m:?} mana they do not have"

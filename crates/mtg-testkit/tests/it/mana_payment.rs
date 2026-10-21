@@ -164,6 +164,7 @@ fn manual_payments_must_be_exact(
         chosen.push(remaining.remove(pos).source);
     }
     let result = driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
+        restricted: Vec::new(),
         pool: vec![],
         taps: chosen,
         life: 0,
@@ -194,6 +195,7 @@ fn tapping_the_same_land_twice_or_an_unknown_source_is_rejected() -> Result<(), 
     let sources = pay_options(&driver)?.sources;
     let first = sources[0].source;
     let twice = Payment {
+        restricted: Vec::new(),
         pool: vec![],
         taps: vec![first, first],
         life: 0,
@@ -207,6 +209,7 @@ fn tapping_the_same_land_twice_or_an_unknown_source_is_rejected() -> Result<(), 
         ability: 0,
     };
     let unknown = Payment {
+        restricted: Vec::new(),
         pool: vec![],
         taps: vec![first, stranger],
         life: 0,
@@ -291,6 +294,7 @@ fn floating_mana_pays_first_and_may_be_chosen_explicitly() -> Result<(), ScriptE
         .map(|o| o.source)
         .ok_or_else(|| ScriptError::Expectation("no green source".into()))?;
     driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
+        restricted: Vec::new(),
         pool: vec![ManaType::Red],
         taps: vec![forest],
         life: 0,
@@ -306,6 +310,7 @@ fn spending_floating_mana_that_does_not_exist_is_rejected() -> Result<(), Script
     driver.begin_cast("Spell")?;
     let before = driver.engine().state_hash();
     let result = driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
+        restricted: Vec::new(),
         pool: vec![ManaType::Green],
         taps: vec![],
         life: 0,
@@ -358,6 +363,7 @@ fn completing_a_partial_payment_keeps_the_chosen_land_and_pays_the_rest() -> Res
     driver.begin_cast("Spell")?;
     let plains = source_of(&driver, ManaType::White)?;
     let events = driver.answer(Answer::PayMana(PayChoice::Complete(Payment {
+        restricted: Vec::new(),
         pool: vec![],
         taps: vec![plains],
         life: 0,
@@ -396,6 +402,7 @@ fn a_partial_payment_that_cannot_be_finished_is_rejected_whole(
         .map(|m| source_of(&driver, *m))
         .collect::<Result<Vec<_>, _>>()?;
     let result = driver.answer(Answer::PayMana(PayChoice::Complete(Payment {
+        restricted: Vec::new(),
         pool: vec![],
         taps,
         life: 0,

@@ -51,6 +51,7 @@ fn any_answer() -> impl Strategy<Value = Answer> {
                 0u32..7
             )
                 .prop_map(|(pool, taps, life)| PayChoice::Manual(Payment {
+                    restricted: Vec::new(),
                     pool,
                     taps,
                     life
@@ -61,6 +62,7 @@ fn any_answer() -> impl Strategy<Value = Answer> {
                 0u32..7
             )
                 .prop_map(|(pool, taps, life)| PayChoice::Complete(Payment {
+                    restricted: Vec::new(),
                     pool,
                     taps,
                     life

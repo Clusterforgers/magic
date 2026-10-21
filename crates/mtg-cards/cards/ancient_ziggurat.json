@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0baabe39-72ae-47bd-a095-cbf7eb8a6361",
+  "name": "Ancient Ziggurat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancient Ziggurat",
+      "oracle_fingerprint": "2a586edaa439be769cac3d7d96777685",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "types": ["Creature"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

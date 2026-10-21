@@ -275,6 +275,7 @@ impl Driver {
         }
         self.answer(Answer::PayMana(PayChoice::Manual(Payment {
             pool: Vec::new(),
+            restricted: Vec::new(),
             taps,
             life,
         })))

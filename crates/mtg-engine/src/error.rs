@@ -103,6 +103,9 @@ pub enum PaymentError {
     /// More floating mana was spent than is in the pool.
     #[error("not enough {0:?} mana in the pool")]
     PoolShortfall(ManaType),
+    /// Restricted mana was spent on something its restriction does not allow.
+    #[error("{0:?} mana may not be spent on this")]
+    Restricted(ManaType),
     /// The payment produces more or less mana than the cost.
     #[error("payment provides {got} mana but the cost is {needed}")]
     WrongTotal {

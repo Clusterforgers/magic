@@ -610,7 +610,7 @@ proptest! {
         match end {
             End::Paying(options) => {
                 prop_assert_eq!(options.cost.generic(), paid);
-                prop_assert!(can_afford(&options.cost, &options.pool, &options.sources, options.life));
+                prop_assert!(can_afford(&options.cost, &options.pool, &options.sources, options.life, &options.spend));
                 prop_assert!(options.can_cancel);
                 // A division gives every target at least one and the whole amount.
                 if !choices.division.is_empty() {

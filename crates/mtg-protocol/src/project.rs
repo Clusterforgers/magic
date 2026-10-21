@@ -217,7 +217,7 @@ impl PlayerView {
                 PlayerStatus::InGame => None,
                 PlayerStatus::Lost(reason) => Some(reason.clone()),
             },
-            mana: *player.mana(),
+            mana: player.mana().clone(),
             counters: player
                 .counters()
                 .map(|(kind, count)| (kind.clone(), count))

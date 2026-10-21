@@ -14,6 +14,7 @@ use mtg_engine::decision::{
 };
 use mtg_engine::mana::{ManaOption, ManaSource, Payment, check_payment};
 use mtg_engine::rng::GameRng;
+use mtg_engine::spend::Restricted;
 use mtg_engine::turn::Step;
 
 use crate::windows::{Mode, SeatWindows, Side, Stop};
@@ -29,13 +30,25 @@ pub struct RandomBot {
 /// A way to produce one mana while paying: floating mana or a tap.
 enum Supply {
     Floating(ManaType),
+    Restricted(Restricted),
     Tap(ManaSource, ManaType),
+}
+
+/// The restricted mana in the pool that the payment may spend.
+fn allowed_restricted(options: &PayOptions) -> impl Iterator<Item = Restricted> + '_ {
+    options
+        .pool
+        .restricted()
+        .iter()
+        .filter(|unit| options.spend.allows(&unit.only))
+        .cloned()
 }
 
 impl Supply {
     fn mana(&self) -> ManaType {
         match self {
             Supply::Floating(m) | Supply::Tap(_, m) => *m,
+            Supply::Restricted(unit) => unit.mana,
         }
     }
 }
@@ -286,6 +299,7 @@ impl RandomBot {
         let mut keep =
             |len: usize| -> Vec<bool> { (0..len).map(|_| self.rng.below(2) == 0).collect() };
         let pool_keep = keep(payment.pool.len());
+        let restricted_keep = keep(payment.restricted.len());
         let tap_keep = keep(payment.taps.len());
         Payment {
             pool: payment
@@ -293,6 +307,13 @@ impl RandomBot {
                 .iter()
                 .zip(pool_keep)
                 .filter_map(|(m, k)| k.then_some(*m))
+                .collect(),
+            restricted: payment
+                .restricted
+                .iter()
+                .zip(restricted_keep)
+                .filter(|(_, k)| *k)
+                .map(|(unit, _)| unit.clone())
                 .collect(),
             taps: payment
                 .taps
@@ -337,11 +358,13 @@ impl RandomBot {
         let mut supply: Vec<(Supply, u32)> = options
             .sources
             .iter()
+            .filter(|o| options.spend.allows(&o.only))
             .map(|o| (Supply::Tap(o.source, o.produces), o.count))
             .collect();
         for mana in ManaType::ALL {
             supply.extend((0..options.pool.get(mana)).map(|_| (Supply::Floating(mana), 1)));
         }
+        supply.extend(allowed_restricted(options).map(|unit| (Supply::Restricted(unit), 1)));
         self.rng.shuffle(&mut supply);
         let mut needs = ManaType::ALL.map(|mana| cost.required(mana));
         let mut generic = cost.generic();
@@ -366,6 +389,7 @@ impl RandomBot {
             generic = generic.saturating_sub(count - used);
             match item {
                 Supply::Floating(m) => payment.pool.push(m),
+                Supply::Restricted(unit) => payment.restricted.push(unit),
                 Supply::Tap(source, _) => {
                     tapped.push(source.object);
                     payment.taps.push(source);
@@ -378,6 +402,7 @@ impl RandomBot {
             &options.sources,
             &[],
             options.life,
+            &options.spend,
             &payment,
         )
         .ok()
@@ -392,11 +417,13 @@ impl RandomBot {
         let mut supply: Vec<Supply> = options
             .sources
             .iter()
+            .filter(|o| options.spend.allows(&o.only))
             .map(|o| Supply::Tap(o.source, o.produces))
             .collect();
         for mana in ManaType::ALL {
             supply.extend((0..options.pool.get(mana)).map(|_| Supply::Floating(mana)));
         }
+        supply.extend(allowed_restricted(options).map(Supply::Restricted));
         self.rng.shuffle(&mut supply);
         let mut chosen = Vec::new();
         // A permanent is tapped once, so choosing one of its abilities drops the others from the supply.
@@ -425,6 +452,7 @@ impl RandomBot {
         for item in chosen {
             match item {
                 Supply::Floating(m) => payment.pool.push(m),
+                Supply::Restricted(unit) => payment.restricted.push(unit),
                 Supply::Tap(source, _) => payment.taps.push(source),
             }
         }

@@ -110,6 +110,14 @@ pub(crate) fn definition_has_rule(definition: &CardDefinition) -> bool {
         .any(|rules| matches!(**rules, Ability::Rule { .. }))
 }
 
+/// Whether a card with this definition prints a cost modifier (`GameState::possible`).
+pub(crate) fn definition_has_cost_modifier(definition: &CardDefinition) -> bool {
+    definition
+        .rules
+        .iter()
+        .any(|rules| matches!(**rules, Ability::CostModifier { .. }))
+}
+
 /// Whether a card with this definition prints a replacement effect, grants one or has a keyword that adds one
 /// (`GameState::possible`).
 pub(crate) fn definition_has_replacement(definition: &CardDefinition) -> bool {

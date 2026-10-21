@@ -1,4 +1,4 @@
-//! Goal: the 133 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 139 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -37,8 +37,9 @@ use Support::{Manual, Partial, Verified};
 /// Partial: Bloodbraid Elf's haste, not its cascade.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk).
-/// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified and Fireball waits for its cost modifier alone.
-const CARDS: [(&str, Support, usize); 133] = [
+/// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified; cost increases and reductions are
+/// played too, so Fireball, Thalia, Guardian of Thraben and Foundry Inspector are Verified.
+const CARDS: [(&str, Support, usize); 139] = [
     ("Act of Treason", Verified, 1),
     ("Llanowar Behemoth", Verified, 1),
     ("Lurching Rotbeast", Verified, 1),
@@ -48,6 +49,7 @@ const CARDS: [(&str, Support, usize); 133] = [
     ("Souldrinker", Verified, 1),
     ("Tumble Magnet", Verified, 2),
     ("Ajani, Caller of the Pride", Verified, 3),
+    ("Ancient Ziggurat", Verified, 1),
     ("Anger", Verified, 2),
     ("Anointed Procession", Verified, 1),
     ("Archon of Cruelty", Verified, 2),
@@ -89,8 +91,9 @@ const CARDS: [(&str, Support, usize); 133] = [
     ("Favorable Winds", Verified, 1),
     ("Felidar Sovereign", Verified, 3),
     ("Fire // Ice", Manual, 0),
-    ("Fireball", Partial, 1),
+    ("Fireball", Verified, 2),
     ("Flooded Strand", Verified, 1),
+    ("Foundry Inspector", Verified, 1),
     ("Fog", Verified, 1),
     ("Forest", Verified, 1),
     ("Gaea's Cradle", Verified, 1),
@@ -116,6 +119,7 @@ const CARDS: [(&str, Support, usize); 133] = [
     ("Lotus Petal", Verified, 1),
     ("Maralen of the Mornsong", Verified, 2),
     ("Maro", Verified, 1),
+    ("Mishra's Workshop", Verified, 1),
     ("Mending Hands", Verified, 1),
     ("Kor Firewalker", Verified, 2),
     ("Mindlock Orb", Verified, 1),
@@ -128,12 +132,14 @@ const CARDS: [(&str, Support, usize); 133] = [
     ("Pacifism", Verified, 2),
     ("Panharmonicon", Verified, 1),
     ("Parallel Lives", Verified, 1),
+    ("Pillar of the Paruns", Verified, 1),
     ("Questing Beast", Partial, 3),
     ("Rally the Ranks", Verified, 2),
     ("Rampaging Ferocidon", Verified, 3),
     ("Rampant Growth", Verified, 1),
     ("Reassembling Skeleton", Verified, 1),
     ("Rest in Peace", Verified, 2),
+    ("Rosheen Meanderer", Verified, 1),
     ("Rhox Faithmender", Verified, 2),
     ("Rhystic Study", Verified, 1),
     ("Samite Healer", Verified, 1),
@@ -148,6 +154,7 @@ const CARDS: [(&str, Support, usize); 133] = [
     ("Supreme Verdict", Verified, 2),
     ("Swiftfoot Boots", Verified, 2),
     ("Swords to Plowshares", Verified, 1),
+    ("Thalia, Guardian of Thraben", Verified, 2),
     ("Teysa Karlov", Verified, 2),
     ("Thought Reflection", Verified, 1),
     ("Tireless Tracker", Verified, 2),
@@ -178,7 +185,7 @@ const CARDS: [(&str, Support, usize); 133] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 133);
+    assert_eq!(in_table.len(), 139);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -250,13 +257,15 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         let reasons: Vec<&str> = record.clauses.iter().map(|c| c.reason.as_str()).collect();
         reasons.join("; ")
     };
-    // Fireball waits for its cost modifier alone: the even split of its damage and its X are played.
-    let fireball = reasons("Fireball");
-    assert!(
-        fireball.contains("Ability.CostModifier") && !fireball.contains("Amount.EvenShare"),
-        "{fireball}"
-    );
-    assert!(!fireball.contains("{X}"), "{fireball}");
+    // Fireball is covered whole: its cost for the targets beyond the first, its X and the even split of its damage.
+    // Thalia and Foundry Inspector change what other spells cost, which the engine plays.
+    for name in [
+        "Fireball",
+        "Thalia, Guardian of Thraben",
+        "Foundry Inspector",
+    ] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // The kicker and multikicker cards are covered whole: the costs are paid at announcement and read at resolution.
     for name in [
         "Burst Lightning",
@@ -324,6 +333,10 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         "Gaea's Cradle",
         "Battlefield Forge",
         "Lotus Petal",
+        "Ancient Ziggurat",
+        "Mishra's Workshop",
+        "Pillar of the Paruns",
+        "Rosheen Meanderer",
     ] {
         assert_eq!(reasons(name), "", "{name}");
     }

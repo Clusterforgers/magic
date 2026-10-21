@@ -15,6 +15,7 @@ use crate::choose::{
 };
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::mana::{ManaOption, ManaPool, ManaSource, Payment};
+use crate::spend::Spend;
 
 /// A question for one player together with all of their legal options.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -158,6 +159,10 @@ pub struct PayOptions {
     pub pool: ManaPool,
     /// Mana abilities that may be tapped.
     pub sources: Vec<ManaOption>,
+    /// What the payment is for, which decides what restricted mana may be spent on it; left out means neither a spell nor an ability.
+    #[serde(default, skip_serializing_if = "Spend::is_other")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Spend>", optional))]
+    pub spend: Box<Spend>,
     /// Whether an automatic payment exists (it does whenever the cast was offered, unless only a payment that takes the last life would do).
     pub auto_available: bool,
     /// Whether the cast may be backed out of; nothing has been paid yet, so it rolls back (CR 601.2).

@@ -7,6 +7,7 @@
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaCost;
 
+use super::x::XCost;
 use super::{Ctx, Next, What, Work};
 use crate::abilities::PutOnStack;
 use crate::cast::{activation_events, payment_decision};
@@ -14,6 +15,7 @@ use crate::choose::Choices;
 use crate::decision::DecisionKind;
 use crate::events::Event;
 use crate::mana::{ManaOption, can_afford};
+use crate::spend::Spend;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
 
@@ -37,8 +39,18 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
     }
 }
 
+/// What the payment of the cost being announced is for: the spell or the ability, with whether the cost has {X}.
+pub(super) fn spend(ctx: &Ctx<'_>) -> Spend {
+    let has_x = XCost::of(ctx.state, ctx.what, ctx.ability).is_some();
+    match ctx.what {
+        What::Spell(spell) => Spend::for_spell(ctx.state, *spell, has_x),
+        What::Ability(ability) => Spend::for_ability(ctx.state, ability.object, has_x),
+        What::Trigger(_) => Spend::other(),
+    }
+}
+
 /// The payment decision for `cost` on behalf of `object`, if it can be paid; nothing is paid until it is answered, so
-/// the player can back out.
+/// the player can back out. `reserved_life` is the life other parts of the cost pay.
 fn pay(
     ctx: &Ctx<'_>,
     object: ObjectId,
@@ -52,11 +64,18 @@ fn pay(
         object,
         cost,
         sources,
+        spend(ctx),
         true,
         reserved_life,
     ) {
         Some(options)
-            if can_afford(&options.cost, &options.pool, &options.sources, options.life) =>
+            if can_afford(
+                &options.cost,
+                &options.pool,
+                &options.sources,
+                options.life,
+                &options.spend,
+            ) =>
         {
             ctx.ask(DecisionKind::PayMana(options))
         }

@@ -255,6 +255,7 @@ fn a_manual_payment_has_nothing_to_spare(
         })
         .collect();
     let result = driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
+        restricted: Vec::new(),
         pool: Vec::new(),
         taps: chosen,
         life: 0,

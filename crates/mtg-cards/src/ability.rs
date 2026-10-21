@@ -263,6 +263,7 @@ mod tests {
             who: Ref::You,
             mana: Produce::Fixed(mana.to_vec()),
             times: Amount::one(),
+            only: Vec::new(),
         }
     }
 

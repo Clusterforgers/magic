@@ -23,6 +23,8 @@ mod preview;
 mod price;
 mod replace_dry;
 mod sba;
+#[cfg(test)]
+mod spend_tests;
 mod steps;
 mod ways;
 mod wording;
@@ -59,6 +61,7 @@ pub mod rules;
 pub mod setup;
 pub mod sight;
 pub mod snapshot;
+pub mod spend;
 pub mod stack;
 pub mod state;
 pub mod tokens;

@@ -8,6 +8,7 @@ use crate::card::TokenSpec;
 use crate::cost::Cost;
 use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Bounds, Ref, Selector, TargetSpec, ZoneKind};
+use crate::spend::SpendOn;
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, Condition, CounterKind};
 
@@ -312,6 +313,9 @@ pub enum Effect {
         /// How many times it is added.
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         times: Amount,
+        /// What the mana may be spent on, any one of these ("Spend this mana only to cast creature spells"); none means anything.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        only: Vec<SpendOn>,
     },
     /// Puts counters on an object or player.
     PutCounters {

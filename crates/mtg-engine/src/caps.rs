@@ -11,7 +11,7 @@
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
 //! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
 //! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
-//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, cycling, permissions to cast (from another zone, without paying, as though with flash), attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, cycling, permissions to cast (from another zone, without paying, as though with flash), cost modifiers, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
@@ -72,6 +72,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana",
     "Effect.AddMana.OneOf",
     "Effect.AddMana.ChosenColor",
+    "Effect.AddMana.Restricted",
     "Ability.ManaAbility.Complex",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
@@ -154,6 +155,7 @@ const RUNS: &[&str] = &[
     "Condition.Kicked",
     "Amount.Kicks",
     "Ability.Replacement",
+    "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
     "ReplaceWhen.Damage",
     "ReplaceWhen.ZoneChange",
@@ -379,6 +381,7 @@ mod tests {
     #[case::extra_turns("Effect.ExtraTurn", false)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
+    #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", false)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", false)]
     #[case::devotion("Amount.Devotion", false)]

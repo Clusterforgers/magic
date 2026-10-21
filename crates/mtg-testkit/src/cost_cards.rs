@@ -1,204 +1,300 @@
-//! Costs of activated abilities beyond `{T}`, mana and the sacrifice of the source (CR 118.3, 602.2): life paid, counters
-//! removed, a permanent sacrificed, tapped or returned, a card discarded or exiled from a graveyard, and cycling, and
-//! the decks and games built from them, which hold the corpus cards that pay these costs. Each ability draws or gains
-//! life when it resolves, so a test sees what was paid.
+//! Cards that change what spells cost (CR 601.2f): permanents with a cost increase or reduction, and a seeded deck of them
+//! beside spells to cast under them, for fuzz games. Each modifier is written as data, the way a card file holds it.
 
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
-use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::{Ref, Targetable};
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
+use mtg_core::mana::{ManaCost, ManaSymbol};
 use mtg_engine::GameSetup;
 use mtg_engine::format::Normal;
 use mtg_engine::rng::GameRng;
 
-use crate::cards::{bear, burn, cost, creature, land};
+use crate::cards::{
+    burn, cost, creature, creature_costing, damage, hybrid_bear, land, one_target, phyrexian_bear,
+};
 use crate::corpus::{self, CorpusError};
+use crate::x_cards::{blaze, hybrid_font};
 
-/// Lands in a cost deck: three colours in turn.
-const LANDS: usize = 28;
-
-fn rules(json: &str) -> Ability {
-    // The abilities are written here, so a typo is a bug of the test cards.
-    serde_json::from_str(json).unwrap_or_else(|error| panic!("{json}: {error}"))
+fn rules(json: &str) -> Result<Ability, CorpusError> {
+    serde_json::from_str(json).map_err(|error| CorpusError::Data(format!("{json}: {error}")))
 }
 
-/// A creature costing `generic` and `colored`, with these abilities written as data.
-fn creature_with(
-    name: &str,
-    (generic, colored): (u32, &[Color]),
-    abilities: &[&str],
-) -> Arc<CardDefinition> {
-    let mut card = CardDefinition::new(name)
-        .with_type(CardType::Creature)
-        .with_mana_cost(cost(generic, colored))
-        .with_power_toughness(1, 1);
-    for ability in abilities {
-        card = card.with_rules(rules(ability));
-    }
-    Arc::new(card)
+fn mana(text: &str) -> Result<ManaCost, CorpusError> {
+    ManaCost::parse(text).map_err(|error| CorpusError::Data(format!("{text}: {error}")))
 }
 
-/// An artifact costing `generic`, with these abilities written as data.
-fn artifact_with(name: &str, generic: u32, abilities: &[&str]) -> Arc<CardDefinition> {
-    let mut card = CardDefinition::new(name)
-        .with_type(CardType::Artifact)
-        .with_mana_cost(cost(generic, &[]));
-    for ability in abilities {
-        card = card.with_rules(rules(ability));
-    }
-    Arc::new(card)
-}
-
-const DRAW: &str = r#"[{"Draw":{}}]"#;
-
-/// `{1}{B}` creature: "Sacrifice a creature: Draw a card."
-pub fn sacrificer(name: &str) -> Arc<CardDefinition> {
-    let ability = format!(
-        r#"{{"Activated":{{"cost":[{{"Sacrifice":{{"filter":[{{"Type":"Creature"}}]}}}}],"effects":{DRAW}}}}}"#
-    );
-    creature_with(name, (1, &[Color::Black]), &[&ability])
-}
-
-/// `{R}` creature: "{T}, Discard a card: Draw a card."
-pub fn rummager(name: &str) -> Arc<CardDefinition> {
-    let ability =
-        format!(r#"{{"Activated":{{"cost":["Tap",{{"Discard":{{}}}}],"effects":{DRAW}}}}}"#);
-    creature_with(name, (0, &[Color::Red]), &[&ability])
-}
-
-/// `{B}` creature: "Exile a creature card from your graveyard: You gain 2 life."
-pub fn gravedigger(name: &str) -> Arc<CardDefinition> {
-    let ability = r#"{"Activated":{"cost":[{"ExileFromGraveyard":{"filter":[{"Type":"Creature"}]}}],"effects":[{"GainLife":{"amount":2}}]}}"#;
-    creature_with(name, (0, &[Color::Black]), &[ability])
-}
-
-/// `{2}` artifact: "Tap two untapped creatures you control: Draw a card."
-pub fn drummer(name: &str) -> Arc<CardDefinition> {
-    let ability = format!(
-        r#"{{"Activated":{{"cost":[{{"TapPermanents":{{"filter":[{{"Type":"Creature"}}],"count":2}}}}],"effects":{DRAW}}}}}"#
-    );
-    artifact_with(name, 2, &[&ability])
-}
-
-/// `{1}` artifact: "{1}, Tap an untapped creature you control: Draw a card."
-pub fn levy(name: &str) -> Arc<CardDefinition> {
-    let ability = format!(
-        r#"{{"Activated":{{"cost":[{{"Mana":"{{1}}"}},{{"TapPermanents":{{"filter":[{{"Type":"Creature"}}]}}}}],"effects":{DRAW}}}}}"#
-    );
-    artifact_with(name, 1, &[&ability])
-}
-
-/// `{B}` 1/1 creature: "Pay 3 life: Draw a card."
-pub fn bleeder(name: &str) -> Arc<CardDefinition> {
-    let ability = format!(r#"{{"Activated":{{"cost":[{{"PayLife":3}}],"effects":{DRAW}}}}}"#);
-    creature_with(name, (0, &[Color::Black]), &[&ability])
-}
-
-/// `{2}` artifact that enters with three charge counters: "Remove a charge counter from this artifact: You gain 1 life."
-pub fn charger(name: &str) -> Arc<CardDefinition> {
-    let enters = r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"charge","count":3}}}}"#;
-    let ability = r#"{"Activated":{"cost":[{"RemoveCounters":{"counter":"charge"}}],"effects":[{"GainLife":{"amount":1}}]}}"#;
-    artifact_with(name, 2, &[enters, ability])
-}
-
-/// `{1}{U}` creature: "{1}, Return a land you control to its owner's hand: Draw a card."
-pub fn returner(name: &str) -> Arc<CardDefinition> {
-    let ability = format!(
-        r#"{{"Activated":{{"cost":[{{"Mana":"{{1}}"}},{{"ReturnToHand":{{"filter":[{{"Type":"Land"}}]}}}}],"effects":{DRAW}}}}}"#
-    );
-    creature_with(name, (1, &[Color::Blue]), &[&ability])
-}
-
-/// `{2}{R}` 1/1 creature: "{1}, {T}, Pay 1 life, Sacrifice a creature, Discard a card: You gain 3 life." Every kind of
-/// part at once, to see them announced in the order the cost prints them.
-pub fn gauntlet(name: &str) -> Arc<CardDefinition> {
-    let ability = r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap",{"PayLife":1},{"Sacrifice":{"filter":[{"Type":"Creature"}]}},{"Discard":{}}],"effects":[{"GainLife":{"amount":3}}]}}"#;
-    creature_with(name, (2, &[Color::Red]), &[ability])
-}
-
-/// `{G}` creature: "{T}: Add {G}."
-pub fn mana_elf(name: &str) -> Arc<CardDefinition> {
-    let ability =
-        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#;
-    creature_with(name, (0, &[Color::Green]), &[ability])
-}
-
-/// `{3}{R}` 3/3 creature with `Cycling {1}`.
-pub fn cycler(name: &str) -> Arc<CardDefinition> {
-    let cycling = Keyword::Cycling(mtg_cards::cost::Cost::mana(
-        "{1}".parse().unwrap_or_else(|_| unreachable!()),
-    ));
-    Arc::new(
+/// An artifact costing `printed` with the cost modifier `modifier`, written as the card file holds it.
+fn artifact(name: &str, printed: &str, modifier: &str) -> Result<Arc<CardDefinition>, CorpusError> {
+    Ok(Arc::new(
         CardDefinition::new(name)
-            .with_type(CardType::Creature)
+            .with_type(CardType::Artifact)
+            .with_mana_cost(mana(printed)?)
+            .with_rules(rules(modifier)?),
+    ))
+}
+
+/// A modifier of `mana` more or less (`direction`: `Increase` or `Reduce`) for the spells `applies_to` names; `extra`
+/// holds the fields after the mana (`,"per":...`, `,"condition":...`).
+fn change(applies_to: &str, direction: &str, mana: &str, extra: &str) -> String {
+    format!(
+        r#"{{"CostModifier":{{"applies_to":{applies_to},"change":"{direction}","mana":"{mana}"{extra}}}}}"#
+    )
+}
+
+/// An artifact for `{1}`: noncreature spells, whoever casts them, cost {1} more.
+pub fn tax_rock() -> Result<Arc<CardDefinition>, CorpusError> {
+    artifact(
+        "Tax Rock",
+        "{1}",
+        &change(
+            r#"["Spell",{"Not":{"Type":"Creature"}}]"#,
+            "Increase",
+            "{1}",
+            "",
+        ),
+    )
+}
+
+/// An artifact for `{2}`: spells, whoever casts them, cost {1} more.
+pub fn sphere() -> Result<Arc<CardDefinition>, CorpusError> {
+    artifact(
+        "Sphere",
+        "{2}",
+        &change(r#"["Spell"]"#, "Increase", "{1}", ""),
+    )
+}
+
+/// An artifact for `{2}`: spells your opponents cast cost {1} more.
+pub fn hostile_tax() -> Result<Arc<CardDefinition>, CorpusError> {
+    artifact(
+        "Hostile Tax",
+        "{2}",
+        &change(
+            r#"["Spell",{"ControlledBy":"Opponents"}]"#,
+            "Increase",
+            "{1}",
+            "",
+        ),
+    )
+}
+
+/// An artifact for `{2}`: spells, whoever casts them, cost {1} less.
+pub fn helm() -> Result<Arc<CardDefinition>, CorpusError> {
+    artifact("Helm", "{2}", &change(r#"["Spell"]"#, "Reduce", "{1}", ""))
+}
+
+/// An artifact for `{2}`: spells you cast cost {1} less.
+pub fn my_helm() -> Result<Arc<CardDefinition>, CorpusError> {
+    artifact(
+        "My Helm",
+        "{2}",
+        &change(r#"["Spell",{"ControlledBy":"You"}]"#, "Reduce", "{1}", ""),
+    )
+}
+
+/// An artifact for `{3}`: spells you cast cost {2} less.
+pub fn deep_helm() -> Result<Arc<CardDefinition>, CorpusError> {
+    artifact(
+        "Deep Helm",
+        "{3}",
+        &change(r#"["Spell",{"ControlledBy":"You"}]"#, "Reduce", "{2}", ""),
+    )
+}
+
+/// An artifact for `{2}`: spells you cast cost {R} less.
+pub fn red_helm() -> Result<Arc<CardDefinition>, CorpusError> {
+    artifact(
+        "Red Helm",
+        "{2}",
+        &change(r#"["Spell",{"ControlledBy":"You"}]"#, "Reduce", "{R}", ""),
+    )
+}
+
+/// An artifact for `{2}`: spells you cast cost {1} less for each creature you control.
+pub fn crowd_helm() -> Result<Arc<CardDefinition>, CorpusError> {
+    artifact(
+        "Crowd Helm",
+        "{2}",
+        &change(
+            r#"["Spell",{"ControlledBy":"You"}]"#,
+            "Reduce",
+            "{1}",
+            r#","per":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#,
+        ),
+    )
+}
+
+/// An artifact for `{2}`: spells cost {1} less to cast during the turn of the player who controls it.
+pub fn day_helm() -> Result<Arc<CardDefinition>, CorpusError> {
+    artifact(
+        "Day Helm",
+        "{2}",
+        &change(
+            r#"["Spell"]"#,
+            "Reduce",
+            "{1}",
+            r#","condition":"YourTurn""#,
+        ),
+    )
+}
+
+/// An artifact for `{2}`: red spells cost {U} more.
+pub fn blue_tax() -> Result<Arc<CardDefinition>, CorpusError> {
+    artifact(
+        "Blue Tax",
+        "{2}",
+        &change(r#"["Spell",{"Color":"Red"}]"#, "Increase", "{U}", ""),
+    )
+}
+
+/// A sorcery for `{3}{R}`: 4 damage to any target.
+pub fn big_bolt() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Big Bolt")
+            .with_type(CardType::Sorcery)
             .with_mana_cost(cost(3, &[Color::Red]))
-            .with_power_toughness(3, 3)
-            .with_rules(Ability::Keyword(cycling)),
+            .with_rules(Ability::Spell {
+                targets: vec![one_target(Targetable::AnyTarget)],
+                effects: vec![damage(Ref::Target(0), 4)],
+            }),
     )
 }
 
-/// `{2}{U}` 2/2 creature with "Cycling—Pay 2 life."
-pub fn life_cycler(name: &str) -> Arc<CardDefinition> {
+/// An artifact for `{1}` with no ability: something to cast under the modifiers that name artifacts.
+pub fn trinket() -> Arc<CardDefinition> {
     Arc::new(
-        CardDefinition::new(name)
-            .with_type(CardType::Creature)
-            .with_mana_cost(cost(2, &[Color::Blue]))
-            .with_power_toughness(2, 2)
-            .with_rules(Ability::Keyword(Keyword::Cycling(mtg_cards::cost::Cost(
-                vec![mtg_cards::cost::CostItem::PayLife(
-                    mtg_cards::value::Amount::Fixed(2),
-                )],
-            )))),
+        CardDefinition::new("Trinket")
+            .with_type(CardType::Artifact)
+            .with_mana_cost(ManaCost::from_symbols([ManaSymbol::Generic(1)])),
     )
 }
 
-/// The deck of a seat: lands in three colours and every card with a cost of this kind, with creatures and burn for the
-/// costs to bear on.
-pub fn cost_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
-    let colors = [Color::Black, Color::Red, Color::Blue];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 3])).collect();
-    for (card, copies) in [
-        (sacrificer("Sacrificer"), 3),
-        (rummager("Rummager"), 2),
-        (gravedigger("Gravedigger"), 2),
-        (drummer("Drummer"), 2),
-        (levy("Levy"), 2),
-        (bleeder("Bleeder"), 2),
-        (charger("Charger"), 2),
-        (returner("Returner"), 2),
-        (gauntlet("Gauntlet"), 1),
-        (cycler("Cycler"), 3),
-        (life_cycler("Life Cycler"), 2),
-        (bear(), 4),
-        (creature("Ogre", 2, &[Color::Red], 3, 3), 2),
-        (burn("Burn", 3), 3),
-    ] {
-        deck.extend(std::iter::repeat_n(card, copies));
+/// A spell with no mana cost to speak of: a creature with the printed cost `{0}`.
+pub fn free_bear() -> Arc<CardDefinition> {
+    creature("Free Bear", 0, &[], 2, 2)
+}
+
+/// A 2/2 for `{W/P}{W/P}{1}`: Phyrexian symbols beside generic mana.
+pub fn double_phyrexian() -> Arc<CardDefinition> {
+    creature_costing(
+        "Double Phyrexian",
+        &[
+            ManaSymbol::Generic(1),
+            ManaSymbol::Phyrexian(Color::White),
+            ManaSymbol::Phyrexian(Color::White),
+        ],
+        2,
+        2,
+    )
+}
+
+/// The cards of this module that are permanents with a modifier.
+pub const MODIFIER_CARDS: [&str; 10] = [
+    "Tax Rock",
+    "Sphere",
+    "Hostile Tax",
+    "Helm",
+    "My Helm",
+    "Deep Helm",
+    "Red Helm",
+    "Crowd Helm",
+    "Day Helm",
+    "Blue Tax",
+];
+
+/// The modifier permanents, in the order of [`MODIFIER_CARDS`].
+pub fn modifiers() -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
+    Ok(vec![
+        tax_rock()?,
+        sphere()?,
+        hostile_tax()?,
+        helm()?,
+        my_helm()?,
+        deep_helm()?,
+        red_helm()?,
+        crowd_helm()?,
+        day_helm()?,
+        blue_tax()?,
+    ])
+}
+
+/// The modifier permanent called `name` ([`MODIFIER_CARDS`]).
+pub fn modifier(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
+    modifiers()?
+        .into_iter()
+        .find(|card| card.name == name)
+        .ok_or_else(|| CorpusError::Data(format!("no modifier card called {name}")))
+}
+
+/// The spell called `name` among those a modifier changes: the cards of this module, `Bolt` and the hybrid and
+/// Phyrexian bears.
+pub fn spell(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
+    Ok(match name {
+        "Bolt" => burn("Bolt", 3),
+        "Big Bolt" => big_bolt(),
+        "Trinket" => trinket(),
+        "Free Bear" => free_bear(),
+        "Hybrid Bear" => hybrid_bear(),
+        "Phyrexian Bear" => phyrexian_bear(),
+        "Double Phyrexian" => double_phyrexian(),
+        "Blaze" => blaze()?,
+        "Hybrid Font" => hybrid_font()?,
+        other => corpus::card(other)?,
+    })
+}
+
+/// A legal Normal deck of lands, the modifier permanents, spells that are changed by them (X spells, hybrid and
+/// Phyrexian costs, Fireball, the corpus cards Thalia and Foundry Inspector) and creatures, derived entirely from `rng`.
+pub fn cost_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
+    let colors = [Color::Red, Color::White, Color::Blue];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..24).map(|i| land(colors[i % 3])).collect();
+    let mut cards = modifiers().unwrap_or_default();
+    cards.extend(
+        [
+            "Fireball",
+            "Thalia, Guardian of Thraben",
+            "Foundry Inspector",
+        ]
+        .iter()
+        .filter_map(|name| corpus::card(name).ok()),
+    );
+    cards.extend(
+        [
+            blaze().ok(),
+            hybrid_font().ok(),
+            Some(big_bolt()),
+            Some(burn("Bolt", 3)),
+            Some(trinket()),
+            Some(hybrid_bear()),
+            Some(phyrexian_bear()),
+            Some(double_phyrexian()),
+            Some(free_bear()),
+        ]
+        .into_iter()
+        .flatten(),
+    );
+    for card in cards {
+        deck.extend(std::iter::repeat_n(card, 2));
     }
-    for (name, copies) in [
-        ("Flooded Strand", 2),
-        ("Nantuko Husk", 2),
-        ("Rummaging Goblin", 2),
-        ("Soul Shepherd", 2),
-        ("Llanowar Behemoth", 2),
-        ("Tumble Magnet", 2),
-        ("Lurching Rotbeast", 2),
-        ("Souldrinker", 2),
-    ] {
-        deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
+    for slot in 0..4 {
+        let power = i32::try_from(1 + rng.index(3)).unwrap_or(1);
+        let name = format!("Cost Fodder {slot} {power}/{power}");
+        deck.push(creature(&name, 1, &[colors[rng.index(3)]], power, power));
     }
     rng.shuffle(&mut deck);
-    Ok(deck)
+    deck.truncate(60);
+    deck
 }
 
-/// A game of `players` seats with cost decks.
-pub fn costs_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
-    let mut decks = Vec::with_capacity(players);
-    for seat in 0u64..players as u64 {
-        decks.push(cost_deck(&mut GameRng::substream(seed, 17_000 + seat))?);
-    }
-    Ok(GameSetup::new(Arc::new(Normal), seed, decks))
+/// A normal game of `players` seats whose decks are [`cost_deck`]s, fully determined by `seed`.
+pub fn cost_fuzz_setup(players: usize, seed: u64) -> GameSetup {
+    let decks = (0u64..)
+        .take(players)
+        .map(|seat| cost_deck(&mut GameRng::substream(seed, 21_000 + seat)))
+        .collect();
+    GameSetup::new(Arc::new(Normal), seed, decks)
 }

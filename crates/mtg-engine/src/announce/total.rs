@@ -6,6 +6,7 @@
 use mtg_cards::ability::Ability;
 use mtg_core::mana::ManaCost;
 
+use super::payment::spend;
 use super::{Ctx, Next, What, Work, alternative, modifiers, optional, x};
 use crate::choose::Choices;
 use crate::mana::{ManaOption, can_afford};
@@ -89,5 +90,5 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
     total
         .mana
         .as_ref()
-        .is_none_or(|cost| can_afford(cost, seat.mana(), &total.sources, life))
+        .is_none_or(|cost| can_afford(cost, seat.mana(), &total.sources, life, &spend(ctx)))
 }

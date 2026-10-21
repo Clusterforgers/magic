@@ -13,7 +13,7 @@ use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, Event, GameSetup, replay};
 use mtg_testkit::cards::{forest, free_creature, island, mountain, swamp};
 use mtg_testkit::corpus;
-use mtg_testkit::cost_cards::{
+use mtg_testkit::part_cards::{
     bleeder, charger, cycler, drummer, gauntlet, gravedigger, levy, life_cycler, mana_elf,
     returner, rummager, sacrificer,
 };

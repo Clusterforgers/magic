@@ -11,7 +11,7 @@ use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, StatKind};
 use mtg_core::card::CardType;
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use thiserror::Error;
 
 use super::share::{OUTSIDE_A_DIVISION, Share};
@@ -76,6 +76,9 @@ pub struct Scope<'a> {
     /// The permanents as the layers have left them so far, for a value that a pass over the layers works out: the
     /// effects that apply before it are in what it reads (`layers.rs`). None reads the game as it is now.
     pub(crate) layered: Option<View<'a>>,
+    /// The spell being cast and the player who casts it: the announcement reads it as a spell on the stack that this
+    /// player controls, though it is still in a hand (CR 601.2a), when a cost modifier asks what it affects.
+    pub(crate) casting: Option<(ObjectId, PlayerId)>,
 }
 
 /// What is known of an object: the object itself if it is still the one that was named, else how it was.
@@ -147,6 +150,7 @@ impl<'a> Scope<'a> {
             departed: &[],
             cause: None,
             layered: None,
+            casting: None,
         }
     }
 
@@ -222,10 +226,14 @@ impl<'a> Scope<'a> {
                 });
             }
             let (chars, controller) = seen_as(self.state, reference.id)?;
+            let (zone, controller) = match self.casting {
+                Some((spell, caster)) if spell == object.id() => (Zone::Stack, caster),
+                _ => (object.zone(), controller),
+            };
             return Some(Seen {
                 owner: object.owner(),
                 controller,
-                zone: object.zone(),
+                zone,
                 kind: object.kind(),
                 chars: Cow::Owned(chars),
                 tapped,

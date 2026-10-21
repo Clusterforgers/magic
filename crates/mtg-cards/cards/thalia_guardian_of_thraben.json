@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9b7f1d05-707c-4ed3-9f0e-8ced1232c2ee",
+  "name": "Thalia, Guardian of Thraben",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thalia, Guardian of Thraben",
+      "oracle_fingerprint": "60ceca4e6d3fa4ba54051cece7f8f0fe",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Not": { "Type": "Creature" } }],
+            "change": "Increase",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

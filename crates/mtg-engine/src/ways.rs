@@ -11,6 +11,7 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
+use crate::announce;
 use crate::attach;
 use crate::choose::announceable;
 use crate::keywords::{self, keywords_of};
@@ -20,6 +21,7 @@ use crate::price::Price;
 use crate::priority::sorcery_timing;
 use crate::resolve::{spell_ability, zone_kind};
 use crate::rules::cast_permissions;
+use crate::spend::Spend;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -158,12 +160,16 @@ pub(crate) fn castable_now(
     let Some(card) = state.object(id) else {
         return false;
     };
+    let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
     of(state, player, id).iter().any(|way| {
         (way.instant || sorcery_timing(state, player))
             && announceable_in(state, player, id, way.alternative)
             && way
                 .cost(card.card().mana_cost.as_ref())
-                .is_some_and(|cost| can_afford(&cost, pool, sources, life))
+                .is_some_and(|cost| {
+                    let cost = announce::cheapest(state, player, id, &cost);
+                    can_afford(&cost, pool, sources, life, &spend)
+                })
     })
 }
 

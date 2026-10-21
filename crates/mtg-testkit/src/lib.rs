@@ -21,6 +21,7 @@ pub mod keyword_cards;
 pub mod kicker_cards;
 pub mod layer_cards;
 pub mod loyalty_cards;
+pub mod part_cards;
 pub mod pay_cards;
 pub mod prevent_cards;
 pub mod protect_cards;
@@ -41,7 +42,7 @@ pub use announce_cards::split_fuzz_setup;
 pub use attach_cards::attach_fuzz_setup;
 pub use bot::RandomBot;
 pub use choice_cards::choice_fuzz_setup;
-pub use cost_cards::costs_fuzz_setup;
+pub use cost_cards::cost_fuzz_setup;
 pub use counter_cards::counters_fuzz_setup;
 pub use decks::{
     archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, ramp_fuzz_setup,
@@ -54,6 +55,7 @@ pub use keyword_cards::keyword_triggers_fuzz_setup;
 pub use kicker_cards::kicker_fuzz_setup;
 pub use layer_cards::layers_fuzz_setup;
 pub use loyalty_cards::loyalty_fuzz_setup;
+pub use part_cards::parts_fuzz_setup;
 pub use pay_cards::pay_fuzz_setup;
 pub use prevent_cards::prevent_fuzz_setup;
 pub use protect_cards::protect_fuzz_setup;

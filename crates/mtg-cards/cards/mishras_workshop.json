@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ba284fe6-bb29-455c-8321-9714a0cdc05e",
+  "name": "Mishra's Workshop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mishra's Workshop",
+      "oracle_fingerprint": "fd0c0cde418e71f3e147e73ac81b7ca1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless", "Colorless"] },
+                  "only": [{ "Spell": { "types": ["Artifact"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

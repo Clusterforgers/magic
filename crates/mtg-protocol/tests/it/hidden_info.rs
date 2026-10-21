@@ -17,9 +17,9 @@ use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
 use mtg_testkit::{
-    archon_fuzz_setup, attach_fuzz_setup, costs_fuzz_setup, counters_fuzz_setup,
-    keyword_triggers_fuzz_setup, loyalty_fuzz_setup, prevent_fuzz_setup, rules_fuzz_setup,
-    spell_fuzz_setup, split_fuzz_setup, zones_fuzz_setup,
+    archon_fuzz_setup, attach_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup,
+    loyalty_fuzz_setup, parts_fuzz_setup, prevent_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup,
+    split_fuzz_setup, zones_fuzz_setup,
 };
 use rstest::rstest;
 use serde_json::Value;
@@ -617,7 +617,7 @@ fn a_card_discarded_or_exiled_to_pay_a_cost_reaches_every_seat_and_no_hidden_obj
     let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
     let (mut checked, mut discards, mut exiles, mut picks) = (0usize, 0usize, 0usize, 0usize);
     let mut previous: Option<Decision> = None;
-    let setup = with_unique_names(costs_fuzz_setup(players, seed).unwrap());
+    let setup = with_unique_names(parts_fuzz_setup(players, seed).unwrap());
     let engine = run_game(setup, seed, |step: &Step| {
         if let Some(Decision {
             kind: DecisionKind::ChooseCards(options),
@@ -1603,7 +1603,7 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_auras_and_legends(
 }
 
 #[rstest]
-#[case(2, 310)]
+#[case(2, 311)]
 #[case(3, 308)]
 #[case(4, 320)]
 fn no_hidden_object_reaches_any_viewer_in_games_of_prevention_and_regeneration(
