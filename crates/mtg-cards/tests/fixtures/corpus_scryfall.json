@@ -167,12 +167,12 @@
     "type_line": "Legendary Creature — Vampire Knight",
     "oracle_text": "Deathtouch, lifelink\nOther legendary creatures you control get +2/+2.",
     "colors": [
-      "W",
-      "B"
+      "B",
+      "W"
     ],
     "color_identity": [
-      "W",
-      "B"
+      "B",
+      "W"
     ],
     "keywords": [
       "Lifelink",
@@ -204,18 +204,20 @@
     ]
   },
   {
-    "id": "e07b3a95-81d4-4c62-b5f0-6a9c2d7e1b38",
-    "oracle_id": "3f92c1d8-5a6e-4b07-9d34-8e1f7a2c6b50",
+    "id": "ef7d3676-b1db-4329-9201-18f8a6c54ea6",
+    "oracle_id": "6b75b94e-83b7-457e-ac41-7ca90b5a59aa",
     "name": "Battlefield Forge",
     "lang": "en",
     "layout": "normal",
-    "set": "apc",
-    "collector_number": "140",
+    "set": "frc",
+    "collector_number": "65",
     "rarity": "rare",
-    "released_at": "2001-06-04",
+    "released_at": "2026-10-02",
     "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
     "type_line": "Land",
-    "oracle_text": "{T}: Add {C}.\n{T}: Add {R} or {W}. Battlefield Forge deals 1 damage to you.",
+    "oracle_text": "{T}: Add {C}.\n{T}: Add {R} or {W}. This land deals 1 damage to you.",
     "colors": [],
     "color_identity": [
       "R",
@@ -891,15 +893,22 @@
     "type_line": "Sorcery",
     "oracle_text": "Create two 4/4 blue and red Elemental creature tokens.\n{U/R}{U/R}, Discard this card: Create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
     "colors": [
-      "U",
-      "R"
+      "R",
+      "U"
     ],
     "color_identity": [
-      "U",
-      "R"
+      "R",
+      "U"
     ],
     "keywords": [
       "Treasure"
+    ],
+    "produced_mana": [
+      "B",
+      "G",
+      "R",
+      "U",
+      "W"
     ]
   },
   {
@@ -1502,6 +1511,9 @@
     ],
     "keywords": [
       "Ward"
+    ],
+    "produced_mana": [
+      "G"
     ]
   },
   {
@@ -1850,20 +1862,20 @@
     ]
   },
   {
-    "id": "5c1a7d4e-2f6b-4e83-9a0d-1b7e3c9f4a21",
-    "oracle_id": "a14e6b02-7c3d-4f58-8e91-3d2b6f0c5a77",
+    "id": "f85ab5f9-508e-45de-8fa1-ce1f16552ffc",
+    "oracle_id": "32e5339e-9e4f-46f8-b305-f9d6d3ba8bb5",
     "name": "Lotus Petal",
     "lang": "en",
     "layout": "normal",
-    "set": "tmp",
-    "collector_number": "294",
-    "rarity": "common",
-    "released_at": "1997-10-14",
-    "digital": false,
+    "set": "tpr",
+    "collector_number": "225",
+    "rarity": "uncommon",
+    "released_at": "2015-05-06",
+    "digital": true,
     "mana_cost": "{0}",
     "cmc": 0.0,
     "type_line": "Artifact",
-    "oracle_text": "{T}, Sacrifice Lotus Petal: Add one mana of any color.",
+    "oracle_text": "{T}, Sacrifice this artifact: Add one mana of any color.",
     "colors": [],
     "color_identity": [],
     "keywords": [],
@@ -3091,14 +3103,14 @@
     "type_line": "Creature — Human Soldier",
     "oracle_text": "When this creature enters, distribute two +1/+1 counters among one or two target creatures you control.",
     "colors": [
-      "W",
       "B",
-      "G"
+      "G",
+      "W"
     ],
     "color_identity": [
-      "W",
       "B",
-      "G"
+      "G",
+      "W"
     ],
     "keywords": [],
     "power": "4",
@@ -3207,6 +3219,8 @@
     "rarity": "uncommon",
     "released_at": "2026-01-23",
     "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
     "type_line": "Land",
     "oracle_text": "{T}: Add one mana of any color. Spend this mana only to cast a creature spell.",
     "colors": [],
@@ -3231,6 +3245,8 @@
     "rarity": "rare",
     "released_at": "2022-07-08",
     "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
     "type_line": "Land",
     "oracle_text": "{T}: Add one mana of any color. Spend this mana only to cast a multicolored spell.",
     "colors": [],
@@ -3285,6 +3301,8 @@
     "rarity": "mythic",
     "released_at": "2014-06-16",
     "digital": true,
+    "mana_cost": "",
+    "cmc": 0.0,
     "type_line": "Land",
     "oracle_text": "{T}: Add {C}{C}{C}. Spend this mana only to cast artifact spells.",
     "colors": [],
