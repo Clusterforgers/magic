@@ -72,7 +72,7 @@ fn kind(r: &mut Reader<'_>) -> Option<CounterKind> {
 }
 
 /// How many counters of what kind: "a +1/+1 counter", "two charge counters".
-fn counters(r: &mut Reader<'_>) -> Option<(CounterKind, u32)> {
+pub(super) fn counters(r: &mut Reader<'_>) -> Option<(CounterKind, u32)> {
     let number = number_word(r.take_word()?)?;
     let counter = kind(r)?;
     r.word(if number == 1 { "counter" } else { "counters" })

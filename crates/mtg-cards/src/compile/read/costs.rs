@@ -2,13 +2,14 @@
 //! in the order it is printed and written back the same way.
 
 use super::amounts::{cards, cards_text, count_word, number_word, points, points_text};
+use super::counters::{counters, text as counters_text};
 use super::effects::describes_a_kind;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::cost::{Cost, CostItem};
 use crate::mana::ManaCostX;
-use crate::refs::{Pred, Selector};
+use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::value::Amount;
 
 /// The parts of a cost, separated by commas: `{T}`, `{Q}`, a run of mana symbols, "Pay 2 life",
@@ -69,11 +70,92 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
             filter: None,
         });
     }
+    if r.word("tap") {
+        return tap(r);
+    }
+    if r.word("exile") {
+        return exile(r);
+    }
+    if r.word("return") {
+        return bounce(r);
+    }
+    if r.word("remove") {
+        return remove(r);
+    }
     r.need("sacrifice")?;
     if r.source() {
         return Some(CostItem::SacrificeSelf);
     }
     sacrifice(r)
+}
+
+/// "a" or "an" for one, a number above one for several: how many a cost takes and how the phrase after it reads.
+fn how_many(r: &mut Reader<'_>) -> Option<(Form, i32)> {
+    if r.word("a") || r.word("an") {
+        return Some((Form::Subject, 1));
+    }
+    let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
+    Some((Form::Targets, i32::try_from(number).ok()?))
+}
+
+/// Takes one `pred` out of a filter; `None` when it is not there.
+fn without(filter: &mut Selector, pred: &Pred) -> Option<()> {
+    let at = filter.0.iter().position(|found| found == pred)?;
+    filter.0.remove(at);
+    Some(())
+}
+
+/// What a cost that takes objects says of them: a kind, and nothing else.
+fn kinds_only(filter: Selector) -> Option<Selector> {
+    filter.0.iter().all(is_cost_filter).then_some(filter)
+}
+
+/// "Tap an untapped creature you control", "Tap two untapped creatures you control": the payer taps untapped
+/// permanents they control, which the part says for itself.
+fn tap(r: &mut Reader<'_>) -> Option<CostItem> {
+    let (form, count) = how_many(r)?;
+    let mut filter = phrase(r, form)?;
+    without(&mut filter, &Pred::Untapped)?;
+    without(&mut filter, &Pred::ControlledBy(Ref::You))?;
+    Some(CostItem::TapPermanents {
+        filter: kinds_only(filter)?,
+        count: Amount::Fixed(count),
+    })
+}
+
+/// "Exile a creature card from your graveyard", "Exile two cards from your graveyard".
+fn exile(r: &mut Reader<'_>) -> Option<CostItem> {
+    let (form, count) = how_many(r)?;
+    let mut filter = phrase(r, form)?;
+    without(&mut filter, &Pred::In(ZoneKind::Graveyard))?;
+    without(&mut filter, &Pred::OwnedBy(Ref::You))?;
+    Some(CostItem::ExileFromGraveyard {
+        filter: kinds_only(filter)?,
+        count: Amount::Fixed(count),
+    })
+}
+
+/// "Return a land you control to its owner's hand".
+fn bounce(r: &mut Reader<'_>) -> Option<CostItem> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    let mut filter = phrase(r, Form::Subject)?;
+    without(&mut filter, &Pred::ControlledBy(Ref::You))?;
+    r.words("to its owner's hand").then_some(())?;
+    Some(CostItem::ReturnToHand {
+        filter: kinds_only(filter)?,
+        count: Amount::one(),
+    })
+}
+
+/// "Remove a charge counter from ~": counters of the card itself.
+fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
+    let (counter, number) = counters(r)?;
+    r.need("from")?;
+    r.source().then_some(())?;
+    Some(CostItem::RemoveCounters {
+        counter,
+        count: Amount::Fixed(i32::try_from(number).ok()?),
+    })
 }
 
 /// A run of energy symbols: "{E}{E}" is two energy.
@@ -131,8 +213,46 @@ fn item_text(item: &CostItem) -> Option<String> {
             count,
             filter: None,
         } => format!("Discard {}", cards_text(count)?),
+        CostItem::TapPermanents { filter, count } => {
+            let mut said = filter.clone();
+            said.0.extend([Pred::Untapped, Pred::ControlledBy(Ref::You)]);
+            format!("Tap {}", taken_text(&said, count)?)
+        }
+        CostItem::ExileFromGraveyard { filter, count } => {
+            let mut said = filter.clone();
+            said.0
+                .extend([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
+            format!("Exile {}", taken_text(&said, count)?)
+        }
+        CostItem::ReturnToHand { filter, count } if *count == Amount::one() => {
+            let mut said = filter.clone();
+            said.0.push(Pred::ControlledBy(Ref::You));
+            format!(
+                "Return {} to its owner's hand",
+                taken_text(&said, count)?
+            )
+        }
+        CostItem::RemoveCounters { counter, count } => {
+            format!("Remove {} from ~", counters_text(counter, count)?)
+        }
         _ => return None,
     })
+}
+
+/// "a creature you control", "two untapped creatures you control": what a cost takes, in the words `phrase` reads.
+fn taken_text(said: &Selector, count: &Amount) -> Option<String> {
+    let Amount::Fixed(number) = count else {
+        return None;
+    };
+    if *number == 1 {
+        let text = phrase_text(said, Form::Subject)?;
+        return Some(format!("{} {text}", article(&text)));
+    }
+    let text = phrase_text(said, Form::Targets)?;
+    Some(format!(
+        "{} {text}",
+        count_word(u32::try_from(*number).ok().filter(|n| *n > 1)?)?
+    ))
 }
 
 /// "a creature", "another creature", "two other creatures".

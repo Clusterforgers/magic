@@ -62,6 +62,38 @@ fn activated(text: &str) -> Option<Ability> {
     "{T}, Discard a card: Draw a card.",
     r#"{"Activated":{"cost":["Tap",{"Discard":{}}],"effects":[{"Draw":{}}]}}"#
 )]
+#[case::tap_an_untapped_creature(
+    "Tap an untapped creature you control: ~ gets +1/+1 until end of turn.",
+    r#"{"Activated":{"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}}]}}"#
+)]
+#[case::tap_two_untapped_creatures(
+    "{1}, Tap two untapped creatures you control: Draw a card.",
+    r#"{"Activated":{"cost":[{"Mana":"{1}"},{"TapPermanents":{"filter":[{"Type":"Creature"}],"count":2}}],"effects":[{"Draw":{}}]}}"#
+)]
+#[case::exile_a_creature_card_from_the_graveyard(
+    "{W}, Exile a creature card from your graveyard: You gain 1 life.",
+    r#"{"Activated":{"cost":[{"Mana":"{W}"},{"ExileFromGraveyard":{"filter":[{"Type":"Creature"}]}}],"effects":[{"GainLife":{"amount":1}}]}}"#
+)]
+#[case::exile_any_card_from_the_graveyard(
+    "Exile a card from your graveyard: Draw a card.",
+    r#"{"Activated":{"cost":[{"ExileFromGraveyard":{"filter":[]}}],"effects":[{"Draw":{}}]}}"#
+)]
+#[case::exile_two_cards_from_the_graveyard(
+    "Exile two creature cards from your graveyard: Draw a card.",
+    r#"{"Activated":{"cost":[{"ExileFromGraveyard":{"filter":[{"Type":"Creature"}],"count":2}}],"effects":[{"Draw":{}}]}}"#
+)]
+#[case::remove_a_counter(
+    "{T}, Remove a charge counter from ~: You gain 1 life.",
+    r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"counter":"charge"}}],"effects":[{"GainLife":{"amount":1}}]}}"#
+)]
+#[case::remove_two_counters(
+    "Remove two +1/+1 counters from ~: Draw a card.",
+    r#"{"Activated":{"cost":[{"RemoveCounters":{"counter":"+1/+1","count":2}}],"effects":[{"Draw":{}}]}}"#
+)]
+#[case::return_a_land(
+    "Return a land you control to its owner's hand: Draw a card.",
+    r#"{"Activated":{"cost":[{"ReturnToHand":{"filter":[{"Type":"Land"}]}}],"effects":[{"Draw":{}}]}}"#
+)]
 #[case::drudge_skeletons(
     "{B}: Regenerate ~.",
     r#"{"Activated":{"cost":"{B}","effects":[{"Regenerate":{"what":"This"}}]}}"#
@@ -219,7 +251,6 @@ fn every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
 )]
 #[case::an_unknown_restriction("{T}: Draw a card. Activate only during your turn.")]
 #[case::a_restriction_first("{T}: Activate only as a sorcery. Draw a card.")]
-#[case::another_cost_word("{T}, Tap an untapped creature you control: Add one mana of any color.")]
 #[case::a_creature_you_control("{T}, Sacrifice a creature you control: Draw a card.")]
 #[case::a_creature_card("{T}, Sacrifice a creature card: Draw a card.")]
 #[case::a_variable_count("Sacrifice X creatures: Draw a card.")]
@@ -237,7 +268,6 @@ fn every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
 #[case::nothing_to_do("{T}:")]
 #[case::no_colon("{T} Draw a card.")]
 #[case::exile_from_the_graveyard("{2}, Exile ~ from your graveyard: Draw a card.")]
-#[case::remove_a_counter("{T}, Remove a charge counter from ~: Add one mana of any color.")]
 #[case::regenerate_a_spell("{B}: Regenerate target spell.")]
 #[case::regenerate_a_card_in_a_graveyard(
     "{B}: Regenerate target creature card from your graveyard."
