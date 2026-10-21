@@ -145,7 +145,7 @@ mod tests {
 
     use super::*;
 
-    fn rules(field: &str, value: serde_json::Value) -> Result<HouseRules, serde_json::Error> {
+    fn rules(field: &str, value: &serde_json::Value) -> Result<HouseRules, serde_json::Error> {
         serde_json::from_value(json!({ field: value }))
     }
 
@@ -176,7 +176,7 @@ mod tests {
         #[case] value: serde_json::Value,
         #[case] refused: Option<&str>,
     ) {
-        let parsed = rules(field, value).unwrap();
+        let parsed = rules(field, &value).unwrap();
         assert_eq!(parsed.validate().err().map(|e| e.field()), refused);
     }
 

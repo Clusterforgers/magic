@@ -83,7 +83,12 @@ fn starting_life_follows_the_rule(
     #[values(None, Some(1), Some(40), Some(1000))] life: Option<i32>,
 ) -> Result<(), ScriptError> {
     let driver = opening(players, 3, rules(|r| r.starting_life = life))?;
-    let lives: Vec<i32> = driver.state().players().iter().map(|p| p.life()).collect();
+    let lives: Vec<i32> = driver
+        .state()
+        .players()
+        .iter()
+        .map(mtg_engine::player::Player::life)
+        .collect();
     assert_eq!(lives, vec![life.unwrap_or(20); players]);
     Ok(())
 }
@@ -332,10 +337,7 @@ fn a_first_draw_rule_wins_over_a_format_that_always_skips(
 #[case::free(rules(|r| r.free_mulligans = Some(101)), "free_mulligans")]
 #[case::cap(rules(|r| r.mulligan_cap = Some(101)), "mulligan_cap")]
 #[case::limit(rules(|r| r.max_hand_size = Some(HandLimit::Cards(51))), "max_hand_size")]
-fn a_rule_out_of_range_refuses_the_setup(
-    #[case] house: HouseRules,
-    #[case] field: &str,
-) -> Result<(), ScriptError> {
+fn a_rule_out_of_range_refuses_the_setup(#[case] house: HouseRules, #[case] field: &str) {
     let setup = fuzz_setup(2, 1).with_house_rules(house);
     for refused in [
         setup.validate().err(),
@@ -350,7 +352,6 @@ fn a_rule_out_of_range_refuses_the_setup(
             other => panic!("expected the rule {field} to be refused, got {other:?}"),
         }
     }
-    Ok(())
 }
 
 /// The house rules as a random table sets them: each rule is left out about half the time.

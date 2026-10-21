@@ -207,6 +207,7 @@ impl GameRecipe {
     }
 
     /// The recipe with `house_rules` laid over the format's values.
+    #[must_use]
     pub fn with_house_rules(mut self, house_rules: HouseRules) -> GameRecipe {
         self.house_rules = house_rules;
         self
@@ -459,6 +460,92 @@ mod tests {
         assert!(!recipe.is_fingerprinted());
         assert!(recipe.build().is_ok());
         assert_eq!(serde_json::to_value(&recipe).unwrap(), stored);
+    }
+
+    fn with_rules() -> HouseRules {
+        HouseRules {
+            starting_life: Some(40),
+            opening_hand_size: Some(5),
+            max_hand_size: Some(mtg_core::house::HandLimit::Unlimited),
+            ..HouseRules::default()
+        }
+    }
+
+    #[test]
+    fn a_recipe_stored_before_house_rules_decodes_with_none_and_stores_the_same_shape() {
+        let stored = json!({
+            "format": "normal",
+            "seed": 3,
+            "decks": [
+                { "kind": "demo", "id": "mono-green" },
+                { "kind": "demo", "id": "mono-red" },
+            ],
+        });
+        let recipe: GameRecipe = serde_json::from_value(stored.clone()).unwrap();
+        assert!(recipe.house_rules.is_empty());
+        let setup = recipe.build().unwrap();
+        assert!(setup.house_rules.is_empty());
+        assert_eq!(serde_json::to_value(&recipe).unwrap(), stored);
+    }
+
+    #[test]
+    fn house_rules_are_stored_with_the_recipe_and_build_into_the_setup() {
+        let recipe = GameRecipe::normal(3, demo_decks(&["mono-green", "mono-red"]))
+            .with_house_rules(with_rules());
+        let stored = serde_json::to_value(&recipe).unwrap();
+        assert_eq!(
+            stored["house_rules"],
+            json!({
+                "starting_life": 40,
+                "opening_hand_size": 5,
+                "max_hand_size": "unlimited",
+            })
+        );
+        let back: GameRecipe = serde_json::from_value(stored).unwrap();
+        assert_eq!(back, recipe);
+        let setup = back.build().unwrap();
+        assert_eq!(setup.house_rules, with_rules());
+        let state = GameState::from_setup(&setup).unwrap();
+        assert!(state.players().iter().all(|p| p.life() == 40));
+    }
+
+    #[test]
+    fn the_rules_are_part_of_the_game_the_recipe_rebuilds() {
+        let hash = |house: HouseRules| {
+            let recipe = GameRecipe::normal(3, demo_decks(&["mono-green", "mono-red"]))
+                .with_house_rules(house);
+            GameState::from_setup(&recipe.build().unwrap())
+                .unwrap()
+                .state_hash()
+        };
+        assert_eq!(hash(with_rules()), hash(with_rules()));
+        assert_ne!(hash(with_rules()), hash(HouseRules::default()));
+    }
+
+    #[test]
+    fn rules_out_of_range_do_not_build() {
+        let recipe = GameRecipe::normal(3, demo_decks(&["mono-green", "mono-red"]))
+            .with_house_rules(HouseRules {
+                opening_hand_size: Some(0),
+                ..HouseRules::default()
+            });
+        match recipe.build() {
+            Err(RecipeError::Setup(SetupError::HouseRules(error))) => {
+                assert_eq!(error.field(), "opening_hand_size");
+            }
+            other => panic!("expected the rule to be refused, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn a_stored_rule_the_server_does_not_know_is_refused() {
+        let stored = json!({
+            "format": "normal",
+            "seed": 3,
+            "decks": [],
+            "house_rules": { "mana_burn": true },
+        });
+        assert!(serde_json::from_value::<GameRecipe>(stored).is_err());
     }
 
     #[test]

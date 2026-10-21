@@ -134,6 +134,7 @@ impl GameSetup {
     }
 
     /// The setup with `house_rules` laid over the format's values.
+    #[must_use]
     pub fn with_house_rules(mut self, house_rules: HouseRules) -> Self {
         self.house_rules = house_rules;
         self

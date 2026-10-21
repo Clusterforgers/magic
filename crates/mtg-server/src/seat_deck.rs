@@ -106,6 +106,7 @@ impl SeatDecks {
     }
 
     /// The lobby of a game played under `house_rules`, which every recipe it writes keeps.
+    #[must_use]
     pub(crate) fn with_house_rules(mut self, house_rules: HouseRules) -> Self {
         self.house_rules = house_rules;
         self
