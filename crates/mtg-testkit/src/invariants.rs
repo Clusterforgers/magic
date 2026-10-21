@@ -142,13 +142,11 @@ fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
             )));
         }
         // A planeswalker with no loyalty went to its owner's graveyard (CR 704.5i).
-        let walker = state
-            .object(id)
-            .is_some_and(|o| o.base_types().contains(CardType::Planeswalker));
-        if walker
-            && held(&CounterKind::Loyalty) == 0
-            && state.is_alive(state.object(id).map_or(PlayerId(0), |o| o.controller()))
-        {
+        let walker = state.object(id).filter(|object| {
+            object.base_types().contains(CardType::Planeswalker)
+                && state.is_alive(object.controller())
+        });
+        if walker.is_some() && held(&CounterKind::Loyalty) == 0 {
             return Err(Violation::Counters(format!(
                 "{id:?} is a planeswalker with no loyalty at a decision point"
             )));
@@ -209,6 +207,46 @@ fn check_zone_index(state: &GameState) -> Result<(), Violation> {
     Ok(())
 }
 
+/// Every attacker and blocker is on the battlefield, no one attacks a player who is out, and what an attacker attacks is a
+/// planeswalker in play, or nothing once the planeswalker has left (CR 506.4c), when no one may block it.
+fn check_attackers(state: &GameState) -> Result<(), Violation> {
+    let book = |message: String| Violation::Bookkeeping(message);
+    let on_battlefield = |id: ObjectId| {
+        state
+            .object(id)
+            .is_some_and(|o| o.zone() == Zone::Battlefield)
+    };
+    for attacker in state.combat().attackers() {
+        if !on_battlefield(attacker.object()) {
+            return Err(book(format!(
+                "attacker {:?} left the battlefield",
+                attacker.object()
+            )));
+        }
+        if let Some(missing) = attacker.blockers().iter().find(|b| !on_battlefield(**b)) {
+            return Err(book(format!("blocker {missing:?} left the battlefield")));
+        }
+        match attacker.target() {
+            AttackTarget::Player(p) if !state.is_alive(p) => {
+                return Err(book(format!("attacking eliminated {p:?}")));
+            }
+            AttackTarget::Planeswalker(o) if !on_battlefield(o) && !attacker.attacks_nothing() => {
+                return Err(book(format!("attacking missing planeswalker {o:?}")));
+            }
+            AttackTarget::Planeswalker(_)
+                if attacker.attacks_nothing() && attacker.defender(state).is_some() =>
+            {
+                return Err(book(format!(
+                    "{:?} attacks nothing but has a defending player",
+                    attacker.object()
+                )));
+            }
+            _ => {}
+        }
+    }
+    Ok(())
+}
+
 fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
     let book = |message: String| Violation::Bookkeeping(message);
     if let Some(pair) = state
@@ -234,43 +272,7 @@ fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
             priority.holder()
         )));
     }
-    for attacker in state.combat().attackers() {
-        let on_battlefield = |id: ObjectId| {
-            state
-                .object(id)
-                .is_some_and(|o| o.zone() == Zone::Battlefield)
-        };
-        if !on_battlefield(attacker.object()) {
-            return Err(book(format!(
-                "attacker {:?} left the battlefield",
-                attacker.object()
-            )));
-        }
-        if let Some(missing) = attacker.blockers().iter().find(|b| !on_battlefield(**b)) {
-            return Err(book(format!("blocker {missing:?} left the battlefield")));
-        }
-        match attacker.target() {
-            AttackTarget::Player(p) if !state.is_alive(p) => {
-                return Err(book(format!("attacking eliminated {p:?}")));
-            }
-            // A planeswalker that left leaves its attackers attacking nothing (CR 506.4c), with no one to block them.
-            AttackTarget::Planeswalker(o) if !on_battlefield(o) && !attacker.attacks_nothing() => {
-                return Err(book(format!("attacking missing planeswalker {o:?}")));
-            }
-            AttackTarget::Planeswalker(o) if attacker.attacks_nothing() => {
-                if attacker.defender(state).is_some() {
-                    return Err(book(format!(
-                        "{:?} attacks nothing but has a defending player",
-                        attacker.object()
-                    )));
-                }
-                if attacker.blockers().iter().any(|b| !on_battlefield(*b)) {
-                    return Err(book(format!("a blocker of the attacker of {o:?} left")));
-                }
-            }
-            _ => {}
-        }
-    }
+    check_attackers(state)?;
     if state.stage() != Stage::Finished
         && let Some(out) = state.objects().find(|o| !state.is_alive(o.owner()))
     {
@@ -595,7 +597,10 @@ impl InvariantChecker {
     /// Damage to a permanent is marked on a creature (CR 120.3e) and removes that many loyalty counters from a
     /// planeswalker, no more than it holds (CR 120.3c); one that is both takes both.
     fn damage_object(&mut self, object: ObjectId, amount: u32) {
-        let printed = self.shadow.object(object).map(|o| o.base_types());
+        let printed = self
+            .shadow
+            .object(object)
+            .map(mtg_engine::object::GameObject::base_types);
         let walker = printed.is_some_and(|types| types.contains(CardType::Planeswalker));
         let creature = printed.is_some_and(|types| types.contains(CardType::Creature));
         if !walker || creature {

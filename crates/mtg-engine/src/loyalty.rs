@@ -275,6 +275,6 @@ mod tests {
             .map(|(_, cost)| cost)
             .collect();
         assert_eq!(costs, [LoyaltyCost::Plus(1), LoyaltyCost::Minus(3)]);
-        assert!(loyalty_abilities(&game, game.zone(Zone::Hand(ME))[0]).is_empty());
+        assert_eq!(loyalty_abilities(&game, game.zone(Zone::Hand(ME))[0]), []);
     }
 }

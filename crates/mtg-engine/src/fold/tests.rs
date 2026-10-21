@@ -913,7 +913,7 @@ fn damage_to_a_planeswalker_removes_that_many_loyalty_counters_and_marks_nothing
     let marked = game
         .object(walker)
         .and_then(|o| o.permanent())
-        .map(|p| p.damage());
+        .map(crate::object::PermanentState::damage);
     assert_eq!(
         marked,
         Some(0),

@@ -259,6 +259,12 @@ impl GameState {
         self.limits_spent.contains(&(source, origin, ability))
     }
 
+    /// A new turn begins: the abilities used once each turn and the planeswalkers that activated a loyalty ability are free again.
+    pub(crate) fn clear_turn_uses(&mut self) {
+        self.limits_spent.clear();
+        self.loyalty_used.clear();
+    }
+
     /// Whether a loyalty ability of the planeswalker `permanent` has been activated this turn (CR 606.3).
     pub(crate) fn loyalty_spent(&self, permanent: ObjectRef) -> bool {
         self.loyalty_used.contains(&permanent)

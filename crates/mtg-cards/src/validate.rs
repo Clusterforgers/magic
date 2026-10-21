@@ -977,6 +977,15 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A loyalty ability: a `-X` cost waits for the choice of X, which the effects then read.
+    fn loyalty_ability(&mut self, cost: LoyaltyCost, targets: &[TargetSpec], effects: &[Effect]) {
+        if cost == LoyaltyCost::MinusX {
+            self.uses("Cost", "Loyalty.X");
+            self.x_free = true;
+        }
+        self.body(targets, effects, false);
+    }
+
     fn ability(&mut self, ability: &Ability) {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {
@@ -994,14 +1003,7 @@ impl<'a> Walker<'a> {
                 cost,
                 targets,
                 effects,
-            } => {
-                // `-X` waits for the choice of X, which the effects then read.
-                if *cost == LoyaltyCost::MinusX {
-                    w.uses("Cost", "Loyalty.X");
-                    w.x_free = true;
-                }
-                w.body(targets, effects, false);
-            }
+            } => w.loyalty_ability(*cost, targets, effects),
             Ability::Activated {
                 cost,
                 targets,

@@ -80,7 +80,7 @@ fn the_abilities_a_player_is_offered_are_among_those_the_view_lists() {
     };
     let walker = named(&view(&driver, 0), "Dawn Walker", Zone::Battlefield).unwrap();
     let listed: Vec<AbilityRef> = walker.loyalty_abilities.iter().map(|a| a.ability).collect();
-    assert!(!options.abilities.is_empty());
+    assert_ne!(options.abilities.len(), 0);
     for offered in &options.abilities {
         assert!(
             listed.contains(offered),
@@ -96,7 +96,7 @@ fn a_planeswalker_off_the_battlefield_and_every_other_permanent_list_none() {
     let in_hand = named(&seen, "Dawn Walker", Zone::Hand(PlayerId(1))).unwrap();
     assert!(in_hand.loyalty_abilities.is_empty() && in_hand.counters.is_empty());
     let bear = named(&seen, "Grizzly Bears", Zone::Battlefield).unwrap();
-    assert!(bear.loyalty_abilities.is_empty());
+    assert_eq!(bear.loyalty_abilities, []);
     // The field is left out while it says nothing, and the abilities of the walker are not.
     assert!(
         serde_json::to_value(&bear)

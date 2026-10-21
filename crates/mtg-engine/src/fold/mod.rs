@@ -140,8 +140,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.turn.active = *active;
             state.turn.step = Step::Untap;
             state.turn.lands_played = 0;
-            state.limits_spent.clear();
-            state.loyalty_used.clear();
+            state.clear_turn_uses();
             state.priority = None;
             state.combat = crate::combat::CombatState::default();
             // A permanent its controller has held since this turn began is no longer held back (CR 302.6): who

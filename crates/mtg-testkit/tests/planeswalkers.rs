@@ -90,7 +90,10 @@ fn a_planeswalker_cast_from_a_hand_enters_with_its_printed_loyalty_in_the_batch_
     );
     assert_eq!(loyalty_of(&driver, "Dawn Walker"), Some(4));
     // A planeswalker with its loyalty stays: no state-based action took it.
-    assert!(in_zone(&driver, Zone::Graveyard(pid(0))).is_empty());
+    assert_eq!(
+        in_zone(&driver, Zone::Graveyard(pid(0))),
+        Vec::<String>::new()
+    );
     replays(&driver, &setup);
     Ok(())
 }

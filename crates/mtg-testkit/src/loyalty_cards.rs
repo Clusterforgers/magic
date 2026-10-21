@@ -163,7 +163,7 @@ mod tests {
         for card in [pyre_walker().unwrap(), dawn_walker().unwrap()] {
             assert!(card.is_type(CardType::Planeswalker), "{}", card.name);
             assert!(card.loyalty.is_some_and(|loyalty| loyalty > 0));
-            assert!(!card.rules.is_empty());
+            assert_ne!(card.rules.len(), 0);
             for ability in &card.rules {
                 for name in used_primitives(ability) {
                     assert!(caps.runs(&name), "{}: {name}", card.name);

@@ -523,7 +523,7 @@ impl<'a> Scope<'a> {
             },
             Pred::HasCounter(kind) => seen.counters.of(kind) > 0,
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
-            Pred::Compare { stat, op, to } => match Self::stat(seen, *stat)? {
+            Pred::Compare { stat, op, to } => match Self::stat(seen, *stat) {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
             },
@@ -541,8 +541,8 @@ impl<'a> Scope<'a> {
         })
     }
 
-    fn stat(seen: &Seen<'_>, stat: StatKind) -> Result<Option<i64>, ResolveError> {
-        Ok(match stat {
+    fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
+        match stat {
             StatKind::Power => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
             StatKind::ManaValue => seen.card.map(|c| i64::from(c.card().mana_value())),
@@ -557,7 +557,7 @@ impl<'a> Scope<'a> {
                         .map_or(0, i64::from)
                 }
             }),
-        })
+        }
     }
 
     /// The number an amount stands for.
@@ -574,9 +574,7 @@ impl<'a> Scope<'a> {
             Amount::Stat { of, stat } => match self.objects(of)?.first() {
                 Some(object) => self
                     .seen(*object)
-                    .map(|seen| Self::stat(&seen, *stat))
-                    .transpose()?
-                    .flatten()
+                    .and_then(|seen| Self::stat(&seen, *stat))
                     .unwrap_or(0),
                 None => 0,
             },
