@@ -6,7 +6,7 @@ use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
-use super::Target;
+use super::{Choices, Target};
 use crate::abilities::Cause;
 use crate::answers::Outcome;
 use crate::error::{EngineError, IllegalAnswer};
@@ -17,6 +17,10 @@ use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::wording;
 use crate::zones::Zone;
+
+/// The X a check of whether a spell or ability can be announced assumes while its player has not chosen one: the
+/// largest there is, so a filter that reads X ("mana value X or less") offers what some X allows.
+pub(crate) const ANY_X: u32 = 1_000;
 
 /// The targets a player may choose for one target specification of a spell or ability being put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -102,16 +106,18 @@ pub fn legal_targets(
     source: ObjectId,
     controller: PlayerId,
 ) -> Vec<Target> {
-    legal_for(state, spec, source, controller, None)
+    legal_for(state, spec, source, controller, None, None)
 }
 
-/// [`legal_targets`] for an ability that triggered: what it triggered on is what "that player" in the specification names.
+/// [`legal_targets`] for an ability that triggered: what it triggered on is what "that player" in the specification
+/// names. `x` is the X announced, which a filter may read.
 pub(crate) fn legal_for(
     state: &GameState,
     spec: &TargetSpec,
     source: ObjectId,
     controller: PlayerId,
     cause: Option<&Cause>,
+    x: Option<u32>,
 ) -> Vec<Target> {
     let source = state.object(source).map_or(
         ObjectRef {
@@ -120,7 +126,7 @@ pub(crate) fn legal_for(
         },
         GameObject::reference,
     );
-    legal_from(state, spec, source, &[], controller, cause)
+    legal_from(state, spec, source, &[], controller, cause, x)
 }
 
 /// [`legal_for`] for a source named by its reference, with the snapshots that say how objects were when they have gone:
@@ -132,8 +138,14 @@ pub(crate) fn legal_from(
     known: &[&Snapshot],
     controller: PlayerId,
     cause: Option<&Cause>,
+    x: Option<u32>,
 ) -> Vec<Target> {
+    let announced = Choices {
+        x,
+        ..Choices::default()
+    };
     let mut scope = Scope::announcing(state, controller, source);
+    scope.choices = &announced;
     scope.cause = cause;
     scope.snapshots = cause
         .iter()
@@ -180,8 +192,9 @@ pub(crate) fn options_for(
     spec: &TargetSpec,
     can_cancel: bool,
     cause: Option<&Cause>,
+    x: Option<u32>,
 ) -> Option<TargetOptions> {
-    let legal = legal_for(state, spec, source, controller, cause);
+    let legal = legal_for(state, spec, source, controller, cause, x);
     let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
     if available < spec.bounds.min {
         return None;
@@ -197,9 +210,13 @@ pub(crate) fn options_for(
                 },
                 GameObject::reference,
             );
-            let amount = Scope::announcing(state, controller, origin)
-                .amount(other)
-                .ok()?;
+            let announced = Choices {
+                x,
+                ..Choices::default()
+            };
+            let mut scope = Scope::announcing(state, controller, origin);
+            scope.choices = &announced;
+            let amount = scope.amount(other).ok()?;
             u32::try_from(amount).unwrap_or(0)
         }
     };
@@ -429,7 +446,7 @@ mod tests {
     ) {
         let game = game();
         let spell = game.zone(Zone::Hand(PlayerId(0)))[0];
-        let options = options_for(&game, spell, PlayerId(0), 0, &spec(json), true, None);
+        let options = options_for(&game, spell, PlayerId(0), 0, &spec(json), true, None, None);
         assert_eq!(options.map(|o| (o.min, o.max)), expected);
     }
 

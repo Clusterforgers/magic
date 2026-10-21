@@ -154,7 +154,7 @@ pub(crate) fn spell_target(state: &GameState, id: ObjectId) -> Option<TargetSpec
 /// may target (CR 601.2c); any other spell asks nothing here.
 pub(crate) fn announceable(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
     spell_target(state, id)
-        .is_none_or(|spec| options_for(state, id, player, 0, &spec, true, None).is_some())
+        .is_none_or(|spec| options_for(state, id, player, 0, &spec, true, None, None).is_some())
 }
 
 /// Whether `id` is an Aura spell on the stack.

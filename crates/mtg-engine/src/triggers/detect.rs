@@ -24,7 +24,7 @@ use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::replace::in_combat_damage;
 use crate::resolve::{Scope, zone_kind};
 use crate::rules::triggers_again;
-use crate::snapshot::snapshot;
+use crate::snapshot::{Snapshot, snapshot};
 use crate::state::{GameState, Tally};
 use crate::turn::Step;
 use crate::zones::Zone;
@@ -863,7 +863,12 @@ fn delayed(
         let Some(cause) = matching(pattern, happened, &scope) else {
             continue;
         };
-        let live = snapshot(state, source.id).filter(|shot| shot.counter == source.counter);
+        let live = snapshot(state, source.id)
+            .filter(|shot| shot.counter == source.counter)
+            .map(|shot| Snapshot {
+                x: waiting.snapshot.x,
+                ..shot
+            });
         if waiting.once {
             used.delayed.insert(waiting.id());
         }

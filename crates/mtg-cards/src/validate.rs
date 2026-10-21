@@ -353,8 +353,9 @@ impl<'a> Walker<'a> {
                 if !self.x_free {
                     self.x_uses.push((self.face, self.current_path()));
                 }
-                // Only the effects of the spell or ability that has the X read it; what it creates or leaves behind does
-                // not remember it.
+                // The effects and targets of the spell or ability that has the X read it, and so do the delayed triggers
+                // it sets up and, for a permanent, its enters trigger and the counters it enters with (CR 107.3m);
+                // what else it creates or carries does not remember it.
                 if !self.x_now {
                     self.uses("Amount", "X.Elsewhere");
                 }
@@ -878,11 +879,9 @@ impl<'a> Walker<'a> {
     }
 
     fn target_spec(&mut self, spec: &TargetSpec) {
-        // What may be targeted is judged as the targets are chosen, which has no X to read; the amount to divide has it.
-        let saved = std::mem::replace(&mut self.x_now, false);
+        // X is announced before the targets are chosen, so what may be targeted reads it.
         self.at("what", |w| w.targetable(&spec.what));
         self.at("bounds", |w| w.bounds(&spec.bounds));
-        self.x_now = saved;
         if let Some(divide) = &spec.divide {
             self.at("divide", |w| w.amount(divide));
         }
@@ -1204,10 +1203,8 @@ impl<'a> Walker<'a> {
             Effect::DelayedTrigger { when, effects, .. } => {
                 w.at("when", |w| w.trigger_pattern(when));
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
-                // The trigger it leaves behind does not remember X.
-                let now = std::mem::replace(&mut w.x_now, false);
+                // The trigger it leaves behind remembers the X of the spell or ability that sets it up.
                 w.effect_list("effects", effects, false);
-                w.x_now = now;
                 w.scope.in_trigger = saved;
             }
             Effect::If {
@@ -1497,6 +1494,8 @@ impl<'a> Walker<'a> {
                 if let Some(condition) = intervening_if {
                     w.at("if", |w| w.condition(condition));
                 }
+                // The permanent remembers the X of the spell it came from for its own enters trigger (CR 107.3m).
+                w.x_now = enters_itself(when);
                 w.body(
                     targets,
                     effects,
@@ -1523,6 +1522,9 @@ impl<'a> Walker<'a> {
             } => {
                 w.scope = Scope::new(&[], false);
                 w.at("when", |w| w.replace_when(when));
+                // A permanent entering as its spell resolves has the X the spell was cast with (CR 107.3m).
+                w.x_now =
+                    matches!(when, ReplaceWhen::Enters { what } if what.0.contains(&Pred::This));
                 w.at("by", |w| w.replace_by(when, by));
                 if let Some(condition) = condition {
                     w.at("condition", |w| w.condition(condition));
@@ -1717,6 +1719,18 @@ impl<'a> Walker<'a> {
 }
 
 /// Whether a cost has an `{X}` in its mana.
+/// Whether the trigger is "when this enters": the one trigger of a permanent that reads the X its spell was cast with.
+fn enters_itself(when: &TriggerPattern) -> bool {
+    matches!(
+        when,
+        TriggerPattern::ZoneChange {
+            what,
+            to: Some(ZoneKind::Battlefield),
+            ..
+        } if what.0.contains(&Pred::This)
+    )
+}
+
 fn has_x_mana(cost: &Cost) -> bool {
     cost.0
         .iter()
@@ -2099,7 +2113,16 @@ mod tests {
     #[case::an_x_beside_a_tap(r#"{"Activated":{"cost":[{"Mana":"{X}{R}{G}"},"Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.Mana.X", "Cost.Tap", "Effect.Draw"])]
     #[case::an_x_that_the_ability_never_announced(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Amount.X.Elsewhere", "Cost.Tap", "Effect.Draw"])]
     #[case::an_x_in_a_triggered_ability(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.StepBegins"])]
-    #[case::an_x_in_a_delayed_trigger_the_spell_leaves_behind(r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Draw":{"count":"X"}}]}}]}}"#, &["Ability.Spell", "Amount.X.Elsewhere", "Effect.DelayedTrigger", "Effect.Draw", "Trigger.StepBegins"])]
+    #[case::an_x_in_a_delayed_trigger_the_spell_leaves_behind(r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Draw":{"count":"X"}}]}}]}}"#, &["Ability.Spell", "Effect.DelayedTrigger", "Effect.Draw", "Trigger.StepBegins"])]
+    #[case::an_x_in_a_delayed_trigger_an_ability_without_x_leaves_behind(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"DelayedTrigger":{"when":{"StepBegins":{"step":"End","whose":"You"}},"effects":[{"Draw":{"count":"X"}}]}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.DelayedTrigger", "Effect.Draw", "Trigger.StepBegins"])]
+    #[case::an_x_in_the_enters_trigger_of_the_card(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Effect.Draw", "Trigger.ZoneChange"])]
+    #[case::an_x_in_the_dies_trigger_of_the_card(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.ZoneChange"])]
+    #[case::an_x_in_the_enters_trigger_of_another_card(r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},"Other"],"to":"Battlefield"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.ZoneChange"])]
+    #[case::an_x_in_the_counters_the_card_enters_with(r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"+1/+1","count":"X"}}}}"#, &["Ability.Replacement", "ReplaceBy.WithCounters", "ReplaceWhen.Enters"])]
+    #[case::an_x_in_the_counters_another_card_enters_with(r#"{"Replacement":{"when":{"Enters":{"what":[{"Type":"Creature"},"Other"]}},"by":{"WithCounters":{"counter":"+1/+1","count":"X"}}}}"#, &["Ability.Replacement", "Amount.X.Elsewhere", "ReplaceBy.WithCounters", "ReplaceWhen.Enters"])]
+    #[case::an_x_in_what_a_spell_targets(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#, &["Ability.Spell", "Effect.Destroy"])]
+    #[case::an_x_in_what_an_enters_trigger_targets(r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#, &["Ability.Triggered", "Effect.Destroy", "Trigger.ZoneChange"])]
+    #[case::an_x_in_what_another_trigger_targets(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"targets":[{"what":{"Object":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}]}}],"effects":[{"Destroy":{"what":{"Target":0},"regenerate":false}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Destroy", "Trigger.StepBegins"])]
     #[case::an_x_in_a_loyalty_ability_that_removes_no_x(r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Amount.X.Elsewhere", "Effect.Draw"])]
     #[case::an_x_in_the_effects_of_a_loyalty_ability_that_removes_x(r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.Draw"])]
     #[case::an_x_in_the_ability_a_token_carries(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}]}}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Amount.X.Elsewhere", "Cost.Tap", "Effect.CreateToken", "Effect.Draw"])]

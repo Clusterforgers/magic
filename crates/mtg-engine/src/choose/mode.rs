@@ -14,6 +14,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use super::options_for;
+use super::targets::ANY_X;
 use crate::abilities::Cause;
 use crate::answers::Outcome;
 use crate::error::{EngineError, IllegalAnswer};
@@ -136,7 +137,17 @@ fn is_legal(
     cause: Option<&Cause>,
 ) -> bool {
     mode.targets.iter().enumerate().all(|(index, spec)| {
-        options_for(state, source, controller, index, spec, true, cause).is_some()
+        options_for(
+            state,
+            source,
+            controller,
+            index,
+            spec,
+            true,
+            cause,
+            Some(ANY_X),
+        )
+        .is_some()
     })
 }
 
@@ -251,7 +262,7 @@ pub(crate) fn announceable(
     match modal_of(rules) {
         Some(modal) => mode_options(state, source, player, &modal, true, None).is_some(),
         None => rules.targets().iter().enumerate().all(|(index, spec)| {
-            options_for(state, source, player, index, spec, true, None).is_some()
+            options_for(state, source, player, index, spec, true, None, Some(ANY_X)).is_some()
         }),
     }
 }

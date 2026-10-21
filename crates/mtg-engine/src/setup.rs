@@ -236,6 +236,7 @@ fn preset_state(
         chosen: None,
         paid: Vec::new(),
         way: None,
+        x: None,
     }
 }
 
