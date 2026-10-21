@@ -523,7 +523,7 @@ impl<'a> Scope<'a> {
             },
             Pred::HasCounter(kind) => seen.counters.of(kind) > 0,
             Pred::Named(name) => seen.card.is_some_and(|c| c.card().name == *name),
-            Pred::Compare { stat, op, to } => match Self::stat(seen, *stat)? {
+            Pred::Compare { stat, op, to } => match Self::stat(seen, *stat) {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
             },
@@ -541,13 +541,23 @@ impl<'a> Scope<'a> {
         })
     }
 
-    fn stat(seen: &Seen<'_>, stat: StatKind) -> Result<Option<i64>, ResolveError> {
-        Ok(match stat {
+    fn stat(seen: &Seen<'_>, stat: StatKind) -> Option<i64> {
+        match stat {
             StatKind::Power => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
             StatKind::ManaValue => seen.card.map(|c| i64::from(c.card().mana_value())),
-            StatKind::Loyalty => return Err(ResolveError::Unsupported("loyalty counters")),
-        })
+            // The loyalty of a planeswalker on the battlefield is its loyalty counters, as they were if it has left;
+            // in any other zone it is the number printed on the card (CR 306.5a, 306.5c). Nothing else has loyalty.
+            StatKind::Loyalty => seen.chars.types.contains(CardType::Planeswalker).then(|| {
+                if seen.zone == Zone::Battlefield {
+                    i64::from(seen.counters.of(&CounterKind::Loyalty))
+                } else {
+                    seen.card
+                        .and_then(|card| card.card().loyalty)
+                        .map_or(0, i64::from)
+                }
+            }),
+        }
     }
 
     /// The number an amount stands for.
@@ -564,9 +574,7 @@ impl<'a> Scope<'a> {
             Amount::Stat { of, stat } => match self.objects(of)?.first() {
                 Some(object) => self
                     .seen(*object)
-                    .map(|seen| Self::stat(&seen, *stat))
-                    .transpose()?
-                    .flatten()
+                    .and_then(|seen| Self::stat(&seen, *stat))
                     .unwrap_or(0),
                 None => 0,
             },
@@ -859,10 +867,6 @@ mod tests {
     #[case::x(r#""X""#, "X")]
     #[case::divided(r#""Divided""#, "divided amounts")]
     #[case::even_share(r#"{"EvenShare":4}"#, "divided amounts")]
-    #[case::loyalty(
-        r#"{"Stat":{"of":{"Each":[{"Named":"Ogre"}]},"stat":"Loyalty"}}"#,
-        "loyalty counters"
-    )]
     fn what_the_engine_cannot_evaluate_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,
@@ -1188,5 +1192,89 @@ mod tests {
         scope.snapshots = vec![&shot];
         assert_eq!(scope.amount(&plus), Ok(2), "the snapshot says what it held");
         assert!(scope.selects(&selector, old).unwrap());
+    }
+
+    fn walker() -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new("Walker")
+                .with_type(CardType::Planeswalker)
+                .with_loyalty(4),
+        )
+    }
+
+    /// Seat 0 controls a Walker with 3 loyalty counters (printed 4), a Bear and a Relic; a second Walker waits in its hand.
+    fn walkers() -> GameState {
+        let mut game = state(
+            vec![vec![walker()], vec![]],
+            vec![vec![walker(), bear(), relic()], vec![ogre()]],
+        );
+        let on = Target::Object(named(&game, "Walker", 0));
+        let event = Event::CountersChanged(CountersChanged {
+            on,
+            counter: CounterKind::Loyalty,
+            delta: -1,
+        });
+        apply_event(&mut game, &event).unwrap();
+        game
+    }
+
+    #[rstest]
+    #[case::the_counters_on_the_battlefield(r#"{"Each":[{"Named":"Walker"}]}"#, 3)]
+    #[case::the_printed_number_in_a_hand(r#"{"Each":[{"Named":"Walker"},{"In":"Hand"}]}"#, 4)]
+    #[case::a_creature_has_none(r#"{"Each":[{"Named":"Bear"}]}"#, 0)]
+    #[case::nothing_named(r#"{"Each":[{"Named":"Nobody"}]}"#, 0)]
+    fn the_loyalty_of_a_planeswalker_is_its_counters_in_play_and_its_printed_number_elsewhere(
+        #[case] of: &str,
+        #[case] expected: i64,
+    ) {
+        let game = walkers();
+        let json = format!(r#"{{"Stat":{{"of":{of},"stat":"Loyalty"}}}}"#);
+        let amount: Amount = serde_json::from_str(&json).unwrap();
+        assert_eq!(scope(&game).amount(&amount), Ok(expected));
+    }
+
+    #[rstest]
+    #[case::at_least_three(r#"[{"Compare":{"stat":"Loyalty","op":"Ge","to":3}}]"#, &["Walker 0"])]
+    #[case::at_least_four(r#"[{"Compare":{"stat":"Loyalty","op":"Ge","to":4}}]"#, &[])]
+    #[case::at_most_zero(r#"[{"Compare":{"stat":"Loyalty","op":"Le","to":0}}]"#, &[])]
+    #[case::only_walkers_have_loyalty(r#"[{"Compare":{"stat":"Loyalty","op":"Ge","to":0}}]"#, &["Walker 0"])]
+    fn a_selector_compares_loyalty_and_only_a_planeswalker_has_it(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
+        assert_eq!(matched(&walkers(), json), expected);
+    }
+
+    #[test]
+    fn the_loyalty_of_a_planeswalker_that_left_is_read_from_its_snapshot() {
+        let mut game = walkers();
+        let old = named(&game, "Walker", 0);
+        let shot = snapshot(&game, old.id).unwrap();
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: old.id,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(PlayerId(0)),
+                cause: ZoneCause::StateBased,
+            },
+        )
+        .unwrap();
+        let bindings: Bindings = [("walker".to_owned(), vec![Target::Object(old)])].into();
+        let loyalty: Amount =
+            serde_json::from_str(r#"{"Stat":{"of":{"Bound":"walker"},"stat":"Loyalty"}}"#).unwrap();
+        let mut scope = scope(&game);
+        scope.bindings = &bindings;
+        assert_eq!(
+            scope.amount(&loyalty),
+            Ok(0),
+            "the card in the graveyard is another object and nothing says otherwise"
+        );
+        scope.snapshots = vec![&shot];
+        assert_eq!(
+            scope.amount(&loyalty),
+            Ok(3),
+            "the snapshot says what it held"
+        );
     }
 }

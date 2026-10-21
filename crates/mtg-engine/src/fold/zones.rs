@@ -8,7 +8,6 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use super::opening::same_cards;
 use super::{invalid, player_mut, priority_to_active, reset_passes};
 use crate::choose::Choices;
-use crate::combat::AttackTarget;
 use crate::error::EngineError;
 use crate::events::Event;
 use crate::library::Scried;
@@ -49,10 +48,8 @@ pub(super) fn move_object(
     if from == Zone::Battlefield {
         object.permanent = None;
         state.combat.remove_object(id);
-        // Creatures attacking a planeswalker that is gone are out of combat, as when its owner leaves the game.
-        state
-            .combat
-            .remove_attackers_targeting(AttackTarget::Planeswalker(id));
+        // Creatures attacking a planeswalker that leaves go on attacking nothing (CR 506.4c).
+        state.combat.planeswalker_left(id);
     }
     if to == Zone::Battlefield {
         object.permanent = Some(PermanentState {
@@ -265,8 +262,6 @@ fn leave_game(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
         state.resolving = None;
     }
     state.combat.remove_object(id);
-    state
-        .combat
-        .remove_attackers_targeting(AttackTarget::Planeswalker(id));
+    state.combat.planeswalker_left(id);
     player_mut(state, object.owner).map(|_| ())
 }

@@ -164,10 +164,7 @@ fn combat_damage(state: &GameState, pass: DamagePass) -> Progress {
 
 fn priority_round(state: &GameState) -> Progress {
     if all_passed(state) {
-        return Progress::Events(match resolve_top(state) {
-            Some(resolution) => vec![resolution],
-            None => leave_step(state),
-        });
+        return Progress::Events(resolve_top(state).unwrap_or_else(|| leave_step(state)));
     }
     match state.priority() {
         Some(priority) => Progress::Decide(Decision {

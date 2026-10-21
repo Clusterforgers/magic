@@ -223,15 +223,13 @@ fn scope_of<'a>(
 }
 
 /// The events that end a resolution that did what it says.
-fn finish(object: &GameObject) -> Vec<Event> {
+fn finish(state: &GameState, object: &GameObject) -> Vec<Event> {
     let mut events = vec![Event::ResolutionEnded {
         object: object.id(),
         outcome: ResolutionOutcome::Resolved,
     }];
     if object.kind() != ObjectKind::Ability {
-        events.push(Event::SpellResolved {
-            object: object.id(),
-        });
+        events.extend(crate::stack::resolved(state, object.id()));
     }
     events
 }
@@ -259,7 +257,7 @@ fn step_with(
         }]));
     }
     let Some(rules) = rules_of(state, object) else {
-        return Ok(Progress::Done(finish(object)));
+        return Ok(Progress::Done(finish(state, object)));
     };
     let scope = scope_of(state, object, resolving, &rules);
     // CR 603.4: a triggered ability whose "if" is no longer true as it resolves does nothing.
@@ -285,7 +283,7 @@ fn step_with(
     let effects = rules.effects();
     let chosen = &object.choices().modes;
     let Some(effect) = tree::effect_at(effects, chosen, &resolving.position) else {
-        return Ok(Progress::Done(finish(object)));
+        return Ok(Progress::Done(finish(state, object)));
     };
     let cx = Cx { scope, resolving };
     match run(&cx, effect)? {

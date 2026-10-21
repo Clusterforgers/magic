@@ -39,6 +39,7 @@ pub mod format;
 pub mod hash;
 pub mod keywords;
 pub mod library;
+pub mod loyalty;
 pub mod mana;
 pub mod object;
 pub mod player;

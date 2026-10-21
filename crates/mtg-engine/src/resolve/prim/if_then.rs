@@ -209,14 +209,6 @@ mod tests {
     #[rstest]
     #[case::kicked(r#""Kicked""#, "kicker")]
     #[case::x(r#"{"Compare":{"left":"X","op":"Ge","right":1}}"#, "X")]
-    #[case::loyalty(
-        r#"{"Compare":{"left":{"Stat":{"of":"This","stat":"Loyalty"}},"op":"Ge","right":1}}"#,
-        "loyalty counters"
-    )]
-    #[case::loyalty_in_a_selector(
-        r#"{"Matches":{"subject":"This","selector":[{"Compare":{"stat":"Loyalty","op":"Ge","to":1}}]}}"#,
-        "loyalty counters"
-    )]
     #[case::divided(
         r#"{"Compare":{"left":"Divided","op":"Ge","right":1}}"#,
         "divided amounts"

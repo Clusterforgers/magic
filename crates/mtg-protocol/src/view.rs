@@ -4,11 +4,13 @@
 //! library order, and an object appears only when its viewer may see which card it is.
 
 use mtg_cards::AbilityDef;
+use mtg_cards::ability::LoyaltyCost;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
+use mtg_engine::abilities::AbilityRef;
 use mtg_engine::choose::Target;
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::forecast::CombatForecast;
@@ -39,6 +41,15 @@ pub struct PermanentView {
     pub damage: u32,
     /// Whether summoning sickness holds it back: it has not been under its controller's control since their turn began and has no haste.
     pub summoning_sick: bool,
+}
+
+/// A loyalty ability of a planeswalker and what activating it does to the loyalty counters.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct LoyaltyAbilityView {
+    /// Its address, which `PriorityOptions.abilities` lists while the holder of priority can activate it.
+    pub ability: AbilityRef,
+    /// Its cost: loyalty counters put on, removed, or neither.
+    pub cost: LoyaltyCost,
 }
 
 /// A card the viewer may identify, with its current (layer-derived) characteristics.
@@ -89,10 +100,16 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<Vec<Target>>>", optional)]
     pub targets: Vec<Vec<Target>>,
-    /// The counters on a permanent, by kind and number in a fixed order; left out while there are none.
+    /// The counters on a permanent, by kind and number in a fixed order; left out while there are none. A planeswalker's
+    /// loyalty is its loyalty counters, public like the rest.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<(CounterKind, u32)>>", optional)]
     pub counters: Vec<(CounterKind, u32)>,
+    /// The loyalty abilities of a planeswalker on the battlefield with their costs, in the order of its abilities; left
+    /// out while there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<LoyaltyAbilityView>>", optional)]
+    pub loyalty_abilities: Vec<LoyaltyAbilityView>,
     /// The permanent this one is attached to, when it is an Aura or Equipment on the battlefield.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]

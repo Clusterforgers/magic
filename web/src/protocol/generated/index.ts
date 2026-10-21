@@ -98,6 +98,8 @@ export type { LobbyGame } from "./LobbyGame";
 export type { LobbyList } from "./LobbyList";
 export type { LobbySeat } from "./LobbySeat";
 export type { LossReason } from "./LossReason";
+export type { LoyaltyAbilityView } from "./LoyaltyAbilityView";
+export type { LoyaltyCost } from "./LoyaltyCost";
 export type { ManaAbility } from "./ManaAbility";
 export type { ManaCost } from "./ManaCost";
 export type { ManaOption } from "./ManaOption";

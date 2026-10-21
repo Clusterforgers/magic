@@ -182,6 +182,7 @@ const BECAUSE: Record<ZoneCause, string> = {
   Exiled: 'is exiled',
   Countered: 'is countered',
   Milled: 'is milled',
+  StateBased: 'is put into the graveyard',
 }
 
 /** The events of spells and abilities: abilities on the stack, the steps of a resolution, life, zones and what players learn. */

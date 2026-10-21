@@ -78,7 +78,7 @@ fn files_are_canonical_and_carry_current_fingerprints() {
 #[test]
 fn the_corpus_loads_with_seventy_five_cards_and_three_tokens() {
     let library = library();
-    assert_eq!(library.cards().count(), 75);
+    assert_eq!(library.cards().count(), 78);
     let tokens: Vec<_> = library.tokens().map(|t| t.id.as_str()).collect();
     assert_eq!(tokens, ["clue", "food", "treasure"]);
 }

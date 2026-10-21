@@ -6,6 +6,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
+use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::combat::CombatState;
@@ -197,6 +198,13 @@ fn preset_state(
             *counters.entry(kind.clone()).or_default() += count;
         }
     }
+    // A planeswalker starts with its printed loyalty unless the setup says how many loyalty counters it holds (CR 306.5b).
+    if preset.card.type_set().contains(CardType::Planeswalker)
+        && !counters.contains_key(&CounterKind::Loyalty)
+        && let Some(loyalty) = preset.card.loyalty.filter(|loyalty| *loyalty > 0)
+    {
+        counters.insert(CounterKind::Loyalty, loyalty);
+    }
     PermanentState {
         tapped: preset.tapped,
         damage: preset.damage,
@@ -318,6 +326,7 @@ impl GameState {
             delayed: Vec::new(),
             next_delayed: 0,
             limits_spent: BTreeSet::new(),
+            loyalty_used: BTreeSet::new(),
             triggers_possible: false,
             statics_possible: false,
             layers: LayersCache::default(),

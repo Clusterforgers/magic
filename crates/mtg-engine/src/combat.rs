@@ -19,7 +19,7 @@ use crate::zones::Zone;
 pub enum AttackTarget {
     /// A player.
     Player(PlayerId),
-    /// A planeswalker (damage to loyalty is not implemented until counters exist).
+    /// A planeswalker.
     Planeswalker(ObjectId),
 }
 
@@ -41,9 +41,27 @@ pub struct Attacker {
     pub(crate) blocked: bool,
     pub(crate) blockers: Vec<ObjectId>,
     pub(crate) assignment: Option<Vec<(ObjectId, u32)>>,
+    /// The planeswalker it attacks has left the battlefield: it goes on attacking, aimed at nothing (CR 506.4c).
+    pub(crate) target_left: bool,
 }
 
 impl Attacker {
+    /// Whether the planeswalker it attacks has left the battlefield: it is still an attacking creature, deals no combat
+    /// damage to the planeswalker, is not redirected and has no defending player to block it (CR 506.4c).
+    pub const fn attacks_nothing(&self) -> bool {
+        self.target_left
+    }
+
+    /// The player who may block it: whoever it attacks, or controls the planeswalker it attacks; nobody once that
+    /// planeswalker has left.
+    pub fn defender(&self, state: &GameState) -> Option<PlayerId> {
+        if self.target_left {
+            None
+        } else {
+            defending_player(state, self.target)
+        }
+    }
+
     /// The attacking creature.
     pub const fn object(&self) -> ObjectId {
         self.object
@@ -100,9 +118,18 @@ impl CombatState {
         }
     }
 
-    /// Removes attackers aimed at a player or planeswalker that left the game.
+    /// Removes attackers aimed at a player that left the game.
     pub(crate) fn remove_attackers_targeting(&mut self, target: AttackTarget) {
         self.attackers.retain(|a| a.target != target);
+    }
+
+    /// The planeswalker `id` left the battlefield: the creatures attacking it go on attacking nothing (CR 506.4c).
+    pub(crate) fn planeswalker_left(&mut self, id: ObjectId) {
+        for attacker in &mut self.attackers {
+            if attacker.target == AttackTarget::Planeswalker(id) {
+                attacker.target_left = true;
+            }
+        }
     }
 
     /// Forgets how attackers divided their damage: each damage step starts with every attacker undivided.
@@ -194,7 +221,7 @@ pub(crate) fn defending_players(state: &GameState) -> Vec<PlayerId> {
                 .combat()
                 .attackers()
                 .iter()
-                .any(|a| defending_player(state, a.target) == Some(*p))
+                .any(|a| a.defender(state) == Some(*p))
         })
         .collect()
 }
@@ -208,7 +235,7 @@ pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions
         .combat()
         .attackers()
         .iter()
-        .filter(|a| defending_player(state, a.target) == Some(player))
+        .filter(|a| a.defender(state) == Some(player))
         .map(Attacker::object)
         .collect();
     let candidates: Vec<(ObjectId, Vec<ObjectId>)> = state

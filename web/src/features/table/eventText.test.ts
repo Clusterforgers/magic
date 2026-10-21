@@ -254,6 +254,18 @@ const MORE: [Event, string][] = [
     { CountersChanged: { on: { Object: { id: 1, counter: 0 } }, counter: '+1/+1', delta: -2 } },
     'Grizzly Bears loses 2 +1/+1 counters',
   ],
+  [
+    { CountersChanged: { on: { Object: { id: 1, counter: 1 } }, counter: 'loyalty', delta: 3 } },
+    'Grizzly Bears gets 3 loyalty counters',
+  ],
+  [
+    { CountersChanged: { on: { Object: { id: 1, counter: 1 } }, counter: 'loyalty', delta: -1 } },
+    'Grizzly Bears loses a loyalty counter',
+  ],
+  [
+    { ZoneChanged: { object: 1, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'StateBased' } },
+    'Grizzly Bears is put into the graveyard',
+  ],
 ]
 
 function snapshotOf(id: number): Snapshot {

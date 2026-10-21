@@ -7,7 +7,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde::Serialize;
 
-use crate::ability::Ability;
+use crate::ability::{Ability, LoyaltyCost};
 use crate::assemble::{PLAIN_MANA_ABILITY, plain_mana_ability, simple_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
@@ -17,7 +17,7 @@ use crate::modify::{GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use crate::value::{Amount, Condition, StatKind};
+use crate::value::{Amount, Condition};
 
 /// One problem found in a file: where, and what.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -254,8 +254,7 @@ impl<'a> Walker<'a> {
             Pred::Named(name) => self
                 .names
                 .push((self.face, self.current_path(), name.clone())),
-            Pred::Compare { stat, to, .. } => {
-                self.stat(*stat);
+            Pred::Compare { to, .. } => {
                 self.at("to", |w| w.amount(to));
             }
             Pred::Not(inner) => self.pred(inner),
@@ -285,13 +284,6 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// A characteristic the value evaluator reads. It cannot read loyalty yet, and a card that needs it waits.
-    fn stat(&mut self, stat: StatKind) {
-        if stat == StatKind::Loyalty {
-            self.uses("Stat", "Loyalty");
-        }
-    }
-
     fn amount(&mut self, amount: &Amount) {
         match amount {
             Amount::Fixed(_) => {}
@@ -301,8 +293,7 @@ impl<'a> Walker<'a> {
                 }
             }
             Amount::Count(selector) => self.selector(selector),
-            Amount::Stat { of, stat } => {
-                self.stat(*stat);
+            Amount::Stat { of, .. } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
             Amount::Life(who) => self.reference(who, Kind::Player),
@@ -986,6 +977,15 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// A loyalty ability: a `-X` cost waits for the choice of X, which the effects then read.
+    fn loyalty_ability(&mut self, cost: LoyaltyCost, targets: &[TargetSpec], effects: &[Effect]) {
+        if cost == LoyaltyCost::MinusX {
+            self.uses("Cost", "Loyalty.X");
+            self.x_free = true;
+        }
+        self.body(targets, effects, false);
+    }
+
     fn ability(&mut self, ability: &Ability) {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {
@@ -998,12 +998,12 @@ impl<'a> Walker<'a> {
         self.where_and_how_often(ability);
         let saved_x = self.x_free;
         self.at(tag, |w| match ability {
-            Ability::Spell { targets, effects }
-            | Ability::Loyalty {
-                targets, effects, ..
-            } => {
-                w.body(targets, effects, false);
-            }
+            Ability::Spell { targets, effects } => w.body(targets, effects, false),
+            Ability::Loyalty {
+                cost,
+                targets,
+                effects,
+            } => w.loyalty_ability(*cost, targets, effects),
             Ability::Activated {
                 cost,
                 targets,
@@ -1175,7 +1175,7 @@ impl<'a> Walker<'a> {
 /// `Cost.Tap`, `Mod.ModifyPT`, `ReplaceWhen.TokenCreation`, `ReplaceBy.Multiply` or `Ability.Loyalty`;
 /// an ability with a `limit` or a zone other than the battlefield also uses `Ability.Limit` or `Ability.From`.
 /// A value the engine cannot read yet is named too, wherever it stands (a condition, an amount, a selector):
-/// `Amount.Divided`, `Amount.EvenShare`, `Stat.Loyalty` and `Condition.Kicked`.
+/// `Amount.Divided`, `Amount.EvenShare` and `Condition.Kicked`. A loyalty ability whose cost is `-X` names `Cost.Loyalty.X`.
 ///
 /// A plain `{T}: Add {X}` is one primitive, [`PLAIN_MANA_ABILITY`]: the engine runs that exact shape
 /// and not the general ability, cost and effect it is made of.
@@ -1933,11 +1933,23 @@ mod tests {
     #[rstest]
     #[case::loyalty_as_a_stat(
         r#"{"Spell":{"effects":[{"If":{"condition":{"Compare":{"left":{"Stat":{"of":"This","stat":"Loyalty"}},"op":"Ge","right":1}},"then":[]}}]}}"#,
-        &["Ability.Spell", "Effect.If", "Stat.Loyalty"]
+        &["Ability.Spell", "Effect.If"]
     )]
     #[case::loyalty_in_a_selector(
         r#"{"Spell":{"effects":[{"If":{"condition":{"Matches":{"subject":"This","selector":[{"Compare":{"stat":"Loyalty","op":"Ge","to":3}}]}},"then":[]}}]}}"#,
-        &["Ability.Spell", "Effect.If", "Stat.Loyalty"]
+        &["Ability.Spell", "Effect.If"]
+    )]
+    #[case::a_loyalty_ability(
+        r#"{"Loyalty":{"cost":{"Plus":1},"effects":[{"Draw":{}}]}}"#,
+        &["Ability.Loyalty", "Effect.Draw"]
+    )]
+    #[case::a_loyalty_ability_that_reads_loyalty(
+        r#"{"Loyalty":{"cost":{"Minus":3},"effects":[{"GainLife":{"amount":{"Stat":{"of":"This","stat":"Loyalty"}}}}]}}"#,
+        &["Ability.Loyalty", "Effect.GainLife"]
+    )]
+    #[case::a_loyalty_ability_that_removes_x_counters_waits_for_x(
+        r#"{"Loyalty":{"cost":"MinusX","targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}"#,
+        &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.DealDamage"]
     )]
     #[case::power_and_mana_value_are_read(
         r#"{"Spell":{"effects":[{"If":{"condition":{"All":[{"Compare":{"left":{"Stat":{"of":"This","stat":"Power"}},"op":"Ge","right":3}},{"Matches":{"subject":"This","selector":[{"Compare":{"stat":"ManaValue","op":"Le","to":2}}]}}]},"then":[]}}]}}"#,

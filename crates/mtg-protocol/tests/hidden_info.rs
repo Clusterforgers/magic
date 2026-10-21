@@ -17,8 +17,8 @@ use mtg_engine::zones::Zone;
 use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
 use mtg_testkit::{
-    archon_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup, rules_fuzz_setup,
-    spell_fuzz_setup, zones_fuzz_setup,
+    archon_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup, loyalty_fuzz_setup,
+    rules_fuzz_setup, spell_fuzz_setup, zones_fuzz_setup,
 };
 use rstest::rstest;
 use serde_json::Value;
@@ -41,6 +41,8 @@ const SCALAR_KEYS: &[&str] = &[
     "counter",
     "counters",
     "delta",
+    "Plus",
+    "Minus",
     "types",
     "colors",
     "position",
@@ -328,6 +330,104 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_counters(
     assert!(
         checked > 500 && counter_events > 0 && counted_views > 0,
         "test must not be vacuous: {checked} hidden, {counter_events} counter events, {counted_views} views with counters"
+    );
+}
+
+/// Planeswalkers are public: their loyalty counters and loyalty abilities, the activations and the attackers aimed at
+/// them name only things every seat may see; a loyalty ability of a planeswalker on the battlefield is listed with its
+/// cost to every viewer, a card in a hand lists none, and the loyalty counters of a snapshot are those the permanent holds.
+#[rstest]
+#[case(2, 71)]
+#[case(3, 72)]
+#[case(4, 73)]
+fn no_hidden_object_reaches_any_viewer_in_games_of_planeswalkers(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut activations, mut walker_views) = (0usize, 0usize, 0usize);
+    // A game of random bots may never cast a planeswalker, so a few seeds are played from each case.
+    for seed in seed..seed + 2 {
+        let setup = with_unique_names(loyalty_fuzz_setup(players, seed).unwrap());
+        let mut shown: BTreeMap<PlayerId, std::collections::BTreeSet<ObjectId>> = BTreeMap::new();
+        let engine = run_game(setup, seed, |step: &Step| {
+            activations += step
+                .events
+                .iter()
+                .filter(|event| matches!(event, mtg_engine::Event::AbilityActivated { .. }))
+                .count();
+            let batches =
+                project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+            for (viewer, batch) in viewers.iter().zip(&batches) {
+                let mut hidden = hidden_across(step.before, step.after, *viewer);
+                // The seat that looks at a card (Jace's +2) is shown it, and the events say so to that seat alone; it
+                // may be named afterwards, when the card is put on the bottom and leaves its sight.
+                for event in step.events {
+                    if let mtg_engine::Event::LibraryLooked(looked) = event {
+                        shown
+                            .entry(looked.player)
+                            .or_default()
+                            .extend(&looked.cards);
+                    }
+                }
+                for card in shown.get(viewer).into_iter().flatten() {
+                    hidden.remove(card);
+                }
+                checked += hidden.len();
+                for (part, value) in batch_parts(batch) {
+                    let found = leaks(&without_trigger_orders(value), &hidden);
+                    assert!(
+                        found.is_empty(),
+                        "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                        step.answers
+                    );
+                }
+            }
+            if step.answers.is_multiple_of(SNAPSHOT_EVERY) {
+                for viewer in &viewers {
+                    let mut hidden = hidden_in(step.after, *viewer);
+                    // What the resolution in progress showed the seat (the card it looked at) is theirs to see.
+                    hidden.retain(|id, _| !step.after.is_shown_to(*viewer, *id));
+                    let view = StateView::for_player(step.after, *viewer);
+                    let found = leaks(&serde_json::to_value(&view).unwrap(), &hidden);
+                    assert!(
+                        found.is_empty(),
+                        "seed {seed} answer {} viewer {viewer:?}: snapshot leaks {found:?}",
+                        step.answers
+                    );
+                    for object in &view.objects {
+                        let in_play = object.zone == Zone::Battlefield;
+                        assert!(
+                            in_play || object.loyalty_abilities.is_empty(),
+                            "{} lists loyalty abilities off the battlefield",
+                            object.name
+                        );
+                        if in_play && !object.loyalty_abilities.is_empty() {
+                            walker_views += 1;
+                            // The loyalty is the counters the permanent holds, whoever looks.
+                            let held = step
+                                .after
+                                .object(object.id)
+                                .and_then(|o| o.permanent())
+                                .map_or(0, |p| {
+                                    p.counters_of(&mtg_cards::value::CounterKind::Loyalty)
+                                });
+                            let shown = object
+                                .counters
+                                .iter()
+                                .find(|(kind, _)| *kind == mtg_cards::value::CounterKind::Loyalty)
+                                .map_or(0, |(_, count)| *count);
+                            assert_eq!(shown, held, "seed {seed} {}", object.name);
+                        }
+                    }
+                }
+            }
+        });
+        assert!(engine.result().is_some(), "game should finish");
+    }
+    assert!(
+        checked > 500 && activations > 0 && walker_views > 0,
+        "test must not be vacuous: {checked} hidden, {activations} activations, {walker_views} views of planeswalkers"
     );
 }
 

@@ -375,6 +375,67 @@ impl Driver {
         self.answer(Answer::Priority(PriorityAction::Activate(ability)))
     }
 
+    /// Starts activating the printed ability with this index of the named permanent: the loyalty ability of a planeswalker
+    /// among its abilities, in the order of the card.
+    pub fn begin_ability(&mut self, name: &str, ability: usize) -> Result<Vec<Event>, ScriptError> {
+        let (_, options) = self.priority()?;
+        let found = options
+            .abilities
+            .iter()
+            .find(|a| a.ability == ability && self.name_of(a.object) == name)
+            .copied()
+            .ok_or_else(|| ScriptError::NoSuchCard {
+                name: format!("{name} ability {ability}"),
+                place: "activatable abilities",
+            })?;
+        self.answer(Answer::Priority(PriorityAction::Activate(found)))
+    }
+
+    /// The indices of the printed abilities of the named permanent that the deciding player may activate now.
+    pub fn offered_abilities(&self, name: &str) -> Result<Vec<usize>, ScriptError> {
+        let (_, options) = self.priority()?;
+        Ok(options
+            .abilities
+            .iter()
+            .filter(|a| self.name_of(a.object) == name)
+            .map(|a| a.ability)
+            .collect())
+    }
+
+    /// The deciding player attacks planeswalkers: each pair is (attacker name, planeswalker name).
+    pub fn attack_planeswalkers(
+        &mut self,
+        attacks: &[(&str, &str)],
+    ) -> Result<Vec<Event>, ScriptError> {
+        let DecisionKind::DeclareAttackers(options) = &self.decision()?.kind else {
+            return Err(self.unexpected("declare-attackers"));
+        };
+        let mut chosen: Vec<(ObjectId, AttackTarget)> = Vec::new();
+        for (name, walker) in attacks {
+            let free = options
+                .attackers
+                .iter()
+                .map(|a| a.object)
+                .filter(|o| !chosen.iter().any(|(c, _)| c == o));
+            let object = self.find(free, name, "legal attackers")?;
+            let target = options
+                .attackers
+                .iter()
+                .find(|a| a.object == object)
+                .and_then(|a| {
+                    a.defenders.iter().copied().find(|defender| {
+                        matches!(defender, AttackTarget::Planeswalker(id) if self.name_of(*id) == *walker)
+                    })
+                })
+                .ok_or_else(|| ScriptError::NoSuchCard {
+                    name: (*walker).to_owned(),
+                    place: "planeswalkers the attacker may attack",
+                })?;
+            chosen.push((object, target));
+        }
+        self.answer(Answer::DeclareAttackers(chosen))
+    }
+
     fn unexpected(&self, wanted: &'static str) -> ScriptError {
         ScriptError::UnexpectedDecision {
             wanted,
