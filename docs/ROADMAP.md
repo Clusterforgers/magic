@@ -59,12 +59,13 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (l2) Planeswalkers: loyalty abilities (once a turn, at sorcery speed), damage removes loyalty (CR 120.3c), zero loyalty dies, an attacker keeps attacking a planeswalker that left (CR 506.4c); Jace, the Mind Sculptor, Jace Beleren, Ajani, Caller of the Pride and Garruk Wildspeaker are Verified
 - [x] (l3) The legend rule (CR 704.5j): a player who controls two legendary permanents of one name keeps one; Arvad the Cursed, Kongming and Sram are Verified
 - [x] (m1) `Attach`, Aura spells that target through `Enchant`, and the state-based actions of attachments (CR 704.5m to 704.5p); Pacifism, Epic Proportions, Control Magic, Squirrel Nest and Shielded by Faith are Verified
-- [ ] (m2) Equipment with `Equip` and `Reconfigure`; Bonesplitter is Verified
+- [ ] (m2) Equipment with `Equip`, `Reconfigure` and living weapon; Bonesplitter, Lightning Greaves and Batterskull are Verified
 
 ### Replacement and prevention
 - [ ] (j1) The replacement step: `Ability::Replacement` found through the reader, one `ReplaceWhen` for each event it can replace, self-replacement first, once per event (CR 614 to 616), and `ChooseReplacement` in engine and protocol; Anointed Procession is Verified
 - [ ] (j2) Enters tapped or with counters; a choice made as it enters and remembered on the permanent
 - [ ] (j3) Damage prevention shields, regeneration and `GameRule::DamageCantBePrevented`
+- [ ] (j4) Protection from a quality (colour, card type, player, everything) with its four checks (damage prevented, no Aura or Equipment attaches, no blocking by it, no targeting) and shroud; Black Knight, Kor Firewalker and Mother of Runes are Verified
 
 ### Costs and casting
 - [ ] (g1) One announcement procedure (CR 601.2): modes, X, optional, alternative and additional costs, targets and division, then the total cost; `ChooseNumber`, `ChooseCosts` and `DivideAmount` are built with it
