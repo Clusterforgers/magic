@@ -11,7 +11,7 @@ use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::CounterKind;
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
-use super::{Ctx, Next, What, Work, total};
+use super::{Ctx, Next, What, Work, parts, total};
 use crate::choose::{Choices, NumberOptions};
 use crate::decision::DecisionKind;
 use crate::price::Price;
@@ -31,6 +31,8 @@ pub(crate) enum XCost {
     },
     /// The `-X` of a loyalty ability: X loyalty counters are removed.
     Loyalty,
+    /// The amount of a part of an ability's cost (life, counters, energy, objects picked): X of them are paid.
+    Parts,
 }
 
 impl XCost {
@@ -40,7 +42,13 @@ impl XCost {
         let symbols = match what {
             What::Spell(spell) => u32::from(state.object(*spell)?.card().x_in_cost),
             What::Ability(_) => match rules? {
-                Ability::Activated { cost, .. } => Price::announced(cost).ok()?.x,
+                Ability::Activated { cost, .. } => {
+                    let price = Price::announced(cost).ok()?;
+                    if price.x == 0 && price.counted() {
+                        return Some(XCost::Parts);
+                    }
+                    price.x
+                }
                 Ability::Loyalty {
                     cost: LoyaltyCost::MinusX,
                     ..
@@ -129,7 +137,11 @@ fn largest(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
                 .permanent()?
                 .counters_of(&CounterKind::Loyalty),
         ),
-        XCost::Mana { .. } => largest_payable(ctx, choices),
+        XCost::Mana { .. } => {
+            let payable = largest_payable(ctx, choices)?;
+            Some(parts::most(ctx, choices).map_or(payable, |most| most.min(payable)))
+        }
+        XCost::Parts => parts::most(ctx, choices),
     }
 }
 

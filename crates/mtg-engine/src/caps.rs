@@ -67,6 +67,7 @@ const RUNS: &[&str] = &[
     "Cost.ExileSelf",
     "Cost.DiscardSelf",
     "Cost.PayLife",
+    "Cost.PayEnergy",
     "Cost.Sacrifice",
     "Cost.Discard",
     "Cost.RemoveCounters",
@@ -422,7 +423,8 @@ mod tests {
     #[case::the_greatest_value("Amount.Greatest", false)]
     #[case::totals("Amount.Total", false)]
     #[case::card_types_among_cards("Amount.CardTypes", false)]
-    #[case::paying_energy("Cost.PayEnergy", false)]
+    #[case::paying_energy("Cost.PayEnergy", true)]
+    #[case::paying_a_counted_amount_of_energy("Cost.PayEnergy.Counted", false)]
     #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]
     #[case::tapping_permanents_as_a_cost("Cost.TapPermanents", true)]
     #[case::exiling_from_a_graveyard_as_a_cost("Cost.ExileFromGraveyard", true)]

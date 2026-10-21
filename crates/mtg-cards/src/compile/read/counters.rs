@@ -117,8 +117,7 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("counters")?;
         (counter, Amount::Triggering)
     } else {
-        let (counter, number) = counters(r)?;
-        (counter, Amount::Fixed(i32::try_from(number).ok()?))
+        entering(r)?
     };
     r.need("on")?;
     let on = match each(r) {
@@ -197,6 +196,9 @@ pub fn entering_text(counter: &CounterKind, count: &Amount) -> Option<String> {
 pub fn text(counter: &CounterKind, count: &Amount) -> Option<String> {
     if *count == Amount::Triggering {
         return Some(format!("that many {} counters", kind_text(counter)?));
+    }
+    if *count == Amount::X {
+        return Some(format!("X {} counters", kind_text(counter)?));
     }
     let Amount::Fixed(number) = count else {
         return None;
