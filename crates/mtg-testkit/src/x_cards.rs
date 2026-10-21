@@ -99,13 +99,15 @@ pub fn x_pinger() -> Result<Arc<CardDefinition>, CorpusError> {
     )
 }
 
-/// An artifact for `{2}` with "{X}{X}: you gain X life."
+/// An artifact for `{2}` with "{X}{X}, {T}: you gain X life."
 pub fn twin_well() -> Result<Arc<CardDefinition>, CorpusError> {
     card(
         "Twin Well",
         CardType::Artifact,
         ("{2}", 0),
-        &[r#"{"Activated":{"cost":"{X}{X}","effects":[{"GainLife":{"amount":"X"}}]}}"#],
+        &[
+            r#"{"Activated":{"cost":[{"Mana":"{X}{X}"},"Tap"],"effects":[{"GainLife":{"amount":"X"}}]}}"#,
+        ],
     )
 }
 
@@ -140,8 +142,7 @@ pub const X_CARDS: [&str; 7] = [
 /// from `rng`.
 pub fn x_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let colors = [Color::Red, Color::Blue, Color::White];
-    let mut deck: Vec<Arc<CardDefinition>> =
-        (0..LANDS).map(|i| land(colors[i % 3])).collect();
+    let mut deck: Vec<Arc<CardDefinition>> = (0..LANDS).map(|i| land(colors[i % 3])).collect();
     for card in [
         blaze()?,
         stroke()?,

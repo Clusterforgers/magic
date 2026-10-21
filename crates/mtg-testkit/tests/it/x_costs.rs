@@ -10,9 +10,7 @@ use mtg_engine::decision::{DecisionKind, PayChoice};
 use mtg_engine::zones::Zone;
 use mtg_engine::{Answer, EngineError, Event, GameSetup, replay};
 use mtg_testkit::cards::{island, mountain, plains};
-use mtg_testkit::x_cards::{
-    blaze, hybrid_font, stroke, twin_font, twin_well, x_pinger, x_walker,
-};
+use mtg_testkit::x_cards::{blaze, hybrid_font, stroke, twin_font, twin_well, x_pinger, x_walker};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, with_counters};
 use rstest::rstest;
 
@@ -68,7 +66,10 @@ fn generic_to_pay(driver: &Driver) -> u32 {
     driver.pay_options().unwrap().cost.generic()
 }
 
-fn lands(count: usize, land: fn() -> std::sync::Arc<mtg_cards::CardDefinition>) -> Vec<mtg_engine::PresetPermanent> {
+fn lands(
+    count: usize,
+    land: fn() -> std::sync::Arc<mtg_cards::CardDefinition>,
+) -> Vec<mtg_engine::PresetPermanent> {
     (0..count).map(|_| ready(land())).collect()
 }
 
@@ -127,8 +128,8 @@ fn a_spell_that_cannot_pay_for_x_of_nothing_is_not_offered() -> Result<(), Scrip
 }
 
 #[test]
-fn an_answer_above_the_most_the_player_can_pay_is_refused_and_asked_again() -> Result<(), ScriptError>
-{
+fn an_answer_above_the_most_the_player_can_pay_is_refused_and_asked_again()
+-> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(blaze_with(3))?;
     driver.begin_cast("Blaze")?;
     let before = driver.engine().events().len();
@@ -176,7 +177,11 @@ fn x_adds_generic_mana_to_the_cost_and_the_spell_remembers_it_while_it_is_on_the
     say(&mut driver, x)?;
     let foe = driver.target_player(1);
     driver.choose_targets(&[foe])?;
-    assert_eq!(generic_to_pay(&driver), x, "X generic mana beside the {{R}}");
+    assert_eq!(
+        generic_to_pay(&driver),
+        x,
+        "X generic mana beside the {{R}}"
+    );
     let events = driver.answer(Answer::PayMana(PayChoice::Auto))?;
     let choices = announced(&events);
     assert_eq!(choices.x, Some(x));
@@ -376,9 +381,8 @@ fn an_ability_that_cannot_pay_x_of_nothing_is_not_offered() -> Result<(), Script
 #[test]
 fn a_double_x_ability_with_nothing_else_is_offered_for_nothing_and_asks_no_number()
 -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(
-        Scenario::new(2).battlefield(0, [ready(twin_well().unwrap())]),
-    )?;
+    let mut driver =
+        Driver::from_scenario(Scenario::new(2).battlefield(0, [ready(twin_well().unwrap())]))?;
     driver.begin_activation("Twin Well")?;
     // X can only be 0: nothing to ask.
     let events = driver.answer(Answer::PayMana(PayChoice::Auto))?;
