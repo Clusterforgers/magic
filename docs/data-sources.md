@@ -53,13 +53,13 @@ Figures come from the oracle-cards file (38,753 cards).
 - The other seven (`{X}`, `{Y}`, `{Z}`, `{S}`, `{HW}`, `{D}`, `{L}`) are refused by name as `Unsupported`, never skipped. X is a roadmap item; the rest are silver-border or playtest symbols.
 - The importer keeps the text. `CardFace::cost()` is the step from it to a cost: `None` for a face with no cost, `Some` for the rest (`{0}` included), or an error naming an unsupported symbol.
 - `crates/mtg-import/tests/fixtures/scryfall_mana_costs.tsv` holds every distinct string of the file: 864 single-faced costs with Scryfall's `cmc` and colours, 211 face costs and 297 `//` texts. It takes the majority value per string because a few joke cards disagree with their own cost.
-- `tests/mana_costs.rs` checks that the mana value and colours of every cost that parses equal Scryfall's, and that a refusal names one of the seven symbols. The 290 `manaCost` strings of 56 MTGJSON precon decks are all among the fixture's strings.
+- `tests/it/mana_costs.rs` checks that the mana value and colours of every cost that parses equal Scryfall's, and that a refusal names one of the seven symbols. The 290 `manaCost` strings of 56 MTGJSON precon decks are all among the fixture's strings.
 
 ## Deck export fixtures
 
-- `crates/mtg-import/tests/fixtures/real/<site>/` holds verbatim exports of two Commander decks (cEDH Najeela, Warhammer 40K Tyranids); never reformat them. `tests/real_exports.rs` pins detection, section counts and exact entries. The Arena and MTGO files are Moxfield's export-menu output; the Archidekt lists were edited separately.
+- `crates/mtg-import/tests/fixtures/real/<site>/` holds verbatim exports of two Commander decks (cEDH Najeela, Warhammer 40K Tyranids); never reformat them. `tests/it/real_exports.rs` pins detection, section counts and exact entries. The Arena and MTGO files are Moxfield's export-menu output; the Archidekt lists were edited separately.
 - `crates/mtg-import/tests/fixtures/corpus/` holds 29 public decks (16 Moxfield, 13 Archidekt) as 183 export files, each deck with the card lists its own site reports; its README gives the provenance.
-  - `tests/corpus_parse.rs` parses every export with the format a user would name and compares the cards with the site's lists.
+  - `tests/it/corpus_parse.rs` parses every export with the format a user would name and compares the cards with the site's lists.
   - `corpus_detect.rs` pins what `detect` can and cannot know.
   - `corpus_export.rs` writes every parsed deck out and reads it back, as text, as an Arena export and as MTGO text.
 - The ignored test in `real_exports.rs` checks that every name of the eight real files, except the flavor name `The Ball`, resolves against Scryfall (needs `MTG_REAL_DATA_DIR`).
