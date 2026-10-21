@@ -1,4 +1,4 @@
-//! Goal: the 90 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 104 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -37,11 +37,11 @@ use Support::{Manual, Partial, Verified};
 /// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
-const CARDS: [(&str, Support, usize); 90] = [
+const CARDS: [(&str, Support, usize); 104] = [
     ("Act of Treason", Verified, 1),
     ("Ajani, Caller of the Pride", Verified, 3),
     ("Anger", Verified, 2),
-    ("Anointed Procession", Manual, 0),
+    ("Anointed Procession", Verified, 1),
     ("Archon of Cruelty", Verified, 2),
     ("Batterskull", Verified, 4),
     ("Bloodbraid Elf", Partial, 1),
@@ -50,6 +50,13 @@ const CARDS: [(&str, Support, usize); 90] = [
     ("Armguard Familiar", Verified, 3),
     ("Bonesplitter", Verified, 2),
     ("Bronzeplate Boar", Verified, 3),
+    ("Corpsejack Menace", Verified, 1),
+    ("Doubling Season", Verified, 2),
+    ("Faithful Watchdog", Verified, 2),
+    ("Furnace of Rath", Verified, 1),
+    ("Hall of Triumph", Verified, 2),
+    ("Hardened Scales", Verified, 1),
+    ("Idyllic Beachfront", Verified, 3),
     ("Lizard Blades", Verified, 3),
     ("Brainstorm", Verified, 1),
     ("Burst Lightning", Manual, 0),
@@ -102,21 +109,28 @@ const CARDS: [(&str, Support, usize); 90] = [
     ("Opt", Verified, 1),
     ("Pacifism", Verified, 2),
     ("Panharmonicon", Verified, 1),
+    ("Parallel Lives", Verified, 1),
     ("Questing Beast", Partial, 3),
+    ("Rally the Ranks", Verified, 2),
     ("Rampaging Ferocidon", Verified, 3),
     ("Rampant Growth", Verified, 1),
     ("Reassembling Skeleton", Verified, 1),
+    ("Rest in Peace", Verified, 2),
+    ("Rhox Faithmender", Verified, 2),
     ("Rhystic Study", Verified, 1),
     ("Serra Angel", Verified, 2),
     ("Sneak Attack", Verified, 1),
+    ("Sodden Verdure", Verified, 3),
     ("Sol Ring", Manual, 0),
     ("Soul of Zendikar", Verified, 3),
     ("Spellbreaker Behemoth", Verified, 2),
     ("Squee, Goblin Nabob", Verified, 1),
+    ("Steam Vents", Verified, 3),
     ("Supreme Verdict", Verified, 2),
     ("Swiftfoot Boots", Verified, 2),
     ("Swords to Plowshares", Verified, 1),
     ("Teysa Karlov", Verified, 2),
+    ("Thought Reflection", Verified, 1),
     ("Tireless Tracker", Verified, 2),
     ("Transguild Courier", Verified, 1),
     ("Warmonger Hellkite", Verified, 3),
@@ -134,7 +148,7 @@ const CARDS: [(&str, Support, usize); 90] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 90);
+    assert_eq!(in_table.len(), 104);
     assert_eq!(in_table, in_corpus);
 }
 

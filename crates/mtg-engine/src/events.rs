@@ -10,7 +10,7 @@ use crate::combat::{AttackTarget, DamageTarget};
 use crate::counters::CountersChanged;
 use crate::effects::ContinuousEffect;
 use crate::library::{CardsFound, LibraryLooked, Revealed, Scried};
-use crate::object::ObjectRef;
+use crate::object::{Chosen, ObjectRef};
 use crate::player::LossReason;
 use crate::rules::RuleEffect;
 use crate::snapshot::Snapshot;
@@ -422,6 +422,10 @@ pub enum Event {
         tapped: bool,
         /// Who controls it.
         controller: PlayerId,
+        /// What its controller chose as it entered, which the permanent remembers.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        chosen: Option<Chosen>,
     },
     /// An Aura, Equipment or Fortification became attached to a permanent (CR 701.3); it takes a new timestamp (CR 613.7a).
     Attached {
@@ -469,6 +473,8 @@ pub enum ZoneCause {
     Milled,
     /// A state-based action put it into its owner's graveyard (CR 704.5i, 704.5j, 704.5m).
     StateBased,
+    /// It was discarded and a replacement effect sent it somewhere other than the graveyard (CR 701.9).
+    Discarded,
 }
 
 impl Event {

@@ -10,7 +10,7 @@ use mtg_cards::load::{canonical, parse_json};
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::modify::{Duration, GameRule, Modification};
 use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, Step, TriggerPattern};
+use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use mtg_cards::value::{Amount, Cmp, Condition, CounterKind, StatKind};
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
@@ -127,6 +127,8 @@ fn leaf_pred() -> impl Strategy<Value = Pred> {
         Just(Pred::Blocking),
         zone().prop_map(Pred::In),
         text().prop_map(Pred::Named),
+        Just(Pred::ChosenColor),
+        Just(Pred::ChosenSubtype),
     ]
 }
 
@@ -687,8 +689,24 @@ fn ability() -> impl Strategy<Value = Ability> {
         (
             prop_oneof![
                 reference().prop_map(|controller| ReplaceWhen::TokenCreation { controller }),
-                (reference(), proptest::option::of(any::<bool>()))
-                    .prop_map(|(to, combat)| ReplaceWhen::Damage { to, combat }),
+                (
+                    proptest::option::of(reference()),
+                    selector(),
+                    proptest::option::of(any::<bool>())
+                )
+                    .prop_map(|(to, source, combat)| ReplaceWhen::Damage {
+                        to,
+                        source,
+                        combat
+                    }),
+                (
+                    proptest::option::of(reference()),
+                    proptest::option::of(counter())
+                )
+                    .prop_map(|(on, counter)| ReplaceWhen::CountersPut { on, counter }),
+                reference().prop_map(|who| ReplaceWhen::LifeGain { who }),
+                reference().prop_map(|who| ReplaceWhen::Draw { who }),
+                selector().prop_map(|what| ReplaceWhen::Enters { what }),
                 (
                     selector(),
                     proptest::option::of(zone()),
@@ -705,6 +723,13 @@ fn ability() -> impl Strategy<Value = Ability> {
                 (1u32..4).prop_map(ReplaceBy::Add),
                 Just(ReplaceBy::Prevent),
                 effects().prop_map(ReplaceBy::Instead),
+                zone().prop_map(ReplaceBy::MoveTo),
+                Just(ReplaceBy::Tapped),
+                (counter(), amount())
+                    .prop_map(|(counter, count)| ReplaceBy::WithCounters { counter, count }),
+                select(vec![EntersChoice::Color, EntersChoice::CreatureType])
+                    .prop_map(ReplaceBy::Choose),
+                (1u32..5).prop_map(ReplaceBy::PayLifeOrTapped),
             ],
             tail()
         )

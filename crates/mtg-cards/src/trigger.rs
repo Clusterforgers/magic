@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::effect::Effect;
 use crate::refs::{Ref, Selector, ZoneKind};
-use crate::value::Condition;
+use crate::value::{Amount, Condition, CounterKind};
 
 /// A step or main phase of a turn, as triggers name it (the same thirteen as the engine's).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -112,25 +112,31 @@ pub enum TriggerPattern {
     AnyOf(Vec<TriggerPattern>),
 }
 
-/// The event a replacement effect replaces (CR 614).
+/// The event a replacement effect replaces (CR 614). Each variant is one kind of event the engine's replacement step
+/// sees; `docs/cards-dsl.md` (Triggers, replacement and layers) says what each one matches.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub enum ReplaceWhen {
-    /// An effect would create tokens under the player's control.
+    /// An effect would create tokens under the player's control; all the tokens one effect makes for a player are one event.
     TokenCreation {
         /// The player who would control them.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         controller: Ref,
     },
-    /// Damage would be dealt to the player or object.
+    /// A source would deal damage to a player or a permanent.
     Damage {
-        /// The recipient.
-        to: Ref,
+        /// The recipient; any player or permanent when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        to: Option<Ref>,
+        /// The source of the damage; any source when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        source: Selector,
         /// Only combat damage (`true`) or only other damage (`false`); both when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         combat: Option<bool>,
     },
-    /// An object matching the selector would move between zones.
+    /// An object matching the selector would move between zones, except a card drawn, a land played, a spell cast and
+    /// a permanent entering (`Enters`).
     ZoneChange {
         /// The object that would move.
         what: Selector,
@@ -141,6 +147,42 @@ pub enum ReplaceWhen {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<ZoneKind>,
     },
+    /// Counters would be put on a permanent or a player, by an effect or as a permanent enters.
+    CountersPut {
+        /// What receives them; any permanent or player when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        on: Option<Ref>,
+        /// Only counters of this kind; any kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
+    },
+    /// A player would gain life.
+    LifeGain {
+        /// Who would gain it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// A player would draw a card.
+    Draw {
+        /// Who would draw.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// A card matching the selector would enter the battlefield (a land played, a permanent spell resolving, a card
+    /// put onto the battlefield); `This` is the card with the ability, in whatever zone it enters from.
+    Enters {
+        /// The permanent that would enter.
+        what: Selector,
+    },
+}
+
+/// What a permanent's controller chooses as it enters the battlefield.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum EntersChoice {
+    /// A colour.
+    Color,
+    /// A creature type.
+    CreatureType,
 }
 
 /// What happens instead.
@@ -155,6 +197,23 @@ pub enum ReplaceBy {
     Prevent,
     /// These effects happen instead.
     Instead(Vec<Effect>),
+    /// The object goes to this zone instead ("exile it instead"); a card in a graveyard, a hand, the stack or exile
+    /// goes to its owner's zone.
+    MoveTo(ZoneKind),
+    /// The permanent enters tapped (CR 614.1c).
+    Tapped,
+    /// The permanent enters with this many counters of the kind on it (CR 614.1c); they are put by an event of
+    /// their own that other replacement effects can change.
+    WithCounters {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        count: Amount,
+    },
+    /// As the permanent enters, its controller makes this choice, which the permanent remembers for its abilities.
+    Choose(EntersChoice),
+    /// As the permanent enters, its controller may pay this much life; if they don't (or can't) it enters tapped.
+    PayLifeOrTapped(u32),
 }
 
 #[cfg(test)]

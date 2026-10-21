@@ -1,0 +1,12 @@
+{
+  "oracle_id": "68715465-6cf9-4006-87e9-31f227fe9ed3",
+  "name": "Furnace of Rath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furnace of Rath",
+      "oracle_fingerprint": "1bb19c79ec4efdb68920f038afdc32e4",
+      "abilities": [{ "Replacement": { "when": { "Damage": {} }, "by": { "Multiply": 2 } } }]
+    }
+  ]
+}

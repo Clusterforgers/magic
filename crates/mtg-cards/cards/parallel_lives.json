@@ -1,0 +1,12 @@
+{
+  "oracle_id": "84dc94b2-95fb-4d53-aaa2-191cb645639f",
+  "name": "Parallel Lives",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parallel Lives",
+      "oracle_fingerprint": "a774995cbdf7ee2d73679ae422bfdcb2",
+      "abilities": [{ "Replacement": { "when": { "TokenCreation": {} }, "by": { "Multiply": 2 } } }]
+    }
+  ]
+}

@@ -218,6 +218,9 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.next_effect = state.next_effect.max(effect.id.0 + 1);
             state.next_timestamp = state.next_timestamp.max(effect.timestamp + 1);
             if let Modification::GrantAbility(granted) = &effect.modification {
+                if matches!(**granted, mtg_cards::ability::Ability::Replacement { .. }) {
+                    state.possible.replacements = true;
+                }
                 if triggers_something(granted) {
                     state.triggers_possible = true;
                 }

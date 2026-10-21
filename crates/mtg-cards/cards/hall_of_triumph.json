@@ -1,0 +1,24 @@
+{
+  "oracle_id": "716632dd-2947-4641-a1db-50e0a2b0b4e8",
+  "name": "Hall of Triumph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hall of Triumph",
+      "oracle_fingerprint": "ea3d34becaac5536c223f9b75bea59f7",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenColor"]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

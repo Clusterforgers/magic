@@ -30,7 +30,7 @@ use mtg_engine::forecast::{
 };
 use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried};
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
-use mtg_engine::object::ObjectRef;
+use mtg_engine::object::{Chosen, ObjectRef};
 use mtg_engine::snapshot::snapshot;
 use mtg_engine::state::GameResult;
 use mtg_engine::tokens::TokenCreated;
@@ -389,6 +389,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                 source: a,
                 ability: 0,
             }],
+            text: "Create 2 token(s).".into(),
         }),
     ]
 }
@@ -1289,6 +1290,7 @@ fn primitive_events() -> Vec<Event> {
             object: a,
             tapped: true,
             controller: player,
+            chosen: Some(Chosen::Color(Color::Green)),
         },
     ]
 }

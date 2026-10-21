@@ -1,0 +1,25 @@
+{
+  "oracle_id": "087f9ad7-e74f-40e2-8102-1ed2925d0418",
+  "name": "Rest in Peace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rest in Peace",
+      "oracle_fingerprint": "03eecb272f98ea819e9bc6fa1b5902d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "ZoneChange": { "what": [], "to": "Graveyard" } },
+            "by": { "MoveTo": "Exile" }
+          }
+        }
+      ]
+    }
+  ]
+}

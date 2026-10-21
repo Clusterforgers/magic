@@ -101,6 +101,11 @@ fn moved(pre: &GameState, event: &Event, post: &GameState) -> Option<Happened> {
             let spell = pre
                 .object(*object)
                 .filter(|o| o.kind() != ObjectKind::Ability)?;
+            // A spell a replacement effect sent elsewhere was moved by the event that did it.
+            let landed = post.object(*object)?.zone();
+            if !matches!(landed, Zone::Graveyard(_)) {
+                return None;
+            }
             (
                 *object,
                 Zone::Stack,

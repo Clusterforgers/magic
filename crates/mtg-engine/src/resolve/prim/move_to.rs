@@ -174,6 +174,7 @@ fn onto_battlefield(
                 object: object.id(),
                 tapped,
                 controller,
+                chosen: None,
             });
         }
         // A planeswalker comes in with its loyalty, proposed with the move so a rule that changes what enters with
@@ -716,6 +717,7 @@ mod tests {
             object: card,
             tapped,
             controller,
+            chosen: None,
         };
         let expected = if tapped || controller != ME {
             vec![moved, entered]
@@ -781,7 +783,8 @@ mod tests {
                 Event::Entered {
                     object: land,
                     tapped: true,
-                    controller: ME
+                    controller: ME,
+                    chosen: None
                 }
             ]
         );

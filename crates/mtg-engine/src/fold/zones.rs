@@ -61,6 +61,7 @@ pub(super) fn move_object(
             attached_to: None,
             timestamp,
             observed: None,
+            chosen: None,
         });
     } else if to != Zone::Stack {
         object.controller = object.owner;
@@ -124,7 +125,8 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             object,
             tapped,
             controller,
-        } => enter(state, *object, *tapped, *controller)?,
+            chosen,
+        } => enter(state, *object, *tapped, *controller, chosen.as_ref())?,
         Event::CardDrawn { player, object } => {
             if state.zones.get(Zone::Library(*player)).last() != Some(object) {
                 return Err(invalid("drawn card is not on top of the library"));
@@ -153,6 +155,7 @@ fn enter(
     id: ObjectId,
     tapped: bool,
     controller: PlayerId,
+    chosen: Option<&crate::object::Chosen>,
 ) -> Result<(), EngineError> {
     player_mut(state, controller)?;
     let object = state
@@ -165,6 +168,7 @@ fn enter(
         )));
     };
     permanent.tapped = tapped;
+    permanent.chosen = chosen.cloned();
     object.controller = controller;
     Ok(())
 }

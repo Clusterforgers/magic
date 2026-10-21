@@ -28,7 +28,6 @@ use crate::error::EngineError;
 use crate::events::{Event, ResolutionOutcome};
 use crate::flow;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
-use crate::replace::{self, Processed};
 use crate::snapshot::Snapshot;
 use crate::state::GameState;
 
@@ -294,10 +293,7 @@ fn step_with(
             snapshots,
             next,
         } => {
-            let mut events = match replace::process(state, events) {
-                Processed::Events(events) => events,
-                Processed::Ask(decision) => return Ok(Progress::Ask(decision)),
-            };
+            let mut events = events;
             events.push(Event::StepDone {
                 position: tree::after(effects, chosen, &resolving.position, next),
                 bound,

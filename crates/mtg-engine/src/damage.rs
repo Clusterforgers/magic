@@ -296,6 +296,11 @@ impl Dealer {
         }
     }
 
+    /// Whether the source has lifelink and `player` is the one who gains the life (CR 702.15).
+    pub(crate) fn lifelink_for(&self, player: PlayerId) -> bool {
+        self.keywords.lifelink && self.controller == Some(player)
+    }
+
     /// The source as its snapshot holds it: under the controller and with the keywords it had.
     pub(crate) fn known(shot: &Snapshot) -> Dealer {
         Dealer {

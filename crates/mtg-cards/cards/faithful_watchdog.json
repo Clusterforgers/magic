@@ -1,0 +1,20 @@
+{
+  "oracle_id": "139fb542-89fd-4b9e-87e6-ec925bcca93a",
+  "name": "Faithful Watchdog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faithful Watchdog",
+      "oracle_fingerprint": "2222d528d352202952d9556e238be32a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 3 } }
+          }
+        }
+      ]
+    }
+  ]
+}

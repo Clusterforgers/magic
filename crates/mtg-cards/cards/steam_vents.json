@@ -1,0 +1,20 @@
+{
+  "oracle_id": "17039058-822d-409f-938c-b727a366ba63",
+  "name": "Steam Vents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steam Vents",
+      "oracle_fingerprint": "63e4529973e8557f6888ec04b5b99711",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "PayLifeOrTapped": 2 }
+          }
+        }
+      ]
+    }
+  ],
+  "notes": "The mana ability comes from the Island and Mountain subtypes (CR 305.6), not from data."
+}

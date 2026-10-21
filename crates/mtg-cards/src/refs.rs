@@ -138,6 +138,10 @@ pub enum Pred {
     HasCounter(CounterKind),
     /// Has exactly this card name.
     Named(String),
+    /// Is the colour the controller of the source chose as the source entered the battlefield.
+    ChosenColor,
+    /// Has the creature type the controller of the source chose as the source entered the battlefield.
+    ChosenSubtype,
     /// Its power, toughness, mana value or loyalty compares to the amount.
     Compare {
         /// The characteristic.

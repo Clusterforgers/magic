@@ -1,0 +1,24 @@
+{
+  "oracle_id": "a1f3da21-af6d-450e-bf0b-985d158418e6",
+  "name": "Hardened Scales",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hardened Scales",
+      "oracle_fingerprint": "e71c8d987cb2378aed5e55b0fed33ad7",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "counter": "+1/+1"
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

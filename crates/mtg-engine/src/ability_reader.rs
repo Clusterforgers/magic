@@ -94,6 +94,41 @@ pub(crate) fn definition_has_rule(definition: &CardDefinition) -> bool {
         .any(|rules| matches!(**rules, Ability::Rule { .. }))
 }
 
+/// Whether a card with this definition prints a replacement effect, grants one or has a keyword that adds one
+/// (`GameState::possible`).
+pub(crate) fn definition_has_replacement(definition: &CardDefinition) -> bool {
+    let replaces = |ability: &Ability| matches!(ability, Ability::Replacement { .. });
+    definition.rules.iter().any(|rules| {
+        match &**rules {
+        Ability::Replacement { .. } => true,
+        Ability::Static { mods, .. } => mods.iter().any(|modification| {
+            matches!(modification, WantedModification::GrantAbility(granted) if replaces(granted))
+        }),
+        Ability::Triggered { effects, .. } | Ability::Activated { effects, .. } => {
+            effects.iter().any(grants_replacement)
+        }
+        Ability::Spell { effects, .. } | Ability::Loyalty { effects, .. } => {
+            effects.iter().any(grants_replacement)
+        }
+        Ability::Keyword(keyword) => keywords::rules(keyword)
+            .adds_abilities(keyword)
+            .iter()
+            .any(replaces),
+        _ => false,
+    }
+    })
+}
+
+/// Whether an effect gives an ability that is a replacement effect.
+fn grants_replacement(effect: &mtg_cards::effect::Effect) -> bool {
+    match effect {
+        mtg_cards::effect::Effect::Continuous { mods, .. } => mods.iter().any(|modification| {
+            matches!(modification, WantedModification::GrantAbility(granted) if matches!(**granted, Ability::Replacement { .. }))
+        }),
+        _ => false,
+    }
+}
+
 /// Whether anything a card with this definition does can make something trigger (`GameState::watches`): it prints a
 /// triggered ability, sets up a delayed one or grants one.
 pub(crate) fn definition_triggers(definition: &CardDefinition) -> bool {
