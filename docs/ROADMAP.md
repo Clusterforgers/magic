@@ -139,10 +139,11 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Precon browser with one-click play, remaining in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"` (the server half is done; Commander precons are not `playable` before the Commander format, M4)
 - [ ] House rules in the web: the create-game form sets them with the format's values as defaults, and the lobby row and the table name the ones that differ from the format
 - [ ] Choose a deck in the lobby, remaining in the web: precons as a third kind of deck in the picker (the server takes `precon:<code>` as a seat's deck; `docs/server.md`, `docs/deck-check.md`)
+- [ ] The importer fixtures hold real records: `scryfall_oracle_cards.json`, `scryfall_rulings.json` and `mtgjson_deck_commander.json` in `mtg-import` carry invented oracle ids and printings (the card fixtures of `mtg-cards` are checked by `fixture_real`); the tests of five crates that assert on their sets and counts follow, and the synthetic edge cases (a nameless record, art series, emblems) stay marked as synthetic
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
 - [x] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
 - [x] Deck import by printing in the server: fetch and ingest Scryfall Default Cards (every printing, with flavor and printed names stored on `printings`) and resolve imports with `CardRepo::card_index`, which already holds the stored printings (`docs/data-sources.md`, `docs/server.md`)
-- [ ] The stored card index equals the index built from records: meld names (a `cards.melds_into` column) resolve, and a line matched by a flavor or digital name selects that printing (`docs/data-sources.md`)
+- [x] The stored card index equals the index built from records: meld names (a `cards.melds_into` column) resolve, and a line matched by a flavor or digital name selects that printing (`docs/data-sources.md`)
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 - [x] Account settings: change the password, delete the account (its seats are freed)
 - [x] A game that failed to resume shows in My games with its reason

@@ -91,6 +91,7 @@ pub(crate) struct CardPayload {
     produces_colorless: bool,
     legalities: BTreeMap<String, &'static str>,
     faces: Vec<StoredFace>,
+    melds_into: Option<String>,
 }
 
 /// A `printings` row in the shape of the upsert statement's `jsonb_to_recordset` columns.
@@ -191,6 +192,7 @@ pub(crate) fn split_record(
                 colors: face.colors,
             })
             .collect(),
+        melds_into: record.melds_into.clone(),
     };
     reject_nul(&card)?;
     Ok((card, printing))

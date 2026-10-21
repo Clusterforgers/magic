@@ -1,0 +1,182 @@
+[
+  {
+    "id": "6fccdb60-5fce-4a6e-a709-b986f9a4b653",
+    "oracle_id": "bce7e45d-b2c5-43aa-91a6-3a3c24f30850",
+    "name": "Bruna, the Fading Light",
+    "lang": "en",
+    "layout": "meld",
+    "set": "inr",
+    "collector_number": "14",
+    "rarity": "rare",
+    "released_at": "2025-01-24",
+    "digital": false,
+    "mana_cost": "{5}{W}{W}",
+    "cmc": 7.0,
+    "type_line": "Legendary Creature — Angel Horror",
+    "oracle_text": "When you cast this spell, you may return target Angel or Human creature card from your graveyard to the battlefield.\nFlying, vigilance\n(Melds with Gisela, the Broken Blade.)",
+    "power": "5",
+    "toughness": "7",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Flying",
+      "Vigilance"
+    ],
+    "all_parts": [
+      {
+        "object": "related_card",
+        "id": "cd8586f9-97e2-438d-b74f-1e53c811f314",
+        "component": "combo_piece",
+        "name": "Eldritch Moon Checklist",
+        "type_line": "Card",
+        "uri": "https://api.scryfall.com/cards/cd8586f9-97e2-438d-b74f-1e53c811f314"
+      },
+      {
+        "object": "related_card",
+        "id": "7e926e19-553c-470a-afde-358541af5caa",
+        "component": "meld_result",
+        "name": "Brisela, Voice of Nightmares",
+        "type_line": "Legendary Creature — Eldrazi Angel",
+        "uri": "https://api.scryfall.com/cards/7e926e19-553c-470a-afde-358541af5caa"
+      },
+      {
+        "object": "related_card",
+        "id": "6fccdb60-5fce-4a6e-a709-b986f9a4b653",
+        "component": "meld_part",
+        "name": "Bruna, the Fading Light",
+        "type_line": "Legendary Creature — Angel Horror",
+        "uri": "https://api.scryfall.com/cards/6fccdb60-5fce-4a6e-a709-b986f9a4b653"
+      },
+      {
+        "object": "related_card",
+        "id": "04506bad-3856-4184-8dda-941ded60f41a",
+        "component": "meld_part",
+        "name": "Gisela, the Broken Blade",
+        "type_line": "Legendary Creature — Angel Horror",
+        "uri": "https://api.scryfall.com/cards/04506bad-3856-4184-8dda-941ded60f41a"
+      }
+    ]
+  },
+  {
+    "id": "7e926e19-553c-470a-afde-358541af5caa",
+    "oracle_id": "b23587e0-9fb7-492e-8bb4-f218e8e4ce6c",
+    "name": "Brisela, Voice of Nightmares",
+    "lang": "en",
+    "layout": "meld",
+    "set": "inr",
+    "collector_number": "14b",
+    "rarity": "mythic",
+    "released_at": "2025-01-24",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 11.0,
+    "type_line": "Legendary Creature — Eldrazi Angel",
+    "oracle_text": "Flying, first strike, vigilance, lifelink\nYour opponents can't cast spells with mana value 3 or less.",
+    "power": "9",
+    "toughness": "10",
+    "colors": [],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Flying",
+      "Lifelink",
+      "Vigilance",
+      "First strike"
+    ],
+    "all_parts": [
+      {
+        "object": "related_card",
+        "id": "7e926e19-553c-470a-afde-358541af5caa",
+        "component": "meld_result",
+        "name": "Brisela, Voice of Nightmares",
+        "type_line": "Legendary Creature — Eldrazi Angel",
+        "uri": "https://api.scryfall.com/cards/7e926e19-553c-470a-afde-358541af5caa"
+      },
+      {
+        "object": "related_card",
+        "id": "6fccdb60-5fce-4a6e-a709-b986f9a4b653",
+        "component": "meld_part",
+        "name": "Bruna, the Fading Light",
+        "type_line": "Legendary Creature — Angel Horror",
+        "uri": "https://api.scryfall.com/cards/6fccdb60-5fce-4a6e-a709-b986f9a4b653"
+      },
+      {
+        "object": "related_card",
+        "id": "04506bad-3856-4184-8dda-941ded60f41a",
+        "component": "meld_part",
+        "name": "Gisela, the Broken Blade",
+        "type_line": "Legendary Creature — Angel Horror",
+        "uri": "https://api.scryfall.com/cards/04506bad-3856-4184-8dda-941ded60f41a"
+      }
+    ]
+  },
+  {
+    "id": "04506bad-3856-4184-8dda-941ded60f41a",
+    "oracle_id": "f3e23d5e-bd88-4e7c-a3fb-db2a8cb05b22",
+    "name": "Gisela, the Broken Blade",
+    "lang": "en",
+    "layout": "meld",
+    "set": "inr",
+    "collector_number": "24",
+    "rarity": "mythic",
+    "released_at": "2025-01-24",
+    "digital": false,
+    "mana_cost": "{2}{W}{W}",
+    "cmc": 4.0,
+    "type_line": "Legendary Creature — Angel Horror",
+    "oracle_text": "Flying, first strike, lifelink\nAt the beginning of your end step, if you both own and control Gisela and a creature named Bruna, the Fading Light, exile them, then meld them into Brisela, Voice of Nightmares.",
+    "power": "4",
+    "toughness": "3",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Flying",
+      "Lifelink",
+      "First strike",
+      "Meld"
+    ],
+    "all_parts": [
+      {
+        "object": "related_card",
+        "id": "cd8586f9-97e2-438d-b74f-1e53c811f314",
+        "component": "combo_piece",
+        "name": "Eldritch Moon Checklist",
+        "type_line": "Card",
+        "uri": "https://api.scryfall.com/cards/cd8586f9-97e2-438d-b74f-1e53c811f314"
+      },
+      {
+        "object": "related_card",
+        "id": "7e926e19-553c-470a-afde-358541af5caa",
+        "component": "meld_result",
+        "name": "Brisela, Voice of Nightmares",
+        "type_line": "Legendary Creature — Eldrazi Angel",
+        "uri": "https://api.scryfall.com/cards/7e926e19-553c-470a-afde-358541af5caa"
+      },
+      {
+        "object": "related_card",
+        "id": "6fccdb60-5fce-4a6e-a709-b986f9a4b653",
+        "component": "meld_part",
+        "name": "Bruna, the Fading Light",
+        "type_line": "Legendary Creature — Angel Horror",
+        "uri": "https://api.scryfall.com/cards/6fccdb60-5fce-4a6e-a709-b986f9a4b653"
+      },
+      {
+        "object": "related_card",
+        "id": "04506bad-3856-4184-8dda-941ded60f41a",
+        "component": "meld_part",
+        "name": "Gisela, the Broken Blade",
+        "type_line": "Legendary Creature — Angel Horror",
+        "uri": "https://api.scryfall.com/cards/04506bad-3856-4184-8dda-941ded60f41a"
+      }
+    ]
+  }
+]

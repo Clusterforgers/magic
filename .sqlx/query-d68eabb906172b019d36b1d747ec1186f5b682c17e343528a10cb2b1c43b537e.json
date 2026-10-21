@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT oracle_id, name FROM cards WHERE is_deck_card ORDER BY name_normalized, oracle_id",
+  "query": "SELECT oracle_id, name, melds_into FROM cards\n             WHERE is_deck_card ORDER BY name_normalized, oracle_id",
   "describe": {
     "columns": [
       {
@@ -24,6 +24,17 @@
             "name": "name"
           }
         }
+      },
+      {
+        "ordinal": 2,
+        "name": "melds_into",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "cards",
+            "name": "melds_into"
+          }
+        }
       }
     ],
     "parameters": {
@@ -31,8 +42,9 @@
     },
     "nullable": [
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "4fc05e8dbe1eb774a462c2164314f0722f4d33096dfacfafe7f0fb2dd7635cee"
+  "hash": "d68eabb906172b019d36b1d747ec1186f5b682c17e343528a10cb2b1c43b537e"
 }

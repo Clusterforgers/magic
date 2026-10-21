@@ -108,3 +108,45 @@ async fn connect_works_from_a_plain_url_and_rejects_a_bad_one(
         assert!(matches!(error, DbError::Query(_)), "{malformed:?}: {error}");
     }
 }
+
+#[sqlx::test(migrations = false)]
+async fn the_meld_name_migration_makes_the_next_card_ingest_read_its_file_again(pool: PgPool) {
+    const MELDS_INTO: i64 = 20_261_021_000_011;
+    let all = sqlx::migrate!("./migrations");
+    let before: Vec<_> = all
+        .iter()
+        .filter(|migration| migration.version < MELDS_INTO)
+        .cloned()
+        .collect();
+    let old = sqlx::migrate::Migrator {
+        migrations: std::borrow::Cow::Owned(before),
+        ..sqlx::migrate::Migrator::DEFAULT
+    };
+    old.run(&pool).await.unwrap();
+    sqlx::query(
+        "INSERT INTO import_runs (source, status, finished_at, input) VALUES
+         ('scryfall_cards', 'succeeded', now(), 'cards-file'),
+         ('scryfall_printings', 'succeeded', now(), 'printings-file')",
+    )
+    .execute(&pool)
+    .await
+    .unwrap();
+
+    all.run(&pool).await.unwrap();
+
+    let inputs: Vec<(String, Option<String>)> =
+        sqlx::query_as("SELECT source::text, input FROM import_runs ORDER BY source::text")
+            .fetch_all(&pool)
+            .await
+            .unwrap();
+    assert_eq!(
+        inputs,
+        [
+            ("scryfall_cards".to_owned(), None),
+            (
+                "scryfall_printings".to_owned(),
+                Some("printings-file".to_owned())
+            )
+        ]
+    );
+}

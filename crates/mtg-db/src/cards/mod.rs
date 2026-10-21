@@ -128,16 +128,24 @@ impl CardRepo {
     /// Builds the in-memory index over all deck cards and their stored printings, for resolving deck lists.
     ///
     /// Every printing is known by its set and number; the flavor name and the printed name of an
-    /// English printing are other names of its card, as for an index built from the records.
+    /// English printing are other names of its card that select that printing, and a meld piece
+    /// is known by the name of both halves, as for an index built from the records
+    /// ([`CardIndex::from_records`]).
     pub async fn card_index(&self) -> Result<CardIndex, DbError> {
         let rows = sqlx::query!(
-            "SELECT oracle_id, name FROM cards WHERE is_deck_card ORDER BY name_normalized, oracle_id"
+            "SELECT oracle_id, name, melds_into FROM cards
+             WHERE is_deck_card ORDER BY name_normalized, oracle_id"
         )
         .fetch_all(&self.pool)
         .await?;
         let mut index = CardIndex::new();
-        for row in rows {
+        for row in &rows {
             index.insert(OracleId(row.oracle_id.to_string()), &row.name);
+        }
+        for row in &rows {
+            if let Some(result) = &row.melds_into {
+                index.add_melds_into(&OracleId(row.oracle_id.to_string()), result);
+            }
         }
         let printings = sqlx::query!(
             "SELECT p.oracle_id, p.set_code, p.collector_number,
@@ -151,8 +159,8 @@ impl CardRepo {
         for row in printings {
             let card = OracleId(row.oracle_id.to_string());
             index.add_printing(&card, &row.set_code, &row.collector_number);
-            for alias in [&row.flavor_name, &row.printed_name].into_iter().flatten() {
-                index.add_alias(&card, alias);
+            for name in [&row.flavor_name, &row.printed_name].into_iter().flatten() {
+                index.add_printing_name(&card, &row.set_code, &row.collector_number, name);
             }
         }
         Ok(index)

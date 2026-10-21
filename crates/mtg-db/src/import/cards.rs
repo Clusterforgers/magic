@@ -148,16 +148,16 @@ async fn upsert_cards(
         r#"INSERT INTO cards AS c (
                oracle_id, name, name_normalized, front_name_normalized, layout, is_deck_card,
                mana_cost, mana_value, type_line, oracle_text, keywords, colors, color_identity,
-               produced_mana, produces_colorless, legalities, faces)
+               produced_mana, produces_colorless, legalities, faces, melds_into)
            SELECT oracle_id, name, name_normalized, front_name_normalized, layout, is_deck_card,
                mana_cost, mana_value, type_line, oracle_text, keywords, colors, color_identity,
-               produced_mana, produces_colorless, legalities, faces
+               produced_mana, produces_colorless, legalities, faces, melds_into
            FROM jsonb_to_recordset($1) AS r(
                oracle_id uuid, name text, name_normalized text, front_name_normalized text,
                layout text, is_deck_card boolean, mana_cost text, mana_value double precision,
                type_line text, oracle_text text, keywords text[], colors smallint,
                color_identity smallint, produced_mana smallint, produces_colorless boolean,
-               legalities jsonb, faces jsonb)
+               legalities jsonb, faces jsonb, melds_into text)
            ORDER BY oracle_id
            ON CONFLICT (oracle_id) DO UPDATE SET
                name = EXCLUDED.name,
@@ -176,16 +176,18 @@ async fn upsert_cards(
                produces_colorless = EXCLUDED.produces_colorless,
                legalities = EXCLUDED.legalities,
                faces = EXCLUDED.faces,
+               melds_into = EXCLUDED.melds_into,
                updated_at = now()
            WHERE (c.name, c.name_normalized, c.front_name_normalized, c.layout, c.is_deck_card,
                   c.mana_cost, c.mana_value, c.type_line, c.oracle_text, c.keywords, c.colors,
-                  c.color_identity, c.produced_mana, c.produces_colorless, c.legalities, c.faces)
+                  c.color_identity, c.produced_mana, c.produces_colorless, c.legalities, c.faces,
+                  c.melds_into)
                IS DISTINCT FROM
                  (EXCLUDED.name, EXCLUDED.name_normalized, EXCLUDED.front_name_normalized,
                   EXCLUDED.layout, EXCLUDED.is_deck_card, EXCLUDED.mana_cost, EXCLUDED.mana_value,
                   EXCLUDED.type_line, EXCLUDED.oracle_text, EXCLUDED.keywords, EXCLUDED.colors,
                   EXCLUDED.color_identity, EXCLUDED.produced_mana, EXCLUDED.produces_colorless,
-                  EXCLUDED.legalities, EXCLUDED.faces)
+                  EXCLUDED.legalities, EXCLUDED.faces, EXCLUDED.melds_into)
            RETURNING (xmax = 0) AS "inserted!""#,
         Json(cards) as _
     )

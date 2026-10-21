@@ -10,6 +10,7 @@ mod mtgjson_decks;
 mod real_data;
 mod real_exports;
 mod resolve_corpus;
+mod resolve_names;
 mod resolve_pipeline;
 mod scryfall_bulk;
 mod support;
