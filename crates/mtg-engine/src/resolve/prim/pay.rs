@@ -10,7 +10,7 @@ use crate::cast::payment_decision;
 use crate::choose::{Choice, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
 use crate::mana::can_afford;
-use crate::price::Price;
+use crate::price::{Leaves, Price};
 use crate::priority::mana_options;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::state::GameState;
@@ -79,10 +79,19 @@ fn unexpected(answer: &Choice, player: PlayerId) -> ResolveError {
 /// The mana of a cost that is only mana: the one cost an effect can ask for today.
 fn mana_of(cost: &Cost) -> Result<ManaCost, ResolveError> {
     match Price::of(cost) {
-        // Sacrificing the source is a cost of an ability; no effect asks a player to pay it yet.
+        // Losing the source is a cost of an ability; no effect asks a player to pay it yet.
         Ok(Price {
-            sacrifice: true, ..
+            leaves: Leaves::Sacrificed,
+            ..
         }) => Err(ResolveError::Unsupported("Effect.Pay.SacrificeSelf")),
+        Ok(Price {
+            leaves: Leaves::Exiled,
+            ..
+        }) => Err(ResolveError::Unsupported("Effect.Pay.ExileSelf")),
+        Ok(Price {
+            leaves: Leaves::Discarded,
+            ..
+        }) => Err(ResolveError::Unsupported("Effect.Pay.DiscardSelf")),
         Ok(Price {
             tap: false,
             mana: Some(mana),

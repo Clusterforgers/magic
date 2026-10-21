@@ -411,6 +411,20 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// Losing the source (sacrificing, exiling or discarding it) is paid as part of an ability's cost; no effect asks a
+    /// player to pay it yet, so a payment that asks for it names what is missing.
+    fn payment_of_the_source(&mut self, cost: &Cost) {
+        for (item, name) in [
+            (CostItem::SacrificeSelf, "Pay.SacrificeSelf"),
+            (CostItem::ExileSelf, "Pay.ExileSelf"),
+            (CostItem::DiscardSelf, "Pay.DiscardSelf"),
+        ] {
+            if cost.0.contains(&item) {
+                self.uses("Effect", name);
+            }
+        }
+    }
+
     /// An ability is activated from the battlefield, a hand, a graveyard, exile or the command zone, and a cost that
     /// needs its source in a place is only paid from there: `{T}`, `{Q}` and sacrificing it on the battlefield,
     /// discarding it from a hand.
@@ -439,10 +453,8 @@ impl<'a> Walker<'a> {
         match keyword {
             Keyword::Ward(cost) => {
                 self.at("cost", |w| w.cost(cost));
-                // Ward asks the player for its cost through a payment, which no effect makes by sacrificing the source.
-                if cost.0.contains(&CostItem::SacrificeSelf) {
-                    self.uses("Effect", "Pay.SacrificeSelf");
-                }
+                // Ward asks the player for its cost through a payment.
+                self.payment_of_the_source(cost);
             }
             Keyword::Equip(cost)
             | Keyword::Reconfigure(cost)
@@ -844,10 +856,7 @@ impl<'a> Walker<'a> {
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("cost", |w| w.cost(cost));
-                // Sacrificing the source is paid as part of an ability's cost; no effect asks for it yet.
-                if cost.0.contains(&CostItem::SacrificeSelf) {
-                    w.uses("Effect", "Pay.SacrificeSelf");
-                }
+                w.payment_of_the_source(cost);
                 w.effect_list("paid", paid, false);
                 w.effect_list("unpaid", unpaid, false);
             }
@@ -923,7 +932,10 @@ impl<'a> Walker<'a> {
                 (false, !from.is_battlefield())
             }
             // A spell that can't be countered says so from the stack, which every spell is on.
-            Ability::Rule { from, .. } => (false, !matches!(from, ZoneKind::Battlefield | ZoneKind::Stack)),
+            Ability::Rule { from, .. } => (
+                false,
+                !matches!(from, ZoneKind::Battlefield | ZoneKind::Stack),
+            ),
             _ => (false, false),
         };
         if limit {
@@ -935,6 +947,34 @@ impl<'a> Walker<'a> {
             if ability.is_mana_ability() {
                 self.uses("Ability", "ManaAbility.From");
             }
+        }
+    }
+
+    /// A static ability: who it affects, what it does, when, and from where.
+    fn static_ability(
+        &mut self,
+        affected: &Ref,
+        mods: &[Modification],
+        condition: Option<&Condition>,
+        defining: bool,
+        from: ZoneKind,
+    ) {
+        self.scope = Scope::new(&[], false);
+        self.at("affected", |w| w.reference(affected, Kind::Object));
+        // The layers change permanents, and the source of this one is not on the battlefield.
+        if !from.is_battlefield() && !matches!(affected, Ref::Each(_)) {
+            self.at("affected", |w| {
+                w.problem(
+                    "a static ability that works from another zone affects the objects a selector names",
+                );
+            });
+        }
+        self.at("mods", |w| w.mods(mods));
+        if let Some(condition) = condition {
+            self.at("condition", |w| w.condition(condition));
+        }
+        if defining {
+            self.defining(affected, mods, condition.is_some(), from);
         }
     }
 
@@ -992,25 +1032,7 @@ impl<'a> Walker<'a> {
                 condition,
                 defining,
                 from,
-            } => {
-                w.scope = Scope::new(&[], false);
-                w.at("affected", |w| w.reference(affected, Kind::Object));
-                // The layers change permanents, and the source of this one is not on the battlefield.
-                if !from.is_battlefield() && !matches!(affected, Ref::Each(_)) {
-                    w.at("affected", |w| {
-                        w.problem(
-                            "a static ability that works from another zone affects the objects a selector names",
-                        );
-                    });
-                }
-                w.at("mods", |w| w.mods(mods));
-                if let Some(condition) = condition {
-                    w.at("condition", |w| w.condition(condition));
-                }
-                if *defining {
-                    w.defining(affected, mods, condition.is_some(), *from);
-                }
-            }
+            } => w.static_ability(affected, mods, condition.as_ref(), *defining, *from),
             Ability::Rule {
                 rule,
                 condition,
@@ -1498,6 +1520,8 @@ mod tests {
     #[case::a_clue_pays_mana_and_sacrifices_itself(r#"{"Activated":{"cost":[{"Mana":"{2}"},"SacrificeSelf"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.SacrificeSelf", "Effect.Draw"])]
     #[case::ward_paid_with_mana(r#"{"Keyword":{"Ward":"{2}"}}"#, &["Cost.Mana", "Keyword.Ward"])]
     #[case::ward_paid_by_sacrificing_the_source(r#"{"Keyword":{"Ward":["SacrificeSelf"]}}"#, &["Cost.SacrificeSelf", "Effect.Pay.SacrificeSelf", "Keyword.Ward"])]
+    #[case::a_payment_that_exiles_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["ExileSelf"]}}]}}"#, &["Ability.Triggered", "Cost.ExileSelf", "Effect.Pay", "Effect.Pay.ExileSelf", "Trigger.StepBegins"])]
+    #[case::a_payment_that_discards_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["DiscardSelf"]}}]}}"#, &["Ability.Triggered", "Cost.DiscardSelf", "Effect.Pay", "Effect.Pay.DiscardSelf", "Trigger.StepBegins"])]
     #[case::a_payment_that_sacrifices_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["SacrificeSelf"]}}]}}"#, &["Ability.Triggered", "Cost.SacrificeSelf", "Effect.Pay", "Effect.Pay.SacrificeSelf", "Trigger.StepBegins"])]
     #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
     #[case::sol_ring(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#, &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana"])]

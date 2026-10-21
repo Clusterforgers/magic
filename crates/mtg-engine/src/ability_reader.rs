@@ -56,7 +56,7 @@ pub(crate) const fn works_from(ability: &Ability) -> Option<ZoneKind> {
 }
 
 /// Whether a card with this definition prints an ability that works from a zone other than the battlefield
-/// (`GameState::zone_abilities_possible`).
+/// (`GameState::possible`).
 pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
     definition
         .rules
@@ -101,7 +101,7 @@ pub(crate) fn definition_triggers(definition: &CardDefinition) -> bool {
         .any(|rules| triggers_something(rules))
 }
 
-/// Whether a card with this definition prints a state trigger or gives one (`GameState::state_triggers_possible`).
+/// Whether a card with this definition prints a state trigger or gives one (`GameState::possible`).
 pub(crate) fn definition_has_state_trigger(definition: &CardDefinition) -> bool {
     definition
         .rules

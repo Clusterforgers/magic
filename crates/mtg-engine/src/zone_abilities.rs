@@ -272,7 +272,10 @@ fn a_state_trigger_does_not_watch_events_and_an_event_trigger_does_not_watch_sta
     let mut after = before.clone();
     let events = [Event::StepBegan { step: Step::Upkeep }];
     apply_event(&mut after, &events[0]).unwrap();
-    assert!(detect(&before, &events, &after).is_empty());
+    assert!(
+        detect(&before, &events, &after).is_empty(),
+        "an event is not a state"
+    );
     let (game, _) = game(subject(&triggered(place, UPKEEP)), place);
     assert!(state_triggers(&game).iter().all(|t| t.source.id != id));
 }
@@ -383,7 +386,7 @@ fn a_state_trigger_triggers_again_once_its_ability_has_left_the_stack(
                 delayed: None,
             };
             apply_event(&mut game, &Event::AbilityPutOnStack(Box::new(put))).unwrap();
-            assert!(game.pending_triggers().is_empty());
+            assert!(game.pending_triggers().is_empty(), "it left the queue");
             assert!(state_triggers(&game).is_empty(), "it is on the stack");
             let countered = Event::ResolutionEnded {
                 object,
@@ -394,5 +397,8 @@ fn a_state_trigger_triggers_again_once_its_ability_has_left_the_stack(
     }
     let again = state_triggers(&game);
     assert_eq!(again.len(), 1, "{id:?}: the state is still true");
-    assert_eq!(again[0].source, trigger.source, "the same object, so the same ability");
+    assert_eq!(
+        again[0].source, trigger.source,
+        "the same object, so the same ability"
+    );
 }

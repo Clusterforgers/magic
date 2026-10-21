@@ -119,11 +119,26 @@ fn seeded_zone_games_finish_and_keep_every_invariant(#[case] players: usize) {
             "{name} never entered play in {campaign}"
         );
     }
-    assert!(seen.activated_from_graveyard > 0, "no graveyard ability in {campaign}");
-    assert!(seen.activated_from_hand > 0, "no hand ability in {campaign}");
-    assert!(seen.triggered_from_graveyard > 0, "no graveyard trigger in {campaign}");
-    assert!(seen.triggered_from_hand > 0, "no hand trigger in {campaign}");
-    assert!(seen.triggered_from_the_stack > 0, "no spell trigger in {campaign}");
+    assert!(
+        seen.activated_from_graveyard > 0,
+        "no graveyard ability in {campaign}"
+    );
+    assert!(
+        seen.activated_from_hand > 0,
+        "no hand ability in {campaign}"
+    );
+    assert!(
+        seen.triggered_from_graveyard > 0,
+        "no graveyard trigger in {campaign}"
+    );
+    assert!(
+        seen.triggered_from_hand > 0,
+        "no hand trigger in {campaign}"
+    );
+    assert!(
+        seen.triggered_from_the_stack > 0,
+        "no spell trigger in {campaign}"
+    );
     assert!(seen.state_triggers > 0, "no state trigger in {campaign}");
 }
 
@@ -178,7 +193,9 @@ impl Walk {
         for waiting in state.pending_triggers() {
             if is_state(waiting.rules()) {
                 let t = waiting.trigger();
-                *instances.entry((t.source, t.origin, t.ability)).or_default() += 1;
+                *instances
+                    .entry((t.source, t.origin, t.ability))
+                    .or_default() += 1;
             }
         }
         for id in state.stack() {
@@ -197,11 +214,10 @@ impl Walk {
         }
         self.state_instances += instances.len() as u64;
         for seat in state.alive_players() {
-            let anger = state.zone(Zone::Graveyard(seat)).iter().any(|id| {
-                state
-                    .object(*id)
-                    .is_some_and(|o| o.card().name == "Anger")
-            });
+            let anger = state
+                .zone(Zone::Graveyard(seat))
+                .iter()
+                .any(|id| state.object(*id).is_some_and(|o| o.card().name == "Anger"));
             let mountain = state.zone(Zone::Battlefield).iter().any(|id| {
                 state.object(*id).is_some_and(|o| {
                     o.controller() == seat && o.card().subtypes.iter().any(|s| s.0 == "Mountain")
@@ -211,9 +227,15 @@ impl Walk {
                 for id in state.zone(Zone::Battlefield) {
                     let object = state.object(*id).unwrap();
                     if object.controller() == seat
-                        && object.base_types().contains(mtg_core::card::CardType::Creature)
+                        && object
+                            .base_types()
+                            .contains(mtg_core::card::CardType::Creature)
                     {
-                        assert!(has_keyword(state, *id, &Keyword::Haste), "{}", object.card().name);
+                        assert!(
+                            has_keyword(state, *id, &Keyword::Haste),
+                            "{}",
+                            object.card().name
+                        );
                         self.graveyard_hastes += 1;
                     }
                 }
@@ -272,7 +294,10 @@ fn a_rebuilt_engine_asks_what_the_original_asks_under_abilities_from_other_zones
     #[values(2, 3)] players: usize,
 ) -> Result<(), EngineError> {
     let walk = walk_games(players, 0..8, true)?;
-    assert!(walk.offered_from_the_graveyard > 0, "nothing was offered from a graveyard");
+    assert!(
+        walk.offered_from_the_graveyard > 0,
+        "nothing was offered from a graveyard"
+    );
     Ok(())
 }
 
@@ -282,11 +307,23 @@ fn every_offered_ability_is_the_seats_own_works_where_its_card_is_and_no_state_t
 ) -> Result<(), EngineError> {
     let walk = walk_games(players, 0..games(), false)?;
     let seats = format!("{players} seats");
-    assert!(walk.offered_from_the_graveyard > 0, "no graveyard ability at {seats}");
+    assert!(
+        walk.offered_from_the_graveyard > 0,
+        "no graveyard ability at {seats}"
+    );
     assert!(walk.offered_from_the_hand > 0, "no hand ability at {seats}");
-    assert!(walk.offered_from_the_battlefield > 0, "no battlefield ability at {seats}");
-    assert!(walk.graveyard_hastes > 0, "no Anger gave haste from a graveyard at {seats}");
-    assert!(walk.state_instances > 0, "no state trigger was alive at {seats}");
+    assert!(
+        walk.offered_from_the_battlefield > 0,
+        "no battlefield ability at {seats}"
+    );
+    assert!(
+        walk.graveyard_hastes > 0,
+        "no Anger gave haste from a graveyard at {seats}"
+    );
+    assert!(
+        walk.state_instances > 0,
+        "no state trigger was alive at {seats}"
+    );
     Ok(())
 }
 

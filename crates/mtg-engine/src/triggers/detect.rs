@@ -400,7 +400,7 @@ fn permanents(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>
 /// are judged against the same state as the permanents, so a card in the graveyard before a creature dies is there when
 /// that death is looked back at (CR 603.10a).
 fn elsewhere(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>, used: &mut Used) {
-    if !state.zone_abilities_possible {
+    if !state.possible.elsewhere {
         return;
     }
     for object in state.objects() {

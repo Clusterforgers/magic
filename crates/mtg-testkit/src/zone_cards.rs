@@ -50,7 +50,14 @@ pub fn echo_wraith() -> Result<Arc<CardDefinition>, CorpusError> {
     let ability = format!(
         r#"{{"Triggered":{{"when":{UPKEEP},"from":"Graveyard","effects":[{{"GainLife":{{"amount":{{"Stat":{{"of":"This","stat":"Power"}}}}}}}}]}}}}"#
     );
-    creature_with("Echo Wraith", 2, &[Color::Black], (3, 3), "Spirit", &ability)
+    creature_with(
+        "Echo Wraith",
+        2,
+        &[Color::Black],
+        (3, 3),
+        "Spirit",
+        &ability,
+    )
 }
 
 /// `{1}{G}` 1/1 creature: at the beginning of your upkeep, if it is in your hand, you gain 1 life.

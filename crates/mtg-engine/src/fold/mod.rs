@@ -220,7 +220,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                     state.triggers_possible = true;
                 }
                 if has_state_trigger(granted) {
-                    state.state_triggers_possible = true;
+                    state.possible.states = true;
                 }
             }
             state.effects.push(effect.clone());

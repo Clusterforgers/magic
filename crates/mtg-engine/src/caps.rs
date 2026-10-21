@@ -238,6 +238,8 @@ mod tests {
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
     #[case::sacrificing_a_permanent("Cost.Sacrifice", false)]
     #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
+    #[case::paying_by_exiling_the_source("Effect.Pay.ExileSelf", false)]
+    #[case::paying_by_discarding_the_source("Effect.Pay.DiscardSelf", false)]
     #[case::mana_abilities_of_other_shapes("Ability.ManaAbility.Complex", false)]
     #[case::paying_or_not("Effect.Pay", true)]
     #[case::flash("Keyword.Flash", true)]

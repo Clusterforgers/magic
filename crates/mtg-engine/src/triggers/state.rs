@@ -107,7 +107,7 @@ fn triggers_of(
 /// The state triggers that trigger in `state`, the permanents' first and then those of the cards elsewhere, in id order.
 pub(crate) fn detect(state: &GameState) -> Vec<Triggered> {
     let mut found = Vec::new();
-    if !state.state_triggers_possible {
+    if !state.possible.states {
         return found;
     }
     for &id in state.zone(Zone::Battlefield) {
@@ -121,7 +121,7 @@ pub(crate) fn detect(state: &GameState) -> Vec<Triggered> {
             );
         }
     }
-    if state.zone_abilities_possible {
+    if state.possible.elsewhere {
         for object in state.objects() {
             if object.zone() == Zone::Battlefield || object.kind() == ObjectKind::Ability {
                 continue;

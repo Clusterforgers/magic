@@ -72,6 +72,8 @@ const SCALAR_KEYS: &[&str] = &[
     "Library",
     "Graveyard",
     "Command",
+    "AnyColor",
+    "color_indicator",
 ];
 
 /// How often (in answers) a full snapshot is checked; events are checked after every answer.
@@ -308,7 +310,9 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_abilities_from_other_zones(
                     state_triggers += usize::from(trigger.cause.subjects.is_empty());
                     Some((trigger.source.id, trigger.snapshot.zone))
                 }
-                mtg_engine::Event::AbilityPutOnStack(put) => Some((put.source.id, put.snapshot.zone)),
+                mtg_engine::Event::AbilityPutOnStack(put) => {
+                    Some((put.source.id, put.snapshot.zone))
+                }
                 _ => None,
             };
             if let Some((id, zone)) = source {

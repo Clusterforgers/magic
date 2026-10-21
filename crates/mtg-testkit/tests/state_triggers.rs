@@ -64,10 +64,13 @@ fn a_state_trigger_triggers_when_the_game_begins_in_its_state_and_its_ability_sa
     )?;
     // No artifact: the trigger is on the stack before the first player receives priority.
     assert_eq!(driver.state().stack().len(), 1);
-    assert!(driver.state().pending_triggers().is_empty());
+    assert_eq!(driver.state().pending_triggers(), []);
     assert_eq!(driver.state().turn().active(), pid(0));
     let events = pass_while_resolving(&mut driver)?;
-    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))), ["Covetous Dragon"]);
+    assert_eq!(
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        ["Covetous Dragon"]
+    );
     assert_eq!(triggered(&events), 0, "it triggered once, at the start");
     assert_eq!(
         triggered(driver.engine().events()),
@@ -82,10 +85,7 @@ fn a_state_trigger_triggers_when_the_game_begins_in_its_state_and_its_ability_sa
 fn it_waits_while_the_state_is_false_and_triggers_the_moment_an_ability_makes_it_true()
 -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
-        Scenario::new(2).battlefield(
-            0,
-            [ready(card("Covetous Dragon").unwrap()), ready(gem())],
-        ),
+        Scenario::new(2).battlefield(0, [ready(card("Covetous Dragon").unwrap()), ready(gem())]),
     )?;
     assert!(driver.state().stack().is_empty(), "an artifact is in play");
     assert_eq!(triggered(driver.engine().events()), 0);
@@ -99,13 +99,24 @@ fn it_waits_while_the_state_is_false_and_triggers_the_moment_an_ability_makes_it
         .map(|id| driver.state().object(*id).unwrap().kind())
         .collect();
     assert_eq!(stack, [ObjectKind::Ability, ObjectKind::Ability]);
-    let top = driver.state().object(*driver.state().stack().last().unwrap()).unwrap();
+    let top = driver
+        .state()
+        .object(*driver.state().stack().last().unwrap())
+        .unwrap();
     assert_eq!(
-        driver.state().object(top.ability().unwrap().source().id).unwrap().card().name,
+        driver
+            .state()
+            .object(top.ability().unwrap().source().id)
+            .unwrap()
+            .card()
+            .name,
         "Covetous Dragon"
     );
     pass_while_resolving(&mut driver)?;
-    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))), ["Gem", "Covetous Dragon"]);
+    assert_eq!(
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        ["Gem", "Covetous Dragon"]
+    );
     assert_eq!(driver.state().player(pid(0)).unwrap().life(), 21);
     assert_replays(&driver);
     Ok(())
@@ -115,7 +126,9 @@ fn it_waits_while_the_state_is_false_and_triggers_the_moment_an_ability_makes_it
 fn a_state_trigger_triggers_again_each_time_its_ability_has_left_the_stack_and_never_twice_at_once()
 -> Result<(), ScriptError> {
     // "Whenever you have two or fewer cards in hand, draw a card": the hand is empty, so it draws three times.
-    let library: Vec<_> = (0..6).map(|n| free_creature(&format!("Card {n}"), 1, 1)).collect();
+    let library: Vec<_> = (0..6)
+        .map(|n| free_creature(&format!("Card {n}"), 1, 1))
+        .collect();
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .battlefield(0, [ready(hollow_scholar().unwrap())])
@@ -160,14 +173,13 @@ fn the_state_is_judged_for_the_controller_of_the_source(
     // Seat 1's wolf has company of its own; the creatures of seat 0 matter to seat 0's wolf alone.
     let mine = std::iter::once(ready(lone_wolf().unwrap()))
         .chain((0..others).map(|n| ready(free_creature(&format!("Friend {n}"), 1, 1))));
-    let mut driver = Driver::from_scenario(
-        Scenario::new(2)
-            .battlefield(0, mine)
-            .battlefield(
-                1,
-                [ready(lone_wolf().unwrap()), ready(free_creature("Ally", 1, 1))],
-            ),
-    )?;
+    let mut driver = Driver::from_scenario(Scenario::new(2).battlefield(0, mine).battlefield(
+        1,
+        [
+            ready(lone_wolf().unwrap()),
+            ready(free_creature("Ally", 1, 1)),
+        ],
+    ))?;
     assert_eq!(triggered(driver.engine().events()), usize::from(sacrificed));
     pass_while_resolving(&mut driver)?;
     let wolves = driver
@@ -196,7 +208,10 @@ fn a_state_trigger_is_found_after_the_state_based_action_and_before_anyone_has_p
                 ],
             ),
     )?;
-    assert!(driver.state().stack().is_empty(), "the Bears keep it company");
+    assert!(
+        driver.state().stack().is_empty(),
+        "the Bears keep it company"
+    );
     let bears = common::on_battlefield(driver.state(), "Grizzly Bears").unwrap();
     let at = mtg_engine::choose::Target::Object(driver.state().object(bears).unwrap().reference());
     driver.cast_at("Lightning Bolt", &[at])?;
@@ -211,10 +226,17 @@ fn a_state_trigger_is_found_after_the_state_based_action_and_before_anyone_has_p
         })
         .collect();
     let death = kinds.iter().position(|k| *k == "died").unwrap();
-    let trigger = kinds.iter().position(|k| *k == "triggered").unwrap_or_else(|| panic!("{kinds:?} {:?}", driver.state().stack()));
+    let trigger = kinds
+        .iter()
+        .position(|k| *k == "triggered")
+        .unwrap_or_else(|| panic!("{kinds:?} {:?}", driver.state().stack()));
     assert!(death < trigger, "{kinds:?}");
     assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
-    assert_eq!(driver.state().stack().len(), 1, "on the stack before the next priority");
+    assert_eq!(
+        driver.state().stack().len(),
+        1,
+        "on the stack before the next priority"
+    );
     assert_replays(&driver);
     Ok(())
 }

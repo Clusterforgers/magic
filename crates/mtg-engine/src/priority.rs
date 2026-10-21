@@ -21,7 +21,7 @@ use crate::keywords;
 use crate::mana::{ManaOption, ManaSource, can_afford};
 use crate::object::GameObject;
 use crate::player::Player;
-use crate::price::Price;
+use crate::price::{Leaves, Price};
 use crate::resolve::{spell_ability, zone_kind};
 use crate::state::GameState;
 use crate::turn::LAND_DROPS_PER_TURN;
@@ -231,9 +231,12 @@ fn can_activate(
     if rules.is_mana_ability() {
         return false;
     }
-    if (price.sacrifice && object.zone() != Zone::Battlefield)
-        || (price.discard_self && !matches!(object.zone(), Zone::Hand(_)))
-    {
+    let leaves_from_here = match price.leaves {
+        Leaves::Stays | Leaves::Exiled => true,
+        Leaves::Sacrificed => object.zone() == Zone::Battlefield,
+        Leaves::Discarded => matches!(object.zone(), Zone::Hand(_)),
+    };
+    if !leaves_from_here {
         return false;
     }
     if *timing == Timing::Sorcery && !sorcery_timing(state, player) {
@@ -294,7 +297,7 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
             }
         }
     }
-    if state.zone_abilities_possible {
+    if state.possible.elsewhere {
         for object in own_cards_elsewhere(state, player) {
             for (address, rules) in working_here(object) {
                 if can_activate(state, player, object, address, rules) {

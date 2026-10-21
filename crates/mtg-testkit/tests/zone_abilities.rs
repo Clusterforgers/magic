@@ -101,7 +101,11 @@ fn a_graveyard_ability_is_offered_only_from_the_graveyard_and_with_its_price(
 #[test]
 fn the_skeleton_pays_and_returns_tapped_as_a_new_object() -> Result<(), ScriptError> {
     let mut driver = skeleton_game(Place::Graveyard, 2)?;
-    let id = in_zone(driver.state(), Zone::Graveyard(pid(0)), "Reassembling Skeleton");
+    let id = in_zone(
+        driver.state(),
+        Zone::Graveyard(pid(0)),
+        "Reassembling Skeleton",
+    );
     driver.begin_activation("Reassembling Skeleton")?;
     let events = driver.answer(Answer::PayMana(PayChoice::Auto))?;
     let Some(Event::AbilityPutOnStack(put)) = events
@@ -120,11 +124,12 @@ fn the_skeleton_pays_and_returns_tapped_as_a_new_object() -> Result<(), ScriptEr
     assert!(skeleton.permanent().unwrap().tapped());
     assert_eq!(skeleton.counter(), before + 1, "a new object (CR 400.7)");
     assert!(
-        driver
+        driver.state().zone(Zone::Stack).iter().all(|id| driver
             .state()
-            .zone(Zone::Stack)
-            .iter()
-            .all(|id| driver.state().object(*id).unwrap().kind() != ObjectKind::Ability)
+            .object(*id)
+            .unwrap()
+            .kind()
+            != ObjectKind::Ability)
     );
     assert_replays(&driver);
     Ok(())
@@ -139,7 +144,11 @@ fn the_ability_does_nothing_when_its_card_has_left_the_graveyard_by_the_time_it_
             .battlefield(0, [ready(swamp()), ready(swamp())])
             .hand(1, [banish().unwrap()]),
     )?;
-    let id = in_zone(driver.state(), Zone::Graveyard(pid(0)), "Reassembling Skeleton");
+    let id = in_zone(
+        driver.state(),
+        Zone::Graveyard(pid(0)),
+        "Reassembling Skeleton",
+    );
     driver.begin_activation("Reassembling Skeleton")?;
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
     driver.pass()?;
@@ -158,7 +167,7 @@ fn the_ability_does_nothing_when_its_card_has_left_the_graveyard_by_the_time_it_
         )),
         "the new object in exile is not the card the ability named"
     );
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     assert_replays(&driver);
     Ok(())
 }
@@ -235,7 +244,10 @@ fn discarding_the_source_is_a_discard_that_the_watchers_of_discards_see() -> Res
         "a discard as a cost is a discard"
     );
     pass_while_resolving(&mut driver)?;
-    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))), ["Elemental Masterpiece"]);
+    assert_eq!(
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        ["Elemental Masterpiece"]
+    );
     assert!(on_battlefield(driver.state(), "Treasure").is_some());
     assert_eq!(driver.state().player(pid(0)).unwrap().life(), 21);
     assert_replays(&driver);
@@ -245,28 +257,25 @@ fn discarding_the_source_is_a_discard_that_the_watchers_of_discards_see() -> Res
 /// A game in which seat 0 may burn a Dragon with a Scourge in `place` waiting, seat `owner` controlling the Dragon.
 fn scourge_game(place: Place, owner: usize) -> Result<Driver, ScriptError> {
     let scourge = card("Boneyard Scourge").unwrap();
-    let mut scenario = Scenario::new(2)
-        .hand(0, [card("Lightning Bolt").unwrap()])
-        .battlefield(
-            0,
-            [ready(mountain()), ready(swamp()), ready(swamp())],
-        )
-        .battlefield(owner, [ready(dragon_whelp())]);
+    let bolt = card("Lightning Bolt").unwrap();
+    let mut mine = vec![ready(mountain()), ready(swamp()), ready(swamp())];
+    let mut theirs = Vec::new();
     if owner == 0 {
-        scenario = scenario.battlefield(
-            0,
-            [
-                ready(mountain()),
-                ready(swamp()),
-                ready(swamp()),
-                ready(dragon_whelp()),
-            ],
-        );
+        mine.push(ready(dragon_whelp()));
+    } else {
+        theirs.push(ready(dragon_whelp()));
     }
-    scenario = match place {
-        Place::Graveyard => scenario.graveyard(0, [scourge]),
-        Place::Hand => scenario.hand(0, [card("Lightning Bolt").unwrap(), scourge]),
-        Place::Battlefield => scenario,
+    let scenario = Scenario::new(2).battlefield(1, theirs);
+    let scenario = match place {
+        Place::Graveyard => scenario
+            .battlefield(0, mine)
+            .hand(0, [bolt])
+            .graveyard(0, [scourge]),
+        Place::Hand => scenario.battlefield(0, mine).hand(0, [bolt, scourge]),
+        Place::Battlefield => {
+            mine.push(ready(scourge));
+            scenario.battlefield(0, mine).hand(0, [bolt])
+        }
     };
     Driver::from_scenario(scenario)
 }
@@ -301,7 +310,10 @@ fn a_creature_that_dies_triggers_the_graveyard_card_that_waits_for_it_and_the_ca
         driver.state().object(scourge).unwrap().zone(),
         Zone::Battlefield
     );
-    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))), ["Lightning Bolt", "Dragon Whelp"]);
+    assert_eq!(
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        ["Lightning Bolt", "Dragon Whelp"]
+    );
     assert_replays(&driver);
     Ok(())
 }
@@ -325,7 +337,10 @@ fn only_the_card_in_the_graveyard_that_waits_for_a_dragon_of_its_controller_trig
             .all(|e| !matches!(e, Event::AbilityTriggered(_))),
         "{events:?}"
     );
-    assert_eq!(names(driver.state(), Zone::Graveyard(pid(owner))).contains(&"Dragon Whelp".to_owned()), true);
+    assert!(
+        names(driver.state(), Zone::Graveyard(pid(owner))).contains(&"Dragon Whelp".to_owned()),
+        "the Dragon died"
+    );
     Ok(())
 }
 
@@ -424,10 +439,8 @@ fn a_static_ability_applies_from_the_graveyard_while_its_condition_holds(
     let anger = card("Anger").unwrap();
     let mut scenario = Scenario::new(2).battlefield(0, [sick(card("Grizzly Bears").unwrap())]);
     if mountain_in_play {
-        scenario = scenario.battlefield(
-            0,
-            [sick(card("Grizzly Bears").unwrap()), ready(mountain())],
-        );
+        scenario =
+            scenario.battlefield(0, [sick(card("Grizzly Bears").unwrap()), ready(mountain())]);
     }
     scenario = match place {
         Place::Graveyard => scenario.graveyard(0, [anger]),

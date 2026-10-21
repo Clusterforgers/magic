@@ -448,7 +448,7 @@ fn compute(state: &GameState) -> Layers {
         .iter()
         .filter_map(|id| state.object(*id))
         .any(|object| printed(object).any(|(_, rules)| matches!(**rules, Ability::Static { .. })))
-        || (state.zone_abilities_possible
+        || (state.possible.elsewhere
             && state.objects().any(|object| {
                 object.zone() != Zone::Battlefield
                     && object.kind() != ObjectKind::Ability
@@ -556,7 +556,7 @@ impl<'a> Pass<'a> {
         }
         // A static ability of a card that is not on the battlefield applies while the card is in the zone it names; its
         // timestamp is 0, since only permanents are stamped.
-        if self.state.zone_abilities_possible {
+        if self.state.possible.elsewhere {
             for object in self.state.objects() {
                 if object.zone() == Zone::Battlefield || object.kind() == ObjectKind::Ability {
                     continue;
