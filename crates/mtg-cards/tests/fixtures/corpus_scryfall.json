@@ -4179,5 +4179,60 @@
     "keywords": [
       "Suspend"
     ]
+  },
+  {
+    "id": "14d265aa-c1d8-4faa-b282-5c273ab725fd",
+    "oracle_id": "1a137a67-4156-45c8-aae9-838f688e12bd",
+    "name": "Invisible Stalker",
+    "lang": "en",
+    "layout": "normal",
+    "set": "znc",
+    "collector_number": "27",
+    "rarity": "uncommon",
+    "released_at": "2020-09-25",
+    "digital": false,
+    "mana_cost": "{1}{U}",
+    "cmc": 2.0,
+    "type_line": "Creature — Human Rogue",
+    "oracle_text": "Hexproof (This creature can't be the target of spells or abilities your opponents control.)\nThis creature can't be blocked.",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Hexproof"
+    ]
+  },
+  {
+    "id": "d4cf468f-4e9d-4551-a0ed-10bd6a2316ad",
+    "oracle_id": "d9517c5d-66d0-4178-96fb-a8c04f311ad8",
+    "name": "Aven Mindcensor",
+    "lang": "en",
+    "layout": "normal",
+    "set": "clb",
+    "collector_number": "688",
+    "rarity": "uncommon",
+    "released_at": "2022-06-10",
+    "digital": false,
+    "mana_cost": "{2}{W}",
+    "cmc": 3.0,
+    "type_line": "Creature — Bird Wizard",
+    "oracle_text": "Flash\nFlying\nIf an opponent would search a library, that player searches the top four cards of that library instead.",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Flying",
+      "Flash"
+    ]
   }
 ]

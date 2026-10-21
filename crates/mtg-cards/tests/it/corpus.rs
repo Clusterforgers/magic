@@ -76,9 +76,9 @@ fn files_are_canonical_and_carry_current_fingerprints() {
 }
 
 #[test]
-fn the_corpus_loads_with_one_hundred_and_sixty_five_cards_and_three_tokens() {
+fn the_corpus_loads_with_one_hundred_and_sixty_seven_cards_and_three_tokens() {
     let library = library();
-    assert_eq!(library.cards().count(), 165);
+    assert_eq!(library.cards().count(), 167);
     let tokens: Vec<_> = library.tokens().map(|t| t.id.as_str()).collect();
     assert_eq!(tokens, ["clue", "food", "treasure"]);
 }
@@ -178,7 +178,7 @@ fn declared_status_decides_the_support_when_the_engine_runs_everything(#[case] c
     for shown in printed() {
         let record = library.support(&shown, &caps);
         let expected = match shown.name.as_str() {
-            "Questing Beast" => Support::Partial,
+            "Aven Mindcensor" => Support::Partial,
             _ => Support::Verified,
         };
         assert_eq!(
@@ -407,12 +407,12 @@ fn clause_spans_cut_out_the_sentences_they_name() {
             }
         }
     }
-    let expected = [
-        "Combat damage that would be dealt by creatures you control can't be prevented.",
-        "Whenever Questing Beast deals combat damage to an opponent, it deals that much damage to target planeswalker that player controls.",
-    ];
+    let expected = [(
+        "Aven Mindcensor",
+        "If an opponent would search a library, that player searches the top four cards of that library instead.",
+    )];
     assert_eq!(
         found,
-        expected.map(|clause| ("Questing Beast".to_owned(), clause.to_owned()))
+        expected.map(|(name, clause)| (name.to_owned(), clause.to_owned()))
     );
 }

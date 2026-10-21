@@ -126,7 +126,7 @@ fn modern() -> Value {
     )
 }
 
-/// A hundred cards: Questing Beast, whose rules the corpus models in part, and ninety-nine Forests.
+/// A hundred cards: Questing Beast, whose rules the corpus models in full, and ninety-nine Forests.
 fn commander() -> Value {
     body(
         "Beast Mode",
@@ -392,7 +392,15 @@ async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(
     let server = start(&pool).await;
     let ann = register_ann(&server).await;
 
-    let manual = create(&server, &ann, &commander()).await;
+    // Sixty cards legal in Modern, one of which (Aven Mindcensor) the corpus models in part.
+    let mut partial = modern();
+    partial["name"] = json!("Beast Mode");
+    partial["cards"][0]["count"] = json!(35);
+    partial["cards"]
+        .as_array_mut()
+        .unwrap()
+        .push(line("main", "Aven Mindcensor", 1));
+    let manual = create(&server, &ann, &partial).await;
     assert_eq!(manual["state"], "manual_play");
     assert_eq!(
         (manual["verified"].as_bool(), manual["changed"].as_bool()),
@@ -401,7 +409,7 @@ async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(
     assert_eq!(
         manual["report"]["legality"],
         json!([]),
-        "a legal Commander deck"
+        "a legal Modern deck"
     );
     let counts = &manual["report"]["summary"]["counts"];
     assert_eq!(
@@ -410,20 +418,20 @@ async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(
             counts["verified"].as_u64(),
             counts["partial"].as_u64()
         ),
-        (Some(100), Some(99), Some(1))
+        (Some(60), Some(59), Some(1))
     );
-    let beast = manual["report"]["cards"]
+    let bird = manual["report"]["cards"]
         .as_array()
         .unwrap()
         .iter()
-        .find(|c| c["name"] == "Questing Beast")
+        .find(|c| c["name"] == "Aven Mindcensor")
         .unwrap();
     assert_eq!(
-        (beast["zone"].as_str(), beast["support"].as_str()),
-        (Some("commander"), Some("partial"))
+        (bird["zone"].as_str(), bird["support"].as_str()),
+        (Some("main"), Some("partial"))
     );
-    assert!(beast["reasons"].as_array().unwrap().len() >= 2, "{beast}");
-    assert!(beast["reasons"][0]["span"]["end"].as_u64().unwrap() > 0);
+    assert!(!bird["reasons"].as_array().unwrap().is_empty(), "{bird}");
+    assert!(bird["reasons"][0]["span"]["end"].as_u64().unwrap() > 0);
     assert_eq!(manual["check"]["summary"]["state"], "manual_play");
 
     let mut short = modern();
