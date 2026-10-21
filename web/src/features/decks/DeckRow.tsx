@@ -31,7 +31,7 @@ export function DeckRow({ deck, api, now, onDelete }: DeckRowProps) {
     >
       <div className="grid min-w-0 gap-1">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <p className="min-w-0 text-base font-semibold break-words">
+          <p className="min-w-0 text-base font-semibold [overflow-wrap:anywhere]">
             <Link
               to="/decks/$deckId"
               params={{ deckId: deck.id }}

@@ -1,6 +1,11 @@
-// Goal: accounts work end to end in a browser on a real server and database: register, create a game, come back through My games and rejoin with no seat link, two accounts at one table, and signing out and in again.
+// Goal: accounts work end to end in a browser on a real server and database: register, create a game, come back through My games and rejoin with no seat link, two accounts at one table, and signing out and in again; and the pages that need an account (Decks, My games, the builder with a real imported deck) keep the layout rules of the gate at the six sizes in both themes.
+import { readFileSync } from 'node:fs'
 import { expect, test } from '@playwright/test'
 import type { Browser, BrowserContext, Page } from '@playwright/test'
+import type { DeckView, ImportResult } from '../src/protocol/generated'
+import { THEMES } from './layoutAudit'
+import { expectTheme, holdsAtEverySize, showPane, themedContext } from './layoutGate'
+import type { Rules } from './layoutGate'
 import { ACCOUNTS_DATABASE_URL, ACCOUNTS_WEB_URL } from './ports'
 
 // Accounts need Postgres, so this spec runs only against its own server on an empty scratch database: set
@@ -209,5 +214,233 @@ test('signing out leaves a guest, My games asks for a sign-in and comes back to 
     expect(errors).toEqual([])
   } finally {
     await context.close()
+  }
+})
+
+// The layout gate for the pages that need an account, as `layout.spec.ts` holds the pages that need none. The account
+// has a long name and the lists hold the longest names, since those break a layout first.
+
+const COMMANDER_LIST = readFileSync(new URL('./fixtures/commander-deck.txt', import.meta.url), 'utf8')
+
+const MODERN_LIST = [
+  '4 Lightning Bolt',
+  '4 Monastery Swiftspear',
+  '4 Goblin Guide',
+  '4 Lava Spike',
+  '4 Chain Lightning',
+  '4 Rift Bolt',
+  '4 Boros Charm',
+  '4 Skullcrack',
+  '4 Searing Blaze',
+  '20 Mountain',
+].join('\n')
+
+/** The longest name a deck can have, in one word. */
+const LONGEST_DECK_NAME = `Supercalifragilistic${'x'.repeat(80)}`
+const TOODEEP = 'Krark Sakashima Storm [TOODEEP]'
+
+const asAccount = { headers: { origin: ACCOUNTS_WEB_URL } }
+
+/** Registers `username` in the context, which then holds the session cookie of its requests and of its pages. */
+async function signUp(context: BrowserContext, username: string): Promise<void> {
+  const made = await context.request.post('/api/auth/register', {
+    ...asAccount,
+    data: { username, password: PASSWORD },
+  })
+  expect(made.ok(), 'register').toBe(true)
+}
+
+/** Saves a deck the way a person does: the importer reads the list and what it resolved is stored. */
+async function saveDeck(
+  context: BrowserContext,
+  deck: { name: string; format: string; list: string },
+): Promise<string> {
+  const read = await context.request.post('/api/decks/import', {
+    ...asAccount,
+    data: { text: deck.list, format: deck.format },
+  })
+  expect(read.ok(), 'import').toBe(true)
+  const { cards, unresolved } = (await read.json()) as ImportResult
+  expect(unresolved, 'every card of the list is in the database').toEqual([])
+  const saved = await context.request.post('/api/decks', {
+    ...asAccount,
+    data: {
+      name: deck.name,
+      format: deck.format,
+      notes: '',
+      cards: cards.map((line) => ({
+        zone: line.zone,
+        oracle_id: line.card.oracle_id,
+        printing_id: line.printing_id,
+        count: line.count,
+      })),
+    },
+  })
+  expect(saved.ok(), `save: ${await saved.text()}`).toBe(true)
+  return ((await saved.json()) as DeckView).id
+}
+
+/** A public game of `seats` seats made by the signed-in account, so seat 1 is its own and the others are open. */
+async function makeGame(context: BrowserContext, seats: number, name: string): Promise<void> {
+  const made = await context.request.post('/api/games', {
+    ...asAccount,
+    data: {
+      format: 'normal',
+      visibility: 'public',
+      held: 1,
+      seats: Array.from({ length: seats }, (_, index) => ({
+        name: index === 0 ? name : `Bartholomew-the-Long-Name-${index}`,
+        deck: index % 2 === 0 ? 'mono-green' : 'mono-red',
+      })),
+    },
+  })
+  expect(made.ok(), 'create game').toBe(true)
+}
+
+type StorageState = Awaited<ReturnType<BrowserContext['storageState']>>
+
+/** The two accounts of the gate: one with nothing in it, one with decks and games, as the cookies of their sessions. */
+interface Accounts {
+  empty: StorageState
+  full: StorageState
+}
+
+/** Registers both accounts once for the whole gate, since a server counts registrations per address (ten in 15 minutes). */
+async function makeAccounts(browser: Browser): Promise<Accounts> {
+  const fresh = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL })
+  const used = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL })
+  try {
+    await signUp(fresh, unique('layout_empty'))
+    const name = unique('long_layout_account_name')
+    await signUp(used, name)
+    // The commander deck last, so it is the first of the list: the one a click on the list opens.
+    for (const index of [1, 2, 3, 4, 5, 6])
+      await saveDeck(used, { name: `Burn ${index}`, format: 'modern', list: MODERN_LIST })
+    await saveDeck(used, { name: TOODEEP, format: 'commander', list: COMMANDER_LIST })
+    await saveDeck(used, { name: LONGEST_DECK_NAME, format: 'commander', list: COMMANDER_LIST })
+    for (const seats of [2, 3, 4, 6, 2, 5, 12, 2]) await makeGame(used, seats, name)
+    return { empty: await fresh.storageState(), full: await used.storageState() }
+  } finally {
+    await Promise.all([fresh.close(), used.close()])
+  }
+}
+
+/** A page of the gate and the way to it. */
+interface AccountStop extends Rules {
+  name: string
+  /** Whose session opens the page. */
+  account: keyof Accounts
+  /** Opens the page and waits until it is drawn. */
+  open(page: Page): Promise<void>
+}
+
+const DECK_ACTIONS = { 'New deck': 'text:New deck', 'Import deck': 'text:Import deck' }
+
+/** The builder of the first deck of the list. */
+async function openBuilder(page: Page): Promise<void> {
+  await page.goto('/decks')
+  await page.getByRole('list', { name: 'Your decks' }).getByRole('link').first().click()
+  await expect(page.getByRole('button', { name: 'Save', exact: true })).toBeAttached()
+}
+
+const ACCOUNT_STOPS: readonly AccountStop[] = [
+  {
+    name: 'Decks, with none',
+    account: 'empty',
+    fitsFrom: 640,
+    actions: DECK_ACTIONS,
+    async open(page) {
+      await page.goto('/decks')
+      await expect(page.getByText('You have no decks yet')).toBeVisible()
+    },
+  },
+  {
+    name: 'Decks, with a list of them',
+    account: 'full',
+    fitsFrom: 640,
+    actions: { ...DECK_ACTIONS, 'Edit a deck': 'main ul[aria-label="Your decks"] a[aria-label^="Edit "]' },
+    async open(page) {
+      await page.goto('/decks')
+      await expect(page.getByRole('list', { name: 'Your decks' }).getByRole('listitem')).toHaveCount(8)
+    },
+  },
+  {
+    name: 'My games, with none',
+    account: 'empty',
+    fitsFrom: 0,
+    actions: { 'Create game': 'main a[href="/new"]' },
+    async open(page) {
+      await page.goto('/games')
+      await expect(page.getByText('You have no games yet')).toBeVisible()
+    },
+  },
+  {
+    name: 'My games, with a list of them',
+    account: 'full',
+    fitsFrom: 0,
+    actions: { 'Create game': 'main a[href="/new"]', Continue: 'main [data-game] a' },
+    async open(page) {
+      await page.goto('/games')
+      await expect(games(page)).toHaveCount(8)
+    },
+  },
+  {
+    name: 'The builder with a real deck, the search pane',
+    account: 'full',
+    fitsFrom: 640,
+    actions: { 'Search cards': 'main input[aria-label="Search cards"]' },
+    afterResize: (page) => showPane(page, 'Search'),
+    async open(page) {
+      await openBuilder(page)
+      await showPane(page, 'Search')
+      await page.getByRole('searchbox', { name: 'Search cards' }).fill('dragon')
+      await expect(
+        page.getByRole('list', { name: 'Search results' }).getByRole('listitem').first(),
+      ).toBeVisible()
+    },
+  },
+  {
+    name: 'The builder with a real deck, the deck pane',
+    account: 'full',
+    fitsFrom: 640,
+    actions: { Save: 'text:Save' },
+    afterResize: (page) => showPane(page, 'Deck'),
+    async open(page) {
+      await openBuilder(page)
+      await showPane(page, 'Deck')
+      await expect(
+        page.getByRole('list', { name: 'Main deck cards' }).getByRole('listitem').first(),
+      ).toBeVisible()
+    },
+  },
+]
+
+test.describe('the layout gate', () => {
+  let accounts: Accounts
+  test.beforeAll(async ({ browser }) => {
+    accounts = await makeAccounts(browser)
+  })
+
+  for (const theme of THEMES) {
+    for (const stop of ACCOUNT_STOPS) {
+      test(`${stop.name} keeps the layout rules at every size in the ${theme} theme`, async ({ browser }) => {
+        test.setTimeout(120_000)
+        const context = await themedContext(browser, theme, {
+          baseURL: ACCOUNTS_WEB_URL,
+          storageState: accounts[stop.account],
+        })
+        const errors: string[] = []
+        try {
+          const page = await context.newPage()
+          page.on('pageerror', (error) => errors.push(error.message))
+          await stop.open(page)
+          await expectTheme(page, theme)
+          await holdsAtEverySize(page, stop, `${stop.name} in the ${theme} theme`)
+          expect(errors, 'uncaught exceptions').toEqual([])
+        } finally {
+          await context.close()
+        }
+      })
+    }
   }
 })

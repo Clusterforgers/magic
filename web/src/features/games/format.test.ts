@@ -31,6 +31,18 @@ describe('the other players', () => {
     })
     expect(othersText(game)).toBe('bo, Cy and di')
   })
+
+  it.each([
+    [[], ''],
+    [[''], 'an open seat'],
+    [['', ''], '2 open seats'],
+    [['bo', ''], 'bo and an open seat'],
+    [['', 'bo', ''], 'bo and 2 open seats'],
+    [['bo', 'Cy', '', '', ''], 'bo, Cy and 3 open seats'],
+  ])('names the seats nobody has taken as open: %j reads %j', (names, text) => {
+    const others = names.map((name, index) => ({ seat: index + 1, name, user: null }))
+    expect(othersText(listed({ others }))).toBe(text)
+  })
 })
 
 describe('resultText', () => {
