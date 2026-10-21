@@ -95,6 +95,8 @@ struct Seen<'a> {
     keywords: Option<&'a [Keyword]>,
     /// The counters on it: its own while it is the object that was named, else those its snapshot holds.
     counters: Counted<'a>,
+    /// The X it was cast with while it is a spell on the stack, else 0 (CR 202.3e).
+    x: u32,
 }
 
 /// The counters of an object that was seen.
@@ -119,6 +121,15 @@ impl Counted<'_> {
                 .map_or(0, |(_, count)| *count),
             Counted::Card(held) => held.get(kind).copied().unwrap_or(0),
         }
+    }
+}
+
+/// The X a spell on the stack was cast with; 0 for anything else (CR 202.3e).
+fn stacked_x(object: &GameObject) -> u32 {
+    if object.zone() == Zone::Stack && object.kind() == ObjectKind::Card {
+        object.choices().x.unwrap_or(0)
+    } else {
+        0
     }
 }
 
@@ -213,6 +224,7 @@ impl<'a> Scope<'a> {
                         card: Some(object),
                         keywords: Some(&held.keywords),
                         counters,
+                        x: stacked_x(object),
                     },
                     None => Seen {
                         owner: object.owner(),
@@ -224,6 +236,7 @@ impl<'a> Scope<'a> {
                         card: Some(object),
                         keywords: None,
                         counters,
+                        x: stacked_x(object),
                     },
                 });
             }
@@ -242,6 +255,7 @@ impl<'a> Scope<'a> {
                 card: Some(object),
                 keywords: None,
                 counters,
+                x: stacked_x(object),
             });
         }
         let shot = self
@@ -259,6 +273,11 @@ impl<'a> Scope<'a> {
             card: live,
             keywords: Some(shot.keywords.as_slice()),
             counters: Counted::Shot(&shot.counters),
+            x: if shot.zone == Zone::Stack {
+                shot.x.unwrap_or(0)
+            } else {
+                0
+            },
         })
     }
 
@@ -284,6 +303,7 @@ impl<'a> Scope<'a> {
             counters: object
                 .permanent()
                 .map_or(Counted::Card(&object.card_counters), Counted::Live),
+            x: stacked_x(object),
         };
         for pred in &selector.0 {
             if !self.pred(pred, object.reference(), &seen)? {
@@ -309,6 +329,7 @@ impl<'a> Scope<'a> {
             &self.snapshots,
             self.controller,
             self.cause,
+            Some(self.x_value()),
         );
         set.iter()
             .copied()
@@ -353,6 +374,7 @@ impl<'a> Scope<'a> {
                 &self.snapshots,
                 self.controller,
                 self.cause,
+                Some(self.x_value()),
             );
             for target in set {
                 any = true;
@@ -602,7 +624,11 @@ impl<'a> Scope<'a> {
         match stat {
             StatKind::Power => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
-            StatKind::ManaValue => seen.card.map(|c| i64::from(c.card().mana_value())),
+            // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
+            StatKind::ManaValue => seen.card.map(|c| {
+                let card = c.card();
+                i64::from(card.mana_value() + u32::from(card.x_in_cost) * seen.x)
+            }),
             // The loyalty of a planeswalker on the battlefield is its loyalty counters, as they were if it has left;
             // in any other zone it is the number printed on the card (CR 306.5a, 306.5c). Nothing else has loyalty.
             StatKind::Loyalty => seen.chars.types.contains(CardType::Planeswalker).then(|| {
@@ -630,11 +656,7 @@ impl<'a> Scope<'a> {
     ) -> Result<i64, ResolveError> {
         Ok(match amount {
             Amount::Fixed(n) => i64::from(*n),
-            Amount::X => self
-                .choices
-                .x
-                .map(i64::from)
-                .ok_or(ResolveError::Unsupported("X"))?,
+            Amount::X => i64::from(self.x_value()),
             Amount::Count(selector) => i64::try_from(self.matching(selector)?.len())
                 .map_err(|_| ResolveError::Invalid("too many objects".into()))?,
             Amount::Stat { of, stat } => match self.objects(of)?.first() {
@@ -703,6 +725,24 @@ impl<'a> Scope<'a> {
                 .cause
                 .map(|cause| i64::from(cause.amount))
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+        })
+    }
+
+    /// The value of X this scope reads (CR 107.3): what the spell or ability announced or, for a spell that is
+    /// entering the battlefield, the X it was cast with (CR 107.3m); 0 when no X was chosen.
+    pub(crate) fn x_value(&self) -> u32 {
+        self.announced_x().unwrap_or(0)
+    }
+
+    /// [`Scope::x_value`] when an X was chosen, else nothing.
+    pub(crate) fn announced_x(&self) -> Option<u32> {
+        self.choices.x.or_else(|| {
+            self.state
+                .object(self.source.id)
+                .filter(|object| {
+                    object.counter() == self.source.counter && object.zone() == Zone::Stack
+                })
+                .and_then(GameObject::announced_x)
         })
     }
 
@@ -1035,7 +1075,7 @@ mod tests {
     }
 
     #[rstest]
-    #[case::x(r#""X""#, "X")]
+    #[case::devotion(r#"{"Devotion":["Red"]}"#, "devotion")]
     #[case::divided(
         r#""Divided""#,
         "a divided amount outside the damage or counters it divides"

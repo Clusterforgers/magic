@@ -40,6 +40,15 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         .filter_map(|text| spend::singular(text))
         .collect();
     texts.extend(singulars);
+    // An activated ability that opens with damage may say "It deals" for the source (Walking Ballista).
+    if matches!(ability, Ability::Activated { .. }) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(": ~ deals "))
+            .map(|text| text.replacen(": ~ deals ", ": It deals ", 1))
+            .collect();
+        texts.extend(pronouns);
+    }
     texts
 }
 

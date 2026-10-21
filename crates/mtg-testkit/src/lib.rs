@@ -40,6 +40,7 @@ pub mod small_cards;
 pub mod static_cards;
 pub mod trigger_cards;
 pub mod windows;
+pub mod x_after_cards;
 pub mod x_cards;
 pub mod zone_cards;
 
@@ -81,5 +82,6 @@ pub use script_error::ScriptError;
 pub use small_cards::small_fuzz_setup;
 pub use static_cards::statics_fuzz_setup;
 pub use windows::{SeatWindows, Windows};
+pub use x_after_cards::x_after_fuzz_setup;
 pub use x_cards::x_fuzz_setup;
 pub use zone_cards::zones_fuzz_setup;

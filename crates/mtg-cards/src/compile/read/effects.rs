@@ -472,9 +472,10 @@ fn recipient(r: &mut Reader<'_>) -> Option<Ref> {
     })
 }
 
-/// "~ deals 3 damage to any target."
+/// "~ deals 3 damage to any target.", and "It deals 1 damage to any target." as the first thing an ability does, where "it" is
+/// the source.
 fn damage(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.source().then_some(())?;
+    (r.source() || (r.targets.is_empty() && r.word("it"))).then_some(())?;
     r.need("deals")?;
     let amount = points(r)?;
     r.need("damage to")?;

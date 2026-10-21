@@ -208,7 +208,10 @@ mod tests {
 
     #[rstest]
     #[case::the_monarch(r#"{"Monarch":"You"}"#, "the monarch")]
-    #[case::x(r#"{"Compare":{"left":"X","op":"Ge","right":1}}"#, "X")]
+    #[case::devotion(
+        r#"{"Compare":{"left":{"Devotion":["Red"]},"op":"Ge","right":1}}"#,
+        "devotion"
+    )]
     #[case::divided(
         r#"{"Compare":{"left":"Divided","op":"Ge","right":1}}"#,
         "a divided amount outside the damage or counters it divides"

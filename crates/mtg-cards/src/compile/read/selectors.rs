@@ -259,7 +259,12 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
             return Some(Pred::HasKeyword(keyword));
         }
         let stat = stat_word(r)?;
-        let number = i32::try_from(r.number()?).ok()?;
+        // "mana value X or less": the X of the card's own cost.
+        let to = if r.x_free && r.word("x") {
+            Amount::X
+        } else {
+            Amount::Fixed(i32::try_from(r.number()?).ok()?)
+        };
         let op = if r.words("or less") {
             Cmp::Le
         } else if r.words("or greater") {
@@ -267,11 +272,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
         } else {
             Cmp::Eq
         };
-        Some(Pred::Compare {
-            stat,
-            op,
-            to: Amount::Fixed(number),
-        })
+        Some(Pred::Compare { stat, op, to })
     })
 }
 
@@ -283,11 +284,12 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
-        Pred::Compare {
-            stat,
-            op,
-            to: Amount::Fixed(number),
-        } => {
+        Pred::Compare { stat, op, to } => {
+            let number = match to {
+                Amount::Fixed(number) => number.to_string(),
+                Amount::X => "X".to_owned(),
+                _ => return None,
+            };
             let tail = match op {
                 Cmp::Le => " or less",
                 Cmp::Ge => " or greater",
