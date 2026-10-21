@@ -78,6 +78,8 @@ struct Pending {
     /// that belongs to the spell ability of an earlier line.
     ability: Option<Ability>,
     read: bool,
+    /// Its reminder text explains a counter, so the reading would lose what the counter does.
+    reminds_counter: bool,
 }
 
 /// The abilities of one face; its clauses are appended to `listed`.
@@ -98,12 +100,16 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         if is_unread_keyword_line(&clause_text, kind, x_free) {
             kind = ClauseKind::Keyword;
         }
+        let reminds_counter = kind != ClauseKind::Keyword
+            && span
+                .slice(&shown.oracle_text)
+                .is_some_and(normalize::reminder_mentions_counter);
         let ability = match kind {
             ClauseKind::Keyword => keywords::read(&clause_text)
                 // `check_printed` accepts Enchant on an Aura only.
                 .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
                 .map(Ability::Keyword),
-            ClauseKind::Triggered | ClauseKind::Activated => {
+            ClauseKind::Triggered | ClauseKind::Activated if !reminds_counter => {
                 read::clause(&clause_text, kind, x_free)
             }
             _ => None,
@@ -114,6 +120,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
             kind,
             read: ability.is_some(),
             ability,
+            reminds_counter,
         });
     }
     let lines: Vec<&str> = pending
@@ -122,7 +129,10 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         .map(|clause| clause.text.as_str())
         .collect();
     let spell_text = lines.join("\n");
-    let spell_ability = if spell_text.is_empty() {
+    let counter_explained = pending
+        .iter()
+        .any(|clause| clause.kind == ClauseKind::Spell && clause.reminds_counter);
+    let spell_ability = if spell_text.is_empty() || counter_explained {
         None
     } else {
         read::clause(&spell_text, ClauseKind::Spell, x_free)
@@ -142,7 +152,9 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         let mut modals = pending
             .iter_mut()
             .filter(|clause| clause.kind == ClauseKind::Modal);
-        if let (Some(only), None) = (modals.next(), modals.next()) {
+        if let (Some(only), None) = (modals.next(), modals.next())
+            && !only.reminds_counter
+        {
             only.ability = read::clause(&only.text, ClauseKind::Modal, x_free);
             only.read = only.ability.is_some();
         }

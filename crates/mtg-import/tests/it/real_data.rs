@@ -2,7 +2,8 @@
 //!
 //! Ignored by default (needs downloads). Set `MTG_REAL_DATA_DIR` to a directory holding
 //! `oracle-cards-*.jsonl.gz`, `rulings-*.jsonl.gz`, `DeckList.json` and one or more MTGJSON deck files named
-//! `*_<SET>.json`, then run `cargo test -p mtg-import real_data:: -- --ignored`.
+//! `*_<SET>.json` (or to a `mtg-cli` cache directory, which holds them in subfolders), then run
+//! `cargo test -p mtg-import real_data:: -- --ignored`.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -22,9 +23,13 @@ fn data_dir() -> PathBuf {
     PathBuf::from(std::env::var("MTG_REAL_DATA_DIR").expect("set MTG_REAL_DATA_DIR"))
 }
 
+/// Files of the data directory, or of a `mtg-cli` cache used as one (`scryfall/`, `mtgjson/`, `mtgjson/decks/`), whose names fit.
 fn files_matching(prefix: &str, suffix: &str) -> Vec<PathBuf> {
-    let mut found: Vec<PathBuf> = fs::read_dir(data_dir())
-        .unwrap()
+    let dir = data_dir();
+    let mut found: Vec<PathBuf> = ["", "scryfall", "mtgjson", "mtgjson/decks"]
+        .into_iter()
+        .filter_map(|sub| fs::read_dir(dir.join(sub)).ok())
+        .flatten()
         .map(|entry| entry.unwrap().path())
         .filter(|path| {
             let name = path.file_name().unwrap().to_string_lossy();
@@ -35,7 +40,7 @@ fn files_matching(prefix: &str, suffix: &str) -> Vec<PathBuf> {
     found
 }
 
-fn load_cards() -> Vec<CardRecord> {
+pub(crate) fn load_cards() -> Vec<CardRecord> {
     let path = files_matching("oracle-cards-", ".jsonl.gz")
         .pop()
         .expect("oracle cards file");
@@ -95,7 +100,10 @@ fn every_real_ruling_parses() {
 #[test]
 #[ignore = "needs MTG_REAL_DATA_DIR"]
 fn real_deck_index_lists_commander_precons() {
-    let reader = File::open(data_dir().join("DeckList.json")).unwrap();
+    let list = files_matching("DeckList", ".json")
+        .pop()
+        .expect("DeckList.json");
+    let reader = File::open(list).unwrap();
     let decks = parse_deck_list(BufReader::new(reader)).unwrap();
     assert!(decks.len() > 1_000);
     assert!(decks.iter().filter(|d| d.is_commander_precon()).count() > 50);

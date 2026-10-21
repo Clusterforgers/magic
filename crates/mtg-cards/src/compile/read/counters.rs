@@ -10,6 +10,31 @@ use crate::effect::Effect;
 use crate::refs::Ref;
 use crate::value::{Amount, CounterKind};
 
+/// The counters whose effect the rules of the game give and not the card (CR 122.1: keyword
+/// counters, stun, shield, finality; the lore counters of Sagas and the defense counters of Battles); the data holds a counter as a name only, so a clause that puts,
+/// removes or moves one stays with the table.
+const RULES_COUNTERS: [&str; 19] = [
+    "decayed",
+    "deathtouch",
+    "exalted",
+    "finality",
+    "flying",
+    "haste",
+    "hexproof",
+    "indestructible",
+    "lifelink",
+    "menace",
+    "reach",
+    "shadow",
+    "shield",
+    "skulk",
+    "stun",
+    "trample",
+    "vigilance",
+    "defense",
+    "lore",
+];
+
 /// "+1/+1" or "-1/-1", the counters that change a creature's size, or a word that names another
 /// kind: "charge", "poison", "time".
 fn kind(r: &mut Reader<'_>) -> Option<CounterKind> {
@@ -35,6 +60,7 @@ fn kind(r: &mut Reader<'_>) -> Option<CounterKind> {
     let named = matches!(r.word_at(1), Some("counter" | "counters"))
         && word.chars().all(|c| c.is_ascii_lowercase());
     named.then_some(())?;
+    (!RULES_COUNTERS.contains(&word)).then_some(())?;
     r.skip();
     Some(match word {
         "loyalty" => CounterKind::Loyalty,

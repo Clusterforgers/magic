@@ -128,7 +128,7 @@ fn removing_and_moving_counters_read_in_the_shape_of_the_hand_written_files(
 #[test]
 fn every_counter_kind_count_and_place_writes_back() {
     let kinds = [
-        "+1/+1", "-1/-1", "charge", "poison", "loyalty", "time", "storage", "shield",
+        "+1/+1", "-1/-1", "charge", "poison", "loyalty", "time", "storage", "spore",
     ];
     let counts = ["a", "two", "three", "four", "five", "ten", "twenty"];
     let objects = [

@@ -10,8 +10,16 @@ export function joinNames(names: readonly string[]): string {
   return `${names.slice(0, -1).join(', ')} and ${names.at(-1) ?? ''}`
 }
 
-/** The other players of a game, by username for accounts and by seat name for guests. */
-export const othersText = (game: MyGame): string => joinNames(game.others.map(playerLabel))
+/**
+ * The other players of a game, by username for accounts and by seat name for guests; seats nobody has taken yet have no
+ * name and read as "an open seat" or "3 open seats", after the players.
+ */
+export function othersText(game: MyGame): string {
+  const names = game.others.map(playerLabel).filter((name) => name !== '')
+  const open = game.others.length - names.length
+  if (open > 0) names.push(open === 1 ? 'an open seat' : `${open} open seats`)
+  return joinNames(names)
+}
 
 /**
  * How a finished game ended from the user's seat: "You won", "Bo won", "Draw"; a finished game the server holds no

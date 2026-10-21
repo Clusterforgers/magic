@@ -42,6 +42,8 @@ pub enum Command {
     Status,
     /// Report how well the compiler and the engine cover the stored precons, and what would free the most cards.
     Coverage(CoverageArgs),
+    /// List a seeded sample of the cards the compiler reads: oracle text beside the reading and the JSON.
+    Audit(AuditArgs),
 }
 
 /// What `fetch` downloads.
@@ -93,6 +95,25 @@ pub struct CoverageArgs {
     pub top: usize,
 }
 
+/// How many cards `audit` lists by default.
+pub const DEFAULT_AUDIT_COUNT: usize = 100;
+
+/// Options of `audit`.
+#[derive(Debug, Args)]
+pub struct AuditArgs {
+    /// How many cards to list.
+    #[arg(long, value_name = "N", default_value_t = DEFAULT_AUDIT_COUNT)]
+    pub count: usize,
+
+    /// The seed of the sample: the same seed lists the same cards.
+    #[arg(long, value_name = "N", default_value_t = 1)]
+    pub seed: u64,
+
+    /// Write the listing to this file instead of printing it.
+    #[arg(value_name = "FILE")]
+    pub file: Option<PathBuf>,
+}
+
 /// Options of `ingest`.
 #[derive(Debug, Args)]
 pub struct IngestArgs {
@@ -136,6 +157,8 @@ mod tests {
     #[case(&["mtg-cli", "coverage", "--deck", "C21", "--top", "5"])]
     #[case(&["mtg-cli", "coverage", "--top", "0", "--deck", "Quantum Quandrix"])]
     #[case(&["mtg-cli", "--database-url", "postgres://x/y", "coverage"])]
+    #[case(&["mtg-cli", "audit"])]
+    #[case(&["mtg-cli", "audit", "--count", "20", "--seed", "7", "out.txt"])]
     fn documented_invocations_parse(#[case] args: &[&str]) {
         assert!(Cli::try_parse_from(args).is_ok(), "{args:?}");
     }
@@ -152,6 +175,9 @@ mod tests {
     #[case(&["mtg-cli", "coverage", "--deck"])]
     #[case(&["mtg-cli", "coverage", "--deck", ""])]
     #[case(&["mtg-cli", "coverage", "C21"])]
+    #[case(&["mtg-cli", "audit", "--count", "many"])]
+    #[case(&["mtg-cli", "audit", "--seed", "-1"])]
+    #[case(&["mtg-cli", "audit", "a.txt", "b.txt"])]
     fn bad_invocations_are_refused(#[case] args: &[&str]) {
         assert!(Cli::try_parse_from(args).is_err(), "{args:?}");
     }
@@ -173,6 +199,26 @@ mod tests {
         assert_eq!(
             (args.limit, args.only, args.deck_type),
             (Some(5), vec!["A".into()], vec!["all".into()])
+        );
+    }
+
+    #[rstest]
+    #[case(&["mtg-cli", "audit"], 100, 1, None)]
+    #[case(&["mtg-cli", "audit", "--seed", "9"], 100, 9, None)]
+    #[case(&["mtg-cli", "audit", "x.txt", "--count", "5"], 5, 1, Some("x.txt"))]
+    fn audit_options_land_in_their_fields(
+        #[case] args: &[&str],
+        #[case] count: usize,
+        #[case] seed: u64,
+        #[case] file: Option<&str>,
+    ) {
+        let cli = Cli::try_parse_from(args).unwrap();
+        let Command::Audit(args) = cli.command else {
+            panic!("expected audit");
+        };
+        assert_eq!(
+            (args.count, args.seed, args.file),
+            (count, seed, file.map(PathBuf::from))
         );
     }
 

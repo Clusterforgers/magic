@@ -1,0 +1,439 @@
+[
+  {
+    "id": "856c3adc-9fdf-4dd2-85a0-28da47f320fb",
+    "oracle_id": "255b937f-c9c9-4ae9-815e-17418eba0602",
+    "name": "Shinka, the Bloodsoaked Keep",
+    "lang": "en",
+    "layout": "normal",
+    "set": "ltc",
+    "collector_number": "404z",
+    "rarity": "mythic",
+    "released_at": "2023-06-23",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Legendary Land",
+    "oracle_text": "{T}: Add {R}.\n{R}, {T}: Target legendary creature gains first strike until end of turn.",
+    "colors": [],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [],
+    "flavor_name": "Helm's Deep"
+  },
+  {
+    "id": "f6cd3fbc-908d-4653-a133-e35843a5ac65",
+    "oracle_id": "255b937f-c9c9-4ae9-815e-17418eba0602",
+    "name": "Shinka, the Bloodsoaked Keep",
+    "lang": "en",
+    "layout": "normal",
+    "set": "ltc",
+    "collector_number": "374",
+    "rarity": "mythic",
+    "released_at": "2023-06-23",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Legendary Land",
+    "oracle_text": "{T}: Add {R}.\n{R}, {T}: Target legendary creature gains first strike until end of turn.",
+    "colors": [],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [],
+    "flavor_name": "Helm's Deep"
+  },
+  {
+    "id": "ebb868c6-56c9-4d15-be22-bb46cc96269a",
+    "oracle_id": "255b937f-c9c9-4ae9-815e-17418eba0602",
+    "name": "Shinka, the Bloodsoaked Keep",
+    "lang": "en",
+    "layout": "normal",
+    "set": "ltc",
+    "collector_number": "404",
+    "rarity": "mythic",
+    "released_at": "2023-06-23",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Legendary Land",
+    "oracle_text": "{T}: Add {R}.\n{R}, {T}: Target legendary creature gains first strike until end of turn.",
+    "colors": [],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [],
+    "flavor_name": "Helm's Deep"
+  },
+  {
+    "id": "5c278bd1-f120-4ade-95f1-c2cfc23bd763",
+    "oracle_id": "c7476beb-7923-4994-8476-bc69187ecb72",
+    "name": "Hammerheim",
+    "lang": "en",
+    "layout": "normal",
+    "set": "ltc",
+    "collector_number": "518",
+    "rarity": "rare",
+    "released_at": "2023-11-03",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Legendary Land",
+    "oracle_text": "{T}: Add {R}.\n{T}: Target creature loses all landwalk abilities until end of turn.",
+    "colors": [],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [],
+    "flavor_name": "Edoras, Capital of Rohan"
+  },
+  {
+    "id": "5b12f23c-54b2-4b28-8434-c3f509a204d7",
+    "oracle_id": "3db16fb8-5650-4568-b975-42ad3d44ebcd",
+    "name": "Electro, Assaulting Battery",
+    "lang": "en",
+    "layout": "normal",
+    "set": "om1",
+    "collector_number": "76",
+    "rarity": "rare",
+    "released_at": "2025-09-23",
+    "digital": true,
+    "mana_cost": "{1}{R}{R}",
+    "cmc": 3.0,
+    "type_line": "Legendary Creature — Human Villain",
+    "oracle_text": "Flying\nYou don't lose unspent red mana as steps and phases end.\nWhenever you cast an instant or sorcery spell, add {R}.\nWhen Electro leaves the battlefield, you may pay {X}. When you do, he deals X damage to target player.",
+    "power": "2",
+    "toughness": "3",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Flying"
+    ],
+    "printed_name": "Bayo, Irritable Instructor"
+  },
+  {
+    "id": "a15359e5-3d49-45c1-92fd-406bcc8c3afe",
+    "oracle_id": "43306a78-85b5-4df4-a018-75dd75aa8997",
+    "name": "Heroes' Hangout",
+    "lang": "en",
+    "layout": "normal",
+    "set": "om1",
+    "collector_number": "79",
+    "rarity": "uncommon",
+    "released_at": "2025-09-23",
+    "digital": true,
+    "mana_cost": "{R}",
+    "cmc": 1.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Choose one —\n• Date Night — Exile the top two cards of your library. Choose one of them. Until the end of your next turn, you may play that card.\n• Patrol Night — One or two target creatures each get +1/+0 and gain first strike until end of turn.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Patrol Night",
+      "Date Night"
+    ],
+    "printed_name": "Fire-Brained Scheme"
+  },
+  {
+    "id": "774d48ab-181b-4190-9956-67706bea9b27",
+    "oracle_id": "03bf7a90-78c1-4e83-8553-e22d85e49876",
+    "name": "Spider-Punk",
+    "lang": "en",
+    "layout": "normal",
+    "set": "om1",
+    "collector_number": "85",
+    "rarity": "rare",
+    "released_at": "2025-09-23",
+    "digital": true,
+    "mana_cost": "{1}{R}",
+    "cmc": 2.0,
+    "type_line": "Legendary Creature — Spider Human Hero",
+    "oracle_text": "Riot (This creature enters with your choice of a +1/+1 counter or haste.)\nOther Spiders you control have riot.\nSpells and abilities can't be countered.\nDamage can't be prevented.",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Riot"
+    ],
+    "printed_name": "Kraza, the Swarm as One"
+  },
+  {
+    "id": "6bcdcc73-e854-4e7f-9911-ac9c51965c7b",
+    "oracle_id": "a0037ff8-64db-45dd-bba1-db5c49095083",
+    "name": "Masked Meower",
+    "lang": "en",
+    "layout": "normal",
+    "set": "om1",
+    "collector_number": "96",
+    "rarity": "common",
+    "released_at": "2025-09-23",
+    "digital": true,
+    "mana_cost": "{R}",
+    "cmc": 1.0,
+    "type_line": "Creature — Spider Cat Hero",
+    "oracle_text": "Haste\nDiscard a card, Sacrifice this creature: Draw a card.",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Haste"
+    ],
+    "printed_name": "Skittering Kitten"
+  },
+  {
+    "id": "e1332480-4986-421f-9a31-1d597d597c65",
+    "oracle_id": "c0efafc6-8ffb-4908-ae64-3f391722370a",
+    "name": "Carnage, Crimson Chaos",
+    "lang": "en",
+    "layout": "normal",
+    "set": "om1",
+    "collector_number": "133",
+    "rarity": "rare",
+    "released_at": "2025-09-23",
+    "digital": true,
+    "mana_cost": "{2}{B}{R}",
+    "cmc": 4.0,
+    "type_line": "Legendary Creature — Symbiote Villain",
+    "oracle_text": "Trample\nWhen Carnage enters, return target creature card with mana value 3 or less from your graveyard to the battlefield. It gains \"This creature attacks each combat if able\" and \"When this creature deals combat damage to a player, sacrifice it.\"\nMayhem {B}{R}",
+    "power": "4",
+    "toughness": "3",
+    "colors": [
+      "B",
+      "R"
+    ],
+    "color_identity": [
+      "B",
+      "R"
+    ],
+    "keywords": [
+      "Mayhem",
+      "Trample"
+    ],
+    "printed_name": "Desecrex, Gift of Servitude"
+  },
+  {
+    "id": "0f193a36-d452-4503-937c-90fb55a99ab4",
+    "oracle_id": "636cc915-9d1b-4ffe-9e74-795b78663911",
+    "name": "Superior Spider-Man",
+    "lang": "en",
+    "layout": "normal",
+    "set": "om1",
+    "collector_number": "140",
+    "rarity": "rare",
+    "released_at": "2025-09-23",
+    "digital": true,
+    "mana_cost": "{2}{U}{B}",
+    "cmc": 4.0,
+    "type_line": "Legendary Creature — Spider Human Hero",
+    "oracle_text": "Mind Swap — You may have Superior Spider-Man enter as a copy of any creature card in a graveyard, except his name is Superior Spider-Man and he's a 4/4 Spider Human Hero in addition to his other types. When you do, exile that card.",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+      "B",
+      "U"
+    ],
+    "color_identity": [
+      "B",
+      "U"
+    ],
+    "keywords": [
+      "Mind Swap"
+    ],
+    "printed_name": "Kavaero, Mind-Bitten"
+  },
+  {
+    "id": "5f5a13ff-8763-4923-a610-8cfd08bc8d2b",
+    "oracle_id": "4ec8a5ea-b750-4711-8843-2bc98f4ce060",
+    "name": "Scarlet Spider, Kaine",
+    "lang": "en",
+    "layout": "normal",
+    "set": "om1",
+    "collector_number": "141",
+    "rarity": "uncommon",
+    "released_at": "2025-09-23",
+    "digital": true,
+    "mana_cost": "{B}{R}",
+    "cmc": 2.0,
+    "type_line": "Legendary Creature — Spider Human Hero",
+    "oracle_text": "Menace (This creature can't be blocked except by two or more creatures.)\nWhen Scarlet Spider enters, you may discard a card. If you do, put a +1/+1 counter on him.\nMayhem {B/R} (You may cast this card from your graveyard for {B/R} if you discarded it this turn. Timing rules still apply.)",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "B",
+      "R"
+    ],
+    "color_identity": [
+      "B",
+      "R"
+    ],
+    "keywords": [
+      "Mayhem",
+      "Menace"
+    ],
+    "printed_name": "Kivni, Orb Weaver"
+  },
+  {
+    "id": "b0c811f8-b456-47b3-9d55-a87590eb4573",
+    "oracle_id": "10777360-c046-43e3-ab44-9d0b926fbbf8",
+    "name": "Peter Parker's Camera",
+    "lang": "en",
+    "layout": "normal",
+    "set": "om1",
+    "collector_number": "171",
+    "rarity": "rare",
+    "released_at": "2025-09-23",
+    "digital": true,
+    "mana_cost": "{1}",
+    "cmc": 1.0,
+    "type_line": "Artifact",
+    "oracle_text": "This artifact enters with three film counters on it.\n{2}, {T}, Remove a film counter from this artifact: Copy target activated or triggered ability you control. You may choose new targets for the copy.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [],
+    "printed_name": "Phenomena Recorder"
+  },
+  {
+    "id": "0a8e78b3-3232-4d48-9d6c-540951a0330e",
+    "oracle_id": "739a5220-50cd-4148-be58-1bbdeef2954e",
+    "name": "Greymond, Avacyn's Stalwart",
+    "lang": "en",
+    "layout": "normal",
+    "set": "sld",
+    "collector_number": "143",
+    "rarity": "mythic",
+    "released_at": "2020-10-13",
+    "digital": false,
+    "mana_cost": "{2}{W}{W}",
+    "cmc": 4.0,
+    "type_line": "Legendary Creature — Human Soldier",
+    "oracle_text": "As Greymond, Avacyn's Stalwart enters, choose two abilities from among first strike, vigilance, and lifelink.\nHumans you control have each of the chosen abilities.\nAs long as you control four or more Humans, Humans you control get +2/+2.",
+    "power": "3",
+    "toughness": "4",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [],
+    "printed_name": "Rick, Steadfast Leader"
+  },
+  {
+    "id": "c9a85474-e0e5-40cf-b0a3-a2b7da7f7000",
+    "oracle_id": "53236dd7-845a-444c-96d5-f41ed7325d8f",
+    "name": "Rhystic Study",
+    "lang": "en",
+    "layout": "normal",
+    "set": "sld",
+    "collector_number": "478",
+    "rarity": "rare",
+    "released_at": "2021-11-29",
+    "digital": false,
+    "mana_cost": "{2}{U}",
+    "cmc": 3.0,
+    "type_line": "Enchantment",
+    "oracle_text": "Whenever an opponent casts a spell, you may draw a card unless that player pays {1}.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [],
+    "flavor_name": "Unstable Harmonics"
+  },
+  {
+    "id": "57cd70c4-17e9-4bbe-a8f8-2a29450835a9",
+    "oracle_id": "95560508-7ac9-4be9-8a3f-3c7d5b52807b",
+    "name": "Fellwar Stone",
+    "lang": "en",
+    "layout": "normal",
+    "set": "sld",
+    "collector_number": "1040",
+    "rarity": "rare",
+    "released_at": "2022-11-28",
+    "digital": false,
+    "mana_cost": "{2}",
+    "cmc": 2.0,
+    "type_line": "Artifact",
+    "oracle_text": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [],
+    "flavor_name": "The Ball"
+  },
+  {
+    "id": "509c00d2-6a84-4760-8927-483ed123b05f",
+    "oracle_id": "20053847-6623-493c-8cdb-a69cda3b1577",
+    "name": "Skrelv, Defector Mite",
+    "lang": "en",
+    "layout": "normal",
+    "set": "sld",
+    "collector_number": "1926",
+    "rarity": "rare",
+    "released_at": "2025-03-24",
+    "digital": false,
+    "mana_cost": "{W}",
+    "cmc": 1.0,
+    "type_line": "Legendary Artifact Creature — Phyrexian Mite",
+    "oracle_text": "Toxic 1 (Players dealt combat damage by this creature also get a poison counter.)\nSkrelv can't block.\n{W/P}, {T}: Choose a color. Another target creature you control gains toxic 1 and hexproof from that color until end of turn. It can't be blocked by creatures of that color this turn. ({W/P} can be paid with either {W} or 2 life.)",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Toxic"
+    ],
+    "flavor_name": "Plankton, Tiny Tyrant"
+  },
+  {
+    "id": "6f8fca40-1f5c-4f93-8c02-b697fa592c11",
+    "oracle_id": "1d704c2f-cd24-4a04-a51a-da7984dcd358",
+    "name": "Vogar, Necropolis Tyrant",
+    "lang": "en",
+    "layout": "normal",
+    "set": "sld",
+    "collector_number": "2591",
+    "rarity": "mythic",
+    "released_at": "2026-10-12",
+    "digital": false,
+    "mana_cost": "{3}{B}{B}",
+    "cmc": 5.0,
+    "type_line": "Legendary Creature — Zombie Giant",
+    "oracle_text": "Menace\nWhenever another creature dies during your turn, put a +1/+1 counter on Vogar.\nWhen Vogar dies, draw a card for each +1/+1 counter on it.",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Menace"
+    ],
+    "flavor_name": "Zombie Giant-Man"
+  }
+]

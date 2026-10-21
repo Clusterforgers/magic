@@ -6,6 +6,7 @@ use std::time::{Duration, Instant};
 use mtg_db::Database;
 
 pub mod args;
+pub mod audit;
 pub mod bulk;
 pub mod cache;
 pub mod coverage;
@@ -84,6 +85,18 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         Command::Status => status::status(&cache, cli.database_url.as_deref())
             .await
             .map(|text| text.trim_end().to_owned()),
+        Command::Audit(args) => {
+            let url = cli.database_url.ok_or_else(missing_database_url)?;
+            let db = Database::connect(&url).await?;
+            let text = audit::audit(&db, &args).await?;
+            let Some(path) = &args.file else {
+                return Ok(text);
+            };
+            tokio::fs::write(path, format!("{text}\n"))
+                .await
+                .map_err(|source| CliError::io(path, source))?;
+            Ok(format!("audit: written to {}", path.display()))
+        }
         Command::Coverage(args) => {
             let url = cli.database_url.ok_or_else(missing_database_url)?;
             let db = Database::connect(&url).await?;

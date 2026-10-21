@@ -7,17 +7,15 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::{BTreeMap, BTreeSet};
-use std::fs::File;
-use std::io::BufReader;
-use std::path::PathBuf;
 
-use flate2::read::GzDecoder;
 use mtg_import::decklist::{
     DeckEntry, DeckFormat, ParsedDeck, Section, detect, export, parse, promote_implied_commander,
 };
 use mtg_import::resolve::{CardIndex, resolve_deck};
-use mtg_import::scryfall::{CardRecord, cards_jsonl};
+
 use rstest::rstest;
+
+use crate::{real_data, resolve_corpus};
 
 use DeckFormat::{Archidekt, Arena, Moxfield, MtgoText};
 use Section::{Commander, Main, Sideboard};
@@ -289,30 +287,17 @@ const ALL: [&str; 8] = [
     MTGO_TYRANIDS,
 ];
 
-/// Secret Lair printings that Moxfield lists by flavor name (`The Ball` is Fellwar Stone, SLD 1040), which a name index cannot see.
-const KNOWN_FLAVOR_NAMES: [&str; 1] = ["The Ball"];
-
-/// Needs the Scryfall oracle dump described in `real_data.rs`.
+/// Needs the Scryfall oracle dump described in `real_data.rs`; the Secret Lair printing `The Ball` (Fellwar Stone, SLD 1040) is not in it, so its record comes from the fixture.
 #[test]
 #[ignore = "needs MTG_REAL_DATA_DIR"]
-fn real_exports_resolve_against_real_scryfall_data_except_known_flavor_names() {
-    let dir = std::env::var("MTG_REAL_DATA_DIR").expect("set MTG_REAL_DATA_DIR");
-    let mut dumps: Vec<PathBuf> = std::fs::read_dir(dir)
-        .unwrap()
-        .map(|file| file.unwrap().path())
-        .filter(|path| path.to_string_lossy().contains("/oracle-cards-"))
-        .collect();
-    dumps.sort();
-    let reader = GzDecoder::new(BufReader::new(File::open(dumps.pop().unwrap()).unwrap()));
-    let records: Vec<CardRecord> = cards_jsonl(reader).map(Result::unwrap).collect();
+fn real_exports_resolve_against_real_scryfall_data() {
+    let mut records = real_data::load_cards();
+    records.extend(resolve_corpus::other_name_records());
     let index = CardIndex::from_records(&records);
     let mut unresolved = BTreeSet::new();
     for input in ALL {
         let resolution = resolve_deck(&index, &parse(input));
         unresolved.extend(resolution.unresolved.into_iter().map(|u| u.entry.name));
     }
-    assert_eq!(
-        unresolved.into_iter().collect::<Vec<_>>(),
-        KNOWN_FLAVOR_NAMES
-    );
+    assert_eq!(unresolved, BTreeSet::new());
 }

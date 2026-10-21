@@ -135,7 +135,7 @@ describe('the list', () => {
       within(deckRows()[0] as HTMLElement)
         .getByText(name)
         .closest('p'),
-    ).toHaveClass('break-words')
+    ).toHaveClass('[overflow-wrap:anywhere]')
   })
 
   it('says it is loading while the first answer is awaited', async () => {

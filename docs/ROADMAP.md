@@ -37,7 +37,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (r3b2) Templates: modes ("choose one"), "pay" ("unless its controller pays"), compound predicates ("discards a card and loses 3 life"), the older "enters the battlefield" wording, and the effects "exile ~", "return target creature to its owner's hand" and "all creatures get -N/-N"
 - [x] (r3c) Templates: activated abilities with `{T}`, mana and sacrifice costs, and the wordings of search and the library effects, and of removing and moving counters
 - [x] (r4) `mtg-cli coverage`: the state of every precon card (and of each precon) from its compiled rules and the engine's `Caps`, with the unread wordings and missing primitives ranked by the cards each holds back and by the cards it alone holds back
-- [ ] (r4b) Audit before any compiled rule reaches a game: 100 random compiled cards are listed as oracle text beside the rendered reading and the JSON, and each disagreement fixes a template
+- [x] (r4b) Audit before any compiled rule reaches a game: 100 random compiled cards are listed as oracle text beside the rendered reading and the JSON, and each disagreement fixes a template
 - [ ] (r5) The vocabulary the report ranks highest and the DSL lacks (value nodes such as devotion, energy and chosen colour; effects; costs; trigger patterns) is added in one pass, each with its `Caps` name and a stub
 - [ ] (r1c) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes the ones that validate; a compiled mode without a label shows its rendered text in the mode prompt
 
@@ -75,7 +75,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (g4) Alternative costs and cast permissions: flashback, evoke, overload, madness, suspend, casting from another zone, without paying the cost or as though it had flash, cascade; Mulldrifter, Faithless Looting and Bloodbraid Elf are Verified
 - [ ] (g5) Cost modifiers (`Ability::CostModifier`): reductions, increases, convoke, delve; Fireball is Verified
 - [ ] (g6) Costs of activated abilities beyond `{T}`, mana and sacrificing the source: a chosen permanent (chosen when the ability is announced), life, discard, counters removed, a card exiled from a graveyard, untapped creatures tapped; cycling; a card's support counts the abilities of the predefined tokens it makes; Flooded Strand is Verified
-- [ ] (g7) Mana: abilities of several mana or counting something, restrictions on how mana is spent, Treasure and other sacrifice sources offered while paying a spell; Sol Ring and Gaea's Cradle are Verified
+- [ ] (g7) Mana: abilities of several mana or counting something, a mana ability with further effects (painlands, Eggs; `is_mana_ability`, then the compiler reads them again), restrictions on how mana is spent, Treasure and other sacrifice sources offered while paying a spell; Sol Ring and Gaea's Cradle are Verified
 - [ ] (g8) A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
 
 ### Trigger families
@@ -121,11 +121,12 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Precon browser with one-click play
 - [ ] Choose a deck in the lobby, remaining: precons as a third kind of deck (`docs/server.md`, `docs/deck-check.md`)
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
-- [ ] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
+- [x] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
+- [ ] Deck import by printing in the server: fetch and ingest Scryfall Default Cards (every printing, with flavor and printed names stored on `printings`) and resolve imports with `CardRepo::card_index`, which already holds the stored printings (`docs/data-sources.md`, `docs/server.md`)
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 - [x] Account settings: change the password, delete the account (its seats are freed)
 - [ ] A game that failed to resume shows in My games with its reason
-- [ ] Layout gate for the pages that need an account (Decks, My games, the builder with a real deck), in `accounts.spec.ts`
+- [x] Layout gate for the pages that need an account (Decks, My games, the builder with a real deck), in `accounts.spec.ts`
 
 ## M8 Polish and deploy
 - [ ] Animations beyond the table feedback (zone moves to hand, exile and library, a spell on the stack; `docs/web.md`), sounds, replays, solo play against bots

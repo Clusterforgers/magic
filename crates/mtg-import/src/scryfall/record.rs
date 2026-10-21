@@ -283,6 +283,15 @@ pub struct CardRecord {
     pub lang: String,
     /// Whether this printing is digital-only.
     pub digital: bool,
+    /// Name of the card this card melds into, for a meld piece (`Gisela, the Broken Blade` melds into `Brisela, Voice of Nightmares`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub melds_into: Option<String>,
+    /// Flavor name of this printing (`A // B` for a multi-faced card, a face without one keeping its own name).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flavor_name: Option<String>,
+    /// Name printed on this printing when it differs from the oracle name, as on the Arena and MTGO versions of Universes Beyond cards.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub printed_name: Option<String>,
 }
 
 impl CardRecord {

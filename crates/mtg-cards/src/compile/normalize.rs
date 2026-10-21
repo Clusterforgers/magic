@@ -141,6 +141,17 @@ fn reminder_ranges(chars: &[char]) -> Vec<Range<usize>> {
     ranges
 }
 
+/// Whether reminder text in `text` speaks of a counter: it then explains a counter the clause puts
+/// (a shield or hone counter), which the reading would drop with the reminder.
+pub fn reminder_mentions_counter(text: &str) -> bool {
+    let chars: Vec<char> = text.chars().collect();
+    reminder_ranges(&chars).iter().any(|range| {
+        let reminder: String = chars[range.clone()].iter().collect();
+        let reminder = reminder.to_lowercase();
+        reminder.contains(" counter") || reminder.contains("counters")
+    })
+}
+
 /// Drops the whitespace at both ends of every line.
 fn trim_lines(pieces: Vec<Piece>) -> Vec<Piece> {
     fn trim_end(out: &mut Vec<Piece>, line_start: usize) {

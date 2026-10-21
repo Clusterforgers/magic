@@ -39,6 +39,8 @@ mkdir -p /tmp/mtgdata && cd /tmp/mtgdata
 MTG_REAL_DATA_DIR=/tmp/mtgdata cargo test -p mtg-import real_data:: -- --ignored
 ```
 
+`MTG_REAL_DATA_DIR` can also be the `mtg-cli` cache (`~/.cache/mtg-cli`); `cargo test -p mtg-import -- --ignored` then runs every real-data test, `resolve_corpus::` and `real_exports::` included.
+
 ## Mana cost strings
 
 Figures come from the oracle-cards file (38,753 cards).
@@ -62,7 +64,9 @@ Figures come from the oracle-cards file (38,753 cards).
   - `tests/it/corpus_parse.rs` parses every export with the format a user would name and compares the cards with the site's lists.
   - `corpus_detect.rs` pins what `detect` can and cannot know.
   - `corpus_export.rs` writes every parsed deck out and reads it back, as text, as an Arena export and as MTGO text.
-- The ignored test in `real_exports.rs` checks that every name of the eight real files, except the flavor name `The Ball`, resolves against Scryfall (needs `MTG_REAL_DATA_DIR`).
+- `tests/fixtures/scryfall_alias_printings.json` holds the Scryfall records (`/cards/search`, `include_multilingual=true`) of the 17 printings with a flavor or printed name that the corpus and the real exports use.
+  - `tests/it/resolve_corpus.rs` resolves all 183 exports against the printings the sites list plus those records: every line ties to the card the site lists. The ignored test there does the same against Oracle Cards plus those records.
+- The ignored test in `real_exports.rs` checks that every name of the eight real files resolves against Scryfall (needs `MTG_REAL_DATA_DIR`).
 
 ## Deck export formats
 
@@ -101,12 +105,15 @@ Figures come from the oracle-cards file (38,753 cards).
   - A bracketless Archidekt list that opens with a header word (`headers-generic-plain`) reads as Arena.
   - Every fallback reads the same cards in the same sections except an MTGO commander block, which plain text takes for the sideboard.
 
-## Names the resolver must map
+## Name resolution
 
-The parser leaves these as written:
+The parser leaves names as written; `resolve::resolve_deck(index, deck)` ties each entry to one card, by these rules in this order.
 
-- Moxfield's flavor names: `The Ball` is Fellwar Stone (SLD 1040), `Rick, Steadfast Leader` is Greymond, Avacyn's Stalwart (SLD 143), `Skittering Kitten` is Masked Meower (OM1 96).
-- The digital names Arena and MTGO exports give Universes Beyond cards (`Phenomena Recorder` is Peter Parker's Camera).
-- The face notations above, and front faces alone.
-
-The tests learn these from each deck's own data (printings shared with the site's list, leftovers by elimination), not from a list.
+- **Printing**: a set and a collector number (compared in lower case, numbers as free text) name a printing, and its card is the entry's card unless the entry's name is another card's.
+- **Card name**: compared after folding case, accents, ligatures, typographic punctuation and spacing. Faces are `A // B`, `A / B`, `A /// B` or `A/B`, and the front face alone matches too. A trailing `(SET)` that the parsers split off is retried as part of the name (`Hazmat Suit (Used)`).
+- **Other names of a printing**: flavor names (`The Ball` is Fellwar Stone, SLD 1040; `Plankton, Tiny Tyrant` is Skrelv, Defector Mite, SLD 1926), the names printed on English digital versions (`Phenomena Recorder` is Peter Parker's Camera, OM1 171; `Skittering Kitten` is Masked Meower, OM1 96) and `A // B` of a meld piece (`Gisela, the Broken Blade // Brisela, Voice of Nightmares`), in full or by the front face. They are tried last and never take a card name from its card.
+- A printing and a name that belong to different cards leave the entry unresolved as `AmbiguousName`, the printing's card first. A name several cards share is ambiguous, a name no card has is unknown with up to five fuzzy suggestions, and a suggestion is never applied.
+- `ResolvedEntry::matched` tells which rule tied the entry: `Printing`, `Name` or `OtherName`.
+- `CardIndex::from_records` takes every record as a printing (`set`, `collector_number`) and, from English ones, `flavor_name`, `printed_name` and the meld name; `add_printing` and `add_alias` do the same by hand. `CardRepo::card_index` holds the deck cards and their stored printings.
+- Oracle Cards has one printing per card and five flavor names; a file with every printing (Scryfall's Default Cards) fills in the rest.
+- Moxfield's Arena and MTGO exports write a printing's flavor or digital name with no set, so only the third rule reads them.

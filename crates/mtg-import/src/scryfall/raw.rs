@@ -31,6 +31,19 @@ pub struct RawCardFace {
     pub colors: Option<Vec<String>>,
     /// Images of this face.
     pub image_uris: Option<ImageUris>,
+    /// Flavor name of this face on the printing.
+    pub flavor_name: Option<String>,
+    /// Name printed on this face when it differs from the oracle name.
+    pub printed_name: Option<String>,
+}
+
+/// A card related to another one (`all_parts`): a token, a meld piece, a combo piece.
+#[derive(Debug, Clone, Default, PartialEq, Deserialize)]
+pub struct RawRelatedCard {
+    /// How the card relates: `token`, `meld_part`, `meld_result`, `combo_piece`.
+    pub component: Option<String>,
+    /// Name of the related card.
+    pub name: Option<String>,
 }
 
 /// A Scryfall card object from Oracle Cards or Default Cards bulk data.
@@ -86,6 +99,12 @@ pub struct RawCard {
     pub image_uris: Option<ImageUris>,
     /// Faces of a multi-faced card.
     pub card_faces: Option<Vec<RawCardFace>>,
+    /// Cards related to this one.
+    pub all_parts: Option<Vec<RawRelatedCard>>,
+    /// Flavor name of the printing (Secret Lair and Universes Beyond cards).
+    pub flavor_name: Option<String>,
+    /// Name printed on the card when it differs from the oracle name (Arena and MTGO names, translations).
+    pub printed_name: Option<String>,
 }
 
 /// A Scryfall ruling object from the rulings bulk file.
