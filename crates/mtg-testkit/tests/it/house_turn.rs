@@ -484,15 +484,15 @@ fn the_turn_limit_ends_the_game_at_the_end_of_its_last_round(
 }
 
 #[rstest]
-#[case::the_seat_before_the_end_leaves_the_round_short(4, 3, 1, 3)]
-#[case::the_highest_seat_is_out_so_it_does_not_count(3, 1, 0, 2)]
+#[case::the_last_seat_leaves_a_round_of_the_others(4, 3, 3)]
+#[case::the_seat_with_the_most_life_is_out_so_it_does_not_count(3, 1, 2)]
+#[case::the_first_players_turn_goes_on_without_them(4, 0, 4)]
 fn a_seat_that_has_lost_does_not_take_a_turn_or_count(
     #[case] players: usize,
     #[case] leaver: usize,
-    #[case] _unused: usize,
     #[case] turns: u32,
 ) -> Result<(), ScriptError> {
-    // The seat with the most life concedes at once: the round is one turn of each of the others.
+    // A seat concedes at once with the most life: the round is one turn of each seat that is left.
     let mut scenario = Scenario::new(players).house_rules(rules(|r| r.turn_limit = Some(1)));
     for seat in 0..players {
         scenario = scenario.life(seat, if seat == leaver { 50 } else { 10 + seat as i32 });
@@ -506,6 +506,39 @@ fn a_seat_that_has_lost_does_not_take_a_turn_or_count(
         .max_by_key(|seat| 10 + *seat as i32)
         .unwrap();
     assert_eq!(driver.state().result(), Some(GameResult::Winner(pid(best))));
+    Ok(())
+}
+
+#[rstest]
+fn a_round_starts_at_whoever_goes_first(
+    #[values(2, 3, 4)] players: usize,
+    #[values(1, 3)] rounds: u32,
+) -> Result<(), ScriptError> {
+    let mut firsts = BTreeSet::new();
+    for seed in 0..8 {
+        let house = rules(|r| r.turn_limit = Some(rounds));
+        let mut driver = Driver::new(Engine::new(
+            fuzz_setup(players, seed).with_house_rules(house),
+        )?)?;
+        to_the_end(&mut driver)?;
+        let state = driver.state();
+        let first = state.first_player();
+        firsts.insert(first);
+        // Every seat took `rounds` turns, the last of them the seat before the first player's.
+        assert_eq!(
+            state.turn().number(),
+            players as u32 * rounds,
+            "seed {seed}"
+        );
+        assert_eq!(
+            state.turn().active().index(),
+            (first.index() + players - 1) % players
+        );
+    }
+    assert!(
+        firsts.len() > 1,
+        "the first player was always seat {firsts:?}"
+    );
     Ok(())
 }
 

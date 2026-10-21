@@ -113,6 +113,14 @@ async fn a_game_made_under_house_rules_comes_back_under_them_and_ends_as_the_sam
                 "mulligan_cap": 4,
                 "skip_first_draw": "never",
                 "max_hand_size": { "cards": 5 },
+                "draw_step_cards": 2,
+                "land_plays_per_turn": 2,
+                "mana_burn": true,
+                "empty_library": "reshuffle_graveyard",
+                "turn_limit": 30,
+                "winning_life": 60,
+                "poison_threshold": 3,
+                "handicaps": [{ "seat": 1, "starting_life": 9, "opening_hand_size": 4 }],
             })
         );
 
