@@ -18,7 +18,8 @@ use common::{cards_dir, printed};
 /// The corpus cards whose compiled abilities are the hand-written file's, face by face. A card joins
 /// the list when the templates reach it and never leaves; a card that matches but is not listed fails
 /// the test too, so the list is the ratchet.
-const REPRODUCED: [&str; 59] = [
+const REPRODUCED: [&str; 63] = [
+    "Ancient Ziggurat",
     "Archon of Cruelty",
     "Arvad the Cursed",
     "Battlefield Forge",
@@ -61,6 +62,9 @@ const REPRODUCED: [&str; 59] = [
     "Mizzium Mortars",
     "Monastery Swiftspear",
     "Lotus Petal",
+    "Mishra's Workshop",
+    "Pillar of the Paruns",
+    "Rosheen Meanderer",
     "Mulldrifter",
     "Opt",
     "Pacifism",

@@ -440,6 +440,7 @@ mod tests {
         MulliganOptions, PriorityOptions,
     };
     use mtg_engine::mana::ManaPool;
+    use mtg_engine::spend::Spend;
     use mtg_engine::object::ObjectRef;
     use rstest::rstest;
 
@@ -486,6 +487,7 @@ mod tests {
 
     fn payment(can_cancel: bool, auto_available: bool) -> DecisionKind {
         DecisionKind::PayMana(PayOptions {
+            spend: Spend::other(),
             spell: ObjectId(1),
             cost: mtg_core::mana::ManaCost::parse("{1}").unwrap(),
             pool: ManaPool::default(),

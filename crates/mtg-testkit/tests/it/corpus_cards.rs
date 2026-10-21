@@ -1,4 +1,4 @@
-//! Goal: the 126 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 130 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -38,9 +38,10 @@ use Support::{Manual, Partial, Verified};
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
 /// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified and Fireball waits for its cost modifier alone.
-const CARDS: [(&str, Support, usize); 126] = [
+const CARDS: [(&str, Support, usize); 130] = [
     ("Act of Treason", Verified, 1),
     ("Ajani, Caller of the Pride", Verified, 3),
+    ("Ancient Ziggurat", Verified, 1),
     ("Anger", Verified, 2),
     ("Anointed Procession", Verified, 1),
     ("Archon of Cruelty", Verified, 2),
@@ -109,6 +110,7 @@ const CARDS: [(&str, Support, usize); 126] = [
     ("Lotus Petal", Verified, 1),
     ("Maralen of the Mornsong", Verified, 2),
     ("Maro", Verified, 1),
+    ("Mishra's Workshop", Verified, 1),
     ("Mending Hands", Verified, 1),
     ("Kor Firewalker", Verified, 2),
     ("Mindlock Orb", Verified, 1),
@@ -121,12 +123,14 @@ const CARDS: [(&str, Support, usize); 126] = [
     ("Pacifism", Verified, 2),
     ("Panharmonicon", Verified, 1),
     ("Parallel Lives", Verified, 1),
+    ("Pillar of the Paruns", Verified, 1),
     ("Questing Beast", Partial, 3),
     ("Rally the Ranks", Verified, 2),
     ("Rampaging Ferocidon", Verified, 3),
     ("Rampant Growth", Verified, 1),
     ("Reassembling Skeleton", Verified, 1),
     ("Rest in Peace", Verified, 2),
+    ("Rosheen Meanderer", Verified, 1),
     ("Rhox Faithmender", Verified, 2),
     ("Rhystic Study", Verified, 1),
     ("Samite Healer", Verified, 1),
@@ -171,7 +175,7 @@ const CARDS: [(&str, Support, usize); 126] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 126);
+    assert_eq!(in_table.len(), 130);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -317,6 +321,10 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         "Gaea's Cradle",
         "Battlefield Forge",
         "Lotus Petal",
+        "Ancient Ziggurat",
+        "Mishra's Workshop",
+        "Pillar of the Paruns",
+        "Rosheen Meanderer",
     ] {
         assert_eq!(reasons(name), "", "{name}");
     }

@@ -567,6 +567,7 @@ fn a_payment_may_use_several_sources_a_partial_choice_the_engine_finishes_and_fl
                 .unwrap()
                 .source;
             driver.answer(Answer::PayMana(PayChoice::Complete(Payment {
+                restricted: Vec::new(),
                 taps: vec![plains_source],
                 ..Payment::default()
             })))?;
@@ -574,6 +575,7 @@ fn a_payment_may_use_several_sources_a_partial_choice_the_engine_finishes_and_fl
         _ => {
             assert_eq!(options.pool.total(), 1, "the floating mana is offered");
             driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
+                restricted: Vec::new(),
                 pool: vec![ManaType::White],
                 taps: options
                     .sources

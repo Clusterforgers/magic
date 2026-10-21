@@ -258,6 +258,7 @@ fn paying_all_of_ones_life_is_allowed_but_never_automatic_and_loses_the_game()
         Err(ScriptError::Engine(EngineError::Illegal(_)))
     ));
     driver.answer(Answer::PayMana(PayChoice::Manual(Payment {
+        restricted: Vec::new(),
         life: 2,
         ..Payment::default()
     })))?;
@@ -336,6 +337,7 @@ fn the_engine_finishes_a_partial_payment_with_life_only_as_a_last_resort(
         taps.push(source.source);
     }
     let events = driver.answer(Answer::PayMana(PayChoice::Complete(Payment {
+        restricted: Vec::new(),
         pool: vec![],
         taps: taps.clone(),
         life,

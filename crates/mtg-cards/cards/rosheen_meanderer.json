@@ -13,9 +13,7 @@
             "effects": [
               {
                 "AddMana": {
-                  "mana": {
-                    "Fixed": ["Colorless", "Colorless", "Colorless", "Colorless"]
-                  },
+                  "mana": { "Fixed": ["Colorless", "Colorless", "Colorless", "Colorless"] },
                   "only": ["CostWithX"]
                 }
               }

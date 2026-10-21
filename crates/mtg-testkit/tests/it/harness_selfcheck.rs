@@ -52,7 +52,7 @@ fn a_live_state_that_differs_from_the_log_is_a_replay_violation() -> Result<(), 
 
 #[rstest]
 #[case::draw_from_the_middle(Event::CardDrawn { player: PlayerId(0), object: ObjectId(3) })]
-#[case::spend_mana_that_is_not_there(Event::ManaSpent { player: PlayerId(0), mana: vec![ManaType::Green] })]
+#[case::spend_mana_that_is_not_there(Event::ManaSpent { player: PlayerId(0), mana: vec![ManaType::Green], restricted: Vec::new() })]
 #[case::pay_more_life_than_there_is(Event::LifePaid { player: PlayerId(0), amount: 21 })]
 #[case::pay_no_life(Event::LifePaid { player: PlayerId(0), amount: 0 })]
 #[case::unknown_object(Event::PermanentTapped { object: ObjectId(10_000) })]

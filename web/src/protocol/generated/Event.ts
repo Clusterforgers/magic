@@ -23,10 +23,12 @@ import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
 import type { PutOnStack } from "./PutOnStack";
 import type { ResolutionOutcome } from "./ResolutionOutcome";
+import type { Restricted } from "./Restricted";
 import type { Revealed } from "./Revealed";
 import type { RuleEffect } from "./RuleEffect";
 import type { Scried } from "./Scried";
 import type { Snapshot } from "./Snapshot";
+import type { SpendOn } from "./SpendOn";
 import type { Step } from "./Step";
 import type { Target } from "./Target";
 import type { TokenCreated } from "./TokenCreated";
@@ -153,7 +155,11 @@ mana: ManaType,
 /**
  * The producing permanent.
  */
-source: ObjectId | null, } } | { "ManaSpent": { 
+source: ObjectId | null, 
+/**
+ * What the mana may be spent on; left out means anything.
+ */
+only?: Array<SpendOn>, } } | { "ManaSpent": { 
 /**
  * Whose pool.
  */
@@ -161,7 +167,11 @@ player: PlayerId,
 /**
  * The mana spent.
  */
-mana: Array<ManaType>, } } | { "ManaPoolEmptied": { 
+mana: Array<ManaType>, 
+/**
+ * The part of it that was restricted, each also in `mana`; left out means none.
+ */
+restricted?: Array<Restricted>, } } | { "ManaPoolEmptied": { 
 /**
  * Whose pool.
  */

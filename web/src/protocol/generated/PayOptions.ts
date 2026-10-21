@@ -3,6 +3,7 @@ import type { ManaCost } from "./ManaCost";
 import type { ManaOption } from "./ManaOption";
 import type { ManaPool } from "./ManaPool";
 import type { ObjectId } from "./ObjectId";
+import type { Spend } from "./Spend";
 
 /**
  * Options while paying for a spell.
@@ -24,6 +25,10 @@ pool: ManaPool,
  * Mana abilities that may be tapped.
  */
 sources: Array<ManaOption>, 
+/**
+ * What the payment is for, which decides what restricted mana may be spent on it; left out means neither a spell nor an ability.
+ */
+spend?: Spend, 
 /**
  * Whether an automatic payment exists (it does whenever the cast was offered, unless only a payment that takes the last life would do).
  */
