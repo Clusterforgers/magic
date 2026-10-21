@@ -1,5 +1,10 @@
 //! Goal: each house rule of the turn and life changes its own part of the game and nothing else at two, three and four seats: the cards drawn in the draw step and the lands played each turn, mana burn, an empty library that reshuffles the graveyard (replayable and seeded), the turn limit and its result, the life total that wins, the poison threshold, the card rule of no maximum hand size beside the house limit, and the handicaps of single seats, each with the format's own first draw and mulligan; the refused setups; and bot games with every rule.
-#![allow(clippy::unwrap_used, clippy::expect_used)]
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::cast_possible_truncation,
+    clippy::cast_possible_wrap
+)]
 
 use crate::common::house::any_turn_rules;
 use crate::common::pid;
@@ -40,7 +45,9 @@ fn hand_of(state: &GameState, seat: usize) -> usize {
 }
 
 fn life_of(state: &GameState, seat: usize) -> i32 {
-    state.player(pid(seat)).map_or(i32::MIN, |p| p.life())
+    state
+        .player(pid(seat))
+        .map_or(i32::MIN, mtg_engine::player::Player::life)
 }
 
 fn lost_to(state: &GameState, seat: usize) -> Option<LossReason> {
@@ -338,44 +345,38 @@ fn an_empty_library_loses_or_reshuffles_the_graveyard(
     ))?)?;
     to_main(&mut driver, 2)?;
     let state = driver.state();
-    match outcome {
-        Some((hand, in_library)) => {
-            assert_eq!(lost_to(state, 0), None);
-            assert_eq!(hand_of(state, 0), hand);
-            assert_eq!(state.zone(Zone::Library(pid(0))).len(), in_library);
-            let reshuffled = events_of(&driver)
-                .iter()
-                .any(|e| matches!(e, Event::LibraryRefilled { .. }));
-            assert_eq!(
-                reshuffled,
-                library < draws as usize,
-                "a shuffle only when one is needed"
-            );
-            if reshuffled {
-                assert!(state.zone(Zone::Graveyard(pid(0))).is_empty());
-            }
+    if let Some((hand, in_library)) = outcome {
+        assert_eq!(lost_to(state, 0), None);
+        assert_eq!(hand_of(state, 0), hand);
+        assert_eq!(state.zone(Zone::Library(pid(0))).len(), in_library);
+        let reshuffled = events_of(&driver)
+            .iter()
+            .any(|e| matches!(e, Event::LibraryRefilled { .. }));
+        assert_eq!(
+            reshuffled,
+            library < draws as usize,
+            "a shuffle only when one is needed"
+        );
+        if reshuffled {
+            assert_eq!(state.zone(Zone::Graveyard(pid(0))), []);
         }
-        None => {
-            assert_eq!(lost_to(state, 0), Some(LossReason::EmptyLibrary));
-            // Whatever the graveyard could give was drawn before the player lost.
-            let refilled = events_of(&driver)
-                .iter()
-                .filter(|e| matches!(e, Event::CardDrawn { .. }))
-                .count();
-            assert_eq!(
-                refilled,
-                library.min(draws as usize)
-                    + if rule == Some(EmptyLibrary::ReshuffleGraveyard) {
-                        graveyard.min((draws as usize).saturating_sub(library))
-                    } else {
-                        0
-                    }
-            );
-            assert_eq!(
-                state.result(),
-                (players == 2).then_some(GameResult::Winner(pid(1)))
-            );
-        }
+    } else {
+        assert_eq!(lost_to(state, 0), Some(LossReason::EmptyLibrary));
+        // Whatever the graveyard could give was drawn before the player lost.
+        let drawn = events_of(&driver)
+            .iter()
+            .filter(|e| matches!(e, Event::CardDrawn { .. }))
+            .count();
+        let from_graveyard = if rule == Some(EmptyLibrary::ReshuffleGraveyard) {
+            graveyard.min((draws as usize).saturating_sub(library))
+        } else {
+            0
+        };
+        assert_eq!(drawn, library.min(draws as usize) + from_graveyard);
+        assert_eq!(
+            state.result(),
+            (players == 2).then_some(GameResult::Winner(pid(1)))
+        );
     }
     Ok(())
 }
@@ -445,20 +446,20 @@ fn a_reshuffle_in_a_game_of_bots_replays() -> Result<(), GameFailure> {
 
 #[rstest]
 // Two seats.
-#[case::a_tie_is_a_draw(2, 1, &[20, 20], Some(None))]
-#[case::the_first_seat_wins(2, 1, &[20, 15], Some(Some(0)))]
-#[case::the_second_seat_wins(2, 1, &[15, 20], Some(Some(1)))]
-#[case::two_rounds_in_two(2, 2, &[3, 4], Some(Some(1)))]
+#[case::a_tie_is_a_draw(2, 1, &[20, 20], None)]
+#[case::the_first_seat_wins(2, 1, &[20, 15], Some(0))]
+#[case::the_second_seat_wins(2, 1, &[15, 20], Some(1))]
+#[case::two_rounds_in_two(2, 2, &[3, 4], Some(1))]
 // Three and four seats.
-#[case::three_seats(3, 2, &[10, 30, 20], Some(Some(1)))]
-#[case::a_tie_for_the_highest_of_four(4, 1, &[5, 9, 9, 3], Some(None))]
-#[case::a_tie_below_the_highest_does_not_matter(4, 1, &[5, 9, 9, 12], Some(Some(3)))]
-#[case::three_rounds_of_four(4, 3, &[7, 7, 7, 8], Some(Some(3)))]
+#[case::three_seats(3, 2, &[10, 30, 20], Some(1))]
+#[case::a_tie_for_the_highest_of_four(4, 1, &[5, 9, 9, 3], None)]
+#[case::a_tie_below_the_highest_does_not_matter(4, 1, &[5, 9, 9, 12], Some(3))]
+#[case::three_rounds_of_four(4, 3, &[7, 7, 7, 8], Some(3))]
 fn the_turn_limit_ends_the_game_at_the_end_of_its_last_round(
     #[case] players: usize,
     #[case] rounds: u32,
     #[case] lives: &[i32],
-    #[case] result: Option<Option<usize>>,
+    #[case] winner: Option<usize>,
 ) -> Result<(), ScriptError> {
     let mut scenario = Scenario::new(players).house_rules(rules(|r| r.turn_limit = Some(rounds)));
     for (seat, life) in lives.iter().enumerate() {
@@ -466,9 +467,8 @@ fn the_turn_limit_ends_the_game_at_the_end_of_its_last_round(
     }
     let mut driver = Driver::from_scenario(scenario)?;
     to_the_end(&mut driver)?;
-    let want =
-        result.map(|winner| winner.map_or(GameResult::Draw, |seat| GameResult::Winner(pid(seat))));
-    assert_eq!(driver.state().result(), want);
+    let want = winner.map_or(GameResult::Draw, |seat| GameResult::Winner(pid(seat)));
+    assert_eq!(driver.state().result(), Some(want));
     let last = players as u32 * rounds;
     assert_eq!(driver.state().turn().number(), last);
     assert_eq!(driver.state().turn().round(), rounds);

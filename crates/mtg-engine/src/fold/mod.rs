@@ -177,7 +177,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             // Each combat damage step divides its damage afresh: a double striker divides twice.
             state.combat.clear_assignments();
         }
-        Event::NothingToDo { .. } => {}
+        // Information in the log: the life it cost is its own `LifeLost`.
+        Event::NothingToDo { .. } | Event::ManaBurned { .. } => {}
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {
                 holder: *player,
@@ -220,7 +221,6 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
         }
         Event::ManaPoolEmptied { player } => pool_mut(state, *player)?.clear(),
-        Event::ManaBurned { .. } => {}
         Event::LifePaid { player, amount } => pay_life(state, *player, *amount)?,
         Event::LifeGained { player, amount } => change_life(state, *player, *amount, true)?,
         Event::LifeLost { player, amount } => change_life(state, *player, *amount, false)?,
