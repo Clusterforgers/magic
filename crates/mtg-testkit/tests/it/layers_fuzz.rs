@@ -2,6 +2,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
+use std::sync::Mutex;
 
 use mtg_core::card::{CardType, Subtype};
 use mtg_engine::characteristics::characteristics;
@@ -11,6 +12,8 @@ use mtg_engine::{Engine, EngineError, Event, GameState, replay};
 use mtg_testkit::layer_cards::LAYER_CARDS;
 use mtg_testkit::{RandomBot, layers_fuzz_setup, play_game};
 use rstest::rstest;
+
+use crate::common::seeds::for_each_seed;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
@@ -91,13 +94,14 @@ impl Tally {
 #[case(3)]
 #[case(4)]
 fn seeded_layers_games_finish_and_keep_every_invariant(#[case] players: usize) {
-    let mut seen = Seen::default();
-    for seed in 0..games() {
+    let seen = Mutex::new(Seen::default());
+    for_each_seed(0..games(), |seed| {
         let setup = layers_fuzz_setup(players, seed).unwrap();
         let outcome = play_game(setup.clone(), seed).unwrap_or_else(|failure| panic!("{failure}"));
         let end = replay(&setup, &outcome.events).unwrap();
-        seen.add(&end, &outcome.events);
-    }
+        seen.lock().unwrap().add(&end, &outcome.events);
+    });
+    let seen = seen.into_inner().unwrap();
     let campaign = format!("{} games of {players} seats", games());
     for name in LAYER_CARDS {
         assert!(

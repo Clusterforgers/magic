@@ -2,11 +2,9 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use std::collections::BTreeMap;
-
+use crate::common::generated;
 use mtg_cards::deck::{DeckZone, Issue, IssueCode};
 use mtg_core::ids::PlayerId;
-use mtg_protocol::bindings::export_to;
 use mtg_protocol::rest::{
     ChooseDeck, DeckBlockedBody, DeckChoiceErrorCode, JoinCodeRequest, JoinRequest,
 };
@@ -236,21 +234,6 @@ fn every_deck_error_code_has_one_spelling_shared_by_serde_and_as_str() {
     assert_eq!(DeckChoiceErrorCode::DeckBlocked.as_str(), "deck_blocked");
     assert_eq!(DeckChoiceErrorCode::SeatReady.as_str(), "seat_ready");
     assert!(serde_json::from_value::<DeckChoiceErrorCode>(json!("UnknownDeck")).is_err());
-}
-
-fn generated() -> BTreeMap<String, String> {
-    let scratch = tempfile::tempdir().unwrap();
-    export_to(scratch.path()).unwrap();
-    std::fs::read_dir(scratch.path())
-        .unwrap()
-        .map(|entry| {
-            let path = entry.unwrap().path();
-            (
-                path.file_name().unwrap().to_string_lossy().into_owned(),
-                std::fs::read_to_string(&path).unwrap(),
-            )
-        })
-        .collect()
 }
 
 #[test]

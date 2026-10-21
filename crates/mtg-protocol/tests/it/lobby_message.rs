@@ -2,10 +2,8 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use std::collections::BTreeMap;
-
+use crate::common::generated;
 use mtg_core::ids::PlayerId;
-use mtg_protocol::bindings::export_to;
 use mtg_protocol::{ClientMessage, LobbySeat, ServerMessage};
 use proptest::prelude::*;
 use rstest::rstest;
@@ -162,21 +160,6 @@ proptest! {
             prop_assert_eq!(fields, ["connected", "name", "ready", "seat"]);
         }
     }
-}
-
-fn generated() -> BTreeMap<String, String> {
-    let scratch = tempfile::tempdir().unwrap();
-    export_to(scratch.path()).unwrap();
-    std::fs::read_dir(scratch.path())
-        .unwrap()
-        .map(|entry| {
-            let path = entry.unwrap().path();
-            (
-                path.file_name().unwrap().to_string_lossy().into_owned(),
-                std::fs::read_to_string(&path).unwrap(),
-            )
-        })
-        .collect()
 }
 
 #[test]

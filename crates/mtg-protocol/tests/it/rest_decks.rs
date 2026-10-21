@@ -2,14 +2,14 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 
+use crate::common::generated;
 use mtg_cards::deck::{
     Counts, DeckReport, DeckState, DeckZone, Issue, IssueCode, ReportCard, StoredCheck, Summary,
     ZoneCounts,
 };
 use mtg_cards::support::Support;
-use mtg_protocol::bindings::export_to;
 use mtg_protocol::rest::{
     CardSuggestion, CheckRequest, DeckBody, DeckErrorCode, DeckLineBody, DeckList, DeckListItem,
     ImportRequest, ImportSource, MAX_DECK_CARDS, MAX_DECK_LINES, MAX_DECK_NAME_CHARS,
@@ -343,21 +343,6 @@ fn the_limits_match_the_documented_numbers() {
     assert_eq!((MAX_DECK_NAME_CHARS, MAX_DECK_NOTES_CHARS), (100, 10_000));
     assert_eq!((MAX_IMPORT_CHARS, MAX_IMPORT_LINES), (100_000, 1_000));
     const { assert!(MAX_DECK_LINES <= MAX_DECK_CARDS as usize) };
-}
-
-fn generated() -> BTreeMap<String, String> {
-    let scratch = tempfile::tempdir().unwrap();
-    export_to(scratch.path()).unwrap();
-    std::fs::read_dir(scratch.path())
-        .unwrap()
-        .map(|entry| {
-            let path = entry.unwrap().path();
-            (
-                path.file_name().unwrap().to_string_lossy().into_owned(),
-                std::fs::read_to_string(&path).unwrap(),
-            )
-        })
-        .collect()
 }
 
 #[test]

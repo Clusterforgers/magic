@@ -1,11 +1,15 @@
 //! Goal: whole bot games whose creatures cost hybrid and Phyrexian symbols, paid by bots that choose the ways to pay them (life included), finish with a winner or a draw, keep every invariant (life paid is accounted for, replay agrees), and use every way of paying.
 
+use std::sync::atomic::{AtomicU64, Ordering};
+
 use mtg_core::mana::ManaSymbol;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::player::LossReason;
 use mtg_engine::{Engine, Event, GameResult};
 use mtg_testkit::{PlayOptions, RandomBot, play_game_with, symbol_fuzz_setup};
 use rstest::rstest;
+
+use crate::common::seeds::for_each_seed;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES` to run longer or shorter campaigns.
 fn games() -> u64 {
@@ -29,15 +33,16 @@ fn bot_games_with_hybrid_and_phyrexian_costs_finish_and_keep_every_invariant(
         partial_payments,
         ..PlayOptions::default()
     };
-    let (mut winners, mut draws) = (0u64, 0u64);
-    for seed in 0..games() / 2 {
+    let (winners, draws) = (AtomicU64::new(0), AtomicU64::new(0));
+    for_each_seed(0..games() / 2, |seed| {
         let outcome = play_game_with(symbol_fuzz_setup(players, seed), seed, options)
             .unwrap_or_else(|failure| panic!("{failure}"));
         match outcome.result {
-            GameResult::Winner(_) => winners += 1,
-            GameResult::Draw => draws += 1,
-        }
-    }
+            GameResult::Winner(_) => winners.fetch_add(1, Ordering::Relaxed),
+            GameResult::Draw => draws.fetch_add(1, Ordering::Relaxed),
+        };
+    });
+    let (winners, draws) = (winners.into_inner(), draws.into_inner());
     assert_eq!(winners + draws, games() / 2);
     assert!(winners > 0, "no game produced a winner");
 }
@@ -45,10 +50,10 @@ fn bot_games_with_hybrid_and_phyrexian_costs_finish_and_keep_every_invariant(
 #[test]
 fn bots_that_do_not_choose_symbols_still_play_every_game_by_paying_automatically() {
     // Without the opt-in a cost with a hybrid or Phyrexian symbol is paid automatically or cancelled.
-    for seed in 0..games() / 5 {
+    for_each_seed(0..games() / 5, |seed| {
         play_game_with(symbol_fuzz_setup(3, seed), seed, PlayOptions::default())
             .unwrap_or_else(|failure| panic!("{failure}"));
-    }
+    });
 }
 
 #[derive(Debug, Default)]

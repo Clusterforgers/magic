@@ -4,9 +4,9 @@
 
 use std::collections::BTreeMap;
 
+use crate::common::generated;
 use mtg_cards::card::Span;
 use mtg_cards::support::{Reason, Support};
-use mtg_protocol::bindings::export_to;
 use mtg_protocol::rest::{
     CardColor, CardDetail, CardFaceView, CardHit, CardImages, CardSearchPage, ImageLinks,
     PrintingView, RulingView,
@@ -163,21 +163,6 @@ fn colors_are_single_letters(#[case] color: CardColor, #[case] letter: &str) {
 #[case("")]
 fn other_spellings_of_a_color_do_not_exist(#[case] text: &str) {
     assert!(serde_json::from_value::<CardColor>(json!(text)).is_err());
-}
-
-fn generated() -> BTreeMap<String, String> {
-    let scratch = tempfile::tempdir().unwrap();
-    export_to(scratch.path()).unwrap();
-    std::fs::read_dir(scratch.path())
-        .unwrap()
-        .map(|entry| {
-            let path = entry.unwrap().path();
-            (
-                path.file_name().unwrap().to_string_lossy().into_owned(),
-                std::fs::read_to_string(&path).unwrap(),
-            )
-        })
-        .collect()
 }
 
 #[test]

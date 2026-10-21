@@ -5,6 +5,7 @@
 pub mod table;
 
 use std::collections::{BTreeMap, BTreeSet};
+use std::sync::OnceLock;
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::zones::Zone;
@@ -140,4 +141,26 @@ pub fn run_game(setup: GameSetup, seed: u64, mut observe: impl FnMut(&Step)) -> 
         });
     }
     engine
+}
+
+/// The bindings the wire types generate today, as file name to text. They are exported once per process: ts-rs syncs
+/// every file it writes while it holds one lock, so exports that each test made for itself queued behind each other.
+pub fn generated() -> BTreeMap<String, String> {
+    static FILES: OnceLock<BTreeMap<String, String>> = OnceLock::new();
+    FILES
+        .get_or_init(|| {
+            let scratch = tempfile::tempdir().unwrap();
+            mtg_protocol::bindings::export_to(scratch.path()).unwrap();
+            std::fs::read_dir(scratch.path())
+                .unwrap()
+                .map(|entry| {
+                    let path = entry.unwrap().path();
+                    (
+                        path.file_name().unwrap().to_string_lossy().into_owned(),
+                        std::fs::read_to_string(&path).unwrap(),
+                    )
+                })
+                .collect()
+        })
+        .clone()
 }

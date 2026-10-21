@@ -10,6 +10,8 @@ use std::path::{Path, PathBuf};
 
 use mtg_protocol::bindings::{GENERATED_DIR, export_to};
 
+use crate::common::generated;
+
 fn committed_dir() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
@@ -39,9 +41,7 @@ fn committed_bindings_match_generated() {
         export_to(&committed).expect("regenerate bindings");
         return;
     }
-    let scratch = tempfile::tempdir().expect("temp dir");
-    export_to(scratch.path()).expect("generate bindings");
-    let fresh = read_all(scratch.path());
+    let fresh = generated();
     let old = read_all(&committed);
 
     let missing: Vec<_> = fresh.keys().filter(|k| !old.contains_key(*k)).collect();
@@ -60,9 +60,7 @@ fn committed_bindings_match_generated() {
 
 #[test]
 fn bindings_cover_the_wire_surface() {
-    let scratch = tempfile::tempdir().expect("temp dir");
-    export_to(scratch.path()).expect("generate bindings");
-    let files = read_all(scratch.path());
+    let files = generated();
     for needed in [
         "ClientMessage.ts",
         "ServerMessage.ts",

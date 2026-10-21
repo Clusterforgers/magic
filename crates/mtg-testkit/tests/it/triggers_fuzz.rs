@@ -1,10 +1,14 @@
 //! Goal: whole bot games with decks of cards that trigger finish and keep every invariant (zones, life, damage, the journal, zone-change counters, no trigger waiting while a player has priority, and the replay of the log equal to the live state), for many seeds and table sizes, and the games really use triggers: abilities trigger, wait and go on the stack with their targets, some are removed for want of a target, several of one player are ordered, an intervening "if" lapses, delayed triggers are set up and run out; a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use std::sync::Mutex;
+
 use mtg_engine::Event;
 use mtg_engine::events::ResolutionOutcome;
 use mtg_testkit::{PlayOptions, play_game, play_game_with, trigger_fuzz_setup};
 use rstest::rstest;
+
+use crate::common::seeds::for_each_seed;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES` to run longer or shorter campaigns. A game of triggers lasts
 /// about three times as many turns as one of vanilla creatures, so there are fewer of them.
@@ -59,12 +63,13 @@ impl Seen {
 #[case(3)]
 #[case(4)]
 fn seeded_trigger_games_finish_and_keep_every_invariant(#[case] players: usize) {
-    let mut seen = Seen::default();
-    for seed in 0..games() {
+    let seen = Mutex::new(Seen::default());
+    for_each_seed(0..games(), |seed| {
         let outcome = play_game(trigger_fuzz_setup(players, seed), seed)
             .unwrap_or_else(|failure| panic!("{failure}"));
-        seen.add(&outcome.events);
-    }
+        seen.lock().unwrap().add(&outcome.events);
+    });
+    let seen = seen.into_inner().unwrap();
     let campaign = format!("{} games of {players} seats", games());
     assert!(seen.triggered > 0, "nothing triggered in {campaign}");
     assert!(
@@ -97,10 +102,10 @@ fn the_same_games_finish_when_the_engine_finishes_the_payments(#[case] players: 
         partial_payments: true,
         ..PlayOptions::default()
     };
-    for seed in 0..games() / 5 {
+    for_each_seed(0..games() / 5, |seed| {
         play_game_with(trigger_fuzz_setup(players, seed), seed, options)
             .unwrap_or_else(|failure| panic!("{failure}"));
-    }
+    });
 }
 
 #[test]

@@ -2,6 +2,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
+use std::sync::Mutex;
 
 use mtg_engine::abilities::AbilitySource;
 use mtg_engine::characteristics::{characteristics, controller_of};
@@ -11,6 +12,8 @@ use mtg_engine::{Engine, EngineError, Event, replay};
 use mtg_testkit::static_cards::STATIC_CARDS;
 use mtg_testkit::{RandomBot, play_game, statics_fuzz_setup};
 use rstest::rstest;
+
+use crate::common::seeds::for_each_seed;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
@@ -61,13 +64,14 @@ impl Seen {
 #[case(3)]
 #[case(4)]
 fn seeded_static_games_finish_and_keep_every_invariant(#[case] players: usize) {
-    let mut seen = Seen::default();
-    for seed in 0..games() {
+    let seen = Mutex::new(Seen::default());
+    for_each_seed(0..games(), |seed| {
         let setup = statics_fuzz_setup(players, seed).unwrap();
         let outcome = play_game(setup.clone(), seed).unwrap_or_else(|failure| panic!("{failure}"));
         let end = replay(&setup, &outcome.events).unwrap();
-        seen.add(&end, &outcome.events);
-    }
+        seen.lock().unwrap().add(&end, &outcome.events);
+    });
+    let seen = seen.into_inner().unwrap();
     let campaign = format!("{} games of {players} seats", games());
     for name in STATIC_CARDS {
         assert!(

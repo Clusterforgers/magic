@@ -75,6 +75,7 @@ mod rules_fuzz;
 mod rules_games;
 mod search_effects;
 mod search_fuzz;
+mod seed_campaigns;
 mod small_effects_fuzz;
 mod spell_fuzz;
 mod spell_targets;

@@ -2,11 +2,11 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 
+use crate::common::generated;
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
-use mtg_protocol::bindings::export_to;
 use mtg_protocol::rest::{
     GameInfo, GameSeat, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList,
     Visibility, VisibilityBody,
@@ -354,21 +354,6 @@ fn the_error_codes_share_their_spelling_with_the_other_endpoints() {
             "{shared} is missing"
         );
     }
-}
-
-fn generated() -> BTreeMap<String, String> {
-    let scratch = tempfile::tempdir().unwrap();
-    export_to(scratch.path()).unwrap();
-    std::fs::read_dir(scratch.path())
-        .unwrap()
-        .map(|entry| {
-            let path = entry.unwrap().path();
-            (
-                path.file_name().unwrap().to_string_lossy().into_owned(),
-                std::fs::read_to_string(&path).unwrap(),
-            )
-        })
-        .collect()
 }
 
 #[test]

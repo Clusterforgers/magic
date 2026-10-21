@@ -1,10 +1,14 @@
 //! Goal: whole bot games with decks of spells and activated abilities finish and keep every invariant (zones, life, damage, the journal, zone-change counters and replay equal to the live state), for many seeds and table sizes, and the games really use the pipeline: spells resolve, abilities go on the stack and cease to exist, and some spells fizzle.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use std::sync::Mutex;
+
 use mtg_engine::Event;
 use mtg_engine::events::ResolutionOutcome;
 use mtg_testkit::{PlayOptions, play_game, play_game_with, spell_fuzz_setup};
 use rstest::rstest;
+
+use crate::common::seeds::for_each_seed;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES` to run longer or shorter campaigns.
 fn games() -> u64 {
@@ -48,12 +52,13 @@ impl Seen {
 #[case(3)]
 #[case(4)]
 fn seeded_spell_games_finish_and_keep_every_invariant(#[case] players: usize) {
-    let mut seen = Seen::default();
-    for seed in 0..games() {
+    let seen = Mutex::new(Seen::default());
+    for_each_seed(0..games(), |seed| {
         let outcome = play_game(spell_fuzz_setup(players, seed), seed)
             .unwrap_or_else(|failure| panic!("{failure}"));
-        seen.add(&outcome.events);
-    }
+        seen.lock().unwrap().add(&outcome.events);
+    });
+    let seen = seen.into_inner().unwrap();
     assert!(seen.resolutions > 0, "no spell or ability ever resolved");
     assert!(seen.abilities > 0, "no ability was ever activated");
     assert!(
@@ -72,10 +77,10 @@ fn the_same_games_finish_when_the_engine_finishes_the_payments(#[case] players: 
         partial_payments: true,
         ..PlayOptions::default()
     };
-    for seed in 0..games() / 5 {
+    for_each_seed(0..games() / 5, |seed| {
         play_game_with(spell_fuzz_setup(players, seed), seed, options)
             .unwrap_or_else(|failure| panic!("{failure}"));
-    }
+    });
 }
 
 #[test]

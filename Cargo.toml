@@ -82,3 +82,5 @@ opt-level = 3
 opt-level = 3
 [profile.dev.package.mtg-testkit]
 opt-level = 3
+[profile.dev.package.mtg-protocol]
+opt-level = 3

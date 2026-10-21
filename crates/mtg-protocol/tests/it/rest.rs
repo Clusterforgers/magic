@@ -2,11 +2,11 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 
+use crate::common::generated;
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
-use mtg_protocol::bindings::export_to;
 use mtg_protocol::rest::{
     AuthErrorCode, Credentials, MyGame, MyGameSeat, MyGameStatus, MyGames, PASSWORD_MAX_CHARS,
     PASSWORD_MIN_CHARS, USERNAME_MAX_CHARS, USERNAME_MIN_CHARS, UserView,
@@ -222,21 +222,6 @@ fn game_statuses_are_snake_case(#[case] status: MyGameStatus, #[case] text: &str
 #[case("")]
 fn statuses_of_games_that_are_not_listed_do_not_exist(#[case] text: &str) {
     assert!(serde_json::from_value::<MyGameStatus>(json!(text)).is_err());
-}
-
-fn generated() -> BTreeMap<String, String> {
-    let scratch = tempfile::tempdir().unwrap();
-    export_to(scratch.path()).unwrap();
-    std::fs::read_dir(scratch.path())
-        .unwrap()
-        .map(|entry| {
-            let path = entry.unwrap().path();
-            (
-                path.file_name().unwrap().to_string_lossy().into_owned(),
-                std::fs::read_to_string(&path).unwrap(),
-            )
-        })
-        .collect()
 }
 
 #[test]
