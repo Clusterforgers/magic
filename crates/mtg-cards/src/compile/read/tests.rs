@@ -150,11 +150,13 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
     assert_eq!(read, tilde);
 }
 
+mod activated;
 mod compound;
 mod counters;
 mod create;
 mod enters;
 mod exile_bounce_shrink;
+mod library;
 mod life;
 mod may;
 mod modes;
@@ -200,18 +202,13 @@ mod mana {
 
     #[rstest]
     #[case::a_choice("{T}: Add {R} or {G}.")]
-    #[case::life_in_the_cost("{T}, Pay 1 life: Add {B}.")]
-    #[case::mana_in_the_cost("{1}, {T}: Add {G}{G}.")]
-    #[case::sacrifice_in_the_cost("{T}, Sacrifice ~: Add {C}{C}{C}.")]
     #[case::for_each("{T}: Add {G} for each creature you control.")]
     #[case::x("{T}: Add {X}.")]
     #[case::generic("{T}: Add {2}.")]
     #[case::snow("{T}: Add {S}.")]
     #[case::any_one_colour("{T}: Add two mana of any one color.")]
     #[case::identity("{T}: Add one mana of any color in your commander's color identity.")]
-    #[case::a_second_sentence("{T}: Add {G}. ~ deals 1 damage to you.")]
     #[case::no_mana("{T}: Add")]
-    #[case::untap("{Q}: Add {G}.")]
     #[case::not_a_cost("Draw a card: Add {G}.")]
     fn a_cost_a_choice_or_a_count_the_template_does_not_model_stays_unread(#[case] text: &str) {
         assert_eq!(clause(text, ClauseKind::Activated, false), None, "{text}");

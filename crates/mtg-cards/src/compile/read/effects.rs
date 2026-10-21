@@ -1,23 +1,27 @@
 //! Effects: a sentence is read into the effects of one template. A template reads the whole
 //! sentence or nothing; to add a wording, write a template and list it in [`TEMPLATES`].
 
+use mtg_core::mana::ManaType;
+
 use super::amounts::{cards, its_stat, number_word, points};
+use super::counters;
 use super::create;
+use super::library;
 use super::modal;
 use super::selectors::{Form, all, each, keyword, phrase, target};
 use super::tokens::Reader;
 use crate::cost::Cost;
-use crate::effect::{Destination, Effect, Order, Place};
+use crate::effect::{Destination, Effect, Order, Place, Produce};
 use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
-use crate::value::{Amount, CounterKind};
+use crate::value::Amount;
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 11] = [
+const TEMPLATES: [Template; 17] = [
     modal::modal,
     may,
     chain,
@@ -28,11 +32,26 @@ const TEMPLATES: [Template; 11] = [
     pump,
     return_card,
     create::tokens,
-    put_counters,
+    counters::put,
+    counters::remove,
+    counters::moving,
+    add_mana,
+    library::search,
+    library::look,
+    library::put_on_library,
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-const IMPERATIVES: [Template; 5] = [chain, removal, return_card, create::tokens, put_counters];
+const IMPERATIVES: [Template; 8] = [
+    chain,
+    removal,
+    return_card,
+    create::tokens,
+    counters::put,
+    counters::remove,
+    counters::moving,
+    library::put_on_library,
+];
 
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the
 /// templates read.
@@ -205,6 +224,10 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             who,
             count: cards(r)?,
         },
+        "shuffle" => {
+            r.need("your library")?;
+            Effect::Shuffle { who }
+        }
         "discard" => {
             let count = cards(r)?;
             let random = r.words("at random");
@@ -292,6 +315,14 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             r.need("the game")?;
             Effect::WinGame { who }
         }
+        "shuffle" | "shuffles" => {
+            r.need(if who == Ref::You {
+                "your library"
+            } else {
+                "their library"
+            })?;
+            Effect::Shuffle { who }
+        }
         "sacrifice" | "sacrifices" => sacrifice(r, who)?,
         _ => return None,
     })
@@ -311,7 +342,7 @@ fn sacrifice(r: &mut Reader<'_>, who: Ref) -> Option<Effect> {
 }
 
 /// Whether a predicate says what kind of permanent it is, and nothing of who has it or where.
-fn describes_a_kind(pred: &Pred) -> bool {
+pub(super) fn describes_a_kind(pred: &Pred) -> bool {
     match pred {
         Pred::Type(_)
         | Pred::Supertype(_)
@@ -361,45 +392,6 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
-/// "+1/+1" or "-1/-1": the counters that change a creature's size.
-fn counter_kind(r: &mut Reader<'_>) -> Option<CounterKind> {
-    r.attempt(|r| {
-        let plus = r.punct('+');
-        if !plus {
-            r.punct('-').then_some(())?;
-        }
-        (r.number()? == 1).then_some(())?;
-        r.punct('/').then_some(())?;
-        r.punct(if plus { '+' } else { '-' }).then_some(())?;
-        (r.number()? == 1).then_some(())?;
-        Some(if plus {
-            CounterKind::PlusOnePlusOne
-        } else {
-            CounterKind::MinusOneMinusOne
-        })
-    })
-}
-
-/// "Put a +1/+1 counter on ~.", "Put two -1/-1 counters on target creature."
-fn put_counters(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.need("put")?;
-    let number = number_word(r.take_word()?)?;
-    let counter = counter_kind(r)?;
-    r.word(if number == 1 { "counter" } else { "counters" })
-        .then_some(())?;
-    r.need("on")?;
-    let on = if r.source() {
-        Ref::This
-    } else {
-        target_object(r)?
-    };
-    Some(vec![Effect::PutCounters {
-        on,
-        counter,
-        count: Amount::Fixed(i32::try_from(number).ok()?),
-    }])
-}
-
 /// Who or what takes damage: a single target, "each opponent", "each creature".
 fn recipient(r: &mut Reader<'_>) -> Option<Ref> {
     if r.words("each opponent") {
@@ -436,7 +428,7 @@ fn damage(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// A target object chosen one at a time.
-fn target_object(r: &mut Reader<'_>) -> Option<Ref> {
+pub(super) fn target_object(r: &mut Reader<'_>) -> Option<Ref> {
     r.attempt(|r| {
         let what = target(r)?;
         let spec = r.targets.first()?;
@@ -456,16 +448,19 @@ fn object(r: &mut Reader<'_>) -> Option<Ref> {
 }
 
 /// "Destroy target creature.", "Exile all creatures.", "Counter target spell.", "Tap target creature.", "Untap
-/// target land."
+/// target land.", "Regenerate ~."
 fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let verb = r.take_word()?;
-    if !matches!(verb, "destroy" | "exile" | "counter" | "tap" | "untap") {
+    if !matches!(
+        verb,
+        "destroy" | "exile" | "counter" | "tap" | "untap" | "regenerate"
+    ) {
         return None;
     }
-    let turns = matches!(verb, "tap" | "untap");
+    let turns = matches!(verb, "tap" | "untap" | "regenerate");
     // "Exile ~" is the card itself leaving, "Untap ~" the card turning over; nothing else of the card is destroyed or
     // countered this way.
-    let what = if matches!(verb, "exile" | "tap" | "untap") && r.source() {
+    let what = if matches!(verb, "exile" | "tap" | "untap" | "regenerate") && r.source() {
         Ref::This
     } else {
         object(r)?
@@ -491,6 +486,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         "exile" => Effect::Exile { what },
         "tap" => Effect::Tap { what },
         "untap" => Effect::Untap { what },
+        "regenerate" => Effect::Regenerate { what },
         _ => Effect::Counter { what },
     }])
 }
@@ -579,5 +575,34 @@ fn pump(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         affected,
         mods,
         duration: Duration::UntilEndOfTurn,
+    }])
+}
+
+/// The mana of a symbol, when it is one a land or creature can produce.
+fn mana_type(symbol: &str) -> Option<ManaType> {
+    ManaType::ALL
+        .into_iter()
+        .find(|mana| symbol.len() == 1 && symbol.starts_with(mana.symbol()))
+}
+
+/// "Add {G}{G}." or "Add one mana of any color."
+fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("add")?;
+    let mana = if r.words("one mana of any color") {
+        Produce::AnyColor(1)
+    } else {
+        let mut list = Vec::new();
+        while let Some(mana) = r.attempt(|r| mana_type(r.symbol()?)) {
+            list.push(mana);
+        }
+        if list.is_empty() {
+            return None;
+        }
+        Produce::Fixed(list)
+    };
+    Some(vec![Effect::AddMana {
+        who: Ref::You,
+        mana,
+        times: Amount::one(),
     }])
 }

@@ -17,6 +17,13 @@ const STEPS: [(Step, &str); 5] = [
     (Step::Main2, "postcombat main phase"),
 ];
 
+/// The newer wordings of the main phases: the card text says "first" and "second" where the rules
+/// said "precombat" and "postcombat". Both are read; the older is written.
+const NEWER_STEPS: [(Step, &str); 2] = [
+    (Step::Main1, "first main phase"),
+    (Step::Main2, "second main phase"),
+];
+
 /// The event of a trigger, from its first word: "When ~ enters", "Whenever you cast a spell",
 /// "At the beginning of your upkeep".
 pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
@@ -53,7 +60,10 @@ fn step(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else {
         return None;
     };
-    let (step, _) = STEPS.iter().find(|(_, words)| r.words(words))?;
+    let (step, _) = STEPS
+        .iter()
+        .chain(&NEWER_STEPS)
+        .find(|(_, words)| r.words(words))?;
     Some(TriggerPattern::StepBegins { step: *step, whose })
 }
 

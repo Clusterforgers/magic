@@ -206,7 +206,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::unless("Tap target creature unless its controller pays {2}.")]
 #[case::three_targets("Tap target creature, target land, and target artifact.")]
 #[case::another_word_order("You mill two cards.")]
-#[case::a_mana_sentence("Untap target land. Add {G}.")]
 #[case::x_cards("Mill X cards.")]
 #[case::as_many_as_the_life("Target player mills cards equal to their life total.")]
 #[case::the_top_of_the_library("Target player mills the top three cards of their library.")]

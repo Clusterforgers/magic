@@ -4,18 +4,21 @@
 //! same sequence.
 
 use super::amounts::{cards_text, count_word, points_text, stat_name};
+use super::costs;
+use super::counters;
 use super::create;
 use super::effects::BACK;
+use super::library;
 use super::modal::{BULLET, DASH};
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
 use super::triggers::{article, condition_text, pattern_text};
-use crate::ability::{Ability, Timing};
+use crate::ability::{Ability, Limit, Timing};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::trigger::TriggerPattern;
-use crate::value::{Amount, Condition, CounterKind};
+use crate::value::{Amount, Condition};
 
 /// The oracle wording of an ability the readers produce, in the first way its effects can be
 /// written (see [`variants`]); `None` for any other ability.
@@ -50,13 +53,31 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         }
         Ability::Activated {
             cost,
-            timing: Timing::Instant,
+            timing,
             condition: None,
-            limit: None,
+            limit,
             from: ZoneKind::Battlefield,
             targets,
             effects,
-        } if targets.is_empty() => mana_ability(cost, effects).into_iter().collect(),
+        } => {
+            let Some(head) = costs::text(cost) else {
+                return Vec::new();
+            };
+            let tails = restriction_texts(*timing, *limit);
+            alternatives(targets, effects)
+                .iter()
+                .flat_map(|sentences| {
+                    let body = format!("{head}: {}", closed(sentences, true).join(" "));
+                    tails.iter().map(move |tail| {
+                        if tail.is_empty() {
+                            body.clone()
+                        } else {
+                            format!("{body} {tail}")
+                        }
+                    })
+                })
+                .collect()
+        }
         _ => Vec::new(),
     }
 }
@@ -113,6 +134,16 @@ fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
     while start < effects.len() {
+        // A search and what follows it, or a look at the top cards and the choice from them, are
+        // one sentence, which no joint splits.
+        if let Some((text, used)) = library::sequence(&effects[start..]) {
+            if (mask >> start) & ((1 << used) - 1) != 0 {
+                return None;
+            }
+            sentences.push(text);
+            start += used;
+            continue;
+        }
         // A choice of cards and the move of what was chosen are one sentence, which no joint splits.
         if let [
             choose @ Effect::Choose { .. },
@@ -263,6 +294,7 @@ fn player_of(effect: &Effect) -> Option<&Ref> {
         | Effect::Discard { who, .. }
         | Effect::GainLife { who, .. }
         | Effect::LoseLife { who, .. }
+        | Effect::Shuffle { who }
         | Effect::Sacrifice { who, .. } => Some(who),
         _ => None,
     }
@@ -292,6 +324,7 @@ fn is_imperative(effect: &Effect) -> bool {
             | Effect::Draw { who: Ref::You, .. }
             | Effect::Mill { who: Ref::You, .. }
             | Effect::Discard { who: Ref::You, .. }
+            | Effect::Shuffle { who: Ref::You }
             | Effect::Destroy {
                 regenerate: true,
                 ..
@@ -299,32 +332,19 @@ fn is_imperative(effect: &Effect) -> bool {
             | Effect::Exile { .. }
             | Effect::Tap { .. }
             | Effect::Untap { .. }
+            | Effect::Regenerate { .. }
             | Effect::Counter { .. }
             | Effect::Move { .. }
             | Effect::CreateToken { who: Ref::You, .. }
             | Effect::PutCounters { .. }
+            | Effect::RemoveCounters { .. }
+            | Effect::MoveCounters { .. }
     )
 }
 
-/// `{T}: Add {G}.`
-fn mana_ability(cost: &Cost, effects: &[Effect]) -> Option<String> {
-    if cost.0.as_slice() != [CostItem::Tap] {
-        return None;
-    }
-    let [
-        Effect::AddMana {
-            who: Ref::You,
-            mana,
-            times,
-        },
-    ] = effects
-    else {
-        return None;
-    };
-    if !times.is_one() {
-        return None;
-    }
-    let added = match mana {
+/// "{G}{G}", "one mana of any color": the mana an effect adds.
+fn mana_text(mana: &Produce) -> Option<String> {
+    Some(match mana {
         Produce::Fixed(list) if !list.is_empty() => {
             let mut symbols = String::new();
             for mana in list {
@@ -336,8 +356,22 @@ fn mana_ability(cost: &Cost, effects: &[Effect]) -> Option<String> {
         }
         Produce::AnyColor(1) => "one mana of any color".to_owned(),
         _ => return None,
-    };
-    Some(format!("{{T}}: Add {added}."))
+    })
+}
+
+/// The sentence that restricts when an ability may be activated, in every wording of it; empty
+/// text for none.
+fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
+    let words = |text: &str| vec![text.to_owned()];
+    match (timing, limit) {
+        (Timing::Instant, None) => words(""),
+        (Timing::Sorcery, None) => words("Activate only as a sorcery."),
+        (Timing::Instant, Some(Limit::OncePerTurn)) => words("Activate only once each turn."),
+        (Timing::Sorcery, Some(Limit::OncePerTurn)) => vec![
+            "Activate only as a sorcery and only once each turn.".to_owned(),
+            "Activate only once each turn and only as a sorcery.".to_owned(),
+        ],
+    }
 }
 
 /// "+2", "-3", "+X": a change of power or toughness.
@@ -420,32 +454,89 @@ impl Writer<'_> {
             })
     }
 
-    /// "put a +1/+1 counter on ~", "put two -1/-1 counters on target creature".
-    fn counters(&mut self, on: &Ref, counter: &CounterKind, count: &Amount) -> Option<String> {
-        let kind = match counter {
-            CounterKind::PlusOnePlusOne => "+1/+1",
-            CounterKind::MinusOneMinusOne => "-1/-1",
-            _ => return None,
-        };
-        let Amount::Fixed(number) = count else {
-            return None;
-        };
-        let (many, noun) = match number {
-            ..=0 => return None,
-            1 => ("a", "counter"),
-            _ => (count_word(u32::try_from(*number).ok()?)?, "counters"),
-        };
-        let place = match on {
-            Ref::This => "~".to_owned(),
+    /// The object counters are put on, taken from or moved: "~", one target, or (with `several`) "each
+    /// creature you control".
+    fn counter_place(&mut self, place: &Ref, several: bool) -> Option<String> {
+        match place {
+            Ref::This => Some("~".to_owned()),
             Ref::Target(0)
-                if self.single(on)
+                if self.single(place)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
             {
-                self.name_target()?
+                self.name_target()
+            }
+            Ref::Each(selector) if several => {
+                Some(format!("each {}", phrase_text(selector, Form::Each)?))
+            }
+            _ => None,
+        }
+    }
+
+    /// "put a +1/+1 counter on ~", "remove two charge counters from target permanent", "move a
+    /// +1/+1 counter from target creature onto ~".
+    fn counters(&mut self, effect: &Effect) -> Option<String> {
+        Some(match effect {
+            Effect::PutCounters { on, counter, count } => {
+                let counters = counters::text(counter, count)?;
+                format!("put {counters} on {}", self.counter_place(on, true)?)
+            }
+            Effect::RemoveCounters {
+                from,
+                counter,
+                count,
+            } => {
+                let counters = counters::text(counter, count)?;
+                format!(
+                    "remove {counters} from {}",
+                    self.counter_place(from, false)?
+                )
+            }
+            Effect::MoveCounters {
+                from,
+                to,
+                counter,
+                count,
+            } => {
+                let counters = counters::text(counter, count)?;
+                let from = self.counter_place(from, false)?;
+                format!(
+                    "move {counters} from {from} onto {}",
+                    self.counter_place(to, false)?
+                )
             }
             _ => return None,
-        };
-        Some(format!("put {many} {kind} {noun} on {place}"))
+        })
+    }
+
+    /// An effect on a library: "shuffle your library", "look at the top card of your library",
+    /// "put target card from your graveyard on the bottom of your library".
+    fn library(&mut self, effect: &Effect) -> Option<String> {
+        Some(match effect {
+            Effect::Shuffle { who: Ref::You } => "shuffle your library".to_owned(),
+            Effect::LookAtTop {
+                who: Ref::You,
+                count,
+                bind,
+            } => library::look_text(count, bind)?,
+            Effect::Move {
+                what,
+                to: Destination::Library { place, order: None },
+            } => {
+                let whose = if self.in_your_graveyard(what) {
+                    "your"
+                } else if self.is_a_permanent(what) {
+                    "its owner's"
+                } else {
+                    return None;
+                };
+                format!(
+                    "put {} {} {whose} library",
+                    self.object(what)?,
+                    library::place_text(*place)?
+                )
+            }
+            _ => return None,
+        })
     }
 
     /// An effect as a sentence without its first capital and its period.
@@ -468,11 +559,18 @@ impl Writer<'_> {
                 count,
                 random,
             } => format!("discard {}{}", cards_text(count)?, at_random(*random)),
+            Effect::Shuffle { who: Ref::You }
+            | Effect::LookAtTop { .. }
+            | Effect::Move {
+                to: Destination::Library { .. },
+                ..
+            } => self.library(effect)?,
             Effect::Draw { who, .. }
             | Effect::Mill { who, .. }
             | Effect::Discard { who, .. }
             | Effect::GainLife { who, .. }
             | Effect::LoseLife { who, .. }
+            | Effect::Shuffle { who }
             | Effect::Sacrifice { who, .. } => {
                 let subject = self.player(who)?;
                 format!("{subject} {}", self.predicate(effect, *who != Ref::You)?)
@@ -494,7 +592,14 @@ impl Writer<'_> {
             } if self.is_a_permanent(what) => {
                 format!("return {} to its owner's hand", self.object(what)?)
             }
-            Effect::PutCounters { on, counter, count } => self.counters(on, counter, count)?,
+            Effect::AddMana {
+                who: Ref::You,
+                mana,
+                times,
+            } if times.is_one() => format!("add {}", mana_text(mana)?),
+            Effect::PutCounters { .. }
+            | Effect::RemoveCounters { .. }
+            | Effect::MoveCounters { .. } => self.counters(effect)?,
             Effect::CreateToken { .. } => create::text(effect)?,
             Effect::DealDamage {
                 source: None,
@@ -509,6 +614,7 @@ impl Writer<'_> {
             Effect::Exile { what } => format!("exile {}", self.object(what)?),
             Effect::Tap { what } => format!("tap {}", self.object(what)?),
             Effect::Untap { what } => format!("untap {}", self.object(what)?),
+            Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
             Effect::Counter { what } => format!("counter {}", self.object(what)?),
             Effect::Continuous {
                 affected,
@@ -527,16 +633,22 @@ impl Writer<'_> {
                 cost,
                 paid,
                 unpaid,
-            } if paid.is_empty() => {
-                let [inner] = unpaid.as_slice() else {
-                    return None;
-                };
-                let happens = self.effect(inner)?;
-                let payer = self.player(who)?;
-                format!("{happens} unless {payer} pays {}", cost_text(cost)?)
-            }
+            } if paid.is_empty() => self.unless_pays(who, cost, unpaid)?,
             _ => return None,
         })
+    }
+
+    /// "counter target spell unless its controller pays {2}".
+    fn unless_pays(&mut self, who: &Ref, cost: &Cost, unpaid: &[Effect]) -> Option<String> {
+        let [inner] = unpaid else {
+            return None;
+        };
+        let happens = self.effect(inner)?;
+        let payer = self.player(who)?;
+        Some(format!(
+            "{happens} unless {payer} pays {}",
+            cost_text(cost)?
+        ))
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".
@@ -588,6 +700,12 @@ impl Writer<'_> {
             Effect::LoseLife { amount, .. } => format!("lose{s} {}", self.life(amount)?),
             Effect::Sacrifice { filter, count, .. } if count.is_one() => {
                 format!("sacrifice{s} {}", sacrifice_text(filter)?)
+            }
+            Effect::Shuffle { who } => {
+                format!(
+                    "shuffle{s} {} library",
+                    if *who == Ref::You { "your" } else { "their" }
+                )
             }
             _ => return None,
         })

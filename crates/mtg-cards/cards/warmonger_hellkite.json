@@ -15,7 +15,7 @@
             "effects": [
               {
                 "Continuous": {
-                  "affected": { "Each": ["Attacking"] },
+                  "affected": { "Each": [{ "Type": "Creature" }, "Attacking"] },
                   "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
                   "duration": "UntilEndOfTurn"
                 }
