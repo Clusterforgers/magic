@@ -27,7 +27,7 @@ pub(crate) fn run_inline(
     for effect in effects {
         match prim::run(&cx, effect)? {
             Run::Done { events: made, .. } => events.extend(made),
-            Run::Ask(_) => {
+            Run::Ask(_) | Run::Cast(_) => {
                 return Err(ResolveError::Invalid(
                     "an effect of a mana ability asked a question".into(),
                 ));

@@ -667,7 +667,14 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             amount().prop_map(|count| Effect::Bolster { count }),
             reference().prop_map(|what| Effect::Explore { what }),
             reference().prop_map(|what| Effect::Connive { what }),
-            (who(), amount()).prop_map(|(who, count)| Effect::Discover { who, count }),
+            (who(), selector(), bound_name(), bound_name()).prop_map(
+                |(who, filter, bind, exiled_as)| Effect::ExileUntil {
+                    who,
+                    filter,
+                    bind,
+                    exiled_as
+                }
+            ),
             who().prop_map(|who| Effect::TimeTravel { who }),
             who().prop_map(|who| Effect::ExtraTurn { who }),
             (who(), token_ref(), amount(), any::<bool>(), any::<bool>()).prop_map(
@@ -715,6 +722,14 @@ fn effect() -> impl Strategy<Value = Effect> {
                 otherwise
             }),
             (reference(), list()).prop_map(|(who, effects)| Effect::May { who, effects }),
+            (reference(), reference(), any::<bool>(), list()).prop_map(
+                |(who, what, free, otherwise)| Effect::CastFromZone {
+                    who,
+                    what,
+                    free,
+                    otherwise
+                }
+            ),
             (reference(), cost(), list(), list()).prop_map(|(who, cost, paid, unpaid)| {
                 Effect::Pay {
                     who,

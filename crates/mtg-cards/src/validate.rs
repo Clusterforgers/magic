@@ -932,11 +932,11 @@ impl<'a> Walker<'a> {
             Effect::Move {
                 to:
                     Destination::Library {
-                        place: Place::Top | Place::Bottom,
+                        place: Place::Top,
                         order: Some(Order::Random),
                     },
                 ..
-            } => self.uses("Effect", "Move.Random"),
+            } => self.uses("Effect", "Move.Random.Top"),
             _ => {}
         }
         self.at(tag, |w| match effect {
@@ -944,7 +944,6 @@ impl<'a> Walker<'a> {
             | Effect::Mill { who, count }
             | Effect::Scry { who, count }
             | Effect::Surveil { who, count }
-            | Effect::Discover { who, count }
             | Effect::Discard { who, count, .. } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
@@ -983,6 +982,27 @@ impl<'a> Walker<'a> {
                 w.at("filter", |w| w.selector(filter));
                 w.at("count", |w| w.bounds(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
+            }
+            Effect::ExileUntil {
+                who,
+                filter,
+                bind,
+                exiled_as,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("filter", |w| w.selector(filter));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+                w.at("exiled_as", |w| w.bind(exiled_as, Kind::Object));
+            }
+            Effect::CastFromZone {
+                who,
+                what,
+                otherwise,
+                ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.effect_list("otherwise", otherwise, false);
             }
             Effect::Choose {
                 who,
@@ -2006,7 +2026,8 @@ mod tests {
     #[case::a_move_to_the_top_of_a_library(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Chosen"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
-    #[case::a_move_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Bottom","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random"])]
+    #[case::a_move_to_the_top_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Top","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random.Top"])]
+    #[case::a_move_to_the_bottom_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Bottom","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_named_token_brings_its_own_abilities(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]
     #[case::an_inline_token_with_an_ability(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}]}},"count":2,"tapped":true}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]
     #[case::a_copy_of_an_object(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This"}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy"])]

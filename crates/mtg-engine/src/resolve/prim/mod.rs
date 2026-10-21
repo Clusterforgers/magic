@@ -11,6 +11,7 @@ mod amass;
 mod attach;
 mod become_monarch;
 mod bolster;
+mod cast_from_zone;
 mod choose;
 mod connive;
 mod continuous;
@@ -22,9 +23,9 @@ mod deal_damage;
 mod delayed_trigger;
 mod destroy;
 mod discard;
-mod discover;
 mod draw;
 mod exile;
+mod exile_until;
 mod explore;
 mod extra_turn;
 mod fight;
@@ -112,7 +113,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Bolster { .. } => bolster::run(cx, effect),
         Effect::Explore { .. } => explore::run(cx, effect),
         Effect::Connive { .. } => connive::run(cx, effect),
-        Effect::Discover { .. } => discover::run(cx, effect),
+        Effect::ExileUntil { .. } => exile_until::run(cx, effect),
+        Effect::CastFromZone { .. } => cast_from_zone::run(cx, effect),
         Effect::TimeTravel { .. } => time_travel::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
@@ -154,7 +156,7 @@ mod tests {
         {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
         {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"Discover":{"count":1}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
@@ -176,7 +178,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 51, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 52, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -235,6 +237,8 @@ mod tests {
                 "Effect.Attach",
                 "Effect.Unattach",
                 "Effect.WinGame",
+                "Effect.ExileUntil",
+                "Effect.CastFromZone",
                 "Effect.CreateToken",
                 "Effect.Continuous",
                 "Effect.Rule",

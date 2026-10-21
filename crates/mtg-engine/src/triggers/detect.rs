@@ -14,7 +14,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{DelayedId, Triggered};
 use crate::abilities::{AbilityRef, AbilitySource, Cause};
-use crate::ability_reader::{abilities_of, working_here};
+use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::characteristics::{controller_of, controller_of_object};
 use crate::choose::{Choices, Target};
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
@@ -422,7 +422,9 @@ fn elsewhere(state: &GameState, happened: &Happened, found: &mut Vec<Triggered>,
         if object.zone() == Zone::Battlefield || object.kind() == ObjectKind::Ability {
             continue;
         }
-        let here = working_here(object).map(|(address, rules)| (address, Arc::clone(rules)));
+        let here = working_here(object)
+            .map(|(address, rules)| (address, Arc::clone(rules)))
+            .chain(provided_here(object));
         object_triggers(
             state,
             object,

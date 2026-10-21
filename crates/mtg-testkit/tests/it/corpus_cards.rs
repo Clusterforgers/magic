@@ -34,7 +34,7 @@ use Support::{Manual, Partial, Verified};
 /// (power and toughness from a count, colours) and the keywords of combat and
 /// flash, hexproof and the keywords that are triggers (battle cry, prowess, ward), so the fifty cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
-/// Partial: Bloodbraid Elf's haste, not its cascade.
+/// Partial (Questing Beast). Cascade is played, so Bloodbraid Elf is Verified.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk).
 /// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified; cost increases and reductions are
@@ -56,7 +56,7 @@ const CARDS: [(&str, Support, usize); 139] = [
     ("Batterskull", Verified, 4),
     ("Battlefield Forge", Verified, 2),
     ("Black Knight", Verified, 2),
-    ("Bloodbraid Elf", Partial, 1),
+    ("Bloodbraid Elf", Verified, 2),
     ("Bonecrusher Giant // Stomp", Manual, 0),
     ("Boneyard Scourge", Verified, 2),
     ("Armguard Familiar", Verified, 3),

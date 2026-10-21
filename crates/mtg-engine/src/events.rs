@@ -434,6 +434,9 @@ pub enum Event {
         player: PlayerId,
         /// The cards, top to bottom as they lie after the move: the last is the bottom card.
         cards: Vec<ObjectId>,
+        /// The order was drawn at random, with the next substream of the generator (CR 702.85a).
+        #[serde(default)]
+        random: bool,
     },
     /// A card an effect put onto the battlefield entered tapped or under another player's control; it follows the
     /// `ZoneChanged` that moved it, in the same batch.

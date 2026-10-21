@@ -255,6 +255,7 @@ mod tests {
                 kind: DecisionKind::PayMana(options),
             }) => Said::Pays(player.index(), options.cost.to_string(), options.can_cancel),
             Run::Ask(other) => panic!("unexpected question {other:?}"),
+            Run::Cast(cast) => panic!("unexpected cast {cast:?}"),
             Run::Done {
                 events,
                 bound,

@@ -119,7 +119,16 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             sight::show(state, Some(scried.player), &seen);
             Ok(())
         }
-        Event::LibraryBottomed { player, cards } => zones::bottom(state, *player, cards),
+        Event::LibraryBottomed {
+            player,
+            cards,
+            random,
+        } => {
+            zones::bottom(state, *player, cards)?;
+            // A random order spent a substream of the generator, as a shuffle does.
+            state.rng_index += u64::from(*random);
+            Ok(())
+        }
         // What a player learned changes nothing in the game but who may identify the cards until the resolution ends.
         Event::LibraryLooked(looked) => {
             sight::show(state, Some(looked.player), &looked.cards);

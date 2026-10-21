@@ -43,7 +43,8 @@ fn names(list: &[&str]) -> BTreeSet<String> {
 #[case::bolster(r#"{"Spell":{"effects":[{"Bolster":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Bolster"])]
 #[case::explore(r#"{"Spell":{"effects":[{"Explore":{"what":"This"}}]}}"#, &["Ability.Spell", "Effect.Explore"])]
 #[case::connive(r#"{"Spell":{"effects":[{"Connive":{"what":"This"}}]}}"#, &["Ability.Spell", "Effect.Connive"])]
-#[case::discover(r#"{"Spell":{"effects":[{"Discover":{"count":4}}]}}"#, &["Ability.Spell", "Effect.Discover"])]
+#[case::exile_until(r#"{"Spell":{"effects":[{"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}]}}"#, &["Ability.Spell", "Effect.ExileUntil"])]
+#[case::cast_from_zone(r#"{"Spell":{"effects":[{"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}},{"CastFromZone":{"what":{"Bound":"found"},"free":true,"otherwise":[{"Move":{"what":{"Bound":"found"},"to":"Hand"}}]}}]}}"#, &["Ability.Spell", "Effect.ExileUntil", "Effect.CastFromZone", "Effect.Move"])]
 #[case::time_travel(r#"{"Spell":{"effects":[{"TimeTravel":{}}]}}"#, &["Ability.Spell", "Effect.TimeTravel"])]
 #[case::extra_turn(r#"{"Spell":{"effects":[{"ExtraTurn":{}}]}}"#, &["Ability.Spell", "Effect.ExtraTurn"])]
 #[case::a_choice_of_mana(

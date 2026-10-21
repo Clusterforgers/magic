@@ -8,17 +8,23 @@
 
 use mtg_core::mana::ManaCost;
 
-use super::{Ctx, Next, What, Work, total};
+use super::{Ctx, Granted, Next, What, Work, total};
 use crate::choose::{ChoiceOption, Choices, OptionOptions};
 use crate::decision::DecisionKind;
 use crate::state::GameState;
 use crate::ways::{self, Way};
 
 /// The ways the card a spell is cast from has, in the order of the rules.
-pub(super) fn read(state: &GameState, player: mtg_core::ids::PlayerId, what: &What) -> Vec<Way> {
-    match what {
-        What::Spell(spell) => ways::of(state, player, *spell),
-        What::Ability(_) | What::Trigger(_) => Vec::new(),
+pub(super) fn read(
+    state: &GameState,
+    player: mtg_core::ids::PlayerId,
+    what: &What,
+    granted: Option<Granted>,
+) -> Vec<Way> {
+    match (what, granted) {
+        (What::Spell(spell), Some(granted)) => ways::granted(state, *spell, granted.free),
+        (What::Spell(spell), None) => ways::of(state, player, *spell),
+        (What::Ability(_) | What::Trigger(_), _) => Vec::new(),
     }
 }
 
@@ -28,6 +34,10 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     }
     // A spell the rules give no way to cast is paid for with its mana cost.
     if ctx.needs.ways.is_empty() {
+        // A resolution that lets the card be cast names how, and a card it cannot be cast in any way is not cast.
+        if ctx.granted.is_some() {
+            return Some(Next::Drop);
+        }
         work.done.alternative = true;
         return None;
     }

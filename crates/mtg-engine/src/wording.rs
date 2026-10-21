@@ -630,6 +630,15 @@ pub(crate) fn pay(cost: &ManaCost) -> String {
     format!("Pay {cost}?")
 }
 
+/// The question of a cast an effect allows: "Cast Lightning Bolt without paying its mana cost?"
+pub(crate) fn cast(name: &str, free: bool) -> String {
+    if free {
+        format!("Cast {name} without paying its mana cost?")
+    } else {
+        format!("Cast {name}?")
+    }
+}
+
 /// What a choice among players asks: "Choose an opponent." or "Choose a player."
 pub(crate) fn choose_player(from: &Ref) -> String {
     match from {

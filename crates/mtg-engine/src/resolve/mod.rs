@@ -25,6 +25,7 @@ pub use value::{Bindings, ResolveError, Scope};
 
 use crate::abilities::{AbilityObject, AbilityRef};
 use crate::ability_reader::abilities_of;
+use crate::announce::Pending;
 use crate::choose::{Choice, Target, announced_specs, targets_before};
 use crate::decision::Decision;
 use crate::error::EngineError;
@@ -107,6 +108,20 @@ pub enum Progress {
     Done(Vec<Event>),
     /// The step needs an answer first.
     Ask(Decision),
+    /// The step has a spell cast: its announcement is decided, with no event logged, and the step runs again once the
+    /// spell is on the stack or cannot be (CR 608.2g).
+    Cast(Cast),
+}
+
+/// A cast a resolution has a player make.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Cast {
+    /// Who casts it.
+    pub player: PlayerId,
+    /// The card.
+    pub card: ObjectId,
+    /// The mana cost is not paid.
+    pub free: bool,
 }
 
 /// Where a step goes after its effect.
@@ -134,6 +149,8 @@ pub enum Run {
     },
     /// The effect needs an answer first.
     Ask(Decision),
+    /// The effect has a spell cast; the step runs again once it is on the stack (`Progress::Cast`).
+    Cast(Cast),
 }
 
 impl Run {
@@ -291,6 +308,7 @@ fn step_with(
     let cx = Cx { scope, resolving };
     match run(&cx, effect)? {
         Run::Ask(decision) => Ok(Progress::Ask(decision)),
+        Run::Cast(cast) => Ok(Progress::Cast(cast)),
         Run::Done {
             events,
             bound,
@@ -313,6 +331,9 @@ pub(crate) fn next(state: &GameState) -> flow::Progress {
     match step(state) {
         Ok(Progress::Done(events)) => flow::Progress::Events(events),
         Ok(Progress::Ask(decision)) => flow::Progress::Decide(decision),
+        Ok(Progress::Cast(Cast { player, card, free })) => {
+            flow::Progress::Put(Pending::during_resolution(player, card, free))
+        }
         Err(error) => flow::Progress::Fail(error),
     }
 }
@@ -433,6 +454,7 @@ mod tests {
                         choice: Choice::YesNo(answer),
                     }]
                 }
+                Progress::Cast(cast) => panic!("nothing was to be cast: {cast:?}"),
             };
             for event in &events {
                 apply_event(&mut game, event).unwrap();
