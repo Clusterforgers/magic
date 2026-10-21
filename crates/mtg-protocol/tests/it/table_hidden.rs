@@ -1,5 +1,9 @@
 //! Goal: a seat that does not own a card sees exactly what the rules of the table say and no more: open hands show every hand and the cards dealt, bottomed and drawn to every seat while the library order stays unknown, a revealed library top shows the top card of every library after each deal, draw and shuffle and nothing under it, the card a seat scries after a mulligan is shown to that seat alone, and the hand that opening-hand smoothing does not keep is shown to nobody, its owner included.
-#![allow(clippy::unwrap_used, clippy::expect_used)]
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::cast_possible_truncation
+)]
 
 use std::collections::BTreeSet;
 
@@ -257,7 +261,7 @@ fn the_library_top_is_not_shown_before_the_first_shuffle(#[values(2, 4)] players
     for viewer in viewers(players) {
         let view = StateView::for_player(&state, viewer);
         assert!(view.table.players.iter().all(|p| p.revealed_top.is_none()));
-        assert!(view.objects.is_empty());
+        assert_eq!(view.objects.len(), 0);
     }
 }
 

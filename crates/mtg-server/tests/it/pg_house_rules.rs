@@ -127,6 +127,11 @@ async fn a_game_made_under_house_rules_comes_back_under_them_and_ends_as_the_sam
                 "turn_limit": 30,
                 "winning_life": 60,
                 "poison_threshold": 3,
+                "attack_range": "neighbours",
+                "open_hands": true,
+                "revealed_library_top": true,
+                "opening_hand_smoothing": true,
+                "mulligan_style": "vancouver",
                 "handicaps": [{ "seat": 1, "starting_life": 9, "opening_hand_size": 4 }],
             })
         );

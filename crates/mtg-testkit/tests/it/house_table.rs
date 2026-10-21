@@ -327,7 +327,7 @@ fn each_style_deals_bottoms_and_scries_what_it_names(
             driver
                 .state()
                 .player(pid(seat))
-                .map(|p| p.mulligan_status()),
+                .map(mtg_engine::player::Player::mulligan_status),
             Some(MulliganStatus::Kept)
         );
     }
@@ -468,12 +468,12 @@ fn the_first_player_draws_or_skips_the_first_draw_after_any_opening(
 
 // Opening-hand smoothing
 
-/// The libraries as the pregame shuffle left them and the hands dealt, for each seat: the base order (bottom to top),
-/// the order of the shuffle that precedes the deal if there was one, and the hand.
-fn deals(
-    events: &[Event],
-    players: usize,
-) -> Vec<Vec<(Vec<ObjectId>, Option<Vec<ObjectId>>, Vec<ObjectId>)>> {
+/// One deal of a seat: the library as it lay before it (bottom to top), the order of the shuffle that precedes the deal
+/// if there was one, and the hand.
+type Deal = (Vec<ObjectId>, Option<Vec<ObjectId>>, Vec<ObjectId>);
+
+/// The deals of each seat in the log.
+fn deals(events: &[Event], players: usize) -> Vec<Vec<Deal>> {
     let mut base: Vec<Option<Vec<ObjectId>>> = vec![None; players];
     let mut pending: Vec<Option<Vec<ObjectId>>> = vec![None; players];
     let mut out = vec![Vec::new(); players];
