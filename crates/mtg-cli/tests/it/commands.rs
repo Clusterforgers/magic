@@ -1,6 +1,6 @@
 //! Goal: the commands as a person meets them: a dry run needs no database while an ingest does, the status report shows the cache, the rows and the latest runs of a loaded database and says so for an empty one, and every summary is one line.
 
-mod common;
+use crate::common;
 
 use std::time::Duration;
 

@@ -1,6 +1,6 @@
 //! Goal: the Scryfall download sends the headers Scryfall requires, skips files whose `updated_at` is current, resumes partial files with Range requests whatever the server does with them, spaces its requests on a paused clock, records checksums, and ends in a clear error without a half-written file when the server fails.
 
-mod common;
+use crate::common;
 
 use std::collections::HashMap;
 use std::fs;

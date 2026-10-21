@@ -1,6 +1,6 @@
 //! Goal: `coverage` reads the stored precons and reports on their cards: all of them or those a code or a name part selects, the counts of cards and copies, the decks and the blockers; it refuses a selection that matches nothing and a database without precons.
 
-mod common;
+use crate::common;
 
 use mtg_cli::args::CoverageArgs;
 use mtg_cli::cache::Cache;

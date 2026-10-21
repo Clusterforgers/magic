@@ -1,6 +1,6 @@
 //! Goal: ingest loads the cached Scryfall and MTGJSON fixtures into Postgres exactly once per input, changes nothing on a rerun or a forced reload, ties rulings and decks to the cards they were loaded against, resumes after a broken file, skips and counts NUL records, reaps runs of dead processes, and a dry run touches no database.
 
-mod common;
+use crate::common;
 
 use std::time::Duration;
 

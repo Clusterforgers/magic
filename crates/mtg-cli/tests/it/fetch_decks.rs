@@ -1,6 +1,6 @@
 //! Goal: the MTGJSON fetch picks decks by type, name and age, asks about a cached deck only when the index build changed and then conditionally, decodes gzip transfers, skips decks the server lacks without losing the rest, keeps what it fetched when the server fails, and spaces its requests on a paused clock.
 
-mod common;
+use crate::common;
 
 use std::collections::BTreeMap;
 use std::fs;
