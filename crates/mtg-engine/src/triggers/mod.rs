@@ -7,6 +7,8 @@
 mod delayed;
 mod detect;
 #[cfg(test)]
+mod detect_batches;
+#[cfg(test)]
 mod detect_events;
 mod queue;
 mod state;

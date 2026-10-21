@@ -19,7 +19,7 @@ use crate::mana::ManaPool;
 use crate::player::{LossReason, Player, PlayerStatus};
 use crate::priority::PriorityState;
 use crate::sight;
-use crate::state::{GameResult, GameState, Stage};
+use crate::state::{GameResult, GameState, Stage, Tally};
 use crate::triggers::{has_state_trigger, triggers_something};
 use crate::turn::Step;
 use crate::zones::Zone;
@@ -231,7 +231,10 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::ManaPoolEmptied { player } => pool_mut(state, *player)?.clear(),
         Event::LifePaid { player, amount } => pay_life(state, *player, *amount)?,
-        Event::LifeGained { player, amount } => change_life(state, *player, *amount, true)?,
+        Event::LifeGained { player, amount } => {
+            change_life(state, *player, *amount, true)?;
+            state.tally(*player, Tally::Gained);
+        }
         Event::LifeLost { player, amount } => change_life(state, *player, *amount, false)?,
         Event::DrewFromEmptyLibrary { player } => {
             let seat = player_mut(state, *player)?;

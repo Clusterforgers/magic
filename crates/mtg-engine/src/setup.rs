@@ -353,6 +353,7 @@ impl GameState {
             next_delayed: 0,
             limits_spent: BTreeSet::new(),
             loyalty_used: BTreeSet::new(),
+            tallies: BTreeMap::new(),
             triggers_possible: false,
             statics_possible: false,
             layers: LayersCache::default(),

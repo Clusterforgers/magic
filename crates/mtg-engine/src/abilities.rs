@@ -116,6 +116,16 @@ pub struct Cause {
     pub subjects: Vec<Target>,
     /// The objects among them, as they were.
     pub snapshots: Vec<Snapshot>,
+    /// How much the event was (`Amount::Triggering`): the damage dealt, the life gained or lost, the counters put or
+    /// removed, how many events a batch held; zero for an event with no amount.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub amount: u32,
+}
+
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(amount: &u32) -> bool {
+    *amount == 0
 }
 
 /// An ability put on the stack, activated by its controller or triggered: what the `AbilityPutOnStack` event says.

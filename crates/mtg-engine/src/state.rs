@@ -71,6 +71,17 @@ pub(crate) struct Possible {
     pub(crate) protection: bool,
 }
 
+/// A kind of event the game counts for each player in a turn, for "your second card each turn".
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub(crate) enum Tally {
+    /// A card drawn.
+    Drawn,
+    /// A spell cast.
+    Cast,
+    /// Life gained, once for each event.
+    Gained,
+}
+
 /// The state of one game; a pure fold of events over the initial setup.
 #[derive(Debug, Clone)]
 pub struct GameState {
@@ -103,6 +114,8 @@ pub struct GameState {
     pub(crate) limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// The planeswalkers that had a loyalty ability activated this turn: no more than one for each (CR 606.3).
     pub(crate) loyalty_used: BTreeSet<ObjectRef>,
+    /// How many events of each kind each player has had this turn, from zero at the turn's start.
+    pub(crate) tallies: BTreeMap<(PlayerId, Tally), u32>,
     /// Whether any card of the game has a triggered ability or sets up a delayed one; derived from the setup.
     pub(crate) triggers_possible: bool,
     /// Whether any card of the game has a static ability; derived from the setup and the tokens made.
@@ -288,6 +301,18 @@ impl GameState {
     pub(crate) fn clear_turn_uses(&mut self) {
         self.limits_spent.clear();
         self.loyalty_used.clear();
+        self.tallies.clear();
+    }
+
+    /// Counts one more event of the kind for the player this turn.
+    pub(crate) fn tally(&mut self, player: PlayerId, kind: Tally) {
+        let count = self.tallies.entry((player, kind)).or_insert(0);
+        *count = count.saturating_add(1);
+    }
+
+    /// How many events of the kind the player has had this turn.
+    pub(crate) fn tallied(&self, player: PlayerId, kind: Tally) -> u32 {
+        self.tallies.get(&(player, kind)).copied().unwrap_or(0)
     }
 
     /// Whether a loyalty ability of the planeswalker `permanent` has been activated this turn (CR 606.3).
@@ -404,6 +429,10 @@ impl Hash for GameState {
         // A game with no planeswalker hashes as it did before they existed.
         if !self.loyalty_used.is_empty() {
             self.loyalty_used.hash(state);
+        }
+        // Likewise a game that counted nothing this turn.
+        if !self.tallies.is_empty() {
+            self.tallies.hash(state);
         }
         self.result.hash(state);
     }

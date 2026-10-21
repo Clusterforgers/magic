@@ -431,6 +431,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (format!("counters are put on {on}"), false)
         }
+        TriggerPattern::Batch(inner) => (
+            format!("one or more events happen together: {}", clause(inner).0),
+            false,
+        ),
+        TriggerPattern::Nth { event, nth } => {
+            (format!("{} (time {nth} this turn)", clause(event).0), false)
+        }
         TriggerPattern::AnyOf(patterns) => {
             let clauses: Vec<(String, bool)> = patterns.iter().map(clause).collect();
             (

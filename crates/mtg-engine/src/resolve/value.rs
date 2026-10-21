@@ -695,6 +695,10 @@ impl<'a> Scope<'a> {
             }
             Amount::Kicks => i64::try_from(self.paid_costs().len())
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
+            Amount::Triggering => self
+                .cause
+                .map(|cause| i64::from(cause.amount))
+                .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
         })
     }
 
@@ -1208,6 +1212,7 @@ mod tests {
         let cause = crate::abilities::Cause {
             subjects: vec![Target::Player(PlayerId(1))],
             snapshots: Vec::new(),
+            amount: 0,
         };
         let mut scope = scope(&game);
         let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();

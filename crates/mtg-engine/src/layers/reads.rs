@@ -167,9 +167,12 @@ fn reads_of_stat(stat: StatKind) -> Traits {
 /// What an amount reads when it is worked out.
 pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
     match amount {
-        Amount::Fixed(_) | Amount::X | Amount::Divided | Amount::TargetCount(_) | Amount::Kicks => {
-            Traits::NONE
-        }
+        Amount::Fixed(_)
+        | Amount::X
+        | Amount::Divided
+        | Amount::TargetCount(_)
+        | Amount::Kicks
+        | Amount::Triggering => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
         Amount::Life(who)

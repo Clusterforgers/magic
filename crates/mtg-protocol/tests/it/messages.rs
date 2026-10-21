@@ -1233,6 +1233,7 @@ fn pipeline_events() -> Vec<Event> {
             cause: Some(Cause {
                 subjects: vec![target],
                 snapshots: vec![shot.clone()],
+                amount: 0,
             }),
             delayed: Some(DelayedId(2)),
         })),
