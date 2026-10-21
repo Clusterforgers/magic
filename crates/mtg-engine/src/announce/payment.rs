@@ -14,7 +14,8 @@ use crate::cast::{activation_events, payment_decision, spell_cast};
 use crate::choose::Choices;
 use crate::decision::DecisionKind;
 use crate::events::Event;
-use crate::mana::{ManaOption, can_afford};
+use crate::help::Offered;
+use crate::mana::{ManaOption, can_afford_with};
 use crate::spend::Spend;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
@@ -33,10 +34,12 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
         {
             Next::Commit(spell_cast(ctx.player, *spell, work.choices, true))
         }
-        (What::Spell(spell), Some(cost)) => pay(ctx, *spell, cost, total.sources, total.life),
+        (What::Spell(spell), Some(cost)) => {
+            pay(ctx, *spell, cost, total.sources, total.help, total.life)
+        }
         (What::Spell(_), None) => Next::Drop,
         (What::Ability(ability), Some(cost)) => {
-            pay(ctx, ability.object, cost, total.sources, total.life)
+            pay(ctx, ability.object, cost, total.sources, total.help, total.life)
         }
         (What::Ability(ability), None) => {
             activation_events(ctx.state, ctx.player, *ability, work.choices)
@@ -62,6 +65,7 @@ fn pay(
     object: ObjectId,
     cost: ManaCost,
     sources: Vec<ManaOption>,
+    help: Offered,
     reserved_life: u32,
 ) -> Next {
     match payment_decision(
@@ -70,15 +74,17 @@ fn pay(
         object,
         cost,
         sources,
+        help,
         spend(ctx),
         ctx.can_cancel(),
         reserved_life,
     ) {
         Some(options)
-            if can_afford(
+            if can_afford_with(
                 &options.cost,
                 &options.pool,
                 &options.sources,
+                options.help(),
                 options.life,
                 &options.spend,
             ) =>

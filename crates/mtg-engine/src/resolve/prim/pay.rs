@@ -7,6 +7,7 @@ use mtg_core::mana::ManaCost;
 
 use super::wrong_effect;
 use crate::cast::payment_decision;
+use crate::help::Offered;
 use crate::choose::{Choice, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
 use crate::mana::can_afford;
@@ -138,6 +139,7 @@ fn payment(cx: &Cx<'_>, player: PlayerId, cost: ManaCost) -> Result<Decision, Re
         cx.scope.source.id,
         cost,
         mana_options(state, player),
+        Offered::default(),
         Spend::other(),
         false,
         0,

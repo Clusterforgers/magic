@@ -1,5 +1,6 @@
 //! Error types returned by the engine.
 
+use mtg_core::color::Color;
 use mtg_core::house::HouseRuleError;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
@@ -145,6 +146,26 @@ pub enum PaymentError {
         /// The payer's life total.
         have: i32,
     },
+    /// A creature or card was named as help (convoke, delve) that is not among the ones offered.
+    #[error("{0:?} is not offered to help pay")]
+    NotOffered(ObjectId),
+    /// A creature or card was named twice as help.
+    #[error("{0:?} helps pay twice")]
+    HelpedTwice(ObjectId),
+    /// A creature was named to pay for mana of a colour it is not.
+    #[error("{creature:?} is not {color:?}")]
+    WrongColor {
+        /// The creature tapped.
+        creature: ObjectId,
+        /// The colour it was named for.
+        color: Color,
+    },
+    /// A card named to delve is not in the payer's graveyard.
+    #[error("{0:?} is not in the graveyard")]
+    NotInGraveyard(ObjectId),
+    /// The creatures and cards named pay for more than the cost asks.
+    #[error("the creatures and cards named pay for more than the cost asks")]
+    HelpedTooMuch,
 }
 
 /// Why an answer was rejected.

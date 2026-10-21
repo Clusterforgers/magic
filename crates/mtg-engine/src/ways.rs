@@ -15,7 +15,8 @@ use crate::announce;
 use crate::attach;
 use crate::choose::announceable;
 use crate::keywords::{self, keywords_of};
-use crate::mana::{ManaOption, ManaPool, can_afford};
+use crate::help;
+use crate::mana::{ManaOption, ManaPool, can_afford_with};
 use crate::object::ObjectKind;
 use crate::price::Price;
 use crate::priority::{mana_options, sorcery_timing};
@@ -178,13 +179,21 @@ pub(crate) fn grantable(state: &GameState, player: PlayerId, id: ObjectId, free:
     };
     let sources = mana_options(state, player);
     let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
+    let help = help::offered(state, player, id);
     granted(state, id, free).iter().any(|way| {
         announceable_in(state, player, id, way.alternative)
             && way
                 .cost(card.card().mana_cost.as_ref())
                 .is_some_and(|cost| {
                     let cost = announce::cheapest(state, player, id, &cost);
-                    can_afford(&cost, seat.mana(), &sources, seat.life(), &spend)
+                    can_afford_with(
+                        &cost,
+                        seat.mana(),
+                        &sources,
+                        help.help(),
+                        seat.life(),
+                        &spend,
+                    )
                 })
     })
 }
@@ -216,6 +225,7 @@ pub(crate) fn castable_now(
         return false;
     };
     let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
+    let help = help::offered(state, player, id);
     of(state, player, id).iter().any(|way| {
         (way.instant || sorcery_timing(state, player))
             && announceable_in(state, player, id, way.alternative)
@@ -223,7 +233,7 @@ pub(crate) fn castable_now(
                 .cost(card.card().mana_cost.as_ref())
                 .is_some_and(|cost| {
                     let cost = announce::cheapest(state, player, id, &cost);
-                    can_afford(&cost, pool, sources, life, &spend)
+                    can_afford_with(&cost, pool, sources, help.help(), life, &spend)
                 })
     })
 }
