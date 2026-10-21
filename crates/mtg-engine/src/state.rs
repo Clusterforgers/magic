@@ -64,6 +64,8 @@ pub(crate) struct Possible {
     pub(crate) replacements: bool,
     /// Some card is legendary.
     pub(crate) legends: bool,
+    /// Some card, token or player has protection or an effect that gives it, so damage is checked against it.
+    pub(crate) protection: bool,
 }
 
 /// The state of one game; a pure fold of events over the initial setup.

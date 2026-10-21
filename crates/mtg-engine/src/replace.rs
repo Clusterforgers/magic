@@ -43,6 +43,7 @@ use crate::counters::CountersChanged;
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
 use crate::events::{DeathCause, Event, ResolutionOutcome, ZoneCause};
+use crate::keywords::{self, Holder};
 use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{Scope, zone_kind};
 use crate::rules::{DamageShield, Rule, RuleEffect, damage_cant_be_prevented};
@@ -72,13 +73,14 @@ pub fn process(
     proposed: Vec<Event>,
     journal: &[(PlayerId, Choice)],
 ) -> Result<Processed, EngineError> {
-    if !state.possible.replacements || proposed.is_empty() {
+    if !(state.possible.replacements || state.possible.protection) || proposed.is_empty() {
         return Ok(Processed::Events(proposed));
     }
     let sources = gather(state);
     let shields = shields_of(state);
     if sources.is_empty()
         && shields.is_empty()
+        && !state.possible.protection
         && !proposed
             .iter()
             .any(|event| entering(state, event).is_some())
@@ -133,6 +135,55 @@ pub fn process(
     }
 }
 
+/// The source `dealer` and the player who controls what `target` is, when protection of the target from the dealer
+/// prevents the damage (CR 702.16e).
+fn protection_of(
+    state: &GameState,
+    dealer: ObjectId,
+    target: DamageTarget,
+) -> Option<(ObjectRef, PlayerId)> {
+    if !state.possible.protection {
+        return None;
+    }
+    let source = keywords::Source::live(state, dealer)?;
+    let (holder, controller) = match target {
+        DamageTarget::Player(player) => (Holder::Player(player), player),
+        DamageTarget::Object(object) => (
+            Holder::Object(object),
+            controller_of_object(state, state.object(object)?),
+        ),
+    };
+    keywords::protected_from(state, holder, source).then_some((source.object, controller))
+}
+
+/// Whether combat damage is being dealt: the damage steps with nothing resolving.
+fn in_combat_damage(state: &GameState) -> bool {
+    state.resolving().is_none()
+        && matches!(
+            state.turn().step(),
+            Step::FirstStrikeDamage | Step::CombatDamage
+        )
+}
+
+/// The events less the damage that protection prevents, for a caller that plays damage without the replacement step
+/// (the combat forecast): damage that can't be prevented stays.
+pub(crate) fn without_protected_damage(state: &GameState, events: Vec<Event>) -> Vec<Event> {
+    if !state.possible.protection {
+        return events;
+    }
+    let combat = in_combat_damage(state);
+    events
+        .into_iter()
+        .filter(|event| match event {
+            Event::DamageDealt { source, target, .. } => {
+                damage_cant_be_prevented(state, *source, combat)
+                    || protection_of(state, *source, *target).is_none()
+            }
+            _ => true,
+        })
+        .collect()
+}
+
 /// One replaceable thing in a batch: an event, or all the tokens one effect makes for a player (they are one event).
 #[derive(Debug, Clone)]
 enum Item {
@@ -182,6 +233,8 @@ fn slots_of(events: Vec<Event>) -> Vec<Slot> {
 enum Origin {
     Ability(AbilityRef),
     Shield(EffectId),
+    /// The protection of the permanent or player the damage is dealt to (CR 702.16e).
+    Protection,
 }
 
 /// The shields in play: prevention and regeneration shields that still last, in the order they began.
@@ -510,11 +563,7 @@ impl Pass<'_> {
 
     /// Whether combat damage is being dealt: the damage steps with nothing resolving.
     fn combat_damage(&self) -> bool {
-        self.state.resolving().is_none()
-            && matches!(
-                self.state.turn().step(),
-                Step::FirstStrikeDamage | Step::CombatDamage
-            )
+        in_combat_damage(self.state)
     }
 
     /// Whether the effect names the target `target`.
@@ -643,6 +692,12 @@ impl Pass<'_> {
             unit,
             Unit::Damage { source, .. } if damage_cant_be_prevented(self.state, source, self.combat_damage())
         );
+        if !unpreventable
+            && let Unit::Damage { source, target } = &unit
+            && let Some(protection) = self.protection_candidate(*source, *target)
+        {
+            return Ok(vec![protection]);
+        }
         let mut found: Vec<Candidate> = Vec::new();
         let mut consider = |step: &Pass<'_>, source: &Source| -> Result<(), EngineError> {
             let Ability::Replacement {
@@ -710,6 +765,19 @@ impl Pass<'_> {
         }
         found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
+    }
+
+    /// The protection that prevents all the damage `dealer` would deal to `target`, as the only effect that applies to it:
+    /// preventing all of it first leaves every shield whole, which is never worse for the player (CR 616.1).
+    fn protection_candidate(&self, dealer: ObjectId, target: DamageTarget) -> Option<Candidate> {
+        let (object, controller) = protection_of(self.state, dealer, target)?;
+        Some(Candidate {
+            origin: Origin::Protection,
+            object,
+            controller,
+            action: Action::Replace(ReplaceBy::Prevent),
+            is_self: false,
+        })
     }
 
     /// The regeneration shield that replaces the destruction the item is, as the only effect that applies to it.
@@ -914,11 +982,11 @@ impl Pass<'_> {
                                             source: c.object.id,
                                             ability: match c.origin {
                                                 Origin::Ability(address) => address.ability,
-                                                Origin::Shield(_) => 0,
+                                                Origin::Shield(_) | Origin::Protection => 0,
                                             },
                                             shield: match c.origin {
                                                 Origin::Shield(id) => Some(id),
-                                                Origin::Ability(_) => None,
+                                                Origin::Ability(_) | Origin::Protection => None,
                                             },
                                         })
                                         .collect(),

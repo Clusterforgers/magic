@@ -65,7 +65,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (j1) The replacement step: `Ability::Replacement` found through the reader, one `ReplaceWhen` for each event it can replace, self-replacement first, once per event (CR 614 to 616), and `ChooseReplacement` in engine, protocol, bots and the server's pace; Anointed Procession, Parallel Lives, Doubling Season, Hardened Scales, Corpsejack Menace, Rhox Faithmender, Thought Reflection, Furnace of Rath and Rest in Peace are Verified
 - [x] (j2) Enters tapped or with counters; a choice made as it enters and remembered on the permanent; Idyllic Beachfront, Sodden Verdure, Steam Vents, Faithful Watchdog, Hall of Triumph and Rally the Ranks are Verified
 - [x] (j3) Damage prevention shields, regeneration and `GameRule::DamageCantBePrevented`
-- [ ] (j4) Protection from a quality (colour, card type, player, everything) with its four checks (damage prevented, no Aura or Equipment attaches, no blocking by it, no targeting) and shroud; Black Knight, Kor Firewalker and Mother of Runes are Verified
+- [x] (j4) Protection from a quality (colour, card type, player, everything) with its four checks (damage prevented, no Aura or Equipment attaches, no blocking by it, no targeting) and shroud; Black Knight, Kor Firewalker and Mother of Runes are Verified
 - [ ] (j5) A prevention shield that stops only the next N damage covers the events of one damage batch in the order the affected player picks, not in batch order
 
 ### Costs and casting

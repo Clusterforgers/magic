@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fb37ff1c-7461-4a16-b27f-6eef0db937fe",
+  "name": "Kor Firewalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kor Firewalker",
+      "oracle_fingerprint": "a8fdfbcc4bf07323788cf99e7f601a95",
+      "abilities": [
+        { "Keyword": { "Protection": [{ "Color": "Red" }] } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Color": "Red" }] } },
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 1 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

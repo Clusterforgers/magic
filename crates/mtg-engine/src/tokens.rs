@@ -106,6 +106,9 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
     if crate::ability_reader::definition_has_replacement(&event.definition) {
         state.possible.replacements = true;
     }
+    if crate::ability_reader::definition_has_protection(&event.definition) {
+        state.possible.protection = true;
+    }
     state.objects.insert(id, token);
     state.zones.insert(Zone::Battlefield, id, Placement::Top);
     state.next_object = state.next_object.max(id.get() + 1);

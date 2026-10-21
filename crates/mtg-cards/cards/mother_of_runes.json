@@ -1,0 +1,30 @@
+{
+  "oracle_id": "60433b48-d27f-413c-905c-43839b1943f1",
+  "name": "Mother of Runes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mother of Runes",
+      "oracle_fingerprint": "6a6429f432000b11b2f1f8f726143da2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

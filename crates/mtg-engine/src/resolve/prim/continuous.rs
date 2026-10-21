@@ -3,16 +3,29 @@
 use std::sync::Arc;
 
 use mtg_cards::effect::Effect;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification as Wanted;
+use mtg_cards::refs::{Pred, Selector as PickSelector};
 use mtg_cards::value::Amount;
+use mtg_core::color::Color;
 use mtg_core::ids::EffectId;
 
 use super::wrong_effect;
+use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::effects::{ContinuousEffect, Modification, Selector};
 use crate::events::Event;
 use crate::object::{GameObject, ObjectRef};
 use crate::resolve::{Cx, ResolveError, Run, Scope};
 use crate::zones::Zone;
+
+/// The colours a player may choose, in the order of the five-colour wheel.
+const COLORS: [Color; 5] = [
+    Color::White,
+    Color::Blue,
+    Color::Black,
+    Color::Red,
+    Color::Green,
+];
 
 /// Each modification becomes one effect that applies to the permanents the reference names now and to no other object,
 /// whatever happens to the set later (CR 611.2c). The effects take consecutive timestamps in the order of the card's
@@ -38,9 +51,34 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     if named.is_empty() {
         return Ok(Run::events(Vec::new()));
     }
+    // The colour of "protection from the color of your choice" is chosen as the effect begins, once for each.
+    let choosers: Vec<OptionChooser> = mods
+        .iter()
+        .filter(|wanted| matches!(wanted, Wanted::AddProtectionFromChosenColor))
+        .map(|_| OptionChooser {
+            player: cx.controller(),
+            options: COLORS.iter().copied().map(ChoiceOption::Color).collect(),
+            text: "Choose a color.".into(),
+        })
+        .collect();
+    let mut chosen = match pick_options(cx, &choosers)? {
+        Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
+        Optioned::Done(taken) => taken.into_iter(),
+    };
     let mut events = Vec::new();
     for (made, wanted) in (0u64..).zip(mods) {
-        let modification = lower(&cx.scope, wanted)?;
+        let modification = match wanted {
+            Wanted::AddProtectionFromChosenColor => {
+                let color = chosen
+                    .next()
+                    .and_then(|(_, index)| COLORS.get(index).copied())
+                    .ok_or_else(|| ResolveError::Invalid("no color was chosen".into()))?;
+                Modification::AddKeyword(Keyword::Protection(PickSelector(vec![Pred::Color(
+                    color,
+                )])))
+            }
+            other => lower(&cx.scope, other)?,
+        };
         events.push(Event::EffectCreated {
             effect: ContinuousEffect::new(
                 EffectId(state.next_effect + made),
@@ -88,6 +126,11 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             Modification::SetController(*scope.players(who)?.first().ok_or_else(|| {
                 ResolveError::Invalid("a change of control names no player".into())
             })?)
+        }
+        Wanted::AddProtectionFromChosenColor => {
+            return Err(ResolveError::Unsupported(
+                "Mod.AddProtectionFromChosenColor outside an effect",
+            ));
         }
         Wanted::CantAttack => Modification::CantAttack,
         Wanted::CantBlock => Modification::CantBlock,

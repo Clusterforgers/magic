@@ -1,0 +1,15 @@
+{
+  "oracle_id": "9456c5b6-946d-403a-8ed0-dff9f921d98c",
+  "name": "Black Knight",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Black Knight",
+      "oracle_fingerprint": "02469d7abbfb12f233c56e3391dce51f",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": { "Protection": [{ "Color": "White" }] } }
+      ]
+    }
+  ]
+}

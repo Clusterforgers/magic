@@ -35,11 +35,13 @@ mod multikicker;
 mod overload;
 mod partner;
 mod partner_with;
+mod protection;
 #[cfg(test)]
 mod provided;
 mod prowess;
 mod reach;
 mod reconfigure;
+mod shroud;
 mod storm;
 mod suspend;
 mod trample;
@@ -54,7 +56,8 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::ability_reader::keyword_abilities;
 use crate::characteristics::controller_of_object;
-use crate::object::ObjectKind;
+use crate::object::{ObjectKind, ObjectRef};
+use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -96,6 +99,35 @@ impl DamageRules {
     /// Whether the holder deals damage in the regular step: always, but for first strike alone (CR 510.4).
     pub const fn strikes_regularly(self) -> bool {
         self.double_strike || !self.first_strike
+    }
+}
+
+/// What has keywords that protect it: a permanent or a player.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Holder {
+    /// A permanent.
+    Object(ObjectId),
+    /// A player.
+    Player(PlayerId),
+}
+
+/// What damage, an attachment, a blocker, a spell or an ability comes from, as protection reads it: the object, and the
+/// snapshots that say how it was if it has gone (last-known information, CR 608.2h).
+#[derive(Debug, Clone, Copy)]
+pub struct Source<'a> {
+    /// The object.
+    pub object: ObjectRef,
+    /// How objects that have changed zones were.
+    pub snapshots: &'a [&'a Snapshot],
+}
+
+impl Source<'static> {
+    /// The object `id` as it is now.
+    pub(crate) fn live(state: &GameState, id: ObjectId) -> Option<Source<'static>> {
+        state.object(id).map(|object| Source {
+            object: object.reference(),
+            snapshots: &[],
+        })
     }
 }
 
@@ -164,6 +196,18 @@ pub trait KeywordRules: Debug + Sync {
         false
     }
 
+    /// Whether the keyword protects `holder` from `source` (CR 702.16): damage from it is prevented, it can't enchant or
+    /// equip the holder, can't block it and can't target it.
+    fn protects_from(
+        &self,
+        _state: &GameState,
+        _keyword: &Keyword,
+        _holder: Holder,
+        _source: Source<'_>,
+    ) -> bool {
+        false
+    }
+
     /// How the keyword changes the combat damage its holder deals.
     fn modifies_damage(&self, _keyword: &Keyword) -> DamageRules {
         DamageRules::default()
@@ -197,6 +241,8 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Defender => &defender::Defender,
         Keyword::Indestructible => &indestructible::Indestructible,
         Keyword::Hexproof => &hexproof::Hexproof,
+        Keyword::Shroud => &shroud::Shroud,
+        Keyword::Protection(_) => &protection::Protection,
         Keyword::Prowess => &prowess::Prowess,
         Keyword::Convoke => &convoke::Convoke,
         Keyword::Delve => &delve::Delve,
@@ -344,11 +390,25 @@ pub(crate) fn protects_player(state: &GameState, holder: PlayerId, controller: P
         .any(|keyword| rules(keyword).restricts_player_targeting(keyword, holder, controller))
 }
 
-/// Whether a keyword of the attacker stops `blocker` from blocking it.
+/// Whether a keyword of `holder` protects it from `source` (CR 702.16): the one reader of protection for damage,
+/// attachments, blocking and targeting.
+pub(crate) fn protected_from(state: &GameState, holder: Holder, source: Source<'_>) -> bool {
+    let held: Vec<&Keyword> = match holder {
+        Holder::Object(id) => keywords_of(state, id),
+        Holder::Player(id) => player_keywords(state, id),
+    };
+    held.into_iter()
+        .any(|keyword| rules(keyword).protects_from(state, keyword, holder, source))
+}
+
+/// Whether a keyword of the attacker stops `blocker` from blocking it: menace-like restrictions, and protection from
+/// the blocker.
 pub(crate) fn stops_block(state: &GameState, attacker: ObjectId, blocker: ObjectId) -> bool {
     keywords_of(state, attacker)
         .into_iter()
         .any(|keyword| rules(keyword).restricts_blocking(state, keyword, attacker, blocker))
+        || Source::live(state, blocker)
+            .is_some_and(|source| protected_from(state, Holder::Object(attacker), source))
 }
 
 /// Whether a keyword lets the card be cast whenever an instant could be.
@@ -393,6 +453,8 @@ mod tests {
             Keyword::Defender,
             Keyword::Indestructible,
             Keyword::Hexproof,
+            Keyword::Shroud,
+            Keyword::Protection(Selector::default()),
             Keyword::Prowess,
             Keyword::Convoke,
             Keyword::Delve,
@@ -425,7 +487,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 21] = [
+    const RUN: [&str; 23] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -440,6 +502,8 @@ mod tests {
         "Keyword.Defender",
         "Keyword.Indestructible",
         "Keyword.Hexproof",
+        "Keyword.Shroud",
+        "Keyword.Protection",
         "Keyword.Prowess",
         "Keyword.BattleCry",
         "Keyword.Ward",
@@ -522,6 +586,8 @@ mod tests {
     #[case::vigilance(Keyword::Vigilance, Hooks { attacks_untapped: true, ..Hooks::none() })]
     #[case::indestructible(Keyword::Indestructible, Hooks { indestructible: true, ..Hooks::none() })]
     #[case::hexproof(Keyword::Hexproof, Hooks { shields_player: true, ..Hooks::none() })]
+    #[case::shroud(Keyword::Shroud, Hooks { shields_player: true, ..Hooks::none() })]
+    #[case::protection(Keyword::Protection(Selector::default()), Hooks::none())]
     #[case::first_strike(Keyword::FirstStrike, Hooks { damage: damage(|d| d.first_strike = true), ..Hooks::none() })]
     #[case::double_strike(Keyword::DoubleStrike, Hooks { damage: damage(|d| d.double_strike = true), ..Hooks::none() })]
     #[case::deathtouch(Keyword::Deathtouch, Hooks { damage: damage(|d| d.deathtouch = true), ..Hooks::none() })]

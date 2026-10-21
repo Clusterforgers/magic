@@ -13,6 +13,7 @@ use crate::error::{EngineError, IllegalAnswer};
 use crate::keywords;
 use crate::object::{GameObject, ObjectRef};
 use crate::resolve::{ResolveError, Scope};
+use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::wording;
 use crate::zones::Zone;
@@ -119,13 +120,40 @@ pub(crate) fn legal_for(
         },
         GameObject::reference,
     );
+    legal_from(state, spec, source, &[], controller, cause)
+}
+
+/// [`legal_for`] for a source named by its reference, with the snapshots that say how objects were when they have gone:
+/// a resolving ability reads the source it came from as it was (CR 608.2h), which protection from a colour needs.
+pub(crate) fn legal_from(
+    state: &GameState,
+    spec: &TargetSpec,
+    source: ObjectRef,
+    known: &[&Snapshot],
+    controller: PlayerId,
+    cause: Option<&Cause>,
+) -> Vec<Target> {
     let mut scope = Scope::announcing(state, controller, source);
     scope.cause = cause;
-    scope.snapshots = cause.iter().flat_map(|c| c.snapshots.iter()).collect();
+    scope.snapshots = cause
+        .iter()
+        .flat_map(|c| c.snapshots.iter())
+        .chain(known.iter().copied())
+        .collect();
     let mut legal = candidates(&scope, &spec.what).unwrap_or_default();
+    let origin = keywords::Source {
+        object: source,
+        snapshots: &scope.snapshots,
+    };
     legal.retain(|target| match target {
-        Target::Object(object) => !keywords::protects(state, object.id, source.id, controller),
-        Target::Player(player) => !keywords::protects_player(state, *player, controller),
+        Target::Object(object) => {
+            !keywords::protects(state, object.id, source.id, controller)
+                && !keywords::protected_from(state, keywords::Holder::Object(object.id), origin)
+        }
+        Target::Player(player) => {
+            !keywords::protects_player(state, *player, controller)
+                && !keywords::protected_from(state, keywords::Holder::Player(*player), origin)
+        }
     });
     legal.sort_unstable();
     legal.dedup();

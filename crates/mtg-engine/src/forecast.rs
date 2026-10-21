@@ -17,6 +17,7 @@ use crate::damage::{DamagePass, damage_events, passes_ahead};
 use crate::events::Event;
 use crate::fold::apply_event;
 use crate::keywords;
+use crate::replace::without_protected_damage;
 use crate::sba;
 use crate::state::{GameState, Stage};
 use crate::turn::Step;
@@ -195,7 +196,7 @@ impl Run {
             };
             // Entering a step is what forgets the last step's divisions of damage; a step under way keeps its own.
             let entered = run.after.turn().step() == step || run.fold(&[Event::StepBegan { step }]);
-            let events = damage_events(&run.after, pass);
+            let events = without_protected_damage(&run.after, damage_events(&run.after, pass));
             if !entered || !run.fold(&events) || !run.settle() {
                 break;
             }
