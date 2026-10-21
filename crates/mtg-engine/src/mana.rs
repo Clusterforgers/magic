@@ -28,9 +28,11 @@ use crate::spend::{Restricted, Spend, Spent};
 pub struct ManaPool {
     counts: [u32; 6],
     /// The mana that may be spent only on some things, one entry for each mana; a public fact, like the pool.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Restricted>>", optional))]
-    restricted: Vec<Restricted>,
+    // Boxed so a decision that holds a pool stays small.
+    #[allow(clippy::box_collection)]
+    restricted: Option<Box<Vec<Restricted>>>,
 }
 
 impl ManaPool {
@@ -44,7 +46,7 @@ impl ManaPool {
         self.counts
             .iter()
             .sum::<u32>()
-            .saturating_add(u32::try_from(self.restricted.len()).unwrap_or(u32::MAX))
+            .saturating_add(u32::try_from(self.restricted().len()).unwrap_or(u32::MAX))
     }
 
     /// Whether the pool holds nothing.
@@ -54,7 +56,7 @@ impl ManaPool {
 
     /// The mana that may be spent only on some things.
     pub fn restricted(&self) -> &[Restricted] {
-        &self.restricted
+        self.restricted.as_deref().map_or(&[], Vec::as_slice)
     }
 
     pub(crate) fn add(&mut self, mana: ManaType) {
@@ -66,7 +68,9 @@ impl ManaPool {
         if only.is_empty() {
             self.add(mana);
         } else {
-            self.restricted.push(Restricted { mana, only });
+            self.restricted
+                .get_or_insert_with(Box::default)
+                .push(Restricted { mana, only });
         }
     }
 
@@ -83,9 +87,16 @@ impl ManaPool {
 
     /// Removes one mana equal to `unit`; false (and no change) if there is none.
     pub(crate) fn spend_restricted(&mut self, unit: &Restricted) -> bool {
-        match self.restricted.iter().position(|held| held == unit) {
-            Some(at) => {
-                self.restricted.remove(at);
+        let held = self.restricted.as_mut();
+        match held.and_then(|held| {
+            let at = held.iter().position(|h| h == unit)?;
+            held.remove(at);
+            Some(held.is_empty())
+        }) {
+            Some(emptied) => {
+                if emptied {
+                    self.restricted = None;
+                }
                 true
             }
             None => false,
@@ -94,7 +105,7 @@ impl ManaPool {
 
     pub(crate) fn clear(&mut self) {
         self.counts = [0; 6];
-        self.restricted.clear();
+        self.restricted = None;
     }
 
     /// What `spend` may use of the pool: the mana without a restriction and the restricted mana it allows.
@@ -103,7 +114,7 @@ impl ManaPool {
             counts: self.counts,
             lean: [0; 6],
         };
-        for unit in self.restricted.iter().filter(|u| spend.allows(&u.only)) {
+        for unit in self.restricted().iter().filter(|u| spend.allows(&u.only)) {
             floating.counts[unit.mana.index()] += 1;
             floating.lean[unit.mana.index()] += 1;
         }
@@ -260,7 +271,7 @@ fn flat(payment: &Payment) -> Payment {
 /// already names: restricted mana `spend` allows goes first, because it is of less use than mana without a restriction.
 fn separate(types: &[ManaType], pool: &ManaPool, spend: &Spend, kept: &Payment) -> Payment {
     let mut free: Vec<&Restricted> = pool
-        .restricted
+        .restricted()
         .iter()
         .filter(|u| spend.allows(&u.only))
         .collect();
@@ -307,7 +318,6 @@ fn restricted_used(payment: &Payment, sources: &[ManaOption]) -> usize {
     payment.restricted.len() + taps
 }
 
-
 /// The sources grouped by permanent: a permanent is tapped once, for one of its abilities.
 ///
 /// Permanents with fewer abilities come first, so a flexible permanent is the last one tapped for a fixed need.
@@ -323,7 +333,14 @@ fn by_permanent(sources: &[ManaOption]) -> Vec<Vec<ManaOption>> {
     for group in &mut groups {
         group.sort_by_key(|o| o.source);
     }
-    groups.sort_by_key(|g| (g.len(), g.first().map(|o| o.source)));
+    // Permanents that add restricted mana come first: it is of less use than mana without a restriction.
+    groups.sort_by_key(|g| {
+        (
+            g.iter().all(|o| o.only.is_empty()),
+            g.len(),
+            g.first().map(|o| o.source),
+        )
+    });
     groups
 }
 
@@ -784,7 +801,7 @@ pub fn check_payment(
             continue;
         }
         match spent_of(&resolution.cost, &parts) {
-            Ok(spent) => return Ok(split_spent(spent, payment, &sources)),
+            Ok(made) => return Ok(split_spent(made, payment, &sources)),
             Err(error) => {
                 refusal.get_or_insert(error);
             }

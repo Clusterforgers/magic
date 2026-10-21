@@ -88,6 +88,9 @@ The payment rules are in [engine.md](engine.md); the wire facts are:
 
 - `PayOptions.can_cancel` says whether `PayChoice::Cancel` is legal. A cancelled cast produces no events, so the server sends no `Events` batch and stores nothing, only the caster's `Priority` decision again with a fresh id. The log never records a cast that was not paid.
 - `PayChoice::Complete(Payment)` sends part of a payment (floating mana and taps) for the engine to finish. A rejected answer leaves the decision pending.
+
+- Mana that may be spent only on some things is told in the pool (`ManaPool.restricted`, one entry for each mana with what it allows: a public fact like the pool) and in the events (`ManaAdded.only`, `ManaSpent.restricted`); a payment names it in `Payment.restricted`, and `PayOptions.spend` says what the payment is for. All of them are optional on the wire.
+
 - `ManaCost` is `Array<ManaSymbol>` in canonical order (shapes in the generated `ManaSymbol.ts`).
 - Life pays Phyrexian symbols. `Payment.life` is optional on input and read as 0, `PayOptions.life` is the payer's life total and `max_life` the most this payment may take, so the prompt offers up to `max_life / 2` symbols paid with life and shows the total left.
 - The cast's events start with one public `LifePaid { player, amount }` before `SpellCast`; the client reads the new total from the batch's table.

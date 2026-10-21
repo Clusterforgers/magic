@@ -37,6 +37,7 @@ const fn mana_of(color: Color) -> ManaType {
 /// with one option is not asked. The chosen color is the one the source's controller chose as it entered, and
 /// none is added while there is none. The mana is credited to the object that produced it while that object is in
 /// the game.
+#[allow(clippy::too_many_lines)]
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::AddMana {
         who,

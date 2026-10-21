@@ -233,7 +233,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             times,
             only,
         },
-        then @ ..
+        then @ ..,
     ] = effects.as_slice()
     else {
         return None;

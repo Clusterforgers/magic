@@ -19,6 +19,7 @@ use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::spend::SpendOn;
 use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Condition};
 
@@ -33,7 +34,10 @@ pub fn ability(ability: &Ability) -> Option<String> {
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 pub fn variants(ability: &Ability) -> Vec<String> {
     let mut texts = ability_texts(ability);
-    let singulars: Vec<String> = texts.iter().filter_map(|text| spend::singular(text)).collect();
+    let singulars: Vec<String> = texts
+        .iter()
+        .filter_map(|text| spend::singular(text))
+        .collect();
     texts.extend(singulars);
     texts
 }
@@ -399,6 +403,16 @@ fn is_imperative(effect: &Effect) -> bool {
 }
 
 /// "{G}{G}", "one mana of any color": the mana an effect adds.
+/// "add {C}{C}" and, when the mana is restricted, the sentence that says what it may be spent on.
+fn add_text(mana: &Produce, only: &[SpendOn]) -> Option<String> {
+    let added = format!("add {}", mana_text(mana)?);
+    if only.is_empty() {
+        Some(added)
+    } else {
+        Some(format!("{added}. {}", spend::text(only)?))
+    }
+}
+
 fn mana_text(mana: &Produce) -> Option<String> {
     Some(match mana {
         Produce::Fixed(list) if !list.is_empty() => {
@@ -665,14 +679,7 @@ impl Writer<'_> {
                 mana,
                 times,
                 only,
-            } if times.is_one() => {
-                let added = format!("add {}", mana_text(mana)?);
-                if only.is_empty() {
-                    added
-                } else {
-                    format!("{added}. {}", spend::text(only)?)
-                }
-            }
+            } if times.is_one() => add_text(mana, only)?,
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. } => self.counters(effect)?,

@@ -10,10 +10,10 @@ use crate::cast::payment_decision;
 use crate::choose::{Choice, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
 use crate::mana::can_afford;
-use crate::spend::Spend;
 use crate::price::{Leaves, Price};
 use crate::priority::mana_options;
 use crate::resolve::{Cx, Next, ResolveError, Run};
+use crate::spend::Spend;
 use crate::state::GameState;
 use crate::wording;
 

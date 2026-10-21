@@ -7,6 +7,7 @@
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaCost;
 
+use super::x::XCost;
 use super::{Ctx, Next, What, Work};
 use crate::abilities::PutOnStack;
 use crate::cast::{activation_events, payment_decision};
@@ -15,7 +16,6 @@ use crate::decision::DecisionKind;
 use crate::events::Event;
 use crate::mana::{ManaOption, can_afford};
 use crate::spend::Spend;
-use super::x::XCost;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
 
@@ -50,7 +50,15 @@ pub(super) fn spend(ctx: &Ctx<'_>) -> Spend {
 }
 
 fn pay(ctx: &Ctx<'_>, object: ObjectId, cost: ManaCost, sources: Vec<ManaOption>) -> Next {
-    match payment_decision(ctx.state, ctx.player, object, cost, sources, spend(ctx), true) {
+    match payment_decision(
+        ctx.state,
+        ctx.player,
+        object,
+        cost,
+        sources,
+        spend(ctx),
+        true,
+    ) {
         Some(options)
             if can_afford(
                 &options.cost,

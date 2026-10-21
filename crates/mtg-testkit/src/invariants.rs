@@ -1028,7 +1028,11 @@ impl InvariantChecker {
     /// Restricted mana spent for a spell is mana its restriction allows: the spell is the top of the stack once its cast
     /// events have folded, which come before the mana it is paid with is spent.
     fn check_restrictions_honoured(&self, spent: &[Restricted]) -> Result<(), Violation> {
-        let top = self.shadow.zone(Zone::Stack).last().and_then(|id| self.shadow.object(*id));
+        let top = self
+            .shadow
+            .zone(Zone::Stack)
+            .last()
+            .and_then(|id| self.shadow.object(*id));
         let Some(spell) = top.filter(|o| o.kind() == ObjectKind::Card) else {
             return Ok(());
         };
@@ -1051,8 +1055,10 @@ impl InvariantChecker {
             (Some(expected), Some(pool)) => {
                 for mana in ManaType::ALL {
                     let held = pool.get(mana)
-                        + u32::try_from(pool.restricted().iter().filter(|u| u.mana == mana).count())
-                            .unwrap_or(u32::MAX);
+                        + u32::try_from(
+                            pool.restricted().iter().filter(|u| u.mana == mana).count(),
+                        )
+                        .unwrap_or(u32::MAX);
                     let want = expected[mana.index()];
                     if want < 0 || i64::from(held) != want {
                         return Err(Violation::Mana(format!(

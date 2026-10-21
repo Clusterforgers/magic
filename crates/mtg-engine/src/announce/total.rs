@@ -72,7 +72,5 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
     total
         .mana
         .as_ref()
-        .is_none_or(|cost| {
-            can_afford(cost, seat.mana(), &total.sources, seat.life(), &spend(ctx))
-        })
+        .is_none_or(|cost| can_afford(cost, seat.mana(), &total.sources, seat.life(), &spend(ctx)))
 }

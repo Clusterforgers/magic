@@ -204,6 +204,64 @@ mod mana {
     }
 
     #[rstest]
+    #[case::a_creature_spell(
+        "{T}: Add one mana of any color. Spend this mana only to cast a creature spell.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1},"only":[{"Spell":{"types":["Creature"]}}]}}]}}"#
+    )]
+    #[case::artifact_spells(
+        "{T}: Add {C}{C}{C}. Spend this mana only to cast artifact spells.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless","Colorless"]},"only":[{"Spell":{"types":["Artifact"]}}]}}]}}"#
+    )]
+    #[case::instant_or_sorcery_spells(
+        "{T}: Add {R}. Spend this mana only to cast instant or sorcery spells.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]},"only":[{"Spell":{"types":["Instant","Sorcery"]}}]}}]}}"#
+    )]
+    #[case::a_multicolored_spell(
+        "{T}: Add one mana of any color. Spend this mana only to cast a multicolored spell.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1},"only":[{"Spell":{"multicolored":true}}]}}]}}"#
+    )]
+    #[case::noncreature_spells(
+        "{T}: Add {G}. Spend this mana only to cast noncreature spells.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"only":[{"Spell":{"without":["Creature"]}}]}}]}}"#
+    )]
+    #[case::any_spell(
+        "{T}: Add {G}. Spend this mana only to cast spells.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"only":[{"Spell":{}}]}}]}}"#
+    )]
+    #[case::abilities(
+        "{T}: Add {C}{C}. Spend this mana only to activate abilities.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]},"only":[{"Ability":{}}]}}]}}"#
+    )]
+    #[case::costs_with_x(
+        "{T}: Add {C}{C}{C}{C}. Spend this mana only on costs that contain {X}.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless","Colorless","Colorless"]},"only":["CostWithX"]}}]}}"#
+    )]
+    fn mana_that_may_be_spent_only_on_some_things_reads_with_its_restriction(
+        #[case] text: &str,
+        #[case] json: &str,
+    ) {
+        reads_as(text, ClauseKind::Activated, false, json);
+    }
+
+    #[rstest]
+    #[case::a_kind_the_data_does_not_hold(
+        "{T}: Add {G}. Spend this mana only to cast Dragon spells."
+    )]
+    #[case::two_uses(
+        "{T}: Add {G}. Spend this mana only to cast artifact spells or activate abilities of artifacts."
+    )]
+    #[case::the_chosen_type(
+        "{T}: Add one mana of any color. Spend this mana only to cast a creature spell of the chosen type."
+    )]
+    #[case::without_the_period_after_the_mana(
+        "{T}: Add {G} Spend this mana only to cast creature spells."
+    )]
+    #[case::the_restriction_alone("Spend this mana only to cast creature spells.")]
+    fn a_restriction_the_templates_do_not_write_stays_unread(#[case] text: &str) {
+        assert_eq!(clause(text, ClauseKind::Activated, false), None, "{text}");
+    }
+
+    #[rstest]
     #[case::a_choice_and_a_cost("{T}: Add {R} or {G}. {T}: Add {B}.")]
     #[case::for_each("{T}: Add {G} for each creature you control.")]
     #[case::x("{T}: Add {X}.")]

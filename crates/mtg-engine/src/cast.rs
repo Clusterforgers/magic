@@ -122,7 +122,7 @@ pub(crate) fn payment_decision(
     Some(PayOptions {
         spell: object,
         auto_available: auto_payment(&cost, &pool, &sources, life, &spend).is_some(),
-        spend,
+        spend: Box::new(spend),
         can_cancel,
         life,
         max_life: max_life_payment(&cost, life),
@@ -307,16 +307,14 @@ fn pay_with(
             &partial,
         )
         .map_err(IllegalAnswer::from)?,
-        PayChoice::Auto => {
-            auto_payment(
-                &options.cost,
-                &options.pool,
-                &options.sources,
-                options.life,
-                &options.spend,
-            )
-            .ok_or(IllegalAnswer::NotOffered("automatic payment"))?
-        }
+        PayChoice::Auto => auto_payment(
+            &options.cost,
+            &options.pool,
+            &options.sources,
+            options.life,
+            &options.spend,
+        )
+        .ok_or(IllegalAnswer::NotOffered("automatic payment"))?,
     };
     let events = payment_events(player, options, tapped, &payment, announced, activate)?;
     Ok(Outcome::Events(events))
@@ -358,7 +356,7 @@ mod tests {
                 &Spend::other(),
             )
             .is_some(),
-            spend: Spend::other(),
+            spend: Box::new(Spend::other()),
             can_cancel,
             life,
             max_life: max_life_payment(&cost, life),

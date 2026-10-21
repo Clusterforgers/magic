@@ -27,6 +27,8 @@ struct Weight {
     extras: u32,
     /// Permanents tapped or sacrificed.
     taps: u32,
+    /// Sources used whose mana has no restriction, which is of more use than mana with one.
+    unrestricted: u32,
     /// How far the types used are from the commonest ones.
     scarcity: u32,
 }
@@ -58,6 +60,7 @@ pub(crate) fn plan(
                     sacrifices: weight.sacrifices + u32::from(option.sacrifice),
                     extras: weight.extras + u32::from(option.extra),
                     taps: weight.taps + 1,
+                    unrestricted: weight.unrestricted + u32::from(option.only.is_empty()),
                     scarcity: weight.scarcity + (all - plenty(option.produces)),
                 };
                 if next.get(&after).is_none_or(|(held, _)| used < *held) {
@@ -186,7 +189,7 @@ pub(crate) fn covers_cost(cost: &ManaCost, parts: &[Vec<ManaType>]) -> bool {
 }
 
 /// The best completion so far: its weight (sacrifices, side effects, taps), the floating mana it spends and the sources it taps.
-type Found = ((u32, u32, usize), Vec<ManaType>, Vec<ManaSource>);
+type Found = ((u32, u32, usize, usize), Vec<ManaType>, Vec<ManaSource>);
 
 /// What a completion may add: one floating mana, or one permanent used for one of its options.
 enum Candidate<'a> {
@@ -228,7 +231,8 @@ pub(crate) fn complete_with(
                             .unwrap_or(u32::MAX);
                     let extras = u32::try_from(self.taps.iter().filter(|o| o.extra).count())
                         .unwrap_or(u32::MAX);
-                    let weight = (sacrifices, extras, self.taps.len());
+                    let unrestricted = self.taps.iter().filter(|o| o.only.is_empty()).count();
+                    let weight = (sacrifices, extras, self.taps.len(), unrestricted);
                     if self.best.as_ref().is_none_or(|(held, ..)| weight < *held) {
                         let sources = self.taps.iter().map(|o| o.source).collect();
                         self.best = Some((weight, self.pool.clone(), sources));

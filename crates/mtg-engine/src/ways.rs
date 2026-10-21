@@ -15,12 +15,12 @@ use crate::attach;
 use crate::choose::announceable;
 use crate::keywords::{self, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford};
-use crate::spend::Spend;
 use crate::object::ObjectKind;
 use crate::price::Price;
 use crate::priority::sorcery_timing;
 use crate::resolve::{spell_ability, zone_kind};
 use crate::rules::cast_permissions;
+use crate::spend::Spend;
 use crate::state::GameState;
 use crate::zones::Zone;
 

@@ -13,8 +13,8 @@ use mtg_engine::decision::{
     PriorityOptions,
 };
 use mtg_engine::mana::{ManaOption, ManaSource, Payment, check_payment};
-use mtg_engine::spend::Restricted;
 use mtg_engine::rng::GameRng;
+use mtg_engine::spend::Restricted;
 use mtg_engine::turn::Step;
 
 use crate::windows::{Mode, SeatWindows, Side, Stop};

@@ -67,8 +67,13 @@ impl SpendFilter {
         let any = |wanted: &[CardType]| wanted.iter().any(|t| traits.types.contains(*t));
         (self.types.is_empty() || any(&self.types))
             && !any(&self.without)
-            && (self.supertypes.is_empty() || self.supertypes.iter().any(|s| traits.supertypes.contains(s)))
-            && (self.subtypes.is_empty() || self.subtypes.iter().any(|s| traits.subtypes.contains(s)))
+            && (self.supertypes.is_empty()
+                || self
+                    .supertypes
+                    .iter()
+                    .any(|s| traits.supertypes.contains(s)))
+            && (self.subtypes.is_empty()
+                || self.subtypes.iter().any(|s| traits.subtypes.contains(s)))
             && (!self.multicolored || traits.colors >= 2)
     }
 }
@@ -105,7 +110,12 @@ mod tests {
 
     use super::*;
 
-    fn traits(types: &[CardType], supertypes: &[Supertype], subtypes: &[&str], colors: u8) -> SpendTraits {
+    fn traits(
+        types: &[CardType],
+        supertypes: &[Supertype],
+        subtypes: &[&str],
+        colors: u8,
+    ) -> SpendTraits {
         SpendTraits {
             types: types.iter().copied().collect(),
             supertypes: supertypes.to_vec(),
@@ -115,7 +125,7 @@ mod tests {
     }
 
     #[rstest]
-    #[case::any(r#"{}"#, &[CardType::Land], &[], &[], 0, true)]
+    #[case::any(r"{}", &[CardType::Land], &[], &[], 0, true)]
     #[case::type_held(r#"{"types":["Creature"]}"#, &[CardType::Creature], &[], &[], 1, true)]
     #[case::type_missing(r#"{"types":["Creature"]}"#, &[CardType::Artifact], &[], &[], 0, false)]
     #[case::one_of_two_types(r#"{"types":["Instant","Sorcery"]}"#, &[CardType::Sorcery], &[], &[], 1, true)]
@@ -136,11 +146,17 @@ mod tests {
         #[case] holds: bool,
     ) {
         let filter: SpendFilter = serde_json::from_str(json).unwrap();
-        assert_eq!(filter.holds(&traits(types, supertypes, subtypes, colors)), holds);
+        assert_eq!(
+            filter.holds(&traits(types, supertypes, subtypes, colors)),
+            holds
+        );
     }
 
     #[rstest]
-    #[case::spells(SpendOn::spells(SpendFilter::of_type(CardType::Creature)), r#"{"Spell":{"types":["Creature"]}}"#)]
+    #[case::spells(
+        SpendOn::spells(SpendFilter::of_type(CardType::Creature)),
+        r#"{"Spell":{"types":["Creature"]}}"#
+    )]
     #[case::abilities(SpendOn::abilities(), r#"{"Ability":{}}"#)]
     #[case::x(SpendOn::CostWithX, r#""CostWithX""#)]
     fn a_use_is_written_without_its_empty_parts(#[case] on: SpendOn, #[case] json: &str) {

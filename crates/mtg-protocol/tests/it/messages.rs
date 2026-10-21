@@ -18,7 +18,6 @@ use mtg_engine::choose::{
     TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
 };
 use mtg_engine::combat::{AttackTarget, DamageTarget};
-use mtg_engine::spend::Spend;
 use mtg_engine::counters::CountersChanged;
 use mtg_engine::decision::{
     AttackOptions, AttackerOption, BlockOptions, BlockerOption, BottomOptions, DamageOptions,
@@ -33,6 +32,7 @@ use mtg_engine::library::{CardsFound, LibraryLooked, Revealed, Scried};
 use mtg_engine::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use mtg_engine::object::{Chosen, ObjectRef};
 use mtg_engine::snapshot::snapshot;
+use mtg_engine::spend::Spend;
 use mtg_engine::state::GameResult;
 use mtg_engine::tokens::TokenCreated;
 use mtg_engine::triggers::{DelayedId, Triggered};
@@ -229,7 +229,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             can_pass: true,
         }),
         DecisionKind::PayMana(PayOptions {
-            spend: Spend::other(),
+            spend: Box::new(Spend::other()),
             spell: b,
             cost: ManaCost::parse("{1}{G}").unwrap(),
             pool: ManaPool::default(),
@@ -240,7 +240,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             max_life: 0,
         }),
         DecisionKind::PayMana(PayOptions {
-            spend: Spend::other(),
+            spend: Box::new(Spend::other()),
             spell: b,
             cost: ManaCost::parse("{2}{W/P}{G/U/P}").unwrap(),
             pool: ManaPool::default(),
@@ -978,7 +978,7 @@ fn a_payment_names_the_life_it_pays_and_may_leave_it_out() {
 #[test]
 fn pay_options_carry_the_life_total_and_the_most_life_that_may_be_paid() {
     let options = PayOptions {
-        spend: Spend::other(),
+        spend: Box::new(Spend::other()),
         spell: ObjectId(4),
         cost: ManaCost::parse("{W/P}").unwrap(),
         pool: ManaPool::default(),

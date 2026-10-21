@@ -162,7 +162,7 @@ pub struct PayOptions {
     /// What the payment is for, which decides what restricted mana may be spent on it; left out means neither a spell nor an ability.
     #[serde(default, skip_serializing_if = "Spend::is_other")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Spend>", optional))]
-    pub spend: Spend,
+    pub spend: Box<Spend>,
     /// Whether an automatic payment exists (it does whenever the cast was offered, unless only a payment that takes the last life would do).
     pub auto_available: bool,
     /// Whether the cast may be backed out of; nothing has been paid yet, so it rolls back (CR 601.2).

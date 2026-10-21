@@ -270,19 +270,31 @@ fn pred() -> impl Strategy<Value = Pred> {
 
 fn spend_filter() -> impl Strategy<Value = SpendFilter> {
     (
-        vec(select(vec![CardType::Creature, CardType::Artifact, CardType::Instant]), 0..3),
+        vec(
+            select(vec![
+                CardType::Creature,
+                CardType::Artifact,
+                CardType::Instant,
+            ]),
+            0..3,
+        ),
         vec(select(vec![CardType::Creature, CardType::Land]), 0..2),
         vec(select(vec![Supertype::Legendary, Supertype::Basic]), 0..2),
         vec(select(vec!["Dragon", "Elf"]), 0..2),
         any::<bool>(),
     )
-        .prop_map(|(types, without, supertypes, subtypes, multicolored)| SpendFilter {
-            types,
-            without,
-            supertypes,
-            subtypes: subtypes.into_iter().map(|s| Subtype(s.to_owned())).collect(),
-            multicolored,
-        })
+        .prop_map(
+            |(types, without, supertypes, subtypes, multicolored)| SpendFilter {
+                types,
+                without,
+                supertypes,
+                subtypes: subtypes
+                    .into_iter()
+                    .map(|s| Subtype(s.to_owned()))
+                    .collect(),
+                multicolored,
+            },
+        )
 }
 
 fn spend_on() -> impl Strategy<Value = SpendOn> {

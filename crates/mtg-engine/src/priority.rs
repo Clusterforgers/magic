@@ -17,12 +17,12 @@ use crate::events::Event;
 use crate::keywords;
 use crate::loyalty;
 use crate::mana::{ManaOption, can_afford};
-use crate::spend::Spend;
 use crate::mana_ability;
 use crate::object::GameObject;
 use crate::player::Player;
 use crate::price::{Leaves, Price};
 use crate::resolve::{Scope, zone_kind};
+use crate::spend::Spend;
 use crate::state::GameState;
 use crate::turn::LAND_DROPS_PER_TURN;
 use crate::ways;
@@ -217,7 +217,10 @@ pub(crate) fn can_act(
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
     let all_mana = mana_options(state, player);
-    let pool = state.player(player).map(|p| p.mana().clone()).unwrap_or_default();
+    let pool = state
+        .player(player)
+        .map(|p| p.mana().clone())
+        .unwrap_or_default();
     let life = state.player(player).map_or(0, Player::life);
     let may_play_land =
         sorcery_timing(state, player) && state.turn().lands_played() < LAND_DROPS_PER_TURN;
