@@ -43,6 +43,8 @@ mod forecast_replacement;
 mod format_hooks;
 mod fuzz_games;
 mod harness_selfcheck;
+mod help_fuzz;
+mod help_payment;
 mod house_rules;
 mod house_turn;
 mod hybrid_payment;
