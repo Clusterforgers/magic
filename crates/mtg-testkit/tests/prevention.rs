@@ -5,8 +5,8 @@ mod common;
 
 use common::combat::to_blockers;
 use common::names;
-use mtg_cards::refs::Selector;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::Selector;
 use mtg_engine::choose::{ChoiceOption, OptionChoice, ReplacementChoice, Target};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::effects::Duration;

@@ -62,8 +62,7 @@ pub fn smite(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
 /// Stomp, the adventure of Bonecrusher Giant, as an instant of its own for `{1}{R}`: the rules are those of its face in
 /// the card file (damage can't be prevented this turn, 2 damage to any target).
 pub fn stomp() -> Result<Arc<CardDefinition>, CorpusError> {
-    let library =
-        builtin::library().map_err(|errors| CorpusError::Data(errors.to_string()))?;
+    let library = builtin::library().map_err(|errors| CorpusError::Data(errors.to_string()))?;
     let face = library
         .card_by_name("Stomp")
         .and_then(|card| card.faces.iter().find(|face| face.name == "Stomp"))

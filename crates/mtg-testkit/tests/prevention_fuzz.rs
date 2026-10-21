@@ -1,7 +1,7 @@
 //! Goal: whole bot games with decks of prevention and regeneration (Fog, Mending Hands, Samite Healer, Drudge Skeletons, Death Ward) against burn, Stomp, destroy effects, Wrath of God and creatures that fight finish and keep every invariant for many seeds at tables of two, three and four seats, and the games use them: an independent ledger replays each log and finds that no combat damage is dealt while a Fog is in force unless it can't be prevented, that damage of a spell is dealt through a Fog, that a shield with damage left says how much it kept and that this is always less than before and more than nothing, that no shield keeps or uses up damage while a Stomp makes all damage unpreventable and every Stomp that resolves deals at least its 2 damage, that a creature regenerates only while a shield names it, and that Wrath of God resolves with no regeneration and leaves no creature; bots answer the question of which damage a shield takes first.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{EffectId, ObjectId};
 use mtg_engine::events::{ResolutionOutcome, ZoneCause};
 use mtg_engine::rules::Rule;
 use mtg_engine::turn::Step;
@@ -106,6 +106,90 @@ fn creatures(state: &GameState) -> Vec<String> {
         .collect()
 }
 
+/// Follows the Stomp that resolves and the damage dealt while no damage can be prevented: a Stomp that resolves deals at
+/// least its 2 damage whatever shields and Fogs are in force (Furnace of Rath may add to it).
+fn watch_stomp(
+    state: &GameState,
+    event: &Event,
+    at: usize,
+    stomp: &mut Option<(ObjectId, u32)>,
+    seen: &mut Seen,
+) {
+    if let Event::ResolutionBegan { object } = event
+        && name_of(state, *object) == "Stomp"
+    {
+        *stomp = Some((*object, 0));
+    }
+    if let (Event::DamageDealt { source, amount, .. }, Some((spell, dealt))) =
+        (event, stomp.as_mut())
+        && source == spell
+    {
+        *dealt += amount;
+    }
+    if let Event::ResolutionEnded { object, outcome } = event
+        && stomp.is_some_and(|(spell, _)| spell == *object)
+    {
+        let (_, dealt) = stomp.take().unwrap();
+        if *outcome == ResolutionOutcome::Resolved {
+            assert!(dealt >= 2, "Stomp dealt {dealt} damage at {at}");
+            seen.stomps += 1;
+        }
+    }
+    if matches!(event, Event::DamageDealt { .. }) && all_damage_unpreventable(state) {
+        seen.damage_while_unpreventable += 1;
+        if shield_in_force(state) {
+            seen.damage_past_a_shield += 1;
+        }
+    }
+}
+
+/// A shield keeps damage: no damage is prevented while all of it can't be, and what is left is less than before and more
+/// than nothing.
+fn kept(state: &GameState, id: EffectId, left: u32, at: usize, seen: &mut Seen) {
+    assert!(
+        !all_damage_unpreventable(state),
+        "a shield kept damage at {at} while no damage could be prevented"
+    );
+    let shield = state
+        .rule_effects()
+        .iter()
+        .find(|effect| effect.id == id)
+        .and_then(|effect| match &effect.rule {
+            Rule::PreventDamage(shield) => Some(shield.clone()),
+            _ => None,
+        })
+        .unwrap_or_else(|| panic!("ShieldUsed at {at} names no damage shield"));
+    let before = shield.left.expect("only a shield with an amount is used");
+    assert!(
+        left > 0 && left < before,
+        "ShieldUsed at {at}: {before} left became {left}"
+    );
+    seen.shields_used += 1;
+}
+
+/// A rule expires: a damage shield that ends is counted, and one with an amount that is used up while all damage can't
+/// be prevented would be damage prevented (the others end with the turn or when what they name has gone).
+fn expire(state: &GameState, id: EffectId, at: usize, seen: &mut Seen) {
+    let shield =
+        state
+            .rule_effects()
+            .iter()
+            .find_map(|effect| match (&effect.rule, effect.id == id) {
+                (Rule::PreventDamage(shield), true) => Some((effect, shield.left)),
+                _ => None,
+            });
+    if let Some((effect, left)) = shield {
+        seen.shields_ended += 1;
+        assert!(
+            left.is_none()
+                || !effect.is_active(state)
+                || state.turn().step() == Step::Cleanup
+                || !all_damage_unpreventable(state),
+            "a shield was used up at {at} while no damage could be prevented"
+        );
+    }
+}
+
 /// Replays the log event by event and checks each against the state it happened in.
 fn ledger(setup: &GameSetup, events: &[Event], seen: &mut Seen) {
     let mut state = GameState::from_setup(setup).unwrap();
@@ -114,33 +198,7 @@ fn ledger(setup: &GameSetup, events: &[Event], seen: &mut Seen) {
     // The Stomp that is resolving, with the damage it has dealt.
     let mut stomp: Option<(ObjectId, u32)> = None;
     for (at, event) in events.iter().enumerate() {
-        if let Event::ResolutionBegan { object } = event
-            && name_of(&state, *object) == "Stomp"
-        {
-            stomp = Some((*object, 0));
-        }
-        if let (Event::DamageDealt { source, amount, .. }, Some((spell, dealt))) =
-            (event, stomp.as_mut())
-            && source == spell
-        {
-            *dealt += amount;
-        }
-        if let Event::ResolutionEnded { object, outcome } = event
-            && stomp.is_some_and(|(spell, _)| spell == *object)
-        {
-            let (_, dealt) = stomp.take().unwrap();
-            if *outcome == ResolutionOutcome::Resolved {
-                // Whatever shields and Fogs are in force, nothing of the 2 damage is prevented (Furnace of Rath may add).
-                assert!(dealt >= 2, "Stomp dealt {dealt} damage at {at}");
-                seen.stomps += 1;
-            }
-        }
-        if matches!(event, Event::DamageDealt { .. }) && all_damage_unpreventable(&state) {
-            seen.damage_while_unpreventable += 1;
-            if shield_in_force(&state) {
-                seen.damage_past_a_shield += 1;
-            }
-        }
+        watch_stomp(&state, event, at, &mut stomp, seen);
         match event {
             Event::RuleCreated { effect }
                 if matches!(&effect.rule, Rule::DamageCantBePrevented { .. }) =>
@@ -175,47 +233,8 @@ fn ledger(setup: &GameSetup, events: &[Event], seen: &mut Seen) {
                     seen.spell_damage_in_a_fog += 1;
                 }
             }
-            Event::ShieldUsed { id, left } => {
-                assert!(
-                    !all_damage_unpreventable(&state),
-                    "a shield kept damage at {at} while no damage could be prevented"
-                );
-                let shield = state
-                    .rule_effects()
-                    .iter()
-                    .find(|effect| effect.id == *id)
-                    .and_then(|effect| match &effect.rule {
-                        Rule::PreventDamage(shield) => Some(shield.clone()),
-                        _ => None,
-                    })
-                    .unwrap_or_else(|| panic!("ShieldUsed at {at} names no damage shield"));
-                let before = shield.left.expect("only a shield with an amount is used");
-                assert!(
-                    *left > 0 && *left < before,
-                    "ShieldUsed at {at}: {before} left became {left}"
-                );
-                seen.shields_used += 1;
-            }
-            Event::RuleExpired { id } => {
-                let shield = state.rule_effects().iter().find_map(|effect| {
-                    match (&effect.rule, effect.id == *id) {
-                        (Rule::PreventDamage(shield), true) => Some((effect, shield.left)),
-                        _ => None,
-                    }
-                });
-                if let Some((effect, left)) = shield {
-                    seen.shields_ended += 1;
-                    // A shield used up while all damage can't be prevented would be damage prevented: the others end
-                    // with the turn or when what they name has gone.
-                    assert!(
-                        left.is_none()
-                            || !effect.is_active(&state)
-                            || state.turn().step() == Step::Cleanup
-                            || !all_damage_unpreventable(&state),
-                        "a shield was used up at {at} while no damage could be prevented"
-                    );
-                }
-            }
+            Event::ShieldUsed { id, left } => kept(&state, *id, *left, at, seen),
+            Event::RuleExpired { id } => expire(&state, *id, at, seen),
             Event::Regenerated { object } => {
                 assert!(
                     regenerates(&state, *object),

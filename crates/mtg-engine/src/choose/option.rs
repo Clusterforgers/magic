@@ -1,4 +1,4 @@
-//! `ChooseOption`: one of a short list of things (a colour, a defending player, a name).
+//! `ChooseOption`: one of a short list of things (a colour, a defending player, a name, the damage a shield takes first).
 //!
 //! An effect asks through [`pick_options`]: a player with more than one option is asked, the answer is logged as
 //! `ChoiceMade` and the step runs again and reads it from the journal (`docs/cards-dsl.md`, Execution).
