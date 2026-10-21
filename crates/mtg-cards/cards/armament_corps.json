@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3b93427c-5b40-4119-96ae-7dce3ca2bbb9",
+  "name": "Armament Corps",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armament Corps",
+      "oracle_fingerprint": "b15859d5b986999d6a049f6bd9f7395a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 1, "max": 2 },
+                "divide": 2
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

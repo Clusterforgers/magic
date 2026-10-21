@@ -131,6 +131,22 @@ enum After {
     Condition,
 }
 
+/// What the amount being walked is the amount of.
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
+enum Amounting {
+    /// Anything but damage or counters.
+    #[default]
+    Other,
+    /// Damage or counters, whose recipients each read their share of a division.
+    Shared,
+}
+
+impl Amounting {
+    fn of(shared: bool) -> Self {
+        if shared { Self::Shared } else { Self::Other }
+    }
+}
+
 struct Walker<'a> {
     tokens: &'a BTreeSet<String>,
     problems: Vec<Problem>,
@@ -141,6 +157,8 @@ struct Walker<'a> {
     x_free: bool,
     /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
     x_now: bool,
+    /// What the amount being walked is the amount of, which says whether a divided amount has recipients to read it.
+    amounting: Amounting,
     /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
     nested: u32,
     /// Where the walk stands in an effect list, for "if you do".
@@ -162,6 +180,7 @@ impl<'a> Walker<'a> {
             has_kicker: false,
             x_free: false,
             x_now: false,
+            amounting: Amounting::Other,
             nested: 0,
             after: After::Nothing,
             face: 0,
@@ -307,6 +326,8 @@ impl<'a> Walker<'a> {
     }
 
     fn amount(&mut self, amount: &Amount) {
+        // Only the amount of damage or counters, or a sum or even share made of it, can be a recipient's share.
+        let sharing = std::mem::take(&mut self.amounting) == Amounting::Shared;
         match amount {
             Amount::Fixed(_) => {}
             Amount::X => {
@@ -327,22 +348,28 @@ impl<'a> Walker<'a> {
             Amount::Counters { on, .. } => self.at("on", |w| w.reference(on, Kind::Either)),
             Amount::Sum(parts) => {
                 for (i, part) in parts.iter().enumerate() {
+                    self.amounting = Amounting::of(sharing);
                     self.at(format!("[{i}]"), |w| w.amount(part));
                 }
             }
             Amount::Divided => {
-                self.uses("Amount", "Divided");
+                if !sharing {
+                    self.uses("Amount", "Divided.Elsewhere");
+                }
                 if !self.scope.targets.iter().any(|t| t.1) {
                     self.problem("`Divided` needs a target specification with `divide`");
                 }
             }
             Amount::EvenShare(total) => {
-                self.uses("Amount", "EvenShare");
+                if !sharing {
+                    self.uses("Amount", "EvenShare.Elsewhere");
+                }
                 if !self.scope.targets.iter().any(|t| t.2) {
                     self.problem(
                         "`EvenShare` needs a target specification with more than one target",
                     );
                 }
+                self.amounting = Amounting::of(sharing);
                 self.amount(total);
             }
             Amount::TargetCount(index) => {
@@ -932,6 +959,8 @@ impl<'a> Walker<'a> {
                     w.at("source", |w| w.reference(source, Kind::Object));
                 }
                 w.at("to", |w| w.reference(to, Kind::Either));
+                // The recipients of the damage each read their share of a division.
+                w.amounting = Amounting::Shared;
                 w.at("amount", |w| w.amount(amount));
             }
             Effect::GainLife { who, amount } | Effect::LoseLife { who, amount } => {
@@ -967,6 +996,7 @@ impl<'a> Walker<'a> {
             }
             Effect::PutCounters { on, count, .. } => {
                 w.at("on", |w| w.reference(on, Kind::Either));
+                w.amounting = Amounting::Shared;
                 w.at("count", |w| w.amount(count));
             }
             Effect::RemoveCounters { from, count, .. } => {
@@ -1486,7 +1516,8 @@ fn has_x_mana(cost: &Cost) -> bool {
 /// an ability with a `limit`, a zone other than the battlefield or sorcery timing also uses `Ability.Limit`,
 /// `Ability.From` or `Ability.Sorcery`.
 /// A value the engine cannot read yet is named too, wherever it stands (a condition, an amount, a selector):
-/// `Amount.Divided`, `Amount.EvenShare`, `Amount.Kicks` and `Condition.Kicked`. A loyalty ability whose cost is `-X` names `Cost.Loyalty.X`.
+/// `Amount.Kicks` and `Condition.Kicked`, and a divided amount read anywhere but as the amount of damage or counters
+/// (`Amount.Divided.Elsewhere`, `Amount.EvenShare.Elsewhere`). A loyalty ability whose cost is `-X` names `Cost.Loyalty.X`.
 ///
 /// A plain `{T}: Add {X}` is one primitive, [`PLAIN_MANA_ABILITY`]: the engine runs that exact shape
 /// and not the general ability, cost and effect it is made of.
@@ -2288,19 +2319,49 @@ mod tests {
         r#"{"Spell":{"effects":[{"If":{"condition":{"All":[{"Compare":{"left":{"Stat":{"of":"This","stat":"Power"}},"op":"Ge","right":3}},{"Matches":{"subject":"This","selector":[{"Compare":{"stat":"ManaValue","op":"Le","to":2}}]}}]},"then":[]}}]}}"#,
         &["Ability.Spell", "Effect.If"]
     )]
-    #[case::a_divided_amount(
-        r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":2},"divide":2}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}"#,
-        &["Ability.Spell", "Amount.Divided", "Effect.DealDamage"]
+    #[case::a_divided_amount_of_life(
+        r#"{"Spell":{"targets":[{"what":"Player","bounds":{"min":1,"max":2},"divide":2}],"effects":[{"GainLife":{"who":{"Target":0},"amount":"Divided"}}]}}"#,
+        &["Ability.Spell", "Amount.Divided.Elsewhere", "Effect.GainLife"]
     )]
-    #[case::an_even_share(
-        r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":null}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"EvenShare":3}}}]}}"#,
-        &["Ability.Spell", "Amount.EvenShare", "Effect.DealDamage"]
+    #[case::an_even_share_of_cards(
+        r#"{"Spell":{"targets":[{"what":"Player","bounds":{"min":1,"max":null}}],"effects":[{"Draw":{"who":{"Target":0},"count":{"EvenShare":3}}}]}}"#,
+        &["Ability.Spell", "Amount.EvenShare.Elsewhere", "Effect.Draw"]
+    )]
+    #[case::a_divided_amount_read_by_a_selector_of_the_damage(
+        r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":2},"divide":2}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"Count":[{"Compare":{"stat":"Power","op":"Ge","to":"Divided"}}]}}}]}}"#,
+        &["Ability.Spell", "Amount.Divided.Elsewhere", "Effect.DealDamage"]
     )]
     fn a_value_the_engine_cannot_read_yet_counts_as_a_primitive(
         #[case] json: &str,
         #[case] expected: &[&str],
     ) {
         assert_eq!(problems(json), Vec::<String>::new());
+        let ability: Ability = serde_json::from_str(json).unwrap();
+        let expected: BTreeSet<String> = expected.iter().map(|name| (*name).to_owned()).collect();
+        assert_eq!(used_primitives(&ability), expected);
+    }
+
+    #[rstest]
+    #[case::divided_damage(
+        r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":2},"divide":2}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"Divided"}}]}}"#,
+        &["Ability.Spell", "Effect.DealDamage"]
+    )]
+    #[case::damage_divided_evenly(
+        r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":null}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"EvenShare":"X"}}}]}}"#,
+        &["Ability.Spell", "Effect.DealDamage"]
+    )]
+    #[case::divided_counters(
+        r#"{"Spell":{"targets":[{"what":{"Object":[]},"bounds":{"min":1,"max":3},"divide":3}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":"Divided"}}]}}"#,
+        &["Ability.Spell", "Effect.PutCounters"]
+    )]
+    #[case::a_share_in_a_sum(
+        r#"{"Spell":{"targets":[{"what":"AnyTarget","bounds":{"min":1,"max":2},"divide":2}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":{"Sum":["Divided",1]}}}]}}"#,
+        &["Ability.Spell", "Effect.DealDamage"]
+    )]
+    fn a_divided_amount_of_damage_or_counters_is_no_primitive_of_its_own(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
         let ability: Ability = serde_json::from_str(json).unwrap();
         let expected: BTreeSet<String> = expected.iter().map(|name| (*name).to_owned()).collect();
         assert_eq!(used_primitives(&ability), expected);
