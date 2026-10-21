@@ -9,6 +9,7 @@
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_core::house::HouseRules;
 use mtg_protocol::SeatDeck;
 
 use crate::demo::{self, DemoDeck};
@@ -84,6 +85,7 @@ impl ChosenDeck {
 #[derive(Debug)]
 pub(crate) struct SeatDecks {
     format: FormatKind,
+    house_rules: HouseRules,
     seed: u64,
     /// What each seat plays until its holder chooses, and again once the seat is given back.
     defaults: Vec<Option<ChosenDeck>>,
@@ -96,10 +98,18 @@ impl SeatDecks {
     pub(crate) fn new(format: FormatKind, seed: u64, defaults: Vec<Option<ChosenDeck>>) -> Self {
         SeatDecks {
             format,
+            house_rules: HouseRules::default(),
             seed,
             current: defaults.clone(),
             defaults,
         }
+    }
+
+    /// The lobby of a game played under `house_rules`, which every recipe it writes keeps.
+    #[must_use]
+    pub(crate) fn with_house_rules(mut self, house_rules: HouseRules) -> Self {
+        self.house_rules = house_rules;
+        self
     }
 
     /// The lobby of a game stored in `recipe`: only built-in decks come back as chosen, since the
@@ -113,7 +123,7 @@ impl SeatDecks {
                 DeckRef::Oracle { .. } => None,
             })
             .collect();
-        SeatDecks::new(recipe.format, recipe.seed, defaults)
+        SeatDecks::new(recipe.format, recipe.seed, defaults).with_house_rules(recipe.house_rules)
     }
 
     /// What the table is told of `seat`'s deck.
@@ -163,6 +173,7 @@ impl SeatDecks {
         let chosen = chosen?;
         Some(GameRecipe {
             format: self.format,
+            house_rules: self.house_rules,
             seed: self.seed,
             decks: chosen.iter().map(|deck| deck.deck.clone()).collect(),
             fingerprints: chosen.iter().map(|deck| deck.fingerprint).collect(),

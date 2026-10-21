@@ -6,6 +6,7 @@
 use std::fmt;
 
 use mtg_cards::deck::Issue;
+use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use serde::{Deserialize, Serialize};
@@ -45,6 +46,10 @@ pub struct LobbyGame {
     pub host: String,
     /// The format key the game is played under, `normal` today.
     pub format: String,
+    /// What the host set in place of the format's values; left out when nothing is set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub house_rules: Option<HouseRules>,
     /// Seats somebody holds, the host's included.
     pub filled: u32,
     /// Seats in all; a lobby with `filled == total` is full and waits for everybody to be ready.

@@ -50,6 +50,8 @@ MTG_REAL_DATA_DIR=/tmp/mtgdata cargo test -p mtg-import real_data:: -- --ignored
 
 `MTG_REAL_DATA_DIR` can also be the `mtg-cli` cache (`~/.cache/mtg-cli`); `cargo test -p mtg-import -- --ignored` then runs every real-data test, `resolve_corpus::` and `real_exports::` included.
 
+The records of `mtg-cards/tests/fixtures/corpus_scryfall.json` are copies of Oracle Cards records, never typed by hand: `cargo test -p mtg-cards fixture_real:: -- --ignored` compares each with the cached download by oracle id and names the card and field that differ (it reads the `mtg-cli` cache, or `MTG_REAL_DATA_DIR`).
+
 ## Mana cost strings
 
 Figures come from the oracle-cards file (38,753 cards).

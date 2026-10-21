@@ -102,6 +102,7 @@ async fn visibility_and_open_seats_are_stored_and_survive_a_restart(pool: PgPool
     let options = GameOptions {
         visibility: Visibility::Public,
         held: Some(1),
+        ..GameOptions::default()
     };
     let listed = registry
         .create_with(&requests(&["Cy", "ignored", "ignored too"]), options, None)
@@ -205,6 +206,7 @@ async fn an_open_seat_is_stored_without_a_token_or_an_account(pool: PgPool) {
     let options = GameOptions {
         visibility: Visibility::Invite,
         held: Some(1),
+        ..GameOptions::default()
     };
     let created = registry
         .create_with(&requests(&["Ann", "Bo"]), options, None)

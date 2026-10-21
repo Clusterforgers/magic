@@ -1,11 +1,11 @@
 {
-  "oracle_id": "a14e6b02-7c3d-4f58-8e91-3d2b6f0c5a77",
+  "oracle_id": "32e5339e-9e4f-46f8-b305-f9d6d3ba8bb5",
   "name": "Lotus Petal",
   "impl_status": "Full",
   "faces": [
     {
       "name": "Lotus Petal",
-      "oracle_fingerprint": "3091cdade923b8ad307a6928bcec129a",
+      "oracle_fingerprint": "ea54fe0252ad36c263e593d1742d993b",
       "abilities": [
         {
           "Activated": {
