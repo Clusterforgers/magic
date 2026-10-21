@@ -18,10 +18,11 @@ use crate::turn::{MAX_HAND_SIZE, Step};
 use crate::zones::Zone;
 
 /// The next batch of events or decision for the current step.
+///
+/// A turn whose active player has left the game goes on without one (CR 800.4): the turn-based actions that
+/// belong to the active player (untap, draw, attack, discard down) are skipped and every step that grants
+/// priority starts with the next player in turn order.
 pub(crate) fn next(state: &GameState) -> Progress {
-    if !state.is_alive(state.turn().active()) {
-        return Progress::Events(end_turn(state));
-    }
     if state.priority().is_some() {
         priority_round(state)
     } else {
@@ -31,19 +32,20 @@ pub(crate) fn next(state: &GameState) -> Progress {
 
 fn grant(state: &GameState) -> Event {
     Event::PriorityGranted {
-        player: state.turn().active(),
+        player: state.active_or_next(),
     }
 }
 
 fn begin_step(state: &GameState, step: Step) -> Progress {
-    let active = state.turn().active();
+    let active = state.active_player();
     match step {
         Step::Untap => {
             let mut events: Vec<Event> = state
                 .zone(Zone::Battlefield)
                 .iter()
                 .filter(|id| {
-                    controller_of(state, **id) == Some(active)
+                    active.is_some()
+                        && controller_of(state, **id) == active
                         && state
                             .object(**id)
                             .and_then(GameObject::permanent)
@@ -57,10 +59,9 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
         Step::Draw => {
             let skipped = state.turn().number() == 1
                 && state.format().skips_first_draw(state.players().len());
-            let mut events = if skipped {
-                Vec::new()
-            } else {
-                draw(state, active, 1)
+            let mut events = match active {
+                Some(active) if !skipped => draw(state, active, 1),
+                _ => Vec::new(),
             };
             events.push(grant(state));
             Progress::Events(events)
@@ -98,8 +99,15 @@ pub(crate) fn draw(state: &GameState, player: PlayerId, count: usize) -> Vec<Eve
 }
 
 fn declare_attackers(state: &GameState) -> Progress {
-    let active = state.turn().active();
+    let seat = state.turn().active();
     if !state.combat().attackers_declared() {
+        // Nobody declares attackers in a turn without an active player.
+        let Some(active) = state.active_player() else {
+            return Progress::Events(vec![Event::AttackersDeclared {
+                player: seat,
+                attackers: Vec::new(),
+            }]);
+        };
         let options = attack_options(state, active);
         if options.attackers.is_empty() {
             return Progress::Events(vec![
@@ -206,16 +214,17 @@ fn pool_emptying(state: &GameState) -> Vec<Event> {
 }
 
 fn cleanup(state: &GameState) -> Progress {
-    let active = state.turn().active();
-    let hand = state.zone(Zone::Hand(active));
-    if hand.len() > MAX_HAND_SIZE {
-        return Progress::Decide(Decision {
-            player: active,
-            kind: DecisionKind::Discard(DiscardOptions {
-                hand: hand.to_vec(),
-                count: hand.len() - MAX_HAND_SIZE,
-            }),
-        });
+    if let Some(active) = state.active_player() {
+        let hand = state.zone(Zone::Hand(active));
+        if hand.len() > MAX_HAND_SIZE {
+            return Progress::Decide(Decision {
+                player: active,
+                kind: DecisionKind::Discard(DiscardOptions {
+                    hand: hand.to_vec(),
+                    count: hand.len() - MAX_HAND_SIZE,
+                }),
+            });
+        }
     }
     // CR 514.3a: an ability that triggered during cleanup gets a round of priority, then cleanup begins again.
     if !state.stack().is_empty() {
@@ -226,7 +235,7 @@ fn cleanup(state: &GameState) -> Progress {
 
 /// Ends the turn: damage wears off, "until end of turn" effects end, and the next player's turn begins.
 ///
-/// Also used when the active player leaves the game, which abandons the rest of their turn.
+/// The next turn goes to the next player in turn order after the active player, who may have left the game.
 pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
     let mut events = Vec::new();
     let damaged = state

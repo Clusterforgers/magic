@@ -880,7 +880,7 @@ impl Pass<'_> {
         let controller_of = |object: ObjectId| {
             self.state
                 .object(object)
-                .map_or(self.state.turn().active(), |o| {
+                .map_or(self.state.active_or_next(), |o| {
                     controller_of_object(self.state, o)
                 })
         };
@@ -896,7 +896,7 @@ impl Pass<'_> {
                 Target::Object(object) => controller_of(object.id),
             },
             Unit::Move { object, .. } => controller_of(*object),
-            Unit::Other => self.state.turn().active(),
+            Unit::Other => self.state.active_or_next(),
         }
     }
 

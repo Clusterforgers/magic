@@ -313,6 +313,21 @@ impl GameState {
             .collect()
     }
 
+    /// The active player, or `None` once they have left the game: the turn goes on without one (CR 800.4).
+    pub fn active_player(&self) -> Option<PlayerId> {
+        Some(self.turn.active).filter(|player| self.is_alive(*player))
+    }
+
+    /// Who comes first in the turn's order of play: the active player, or the next player in turn order after
+    /// the one who left (CR 800.4); the seat itself if nobody is left.
+    pub fn active_or_next(&self) -> PlayerId {
+        let active = self.turn.active;
+        self.turn_order_from(active)
+            .first()
+            .copied()
+            .unwrap_or(active)
+    }
+
     /// The next living player after `player` in turn order (possibly `player` itself).
     pub fn next_alive_after(&self, player: PlayerId) -> Option<PlayerId> {
         let n = self.players.len();
