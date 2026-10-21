@@ -473,8 +473,11 @@ mod tests {
     /// What the state-based actions do to `game(attached)`: (name, put into the graveyard) for each, sorted; an attachment
     /// that becomes unattached is not put into the graveyard.
     fn actions(attached: &[(usize, (usize, usize))]) -> Vec<(String, bool)> {
-        let game = game(attached);
-        let mut done: Vec<(String, bool)> = state_based(&game, &[])
+        done_to(&game(attached))
+    }
+
+    fn done_to(game: &GameState) -> Vec<(String, bool)> {
+        let mut done: Vec<(String, bool)> = state_based(game, &[])
             .iter()
             .map(|event| match event {
                 Event::ZoneChanged {
@@ -524,6 +527,30 @@ mod tests {
             .map(|(name, put)| ((*name).to_owned(), *put))
             .collect();
         assert_eq!(actions(&attached), expected);
+    }
+
+    #[rstest]
+    #[case::an_aura_goes_with_its_host("Bear", ("Halo", true))]
+    #[case::an_equipment_comes_off("Wolf", ("Blade", false))]
+    fn a_host_that_left_is_no_host_so_its_aura_goes_and_its_equipment_comes_off(
+        #[case] host: &str,
+        #[case] expected: (&str, bool),
+    ) {
+        let mut game = game(&with(&[(BLADE, (0, WOLF))]));
+        let host = id(&game, host);
+        assert_eq!(done_to(&game), []);
+        apply_event(
+            &mut game,
+            &Event::ZoneChanged {
+                object: host,
+                from: Zone::Battlefield,
+                to: Zone::Graveyard(ME),
+                cause: ZoneCause::Destroyed,
+            },
+        )
+        .unwrap();
+        // The attachment still names the old object, which stopped being a host the moment it left (CR 400.7).
+        assert_eq!(done_to(&game), [(expected.0.to_owned(), expected.1)]);
     }
 
     #[test]
