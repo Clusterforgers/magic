@@ -233,6 +233,14 @@ mod tests {
         "Haste (This creature can attack and {T} as soon as it comes under your control.)\nCascade (When you cast this spell, exile cards.)",
         "Haste\nCascade"
     )]
+    #[case::convoke_and_a_sentence(
+        "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nStoke the Flames deals 4 damage to any target.",
+        "Convoke\nStoke the Flames deals 4 damage to any target."
+    )]
+    #[case::delve(
+        "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nDraw three cards.",
+        "Delve\nDraw three cards."
+    )]
     #[case::only_reminder("({T}: Add {G}.)", "")]
     #[case::before_a_sentence(
         "Scry 1. (Look at the top card.)\nDraw a card.",

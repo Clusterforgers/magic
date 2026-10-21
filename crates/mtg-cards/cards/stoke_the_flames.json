@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2249001c-08d5-4c0a-86f8-d97519a39f37",
+  "name": "Stoke the Flames",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stoke the Flames",
+      "oracle_fingerprint": "8dab181b07b20d5a78a63e853a16db81",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

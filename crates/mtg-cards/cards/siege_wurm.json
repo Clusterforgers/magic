@@ -1,0 +1,12 @@
+{
+  "oracle_id": "8a802eae-abfb-47fd-8458-1689055531ef",
+  "name": "Siege Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siege Wurm",
+      "oracle_fingerprint": "e8e9a355af3e41426bb571e1df06f33c",
+      "abilities": [{ "Keyword": "Convoke" }, { "Keyword": "Trample" }]
+    }
+  ]
+}

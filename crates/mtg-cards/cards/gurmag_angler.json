@@ -1,0 +1,12 @@
+{
+  "oracle_id": "315772f2-abd2-4681-b8c8-1db4b0ccbbcd",
+  "name": "Gurmag Angler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gurmag Angler",
+      "oracle_fingerprint": "ed3df00a735d87a6d259bf298910f8f9",
+      "abilities": [{ "Keyword": "Delve" }]
+    }
+  ]
+}

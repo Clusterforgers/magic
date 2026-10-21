@@ -1,4 +1,4 @@
-//! Goal: the 147 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 152 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -39,7 +39,7 @@ use Support::{Manual, Partial, Verified};
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk).
 /// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified; cost increases and reductions are
 /// played too, so Fireball, Thalia, Guardian of Thraben and Foundry Inspector are Verified.
-const CARDS: [(&str, Support, usize); 147] = [
+const CARDS: [(&str, Support, usize); 152] = [
     ("Act of Treason", Verified, 1),
     ("Llanowar Behemoth", Verified, 1),
     ("Lurching Rotbeast", Verified, 1),
@@ -187,13 +187,18 @@ const CARDS: [(&str, Support, usize); 147] = [
     ("Mesmeric Orb", Verified, 1),
     ("Wanderbrine Preacher", Verified, 1),
     ("Renewed Faith", Verified, 3),
+    ("Stoke the Flames", Verified, 2),
+    ("Gurmag Angler", Verified, 1),
+    ("Treasure Cruise", Verified, 2),
+    ("Murderous Cut", Verified, 2),
+    ("Siege Wurm", Verified, 2),
 ];
 
 #[test]
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 147);
+    assert_eq!(in_table.len(), 152);
     assert_eq!(in_table, in_corpus);
 }
 

@@ -24,6 +24,8 @@ mod price;
 mod replace_dry;
 mod sba;
 #[cfg(test)]
+mod help_tests;
+#[cfg(test)]
 mod spend_tests;
 mod steps;
 mod ways;
