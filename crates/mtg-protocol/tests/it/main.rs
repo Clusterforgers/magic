@@ -12,6 +12,7 @@ mod common;
 mod counter_view;
 mod effect_view;
 mod hidden_info;
+mod house_rules_view;
 mod keyword_view;
 mod lobby_message;
 mod loyalty_view;

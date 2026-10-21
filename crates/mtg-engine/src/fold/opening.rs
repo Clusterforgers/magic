@@ -71,7 +71,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         } => take_mulligan(state, *player, library_order)?,
         Event::MulliganKept { player } => {
             expect_status(state, *player, MulliganStatus::Deciding)?;
-            let rule = state.format.mulligan_rule();
+            let rule = state.ruleset().mulligan_rule();
             let seat = player_mut(state, *player)?;
             seat.mulligan = match rule.bottom_count(seat.mulligans) {
                 0 => MulliganStatus::Kept,

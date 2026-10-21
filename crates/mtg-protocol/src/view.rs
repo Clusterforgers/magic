@@ -8,6 +8,7 @@ use mtg_cards::ability::LoyaltyCost;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
+use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use mtg_engine::abilities::AbilityRef;
@@ -209,6 +210,10 @@ pub struct TableView {
     pub viewer: PlayerId,
     /// Name of the format being played.
     pub format: String,
+    /// What the table's creator set in place of the format's values; left out when nothing is set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub house_rules: Option<HouseRules>,
     /// Coarse game stage.
     pub stage: Stage,
     /// The player who took the first turn.

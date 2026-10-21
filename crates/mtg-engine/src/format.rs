@@ -11,6 +11,11 @@ use thiserror::Error;
 
 use crate::player::LossReason;
 use crate::state::{GameResult, GameState};
+use crate::turn::MAX_HAND_SIZE;
+
+mod ruleset;
+
+pub use ruleset::RuleSet;
 
 /// Why a deck is not legal in a format.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -58,7 +63,7 @@ pub enum ExtraZone {
     Command,
 }
 
-/// Format-specific rules.
+/// Format-specific rules. A game reads the ones its table can override through [`RuleSet`], never from here.
 ///
 /// Extension point (M5): `Commander` implements this trait with 100-card singleton validation,
 /// [`ExtraZone::Command`], 40 starting life, a free first mulligan and a commander-damage
@@ -78,6 +83,10 @@ pub trait FormatRules: Debug + Send + Sync {
     }
     /// Whether the starting player skips their first draw.
     fn skips_first_draw(&self, player_count: usize) -> bool;
+    /// The most cards a player keeps in hand at the cleanup step.
+    fn max_hand_size(&self) -> usize {
+        MAX_HAND_SIZE
+    }
     /// A format-specific reason `player` has lost, checked with state-based actions.
     fn loss_condition(&self, _state: &GameState, _player: PlayerId) -> Option<LossReason> {
         None

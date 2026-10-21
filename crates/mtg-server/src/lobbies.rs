@@ -197,6 +197,7 @@ fn view(game: ListedGame) -> LobbyGame {
         game: game.game.to_string(),
         host: game.host,
         format: game.format.as_str().to_owned(),
+        house_rules: Some(game.house_rules).filter(|rules| !rules.is_empty()),
         filled: count(game.filled),
         total: count(game.total),
         created_at: game.created_at,
@@ -212,10 +213,13 @@ fn listing_tag(listed: &[ListedGame]) -> String {
         let filled = game.filled.to_string();
         let total = game.total.to_string();
         let id = game.game.to_string();
+        // A rule set is plain data that always serializes; the empty text only stands for a failure that cannot occur.
+        let rules = serde_json::to_string(&game.house_rules).unwrap_or_default();
         let parts = [
             id.as_str(),
             &game.host,
             game.format.as_str(),
+            &rules,
             &filled,
             &total,
             &game.created_at,
@@ -499,6 +503,7 @@ mod tests {
 
     use super::*;
     use crate::recipe::FormatKind;
+    use mtg_core::house::HouseRules;
 
     #[rstest]
     #[case("0", Some(0))]
@@ -594,6 +599,7 @@ mod tests {
             game: GameId(Uuid::from_u128(7)),
             host: host.to_owned(),
             format: FormatKind::Normal,
+            house_rules: HouseRules::default(),
             filled,
             total: 4,
             created_at: "2026-10-19T12:30:00Z".to_owned(),

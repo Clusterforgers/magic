@@ -3,6 +3,8 @@
 use std::net::IpAddr;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
+use mtg_core::house::HouseRules;
+
 use super::Registry;
 use crate::game_id::GameId;
 use crate::handle::GameHandle;
@@ -23,6 +25,8 @@ pub struct ListedGame {
     pub host: String,
     /// The rules it is played under.
     pub format: FormatKind,
+    /// What the creator set in place of the format's values.
+    pub house_rules: HouseRules,
     /// Seats somebody holds, the host's included.
     pub filled: usize,
     /// Seats in all; a lobby with `filled == total` is full and waits for everybody to be ready.
@@ -67,6 +71,7 @@ impl Registry {
                         .map(|s| s.name.clone())
                         .unwrap_or_default(),
                     format: entry.format,
+                    house_rules: entry.house_rules,
                     filled: entry
                         .seats
                         .iter()

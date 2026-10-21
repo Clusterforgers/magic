@@ -2,6 +2,7 @@
 import type { CombatForecast } from "./CombatForecast";
 import type { CombatView } from "./CombatView";
 import type { GameResult } from "./GameResult";
+import type { HouseRules } from "./HouseRules";
 import type { ObjectView } from "./ObjectView";
 import type { PlayerId } from "./PlayerId";
 import type { PlayerView } from "./PlayerView";
@@ -28,6 +29,10 @@ viewer: PlayerId,
  * Name of the format being played.
  */
 format: string, 
+/**
+ * What the table's creator set in place of the format's values; left out when nothing is set.
+ */
+house_rules?: HouseRules, 
 /**
  * Coarse game stage.
  */

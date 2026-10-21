@@ -383,6 +383,7 @@ async fn lobby_of(registry: &Registry, seats: usize, visibility: Visibility) -> 
     let options = GameOptions {
         visibility,
         held: Some(1),
+        ..GameOptions::default()
     };
     registry
         .create_with(&requests(seats), options, None)

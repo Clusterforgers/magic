@@ -4,13 +4,14 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
+use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::abilities::AbilitySource;
 use crate::combat::CombatState;
 use crate::effects::ContinuousEffect;
-use crate::format::FormatRules;
+use crate::format::{FormatRules, RuleSet};
 use crate::hash::stable_hash;
 use crate::layers::LayersCache;
 use crate::object::{GameObject, ObjectRef};
@@ -74,6 +75,8 @@ pub(crate) struct Possible {
 #[derive(Debug, Clone)]
 pub struct GameState {
     pub(crate) format: Arc<dyn FormatRules>,
+    /// What the table's creator set in place of the format's values.
+    pub(crate) house_rules: HouseRules,
     pub(crate) seed: u64,
     pub(crate) rng_index: u64,
     pub(crate) stage: Stage,
@@ -119,6 +122,16 @@ impl GameState {
     /// The format being played.
     pub fn format(&self) -> &dyn FormatRules {
         &*self.format
+    }
+
+    /// What the table's creator set in place of the format's values.
+    pub fn house_rules(&self) -> &HouseRules {
+        &self.house_rules
+    }
+
+    /// The rules the game plays by: the format's values with the house rules over them.
+    pub fn ruleset(&self) -> RuleSet<'_> {
+        RuleSet::new(&*self.format, &self.house_rules)
     }
 
     /// The game seed.
@@ -348,6 +361,7 @@ impl GameState {
 impl Hash for GameState {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.format.name().hash(state);
+        self.house_rules.hash(state);
         self.seed.hash(state);
         self.rng_index.hash(state);
         self.stage.hash(state);
