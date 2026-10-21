@@ -17,7 +17,7 @@ use crate::cards::{bear, burn, cost, creature, land};
 use crate::corpus::CorpusError;
 
 /// Lands in a cost deck: three colours in turn.
-const LANDS: usize = 22;
+const LANDS: usize = 28;
 
 fn rules(json: &str) -> Ability {
     // The abilities are written here, so a typo is a bug of the test cards.
@@ -116,6 +116,13 @@ pub fn returner(name: &str) -> Arc<CardDefinition> {
 pub fn gauntlet(name: &str) -> Arc<CardDefinition> {
     let ability = r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap",{"PayLife":1},{"Sacrifice":{"filter":[{"Type":"Creature"}]}},{"Discard":{}}],"effects":[{"GainLife":{"amount":3}}]}}"#;
     creature_with(name, (2, &[Color::Red]), &[ability])
+}
+
+/// `{G}` creature: "{T}: Add {G}."
+pub fn mana_elf(name: &str) -> Arc<CardDefinition> {
+    let ability =
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#;
+    creature_with(name, (0, &[Color::Green]), &[ability])
 }
 
 /// `{3}{R}` 3/3 creature with `Cycling {1}`.
