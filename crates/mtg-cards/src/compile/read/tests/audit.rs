@@ -11,7 +11,9 @@ fn activated(text: &str) -> Option<Ability> {
 #[rstest]
 #[case::mana_and_damage_to_you("{T}: Add {R}. ~ deals 1 damage to you.")]
 #[case::a_painland("{T}: Add {W} or {U}. ~ deals 1 damage to you.")]
-#[case::a_painland_of_the_chosen_color("{T}: Add one mana of the chosen color. ~ deals 1 damage to you.")]
+#[case::a_painland_of_the_chosen_color(
+    "{T}: Add one mana of the chosen color. ~ deals 1 damage to you."
+)]
 #[case::an_egg("{T}, Sacrifice ~: Add one mana of any color. Draw a card.")]
 #[case::a_choice_and_a_second_effect("{T}: Add {W} or {U}. Draw a card.")]
 #[case::mana_and_a_counter("{2}, {T}: Add one mana of any color. Put a brick counter on ~.")]

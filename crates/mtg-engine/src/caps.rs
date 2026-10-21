@@ -321,8 +321,14 @@ mod tests {
     #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
     #[case::paying_by_exiling_the_source("Effect.Pay.ExileSelf", false)]
     #[case::paying_by_discarding_the_source("Effect.Pay.DiscardSelf", false)]
-    #[case::mana_abilities_of_several_mana_or_with_more_effects("Ability.ManaAbility.Complex", true)]
-    #[case::mana_abilities_the_engine_does_not_activate_at_priority("Ability.ManaAbility.Other", false)]
+    #[case::mana_abilities_of_several_mana_or_with_more_effects(
+        "Ability.ManaAbility.Complex",
+        true
+    )]
+    #[case::mana_abilities_the_engine_does_not_activate_at_priority(
+        "Ability.ManaAbility.Other",
+        false
+    )]
     #[case::paying_or_not("Effect.Pay", true)]
     #[case::flash("Keyword.Flash", true)]
     #[case::flying("Keyword.Flying", true)]

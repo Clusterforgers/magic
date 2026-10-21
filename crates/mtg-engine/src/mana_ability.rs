@@ -85,15 +85,17 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             ManaProduced::Fixed { mana, .. } => vec![mana],
             ManaProduced::AnyColor(_) => COLORS.to_vec(),
             ManaProduced::OneOf(types) => types.to_vec(),
-            ManaProduced::ChosenColor(_) => match object.permanent().and_then(PermanentState::chosen) {
-                Some(Chosen::Color(color)) => vec![mana_of(*color)],
-                _ => Vec::new(),
-            },
+            ManaProduced::ChosenColor(_) => {
+                match object.permanent().and_then(PermanentState::chosen) {
+                    Some(Chosen::Color(color)) => vec![mana_of(*color)],
+                    _ => Vec::new(),
+                }
+            }
         };
         if count == 0 {
             continue;
         }
-        let (tap, sacrifice) = (shape.tap, shape.sacrifice);
+        let (tap, sacrifice, extra) = (shape.tap, shape.sacrifice, !shape.then.is_empty());
         let options = types
             .into_iter()
             .take(VARIANTS)
@@ -106,6 +108,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                 produces,
                 count,
                 sacrifice,
+                extra,
             })
             .collect();
         found.push(RuleMana {
@@ -446,7 +449,10 @@ mod tests {
             assert!(found.is_empty(), "a source of nothing is not offered");
             return;
         }
-        assert_eq!(produced(&found), [(ManaType::Green, creatures as u32)]);
+        assert_eq!(
+            produced(&found),
+            [(ManaType::Green, u32::try_from(creatures).unwrap())]
+        );
         assert_eq!(added(&activate(&game, 0)), vec![ManaType::Green; creatures]);
     }
 
@@ -492,7 +498,8 @@ mod tests {
 
     #[test]
     fn the_color_chosen_as_a_permanent_entered_is_the_mana_it_adds() {
-        let json = r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ChosenColor":2}}}]}}"#;
+        let json =
+            r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ChosenColor":2}}}]}}"#;
         let mut game = game(artifact("Pillar", json));
         let id = game.zone(Zone::Battlefield)[0];
         assert!(options(&game, ME).is_empty(), "no colour was chosen");

@@ -243,12 +243,7 @@ impl Ability {
         match self {
             Ability::Activated {
                 targets, effects, ..
-            } => {
-                targets.is_empty()
-                    && effects
-                        .iter()
-                        .any(|e| matches!(e, Effect::AddMana { .. }))
-            }
+            } => targets.is_empty() && effects.iter().any(|e| matches!(e, Effect::AddMana { .. })),
             _ => false,
         }
     }

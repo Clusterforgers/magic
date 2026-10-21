@@ -18,10 +18,10 @@ use crate::decision::{PayChoice, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::{Event, ZoneCause};
 use crate::loyalty;
-use crate::mana_ability;
 use crate::mana::{
     ManaOption, Payment, auto_payment, check_payment, complete_payment, max_life_payment,
 };
+use crate::mana_ability;
 use crate::object::PermanentState;
 use crate::snapshot::snapshot;
 use crate::state::GameState;
@@ -146,7 +146,7 @@ fn unusable(state: &GameState, options: &PayOptions) -> Vec<ObjectId> {
 
 /// The events of using a mana source when the game is not at hand: the tap and the mana it adds.
 #[cfg(test)]
-fn tap_events(player: PlayerId, option: &ManaOption) -> Result<Vec<Event>, EngineError> {
+fn tap_events(player: PlayerId, option: &ManaOption) -> Vec<Event> {
     let mut events = vec![Event::PermanentTapped {
         object: option.source.object,
     }];
@@ -155,7 +155,7 @@ fn tap_events(player: PlayerId, option: &ManaOption) -> Result<Vec<Event>, Engin
         mana: option.produces,
         source: Some(option.source.object),
     }));
-    Ok(events)
+    events
 }
 
 /// The events of a valid payment, with the `announced` events of what it is for between the life and the mana.
@@ -274,7 +274,7 @@ pub(crate) fn pay_choice(
     announced: Vec<Event>,
 ) -> Result<Outcome, EngineError> {
     pay_with(player, options, tapped, choice, announced, &|option| {
-        tap_events(player, option)
+        Ok(tap_events(player, option))
     })
 }
 

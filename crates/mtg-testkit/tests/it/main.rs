@@ -50,6 +50,8 @@ mod library_effects;
 mod library_fuzz;
 mod living_weapon;
 mod loyalty_fuzz;
+mod mana_abilities;
+mod mana_fuzz;
 mod mana_payment;
 mod mill_effects;
 mod mulligan;

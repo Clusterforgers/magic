@@ -1236,13 +1236,10 @@ impl<'a> Walker<'a> {
         self.body(targets, effects, false);
     }
 
-    fn ability(&mut self, ability: &Ability) {
-        let tag = tag_of(ability);
-        if !matches!(ability, Ability::Keyword(_)) {
-            self.uses("Ability", &tag);
-        }
-        // The engine activates a mana ability of the shape `mana_shape` reads at priority (the plain one is its own
-        // primitive); one of any other shape (a mana cost, a limit, mixed mana) waits for its own task.
+    /// The engine activates a mana ability of the shape `mana_shape` reads at priority (the plain one is its own
+    /// primitive, a Treasure's needs no more than its parts); one of any other shape (a mana cost, a limit, mixed mana)
+    /// waits for its own task.
+    fn mana_ability(&mut self, ability: &Ability) {
         if ability.is_mana_ability() && plain_mana_ability(ability).is_none() {
             match mana_shape(ability) {
                 Some(shape) if shape.is_simple() => {}
@@ -1250,6 +1247,14 @@ impl<'a> Walker<'a> {
                 None => self.uses("Ability", "ManaAbility.Other"),
             }
         }
+    }
+
+    fn ability(&mut self, ability: &Ability) {
+        let tag = tag_of(ability);
+        if !matches!(ability, Ability::Keyword(_)) {
+            self.uses("Ability", &tag);
+        }
+        self.mana_ability(ability);
         self.where_and_how_often(ability);
         let saved_x = self.x_free;
         let saved_now = std::mem::replace(&mut self.x_now, false);

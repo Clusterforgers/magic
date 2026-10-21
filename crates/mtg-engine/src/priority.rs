@@ -310,8 +310,8 @@ mod tests {
     //! Goal: an activated ability is offered when its whole price can be paid now: a `{T}` needs an untapped source, mana needs floating mana or untapped mana sources (the source of an ability that taps it is none of them), an `{X}` is offered when X = 0 can be paid, and a part the engine does not pay is never offered.
     use std::sync::Arc;
 
-    use mtg_cards::CardDefinition;
     use mtg_cards::AbilityDef;
+    use mtg_cards::CardDefinition;
     use mtg_cards::definition::ManaAbility;
     use mtg_core::card::CardType;
     use mtg_core::color::Color;

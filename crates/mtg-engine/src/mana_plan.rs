@@ -23,6 +23,8 @@ type State = (Needs, u32);
 struct Weight {
     /// Sources sacrificed.
     sacrifices: u32,
+    /// Sources that do more than add mana.
+    extras: u32,
     /// Permanents tapped or sacrificed.
     taps: u32,
     /// How far the types used are from the commonest ones.
@@ -54,6 +56,7 @@ pub(crate) fn plan(
                 let after: State = (left, state.1.saturating_sub(option.count));
                 let used = Weight {
                     sacrifices: weight.sacrifices + u32::from(option.sacrifice),
+                    extras: weight.extras + u32::from(option.extra),
                     taps: weight.taps + 1,
                     scarcity: weight.scarcity + (all - plenty(option.produces)),
                 };
@@ -84,10 +87,7 @@ pub(crate) fn spent_of(
     let got = u32::try_from(made.len()).unwrap_or(u32::MAX);
     let singles = parts.iter().all(|part| part.len() == 1);
     if got < value || (singles && got != value) {
-        return Err(PaymentError::WrongTotal {
-            needed: value,
-            got,
-        });
+        return Err(PaymentError::WrongTotal { needed: value, got });
     }
     if singles {
         covers(cost, &made, value)?;
@@ -97,10 +97,7 @@ pub(crate) fn spent_of(
     for part in parts {
         let rest: Vec<ManaType> = remove(&made, part);
         if covers(cost, &rest, value).is_ok() {
-            return Err(PaymentError::WrongTotal {
-                needed: value,
-                got,
-            });
+            return Err(PaymentError::WrongTotal { needed: value, got });
         }
     }
     Ok(select(cost, &made))
@@ -121,10 +118,7 @@ fn remove(made: &[ManaType], part: &[ManaType]) -> Vec<ManaType> {
 fn covers(cost: &ManaCost, made: &[ManaType], value: u32) -> Result<(), PaymentError> {
     let got = u32::try_from(made.len()).unwrap_or(u32::MAX);
     if got < value {
-        return Err(PaymentError::WrongTotal {
-            needed: value,
-            got,
-        });
+        return Err(PaymentError::WrongTotal { needed: value, got });
     }
     for mana in ManaType::ALL {
         let have = made.iter().filter(|m| **m == mana).count();
@@ -191,6 +185,9 @@ pub(crate) fn covers_cost(cost: &ManaCost, parts: &[Vec<ManaType>]) -> bool {
     covers(cost, &parts.concat(), cost.mana_value()).is_ok()
 }
 
+/// The best completion so far: its weight (sacrifices, side effects, taps), the floating mana it spends and the sources it taps.
+type Found = ((u32, u32, usize), Vec<ManaType>, Vec<ManaSource>);
+
 /// What a completion may add: one floating mana, or one permanent used for one of its options.
 enum Candidate<'a> {
     Floating(ManaType),
@@ -215,7 +212,7 @@ pub(crate) fn complete_with(
         parts: Vec<Vec<ManaType>>,
         pool: Vec<ManaType>,
         taps: Vec<ManaOption>,
-        best: Option<((u32, usize), Vec<ManaType>, Vec<ManaSource>)>,
+        best: Option<Found>,
         budget: usize,
     }
     impl Search<'_> {
@@ -226,9 +223,12 @@ pub(crate) fn complete_with(
             self.budget -= 1;
             if covers_cost(self.cost, &self.parts) {
                 if spent_of(self.cost, &self.parts).is_ok() {
-                    let sacrifices = u32::try_from(self.taps.iter().filter(|o| o.sacrifice).count())
+                    let sacrifices =
+                        u32::try_from(self.taps.iter().filter(|o| o.sacrifice).count())
+                            .unwrap_or(u32::MAX);
+                    let extras = u32::try_from(self.taps.iter().filter(|o| o.extra).count())
                         .unwrap_or(u32::MAX);
-                    let weight = (sacrifices, self.taps.len());
+                    let weight = (sacrifices, extras, self.taps.len());
                     if self.best.as_ref().is_none_or(|(held, ..)| weight < *held) {
                         let sources = self.taps.iter().map(|o| o.source).collect();
                         self.best = Some((weight, self.pool.clone(), sources));
@@ -296,6 +296,7 @@ mod tests {
             produces,
             count,
             sacrifice,
+            extra: false,
         }
     }
 

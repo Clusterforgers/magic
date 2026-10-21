@@ -372,9 +372,16 @@ impl RandomBot {
                 }
             }
         }
-        check_payment(cost, &options.pool, &options.sources, &[], options.life, &payment)
-            .ok()
-            .map(|_| payment)
+        check_payment(
+            cost,
+            &options.pool,
+            &options.sources,
+            &[],
+            options.life,
+            &payment,
+        )
+        .ok()
+        .map(|_| payment)
     }
 
     /// A random exact payment of the plain `cost`: required colors first, then random mana for the generic part.

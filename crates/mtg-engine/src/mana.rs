@@ -80,6 +80,10 @@ pub struct ManaOption {
     #[serde(default = "one", skip_serializing_if = "is_one")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
     pub count: u32,
+    /// Activating it does more than add mana (a painland deals damage, an egg draws); left out means it does not.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub extra: bool,
     /// Activating it sacrifices its source (a Treasure); left out means it does not.
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
@@ -107,13 +111,14 @@ impl ManaOption {
             source,
             produces,
             count: 1,
+            extra: false,
             sacrifice: false,
         }
     }
 
-    /// Whether it adds one mana and keeps its source, so a permanent is one mana for one tap.
+    /// Whether it adds one mana, keeps its source and does nothing else, so a permanent is one mana for one tap.
     pub const fn is_simple(&self) -> bool {
-        self.count == 1 && !self.sacrifice
+        self.count == 1 && !self.sacrifice && !self.extra
     }
 }
 
@@ -443,10 +448,13 @@ pub fn can_afford(cost: &ManaCost, pool: &ManaPool, sources: &[ManaOption], life
         .any(|r| can_pay_life(life, r.life) && plain_can_afford(&r.cost, pool, sources))
 }
 
-/// How much a payment is wanted, lower first: less life, then fewer sacrifices, then fewer taps, then taps of the kinds the sources make most of.
+/// How much a payment is wanted, lower first: less life, then fewer sacrifices, then fewer sources that do more than add mana, then fewer taps, then taps of the kinds the sources make most of.
 ///
 /// The last part keeps a scarce color untapped when a hybrid symbol can be paid with either of two.
-fn preference(payment: &Payment, sources: &[ManaOption]) -> (u32, usize, usize, Reverse<usize>) {
+fn preference(
+    payment: &Payment,
+    sources: &[ManaOption],
+) -> (u32, usize, usize, usize, Reverse<usize>) {
     let plenty = |mana: ManaType| sources.iter().filter(|o| o.produces == mana).count();
     let used: Vec<&ManaOption> = payment
         .taps
@@ -455,9 +463,11 @@ fn preference(payment: &Payment, sources: &[ManaOption]) -> (u32, usize, usize, 
         .collect();
     let common = used.iter().map(|o| plenty(o.produces)).sum();
     let sacrificed = used.iter().filter(|o| o.sacrifice).count();
+    let extras = used.iter().filter(|o| o.extra).count();
     (
         payment.life,
         sacrificed,
+        extras,
         payment.taps.len(),
         Reverse(common),
     )
@@ -622,18 +632,15 @@ mod tests {
             .iter()
             .zip(0u64..)
             .flat_map(|(letters, object)| {
-                letters
-                    .chars()
-                    .enumerate()
-                    .map(move |(ability, c)| {
-                        ManaOption::new(
-                            ManaSource {
-                                object: ObjectId(object),
-                                ability,
-                            },
-                            mana_of(c),
-                        )
-                    })
+                letters.chars().enumerate().map(move |(ability, c)| {
+                    ManaOption::new(
+                        ManaSource {
+                            object: ObjectId(object),
+                            ability,
+                        },
+                        mana_of(c),
+                    )
+                })
             })
             .collect()
     }
@@ -1561,7 +1568,10 @@ mod tests {
             costs,
             prop::collection::vec(mana_strategy(), 0..2),
             prop::collection::vec(
-                prop::collection::vec((mana_strategy(), 1u32..4, any::<bool>()), 1..3),
+                prop::collection::vec(
+                    (mana_strategy(), 1u32..4, any::<bool>(), any::<bool>()),
+                    1..3,
+                ),
                 0..4,
             ),
             -2i32..9,
@@ -1569,13 +1579,15 @@ mod tests {
             .prop_map(|(cost, floating, permanents, life)| {
                 let mut sources = Vec::new();
                 for (object, abilities) in (0u64..).zip(permanents) {
-                    for (ability, (produces, count, sacrifice)) in abilities.into_iter().enumerate()
+                    for (ability, (produces, count, sacrifice, extra)) in
+                        abilities.into_iter().enumerate()
                     {
                         sources.push(ManaOption {
                             source: tap(object, ability),
                             produces,
                             count,
                             sacrifice,
+                            extra,
                         });
                     }
                 }
@@ -1637,6 +1649,26 @@ mod tests {
                 Some(sacrifices(&payment, sources)),
                 fewest,
                 "no more sacrifices than the life paid needs"
+            );
+            let extras = |p: &Payment| {
+                p.taps
+                    .iter()
+                    .filter_map(|t| sources.iter().find(|o| o.source == *t))
+                    .filter(|o| o.extra)
+                    .count()
+            };
+            let fewest_extras = allowed
+                .iter()
+                .filter(|p| {
+                    p.life == payment.life
+                        && sacrifices(p, sources) == sacrifices(&payment, sources)
+                })
+                .map(|p| extras(p))
+                .min();
+            prop_assert_eq!(
+                Some(extras(&payment)),
+                fewest_extras,
+                "no more sources that do more than add mana than the sacrifices allow"
             );
         }
         Ok(())

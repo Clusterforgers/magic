@@ -315,7 +315,12 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     }
     // The mana abilities of several mana, of as many mana as there are creatures, of a choice of colour with damage to
     // their controller and of a sacrifice are activated at priority and paid with: the cards are covered whole.
-    for name in ["Sol Ring", "Gaea's Cradle", "Battlefield Forge", "Lotus Petal"] {
+    for name in [
+        "Sol Ring",
+        "Gaea's Cradle",
+        "Battlefield Forge",
+        "Lotus Petal",
+    ] {
         assert_eq!(reasons(name), "", "{name}");
     }
     // The rules of the game run as static abilities and as effects: the cards that change one are covered whole.

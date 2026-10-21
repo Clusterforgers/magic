@@ -19,6 +19,10 @@ produces: ManaType,
  */
 count?: number, 
 /**
+ * Activating it does more than add mana (a painland deals damage, an egg draws); left out means it does not.
+ */
+extra?: boolean, 
+/**
  * Activating it sacrifices its source (a Treasure); left out means it does not.
  */
 sacrifice?: boolean, };
