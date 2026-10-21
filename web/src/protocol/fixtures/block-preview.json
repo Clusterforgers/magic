@@ -1,5 +1,5 @@
 {
-  "description": "What mtg-server answers a seat's Preview messages with, from the real engine: `blocks` is player 1 facing three attackers (a Decision, then Preview and Forecast pairs), `attacks` is player 0 declaring them. A reply with a null forecast is an answer the engine would refuse or a declaration of no attackers. Regenerate: MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test preview_fixture",
+  "description": "What mtg-server answers a seat's Preview messages with, from the real engine: `blocks` is player 1 facing three attackers (a Decision, then Preview and Forecast pairs), `attacks` is player 0 declaring them. A reply with a null forecast is an answer the engine would refuse or a declaration of no attackers. Regenerate: MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol preview_fixture::",
   "blocks": {
     "seat": 1,
     "decision": {"type":"Decision","id":12,"decision":{"player":1,"kind":{"DeclareBlockers":{"blockers":[{"object":63,"can_block":[30,31,32]},{"object":64,"can_block":[30,31,32]}]}}},"deadline_ms":45000},

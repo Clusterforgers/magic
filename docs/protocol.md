@@ -7,7 +7,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 - Both families are flat JSON objects tagged with `type`. `PROTOCOL_VERSION` (1) rides in `Join` and `Welcome`.
   - `ClientMessage`: `Join`, `Ready`, `NotReady`, `Answer`, `Preview`, `Chat`, `Concede`, `Resync`, `AutoPass`, `Yield`, `CancelYield`, `SetStop`, `FullControl`.
   - `ServerMessage`: `Welcome`, `Lobby`, `Decision`, `Forecast`, `Events`, `Snapshot`, `Chat`, `Error`, `GameOver`, `Yielding`, `Stops`, `FullControl`.
-- TypeScript bindings come from ts-rs into `web/src/protocol/generated/`. `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test bindings` regenerates them, and the drift test fails while they are stale.
+- TypeScript bindings come from ts-rs into `web/src/protocol/generated/`. `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol bindings::` regenerates them, and the drift test fails while they are stale.
 - `mtg-core` and `mtg-engine` derive `TS` behind an optional `ts` feature that only this crate enables. ts-rs inlines the flattened table, so the TypeScript `StateView` is `TableView`'s fields plus `objects`.
 
 ## State projection
@@ -179,6 +179,6 @@ The account, card and deck endpoints of `mtg-server` take their bodies from `mtg
 - `tests/counter_view.rs` checks that every seat sees the counters of every player alike, in order and left out of the JSON while empty, that counter events reach every seat as logged and the table after them shows the new totals, and that a player lost to poison keeps the counters in the view; `tests/hidden_info.rs` also plays games of counters (the keys `counters` and `delta` are numbers, not objects).
 - `tests/messages.rs` round-trips a sample of every message, decision, answer and pipeline event; `events.rs` unit tests cover each redaction arm for the acting seat, another seat and a seat that cannot see the cards.
 - `tests/sync.rs` checks that in seeded 2, 3 and 4-seat games every seat's view folded from its batches (after a JSON round trip) equals `StateView::for_player` on the true state after every answer, that `gone` and `objects` match a separate statement of the visibility rule, and that no unchanged object is listed.
-- `tests/transcript.rs` and `tests/preview_fixture.rs` write the fixtures in `web/src/protocol/fixtures/` that the web tests replay, and fail on drift (`MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test transcript`, likewise `--test preview_fixture`).
+- `tests/transcript.rs` and `tests/preview_fixture.rs` write the fixtures in `web/src/protocol/fixtures/` that the web tests replay, and fail on drift (`MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol transcript::`, likewise `--test preview_fixture`).
   - The transcript test's `play()` mirrors the actor's message order, so change them together.
   - It mirrors a seat with auto-pass off, because passing for idle seats would change the bots' games the seeds were picked for.

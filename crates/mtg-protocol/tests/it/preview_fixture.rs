@@ -1,6 +1,6 @@
 //! Goal: the block-preview fixture the web tests replay is exactly what the engine answers a seat's `Preview` messages with (blocks, attacks, a refused answer), and every reply in it is the shape the wire carries.
 //!
-//! Regenerate with `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test preview_fixture`.
+//! Regenerate with `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol preview_fixture::`.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -21,7 +21,7 @@ const FIXTURE: &str = "web/src/protocol/fixtures/block-preview.json";
 const DESCRIPTION: &str = "What mtg-server answers a seat's Preview messages with, from the real engine: \
     `blocks` is player 1 facing three attackers (a Decision, then Preview and Forecast pairs), `attacks` is player 0 \
     declaring them. A reply with a null forecast is an answer the engine would refuse or a declaration of no attackers. \
-    Regenerate: MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test preview_fixture";
+    Regenerate: MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol preview_fixture::";
 /// Player 1's life: low enough that some attacks and no-blocks are lethal.
 const LIFE: i32 = 6;
 /// The response clock of a blocker (`MTG_BLOCK_SECS`, 45 s), which the block decision carries.
@@ -265,7 +265,7 @@ fn the_committed_fixture_is_what_the_engine_answers() {
     let committed = fs::read_to_string(&path).unwrap_or_default();
     assert!(
         committed == fresh,
-        "the preview fixture drifted; run MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test preview_fixture"
+        "the preview fixture drifted; run MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol preview_fixture::"
     );
 }
 

@@ -1,11 +1,11 @@
 //! Goal: the transcript fixture the web tests replay is exactly what seat 0 of seeded 2-player bot
 //! games is sent, and folding its messages with the client rule reproduces the expected view.
 //!
-//! Regenerate with `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test transcript`.
+//! Regenerate with `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol transcript::`.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-mod common;
+use crate::common;
 
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -35,7 +35,7 @@ const DESCRIPTION: &str = "What seat 0 of a seeded two-player bot game is sent b
     batches of the game with their Decisions and GameOver. `lobby` is a seat that joined before the start: \
     Welcome, the lobby's rosters (seat 1 joins, presses Ready, takes it back, presses it again), then the first \
     batches from seq 0 with no Snapshot. `expected` is the seat's true StateView \
-    after the last message. Regenerate: MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test transcript";
+    after the last message. Regenerate: MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol transcript::";
 
 /// One engine step as the seat lives it.
 struct Beat {
@@ -300,7 +300,7 @@ fn the_committed_fixture_is_what_the_server_would_send() {
     let committed = fs::read_to_string(&path).unwrap_or_default();
     assert!(
         committed == fresh,
-        "the transcript fixture drifted; run MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test transcript"
+        "the transcript fixture drifted; run MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol transcript::"
     );
     assert!(
         fresh.len() < 300 * 1024,

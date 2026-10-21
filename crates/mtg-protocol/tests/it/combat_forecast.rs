@@ -3,7 +3,7 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-mod common;
+use crate::common;
 
 use common::table::{Table, two_player_board};
 use common::{Step, run_game, unique_setup, visible_ids};

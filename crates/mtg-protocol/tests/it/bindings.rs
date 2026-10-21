@@ -1,6 +1,6 @@
 //! Goal: the committed TypeScript bindings equal what the Rust wire types generate today.
 //!
-//! Regenerate with `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test bindings`.
+//! Regenerate with `MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol bindings::`.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -54,7 +54,7 @@ fn committed_bindings_match_generated() {
     assert!(
         missing.is_empty() && stale.is_empty() && changed.is_empty(),
         "bindings drifted (missing {missing:?}, stale {stale:?}, changed {changed:?}); \
-         run MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol --test bindings"
+         run MTG_UPDATE_BINDINGS=1 cargo test -p mtg-protocol bindings::"
     );
 }
 

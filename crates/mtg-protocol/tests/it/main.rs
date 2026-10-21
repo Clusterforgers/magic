@@ -1,0 +1,26 @@
+//! Goal: the wire types, projection and REST contract of the protocol; one test binary so the crate's integration tests share one link and run together on the thread pool.
+
+mod ability_view;
+mod attachment_view;
+mod batch_diff;
+mod batch_size;
+mod batch_visibility;
+mod bindings;
+mod combat_forecast;
+mod common;
+mod counter_view;
+mod effect_view;
+mod hidden_info;
+mod keyword_view;
+mod lobby_message;
+mod loyalty_view;
+mod messages;
+mod preview_fixture;
+mod projection;
+mod rest;
+mod rest_cards;
+mod rest_decks;
+mod rest_lobbies;
+mod seat_deck;
+mod sync;
+mod transcript;
