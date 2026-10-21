@@ -157,6 +157,7 @@ async fn at_most_fifty_games_are_listed_the_newest() {
         let options = GameOptions {
             visibility: Visibility::Public,
             held: Some(1),
+            ..GameOptions::default()
         };
         let created = server
             .registry

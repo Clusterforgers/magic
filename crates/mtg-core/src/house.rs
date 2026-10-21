@@ -38,8 +38,8 @@ pub enum HandLimit {
     Unlimited,
 }
 
-/// What a game's creator sets in place of the format's values. `None` keeps the format's value; a
-/// value equal to the format's is kept as given.
+/// What a game's creator sets in place of the format's values. A rule that is left out keeps the
+/// format's value; a value equal to the format's is kept as given.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 #[serde(default, deny_unknown_fields)]

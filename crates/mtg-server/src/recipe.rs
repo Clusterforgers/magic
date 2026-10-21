@@ -21,6 +21,7 @@ use std::fmt;
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_core::house::HouseRules;
 use mtg_engine::GameSetup;
 use mtg_engine::error::SetupError;
 use mtg_engine::format::{FormatRules, Normal};
@@ -129,6 +130,10 @@ impl Catalog {
 pub struct GameRecipe {
     /// The format's rules.
     pub format: FormatKind,
+    /// What the creator set in place of the format's values; left out of the stored form while none is set,
+    /// which is also how a recipe stored before house rules reads.
+    #[serde(default, skip_serializing_if = "HouseRules::is_empty")]
+    pub house_rules: HouseRules,
     /// Seed for shuffles and the first-player roll.
     pub seed: u64,
     /// One deck per seat, in seat order.
@@ -194,10 +199,17 @@ impl GameRecipe {
     pub fn normal(seed: u64, decks: impl IntoIterator<Item = DeckRef>) -> GameRecipe {
         GameRecipe {
             format: FormatKind::Normal,
+            house_rules: HouseRules::default(),
             seed,
             decks: decks.into_iter().collect(),
             fingerprints: Vec::new(),
         }
+    }
+
+    /// The recipe with `house_rules` laid over the format's values.
+    pub fn with_house_rules(mut self, house_rules: HouseRules) -> GameRecipe {
+        self.house_rules = house_rules;
+        self
     }
 
     /// The recipe with the fingerprint of every seat's deck as the server has it now, replacing any
@@ -255,7 +267,7 @@ impl GameRecipe {
         };
         let decks = self.resolve(catalog)?;
         self.check(&decks)?;
-        let setup = GameSetup::new(format, self.seed, decks);
+        let setup = GameSetup::new(format, self.seed, decks).with_house_rules(self.house_rules);
         setup.validate()?;
         Ok(setup)
     }

@@ -53,7 +53,8 @@ async fn a_game_is_invite_only_whichever_way_the_old_calls_make_it() {
         GameOptions::default(),
         GameOptions {
             visibility: Visibility::Invite,
-            held: None
+            held: None,
+            ..GameOptions::default()
         }
     );
 }
@@ -67,6 +68,7 @@ async fn a_creator_chooses_the_visibility(#[case] visibility: Visibility) {
     let options = GameOptions {
         visibility,
         held: None,
+        ..GameOptions::default()
     };
     let created = registry
         .create_with(&requests(3), options, None)
@@ -107,6 +109,7 @@ async fn only_the_held_seats_get_tokens_and_the_others_are_open(
     let options = GameOptions {
         visibility: Visibility::Public,
         held,
+        ..GameOptions::default()
     };
     let created = registry
         .create_with(&requests(seats), options, None)
@@ -143,6 +146,7 @@ async fn the_lobby_shows_an_open_seat_with_no_name_and_counts_it_as_needed() {
     let options = GameOptions {
         visibility: Visibility::Public,
         held: Some(1),
+        ..GameOptions::default()
     };
     let created = registry
         .create_with(&requests(3), options, None)
@@ -189,6 +193,7 @@ async fn a_game_cannot_start_while_a_seat_is_open() {
     let options = GameOptions {
         visibility: Visibility::Public,
         held: Some(1),
+        ..GameOptions::default()
     };
     let created = registry
         .create_with(&requests(2), options, None)

@@ -7,6 +7,7 @@ use axum::http::header::CONTENT_TYPE;
 use axum::http::{HeaderMap, HeaderName, HeaderValue, Method, StatusCode};
 use axum::middleware::Next;
 use axum::response::{IntoResponse, Response};
+use mtg_core::house::{HouseRuleError, HouseRules};
 use mtg_core::ids::PlayerId;
 use mtg_protocol::rest::{GameInfo, GameSeat};
 use serde::{Deserialize, Serialize};
@@ -156,6 +157,13 @@ pub(crate) async fn same_site_only(
     next.run(request).await
 }
 
+impl From<HouseRuleError> for ApiError {
+    /// A 400 whose `message` starts with `house_rules.<rule>` and whose `field` is the rule's name.
+    fn from(error: HouseRuleError) -> ApiError {
+        ApiError::invalid(format!("house_rules.{error}")).with_field("field", json!(error.field()))
+    }
+}
+
 impl From<CreateError> for ApiError {
     fn from(error: CreateError) -> ApiError {
         match error {
@@ -200,6 +208,9 @@ struct NewGame {
     /// rest are open for a join to take.
     #[serde(default)]
     held: Option<usize>,
+    /// What the creator sets in place of the format's values; the format's own when absent.
+    #[serde(default)]
+    house_rules: HouseRules,
 }
 
 #[derive(Debug, Deserialize)]
@@ -479,9 +490,11 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
             Ok(name)
         })
         .collect::<Result<Vec<_>, ApiError>>()?;
+    body.house_rules.validate()?;
     let options = GameOptions {
         visibility: body.visibility,
         held: Some(held),
+        house_rules: body.house_rules,
     };
     Ok((seats, options))
 }
