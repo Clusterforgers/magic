@@ -509,7 +509,7 @@ fn wrath_of_god_destroys_every_creature_but_the_indestructible_ones_at_once(
             Event::ZoneChanged {
                 object,
                 from: Zone::Battlefield,
-                cause: ZoneCause::Destroyed,
+                cause: ZoneCause::Destroyed | ZoneCause::Buried,
                 ..
             } => Some((at, *object)),
             _ => None,

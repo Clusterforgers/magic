@@ -33,7 +33,7 @@ impl Seen {
         for event in events {
             match event {
                 Event::ZoneChanged {
-                    cause: ZoneCause::Destroyed,
+                    cause: ZoneCause::Destroyed | ZoneCause::Buried,
                     ..
                 } => {
                     self.destroyed += 1;

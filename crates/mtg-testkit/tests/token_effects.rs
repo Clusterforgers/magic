@@ -429,7 +429,7 @@ fn a_token_that_dies_is_seen_by_its_watchers_and_then_ceases_to_exist(
         "a token is no card in the graveyard"
     );
     let log = driver.engine().events();
-    assert!(log.iter().any(|event| matches!(event, Event::ZoneChanged { object, cause: ZoneCause::Destroyed, .. } if *object == soldiers[0])));
+    assert!(log.iter().any(|event| matches!(event, Event::ZoneChanged { object, cause: ZoneCause::Destroyed | ZoneCause::Buried, .. } if *object == soldiers[0])));
     assert_replays(&driver, &setup)
 }
 

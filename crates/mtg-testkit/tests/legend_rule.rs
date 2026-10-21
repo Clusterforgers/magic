@@ -217,7 +217,7 @@ fn a_legend_is_put_into_the_graveyard_not_destroyed_so_indestructible_does_not_s
     assert!(!events.iter().any(|event| matches!(
         event,
         Event::ZoneChanged {
-            cause: ZoneCause::Destroyed,
+            cause: ZoneCause::Destroyed | ZoneCause::Buried,
             ..
         }
     )));

@@ -414,7 +414,7 @@ fn every_creature_that_dies_in_a_wrath_is_seen_by_every_watcher_and_the_triggers
             .filter(|e| matches!(
                 e,
                 Event::ZoneChanged {
-                    cause: ZoneCause::Destroyed,
+                    cause: ZoneCause::Destroyed | ZoneCause::Buried,
                     ..
                 }
             ))
@@ -548,7 +548,7 @@ fn the_creature_the_destroyed_one_kept_alive_dies_to_state_based_actions_right_a
     let played = &driver.engine().events()[begun..];
     let at = |wanted: &dyn Fn(&Event) -> bool| played.iter().position(wanted).unwrap();
     let destroyed = at(
-        &|e| matches!(e, Event::ZoneChanged { object, cause: ZoneCause::Destroyed, .. } if *object == lord),
+        &|e| matches!(e, Event::ZoneChanged { object, cause: ZoneCause::Destroyed | ZoneCause::Buried, .. } if *object == lord),
     );
     let resolved = at(&|e| {
         matches!(
@@ -677,7 +677,7 @@ fn a_game_that_casts_all_four_cards_is_rebuilt_at_every_decision_and_replays_to_
         matches!(
             e,
             Event::ZoneChanged {
-                cause: ZoneCause::Destroyed,
+                cause: ZoneCause::Destroyed | ZoneCause::Buried,
                 ..
             }
         )

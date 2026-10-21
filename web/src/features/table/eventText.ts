@@ -183,7 +183,7 @@ function describeChoice(choice: Choice, n: EventNames): string {
 const BECAUSE: Record<ZoneCause, string> = {
   Moved: 'moves',
   Destroyed: 'is destroyed',
-  Buried: 'is destroyed and can\'t be regenerated',
+  Buried: "is destroyed and can't be regenerated",
   Sacrificed: 'is sacrificed',
   Exiled: 'is exiled',
   Countered: 'is countered',
