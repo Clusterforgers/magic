@@ -1475,7 +1475,7 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_auras_and_legends(
 #[rstest]
 #[case(2, 310)]
 #[case(3, 308)]
-#[case(4, 319)]
+#[case(4, 320)]
 fn no_hidden_object_reaches_any_viewer_in_games_of_prevention_and_regeneration(
     #[case] players: usize,
     #[case] seed: u64,
@@ -1485,6 +1485,18 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_prevention_and_regeneration(
     for seed in seed..seed + PREVENTION_GAMES {
         let setup = with_unique_names(prevent_fuzz_setup(players, seed).unwrap());
         let engine = run_game(setup, seed, |step: &Step| {
+            // The only option the prevention decks ask for is the damage a shield takes first.
+            if let Some(decision) = step.decision
+                && matches!(decision.kind, DecisionKind::ChooseOption(_))
+            {
+                let hidden = hidden_in(step.after, decision.player);
+                let found = leaks(&serde_json::to_value(decision).unwrap(), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {}: the question leaks {found:?}",
+                    step.answers
+                );
+            }
             let count = |wanted: fn(&mtg_engine::Event) -> bool| {
                 step.events.iter().filter(|event| wanted(event)).count()
             };
@@ -1607,6 +1619,80 @@ fn a_shield_that_kept_damage_and_a_regeneration_reach_every_seat_whole_and_nothi
         let kept = public(|event| matches!(event, mtg_engine::Event::ShieldUsed { left: 3, .. }));
         let regenerated = public(|event| matches!(event, mtg_engine::Event::Regenerated { .. }));
         assert_eq!((kept, regenerated), (1, 1), "viewer {viewer:?}");
+        assert_clean(batch, &hidden_in(&after, *viewer));
+    }
+}
+
+#[rstest]
+fn the_seat_hurt_picks_the_damage_a_shield_takes_first_and_the_question_shows_nothing_hidden(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    use mtg_engine::choose::{ChoiceOption, OptionChoice};
+    use mtg_engine::decision::Answer;
+    use mtg_testkit::cards::{free_creature, keyworded, plains};
+    use mtg_testkit::{Driver, Scenario, ready};
+    let mut scenario = Scenario::new(seats)
+        .at(2, 0, mtg_engine::turn::Step::DeclareAttackers)
+        .hand_named(1, ["Mending Hands"])
+        .battlefield(
+            0,
+            [
+                ready(keyworded(
+                    "Linker",
+                    3,
+                    3,
+                    &[mtg_cards::keyword::Keyword::Lifelink],
+                )),
+                ready(free_creature("Grunt", 2, 2)),
+            ],
+        )
+        .battlefield(1, [ready(plains())]);
+    for seat in 0..seats {
+        scenario = scenario.library_named(seat, LIBRARY);
+    }
+    let before = GameState::from_setup(&scenario.clone().setup().unwrap()).unwrap();
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    driver.attack(&[("Linker", 1), ("Grunt", 1)]).unwrap();
+    driver.pass().unwrap();
+    let me = driver.target_player(1);
+    driver.cast_at("Mending Hands", &[me]).unwrap();
+    while !driver.state().stack().is_empty() {
+        driver.pass().unwrap();
+    }
+    let mut asked = None;
+    for _ in 0..200 {
+        let decision = driver.decision().unwrap().clone();
+        if matches!(decision.kind, DecisionKind::ChooseOption(_)) {
+            asked = Some(decision);
+            break;
+        }
+        driver.answer_passively().unwrap();
+    }
+    let decision = asked.expect("the damage of two attackers is more than the shield stops");
+    // Only the seat that is hurt is asked, and the question names the damage and nothing a seat has not seen.
+    assert_eq!(decision.player, PlayerId::from_index(1));
+    let DecisionKind::ChooseOption(options) = &decision.kind else {
+        unreachable!();
+    };
+    assert_eq!(options.options.len(), 2);
+    assert!(
+        options
+            .options
+            .iter()
+            .all(|option| matches!(option, ChoiceOption::Label(_)))
+    );
+    let hidden = hidden_in(driver.state(), decision.player);
+    assert!(!hidden.is_empty());
+    let found = leaks(&serde_json::to_value(&decision).unwrap(), &hidden);
+    assert!(found.is_empty(), "the question leaks {found:?}");
+    driver
+        .answer(Answer::ChooseOption(OptionChoice(1)))
+        .unwrap();
+    let events = driver.engine().events().to_vec();
+    let after = driver.state().clone();
+    let viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
+    let batches = project_events(&before, &events, &viewers, 0).unwrap();
+    for (viewer, batch) in viewers.iter().zip(&batches) {
         assert_clean(batch, &hidden_in(&after, *viewer));
     }
 }

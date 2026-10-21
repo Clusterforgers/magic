@@ -1,4 +1,4 @@
-//! Goal: prevention and regeneration shields play through the whole stack as the rules say, at tables of two, three and four seats: a spell or an activated ability makes a shield for its target and for the rest of the turn (Mending Hands, Samite Healer); a shield prevents up to its amount in all and is used up (several burns across one shield, several shields across one burn); it protects what it names and nothing else; Fog prevents the combat damage of every attacker and blocker and not the damage of a spell; every shield ends with the turn; a regeneration shield (Death Ward, Drudge Skeletons) takes one destruction each, by a destroy effect or by lethal damage, leaving the permanent tapped and without damage, and a regenerating attacker or blocker leaves combat; a destruction that can't be regenerated (Wrath of God) buries the creature whatever shields it has; and damage that can't be prevented passes every shield and leaves it whole.
+//! Goal: prevention and regeneration shields play through the whole stack as the rules say, at tables of two, three and four seats: a spell or an activated ability makes a shield for its target and for the rest of the turn (Mending Hands, Samite Healer); a shield prevents up to its amount in all and is used up (several burns across one shield, several shields across one burn); when its player is dealt the damage of several attackers in one combat and it cannot stop all of it, that player picks which damage it stops first (lifelink follows); it protects what it names and nothing else; Fog prevents the combat damage of every attacker and blocker and not the damage of a spell; every shield ends with the turn; a regeneration shield (Death Ward, Drudge Skeletons) takes one destruction each, by a destroy effect or by lethal damage, leaving the permanent tapped and without damage, and a regenerating attacker or blocker leaves combat; a destruction that can't be regenerated (Wrath of God) buries the creature whatever shields it has; and damage that can't be prevented passes every shield and leaves it whole.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -6,7 +6,8 @@ mod common;
 use common::combat::to_blockers;
 use common::names;
 use mtg_cards::refs::Selector;
-use mtg_engine::choose::{ReplacementChoice, Target};
+use mtg_cards::keyword::Keyword;
+use mtg_engine::choose::{ChoiceOption, OptionChoice, ReplacementChoice, Target};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::effects::Duration;
 use mtg_engine::events::ZoneCause;
@@ -15,7 +16,7 @@ use mtg_engine::rules::Rule;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, PresetPermanent, replay};
-use mtg_testkit::cards::{bear, burn, forest, free_creature, mountain, plains, swamp};
+use mtg_testkit::cards::{bear, burn, forest, free_creature, keyworded, mountain, plains, swamp};
 use mtg_testkit::corpus::card;
 use mtg_testkit::prevent_cards::smite;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -381,6 +382,101 @@ fn fog_prevents_the_combat_damage_of_every_creature_and_not_the_damage_of_a_spel
         guard_lives
     );
     assert_eq!(damage_marked(&driver, "A1"), attacker_damage);
+    replays(&driver, &setup);
+    Ok(())
+}
+
+// The order a shield takes the damage of one combat in
+
+/// Seat 0 attacks seat 1 with a lifelinking `Linker` and a `Grunt`; seat 1 holds Mending Hands.
+fn pick_table(seats: usize, linker: i32, grunt: i32) -> Scenario {
+    table(seats)
+        .at(2, 0, Step::DeclareAttackers)
+        .battlefield(
+            0,
+            [
+                ready(keyworded("Linker", linker, 3, &[Keyword::Lifelink])),
+                ready(free_creature("Grunt", grunt, 2)),
+            ],
+        )
+        .hand_named(1, ["Mending Hands"])
+        .battlefield(1, lands(plains, 1))
+}
+
+/// Answers what the table asks passively until a seat is asked to pick an option, and returns the question.
+fn until_the_pick(driver: &mut Driver) -> Result<Option<(usize, Vec<String>)>, ScriptError> {
+    for _ in 0..200 {
+        let Some(decision) = driver.engine().decision().cloned() else {
+            return Ok(None);
+        };
+        if driver.state().turn().step() == Step::EndCombat {
+            return Ok(None);
+        }
+        if let DecisionKind::ChooseOption(options) = decision.kind {
+            let labels = options
+                .options
+                .iter()
+                .map(|option| match option {
+                    ChoiceOption::Label(label) => label.clone(),
+                    other => panic!("a label was expected, got {other:?}"),
+                })
+                .collect();
+            return Ok(Some((decision.player.index(), labels)));
+        }
+        driver.answer_passively()?;
+    }
+    Err(ScriptError::Stuck("the combat damage".into()))
+}
+
+#[rstest]
+#[case::the_lifelinker_first(3, 2, Some("Linker"), 19, 20)]
+#[case::the_other_first(3, 2, Some("Grunt"), 19, 21)]
+#[case::a_large_one_first(4, 1, Some("Linker"), 19, 20)]
+#[case::a_small_one_first(4, 1, Some("Grunt"), 19, 21)]
+#[case::enough_for_both(2, 2, None, 20, 20)]
+#[case::exactly_enough(3, 1, None, 20, 20)]
+fn mending_hands_takes_the_combat_damage_in_the_order_its_player_picks(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] linker: i32,
+    #[case] grunt: i32,
+    #[case] pick: Option<&str>,
+    #[case] defender_life: i32,
+    #[case] attacker_life: i32,
+) -> Result<(), ScriptError> {
+    let setup = pick_table(seats, linker, grunt).setup().unwrap();
+    let mut driver = Driver::from_scenario(pick_table(seats, linker, grunt))?;
+    driver.attack(&[("Linker", 1), ("Grunt", 1)])?;
+    driver.pass()?;
+    let me = driver.target_player(1);
+    driver.cast_at("Mending Hands", &[me])?;
+    settle(&mut driver)?;
+    to_blockers(&mut driver, 1)?;
+    let asked = until_the_pick(&mut driver)?;
+    match (pick, asked) {
+        (None, None) => {}
+        (Some(first), Some((who, offered))) => {
+            // Seat 1 is hurt, so seat 1 orders the damage; the question names each event once.
+            assert_eq!(who, 1);
+            let mut sorted = offered.clone();
+            sorted.sort();
+            assert_eq!(
+                sorted,
+                [
+                    format!("{grunt} damage from Grunt to player 1"),
+                    format!("{linker} damage from Linker to player 1"),
+                ]
+            );
+            let index = offered
+                .iter()
+                .position(|label| label.contains(first))
+                .unwrap();
+            driver.answer(Answer::ChooseOption(OptionChoice(index)))?;
+        }
+        (wanted, other) => panic!("expected the pick {wanted:?}, the table asked {other:?}"),
+    }
+    driver.idle_until(2, Step::EndCombat)?;
+    assert_eq!(life(&driver, 1), defender_life);
+    assert_eq!(life(&driver, 0), attacker_life);
     replays(&driver, &setup);
     Ok(())
 }
