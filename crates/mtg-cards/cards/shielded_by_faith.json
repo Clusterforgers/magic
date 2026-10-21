@@ -1,0 +1,23 @@
+{
+  "oracle_id": "79085dea-8daa-41c0-a975-61e3e6da2e26",
+  "name": "Shielded by Faith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shielded by Faith",
+      "oracle_fingerprint": "96733584cae7dc80bd8e894d7600e6c1",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "Indestructible" }] } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "Type": "Creature" }], "to": "Battlefield" } },
+            "effects": [
+              { "May": { "effects": [{ "Attach": { "what": "This", "to": "Triggering" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

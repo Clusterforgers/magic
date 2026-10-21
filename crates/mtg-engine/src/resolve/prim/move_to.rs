@@ -6,6 +6,7 @@ use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{unsupported, wrong_effect};
+use crate::attach;
 use crate::choose::{Questions, Stop, Target};
 use crate::events::{Event, ZoneCause};
 use crate::loyalty;
@@ -119,40 +120,74 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Destination::Battlefield { tapped, under } => {
             let under = entering_under(cx, under.as_ref())?;
-            let mut entered = Vec::new();
-            for object in objects {
-                let spell = object.base_types().contains(CardType::Instant)
-                    || object.base_types().contains(CardType::Sorcery);
-                if object.zone() == Zone::Battlefield || spell {
-                    continue;
-                }
-                let (event, shot) = moved(state, object.id(), object.zone(), Zone::Battlefield);
-                events.push(event);
-                snapshots.extend(shot);
-                entered.push(object.id());
-                let controller = under.unwrap_or_else(|| object.owner());
-                if *tapped || controller != object.owner() {
-                    events.push(Event::Entered {
-                        object: object.id(),
-                        tapped: *tapped,
-                        controller,
-                    });
-                }
-                // A planeswalker comes in with its loyalty, proposed with the move so a rule that changes what
-                // enters with counters can reach it (CR 306.5b).
-                events.extend(loyalty::entering(state, object.id()));
-            }
-            return Ok(Run::Done {
-                events,
-                bound: arrived_as(cx, what, &entered),
-                snapshots,
-                next: Next::Sibling,
-            });
+            return Stop::settle(onto_battlefield(cx, what, &objects, *tapped, under));
         }
     }
     Ok(Run::Done {
         events,
         bound: Vec::new(),
+        snapshots,
+        next: Next::Sibling,
+    })
+}
+
+/// The cards put onto the battlefield: one `ZoneChanged` each, so what triggers on entering sees it, and an `Entered`
+/// after it for a card that comes in tapped or under a player other than its owner. An Aura that is not cast enters
+/// attached to a permanent its controller chooses among those it may enchant (asked unless there is one), and one with
+/// nothing to enchant stays where it is (CR 303.4g).
+fn onto_battlefield(
+    cx: &Cx<'_>,
+    what: &Ref,
+    objects: &[&GameObject],
+    tapped: bool,
+    under: Option<PlayerId>,
+) -> Result<Run, Stop> {
+    let state = cx.state();
+    let mut questions = Questions::new(cx);
+    let mut events = Vec::new();
+    let mut snapshots = Vec::new();
+    let mut entered = Vec::new();
+    for object in objects {
+        let spell = object.base_types().contains(CardType::Instant)
+            || object.base_types().contains(CardType::Sorcery);
+        if object.zone() == Zone::Battlefield || spell {
+            continue;
+        }
+        let controller = under.unwrap_or_else(|| object.owner());
+        let host = match attach::hosts_when_entering(state, object, controller) {
+            None => None,
+            Some(hosts) => match hosts.as_slice() {
+                [] => continue,
+                [only] => Some(*only),
+                _ => questions
+                    .cards(controller, hosts, (1, 1), wording::ENCHANT.into())?
+                    .first()
+                    .copied(),
+            },
+        };
+        let (event, shot) = moved(state, object.id(), object.zone(), Zone::Battlefield);
+        events.push(event);
+        snapshots.extend(shot);
+        entered.push(object.id());
+        if tapped || controller != object.owner() {
+            events.push(Event::Entered {
+                object: object.id(),
+                tapped,
+                controller,
+            });
+        }
+        // A planeswalker comes in with its loyalty, proposed with the move so a rule that changes what enters with
+        // counters can reach it (CR 306.5b).
+        events.extend(loyalty::entering(state, object.id()));
+        events.extend(host.map(|to| Event::Attached {
+            object: object.id(),
+            to,
+        }));
+    }
+    questions.end()?;
+    Ok(Run::Done {
+        events,
+        bound: arrived_as(cx, what, &entered),
         snapshots,
         next: Next::Sibling,
     })

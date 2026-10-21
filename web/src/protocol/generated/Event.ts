@@ -406,4 +406,16 @@ tapped: boolean,
 /**
  * Who controls it.
  */
-controller: PlayerId, } };
+controller: PlayerId, } } | { "Attached": { 
+/**
+ * The attachment.
+ */
+object: ObjectId, 
+/**
+ * The permanent it is attached to.
+ */
+to: ObjectId, } } | { "Unattached": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } };

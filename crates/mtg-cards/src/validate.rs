@@ -456,7 +456,17 @@ impl<'a> Walker<'a> {
             | Keyword::Evoke(cost)
             | Keyword::Overload(cost)
             | Keyword::Suspend { cost, .. } => self.at("cost", |w| w.cost(cost)),
-            Keyword::Enchant(selector) => self.selector(selector),
+            Keyword::Enchant(selector) => {
+                self.selector(selector);
+                // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
+                if selector
+                    .0
+                    .iter()
+                    .any(|pred| matches!(pred, Pred::In(zone) if !zone.is_battlefield()))
+                {
+                    self.uses("Keyword", "Enchant.Elsewhere");
+                }
+            }
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
@@ -764,6 +774,10 @@ impl<'a> Walker<'a> {
                 if let Some(rest) = rest_as {
                     w.at("rest_as", |w| w.bind(rest, Kind::Object));
                 }
+            }
+            Effect::Attach { what, to } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("to", |w| w.reference(to, Kind::Object));
             }
             Effect::Shuffle { who } | Effect::WinGame { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -1531,6 +1545,9 @@ mod tests {
     #[case::a_payment_that_exiles_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["ExileSelf"]}}]}}"#, &["Ability.Triggered", "Cost.ExileSelf", "Effect.Pay", "Effect.Pay.ExileSelf", "Trigger.StepBegins"])]
     #[case::a_payment_that_discards_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["DiscardSelf"]}}]}}"#, &["Ability.Triggered", "Cost.DiscardSelf", "Effect.Pay", "Effect.Pay.DiscardSelf", "Trigger.StepBegins"])]
     #[case::a_payment_that_sacrifices_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["SacrificeSelf"]}}]}}"#, &["Ability.Triggered", "Cost.SacrificeSelf", "Effect.Pay", "Effect.Pay.SacrificeSelf", "Trigger.StepBegins"])]
+    #[case::attaching_the_source_to_a_target(r#"{"Activated":{"cost":"{2}","timing":"Sorcery","targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Attach":{"what":"This","to":{"Target":0}}}]}}"#, &["Ability.Activated", "Cost.Mana", "Effect.Attach"])]
+    #[case::an_aura_that_enchants_a_creature(r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}}"#, &["Keyword.Enchant"])]
+    #[case::an_aura_that_enchants_a_card_in_a_graveyard(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Elsewhere"])]
     #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
     #[case::sol_ring(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#, &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana"])]
     fn how_often_from_where_and_by_what_chance_an_ability_works_counts_as_a_primitive(
@@ -2030,6 +2047,14 @@ mod tests {
     #[case::object_where_player(
         r#"{"Spell":{"effects":[{"Draw":{"who":"This"}}]}}"#,
         "expected a player but this is an object"
+    )]
+    #[case::attaching_a_player(
+        r#"{"Spell":{"effects":[{"Attach":{"what":"You","to":"This"}}]}}"#,
+        "abilities[0].Spell.effects[0].Attach.what: expected an object but this is a player"
+    )]
+    #[case::attaching_to_a_player(
+        r#"{"Spell":{"effects":[{"Attach":{"what":"This","to":"You"}}]}}"#,
+        "abilities[0].Spell.effects[0].Attach.to: expected an object but this is a player"
     )]
     #[case::unknown_token(
         r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"gold"}}}]}}"#,

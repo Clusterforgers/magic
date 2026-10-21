@@ -250,6 +250,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CountersChanged(_)
         | Event::TokenCreated(_)
         | Event::Entered { .. }
+        | Event::Attached { .. }
+        | Event::Unattached { .. }
         | Event::Revealed(_) => None,
     }
 }

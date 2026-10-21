@@ -1,0 +1,19 @@
+{
+  "oracle_id": "21e9e1a9-5d6d-473e-adab-6a1e8e2b0ebd",
+  "name": "Kongming, \"Sleeping Dragon\"",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kongming, \"Sleeping Dragon\"",
+      "oracle_fingerprint": "51a409183459ccfb4d2671d3bcf939a1",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

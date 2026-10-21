@@ -10,7 +10,7 @@ use common::{names, pid};
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Supertype};
 use mtg_engine::choose::CardsChoice;
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_engine::effects::Duration;
@@ -855,6 +855,13 @@ fn reaper() -> Arc<CardDefinition> {
     )))
 }
 
+/// The card with its legendary supertype taken off, so that two stand together without the legend rule putting one away.
+fn without_legend(card: &CardDefinition) -> Arc<CardDefinition> {
+    let mut plain = card.clone();
+    plain.supertypes.remove(&Supertype::Legendary);
+    Arc::new(plain)
+}
+
 #[rstest]
 #[case::no_teysa(&[], 2)]
 #[case::teysa_among_the_dead(&["Teysa Karlov"], 6)]
@@ -866,7 +873,11 @@ fn a_death_triggers_again_under_teysa_even_as_she_dies(
     // Wrath of God destroys every creature at once: the Bears and each Teysa die together, and what leaves the
     // battlefield is judged as it was, so the rule of a Teysa that dies applies to every death in that step.
     let mut battlefield = vec![ready(reaper())];
-    battlefield.extend(teysas.iter().map(|name| ready(corpus(name))));
+    battlefield.extend(
+        teysas
+            .iter()
+            .map(|name| ready(without_legend(&corpus(name)))),
+    );
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .at(2, 0, Step::Main1)

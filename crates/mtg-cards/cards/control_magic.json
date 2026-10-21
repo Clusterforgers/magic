@@ -1,0 +1,15 @@
+{
+  "oracle_id": "cd0d7141-46d2-4aa3-bc77-6b3b4513803e",
+  "name": "Control Magic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Control Magic",
+      "oracle_fingerprint": "d486ad0002ddd59bd73e52f10a69857c",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        { "Static": { "affected": "Attached", "mods": [{ "SetController": "You" }] } }
+      ]
+    }
+  ]
+}

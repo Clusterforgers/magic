@@ -48,6 +48,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { Entered: { object: 3, tapped: true, controller: 1 } },
     "Forest enters tapped under Bo's control",
   ],
+  Attached: [{ Attached: { object: 3, to: 1 } }, 'Forest becomes attached to Grizzly Bears'],
+  Unattached: [{ Unattached: { object: 3 } }, 'Forest becomes unattached'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],
   StepBegan: [{ StepBegan: { step: 'DeclareAttackers' } }, 'Declare attackers begins'],

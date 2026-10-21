@@ -11,7 +11,7 @@
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
 //! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
 //! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
-//! combat, flash and hexproof and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! combat, flash, hexproof and enchant, attaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS};
@@ -63,6 +63,7 @@ const RUNS: &[&str] = &[
     "Effect.MoveCounters",
     "Effect.Tap",
     "Effect.Untap",
+    "Effect.Attach",
     "Effect.WinGame",
     "Effect.CreateToken",
     "Effect.Continuous",
@@ -116,6 +117,7 @@ const RUNS: &[&str] = &[
     "Keyword.Prowess",
     "Keyword.BattleCry",
     "Keyword.Ward",
+    "Keyword.Enchant",
 ];
 
 /// The capabilities of this engine.
@@ -239,6 +241,9 @@ mod tests {
     #[case::adding_mana("Effect.AddMana", true)]
     #[case::tapping_permanents("Effect.Tap", true)]
     #[case::untapping_permanents("Effect.Untap", true)]
+    #[case::attaching("Effect.Attach", true)]
+    #[case::enchanting("Keyword.Enchant", true)]
+    #[case::enchanting_cards_elsewhere("Keyword.Enchant.Elsewhere", false)]
     #[case::winning_the_game("Effect.WinGame", true)]
     #[case::creating_tokens("Effect.CreateToken", true)]
     #[case::creating_copies("Effect.CreateToken.Copy", false)]

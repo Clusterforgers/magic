@@ -109,7 +109,7 @@ Effect (one variant per engine primitive)
   DealDamage{source?,to,amount} GainLife{who,amount} LoseLife{who,amount}
   AddMana{who,mana: Fixed([ManaType]) | AnyColor(n),times} PutCounters{on,counter,count}
   RemoveCounters{from,counter,count} MoveCounters{from,to,counter,count}
-  Tap{what} Untap{what} Transform{what} WinGame{who}
+  Tap{what} Untap{what} Attach{what,to} Transform{what} WinGame{who}
   CreateToken{who,token: Named(id) | Custom(TokenSpec) | CopyOf{of,except},count,tapped,attacking}
   Continuous{affected,mods,duration} Rule{rule: GameRule,duration}
   DelayedTrigger{when,once,effects}
@@ -203,6 +203,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | If | The condition is read in the state the earlier steps left: the resolution enters `then` when it holds and `otherwise` when it does not, and a list with nothing in it goes on to the next effect. A condition the evaluator cannot read is refused by name; its cards are outside `Caps` (see Values). |
 | Tap, untap | Each names its permanents with a `Ref` and acts on all of them together, in the order the reference lists them. A permanent already in that state, an object that is not a permanent or has changed zones since (CR 400.7), a player and a repeated name are passed over. The events are `PermanentTapped` and `PermanentUntapped`. |
 | Mill | Each player the effect names who is in the game puts the top cards of their library into their graveyard, the top card first, in one step: a `ZoneChanged` with `ZoneCause::Milled` for each. A short library gives what it has, an empty one nothing, and milling is not drawing. |
+| Attach | Each permanent `what` names that is still the object named moves onto the first permanent `to` names when it may be attached there (an Aura what its `Enchant` keywords allow, an Equipment a creature, a Fortification a land; CR 701.3): an `Attached` for each, in one step, with a new timestamp (CR 613.7a). One that may not stays (CR 701.3b), one already there is not attached again (CR 701.3c), and a `to` that names nothing attaches nothing. An Aura spell needs no `Attach`: its target comes from `Enchant` and it enters attached to it (CR 303.4a, 303.4f). |
 | WinGame | Every opponent of a winner who is in the game loses at once (`PlayerLost`, in turn order from the active player), and the end-of-game check after the resolution names the one player left (CR 104.2a, 104.2b). The rest of the resolution is done first. |
 | Values | `Scope` in `resolve/value.rs` reads `Ref`, `Selector`, `Amount` and `Condition` from the state, the bindings, the choices and the snapshots, and changes nothing. It refuses by name what it cannot read yet: X, divided amounts and kicker (`ResolveError::Unsupported`). The support walker names each of them as a primitive that `Caps` lacks (`Amount.Divided`, `Amount.EvenShare`, `Condition.Kicked`; an X comes with the `{X}` of its cost or the `-X` of a loyalty cost), wherever the value stands, so no card that would meet a refusal in a game is `Verified`. |
 | Replacement | The events of a step pass through `replace::process(state, proposed)` before they are logged; it returns them unchanged until the replacement task. |
@@ -210,7 +211,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 ### Decisions the effects need
 
-`Decision.player` names who answers, so a decision may go to any seat. Every effect decision carries `source` (the object that asks). Decisions for a seat that is not the active player have a response clock (`server.md`). `ChooseTargets` and `OrderTriggers` are asked and have their prompts in the web; `ChooseCards` is asked by `Discard`, `Sacrifice`, `Choose` over objects, `Scry` and `Search` (its question carries `text`, "Discard a card." or "Search your library for a basic land card."; a search offers the matching cards, between 0 and the most that may be found), `OrderCards` by `Scry` and `Move` (the controller puts cards in one library in an order, top first), `YesNo` by `May` ("Draw a card?"; the players `who` names are asked in turn order until one says yes) and by `Pay` ("Pay {2}?"; the same order until one pays, those who cannot pay are not asked), `PayMana` by `Pay` after a yes (the payment cannot be backed out of), `ChooseOption` by `Choose` over players ("Choose an opponent."; a player with one option is not asked) and `ChooseMode` at announcement by `Modal`; `YesNo`, `ChooseOption`, `ChooseMode`, `ChooseCards` and `OrderCards` have their prompts and response clocks; the other kinds in the table, `PayMana` aside, exist as options, answer and wire types in `choose/<kind>.rs` and the four of them without a prompt (`ChooseNumber`, `DivideAmount`, `ChooseCosts`, `ChooseReplacement`) have a placeholder in the web, which their task replaces. The questions of `YesNo`, `ChooseOption`, `ChooseCards` and `OrderCards` carry `text` in the words of a card, and `ChooseMode` says whether the cast can be backed out of (`can_cancel`).
+`Decision.player` names who answers, so a decision may go to any seat. Every effect decision carries `source` (the object that asks). Decisions for a seat that is not the active player have a response clock (`server.md`). `ChooseTargets` and `OrderTriggers` are asked and have their prompts in the web; `ChooseCards` is asked by `Discard`, `Sacrifice`, `Choose` over objects, `Scry`, `Search`, `Move` of an Aura onto the battlefield (what it enchants) and the legend rule of the state-based actions (the permanent to keep) (its question carries `text`, "Discard a card." or "Search your library for a basic land card."; a search offers the matching cards, between 0 and the most that may be found), `OrderCards` by `Scry` and `Move` (the controller puts cards in one library in an order, top first), `YesNo` by `May` ("Draw a card?"; the players `who` names are asked in turn order until one says yes) and by `Pay` ("Pay {2}?"; the same order until one pays, those who cannot pay are not asked), `PayMana` by `Pay` after a yes (the payment cannot be backed out of), `ChooseOption` by `Choose` over players ("Choose an opponent."; a player with one option is not asked) and `ChooseMode` at announcement by `Modal`; `YesNo`, `ChooseOption`, `ChooseMode`, `ChooseCards` and `OrderCards` have their prompts and response clocks; the other kinds in the table, `PayMana` aside, exist as options, answer and wire types in `choose/<kind>.rs` and the four of them without a prompt (`ChooseNumber`, `DivideAmount`, `ChooseCosts`, `ChooseReplacement`) have a placeholder in the web, which their task replaces. The questions of `YesNo`, `ChooseOption`, `ChooseCards` and `OrderCards` carry `text` in the words of a card, and `ChooseMode` says whether the cast can be backed out of (`can_cancel`).
 
 | Decision | Who answers | When | Corpus cards that need it |
 |---|---|---|---|
@@ -218,7 +219,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | `ChooseMode` | controller | announcement | Izzet Charm |
 | `ChooseNumber` | controller | announcement (X, multikicker); resolution ("any number") | Fireball |
 | `DivideAmount` | controller | announcement | Fire // Ice |
-| `ChooseCards` | any seat | resolution; cost payment | Rampant Growth, Cultivate, Flooded Strand, Brainstorm, Jace 0, Faithless Looting, Archon (sacrifice and discard, by the target player), Sneak Attack |
+| `ChooseCards` | any seat | resolution; state-based actions (the legend rule); cost payment | Rampant Growth, Cultivate, Flooded Strand, Brainstorm, Jace 0, Faithless Looting, Archon (sacrifice and discard, by the target player), Sneak Attack |
 | `OrderCards` | any seat | resolution | Opt, Brainstorm, Jace 0, cascade (bottom) |
 | `YesNo` | any seat | resolution ("may", pay or not) | Eternal Witness, Jace +2, Rhystic Study (both players), Delver |
 | `ChooseOption` | any seat | resolution | Hero of Bladehold in multiplayer (which defender), Treasure (colour) |
@@ -371,7 +372,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 
 ## Corpus
 
-`crates/mtg-cards/cards/` holds 78 cards and 3 tokens.
+`crates/mtg-cards/cards/` holds 85 cards and 3 tokens.
 
 | Feature | Cards |
 |---|---|
@@ -388,7 +389,9 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 | Abilities from other zones and state triggers (Verified) | Reassembling Skeleton (returns from the graveyard for mana), Soul of Zendikar (exiles itself from the graveyard as a cost), Elemental Masterpiece (discards itself from the hand as a cost), Squee, Goblin Nabob (an upkeep trigger from the graveyard) and Boneyard Scourge (a Dragon dying, with a payment, from the graveyard), Anger (a static ability from the graveyard) and Covetous Dragon (a state trigger) |
 | Counters (Verified) | Tireless Tracker (a +1/+1 counter on itself when a Clue is sacrificed), Cathars' Crusade (a counter on each creature you control), Inspiring Call (a count and a selector over +1/+1 counters), Caress of Phyrexia (poison counters on a player) |
 | Planeswalkers (Verified) | Jace, the Mind Sculptor (look at a library, Brainstorm, bounce, exile a library and shuffle a hand into it), Jace Beleren (each player draws, a target player draws or mills twenty), Ajani, Caller of the Pride (a counter on up to one creature, flying and double strike, a Cat for each life) and Garruk Wildspeaker (untap two lands, a Beast, +3/+3 and trample) |
-| Static, Aura, Equipment | Pacifism, Bonesplitter (their statics run; `Enchant` and `Equip` do not) |
+| Auras (Verified) | Pacifism, Epic Proportions (flash, a pump and a keyword), Control Magic (`SetController` through `Attached`), Squirrel Nest (an Aura on a land that gives it an ability) and Shielded by Faith (`Attach` in a trigger) |
+| Equipment | Bonesplitter (its static runs; `Equip` does not) |
+| Legends (Verified) | Arvad the Cursed and Kongming, "Sleeping Dragon" (lords) and Sram, Senior Edificer (a trigger on Aura spells); two of a name meet the legend rule |
 | Mana abilities | Llanowar Elves, Sol Ring, Gaea's Cradle |
 | Keywords | Serra Angel, Bloodbraid Elf (cascade), Faithless Looting (flashback), Monastery Swiftspear (prowess) and Hulking Raptor (ward), Verified |
 | No abilities | Forest, Grizzly Bears |

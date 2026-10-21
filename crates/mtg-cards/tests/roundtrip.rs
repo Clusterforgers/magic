@@ -538,6 +538,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 .prop_map(|(on, counter, count)| Effect::PutCounters { on, counter, count }),
             reference().prop_map(|what| Effect::Tap { what }),
             reference().prop_map(|what| Effect::Untap { what }),
+            (reference(), reference()).prop_map(|(what, to)| Effect::Attach { what, to }),
             reference().prop_map(|what| Effect::Transform { what }),
             who().prop_map(|who| Effect::WinGame { who }),
             (who(), token_ref(), amount(), any::<bool>(), any::<bool>()).prop_map(

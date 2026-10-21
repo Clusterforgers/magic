@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7e00b0cd-d212-4604-ba07-da21f4fe00b0",
+  "name": "Sram, Senior Edificer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sram, Senior Edificer",
+      "oracle_fingerprint": "14d775bcb1b446a0db998fc1788db20c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Subtype": "Aura" },
+                      { "Subtype": "Equipment" },
+                      { "Subtype": "Vehicle" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

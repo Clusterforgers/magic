@@ -108,6 +108,8 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::RuleCreated { effect } => crate::rules::fold_created(state, effect),
         Event::RuleExpired { id } => crate::rules::fold_expired(state, *id),
         Event::CountersChanged(counters) => crate::counters::fold(state, counters),
+        Event::Attached { object, to } => crate::attach::fold_attached(state, *object, *to),
+        Event::Unattached { object } => crate::attach::fold_unattached(state, *object),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
         Event::Scried(scried) => {
             zones::scry(state, scried)?;

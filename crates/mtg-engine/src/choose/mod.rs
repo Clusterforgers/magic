@@ -36,6 +36,7 @@ pub use triggers::{TriggerEntry, TriggersChoice, TriggersOptions};
 pub use yes_no::{YesNoChoice, YesNoOptions};
 
 pub(crate) use ask::{Questions, Stop};
+pub(crate) use cards::check as check_cards;
 pub(crate) use cards::{Chooser, Picked, Selection, pick_cards, pick_selections};
 pub(crate) use mode::{announceable, announced_specs, modal_of, mode_options, targets_before};
 pub(crate) use option::{OptionChooser, Optioned, pick_options};

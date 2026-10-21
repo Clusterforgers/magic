@@ -6,12 +6,14 @@
 //! [`characteristics`], never stored.
 
 mod answers;
+mod attach;
 mod cast;
 mod damage;
 #[cfg(test)]
 mod fixtures;
 mod flow;
 mod layers;
+mod legend;
 mod mulligan;
 mod preview;
 mod price;

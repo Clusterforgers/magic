@@ -88,6 +88,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
         })
         .collect();
     events.extend(annihilation(state, &died));
+    events.extend(crate::attach::state_based(state, &died));
     events
 }
 

@@ -423,6 +423,18 @@ pub enum Event {
         /// Who controls it.
         controller: PlayerId,
     },
+    /// An Aura, Equipment or Fortification became attached to a permanent (CR 701.3); it takes a new timestamp (CR 613.7a).
+    Attached {
+        /// The attachment.
+        object: ObjectId,
+        /// The permanent it is attached to.
+        to: ObjectId,
+    },
+    /// A permanent stopped being attached to what it was attached to.
+    Unattached {
+        /// The permanent.
+        object: ObjectId,
+    },
 }
 
 /// How the resolution of a spell or ability ended.
@@ -455,7 +467,7 @@ pub enum ZoneCause {
     Countered,
     /// It was milled (CR 701.17).
     Milled,
-    /// A state-based action put it into its owner's graveyard (CR 704.5i).
+    /// A state-based action put it into its owner's graveyard (CR 704.5i, 704.5j, 704.5m).
     StateBased,
 }
 
@@ -522,12 +534,14 @@ impl Event {
             | Event::ZoneChanged { object, .. }
             | Event::SpellResolved { object }
             | Event::Entered { object, .. }
+            | Event::Unattached { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
             | Event::CardDrawn { object, .. }
             | Event::CardDiscarded { object, .. }
             | Event::CreatureDied { object, .. }
             | Event::ObjectLeftGame { object } => vec![*object],
+            Event::Attached { object, to } => vec![*object, *to],
             Event::AttackersDeclared { attackers, .. } => {
                 attackers.iter().map(|(o, _)| *o).collect()
             }

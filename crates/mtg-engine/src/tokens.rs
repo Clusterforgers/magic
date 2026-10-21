@@ -79,7 +79,17 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         observed: None,
     });
     state.next_timestamp += 1;
-    // A token can bring what no card of the game had: a triggered ability, a static ability.
+    // A token can bring what no card of the game had: a triggered ability, a static ability, a legend.
+    if event
+        .definition
+        .supertypes
+        .contains(&mtg_core::card::Supertype::Legendary)
+    {
+        state.possible.legends = true;
+    }
+    if crate::attach::definition_attaches(&event.definition) {
+        state.possible.attachments = true;
+    }
     if crate::ability_reader::definition_triggers(&event.definition) {
         state.triggers_possible = true;
     }

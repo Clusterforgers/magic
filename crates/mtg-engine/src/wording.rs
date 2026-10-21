@@ -436,6 +436,9 @@ pub(crate) fn search(zone: ZoneKind, filter: &Selector, min: usize, most: usize)
     format!("Search {place} for {what}.")
 }
 
+/// What an Aura asks as it enters the battlefield without being cast (CR 303.4g).
+pub(crate) const ENCHANT: &str = "Choose what the Aura enchants.";
+
 /// What a scry asks about the cards looked at.
 pub(crate) const SCRY: &str = "Put any number of the cards on the bottom of your library.";
 

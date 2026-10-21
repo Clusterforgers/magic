@@ -12,6 +12,7 @@ use mtg_core::mana::ManaType;
 use crate::abilities::AbilityRef;
 use crate::ability_reader::{abilities_of, working_here};
 use crate::answers::Outcome;
+use crate::attach;
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::announceable;
 use crate::decision::{PriorityAction, PriorityOptions};
@@ -370,6 +371,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             timing
                 && spell_ability(state, *id)
                     .is_none_or(|(_, rules)| announceable(state, player, *id, &rules))
+                && attach::announceable(state, player, *id)
                 && can_afford(cost, &pool, &plain_mana, life)
         })
         .collect();
