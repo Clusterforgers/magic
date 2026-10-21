@@ -360,6 +360,12 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "CardTypes");
                 self.selector(of);
             }
+            Amount::Kicks => {
+                self.uses("Amount", "Kicks");
+                if !self.has_kicker {
+                    self.problem("`Kicks` needs a Kicker or Multikicker keyword on the card");
+                }
+            }
         }
     }
 
@@ -1435,7 +1441,7 @@ impl<'a> Walker<'a> {
 /// an ability with a `limit`, a zone other than the battlefield or sorcery timing also uses `Ability.Limit`,
 /// `Ability.From` or `Ability.Sorcery`.
 /// A value the engine cannot read yet is named too, wherever it stands (a condition, an amount, a selector):
-/// `Amount.Divided`, `Amount.EvenShare` and `Condition.Kicked`. A loyalty ability whose cost is `-X` names `Cost.Loyalty.X`.
+/// `Amount.Divided`, `Amount.EvenShare`, `Amount.Kicks` and `Condition.Kicked`. A loyalty ability whose cost is `-X` names `Cost.Loyalty.X`.
 ///
 /// A plain `{T}: Add {X}` is one primitive, [`PLAIN_MANA_ABILITY`]: the engine runs that exact shape
 /// and not the general ability, cost and effect it is made of.
@@ -2245,21 +2251,22 @@ mod tests {
         assert_eq!(used_primitives(&ability), expected);
     }
 
-    #[test]
-    fn being_kicked_counts_as_a_primitive_beside_the_keyword() {
-        let json = r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#;
+    #[rstest]
+    #[case::being_kicked(
+        r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#,
+        &["Ability.Spell", "Condition.Kicked", "Effect.Draw", "Effect.If"]
+    )]
+    #[case::the_number_of_kicks(
+        r#"{"Spell":{"effects":[{"Draw":{"count":"Kicks"}}]}}"#,
+        &["Ability.Spell", "Amount.Kicks", "Effect.Draw"]
+    )]
+    fn being_kicked_counts_as_a_primitive_beside_the_keyword(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
         let ability: Ability = serde_json::from_str(json).unwrap();
-        assert_eq!(
-            used_primitives(&ability),
-            [
-                "Ability.Spell",
-                "Condition.Kicked",
-                "Effect.Draw",
-                "Effect.If"
-            ]
-            .map(String::from)
-            .into()
-        );
+        let expected: BTreeSet<String> = expected.iter().map(|name| (*name).to_owned()).collect();
+        assert_eq!(used_primitives(&ability), expected);
     }
 
     #[rstest]
@@ -2322,6 +2329,10 @@ mod tests {
     #[case::kicked_without_kicker(
         r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#,
         "`Kicked` needs a Kicker"
+    )]
+    #[case::kicks_without_kicker(
+        r#"{"Spell":{"effects":[{"Draw":{"count":"Kicks"}}]}}"#,
+        "`Kicks` needs a Kicker"
     )]
     #[case::modal_not_alone(
         r#"{"Spell":{"effects":[{"Draw":{}},{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,

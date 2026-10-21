@@ -11,7 +11,7 @@
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
 //! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
 //! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
-//! combat, flash, hexproof, enchant, equip and reconfigure, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS};
@@ -130,6 +130,10 @@ const RUNS: &[&str] = &[
     "Keyword.Equip",
     "Keyword.Reconfigure",
     "Keyword.LivingWeapon",
+    "Keyword.Kicker",
+    "Keyword.Multikicker",
+    "Condition.Kicked",
+    "Amount.Kicks",
     "Ability.Replacement",
     "ReplaceWhen.TokenCreation",
     "ReplaceWhen.Damage",
@@ -292,7 +296,8 @@ mod tests {
     #[case::even_shares("Amount.EvenShare", false)]
     #[case::loyalty_abilities("Ability.Loyalty", true)]
     #[case::loyalty_costs_with_an_x("Cost.Loyalty.X", false)]
-    #[case::being_kicked("Condition.Kicked", false)]
+    #[case::being_kicked("Condition.Kicked", true)]
+    #[case::the_number_of_kicks("Amount.Kicks", true)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]
@@ -329,7 +334,8 @@ mod tests {
     #[case::prowess("Keyword.Prowess", true)]
     #[case::battle_cry("Keyword.BattleCry", true)]
     #[case::ward("Keyword.Ward", true)]
-    #[case::kicker("Keyword.Kicker", false)]
+    #[case::kicker("Keyword.Kicker", true)]
+    #[case::multikicker("Keyword.Multikicker", true)]
     #[case::surveilling("Effect.Surveil", false)]
     #[case::proliferating("Effect.Proliferate", false)]
     #[case::goading("Effect.Goad", false)]

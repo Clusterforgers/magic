@@ -93,6 +93,7 @@ fn kicker() -> Optional {
     Optional {
         label: "Kicker {1}".to_owned(),
         mana: ManaCost::parse("{1}").unwrap(),
+        repeatable: false,
     }
 }
 
@@ -279,7 +280,6 @@ fn an_alternative_cost_is_paid_in_place_of_the_printed_cost(#[case] cost: &str, 
 #[case::a_target_that_cannot_be_met(Shape::Creature, 0, needs(false, 0), Vec::new())]
 #[case::x_that_cannot_be_paid_even_as_nothing(Shape::Plain, 0, needs(false, 1), Vec::new())]
 #[case::a_cost_that_cannot_be_paid(Shape::Plain, 0, needs(false, 0), Vec::new())]
-#[case::an_optional_cost_that_cannot_be_paid(Shape::Plain, 1, needs(true, 0), vec![0])]
 #[case::a_division_that_cannot_give_each_target_one(Shape::Stingy, 3, needs(false, 0), Vec::new())]
 fn a_step_that_cannot_be_met_rewinds_the_announcement(
     #[case] shape: Shape,

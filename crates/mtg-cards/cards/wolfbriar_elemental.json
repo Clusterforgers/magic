@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2f8872fe-84dc-4cda-a253-e7503a5c96a3",
+  "name": "Wolfbriar Elemental",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wolfbriar Elemental",
+      "oracle_fingerprint": "66e1849dc3eaa3f861ec66ec25dfb448",
+      "abilities": [
+        { "Keyword": { "Multikicker": "{G}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": "Kicks"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

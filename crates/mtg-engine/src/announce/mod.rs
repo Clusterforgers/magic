@@ -130,12 +130,21 @@ pub(crate) struct Needs {
 
 impl Needs {
     /// What `what` asks for; its rules are `rules`.
-    const fn of(_state: &GameState, _what: &What, _rules: Option<&Ability>) -> Self {
+    fn of(state: &GameState, what: &What, _rules: Option<&Ability>) -> Self {
         Needs {
             alternative: None,
-            optional: Vec::new(),
+            optional: optional::read(state, what),
             x: None,
         }
+    }
+
+    /// The indices of the optional costs that may be paid any number of times.
+    fn repeatable(&self) -> impl Iterator<Item = usize> {
+        self.optional
+            .iter()
+            .enumerate()
+            .filter(|(_, cost)| cost.repeatable)
+            .map(|(index, _)| index)
     }
 }
 
@@ -146,6 +155,10 @@ pub(crate) struct Done {
     pub(crate) modes: bool,
     /// The optional costs are settled.
     pub(crate) optional: bool,
+    /// The optional costs that may be paid once are settled.
+    pub(crate) single: bool,
+    /// How many of the costs that may be paid any number of times are settled.
+    pub(crate) repeated: usize,
     /// X is settled.
     pub(crate) x: bool,
     /// How many target specifications have their division settled.
@@ -196,11 +209,17 @@ impl Pending {
         let wanted = match answered {
             Answered::Modes(_) => Phase::Modes,
             Answered::Targets(_) => Phase::Targets,
+            // A number is asked for X, and for the times a repeatable optional cost is paid, which comes once the
+            // costs that are paid once are settled.
+            Answered::Number(_) if self.done.single && self.done.asked == Some(Phase::Optional) => {
+                Phase::Optional
+            }
             Answered::Number(_) => Phase::X,
             Answered::Costs(_) => Phase::Optional,
             Answered::Division(_) => Phase::Division,
         };
-        if self.done.asked != Some(wanted) {
+        let costs_again = matches!(answered, Answered::Costs(_)) && self.done.single;
+        if self.done.asked != Some(wanted) || costs_again {
             return Err(EngineError::InvalidEvent(
                 "an answer for a step the announcement did not ask".into(),
             ));
@@ -212,13 +231,26 @@ impl Pending {
                 self.done.modes = true;
             }
             Answered::Targets(targets) => self.choices.targets.push(targets),
+            Answered::Number(times) if wanted == Phase::Optional => {
+                let paid = self
+                    .needs
+                    .as_ref()
+                    .and_then(|needs| needs.repeatable().nth(self.done.repeated));
+                if let Some(index) = paid {
+                    let times = usize::try_from(times).unwrap_or(0);
+                    self.choices
+                        .optional_costs
+                        .extend(std::iter::repeat_n(index, times));
+                }
+                self.done.repeated += 1;
+            }
             Answered::Number(number) => {
                 self.choices.x = Some(number);
                 self.done.x = true;
             }
             Answered::Costs(costs) => {
                 self.choices.optional_costs = costs;
-                self.done.optional = true;
+                self.done.single = true;
             }
             Answered::Division(shares) => {
                 self.choices.division.extend(shares);
@@ -380,3 +412,6 @@ mod procedure;
 
 #[cfg(test)]
 mod through_engine;
+
+#[cfg(test)]
+mod kicks;
