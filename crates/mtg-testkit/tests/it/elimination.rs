@@ -150,26 +150,6 @@ fn turns_and_priority_skip_eliminated_players(
 }
 
 #[test]
-fn losing_in_your_own_turn_ends_that_turn() -> Result<(), ScriptError> {
-    // Turn 4 of a three-player game belongs to seat 0, who has nothing left to draw.
-    let mut driver = Driver::from_scenario(
-        Scenario::new(3)
-            .at(4, 0, Step::Untap)
-            .library(0, std::iter::empty()),
-    )?;
-    driver.idle_until(5, Step::Upkeep)?;
-    assert_eq!(driver.state().turn().active(), pid(1));
-    driver.expect_event("empty-library loss", |e| {
-        matches!(e, Event::PlayerLost { player, reason: LossReason::EmptyLibrary } if *player == pid(0))
-    })?;
-    driver.expect_no_event("the abandoned turn's main phase", |e| {
-        matches!(e, Event::StepBegan { step: Step::Main1 })
-    })?;
-    assert_eq!(driver.engine().result(), None);
-    Ok(())
-}
-
-#[test]
 fn an_attacker_aimed_at_an_eliminated_player_leaves_combat() -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
         Scenario::new(3)

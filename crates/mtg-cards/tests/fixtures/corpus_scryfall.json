@@ -3054,6 +3054,98 @@
     "toughness": "4"
   },
   {
+    "id": "544b2931-0af1-4743-b7c1-91e1dc9294d5",
+    "oracle_id": "48ddba1e-2ad7-463f-9307-d2379a800e51",
+    "name": "Mizzium Mortars",
+    "lang": "en",
+    "layout": "normal",
+    "set": "clb",
+    "collector_number": "803",
+    "rarity": "rare",
+    "released_at": "2022-06-10",
+    "digital": false,
+    "mana_cost": "{1}{R}",
+    "cmc": 2.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Mizzium Mortars deals 4 damage to target creature you don't control.\nOverload {3}{R}{R}{R} (You may cast this spell for its overload cost. If you do, change \"target\" in its text to \"each.\")",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Overload"
+    ]
+  },
+  {
+    "id": "44067327-6fe3-4222-b591-6d14d0e360d7",
+    "oracle_id": "60d640a4-032b-4279-ac75-8f200ca776fb",
+    "name": "Vedalken Orrery",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2x2",
+    "collector_number": "317",
+    "rarity": "rare",
+    "released_at": "2022-07-08",
+    "digital": false,
+    "mana_cost": "{4}",
+    "cmc": 4.0,
+    "type_line": "Artifact",
+    "oracle_text": "You may cast spells as though they had flash.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": []
+  },
+  {
+    "id": "d33d91d0-1506-45e4-9def-975bf901815e",
+    "oracle_id": "730e39e6-c61d-48b5-8827-bfd952bf1be7",
+    "name": "Omniscience",
+    "lang": "en",
+    "layout": "normal",
+    "set": "fdn",
+    "collector_number": "161",
+    "rarity": "mythic",
+    "released_at": "2024-11-15",
+    "digital": false,
+    "mana_cost": "{7}{U}{U}{U}",
+    "cmc": 10.0,
+    "type_line": "Enchantment",
+    "oracle_text": "You may cast spells from your hand without paying their mana costs.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "dfb7c4b9-f2f4-4d4e-baf2-86551c8150fe",
+    "oracle_id": "d75b9c82-1b49-4c3e-a1b5-aeef57d6644b",
+    "name": "Cyclonic Rift",
+    "lang": "en",
+    "layout": "normal",
+    "set": "rvr",
+    "collector_number": "40",
+    "rarity": "mythic",
+    "released_at": "2024-01-12",
+    "digital": false,
+    "mana_cost": "{1}{U}",
+    "cmc": 2.0,
+    "type_line": "Instant",
+    "oracle_text": "Return target nonland permanent you don't control to its owner's hand.\nOverload {6}{U} (You may cast this spell for its overload cost. If you do, change \"target\" in its text to \"each.\")",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Overload"
+    ]
+  },
+  {
     "id": "16debeb1-fb2b-4172-b6da-726416d4fb38",
     "oracle_id": "18f22960-87ec-43cd-82ea-ec5cabf49ad3",
     "name": "Foundry Inspector",

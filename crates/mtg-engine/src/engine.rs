@@ -267,7 +267,7 @@ impl Engine {
         let controller = source
             .and_then(|source| self.state.object(source.id))
             .map_or_else(
-                || self.state.turn().active(),
+                || self.state.active_or_next(),
                 |object| controller_of_object(&self.state, object),
             );
         let effect = RuleEffect {
@@ -299,7 +299,7 @@ impl Engine {
         let controller = source
             .and_then(|source| self.state.object(source.id))
             .map_or_else(
-                || self.state.turn().active(),
+                || self.state.active_or_next(),
                 |object| controller_of_object(&self.state, object),
             );
         let mut effect = ContinuousEffect::new(
@@ -337,6 +337,7 @@ impl Engine {
                 Ok(())
             }
             Outcome::Modes(modes) => self.announced(Answered::Modes(modes)),
+            Outcome::Way(pick) => self.announced(Answered::Way(pick)),
             Outcome::Targets(targets) => self.announced(Answered::Targets(targets)),
             Outcome::Number(number) => self.announced(Answered::Number(number)),
             Outcome::Costs(costs) => self.announced(Answered::Costs(costs)),

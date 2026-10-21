@@ -76,9 +76,27 @@ pub fn check_state(state: &GameState) -> Result<(), Violation> {
     check_bookkeeping(state)
 }
 
-/// Checks what must hold where the engine has stopped to ask: a player asked for priority has no triggered ability
-/// waiting for the stack, since they go on it before a player would receive priority (CR 117.5, 603.3).
+/// Checks what must hold where the engine has stopped to ask: the player asked is still in the game and only an
+/// active player declares attackers (CR 800.4), and a player asked for priority has no triggered ability waiting for
+/// the stack, since they go on it before a player would receive priority (CR 117.5, 603.3).
 pub fn check_decision(engine: &Engine) -> Result<(), Violation> {
+    if let Some(decision) = engine.decision() {
+        let state = engine.state();
+        if !state.is_alive(decision.player) {
+            return Err(Violation::Bookkeeping(format!(
+                "{:?} is asked but has left the game",
+                decision.player
+            )));
+        }
+        if matches!(decision.kind, DecisionKind::DeclareAttackers(_))
+            && state.active_player() != Some(decision.player)
+        {
+            return Err(Violation::Bookkeeping(format!(
+                "{:?} is asked for attackers but is not the active player",
+                decision.player
+            )));
+        }
+    }
     let asked_for_priority = engine
         .decision()
         .is_some_and(|d| matches!(d.kind, DecisionKind::Priority(_)));
@@ -621,6 +639,17 @@ impl InvariantChecker {
             Event::CreatureDied { object, .. } => is_token(object),
             _ => false,
         };
+        // The next turn goes to the next player in turn order after the last active player, who may have left (CR 800.4).
+        if let Event::TurnBegan { number, active } = event
+            && self.shadow.turn().number() > 0
+            && (self.shadow.next_alive_after(self.shadow.turn().active()) != Some(*active)
+                || *number != self.shadow.turn().number() + 1)
+        {
+            return Err(Violation::Bookkeeping(format!(
+                "turn {number} goes to {active:?}, not to the next player in turn order after {:?}",
+                self.shadow.turn().active()
+            )));
+        }
         apply_event(&mut self.shadow, event)
             .map_err(|e| Violation::Fold(format!("{event:?}: {e}")))?;
         self.account(event)?;

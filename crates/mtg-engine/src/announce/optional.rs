@@ -5,13 +5,14 @@
 //! cost is offered. The costs chosen are kept in `Choices.optional_costs`, a repeatable cost once for each payment,
 //! their mana joins the total cost, and the spell, the permanent it becomes and their abilities remember them.
 
+use mtg_cards::value::CastWay;
 use mtg_core::mana::ManaCost;
 
 use super::{Ctx, Next, What, Work, total};
 use crate::choose::{Choices, CostsOptions, NumberOptions, OptionalCost};
 use crate::decision::DecisionKind;
 use crate::keywords::{self, keywords_of};
-use crate::object::ObjectRef;
+use crate::object::{GameObject, ObjectRef};
 use crate::price::Price;
 use crate::state::GameState;
 
@@ -60,6 +61,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     // An ability is not cast: it remembers what was paid for its source.
     if let What::Ability(_) | What::Trigger(_) = ctx.what {
         work.choices.optional_costs = paid_for(ctx);
+        work.choices.way = cast_for(ctx);
         work.done.optional = true;
         return None;
     }
@@ -144,17 +146,27 @@ fn affordable(ctx: &Ctx<'_>, choices: &Choices, more: &[usize]) -> bool {
     total::of(ctx, &trial).is_some_and(|total| total::affordable(ctx, &total))
 }
 
+/// The source of an ability being announced.
+fn source_of(ctx: &Ctx<'_>) -> Option<ObjectRef> {
+    match ctx.what {
+        What::Trigger(waiting) => Some(waiting.trigger.source),
+        What::Ability(ability) => ctx.state.object(ability.object).map(GameObject::reference),
+        What::Spell(_) => None,
+    }
+}
+
 /// The optional costs paid for the source of an ability, which the permanent remembers from its spell.
 fn paid_for(ctx: &Ctx<'_>) -> Vec<usize> {
-    let source = match ctx.what {
-        What::Trigger(waiting) => waiting.trigger.source,
-        What::Ability(ability) => match ctx.state.object(ability.object) {
-            Some(object) => object.reference(),
-            None => return Vec::new(),
-        },
-        What::Spell(_) => return Vec::new(),
-    };
-    paid_by(ctx.state, source)
+    source_of(ctx).map_or_else(Vec::new, |source| paid_by(ctx.state, source))
+}
+
+/// The alternative cost the source of an ability was cast for, which the permanent remembers from its spell.
+fn cast_for(ctx: &Ctx<'_>) -> Option<CastWay> {
+    let source = source_of(ctx)?;
+    ctx.state
+        .object(source.id)
+        .filter(|object| object.counter() == source.counter)
+        .and_then(GameObject::cast_way)
 }
 
 /// The optional costs paid as `source` was cast, while it is the object that was named.

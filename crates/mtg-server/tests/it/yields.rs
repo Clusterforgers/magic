@@ -28,6 +28,7 @@ const OFF: Pace = Pace {
     auto_pass: true,
     response: None,
     blocks: None,
+    think: None,
     dwell: Dwell::OFF,
 };
 
@@ -36,6 +37,7 @@ const DEFAULT: Pace = Pace {
     auto_pass: true,
     response: Some(Duration::from_secs(10)),
     blocks: Some(Duration::from_secs(45)),
+    think: Some(Duration::from_secs(60)),
     dwell: Dwell::OFF,
 };
 

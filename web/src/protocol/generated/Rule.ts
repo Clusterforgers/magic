@@ -7,7 +7,27 @@ import type { PlayerId } from "./PlayerId";
  * A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
  * began (an effect) or whenever the state changes (a static ability).
  */
-export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustBlock": Array<ObjectRef> } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "TriggerAgain": unknown } | { "DamageCantBePrevented": { 
+export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustBlock": Array<ObjectRef> } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "MayCast": { 
+/**
+ * The players who may cast.
+ */
+who: Array<PlayerId>, 
+/**
+ * The cards they may cast, judged when they are cast; every card when empty.
+ */
+what: unknown, 
+/**
+ * The zone they are cast from; wherever they are when absent.
+ */
+from: unknown, 
+/**
+ * They are cast without paying their mana costs.
+ */
+free: boolean, 
+/**
+ * They are cast as though they had flash.
+ */
+flash: boolean, } } | { "TriggerAgain": unknown } | { "DamageCantBePrevented": { 
 /**
  * The sources, judged when the damage would be dealt.
  */

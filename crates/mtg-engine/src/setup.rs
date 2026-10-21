@@ -218,6 +218,7 @@ fn preset_state(
         observed: (!preset.summoning_sick).then_some(owner),
         chosen: None,
         paid: Vec::new(),
+        way: None,
     }
 }
 

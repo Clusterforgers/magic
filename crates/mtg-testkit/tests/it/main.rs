@@ -2,10 +2,15 @@
 
 mod abilities;
 mod ability_costs;
+mod active_leaves;
+mod active_leaves_fuzz;
+mod alternative_costs;
+mod alternative_fuzz;
 mod announce_division;
 mod archon_fuzz;
 mod attach_fuzz;
 mod attachments;
+mod cast_permissions;
 mod checkpoint;
 mod choice_fuzz;
 mod choose_cards;
@@ -28,7 +33,9 @@ mod divided_resolution;
 mod elimination;
 mod enters;
 mod equipment;
+mod forecast_hidden;
 mod forecast_matches_games;
+mod forecast_replacement;
 mod format_hooks;
 mod fuzz_games;
 mod harness_selfcheck;

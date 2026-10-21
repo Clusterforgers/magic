@@ -312,6 +312,12 @@ impl ContinuousEffect {
             self.controller,
             self.source,
         ) && !self.spent(state)
+            && !self.gives_control_to_a_player_who_left(state)
+    }
+
+    /// Whether the effect gives control to a player who has left the game, which ends it (CR 800.4).
+    fn gives_control_to_a_player_who_left(&self, state: &GameState) -> bool {
+        matches!(self.modification, Modification::SetController(who) if !state.is_alive(who))
     }
 
     /// Whether every object the effect names has become a new object or is gone, so it can never change anything again.
@@ -426,6 +432,25 @@ mod tests {
         };
         apply_event(&mut game, &lost).unwrap();
         assert!(!effect.is_active(&game));
+    }
+
+    #[rstest]
+    #[case::control_to_a_player_who_left(Modification::SetController(FOE), false)]
+    #[case::control_to_a_player_in_the_game(Modification::SetController(ME), true)]
+    #[case::another_change_stays(Modification::SwitchPowerToughness, true)]
+    fn an_effect_that_gives_control_to_a_player_who_left_ends(
+        #[case] modification: Modification,
+        #[case] active: bool,
+    ) {
+        let mut game = game();
+        let mut effect = effect(&game, Duration::Forever, ME);
+        effect.modification = modification;
+        let lost = Event::PlayerLost {
+            player: FOE,
+            reason: LossReason::Conceded,
+        };
+        apply_event(&mut game, &lost).unwrap();
+        assert_eq!(effect.is_active(&game), active);
     }
 
     #[rstest]

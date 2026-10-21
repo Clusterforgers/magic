@@ -29,6 +29,7 @@ const CLOCKS: Pace = Pace {
     auto_pass: true,
     response: Some(Duration::from_secs(10)),
     blocks: Some(Duration::from_secs(45)),
+    think: Some(Duration::from_secs(60)),
     dwell: Dwell::OFF,
 };
 
@@ -1056,6 +1057,7 @@ async fn bots_play_the_reference_game(players: usize, seed: u64, auto_pass: bool
         auto_pass,
         response: None,
         blocks: None,
+        think: None,
         dwell: Dwell::OFF,
     };
     let setup = table_setup(players, seed);

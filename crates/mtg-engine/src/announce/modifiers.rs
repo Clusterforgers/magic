@@ -37,7 +37,7 @@ pub(super) fn apply(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) ->
     if !ctx.state.possible.costs {
         return mana;
     }
-    let specs = targets::specs(ctx, &choices.modes);
+    let specs = targets::specs(ctx, choices);
     modified(ctx.state, ctx.player, *spell, &specs, choices, mana)
 }
 

@@ -58,6 +58,12 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         work.done.x = true;
         return None;
     }
+    // An alternative cost has no `{X}`: the one of the mana cost is 0 (CR 107.3b).
+    if work.choices.way.is_some() {
+        work.choices.x = Some(0);
+        work.done.x = true;
+        return None;
+    }
     // Without a value of X that can be paid for there is nothing to announce.
     let Some(max) = largest(ctx, work.choices) else {
         return Some(Next::Drop);
@@ -217,7 +223,7 @@ mod tests {
         );
         let card = game.zone(Zone::Hand(SEAT))[0];
         let needs = Needs {
-            alternative: None,
+            ways: Vec::new(),
             optional: Vec::new(),
             x: XCost::of(&game, &What::Spell(card), None),
         };
@@ -259,7 +265,7 @@ mod tests {
         );
         let card = game.zone(Zone::Hand(SEAT))[0];
         let needs = Needs {
-            alternative: None,
+            ways: Vec::new(),
             optional: Vec::new(),
             x: Some(XCost::Mana { symbols: 1 }),
         };

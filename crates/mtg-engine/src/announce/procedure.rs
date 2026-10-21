@@ -2,19 +2,21 @@
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::value::CastWay;
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 use proptest::prelude::*;
 use rstest::rstest;
 
-use super::{Alternative, Answered, Needs, Next, Optional, Pending, Phase, What, XCost, announce};
-use crate::choose::Target;
+use super::{Answered, Needs, Next, Optional, Pending, Phase, What, XCost, announce};
+use crate::choose::{ChoiceOption, Target};
 use crate::decision::{Decision, DecisionKind, PayOptions};
 use crate::fixtures::{creature, state};
 use crate::mana::can_afford;
 use crate::object::ObjectRef;
 use crate::state::GameState;
+use crate::ways::Way;
 use crate::zones::Zone;
 
 const SEAT: PlayerId = PlayerId(0);
@@ -99,7 +101,7 @@ fn kicker() -> Optional {
 
 fn needs(kicked: bool, x: u32) -> Needs {
     Needs {
-        alternative: None,
+        ways: Vec::new(),
         optional: if kicked { vec![kicker()] } else { Vec::new() },
         x: (x > 0).then_some(XCost::Mana { symbols: x }),
     }
@@ -254,26 +256,114 @@ fn the_total_cost_is_the_cost_with_the_optional_costs_and_x_added(
     );
 }
 
+/// A way to cast the spell: its printed cost of `{1}`, or an alternative cost.
+fn way(alternative: Option<CastWay>, cost: Option<&str>) -> Way {
+    Way {
+        alternative,
+        label: cost.map_or("Cast for {1}".to_owned(), |cost| {
+            format!("Alternative {cost}")
+        }),
+        mana: cost.map(|cost| ManaCost::parse(cost).unwrap()),
+        instant: true,
+    }
+}
+
 #[rstest]
-#[case::an_alternative_cost_replaces_the_printed_one("{2}", 2)]
-#[case::a_free_one_leaves_nothing_to_pay("{0}", 0)]
-fn an_alternative_cost_is_paid_in_place_of_the_printed_cost(#[case] cost: &str, #[case] paid: u32) {
+#[case::an_alternative_cost_replaces_the_printed_one(&[(Some(CastWay::Evoke), Some("{2}"))], &["pay-mana"], 2, Some(CastWay::Evoke))]
+#[case::a_free_one_leaves_nothing_to_pay(&[(Some(CastWay::Free), Some("{0}"))], &["pay-mana"], 0, Some(CastWay::Free))]
+#[case::the_printed_way_alone_is_not_asked(&[(None, None)], &["pay-mana"], 1, None)]
+#[case::two_ways_are_asked_and_the_first_is_taken(&[(None, None), (Some(CastWay::Evoke), Some("{2}"))], &["choose-option", "pay-mana"], 1, None)]
+#[case::an_alternative_that_cannot_be_paid_is_not_offered(&[(None, None), (Some(CastWay::Overload), Some("{9}"))], &["pay-mana"], 1, None)]
+#[case::an_alternative_that_cannot_be_paid_leaves_the_other(&[(Some(CastWay::Flashback), Some("{9}")), (Some(CastWay::Free), Some("{0}"))], &["pay-mana"], 0, Some(CastWay::Free))]
+fn the_way_the_spell_is_cast_decides_the_cost_it_pays(
+    #[case] ways: &[(Option<CastWay>, Option<&str>)],
+    #[case] asked_for: &[&str],
+    #[case] paid: u32,
+    #[case] chosen: Option<CastWay>,
+) {
     let game = table(Shape::Plain, 4);
     let mut pending = pending(
         &game,
         Needs {
-            alternative: Some(Alternative {
-                mana: ManaCost::parse(cost).unwrap(),
-            }),
+            ways: ways
+                .iter()
+                .map(|(way_of, cost)| way(*way_of, *cost))
+                .collect(),
+            ..Needs::default()
+        },
+    );
+    let (asked, end) = walk(&game, &mut pending, |kind| match kind {
+        DecisionKind::ChooseOption(_) => Some(Answered::Way(0)),
+        other => greedy(other),
+    });
+    assert_eq!(asked, asked_for);
+    let End::Paying(options) = end else {
+        panic!("{end:?}");
+    };
+    assert_eq!(options.cost.generic(), paid);
+    assert_eq!(pending.choices.way, chosen, "the way is remembered");
+}
+
+#[test]
+fn the_second_way_is_taken_when_the_player_picks_it() {
+    let game = table(Shape::Plain, 4);
+    let mut pending = pending(
+        &game,
+        Needs {
+            ways: vec![way(None, None), way(Some(CastWay::Evoke), Some("{2}"))],
+            ..Needs::default()
+        },
+    );
+    let (asked, end) = walk(&game, &mut pending, |kind| match kind {
+        DecisionKind::ChooseOption(options) => {
+            assert_eq!(
+                options.options,
+                [
+                    ChoiceOption::Label("Cast for {1}".into()),
+                    ChoiceOption::Label("Alternative {2}".into())
+                ]
+            );
+            Some(Answered::Way(1))
+        }
+        other => greedy(other),
+    });
+    assert_eq!(asked, ["choose-option", "pay-mana"]);
+    let End::Paying(options) = end else {
+        panic!("{end:?}");
+    };
+    assert_eq!(options.cost.generic(), 2);
+    assert_eq!(pending.choices.way, Some(CastWay::Evoke));
+}
+
+#[test]
+fn no_way_that_can_be_used_rewinds_the_announcement_and_an_unasked_way_is_refused() {
+    let game = table(Shape::Plain, 1);
+    let mut pending = pending(
+        &game,
+        Needs {
+            ways: vec![way(Some(CastWay::Overload), Some("{9}"))],
+            ..Needs::default()
+        },
+    );
+    let (asked, end) = walk(&game, &mut pending, greedy);
+    assert!(asked.is_empty() && matches!(end, End::Rewound), "{end:?}");
+    assert!(pending.accept(Answered::Way(0)).is_err());
+}
+
+#[test]
+fn an_overloaded_spell_asks_for_no_targets() {
+    let game = table(Shape::Creature, 4);
+    let mut pending = pending(
+        &game,
+        Needs {
+            ways: vec![way(Some(CastWay::Overload), Some("{2}"))],
             ..Needs::default()
         },
     );
     let (asked, end) = walk(&game, &mut pending, greedy);
     assert_eq!(asked, ["pay-mana"]);
-    let End::Paying(options) = end else {
-        panic!("{end:?}");
-    };
-    assert_eq!(options.cost.generic(), paid);
+    assert!(matches!(end, End::Paying(_)));
+    assert_eq!(pending.choices.targets, Vec::<Vec<Target>>::new());
 }
 
 #[rstest]
