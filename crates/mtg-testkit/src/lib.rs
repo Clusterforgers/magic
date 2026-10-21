@@ -9,6 +9,7 @@ pub mod bot;
 pub mod cards;
 pub mod choice_cards;
 pub mod corpus;
+pub mod cost_cards;
 pub mod counter_cards;
 pub mod decks;
 pub mod driver;
@@ -38,6 +39,7 @@ pub use announce_cards::split_fuzz_setup;
 pub use attach_cards::attach_fuzz_setup;
 pub use bot::RandomBot;
 pub use choice_cards::choice_fuzz_setup;
+pub use cost_cards::cost_fuzz_setup;
 pub use counter_cards::counters_fuzz_setup;
 pub use decks::{
     archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, ramp_fuzz_setup,

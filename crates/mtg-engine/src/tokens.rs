@@ -107,6 +107,9 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
     if crate::ability_reader::definition_has_replacement(&event.definition) {
         state.possible.replacements = true;
     }
+    if crate::ability_reader::definition_has_cost_modifier(&event.definition) {
+        state.possible.costs = true;
+    }
     if crate::ability_reader::definition_has_protection(&event.definition) {
         state.possible.protection = true;
     }

@@ -388,3 +388,63 @@ fn near_misses_stay_with_the_table(#[case] text: &str) {
 fn more_static_wordings_read_and_write_back(#[case] text: &str) {
     golden(text, ClauseKind::Static, false);
 }
+
+#[rstest]
+#[case::an_increase_for_a_kind(
+    "Noncreature spells cost {1} more to cast.",
+    r#"{"CostModifier":{"applies_to":["Spell",{"Not":{"Type":"Creature"}}],"change":"Increase","mana":"{1}"}}"#
+)]
+#[case::a_reduction_for_what_you_cast(
+    "Artifact spells you cast cost {1} less to cast.",
+    r#"{"CostModifier":{"applies_to":["Spell",{"Type":"Artifact"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}"}}"#
+)]
+#[case::every_spell(
+    "Spells cost {1} less to cast.",
+    r#"{"CostModifier":{"applies_to":["Spell"],"change":"Reduce","mana":"{1}"}}"#
+)]
+#[case::two_generic(
+    "Creature spells you cast cost {2} less to cast.",
+    r#"{"CostModifier":{"applies_to":["Spell",{"Type":"Creature"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{2}"}}"#
+)]
+#[case::what_opponents_cast(
+    "Spells your opponents cast cost {1} more to cast.",
+    r#"{"CostModifier":{"applies_to":["Spell",{"ControlledBy":"Opponents"}],"change":"Increase","mana":"{1}"}}"#
+)]
+#[case::a_colour_of_spell(
+    "Red spells you cast cost {R} less to cast.",
+    r#"{"CostModifier":{"applies_to":["Spell",{"Color":"Red"},{"ControlledBy":"You"}],"change":"Reduce","mana":"{R}"}}"#
+)]
+#[case::a_coloured_symbol(
+    "Nonland spells cost {U} more to cast.",
+    r#"{"CostModifier":{"applies_to":["Spell",{"Not":{"Type":"Land"}}],"change":"Increase","mana":"{U}"}}"#
+)]
+#[case::this_spell_for_each_target(
+    "This spell costs {1} more to cast for each target beyond the first.",
+    r#"{"CostModifier":{"applies_to":["This"],"change":"Increase","mana":"{1}","per":{"Sum":[{"TargetCount":0},-1]}}}"#
+)]
+#[case::this_spell_for_less(
+    "This spell costs {2} less to cast.",
+    r#"{"CostModifier":{"applies_to":["This"],"change":"Reduce","mana":"{2}"}}"#
+)]
+fn a_cost_modifier_reads_as_the_hand_written_files_say(#[case] text: &str, #[case] json: &str) {
+    reads_as(text, ClauseKind::Static, false, json);
+}
+
+#[rstest]
+#[case::for_each_of_something(
+    "Spells you cast cost {1} less to cast for each creature you control."
+)]
+#[case::where_x("Spells cost {X} less to cast, where X is the number of artifacts you control.")]
+#[case::as_long_as("Spells cost {1} less to cast as long as it's your turn.")]
+#[case::no_amount("Spells cost less to cast.")]
+#[case::an_x_in_the_mana("Spells cost {X} less to cast.")]
+#[case::a_cost_not_of_mana("Spells cost {1} more to cast and you lose 1 life.")]
+#[case::another_verb("Spells cost {1} more to play.")]
+#[case::not_spells("Creatures you control cost {1} less to cast.")]
+#[case::activated_abilities("Activated abilities cost {1} less to activate.")]
+#[case::beyond_the_first_on_a_kind(
+    "Noncreature spells cost {1} more to cast for each target beyond the first."
+)]
+fn cost_wordings_the_templates_do_not_know_stay_with_the_table(#[case] text: &str) {
+    assert_eq!(stat(text), None, "{text}");
+}

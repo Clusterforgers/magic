@@ -1356,10 +1356,14 @@ impl<'a> Walker<'a> {
             }
             Ability::CostModifier {
                 applies_to,
+                mana,
                 per,
                 condition,
                 ..
             } => {
+                if mana.has_x() {
+                    w.problem("a cost modifier changes the cost by fixed mana, repeated by `per`, not by an {X}");
+                }
                 let specs = w.spell_targets.clone();
                 w.scope = Scope::new(&specs, false);
                 w.at("applies_to", |w| w.selector(applies_to));
@@ -1874,6 +1878,14 @@ mod tests {
         );
     }
 
+    #[test]
+    fn a_cost_modifier_changes_the_cost_by_fixed_mana_and_never_by_an_x() {
+        let json = r#"{"CostModifier":{"applies_to":["Spell"],"change":"Reduce","mana":"{X}"}}"#;
+        let found = problems(json);
+        assert_eq!(found.len(), 1, "{found:?}");
+        assert!(found[0].contains("not by an {X}"), "{found:?}");
+    }
+
     #[rstest]
     #[case::plain_activation(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.Draw"])]
     #[case::at_sorcery_speed(r#"{"Activated":{"cost":["Tap"],"timing":"Sorcery","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.Sorcery", "Cost.Tap", "Effect.Draw"])]
@@ -1924,6 +1936,9 @@ mod tests {
     #[case::an_aura_that_enchants_a_card_in_a_graveyard(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Elsewhere"])]
     #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
     #[case::sol_ring(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#, &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana"])]
+    #[case::a_cost_increase(r#"{"CostModifier":{"applies_to":["Spell",{"Not":{"Type":"Creature"}}],"change":"Increase","mana":"{1}"}}"#, &["Ability.CostModifier"])]
+    #[case::a_cost_reduction_for_each_creature(r#"{"CostModifier":{"applies_to":["Spell",{"ControlledBy":"You"}],"change":"Reduce","mana":"{1}","per":{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}"#, &["Ability.CostModifier"])]
+    #[case::a_condition_on_a_cost_modifier(r#"{"CostModifier":{"applies_to":["Spell"],"change":"Reduce","mana":"{1}","condition":"YourTurn"}}"#, &["Ability.CostModifier"])]
     fn how_often_from_where_and_by_what_chance_an_ability_works_counts_as_a_primitive(
         #[case] json: &str,
         #[case] expected: &[&str],

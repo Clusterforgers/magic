@@ -64,6 +64,8 @@ pub(crate) struct Possible {
     pub(crate) replacements: bool,
     /// Some card is legendary.
     pub(crate) legends: bool,
+    /// Some card or token made has a cost modifier, so the cost of a spell is worked out against the permanents.
+    pub(crate) costs: bool,
     /// Some card, token or player has protection or an effect that gives it, so damage is checked against it.
     pub(crate) protection: bool,
 }

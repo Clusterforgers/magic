@@ -1,0 +1,20 @@
+{
+  "oracle_id": "18f22960-87ec-43cd-82ea-ec5cabf49ad3",
+  "name": "Foundry Inspector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foundry Inspector",
+      "oracle_fingerprint": "4ec5b9e9396460eb97813593ad5a7fa9",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Type": "Artifact" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

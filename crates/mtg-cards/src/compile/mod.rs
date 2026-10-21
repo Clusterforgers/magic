@@ -139,6 +139,18 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
     } else {
         read::clause(&spell_text, ClauseKind::Spell, x_free)
     };
+    // A cost that counts targets needs the targets of the spell ability beside it: without them it is left to the table.
+    let has_targets = spell_ability
+        .as_ref()
+        .is_some_and(|ability| !ability.targets().is_empty());
+    if !has_targets {
+        for clause in &mut pending {
+            if matches!(&clause.ability, Some(Ability::CostModifier { per, .. }) if !per.is_one()) {
+                clause.ability = None;
+                clause.read = false;
+            }
+        }
+    }
     if let Some(ability) = spell_ability {
         let mut ability = Some(ability);
         for clause in pending
@@ -404,6 +416,21 @@ mod tests {
         "Enchantment",
         "Choose one \u{2014}\n\u{2022} Draw a card.\n\u{2022} You gain 2 life.",
         Some(ImplStatus::Manual)
+    )]
+    #[case::a_cost_beside_the_spell_it_counts_the_targets_of(
+        "Sorcery",
+        "This spell costs {1} more to cast for each target beyond the first.\nDestroy any number of target creatures.",
+        Some(ImplStatus::Full)
+    )]
+    #[case::a_cost_that_counts_targets_the_spell_does_not_read(
+        "Sorcery",
+        "This spell costs {1} more to cast for each target beyond the first.\nGoad any number of target creatures.",
+        Some(ImplStatus::Manual)
+    )]
+    #[case::a_cost_that_counts_nothing_stands_alone(
+        "Sorcery",
+        "This spell costs {1} less to cast.\nGoad target creature.",
+        Some(ImplStatus::Partial)
     )]
     fn the_status_follows_the_clauses(
         #[case] type_line: &str,
