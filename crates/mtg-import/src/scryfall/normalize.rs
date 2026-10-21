@@ -5,7 +5,7 @@ use std::collections::BTreeMap;
 use mtg_core::color::{Color, ColorSet};
 use thiserror::Error;
 
-use super::raw::{RawCard, RawCardFace, RawRuling};
+use super::raw::{RawCard, RawCardFace, RawRelatedCard, RawRuling};
 use super::record::{
     CardFace, CardRecord, Layout, Legality, ProducedMana, Rarity, RulingRecord, RulingSource,
 };
@@ -90,6 +90,31 @@ fn produced_mana_from(symbols: &[String]) -> ProducedMana {
     }
 }
 
+/// The names the faces of a multi-faced printing carry, joined as `A // B`; a face without one keeps its own name.
+fn joined_face_names<'a>(
+    faces: &'a [RawCardFace],
+    pick: impl Fn(&'a RawCardFace) -> Option<&'a str>,
+) -> Option<String> {
+    let carried = |face: &'a RawCardFace| pick(face).filter(|name| !name.is_empty());
+    if faces.len() < 2 || faces.iter().all(|face| carried(face).is_none()) {
+        return None;
+    }
+    let names: Option<Vec<&str>> = faces
+        .iter()
+        .map(|face| carried(face).or(face.name.as_deref()))
+        .collect();
+    names.map(|names| names.join(" // "))
+}
+
+/// The card a meld piece melds into: the `meld_result` among the related cards, unless that is the card itself.
+fn melds_into(parts: &[RawRelatedCard], name: &str) -> Option<String> {
+    parts
+        .iter()
+        .filter(|part| part.component.as_deref() == Some("meld_result"))
+        .filter_map(|part| non_empty(part.name.clone()))
+        .find(|result| result != name)
+}
+
 fn face_from_raw(raw: RawCardFace, card: &str, index: usize) -> Result<CardFace, InvalidRecord> {
     let name = non_empty(raw.name).ok_or_else(|| InvalidRecord::MissingFaceName {
         name: card.to_owned(),
@@ -159,6 +184,9 @@ impl TryFrom<RawCard> for CardRecord {
             legalities,
             image_uris,
             card_faces,
+            all_parts,
+            flavor_name,
+            printed_name,
         } = raw;
 
         let name = non_empty(name).ok_or(InvalidRecord::MissingName)?;
@@ -172,6 +200,13 @@ impl TryFrom<RawCard> for CardRecord {
                     .find_map(|face| non_empty(face.oracle_id.clone()))
             })
             .ok_or_else(|| InvalidRecord::MissingOracleId { name: name.clone() })?;
+
+        let melds_into = melds_into(all_parts.as_deref().unwrap_or_default(), &name);
+        let raw_faces = card_faces.as_deref().unwrap_or_default();
+        let flavor_name = non_empty(flavor_name)
+            .or_else(|| joined_face_names(raw_faces, |face| face.flavor_name.as_deref()));
+        let printed_name = non_empty(printed_name)
+            .or_else(|| joined_face_names(raw_faces, |face| face.printed_name.as_deref()));
 
         let (front, back_faces) = split_faces(
             card_faces,
@@ -187,6 +222,8 @@ impl TryFrom<RawCard> for CardRecord {
                 defense,
                 colors: colors.clone(),
                 image_uris: None,
+                flavor_name: None,
+                printed_name: None,
             },
             &name,
         )?;
@@ -216,6 +253,9 @@ impl TryFrom<RawCard> for CardRecord {
             collector_number: collector_number.unwrap_or_default(),
             rarity: rarity.as_deref().and_then(Rarity::parse),
             released_at,
+            melds_into,
+            flavor_name,
+            printed_name,
             lang: non_empty(lang).unwrap_or_else(|| "en".to_owned()),
             digital: digital.unwrap_or(false),
             name,
@@ -345,6 +385,83 @@ mod tests {
         expected.sort_unstable();
         actual.sort_unstable();
         assert_eq!(actual, expected);
+    }
+
+    #[rstest]
+    #[case::none(json!({}), None, None)]
+    #[case::flavor_name(json!({"flavor_name": "The Ball"}), Some("The Ball"), None)]
+    #[case::printed_name(json!({"printed_name": "Phenomena Recorder"}), None, Some("Phenomena Recorder"))]
+    #[case::empty_is_none(json!({"flavor_name": "", "printed_name": ""}), None, None)]
+    #[case::single_face_in_a_list(
+        json!({"card_faces": [{"name": "Test Card", "flavor_name": "Only Face"}]}),
+        None,
+        None
+    )]
+    #[case::faces_joined(
+        json!({"card_faces": [
+            {"name": "Front", "flavor_name": "Mask"},
+            {"name": "Back", "flavor_name": "Face"}
+        ]}),
+        Some("Mask // Face"),
+        None
+    )]
+    #[case::face_without_one_keeps_its_name(
+        json!({"card_faces": [
+            {"name": "Front", "printed_name": "Mask"},
+            {"name": "Back"}
+        ]}),
+        None,
+        Some("Mask // Back")
+    )]
+    #[case::card_level_wins(
+        json!({"flavor_name": "Whole", "card_faces": [
+            {"name": "Front", "flavor_name": "Mask"},
+            {"name": "Back", "flavor_name": "Face"}
+        ]}),
+        Some("Whole"),
+        None
+    )]
+    fn other_names_of_a_printing(
+        #[case] extra: Value,
+        #[case] flavor: Option<&str>,
+        #[case] printed: Option<&str>,
+    ) {
+        let card = convert(base(extra)).unwrap();
+        assert_eq!(card.flavor_name.as_deref(), flavor);
+        assert_eq!(card.printed_name.as_deref(), printed);
+    }
+
+    #[rstest]
+    #[case::piece(
+        "Gisela, the Broken Blade",
+        json!([{"component": "combo_piece", "name": "Checklist"},
+               {"component": "meld_result", "name": "Brisela, Voice of Nightmares"},
+               {"component": "meld_part", "name": "Bruna, the Fading Light"},
+               {"component": "meld_part", "name": "Gisela, the Broken Blade"}]),
+        Some("Brisela, Voice of Nightmares")
+    )]
+    #[case::result_itself(
+        "Brisela, Voice of Nightmares",
+        json!([{"component": "meld_result", "name": "Brisela, Voice of Nightmares"},
+               {"component": "meld_part", "name": "Gisela, the Broken Blade"}]),
+        None
+    )]
+    #[case::token_parts(
+        "Test Card",
+        json!([{"component": "token", "name": "Goblin"}]),
+        None
+    )]
+    #[case::unnamed_result("Test Card", json!([{"component": "meld_result"}]), None)]
+    fn meld_pieces_know_what_they_meld_into(
+        #[case] name: &str,
+        #[case] parts: Value,
+        #[case] expected: Option<&str>,
+    ) {
+        let card = convert(json!({
+            "id": "p-1", "oracle_id": "o-1", "name": name, "layout": "meld", "all_parts": parts
+        }))
+        .unwrap();
+        assert_eq!(card.melds_into.as_deref(), expected);
     }
 
     #[test]
