@@ -96,7 +96,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ### Manual cards and views
 - [ ] (p) Manual cards: a card the engine does not run is cast and resolves without effects, and its controller applies generic logged actions (move, counters, life, token, tap) through the same primitives, visible to every seat
 - [ ] Views complete: they carry every state of an object (counters, attachments, face, face-down, copies, support) and the abilities a player may activate with their cost and target wording (Equip, Reconfigure, loyalty and other activated abilities in one list), a spectator audience sees public information, and a card revealed and then moved to a hidden zone in one batch reaches the other seats' views (`docs/protocol.md`)
-- [ ] The combat forecast and block preview apply replacement and prevention effects (`forecast.rs` and `preview.rs` skip `replace::process` today), so Furnace of Rath, a life doubler and a damage shield show in the numbers they preview
+- [x] The combat forecast and block preview apply replacement and prevention effects, so Furnace of Rath, a life doubler and a damage shield show in the numbers they preview
 - [ ] Gate: every corpus card is Verified except the two kept Partial and Manual by design, and fuzz games with a deck from each cluster pass every invariant
 
 ## M4 Commander
@@ -116,6 +116,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] The `YesNo` prompt disables Yes and its key when `YesNoOptions.only_no` is set (a payment the seat cannot make)
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts mark the creatures a rule requires (`AttackOptions.required`, `BlockOptions.required`) as chosen and locked, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
+- [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
 - [ ] Table states: counters, attachments tucked beside their host, loyalty, faces and face-down cards, copies, command zone and commander damage, support marks; each in the `/dev/table` fixture with screenshots at six sizes in both themes
 - [ ] Manual actions on any card: a menu and log entries
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes

@@ -169,25 +169,6 @@ fn in_combat_damage(state: &GameState) -> bool {
         )
 }
 
-/// The events less the damage that protection prevents, for a caller that plays damage without the replacement step
-/// (the combat forecast): damage that can't be prevented stays.
-pub(crate) fn without_protected_damage(state: &GameState, events: Vec<Event>) -> Vec<Event> {
-    if !state.possible.protection {
-        return events;
-    }
-    let combat = in_combat_damage(state);
-    events
-        .into_iter()
-        .filter(|event| match event {
-            Event::DamageDealt { source, target, .. } => {
-                damage_cant_be_prevented(state, *source, combat)
-                    || protection_of(state, *source, *target).is_none()
-            }
-            _ => true,
-        })
-        .collect()
-}
-
 /// One replaceable thing in a batch: an event, or all the tokens one effect makes for a player (they are one event).
 #[derive(Debug, Clone)]
 enum Item {

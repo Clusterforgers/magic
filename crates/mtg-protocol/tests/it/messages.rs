@@ -477,6 +477,7 @@ fn sample_forecast() -> CombatForecast {
             life_after: 20,
             lethal: false,
         }],
+        depends_on_choice: true,
     }
 }
 
@@ -864,12 +865,30 @@ fn client_wire_shape_is_flat_and_tagged(
             attackers: Vec::new(),
             creatures: vec![CreatureForecast { object: ObjectId(3), damage: 2, dies: true }],
             players: Vec::new(),
+            depends_on_choice: false,
         }),
     },
     json!({"type": "Forecast", "decision": 7, "forecast": {
         "attackers": [],
         "creatures": [{"object": 3, "damage": 2, "dies": true}],
         "players": [],
+    }})
+)]
+#[case(
+    ServerMessage::Forecast {
+        decision: DecisionId(7),
+        forecast: Some(CombatForecast {
+            attackers: Vec::new(),
+            creatures: Vec::new(),
+            players: Vec::new(),
+            depends_on_choice: true,
+        }),
+    },
+    json!({"type": "Forecast", "decision": 7, "forecast": {
+        "attackers": [],
+        "creatures": [],
+        "players": [],
+        "depends_on_choice": true,
     }})
 )]
 fn server_wire_shape_is_flat_and_tagged(
