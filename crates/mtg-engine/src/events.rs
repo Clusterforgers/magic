@@ -233,6 +233,14 @@ pub enum Event {
         /// The card.
         object: ObjectId,
     },
+    /// A card was cycled (CR 702.29): it is the discard that pays for cycling, logged after its `CardDiscarded`, so a
+    /// cycling trigger and a discard trigger each read their own event.
+    Cycled {
+        /// Who cycled it.
+        player: PlayerId,
+        /// The card.
+        object: ObjectId,
+    },
     /// Attackers were declared (possibly none).
     AttackersDeclared {
         /// The attacking player.
@@ -588,6 +596,7 @@ impl Event {
             | Event::Regenerated { object }
             | Event::CardDrawn { object, .. }
             | Event::CardDiscarded { object, .. }
+            | Event::Cycled { object, .. }
             | Event::CreatureDied { object, .. }
             | Event::ObjectLeftGame { object } => vec![*object],
             Event::Attached { object, to } => vec![*object, *to],

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "633ad9e2-9f55-4a1c-9248-661ad4b0e1dc",
+  "name": "Megrim",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Megrim",
+      "oracle_fingerprint": "d0af3baaf6c0c8d1846cd29ba65fb5d6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Discarded": { "by": "Opponents" } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

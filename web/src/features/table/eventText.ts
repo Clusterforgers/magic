@@ -392,6 +392,9 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('CardDiscarded' in event) {
     return line(`${n.seat(event.CardDiscarded.player)} discards ${n.card(event.CardDiscarded.object)}`)
   }
+  if ('Cycled' in event) {
+    return quiet(`${n.seat(event.Cycled.player)} cycles ${n.card(event.Cycled.object)}`)
+  }
   if ('AttackersDeclared' in event) {
     const { player, attackers } = event.AttackersDeclared
     if (attackers.length === 0) return line(`${n.seat(player)} declares no attackers`)

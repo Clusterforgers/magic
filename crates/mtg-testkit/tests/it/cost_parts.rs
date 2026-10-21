@@ -87,6 +87,7 @@ fn story(driver: &Driver, events: &[Event]) -> Vec<String> {
             Event::PermanentTapped { object } => Some(format!("tap {}", name(object))),
             Event::LifePaid { amount, .. } => Some(format!("pay {amount} life")),
             Event::CardDiscarded { object, .. } => Some(format!("discard {}", name(object))),
+            Event::Cycled { object, .. } => Some(format!("cycle {}", name(object))),
             Event::CountersChanged(changed) => Some(format!("counters {:+}", changed.delta)),
             Event::ZoneChanged {
                 object,
@@ -650,6 +651,7 @@ fn cycling_discards_the_card_for_its_cost_and_draws_at_instant_speed() -> Result
         story(&driver, &events),
         [
             "discard Cycler",
+            "cycle Cycler",
             "activated",
             "on the stack",
             "tap Mountain",
@@ -686,7 +688,13 @@ fn cycling_for_life_pays_the_life_and_then_discards() -> Result<(), ScriptError>
     let events = driver.begin_activation("Cycler")?;
     assert_eq!(
         story(&driver, &events),
-        ["pay 2 life", "discard Cycler", "activated", "on the stack"]
+        [
+            "pay 2 life",
+            "discard Cycler",
+            "cycle Cycler",
+            "activated",
+            "on the stack"
+        ]
     );
     assert_eq!(life(&driver, 0), 18);
     Ok(())

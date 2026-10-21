@@ -247,8 +247,11 @@ pub struct Reader<'a> {
     pub x_free: bool,
     /// What "it" and "its" mean: the object the last sentence acted on.
     pub it: Option<Ref>,
-    /// Whether the event of the trigger is about a player: "that player" is who cast the spell.
+    /// Whether the event of the trigger is about a player: "that player" is who cast the spell, drew the card,
+    /// lost the life or was dealt the damage.
     pub that_player: bool,
+    /// Whether the event of the trigger is about one permanent: "that permanent's controller" is who controls it.
+    pub that_permanent: bool,
 }
 
 impl<'a> Reader<'a> {
@@ -261,6 +264,7 @@ impl<'a> Reader<'a> {
             x_free,
             it: None,
             that_player: false,
+            that_permanent: false,
         }
     }
 

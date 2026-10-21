@@ -73,6 +73,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   CardDrawn: [{ CardDrawn: { player: 0, object: 3 } }, 'Ana draws Forest'],
   DrewFromEmptyLibrary: [{ DrewFromEmptyLibrary: { player: 1 } }, 'Bo tries to draw from an empty library'],
   CardDiscarded: [{ CardDiscarded: { player: 0, object: 2 } }, 'Ana discards Hill Giant'],
+  Cycled: [{ Cycled: { player: 0, object: 2 } }, 'Ana cycles Hill Giant'],
   AttackersDeclared: [
     {
       AttackersDeclared: {
@@ -413,6 +414,7 @@ describe('minor lines', () => {
     { ManaAdded: { player: 0, mana: 'Red', source: null } },
     { ManaPoolEmptied: { player: 0 } },
     { PermanentUntapped: { object: 3 } },
+    { Cycled: { player: 0, object: 2 } },
     { StepBegan: { step: 'Upkeep' } },
     { ShieldUsed: { id: 2, left: 3 } },
     'DamageCleared',

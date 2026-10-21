@@ -779,15 +779,23 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Drew { who } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
-            TriggerPattern::Discarded { what, by } | TriggerPattern::TappedForMana { what, by } => {
+            TriggerPattern::Discarded { what, by }
+            | TriggerPattern::TappedForMana { what, by }
+            | TriggerPattern::Cycled { what, by } => {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));
             }
             TriggerPattern::Tapped { what }
+            | TriggerPattern::Untapped { what }
             | TriggerPattern::Blocks { what }
             | TriggerPattern::BecomesBlocked { what }
-            | TriggerPattern::CountersPut { what, .. } => {
+            | TriggerPattern::CountersPut { what, .. }
+            | TriggerPattern::CountersRemoved { what, .. } => {
                 self.at("what", |w| w.selector(what));
+            }
+            TriggerPattern::Attached { what, to } => {
+                self.at("what", |w| w.selector(what));
+                self.at("to", |w| w.selector(to));
             }
             TriggerPattern::GroupAttacks { what, at_least } => {
                 self.at("what", |w| w.selector(what));

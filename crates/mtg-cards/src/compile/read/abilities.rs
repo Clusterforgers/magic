@@ -6,7 +6,7 @@ use super::tokens::Reader;
 use super::{costs, effects, modal, triggers};
 use crate::ability::{Ability, Limit, Timing};
 use crate::effect::Effect;
-use crate::refs::ZoneKind;
+use crate::refs::{Ref, ZoneKind};
 use crate::trigger::TriggerPattern;
 
 /// The sentences of an ability, in order, every one read; `None` when one is not, or when a `Modal`
@@ -58,7 +58,24 @@ pub fn modal_spell(r: &mut Reader<'_>) -> Option<Ability> {
 /// one of which must be read.
 pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let when = triggers::pattern(r)?;
-    r.that_player = matches!(when, TriggerPattern::SpellCast { .. });
+    r.that_player = matches!(
+        when,
+        TriggerPattern::SpellCast { .. }
+            | TriggerPattern::Drew { .. }
+            | TriggerPattern::Discarded { .. }
+            | TriggerPattern::LifeGained { .. }
+            | TriggerPattern::LifeLost { .. }
+            | TriggerPattern::Cycled { .. }
+            | TriggerPattern::TappedForMana { .. }
+            | TriggerPattern::DealsDamage {
+                to: Some(Ref::EachPlayer | Ref::Opponents),
+                ..
+            }
+    );
+    r.that_permanent = matches!(
+        when,
+        TriggerPattern::Tapped { .. } | TriggerPattern::Untapped { .. }
+    );
     r.punct(',').then_some(())?;
     let intervening_if = r.attempt(|r| {
         r.word("if").then_some(())?;
@@ -66,11 +83,17 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         r.punct(',').then_some(condition)
     });
     let effects = sentences(r, false)?;
+    // A card cycled is in its owner's graveyard when its own ability triggers.
+    let from = if triggers::cycled_itself(&when) {
+        ZoneKind::Graveyard
+    } else {
+        ZoneKind::Battlefield
+    };
     Some(Ability::Triggered {
         when,
         intervening_if,
         limit: None,
-        from: ZoneKind::Battlefield,
+        from,
         targets: std::mem::take(&mut r.targets),
         effects,
     })

@@ -219,6 +219,14 @@ player: PlayerId,
 /**
  * The card.
  */
+object: ObjectId, } } | { "Cycled": { 
+/**
+ * Who cycled it.
+ */
+player: PlayerId, 
+/**
+ * The card.
+ */
 object: ObjectId, } } | { "AttackersDeclared": { 
 /**
  * The attacking player.

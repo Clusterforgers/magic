@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0f1afedd-c60f-454f-b84a-c8117aec0128",
+  "name": "Manabarbs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Manabarbs",
+      "oracle_fingerprint": "f27a1ff05636d8e798d28bcb4c8ff2b2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Type": "Land" }] } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

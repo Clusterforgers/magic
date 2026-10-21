@@ -239,6 +239,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::LifePaid { .. }
         | Event::DrewFromEmptyLibrary { .. }
         | Event::CardDiscarded { .. }
+        | Event::Cycled { .. }
         | Event::AttackersDeclared { .. }
         | Event::BlockersDeclared { .. }
         | Event::DamageAssigned { .. }
@@ -740,6 +741,25 @@ mod tests {
         for event in &events {
             for viewer in [OWNER, OTHER] {
                 assert_eq!(told(&t.state, event, viewer), Ok(()), "{event:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn a_cycled_card_is_public_like_the_discard_it_accompanies() {
+        let t = table();
+        for event in [
+            Event::CardDiscarded {
+                player: OWNER,
+                object: t.hand,
+            },
+            Event::Cycled {
+                player: OWNER,
+                object: t.hand,
+            },
+        ] {
+            for viewer in [OWNER, OTHER] {
+                assert_eq!(told(&t.state, &event, viewer), Ok(()), "{event:?}");
             }
         }
     }

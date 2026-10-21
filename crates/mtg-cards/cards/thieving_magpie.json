@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2f074636-6a36-46a3-b872-add79e19aa8b",
+  "name": "Thieving Magpie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thieving Magpie",
+      "oracle_fingerprint": "d23ca3af5454e929f13269d77e931cad",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

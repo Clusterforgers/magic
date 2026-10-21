@@ -114,9 +114,6 @@ fn a_payment_the_template_does_not_model_stays_unread(#[case] text: &str) {
 #[case::sacrifice_event(
     "Whenever you sacrifice a creature, draw a card unless that player pays {1}."
 )]
-#[case::that_player_acts(
-    "Whenever an opponent casts a spell, that player loses 1 life unless that player pays {1}."
-)]
 #[case::you_pay("Whenever an opponent casts a spell, you may draw a card unless you pay {1}.")]
 #[case::they_pay("Whenever an opponent casts a spell, you may draw a card unless they pay {1}.")]
 #[case::x("Whenever an opponent casts a spell, you may draw a card unless that player pays {X}.")]
