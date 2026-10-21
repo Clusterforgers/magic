@@ -530,7 +530,7 @@ fn equip_is_not_offered_a_creature_with_protection_from_the_equipment(
     );
     let mut driver = Driver::from_scenario(scenario)?;
     let offered = driver.offered_abilities("Bonesplitter")?;
-    assert!(!offered.is_empty());
+    assert_eq!(offered.len(), 1);
     driver.begin_activation("Bonesplitter")?;
     let guard = driver.target_named("Own Guard")?;
     let stopped = matches!(quality, Quality::Everything);
@@ -619,34 +619,38 @@ fn shroud_stops_everyone_hexproof_the_opponents_and_protection_only_its_quality(
     #[values(2, 3, 4)] seats: usize,
     #[values(0, 1)] caster: usize,
 ) -> Result<(), ScriptError> {
-    let scenario = Scenario::new(seats)
-        .at(1, 1, Step::Main1)
-        .battlefield(
+    let mut holders = vec![
+        ready(keyworded("Shrouded", 1, 1, &[Keyword::Shroud])),
+        ready(keyworded("Hexed", 1, 1, &[Keyword::Hexproof])),
+        ready(keyworded("Red Proof", 1, 1, &[Quality::Red.keyword()])),
+        ready(keyworded(
+            "White Proof",
             1,
-            [
-                ready(mountain()),
-                ready(keyworded("Shrouded", 1, 1, &[Keyword::Shroud])),
-                ready(keyworded("Hexed", 1, 1, &[Keyword::Hexproof])),
-                ready(keyworded("Blue Proof", 1, 1, &[Quality::Red.keyword()])),
-                ready(keyworded(
-                    "White Proof",
-                    1,
-                    1,
-                    &[Keyword::Protection(Selector(vec![Pred::Color(
-                        Color::White,
-                    )]))],
-                )),
-            ],
-        )
-        .hand(1, [burn("Bolt", 3)]);
+            1,
+            &[Keyword::Protection(Selector(vec![Pred::Color(
+                Color::White,
+            )]))],
+        )),
+    ];
+    if caster == 1 {
+        holders.push(ready(mountain()));
+    }
+    let mut scenario = Scenario::new(seats)
+        .at(1, caster, Step::Main1)
+        .battlefield(1, holders)
+        .hand(caster, [burn("Bolt", 3)]);
+    if caster == 0 {
+        scenario = scenario.battlefield(0, [ready(mountain())]);
+    }
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_cast("Bolt")?;
     let offered = legal(&driver);
-    // The caster controls all four, so hexproof does not apply to it; shroud and protection from red do.
+    // Seat 1 controls all four: hexproof lets its own spell through, shroud and protection from red do not, and a
+    // protection from white does not name a red spell.
     for (name, may) in [
         ("Shrouded", false),
-        ("Hexed", true),
-        ("Blue Proof", false),
+        ("Hexed", caster == 1),
+        ("Red Proof", false),
         ("White Proof", true),
     ] {
         assert_eq!(offered.contains(&driver.target_named(name)?), may, "{name}");

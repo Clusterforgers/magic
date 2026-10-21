@@ -1696,6 +1696,8 @@ mod tests {
     #[case::colours(ALL_MINE, r#"{"SetColors":["Blue"]}"#, &["Mod.SetColors"])]
     #[case::a_keyword(ALL_MINE, r#"{"AddKeyword":"Flying"}"#, &["Keyword.Flying", "Mod.AddKeyword"])]
     #[case::a_keyword_taken_away(ALL_MINE, r#"{"RemoveKeyword":"Flying"}"#, &["Keyword.Flying", "Mod.RemoveKeyword"])]
+    #[case::protection(ALL_MINE, r#"{"AddKeyword":{"Protection":[{"Color":"Red"}]}}"#, &["Keyword.Protection", "Mod.AddKeyword"])]
+    #[case::shroud(ALL_MINE, r#"{"AddKeyword":"Shroud"}"#, &["Keyword.Shroud", "Mod.AddKeyword"])]
     #[case::every_ability_lost(ALL_MINE, r#""LoseAbilities""#, &["Mod.LoseAbilities"])]
     #[case::control_of_the_enchanted_creature(r#""Attached""#, r#"{"SetController":"You"}"#, &["Mod.SetController"])]
     #[case::not_attacking(ALL_MINE, r#""CantAttack""#, &["Mod.CantAttack"])]
@@ -1751,6 +1753,10 @@ mod tests {
     #[case::a_granted_ability_has_a_scope_of_its_own(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"who":{"Target":0}}}]}}}]}}"#,
         "mods[0].GrantAbility.Activated.effects[0].Draw.who: target 0 does not exist"
+    )]
+    #[case::a_colour_is_chosen_as_an_effect_begins(
+        r#"{"Static":{"affected":"This","mods":["AddProtectionFromChosenColor"]}}"#,
+        "a colour is chosen as an effect begins, so only a `Continuous` effect adds protection from it"
     )]
     #[case::a_player_is_not_an_affected_object(
         r#"{"Static":{"affected":"You","mods":[{"AddType":"Artifact"}]}}"#,
