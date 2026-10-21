@@ -268,7 +268,8 @@ impl GameRecipe {
         };
         let decks = self.resolve(catalog)?;
         self.check(&decks)?;
-        let setup = GameSetup::new(format, self.seed, decks).with_house_rules(self.house_rules.clone());
+        let setup =
+            GameSetup::new(format, self.seed, decks).with_house_rules(self.house_rules.clone());
         setup.validate()?;
         Ok(setup)
     }

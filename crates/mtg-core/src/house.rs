@@ -229,27 +229,23 @@ impl HouseRules {
         };
         within("max_hand_size", cards, &MAX_HAND_SIZE)?;
         within("draw_step_cards", self.draw_step_cards, &DRAW_STEP_CARDS)?;
-        within(
-            "land_plays_per_turn",
-            self.land_plays_per_turn,
-            &LAND_PLAYS,
-        )?;
+        within("land_plays_per_turn", self.land_plays_per_turn, &LAND_PLAYS)?;
         within("turn_limit", self.turn_limit, &TURN_LIMIT)?;
         within("winning_life", self.winning_life, &WINNING_LIFE)?;
-        within(
-            "poison_threshold",
-            self.poison_threshold,
-            &POISON_THRESHOLD,
-        )?;
+        within("poison_threshold", self.poison_threshold, &POISON_THRESHOLD)?;
         for (index, handicap) in self.handicaps.iter().enumerate() {
             if self.handicaps[..index]
                 .iter()
                 .any(|earlier| earlier.seat == handicap.seat)
             {
-                return Err(HouseRuleError::DuplicateHandicap { seat: handicap.seat });
+                return Err(HouseRuleError::DuplicateHandicap {
+                    seat: handicap.seat,
+                });
             }
             if handicap.starting_life.is_none() && handicap.opening_hand_size.is_none() {
-                return Err(HouseRuleError::EmptyHandicap { seat: handicap.seat });
+                return Err(HouseRuleError::EmptyHandicap {
+                    seat: handicap.seat,
+                });
             }
             within(
                 &format!("handicaps[{index}].starting_life"),
@@ -473,7 +469,10 @@ mod tests {
             }],
             ..HouseRules::default()
         };
-        assert_eq!(rules.handicap(PlayerId(2)).and_then(|h| h.starting_life), Some(9));
+        assert_eq!(
+            rules.handicap(PlayerId(2)).and_then(|h| h.starting_life),
+            Some(9)
+        );
         assert!(rules.handicap(PlayerId(1)).is_none());
     }
 
@@ -555,7 +554,8 @@ mod tests {
             rules.handicaps[..index].iter().all(|e| e.seat != h.seat)
                 && (h.starting_life.is_some() || h.opening_hand_size.is_some())
                 && h.starting_life.is_none_or(|n| STARTING_LIFE.contains(&n))
-                && h.opening_hand_size.is_none_or(|n| OPENING_HAND_SIZE.contains(&n))
+                && h.opening_hand_size
+                    .is_none_or(|n| OPENING_HAND_SIZE.contains(&n))
         })
     }
 

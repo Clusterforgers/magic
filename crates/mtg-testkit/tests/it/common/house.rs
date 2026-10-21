@@ -10,8 +10,7 @@ use proptest::prelude::*;
 /// table has. The values lie where a bot game is cut short or won by life now and then.
 pub fn random_turn_rules(rng: &mut GameRng) -> HouseRules {
     let mut some = |bound: u64| (rng.below(2) == 0).then(|| rng.below(bound));
-    let (draws, lands, turns, wins, poison) =
-        (some(10), some(10), some(40), some(70), some(100));
+    let (draws, lands, turns, wins, poison) = (some(10), some(10), some(40), some(70), some(100));
     let to_u32 = |n: Option<u64>, plus: u64| n.and_then(|n| u32::try_from(n + plus).ok());
     let mut handicaps = Vec::new();
     for seat in 0..2u64 {

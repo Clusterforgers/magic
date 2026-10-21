@@ -104,7 +104,9 @@ impl<'a> RuleSet<'a> {
 
     /// Lands each player may play on their turn.
     pub fn land_plays_per_turn(&self) -> u32 {
-        self.house.land_plays_per_turn.unwrap_or(LAND_DROPS_PER_TURN)
+        self.house
+            .land_plays_per_turn
+            .unwrap_or(LAND_DROPS_PER_TURN)
     }
 
     /// Whether mana left in a pool at the end of a step or phase costs its owner 1 life each (CR 106.4 as it was).

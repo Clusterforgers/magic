@@ -55,12 +55,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 ));
             }
             for card in graveyard {
-                super::zones::move_object(
-                    state,
-                    card,
-                    Zone::Library(*player),
-                    Placement::Top,
-                )?;
+                super::zones::move_object(state, card, Zone::Library(*player), Placement::Top)?;
             }
             state.zones.set(Zone::Library(*player), order.clone());
             player_mut(state, *player)?.failed_draws = 0;

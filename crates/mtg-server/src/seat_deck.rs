@@ -123,7 +123,8 @@ impl SeatDecks {
                 DeckRef::Oracle { .. } => None,
             })
             .collect();
-        SeatDecks::new(recipe.format, recipe.seed, defaults).with_house_rules(recipe.house_rules.clone())
+        SeatDecks::new(recipe.format, recipe.seed, defaults)
+            .with_house_rules(recipe.house_rules.clone())
     }
 
     /// What the table is told of `seat`'s deck.

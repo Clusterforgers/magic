@@ -50,9 +50,8 @@ fn losses(state: &GameState) -> Vec<Event> {
     let reached = own.iter().any(|(p, reason)| reason.is_none() && at_goal(p));
     own.into_iter()
         .filter_map(|(p, reason)| {
-            let reason = reason.or_else(|| {
-                (reached && !at_goal(p)).then_some(LossReason::OpponentReachedLife)
-            })?;
+            let reason = reason
+                .or_else(|| (reached && !at_goal(p)).then_some(LossReason::OpponentReachedLife))?;
             Some(Event::PlayerLost {
                 player: p.id(),
                 reason,
@@ -83,7 +82,10 @@ fn refills_of(state: &GameState, lost: &[Event]) -> Vec<Event> {
         let drawn = wanted.min(order.len());
         let top: Vec<ObjectId> = order.iter().rev().take(drawn).copied().collect();
         events.push(Event::LibraryRefilled { player: id, order });
-        events.extend(top.into_iter().map(|object| Event::CardDrawn { player: id, object }));
+        events.extend(
+            top.into_iter()
+                .map(|object| Event::CardDrawn { player: id, object }),
+        );
         events.extend((drawn..wanted).map(|_| Event::DrewFromEmptyLibrary { player: id }));
     }
     events

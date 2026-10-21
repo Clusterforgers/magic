@@ -84,11 +84,11 @@ pub(crate) fn next(state: &GameState) -> Progress {
         let taken = state.player(*player).map_or(0, Player::mulligans);
         return Progress::Decide(Decision {
             player: *player,
-            kind: DecisionKind::Mulligan(
-                state
-                    .ruleset()
-                    .mulligan_options(*player, state.zone(Zone::Hand(*player)).to_vec(), taken),
-            ),
+            kind: DecisionKind::Mulligan(state.ruleset().mulligan_options(
+                *player,
+                state.zone(Zone::Hand(*player)).to_vec(),
+                taken,
+            )),
         });
     }
     let takers = with_status(|s| s == MulliganStatus::Mulliganing);

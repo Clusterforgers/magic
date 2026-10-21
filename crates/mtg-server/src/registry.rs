@@ -456,8 +456,8 @@ impl Registry {
             fingerprints: held.iter().map(|deck| *deck.fingerprint()).collect(),
         };
         let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
-        let setup =
-            GameSetup::new(Arc::new(Normal), seed, libraries).with_house_rules(options.house_rules.clone());
+        let setup = GameSetup::new(Arc::new(Normal), seed, libraries)
+            .with_house_rules(options.house_rules.clone());
         // Refused like a recipe that does not build: too few seats, a deck the format does not allow.
         setup.validate().map_err(RecipeError::from)?;
         self.admit(setup, names, Some(recipe), host, options, Some(decks))
@@ -541,7 +541,8 @@ impl Registry {
         };
         let house_rules = setup.house_rules.clone();
         let decks = decks.map(|defaults| {
-            SeatDecks::new(FormatKind::Normal, setup.seed, defaults).with_house_rules(house_rules.clone())
+            SeatDecks::new(FormatKind::Normal, setup.seed, defaults)
+                .with_house_rules(house_rules.clone())
         });
         let handle = self
             .start(id, setup, recipe.as_ref(), &meta, &slots, decks)
