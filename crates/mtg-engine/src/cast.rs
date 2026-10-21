@@ -24,6 +24,7 @@ use crate::mana::{
 use crate::mana_ability;
 use crate::object::PermanentState;
 use crate::snapshot::snapshot;
+use crate::spend::Spend;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -113,13 +114,15 @@ pub(crate) fn payment_decision(
     object: ObjectId,
     cost: ManaCost,
     sources: Vec<ManaOption>,
+    spend: Spend,
     can_cancel: bool,
 ) -> Option<PayOptions> {
     let seat = state.player(player)?;
-    let (pool, life) = (*seat.mana(), seat.life());
+    let (pool, life) = (seat.mana().clone(), seat.life());
     Some(PayOptions {
         spell: object,
-        auto_available: auto_payment(&cost, &pool, &sources, life).is_some(),
+        auto_available: auto_payment(&cost, &pool, &sources, life, &spend).is_some(),
+        spend,
         can_cancel,
         life,
         max_life: max_life_payment(&cost, life),
@@ -154,6 +157,7 @@ fn tap_events(player: PlayerId, option: &ManaOption) -> Vec<Event> {
         player,
         mana: option.produces,
         source: Some(option.source.object),
+        only: option.only.clone(),
     }));
     events
 }
@@ -175,6 +179,7 @@ fn payment_events(
         &options.sources,
         tapped,
         options.life,
+        &options.spend,
         payment,
     )
     .map_err(IllegalAnswer::from)?;
@@ -195,10 +200,11 @@ fn payment_events(
             .ok_or(IllegalAnswer::NotOffered("mana source"))?;
         events.extend(activate(option)?);
     }
-    if !spent.is_empty() {
+    if !spent.mana.is_empty() {
         events.push(Event::ManaSpent {
             player,
-            mana: spent,
+            mana: spent.mana,
+            restricted: spent.restricted,
         });
     }
     Ok(events)
@@ -297,12 +303,19 @@ fn pay_with(
             &options.sources,
             tapped,
             options.life,
+            &options.spend,
             &partial,
         )
         .map_err(IllegalAnswer::from)?,
         PayChoice::Auto => {
-            auto_payment(&options.cost, &options.pool, &options.sources, options.life)
-                .ok_or(IllegalAnswer::NotOffered("automatic payment"))?
+            auto_payment(
+                &options.cost,
+                &options.pool,
+                &options.sources,
+                options.life,
+                &options.spend,
+            )
+            .ok_or(IllegalAnswer::NotOffered("automatic payment"))?
         }
     };
     let events = payment_events(player, options, tapped, &payment, announced, activate)?;
@@ -337,8 +350,15 @@ mod tests {
         let cost = ManaCost::parse(cost).unwrap();
         PayOptions {
             spell: ObjectId(9),
-            auto_available: crate::mana::auto_payment(&cost, &ManaPool::default(), &sources, life)
-                .is_some(),
+            auto_available: crate::mana::auto_payment(
+                &cost,
+                &ManaPool::default(),
+                &sources,
+                life,
+                &Spend::other(),
+            )
+            .is_some(),
+            spend: Spend::other(),
             can_cancel,
             life,
             max_life: max_life_payment(&cost, life),

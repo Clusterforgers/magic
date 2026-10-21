@@ -297,6 +297,7 @@ mod tests {
             count,
             sacrifice,
             extra: false,
+            only: Vec::new(),
         }
     }
 
@@ -334,8 +335,8 @@ mod tests {
                 .iter_mut()
                 .find(|g| g[0].source.object == option.source.object)
             {
-                Some(group) => group.push(*option),
-                None => groups.push(vec![*option]),
+                Some(group) => group.push(option.clone()),
+                None => groups.push(vec![option.clone()]),
             }
         }
         plan(needs, generic, &groups, sources).map(|picks| {

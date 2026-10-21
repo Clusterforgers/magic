@@ -65,6 +65,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana",
     "Effect.AddMana.OneOf",
     "Effect.AddMana.ChosenColor",
+    "Effect.AddMana.Restricted",
     "Ability.ManaAbility.Complex",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
@@ -370,6 +371,7 @@ mod tests {
     #[case::extra_turns("Effect.ExtraTurn", false)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
+    #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", false)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", false)]
     #[case::devotion("Amount.Devotion", false)]

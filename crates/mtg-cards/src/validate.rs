@@ -15,6 +15,7 @@ use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::keyword::Keyword;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use crate::spend::SpendOn;
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, Condition};
@@ -982,8 +983,19 @@ impl<'a> Walker<'a> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("amount", |w| w.amount(amount));
             }
-            Effect::AddMana { who, mana, times } => {
+            Effect::AddMana {
+                who,
+                mana,
+                times,
+                only,
+            } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                if only.iter().any(|on| matches!(on, SpendOn::Spell(f) | SpendOn::Ability(f) if f.types.iter().any(|t| f.without.contains(t)))) {
+                    w.problem("a restriction names a card type it also excludes");
+                }
+                if !only.is_empty() {
+                    w.uses("Effect", "AddMana.Restricted");
+                }
                 match mana {
                     Produce::Fixed(list) if list.is_empty() => w.problem("adds no mana"),
                     Produce::AnyColor(0)

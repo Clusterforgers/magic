@@ -1,0 +1,28 @@
+{
+  "oracle_id": "892d318e-34bd-4fca-a2a1-0c3534c68068",
+  "name": "Rosheen Meanderer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rosheen Meanderer",
+      "oracle_fingerprint": "a6540cd956782d1280ab75d93a935852",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "Fixed": ["Colorless", "Colorless", "Colorless", "Colorless"]
+                  },
+                  "only": ["CostWithX"]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

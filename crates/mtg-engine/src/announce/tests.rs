@@ -254,6 +254,7 @@ fn a_payment_for_an_effect_is_logged_as_an_answer_and_cannot_be_cancelled() {
         game.zone(Zone::Battlefield)[0],
         ManaCost::parse("{1}").unwrap(),
         mana_options(&game, PlayerId(0)),
+        crate::spend::Spend::other(),
         false,
     )
     .unwrap();

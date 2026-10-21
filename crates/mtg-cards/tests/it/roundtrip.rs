@@ -10,6 +10,7 @@ use mtg_cards::load::{canonical, parse_json};
 use mtg_cards::mana::ManaCostX;
 use mtg_cards::modify::{Duration, GameRule, Modification};
 use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::spend::{SpendFilter, SpendOn};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, Step, TriggerPattern};
 use mtg_cards::value::{Amount, Cmp, Condition, CounterKind, StatKind};
 use mtg_core::card::{CardType, Subtype, Supertype};
@@ -265,6 +266,31 @@ fn pred() -> impl Strategy<Value = Pred> {
             }),
         ]
     })
+}
+
+fn spend_filter() -> impl Strategy<Value = SpendFilter> {
+    (
+        vec(select(vec![CardType::Creature, CardType::Artifact, CardType::Instant]), 0..3),
+        vec(select(vec![CardType::Creature, CardType::Land]), 0..2),
+        vec(select(vec![Supertype::Legendary, Supertype::Basic]), 0..2),
+        vec(select(vec!["Dragon", "Elf"]), 0..2),
+        any::<bool>(),
+    )
+        .prop_map(|(types, without, supertypes, subtypes, multicolored)| SpendFilter {
+            types,
+            without,
+            supertypes,
+            subtypes: subtypes.into_iter().map(|s| Subtype(s.to_owned())).collect(),
+            multicolored,
+        })
+}
+
+fn spend_on() -> impl Strategy<Value = SpendOn> {
+    prop_oneof![
+        spend_filter().prop_map(SpendOn::Spell),
+        spend_filter().prop_map(SpendOn::Ability),
+        Just(SpendOn::CostWithX),
+    ]
 }
 
 fn selector() -> impl Strategy<Value = Selector> {
@@ -599,9 +625,15 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     (selector(), 1u32..3)
                         .prop_map(|(among, count)| Produce::ProducedBy { among, count }),
                 ],
-                amount()
+                amount(),
+                vec(spend_on(), 0..3)
             )
-                .prop_map(|(who, mana, times)| Effect::AddMana { who, mana, times }),
+                .prop_map(|(who, mana, times, only)| Effect::AddMana {
+                    who,
+                    mana,
+                    times,
+                    only
+                }),
             (reference(), counter(), amount())
                 .prop_map(|(on, counter, count)| Effect::PutCounters { on, counter, count }),
             reference().prop_map(|what| Effect::Tap { what }),

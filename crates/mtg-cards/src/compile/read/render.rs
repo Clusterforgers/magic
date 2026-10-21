@@ -11,6 +11,7 @@ use super::effects::{BACK, RETURNED};
 use super::library;
 use super::modal::{BULLET, DASH};
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
+use super::spend;
 use super::statics;
 use super::triggers::{article, condition_text, pattern_text};
 use crate::ability::{Ability, Limit, Timing};
@@ -31,6 +32,13 @@ pub fn ability(ability: &Ability) -> Option<String> {
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
 pub fn variants(ability: &Ability) -> Vec<String> {
+    let mut texts = ability_texts(ability);
+    let singulars: Vec<String> = texts.iter().filter_map(|text| spend::singular(text)).collect();
+    texts.extend(singulars);
+    texts
+}
+
+fn ability_texts(ability: &Ability) -> Vec<String> {
     match ability {
         Ability::Spell { targets, effects } => alternatives(targets, effects)
             .iter()
@@ -656,7 +664,15 @@ impl Writer<'_> {
                 who: Ref::You,
                 mana,
                 times,
-            } if times.is_one() => format!("add {}", mana_text(mana)?),
+                only,
+            } if times.is_one() => {
+                let added = format!("add {}", mana_text(mana)?);
+                if only.is_empty() {
+                    added
+                } else {
+                    format!("{added}. {}", spend::text(only)?)
+                }
+            }
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. } => self.counters(effect)?,

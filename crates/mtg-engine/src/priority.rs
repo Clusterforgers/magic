@@ -17,6 +17,7 @@ use crate::events::Event;
 use crate::keywords;
 use crate::loyalty;
 use crate::mana::{ManaOption, can_afford};
+use crate::spend::Spend;
 use crate::mana_ability;
 use crate::object::GameObject;
 use crate::player::Player;
@@ -148,7 +149,8 @@ fn can_activate(
             return false;
         };
         let sources = price.sources(state, player, object.id());
-        if !can_afford(mana, seat.mana(), &sources, seat.life()) {
+        let spend = Spend::for_ability(state, object.id(), price.x > 0);
+        if !can_afford(mana, seat.mana(), &sources, seat.life(), &spend) {
             return false;
         }
     }
@@ -215,7 +217,7 @@ pub(crate) fn can_act(
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
     let all_mana = mana_options(state, player);
-    let pool = state.player(player).map(|p| *p.mana()).unwrap_or_default();
+    let pool = state.player(player).map(|p| p.mana().clone()).unwrap_or_default();
     let life = state.player(player).map_or(0, Player::life);
     let may_play_land =
         sorcery_timing(state, player) && state.turn().lands_played() < LAND_DROPS_PER_TURN;
@@ -376,6 +378,7 @@ mod tests {
                 player: PlayerId(0),
                 mana: ManaType::Red,
                 source: None,
+                only: Vec::new(),
             },
         )
         .unwrap();

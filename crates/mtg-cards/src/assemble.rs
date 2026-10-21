@@ -18,6 +18,7 @@ use crate::definition::{AbilityDef, CardDefinition, ManaAbility};
 use crate::effect::{Effect, Produce};
 use crate::mana::ManaCostX;
 use crate::refs::{Ref, ZoneKind};
+use crate::spend::SpendOn;
 use crate::support::{
     Caps, Clause, PrintedCard, PrintedFace, Support, SupportRecord, support, whole_text,
 };
@@ -108,6 +109,7 @@ pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
             who: Ref::You,
             mana: Produce::Fixed(mana),
             times,
+            only,
         },
     ] = effects.as_slice()
     else {
@@ -116,7 +118,7 @@ pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
     let [one] = mana.as_slice() else {
         return None;
     };
-    (targets.is_empty() && times.is_one()).then_some(*one)
+    (targets.is_empty() && times.is_one() && only.is_empty()).then_some(*one)
 }
 
 /// What a mana ability the engine runs without the stack adds each time.
@@ -167,6 +169,8 @@ pub struct ManaShape<'a> {
     pub sacrifice: bool,
     /// What it does besides adding mana.
     pub then: &'a [Effect],
+    /// What the mana may be spent on; none listed means anything.
+    pub only: &'a [SpendOn],
 }
 
 impl ManaShape<'_> {
@@ -227,8 +231,9 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             who: Ref::You,
             mana,
             times,
+            only,
         },
-        then @ ..,
+        then @ ..
     ] = effects.as_slice()
     else {
         return None;
@@ -264,6 +269,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             tap,
             sacrifice,
             then,
+            only,
         })
 }
 

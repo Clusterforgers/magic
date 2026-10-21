@@ -96,6 +96,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
             continue;
         }
         let (tap, sacrifice, extra) = (shape.tap, shape.sacrifice, !shape.then.is_empty());
+        let only = shape.only.to_vec();
         let options = types
             .into_iter()
             .take(VARIANTS)
@@ -109,6 +110,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                 count,
                 sacrifice,
                 extra,
+                only: only.clone(),
             })
             .collect();
         found.push(RuleMana {
@@ -192,6 +194,7 @@ pub(crate) fn activation(
         player,
         mana: option.produces,
         source: Some(id),
+        only: option.only.clone(),
     }));
     if let Some(shape) = shape {
         events.extend(run_inline(state, player, object, shape.then)?);
@@ -367,7 +370,8 @@ mod tests {
                 Event::ManaAdded {
                     player: ME,
                     mana,
-                    source: Some(id)
+                    source: Some(id),
+                    only: Vec::new()
                 },
             ]
         );
@@ -403,7 +407,8 @@ mod tests {
                 Event::ManaAdded {
                     player: ME,
                     mana: ManaType::Green,
-                    source: Some(id)
+                    source: Some(id),
+                    only: Vec::new()
                 },
             ]
         );

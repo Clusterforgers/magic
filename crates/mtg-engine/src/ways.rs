@@ -15,6 +15,7 @@ use crate::attach;
 use crate::choose::announceable;
 use crate::keywords::{self, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford};
+use crate::spend::Spend;
 use crate::object::ObjectKind;
 use crate::price::Price;
 use crate::priority::sorcery_timing;
@@ -158,12 +159,13 @@ pub(crate) fn castable_now(
     let Some(card) = state.object(id) else {
         return false;
     };
+    let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
     of(state, player, id).iter().any(|way| {
         (way.instant || sorcery_timing(state, player))
             && announceable_in(state, player, id, way.alternative)
             && way
                 .cost(card.card().mana_cost.as_ref())
-                .is_some_and(|cost| can_afford(&cost, pool, sources, life))
+                .is_some_and(|cost| can_afford(&cost, pool, sources, life, &spend))
     })
 }
 

@@ -22,6 +22,7 @@ mod library;
 mod modal;
 mod render;
 mod selectors;
+mod spend;
 mod statics;
 mod subtypes;
 #[cfg(test)]

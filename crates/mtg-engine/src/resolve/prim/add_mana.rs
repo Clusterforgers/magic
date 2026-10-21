@@ -38,7 +38,13 @@ const fn mana_of(color: Color) -> ManaType {
 /// none is added while there is none. The mana is credited to the object that produced it while that object is in
 /// the game.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::AddMana { who, mana, times } = effect else {
+    let Effect::AddMana {
+        who,
+        mana,
+        times,
+        only,
+    } = effect
+    else {
         return Err(wrong_effect("AddMana"));
     };
     // The identity of a commander and what a land could produce wait for the task that plays them; `Caps` names each by `Effect.AddMana.<kind>`.
@@ -66,6 +72,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                         player: *player,
                         mana,
                         source,
+                        only: only.clone(),
                     }));
                 }
             }
@@ -84,6 +91,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                                 player: *player,
                                 mana: mana_of(*color),
                                 source,
+                                only: only.clone(),
                             },
                             usize::try_from(*each).unwrap_or(0).saturating_mul(times),
                         )
@@ -134,6 +142,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 player,
                 mana: kind,
                 source,
+                only: only.clone(),
             },
             usize::try_from(each).unwrap_or(0),
         ));
@@ -249,7 +258,8 @@ mod tests {
             [Event::ManaAdded {
                 player: ME,
                 mana: ManaType::Green,
-                source: Some(source)
+                source: Some(source),
+                only: Vec::new()
             }]
         );
     }

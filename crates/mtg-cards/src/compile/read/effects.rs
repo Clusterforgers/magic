@@ -9,6 +9,7 @@ use super::create;
 use super::library;
 use super::modal;
 use super::selectors::{Form, all, each, keyword, phrase, target};
+use super::spend;
 use super::tokens::Reader;
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Order, Place, Produce};
@@ -660,9 +661,11 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         }
         Produce::Fixed(list)
     };
+    let only = spend::only(r).unwrap_or_default();
     Some(vec![Effect::AddMana {
         who: Ref::You,
         mana,
         times: Amount::one(),
+        only,
     }])
 }
