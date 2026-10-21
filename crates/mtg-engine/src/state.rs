@@ -56,6 +56,10 @@ pub(crate) struct Possible {
     pub(crate) states: bool,
     /// A +1/+1 or -1/-1 counter has been on a permanent, so the layers work out its power and toughness (CR 613.4c).
     pub(crate) counters: bool,
+    /// Some card is an Aura, an Equipment or a Fortification, or a permanent starts attached.
+    pub(crate) attachments: bool,
+    /// Some card is legendary.
+    pub(crate) legends: bool,
 }
 
 /// The state of one game; a pure fold of events over the initial setup.

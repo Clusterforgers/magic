@@ -6,7 +6,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Supertype};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::combat::CombatState;
@@ -371,6 +371,17 @@ impl GameState {
             })
         });
         self.possible.counters = counters;
+        let attachments = self.objects().any(|object| {
+            crate::attach::definition_attaches(&object.def)
+                || object
+                    .permanent()
+                    .is_some_and(|permanent| permanent.attached_to().is_some())
+        });
+        self.possible.attachments = attachments;
+        let legends = self
+            .objects()
+            .any(|object| object.def.supertypes.contains(&Supertype::Legendary));
+        self.possible.legends = legends;
     }
 }
 

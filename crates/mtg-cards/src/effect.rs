@@ -335,6 +335,13 @@ pub enum Effect {
         /// What is untapped.
         what: Ref,
     },
+    /// Attaches Auras, Equipment or Fortifications to an object (CR 701.3).
+    Attach {
+        /// The permanents attached; each moves to `to` when it can be attached there.
+        what: Ref,
+        /// The object they are attached to.
+        to: Ref,
+    },
     /// Transforms permanents.
     Transform {
         /// What transforms.
@@ -480,6 +487,10 @@ mod tests {
     #[case::remove_all_the_counters_of_a_kind(
         Effect::RemoveCounters { from: Ref::This, counter: CounterKind::Other("energy".into()), count: Amount::Counters { on: Ref::This, counter: CounterKind::Other("energy".into()) } },
         r#"{"RemoveCounters":{"from":"This","counter":{"Other":"energy"},"count":{"Counters":{"on":"This","counter":{"Other":"energy"}}}}}"#
+    )]
+    #[case::attach_the_source_to_a_target(
+        Effect::Attach { what: Ref::This, to: Ref::Target(0) },
+        r#"{"Attach":{"what":"This","to":{"Target":0}}}"#
     )]
     #[case::move_two_counters(
         Effect::MoveCounters { from: Ref::Target(0), to: Ref::Target(1), counter: CounterKind::PlusOnePlusOne, count: Amount::Fixed(2) },

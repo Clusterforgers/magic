@@ -422,7 +422,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 17] = [
+    const RUN: [&str; 18] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -440,6 +440,7 @@ mod tests {
         "Keyword.Prowess",
         "Keyword.BattleCry",
         "Keyword.Ward",
+        "Keyword.Enchant",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -523,6 +524,7 @@ mod tests {
     #[case::prowess(Keyword::Prowess, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::battle_cry(Keyword::BattleCry, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ward(Keyword::Ward(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::enchant(Keyword::Enchant(Selector::default()), Hooks::none())]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
     }

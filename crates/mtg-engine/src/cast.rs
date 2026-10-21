@@ -16,6 +16,7 @@ use mtg_core::mana::ManaCost;
 use crate::abilities::{AbilityRef, PutOnStack};
 use crate::ability_reader;
 use crate::answers::Outcome;
+use crate::attach;
 use crate::choose::{Choice, Choices, announced_specs, asks, modal_of, mode_options, options_for};
 use crate::decision::{Decision, DecisionKind, PayChoice, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
@@ -139,9 +140,17 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         }
         pending.modes_chosen = true;
     }
-    let specs = rules.map_or_else(Vec::new, |rules| {
-        announced_specs(rules, &pending.choices.modes)
-    });
+    // An Aura spell targets through its enchant ability (CR 303.4a).
+    let aura = match &pending.what {
+        What::Spell(spell) => attach::spell_target(state, *spell),
+        _ => None,
+    };
+    let specs = match &aura {
+        Some(spec) => vec![spec],
+        None => rules.map_or_else(Vec::new, |rules| {
+            announced_specs(rules, &pending.choices.modes)
+        }),
+    };
     while pending.choices.targets.len() < specs.len() {
         let index = pending.choices.targets.len();
         let Some(mut options) = options_for(

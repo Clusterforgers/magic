@@ -4,6 +4,7 @@ use crate::cast::Pending;
 use crate::decision::Decision;
 use crate::error::EngineError;
 use crate::events::Event;
+use crate::legend;
 use crate::mulligan;
 use crate::resolve;
 use crate::sba;
@@ -47,6 +48,9 @@ fn next_in_turns(state: &GameState) -> Progress {
     let actions = sba::check(state);
     if !actions.is_empty() {
         return Progress::Events(actions);
+    }
+    if let Some(decision) = legend::decision(state) {
+        return Progress::Decide(decision);
     }
     if let Some(progress) = settle(state) {
         return progress;

@@ -353,7 +353,12 @@ impl<'a> Scope<'a> {
                 .cause
                 .map(|cause| cause.subjects.clone())
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
-            Ref::Attached => Vec::new(),
+            Ref::Attached => state
+                .host_of(self.source.id)
+                .and_then(|host| state.object(host))
+                .map(|host| Target::Object(host.reference()))
+                .into_iter()
+                .collect(),
             Ref::Bound(name) => self
                 .bindings
                 .get(name)
