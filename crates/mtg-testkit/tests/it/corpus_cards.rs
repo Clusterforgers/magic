@@ -1,4 +1,4 @@
-//! Goal: the 122 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 124 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -37,7 +37,8 @@ use Support::{Manual, Partial, Verified};
 /// Partial: Bloodbraid Elf's haste, not its cascade.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
-const CARDS: [(&str, Support, usize); 122] = [
+/// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified and Fireball waits for its cost modifier alone.
+const CARDS: [(&str, Support, usize); 124] = [
     ("Act of Treason", Verified, 1),
     ("Ajani, Caller of the Pride", Verified, 3),
     ("Anger", Verified, 2),
@@ -80,7 +81,7 @@ const CARDS: [(&str, Support, usize); 122] = [
     ("Favorable Winds", Verified, 1),
     ("Felidar Sovereign", Verified, 3),
     ("Fire // Ice", Manual, 0),
-    ("Fireball", Manual, 0),
+    ("Fireball", Partial, 1),
     ("Flooded Strand", Manual, 0),
     ("Fog", Verified, 1),
     ("Forest", Verified, 1),
@@ -156,6 +157,8 @@ const CARDS: [(&str, Support, usize); 122] = [
     ("Stroke of Genius", Verified, 1),
     ("Kessig Wolf Run", Verified, 2),
     ("Tezzeret the Seeker", Verified, 3),
+    ("Forked Bolt", Verified, 1),
+    ("Armament Corps", Verified, 1),
     ("Cyclonic Rift", Verified, 2),
     ("Mizzium Mortars", Verified, 2),
     ("Omniscience", Verified, 1),
@@ -166,7 +169,7 @@ const CARDS: [(&str, Support, usize); 122] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 122);
+    assert_eq!(in_table.len(), 124);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -238,10 +241,10 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         let reasons: Vec<&str> = record.clauses.iter().map(|c| c.reason.as_str()).collect();
         reasons.join("; ")
     };
-    // Fireball waits for its cost modifier and the even split of its damage, not for X.
+    // Fireball waits for its cost modifier alone: the even split of its damage and its X are played.
     let fireball = reasons("Fireball");
     assert!(
-        fireball.contains("Ability.CostModifier") && fireball.contains("Amount.EvenShare"),
+        fireball.contains("Ability.CostModifier") && !fireball.contains("Amount.EvenShare"),
         "{fireball}"
     );
     assert!(!fireball.contains("{X}"), "{fireball}");

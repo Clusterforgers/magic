@@ -160,6 +160,10 @@ pub enum Amount {
     },
     /// How many card types there are among the objects that match the selector.
     CardTypes(Selector),
+    /// How many players the reference names: `Players(Opponents)` is the number of opponents.
+    Players(Ref),
+    /// The lowest life total among the players the reference names (a player "has 13 or less life": `EachPlayer`).
+    LowestLife(Ref),
     /// How many times the kicker costs of the spell were paid, a multikicker once for each payment (CR 702.33); a
     /// permanent and its abilities read the spell it came from, and zero is no kicker paid.
     Kicks,
@@ -194,6 +198,8 @@ enum Tagged {
     Greatest { of: Selector, stat: StatKind },
     Total { of: Selector, stat: StatKind },
     CardTypes(Selector),
+    Players(Ref),
+    LowestLife(Ref),
     Kicks,
 }
 
@@ -225,6 +231,8 @@ enum TaggedRef<'a> {
         stat: StatKind,
     },
     CardTypes(&'a Selector),
+    Players(&'a Ref),
+    LowestLife(&'a Ref),
     Kicks,
 }
 
@@ -244,6 +252,8 @@ impl From<Tagged> for Amount {
             Tagged::Greatest { of, stat } => Amount::Greatest { of, stat },
             Tagged::Total { of, stat } => Amount::Total { of, stat },
             Tagged::CardTypes(of) => Amount::CardTypes(of),
+            Tagged::Players(who) => Amount::Players(who),
+            Tagged::LowestLife(who) => Amount::LowestLife(who),
             Tagged::Kicks => Amount::Kicks,
         }
     }
@@ -272,6 +282,8 @@ impl Serialize for Amount {
                 TaggedRef::Total { of, stat: *stat }.serialize(serializer)
             }
             Amount::CardTypes(of) => TaggedRef::CardTypes(of).serialize(serializer),
+            Amount::Players(who) => TaggedRef::Players(who).serialize(serializer),
+            Amount::LowestLife(who) => TaggedRef::LowestLife(who).serialize(serializer),
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
         }
     }
@@ -381,6 +393,8 @@ mod tests {
         r#"{"Sum":[{"TargetCount":0},-1]}"#
     )]
     #[case::even(Amount::EvenShare(Box::new(Amount::X)), r#"{"EvenShare":"X"}"#)]
+    #[case::opponents(Amount::Players(Ref::Opponents), r#"{"Players":"Opponents"}"#)]
+    #[case::lowest_life(Amount::LowestLife(Ref::EachPlayer), r#"{"LowestLife":"EachPlayer"}"#)]
     #[case::counters(
         Amount::Counters { on: Ref::This, counter: CounterKind::PlusOnePlusOne },
         r#"{"Counters":{"on":"This","counter":"+1/+1"}}"#

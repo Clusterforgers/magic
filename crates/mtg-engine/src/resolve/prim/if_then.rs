@@ -211,7 +211,7 @@ mod tests {
     #[case::x(r#"{"Compare":{"left":"X","op":"Ge","right":1}}"#, "X")]
     #[case::divided(
         r#"{"Compare":{"left":"Divided","op":"Ge","right":1}}"#,
-        "divided amounts"
+        "a divided amount outside the damage or counters it divides"
     )]
     #[case::wrapped_in_not(r#"{"Not":{"Monarch":"You"}}"#, "the monarch")]
     #[case::wrapped_in_all(r#"{"All":["YourTurn",{"Monarch":"You"}]}"#, "the monarch")]

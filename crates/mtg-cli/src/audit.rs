@@ -36,7 +36,7 @@ pub async fn audit(db: &Database, args: &AuditArgs) -> Result<String, CliError> 
 }
 
 /// Every stored deck card, in name order.
-async fn stored_cards(db: &Database) -> Result<Vec<PrintedCard>, CliError> {
+pub(crate) async fn stored_cards(db: &Database) -> Result<Vec<PrintedCard>, CliError> {
     let repo = db.cards();
     let mut cards = Vec::new();
     let mut page = Page::new(MAX_PAGE_SIZE, 0);

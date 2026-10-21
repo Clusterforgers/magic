@@ -4,6 +4,7 @@ mod card_detail;
 mod card_import;
 mod card_index;
 mod card_printings;
+mod card_rules;
 mod card_update;
 mod color_identity;
 mod common;

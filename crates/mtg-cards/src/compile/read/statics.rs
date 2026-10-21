@@ -53,7 +53,7 @@ fn entering(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("enters")?;
     if r.word("tapped") {
         let condition = if r.word("unless") {
-            Some(Condition::Not(Box::new(control(r)?)))
+            Some(Condition::Not(Box::new(holds(r)?)))
         } else {
             None
         };
@@ -83,6 +83,12 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
             None,
         ));
     }
+    if r.words("choose a player") {
+        return Some(replacement(ReplaceBy::Choose(EntersChoice::Player), None));
+    }
+    if r.words("choose an opponent") {
+        return Some(replacement(ReplaceBy::Choose(EntersChoice::Opponent), None));
+    }
     r.need("you may pay")?;
     let life = r.number().filter(|life| *life > 0)?;
     r.need("life")?;
@@ -91,6 +97,54 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     r.punct(',').then_some(())?;
     r.need("it enters tapped")?;
     Some(replacement(ReplaceBy::PayLifeOrTapped(life), None))
+}
+
+/// What must hold for a permanent not to enter tapped: one thing, or several joined by "or" ("you have two or more
+/// opponents or a player has 13 or less life").
+fn holds(r: &mut Reader<'_>) -> Option<Condition> {
+    let mut any = vec![held(r)?];
+    while let Some(next) = r.attempt(|r| {
+        r.need("or")?;
+        held(r)
+    }) {
+        any.push(next);
+    }
+    if any.len() == 1 {
+        any.pop()
+    } else {
+        Some(Condition::Any(any))
+    }
+}
+
+/// One thing that can hold: what a player controls, how many opponents there are, or how low a life total is.
+fn held(r: &mut Reader<'_>) -> Option<Condition> {
+    r.attempt(control)
+        .or_else(|| r.attempt(opponents))
+        .or_else(|| r.attempt(low_life))
+}
+
+/// "you have two or more opponents".
+fn opponents(r: &mut Reader<'_>) -> Option<Condition> {
+    r.need("you have")?;
+    let number = number_word(r.take_word()?)?;
+    r.need("or more opponents")?;
+    Some(Condition::Compare {
+        left: Amount::Players(Ref::Opponents),
+        op: Cmp::Ge,
+        right: Amount::Fixed(i32::try_from(number).ok()?),
+    })
+}
+
+/// "a player has 13 or less life".
+fn low_life(r: &mut Reader<'_>) -> Option<Condition> {
+    r.need("a player has")?;
+    let life = r.number()?;
+    r.need("or less life")?;
+    Some(Condition::Compare {
+        left: Amount::LowestLife(Ref::EachPlayer),
+        op: Cmp::Le,
+        right: Amount::Fixed(i32::try_from(life).ok()?),
+    })
 }
 
 /// What a permanent must control for it not to enter tapped: "you control a Forest or a Plains",
@@ -155,8 +209,12 @@ fn one_kind(r: &mut Reader<'_>) -> Option<Selector> {
 fn rule(r: &mut Reader<'_>) -> Option<Ability> {
     let rule = if r.words("play with the top card of your library revealed") {
         GameRule::RevealTop(Ref::You)
+    } else if let Some(rule) = r.attempt(player_rule) {
+        rule
     } else if r.source() {
-        if r.words("can't be countered") {
+        if r.words("can be your commander") {
+            GameRule::CanBeCommander
+        } else if r.words("can't be countered") {
             return Some(Ability::Rule {
                 rule: GameRule::CantBeCountered(Ref::This),
                 condition: None,
@@ -183,6 +241,31 @@ fn rule(r: &mut Reader<'_>) -> Option<Ability> {
         rule,
         condition: None,
         from: ZoneKind::Battlefield,
+    })
+}
+
+/// The rules about a player's hand, land plays and library: "You have no maximum hand size.", "You may play an
+/// additional land on each of your turns.", "You may look at the top card of your library any time."
+fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
+    if r.words("you have no maximum hand size") {
+        return Some(GameRule::NoMaxHandSize(Ref::You));
+    }
+    if r.words("players have no maximum hand size") {
+        return Some(GameRule::NoMaxHandSize(Ref::EachPlayer));
+    }
+    if r.words("you may look at the top card of your library any time") {
+        return Some(GameRule::LookAtTopAnyTime(Ref::You));
+    }
+    let who = if r.words("you may play an additional land on each of your turns") {
+        Ref::You
+    } else if r.words("each player may play an additional land on each of their turns") {
+        Ref::EachPlayer
+    } else {
+        return None;
+    };
+    Some(GameRule::AdditionalLandPlays {
+        who,
+        count: Amount::one(),
     })
 }
 
@@ -216,12 +299,19 @@ fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
     plural(r).map(|group| (group, true))
 }
 
-/// "~ can't block.", "Enchanted creature can't attack or block."
+/// "~ can't block.", "Enchanted creature can't attack or block.", "~ can't be blocked.", "~ can't be blocked by
+/// creatures with power 2 or less."
 fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
     let (affected, _) = subject(r, true)?;
     r.need("can't")?;
     let mods = if r.words("attack or block") {
         vec![Modification::CantAttack, Modification::CantBlock]
+    } else if r.words("block and can't be blocked") {
+        vec![Modification::CantBlock, Modification::CantBeBlocked]
+    } else if r.words("be blocked by") {
+        vec![Modification::CantBeBlockedBy(phrase(r, Form::All)?)]
+    } else if r.words("be blocked") {
+        vec![Modification::CantBeBlocked]
     } else if r.word("attack") {
         vec![Modification::CantAttack]
     } else if r.word("block") {
@@ -302,7 +392,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
 fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> {
     match (by, condition) {
         (ReplaceBy::Tapped, None) => vec!["~ enters tapped".to_owned()],
-        (ReplaceBy::Tapped, Some(Condition::Not(held))) => control_texts(held)
+        (ReplaceBy::Tapped, Some(Condition::Not(held))) => holds_texts(held)
             .into_iter()
             .map(|held| format!("~ enters tapped unless {held}"))
             .collect(),
@@ -318,6 +408,12 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         (ReplaceBy::Choose(EntersChoice::CreatureType), None) => {
             vec!["As ~ enters, choose a creature type".to_owned()]
         }
+        (ReplaceBy::Choose(EntersChoice::Player), None) => {
+            vec!["As ~ enters, choose a player".to_owned()]
+        }
+        (ReplaceBy::Choose(EntersChoice::Opponent), None) => {
+            vec!["As ~ enters, choose an opponent".to_owned()]
+        }
         (ReplaceBy::PayLifeOrTapped(life), None) => vec![format!(
             "As ~ enters, you may pay {life} life. If you don't, it enters tapped"
         )],
@@ -325,8 +421,52 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
     }
 }
 
-/// "you control two or more basic lands": a count of what a player controls, as `control` reads it.
+/// What holds for a permanent not to enter tapped, as `holds` reads it: one thing, or several joined by "or".
+fn holds_texts(condition: &Condition) -> Vec<String> {
+    let Condition::Any(list) = condition else {
+        return control_texts(condition);
+    };
+    list.iter().fold(vec![String::new()], |written, item| {
+        let choices = control_texts(item);
+        written
+            .iter()
+            .flat_map(|start| {
+                choices.iter().map(move |choice| {
+                    if start.is_empty() {
+                        choice.clone()
+                    } else {
+                        format!("{start} or {choice}")
+                    }
+                })
+            })
+            .collect()
+    })
+}
+
+/// "you control two or more basic lands", "you have two or more opponents", "a player has 13 or less life": one thing
+/// that holds, as `held` reads it.
 fn control_texts(condition: &Condition) -> Vec<String> {
+    if let Condition::Compare {
+        left: Amount::Players(Ref::Opponents),
+        op: Cmp::Ge,
+        right: Amount::Fixed(number),
+    } = condition
+    {
+        return u32::try_from(*number)
+            .ok()
+            .and_then(count_word)
+            .map(|words| format!("you have {words} or more opponents"))
+            .into_iter()
+            .collect();
+    }
+    if let Condition::Compare {
+        left: Amount::LowestLife(Ref::EachPlayer),
+        op: Cmp::Le,
+        right: Amount::Fixed(life),
+    } = condition
+    {
+        return vec![format!("a player has {life} or less life")];
+    }
     let Condition::Compare {
         left: Amount::Count(Selector(preds)),
         op,
@@ -412,6 +552,29 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
         (GameRule::RevealTop(Ref::You), ZoneKind::Battlefield) => {
             vec!["Play with the top card of your library revealed".to_owned()]
         }
+        (GameRule::NoMaxHandSize(Ref::You), ZoneKind::Battlefield) => {
+            vec!["You have no maximum hand size".to_owned()]
+        }
+        (GameRule::NoMaxHandSize(Ref::EachPlayer), ZoneKind::Battlefield) => {
+            vec!["Players have no maximum hand size".to_owned()]
+        }
+        (GameRule::LookAtTopAnyTime(Ref::You), ZoneKind::Battlefield) => {
+            vec!["You may look at the top card of your library any time".to_owned()]
+        }
+        (GameRule::AdditionalLandPlays { who, count }, ZoneKind::Battlefield) if count.is_one() => {
+            match who {
+                Ref::You => {
+                    vec!["You may play an additional land on each of your turns".to_owned()]
+                }
+                Ref::EachPlayer => vec![
+                    "Each player may play an additional land on each of their turns".to_owned(),
+                ],
+                _ => Vec::new(),
+            }
+        }
+        (GameRule::CanBeCommander, ZoneKind::Battlefield) => {
+            vec!["~ can be your commander".to_owned()]
+        }
         (GameRule::MustAttack(who), ZoneKind::Battlefield) => each_combat(who, "attack"),
         (GameRule::MustBlock(who), ZoneKind::Battlefield) => each_combat(who, "block"),
         _ => Vec::new(),
@@ -487,6 +650,16 @@ fn predicate(mods: &[Modification], plural: bool, itself: bool) -> Option<String
         }
         [Modification::CantAttack] => return Some("can't attack".to_owned()),
         [Modification::CantBlock] => return Some("can't block".to_owned()),
+        [Modification::CantBeBlocked] => return Some("can't be blocked".to_owned()),
+        [Modification::CantBlock, Modification::CantBeBlocked] => {
+            return Some("can't block and can't be blocked".to_owned());
+        }
+        [Modification::CantBeBlockedBy(blockers)] => {
+            return Some(format!(
+                "can't be blocked by {}",
+                phrase_text(blockers, Form::All)?
+            ));
+        }
         // A card does not give itself a bonus.
         _ if itself => return None,
         _ => {}

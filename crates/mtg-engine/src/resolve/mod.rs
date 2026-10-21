@@ -7,6 +7,7 @@
 //! stands at the same step (`docs/cards-dsl.md`, Execution).
 
 mod prim;
+mod share;
 mod tree;
 mod value;
 

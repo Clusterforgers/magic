@@ -4,8 +4,8 @@
 //!
 //! One function judges a precon ([`Judge::judge`]), so the list, one precon and a seat that takes
 //! it as its deck agree. The index is built from every stored precon and its cards and kept until
-//! the precons, the cards or the printings change; the rules files and the engine's capabilities
-//! are fixed for the life of a [`CardSource`].
+//! the precons, the cards, the printings or the compiled rules change; the rules files and the
+//! engine's capabilities are fixed for the life of a [`CardSource`].
 
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::sync::Arc;
@@ -16,13 +16,15 @@ use mtg_cards::deck::{
 };
 use mtg_cards::load::Library;
 use mtg_cards::{Caps, CardDefinition};
-use mtg_db::{DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion};
+use mtg_db::{
+    DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion, RulesVersion,
+};
 use mtg_engine::format::{FormatRules, Normal};
 use mtg_protocol::rest::PreconListItem;
 use thiserror::Error;
 use tokio::sync::Mutex;
 
-use crate::cards::{CardSource, CatalogError, card_facts, printed_card};
+use crate::cards::{CardSource, CatalogError, Rules, card_facts, printed_card};
 use crate::deck_cards::Line;
 use crate::deck_choice::{engine_issue, library_ids, no_command_zone};
 
@@ -125,14 +127,14 @@ pub(crate) struct Judge<'a> {
 }
 
 impl<'a> Judge<'a> {
-    /// A judge with the rules and capabilities of `source`.
-    pub(crate) fn new(source: &'a CardSource) -> Result<Judge<'a>, CatalogError> {
-        Ok(Judge {
-            library: source.library()?,
-            caps: source.caps(),
+    /// A judge with the rules and capabilities a request reads cards with.
+    pub(crate) fn new(rules: &'a Rules) -> Judge<'a> {
+        Judge {
+            library: rules.library(),
+            caps: rules.caps(),
             facts: BTreeMap::new(),
             definitions: HashMap::new(),
-        })
+        }
     }
 
     /// The deck check of a precon in its own format and the rules of a Normal game on top.
@@ -334,10 +336,7 @@ impl PreconIndex {
         self.by_code.get(code).and_then(|at| self.decks.get(*at))
     }
 
-    fn build(
-        source: &CardSource,
-        details: &[PreconDeckDetail],
-    ) -> Result<PreconIndex, PreconError> {
+    fn build(rules: &Rules, details: &[PreconDeckDetail]) -> PreconIndex {
         let named: Vec<(PreconDeckId, &str, &str)> = details
             .iter()
             .map(|deck| {
@@ -349,7 +348,7 @@ impl PreconIndex {
             })
             .collect();
         let codes = codes(&named);
-        let mut judge = Judge::new(source)?;
+        let mut judge = Judge::new(rules);
         let decks: Vec<Indexed> = details
             .iter()
             .zip(&codes)
@@ -363,15 +362,16 @@ impl PreconIndex {
             .enumerate()
             .map(|(at, indexed)| (indexed.item.code.clone(), at))
             .collect();
-        Ok(PreconIndex { decks, by_code })
+        PreconIndex { decks, by_code }
     }
 }
 
-/// What the stored precons and cards looked like when an index was built.
+/// What the stored precons, cards and compiled rules looked like when an index was built.
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct Stamp {
     cards: IndexVersion,
     precons: PreconVersion,
+    rules: RulesVersion,
 }
 
 /// The index of the precons, built the first time it is needed and again when the precons, the
@@ -385,9 +385,11 @@ impl PreconCache {
     /// The current index.
     pub(crate) async fn index(&self, source: &CardSource) -> Result<Arc<PreconIndex>, PreconError> {
         let database = source.database();
+        let rules = source.rules().await?;
         let stamp = Stamp {
             cards: database.cards().index_version().await?,
             precons: database.precons().version().await?,
+            rules: rules.version().clone(),
         };
         let mut built = self.built.lock().await;
         if let Some((held, index)) = built.as_ref()
@@ -396,7 +398,7 @@ impl PreconCache {
             return Ok(index.clone());
         }
         let details = database.precons().all().await?;
-        let index = Arc::new(PreconIndex::build(source, &details)?);
+        let index = Arc::new(PreconIndex::build(&rules, &details));
         *built = Some((stamp, index.clone()));
         Ok(index)
     }

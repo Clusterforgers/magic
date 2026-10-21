@@ -17,7 +17,7 @@ use sqlx::types::uuid::Uuid;
 
 use crate::api::{ApiError, is_unsafe_in_names};
 use crate::card_api::{failed, hit};
-use crate::cards::{CardSource, CatalogError, card_facts};
+use crate::cards::{CardSource, Rules, card_facts};
 
 /// Most copies of a card on one line.
 const MAX_LINE_COUNT: u32 = 999;
@@ -191,11 +191,25 @@ pub(crate) struct Loaded {
     facts: BTreeMap<String, CardFacts>,
     defaults: HashMap<OracleId, PrintingImages>,
     printings: HashMap<String, Printing>,
+    /// The rules every card of the request is judged under.
+    rules: Rules,
 }
 
 impl Loaded {
-    /// Reads every distinct card of `lines` and the printings they name, in three queries.
+    /// Reads every distinct card of `lines` and the printings they name, in three queries, and the
+    /// rules (the files and the compiled rows) they are judged under.
     pub(crate) async fn load(source: &CardSource, lines: &[Line]) -> Result<Loaded, ApiError> {
+        let rules = source.rules().await?;
+        Loaded::load_under(source, rules, lines).await
+    }
+
+    /// [`Loaded::load`] under rules the caller already holds, so that what a request judged
+    /// elsewhere and what it shows here are the same.
+    pub(crate) async fn load_under(
+        source: &CardSource,
+        rules: Rules,
+        lines: &[Line],
+    ) -> Result<Loaded, ApiError> {
         let repo = source.database().cards();
         let ids: Vec<OracleId> = lines
             .iter()
@@ -238,6 +252,7 @@ impl Loaded {
                 .into_iter()
                 .map(|printing| (printing.printing_id.to_string(), printing))
                 .collect(),
+            rules,
         })
     }
 
@@ -299,44 +314,33 @@ impl Loaded {
     }
 
     /// The deck checked: legality in `format` and the support of every card.
-    pub(crate) fn report(
-        &self,
-        source: &CardSource,
-        format: &str,
-        lines: &[Line],
-    ) -> Result<DeckReport, CatalogError> {
+    pub(crate) fn report(&self, format: &str, lines: &[Line]) -> DeckReport {
         let lines: Vec<CheckLine> = lines.iter().map(Line::to_check).collect();
-        Ok(deck_report(
+        deck_report(
             format,
             &lines,
             &self.facts,
-            source.library()?,
-            source.caps(),
-        ))
+            self.rules.library(),
+            self.rules.caps(),
+        )
     }
 
     /// A line as a list shows it, with the art of the chosen printing or else of the default one;
     /// `None` for a card the database does not hold.
-    pub(crate) fn view(
-        &self,
-        source: &CardSource,
-        line: &Line,
-    ) -> Result<Option<DeckLineView>, CatalogError> {
-        let Some(card) = self.cards.get(&line.oracle_id) else {
-            return Ok(None);
-        };
+    pub(crate) fn view(&self, line: &Line) -> Option<DeckLineView> {
+        let card = self.cards.get(&line.oracle_id)?;
         let images = line
             .printing_id
             .as_ref()
             .and_then(|id| self.printings.get(id))
             .map(|printing| &printing.images)
             .or_else(|| self.defaults.get(&card.oracle_id));
-        Ok(Some(DeckLineView {
+        Some(DeckLineView {
             zone: line.zone,
             count: line.count,
             printing_id: line.printing_id.clone(),
-            card: hit(source, card, images)?,
-        }))
+            card: hit(&self.rules, card, images),
+        })
     }
 }
 

@@ -1,7 +1,7 @@
 //! The values of the DSL read from the game: references, selectors, amounts and conditions.
 //!
-//! Nothing here changes state. What the engine cannot evaluate yet (loyalty, X, divided amounts)
-//! is a `ResolveError::Unsupported` with the name of what is missing; `Caps` keeps the cards that need
+//! Nothing here changes state. What the engine cannot evaluate yet (devotion, totals) is a
+//! `ResolveError::Unsupported` with the name of what is missing; `Caps` keeps the cards that need
 //! them from being offered, so the error is not met in a game.
 
 use std::borrow::Cow;
@@ -14,6 +14,7 @@ use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
 use thiserror::Error;
 
+use super::share::{OUTSIDE_A_DIVISION, Share};
 use crate::abilities::Cause;
 use crate::characteristics::{Characteristics, characteristics, seen_as};
 use crate::choose::legal_from;
@@ -605,6 +606,15 @@ impl<'a> Scope<'a> {
 
     /// The number an amount stands for.
     pub fn amount(&self, amount: &Amount) -> Result<i64, ResolveError> {
+        self.amount_of(amount, None)
+    }
+
+    /// The number an amount stands for as one recipient of the running effect reads it (`share`, see `share.rs`).
+    pub(super) fn amount_of(
+        &self,
+        amount: &Amount,
+        share: Option<Share>,
+    ) -> Result<i64, ResolveError> {
         Ok(match amount {
             Amount::Fixed(n) => i64::from(*n),
             Amount::X => self
@@ -644,12 +654,23 @@ impl<'a> Scope<'a> {
             Amount::Sum(parts) => {
                 let mut sum = 0i64;
                 for part in parts {
-                    sum += self.amount(part)?;
+                    sum += self.amount_of(part, share)?;
                 }
                 sum
             }
-            Amount::Divided | Amount::EvenShare(_) => {
-                return Err(ResolveError::Unsupported("divided amounts"));
+            Amount::Divided => {
+                let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;
+                self.divided_share(share.recipient)
+            }
+            // "Divided evenly, rounded down": the whole is split among the recipients still there, whatever
+            // was announced.
+            Amount::EvenShare(whole) => {
+                let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;
+                let whole = self.amount_of(whole, Some(share))?.max(0);
+                match i64::try_from(share.among) {
+                    Ok(among) if among > 0 => whole / among,
+                    _ => 0,
+                }
             }
             Amount::TargetCount(index) => i64::try_from(self.chosen(usize::from(*index)).len())
                 .map_err(|_| ResolveError::Invalid("too many targets".into()))?,
@@ -658,6 +679,10 @@ impl<'a> Scope<'a> {
             Amount::Total { .. } => return Err(ResolveError::Unsupported("totals")),
             Amount::CardTypes(_) => {
                 return Err(ResolveError::Unsupported("card types among cards"));
+            }
+            Amount::Players(_) => return Err(ResolveError::Unsupported("a count of players")),
+            Amount::LowestLife(_) => {
+                return Err(ResolveError::Unsupported("the lowest life total"));
             }
             Amount::Kicks => i64::try_from(self.paid_costs().len())
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
@@ -980,8 +1005,14 @@ mod tests {
 
     #[rstest]
     #[case::x(r#""X""#, "X")]
-    #[case::divided(r#""Divided""#, "divided amounts")]
-    #[case::even_share(r#"{"EvenShare":4}"#, "divided amounts")]
+    #[case::divided(
+        r#""Divided""#,
+        "a divided amount outside the damage or counters it divides"
+    )]
+    #[case::even_share(
+        r#"{"EvenShare":4}"#,
+        "a divided amount outside the damage or counters it divides"
+    )]
     fn what_the_engine_cannot_evaluate_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,
@@ -1398,6 +1429,8 @@ mod tests {
     #[case::the_greatest_value(r#"{"Greatest":{"of":[],"stat":"Power"}}"#, "greatest values")]
     #[case::a_total(r#"{"Total":{"of":[],"stat":"Power"}}"#, "totals")]
     #[case::card_types(r#"{"CardTypes":[]}"#, "card types among cards")]
+    #[case::a_count_of_players(r#"{"Players":"Opponents"}"#, "a count of players")]
+    #[case::the_lowest_life_total(r#"{"LowestLife":"EachPlayer"}"#, "the lowest life total")]
     fn an_amount_the_evaluator_cannot_read_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,

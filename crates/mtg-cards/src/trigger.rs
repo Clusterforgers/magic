@@ -286,6 +286,10 @@ pub enum EntersChoice {
     Color,
     /// A creature type.
     CreatureType,
+    /// A player.
+    Player,
+    /// An opponent of the permanent's controller.
+    Opponent,
 }
 
 /// What happens instead.

@@ -1,0 +1,73 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT oracle_id, status AS \"status: ImplStatus\", fingerprint, compiler_version\n               FROM card_rules ORDER BY oracle_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "oracle_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "card_rules",
+            "name": "oracle_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "status: ImplStatus",
+        "type_info": {
+          "Custom": {
+            "name": "impl_status",
+            "kind": {
+              "Enum": [
+                "manual",
+                "partial",
+                "full"
+              ]
+            }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "card_rules",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "fingerprint",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "card_rules",
+            "name": "fingerprint"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "compiler_version",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "card_rules",
+            "name": "compiler_version"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "5d10a1179e9fb0aa02e3ff38f916634004ae9519bd5105b9800bf81f3ea5a674"
+}

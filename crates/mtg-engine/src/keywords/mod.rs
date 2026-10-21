@@ -6,15 +6,19 @@
 
 mod battle_cry;
 mod cascade;
+mod changeling;
 mod companion;
 mod convoke;
+mod crew;
 mod cycling;
 mod deathtouch;
 mod defender;
 mod delve;
+mod devoid;
 mod disguise;
 mod double_strike;
 mod enchant;
+mod encore;
 mod equip;
 mod evoke;
 mod first_strike;
@@ -25,6 +29,7 @@ mod fuse;
 mod haste;
 mod hexproof;
 mod indestructible;
+mod infect;
 mod kicker;
 mod lifelink;
 mod living_weapon;
@@ -32,6 +37,8 @@ mod madness;
 mod menace;
 mod morph;
 mod multikicker;
+mod mutate;
+mod myriad;
 mod overload;
 mod partner;
 mod partner_with;
@@ -42,6 +49,7 @@ mod prowess;
 mod reach;
 mod reconfigure;
 mod shroud;
+mod squad;
 mod storm;
 mod suspend;
 mod trample;
@@ -285,6 +293,14 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Evoke(_) => &evoke::Evoke,
         Keyword::Overload(_) => &overload::Overload,
         Keyword::PartnerWith(_) => &partner_with::PartnerWith,
+        Keyword::Changeling => &changeling::Changeling,
+        Keyword::Devoid => &devoid::Devoid,
+        Keyword::Infect => &infect::Infect,
+        Keyword::Myriad => &myriad::Myriad,
+        Keyword::Crew(_) => &crew::Crew,
+        Keyword::Mutate(_) => &mutate::Mutate,
+        Keyword::Encore(_) => &encore::Encore,
+        Keyword::Squad(_) => &squad::Squad,
     }
 }
 
@@ -500,6 +516,14 @@ mod tests {
             Keyword::Evoke(cost()),
             Keyword::Overload(cost()),
             Keyword::PartnerWith("Pir, Imaginative Rascal".into()),
+            Keyword::Changeling,
+            Keyword::Devoid,
+            Keyword::Infect,
+            Keyword::Myriad,
+            Keyword::Crew(3),
+            Keyword::Mutate(cost()),
+            Keyword::Encore(cost()),
+            Keyword::Squad(cost()),
         ]
     }
 

@@ -327,6 +327,14 @@ pub fn read(item: &str) -> Option<Keyword> {
         "disguise" => cost(rest).map(Keyword::Disguise),
         "evoke" => cost(rest).map(Keyword::Evoke),
         "overload" => cost(rest).map(Keyword::Overload),
+        "mutate" => cost(rest).map(Keyword::Mutate),
+        "encore" => cost(rest).map(Keyword::Encore),
+        "squad" => cost(rest).map(Keyword::Squad),
+        "crew" => rest
+            .parse()
+            .ok()
+            .filter(|power| *power > 0)
+            .map(Keyword::Crew),
         "suspend" => suspend(rest),
         "enchant" => enchant(rest).map(Keyword::Enchant),
         "partner with" => Some(Keyword::PartnerWith(rest.to_owned())),
@@ -364,6 +372,10 @@ fn plain(name: &str) -> Option<Keyword> {
         "battle cry" => Keyword::BattleCry,
         "living weapon" => Keyword::LivingWeapon,
         "fuse" => Keyword::Fuse,
+        "changeling" => Keyword::Changeling,
+        "devoid" => Keyword::Devoid,
+        "infect" => Keyword::Infect,
+        "myriad" => Keyword::Myriad,
         _ => return None,
     })
 }
@@ -479,6 +491,14 @@ mod tests {
     #[case::disguise("Disguise {1}{W}", Keyword::Disguise(mana("{1}{W}")))]
     #[case::overload("Overload {3}{U}{U}", Keyword::Overload(mana("{3}{U}{U}")))]
     #[case::reconfigure("Reconfigure {2}", Keyword::Reconfigure(mana("{2}")))]
+    #[case::mutate("Mutate {1}{G}{G}", Keyword::Mutate(mana("{1}{G}{G}")))]
+    #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
+    #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
+    #[case::crew("Crew 3", Keyword::Crew(3))]
+    #[case::changeling("Changeling", Keyword::Changeling)]
+    #[case::devoid("Devoid", Keyword::Devoid)]
+    #[case::infect("Infect", Keyword::Infect)]
+    #[case::myriad("Myriad", Keyword::Myriad)]
     #[case::ward_mana("Ward {2}", Keyword::Ward(mana("{2}")))]
     #[case::ward_life(
         "Ward\u{2014}Pay 3 life.",
@@ -521,6 +541,10 @@ mod tests {
     #[case::enchant_two_types("Enchant creature or planeswalker")]
     #[case::partner_friends("Partner\u{2014}Friends forever")]
     #[case::undeclared("Undying")]
+    #[case::crew_x("Crew X")]
+    #[case::crew_nothing("Crew 0")]
+    #[case::mutate_without_a_cost("Mutate")]
+    #[case::a_parameter_on_changeling("Changeling {1}")]
     #[case::level_up("Level up {1}{U}")]
     #[case::typecycling("Plainscycling {2}")]
     #[case::landwalk("Islandwalk")]
@@ -627,6 +651,14 @@ mod tests {
             "Evoke {1}",
             "Overload {1}",
             "Living weapon",
+            "Changeling",
+            "Devoid",
+            "Infect",
+            "Myriad",
+            "Crew 2",
+            "Mutate {1}",
+            "Encore {1}",
+            "Squad {1}",
             "Partner with Someone",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

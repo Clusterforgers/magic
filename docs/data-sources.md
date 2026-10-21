@@ -20,6 +20,7 @@ cargo run -p mtg-cli -- fetch decks      # the 198 Commander precons, about 100 
 cargo run -p mtg-cli -- ingest           # applies the migrations, then loads the cache
 cargo run -p mtg-cli -- status           # cache, row counts, latest import runs
 cargo run -p mtg-cli -- coverage         # compiler and engine coverage of the precons, ranked blockers (--deck, --top)
+cargo run -p mtg-cli -- compile          # stores the rules the compiler reads as card_rules rows (--all, --card <name>)
 ```
 
 - **`fetch scryfall`** reads the `bulk-data` listing and downloads `oracle_cards` and `rulings` (`jsonl_download_uri`, else `download_uri`), and `default_cards` with `--printings`. A file is skipped while the manifest holds it under the listing's `updated_at`; `--force` downloads anyway. Every requested entry is checked in the listing before the first download starts.
@@ -33,6 +34,11 @@ cargo run -p mtg-cli -- coverage         # compiler and engine coverage of the p
   - `printings.flavor_name` and `printed_name` hold what the record carries for any language (faces joined with ` // `); Default Cards has 692 flavor names and 275 names printed on English digital versions.
   - A failed run keeps its finished batches and the rerun upserts the rest. A record Postgres cannot store (a bad id or date, a NUL byte in any text) is skipped, counted and warned about; a run left `running` for over an hour is marked failed when the next import starts.
   - `--dry-run` reads and checks the cached files with the importers' record rules, connects to no database and writes nothing.
+
+- **`compile`** compiles the stored deck cards (the cards of the stored precons by default, every card with `--all`, one card, or one by a face name, with `--card <name>`) and keeps the rules that pass the checks of a rules file in `card_rules` (`cards-dsl.md`, Compiler and Manual fallback). It reads no cache and writes no card.
+  - A row has the oracle id, the rules as JSON, the status (`full` or `partial`), the fingerprint of the printed data the compiler read and the version of the compiler. A card whose row has the same fingerprint and version is left as it is; any other is compiled again and its row replaced. A card the compiler reads nothing of, or whose rules fail a check, has no row (a row it had is removed, and the card is listed as invalid with the first two problems); a card a hand-written file covers has none either.
+  - Rows of cards that are no longer stored as deck cards are removed whatever the selection; with a selection no other row is touched. Rows are written in batches of 500 and a rerun finishes what a failed run left.
+  - The summary lists the rows written, replaced, unchanged and removed, the rules held for the cards looked at by state, and the cards left out (hand-written, nothing to read, invalid with reasons). `status` shows how many rows are stored.
 
 Real-data tests are ignored by default; they need downloaded files:
 

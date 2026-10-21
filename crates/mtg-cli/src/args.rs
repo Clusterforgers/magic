@@ -44,6 +44,8 @@ pub enum Command {
     Coverage(CoverageArgs),
     /// List a seeded sample of the cards the compiler reads: oracle text beside the reading and the JSON.
     Audit(AuditArgs),
+    /// Compile the stored cards and keep the rules that validate as `card_rules` rows the server reads.
+    Compile(CompileArgs),
 }
 
 /// What `fetch` downloads.
@@ -97,6 +99,18 @@ pub struct CoverageArgs {
     /// How many blockers each of the two rankings shows.
     #[arg(long, value_name = "N", default_value_t = mtg_cards::coverage::DEFAULT_TOP)]
     pub top: usize,
+}
+
+/// Options of `compile`.
+#[derive(Debug, Args)]
+pub struct CompileArgs {
+    /// Compile every stored card, not only the cards of the stored precons.
+    #[arg(long, conflicts_with = "card")]
+    pub all: bool,
+
+    /// Compile only the card with this name (any case; the name of one of its faces also selects it).
+    #[arg(long, value_name = "NAME", value_parser = clap::builder::NonEmptyStringValueParser::new())]
+    pub card: Option<String>,
 }
 
 /// How many cards `audit` lists by default.
@@ -163,6 +177,10 @@ mod tests {
     #[case(&["mtg-cli", "--database-url", "postgres://x/y", "coverage"])]
     #[case(&["mtg-cli", "audit"])]
     #[case(&["mtg-cli", "audit", "--count", "20", "--seed", "7", "out.txt"])]
+    #[case(&["mtg-cli", "compile"])]
+    #[case(&["mtg-cli", "compile", "--all"])]
+    #[case(&["mtg-cli", "compile", "--card", "Lightning Bolt"])]
+    #[case(&["mtg-cli", "--database-url", "postgres://x/y", "compile", "--all"])]
     fn documented_invocations_parse(#[case] args: &[&str]) {
         assert!(Cli::try_parse_from(args).is_ok(), "{args:?}");
     }
@@ -182,6 +200,10 @@ mod tests {
     #[case(&["mtg-cli", "audit", "--count", "many"])]
     #[case(&["mtg-cli", "audit", "--seed", "-1"])]
     #[case(&["mtg-cli", "audit", "a.txt", "b.txt"])]
+    #[case(&["mtg-cli", "compile", "--all", "--card", "Shock"])]
+    #[case(&["mtg-cli", "compile", "--card"])]
+    #[case(&["mtg-cli", "compile", "--card", ""])]
+    #[case(&["mtg-cli", "compile", "Shock"])]
     fn bad_invocations_are_refused(#[case] args: &[&str]) {
         assert!(Cli::try_parse_from(args).is_err(), "{args:?}");
     }
@@ -224,6 +246,22 @@ mod tests {
             (args.count, args.seed, args.file),
             (count, seed, file.map(PathBuf::from))
         );
+    }
+
+    #[rstest]
+    #[case(&["mtg-cli", "compile"], false, None)]
+    #[case(&["mtg-cli", "compile", "--all"], true, None)]
+    #[case(&["mtg-cli", "compile", "--card", "Fire // Ice"], false, Some("Fire // Ice"))]
+    fn compile_options_land_in_their_fields(
+        #[case] args: &[&str],
+        #[case] all: bool,
+        #[case] card: Option<&str>,
+    ) {
+        let cli = Cli::try_parse_from(args).unwrap();
+        let Command::Compile(args) = cli.command else {
+            panic!("expected compile");
+        };
+        assert_eq!((args.all, args.card.as_deref()), (all, card));
     }
 
     #[rstest]

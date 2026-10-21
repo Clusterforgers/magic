@@ -163,6 +163,8 @@ fn simple_amount() -> impl Strategy<Value = Amount> {
         (leaf_selector(), stat()).prop_map(|(of, stat)| Amount::Greatest { of, stat }),
         (leaf_selector(), stat()).prop_map(|(of, stat)| Amount::Total { of, stat }),
         leaf_selector().prop_map(Amount::CardTypes),
+        leaf_ref().prop_map(Amount::Players),
+        leaf_ref().prop_map(Amount::LowestLife),
         Just(Amount::Kicks),
     ]
 }
@@ -220,7 +222,15 @@ fn keyword() -> impl Strategy<Value = Keyword> {
             Keyword::Companion,
             Keyword::BattleCry,
             Keyword::Fuse,
+            Keyword::Changeling,
+            Keyword::Devoid,
+            Keyword::Infect,
+            Keyword::Myriad,
         ]),
+        (1u32..10).prop_map(Keyword::Crew),
+        cost().prop_map(Keyword::Mutate),
+        cost().prop_map(Keyword::Encore),
+        cost().prop_map(Keyword::Squad),
         cost().prop_map(Keyword::Ward),
         cost().prop_map(Keyword::Equip),
         cost().prop_map(Keyword::Reconfigure),
@@ -324,6 +334,8 @@ fn modification() -> impl Strategy<Value = Modification> {
         reference().prop_map(Modification::SetController),
         Just(Modification::CantAttack),
         Just(Modification::CantBlock),
+        Just(Modification::CantBeBlocked),
+        selector().prop_map(Modification::CantBeBlockedBy),
     ]
 }
 
@@ -381,6 +393,11 @@ fn game_rule() -> impl Strategy<Value = GameRule> {
         reference().prop_map(GameRule::CantDraw),
         reference().prop_map(GameRule::CantSearch),
         reference().prop_map(GameRule::RevealTop),
+        reference().prop_map(GameRule::LookAtTopAnyTime),
+        reference().prop_map(GameRule::NoMaxHandSize),
+        (reference(), amount())
+            .prop_map(|(who, count)| GameRule::AdditionalLandPlays { who, count }),
+        Just(GameRule::CanBeCommander),
         trigger_pattern().prop_map(|cause| GameRule::TriggerAgain { cause }),
     ]
 }
@@ -806,8 +823,13 @@ fn ability() -> impl Strategy<Value = Ability> {
                 Just(ReplaceBy::Tapped),
                 (counter(), amount())
                     .prop_map(|(counter, count)| ReplaceBy::WithCounters { counter, count }),
-                select(vec![EntersChoice::Color, EntersChoice::CreatureType])
-                    .prop_map(ReplaceBy::Choose),
+                select(vec![
+                    EntersChoice::Color,
+                    EntersChoice::CreatureType,
+                    EntersChoice::Player,
+                    EntersChoice::Opponent
+                ])
+                .prop_map(ReplaceBy::Choose),
                 (1u32..5).prop_map(ReplaceBy::PayLifeOrTapped),
             ],
             tail()
