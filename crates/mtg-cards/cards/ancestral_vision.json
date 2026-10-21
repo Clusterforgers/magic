@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9728dec9-d482-4c7a-8cdc-44d010dc878d",
+  "name": "Ancestral Vision",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancestral Vision",
+      "oracle_fingerprint": "f5d00657ce9d6fa4c962a258873d729c",
+      "abilities": [
+        { "Keyword": { "Suspend": { "time": 4, "cost": "{U}" } } },
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

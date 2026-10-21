@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f07bd49d-8e71-4d56-be2a-638514011318",
+  "name": "Fiery Temper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fiery Temper",
+      "oracle_fingerprint": "12b537aefd5965cef2834a14edd2617f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        { "Keyword": { "Madness": "{R}" } }
+      ]
+    }
+  ]
+}
