@@ -1,6 +1,7 @@
 //! A seeded deck of the corpus cards that read X after the spell has resolved: Walking Ballista and Hangarback Walker
 //! (enter with X counters), Gadwick (an enters trigger that draws X), Disembowel and Forced March (X in what they may
-//! destroy), with lands of their colours and creatures to aim them at, for fuzz games.
+//! destroy) and Wargate (X in the mana value of a search), with lands of their colours and creatures to aim them at,
+//! for fuzz games.
 
 use std::sync::Arc;
 
@@ -14,19 +15,26 @@ use crate::cards::{creature, land};
 use crate::corpus;
 
 /// The corpus cards whose X is read after they resolve.
-pub const X_AFTER_CARDS: [&str; 5] = [
+pub const X_AFTER_CARDS: [&str; 6] = [
     "Walking Ballista",
     "Hangarback Walker",
     "Gadwick, the Wizened",
     "Disembowel",
     "Forced March",
+    "Wargate",
 ];
 
 /// A legal Normal deck of lands, four of each card and creatures of different mana values to aim them at, derived
 /// entirely from `rng`.
 pub fn x_after_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
-    let colors = [Color::Blue, Color::Black, Color::Red];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..28).map(|i| land(colors[i % 3])).collect();
+    let colors = [
+        Color::Blue,
+        Color::Black,
+        Color::Red,
+        Color::Green,
+        Color::White,
+    ];
+    let mut deck: Vec<Arc<CardDefinition>> = (0..28).map(|i| land(colors[i % 5])).collect();
     for card in X_AFTER_CARDS
         .iter()
         .filter_map(|name| corpus::card(name).ok())

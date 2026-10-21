@@ -1,4 +1,4 @@
-//! Goal: an X of the card's own cost is read where it outlives the spell (what a spell may target or destroy, the counters the card enters with, what its enters trigger does) and written back in the same words, a card without an X in its cost leaves each of them to the table, and "It deals" opens an activated ability that damages for the source.
+//! Goal: an X of the card's own cost is read where it outlives the spell (what a spell may target or destroy, the counters the card enters with, what its enters trigger does, the mana value of a library search) and written back in the same words, a card without an X in its cost leaves each of them to the table, and "It deals" opens an activated ability that damages for the source.
 use super::*;
 
 fn activated(text: &str) -> Option<Ability> {
@@ -23,6 +23,31 @@ fn activated(text: &str) -> Option<Ability> {
     r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}]}}}]}}"#
 )]
 fn an_x_in_what_a_spell_selects_is_read_and_written_back(#[case] text: &str, #[case] json: &str) {
+    reads_as(text, ClauseKind::Spell, true, json);
+    assert_eq!(
+        spell(text),
+        None,
+        "a card without an X in its cost has none to read"
+    );
+}
+
+#[rstest]
+#[case::a_creature(
+    "Search your library for a creature card with mana value X or less, put it onto the battlefield, then shuffle.",
+    r#"{"Spell":{"effects":[{"Search":{"filter":[{"Type":"Creature"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}],"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{}}}},{"Shuffle":{}}]}}"#
+)]
+#[case::a_permanent(
+    "Search your library for a permanent card with mana value X or less, put it onto the battlefield, then shuffle.",
+    r#"{"Spell":{"effects":[{"Search":{"filter":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"},{"Type":"Enchantment"},{"Type":"Land"},{"Type":"Planeswalker"},{"Type":"Battle"}]},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}],"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":{"Battlefield":{}}}},{"Shuffle":{}}]}}"#
+)]
+#[case::into_your_hand(
+    "Search your library for an artifact card with mana value X or less, reveal it, put it into your hand, then shuffle.",
+    r#"{"Spell":{"effects":[{"Search":{"filter":[{"Type":"Artifact"},{"Compare":{"stat":"ManaValue","op":"Le","to":"X"}}],"reveal":true,"as":"card"}},{"Move":{"what":{"Bound":"card"},"to":"Hand"}},{"Shuffle":{}}]}}"#
+)]
+fn the_mana_value_of_a_library_search_reads_the_x_of_the_cost(
+    #[case] text: &str,
+    #[case] json: &str,
+) {
     reads_as(text, ClauseKind::Spell, true, json);
     assert_eq!(
         spell(text),

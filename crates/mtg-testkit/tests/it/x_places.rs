@@ -13,7 +13,7 @@ use mtg_engine::choose::{NumberChoice, Target};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::zones::Zone;
 use mtg_engine::{EngineError, Event, PresetPermanent, replay};
-use mtg_testkit::cards::{bear, forest, free_creature, island, mountain, swamp};
+use mtg_testkit::cards::{bear, forest, free_creature, island, mountain, plains, swamp};
 use mtg_testkit::corpus::card;
 use mtg_testkit::x_cards::blaze;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -484,6 +484,85 @@ fn disembowel_destroys_the_creature_of_the_value_chosen(
     settle(&mut driver)?;
     let left = names(driver.state(), Zone::Battlefield);
     assert!(!left.contains(&dies.to_owned()));
+    replays(&driver, scenario());
+    Ok(())
+}
+
+/// Wargate with its three colours and `extra` Mountains for X, and a library of permanents of mana value 0, 1, 1, 1, 3
+/// and 5 and an instant of mana value 1.
+fn wargate(extra: usize) -> Scenario {
+    let mut permanents = vec![ready(forest()), ready(plains()), ready(island())];
+    permanents.extend(lands(extra, mountain));
+    Scenario::new(2)
+        .hand(0, [card("Wargate").unwrap()])
+        .battlefield(0, permanents)
+        .library_named(
+            0,
+            [
+                "Batterskull",
+                "Hall of Triumph",
+                "Bonesplitter",
+                "Sol Ring",
+                "Llanowar Elves",
+                "Forest",
+                "Lightning Bolt",
+            ],
+        )
+}
+
+#[rstest]
+#[case::nothing(0, &["Forest"])]
+#[case::one(1, &["Bonesplitter", "Forest", "Llanowar Elves", "Sol Ring"])]
+#[case::two(2, &["Bonesplitter", "Forest", "Llanowar Elves", "Sol Ring"])]
+#[case::three(3, &["Bonesplitter", "Forest", "Hall of Triumph", "Llanowar Elves", "Sol Ring"])]
+#[case::large(6, &["Batterskull", "Bonesplitter", "Forest", "Hall of Triumph", "Llanowar Elves", "Sol Ring"])]
+fn wargate_finds_only_permanents_of_mana_value_x_or_less(
+    #[case] x: u32,
+    #[case] found: &[&str],
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(wargate(6))?;
+    driver.begin_cast("Wargate")?;
+    say(&mut driver, x)?;
+    pay(&mut driver)?;
+    driver.pass()?;
+    driver.pass()?;
+    let DecisionKind::ChooseCards(options) = &driver.decision()?.kind else {
+        panic!("a search was expected");
+    };
+    let mut offered: Vec<String> = options
+        .from
+        .iter()
+        .map(|id| common::name_of(driver.state(), *id))
+        .collect();
+    offered.sort();
+    assert_eq!(offered, found);
+    let pick = options.from[0];
+    let picked = common::name_of(driver.state(), pick);
+    driver.answer(Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![
+        pick,
+    ])))?;
+    settle(&mut driver)?;
+    assert!(count(&driver, Zone::Battlefield, &picked) >= 1);
+    replays(&driver, wargate(6));
+    Ok(())
+}
+
+#[test]
+fn a_countered_wargate_searches_for_nothing() -> Result<(), ScriptError> {
+    let scenario = || {
+        wargate(2)
+            .hand(1, [card("Counterspell").unwrap()])
+            .battlefield(1, lands(2, island))
+    };
+    let mut driver = Driver::from_scenario(scenario())?;
+    driver.begin_cast("Wargate")?;
+    say(&mut driver, 2)?;
+    pay(&mut driver)?;
+    driver.pass()?;
+    counter(&mut driver, "Wargate")?;
+    settle(&mut driver)?;
+    assert_eq!(count(&driver, Zone::Graveyard(pid(0)), "Wargate"), 1);
+    assert_eq!(driver.state().zone(Zone::Library(pid(0))).len(), 7);
     replays(&driver, scenario());
     Ok(())
 }

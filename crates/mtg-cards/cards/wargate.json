@@ -1,0 +1,39 @@
+{
+  "oracle_id": "26f39abe-ea0b-400d-b11c-03ee4cf50915",
+  "name": "Wargate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wargate",
+      "oracle_fingerprint": "72713c488afc24fd770f9cdfc0887195",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" },
+                        { "Type": "Battle" }
+                      ]
+                    },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ],
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
