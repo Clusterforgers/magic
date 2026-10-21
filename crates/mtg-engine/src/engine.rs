@@ -360,6 +360,13 @@ impl Engine {
         }
     }
 
+    /// Begins `pending` as if the player had chosen it, to try an announcement a card cannot ask for yet.
+    #[cfg(test)]
+    pub(crate) fn begin(&mut self, pending: Pending) -> Result<(), EngineError> {
+        self.pending = Some(pending);
+        self.advance()
+    }
+
     /// Hands the answer to a question of the announcement to the cast or activation that asked it.
     fn announced(&mut self, answered: Answered) -> Result<(), EngineError> {
         match &mut self.pending {

@@ -4,8 +4,9 @@ use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType, PHYREXIAN_LIFE, Resolution};
 use mtg_engine::Decision;
 use mtg_engine::choose::{
-    CardsChoice, CostsChoice, DivideChoice, DivideOptions, ModeChoice, NumberChoice, OptionChoice,
-    OrderChoice, ReplacementChoice, Target, TargetChoice, TriggersChoice, YesNoChoice,
+    CardsChoice, CostsChoice, CostsOptions, DivideChoice, DivideOptions, ModeChoice, NumberChoice,
+    NumberOptions, OptionChoice, OrderChoice, ReplacementChoice, Target, TargetChoice,
+    TriggersChoice, YesNoChoice,
 };
 use mtg_engine::decision::{
     Answer, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction,
@@ -177,13 +178,7 @@ impl RandomBot {
                 };
                 Answer::ChooseMode(ModeChoice::Modes(chosen))
             }
-            DecisionKind::ChooseNumber(options) => {
-                // Any number in range; with no upper bound, a few above the lowest. A bot never backs out.
-                let top = options.max.unwrap_or_else(|| options.min.saturating_add(3));
-                let spread = usize::try_from(top.saturating_sub(options.min)).unwrap_or(0) + 1;
-                let offset = u32::try_from(self.rng.index(spread)).unwrap_or(0);
-                Answer::ChooseNumber(NumberChoice::Number(options.min.saturating_add(offset)))
-            }
+            DecisionKind::ChooseNumber(options) => self.number(options),
             DecisionKind::DivideAmount(options) => {
                 Answer::DivideAmount(DivideChoice::Division(self.share_out(options)))
             }
@@ -204,14 +199,7 @@ impl RandomBot {
             DecisionKind::ChooseOption(options) => {
                 Answer::ChooseOption(OptionChoice(self.rng.index(options.options.len().max(1))))
             }
-            DecisionKind::ChooseCosts(options) => {
-                // Any of the optional costs, each with the chance of a coin.
-                let indices: Vec<usize> = options.optional.iter().map(|cost| cost.index).collect();
-                let wanted = self.rng.index(indices.len() + 1);
-                let mut chosen = self.pick(&indices, wanted);
-                chosen.sort_unstable();
-                Answer::ChooseCosts(CostsChoice::Costs(chosen))
-            }
+            DecisionKind::ChooseCosts(options) => self.costs(options),
             DecisionKind::OrderTriggers(options) => {
                 Answer::OrderTriggers(TriggersChoice((0..options.triggers.len()).collect()))
             }
@@ -385,6 +373,23 @@ impl RandomBot {
             }
         }
         Some(payment)
+    }
+
+    /// Any number in range; with no upper bound, a few above the lowest. A bot never backs out of a cast.
+    fn number(&mut self, options: &NumberOptions) -> Answer {
+        let top = options.max.unwrap_or_else(|| options.min.saturating_add(3));
+        let spread = usize::try_from(top.saturating_sub(options.min)).unwrap_or(0) + 1;
+        let offset = u32::try_from(self.rng.index(spread)).unwrap_or(0);
+        Answer::ChooseNumber(NumberChoice::Number(options.min.saturating_add(offset)))
+    }
+
+    /// Any of the optional costs on offer, none included.
+    fn costs(&mut self, options: &CostsOptions) -> Answer {
+        let indices: Vec<usize> = options.optional.iter().map(|cost| cost.index).collect();
+        let wanted = self.rng.index(indices.len() + 1);
+        let mut chosen = self.pick(&indices, wanted);
+        chosen.sort_unstable();
+        Answer::ChooseCosts(CostsChoice::Costs(chosen))
     }
 
     /// Shares an amount among the targets of a spell: one each, then the rest a point at a time at random.

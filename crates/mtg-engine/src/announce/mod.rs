@@ -109,7 +109,7 @@ impl Phase {
             Phase::Division => division::run(ctx, work),
             Phase::Legality => legality::run(ctx, work),
             Phase::Total => total::run(ctx, work),
-            Phase::Payment => payment::run(ctx, work),
+            Phase::Payment => Some(payment::run(ctx, work)),
         }
     }
 }
@@ -374,3 +374,9 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod procedure;
+
+#[cfg(test)]
+mod through_engine;

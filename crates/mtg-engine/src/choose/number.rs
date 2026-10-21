@@ -122,11 +122,15 @@ mod tests {
             NumberChoice::Cancel,
             true,
         );
-        match (can_cancel, result) {
-            (true, Ok(Outcome::CancelCast)) => {}
-            (false, Err(EngineError::Illegal(IllegalAnswer::NotOffered("cancel")))) => {}
-            (_, other) => panic!("{other:?}"),
-        }
+        let expected = if can_cancel {
+            Ok(())
+        } else {
+            Err(EngineError::Illegal(IllegalAnswer::NotOffered("cancel")))
+        };
+        assert_eq!(
+            result.map(|outcome| assert!(matches!(outcome, Outcome::CancelCast))),
+            expected
+        );
     }
 
     #[test]

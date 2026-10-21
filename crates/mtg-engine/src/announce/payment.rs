@@ -17,11 +17,11 @@ use crate::mana::{ManaOption, can_afford};
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
 
-pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
+pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
     let Some(total) = work.total.take() else {
-        return Some(Next::Drop);
+        return Next::Drop;
     };
-    Some(match (ctx.what, total.mana) {
+    match (ctx.what, total.mana) {
         (What::Trigger(waiting), _) => {
             Next::Commit(vec![trigger_event(ctx.state, waiting, work.choices)])
         }
@@ -32,7 +32,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             activation_events(ctx.state, ctx.player, *ability, work.choices)
                 .map_or(Next::Drop, Next::Commit)
         }
-    })
+    }
 }
 
 /// The payment decision for `cost` on behalf of `object`, if it can be paid; nothing is paid until it is answered, so

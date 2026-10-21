@@ -546,14 +546,14 @@ mod tests {
     }
 
     /// The answer that gives the first seats these shares, in order.
-    fn shares(given: &[u32]) -> Option<Answer> {
-        Some(Answer::DivideAmount(DivideChoice::Division(
+    fn shares(given: &[u32]) -> Answer {
+        Answer::DivideAmount(DivideChoice::Division(
             given
                 .iter()
                 .zip(0u64..)
                 .map(|(share, n)| (Target::Player(PlayerId(n)), *share))
                 .collect(),
-        )))
+        ))
     }
 
     /// `count` cards on offer whose ids run down, so the first cards offered are not the ones with the lowest ids.
@@ -750,9 +750,9 @@ mod tests {
         division(5, 2, true),
         Some(Answer::DivideAmount(DivideChoice::Cancel))
     )]
-    #[case::an_even_division_the_first_gets_the_rest(division(5, 2, false), shares(&[3, 2]))]
-    #[case::an_even_division_of_three_ways(division(6, 3, false), shares(&[2, 2, 2]))]
-    #[case::a_division_with_one_each(division(2, 2, false), shares(&[1, 1]))]
+    #[case::an_even_division_the_first_gets_the_rest(division(5, 2, false), Some(shares(&[3, 2])))]
+    #[case::an_even_division_of_three_ways(division(6, 3, false), Some(shares(&[2, 2, 2])))]
+    #[case::a_division_with_one_each(division(2, 2, false), Some(shares(&[1, 1])))]
     #[case::a_division_that_cannot_give_one_each_has_no_answer(division(1, 2, false), None)]
     #[case::the_first_card_offered(cards(4, 1, 1), Some(chosen(&[100])))]
     #[case::the_first_two_cards_not_the_lowest_ids(cards(4, 2, 2), Some(chosen(&[100, 97])))]

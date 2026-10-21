@@ -18,7 +18,8 @@ use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
 use mtg_testkit::{
     archon_fuzz_setup, attach_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup,
-    loyalty_fuzz_setup, prevent_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup, zones_fuzz_setup,
+    loyalty_fuzz_setup, prevent_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup, split_fuzz_setup,
+    zones_fuzz_setup,
 };
 use rstest::rstest;
 use serde_json::Value;
@@ -247,6 +248,48 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_spells_and_abilities(
     });
     assert!(engine.result().is_some(), "game should finish");
     assert!(checked > 500 && abilities > 0, "test must not be vacuous");
+}
+
+/// The division of a spell, an ability and a trigger names only the targets they have, which every seat sees: the
+/// cast, the ability on the stack and the amounts each target gets reach every seat whole, and no hand or library
+/// card is named by them.
+#[rstest]
+#[case(2, 71)]
+#[case(3, 72)]
+#[case(4, 73)]
+fn no_hidden_object_reaches_any_viewer_in_games_of_divided_spells(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut divisions) = (0usize, 0usize);
+    let setup = with_unique_names(split_fuzz_setup(players, seed));
+    let engine = run_game(setup, seed, |step: &Step| {
+        divisions += step
+            .events
+            .iter()
+            .filter(|event| match event {
+                mtg_engine::Event::SpellCast { choices, .. } => choices.division.len() > 1,
+                mtg_engine::Event::AbilityPutOnStack(put) => put.choices.division.len() > 1,
+                _ => false,
+            })
+            .count();
+        let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+        for (viewer, batch) in viewers.iter().zip(&batches) {
+            let hidden = hidden_across(step.before, step.after, *viewer);
+            checked += hidden.len();
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&value, &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
+        }
+    });
+    assert!(engine.result().is_some(), "game should finish");
+    assert!(checked > 500 && divisions > 0, "test must not be vacuous");
 }
 
 /// Counters on permanents and players are public: the events that put them on and take them off, and the counters of
