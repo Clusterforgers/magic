@@ -124,17 +124,19 @@ pub(crate) fn cant_be_blocked_by(state: &GameState, attacker: ObjectId, blocker:
         .filter(|object| object.zone() == Zone::Battlefield)
         .and_then(|object| state.layers().get(object.id()))
         .is_some_and(|held| {
-            held.applied.iter().any(|applied| match &applied.modification {
-                Modification::CantBeBlocked => true,
-                Modification::CantBeBlockedBy {
-                    by,
-                    controller,
-                    source,
-                } => Scope::announcing(state, *controller, *source)
-                    .selects(by, blocker)
-                    .unwrap_or(false),
-                _ => false,
-            })
+            held.applied
+                .iter()
+                .any(|applied| match &applied.modification {
+                    Modification::CantBeBlocked => true,
+                    Modification::CantBeBlockedBy {
+                        by,
+                        controller,
+                        source,
+                    } => Scope::announcing(state, *controller, *source)
+                        .selects(by, blocker)
+                        .unwrap_or(false),
+                    _ => false,
+                })
         })
 }
 
