@@ -1,7 +1,7 @@
 //! Goal: over the design corpus the compiler reads nothing wrongly (every ability it reads is an ability of the hand-written file on the same face), the cards it reproduces whole never shrink in number, and the renderer writes the hand-written abilities as the cards' own text.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-mod common;
+use crate::common;
 
 use std::collections::BTreeSet;
 

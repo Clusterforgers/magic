@@ -1,7 +1,7 @@
 //! Goal: over a full Oracle Cards download, the compiler never panics and every card it writes loads and matches its imported text.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-mod common;
+use crate::common;
 
 use std::collections::BTreeMap;
 use std::io::BufReader;
@@ -151,7 +151,7 @@ fn problems_of(card: &Card, printed: &PrintedCard, tokens: &[Source]) -> Vec<Str
 }
 
 /// Ignored by default (needs a download). Set `MTG_REAL_DATA_DIR` to a directory holding
-/// `oracle-cards-*.jsonl.gz` and run `cargo test -p mtg-cards --test compile_real -- --ignored --nocapture`.
+/// `oracle-cards-*.jsonl.gz` and run `cargo test -p mtg-cards compile_real:: -- --ignored --nocapture`.
 #[test]
 #[ignore = "needs MTG_REAL_DATA_DIR"]
 fn every_card_of_a_full_download_compiles_to_rules_that_load() {

@@ -9,7 +9,7 @@ use mtg_core::mana::ManaType;
 use mtg_import::scryfall::{CardRecord, cards};
 
 /// Scryfall objects (trimmed) of every card in the corpus, from the 2026-10-18 Oracle Cards bulk file.
-const FIXTURE: &str = include_str!("../fixtures/corpus_scryfall.json");
+const FIXTURE: &str = include_str!("../../fixtures/corpus_scryfall.json");
 
 /// The directory of rules files.
 pub fn cards_dir() -> PathBuf {

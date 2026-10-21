@@ -1,7 +1,7 @@
 //! Goal: the oracle-text compiler turns every card of the design corpus into rules that load, match the imported text, earn the status their clauses say, and agree with the hand-written files on every keyword they read.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-mod common;
+use crate::common;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::card::ImplStatus::{Full, Manual, Partial};

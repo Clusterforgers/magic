@@ -1,7 +1,7 @@
 //! Goal: every file of the design corpus loads, matches the imported Scryfall data, is in canonical form, reads back to the same value, plays the part its status says, and together they cover the vocabulary.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-mod common;
+use crate::common;
 
 use std::collections::BTreeSet;
 use std::path::Path;
@@ -71,7 +71,7 @@ fn files_are_canonical_and_carry_current_fingerprints() {
     }
     assert!(
         stale.is_empty(),
-        "not in canonical form: {stale:?}; run `MTG_UPDATE_CARDS=1 cargo test -p mtg-cards --test corpus`"
+        "not in canonical form: {stale:?}; run `MTG_UPDATE_CARDS=1 cargo test -p mtg-cards corpus::`"
     );
 }
 
@@ -345,7 +345,7 @@ fn the_worked_example_in_the_design_doc_is_the_file() {
 }
 
 /// Ignored by default (needs a download). Set `MTG_REAL_DATA_DIR` to a directory holding `oracle-cards-*.jsonl.gz`
-/// (as for `mtg-import`'s real-data tests) and run `cargo test -p mtg-cards --test corpus -- --ignored`.
+/// (as for `mtg-import`'s real-data tests) and run `cargo test -p mtg-cards corpus:: -- --ignored`.
 #[test]
 #[ignore = "needs MTG_REAL_DATA_DIR"]
 fn the_corpus_still_matches_a_fresh_oracle_cards_download() {

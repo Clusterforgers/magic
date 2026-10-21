@@ -1,7 +1,7 @@
 //! Goal: all 40 corpus cards assemble into the characteristics their imported record prints whatever the engine runs, rules are attached only when the support record says the engine runs them, and a card comes out Verified, Partial or Manual as the capabilities allow.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-mod common;
+use crate::common;
 
 use std::collections::BTreeSet;
 
