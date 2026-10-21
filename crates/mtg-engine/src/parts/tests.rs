@@ -51,7 +51,7 @@ fn game() -> GameState {
 fn named(game: &GameState, name: &str) -> ObjectId {
     game.objects()
         .find(|object| object.card().name == name)
-        .map(|object| object.id())
+        .map(crate::object::GameObject::id)
         .unwrap()
 }
 

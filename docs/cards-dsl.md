@@ -408,6 +408,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 | Targets, damage | Lightning Bolt, Burst Lightning (kicker), Fireball (X, even split, cost per extra target), Fire // Ice (split, divided damage, Fuse) |
 | Optional costs | Burst Lightning and Gatekeeper of Malakir (kicker, the second with an enters trigger that reads it), Wolfbriar Elemental (multikicker, a Wolf for each payment) (Verified) |
 | Alternative costs and cast permissions (Verified) | Faithless Looting (flashback), Mulldrifter (evoke, with the enters trigger), Cyclonic Rift and Mizzium Mortars (overload), Omniscience (cast from the hand without paying) and Vedalken Orrery (as though flash) |
+| Costs of activated abilities (Verified) | Flooded Strand (life), Nantuko Husk (a creature sacrificed), Rummaging Goblin (a discard), Soul Shepherd (a creature card exiled from the graveyard), Llanowar Behemoth (a creature tapped), Tumble Magnet (a counter removed), Souldrinker (life for a counter) and Lurching Rotbeast (cycling) |
 | Counter, destroy, exile, mass removal | Counterspell, Doom Blade, Swords to Plowshares, Wrath of God (Verified) |
 | Pump and control with duration | Giant Growth, Act of Treason (Verified) |
 | Library | Rampant Growth, Cultivate, Opt, Brainstorm, Flooded Strand (fetchland), Jace, the Mind Sculptor (planeswalker, Verified) |
@@ -429,7 +430,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 | Keywords | Serra Angel, Bloodbraid Elf (cascade), Monastery Swiftspear (prowess), Hulking Raptor (ward), Black Knight and Kor Firewalker (protection from a colour) and Mother of Runes (protection from a colour chosen as the ability resolves), Verified |
 | No abilities | Forest, Grizzly Bears |
 | `Partial`, `Manual` | Questing Beast (three clauses) |
-| Tokens | Treasure (a mana ability, made by Dockside Extortionist), Clue (made by Tireless Tracker) and Food (`{2}` and a sacrifice, paid as any ability with mana) |
+| Tokens | Treasure (a mana ability, made by Dockside Extortionist), Clue (made by Tireless Tracker) and Food (`{2}` and a sacrifice, paid as any ability with mana); a card that makes a predefined token needs what the abilities of that token need, so its support counts them |
 
 ## Cross-check
 
@@ -449,7 +450,8 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | Cast permissions (`GameRule::MayCast`: cast from a graveyard, exile or a library, without paying, as though with flash); `Condition::CastWith` | P, X | (g4) |
 | `CastFromZone` as an effect (cascade, discover, suspend, madness) | P, X | (g4) |
 | `CopySpell`, `BecomeCopy` | P, X, F | (o) |
-| Costs: ExileFromGraveyard, TapPermanents, RemoveCounters, PayEnergy, ReturnToHand | P, X, F | DSL (stubs); the engine pays them in (g6) |
+| Costs: PayLife, Sacrifice, Discard, ExileFromGraveyard, TapPermanents, RemoveCounters, ReturnToHand with a fixed amount | P, X, F | the engine announces and pays them (`parts/`, `engine.md`) |
+| Costs: PayEnergy | P, X, F | DSL (stub); (g) |
 | Costs: RemoveCounters with X, Mill, Reveal, Exert, Unattach, OneOf | P, X, F | (g) |
 | `ChooseOption` effect (colour, type, name, player) with a remembered choice | P, X, F | (j) |
 | `Condition::Performed` ("if you do") | P, F | DSL (stub); the engine reads it from the journal in (h) |

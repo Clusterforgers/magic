@@ -371,7 +371,7 @@ fn counters_are_removed_from_the_source_and_the_ability_remembers_it_as_it_then_
     driver.begin_activation("Charger")?;
     settle(&mut driver)?;
     assert_eq!(life(&driver, 0), 22);
-    assert!(offered(&driver).is_empty());
+    assert_eq!(offered(&driver), Vec::<String>::new());
     Ok(())
 }
 
@@ -503,7 +503,7 @@ fn a_creature_that_makes_the_mana_is_left_for_it_when_the_cost_can_take_another(
         )
     };
     // The only creature is the one that pays the mana, so it cannot also be tapped for the cost.
-    assert!(offered(&table(scenario(false))?).is_empty());
+    assert_eq!(offered(&table(scenario(false))?), Vec::<String>::new());
     // With another creature the cost taps that one, which is the only choice, and the Elf pays.
     let mut driver = table(scenario(true))?;
     assert_eq!(offered(&driver), ["Levy"]);

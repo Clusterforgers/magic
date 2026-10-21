@@ -1,4 +1,4 @@
-//! The total .is_none_or(|cost| can_afford(cost, seat.mana(), &total.sources, life)) (CR 601.2f): the cost printed, replaced by an alternative cost, with the optional costs and X added
+//! The total cost (CR 601.2f): the cost printed, replaced by an alternative cost, with the optional costs and X added
 //! and the cost modifiers applied, in that order.
 //!
 //! The mana of the total is what the payment step asks for, from the sources that may pay it.

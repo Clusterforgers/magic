@@ -134,7 +134,7 @@ pub(crate) struct Needs {
     /// An `{X}` in the cost.
     pub(crate) x: Option<XCost>,
     /// The price of an activated ability whose cost has parts the player picks objects for.
-    pub(crate) price: Option<Price>,
+    pub(crate) price: Option<Box<Price>>,
 }
 
 impl Needs {

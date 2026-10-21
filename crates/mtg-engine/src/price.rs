@@ -155,13 +155,13 @@ impl Price {
         let mut taken: Vec<Vec<ObjectId>> = Vec::new();
         for part in &self.parts {
             let barred = self.barred(part, source, &taken);
-            let payer = Payer {
+            let owner = Payer {
                 state,
                 player,
                 source,
                 barred: &barred,
             };
-            taken.push(part.payable(&payer, &spare)?);
+            taken.push(part.payable(&owner, &spare)?);
         }
         Some(taken.into_iter().flatten().collect())
     }

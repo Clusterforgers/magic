@@ -15,11 +15,12 @@ use crate::parts::{Part, Payer};
 use crate::price::Price;
 
 /// The price of the cost of an activated ability, when it has parts beyond `{T}`, mana and the loss of the source.
-pub(super) fn read(what: &What, rules: Option<&Ability>) -> Option<Price> {
+pub(super) fn read(what: &What, rules: Option<&Ability>) -> Option<Box<Price>> {
     match (what, rules?) {
         (What::Ability(_), Ability::Activated { cost, .. }) => Price::announced(cost)
             .ok()
-            .filter(|price| !price.parts.is_empty()),
+            .filter(|price| !price.parts.is_empty())
+            .map(Box::new),
         _ => None,
     }
 }
