@@ -15,7 +15,7 @@ use crate::resolve::{Cx, ResolveError, Run};
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum Stop {
     /// A player has to answer first.
-    Ask(Decision),
+    Ask(Box<Decision>),
     /// The journal or the data does not fit the step.
     Fail(ResolveError),
 }
@@ -31,7 +31,7 @@ impl Stop {
     pub(crate) fn settle(result: Result<Run, Stop>) -> Result<Run, ResolveError> {
         match result {
             Ok(run) => Ok(run),
-            Err(Stop::Ask(decision)) => Ok(Run::Ask(decision)),
+            Err(Stop::Ask(decision)) => Ok(Run::Ask(*decision)),
             Err(Stop::Fail(error)) => Err(error),
         }
     }
@@ -76,10 +76,10 @@ impl<'a> Questions<'a> {
             can_cancel: false,
         };
         match self.answers.next() {
-            None => Err(Stop::Ask(Decision {
+            None => Err(Stop::Ask(Box::new(Decision {
                 player,
                 kind: DecisionKind::ChooseCards(options),
-            })),
+            }))),
             Some((who, Choice::Cards(chosen)))
                 if *who == player && cards::check(&options, chosen).is_ok() =>
             {
@@ -102,10 +102,10 @@ impl<'a> Questions<'a> {
             text,
         };
         match self.answers.next() {
-            None => Err(Stop::Ask(Decision {
+            None => Err(Stop::Ask(Box::new(Decision {
                 player,
                 kind: DecisionKind::OrderCards(options),
-            })),
+            }))),
             Some((who, Choice::Order(chosen)))
                 if *who == player && order::check(&options, chosen).is_ok() =>
             {
@@ -183,7 +183,7 @@ mod tests {
         };
         let source = game().zone(Zone::Battlefield)[0];
         assert_eq!(
-            decision,
+            *decision,
             Decision {
                 player: ME,
                 kind: DecisionKind::ChooseCards(CardsOptions {
@@ -253,7 +253,7 @@ mod tests {
             }),
         };
         assert_eq!(
-            Stop::settle(Err(Stop::Ask(decision.clone()))).unwrap(),
+            Stop::settle(Err(Stop::Ask(Box::new(decision.clone())))).unwrap(),
             Run::Ask(decision)
         );
         assert_eq!(

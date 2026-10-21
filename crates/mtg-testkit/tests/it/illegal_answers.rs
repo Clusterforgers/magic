@@ -54,7 +54,8 @@ fn any_answer() -> impl Strategy<Value = Answer> {
                     restricted: Vec::new(),
                     pool,
                     taps,
-                    life
+                    life,
+                    ..Payment::default()
                 })),
             (
                 prop::collection::vec(mana(), 0..3),
@@ -65,7 +66,8 @@ fn any_answer() -> impl Strategy<Value = Answer> {
                     restricted: Vec::new(),
                     pool,
                     taps,
-                    life
+                    life,
+                    ..Payment::default()
                 })),
         ]
         .prop_map(Answer::PayMana),

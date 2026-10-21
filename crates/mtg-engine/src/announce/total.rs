@@ -9,7 +9,8 @@ use mtg_core::mana::ManaCost;
 use super::payment::spend;
 use super::{Ctx, Next, What, Work, alternative, modifiers, optional, x};
 use crate::choose::Choices;
-use crate::mana::{ManaOption, can_afford};
+use crate::help::{self, Offered};
+use crate::mana::{ManaOption, can_afford_with};
 use crate::price::Price;
 use crate::priority::mana_options;
 
@@ -22,6 +23,8 @@ pub(crate) struct Total {
     pub(crate) sources: Vec<ManaOption>,
     /// The life other parts of the cost pay, which the mana cannot use.
     pub(crate) life: u32,
+    /// The creatures and graveyard cards that may pay part of the mana (convoke, delve), fixed after the total is.
+    pub(crate) help: Offered,
 }
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
@@ -42,10 +45,15 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let mana = optional::add(ctx, choices, mana);
     let mana = x::add(ctx, choices, mana);
     let mana = modifiers::apply(ctx, choices, mana);
+    let help = match ctx.what {
+        What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell),
+        _ => Offered::default(),
+    };
     Some(Total {
         mana,
         sources,
         life,
+        help,
     })
 }
 
@@ -87,8 +95,14 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
     let life = seat
         .life()
         .saturating_sub(i32::try_from(total.life).unwrap_or(i32::MAX));
-    total
-        .mana
-        .as_ref()
-        .is_none_or(|cost| can_afford(cost, seat.mana(), &total.sources, life, &spend(ctx)))
+    total.mana.as_ref().is_none_or(|cost| {
+        can_afford_with(
+            cost,
+            seat.mana(),
+            &total.sources,
+            total.help.help(),
+            life,
+            &spend(ctx),
+        )
+    })
 }

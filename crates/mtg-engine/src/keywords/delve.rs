@@ -1,4 +1,4 @@
-//! Delve (CR 702.66): the rules are a stub until the keyword task (`docs/cards-dsl.md`, Keywords).
+//! Delve (CR 702.66): the payment of the cost reads the keyword (`help.rs`), so it answers no hook.
 
 use super::KeywordRules;
 

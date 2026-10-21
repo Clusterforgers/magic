@@ -42,6 +42,8 @@ export type { ColorSet } from "./ColorSet";
 export type { CombatForecast } from "./CombatForecast";
 export type { CombatView } from "./CombatView";
 export type { ContinuousEffect } from "./ContinuousEffect";
+export type { ConvokeOption } from "./ConvokeOption";
+export type { Convoked } from "./Convoked";
 export type { CostsChoice } from "./CostsChoice";
 export type { CostsOptions } from "./CostsOptions";
 export type { CounterKind } from "./CounterKind";

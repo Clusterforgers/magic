@@ -1,5 +1,6 @@
 //! A bot that always picks uniformly at random among the legal options it is offered.
 
+use mtg_core::color::Color;
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType, PHYREXIAN_LIFE, Resolution};
 use mtg_engine::Decision;
@@ -12,6 +13,7 @@ use mtg_engine::decision::{
     Answer, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction,
     PriorityOptions,
 };
+use mtg_engine::help::{Convoked, Used, reduce};
 use mtg_engine::mana::{ManaOption, ManaSource, Payment, check_payment};
 use mtg_engine::rng::GameRng;
 use mtg_engine::spend::Restricted;
@@ -264,7 +266,9 @@ impl RandomBot {
     }
 
     fn pay(&mut self, options: &PayOptions) -> PayChoice {
-        let manual = if options.cost.is_plain() {
+        let manual = if !options.help.is_empty() {
+            self.random_helped_payment(options)
+        } else if options.cost.is_plain() {
             self.random_payment(&options.cost, options)
         } else if self.symbol_choices {
             self.random_symbol_payment(options)
@@ -301,6 +305,8 @@ impl RandomBot {
         let pool_keep = keep(payment.pool.len());
         let restricted_keep = keep(payment.restricted.len());
         let tap_keep = keep(payment.taps.len());
+        let convoke_keep = keep(payment.convoke.len());
+        let delve_keep = keep(payment.delve.len());
         Payment {
             pool: payment
                 .pool
@@ -322,7 +328,90 @@ impl RandomBot {
                 .filter_map(|(t, k)| k.then_some(*t))
                 .collect(),
             life: self.some_life(payment.life, life),
+            convoke: payment
+                .convoke
+                .iter()
+                .zip(convoke_keep)
+                .filter_map(|(c, k)| k.then_some(*c))
+                .collect(),
+            delve: payment
+                .delve
+                .iter()
+                .zip(delve_keep)
+                .filter_map(|(c, k)| k.then_some(*c))
+                .collect(),
         }
+    }
+
+    /// A random payment that taps some of the creatures and exiles some of the cards offered to help, and pays the rest
+    /// of a random way to pay the cost with mana.
+    fn random_helped_payment(&mut self, options: &PayOptions) -> Option<Payment> {
+        if !options.cost.is_plain() && !self.symbol_choices {
+            return None;
+        }
+        let mut ways: Vec<Resolution> = options
+            .cost
+            .resolutions()
+            .into_iter()
+            .filter(|r| r.life <= options.max_life)
+            .collect();
+        self.rng.shuffle(&mut ways);
+        ways.into_iter().find_map(|way| {
+            let (convoke, delve) = self.random_help(&way.cost, options);
+            let used = Used::new(&convoke, &delve);
+            let rest = reduce(&way.cost, &used).ok()?;
+            let mut open = options.clone();
+            open.sources.retain(|o| !used.taps(o.source.object));
+            let mut payment = self.random_payment(&rest, &open)?;
+            payment.life = way.life;
+            payment.convoke = convoke;
+            payment.delve = delve;
+            Some(payment)
+        })
+    }
+
+    /// Some of the creatures and cards offered, each creature paying {1} or a colour the plain `cost` still needs.
+    fn random_help(
+        &mut self,
+        cost: &ManaCost,
+        options: &PayOptions,
+    ) -> (Vec<Convoked>, Vec<ObjectId>) {
+        let mut needs = ManaType::ALL.map(|mana| cost.required(mana));
+        let mut generic = cost.generic();
+        let mut creatures = options.help.convoke.clone();
+        self.rng.shuffle(&mut creatures);
+        let mut convoke = Vec::new();
+        for creature in creatures {
+            if self.rng.below(2) == 0 {
+                continue;
+            }
+            let mut ways: Vec<Option<Color>> = Vec::new();
+            if generic > 0 {
+                ways.push(None);
+            }
+            ways.extend(
+                creature
+                    .colors
+                    .iter()
+                    .filter(|c| needs[ManaType::from(**c).index()] > 0)
+                    .map(|c| Some(*c)),
+            );
+            if ways.is_empty() {
+                continue;
+            }
+            let pays = ways[self.rng.index(ways.len())];
+            match pays {
+                Some(color) => needs[ManaType::from(color).index()] -= 1,
+                None => generic -= 1,
+            }
+            convoke.push(Convoked {
+                creature: creature.creature,
+                pays,
+            });
+        }
+        let most = options.help.delve.len().min(generic as usize);
+        let cards = usize::try_from(self.rng.below(most as u64 + 1)).unwrap_or(0);
+        (convoke, options.help.delve[..cards].to_vec())
     }
 
     /// A random part of the `paid` life, in steps of one symbol; all of it when taking the rest would be the engine's call to make alone.

@@ -80,7 +80,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (g4b) A spell cast during a resolution (`Effect::CastFromZone`), cascade and discover, and the hidden-information tests of a cast from a library or exile; Bloodbraid Elf is Verified
 - [ ] (g4c) Madness, suspend and foretell on the cast of (g4b); the keyword Foretell is in the DSL with its `Caps` name (r5c)
 - [x] (g5) Cost modifiers (`Ability::CostModifier`): increases and reductions of the total cost in the order of CR 601.2f, from the spell itself and the permanents of every player; Fireball, Thalia, Guardian of Thraben and Foundry Inspector are Verified
-- [ ] (g5b) Convoke and delve: payment taps creatures or exiles graveyard cards for part of the cost, offered beside the mana sources in `PayMana`
+- [x] (g5b) Convoke and delve: payment taps creatures or exiles graveyard cards for part of the cost, offered beside the mana sources in `PayMana`; Stoke the Flames, Siege Wurm, Treasure Cruise, Murderous Cut and Gurmag Angler are Verified
+- [ ] (g5c) Convoke and delve are shown to every seat by the protocol projection (a test over `mtg-protocol` hidden-information helpers) and a payment of a copy of a spell uses them (waits for the spell copies of (o))
 - [x] (g6) Costs of activated abilities beyond `{T}`, mana and sacrificing the source: life, counters removed, and permanents and cards picked when the ability is announced (sacrificed, returned to hand, tapped, discarded, exiled from a graveyard); cycling from a hand; a card's support counts the abilities of the predefined tokens it makes; Flooded Strand, Nantuko Husk, Rummaging Goblin, Soul Shepherd, Llanowar Behemoth, Tumble Magnet, Souldrinker and Lurching Rotbeast are Verified
 - [ ] (g6b) Costs with a counted amount ("Pay X life", "Remove X counters"), `Pay {E}`, and these cost parts inside a `Pay` effect, ward and the costs of keywords other than mana; the support walker names them until then
 - [x] (g7) Mana abilities of several mana, of a count and of a choice of type, with further effects (painlands, Eggs) and sacrificing their source (Treasure, Lotus Petal) are activated without the stack and are mana sources of every payment; `is_mana_ability` holds them whole and the compiler reads the painland wording again; Sol Ring, Gaea's Cradle, Battlefield Forge and Lotus Petal are Verified
@@ -124,7 +125,7 @@ The server is settled first, then the web is built once against the final types.
 - [x] Response clocks for every decision kind without one, each with a fallback answer, and a clock test through the actor for YesNo, ChooseOption and ChooseMode (`docs/server.md`, Response clocks)
 - [ ] (d9) Timer bank: extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
-- [ ] Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and the order of cards put back; the payment prompt for X and restricted mana
+- [ ] Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and the order of cards put back; the payment prompt for X and restricted mana and for convoke and delve
 - [ ] Clock words in the web (`clockText.ts`) for every decision with a clock the web does not name: number, optional costs, division, replacement, keep, bottoming, payment, damage, attackers and discard
 - [ ] The `YesNo` prompt disables Yes and its key when `YesNoOptions.only_no` is set (a payment the seat cannot make)
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X

@@ -18,9 +18,11 @@ use crate::choose::{Choice, Choices};
 use crate::decision::{PayChoice, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::{Event, ZoneCause};
+use crate::help::Offered;
 use crate::loyalty;
 use crate::mana::{
-    ManaOption, Payment, auto_payment, check_payment, complete_payment, max_life_payment,
+    ManaOption, Payment, auto_payment_with, check_payment_with, complete_payment_with,
+    max_life_payment,
 };
 use crate::mana_ability;
 use crate::object::PermanentState;
@@ -144,6 +146,7 @@ pub(crate) fn payment_decision(
     object: ObjectId,
     cost: ManaCost,
     sources: Vec<ManaOption>,
+    help: Offered,
     spend: Spend,
     can_cancel: bool,
     reserved_life: u32,
@@ -156,7 +159,9 @@ pub(crate) fn payment_decision(
     let pool = seat.mana().clone();
     Some(PayOptions {
         spell: object,
-        auto_available: auto_payment(&cost, &pool, &sources, life, &spend).is_some(),
+        auto_available: auto_payment_with(&cost, &pool, &sources, help.help(), life, &spend)
+            .is_some(),
+        help: Box::new(help),
         spend: Box::new(spend),
         can_cancel,
         life,
@@ -167,19 +172,30 @@ pub(crate) fn payment_decision(
     })
 }
 
-/// The offered permanents that are tapped (or gone) in `state`; no payment may use them.
-fn unusable(state: &GameState, options: &PayOptions) -> Vec<ObjectId> {
-    options
+/// The offered permanents that are tapped (or gone) and the offered cards that left the graveyard in `state`; no payment may use them.
+fn unusable(state: &GameState, player: PlayerId, options: &PayOptions) -> Vec<ObjectId> {
+    let tapped = |id: &ObjectId| {
+        state
+            .object(*id)
+            .and_then(|o| o.permanent())
+            .is_none_or(PermanentState::tapped)
+    };
+    let mut gone: Vec<ObjectId> = options
         .sources
         .iter()
         .map(|o| o.source.object)
-        .filter(|id| {
-            state
-                .object(*id)
-                .and_then(|o| o.permanent())
-                .is_none_or(PermanentState::tapped)
-        })
-        .collect()
+        .chain(options.help.convoke.iter().map(|o| o.creature))
+        .filter(tapped)
+        .collect();
+    gone.extend(
+        options
+            .help
+            .delve
+            .iter()
+            .copied()
+            .filter(|card| !state.zone(Zone::Graveyard(player)).contains(card)),
+    );
+    gone
 }
 
 /// The events of using a mana source when the game is not at hand: the tap and the mana it adds.
@@ -208,10 +224,11 @@ fn payment_events(
     announced: Vec<Event>,
     activate: &dyn Fn(&ManaOption) -> Result<Vec<Event>, EngineError>,
 ) -> Result<Vec<Event>, EngineError> {
-    let spent = check_payment(
+    let spent = check_payment_with(
         &options.cost,
         &options.pool,
         &options.sources,
+        options.help(),
         tapped,
         options.life,
         &options.spend,
@@ -227,6 +244,20 @@ fn payment_events(
         });
     }
     events.extend(announced);
+    // The creatures tapped and the cards exiled to help pay (CR 702.51, CR 702.66), before the mana.
+    for convoked in &payment.convoke {
+        events.push(Event::PermanentTapped {
+            object: convoked.creature,
+        });
+    }
+    for &card in &payment.delve {
+        events.push(Event::ZoneChanged {
+            object: card,
+            from: Zone::Graveyard(player),
+            to: Zone::Exile,
+            cause: ZoneCause::Exiled,
+        });
+    }
     for tap in &payment.taps {
         let option = options
             .sources
@@ -263,7 +294,7 @@ pub(crate) fn pay_answer(
     pay_with(
         player,
         options,
-        &unusable(state, options),
+        &unusable(state, player, options),
         choice,
         announced,
         &|option| mana_ability::activation(state, player, option),
@@ -351,20 +382,22 @@ fn pay_with(
         PayChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
         PayChoice::Cancel => return Err(IllegalAnswer::NotOffered("cancel").into()),
         PayChoice::Manual(payment) => payment,
-        PayChoice::Complete(partial) => complete_payment(
+        PayChoice::Complete(partial) => complete_payment_with(
             &options.cost,
             &options.pool,
             &options.sources,
+            options.help(),
             tapped,
             options.life,
             &options.spend,
             &partial,
         )
         .map_err(IllegalAnswer::from)?,
-        PayChoice::Auto => auto_payment(
+        PayChoice::Auto => auto_payment_with(
             &options.cost,
             &options.pool,
             &options.sources,
+            options.help(),
             options.life,
             &options.spend,
         )
@@ -410,6 +443,7 @@ mod tests {
                 &Spend::other(),
             )
             .is_some(),
+            help: Box::default(),
             spend: Box::new(Spend::other()),
             can_cancel,
             life,

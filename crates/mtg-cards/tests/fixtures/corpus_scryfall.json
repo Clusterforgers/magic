@@ -3892,5 +3892,135 @@
     "keywords": [
       "Landfall"
     ]
+  },
+  {
+    "id": "04113b3c-cc8f-4b15-9091-f82ea3df2e7c",
+    "oracle_id": "2249001c-08d5-4c0a-86f8-d97519a39f37",
+    "name": "Stoke the Flames",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mom",
+    "collector_number": "166",
+    "rarity": "uncommon",
+    "released_at": "2023-04-21",
+    "digital": false,
+    "mana_cost": "{2}{R}{R}",
+    "cmc": 4.0,
+    "type_line": "Instant",
+    "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nStoke the Flames deals 4 damage to any target.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Convoke"
+    ]
+  },
+  {
+    "id": "cedd44eb-f381-46e1-bcb0-88416b4ce33d",
+    "oracle_id": "315772f2-abd2-4681-b8c8-1db4b0ccbbcd",
+    "name": "Gurmag Angler",
+    "lang": "en",
+    "layout": "normal",
+    "set": "uma",
+    "collector_number": "102",
+    "rarity": "common",
+    "released_at": "2018-12-07",
+    "digital": false,
+    "mana_cost": "{6}{B}",
+    "cmc": 7.0,
+    "type_line": "Creature — Zombie Fish",
+    "oracle_text": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)",
+    "power": "5",
+    "toughness": "5",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Delve"
+    ]
+  },
+  {
+    "id": "42c45880-15c7-4259-8066-c04d031d8216",
+    "oracle_id": "5b6bdf5a-2742-4851-92cd-a857a3852836",
+    "name": "Treasure Cruise",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "205",
+    "rarity": "common",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{7}{U}",
+    "cmc": 8.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nDraw three cards.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Delve"
+    ]
+  },
+  {
+    "id": "19c55fc1-11e5-4e67-ba49-604f5b574c2d",
+    "oracle_id": "8a802eae-abfb-47fd-8458-1689055531ef",
+    "name": "Siege Wurm",
+    "lang": "en",
+    "layout": "normal",
+    "set": "rvr",
+    "collector_number": "155",
+    "rarity": "common",
+    "released_at": "2024-01-12",
+    "digital": false,
+    "mana_cost": "{5}{G}{G}",
+    "cmc": 7.0,
+    "type_line": "Creature — Wurm",
+    "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nTrample",
+    "power": "5",
+    "toughness": "5",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Trample",
+      "Convoke"
+    ]
+  },
+  {
+    "id": "b2dadff2-883f-4134-a881-be145cdcbd84",
+    "oracle_id": "c0ce7d5a-68fd-41f3-b5ba-a1a178cee9ec",
+    "name": "Murderous Cut",
+    "lang": "en",
+    "layout": "normal",
+    "set": "ktk",
+    "collector_number": "81",
+    "rarity": "uncommon",
+    "released_at": "2014-09-26",
+    "digital": false,
+    "mana_cost": "{4}{B}",
+    "cmc": 5.0,
+    "type_line": "Instant",
+    "oracle_text": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nDestroy target creature.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Delve"
+    ]
   }
 ]

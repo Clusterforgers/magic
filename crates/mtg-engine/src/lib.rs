@@ -13,6 +13,8 @@ mod damage;
 #[cfg(test)]
 mod fixtures;
 mod flow;
+#[cfg(test)]
+mod help_tests;
 mod layers;
 mod legend;
 mod mana_ability;
@@ -47,6 +49,7 @@ pub mod fold;
 pub mod forecast;
 pub mod format;
 pub mod hash;
+pub mod help;
 pub mod keywords;
 pub mod library;
 pub mod loyalty;

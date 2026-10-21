@@ -505,6 +505,7 @@ mod tests {
             can_cancel,
             life: 20,
             max_life: 0,
+            help: Box::default(),
         })
     }
 
