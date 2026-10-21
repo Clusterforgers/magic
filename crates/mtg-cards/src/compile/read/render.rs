@@ -7,6 +7,7 @@ use super::amounts::{cards_text, count_word, points_text, stat_name};
 use super::costs;
 use super::create;
 use super::effects::BACK;
+use super::library;
 use super::modal::{BULLET, DASH};
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
 use super::triggers::{article, condition_text, pattern_text};
@@ -132,6 +133,16 @@ fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<
     let mut sentences: Vec<String> = Vec::new();
     let mut start = 0;
     while start < effects.len() {
+        // A search and what follows it, or a look at the top cards and the choice from them, are
+        // one sentence, which no joint splits.
+        if let Some((text, used)) = library::sequence(&effects[start..]) {
+            if (mask >> start) & ((1 << used) - 1) != 0 {
+                return None;
+            }
+            sentences.push(text);
+            start += used;
+            continue;
+        }
         // A choice of cards and the move of what was chosen are one sentence, which no joint splits.
         if let [
             choose @ Effect::Choose { .. },
@@ -282,6 +293,7 @@ fn player_of(effect: &Effect) -> Option<&Ref> {
         | Effect::Discard { who, .. }
         | Effect::GainLife { who, .. }
         | Effect::LoseLife { who, .. }
+        | Effect::Shuffle { who }
         | Effect::Sacrifice { who, .. } => Some(who),
         _ => None,
     }
@@ -311,6 +323,7 @@ fn is_imperative(effect: &Effect) -> bool {
             | Effect::Draw { who: Ref::You, .. }
             | Effect::Mill { who: Ref::You, .. }
             | Effect::Discard { who: Ref::You, .. }
+            | Effect::Shuffle { who: Ref::You }
             | Effect::Destroy {
                 regenerate: true,
                 ..
@@ -465,6 +478,37 @@ impl Writer<'_> {
         Some(format!("put {many} {kind} {noun} on {place}"))
     }
 
+    /// An effect on a library: "shuffle your library", "look at the top card of your library",
+    /// "put target card from your graveyard on the bottom of your library".
+    fn library(&mut self, effect: &Effect) -> Option<String> {
+        Some(match effect {
+            Effect::Shuffle { who: Ref::You } => "shuffle your library".to_owned(),
+            Effect::LookAtTop {
+                who: Ref::You,
+                count,
+                bind,
+            } => library::look_text(count, bind)?,
+            Effect::Move {
+                what,
+                to: Destination::Library { place, order: None },
+            } => {
+                let whose = if self.in_your_graveyard(what) {
+                    "your"
+                } else if self.is_a_permanent(what) {
+                    "its owner's"
+                } else {
+                    return None;
+                };
+                format!(
+                    "put {} {} {whose} library",
+                    self.object(what)?,
+                    library::place_text(*place)?
+                )
+            }
+            _ => return None,
+        })
+    }
+
     /// An effect as a sentence without its first capital and its period.
     fn effect(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
@@ -485,11 +529,18 @@ impl Writer<'_> {
                 count,
                 random,
             } => format!("discard {}{}", cards_text(count)?, at_random(*random)),
+            Effect::Shuffle { who: Ref::You }
+            | Effect::LookAtTop { .. }
+            | Effect::Move {
+                to: Destination::Library { .. },
+                ..
+            } => self.library(effect)?,
             Effect::Draw { who, .. }
             | Effect::Mill { who, .. }
             | Effect::Discard { who, .. }
             | Effect::GainLife { who, .. }
             | Effect::LoseLife { who, .. }
+            | Effect::Shuffle { who }
             | Effect::Sacrifice { who, .. } => {
                 let subject = self.player(who)?;
                 format!("{subject} {}", self.predicate(effect, *who != Ref::You)?)
@@ -610,6 +661,12 @@ impl Writer<'_> {
             Effect::LoseLife { amount, .. } => format!("lose{s} {}", self.life(amount)?),
             Effect::Sacrifice { filter, count, .. } if count.is_one() => {
                 format!("sacrifice{s} {}", sacrifice_text(filter)?)
+            }
+            Effect::Shuffle { who } => {
+                format!(
+                    "shuffle{s} {} library",
+                    if *who == Ref::You { "your" } else { "their" }
+                )
             }
             _ => return None,
         })

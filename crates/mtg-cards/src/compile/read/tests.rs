@@ -156,6 +156,7 @@ mod counters;
 mod create;
 mod enters;
 mod exile_bounce_shrink;
+mod library;
 mod life;
 mod may;
 mod modes;

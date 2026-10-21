@@ -143,7 +143,7 @@ fn not(pred: Pred) -> Pred {
 }
 
 /// What an adjective before the noun says; "another" stands for "other" after an article.
-fn adjective(word: &str, form: Form) -> Option<Pred> {
+pub(super) fn adjective(word: &str, form: Form) -> Option<Pred> {
     if word == "another" {
         return (form == Form::Subject).then_some(Pred::Other);
     }
@@ -178,7 +178,7 @@ fn adjective(word: &str, form: Form) -> Option<Pred> {
 }
 
 /// The adjective for a predicate.
-fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
+pub(super) fn adjective_text(pred: &Pred, form: Form) -> Option<String> {
     Some(match pred {
         Pred::Color(color) => color_name(*color).to_owned(),
         Pred::Colorless => "colorless".to_owned(),
@@ -243,7 +243,7 @@ fn stat_word(r: &mut Reader<'_>) -> Option<StatKind> {
 }
 
 /// What may follow the noun: who controls it, a keyword or a number it has.
-fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
+pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("you control") {
         return Some(Pred::ControlledBy(Ref::You));
     }
@@ -275,7 +275,7 @@ fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     })
 }
 
-fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
+pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     Some(match pred {
         Pred::ControlledBy(Ref::You) => "you control".to_owned(),
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),

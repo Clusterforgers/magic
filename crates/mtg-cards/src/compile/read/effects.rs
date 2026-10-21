@@ -5,6 +5,7 @@ use mtg_core::mana::ManaType;
 
 use super::amounts::{cards, its_stat, number_word, points};
 use super::create;
+use super::library;
 use super::modal;
 use super::selectors::{Form, all, each, keyword, phrase, target};
 use super::tokens::Reader;
@@ -19,7 +20,7 @@ use crate::value::{Amount, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 12] = [
+const TEMPLATES: [Template; 15] = [
     modal::modal,
     may,
     chain,
@@ -32,10 +33,20 @@ const TEMPLATES: [Template; 12] = [
     create::tokens,
     put_counters,
     add_mana,
+    library::search,
+    library::look,
+    library::put_on_library,
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-const IMPERATIVES: [Template; 5] = [chain, removal, return_card, create::tokens, put_counters];
+const IMPERATIVES: [Template; 6] = [
+    chain,
+    removal,
+    return_card,
+    create::tokens,
+    put_counters,
+    library::put_on_library,
+];
 
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the
 /// templates read.
@@ -208,6 +219,10 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             who,
             count: cards(r)?,
         },
+        "shuffle" => {
+            r.need("your library")?;
+            Effect::Shuffle { who }
+        }
         "discard" => {
             let count = cards(r)?;
             let random = r.words("at random");
@@ -294,6 +309,14 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         "win" | "wins" => {
             r.need("the game")?;
             Effect::WinGame { who }
+        }
+        "shuffle" | "shuffles" => {
+            r.need(if who == Ref::You {
+                "your library"
+            } else {
+                "their library"
+            })?;
+            Effect::Shuffle { who }
         }
         "sacrifice" | "sacrifices" => sacrifice(r, who)?,
         _ => return None,
@@ -439,7 +462,7 @@ fn damage(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// A target object chosen one at a time.
-fn target_object(r: &mut Reader<'_>) -> Option<Ref> {
+pub(super) fn target_object(r: &mut Reader<'_>) -> Option<Ref> {
     r.attempt(|r| {
         let what = target(r)?;
         let spec = r.targets.first()?;

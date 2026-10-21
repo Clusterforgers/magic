@@ -15,6 +15,7 @@ mod amounts;
 mod costs;
 mod create;
 mod effects;
+mod library;
 mod modal;
 mod render;
 mod selectors;
