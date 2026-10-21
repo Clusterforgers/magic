@@ -643,6 +643,32 @@ mod tests {
         }
     }
 
+    #[rstest]
+    #[case::damage(r#"{"DealsDamage":{"source":[]}}"#)]
+    #[case::life_gained(r#"{"LifeGained":{}}"#)]
+    #[case::life_lost(r#"{"LifeLost":{}}"#)]
+    #[case::drawing(r#"{"Drew":{}}"#)]
+    #[case::discarding(r#"{"Discarded":{}}"#)]
+    #[case::becoming_tapped(r#"{"Tapped":{"what":[]}}"#)]
+    #[case::tapping_for_mana(r#"{"TappedForMana":{"what":[]}}"#)]
+    #[case::blocking(r#"{"Blocks":{"what":[]}}"#)]
+    #[case::becoming_blocked(r#"{"BecomesBlocked":{"what":[]}}"#)]
+    #[case::attacking_together(r#"{"GroupAttacks":{"what":[]}}"#)]
+    #[case::counters_put(r#"{"CountersPut":{}}"#)]
+    fn a_pattern_the_engine_does_not_detect_yet_triggers_on_no_event(#[case] when: &str) {
+        let pre = board(with("Watcher", vec![triggered(when)]));
+        let events = [
+            Event::LifeGained {
+                player: ME,
+                amount: 1,
+            },
+            Event::StepBegan { step: Step::Upkeep },
+            died(&pre, "Bear"),
+        ];
+        let (_, found) = fire(&pre, &events);
+        assert_eq!(found, []);
+    }
+
     #[test]
     fn a_game_without_triggered_abilities_finds_nothing() {
         let pre = state(

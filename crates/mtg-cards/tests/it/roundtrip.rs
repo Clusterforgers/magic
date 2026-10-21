@@ -177,6 +177,15 @@ fn cost_item() -> impl Strategy<Value = CostItem> {
             .prop_map(|(filter, count)| CostItem::Sacrifice { filter, count }),
         (simple_amount(), proptest::option::of(leaf_selector()))
             .prop_map(|(count, filter)| CostItem::Discard { count, filter }),
+        simple_amount().prop_map(CostItem::PayEnergy),
+        (counter(), simple_amount())
+            .prop_map(|(counter, count)| CostItem::RemoveCounters { counter, count }),
+        (leaf_selector(), simple_amount())
+            .prop_map(|(filter, count)| CostItem::TapPermanents { filter, count }),
+        (leaf_selector(), simple_amount())
+            .prop_map(|(filter, count)| CostItem::ExileFromGraveyard { filter, count }),
+        (leaf_selector(), simple_amount())
+            .prop_map(|(filter, count)| CostItem::ReturnToHand { filter, count }),
     ]
 }
 
@@ -399,6 +408,25 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
             reference()
         )
             .prop_map(|(step, whose)| TriggerPattern::StepBegins { step, whose }),
+        (
+            selector(),
+            proptest::option::of(reference()),
+            proptest::option::of(any::<bool>())
+        )
+            .prop_map(|(source, to, combat)| TriggerPattern::DealsDamage { source, to, combat }),
+        reference().prop_map(|who| TriggerPattern::LifeGained { who }),
+        reference().prop_map(|who| TriggerPattern::LifeLost { who }),
+        reference().prop_map(|who| TriggerPattern::Drew { who }),
+        (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Discarded { what, by }),
+        selector().prop_map(|what| TriggerPattern::Tapped { what }),
+        (selector(), reference())
+            .prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by }),
+        selector().prop_map(|what| TriggerPattern::Blocks { what }),
+        selector().prop_map(|what| TriggerPattern::BecomesBlocked { what }),
+        (selector(), 1u32..5)
+            .prop_map(|(what, at_least)| TriggerPattern::GroupAttacks { what, at_least }),
+        (selector(), proptest::option::of(counter()))
+            .prop_map(|(what, counter)| TriggerPattern::CountersPut { what, counter }),
     ];
     leaf.prop_recursive(2, 6, 2, |inner| {
         vec(inner, 2..4).prop_map(TriggerPattern::AnyOf)

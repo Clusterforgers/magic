@@ -8,7 +8,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::mana::ManaCostX;
 use crate::refs::Selector;
-use crate::value::Amount;
+use crate::value::{Amount, CounterKind};
 
 /// One part of a cost.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -44,6 +44,40 @@ pub enum CostItem {
         /// Which cards may be chosen; any card when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         filter: Option<Selector>,
+    },
+    /// Pay energy (`{E}`, CR 107.14): remove that many energy counters from the payer.
+    PayEnergy(Amount),
+    /// Remove counters of a kind from the source ("Remove a charge counter from this land").
+    RemoveCounters {
+        /// The kind of counter.
+        counter: CounterKind,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// Tap untapped permanents the payer controls that match ("Tap an untapped creature you control").
+    TapPermanents {
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// Exile cards from the payer's graveyard that match.
+    ExileFromGraveyard {
+        /// Which cards may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// Return permanents the payer controls that match to their owner's hand.
+    ReturnToHand {
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
     },
 }
 

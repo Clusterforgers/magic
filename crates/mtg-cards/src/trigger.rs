@@ -37,6 +37,16 @@ pub enum Step {
     Cleanup,
 }
 
+// serde's `default` and `skip_serializing_if` take a function and a reference.
+const fn one_attacker() -> u32 {
+    1
+}
+
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_one_attacker(count: &u32) -> bool {
+    *count == 1
+}
+
 /// The game event a triggered ability waits for (CR 603.2). Each variant is backed by one or more
 /// engine events (`docs/cards-dsl.md`, Triggers).
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -89,6 +99,99 @@ pub enum TriggerPattern {
             skip_serializing_if = "Ref::is_each_player"
         )]
         by: Ref,
+    },
+    /// A source deals damage to a player or a permanent.
+    DealsDamage {
+        /// The source of the damage.
+        source: Selector,
+        /// The recipient; any player or permanent when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        to: Option<Ref>,
+        /// Only combat damage (`true`) or only other damage (`false`); both when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        combat: Option<bool>,
+    },
+    /// A player gains life.
+    LifeGained {
+        /// Who gains it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
+    /// A player loses life.
+    LifeLost {
+        /// Who loses it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
+    /// A player draws a card.
+    Drew {
+        /// Who draws.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
+    /// A player discards a card.
+    Discarded {
+        /// The card; any card when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// Who discards it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        by: Ref,
+    },
+    /// A permanent matching the selector becomes tapped.
+    Tapped {
+        /// The permanent.
+        what: Selector,
+    },
+    /// A permanent matching the selector is tapped for mana.
+    TappedForMana {
+        /// The permanent.
+        what: Selector,
+        /// Who taps it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        by: Ref,
+    },
+    /// A creature matching the selector blocks.
+    Blocks {
+        /// The blocker.
+        what: Selector,
+    },
+    /// A creature matching the selector becomes blocked.
+    BecomesBlocked {
+        /// The attacker.
+        what: Selector,
+    },
+    /// At least this many creatures matching the selector are declared as attackers together; it triggers once.
+    GroupAttacks {
+        /// The attackers.
+        what: Selector,
+        /// The fewest that make it trigger.
+        #[serde(default = "one_attacker", skip_serializing_if = "is_one_attacker")]
+        at_least: u32,
+    },
+    /// Counters are put on a permanent or a player.
+    CountersPut {
+        /// What receives them; any permanent when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// Only counters of this kind; any kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
     },
     /// A step begins ("at the beginning of ...").
     StepBegins {

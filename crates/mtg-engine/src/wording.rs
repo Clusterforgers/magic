@@ -328,6 +328,74 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (when, false)
         }
+        TriggerPattern::DealsDamage {
+            source, combat, ..
+        } => {
+            let kind = match combat {
+                Some(true) => "combat damage",
+                Some(false) => "noncombat damage",
+                None => "damage",
+            };
+            (
+                format!("{} deals {kind}", subject(source)),
+                source.0 == [Pred::This],
+            )
+        }
+        TriggerPattern::LifeGained { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} gain{s} life"), false)
+        }
+        TriggerPattern::LifeLost { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} lose{s} life"), false)
+        }
+        TriggerPattern::Drew { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} draw{s} a card"), false)
+        }
+        TriggerPattern::Discarded { what, by } => {
+            let (name, s) = who(by);
+            let card = if what.is_empty() {
+                "a card".to_owned()
+            } else {
+                subject(what)
+            };
+            (format!("{name} discard{s} {card}"), false)
+        }
+        TriggerPattern::Tapped { what } => (
+            format!("{} becomes tapped", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::TappedForMana { what, by } => {
+            let (name, s) = who(by);
+            (format!("{name} tap{s} {} for mana", subject(what)), false)
+        }
+        TriggerPattern::Blocks { what } => (
+            format!("{} blocks", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::BecomesBlocked { what } => (
+            format!("{} becomes blocked", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::GroupAttacks { what, at_least } => {
+            let (head, tail) = phrase(what);
+            (
+                format!(
+                    "{} attack",
+                    join(&format!("{at_least} or more {}", plural(&head)), &tail)
+                ),
+                false,
+            )
+        }
+        TriggerPattern::CountersPut { what, .. } => {
+            let on = if what.is_empty() {
+                "a permanent".to_owned()
+            } else {
+                subject(what)
+            };
+            (format!("counters are put on {on}"), false)
+        }
         TriggerPattern::AnyOf(patterns) => {
             let clauses: Vec<(String, bool)> = patterns.iter().map(clause).collect();
             (
@@ -837,6 +905,48 @@ mod tests {
     #[case::a_state_with_no_phrase(
         r#"{"State":{"condition":"YourTurn"}}"#,
         "When its state is true"
+    )]
+    #[case::combat_damage(
+        r#"{"DealsDamage":{"source":["This"],"combat":true}}"#,
+        "When it deals combat damage"
+    )]
+    #[case::damage_by_a_creature(
+        r#"{"DealsDamage":{"source":[{"Type":"Creature"}]}}"#,
+        "Whenever a creature deals damage"
+    )]
+    #[case::noncombat_damage(
+        r#"{"DealsDamage":{"source":[{"Type":"Creature"}],"combat":false}}"#,
+        "Whenever a creature deals noncombat damage"
+    )]
+    #[case::you_gain_life(r#"{"LifeGained":{"who":"You"}}"#, "Whenever you gain life")]
+    #[case::a_player_gains_life(r#"{"LifeGained":{}}"#, "Whenever a player gains life")]
+    #[case::an_opponent_loses_life(
+        r#"{"LifeLost":{"who":"Opponents"}}"#,
+        "Whenever an opponent loses life"
+    )]
+    #[case::you_draw(r#"{"Drew":{"who":"You"}}"#, "Whenever you draw a card")]
+    #[case::you_discard(r#"{"Discarded":{"by":"You"}}"#, "Whenever you discard a card")]
+    #[case::you_discard_a_land(
+        r#"{"Discarded":{"what":[{"Type":"Land"}],"by":"You"}}"#,
+        "Whenever you discard a land"
+    )]
+    #[case::becoming_tapped(r#"{"Tapped":{"what":["This"]}}"#, "When it becomes tapped")]
+    #[case::tapping_a_land_for_mana(
+        r#"{"TappedForMana":{"what":[{"Type":"Land"}],"by":"You"}}"#,
+        "Whenever you tap a land for mana"
+    )]
+    #[case::blocking(r#"{"Blocks":{"what":["This"]}}"#, "When it blocks")]
+    #[case::becoming_blocked(
+        r#"{"BecomesBlocked":{"what":["This"]}}"#,
+        "When it becomes blocked"
+    )]
+    #[case::attacking_together(
+        r#"{"GroupAttacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"at_least":2}}"#,
+        "Whenever 2 or more creatures you control attack"
+    )]
+    #[case::counters_put(
+        r#"{"CountersPut":{"what":[{"Type":"Creature"}]}}"#,
+        "Whenever counters are put on a creature"
     )]
     fn a_trigger_pattern_reads_as_a_card_says_it(#[case] json: &str, #[case] expected: &str) {
         assert_eq!(words(json), expected);

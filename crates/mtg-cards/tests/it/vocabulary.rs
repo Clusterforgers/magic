@@ -94,6 +94,78 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     r#"{"Spell":{"effects":[{"If":{"condition":{"CitysBlessing":"You"},"then":[{"Draw":{}}]}}]}}"#,
     &["Ability.Spell", "Condition.CitysBlessing", "Effect.Draw", "Effect.If"]
 )]
+#[case::paying_energy(
+    r#"{"Activated":{"cost":["Tap",{"PayEnergy":2}],"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Activated", "Cost.PayEnergy", "Cost.Tap", "Effect.Draw"]
+)]
+#[case::removing_a_counter(
+    r#"{"Activated":{"cost":[{"RemoveCounters":{"counter":"charge"}}],"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Activated", "Cost.RemoveCounters", "Effect.Draw"]
+)]
+#[case::tapping_creatures(
+    r#"{"Activated":{"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"},{"ControlledBy":"You"},"Untapped"],"count":2}}],"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Activated", "Cost.TapPermanents", "Effect.Draw"]
+)]
+#[case::exiling_from_the_graveyard(
+    r#"{"Activated":{"cost":[{"ExileFromGraveyard":{"filter":[{"Type":"Creature"}]}}],"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Activated", "Cost.ExileFromGraveyard", "Effect.Draw"]
+)]
+#[case::returning_a_permanent(
+    r#"{"Activated":{"cost":[{"ReturnToHand":{"filter":[{"Type":"Land"},{"ControlledBy":"You"}]}}],"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Activated", "Cost.ReturnToHand", "Effect.Draw"]
+)]
+#[case::paying_energy_in_a_payment(
+    r#"{"Spell":{"effects":[{"Pay":{"cost":[{"PayEnergy":1}],"paid":[{"Draw":{}}]}}]}}"#,
+    &["Ability.Spell", "Cost.PayEnergy", "Effect.Draw", "Effect.Pay"]
+)]
+#[case::dealing_damage(
+    r#"{"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.DealsDamage"]
+)]
+#[case::gaining_life(
+    r#"{"Triggered":{"when":{"LifeGained":{"who":"You"}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.LifeGained"]
+)]
+#[case::losing_life(
+    r#"{"Triggered":{"when":{"LifeLost":{"who":"Opponents"}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.LifeLost"]
+)]
+#[case::drawing(
+    r#"{"Triggered":{"when":{"Drew":{"who":"You"}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Drew"]
+)]
+#[case::discarding(
+    r#"{"Triggered":{"when":{"Discarded":{"what":[{"Type":"Land"}],"by":"You"}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Discarded"]
+)]
+#[case::becoming_tapped(
+    r#"{"Triggered":{"when":{"Tapped":{"what":["This"]}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Tapped"]
+)]
+#[case::tapping_for_mana(
+    r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}],"by":"You"}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.TappedForMana"]
+)]
+#[case::blocking(
+    r#"{"Triggered":{"when":{"Blocks":{"what":["This"]}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Blocks"]
+)]
+#[case::becoming_blocked(
+    r#"{"Triggered":{"when":{"BecomesBlocked":{"what":["This"]}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.BecomesBlocked"]
+)]
+#[case::attacking_together(
+    r#"{"Triggered":{"when":{"GroupAttacks":{"what":[{"ControlledBy":"You"}],"at_least":2}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.GroupAttacks"]
+)]
+#[case::counters_put(
+    r#"{"Triggered":{"when":{"CountersPut":{"what":[{"Type":"Creature"}],"counter":"+1/+1"}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.CountersPut"]
+)]
+#[case::one_of_several_events(
+    r#"{"Triggered":{"when":{"AnyOf":[{"Drew":{"who":"You"}},{"LifeGained":{"who":"You"}}]},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.AnyOf", "Trigger.Drew", "Trigger.LifeGained"]
+)]
 fn a_node_validates_round_trips_and_names_its_primitive(
     #[case] json: &str,
     #[case] expected: &[&str],
@@ -144,6 +216,26 @@ fn a_node_validates_round_trips_and_names_its_primitive(
 #[case::an_object_does_not_surveil(
     r#"{"Spell":{"effects":[{"Surveil":{"who":"This"}}]}}"#,
     "expected a player"
+)]
+#[case::removing_counters_from_a_source_that_is_not_on_the_battlefield(
+    r#"{"Activated":{"cost":[{"RemoveCounters":{"counter":"charge"}}],"from":"Graveyard","effects":[{"Draw":{}}]}}"#,
+    "`RemoveCounters` is paid from the battlefield"
+)]
+#[case::an_amount_in_a_cost_is_checked(
+    r#"{"Activated":{"cost":[{"PayEnergy":{"Life":"This"}}],"effects":[{"Draw":{}}]}}"#,
+    "expected a player"
+)]
+#[case::a_player_who_gains_life_is_a_player(
+    r#"{"Triggered":{"when":{"LifeGained":{"who":"This"}},"effects":[{"Draw":{}}]}}"#,
+    "expected a player"
+)]
+#[case::no_attackers_at_all(
+    r#"{"Triggered":{"when":{"GroupAttacks":{"what":[],"at_least":0}},"effects":[{"Draw":{}}]}}"#,
+    "at least one creature attacks"
+)]
+#[case::nothing_triggering_in_a_state(
+    r#"{"Triggered":{"when":{"AnyOf":[{"State":{"condition":"YourTurn"}},{"Drew":{}}]},"effects":[{"Draw":{}}]}}"#,
+    "a state is the whole pattern of a triggered ability"
 )]
 #[case::a_target_that_is_not_there(
     r#"{"Spell":{"effects":[{"Goad":{"what":{"Target":0}}}]}}"#,

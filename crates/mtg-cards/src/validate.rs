@@ -417,8 +417,14 @@ impl<'a> Walker<'a> {
             self.at(format!("[{i}]"), |w| {
                 w.uses("Cost", &tag_of(item));
                 match item {
-                    CostItem::PayLife(amount) => w.amount(amount),
-                    CostItem::Sacrifice { filter, count } => {
+                    CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => w.amount(amount),
+                    CostItem::RemoveCounters { count, .. } => {
+                        w.at("count", |w| w.amount(count));
+                    }
+                    CostItem::Sacrifice { filter, count }
+                    | CostItem::TapPermanents { filter, count }
+                    | CostItem::ExileFromGraveyard { filter, count }
+                    | CostItem::ReturnToHand { filter, count } => {
                         w.at("filter", |w| w.selector(filter));
                         w.at("count", |w| w.amount(count));
                     }
@@ -464,9 +470,10 @@ impl<'a> Walker<'a> {
         }
         for item in &cost.0 {
             let (needs, place) = match item {
-                CostItem::Tap | CostItem::Untap | CostItem::SacrificeSelf => {
-                    (ZoneKind::Battlefield, "the battlefield")
-                }
+                CostItem::Tap
+                | CostItem::Untap
+                | CostItem::SacrificeSelf
+                | CostItem::RemoveCounters { .. } => (ZoneKind::Battlefield, "the battlefield"),
                 CostItem::DiscardSelf => (ZoneKind::Hand, "a hand"),
                 _ => continue,
             };
@@ -639,6 +646,33 @@ impl<'a> Walker<'a> {
             }
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
+            }
+            TriggerPattern::DealsDamage { source, to, .. } => {
+                self.at("source", |w| w.selector(source));
+                if let Some(to) = to {
+                    self.at("to", |w| w.reference(to, Kind::Either));
+                }
+            }
+            TriggerPattern::LifeGained { who }
+            | TriggerPattern::LifeLost { who }
+            | TriggerPattern::Drew { who } => {
+                self.at("who", |w| w.reference(who, Kind::Player));
+            }
+            TriggerPattern::Discarded { what, by } | TriggerPattern::TappedForMana { what, by } => {
+                self.at("what", |w| w.selector(what));
+                self.at("by", |w| w.reference(by, Kind::Player));
+            }
+            TriggerPattern::Tapped { what }
+            | TriggerPattern::Blocks { what }
+            | TriggerPattern::BecomesBlocked { what }
+            | TriggerPattern::CountersPut { what, .. } => {
+                self.at("what", |w| w.selector(what));
+            }
+            TriggerPattern::GroupAttacks { what, at_least } => {
+                self.at("what", |w| w.selector(what));
+                if *at_least == 0 {
+                    self.at("at_least", |w| w.problem("at least one creature attacks"));
+                }
             }
             TriggerPattern::State { .. } => {
                 self.problem("a state is the whole pattern of a triggered ability");
