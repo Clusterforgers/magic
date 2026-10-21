@@ -55,6 +55,11 @@ pub(super) fn move_object(
     } else {
         None
     };
+    let x = if from == Zone::Stack && to == Zone::Battlefield {
+        object.choices.x
+    } else {
+        None
+    };
     if from == Zone::Stack {
         object.choices = Choices::default();
     }
@@ -77,6 +82,7 @@ pub(super) fn move_object(
             chosen: None,
             paid,
             way,
+            x,
         });
     } else if to != Zone::Stack {
         object.controller = object.owner;
