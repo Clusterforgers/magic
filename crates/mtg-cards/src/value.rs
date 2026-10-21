@@ -53,6 +53,22 @@ impl Cmp {
     }
 }
 
+/// The alternative cost a spell is cast for (CR 118.9): what a permanent and its abilities remember of how it was cast.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum CastWay {
+    /// Flashback (CR 702.34): from a graveyard, exiled when it leaves the stack.
+    Flashback,
+    /// Evoke (CR 702.74): sacrificed as it enters.
+    Evoke,
+    /// Overload (CR 702.96): every "target" reads "each".
+    Overload,
+    /// Madness (CR 702.35): from exile after it was discarded.
+    Madness,
+    /// Without paying its mana cost, by a permission or an effect (CR 118.9).
+    Free,
+}
+
 /// A kind of counter.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -144,6 +160,10 @@ pub enum Amount {
     },
     /// How many card types there are among the objects that match the selector.
     CardTypes(Selector),
+    /// How many players the reference names: `Players(Opponents)` is the number of opponents.
+    Players(Ref),
+    /// The lowest life total among the players the reference names (a player "has 13 or less life": `EachPlayer`).
+    LowestLife(Ref),
     /// How many times the kicker costs of the spell were paid, a multikicker once for each payment (CR 702.33); a
     /// permanent and its abilities read the spell it came from, and zero is no kicker paid.
     Kicks,
@@ -178,6 +198,8 @@ enum Tagged {
     Greatest { of: Selector, stat: StatKind },
     Total { of: Selector, stat: StatKind },
     CardTypes(Selector),
+    Players(Ref),
+    LowestLife(Ref),
     Kicks,
 }
 
@@ -209,6 +231,8 @@ enum TaggedRef<'a> {
         stat: StatKind,
     },
     CardTypes(&'a Selector),
+    Players(&'a Ref),
+    LowestLife(&'a Ref),
     Kicks,
 }
 
@@ -228,6 +252,8 @@ impl From<Tagged> for Amount {
             Tagged::Greatest { of, stat } => Amount::Greatest { of, stat },
             Tagged::Total { of, stat } => Amount::Total { of, stat },
             Tagged::CardTypes(of) => Amount::CardTypes(of),
+            Tagged::Players(who) => Amount::Players(who),
+            Tagged::LowestLife(who) => Amount::LowestLife(who),
             Tagged::Kicks => Amount::Kicks,
         }
     }
@@ -256,6 +282,8 @@ impl Serialize for Amount {
                 TaggedRef::Total { of, stat: *stat }.serialize(serializer)
             }
             Amount::CardTypes(of) => TaggedRef::CardTypes(of).serialize(serializer),
+            Amount::Players(who) => TaggedRef::Players(who).serialize(serializer),
+            Amount::LowestLife(who) => TaggedRef::LowestLife(who).serialize(serializer),
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
         }
     }
@@ -325,6 +353,8 @@ pub enum Condition {
     },
     /// The spell was kicked (any kicker cost was paid); a permanent and its abilities read the spell it came from.
     Kicked,
+    /// The spell was cast for this alternative cost; a permanent and its abilities read the spell it came from.
+    CastWith(CastWay),
     /// It is the controller's turn.
     YourTurn,
     /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was
@@ -363,6 +393,8 @@ mod tests {
         r#"{"Sum":[{"TargetCount":0},-1]}"#
     )]
     #[case::even(Amount::EvenShare(Box::new(Amount::X)), r#"{"EvenShare":"X"}"#)]
+    #[case::opponents(Amount::Players(Ref::Opponents), r#"{"Players":"Opponents"}"#)]
+    #[case::lowest_life(Amount::LowestLife(Ref::EachPlayer), r#"{"LowestLife":"EachPlayer"}"#)]
     #[case::counters(
         Amount::Counters { on: Ref::This, counter: CounterKind::PlusOnePlusOne },
         r#"{"Counters":{"on":"This","counter":"+1/+1"}}"#

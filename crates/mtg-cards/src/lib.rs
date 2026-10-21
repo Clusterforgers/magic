@@ -14,6 +14,7 @@ pub mod coverage;
 pub mod deck;
 pub mod definition;
 pub mod effect;
+pub mod generated;
 pub mod keyword;
 pub mod load;
 pub mod mana;

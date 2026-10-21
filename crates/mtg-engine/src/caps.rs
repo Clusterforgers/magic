@@ -11,7 +11,7 @@
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
 //! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
 //! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
-//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, permissions to cast (from another zone, without paying, as though with flash), attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
@@ -138,6 +138,11 @@ const RUNS: &[&str] = &[
     "Keyword.LivingWeapon",
     "Keyword.Kicker",
     "Keyword.Multikicker",
+    "Keyword.Flashback",
+    "Keyword.Evoke",
+    "Keyword.Overload",
+    "Condition.CastWith",
+    "Rule.MayCast",
     "Condition.Kicked",
     "Amount.Kicks",
     "Ability.Replacement",
@@ -298,8 +303,8 @@ mod tests {
     #[case::putting_counters("Effect.PutCounters", true)]
     #[case::removing_counters("Effect.RemoveCounters", true)]
     #[case::moving_counters("Effect.MoveCounters", true)]
-    #[case::divided_amounts("Amount.Divided", false)]
-    #[case::even_shares("Amount.EvenShare", false)]
+    #[case::divided_amounts_read_outside_damage_and_counters("Amount.Divided.Elsewhere", false)]
+    #[case::even_shares_read_outside_damage_and_counters("Amount.EvenShare.Elsewhere", false)]
     #[case::loyalty_abilities("Ability.Loyalty", true)]
     #[case::loyalty_costs_with_an_x("Cost.Loyalty.X", true)]
     #[case::being_kicked("Condition.Kicked", true)]
@@ -390,6 +395,24 @@ mod tests {
     #[case::if_you_do("Condition.Performed", false)]
     #[case::the_monarch("Condition.Monarch", false)]
     #[case::the_citys_blessing("Condition.CitysBlessing", false)]
+    #[case::unblockable_creatures("Mod.CantBeBlocked", false)]
+    #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", false)]
+    #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", false)]
+    #[case::no_maximum_hand_size("Rule.NoMaxHandSize", false)]
+    #[case::additional_land_plays("Rule.AdditionalLandPlays", false)]
+    #[case::commander_eligibility("Rule.CanBeCommander", false)]
+    #[case::counting_players("Amount.Players", false)]
+    #[case::the_lowest_life_total("Amount.LowestLife", false)]
+    #[case::choosing_a_player_as_it_enters("ReplaceBy.Choose.Player", false)]
+    #[case::choosing_an_opponent_as_it_enters("ReplaceBy.Choose.Opponent", false)]
+    #[case::changeling("Keyword.Changeling", false)]
+    #[case::devoid("Keyword.Devoid", false)]
+    #[case::infect("Keyword.Infect", false)]
+    #[case::myriad("Keyword.Myriad", false)]
+    #[case::crew("Keyword.Crew", false)]
+    #[case::mutate("Keyword.Mutate", false)]
+    #[case::encore("Keyword.Encore", false)]
+    #[case::squad("Keyword.Squad", false)]
     #[case::x_costs(X_COST, true)]
     #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
     #[case::paying_x_in_an_effect("Effect.Pay.X", false)]

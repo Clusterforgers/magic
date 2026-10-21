@@ -4,15 +4,21 @@
 //! rewinds the announcement.
 
 use mtg_cards::refs::TargetSpec;
+use mtg_cards::value::CastWay;
 
 use super::{Ctx, Next, What, Work};
 use crate::attach;
-use crate::choose::{announced_specs, asks, options_for};
+use crate::choose::{Choices, announced_specs, asks, options_for};
 use crate::decision::DecisionKind;
 
 /// The target specifications announced, in the order they are asked: an Aura spell's one, from its enchant ability
 /// (CR 303.4a), otherwise those of the rules or, for a modal ability, of the modes chosen.
-pub(super) fn specs(ctx: &Ctx<'_>, modes: &[usize]) -> Vec<TargetSpec> {
+pub(super) fn specs(ctx: &Ctx<'_>, choices: &Choices) -> Vec<TargetSpec> {
+    // An overloaded spell has no targets: each object that could be one is affected (CR 702.96).
+    if choices.way == Some(CastWay::Overload) {
+        return Vec::new();
+    }
+    let modes = &choices.modes;
     if let What::Spell(spell) = ctx.what
         && let Some(spec) = attach::spell_target(ctx.state, *spell)
     {
@@ -27,7 +33,7 @@ pub(super) fn specs(ctx: &Ctx<'_>, modes: &[usize]) -> Vec<TargetSpec> {
 }
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
-    let specs = specs(ctx, &work.choices.modes);
+    let specs = specs(ctx, work.choices);
     while work.choices.targets.len() < specs.len() {
         let index = work.choices.targets.len();
         let Some(mut options) = options_for(

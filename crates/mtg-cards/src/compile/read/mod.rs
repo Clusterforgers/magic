@@ -29,7 +29,7 @@ mod tests;
 mod tokens;
 mod triggers;
 
-pub use render::{ability as render_ability, variants as render_variants};
+pub use render::{ability as render_ability, mode as render_mode, variants as render_variants};
 pub use tokens::same_text;
 
 use super::{ClauseKind, classify};

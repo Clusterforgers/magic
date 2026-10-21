@@ -267,8 +267,18 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 step: began,
                 active,
             },
-        ) => (step_matches(*step, *began) && scope.players(whose).ok()?.contains(active))
-            .then(|| cause(state, vec![Target::Player(*active)])),
+        ) => {
+            if !step_matches(*step, *began) {
+                None
+            } else if scope.players(whose).ok()?.contains(active) {
+                Some(cause(state, vec![Target::Player(*active)]))
+            } else if whose.is_each_player() && !state.is_alive(*active) {
+                // The steps of a turn without an active player still begin (CR 800.4) but name no player.
+                Some(cause(state, Vec::new()))
+            } else {
+                None
+            }
+        }
         (TriggerPattern::BecomesTarget { what, by }, Happened::Targeted { target, by: caster }) => {
             let Target::Object(targeted) = target else {
                 return None;
@@ -973,6 +983,35 @@ mod tests {
         assert_eq!(found.len(), expected, "{:?}", who(&post, &found));
         if let Some(found) = found.first() {
             assert_eq!(found.cause.subjects, [Target::Player(ME)]);
+        }
+    }
+
+    #[rstest]
+    #[case::every_players_step_still_begins(r#"{"StepBegins":{"step":"End"}}"#, 1)]
+    #[case::my_step_is_not_theirs(r#"{"StepBegins":{"step":"End","whose":"You"}}"#, 0)]
+    #[case::an_opponents_step_has_no_opponent(
+        r#"{"StepBegins":{"step":"End","whose":"Opponents"}}"#,
+        0
+    )]
+    fn a_step_of_a_turn_without_an_active_player_triggers_only_what_names_no_player(
+        #[case] when: &str,
+        #[case] expected: usize,
+    ) {
+        let mut pre = board(with("Clock", vec![triggered(when)]));
+        let turn = Event::TurnBegan {
+            number: 2,
+            active: FOE,
+        };
+        let lost = Event::PlayerLost {
+            player: FOE,
+            reason: crate::player::LossReason::Conceded,
+        };
+        apply_event(&mut pre, &turn).unwrap();
+        apply_event(&mut pre, &lost).unwrap();
+        let (post, found) = fire(&pre, &[Event::StepBegan { step: Step::End }]);
+        assert_eq!(found.len(), expected, "{:?}", who(&post, &found));
+        if let Some(found) = found.first() {
+            assert_eq!(found.cause.subjects, [], "no player's step");
         }
     }
 

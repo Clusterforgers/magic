@@ -60,6 +60,15 @@ pub fn disagreement(
             Event::CreatureDied { object, .. } => {
                 died.insert(*object);
             }
+            // A death that a replacement effect turned into a move (Rest in Peace) takes it off the battlefield too.
+            Event::ZoneChanged {
+                object,
+                from: mtg_engine::zones::Zone::Battlefield,
+                cause: mtg_engine::events::ZoneCause::StateBased,
+                ..
+            } if forecast.creatures.iter().any(|c| c.object == *object) => {
+                died.insert(*object);
+            }
             _ => {}
         }
     }
@@ -91,7 +100,12 @@ pub fn disagreement(
             ));
         }
     }
-    let known: BTreeSet<_> = forecast.creatures.iter().map(|c| c.object).collect();
+    let mut known: BTreeSet<_> = forecast.creatures.iter().map(|c| c.object).collect();
+    // A planeswalker is no creature: what it takes is in the packets compared above.
+    known.extend(forecast.attackers.iter().filter_map(|a| match a.target {
+        mtg_engine::combat::AttackTarget::Planeswalker(object) => Some(object),
+        mtg_engine::combat::AttackTarget::Player(_) => None,
+    }));
     if let Some(stranger) = to_objects.keys().find(|o| !known.contains(o)) {
         return Some(format!(
             "{stranger:?} took damage but is not in the forecast"

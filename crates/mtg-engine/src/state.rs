@@ -313,6 +313,21 @@ impl GameState {
             .collect()
     }
 
+    /// The active player, or `None` once they have left the game: the turn goes on without one (CR 800.4).
+    pub fn active_player(&self) -> Option<PlayerId> {
+        Some(self.turn.active).filter(|player| self.is_alive(*player))
+    }
+
+    /// Who comes first in the turn's order of play: the active player, or the next player in turn order after
+    /// the one who left (CR 800.4); the seat itself if nobody is left.
+    pub fn active_or_next(&self) -> PlayerId {
+        let active = self.turn.active;
+        self.turn_order_from(active)
+            .first()
+            .copied()
+            .unwrap_or(active)
+    }
+
     /// The next living player after `player` in turn order (possibly `player` itself).
     pub fn next_alive_after(&self, player: PlayerId) -> Option<PlayerId> {
         let n = self.players.len();
@@ -361,5 +376,47 @@ impl Hash for GameState {
             self.loyalty_used.hash(state);
         }
         self.result.hash(state);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the active player is none once they have left the game, and the first player in turn order of that turn is the next seat in the game, wrapping round the table and skipping the seats that left before.
+    use mtg_core::ids::PlayerId;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::events::Event;
+    use crate::fixtures::setup;
+    use crate::fold::apply_event;
+    use crate::player::LossReason;
+
+    #[rstest]
+    #[case::in_the_game(3, 0, &[], Some(0), 0)]
+    #[case::middle_seat_left(3, 1, &[1], None, 2)]
+    #[case::last_seat_left_wraps(3, 2, &[2], None, 0)]
+    #[case::skips_a_seat_that_left_before(4, 1, &[1, 2], None, 3)]
+    #[case::wraps_over_a_seat_that_left_before(4, 3, &[3, 0], None, 1)]
+    #[case::others_left_not_the_active_one(4, 1, &[2, 3], Some(1), 1)]
+    fn the_active_player_and_who_comes_first_when_they_have_left(
+        #[case] seats: usize,
+        #[case] active: usize,
+        #[case] left: &[usize],
+        #[case] player: Option<usize>,
+        #[case] first: usize,
+    ) {
+        let mut game =
+            GameState::from_setup(&setup(vec![Vec::new(); seats], vec![Vec::new(); seats]))
+                .unwrap();
+        game.turn.active = PlayerId::from_index(active);
+        for seat in left {
+            let lost = Event::PlayerLost {
+                player: PlayerId::from_index(*seat),
+                reason: LossReason::Conceded,
+            };
+            apply_event(&mut game, &lost).unwrap();
+        }
+        assert_eq!(game.active_player(), player.map(PlayerId::from_index));
+        assert_eq!(game.active_or_next(), PlayerId::from_index(first));
     }
 }

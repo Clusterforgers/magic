@@ -1,19 +1,20 @@
 //! The values of the DSL read from the game: references, selectors, amounts and conditions.
 //!
-//! Nothing here changes state. What the engine cannot evaluate yet (loyalty, X, divided amounts)
-//! is a `ResolveError::Unsupported` with the name of what is missing; `Caps` keeps the cards that need
+//! Nothing here changes state. What the engine cannot evaluate yet (devotion, totals) is a
+//! `ResolveError::Unsupported` with the name of what is missing; `Caps` keeps the cards that need
 //! them from being offered, so the error is not met in a game.
 
 use std::borrow::Cow;
 use std::collections::BTreeMap;
 
 use mtg_cards::keyword::Keyword;
-use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, ZoneKind};
-use mtg_cards::value::{Amount, Condition, CounterKind, StatKind};
+use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::value::{Amount, CastWay, Condition, CounterKind, StatKind};
 use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
 use thiserror::Error;
 
+use super::share::{OUTSIDE_A_DIVISION, Share};
 use crate::abilities::Cause;
 use crate::characteristics::{Characteristics, characteristics, seen_as};
 use crate::choose::legal_from;
@@ -51,6 +52,7 @@ static NO_CHOICES: Choices = Choices {
     targets: Vec::new(),
     division: Vec::new(),
     optional_costs: Vec::new(),
+    way: None,
 };
 static NO_BINDINGS: Bindings = BTreeMap::new();
 
@@ -301,6 +303,22 @@ impl<'a> Scope<'a> {
             .collect()
     }
 
+    /// What an overloaded spell reads instead of the target `index`: each object or player that specification could
+    /// target ("each" for "target", CR 702.96a), whatever protects it.
+    fn each_target(&self, index: usize) -> Result<Vec<Target>, ResolveError> {
+        let Some(spec) = self.specs.get(self.target_base + index) else {
+            return Ok(Vec::new());
+        };
+        match &spec.what {
+            Targetable::Object(selector) => self.refs(&Ref::Each(selector.clone())),
+            Targetable::Player => self.refs(&Ref::EachPlayer),
+            Targetable::Opponent => self.refs(&Ref::Opponents),
+            Targetable::AnyTarget | Targetable::Either(_) => Err(ResolveError::Unsupported(
+                "overload of a target that is not an object or a player",
+            )),
+        }
+    }
+
     /// Whether an earlier step of this resolution moved the target away.
     fn departed(&self, target: Target) -> bool {
         target
@@ -350,6 +368,9 @@ impl<'a> Scope<'a> {
                 .map(Target::Player)
                 .collect(),
             Ref::This => vec![Target::Object(self.source)],
+            Ref::Target(index) if self.choices.way == Some(CastWay::Overload) => {
+                self.each_target(usize::from(*index))?
+            }
             Ref::Target(index) => self.chosen(usize::from(*index)),
             Ref::Triggering => self
                 .cause
@@ -585,6 +606,15 @@ impl<'a> Scope<'a> {
 
     /// The number an amount stands for.
     pub fn amount(&self, amount: &Amount) -> Result<i64, ResolveError> {
+        self.amount_of(amount, None)
+    }
+
+    /// The number an amount stands for as one recipient of the running effect reads it (`share`, see `share.rs`).
+    pub(super) fn amount_of(
+        &self,
+        amount: &Amount,
+        share: Option<Share>,
+    ) -> Result<i64, ResolveError> {
         Ok(match amount {
             Amount::Fixed(n) => i64::from(*n),
             Amount::X => self
@@ -624,12 +654,23 @@ impl<'a> Scope<'a> {
             Amount::Sum(parts) => {
                 let mut sum = 0i64;
                 for part in parts {
-                    sum += self.amount(part)?;
+                    sum += self.amount_of(part, share)?;
                 }
                 sum
             }
-            Amount::Divided | Amount::EvenShare(_) => {
-                return Err(ResolveError::Unsupported("divided amounts"));
+            Amount::Divided => {
+                let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;
+                self.divided_share(share.recipient)
+            }
+            // "Divided evenly, rounded down": the whole is split among the recipients still there, whatever
+            // was announced.
+            Amount::EvenShare(whole) => {
+                let share = share.ok_or(ResolveError::Unsupported(OUTSIDE_A_DIVISION))?;
+                let whole = self.amount_of(whole, Some(share))?.max(0);
+                match i64::try_from(share.among) {
+                    Ok(among) if among > 0 => whole / among,
+                    _ => 0,
+                }
             }
             Amount::TargetCount(index) => i64::try_from(self.chosen(usize::from(*index)).len())
                 .map_err(|_| ResolveError::Invalid("too many targets".into()))?,
@@ -638,6 +679,10 @@ impl<'a> Scope<'a> {
             Amount::Total { .. } => return Err(ResolveError::Unsupported("totals")),
             Amount::CardTypes(_) => {
                 return Err(ResolveError::Unsupported("card types among cards"));
+            }
+            Amount::Players(_) => return Err(ResolveError::Unsupported("a count of players")),
+            Amount::LowestLife(_) => {
+                return Err(ResolveError::Unsupported("the lowest life total"));
             }
             Amount::Kicks => i64::try_from(self.paid_costs().len())
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
@@ -655,6 +700,17 @@ impl<'a> Scope<'a> {
             .object(self.source.id)
             .filter(|object| object.counter() == self.source.counter)
             .map_or(&[], GameObject::paid_costs)
+    }
+
+    /// The alternative cost the spell was cast for: what the spell or ability announced, else what the spell its source is
+    /// or came from was cast for while that is still the object named.
+    fn cast_way(&self) -> Option<CastWay> {
+        self.choices.way.or_else(|| {
+            self.state
+                .object(self.source.id)
+                .filter(|object| object.counter() == self.source.counter)
+                .and_then(GameObject::cast_way)
+        })
     }
 
     /// Whether a condition is true now.
@@ -695,6 +751,7 @@ impl<'a> Scope<'a> {
                 holds
             }
             Condition::Kicked => !self.paid_costs().is_empty(),
+            Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Monarch(_) => return Err(ResolveError::Unsupported("the monarch")),
             Condition::CitysBlessing(_) => {
@@ -948,8 +1005,14 @@ mod tests {
 
     #[rstest]
     #[case::x(r#""X""#, "X")]
-    #[case::divided(r#""Divided""#, "divided amounts")]
-    #[case::even_share(r#"{"EvenShare":4}"#, "divided amounts")]
+    #[case::divided(
+        r#""Divided""#,
+        "a divided amount outside the damage or counters it divides"
+    )]
+    #[case::even_share(
+        r#"{"EvenShare":4}"#,
+        "a divided amount outside the damage or counters it divides"
+    )]
     fn what_the_engine_cannot_evaluate_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,
@@ -1366,6 +1429,8 @@ mod tests {
     #[case::the_greatest_value(r#"{"Greatest":{"of":[],"stat":"Power"}}"#, "greatest values")]
     #[case::a_total(r#"{"Total":{"of":[],"stat":"Power"}}"#, "totals")]
     #[case::card_types(r#"{"CardTypes":[]}"#, "card types among cards")]
+    #[case::a_count_of_players(r#"{"Players":"Opponents"}"#, "a count of players")]
+    #[case::the_lowest_life_total(r#"{"LowestLife":"EachPlayer"}"#, "the lowest life total")]
     fn an_amount_the_evaluator_cannot_read_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,

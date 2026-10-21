@@ -48,6 +48,22 @@ pub enum Rule {
     CantSearch(Vec<PlayerId>),
     /// The players play with the top card of their library revealed.
     RevealTop(Vec<PlayerId>),
+    /// The players may cast the cards the selector picks from a zone, without paying their mana costs or as though they
+    /// had flash (CR 601.3).
+    MayCast {
+        /// The players who may cast.
+        who: Vec<PlayerId>,
+        /// The cards they may cast, judged when they are cast; every card when empty.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// The zone they are cast from; wherever they are when absent.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        from: Option<ZoneKind>,
+        /// They are cast without paying their mana costs.
+        free: bool,
+        /// They are cast as though they had flash.
+        flash: bool,
+    },
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// the pattern describes causes it.
     TriggerAgain(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<TriggerPattern>),
@@ -170,6 +186,40 @@ pub(crate) struct RulesInForce {
     reveal_top: BTreeSet<PlayerId>,
     again: Vec<Again>,
     unpreventable: Vec<Unpreventable>,
+    casts: Vec<Cast>,
+}
+
+/// A permission to cast cards, with whose it is.
+#[derive(Debug, Clone)]
+pub(crate) struct Cast {
+    /// The controller of the effect or permanent that gives it, for the selector's "you".
+    pub(crate) controller: PlayerId,
+    /// The object that gives it.
+    pub(crate) source: ObjectRef,
+    /// The players who may cast.
+    pub(crate) who: Vec<PlayerId>,
+    /// The cards they may cast; every card when empty.
+    pub(crate) what: Selector,
+    /// The zone they are cast from; wherever they are when absent.
+    pub(crate) from: Option<ZoneKind>,
+    /// Cast without paying their mana costs.
+    pub(crate) free: bool,
+    /// Cast as though they had flash.
+    pub(crate) flash: bool,
+}
+
+impl Cast {
+    /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
+    pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
+        self.who.contains(&player)
+            && self
+                .from
+                .is_none_or(|zone| crate::resolve::zone_kind(card.zone()) == zone)
+            && (self.what.is_empty()
+                || Scope::announcing(state, self.controller, self.source)
+                    .selects(&self.what, card.reference())
+                    .unwrap_or(false))
+    }
 }
 
 /// Damage that can't be prevented: whose rule it is, and which damage it covers.
@@ -212,6 +262,25 @@ impl RulesInForce {
                         source,
                         from: from.clone(),
                         combat: *combat,
+                    });
+                }
+            }
+            Rule::MayCast {
+                who,
+                what,
+                from,
+                free,
+                flash,
+            } => {
+                if let Some(source) = source {
+                    self.casts.push(Cast {
+                        controller,
+                        source,
+                        who: who.clone(),
+                        what: what.clone(),
+                        from: *from,
+                        free: *free,
+                        flash: *flash,
                     });
                 }
             }
@@ -259,7 +328,22 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CantDraw(who) => Rule::CantDraw(scope.players(who)?),
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
+        GameRule::MayCast(permission) => Rule::MayCast {
+            who: scope.players(&permission.who)?,
+            what: permission.what.clone(),
+            from: permission.from,
+            free: permission.free,
+            flash: permission.flash,
+        },
         GameRule::TriggerAgain { cause } => Rule::TriggerAgain(Box::new(cause.clone())),
+        GameRule::LookAtTopAnyTime(_) => {
+            return Err(ResolveError::Unsupported("Rule.LookAtTopAnyTime"));
+        }
+        GameRule::NoMaxHandSize(_) => return Err(ResolveError::Unsupported("Rule.NoMaxHandSize")),
+        GameRule::AdditionalLandPlays { .. } => {
+            return Err(ResolveError::Unsupported("Rule.AdditionalLandPlays"));
+        }
+        GameRule::CanBeCommander => return Err(ResolveError::Unsupported("Rule.CanBeCommander")),
     })
 }
 
@@ -272,7 +356,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::CantGainLife(players)
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
-        | Rule::RevealTop(players) => players.is_empty(),
+        | Rule::RevealTop(players)
+        | Rule::MayCast { who: players, .. } => players.is_empty(),
         Rule::TriggerAgain(_) | Rule::DamageCantBePrevented { .. } | Rule::Regenerate(_) => false,
         Rule::PreventDamage(shield) => shield.to.as_ref().is_some_and(Vec::is_empty),
     }
@@ -367,6 +452,7 @@ static NONE: RulesInForce = RulesInForce {
     reveal_top: BTreeSet::new(),
     again: Vec::new(),
     unpreventable: Vec::new(),
+    casts: Vec::new(),
 };
 
 /// The rules of a state, built when first asked for and dropped when the state changes.
@@ -510,6 +596,11 @@ pub(crate) fn damage_cant_be_prevented(state: &GameState, dealer: ObjectId, comb
                         .unwrap_or(false)
                 }))
     })
+}
+
+/// The permissions to cast cards in force: the one place a cast reads them (`ways`).
+pub(crate) fn cast_permissions(state: &GameState) -> &[Cast] {
+    &state.rules().casts
 }
 
 /// The triggers that trigger an additional time: the one place trigger detection reads this rule.
@@ -861,6 +952,28 @@ mod tests {
         assert_eq!(
             names_nothing(&lower_rule(&scope, &wanted).unwrap()),
             nothing
+        );
+    }
+
+    #[rstest]
+    #[case::looking_at_the_top(r#"{"LookAtTopAnyTime":"You"}"#, "Rule.LookAtTopAnyTime")]
+    #[case::no_maximum_hand_size(r#"{"NoMaxHandSize":"You"}"#, "Rule.NoMaxHandSize")]
+    #[case::an_additional_land(r#"{"AdditionalLandPlays":{}}"#, "Rule.AdditionalLandPlays")]
+    #[case::two_additional_lands(
+        r#"{"AdditionalLandPlays":{"count":2}}"#,
+        "Rule.AdditionalLandPlays"
+    )]
+    #[case::a_commander(r#""CanBeCommander""#, "Rule.CanBeCommander")]
+    fn a_rule_the_engine_does_not_play_refuses_by_its_name(
+        #[case] rule: &str,
+        #[case] name: &'static str,
+    ) {
+        let game = game(Vec::new());
+        let scope = Scope::announcing(&game, ME, named(&game, "Holder"));
+        let wanted: GameRule = serde_json::from_str(rule).unwrap();
+        assert_eq!(
+            lower_rule(&scope, &wanted).err(),
+            Some(ResolveError::Unsupported(name))
         );
     }
 

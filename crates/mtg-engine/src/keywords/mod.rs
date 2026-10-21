@@ -6,15 +6,19 @@
 
 mod battle_cry;
 mod cascade;
+mod changeling;
 mod companion;
 mod convoke;
+mod crew;
 mod cycling;
 mod deathtouch;
 mod defender;
 mod delve;
+mod devoid;
 mod disguise;
 mod double_strike;
 mod enchant;
+mod encore;
 mod equip;
 mod evoke;
 mod first_strike;
@@ -25,6 +29,7 @@ mod fuse;
 mod haste;
 mod hexproof;
 mod indestructible;
+mod infect;
 mod kicker;
 mod lifelink;
 mod living_weapon;
@@ -32,6 +37,8 @@ mod madness;
 mod menace;
 mod morph;
 mod multikicker;
+mod mutate;
+mod myriad;
 mod overload;
 mod partner;
 mod partner_with;
@@ -42,6 +49,7 @@ mod prowess;
 mod reach;
 mod reconfigure;
 mod shroud;
+mod squad;
 mod storm;
 mod suspend;
 mod trample;
@@ -285,6 +293,14 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Evoke(_) => &evoke::Evoke,
         Keyword::Overload(_) => &overload::Overload,
         Keyword::PartnerWith(_) => &partner_with::PartnerWith,
+        Keyword::Changeling => &changeling::Changeling,
+        Keyword::Devoid => &devoid::Devoid,
+        Keyword::Infect => &infect::Infect,
+        Keyword::Myriad => &myriad::Myriad,
+        Keyword::Crew(_) => &crew::Crew,
+        Keyword::Mutate(_) => &mutate::Mutate,
+        Keyword::Encore(_) => &encore::Encore,
+        Keyword::Squad(_) => &squad::Squad,
     }
 }
 
@@ -500,11 +516,19 @@ mod tests {
             Keyword::Evoke(cost()),
             Keyword::Overload(cost()),
             Keyword::PartnerWith("Pir, Imaginative Rascal".into()),
+            Keyword::Changeling,
+            Keyword::Devoid,
+            Keyword::Infect,
+            Keyword::Myriad,
+            Keyword::Crew(3),
+            Keyword::Mutate(cost()),
+            Keyword::Encore(cost()),
+            Keyword::Squad(cost()),
         ]
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 25] = [
+    const RUN: [&str; 28] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -530,6 +554,9 @@ mod tests {
         "Keyword.LivingWeapon",
         "Keyword.Kicker",
         "Keyword.Multikicker",
+        "Keyword.Flashback",
+        "Keyword.Evoke",
+        "Keyword.Overload",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -619,6 +646,9 @@ mod tests {
     #[case::equip(Keyword::Equip(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::reconfigure(Keyword::Reconfigure(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 3, ..Hooks::none() })]
     #[case::living_weapon(Keyword::LivingWeapon, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::evoke(Keyword::Evoke(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::flashback(Keyword::Flashback(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
+    #[case::overload(Keyword::Overload(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
     }

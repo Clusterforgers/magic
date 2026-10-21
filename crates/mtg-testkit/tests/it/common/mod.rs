@@ -98,8 +98,10 @@ pub fn spell(
     )
 }
 
+pub mod casting;
 pub mod combat;
 pub mod forecast;
 pub mod keywords;
 pub mod removal;
+pub mod replaced;
 pub mod seeds;

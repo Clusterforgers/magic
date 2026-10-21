@@ -100,11 +100,27 @@ pub enum Keyword {
     Overload(Cost),
     /// Partner with the named card.
     PartnerWith(String),
+    /// Changeling: the object is every creature type (CR 702.73).
+    Changeling,
+    /// Devoid: the object is colorless (CR 702.114).
+    Devoid,
+    /// Infect: damage to creatures is dealt as -1/-1 counters and to players as poison counters (CR 702.90).
+    Infect,
+    /// Myriad: when the creature attacks, token copies attack each other opponent (CR 702.116).
+    Myriad,
+    /// Crew with its power: tapping creatures with that total power turns a Vehicle into a creature (CR 702.122).
+    Crew(u32),
+    /// Mutate with its cost: the spell may be cast onto a non-Human creature (CR 702.140).
+    Mutate(Cost),
+    /// Encore with its cost: exiled from a graveyard, a token copy attacks each opponent (CR 702.141).
+    Encore(Cost),
+    /// Squad with its cost: paid any number of times as the spell is cast, each time a token copy enters (CR 702.157).
+    Squad(Cost),
 }
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 41] = [
+    pub const NAMES: [&'static str; 49] = [
         "Flash",
         "Flying",
         "Reach",
@@ -146,6 +162,14 @@ impl Keyword {
         "Evoke",
         "Overload",
         "Partner with",
+        "Changeling",
+        "Devoid",
+        "Infect",
+        "Myriad",
+        "Crew",
+        "Mutate",
+        "Encore",
+        "Squad",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -192,6 +216,14 @@ impl Keyword {
             Keyword::Evoke(_) => "Evoke",
             Keyword::Overload(_) => "Overload",
             Keyword::PartnerWith(_) => "Partner with",
+            Keyword::Changeling => "Changeling",
+            Keyword::Devoid => "Devoid",
+            Keyword::Infect => "Infect",
+            Keyword::Myriad => "Myriad",
+            Keyword::Crew(_) => "Crew",
+            Keyword::Mutate(_) => "Mutate",
+            Keyword::Encore(_) => "Encore",
+            Keyword::Squad(_) => "Squad",
         }
     }
 
@@ -259,8 +291,16 @@ mod tests {
                 cost: cost.clone(),
             },
             Keyword::Evoke(cost.clone()),
-            Keyword::Overload(cost),
+            Keyword::Overload(cost.clone()),
             Keyword::PartnerWith("Some Card".into()),
+            Keyword::Changeling,
+            Keyword::Devoid,
+            Keyword::Infect,
+            Keyword::Myriad,
+            Keyword::Crew(3),
+            Keyword::Mutate(cost.clone()),
+            Keyword::Encore(cost.clone()),
+            Keyword::Squad(cost),
         ]
     }
 

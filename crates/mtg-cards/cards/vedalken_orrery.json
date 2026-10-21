@@ -1,0 +1,12 @@
+{
+  "oracle_id": "60d640a4-032b-4279-ac75-8f200ca776fb",
+  "name": "Vedalken Orrery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vedalken Orrery",
+      "oracle_fingerprint": "cd67e7ffd98826b30f8e5dc211249a61",
+      "abilities": [{ "Rule": { "rule": { "MayCast": { "flash": true } } } }]
+    }
+  ]
+}

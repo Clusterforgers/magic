@@ -145,6 +145,7 @@ fn leaves(game: &mut GameState, name: &str) {
     );
 }
 
+/// The modifications the engine runs; `CantBeBlocked` and `CantBeBlockedBy` refuse as effects until their task.
 const MODIFICATIONS: [&str; 14] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
@@ -194,7 +195,9 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::LoseAbilities
             | mtg_cards::modify::Modification::SetController(_)
             | mtg_cards::modify::Modification::CantAttack
-            | mtg_cards::modify::Modification::CantBlock => {}
+            | mtg_cards::modify::Modification::CantBlock
+            | mtg_cards::modify::Modification::CantBeBlocked
+            | mtg_cards::modify::Modification::CantBeBlockedBy(_) => {}
         }
     }
 }

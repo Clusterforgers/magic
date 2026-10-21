@@ -29,10 +29,11 @@ fn the_caster_conceding_drops_the_cast_and_the_game_moves_on() -> Result<(), Scr
     assert_ne!(decision.player, pid(0));
     assert!(!matches!(decision.kind, DecisionKind::PayMana(_)));
     assert!(driver.state().objects().all(|o| o.owner() != pid(0)));
+    assert_eq!(decision.player, pid(1), "priority passes to the next seat");
     assert_eq!(
-        driver.state().turn().active(),
-        pid(1),
-        "seat 0's turn is over"
+        driver.state().active_player(),
+        None,
+        "seat 0's turn goes on without an active player"
     );
     Ok(())
 }

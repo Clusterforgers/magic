@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e0548f0d-4aec-4c39-8c34-52bfa2bf7c60",
+  "name": "Forked Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forked Bolt",
+      "oracle_fingerprint": "0ddbd06cb2543088433903e1206d1b37",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget", "bounds": { "min": 1, "max": 2 }, "divide": 2 }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

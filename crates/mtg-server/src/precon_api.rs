@@ -90,8 +90,9 @@ pub(crate) async fn get_one(
         .await
         .map_err(|error| failed(&error))?
         .ok_or_else(ApiError::not_found)?;
-    let judged = Judge::new(cards)?.judge(&deck);
-    let loaded = Loaded::load(cards, &judged.lines).await?;
+    let rules = cards.rules().await?;
+    let judged = Judge::new(&rules).judge(&deck);
+    let loaded = Loaded::load_under(cards, rules.clone(), &judged.lines).await?;
 
     let reported: HashMap<(DeckZone, &str), &ReportCard> = judged
         .report
@@ -116,7 +117,7 @@ pub(crate) async fn get_one(
                 count: entry.count,
             });
             let hit = match &line {
-                Some(line) => loaded.view(cards, line)?.map(|view| view.card),
+                Some(line) => loaded.view(line).map(|view| view.card),
                 None => None,
             };
             let record = line

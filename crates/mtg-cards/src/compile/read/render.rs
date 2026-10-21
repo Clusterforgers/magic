@@ -83,6 +83,21 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     }
 }
 
+/// The oracle wording of one mode of a modal spell as its bullet reads, with a capital and no
+/// closing period; `None` when the readers do not write the mode.
+pub fn mode(mode: &Mode) -> Option<String> {
+    let sentences = alternatives(&mode.targets, &mode.effects)
+        .into_iter()
+        .next()?;
+    Some(
+        sentences
+            .iter()
+            .map(|sentence| capitalize(sentence))
+            .collect::<Vec<_>>()
+            .join(". "),
+    )
+}
+
 pub(super) fn capitalize(text: &str) -> String {
     let mut chars = text.chars();
     chars.next().map_or_else(String::new, |first| {

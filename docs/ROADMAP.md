@@ -40,8 +40,9 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (r4b) Audit before any compiled rule reaches a game: 100 random compiled cards are listed as oracle text beside the rendered reading and the JSON, and each disagreement fixes a template
 - [x] (r5) Value nodes (devotion, greatest, total, card types, "if you do", the monarch, the city's blessing, mana of a choice, the chosen colour, a commander's identity), fourteen keyword-action effects, five activated-ability costs and eleven trigger patterns are in the DSL, each with its `Caps` name and a stub; the templates for surveil, proliferate, the monarch, a choice of mana, paying energy and the life, draw and discard events read them
 - [x] (r3d) Templates for the unread wordings the report ranks highest whose primitives the DSL and the engine already have (enters tapped, also unless a count is controlled, enters with counters, a choice or a payment as it enters, can't be countered, can't block, attacks each combat, bonuses and keywords for an attached or a group of creatures, a land returned to the hand), each with goldens
-- [ ] (r5b) The vocabulary the report ranks next and the DSL still lacks (can't be blocked, no maximum hand size, an additional land play, choosing a player as a permanent enters, entering tapped unless you have two or more opponents or a player has 13 or less life, "can be your commander", "look at the top card of your library any time", and the keywords Crew, Changeling, Devoid, Foretell, Mutate, Encore, Myriad, Squad, Infect) is added with a `Caps` name and a stub each
-- [ ] (r1c) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes the ones that validate; a compiled mode without a label shows its rendered text in the mode prompt
+- [x] (r5b) Can't be blocked (also by a kind of creature), no maximum hand size, an additional land play, looking at the top card any time, "can be your commander", choosing a player or an opponent as a permanent enters, the number of opponents and the lowest life total as values, and the keywords Crew, Changeling, Devoid, Mutate, Encore, Myriad, Squad and Infect are in the DSL, each with its `Caps` name and a stub; the templates read the statics, the choices, "enters tapped unless you have two or more opponents or a player has 13 or less life" and the keyword lines
+- [ ] (r5c) The keyword Foretell is in the DSL with its `Caps` name and a stub, beside the cast permission it grants (g4)
+- [x] (r1c) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes the ones that validate; a compiled mode without a label shows its rendered text in the mode prompt
 
 ### Small effects
 - [x] (q) `Effect::If` with its conditions, `Tap`, `Untap`, `Mill`, `WinGame` and the keyword Flash; Felidar Sovereign is Verified
@@ -76,13 +77,14 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (g2b) X read after the spell or ability has resolved: a permanent that enters with X counters (Walking Ballista, Hangarback Walker), a trigger or delayed trigger that reads X, X in a target filter and the mana value of a spell with X on the stack; the walker names these `Amount.X.Elsewhere`
 - [x] (g3) Optional costs: kicker and multikicker are asked with `ChooseCosts` and `ChooseNumber`, added to the total cost, remembered by the spell, the permanent and its triggers, and read as `Condition::Kicked` and `Amount::Kicks`; Burst Lightning, Gatekeeper of Malakir and Wolfbriar Elemental are Verified
 - [ ] (g3b) Other additional costs a spell may choose (buyback, entwine, "as an additional cost, you may ..."), a kicker with a part other than mana, and the kicks of a permanent that left before its trigger went on the stack (last known information)
-- [ ] (g4) Alternative costs and cast permissions: flashback, evoke, overload, madness, suspend, casting from another zone, without paying the cost or as though it had flash, cascade; Mulldrifter, Faithless Looting and Bloodbraid Elf are Verified
+- [x] (g4) Alternative costs chosen with the cast (`ChooseOption`, `Choices.way`) and cast permissions (`GameRule::MayCast`: from a graveyard, exile or a library, without paying, as though with flash): flashback, evoke and overload; Mulldrifter, Faithless Looting, Cyclonic Rift, Mizzium Mortars, Omniscience and Vedalken Orrery are Verified
+- [ ] (g4b) A spell cast during a resolution (`Effect::CastFromZone`, the cast of cascade, discover and the end of suspend), cascade, madness, suspend and foretell, and the hidden-information tests of a cast from a library or exile; Bloodbraid Elf is Verified
 - [ ] (g5) Cost modifiers (`Ability::CostModifier`): reductions, increases, convoke, delve; Fireball is Verified
 - [ ] (g6) Costs of activated abilities beyond `{T}`, mana and sacrificing the source: a chosen permanent (chosen when the ability is announced), life, discard, counters removed, a card exiled from a graveyard, untapped creatures tapped; cycling; a card's support counts the abilities of the predefined tokens it makes; Flooded Strand is Verified
 - [x] (g7) Mana abilities of several mana, of a count and of a choice of type, with further effects (painlands, Eggs) and sacrificing their source (Treasure, Lotus Petal) are activated without the stack and are mana sources of every payment; `is_mana_ability` holds them whole and the compiler reads the painland wording again; Sol Ring, Gaea's Cradle, Battlefield Forge and Lotus Petal are Verified
 - [ ] (g7b) Restrictions on how mana is spent ("spend this mana only to cast creature spells"): the pool keeps what each mana may be spent on, payment honours it, and restricted mana beside hybrid costs is paid and refused as the rules say
 - [x] (g8) A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
-- [ ] (g9) Divided amounts at resolution: `Amount.Divided` and `Amount.EvenShare` read `Choices.division` (`DealDamage` and `PutCounters` give each target its share) and the support walker stops naming them; Fire // Ice (n1) needs it
+- [x] (g9) Divided amounts at resolution: `Amount.Divided` and `Amount.EvenShare` read `Choices.division` (`DealDamage` and `PutCounters` give each target its share) and the support walker stops naming them; Fire // Ice (n1) needs it
 
 ### Trigger families
 - [ ] (i4) Patterns for every event the engine logs (damage, life, draw, discard, mill, tap, untap, counters, attach, cast, cycle), triggers whose subject is the creature an Equipment or Aura is attached to ("whenever equipped creature dies or deals combat damage"; Skullclamp, Swords of X and Y), batches ("one or more"), first time each turn, the nth card, event amounts ("that much"); conditions over any or every opponent ("an opponent has 10 or less life", `Amount::Life` of a set of players); Bloodghast and Questing Beast are Verified
@@ -95,24 +97,27 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ### Manual cards and views
 - [ ] (p) Manual cards: a card the engine does not run is cast and resolves without effects, and its controller applies generic logged actions (move, counters, life, token, tap) through the same primitives, visible to every seat
 - [ ] Views complete: they carry every state of an object (counters, attachments, face, face-down, copies, support) and the abilities a player may activate with their cost and target wording (Equip, Reconfigure, loyalty and other activated abilities in one list), a spectator audience sees public information, and a card revealed and then moved to a hidden zone in one batch reaches the other seats' views (`docs/protocol.md`)
-- [ ] The combat forecast and block preview apply replacement and prevention effects (`forecast.rs` and `preview.rs` skip `replace::process` today), so Furnace of Rath, a life doubler and a damage shield show in the numbers they preview
+- [x] The combat forecast and block preview apply replacement and prevention effects, so Furnace of Rath, a life doubler and a damage shield show in the numbers they preview
 - [ ] Gate: every corpus card is Verified except the two kept Partial and Manual by design, and fuzz games with a deck from each cluster pass every invariant
 
 ## M4 Commander
 - [ ] `Commander` format rules: 100-card singleton, colour identity, 40 life, command zone, tax as a cost modifier, return to the command zone (CR 903.9), 21 commander damage; the views carry commander damage and tax so the pod can show them
-- [ ] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
+- [x] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
+- [ ] The table view says when a turn has no active player (`TurnView.active` names the seat that left; the turn indicator and the step bar show a turn without one), with a projection test
 - [ ] Partner, companion, Commander-specific tests and Commander-format fuzz games with 4-6 players
 
 ## M5 Table and prompts
 
 The server is settled first, then the web is built once against the final types.
-- [ ] Response clocks for every decision kind without one, each with a fallback answer, and a clock test through the actor for YesNo, ChooseOption and ChooseMode (`docs/server.md`, Response clocks)
+- [x] Response clocks for every decision kind without one, each with a fallback answer, and a clock test through the actor for YesNo, ChooseOption and ChooseMode (`docs/server.md`, Response clocks)
 - [ ] (d9) Timer bank: extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
 - [ ] Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and the order of cards put back; the payment prompt for X and restricted mana
+- [ ] Clock words in the web (`clockText.ts`) for every decision with a clock the web does not name: number, optional costs, division, replacement, keep, bottoming, payment, damage, attackers and discard
 - [ ] The `YesNo` prompt disables Yes and its key when `YesNoOptions.only_no` is set (a payment the seat cannot make)
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts mark the creatures a rule requires (`AttackOptions.required`, `BlockOptions.required`) as chosen and locked, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
+- [ ] The forecast and block preview mark numbers that depend on a choice (`CombatForecast.depends_on_choice`)
 - [ ] Table states: counters, attachments tucked beside their host, loyalty, faces and face-down cards, copies, command zone and commander damage, support marks; each in the `/dev/table` fixture with screenshots at six sizes in both themes
 - [ ] Manual actions on any card: a menu and log entries
 - [ ] (U5b) One step ladder: the ladder that shows the turn also sets the stops (click a step), as in Arena, and the second row of step buttons goes

@@ -38,7 +38,7 @@ fn begun() -> Engine {
     .unwrap();
     let card = engine.state().zone(Zone::Hand(SEAT))[0];
     let needs = Needs {
-        alternative: None,
+        ways: Vec::new(),
         optional: vec![Optional {
             label: "Kicker {1}".to_owned(),
             mana: ManaCost::parse("{1}").unwrap(),

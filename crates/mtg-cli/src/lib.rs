@@ -9,6 +9,7 @@ pub mod args;
 pub mod audit;
 pub mod bulk;
 pub mod cache;
+pub mod compile;
 pub mod coverage;
 pub mod error;
 pub mod fetch;
@@ -101,6 +102,11 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
                 .await
                 .map_err(|source| CliError::io(path, source))?;
             Ok(format!("audit: written to {}", path.display()))
+        }
+        Command::Compile(args) => {
+            let url = cli.database_url.ok_or_else(missing_database_url)?;
+            let db = Database::connect(&url).await?;
+            Ok(compile::compile(&db, &args).await?.render())
         }
         Command::Coverage(args) => {
             let url = cli.database_url.ok_or_else(missing_database_url)?;

@@ -8,6 +8,7 @@
 
 mod inline;
 mod prim;
+mod share;
 mod tree;
 mod value;
 

@@ -1,4 +1,4 @@
-//! Goal: the 120 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, Sol Ring resolves and adds two mana, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 126 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -34,10 +34,11 @@ use Support::{Manual, Partial, Verified};
 /// (power and toughness from a count, colours) and the keywords of combat and
 /// flash, hexproof and the keywords that are triggers (battle cry, prowess, ward), so the fifty cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
-/// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
+/// Partial: Bloodbraid Elf's haste, not its cascade.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
-const CARDS: [(&str, Support, usize); 120] = [
+/// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified and Fireball waits for its cost modifier alone.
+const CARDS: [(&str, Support, usize); 126] = [
     ("Act of Treason", Verified, 1),
     ("Ajani, Caller of the Pride", Verified, 3),
     ("Anger", Verified, 2),
@@ -77,11 +78,11 @@ const CARDS: [(&str, Support, usize); 120] = [
     ("Drudge Skeletons", Verified, 1),
     ("Elemental Masterpiece", Verified, 2),
     ("Eternal Witness", Verified, 1),
-    ("Faithless Looting", Partial, 1),
+    ("Faithless Looting", Verified, 2),
     ("Favorable Winds", Verified, 1),
     ("Felidar Sovereign", Verified, 3),
     ("Fire // Ice", Manual, 0),
-    ("Fireball", Manual, 0),
+    ("Fireball", Partial, 1),
     ("Flooded Strand", Manual, 0),
     ("Fog", Verified, 1),
     ("Forest", Verified, 1),
@@ -113,7 +114,7 @@ const CARDS: [(&str, Support, usize); 120] = [
     ("Mindlock Orb", Verified, 1),
     ("Mother of Runes", Verified, 1),
     ("Monastery Swiftspear", Verified, 2),
-    ("Mulldrifter", Partial, 2),
+    ("Mulldrifter", Verified, 3),
     ("Naban, Dean of Iteration", Verified, 1),
     ("Nightmare", Verified, 2),
     ("Opt", Verified, 1),
@@ -158,13 +159,19 @@ const CARDS: [(&str, Support, usize); 120] = [
     ("Stroke of Genius", Verified, 1),
     ("Kessig Wolf Run", Verified, 2),
     ("Tezzeret the Seeker", Verified, 3),
+    ("Forked Bolt", Verified, 1),
+    ("Armament Corps", Verified, 1),
+    ("Cyclonic Rift", Verified, 2),
+    ("Mizzium Mortars", Verified, 2),
+    ("Omniscience", Verified, 1),
+    ("Vedalken Orrery", Verified, 1),
 ];
 
 #[test]
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 120);
+    assert_eq!(in_table.len(), 126);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -236,10 +243,10 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         let reasons: Vec<&str> = record.clauses.iter().map(|c| c.reason.as_str()).collect();
         reasons.join("; ")
     };
-    // Fireball waits for its cost modifier and the even split of its damage, not for X.
+    // Fireball waits for its cost modifier alone: the even split of its damage and its X are played.
     let fireball = reasons("Fireball");
     assert!(
-        fireball.contains("Ability.CostModifier") && fireball.contains("Amount.EvenShare"),
+        fireball.contains("Ability.CostModifier") && !fireball.contains("Amount.EvenShare"),
         "{fireball}"
     );
     assert!(!fireball.contains("{X}"), "{fireball}");
@@ -256,20 +263,10 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     for name in ["Rhystic Study", "Izzet Charm"] {
         assert_eq!(reasons(name), "", "{name}");
     }
-    // Mulldrifter's draw and flying are covered, its evoke is not.
-    let mulldrifter = reasons("Mulldrifter");
-    assert!(mulldrifter.contains("Keyword.Evoke"), "{mulldrifter}");
-    assert!(
-        !mulldrifter.contains("Keyword.Flying") && !mulldrifter.contains("Effect.Draw"),
-        "{mulldrifter}"
-    );
-    // Faithless Looting's draw and discard are covered, its flashback is not.
-    let looting = reasons("Faithless Looting");
-    assert!(looting.contains("Keyword.Flashback"), "{looting}");
-    assert!(
-        !looting.contains("Effect.Draw") && !looting.contains("Effect.Discard"),
-        "{looting}"
-    );
+    // Mulldrifter and Faithless Looting are covered whole: evoke and flashback are alternative costs chosen with the cast.
+    for name in ["Mulldrifter", "Faithless Looting"] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // Archon of Cruelty is covered whole: its sacrifice and discard are played now.
     assert_eq!(reasons("Archon of Cruelty"), "");
     // The removal and the counterspell are covered whole: destroy, exile and counter are played now.
@@ -456,7 +453,14 @@ fn mulldrifter_draws_two_cards_when_it_enters_from_its_assembled_ability() -> Re
             .battlefield(0, lands),
     )?;
     let hand = driver.state().zone(Zone::Hand(PlayerId(0))).len();
-    driver.cast("Mulldrifter")?;
+    // Five lands pay its mana cost and its evoke cost: it is cast for the mana cost, the first way offered.
+    driver.begin_cast("Mulldrifter")?;
+    driver.answer(mtg_engine::Answer::ChooseOption(
+        mtg_engine::choose::OptionChoice(0),
+    ))?;
+    driver.answer(mtg_engine::Answer::PayMana(
+        mtg_engine::decision::PayChoice::Auto,
+    ))?;
     resolve_the_stack(&mut driver)?;
     assert!(names(driver.state(), Zone::Battlefield).contains(&"Mulldrifter".to_owned()));
     assert_eq!(

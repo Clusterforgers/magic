@@ -17,6 +17,7 @@ mod targets;
 mod triggers;
 mod yes_no;
 
+use mtg_cards::value::CastWay;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
@@ -107,6 +108,10 @@ pub struct Choices {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<usize>>", optional))]
     pub optional_costs: Vec<usize>,
+    /// The alternative cost the spell is cast for; none for its mana cost.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub way: Option<CastWay>,
 }
 
 impl Choices {

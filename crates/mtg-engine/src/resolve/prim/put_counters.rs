@@ -13,19 +13,23 @@ use crate::zones::Zone;
 
 /// Each permanent on the battlefield and each player in the game the effect names gets the counters, all together and in
 /// the order the reference lists them. An object that has changed zones since it was named (CR 400.7), a card in
-/// another zone, a player who has left and a name that repeats are passed over; a count of nothing is no event.
+/// another zone, a player who has left and a name that repeats are passed over; a count of nothing is no event. A
+/// divided count gives each holder its own share or an even part of the whole (`Scope::amounts_for`); a target that is
+/// not legal at resolution has none.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::PutCounters { on, counter, count } = effect else {
         return Err(wrong_effect("PutCounters"));
     };
-    let count = whole(cx.scope.amount(count)?);
+    let holders = holders(cx, on)?;
+    let counts = cx.scope.amounts_for(count, &holders)?;
     let mut events = Vec::new();
-    if count > 0 {
-        for holder in holders(cx, on)? {
+    for (holder, count) in holders.into_iter().zip(counts) {
+        let delta = whole(count);
+        if delta > 0 {
             events.push(Event::CountersChanged(CountersChanged {
                 on: holder,
                 counter: counter.clone(),
-                delta: count,
+                delta,
             }));
         }
     }

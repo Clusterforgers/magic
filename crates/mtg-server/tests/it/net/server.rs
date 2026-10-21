@@ -44,6 +44,7 @@ pub fn windowed_config() -> ServerConfig {
                 auto_pass: true,
                 response: None,
                 blocks: None,
+                think: None,
                 dwell: Dwell::OFF,
             },
             ..config.game

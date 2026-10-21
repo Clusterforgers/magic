@@ -40,6 +40,11 @@ pub enum ConfigError {
         "MTG_BLOCK_SECS must be a whole number of seconds, 0 for no clock, at most 86400, got {0:?}"
     )]
     BadBlockSecs(String),
+    /// `MTG_THINK_SECS` is not a number of seconds.
+    #[error(
+        "MTG_THINK_SECS must be a whole number of seconds, 0 for no clock, at most 86400, got {0:?}"
+    )]
+    BadThinkSecs(String),
     /// `MTG_DWELL_MS` is not a range or a number of milliseconds.
     #[error(
         "MTG_DWELL_MS must be a range such as 250-700, or one whole number of milliseconds, 0 for no wait, at most 5000, got {0:?}"
@@ -250,8 +255,8 @@ impl Default for ServerConfig {
 
 impl ServerConfig {
     /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
-    /// `MTG_BLOCK_SECS`, `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE` and `MTG_TRUSTED_PROXIES` from the
-    /// process environment.
+    /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_COOKIE_SECURE` and
+    /// `MTG_TRUSTED_PROXIES` from the process environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
             std::env::var_os(key).map(|value| value.to_string_lossy().into_owned())
@@ -296,6 +301,10 @@ impl ServerConfig {
         if let Some(text) = get("MTG_BLOCK_SECS") {
             let seconds = parse_seconds(&text).ok_or(ConfigError::BadBlockSecs(text))?;
             config.game.pace.blocks = clock_of(seconds);
+        }
+        if let Some(text) = get("MTG_THINK_SECS") {
+            let seconds = parse_seconds(&text).ok_or(ConfigError::BadThinkSecs(text))?;
+            config.game.pace.think = clock_of(seconds);
         }
         if let Some(text) = get("MTG_DWELL_MS") {
             config.game.pace.dwell = Dwell::parse(&text).ok_or(ConfigError::BadDwellMs(text))?;
@@ -588,6 +597,7 @@ mod tests {
         assert!(pace.auto_pass);
         assert_eq!(pace.response, Some(Duration::from_secs(10)));
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
+        assert_eq!(pace.think, Some(Duration::from_secs(60)));
         assert_eq!(pace.dwell, Dwell::DEFAULT);
     }
 
@@ -652,12 +662,31 @@ mod tests {
     }
 
     #[rstest]
+    #[case("5", Some(5))]
+    #[case("300", Some(300))]
+    #[case("0", None)]
+    #[case("", Some(60))]
+    fn think_clock(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let pace = load(&[("MTG_THINK_SECS", text)]).unwrap().game.pace;
+        assert_eq!(pace.think, seconds.map(Duration::from_secs));
+        assert_eq!(
+            (pace.response, pace.blocks),
+            (Some(Duration::from_secs(10)), Some(Duration::from_secs(45))),
+            "the other clocks are untouched"
+        );
+    }
+
+    #[rstest]
     #[case("-1")]
     #[case("ten")]
     #[case("1.5")]
     #[case("86401")]
     #[case("99999999999999999999999")]
     fn bad_clocks(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_THINK_SECS", text)]),
+            Err(ConfigError::BadThinkSecs(text.to_owned()))
+        );
         assert_eq!(
             load(&[("MTG_RESPONSE_SECS", text)]),
             Err(ConfigError::BadResponseSecs(text.to_owned()))

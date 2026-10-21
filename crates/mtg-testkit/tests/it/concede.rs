@@ -7,6 +7,7 @@ use common::pid;
 use mtg_core::ids::PlayerId;
 use mtg_engine::player::{LossReason, PlayerStatus};
 use mtg_engine::state::Stage;
+use mtg_engine::turn::Step;
 use mtg_engine::{Engine, EngineError, Event, GameResult, GameSetup, replay};
 use mtg_testkit::{InvariantChecker, RandomBot, fuzz_setup};
 use proptest::prelude::*;
@@ -58,7 +59,7 @@ impl Game {
 
     fn check(&mut self) {
         self.checker
-            .observe(self.engine.state(), self.engine.events())
+            .observe_engine(&self.engine)
             .expect("invariants");
     }
 
@@ -117,7 +118,7 @@ impl Game {
     fn concede(&mut self, player: PlayerId) -> Vec<Event> {
         let events = self.engine.concede(player).expect("concede succeeds");
         self.checker
-            .observe(self.engine.state(), self.engine.events())
+            .observe_engine(&self.engine)
             .expect("invariants after concede");
         self.checker
             .full_check(self.engine.state())
@@ -176,6 +177,7 @@ fn conceding_at_any_point_keeps_the_game_consistent(
     let holder = game.holder().expect("a decision is pending");
     let state = game.engine.state();
     let (active, stage, turn) = (state.turn().active(), state.stage(), state.turn().number());
+    let step = state.turn().step();
     let owned = state.objects().filter(|o| o.owner() == conceder).count();
     let alive_before = game.alive().len();
 
@@ -220,14 +222,23 @@ fn conceding_at_any_point_keeps_the_game_consistent(
             assert_eq!(next, holder, "an uninvolved concession keeps the decision");
         }
         if conceder == active && stage == Stage::Turns {
-            assert!(
-                events.iter().any(|e| matches!(
-                    e,
-                    Event::TurnBegan { number, active } if *number == turn + 1 && *active != conceder
-                )),
-                "the turn ends at once"
-            );
-            assert_ne!(state.turn().active(), conceder);
+            let began: Vec<(u32, PlayerId)> = events
+                .iter()
+                .filter_map(|e| match e {
+                    Event::TurnBegan { number, active } => Some((*number, *active)),
+                    _ => None,
+                })
+                .collect();
+            if let Some(&(number, next)) = began.first() {
+                // Only cleanup, which asks nobody else, ends the turn within the concession.
+                assert_eq!(step, Step::Cleanup);
+                assert_eq!((began.len(), number), (1, turn + 1));
+                assert_eq!(Some(next), state.next_alive_after(conceder));
+            } else {
+                assert_eq!(state.turn().number(), turn, "the turn goes on");
+                assert_eq!(state.turn().active(), conceder);
+                assert_eq!(state.active_player(), None, "without an active player");
+            }
         }
     }
     game.assert_replays();

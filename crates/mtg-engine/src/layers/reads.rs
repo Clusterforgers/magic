@@ -72,7 +72,11 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::SetPT { .. } | Wanted::ModifyPT { .. } | Wanted::SwitchPT => {
             Traits::POWER.or(Traits::TOUGHNESS)
         }
-        Wanted::GrantAbility(_) | Wanted::CantAttack | Wanted::CantBlock => Traits::NONE,
+        Wanted::GrantAbility(_)
+        | Wanted::CantAttack
+        | Wanted::CantBlock
+        | Wanted::CantBeBlocked
+        | Wanted::CantBeBlockedBy(_) => Traits::NONE,
     }
 }
 
@@ -83,6 +87,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
             reads_of_amount(power).or(reads_of_amount(toughness))
         }
         Wanted::SetController(who) => reads_of_ref(who),
+        Wanted::CantBeBlockedBy(blockers) => reads_of_selector(blockers),
         Wanted::SwitchPT
         | Wanted::AddType(_)
         | Wanted::RemoveType(_)
@@ -94,7 +99,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities
         | Wanted::CantAttack
-        | Wanted::CantBlock => Traits::NONE,
+        | Wanted::CantBlock
+        | Wanted::CantBeBlocked => Traits::NONE,
     }
 }
 
@@ -166,7 +172,10 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         }
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
-        Amount::Life(who) | Amount::Counters { on: who, .. } => reads_of_ref(who),
+        Amount::Life(who)
+        | Amount::Counters { on: who, .. }
+        | Amount::Players(who)
+        | Amount::LowestLife(who) => reads_of_ref(who),
         Amount::Sum(parts) => parts
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
@@ -191,7 +200,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
         Condition::YourTurn => Traits::CONTROL,
-        Condition::Kicked | Condition::Performed => Traits::NONE,
+        Condition::Kicked | Condition::CastWith(_) | Condition::Performed => Traits::NONE,
         Condition::Monarch(who) | Condition::CitysBlessing(who) => reads_of_ref(who),
     }
 }

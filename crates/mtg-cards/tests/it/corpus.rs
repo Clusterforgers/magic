@@ -76,9 +76,9 @@ fn files_are_canonical_and_carry_current_fingerprints() {
 }
 
 #[test]
-fn the_corpus_loads_with_one_hundred_and_twenty_cards_and_three_tokens() {
+fn the_corpus_loads_with_one_hundred_and_twenty_six_cards_and_three_tokens() {
     let library = library();
-    assert_eq!(library.cards().count(), 120);
+    assert_eq!(library.cards().count(), 126);
     let tokens: Vec<_> = library.tokens().map(|t| t.id.as_str()).collect();
     assert_eq!(tokens, ["clue", "food", "treasure"]);
 }
@@ -408,7 +408,6 @@ fn clause_spans_cut_out_the_sentences_they_name() {
         }
     }
     let expected = [
-        "Questing Beast can't be blocked by creatures with power 2 or less.",
         "Combat damage that would be dealt by creatures you control can't be prevented.",
         "Whenever Questing Beast deals combat damage to an opponent, it deals that much damage to target planeswalker that player controls.",
     ];

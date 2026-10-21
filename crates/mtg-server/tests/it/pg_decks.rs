@@ -422,7 +422,7 @@ async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(
         (beast["zone"].as_str(), beast["support"].as_str()),
         (Some("commander"), Some("partial"))
     );
-    assert!(beast["reasons"].as_array().unwrap().len() >= 3, "{beast}");
+    assert!(beast["reasons"].as_array().unwrap().len() >= 2, "{beast}");
     assert!(beast["reasons"][0]["span"]["end"].as_u64().unwrap() > 0);
     assert_eq!(manual["check"]["summary"]["state"], "manual_play");
 

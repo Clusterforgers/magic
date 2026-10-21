@@ -20,8 +20,10 @@ mod mana_plan;
 mod mulligan;
 mod preview;
 mod price;
+mod replace_dry;
 mod sba;
 mod steps;
+mod ways;
 mod wording;
 #[cfg(test)]
 mod zone_abilities;

@@ -8,13 +8,13 @@
 
 use std::time::Duration;
 
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{
     CardsChoice, CardsOptions, CostsChoice, DivideChoice, DivideOptions, ModeChoice, ModeOptions,
     NumberChoice, OptionChoice, OrderChoice, ReplacementChoice, Target, TargetChoice,
     TriggersChoice, YesNoChoice,
 };
-use mtg_engine::decision::PriorityAction;
+use mtg_engine::decision::{DamageOptions, MulliganChoice, PayChoice, PayOptions, PriorityAction};
 use mtg_engine::{Answer, Decision, DecisionKind};
 use mtg_protocol::{ErrorCode, FullControlMode, ServerMessage, YieldUntil};
 use tokio::time::Instant;
@@ -45,6 +45,11 @@ pub struct Pace {
     pub response: Option<Duration>,
     /// Time a defending seat has to declare blockers (`MTG_BLOCK_SECS`); `None` is no clock.
     pub blocks: Option<Duration>,
+    /// Time to decide what takes thought and is no quick response (`MTG_THINK_SECS`): to keep or mulligan and to bottom
+    /// cards (every seat: the opening has no active player), to pay for a spell or divide combat damage (a seat that
+    /// is not the active player) and to declare attackers or discard (asked of the active player alone, so these two
+    /// wait until the active seat has a clock); `None` is no clock.
+    pub think: Option<Duration>,
     /// How long the table waits before it passes for an idle seat at a window of the default table, its own main phase
     /// with an empty stack aside (`MTG_DWELL_MS`).
     pub dwell: Dwell,
@@ -56,6 +61,7 @@ impl Pace {
         auto_pass: false,
         response: None,
         blocks: None,
+        think: None,
         dwell: Dwell::OFF,
     };
 
@@ -70,17 +76,20 @@ impl Pace {
 
     /// The clock `decision` runs on, if any.
     ///
-    /// Only a seat that is not the active player is hurried, and only for a priority decision, for choosing the
-    /// targets of a spell or ability, for ordering its triggers or the replacement effects that apply to an event, for
-    /// answering a question of an effect (yes or no, an option, modes, a number, optional costs, a division, cards, an order of cards) or for declaring blockers; every other decision (mulligans, discards,
-    /// damage division, the active player's own turn) waits for as long as it takes. A priority window the seat has nothing to do in is
-    /// hurried too (it is only delivered at a stop or in Full Control): it would hold the table for no reason. The
-    /// rule reads the kind alone, never the options, the seat or the hand, so it shows nothing about them.
+    /// Every decision kind is named here, so a new one cannot be added without choosing its clock. The opening
+    /// decisions (keep or mulligan, bottoming) are asked before any turn exists and run on `think` for every seat.
+    /// After that only a seat that is not the active player is hurried: a priority decision, the targets of a spell or
+    /// ability, the order of its triggers or of the replacement effects that apply to an event and the questions of
+    /// effects (yes or no, an option, modes, a number, optional costs, a division, cards, an order of cards) run on
+    /// `response`, blockers on `blocks`, and paying for a spell, dividing combat damage, declaring attackers and
+    /// discarding on `think`. The active player's own decisions wait for as long as it takes. A priority window the
+    /// seat has nothing to do in is hurried too (it is only delivered at a stop or in Full Control): it would hold the
+    /// table for no reason. The rule reads the kind alone, never the options, the seat or the hand, so it shows nothing
+    /// about them.
     pub(crate) fn clock_for(&self, decision: &Decision, active: PlayerId) -> Option<Duration> {
-        if decision.player == active {
-            return None;
-        }
         match &decision.kind {
+            DecisionKind::Mulligan(_) | DecisionKind::BottomCards(_) => self.think,
+            _ if decision.player == active => None,
             // A target, an order or a question is asked of a seat the table waits for just as a priority window is.
             DecisionKind::Priority(_)
             | DecisionKind::ChooseTargets(_)
@@ -95,7 +104,10 @@ impl Pace {
             | DecisionKind::ChooseCards(_)
             | DecisionKind::OrderCards(_) => self.response,
             DecisionKind::DeclareBlockers(_) => self.blocks,
-            _ => None,
+            DecisionKind::PayMana(_)
+            | DecisionKind::AssignDamage(_)
+            | DecisionKind::DeclareAttackers(_)
+            | DecisionKind::Discard(_) => self.think,
         }
     }
 }
@@ -106,6 +118,7 @@ impl Default for Pace {
             auto_pass: true,
             response: Some(Duration::from_secs(10)),
             blocks: Some(Duration::from_secs(45)),
+            think: Some(Duration::from_secs(60)),
             dwell: Dwell::DEFAULT,
         }
     }
@@ -121,13 +134,16 @@ pub(crate) fn is_priority(decision: &Decision) -> bool {
     matches!(&decision.kind, DecisionKind::Priority(_))
 }
 
-/// What the table answers for a seat whose clock ran out: a pass, only the blockers a rule requires, no target (a spell is taken back and a
-/// triggered ability removed, as the rules do when a target cannot be chosen), the triggers in the order they
-/// triggered, No to a question, the first option, for modes the cast taken back when the options allow it and the
-/// first mode otherwise, the same for a number, the optional costs and a division (the lowest number, no cost and an
-/// even division otherwise), the first cards of the list for a choice of cards and the order given for an order of cards.
+/// What the table answers for a seat whose clock ran out: a pass, only the blockers or attackers a rule requires, no
+/// target (a spell is taken back and a triggered ability removed, as the rules do when a target cannot be chosen), the
+/// triggers in the order they triggered, No to a question, the first option, for modes the cast taken back when the
+/// options allow it and the first mode otherwise, the same for a number, the optional costs, a division and a payment
+/// (the lowest number, no cost, an even division and the engine's own payment otherwise), the first cards of the list
+/// for a choice of cards, of the hand for a discard or a bottoming, the order given for an order of cards, keeping the
+/// hand and lethal damage to each blocker in turn.
 ///
-/// The answer is read from the decision alone. `None` for a decision that has no clock and no safe default.
+/// The answer is read from the decision alone. `None` for a decision that has no answer to give (no option, no blocker
+/// to take the damage, a payment only the player can make): the clock stops and the decision waits.
 pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
     match &decision.kind {
         DecisionKind::Priority(_) => Some(pass()),
@@ -170,8 +186,58 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         DecisionKind::OrderCards(options) => {
             Some(Answer::OrderCards(OrderChoice(options.cards.clone())))
         }
-        _ => None,
+        DecisionKind::Mulligan(_) => Some(Answer::Mulligan(MulliganChoice::Keep)),
+        DecisionKind::BottomCards(options) => Some(Answer::BottomCards(first_of_hand(
+            &options.hand,
+            options.count,
+        ))),
+        DecisionKind::PayMana(options) => pay_fallback(options).map(Answer::PayMana),
+        DecisionKind::DeclareAttackers(options) => {
+            Some(Answer::DeclareAttackers(options.required_attack()))
+        }
+        DecisionKind::AssignDamage(options) => in_order(options).map(Answer::AssignDamage),
+        DecisionKind::Discard(options) => {
+            Some(Answer::Discard(first_of_hand(&options.hand, options.count)))
+        }
     }
+}
+
+/// The first `count` cards of the hand in the order it was offered.
+fn first_of_hand(hand: &[ObjectId], count: usize) -> Vec<ObjectId> {
+    hand.iter().copied().take(count).collect()
+}
+
+/// Backing out of the cast when the options allow it, else the engine's own payment. `None` when neither exists: the
+/// seat has to pay by hand.
+fn pay_fallback(options: &PayOptions) -> Option<PayChoice> {
+    if options.can_cancel {
+        Some(PayChoice::Cancel)
+    } else {
+        options.auto_available.then_some(PayChoice::Auto)
+    }
+}
+
+/// Lethal damage to each blocker in the order offered, the rest to the last one, or to the player attacked when
+/// trampling. `None` when there is no blocker to take the damage.
+fn in_order(options: &DamageOptions) -> Option<Vec<(ObjectId, u32)>> {
+    let mut left = options.power;
+    let mut shares: Vec<(ObjectId, u32)> = options
+        .blockers
+        .iter()
+        .enumerate()
+        .map(|(at, blocker)| {
+            let share = options
+                .lethal
+                .get(at)
+                .map_or(left, |lethal| left.min(*lethal));
+            left -= share;
+            (*blocker, share)
+        })
+        .collect();
+    if options.excess.is_none() {
+        shares.last_mut()?.1 += left;
+    }
+    Some(shares)
 }
 
 /// The first `min` cards of the list in the order it was offered, all of them when fewer are offered. `min <= max`, so
@@ -255,7 +321,11 @@ impl<S: EventStore> GameActor<S> {
         let Phase::Running(running) = &mut self.phase else {
             return Ok(());
         };
+        let sent = running.sent_decision();
         if let Ok(step) = running.fall_back() {
+            if let Some((seat, kind)) = sent {
+                tracing::info!(game = %self.id, seat = seat.index(), kind, "clock ran out; the table answered for the seat");
+            }
             // If the move cannot be saved the decision stays; trying again at once would spin.
             running.postpone(Instant::now() + RETRY_AFTER);
             self.publish(step).await
@@ -364,9 +434,10 @@ mod tests {
         OptionalCost, OrderOptions, ReplacementCandidate, ReplacementOptions, TargetOptions,
         TriggerEntry, TriggersOptions, YesNoOptions,
     };
+    use mtg_engine::combat::{AttackTarget, DamageTarget};
     use mtg_engine::decision::{
-        AttackOptions, BlockOptions, BottomOptions, DamageOptions, DiscardOptions, MulliganOptions,
-        PayOptions, PriorityOptions,
+        AttackOptions, AttackerOption, BlockOptions, BottomOptions, DiscardOptions,
+        MulliganOptions, PriorityOptions,
     };
     use mtg_engine::mana::ManaPool;
     use mtg_engine::object::ObjectRef;
@@ -394,46 +465,91 @@ mod tests {
         })
     }
 
-    fn other_kinds() -> Vec<DecisionKind> {
+    fn mulligan() -> DecisionKind {
+        DecisionKind::Mulligan(MulliganOptions {
+            hand: Vec::new(),
+            mulligans_taken: 0,
+            can_mulligan: true,
+            free_mulligans: 0,
+            bottom_if_keep: 0,
+            bottom_if_mulligan: 1,
+        })
+    }
+
+    /// A hand of `size` cards of which `count` go to the bottom.
+    fn bottoming(size: usize, count: usize) -> DecisionKind {
+        DecisionKind::BottomCards(BottomOptions {
+            hand: offered(size),
+            count,
+        })
+    }
+
+    fn payment(can_cancel: bool, auto_available: bool) -> DecisionKind {
+        DecisionKind::PayMana(PayOptions {
+            spell: ObjectId(1),
+            cost: mtg_core::mana::ManaCost::parse("{1}").unwrap(),
+            pool: ManaPool::default(),
+            sources: Vec::new(),
+            auto_available,
+            can_cancel,
+            life: 20,
+            max_life: 0,
+        })
+    }
+
+    /// Creatures 10, 11 and 12 may attack the player 0; those named in `required` have to.
+    fn attackers(required: &[u64]) -> DecisionKind {
+        DecisionKind::DeclareAttackers(AttackOptions {
+            attackers: (10..13)
+                .map(|n| AttackerOption {
+                    object: ObjectId(n),
+                    defenders: vec![AttackTarget::Player(PlayerId(0))],
+                })
+                .collect(),
+            required: required.iter().copied().map(ObjectId).collect(),
+        })
+    }
+
+    /// An attacker of `power` blocked by creatures 20, 21, ... whose lethal damage is `lethal`, trampling over them
+    /// to the player 0 when `trample`.
+    fn damage(power: u32, lethal: &[u32], trample: bool) -> DecisionKind {
+        DecisionKind::AssignDamage(DamageOptions {
+            attacker: ObjectId(1),
+            power,
+            blockers: (20..).map(ObjectId).take(lethal.len()).collect(),
+            excess: trample.then_some(DamageTarget::Player(PlayerId(0))),
+            lethal: lethal.to_vec(),
+        })
+    }
+
+    /// The answer that gives creatures 20, 21, ... these shares.
+    fn assigned(shares: &[u32]) -> Answer {
+        Answer::AssignDamage((20..).map(ObjectId).zip(shares.iter().copied()).collect())
+    }
+
+    fn discard(size: usize, count: usize) -> DecisionKind {
+        DecisionKind::Discard(DiscardOptions {
+            hand: offered(size),
+            count,
+        })
+    }
+
+    /// The kinds the think clock runs, for the seat that is not the active player.
+    fn think_kinds() -> Vec<DecisionKind> {
         vec![
-            DecisionKind::Mulligan(MulliganOptions {
-                hand: Vec::new(),
-                mulligans_taken: 0,
-                can_mulligan: true,
-                free_mulligans: 0,
-                bottom_if_keep: 0,
-                bottom_if_mulligan: 1,
-            }),
-            DecisionKind::BottomCards(BottomOptions {
-                hand: Vec::new(),
-                count: 1,
-            }),
-            DecisionKind::PayMana(PayOptions {
-                spell: ObjectId(1),
-                cost: mtg_core::mana::ManaCost::parse("{1}").unwrap(),
-                pool: ManaPool::default(),
-                sources: Vec::new(),
-                auto_available: true,
-                can_cancel: true,
-                life: 20,
-                max_life: 0,
-            }),
-            DecisionKind::DeclareAttackers(AttackOptions {
-                attackers: Vec::new(),
-                required: Vec::new(),
-            }),
-            DecisionKind::AssignDamage(DamageOptions {
-                attacker: ObjectId(1),
-                power: 2,
-                blockers: Vec::new(),
-                excess: None,
-                lethal: Vec::new(),
-            }),
-            DecisionKind::Discard(DiscardOptions {
-                hand: Vec::new(),
-                count: 1,
-            }),
+            mulligan(),
+            bottoming(7, 1),
+            payment(true, true),
+            payment(false, true),
+            attackers(&[]),
+            damage(3, &[2, 2], false),
+            discard(8, 1),
         ]
+    }
+
+    /// The kinds that are asked before any turn exists, whose clock does not look at the active player.
+    fn opening_kinds() -> Vec<DecisionKind> {
+        vec![mulligan(), bottoming(7, 1)]
     }
 
     fn targets(can_cancel: bool) -> DecisionKind {
@@ -584,6 +700,11 @@ mod tests {
         })
     }
 
+    /// The cards with these ids.
+    fn ids(ids: &[u64]) -> Vec<ObjectId> {
+        ids.iter().copied().map(ObjectId).collect()
+    }
+
     /// The answer that chooses `ids`.
     fn chosen(ids: &[u64]) -> Answer {
         Answer::ChooseCards(CardsChoice(ids.iter().copied().map(ObjectId).collect()))
@@ -603,6 +724,7 @@ mod tests {
             auto_pass: true,
             response: Some(Duration::from_secs(10)),
             blocks: Some(Duration::from_secs(45)),
+            think: Some(Duration::from_secs(60)),
             dwell: Dwell::OFF,
         }
     }
@@ -644,6 +766,19 @@ mod tests {
     #[case::putting_one_card_in_order(OTHER, ordering(1), Some(10))]
     #[case::the_active_player_choosing_cards(ACTIVE, cards(3, 1, 1), None)]
     #[case::the_active_player_putting_cards_in_order(ACTIVE, ordering(3), None)]
+    #[case::keeping_or_mulliganing(OTHER, mulligan(), Some(60))]
+    #[case::the_first_player_keeping_or_mulliganing(ACTIVE, mulligan(), Some(60))]
+    #[case::bottoming_after_a_keep(OTHER, bottoming(7, 1), Some(60))]
+    #[case::the_first_player_bottoming(ACTIVE, bottoming(7, 1), Some(60))]
+    #[case::paying_for_a_spell(OTHER, payment(true, true), Some(60))]
+    #[case::paying_for_a_cost_that_cannot_be_taken_back(OTHER, payment(false, true), Some(60))]
+    #[case::the_active_player_paying(ACTIVE, payment(true, true), None)]
+    #[case::dividing_combat_damage(OTHER, damage(3, &[2, 2], false), Some(60))]
+    #[case::the_active_player_dividing_combat_damage(ACTIVE, damage(3, &[2, 2], false), None)]
+    #[case::declaring_attackers(OTHER, attackers(&[]), Some(60))]
+    #[case::the_active_player_declaring_attackers(ACTIVE, attackers(&[]), None)]
+    #[case::discarding(OTHER, discard(8, 1), Some(60))]
+    #[case::the_active_player_discarding_to_hand_size(ACTIVE, discard(8, 1), None)]
     fn clocks_by_decision(
         #[case] player: PlayerId,
         #[case] kind: DecisionKind,
@@ -654,18 +789,57 @@ mod tests {
     }
 
     #[test]
-    fn every_other_decision_waits_as_long_as_it_takes() {
-        for kind in other_kinds() {
+    fn the_opening_decisions_run_on_the_think_clock_for_every_seat() {
+        for kind in opening_kinds() {
+            for player in [ACTIVE, OTHER, PlayerId(2), PlayerId(3)] {
+                let d = decision(player, kind.clone());
+                assert_eq!(
+                    pace().clock_for(&d, ACTIVE),
+                    Some(Duration::from_secs(60)),
+                    "{d:?}"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn after_the_opening_the_think_clock_hurries_a_seat_that_is_not_the_active_player_only() {
+        for kind in think_kinds() {
+            let (other, active) = (
+                decision(OTHER, kind.clone()),
+                decision(ACTIVE, kind.clone()),
+            );
+            assert_eq!(
+                pace().clock_for(&other, ACTIVE),
+                Some(Duration::from_secs(60)),
+                "{other:?}"
+            );
+            let opening = opening_kinds().contains(&kind);
+            assert_eq!(
+                pace().clock_for(&active, ACTIVE).is_some(),
+                opening,
+                "{active:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn without_a_think_setting_no_decision_that_takes_thought_has_a_clock() {
+        for kind in think_kinds() {
+            let none = Pace {
+                think: None,
+                ..pace()
+            };
             for player in [ACTIVE, OTHER] {
                 let d = decision(player, kind.clone());
-                assert_eq!(pace().clock_for(&d, ACTIVE), None, "{d:?}");
+                assert_eq!(none.clock_for(&d, ACTIVE), None, "{d:?}");
             }
         }
     }
 
     #[rstest]
     #[case::manual(Pace::MANUAL)]
-    #[case::response_off(Pace { response: None, ..pace() })]
+    #[case::response_off(Pace { response: None, think: None, ..pace() })]
     fn a_missing_setting_means_no_clock(#[case] pace: Pace) {
         assert_eq!(
             pace.clock_for(&decision(OTHER, priority(true)), ACTIVE),
@@ -693,14 +867,20 @@ mod tests {
         if pace.blocks.is_none() {
             assert_eq!(pace.clock_for(&decision(OTHER, blockers()), ACTIVE), None);
         }
+        if pace.think.is_none() {
+            for kind in think_kinds() {
+                assert_eq!(pace.clock_for(&decision(OTHER, kind), ACTIVE), None);
+            }
+        }
     }
 
     #[test]
-    fn the_defaults_are_ten_and_forty_five_seconds_and_a_dwell_with_auto_pass_on() {
+    fn the_defaults_are_ten_forty_five_and_sixty_seconds_and_a_dwell_with_auto_pass_on() {
         let pace = Pace::default();
         assert!(pace.auto_pass);
         assert_eq!(pace.response, Some(Duration::from_secs(10)));
         assert_eq!(pace.blocks, Some(Duration::from_secs(45)));
+        assert_eq!(pace.think, Some(Duration::from_secs(60)));
         assert_eq!(
             pace.dwell.range(),
             (Duration::from_millis(250), Duration::from_millis(700))
@@ -779,6 +959,42 @@ mod tests {
     #[case::the_order_given(ordering(3), Some(ordered(&[100, 97, 94])))]
     #[case::one_card_is_its_own_order(ordering(1), Some(ordered(&[100])))]
     #[case::no_cards_are_an_empty_order(ordering(0), Some(ordered(&[])))]
+    #[case::keep_the_hand(mulligan(), Some(Answer::Mulligan(MulliganChoice::Keep)))]
+    #[case::bottom_the_first_card_of_the_hand(bottoming(7, 1), Some(Answer::BottomCards(ids(&[100]))))]
+    #[case::bottom_the_first_two_cards(bottoming(7, 2), Some(Answer::BottomCards(ids(&[100, 97]))))]
+    #[case::bottom_nothing_when_nothing_is_asked(bottoming(7, 0), Some(Answer::BottomCards(ids(&[]))))]
+    #[case::a_cast_is_taken_back_instead_of_paid(
+        payment(true, true),
+        Some(Answer::PayMana(PayChoice::Cancel))
+    )]
+    #[case::a_cast_is_taken_back_with_no_payment_at_hand(
+        payment(true, false),
+        Some(Answer::PayMana(PayChoice::Cancel))
+    )]
+    #[case::the_engine_pays_what_cannot_be_taken_back(
+        payment(false, true),
+        Some(Answer::PayMana(PayChoice::Auto))
+    )]
+    #[case::a_payment_only_the_player_can_make_has_no_answer(payment(false, false), None)]
+    #[case::no_attack_when_none_is_required(attackers(&[]), Some(Answer::DeclareAttackers(Vec::new())))]
+    #[case::only_the_attackers_a_rule_requires(
+        attackers(&[12, 10]),
+        Some(Answer::DeclareAttackers(vec![
+            (ObjectId(10), AttackTarget::Player(PlayerId(0))),
+            (ObjectId(12), AttackTarget::Player(PlayerId(0))),
+        ]))
+    )]
+    #[case::lethal_damage_to_the_first_and_the_rest_to_the_last(damage(3, &[2, 2], false), Some(assigned(&[2, 1])))]
+    #[case::too_little_damage_for_the_second_blocker(damage(1, &[2, 2], false), Some(assigned(&[1, 0])))]
+    #[case::the_rest_goes_to_the_last_blocker(damage(5, &[2, 2], false), Some(assigned(&[2, 3])))]
+    #[case::one_blocker_takes_everything(damage(7, &[3], false), Some(assigned(&[7])))]
+    #[case::three_blockers_in_turn(damage(2, &[1, 1, 1], false), Some(assigned(&[1, 1, 0])))]
+    #[case::a_trampler_keeps_the_rest_for_the_player(damage(5, &[2, 2], true), Some(assigned(&[2, 2])))]
+    #[case::a_trampler_short_of_lethal_gives_all_it_has(damage(3, &[2, 2], true), Some(assigned(&[2, 1])))]
+    #[case::a_trampler_with_nothing_blocking_it_gives_nothing(damage(4, &[], true), Some(assigned(&[])))]
+    #[case::no_blocker_to_give_the_damage_to(damage(4, &[], false), None)]
+    #[case::discard_the_first_card_of_the_hand(discard(8, 1), Some(Answer::Discard(ids(&[100]))))]
+    #[case::discard_the_first_two_cards(discard(9, 2), Some(Answer::Discard(ids(&[100, 97]))))]
     fn safe_defaults(#[case] kind: DecisionKind, #[case] expected: Option<Answer>) {
         assert_eq!(fallback(&decision(OTHER, kind)), expected);
     }
@@ -953,9 +1169,24 @@ mod tests {
     }
 
     #[test]
-    fn nothing_else_has_a_safe_default() {
-        for kind in other_kinds() {
-            assert_eq!(fallback(&decision(OTHER, kind)), None);
+    fn every_decision_that_takes_thought_has_an_answer_for_the_seat_that_ran_out_of_time() {
+        for kind in think_kinds() {
+            let d = decision(OTHER, kind);
+            assert!(fallback(&d).is_some(), "{d:?}");
+        }
+    }
+
+    #[test]
+    fn the_clock_and_the_fallback_of_what_takes_thought_are_the_same_for_every_seat() {
+        for kind in think_kinds() {
+            let want = (
+                pace().clock_for(&decision(OTHER, kind.clone()), ACTIVE),
+                fallback(&decision(OTHER, kind.clone())),
+            );
+            for seat in 1..12 {
+                let d = decision(PlayerId::from_index(seat), kind.clone());
+                assert_eq!((pace().clock_for(&d, ACTIVE), fallback(&d)), want, "{d:?}");
+            }
         }
     }
 
@@ -981,7 +1212,7 @@ mod tests {
         assert!(is_priority(&decision(OTHER, priority(true))));
         assert!(is_priority(&decision(OTHER, priority(false))));
         assert!(!is_priority(&decision(OTHER, blockers())));
-        for kind in other_kinds() {
+        for kind in think_kinds() {
             assert!(!is_priority(&decision(OTHER, kind)));
         }
     }

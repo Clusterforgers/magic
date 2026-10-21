@@ -4,7 +4,7 @@ use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
 
-use crate::characteristics::characteristics;
+use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::Target;
 use crate::counters::CountersChanged;
 use crate::events::{DeathCause, Event, ZoneCause};
@@ -182,7 +182,21 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
             .filter(|d| d.lapsed(state))
             .map(|d| Event::DelayedTriggerExpired { id: d.id() }),
     );
-    expired
+    if !expired.is_empty() {
+        return expired;
+    }
+    // CR 800.4: with their control effects over, what a player who left still controls is exiled.
+    state
+        .objects()
+        .filter(|o| matches!(o.zone(), Zone::Battlefield | Zone::Stack))
+        .filter(|o| !state.is_alive(controller_of_object(state, o)))
+        .map(|o| Event::ZoneChanged {
+            object: o.id(),
+            from: o.zone(),
+            to: Zone::Exile,
+            cause: ZoneCause::Exiled,
+        })
+        .collect()
 }
 
 #[cfg(test)]
@@ -443,6 +457,60 @@ mod tests {
             [Event::PlayerLost {
                 player: PlayerId(0),
                 reason: LossReason::ZeroLife
+            }]
+        );
+    }
+
+    #[test]
+    fn what_a_player_who_left_still_controls_is_exiled_once_their_own_objects_are_gone() {
+        use crate::fold::apply_event;
+        let mut game = GameState::from_setup(&setup(
+            vec![vec![], vec![]],
+            vec![vec![creature("Wolf", 2, 2)], vec![creature("Bear", 2, 2)]],
+        ))
+        .unwrap();
+        let find = |game: &GameState, name: &str| {
+            game.objects()
+                .find(|o| o.card().name == name)
+                .map(crate::object::GameObject::id)
+                .unwrap()
+        };
+        let (wolf, bear) = (find(&game, "Wolf"), find(&game, "Bear"));
+        // The Bear is the foe's but enters under the control of seat 0, who then leaves.
+        let steal = Event::Entered {
+            object: bear,
+            tapped: false,
+            controller: PlayerId(0),
+            chosen: None,
+        };
+        let lost = Event::PlayerLost {
+            player: PlayerId(0),
+            reason: LossReason::Conceded,
+        };
+        apply_event(&mut game, &steal).unwrap();
+        assert_eq!(housekeeping(&game), []);
+        apply_event(&mut game, &lost).unwrap();
+        let first = housekeeping(&game);
+        assert!(
+            first.contains(&Event::ObjectLeftGame { object: wolf }),
+            "their own objects leave first"
+        );
+        assert!(
+            first
+                .iter()
+                .all(|e| matches!(e, Event::ObjectLeftGame { .. })),
+            "{first:?}"
+        );
+        for event in &first {
+            apply_event(&mut game, event).unwrap();
+        }
+        assert_eq!(
+            housekeeping(&game),
+            [Event::ZoneChanged {
+                object: bear,
+                from: Zone::Battlefield,
+                to: Zone::Exile,
+                cause: ZoneCause::Exiled,
             }]
         );
     }

@@ -426,7 +426,10 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::SetPT { .. } => Layer::PtSet,
         Wanted::ModifyPT { .. } => Layer::PtModify,
         Wanted::SwitchPT => Layer::PtSwitch,
-        Wanted::CantAttack | Wanted::CantBlock => return None,
+        Wanted::CantAttack
+        | Wanted::CantBlock
+        | Wanted::CantBeBlocked
+        | Wanted::CantBeBlockedBy(_) => return None,
     })
 }
 
