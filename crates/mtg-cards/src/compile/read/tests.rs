@@ -154,6 +154,7 @@ mod activated;
 mod audit;
 mod cast;
 mod compound;
+mod counted;
 mod counters;
 mod create;
 mod enters;

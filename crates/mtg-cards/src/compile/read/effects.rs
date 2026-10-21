@@ -5,6 +5,7 @@ use mtg_core::mana::ManaType;
 
 use super::amounts::{cards, its_stat, number_word, points};
 use super::cast;
+use super::costs;
 use super::counters;
 use super::create;
 use super::library;
@@ -17,7 +18,7 @@ use crate::effect::{Destination, Effect, Order, Place, Produce};
 use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
-use crate::value::Amount;
+use crate::value::{Amount, CounterKind};
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
@@ -348,6 +349,12 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
             Effect::Shuffle { who }
         }
         "sacrifice" | "sacrifices" => sacrifice(r, who)?,
+        // "you get {E}{E}": energy counters, written with their symbol.
+        "get" | "gets" => Effect::PutCounters {
+            on: who,
+            counter: CounterKind::Other("energy".to_owned()),
+            count: costs::energy(r)?,
+        },
         _ => return None,
     })
 }

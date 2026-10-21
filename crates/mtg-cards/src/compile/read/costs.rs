@@ -167,8 +167,17 @@ fn remove(r: &mut Reader<'_>) -> Option<CostItem> {
     Some(CostItem::RemoveCounters { counter, count })
 }
 
+/// The energy symbols of an amount: "{E}{E}" for two, "X {E}" for the number announced.
+pub(super) fn energy_text(amount: &Amount) -> Option<String> {
+    match amount {
+        Amount::Fixed(count) if *count > 0 => Some("{E}".repeat(usize::try_from(*count).ok()?)),
+        Amount::X => Some("X {E}".to_owned()),
+        _ => None,
+    }
+}
+
 /// A run of energy symbols: "{E}{E}" is two energy, "X {E}" the number announced.
-fn energy(r: &mut Reader<'_>) -> Option<Amount> {
+pub(super) fn energy(r: &mut Reader<'_>) -> Option<Amount> {
     let x = r.x_free && r.word("x");
     let mut count = 0;
     while r

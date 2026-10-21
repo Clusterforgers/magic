@@ -22,7 +22,7 @@ use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::SpendOn;
 use crate::trigger::TriggerPattern;
-use crate::value::{Amount, Condition};
+use crate::value::{Amount, Condition, CounterKind};
 
 /// The oracle wording of an ability the readers produce, in the first way its effects can be
 /// written (see [`variants`]); `None` for any other ability.
@@ -398,32 +398,42 @@ fn sacrifice_text(filter: &Selector) -> Option<String> {
     Some(format!("{} {text}", article(&text)))
 }
 
-/// Whether the effect is written as a verb with "you" understood ("draw a card"), which "you may" can precede.
-fn is_imperative(effect: &Effect) -> bool {
+/// Whether the effect puts energy counters on you, which a card writes "you get {E}{E}".
+fn gets_energy(effect: &Effect) -> bool {
     matches!(
         effect,
-        Effect::Scry { who: Ref::You, .. }
-            | Effect::Surveil { who: Ref::You, .. }
-            | Effect::Proliferate { who: Ref::You }
-            | Effect::Draw { who: Ref::You, .. }
-            | Effect::Mill { who: Ref::You, .. }
-            | Effect::Discard { who: Ref::You, .. }
-            | Effect::Shuffle { who: Ref::You }
-            | Effect::Destroy {
-                regenerate: true,
-                ..
-            }
-            | Effect::Exile { .. }
-            | Effect::Tap { .. }
-            | Effect::Untap { .. }
-            | Effect::Regenerate { .. }
-            | Effect::Counter { .. }
-            | Effect::Move { .. }
-            | Effect::CreateToken { who: Ref::You, .. }
-            | Effect::PutCounters { .. }
-            | Effect::RemoveCounters { .. }
-            | Effect::MoveCounters { .. }
+        Effect::PutCounters { on: Ref::You, counter, .. }
+            if *counter == CounterKind::Other("energy".to_owned())
     )
+}
+
+/// Whether the effect is written as a verb with "you" understood ("draw a card"), which "you may" can precede.
+fn is_imperative(effect: &Effect) -> bool {
+    !gets_energy(effect)
+        && matches!(
+            effect,
+            Effect::Scry { who: Ref::You, .. }
+                | Effect::Surveil { who: Ref::You, .. }
+                | Effect::Proliferate { who: Ref::You }
+                | Effect::Draw { who: Ref::You, .. }
+                | Effect::Mill { who: Ref::You, .. }
+                | Effect::Discard { who: Ref::You, .. }
+                | Effect::Shuffle { who: Ref::You }
+                | Effect::Destroy {
+                    regenerate: true,
+                    ..
+                }
+                | Effect::Exile { .. }
+                | Effect::Tap { .. }
+                | Effect::Untap { .. }
+                | Effect::Regenerate { .. }
+                | Effect::Counter { .. }
+                | Effect::Move { .. }
+                | Effect::CreateToken { who: Ref::You, .. }
+                | Effect::PutCounters { .. }
+                | Effect::RemoveCounters { .. }
+                | Effect::MoveCounters { .. }
+        )
 }
 
 /// "{G}{G}", "one mana of any color": the mana an effect adds.
@@ -704,6 +714,10 @@ impl Writer<'_> {
                 times,
                 only,
             } if times.is_one() => add_text(mana, only)?,
+            // "you get {E}{E}": energy is a counter on the player, written with its symbol.
+            Effect::PutCounters { count, .. } if gets_energy(effect) => {
+                format!("you get {}", costs::energy_text(count)?)
+            }
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. } => self.counters(effect)?,
