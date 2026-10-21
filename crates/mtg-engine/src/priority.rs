@@ -234,7 +234,7 @@ fn can_activate(
     {
         return false;
     }
-    let Ok(price) = Price::of(cost) else {
+    let Ok(price) = Price::announced(cost) else {
         return false;
     };
     if rules.is_mana_ability() {
@@ -368,10 +368,6 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             if types.contains(CardType::Land) {
                 return false;
             }
-            // The cost the engine pays has no {X} in it, so paying it would be casting for less.
-            if object.card().x_in_cost > 0 {
-                return false;
-            }
             let timing = types.contains(CardType::Instant)
                 || keywords::grants_instant_timing(state, *id)
                 || sorcery_timing(state, player);
@@ -459,7 +455,7 @@ pub(crate) fn answer(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an activated ability is offered when its whole price can be paid now: a `{T}` needs an untapped source, mana needs floating mana or untapped mana sources (the source of an ability that taps it is none of them), and an `{X}` or a part the engine does not pay is never offered.
+    //! Goal: an activated ability is offered when its whole price can be paid now: a `{T}` needs an untapped source, mana needs floating mana or untapped mana sources (the source of an ability that taps it is none of them), an `{X}` is offered when X = 0 can be paid, and a part the engine does not pay is never offered.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -505,7 +501,10 @@ mod tests {
     #[case::a_colour_the_lands_do_not_make("\"{R}\"", 3, false)]
     #[case::mana_and_a_tap("[{\"Mana\":\"{1}\"},\"Tap\"]", 1, true)]
     #[case::mana_and_a_tap_without_a_land("[{\"Mana\":\"{1}\"},\"Tap\"]", 0, false)]
-    #[case::x("[{\"Mana\":\"{X}\"}]", 3, false)]
+    #[case::x("[{\"Mana\":\"{X}\"}]", 3, true)]
+    #[case::x_of_nothing("[{\"Mana\":\"{X}\"}]", 0, true)]
+    #[case::x_with_a_colour_that_cannot_be_paid("[{\"Mana\":\"{X}{R}\"}]", 3, false)]
+    #[case::x_and_a_tap_without_a_source("[{\"Mana\":\"{X}\"},\"Tap\"]", 0, true)]
     #[case::life_as_well("[{\"Mana\":\"{1}\"},{\"PayLife\":1}]", 3, false)]
     fn an_ability_is_offered_when_its_price_can_be_paid(
         #[case] cost: &str,

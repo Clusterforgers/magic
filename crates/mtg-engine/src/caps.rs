@@ -11,10 +11,10 @@
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
 //! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
 //! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
-//! combat, flash, hexproof, enchant, equip and reconfigure, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
-use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS};
+use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
 
 /// The primitives the engine runs, and the only list of them. A task that teaches the engine one adds its
 /// name here in the same change as the code: the test of the interpreter fails when a name is listed for an
@@ -39,6 +39,9 @@ const RUNS: &[&str] = &[
     "Trigger.AnyOf",
     "Cost.Tap",
     "Cost.Mana",
+    "Cost.Mana.X",
+    "Cost.Loyalty.X",
+    X_COST,
     "Cost.SacrificeSelf",
     "Cost.ExileSelf",
     "Cost.DiscardSelf",
@@ -130,6 +133,10 @@ const RUNS: &[&str] = &[
     "Keyword.Equip",
     "Keyword.Reconfigure",
     "Keyword.LivingWeapon",
+    "Keyword.Kicker",
+    "Keyword.Multikicker",
+    "Condition.Kicked",
+    "Amount.Kicks",
     "Ability.Replacement",
     "ReplaceWhen.TokenCreation",
     "ReplaceWhen.Damage",
@@ -207,7 +214,7 @@ mod tests {
     #[case::gaining_life("Effect.GainLife", true)]
     #[case::losing_life("Effect.LoseLife", true)]
     #[case::mana_costs("Cost.Mana", true)]
-    #[case::x_in_a_mana_cost("Cost.Mana.X", false)]
+    #[case::x_in_a_mana_cost("Cost.Mana.X", true)]
     #[case::paying_life("Cost.PayLife", false)]
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_zones("Ability.From", true)]
@@ -291,8 +298,9 @@ mod tests {
     #[case::divided_amounts("Amount.Divided", false)]
     #[case::even_shares("Amount.EvenShare", false)]
     #[case::loyalty_abilities("Ability.Loyalty", true)]
-    #[case::loyalty_costs_with_an_x("Cost.Loyalty.X", false)]
-    #[case::being_kicked("Condition.Kicked", false)]
+    #[case::loyalty_costs_with_an_x("Cost.Loyalty.X", true)]
+    #[case::being_kicked("Condition.Kicked", true)]
+    #[case::the_number_of_kicks("Amount.Kicks", true)]
     #[case::may("Effect.May", true)]
     #[case::choosing("Effect.Choose", true)]
     #[case::modes("Effect.Modal", true)]
@@ -329,7 +337,8 @@ mod tests {
     #[case::prowess("Keyword.Prowess", true)]
     #[case::battle_cry("Keyword.BattleCry", true)]
     #[case::ward("Keyword.Ward", true)]
-    #[case::kicker("Keyword.Kicker", false)]
+    #[case::kicker("Keyword.Kicker", true)]
+    #[case::multikicker("Keyword.Multikicker", true)]
     #[case::surveilling("Effect.Surveil", false)]
     #[case::proliferating("Effect.Proliferate", false)]
     #[case::goading("Effect.Goad", false)]
@@ -371,7 +380,9 @@ mod tests {
     #[case::if_you_do("Condition.Performed", false)]
     #[case::the_monarch("Condition.Monarch", false)]
     #[case::the_citys_blessing("Condition.CitysBlessing", false)]
-    #[case::x_costs(X_COST, false)]
+    #[case::x_costs(X_COST, true)]
+    #[case::x_read_after_resolving("Amount.X.Elsewhere", false)]
+    #[case::paying_x_in_an_effect("Effect.Pay.X", false)]
     #[case::faces(FACES, false)]
     #[case::variable_stats(VARIABLE_STATS, true)]
     fn the_engine_runs_what_it_runs_today(#[case] name: &str, #[case] runs: bool) {

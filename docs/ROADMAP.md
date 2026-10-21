@@ -72,13 +72,15 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 ### Costs and casting
 - [x] (g1) One announcement procedure (CR 601.2): modes, X, optional, alternative and additional costs, targets and division, then the total cost; `ChooseNumber`, `ChooseCosts` and `DivideAmount` are built with it
-- [ ] (g2) `{X}` in spell and ability costs and the `-X` of a loyalty ability; the support walker names `Cost.Mana.X` and `Cost.Loyalty.X`
-- [ ] (g3) Optional and additional costs: kicker and multikicker; Burst Lightning is Verified
+- [x] (g2) `{X}` in spell and ability costs and the `-X` of a loyalty ability; the support walker names `Cost.Mana.X` and `Cost.Loyalty.X`; Blaze, Stroke of Genius, Kessig Wolf Run and Tezzeret the Seeker are Verified
+- [ ] (g2b) X read after the spell or ability has resolved: a permanent that enters with X counters (Walking Ballista, Hangarback Walker), a trigger or delayed trigger that reads X, X in a target filter and the mana value of a spell with X on the stack; the walker names these `Amount.X.Elsewhere`
+- [x] (g3) Optional costs: kicker and multikicker are asked with `ChooseCosts` and `ChooseNumber`, added to the total cost, remembered by the spell, the permanent and its triggers, and read as `Condition::Kicked` and `Amount::Kicks`; Burst Lightning, Gatekeeper of Malakir and Wolfbriar Elemental are Verified
+- [ ] (g3b) Other additional costs a spell may choose (buyback, entwine, "as an additional cost, you may ..."), a kicker with a part other than mana, and the kicks of a permanent that left before its trigger went on the stack (last known information)
 - [ ] (g4) Alternative costs and cast permissions: flashback, evoke, overload, madness, suspend, casting from another zone, without paying the cost or as though it had flash, cascade; Mulldrifter, Faithless Looting and Bloodbraid Elf are Verified
 - [ ] (g5) Cost modifiers (`Ability::CostModifier`): reductions, increases, convoke, delve; Fireball is Verified
 - [ ] (g6) Costs of activated abilities beyond `{T}`, mana and sacrificing the source: a chosen permanent (chosen when the ability is announced), life, discard, counters removed, a card exiled from a graveyard, untapped creatures tapped; cycling; a card's support counts the abilities of the predefined tokens it makes; Flooded Strand is Verified
 - [ ] (g7) Mana: abilities of several mana or counting something, a mana ability with further effects (painlands, Eggs; `is_mana_ability`, then the compiler reads them again), restrictions on how mana is spent, Treasure and other sacrifice sources offered while paying a spell; Sol Ring and Gaea's Cradle are Verified
-- [ ] (g8) A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
+- [x] (g8) A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
 - [ ] (g9) Divided amounts at resolution: `Amount.Divided` and `Amount.EvenShare` read `Choices.division` (`DealDamage` and `PutCounters` give each target its share) and the support walker stops naming them; Fire // Ice (n1) needs it
 
 ### Trigger families
@@ -107,6 +109,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (d9) Timer bank: extensions earned and spent at expiry, a delay before the countdown shows, an optional clock for the active seat
 - [ ] (i2) Arena flow P10: smart stops, per-ability yields, an order-by-timestamp preference, damage auto-assign and the engine's answer to a one-option decision (`docs/arena-flow.md`)
 - [ ] Prompts for ChooseNumber, DivideAmount, ChooseCosts, ChooseReplacement, scry and the order of cards put back; the payment prompt for X and restricted mana
+- [ ] The `YesNo` prompt disables Yes and its key when `YesNoOptions.only_no` is set (a payment the seat cannot make)
 - [ ] Cast options in the table: face, optional and alternative costs, modes, X
 - [ ] Attack and block prompts mark the creatures a rule requires (`AttackOptions.required`, `BlockOptions.required`) as chosen and locked, and a seat panel shows a revealed library top (`PlayerView.revealed_top`)
 - [ ] Table states: counters, attachments tucked beside their host, loyalty, faces and face-down cards, copies, command zone and commander damage, support marks; each in the `/dev/table` fixture with screenshots at six sizes in both themes

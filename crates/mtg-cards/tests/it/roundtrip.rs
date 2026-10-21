@@ -163,6 +163,7 @@ fn simple_amount() -> impl Strategy<Value = Amount> {
         (leaf_selector(), stat()).prop_map(|(of, stat)| Amount::Greatest { of, stat }),
         (leaf_selector(), stat()).prop_map(|(of, stat)| Amount::Total { of, stat }),
         leaf_selector().prop_map(Amount::CardTypes),
+        Just(Amount::Kicks),
     ]
 }
 

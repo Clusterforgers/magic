@@ -1,0 +1,54 @@
+{
+  "oracle_id": "4aeafdf3-7828-4114-8c74-3bd46357caec",
+  "name": "Tezzeret the Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tezzeret the Seeker",
+      "oracle_fingerprint": "37b23380fc1330b2443257652e036588",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] }, "bounds": { "min": 0, "max": 2 } }
+            ],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "MinusX",
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Artifact" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ],
+                  "as": "artifact"
+                }
+              },
+              { "Move": { "what": { "Bound": "artifact" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 5 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddType": "Creature" }, { "SetPT": { "power": 5, "toughness": 5 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -116,6 +116,7 @@ What ours leaks:
 - Pace. At a default window a seat that can act makes the table wait for a human (10 s as a non-active seat, unbounded as the active one); a seat that cannot waits 250 to 700 ms and passes as a step and batch of its own, so the other seats see the same stream ([server.md](server.md), Dwell). Its own main phase with an empty stack is passed at once, because what it plays is in plain sight.
 - What remains: how long a seat that can act takes (a pause past 700 ms or a pass before 250 ms is its own); a pass at the response-clock deadline, which reads as "was asked and sat on it"; and the choices of stops, Full Control and yields. Arena shows the same choices; constant Full Control is "very obvious" [community S12].
 - The log is uniform: `PriorityGranted` and `PriorityPassed` are public events for every window, skipped or not. Arrival time and batch shape could leak; the text does not.
+- Payments. An effect that asks a player to pay ("unless that player pays {2}", a shock land's two life) asks every player it names the same question at the same moment with the same clock, whether they can pay or not; a player who cannot may only say No, and the table or the clock answers No for them ([engine.md](engine.md), Paying in an effect). A skipped question would show that the player could not pay.
 - Not leaked: there is no hover or selection relay, and clocks, previews, `Welcome` and the `Stops`, `FullControl` and `Yielding` notices reach only their seat. The client's turn feed uses public events only, the same for every seat, and never marks another seat's pass as automatic or timed ([ui-design.md](ui-design.md), Turn and focus).
 
 Mitigations, ranked by value for effort:
@@ -128,6 +129,7 @@ Mitigations, ranked by value for effort:
 | 4 | Leak test over what the other seats receive (ours) | keeps 2 and 3 true | done (P8), for combat windows and for a spell or a triggered ability on the stack |
 | 5 | Strict table: auto-pass off for every seat (ours; MTGO's default stops are the nearest [official S5]) | everything, paid in clicks | `MTG_AUTO_PASS=0`, server-wide |
 | 6 | Never add a hover or selection relay, a thinking cue or the kind of decision owed to the views (Arena leaks these [community S22, S25]) | new tells | holds |
+| 7 | A payment is asked of every player an effect names, with No the only answer for one who cannot pay (ours) | the skipped question of a player who cannot pay | done (g8), tested in `pay_leak.rs` |
 
 The client never paces steps: the fx layer must not wait for a cadence, and P3 does it at the source.
 

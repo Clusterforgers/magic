@@ -1,6 +1,6 @@
 //! The values of the DSL read from the game: references, selectors, amounts and conditions.
 //!
-//! Nothing here changes state. What the engine cannot evaluate yet (loyalty, X, divided amounts, kicker)
+//! Nothing here changes state. What the engine cannot evaluate yet (loyalty, X, divided amounts)
 //! is a `ResolveError::Unsupported` with the name of what is missing; `Caps` keeps the cards that need
 //! them from being offered, so the error is not met in a game.
 
@@ -639,7 +639,22 @@ impl<'a> Scope<'a> {
             Amount::CardTypes(_) => {
                 return Err(ResolveError::Unsupported("card types among cards"));
             }
+            Amount::Kicks => i64::try_from(self.paid_costs().len())
+                .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
         })
+    }
+
+    /// The optional costs paid as the spell was cast, by index, a repeatable cost once for each payment: those the
+    /// spell or ability announced, else those of the spell its source is or came from while that is still the object
+    /// named (the spell on the stack, the permanent it became).
+    fn paid_costs(&self) -> &[usize] {
+        if !self.choices.optional_costs.is_empty() {
+            return &self.choices.optional_costs;
+        }
+        self.state
+            .object(self.source.id)
+            .filter(|object| object.counter() == self.source.counter)
+            .map_or(&[], GameObject::paid_costs)
     }
 
     /// Whether a condition is true now.
@@ -679,7 +694,7 @@ impl<'a> Scope<'a> {
                 }
                 holds
             }
-            Condition::Kicked => return Err(ResolveError::Unsupported("kicker")),
+            Condition::Kicked => !self.paid_costs().is_empty(),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
             Condition::Monarch(_) => return Err(ResolveError::Unsupported("the monarch")),
             Condition::CitysBlessing(_) => {
@@ -948,7 +963,7 @@ mod tests {
     }
 
     #[rstest]
-    #[case::kicked(r#""Kicked""#, Err("kicker"))]
+    #[case::not_kicked(r#""Kicked""#, Ok(false))]
     #[case::your_turn(r#""YourTurn""#, Ok(true))]
     #[case::not(r#"{"Not":"YourTurn"}"#, Ok(false))]
     #[case::all(

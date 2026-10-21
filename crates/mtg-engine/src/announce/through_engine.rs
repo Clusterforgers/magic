@@ -42,8 +42,9 @@ fn begun() -> Engine {
         optional: vec![Optional {
             label: "Kicker {1}".to_owned(),
             mana: ManaCost::parse("{1}").unwrap(),
+            repeatable: false,
         }],
-        x: Some(XCost { symbols: 1 }),
+        x: Some(XCost::Mana { symbols: 1 }),
     };
     engine
         .begin(Pending::needing(SEAT, What::Spell(card), needs))

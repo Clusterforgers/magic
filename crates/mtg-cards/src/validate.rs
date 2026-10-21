@@ -139,6 +139,10 @@ struct Walker<'a> {
     scope: Scope,
     has_kicker: bool,
     x_free: bool,
+    /// Whether an `X` read here is the one announced for the ability being walked, which its effects read as it resolves.
+    x_now: bool,
+    /// How many abilities deep the walk stands inside abilities that other abilities grant or tokens carry.
+    nested: u32,
     /// Where the walk stands in an effect list, for "if you do".
     after: After,
     face: usize,
@@ -157,6 +161,8 @@ impl<'a> Walker<'a> {
             scope: Scope::default(),
             has_kicker: false,
             x_free: false,
+            x_now: false,
+            nested: 0,
             after: After::Nothing,
             face: 0,
             spell_targets: Vec::new(),
@@ -307,6 +313,11 @@ impl<'a> Walker<'a> {
                 if !self.x_free {
                     self.x_uses.push((self.face, self.current_path()));
                 }
+                // Only the effects of the spell or ability that has the X read it; what it creates or leaves behind does
+                // not remember it.
+                if !self.x_now {
+                    self.uses("Amount", "X.Elsewhere");
+                }
             }
             Amount::Count(selector) => self.selector(selector),
             Amount::Stat { of, .. } => {
@@ -359,6 +370,12 @@ impl<'a> Walker<'a> {
             Amount::CardTypes(of) => {
                 self.uses("Amount", "CardTypes");
                 self.selector(of);
+            }
+            Amount::Kicks => {
+                self.uses("Amount", "Kicks");
+                if !self.has_kicker {
+                    self.problem("`Kicks` needs a Kicker or Multikicker keyword on the card");
+                }
             }
         }
     }
@@ -464,6 +481,10 @@ impl<'a> Walker<'a> {
             if cost.0.contains(&item) {
                 self.uses("Effect", name);
             }
+        }
+        // There is no announcement to choose an X in the middle of a resolution.
+        if has_x_mana(cost) {
+            self.uses("Effect", "Pay.X");
         }
     }
 
@@ -580,7 +601,9 @@ impl<'a> Walker<'a> {
             }
         }
         let scope = std::mem::take(&mut self.scope);
+        self.nested += 1;
         self.at("GrantAbility", |w| w.ability(granted));
+        self.nested -= 1;
         self.scope = scope;
     }
 
@@ -710,8 +733,11 @@ impl<'a> Walker<'a> {
     }
 
     fn target_spec(&mut self, spec: &TargetSpec) {
+        // What may be targeted is judged as the targets are chosen, which has no X to read; the amount to divide has it.
+        let saved = std::mem::replace(&mut self.x_now, false);
         self.at("what", |w| w.targetable(&spec.what));
         self.at("bounds", |w| w.bounds(&spec.bounds));
+        self.x_now = saved;
         if let Some(divide) = &spec.divide {
             self.at("divide", |w| w.amount(divide));
         }
@@ -772,9 +798,11 @@ impl<'a> Walker<'a> {
             self.problem("a creature token needs power and toughness, any other token none");
         }
         let saved = std::mem::take(&mut self.scope);
+        self.nested += 1;
         for (i, ability) in spec.abilities.iter().enumerate() {
             self.at(format!("abilities[{i}]"), |w| w.ability(ability));
         }
+        self.nested -= 1;
         self.scope = saved;
     }
 
@@ -991,7 +1019,10 @@ impl<'a> Walker<'a> {
             Effect::DelayedTrigger { when, effects, .. } => {
                 w.at("when", |w| w.trigger_pattern(when));
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
+                // The trigger it leaves behind does not remember X.
+                let now = std::mem::replace(&mut w.x_now, false);
                 w.effect_list("effects", effects, false);
+                w.x_now = now;
                 w.scope.in_trigger = saved;
             }
             Effect::If {
@@ -1186,14 +1217,21 @@ impl<'a> Walker<'a> {
             self.at("condition", |w| w.condition(condition));
         }
         self.x_free = cost.has_x();
+        // An `{X}` of the mana is asked as the ability is announced; another X in a cost (life) is not.
+        let x_mana = has_x_mana(cost);
+        if x_mana {
+            self.uses("Cost", "Mana.X");
+        }
+        self.x_now = x_mana;
         self.body(targets, effects, false);
     }
 
-    /// A loyalty ability: a `-X` cost waits for the choice of X, which the effects then read.
+    /// A loyalty ability: a `-X` cost is asked as the ability is announced, and the effects read it.
     fn loyalty_ability(&mut self, cost: LoyaltyCost, targets: &[TargetSpec], effects: &[Effect]) {
         if cost == LoyaltyCost::MinusX {
             self.uses("Cost", "Loyalty.X");
             self.x_free = true;
+            self.x_now = true;
         }
         self.body(targets, effects, false);
     }
@@ -1209,8 +1247,13 @@ impl<'a> Walker<'a> {
         }
         self.where_and_how_often(ability);
         let saved_x = self.x_free;
+        let saved_now = std::mem::replace(&mut self.x_now, false);
         self.at(tag, |w| match ability {
-            Ability::Spell { targets, effects } => w.body(targets, effects, false),
+            Ability::Spell { targets, effects } => {
+                // The spell has the X of its own cost; one that another ability grants or a token carries has none.
+                w.x_now = w.nested == 0;
+                w.body(targets, effects, false);
+            }
             Ability::Loyalty {
                 cost,
                 targets,
@@ -1292,6 +1335,7 @@ impl<'a> Walker<'a> {
             }
         });
         self.x_free = saved_x;
+        self.x_now = saved_now;
     }
 
     /// A rule of the game names what it is about: players or objects, and for the one that triggers again the event that
@@ -1430,12 +1474,19 @@ impl<'a> Walker<'a> {
     }
 }
 
+/// Whether a cost has an `{X}` in its mana.
+fn has_x_mana(cost: &Cost) -> bool {
+    cost.0
+        .iter()
+        .any(|item| matches!(item, CostItem::Mana(mana) if mana.has_x()))
+}
+
 /// Every primitive an ability uses, named `Effect.DealDamage`, `Keyword.Flying`, `Trigger.ZoneChange`,
 /// `Cost.Tap`, `Mod.ModifyPT`, `ReplaceWhen.TokenCreation`, `ReplaceBy.Multiply` or `Ability.Loyalty`;
 /// an ability with a `limit`, a zone other than the battlefield or sorcery timing also uses `Ability.Limit`,
 /// `Ability.From` or `Ability.Sorcery`.
 /// A value the engine cannot read yet is named too, wherever it stands (a condition, an amount, a selector):
-/// `Amount.Divided`, `Amount.EvenShare` and `Condition.Kicked`. A loyalty ability whose cost is `-X` names `Cost.Loyalty.X`.
+/// `Amount.Divided`, `Amount.EvenShare`, `Amount.Kicks` and `Condition.Kicked`. A loyalty ability whose cost is `-X` names `Cost.Loyalty.X`.
 ///
 /// A plain `{T}: Add {X}` is one primitive, [`PLAIN_MANA_ABILITY`]: the engine runs that exact shape
 /// and not the general ability, cost and effect it is made of.
@@ -1791,6 +1842,16 @@ mod tests {
     #[case::a_payment_that_exiles_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["ExileSelf"]}}]}}"#, &["Ability.Triggered", "Cost.ExileSelf", "Effect.Pay", "Effect.Pay.ExileSelf", "Trigger.StepBegins"])]
     #[case::a_payment_that_discards_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["DiscardSelf"]}}]}}"#, &["Ability.Triggered", "Cost.DiscardSelf", "Effect.Pay", "Effect.Pay.DiscardSelf", "Trigger.StepBegins"])]
     #[case::a_payment_that_sacrifices_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["SacrificeSelf"]}}]}}"#, &["Ability.Triggered", "Cost.SacrificeSelf", "Effect.Pay", "Effect.Pay.SacrificeSelf", "Trigger.StepBegins"])]
+    #[case::an_x_in_the_cost_of_a_spell_is_read_by_its_effects(r#"{"Spell":{"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Spell", "Effect.Draw"])]
+    #[case::an_x_in_the_mana_of_an_ability_is_read_by_its_effects(r#"{"Activated":{"cost":"{X}{G}","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.Mana.X", "Effect.Draw"])]
+    #[case::an_x_beside_a_tap(r#"{"Activated":{"cost":[{"Mana":"{X}{R}{G}"},"Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Cost.Mana", "Cost.Mana.X", "Cost.Tap", "Effect.Draw"])]
+    #[case::an_x_that_the_ability_never_announced(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Activated", "Amount.X.Elsewhere", "Cost.Tap", "Effect.Draw"])]
+    #[case::an_x_in_a_triggered_ability(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.StepBegins"])]
+    #[case::an_x_in_a_delayed_trigger_the_spell_leaves_behind(r#"{"Spell":{"effects":[{"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Draw":{"count":"X"}}]}}]}}"#, &["Ability.Spell", "Amount.X.Elsewhere", "Effect.DelayedTrigger", "Effect.Draw", "Trigger.StepBegins"])]
+    #[case::an_x_in_a_loyalty_ability_that_removes_no_x(r#"{"Loyalty":{"cost":{"Minus":2},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Amount.X.Elsewhere", "Effect.Draw"])]
+    #[case::an_x_in_the_effects_of_a_loyalty_ability_that_removes_x(r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Loyalty", "Cost.Loyalty.X", "Effect.Draw"])]
+    #[case::an_x_in_the_ability_a_token_carries(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"Draw":{"count":"X"}}]}}]}}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Amount.X.Elsewhere", "Cost.Tap", "Effect.CreateToken", "Effect.Draw"])]
+    #[case::a_payment_of_x_in_an_effect(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":"{X}"}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.Pay", "Effect.Pay.X", "Trigger.StepBegins"])]
     #[case::attaching_the_source_to_a_target(r#"{"Activated":{"cost":"{2}","timing":"Sorcery","targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Attach":{"what":"This","to":{"Target":0}}}]}}"#, &["Ability.Activated", "Ability.Sorcery", "Cost.Mana", "Effect.Attach"])]
     #[case::equip_pays_a_mana_cost(r#"{"Keyword":{"Equip":"{2}"}}"#, &["Cost.Mana", "Keyword.Equip"])]
     #[case::reconfigure_pays_a_mana_cost(r#"{"Keyword":{"Reconfigure":"{2}"}}"#, &["Cost.Mana", "Keyword.Reconfigure"])]
@@ -2245,21 +2306,22 @@ mod tests {
         assert_eq!(used_primitives(&ability), expected);
     }
 
-    #[test]
-    fn being_kicked_counts_as_a_primitive_beside_the_keyword() {
-        let json = r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#;
+    #[rstest]
+    #[case::being_kicked(
+        r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#,
+        &["Ability.Spell", "Condition.Kicked", "Effect.Draw", "Effect.If"]
+    )]
+    #[case::the_number_of_kicks(
+        r#"{"Spell":{"effects":[{"Draw":{"count":"Kicks"}}]}}"#,
+        &["Ability.Spell", "Amount.Kicks", "Effect.Draw"]
+    )]
+    fn being_kicked_counts_as_a_primitive_beside_the_keyword(
+        #[case] json: &str,
+        #[case] expected: &[&str],
+    ) {
         let ability: Ability = serde_json::from_str(json).unwrap();
-        assert_eq!(
-            used_primitives(&ability),
-            [
-                "Ability.Spell",
-                "Condition.Kicked",
-                "Effect.Draw",
-                "Effect.If"
-            ]
-            .map(String::from)
-            .into()
-        );
+        let expected: BTreeSet<String> = expected.iter().map(|name| (*name).to_owned()).collect();
+        assert_eq!(used_primitives(&ability), expected);
     }
 
     #[rstest]
@@ -2322,6 +2384,10 @@ mod tests {
     #[case::kicked_without_kicker(
         r#"{"Spell":{"effects":[{"If":{"condition":"Kicked","then":[{"Draw":{}}]}}]}}"#,
         "`Kicked` needs a Kicker"
+    )]
+    #[case::kicks_without_kicker(
+        r#"{"Spell":{"effects":[{"Draw":{"count":"Kicks"}}]}}"#,
+        "`Kicks` needs a Kicker"
     )]
     #[case::modal_not_alone(
         r#"{"Spell":{"effects":[{"Draw":{}},{"Modal":{"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Draw":{}}]}]}}]}}"#,

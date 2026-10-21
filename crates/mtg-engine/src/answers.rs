@@ -110,7 +110,7 @@ pub(crate) fn handle(
             choose::order_answer(player, options, choice)
         }
         (DecisionKind::YesNo(options), Answer::YesNo(choice)) => {
-            Ok(choose::yes_no_answer(player, options, choice))
+            choose::yes_no_answer(player, options, choice)
         }
         (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice)) => {
             choose::option_answer(player, options, choice)

@@ -1234,6 +1234,33 @@
     "keywords": []
   },
   {
+    "id": "58c45158-7858-409e-ab37-8a9a66ad8714",
+    "oracle_id": "6781f8ae-2a86-4e3d-bc43-48809c9d6c26",
+    "name": "Gatekeeper of Malakir",
+    "lang": "en",
+    "layout": "normal",
+    "set": "fdn",
+    "collector_number": "752",
+    "rarity": "uncommon",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{B}{B}",
+    "cmc": 2.0,
+    "type_line": "Creature — Vampire Warrior",
+    "oracle_text": "Kicker {B} (You may pay an additional {B} as you cast this spell.)\nWhen this creature enters, if it was kicked, target player sacrifices a creature of their choice.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Kicker"
+    ]
+  },
+  {
     "id": "fd1f95bf-48ea-455a-8a6c-0249b11c8900",
     "oracle_id": "5748ebf1-24e3-499d-ab7c-c2cebd462a24",
     "name": "Giant Growth",
@@ -2830,6 +2857,33 @@
     "toughness": "5"
   },
   {
+    "id": "60da801e-c47c-4aac-928c-2e7eab2d24c6",
+    "oracle_id": "2f8872fe-84dc-4cda-a253-e7503a5c96a3",
+    "name": "Wolfbriar Elemental",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cma",
+    "collector_number": "168",
+    "rarity": "rare",
+    "released_at": "2017-06-09",
+    "digital": false,
+    "mana_cost": "{2}{G}{G}",
+    "cmc": 4.0,
+    "type_line": "Creature — Elemental",
+    "oracle_text": "Multikicker {G} (You may pay an additional {G} any number of times as you cast this spell.)\nWhen this creature enters, create a 2/2 green Wolf creature token for each time it was kicked.",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Multikicker"
+    ]
+  },
+  {
     "id": "537d2b05-3f52-45d6-8fe3-26282085d0c6",
     "oracle_id": "34515b16-c9a4-4f98-8c77-416a7a523407",
     "name": "Wrath of God",
@@ -2851,5 +2905,100 @@
       "W"
     ],
     "keywords": []
+  },
+  {
+    "id": "b16d0422-61ea-4039-b1c1-e590ace9156e",
+    "oracle_id": "0596920f-9946-42f4-a03b-24aab67f9f1b",
+    "name": "Blaze",
+    "lang": "en",
+    "layout": "normal",
+    "set": "bbd",
+    "collector_number": "167",
+    "rarity": "uncommon",
+    "released_at": "2018-06-08",
+    "digital": false,
+    "mana_cost": "{X}{R}",
+    "cmc": 1.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Blaze deals X damage to any target.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "beeb5419-828e-4a84-b4f3-87bc6f4cc594",
+    "oracle_id": "0cc6d683-366f-4ae4-be60-20ad9621fdaf",
+    "name": "Stroke of Genius",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "203",
+    "rarity": "rare",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{X}{2}{U}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Target player draws X cards.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "cf339735-eb1a-46f0-8c3e-eae06f278eca",
+    "oracle_id": "4aeafdf3-7828-4114-8c74-3bd46357caec",
+    "name": "Tezzeret the Seeker",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mm2",
+    "collector_number": "62",
+    "rarity": "mythic",
+    "released_at": "2015-05-22",
+    "digital": false,
+    "mana_cost": "{3}{U}{U}",
+    "cmc": 5.0,
+    "type_line": "Legendary Planeswalker — Tezzeret",
+    "oracle_text": "+1: Untap up to two target artifacts.\n−X: Search your library for an artifact card with mana value X or less, put it onto the battlefield, then shuffle.\n−5: Artifacts you control become artifact creatures with base power and toughness 5/5 until end of turn.",
+    "loyalty": "4",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "32da0d6c-64dd-4aec-b63e-953e96164603",
+    "oracle_id": "c6911265-54ef-4c16-bcf2-1ffb24b7d426",
+    "name": "Kessig Wolf Run",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tdc",
+    "collector_number": "375",
+    "rarity": "rare",
+    "released_at": "2025-04-11",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Land",
+    "oracle_text": "{T}: Add {C}.\n{X}{R}{G}, {T}: Target creature gets +X/+0 and gains trample until end of turn.",
+    "colors": [],
+    "color_identity": [
+      "G",
+      "R"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "C"
+    ]
   }
 ]

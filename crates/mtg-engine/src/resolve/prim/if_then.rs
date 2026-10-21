@@ -207,15 +207,15 @@ mod tests {
     }
 
     #[rstest]
-    #[case::kicked(r#""Kicked""#, "kicker")]
+    #[case::the_monarch(r#"{"Monarch":"You"}"#, "the monarch")]
     #[case::x(r#"{"Compare":{"left":"X","op":"Ge","right":1}}"#, "X")]
     #[case::divided(
         r#"{"Compare":{"left":"Divided","op":"Ge","right":1}}"#,
         "divided amounts"
     )]
-    #[case::wrapped_in_not(r#"{"Not":"Kicked"}"#, "kicker")]
-    #[case::wrapped_in_all(r#"{"All":["YourTurn","Kicked"]}"#, "kicker")]
-    #[case::wrapped_in_any(r#"{"Any":[{"Not":"YourTurn"},"Kicked"]}"#, "kicker")]
+    #[case::wrapped_in_not(r#"{"Not":{"Monarch":"You"}}"#, "the monarch")]
+    #[case::wrapped_in_all(r#"{"All":["YourTurn",{"Monarch":"You"}]}"#, "the monarch")]
+    #[case::wrapped_in_any(r#"{"Any":[{"Not":"YourTurn"},{"Monarch":"You"}]}"#, "the monarch")]
     fn a_condition_the_evaluator_cannot_read_is_refused_by_name(
         #[case] condition: &str,
         #[case] lacks: &'static str,

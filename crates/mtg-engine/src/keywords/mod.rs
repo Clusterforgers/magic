@@ -51,6 +51,7 @@ mod ward;
 use std::fmt::Debug;
 
 use mtg_cards::ability::Ability;
+use mtg_cards::cost::Cost;
 use mtg_cards::keyword::Keyword;
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -129,6 +130,17 @@ impl Source<'static> {
             snapshots: &[],
         })
     }
+}
+
+/// A cost a keyword lets the caster pay in addition: kicker and multikicker.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AdditionalCost {
+    /// The keyword as the card prints it, before its cost: `Kicker`.
+    pub name: &'static str,
+    /// What paying it once costs.
+    pub cost: Cost,
+    /// Whether it may be paid any number of times (multikicker) and not only once.
+    pub repeatable: bool,
 }
 
 /// What a keyword does to the rules machinery; every hook defaults to doing nothing.
@@ -221,6 +233,11 @@ pub trait KeywordRules: Debug + Sync {
     /// The abilities the keyword stands for, written in the DSL like any card.
     fn adds_abilities(&self, _keyword: &Keyword) -> Vec<Ability> {
         Vec::new()
+    }
+
+    /// The cost the keyword lets the caster pay in addition as the spell is announced (CR 601.2b, 702.33).
+    fn additional_cost(&self, _keyword: &Keyword) -> Option<AdditionalCost> {
+        None
     }
 }
 
@@ -487,7 +504,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 23] = [
+    const RUN: [&str; 25] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -511,6 +528,8 @@ mod tests {
         "Keyword.Equip",
         "Keyword.Reconfigure",
         "Keyword.LivingWeapon",
+        "Keyword.Kicker",
+        "Keyword.Multikicker",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -602,6 +621,18 @@ mod tests {
     #[case::living_weapon(Keyword::LivingWeapon, Hooks { abilities: 1, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
+    }
+
+    #[test]
+    fn only_kicker_and_multikicker_add_a_cost_and_only_multikicker_repeats() {
+        let given: Vec<(&str, bool)> = every_keyword()
+            .iter()
+            .filter_map(|keyword| {
+                let extra = rules(keyword).additional_cost(keyword)?;
+                Some((extra.name, extra.repeatable))
+            })
+            .collect();
+        assert_eq!(given, [("Kicker", false), ("Multikicker", true)]);
     }
 
     #[test]
