@@ -4,6 +4,7 @@ use crate::common;
 
 use mtg_import::decklist::parse;
 use mtg_import::resolve::{Lookup, resolve_deck};
+use mtg_import::scryfall::CardRecord;
 use sqlx::PgPool;
 
 use common::{another_card, card_index_pair, fixture_path, oracle_of, record, seeded};
@@ -66,6 +67,43 @@ async fn the_index_holds_deck_cards_only(pool: PgPool) {
     assert!(
         matches!(index.find("Lightning Bolt"), Lookup::Found(card) if card.oracle_id == oracle_of("Lightning Bolt"))
     );
+}
+
+#[sqlx::test]
+async fn the_index_knows_the_stored_printings_of_deck_cards(pool: PgPool) {
+    let database = seeded(pool).await;
+    let (stored, in_memory) = card_index_pair(&database).await;
+    let records = common::fixture_records();
+    let mut checked = 0;
+    let numbered = |r: &&CardRecord| !r.set.is_empty() && !r.collector_number.is_empty();
+    for record in records
+        .iter()
+        .filter(numbered)
+        .filter(|r| r.layout.is_deck_card())
+    {
+        let found = stored.find_printing(&record.set.to_uppercase(), &record.collector_number);
+        assert!(
+            matches!(&found, Lookup::Found(card) if card.oracle_id == record.oracle_id),
+            "{} ({} {}): {found:?}",
+            record.name,
+            record.set,
+            record.collector_number
+        );
+        assert_eq!(
+            found,
+            in_memory.find_printing(&record.set, &record.collector_number)
+        );
+        checked += 1;
+    }
+    assert!(checked >= 15, "only {checked} printings were checked");
+    for token in records.iter().filter(|r| !r.layout.is_deck_card()) {
+        assert_eq!(
+            stored.find_printing(&token.set, &token.collector_number),
+            Lookup::Missing,
+            "{}",
+            token.name
+        );
+    }
 }
 
 #[sqlx::test]

@@ -94,7 +94,7 @@ impl CardRepo {
         }))
     }
 
-    /// Builds the in-memory name index over all deck cards, for resolving deck lists.
+    /// Builds the in-memory index over all deck cards and their stored printings, for resolving deck lists.
     pub async fn card_index(&self) -> Result<CardIndex, DbError> {
         let rows = sqlx::query!(
             "SELECT oracle_id, name FROM cards WHERE is_deck_card ORDER BY name_normalized, oracle_id"
@@ -104,6 +104,20 @@ impl CardRepo {
         let mut index = CardIndex::new();
         for row in rows {
             index.insert(OracleId(row.oracle_id.to_string()), &row.name);
+        }
+        let printings = sqlx::query!(
+            "SELECT p.oracle_id, p.set_code, p.collector_number
+             FROM printings p JOIN cards c USING (oracle_id)
+             WHERE c.is_deck_card ORDER BY p.set_code, p.collector_number, p.printing_id"
+        )
+        .fetch_all(&self.pool)
+        .await?;
+        for row in printings {
+            index.add_printing(
+                &OracleId(row.oracle_id.to_string()),
+                &row.set_code,
+                &row.collector_number,
+            );
         }
         Ok(index)
     }
