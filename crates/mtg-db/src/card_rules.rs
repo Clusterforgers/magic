@@ -45,6 +45,8 @@ pub struct StoredRules {
 pub struct RuleStamp {
     /// The card.
     pub oracle_id: OracleId,
+    /// How much of the card the rules cover.
+    pub status: ImplStatus,
     /// Digest of the printed data the compiler read.
     pub fingerprint: String,
     /// Digest of the compiler that wrote the rules.
@@ -148,7 +150,8 @@ impl CardRulesRepo {
     /// The age of every row, by oracle id.
     pub async fn stamps(&self) -> Result<Vec<RuleStamp>, DbError> {
         let rows = sqlx::query!(
-            "SELECT oracle_id, fingerprint, compiler_version FROM card_rules ORDER BY oracle_id"
+            r#"SELECT oracle_id, status AS "status: ImplStatus", fingerprint, compiler_version
+               FROM card_rules ORDER BY oracle_id"#
         )
         .fetch_all(&self.pool)
         .await?;
@@ -156,6 +159,7 @@ impl CardRulesRepo {
             .into_iter()
             .map(|row| RuleStamp {
                 oracle_id: OracleId(row.oracle_id.to_string()),
+                status: row.status,
                 fingerprint: row.fingerprint,
                 compiler_version: row.compiler_version,
             })

@@ -48,6 +48,7 @@ async fn a_row_reads_back_exactly_as_it_was_written(pool: PgPool) {
         repo.stamps().await.unwrap(),
         [RuleStamp {
             oracle_id: bolt,
+            status: ImplStatus::Partial,
             fingerprint: FINGERPRINT.into(),
             compiler_version: "v1".into(),
         }]

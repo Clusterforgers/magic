@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT oracle_id, fingerprint, compiler_version FROM card_rules ORDER BY oracle_id",
+  "query": "SELECT oracle_id, status AS \"status: ImplStatus\", fingerprint, compiler_version\n               FROM card_rules ORDER BY oracle_id",
   "describe": {
     "columns": [
       {
@@ -16,6 +16,28 @@
       },
       {
         "ordinal": 1,
+        "name": "status: ImplStatus",
+        "type_info": {
+          "Custom": {
+            "name": "impl_status",
+            "kind": {
+              "Enum": [
+                "manual",
+                "partial",
+                "full"
+              ]
+            }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "card_rules",
+            "name": "status"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
         "name": "fingerprint",
         "type_info": "Text",
         "origin": {
@@ -26,7 +48,7 @@
         }
       },
       {
-        "ordinal": 2,
+        "ordinal": 3,
         "name": "compiler_version",
         "type_info": "Text",
         "origin": {
@@ -43,8 +65,9 @@
     "nullable": [
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "0caf584e46d694674972a30b88f6722c31b6b4e92fb3dfcf5f7713b52f343516"
+  "hash": "5d10a1179e9fb0aa02e3ff38f916634004ae9519bd5105b9800bf81f3ea5a674"
 }
