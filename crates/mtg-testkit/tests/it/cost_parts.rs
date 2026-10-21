@@ -12,6 +12,7 @@ use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, Event, GameSetup, replay};
 use mtg_testkit::cards::{forest, free_creature, island, mountain, swamp};
+use mtg_testkit::corpus;
 use mtg_testkit::cost_cards::{
     bleeder, charger, cycler, drummer, gauntlet, gravedigger, levy, life_cycler, mana_elf,
     returner, rummager, sacrificer,
@@ -688,6 +689,200 @@ fn cycling_for_life_pays_the_life_and_then_discards() -> Result<(), ScriptError>
         ["pay 2 life", "discard Cycler", "activated", "on the stack"]
     );
     assert_eq!(life(&driver, 0), 18);
+    Ok(())
+}
+
+fn real(name: &str) -> std::sync::Arc<mtg_cards::CardDefinition> {
+    corpus::card(name).unwrap()
+}
+
+#[test]
+fn flooded_strand_pays_life_taps_and_sacrifices_itself_then_fetches_a_land()
+-> Result<(), ScriptError> {
+    let scenario = Scenario::new(2)
+        .library(0, [forest(), island(), mountain()])
+        .battlefield(0, [ready(real("Flooded Strand"))]);
+    let setup = scenario.clone().setup()?;
+    let mut driver = table(scenario)?;
+    let events = driver.begin_activation("Flooded Strand")?;
+    assert_eq!(
+        story(&driver, &events),
+        [
+            "tap Flooded Strand",
+            "pay 1 life",
+            "Flooded Strand Battlefield to Graveyard(PlayerId(0)) (Sacrificed)",
+            "activated",
+            "on the stack"
+        ]
+    );
+    for _ in 0..50 {
+        if driver.state().stack().is_empty() && driver.state().resolving().is_none() {
+            break;
+        }
+        match &driver.decision()?.kind {
+            DecisionKind::ChooseCards(options) => {
+                assert_eq!(
+                    options.from.len(),
+                    1,
+                    "only the Island is a Plains or an Island"
+                );
+                let found = options.from.clone();
+                driver.answer(Answer::ChooseCards(CardsChoice(found)))?;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    assert_eq!(life(&driver, 0), 19);
+    assert_eq!(names(driver.state(), Zone::Battlefield), ["Island"]);
+    assert_eq!(
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        ["Flooded Strand"]
+    );
+    replays(&driver, &setup);
+    Ok(())
+}
+
+#[rstest]
+#[case::nantuko_husk("Nantuko Husk", "Sacrifice a creature.", 4)]
+#[case::llanowar_behemoth("Llanowar Behemoth", "Tap an untapped creature you control.", 5)]
+fn a_real_card_asks_for_the_permanent_its_cost_takes(
+    #[case] name: &str,
+    #[case] words: &str,
+    #[case] power: i32,
+) -> Result<(), ScriptError> {
+    let mut driver = table(Scenario::new(2).battlefield(
+        0,
+        [
+            ready(real(name)),
+            ready(free_creature("Wolf", 2, 2)),
+            ready(free_creature("Ogre", 3, 3)),
+        ],
+    ))?;
+    driver.begin_activation(name)?;
+    assert_eq!(asked(&driver).1, words);
+    choose(&mut driver, Zone::Battlefield, &["Wolf"])?;
+    settle(&mut driver)?;
+    let id = driver.id_of(name)?;
+    let shown = mtg_engine::characteristics::characteristics(driver.state(), id).unwrap();
+    assert_eq!(shown.power, Some(power));
+    Ok(())
+}
+
+#[test]
+fn rummaging_goblin_discards_a_card_and_draws_one() -> Result<(), ScriptError> {
+    let mut driver = table(
+        Scenario::new(2)
+            .hand(0, [free_creature("Spare", 1, 1)])
+            .battlefield(0, [ready(real("Rummaging Goblin"))]),
+    )?;
+    let hand = |driver: &Driver| names(driver.state(), Zone::Hand(pid(0)));
+    assert_eq!(hand(&driver), ["Spare"]);
+    driver.begin_activation("Rummaging Goblin")?;
+    settle(&mut driver)?;
+    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))), ["Spare"]);
+    assert_eq!(hand(&driver).len(), 1, "a card was drawn");
+    assert_ne!(hand(&driver), ["Spare"]);
+    Ok(())
+}
+
+#[test]
+fn soul_shepherd_exiles_a_creature_card_of_the_graveyard_and_gains_a_life()
+-> Result<(), ScriptError> {
+    let mut driver = table(
+        Scenario::new(2)
+            .graveyard(0, [free_creature("Dead", 1, 1)])
+            .battlefield(
+                0,
+                [
+                    ready(real("Soul Shepherd")),
+                    ready(mtg_testkit::cards::plains()),
+                ],
+            ),
+    )?;
+    driver.begin_activation("Soul Shepherd")?;
+    driver.pay_tapping(&["Plains"], 0)?;
+    settle(&mut driver)?;
+    assert_eq!(names(driver.state(), Zone::Exile), ["Dead"]);
+    assert_eq!(life(&driver, 0), 21);
+    Ok(())
+}
+
+#[test]
+fn tumble_magnet_taps_a_target_and_loses_its_last_counter() -> Result<(), ScriptError> {
+    let mut driver = table(
+        Scenario::new(2)
+            .battlefield(
+                0,
+                [with_counters(
+                    ready(real("Tumble Magnet")),
+                    CounterKind::Charge,
+                    1,
+                )],
+            )
+            .battlefield(1, [ready(free_creature("Wolf", 2, 2))]),
+    )?;
+    driver.begin_activation("Tumble Magnet")?;
+    let wolf = driver.target_named("Wolf")?;
+    driver.choose_targets(&[wolf])?;
+    settle(&mut driver)?;
+    let wolf = driver.id_of("Wolf")?;
+    assert!(
+        driver
+            .state()
+            .object(wolf)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .tapped()
+    );
+    let magnet = driver.id_of("Tumble Magnet")?;
+    let held = driver
+        .state()
+        .object(magnet)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .counters_of(&CounterKind::Charge);
+    assert_eq!(held, 0);
+    Ok(())
+}
+
+#[test]
+fn lurching_rotbeast_is_cycled_for_black_mana_from_the_hand() -> Result<(), ScriptError> {
+    let mut driver = table(
+        Scenario::new(2)
+            .hand(0, [real("Lurching Rotbeast")])
+            .battlefield(0, [ready(swamp())]),
+    )?;
+    assert_eq!(offered(&driver), ["Lurching Rotbeast"]);
+    driver.begin_activation("Lurching Rotbeast")?;
+    assert_eq!(driver.pay_options()?.cost.to_string(), "{B}");
+    driver.pay_tapping(&["Swamp"], 0)?;
+    settle(&mut driver)?;
+    assert_eq!(
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        ["Lurching Rotbeast"]
+    );
+    Ok(())
+}
+
+#[test]
+fn souldrinker_pays_three_life_for_a_counter() -> Result<(), ScriptError> {
+    let mut driver = table(Scenario::new(2).battlefield(0, [ready(real("Souldrinker"))]))?;
+    driver.begin_activation("Souldrinker")?;
+    settle(&mut driver)?;
+    assert_eq!(life(&driver, 0), 17);
+    let id = driver.id_of("Souldrinker")?;
+    let held = driver
+        .state()
+        .object(id)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .counters_of(&CounterKind::PlusOnePlusOne);
+    assert_eq!(held, 1);
     Ok(())
 }
 

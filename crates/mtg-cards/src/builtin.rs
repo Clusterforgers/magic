@@ -21,6 +21,16 @@ pub fn sources() -> Vec<Source> {
         .collect()
 }
 
+/// The description of a predefined token, read from its embedded file without loading the library: the walker that
+/// validates the library asks for it, so it cannot ask the library.
+pub(crate) fn token_spec(id: &str) -> Option<crate::card::TokenSpec> {
+    let path = format!("cards/tokens/{id}.json");
+    let (_, text) = FILES.iter().find(|(file, _)| *file == path)?;
+    serde_json::from_str::<crate::card::TokenFile>(text)
+        .ok()
+        .map(|file| file.token)
+}
+
 /// The library of the embedded files, loaded and validated on first use. The tests of this crate
 /// load it, so an error here means the crate was built from files they would have refused.
 pub fn library() -> Result<&'static Library, &'static LoadErrors> {
@@ -37,7 +47,7 @@ mod tests {
     #[test]
     fn the_embedded_files_are_the_corpus() {
         let library = library().unwrap_or_else(|errors| panic!("{errors}"));
-        assert_eq!(library.cards().count(), 126);
+        assert_eq!(library.cards().count(), 133);
         assert_eq!(library.tokens().count(), 3);
         assert!(library.card_by_name("Lightning Bolt").is_some());
         assert!(std::ptr::eq(library, self::library().unwrap()));
@@ -47,7 +57,7 @@ mod tests {
     fn the_sources_are_named_like_the_directory_and_equal_its_files() {
         let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"));
         let sources = sources();
-        assert_eq!(sources.len(), 129);
+        assert_eq!(sources.len(), 136);
         for source in &sources {
             assert!(source.path.starts_with("cards/"), "{}", source.path);
             let text = std::fs::read_to_string(root.join(&source.path)).unwrap();

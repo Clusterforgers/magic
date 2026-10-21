@@ -3195,5 +3195,176 @@
     "keywords": [
       "Overload"
     ]
+  },
+  {
+    "id": "74baa632-d046-401a-9172-1ab6284240bc",
+    "oracle_id": "0481adcd-b66d-432e-80ba-3a4718bb3a7d",
+    "name": "Tumble Magnet",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2xm",
+    "collector_number": "304",
+    "rarity": "common",
+    "released_at": "2020-08-07",
+    "digital": false,
+    "mana_cost": "{3}",
+    "cmc": 3.0,
+    "type_line": "Artifact",
+    "oracle_text": "This artifact enters with three charge counters on it.\n{T}, Remove a charge counter from this artifact: Tap target artifact or creature.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": []
+  },
+  {
+    "id": "3915c0be-7e9c-45bc-9c83-80beba469a81",
+    "oracle_id": "0dcefc00-9425-43e3-bd47-1e34fff8b0e2",
+    "name": "Nantuko Husk",
+    "lang": "en",
+    "layout": "normal",
+    "set": "ori",
+    "collector_number": "109",
+    "rarity": "common",
+    "released_at": "2015-07-17",
+    "digital": false,
+    "mana_cost": "{2}{B}",
+    "cmc": 3.0,
+    "type_line": "Creature — Zombie Insect",
+    "oracle_text": "Sacrifice a creature: This creature gets +2/+2 until end of turn.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "254391a3-c12a-4944-9da5-ae166094480f",
+    "oracle_id": "2055eb91-ee36-4752-a6dc-581eaef335c8",
+    "name": "Rummaging Goblin",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmr",
+    "collector_number": "198",
+    "rarity": "common",
+    "released_at": "2020-11-20",
+    "digital": false,
+    "mana_cost": "{2}{R}",
+    "cmc": 3.0,
+    "type_line": "Creature — Goblin Rogue",
+    "oracle_text": "{T}, Discard a card: Draw a card.",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "f47054d9-ab6c-4d66-8744-b458721a6c98",
+    "oracle_id": "4364bef8-f7ec-487c-9b64-b55c4afb864e",
+    "name": "Llanowar Behemoth",
+    "lang": "en",
+    "layout": "normal",
+    "set": "9ed",
+    "collector_number": "252",
+    "rarity": "uncommon",
+    "released_at": "2005-07-29",
+    "digital": false,
+    "mana_cost": "{3}{G}{G}",
+    "cmc": 5.0,
+    "type_line": "Creature — Elemental",
+    "oracle_text": "Tap an untapped creature you control: This creature gets +1/+1 until end of turn.",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "48c03fa5-c8cc-4b39-a673-c23e41a5802a",
+    "oracle_id": "624d4bda-448f-43d1-92b6-53a77afe2374",
+    "name": "Souldrinker",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dvd",
+    "collector_number": "39",
+    "rarity": "uncommon",
+    "released_at": "2014-12-05",
+    "digital": false,
+    "mana_cost": "{3}{B}",
+    "cmc": 4.0,
+    "type_line": "Creature — Spirit",
+    "oracle_text": "Pay 3 life: Put a +1/+1 counter on this creature.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "9f06be97-71c8-46c8-a1c2-5da3af25e6de",
+    "oracle_id": "771be8ad-5ab5-40b1-ad9b-e5e834949d32",
+    "name": "Lurching Rotbeast",
+    "lang": "en",
+    "layout": "normal",
+    "set": "hou",
+    "collector_number": "69",
+    "rarity": "common",
+    "released_at": "2017-07-14",
+    "digital": false,
+    "mana_cost": "{3}{B}",
+    "cmc": 4.0,
+    "type_line": "Creature — Zombie Beast",
+    "oracle_text": "Cycling {B} ({B}, Discard this card: Draw a card.)",
+    "power": "4",
+    "toughness": "2",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Cycling"
+    ]
+  },
+  {
+    "id": "f45a39ba-5fbf-46c3-8dc7-3058ac6d24e8",
+    "oracle_id": "78dbcc18-291c-4b2c-9576-f8dc93914936",
+    "name": "Soul Shepherd",
+    "lang": "en",
+    "layout": "normal",
+    "set": "wth",
+    "collector_number": "26",
+    "rarity": "common",
+    "released_at": "1997-06-09",
+    "digital": false,
+    "mana_cost": "{1}{W}",
+    "cmc": 2.0,
+    "type_line": "Creature — Human Cleric",
+    "oracle_text": "{W}, Exile a creature card from your graveyard: You gain 1 life.",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
   }
 ]

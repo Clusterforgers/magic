@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0481adcd-b66d-432e-80ba-3a4718bb3a7d",
+  "name": "Tumble Magnet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tumble Magnet",
+      "oracle_fingerprint": "ac15ddd20a90a4e7a8bfe00a950b6157",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": 3 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

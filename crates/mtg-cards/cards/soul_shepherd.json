@@ -1,0 +1,22 @@
+{
+  "oracle_id": "78dbcc18-291c-4b2c-9576-f8dc93914936",
+  "name": "Soul Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Shepherd",
+      "oracle_fingerprint": "d6c6fb093df9e9e44b68f3571e6d2a75",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

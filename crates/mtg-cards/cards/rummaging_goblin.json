@@ -1,0 +1,14 @@
+{
+  "oracle_id": "2055eb91-ee36-4752-a6dc-581eaef335c8",
+  "name": "Rummaging Goblin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rummaging Goblin",
+      "oracle_fingerprint": "70491bb6fe10ce6a1457c4078ee7fe38",
+      "abilities": [
+        { "Activated": { "cost": ["Tap", { "Discard": {} }], "effects": [{ "Draw": {} }] } }
+      ]
+    }
+  ]
+}

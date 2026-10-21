@@ -1,6 +1,7 @@
 //! Costs of activated abilities beyond `{T}`, mana and the sacrifice of the source (CR 118.3, 602.2): life paid, counters
 //! removed, a permanent sacrificed, tapped or returned, a card discarded or exiled from a graveyard, and cycling, and
-//! the decks and games built from them. Each ability draws or gains life when it resolves, so a test sees what was paid.
+//! the decks and games built from them, which hold the corpus cards that pay these costs. Each ability draws or gains
+//! life when it resolves, so a test sees what was paid.
 
 use std::sync::Arc;
 
@@ -14,7 +15,7 @@ use mtg_engine::format::Normal;
 use mtg_engine::rng::GameRng;
 
 use crate::cards::{bear, burn, cost, creature, land};
-use crate::corpus::CorpusError;
+use crate::corpus::{self, CorpusError};
 
 /// Lands in a cost deck: three colours in turn.
 const LANDS: usize = 28;
@@ -176,6 +177,18 @@ pub fn cost_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusEr
         (burn("Burn", 3), 3),
     ] {
         deck.extend(std::iter::repeat_n(card, copies));
+    }
+    for (name, copies) in [
+        ("Flooded Strand", 2),
+        ("Nantuko Husk", 2),
+        ("Rummaging Goblin", 2),
+        ("Soul Shepherd", 2),
+        ("Llanowar Behemoth", 2),
+        ("Tumble Magnet", 2),
+        ("Lurching Rotbeast", 2),
+        ("Souldrinker", 2),
+    ] {
+        deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     rng.shuffle(&mut deck);
     Ok(deck)

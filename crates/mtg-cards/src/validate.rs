@@ -28,6 +28,9 @@ pub struct Problem {
     pub message: String,
 }
 
+/// How deep the abilities of a token may make tokens whose abilities are counted.
+const MOST_NESTED: u32 = 4;
+
 /// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
 fn tag_of<T: Serialize>(value: &T) -> String {
     match serde_json::to_value(value) {
@@ -860,6 +863,12 @@ impl<'a> Walker<'a> {
                     self.problem(format!(
                         "unknown token `{id}` (no file cards/tokens/{id}.json)"
                     ));
+                }
+                // What the token does is part of what the card needs: a card that makes a Treasure needs its mana ability.
+                if self.nested < MOST_NESTED
+                    && let Some(spec) = crate::builtin::token_spec(id)
+                {
+                    self.at(id.clone(), |w| w.token_spec(&spec));
                 }
             }
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec)),
@@ -1962,7 +1971,7 @@ mod tests {
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
     #[case::a_move_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Bottom","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random"])]
-    #[case::a_named_token(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}"#, &["Ability.Spell", "Effect.CreateToken"])]
+    #[case::a_named_token_brings_its_own_abilities(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]
     #[case::an_inline_token_with_an_ability(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}]}},"count":2,"tapped":true}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]
     #[case::a_copy_of_an_object(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This"}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy"])]
     #[case::a_cost_that_sacrifices_a_permanent(r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Sacrifice", "Effect.Draw"])]

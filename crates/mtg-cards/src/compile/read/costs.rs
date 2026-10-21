@@ -215,7 +215,8 @@ fn item_text(item: &CostItem) -> Option<String> {
         } => format!("Discard {}", cards_text(count)?),
         CostItem::TapPermanents { filter, count } => {
             let mut said = filter.clone();
-            said.0.extend([Pred::Untapped, Pred::ControlledBy(Ref::You)]);
+            said.0
+                .extend([Pred::Untapped, Pred::ControlledBy(Ref::You)]);
             format!("Tap {}", taken_text(&said, count)?)
         }
         CostItem::ExileFromGraveyard { filter, count } => {
@@ -227,10 +228,7 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::ReturnToHand { filter, count } if *count == Amount::one() => {
             let mut said = filter.clone();
             said.0.push(Pred::ControlledBy(Ref::You));
-            format!(
-                "Return {} to its owner's hand",
-                taken_text(&said, count)?
-            )
+            format!("Return {} to its owner's hand", taken_text(&said, count)?)
         }
         CostItem::RemoveCounters { counter, count } => {
             format!("Remove {} from ~", counters_text(counter, count)?)
