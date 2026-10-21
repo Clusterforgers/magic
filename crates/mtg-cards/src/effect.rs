@@ -1,16 +1,16 @@
 //! Effects: the verbs of the DSL. One variant per engine primitive, so a new mechanic is one variant.
 
-use mtg_core::card::Subtype;
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
 use crate::card::TokenSpec;
 use crate::cost::Cost;
 use crate::modify::{Duration, GameRule, Modification};
-use crate::refs::{Bounds, Ref, Selector, TargetSpec, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, ZoneKind};
 use crate::spend::SpendOn;
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use crate::value::{Amount, Condition, CounterKind};
+use crate::value::{Amount, Cmp, Condition, CounterKind, StatKind};
 
 // serde's `skip_serializing_if` hands out a reference, so these take one.
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -441,13 +441,34 @@ pub enum Effect {
         /// The creatures that connive.
         what: Ref,
     },
-    /// The player discovers (CR 701.57): the first nonland card of lesser mana value from the top is cast free or kept.
-    Discover {
-        /// Who discovers.
+    /// The player exiles cards from the top of their library, face up one at a time, until one matches the filter
+    /// (CR 702.85a, 701.57a); a library that runs out ends it with nothing found.
+    ExileUntil {
+        /// Whose library.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
-        /// The greatest mana value of the card found.
-        count: Amount,
+        /// What the card that ends the exiling must be.
+        filter: Selector,
+        /// The name the card found is bound to.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name every card exiled, the one found included, is bound to.
+        exiled_as: String,
+    },
+    /// The player may cast a card during the resolution, without waiting for priority (CR 608.2g); `otherwise` is
+    /// done when they do not.
+    CastFromZone {
+        /// Who casts it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The card cast.
+        what: Ref,
+        /// It is cast without paying its mana cost (CR 118.9).
+        #[serde(default, skip_serializing_if = "is_false")]
+        free: bool,
+        /// Done when the card is not cast: the player declines, or nothing lets it be cast.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        otherwise: Vec<Effect>,
     },
     /// The player time travels (CR 701.56): each suspended card and permanent with a time counter gains or loses one.
     TimeTravel {
@@ -569,14 +590,81 @@ pub enum Effect {
     },
 }
 
+/// The name the card found by exiling until a card matches is bound to.
+pub const FOUND: &str = "found";
+
+/// The name every card exiled that way is bound to, the card found included.
+pub const EXILED: &str = "exiled";
+
+/// The steps that exile cards from the top of the library until one matches `filter`, let the player cast it free (and do
+/// `otherwise` when they do not) and put every card exiled that is still in exile on the bottom in a random order.
+fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
+    vec![
+        Effect::ExileUntil {
+            who: Ref::You,
+            filter,
+            bind: FOUND.to_owned(),
+            exiled_as: EXILED.to_owned(),
+        },
+        Effect::CastFromZone {
+            who: Ref::You,
+            what: Ref::Bound(FOUND.to_owned()),
+            free: true,
+            otherwise,
+        },
+        Effect::Move {
+            what: Ref::Bound(EXILED.to_owned()),
+            to: Destination::Library {
+                place: Place::Bottom,
+                order: Some(Order::Random),
+            },
+        },
+    ]
+}
+
+/// The steps of discover N (CR 701.57a): the first nonland card of mana value `count` or less is cast free or put into the
+/// hand, and the cards exiled with it go to the bottom of the library.
+pub fn discover(count: Amount) -> Vec<Effect> {
+    exile_cast_bottom(
+        Selector(vec![
+            Pred::Not(Box::new(Pred::Type(CardType::Land))),
+            Pred::Compare {
+                stat: StatKind::ManaValue,
+                op: Cmp::Le,
+                to: count,
+            },
+        ]),
+        vec![Effect::Move {
+            what: Ref::Bound(FOUND.to_owned()),
+            to: Destination::Hand,
+        }],
+    )
+}
+
+/// The steps of cascade (CR 702.85a): the first nonland card of lesser mana value than the source, the spell that cascades,
+/// may be cast free, and the cards exiled with it go to the bottom of the library.
+pub fn cascade() -> Vec<Effect> {
+    exile_cast_bottom(
+        Selector(vec![
+            Pred::Not(Box::new(Pred::Type(CardType::Land))),
+            Pred::Compare {
+                stat: StatKind::ManaValue,
+                op: Cmp::Lt,
+                to: Amount::Stat {
+                    of: Ref::This,
+                    stat: StatKind::ManaValue,
+                },
+            },
+        ]),
+        Vec::new(),
+    )
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: effects read and write the compact forms card files use, with defaults left out, and refuse what is not a field.
     use super::*;
-    use mtg_core::card::CardType;
     use rstest::rstest;
-
-    use crate::refs::Pred;
 
     #[rstest]
     #[case::draw_one(Effect::Draw { who: Ref::You, count: Amount::one() }, r#"{"Draw":{}}"#)]

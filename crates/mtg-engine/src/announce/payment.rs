@@ -10,7 +10,7 @@ use mtg_core::mana::ManaCost;
 use super::x::XCost;
 use super::{Ctx, Next, What, Work};
 use crate::abilities::PutOnStack;
-use crate::cast::{activation_events, payment_decision};
+use crate::cast::{activation_events, payment_decision, spell_cast};
 use crate::choose::Choices;
 use crate::decision::DecisionKind;
 use crate::events::Event;
@@ -26,6 +26,12 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
     match (ctx.what, total.mana) {
         (What::Trigger(waiting), _) => {
             Next::Commit(vec![trigger_event(ctx.state, waiting, work.choices)])
+        }
+        // A spell a resolution lets the player cast for nothing needs no payment decision.
+        (What::Spell(spell), Some(cost))
+            if ctx.granted.is_some() && cost.mana_value() == 0 && total.life == 0 =>
+        {
+            Next::Commit(spell_cast(ctx.player, *spell, work.choices, true))
         }
         (What::Spell(spell), Some(cost)) => pay(ctx, *spell, cost, total.sources, total.life),
         (What::Spell(_), None) => Next::Drop,
@@ -65,7 +71,7 @@ fn pay(
         cost,
         sources,
         spend(ctx),
-        true,
+        ctx.can_cancel(),
         reserved_life,
     ) {
         Some(options)

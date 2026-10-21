@@ -441,7 +441,11 @@ player: PlayerId,
 /**
  * The cards, top to bottom as they lie after the move: the last is the bottom card.
  */
-cards: Array<ObjectId>, } } | { "Entered": { 
+cards: Array<ObjectId>, 
+/**
+ * The order was drawn at random, with the next substream of the generator (CR 702.85a).
+ */
+random: boolean, } } | { "Entered": { 
 /**
  * The permanent.
  */

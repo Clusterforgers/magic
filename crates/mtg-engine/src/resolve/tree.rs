@@ -18,6 +18,7 @@ fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
         } => vec![then, otherwise],
         Effect::May { effects, .. } => vec![effects],
         Effect::Pay { paid, unpaid, .. } => vec![paid, unpaid],
+        Effect::CastFromZone { otherwise, .. } => vec![otherwise],
         Effect::Modal { modes, .. } => chosen
             .iter()
             .map(|index| modes.get(*index).map_or(&[][..], |m| m.effects.as_slice()))

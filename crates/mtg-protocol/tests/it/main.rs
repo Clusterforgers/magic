@@ -6,6 +6,7 @@ mod batch_diff;
 mod batch_size;
 mod batch_visibility;
 mod bindings;
+mod cast_hidden;
 mod combat_forecast;
 mod common;
 mod counter_view;

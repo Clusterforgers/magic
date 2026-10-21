@@ -103,9 +103,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Destination::Library {
             order: Some(Order::Random),
-            place: Place::Top | Place::Bottom,
-        } => return unsupported("Effect.Move.Random"),
-        Destination::Library { place, .. } => {
+            place: Place::Top,
+        } => return unsupported("Effect.Move.Random.Top"),
+        Destination::Library { place, order } => {
             let mut owners: Vec<(PlayerId, Vec<&GameObject>)> = Vec::new();
             for object in objects {
                 match owners
@@ -116,7 +116,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     None => owners.push((object.owner(), vec![object])),
                 }
             }
-            return Stop::settle(into_libraries(cx, *place, &owners));
+            let random = *order == Some(Order::Random);
+            return Stop::settle(into_libraries(cx, *place, random, &owners));
         }
         Destination::Battlefield { tapped, under } => {
             let under = entering_under(cx, under.as_ref())?;
@@ -232,6 +233,7 @@ fn arrived_as(cx: &Cx<'_>, what: &Ref, entered: &[ObjectId]) -> Vec<(String, Vec
 fn into_libraries(
     cx: &Cx<'_>,
     place: Place,
+    random: bool,
     owners: &[(PlayerId, Vec<&GameObject>)],
 ) -> Result<Run, Stop> {
     let state = cx.state();
@@ -242,7 +244,11 @@ fn into_libraries(
     for (owner, group) in owners {
         let library = Zone::Library(*owner);
         let mut ids: Vec<ObjectId> = group.iter().map(|object| object.id()).collect();
-        if place != Place::Shuffled && ids.len() > 1 {
+        let drawn = random && place == Place::Bottom && ids.len() > 1;
+        if drawn {
+            ids = shuffled(state, shuffles, ids);
+            shuffles += 1;
+        } else if place != Place::Shuffled && ids.len() > 1 {
             let who = cx.controller();
             ids = questions.order(who, ids, wording::library_order(place == Place::Bottom))?;
         }
@@ -271,6 +277,7 @@ fn into_libraries(
             Place::Bottom => events.push(Event::LibraryBottomed {
                 player: *owner,
                 cards: ids,
+                random: drawn,
             }),
             Place::Shuffled => {
                 let mut cards = state.zone(library).to_vec();
@@ -530,7 +537,8 @@ mod tests {
             events.last(),
             Some(&Event::LibraryBottomed {
                 player: ME,
-                cards: chosen.clone()
+                cards: chosen.clone(),
+                random: false
             })
         );
         let low = library(&after(&game, &events), ME);
@@ -552,7 +560,8 @@ mod tests {
             events,
             [Event::LibraryBottomed {
                 player: ME,
-                cards: vec![top_card]
+                cards: vec![top_card],
+                random: false
             }]
         );
         assert_eq!(library(&after(&game, &events), ME)[0], top_card);
@@ -857,11 +866,7 @@ mod tests {
     #[rstest]
     #[case::a_random_order_on_top(
         r#"{"Library":{"place":"Top","order":"Random"}}"#,
-        "Effect.Move.Random"
-    )]
-    #[case::a_random_order_on_the_bottom(
-        r#"{"Library":{"place":"Bottom","order":"Random"}}"#,
-        "Effect.Move.Random"
+        "Effect.Move.Random.Top"
     )]
     fn what_the_engine_does_not_play_is_refused_by_name(
         #[case] to: &str,
@@ -871,6 +876,52 @@ mod tests {
         let card = hand(&game, ME)[0];
         let refused = run_with(&game, &[card], Vec::new(), &moving(to));
         assert_eq!(refused.unwrap_err(), ResolveError::Unsupported(name));
+    }
+
+    const RANDOM_BOTTOM: &str = r#"{"Library":{"place":"Bottom","order":"Random"}}"#;
+
+    #[test]
+    fn cards_put_on_the_bottom_in_a_random_order_ask_nothing_and_spend_a_substream() {
+        let game = game();
+        let cards = hand(&game, ME);
+        let (events, _) =
+            done(run_with(&game, &cards, Vec::new(), &moving(RANDOM_BOTTOM)).unwrap());
+        let Some(Event::LibraryBottomed {
+            cards: order,
+            random,
+            ..
+        }) = events.last()
+        else {
+            panic!("the cards go to the bottom");
+        };
+        assert!(*random);
+        let mut sorted = order.clone();
+        sorted.sort();
+        assert_eq!(sorted, cards);
+        assert_eq!(*order, shuffled(&game, 0, cards.clone()));
+        let folded = after(&game, &events);
+        assert_eq!(folded.rng_index(), game.rng_index() + 1);
+        assert_eq!(
+            library(&folded, ME)[..3],
+            order.iter().rev().copied().collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn one_card_put_on_the_bottom_in_a_random_order_has_no_order_to_draw() {
+        let game = game();
+        let card = hand(&game, ME)[0];
+        let (events, _) =
+            done(run_with(&game, &[card], Vec::new(), &moving(RANDOM_BOTTOM)).unwrap());
+        assert_eq!(
+            events.last(),
+            Some(&Event::LibraryBottomed {
+                player: ME,
+                cards: vec![card],
+                random: false
+            })
+        );
+        assert_eq!(after(&game, &events).rng_index(), game.rng_index());
     }
 
     #[test]

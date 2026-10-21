@@ -138,11 +138,25 @@ pub(crate) struct Needs {
     pub(crate) price: Option<Box<Price>>,
 }
 
+/// What a resolution lets a player cast (CR 608.2g): the spell goes on the stack as part of the resolution, with no
+/// timing and no way back.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct Granted {
+    /// The mana cost is not paid (CR 118.9).
+    pub(crate) free: bool,
+}
+
 impl Needs {
     /// What `what` asks for; its rules are `rules`.
-    fn of(state: &GameState, player: PlayerId, what: &What, rules: Option<&Ability>) -> Self {
+    fn of(
+        state: &GameState,
+        player: PlayerId,
+        what: &What,
+        rules: Option<&Ability>,
+        granted: Option<Granted>,
+    ) -> Self {
         Needs {
-            ways: alternative::read(state, player, what),
+            ways: alternative::read(state, player, what, granted),
             optional: optional::read(state, what),
             x: XCost::of(state, what, rules),
             price: parts::read(what, rules),
@@ -192,6 +206,8 @@ pub(crate) struct Pending {
     pub(crate) choices: Choices,
     /// Which steps are done.
     pub(crate) done: Done,
+    /// Set when a resolution casts the spell.
+    pub(crate) granted: Option<Granted>,
     needs: Option<Needs>,
 }
 
@@ -202,7 +218,16 @@ impl Pending {
             what,
             choices: Choices::default(),
             done: Done::default(),
+            granted: None,
             needs: None,
+        }
+    }
+
+    /// The cast of `spell` that a resolution lets `player` make, with or without paying its mana cost.
+    pub(crate) fn during_resolution(player: PlayerId, spell: ObjectId, free: bool) -> Self {
+        Pending {
+            granted: Some(Granted { free }),
+            ..Pending::new(player, What::Spell(spell))
         }
     }
 
@@ -322,13 +347,15 @@ pub(super) struct Ctx<'a> {
     /// The ability being announced: the ability of a spell, an activated or a triggered ability.
     pub(super) ability: Option<&'a Ability>,
     pub(super) triggered: Option<&'a PendingTrigger>,
+    pub(super) granted: Option<Granted>,
     pub(super) needs: &'a Needs,
 }
 
 impl Ctx<'_> {
-    /// Whether the player may still back out: a triggered ability that is put on the stack cannot be (CR 603.3c).
+    /// Whether the player may still back out: a triggered ability that is put on the stack cannot be (CR 603.3c), nor
+    /// can a spell the resolution of another is casting, which the player chose to cast already.
     pub(super) const fn can_cancel(&self) -> bool {
-        self.triggered.is_none()
+        self.triggered.is_none() && self.granted.is_none()
     }
 
     /// What a triggered ability triggered on.
@@ -394,12 +421,13 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         what,
         choices,
         done,
+        granted,
         needs,
     } = pending;
     let what: &What = what;
     let held = rules_of(state, what);
     let needs: &Needs =
-        needs.get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref()));
+        needs.get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), *granted));
     let ctx = Ctx {
         state,
         player: *player,
@@ -410,6 +438,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             What::Trigger(waiting) => Some(waiting),
             _ => None,
         },
+        granted: *granted,
         needs,
     };
     let mut work = Work {

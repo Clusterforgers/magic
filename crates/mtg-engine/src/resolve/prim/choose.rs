@@ -175,6 +175,7 @@ mod tests {
                 bound
             }
             Run::Ask(decision) => panic!("nothing was to be asked: {decision:?}"),
+            Run::Cast(cast) => panic!("nothing was to be cast: {cast:?}"),
         }
     }
 

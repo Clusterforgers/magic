@@ -270,6 +270,28 @@ pub(crate) fn pay_answer(
     )
 }
 
+/// The events of a spell being cast: `SpellCast`, and for a cast that the resolution of another spell or ability allowed
+/// (`granted`) the yes that resolution reads back from its journal to go on (`resolve/prim/cast_from_zone.rs`).
+pub(crate) fn spell_cast(
+    player: PlayerId,
+    spell: ObjectId,
+    choices: &Choices,
+    granted: bool,
+) -> Vec<Event> {
+    let mut events = vec![Event::SpellCast {
+        player,
+        object: spell,
+        choices: choices.clone(),
+    }];
+    if granted {
+        events.push(Event::ChoiceMade {
+            player,
+            choice: Choice::YesNo(true),
+        });
+    }
+    events
+}
+
 /// The events that say what a payment is for, which come between the life paid and the mana: the cast of the spell,
 /// the activation of the ability, or the answer "paid" to the effect that asked.
 fn announcement(
@@ -282,12 +304,9 @@ fn announcement(
         Some(Pending {
             what: What::Spell(spell),
             choices,
+            granted,
             ..
-        }) => Ok(vec![Event::SpellCast {
-            player,
-            object: *spell,
-            choices: choices.clone(),
-        }]),
+        }) => Ok(spell_cast(player, *spell, choices, granted.is_some())),
         Some(Pending {
             what: What::Ability(ability),
             choices,

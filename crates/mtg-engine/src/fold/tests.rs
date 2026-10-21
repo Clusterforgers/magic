@@ -736,6 +736,7 @@ fn cards_put_on_the_bottom_of_a_library_go_under_the_others_with_the_last_of_the
     let event = Event::LibraryBottomed {
         player: PlayerId(0),
         cards: from_the_top(&game, cards),
+        random: false,
     };
     fold(&mut game, &[event]);
     assert_eq!(library_names(&game), expected);
@@ -751,6 +752,7 @@ fn cards_that_are_not_in_the_library_cannot_be_put_on_its_bottom() {
         let event = Event::LibraryBottomed {
             player: PlayerId(0),
             cards,
+            random: false,
         };
         assert!(apply_event(&mut game, &event).is_err());
         assert_eq!(game.state_hash(), before);

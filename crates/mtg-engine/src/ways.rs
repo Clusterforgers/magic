@@ -18,7 +18,7 @@ use crate::keywords::{self, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford};
 use crate::object::ObjectKind;
 use crate::price::Price;
-use crate::priority::sorcery_timing;
+use crate::priority::{mana_options, sorcery_timing};
 use crate::resolve::{spell_ability, zone_kind};
 use crate::rules::cast_permissions;
 use crate::spend::Spend;
@@ -132,6 +132,61 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
         });
     }
     ways
+}
+
+/// The way `player` casts the card `id` when a resolution lets them (CR 608.2g): for its mana cost, or without paying it.
+/// A land cannot be cast, nor can a card that is on the battlefield or the stack.
+pub(crate) fn granted(state: &GameState, id: ObjectId, free: bool) -> Vec<Way> {
+    let Some(card) = state.object(id) else {
+        return Vec::new();
+    };
+    let castable = card.kind() == ObjectKind::Card
+        && !card.base_types().contains(CardType::Land)
+        && !matches!(card.zone(), Zone::Battlefield | Zone::Stack);
+    if !castable {
+        return Vec::new();
+    }
+    if free {
+        return vec![Way {
+            alternative: Some(CastWay::Free),
+            label: "Cast without paying its mana cost".to_owned(),
+            mana: Some(ManaCost::default()),
+            instant: true,
+        }];
+    }
+    card.card()
+        .mana_cost
+        .as_ref()
+        .map(|cost| Way {
+            alternative: None,
+            label: format!("Cast for {cost}"),
+            mana: None,
+            instant: true,
+        })
+        .into_iter()
+        .collect()
+}
+
+/// Whether a resolution can have `player` cast the card `id` now: its targets can be announced and, unless it is cast
+/// free, the mana can be paid with what floats and what they control. Cost increases count even for a free cast.
+pub(crate) fn grantable(state: &GameState, player: PlayerId, id: ObjectId, free: bool) -> bool {
+    let Some(card) = state.object(id) else {
+        return false;
+    };
+    let Some(seat) = state.player(player) else {
+        return false;
+    };
+    let sources = mana_options(state, player);
+    let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
+    granted(state, id, free).iter().any(|way| {
+        announceable_in(state, player, id, way.alternative)
+            && way
+                .cost(card.card().mana_cost.as_ref())
+                .is_some_and(|cost| {
+                    let cost = announce::cheapest(state, player, id, &cost);
+                    can_afford(&cost, seat.mana(), &sources, seat.life(), &spend)
+                })
+    })
 }
 
 /// Whether the targets of the card `id` can be announced when it is cast in `way`: an overloaded spell has none.

@@ -152,6 +152,7 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
 
 mod activated;
 mod audit;
+mod cast;
 mod compound;
 mod counters;
 mod create;

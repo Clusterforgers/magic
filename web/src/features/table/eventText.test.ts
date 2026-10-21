@@ -41,7 +41,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Ana puts 2 cards on the bottom of their library',
   ],
   LibraryBottomed: [
-    { LibraryBottomed: { player: 0, cards: [1, 2] } },
+    { LibraryBottomed: { player: 0, cards: [1, 2], random: false } },
     'Ana puts 2 cards on the bottom of their library',
   ],
   Entered: [

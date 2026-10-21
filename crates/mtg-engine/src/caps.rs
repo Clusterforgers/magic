@@ -77,6 +77,8 @@ const RUNS: &[&str] = &[
     "Effect.Shuffle",
     "Effect.Move",
     "Effect.Move.Battlefield",
+    "Effect.ExileUntil",
+    "Effect.CastFromZone",
     "Effect.Destroy",
     "Effect.Exile",
     "Effect.Sacrifice",
@@ -166,6 +168,7 @@ const RUNS: &[&str] = &[
     "Keyword.Evoke",
     "Keyword.Overload",
     "Keyword.Cycling",
+    "Keyword.Cascade",
     "Condition.CastWith",
     "Rule.MayCast",
     "Condition.Kicked",
@@ -241,7 +244,7 @@ mod tests {
     #[case::shuffling("Effect.Shuffle", true)]
     #[case::moving("Effect.Move", true)]
     #[case::moving_to_the_battlefield("Effect.Move.Battlefield", true)]
-    #[case::moving_in_a_random_order("Effect.Move.Random", false)]
+    #[case::moving_in_a_random_order_to_the_top("Effect.Move.Random.Top", false)]
     #[case::searching("Effect.Search", true)]
     #[case::sacrificing("Effect.Sacrifice", true)]
     #[case::damage("Effect.DealDamage", true)]
@@ -393,7 +396,9 @@ mod tests {
     #[case::bolstering("Effect.Bolster", false)]
     #[case::exploring("Effect.Explore", false)]
     #[case::conniving("Effect.Connive", false)]
-    #[case::discovering("Effect.Discover", false)]
+    #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
+    #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
+    #[case::cascading("Keyword.Cascade", true)]
     #[case::time_travelling("Effect.TimeTravel", false)]
     #[case::extra_turns("Effect.ExtraTurn", false)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
