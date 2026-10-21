@@ -1,4 +1,4 @@
-//! Goal: the wordings that a listing of compiled cards beside their oracle text showed to be read wrongly stay with the table: a mana ability with other effects, a counter whose effect the rules give and a counter that reminder text explains; the neighbouring wordings that are read faithfully still read.
+//! Goal: the wordings that a listing of compiled cards beside their oracle text showed to be read wrongly stay with the table: a counter whose effect the rules give and a counter that reminder text explains; the neighbouring wordings that are read faithfully still read, a mana ability with other effects among them (the data holds it whole, as the rules play it without the stack).
 use super::*;
 use crate::card::ImplStatus;
 use crate::compile::compile;
@@ -9,13 +9,19 @@ fn activated(text: &str) -> Option<Ability> {
 }
 
 #[rstest]
-#[case::mana_and_damage("{T}: Add {R}. ~ deals 1 damage to you.")]
+#[case::mana_and_damage_to_you("{T}: Add {R}. ~ deals 1 damage to you.")]
+#[case::a_painland("{T}: Add {W} or {U}. ~ deals 1 damage to you.")]
+#[case::a_painland_of_the_chosen_color("{T}: Add one mana of the chosen color. ~ deals 1 damage to you.")]
+#[case::an_egg("{T}, Sacrifice ~: Add one mana of any color. Draw a card.")]
+#[case::a_choice_and_a_second_effect("{T}: Add {W} or {U}. Draw a card.")]
 #[case::mana_and_a_counter("{2}, {T}: Add one mana of any color. Put a brick counter on ~.")]
 #[case::mana_and_a_card("{2}, {T}, Sacrifice ~: Add {U}{B}. Draw a card.")]
 #[case::mana_and_life("{T}: Add {C}. You gain 1 life.")]
 #[case::life_first("{T}: You gain 1 life. Add {C}.")]
-fn a_mana_ability_with_other_effects_is_not_read(#[case] text: &str) {
-    assert_eq!(activated(text), None, "{text}");
+fn a_mana_ability_with_other_effects_reads_whole_and_writes_back(#[case] text: &str) {
+    let read = activated(text).unwrap_or_else(|| panic!("{text} is not read"));
+    assert!(read.is_mana_ability(), "{text}");
+    golden(text, ClauseKind::Activated, false);
 }
 
 #[rstest]

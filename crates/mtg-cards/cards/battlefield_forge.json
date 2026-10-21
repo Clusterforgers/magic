@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3f92c1d8-5a6e-4b07-9d34-8e1f7a2c6b50",
+  "name": "Battlefield Forge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battlefield Forge",
+      "oracle_fingerprint": "175a4773dd7850e390089a71d4b28819",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Red", "White"] } } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

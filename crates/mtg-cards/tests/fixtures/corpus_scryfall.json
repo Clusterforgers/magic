@@ -204,6 +204,31 @@
     ]
   },
   {
+    "id": "e07b3a95-81d4-4c62-b5f0-6a9c2d7e1b38",
+    "oracle_id": "3f92c1d8-5a6e-4b07-9d34-8e1f7a2c6b50",
+    "name": "Battlefield Forge",
+    "lang": "en",
+    "layout": "normal",
+    "set": "apc",
+    "collector_number": "140",
+    "rarity": "rare",
+    "released_at": "2001-06-04",
+    "digital": false,
+    "type_line": "Land",
+    "oracle_text": "{T}: Add {C}.\n{T}: Add {R} or {W}. Battlefield Forge deals 1 damage to you.",
+    "colors": [],
+    "color_identity": [
+      "R",
+      "W"
+    ],
+    "keywords": [],
+    "produced_mana": [
+      "C",
+      "R",
+      "W"
+    ]
+  },
+  {
     "id": "db593d4f-d3c1-48ae-a55d-4b61d2cb5cc2",
     "oracle_id": "9456c5b6-946d-403a-8ed0-dff9f921d98c",
     "name": "Black Knight",
@@ -1822,6 +1847,32 @@
     "keywords": [],
     "produced_mana": [
       "G"
+    ]
+  },
+  {
+    "id": "5c1a7d4e-2f6b-4e83-9a0d-1b7e3c9f4a21",
+    "oracle_id": "a14e6b02-7c3d-4f58-8e91-3d2b6f0c5a77",
+    "name": "Lotus Petal",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tmp",
+    "collector_number": "294",
+    "rarity": "common",
+    "released_at": "1997-10-14",
+    "digital": false,
+    "mana_cost": "{0}",
+    "cmc": 0.0,
+    "type_line": "Artifact",
+    "oracle_text": "{T}, Sacrifice Lotus Petal: Add one mana of any color.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [],
+    "produced_mana": [
+      "B",
+      "G",
+      "R",
+      "U",
+      "W"
     ]
   },
   {

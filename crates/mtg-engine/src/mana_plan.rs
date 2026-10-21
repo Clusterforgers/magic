@@ -186,6 +186,98 @@ pub(crate) fn rest_after(
     Ok((needs, generic))
 }
 
+/// Whether the mana of `parts` covers the plain `cost`: enough in all and of each type.
+pub(crate) fn covers_cost(cost: &ManaCost, parts: &[Vec<ManaType>]) -> bool {
+    covers(cost, &parts.concat(), cost.mana_value()).is_ok()
+}
+
+/// What a completion may add: one floating mana, or one permanent used for one of its options.
+enum Candidate<'a> {
+    Floating(ManaType),
+    Permanent(&'a [ManaOption]),
+}
+
+/// The most nodes [`complete_with`] looks at before it gives up.
+const SEARCH_BUDGET: usize = 200_000;
+
+/// The floating mana to spend and the sources to use, on top of the `kept` parts of a payment, so that the whole pays
+/// the plain `cost` with nothing to spare; the one with the fewest sacrifices, then the fewest sources. `None` when
+/// there is none within the search budget.
+pub(crate) fn complete_with(
+    cost: &ManaCost,
+    kept: &[Vec<ManaType>],
+    floating: &[ManaType],
+    groups: &[Vec<ManaOption>],
+) -> Option<(Vec<ManaType>, Vec<ManaSource>)> {
+    struct Search<'a> {
+        cost: &'a ManaCost,
+        candidates: Vec<Candidate<'a>>,
+        parts: Vec<Vec<ManaType>>,
+        pool: Vec<ManaType>,
+        taps: Vec<ManaOption>,
+        best: Option<((u32, usize), Vec<ManaType>, Vec<ManaSource>)>,
+        budget: usize,
+    }
+    impl Search<'_> {
+        fn visit(&mut self, from: usize) {
+            if self.budget == 0 {
+                return;
+            }
+            self.budget -= 1;
+            if covers_cost(self.cost, &self.parts) {
+                if spent_of(self.cost, &self.parts).is_ok() {
+                    let sacrifices = u32::try_from(self.taps.iter().filter(|o| o.sacrifice).count())
+                        .unwrap_or(u32::MAX);
+                    let weight = (sacrifices, self.taps.len());
+                    if self.best.as_ref().is_none_or(|(held, ..)| weight < *held) {
+                        let sources = self.taps.iter().map(|o| o.source).collect();
+                        self.best = Some((weight, self.pool.clone(), sources));
+                    }
+                }
+                // Anything added to a payment that covers the cost has a part to spare.
+                return;
+            }
+            for at in from..self.candidates.len() {
+                match &self.candidates[at] {
+                    Candidate::Floating(mana) => {
+                        let mana = *mana;
+                        self.parts.push(vec![mana]);
+                        self.pool.push(mana);
+                        self.visit(at + 1);
+                        self.pool.pop();
+                        self.parts.pop();
+                    }
+                    Candidate::Permanent(options) => {
+                        let options = options.to_vec();
+                        for option in options {
+                            self.parts
+                                .push(vec![option.produces; option.count as usize]);
+                            self.taps.push(option);
+                            self.visit(at + 1);
+                            self.taps.pop();
+                            self.parts.pop();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let mut candidates: Vec<Candidate<'_>> = Vec::new();
+    candidates.extend(floating.iter().map(|m| Candidate::Floating(*m)));
+    candidates.extend(groups.iter().map(|g| Candidate::Permanent(g)));
+    let mut search = Search {
+        cost,
+        candidates,
+        parts: kept.to_vec(),
+        pool: Vec::new(),
+        taps: Vec::new(),
+        best: None,
+        budget: SEARCH_BUDGET,
+    };
+    search.visit(0);
+    search.best.map(|(_, pool, taps)| (pool, taps))
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: sources that add several mana or are sacrificed are chosen to cover a cost with the fewest sacrifices and taps, a surplus is allowed only from the last part needed, and a payment with a part to spare is refused.

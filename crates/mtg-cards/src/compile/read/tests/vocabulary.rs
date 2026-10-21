@@ -105,7 +105,6 @@ fn the_wordings_read_into_the_dsl_and_write_back(
 #[case::three_alternatives_in_a_row("{T}: Add {W} or {U} or {B}.")]
 #[case::one_alternative("{T}: Add {W} or.")]
 #[case::the_chosen_color_twice("{T}: Add two mana of the chosen color.")]
-#[case::a_choice_and_a_second_effect("{T}: Add {W} or {U}. Draw a card.")]
 #[case::energy_and_life("{T}, Pay {E} and 2 life: Draw a card.")]
 #[case::no_energy("{T}, Pay: Draw a card.")]
 fn near_misses_stay_with_the_table(#[case] text: &str) {

@@ -107,13 +107,8 @@ pub fn activated(r: &mut Reader<'_>) -> Option<Ability> {
     let effects = sentences(r, true)?;
     let (timing, limit) = restrictions(r)?;
     let targets = std::mem::take(&mut r.targets);
-    // An ability without targets that adds mana is a mana ability (CR 605.1a) whatever else it
-    // does, and plays without the stack; the data holds that only for an ability that adds mana
-    // alone, so this wording stays with the table.
-    let adds_mana = |e: &Effect| matches!(e, Effect::AddMana { .. });
-    if targets.is_empty() && effects.iter().any(adds_mana) && !effects.iter().all(adds_mana) {
-        return None;
-    }
+    // An ability without targets that adds mana is a mana ability (CR 605.1a) whatever else it does and plays
+    // without the stack; the data holds it whole, and the engine plays the shapes it reads (`mana_shape`).
     Some(Ability::Activated {
         cost,
         timing,

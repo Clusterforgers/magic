@@ -13,7 +13,7 @@ use mtg_core::mana::{ManaCost, ManaSymbol, ManaType, PHYREXIAN_LIFE};
 use serde::{Deserialize, Serialize};
 
 use crate::error::PaymentError;
-use crate::mana_plan::{Needs, plan, rest_after, spent_of};
+use crate::mana_plan::{Needs, complete_with, covers_cost, plan, rest_after, spent_of};
 
 /// Mana currently floating for a player.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
@@ -229,6 +229,15 @@ fn planned_auto(cost: &ManaCost, pool: &ManaPool, sources: &[ManaOption]) -> Opt
         }
     }
     payment.taps = plan(needs, generic, &by_permanent(sources), sources)?;
+    // A source of several mana may cover what floating mana was spent on: a payment has nothing to spare.
+    for at in (0..payment.pool.len()).rev() {
+        let mut without = payment.clone();
+        without.pool.remove(at);
+        let parts = parts_of(pool, sources, &[], &without).ok()?;
+        if covers_cost(cost, &parts) {
+            payment = without;
+        }
+    }
     Some(payment)
 }
 
@@ -371,9 +380,29 @@ fn plain_complete(
         .collect();
     let rest =
         plain_auto(&rest_cost, &rest_pool, &rest_sources).ok_or(PaymentError::CannotComplete)?;
-    Ok(Payment {
+    let whole = Payment {
         pool: [partial.pool.as_slice(), rest.pool.as_slice()].concat(),
         taps: [partial.taps.as_slice(), rest.taps.as_slice()].concat(),
+        life: 0,
+    };
+    if sources.iter().all(ManaOption::is_simple) {
+        return Ok(whole);
+    }
+    // What the sources add beyond the rest of the cost may leave a part of the whole to spare: look for another.
+    let held = parts_of(pool, sources, &[], &whole)?;
+    if spent_of(cost, &held).is_ok() {
+        return Ok(whole);
+    }
+    let floating: Vec<ManaType> = ManaType::ALL
+        .into_iter()
+        .flat_map(|mana| std::iter::repeat_n(mana, rest_pool.get(mana) as usize))
+        .collect();
+    let (more_pool, more_taps) =
+        complete_with(cost, parts, &floating, &by_permanent(&rest_sources))
+            .ok_or(PaymentError::CannotComplete)?;
+    Ok(Payment {
+        pool: [partial.pool.as_slice(), more_pool.as_slice()].concat(),
+        taps: [partial.taps.as_slice(), more_taps.as_slice()].concat(),
         life: 0,
     })
 }
@@ -1320,22 +1349,95 @@ mod tests {
         assert!(pays(&sym("{1}{B/P}{B/P}"), &mana_list("BG"), 2));
     }
 
-    fn spent_types(payment: &Payment, sources: &[ManaOption]) -> Vec<ManaType> {
-        let mut spent = payment.pool.clone();
-        spent.extend(
+    /// What each part of `payment` makes: one mana for each floating mana, and what each tap adds.
+    fn made_parts(payment: &Payment, sources: &[ManaOption]) -> Vec<Vec<ManaType>> {
+        let mut parts: Vec<Vec<ManaType>> = payment.pool.iter().map(|m| vec![*m]).collect();
+        parts.extend(
             payment
                 .taps
                 .iter()
                 .filter_map(|t| sources.iter().find(|o| o.source == *t))
-                .map(|o| o.produces),
+                .map(|o| vec![o.produces; o.count as usize]),
         );
-        spent
+        parts
     }
 
-    /// Whether `payment` pays for `cost` according to the independent check and the payer has the life.
+    fn spent_types(payment: &Payment, sources: &[ManaOption]) -> Vec<ManaType> {
+        made_parts(payment, sources).concat()
+    }
+
+    /// What one way to pay a cost asks for: mana of each type, more mana of any type, and life.
+    type Way = ([usize; 6], usize, u32);
+
+    /// Every way to pay `symbols`, symbol by symbol (the independent counterpart of `ManaCost::resolutions`).
+    fn ways(symbols: &[ManaSymbol]) -> Vec<Way> {
+        let Some((first, rest)) = symbols.split_first() else {
+            return vec![([0; 6], 0, 0)];
+        };
+        let colour = |c: Color| {
+            let mut asks: Way = ([0; 6], 0, 0);
+            asks.0[ManaType::from(c).index()] = 1;
+            asks
+        };
+        let colourless = || {
+            let mut asks: Way = ([0; 6], 0, 0);
+            asks.0[ManaType::Colorless.index()] = 1;
+            asks
+        };
+        let generic = |n: u32| ([0; 6], n as usize, 0);
+        let life = || ([0; 6], 0, 2);
+        let choices: Vec<Way> = match *first {
+            ManaSymbol::Generic(n) => vec![generic(n)],
+            ManaSymbol::Colored(c) => vec![colour(c)],
+            ManaSymbol::Colorless => vec![colourless()],
+            ManaSymbol::Hybrid(a, b) => vec![colour(a), colour(b)],
+            ManaSymbol::MonoHybrid(c) => vec![colour(c), generic(2)],
+            ManaSymbol::Phyrexian(c) => vec![colour(c), life()],
+            ManaSymbol::HybridPhyrexian(a, b) => vec![colour(a), colour(b), life()],
+            ManaSymbol::ColorlessHybrid(c) => vec![colour(c), colourless()],
+            ManaSymbol::ColorlessPhyrexian => vec![colourless(), life()],
+        };
+        let mut all = Vec::new();
+        for (types, any, paid) in choices {
+            for (more, more_any, more_paid) in ways(rest) {
+                let mut types = types;
+                for (t, n) in types.iter_mut().zip(more) {
+                    *t += n;
+                }
+                all.push((types, any + more_any, paid + more_paid));
+            }
+        }
+        all
+    }
+
+    /// Whether the mana of `parts` covers `way`: enough of each type, and enough in all.
+    fn covers_way(way: &Way, parts: &[&Vec<ManaType>]) -> bool {
+        let made: Vec<ManaType> = parts.iter().flat_map(|p| p.iter().copied()).collect();
+        let (types, any, _) = way;
+        ManaType::ALL
+            .iter()
+            .all(|t| made.iter().filter(|m| *m == t).count() >= types[t.index()])
+            && made.len() >= types.iter().sum::<usize>() + any
+    }
+
+    /// Whether `payment` pays for `cost` according to the independent check and the payer has the life: for one way to
+    /// pay the cost, the mana it makes covers it and no part of the payment could be left out.
     fn valid(cost: &ManaCost, payment: &Payment, sources: &[ManaOption], life: i32) -> bool {
-        pays(cost.symbols(), &spent_types(payment, sources), payment.life)
-            && (payment.life == 0 || i64::from(payment.life) <= i64::from(life))
+        let parts = made_parts(payment, sources);
+        let all: Vec<&Vec<ManaType>> = parts.iter().collect();
+        ways(cost.symbols()).iter().any(|way| {
+            way.2 == payment.life
+                && covers_way(way, &all)
+                && (0..parts.len()).all(|skip| {
+                    let rest: Vec<&Vec<ManaType>> = parts
+                        .iter()
+                        .enumerate()
+                        .filter(|(i, _)| *i != skip)
+                        .map(|(_, part)| part)
+                        .collect();
+                    !covers_way(way, &rest)
+                })
+        }) && (payment.life == 0 || i64::from(payment.life) <= i64::from(life))
     }
 
     /// Every payment from some floating mana, each permanent tapped for one of its abilities or left alone, and every even amount of life up to `most_life`.
@@ -1452,6 +1554,45 @@ mod tests {
             })
     }
 
+    /// A random scenario whose sources may add several mana or be sacrificed: up to three permanents of one or two
+    /// abilities each, one floating mana at most.
+    fn complex_scenario(costs: impl Strategy<Value = ManaCost>) -> impl Strategy<Value = Scenario> {
+        (
+            costs,
+            prop::collection::vec(mana_strategy(), 0..2),
+            prop::collection::vec(
+                prop::collection::vec((mana_strategy(), 1u32..4, any::<bool>()), 1..3),
+                0..4,
+            ),
+            -2i32..9,
+        )
+            .prop_map(|(cost, floating, permanents, life)| {
+                let mut sources = Vec::new();
+                for (object, abilities) in (0u64..).zip(permanents) {
+                    for (ability, (produces, count, sacrifice)) in abilities.into_iter().enumerate()
+                    {
+                        sources.push(ManaOption {
+                            source: tap(object, ability),
+                            produces,
+                            count,
+                            sacrifice,
+                        });
+                    }
+                }
+                (cost, floating, sources, life)
+            })
+    }
+
+    /// Sacrifices a payment makes.
+    fn sacrifices(payment: &Payment, sources: &[ManaOption]) -> usize {
+        payment
+            .taps
+            .iter()
+            .filter_map(|t| sources.iter().find(|o| o.source == *t))
+            .filter(|o| o.sacrifice)
+            .count()
+    }
+
     fn payments_of(scenario: &Scenario) -> Vec<Payment> {
         let (cost, floating, sources, _) = scenario;
         all_payments(floating, sources, cost.life_symbols() * PHYREXIAN_LIFE)
@@ -1487,6 +1628,16 @@ mod tests {
             prop_assert!(valid(cost, &payment, sources, *life));
             let least = allowed.iter().map(|p| p.life).min();
             prop_assert_eq!(Some(payment.life), least, "mana first, then the least life");
+            let fewest = allowed
+                .iter()
+                .filter(|p| p.life == payment.life)
+                .map(|p| sacrifices(p, sources))
+                .min();
+            prop_assert_eq!(
+                Some(sacrifices(&payment, sources)),
+                fewest,
+                "no more sacrifices than the life paid needs"
+            );
         }
         Ok(())
     }
@@ -1514,7 +1665,17 @@ mod tests {
             let mut got = spent;
             expected.sort();
             got.sort();
-            prop_assert_eq!(got, expected);
+            if made_parts(&payment, sources).iter().all(|p| p.len() == 1) {
+                prop_assert_eq!(got, expected);
+            } else {
+                // A source that adds several mana may add more than the cost takes; the rest floats.
+                let mut left = expected;
+                for mana in got {
+                    let at = left.iter().position(|m| *m == mana);
+                    prop_assert!(at.is_some(), "{:?} was spent but not made", mana);
+                    left.remove(at.unwrap_or(0));
+                }
+            }
         }
         Ok(())
     }
@@ -1588,6 +1749,27 @@ mod tests {
         #[test]
         fn completion_exists_iff_some_valid_payment_contains_the_partial(
             s in scenario(any_cost()), pick in any::<prop::sample::Index>()
+        ) {
+            completion_matches_the_independent_check(&s, pick)?;
+        }
+
+        #[test]
+        fn sources_of_several_mana_and_sacrifices_follow_the_independent_check(
+            s in complex_scenario(any_cost())
+        ) {
+            automatic_payment_matches_the_independent_check(&s)?;
+        }
+
+        #[test]
+        fn payments_of_such_sources_are_checked_like_the_independent_check(
+            s in complex_scenario(any_cost()), pick in any::<prop::sample::Index>(), extra in 0u32..4
+        ) {
+            check_payment_matches_the_independent_check(&s, pick, extra)?;
+        }
+
+        #[test]
+        fn completion_with_such_sources_exists_iff_some_valid_payment_contains_the_partial(
+            s in complex_scenario(any_cost()), pick in any::<prop::sample::Index>()
         ) {
             completion_matches_the_independent_check(&s, pick)?;
         }
