@@ -99,6 +99,14 @@ const ENTERS: &str = r#""when":{"Enters":{"what":["This"]}}"#;
     ),
     &["Ability.Replacement", "Amount.LowestLife", "Amount.Players", "ReplaceBy.Tapped", "ReplaceWhen.Enters"]
 )]
+#[case::a_static_ability_while_an_opponent_has_low_life(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":{"Compare":{"left":{"LowestLife":"Opponents"},"op":"Le","right":10}}}}"#,
+    &["Ability.Static", "Amount.LowestLife", "Keyword.Haste", "Mod.AddKeyword"]
+)]
+#[case::a_static_ability_while_every_opponent_has_low_life(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":{"Compare":{"left":{"HighestLife":"Opponents"},"op":"Le","right":10}}}}"#,
+    &["Ability.Static", "Amount.HighestLife", "Keyword.Haste", "Mod.AddKeyword"]
+)]
 #[case::changeling(r#"{"Keyword":"Changeling"}"#, &["Keyword.Changeling"])]
 #[case::devoid(r#"{"Keyword":"Devoid"}"#, &["Keyword.Devoid"])]
 #[case::infect(r#"{"Keyword":"Infect"}"#, &["Keyword.Infect"])]
@@ -179,6 +187,7 @@ fn a_node_used_wrongly_is_refused_where_it_stands(#[case] json: &str, #[case] me
 #[case::choosing_an_opponent("ReplaceBy.Choose.Opponent")]
 #[case::counting_players("Amount.Players")]
 #[case::the_lowest_life_total("Amount.LowestLife")]
+#[case::the_highest_life_total("Amount.HighestLife")]
 #[case::changeling("Keyword.Changeling")]
 #[case::devoid("Keyword.Devoid")]
 #[case::infect("Keyword.Infect")]

@@ -136,15 +136,39 @@ fn opponents(r: &mut Reader<'_>) -> Option<Condition> {
     })
 }
 
-/// "a player has 13 or less life".
+/// The players a life total is about and whether one of them is enough ("a player", "an opponent") or all must have it
+/// ("each opponent", "each player").
+const LIFE_SUBJECTS: [(&str, Ref, bool); 4] = [
+    ("a player has", Ref::EachPlayer, true),
+    ("an opponent has", Ref::Opponents, true),
+    ("each opponent has", Ref::Opponents, false),
+    ("each player has", Ref::EachPlayer, false),
+];
+
+/// "a player has 13 or less life", "an opponent has 10 or less life", "each opponent has 20 or more life": the lowest or
+/// highest life total among the players, whichever one player or every player having it comes to.
 fn low_life(r: &mut Reader<'_>) -> Option<Condition> {
-    r.need("a player has")?;
-    let life = r.number()?;
-    r.need("or less life")?;
+    let (who, any) = LIFE_SUBJECTS
+        .iter()
+        .find_map(|(words, who, any)| r.words(words).then(|| (who.clone(), *any)))?;
+    let life = i32::try_from(r.number()?).ok()?;
+    let less = if r.words("or less life") {
+        true
+    } else if r.words("or more life") {
+        false
+    } else {
+        return None;
+    };
+    // One player with at most the amount is the lowest total at most it; all of them is the highest total at most it.
+    let left = if any == less {
+        Amount::LowestLife(who)
+    } else {
+        Amount::HighestLife(who)
+    };
     Some(Condition::Compare {
-        left: Amount::LowestLife(Ref::EachPlayer),
-        op: Cmp::Le,
-        right: Amount::Fixed(i32::try_from(life).ok()?),
+        left,
+        op: if less { Cmp::Le } else { Cmp::Ge },
+        right: Amount::Fixed(life),
     })
 }
 
@@ -545,7 +569,7 @@ fn holds_texts(condition: &Condition) -> Vec<String> {
     })
 }
 
-/// "you control two or more basic lands", "you have two or more opponents", "a player has 13 or less life": one thing
+/// "you control two or more basic lands", "you have two or more opponents", "an opponent has 10 or less life": one thing
 /// that holds, as `held` reads it.
 fn control_texts(condition: &Condition) -> Vec<String> {
     if let Condition::Compare {
@@ -562,12 +586,24 @@ fn control_texts(condition: &Condition) -> Vec<String> {
             .collect();
     }
     if let Condition::Compare {
-        left: Amount::LowestLife(Ref::EachPlayer),
-        op: Cmp::Le,
+        left: left @ (Amount::LowestLife(who) | Amount::HighestLife(who)),
+        op: op @ (Cmp::Le | Cmp::Ge),
         right: Amount::Fixed(life),
     } = condition
     {
-        return vec![format!("a player has {life} or less life")];
+        let (less, any) = (
+            *op == Cmp::Le,
+            matches!(left, Amount::LowestLife(_)) == (*op == Cmp::Le),
+        );
+        return LIFE_SUBJECTS
+            .iter()
+            .find(|(_, subject, one)| subject == who && *one == any)
+            .map(|(words, _, _)| {
+                let end = if less { "less" } else { "more" };
+                format!("{words} {life} or {end} life")
+            })
+            .into_iter()
+            .collect();
     }
     let Condition::Compare {
         left: Amount::Count(Selector(preds)),

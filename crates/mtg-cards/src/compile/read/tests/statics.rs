@@ -123,6 +123,26 @@ fn x_counters_need_an_x_in_the_mana_cost() {
     "This land enters tapped unless a player has 13 or less life.",
     r#"{"Not":{"Compare":{"left":{"LowestLife":"EachPlayer"},"op":"Le","right":13}}}"#
 )]
+#[case::an_opponent_with_a_low_life_total(
+    "This land enters tapped unless an opponent has 10 or less life.",
+    r#"{"Not":{"Compare":{"left":{"LowestLife":"Opponents"},"op":"Le","right":10}}}"#
+)]
+#[case::every_opponent_with_a_low_life_total(
+    "This land enters tapped unless each opponent has 10 or less life.",
+    r#"{"Not":{"Compare":{"left":{"HighestLife":"Opponents"},"op":"Le","right":10}}}"#
+)]
+#[case::an_opponent_with_a_high_life_total(
+    "This land enters tapped unless an opponent has 30 or more life.",
+    r#"{"Not":{"Compare":{"left":{"HighestLife":"Opponents"},"op":"Ge","right":30}}}"#
+)]
+#[case::every_opponent_with_a_high_life_total(
+    "This land enters tapped unless each opponent has 30 or more life.",
+    r#"{"Not":{"Compare":{"left":{"LowestLife":"Opponents"},"op":"Ge","right":30}}}"#
+)]
+#[case::every_player_with_a_low_life_total(
+    "This land enters tapped unless each player has 13 or less life.",
+    r#"{"Not":{"Compare":{"left":{"HighestLife":"EachPlayer"},"op":"Le","right":13}}}"#
+)]
 #[case::opponents_or_life(
     "This land enters tapped unless you have two or more opponents or a player has 13 or less life.",
     r#"{"Not":{"Any":[{"Compare":{"left":{"Players":"Opponents"},"op":"Ge","right":2}},{"Compare":{"left":{"LowestLife":"EachPlayer"},"op":"Le","right":13}}]}}"#
@@ -329,8 +349,11 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 #[case::choose_two("As this creature enters, choose a color and a creature type.")]
 #[case::choose_a_player_in_secret("As this creature enters, secretly choose an opponent.")]
 #[case::unless_one_opponent("This land enters tapped unless you have one opponent.")]
-#[case::unless_a_player_has_more_life(
-    "This land enters tapped unless a player has 13 or more life."
+#[case::unless_a_player_has_exactly_this_life(
+    "This land enters tapped unless a player has 13 life."
+)]
+#[case::unless_a_player_has_more_than_this_life(
+    "This land enters tapped unless a player has more than 13 life."
 )]
 #[case::unless_nobody_has_life("This land enters tapped unless a player has life.")]
 #[case::unblockable_except_by(

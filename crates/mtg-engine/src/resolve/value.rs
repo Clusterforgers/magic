@@ -1020,8 +1020,8 @@ mod tests {
     #[case::players_other_than_you(r#"{"Players":"Opponents"}"#, 1)]
     #[case::lowest_life_of_everyone(r#"{"LowestLife":"EachPlayer"}"#, 20)]
     #[case::highest_life_of_the_opponents(r#"{"HighestLife":"Opponents"}"#, 20)]
-    #[case::lowest_life_of_no_one(r#"{"LowestLife":{"Each":[{"Named":"Nobody"}]}}"#, 2147483647)]
-    #[case::highest_life_of_no_one(r#"{"HighestLife":{"Each":[{"Named":"Nobody"}]}}"#, -2147483648)]
+    #[case::lowest_life_of_no_one(r#"{"LowestLife":{"Each":[{"Named":"Nobody"}]}}"#, 2_147_483_647)]
+    #[case::highest_life_of_no_one(r#"{"HighestLife":{"Each":[{"Named":"Nobody"}]}}"#, -2_147_483_648)]
     #[case::sum(r#"{"Sum":[2,{"Count":[{"Type":"Artifact"}]},-1]}"#, 2)]
     #[case::no_targets_chosen(r#"{"TargetCount":0}"#, 0)]
     fn an_amount_is_the_number_it_stands_for(#[case] json: &str, #[case] expected: i64) {
