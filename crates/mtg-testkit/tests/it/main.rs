@@ -40,6 +40,8 @@ mod event_triggers;
 mod forecast_hidden;
 mod forecast_matches_games;
 mod forecast_replacement;
+mod foretell;
+mod foretell_fuzz;
 mod format_hooks;
 mod fuzz_games;
 mod harness_selfcheck;

@@ -8,13 +8,13 @@
 
 mod alternative;
 mod division;
+pub(crate) mod foretell;
 mod legality;
 mod modes;
 mod modifiers;
 mod optional;
 mod parts;
 mod payment;
-pub(crate) mod foretell;
 pub(crate) mod suspend;
 mod targets;
 mod total;
