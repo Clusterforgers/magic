@@ -62,6 +62,14 @@ fn activated(text: &str) -> Option<Ability> {
     "{T}, Discard a card: Draw a card.",
     r#"{"Activated":{"cost":["Tap",{"Discard":{}}],"effects":[{"Draw":{}}]}}"#
 )]
+#[case::drudge_skeletons(
+    "{B}: Regenerate ~.",
+    r#"{"Activated":{"cost":"{B}","effects":[{"Regenerate":{"what":"This"}}]}}"#
+)]
+#[case::regenerate_a_target(
+    "{1}{G}: Regenerate target creature.",
+    r#"{"Activated":{"cost":"{1}{G}","targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Regenerate":{"what":{"Target":0}}}]}}"#
+)]
 #[case::untap_symbol(
     "{Q}, {1}: Scry 1.",
     r#"{"Activated":{"cost":["Untap",{"Mana":"{1}"}],"effects":[{"Scry":{}}]}}"#
@@ -228,6 +236,10 @@ fn every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
 #[case::no_colon("{T} Draw a card.")]
 #[case::exile_from_the_graveyard("{2}, Exile ~ from your graveyard: Draw a card.")]
 #[case::remove_a_counter("{T}, Remove a charge counter from ~: Add one mana of any color.")]
+#[case::regenerate_a_spell("{B}: Regenerate target spell.")]
+#[case::regenerate_a_card_in_a_graveyard(
+    "{B}: Regenerate target creature card from your graveyard."
+)]
 #[case::loose_words("When you do, {T}: Draw a card.")]
 fn costs_and_restrictions_the_templates_do_not_model_stay_unread(#[case] text: &str) {
     assert_eq!(activated(text), None, "{text}");

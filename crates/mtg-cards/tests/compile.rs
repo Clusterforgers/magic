@@ -48,7 +48,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 112] = [
     ("Covetous Dragon", Some(Partial), 1, 2),
     ("Cultivate", Some(Manual), 0, 1),
     ("Darksteel Juggernaut", Some(Partial), 1, 3),
-    ("Death Ward", Some(Manual), 0, 1),
+    ("Death Ward", Some(Full), 1, 1),
     (
         "Delver of Secrets // Insectile Aberration",
         Some(Partial),
@@ -57,7 +57,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 112] = [
     ),
     ("Dockside Extortionist", Some(Full), 1, 1),
     ("Doom Blade", Some(Full), 1, 1),
-    ("Drudge Skeletons", Some(Manual), 0, 1),
+    ("Drudge Skeletons", Some(Full), 1, 1),
     ("Elemental Masterpiece", Some(Partial), 1, 2),
     ("Epic Proportions", Some(Partial), 2, 3),
     ("Eternal Witness", Some(Full), 1, 1),

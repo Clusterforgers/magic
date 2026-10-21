@@ -6,9 +6,10 @@
 //! new sentence aside), so a reading that dropped or changed a word stays with the table. One file
 //! per part: `tokens` (the words, numbers and symbols of a clause and the reader that walks them),
 //! `selectors` (what a clause targets or counts), `subtypes` (the capitalized words that are
-//! types, not names), `amounts`, `effects` (a sentence is an effect), `modal` (the modes of a choice),
-//! `triggers` (the event of a triggered ability), `costs` (what is paid before the colon), `abilities` (a spell ability, a triggered
-//! ability, an activated ability) and `render`.
+//! types, not names), `amounts`, `effects` (a sentence is an effect), `library` (searching, looking
+//! at and shuffling a library), `counters` (putting, removing and moving them), `modal` (the modes
+//! of a choice), `triggers` (the event of a triggered ability), `costs` (what is paid before the
+//! colon), `abilities` (a spell ability, a triggered ability, an activated ability) and `render`.
 
 mod abilities;
 mod amounts;

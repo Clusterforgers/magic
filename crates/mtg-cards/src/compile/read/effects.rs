@@ -448,16 +448,19 @@ fn object(r: &mut Reader<'_>) -> Option<Ref> {
 }
 
 /// "Destroy target creature.", "Exile all creatures.", "Counter target spell.", "Tap target creature.", "Untap
-/// target land."
+/// target land.", "Regenerate ~."
 fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let verb = r.take_word()?;
-    if !matches!(verb, "destroy" | "exile" | "counter" | "tap" | "untap") {
+    if !matches!(
+        verb,
+        "destroy" | "exile" | "counter" | "tap" | "untap" | "regenerate"
+    ) {
         return None;
     }
-    let turns = matches!(verb, "tap" | "untap");
+    let turns = matches!(verb, "tap" | "untap" | "regenerate");
     // "Exile ~" is the card itself leaving, "Untap ~" the card turning over; nothing else of the card is destroyed or
     // countered this way.
-    let what = if matches!(verb, "exile" | "tap" | "untap") && r.source() {
+    let what = if matches!(verb, "exile" | "tap" | "untap" | "regenerate") && r.source() {
         Ref::This
     } else {
         object(r)?
@@ -483,6 +486,7 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         "exile" => Effect::Exile { what },
         "tap" => Effect::Tap { what },
         "untap" => Effect::Untap { what },
+        "regenerate" => Effect::Regenerate { what },
         _ => Effect::Counter { what },
     }])
 }
