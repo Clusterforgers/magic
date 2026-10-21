@@ -64,7 +64,8 @@ pub fn cascade_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
     deck.extend(std::iter::repeat_n(discoverer(), 3));
     for value in 1u32..=5 {
         let name = format!("Cascade Fodder {value}");
-        let card = creature(&name, value, &[], 1 + (value % 3) as i32, 2);
+        let power = i32::try_from(1 + value % 3).unwrap_or(1);
+        let card = creature(&name, value, &[], power, 2);
         deck.extend(std::iter::repeat_n(card, 2));
     }
     rng.shuffle(&mut deck);

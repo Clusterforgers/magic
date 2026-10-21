@@ -465,17 +465,19 @@ impl Engine {
                         self.commit(events)?;
                     }
                     // A cast the resolution of another spell or ability began that cannot go on tells it so (CR 608.2g).
-                    Next::Drop => match self.pending.take() {
-                        Some(Pending {
+                    Next::Drop => {
+                        if let Some(Pending {
                             player,
                             granted: Some(_),
                             ..
-                        }) => self.commit(vec![Event::ChoiceMade {
-                            player,
-                            choice: Choice::YesNo(false),
-                        }])?,
-                        _ => {}
-                    },
+                        }) = self.pending.take()
+                        {
+                            self.commit(vec![Event::ChoiceMade {
+                                player,
+                                choice: Choice::YesNo(false),
+                            }])?;
+                        }
+                    }
                 }
                 continue;
             }

@@ -25,8 +25,12 @@ fn discover_in_a_trigger_reads_and_writes_back() {
 }
 
 #[rstest]
-#[case::the_exiling("Exile cards from the top of your library until you exile a nonland card with mana value 3 or less.")]
-#[case::and_the_cast("Exile cards from the top of your library until you exile a nonland card with mana value 3 or less. You may cast it without paying its mana cost.")]
+#[case::the_exiling(
+    "Exile cards from the top of your library until you exile a nonland card with mana value 3 or less."
+)]
+#[case::and_the_cast(
+    "Exile cards from the top of your library until you exile a nonland card with mana value 3 or less. You may cast it without paying its mana cost."
+)]
 fn the_first_sentences_read(#[case] text: &str) {
     golden(text, ClauseKind::Spell, false);
 }
@@ -54,9 +58,13 @@ fn the_sentences_of_an_exile_until_a_card_is_found_and_its_free_cast_read_one_by
 
 #[rstest]
 #[case::a_cast_with_nothing_exiled_before("You may cast it without paying its mana cost.")]
-#[case::bottom_with_nothing_exiled_before("Put all cards exiled this way that weren't cast on the bottom of your library in a random order.")]
+#[case::bottom_with_nothing_exiled_before(
+    "Put all cards exiled this way that weren't cast on the bottom of your library in a random order."
+)]
 #[case::discover_without_a_number("Discover.")]
-#[case::another_value("Exile cards from the top of your library until you exile a nonland card with mana value 3 or more.")]
+#[case::another_value(
+    "Exile cards from the top of your library until you exile a nonland card with mana value 3 or more."
+)]
 fn a_near_miss_is_left_to_the_table(#[case] text: &str) {
     assert_eq!(spell(text), None, "{text}");
 }

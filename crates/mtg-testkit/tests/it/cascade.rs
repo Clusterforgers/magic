@@ -85,7 +85,7 @@ fn the_first_card_of_lesser_value_is_cast_for_nothing_and_the_rest_go_to_the_bot
         ["Bloodbraid Elf", "Three"],
         "the spell is above the elf, whose trigger is gone"
     );
-    assert!(names(driver.state(), Zone::Exile).is_empty());
+    assert_eq!(driver.state().zone(Zone::Exile).len(), 0);
     let library = library_top_first(&driver, 0);
     assert_eq!(library[..2], ["Four", "Deep"]);
     let mut bottom = library[2..].to_vec();
@@ -130,7 +130,7 @@ fn nothing_is_asked_when_nothing_can_be_cast_and_every_card_goes_to_the_bottom(
     cascade(&mut driver)?;
     assert_eq!(driver.decision()?.kind.name(), "priority");
     assert_eq!(names(driver.state(), Zone::Stack), ["Bloodbraid Elf"]);
-    assert!(names(driver.state(), Zone::Exile).is_empty());
+    assert_eq!(driver.state().zone(Zone::Exile).len(), 0);
     let mut after = names(driver.state(), Zone::Library(pid(0)));
     after.sort();
     assert_eq!(after, before, "no card is lost and none is cast");
@@ -397,6 +397,6 @@ fn discover_casts_the_card_found_or_puts_it_into_the_hand(
     }
     assert_eq!(names(driver.state(), Zone::Stack), stack);
     assert_eq!(names(driver.state(), Zone::Hand(pid(0))), hand);
-    assert!(names(driver.state(), Zone::Exile).is_empty());
+    assert_eq!(driver.state().zone(Zone::Exile).len(), 0);
     Ok(())
 }
