@@ -331,6 +331,28 @@ fn a_card_that_is_not_one_of_the_copies_is_refused() -> Result<(), ScriptError> 
     Ok(())
 }
 
+#[rstest]
+fn a_player_who_concedes_while_asked_is_out_and_the_question_goes_with_them(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(seats)
+            .battlefield(1, copies(&legendary_bear(), 2))
+            .battlefield(seats - 1, copies(&legendary_ogre(), 2)),
+    )?;
+    let (who, _) = question(&driver).unwrap();
+    assert_eq!(who, pid(1));
+    driver.concede(pid(1))?;
+    if seats == 2 {
+        assert!(driver.engine().result().is_some(), "the other player wins");
+        return Ok(());
+    }
+    // The next group, if another seat has one, is asked of that seat.
+    let next = question(&driver).map(|(who, _)| who);
+    assert_eq!(next, (seats > 2).then(|| pid(seats - 1)));
+    Ok(())
+}
+
 #[test]
 fn an_engine_rebuilt_from_the_log_asks_the_same_question() -> Result<(), ScriptError> {
     let scenario = || Scenario::new(3).battlefield(1, copies(&legendary_bear(), 3));

@@ -39,7 +39,7 @@ pub(crate) fn next(state: &GameState) -> Progress {
 }
 
 /// A resolution first (state-based actions wait for it to end, CR 704.3), then state-based actions to a
-/// fixpoint, then the game-end check, then the state triggers whose state is true (CR 603.8), then the triggered
+/// fixpoint, then the game-end check, then the legend rule, then the state triggers whose state is true (CR 603.8), then the triggered
 /// abilities waiting for the stack (CR 603.3), then the turn structure.
 fn next_in_turns(state: &GameState) -> Progress {
     if state.resolving().is_some() {
@@ -49,11 +49,13 @@ fn next_in_turns(state: &GameState) -> Progress {
     if !actions.is_empty() {
         return Progress::Events(actions);
     }
-    if let Some(decision) = legend::decision(state) {
-        return Progress::Decide(decision);
-    }
     if let Some(progress) = settle(state) {
         return progress;
+    }
+    // The legend rule is a state-based action that asks (CR 704.5j); it waits for the end of the game and the removal of
+    // the objects of players who left, so it never asks about a permanent that is gone.
+    if let Some(decision) = legend::decision(state) {
+        return Progress::Decide(decision);
     }
     // A state is true where a player would receive priority, after state-based actions (CR 603.8).
     let states = triggers::state_triggers(state);

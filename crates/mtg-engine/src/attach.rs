@@ -5,7 +5,7 @@
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Bounds, Selector, TargetSpec, Targetable};
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::characteristics::{characteristics, controller_of_object};
@@ -47,14 +47,17 @@ pub(crate) fn definition_attaches(definition: &CardDefinition) -> bool {
 /// What `id` is as an attachment, by the subtypes it prints and those effects gave it.
 pub(crate) fn kind_of(state: &GameState, id: ObjectId) -> Option<Kind> {
     let object = state.object(id)?;
-    let printed = |name: &str| object.card().subtypes.iter().any(|s| s.0 == name);
-    if let Some((_, kind)) = KINDS.iter().find(|(name, _)| printed(name)) {
-        return Some(*kind);
-    }
-    let chars = characteristics(state, id)?;
+    // The subtypes effects gave a permanent are held by the layers, which a pass over the battlefield reads in place.
+    let given = (object.zone() == Zone::Battlefield)
+        .then(|| state.layers().get(id))
+        .flatten()
+        .map(|held| held.chars.subtypes.as_slice());
+    let has = |subtypes: &[Subtype], name: &str| subtypes.iter().any(|s| s.0 == name);
     KINDS
         .iter()
-        .find(|(name, _)| chars.subtypes.iter().any(|s| s.0 == *name))
+        .find(|(name, _)| {
+            has(&object.card().subtypes, name) || given.is_some_and(|given| has(given, name))
+        })
         .map(|(_, kind)| *kind)
 }
 
