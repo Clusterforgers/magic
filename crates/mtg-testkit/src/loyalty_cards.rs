@@ -70,7 +70,14 @@ pub fn dawn_walker() -> Result<Arc<CardDefinition>, CorpusError> {
 
 /// `{2}{G}` 4/4 creature with trample.
 pub fn charging_rhino() -> Arc<CardDefinition> {
-    keyworded_creature("Charging Rhino", 2, &[Color::Green], 4, 4, &[Keyword::Trample])
+    keyworded_creature(
+        "Charging Rhino",
+        2,
+        &[Color::Green],
+        4,
+        4,
+        &[Keyword::Trample],
+    )
 }
 
 /// `{1}{U}` 2/2 creature with flying.

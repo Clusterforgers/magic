@@ -81,7 +81,11 @@ fn a_planeswalker_cast_from_a_hand_enters_with_its_printed_loyalty_in_the_batch_
         panic!("the loyalty counters follow the spell in the same batch: {events:?}");
     };
     assert_eq!(
-        (changed.on.object().map(|o| o.id), &changed.counter, changed.delta),
+        (
+            changed.on.object().map(|o| o.id),
+            &changed.counter,
+            changed.delta
+        ),
         (Some(object), &LOYALTY, 4)
     );
     assert_eq!(loyalty_of(&driver, "Dawn Walker"), Some(4));
@@ -114,7 +118,11 @@ fn dawn(seats: usize, loyalty: u32) -> Scenario {
     Scenario::new(seats)
         .battlefield(
             0,
-            [with_counters(ready(dawn_walker().unwrap()), LOYALTY, loyalty)],
+            [with_counters(
+                ready(dawn_walker().unwrap()),
+                LOYALTY,
+                loyalty,
+            )],
         )
         .battlefield(1, [ready(bear())])
 }
@@ -191,7 +199,14 @@ fn a_planeswalker_that_paid_its_last_loyalty_goes_to_the_graveyard_by_a_state_ba
     driver.choose_targets(&[bear])?;
     let events = &driver.engine().events()[begun..];
     let gone = events.iter().any(|event| {
-        matches!(event, Event::ZoneChanged { to: Zone::Graveyard(_), cause: ZoneCause::StateBased, .. })
+        matches!(
+            event,
+            Event::ZoneChanged {
+                to: Zone::Graveyard(_),
+                cause: ZoneCause::StateBased,
+                ..
+            }
+        )
     });
     // The state-based action is found before anyone receives priority, with the ability on the stack.
     assert!(gone || in_zone(&driver, Zone::Graveyard(pid(0))).contains(&"Dawn Walker".to_owned()));
@@ -228,17 +243,24 @@ fn an_opponent_is_not_offered_the_loyalty_abilities_of_a_planeswalker_it_does_no
     // Seat 1 has priority in its own main step; the planeswalker is seat 0's.
     let driver = Driver::from_scenario(dawn(2, 4).at(2, 1, Step::Main1))?;
     assert_eq!(driver.decision()?.player, pid(1));
-    assert_eq!(driver.offered_abilities("Dawn Walker")?, Vec::<usize>::new());
+    assert_eq!(
+        driver.offered_abilities("Dawn Walker")?,
+        Vec::<usize>::new()
+    );
     // And seat 0 does not get them in seat 1's turn when it is handed priority.
     let mut driver = Driver::from_scenario(dawn(2, 4).at(2, 1, Step::Main1))?;
     driver.pass()?;
     assert_eq!(driver.decision()?.player, pid(0));
-    assert_eq!(driver.offered_abilities("Dawn Walker")?, Vec::<usize>::new());
+    assert_eq!(
+        driver.offered_abilities("Dawn Walker")?,
+        Vec::<usize>::new()
+    );
     Ok(())
 }
 
 #[test]
-fn a_loyalty_ability_is_activated_once_for_each_planeswalker_each_turn() -> Result<(), ScriptError> {
+fn a_loyalty_ability_is_activated_once_for_each_planeswalker_each_turn() -> Result<(), ScriptError>
+{
     let scenario = || {
         Scenario::new(2).battlefield(
             0,
@@ -255,17 +277,26 @@ fn a_loyalty_ability_is_activated_once_for_each_planeswalker_each_turn() -> Resu
     assert_eq!(driver.offered_abilities("Pyre Walker")?, [0, 1]);
     // Not while one is on the stack: only an empty stack allows a sorcery.
     driver.begin_ability("Dawn Walker", 0)?;
-    assert_eq!(driver.offered_abilities("Pyre Walker")?, Vec::<usize>::new());
+    assert_eq!(
+        driver.offered_abilities("Pyre Walker")?,
+        Vec::<usize>::new()
+    );
     settle(&mut driver)?;
     // Another planeswalker may, this one may not again.
-    assert_eq!(driver.offered_abilities("Dawn Walker")?, Vec::<usize>::new());
+    assert_eq!(
+        driver.offered_abilities("Dawn Walker")?,
+        Vec::<usize>::new()
+    );
     assert_eq!(driver.offered_abilities("Pyre Walker")?, [0, 1]);
     driver.begin_ability("Pyre Walker", 0)?;
     let target = driver.target_player(1);
     driver.choose_targets(&[target])?;
     settle(&mut driver)?;
     assert_eq!(life(&driver, 1), 19);
-    assert_eq!(driver.offered_abilities("Pyre Walker")?, Vec::<usize>::new());
+    assert_eq!(
+        driver.offered_abilities("Pyre Walker")?,
+        Vec::<usize>::new()
+    );
     assert!(driver.decision().is_ok());
     // A new turn of the same player, the same planeswalkers: each has one more.
     driver.idle_until(3, Step::Main1)?;
@@ -289,8 +320,12 @@ fn at_the_walker(
             .battlefield(0, [ready(attacker)])
             .battlefield(
                 1,
-                std::iter::once(with_counters(ready(dawn_walker().unwrap()), LOYALTY, loyalty))
-                    .chain(blocker.then(|| ready(free_creature("B", 1, 1)))),
+                std::iter::once(with_counters(
+                    ready(dawn_walker().unwrap()),
+                    LOYALTY,
+                    loyalty,
+                ))
+                .chain(blocker.then(|| ready(free_creature("B", 1, 1)))),
             ),
     )?;
     driver.attack_planeswalkers(&[("A", "Dawn Walker")])?;
@@ -320,7 +355,11 @@ fn combat_damage_to_a_planeswalker_removes_that_many_loyalty_counters_and_marks_
         assert!(in_zone(&driver, Zone::Graveyard(pid(1))).contains(&"Dawn Walker".to_owned()));
     } else {
         let id = driver.id_of("Dawn Walker")?;
-        let marked = driver.state().object(id).and_then(|o| o.permanent()).map(mtg_engine::object::PermanentState::damage);
+        let marked = driver
+            .state()
+            .object(id)
+            .and_then(|o| o.permanent())
+            .map(mtg_engine::object::PermanentState::damage);
         assert_eq!(marked, Some(0), "damage to a planeswalker is not marked");
     }
     assert_eq!(life(&driver, 1), 20 - foe_life_lost);
@@ -332,7 +371,11 @@ fn damage_past_the_loyalty_of_a_planeswalker_is_still_damage_dealt_so_lifelink_g
 -> Result<(), ScriptError> {
     let mut driver = at_the_walker(keyworded("A", 5, 5, &[Keyword::Lifelink]), 2, false)?;
     driver.idle_until(2, Step::EndCombat)?;
-    assert_eq!(life(&driver, 0), 25, "5 damage was dealt to a planeswalker with 2 loyalty");
+    assert_eq!(
+        life(&driver, 0),
+        25,
+        "5 damage was dealt to a planeswalker with 2 loyalty"
+    );
     assert!(in_zone(&driver, Zone::Graveyard(pid(1))).contains(&"Dawn Walker".to_owned()));
     Ok(())
 }
@@ -346,7 +389,11 @@ fn trample_puts_the_damage_beyond_the_blocker_on_the_planeswalker_and_none_on_th
     driver.pass()?;
     driver.pass()?;
     driver.assign_damage(&[("B", 1)])?;
-    assert_eq!(loyalty_of(&driver, "Dawn Walker"), None, "3 of the 4 reached it");
+    assert_eq!(
+        loyalty_of(&driver, "Dawn Walker"),
+        None,
+        "3 of the 4 reached it"
+    );
     assert_eq!(life(&driver, 1), 20);
     Ok(())
 }
@@ -375,7 +422,9 @@ fn bolt(driver: &mut Driver, target: &str) -> Result<(), ScriptError> {
     driver.begin_cast("Lightning Bolt")?;
     let target = driver.target_named(target)?;
     driver.choose_targets(&[target])?;
-    driver.answer(mtg_engine::Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
+    driver.answer(mtg_engine::Answer::PayMana(
+        mtg_engine::decision::PayChoice::Auto,
+    ))?;
     settle(driver)
 }
 
@@ -388,7 +437,11 @@ fn an_unblocked_creature_goes_on_attacking_a_planeswalker_that_left_and_deals_no
     let attackers = driver.state().combat().attackers();
     assert_eq!(attackers.len(), 1, "it is still attacking");
     assert!(attackers[0].attacks_nothing());
-    assert_eq!(attackers[0].defender(driver.state()), None, "nobody may block it");
+    assert_eq!(
+        attackers[0].defender(driver.state()),
+        None,
+        "nobody may block it"
+    );
     driver.idle_until(2, Step::EndCombat)?;
     assert_eq!(life(&driver, 1), 20, "it was not redirected to the player");
     assert_eq!(life(&driver, 0), 20);
@@ -403,7 +456,8 @@ fn an_unblocked_creature_goes_on_attacking_a_planeswalker_that_left_and_deals_no
 }
 
 #[test]
-fn a_creature_blocked_before_the_planeswalker_left_still_fights_its_blocker() -> Result<(), ScriptError> {
+fn a_creature_blocked_before_the_planeswalker_left_still_fights_its_blocker()
+-> Result<(), ScriptError> {
     let mut driver = bolt_the_walker(true)?;
     common::combat::to_blockers(&mut driver, 1)?;
     driver.block(&[("B", "A")])?;
@@ -419,7 +473,8 @@ fn a_creature_blocked_before_the_planeswalker_left_still_fights_its_blocker() ->
 }
 
 #[test]
-fn a_planeswalker_that_left_is_not_a_target_of_an_attacker_that_attacked_another() -> Result<(), ScriptError> {
+fn a_planeswalker_that_left_is_not_a_target_of_an_attacker_that_attacked_another()
+-> Result<(), ScriptError> {
     // The other planeswalker (and the player) are still attacked as they were declared.
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
@@ -427,7 +482,11 @@ fn a_planeswalker_that_left_is_not_a_target_of_an_attacker_that_attacked_another
             .hand(0, [card("Lightning Bolt").unwrap()])
             .battlefield(
                 0,
-                [ready(free_creature("A", 2, 2)), ready(free_creature("C", 2, 2)), ready(mountain())],
+                [
+                    ready(free_creature("A", 2, 2)),
+                    ready(free_creature("C", 2, 2)),
+                    ready(mountain()),
+                ],
             )
             .battlefield(
                 1,
@@ -440,7 +499,11 @@ fn a_planeswalker_that_left_is_not_a_target_of_an_attacker_that_attacked_another
     driver.attack_planeswalkers(&[("A", "Pyre Walker"), ("C", "Dawn Walker")])?;
     bolt(&mut driver, "Pyre Walker")?;
     driver.idle_until(2, Step::EndCombat)?;
-    assert_eq!(loyalty_of(&driver, "Dawn Walker"), Some(2), "C's 2 damage reached its planeswalker");
+    assert_eq!(
+        loyalty_of(&driver, "Dawn Walker"),
+        Some(2),
+        "C's 2 damage reached its planeswalker"
+    );
     assert_eq!(life(&driver, 1), 20);
     Ok(())
 }
@@ -457,7 +520,14 @@ fn jace_beleren_draws_for_each_player_for_one_and_mills_twenty(
 ) -> Result<(), ScriptError> {
     let scenario = || {
         Scenario::new(seats)
-            .battlefield(0, [with_counters(ready(card("Jace Beleren").unwrap()), LOYALTY, 10)])
+            .battlefield(
+                0,
+                [with_counters(
+                    ready(card("Jace Beleren").unwrap()),
+                    LOYALTY,
+                    10,
+                )],
+            )
             .library(0, std::iter::repeat_n(bear(), 30))
             .library(1, std::iter::repeat_n(bear(), 30))
     };
@@ -487,7 +557,11 @@ fn jace_beleren_makes_a_chosen_player_draw_for_one_loyalty(
     settle(&mut driver)?;
     assert_eq!(loyalty_of(&driver, "Jace Beleren"), Some(2));
     for seat in 0..seats {
-        assert_eq!(hand_size(&driver, seat), usize::from(seat == chosen), "seat {seat}");
+        assert_eq!(
+            hand_size(&driver, seat),
+            usize::from(seat == chosen),
+            "seat {seat}"
+        );
     }
     Ok(())
 }
@@ -496,13 +570,24 @@ fn jace_beleren_makes_a_chosen_player_draw_for_one_loyalty(
 fn jace_beleren_mills_twenty_cards_of_a_player_for_ten_loyalty() -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
-            .battlefield(0, [with_counters(ready(card("Jace Beleren").unwrap()), LOYALTY, 10)])
+            .battlefield(
+                0,
+                [with_counters(
+                    ready(card("Jace Beleren").unwrap()),
+                    LOYALTY,
+                    10,
+                )],
+            )
             .library(1, std::iter::repeat_n(bear(), 30)),
     )?;
     driver.begin_ability("Jace Beleren", 2)?;
     let target = driver.target_player(1);
     driver.choose_targets(&[target])?;
-    assert_eq!(loyalty_of(&driver, "Jace Beleren"), None, "ten loyalty paid, none left");
+    assert_eq!(
+        loyalty_of(&driver, "Jace Beleren"),
+        None,
+        "ten loyalty paid, none left"
+    );
     settle(&mut driver)?;
     assert_eq!(driver.state().zone(Zone::Library(pid(1))).len(), 10);
     assert_eq!(driver.state().zone(Zone::Graveyard(pid(1))).len(), 20);
@@ -510,20 +595,32 @@ fn jace_beleren_mills_twenty_cards_of_a_player_for_ten_loyalty() -> Result<(), S
 }
 
 #[test]
-fn ajani_puts_a_counter_on_up_to_one_creature_and_gives_flying_and_double_strike() -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(
-        Scenario::new(2).battlefield(
-            0,
-            [ready(card("Ajani, Caller of the Pride").unwrap()), ready(bear())],
-        ),
-    )?;
+fn ajani_puts_a_counter_on_up_to_one_creature_and_gives_flying_and_double_strike()
+-> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(Scenario::new(2).battlefield(
+        0,
+        [
+            ready(card("Ajani, Caller of the Pride").unwrap()),
+            ready(bear()),
+        ],
+    ))?;
     // "Up to one": with none chosen nothing gets a counter, and the loyalty is still paid.
     driver.begin_ability("Ajani, Caller of the Pride", 0)?;
     driver.choose_targets(&[])?;
     settle(&mut driver)?;
     assert_eq!(loyalty_of(&driver, "Ajani, Caller of the Pride"), Some(5));
     let bears = driver.id_of("Grizzly Bears")?;
-    assert!(driver.state().object(bears).unwrap().permanent().unwrap().counters().next().is_none());
+    assert!(
+        driver
+            .state()
+            .object(bears)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .counters()
+            .next()
+            .is_none()
+    );
     driver.idle_until(3, Step::Main1)?;
     driver.begin_ability("Ajani, Caller of the Pride", 0)?;
     let target = driver.target_named("Grizzly Bears")?;
@@ -554,31 +651,37 @@ fn ajani_makes_a_cat_for_each_life_he_is_worth_at_eight_loyalty() -> Result<(), 
         Scenario::new(2)
             .battlefield(
                 0,
-                [with_counters(ready(card("Ajani, Caller of the Pride").unwrap()), LOYALTY, 8)],
+                [with_counters(
+                    ready(card("Ajani, Caller of the Pride").unwrap()),
+                    LOYALTY,
+                    8,
+                )],
             )
             .life(0, 3),
     )?;
     driver.begin_ability("Ajani, Caller of the Pride", 2)?;
     settle(&mut driver)?;
-    let cats = in_zone(&driver, Zone::Battlefield).iter().filter(|name| *name == "Cat").count();
+    let cats = in_zone(&driver, Zone::Battlefield)
+        .iter()
+        .filter(|name| *name == "Cat")
+        .count();
     assert_eq!(cats, 3);
     assert_eq!(loyalty_of(&driver, "Ajani, Caller of the Pride"), None);
     Ok(())
 }
 
 #[test]
-fn garruk_untaps_two_lands_makes_a_beast_and_gives_the_creatures_you_control_trample() -> Result<(), ScriptError> {
-    let mut driver = Driver::from_scenario(
-        Scenario::new(2).battlefield(
-            0,
-            [
-                with_counters(ready(card("Garruk Wildspeaker").unwrap()), LOYALTY, 5),
-                mtg_testkit::tapped(mountain()),
-                mtg_testkit::tapped(mountain()),
-                ready(bear()),
-            ],
-        ),
-    )?;
+fn garruk_untaps_two_lands_makes_a_beast_and_gives_the_creatures_you_control_trample()
+-> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(Scenario::new(2).battlefield(
+        0,
+        [
+            with_counters(ready(card("Garruk Wildspeaker").unwrap()), LOYALTY, 5),
+            mtg_testkit::tapped(mountain()),
+            mtg_testkit::tapped(mountain()),
+            ready(bear()),
+        ],
+    ))?;
     driver.begin_ability("Garruk Wildspeaker", 0)?;
     let lands: Vec<Target> = driver
         .state()
@@ -614,12 +717,17 @@ fn garruk_untaps_two_lands_makes_a_beast_and_gives_the_creatures_you_control_tra
 }
 
 #[test]
-fn jace_the_mind_sculptor_bounces_a_creature_looks_at_a_card_and_exiles_a_library() -> Result<(), ScriptError> {
+fn jace_the_mind_sculptor_bounces_a_creature_looks_at_a_card_and_exiles_a_library()
+-> Result<(), ScriptError> {
     let scenario = || {
         Scenario::new(2)
             .battlefield(
                 0,
-                [with_counters(ready(card("Jace, the Mind Sculptor").unwrap()), LOYALTY, 12)],
+                [with_counters(
+                    ready(card("Jace, the Mind Sculptor").unwrap()),
+                    LOYALTY,
+                    12,
+                )],
             )
             .battlefield(1, [ready(bear())])
             .library(0, std::iter::repeat_n(mountain(), 5))
@@ -634,15 +742,24 @@ fn jace_the_mind_sculptor_bounces_a_creature_looks_at_a_card_and_exiles_a_librar
     driver.choose_targets(&[target])?;
     settle(&mut driver)?;
     assert_eq!(loyalty_of(&driver, "Jace, the Mind Sculptor"), None);
-    assert_eq!(driver.state().zone(Zone::Exile).len(), 6, "the library was exiled");
-    assert_eq!(driver.state().zone(Zone::Library(pid(1))).len(), 2, "the hand is the library now");
+    assert_eq!(
+        driver.state().zone(Zone::Exile).len(),
+        6,
+        "the library was exiled"
+    );
+    assert_eq!(
+        driver.state().zone(Zone::Library(pid(1))).len(),
+        2,
+        "the hand is the library now"
+    );
     assert_eq!(hand_size(&driver, 1), 0);
     replays(&driver, &setup);
     Ok(())
 }
 
 #[test]
-fn jace_the_mind_sculptor_bounces_a_creature_for_one_and_draws_three_for_nothing() -> Result<(), ScriptError> {
+fn jace_the_mind_sculptor_bounces_a_creature_for_one_and_draws_three_for_nothing()
+-> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .battlefield(0, [ready(card("Jace, the Mind Sculptor").unwrap())])
@@ -659,7 +776,11 @@ fn jace_the_mind_sculptor_bounces_a_creature_for_one_and_draws_three_for_nothing
     let before = hand_size(&driver, 0);
     driver.begin_ability("Jace, the Mind Sculptor", 1)?;
     settle(&mut driver)?;
-    assert_eq!(hand_size(&driver, 0), before + 1, "three drawn, two put back");
+    assert_eq!(
+        hand_size(&driver, 0),
+        before + 1,
+        "three drawn, two put back"
+    );
     assert_eq!(loyalty_of(&driver, "Jace, the Mind Sculptor"), Some(2));
     Ok(())
 }

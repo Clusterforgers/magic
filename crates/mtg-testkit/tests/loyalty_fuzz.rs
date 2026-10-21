@@ -75,7 +75,10 @@ impl Seen {
                         .and_then(|before| events.get(before))
                         .and_then(|before| match before {
                             Event::CountersChanged(changed)
-                                if changed.on.object().is_some_and(|named| named.id == source.id)
+                                if changed
+                                    .on
+                                    .object()
+                                    .is_some_and(|named| named.id == source.id)
                                     && changed.counter == CounterKind::Loyalty =>
                             {
                                 Some(changed.delta)
@@ -131,14 +134,29 @@ fn seeded_planeswalker_games_finish_and_keep_every_invariant(#[case] players: us
             "{name} never entered play in {campaign}"
         );
     }
-    assert_eq!(seen.without_it, 0, "a planeswalker came in without its loyalty in {campaign}");
-    assert!(seen.with_printed_loyalty > 0, "no planeswalker entered in {campaign}");
+    assert_eq!(
+        seen.without_it, 0,
+        "a planeswalker came in without its loyalty in {campaign}"
+    );
+    assert!(
+        seen.with_printed_loyalty > 0,
+        "no planeswalker entered in {campaign}"
+    );
     assert!(seen.plus > 0, "no + cost paid in {campaign}");
     assert!(seen.minus > 0, "no - cost paid in {campaign}");
     assert!(seen.zero > 0, "no 0 cost paid in {campaign}");
-    assert!(seen.attacks_at_walkers > 0, "no attack at a planeswalker in {campaign}");
-    assert!(seen.damage_to_walkers > 0, "no damage to a planeswalker in {campaign}");
-    assert!(seen.died_of_damage_or_cost > 0, "no planeswalker died in {campaign}");
+    assert!(
+        seen.attacks_at_walkers > 0,
+        "no attack at a planeswalker in {campaign}"
+    );
+    assert!(
+        seen.damage_to_walkers > 0,
+        "no damage to a planeswalker in {campaign}"
+    );
+    assert!(
+        seen.died_of_damage_or_cost > 0,
+        "no planeswalker died in {campaign}"
+    );
 }
 
 /// What a walk through the decisions of a game saw.
@@ -159,7 +177,11 @@ impl Walk {
             if object.base_types().contains(CardType::Planeswalker) && state.resolving().is_none() {
                 self.walkers_seen += 1;
                 assert!(
-                    object.permanent().unwrap().counters_of(&CounterKind::Loyalty) >= 1,
+                    object
+                        .permanent()
+                        .unwrap()
+                        .counters_of(&CounterKind::Loyalty)
+                        >= 1,
                     "{} has no loyalty at a decision",
                     object.card().name
                 );
