@@ -101,11 +101,19 @@ fn judge(seen: &mut Seen, setup: &mtg_engine::GameSetup, events: &[Event]) {
                         }
                         _ => None,
                     });
-                    assert_eq!(
-                        paid,
-                        (x > 0).then(|| -i32::try_from(x).unwrap()),
-                        "a -X takes X counters"
-                    );
+                    if x > 0 {
+                        assert_eq!(
+                            paid,
+                            Some(-i32::try_from(x).unwrap()),
+                            "a -X takes X counters"
+                        );
+                    } else {
+                        // Nothing is paid, so the event before the activation belongs to an earlier batch.
+                        assert!(
+                            paid.is_none_or(|delta| delta >= 0),
+                            "a -X of nothing takes counters"
+                        );
+                    }
                     continue;
                 }
                 seen.abilities_with_x += 1;
