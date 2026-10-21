@@ -1,4 +1,4 @@
-//! Goal: "return target card from your graveyard to your hand" reads into a move to the hand with the card's zone and owner in the target, alone, with a card type, in a trigger and after "you may", and any other place, owner, count or destination stays with the table.
+//! Goal: "return target card from your graveyard to your hand" reads into a move to the hand with the card's zone and owner in the target, alone, with a card type, in a trigger and after "you may", and "return a land you control to its owner's hand" reads as a choice and a move; any other place, owner, count or destination stays with the table.
 use super::*;
 
 fn trigger(text: &str) -> Option<Ability> {
@@ -95,4 +95,30 @@ fn a_card_in_a_graveyard_is_not_a_phrase_without_its_zone() {
     assert_eq!(spell("Exile target card."), None);
     assert_eq!(spell("Destroy target creature card."), None);
     assert_eq!(trigger("When ~ enters, exile target card."), None);
+}
+
+#[rstest]
+#[case::a_land(
+    "When this land enters, return a land you control to its owner's hand.",
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Choose":{"from":{"Each":[{"Type":"Land"},{"ControlledBy":"You"}]},"as":"returned"}},{"Move":{"what":{"Bound":"returned"},"to":"Hand"}}]}}"#
+)]
+#[case::a_creature(
+    "When ~ enters, return a creature you control to its owner's hand.",
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"as":"returned"}},{"Move":{"what":{"Bound":"returned"},"to":"Hand"}}]}}"#
+)]
+fn a_permanent_you_choose_returns_to_its_owners_hand(#[case] text: &str, #[case] json: &str) {
+    reads_as(text, ClauseKind::Triggered, false, json);
+}
+
+#[rstest]
+#[case::any_land("When this land enters, return a land to its owner's hand.")]
+#[case::an_opponents("When ~ enters, return a creature an opponent controls to its owner's hand.")]
+#[case::from_a_graveyard(
+    "When ~ enters, return a creature card from your graveyard to its owner's hand."
+)]
+#[case::to_your_hand("When ~ enters, return a land you control to your hand.")]
+#[case::two("When ~ enters, return two lands you control to their owner's hand.")]
+#[case::another("When ~ enters, return another creature you control to its owner's hand.")]
+fn a_choice_of_the_return_stays_with_the_table_unless_the_player_controls_it(#[case] text: &str) {
+    assert_eq!(trigger(text), None, "{text}");
 }

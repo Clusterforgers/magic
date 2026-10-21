@@ -21,7 +21,7 @@ use crate::value::Amount;
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 17] = [
+const TEMPLATES: [Template; 18] = [
     modal::modal,
     may,
     chain,
@@ -31,6 +31,7 @@ const TEMPLATES: [Template; 17] = [
     removal,
     pump,
     return_card,
+    return_chosen,
     create::tokens,
     counters::put,
     counters::remove,
@@ -42,10 +43,11 @@ const TEMPLATES: [Template; 17] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-const IMPERATIVES: [Template; 8] = [
+const IMPERATIVES: [Template; 9] = [
     chain,
     removal,
     return_card,
+    return_chosen,
     create::tokens,
     counters::put,
     counters::remove,
@@ -401,6 +403,37 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     }])
 }
 
+/// "Return a land you control to its owner's hand.": the player chooses one permanent they
+/// control, bound as `returned`, and it goes to its owner's hand.
+fn return_chosen(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("return")?;
+    (r.word("a") || r.word("an")).then_some(())?;
+    let from = phrase(r, Form::Subject)?;
+    let yours = from.0.contains(&Pred::ControlledBy(Ref::You));
+    let on_the_battlefield = !from
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::In(_) | Pred::Spell));
+    (yours && on_the_battlefield).then_some(())?;
+    r.need("to its owner's hand")?;
+    Some(vec![
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(from),
+            count: Bounds::default(),
+            bind: RETURNED.to_owned(),
+            rest_as: None,
+        },
+        Effect::Move {
+            what: Ref::Bound(RETURNED.to_owned()),
+            to: Destination::Hand,
+        },
+    ])
+}
+
+/// The name the permanent returned to its owner's hand is bound to.
+pub const RETURNED: &str = "returned";
+
 /// Who or what takes damage: a single target, "each opponent", "each creature".
 fn recipient(r: &mut Reader<'_>) -> Option<Ref> {
     if r.words("each opponent") {
@@ -541,7 +574,7 @@ fn signed(r: &mut Reader<'_>) -> Option<Amount> {
     })
 }
 
-fn power_toughness(r: &mut Reader<'_>) -> Option<Modification> {
+pub(super) fn power_toughness(r: &mut Reader<'_>) -> Option<Modification> {
     let power = signed(r)?;
     r.punct('/').then_some(())?;
     let toughness = signed(r)?;
@@ -549,7 +582,7 @@ fn power_toughness(r: &mut Reader<'_>) -> Option<Modification> {
 }
 
 /// "flying", "flying and haste": keywords given.
-fn granted(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
+pub(super) fn granted(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
     let mut mods = vec![Modification::AddKeyword(keyword(r)?)];
     while let Some(next) = r.attempt(|r| {
         r.need("and")?;
