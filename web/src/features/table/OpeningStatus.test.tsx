@@ -49,6 +49,7 @@ describe('describeOpening', () => {
     [{ Bottoming: 2 }, 2, 'keeping, bottoming 2 · 2 mulligans taken'],
     ['Mulliganing', 0, 'taking a mulligan'],
     ['Mulliganing', 1, 'taking a mulligan · 1 mulligan taken'],
+    ['Scrying', 1, 'scrying · 1 mulligan taken'],
     ['NeedsHand', 1, 'getting a new hand · 1 mulligan taken'],
   ])('says %j after %i mulligans as "%s"', (status, mulligans, text) => {
     expect(describeOpening(status, mulligans)).toBe(text)
