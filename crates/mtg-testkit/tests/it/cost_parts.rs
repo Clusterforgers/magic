@@ -87,6 +87,7 @@ fn story(driver: &Driver, events: &[Event]) -> Vec<String> {
             Event::PermanentTapped { object } => Some(format!("tap {}", name(object))),
             Event::LifePaid { amount, .. } => Some(format!("pay {amount} life")),
             Event::CardDiscarded { object, .. } => Some(format!("discard {}", name(object))),
+            Event::Cycled { object, .. } => Some(format!("cycle {}", name(object))),
             Event::CountersChanged(changed) => Some(format!("counters {:+}", changed.delta)),
             Event::ZoneChanged {
                 object,
@@ -650,6 +651,7 @@ fn cycling_discards_the_card_for_its_cost_and_draws_at_instant_speed() -> Result
         story(&driver, &events),
         [
             "discard Cycler",
+            "cycle Cycler",
             "activated",
             "on the stack",
             "tap Mountain",

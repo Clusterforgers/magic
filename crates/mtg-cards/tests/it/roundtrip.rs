@@ -486,6 +486,11 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
             .prop_map(|(what, at_least)| TriggerPattern::GroupAttacks { what, at_least }),
         (selector(), proptest::option::of(counter()))
             .prop_map(|(what, counter)| TriggerPattern::CountersPut { what, counter }),
+        selector().prop_map(|what| TriggerPattern::Untapped { what }),
+        (selector(), proptest::option::of(counter()))
+            .prop_map(|(what, counter)| TriggerPattern::CountersRemoved { what, counter }),
+        (selector(), selector()).prop_map(|(what, to)| TriggerPattern::Attached { what, to }),
+        (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Cycled { what, by }),
     ];
     leaf.prop_recursive(2, 6, 2, |inner| {
         vec(inner, 2..4).prop_map(TriggerPattern::AnyOf)

@@ -8,8 +8,9 @@ use std::collections::BTreeSet;
 use std::sync::Arc;
 
 use mtg_cards::ability::{Ability, Limit};
-use mtg_cards::refs::ZoneKind;
+use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{DelayedId, Triggered};
@@ -17,8 +18,10 @@ use crate::abilities::{AbilityRef, AbilitySource, Cause};
 use crate::ability_reader::{abilities_of, working_here};
 use crate::characteristics::{controller_of, controller_of_object};
 use crate::choose::{Choices, Target};
+use crate::combat::DamageTarget;
 use crate::events::{Event, ResolutionOutcome, ZoneCause};
 use crate::object::{GameObject, ObjectKind, ObjectRef};
+use crate::replace::in_combat_damage;
 use crate::resolve::{Scope, zone_kind};
 use crate::rules::triggers_again;
 use crate::snapshot::snapshot;
@@ -46,6 +49,43 @@ enum Happened {
     Targeted { target: Target, by: ObjectId },
     /// A step began.
     Step { step: Step, active: PlayerId },
+    /// A source dealt damage; `combat` is whether it was combat damage.
+    Damaged {
+        source: ObjectId,
+        to: DamageTarget,
+        combat: bool,
+    },
+    /// A player gained life.
+    LifeGained { player: PlayerId },
+    /// A player lost life: by an effect, by paying it or from damage (CR 120.3a).
+    LifeLost { player: PlayerId },
+    /// A player drew a card.
+    Drew { player: PlayerId },
+    /// A permanent became tapped.
+    Tapped { object: ObjectId },
+    /// A permanent became untapped.
+    Untapped { object: ObjectId },
+    /// A player tapped a permanent for mana: once for the tap, whatever mana it made.
+    TappedForMana { object: ObjectId, player: PlayerId },
+    /// Counters of a kind were put on a permanent (`delta` above 0) or removed from it (below 0).
+    Counters {
+        on: ObjectId,
+        counter: CounterKind,
+        delta: i32,
+    },
+    /// A creature was declared as a blocker of an attacker.
+    Blocked {
+        blocker: ObjectId,
+        attacker: ObjectId,
+    },
+    /// An attacker became blocked, once however many creatures block it.
+    BecameBlocked { attacker: ObjectId },
+    /// Attackers were declared together.
+    AttackedTogether { attackers: Vec<ObjectId> },
+    /// An Aura, Equipment or Fortification became attached to a permanent.
+    Attached { attachment: ObjectId, to: ObjectId },
+    /// A player cycled a card.
+    Cycled { player: PlayerId, card: ObjectId },
 }
 
 impl Happened {
@@ -86,7 +126,7 @@ fn moved(pre: &GameState, event: &Event, post: &GameState) -> Option<Happened> {
             *object,
             Zone::Hand(*player),
             Zone::Graveyard(owner(object)?),
-            None,
+            Some(ZoneCause::Discarded),
         ),
         Event::CardDrawn { player, object } => {
             (*object, Zone::Library(*player), Zone::Hand(*player), None)
@@ -135,10 +175,11 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
             .collect::<Vec<_>>()
     };
     let mut found = Vec::new();
+    // Permanents tapped in this batch whose mana has not been added yet: tapping for mana is the tap that adds it.
+    let mut tapped = Vec::new();
     for event in events {
         if let Some(moved) = moved(pre, event, post) {
             found.push(moved);
-            continue;
         }
         match event {
             Event::TokenCreated(token) => found.push(Happened::Created {
@@ -148,6 +189,11 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 found.extend(attackers.iter().map(|(attacker, _)| Happened::Attacked {
                     attacker: *attacker,
                 }));
+                if !attackers.is_empty() {
+                    found.push(Happened::AttackedTogether {
+                        attackers: attackers.iter().map(|(attacker, _)| *attacker).collect(),
+                    });
+                }
             }
             Event::SpellCast {
                 player,
@@ -165,10 +211,89 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 step: *step,
                 active: post.turn().active(),
             }),
-            _ => {}
+            other => about_players_and_permanents(other, post, &mut tapped, &mut found),
         }
     }
     found
+}
+
+/// What `event` is, when it is about blocks, damage, life, cards drawn or cycled, taps, counters or attachments.
+/// `tapped` holds the permanents of the batch tapped so far whose mana has not been added.
+fn about_players_and_permanents(
+    event: &Event,
+    post: &GameState,
+    tapped: &mut Vec<ObjectId>,
+    found: &mut Vec<Happened>,
+) {
+    match event {
+        Event::BlockersDeclared { blocks, .. } => {
+            found.extend(blocks.iter().map(|(blocker, attacker)| Happened::Blocked {
+                blocker: *blocker,
+                attacker: *attacker,
+            }));
+            let mut blocked = Vec::new();
+            for (_, attacker) in blocks {
+                if !blocked.contains(attacker) {
+                    blocked.push(*attacker);
+                    found.push(Happened::BecameBlocked {
+                        attacker: *attacker,
+                    });
+                }
+            }
+        }
+        Event::DamageDealt { source, target, .. } => {
+            found.push(Happened::Damaged {
+                source: *source,
+                to: *target,
+                combat: in_combat_damage(post),
+            });
+            // Damage to a player makes them lose that much life (CR 120.3a).
+            if let DamageTarget::Player(player) = target {
+                found.push(Happened::LifeLost { player: *player });
+            }
+        }
+        Event::LifeGained { player, .. } => found.push(Happened::LifeGained { player: *player }),
+        Event::LifeLost { player, .. } | Event::LifePaid { player, .. } => {
+            found.push(Happened::LifeLost { player: *player });
+        }
+        Event::CardDrawn { player, .. } => found.push(Happened::Drew { player: *player }),
+        Event::PermanentTapped { object } => {
+            tapped.push(*object);
+            found.push(Happened::Tapped { object: *object });
+        }
+        Event::PermanentUntapped { object } => found.push(Happened::Untapped { object: *object }),
+        Event::ManaAdded {
+            player,
+            source: Some(source),
+            ..
+        } => {
+            if let Some(at) = tapped.iter().position(|object| object == source) {
+                tapped.remove(at);
+                found.push(Happened::TappedForMana {
+                    object: *source,
+                    player: *player,
+                });
+            }
+        }
+        Event::CountersChanged(changed) => {
+            if let Target::Object(on) = changed.on {
+                found.push(Happened::Counters {
+                    on: on.id,
+                    counter: changed.counter.clone(),
+                    delta: changed.delta,
+                });
+            }
+        }
+        Event::Attached { object, to } => found.push(Happened::Attached {
+            attachment: *object,
+            to: *to,
+        }),
+        Event::Cycled { player, object } => found.push(Happened::Cycled {
+            player: *player,
+            card: *object,
+        }),
+        _ => {}
+    }
 }
 
 /// What the batch has used up so far, so that two events of one batch cannot use an ability up twice.
@@ -291,6 +416,153 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             ];
             (scope.selects(what, *targeted).ok()? && scope.selects(by, targeting).ok()?)
                 .then(|| cause(state, subjects))
+        }
+        _ => matching_event(pattern, happened, scope),
+    }
+}
+
+/// What `pattern` finds in the events about a player or a permanent: damage, life, cards drawn, discarded and cycled,
+/// taps, counters, blocks and attachments. The subjects of the cause (`Ref::Triggering`) are, in order, the source and
+/// the recipient of damage; the player and the card; the permanent and the player who tapped it for mana; the blocker
+/// and the attacker it blocks; the attachment and what it is attached to.
+fn matching_event(
+    pattern: &TriggerPattern,
+    happened: &Happened,
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let state = scope.state;
+    let object = |id: ObjectId| state.object(id).map(GameObject::reference);
+    let by = |who: &Ref, player: &PlayerId| scope.players(who).is_ok_and(|p| p.contains(player));
+    let picks = |what: &Selector, reference: ObjectRef| scope.selects(what, reference).ok();
+    match (pattern, happened) {
+        (
+            TriggerPattern::DealsDamage { source, to, combat },
+            Happened::Damaged {
+                source: dealer,
+                to: hit,
+                combat: was,
+            },
+        ) => {
+            let dealer = object(*dealer)?;
+            let recipient = match hit {
+                DamageTarget::Player(player) => Target::Player(*player),
+                DamageTarget::Object(hit) => Target::Object(object(*hit)?),
+            };
+            let named = to
+                .as_ref()
+                .is_none_or(|to| scope.refs(to).is_ok_and(|named| named.contains(&recipient)));
+            (combat.is_none_or(|wanted| wanted == *was) && named && picks(source, dealer)?)
+                .then(|| cause(state, vec![Target::Object(dealer), recipient]))
+        }
+        (TriggerPattern::LifeGained { who }, Happened::LifeGained { player })
+        | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player })
+        | (TriggerPattern::Drew { who }, Happened::Drew { player }) => {
+            by(who, player).then(|| cause(state, vec![Target::Player(*player)]))
+        }
+        (
+            TriggerPattern::Discarded { what, by: who },
+            Happened::Moved {
+                object: card,
+                from: Zone::Hand(player),
+                cause: Some(ZoneCause::Discarded),
+                ..
+            },
+        )
+        | (TriggerPattern::Cycled { what, by: who }, Happened::Cycled { player, card }) => {
+            let card = object(*card)?;
+            (by(who, player) && picks(what, card)?)
+                .then(|| cause(state, vec![Target::Player(*player), Target::Object(card)]))
+        }
+        _ => matching_permanents(pattern, happened, scope),
+    }
+}
+
+/// What `pattern` finds in the events about permanents: taps, counters, blocks, attackers and attachments.
+fn matching_permanents(
+    pattern: &TriggerPattern,
+    happened: &Happened,
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let state = scope.state;
+    let object = |id: ObjectId| state.object(id).map(GameObject::reference);
+    let by = |who: &Ref, player: &PlayerId| scope.players(who).is_ok_and(|p| p.contains(player));
+    let picks = |what: &Selector, reference: ObjectRef| scope.selects(what, reference).ok();
+    let of_kind = |wanted: &Option<CounterKind>, kind: &CounterKind| {
+        wanted.as_ref().is_none_or(|wanted| wanted == kind)
+    };
+    match (pattern, happened) {
+        (TriggerPattern::Tapped { what }, Happened::Tapped { object: tapped })
+        | (TriggerPattern::Untapped { what }, Happened::Untapped { object: tapped }) => {
+            let tapped = object(*tapped)?;
+            picks(what, tapped)?.then(|| cause(state, vec![Target::Object(tapped)]))
+        }
+        (
+            TriggerPattern::TappedForMana { what, by: who },
+            Happened::TappedForMana {
+                object: tapped,
+                player,
+            },
+        ) => {
+            let tapped = object(*tapped)?;
+            (by(who, player) && picks(what, tapped)?)
+                .then(|| cause(state, vec![Target::Object(tapped), Target::Player(*player)]))
+        }
+        (
+            TriggerPattern::CountersPut { what, counter }
+            | TriggerPattern::CountersRemoved { what, counter },
+            Happened::Counters {
+                on,
+                counter: kind,
+                delta,
+            },
+        ) => {
+            let putting = matches!(pattern, TriggerPattern::CountersPut { .. });
+            let on = object(*on)?;
+            ((*delta > 0) == putting && of_kind(counter, kind) && picks(what, on)?)
+                .then(|| cause(state, vec![Target::Object(on)]))
+        }
+        (TriggerPattern::Blocks { what }, Happened::Blocked { blocker, attacker }) => {
+            let (blocker, attacker) = (object(*blocker)?, object(*attacker)?);
+            picks(what, blocker)?.then(|| {
+                cause(
+                    state,
+                    vec![Target::Object(blocker), Target::Object(attacker)],
+                )
+            })
+        }
+        (TriggerPattern::BecomesBlocked { what }, Happened::BecameBlocked { attacker }) => {
+            let attacker = object(*attacker)?;
+            picks(what, attacker)?.then(|| cause(state, vec![Target::Object(attacker)]))
+        }
+        (
+            TriggerPattern::GroupAttacks { what, at_least },
+            Happened::AttackedTogether { attackers },
+        ) => {
+            let mut picked = Vec::new();
+            for attacker in attackers {
+                if let Some(attacker) = object(*attacker)
+                    && picks(what, attacker)?
+                {
+                    picked.push(Target::Object(attacker));
+                }
+            }
+            (picked.len() >= usize::try_from(*at_least).unwrap_or(usize::MAX))
+                .then(|| cause(state, picked))
+        }
+        (
+            TriggerPattern::Attached { what, to },
+            Happened::Attached {
+                attachment,
+                to: host,
+            },
+        ) => {
+            let (attachment, host) = (object(*attachment)?, object(*host)?);
+            (picks(what, attachment)? && picks(to, host)?).then(|| {
+                cause(
+                    state,
+                    vec![Target::Object(attachment), Target::Object(host)],
+                )
+            })
         }
         _ => None,
     }
@@ -660,19 +932,22 @@ mod tests {
     #[case::drawing(r#"{"Drew":{}}"#)]
     #[case::discarding(r#"{"Discarded":{}}"#)]
     #[case::becoming_tapped(r#"{"Tapped":{"what":[]}}"#)]
+    #[case::becoming_untapped(r#"{"Untapped":{"what":[]}}"#)]
     #[case::tapping_for_mana(r#"{"TappedForMana":{"what":[]}}"#)]
     #[case::blocking(r#"{"Blocks":{"what":[]}}"#)]
     #[case::becoming_blocked(r#"{"BecomesBlocked":{"what":[]}}"#)]
     #[case::attacking_together(r#"{"GroupAttacks":{"what":[]}}"#)]
     #[case::counters_put(r#"{"CountersPut":{}}"#)]
-    fn a_pattern_the_engine_does_not_detect_yet_triggers_on_no_event(#[case] when: &str) {
+    #[case::counters_removed(r#"{"CountersRemoved":{}}"#)]
+    #[case::attaching(r#"{"Attached":{}}"#)]
+    #[case::cycling(r#"{"Cycled":{}}"#)]
+    fn the_patterns_of_events_about_players_and_permanents_trigger_on_no_other_event(
+        #[case] when: &str,
+    ) {
         let pre = board(with("Watcher", vec![triggered(when)]));
         let events = [
-            Event::LifeGained {
-                player: ME,
-                amount: 1,
-            },
             Event::StepBegan { step: Step::Upkeep },
+            Event::ManaPoolEmptied { player: ME },
             died(&pre, "Bear"),
         ];
         let (_, found) = fire(&pre, &events);
