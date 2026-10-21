@@ -11,6 +11,7 @@ mod archon_fuzz;
 mod attach_fuzz;
 mod attachments;
 mod cascade;
+mod cascade_fuzz;
 mod cast_permissions;
 mod checkpoint;
 mod choice_fuzz;
