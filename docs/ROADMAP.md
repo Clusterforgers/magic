@@ -76,7 +76,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (g8) A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
 
 ### Trigger families
-- [ ] (i4) Patterns for every event the engine logs (damage, life, draw, discard, mill, tap, untap, counters, attach, cast, cycle), batches ("one or more"), first time each turn, the nth card, event amounts ("that much")
+- [ ] (i4) Patterns for every event the engine logs (damage, life, draw, discard, mill, tap, untap, counters, attach, cast, cycle), batches ("one or more"), first time each turn, the nth card, event amounts ("that much"); conditions over any or every opponent ("an opponent has 10 or less life", `Amount::Life` of a set of players); Bloodghast is Verified
 
 ### Faces and copies
 - [ ] (n1) Multi-face cards: split, adventure, modal double-faced, transform and meld; the face is chosen at announcement, `Card.Faces` is lifted, `Effect::Transform`; Delver of Secrets, Bonecrusher Giant and Fire // Ice (fuse) are Verified
