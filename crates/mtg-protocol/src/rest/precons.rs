@@ -61,7 +61,7 @@ pub struct PreconCardView {
     pub name: String,
     /// How many copies.
     pub count: u32,
-    /// The printing the deck names, if it names one the database holds.
+    /// The printing the deck names, if it names one.
     pub printing_id: Option<String>,
     /// The card as a list shows it, in the art of the deck's printing; null when the deck names a
     /// card the database does not hold.

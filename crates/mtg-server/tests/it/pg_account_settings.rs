@@ -29,6 +29,7 @@ fn roomy_limits() -> AttemptLimits {
         code_misses_per_ip: 10_000,
         lobby_window: Duration::from_secs(600),
         lobby_requests_per_ip: 10_000,
+        precon_requests_per_ip: 10_000,
     }
 }
 

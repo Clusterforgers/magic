@@ -16,7 +16,7 @@ name: string,
  */
 count: number, 
 /**
- * The printing the deck names, if it names one the database holds.
+ * The printing the deck names, if it names one.
  */
 printing_id: string | null, 
 /**
