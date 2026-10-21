@@ -17,6 +17,7 @@ pub mod decks;
 pub mod driver;
 pub mod event_cards;
 pub mod expect;
+pub mod family_cards;
 pub mod harness;
 pub mod invariants;
 pub mod keyword_cards;
@@ -53,6 +54,7 @@ pub use decks::{
 };
 pub use driver::Driver;
 pub use event_cards::events_fuzz_setup;
+pub use family_cards::families_fuzz_setup;
 pub use harness::{FailureKind, GameFailure, GameOutcome, PlayOptions, play_game, play_game_with};
 pub use invariants::{InvariantChecker, Violation, check_settled, check_state};
 pub use keyword_cards::keyword_triggers_fuzz_setup;

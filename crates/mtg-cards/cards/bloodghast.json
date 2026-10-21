@@ -1,0 +1,39 @@
+{
+  "oracle_id": "e97f9c2b-b41e-4f36-9245-77c0ac125647",
+  "name": "Bloodghast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodghast",
+      "oracle_fingerprint": "e72565744eead53b441fe56d84c43718",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": { "left": { "LowestLife": "Opponents" }, "op": "Le", "right": 10 }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "from": "Graveyard",
+            "effects": [
+              {
+                "May": { "effects": [{ "Move": { "what": "This", "to": { "Battlefield": {} } } }] }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
