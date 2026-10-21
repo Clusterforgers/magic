@@ -10,7 +10,7 @@ use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, ZoneKind};
 use crate::spend::SpendOn;
 use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
-use crate::value::{Amount, Cmp, Condition, CounterKind, StatKind};
+use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
 
 // serde's `skip_serializing_if` hands out a reference, so these take one.
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -466,6 +466,9 @@ pub enum Effect {
         /// It is cast without paying its mana cost (CR 118.9).
         #[serde(default, skip_serializing_if = "is_false")]
         free: bool,
+        /// The alternative cost it is cast for (CR 118.9): `Madness` pays the madness cost of the card, `Suspend` pays nothing; the spell remembers it.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        way: Option<CastWay>,
         /// Done when the card is not cast: the player declines, or nothing lets it be cast.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         otherwise: Vec<Effect>,
@@ -610,6 +613,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             who: Ref::You,
             what: Ref::Bound(FOUND.to_owned()),
             free: true,
+            way: None,
             otherwise,
         },
         Effect::Move {

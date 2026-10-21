@@ -33,7 +33,7 @@ use mtg_core::color::Color;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::abilities::AbilityRef;
-use crate::ability_reader::{abilities_of, working_here};
+use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::characteristics::controller_of_object;
 use crate::choose::{
     Choice, ChoiceOption, OptionOptions, ReplacementCandidate, ReplacementOptions, Target,
@@ -295,6 +295,7 @@ fn gather(state: &GameState) -> Vec<Source> {
         } else if state.possible.elsewhere {
             working_here(object)
                 .map(|(address, rules)| (address, Arc::clone(rules)))
+                .chain(provided_here(object))
                 .collect()
         } else {
             continue;
@@ -334,6 +335,8 @@ enum Unit {
         object: ObjectId,
         from: Zone,
         to: Zone,
+        /// The move is a discard.
+        discard: bool,
     },
     /// A card would enter the battlefield.
     Enter {
@@ -361,6 +364,18 @@ fn entering(state: &GameState, event: &Event) -> Option<(ObjectId, PlayerId)> {
         } => Some((*object, state.object(*object)?.owner())),
         _ => None,
     }
+}
+
+/// Whether the event is a discard: a card put into a graveyard from a hand, or one a replacement effect sent elsewhere.
+fn discards(event: &Event) -> bool {
+    matches!(
+        event,
+        Event::CardDiscarded { .. }
+            | Event::ZoneChanged {
+                cause: ZoneCause::Discarded,
+                ..
+            }
+    )
 }
 
 /// The move to a zone other than the battlefield that this event is, with where the object is and where it goes.
@@ -396,7 +411,9 @@ fn is_self(when: &ReplaceWhen) -> bool {
     use mtg_cards::refs::Pred;
     let only_this = |selector: &mtg_cards::refs::Selector| selector.0.contains(&Pred::This);
     match when {
-        ReplaceWhen::Enters { what } | ReplaceWhen::ZoneChange { what, .. } => only_this(what),
+        ReplaceWhen::Enters { what }
+        | ReplaceWhen::ZoneChange { what, .. }
+        | ReplaceWhen::Discarded { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
         }
@@ -515,7 +532,12 @@ impl Pass<'_> {
             };
         }
         if let Some((object, from, to)) = moving(state, event) {
-            return Unit::Move { object, from, to };
+            return Unit::Move {
+                object,
+                from,
+                to,
+                discard: discards(event),
+            };
         }
         match event {
             Event::DamageDealt { source, target, .. } => Unit::Damage {
@@ -642,6 +664,7 @@ impl Pass<'_> {
                     object,
                     from: left,
                     to: entered,
+                    ..
                 },
             ) => {
                 let Some(reference) = self.reference(*object) else {
@@ -650,6 +673,20 @@ impl Pass<'_> {
                 from.is_none_or(|kind| zone_kind(*left) == kind)
                     && to.is_none_or(|kind| zone_kind(*entered) == kind)
                     && scope.selects(what, reference)?
+            }
+            (
+                ReplaceWhen::Discarded { what },
+                Unit::Move {
+                    object,
+                    to: Zone::Graveyard(_),
+                    discard: true,
+                    ..
+                },
+            ) => {
+                let Some(reference) = self.reference(*object) else {
+                    return Ok(false);
+                };
+                scope.selects(what, reference)?
             }
             (
                 ReplaceWhen::CountersPut { on, counter },
@@ -1216,7 +1253,12 @@ impl Pass<'_> {
             (ReplaceBy::Multiply(_) | ReplaceBy::Add(_), _) => {
                 self.scale(at, by, &applied);
             }
-            (ReplaceBy::MoveTo(kind), Unit::Move { object, from, to }) => {
+            (
+                ReplaceBy::MoveTo(kind),
+                Unit::Move {
+                    object, from, to, ..
+                },
+            ) => {
                 let Some(owner) = self.state.object(*object).map(GameObject::owner) else {
                     self.slots[at].applied = applied;
                     return Ok(Applied::Done);

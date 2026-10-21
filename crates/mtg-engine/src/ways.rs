@@ -136,7 +136,12 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
 
 /// The way `player` casts the card `id` when a resolution lets them (CR 608.2g): for its mana cost, or without paying it.
 /// A land cannot be cast, nor can a card that is on the battlefield or the stack.
-pub(crate) fn granted(state: &GameState, id: ObjectId, free: bool) -> Vec<Way> {
+pub(crate) fn granted(
+    state: &GameState,
+    id: ObjectId,
+    free: bool,
+    way: Option<CastWay>,
+) -> Vec<Way> {
     let Some(card) = state.object(id) else {
         return Vec::new();
     };
@@ -146,9 +151,20 @@ pub(crate) fn granted(state: &GameState, id: ObjectId, free: bool) -> Vec<Way> {
     if !castable {
         return Vec::new();
     }
+    if way == Some(CastWay::Madness) {
+        return madness_cost(state, id)
+            .map(|mana| Way {
+                alternative: Some(CastWay::Madness),
+                label: format!("Madness {mana}"),
+                mana: Some(mana),
+                instant: true,
+            })
+            .into_iter()
+            .collect();
+    }
     if free {
         return vec![Way {
-            alternative: Some(CastWay::Free),
+            alternative: Some(way.unwrap_or(CastWay::Free)),
             label: "Cast without paying its mana cost".to_owned(),
             mana: Some(ManaCost::default()),
             instant: true,
@@ -167,9 +183,66 @@ pub(crate) fn granted(state: &GameState, id: ObjectId, free: bool) -> Vec<Way> {
         .collect()
 }
 
+/// The time counters and the mana of the suspend cost of the card `id` (CR 702.62), when the cost is paid with mana alone.
+pub(crate) fn suspend_of(state: &GameState, id: ObjectId) -> Option<(u32, ManaCost)> {
+    keywords_of(state, id).into_iter().find_map(|keyword| {
+        let Keyword::Suspend { time, cost } = keyword else {
+            return None;
+        };
+        Some((*time, mana_only(cost)?))
+    })
+}
+
+/// Whether `player` can suspend the card `id` now: it is in their hand and could be cast at this time (CR 702.62a, whether
+/// or not it has a legal target), and they can pay the suspend cost with the mana that floats and what they control.
+pub(crate) fn can_suspend(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> bool {
+    let Some(card) = state.object(id) else {
+        return false;
+    };
+    let Some((_, cost)) = suspend_of(state, id) else {
+        return false;
+    };
+    if card.kind() != ObjectKind::Card
+        || card.base_types().contains(CardType::Land)
+        || card.zone() != Zone::Hand(player)
+    {
+        return false;
+    }
+    let instant = card.base_types().contains(CardType::Instant)
+        || keywords::grants_instant_timing(state, id)
+        || cast_permissions(state)
+            .iter()
+            .any(|permission| permission.flash && permission.covers(state, player, card));
+    (instant || sorcery_timing(state, player))
+        && can_afford(&cost, pool, sources, life, &Spend::other())
+}
+
+/// The mana of the madness cost of the card `id` (CR 702.35), when it has one that is paid with mana alone.
+pub(crate) fn madness_cost(state: &GameState, id: ObjectId) -> Option<ManaCost> {
+    keywords_of(state, id).into_iter().find_map(|keyword| {
+        let Keyword::Madness(cost) = keyword else {
+            return None;
+        };
+        mana_only(cost)
+    })
+}
+
 /// Whether a resolution can have `player` cast the card `id` now: its targets can be announced and, unless it is cast
 /// free, the mana can be paid with what floats and what they control. Cost increases count even for a free cast.
-pub(crate) fn grantable(state: &GameState, player: PlayerId, id: ObjectId, free: bool) -> bool {
+pub(crate) fn grantable(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    free: bool,
+    way: Option<CastWay>,
+) -> bool {
     let Some(card) = state.object(id) else {
         return false;
     };
@@ -178,7 +251,7 @@ pub(crate) fn grantable(state: &GameState, player: PlayerId, id: ObjectId, free:
     };
     let sources = mana_options(state, player);
     let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
-    granted(state, id, free).iter().any(|way| {
+    granted(state, id, free, way).iter().any(|way| {
         announceable_in(state, player, id, way.alternative)
             && way
                 .cost(card.card().mana_cost.as_ref())

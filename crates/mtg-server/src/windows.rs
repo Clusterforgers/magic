@@ -363,6 +363,7 @@ mod tests {
                 castable: Vec::new(),
                 mana_abilities: Vec::new(),
                 abilities: Vec::new(),
+                suspendable: Vec::new(),
                 can_act,
                 can_pass: true,
             }),

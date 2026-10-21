@@ -116,11 +116,13 @@ pub enum Keyword {
     Encore(Cost),
     /// Squad with its cost: paid any number of times as the spell is cast, each time a token copy enters (CR 702.157).
     Squad(Cost),
+    /// Foretell with its cost: a special action from the hand exiles the card face down, and it is cast later for its foretell cost (CR 702.143).
+    Foretell(Cost),
 }
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 49] = [
+    pub const NAMES: [&'static str; 50] = [
         "Flash",
         "Flying",
         "Reach",
@@ -170,6 +172,7 @@ impl Keyword {
         "Mutate",
         "Encore",
         "Squad",
+        "Foretell",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -224,6 +227,7 @@ impl Keyword {
             Keyword::Mutate(_) => "Mutate",
             Keyword::Encore(_) => "Encore",
             Keyword::Squad(_) => "Squad",
+            Keyword::Foretell(_) => "Foretell",
         }
     }
 
@@ -300,7 +304,8 @@ mod tests {
             Keyword::Crew(3),
             Keyword::Mutate(cost.clone()),
             Keyword::Encore(cost.clone()),
-            Keyword::Squad(cost),
+            Keyword::Squad(cost.clone()),
+            Keyword::Foretell(cost),
         ]
     }
 

@@ -22,7 +22,9 @@ pub(super) fn read(
     granted: Option<Granted>,
 ) -> Vec<Way> {
     match (what, granted) {
-        (What::Spell(spell), Some(granted)) => ways::granted(state, *spell, granted.free),
+        (What::Spell(spell), Some(granted)) => {
+            ways::granted(state, *spell, granted.free, granted.way)
+        }
         (What::Spell(spell), None) => ways::of(state, player, *spell),
         (What::Ability(_) | What::Trigger(_), _) => Vec::new(),
     }

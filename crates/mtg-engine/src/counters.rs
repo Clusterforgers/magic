@@ -9,6 +9,7 @@ use crate::choose::Target;
 use crate::error::EngineError;
 use crate::fold::{invalid, player_mut};
 use crate::state::GameState;
+use crate::zones::Zone;
 
 /// Counters put on or removed from an object or a player.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -35,15 +36,20 @@ pub(crate) const fn changes_power_toughness(kind: &CounterKind) -> bool {
 pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(), EngineError> {
     match event.on {
         Target::Object(named) => {
-            let counters = state
+            let object = state
                 .objects
                 .get_mut(&named.id)
                 .filter(|object| object.counter() == named.counter)
-                .and_then(|object| object.permanent.as_mut())
-                .map(|permanent| &mut permanent.counters)
-                .ok_or_else(|| {
-                    invalid(format!("{named:?} is not a permanent on the battlefield"))
-                })?;
+                .ok_or_else(|| invalid(format!("{named:?} is not in the game")))?;
+            let counters = if let Some(permanent) = object.permanent.as_mut() {
+                &mut permanent.counters
+            } else if object.zone == Zone::Exile {
+                &mut object.card_counters
+            } else {
+                return Err(invalid(format!(
+                    "{named:?} is not a permanent on the battlefield or a card in exile"
+                )));
+            };
             change(counters, &event.counter, event.delta)?;
             if event.delta > 0 && changes_power_toughness(&event.counter) {
                 state.possible.counters = true;
@@ -94,8 +100,10 @@ pub(crate) fn held_by(state: &GameState, target: Target, kind: &CounterKind) -> 
         Target::Object(named) => state
             .object(named.id)
             .filter(|object| object.counter() == named.counter)
-            .and_then(|object| object.permanent())
-            .map_or(0, |permanent| permanent.counters_of(kind)),
+            .map_or(0, |object| match object.permanent() {
+                Some(permanent) => permanent.counters_of(kind),
+                None => object.card_counters_of(kind),
+            }),
     }
 }
 

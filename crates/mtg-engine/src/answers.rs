@@ -23,6 +23,8 @@ pub(crate) enum Outcome {
     BeginCast(ObjectId),
     /// Start activating this ability; its announcement is decided next.
     BeginActivation(AbilityRef),
+    /// Start suspending this card from the hand: the payment of its suspend cost is decided next.
+    BeginSuspend(ObjectId),
     /// These are the modes, in the order they are printed, of the cast or activation in progress.
     Modes(Vec<usize>),
     /// This is the way, by position among those offered, the spell in progress is cast.

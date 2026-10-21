@@ -25,6 +25,7 @@ mod first_strike;
 mod flash;
 mod flashback;
 mod flying;
+mod foretell;
 mod fuse;
 mod haste;
 mod hexproof;
@@ -51,7 +52,7 @@ mod reconfigure;
 mod shroud;
 mod squad;
 mod storm;
-mod suspend;
+pub(crate) mod suspend;
 mod trample;
 mod vigilance;
 mod ward;
@@ -301,6 +302,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Mutate(_) => &mutate::Mutate,
         Keyword::Encore(_) => &encore::Encore,
         Keyword::Squad(_) => &squad::Squad,
+        Keyword::Foretell(_) => &foretell::Foretell,
     }
 }
 
@@ -524,11 +526,12 @@ mod tests {
             Keyword::Mutate(cost()),
             Keyword::Encore(cost()),
             Keyword::Squad(cost()),
+            Keyword::Foretell(cost()),
         ]
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 30] = [
+    const RUN: [&str; 32] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -559,6 +562,8 @@ mod tests {
         "Keyword.Overload",
         "Keyword.Cycling",
         "Keyword.Cascade",
+        "Keyword.Madness",
+        "Keyword.Suspend",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -652,6 +657,8 @@ mod tests {
     #[case::flashback(Keyword::Flashback(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::overload(Keyword::Overload(Cost::mana("{2}".parse().unwrap())), Hooks::none())]
     #[case::cascade(Keyword::Cascade, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::madness(Keyword::Madness(Cost::mana("{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);
     }

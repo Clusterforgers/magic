@@ -169,6 +169,8 @@ const RUNS: &[&str] = &[
     "Keyword.Overload",
     "Keyword.Cycling",
     "Keyword.Cascade",
+    "Keyword.Madness",
+    "Keyword.Suspend",
     "Condition.CastWith",
     "Rule.MayCast",
     "Condition.Kicked",

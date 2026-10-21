@@ -668,8 +668,10 @@ pub(crate) fn pay(cost: &ManaCost) -> String {
 }
 
 /// The question of a cast an effect allows: "Cast Lightning Bolt without paying its mana cost?"
-pub(crate) fn cast(name: &str, free: bool) -> String {
-    if free {
+pub(crate) fn cast(name: &str, free: bool, madness: Option<&mtg_core::mana::ManaCost>) -> String {
+    if let Some(cost) = madness {
+        format!("Cast {name} for its madness cost {cost}?")
+    } else if free {
         format!("Cast {name} without paying its mana cost?")
     } else {
         format!("Cast {name}?")

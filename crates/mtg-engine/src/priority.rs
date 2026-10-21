@@ -219,8 +219,12 @@ pub(crate) fn can_act(
     playable_lands: &[ObjectId],
     castable: &[ObjectId],
     abilities: &[AbilityRef],
+    suspendable: &[ObjectId],
 ) -> bool {
-    !playable_lands.is_empty() || !castable.is_empty() || !abilities.is_empty()
+    !playable_lands.is_empty()
+        || !castable.is_empty()
+        || !abilities.is_empty()
+        || !suspendable.is_empty()
 }
 
 /// Everything `player` may do while holding priority.
@@ -250,14 +254,21 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .chain(ways::elsewhere(state, player))
         .filter(|id| ways::castable_now(state, player, *id, &pool, &all_mana, life))
         .collect();
+    // A special action: no stack, so no target or modes are needed (CR 116.2f).
+    let suspendable: Vec<ObjectId> = hand
+        .iter()
+        .copied()
+        .filter(|id| ways::can_suspend(state, player, *id, &pool, &all_mana, life))
+        .collect();
     let abilities = other_abilities(state, player);
     let mana_abilities = all_mana;
     PriorityOptions {
-        can_act: can_act(&playable_lands, &castable, &abilities),
+        can_act: can_act(&playable_lands, &castable, &abilities, &suspendable),
         playable_lands,
         castable,
         mana_abilities,
         abilities,
+        suspendable,
         can_pass: true,
     }
 }
@@ -288,6 +299,12 @@ pub(crate) fn answer(
                 return Err(IllegalAnswer::NotOffered("ability").into());
             }
             Ok(Outcome::BeginActivation(ability))
+        }
+        PriorityAction::Suspend(object) => {
+            if !options.suspendable.contains(&object) {
+                return Err(IllegalAnswer::NotOffered("suspend").into());
+            }
+            Ok(Outcome::BeginSuspend(object))
         }
         PriorityAction::ActivateMana(source) => {
             let option = options
