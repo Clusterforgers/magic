@@ -24,6 +24,10 @@ mana_abilities: Array<ManaOption>,
  */
 abilities?: Array<AbilityRef>, 
 /**
+ * Cards in the hand that can be suspended now (a special action that does not use the stack, CR 702.62).
+ */
+suspendable?: Array<ObjectId>, 
+/**
  * Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
  * mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.
  */

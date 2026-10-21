@@ -23,6 +23,10 @@ pub(super) fn next(state: &GameState, player: PlayerId, card: ObjectId) -> Next 
     let Some((_, cost)) = ways::suspend_of(state, card) else {
         return Next::Drop;
     };
+    // A suspend cost of nothing needs no payment decision.
+    if cost.mana_value() == 0 {
+        return events(state, card).map_or(Next::Drop, Next::Commit);
+    }
     let options = payment_decision(
         state,
         player,

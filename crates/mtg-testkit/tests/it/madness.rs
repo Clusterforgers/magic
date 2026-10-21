@@ -105,7 +105,10 @@ fn yes(driver: &mut Driver, yes: bool) -> Result<Vec<Event>, ScriptError> {
 /// The text of the yes or no question pending.
 fn question(driver: &Driver) -> String {
     let DecisionKind::YesNo(question) = &driver.decision().unwrap().kind else {
-        panic!("a question is asked: {:?}", driver.decision().unwrap().kind.name());
+        panic!(
+            "a question is asked: {:?}",
+            driver.decision().unwrap().kind.name()
+        );
     };
     question.text.clone()
 }
@@ -141,7 +144,9 @@ fn a_discarded_madness_card_waits_in_exile_and_is_cast_for_its_madness_cost(
     resolve(&mut driver)?;
     assert_eq!(driver.state().player(pid(1)).unwrap().life(), 17);
     assert_eq!(
-        names(driver.state(), Zone::Graveyard(pid(0))).last().map(String::as_str),
+        names(driver.state(), Zone::Graveyard(pid(0)))
+            .last()
+            .map(String::as_str),
         Some("Fiery Temper")
     );
     Ok(())
@@ -186,7 +191,12 @@ fn a_madness_cost_of_nothing_is_cast_without_a_payment() -> Result<(), ScriptErr
         "Cast Basking Rootwalla for its madness cost {0}?"
     );
     yes(&mut driver, true)?;
-    assert_eq!(names(driver.state(), Zone::Stack).last().map(String::as_str), Some("Basking Rootwalla"));
+    assert_eq!(
+        names(driver.state(), Zone::Stack)
+            .last()
+            .map(String::as_str),
+        Some("Basking Rootwalla")
+    );
     resolve(&mut driver)?;
     resolve(&mut driver)?;
     assert!(names(driver.state(), Zone::Battlefield).contains(&"Basking Rootwalla".to_owned()));
@@ -194,7 +204,8 @@ fn a_madness_cost_of_nothing_is_cast_without_a_payment() -> Result<(), ScriptErr
 }
 
 #[test]
-fn a_creature_with_madness_is_cast_for_its_cost_and_enters_the_battlefield() -> Result<(), ScriptError> {
+fn a_creature_with_madness_is_cast_for_its_cost_and_enters_the_battlefield()
+-> Result<(), ScriptError> {
     let scenario = Scenario::new(2)
         .library(0, vec![forest(); 6])
         .hand_named(0, ["Arrogant Wurm"])
@@ -218,7 +229,8 @@ fn a_creature_with_madness_is_cast_for_its_cost_and_enters_the_battlefield() -> 
 }
 
 #[test]
-fn the_discard_of_a_madness_card_still_triggers_what_watches_for_discards() -> Result<(), ScriptError> {
+fn the_discard_of_a_madness_card_still_triggers_what_watches_for_discards()
+-> Result<(), ScriptError> {
     let scenario = Scenario::new(2)
         .library(0, vec![forest(); 6])
         .hand_named(0, ["Fiery Temper"])
