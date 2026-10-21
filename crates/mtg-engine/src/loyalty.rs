@@ -106,6 +106,7 @@ mod tests {
 
     use mtg_cards::CardDefinition;
     use mtg_core::ids::PlayerId;
+    use proptest::prelude::*;
     use rstest::rstest;
 
     use super::*;
@@ -261,6 +262,72 @@ mod tests {
         let mut counters = before.to_vec();
         after_payment(&mut counters, delta);
         assert_eq!(counters, after);
+    }
+
+    /// What a planeswalker may be put through: damage, and the plus and minus costs of its abilities.
+    #[derive(Debug, Clone, Copy)]
+    enum Hit {
+        Damage(u32),
+        Plus(u32),
+        Minus(u32),
+    }
+
+    fn hits() -> impl Strategy<Value = Hit> {
+        prop_oneof![
+            (1u32..9).prop_map(Hit::Damage),
+            (1u32..4).prop_map(Hit::Plus),
+            (1u32..6).prop_map(Hit::Minus),
+        ]
+    }
+
+    proptest! {
+        /// Folding any run of damage and costs onto a planeswalker leaves the loyalty that a count of the counters
+        /// predicts, never fewer than none: damage takes what is there and no more, a plus cost adds, and a minus cost
+        /// is only paid when that many are there (and is what `can_activate` allows).
+        #[test]
+        fn loyalty_follows_damage_and_costs_and_never_falls_below_none(
+            start in 1u32..12,
+            run in proptest::collection::vec(hits(), 0..24),
+        ) {
+            let mut game = walker_in_play(start);
+            let id = game.zone(Zone::Battlefield)[0];
+            let source = game.zone(Zone::Battlefield)[0];
+            let mut expected = i64::from(start);
+            for hit in run {
+                match hit {
+                    Hit::Damage(amount) => {
+                        let event = Event::DamageDealt {
+                            source,
+                            target: crate::combat::DamageTarget::Object(id),
+                            amount,
+                            deathtouch: false,
+                        };
+                        apply_event(&mut game, &event).unwrap();
+                        expected = (expected - i64::from(amount)).max(0);
+                    }
+                    Hit::Plus(by) => {
+                        let object = walker_object(&game);
+                        prop_assert!(can_activate(&game, ME, object, LoyaltyCost::Plus(by)));
+                        let paid = payment(object, LoyaltyCost::Plus(by)).unwrap();
+                        apply_event(&mut game, &paid).unwrap();
+                        expected += i64::from(by);
+                    }
+                    Hit::Minus(by) => {
+                        let object = walker_object(&game);
+                        let allowed = can_activate(&game, ME, object, LoyaltyCost::Minus(by));
+                        prop_assert_eq!(allowed, expected >= i64::from(by));
+                        if allowed {
+                            let paid = payment(object, LoyaltyCost::Minus(by)).unwrap();
+                            apply_event(&mut game, &paid).unwrap();
+                            expected -= i64::from(by);
+                        }
+                    }
+                }
+                let held = i64::from(walker_object(&game).permanent().unwrap().counters_of(&CounterKind::Loyalty));
+                prop_assert_eq!(held, expected);
+                prop_assert!(held >= 0);
+            }
+        }
     }
 
     #[test]
