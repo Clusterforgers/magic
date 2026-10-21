@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d12e5ce0-5705-4c35-9a93-b883db52c80c",
+  "name": "Batterskull",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Batterskull",
+      "oracle_fingerprint": "21b65e007f287d0056ec7216203e7906",
+      "abilities": [
+        { "Keyword": "LivingWeapon" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 4, "toughness": 4 } },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Lifelink" }
+            ]
+          }
+        },
+        {
+          "Activated": { "cost": "{3}", "effects": [{ "Move": { "what": "This", "to": "Hand" } }] }
+        },
+        { "Keyword": { "Equip": "{5}" } }
+      ]
+    }
+  ]
+}

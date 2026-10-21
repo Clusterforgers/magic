@@ -830,11 +830,18 @@ impl<'a> Walker<'a> {
                 w.at("count", |w| w.amount(count));
             }
             Effect::CreateToken {
-                who, token, count, ..
+                who,
+                token,
+                count,
+                bind,
+                ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("token", |w| w.token(token));
                 w.at("count", |w| w.amount(count));
+                if let Some(name) = bind {
+                    w.at("as", |w| w.bind(name, Kind::Object));
+                }
                 // A token that copies an object waits for the copy effects.
                 if matches!(token, TokenRef::CopyOf { .. }) {
                     w.uses("Effect", "CreateToken.Copy");

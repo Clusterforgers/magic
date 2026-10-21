@@ -548,7 +548,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     token,
                     count,
                     tapped,
-                    attacking
+                    attacking,
+                    bind: None
                 }
             ),
             (reference(), vec(modification(), 1..3), duration()).prop_map(

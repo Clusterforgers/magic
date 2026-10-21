@@ -64,6 +64,8 @@ pub enum Keyword {
     Equip(Cost),
     /// Reconfigure with its cost.
     Reconfigure(Cost),
+    /// Living weapon: when the Equipment enters, a 0/0 black Phyrexian Germ is created and the Equipment attached to it.
+    LivingWeapon,
     /// Enchant: what an Aura may enchant.
     Enchant(Selector),
     /// Cycling with its cost.
@@ -97,7 +99,7 @@ pub enum Keyword {
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 38] = [
+    pub const NAMES: [&'static str; 39] = [
         "Flash",
         "Flying",
         "Reach",
@@ -124,6 +126,7 @@ impl Keyword {
         "Ward",
         "Equip",
         "Reconfigure",
+        "Living weapon",
         "Enchant",
         "Cycling",
         "Kicker",
@@ -167,6 +170,7 @@ impl Keyword {
             Keyword::Ward(_) => "Ward",
             Keyword::Equip(_) => "Equip",
             Keyword::Reconfigure(_) => "Reconfigure",
+            Keyword::LivingWeapon => "Living weapon",
             Keyword::Enchant(_) => "Enchant",
             Keyword::Cycling(_) => "Cycling",
             Keyword::Kicker(_) => "Kicker",
@@ -230,6 +234,7 @@ mod tests {
             Keyword::Ward(cost.clone()),
             Keyword::Equip(cost.clone()),
             Keyword::Reconfigure(cost.clone()),
+            Keyword::LivingWeapon,
             Keyword::Enchant(Selector::default()),
             Keyword::Cycling(cost.clone()),
             Keyword::Kicker(cost.clone()),

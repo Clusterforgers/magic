@@ -26,6 +26,7 @@ fn effect(token: TokenRef, count: Amount, tapped: bool, attacking: bool) -> Effe
         count,
         tapped,
         attacking,
+        bind: None,
     }
 }
 
@@ -172,6 +173,7 @@ pub fn text(effect: &Effect) -> Option<String> {
         count,
         tapped,
         attacking,
+        bind: None,
     } = effect
     else {
         return None;

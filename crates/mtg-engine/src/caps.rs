@@ -123,6 +123,7 @@ const RUNS: &[&str] = &[
     "Keyword.Enchant",
     "Keyword.Equip",
     "Keyword.Reconfigure",
+    "Keyword.LivingWeapon",
 ];
 
 /// The capabilities of this engine.
@@ -191,6 +192,7 @@ mod tests {
     #[case::activation_conditions("Ability.Condition", true)]
     #[case::equip("Keyword.Equip", true)]
     #[case::reconfigure("Keyword.Reconfigure", true)]
+    #[case::living_weapon("Keyword.LivingWeapon", true)]
     #[case::unattaching("Effect.Unattach", true)]
     #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", false)]
     #[case::states("Trigger.State", true)]

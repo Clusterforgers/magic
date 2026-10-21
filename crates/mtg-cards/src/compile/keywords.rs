@@ -359,6 +359,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "storm" => Keyword::Storm,
         "partner" => Keyword::Partner,
         "battle cry" => Keyword::BattleCry,
+        "living weapon" => Keyword::LivingWeapon,
         "fuse" => Keyword::Fuse,
         _ => return None,
     })
@@ -583,6 +584,7 @@ mod tests {
             "Suspend 2\u{2014}{1}",
             "Evoke {1}",
             "Overload {1}",
+            "Living weapon",
             "Partner with Someone",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

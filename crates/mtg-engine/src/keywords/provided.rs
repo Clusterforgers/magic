@@ -321,6 +321,7 @@ fn the_abilities_a_keyword_adds_are_valid_rules_and_the_engine_runs_them(#[case]
 #[case::equip(Keyword::Equip(Cost::mana("{1}".parse().unwrap())), 1)]
 #[case::equip_with_colored_mana(Keyword::Equip(Cost::mana("{R}{R}".parse().unwrap())), 1)]
 #[case::reconfigure(Keyword::Reconfigure(Cost::mana("{2}".parse().unwrap())), 3)]
+#[case::living_weapon(Keyword::LivingWeapon, 1)]
 #[case::reconfigure_with_colored_mana(Keyword::Reconfigure(Cost::mana("{R}".parse().unwrap())), 3)]
 fn the_abilities_of_an_attachment_keyword_are_valid_rules_and_the_engine_runs_them(
     #[case] keyword: Keyword,

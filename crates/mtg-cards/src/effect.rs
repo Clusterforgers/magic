@@ -374,6 +374,9 @@ pub enum Effect {
         /// They enter attacking.
         #[serde(default, skip_serializing_if = "is_false")]
         attacking: bool,
+        /// Names the tokens for the effects that follow ("then attach this to it").
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// Creates a continuous effect from this resolution; the objects are fixed now (CR 611.2c).
     Continuous {

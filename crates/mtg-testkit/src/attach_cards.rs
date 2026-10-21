@@ -163,7 +163,7 @@ pub fn legendary_relic() -> Arc<CardDefinition> {
 }
 
 /// The corpus Auras, Equipment and legends the deck holds.
-pub const ATTACH_CORPUS_CARDS: [&str; 11] = [
+pub const ATTACH_CORPUS_CARDS: [&str; 12] = [
     "Pacifism",
     "Epic Proportions",
     "Control Magic",
@@ -175,6 +175,7 @@ pub const ATTACH_CORPUS_CARDS: [&str; 11] = [
     "Bonesplitter",
     "Swiftfoot Boots",
     "Lizard Blades",
+    "Batterskull",
 ];
 
 /// The cards of this module and the plain ones the deck is made of.
@@ -219,7 +220,8 @@ pub fn attach_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corpus
         ("Sram, Senior Edificer", 2),
         ("Bonesplitter", 2),
         ("Swiftfoot Boots", 1),
-        ("Lizard Blades", 2),
+        ("Lizard Blades", 1),
+        ("Batterskull", 1),
         ("Lightning Bolt", 2),
     ] {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));

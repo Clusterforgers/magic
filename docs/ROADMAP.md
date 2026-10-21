@@ -59,7 +59,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (l2) Planeswalkers: loyalty abilities (once a turn, at sorcery speed), damage removes loyalty (CR 120.3c), zero loyalty dies, an attacker keeps attacking a planeswalker that left (CR 506.4c); Jace, the Mind Sculptor, Jace Beleren, Ajani, Caller of the Pride and Garruk Wildspeaker are Verified
 - [x] (l3) The legend rule (CR 704.5j): a player who controls two legendary permanents of one name keeps one; Arvad the Cursed, Kongming and Sram are Verified
 - [x] (m1) `Attach`, Aura spells that target through `Enchant`, and the state-based actions of attachments (CR 704.5m to 704.5p); Pacifism, Epic Proportions, Control Magic, Squirrel Nest and Shielded by Faith are Verified
-- [ ] (m2) Equipment with `Equip`, `Reconfigure` and living weapon; Bonesplitter, Lightning Greaves and Batterskull are Verified
+- [x] (m2) Equipment with `Equip`, `Reconfigure` and living weapon; Bonesplitter, Swiftfoot Boots, Batterskull, Lizard Blades, Bronzeplate Boar and Armguard Familiar are Verified
 
 ### Replacement and prevention
 - [ ] (j1) The replacement step: `Ability::Replacement` found through the reader, one `ReplaceWhen` for each event it can replace, self-replacement first, once per event (CR 614 to 616), and `ChooseReplacement` in engine and protocol; Anointed Procession is Verified
@@ -78,7 +78,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (g8) A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
 
 ### Trigger families
-- [ ] (i4) Patterns for every event the engine logs (damage, life, draw, discard, mill, tap, untap, counters, attach, cast, cycle), batches ("one or more"), first time each turn, the nth card, event amounts ("that much"); conditions over any or every opponent ("an opponent has 10 or less life", `Amount::Life` of a set of players); Bloodghast is Verified
+- [ ] (i4) Patterns for every event the engine logs (damage, life, draw, discard, mill, tap, untap, counters, attach, cast, cycle), triggers whose subject is the creature an Equipment or Aura is attached to ("whenever equipped creature dies or deals combat damage"; Skullclamp, Swords of X and Y), batches ("one or more"), first time each turn, the nth card, event amounts ("that much"); conditions over any or every opponent ("an opponent has 10 or less life", `Amount::Life` of a set of players); Bloodghast is Verified
 
 ### Faces and copies
 - [ ] (n1) Multi-face cards: split, adventure, modal double-faced, transform and meld; the face is chosen at announcement, `Card.Faces` is lifted, `Effect::Transform`; Delver of Secrets, Bonecrusher Giant and Fire // Ice (fuse) are Verified

@@ -9,10 +9,11 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::wrong_effect;
 use crate::caps::caps;
-use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
+use crate::choose::{ChoiceOption, OptionChooser, Optioned, Target, pick_options};
 use crate::combat::{AttackTarget, defenders_for};
 use crate::events::Event;
-use crate::resolve::{Cx, ResolveError, Run};
+use crate::object::ObjectRef;
+use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::state::GameState;
 use crate::tokens::TokenCreated;
 
@@ -61,6 +62,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         count,
         tapped,
         attacking,
+        bind,
     } = effect
     else {
         return Err(wrong_effect("CreateToken"));
@@ -133,7 +135,25 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             made += 1;
         }
     }
-    Ok(Run::events(events))
+    // A token is a new object: its zone-change counter starts at 0.
+    let bound = bind
+        .iter()
+        .map(|name| {
+            let named = (0..made).map(|n| {
+                Target::Object(ObjectRef {
+                    id: ObjectId(first + n),
+                    counter: 0,
+                })
+            });
+            (name.clone(), named.collect())
+        })
+        .collect();
+    Ok(Run::Done {
+        events,
+        bound,
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
 }
 
 #[cfg(test)]
@@ -232,6 +252,38 @@ mod tests {
             assert_eq!(token.object.get(), first + at as u64, "ids follow on");
             assert_eq!((token.tapped, token.attacking), (false, None));
         }
+    }
+
+    #[rstest]
+    #[case::one("", 0)]
+    #[case::one_named(r#","as":"made""#, 1)]
+    #[case::three_named(r#","count":3,"as":"made""#, 3)]
+    fn tokens_are_named_for_the_effects_that_follow_only_when_the_effect_says_so(
+        #[case] extra: &str,
+        #[case] named: usize,
+    ) {
+        let game = game(2);
+        let Run::Done { events, bound, .. } =
+            run_with(&game, Vec::new(), &effect(SOLDIER, extra)).unwrap()
+        else {
+            panic!("a token maker asks nothing");
+        };
+        if named == 0 {
+            assert_eq!(bound.len(), 0);
+            return;
+        }
+        let made: Vec<Target> = events
+            .iter()
+            .filter_map(|event| match event {
+                Event::TokenCreated(token) => Some(Target::Object(ObjectRef {
+                    id: token.object,
+                    counter: 0,
+                })),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(made.len(), named);
+        assert_eq!(bound, vec![("made".to_owned(), made)]);
     }
 
     #[test]
