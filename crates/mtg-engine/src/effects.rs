@@ -435,6 +435,25 @@ mod tests {
     }
 
     #[rstest]
+    #[case::control_to_a_player_who_left(Modification::SetController(FOE), false)]
+    #[case::control_to_a_player_in_the_game(Modification::SetController(ME), true)]
+    #[case::another_change_stays(Modification::SwitchPowerToughness, true)]
+    fn an_effect_that_gives_control_to_a_player_who_left_ends(
+        #[case] modification: Modification,
+        #[case] active: bool,
+    ) {
+        let mut game = game();
+        let mut effect = effect(&game, Duration::Forever, ME);
+        effect.modification = modification;
+        let lost = Event::PlayerLost {
+            player: FOE,
+            reason: LossReason::Conceded,
+        };
+        apply_event(&mut game, &lost).unwrap();
+        assert_eq!(effect.is_active(&game), active);
+    }
+
+    #[rstest]
     #[case::stays_away(false)]
     #[case::returns_as_a_new_object(true)]
     fn an_effect_that_follows_its_source_ends_when_the_source_leaves(#[case] returns: bool) {

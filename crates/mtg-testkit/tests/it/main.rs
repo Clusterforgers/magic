@@ -3,6 +3,7 @@
 mod abilities;
 mod ability_costs;
 mod active_leaves;
+mod active_leaves_fuzz;
 mod announce_division;
 mod archon_fuzz;
 mod attach_fuzz;

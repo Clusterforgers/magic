@@ -100,7 +100,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 ## M4 Commander
 - [ ] `Commander` format rules: 100-card singleton, colour identity, 40 life, command zone, tax as a cost modifier, return to the command zone (CR 903.9), 21 commander damage; the views carry commander damage and tax so the pod can show them
-- [ ] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
+- [x] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
+- [ ] The table view says when a turn has no active player (`TurnView.active` names the seat that left; the turn indicator and the step bar show a turn without one), with a projection test
 - [ ] Partner, companion, Commander-specific tests and Commander-format fuzz games with 4-6 players
 
 ## M5 Table and prompts
