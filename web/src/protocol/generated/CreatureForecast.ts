@@ -14,6 +14,7 @@ object: ObjectId,
  */
 damage: number, 
 /**
- * Whether state-based actions destroy it once the damage is dealt: lethal damage or deathtouch, unless it is indestructible.
+ * Whether state-based actions take it off the battlefield once the damage is dealt: lethal damage or deathtouch,
+ * unless it is indestructible or a shield regenerates it (an effect may send it to exile instead of the graveyard).
  */
 dies: boolean, };

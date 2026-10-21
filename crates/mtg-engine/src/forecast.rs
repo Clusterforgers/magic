@@ -2,9 +2,11 @@
 //!
 //! The forecast is derived data, recomputed from the state whenever it is asked for and never stored. It
 //! plays the damage steps still ahead on a copy of the state with the engine's own code: `damage_events`
-//! deals a step, the events fold, and state-based actions settle before the next step, so keywords (first
-//! strike, deathtouch, trample, lifelink, indestructible) are in the forecast because they are in the
-//! damage. An attacker whose controller has not divided its damage yet deals the default division.
+//! deals a step, the replacement step (`replace_dry`) changes what would happen, the events fold, and
+//! state-based actions settle before the next step, so keywords (first strike, deathtouch, trample, lifelink,
+//! indestructible) and the effects that double, prevent or replace are in the forecast because they are in
+//! the real step. An attacker whose controller has not divided its damage yet deals the default division, and
+//! a question the replacement step would ask a player is answered with its first option.
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -17,10 +19,15 @@ use crate::damage::{DamagePass, damage_events, passes_ahead};
 use crate::events::Event;
 use crate::fold::apply_event;
 use crate::keywords;
-use crate::replace::without_protected_damage;
+use crate::replace_dry::{Picks, settle};
 use crate::sba;
 use crate::state::{GameState, Stage};
 use crate::turn::Step;
+use crate::zones::Zone;
+
+/// The most other answers to the questions of the replacement step that the forecast plays to see whether they change
+/// the numbers; past it the forecast says they may.
+const MAX_ALTERNATIVES: usize = 12;
 
 /// One expected packet of combat damage.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -61,7 +68,8 @@ pub struct CreatureForecast {
     pub object: ObjectId,
     /// Combat damage it is expected to receive, from all sources together.
     pub damage: u32,
-    /// Whether state-based actions destroy it once the damage is dealt: lethal damage or deathtouch, unless it is indestructible.
+    /// Whether state-based actions take it off the battlefield once the damage is dealt: lethal damage or deathtouch,
+    /// unless it is indestructible or a shield regenerates it (an effect may send it to exile instead of the graveyard).
     pub dies: bool,
 }
 
@@ -91,6 +99,11 @@ pub struct CombatForecast {
     pub creatures: Vec<CreatureForecast>,
     /// Every player an attacker is aimed at, by seat.
     pub players: Vec<PlayerForecast>,
+    /// The numbers take the first option of each question the replacement effects would ask a player (the order they
+    /// apply in, the damage a shield stops first), and another answer would change them.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub depends_on_choice: bool,
 }
 
 impl CombatForecast {
@@ -128,12 +141,36 @@ pub fn pending_combat_forecast(state: &GameState) -> Option<CombatForecast> {
 /// Meaningful while an attack is declared and damage has not been dealt; see
 /// [`pending_combat_forecast`] for the guarded version.
 pub fn combat_forecast(state: &GameState) -> CombatForecast {
-    let run = Run::of(state);
+    let run = Run::of(state, Vec::new());
+    let mut forecast = forecast_of(state, &run);
+    forecast.depends_on_choice = depends_on_choice(state, &run, &forecast);
+    forecast
+}
+
+/// Whether another answer to a question of the replacement step changes the numbers: each other option of each
+/// question is played alone, and past a few the answer is yes without playing them.
+fn depends_on_choice(state: &GameState, run: &Run, forecast: &CombatForecast) -> bool {
+    let asked = run.picks.asked();
+    let alternatives: usize = asked.iter().map(|options| options.saturating_sub(1)).sum();
+    if alternatives > MAX_ALTERNATIVES {
+        return true;
+    }
+    asked.iter().enumerate().any(|(at, &options)| {
+        (1..options).any(|option| {
+            let mut script = vec![0; at];
+            script.push(option);
+            forecast_of(state, &Run::of(state, script)) != *forecast
+        })
+    })
+}
+
+/// The numbers of one run of the damage steps.
+fn forecast_of(state: &GameState, run: &Run) -> CombatForecast {
     let attackers: Vec<AttackerForecast> = state
         .combat()
         .attackers()
         .iter()
-        .map(|attacker| attacker_forecast(state, attacker, &run))
+        .map(|attacker| attacker_forecast(state, attacker, run))
         .collect();
 
     let mut involved: BTreeSet<ObjectId> = BTreeSet::new();
@@ -160,12 +197,13 @@ pub fn combat_forecast(state: &GameState) -> CombatForecast {
         attackers,
         creatures: involved
             .into_iter()
-            .filter_map(|id| creature_forecast(state, id, &run))
+            .filter_map(|id| creature_forecast(state, id, run))
             .collect(),
         players: attacked
             .into_iter()
-            .filter_map(|id| player_forecast(state, id, &run))
+            .filter_map(|id| player_forecast(state, id, run))
             .collect(),
+        depends_on_choice: false,
     }
 }
 
@@ -173,21 +211,28 @@ pub fn combat_forecast(state: &GameState) -> CombatForecast {
 struct Run {
     /// The copy after the last step and the state-based actions that follow it.
     after: GameState,
-    /// Damage dealt over all the steps, by source and recipient.
+    /// Damage dealt over all the steps, as the replacement effects left it, by source and recipient.
     dealt: BTreeMap<(ObjectId, DamageTarget), u32>,
-    /// Creatures destroyed or put into the graveyard by state-based actions along the way.
-    died: BTreeSet<ObjectId>,
+    /// Permanents that state-based actions took off the battlefield, as the replacement effects left the events.
+    left: BTreeSet<ObjectId>,
+    /// The answers given to the questions the replacement step asked along the way.
+    picks: Picks,
 }
 
 /// State-based actions that follow a step repeat until none is left; this bounds a bug, not a game.
 const MAX_SETTLE_ROUNDS: usize = 64;
 
 impl Run {
-    fn of(state: &GameState) -> Run {
+    /// Plays the steps; `script` answers the questions of the replacement step (see [`Picks`]).
+    fn of(state: &GameState, script: Vec<usize>) -> Run {
+        let mut after = state.clone();
+        // Combat damage is dealt with nothing resolving; a spell that waits for an answer is not part of the step.
+        after.resolving = None;
         let mut run = Run {
-            after: state.clone(),
+            after,
             dealt: BTreeMap::new(),
-            died: BTreeSet::new(),
+            left: BTreeSet::new(),
+            picks: Picks::new(script),
         };
         for &pass in passes_ahead(state) {
             let step = match pass {
@@ -195,35 +240,43 @@ impl Run {
                 DamagePass::Regular => Step::CombatDamage,
             };
             // Entering a step is what forgets the last step's divisions of damage; a step under way keeps its own.
-            let entered = run.after.turn().step() == step || run.fold(&[Event::StepBegan { step }]);
-            let events = without_protected_damage(&run.after, damage_events(&run.after, pass));
-            if !entered || !run.fold(&events) || !run.settle() {
+            let entered =
+                run.after.turn().step() == step || run.commit(&[Event::StepBegan { step }], false);
+            let events = damage_events(&run.after, pass);
+            if !entered || !run.commit(&events, false) || !run.settle() {
                 break;
             }
         }
         run
     }
 
-    /// Folds `events` onto the copy and notes the damage and deaths among them; `false` if one cannot be folded.
+    /// Sends `events` through the replacement step and folds what comes out; `false` if that fails. The creatures that
+    /// `state_based` actions take off the battlefield are noted, by whatever event the replacement effects left.
+    fn commit(&mut self, events: &[Event], state_based: bool) -> bool {
+        let Ok(events) = settle(&mut self.after, events, &mut self.picks) else {
+            return false;
+        };
+        if state_based {
+            self.left.extend(events.iter().filter_map(leaves));
+        }
+        self.fold(&events)
+    }
+
+    /// Folds `events` onto the copy and notes the damage among them; `false` if one cannot be folded.
     fn fold(&mut self, events: &[Event]) -> bool {
         for event in events {
             if apply_event(&mut self.after, event).is_err() {
                 return false;
             }
-            match event {
-                Event::DamageDealt {
-                    source,
-                    target,
-                    amount,
-                    ..
-                } => {
-                    let total = self.dealt.entry((*source, *target)).or_default();
-                    *total = total.saturating_add(*amount);
-                }
-                Event::CreatureDied { object, .. } => {
-                    self.died.insert(*object);
-                }
-                _ => {}
+            if let Event::DamageDealt {
+                source,
+                target,
+                amount,
+                ..
+            } = event
+            {
+                let total = self.dealt.entry((*source, *target)).or_default();
+                *total = total.saturating_add(*amount);
             }
         }
         true
@@ -233,6 +286,7 @@ impl Run {
     fn settle(&mut self) -> bool {
         for _ in 0..MAX_SETTLE_ROUNDS {
             let mut events = sba::check(&self.after);
+            let state_based = !events.is_empty();
             if events.is_empty() {
                 if let Some(result) = self.after.format().game_result(&self.after) {
                     events = vec![Event::GameEnded { result }];
@@ -243,7 +297,7 @@ impl Run {
             if events.is_empty() {
                 return true;
             }
-            if !self.fold(&events) || self.after.stage() == Stage::Finished {
+            if !self.commit(&events, state_based) || self.after.stage() == Stage::Finished {
                 return false;
             }
         }
@@ -259,6 +313,19 @@ impl Run {
             .iter()
             .filter(|((_, to), _)| *to == target)
             .fold(0u32, |sum, (_, amount)| sum.saturating_add(*amount))
+    }
+}
+
+/// The permanent an event takes off the battlefield: a death, or the move that an effect made of it.
+fn leaves(event: &Event) -> Option<ObjectId> {
+    match event {
+        Event::CreatureDied { object, .. }
+        | Event::ZoneChanged {
+            object,
+            from: Zone::Battlefield,
+            ..
+        } => Some(*object),
+        _ => None,
     }
 }
 
@@ -306,7 +373,7 @@ fn creature_forecast(state: &GameState, id: ObjectId, run: &Run) -> Option<Creat
     Some(CreatureForecast {
         object: id,
         damage: run.total_to(DamageTarget::Object(id)),
-        dies: run.died.contains(&id),
+        dies: run.left.contains(&id),
     })
 }
 

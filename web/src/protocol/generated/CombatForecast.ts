@@ -18,4 +18,9 @@ creatures: Array<CreatureForecast>,
 /**
  * Every player an attacker is aimed at, by seat.
  */
-players: Array<PlayerForecast>, };
+players: Array<PlayerForecast>, 
+/**
+ * The numbers take the first option of each question the replacement effects would ask a player (the order they
+ * apply in, the damage a shield stops first), and another answer would change them.
+ */
+depends_on_choice?: boolean, };

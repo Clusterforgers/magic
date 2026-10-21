@@ -18,6 +18,7 @@ mod legend;
 mod mulligan;
 mod preview;
 mod price;
+mod replace_dry;
 mod sba;
 mod steps;
 mod ways;
