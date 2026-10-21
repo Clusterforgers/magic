@@ -231,10 +231,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::ManaPoolEmptied { player } => pool_mut(state, *player)?.clear(),
         Event::LifePaid { player, amount } => pay_life(state, *player, *amount)?,
-        Event::LifeGained { player, amount } => {
-            change_life(state, *player, *amount, true)?;
-            state.tally(*player, Tally::Gained);
-        }
+        Event::LifeGained { player, amount } => gain_life(state, *player, *amount)?,
         Event::LifeLost { player, amount } => change_life(state, *player, *amount, false)?,
         Event::DrewFromEmptyLibrary { player } => {
             let seat = player_mut(state, *player)?;
@@ -312,6 +309,13 @@ fn pay_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), Engi
 }
 
 /// Adds `amount` to a life total, or takes it off; a total may go to 0 or below, which state-based actions judge.
+/// A player gains life, which counts for "the second time this turn".
+fn gain_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), EngineError> {
+    change_life(state, id, amount, true)?;
+    state.tally(id, Tally::Gained);
+    Ok(())
+}
+
 fn change_life(
     state: &mut GameState,
     id: PlayerId,

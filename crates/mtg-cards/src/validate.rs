@@ -825,41 +825,43 @@ impl<'a> Walker<'a> {
                     });
                 }
             }
-            TriggerPattern::Batch(inner) => {
-                if matches!(
-                    **inner,
-                    TriggerPattern::Batch(_)
-                        | TriggerPattern::Nth { .. }
-                        | TriggerPattern::AnyOf(_)
-                        | TriggerPattern::State { .. }
-                        | TriggerPattern::StepBegins { .. }
-                        | TriggerPattern::SpellCast { .. }
-                        | TriggerPattern::BecomesTarget { .. }
-                        | TriggerPattern::GroupAttacks { .. }
-                ) {
-                    self.problem(
-                        "a batch is of one event that can happen to several things at once",
-                    );
-                }
-                self.at("Batch", |w| w.trigger_pattern(inner));
-            }
-            TriggerPattern::Nth { event, nth } => {
-                if *nth == 0 {
-                    self.at("nth", |w| w.problem("the first time is 1"));
-                }
-                if !matches!(
-                    **event,
-                    TriggerPattern::Drew { .. }
-                        | TriggerPattern::SpellCast { .. }
-                        | TriggerPattern::LifeGained { .. }
-                ) {
-                    self.problem(
-                        "only cards drawn, spells cast and life gained are counted in a turn",
-                    );
-                }
-                self.at("event", |w| w.trigger_pattern(event));
-            }
+            TriggerPattern::Batch(inner) => self.batch(inner),
+            TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
         }
+    }
+
+    /// A batch is of one event that can happen to several things at once.
+    fn batch(&mut self, inner: &TriggerPattern) {
+        if matches!(
+            inner,
+            TriggerPattern::Batch(_)
+                | TriggerPattern::Nth { .. }
+                | TriggerPattern::AnyOf(_)
+                | TriggerPattern::State { .. }
+                | TriggerPattern::StepBegins { .. }
+                | TriggerPattern::SpellCast { .. }
+                | TriggerPattern::BecomesTarget { .. }
+                | TriggerPattern::GroupAttacks { .. }
+        ) {
+            self.problem("a batch is of one event that can happen to several things at once");
+        }
+        self.at("Batch", |w| w.trigger_pattern(inner));
+    }
+
+    /// The nth time in a turn is counted for cards drawn, spells cast and life gained.
+    fn nth(&mut self, event: &TriggerPattern, nth: u32) {
+        if nth == 0 {
+            self.at("nth", |w| w.problem("the first time is 1"));
+        }
+        if !matches!(
+            event,
+            TriggerPattern::Drew { .. }
+                | TriggerPattern::SpellCast { .. }
+                | TriggerPattern::LifeGained { .. }
+        ) {
+            self.problem("only cards drawn, spells cast and life gained are counted in a turn");
+        }
+        self.at("event", |w| w.trigger_pattern(event));
     }
 
     /// The pattern of a triggered ability, the only place a state may stand. No event is behind a state, so nothing in

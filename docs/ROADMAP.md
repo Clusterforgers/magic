@@ -90,7 +90,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 ### Trigger families
 - [x] (i4a) Patterns for the events the engine logs (damage, life gained and lost, draw, discard, cycle with its `Cycled` event, tap, untap, tap for mana, counters put and removed, block, attach) with their templates and detection; Ajani's Pridemate, Thieving Magpie, Underworld Dreams, Megrim, Manabarbs, Mesmeric Orb, Wanderbrine Preacher and Renewed Faith are Verified
-- [ ] (i4b) Triggers whose subject is the creature an Equipment or Aura is attached to ("whenever equipped creature dies or deals combat damage"; Skullclamp, Swords of X and Y), batches ("one or more"), first time each turn, the nth card, event amounts ("that much"); conditions over any or every opponent ("an opponent has 10 or less life", `Amount::Life` of a set of players); Bloodghast and Questing Beast are Verified
+- [x] (i4b) Patterns for the creature an Equipment or Aura is attached to (`Is(Attached)`), batches (`Batch`), the nth card, spell or life gain of a turn (`Nth` with per-turn tallies in the state) and the amount of an event (`Amount::Triggering`), with their templates, detection and tests
+- [ ] (i4c) Skullclamp, one Sword of X and Y, a batch card (Professional Face-Breaker), Lat-Nam Adept, Sanguine Bond and Fear of Failed Tests are Verified with fuzz games and a replay test; "for the first time each turn" for an object; conditions over any or every opponent ("an opponent has 10 or less life", `Amount::Life` of a set of players); Bloodghast and Questing Beast are Verified
 
 ### Faces and copies
 - [ ] (n1) Multi-face cards: split, adventure, modal double-faced, transform and meld; the face is chosen at announcement, `Card.Faces` is lifted, `Effect::Transform`; Delver of Secrets, Bonecrusher Giant and Fire // Ice (fuse) are Verified

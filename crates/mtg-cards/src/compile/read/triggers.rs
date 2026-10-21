@@ -2,6 +2,7 @@
 //! read from "when ~ enters", "whenever you cast a creature spell" or "at the beginning of your
 //! upkeep" and written back the same way.
 
+use super::amounts::{count_word, number_word};
 use super::counters;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
@@ -48,8 +49,42 @@ pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if let Some(found) = r.attempt(counter_event) {
         return Some(found);
     }
+    if let Some(found) = r.attempt(together) {
+        return Some(found);
+    }
     let what = subject(r)?;
     verbs(r, &what)
+}
+
+/// The events that happen together: "one or more creatures you control deal combat damage to a player", "one or more
+/// cards are put into your graveyard from your library", "one or more creatures attack".
+fn together(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    let at_least = if r.words("one or more") {
+        1
+    } else {
+        let number = number_word(r.take_word()?)?;
+        r.need("or more")?;
+        number
+    };
+    if at_least == 1 && r.words("cards are put into your graveyard from your library") {
+        let what = Selector(vec![Pred::OwnedBy(Ref::You)]);
+        return Some(TriggerPattern::Batch(Box::new(
+            TriggerPattern::ZoneChange {
+                what,
+                from: Some(ZoneKind::Library),
+                to: Some(ZoneKind::Graveyard),
+            },
+        )));
+    }
+    let what = phrase(r, Form::All)?;
+    if r.word("attack") {
+        return Some(TriggerPattern::GroupAttacks { what, at_least });
+    }
+    if at_least != 1 || !r.word("deal") {
+        return None;
+    }
+    let damage = damage_dealt(r, &what)?;
+    Some(TriggerPattern::Batch(Box::new(damage)))
 }
 
 /// "a +1/+1 counter is put on ~", "a counter is removed from a creature you control".
@@ -122,6 +157,16 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;
     let verb = r.take_word()?;
     if verb == if third { "casts" } else { "cast" } {
+        if let Some(nth) = each_turn(r, "spell") {
+            let event = TriggerPattern::SpellCast {
+                what: Selector::default(),
+                by,
+            };
+            return Some(TriggerPattern::Nth {
+                event: Box::new(event),
+                nth,
+            });
+        }
         let mut spell = subject(r)?.0;
         // The pattern is about a spell already; the selector keeps what the spell must be.
         if spell.first() != Some(&Pred::Spell) || spell.contains(&Pred::Other) {
@@ -144,6 +189,13 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         r.need("life")?;
         Some(TriggerPattern::LifeLost { who: by })
     } else if verb == if third { "draws" } else { "draw" } {
+        if let Some(nth) = each_turn(r, "card") {
+            let event = TriggerPattern::Drew { who: by };
+            return Some(TriggerPattern::Nth {
+                event: Box::new(event),
+                nth,
+            });
+        }
         r.need("a card")?;
         Some(TriggerPattern::Drew { who: by })
     } else if verb == if third { "discards" } else { "discard" } {
@@ -171,10 +223,32 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     }
 }
 
+/// "your second card each turn", "your first spell each turn": which one of the turn, for a noun.
+fn each_turn(r: &mut Reader<'_>, noun: &str) -> Option<u32> {
+    r.attempt(|r| {
+        r.need("your")?;
+        let at = ORDINALS.iter().position(|word| r.word(word))?;
+        r.need(noun)?;
+        r.need("each turn")?;
+        u32::try_from(at + 1).ok()
+    })
+}
+
+/// The ordinals a count of a turn names.
+const ORDINALS: [&str; 5] = ["first", "second", "third", "fourth", "fifth"];
+
 /// The card itself, or an object with its article: "a creature you control", "another creature".
 fn subject(r: &mut Reader<'_>) -> Option<Selector> {
     if r.source() {
         return Some(Selector::this());
+    }
+    // What an Equipment or an Aura is attached to.
+    let attached = r.attempt(|r| {
+        (r.word("equipped") || r.word("enchanted")).then_some(())?;
+        r.word("creature").then_some(())
+    });
+    if attached.is_some() {
+        return Some(Selector(vec![Pred::Is(Ref::Attached)]));
     }
     r.attempt(|r| {
         let article = r.word("a") || r.word("an");
@@ -320,6 +394,9 @@ fn subject_text(what: &Selector) -> Option<String> {
     if what.0 == [Pred::This] {
         return Some("~".to_owned());
     }
+    if what.0 == [Pred::Is(Ref::Attached)] {
+        return Some("equipped creature".to_owned());
+    }
     let text = phrase_text(what, Form::Subject)?;
     if what.0.contains(&Pred::Other) {
         Some(text)
@@ -359,23 +436,29 @@ fn happening(pattern: &TriggerPattern) -> Option<(&Selector, String)> {
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))
         }
-        TriggerPattern::DealsDamage { source, to, combat } => {
-            let kind = match combat {
-                Some(true) => "combat damage",
-                Some(false) => "noncombat damage",
-                None => "damage",
-            };
-            let to = match to {
-                None => String::new(),
-                Some(Ref::EachPlayer) => " to a player".to_owned(),
-                Some(Ref::Opponents) => " to an opponent".to_owned(),
-                Some(Ref::You) => " to you".to_owned(),
-                Some(_) => return None,
-            };
-            said(source, &format!("deals {kind}{to}"))
-        }
+        TriggerPattern::DealsDamage { source, to, combat } => said(
+            source,
+            &format!("deals {}", damage_text(*combat, to.as_ref())?),
+        ),
         _ => None,
     }
+}
+
+/// "combat damage to a player", "damage to an opponent", "noncombat damage".
+fn damage_text(combat: Option<bool>, to: Option<&Ref>) -> Option<String> {
+    let kind = match combat {
+        Some(true) => "combat damage",
+        Some(false) => "noncombat damage",
+        None => "damage",
+    };
+    let to = match to {
+        None => "",
+        Some(Ref::EachPlayer) => " to a player",
+        Some(Ref::Opponents) => " to an opponent",
+        Some(Ref::You) => " to you",
+        Some(_) => return None,
+    };
+    Some(format!("{kind}{to}"))
 }
 
 /// The step as the card words it after "the beginning of".
@@ -446,6 +529,19 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::CountersRemoved { what, counter } => {
             counter_text(what, counter.as_ref(), "removed from")
         }
+        TriggerPattern::Nth { event, nth } => nth_text(event, *nth),
+        TriggerPattern::Batch(inner) => batch_text(inner),
+        TriggerPattern::GroupAttacks { what, at_least } => {
+            let count = if *at_least == 1 {
+                "one"
+            } else {
+                count_word(*at_least)?
+            };
+            Some(format!(
+                "Whenever {count} or more {} attack",
+                phrase_text(what, Form::All)?
+            ))
+        }
         TriggerPattern::AnyOf(patterns) => {
             let (first, rest) = patterns.split_first()?;
             let (what, verb) = happening(first)?;
@@ -463,6 +559,39 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             let (what, verb) = happening(pattern)?;
             about(what, &[verb])
         }
+    }
+}
+
+/// "Whenever you draw your second card each turn", "Whenever you cast your first spell each turn".
+fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
+    let ordinal = ORDINALS.get(usize::try_from(nth.checked_sub(1)?).ok()?)?;
+    let (verb, noun) = match event {
+        TriggerPattern::Drew { who: Ref::You } => ("draw", "card"),
+        TriggerPattern::SpellCast { what, by: Ref::You } if what.is_empty() => ("cast", "spell"),
+        _ => return None,
+    };
+    Some(format!(
+        "Whenever you {verb} your {ordinal} {noun} each turn"
+    ))
+}
+
+/// "Whenever one or more creatures you control deal combat damage to a player", "Whenever one or more cards are put
+/// into your graveyard from your library".
+fn batch_text(inner: &TriggerPattern) -> Option<String> {
+    match inner {
+        TriggerPattern::DealsDamage { source, to, combat } => Some(format!(
+            "Whenever one or more {} deal {}",
+            phrase_text(source, Form::All)?,
+            damage_text(*combat, to.as_ref())?
+        )),
+        TriggerPattern::ZoneChange {
+            what,
+            from: Some(ZoneKind::Library),
+            to: Some(ZoneKind::Graveyard),
+        } if what.0 == [Pred::OwnedBy(Ref::You)] => Some(
+            "Whenever one or more cards are put into your graveyard from your library".to_owned(),
+        ),
+        _ => None,
     }
 }
 

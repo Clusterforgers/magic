@@ -46,6 +46,9 @@ pub fn count_word(number: u32) -> Option<&'static str> {
 /// How many cards: "a card", "two cards", "X cards".
 pub fn cards(r: &mut Reader<'_>) -> Option<Amount> {
     r.attempt(|r| {
+        if r.words("that many") {
+            return (r.word("card") || r.word("cards")).then_some(Amount::Triggering);
+        }
         let count = if r.x_free && r.word("x") {
             Amount::X
         } else {
@@ -57,8 +60,11 @@ pub fn cards(r: &mut Reader<'_>) -> Option<Amount> {
     })
 }
 
-/// How many points of life, damage or scrying: digits, or X.
+/// How many points of life, damage or scrying: digits, X, or "that much" (what the trigger's event was).
 pub fn points(r: &mut Reader<'_>) -> Option<Amount> {
+    if r.words("that much") {
+        return Some(Amount::Triggering);
+    }
     if r.x_free && r.word("x") {
         return Some(Amount::X);
     }
@@ -102,6 +108,7 @@ pub fn cards_text(amount: &Amount) -> Option<String> {
             count_word(u32::try_from(*number).ok()?)?
         )),
         Amount::X => Some("X cards".to_owned()),
+        Amount::Triggering => Some("that many cards".to_owned()),
         _ => None,
     }
 }
@@ -111,6 +118,7 @@ pub fn points_text(amount: &Amount) -> Option<String> {
     match amount {
         Amount::Fixed(number) if *number > 0 => Some(number.to_string()),
         Amount::X => Some("X".to_owned()),
+        Amount::Triggering => Some("that much".to_owned()),
         _ => None,
     }
 }

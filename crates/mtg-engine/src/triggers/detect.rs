@@ -439,13 +439,6 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 .ok()?
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
-        (TriggerPattern::Nth { event, nth }, happened) => {
-            if happened.nth() == Some(*nth) {
-                matching(event, happened, scope)
-            } else {
-                None
-            }
-        }
         (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell, .. }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];
@@ -518,6 +511,9 @@ fn matching_event(
     let by = |who: &Ref, player: &PlayerId| scope.players(who).is_ok_and(|p| p.contains(player));
     let picks = |what: &Selector, reference: ObjectRef| scope.selects(what, reference).ok();
     match (pattern, happened) {
+        (TriggerPattern::Nth { event, nth }, happened) => (happened.nth() == Some(*nth))
+            .then(|| matching(event, happened, scope))
+            .flatten(),
         (
             TriggerPattern::DealsDamage { source, to, combat },
             Happened::Damaged {
@@ -691,14 +687,11 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
                     .copied()
                     .collect();
                 let at = groups.iter().position(|(key, _)| *key == players);
-                let (_, group) = match at {
-                    Some(at) => &mut groups[at],
-                    None => {
-                        groups.push((players, Cause::default()));
-                        let last = groups.len() - 1;
-                        &mut groups[last]
-                    }
-                };
+                let at = at.unwrap_or_else(|| {
+                    groups.push((players, Cause::default()));
+                    groups.len() - 1
+                });
+                let group = &mut groups[at].1;
                 for subject in found.subjects {
                     if !group.subjects.contains(&subject) {
                         group.subjects.push(subject);

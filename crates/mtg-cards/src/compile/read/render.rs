@@ -66,9 +66,24 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             let Some(head) = trigger_head(when, intervening_if.as_ref()) else {
                 return Vec::new();
             };
+            // An Equipment says "equipped creature" and an Aura "enchanted creature"; the data does not say which.
+            let mut heads = vec![head.clone()];
+            if head[0].contains("equipped creature") {
+                heads.push(
+                    head.iter()
+                        .map(|part| part.replace("equipped creature", "enchanted creature"))
+                        .collect(),
+                );
+            }
             alternatives(targets, effects)
                 .iter()
-                .map(|sentences| [head.clone(), closed(sentences, false)].concat().join(" "))
+                .flat_map(|sentences| {
+                    let tail = closed(sentences, false);
+                    heads
+                        .iter()
+                        .map(move |head| [head.clone(), tail.clone()].concat().join(" "))
+                        .collect::<Vec<_>>()
+                })
                 .collect()
         }
         Ability::Activated {
