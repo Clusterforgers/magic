@@ -6,6 +6,7 @@
 //! which is the order they happen in.
 
 use mtg_cards::ability::Ability;
+use mtg_cards::compile::render_mode;
 use mtg_cards::effect::{Effect, Mode};
 use mtg_cards::refs::{Bounds, TargetSpec};
 use mtg_cards::value::Amount;
@@ -139,6 +140,17 @@ fn is_legal(
     })
 }
 
+/// What a mode is called in the prompt: the label the card gives it, else the oracle wording of what it does (a
+/// compiled mode has no label), with the card's own name where the wording says `~`.
+fn label_of(mode: &Mode, card: Option<&str>) -> Option<String> {
+    mode.label.clone().or_else(|| {
+        render_mode(mode).map(|text| match card {
+            Some(name) => text.replace('~', name),
+            None => text,
+        })
+    })
+}
+
 /// The decision for the modes of `modal`, or `None` when too few can be chosen: fewer legal modes than the fewest to
 /// choose, or none at all for a mode that must be chosen.
 pub(crate) fn mode_options(
@@ -149,6 +161,7 @@ pub(crate) fn mode_options(
     can_cancel: bool,
     cause: Option<&Cause>,
 ) -> Option<ModeOptions> {
+    let card = state.object(source).map(|object| object.def.name.as_str());
     let modes: Vec<ModeOption> = modal
         .modes
         .iter()
@@ -156,7 +169,7 @@ pub(crate) fn mode_options(
         .filter(|(_, mode)| is_legal(state, source, controller, mode, cause))
         .map(|(index, mode)| ModeOption {
             index,
-            label: mode.label.clone(),
+            label: label_of(mode, card),
         })
         .collect();
     let available = u32::try_from(modes.len()).unwrap_or(u32::MAX);
@@ -245,7 +258,7 @@ pub(crate) fn announceable(
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an answer to a mode decision is accepted exactly when it names modes among those offered, each once unless the mode may repeat, between the fewest and the most, or backs out of a cast that can be backed out of, and the modes come back in printed order; a mode is offered only when its targets can be met, a modal ability with too few modes to choose cannot be announced, and the target specifications of a modal ability are those of the modes chosen, in order.
+    //! Goal: an answer to a mode decision is accepted exactly when it names modes among those offered, each once unless the mode may repeat, between the fewest and the most, or backs out of a cast that can be backed out of, and the modes come back in printed order; a mode is offered only when its targets can be met, a modal ability with too few modes to choose cannot be announced, the target specifications of a modal ability are those of the modes chosen, in order, and a mode is offered under the label the card gives it, else under the oracle wording of what it does.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -426,6 +439,74 @@ mod tests {
             options.modes.iter().all(|mode| mode.label.is_some()),
             "the card's name for each mode"
         );
+    }
+
+    /// A modal spell whose modes carry no label, as the compiler writes them, or the given labels.
+    fn unlabeled(labels: [Option<&str>; 3]) -> Ability {
+        let modes = [
+            r#"{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}"#,
+            r#"{"effects":[{"GainLife":{"amount":3}}]}"#,
+            r#"{"effects":[{"Draw":{}}]}"#,
+        ];
+        let modes: Vec<String> = modes
+            .iter()
+            .zip(labels)
+            .map(|(mode, label)| match label {
+                Some(label) => mode.replacen('{', &format!(r#"{{"label":"{label}","#), 1),
+                None => (*mode).to_owned(),
+            })
+            .collect();
+        serde_json::from_str(&format!(
+            r#"{{"Spell":{{"effects":[{{"Modal":{{"choose":{{"min":1,"max":1}},"modes":[{}]}}}}]}}}}"#,
+            modes.join(",")
+        ))
+        .unwrap()
+    }
+
+    fn labels_of(options: &ModeOptions) -> Vec<Option<&str>> {
+        options
+            .modes
+            .iter()
+            .map(|mode| mode.label.as_deref())
+            .collect()
+    }
+
+    #[test]
+    fn a_mode_without_a_label_is_offered_with_the_text_of_what_it_does() {
+        let rules = unlabeled([None, None, None]);
+        let options = options_of(&game(true), &rules, true).unwrap();
+        assert_eq!(
+            labels_of(&options),
+            [
+                Some("Source deals 2 damage to target creature"),
+                Some("You gain 3 life"),
+                Some("Draw a card"),
+            ]
+        );
+    }
+
+    #[test]
+    fn a_label_the_card_gives_is_kept() {
+        let rules = unlabeled([Some("Shock"), None, Some("Cantrip")]);
+        let options = options_of(&game(true), &rules, true).unwrap();
+        assert_eq!(
+            labels_of(&options),
+            [Some("Shock"), Some("You gain 3 life"), Some("Cantrip")]
+        );
+    }
+
+    #[test]
+    fn a_mode_the_renderer_cannot_write_has_no_label() {
+        // Two target specifications are more than the renderer writes for a mode.
+        let rules: Ability = serde_json::from_str(
+            r#"{"Spell":{"effects":[{"Modal":{"choose":{"min":1,"max":1},"modes":[
+                {"effects":[{"Draw":{}}]},
+                {"targets":[{"what":"AnyTarget"},{"what":"AnyTarget"}],"effects":[
+                    {"DealDamage":{"to":{"Target":0},"amount":1}},{"DealDamage":{"to":{"Target":1},"amount":1}}]}]}}]}}"#,
+        )
+        .unwrap();
+        let options = options_of(&game(false), &rules, true).unwrap();
+        assert_eq!(labels_of(&options), [Some("Draw a card"), None]);
     }
 
     #[rstest]

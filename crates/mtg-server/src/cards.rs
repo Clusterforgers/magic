@@ -2,7 +2,8 @@
 //! and the lookup that turns a deck of oracle ids into the definitions the engine plays.
 //!
 //! A row of `cards` (the imported Scryfall record) gives the printed side; the rules files embedded
-//! in `mtg-cards` give the abilities; what the engine runs ([`mtg_engine::caps()`]) decides which of
+//! in `mtg-cards` and the rules the compiler stored in `card_rules` give the abilities (a file wins
+//! over a row for the same card); what the engine runs ([`mtg_engine::caps()`]) decides which of
 //! those abilities reach the definition (`docs/cards-dsl.md`, "Printed side and rules").
 
 use std::collections::BTreeMap;
@@ -10,12 +11,12 @@ use std::sync::Arc;
 
 use mtg_cards::assemble::Assembled;
 use mtg_cards::deck::{CardFacts, Legality};
-use mtg_cards::load::Library;
+use mtg_cards::load::{GeneratedRules, Library};
 use mtg_cards::support::SupportRecord;
 use mtg_cards::{Caps, CardDefinition, PrintedCard, PrintedFace, builtin};
 use mtg_core::mana::ManaType;
 use mtg_db::codec::legality_keyword;
-use mtg_db::{Card, Database, DbError, IndexVersion, StoredFace};
+use mtg_db::{Card, Database, DbError, IndexVersion, RulesVersion, StoredFace};
 use mtg_import::ids::OracleId;
 use mtg_import::resolve::CardIndex;
 use sqlx::PgPool;
@@ -92,6 +93,37 @@ fn canonical(id: &str) -> String {
     Uuid::parse_str(id).map_or_else(|_| id.to_owned(), |uuid| uuid.to_string())
 }
 
+/// The rules and capabilities one request reads cards with, and the version of the stored rules
+/// they include: every card of a request is judged under the same rules.
+#[derive(Debug, Clone)]
+pub(crate) struct Rules {
+    library: Arc<Library>,
+    caps: Caps,
+    version: RulesVersion,
+}
+
+impl Rules {
+    /// The hand-written and the compiled rules.
+    pub(crate) fn library(&self) -> &Library {
+        &self.library
+    }
+
+    /// What the engine runs.
+    pub(crate) fn caps(&self) -> &Caps {
+        &self.caps
+    }
+
+    /// Which stored rules these are: another version means a row was added, written again or removed.
+    pub(crate) fn version(&self) -> &RulesVersion {
+        &self.version
+    }
+
+    /// How far the game plays a stored card: the pure lookup the deck check calls.
+    pub(crate) fn support_of(&self, card: &Card) -> SupportRecord {
+        self.library.support(&printed_card(card), &self.caps)
+    }
+}
+
 /// Where the server gets the definitions of the cards of a deck: the card database, the rules and
 /// the capabilities of the engine. Cheap to clone.
 #[derive(Debug, Clone)]
@@ -101,6 +133,13 @@ pub struct CardSource {
     caps: Caps,
     names: Arc<NameIndex>,
     precons: Arc<PreconCache>,
+    stored: Arc<StoredRules>,
+}
+
+/// The library of the hand-written rules and the rows of `card_rules`, built when the rows change.
+#[derive(Debug, Default)]
+struct StoredRules {
+    built: Mutex<Option<(RulesVersion, Arc<Library>)>>,
 }
 
 /// The index that ties the names and printings of a pasted list to cards, built from the stored
@@ -120,14 +159,17 @@ impl CardSource {
             caps: mtg_engine::caps(),
             names: Arc::default(),
             precons: Arc::default(),
+            stored: Arc::default(),
         }
     }
 
-    /// The same source with other rules than the embedded ones (tests, and a future rules table).
+    /// The same source with other hand-written rules than the embedded ones (tests); the stored
+    /// compiled rules still join them.
     #[must_use]
     pub fn with_rules(mut self, rules: Library) -> CardSource {
         self.rules = Some(Arc::new(rules));
-        // What the index holds was judged under the old rules.
+        // What the library and the index hold was built from the old rules.
+        self.stored = Arc::default();
         self.precons = Arc::default();
         self
     }
@@ -140,17 +182,54 @@ impl CardSource {
         self
     }
 
-    /// The rules files this source assembles with.
-    pub(crate) fn library(&self) -> Result<&Library, CatalogError> {
+    /// The hand-written rules files this source assembles with.
+    fn hand_written(&self) -> Result<&Library, CatalogError> {
         match &self.rules {
             Some(rules) => Ok(rules),
             None => builtin::library().map_err(|errors| CatalogError::Rules(errors.to_string())),
         }
     }
 
-    /// What the engine of this source runs.
-    pub(crate) fn caps(&self) -> &Caps {
-        &self.caps
+    /// The rules files and the compiled rules the database holds now: the library is built again
+    /// when a row of `card_rules` was added, written again or removed, and a file wins over a row
+    /// for the same card. A row this build cannot read is left out and logged.
+    async fn library(&self) -> Result<(Arc<Library>, RulesVersion), CatalogError> {
+        let repo = self.db.card_rules();
+        let database = |error: DbError| CatalogError::Database(error.to_string());
+        let version = repo.version().await.map_err(database)?;
+        let mut built = self.stored.built.lock().await;
+        if let Some((held, library)) = built.as_ref()
+            && *held == version
+        {
+            return Ok((library.clone(), version));
+        }
+        let rows: Vec<GeneratedRules> = repo
+            .all()
+            .await
+            .map_err(database)?
+            .into_iter()
+            .map(|row| GeneratedRules {
+                oracle_id: row.oracle_id.as_str().to_owned(),
+                rules: row.rules,
+            })
+            .collect();
+        let (library, left_out) = self.hand_written()?.with_generated(&rows);
+        for error in &left_out {
+            tracing::warn!(%error, "compiled rules left out");
+        }
+        let library = Arc::new(library);
+        *built = Some((version.clone(), library.clone()));
+        Ok((library, version))
+    }
+
+    /// The rules and capabilities to read cards with, as of now.
+    pub(crate) async fn rules(&self) -> Result<Rules, CatalogError> {
+        let (library, version) = self.library().await?;
+        Ok(Rules {
+            library,
+            caps: self.caps.clone(),
+            version,
+        })
     }
 
     /// The card database behind this source.
@@ -182,11 +261,6 @@ impl CardSource {
         self.precons.index(self).await
     }
 
-    /// How far the game plays a stored card: the pure lookup the deck check calls.
-    pub(crate) fn support_of(&self, card: &Card) -> Result<SupportRecord, CatalogError> {
-        Ok(self.library()?.support(&printed_card(card), &self.caps))
-    }
-
     /// Assembles each distinct card of `ids`, keyed by the id as it was asked for. Every id the
     /// database does not know is named in the error.
     pub async fn assemble(
@@ -202,7 +276,7 @@ impl CardSource {
         if wanted.is_empty() {
             return Ok(BTreeMap::new());
         }
-        let rules = self.library()?;
+        let (rules, _) = self.library().await?;
         let asked: Vec<OracleId> = wanted.iter().map(|id| OracleId(canonical(id))).collect();
         let found = self
             .db

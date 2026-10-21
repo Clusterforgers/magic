@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO card_rules (oracle_id, rules, status, fingerprint, compiler_version)\n                   VALUES ($1, $2, $3, $4, $5)\n                   ON CONFLICT (oracle_id) DO UPDATE\n                   SET rules = EXCLUDED.rules, status = EXCLUDED.status, fingerprint = EXCLUDED.fingerprint,\n                       compiler_version = EXCLUDED.compiler_version, updated_at = now()",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Jsonb",
+        {
+          "Custom": {
+            "name": "impl_status",
+            "kind": {
+              "Enum": [
+                "manual",
+                "partial",
+                "full"
+              ]
+            }
+          }
+        },
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "1e0727d73c06b291baaa182ee99c058c942e051914c6639ccd7cda2475d1b220"
+}

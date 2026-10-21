@@ -9,6 +9,7 @@ mod compile_real;
 mod compile_shapes;
 mod corpus;
 mod deck_report;
+mod generated;
 mod printed;
 mod roundtrip;
 mod vocabulary;

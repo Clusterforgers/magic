@@ -6,6 +6,7 @@ use sqlx::PgPool;
 use sqlx::migrate::Migrator;
 use sqlx::postgres::PgPoolOptions;
 
+use crate::card_rules::CardRulesRepo;
 use crate::cards::CardRepo;
 use crate::decks::DeckRepo;
 use crate::error::DbError;
@@ -58,6 +59,11 @@ impl Database {
     /// Card queries: lookup, suggestions, search and the name index.
     pub fn cards(&self) -> CardRepo {
         CardRepo::new(self.pool.clone())
+    }
+
+    /// Rules the compiler generated for cards.
+    pub fn card_rules(&self) -> CardRulesRepo {
+        CardRulesRepo::new(self.pool.clone())
     }
 
     /// Decks stored by accounts.
