@@ -7,7 +7,6 @@ use crate::decision::{BottomOptions, Decision, DecisionKind, MulliganChoice, Mul
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::flow::Progress;
-use crate::format::MulliganRule;
 use crate::player::{MulliganStatus, Player};
 use crate::rng::GameRng;
 use crate::state::GameState;
@@ -39,21 +38,9 @@ fn status(state: &GameState, player: PlayerId) -> Option<MulliganStatus> {
     state.player(player).map(Player::mulligan_status)
 }
 
-/// The keep-or-mulligan options for `hand` after `taken` mulligans, with the bottom counts worked out from `rule`.
-fn mulligan_options(rule: &MulliganRule, hand: Vec<ObjectId>, taken: u32) -> MulliganOptions {
-    MulliganOptions {
-        hand,
-        mulligans_taken: taken,
-        can_mulligan: usize::try_from(taken).is_ok_and(|t| t < rule.hand_size),
-        free_mulligans: rule.free_mulligans,
-        bottom_if_keep: rule.bottom_count(taken),
-        bottom_if_mulligan: rule.bottom_count(taken.saturating_add(1)),
-    }
-}
-
 /// The next step of the opening procedure: deal, ask, shuffle back, or begin turn one.
 pub(crate) fn next(state: &GameState) -> Progress {
-    let rule = state.format().mulligan_rule();
+    let rule = state.ruleset().mulligan_rule();
     let order = state.turn_order_from(state.first_player());
     let with_status = |wanted: fn(MulliganStatus) -> bool| -> Vec<PlayerId> {
         order
@@ -98,11 +85,11 @@ pub(crate) fn next(state: &GameState) -> Progress {
         let taken = state.player(*player).map_or(0, Player::mulligans);
         return Progress::Decide(Decision {
             player: *player,
-            kind: DecisionKind::Mulligan(mulligan_options(
-                &rule,
-                state.zone(Zone::Hand(*player)).to_vec(),
-                taken,
-            )),
+            kind: DecisionKind::Mulligan(
+                state
+                    .ruleset()
+                    .mulligan_options(state.zone(Zone::Hand(*player)).to_vec(), taken),
+            ),
         });
     }
     let takers = with_status(|s| s == MulliganStatus::Mulliganing);
@@ -180,64 +167,4 @@ pub(crate) fn check_card_choice(
         }
     }
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    //! Goal: for every mulligan rule and number of mulligans taken, the options state the cards that go to the bottom now and after one more mulligan, as the bottom step will ask for them.
-    use super::*;
-    use rstest::rstest;
-
-    fn options(hand_size: usize, free: u32, taken: u32) -> MulliganOptions {
-        let rule = MulliganRule {
-            hand_size,
-            free_mulligans: free,
-        };
-        mulligan_options(&rule, vec![ObjectId(1)], taken)
-    }
-
-    #[rstest]
-    #[case::normal_fresh(7, 0, 0, true, 0, 1)]
-    #[case::normal_one(7, 0, 1, true, 1, 2)]
-    #[case::normal_six(7, 0, 6, true, 6, 7)]
-    #[case::normal_seven_is_the_last(7, 0, 7, false, 7, 8)]
-    #[case::free_fresh(7, 1, 0, true, 0, 0)]
-    #[case::free_spent(7, 1, 1, true, 0, 1)]
-    #[case::free_then_paid(7, 1, 2, true, 1, 2)]
-    #[case::two_free_fresh(5, 2, 0, true, 0, 0)]
-    #[case::two_free_first(5, 2, 1, true, 0, 0)]
-    #[case::two_free_second(5, 2, 2, true, 0, 1)]
-    #[case::small_hand_last(5, 1, 5, false, 4, 5)]
-    fn bottom_counts_follow_the_rule(
-        #[case] hand_size: usize,
-        #[case] free: u32,
-        #[case] taken: u32,
-        #[case] can: bool,
-        #[case] keep: usize,
-        #[case] mulligan: usize,
-    ) {
-        let got = options(hand_size, free, taken);
-        assert_eq!(
-            (
-                got.mulligans_taken,
-                got.free_mulligans,
-                got.can_mulligan,
-                got.bottom_if_keep,
-                got.bottom_if_mulligan
-            ),
-            (taken, free, can, keep, mulligan)
-        );
-    }
-
-    #[rstest]
-    fn the_next_mulligan_costs_a_card_only_when_no_free_one_is_left(
-        #[values(0, 1, 2)] free: u32,
-        #[values(0, 1, 2, 3, 4)] taken: u32,
-    ) {
-        let got = options(7, free, taken);
-        assert_eq!(
-            got.bottom_if_mulligan - got.bottom_if_keep,
-            usize::from(taken >= free)
-        );
-    }
 }

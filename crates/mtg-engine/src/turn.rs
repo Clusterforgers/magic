@@ -134,7 +134,7 @@ impl TurnState {
 /// Lands a player may play per turn (no effects change this yet).
 pub const LAND_DROPS_PER_TURN: u32 = 1;
 
-/// Maximum hand size enforced at cleanup (no effects change this yet).
+/// The maximum hand size a format enforces at cleanup unless it says otherwise.
 pub const MAX_HAND_SIZE: usize = 7;
 
 #[cfg(test)]

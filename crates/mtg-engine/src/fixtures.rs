@@ -43,6 +43,7 @@ pub(crate) fn setup(
         .collect();
     GameSetup {
         format: Arc::new(Normal),
+        house_rules: Default::default(),
         seed: 7,
         players,
         start: Start::At {

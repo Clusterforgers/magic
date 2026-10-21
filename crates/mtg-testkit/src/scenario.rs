@@ -5,6 +5,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
+use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_engine::PlayerSetup;
 use mtg_engine::format::{FormatRules, Normal};
@@ -83,6 +84,7 @@ pub struct Scenario {
     players: Vec<PlayerSetup>,
     library_given: Vec<bool>,
     format: Arc<dyn FormatRules>,
+    house_rules: HouseRules,
     seed: u64,
     turn: u32,
     active: usize,
@@ -97,6 +99,7 @@ impl Scenario {
             players: vec![PlayerSetup::default(); players],
             library_given: vec![false; players],
             format: Arc::new(Normal),
+            house_rules: HouseRules::default(),
             seed: 0,
             turn: 1,
             active: 0,
@@ -116,6 +119,13 @@ impl Scenario {
     #[must_use]
     pub fn format(mut self, format: Arc<dyn FormatRules>) -> Self {
         self.format = format;
+        self
+    }
+
+    /// Sets the house rules laid over the format's values.
+    #[must_use]
+    pub fn house_rules(mut self, house_rules: HouseRules) -> Self {
+        self.house_rules = house_rules;
         self
     }
 
@@ -296,6 +306,7 @@ impl Scenario {
         }
         Ok(GameSetup {
             format: self.format,
+            house_rules: self.house_rules,
             seed: self.seed,
             players,
             start: Start::At {
