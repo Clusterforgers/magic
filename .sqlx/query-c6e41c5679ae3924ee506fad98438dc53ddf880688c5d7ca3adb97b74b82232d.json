@@ -1,0 +1,21 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT to_regclass('decks') IS NOT NULL AS \"migrated!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "migrated!",
+        "type_info": "Bool",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "c6e41c5679ae3924ee506fad98438dc53ddf880688c5d7ca3adb97b74b82232d"
+}

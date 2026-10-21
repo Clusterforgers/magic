@@ -125,7 +125,7 @@ test('a deleted account goes home signed out, loses its games and its username c
     await page.goto('/new')
     await expect(createForm(page)).toBeVisible()
     await page.getByRole('button', { name: 'Create game' }).click()
-    await expect(page.getByRole('heading', { name: 'Game created' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
     await page.goto('/games')
     await expect(page.locator('main [data-game]')).toHaveCount(1)
 

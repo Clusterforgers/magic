@@ -398,8 +398,16 @@ impl DeckRepo {
 
     /// Deletes every deck of `owner` with its lines, inside the caller's transaction `tx`, and
     /// returns how many decks went. It takes the owner's lock first, so a save in flight finishes
-    /// before this runs; the lock ends with the transaction.
+    /// before this runs; the lock ends with the transaction. A database whose deck tables are not
+    /// migrated yet (the server's accounts can run without card data) holds no decks: 0.
     pub async fn delete_all_of(tx: &mut PgConnection, owner: Uuid) -> Result<u64, DbError> {
+        let migrated =
+            sqlx::query_scalar!(r#"SELECT to_regclass('decks') IS NOT NULL AS "migrated!""#)
+                .fetch_one(&mut *tx)
+                .await?;
+        if !migrated {
+            return Ok(0);
+        }
         sqlx::query!(
             "SELECT pg_advisory_xact_lock($1, hashtext($2::text))",
             OWNER_LOCK_CLASS,

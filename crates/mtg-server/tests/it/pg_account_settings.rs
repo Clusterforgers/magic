@@ -777,6 +777,23 @@ async fn the_username_is_free_again_and_a_new_account_of_that_name_inherits_noth
 }
 
 #[sqlx::test(migrations = false)]
+async fn an_account_on_a_database_without_deck_tables_is_deleted_all_the_same(pool: PgPool) {
+    // Accounts run without card data: only the server's own schema is there.
+    migrate(&pool).await.unwrap();
+    let mut config = bot_config();
+    config.auth.limits = roomy_limits();
+    let server = TestServer::start_on(pool.clone(), config).await;
+    let ann = register(server.addr, "Ann", PASSWORD).await;
+    let bob = register(server.addr, "Bob", PASSWORD).await;
+
+    let reply = delete(&server, &ann, PASSWORD).await;
+    assert_eq!(reply.status, 204, "{}", reply.text());
+    assert_eq!(count(&pool, "SELECT count(*) FROM users").await, 1);
+    assert_eq!(count(&pool, "SELECT count(*) FROM sessions").await, 1);
+    assert_eq!(bob.get(server.addr, "/api/auth/me").await.status, 200);
+}
+
+#[sqlx::test(migrations = false)]
 async fn racing_deletions_have_one_winner(pool: PgPool) {
     let w = world(&pool).await;
     let (a, b, c) = tokio::join!(
