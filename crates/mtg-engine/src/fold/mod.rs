@@ -19,7 +19,7 @@ use crate::mana::ManaPool;
 use crate::player::{LossReason, Player, PlayerStatus};
 use crate::priority::PriorityState;
 use crate::sight;
-use crate::state::{GameResult, GameState, Stage};
+use crate::state::{GameResult, GameState, Stage, Tally};
 use crate::triggers::{has_state_trigger, triggers_something};
 use crate::turn::Step;
 use crate::zones::Zone;
@@ -116,6 +116,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
         Event::Scried(scried) => {
             zones::scry(state, scried)?;
+            opening::scried(state, scried.player)?;
             let seen: Vec<ObjectId> = scried.top.iter().chain(&scried.bottom).copied().collect();
             sight::show(state, Some(scried.player), &seen);
             Ok(())
@@ -231,7 +232,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::ManaPoolEmptied { player } => pool_mut(state, *player)?.clear(),
         Event::LifePaid { player, amount } => pay_life(state, *player, *amount)?,
-        Event::LifeGained { player, amount } => change_life(state, *player, *amount, true)?,
+        Event::LifeGained { player, amount } => gain_life(state, *player, *amount)?,
         Event::LifeLost { player, amount } => change_life(state, *player, *amount, false)?,
         Event::DrewFromEmptyLibrary { player } => {
             let seat = player_mut(state, *player)?;
@@ -309,6 +310,13 @@ fn pay_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), Engi
 }
 
 /// Adds `amount` to a life total, or takes it off; a total may go to 0 or below, which state-based actions judge.
+/// A player gains life, which counts for "the second time this turn".
+fn gain_life(state: &mut GameState, id: PlayerId, amount: u32) -> Result<(), EngineError> {
+    change_life(state, id, amount, true)?;
+    state.tally(id, Tally::Gained);
+    Ok(())
+}
+
 fn change_life(
     state: &mut GameState,
     id: PlayerId,

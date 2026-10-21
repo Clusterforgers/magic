@@ -114,7 +114,6 @@ fn near_misses_stay_with_the_table(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::the_first_card_each_turn("Whenever you draw your first card each turn, draw a card.")]
 #[case::except_the_first(
     "Whenever an opponent draws a card except the first one they draw in each of their draw steps, you gain 1 life."
 )]

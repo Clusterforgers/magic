@@ -1,0 +1,15 @@
+{
+  "oracle_id": "5b6bdf5a-2742-4851-92cd-a857a3852836",
+  "name": "Treasure Cruise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Treasure Cruise",
+      "oracle_fingerprint": "f982d785a1314a4fab87f67d061bcf2d",
+      "abilities": [
+        { "Keyword": "Delve" },
+        { "Spell": { "effects": [{ "Draw": { "count": 3 } }] } }
+      ]
+    }
+  ]
+}

@@ -392,6 +392,7 @@ mod tests {
             cause: Cause {
                 subjects: vec![crate::choose::Target::Player(subject)],
                 snapshots: Vec::new(),
+                amount: 0,
             },
             snapshot: snapshot(state, object.id()).unwrap(),
             delayed: None,

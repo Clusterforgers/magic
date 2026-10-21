@@ -52,6 +52,9 @@ const RUNS: &[&str] = &[
     "Trigger.CountersRemoved",
     "Trigger.Attached",
     "Trigger.Cycled",
+    "Trigger.Batch",
+    "Trigger.Nth",
+    "Amount.Triggering",
     "Cost.Tap",
     "Cost.Mana",
     "Cost.Mana.X",
@@ -169,6 +172,8 @@ const RUNS: &[&str] = &[
     "Keyword.Overload",
     "Keyword.Cycling",
     "Keyword.Cascade",
+    "Keyword.Convoke",
+    "Keyword.Delve",
     "Keyword.Madness",
     "Keyword.Suspend",
     "Condition.CastWith",
@@ -401,6 +406,8 @@ mod tests {
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
     #[case::casting_during_a_resolution("Effect.CastFromZone", true)]
     #[case::cascading("Keyword.Cascade", true)]
+    #[case::convoking("Keyword.Convoke", true)]
+    #[case::delving("Keyword.Delve", true)]
     #[case::time_travelling("Effect.TimeTravel", false)]
     #[case::extra_turns("Effect.ExtraTurn", false)]
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
@@ -432,6 +439,9 @@ mod tests {
     #[case::counter_removal_triggers("Trigger.CountersRemoved", true)]
     #[case::attach_triggers("Trigger.Attached", true)]
     #[case::cycle_triggers("Trigger.Cycled", true)]
+    #[case::batch_triggers("Trigger.Batch", true)]
+    #[case::nth_triggers("Trigger.Nth", true)]
+    #[case::event_amounts("Amount.Triggering", true)]
     #[case::if_you_do("Condition.Performed", false)]
     #[case::the_monarch("Condition.Monarch", false)]
     #[case::the_citys_blessing("Condition.CitysBlessing", false)]

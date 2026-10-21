@@ -19,6 +19,7 @@ use mtg_core::mana::{ManaCost, ManaSymbol, ManaType, PHYREXIAN_LIFE};
 use serde::{Deserialize, Serialize};
 
 use crate::error::PaymentError;
+use crate::help::{self, Convoked, Help, Used};
 use crate::mana_plan::{Needs, complete_with, covers_cost, plan, rest_after, spent_of};
 use crate::spend::{Restricted, Spend, Spent};
 
@@ -241,6 +242,14 @@ pub struct Payment {
     /// Life paid in place of Phyrexian symbols: 2 for each, within the life total (CR 119.4). Left out means none.
     #[serde(default)]
     pub life: u32,
+    /// Creatures tapped for convoke, each with the mana it pays for (CR 702.51). Left out means none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Convoked>>", optional))]
+    pub convoke: Vec<Convoked>,
+    /// Cards exiled from the graveyard for delve, each paying {1} (CR 702.66). Left out means none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub delve: Vec<ObjectId>,
 }
 
 /// The sources a payment for `spend` may tap: the ones whose mana it may spend.
@@ -264,6 +273,8 @@ fn flat(payment: &Payment) -> Payment {
         restricted: Vec::new(),
         taps: payment.taps.clone(),
         life: payment.life,
+        convoke: payment.convoke.clone(),
+        delve: payment.delve.clone(),
     }
 }
 
@@ -296,6 +307,8 @@ fn separate(types: &[ManaType], pool: &ManaPool, spend: &Spend, kept: &Payment) 
         restricted: kept.restricted.clone(),
         taps: kept.taps.clone(),
         life: kept.life,
+        convoke: kept.convoke.clone(),
+        delve: kept.delve.clone(),
     };
     for mana in left {
         match free.iter().position(|u| u.mana == mana) {
@@ -580,6 +593,7 @@ fn plain_complete(
         restricted: Vec::new(),
         taps: [partial.taps.as_slice(), rest.taps.as_slice()].concat(),
         life: 0,
+        ..Payment::default()
     };
     if sources.iter().all(ManaOption::is_simple) {
         return Ok(whole);
@@ -601,6 +615,7 @@ fn plain_complete(
         restricted: Vec::new(),
         taps: [partial.taps.as_slice(), more_taps.as_slice()].concat(),
         life: 0,
+        ..Payment::default()
     })
 }
 
@@ -642,21 +657,48 @@ pub fn can_afford(
     life: i32,
     spend: &Spend,
 ) -> bool {
-    let floating = pool.floating(spend);
-    let sources = usable(sources, spend);
-    cost.resolutions()
-        .iter()
-        .any(|r| can_pay_life(life, r.life) && plain_can_afford(&r.cost, &floating, &sources))
+    can_afford_with(cost, pool, sources, Help::NONE, life, spend)
 }
 
-/// How much a payment is wanted, lower first: less life, then fewer sacrifices, then fewer sources that do more than add mana, then fewer taps, then more restricted mana spent, then taps of the kinds the sources make most of.
+/// [`can_afford`] when creatures may be tapped and graveyard cards exiled to pay part of the cost (`help`).
+pub fn can_afford_with(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    life: i32,
+    spend: &Spend,
+) -> bool {
+    let floating = pool.floating(spend);
+    let sources = usable(sources, spend);
+    cost.resolutions().iter().any(|r| {
+        can_pay_life(life, r.life)
+            && help::variants(&r.cost, help, &Used::default(), &[], &sources)
+                .iter()
+                .any(|v| {
+                    let sources = help::without_tapped(&sources, &v.used, &Used::default());
+                    plain_can_afford(&v.cost, &floating, &sources)
+                })
+    })
+}
+
+/// How much a payment is wanted, lower first: less life, then fewer creatures tapped and cards exiled to help, then fewer sacrifices, then fewer sources that do more than add mana, then fewer taps, then more restricted mana spent, then taps of the kinds the sources make most of.
 ///
 /// Restricted mana is of less use than mana without a restriction, so spending it keeps the rest. The last part keeps a
 /// scarce color untapped when a hybrid symbol can be paid with either of two.
+#[allow(clippy::type_complexity)]
 fn preference(
     payment: &Payment,
     sources: &[ManaOption],
-) -> (u32, usize, usize, usize, Reverse<usize>, Reverse<usize>) {
+) -> (
+    u32,
+    usize,
+    usize,
+    usize,
+    usize,
+    Reverse<usize>,
+    Reverse<usize>,
+) {
     let plenty = |mana: ManaType| sources.iter().filter(|o| o.produces == mana).count();
     let used: Vec<&ManaOption> = payment
         .taps
@@ -668,6 +710,7 @@ fn preference(
     let extras = used.iter().filter(|o| o.extra).count();
     (
         payment.life,
+        payment.convoke.len() + payment.delve.len(),
         sacrificed,
         extras,
         payment.taps.len(),
@@ -699,6 +742,21 @@ pub fn auto_payment(
     life: i32,
     spend: &Spend,
 ) -> Option<Payment> {
+    auto_payment_with(cost, pool, sources, Help::NONE, life, spend)
+}
+
+/// [`auto_payment`] when creatures may be tapped and graveyard cards exiled to pay part of the cost (`help`).
+///
+/// They are used only when mana cannot pay the cost without them, then as few as possible (cards last, so creatures
+/// that are tapped anyway go first); mana and life are chosen for the rest as [`auto_payment`] does.
+pub fn auto_payment_with(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    life: i32,
+    spend: &Spend,
+) -> Option<Payment> {
     let floating = pool.floating(spend);
     let sources = usable(sources, spend);
     let mut best = None;
@@ -706,14 +764,19 @@ pub fn auto_payment(
         if resolution.life > 0 && i64::from(life) <= i64::from(resolution.life) {
             continue;
         }
-        if let Some(plain) = plain_auto(&resolution.cost, &floating, &sources) {
-            let kept = Payment {
-                taps: plain.taps,
-                life: resolution.life,
-                ..Payment::default()
-            };
-            let payment = separate(&plain.pool, pool, spend, &kept);
-            keep_better(&mut best, payment, &sources);
+        for variant in help::variants(&resolution.cost, help, &Used::default(), &[], &sources) {
+            let left = help::without_tapped(&sources, &variant.used, &Used::default());
+            if let Some(plain) = plain_auto(&variant.cost, &floating, &left) {
+                let kept = Payment {
+                    taps: plain.taps,
+                    life: resolution.life,
+                    convoke: variant.used.convoke,
+                    delve: variant.used.delve,
+                    ..Payment::default()
+                };
+                let payment = separate(&plain.pool, pool, spend, &kept);
+                keep_better(&mut best, payment, &sources);
+            }
         }
     }
     best
@@ -791,8 +854,40 @@ pub fn check_payment(
     spend: &Spend,
     payment: &Payment,
 ) -> Result<Spent, PaymentError> {
+    check_payment_with(
+        cost,
+        pool,
+        sources,
+        Help::NONE,
+        tapped,
+        life,
+        spend,
+        payment,
+    )
+}
+
+/// [`check_payment`] for a payment that may name creatures tapped and graveyard cards exiled (`help` lists the ones offered).
+///
+/// What they pay is taken out of the cost before the mana is read against it: a creature pays {1} or one mana of a
+/// colour it is, a card pays {1}, none pays more than the cost has, and none is also tapped for mana. `tapped` lists the
+/// permanents and cards no payment may use.
+// Every argument is a different thing a payment depends on; the callers each have them all.
+#[allow(clippy::too_many_arguments)]
+pub fn check_payment_with(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    payment: &Payment,
+) -> Result<Spent, PaymentError> {
     let floating = check_pool(pool, sources, spend, payment)?;
     let sources = usable(sources, spend);
+    let used = Used::new(&payment.convoke, &payment.delve);
+    let tapped_for_mana: Vec<ObjectId> = payment.taps.iter().map(|tap| tap.object).collect();
+    help::check(&used, help, tapped, &tapped_for_mana)?;
     let parts = parts_of(&floating, &sources, tapped, &flat(payment))?;
     check_life(cost, life, payment.life)?;
     let mut refusal = None;
@@ -800,7 +895,14 @@ pub fn check_payment(
         if resolution.life != payment.life {
             continue;
         }
-        match spent_of(&resolution.cost, &parts) {
+        let plain = match help::reduce(&resolution.cost, &used) {
+            Ok(plain) => plain,
+            Err(error) => {
+                refusal.get_or_insert(error);
+                continue;
+            }
+        };
+        match spent_of(&plain, &parts) {
             Ok(made) => return Ok(split_spent(made, payment, &sources)),
             Err(error) => {
                 refusal.get_or_insert(error);
@@ -833,9 +935,40 @@ pub fn complete_payment(
     spend: &Spend,
     partial: &Payment,
 ) -> Result<Payment, PaymentError> {
+    complete_payment_with(
+        cost,
+        pool,
+        sources,
+        Help::NONE,
+        tapped,
+        life,
+        spend,
+        partial,
+    )
+}
+
+/// [`complete_payment`] when creatures may be tapped and graveyard cards exiled to pay part of the cost (`help`).
+///
+/// The creatures and cards `partial` names are kept; more are added only when the mana left cannot pay the rest without
+/// them, as [`auto_payment_with`] does.
+// Every argument is a different thing a payment depends on; the callers each have them all.
+#[allow(clippy::too_many_arguments)]
+pub fn complete_payment_with(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    partial: &Payment,
+) -> Result<Payment, PaymentError> {
     let floating = check_pool(pool, sources, spend, partial)?;
     let usable_sources = usable(sources, spend);
     let flat_partial = flat(partial);
+    let kept = Used::new(&partial.convoke, &partial.delve);
+    let occupied: Vec<ObjectId> = partial.taps.iter().map(|tap| tap.object).collect();
+    help::check(&kept, help, tapped, &occupied)?;
     let parts = parts_of(&floating, &usable_sources, tapped, &flat_partial)?;
     check_life(cost, life, partial.life)?;
     let mut best = None;
@@ -844,29 +977,36 @@ pub fn complete_payment(
         if !may_pay_life(resolution.life, partial.life, life) {
             continue;
         }
-        match plain_complete(
-            &resolution.cost,
-            &floating,
-            &usable_sources,
-            &flat_partial,
-            &parts,
-        ) {
-            Ok(whole) => {
-                let mut whole_split = separate(&whole.pool, pool, spend, partial);
-                whole_split.taps = whole.taps;
-                whole_split.life = resolution.life;
-                keep_better(&mut best, whole_split, &usable_sources);
-            }
-            // Of the reasons, "could not be finished" says more than "does not fit".
+        let left = match help::reduce(&resolution.cost, &kept) {
+            Ok(left) => left,
             Err(error) => {
-                if refusal.is_none() || error == PaymentError::CannotComplete {
-                    refusal = Some(error);
+                refusal.get_or_insert(error);
+                continue;
+            }
+        };
+        for variant in help::variants(&left, help, &kept, &occupied, &usable_sources) {
+            let sources = help::without_tapped(&usable_sources, &variant.used, &kept);
+            match plain_complete(&variant.cost, &floating, &sources, &flat_partial, &parts) {
+                Ok(whole) => {
+                    let all = help::together(&kept, &variant.used);
+                    let mut whole_split = separate(&whole.pool, pool, spend, partial);
+                    whole_split.taps = whole.taps;
+                    whole_split.life = resolution.life;
+                    whole_split.convoke = all.convoke;
+                    whole_split.delve = all.delve;
+                    keep_better(&mut best, whole_split, &usable_sources);
+                }
+                // Of the reasons, "could not be finished" says more than "does not fit".
+                Err(error) => {
+                    if refusal.is_none() || error == PaymentError::CannotComplete {
+                        refusal = Some(error);
+                    }
                 }
             }
         }
     }
     let whole = best.ok_or_else(|| refusal.unwrap_or(PaymentError::CannotComplete))?;
-    check_payment(cost, pool, sources, tapped, life, spend, &whole)?;
+    check_payment_with(cost, pool, sources, help, tapped, life, spend, &whole)?;
     Ok(whole)
 }
 
@@ -1806,6 +1946,7 @@ mod tests {
                         restricted: Vec::new(),
                         taps: taps.clone(),
                         life,
+                        ..Payment::default()
                     });
                 }
             }

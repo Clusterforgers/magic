@@ -259,6 +259,7 @@ fn a_manual_payment_has_nothing_to_spare(
         pool: Vec::new(),
         taps: chosen,
         life: 0,
+        ..Payment::default()
     })));
     if accepted {
         result?;

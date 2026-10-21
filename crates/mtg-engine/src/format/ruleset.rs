@@ -1,6 +1,8 @@
 //! The rules a game plays by: the format's values with the house rules laid over them.
 
-use mtg_core::house::{EmptyLibrary, HandLimit, HouseRules, SkipFirstDraw};
+use mtg_core::house::{
+    AttackRange, EmptyLibrary, HandLimit, HouseRules, MulliganStyle, SkipFirstDraw,
+};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{FormatRules, MulliganRule};
@@ -61,7 +63,8 @@ impl<'a> RuleSet<'a> {
             .min(hand.saturating_add(rule.free_mulligans))
     }
 
-    /// The keep-or-mulligan options of `seat` for `hand` after `taken` mulligans, with the bottom counts worked out.
+    /// The keep-or-mulligan options of `seat` for `hand` after `taken` mulligans, with the size of the next hand, the
+    /// bottom counts and the scries worked out.
     pub fn mulligan_options(
         &self,
         seat: PlayerId,
@@ -69,14 +72,88 @@ impl<'a> RuleSet<'a> {
         taken: u32,
     ) -> MulliganOptions {
         let rule = self.mulligan_rule(seat);
+        let next = taken.saturating_add(1);
+        let scry = |taken| Some(self.scry_after_keep(taken)).filter(|cards| *cards > 0);
         MulliganOptions {
             hand,
             mulligans_taken: taken,
             can_mulligan: taken < self.max_mulligans(seat),
             free_mulligans: rule.free_mulligans,
-            bottom_if_keep: rule.bottom_count(taken),
-            bottom_if_mulligan: rule.bottom_count(taken.saturating_add(1)),
+            bottom_if_keep: self.bottom_count(seat, taken),
+            bottom_if_mulligan: self.bottom_count(seat, next),
+            hand_if_mulligan: Some(self.dealt_hand_size(seat, next)),
+            scry_if_keep: scry(taken),
+            scry_if_mulligan: scry(next),
         }
+    }
+
+    /// Which players an attacker may attack.
+    pub fn attack_range(&self) -> AttackRange {
+        self.house.attack_range.unwrap_or(AttackRange::Any)
+    }
+
+    /// The players `attacker` may attack, in turn order from the one after them. The neighbours and the left player
+    /// are worked out over the seats still in the game, so a seat that left changes who is next.
+    pub fn defending_seats(&self, state: &GameState, attacker: PlayerId) -> Vec<PlayerId> {
+        let mut others = state.turn_order_from(attacker);
+        others.retain(|seat| *seat != attacker);
+        match self.attack_range() {
+            AttackRange::Any => others,
+            AttackRange::Left => others.into_iter().take(1).collect(),
+            AttackRange::Neighbours => {
+                let (first, last) = (others.first().copied(), others.last().copied());
+                first
+                    .into_iter()
+                    .chain(last.filter(|_| others.len() > 1))
+                    .collect()
+            }
+        }
+    }
+
+    /// Whether every seat sees every hand.
+    pub fn open_hands(&self) -> bool {
+        self.house.open_hands.unwrap_or(false)
+    }
+
+    /// Whether every seat sees the top card of every library.
+    pub fn revealed_library_top(&self) -> bool {
+        self.house.revealed_library_top.unwrap_or(false)
+    }
+
+    /// Whether each opening hand is the better of two draws by its share of lands.
+    pub fn opening_hand_smoothing(&self) -> bool {
+        self.house.opening_hand_smoothing.unwrap_or(false)
+    }
+
+    /// How a mulligan gets the next hand.
+    pub fn mulligan_style(&self) -> MulliganStyle {
+        self.house.mulligan_style.unwrap_or(MulliganStyle::London)
+    }
+
+    /// Cards `seat` puts on the bottom when it keeps a hand after `taken` mulligans: the London count, none in the
+    /// styles that draw fewer cards instead.
+    pub fn bottom_count(&self, seat: PlayerId, taken: u32) -> usize {
+        match self.mulligan_style() {
+            MulliganStyle::London => self.mulligan_rule(seat).bottom_count(taken),
+            MulliganStyle::Paris | MulliganStyle::Vancouver => 0,
+        }
+    }
+
+    /// Cards in the hand `seat` is dealt after `taken` mulligans: the full hand, or one card fewer for each mulligan
+    /// that is not free in the styles that draw fewer cards.
+    pub fn dealt_hand_size(&self, seat: PlayerId, taken: u32) -> usize {
+        let rule = self.mulligan_rule(seat);
+        match self.mulligan_style() {
+            MulliganStyle::London => rule.hand_size,
+            MulliganStyle::Paris | MulliganStyle::Vancouver => {
+                rule.hand_size.saturating_sub(rule.bottom_count(taken))
+            }
+        }
+    }
+
+    /// Cards a player who keeps a hand after `taken` mulligans scries.
+    pub fn scry_after_keep(&self, taken: u32) -> usize {
+        usize::from(self.mulligan_style() == MulliganStyle::Vancouver && taken > 0)
     }
 
     /// Whether the starting player skips their first draw in a game of `player_count` players.
@@ -420,5 +497,164 @@ mod tests {
         );
         assert_eq!(rules.max_mulligans(PlayerId(1)), 3);
         assert_eq!(rules.max_mulligans(PlayerId(0)), 7);
+    }
+}
+
+#[cfg(test)]
+mod table_tests {
+    //! Goal: the rules of the table are the format's when unset; the attack range names the players an attacker may attack over the seats still in the game at every table size, whoever is next or left; and the mulligan style sizes the next hand, the bottom count and the scry the options state.
+    use mtg_core::house::{AttackRange, HouseRules, MulliganStyle};
+    use rstest::rstest;
+
+    use super::*;
+    use crate::events::Event;
+    use crate::fixtures::state;
+    use crate::fold::apply_event;
+    use crate::format::Normal;
+    use crate::player::LossReason;
+
+    fn rules(set: impl FnOnce(&mut HouseRules)) -> HouseRules {
+        let mut house = HouseRules::default();
+        set(&mut house);
+        house
+    }
+
+    fn table(seats: usize, gone: &[u64]) -> GameState {
+        let mut game = state(vec![Vec::new(); seats], vec![Vec::new(); seats]);
+        for seat in gone {
+            let lost = Event::PlayerLost {
+                player: PlayerId(*seat),
+                reason: LossReason::Conceded,
+            };
+            apply_event(&mut game, &lost).unwrap();
+        }
+        game
+    }
+
+    fn seats(of: &[u64]) -> Vec<PlayerId> {
+        of.iter().copied().map(PlayerId).collect()
+    }
+
+    #[test]
+    fn the_rules_of_the_table_are_the_formats_when_unset() {
+        let house = HouseRules::default();
+        let rules = RuleSet::new(&Normal, &house);
+        assert_eq!(rules.attack_range(), AttackRange::Any);
+        assert!(!rules.open_hands() && !rules.revealed_library_top());
+        assert!(!rules.opening_hand_smoothing());
+        assert_eq!(rules.mulligan_style(), MulliganStyle::London);
+    }
+
+    #[rstest]
+    #[case::two_seats(2, &[], 0, &[1], &[1], &[1])]
+    #[case::three_seats(3, &[], 0, &[1, 2], &[1, 2], &[1])]
+    #[case::three_seats_from_the_last(3, &[], 2, &[0, 1], &[0, 1], &[0])]
+    #[case::four_seats(4, &[], 0, &[1, 2, 3], &[1, 3], &[1])]
+    #[case::four_seats_the_third(4, &[], 2, &[3, 0, 1], &[3, 1], &[3])]
+    #[case::four_seats_the_last(4, &[], 3, &[0, 1, 2], &[0, 2], &[0])]
+    #[case::five_seats(5, &[], 0, &[1, 2, 3, 4], &[1, 4], &[1])]
+    #[case::five_seats_the_fourth(5, &[], 3, &[4, 0, 1, 2], &[4, 2], &[4])]
+    #[case::the_next_seat_left(5, &[1], 0, &[2, 3, 4], &[2, 4], &[2])]
+    #[case::the_previous_seat_left(5, &[4], 0, &[1, 2, 3], &[1, 3], &[1])]
+    #[case::both_neighbours_left(4, &[1, 3], 0, &[2], &[2], &[2])]
+    #[case::a_seat_between_left(4, &[2], 0, &[1, 3], &[1, 3], &[1])]
+    #[case::two_left_of_five(5, &[1, 4], 0, &[2, 3], &[2, 3], &[2])]
+    #[case::one_opponent_left(5, &[1, 2, 3], 0, &[4], &[4], &[4])]
+    #[case::the_attacker_wraps_past_a_gap(5, &[0, 3], 2, &[4, 1], &[4, 1], &[4])]
+    #[case::alone(3, &[1, 2], 0, &[], &[], &[])]
+    fn the_attack_range_limits_the_players_by_turn_order_over_the_seats_in_the_game(
+        #[case] players: usize,
+        #[case] gone: &[u64],
+        #[case] attacker: u64,
+        #[case] any: &[u64],
+        #[case] neighbours: &[u64],
+        #[case] left: &[u64],
+    ) {
+        let game = table(players, gone);
+        for (range, want) in [
+            (None, any),
+            (Some(AttackRange::Any), any),
+            (Some(AttackRange::Neighbours), neighbours),
+            (Some(AttackRange::Left), left),
+        ] {
+            let house = rules(|r| r.attack_range = range);
+            let got = RuleSet::new(&Normal, &house).defending_seats(&game, PlayerId(attacker));
+            assert_eq!(got, seats(want), "{range:?}");
+        }
+    }
+
+    #[rstest]
+    #[case::london(MulliganStyle::London, 0, 7, 0, 0)]
+    #[case::london_two(MulliganStyle::London, 2, 7, 2, 0)]
+    #[case::paris(MulliganStyle::Paris, 0, 7, 0, 0)]
+    #[case::paris_two(MulliganStyle::Paris, 2, 5, 0, 0)]
+    #[case::paris_seven(MulliganStyle::Paris, 7, 0, 0, 0)]
+    #[case::vancouver(MulliganStyle::Vancouver, 0, 7, 0, 0)]
+    #[case::vancouver_one(MulliganStyle::Vancouver, 1, 6, 0, 1)]
+    #[case::vancouver_three(MulliganStyle::Vancouver, 3, 4, 0, 1)]
+    fn a_style_sizes_the_hand_the_bottom_and_the_scry(
+        #[case] style: MulliganStyle,
+        #[case] taken: u32,
+        #[case] hand: usize,
+        #[case] bottom: usize,
+        #[case] scry: usize,
+    ) {
+        let house = rules(|r| r.mulligan_style = Some(style));
+        let rules = RuleSet::new(&Normal, &house);
+        assert_eq!(
+            (
+                rules.dealt_hand_size(PlayerId(0), taken),
+                rules.bottom_count(PlayerId(0), taken),
+                rules.scry_after_keep(taken)
+            ),
+            (hand, bottom, scry)
+        );
+    }
+
+    #[rstest]
+    fn free_mulligans_shrink_no_hand_in_any_style(
+        #[values(MulliganStyle::London, MulliganStyle::Paris, MulliganStyle::Vancouver)]
+        style: MulliganStyle,
+        #[values(0, 1, 2, 3)] free: u32,
+        #[values(0, 1, 2, 3, 4)] taken: u32,
+    ) {
+        let house = rules(|r| {
+            r.mulligan_style = Some(style);
+            r.free_mulligans = Some(free);
+        });
+        let rules = RuleSet::new(&Normal, &house);
+        let paid = taken.saturating_sub(free) as usize;
+        let (hand, bottom) = match style {
+            MulliganStyle::London => (7, paid),
+            _ => (7 - paid, 0),
+        };
+        assert_eq!(rules.dealt_hand_size(PlayerId(0), taken), hand);
+        assert_eq!(rules.bottom_count(PlayerId(0), taken), bottom);
+    }
+
+    #[rstest]
+    #[case::london(MulliganStyle::London, 0, (Some(7), 0, 1), (None, None))]
+    #[case::london_later(MulliganStyle::London, 3, (Some(7), 3, 4), (None, None))]
+    #[case::paris(MulliganStyle::Paris, 0, (Some(6), 0, 0), (None, None))]
+    #[case::paris_later(MulliganStyle::Paris, 3, (Some(3), 0, 0), (None, None))]
+    #[case::vancouver_first(MulliganStyle::Vancouver, 0, (Some(6), 0, 0), (None, Some(1)))]
+    #[case::vancouver_later(MulliganStyle::Vancouver, 2, (Some(4), 0, 0), (Some(1), Some(1)))]
+    fn the_options_state_the_next_hand_the_bottoms_and_the_scries(
+        #[case] style: MulliganStyle,
+        #[case] taken: u32,
+        #[case] hand_and_bottoms: (Option<usize>, usize, usize),
+        #[case] scries: (Option<usize>, Option<usize>),
+    ) {
+        let house = rules(|r| r.mulligan_style = Some(style));
+        let got = RuleSet::new(&Normal, &house).mulligan_options(PlayerId(0), Vec::new(), taken);
+        assert_eq!(
+            (
+                got.hand_if_mulligan,
+                got.bottom_if_keep,
+                got.bottom_if_mulligan
+            ),
+            hand_and_bottoms
+        );
+        assert_eq!((got.scry_if_keep, got.scry_if_mulligan), scries);
     }
 }

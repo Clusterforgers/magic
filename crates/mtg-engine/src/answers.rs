@@ -11,7 +11,7 @@ use crate::decision::{Answer, Decision, DecisionKind};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::mulligan::{bottom_answer, check_card_choice, mulligan_answer};
-use crate::state::GameState;
+use crate::state::{GameState, Stage};
 use crate::{cast, priority};
 
 /// What a validated answer asks the engine to do.
@@ -102,6 +102,12 @@ pub(crate) fn handle(
         }
         (DecisionKind::DivideAmount(options), Answer::DivideAmount(choice)) => {
             choose::divide_answer(player, options, choice)
+        }
+        // In the opening the question is the scry of a seat that kept a hand after a mulligan.
+        (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice))
+            if state.stage() == Stage::Mulligan =>
+        {
+            crate::mulligan::scry_answer(player, options, &choice)
         }
         // Nothing resolving and nothing announced: the question is the legend rule of the state-based actions.
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice))

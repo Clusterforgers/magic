@@ -25,7 +25,7 @@ use crate::replace::in_combat_damage;
 use crate::resolve::{Scope, zone_kind};
 use crate::rules::triggers_again;
 use crate::snapshot::snapshot;
-use crate::state::GameState;
+use crate::state::{GameState, Tally};
 use crate::turn::Step;
 use crate::zones::Zone;
 
@@ -43,8 +43,12 @@ enum Happened {
     Created { object: ObjectId },
     /// A creature was declared as an attacker.
     Attacked { attacker: ObjectId },
-    /// A player cast a spell.
-    Cast { player: PlayerId, spell: ObjectId },
+    /// A player cast a spell, the `nth` of their turn.
+    Cast {
+        player: PlayerId,
+        spell: ObjectId,
+        nth: u32,
+    },
     /// Something was chosen as a target of a spell or ability.
     Targeted { target: Target, by: ObjectId },
     /// A step began.
@@ -54,13 +58,18 @@ enum Happened {
         source: ObjectId,
         to: DamageTarget,
         combat: bool,
+        amount: u32,
     },
-    /// A player gained life.
-    LifeGained { player: PlayerId },
+    /// A player gained life, the `nth` time of their turn.
+    LifeGained {
+        player: PlayerId,
+        amount: u32,
+        nth: u32,
+    },
     /// A player lost life: by an effect, by paying it or from damage (CR 120.3a).
-    LifeLost { player: PlayerId },
-    /// A player drew a card.
-    Drew { player: PlayerId },
+    LifeLost { player: PlayerId, amount: u32 },
+    /// A player drew a card, the `nth` of their turn.
+    Drew { player: PlayerId, nth: u32 },
     /// A permanent became tapped.
     Tapped { object: ObjectId },
     /// A permanent became untapped.
@@ -86,6 +95,9 @@ enum Happened {
     Attached { attachment: ObjectId, to: ObjectId },
     /// A player cycled a card.
     Cycled { player: PlayerId, card: ObjectId },
+    /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
+    /// happen together.
+    Batch(Vec<Happened>),
 }
 
 impl Happened {
@@ -98,6 +110,27 @@ impl Happened {
                 ..
             }
         )
+    }
+
+    /// How much it was: the damage dealt, the life gained or lost, the counters put or removed; zero for the rest.
+    const fn amount(&self) -> u32 {
+        match self {
+            Happened::Damaged { amount, .. }
+            | Happened::LifeGained { amount, .. }
+            | Happened::LifeLost { amount, .. } => *amount,
+            Happened::Counters { delta, .. } => delta.unsigned_abs(),
+            _ => 0,
+        }
+    }
+
+    /// Which time of its turn this was, for the events a turn counts.
+    const fn nth(&self) -> Option<u32> {
+        match self {
+            Happened::Drew { nth, .. }
+            | Happened::Cast { nth, .. }
+            | Happened::LifeGained { nth, .. } => Some(*nth),
+            _ => None,
+        }
     }
 }
 
@@ -177,7 +210,8 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
     let mut found = Vec::new();
     // Permanents tapped in this batch whose mana has not been added yet: tapping for mana is the tap that adds it.
     let mut tapped = Vec::new();
-    for event in events {
+    for (at, event) in events.iter().enumerate() {
+        let later = &events[at + 1..];
         if let Some(moved) = moved(pre, event, post) {
             found.push(moved);
         }
@@ -200,9 +234,11 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 object,
                 choices,
             } => {
+                let nth = ordinal(post, later, *player, Tally::Cast);
                 found.push(Happened::Cast {
                     player: *player,
                     spell: *object,
+                    nth,
                 });
                 found.extend(targeted(choices, *object));
             }
@@ -211,17 +247,31 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 step: *step,
                 active: post.turn().active(),
             }),
-            other => about_players_and_permanents(other, post, &mut tapped, &mut found),
+            other => about_players_and_permanents(other, (post, later), &mut tapped, &mut found),
         }
     }
     found
+}
+
+/// Which time of the turn the event of `player` and kind `kind` is: the count after the batch less the events of that kind
+/// that follow it in the batch (`later`).
+fn ordinal(post: &GameState, later: &[Event], player: PlayerId, kind: Tally) -> u32 {
+    let same = |event: &Event| match (kind, event) {
+        (Tally::Drawn, Event::CardDrawn { player: who, .. })
+        | (Tally::Cast, Event::SpellCast { player: who, .. })
+        | (Tally::Gained, Event::LifeGained { player: who, .. }) => *who == player,
+        _ => false,
+    };
+    let after = post.tallied(player, kind);
+    after
+        .saturating_sub(u32::try_from(later.iter().filter(|e| same(e)).count()).unwrap_or(u32::MAX))
 }
 
 /// What `event` is, when it is about blocks, damage, life, cards drawn or cycled, taps, counters or attachments.
 /// `tapped` holds the permanents of the batch tapped so far whose mana has not been added.
 fn about_players_and_permanents(
     event: &Event,
-    post: &GameState,
+    (post, later): (&GameState, &[Event]),
     tapped: &mut Vec<ObjectId>,
     found: &mut Vec<Happened>,
 ) {
@@ -241,22 +291,41 @@ fn about_players_and_permanents(
                 }
             }
         }
-        Event::DamageDealt { source, target, .. } => {
+        Event::DamageDealt {
+            source,
+            target,
+            amount,
+            ..
+        } => {
             found.push(Happened::Damaged {
                 source: *source,
                 to: *target,
                 combat: in_combat_damage(post),
+                amount: *amount,
             });
             // Damage to a player makes them lose that much life (CR 120.3a).
             if let DamageTarget::Player(player) = target {
-                found.push(Happened::LifeLost { player: *player });
+                found.push(Happened::LifeLost {
+                    player: *player,
+                    amount: *amount,
+                });
             }
         }
-        Event::LifeGained { player, .. } => found.push(Happened::LifeGained { player: *player }),
-        Event::LifeLost { player, .. } | Event::LifePaid { player, .. } => {
-            found.push(Happened::LifeLost { player: *player });
+        Event::LifeGained { player, amount } => found.push(Happened::LifeGained {
+            player: *player,
+            amount: *amount,
+            nth: ordinal(post, later, *player, Tally::Gained),
+        }),
+        Event::LifeLost { player, amount } | Event::LifePaid { player, amount } => {
+            found.push(Happened::LifeLost {
+                player: *player,
+                amount: *amount,
+            });
         }
-        Event::CardDrawn { player, .. } => found.push(Happened::Drew { player: *player }),
+        Event::CardDrawn { player, .. } => found.push(Happened::Drew {
+            player: *player,
+            nth: ordinal(post, later, *player, Tally::Drawn),
+        }),
         Event::PermanentTapped { object } => {
             tapped.push(*object);
             found.push(Happened::Tapped { object: *object });
@@ -305,6 +374,11 @@ struct Used {
 
 /// The cause of a trigger about `subjects`, with the objects among them as they are in `state`.
 fn cause(state: &GameState, subjects: Vec<Target>) -> Cause {
+    counted(state, subjects, 0)
+}
+
+/// The same for an event of the given amount (`Amount::Triggering`).
+fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
     let snapshots = subjects
         .iter()
         .filter_map(|subject| subject.object())
@@ -313,6 +387,7 @@ fn cause(state: &GameState, subjects: Vec<Target>) -> Cause {
     Cause {
         subjects,
         snapshots,
+        amount,
     }
 }
 
@@ -364,7 +439,7 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 .ok()?
                 .then(|| cause(state, vec![Target::Object(reference)]))
         }
-        (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell }) => {
+        (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell, .. }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];
             (scope.players(by).ok()?.contains(player) && scope.selects(what, reference).ok()?)
@@ -436,12 +511,16 @@ fn matching_event(
     let by = |who: &Ref, player: &PlayerId| scope.players(who).is_ok_and(|p| p.contains(player));
     let picks = |what: &Selector, reference: ObjectRef| scope.selects(what, reference).ok();
     match (pattern, happened) {
+        (TriggerPattern::Nth { event, nth }, happened) => (happened.nth() == Some(*nth))
+            .then(|| matching(event, happened, scope))
+            .flatten(),
         (
             TriggerPattern::DealsDamage { source, to, combat },
             Happened::Damaged {
                 source: dealer,
                 to: hit,
                 combat: was,
+                amount,
             },
         ) => {
             let dealer = object(*dealer)?;
@@ -453,13 +532,12 @@ fn matching_event(
                 .as_ref()
                 .is_none_or(|to| scope.refs(to).is_ok_and(|named| named.contains(&recipient)));
             (combat.is_none_or(|wanted| wanted == *was) && named && picks(source, dealer)?)
-                .then(|| cause(state, vec![recipient]))
+                .then(|| counted(state, vec![recipient], *amount))
         }
-        (TriggerPattern::LifeGained { who }, Happened::LifeGained { player })
-        | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player })
-        | (TriggerPattern::Drew { who }, Happened::Drew { player }) => {
-            by(who, player).then(|| cause(state, vec![Target::Player(*player)]))
-        }
+        (TriggerPattern::LifeGained { who }, Happened::LifeGained { player, .. })
+        | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player, .. })
+        | (TriggerPattern::Drew { who }, Happened::Drew { player, .. }) => by(who, player)
+            .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
         (
             TriggerPattern::Discarded { what, by: who },
             Happened::Moved {
@@ -520,7 +598,7 @@ fn matching_permanents(
             let putting = matches!(pattern, TriggerPattern::CountersPut { .. });
             let on = object(*on)?;
             ((*delta > 0) == putting && of_kind(counter, kind) && picks(what, on)?)
-                .then(|| cause(state, vec![Target::Object(on)]))
+                .then(|| counted(state, vec![Target::Object(on)], happened.amount()))
         }
         (TriggerPattern::Blocks { what }, Happened::Blocked { blocker, attacker }) => {
             let (blocker, attacker) = (object(*blocker)?, object(*attacker)?);
@@ -547,8 +625,10 @@ fn matching_permanents(
                     picked.push(Target::Object(attacker));
                 }
             }
-            (picked.len() >= usize::try_from(*at_least).unwrap_or(usize::MAX))
-                .then(|| cause(state, picked))
+            (picked.len() >= usize::try_from(*at_least).unwrap_or(usize::MAX)).then(|| {
+                let count = u32::try_from(picked.len()).unwrap_or(u32::MAX);
+                counted(state, picked, count)
+            })
         }
         (
             TriggerPattern::Attached { what, to },
@@ -590,6 +670,47 @@ fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool {
     )
 }
 
+/// What `pattern` finds in `happened`: one cause for an event, and for the events of a batch one for each player they
+/// are about (or one in all when they are about none).
+fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> Vec<Cause> {
+    match (pattern, happened) {
+        (TriggerPattern::Batch(inner), Happened::Batch(members)) => {
+            let mut groups: Vec<(Vec<Target>, Cause)> = Vec::new();
+            for member in members {
+                let Some(found) = matching(inner, member, scope) else {
+                    continue;
+                };
+                let players: Vec<Target> = found
+                    .subjects
+                    .iter()
+                    .filter(|subject| matches!(subject, Target::Player(_)))
+                    .copied()
+                    .collect();
+                let at = groups.iter().position(|(key, _)| *key == players);
+                let at = at.unwrap_or_else(|| {
+                    groups.push((players, Cause::default()));
+                    groups.len() - 1
+                });
+                let group = &mut groups[at].1;
+                for subject in found.subjects {
+                    if !group.subjects.contains(&subject) {
+                        group.subjects.push(subject);
+                    }
+                }
+                for shot in found.snapshots {
+                    if !group.snapshots.contains(&shot) {
+                        group.snapshots.push(shot);
+                    }
+                }
+                group.amount = group.amount.saturating_add(1);
+            }
+            groups.into_iter().map(|(_, cause)| cause).collect()
+        }
+        (TriggerPattern::Batch(_), _) | (_, Happened::Batch(_)) => Vec::new(),
+        _ => matching(pattern, happened, scope).into_iter().collect(),
+    }
+}
+
 /// The triggered abilities of `object`, which is in the zone `zone`, that trigger on `happened`: `abilities` are those
 /// that work there. A permanent's abilities may trigger again (`repeats`); a card elsewhere's do not.
 fn object_triggers(
@@ -622,46 +743,45 @@ fn object_triggers(
             continue;
         }
         let scope = Scope::announcing(state, controller, source);
-        let Some(cause) = matching(when, happened, &scope) else {
-            continue;
-        };
-        // CR 603.4: an "if" in the trigger is checked as the event happens.
-        if let Some(condition) = intervening_if {
-            let scope = Scope::triggered(state, controller, source, &cause);
-            if !scope.holds(condition).unwrap_or(false) {
+        for cause in causes(when, happened, &scope) {
+            // CR 603.4: an "if" in the trigger is checked as the event happens.
+            if let Some(condition) = intervening_if {
+                let scope = Scope::triggered(state, controller, source, &cause);
+                if !scope.holds(condition).unwrap_or(false) {
+                    continue;
+                }
+            }
+            if *limit == Some(Limit::OncePerTurn)
+                && (state.limit_spent(source, address.source, address.ability)
+                    || !used
+                        .limits
+                        .insert((source, address.source, address.ability)))
+            {
                 continue;
             }
-        }
-        if *limit == Some(Limit::OncePerTurn)
-            && (state.limit_spent(source, address.source, address.ability)
-                || !used
-                    .limits
-                    .insert((source, address.source, address.ability)))
-        {
-            continue;
-        }
-        if shot.is_none() {
-            shot = snapshot(state, object.id());
-        }
-        let Some(shot) = &shot else {
-            continue;
-        };
-        let trigger = Triggered {
-            source,
-            ability: address.ability,
-            origin: address.source,
-            controller,
-            cause,
-            snapshot: shot.clone(),
-            delayed: None,
-        };
-        // An ability that triggers only once each turn does so once, whatever else is said of it.
-        if limit.is_none() && zone == ZoneKind::Battlefield {
-            for _ in 0..repeats(state, happened, controller) {
-                found.push(trigger.clone());
+            if shot.is_none() {
+                shot = snapshot(state, object.id());
             }
+            let Some(shot) = &shot else {
+                continue;
+            };
+            let trigger = Triggered {
+                source,
+                ability: address.ability,
+                origin: address.source,
+                controller,
+                cause,
+                snapshot: shot.clone(),
+                delayed: None,
+            };
+            // An ability that triggers only once each turn does so once, whatever else is said of it.
+            if limit.is_none() && zone == ZoneKind::Battlefield {
+                for _ in 0..repeats(state, happened, controller) {
+                    found.push(trigger.clone());
+                }
+            }
+            found.push(trigger);
         }
-        found.push(trigger);
     }
 }
 
@@ -783,11 +903,22 @@ pub fn detect(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Trigge
     }
     let mut found = Vec::new();
     let mut used = Used::default();
-    for happened in happenings(pre, events, post) {
+    let all = happenings(pre, events, post);
+    for happened in &all {
         let state = if happened.looks_back() { pre } else { post };
-        permanents(state, &happened, &mut found, &mut used);
-        elsewhere(state, &happened, &mut found, &mut used);
-        delayed(state, post, &happened, &mut found, &mut used);
+        permanents(state, happened, &mut found, &mut used);
+        elsewhere(state, happened, &mut found, &mut used);
+        delayed(state, post, happened, &mut found, &mut used);
+    }
+    // The events of the batch together, after each of them: what looks back is judged against `pre`, the rest `post`.
+    let (back, forward): (Vec<Happened>, Vec<Happened>) =
+        all.into_iter().partition(Happened::looks_back);
+    for (state, members) in [(pre, back), (post, forward)] {
+        if !members.is_empty() {
+            let together = Happened::Batch(members);
+            permanents(state, &together, &mut found, &mut used);
+            elsewhere(state, &together, &mut found, &mut used);
+        }
     }
     found
 }

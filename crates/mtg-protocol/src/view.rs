@@ -141,11 +141,11 @@ pub struct PlayerView {
     pub mulligans: u32,
     /// Opening-hand progress.
     pub mulligan: MulliganStatus,
-    /// Hand; cards listed only for its owner.
+    /// Hand; cards listed only for its owner, or for every seat when the table has open hands.
     pub hand: ZoneView,
-    /// Library; the count only, never the cards but the top one while a rule has it revealed to every seat.
+    /// Library; the count only, never the cards but the top one while a rule or the table has it revealed to every seat.
     pub library: ZoneView,
-    /// The top card of the library while a rule has it revealed; left out otherwise.
+    /// The top card of the library while a rule or the table has it revealed; left out otherwise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub revealed_top: Option<ObjectId>,

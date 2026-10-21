@@ -9,6 +9,7 @@ use super::wrong_effect;
 use crate::cast::payment_decision;
 use crate::choose::{Choice, YesNoOptions};
 use crate::decision::{Decision, DecisionKind};
+use crate::help::Offered;
 use crate::mana::can_afford;
 use crate::price::{Leaves, Price};
 use crate::priority::mana_options;
@@ -138,6 +139,7 @@ fn payment(cx: &Cx<'_>, player: PlayerId, cost: ManaCost) -> Result<Decision, Re
         cx.scope.source.id,
         cost,
         mana_options(state, player),
+        Offered::default(),
         Spend::other(),
         false,
         0,

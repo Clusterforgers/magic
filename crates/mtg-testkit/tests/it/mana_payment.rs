@@ -168,6 +168,7 @@ fn manual_payments_must_be_exact(
         pool: vec![],
         taps: chosen,
         life: 0,
+        ..Payment::default()
     })));
     match rejection {
         None => {
@@ -199,6 +200,7 @@ fn tapping_the_same_land_twice_or_an_unknown_source_is_rejected() -> Result<(), 
         pool: vec![],
         taps: vec![first, first],
         life: 0,
+        ..Payment::default()
     };
     assert!(matches!(
         driver.answer(Answer::PayMana(PayChoice::Manual(twice))),
@@ -213,6 +215,7 @@ fn tapping_the_same_land_twice_or_an_unknown_source_is_rejected() -> Result<(), 
         pool: vec![],
         taps: vec![first, stranger],
         life: 0,
+        ..Payment::default()
     };
     assert!(
         driver
@@ -298,6 +301,7 @@ fn floating_mana_pays_first_and_may_be_chosen_explicitly() -> Result<(), ScriptE
         pool: vec![ManaType::Red],
         taps: vec![forest],
         life: 0,
+        ..Payment::default()
     })))?;
     driver.expect_event("ManaSpent of R and G", |e| {
         matches!(e, Event::ManaSpent { mana, .. } if mana.len() == 2 && mana.contains(&ManaType::Red) && mana.contains(&ManaType::Green))
@@ -314,6 +318,7 @@ fn spending_floating_mana_that_does_not_exist_is_rejected() -> Result<(), Script
         pool: vec![ManaType::Green],
         taps: vec![],
         life: 0,
+        ..Payment::default()
     })));
     assert!(result.is_err());
     assert_eq!(driver.engine().state_hash(), before);
@@ -367,6 +372,7 @@ fn completing_a_partial_payment_keeps_the_chosen_land_and_pays_the_rest() -> Res
         pool: vec![],
         taps: vec![plains],
         life: 0,
+        ..Payment::default()
     })))?;
     let tapped: Vec<_> = events
         .iter()
@@ -406,6 +412,7 @@ fn a_partial_payment_that_cannot_be_finished_is_rejected_whole(
         pool: vec![],
         taps,
         life: 0,
+        ..Payment::default()
     })));
     assert!(matches!(
         result,

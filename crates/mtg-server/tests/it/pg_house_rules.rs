@@ -4,7 +4,9 @@
 use crate::common;
 
 use common::{Bot, drive, roomy};
-use mtg_core::house::{EmptyLibrary, HandLimit, Handicap, HouseRules, SkipFirstDraw};
+use mtg_core::house::{
+    AttackRange, EmptyLibrary, HandLimit, Handicap, HouseRules, MulliganStyle, SkipFirstDraw,
+};
 use mtg_core::ids::PlayerId;
 use mtg_engine::replay;
 use mtg_protocol::ClientMessage;
@@ -60,6 +62,11 @@ fn some_rules() -> HouseRules {
         turn_limit: Some(30),
         winning_life: Some(60),
         poison_threshold: Some(3),
+        attack_range: Some(AttackRange::Neighbours),
+        open_hands: Some(true),
+        revealed_library_top: Some(true),
+        opening_hand_smoothing: Some(true),
+        mulligan_style: Some(MulliganStyle::Vancouver),
         handicaps: vec![Handicap {
             seat: PlayerId(1),
             starting_life: Some(9),
@@ -120,6 +127,11 @@ async fn a_game_made_under_house_rules_comes_back_under_them_and_ends_as_the_sam
                 "turn_limit": 30,
                 "winning_life": 60,
                 "poison_threshold": 3,
+                "attack_range": "neighbours",
+                "open_hands": true,
+                "revealed_library_top": true,
+                "opening_hand_smoothing": true,
+                "mulligan_style": "vancouver",
                 "handicaps": [{ "seat": 1, "starting_life": 9, "opening_hand_size": 4 }],
             })
         );

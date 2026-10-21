@@ -14,6 +14,7 @@ use crate::choose::{
     TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
 };
 use crate::combat::{AttackTarget, DamageTarget};
+use crate::help::{Help, Offered};
 use crate::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use crate::spend::Spend;
 
@@ -114,6 +115,18 @@ pub struct MulliganOptions {
     pub bottom_if_keep: usize,
     /// Cards put on the bottom if the hand drawn by one more mulligan is kept (equals `bottom_if_keep` when it is free).
     pub bottom_if_mulligan: usize,
+    /// Cards in the hand one more mulligan draws, as the table's mulligan style sizes it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub hand_if_mulligan: Option<usize>,
+    /// Cards scried after keeping this hand; left out when none are.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub scry_if_keep: Option<usize>,
+    /// Cards scried after keeping the hand one more mulligan draws; left out when none are.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub scry_if_mulligan: Option<usize>,
 }
 
 /// Options for choosing cards to bottom.
@@ -163,6 +176,10 @@ pub struct PayOptions {
     pub pool: ManaPool,
     /// Mana abilities that may be tapped.
     pub sources: Vec<ManaOption>,
+    /// The creatures that may be tapped (`convoke`) and the graveyard cards that may be exiled (`delve`) to pay part of the cost; boxed to keep a decision small, and flat on the wire.
+    #[serde(flatten)]
+    #[cfg_attr(feature = "ts", ts(flatten))]
+    pub help: Box<Offered>,
     /// What the payment is for, which decides what restricted mana may be spent on it; left out means neither a spell nor an ability.
     #[serde(default, skip_serializing_if = "Spend::is_other")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Spend>", optional))]
@@ -175,6 +192,13 @@ pub struct PayOptions {
     pub life: i32,
     /// The most life this payment may take: 2 for each Phyrexian symbol in the cost, within the life total (CR 119.4).
     pub max_life: u32,
+}
+
+impl PayOptions {
+    /// The creatures and cards that may help pay, as the payment functions read them.
+    pub fn help(&self) -> Help<'_> {
+        self.help.help()
+    }
 }
 
 /// One creature that may attack and the defenders it may attack.

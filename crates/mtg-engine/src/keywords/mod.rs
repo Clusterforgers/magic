@@ -531,7 +531,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 32] = [
+    const RUN: [&str; 34] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -562,6 +562,8 @@ mod tests {
         "Keyword.Overload",
         "Keyword.Cycling",
         "Keyword.Cascade",
+        "Keyword.Convoke",
+        "Keyword.Delve",
         "Keyword.Madness",
         "Keyword.Suspend",
     ];

@@ -1,7 +1,7 @@
-//! Goal: the house rules of the turn and life as a random table sets them, for the fuzz games and the properties of every file that plays under house rules.
+//! Goal: the house rules of the turn, life and table as a random table sets them, for the fuzz games and the properties of every file that plays under house rules.
 #![allow(dead_code, clippy::unwrap_used, clippy::expect_used)]
 
-use mtg_core::house::{EmptyLibrary, Handicap, HouseRules};
+use mtg_core::house::{AttackRange, EmptyLibrary, Handicap, HouseRules, MulliganStyle};
 use mtg_core::ids::PlayerId;
 use mtg_engine::rng::GameRng;
 use proptest::prelude::*;
@@ -37,6 +37,21 @@ pub fn random_turn_rules(rng: &mut GameRng) -> HouseRules {
         turn_limit: to_u32(turns, 1),
         winning_life: wins.and_then(|n| i32::try_from(n + 10).ok()),
         poison_threshold: to_u32(poison, 1),
+        attack_range: match rng.below(4) {
+            0 => Some(AttackRange::Any),
+            1 => Some(AttackRange::Neighbours),
+            2 => Some(AttackRange::Left),
+            _ => None,
+        },
+        open_hands: (rng.below(3) == 0).then(|| rng.below(2) == 0),
+        revealed_library_top: (rng.below(3) == 0).then(|| rng.below(2) == 0),
+        opening_hand_smoothing: (rng.below(3) == 0).then(|| rng.below(2) == 0),
+        mulligan_style: match rng.below(4) {
+            0 => Some(MulliganStyle::London),
+            1 => Some(MulliganStyle::Paris),
+            2 => Some(MulliganStyle::Vancouver),
+            _ => None,
+        },
         handicaps,
         ..HouseRules::default()
     }
@@ -70,18 +85,54 @@ pub fn any_turn_rules() -> impl Strategy<Value = HouseRules> {
         proptest::option::of(10..=80i32),
         proptest::option::of(1..=100u32),
         (any_handicap(0), any_handicap(1)),
+        any_table_rules(),
     )
         .prop_map(
-            |(draws, lands, burn, library, turns, wins, poison, (first, second))| HouseRules {
-                draw_step_cards: draws,
-                land_plays_per_turn: lands,
-                mana_burn: burn,
-                empty_library: library,
-                turn_limit: turns,
-                winning_life: wins,
-                poison_threshold: poison,
-                handicaps: first.into_iter().chain(second).collect(),
-                ..HouseRules::default()
+            |(draws, lands, burn, library, turns, wins, poison, (first, second), table)| {
+                HouseRules {
+                    attack_range: table.attack_range,
+                    open_hands: table.open_hands,
+                    revealed_library_top: table.revealed_library_top,
+                    opening_hand_smoothing: table.opening_hand_smoothing,
+                    mulligan_style: table.mulligan_style,
+                    draw_step_cards: draws,
+                    land_plays_per_turn: lands,
+                    mana_burn: burn,
+                    empty_library: library,
+                    turn_limit: turns,
+                    winning_life: wins,
+                    poison_threshold: poison,
+                    handicaps: first.into_iter().chain(second).collect(),
+                    ..HouseRules::default()
+                }
             },
         )
+}
+
+/// The rules of the table (attack range, open hands, revealed tops, smoothing, mulligan style), each left out about
+/// half the time.
+pub fn any_table_rules() -> impl Strategy<Value = HouseRules> {
+    (
+        proptest::option::of(prop_oneof![
+            Just(AttackRange::Any),
+            Just(AttackRange::Neighbours),
+            Just(AttackRange::Left)
+        ]),
+        proptest::option::of(any::<bool>()),
+        proptest::option::of(any::<bool>()),
+        proptest::option::of(any::<bool>()),
+        proptest::option::of(prop_oneof![
+            Just(MulliganStyle::London),
+            Just(MulliganStyle::Paris),
+            Just(MulliganStyle::Vancouver)
+        ]),
+    )
+        .prop_map(|(range, open, top, smoothing, style)| HouseRules {
+            attack_range: range,
+            open_hands: open,
+            revealed_library_top: top,
+            opening_hand_smoothing: smoothing,
+            mulligan_style: style,
+            ..HouseRules::default()
+        })
 }

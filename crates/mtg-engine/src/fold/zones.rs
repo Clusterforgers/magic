@@ -13,7 +13,7 @@ use crate::error::EngineError;
 use crate::events::Event;
 use crate::library::Scried;
 use crate::object::{GameObject, ObjectKind, PermanentState};
-use crate::state::GameState;
+use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
 /// Moves `id` to `to`, creating or dropping permanent state and leaving combat as needed.
@@ -116,6 +116,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             object,
             choices,
         } => {
+            state.tally(*player, Tally::Cast);
             // A card is cast from its hand, or from the zone a permission names (CR 601.3): never from play.
             let from = state
                 .objects
@@ -161,6 +162,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 return Err(invalid("drawn card is not on top of the library"));
             }
             move_object(state, *object, Zone::Hand(*player), Placement::Top)?;
+            state.tally(*player, Tally::Drawn);
         }
         Event::CardDiscarded { player, object } => {
             expect_in(state, *object, Zone::Hand(*player))?;

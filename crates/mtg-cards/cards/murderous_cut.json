@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c0ce7d5a-68fd-41f3-b5ba-a1a178cee9ec",
+  "name": "Murderous Cut",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murderous Cut",
+      "oracle_fingerprint": "109ae7b4cf0530c3f863b666e3d42f81",
+      "abilities": [
+        { "Keyword": "Delve" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

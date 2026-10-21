@@ -151,18 +151,21 @@ fn answers() -> Vec<Answer> {
             pool: vec![ManaType::Red],
             taps: vec![source],
             life: 0,
+            ..Payment::default()
         })),
         Answer::PayMana(PayChoice::Manual(Payment {
             restricted: Vec::new(),
             pool: vec![],
             taps: vec![],
             life: 4,
+            ..Payment::default()
         })),
         Answer::PayMana(PayChoice::Complete(Payment {
             restricted: Vec::new(),
             pool: vec![],
             taps: vec![source],
             life: 2,
+            ..Payment::default()
         })),
         Answer::DeclareAttackers(vec![
             (a, AttackTarget::Player(PlayerId(1))),
@@ -215,6 +218,9 @@ fn decision_kinds() -> Vec<DecisionKind> {
             free_mulligans: 1,
             bottom_if_keep: 0,
             bottom_if_mulligan: 1,
+            hand_if_mulligan: Some(6),
+            scry_if_keep: Some(1),
+            scry_if_mulligan: Some(1),
         }),
         DecisionKind::BottomCards(BottomOptions {
             hand: vec![a, b],
@@ -239,6 +245,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             can_cancel: true,
             life: 20,
             max_life: 0,
+            help: Box::default(),
         }),
         DecisionKind::PayMana(PayOptions {
             spend: Box::new(Spend::other()),
@@ -250,6 +257,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             can_cancel: false,
             life: 3,
             max_life: 2,
+            help: Box::default(),
         }),
         DecisionKind::DeclareAttackers(AttackOptions {
             attackers: vec![AttackerOption {
@@ -916,6 +924,9 @@ fn mulligan_options_carry_the_bottom_counts_by_name() {
         free_mulligans: 1,
         bottom_if_keep: 0,
         bottom_if_mulligan: 1,
+        hand_if_mulligan: None,
+        scry_if_keep: None,
+        scry_if_mulligan: None,
     };
     assert_eq!(
         serde_json::to_value(DecisionKind::Mulligan(options)).unwrap(),
@@ -927,6 +938,40 @@ fn mulligan_options_carry_the_bottom_counts_by_name() {
             "bottom_if_keep": 0,
             "bottom_if_mulligan": 1,
         }})
+    );
+}
+
+#[test]
+fn mulligan_options_name_the_size_of_the_next_hand_and_the_scries_when_they_are_known() {
+    let options = MulliganOptions {
+        hand: vec![ObjectId(3)],
+        mulligans_taken: 1,
+        can_mulligan: true,
+        free_mulligans: 0,
+        bottom_if_keep: 0,
+        bottom_if_mulligan: 0,
+        hand_if_mulligan: Some(5),
+        scry_if_keep: Some(1),
+        scry_if_mulligan: Some(1),
+    };
+    let wire = json!({"Mulligan": {
+        "hand": [3],
+        "mulligans_taken": 1,
+        "can_mulligan": true,
+        "free_mulligans": 0,
+        "bottom_if_keep": 0,
+        "bottom_if_mulligan": 0,
+        "hand_if_mulligan": 5,
+        "scry_if_keep": 1,
+        "scry_if_mulligan": 1,
+    }});
+    assert_eq!(
+        serde_json::to_value(DecisionKind::Mulligan(options.clone())).unwrap(),
+        wire
+    );
+    assert_eq!(
+        serde_json::from_value::<DecisionKind>(wire).unwrap(),
+        DecisionKind::Mulligan(options)
     );
 }
 
@@ -966,6 +1011,7 @@ fn a_payment_names_the_life_it_pays_and_may_leave_it_out() {
         pool: vec![ManaType::Red],
         taps: vec![],
         life: 2,
+        ..Payment::default()
     };
     assert_eq!(
         serde_json::to_value(&payment).unwrap(),
@@ -990,6 +1036,7 @@ fn pay_options_carry_the_life_total_and_the_most_life_that_may_be_paid() {
         can_cancel: true,
         life: 2,
         max_life: 2,
+        help: Box::default(),
     };
     let value = serde_json::to_value(DecisionKind::PayMana(options)).unwrap();
     assert_eq!(value["PayMana"]["life"], 2);
@@ -1235,6 +1282,7 @@ fn pipeline_events() -> Vec<Event> {
             cause: Some(Cause {
                 subjects: vec![target],
                 snapshots: vec![shot.clone()],
+                amount: 0,
             }),
             delayed: Some(DelayedId(2)),
         })),

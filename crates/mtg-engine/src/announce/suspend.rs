@@ -9,6 +9,7 @@ use crate::choose::Target;
 use crate::counters::CountersChanged;
 use crate::decision::{Decision, DecisionKind};
 use crate::events::{Event, ZoneCause};
+use crate::help::Offered;
 use crate::keywords::suspend::time_counter;
 use crate::mana::can_afford;
 use crate::object::ObjectRef;
@@ -33,6 +34,7 @@ pub(super) fn next(state: &GameState, player: PlayerId, card: ObjectId) -> Next 
         card,
         cost,
         mana_options(state, player),
+        Offered::default(),
         Spend::other(),
         true,
         0,

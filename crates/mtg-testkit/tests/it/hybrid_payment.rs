@@ -341,6 +341,7 @@ fn the_engine_finishes_a_partial_payment_with_life_only_as_a_last_resort(
         pool: vec![],
         taps: taps.clone(),
         life,
+        ..Payment::default()
     })))?;
     assert_eq!(life_paid(&events).iter().sum::<u32>(), life_in_the_end);
     assert_eq!(tapped_count(&driver), lands_tapped);
