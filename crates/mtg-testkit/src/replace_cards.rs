@@ -45,6 +45,27 @@ pub fn mend() -> Result<Arc<CardDefinition>, CorpusError> {
     ))
 }
 
+/// `{B}` sorcery: put target creature or land card from your graveyard onto the battlefield, tapped when `tapped`.
+///
+/// The card is put onto the battlefield by an effect, which is a way in of its own for the replacement effects of
+/// a permanent that enters (a land played and a spell that resolves are the others).
+pub fn raise_dead(name: &str, tapped: bool) -> Result<Arc<CardDefinition>, CorpusError> {
+    let to = if tapped {
+        r#"{"Battlefield":{"tapped":true}}"#
+    } else {
+        r#"{"Battlefield":{}}"#
+    };
+    let spell = format!(
+        r#"{{"Spell":{{"targets":[{{"what":{{"Object":[{{"In":"Graveyard"}},{{"OwnedBy":"You"}},{{"AnyOf":[{{"Type":"Creature"}},{{"Type":"Land"}}]}}]}}}}],"effects":[{{"Move":{{"what":{{"Target":0}},"to":{to}}}}}]}}}}"#
+    );
+    Ok(Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(0, &[Color::Black]))
+            .with_rules(rules(&spell)?),
+    ))
+}
+
 /// Cards of the corpus the replacement deck holds, with how many of each.
 const CORPUS_CARDS: [(&str, usize); 25] = [
     ("Anointed Procession", 2),
@@ -90,6 +111,7 @@ pub fn replace_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corpu
     for (card, copies) in [
         (raise_soldiers()?, 3),
         (mend()?, 2),
+        (raise_dead("Raise Dead", false)?, 2),
         (growth_spurt()?, 3),
         (study("Study"), 1),
         (mind_rot("Mind Rot"), 1),
@@ -119,8 +141,13 @@ mod tests {
     use mtg_cards::support::Support;
 
     #[test]
-    fn the_spells_make_tokens_and_gain_life() {
-        for card in [raise_soldiers().unwrap(), mend().unwrap()] {
+    fn the_spells_make_tokens_gain_life_and_put_cards_onto_the_battlefield() {
+        for card in [
+            raise_soldiers().unwrap(),
+            mend().unwrap(),
+            raise_dead("Raise Dead", false).unwrap(),
+            raise_dead("Raise Dead Tapped", true).unwrap(),
+        ] {
             assert_eq!(card.rules.len(), 1, "{}", card.name);
         }
     }
