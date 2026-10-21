@@ -25,9 +25,11 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
         (What::Trigger(waiting), _) => {
             Next::Commit(vec![trigger_event(ctx.state, waiting, work.choices)])
         }
-        (What::Spell(spell), Some(cost)) => pay(ctx, *spell, cost, total.sources),
+        (What::Spell(spell), Some(cost)) => pay(ctx, *spell, cost, total.sources, total.life),
         (What::Spell(_), None) => Next::Drop,
-        (What::Ability(ability), Some(cost)) => pay(ctx, ability.object, cost, total.sources),
+        (What::Ability(ability), Some(cost)) => {
+            pay(ctx, ability.object, cost, total.sources, total.life)
+        }
         (What::Ability(ability), None) => {
             activation_events(ctx.state, ctx.player, *ability, work.choices)
                 .map_or(Next::Drop, Next::Commit)
@@ -37,8 +39,22 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
 
 /// The payment decision for `cost` on behalf of `object`, if it can be paid; nothing is paid until it is answered, so
 /// the player can back out.
-fn pay(ctx: &Ctx<'_>, object: ObjectId, cost: ManaCost, sources: Vec<ManaOption>) -> Next {
-    match payment_decision(ctx.state, ctx.player, object, cost, sources, true) {
+fn pay(
+    ctx: &Ctx<'_>,
+    object: ObjectId,
+    cost: ManaCost,
+    sources: Vec<ManaOption>,
+    reserved_life: u32,
+) -> Next {
+    match payment_decision(
+        ctx.state,
+        ctx.player,
+        object,
+        cost,
+        sources,
+        true,
+        reserved_life,
+    ) {
         Some(options)
             if can_afford(&options.cost, &options.pool, &options.sources, options.life) =>
         {

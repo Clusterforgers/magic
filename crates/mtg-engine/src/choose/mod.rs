@@ -112,9 +112,26 @@ pub struct Choices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub way: Option<CastWay>,
+    /// The permanents and cards picked for the parts of an ability's cost that take them (a sacrifice, a discard, an
+    /// exile from a graveyard, a tap, a return to hand), one list for each such part in the order the cost prints them.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Vec<ObjectId>>>", optional))]
+    pub cost_picks: Option<Box<Vec<Vec<ObjectId>>>>,
 }
 
 impl Choices {
+    /// The permanents and cards picked for the parts of the cost that take them, one list for each such part.
+    pub fn cost_picks(&self) -> &[Vec<ObjectId>] {
+        self.cost_picks.as_deref().map_or(&[], Vec::as_slice)
+    }
+
+    /// Adds the objects picked for the next part of the cost that takes some.
+    pub(crate) fn pick_for_cost(&mut self, objects: Vec<ObjectId>) {
+        self.cost_picks
+            .get_or_insert_with(Box::default)
+            .push(objects);
+    }
+
     /// Whether nothing was announced, so serialization can leave it out.
     pub fn is_empty(&self) -> bool {
         *self == Choices::default()

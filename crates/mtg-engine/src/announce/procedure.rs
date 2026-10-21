@@ -104,6 +104,7 @@ fn needs(kicked: bool, x: u32) -> Needs {
         ways: Vec::new(),
         optional: if kicked { vec![kicker()] } else { Vec::new() },
         x: (x > 0).then_some(XCost::Mana { symbols: x }),
+        price: None,
     }
 }
 
@@ -188,9 +189,9 @@ fn greedy(kind: &DecisionKind) -> Option<Answered> {
 #[test]
 fn the_steps_are_listed_in_the_order_of_the_rules() {
     let rules: Vec<char> = Phase::ORDER.iter().map(|phase| phase.rule()).collect();
-    assert_eq!(rules, ['b', 'b', 'b', 'b', 'c', 'd', 'e', 'f', 'g']);
+    assert_eq!(rules, ['b', 'b', 'b', 'b', 'b', 'c', 'd', 'e', 'f', 'g']);
     assert_eq!(Phase::ORDER[0], Phase::Modes);
-    assert_eq!(Phase::ORDER[8], Phase::Payment);
+    assert_eq!(Phase::ORDER[9], Phase::Payment);
     let mut seen = Phase::ORDER.to_vec();
     seen.dedup();
     assert_eq!(seen.len(), Phase::ORDER.len(), "each step once");

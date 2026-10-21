@@ -3,7 +3,7 @@
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
 //! runs vanilla permanents, mana abilities that cost `{T}` and/or their source (plain or of several, counted or chosen mana, with effects that ask nothing), spells, abilities that cost `{T}`, mana
-//! and moving their source (sacrificed, exiled or discarded), abilities that work from a hand, a graveyard, exile, the
+//! and moving their source (sacrificed, exiled or discarded), life, counters removed from the source and permanents and cards the player picks (sacrificed, discarded, exiled from a graveyard, tapped or returned to hand), abilities that work from a hand, a graveyard, exile, the
 //! command zone or the stack, state triggers, and triggered abilities made of drawing, discarding, milling, sacrificing, destroying, exiling, countering,
 //! scrying, looking at, revealing, searching for, moving and shuffling cards, tapping and untapping, winning the
 //! game, life and damage (and delayed triggers), conditions, "may" and "pay" and choices and modal spells, continuous
@@ -11,7 +11,7 @@
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
 //! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
 //! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
-//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, permissions to cast (from another zone, without paying, as though with flash), attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, cycling, permissions to cast (from another zone, without paying, as though with flash), attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
@@ -45,6 +45,13 @@ const RUNS: &[&str] = &[
     "Cost.SacrificeSelf",
     "Cost.ExileSelf",
     "Cost.DiscardSelf",
+    "Cost.PayLife",
+    "Cost.Sacrifice",
+    "Cost.Discard",
+    "Cost.RemoveCounters",
+    "Cost.ExileFromGraveyard",
+    "Cost.TapPermanents",
+    "Cost.ReturnToHand",
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Mill",
@@ -141,6 +148,7 @@ const RUNS: &[&str] = &[
     "Keyword.Flashback",
     "Keyword.Evoke",
     "Keyword.Overload",
+    "Keyword.Cycling",
     "Condition.CastWith",
     "Rule.MayCast",
     "Condition.Kicked",
@@ -223,7 +231,8 @@ mod tests {
     #[case::losing_life("Effect.LoseLife", true)]
     #[case::mana_costs("Cost.Mana", true)]
     #[case::x_in_a_mana_cost("Cost.Mana.X", true)]
-    #[case::paying_life("Cost.PayLife", false)]
+    #[case::paying_life("Cost.PayLife", true)]
+    #[case::paying_a_counted_amount_of_life("Cost.PayLife.Counted", false)]
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_zones("Ability.From", true)]
     #[case::sorcery_timing("Ability.Sorcery", true)]
@@ -322,7 +331,7 @@ mod tests {
     #[case::creating_tokens("Effect.CreateToken", true)]
     #[case::creating_copies("Effect.CreateToken.Copy", false)]
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
-    #[case::sacrificing_a_permanent("Cost.Sacrifice", false)]
+    #[case::sacrificing_a_permanent("Cost.Sacrifice", true)]
     #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
     #[case::paying_by_exiling_the_source("Effect.Pay.ExileSelf", false)]
     #[case::paying_by_discarding_the_source("Effect.Pay.DiscardSelf", false)]
@@ -377,10 +386,10 @@ mod tests {
     #[case::totals("Amount.Total", false)]
     #[case::card_types_among_cards("Amount.CardTypes", false)]
     #[case::paying_energy("Cost.PayEnergy", false)]
-    #[case::removing_counters_as_a_cost("Cost.RemoveCounters", false)]
-    #[case::tapping_permanents_as_a_cost("Cost.TapPermanents", false)]
-    #[case::exiling_from_a_graveyard_as_a_cost("Cost.ExileFromGraveyard", false)]
-    #[case::returning_to_a_hand_as_a_cost("Cost.ReturnToHand", false)]
+    #[case::removing_counters_as_a_cost("Cost.RemoveCounters", true)]
+    #[case::tapping_permanents_as_a_cost("Cost.TapPermanents", true)]
+    #[case::exiling_from_a_graveyard_as_a_cost("Cost.ExileFromGraveyard", true)]
+    #[case::returning_to_a_hand_as_a_cost("Cost.ReturnToHand", true)]
     #[case::dealing_damage_triggers("Trigger.DealsDamage", false)]
     #[case::life_gain_triggers("Trigger.LifeGained", false)]
     #[case::life_loss_triggers("Trigger.LifeLost", false)]

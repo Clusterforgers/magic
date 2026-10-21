@@ -528,7 +528,7 @@ mod tests {
     }
 
     /// The keywords whose rules the engine runs, named as the capabilities name them.
-    const RUN: [&str; 28] = [
+    const RUN: [&str; 29] = [
         "Keyword.Flash",
         "Keyword.Flying",
         "Keyword.Reach",
@@ -557,6 +557,7 @@ mod tests {
         "Keyword.Flashback",
         "Keyword.Evoke",
         "Keyword.Overload",
+        "Keyword.Cycling",
     ];
 
     /// What a keyword answers to each hook that does not need a game.

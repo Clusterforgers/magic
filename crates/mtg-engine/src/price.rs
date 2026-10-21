@@ -1,18 +1,20 @@
-//! What a cost asks of a player: the `{T}`, the sacrifice, exile or discard of the source and the mana the engine
-//! pays, and the mana sources that may pay it.
+//! What a cost asks of a player: the `{T}`, the sacrifice, exile or discard of the source, the mana and the other parts
+//! of an ability's cost (`parts`) the engine pays, and the mana sources that may pay it.
 
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
 use crate::mana::ManaOption;
+use crate::parts::{Part, Payer};
 use crate::priority::mana_options;
 use crate::state::GameState;
 
 /// What paying a cost does to its source besides tapping it.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub(crate) enum Leaves {
     /// The source stays where it is.
+    #[default]
     Stays,
     /// It is sacrificed from the battlefield.
     Sacrificed,
@@ -23,7 +25,7 @@ pub(crate) enum Leaves {
 }
 
 /// The parts of a cost the engine pays today.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub(crate) struct Price {
     /// The source is tapped.
     pub(crate) tap: bool,
@@ -33,6 +35,8 @@ pub(crate) struct Price {
     pub(crate) mana: Option<ManaCost>,
     /// How many `{X}` the mana parts hold; each costs X generic mana once X is announced.
     pub(crate) x: u32,
+    /// The other parts, in the order the cost prints them: life, counters removed, the objects the player picks.
+    pub(crate) parts: Vec<Part>,
 }
 
 /// The name `Caps` gives a cost part, for the parts the engine does not pay.
@@ -57,10 +61,13 @@ const fn unpaid(item: &CostItem) -> &'static str {
 
 impl Price {
     /// The price of a cost paid in the middle of a resolution, or the name of the first part the engine does not pay:
-    /// another kind of cost, an `{X}` (`Cost.Mana.X`; no announcement chooses it there) or a second way to lose the
-    /// source.
+    /// another kind of cost, a part that needs the announcement of an ability to pick what it takes, an `{X}`
+    /// (`Cost.Mana.X`; no announcement chooses it there) or a second way to lose the source.
     pub(crate) fn of(cost: &Cost) -> Result<Price, &'static str> {
         let price = Price::announced(cost)?;
+        if let Some(part) = price.parts.first() {
+            return Err(part.name());
+        }
         if price.x > 0 {
             return Err("Cost.Mana.X");
         }
@@ -75,6 +82,7 @@ impl Price {
         let mut symbols = Vec::new();
         let mut mana = false;
         let mut x = 0u32;
+        let mut parts = Vec::new();
         for item in &cost.0 {
             let moves = match item {
                 CostItem::SacrificeSelf => Some(Leaves::Sacrificed),
@@ -96,7 +104,10 @@ impl Price {
                     x = x.saturating_add(u32::from(part.x()));
                     symbols.extend_from_slice(part.rest().symbols());
                 }
-                other => return Err(unpaid(other)),
+                other => match Part::read(other)? {
+                    Some(part) => parts.push(part),
+                    None => return Err(unpaid(other)),
+                },
             }
         }
         Ok(Price {
@@ -104,12 +115,66 @@ impl Price {
             leaves,
             mana: mana.then(|| ManaCost::from_symbols(symbols)),
             x,
+            parts,
         })
     }
 
     /// Whether paying moves the source out of the zone it is in.
     pub(crate) fn moves_source(&self) -> bool {
         self.leaves != Leaves::Stays
+    }
+
+    /// The objects the pick of `part` cannot take: the source when the price already loses it, or taps it and the part
+    /// taps permanents, and what `picked` holds, the picks made for the parts before.
+    pub(crate) fn barred(
+        &self,
+        part: &Part,
+        source: ObjectId,
+        picked: &[Vec<ObjectId>],
+    ) -> Vec<ObjectId> {
+        let mut barred: Vec<ObjectId> = picked.iter().flatten().copied().collect();
+        if self.moves_source() || (self.tap && part.taps()) {
+            barred.push(source);
+        }
+        barred
+    }
+
+    /// The objects the player would give for every part of the price beyond mana (CR 118.3), or `None` when some part
+    /// cannot be paid now: each part takes what is left of the objects the parts before it would take, and leaves the
+    /// permanents that make mana for the mana as far as it can.
+    pub(crate) fn claimed(
+        &self,
+        state: &GameState,
+        player: PlayerId,
+        source: ObjectId,
+    ) -> Option<Vec<ObjectId>> {
+        let spare: Vec<ObjectId> = mana_options(state, player)
+            .iter()
+            .map(|option| option.source.object)
+            .collect();
+        let mut taken: Vec<Vec<ObjectId>> = Vec::new();
+        for part in &self.parts {
+            let barred = self.barred(part, source, &taken);
+            let payer = Payer {
+                state,
+                player,
+                source,
+                barred: &barred,
+            };
+            taken.push(part.payable(&payer, &spare)?);
+        }
+        Some(taken.into_iter().flatten().collect())
+    }
+
+    /// The life the parts of the price pay.
+    pub(crate) fn life(&self) -> u32 {
+        self.parts
+            .iter()
+            .map(|part| match part {
+                Part::Life(amount) => *amount,
+                _ => 0,
+            })
+            .sum()
     }
 
     /// The mana abilities `player` may tap to pay the mana of an ability of `source`: the source itself is not one of
@@ -193,6 +258,7 @@ mod tests {
                 },
                 mana: mana(expected),
                 x: 0,
+                parts: Vec::new(),
             })
         );
     }

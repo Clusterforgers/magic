@@ -455,6 +455,56 @@ pub(crate) fn sacrifice(filter: &Selector, count: usize) -> String {
     format!("Sacrifice {count} {}.", join(&plural(&head), &tail))
 }
 
+/// `count` of what `filter` describes, with `place` after them: "a creature you control", "2 creatures you control".
+fn counted(filter: &Selector, count: usize, extra: &str) -> String {
+    let (head, tail) = phrase(filter);
+    let tail = if tail.is_empty() {
+        extra.to_owned()
+    } else {
+        format!("{tail} {extra}")
+    };
+    if count == 1 {
+        format!("{} {}", article(&head), join(&head, &tail))
+    } else {
+        format!("{count} {}", join(&plural(&head), &tail))
+    }
+}
+
+/// What a cost that exiles cards from the payer's graveyard asks: "Exile a creature card from your graveyard."
+pub(crate) fn exile_from_graveyard(filter: &Selector, count: usize) -> String {
+    let (head, _) = phrase(filter);
+    let kind = if head == "permanent" {
+        "card".to_owned()
+    } else {
+        format!("{head} card")
+    };
+    let what = if count == 1 {
+        format!("{} {kind}", article(&kind))
+    } else {
+        format!("{count} {kind}s")
+    };
+    format!("Exile {what} from your graveyard.")
+}
+
+/// What a cost that taps permanents the payer controls asks: "Tap an untapped creature you control."
+pub(crate) fn tap_untapped(filter: &Selector, count: usize) -> String {
+    let (head, tail) = phrase(filter);
+    let untapped = format!("untapped {head}");
+    let what = if count == 1 {
+        format!("{} {}", article(&untapped), join(&untapped, &tail))
+    } else {
+        format!("{count} {}", join(&plural(&untapped), &tail))
+    };
+    format!("Tap {what} you control.")
+}
+
+/// What a cost that returns permanents the payer controls to hand asks: "Return a land you control to its owner's hand."
+pub(crate) fn return_to_hand(filter: &Selector, count: usize) -> String {
+    let what = counted(filter, count, "you control");
+    let owner = if count == 1 { "its" } else { "their" };
+    format!("Return {what} to {owner} owner's hand.")
+}
+
 /// What a search asks of the player who chooses, as a card says it: "Search your library for a basic land card.",
 /// "Search your library for up to 2 basic land cards." `most` is `usize::MAX` for any number.
 pub(crate) fn search(zone: ZoneKind, filter: &Selector, min: usize, most: usize) -> String {

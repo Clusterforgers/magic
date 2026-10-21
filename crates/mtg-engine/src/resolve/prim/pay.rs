@@ -132,6 +132,7 @@ fn payment(cx: &Cx<'_>, player: PlayerId, cost: ManaCost) -> Result<Decision, Re
         cost,
         mana_options(state, player),
         false,
+        0,
     )
     .map(|options| Decision {
         player,

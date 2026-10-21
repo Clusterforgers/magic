@@ -30,6 +30,11 @@ pub struct CardsOptions {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
     pub text: String,
+    /// Whether the cast or activation may still be backed out of by answering with no cards: nothing is logged until
+    /// it is paid for. Asked only for an announcement, whose questions take at least one card.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub can_cancel: bool,
 }
 
 /// The cards chosen.
@@ -61,16 +66,27 @@ pub(crate) fn check(options: &CardsOptions, cards: &[ObjectId]) -> Result<(), Il
     })
 }
 
+/// Checks the answer against the options it answers. Cards chosen while a spell or ability is announced are kept for
+/// the step that asked, and no cards back out of it when the options say it may be; cards chosen by an effect are
+/// logged for the step that asked.
 pub(crate) fn answer(
     player: PlayerId,
     options: &CardsOptions,
     choice: CardsChoice,
+    announcing: bool,
 ) -> Result<Outcome, EngineError> {
+    if announcing && options.can_cancel && choice.0.is_empty() {
+        return Ok(Outcome::CancelCast);
+    }
     check(options, &choice.0)?;
-    Ok(Outcome::Events(vec![Event::ChoiceMade {
-        player,
-        choice: Choice::Cards(choice.0),
-    }]))
+    Ok(if announcing {
+        Outcome::Cards(choice.0)
+    } else {
+        Outcome::Events(vec![Event::ChoiceMade {
+            player,
+            choice: Choice::Cards(choice.0),
+        }])
+    })
 }
 
 /// One player who takes cards from a list, and what the choice is for.
@@ -151,6 +167,7 @@ pub(crate) fn pick_selections(
                 min: u32::try_from(selection.min).unwrap_or(u32::MAX),
                 max: u32::try_from(most).unwrap_or(u32::MAX),
                 text: selection.text.clone(),
+                can_cancel: false,
             };
             match answers.next() {
                 None => {
@@ -206,6 +223,7 @@ mod tests {
             min,
             max,
             text: "Discard a card.".into(),
+            can_cancel: false,
         }
     }
 
@@ -221,7 +239,13 @@ mod tests {
         #[case] max: u32,
         #[case] chosen: &[u64],
     ) {
-        let outcome = answer(FOE, &options(from, min, max), CardsChoice(ids(chosen))).unwrap();
+        let outcome = answer(
+            FOE,
+            &options(from, min, max),
+            CardsChoice(ids(chosen)),
+            false,
+        )
+        .unwrap();
         let Outcome::Events(events) = outcome else {
             panic!("an answer to a choice is logged");
         };
@@ -249,7 +273,13 @@ mod tests {
         #[case] chosen: &[u64],
         #[case] refusal: IllegalAnswer,
     ) {
-        let error = answer(FOE, &options(from, min, max), CardsChoice(ids(chosen))).unwrap_err();
+        let error = answer(
+            FOE,
+            &options(from, min, max),
+            CardsChoice(ids(chosen)),
+            false,
+        )
+        .unwrap_err();
         assert!(
             matches!(&error, EngineError::Illegal(got) if *got == refusal),
             "{error:?}"
@@ -316,6 +346,7 @@ mod tests {
                     min: 2,
                     max: 2,
                     text: "Discard a card.".into(),
+                    can_cancel: false,
                 }),
             })
         );

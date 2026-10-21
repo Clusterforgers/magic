@@ -23,6 +23,8 @@ use crate::mana::{
 };
 use crate::mana_ability;
 use crate::object::PermanentState;
+use crate::parts::{self, Part};
+use crate::price::Price;
 use crate::snapshot::snapshot;
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -44,10 +46,24 @@ pub(crate) fn activation_events(
     let mut events = Vec::new();
     match &*rules {
         Ability::Activated { cost, .. } => {
-            if cost.0.contains(&CostItem::Tap) {
+            let price = Price::announced(cost).ok()?;
+            if price.tap {
                 events.push(Event::PermanentTapped {
                     object: ability.object,
                 });
+            }
+            // The other parts of the cost, in the order it prints them, with the objects the player picked for them.
+            let mut picks = choices.cost_picks().iter();
+            for part in &price.parts {
+                let picked = if matches!(part, Part::Pick(_)) {
+                    picks.next()?.as_slice()
+                } else {
+                    &[]
+                };
+                events.extend(part.events(state, player, ability.object, picked));
+                if let Part::Counters { counter, count } = part {
+                    parts::after_removal(&mut before.counters, counter, *count);
+                }
             }
             // The costs that move the source come before the activation, which names the source as it was (CR 113.7a): it is
             // sacrificed from the battlefield, discarded from the hand, or exiled from the zone it is in.
@@ -106,7 +122,8 @@ pub(crate) fn activation_events(
 }
 
 /// The payment decision for `cost`, which `player` pays with `sources` for `object`: the spell cast, the source of
-/// the ability activated or the source of the effect that asks. `None` when the player is not in the game.
+/// the ability activated or the source of the effect that asks, `reserved_life` of the life being paid by other parts of
+/// the cost. `None` when the player is not in the game.
 pub(crate) fn payment_decision(
     state: &GameState,
     player: PlayerId,
@@ -114,9 +131,14 @@ pub(crate) fn payment_decision(
     cost: ManaCost,
     sources: Vec<ManaOption>,
     can_cancel: bool,
+    reserved_life: u32,
 ) -> Option<PayOptions> {
     let seat = state.player(player)?;
-    let (pool, life) = (*seat.mana(), seat.life());
+    // The life another part of the cost pays is not there for the mana.
+    let life = seat
+        .life()
+        .saturating_sub(i32::try_from(reserved_life).unwrap_or(i32::MAX));
+    let pool = *seat.mana();
     Some(PayOptions {
         spell: object,
         auto_available: auto_payment(&cost, &pool, &sources, life).is_some(),

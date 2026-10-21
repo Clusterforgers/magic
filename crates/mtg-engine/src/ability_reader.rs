@@ -58,10 +58,26 @@ pub(crate) const fn works_from(ability: &Ability) -> Option<ZoneKind> {
 /// Whether a card with this definition prints an ability that works from a zone other than the battlefield
 /// (`GameState::possible`).
 pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
-    definition
-        .rules
-        .iter()
-        .any(|rules| works_from(rules).is_some_and(|from| !from.is_battlefield()))
+    let elsewhere = |rules: &Ability| works_from(rules).is_some_and(|from| !from.is_battlefield());
+    definition.rules.iter().any(|rules| match &**rules {
+        Ability::Keyword(keyword) => keywords::rules(keyword)
+            .adds_abilities(keyword)
+            .iter()
+            .any(elsewhere),
+        other => elsewhere(other),
+    })
+}
+
+/// The abilities that the keywords printed on `object`, which is not on the battlefield, add and that work from the
+/// zone it is in (cycling works from a hand).
+pub(crate) fn provided_here(object: &GameObject) -> Vec<(AbilityRef, Arc<Ability>)> {
+    let zone = zone_kind(object.zone());
+    printed_and_provided(object)
+        .into_iter()
+        .filter(|(address, rules)| {
+            !matches!(address.source, AbilitySource::Printed) && works_from(rules) == Some(zone)
+        })
+        .collect()
 }
 
 /// The abilities printed on `object`, which is not on the battlefield, that work from the zone it is in: what its owner

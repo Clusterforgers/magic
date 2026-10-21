@@ -226,6 +226,7 @@ mod tests {
             ways: Vec::new(),
             optional: Vec::new(),
             x: XCost::of(&game, &What::Spell(card), None),
+            price: None,
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {
@@ -268,6 +269,7 @@ mod tests {
             ways: Vec::new(),
             optional: Vec::new(),
             x: Some(XCost::Mana { symbols: 1 }),
+            price: None,
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         assert!(matches!(announce(&game, &mut pending), Next::Drop));

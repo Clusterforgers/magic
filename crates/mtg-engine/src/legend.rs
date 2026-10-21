@@ -78,6 +78,7 @@ pub(crate) fn decision(state: &GameState) -> Option<Decision> {
             min: 1,
             max: 1,
             text: format!("Legend rule: choose the {} to keep.", group.name),
+            can_cancel: false,
         }),
     })
 }

@@ -24,4 +24,9 @@ max: number,
 /**
  * What the choice is for, in the words of a card ("Discard a card."); empty when the engine gave none.
  */
-text?: string, };
+text?: string, 
+/**
+ * Whether the cast or activation may still be backed out of by answering with no cards: nothing is logged until
+ * it is paid for. Asked only for an announcement, whose questions take at least one card.
+ */
+can_cancel?: boolean, };
