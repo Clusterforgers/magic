@@ -17,13 +17,13 @@ use crate::state::GameState;
 use crate::wording;
 
 /// The players the effect names who are in the game are asked in turn order whether they will pay ("Pay {2}?"), until
-/// one does; a player who cannot pay, with the floating mana and the permanents they may tap, is not asked and takes
-/// no part. A yes leads to the payment decision (`PayMana`, which cannot be backed out of), and the `paid` effects
-/// follow once it is made; when nobody pays, the `unpaid` effects follow.
+/// one does. A player who cannot pay, with the floating mana and the permanents they may tap, is asked the same
+/// question at the same time and can only say no (`YesNoOptions::only_no`), so neither the table nor the clock shows
+/// whether they could pay. A yes leads to the payment decision (`PayMana`, which cannot be backed out of), and the
+/// `paid` effects follow once it is made; when nobody pays, the `unpaid` effects follow.
 ///
 /// A step with k questions runs k + 1 times. The journal holds, for each player asked, a no or a yes and then, for a
-/// player who paid, a second yes that the payment's answer logs along with its events (`cast::pay_answer`). A
-/// player's entries are read before the player is judged again, since paying has spent what they could pay with; the
+/// player who paid, a second yes that the payment's answer logs along with its events (`cast::pay_answer`). The
 /// entries of a player who has left the game since are not read, and a player who left before paying has not paid.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Pay { who, cost, .. } = effect else {
@@ -39,7 +39,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut paid = false;
     for player in cx.scope.players(who)? {
         let Some((_, asked)) = journal.next_if(|entry| entry.0 == player) else {
-            if can_pay(state, player, &cost) {
+            if state.is_alive(player) {
                 return Ok(Run::Ask(question(cx, player, &cost)));
             }
             continue;
@@ -104,21 +104,20 @@ fn mana_of(cost: &Cost) -> Result<ManaCost, ResolveError> {
     }
 }
 
-/// Whether the player is in the game and has the mana for `cost`: floating or from the permanents they may tap.
+/// Whether the player has the mana and the life for `cost`: floating or from the permanents they may tap.
 fn can_pay(state: &GameState, player: PlayerId, cost: &ManaCost) -> bool {
-    state.is_alive(player)
-        && state.player(player).is_some_and(|seat| {
-            can_afford(cost, seat.mana(), &mana_options(state, player), seat.life())
-        })
+    state.player(player).is_some_and(|seat| {
+        can_afford(cost, seat.mana(), &mana_options(state, player), seat.life())
+    })
 }
 
-/// "Pay {2}?" for the player.
+/// "Pay {2}?" for the player, with No the only answer when they cannot pay.
 fn question(cx: &Cx<'_>, player: PlayerId, cost: &ManaCost) -> Decision {
     Decision {
         player,
         kind: DecisionKind::YesNo(YesNoOptions {
-            source: cx.scope.source.id,
-            text: wording::pay(cost),
+            only_no: !can_pay(cx.state(), player, cost),
+            ..YesNoOptions::new(cx.scope.source.id, wording::pay(cost))
         }),
     }
 }
@@ -143,11 +142,12 @@ fn payment(cx: &Cx<'_>, player: PlayerId, cost: ManaCost) -> Result<Decision, Re
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a payment asks the players it names in turn order "Pay {2}?" until one says yes and then for the payment itself (no way back), skips a player who left the game or cannot pay, enters the paid effects once a payment is logged and the unpaid ones when nobody paid, reads a player's answers before judging them again (paying spends what could pay), refuses answers it did not ask for, and refuses by name a cost that is not plain mana.
+    //! Goal: a payment asks the players it names in turn order "Pay {2}?" until one says yes and then for the payment itself (no way back), asks a player who cannot pay in the same words with No as the only answer (for every kind of mana cost: generic, coloured, hybrid, Phyrexian, floating, tapped and wrong-coloured sources), skips a player who left the game, enters the paid effects once a payment is logged and the unpaid ones when nobody paid, reads a player's answers back from the journal (paying spends what could pay), refuses answers it did not ask for, and refuses by name a cost that is not plain mana.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
     use mtg_core::color::Color;
+    use mtg_core::mana::ManaType;
     use rstest::rstest;
 
     use super::*;
@@ -225,12 +225,18 @@ mod tests {
     #[derive(Debug, PartialEq, Eq)]
     enum Said {
         Asks(usize, String),
+        /// Asked in the same words, but No is the only answer.
+        Declines(usize, String),
         Pays(usize, String, bool),
         Goes(Next),
     }
 
     fn said(run: Result<Run, ResolveError>) -> Said {
         match run.unwrap() {
+            Run::Ask(Decision {
+                player,
+                kind: DecisionKind::YesNo(options),
+            }) if options.only_no => Said::Declines(player.index(), options.text),
             Run::Ask(Decision {
                 player,
                 kind: DecisionKind::YesNo(options),
@@ -257,6 +263,10 @@ mod tests {
 
     fn asks(seat: usize) -> Said {
         Said::Asks(seat, "Pay {2}?".into())
+    }
+
+    fn cannot(seat: usize) -> Said {
+        Said::Declines(seat, "Pay {2}?".into())
     }
 
     #[test]
@@ -307,37 +317,127 @@ mod tests {
         );
     }
 
-    #[rstest]
-    #[case::no_lands(&[0, 0], UNPAID)]
-    #[case::one_land_for_two(&[1, 0], UNPAID)]
-    #[case::two_lands(&[2, 0], asks(0))]
-    fn a_player_who_cannot_pay_is_not_asked(#[case] lands: &[usize], #[case] said_: Said) {
-        let game = game(lands);
-        assert_eq!(
-            said(run_with(&game, &[], &pay(r#""You""#, r#""{2}""#))),
-            said_
-        );
+    /// What seat 0 has to pay with: untapped Forests, Forests that are tapped, green mana floating and life lost.
+    #[derive(Clone, Copy)]
+    struct Means {
+        untapped: usize,
+        tapped: usize,
+        floating: u32,
+        life_lost: u32,
     }
 
-    #[test]
-    fn the_cost_must_be_met_in_colours_and_with_untapped_lands() {
-        let wrong_colour = game(&[2, 0]);
-        let red = pay(r#""You""#, r#""{R}""#);
-        assert_eq!(said(run_with(&wrong_colour, &[], &red)), UNPAID);
-        let mut tapped = game(&[2, 0]);
-        let lands: Vec<_> = tapped
+    const NOTHING: Means = Means {
+        untapped: 0,
+        tapped: 0,
+        floating: 0,
+        life_lost: 0,
+    };
+
+    fn means(means: Means) -> GameState {
+        let mut game = game(&[means.untapped + means.tapped, 0]);
+        let lands: Vec<_> = game
             .zone(Zone::Battlefield)
             .iter()
             .copied()
-            .filter(|id| tapped.object(*id).unwrap().card().name == "Forest")
+            .filter(|id| game.object(*id).unwrap().card().name == "Forest")
             .collect();
-        for land in lands {
-            apply_event(&mut tapped, &Event::PermanentTapped { object: land }).unwrap();
+        let events = lands
+            .into_iter()
+            .skip(means.untapped)
+            .map(|object| Event::PermanentTapped { object })
+            .chain((0..means.floating).map(|_| Event::ManaAdded {
+                player: ME,
+                mana: ManaType::Green,
+                source: None,
+            }))
+            .chain((means.life_lost > 0).then_some(Event::LifeLost {
+                player: ME,
+                amount: means.life_lost,
+            }));
+        for event in events {
+            apply_event(&mut game, &event).unwrap();
         }
-        assert_eq!(
-            said(run_with(&tapped, &[], &pay(r#""You""#, r#""{1}""#))),
-            UNPAID
-        );
+        game
+    }
+
+    #[rstest]
+    // Generic mana: lands, floating mana, or both.
+    #[case::two_lands_for_two("{2}", Means { untapped: 2, ..NOTHING }, true)]
+    #[case::one_land_for_two("{2}", Means { untapped: 1, ..NOTHING }, false)]
+    #[case::no_land_for_two("{2}", NOTHING, false)]
+    #[case::floating_mana_pays("{2}", Means { floating: 2, ..NOTHING }, true)]
+    #[case::a_land_and_floating_mana_pay("{2}", Means { untapped: 1, floating: 1, ..NOTHING }, true)]
+    #[case::too_little_of_both("{3}", Means { untapped: 1, floating: 1, ..NOTHING }, false)]
+    // Coloured mana: the colour is needed.
+    #[case::the_colour_from_lands("{G}{G}", Means { untapped: 2, ..NOTHING }, true)]
+    #[case::the_colour_floating("{G}", Means { floating: 1, ..NOTHING }, true)]
+    #[case::the_wrong_colour("{R}", Means { untapped: 2, ..NOTHING }, false)]
+    #[case::generic_met_but_not_the_colour("{1}{R}", Means { untapped: 2, ..NOTHING }, false)]
+    // Lands that are tapped make nothing.
+    #[case::only_tapped_lands("{1}", Means { tapped: 2, ..NOTHING }, false)]
+    #[case::a_tapped_land_beside_an_untapped_one("{2}", Means { untapped: 1, tapped: 1, ..NOTHING }, false)]
+    // Hybrid: either colour, or two generic.
+    #[case::hybrid_with_one_of_its_colours("{R/G}", Means { untapped: 1, ..NOTHING }, true)]
+    #[case::hybrid_with_neither_colour("{R/W}", Means { untapped: 2, ..NOTHING }, false)]
+    #[case::two_generic_for_a_hybrid_symbol("{2/R}", Means { untapped: 2, ..NOTHING }, true)]
+    #[case::one_land_for_a_two_generic_hybrid_symbol("{2/R}", Means { untapped: 1, ..NOTHING }, false)]
+    // Phyrexian: the colour or two life, and a payment may take a player to 0 life (CR 119.4).
+    #[case::phyrexian_with_the_colour("{G/P}", Means { untapped: 1, ..NOTHING }, true)]
+    #[case::phyrexian_with_life("{R/P}", NOTHING, true)]
+    #[case::phyrexian_with_exactly_the_life("{R/P}", Means { life_lost: 18, ..NOTHING }, true)]
+    #[case::phyrexian_with_too_little_life("{R/P}", Means { life_lost: 19, ..NOTHING }, false)]
+    #[case::two_phyrexian_symbols_with_the_life("{R/P}{R/P}", Means { life_lost: 16, ..NOTHING }, true)]
+    #[case::two_phyrexian_symbols_one_life_short("{R/P}{R/P}", Means { life_lost: 17, ..NOTHING }, false)]
+    #[case::phyrexian_with_a_land_and_life_for_the_rest("{R/P}{G/P}", Means { untapped: 1, life_lost: 18, ..NOTHING }, true)]
+    fn a_player_who_cannot_pay_is_asked_the_same_question_with_no_the_only_answer(
+        #[case] cost: &str,
+        #[case] having: Means,
+        #[case] can_pay: bool,
+    ) {
+        let game = means(having);
+        let text = format!("Pay {cost}?");
+        let expected = if can_pay {
+            Said::Asks(0, text)
+        } else {
+            Said::Declines(0, text)
+        };
+        let effect = pay(r#""You""#, &format!(r#""{cost}""#));
+        assert_eq!(said(run_with(&game, &[], &effect)), expected);
+    }
+
+    #[rstest]
+    #[case::can_pay(Means { untapped: 2, ..NOTHING }, false)]
+    #[case::cannot_pay(NOTHING, true)]
+    fn the_source_and_the_words_are_the_same_whether_or_not_the_player_can_pay(
+        #[case] having: Means,
+        #[case] only_no: bool,
+    ) {
+        let game = means(having);
+        let Ok(Run::Ask(Decision { player, kind })) =
+            run_with(&game, &[], &pay(r#""You""#, r#""{2}""#))
+        else {
+            panic!("the player is asked");
+        };
+        assert_eq!(player, ME);
+        let DecisionKind::YesNo(options) = kind else {
+            panic!("a yes-or-no question is asked");
+        };
+        let source = game
+            .zone(Zone::Battlefield)
+            .iter()
+            .find(|id| game.object(**id).unwrap().card().name == "Source")
+            .unwrap();
+        assert_eq!(options.source, *source);
+        assert_eq!(options.text, "Pay {2}?");
+        assert_eq!(options.only_no, only_no);
+    }
+
+    #[test]
+    fn a_no_from_a_player_who_cannot_pay_leads_to_the_unpaid_effects() {
+        let game = game(&[0, 0]);
+        let effect = pay(r#""You""#, r#""{2}""#);
+        assert_eq!(said(run_with(&game, &[], &effect)), cannot(0));
+        assert_eq!(said(run_with(&game, &[(0, false)], &effect)), UNPAID);
     }
 
     #[rstest]
@@ -348,9 +448,12 @@ mod tests {
     #[case::the_second_pays(&[3, 3, 3, 3], &[(1, false), (2, true)], Said::Pays(2, "{2}".into(), false))]
     #[case::the_second_has_paid(&[3, 3, 3, 3], &[(1, false), (2, true), (2, true)], PAID)]
     #[case::the_first_pays_and_nobody_else_is_asked(&[3, 3, 3, 3], &[(1, true), (1, true)], PAID)]
-    #[case::the_first_cannot_pay(&[3, 0, 3, 3], &[], asks(2))]
-    #[case::the_second_is_asked_after_a_player_who_could_not_pay_was_skipped(&[3, 0, 3, 3], &[(2, false)], asks(3))]
-    #[case::none_can_pay(&[3, 0, 1, 1], &[], UNPAID)]
+    #[case::the_first_cannot_pay_and_is_asked_all_the_same(&[3, 0, 3, 3], &[], cannot(1))]
+    #[case::the_next_is_asked_after_a_player_who_could_not_pay_said_no(&[3, 0, 3, 3], &[(1, false)], asks(2))]
+    #[case::a_player_who_cannot_pay_is_asked_in_turn(&[3, 3, 0, 3], &[(1, false)], cannot(2))]
+    #[case::and_the_one_after_him_is_asked_next(&[3, 3, 0, 3], &[(1, false), (2, false)], asks(3))]
+    #[case::none_can_pay_and_all_are_asked(&[3, 0, 1, 1], &[], cannot(1))]
+    #[case::none_can_pay_and_all_say_no(&[3, 0, 1, 1], &[(1, false), (2, false), (3, false)], UNPAID)]
     fn several_players_are_asked_in_turn_order_until_one_pays(
         #[case] lands: &[usize],
         #[case] given: &[(usize, bool)],
@@ -413,9 +516,10 @@ mod tests {
 
     #[test]
     fn an_answer_of_a_player_the_effect_does_not_name_is_refused() {
-        // The player named cannot pay and is not asked, so the answer of the other seat answers nothing.
+        // The player named said no, so the answer of the other seat answers nothing.
         let game = game(&[0, 2]);
-        let error = run_with(&game, &[(1, true)], &pay(r#""You""#, r#""{2}""#)).unwrap_err();
+        let journal = [(0, false), (1, true)];
+        let error = run_with(&game, &journal, &pay(r#""You""#, r#""{2}""#)).unwrap_err();
         assert!(matches!(error, ResolveError::Invalid(_)), "{error:?}");
     }
 

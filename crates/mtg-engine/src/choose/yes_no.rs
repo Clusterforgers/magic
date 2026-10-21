@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 use super::Choice;
 use crate::answers::Outcome;
 use crate::decision::{Decision, DecisionKind};
+use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::resolve::{Cx, ResolveError};
 
@@ -22,6 +23,22 @@ pub struct YesNoOptions {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
     pub text: String,
+    /// Whether No is the only answer: the payment asked for cannot be made. The question, its words and its clock are
+    /// those of a player who could pay, so nothing but this seat's own view tells the two apart.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub only_no: bool,
+}
+
+impl YesNoOptions {
+    /// A question that either answer is legal to.
+    pub fn new(source: ObjectId, text: impl Into<String>) -> Self {
+        YesNoOptions {
+            source,
+            text: text.into(),
+            only_no: false,
+        }
+    }
 }
 
 /// The answer.
@@ -29,12 +46,19 @@ pub struct YesNoOptions {
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct YesNoChoice(pub bool);
 
-/// What an answer does: it is logged. Either bool is among the answers to a yes-or-no question, so nothing is refused.
-pub(crate) fn answer(player: PlayerId, _options: &YesNoOptions, choice: YesNoChoice) -> Outcome {
-    Outcome::Events(vec![Event::ChoiceMade {
+/// What an answer does: it is logged. A Yes to a question that only No answers is refused and changes nothing.
+pub(crate) fn answer(
+    player: PlayerId,
+    options: &YesNoOptions,
+    choice: YesNoChoice,
+) -> Result<Outcome, EngineError> {
+    if choice.0 && options.only_no {
+        return Err(IllegalAnswer::NotOffered("yes").into());
+    }
+    Ok(Outcome::Events(vec![Event::ChoiceMade {
         player,
         choice: Choice::YesNo(choice.0),
-    }])
+    }]))
 }
 
 /// How far the questions of a step have come.
@@ -62,10 +86,7 @@ pub(crate) fn pick_yes_no(
             None => {
                 return Ok(Said::Ask(Decision {
                     player,
-                    kind: DecisionKind::YesNo(YesNoOptions {
-                        source: cx.scope.source.id,
-                        text: text.to_owned(),
-                    }),
+                    kind: DecisionKind::YesNo(YesNoOptions::new(cx.scope.source.id, text)),
                 }));
             }
             Some((from, Choice::YesNo(yes))) if *from == player => {
@@ -140,11 +161,8 @@ mod tests {
     #[case::yes(true)]
     #[case::no(false)]
     fn an_answer_is_logged_as_the_answerers_choice(#[case] yes: bool) {
-        let options = YesNoOptions {
-            source: ObjectId(1),
-            text: String::new(),
-        };
-        let Outcome::Events(events) = answer(FOE, &options, YesNoChoice(yes)) else {
+        let options = YesNoOptions::new(ObjectId(1), "");
+        let Ok(Outcome::Events(events)) = answer(FOE, &options, YesNoChoice(yes)) else {
             panic!("an answer to a question is logged");
         };
         assert_eq!(
@@ -154,6 +172,24 @@ mod tests {
                 choice: Choice::YesNo(yes)
             }]
         );
+    }
+
+    #[rstest]
+    #[case::yes_is_refused(true, false)]
+    #[case::no_is_the_only_answer(false, true)]
+    fn a_question_that_only_no_answers_refuses_a_yes(#[case] yes: bool, #[case] accepted: bool) {
+        let options = YesNoOptions {
+            only_no: true,
+            ..YesNoOptions::new(ObjectId(1), "Pay {2}?")
+        };
+        let result = answer(FOE, &options, YesNoChoice(yes));
+        assert_eq!(result.is_ok(), accepted, "{result:?}");
+        if !accepted {
+            assert!(matches!(
+                result,
+                Err(EngineError::Illegal(IllegalAnswer::NotOffered("yes")))
+            ));
+        }
     }
 
     #[test]

@@ -195,7 +195,11 @@ impl RandomBot {
                     self.subset(&options.cards, options.cards.len()),
                 ))
             }
-            DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(self.rng.below(2) == 0)),
+            // The die is rolled either way, so a seed plays the same whether or not a payment can be made.
+            DecisionKind::YesNo(options) => {
+                let yes = self.rng.below(2) == 0;
+                Answer::YesNo(YesNoChoice(yes && !options.only_no))
+            }
             DecisionKind::ChooseOption(options) => {
                 Answer::ChooseOption(OptionChoice(self.rng.index(options.options.len().max(1))))
             }

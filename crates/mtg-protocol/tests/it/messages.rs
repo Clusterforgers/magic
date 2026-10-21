@@ -364,10 +364,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             cards: vec![a, b],
             text: String::new(),
         }),
-        DecisionKind::YesNo(YesNoOptions {
-            source: b,
-            text: "Pay {1}?".into(),
-        }),
+        DecisionKind::YesNo(YesNoOptions::new(b, "Pay {1}?")),
         DecisionKind::ChooseOption(OptionOptions {
             source: b,
             options: vec![
@@ -1339,18 +1336,20 @@ fn the_question_of_a_yes_no_or_option_decision_is_left_out_while_empty_and_a_mod
             .clone()
     };
     assert_eq!(
-        shape(DecisionKind::YesNo(YesNoOptions {
-            source,
-            text: String::new(),
-        })),
+        shape(DecisionKind::YesNo(YesNoOptions::new(source, ""))),
         json!({"YesNo": {"source": 4}})
     );
     assert_eq!(
-        shape(DecisionKind::YesNo(YesNoOptions {
-            source,
-            text: "Pay {1}?".into(),
-        })),
+        shape(DecisionKind::YesNo(YesNoOptions::new(source, "Pay {1}?"))),
         json!({"YesNo": {"source": 4, "text": "Pay {1}?"}})
+    );
+    // A payment that cannot be made says so, and only then.
+    assert_eq!(
+        shape(DecisionKind::YesNo(YesNoOptions {
+            only_no: true,
+            ..YesNoOptions::new(source, "Pay {1}?")
+        })),
+        json!({"YesNo": {"source": 4, "text": "Pay {1}?", "only_no": true}})
     );
     assert_eq!(
         shape(DecisionKind::ChooseOption(OptionOptions {
@@ -1379,13 +1378,7 @@ fn the_question_of_a_yes_no_or_option_decision_is_left_out_while_empty_and_a_mod
     );
     // A decision without a question still parses, with an empty one.
     let old: DecisionKind = serde_json::from_value(json!({"YesNo": {"source": 4}})).unwrap();
-    assert_eq!(
-        old,
-        DecisionKind::YesNo(YesNoOptions {
-            source,
-            text: String::new(),
-        })
-    );
+    assert_eq!(old, DecisionKind::YesNo(YesNoOptions::new(source, "")));
 }
 
 #[test]

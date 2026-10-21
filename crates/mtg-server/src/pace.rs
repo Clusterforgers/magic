@@ -479,9 +479,14 @@ mod tests {
     }
 
     fn question() -> DecisionKind {
+        DecisionKind::YesNo(YesNoOptions::new(ObjectId(1), "Pay {1}?"))
+    }
+
+    /// The same question put to a player who cannot pay: No is the only answer.
+    fn unaffordable() -> DecisionKind {
         DecisionKind::YesNo(YesNoOptions {
-            source: ObjectId(1),
-            text: "Pay {1}?".into(),
+            only_no: true,
+            ..YesNoOptions::new(ObjectId(1), "Pay {1}?")
         })
     }
 
@@ -615,6 +620,7 @@ mod tests {
     #[case::the_active_player_choosing_the_targets_of_a_trigger(ACTIVE, targets(false), None)]
     #[case::the_active_player_ordering_triggers(ACTIVE, order(2), None)]
     #[case::answering_a_question(OTHER, question(), Some(10))]
+    #[case::answering_a_payment_that_cannot_be_made(OTHER, unaffordable(), Some(10))]
     #[case::choosing_an_option(OTHER, options(3), Some(10))]
     #[case::choosing_the_modes_of_a_spell(OTHER, modes(3, 1, 1, false, true), Some(10))]
     #[case::choosing_the_modes_of_a_trigger(OTHER, modes(3, 1, 1, false, false), Some(10))]
@@ -626,6 +632,7 @@ mod tests {
     #[case::the_active_player_choosing_optional_costs(ACTIVE, costs(2, true), None)]
     #[case::the_active_player_dividing_an_amount(ACTIVE, division(3, 2, true), None)]
     #[case::the_active_player_answering_a_question(ACTIVE, question(), None)]
+    #[case::the_active_player_answering_a_payment_that_cannot_be_made(ACTIVE, unaffordable(), None)]
     #[case::the_active_player_choosing_an_option(ACTIVE, options(3), None)]
     #[case::the_active_player_choosing_modes(ACTIVE, modes(3, 1, 1, false, true), None)]
     #[case::choosing_a_card(OTHER, cards(3, 1, 1), Some(10))]
@@ -671,6 +678,7 @@ mod tests {
         assert_eq!(pace.clock_for(&decision(OTHER, order(2)), ACTIVE), None);
         for kind in [
             question(),
+            unaffordable(),
             replacements(2),
             options(2),
             modes(2, 1, 1, false, true),
@@ -710,6 +718,7 @@ mod tests {
     #[case::a_trigger_is_removed(targets(false), Some(Answer::ChooseTargets(TargetChoice::Remove)))]
     #[case::triggers_go_on_in_the_order_they_triggered(order(3), Some(Answer::OrderTriggers(TriggersChoice(vec![0, 1, 2]))))]
     #[case::no_to_a_question(question(), Some(Answer::YesNo(YesNoChoice(false))))]
+    #[case::no_to_a_payment_that_cannot_be_made(unaffordable(), Some(Answer::YesNo(YesNoChoice(false))))]
     #[case::the_first_replacement_effect(
         replacements(3),
         Some(Answer::ChooseReplacement(ReplacementChoice(0)))
@@ -775,6 +784,7 @@ mod tests {
     fn the_clock_and_the_fallback_are_the_same_for_every_seat_and_every_shape_of_options() {
         let kinds = [
             question(),
+            unaffordable(),
             replacements(2),
             options(1),
             options(11),
