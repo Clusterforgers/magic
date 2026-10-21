@@ -319,6 +319,48 @@ async fn lines_go_with_their_deck_and_a_removed_printing_leaves_the_card(pool: P
 }
 
 #[sqlx::test]
+async fn deleting_all_of_an_owner_takes_every_deck_and_line_and_only_theirs(pool: PgPool) {
+    let database = seeded(pool.clone()).await;
+    let repo = database.decks();
+    let lines = vec![
+        line(DeckZone::Main, "Lightning Bolt", 4),
+        line(DeckZone::Sideboard, "Lightning Bolt", 1),
+    ];
+    for name in ["One", "Two", "Three"] {
+        repo.create(owner(1), &draft(name, lines.clone()), 10)
+            .await
+            .unwrap();
+    }
+    let kept = repo
+        .create(owner(2), &draft("Kept", lines.clone()), 10)
+        .await
+        .unwrap();
+
+    let mut tx = pool.begin().await.unwrap();
+    let gone = mtg_db::DeckRepo::delete_all_of(&mut tx, owner(1))
+        .await
+        .unwrap();
+    assert_eq!(gone, 3);
+    // Nothing is deleted before the transaction commits.
+    assert_eq!(repo.count(owner(1)).await.unwrap(), 3);
+    tx.commit().await.unwrap();
+
+    assert_eq!(repo.count(owner(1)).await.unwrap(), 0);
+    assert_eq!(repo.get(owner(2), kept.id).await.unwrap(), Some(kept));
+    let left: i64 = sqlx::query_scalar("SELECT count(*) FROM deck_cards")
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+    assert_eq!(left, 2, "only the other owner's lines remain");
+
+    let mut tx = pool.begin().await.unwrap();
+    let again = mtg_db::DeckRepo::delete_all_of(&mut tx, owner(1))
+        .await
+        .unwrap();
+    assert_eq!(again, 0, "an owner with no decks loses none");
+}
+
+#[sqlx::test]
 async fn the_database_refuses_what_the_server_would_never_send(pool: PgPool) {
     let database = seeded(pool.clone()).await;
     let repo = database.decks();

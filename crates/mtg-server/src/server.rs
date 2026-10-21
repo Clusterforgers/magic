@@ -13,7 +13,7 @@ use axum::http::header::{
 };
 use axum::http::{HeaderValue, Method};
 use axum::middleware;
-use axum::routing::{get, post, put};
+use axum::routing::{delete, get, post, put};
 use axum::serve::ListenerExt;
 use sqlx::PgPool;
 use tokio::net::TcpListener;
@@ -294,6 +294,8 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/auth/register", post(auth::register))
         .route("/api/auth/login", post(auth::login))
         .route("/api/auth/logout", post(auth::logout))
+        .route("/api/auth/password", post(auth::change_password))
+        .route("/api/auth/account", delete(auth::delete_account))
         .route("/api/auth/me", get(auth::me))
         .route("/api/me/games", get(my_games::list))
         .route("/ws/{game}/{token}", get(ws::upgrade))

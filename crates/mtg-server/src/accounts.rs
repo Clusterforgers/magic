@@ -1,4 +1,5 @@
-//! Accounts and sessions in Postgres: the `users` and `sessions` tables.
+//! Accounts and sessions in Postgres: the `users` and `sessions` tables, and what goes with an
+//! account when it is deleted.
 //!
 //! A password is stored as its Argon2id hash and a session as the SHA-256 of its cookie token, so
 //! a copy of the database opens no account and no session. Run [`migrate`](crate::migrate) first.
@@ -6,6 +7,7 @@
 use std::fmt;
 use std::time::Duration;
 
+use mtg_db::DeckRepo;
 use sqlx::PgPool;
 use thiserror::Error;
 
@@ -112,6 +114,59 @@ impl Accounts {
             },
             password_hash: row.password_hash,
         }))
+    }
+
+    /// The Argon2id hash of `user`'s password; `None` for an account that is gone.
+    pub(crate) async fn password_hash(&self, user: UserId) -> Result<Option<String>, AccountError> {
+        let row = sqlx::query!("SELECT password_hash FROM users WHERE id = $1", user.uuid())
+            .fetch_optional(&self.pool)
+            .await?;
+        Ok(row.map(|row| row.password_hash))
+    }
+
+    /// Replaces `user`'s password hash and ends every session of the account but `keep`, in one
+    /// transaction. False, and nothing changed, for an account that is gone.
+    pub(crate) async fn change_password(
+        &self,
+        user: UserId,
+        password_hash: &str,
+        keep: &TokenDigest,
+    ) -> Result<bool, AccountError> {
+        let mut tx = self.pool.begin().await?;
+        let changed = sqlx::query!(
+            "UPDATE users SET password_hash = $2 WHERE id = $1",
+            user.uuid(),
+            password_hash,
+        )
+        .execute(&mut *tx)
+        .await?;
+        if changed.rows_affected() == 0 {
+            return Ok(false);
+        }
+        sqlx::query!(
+            "DELETE FROM sessions WHERE user_id = $1 AND token_digest <> $2",
+            user.uuid(),
+            &keep.as_bytes()[..],
+        )
+        .execute(&mut *tx)
+        .await?;
+        tx.commit().await?;
+        Ok(true)
+    }
+
+    /// Deletes the account with everything that refers to it, in one transaction: its decks, its
+    /// sessions (by cascade) and its hold on seats (a seat stays and loses its account). False
+    /// for an account that is already gone.
+    pub(crate) async fn delete_user(&self, user: UserId) -> Result<bool, AccountError> {
+        let mut tx = self.pool.begin().await?;
+        DeckRepo::delete_all_of(&mut tx, user.uuid())
+            .await
+            .map_err(|error| AccountError::Unavailable(error.to_string()))?;
+        let deleted = sqlx::query!("DELETE FROM users WHERE id = $1", user.uuid())
+            .execute(&mut *tx)
+            .await?;
+        tx.commit().await?;
+        Ok(deleted.rows_affected() == 1)
     }
 
     /// Stores a session for `user` that ends `lifetime` from now, by the database's clock.

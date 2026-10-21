@@ -61,6 +61,45 @@ impl fmt::Debug for Credentials {
     }
 }
 
+/// The body of `POST /api/auth/password`: the password in force and the one to replace it.
+///
+/// `Debug` never prints either password.
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct PasswordChange {
+    /// The account's password now, compared exactly as sent.
+    pub current_password: String,
+    /// 10 to 128 characters, like any password.
+    pub new_password: String,
+}
+
+impl fmt::Debug for PasswordChange {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("PasswordChange")
+            .field("current_password", &"<redacted>")
+            .field("new_password", &"<redacted>")
+            .finish()
+    }
+}
+
+/// The body of `DELETE /api/auth/account`: the password that confirms the deletion.
+///
+/// `Debug` never prints the password.
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+#[serde(deny_unknown_fields)]
+pub struct AccountDeletion {
+    /// The account's password, compared exactly as sent.
+    pub password: String,
+}
+
+impl fmt::Debug for AccountDeletion {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("AccountDeletion")
+            .field("password", &"<redacted>")
+            .finish()
+    }
+}
+
 /// The signed-in account, as `register`, `login` and `GET /api/auth/me` answer.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct UserView {
@@ -87,7 +126,8 @@ pub enum AuthErrorCode {
     /// 403: the server does not accept new accounts.
     RegistrationClosed,
     /// 401: the username and password do not match an account; the same answer for an unknown
-    /// username and a wrong password.
+    /// username and a wrong password. Also the answer to a wrong password that confirms a
+    /// password change or an account deletion.
     InvalidCredentials,
     /// 429: too many failed attempts; `Retry-After` says when to try again.
     TooManyAttempts,

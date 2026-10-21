@@ -396,6 +396,23 @@ impl DeckRepo {
         Ok(deleted.rows_affected() > 0)
     }
 
+    /// Deletes every deck of `owner` with its lines, inside the caller's transaction `tx`, and
+    /// returns how many decks went. It takes the owner's lock first, so a save in flight finishes
+    /// before this runs; the lock ends with the transaction.
+    pub async fn delete_all_of(tx: &mut PgConnection, owner: Uuid) -> Result<u64, DbError> {
+        sqlx::query!(
+            "SELECT pg_advisory_xact_lock($1, hashtext($2::text))",
+            OWNER_LOCK_CLASS,
+            owner.to_string()
+        )
+        .execute(&mut *tx)
+        .await?;
+        let deleted = sqlx::query!("DELETE FROM decks WHERE owner = $1", owner)
+            .execute(&mut *tx)
+            .await?;
+        Ok(deleted.rows_affected())
+    }
+
     /// How many decks `owner` holds.
     pub async fn count(&self, owner: Uuid) -> Result<u64, DbError> {
         let held = sqlx::query_scalar!(

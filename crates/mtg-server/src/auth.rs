@@ -1,4 +1,5 @@
-//! The account endpoints: `POST /api/auth/register`, `login` and `logout`, and `GET /api/auth/me`.
+//! The account endpoints: `POST /api/auth/register`, `login`, `logout` and `password`, `DELETE
+//! /api/auth/account`, and `GET /api/auth/me`.
 //!
 //! A session is a random 256-bit token in the `mtg_session` cookie; the database keeps only its
 //! SHA-256. Passwords are Argon2id hashes. Logging in answers the same way for a username that
@@ -30,6 +31,10 @@ use crate::passwords::Passwords;
 use crate::secret::{SessionToken, TokenDigest};
 use crate::server::AppState;
 use crate::throttle::{Blocked, Throttle};
+
+mod settings;
+
+pub(crate) use settings::{change_password, delete_account};
 
 /// What the account endpoints share: the tables, the hasher and the counters of failed tries.
 #[derive(Debug)]

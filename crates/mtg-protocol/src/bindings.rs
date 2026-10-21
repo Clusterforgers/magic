@@ -11,10 +11,10 @@ use ts_rs::{Config, ExportError, TS};
 
 use crate::message::{ClientMessage, PROTOCOL_VERSION, ServerMessage};
 use crate::rest::{
-    AuthErrorCode, CardDetail, CardSearchPage, CheckRequest, ChooseDeck, Credentials,
-    DeckBlockedBody, DeckBody, DeckChoiceErrorCode, DeckErrorCode, DeckList, DeckView, GameInfo,
-    ImportRequest, ImportResult, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode, LobbyList,
-    MyGames, UserView, VisibilityBody,
+    AccountDeletion, AuthErrorCode, CardDetail, CardSearchPage, CheckRequest, ChooseDeck,
+    Credentials, DeckBlockedBody, DeckBody, DeckChoiceErrorCode, DeckErrorCode, DeckList, DeckView,
+    GameInfo, ImportRequest, ImportResult, JoinCodeRequest, JoinRequest, Joined, LobbyErrorCode,
+    LobbyList, MyGames, PasswordChange, UserView, VisibilityBody,
 };
 
 /// Where the committed bindings live, relative to the workspace root.
@@ -46,6 +46,8 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     ClientMessage::export_all(&config)?;
     ServerMessage::export_all(&config)?;
     Credentials::export_all(&config)?;
+    PasswordChange::export_all(&config)?;
+    AccountDeletion::export_all(&config)?;
     UserView::export_all(&config)?;
     AuthErrorCode::export_all(&config)?;
     MyGames::export_all(&config)?;

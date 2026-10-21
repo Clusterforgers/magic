@@ -26,8 +26,9 @@ pub use message::{
 };
 pub use project::zone_is_visible;
 pub use rest::{
-    AuthErrorCode, CardDetail, CardHit, CardSearchPage, Credentials, DeckBody, DeckErrorCode,
-    DeckList, DeckView, MyGame, MyGameSeat, MyGameStatus, MyGames, UserView,
+    AccountDeletion, AuthErrorCode, CardDetail, CardHit, CardSearchPage, Credentials, DeckBody,
+    DeckErrorCode, DeckList, DeckView, MyGame, MyGameSeat, MyGameStatus, MyGames, PasswordChange,
+    UserView,
 };
 pub use view::{
     AttackerView, CombatView, ObjectView, PermanentView, PlayerView, PriorityView, StateView,

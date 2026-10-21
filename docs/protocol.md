@@ -151,6 +151,7 @@ The design is in [arena-flow.md](arena-flow.md).
 The account, card and deck endpoints of `mtg-server` take their bodies from `mtg_protocol::rest`, so the web gets them from the bindings.
 
 - `Credentials {username, password}` is the request of `register` and `login`. Unknown fields are refused and `Debug` prints the password as `<redacted>`.
+- `PasswordChange {current_password, new_password}` is the request of `POST /api/auth/password` and `AccountDeletion {password}` that of `DELETE /api/auth/account`; both refuse unknown fields and print every password as `<redacted>`. A wrong password for either is the 401 `invalid_credentials`.
 - `UserView {id, username}` is the answer of `register`, `login` and `GET /api/auth/me`.
 - `AuthErrorCode` is the snake_case `error` string of a failed account request. `as_str` is the wire text and `ALL` lists every code; a test keeps `as_str`, serde and the generated union equal.
 - The length limits are constants (`USERNAME_MIN_CHARS` 3, `USERNAME_MAX_CHARS` 32, `PASSWORD_MIN_CHARS` 10, `PASSWORD_MAX_CHARS` 128), so server and tests share one number. ts-rs does not export constants, so the web repeats them for its forms and the server stays the judge.

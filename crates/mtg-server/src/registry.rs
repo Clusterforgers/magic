@@ -13,6 +13,7 @@
 //! held from the start (its token is in the create response) or open ([`SeatState`]).
 
 mod claims;
+mod departure;
 mod listing;
 mod resume;
 
@@ -52,6 +53,7 @@ use crate::user_id::UserId;
 pub const MAX_LISTED_GAMES: usize = 100;
 
 pub use claims::{ClaimError, Entrance, HOST, SeatClaim, Seated, TableError};
+pub use departure::Departure;
 pub use listing::{ListedGame, MAX_LISTED_LOBBIES};
 pub use resume::ResumeReport;
 

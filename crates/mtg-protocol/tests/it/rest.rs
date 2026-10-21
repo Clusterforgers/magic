@@ -8,8 +8,9 @@ use crate::common::generated;
 use mtg_core::ids::PlayerId;
 use mtg_engine::state::GameResult;
 use mtg_protocol::rest::{
-    AuthErrorCode, Credentials, MyGame, MyGameSeat, MyGameStatus, MyGames, PASSWORD_MAX_CHARS,
-    PASSWORD_MIN_CHARS, USERNAME_MAX_CHARS, USERNAME_MIN_CHARS, UserView,
+    AccountDeletion, AuthErrorCode, Credentials, MyGame, MyGameSeat, MyGameStatus, MyGames,
+    PASSWORD_MAX_CHARS, PASSWORD_MIN_CHARS, PasswordChange, USERNAME_MAX_CHARS, USERNAME_MIN_CHARS,
+    UserView,
 };
 use rstest::rstest;
 use serde_json::{Value, json};
@@ -94,6 +95,74 @@ fn debug_output_never_shows_the_password(#[case] password: &str) {
             shown.contains("ann") && shown.contains("<redacted>"),
             "{shown}"
         );
+    }
+}
+
+#[test]
+fn settings_bodies_have_the_documented_wire_shape() {
+    let change = PasswordChange {
+        current_password: "the old passphrase".into(),
+        new_password: "the new passphrase".into(),
+    };
+    let value = serde_json::to_value(&change).unwrap();
+    assert_eq!(
+        value,
+        json!({"current_password": "the old passphrase", "new_password": "the new passphrase"})
+    );
+    assert_eq!(
+        serde_json::from_value::<PasswordChange>(value).unwrap(),
+        change
+    );
+
+    let deletion = AccountDeletion {
+        password: "the old passphrase".into(),
+    };
+    let value = serde_json::to_value(&deletion).unwrap();
+    assert_eq!(value, json!({"password": "the old passphrase"}));
+    assert_eq!(
+        serde_json::from_value::<AccountDeletion>(value).unwrap(),
+        deletion
+    );
+}
+
+#[rstest]
+#[case::missing_new(json!({"current_password": "a long passphrase"}))]
+#[case::missing_current(json!({"new_password": "a long passphrase"}))]
+#[case::extra_field(json!({"current_password": "a", "new_password": "b", "username": "ann"}))]
+#[case::login_body(json!({"username": "ann", "password": "a long passphrase"}))]
+#[case::number(json!({"current_password": 1, "new_password": 2}))]
+#[case::null(json!(null))]
+fn password_changes_that_are_not_exactly_two_passwords_are_refused(#[case] body: Value) {
+    assert!(serde_json::from_value::<PasswordChange>(body).is_err());
+}
+
+#[rstest]
+#[case::missing(json!({}))]
+#[case::extra_field(json!({"password": "a long passphrase", "keep_decks": true}))]
+#[case::wrong_name(json!({"current_password": "a long passphrase"}))]
+#[case::number(json!({"password": 1_234_567_890}))]
+#[case::string(json!("a long passphrase"))]
+fn deletions_that_are_not_exactly_a_password_are_refused(#[case] body: Value) {
+    assert!(serde_json::from_value::<AccountDeletion>(body).is_err());
+}
+
+#[test]
+fn debug_output_of_the_settings_bodies_never_shows_a_password() {
+    let change = PasswordChange {
+        current_password: "old-secret-phrase".into(),
+        new_password: "new-secret-phrase".into(),
+    };
+    let deletion = AccountDeletion {
+        password: "confirm-secret-phrase".into(),
+    };
+    for shown in [
+        format!("{change:?}"),
+        format!("{change:#?}"),
+        format!("{deletion:?}"),
+        format!("{:?}", Some(&deletion)),
+    ] {
+        assert!(!shown.contains("secret-phrase"), "{shown}");
+        assert!(shown.contains("<redacted>"), "{shown}");
     }
 }
 
@@ -227,10 +296,19 @@ fn statuses_of_games_that_are_not_listed_do_not_exist(#[case] text: &str) {
 #[test]
 fn the_bindings_carry_the_account_types() {
     let files = generated();
-    for needed in ["Credentials.ts", "UserView.ts", "AuthErrorCode.ts"] {
+    for needed in [
+        "Credentials.ts",
+        "UserView.ts",
+        "AuthErrorCode.ts",
+        "PasswordChange.ts",
+        "AccountDeletion.ts",
+    ] {
         assert!(files.contains_key(needed), "missing {needed}");
         assert!(files["index.ts"].contains(needed.trim_end_matches(".ts")));
     }
+    assert!(files["PasswordChange.ts"].contains("current_password: string"));
+    assert!(files["PasswordChange.ts"].contains("new_password: string"));
+    assert!(files["AccountDeletion.ts"].contains("password: string"));
     assert!(files["Credentials.ts"].contains("username: string"));
     assert!(files["Credentials.ts"].contains("password: string"));
     assert!(files["UserView.ts"].contains("id: string"));
