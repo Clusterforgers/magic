@@ -16,6 +16,7 @@ Docs you write follow the docs rule in CLAUDE.md.
 Checks before every non-wip commit: scripts/check.sh fast; before the final report: scripts/check.sh
 Context: read line ranges (`grep -n`, `sed -n a,bp`) and each file once; run a check that takes more than a few minutes in the background and end the turn instead of polling.
 Commits: commit after every finished module or green run. Prefix unfinished checkpoints with `wip:`. Never add AI attribution.
+Last step: after the final green `scripts/check.sh`, run `rm -rf target` in your worktree.
 Report (max 15 lines): files added, public API in one line each, test counts, decisions, uncertainties.
 ```
 
@@ -28,6 +29,8 @@ Report (max 15 lines): files added, public API in one line each, test counts, de
 - Keep the root Postgres running (`docker compose up -d db`) while agents work: their `check.sh` reuses it instead of starting a compose project of its own, and a file lock lets one test run at a time use it (`sqlx::test` drops other runs' test databases). Remove a stray `agent-*` project with `docker compose -p <name> down -v`.
 - Never `cd` into an agent worktree from the orchestrator shell: the harness then makes it the primary directory and forbids returning to the root. Use `git -C <path>` and absolute paths, and merge with `--no-stat` to keep output short.
 - After a restart, run `git worktree list` and read each worktree's `git status` before resuming or redoing anything.
+- Run at most two agents at once, and only on disjoint code: different crates, modules and roadmap items, never the same file. Structure items that reshape shared code run alone.
+- Disk: every worktree builds its own `target/` (tens of GB each). After merging an agent, remove its worktree and branch (`git worktree remove`, then `git branch -d`); an agent deletes its own `target/` in its last step. Keep one agent worktree per running agent.
 
 ### Parallel agents
 

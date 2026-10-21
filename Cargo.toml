@@ -69,6 +69,12 @@ module_name_repetitions = "allow"
 must_use_candidate = "allow"
 missing_errors_doc = "allow"
 
+# Line tables keep panic backtraces readable; full debug info made `target/` and every test link several times larger.
+[profile.dev]
+debug = "line-tables-only"
+[profile.dev.package."*"]
+debug = false
+
 # Fuzz games play thousands of full games; optimising only the crates involved keeps debug test runs fast.
 [profile.dev.package.mtg-core]
 opt-level = 3
