@@ -22,6 +22,7 @@ use crate::support::{
     Caps, Clause, PrintedCard, PrintedFace, Support, SupportRecord, support, whole_text,
 };
 use crate::validate::used_primitives;
+use crate::value::Amount;
 
 /// The one primitive a plain `{T}: Add {X}` stands for: the engine runs that exact shape, one fixed
 /// mana for a tap, not the general `Ability.Activated`, `Cost.Tap` and `Effect.AddMana`.
@@ -118,32 +119,86 @@ pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
     (targets.is_empty() && times.is_one()).then_some(*one)
 }
 
-/// What a mana ability the engine runs without the stack adds.
+/// What a mana ability the engine runs without the stack adds each time.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ManaProduced {
-    /// One mana of this type.
-    Fixed(ManaType),
-    /// One mana of a colour its controller picks when the ability is activated.
-    AnyColor,
+pub enum ManaProduced<'a> {
+    /// This many mana of one type.
+    Fixed {
+        /// The type.
+        mana: ManaType,
+        /// How many.
+        count: u32,
+    },
+    /// This many mana of one colour its controller picks when the ability is activated.
+    AnyColor(u32),
+    /// One mana of a type its controller picks from these when the ability is activated.
+    OneOf(&'a [ManaType]),
+    /// This many mana of the colour the source chose as it entered.
+    ChosenColor(u32),
+}
+
+impl ManaProduced<'_> {
+    /// How many mana one addition makes.
+    pub const fn each(&self) -> u32 {
+        match self {
+            ManaProduced::Fixed { count, .. }
+            | ManaProduced::AnyColor(count)
+            | ManaProduced::ChosenColor(count) => *count,
+            ManaProduced::OneOf(_) => 1,
+        }
+    }
 }
 
 /// A mana ability of the shape the engine activates at priority: no targets, no limit, instant speed from the
-/// battlefield, a cost of `{T}` and/or sacrificing the source, and one mana added once to its controller's pool.
+/// battlefield, a cost of `{T}` and/or sacrificing the source, mana of one type added to its controller's pool
+/// (some number of times) and then effects that need no answer from anyone (CR 605.3b).
 ///
-/// The plain `{T}: Add {X}` has this shape and is carried as an [`AbilityDef`]; the others (Treasure, Lotus Petal)
-/// stay in the rules of the card.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct SimpleManaAbility {
-    /// The mana it adds.
-    pub produces: ManaProduced,
+/// The plain `{T}: Add {X}` has this shape and is carried as an [`AbilityDef`]; the others (Treasure, Sol Ring, Gaea's
+/// Cradle, the painlands) stay in the rules of the card.
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct ManaShape<'a> {
+    /// What it adds each time.
+    pub produces: ManaProduced<'a>,
+    /// How many times.
+    pub times: &'a Amount,
     /// The source is tapped.
     pub tap: bool,
     /// The source is sacrificed.
     pub sacrifice: bool,
+    /// What it does besides adding mana.
+    pub then: &'a [Effect],
+}
+
+impl ManaShape<'_> {
+    /// Whether it adds one mana of a fixed type or of any colour, once, and does nothing else (a Treasure, a Lotus
+    /// Petal); any other shape is the primitive `Ability.ManaAbility.Complex`.
+    pub fn is_simple(&self) -> bool {
+        matches!(
+            self.produces,
+            ManaProduced::Fixed { count: 1, .. } | ManaProduced::AnyColor(1)
+        ) && self.times.is_one()
+            && self.then.is_empty()
+    }
+}
+
+/// Whether `effect` is one a mana ability may run after its mana: it asks nothing of anyone and touches the
+/// controller alone ("deals 1 damage to you", "draw a card", "you lose 1 life").
+fn needs_no_answer(effect: &Effect) -> bool {
+    match effect {
+        Effect::Draw { who, .. } | Effect::LoseLife { who, .. } | Effect::GainLife { who, .. } => {
+            *who == Ref::You
+        }
+        Effect::DealDamage { source, to, .. } => {
+            *to == Ref::You && source.as_ref().is_none_or(|source| *source == Ref::This)
+        }
+        _ => false,
+    }
 }
 
 /// The shape of a mana ability the engine activates at priority, if `ability` has it.
-pub fn simple_mana_ability(ability: &Ability) -> Option<SimpleManaAbility> {
+///
+/// The first effect adds mana to the controller's pool and the rest each ask nothing; one effect of a kind.
+pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     let Ability::Activated {
         cost,
         timing: Timing::Instant,
@@ -173,27 +228,48 @@ pub fn simple_mana_ability(ability: &Ability) -> Option<SimpleManaAbility> {
             mana,
             times,
         },
+        then @ ..,
     ] = effects.as_slice()
     else {
         return None;
     };
     let produces = match mana {
-        Produce::Fixed(list) => match list.as_slice() {
-            [one] => ManaProduced::Fixed(*one),
-            _ => return None,
-        },
-        Produce::AnyColor(1) => ManaProduced::AnyColor,
-        Produce::AnyColor(_)
-        | Produce::OneOf(_)
-        | Produce::ChosenColor(_)
-        | Produce::CommanderIdentity(_)
-        | Produce::ProducedBy { .. } => return None,
+        Produce::Fixed(list) => {
+            let (&first, rest) = list.split_first()?;
+            if rest.iter().any(|other| *other != first) {
+                return None;
+            }
+            ManaProduced::Fixed {
+                mana: first,
+                count: u32::try_from(list.len()).ok()?,
+            }
+        }
+        Produce::AnyColor(count) => ManaProduced::AnyColor(*count),
+        Produce::OneOf(types) => ManaProduced::OneOf(types),
+        Produce::ChosenColor(count) => ManaProduced::ChosenColor(*count),
+        Produce::CommanderIdentity(_) | Produce::ProducedBy { .. } => return None,
     };
-    (targets.is_empty() && times.is_one() && (tap || sacrifice)).then_some(SimpleManaAbility {
-        produces,
-        tap,
-        sacrifice,
-    })
+    let distinct = then
+        .iter()
+        .enumerate()
+        .all(|(i, effect)| then[..i].iter().all(|before| !same_kind(before, effect)));
+    (targets.is_empty()
+        && (tap || sacrifice)
+        && then.iter().all(needs_no_answer)
+        && distinct
+        && produces.each() > 0)
+        .then_some(ManaShape {
+            produces,
+            times,
+            tap,
+            sacrifice,
+            then,
+        })
+}
+
+/// Whether two effects are of one kind (the same variant).
+fn same_kind(a: &Effect, b: &Effect) -> bool {
+    std::mem::discriminant(a) == std::mem::discriminant(b)
 }
 
 /// The definition of a token from the description of what creates it.
@@ -715,18 +791,85 @@ mod tests {
         }
     }
 
+    /// What `mana_shape` reads of `json`: what is added each time, whether it taps and sacrifices, and how many effects follow.
+    fn shape_of(json: &str) -> Option<(ManaProduced<'static>, bool, bool, usize)> {
+        let parsed: &'static Ability = Box::leak(Box::new(ability(json)));
+        mana_shape(parsed).map(|s| (s.produces, s.tap, s.sacrifice, s.then.len()))
+    }
+
+    const GREEN: ManaProduced<'static> = ManaProduced::Fixed {
+        mana: ManaType::Green,
+        count: 1,
+    };
+
     #[rstest]
     #[case::treasure(
         r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        Some(SimpleManaAbility { produces: ManaProduced::AnyColor, tap: true, sacrifice: true })
+        Some((ManaProduced::AnyColor(1), true, true, 0))
     )]
     #[case::lotus_petal_without_the_tap(
         r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#,
-        Some(SimpleManaAbility { produces: ManaProduced::Fixed(ManaType::Red), tap: false, sacrifice: true })
+        Some((ManaProduced::Fixed { mana: ManaType::Red, count: 1 }, false, true, 0))
     )]
     #[case::the_plain_ability_has_the_shape_too(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
-        Some(SimpleManaAbility { produces: ManaProduced::Fixed(ManaType::Green), tap: true, sacrifice: false })
+        Some((GREEN, true, false, 0))
+    )]
+    #[case::sol_ring_adds_two_of_one_type(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#,
+        Some((ManaProduced::Fixed { mana: ManaType::Colorless, count: 2 }, true, false, 0))
+    )]
+    #[case::three_of_one_color(
+        r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":3}}}]}}"#,
+        Some((ManaProduced::AnyColor(3), true, true, 0))
+    )]
+    #[case::counted_times(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"times":{"Count":[{"Type":"Creature"}]}}}]}}"#,
+        Some((GREEN, true, false, 0))
+    )]
+    #[case::a_choice_of_two(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["White","Blue"]}}}]}}"#,
+        Some((ManaProduced::OneOf(&[ManaType::White, ManaType::Blue]), true, false, 0))
+    )]
+    #[case::the_chosen_color(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ChosenColor":1}}}]}}"#,
+        Some((ManaProduced::ChosenColor(1), true, false, 0))
+    )]
+    #[case::painland_damage(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["White","Blue"]}}},{"DealDamage":{"to":"You","amount":1}}]}}"#,
+        Some((ManaProduced::OneOf(&[ManaType::White, ManaType::Blue]), true, false, 1))
+    )]
+    #[case::egg_draws(
+        r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}},{"Draw":{}}]}}"#,
+        Some((ManaProduced::AnyColor(1), false, true, 1))
+    )]
+    #[case::damage_and_a_draw(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}},{"DealDamage":{"to":"You","amount":1}},{"Draw":{}}]}}"#,
+        Some((ManaProduced::Fixed { mana: ManaType::Red, count: 1 }, true, false, 2))
+    )]
+    #[case::two_draws(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}},{"Draw":{}},{"Draw":{}}]}}"#,
+        None
+    )]
+    #[case::damage_to_an_opponent(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}},{"DealDamage":{"to":"Opponents","amount":1}}]}}"#,
+        None
+    )]
+    #[case::a_discard_asks_something(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}},{"Discard":{}}]}}"#,
+        None
+    )]
+    #[case::mixed_mana(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["White","Blue"]}}}]}}"#,
+        None
+    )]
+    #[case::the_commanders_colors(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"CommanderIdentity":1}}}]}}"#,
+        None
+    )]
+    #[case::for_an_opponent(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"who":"Opponents","mana":{"Fixed":["Green"]}}}]}}"#,
+        None
     )]
     #[case::costs_nothing(
         r#"{"Activated":{"cost":[],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
@@ -734,18 +877,6 @@ mod tests {
     )]
     #[case::tap_twice(
         r#"{"Activated":{"cost":["Tap","Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        None
-    )]
-    #[case::three_of_one_color(
-        r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":3}}}]}}"#,
-        None
-    )]
-    #[case::two_fixed_mana(
-        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#,
-        None
-    )]
-    #[case::counted_times(
-        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1},"times":2}}]}}"#,
         None
     )]
     #[case::sacrifices_another(
@@ -756,49 +887,75 @@ mod tests {
         r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         None
     )]
-    #[case::draws(
+    #[case::costs_life(
+        r#"{"Activated":{"cost":["Tap",{"PayLife":1}],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        None
+    )]
+    #[case::at_sorcery_speed(
+        r#"{"Activated":{"cost":["Tap"],"timing":"Sorcery","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        None
+    )]
+    #[case::once_a_turn(
+        r#"{"Activated":{"cost":["Tap"],"limit":"OncePerTurn","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        None
+    )]
+    #[case::from_the_graveyard(
+        r#"{"Activated":{"cost":["Tap"],"from":"Graveyard","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        None
+    )]
+    #[case::draws_without_mana(
         r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"Draw":{}}]}}"#,
         None
     )]
-    fn a_mana_ability_the_engine_activates_at_priority_has_one_mana_and_costs_of_tap_and_sacrifice(
+    fn a_mana_ability_the_engine_activates_at_priority_has_one_type_of_mana_and_costs_of_tap_and_sacrifice(
         #[case] json: &str,
-        #[case] expected: Option<SimpleManaAbility>,
+        #[case] expected: Option<(ManaProduced<'static>, bool, bool, usize)>,
     ) {
-        assert_eq!(simple_mana_ability(&ability(json)), expected);
+        assert_eq!(shape_of(json), expected);
     }
 
     #[rstest]
     #[case::treasure(
         r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
-        false
+        None
     )]
     #[case::sol_ring(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless","Colorless"]}}}]}}"#,
-        true
+        Some("Ability.ManaAbility.Complex")
     )]
     #[case::gaeas_cradle(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"times":{"Count":[{"Type":"Creature"}]}}}]}}"#,
-        true
+        Some("Ability.ManaAbility.Complex")
     )]
     #[case::black_lotus(
         r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":3}}}]}}"#,
-        true
+        Some("Ability.ManaAbility.Complex")
     )]
-    #[case::not_a_mana_ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, false)]
+    #[case::a_painland(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["White","Blue"]}}},{"DealDamage":{"to":"You","amount":1}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::a_mana_cost(
+        r#"{"Activated":{"cost":[{"Mana":"{1}"},"Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::mixed_mana(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["White","Blue"]}}}]}}"#,
+        Some("Ability.ManaAbility.Other")
+    )]
+    #[case::not_a_mana_ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, None)]
     #[case::a_spell_that_adds_mana(
         r#"{"Spell":{"effects":[{"AddMana":{"mana":{"Fixed":["Black","Black","Black"]}}}]}}"#,
-        false
+        None
     )]
-    fn only_a_mana_ability_of_a_shape_the_engine_does_not_activate_is_named_complex(
+    fn a_mana_ability_that_is_not_one_mana_is_named_complex_and_one_the_engine_does_not_activate_other(
         #[case] json: &str,
-        #[case] complex: bool,
+        #[case] named: Option<&str>,
     ) {
         let used = used_primitives(&ability(json));
-        assert_eq!(
-            used.contains("Ability.ManaAbility.Complex"),
-            complex,
-            "{used:?}"
-        );
+        for name in ["Ability.ManaAbility.Complex", "Ability.ManaAbility.Other"] {
+            assert_eq!(used.contains(name), Some(name) == named, "{name}: {used:?}");
+        }
     }
 
     #[test]

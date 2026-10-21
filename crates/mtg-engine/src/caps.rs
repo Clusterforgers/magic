@@ -2,7 +2,7 @@
 //!
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
-//! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, abilities that cost `{T}`, mana
+//! runs vanilla permanents, mana abilities that cost `{T}` and/or their source (plain or of several, counted or chosen mana, with effects that ask nothing), spells, abilities that cost `{T}`, mana
 //! and moving their source (sacrificed, exiled or discarded), abilities that work from a hand, a graveyard, exile, the
 //! command zone or the stack, state triggers, and triggered abilities made of drawing, discarding, milling, sacrificing, destroying, exiling, countering,
 //! scrying, looking at, revealing, searching for, moving and shuffling cards, tapping and untapping, winning the
@@ -63,6 +63,9 @@ const RUNS: &[&str] = &[
     "Effect.GainLife",
     "Effect.LoseLife",
     "Effect.AddMana",
+    "Effect.AddMana.OneOf",
+    "Effect.AddMana.ChosenColor",
+    "Ability.ManaAbility.Complex",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
     "Effect.MoveCounters",
@@ -324,7 +327,14 @@ mod tests {
     #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
     #[case::paying_by_exiling_the_source("Effect.Pay.ExileSelf", false)]
     #[case::paying_by_discarding_the_source("Effect.Pay.DiscardSelf", false)]
-    #[case::mana_abilities_of_other_shapes("Ability.ManaAbility.Complex", false)]
+    #[case::mana_abilities_of_several_mana_or_with_more_effects(
+        "Ability.ManaAbility.Complex",
+        true
+    )]
+    #[case::mana_abilities_the_engine_does_not_activate_at_priority(
+        "Ability.ManaAbility.Other",
+        false
+    )]
     #[case::paying_or_not("Effect.Pay", true)]
     #[case::flash("Keyword.Flash", true)]
     #[case::flying("Keyword.Flying", true)]
@@ -359,8 +369,8 @@ mod tests {
     #[case::discovering("Effect.Discover", false)]
     #[case::time_travelling("Effect.TimeTravel", false)]
     #[case::extra_turns("Effect.ExtraTurn", false)]
-    #[case::a_choice_of_mana("Effect.AddMana.OneOf", false)]
-    #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", false)]
+    #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
+    #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", false)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", false)]
     #[case::devotion("Amount.Devotion", false)]

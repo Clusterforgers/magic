@@ -8,7 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::Serialize;
 
 use crate::ability::{Ability, LoyaltyCost, Timing};
-use crate::assemble::{PLAIN_MANA_ABILITY, plain_mana_ability, simple_mana_ability};
+use crate::assemble::{PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -1304,15 +1304,25 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The engine activates a mana ability of the shape `mana_shape` reads at priority (the plain one is its own
+    /// primitive, a Treasure's needs no more than its parts); one of any other shape (a mana cost, a limit, mixed mana)
+    /// waits for its own task.
+    fn mana_ability(&mut self, ability: &Ability) {
+        if ability.is_mana_ability() && plain_mana_ability(ability).is_none() {
+            match mana_shape(ability) {
+                Some(shape) if shape.is_simple() => {}
+                Some(_) => self.uses("Ability", "ManaAbility.Complex"),
+                None => self.uses("Ability", "ManaAbility.Other"),
+            }
+        }
+    }
+
     fn ability(&mut self, ability: &Ability) {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {
             self.uses("Ability", &tag);
         }
-        // The engine activates a mana ability of one mana at priority; any other waits for its own task.
-        if ability.is_mana_ability() && simple_mana_ability(ability).is_none() {
-            self.uses("Ability", "ManaAbility.Complex");
-        }
+        self.mana_ability(ability);
         self.where_and_how_often(ability);
         let saved_x = self.x_free;
         let saved_now = std::mem::replace(&mut self.x_now, false);
@@ -1920,7 +1930,7 @@ mod tests {
     #[case::exiling_the_source_from_the_battlefield(r#"{"Activated":{"cost":["ExileSelf"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.ExileSelf", "Effect.Draw"])]
     #[case::discarding_the_source_from_a_hand(r#"{"Activated":{"cost":[{"Mana":"{U/R}{U/R}"},"DiscardSelf"],"from":"Hand","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.DiscardSelf", "Cost.Mana", "Effect.Draw"])]
     #[case::from_the_command_zone(r#"{"Activated":{"cost":"{2}","from":"Command","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.Mana", "Effect.Draw"])]
-    #[case::a_mana_ability_from_the_graveyard(r#"{"Activated":{"cost":"{1}","from":"Graveyard","effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#, &["Ability.Activated", "Ability.From", "Ability.ManaAbility.Complex", "Ability.ManaAbility.From", "Cost.Mana", "Effect.AddMana"])]
+    #[case::a_mana_ability_from_the_graveyard(r#"{"Activated":{"cost":"{1}","from":"Graveyard","effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#, &["Ability.Activated", "Ability.From", "Ability.ManaAbility.From", "Ability.ManaAbility.Other", "Cost.Mana", "Effect.AddMana"])]
     #[case::a_state_trigger(r#"{"Triggered":{"when":{"State":{"condition":{"Compare":{"left":{"Count":[{"Subtype":"Island"},{"ControlledBy":"You"}]},"op":"Eq","right":0}}}},"effects":[{"Sacrifice":{"filter":["This"]}}]}}"#, &["Ability.Triggered", "Effect.Sacrifice", "Trigger.State"])]
     #[case::a_state_trigger_from_a_hand(r#"{"Triggered":{"when":{"State":{"condition":{"Compare":{"left":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"op":"Eq","right":0}}}},"from":"Hand","effects":[{"Draw":{}}]}}"#, &["Ability.Triggered", "Ability.From", "Effect.Draw", "Trigger.State"])]
     #[case::a_static_ability_from_the_graveyard(r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Haste"}],"condition":{"Compare":{"left":{"Count":[{"Subtype":"Mountain"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"from":"Graveyard"}}"#, &["Ability.Static", "Ability.From", "Keyword.Haste", "Mod.AddKeyword"])]

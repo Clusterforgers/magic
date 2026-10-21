@@ -196,13 +196,13 @@ fn answers() -> Vec<Answer> {
 
 fn decision_kinds() -> Vec<DecisionKind> {
     let (a, b) = (ObjectId(3), ObjectId(4));
-    let option = ManaOption {
-        source: ManaSource {
+    let option = ManaOption::new(
+        ManaSource {
             object: a,
             ability: 0,
         },
-        produces: ManaType::Green,
-    };
+        ManaType::Green,
+    );
     vec![
         DecisionKind::Mulligan(MulliganOptions {
             hand: vec![a, b],

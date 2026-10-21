@@ -15,6 +15,8 @@ mod fixtures;
 mod flow;
 mod layers;
 mod legend;
+mod mana_ability;
+mod mana_plan;
 mod mulligan;
 mod preview;
 mod price;

@@ -250,11 +250,11 @@ fn a_treasure_is_spent_for_any_color(
     driver.cast_tapping("Dockside Extortionist", &["Mountain", "Mountain"])?;
     resolve_the_stack(&mut driver)?;
     let treasure = tokens_named(&driver, "Treasure")[0];
-    // Nothing but the Treasure is left to pay with, and a spell is not offered on its promise.
+    // Nothing but the Treasure is left to pay with, and it can pay: it is a mana source of the payment, sacrificed with its mana.
     let DecisionKind::Priority(options) = &driver.decision()?.kind else {
         panic!("priority was expected");
     };
-    assert_eq!(options.castable.len(), 0);
+    assert_eq!(options.castable.len(), 1);
     let colors: Vec<ManaType> = options.mana_abilities.iter().map(|m| m.produces).collect();
     assert_eq!(
         colors,

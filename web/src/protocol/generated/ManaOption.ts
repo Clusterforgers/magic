@@ -13,4 +13,16 @@ source: ManaSource,
 /**
  * Mana added when it is activated.
  */
-produces: ManaType, };
+produces: ManaType, 
+/**
+ * How many mana of that type it adds (Sol Ring adds 2); left out means one.
+ */
+count?: number, 
+/**
+ * Activating it does more than add mana (a painland deals damage, an egg draws); left out means it does not.
+ */
+extra?: boolean, 
+/**
+ * Activating it sacrifices its source (a Treasure); left out means it does not.
+ */
+sacrifice?: boolean, };

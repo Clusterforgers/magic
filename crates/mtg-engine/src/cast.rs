@@ -21,6 +21,7 @@ use crate::loyalty;
 use crate::mana::{
     ManaOption, Payment, auto_payment, check_payment, complete_payment, max_life_payment,
 };
+use crate::mana_ability;
 use crate::object::PermanentState;
 use crate::snapshot::snapshot;
 use crate::state::GameState;
@@ -143,14 +144,31 @@ fn unusable(state: &GameState, options: &PayOptions) -> Vec<ObjectId> {
         .collect()
 }
 
+/// The events of using a mana source when the game is not at hand: the tap and the mana it adds.
+#[cfg(test)]
+fn tap_events(player: PlayerId, option: &ManaOption) -> Vec<Event> {
+    let mut events = vec![Event::PermanentTapped {
+        object: option.source.object,
+    }];
+    events.extend((0..option.count).map(|_| Event::ManaAdded {
+        player,
+        mana: option.produces,
+        source: Some(option.source.object),
+    }));
+    events
+}
+
 /// The events of a valid payment, with the `announced` events of what it is for between the life and the mana.
+///
+/// `activate` gives the events of using one mana source: its cost, the mana and what else it does (`mana_ability.rs`).
 fn payment_events(
     player: PlayerId,
     options: &PayOptions,
     tapped: &[ObjectId],
     payment: &Payment,
     announced: Vec<Event>,
-) -> Result<Vec<Event>, IllegalAnswer> {
+    activate: &dyn Fn(&ManaOption) -> Result<Vec<Event>, EngineError>,
+) -> Result<Vec<Event>, EngineError> {
     let spent = check_payment(
         &options.cost,
         &options.pool,
@@ -158,7 +176,8 @@ fn payment_events(
         tapped,
         options.life,
         payment,
-    )?;
+    )
+    .map_err(IllegalAnswer::from)?;
     let mut events = Vec::new();
     // Life is part of the cost, paid in the same step as the mana, so it comes before the spell goes on the stack.
     if payment.life > 0 {
@@ -169,18 +188,12 @@ fn payment_events(
     }
     events.extend(announced);
     for tap in &payment.taps {
-        let produces = options
+        let option = options
             .sources
             .iter()
             .find(|o| o.source == *tap)
-            .map(|o| o.produces)
             .ok_or(IllegalAnswer::NotOffered("mana source"))?;
-        events.push(Event::PermanentTapped { object: tap.object });
-        events.push(Event::ManaAdded {
-            player,
-            mana: produces,
-            source: Some(tap.object),
-        });
+        events.extend(activate(option)?);
     }
     if !spent.is_empty() {
         events.push(Event::ManaSpent {
@@ -206,12 +219,13 @@ pub(crate) fn pay_answer(
         PayChoice::Cancel => Vec::new(),
         _ => announcement(state, player, pending)?,
     };
-    pay_choice(
+    pay_with(
         player,
         options,
         &unusable(state, options),
         choice,
         announced,
+        &|option| mana_ability::activation(state, player, option),
     )
 }
 
@@ -251,12 +265,27 @@ fn announcement(
 }
 
 /// [`pay_answer`] with the tapped permanents and the announcing events already worked out, so it needs no game state.
+#[cfg(test)]
 pub(crate) fn pay_choice(
     player: PlayerId,
     options: &PayOptions,
     tapped: &[ObjectId],
     choice: PayChoice,
     announced: Vec<Event>,
+) -> Result<Outcome, EngineError> {
+    pay_with(player, options, tapped, choice, announced, &|option| {
+        Ok(tap_events(player, option))
+    })
+}
+
+/// [`pay_choice`] with the events of using each mana source given by `activate`.
+fn pay_with(
+    player: PlayerId,
+    options: &PayOptions,
+    tapped: &[ObjectId],
+    choice: PayChoice,
+    announced: Vec<Event>,
+    activate: &dyn Fn(&ManaOption) -> Result<Vec<Event>, EngineError>,
 ) -> Result<Outcome, EngineError> {
     let payment = match choice {
         PayChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
@@ -276,7 +305,7 @@ pub(crate) fn pay_choice(
                 .ok_or(IllegalAnswer::NotOffered("automatic payment"))?
         }
     };
-    let events = payment_events(player, options, tapped, &payment, announced)?;
+    let events = payment_events(player, options, tapped, &payment, announced, activate)?;
     Ok(Outcome::Events(events))
 }
 
@@ -290,13 +319,13 @@ mod tests {
     use crate::mana::{ManaOption, ManaPool, ManaSource};
 
     fn source(object: u64, produces: ManaType) -> ManaOption {
-        ManaOption {
-            source: ManaSource {
+        ManaOption::new(
+            ManaSource {
                 object: ObjectId(object),
                 ability: 0,
             },
             produces,
-        }
+        )
     }
 
     fn options_for(

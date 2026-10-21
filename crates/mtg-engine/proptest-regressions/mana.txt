@@ -1,0 +1,10 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 3cf5106443ec65d3fd106efb6e6c20f05a654f98c8142b1716f1e8b57a93dc69 # shrinks to s = (ManaCost([Generic(2)]), [White], [ManaOption { source: ManaSource { object: ObjectId(0), ability: 0 }, produces: White, count: 2, sacrifice: false }], 0)
+cc 0905b1f6bc36346345f049a142196e7cd1bb33413b838d05c1a400c23236d3fe # shrinks to s = (ManaCost([Colored(White), MonoHybrid(White), MonoHybrid(White)]), [White], [ManaOption { source: ManaSource { object: ObjectId(0), ability: 0 }, produces: White, count: 1, sacrifice: false }, ManaOption { source: ManaSource { object: ObjectId(1), ability: 0 }, produces: White, count: 3, sacrifice: false }], 0), pick = Index(4611686018427387904)
+cc ebe192aa7daaa210031060462fa6ebdd8d55c7f8b5c8f2980b2df12ca8786cad # shrinks to s = (ManaCost([Generic(1), MonoHybrid(Blue), Phyrexian(Red)]), [White, Blue], [ManaOption { source: ManaSource { object: ObjectId(0), ability: 0 }, produces: White, count: 1, sacrifice: false }, ManaOption { source: ManaSource { object: ObjectId(1), ability: 0 }, produces: White, count: 1, sacrifice: false }], 3), pick = Index(5764607523034234880)
+cc 2671f6c28e61a5123b5c769e46331a929ce23e57313be1cbd195312ff0bcd4e6 # shrinks to s = (ManaCost([Hybrid(Red, White), MonoHybrid(Red)]), [White, White], [ManaOption { source: ManaSource { object: ObjectId(0), ability: 0 }, produces: Red, count: 1, sacrifice: false }], 0)

@@ -1,4 +1,4 @@
-//! Goal: the 126 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 128 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -39,13 +39,14 @@ use Support::{Manual, Partial, Verified};
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
 /// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified; cost increases and reductions are
 /// played too, so Fireball, Thalia, Guardian of Thraben and Foundry Inspector are Verified.
-const CARDS: [(&str, Support, usize); 126] = [
+const CARDS: [(&str, Support, usize); 128] = [
     ("Act of Treason", Verified, 1),
     ("Ajani, Caller of the Pride", Verified, 3),
     ("Anger", Verified, 2),
     ("Anointed Procession", Verified, 1),
     ("Archon of Cruelty", Verified, 2),
     ("Batterskull", Verified, 4),
+    ("Battlefield Forge", Verified, 2),
     ("Black Knight", Verified, 2),
     ("Bloodbraid Elf", Partial, 1),
     ("Bonecrusher Giant // Stomp", Manual, 0),
@@ -87,7 +88,7 @@ const CARDS: [(&str, Support, usize); 126] = [
     ("Foundry Inspector", Verified, 1),
     ("Fog", Verified, 1),
     ("Forest", Verified, 1),
-    ("Gaea's Cradle", Manual, 0),
+    ("Gaea's Cradle", Verified, 1),
     ("Garruk Wildspeaker", Verified, 3),
     ("Gatekeeper of Malakir", Verified, 2),
     ("Giant Growth", Verified, 1),
@@ -107,6 +108,7 @@ const CARDS: [(&str, Support, usize); 126] = [
     ("Levitation", Verified, 1),
     ("Lightning Bolt", Verified, 1),
     ("Llanowar Elves", Verified, 1),
+    ("Lotus Petal", Verified, 1),
     ("Maralen of the Mornsong", Verified, 2),
     ("Maro", Verified, 1),
     ("Mending Hands", Verified, 1),
@@ -133,7 +135,7 @@ const CARDS: [(&str, Support, usize); 126] = [
     ("Serra Angel", Verified, 2),
     ("Sneak Attack", Verified, 1),
     ("Sodden Verdure", Verified, 3),
-    ("Sol Ring", Manual, 0),
+    ("Sol Ring", Verified, 1),
     ("Soul of Zendikar", Verified, 3),
     ("Spellbreaker Behemoth", Verified, 2),
     ("Squee, Goblin Nabob", Verified, 1),
@@ -172,7 +174,7 @@ const CARDS: [(&str, Support, usize); 126] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 126);
+    assert_eq!(in_table.len(), 128);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -313,15 +315,15 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     ] {
         assert_eq!(reasons(name), "", "{name}");
     }
-    // Sol Ring and Gaea's Cradle add mana from an activated ability of a shape the engine does not activate yet:
-    // two mana at once, and as many as there are creatures.
-    for name in ["Sol Ring", "Gaea's Cradle"] {
-        let reason = reasons(name);
-        assert!(
-            reason.contains("Ability.ManaAbility.Complex"),
-            "{name}: {reason}"
-        );
-        assert!(!reason.contains("Effect.AddMana"), "{name}: {reason}");
+    // The mana abilities of several mana, of as many mana as there are creatures, of a choice of colour with damage to
+    // their controller and of a sacrifice are activated at priority and paid with: the cards are covered whole.
+    for name in [
+        "Sol Ring",
+        "Gaea's Cradle",
+        "Battlefield Forge",
+        "Lotus Petal",
+    ] {
+        assert_eq!(reasons(name), "", "{name}");
     }
     // The rules of the game run as static abilities and as effects: the cards that change one are covered whole.
     for name in [
@@ -475,7 +477,7 @@ fn mulldrifter_draws_two_cards_when_it_enters_from_its_assembled_ability() -> Re
 }
 
 #[test]
-fn a_manual_artifact_resolves_without_its_ability() -> Result<(), ScriptError> {
+fn sol_ring_resolves_and_is_a_mana_source_of_two() -> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(
         Scenario::new(2)
             .hand_named(0, ["Sol Ring"])
@@ -487,11 +489,13 @@ fn a_manual_artifact_resolves_without_its_ability() -> Result<(), ScriptError> {
     let DecisionKind::Priority(options) = &driver.decision()?.kind else {
         panic!("priority was expected");
     };
+    let counts: Vec<u32> = options.mana_abilities.iter().map(|m| m.count).collect();
     assert_eq!(
-        options.mana_abilities.len(),
-        1,
-        "only the Forest that did not pay taps for mana: Sol Ring is left to the table"
+        counts.iter().sum::<u32>(),
+        3,
+        "the Forest that did not pay adds one mana and Sol Ring two: {counts:?}"
     );
+    assert!(counts.contains(&2));
     Ok(())
 }
 

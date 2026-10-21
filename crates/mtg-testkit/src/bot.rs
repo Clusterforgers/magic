@@ -12,7 +12,7 @@ use mtg_engine::decision::{
     Answer, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction,
     PriorityOptions,
 };
-use mtg_engine::mana::{ManaSource, Payment};
+use mtg_engine::mana::{ManaOption, ManaSource, Payment, check_payment};
 use mtg_engine::rng::GameRng;
 use mtg_engine::turn::Step;
 
@@ -331,8 +331,64 @@ impl RandomBot {
         })
     }
 
+    /// A random payment of the plain `cost` when some source adds several mana or is sacrificed: sources and floating
+    /// mana in random order, each taken while it still helps; `None` when what was taken has a part to spare.
+    fn random_planned_payment(&mut self, cost: &ManaCost, options: &PayOptions) -> Option<Payment> {
+        let mut supply: Vec<(Supply, u32)> = options
+            .sources
+            .iter()
+            .map(|o| (Supply::Tap(o.source, o.produces), o.count))
+            .collect();
+        for mana in ManaType::ALL {
+            supply.extend((0..options.pool.get(mana)).map(|_| (Supply::Floating(mana), 1)));
+        }
+        self.rng.shuffle(&mut supply);
+        let mut needs = ManaType::ALL.map(|mana| cost.required(mana));
+        let mut generic = cost.generic();
+        let mut payment = Payment::default();
+        let mut tapped = Vec::new();
+        for (item, count) in supply {
+            if needs.iter().all(|n| *n == 0) && generic == 0 {
+                break;
+            }
+            let mana = item.mana();
+            if let Supply::Tap(source, _) = item
+                && tapped.contains(&source.object)
+            {
+                continue;
+            }
+            let slot = &mut needs[mana.index()];
+            let used = (*slot).min(count);
+            if used == 0 && generic == 0 {
+                continue;
+            }
+            *slot -= used;
+            generic = generic.saturating_sub(count - used);
+            match item {
+                Supply::Floating(m) => payment.pool.push(m),
+                Supply::Tap(source, _) => {
+                    tapped.push(source.object);
+                    payment.taps.push(source);
+                }
+            }
+        }
+        check_payment(
+            cost,
+            &options.pool,
+            &options.sources,
+            &[],
+            options.life,
+            &payment,
+        )
+        .ok()
+        .map(|_| payment)
+    }
+
     /// A random exact payment of the plain `cost`: required colors first, then random mana for the generic part.
     fn random_payment(&mut self, cost: &ManaCost, options: &PayOptions) -> Option<Payment> {
+        if !options.sources.iter().all(ManaOption::is_simple) {
+            return self.random_planned_payment(cost, options);
+        }
         let mut supply: Vec<Supply> = options
             .sources
             .iter()

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "a14e6b02-7c3d-4f58-8e91-3d2b6f0c5a77",
+  "name": "Lotus Petal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lotus Petal",
+      "oracle_fingerprint": "3091cdade923b8ad307a6928bcec129a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
