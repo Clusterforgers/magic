@@ -1,4 +1,4 @@
-//! Goal: the 72 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 75 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -34,10 +34,10 @@ use Support::{Manual, Partial, Verified};
 /// (power and toughness from a count, colours) and the keywords of combat and
 /// flash, hexproof and the keywords that are triggers (battle cry, prowess, ward), so the fifty cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
-/// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback;
-/// Tireless Tracker's Clue, not its counter. Jace, the Mind Sculptor stays
+/// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
+/// Counters on permanents and players are played, so Tireless Tracker is Verified. Jace, the Mind Sculptor stays
 /// with the table for its loyalty costs and Flooded Strand for the life it costs.
-const CARDS: [(&str, Support, usize); 72] = [
+const CARDS: [(&str, Support, usize); 75] = [
     ("Act of Treason", Verified, 1),
     ("Anger", Verified, 2),
     ("Anointed Procession", Manual, 0),
@@ -48,7 +48,9 @@ const CARDS: [(&str, Support, usize); 72] = [
     ("Bonesplitter", Partial, 1),
     ("Brainstorm", Verified, 1),
     ("Burst Lightning", Manual, 0),
+    ("Caress of Phyrexia", Verified, 1),
     ("Carnage Tyrant", Verified, 3),
+    ("Cathars' Crusade", Verified, 1),
     ("Counterspell", Verified, 1),
     ("Courtly Provocateur", Verified, 2),
     ("Covetous Dragon", Verified, 2),
@@ -75,6 +77,7 @@ const CARDS: [(&str, Support, usize); 72] = [
     ("Hero of Bladehold", Verified, 2),
     ("Hulking Raptor", Verified, 2),
     ("Humility", Verified, 1),
+    ("Inspiring Call", Verified, 1),
     ("Izzet Charm", Verified, 1),
     ("Jace, the Mind Sculptor", Manual, 0),
     ("Jungle Lion", Verified, 1),
@@ -106,7 +109,7 @@ const CARDS: [(&str, Support, usize); 72] = [
     ("Supreme Verdict", Verified, 2),
     ("Swords to Plowshares", Verified, 1),
     ("Teysa Karlov", Verified, 2),
-    ("Tireless Tracker", Partial, 1),
+    ("Tireless Tracker", Verified, 2),
     ("Transguild Courier", Verified, 1),
     ("Warmonger Hellkite", Verified, 3),
     ("Wrath of God", Verified, 1),
@@ -116,7 +119,7 @@ const CARDS: [(&str, Support, usize); 72] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 72);
+    assert_eq!(in_table.len(), 75);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -236,13 +239,17 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     ] {
         assert_eq!(reasons(name), "", "{name}");
     }
-    // Tireless Tracker makes its Clues; putting the counter on itself is not played yet.
-    let tracker = reasons("Tireless Tracker");
-    assert!(tracker.contains("Effect.PutCounters"), "{tracker}");
-    assert!(
-        !tracker.contains("Effect.CreateToken") && !tracker.contains("Trigger.Sacrificed"),
-        "{tracker}"
-    );
+    // Counters are played now: Tireless Tracker makes its Clues and puts the counter on itself, Cathars' Crusade puts
+    // one on each creature, Inspiring Call counts and shields the creatures that have one and Caress of Phyrexia
+    // gives a player poison counters.
+    for name in [
+        "Tireless Tracker",
+        "Cathars' Crusade",
+        "Inspiring Call",
+        "Caress of Phyrexia",
+    ] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // Sol Ring and Gaea's Cradle add mana from an activated ability of a shape the engine does not activate yet:
     // two mana at once, and as many as there are creatures.
     for name in ["Sol Ring", "Gaea's Cradle"] {

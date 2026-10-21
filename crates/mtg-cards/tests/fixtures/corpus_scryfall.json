@@ -294,6 +294,52 @@
     "toughness": "6"
   },
   {
+    "id": "5ef987ad-a3dc-4ef5-90ec-9a8cfa95965b",
+    "oracle_id": "8253fcac-0c07-41e8-afa4-34021f9ef6f4",
+    "name": "Caress of Phyrexia",
+    "lang": "en",
+    "layout": "normal",
+    "set": "nph",
+    "collector_number": "53",
+    "rarity": "uncommon",
+    "released_at": "2011-05-13",
+    "digital": false,
+    "mana_cost": "{3}{B}{B}",
+    "cmc": 5.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Target player draws three cards, loses 3 life, and gets three poison counters.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "5296e353-2efc-4d72-a877-7957eff630b9",
+    "oracle_id": "cc65ac73-5bef-4ecb-ad8e-39199084c027",
+    "name": "Cathars' Crusade",
+    "lang": "en",
+    "layout": "normal",
+    "set": "inr",
+    "collector_number": "17",
+    "rarity": "rare",
+    "released_at": "2025-01-24",
+    "digital": false,
+    "mana_cost": "{3}{W}{W}",
+    "cmc": 5.0,
+    "type_line": "Enchantment",
+    "oracle_text": "Whenever a creature you control enters, put a +1/+1 counter on each creature you control.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
     "id": "4f616706-ec97-4923-bb1e-11a69fbaa1f8",
     "oracle_id": "cc187110-1148-4090-bbb8-e205694a39f5",
     "name": "Counterspell",
@@ -969,6 +1015,29 @@
     ],
     "color_identity": [
       "W"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "2555ec7b-5cc2-4ffd-9344-6368019feff9",
+    "oracle_id": "9b9a10ff-5a5d-4df8-88aa-18d84ff9117c",
+    "name": "Inspiring Call",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tle",
+    "collector_number": "168",
+    "rarity": "uncommon",
+    "released_at": "2025-11-21",
+    "digital": false,
+    "mana_cost": "{2}{G}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Draw a card for each creature you control with a +1/+1 counter on it. Those creatures gain indestructible until end of turn. (Damage and effects that say \"destroy\" don't destroy them.)",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
     ],
     "keywords": []
   },

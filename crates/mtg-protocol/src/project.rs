@@ -212,6 +212,10 @@ impl PlayerView {
                 PlayerStatus::Lost(reason) => Some(reason.clone()),
             },
             mana: *player.mana(),
+            counters: player
+                .counters()
+                .map(|(kind, count)| (kind.clone(), count))
+                .collect(),
             mulligans: player.mulligans(),
             mulligan: player.mulligan_status(),
             hand: zone_view(state, viewer, Zone::Hand(seat)),

@@ -194,7 +194,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   LifeLost: [{ LifeLost: { player: 1, amount: 2 } }, 'Bo loses 2 life'],
   CountersChanged: [
     { CountersChanged: { on: { Object: { id: 1, counter: 0 } }, counter: '+1/+1', delta: 2 } },
-    'Counters are put on Grizzly Bears',
+    'Grizzly Bears gets 2 +1/+1 counters',
   ],
   TokenCreated: [
     { TokenCreated: { object: 91, controller: 2, name: 'Treasure' } },
@@ -240,7 +240,20 @@ const MORE: [Event, string][] = [
   [{ ChoiceMade: { player: 1, choice: { Order: [1, 2] } } }, 'Bo puts 2 cards in order'],
   [{ ChoiceMade: { player: 1, choice: { Option: 0 } } }, 'Bo chooses option 1'],
   [{ ChoiceMade: { player: 1, choice: { Replacement: 1 } } }, 'Bo chooses which effect applies first'],
-  [{ CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: -1 } }, 'Counters are removed from Bo'],
+  [{ CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: -1 } }, 'Bo loses a poison counter'],
+  [{ CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: 3 } }, 'Bo gets 3 poison counters'],
+  [
+    { CountersChanged: { on: { Player: 0 }, counter: { Other: 'energy' }, delta: 2 } },
+    'Ana gets 2 energy counters',
+  ],
+  [
+    { CountersChanged: { on: { Object: { id: 1, counter: 0 } }, counter: '-1/-1', delta: 1 } },
+    'Grizzly Bears gets a -1/-1 counter',
+  ],
+  [
+    { CountersChanged: { on: { Object: { id: 1, counter: 0 } }, counter: '+1/+1', delta: -2 } },
+    'Grizzly Bears loses 2 +1/+1 counters',
+  ],
 ]
 
 function snapshotOf(id: number): Snapshot {
@@ -383,6 +396,7 @@ describe('minor lines', () => {
     { CreatureDied: { object: 1, cause: 'ZeroToughness' } },
     { TurnBegan: { number: 1, active: 0 } },
     { PlayerLost: { player: 1, reason: 'Conceded' } },
+    { CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: 1 } },
   ]
 
   it.each(QUIET)('draws %j quietly', (event) => {
@@ -454,6 +468,7 @@ describe('events with more than one shape', () => {
   it.each([
     ['ZeroLife', 'Bo ran out of life'],
     ['EmptyLibrary', 'Bo could not draw from an empty library'],
+    ['Poison', 'Bo had ten poison counters'],
     ['Conceded', 'Bo conceded'],
   ] as const)('says why a player lost: %s', (reason, text) => {
     expect(say({ PlayerLost: { player: 1, reason } })).toBe(text)

@@ -1,0 +1,43 @@
+{
+  "oracle_id": "9b9a10ff-5a5d-4df8-88aa-18d84ff9117c",
+  "name": "Inspiring Call",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspiring Call",
+      "oracle_fingerprint": "ab783fae342c219a8b63c1ffc98c9ef0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasCounter": "+1/+1" }
+                    ]
+                  }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" },
+                      { "HasCounter": "+1/+1" }
+                    ]
+                  },
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -9,6 +9,8 @@ export function describeLoss(reason: LossReason): string {
       return 'ran out of life'
     case 'EmptyLibrary':
       return 'could not draw from an empty library'
+    case 'Poison':
+      return 'had ten poison counters'
     case 'Conceded':
       return 'conceded'
   }

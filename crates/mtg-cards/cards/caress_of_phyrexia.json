@@ -1,0 +1,23 @@
+{
+  "oracle_id": "8253fcac-0c07-41e8-afa4-34021f9ef6f4",
+  "name": "Caress of Phyrexia",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caress of Phyrexia",
+      "oracle_fingerprint": "08eacbf5d859c86d5330ebb10048419e",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 3 } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 3 } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "poison", "count": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "cc65ac73-5bef-4ecb-ad8e-39199084c027",
+  "name": "Cathars' Crusade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cathars' Crusade",
+      "oracle_fingerprint": "dd1be73940e8a42ce65213c9ebed5d2d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
