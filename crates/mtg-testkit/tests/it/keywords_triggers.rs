@@ -1,4 +1,4 @@
-//! Goal: prowess, battle cry and ward, the keywords that are triggered abilities, play whole at tables of two, three and four seats as their rules say: a creature with prowess grows by 1/+1 for each noncreature spell its controller casts, once for each instance of the keyword, and shrinks back at the end of the turn; battle cry gives every other attacker +1/+0 once it resolves, so the order of Hero of Bladehold's two attack triggers decides whether its Soldiers get it; ward counters a spell or an ability an opponent controls that targets the creature unless that player pays the cost (asked, and not asked when they cannot pay), asks no one for the controller's own spells, and does nothing for a cast that was backed out of; the triggers are told apart in the ordering prompt, and the log replays to the live state.
+//! Goal: prowess, battle cry and ward, the keywords that are triggered abilities, play whole at tables of two, three and four seats as their rules say: a creature with prowess grows by 1/+1 for each noncreature spell its controller casts, once for each instance of the keyword, and shrinks back at the end of the turn; battle cry gives every other attacker +1/+0 once it resolves, so the order of Hero of Bladehold's two attack triggers decides whether its Soldiers get it; ward counters a spell or an ability an opponent controls that targets the creature unless that player pays the cost (asked, and asked the same way when they cannot pay, when No is the only answer), asks no one for the controller's own spells, and does nothing for a cast that was backed out of; the triggers are told apart in the ordering prompt, and the log replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -351,7 +351,7 @@ fn countered(events: &[Event]) -> usize {
         .count()
 }
 
-/// How the opponent answers the ward: pays, declines, or has too little mana to be asked.
+/// How the opponent answers the ward: pays, declines, or has too little mana and can only decline.
 #[derive(Debug, Clone, Copy)]
 enum Reply {
     Pays,
@@ -374,16 +374,19 @@ fn ward_counters_a_spell_unless_its_controller_pays(
     // The ward trigger is above the Bolt, and every seat may answer both.
     assert_eq!(driver.state().stack().len(), 2);
     events.extend(resolve_everything(&mut driver)?);
+    // Only the controller of the Bolt is asked, though it is not their ward and others are opponents too.
+    assert_eq!(asked(&driver), (1, "Pay {2}?".to_owned()));
     match reply {
         Reply::Cannot => {
-            assert!(
-                driver.state().stack().is_empty(),
-                "nobody is asked to pay what they cannot"
-            );
+            let DecisionKind::YesNo(options) = &driver.decision()?.kind else {
+                panic!("a question was expected");
+            };
+            assert!(options.only_no, "a Yes is not an answer to what they cannot pay");
+            assert!(driver.answer(yes_no(true)).is_err());
+            events.extend(driver.answer(yes_no(false))?);
+            events.extend(resolve_everything(&mut driver)?);
         }
         Reply::Pays | Reply::Declines => {
-            // Only the controller of the Bolt is asked, though it is not their ward and others are opponents too.
-            assert_eq!(asked(&driver), (1, "Pay {2}?".to_owned()));
             events.extend(driver.answer(yes_no(matches!(reply, Reply::Pays)))?);
             if matches!(reply, Reply::Pays) {
                 assert_eq!(asked(&driver).1, "pay-mana");
