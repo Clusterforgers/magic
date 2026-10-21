@@ -78,11 +78,11 @@ pub struct ManaOption {
     pub produces: ManaType,
     /// How many mana of that type it adds (Sol Ring adds 2); left out means one.
     #[serde(default = "one", skip_serializing_if = "is_one")]
-    #[cfg_attr(feature = "ts", ts(optional))]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
     pub count: u32,
     /// Activating it sacrifices its source (a Treasure); left out means it does not.
     #[serde(default, skip_serializing_if = "is_false")]
-    #[cfg_attr(feature = "ts", ts(optional))]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub sacrifice: bool,
 }
 

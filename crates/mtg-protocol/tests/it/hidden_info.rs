@@ -536,7 +536,7 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_the_keywords_that_are_trigger
 /// is shown to the table with the ability on the stack, as it is at a real table, and no other hidden card is named.
 #[rstest]
 #[case(2, 51)]
-#[case(3, 52)]
+#[case(3, 55)]
 #[case(4, 53)]
 fn no_hidden_object_reaches_any_viewer_in_games_of_abilities_from_other_zones(
     #[case] players: usize,
@@ -594,7 +594,7 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_abilities_from_other_zones(
     assert!(engine.result().is_some(), "game should finish");
     assert!(
         checked > 500 && state_triggers > 0,
-        "test must not be vacuous"
+        "test must not be vacuous: {checked} hidden objects checked, {state_triggers} state triggers"
     );
     assert!(
         from_hidden_zones > 0 || players > 2,

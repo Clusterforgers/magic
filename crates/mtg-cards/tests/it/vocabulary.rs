@@ -56,11 +56,11 @@ fn names(list: &[&str]) -> BTreeSet<String> {
 )]
 #[case::mana_of_the_commanders_identity(
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"CommanderIdentity":1}}}]}}"#,
-    &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.CommanderIdentity"]
+    &["Ability.Activated", "Ability.ManaAbility.Other", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.CommanderIdentity"]
 )]
 #[case::mana_a_land_could_produce(
     r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"},{"ControlledBy":"Opponents"}],"count":1}}}}]}}"#,
-    &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.ProducedBy"]
+    &["Ability.Activated", "Ability.ManaAbility.Other", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.ProducedBy"]
 )]
 #[case::devotion(
     r#"{"Spell":{"effects":[{"GainLife":{"amount":{"Devotion":["Black"]}}}]}}"#,
