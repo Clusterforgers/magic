@@ -43,6 +43,7 @@ async fn game(
     let options = GameOptions {
         visibility,
         held: Some(held),
+        ..GameOptions::default()
     };
     let created = registry
         .create_with(&requests(host, seats), options, None)
@@ -266,6 +267,7 @@ async fn a_listing_holds_no_token_no_code_and_no_digest() {
         game: _,
         host: _,
         format: _,
+        house_rules: _,
         filled: _,
         total: _,
         created_at: _,

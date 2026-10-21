@@ -14,7 +14,7 @@ use crate::priority::{all_passed, priority_options};
 use crate::rules::cant_draw;
 use crate::stack::resolve_top;
 use crate::state::GameState;
-use crate::turn::{MAX_HAND_SIZE, Step};
+use crate::turn::Step;
 use crate::zones::Zone;
 
 /// The next batch of events or decision for the current step.
@@ -58,7 +58,7 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
         }
         Step::Draw => {
             let skipped = state.turn().number() == 1
-                && state.format().skips_first_draw(state.players().len());
+                && state.ruleset().skips_first_draw(state.players().len());
             let mut events = match active {
                 Some(active) if !skipped => draw(state, active, 1),
                 _ => Vec::new(),
@@ -216,12 +216,13 @@ fn pool_emptying(state: &GameState) -> Vec<Event> {
 fn cleanup(state: &GameState) -> Progress {
     if let Some(active) = state.active_player() {
         let hand = state.zone(Zone::Hand(active));
-        if hand.len() > MAX_HAND_SIZE {
+        let most = state.ruleset().max_hand_size();
+        if let Some(most) = most.filter(|most| hand.len() > *most) {
             return Progress::Decide(Decision {
                 player: active,
                 kind: DecisionKind::Discard(DiscardOptions {
                     hand: hand.to_vec(),
-                    count: hand.len() - MAX_HAND_SIZE,
+                    count: hand.len() - most,
                 }),
             });
         }

@@ -23,6 +23,7 @@ use std::net::IpAddr;
 use std::sync::{Arc, Mutex, MutexGuard, PoisonError};
 use std::time::Instant;
 
+use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 use mtg_engine::GameSetup;
 use mtg_engine::format::Normal;
@@ -104,6 +105,9 @@ pub struct GameOptions {
     /// requested names are ignored, and the decks are the ones requested. `None` holds them all,
     /// as [`Registry::create`] does. The creator plays seat 0, so at least that one is held.
     pub held: Option<usize>,
+    /// What the creator sets in place of the format's values; a game made with [`Registry::create_decked`]
+    /// plays under them, one made from a recipe under the recipe's.
+    pub house_rules: HouseRules,
 }
 
 /// A new game and the secret credential of each seat that is held.
@@ -237,6 +241,7 @@ fn seat_slots(
 struct Parts {
     visibility: Visibility,
     format: FormatKind,
+    house_rules: HouseRules,
     code: Option<TokenDigest>,
     /// Whether the game is in the database, so changes to its seats are written there too.
     recorded: bool,
@@ -247,6 +252,8 @@ struct Entry {
     handle: GameHandle,
     visibility: Visibility,
     format: FormatKind,
+    /// What the creator set in place of the format's values.
+    house_rules: HouseRules,
     /// The digest of the join code; none for a game stored before codes existed.
     code: Option<TokenDigest>,
     recorded: bool,
@@ -273,6 +280,7 @@ impl Entry {
             handle,
             visibility: parts.visibility,
             format: parts.format,
+            house_rules: parts.house_rules,
             code: parts.code,
             recorded: parts.recorded,
             seats: parts.seats,
@@ -442,12 +450,14 @@ impl Registry {
         // The decks as they are now, kept so that a later boot can tell when a deploy changed one.
         let recipe = GameRecipe {
             format: FormatKind::Normal,
+            house_rules: options.house_rules,
             seed,
             decks: held.iter().map(|deck| deck.reference().clone()).collect(),
             fingerprints: held.iter().map(|deck| *deck.fingerprint()).collect(),
         };
         let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
-        let setup = GameSetup::new(Arc::new(Normal), seed, libraries);
+        let setup =
+            GameSetup::new(Arc::new(Normal), seed, libraries).with_house_rules(options.house_rules);
         // Refused like a recipe that does not build: too few seats, a deck the format does not allow.
         setup.validate().map_err(RecipeError::from)?;
         self.admit(setup, names, Some(recipe), host, options, Some(decks))
@@ -529,13 +539,17 @@ impl Registry {
             visibility: options.visibility,
             code_digest: Some(*code.digest().as_bytes()),
         };
-        let decks = decks.map(|defaults| SeatDecks::new(FormatKind::Normal, setup.seed, defaults));
+        let house_rules = setup.house_rules;
+        let decks = decks.map(|defaults| {
+            SeatDecks::new(FormatKind::Normal, setup.seed, defaults).with_house_rules(house_rules)
+        });
         let handle = self
             .start(id, setup, recipe.as_ref(), &meta, &slots, decks)
             .await?;
         let parts = Parts {
             visibility: options.visibility,
             format: recipe.as_ref().map_or(FormatKind::Normal, |r| r.format),
+            house_rules,
             code: Some(code.digest()),
             recorded: persistent,
             seats: slots,

@@ -35,6 +35,7 @@ async fn lobby(registry: &Registry, seats: usize, visibility: Visibility) -> Cre
     let options = GameOptions {
         visibility,
         held: Some(1),
+        ..GameOptions::default()
     };
     registry
         .create_with(&requests(seats), options, None)
@@ -173,6 +174,7 @@ async fn a_claim_and_a_pre_issued_token_are_told_apart_in_the_model() {
     let options = GameOptions {
         visibility: Visibility::Public,
         held: Some(2),
+        ..GameOptions::default()
     };
     let created = registry
         .create_with(&requests(3), options, None)
@@ -246,6 +248,7 @@ async fn an_account_holds_one_seat_per_game_and_is_handed_its_own_again() {
     let options = GameOptions {
         visibility: Visibility::Public,
         held: Some(1),
+        ..GameOptions::default()
     };
     // A game without a database has no accounts to bind at creation, so the host is a guest here.
     let created = registry
@@ -685,6 +688,7 @@ async fn a_seat_made_with_the_game_is_not_given_back() {
     let options = GameOptions {
         visibility: Visibility::Public,
         held: Some(2),
+        ..GameOptions::default()
     };
     let created = registry
         .create_with(&requests(3), options, None)

@@ -42,6 +42,7 @@ fn game(host: &str, filled: u32) -> LobbyGame {
         game: "6f1e0c1a-3b1f-4d9e-8a3e-0d3c2d1b7a55".into(),
         host: host.into(),
         format: "normal".into(),
+        house_rules: None,
         filled,
         total: 4,
         created_at: "2026-10-19T12:30:00Z".into(),

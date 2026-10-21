@@ -1,5 +1,6 @@
 //! Error types returned by the engine.
 
+use mtg_core::house::HouseRuleError;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use thiserror::Error;
@@ -70,6 +71,9 @@ pub enum SetupError {
         /// The validation failure.
         source: DeckError,
     },
+    /// A house rule is outside the range its rule allows.
+    #[error("invalid house rule: {0}")]
+    HouseRules(#[from] HouseRuleError),
     /// The requested starting turn or active player does not exist.
     #[error("invalid starting point: {0}")]
     InvalidStart(&'static str),

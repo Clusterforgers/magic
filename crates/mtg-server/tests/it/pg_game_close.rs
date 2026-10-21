@@ -56,6 +56,7 @@ async fn lobby(registry: &Registry, seats: usize, host: Option<UserId>) -> Creat
     let options = GameOptions {
         visibility: Visibility::Public,
         held: Some(1),
+        ..GameOptions::default()
     };
     registry
         .create_with(&requests(seats), options, host)

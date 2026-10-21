@@ -1,0 +1,176 @@
+//! Goal: the house rules a game was made with are stored in its recipe, so a restart brings the game back under them and it ends exactly as the same game played straight on an engine, a lobby read back from its recipe keeps them for the recipe it writes next, and a game made without rules stores a recipe that has no trace of them.
+#![allow(clippy::unwrap_used, clippy::expect_used)]
+
+use crate::common;
+
+use common::{Bot, drive, roomy};
+use mtg_core::house::{HandLimit, HouseRules, SkipFirstDraw};
+use mtg_engine::replay;
+use mtg_protocol::ClientMessage;
+use mtg_server::registry::{GameOptions, SeatRequest};
+use mtg_server::{
+    DeckRef, EventStore, GameId, GameRecipe, GameRecords, PgEventStore, RecordStatus, Registry,
+    ResumeReport, ServerConfig, demo, migrate,
+};
+use mtg_testkit::play_game;
+use serde_json::json;
+use sqlx::PgPool;
+
+const DECKS: [&str; 3] = ["mono-green", "mono-red", "mono-white"];
+
+fn requests(players: usize) -> Vec<SeatRequest> {
+    DECKS[..players]
+        .iter()
+        .enumerate()
+        .map(|(i, id)| SeatRequest {
+            name: format!("Bot {i}"),
+            deck: demo::find(id).unwrap(),
+        })
+        .collect()
+}
+
+fn recipe(players: usize, seed: u64, house: HouseRules) -> GameRecipe {
+    let decks = DECKS[..players].iter().map(|id| DeckRef::Demo {
+        id: (*id).to_owned(),
+    });
+    GameRecipe::normal(seed, decks).with_house_rules(house)
+}
+
+fn config(seed: u64) -> ServerConfig {
+    ServerConfig {
+        fixed_seed: Some(seed),
+        game: roomy(),
+        ..ServerConfig::default()
+    }
+}
+
+fn some_rules() -> HouseRules {
+    HouseRules {
+        starting_life: Some(11),
+        opening_hand_size: Some(5),
+        free_mulligans: Some(100),
+        mulligan_cap: Some(4),
+        skip_first_draw: Some(SkipFirstDraw::Never),
+        max_hand_size: Some(HandLimit::Cards(5)),
+    }
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_game_made_under_house_rules_comes_back_under_them_and_ends_as_the_same_game_does(
+    pool: PgPool,
+) {
+    migrate(&pool).await.unwrap();
+    for (players, seed, answers_before) in [(2, 1, 40), (3, 2, 60)] {
+        let config = config(seed);
+        let registry = Registry::with_database(&config, pool.clone());
+        let options = GameOptions {
+            house_rules: some_rules(),
+            ..GameOptions::default()
+        };
+        let created = registry
+            .create_with(&requests(players), options, None)
+            .await
+            .unwrap();
+        let game = created.id;
+        let tokens: Vec<String> = created
+            .seats
+            .iter()
+            .map(|(_, token)| token.expose().to_owned())
+            .collect();
+        let handle = registry.handle(game).unwrap();
+        let mut bots = Vec::new();
+        for seat in 0..players {
+            bots.push(Bot::join(&handle, seat, seed).await);
+        }
+        for bot in &bots {
+            handle.send(bot.seat, ClientMessage::Ready).await.unwrap();
+        }
+        assert_eq!(drive(&mut bots, &handle, answers_before).await, None);
+        let stopped = handle.status().await.unwrap();
+        drop(handle);
+        drop(registry); // the process dies; the rows stay
+
+        let record = GameRecords::new(pool.clone()).get(game).await.unwrap();
+        assert_eq!(
+            record.unwrap().recipe["house_rules"],
+            json!({
+                "starting_life": 11,
+                "opening_hand_size": 5,
+                "free_mulligans": 100,
+                "mulligan_cap": 4,
+                "skip_first_draw": "never",
+                "max_hand_size": { "cards": 5 },
+            })
+        );
+
+        let registry = Registry::with_database(&config, pool.clone());
+        let report = registry.resume().await.unwrap();
+        assert_eq!(
+            report,
+            ResumeReport {
+                resumed: 1,
+                ..ResumeReport::default()
+            }
+        );
+        let mut handle = None;
+        for (seat, token) in tokens.iter().enumerate() {
+            let access = registry.authenticate(game, token).unwrap();
+            bots[seat].rejoin(&access.handle).await;
+            handle = Some(access.handle);
+        }
+        let handle = handle.unwrap();
+        let resumed = handle.status().await.unwrap();
+        assert_eq!(resumed.events, stopped.events);
+        assert_eq!(resumed.state_hash, stopped.state_hash);
+
+        let result = drive(&mut bots, &handle, usize::MAX).await;
+        let setup = recipe(players, seed, some_rules()).build().unwrap();
+        let alone = play_game(setup.clone(), seed).unwrap_or_else(|failure| panic!("{failure}"));
+        assert_eq!(result, Some(alone.result), "{players} players");
+        let logged = PgEventStore::new(pool.clone()).load(game).await.unwrap();
+        assert_eq!(logged, alone.events);
+        let replayed = replay(&setup, &logged).unwrap();
+        assert_eq!(replayed.state_hash(), alone.final_hash);
+        assert_eq!(replayed.house_rules(), &some_rules());
+        let record = GameRecords::new(pool.clone()).get(game).await.unwrap();
+        assert_eq!(record.unwrap().status, RecordStatus::Finished);
+    }
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_game_made_without_rules_stores_a_recipe_without_them(pool: PgPool) {
+    migrate(&pool).await.unwrap();
+    let registry = Registry::with_database(&config(5), pool.clone());
+    let created = registry.create(&requests(2)).await.unwrap();
+    let record = GameRecords::new(pool.clone())
+        .get(created.id)
+        .await
+        .unwrap();
+    let stored = record.unwrap().recipe;
+    assert_eq!(
+        stored.as_object().unwrap().keys().collect::<Vec<_>>(),
+        ["decks", "fingerprints", "format", "seed"]
+    );
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_recipe_stored_before_house_rules_existed_resumes_under_the_format(pool: PgPool) {
+    migrate(&pool).await.unwrap();
+    let config = config(6);
+    let registry = Registry::with_database(&config, pool.clone());
+    let created = registry.create(&requests(2)).await.unwrap();
+    let game: GameId = created.id;
+    drop(registry);
+
+    // The stored shape of a game made before the field existed is the shape of a game made without rules.
+    let before = GameRecords::new(pool.clone()).get(game).await.unwrap();
+    let stored = before.unwrap().recipe;
+    assert!(stored.get("house_rules").is_none());
+    let decoded: GameRecipe = serde_json::from_value(stored).unwrap();
+    assert!(decoded.house_rules.is_empty());
+
+    let registry = Registry::with_database(&config, pool.clone());
+    let report = registry.resume().await.unwrap();
+    assert_eq!(report.resumed, 1);
+    assert!(registry.handle(game).is_some());
+}

@@ -250,6 +250,7 @@ impl TableView {
         TableView {
             viewer,
             format: state.format().name().to_owned(),
+            house_rules: Some(*state.house_rules()).filter(|rules| !rules.is_empty()),
             stage: state.stage(),
             first_player: state.first_player(),
             turn: TurnView {

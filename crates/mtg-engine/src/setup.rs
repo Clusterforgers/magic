@@ -7,11 +7,12 @@ use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, Supertype};
+use mtg_core::house::HouseRules;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::combat::CombatState;
 use crate::error::SetupError;
-use crate::format::FormatRules;
+use crate::format::{FormatRules, RuleSet};
 use crate::layers::LayersCache;
 use crate::object::{GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
@@ -97,6 +98,8 @@ pub enum Start {
 pub struct GameSetup {
     /// The format's rules.
     pub format: Arc<dyn FormatRules>,
+    /// What the table's creator set in place of the format's values.
+    pub house_rules: HouseRules,
     /// Seed for shuffles and the first-player roll.
     pub seed: u64,
     /// Seats in turn order.
@@ -116,6 +119,7 @@ impl GameSetup {
     ) -> Self {
         GameSetup {
             format,
+            house_rules: HouseRules::default(),
             seed,
             players: decks
                 .into_iter()
@@ -129,8 +133,21 @@ impl GameSetup {
         }
     }
 
+    /// The setup with `house_rules` laid over the format's values.
+    #[must_use]
+    pub fn with_house_rules(mut self, house_rules: HouseRules) -> Self {
+        self.house_rules = house_rules;
+        self
+    }
+
+    /// The rules the game plays by: the format's values with the house rules over them.
+    pub fn ruleset(&self) -> RuleSet<'_> {
+        RuleSet::new(&*self.format, &self.house_rules)
+    }
+
     /// Checks seat count, decks and the starting point.
     pub fn validate(&self) -> Result<(), SetupError> {
+        self.house_rules.validate()?;
         if self.players.len() < 2 {
             return Err(SetupError::TooFewPlayers(self.players.len()));
         }
@@ -248,7 +265,7 @@ impl GameState {
     pub fn from_setup(setup: &GameSetup) -> Result<GameState, SetupError> {
         setup.validate()?;
         let seats = setup.players.len();
-        let life = setup.format.starting_life();
+        let life = setup.ruleset().starting_life();
         let mut objects = BTreeMap::new();
         let mut zones = Zones::new(seats);
         let mut players = Vec::with_capacity(seats);
@@ -301,6 +318,7 @@ impl GameState {
         };
         let mut game = GameState {
             format: Arc::clone(&setup.format),
+            house_rules: setup.house_rules,
             seed: setup.seed,
             rng_index: 0,
             stage,

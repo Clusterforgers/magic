@@ -1,0 +1,227 @@
+//! Goal: `POST /api/games` takes house rules, plays the game under them, lists them in the game browser and in the table the seats see, keeps a value equal to the format's as given, and refuses a value out of range with a 400 that names the rule, while a request without them is the game it always was.
+#![allow(clippy::unwrap_used, clippy::expect_used)]
+
+use crate::common::{self, Client};
+use crate::net;
+
+use mtg_core::house::{HandLimit, HouseRules, SkipFirstDraw};
+use mtg_protocol::ServerMessage;
+use mtg_server::registry::{GameOptions, Registry, SeatRequest};
+use mtg_server::{ServerConfig, Visibility, demo};
+use net::lobby::{call, lobbies};
+use net::{TestServer, bot_config};
+use rstest::rstest;
+use serde_json::{Value, json};
+
+async fn server() -> TestServer {
+    let mut config = bot_config();
+    config.auth.limits.lobby_requests_per_ip = 100_000;
+    TestServer::start(config).await
+}
+
+/// A public two-seat game with the creator's `house_rules`, as the request carries them.
+fn request(house_rules: &Value) -> String {
+    json!({
+        "format": "normal",
+        "visibility": "public",
+        "seats": [
+            { "name": "Ann", "deck": "mono-green" },
+            { "name": "Bo", "deck": "mono-red" },
+        ],
+        "house_rules": house_rules,
+    })
+    .to_string()
+}
+
+async fn create(server: &TestServer, house_rules: Value) -> net::Reply {
+    call(
+        server.addr,
+        "POST",
+        "/api/games",
+        Some(&request(&house_rules)),
+        &[],
+    )
+    .await
+}
+
+/// The `house_rules` of every listed game, newest first; `None` for a game without any.
+async fn listed_rules(server: &TestServer) -> Vec<Option<Value>> {
+    let reply = lobbies(server.addr, &[]).await;
+    assert_eq!(reply.status, 200, "{}", reply.text());
+    reply.json()["games"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|game| game.get("house_rules").cloned())
+        .collect()
+}
+
+#[tokio::test]
+async fn rules_set_at_creation_are_listed_with_the_game() {
+    let server = server().await;
+    let rules = json!({
+        "starting_life": 40,
+        "opening_hand_size": 5,
+        "free_mulligans": 100,
+        "mulligan_cap": 3,
+        "skip_first_draw": "never",
+        "max_hand_size": { "cards": 9 },
+    });
+    let reply = create(&server, rules.clone()).await;
+    assert_eq!(reply.status, 201, "{}", reply.text());
+    assert_eq!(listed_rules(&server).await, [Some(rules)]);
+}
+
+#[rstest]
+#[case::absent(None)]
+#[case::empty(Some(json!({})))]
+#[case::only_nulls(Some(json!({ "starting_life": null, "max_hand_size": null })))]
+#[tokio::test]
+async fn a_game_without_rules_lists_none(#[case] rules: Option<Value>) {
+    let server = server().await;
+    let mut body: Value = serde_json::from_str(&request(&json!(null))).unwrap();
+    match rules {
+        Some(rules) => body["house_rules"] = rules,
+        None => {
+            body.as_object_mut().unwrap().remove("house_rules");
+        }
+    }
+    let reply = call(
+        server.addr,
+        "POST",
+        "/api/games",
+        Some(&body.to_string()),
+        &[],
+    )
+    .await;
+    assert_eq!(reply.status, 201, "{}", reply.text());
+    assert_eq!(listed_rules(&server).await, [None]);
+}
+
+#[rstest]
+#[case::life(json!({ "starting_life": 20 }))]
+#[case::hand(json!({ "opening_hand_size": 7, "free_mulligans": 0 }))]
+#[case::limit(json!({ "max_hand_size": { "cards": 7 } }))]
+#[tokio::test]
+async fn a_value_equal_to_the_formats_is_kept_as_given(#[case] rules: Value) {
+    let server = server().await;
+    assert_eq!(create(&server, rules.clone()).await.status, 201);
+    assert_eq!(listed_rules(&server).await, [Some(rules)]);
+}
+
+#[rstest]
+#[case::life_zero(json!({ "starting_life": 0 }), "starting_life")]
+#[case::life_negative(json!({ "starting_life": -5 }), "starting_life")]
+#[case::life_high(json!({ "starting_life": 1001 }), "starting_life")]
+#[case::hand_zero(json!({ "opening_hand_size": 0 }), "opening_hand_size")]
+#[case::hand_high(json!({ "opening_hand_size": 21 }), "opening_hand_size")]
+#[case::free_high(json!({ "free_mulligans": 101 }), "free_mulligans")]
+#[case::cap_high(json!({ "mulligan_cap": 101 }), "mulligan_cap")]
+#[case::limit_high(json!({ "max_hand_size": { "cards": 51 } }), "max_hand_size")]
+#[case::the_bad_one_among_good_ones(json!({ "starting_life": 30, "opening_hand_size": 99 }), "opening_hand_size")]
+#[tokio::test]
+async fn a_value_out_of_range_is_refused_naming_the_rule(
+    #[case] rules: Value,
+    #[case] field: &str,
+) {
+    let server = server().await;
+    let reply = create(&server, rules).await;
+    assert_eq!(reply.status, 400, "{}", reply.text());
+    let body = reply.json();
+    assert_eq!(body["error"], "invalid_request");
+    assert_eq!(body["field"], field);
+    assert!(
+        body["message"]
+            .as_str()
+            .unwrap()
+            .starts_with(&format!("house_rules.{field}: ")),
+        "{body}"
+    );
+    assert_eq!(listed_rules(&server).await, [], "nothing was created");
+}
+
+#[rstest]
+#[case::unknown_rule(json!({ "mana_burn": true }))]
+#[case::text_for_a_number(json!({ "starting_life": "forty" }))]
+#[case::negative_count(json!({ "opening_hand_size": -1 }))]
+#[case::a_fraction(json!({ "starting_life": 20.5 }))]
+#[case::unknown_first_draw(json!({ "skip_first_draw": "sometimes" }))]
+#[case::limit_without_a_number(json!({ "max_hand_size": { "cards": "seven" } }))]
+#[case::not_an_object(json!("none"))]
+#[tokio::test]
+async fn a_malformed_rule_is_an_invalid_request(#[case] rules: Value) {
+    let server = server().await;
+    let reply = create(&server, rules).await;
+    assert_eq!(reply.status, 400, "{}", reply.text());
+    assert_eq!(reply.json()["error"], "invalid_request");
+}
+
+fn requests(seats: usize) -> Vec<SeatRequest> {
+    (0..seats)
+        .map(|n| SeatRequest {
+            name: format!("Player {n}"),
+            deck: &demo::all()[n % demo::all().len()],
+        })
+        .collect()
+}
+
+/// The first table every seat is shown once the game has begun: its rules, every player's life and the starting
+/// player's hand.
+async fn first_table(house_rules: HouseRules, seats: usize) -> (Option<HouseRules>, Vec<i32>) {
+    let registry = Registry::new(&ServerConfig {
+        game: common::roomy(),
+        ..ServerConfig::default()
+    });
+    let options = GameOptions {
+        visibility: Visibility::Invite,
+        house_rules,
+        ..GameOptions::default()
+    };
+    let created = registry
+        .create_with(&requests(seats), options, None)
+        .await
+        .unwrap();
+    let handle = registry.handle(created.id).unwrap();
+    let (mut clients, _) = common::start_table(&handle, seats).await;
+    let client: &mut Client = &mut clients[0];
+    let table = client
+        .until(|message| match message {
+            ServerMessage::Events(batch) => Some((*batch.table).clone()),
+            ServerMessage::Snapshot { state, .. } => Some(state.table.clone()),
+            _ => None,
+        })
+        .await;
+    (
+        table.house_rules,
+        table.players.iter().map(|p| p.life).collect(),
+    )
+}
+
+#[rstest]
+#[case::nothing_set(HouseRules::default(), None, 20)]
+#[case::life_set(
+    HouseRules { starting_life: Some(33), ..HouseRules::default() },
+    Some(HouseRules { starting_life: Some(33), ..HouseRules::default() }),
+    33
+)]
+#[case::a_value_equal_to_the_formats(
+    HouseRules { starting_life: Some(20), skip_first_draw: Some(SkipFirstDraw::Never), ..HouseRules::default() },
+    Some(HouseRules { starting_life: Some(20), skip_first_draw: Some(SkipFirstDraw::Never), ..HouseRules::default() }),
+    20
+)]
+#[case::a_limit_alone(
+    HouseRules { max_hand_size: Some(HandLimit::Unlimited), ..HouseRules::default() },
+    Some(HouseRules { max_hand_size: Some(HandLimit::Unlimited), ..HouseRules::default() }),
+    20
+)]
+#[tokio::test]
+async fn the_table_every_seat_sees_carries_the_rules_that_are_set(
+    #[case] house: HouseRules,
+    #[case] shown: Option<HouseRules>,
+    #[case] life: i32,
+    #[values(2, 3)] seats: usize,
+) {
+    let (rules, lives) = first_table(house, seats).await;
+    assert_eq!(rules, shown);
+    assert_eq!(lives, vec![life; seats]);
+}

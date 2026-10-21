@@ -40,6 +40,7 @@ mod forecast_replacement;
 mod format_hooks;
 mod fuzz_games;
 mod harness_selfcheck;
+mod house_rules;
 mod hybrid_payment;
 mod if_effects;
 mod illegal_answers;
