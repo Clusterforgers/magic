@@ -9,14 +9,18 @@
 //! - when two or more effects apply, the affected player, or the controller of the affected object, picks the one
 //!   that applies first with a `ChooseReplacement` decision (CR 616.1); the rest still apply, one after another, to
 //!   what the first one left (CR 616.2);
-//! - an event that is replaced entirely does not happen, so it is not in the result.
+//! - an event that is replaced entirely does not happen, so it is not in the result;
+//! - a shield (CR 615) is a replacement effect an effect made for a while: a prevention shield takes up to a given
+//!   amount of the damage of the events it covers, in the order the batch lists them, and a regeneration shield replaces
+//!   the next destruction of its permanent before anything else applies to it. Damage that can't be prevented
+//!   (`GameRule::DamageCantBePrevented`) is passed by every prevention effect and shield.
 //!
 //! The step is a pure function of the state, the proposed events and the answers given so far. A question the step
 //! needs answered (the order, a choice made as a permanent enters) comes back as a decision; the caller keeps the
 //! proposed events, adds the answer to the journal and runs the step again, which asks the same questions in the same
 //! order. A game with no replacement effect pays one flag.
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
@@ -25,7 +29,7 @@ use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
 use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
-use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::abilities::AbilityRef;
 use crate::ability_reader::{abilities_of, working_here};
@@ -38,9 +42,10 @@ use crate::combat::DamageTarget;
 use crate::counters::CountersChanged;
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
-use crate::events::{Event, ResolutionOutcome, ZoneCause};
+use crate::events::{DeathCause, Event, ResolutionOutcome, ZoneCause};
 use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{Scope, zone_kind};
+use crate::rules::{DamageShield, Rule, RuleEffect, damage_cant_be_prevented};
 use crate::state::GameState;
 use crate::tokens::TokenCreated;
 use crate::turn::Step;
@@ -71,7 +76,9 @@ pub fn process(
         return Ok(Processed::Events(proposed));
     }
     let sources = gather(state);
+    let shields = shields_of(state);
     if sources.is_empty()
+        && shields.is_empty()
         && !proposed
             .iter()
             .any(|event| entering(state, event).is_some())
@@ -79,9 +86,22 @@ pub fn process(
         return Ok(Processed::Events(proposed));
     }
     let original = proposed.clone();
+    let left = shields
+        .iter()
+        .filter_map(|effect| match &effect.rule {
+            Rule::PreventDamage(DamageShield {
+                left: Some(left), ..
+            }) => Some((effect.id, *left)),
+            _ => None,
+        })
+        .collect();
     let mut step = Pass {
         state,
         sources,
+        shields,
+        left,
+        touched: Vec::new(),
+        spent: BTreeSet::new(),
         answers: journal.iter(),
         next_id: state.next_object().get(),
         slots: slots_of(proposed),
@@ -124,7 +144,7 @@ enum Item {
 #[derive(Debug, Clone)]
 struct Slot {
     item: Item,
-    applied: Vec<AbilityRef>,
+    applied: Vec<Origin>,
     /// Nothing applies to it any more: it carries out an event that an earlier effect already redirected.
     frozen: bool,
 }
@@ -155,6 +175,47 @@ fn slots_of(events: Vec<Event>) -> Vec<Slot> {
         }
     }
     slots
+}
+
+/// Where a replacement effect comes from: an ability of an object, or a shield that an effect made.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+enum Origin {
+    Ability(AbilityRef),
+    Shield(EffectId),
+}
+
+/// The shields in play: prevention and regeneration shields that still last, in the order they began.
+fn shields_of(state: &GameState) -> Vec<RuleEffect> {
+    state
+        .rule_effects()
+        .iter()
+        .filter(|effect| {
+            matches!(effect.rule, Rule::PreventDamage(_) | Rule::Regenerate(_))
+                && effect.source.is_some()
+                && effect.is_active(state)
+        })
+        .cloned()
+        .collect()
+}
+
+/// The permanent a destruction destroys: a destroy effect (not one that can't be regenerated) or lethal damage and
+/// deathtouch, but not zero toughness (CR 704.5f) or a sacrifice.
+fn destroyed(item: &Item) -> Option<ObjectId> {
+    match item {
+        Item::One(
+            Event::ZoneChanged {
+                object,
+                from: Zone::Battlefield,
+                cause: ZoneCause::Destroyed,
+                ..
+            }
+            | Event::CreatureDied {
+                object,
+                cause: DeathCause::LethalDamage | DeathCause::Deathtouch,
+            },
+        ) => Some(*object),
+        _ => None,
+    }
 }
 
 /// A replacement effect of an object in play, with whose it is.
@@ -294,6 +355,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
 /// Whether the engine can apply `by` to this kind of event.
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     match by {
+        ReplaceBy::PreventUpTo(_) => matches!(unit, Unit::Damage { .. }),
         ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Prevent => matches!(
             unit,
             Unit::Tokens { .. }
@@ -315,11 +377,32 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
     }
 }
 
+/// What an effect does to the event.
+#[derive(Debug, Clone)]
+enum Action {
+    Replace(ReplaceBy),
+    /// The permanent is tapped, loses its damage and leaves combat instead of being destroyed (CR 701.19).
+    Regenerate,
+}
+
+impl Action {
+    /// Whether this prevents damage, which a rule can forbid.
+    fn prevents(&self) -> bool {
+        matches!(
+            self,
+            Action::Replace(ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_))
+        )
+    }
+}
+
 /// An effect that applies to an event, with who owns it.
 #[derive(Debug, Clone)]
 struct Candidate {
-    source: Source,
-    by: ReplaceBy,
+    origin: Origin,
+    /// The object with the ability, or that made the shield.
+    object: ObjectRef,
+    controller: PlayerId,
+    action: Action,
     is_self: bool,
 }
 
@@ -345,6 +428,13 @@ enum Applied {
 struct Pass<'a> {
     state: &'a GameState,
     sources: Vec<Source>,
+    shields: Vec<RuleEffect>,
+    /// What the prevention shields that prevent a given amount still prevent, as the batch has used them so far.
+    left: BTreeMap<EffectId, u32>,
+    /// The shields the batch used, in the order it used them.
+    touched: Vec<EffectId>,
+    /// The regeneration shields the batch used.
+    spent: BTreeSet<EffectId>,
     answers: std::slice::Iter<'a, (PlayerId, Choice)>,
     next_id: u64,
     slots: Vec<Slot>,
@@ -545,6 +635,14 @@ impl Pass<'_> {
         if unit == Unit::Other || slot.frozen {
             return Ok(Vec::new());
         }
+        // A destruction is replaced by a regeneration shield before anything else applies to the permanent's move.
+        if let Some(regeneration) = self.regeneration_candidate(&slot.item) {
+            return Ok(vec![regeneration]);
+        }
+        let unpreventable = matches!(
+            unit,
+            Unit::Damage { source, .. } if damage_cant_be_prevented(self.state, source, self.combat_damage())
+        );
         let mut found: Vec<Candidate> = Vec::new();
         let mut consider = |step: &Pass<'_>, source: &Source| -> Result<(), EngineError> {
             let Ability::Replacement {
@@ -556,9 +654,11 @@ impl Pass<'_> {
             else {
                 return Ok(());
             };
-            if slot.applied.contains(&source.address)
-                || found.iter().any(|c| c.source.address == source.address)
+            let origin = Origin::Ability(source.address);
+            if slot.applied.contains(&origin)
+                || found.iter().any(|c| c.origin == origin)
                 || !applies_to(by, &unit)
+                || (unpreventable && Action::Replace(by.clone()).prevents())
                 || !step.matches(source, when, &unit)?
             {
                 return Ok(());
@@ -570,8 +670,10 @@ impl Pass<'_> {
                 }
             }
             found.push(Candidate {
-                source: source.clone(),
-                by: by.clone(),
+                origin,
+                object: source.object,
+                controller: source.controller,
+                action: Action::Replace(by.clone()),
                 is_self: is_self(when),
             });
             Ok(())
@@ -603,8 +705,104 @@ impl Pass<'_> {
                 }
             }
         }
-        found.sort_by_key(|candidate| candidate.source.address);
+        if !unpreventable {
+            found.extend(self.shield_candidates(slot, &unit)?);
+        }
+        found.sort_by_key(|candidate| candidate.origin);
         Ok(found)
+    }
+
+    /// The regeneration shield that replaces the destruction the item is, as the only effect that applies to it.
+    fn regeneration_candidate(&self, item: &Item) -> Option<Candidate> {
+        let shield = self.regeneration_of(destroyed(item)?)?;
+        Some(Candidate {
+            origin: Origin::Shield(shield.id),
+            object: shield.source?,
+            controller: shield.controller,
+            action: Action::Regenerate,
+            is_self: false,
+        })
+    }
+
+    /// The prevention shields that cover the damage the slot holds and have not been applied to it.
+    fn shield_candidates(&self, slot: &Slot, unit: &Unit) -> Result<Vec<Candidate>, EngineError> {
+        let Unit::Damage { source, target } = unit else {
+            return Ok(Vec::new());
+        };
+        let mut found = Vec::new();
+        for effect in &self.shields {
+            let origin = Origin::Shield(effect.id);
+            let (Rule::PreventDamage(shield), Some(maker)) = (&effect.rule, effect.source) else {
+                continue;
+            };
+            if slot.applied.contains(&origin)
+                || !self.shield_covers(effect, shield, *source, *target)?
+            {
+                continue;
+            }
+            let by = match self.left.get(&effect.id) {
+                Some(0) => continue,
+                Some(left) => ReplaceBy::PreventUpTo(*left),
+                None => ReplaceBy::Prevent,
+            };
+            found.push(Candidate {
+                origin,
+                object: maker,
+                controller: effect.controller,
+                action: Action::Replace(by),
+                is_self: false,
+            });
+        }
+        Ok(found)
+    }
+
+    /// The regeneration shield that replaces the destruction of `object`, if one is still unused.
+    fn regeneration_of(&self, object: ObjectId) -> Option<&RuleEffect> {
+        let current = self.state.object(object)?.counter();
+        self.shields.iter().find(|effect| {
+            matches!(&effect.rule, Rule::Regenerate(named) if named.id == object && named.counter == current)
+                && !self.spent.contains(&effect.id)
+        })
+    }
+
+    /// Whether the shield covers the damage `dealer` would deal to `target`.
+    fn shield_covers(
+        &self,
+        effect: &RuleEffect,
+        shield: &DamageShield,
+        dealer: ObjectId,
+        target: DamageTarget,
+    ) -> Result<bool, EngineError> {
+        if shield
+            .combat
+            .is_some_and(|wanted| wanted != self.combat_damage())
+        {
+            return Ok(false);
+        }
+        if let Some(protected) = &shield.to {
+            let hit = protected.iter().any(|named| match (named, target) {
+                (Target::Player(player), DamageTarget::Player(hit)) => *player == hit,
+                (Target::Object(named), DamageTarget::Object(hit)) => {
+                    named.id == hit
+                        && self
+                            .state
+                            .object(hit)
+                            .is_some_and(|o| o.counter() == named.counter)
+                }
+                _ => false,
+            });
+            if !hit {
+                return Ok(false);
+            }
+        }
+        if shield.source.is_empty() {
+            return Ok(true);
+        }
+        let (Some(maker), Some(reference)) = (effect.source, self.reference(dealer)) else {
+            return Ok(false);
+        };
+        let scope = Scope::announcing(self.state, effect.controller, maker);
+        Ok(scope.selects(&shield.source, reference)?)
     }
 
     /// The player who orders the effects that apply to the item (CR 616.1): the one it happens to, or the controller of
@@ -694,7 +892,13 @@ impl Pass<'_> {
                 } else {
                     selfs
                 };
-                if let [only] = pool.as_slice() {
+                // Preventing all of it twice is the same whichever comes first.
+                let alike = pool
+                    .iter()
+                    .all(|c| matches!(c.action, Action::Replace(ReplaceBy::Prevent)));
+                if let [only, ..] = pool.as_slice()
+                    && (pool.len() == 1 || alike)
+                {
                     (*only).clone()
                 } else {
                     let unit = self.unit(&self.slots[at].item);
@@ -707,8 +911,15 @@ impl Pass<'_> {
                                     candidates: pool
                                         .iter()
                                         .map(|c| ReplacementCandidate {
-                                            source: c.source.address.object,
-                                            ability: c.source.address.ability,
+                                            source: c.object.id,
+                                            ability: match c.origin {
+                                                Origin::Ability(address) => address.ability,
+                                                Origin::Shield(_) => 0,
+                                            },
+                                            shield: match c.origin {
+                                                Origin::Shield(id) => Some(id),
+                                                Origin::Ability(_) => None,
+                                            },
                                         })
                                         .collect(),
                                     text: self.describe(&self.slots[at].item),
@@ -743,6 +954,7 @@ impl Pass<'_> {
 
     /// Puts the items back as events; cards drawn by an event that was changed are the top cards in order.
     fn finish(self) -> Vec<Event> {
+        let used = self.shield_events();
         let mut events: Vec<Event> = self
             .slots
             .into_iter()
@@ -778,17 +990,27 @@ impl Pass<'_> {
                 };
             }
         }
+        events.extend(used);
         events
     }
 
     /// Applies one effect to the item at `at`.
     fn apply(&mut self, at: usize, candidate: &Candidate) -> Result<Applied, EngineError> {
-        let address = candidate.source.address;
         let mut applied = self.slots[at].applied.clone();
-        applied.push(address);
+        applied.push(candidate.origin);
         let unit = self.unit(&self.slots[at].item);
-        match (&candidate.by, &unit) {
-            (ReplaceBy::Prevent, _) => {
+        let by = match &candidate.action {
+            Action::Regenerate => {
+                self.regenerate(at, candidate);
+                return Ok(Applied::Done);
+            }
+            Action::Replace(by) => by,
+        };
+        match (by, &unit) {
+            (ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_), Unit::Damage { .. }) => {
+                self.prevent(at, candidate, by, applied);
+            }
+            (ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_), _) => {
                 if matches!(
                     &self.slots[at].item,
                     Item::One(Event::CardDrawn { .. } | Event::DrewFromEmptyLibrary { .. })
@@ -798,7 +1020,7 @@ impl Pass<'_> {
                 self.slots.remove(at);
             }
             (ReplaceBy::Multiply(_) | ReplaceBy::Add(_), _) => {
-                self.scale(at, &candidate.by, &applied);
+                self.scale(at, by, &applied);
             }
             (ReplaceBy::MoveTo(kind), Unit::Move { object, from, to }) => {
                 let Some(owner) = self.state.object(*object).map(GameObject::owner) else {
@@ -816,15 +1038,89 @@ impl Pass<'_> {
                 }
             }
             (_, Unit::Enter { object, controller }) => {
-                return self.enter(at, candidate, *object, *controller, applied);
+                return self.enter(at, candidate, by, *object, *controller, applied);
             }
             _ => self.slots[at].applied = applied,
         }
         Ok(Applied::Done)
     }
 
+    /// Takes from the damage of the event what the effect prevents: all of it, or as much as the effect has left (the
+    /// shield remembers what it used). Lifelink gains what the damage that is left is.
+    fn prevent(&mut self, at: usize, candidate: &Candidate, by: &ReplaceBy, applied: Vec<Origin>) {
+        let Item::One(Event::DamageDealt {
+            source,
+            target,
+            amount,
+            deathtouch,
+        }) = self.slots[at].item.clone()
+        else {
+            self.slots[at].applied = applied;
+            return;
+        };
+        let most = match by {
+            ReplaceBy::PreventUpTo(most) => *most,
+            _ => u32::MAX,
+        };
+        let taken = most.min(amount);
+        if let Origin::Shield(id) = candidate.origin
+            && let Some(left) = self.left.get_mut(&id)
+        {
+            *left = left.saturating_sub(taken);
+            if !self.touched.contains(&id) {
+                self.touched.push(id);
+            }
+        }
+        let now = amount - taken;
+        self.follow_lifelink(at, source, amount, now);
+        if now == 0 {
+            self.slots.remove(at);
+        } else {
+            self.slots[at] = Slot {
+                item: Item::One(Event::DamageDealt {
+                    source,
+                    target,
+                    amount: now,
+                    deathtouch,
+                }),
+                applied,
+                frozen: false,
+            };
+        }
+    }
+
+    /// The permanent regenerates instead of being destroyed; the shield is used up.
+    fn regenerate(&mut self, at: usize, candidate: &Candidate) {
+        let (Origin::Shield(id), Some(object)) =
+            (candidate.origin, destroyed(&self.slots[at].item))
+        else {
+            return;
+        };
+        self.spent.insert(id);
+        self.touched.push(id);
+        self.slots[at] = Slot {
+            item: Item::One(Event::Regenerated { object }),
+            applied: vec![candidate.origin],
+            frozen: true,
+        };
+    }
+
+    /// What the shields the batch used did to them: a shield with nothing left ends, another remembers what is left.
+    fn shield_events(&self) -> Vec<Event> {
+        self.touched
+            .iter()
+            .map(|id| match self.left.get(id) {
+                Some(left) if *left > 0 && !self.spent.contains(id) => Event::ShieldUsed {
+                    id: *id,
+                    left: *left,
+                },
+                _ => Event::RuleExpired { id: *id },
+            })
+            .collect()
+    }
+
     /// Multiplies or increases the number in the event: the tokens, the damage, the counters, the life, the cards drawn.
-    fn scale(&mut self, at: usize, by: &ReplaceBy, applied: &[AbilityRef]) {
+    fn scale(&mut self, at: usize, by: &ReplaceBy, applied: &[Origin]) {
         let more = |amount: u32| match by {
             ReplaceBy::Multiply(times) => amount.saturating_mul(*times),
             ReplaceBy::Add(extra) => amount.saturating_add(*extra),
@@ -918,8 +1214,12 @@ impl Pass<'_> {
             return;
         };
         let dealer = crate::damage::Dealer::live(self.state, source);
-        if *amount == before && dealer.lifelink_for(*player) {
-            *amount = now;
+        if *amount != before || !dealer.lifelink_for(*player) {
+            return;
+        }
+        *amount = now;
+        if now == 0 {
+            self.slots.remove(at + 1);
         }
     }
 
@@ -930,7 +1230,7 @@ impl Pass<'_> {
         object: ObjectId,
         from: Zone,
         destination: Zone,
-        applied: &[AbilityRef],
+        applied: &[Origin],
     ) {
         let item = self.slots[at].item.clone();
         let Item::One(event) = item else {
@@ -1004,25 +1304,22 @@ impl Pass<'_> {
         &mut self,
         at: usize,
         candidate: &Candidate,
+        by: &ReplaceBy,
         object: ObjectId,
         controller: PlayerId,
-        applied: Vec<AbilityRef>,
+        applied: Vec<Origin>,
     ) -> Result<Applied, EngineError> {
-        let source = candidate.source.object.id;
+        let source = candidate.object.id;
         let tapped = |step: &mut Pass<'_>, at: usize| {
             let entered = step.entered_at(at, object, controller);
             if let Item::One(Event::Entered { tapped, .. }) = &mut step.slots[entered].item {
                 *tapped = true;
             }
         };
-        match &candidate.by {
+        match by {
             ReplaceBy::Tapped => tapped(self, at),
             ReplaceBy::WithCounters { counter, count } => {
-                let scope = Scope::announcing(
-                    self.state,
-                    candidate.source.controller,
-                    candidate.source.object,
-                );
+                let scope = Scope::announcing(self.state, candidate.controller, candidate.object);
                 let number = scope.amount(count)?.max(0);
                 if let (Some(card), Ok(delta)) = (self.state.object(object), i32::try_from(number))
                     && delta > 0

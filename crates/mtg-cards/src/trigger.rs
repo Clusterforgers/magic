@@ -195,6 +195,9 @@ pub enum ReplaceBy {
     Add(u32),
     /// The event does not happen (prevention, CR 615).
     Prevent,
+    /// Up to this much of the damage is prevented (CR 615). In a shield it is the total the shield prevents ("the next
+    /// 3 damage"); in a static ability it is the most each event loses.
+    PreventUpTo(u32),
     /// These effects happen instead.
     Instead(Vec<Effect>),
     /// The object goes to this zone instead ("exile it instead"); a card in a graveyard, a hand, the stack or exile

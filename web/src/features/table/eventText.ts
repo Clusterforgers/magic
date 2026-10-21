@@ -131,6 +131,11 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if ('CantSearch' in rule) what = `${seats(rule.CantSearch)} can't search libraries`
   else if ('RevealTop' in rule)
     what = `${seats(rule.RevealTop)} play with the top card of their library revealed`
+  else if ('DamageCantBePrevented' in rule) what = "Damage can't be prevented"
+  else if ('PreventDamage' in rule) {
+    const { left } = rule.PreventDamage
+    what = left === null ? 'Damage is prevented' : `The next ${left} damage is prevented`
+  } else if ('Regenerate' in rule) what = `${n.card(rule.Regenerate.id)} gets a regeneration shield`
   else what = 'Triggered abilities trigger an additional time'
   return `${what}${durationWords(duration, source, n)}`
 }
@@ -178,6 +183,7 @@ function describeChoice(choice: Choice, n: EventNames): string {
 const BECAUSE: Record<ZoneCause, string> = {
   Moved: 'moves',
   Destroyed: 'is destroyed',
+  Buried: 'is destroyed and can\'t be regenerated',
   Sacrificed: 'is sacrificed',
   Exiled: 'is exiled',
   Countered: 'is countered',
@@ -406,6 +412,8 @@ function describePublic(event: Event, n: EventNames): LogLine {
   if ('EffectExpired' in event) return quiet('An effect ends')
   if ('RuleCreated' in event) return quiet(describeRule(event.RuleCreated.effect, n))
   if ('RuleExpired' in event) return quiet('A rule change ends')
+  if ('Regenerated' in event) return line(`${n.card(event.Regenerated.object)} regenerates`)
+  if ('ShieldUsed' in event) return quiet(`A prevention shield has ${event.ShieldUsed.left} left`)
   if ('CreatureDied' in event) {
     const HOW: Record<DeathCause, string> = {
       LethalDamage: 'from lethal damage',

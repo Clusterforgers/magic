@@ -356,7 +356,8 @@ fn duration() -> impl Strategy<Value = Duration> {
 
 fn game_rule() -> impl Strategy<Value = GameRule> {
     prop_oneof![
-        Just(GameRule::DamageCantBePrevented),
+        (selector(), proptest::option::of(any::<bool>()))
+            .prop_map(|(source, combat)| GameRule::DamageCantBePrevented { source, combat }),
         reference().prop_map(GameRule::MustAttack),
         reference().prop_map(GameRule::MustBlock),
         reference().prop_map(GameRule::CantBeCountered),
@@ -562,6 +563,19 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 }
             ),
             (game_rule(), duration()).prop_map(|(rule, duration)| Effect::Rule { rule, duration }),
+            reference().prop_map(|what| Effect::Regenerate { what }),
+            (
+                proptest::option::of(reference()),
+                selector(),
+                proptest::option::of(any::<bool>()),
+                proptest::option::of(1u32..6),
+                duration()
+            )
+                .prop_map(|(to, source, combat, most, duration)| Effect::Shield {
+                    when: ReplaceWhen::Damage { to, source, combat },
+                    by: most.map_or(ReplaceBy::Prevent, ReplaceBy::PreventUpTo),
+                    duration
+                }),
         ];
     prop_oneof![part1, part2]
 }
@@ -722,6 +736,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 (1u32..4).prop_map(ReplaceBy::Multiply),
                 (1u32..4).prop_map(ReplaceBy::Add),
                 Just(ReplaceBy::Prevent),
+                (1u32..6).prop_map(ReplaceBy::PreventUpTo),
                 effects().prop_map(ReplaceBy::Instead),
                 zone().prop_map(ReplaceBy::MoveTo),
                 Just(ReplaceBy::Tapped),

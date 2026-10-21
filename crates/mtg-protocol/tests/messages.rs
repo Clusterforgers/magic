@@ -385,10 +385,18 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             ],
         }),
         DecisionKind::ChooseReplacement(ReplacementOptions {
-            candidates: vec![ReplacementCandidate {
-                source: a,
-                ability: 0,
-            }],
+            candidates: vec![
+                ReplacementCandidate {
+                    source: a,
+                    ability: 0,
+                    shield: None,
+                },
+                ReplacementCandidate {
+                    source: b,
+                    ability: 0,
+                    shield: Some(mtg_core::ids::EffectId(3)),
+                },
+            ],
             text: "Create 2 token(s).".into(),
         }),
     ]

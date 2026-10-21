@@ -4,7 +4,7 @@
 //! self-replacement effect. The answer is logged as `ChoiceMade`'s `Choice::Replacement` only through the caller that
 //! holds the batch: it joins the journal the step is rerun with (`replace::process`).
 
-use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use super::Choice;
@@ -18,8 +18,12 @@ use crate::events::Event;
 pub struct ReplacementCandidate {
     /// The object with the effect.
     pub source: ObjectId,
-    /// Its index among the source's rules.
+    /// Its index among the source's rules; 0 for a shield.
     pub ability: usize,
+    /// The shield, when the effect is one that a spell or ability made (the source is the object that made it).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<EffectId>", optional))]
+    pub shield: Option<EffectId>,
 }
 
 /// The effects the affected player orders.

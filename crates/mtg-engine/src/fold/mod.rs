@@ -85,6 +85,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::DamageAssigned { .. }
         | Event::DamageDealt { .. }
         | Event::CombatEnded
+        | Event::Regenerated { .. }
         | Event::DamageCleared => combat::apply(state, event),
         Event::AbilityPutOnStack(_)
         | Event::AbilityActivated { .. }
@@ -107,6 +108,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::DelayedTriggerExpired { id } => crate::triggers::fold_expired(state, *id),
         Event::RuleCreated { effect } => crate::rules::fold_created(state, effect),
         Event::RuleExpired { id } => crate::rules::fold_expired(state, *id),
+        Event::ShieldUsed { id, left } => crate::rules::fold_used(state, *id, *left),
         Event::CountersChanged(counters) => crate::counters::fold(state, counters),
         Event::Attached { object, to } => crate::attach::fold_attached(state, *object, *to),
         Event::Unattached { object } => crate::attach::fold_unattached(state, *object),

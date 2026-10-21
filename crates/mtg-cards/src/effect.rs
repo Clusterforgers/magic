@@ -7,7 +7,7 @@ use crate::card::TokenSpec;
 use crate::cost::Cost;
 use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Bounds, Ref, Selector, TargetSpec, ZoneKind};
-use crate::trigger::TriggerPattern;
+use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, Condition, CounterKind};
 
 // serde's `skip_serializing_if` hands out a reference, so these take one.
@@ -235,6 +235,12 @@ pub enum Effect {
         #[serde(default = "yes", skip_serializing_if = "is_true")]
         regenerate: bool,
     },
+    /// Regenerates permanents (CR 701.19): until end of turn, the next time each would be destroyed it is tapped,
+    /// loses its damage and leaves combat instead.
+    Regenerate {
+        /// The permanents given a regeneration shield.
+        what: Ref,
+    },
     /// Exiles objects.
     Exile {
         /// What is exiled.
@@ -392,6 +398,17 @@ pub enum Effect {
         /// The rule.
         rule: GameRule,
         /// How long.
+        duration: Duration,
+    },
+    /// Creates a shield (CR 615): a replacement effect for a while, whose references name what they do now
+    /// (CR 611.2c). A damage shield prevents damage ("prevent the next 3 damage that would be dealt to target creature
+    /// this turn").
+    Shield {
+        /// The event it replaces.
+        when: ReplaceWhen,
+        /// What happens instead.
+        by: ReplaceBy,
+        /// How long it lasts.
         duration: Duration,
     },
     /// Creates a delayed triggered ability (CR 603.7); bound names are captured as they are now.

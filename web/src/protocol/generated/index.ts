@@ -47,6 +47,7 @@ export type { Counts } from "./Counts";
 export type { CreatureForecast } from "./CreatureForecast";
 export type { Credentials } from "./Credentials";
 export type { DamageOptions } from "./DamageOptions";
+export type { DamageShield } from "./DamageShield";
 export type { DamageTarget } from "./DamageTarget";
 export type { DeathCause } from "./DeathCause";
 export type { Decision } from "./Decision";

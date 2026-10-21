@@ -246,6 +246,18 @@ pub enum Event {
     CombatEnded,
     /// All damage marked on permanents was removed.
     DamageCleared,
+    /// A permanent regenerated instead of being destroyed (CR 701.19): it was tapped, lost its damage and left combat.
+    Regenerated {
+        /// The permanent.
+        object: ObjectId,
+    },
+    /// A shield that prevents a given amount of damage prevented some and has this much left (CR 615.7).
+    ShieldUsed {
+        /// The shield, one of the rule changes (they share the counter of continuous effects).
+        id: EffectId,
+        /// What it still prevents.
+        left: u32,
+    },
     /// A continuous effect was registered.
     EffectCreated {
         /// The effect.
@@ -463,6 +475,8 @@ pub enum ZoneCause {
     Moved,
     /// It was destroyed (CR 701.8).
     Destroyed,
+    /// It was destroyed and can't be regenerated.
+    Buried,
     /// Its controller sacrificed it (CR 701.21).
     Sacrificed,
     /// It was exiled (CR 406).
@@ -488,6 +502,7 @@ impl Event {
             | Event::EffectExpired { .. }
             | Event::RuleCreated { .. }
             | Event::RuleExpired { .. }
+            | Event::ShieldUsed { .. }
             | Event::FirstPlayerChosen { .. }
             | Event::MulliganPhaseBegan
             | Event::MulliganDeclared { .. }
@@ -543,6 +558,7 @@ impl Event {
             | Event::Unattached { object }
             | Event::PermanentTapped { object }
             | Event::PermanentUntapped { object }
+            | Event::Regenerated { object }
             | Event::CardDrawn { object, .. }
             | Event::CardDiscarded { object, .. }
             | Event::CreatureDied { object, .. }

@@ -71,6 +71,8 @@ const RUNS: &[&str] = &[
     "Effect.CreateToken",
     "Effect.Continuous",
     "Effect.Rule",
+    "Effect.Regenerate",
+    "Effect.Shield",
     "Ability.Static",
     "Ability.Static.Defining",
     "Ability.Rule",
@@ -82,6 +84,7 @@ const RUNS: &[&str] = &[
     "Rule.CantSearch",
     "Rule.RevealTop",
     "Rule.TriggerAgain",
+    "Rule.DamageCantBePrevented",
     VARIABLE_STATS,
     "Mod.ModifyPT",
     "Mod.AddKeyword",
@@ -134,6 +137,8 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Enters",
     "ReplaceBy.Multiply",
     "ReplaceBy.Add",
+    "ReplaceBy.Prevent",
+    "ReplaceBy.PreventUpTo",
     "ReplaceBy.MoveTo",
     "ReplaceBy.Tapped",
     "ReplaceBy.WithCounters",
@@ -224,7 +229,6 @@ mod tests {
     #[case::entering_with_counters("ReplaceBy.WithCounters", true)]
     #[case::choosing_as_it_enters("ReplaceBy.Choose", true)]
     #[case::paying_life_or_entering_tapped("ReplaceBy.PayLifeOrTapped", true)]
-    #[case::preventing("ReplaceBy.Prevent", false)]
     #[case::doing_something_instead("ReplaceBy.Instead", false)]
     #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", false)]
     #[case::states("Trigger.State", true)]
@@ -268,7 +272,11 @@ mod tests {
     #[case::no_searching("Rule.CantSearch", true)]
     #[case::a_revealed_top("Rule.RevealTop", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
-    #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", false)]
+    #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
+    #[case::regenerating("Effect.Regenerate", true)]
+    #[case::shields("Effect.Shield", true)]
+    #[case::preventing("ReplaceBy.Prevent", true)]
+    #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]
     #[case::removed_keywords("Mod.RemoveKeyword", true)]
     #[case::conditions("Effect.If", true)]
     #[case::putting_counters("Effect.PutCounters", true)]

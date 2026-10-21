@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::ability::Ability;
 use crate::keyword::Keyword;
-use crate::refs::Ref;
+use crate::refs::{Ref, Selector};
 use crate::trigger::TriggerPattern;
 use crate::value::Amount;
 
@@ -97,8 +97,15 @@ pub enum Duration {
 /// `Ability::Rule` for as long as its source has the ability; the references name the players or objects it is about.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum GameRule {
-    /// Damage can't be prevented, and prevention shields do nothing.
-    DamageCantBePrevented,
+    /// Damage from the sources can't be prevented, and prevention effects do nothing to it (CR 614.17).
+    DamageCantBePrevented {
+        /// The sources; any source when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        source: Selector,
+        /// Only combat damage (`true`) or only other damage (`false`); both when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        combat: Option<bool>,
+    },
     /// The creatures attack each combat if able: a requirement on the declaration (CR 508.1d), not a restriction.
     MustAttack(Ref),
     /// The creatures block each combat if able: a requirement on the declaration (CR 509.1c).
@@ -167,7 +174,14 @@ mod tests {
     }
 
     #[rstest]
-    #[case(GameRule::DamageCantBePrevented, r#""DamageCantBePrevented""#)]
+    #[case(
+        GameRule::DamageCantBePrevented { source: Selector::default(), combat: None },
+        r#"{"DamageCantBePrevented":{}}"#
+    )]
+    #[case(
+        GameRule::DamageCantBePrevented { source: Selector::this(), combat: Some(true) },
+        r#"{"DamageCantBePrevented":{"source":["This"],"combat":true}}"#
+    )]
     #[case(GameRule::MustAttack(Ref::This), r#"{"MustAttack":"This"}"#)]
     #[case(GameRule::MustBlock(Ref::This), r#"{"MustBlock":"This"}"#)]
     #[case(GameRule::CantBeCountered(Ref::This), r#"{"CantBeCountered":"This"}"#)]
@@ -180,7 +194,7 @@ mod tests {
     #[case(GameRule::RevealTop(Ref::You), r#"{"RevealTop":"You"}"#)]
     #[case(
         GameRule::TriggerAgain {
-            cause: TriggerPattern::Attacks { what: crate::refs::Selector::this() }
+            cause: TriggerPattern::Attacks { what: Selector::this() }
         },
         r#"{"TriggerAgain":{"cause":{"Attacks":{"what":["This"]}}}}"#
     )]

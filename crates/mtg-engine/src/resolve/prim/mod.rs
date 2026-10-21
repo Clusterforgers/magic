@@ -30,12 +30,14 @@ mod move_counters;
 mod move_to;
 mod pay;
 mod put_counters;
+mod regenerate;
 mod remove_counters;
 mod reveal;
 mod rule;
 mod sacrifice;
 mod scry;
 mod search;
+mod shield;
 mod shuffle;
 mod tap;
 mod transform;
@@ -89,6 +91,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::CreateToken { .. } => create_token::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
+        Effect::Regenerate { .. } => regenerate::run(cx, effect),
+        Effect::Shield { .. } => shield::run(cx, effect),
         Effect::DelayedTrigger { .. } => delayed_trigger::run(cx, effect),
         Effect::If { .. } => if_then::run(cx, effect),
         Effect::May { .. } => may::run(cx, effect),
@@ -122,6 +126,8 @@ mod tests {
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
+        {"Regenerate":{"what":"This"}},
+        {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"If":{"condition":"YourTurn","then":[]}}, {"May":{"effects":[]}}, {"Pay":{"cost":"{1}"}},
         {"Modal":{"modes":[]}}
@@ -138,7 +144,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 35, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 37, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -200,6 +206,8 @@ mod tests {
                 "Effect.CreateToken",
                 "Effect.Continuous",
                 "Effect.Rule",
+                "Effect.Regenerate",
+                "Effect.Shield",
                 "Effect.DelayedTrigger",
                 "Effect.If",
                 "Effect.May",

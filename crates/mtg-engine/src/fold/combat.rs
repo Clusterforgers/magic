@@ -127,6 +127,17 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             DamageTarget::Object(id) => damage_object(state, *id, *amount, *deathtouch)?,
         },
         Event::CombatEnded => state.combat = CombatState::default(),
+        Event::Regenerated { object } => {
+            let perm = state
+                .objects
+                .get_mut(object)
+                .and_then(|o| o.permanent.as_mut())
+                .ok_or_else(|| invalid(format!("{object:?} is not a permanent")))?;
+            perm.tapped = true;
+            perm.damage = 0;
+            perm.deathtouched = false;
+            state.combat.remove_object(*object);
+        }
         Event::DamageCleared => {
             for object in state.objects.values_mut() {
                 if let Some(perm) = &mut object.permanent {

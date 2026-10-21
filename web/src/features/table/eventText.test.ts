@@ -116,6 +116,8 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     "Ana and Bo can't gain life until end of turn",
   ],
   RuleExpired: [{ RuleExpired: { id: 1 } }, 'A rule change ends'],
+  Regenerated: [{ Regenerated: { object: 1 } }, 'Grizzly Bears regenerates'],
+  ShieldUsed: [{ ShieldUsed: { id: 2, left: 3 } }, 'A prevention shield has 3 left'],
   CreatureDied: [
     { CreatureDied: { object: 1, cause: 'LethalDamage' } },
     'Grizzly Bears dies from lethal damage',
@@ -403,11 +405,13 @@ describe('minor lines', () => {
     { ManaPoolEmptied: { player: 0 } },
     { PermanentUntapped: { object: 3 } },
     { StepBegan: { step: 'Upkeep' } },
+    { ShieldUsed: { id: 2, left: 3 } },
     'DamageCleared',
   ]
   const LOUD: Event[] = [
     { SpellCast: { player: 0, object: 4 } },
     { CreatureDied: { object: 1, cause: 'ZeroToughness' } },
+    { Regenerated: { object: 1 } },
     { TurnBegan: { number: 1, active: 0 } },
     { PlayerLost: { player: 1, reason: 'Conceded' } },
     { CountersChanged: { on: { Player: 1 }, counter: 'poison', delta: 1 } },

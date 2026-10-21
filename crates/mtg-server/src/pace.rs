@@ -423,6 +423,7 @@ mod tests {
                 .map(|n| ReplacementCandidate {
                     source: ObjectId(n as u64 + 1),
                     ability: 0,
+                    shield: None,
                 })
                 .collect(),
             text: "Create 2 token(s).".into(),

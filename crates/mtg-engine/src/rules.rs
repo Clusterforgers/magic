@@ -13,13 +13,14 @@ use std::sync::OnceLock;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::modify::GameRule;
-use mtg_cards::refs::{Ref, ZoneKind};
+use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
 use crate::ability_reader::{abilities_of, definition_has_rule};
 use crate::characteristics::controller_of_object;
+use crate::choose::Target;
 use crate::effects::{Duration, lasts};
 use crate::error::EngineError;
 use crate::fold::invalid;
@@ -50,6 +51,49 @@ pub enum Rule {
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// the pattern describes causes it.
     TriggerAgain(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<TriggerPattern>),
+    /// Damage from the sources can't be prevented (CR 614.17); every source when the selector is empty.
+    DamageCantBePrevented {
+        /// The sources, judged when the damage would be dealt.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        source: Selector,
+        /// Only combat damage (`true`) or only other damage (`false`); both when absent.
+        combat: Option<bool>,
+    },
+    /// A prevention shield (CR 615): it replaces damage with nothing, up to an amount, until it is used up or ends.
+    PreventDamage(DamageShield),
+    /// A regeneration shield (CR 701.19): the next time the permanent would be destroyed, it regenerates instead.
+    Regenerate(ObjectRef),
+}
+
+/// What a prevention shield protects and how much it prevents.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct DamageShield {
+    /// The players and objects it protects, fixed when it was made; anything when absent.
+    pub to: Option<Vec<Target>>,
+    /// The sources of the damage it prevents, judged when the damage would be dealt; any source when empty.
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub source: Selector,
+    /// Only combat damage (`true`) or only other damage (`false`); both when absent.
+    pub combat: Option<bool>,
+    /// What it still prevents; all damage when absent.
+    pub left: Option<u32>,
+}
+
+impl DamageShield {
+    /// Whether it can never prevent anything again: it is used up, or every object it protects is a new object or gone.
+    fn spent(&self, state: &GameState) -> bool {
+        self.left == Some(0)
+            || self.to.as_ref().is_some_and(|to| {
+                !to.is_empty()
+                    && to.iter().all(|target| match target {
+                        Target::Player(_) => false,
+                        Target::Object(named) => state
+                            .object(named.id)
+                            .is_none_or(|o| o.counter() != named.counter),
+                    })
+            })
+    }
 }
 
 /// A rule of the game that a resolved spell or ability changed for a while (CR 611).
@@ -92,14 +136,15 @@ impl RuleEffect {
 
     /// Whether every object the rule names has become a new object or is gone: it can never apply to anything again.
     fn spent(&self, state: &GameState) -> bool {
-        let (Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named)) =
-            &self.rule
-        else {
-            return false;
-        };
-        named
-            .iter()
-            .all(|r| state.object(r.id).is_none_or(|o| o.counter() != r.counter))
+        let gone = |r: &ObjectRef| state.object(r.id).is_none_or(|o| o.counter() != r.counter);
+        match &self.rule {
+            Rule::MustAttack(named) | Rule::MustBlock(named) | Rule::CantBeCountered(named) => {
+                named.iter().all(gone)
+            }
+            Rule::Regenerate(named) => gone(named),
+            Rule::PreventDamage(shield) => shield.spent(state),
+            _ => false,
+        }
     }
 }
 
@@ -124,6 +169,16 @@ pub(crate) struct RulesInForce {
     no_search: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
     again: Vec<Again>,
+    unpreventable: Vec<Unpreventable>,
+}
+
+/// Damage that can't be prevented: whose rule it is, and which damage it covers.
+#[derive(Debug, Clone)]
+struct Unpreventable {
+    controller: PlayerId,
+    source: ObjectRef,
+    from: Selector,
+    combat: Option<bool>,
 }
 
 impl RulesInForce {
@@ -147,6 +202,21 @@ impl RulesInForce {
                     });
                 }
             }
+            Rule::DamageCantBePrevented {
+                source: from,
+                combat,
+            } => {
+                if let Some(source) = source {
+                    self.unpreventable.push(Unpreventable {
+                        controller,
+                        source,
+                        from: from.clone(),
+                        combat: *combat,
+                    });
+                }
+            }
+            // Shields are read by the replacement step from the rule changes themselves.
+            Rule::PreventDamage(_) | Rule::Regenerate(_) => {}
         }
     }
 }
@@ -178,9 +248,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             .collect())
     };
     Ok(match wanted {
-        GameRule::DamageCantBePrevented => {
-            return Err(ResolveError::Unsupported("Rule.DamageCantBePrevented"));
-        }
+        GameRule::DamageCantBePrevented { source, combat } => Rule::DamageCantBePrevented {
+            source: source.clone(),
+            combat: *combat,
+        },
         GameRule::MustAttack(who) => Rule::MustAttack(objects(who, Zone::Battlefield)?),
         GameRule::MustBlock(who) => Rule::MustBlock(objects(who, Zone::Battlefield)?),
         GameRule::CantBeCountered(who) => Rule::CantBeCountered(objects(who, Zone::Stack)?),
@@ -202,7 +273,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
         | Rule::RevealTop(players) => players.is_empty(),
-        Rule::TriggerAgain(_) => false,
+        Rule::TriggerAgain(_) | Rule::DamageCantBePrevented { .. } | Rule::Regenerate(_) => false,
+        Rule::PreventDamage(shield) => shield.to.as_ref().is_some_and(Vec::is_empty),
     }
 }
 
@@ -294,6 +366,7 @@ static NONE: RulesInForce = RulesInForce {
     no_search: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
     again: Vec::new(),
+    unpreventable: Vec::new(),
 };
 
 /// The rules of a state, built when first asked for and dropped when the state changes.
@@ -360,8 +433,29 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
         return Err(invalid(format!("duplicate rule {:?}", effect.id)));
     }
     state.next_effect = state.next_effect.max(effect.id.0 + 1);
+    if matches!(effect.rule, Rule::PreventDamage(_) | Rule::Regenerate(_)) {
+        state.possible.replacements = true;
+    }
     state.rule_effects.push(effect.clone());
     Ok(())
+}
+
+/// Folds `ShieldUsed`: the shield prevents no more than `left`.
+pub(crate) fn fold_used(state: &mut GameState, id: EffectId, left: u32) -> Result<(), EngineError> {
+    let shield = state
+        .rule_effects
+        .iter_mut()
+        .find_map(|effect| match &mut effect.rule {
+            Rule::PreventDamage(shield) if effect.id == id => Some(shield),
+            _ => None,
+        });
+    match shield {
+        Some(shield) => {
+            shield.left = Some(left);
+            Ok(())
+        }
+        None => Err(invalid(format!("unknown prevention shield {id:?}"))),
+    }
 }
 
 /// Folds `RuleExpired`: the change leaves the state.
@@ -402,6 +496,20 @@ pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` can't search libraries: the one place a search reads this rule.
 pub fn cant_search(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_search.contains(&player)
+}
+
+/// Whether the damage `dealer` would deal can't be prevented: the one place a prevention effect reads this rule. A source
+/// that is gone is read as it is in the state (the damage of a creature that dies in the same step is dealt first).
+pub(crate) fn damage_cant_be_prevented(state: &GameState, dealer: ObjectId, combat: bool) -> bool {
+    state.rules().unpreventable.iter().any(|rule| {
+        rule.combat.is_none_or(|only| only == combat)
+            && (rule.from.is_empty()
+                || state.object(dealer).is_some_and(|object| {
+                    Scope::announcing(state, rule.controller, rule.source)
+                        .selects(&rule.from, object.reference())
+                        .unwrap_or(false)
+                }))
+    })
 }
 
 /// The triggers that trigger an additional time: the one place trigger detection reads this rule.
@@ -735,16 +843,6 @@ mod tests {
             seen,
             [true, false, false, true, true, false, true, true],
             "the same rules in force whichever began first"
-        );
-    }
-
-    #[test]
-    fn a_rule_the_engine_does_not_play_refuses_by_name() {
-        let game = game(Vec::new());
-        let scope = Scope::announcing(&game, ME, named(&game, "Holder"));
-        assert_eq!(
-            lower_rule(&scope, &GameRule::DamageCantBePrevented),
-            Err(ResolveError::Unsupported("Rule.DamageCantBePrevented"))
         );
     }
 

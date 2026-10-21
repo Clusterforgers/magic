@@ -12,9 +12,10 @@ use crate::zones::Zone;
 /// Each permanent the effect names that is still on the battlefield goes to its owner's graveyard, all together, unless
 /// it is indestructible (CR 702.12b). Every move carries `ZoneCause::Destroyed` and the step carries what the permanent
 /// was. An object that is not a permanent, has changed zones since it was named or is named twice is passed over, and
-/// naming nothing destroys nothing. `regenerate` is read once an effect can make a regeneration shield.
+/// naming nothing destroys nothing. A destruction that can be regenerated carries `ZoneCause::Destroyed`, which a
+/// regeneration shield replaces; one that can't (`regenerate: false`) carries `ZoneCause::Buried`.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Destroy { what, .. } = effect else {
+    let Effect::Destroy { what, regenerate } = effect else {
         return Err(wrong_effect("Destroy"));
     };
     let state = cx.state();
@@ -29,7 +30,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             object: object.id(),
             from: Zone::Battlefield,
             to: Zone::Graveyard(object.owner()),
-            cause: ZoneCause::Destroyed,
+            cause: if *regenerate {
+                ZoneCause::Destroyed
+            } else {
+                ZoneCause::Buried
+            },
         });
     }
     Ok(Run::Done {
@@ -143,9 +148,7 @@ mod tests {
     }
 
     fn destroy_each(game: &GameState, filter: &str) -> Run {
-        let destroy = effect(&format!(
-            r#"{{"Destroy":{{"what":{{"Each":{filter}}},"regenerate":false}}}}"#
-        ));
+        let destroy = effect(&format!(r#"{{"Destroy":{{"what":{{"Each":{filter}}}}}}}"#));
         run_with(game, &Bindings::new(), Vec::new(), &[], &destroy).unwrap()
     }
 
@@ -317,5 +320,26 @@ mod tests {
             &effect(r#"{"Draw":{}}"#),
         );
         assert!(matches!(refused, Err(ResolveError::Invalid(_))));
+    }
+
+    #[rstest]
+    #[case::can_be_regenerated("", ZoneCause::Destroyed)]
+    #[case::said_to_be_regenerable(r#","regenerate":true"#, ZoneCause::Destroyed)]
+    #[case::cant_be_regenerated(r#","regenerate":false"#, ZoneCause::Buried)]
+    fn a_destruction_says_whether_it_can_be_regenerated(
+        #[case] flag: &str,
+        #[case] cause: ZoneCause,
+    ) {
+        let game = game();
+        let destroy = effect(&format!(
+            r#"{{"Destroy":{{"what":{{"Each":[{{"Named":"Ogre"}}]}}{flag}}}}}"#
+        ));
+        let run = run_with(&game, &Bindings::new(), Vec::new(), &[], &destroy).unwrap();
+        let Run::Done { events, .. } = run else {
+            panic!("the effect is done");
+        };
+        assert!(
+            matches!(events.as_slice(), [Event::ZoneChanged { cause: got, .. }] if *got == cause)
+        );
     }
 }

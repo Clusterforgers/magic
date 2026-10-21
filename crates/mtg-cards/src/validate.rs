@@ -854,6 +854,19 @@ impl<'a> Walker<'a> {
                 w.at("mods", |w| w.mods(mods));
             }
             Effect::Rule { rule, .. } => w.at("rule", |w| w.rule(rule)),
+            Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::Shield { when, by, .. } => {
+                w.at("when", |w| w.replace_when(when));
+                w.at("by", |w| w.replace_by(when, by));
+                // The engine makes shields of damage prevention; any other shield waits.
+                match (when, by) {
+                    (
+                        ReplaceWhen::Damage { .. },
+                        ReplaceBy::Prevent | ReplaceBy::PreventUpTo(_),
+                    ) => {}
+                    _ => w.uses("Effect", &format!("Shield.{}", tag_of(when))),
+                }
+            }
             Effect::DelayedTrigger { when, effects, .. } => {
                 w.at("when", |w| w.trigger_pattern(when));
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
@@ -1152,7 +1165,9 @@ impl<'a> Walker<'a> {
         let tag = tag_of(rule);
         self.uses("Rule", &tag);
         match rule {
-            GameRule::DamageCantBePrevented => {}
+            GameRule::DamageCantBePrevented { source, .. } => {
+                self.at(tag, |w| w.at("source", |w| w.selector(source)));
+            }
             GameRule::MustAttack(who)
             | GameRule::MustBlock(who)
             | GameRule::CantBeCountered(who) => self.at(tag, |w| w.reference(who, Kind::Object)),
@@ -1231,6 +1246,18 @@ impl<'a> Walker<'a> {
                 ) =>
             {
                 self.problem("a zone change has no number to change");
+            }
+            ReplaceBy::PreventUpTo(0) => self.problem("preventing nothing changes nothing"),
+            ReplaceBy::Prevent
+                if matches!(
+                    when,
+                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Enters { .. }
+                ) =>
+            {
+                self.problem("a zone change or an entering is not prevented");
+            }
+            ReplaceBy::PreventUpTo(_) if !matches!(when, ReplaceWhen::Damage { .. }) => {
+                self.problem("only damage is prevented in part");
             }
             ReplaceBy::Instead(effects) => {
                 if effects.is_empty() {

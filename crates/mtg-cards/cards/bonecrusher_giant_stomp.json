@@ -23,7 +23,7 @@
           "Spell": {
             "targets": [{ "what": "AnyTarget" }],
             "effects": [
-              { "Rule": { "rule": "DamageCantBePrevented", "duration": "UntilEndOfTurn" } },
+              { "Rule": { "rule": { "DamageCantBePrevented": {} }, "duration": "UntilEndOfTurn" } },
               { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }
             ]
           }

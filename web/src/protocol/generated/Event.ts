@@ -233,7 +233,19 @@ amount: number,
 /**
  * The source had deathtouch as it dealt the damage (CR 702.2): a creature it hurts is marked for destruction.
  */
-deathtouch?: boolean, } } | "CombatEnded" | "DamageCleared" | { "EffectCreated": { 
+deathtouch?: boolean, } } | "CombatEnded" | "DamageCleared" | { "Regenerated": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, } } | { "ShieldUsed": { 
+/**
+ * The shield, one of the rule changes (they share the counter of continuous effects).
+ */
+id: EffectId, 
+/**
+ * What it still prevents.
+ */
+left: number, } } | { "EffectCreated": { 
 /**
  * The effect.
  */
