@@ -24,7 +24,15 @@ count: number, } } | { "LibraryShuffled": {
 /**
  * Owner of the library.
  */
-player: PlayerId, } } | { "MulliganTaken": { 
+player: PlayerId, } } | { "LibraryRefilled": { 
+/**
+ * Owner of the library.
+ */
+player: PlayerId, 
+/**
+ * Cards the library holds now.
+ */
+count: number, } } | { "MulliganTaken": { 
 /**
  * Who mulliganed.
  */

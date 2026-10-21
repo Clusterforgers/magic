@@ -3,7 +3,7 @@
 use std::fmt;
 
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
-use mtg_engine::state::Stage;
+use mtg_engine::state::{GameState, Stage};
 use mtg_engine::{Engine, EngineError, Event, GameResult, GameSetup};
 use thiserror::Error;
 
@@ -236,6 +236,33 @@ fn observe(checker: &mut Option<InvariantChecker>, engine: &Engine) -> Result<()
     }
 }
 
+/// Whether the players still in the game explain the result: the last one standing wins and nobody left is a draw;
+/// under the house rules of the turn limit and the winning life total a game also ends with several players in it, the
+/// winner then alone at the highest life and a draw a tie for it or everyone at the winning life.
+fn result_explained(state: &GameState, result: GameResult) -> bool {
+    let survivors: Vec<_> = state.players().iter().filter(|p| p.is_in_game()).collect();
+    let rules = state.house_rules();
+    let highest = survivors.iter().map(|p| p.life()).max();
+    let leaders: Vec<_> = survivors
+        .iter()
+        .filter(|p| Some(p.life()) == highest)
+        .collect();
+    let limited = rules
+        .turn_limit
+        .is_some_and(|limit| state.turn().round() >= limit);
+    let everyone_wins = rules
+        .winning_life
+        .is_some_and(|goal| survivors.iter().all(|p| p.life() >= goal));
+    match (result, survivors.as_slice()) {
+        (GameResult::Winner(winner), [only]) => winner == only.id(),
+        (GameResult::Draw, []) => true,
+        (GameResult::Winner(winner), _) => {
+            limited && matches!(leaders.as_slice(), [only] if only.id() == winner)
+        }
+        (GameResult::Draw, _) => (limited && leaders.len() > 1) || everyone_wins,
+    }
+}
+
 /// Terminal checks: one `GameEnded`, a consistent winner, and replay equality for the whole log.
 fn finish(
     engine: &Engine,
@@ -259,11 +286,8 @@ fn finish(
     if state.stage() != Stage::Finished || state.result() != Some(*result) {
         return Err(bad("state does not record the result"));
     }
-    let survivors: Vec<_> = state.alive_players().collect();
-    match (result, survivors.as_slice()) {
-        (GameResult::Winner(winner), [only]) if winner == only => {}
-        (GameResult::Draw, []) => {}
-        _ => return Err(bad("result does not match the players still in the game")),
+    if !result_explained(state, *result) {
+        return Err(bad("result does not match the players still in the game"));
     }
     if let Some(checker) = checker {
         checker.full_check(state)?;

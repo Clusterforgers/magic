@@ -7,7 +7,7 @@ import type { PlayerId } from "./PlayerId";
  * A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
  * began (an effect) or whenever the state changes (a static ability).
  */
-export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustBlock": Array<ObjectRef> } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "MayCast": { 
+export type Rule = { "MustAttack": Array<ObjectRef> } | { "MustBlock": Array<ObjectRef> } | { "CantBeCountered": Array<ObjectRef> } | { "CantGainLife": Array<PlayerId> } | { "CantDraw": Array<PlayerId> } | { "CantSearch": Array<PlayerId> } | { "RevealTop": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "MayCast": { 
 /**
  * The players who may cast.
  */

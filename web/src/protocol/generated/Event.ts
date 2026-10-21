@@ -175,7 +175,15 @@ restricted?: Array<Restricted>, } } | { "ManaPoolEmptied": {
 /**
  * Whose pool.
  */
-player: PlayerId, } } | { "LifePaid": { 
+player: PlayerId, } } | { "ManaBurned": { 
+/**
+ * Whose pool.
+ */
+player: PlayerId, 
+/**
+ * The mana that was left, which is the life lost.
+ */
+amount: number, } } | { "LifePaid": { 
 /**
  * Who paid.
  */
@@ -195,7 +203,15 @@ object: ObjectId, } } | { "DrewFromEmptyLibrary": {
 /**
  * Who tried.
  */
-player: PlayerId, } } | { "CardDiscarded": { 
+player: PlayerId, } } | { "LibraryRefilled": { 
+/**
+ * Owner of the library.
+ */
+player: PlayerId, 
+/**
+ * The new order of the library, graveyard included (bottom to top).
+ */
+order: Array<ObjectId>, } } | { "CardDiscarded": { 
 /**
  * Who discarded.
  */

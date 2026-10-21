@@ -4,7 +4,8 @@
 use crate::common;
 
 use common::{Bot, drive, roomy};
-use mtg_core::house::{HandLimit, HouseRules, SkipFirstDraw};
+use mtg_core::house::{EmptyLibrary, HandLimit, Handicap, HouseRules, SkipFirstDraw};
+use mtg_core::ids::PlayerId;
 use mtg_engine::replay;
 use mtg_protocol::ClientMessage;
 use mtg_server::registry::{GameOptions, SeatRequest};
@@ -52,6 +53,18 @@ fn some_rules() -> HouseRules {
         mulligan_cap: Some(4),
         skip_first_draw: Some(SkipFirstDraw::Never),
         max_hand_size: Some(HandLimit::Cards(5)),
+        draw_step_cards: Some(2),
+        land_plays_per_turn: Some(2),
+        mana_burn: Some(true),
+        empty_library: Some(EmptyLibrary::ReshuffleGraveyard),
+        turn_limit: Some(30),
+        winning_life: Some(60),
+        poison_threshold: Some(3),
+        handicaps: vec![Handicap {
+            seat: PlayerId(1),
+            starting_life: Some(9),
+            opening_hand_size: Some(4),
+        }],
     }
 }
 
