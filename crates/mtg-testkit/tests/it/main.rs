@@ -24,6 +24,7 @@ mod corpus_cards;
 mod counter_effects;
 mod counters_fuzz;
 mod determinism_replay;
+mod divided_resolution;
 mod elimination;
 mod enters;
 mod equipment;
