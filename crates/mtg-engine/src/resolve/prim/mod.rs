@@ -24,9 +24,11 @@ mod lose_life;
 mod may;
 mod mill;
 mod modal;
+mod move_counters;
 mod move_to;
 mod pay;
 mod put_counters;
+mod remove_counters;
 mod reveal;
 mod rule;
 mod sacrifice;
@@ -74,6 +76,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::LoseLife { .. } => lose_life::run(cx, effect),
         Effect::AddMana { .. } => add_mana::run(cx, effect),
         Effect::PutCounters { .. } => put_counters::run(cx, effect),
+        Effect::RemoveCounters { .. } => remove_counters::run(cx, effect),
+        Effect::MoveCounters { .. } => move_counters::run(cx, effect),
         Effect::Tap { .. } => tap::run(cx, effect),
         Effect::Untap { .. } => untap::run(cx, effect),
         Effect::Transform { .. } => transform::run(cx, effect),
@@ -108,7 +112,8 @@ mod tests {
         {"Destroy":{"what":"This"}}, {"Exile":{"what":"This"}}, {"Sacrifice":{"filter":[]}},
         {"Counter":{"what":"This"}}, {"DealDamage":{"to":"You","amount":1}}, {"GainLife":{"amount":1}},
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
-        {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"Tap":{"what":"This"}},
+        {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
+        {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"Tap":{"what":"This"}},
         {"Untap":{"what":"This"}}, {"Transform":{"what":"This"}}, {"WinGame":{}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
@@ -129,7 +134,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 31, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 33, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -180,6 +185,9 @@ mod tests {
                 "Effect.GainLife",
                 "Effect.LoseLife",
                 "Effect.AddMana",
+                "Effect.PutCounters",
+                "Effect.RemoveCounters",
+                "Effect.MoveCounters",
                 "Effect.Tap",
                 "Effect.Untap",
                 "Effect.WinGame",

@@ -57,6 +57,9 @@ const RUNS: &[&str] = &[
     "Effect.GainLife",
     "Effect.LoseLife",
     "Effect.AddMana",
+    "Effect.PutCounters",
+    "Effect.RemoveCounters",
+    "Effect.MoveCounters",
     "Effect.Tap",
     "Effect.Untap",
     "Effect.WinGame",
@@ -221,7 +224,9 @@ mod tests {
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", false)]
     #[case::removed_keywords("Mod.RemoveKeyword", true)]
     #[case::conditions("Effect.If", true)]
-    #[case::counters_in_a_value("Amount.Counters", false)]
+    #[case::putting_counters("Effect.PutCounters", true)]
+    #[case::removing_counters("Effect.RemoveCounters", true)]
+    #[case::moving_counters("Effect.MoveCounters", true)]
     #[case::divided_amounts("Amount.Divided", false)]
     #[case::even_shares("Amount.EvenShare", false)]
     #[case::loyalty_in_a_value("Stat.Loyalty", false)]

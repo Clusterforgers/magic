@@ -1,6 +1,9 @@
 //! Per-player state: life, status, mana pool and mulligan progress.
 
+use std::collections::BTreeMap;
+
 use mtg_cards::keyword::Keyword;
+use mtg_cards::value::CounterKind;
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
@@ -14,6 +17,8 @@ pub enum LossReason {
     ZeroLife,
     /// Attempted to draw from an empty library (CR 704.5b).
     EmptyLibrary,
+    /// Ten or more poison counters (CR 704.5c).
+    Poison,
     /// The player gave up (CR 104.3a).
     Conceded,
     /// A reason in words: a format's own condition, such as commander damage, or an opponent who won by an effect.
@@ -56,6 +61,7 @@ pub struct Player {
     pub(crate) mulligans: u32,
     pub(crate) mulligan: MulliganStatus,
     pub(crate) keywords: Vec<Keyword>,
+    pub(crate) counters: BTreeMap<CounterKind, u32>,
 }
 
 impl Player {
@@ -74,6 +80,7 @@ impl Player {
             mulligans: 0,
             mulligan,
             keywords,
+            counters: BTreeMap::new(),
         }
     }
 
@@ -110,6 +117,16 @@ impl Player {
     /// Opening-hand progress.
     pub const fn mulligan_status(&self) -> MulliganStatus {
         self.mulligan
+    }
+
+    /// The counters on the player, by kind in a fixed order; a kind they have none of is not listed.
+    pub fn counters(&self) -> impl Iterator<Item = (&CounterKind, u32)> {
+        self.counters.iter().map(|(kind, count)| (kind, *count))
+    }
+
+    /// How many counters of `kind` are on the player.
+    pub fn counters_of(&self, kind: &CounterKind) -> u32 {
+        self.counters.get(kind).copied().unwrap_or(0)
     }
 
     /// The keywords the player's setup gives them (hexproof, CR 702.11d); `keywords::player_keywords` is the reader.

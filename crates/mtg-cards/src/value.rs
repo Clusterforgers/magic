@@ -74,6 +74,20 @@ pub enum CounterKind {
     Other(String),
 }
 
+impl CounterKind {
+    /// The kind as a card names it: `+1/+1`, `poison`, `charge`.
+    pub fn name(&self) -> &str {
+        match self {
+            CounterKind::PlusOnePlusOne => "+1/+1",
+            CounterKind::MinusOneMinusOne => "-1/-1",
+            CounterKind::Loyalty => "loyalty",
+            CounterKind::Poison => "poison",
+            CounterKind::Charge => "charge",
+            CounterKind::Other(name) => name,
+        }
+    }
+}
+
 /// A number, fixed or worked out when the effect runs.
 ///
 /// A fixed amount is a bare JSON number; the other forms are serde's usual tagged shape.

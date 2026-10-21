@@ -71,6 +71,8 @@ pub struct PlayerSetup {
     pub life: Option<i32>,
     /// Keywords the player has from the start, such as hexproof (CR 702.11d).
     pub keywords: Vec<Keyword>,
+    /// Counters on the player from the start, by kind; a kind listed twice adds up.
+    pub counters: Vec<(CounterKind, u32)>,
 }
 
 /// Where the game starts.
@@ -248,12 +250,18 @@ impl GameState {
                 Start::Mulligan => MulliganStatus::NeedsHand,
                 Start::At { .. } => MulliganStatus::Kept,
             };
-            players.push(Player::new(
+            let mut player = Player::new(
                 owner,
                 setup_player.life.unwrap_or(life),
                 status,
                 setup_player.keywords.clone(),
-            ));
+            );
+            for (kind, count) in &setup_player.counters {
+                if *count > 0 {
+                    *player.counters.entry(kind.clone()).or_default() += count;
+                }
+            }
+            players.push(player);
         }
         for (id, preset) in presets {
             if let Some(object) = objects.get_mut(&id) {
@@ -336,6 +344,14 @@ impl GameState {
             .objects()
             .any(|object| crate::ability_reader::definition_has_state_trigger(&object.def));
         self.possible.states = states;
+        let counters = self.objects().any(|object| {
+            object.permanent().is_some_and(|permanent| {
+                permanent
+                    .counters()
+                    .any(|(kind, _)| crate::counters::changes_power_toughness(kind))
+            })
+        });
+        self.possible.counters = counters;
     }
 }
 

@@ -1,6 +1,10 @@
 //! State-based actions (CR 704), applied in passes until nothing changes.
 
+use mtg_cards::value::CounterKind;
+
 use crate::characteristics::{Characteristics, characteristics};
+use crate::choose::Target;
+use crate::counters::CountersChanged;
 use crate::events::{DeathCause, Event};
 use crate::keywords;
 use crate::object::PermanentState;
@@ -8,11 +12,16 @@ use crate::player::{LossReason, Player};
 use crate::state::GameState;
 use crate::zones::Zone;
 
+/// How many poison counters make a player lose the game (CR 704.5c).
+const POISON_LOSS: u32 = 10;
+
 fn loss_reason(state: &GameState, player: &Player) -> Option<LossReason> {
     if player.life() <= 0 {
         Some(LossReason::ZeroLife)
     } else if player.drew_from_empty {
         Some(LossReason::EmptyLibrary)
+    } else if player.counters_of(&CounterKind::Poison) >= POISON_LOSS {
+        Some(LossReason::Poison)
     } else {
         state.format().loss_condition(state, player.id())
     }
@@ -50,6 +59,40 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
             continue;
         };
         events.push(Event::CreatureDied { object: id, cause });
+    }
+    events.extend(annihilation(state));
+    events
+}
+
+/// A permanent with both a +1/+1 and a -1/-1 counter on it loses as many of each as it has of the kind it has fewer of
+/// (CR 704.5q).
+fn annihilation(state: &GameState) -> Vec<Event> {
+    let mut events = Vec::new();
+    if !state.possible.counters {
+        return events;
+    }
+    for &id in state.zone(Zone::Battlefield) {
+        let Some(object) = state.object(id).filter(|o| state.is_alive(o.owner())) else {
+            continue;
+        };
+        let Some(permanent) = object.permanent() else {
+            continue;
+        };
+        let pairs = permanent
+            .counters_of(&CounterKind::PlusOnePlusOne)
+            .min(permanent.counters_of(&CounterKind::MinusOneMinusOne));
+        let Ok(pairs) = i32::try_from(pairs) else {
+            continue;
+        };
+        if pairs > 0 {
+            for counter in [CounterKind::PlusOnePlusOne, CounterKind::MinusOneMinusOne] {
+                events.push(Event::CountersChanged(CountersChanged {
+                    on: Target::Object(object.reference()),
+                    counter,
+                    delta: -pairs,
+                }));
+            }
+        }
     }
     events
 }
@@ -113,9 +156,12 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a creature dies to state-based actions for zero toughness always, and for lethal damage or a deathtouch mark unless it is indestructible, and the cause named is the one that applies.
-    use super::*;
+    //! Goal: a creature dies to state-based actions for zero toughness always, and for lethal damage or a deathtouch mark unless it is indestructible, and the cause named is the one that applies; a permanent with both +1/+1 and -1/-1 counters loses a pair of each until it has only one kind; a player with ten or more poison counters loses, and life is named first.
+    use mtg_core::ids::PlayerId;
     use rstest::rstest;
+
+    use super::*;
+    use crate::fixtures::{creature, setup};
 
     #[rstest]
     #[case::healthy(2, 1, false, false, None)]
@@ -167,6 +213,99 @@ mod tests {
         assert_eq!(
             death_cause(0, 0, false, ask),
             Some(DeathCause::ZeroToughness)
+        );
+    }
+
+    const PLUS: CounterKind = CounterKind::PlusOnePlusOne;
+    const MINUS: CounterKind = CounterKind::MinusOneMinusOne;
+
+    /// Seat 0 controls a Bear with these counters and has this many poison counters; seat 1 controls an Ogre.
+    fn game_with(counters: &[(CounterKind, u32)], poison: u32) -> GameState {
+        let mut game = setup(
+            vec![vec![], vec![]],
+            vec![vec![creature("Bear", 2, 2)], vec![creature("Ogre", 3, 3)]],
+        );
+        game.players[0].battlefield[0].counters = counters.to_vec();
+        game.players[0].counters = vec![(CounterKind::Poison, poison)];
+        GameState::from_setup(&game).unwrap()
+    }
+
+    /// The counter changes the check asks for, as (kind, change).
+    fn counter_changes(game: &GameState) -> Vec<(CounterKind, i32)> {
+        check(game)
+            .into_iter()
+            .filter_map(|event| match event {
+                Event::CountersChanged(changed) => Some((changed.counter, changed.delta)),
+                _ => None,
+            })
+            .collect()
+    }
+
+    #[rstest]
+    #[case::no_counters(&[], &[])]
+    #[case::only_plus_counters(&[(PLUS, 2)], &[])]
+    #[case::only_minus_counters(&[(MINUS, 2)], &[])]
+    #[case::one_pair(&[(PLUS, 1), (MINUS, 1)], &[(PLUS, -1), (MINUS, -1)])]
+    #[case::more_plus_than_minus(&[(PLUS, 3), (MINUS, 1)], &[(PLUS, -1), (MINUS, -1)])]
+    #[case::more_minus_than_plus(&[(PLUS, 1), (MINUS, 4)], &[(PLUS, -1), (MINUS, -1)])]
+    #[case::as_many_of_each(&[(PLUS, 3), (MINUS, 3)], &[(PLUS, -3), (MINUS, -3)])]
+    #[case::other_kinds_stay(&[(PLUS, 1), (CounterKind::Charge, 1)], &[])]
+    fn a_permanent_with_both_kinds_loses_a_pair_of_each(
+        #[case] counters: &[(CounterKind, u32)],
+        #[case] expected: &[(CounterKind, i32)],
+    ) {
+        assert_eq!(counter_changes(&game_with(counters, 0)), expected);
+    }
+
+    #[test]
+    fn the_pairs_of_every_permanent_go_together_and_only_while_a_game_has_such_counters() {
+        let mut game = setup(
+            vec![vec![], vec![]],
+            vec![vec![creature("Bear", 2, 2)], vec![creature("Ogre", 3, 3)]],
+        );
+        game.players[0].battlefield[0].counters = vec![(PLUS, 2), (MINUS, 1)];
+        game.players[1].battlefield[0].counters = vec![(PLUS, 1), (MINUS, 5)];
+        let game = GameState::from_setup(&game).unwrap();
+        assert_eq!(
+            counter_changes(&game),
+            [(PLUS, -1), (MINUS, -1), (PLUS, -1), (MINUS, -1)]
+        );
+        assert!(game.possible.counters);
+        let plain = game_with(&[], 0);
+        assert!(
+            !plain.possible.counters,
+            "a game without such counters looks for none"
+        );
+        assert_eq!(check(&plain), []);
+    }
+
+    #[rstest]
+    #[case::none(0, false)]
+    #[case::nine(9, false)]
+    #[case::ten(10, true)]
+    #[case::eleven(11, true)]
+    fn ten_poison_counters_lose_the_game(#[case] poison: u32, #[case] loses: bool) {
+        let events = check(&game_with(&[], poison));
+        let lost = Event::PlayerLost {
+            player: PlayerId(0),
+            reason: LossReason::Poison,
+        };
+        assert_eq!(events.contains(&lost), loses, "{events:?}");
+        assert_eq!(events.len(), usize::from(loses));
+    }
+
+    #[test]
+    fn a_player_out_of_life_loses_for_that_reason_before_poison() {
+        let mut game = setup(vec![vec![], vec![]], vec![vec![], vec![]]);
+        game.players[0].life = Some(0);
+        game.players[0].counters = vec![(CounterKind::Poison, 12)];
+        let events = check(&GameState::from_setup(&game).unwrap());
+        assert_eq!(
+            events,
+            [Event::PlayerLost {
+                player: PlayerId(0),
+                reason: LossReason::ZeroLife
+            }]
         );
     }
 }
