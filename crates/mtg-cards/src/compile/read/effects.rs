@@ -259,6 +259,12 @@ fn player(r: &mut Reader<'_>) -> Option<Ref> {
     if r.words("its controller") {
         return r.it.clone().map(|it| Ref::ControllerOf(Box::new(it)));
     }
+    if r.that_player && r.words("that player") {
+        return Some(Ref::Triggering);
+    }
+    if r.that_permanent && r.words("that permanent's controller") {
+        return Some(Ref::ControllerOf(Box::new(Ref::Triggering)));
+    }
     r.attempt(|r| {
         let who = target(r)?;
         let spec = r.targets.first()?;
@@ -445,6 +451,9 @@ fn recipient(r: &mut Reader<'_>) -> Option<Ref> {
     }
     if r.word("you") {
         return Some(Ref::You);
+    }
+    if r.that_player && r.words("that player") {
+        return Some(Ref::Triggering);
     }
     if let Some(objects) = each(r) {
         return Some(objects);

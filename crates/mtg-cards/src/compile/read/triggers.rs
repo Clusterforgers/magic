@@ -2,11 +2,20 @@
 //! read from "when ~ enters", "whenever you cast a creature spell" or "at the beginning of your
 //! upkeep" and written back the same way.
 
+use super::counters;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
-use crate::value::{Amount, Cmp, Condition};
+use crate::value::{Amount, Cmp, Condition, CounterKind};
+
+/// Whether the pattern is "when you cycle this card", the one trigger that works from the graveyard.
+pub fn cycled_itself(pattern: &TriggerPattern) -> bool {
+    matches!(
+        pattern,
+        TriggerPattern::Cycled { what, by: Ref::You } if what.0 == [Pred::This]
+    )
+}
 
 /// The steps a trigger names and the words for each.
 const STEPS: [(Step, &str); 5] = [
@@ -33,9 +42,37 @@ pub fn pattern(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if !(r.word("when") || r.word("whenever")) {
         return None;
     }
-    r.attempt(player_event).or_else(|| {
-        let what = subject(r)?;
-        verbs(r, &what)
+    if let Some(found) = r.attempt(player_event) {
+        return Some(found);
+    }
+    if let Some(found) = r.attempt(counter_event) {
+        return Some(found);
+    }
+    let what = subject(r)?;
+    verbs(r, &what)
+}
+
+/// "a +1/+1 counter is put on ~", "a counter is removed from a creature you control".
+fn counter_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    // A plain "counter" is a counter of any kind.
+    let counter = if r.word("counter") {
+        None
+    } else {
+        Some(counters::trigger_kind(r)?)
+    };
+    let putting = if r.words("is put on") {
+        true
+    } else if r.words("is removed from") {
+        false
+    } else {
+        return None;
+    };
+    let what = subject(r)?;
+    Some(if putting {
+        TriggerPattern::CountersPut { what, counter }
+    } else {
+        TriggerPattern::CountersRemoved { what, counter }
     })
 }
 
@@ -115,6 +152,20 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             what: Selector::default(),
             by,
         })
+    } else if verb == if third { "cycles" } else { "cycle" } {
+        let what = if r.words("another card") {
+            Selector(vec![Pred::Other])
+        } else if r.source() {
+            Selector::this()
+        } else {
+            r.need("a card")?;
+            Selector::default()
+        };
+        Some(TriggerPattern::Cycled { what, by })
+    } else if verb == if third { "taps" } else { "tap" } {
+        let what = subject(r)?;
+        r.need("for mana")?;
+        Some(TriggerPattern::TappedForMana { what, by })
     } else {
         None
     }
@@ -162,6 +213,21 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         (Some(ZoneKind::Battlefield), None)
     } else if r.word("attacks") {
         return Some(TriggerPattern::Attacks { what: what.clone() });
+    } else if r.word("blocks") {
+        return Some(TriggerPattern::Blocks { what: what.clone() });
+    } else if r.words("becomes blocked") {
+        return Some(TriggerPattern::BecomesBlocked { what: what.clone() });
+    } else if r.words("becomes tapped") {
+        return Some(TriggerPattern::Tapped { what: what.clone() });
+    } else if r.words("becomes untapped") {
+        return Some(TriggerPattern::Untapped { what: what.clone() });
+    } else if r.words("becomes attached to") {
+        return Some(TriggerPattern::Attached {
+            what: what.clone(),
+            to: subject(r)?,
+        });
+    } else if r.word("deals") {
+        return damage_dealt(r, what);
     } else {
         return None;
     };
@@ -169,6 +235,32 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         what: what.clone(),
         from,
         to,
+    })
+}
+
+/// What follows "deals": "combat damage to a player", "damage to an opponent", "noncombat damage".
+fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern> {
+    let combat = if r.words("combat damage") {
+        Some(true)
+    } else if r.words("noncombat damage") {
+        Some(false)
+    } else {
+        r.need("damage")?;
+        None
+    };
+    let to = if r.words("to a player") {
+        Some(Ref::EachPlayer)
+    } else if r.words("to an opponent") {
+        Some(Ref::Opponents)
+    } else if r.words("to you") {
+        Some(Ref::You)
+    } else {
+        None
+    };
+    Some(TriggerPattern::DealsDamage {
+        source: source.clone(),
+        to,
+        combat,
     })
 }
 
@@ -247,7 +339,8 @@ fn player_verb(by: &Ref, verb: &str) -> Option<String> {
 }
 
 /// The subject of a pattern that is about one thing happening to it, and what happens.
-fn happening(pattern: &TriggerPattern) -> Option<(&Selector, &'static str)> {
+fn happening(pattern: &TriggerPattern) -> Option<(&Selector, String)> {
+    let said = |what, verb: &str| Some((what, verb.to_owned()));
     match pattern {
         TriggerPattern::ZoneChange { what, from, to } => {
             let verb = match (from, to) {
@@ -256,9 +349,31 @@ fn happening(pattern: &TriggerPattern) -> Option<(&Selector, &'static str)> {
                 (Some(ZoneKind::Battlefield), None) => "leaves the battlefield",
                 _ => return None,
             };
-            Some((what, verb))
+            said(what, verb)
         }
-        TriggerPattern::Attacks { what } => Some((what, "attacks")),
+        TriggerPattern::Attacks { what } => said(what, "attacks"),
+        TriggerPattern::Blocks { what } => said(what, "blocks"),
+        TriggerPattern::BecomesBlocked { what } => said(what, "becomes blocked"),
+        TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
+        TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
+        TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
+            said(what, &format!("becomes attached to {}", subject_text(to)?))
+        }
+        TriggerPattern::DealsDamage { source, to, combat } => {
+            let kind = match combat {
+                Some(true) => "combat damage",
+                Some(false) => "noncombat damage",
+                None => "damage",
+            };
+            let to = match to {
+                None => String::new(),
+                Some(Ref::EachPlayer) => " to a player".to_owned(),
+                Some(Ref::Opponents) => " to an opponent".to_owned(),
+                Some(Ref::You) => " to you".to_owned(),
+                Some(_) => return None,
+            };
+            said(source, &format!("deals {kind}{to}"))
+        }
         _ => None,
     }
 }
@@ -311,6 +426,26 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Discarded { what, by } if what.is_empty() => {
             Some(format!("Whenever {} a card", player_verb(by, "discard")?))
         }
+        TriggerPattern::Cycled { what, by } => {
+            let card = match what.0.as_slice() {
+                [] => "a card",
+                [Pred::Other] => "another card",
+                [Pred::This] if *by == Ref::You => return Some("When you cycle ~".to_owned()),
+                _ => return None,
+            };
+            Some(format!("Whenever {} {card}", player_verb(by, "cycle")?))
+        }
+        TriggerPattern::TappedForMana { what, by } => Some(format!(
+            "Whenever {} {} for mana",
+            player_verb(by, "tap")?,
+            subject_text(what)?
+        )),
+        TriggerPattern::CountersPut { what, counter } => {
+            counter_text(what, counter.as_ref(), "put on")
+        }
+        TriggerPattern::CountersRemoved { what, counter } => {
+            counter_text(what, counter.as_ref(), "removed from")
+        }
         TriggerPattern::AnyOf(patterns) => {
             let (first, rest) = patterns.split_first()?;
             let (what, verb) = happening(first)?;
@@ -331,13 +466,26 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
     }
 }
 
+/// "Whenever a +1/+1 counter is put on ~", "Whenever a counter is removed from a creature you control".
+fn counter_text(what: &Selector, counter: Option<&CounterKind>, moved: &str) -> Option<String> {
+    let place = if what.is_empty() {
+        "a permanent".to_owned()
+    } else {
+        subject_text(what)?
+    };
+    Some(format!(
+        "Whenever {} is {moved} {place}",
+        counters::trigger_kind_text(counter)?
+    ))
+}
+
 /// "When ~ enters", "Whenever a land you control enters", "Whenever ~ enters or attacks": "when" is
 /// for the card itself entering, dying or leaving, "whenever" for the rest.
-fn about(what: &Selector, verbs: &[&str]) -> Option<String> {
+fn about(what: &Selector, verbs: &[String]) -> Option<String> {
     let once = what.0 == [Pred::This]
         && verbs
             .iter()
-            .all(|verb| matches!(*verb, "enters" | "dies" | "leaves the battlefield"));
+            .all(|verb| matches!(verb.as_str(), "enters" | "dies" | "leaves the battlefield"));
     Some(format!(
         "{} {} {}",
         if once { "When" } else { "Whenever" },
