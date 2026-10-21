@@ -5,5 +5,7 @@ mod commands;
 mod common;
 mod coverage;
 mod fetch_decks;
+mod fetch_printings;
 mod fetch_scryfall;
 mod ingest;
+mod ingest_printings;

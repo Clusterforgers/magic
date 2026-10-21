@@ -64,10 +64,22 @@ pub async fn fetch_scryfall(
     force: bool,
     progress: &Progress,
 ) -> Result<Vec<BulkOutcome>, CliError> {
+    fetch_scryfall_kinds(http, cache, listing_url, &SCRYFALL_TYPES, force, progress).await
+}
+
+/// Like [`fetch_scryfall`] for the given bulk types, such as [`SCRYFALL_TYPES`] plus [`crate::cache::PRINTINGS_TYPE`].
+pub async fn fetch_scryfall_kinds(
+    http: &Http,
+    cache: &Cache,
+    listing_url: &Url,
+    kinds: &[&'static str],
+    force: bool,
+    progress: &Progress,
+) -> Result<Vec<BulkOutcome>, CliError> {
     let listing = read_listing(http, listing_url).await?;
     // Every entry is checked before the first download starts.
     let mut wanted = Vec::new();
-    for kind in SCRYFALL_TYPES {
+    for &kind in kinds {
         let entry = listing
             .data
             .iter()

@@ -20,11 +20,11 @@ pub mod progress;
 pub mod status;
 
 use args::{Cli, Command, Fetch};
-use cache::{Cache, default_dir};
+use cache::{Cache, PRINTINGS_TYPE, SCRYFALL_TYPES, default_dir};
 use error::CliError;
 use fetch::Endpoints;
 use fetch::decks::{DeckFetchReport, DeckFilter, fetch_decks};
-use fetch::scryfall::{BulkAction, BulkOutcome, fetch_scryfall};
+use fetch::scryfall::{BulkAction, BulkOutcome, fetch_scryfall_kinds};
 use http::{Http, HttpConfig};
 use ingest::{IngestOptions, dry_run, ingest};
 use progress::Progress;
@@ -39,10 +39,15 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         } => {
             let http = Http::new(&HttpConfig::default(), progress.clone())?;
             let endpoints = Endpoints::real()?;
-            let outcomes = fetch_scryfall(
+            let mut kinds = SCRYFALL_TYPES.to_vec();
+            if args.printings {
+                kinds.push(PRINTINGS_TYPE);
+            }
+            let outcomes = fetch_scryfall_kinds(
                 &http,
                 &cache,
                 &endpoints.scryfall_listing,
+                &kinds,
                 args.force,
                 &progress,
             )

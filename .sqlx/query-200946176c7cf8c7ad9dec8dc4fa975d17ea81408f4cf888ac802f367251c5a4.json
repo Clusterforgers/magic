@@ -24,7 +24,8 @@
               "Enum": [
                 "scryfall_cards",
                 "scryfall_rulings",
-                "mtgjson_decks"
+                "mtgjson_decks",
+                "scryfall_printings"
               ]
             }
           }

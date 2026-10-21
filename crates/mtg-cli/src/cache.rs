@@ -15,8 +15,11 @@ use crate::http::Validators;
 /// Name of the manifest inside the cache directory.
 const MANIFEST: &str = "manifest.json";
 
-/// Scryfall bulk types the tool downloads and ingests.
+/// Scryfall bulk types every `fetch scryfall` downloads.
 pub const SCRYFALL_TYPES: [&str; 2] = ["oracle_cards", "rulings"];
+
+/// The bulk type with every printing of every card, downloaded on request (`--printings`).
+pub const PRINTINGS_TYPE: &str = "default_cards";
 
 /// A cache directory.
 #[derive(Debug, Clone)]
@@ -89,7 +92,7 @@ pub struct MtgjsonRecords {
 /// Which files in the cache are complete, and what they were downloaded as.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Manifest {
-    /// Scryfall bulk files by bulk type (`oracle_cards`, `rulings`).
+    /// Scryfall bulk files by bulk type (`oracle_cards`, `rulings`, `default_cards`).
     #[serde(default)]
     pub scryfall: BTreeMap<String, BulkRecord>,
     /// MTGJSON files.

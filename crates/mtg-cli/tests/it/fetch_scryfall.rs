@@ -18,11 +18,11 @@ use serde_json::json;
 use common::server::{self, Reply, Request, Server, serve_ranges};
 use common::{client, gzip_file_of, progress};
 
-const FAST: Duration = Duration::from_millis(1);
+pub(crate) const FAST: Duration = Duration::from_millis(1);
 
 /// What the fake Scryfall serves now: a listing and the files it points to.
 #[derive(Clone, Default)]
-struct Remote(Arc<Mutex<State>>);
+pub(crate) struct Remote(Arc<Mutex<State>>);
 
 #[derive(Default)]
 struct State {
@@ -39,12 +39,12 @@ fn lock(state: &Mutex<State>) -> MutexGuard<'_, State> {
 
 impl Remote {
     /// Publishes version `version` of both bulk files and a listing that points to them.
-    fn publish(&self, version: u32, cards: &[u8], rulings: &[u8]) {
+    pub(crate) fn publish(&self, version: u32, cards: &[u8], rulings: &[u8]) {
         self.publish_as(version, version, cards, rulings);
     }
 
     /// Like `publish`, but the file names carry `files` while `updated_at` carries `version`.
-    fn publish_as(&self, version: u32, files: u32, cards: &[u8], rulings: &[u8]) {
+    pub(crate) fn publish_as(&self, version: u32, files: u32, cards: &[u8], rulings: &[u8]) {
         let mut state = lock(&self.0);
         let base = state.base.clone();
         let entry = |kind: &str, file: String, bytes: &[u8]| {
@@ -72,8 +72,28 @@ impl Remote {
             .insert(format!("/files/{rulings_file}"), rulings.to_vec());
     }
 
+    /// Adds the Default Cards entry, and the file it points to, to the listing.
+    pub(crate) fn publish_printings(&self, version: u32, bytes: &[u8]) {
+        let mut state = lock(&self.0);
+        let file = format!("default-cards-{version}.jsonl.gz");
+        let mut listing: serde_json::Value = serde_json::from_str(&state.listing)
+            .unwrap_or_else(|e| panic!("the listing parses: {e}"));
+        let entries = listing["data"].as_array_mut();
+        entries
+            .unwrap_or_else(|| panic!("the listing has data"))
+            .push(json!({
+                "object": "bulk_data",
+                "type": "default_cards",
+                "updated_at": format!("2026-10-18T21:02:00.{version:03}+00:00"),
+                "jsonl_download_uri": format!("{}/files/{file}", state.base),
+                "compressed_size": bytes.len(),
+            }));
+        state.listing = listing.to_string();
+        state.files.insert(format!("/files/{file}"), bytes.to_vec());
+    }
+
     /// The default behaviour: the listing, files with range support, 404 for the rest.
-    fn answer(&self, request: &Request) -> Reply {
+    pub(crate) fn answer(&self, request: &Request) -> Reply {
         let state = lock(&self.0);
         if request.path == "/bulk-data" {
             return Reply::ok(state.listing.clone()).header("Content-Type", "application/json");
@@ -84,13 +104,13 @@ impl Remote {
         }
     }
 
-    fn file(&self, path: &str) -> Vec<u8> {
+    pub(crate) fn file(&self, path: &str) -> Vec<u8> {
         lock(&self.0).files.get(path).cloned().unwrap_or_default()
     }
 }
 
 /// A fake Scryfall that answers with `behave`, which may delegate to [`Remote::answer`].
-async fn scryfall(
+pub(crate) async fn scryfall(
     version: u32,
     cards: &[u8],
     rulings: &[u8],
@@ -105,11 +125,11 @@ async fn scryfall(
     (server, remote)
 }
 
-fn standard(remote: &Remote, request: &Request) -> Reply {
+pub(crate) fn standard(remote: &Remote, request: &Request) -> Reply {
     remote.answer(request)
 }
 
-fn partial(cache: &Cache, name: &str) -> std::path::PathBuf {
+pub(crate) fn partial(cache: &Cache, name: &str) -> std::path::PathBuf {
     cache.path(&format!("scryfall/{name}.part"))
 }
 

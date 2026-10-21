@@ -5,7 +5,7 @@ use mtg_import::scryfall::{CardRecord, RulingRecord, ScryfallError};
 use serde::Serialize;
 
 use super::batches::SkipLog;
-use super::card_payload::split_record;
+use super::card_payload::{split_printing, split_record};
 use super::precons::validate_deck;
 use super::rulings::ruling_row;
 
@@ -24,6 +24,14 @@ where
     I: IntoIterator<Item = Result<CardRecord, ScryfallError>>,
 {
     check(records, |record| split_record(record).map(|_| ()))
+}
+
+/// Applies the printing import's record rules to `records`; a fatal stream error ends the check.
+pub fn check_printings<I>(records: I) -> Result<CheckReport, ScryfallError>
+where
+    I: IntoIterator<Item = Result<CardRecord, ScryfallError>>,
+{
+    check(records, |record| split_printing(record).map(|_| ()))
 }
 
 /// Applies the ruling import's record rules to `records`; a fatal stream error ends the check.
@@ -104,6 +112,23 @@ mod tests {
         let report = check_cards(cards(json.as_bytes())).unwrap();
         assert_eq!(report.usable, usable);
         assert_eq!(report.skipped.count, skipped_at.len() as u64);
+        let positions: Vec<u64> = report.skipped.samples.iter().map(|s| s.position).collect();
+        assert_eq!(positions, skipped_at);
+    }
+
+    #[rstest]
+    #[case::all_usable(&[card(0, ""), card(1, "")], 2, &[])]
+    #[case::bad_date(&[card(0, r#","released_at":"2009-02-30""#), card(1, "")], 1, &[0])]
+    #[case::nul_in_a_name_of_the_printing(&[card(0, r#","flavor_name":"a\u0000b""#), card(1, "")], 1, &[0])]
+    #[case::the_card_is_not_checked(&[card(0, r#","cmc":-1"#)], 1, &[])]
+    fn printings_are_counted_like_the_import_counts_them(
+        #[case] entries: &[String],
+        #[case] usable: u64,
+        #[case] skipped_at: &[u64],
+    ) {
+        let json = format!("[{}]", entries.join(","));
+        let report = check_printings(cards(json.as_bytes())).unwrap();
+        assert_eq!(report.usable, usable);
         let positions: Vec<u64> = report.skipped.samples.iter().map(|s| s.position).collect();
         assert_eq!(positions, skipped_at);
     }

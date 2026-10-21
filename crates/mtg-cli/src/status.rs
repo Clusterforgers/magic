@@ -159,6 +159,7 @@ pub(crate) fn missing_table(error: &DbError) -> bool {
 fn source_name(source: ImportSource) -> &'static str {
     match source {
         ImportSource::ScryfallCards => "scryfall_cards",
+        ImportSource::ScryfallPrintings => "scryfall_printings",
         ImportSource::ScryfallRulings => "scryfall_rulings",
         ImportSource::MtgjsonDecks => "mtgjson_decks",
     }
@@ -293,6 +294,35 @@ mod tests {
         cache.prepare("scryfall").unwrap();
         std::fs::write(cache.path("scryfall/o.gz"), b"data").unwrap();
         assert!(!cache_section(&cache).unwrap().contains("missing"));
+    }
+
+    #[test]
+    fn default_cards_are_listed_with_their_size_and_checksum() {
+        let dir = tempfile::tempdir().unwrap();
+        let cache = Cache::new(dir.path());
+        let mut manifest = Manifest::default();
+        manifest.scryfall.insert(
+            "default_cards".into(),
+            BulkRecord {
+                file: FileRecord {
+                    file: "scryfall/d.gz".into(),
+                    url: "http://x/d.gz".into(),
+                    size: 80 * 1024 * 1024,
+                    sha256: "cd".repeat(32),
+                    fetched_at: "2026-10-21T08:00:00Z".into(),
+                },
+                updated_at: "2026-10-21T09:05:00.000+00:00".into(),
+            },
+        );
+        cache.save(&manifest).unwrap();
+
+        let report = cache_section(&cache).unwrap();
+
+        assert!(
+            report.contains("scryfall default_cards: scryfall/d.gz  80.0 MiB"),
+            "{report}"
+        );
+        assert!(report.contains("sha256 cdcdcdcdcdcd"), "{report}");
     }
 
     #[rstest]

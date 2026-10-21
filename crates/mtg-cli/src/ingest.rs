@@ -7,14 +7,15 @@ use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
 use mtg_db::import::{
-    CardImportReport, CheckReport, PreconImportReport, RulingImportReport, SkipLog, check_cards,
-    check_precons, check_rulings,
+    CardImportReport, CheckReport, PreconImportReport, PrintingImportReport, RulingImportReport,
+    SkipLog, check_cards, check_precons, check_printings, check_rulings,
 };
 use mtg_db::{Database, ImportRuns, ImportSource};
 use mtg_import::mtgjson::{MtgjsonError, PreconDeck, parse_deck};
+use mtg_import::scryfall::ScryfallError;
 
 use crate::bulk::{Counted, ReadAhead, open_cards, open_rulings};
-use crate::cache::{Cache, Manifest};
+use crate::cache::{Cache, Manifest, PRINTINGS_TYPE};
 use crate::error::CliError;
 use crate::files::{sha256_file, sha256_hex, short};
 use crate::progress::Progress;
@@ -58,6 +59,8 @@ pub enum Step<R> {
 pub struct IngestReport {
     /// The Oracle Cards file.
     pub cards: Step<CardImportReport>,
+    /// The Default Cards file, every printing.
+    pub printings: Step<PrintingImportReport>,
     /// The rulings file.
     pub rulings: Step<RulingImportReport>,
     /// The MTGJSON deck files.
@@ -80,6 +83,22 @@ impl IngestReport {
                 r.cards.updated,
                 r.cards.unchanged,
                 r.printings.inserted,
+                r.skipped.count
+            ),
+        };
+        let printings = match &self.printings {
+            Step::Missing => "printings not cached".to_owned(),
+            Step::Unchanged => "printings unchanged".to_owned(),
+            Step::Checked(check) => format!(
+                "printings {} usable, {} skipped",
+                check.usable, check.skipped.count
+            ),
+            Step::Imported(r) => format!(
+                "printings +{} ~{} ={}, orphaned {}, skipped {}",
+                r.printings.inserted,
+                r.printings.updated,
+                r.printings.unchanged,
+                r.orphaned,
                 r.skipped.count
             ),
         };
@@ -116,7 +135,7 @@ impl IngestReport {
                 ""
             };
         format!(
-            "ingest: {dry}{cards}; {rulings}; {decks} ({:.1} s)",
+            "ingest: {dry}{cards}; {printings}; {rulings}; {decks} ({:.1} s)",
             elapsed.as_secs_f64()
         )
     }
@@ -137,13 +156,17 @@ struct DeckInput {
 /// The cached files an ingest reads.
 struct Inputs {
     cards: Option<Input>,
+    printings: Option<Input>,
     rulings: Option<Input>,
     decks: Vec<DeckInput>,
 }
 
 impl Inputs {
     fn nothing(&self) -> bool {
-        self.cards.is_none() && self.rulings.is_none() && self.decks.is_empty()
+        self.cards.is_none()
+            && self.printings.is_none()
+            && self.rulings.is_none()
+            && self.decks.is_empty()
     }
 
     /// One checksum for the whole set of deck files, in the order of their names.
@@ -159,7 +182,7 @@ impl Inputs {
 /// Finds the complete files the manifest lists and takes their checksums from the bytes on disk.
 async fn gather(cache: &Cache, manifest: &Manifest) -> Result<Inputs, CliError> {
     let mut wanted: Vec<(String, PathBuf)> = Vec::new();
-    for kind in ["oracle_cards", "rulings"] {
+    for kind in ["oracle_cards", PRINTINGS_TYPE, "rulings"] {
         if let Some(record) = manifest.scryfall.get(kind).filter(|r| cache.holds(&r.file)) {
             wanted.push((kind.to_owned(), cache.path(&record.file.file)));
         }
@@ -184,6 +207,7 @@ async fn gather(cache: &Cache, manifest: &Manifest) -> Result<Inputs, CliError> 
 
     let mut inputs = Inputs {
         cards: None,
+        printings: None,
         rulings: None,
         decks: Vec::new(),
     };
@@ -193,6 +217,7 @@ async fn gather(cache: &Cache, manifest: &Manifest) -> Result<Inputs, CliError> 
         if position < scryfall_count {
             match name.as_str() {
                 "oracle_cards" => inputs.cards = Some(input),
+                PRINTINGS_TYPE => inputs.printings = Some(input),
                 _ => inputs.rulings = Some(input),
             }
         } else {
@@ -234,12 +259,16 @@ pub async fn ingest(
         progress,
     };
     let cards = loader.cards(inputs.cards.as_ref()).await?;
-    // Read after the cards went in, so that rulings and decks are tied to the cards just loaded.
+    // Read after the cards went in, so that printings, rulings and decks are tied to the cards just loaded.
     let basis = cards_basis(&loader.runs).await?;
+    let printings = loader.printings(inputs.printings.as_ref(), &basis).await?;
     let rulings = loader.rulings(inputs.rulings.as_ref(), &basis).await?;
-    let decks = loader.decks(&inputs, &basis).await?;
+    // Decks name printings, so they are tied to the printings as well.
+    let deck_basis = decks_basis(&loader.runs, &basis).await?;
+    let decks = loader.decks(&inputs, &deck_basis).await?;
     Ok(IngestReport {
         cards,
+        printings,
         rulings,
         decks,
     })
@@ -289,6 +318,55 @@ impl Loader<'_> {
             started.elapsed().as_secs_f64()
         ));
         warn_skipped(self.progress, "cards", &report.skipped);
+        Ok(Step::Imported(report))
+    }
+
+    async fn printings(
+        &self,
+        input: Option<&Input>,
+        basis: &str,
+    ) -> Result<Step<PrintingImportReport>, CliError> {
+        let Some(input) = input else {
+            return Ok(missing(
+                self.progress,
+                "printings",
+                "fetch scryfall --printings",
+            ));
+        };
+        let key = format!("{}@{basis}", input.sha256);
+        if done(
+            &self.runs,
+            ImportSource::ScryfallPrintings,
+            &key,
+            self.options,
+        )
+        .await?
+        {
+            return Ok(unchanged(self.progress, "printings", &input.sha256));
+        }
+        let records = Counted::new(
+            open_cards(&input.path)?,
+            "printings",
+            RECORDS_PER_LINE,
+            self.progress.clone(),
+        );
+        let started = Instant::now();
+        let report = self
+            .importer()
+            .with_input(key)
+            .import_printings(ReadAhead::spawn(records, READ_AHEAD)?)
+            .await?;
+        self.progress.line(format_args!(
+            "printings: {} new, {} changed, {} unchanged, {} without a card; {} skipped (run {}, {:.1} s)",
+            report.printings.inserted,
+            report.printings.updated,
+            report.printings.unchanged,
+            report.orphaned,
+            report.skipped.count,
+            report.run_id,
+            started.elapsed().as_secs_f64()
+        ));
+        warn_skipped(self.progress, "printings", &report.skipped);
         Ok(Step::Imported(report))
     }
 
@@ -394,53 +472,52 @@ pub fn dry_run(cache: &Cache, progress: &Progress) -> Result<IngestReport, CliEr
             },
         })
         .collect();
-    let (cards_path, rulings_path) = (held("oracle_cards"), held("rulings"));
-    if cards_path.is_none() && rulings_path.is_none() && decks.is_empty() {
+    let (cards_path, printings_path, rulings_path) =
+        (held("oracle_cards"), held(PRINTINGS_TYPE), held("rulings"));
+    if cards_path.is_none()
+        && printings_path.is_none()
+        && rulings_path.is_none()
+        && decks.is_empty()
+    {
         return Err(nothing_cached(cache));
     }
 
-    let cards = match cards_path {
-        None => missing(progress, "cards", "fetch scryfall"),
-        Some(path) => {
-            let records = Counted::new(
-                open_cards(&path)?,
-                "cards",
+    let cards = checked(progress, "cards", "fetch scryfall", cards_path, |path| {
+        Ok(check_cards(Counted::new(
+            open_cards(path)?,
+            "cards",
+            RECORDS_PER_LINE,
+            progress.clone(),
+        )))
+    })?;
+    let printings = checked(
+        progress,
+        "printings",
+        "fetch scryfall --printings",
+        printings_path,
+        |path| {
+            Ok(check_printings(Counted::new(
+                open_cards(path)?,
+                "printings",
                 RECORDS_PER_LINE,
                 progress.clone(),
-            );
-            let check = check_cards(records).map_err(|source| CliError::Bulk {
-                what: path.display().to_string(),
-                source,
-            })?;
-            progress.line(format_args!(
-                "cards: {} usable, {} would be skipped",
-                check.usable, check.skipped.count
-            ));
-            warn_skipped(progress, "cards", &check.skipped);
-            Step::Checked(check)
-        }
-    };
-    let rulings = match rulings_path {
-        None => missing(progress, "rulings", "fetch scryfall"),
-        Some(path) => {
-            let records = Counted::new(
-                open_rulings(&path)?,
+            )))
+        },
+    )?;
+    let rulings = checked(
+        progress,
+        "rulings",
+        "fetch scryfall",
+        rulings_path,
+        |path| {
+            Ok(check_rulings(Counted::new(
+                open_rulings(path)?,
                 "rulings",
                 RECORDS_PER_LINE,
                 progress.clone(),
-            );
-            let check = check_rulings(records).map_err(|source| CliError::Bulk {
-                what: path.display().to_string(),
-                source,
-            })?;
-            progress.line(format_args!(
-                "rulings: {} usable, {} would be skipped",
-                check.usable, check.skipped.count
-            ));
-            warn_skipped(progress, "rulings", &check.skipped);
-            Step::Checked(check)
-        }
-    };
+            )))
+        },
+    )?;
     let decks = if decks.is_empty() {
         missing(progress, "decks", "fetch decks")
     } else {
@@ -454,9 +531,33 @@ pub fn dry_run(cache: &Cache, progress: &Progress) -> Result<IngestReport, CliEr
     };
     Ok(IngestReport {
         cards,
+        printings,
         rulings,
         decks,
     })
+}
+
+/// Counts what an import of the cached file at `path` would do, or notes that none is cached.
+fn checked<R>(
+    progress: &Progress,
+    label: &str,
+    command: &str,
+    path: Option<PathBuf>,
+    check: impl FnOnce(&Path) -> Result<Result<CheckReport, ScryfallError>, CliError>,
+) -> Result<Step<R>, CliError> {
+    let Some(path) = path else {
+        return Ok(missing(progress, label, command));
+    };
+    let check = check(&path)?.map_err(|source| CliError::Bulk {
+        what: path.display().to_string(),
+        source,
+    })?;
+    progress.line(format_args!(
+        "{label}: {} usable, {} would be skipped",
+        check.usable, check.skipped.count
+    ));
+    warn_skipped(progress, label, &check.skipped);
+    Ok(Step::Checked(check))
 }
 
 fn missing<R>(progress: &Progress, label: &str, command: &str) -> Step<R> {
@@ -492,6 +593,17 @@ async fn cards_basis(runs: &ImportRuns) -> Result<String, CliError> {
     Ok(latest
         .and_then(|run| run.input)
         .unwrap_or_else(|| "no-cards".to_owned()))
+}
+
+/// What the decks are tied to: the cards, and the printings when an all-printings file was imported.
+async fn decks_basis(runs: &ImportRuns, cards: &str) -> Result<String, CliError> {
+    let latest = runs
+        .latest_succeeded(ImportSource::ScryfallPrintings)
+        .await?;
+    Ok(match latest.and_then(|run| run.input) {
+        Some(printings) => format!("{cards}+{printings}"),
+        None => cards.to_owned(),
+    })
 }
 
 /// The deck files in name order, parsed one by one; a bad file is an error item, not the end.

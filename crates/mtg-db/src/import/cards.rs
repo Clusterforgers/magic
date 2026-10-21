@@ -9,6 +9,7 @@ use sqlx::{PgConnection, Postgres, Transaction};
 
 use super::batches::{Batches, SkipLog};
 use super::card_payload::{CardPayload, PrintingPayload, split_record};
+use super::printings::{BatchCounts, upsert_printings};
 use super::{ImportError, Importer, StepError};
 use crate::error::DbError;
 use crate::runs::{ImportSource, RunId};
@@ -32,6 +33,13 @@ impl UpsertCounts {
         self.inserted += inserted;
         self.updated += written - inserted;
         self.unchanged += submitted as u64 - written;
+    }
+
+    /// Adds a batch of printings; the offered rows whose card is stored and were not written are unchanged.
+    pub(super) fn add_counts(&mut self, counts: BatchCounts) {
+        self.inserted += counts.inserted;
+        self.updated += counts.written - counts.inserted;
+        self.unchanged += counts.known - counts.written;
     }
 }
 
@@ -120,11 +128,11 @@ impl Importer {
 
         let mut tx: Transaction<'_, Postgres> = self.pool.begin().await?;
         let card_flags = upsert_cards(&mut tx, &cards).await?;
-        let printing_flags = upsert_printings(&mut tx, &printings).await?;
+        let printing_counts = upsert_printings(&mut tx, &printings).await?;
         tx.commit().await?;
 
         report.cards.add_batch(&card_flags, cards.len());
-        report.printings.add_batch(&printing_flags, printings.len());
+        report.printings.add_counts(printing_counts);
         Ok(())
     }
 }
@@ -180,44 +188,6 @@ async fn upsert_cards(
                   EXCLUDED.legalities, EXCLUDED.faces)
            RETURNING (xmax = 0) AS "inserted!""#,
         Json(cards) as _
-    )
-    .fetch_all(conn)
-    .await
-}
-
-/// Upserts printings; returns one flag per written row, true if newly inserted.
-async fn upsert_printings(
-    conn: &mut PgConnection,
-    printings: &[PrintingPayload],
-) -> Result<Vec<bool>, sqlx::Error> {
-    sqlx::query_scalar!(
-        r#"INSERT INTO printings AS p (
-               printing_id, oracle_id, set_code, collector_number, rarity, released_at, lang,
-               digital, images)
-           SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at, lang,
-               digital, images
-           FROM jsonb_to_recordset($1) AS r(
-               printing_id uuid, oracle_id uuid, set_code text, collector_number text,
-               rarity text, released_at date, lang text, digital boolean, images jsonb)
-           ORDER BY printing_id
-           ON CONFLICT (printing_id) DO UPDATE SET
-               oracle_id = EXCLUDED.oracle_id,
-               set_code = EXCLUDED.set_code,
-               collector_number = EXCLUDED.collector_number,
-               rarity = EXCLUDED.rarity,
-               released_at = EXCLUDED.released_at,
-               lang = EXCLUDED.lang,
-               digital = EXCLUDED.digital,
-               images = EXCLUDED.images,
-               updated_at = now()
-           WHERE (p.oracle_id, p.set_code, p.collector_number, p.rarity, p.released_at, p.lang,
-                  p.digital, p.images)
-               IS DISTINCT FROM
-                 (EXCLUDED.oracle_id, EXCLUDED.set_code, EXCLUDED.collector_number,
-                  EXCLUDED.rarity, EXCLUDED.released_at, EXCLUDED.lang, EXCLUDED.digital,
-                  EXCLUDED.images)
-           RETURNING (xmax = 0) AS "inserted!""#,
-        Json(printings) as _
     )
     .fetch_all(conn)
     .await

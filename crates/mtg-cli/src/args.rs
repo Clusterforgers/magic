@@ -49,7 +49,7 @@ pub enum Command {
 /// What `fetch` downloads.
 #[derive(Debug, Subcommand)]
 pub enum Fetch {
-    /// Scryfall's Oracle Cards and rulings bulk files.
+    /// Scryfall's Oracle Cards and rulings bulk files, and with `--printings` every printing.
     Scryfall(ScryfallArgs),
     /// The MTGJSON deck index and the decks it lists.
     Decks(DecksArgs),
@@ -61,6 +61,10 @@ pub struct ScryfallArgs {
     /// Download even when the cached files are current.
     #[arg(long)]
     pub force: bool,
+
+    /// Also download Default Cards, every printing with its flavor and printed names (about 80 MiB).
+    #[arg(long)]
+    pub printings: bool,
 }
 
 /// Options of `fetch decks`.

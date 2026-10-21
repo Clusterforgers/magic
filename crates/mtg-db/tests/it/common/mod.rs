@@ -45,6 +45,15 @@ pub fn fixture_records() -> Vec<CardRecord> {
     card_stream().filter_map(Result::ok).collect()
 }
 
+/// The recorded printings that carry a flavor or printed name, as Scryfall's all-printings file has them.
+pub fn alias_records() -> Vec<CardRecord> {
+    let file = File::open(fixture_path("scryfall_alias_printings.json"))
+        .unwrap_or_else(|e| panic!("alias fixture opens: {e}"));
+    cards(file)
+        .collect::<Result<_, _>>()
+        .unwrap_or_else(|e| panic!("alias fixture parses: {e}"))
+}
+
 /// The fixture record named `name`.
 pub fn record(name: &str) -> CardRecord {
     fixture_records()

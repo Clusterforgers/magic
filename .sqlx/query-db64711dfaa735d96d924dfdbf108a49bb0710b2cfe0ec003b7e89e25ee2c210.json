@@ -1,0 +1,44 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "WITH incoming AS (\n               SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,\n                      lang, digital, images, flavor_name, printed_name\n               FROM jsonb_to_recordset($1) AS r(\n                   printing_id uuid, oracle_id uuid, set_code text, collector_number text,\n                   rarity text, released_at date, lang text, digital boolean, images jsonb,\n                   flavor_name text, printed_name text)\n           ), known AS (\n               SELECT i.* FROM incoming i JOIN cards c ON c.oracle_id = i.oracle_id\n           ), written AS (\n               INSERT INTO printings AS p (\n                   printing_id, oracle_id, set_code, collector_number, rarity, released_at, lang,\n                   digital, images, flavor_name, printed_name)\n               SELECT printing_id, oracle_id, set_code, collector_number, rarity, released_at,\n                      lang, digital, images, flavor_name, printed_name\n               FROM known ORDER BY printing_id\n               ON CONFLICT (printing_id) DO UPDATE SET\n                   oracle_id = EXCLUDED.oracle_id,\n                   set_code = EXCLUDED.set_code,\n                   collector_number = EXCLUDED.collector_number,\n                   rarity = EXCLUDED.rarity,\n                   released_at = EXCLUDED.released_at,\n                   lang = EXCLUDED.lang,\n                   digital = EXCLUDED.digital,\n                   images = EXCLUDED.images,\n                   flavor_name = EXCLUDED.flavor_name,\n                   printed_name = EXCLUDED.printed_name,\n                   updated_at = now()\n               WHERE (p.oracle_id, p.set_code, p.collector_number, p.rarity, p.released_at,\n                      p.lang, p.digital, p.images, p.flavor_name, p.printed_name)\n                   IS DISTINCT FROM\n                     (EXCLUDED.oracle_id, EXCLUDED.set_code, EXCLUDED.collector_number,\n                      EXCLUDED.rarity, EXCLUDED.released_at, EXCLUDED.lang, EXCLUDED.digital,\n                      EXCLUDED.images, EXCLUDED.flavor_name, EXCLUDED.printed_name)\n               RETURNING (xmax = 0) AS inserted\n           )\n           SELECT (SELECT count(*) FROM incoming) AS \"received!\",\n                  (SELECT count(*) FROM known) AS \"known!\",\n                  (SELECT count(*) FROM written) AS \"written!\",\n                  (SELECT count(*) FROM written WHERE inserted) AS \"inserted!\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "received!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "known!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "written!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "inserted!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Jsonb"
+      ]
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "db64711dfaa735d96d924dfdbf108a49bb0710b2cfe0ec003b7e89e25ee2c210"
+}

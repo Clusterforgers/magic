@@ -105,17 +105,43 @@ pub(crate) struct PrintingPayload {
     lang: String,
     digital: bool,
     images: PrintingImages,
+    flavor_name: Option<String>,
+    printed_name: Option<String>,
+}
+
+/// The printing-level row of a record: its ids, release date, art and other names.
+pub(crate) fn split_printing(record: &CardRecord) -> Result<PrintingPayload, Rejection> {
+    let oracle_id = Uuid::parse_str(record.oracle_id.as_str())
+        .map_err(|_| Rejection::OracleId(record.oracle_id.to_string()))?;
+    let printing_id = Uuid::parse_str(record.printing_id.as_str())
+        .map_err(|_| Rejection::PrintingId(record.printing_id.to_string()))?;
+    let released_at = record.released_at.as_deref().map(iso_date).transpose()?;
+    let printing = PrintingPayload {
+        printing_id,
+        oracle_id,
+        set_code: record.set.clone(),
+        collector_number: record.collector_number.clone(),
+        rarity: record.rarity.map(rarity_keyword),
+        released_at,
+        lang: record.lang.clone(),
+        digital: record.digital,
+        images: PrintingImages {
+            card: record.images.clone(),
+            faces: record.faces().map(|face| face.images.clone()).collect(),
+        },
+        flavor_name: record.flavor_name.clone(),
+        printed_name: record.printed_name.clone(),
+    };
+    reject_nul(&printing)?;
+    Ok(printing)
 }
 
 /// Splits a record into its oracle-level and printing-level rows.
 pub(crate) fn split_record(
     record: &CardRecord,
 ) -> Result<(CardPayload, PrintingPayload), Rejection> {
-    let oracle_id = Uuid::parse_str(record.oracle_id.as_str())
-        .map_err(|_| Rejection::OracleId(record.oracle_id.to_string()))?;
-    let printing_id = Uuid::parse_str(record.printing_id.as_str())
-        .map_err(|_| Rejection::PrintingId(record.printing_id.to_string()))?;
-    let released_at = record.released_at.as_deref().map(iso_date).transpose()?;
+    let printing = split_printing(record)?;
+    let oracle_id = printing.oracle_id;
     if !record.mana_value.is_finite() || record.mana_value < 0.0 {
         return Err(Rejection::ManaValue(record.mana_value));
     }
@@ -166,22 +192,7 @@ pub(crate) fn split_record(
             })
             .collect(),
     };
-    let printing = PrintingPayload {
-        printing_id,
-        oracle_id,
-        set_code: record.set.clone(),
-        collector_number: record.collector_number.clone(),
-        rarity: record.rarity.map(rarity_keyword),
-        released_at,
-        lang: record.lang.clone(),
-        digital: record.digital,
-        images: PrintingImages {
-            card: record.images.clone(),
-            faces: record.faces().map(|face| face.images.clone()).collect(),
-        },
-    };
     reject_nul(&card)?;
-    reject_nul(&printing)?;
     Ok((card, printing))
 }
 
@@ -236,6 +247,8 @@ mod tests {
     #[case::nul_in_the_name(|r: &mut CardRecord| r.name = "Bolt\0".into(), Rejection::Nul)]
     #[case::nul_in_the_rules_text(|r: &mut CardRecord| r.front.oracle_text = "Deals 3\0damage.".into(), Rejection::Nul)]
     #[case::nul_in_the_set_code(|r: &mut CardRecord| r.set = "\0lea".into(), Rejection::Nul)]
+    #[case::nul_in_the_flavor_name(|r: &mut CardRecord| r.flavor_name = Some("The\0Ball".into()), Rejection::Nul)]
+    #[case::nul_in_the_printed_name(|r: &mut CardRecord| r.printed_name = Some("Phenomena\0Recorder".into()), Rejection::Nul)]
     #[case::nul_in_a_keyword(|r: &mut CardRecord| r.keywords = vec!["Haste\0".into()], Rejection::Nul)]
     fn unusable_records_are_rejected(
         #[case] damage: fn(&mut CardRecord),
@@ -244,6 +257,21 @@ mod tests {
         let mut bolt = record("Lightning Bolt");
         damage(&mut bolt);
         assert_eq!(split_record(&bolt).unwrap_err(), expected);
+    }
+
+    #[test]
+    fn the_names_of_a_printing_go_to_the_printing_row_only() {
+        let mut bolt = record("Lightning Bolt");
+        bolt.flavor_name = Some("The Ball".into());
+        bolt.printed_name = Some("Phenomena Recorder".into());
+        let (card, printing) = split_record(&bolt).unwrap();
+        assert_eq!(printing.flavor_name.as_deref(), Some("The Ball"));
+        assert_eq!(printing.printed_name.as_deref(), Some("Phenomena Recorder"));
+        assert_eq!(card.name, "Lightning Bolt");
+        assert_eq!(
+            split_printing(&bolt).unwrap().printing_id,
+            printing.printing_id
+        );
     }
 
     #[test]

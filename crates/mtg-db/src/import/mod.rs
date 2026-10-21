@@ -1,4 +1,4 @@
-//! Bulk ingestion of cards, rulings and precon decks, each recorded as an import run.
+//! Bulk ingestion of cards, printings, rulings and precon decks, each recorded as an import run.
 
 mod batches;
 mod card_payload;
@@ -6,6 +6,7 @@ mod cards;
 mod check;
 mod precon_resolve;
 mod precons;
+mod printings;
 mod rulings;
 
 use mtg_import::scryfall::ScryfallError;
@@ -15,9 +16,10 @@ use thiserror::Error;
 
 pub use batches::{SkipLog, SkippedRecord};
 pub use cards::{CardImportReport, UpsertCounts};
-pub use check::{CheckReport, check_cards, check_precons, check_rulings};
+pub use check::{CheckReport, check_cards, check_precons, check_printings, check_rulings};
 pub use precon_resolve::UnresolvedReason;
 pub use precons::{DeckIngest, PreconImportReport, UnresolvedCard};
+pub use printings::PrintingImportReport;
 pub use rulings::RulingImportReport;
 
 use crate::error::DbError;

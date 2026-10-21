@@ -9,7 +9,10 @@ use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 
 use common::db;
 
-const MIGRATION_COUNT: i64 = 7;
+/// The migrations the crate ships, so adding one needs no edit here.
+fn migration_count() -> i64 {
+    i64::try_from(sqlx::migrate!("./migrations").iter().count()).unwrap_or(i64::MAX)
+}
 
 async fn applied_migrations(pool: &PgPool) -> i64 {
     sqlx::query_scalar("SELECT count(*) FROM _sqlx_migrations WHERE success")
@@ -23,7 +26,7 @@ async fn applies_to_an_empty_database_and_can_be_rerun(pool: PgPool) {
     let database = db(pool.clone());
     for _ in 0..3 {
         database.migrate().await.unwrap();
-        assert_eq!(applied_migrations(&pool).await, MIGRATION_COUNT);
+        assert_eq!(applied_migrations(&pool).await, migration_count());
     }
 
     let tables: Vec<String> = sqlx::query_scalar(
@@ -80,7 +83,7 @@ async fn concurrent_migration_runs_do_not_conflict(pool: PgPool) {
     for run in runs {
         run.await.unwrap().unwrap();
     }
-    assert_eq!(applied_migrations(&pool).await, MIGRATION_COUNT);
+    assert_eq!(applied_migrations(&pool).await, migration_count());
 }
 
 #[sqlx::test(migrations = false)]

@@ -35,8 +35,10 @@ impl std::fmt::Display for RunId {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, sqlx::Type)]
 #[sqlx(type_name = "import_source", rename_all = "snake_case")]
 pub enum ImportSource {
-    /// Scryfall Oracle Cards or Default Cards bulk data.
+    /// Scryfall Oracle Cards bulk data: the cards and one printing of each.
     ScryfallCards,
+    /// Scryfall Default Cards bulk data: every printing.
+    ScryfallPrintings,
     /// Scryfall rulings bulk data.
     ScryfallRulings,
     /// MTGJSON precon deck files.

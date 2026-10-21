@@ -18,7 +18,10 @@ pub use cards::{
 pub use database::{Database, RowCounts};
 pub use decks::{CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, StoredDeck};
 pub use error::DbError;
-pub use import::{CheckReport, ImportError, Importer, check_cards, check_precons, check_rulings};
+pub use import::{
+    CheckReport, ImportError, Importer, PrintingImportReport, check_cards, check_precons,
+    check_printings, check_rulings,
+};
 pub use model::{Card, CardDetail, ImplStatus, Printing, PrintingImages, Ruling, StoredFace};
 pub use precons::{
     DeckBoard, PreconDeckDetail, PreconDeckId, PreconDeckSummary, PreconEntry, PreconRepo,
