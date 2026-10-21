@@ -18,7 +18,7 @@ use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
 use mtg_testkit::{
     archon_fuzz_setup, attach_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup,
-    loyalty_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup, zones_fuzz_setup,
+    loyalty_fuzz_setup, prevent_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup, zones_fuzz_setup,
 };
 use rstest::rstest;
 use serde_json::Value;
@@ -36,6 +36,9 @@ const SCALAR_KEYS: &[&str] = &[
     "power",
     "toughness",
     "amount",
+    "left",
+    "Option",
+    "Replacement",
     "from_seq",
     "ability",
     "counter",
@@ -82,6 +85,9 @@ const SCALAR_KEYS: &[&str] = &[
 
 /// How often (in answers) a full snapshot is checked; events are checked after every answer.
 const SNAPSHOT_EVERY: usize = 20;
+
+/// Games per table size in the prevention campaign.
+const PREVENTION_GAMES: u64 = 1;
 
 fn hidden_in(state: &GameState, viewer: PlayerId) -> BTreeMap<ObjectId, String> {
     let tops: Vec<ObjectId> = revealed_tops(state).into_values().collect();
@@ -138,6 +144,7 @@ fn leaks(value: &Value, hidden: &BTreeMap<ObjectId, String>) -> Vec<String> {
                 // A continuous effect, and the event that ends one, name it by an effect id, which is no object's.
                 let names_an_effect = key == "EffectExpired"
                     || key == "RuleExpired"
+                    || key == "ShieldUsed"
                     || (map.contains_key("duration")
                         && (map.contains_key("timestamp") || map.contains_key("turn")));
                 map.iter()
@@ -1463,4 +1470,143 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_auras_and_legends(
         checked > 500 && attach_events > 0 && attached_views > 0,
         "test must not be vacuous: {checked} hidden, {attach_events} attach events, {attached_views} views with a host, {questions} legend questions"
     );
+}
+
+#[rstest]
+#[case(2, 310)]
+#[case(3, 308)]
+#[case(4, 319)]
+fn no_hidden_object_reaches_any_viewer_in_games_of_prevention_and_regeneration(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut regenerated, mut shields_used) = (0usize, 0usize, 0usize);
+    for seed in seed..seed + PREVENTION_GAMES {
+        let setup = with_unique_names(prevent_fuzz_setup(players, seed).unwrap());
+        let engine = run_game(setup, seed, |step: &Step| {
+            let count = |wanted: fn(&mtg_engine::Event) -> bool| {
+                step.events.iter().filter(|event| wanted(event)).count()
+            };
+            let regenerations =
+                count(|event| matches!(event, mtg_engine::Event::Regenerated { .. }));
+            let uses = count(|event| matches!(event, mtg_engine::Event::ShieldUsed { .. }));
+            regenerated += regenerations;
+            shields_used += uses;
+            let batches =
+                project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+            for (viewer, batch) in viewers.iter().zip(&batches) {
+                let hidden = hidden_across(step.before, step.after, *viewer);
+                checked += hidden.len();
+                for (part, value) in batch_parts(batch) {
+                    let found = leaks(&without_trigger_orders(value), &hidden);
+                    assert!(
+                        found.is_empty(),
+                        "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                        step.answers
+                    );
+                }
+                // A regeneration and the amount a shield kept are public: every viewer gets each one whole.
+                let public = |wanted: fn(&mtg_engine::Event) -> bool| {
+                    batch
+                        .events
+                        .iter()
+                        .filter(|view| {
+                            matches!(view, mtg_protocol::EventView::Public(event) if wanted(event))
+                        })
+                        .count()
+                };
+                assert_eq!(
+                    public(|event| matches!(event, mtg_engine::Event::Regenerated { .. })),
+                    regenerations,
+                    "seed {seed} viewer {viewer:?}"
+                );
+                assert_eq!(
+                    public(|event| matches!(event, mtg_engine::Event::ShieldUsed { .. })),
+                    uses,
+                    "seed {seed} viewer {viewer:?}"
+                );
+            }
+            if step.answers.is_multiple_of(SNAPSHOT_EVERY) {
+                for viewer in &viewers {
+                    let hidden = hidden_in(step.after, *viewer);
+                    let view = StateView::for_player(step.after, *viewer);
+                    let found = leaks(&serde_json::to_value(&view).unwrap(), &hidden);
+                    assert!(
+                        found.is_empty(),
+                        "seed {seed} answer {} viewer {viewer:?}: snapshot leaks {found:?}",
+                        step.answers
+                    );
+                }
+            }
+        });
+        assert!(engine.result().is_some(), "game should finish");
+    }
+    assert!(
+        checked > 500 && regenerated > 0,
+        "test must not be vacuous: {checked} hidden, {regenerated} regenerations, {shields_used} shields that kept damage"
+    );
+}
+
+#[rstest]
+fn a_shield_that_kept_damage_and_a_regeneration_reach_every_seat_whole_and_nothing_hidden_with_them(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    use mtg_engine::decision::{Answer, PayChoice};
+    use mtg_testkit::cards::{burn, mountain, plains, swamp};
+    use mtg_testkit::{Driver, Scenario, ready};
+    let mut scenario = Scenario::new(seats)
+        .hand_named(0, ["Mending Hands"])
+        .battlefield(
+            0,
+            [
+                ready(plains()),
+                ready(swamp()),
+                ready(mtg_testkit::corpus::card("Drudge Skeletons").unwrap()),
+            ],
+        )
+        .hand(1, vec![burn("Spark", 1), burn("Bolt", 3)])
+        .battlefield(1, [ready(mountain()), ready(mountain())]);
+    for seat in 0..seats {
+        scenario = scenario.library_named(seat, LIBRARY);
+    }
+    let before = GameState::from_setup(&scenario.clone().setup().unwrap()).unwrap();
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let settle = |driver: &mut Driver| {
+        while !driver.state().stack().is_empty() {
+            driver.pass().unwrap();
+        }
+    };
+    let me = driver.target_player(0);
+    driver.cast_at("Mending Hands", &[me.clone()]).unwrap();
+    settle(&mut driver);
+    driver.begin_activation("Drudge Skeletons").unwrap();
+    driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
+    settle(&mut driver);
+    driver.pass().unwrap();
+    driver.cast_at("Spark", &[me]).unwrap();
+    settle(&mut driver);
+    driver.pass().unwrap();
+    let skeletons = driver.target_named("Drudge Skeletons").unwrap();
+    driver.cast_at("Bolt", &[skeletons]).unwrap();
+    settle(&mut driver);
+    let events = driver.engine().events().to_vec();
+    let after = driver.state().clone();
+    let viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
+    let batches = project_events(&before, &events, &viewers, 0).unwrap();
+    for (viewer, batch) in viewers.iter().zip(&batches) {
+        let public = |wanted: fn(&mtg_engine::Event) -> bool| {
+            batch
+                .events
+                .iter()
+                .filter(
+                    |view| matches!(view, mtg_protocol::EventView::Public(event) if wanted(event)),
+                )
+                .count()
+        };
+        let kept = public(|event| matches!(event, mtg_engine::Event::ShieldUsed { left: 3, .. }));
+        let regenerated = public(|event| matches!(event, mtg_engine::Event::Regenerated { .. }));
+        assert_eq!((kept, regenerated), (1, 1), "viewer {viewer:?}");
+        assert_clean(batch, &hidden_in(&after, *viewer));
+    }
 }
