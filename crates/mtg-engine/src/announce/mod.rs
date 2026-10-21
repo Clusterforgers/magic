@@ -33,6 +33,7 @@ use crate::state::GameState;
 use crate::triggers::PendingTrigger;
 use crate::ways::Way;
 
+pub(crate) use modifiers::cheapest;
 pub(crate) use optional::Optional;
 pub(crate) use x::XCost;
 

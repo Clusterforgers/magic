@@ -172,8 +172,13 @@ async fn the_fingerprint_follows_the_record_the_rules_and_what_the_engine_runs(p
 
     let other_rules = fingerprint(CardSource::new(pool.clone()).with_rules(elves_make_red())).await;
     let other_engine = fingerprint(CardSource::new(pool.clone()).with_caps(Caps::none())).await;
-    // Giant Growth and Sol Ring carry their rules once the engine runs everything they say.
-    let more_engine =
+    // An engine that runs only the plain mana ability gives Llanowar Elves their ability and the other cards no rules.
+    let less_engine = fingerprint(
+        CardSource::new(pool.clone()).with_caps(Caps::from_names(["Ability.ManaAbility"])),
+    )
+    .await;
+    // The deck is run whole by this engine, so an engine that runs everything changes nothing in it.
+    let whole_engine =
         fingerprint(CardSource::new(pool.clone()).with_caps(Caps::everything())).await;
     // No card of the deck has flying, so this engine gives every definition what none does.
     let unrelated_engine =
@@ -187,7 +192,7 @@ async fn the_fingerprint_follows_the_record_the_rules_and_what_the_engine_runs(p
         other_rules,
         other_engine,
         other_record,
-        more_engine,
+        less_engine,
     ];
     for (i, a) in all.iter().enumerate() {
         for b in &all[i + 1..] {
@@ -197,6 +202,7 @@ async fn the_fingerprint_follows_the_record_the_rules_and_what_the_engine_runs(p
     // A capability no card of the deck needs changes nothing the engine would do, so it changes
     // nothing in the deck either.
     assert_eq!(unrelated_engine, other_engine);
+    assert_eq!(whole_engine, baseline);
 }
 
 /// The rules of the embedded library with Llanowar Elves tapping for red instead of green.

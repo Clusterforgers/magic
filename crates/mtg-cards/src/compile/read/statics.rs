@@ -2,7 +2,7 @@
 //! unless something holds), with counters, after a choice or after a payment of life; a spell
 //! can't be countered; a creature can't block, or attacks each combat; the top card of a library
 //! is played revealed; a creature, the creature an Aura or Equipment is attached to, or a group of
-//! creatures gets a bonus or a keyword. Read from the wording and written back the same way.
+//! creatures gets a bonus or a keyword; spells cost more or less. Read from the wording and written back the same way.
 
 use mtg_core::card::Subtype;
 
@@ -13,7 +13,8 @@ use super::render::{capitalize, is_a_type, signed_text};
 use super::selectors::{Form, all, keyword_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
 use super::triggers::article;
-use crate::ability::Ability;
+use crate::ability::{Ability, CostChange};
+use crate::mana::ManaCostX;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen};
@@ -22,7 +23,7 @@ use crate::value::{Amount, Cmp, Condition};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 5] = [entering, as_entering, rule, cannot, modifies];
+const TEMPLATES: [Template; 6] = [entering, as_entering, rule, cannot, cost_modifier, modifies];
 
 /// A static ability that is a whole sentence: the shape and its period.
 pub fn ability(r: &mut Reader<'_>) -> Option<Ability> {
@@ -349,6 +350,100 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
     Some(statics(affected, mods?))
 }
 
+/// The count of a spell's own cost increase for each target beyond the first.
+fn beyond_the_first() -> Amount {
+    Amount::Sum(vec![Amount::TargetCount(0), Amount::Fixed(-1)])
+}
+
+/// "Noncreature spells cost {1} more to cast.", "Artifact spells you cast cost {1} less to cast.", "Spells your
+/// opponents cast cost {1} more to cast.", "This spell costs {1} more to cast for each target beyond the first."
+fn cost_modifier(r: &mut Reader<'_>) -> Option<Ability> {
+    let itself = r.source();
+    let mut applies_to = if itself {
+        Selector::this()
+    } else {
+        let spells = phrase(r, Form::All)?;
+        (spells.0.first() == Some(&Pred::Spell)).then_some(())?;
+        spells
+    };
+    if !itself {
+        if r.words("you cast") {
+            applies_to.0.push(Pred::ControlledBy(Ref::You));
+        } else if r.words("your opponents cast") {
+            applies_to.0.push(Pred::ControlledBy(Ref::Opponents));
+        }
+    }
+    r.need(if itself { "costs" } else { "cost" })?;
+    let mut text = String::new();
+    while let Some(symbol) = r.symbol() {
+        text.extend(["{", symbol, "}"]);
+    }
+    let mana: ManaCostX = text.parse().ok().filter(|mana: &ManaCostX| !mana.has_x())?;
+    let change = if r.word("more") {
+        CostChange::Increase
+    } else if r.word("less") {
+        CostChange::Reduce
+    } else {
+        return None;
+    };
+    r.need("to cast")?;
+    let per = if itself && r.words("for each target beyond the first") {
+        beyond_the_first()
+    } else {
+        Amount::one()
+    };
+    Some(Ability::CostModifier {
+        applies_to,
+        change,
+        mana,
+        per,
+        condition: None,
+    })
+}
+
+/// The wording of a cost modifier the template reads.
+fn cost_modifier_texts(
+    applies_to: &Selector,
+    change: CostChange,
+    mana: &ManaCostX,
+    per: &Amount,
+) -> Vec<String> {
+    let head = if *applies_to == Selector::this() {
+        "~ costs".to_owned()
+    } else {
+        let (who, spells): (Vec<&Pred>, Vec<&Pred>) = applies_to
+            .0
+            .iter()
+            .partition(|pred| matches!(pred, Pred::ControlledBy(_)));
+        let cast = match who.as_slice() {
+            [] => "",
+            [Pred::ControlledBy(Ref::You)] => " you cast",
+            [Pred::ControlledBy(Ref::Opponents)] => " your opponents cast",
+            _ => return Vec::new(),
+        };
+        let selector = Selector(spells.into_iter().cloned().collect());
+        if selector.0.first() != Some(&Pred::Spell) || !per.is_one() {
+            return Vec::new();
+        }
+        let Some(phrase) = phrase_text(&selector, Form::All) else {
+            return Vec::new();
+        };
+        format!("{phrase}{cast} cost")
+    };
+    let tail = if *applies_to == Selector::this() && *per == beyond_the_first() {
+        " for each target beyond the first"
+    } else if per.is_one() {
+        ""
+    } else {
+        return Vec::new();
+    };
+    let more = match change {
+        CostChange::Increase => "more",
+        CostChange::Reduce => "less",
+    };
+    vec![format!("{head} {mana} {more} to cast{tail}")]
+}
+
 fn statics(affected: Ref, mods: Vec<Modification>) -> Ability {
     Ability::Static {
         affected,
@@ -381,6 +476,13 @@ pub fn texts(ability: &Ability) -> Vec<String> {
             defining: false,
             from: ZoneKind::Battlefield,
         } => static_texts(affected, mods),
+        Ability::CostModifier {
+            applies_to,
+            change,
+            mana,
+            per,
+            condition: None,
+        } => cost_modifier_texts(applies_to, *change, mana, per),
         _ => Vec::new(),
     };
     sentences

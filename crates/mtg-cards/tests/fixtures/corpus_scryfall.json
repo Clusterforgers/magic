@@ -3293,5 +3293,53 @@
     "produced_mana": [
       "C"
     ]
+  },
+  {
+    "id": "16debeb1-fb2b-4172-b6da-726416d4fb38",
+    "oracle_id": "18f22960-87ec-43cd-82ea-ec5cabf49ad3",
+    "name": "Foundry Inspector",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cmm",
+    "collector_number": "385",
+    "rarity": "common",
+    "released_at": "2023-08-04",
+    "digital": false,
+    "mana_cost": "{3}",
+    "cmc": 3.0,
+    "type_line": "Artifact Creature — Construct",
+    "oracle_text": "Artifact spells you cast cost {1} less to cast.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [],
+    "power": "3",
+    "toughness": "2"
+  },
+  {
+    "id": "c9f8b8fb-1cd8-450e-a1fe-892e7a323479",
+    "oracle_id": "9b7f1d05-707c-4ed3-9f0e-8ced1232c2ee",
+    "name": "Thalia, Guardian of Thraben",
+    "lang": "en",
+    "layout": "normal",
+    "set": "vow",
+    "collector_number": "38",
+    "rarity": "rare",
+    "released_at": "2021-11-19",
+    "digital": false,
+    "mana_cost": "{1}{W}",
+    "cmc": 2.0,
+    "type_line": "Legendary Creature — Human Soldier",
+    "oracle_text": "First strike\nNoncreature spells cost {1} more to cast.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "First strike"
+    ],
+    "power": "2",
+    "toughness": "1"
   }
 ]

@@ -11,7 +11,7 @@
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
 //! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
 //! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
-//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, permissions to cast (from another zone, without paying, as though with flash), attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! combat, flash, hexproof, enchant, equip, reconfigure, kicker and multikicker, flashback, evoke and overload, permissions to cast (from another zone, without paying, as though with flash), cost modifiers, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS, X_COST};
@@ -147,6 +147,7 @@ const RUNS: &[&str] = &[
     "Condition.Kicked",
     "Amount.Kicks",
     "Ability.Replacement",
+    "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
     "ReplaceWhen.Damage",
     "ReplaceWhen.ZoneChange",

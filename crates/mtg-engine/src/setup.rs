@@ -383,6 +383,10 @@ impl GameState {
             .objects()
             .any(|object| object.def.supertypes.contains(&Supertype::Legendary));
         self.possible.legends = legends;
+        let costs = self
+            .objects()
+            .any(|object| crate::ability_reader::definition_has_cost_modifier(&object.def));
+        self.possible.costs = costs;
         let replacements = self
             .objects()
             .any(|object| crate::ability_reader::definition_has_replacement(&object.def));

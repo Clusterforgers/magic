@@ -240,6 +240,7 @@ mod tests {
                 snapshots: Vec::new(),
                 cause: None,
                 layered: None,
+                casting: None,
             };
             (
                 scope.all_targets_illegal(),

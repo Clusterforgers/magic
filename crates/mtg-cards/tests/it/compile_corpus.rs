@@ -18,7 +18,7 @@ use common::{cards_dir, printed};
 /// The corpus cards whose compiled abilities are the hand-written file's, face by face. A card joins
 /// the list when the templates reach it and never leaves; a card that matches but is not listed fails
 /// the test too, so the list is the ratchet.
-const REPRODUCED: [&str; 63] = [
+const REPRODUCED: [&str; 65] = [
     "Ancient Ziggurat",
     "Archon of Cruelty",
     "Arvad the Cursed",
@@ -44,6 +44,7 @@ const REPRODUCED: [&str; 63] = [
     "Favorable Winds",
     "Felidar Sovereign",
     "Flooded Strand",
+    "Foundry Inspector",
     "Giant Growth",
     "Glorious Anthem",
     "Goblin Spy",
@@ -79,6 +80,7 @@ const REPRODUCED: [&str; 63] = [
     "Supreme Verdict",
     "Swiftfoot Boots",
     "Swords to Plowshares",
+    "Thalia, Guardian of Thraben",
     "Tireless Tracker",
     "Warmonger Hellkite",
     "Wrath of God",
@@ -240,9 +242,10 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
             let kinds: &[ClauseKind] = match ability {
                 Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
                 Ability::Triggered { .. } => &[ClauseKind::Triggered],
-                Ability::Replacement { .. } | Ability::Rule { .. } | Ability::Static { .. } => {
-                    &[ClauseKind::Static]
-                }
+                Ability::Replacement { .. }
+                | Ability::Rule { .. }
+                | Ability::Static { .. }
+                | Ability::CostModifier { .. } => &[ClauseKind::Static],
                 _ => &[ClauseKind::Activated],
             };
             let lines: Vec<&str> = compiled
