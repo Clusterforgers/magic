@@ -119,6 +119,7 @@ mod tap_effects;
 mod token_costs;
 mod token_effects;
 mod token_fuzz;
+mod trigger_families;
 mod triggers_chain;
 mod triggers_delayed;
 mod triggers_fuzz;

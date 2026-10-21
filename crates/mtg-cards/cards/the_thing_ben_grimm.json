@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d566d5f1-5abd-405b-8553-d267ecbe72ab",
+  "name": "The Thing, Ben Grimm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Thing, Ben Grimm",
+      "oracle_fingerprint": "045a63447a02a27c424ef63a167464e9",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Hero" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer"
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

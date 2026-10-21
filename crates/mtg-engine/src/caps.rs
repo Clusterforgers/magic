@@ -55,6 +55,9 @@ const RUNS: &[&str] = &[
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
+    "Amount.Players",
+    "Amount.LowestLife",
+    "Amount.HighestLife",
     "Cost.Tap",
     "Cost.Mana",
     "Cost.Mana.X",
@@ -451,8 +454,9 @@ mod tests {
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", false)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", false)]
     #[case::commander_eligibility("Rule.CanBeCommander", false)]
-    #[case::counting_players("Amount.Players", false)]
-    #[case::the_lowest_life_total("Amount.LowestLife", false)]
+    #[case::counting_players("Amount.Players", true)]
+    #[case::the_lowest_life_total("Amount.LowestLife", true)]
+    #[case::the_highest_life_total("Amount.HighestLife", true)]
     #[case::choosing_a_player_as_it_enters("ReplaceBy.Choose.Player", false)]
     #[case::choosing_an_opponent_as_it_enters("ReplaceBy.Choose.Opponent", false)]
     #[case::changeling("Keyword.Changeling", false)]

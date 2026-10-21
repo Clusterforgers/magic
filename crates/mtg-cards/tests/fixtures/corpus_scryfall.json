@@ -3724,6 +3724,176 @@
     ]
   },
   {
+    "id": "a1e088de-e99f-4706-89e0-a7efdaf9403a",
+    "oracle_id": "0d5a1870-6d26-47e7-a86c-f3ff15cb0707",
+    "name": "Lat-Nam Adept",
+    "lang": "en",
+    "layout": "normal",
+    "set": "bro",
+    "collector_number": "56",
+    "rarity": "common",
+    "released_at": "2022-11-18",
+    "digital": false,
+    "mana_cost": "{3}{U}",
+    "cmc": 4.0,
+    "type_line": "Creature — Human Wizard",
+    "oracle_text": "Whenever you draw your second card each turn, put a +1/+1 counter on this creature.",
+    "power": "3",
+    "toughness": "3",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "a87c39df-7636-454b-8485-a1cc9362fd84",
+    "oracle_id": "34fd461b-a913-4a60-9477-ce2bd5c6fc5a",
+    "name": "Fear of Failed Tests",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dsk",
+    "collector_number": "55",
+    "rarity": "uncommon",
+    "released_at": "2024-09-27",
+    "digital": false,
+    "mana_cost": "{4}{U}",
+    "cmc": 5.0,
+    "type_line": "Enchantment Creature — Nightmare",
+    "oracle_text": "Whenever this creature deals combat damage to a player, draw that many cards.",
+    "power": "2",
+    "toughness": "7",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "1d8b007b-3169-4ee3-80c7-781fc096fc7a",
+    "oracle_id": "65986c1b-8e51-4604-b685-d82fa7d1263a",
+    "name": "Skullclamp",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msc",
+    "collector_number": "210",
+    "rarity": "rare",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{1}",
+    "cmc": 1.0,
+    "type_line": "Artifact — Equipment",
+    "oracle_text": "Equipped creature gets +1/-1.\nWhenever equipped creature dies, draw two cards.\nEquip {1}",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Equip"
+    ]
+  },
+  {
+    "id": "ad4de9f1-7a39-45af-828e-c59234d9e9b9",
+    "oracle_id": "73089a39-a2f6-4aa2-a058-e6551475153d",
+    "name": "Sanguine Bond",
+    "lang": "en",
+    "layout": "normal",
+    "set": "c21",
+    "collector_number": "153",
+    "rarity": "rare",
+    "released_at": "2021-04-23",
+    "digital": false,
+    "mana_cost": "{3}{B}{B}",
+    "cmc": 5.0,
+    "type_line": "Enchantment",
+    "oracle_text": "Whenever you gain life, target opponent loses that much life.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "3f1933a8-046f-471a-afcf-cfb08ca0d239",
+    "oracle_id": "d566d5f1-5abd-405b-8553-d267ecbe72ab",
+    "name": "The Thing, Ben Grimm",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msh",
+    "collector_number": "190",
+    "rarity": "uncommon",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{5}{G}",
+    "cmc": 6.0,
+    "type_line": "Legendary Creature — Human Hero",
+    "oracle_text": "Trample\nWhenever one or more Heroes you control deal damage to a player, put two +1/+1 counters on The Thing.",
+    "power": "7",
+    "toughness": "7",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Trample"
+    ]
+  },
+  {
+    "id": "1ffe5f80-a2ac-41b8-8fce-fd3485643557",
+    "oracle_id": "fac42229-4f5f-4d04-85dd-5031d4e435aa",
+    "name": "Sword of Body and Mind",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2xm",
+    "collector_number": "295",
+    "rarity": "mythic",
+    "released_at": "2020-08-07",
+    "digital": false,
+    "mana_cost": "{3}",
+    "cmc": 3.0,
+    "type_line": "Artifact — Equipment",
+    "oracle_text": "Equipped creature gets +2/+2 and has protection from green and from blue.\nWhenever equipped creature deals combat damage to a player, you create a 2/2 green Wolf creature token and that player mills ten cards.\nEquip {2}",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Equip",
+      "Mill"
+    ]
+  },
+  {
+    "id": "cee85485-598f-4dfc-aa0b-7b1de86c7788",
+    "oracle_id": "e97f9c2b-b41e-4f36-9245-77c0ac125647",
+    "name": "Bloodghast",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "210",
+    "rarity": "rare",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{B}{B}",
+    "cmc": 2.0,
+    "type_line": "Creature — Vampire Spirit",
+    "oracle_text": "This creature can't block.\nThis creature has haste as long as an opponent has 10 or less life.\nLandfall — Whenever a land you control enters, you may return this card from your graveyard to the battlefield.",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Landfall"
+    ]
+  },
+  {
     "id": "04113b3c-cc8f-4b15-9091-f82ea3df2e7c",
     "oracle_id": "2249001c-08d5-4c0a-86f8-d97519a39f37",
     "name": "Stoke the Flames",

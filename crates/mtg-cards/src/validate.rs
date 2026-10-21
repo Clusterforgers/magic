@@ -422,6 +422,10 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "Players");
                 self.at("Players", |w| w.reference(who, Kind::Player));
             }
+            Amount::HighestLife(who) => {
+                self.uses("Amount", "HighestLife");
+                self.at("HighestLife", |w| w.reference(who, Kind::Player));
+            }
             Amount::LowestLife(who) => {
                 self.uses("Amount", "LowestLife");
                 self.at("LowestLife", |w| w.reference(who, Kind::Player));

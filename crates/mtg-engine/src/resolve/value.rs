@@ -693,10 +693,10 @@ impl<'a> Scope<'a> {
             Amount::CardTypes(_) => {
                 return Err(ResolveError::Unsupported("card types among cards"));
             }
-            Amount::Players(_) => return Err(ResolveError::Unsupported("a count of players")),
-            Amount::LowestLife(_) => {
-                return Err(ResolveError::Unsupported("the lowest life total"));
-            }
+            Amount::Players(who) => i64::try_from(self.players(who)?.len())
+                .map_err(|_| ResolveError::Invalid("too many players".into()))?,
+            Amount::LowestLife(who) => self.lives(who)?.min().unwrap_or(i64::from(i32::MAX)),
+            Amount::HighestLife(who) => self.lives(who)?.max().unwrap_or(i64::from(i32::MIN)),
             Amount::Kicks => i64::try_from(self.paid_costs().len())
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
             Amount::Triggering => self
@@ -704,6 +704,15 @@ impl<'a> Scope<'a> {
                 .map(|cause| i64::from(cause.amount))
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
         })
+    }
+
+    /// The life totals of the players a reference names.
+    fn lives(&self, who: &Ref) -> Result<impl Iterator<Item = i64>, ResolveError> {
+        let players = self.players(who)?;
+        Ok(players
+            .into_iter()
+            .filter_map(|player| self.state.player(player))
+            .map(|player| i64::from(player.life())))
     }
 
     /// The optional costs paid as the spell was cast, by index, a repeatable cost once for each payment: those the
@@ -1012,6 +1021,11 @@ mod tests {
     )]
     #[case::mana_value(r#"{"Stat":{"of":{"Each":[{"Named":"Ogre"}]},"stat":"ManaValue"}}"#, 4)]
     #[case::life(r#"{"Life":"You"}"#, 20)]
+    #[case::players_other_than_you(r#"{"Players":"Opponents"}"#, 1)]
+    #[case::lowest_life_of_everyone(r#"{"LowestLife":"EachPlayer"}"#, 20)]
+    #[case::highest_life_of_the_opponents(r#"{"HighestLife":"Opponents"}"#, 20)]
+    #[case::lowest_life_of_no_one(r#"{"LowestLife":{"Each":[{"Named":"Nobody"}]}}"#, 2_147_483_647)]
+    #[case::highest_life_of_no_one(r#"{"HighestLife":{"Each":[{"Named":"Nobody"}]}}"#, -2_147_483_648)]
     #[case::sum(r#"{"Sum":[2,{"Count":[{"Type":"Artifact"}]},-1]}"#, 2)]
     #[case::no_targets_chosen(r#"{"TargetCount":0}"#, 0)]
     fn an_amount_is_the_number_it_stands_for(#[case] json: &str, #[case] expected: i64) {
@@ -1447,8 +1461,6 @@ mod tests {
     #[case::the_greatest_value(r#"{"Greatest":{"of":[],"stat":"Power"}}"#, "greatest values")]
     #[case::a_total(r#"{"Total":{"of":[],"stat":"Power"}}"#, "totals")]
     #[case::card_types(r#"{"CardTypes":[]}"#, "card types among cards")]
-    #[case::a_count_of_players(r#"{"Players":"Opponents"}"#, "a count of players")]
-    #[case::the_lowest_life_total(r#"{"LowestLife":"EachPlayer"}"#, "the lowest life total")]
     fn an_amount_the_evaluator_cannot_read_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,
