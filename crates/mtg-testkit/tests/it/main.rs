@@ -19,6 +19,8 @@ mod concede;
 mod concede_mid_cast;
 mod continuous_effects;
 mod corpus_cards;
+mod cost_fuzz;
+mod cost_modifiers;
 mod counter_effects;
 mod counters_fuzz;
 mod determinism_replay;

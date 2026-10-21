@@ -2,7 +2,7 @@
 //! unless something holds), with counters, after a choice or after a payment of life; a spell
 //! can't be countered; a creature can't block, or attacks each combat; the top card of a library
 //! is played revealed; a creature, the creature an Aura or Equipment is attached to, or a group of
-//! creatures gets a bonus or a keyword. Read from the wording and written back the same way.
+//! creatures gets a bonus or a keyword; spells cost more or less. Read from the wording and written back the same way.
 
 use mtg_core::card::Subtype;
 

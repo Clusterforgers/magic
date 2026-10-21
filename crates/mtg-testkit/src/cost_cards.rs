@@ -37,10 +37,11 @@ fn artifact(name: &str, printed: &str, modifier: &str) -> Result<Arc<CardDefinit
     ))
 }
 
-/// A modifier of `mana` more or less (`change`) for the spells `applies_to` names, once for each of `per`.
-fn modifier(applies_to: &str, change: &str, mana: &str, per: &str) -> String {
+/// A modifier of `mana` more or less (`direction`: `Increase` or `Reduce`) for the spells `applies_to` names; `extra`
+/// holds the fields after the mana (`,"per":...`, `,"condition":...`).
+fn change(applies_to: &str, direction: &str, mana: &str, extra: &str) -> String {
     format!(
-        r#"{{"CostModifier":{{"applies_to":{applies_to},"change":"{change}","mana":"{mana}"{per}}}}}"#
+        r#"{{"CostModifier":{{"applies_to":{applies_to},"change":"{direction}","mana":"{mana}"{extra}}}}}"#
     )
 }
 
@@ -49,7 +50,7 @@ pub fn tax_rock() -> Result<Arc<CardDefinition>, CorpusError> {
     artifact(
         "Tax Rock",
         "{1}",
-        &modifier(
+        &change(
             r#"["Spell",{"Not":{"Type":"Creature"}}]"#,
             "Increase",
             "{1}",
@@ -63,7 +64,7 @@ pub fn sphere() -> Result<Arc<CardDefinition>, CorpusError> {
     artifact(
         "Sphere",
         "{2}",
-        &modifier(r#"["Spell"]"#, "Increase", "{1}", ""),
+        &change(r#"["Spell"]"#, "Increase", "{1}", ""),
     )
 }
 
@@ -72,7 +73,7 @@ pub fn hostile_tax() -> Result<Arc<CardDefinition>, CorpusError> {
     artifact(
         "Hostile Tax",
         "{2}",
-        &modifier(
+        &change(
             r#"["Spell",{"ControlledBy":"Opponents"}]"#,
             "Increase",
             "{1}",
@@ -83,11 +84,7 @@ pub fn hostile_tax() -> Result<Arc<CardDefinition>, CorpusError> {
 
 /// An artifact for `{2}`: spells, whoever casts them, cost {1} less.
 pub fn helm() -> Result<Arc<CardDefinition>, CorpusError> {
-    artifact(
-        "Helm",
-        "{2}",
-        &modifier(r#"["Spell"]"#, "Reduce", "{1}", ""),
-    )
+    artifact("Helm", "{2}", &change(r#"["Spell"]"#, "Reduce", "{1}", ""))
 }
 
 /// An artifact for `{2}`: spells you cast cost {1} less.
@@ -95,7 +92,7 @@ pub fn my_helm() -> Result<Arc<CardDefinition>, CorpusError> {
     artifact(
         "My Helm",
         "{2}",
-        &modifier(r#"["Spell",{"ControlledBy":"You"}]"#, "Reduce", "{1}", ""),
+        &change(r#"["Spell",{"ControlledBy":"You"}]"#, "Reduce", "{1}", ""),
     )
 }
 
@@ -104,7 +101,7 @@ pub fn deep_helm() -> Result<Arc<CardDefinition>, CorpusError> {
     artifact(
         "Deep Helm",
         "{3}",
-        &modifier(r#"["Spell",{"ControlledBy":"You"}]"#, "Reduce", "{2}", ""),
+        &change(r#"["Spell",{"ControlledBy":"You"}]"#, "Reduce", "{2}", ""),
     )
 }
 
@@ -113,7 +110,7 @@ pub fn red_helm() -> Result<Arc<CardDefinition>, CorpusError> {
     artifact(
         "Red Helm",
         "{2}",
-        &modifier(r#"["Spell",{"ControlledBy":"You"}]"#, "Reduce", "{R}", ""),
+        &change(r#"["Spell",{"ControlledBy":"You"}]"#, "Reduce", "{R}", ""),
     )
 }
 
@@ -122,7 +119,7 @@ pub fn crowd_helm() -> Result<Arc<CardDefinition>, CorpusError> {
     artifact(
         "Crowd Helm",
         "{2}",
-        &modifier(
+        &change(
             r#"["Spell",{"ControlledBy":"You"}]"#,
             "Reduce",
             "{1}",
@@ -136,7 +133,7 @@ pub fn day_helm() -> Result<Arc<CardDefinition>, CorpusError> {
     artifact(
         "Day Helm",
         "{2}",
-        &modifier(
+        &change(
             r#"["Spell"]"#,
             "Reduce",
             "{1}",
@@ -150,7 +147,7 @@ pub fn blue_tax() -> Result<Arc<CardDefinition>, CorpusError> {
     artifact(
         "Blue Tax",
         "{2}",
-        &modifier(r#"["Spell",{"Color":"Red"}]"#, "Increase", "{U}", ""),
+        &change(r#"["Spell",{"Color":"Red"}]"#, "Increase", "{U}", ""),
     )
 }
 
@@ -223,6 +220,31 @@ pub fn modifiers() -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
         day_helm()?,
         blue_tax()?,
     ])
+}
+
+/// The modifier permanent called `name` ([`MODIFIER_CARDS`]).
+pub fn modifier(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
+    modifiers()?
+        .into_iter()
+        .find(|card| card.name == name)
+        .ok_or_else(|| CorpusError::Data(format!("no modifier card called {name}")))
+}
+
+/// The spell called `name` among those a modifier changes: the cards of this module, `Bolt` and the hybrid and
+/// Phyrexian bears.
+pub fn spell(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
+    Ok(match name {
+        "Bolt" => burn("Bolt", 3),
+        "Big Bolt" => big_bolt(),
+        "Trinket" => trinket(),
+        "Free Bear" => free_bear(),
+        "Hybrid Bear" => hybrid_bear(),
+        "Phyrexian Bear" => phyrexian_bear(),
+        "Double Phyrexian" => double_phyrexian(),
+        "Blaze" => blaze()?,
+        "Hybrid Font" => hybrid_font()?,
+        other => corpus::card(other)?,
+    })
 }
 
 /// A legal Normal deck of lands, the modifier permanents, spells that are changed by them (X spells, hybrid and

@@ -1280,6 +1280,29 @@ impl<'a> Walker<'a> {
         self.body(targets, effects, false);
     }
 
+    /// A cost modifier: fixed mana changes the cost as many times as `per` counts, over the spells `applies_to`
+    /// selects; its own target counts read the targets of the spell ability beside it.
+    fn cost_modifier(
+        &mut self,
+        applies_to: &Selector,
+        mana: &crate::mana::ManaCostX,
+        per: &Amount,
+        condition: Option<&Condition>,
+    ) {
+        if mana.has_x() {
+            self.problem(
+                "a cost modifier changes the cost by fixed mana, repeated by `per`, not by an {X}",
+            );
+        }
+        let specs = self.spell_targets.clone();
+        self.scope = Scope::new(&specs, false);
+        self.at("applies_to", |w| w.selector(applies_to));
+        self.at("per", |w| w.amount(per));
+        if let Some(condition) = condition {
+            self.at("condition", |w| w.condition(condition));
+        }
+    }
+
     fn ability(&mut self, ability: &Ability) {
         let tag = tag_of(ability);
         if !matches!(ability, Ability::Keyword(_)) {
@@ -1360,18 +1383,7 @@ impl<'a> Walker<'a> {
                 per,
                 condition,
                 ..
-            } => {
-                if mana.has_x() {
-                    w.problem("a cost modifier changes the cost by fixed mana, repeated by `per`, not by an {X}");
-                }
-                let specs = w.spell_targets.clone();
-                w.scope = Scope::new(&specs, false);
-                w.at("applies_to", |w| w.selector(applies_to));
-                w.at("per", |w| w.amount(per));
-                if let Some(condition) = condition {
-                    w.at("condition", |w| w.condition(condition));
-                }
-            }
+            } => w.cost_modifier(applies_to, mana, per, condition.as_ref()),
             Ability::Keyword(keyword) => w.keyword(keyword),
             Ability::Manual { reason, span } => {
                 if reason.trim().is_empty() {

@@ -1,8 +1,9 @@
 //! Cost increases and reductions (CR 601.2f, 118.7): what the cost modifiers in play do to the cost of a spell, after
 //! X and the additional costs are added.
 //!
-//! The modifiers are the `Ability::CostModifier`s of the spell itself and of the permanents of every player, read
-//! through the ability reader so a permanent that lost its abilities lost them. Each one that applies to the spell
+//! The modifiers are the `Ability::CostModifier`s of the spell itself that name it (a card that is not in play has no
+//! other static ability) and of the permanents of every player, read through the ability reader so a permanent that
+//! lost its abilities lost them. Each one that applies to the spell
 //! changes the cost by its mana as many times as its `per` counts, and the increases are added before the reductions
 //! are taken away: a reduction of generic mana never goes below zero and one of colored mana removes only a symbol of
 //! that color. Hybrid and Phyrexian symbols stay as they are.
