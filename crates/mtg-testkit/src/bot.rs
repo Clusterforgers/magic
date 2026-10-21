@@ -6,7 +6,7 @@ use mtg_engine::Decision;
 use mtg_engine::choose::{
     CardsChoice, CostsChoice, CostsOptions, DivideChoice, DivideOptions, ModeChoice, NumberChoice,
     NumberOptions, OptionChoice, OrderChoice, ReplacementChoice, Target, TargetChoice,
-    TriggersChoice, YesNoChoice,
+    TriggersChoice, YesNoChoice, YesNoOptions,
 };
 use mtg_engine::decision::{
     Answer, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction,
@@ -195,7 +195,7 @@ impl RandomBot {
                     self.subset(&options.cards, options.cards.len()),
                 ))
             }
-            DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(self.rng.below(2) == 0)),
+            DecisionKind::YesNo(options) => self.yes_no(options),
             DecisionKind::ChooseOption(options) => {
                 Answer::ChooseOption(OptionChoice(self.rng.index(options.options.len().max(1))))
             }
@@ -373,6 +373,13 @@ impl RandomBot {
             }
         }
         Some(payment)
+    }
+
+    /// Yes or no at random, No when it is the only answer. The die is rolled either way, so a seed plays the same
+    /// whether or not a payment can be made.
+    fn yes_no(&mut self, options: &YesNoOptions) -> Answer {
+        let yes = self.rng.below(2) == 0;
+        Answer::YesNo(YesNoChoice(yes && !options.only_no))
     }
 
     /// Any number in range; with no upper bound, a few above the lowest. A bot never backs out of a cast.

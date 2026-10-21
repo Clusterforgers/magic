@@ -16,6 +16,7 @@ mod lobby_roster;
 mod net;
 mod open_seats;
 mod pace_leak;
+mod pay_leak;
 mod pg_account_settings;
 mod pg_accounts;
 mod pg_card_decks;

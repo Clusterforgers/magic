@@ -1565,7 +1565,8 @@ impl Pass<'_> {
         Ok(Applied::Done)
     }
 
-    /// Whether `controller` pays `life` as the card enters: asked yes or no when they can, else no.
+    /// Whether `controller` pays `life` as the card enters: asked yes or no, with No the only answer when they cannot
+    /// pay, so the pace does not show whether they could.
     fn pays_life(
         &mut self,
         source: ObjectId,
@@ -1576,15 +1577,12 @@ impl Pass<'_> {
             .state
             .player(controller)
             .is_some_and(|p| u32::try_from(p.life()).is_ok_and(|have| have >= life));
-        if !can_pay {
-            return Ok(Asked::Got(false));
-        }
         match self.answer() {
             None => Ok(Asked::Ask(Decision {
                 player: controller,
                 kind: DecisionKind::YesNo(YesNoOptions {
-                    source,
-                    text: format!("Pay {life} life?"),
+                    only_no: !can_pay,
+                    ..YesNoOptions::new(source, format!("Pay {life} life?"))
                 }),
             })),
             Some((who, Choice::YesNo(yes))) if *who == controller => Ok(Asked::Got(*yes)),

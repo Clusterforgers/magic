@@ -64,6 +64,11 @@ pub fn leak(name: &str, tax: u32) -> Arc<CardDefinition> {
 /// An instant for `{U}`: "Unless an opponent pays `{1}`, you draw a card; if one does, you gain 1 life." With several
 /// opponents they are asked in turn order until one pays.
 pub fn toll(name: &str) -> Arc<CardDefinition> {
+    toll_costing(name, 1)
+}
+
+/// [`toll`] with a payment of `{tax}`.
+pub fn toll_costing(name: &str, tax: u32) -> Arc<CardDefinition> {
     instant(
         name,
         0,
@@ -72,7 +77,7 @@ pub fn toll(name: &str) -> Arc<CardDefinition> {
             targets: Vec::new(),
             effects: vec![payment(
                 Ref::Opponents,
-                price(1, &[]),
+                price(tax, &[]),
                 vec![gain_life(1)],
                 vec![draw(1)],
             )],
@@ -138,11 +143,13 @@ pub fn mana_pinger(name: &str) -> Arc<CardDefinition> {
     )
 }
 
-/// A deck of lands in the three colours, Izzet Charm and Rhystic Study from the corpus, Lightning Bolts to aim them at,
-/// spells that ask for a payment, permanents with abilities that cost mana, and creatures, derived entirely from `rng`.
+/// A deck of lands in the three colours, two Steam Vents (pay 2 life or enter tapped), Izzet Charm and Rhystic Study
+/// from the corpus, Lightning Bolts to aim them at, spells that ask for a payment, permanents with abilities that cost
+/// mana, and creatures, derived entirely from `rng`.
 pub fn pay_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let colors = [Color::Blue, Color::Red, Color::White];
-    let mut deck: Vec<Arc<CardDefinition>> = (0..24).map(|i| land(colors[i % 3])).collect();
+    let mut deck: Vec<Arc<CardDefinition>> = (0..22).map(|i| land(colors[i % 3])).collect();
+    deck.extend(std::iter::repeat_n(corpus::card("Steam Vents")?, 2));
     for (name, copies) in [
         ("Izzet Charm", 4),
         ("Rhystic Study", 3),
