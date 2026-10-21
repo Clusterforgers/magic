@@ -336,6 +336,10 @@ impl Engine {
                 self.pending = Some(Pending::new(player, What::Ability(ability)));
                 Ok(())
             }
+            Outcome::BeginSuspend(card) => {
+                self.pending = Some(Pending::suspending(player, card));
+                Ok(())
+            }
             Outcome::Modes(modes) => self.announced(Answered::Modes(modes)),
             Outcome::Way(pick) => self.announced(Answered::Way(pick)),
             Outcome::Targets(targets) => self.announced(Answered::Targets(targets)),

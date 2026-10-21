@@ -99,6 +99,14 @@ const ENTERS: &str = r#""when":{"Enters":{"what":["This"]}}"#;
     ),
     &["Ability.Replacement", "Amount.LowestLife", "Amount.Players", "ReplaceBy.Tapped", "ReplaceWhen.Enters"]
 )]
+#[case::a_static_ability_while_an_opponent_has_low_life(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":{"Compare":{"left":{"LowestLife":"Opponents"},"op":"Le","right":10}}}}"#,
+    &["Ability.Static", "Amount.LowestLife", "Keyword.Haste", "Mod.AddKeyword"]
+)]
+#[case::a_static_ability_while_every_opponent_has_low_life(
+    r#"{"Static":{"affected":"This","mods":[{"AddKeyword":"Haste"}],"condition":{"Compare":{"left":{"HighestLife":"Opponents"},"op":"Le","right":10}}}}"#,
+    &["Ability.Static", "Amount.HighestLife", "Keyword.Haste", "Mod.AddKeyword"]
+)]
 #[case::changeling(r#"{"Keyword":"Changeling"}"#, &["Keyword.Changeling"])]
 #[case::devoid(r#"{"Keyword":"Devoid"}"#, &["Keyword.Devoid"])]
 #[case::infect(r#"{"Keyword":"Infect"}"#, &["Keyword.Infect"])]
@@ -107,6 +115,7 @@ const ENTERS: &str = r#""when":{"Enters":{"what":["This"]}}"#;
 #[case::mutate(r#"{"Keyword":{"Mutate":"{1}{G}{G}"}}"#, &["Cost.Mana", "Keyword.Mutate"])]
 #[case::encore(r#"{"Keyword":{"Encore":"{5}{R}"}}"#, &["Cost.Mana", "Keyword.Encore"])]
 #[case::squad(r#"{"Keyword":{"Squad":"{2}"}}"#, &["Cost.Mana", "Keyword.Squad"])]
+#[case::foretell(r#"{"Keyword":{"Foretell":"{1}{U}"}}"#, &["Cost.Mana", "Keyword.Foretell"])]
 #[case::a_granted_changeling(
     r#"{"Static":{"affected":"Attached","mods":[{"AddKeyword":"Changeling"}]}}"#,
     &["Ability.Static", "Keyword.Changeling", "Mod.AddKeyword"]
@@ -179,6 +188,7 @@ fn a_node_used_wrongly_is_refused_where_it_stands(#[case] json: &str, #[case] me
 #[case::choosing_an_opponent("ReplaceBy.Choose.Opponent")]
 #[case::counting_players("Amount.Players")]
 #[case::the_lowest_life_total("Amount.LowestLife")]
+#[case::the_highest_life_total("Amount.HighestLife")]
 #[case::changeling("Keyword.Changeling")]
 #[case::devoid("Keyword.Devoid")]
 #[case::infect("Keyword.Infect")]
@@ -187,6 +197,7 @@ fn a_node_used_wrongly_is_refused_where_it_stands(#[case] json: &str, #[case] me
 #[case::mutate("Keyword.Mutate")]
 #[case::encore("Keyword.Encore")]
 #[case::squad("Keyword.Squad")]
+#[case::foretell("Keyword.Foretell")]
 fn a_caps_that_lacks_the_primitive_reports_it_missing(#[case] name: &str) {
     let lacking = Caps::none();
     assert!(!lacking.runs(name));

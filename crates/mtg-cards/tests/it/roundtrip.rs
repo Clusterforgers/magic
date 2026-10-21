@@ -12,7 +12,7 @@ use mtg_cards::modify::{Duration, GameRule, Modification};
 use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::spend::{SpendFilter, SpendOn};
 use mtg_cards::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, Step, TriggerPattern};
-use mtg_cards::value::{Amount, Cmp, Condition, CounterKind, StatKind};
+use mtg_cards::value::{Amount, CastWay, Cmp, Condition, CounterKind, StatKind};
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use mtg_core::mana::{ManaCost, ManaSymbol, ManaType};
@@ -232,6 +232,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Mutate),
         cost().prop_map(Keyword::Encore),
         cost().prop_map(Keyword::Squad),
+        cost().prop_map(Keyword::Foretell),
         cost().prop_map(Keyword::Ward),
         cost().prop_map(Keyword::Equip),
         cost().prop_map(Keyword::Reconfigure),
@@ -727,14 +728,20 @@ fn effect() -> impl Strategy<Value = Effect> {
                 otherwise
             }),
             (reference(), list()).prop_map(|(who, effects)| Effect::May { who, effects }),
-            (reference(), reference(), any::<bool>(), list()).prop_map(
-                |(who, what, free, otherwise)| Effect::CastFromZone {
+            (
+                reference(),
+                reference(),
+                any::<bool>(),
+                list(),
+                proptest::option::of(select(vec![CastWay::Madness, CastWay::Suspend])),
+            )
+                .prop_map(|(who, what, free, otherwise, way)| Effect::CastFromZone {
                     who,
                     what,
                     free,
-                    otherwise
-                }
-            ),
+                    way,
+                    otherwise,
+                }),
             (reference(), cost(), list(), list()).prop_map(|(who, cost, paid, unpaid)| {
                 Effect::Pay {
                     who,
@@ -866,6 +873,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 reference().prop_map(|who| ReplaceWhen::LifeGain { who }),
                 reference().prop_map(|who| ReplaceWhen::Draw { who }),
                 selector().prop_map(|what| ReplaceWhen::Enters { what }),
+                selector().prop_map(|what| ReplaceWhen::Discarded { what }),
                 (
                     selector(),
                     proptest::option::of(zone()),

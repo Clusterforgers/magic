@@ -11,6 +11,7 @@ mod combat_forecast;
 mod common;
 mod counter_view;
 mod effect_view;
+mod exile_open;
 mod hidden_info;
 mod house_rules_view;
 mod keyword_view;

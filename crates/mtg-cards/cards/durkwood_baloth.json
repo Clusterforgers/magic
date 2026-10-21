@@ -1,0 +1,12 @@
+{
+  "oracle_id": "1732cd31-1393-426f-a2fe-9b6b3f27136b",
+  "name": "Durkwood Baloth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Durkwood Baloth",
+      "oracle_fingerprint": "3b6264d5796063e16c691d01d752361b",
+      "abilities": [{ "Keyword": { "Suspend": { "time": 5, "cost": "{G}" } } }]
+    }
+  ]
+}

@@ -37,7 +37,7 @@ pub enum DecisionKind {
     /// Choose cards to put on the bottom of the library after keeping.
     BottomCards(BottomOptions),
     /// Act with priority or pass.
-    Priority(PriorityOptions),
+    Priority(Box<PriorityOptions>),
     /// Pay the mana cost of the spell being cast.
     PayMana(PayOptions),
     /// Declare attackers.
@@ -153,6 +153,10 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<AbilityRef>>", optional))]
     pub abilities: Vec<AbilityRef>,
+    /// Cards in the hand that can be suspended now (a special action that does not use the stack, CR 702.62).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub suspendable: Vec<ObjectId>,
     /// Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
     /// mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.
     pub can_act: bool,
@@ -400,6 +404,8 @@ pub enum PriorityAction {
     ActivateMana(ManaSource),
     /// Activate this ability, which is not a mana ability (leads to its announcement and costs).
     Activate(AbilityRef),
+    /// Suspend this card from the hand (CR 702.62, a special action): pay its suspend cost and exile it with time counters.
+    Suspend(ObjectId),
 }
 
 /// How to pay for a spell.

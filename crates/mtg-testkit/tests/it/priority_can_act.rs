@@ -68,7 +68,9 @@ fn options_of(
     }
     let decision = driver.decision()?;
     match &decision.kind {
-        DecisionKind::Priority(options) if decision.player == pid(holder) => Ok(options.clone()),
+        DecisionKind::Priority(options) if decision.player == pid(holder) => {
+            Ok((**options).clone())
+        }
         other => Err(ScriptError::UnexpectedDecision {
             wanted: "priority for the holder",
             got: other.name().to_owned(),

@@ -178,7 +178,7 @@ fn priority_round(state: &GameState) -> Progress {
     match state.priority() {
         Some(priority) => Progress::Decide(Decision {
             player: priority.holder(),
-            kind: DecisionKind::Priority(priority_options(state, priority.holder())),
+            kind: DecisionKind::Priority(Box::new(priority_options(state, priority.holder()))),
         }),
         None => Progress::Events(vec![grant(state)]),
     }

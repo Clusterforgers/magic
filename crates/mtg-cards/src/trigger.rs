@@ -300,6 +300,11 @@ pub enum ReplaceWhen {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<ZoneKind>,
     },
+    /// A card matching the selector would be discarded (CR 701.9): the move from a hand to the graveyard that a discard is.
+    Discarded {
+        /// The card that would be discarded.
+        what: Selector,
+    },
     /// Counters would be put on a permanent or a player, by an effect or as a permanent enters.
     CountersPut {
         /// What receives them; any permanent or player when absent.

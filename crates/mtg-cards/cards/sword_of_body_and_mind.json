@@ -1,0 +1,52 @@
+{
+  "oracle_id": "fac42229-4f5f-4d04-85dd-5031d4e435aa",
+  "name": "Sword of Body and Mind",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Body and Mind",
+      "oracle_fingerprint": "b93a574035c4d2db116d82be52a4f0b7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 2 } },
+              { "AddKeyword": { "Protection": [{ "Color": "Green" }] } },
+              { "AddKeyword": { "Protection": [{ "Color": "Blue" }] } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              },
+              { "Mill": { "who": "Triggering", "count": 10 } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

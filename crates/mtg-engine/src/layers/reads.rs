@@ -178,7 +178,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         Amount::Life(who)
         | Amount::Counters { on: who, .. }
         | Amount::Players(who)
-        | Amount::LowestLife(who) => reads_of_ref(who),
+        | Amount::LowestLife(who)
+        | Amount::HighestLife(who) => reads_of_ref(who),
         Amount::Sum(parts) => parts
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),

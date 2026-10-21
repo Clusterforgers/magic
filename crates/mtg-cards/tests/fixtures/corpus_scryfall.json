@@ -3724,6 +3724,176 @@
     ]
   },
   {
+    "id": "a1e088de-e99f-4706-89e0-a7efdaf9403a",
+    "oracle_id": "0d5a1870-6d26-47e7-a86c-f3ff15cb0707",
+    "name": "Lat-Nam Adept",
+    "lang": "en",
+    "layout": "normal",
+    "set": "bro",
+    "collector_number": "56",
+    "rarity": "common",
+    "released_at": "2022-11-18",
+    "digital": false,
+    "mana_cost": "{3}{U}",
+    "cmc": 4.0,
+    "type_line": "Creature — Human Wizard",
+    "oracle_text": "Whenever you draw your second card each turn, put a +1/+1 counter on this creature.",
+    "power": "3",
+    "toughness": "3",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "a87c39df-7636-454b-8485-a1cc9362fd84",
+    "oracle_id": "34fd461b-a913-4a60-9477-ce2bd5c6fc5a",
+    "name": "Fear of Failed Tests",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dsk",
+    "collector_number": "55",
+    "rarity": "uncommon",
+    "released_at": "2024-09-27",
+    "digital": false,
+    "mana_cost": "{4}{U}",
+    "cmc": 5.0,
+    "type_line": "Enchantment Creature — Nightmare",
+    "oracle_text": "Whenever this creature deals combat damage to a player, draw that many cards.",
+    "power": "2",
+    "toughness": "7",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "1d8b007b-3169-4ee3-80c7-781fc096fc7a",
+    "oracle_id": "65986c1b-8e51-4604-b685-d82fa7d1263a",
+    "name": "Skullclamp",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msc",
+    "collector_number": "210",
+    "rarity": "rare",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{1}",
+    "cmc": 1.0,
+    "type_line": "Artifact — Equipment",
+    "oracle_text": "Equipped creature gets +1/-1.\nWhenever equipped creature dies, draw two cards.\nEquip {1}",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Equip"
+    ]
+  },
+  {
+    "id": "ad4de9f1-7a39-45af-828e-c59234d9e9b9",
+    "oracle_id": "73089a39-a2f6-4aa2-a058-e6551475153d",
+    "name": "Sanguine Bond",
+    "lang": "en",
+    "layout": "normal",
+    "set": "c21",
+    "collector_number": "153",
+    "rarity": "rare",
+    "released_at": "2021-04-23",
+    "digital": false,
+    "mana_cost": "{3}{B}{B}",
+    "cmc": 5.0,
+    "type_line": "Enchantment",
+    "oracle_text": "Whenever you gain life, target opponent loses that much life.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "3f1933a8-046f-471a-afcf-cfb08ca0d239",
+    "oracle_id": "d566d5f1-5abd-405b-8553-d267ecbe72ab",
+    "name": "The Thing, Ben Grimm",
+    "lang": "en",
+    "layout": "normal",
+    "set": "msh",
+    "collector_number": "190",
+    "rarity": "uncommon",
+    "released_at": "2026-06-26",
+    "digital": false,
+    "mana_cost": "{5}{G}",
+    "cmc": 6.0,
+    "type_line": "Legendary Creature — Human Hero",
+    "oracle_text": "Trample\nWhenever one or more Heroes you control deal damage to a player, put two +1/+1 counters on The Thing.",
+    "power": "7",
+    "toughness": "7",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Trample"
+    ]
+  },
+  {
+    "id": "1ffe5f80-a2ac-41b8-8fce-fd3485643557",
+    "oracle_id": "fac42229-4f5f-4d04-85dd-5031d4e435aa",
+    "name": "Sword of Body and Mind",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2xm",
+    "collector_number": "295",
+    "rarity": "mythic",
+    "released_at": "2020-08-07",
+    "digital": false,
+    "mana_cost": "{3}",
+    "cmc": 3.0,
+    "type_line": "Artifact — Equipment",
+    "oracle_text": "Equipped creature gets +2/+2 and has protection from green and from blue.\nWhenever equipped creature deals combat damage to a player, you create a 2/2 green Wolf creature token and that player mills ten cards.\nEquip {2}",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Equip",
+      "Mill"
+    ]
+  },
+  {
+    "id": "cee85485-598f-4dfc-aa0b-7b1de86c7788",
+    "oracle_id": "e97f9c2b-b41e-4f36-9245-77c0ac125647",
+    "name": "Bloodghast",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "210",
+    "rarity": "rare",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{B}{B}",
+    "cmc": 2.0,
+    "type_line": "Creature — Vampire Spirit",
+    "oracle_text": "This creature can't block.\nThis creature has haste as long as an opponent has 10 or less life.\nLandfall — Whenever a land you control enters, you may return this card from your graveyard to the battlefield.",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Landfall"
+    ]
+  },
+  {
     "id": "04113b3c-cc8f-4b15-9091-f82ea3df2e7c",
     "oracle_id": "2249001c-08d5-4c0a-86f8-d97519a39f37",
     "name": "Stoke the Flames",
@@ -3851,6 +4021,163 @@
     ],
     "keywords": [
       "Delve"
+    ]
+  },
+  {
+    "id": "9ec075ba-db56-4dcf-b1dc-fe6270b7ab36",
+    "oracle_id": "9728dec9-d482-4c7a-8cdc-44d010dc878d",
+    "name": "Ancestral Vision",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tdc",
+    "collector_number": "144",
+    "rarity": "rare",
+    "released_at": "2025-04-11",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Suspend 4—{U} (Rather than cast this card from your hand, pay {U} and exile it with four time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)\nTarget player draws three cards.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Suspend"
+    ]
+  },
+  {
+    "id": "2dd6977e-269a-4cd1-99ad-37846a0647a7",
+    "oracle_id": "dc7f0c33-80ea-453e-a237-473f077f038e",
+    "name": "Arrogant Wurm",
+    "lang": "en",
+    "layout": "normal",
+    "set": "vma",
+    "collector_number": "195",
+    "rarity": "common",
+    "released_at": "2014-06-16",
+    "digital": true,
+    "mana_cost": "{3}{G}{G}",
+    "cmc": 5.0,
+    "type_line": "Creature — Wurm",
+    "oracle_text": "Trample\nMadness {2}{G} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Madness",
+      "Trample"
+    ]
+  },
+  {
+    "id": "26bfde99-7761-48e1-851a-522f888d0f6c",
+    "oracle_id": "b2ec080f-ad5d-4274-91e3-bc6ac89fc3e4",
+    "name": "Basking Rootwalla",
+    "lang": "en",
+    "layout": "normal",
+    "set": "uma",
+    "collector_number": "156",
+    "rarity": "common",
+    "released_at": "2018-12-07",
+    "digital": false,
+    "mana_cost": "{G}",
+    "cmc": 1.0,
+    "type_line": "Creature — Lizard",
+    "oracle_text": "{1}{G}: This creature gets +2/+2 until end of turn. Activate only once each turn.\nMadness {0} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Madness"
+    ]
+  },
+  {
+    "id": "dce39dd1-ca51-420f-a627-1511192d34c2",
+    "oracle_id": "1732cd31-1393-426f-a2fe-9b6b3f27136b",
+    "name": "Durkwood Baloth",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tsr",
+    "collector_number": "200",
+    "rarity": "common",
+    "released_at": "2021-03-19",
+    "digital": false,
+    "mana_cost": "{4}{G}{G}",
+    "cmc": 6.0,
+    "type_line": "Creature — Beast",
+    "oracle_text": "Suspend 5—{G} (Rather than cast this card from your hand, you may pay {G} and exile it with five time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost. It has haste.)",
+    "power": "5",
+    "toughness": "5",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Suspend"
+    ]
+  },
+  {
+    "id": "1d3a3a1d-c393-4a57-8a0e-5907d1722331",
+    "oracle_id": "f07bd49d-8e71-4d56-be2a-638514011318",
+    "name": "Fiery Temper",
+    "lang": "en",
+    "layout": "normal",
+    "set": "inr",
+    "collector_number": "154",
+    "rarity": "uncommon",
+    "released_at": "2025-01-24",
+    "digital": false,
+    "mana_cost": "{1}{R}{R}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Fiery Temper deals 3 damage to any target.\nMadness {R} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Madness"
+    ]
+  },
+  {
+    "id": "4ccd0ada-92b2-48f3-b5ae-96346fc138b6",
+    "oracle_id": "2b8afa9f-4236-4c02-a8d5-3c145caecfd6",
+    "name": "Rift Bolt",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2x2",
+    "collector_number": "122",
+    "rarity": "common",
+    "released_at": "2022-07-08",
+    "digital": false,
+    "mana_cost": "{2}{R}",
+    "cmc": 3.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Rift Bolt deals 3 damage to any target.\nSuspend 1—{R} (Rather than cast this card from your hand, you may pay {R} and exile it with a time counter on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Suspend"
     ]
   },
   {

@@ -45,6 +45,7 @@ pub fn after_exiling(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()
                 who: Ref::You,
                 what: Ref::Bound(FOUND.to_owned()),
                 free: true,
+                way: None,
                 otherwise: Vec::new(),
             }
         }
@@ -136,6 +137,7 @@ pub fn text(effect: &Effect) -> Option<String> {
             who: Ref::You,
             what: Ref::Bound(name),
             free: true,
+            way: None,
             otherwise,
         } if name == FOUND && otherwise.is_empty() => {
             "you may cast it without paying its mana cost".to_owned()

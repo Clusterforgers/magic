@@ -330,6 +330,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "mutate" => cost(rest).map(Keyword::Mutate),
         "encore" => cost(rest).map(Keyword::Encore),
         "squad" => cost(rest).map(Keyword::Squad),
+        "foretell" => cost(rest).map(Keyword::Foretell),
         "crew" => rest
             .parse()
             .ok()
@@ -498,6 +499,7 @@ mod tests {
     #[case::mutate("Mutate {1}{G}{G}", Keyword::Mutate(mana("{1}{G}{G}")))]
     #[case::encore("Encore {5}{R}", Keyword::Encore(mana("{5}{R}")))]
     #[case::squad("Squad {2}", Keyword::Squad(mana("{2}")))]
+    #[case::foretell("Foretell {1}{U}", Keyword::Foretell(mana("{1}{U}")))]
     #[case::crew("Crew 3", Keyword::Crew(3))]
     #[case::changeling("Changeling", Keyword::Changeling)]
     #[case::devoid("Devoid", Keyword::Devoid)]
@@ -663,6 +665,7 @@ mod tests {
             "Mutate {1}",
             "Encore {1}",
             "Squad {1}",
+            "Foretell {1}",
             "Partner with Someone",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

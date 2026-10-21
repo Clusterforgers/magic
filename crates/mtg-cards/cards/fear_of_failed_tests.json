@@ -1,0 +1,19 @@
+{
+  "oracle_id": "34fd461b-a913-4a60-9477-ce2bd5c6fc5a",
+  "name": "Fear of Failed Tests",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fear of Failed Tests",
+      "oracle_fingerprint": "365057fe5f0378a4072e9c1b981934cb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": { "count": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
