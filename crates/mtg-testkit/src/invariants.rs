@@ -3,8 +3,9 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use mtg_cards::ability::Ability;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Supertype};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use mtg_engine::abilities::AbilityRef;
@@ -13,13 +14,15 @@ use mtg_engine::choose::Target;
 use mtg_engine::combat::{AttackTarget, DamageTarget};
 use mtg_engine::counters::CountersChanged;
 use mtg_engine::effects::Duration;
-use mtg_engine::keywords::is_indestructible;
+use mtg_engine::characteristics::controller_of;
+use mtg_engine::keywords::{is_indestructible, keywords_of};
+use mtg_engine::resolve::Scope;
 use mtg_engine::object::{ObjectKind, ObjectRef, PermanentState};
 use mtg_engine::player::Player;
 use mtg_engine::state::Stage;
 use mtg_engine::zones::{Zone, Zones};
 use mtg_engine::{Characteristics, characteristics};
-use mtg_engine::{DecisionKind, Engine, Event, GameSetup, GameState, apply_event, replay};
+use mtg_engine::{Decision, DecisionKind, Engine, Event, GameSetup, GameState, apply_event, replay};
 use thiserror::Error;
 
 /// A broken engine invariant.
@@ -82,7 +85,7 @@ pub fn check_decision(engine: &Engine) -> Result<(), Violation> {
             "a player has priority while triggered abilities wait for the stack".into(),
         ));
     }
-    Ok(())
+    check_legends(engine)
 }
 
 /// At a decision point no creature that state-based actions would destroy is still on the battlefield:
@@ -105,6 +108,7 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
         }
     }
     check_counters_settled(state)?;
+    check_attachments_settled(state)?;
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id).filter(|o| state.is_alive(o.controller())) else {
             continue;
@@ -124,6 +128,104 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
         }
     }
     Ok(())
+}
+
+/// At a decision point every Aura on the battlefield is attached to a permanent it may enchant, an Equipment or Fortification
+/// that is attached is attached to a creature or a land, and nothing else is attached (CR 704.5m to 704.5p).
+fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
+    for &id in state.zone(Zone::Battlefield) {
+        let Some(object) = state.object(id).filter(|o| state.is_alive(o.controller())) else {
+            continue;
+        };
+        let printed = |name: &str| object.card().subtypes.iter().any(|s| s.0 == name);
+        let attached = object.permanent().and_then(PermanentState::attached_to);
+        let host = state.host_of(id).and_then(|host| state.object(host));
+        let bad = |why: &str| Violation::Bookkeeping(format!("{id:?} {why} at a decision point"));
+        if printed("Aura") {
+            let Some(host) = host else {
+                return Err(bad("is an Aura attached to nothing"));
+            };
+            let controller = controller_of(state, id).unwrap_or(object.controller());
+            let scope = Scope::announcing(state, controller, object.reference());
+            for keyword in keywords_of(state, id) {
+                if let Keyword::Enchant(selector) = keyword
+                    && !scope.selects(selector, host.reference()).unwrap_or(false)
+                {
+                    return Err(bad("is attached to what it may not enchant"));
+                }
+            }
+        } else if printed("Equipment") || printed("Fortification") {
+            if attached.is_none() {
+                continue;
+            }
+            let Some(host) = host else {
+                return Err(bad("is attached to a host that left"));
+            };
+            let is_creature =
+                characteristics(state, host.id()).is_some_and(|chars| chars.is_creature());
+            let is_land = host.base_types().contains(CardType::Land);
+            let fits = if printed("Equipment") {
+                is_creature
+            } else {
+                is_land
+            };
+            if !fits || host.id() == id {
+                return Err(bad("is attached to what it may not be"));
+            }
+        } else if attached.is_some() {
+            return Err(bad("is attached though it is no Aura, Equipment or Fortification"));
+        }
+    }
+    Ok(())
+}
+
+/// At a decision point no player controls two legendary permanents with one name (CR 704.5j), unless the engine is asking that
+/// player which to keep: then the question names exactly those permanents and asks for one.
+fn check_legends(engine: &Engine) -> Result<(), Violation> {
+    let state = engine.state();
+    if state.stage() != Stage::Turns || state.resolving().is_some() {
+        return Ok(());
+    }
+    let mut groups: BTreeMap<(PlayerId, String), Vec<ObjectId>> = BTreeMap::new();
+    for &id in state.zone(Zone::Battlefield) {
+        let Some(object) = state.object(id) else {
+            continue;
+        };
+        let controller = controller_of(state, id).unwrap_or(object.controller());
+        if object.card().supertypes.contains(&Supertype::Legendary) && state.is_alive(controller) {
+            groups
+                .entry((controller, object.card().name.clone()))
+                .or_default()
+                .push(id);
+        }
+    }
+    groups.retain(|_, ids| ids.len() > 1);
+    for ids in groups.values_mut() {
+        ids.sort_unstable();
+    }
+    if groups.is_empty() {
+        return Ok(());
+    }
+    let asked = match engine.decision() {
+        Some(Decision {
+            player,
+            kind: DecisionKind::ChooseCards(options),
+        }) if options.min == 1 && options.max == 1 => {
+            let mut from = options.from.clone();
+            from.sort_unstable();
+            groups
+                .iter()
+                .any(|((owner, _), ids)| owner == player && *ids == from)
+        }
+        _ => false,
+    };
+    if asked {
+        Ok(())
+    } else {
+        Err(Violation::Bookkeeping(format!(
+            "a player controls two legendary permanents of one name at a decision that is not the legend rule: {groups:?}"
+        )))
+    }
 }
 
 /// At a decision point no permanent holds both a +1/+1 and a -1/-1 counter (CR 704.5q) and no player in the game holds ten
@@ -328,6 +430,7 @@ pub struct InvariantChecker {
     expected_damage: BTreeMap<ObjectId, u32>,
     expected_object_counters: BTreeMap<ObjectId, BTreeMap<CounterKind, i64>>,
     expected_player_counters: BTreeMap<PlayerId, BTreeMap<CounterKind, i64>>,
+    expected_attached: BTreeMap<ObjectId, ObjectRef>,
     loyalty_turns: BTreeMap<ObjectRef, u32>,
     zones_seen: BTreeMap<ObjectId, (Zone, u32)>,
     events_seen: usize,
@@ -367,8 +470,13 @@ impl InvariantChecker {
             })
             .filter(|(_, held)| !held.is_empty())
             .collect();
+        let expected_attached = shadow
+            .objects()
+            .filter_map(|o| Some((o.id(), o.permanent()?.attached_to()?)))
+            .collect();
         Ok(InvariantChecker {
             setup: setup.clone(),
+            expected_attached,
             expected_objects: shadow.object_count(),
             expected_life: shadow.players().iter().map(Player::life).collect(),
             expected_pool: vec![[0; 6]; shadow.players().len()],
@@ -424,7 +532,24 @@ impl InvariantChecker {
         }
         self.check_zone_changes()?;
         self.check_damage_totals()?;
-        self.check_counter_totals()
+        self.check_counter_totals()?;
+        self.check_attached_totals()
+    }
+
+    /// What every permanent is attached to must equal what the attach and unattach events say, and an object that left the
+    /// battlefield keeps nothing (CR 400.7).
+    fn check_attached_totals(&self) -> Result<(), Violation> {
+        for object in self.shadow.objects() {
+            let held = object.permanent().and_then(PermanentState::attached_to);
+            if held != self.expected_attached.get(&object.id()).copied() {
+                return Err(Violation::Bookkeeping(format!(
+                    "{:?} is attached to {held:?} but the events say {:?}",
+                    object.id(),
+                    self.expected_attached.get(&object.id())
+                )));
+            }
+        }
+        Ok(())
     }
 
     /// An object that is in another zone than when last seen has a higher zone-change counter, and no counter ever falls (CR 400.7).
@@ -585,11 +710,26 @@ impl InvariantChecker {
             }
             | Event::CreatureDied { object, .. } => {
                 self.expected_damage.remove(object);
-                // Counters stay with the object that held them, so a permanent that comes back holds none (CR 400.7).
+                // Counters stay with the object that held them, so a permanent that comes back holds none (CR 400.7);
+                // nor does it come back attached to anything.
                 self.expected_object_counters.remove(object);
+                self.expected_attached.remove(object);
                 Ok(())
             }
             Event::CountersChanged(changed) => self.adjust_counters(changed),
+            Event::Attached { object, to } => {
+                let host = self
+                    .shadow
+                    .object(*to)
+                    .map(mtg_engine::object::GameObject::reference)
+                    .ok_or_else(|| zone_error(format!("{object:?} attached to missing {to:?}")))?;
+                self.expected_attached.insert(*object, host);
+                Ok(())
+            }
+            Event::Unattached { object } => {
+                self.expected_attached.remove(object);
+                Ok(())
+            }
             _ => Ok(()),
         }
     }
