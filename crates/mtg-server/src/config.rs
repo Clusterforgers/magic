@@ -90,6 +90,9 @@ pub struct AttemptLimits {
     /// Requests for the lobby list one address may make inside `lobby_window` before it is turned
     /// away; every request counts, a cached answer (`304`) too.
     pub lobby_requests_per_ip: u32,
+    /// Requests for the precon list or one precon that one address may make inside `lobby_window`
+    /// before it is turned away; every request counts.
+    pub precon_requests_per_ip: u32,
 }
 
 impl Default for AttemptLimits {
@@ -103,6 +106,7 @@ impl Default for AttemptLimits {
             code_misses_per_ip: 5,
             lobby_window: Duration::from_mins(1),
             lobby_requests_per_ip: 30,
+            precon_requests_per_ip: 60,
         }
     }
 }

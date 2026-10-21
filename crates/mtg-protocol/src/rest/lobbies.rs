@@ -98,7 +98,7 @@ pub struct JoinRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub name: Option<String>,
-    /// The deck the seat plays: the id of a built-in deck, or of one of the signed-in visitor's stored
+    /// The deck the seat plays: the id of a built-in deck, `precon:<code>` (`GET /api/precons`) or the id of one of the signed-in visitor's stored
     /// decks. Absent, the seat keeps the deck it was made with, if any, and its holder chooses one with
     /// `PUT /api/games/{id}/seats/{n}/deck`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -159,7 +159,7 @@ pub struct VisibilityBody {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(deny_unknown_fields)]
 pub struct ChooseDeck {
-    /// The id of a built-in deck (`GET /api/demo-decks`), or of one of the signed-in holder's stored
+    /// The id of a built-in deck (`GET /api/demo-decks`), `precon:<code>` (`GET /api/precons`) or the id of one of the signed-in holder's stored
     /// decks. A stored deck of another account is the same `unknown_deck` as one that does not exist.
     pub deck: String,
 }

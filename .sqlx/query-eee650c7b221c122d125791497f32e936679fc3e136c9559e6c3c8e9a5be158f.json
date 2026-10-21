@@ -1,0 +1,136 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT deck_id AS \"deck_id: _\", position, board, card_name, oracle_id, printing_id, set_code,\n                    collector_number, count, is_foil\n             FROM precon_deck_cards WHERE deck_id = $1 ORDER BY position",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "deck_id: _",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "deck_id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "position",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "position"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "board",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "board"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "card_name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "card_name"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "oracle_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "oracle_id"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "printing_id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "printing_id"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "set_code",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "set_code"
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "collector_number",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "collector_number"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "count",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "count"
+          }
+        }
+      },
+      {
+        "ordinal": 9,
+        "name": "is_foil",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "precon_deck_cards",
+            "name": "is_foil"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "eee650c7b221c122d125791497f32e936679fc3e136c9559e6c3c8e9a5be158f"
+}

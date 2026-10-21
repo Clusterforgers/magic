@@ -109,7 +109,9 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
                 // `check_printed` accepts Enchant on an Aura only.
                 .filter(|keyword| aura || !matches!(keyword, Keyword::Enchant(_)))
                 .map(Ability::Keyword),
-            ClauseKind::Triggered | ClauseKind::Activated if !reminds_counter => {
+            ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static
+                if !reminds_counter =>
+            {
                 read::clause(&clause_text, kind, x_free)
             }
             _ => None,
@@ -338,6 +340,11 @@ mod tests {
     #[case::keyword_and_static(
         "Artifact \u{2014} Equipment",
         "Equipped creature gets +2/+0.\nEquip {1}",
+        Some(ImplStatus::Full)
+    )]
+    #[case::keyword_and_an_unread_static(
+        "Artifact \u{2014} Equipment",
+        "Equipped creature can't be blocked.\nEquip {1}",
         Some(ImplStatus::Partial)
     )]
     #[case::nothing_read("Instant", "Goad target creature.", Some(ImplStatus::Manual))]

@@ -6,6 +6,7 @@ use super::amounts::{count_word, number_word};
 use super::effects::target_object;
 use super::selectors::each;
 use super::tokens::Reader;
+use super::triggers::article;
 use crate::effect::Effect;
 use crate::refs::Ref;
 use crate::value::{Amount, CounterKind};
@@ -79,6 +80,25 @@ fn counters(r: &mut Reader<'_>) -> Option<(CounterKind, u32)> {
     Some((counter, number))
 }
 
+/// How many counters a permanent enters with: "a +1/+1 counter", "two charge counters", "X +1/+1
+/// counters" (when the card's mana cost has an X).
+pub fn entering(r: &mut Reader<'_>) -> Option<(CounterKind, Amount)> {
+    let (count, number) = if r.x_free && r.word("x") {
+        (Amount::X, None)
+    } else {
+        let number = number_word(r.take_word()?)?;
+        (Amount::Fixed(i32::try_from(number).ok()?), Some(number))
+    };
+    let counter = kind(r)?;
+    r.word(if number == Some(1) {
+        "counter"
+    } else {
+        "counters"
+    })
+    .then_some(())?;
+    Some((counter, count))
+}
+
 /// The object counters are on, leave or go onto: "~" or one target.
 fn place(r: &mut Reader<'_>) -> Option<Ref> {
     if r.source() {
@@ -145,6 +165,14 @@ fn kind_text(counter: &CounterKind) -> Option<&str> {
     }
 }
 
+/// The counters a permanent enters with, as `entering` reads them.
+pub fn entering_text(counter: &CounterKind, count: &Amount) -> Option<String> {
+    match count {
+        Amount::X => Some(format!("X {} counters", kind_text(counter)?)),
+        _ => text(counter, count),
+    }
+}
+
 /// "a +1/+1 counter", "two charge counters": a number of counters of one kind.
 pub fn text(counter: &CounterKind, count: &Amount) -> Option<String> {
     let Amount::Fixed(number) = count else {
@@ -153,7 +181,7 @@ pub fn text(counter: &CounterKind, count: &Amount) -> Option<String> {
     let kind = kind_text(counter)?;
     Some(match u32::try_from(*number).ok()? {
         0 => return None,
-        1 => format!("a {kind} counter"),
+        1 => format!("{} {kind} counter", article(kind)),
         many => format!("{} {kind} counters", count_word(many)?),
     })
 }

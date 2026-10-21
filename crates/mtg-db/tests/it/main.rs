@@ -15,6 +15,7 @@ mod import_runs;
 mod migrations;
 mod name_lookup;
 mod pagination;
+mod precon_all;
 mod precon_import;
 mod precon_resolution;
 mod printing_import;

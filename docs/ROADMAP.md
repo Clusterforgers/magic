@@ -39,8 +39,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (r4) `mtg-cli coverage`: the state of every precon card (and of each precon) from its compiled rules and the engine's `Caps`, with the unread wordings and missing primitives ranked by the cards each holds back and by the cards it alone holds back
 - [x] (r4b) Audit before any compiled rule reaches a game: 100 random compiled cards are listed as oracle text beside the rendered reading and the JSON, and each disagreement fixes a template
 - [x] (r5) Value nodes (devotion, greatest, total, card types, "if you do", the monarch, the city's blessing, mana of a choice, the chosen colour, a commander's identity), fourteen keyword-action effects, five activated-ability costs and eleven trigger patterns are in the DSL, each with its `Caps` name and a stub; the templates for surveil, proliferate, the monarch, a choice of mana, paying energy and the life, draw and discard events read them
-- [ ] (r3d) Templates for the unread wordings the report ranks highest whose primitives the DSL and the engine already have ("This land enters tapped", "enters with N counters", and the next ones by the cards each holds back), each with goldens
-- [ ] (r5b) The vocabulary the report ranks next and the DSL still lacks (can't be blocked, no maximum hand size, an additional land play, choosing a player as a permanent enters, and the keywords Crew, Changeling, Devoid, Foretell, Mutate, Encore, Myriad, Squad, Infect) is added with a `Caps` name and a stub each
+- [x] (r3d) Templates for the unread wordings the report ranks highest whose primitives the DSL and the engine already have (enters tapped, also unless a count is controlled, enters with counters, a choice or a payment as it enters, can't be countered, can't block, attacks each combat, bonuses and keywords for an attached or a group of creatures, a land returned to the hand), each with goldens
+- [ ] (r5b) The vocabulary the report ranks next and the DSL still lacks (can't be blocked, no maximum hand size, an additional land play, choosing a player as a permanent enters, entering tapped unless you have two or more opponents or a player has 13 or less life, "can be your commander", "look at the top card of your library any time", and the keywords Crew, Changeling, Devoid, Foretell, Mutate, Encore, Myriad, Squad, Infect) is added with a `Caps` name and a stub each
 - [ ] (r1c) Generated rules stored as `card_rules` rows next to the hand-written files and read by the server; `mtg-cli compile` writes the ones that validate; a compiled mode without a label shows its rendered text in the mode prompt
 
 ### Small effects
@@ -121,9 +121,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (h) Keywords, keyword actions and wordings the DSL and the compiler lack, sagas, classes, designations, extra turns and the other long-tail mechanics: one task each (primitive, template, golden), in the order of the report's demand
 
 ## M7 Product
-- [ ] (B3) Deck check, remaining: each precon's state in the precon browser (`docs/deck-check.md`)
-- [ ] Precon browser with one-click play
-- [ ] Choose a deck in the lobby, remaining: precons as a third kind of deck (`docs/server.md`, `docs/deck-check.md`)
+- [ ] (B3) Deck check, remaining in the web: each precon's state in the precon browser (the server lists it, `GET /api/precons`; `docs/server.md`, Precons)
+- [ ] Precon browser with one-click play, remaining in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"` (the server half is done; Commander precons are not `playable` before the Commander format, M4)
+- [ ] Choose a deck in the lobby, remaining in the web: precons as a third kind of deck in the picker (the server takes `precon:<code>` as a seat's deck; `docs/server.md`, `docs/deck-check.md`)
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
 - [x] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
 - [x] Deck import by printing in the server: fetch and ingest Scryfall Default Cards (every printing, with flavor and printed names stored on `printings`) and resolve imports with `CardRepo::card_index`, which already holds the stored printings (`docs/data-sources.md`, `docs/server.md`)

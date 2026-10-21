@@ -164,6 +164,7 @@ mod modes;
 mod pay;
 mod put_back;
 mod returns;
+mod statics;
 mod tap_and_mill;
 mod triggers;
 mod vocabulary;

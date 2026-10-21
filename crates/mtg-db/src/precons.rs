@@ -177,49 +177,137 @@ impl PreconRepo {
         let Some(row) = row else { return Ok(None) };
         let summary = PreconDeckSummary::try_from(row)?;
 
-        let rows = sqlx::query!(
-            "SELECT position, board, card_name, oracle_id, printing_id, set_code,
+        let rows = sqlx::query_as!(
+            EntryRow,
+            r#"SELECT deck_id AS "deck_id: _", position, board, card_name, oracle_id, printing_id, set_code,
                     collector_number, count, is_foil
-             FROM precon_deck_cards WHERE deck_id = $1 ORDER BY position",
+             FROM precon_deck_cards WHERE deck_id = $1 ORDER BY position"#,
             id as _
         )
         .fetch_all(&self.pool)
         .await?;
+        let cards = self.cards_of(&rows).await?;
+        let entries = rows
+            .into_iter()
+            .map(|row| row.into_entry(&cards))
+            .collect::<Result<Vec<_>, DbError>>()?;
+        Ok(Some(PreconDeckDetail { summary, entries }))
+    }
 
+    /// Every deck with every entry matched to its stored card, in the order of [`PreconRepo::list`],
+    /// from a fixed number of queries however many decks there are.
+    pub async fn all(&self) -> Result<Vec<PreconDeckDetail>, DbError> {
+        let summaries = self.list().await?;
+        let rows = sqlx::query_as!(
+            EntryRow,
+            r#"SELECT deck_id AS "deck_id: _", position, board, card_name, oracle_id, printing_id, set_code,
+                    collector_number, count, is_foil
+             FROM precon_deck_cards ORDER BY deck_id, position"#
+        )
+        .fetch_all(&self.pool)
+        .await?;
+        let cards = self.cards_of(&rows).await?;
+        let mut by_deck: HashMap<PreconDeckId, Vec<PreconEntry>> = HashMap::new();
+        for row in rows {
+            let deck = row.deck_id;
+            by_deck
+                .entry(deck)
+                .or_default()
+                .push(row.into_entry(&cards)?);
+        }
+        Ok(summaries
+            .into_iter()
+            .map(|summary| PreconDeckDetail {
+                entries: by_deck.remove(&summary.id).unwrap_or_default(),
+                summary,
+            })
+            .collect())
+    }
+
+    /// A digest of every deck and entry: two equal versions mean no precon changed in between, so
+    /// anything derived from the decks is current. The cards behind the entries are not part of it
+    /// (`CardRepo::index_version` tells those).
+    pub async fn version(&self) -> Result<PreconVersion, DbError> {
+        let row = sqlx::query!(
+            r#"SELECT (SELECT count(*) FROM precon_decks) AS "decks!",
+                      (SELECT count(*) FROM precon_deck_cards) AS "entries!",
+                      md5(COALESCE((SELECT string_agg(
+                          id::text || ':' || code || ':' || name || ':' || COALESCE(deck_type, '')
+                              || ':' || COALESCE(release_date::text, ''), ',' ORDER BY id)
+                          FROM precon_decks), '')) AS "decks_digest!",
+                      md5(COALESCE((SELECT string_agg(
+                          deck_id::text || ':' || position::text || ':' || board || ':' || card_name
+                              || ':' || count::text || ':' || COALESCE(oracle_id::text, '') || ':'
+                              || COALESCE(printing_id::text, ''), ',' ORDER BY deck_id, position)
+                          FROM precon_deck_cards), '')) AS "entries_digest!""#
+        )
+        .fetch_one(&self.pool)
+        .await?;
+        Ok(PreconVersion {
+            decks: row.decks,
+            entries: row.entries,
+            decks_digest: row.decks_digest,
+            entries_digest: row.entries_digest,
+        })
+    }
+
+    /// The stored cards the rows name, by oracle id.
+    async fn cards_of(&self, rows: &[EntryRow]) -> Result<HashMap<OracleId, Card>, DbError> {
         let wanted: Vec<OracleId> = rows
             .iter()
             .filter_map(|row| row.oracle_id)
             .map(|oracle_id: Uuid| OracleId(oracle_id.to_string()))
             .collect();
-        let cards: HashMap<OracleId, Card> = CardRepo::new(self.pool.clone())
+        Ok(CardRepo::new(self.pool.clone())
             .get_many(&wanted)
             .await?
             .into_iter()
             .map(|card| (card.oracle_id.clone(), card))
-            .collect();
+            .collect())
+    }
+}
 
-        let entries = rows
-            .into_iter()
-            .map(|row| {
-                let oracle_id = row.oracle_id.map(|id| OracleId(id.to_string()));
-                Ok(PreconEntry {
-                    position: unsigned("precon_deck_cards.position", row.position)?,
-                    board: DeckBoard::from_keyword(&row.board).ok_or_else(|| DbError::Corrupt {
-                        column: "precon_deck_cards.board",
-                        value: row.board.clone(),
-                    })?,
-                    count: unsigned("precon_deck_cards.count", row.count)?,
-                    card_name: row.card_name,
-                    is_foil: row.is_foil,
-                    printing_id: row.printing_id.map(|id| PrintingId(id.to_string())),
-                    set_code: row.set_code,
-                    collector_number: row.collector_number,
-                    // Cloned because one card may appear on several lines (e.g. basic lands).
-                    card: oracle_id.and_then(|id| cards.get(&id).cloned()),
-                })
-            })
-            .collect::<Result<Vec<_>, DbError>>()?;
-        Ok(Some(PreconDeckDetail { summary, entries }))
+/// What the stored precons looked like when [`PreconRepo::version`] read them.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PreconVersion {
+    decks: i64,
+    entries: i64,
+    decks_digest: String,
+    entries_digest: String,
+}
+
+/// Raw row of the entry queries.
+struct EntryRow {
+    deck_id: PreconDeckId,
+    position: i32,
+    board: String,
+    card_name: String,
+    oracle_id: Option<Uuid>,
+    printing_id: Option<Uuid>,
+    set_code: Option<String>,
+    collector_number: Option<String>,
+    count: i32,
+    is_foil: bool,
+}
+
+impl EntryRow {
+    fn into_entry(self, cards: &HashMap<OracleId, Card>) -> Result<PreconEntry, DbError> {
+        let oracle_id = self.oracle_id.map(|id| OracleId(id.to_string()));
+        Ok(PreconEntry {
+            position: unsigned("precon_deck_cards.position", self.position)?,
+            board: DeckBoard::from_keyword(&self.board).ok_or_else(|| DbError::Corrupt {
+                column: "precon_deck_cards.board",
+                value: self.board.clone(),
+            })?,
+            count: unsigned("precon_deck_cards.count", self.count)?,
+            card_name: self.card_name,
+            is_foil: self.is_foil,
+            printing_id: self.printing_id.map(|id| PrintingId(id.to_string())),
+            set_code: self.set_code,
+            collector_number: self.collector_number,
+            // Cloned because one card may appear on several lines (e.g. basic lands).
+            card: oracle_id.and_then(|id| cards.get(&id).cloned()),
+        })
     }
 }
 

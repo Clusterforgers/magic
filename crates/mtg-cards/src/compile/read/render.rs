@@ -7,10 +7,11 @@ use super::amounts::{cards_text, count_word, points_text, stat_name};
 use super::costs;
 use super::counters;
 use super::create;
-use super::effects::BACK;
+use super::effects::{BACK, RETURNED};
 use super::library;
 use super::modal::{BULLET, DASH};
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
+use super::statics;
 use super::triggers::{article, condition_text, pattern_text};
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::{Cost, CostItem};
@@ -78,11 +79,11 @@ pub fn variants(ability: &Ability) -> Vec<String> {
                 })
                 .collect()
         }
-        _ => Vec::new(),
+        _ => statics::texts(ability),
     }
 }
 
-fn capitalize(text: &str) -> String {
+pub(super) fn capitalize(text: &str) -> String {
     let mut chars = text.chars();
     chars.next().map_or_else(String::new, |first| {
         first.to_uppercase().chain(chars).collect()
@@ -150,7 +151,8 @@ fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<
             moved @ Effect::Move { .. },
             ..,
         ] = &effects[start..]
-            && let Some(text) = put_back_text(choose, moved)
+            && let Some(text) =
+                put_back_text(choose, moved).or_else(|| returned_text(choose, moved))
         {
             if (mask >> start) & 0b11 != 0 {
                 return None;
@@ -253,6 +255,35 @@ fn put_back_text(choose: &Effect, moved: &Effect) -> Option<String> {
     };
     Some(format!(
         "put {cards} from your hand on top of your library{tail}"
+    ))
+}
+
+/// A choice of one permanent the player controls, bound as `returned`, and the move of it to its
+/// owner's hand: "return a land you control to its owner's hand".
+fn returned_text(choose: &Effect, moved: &Effect) -> Option<String> {
+    let (
+        Effect::Choose {
+            who: Ref::You,
+            from: Ref::Each(from),
+            count,
+            bind,
+            rest_as: None,
+        },
+        Effect::Move {
+            what: Ref::Bound(name),
+            to: Destination::Hand,
+        },
+    ) = (choose, moved)
+    else {
+        return None;
+    };
+    if bind != RETURNED || name != RETURNED || !count.is_one() {
+        return None;
+    }
+    let phrase = phrase_text(from, Form::Subject)?;
+    Some(format!(
+        "return {} {phrase} to its owner's hand",
+        article(&phrase)
     ))
 }
 
@@ -389,7 +420,7 @@ fn restriction_texts(timing: Timing, limit: Option<Limit>) -> Vec<String> {
 }
 
 /// "+2", "-3", "+X": a change of power or toughness.
-fn signed_text(amount: &Amount) -> Option<String> {
+pub(super) fn signed_text(amount: &Amount) -> Option<String> {
     match amount {
         Amount::Fixed(number) if *number >= 0 => Some(format!("+{number}")),
         Amount::Fixed(number) => Some(number.to_string()),
@@ -399,7 +430,7 @@ fn signed_text(amount: &Amount) -> Option<String> {
 }
 
 /// Whether the predicate names card types and nothing else.
-fn is_a_type(pred: &Pred) -> bool {
+pub(super) fn is_a_type(pred: &Pred) -> bool {
     match pred {
         Pred::Type(_) => true,
         Pred::AnyOf(types) => types.iter().all(is_a_type),

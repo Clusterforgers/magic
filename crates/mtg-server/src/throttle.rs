@@ -1,6 +1,6 @@
 //! Limits on guessing and polling: how many failed logins one address and one username may cause,
 //! how many accounts one address may try to register, how many join codes one address may miss and
-//! how often it may ask for the lobby list, per window. Kept in memory, per process.
+//! how often it may ask for the lobby list or the precons, per window. Kept in memory, per process.
 //!
 //! Fixed windows: a counter starts at the first attempt and is forgotten one window later. A
 //! login or a code lookup is counted when it starts, so concurrent guesses cannot all slip under
@@ -37,13 +37,15 @@ enum Key {
     CodeAddress(IpAddr),
     /// Requests for the lobby list from one network, answered or not.
     ListAddress(IpAddr),
+    /// Requests for the precon list or one precon from one network, answered or not.
+    PreconAddress(IpAddr),
 }
 
 /// How long a counter of this kind lasts.
 fn window_of(limits: &AttemptLimits, key: &Key) -> Duration {
     match key {
         Key::CodeAddress(_) => limits.code_window,
-        Key::ListAddress(_) => limits.lobby_window,
+        Key::ListAddress(_) | Key::PreconAddress(_) => limits.lobby_window,
         Key::LoginAddress(_) | Key::LoginName(_) | Key::RegisterAddress(_) => limits.window,
     }
 }
@@ -185,6 +187,16 @@ impl Throttle {
         self.admit(now, &wanted).map(|_| ())
     }
 
+    /// Counts a request for the precon list or one precon from `address`, or says to wait. Every
+    /// request counts, whatever the answer was, and nothing hands it back.
+    pub(crate) fn begin_precons(&self, now: Instant, address: IpAddr) -> Result<(), Blocked> {
+        let wanted = [(
+            Key::PreconAddress(network(address)),
+            self.limits.precon_requests_per_ip,
+        )];
+        self.admit(now, &wanted).map(|_| ())
+    }
+
     /// Takes back the count of a login that turned out right (the address keeps its other
     /// failures, the username starts afresh) or of a code that found its game.
     pub(crate) fn succeeded(&self, attempt: Attempt) {
@@ -289,7 +301,7 @@ fn network(address: IpAddr) -> IpAddr {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: each limit blocks exactly at its count and lifts exactly one window after the first attempt, blocked attempts cost nothing, a success hands its count back, addresses are grouped the way one client controls them, usernames and addresses do not share budgets, join code misses follow a window of their own, the lobby list follows another, and the table stays bounded.
+    //! Goal: each limit blocks exactly at its count and lifts exactly one window after the first attempt, blocked attempts cost nothing, a success hands its count back, addresses are grouped the way one client controls them, usernames and addresses do not share budgets, join code misses follow a window of their own, the lobby list follows another, the precon browser counts apart from it, and the table stays bounded.
     use std::net::Ipv4Addr;
 
     use super::*;
@@ -311,6 +323,7 @@ mod tests {
             code_misses_per_ip: 4,
             lobby_window: LOBBY_WINDOW,
             lobby_requests_per_ip: 6,
+            precon_requests_per_ip: 3,
         }
     }
 
@@ -787,6 +800,27 @@ mod tests {
         }
         assert!(throttle.begin_code(t0, ip("10.0.0.3")).is_err());
         assert!(throttle.begin_listing(t0, ip("10.0.0.3")).is_ok());
+    }
+
+    #[test]
+    fn precon_requests_block_at_their_count_in_the_list_window_and_share_no_budget() {
+        let throttle = Throttle::new(limits());
+        let t0 = Instant::now();
+        for n in 0..3 {
+            assert!(throttle.begin_precons(t0 + secs(n), ip("10.0.0.1")).is_ok());
+        }
+        let blocked = throttle
+            .begin_precons(t0 + secs(3), ip("10.0.0.1"))
+            .unwrap_err();
+        assert_eq!(blocked.retry_after, secs(7));
+        assert!(throttle.begin_precons(t0 + secs(3), ip("10.0.0.2")).is_ok());
+        // The lobby list keeps its own budget.
+        assert!(throttle.begin_listing(t0, ip("10.0.0.1")).is_ok());
+        assert!(
+            throttle
+                .begin_precons(t0 + secs(10), ip("10.0.0.1"))
+                .is_ok()
+        );
     }
 
     #[rstest]

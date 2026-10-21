@@ -18,36 +18,58 @@ use common::{cards_dir, printed};
 /// The corpus cards whose compiled abilities are the hand-written file's, face by face. A card joins
 /// the list when the templates reach it and never leaves; a card that matches but is not listed fails
 /// the test too, so the list is the ratchet.
-const REPRODUCED: [&str; 30] = [
+const REPRODUCED: [&str; 52] = [
     "Archon of Cruelty",
+    "Arvad the Cursed",
     "Black Knight",
     "Bloodbraid Elf",
+    "Bonesplitter",
     "Brainstorm",
+    "Bronzeplate Boar",
+    "Carnage Tyrant",
     "Cathars' Crusade",
     "Counterspell",
     "Death Ward",
     "Dockside Extortionist",
     "Doom Blade",
     "Drudge Skeletons",
+    "Epic Proportions",
     "Eternal Witness",
+    "Faithful Watchdog",
     "Faithless Looting",
+    "Favorable Winds",
     "Felidar Sovereign",
     "Flooded Strand",
     "Giant Growth",
+    "Glorious Anthem",
+    "Goblin Spy",
+    "Hall of Triumph",
     "Hero of Bladehold",
     "Hulking Raptor",
+    "Idyllic Beachfront",
     "Izzet Charm",
+    "Jungle Lion",
+    "Kongming, \"Sleeping Dragon\"",
+    "Levitation",
     "Lightning Bolt",
+    "Lizard Blades",
     "Llanowar Elves",
     "Monastery Swiftspear",
     "Mulldrifter",
     "Opt",
+    "Pacifism",
+    "Rally the Ranks",
     "Rampant Growth",
     "Rhystic Study",
     "Serra Angel",
+    "Sodden Verdure",
     "Sol Ring",
+    "Steam Vents",
+    "Supreme Verdict",
+    "Swiftfoot Boots",
     "Swords to Plowshares",
     "Tireless Tracker",
+    "Warmonger Hellkite",
     "Wrath of God",
 ];
 
@@ -207,6 +229,9 @@ fn the_renderer_writes_the_hand_written_abilities_as_the_cards_text() {
             let kinds: &[ClauseKind] = match ability {
                 Ability::Spell { .. } => &[ClauseKind::Spell, ClauseKind::Modal],
                 Ability::Triggered { .. } => &[ClauseKind::Triggered],
+                Ability::Replacement { .. } | Ability::Rule { .. } | Ability::Static { .. } => {
+                    &[ClauseKind::Static]
+                }
                 _ => &[ClauseKind::Activated],
             };
             let lines: Vec<&str> = compiled

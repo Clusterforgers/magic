@@ -1,11 +1,12 @@
-//! Turning the id of a deck into the deck a seat plays: a built-in deck, or a stored deck of the
-//! signed-in caller, checked when it is chosen.
+//! Turning the id of a deck into the deck a seat plays: a built-in deck, a stored deck of the
+//! signed-in caller, or a precon (`precon:<code>`), checked when it is chosen.
 //!
 //! A stored deck is read as it is at that moment and kept as a snapshot ([`ChosenDeck`]): the
 //! oracle id of every card of its main deck, their definitions as assembled now, and the three facts
 //! the table is told. The check is the one the deck list shows (`deck_report` in the deck's own
 //! format), plus the rules of the game's format: a Normal game has no command zone, and the engine
-//! wants 60 cards with at most four copies of a card.
+//! wants 60 cards with at most four copies of a card. A precon is judged by the same rules
+//! (`precons.rs`) and needs no account.
 
 use axum::http::{HeaderMap, StatusCode};
 use mtg_cards::deck::{DeckReport, DeckState, DeckZone, Issue, IssueCode};
@@ -13,7 +14,7 @@ use mtg_cards::support::Support;
 use mtg_db::DeckId;
 use mtg_engine::format::{DeckError, FormatRules, Normal};
 use mtg_protocol::SeatDeck;
-use mtg_protocol::rest::{DeckBlockedBody, DeckChoiceErrorCode};
+use mtg_protocol::rest::{DeckBlockedBody, DeckChoiceErrorCode, PRECON_DECK_PREFIX};
 use sqlx::types::uuid::Uuid;
 
 use crate::api::ApiError;
@@ -21,6 +22,7 @@ use crate::card_api::failed;
 use crate::deck_cards::{Line, Loaded};
 use crate::decks::lines_of;
 use crate::demo;
+use crate::precons::Judge;
 use crate::seat_deck::ChosenDeck;
 use crate::server::AppState;
 
@@ -81,13 +83,21 @@ fn blocked(issues: &[Issue]) -> ApiError {
     error
 }
 
-/// The deck with this id for the caller: a built-in deck, or one of the signed-in caller's stored
-/// decks. Nothing about a deck of anybody else is told.
+/// The code of the precon an id names (`precon:<code>`), if it names one.
+pub(crate) fn precon_code(id: &str) -> Option<&str> {
+    id.trim().strip_prefix(PRECON_DECK_PREFIX)
+}
+
+/// The deck with this id for the caller: a built-in deck, a precon, or one of the signed-in
+/// caller's stored decks. Nothing about a deck of anybody else is told.
 pub(crate) async fn resolve(
     app: &AppState,
     headers: &HeaderMap,
     id: &str,
 ) -> Result<ChosenDeck, Refused> {
+    if let Some(code) = precon_code(id) {
+        return precon(app, code).await;
+    }
     if let Some(deck) = demo::find(id) {
         return ChosenDeck::demo(deck).map_err(|error| {
             tracing::error!(%error, "a built-in deck could not be fingerprinted");
@@ -107,6 +117,43 @@ pub(crate) fn built_in(id: &str) -> Result<ChosenDeck, Refused> {
     let deck = demo::find(id).ok_or(Refused::Unknown)?;
     ChosenDeck::demo(deck).map_err(|error| {
         tracing::error!(%error, "a built-in deck could not be fingerprinted");
+        Refused::Failed(ApiError::new(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "internal",
+            "the deck could not be read",
+        ))
+    })
+}
+
+/// The precon with this code as a seat's deck: judged as the list shows it, then refused when the
+/// deck check blocks it or a game of this server cannot take it. An unknown code, a malformed one
+/// and a server without a database are one [`Refused::Unknown`].
+async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
+    let Some(source) = app.cards() else {
+        return Err(Refused::Unknown);
+    };
+    let index = source.precon_index().await.map_err(ApiError::from)?;
+    let found = index
+        .find(&code.trim().to_ascii_lowercase())
+        .ok_or(Refused::Unknown)?;
+    let deck = source
+        .database()
+        .precons()
+        .get(found.id)
+        .await
+        .map_err(|error| Refused::Failed(failed(&error)))?
+        .ok_or(Refused::Unknown)?;
+    let judged = Judge::new(source).map_err(ApiError::from)?.judge(&deck);
+    if !judged.playable {
+        return Err(Refused::Blocked(judged.issues));
+    }
+    let note = SeatDeck {
+        name: deck.summary.name.clone(),
+        format: judged.format.to_owned(),
+        manual_cards: manual_cards(&judged.report),
+    };
+    ChosenDeck::stored(judged.library, judged.cards, note).map_err(|error| {
+        tracing::error!(%error, "a precon could not be fingerprinted");
         Refused::Failed(ApiError::new(
             StatusCode::INTERNAL_SERVER_ERROR,
             "internal",
@@ -164,7 +211,7 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
 
 /// The oracle id of every card of the main deck, a line's copies one after the other, in line order:
 /// the library the game is given.
-fn library_ids(lines: &[Line]) -> Vec<String> {
+pub(crate) fn library_ids(lines: &[Line]) -> Vec<String> {
     lines
         .iter()
         .filter(|line| line.zone == DeckZone::Main)
@@ -174,7 +221,7 @@ fn library_ids(lines: &[Line]) -> Vec<String> {
 
 /// Copies of the main deck's cards the game does not run whole; a card of the sideboard or the
 /// companion slot never reaches the game, so the table is told nothing of it.
-fn manual_cards(report: &DeckReport) -> u32 {
+pub(crate) fn manual_cards(report: &DeckReport) -> u32 {
     report
         .cards
         .iter()
@@ -183,7 +230,7 @@ fn manual_cards(report: &DeckReport) -> u32 {
         .fold(0, u32::saturating_add)
 }
 
-fn no_command_zone() -> Issue {
+pub(crate) fn no_command_zone() -> Issue {
     Issue {
         code: IssueCode::NoCommanderZone,
         message: "a Normal game has no command zone, so the cards in it cannot be played"
@@ -195,7 +242,7 @@ fn no_command_zone() -> Issue {
 }
 
 /// A rule of the game's format the deck breaks, in the words of the deck check.
-fn engine_issue(error: DeckError) -> Issue {
+pub(crate) fn engine_issue(error: DeckError) -> Issue {
     match error {
         DeckError::TooFewCards { min, got } => Issue {
             code: IssueCode::DeckSize,

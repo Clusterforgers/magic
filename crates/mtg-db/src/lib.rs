@@ -26,5 +26,6 @@ pub use import::{
 pub use model::{Card, CardDetail, ImplStatus, Printing, PrintingImages, Ruling, StoredFace};
 pub use precons::{
     DeckBoard, PreconDeckDetail, PreconDeckId, PreconDeckSummary, PreconEntry, PreconRepo,
+    PreconVersion,
 };
 pub use runs::{ImportRun, ImportRuns, ImportSource, RunId, RunStatus, STALE_AFTER};

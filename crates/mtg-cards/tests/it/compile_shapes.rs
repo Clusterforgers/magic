@@ -122,9 +122,9 @@ fn clauses_have_the_kind_their_shape_says(
 }
 
 #[rstest]
-#[case::aura("Enchantment \u{2014} Aura", ImplStatus::Partial)]
-#[case::not_an_aura("Enchantment", ImplStatus::Manual)]
-#[case::creature_aura("Enchantment Creature \u{2014} Aura Spirit", ImplStatus::Partial)]
+#[case::aura("Enchantment \u{2014} Aura", ImplStatus::Full)]
+#[case::not_an_aura("Enchantment", ImplStatus::Partial)]
+#[case::creature_aura("Enchantment Creature \u{2014} Aura Spirit", ImplStatus::Full)]
 fn enchant_is_read_on_an_aura_only(#[case] type_line: &str, #[case] expected: ImplStatus) {
     let text = "Enchant creature\nEnchanted creature can't attack or block.";
     let compiled = check(&card_of(vec![face("Test Card", type_line, text)]));

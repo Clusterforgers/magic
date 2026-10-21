@@ -42,6 +42,12 @@ impl Registry {
         self.shared.throttle.begin_listing(now, address)
     }
 
+    /// Counts a request for the precon list or one precon from client `address` at time `now`
+    /// against `AttemptLimits::precon_requests_per_ip` inside `lobby_window`; every request counts.
+    pub fn admit_precons(&self, address: IpAddr, now: Instant) -> Result<(), Blocked> {
+        self.shared.throttle.begin_precons(now, address)
+    }
+
     /// The public games that are still in their lobby, newest first, at most
     /// [`MAX_LISTED_LOBBIES`]. Invite games, started games and games whose actor is gone are
     /// never in it.
