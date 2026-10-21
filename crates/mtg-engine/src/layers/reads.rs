@@ -172,7 +172,10 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         }
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
-        Amount::Life(who) | Amount::Counters { on: who, .. } => reads_of_ref(who),
+        Amount::Life(who)
+        | Amount::Counters { on: who, .. }
+        | Amount::Players(who)
+        | Amount::LowestLife(who) => reads_of_ref(who),
         Amount::Sum(parts) => parts
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
@@ -182,7 +185,6 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             reads_of_selector(of).or(reads_of_stat(*stat))
         }
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
-        Amount::Players(who) | Amount::LowestLife(who) => reads_of_ref(who),
     }
 }
 

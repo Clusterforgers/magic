@@ -881,7 +881,10 @@ mod tests {
         "Rule.AdditionalLandPlays"
     )]
     #[case::a_commander(r#""CanBeCommander""#, "Rule.CanBeCommander")]
-    fn a_rule_the_engine_does_not_play_refuses_by_its_name(#[case] rule: &str, #[case] name: &str) {
+    fn a_rule_the_engine_does_not_play_refuses_by_its_name(
+        #[case] rule: &str,
+        #[case] name: &'static str,
+    ) {
         let game = game(Vec::new());
         let scope = Scope::announcing(&game, ME, named(&game, "Holder"));
         let wanted: GameRule = serde_json::from_str(rule).unwrap();

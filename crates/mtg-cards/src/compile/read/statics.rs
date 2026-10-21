@@ -87,10 +87,7 @@ fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Player), None));
     }
     if r.words("choose an opponent") {
-        return Some(replacement(
-            ReplaceBy::Choose(EntersChoice::Opponent),
-            None,
-        ));
+        return Some(replacement(ReplaceBy::Choose(EntersChoice::Opponent), None));
     }
     r.need("you may pay")?;
     let life = r.number().filter(|life| *life > 0)?;
@@ -564,9 +561,7 @@ fn rule_texts(rule: &GameRule, from: ZoneKind) -> Vec<String> {
         (GameRule::LookAtTopAnyTime(Ref::You), ZoneKind::Battlefield) => {
             vec!["You may look at the top card of your library any time".to_owned()]
         }
-        (GameRule::AdditionalLandPlays { who, count }, ZoneKind::Battlefield)
-            if count.is_one() =>
-        {
+        (GameRule::AdditionalLandPlays { who, count }, ZoneKind::Battlefield) if count.is_one() => {
             match who {
                 Ref::You => {
                     vec!["You may play an additional land on each of your turns".to_owned()]

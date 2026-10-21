@@ -50,7 +50,10 @@ fn replacing_if(by: &str, condition: &str) -> String {
     r#"{"PayLifeOrTapped":3}"#
 )]
 #[case::a_player("As this creature enters, choose a player.", r#"{"Choose":"Player"}"#)]
-#[case::an_opponent("As this enchantment enters, choose an opponent.", r#"{"Choose":"Opponent"}"#)]
+#[case::an_opponent(
+    "As this enchantment enters, choose an opponent.",
+    r#"{"Choose":"Opponent"}"#
+)]
 fn a_permanent_enters_as_the_hand_written_files_say(#[case] text: &str, #[case] by: &str) {
     reads_as(text, ClauseKind::Static, false, &replacing(by));
 }
@@ -326,7 +329,9 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 #[case::choose_two("As this creature enters, choose a color and a creature type.")]
 #[case::choose_a_player_in_secret("As this creature enters, secretly choose an opponent.")]
 #[case::unless_one_opponent("This land enters tapped unless you have one opponent.")]
-#[case::unless_a_player_has_more_life("This land enters tapped unless a player has 13 or more life.")]
+#[case::unless_a_player_has_more_life(
+    "This land enters tapped unless a player has 13 or more life."
+)]
 #[case::unless_nobody_has_life("This land enters tapped unless a player has life.")]
 #[case::unblockable_except_by(
     "This creature can't be blocked except by creatures with flying or reach."
