@@ -286,20 +286,23 @@ pub(crate) fn keyword_adding(state: &GameState, address: AbilityRef) -> Option<K
     }
 }
 
-/// The modification `index` of the static ability `rule` printed on the card of `source`.
+/// The modification `index` of the static ability `rule` printed on the card of `source`, or of the static ability that
+/// the keyword printed as `rule` adds.
 fn static_mod(
     state: &GameState,
     source: ObjectId,
     rule: usize,
     index: usize,
-) -> Option<&WantedModification> {
-    match holder(state, source)?
-        .def
-        .rules
-        .get(rule)
-        .map(|rules| &**rules)
-    {
-        Some(Ability::Static { mods, .. }) => mods.get(index),
+) -> Option<WantedModification> {
+    match &**holder(state, source)?.def.rules.get(rule)? {
+        Ability::Static { mods, .. } => mods.get(index).cloned(),
+        Ability::Keyword(keyword) => keywords::rules(keyword)
+            .adds_abilities(keyword)
+            .into_iter()
+            .find_map(|added| match added {
+                Ability::Static { mods, .. } => mods.get(index).cloned(),
+                _ => None,
+            }),
         _ => None,
     }
 }
@@ -320,7 +323,7 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
             rule,
             index,
         } => match static_mod(state, source, rule, index)? {
-            WantedModification::GrantAbility(granted) => Some(Arc::clone(granted)),
+            WantedModification::GrantAbility(granted) => Some(granted),
             _ => None,
         },
     }
@@ -342,7 +345,7 @@ fn granted_keyword(state: &GameState, grant: Grant) -> Option<Keyword> {
             rule,
             index,
         } => match static_mod(state, source, rule, index)? {
-            WantedModification::AddKeyword(keyword) => Some(keyword.clone()),
+            WantedModification::AddKeyword(keyword) => Some(keyword),
             _ => None,
         },
     }

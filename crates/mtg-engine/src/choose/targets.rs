@@ -215,6 +215,8 @@ pub fn is_legal(
 }
 
 /// The decision for the specification `index`, or `None` when it cannot be met: fewer legal targets than its minimum.
+// Every argument is a different thing the legal targets depend on; the callers each have them all.
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn options_for(
     state: &GameState,
     source: ObjectId,

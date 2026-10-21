@@ -386,7 +386,8 @@ fn player_of(effect: &Effect) -> Option<&Ref> {
         | Effect::GainLife { who, .. }
         | Effect::LoseLife { who, .. }
         | Effect::Shuffle { who }
-        | Effect::Sacrifice { who, .. } => Some(who),
+        | Effect::Sacrifice { who, .. }
+        | Effect::CreateToken { who, .. } => Some(who),
         _ => None,
     }
 }
@@ -841,6 +842,7 @@ impl Writer<'_> {
             Effect::Sacrifice { filter, count, .. } if count.is_one() => {
                 format!("sacrifice{s} {}", sacrifice_text(filter)?)
             }
+            Effect::CreateToken { .. } => create::text(effect)?,
             Effect::Shuffle { who } => {
                 format!(
                     "shuffle{s} {} library",
@@ -851,18 +853,26 @@ impl Writer<'_> {
         })
     }
 
-    /// Several effects of one player as one sentence: "target opponent discards a card and loses 3 life".
+    /// Several effects as one sentence, one clause for each run of effects of one player: "target opponent discards a
+    /// card and loses 3 life", "you create a Wolf token and that player mills ten cards".
     fn compound(&mut self, group: &[Effect]) -> Option<String> {
-        let who = player_of(group.first()?)?;
-        if group.iter().any(|effect| player_of(effect) != Some(who)) {
-            return None;
+        let mut clauses = Vec::new();
+        let mut rest = group;
+        while let Some(first) = rest.first() {
+            let who = player_of(first)?;
+            let run = rest
+                .iter()
+                .take_while(|effect| player_of(effect) == Some(who))
+                .count();
+            let subject = self.player(who)?;
+            let mut phrases = Vec::with_capacity(run);
+            for effect in &rest[..run] {
+                phrases.push(self.predicate(effect, *who != Ref::You)?);
+            }
+            clauses.push(format!("{subject} {}", join_list(&phrases)));
+            rest = &rest[run..];
         }
-        let subject = self.player(who)?;
-        let mut phrases = Vec::with_capacity(group.len());
-        for effect in group {
-            phrases.push(self.predicate(effect, *who != Ref::You)?);
-        }
-        Some(format!("{subject} {}", join_list(&phrases)))
+        Some(clauses.join(" and "))
     }
 
     /// The objects a verb acts on: the target in full, or "all creatures".

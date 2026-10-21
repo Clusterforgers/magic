@@ -43,6 +43,7 @@ pub(super) fn move_object(
     object.zone = to;
     // A new zone makes it a new object (CR 400.7); what was announced for it on the stack goes with the stack.
     object.counter += 1;
+    object.card_counters.clear();
     // What the spell paid for stays with the permanent it becomes, for its abilities to read.
     let paid = if from == Zone::Stack && to == Zone::Battlefield {
         std::mem::take(&mut object.choices.optional_costs)

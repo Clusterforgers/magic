@@ -262,6 +262,12 @@ impl RandomBot {
                 .iter()
                 .map(|a| PriorityAction::Activate(*a)),
         );
+        actions.extend(
+            options
+                .suspendable
+                .iter()
+                .map(|o| PriorityAction::Suspend(*o)),
+        );
         actions[self.rng.index(actions.len())]
     }
 

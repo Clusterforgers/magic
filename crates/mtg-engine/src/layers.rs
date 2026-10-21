@@ -28,7 +28,7 @@ use mtg_cards::value::CounterKind;
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
-use crate::ability_reader::{printed, provided, working_here};
+use crate::ability_reader::{definition_has_static, printed, provided, working_here};
 use crate::characteristics::{Characteristics, base};
 use crate::effects::{ContinuousEffect, Layer, Modification, Selector};
 use crate::events::Event;
@@ -455,7 +455,7 @@ fn compute(state: &GameState) -> Layers {
         .zone(Zone::Battlefield)
         .iter()
         .filter_map(|id| state.object(*id))
-        .any(|object| printed(object).any(|(_, rules)| matches!(**rules, Ability::Static { .. })))
+        .any(|object| definition_has_static(&object.def))
         || (state.possible.elsewhere
             && state.objects().any(|object| {
                 object.zone() != Zone::Battlefield

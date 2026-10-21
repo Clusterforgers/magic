@@ -18,6 +18,7 @@ use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind}
 use crate::spend::SpendOn;
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, TriggerPattern};
+use crate::value::CastWay;
 use crate::value::{Amount, Condition};
 
 /// One problem found in a file: where, and what.
@@ -422,6 +423,10 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "Players");
                 self.at("Players", |w| w.reference(who, Kind::Player));
             }
+            Amount::HighestLife(who) => {
+                self.uses("Amount", "HighestLife");
+                self.at("HighestLife", |w| w.reference(who, Kind::Player));
+            }
             Amount::LowestLife(who) => {
                 self.uses("Amount", "LowestLife");
                 self.at("LowestLife", |w| w.reference(who, Kind::Player));
@@ -621,6 +626,7 @@ impl<'a> Walker<'a> {
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
             | Keyword::Squad(cost)
+            | Keyword::Foretell(cost)
             | Keyword::Suspend { cost, .. } => {
                 self.at("cost", |w| w.cost(cost));
                 // Only mana is paid for these: a part that takes objects, life or counters is not.
@@ -1051,11 +1057,17 @@ impl<'a> Walker<'a> {
             Effect::CastFromZone {
                 who,
                 what,
+                way,
                 otherwise,
                 ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("what", |w| w.reference(what, Kind::Object));
+                if let Some(way) = way
+                    && !matches!(way, CastWay::Madness | CastWay::Suspend)
+                {
+                    w.problem("only madness and suspend are cast for a way of their own");
+                }
                 w.effect_list("otherwise", otherwise, false);
             }
             Effect::Choose {
@@ -1636,7 +1648,9 @@ impl<'a> Walker<'a> {
                 }
                 self.at("source", |w| w.selector(source));
             }
-            ReplaceWhen::ZoneChange { what, .. } | ReplaceWhen::Enters { what } => {
+            ReplaceWhen::ZoneChange { what, .. }
+            | ReplaceWhen::Discarded { what }
+            | ReplaceWhen::Enters { what } => {
                 self.at("what", |w| w.selector(what));
             }
             ReplaceWhen::CountersPut { on, .. } => {
@@ -1665,7 +1679,9 @@ impl<'a> Walker<'a> {
             ReplaceBy::Multiply(_) | ReplaceBy::Add(_)
                 if matches!(
                     when,
-                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Enters { .. }
+                    ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Discarded { .. }
+                        | ReplaceWhen::Enters { .. }
                 ) =>
             {
                 self.problem("a zone change has no number to change");
@@ -1674,7 +1690,9 @@ impl<'a> Walker<'a> {
             ReplaceBy::Prevent
                 if matches!(
                     when,
-                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Enters { .. }
+                    ReplaceWhen::ZoneChange { .. }
+                        | ReplaceWhen::Discarded { .. }
+                        | ReplaceWhen::Enters { .. }
                 ) =>
             {
                 self.problem("a zone change or an entering is not prevented");
@@ -1688,8 +1706,13 @@ impl<'a> Walker<'a> {
                 }
                 self.effect_list("Instead", effects, false);
             }
-            ReplaceBy::MoveTo(_) if !matches!(when, ReplaceWhen::ZoneChange { .. }) => {
-                self.problem("`MoveTo` replaces a `ZoneChange`");
+            ReplaceBy::MoveTo(_)
+                if !matches!(
+                    when,
+                    ReplaceWhen::ZoneChange { .. } | ReplaceWhen::Discarded { .. }
+                ) =>
+            {
+                self.problem("`MoveTo` replaces a `ZoneChange` or a `Discarded`");
             }
             ReplaceBy::WithCounters { count, .. } => {
                 if !enters {

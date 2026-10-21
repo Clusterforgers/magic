@@ -49,7 +49,8 @@ pub(super) fn holders(cx: &Cx<'_>, reference: &Ref) -> Result<Vec<Target>, Resol
         let holds = match named {
             Target::Player(player) => cx.state().is_alive(player),
             Target::Object(object) => cx.state().object(object.id).is_some_and(|live| {
-                live.counter() == object.counter && live.zone() == Zone::Battlefield
+                live.counter() == object.counter
+                    && matches!(live.zone(), Zone::Battlefield | Zone::Exile)
             }),
         };
         if holds && !found.contains(&named) {

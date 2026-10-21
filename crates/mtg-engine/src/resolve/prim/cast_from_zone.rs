@@ -1,7 +1,9 @@
 //! `Effect::CastFromZone`: a player may cast a card as part of a resolution (CR 608.2g).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::value::CastWay;
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_core::mana::ManaCost;
 
 use super::wrong_effect;
 use crate::choose::{Choice, YesNoOptions};
@@ -22,7 +24,11 @@ use crate::wording;
 /// be. Nothing else is logged for the announcement, so a game rebuilt from its log in the middle of one asks it again.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::CastFromZone {
-        who, what, free, ..
+        who,
+        what,
+        free,
+        way,
+        ..
     } = effect
     else {
         return Err(wrong_effect("CastFromZone"));
@@ -48,15 +54,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 .scope
                 .live_objects(what)?
                 .into_iter()
-                .find(|card| ways::grantable(state, player, card.id(), *free));
+                .find(|card| ways::grantable(state, player, card.id(), *free, *way));
             Ok(card.map_or_else(
                 || finished(false),
                 |card| {
+                    let madness = ways::madness_cost(state, card.id())
+                        .filter(|_| *way == Some(CastWay::Madness));
                     Run::Ask(question(
                         player,
                         card.card().name.as_str(),
                         card.id(),
                         *free,
+                        madness.as_ref(),
                     ))
                 },
             ))
@@ -73,6 +82,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 player,
                 card: card.id(),
                 free: *free,
+                way: *way,
             }))
         }
         (Some((first, Choice::YesNo(true))), Some((second, Choice::YesNo(cast))))
@@ -99,9 +109,15 @@ fn unexpected(what: &str) -> ResolveError {
 }
 
 /// "Cast Lightning Bolt without paying its mana cost?"
-fn question(player: PlayerId, name: &str, card: ObjectId, free: bool) -> Decision {
+fn question(
+    player: PlayerId,
+    name: &str,
+    card: ObjectId,
+    free: bool,
+    madness: Option<&ManaCost>,
+) -> Decision {
     Decision {
         player,
-        kind: DecisionKind::YesNo(YesNoOptions::new(card, wording::cast(name, free))),
+        kind: DecisionKind::YesNo(YesNoOptions::new(card, wording::cast(name, free, madness))),
     }
 }

@@ -122,6 +122,8 @@ pub struct Cast {
     pub card: ObjectId,
     /// The mana cost is not paid.
     pub free: bool,
+    /// The alternative cost it is cast for.
+    pub way: Option<mtg_cards::value::CastWay>,
 }
 
 /// Where a step goes after its effect.
@@ -331,9 +333,12 @@ pub(crate) fn next(state: &GameState) -> flow::Progress {
     match step(state) {
         Ok(Progress::Done(events)) => flow::Progress::Events(events),
         Ok(Progress::Ask(decision)) => flow::Progress::Decide(decision),
-        Ok(Progress::Cast(Cast { player, card, free })) => {
-            flow::Progress::Put(Pending::during_resolution(player, card, free))
-        }
+        Ok(Progress::Cast(Cast {
+            player,
+            card,
+            free,
+            way,
+        })) => flow::Progress::Put(Pending::during_resolution(player, card, free, way)),
         Err(error) => flow::Progress::Fail(error),
     }
 }

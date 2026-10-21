@@ -64,15 +64,21 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         zone: object.zone(),
         characteristics,
         keywords: keywords_of(state, id).into_iter().cloned().collect(),
-        counters: object
-            .permanent()
-            .map(|permanent| {
+        counters: object.permanent().map_or_else(
+            || {
+                object
+                    .card_counters
+                    .iter()
+                    .map(|(kind, count)| (kind.clone(), *count))
+                    .collect()
+            },
+            |permanent| {
                 permanent
                     .counters()
                     .map(|(kind, count)| (kind.clone(), count))
                     .collect()
-            })
-            .unwrap_or_default(),
+            },
+        ),
         attachments: state.attachments_of(id),
         x: object.announced_x(),
     })

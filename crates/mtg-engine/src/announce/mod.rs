@@ -14,6 +14,7 @@ mod modifiers;
 mod optional;
 mod parts;
 mod payment;
+pub(crate) mod suspend;
 mod targets;
 mod total;
 mod x;
@@ -21,6 +22,7 @@ mod x;
 use std::sync::Arc;
 
 use mtg_cards::ability::Ability;
+use mtg_cards::value::CastWay;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::abilities::{AbilityRef, Cause};
@@ -144,6 +146,8 @@ pub(crate) struct Needs {
 pub(crate) struct Granted {
     /// The mana cost is not paid (CR 118.9).
     pub(crate) free: bool,
+    /// The alternative cost it is cast for: its madness cost, or nothing for suspend.
+    pub(crate) way: Option<CastWay>,
 }
 
 impl Needs {
@@ -208,6 +212,8 @@ pub(crate) struct Pending {
     pub(crate) done: Done,
     /// Set when a resolution casts the spell.
     pub(crate) granted: Option<Granted>,
+    /// Set when the card is being suspended, a special action that pays its suspend cost and does not use the stack.
+    pub(crate) suspending: bool,
     needs: Option<Needs>,
 }
 
@@ -220,14 +226,28 @@ impl Pending {
             done: Done::default(),
             granted: None,
             needs: None,
+            suspending: false,
         }
     }
 
     /// The cast of `spell` that a resolution lets `player` make, with or without paying its mana cost.
-    pub(crate) fn during_resolution(player: PlayerId, spell: ObjectId, free: bool) -> Self {
+    pub(crate) fn during_resolution(
+        player: PlayerId,
+        spell: ObjectId,
+        free: bool,
+        way: Option<CastWay>,
+    ) -> Self {
         Pending {
-            granted: Some(Granted { free }),
+            granted: Some(Granted { free, way }),
             ..Pending::new(player, What::Spell(spell))
+        }
+    }
+
+    /// The suspending of `card` from the hand by `player`: only the payment of its suspend cost is asked.
+    pub(crate) fn suspending(player: PlayerId, card: ObjectId) -> Self {
+        Pending {
+            suspending: true,
+            ..Pending::new(player, What::Spell(card))
         }
     }
 
@@ -422,8 +442,12 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         choices,
         done,
         granted,
+        suspending,
         needs,
     } = pending;
+    if *suspending && let What::Spell(card) = what {
+        return suspend::next(state, *player, *card);
+    }
     let what: &What = what;
     let held = rules_of(state, what);
     let needs: &Needs =
