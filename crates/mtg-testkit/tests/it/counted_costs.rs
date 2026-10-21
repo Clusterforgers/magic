@@ -291,3 +291,95 @@ fn the_picks_of_a_counted_sacrifice_name_the_creatures_and_what_is_asked() -> Re
     assert_eq!(options.text, "Sacrifice 2 creatures.");
     Ok(())
 }
+
+#[test]
+fn copper_leaf_angel_sacrifices_x_lands_for_x_counters() -> Result<(), ScriptError> {
+    let scenario =
+        Scenario::new(2).battlefield_named(0, ["Copper-Leaf Angel", "Forest", "Forest", "Forest"]);
+    let setup: GameSetup = scenario.clone().setup()?;
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_activation("Copper-Leaf Angel")?;
+    assert_eq!(range(&driver).1, Some(3));
+    say(&mut driver, 2)?;
+    pick_first(&mut driver)?;
+    settle(&mut driver)?;
+    let angel = driver.id_of("Copper-Leaf Angel")?;
+    let counters = driver
+        .state()
+        .object(angel)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .counters_of(&CounterKind::PlusOnePlusOne);
+    assert_eq!(counters, 2);
+    assert_eq!(driver.state().zone(Zone::Graveyard(pid(0))).len(), 2);
+    let replayed = replay(&setup, driver.engine().events()).unwrap();
+    assert_eq!(replayed.state_hash(), driver.state().state_hash());
+    Ok(())
+}
+
+#[test]
+fn solstice_zealot_pays_one_energy_to_tap_a_creature_and_is_not_offered_without_it()
+-> Result<(), ScriptError> {
+    let energy = CounterKind::Other("energy".into());
+    let scenario = Scenario::new(2)
+        .battlefield_named(0, ["Solstice Zealot"])
+        .counters(0, energy.clone(), 1)
+        .battlefield_named(1, ["Grizzly Bears"]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.begin_activation("Solstice Zealot")?;
+    let target = driver.target_named("Grizzly Bears")?;
+    driver.choose_targets(&[target])?;
+    settle(&mut driver)?;
+    let bears = driver.id_of("Grizzly Bears")?;
+    assert!(
+        driver
+            .state()
+            .object(bears)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .tapped()
+    );
+    assert_eq!(
+        driver.state().player(pid(0)).unwrap().counters_of(&energy),
+        0
+    );
+    assert!(driver.offered_abilities("Solstice Zealot")?.is_empty());
+    Ok(())
+}
+
+#[rstest]
+fn bot_games_with_counted_costs_and_energy_finish_whole_and_replay(
+    #[values(2, 3, 4)] players: usize,
+) {
+    let (mut activated, mut gained, mut energy) = (0u64, 0u64, 0u64);
+    for seed in 0..20 {
+        let setup = mtg_testkit::parts_fuzz_setup(players, seed).unwrap();
+        let outcome = mtg_testkit::play_game(setup.clone(), seed)
+            .unwrap_or_else(|failure| panic!("{failure}"));
+        let replayed = replay(&setup, &outcome.events).unwrap();
+        assert_eq!(replayed.state_hash(), outcome.final_hash, "seed {seed}");
+        for event in &outcome.events {
+            match event {
+                mtg_engine::Event::AbilityActivated { .. } => activated += 1,
+                mtg_engine::Event::CountersChanged(changed)
+                    if changed.counter == CounterKind::Other("energy".into()) =>
+                {
+                    if changed.delta > 0 {
+                        gained += 1;
+                    } else {
+                        energy += 1;
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    assert!(activated > 0, "abilities were activated");
+    assert!(gained > 0, "energy was gained in {players}-seat games");
+    assert!(
+        energy > 0,
+        "energy was paid in {players}-seat games ({gained} gained)"
+    );
+}

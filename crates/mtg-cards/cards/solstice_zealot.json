@@ -1,0 +1,28 @@
+{
+  "oracle_id": "1ec63280-ae5b-4892-8854-de2d8127ea83",
+  "name": "Solstice Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solstice Zealot",
+      "oracle_fingerprint": "b65dbeddab2d00a413408ce2b734bfe7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 1 }],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

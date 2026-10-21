@@ -1397,6 +1397,9 @@ impl<'a> Walker<'a> {
         targets: &[TargetSpec],
         effects: &[Effect],
     ) {
+        // The X a part of the cost counts is the one the ability announces.
+        self.x_free = cost.has_x();
+        self.x_now = self.x_free;
         self.at("cost", |w| w.cost(cost));
         self.at("from", |w| w.activated_zone(cost, from));
         if let Some(condition) = condition {
