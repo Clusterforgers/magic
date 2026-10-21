@@ -11,9 +11,10 @@
 //!   what the first one left (CR 616.2);
 //! - an event that is replaced entirely does not happen, so it is not in the result;
 //! - a shield (CR 615) is a replacement effect an effect made for a while: a prevention shield takes up to a given
-//!   amount of the damage of the events it covers, in the order the batch lists them, and a regeneration shield replaces
-//!   the next destruction of its permanent before anything else applies to it. Damage that can't be prevented
-//!   (`GameRule::DamageCantBePrevented`) is passed by every prevention effect and shield.
+//!   amount of the damage of the events it covers, and when the events of one affected player share what it has left
+//!   that player picks the one it takes next (`ChooseOption`); a regeneration shield replaces the next destruction of its
+//!   permanent before anything else applies to it. Damage that can't be prevented (`GameRule::DamageCantBePrevented`) is
+//!   passed by every prevention effect and shield.
 //!
 //! The step is a pure function of the state, the proposed events and the answers given so far. A question the step
 //! needs answered (the order, a choice made as a permanent enters) comes back as a decision; the caller keeps the
@@ -1007,7 +1008,11 @@ impl Pass<'_> {
                     }
                 }
             };
-            match self.apply(at, &chosen)? {
+            let (slot, chosen) = match self.shield_takes(at, chosen)? {
+                Asked::Ask(decision) => return Ok(Run::Ask(decision)),
+                Asked::Got(pick) => pick,
+            };
+            match self.apply(slot, &chosen)? {
                 Applied::Ask(decision) => return Ok(Run::Ask(decision)),
                 Applied::Done => {}
             }
@@ -1018,6 +1023,110 @@ impl Pass<'_> {
             ));
         }
         Ok(Run::Done)
+    }
+
+    /// The slot a prevention shield that stops a given amount is applied to when it is chosen for the slot at `at`: the
+    /// damage events of one affected player that it covers share what it has left, so that player picks which event it
+    /// takes next. Nothing is asked when it has enough for all of them or the events are the same event.
+    fn shield_takes(
+        &mut self,
+        at: usize,
+        chosen: Candidate,
+    ) -> Result<Asked<(usize, Candidate)>, EngineError> {
+        let (Origin::Shield(_), Action::Replace(ReplaceBy::PreventUpTo(left))) =
+            (chosen.origin, &chosen.action)
+        else {
+            return Ok(Asked::Got((at, chosen)));
+        };
+        let left = u64::from(*left);
+        let unit = self.unit(&self.slots[at].item);
+        if !matches!(unit, Unit::Damage { .. }) {
+            return Ok(Asked::Got((at, chosen)));
+        }
+        let player = self.affected(&unit);
+        let mut group: Vec<(usize, Event, Candidate)> = Vec::new();
+        for slot in at..self.slots.len() {
+            let Item::One(event @ Event::DamageDealt { .. }) = &self.slots[slot].item else {
+                continue;
+            };
+            if self.affected(&self.unit(&self.slots[slot].item)) != player {
+                continue;
+            }
+            let found = self.candidates(slot)?;
+            if found.iter().any(|candidate| candidate.is_self) {
+                continue;
+            }
+            if let Some(same) = found
+                .into_iter()
+                .find(|candidate| candidate.origin == chosen.origin)
+            {
+                group.push((slot, event.clone(), same));
+            }
+        }
+        let total: u64 = group
+            .iter()
+            .map(|(_, event, _)| match event {
+                Event::DamageDealt { amount, .. } => u64::from(*amount),
+                _ => 0,
+            })
+            .sum();
+        let mut distinct: Vec<(usize, Event, Candidate)> = Vec::new();
+        for entry in group {
+            if !distinct.iter().any(|(_, seen, _)| *seen == entry.1) {
+                distinct.push(entry);
+            }
+        }
+        if total <= left || distinct.len() < 2 {
+            return Ok(Asked::Got((at, chosen)));
+        }
+        let options: Vec<ChoiceOption> = distinct
+            .iter()
+            .map(|(_, event, _)| ChoiceOption::Label(self.describe_damage(event)))
+            .collect();
+        let maker = self.state.object(chosen.object.id).map_or_else(
+            || "The shield".to_owned(),
+            |object| object.card().name.clone(),
+        );
+        match self.answer() {
+            None => Ok(Asked::Ask(Decision {
+                player,
+                kind: DecisionKind::ChooseOption(OptionOptions {
+                    source: chosen.object.id,
+                    options,
+                    text: format!("Choose the damage {maker} prevents first."),
+                }),
+            })),
+            Some((who, Choice::Option(index))) if *who == player && *index < distinct.len() => {
+                let (slot, _, candidate) = distinct.swap_remove(*index);
+                Ok(Asked::Got((slot, candidate)))
+            }
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the order of the damage a shield prevents of {player:?}"
+            ))),
+        }
+    }
+
+    /// A damage event in words ("2 damage from Imp to Bear0").
+    fn describe_damage(&self, event: &Event) -> String {
+        let name = |object: ObjectId| {
+            self.state
+                .object(object)
+                .map_or_else(|| "a card".to_owned(), |o| o.card().name.clone())
+        };
+        let Event::DamageDealt {
+            source,
+            target,
+            amount,
+            ..
+        } = event
+        else {
+            return String::new();
+        };
+        let to = match target {
+            DamageTarget::Player(player) => format!("player {}", player.get()),
+            DamageTarget::Object(object) => name(*object),
+        };
+        format!("{amount} damage from {} to {to}", name(*source))
     }
 
     /// Puts the items back as events; cards drawn by an event that was changed are the top cards in order.

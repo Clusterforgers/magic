@@ -1,4 +1,4 @@
-//! Goal: prevention and regeneration shields act through the replacement step as the rules say: a shield takes up to its amount of the damage of the events in a batch in the order the batch lists them and is used up or remembers what is left; a shield covers the recipients, the sources and the kind of damage it was made for and nothing else; each shield applies to an event once, so several shields apply one after another in the order the affected player picks, and a question is asked only when the order can matter; damage that can't be prevented passes every shield and leaves it unused; lifelink follows the damage that is left; a regeneration shield replaces the destruction of its permanent (a destroy effect, lethal damage, deathtouch) and nothing else (not a burial, zero toughness or a sacrifice), before any other effect applies to the move, and is used by one destruction; at tables of two, three and four seats.
+//! Goal: prevention and regeneration shields act through the replacement step as the rules say: a shield takes up to its amount of the damage of the events in a batch, in the order the affected player picks when the events differ and share what is left (and with no question when it has enough for all of them or the events are one event), and is used up or remembers what is left; a shield covers the recipients, the sources and the kind of damage it was made for and nothing else; each shield applies to an event once, so several shields apply one after another in the order the affected player picks, and a question is asked only when the order can matter; damage that can't be prevented passes every shield and leaves it unused; lifelink follows the damage that is left; a regeneration shield replaces the destruction of its permanent (a destroy effect, lethal damage, deathtouch) and nothing else (not a burial, zero toughness or a sacrifice), before any other effect applies to the move, and is used by one destruction; at tables of two, three and four seats.
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
@@ -10,7 +10,7 @@ use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 use rstest::rstest;
 
 use super::{Processed, process};
-use crate::choose::{Choice, Target};
+use crate::choose::{Choice, ChoiceOption, Target};
 use crate::combat::DamageTarget;
 use crate::decision::DecisionKind;
 use crate::events::{DeathCause, Event, ZoneCause};
@@ -167,10 +167,10 @@ fn shield_events(events: &[Event], shield: EffectId) -> After {
 #[case::all_of_one(Some(3), &[3], &[], After::Ended)]
 #[case::less_than_the_damage(Some(3), &[5], &[2], After::Ended)]
 #[case::two_events_share_it(Some(3), &[2, 2], &[1], After::Ended)]
-#[case::the_first_events_first(Some(3), &[1, 1, 1, 1], &[1], After::Ended)]
-#[case::one_and_a_bit(Some(1), &[4, 1], &[3, 1], After::Ended)]
+#[case::four_events_share_it(Some(3), &[1, 1, 1, 1], &[1], After::Ended)]
+#[case::enough_for_both(Some(7), &[4, 2], &[], After::Used(1))]
 #[case::all_damage(None, &[4, 2], &[], After::Untouched)]
-fn a_shield_takes_damage_from_the_events_of_a_batch_in_the_order_they_are_listed(
+fn a_shield_takes_damage_from_the_events_of_a_batch_without_a_question_when_they_are_one_event(
     #[values(2, 3, 4)] seats: usize,
     #[case] left: Option<u32>,
     #[case] hits: &[u32],
@@ -389,6 +389,226 @@ fn an_answer_that_is_not_the_order_of_shields_is_refused() {
     }
 }
 
+// The order a limited shield takes the events of a batch in
+
+/// A question the step asked while a batch was played.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct Question {
+    player: PlayerId,
+    /// `option` or `replacement`.
+    kind: &'static str,
+    options: Vec<String>,
+    source: Option<ObjectId>,
+    text: String,
+}
+
+/// Plays a batch to its end, answering each question with the next of `picks`; the questions come back with the events.
+fn play(table: &GameState, batch: &[Event], picks: &[usize]) -> (Vec<Event>, Vec<Question>) {
+    let mut journal = Vec::new();
+    let mut asked = Vec::new();
+    loop {
+        match process(table, batch.to_vec(), &journal).unwrap() {
+            Processed::Events(events) => {
+                assert_eq!(asked.len(), picks.len(), "every pick answers a question");
+                return (events, asked);
+            }
+            Processed::Ask { decision, proposed } => {
+                assert_eq!(proposed, batch);
+                let pick = *picks
+                    .get(asked.len())
+                    .unwrap_or_else(|| panic!("a question was not expected: {decision:?}"));
+                let (question, choice) = match decision.kind {
+                    DecisionKind::ChooseOption(options) => (
+                        Question {
+                            player: decision.player,
+                            kind: "option",
+                            options: options
+                                .options
+                                .iter()
+                                .map(|option| match option {
+                                    ChoiceOption::Label(label) => label.clone(),
+                                    other => panic!("a label was expected, got {other:?}"),
+                                })
+                                .collect(),
+                            source: Some(options.source),
+                            text: options.text,
+                        },
+                        Choice::Option(pick),
+                    ),
+                    DecisionKind::ChooseReplacement(options) => (
+                        Question {
+                            player: decision.player,
+                            kind: "replacement",
+                            options: Vec::new(),
+                            source: None,
+                            text: options.text,
+                        },
+                        Choice::Replacement(pick),
+                    ),
+                    other => panic!("an order was expected, got {other:?}"),
+                };
+                journal.push((question.player, choice));
+                asked.push(question);
+            }
+        }
+    }
+}
+
+/// The damage left in the events as `source>target:amount`.
+fn dealt(game: &GameState, events: &[Event]) -> Vec<String> {
+    let name = |object: ObjectId| game.object(object).unwrap().card().name.clone();
+    events
+        .iter()
+        .filter_map(|event| match event {
+            Event::DamageDealt {
+                source,
+                target,
+                amount,
+                ..
+            } => {
+                let to = match target {
+                    DamageTarget::Player(player) => format!("player{}", player.get()),
+                    DamageTarget::Object(object) => name(*object),
+                };
+                Some(format!("{}>{to}:{amount}", name(*source)))
+            }
+            _ => None,
+        })
+        .collect()
+}
+
+fn hits(game: &GameState, list: &[(&str, &str, u32)]) -> Vec<Event> {
+    list.iter()
+        .map(|(source, to, amount)| hit(game, source, to, *amount))
+        .collect()
+}
+
+const IMP2: (&str, &str, u32) = ("Imp", "Bear0", 2);
+const ELF2: (&str, &str, u32) = ("Elf", "Bear0", 2);
+
+#[rstest]
+#[case::identical_events_are_a_tie(3, &[IMP2, IMP2], &[], &[], &["Imp>Bear0:1"], After::Ended)]
+#[case::enough_for_all(9, &[IMP2, ("Elf", "Bear0", 5)], &[], &[], &[], After::Used(2))]
+#[case::exactly_enough(7, &[IMP2, ("Elf", "Bear0", 5)], &[], &[], &[], After::Ended)]
+#[case::one_event_larger_than_the_shield(2, &[("Imp", "Bear0", 5)], &[], &[], &["Imp>Bear0:3"], After::Ended)]
+#[case::the_first_listed_first(3, &[IMP2, ELF2], &[0], &[0], &["Elf>Bear0:1"], After::Ended)]
+#[case::the_second_listed_first(3, &[IMP2, ELF2], &[1], &[0], &["Imp>Bear0:1"], After::Ended)]
+#[case::the_large_one_takes_it_all(1, &[("Imp", "Bear0", 4), ("Elf", "Bear0", 1)], &[0], &[0], &["Imp>Bear0:3", "Elf>Bear0:1"], After::Ended)]
+#[case::the_small_one_first_is_prevented_whole(1, &[("Imp", "Bear0", 4), ("Elf", "Bear0", 1)], &[1], &[0], &["Imp>Bear0:4"], After::Ended)]
+#[case::three_events_last_then_middle(4, &[IMP2, ("Elf", "Bear0", 3), ("Imp", "Bear0", 1)], &[2, 1], &[0, 0], &["Imp>Bear0:2"], After::Ended)]
+#[case::three_events_middle_then_first(4, &[IMP2, ("Elf", "Bear0", 3), ("Imp", "Bear0", 1)], &[1, 0], &[0, 0], &["Imp>Bear0:1", "Imp>Bear0:1"], After::Ended)]
+#[case::three_events_in_batch_order(4, &[IMP2, ("Elf", "Bear0", 3), ("Imp", "Bear0", 1)], &[0, 0], &[0, 0], &["Elf>Bear0:1", "Imp>Bear0:1"], After::Ended)]
+#[case::a_creature_and_its_controller(3, &[IMP2, ("Imp", "player0", 2)], &[1], &[0], &["Imp>Bear0:1"], After::Ended)]
+#[case::each_player_picks_among_their_own_events_only(3, &[("Imp", "Bear0", 3), ("Imp", "Bear1", 3)], &[], &[], &["Imp>Bear1:3"], After::Ended)]
+#[case::the_player_of_a_later_event_picks_among_theirs(3, &[IMP2, ("Imp", "Bear1", 5), ("Elf", "Bear1", 2)], &[1], &[1], &["Imp>Bear1:5", "Elf>Bear1:1"], After::Ended)]
+#[case::and_the_other_pick(3, &[IMP2, ("Imp", "Bear1", 5), ("Elf", "Bear1", 2)], &[0], &[1], &["Imp>Bear1:4", "Elf>Bear1:2"], After::Ended)]
+fn a_limited_shield_takes_the_events_in_the_order_the_affected_player_picks(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] left: u32,
+    #[case] batch: &[(&str, &str, u32)],
+    #[case] picks: &[usize],
+    #[case] asked: &[usize],
+    #[case] remaining: &[&str],
+    #[case] after: After,
+) {
+    let mut table = game(seats, Vec::new());
+    let rule = anything(&table, Some(left));
+    let shield = begin(&mut table, "Imp", rule);
+    let (result, questions) = play(&table, &hits(&table, batch), picks);
+    assert_eq!(dealt(&table, &result), remaining);
+    assert_eq!(shield_events(&result, shield), after);
+    let who: Vec<PlayerId> = questions.iter().map(|q| q.player).collect();
+    assert_eq!(who, asked.iter().map(|n| seat(*n)).collect::<Vec<_>>());
+    assert!(questions.iter().all(|q| q.kind == "option"));
+}
+
+#[rstest]
+fn the_options_name_each_distinct_event_once_and_the_question_names_the_shield(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let mut table = game(seats, Vec::new());
+    let rule = anything(&table, Some(3));
+    let shield = begin(&mut table, "Imp", rule);
+    let batch = hits(&table, &[IMP2, IMP2, ELF2]);
+    let (result, questions) = play(&table, &batch, &[1]);
+    let [question] = questions.as_slice() else {
+        panic!("one question was expected, got {questions:?}");
+    };
+    assert_eq!(
+        question.options,
+        ["2 damage from Imp to Bear0", "2 damage from Elf to Bear0"]
+    );
+    assert_eq!(question.source, Some(id(&table, "Imp")));
+    assert_eq!(question.text, "Choose the damage Imp prevents first.");
+    // The Elf's event is taken whole, and the two events of the Imp are one tie for what is left.
+    assert_eq!(dealt(&table, &result), ["Imp>Bear0:1", "Imp>Bear0:2"]);
+    assert_eq!(shield_events(&result, shield), After::Ended);
+}
+
+#[rstest]
+fn a_pick_names_the_first_of_the_events_that_are_the_same_event(#[values(2, 3, 4)] seats: usize) {
+    let mut table = game(seats, Vec::new());
+    let rule = anything(&table, Some(2));
+    begin(&mut table, "Imp", rule);
+    let batch = hits(&table, &[ELF2, IMP2, IMP2]);
+    let (result, _) = play(&table, &batch, &[1]);
+    assert_eq!(dealt(&table, &result), ["Elf>Bear0:2", "Imp>Bear0:2"]);
+}
+
+#[rstest]
+fn two_limited_shields_ask_for_the_order_of_the_shields_and_then_for_the_damage(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let mut table = game(seats, Vec::new());
+    let [first, second] = two_shields(&mut table, Some(2), Some(2));
+    let batch = hits(&table, &[IMP2, ELF2]);
+    let (result, questions) = play(&table, &batch, &[0, 1]);
+    let kinds: Vec<&str> = questions.iter().map(|q| q.kind).collect();
+    assert_eq!(kinds, ["replacement", "option"]);
+    assert_eq!(dealt(&table, &result), Vec::<String>::new());
+    assert_eq!(shield_events(&result, first), After::Ended);
+    assert_eq!(shield_events(&result, second), After::Ended);
+}
+
+#[rstest]
+#[case::another_player(seat(1), Choice::Option(0))]
+#[case::an_option_that_is_not_offered(seat(0), Choice::Option(2))]
+#[case::the_order_of_effects(seat(0), Choice::Replacement(0))]
+#[case::a_yes(seat(0), Choice::YesNo(true))]
+fn an_answer_that_is_not_a_pick_of_the_damage_is_refused(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] who: PlayerId,
+    #[case] choice: Choice,
+) {
+    let mut table = game(seats, Vec::new());
+    let rule = anything(&table, Some(3));
+    begin(&mut table, "Imp", rule);
+    let batch = hits(&table, &[IMP2, ELF2]);
+    assert!(process(&table, batch.clone(), &[(who, choice)]).is_err());
+    let two = [(seat(0), Choice::Option(0)), (seat(0), Choice::Option(0))];
+    assert!(
+        process(&table, batch, &two).is_err(),
+        "an answer to a question that is not asked"
+    );
+}
+
+#[rstest]
+fn the_step_is_a_pure_function_of_the_state_the_batch_and_the_answers(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let mut table = game(seats, Vec::new());
+    let rule = anything(&table, Some(3));
+    begin(&mut table, "Imp", rule);
+    let batch = hits(&table, &[IMP2, ELF2]);
+    let journal = [(seat(0), Choice::Option(1))];
+    let once = process(&table, batch.clone(), &journal).unwrap();
+    assert_eq!(once, process(&table, batch.clone(), &journal).unwrap());
+    let Processed::Ask { decision, .. } = process(&table, batch, &[]).unwrap() else {
+        panic!("the player is asked");
+    };
+    assert_eq!(decision.player, seat(0));
+}
+
 // Damage that can't be prevented
 
 fn rule_card(rule: &str) -> Arc<CardDefinition> {
@@ -473,6 +693,39 @@ fn lifelink_gains_the_damage_that_is_dealt(
     ];
     let result = run(&table, &batch);
     assert_eq!(amounts(&result), dealt);
+    let life: Vec<u32> = result
+        .iter()
+        .filter_map(|event| match event {
+            Event::LifeGained { amount, .. } => Some(*amount),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(life, gained.into_iter().collect::<Vec<_>>());
+}
+
+#[rstest]
+#[case::the_linkers_damage_first(1, &["Imp>Bear0:2"], None)]
+#[case::the_other_damage_first(0, &["Linker>Bear0:2"], Some(2))]
+fn lifelink_follows_the_event_the_player_picked(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] pick: usize,
+    #[case] remaining: &[&str],
+    #[case] gained: Option<u32>,
+) {
+    let linker = with("Linker", &[Ability::Keyword(Keyword::Lifelink)]);
+    let mut table = game(seats, vec![linker]);
+    let rule = anything(&table, Some(2));
+    begin(&mut table, "Elf", rule);
+    let batch = [
+        hit(&table, "Imp", "Bear0", 2),
+        hit(&table, "Linker", "Bear0", 2),
+        Event::LifeGained {
+            player: seat(1),
+            amount: 2,
+        },
+    ];
+    let (result, _) = play(&table, &batch, &[pick]);
+    assert_eq!(dealt(&table, &result), remaining);
     let life: Vec<u32> = result
         .iter()
         .filter_map(|event| match event {
