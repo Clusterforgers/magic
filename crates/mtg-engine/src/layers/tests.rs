@@ -145,7 +145,8 @@ fn leaves(game: &mut GameState, name: &str) {
     );
 }
 
-const MODIFICATIONS: [&str; 16] = [
+/// The modifications the engine runs; `CantBeBlocked` and `CantBeBlockedBy` refuse as effects until their task.
+const MODIFICATIONS: [&str; 14] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -160,8 +161,6 @@ const MODIFICATIONS: [&str; 16] = [
     r#"{"SetController":"Opponents"}"#,
     r#""CantAttack""#,
     r#""CantBlock""#,
-    r#""CantBeBlocked""#,
-    r#"{"CantBeBlockedBy":[{"Type":"Creature"}]}"#,
 ];
 
 #[test]
