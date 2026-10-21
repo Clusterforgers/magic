@@ -2018,6 +2018,27 @@
     "keywords": []
   },
   {
+    "id": "03f7e9fc-8e59-45c1-90fc-1d04d929b292",
+    "oracle_id": "c8b143ad-43ec-4e0d-a440-e348daa31391",
+    "name": "Swiftfoot Boots",
+    "lang": "en",
+    "layout": "normal",
+    "set": "mbc",
+    "collector_number": "77",
+    "rarity": "uncommon",
+    "released_at": "2026-10-19",
+    "digital": false,
+    "mana_cost": "{2}",
+    "cmc": 2.0,
+    "type_line": "Artifact — Equipment",
+    "oracle_text": "Equipped creature has hexproof and haste. (It can't be the target of spells or abilities your opponents control. It can attack and {T} no matter when it came under your control.)\nEquip {1} ({1}: Attach to target creature you control. Equip only as a sorcery.)",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Equip"
+    ]
+  },
+  {
     "id": "f7e12477-d59f-442b-a678-1be746d0b7be",
     "oracle_id": "b1544f21-7e98-461b-aed5-e748b0168c52",
     "name": "Swords to Plowshares",

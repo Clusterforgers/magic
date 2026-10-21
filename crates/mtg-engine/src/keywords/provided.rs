@@ -317,6 +317,23 @@ fn the_abilities_a_keyword_adds_are_valid_rules_and_the_engine_runs_them(#[case]
     }
 }
 
+#[rstest]
+#[case::equip(Keyword::Equip(Cost::mana("{1}".parse().unwrap())), 1)]
+#[case::equip_with_colored_mana(Keyword::Equip(Cost::mana("{R}{R}".parse().unwrap())), 1)]
+fn the_abilities_of_an_attachment_keyword_are_valid_rules_and_the_engine_runs_them(
+    #[case] keyword: Keyword,
+    #[case] count: usize,
+) {
+    let added = rules(&keyword).adds_abilities(&keyword);
+    assert_eq!(added.len(), count);
+    library_of(&added).unwrap_or_else(|errors| panic!("{errors}"));
+    let caps = caps();
+    for ability in std::iter::once(&Ability::Keyword(keyword.clone())).chain(&added) {
+        let missing = caps.missing(&used_primitives(ability));
+        assert!(missing.is_empty(), "{keyword:?}: {missing:?}");
+    }
+}
+
 #[test]
 fn a_ward_cost_the_engine_cannot_pay_keeps_the_card_from_being_verified() {
     let life = Keyword::Ward(serde_json::from_str(r#"[{"PayLife":2}]"#).unwrap());

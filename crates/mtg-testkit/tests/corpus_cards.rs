@@ -1,4 +1,4 @@
-//! Goal: the 85 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 86 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -37,7 +37,7 @@ use Support::{Manual, Partial, Verified};
 /// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
-const CARDS: [(&str, Support, usize); 85] = [
+const CARDS: [(&str, Support, usize); 86] = [
     ("Act of Treason", Verified, 1),
     ("Ajani, Caller of the Pride", Verified, 3),
     ("Anger", Verified, 2),
@@ -46,7 +46,7 @@ const CARDS: [(&str, Support, usize); 85] = [
     ("Bloodbraid Elf", Partial, 1),
     ("Bonecrusher Giant // Stomp", Manual, 0),
     ("Boneyard Scourge", Verified, 2),
-    ("Bonesplitter", Partial, 1),
+    ("Bonesplitter", Verified, 2),
     ("Brainstorm", Verified, 1),
     ("Burst Lightning", Manual, 0),
     ("Caress of Phyrexia", Verified, 1),
@@ -110,6 +110,7 @@ const CARDS: [(&str, Support, usize); 85] = [
     ("Spellbreaker Behemoth", Verified, 2),
     ("Squee, Goblin Nabob", Verified, 1),
     ("Supreme Verdict", Verified, 2),
+    ("Swiftfoot Boots", Verified, 2),
     ("Swords to Plowshares", Verified, 1),
     ("Teysa Karlov", Verified, 2),
     ("Tireless Tracker", Verified, 2),
@@ -129,7 +130,7 @@ const CARDS: [(&str, Support, usize); 85] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 85);
+    assert_eq!(in_table.len(), 86);
     assert_eq!(in_table, in_corpus);
 }
 

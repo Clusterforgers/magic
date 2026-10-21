@@ -7,7 +7,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde::Serialize;
 
-use crate::ability::{Ability, LoyaltyCost};
+use crate::ability::{Ability, LoyaltyCost, Timing};
 use crate::assemble::{PLAIN_MANA_ABILITY, plain_mana_ability, simple_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
@@ -934,9 +934,18 @@ impl<'a> Walker<'a> {
         self.body_checks(targets, effects, true);
     }
 
-    /// How often and from where an ability works are rules of their own, so an engine that has not got
+    /// How often, when and from where an ability works are rules of their own, so an engine that has not got
     /// them does not run the ability, whatever else it runs.
     fn where_and_how_often(&mut self, ability: &Ability) {
+        if matches!(
+            ability,
+            Ability::Activated {
+                timing: Timing::Sorcery,
+                ..
+            }
+        ) {
+            self.uses("Ability", "Sorcery");
+        }
         let (limit, from) = match ability {
             Ability::Activated { limit, from, .. } | Ability::Triggered { limit, from, .. } => {
                 (limit.is_some(), !from.is_battlefield())
@@ -1187,7 +1196,8 @@ impl<'a> Walker<'a> {
 
 /// Every primitive an ability uses, named `Effect.DealDamage`, `Keyword.Flying`, `Trigger.ZoneChange`,
 /// `Cost.Tap`, `Mod.ModifyPT`, `ReplaceWhen.TokenCreation`, `ReplaceBy.Multiply` or `Ability.Loyalty`;
-/// an ability with a `limit` or a zone other than the battlefield also uses `Ability.Limit` or `Ability.From`.
+/// an ability with a `limit`, a zone other than the battlefield or sorcery timing also uses `Ability.Limit`,
+/// `Ability.From` or `Ability.Sorcery`.
 /// A value the engine cannot read yet is named too, wherever it stands (a condition, an amount, a selector):
 /// `Amount.Divided`, `Amount.EvenShare` and `Condition.Kicked`. A loyalty ability whose cost is `-X` names `Cost.Loyalty.X`.
 ///
@@ -1515,7 +1525,7 @@ mod tests {
 
     #[rstest]
     #[case::plain_activation(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.Draw"])]
-    #[case::at_sorcery_speed(r#"{"Activated":{"cost":["Tap"],"timing":"Sorcery","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Tap", "Effect.Draw"])]
+    #[case::at_sorcery_speed(r#"{"Activated":{"cost":["Tap"],"timing":"Sorcery","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.Sorcery", "Cost.Tap", "Effect.Draw"])]
     #[case::once_a_turn(r#"{"Activated":{"cost":["Tap"],"limit":"OncePerTurn","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.Limit", "Cost.Tap", "Effect.Draw"])]
     #[case::from_the_graveyard(r#"{"Activated":{"cost":"{1}","from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.Mana", "Effect.Draw"])]
     #[case::exiling_the_source_from_the_graveyard(r#"{"Activated":{"cost":[{"Mana":"{3}{G}{G}"},"ExileSelf"],"from":"Graveyard","effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Ability.From", "Cost.ExileSelf", "Cost.Mana", "Effect.Draw"])]
@@ -1545,7 +1555,8 @@ mod tests {
     #[case::a_payment_that_exiles_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["ExileSelf"]}}]}}"#, &["Ability.Triggered", "Cost.ExileSelf", "Effect.Pay", "Effect.Pay.ExileSelf", "Trigger.StepBegins"])]
     #[case::a_payment_that_discards_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["DiscardSelf"]}}]}}"#, &["Ability.Triggered", "Cost.DiscardSelf", "Effect.Pay", "Effect.Pay.DiscardSelf", "Trigger.StepBegins"])]
     #[case::a_payment_that_sacrifices_the_source(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":["SacrificeSelf"]}}]}}"#, &["Ability.Triggered", "Cost.SacrificeSelf", "Effect.Pay", "Effect.Pay.SacrificeSelf", "Trigger.StepBegins"])]
-    #[case::attaching_the_source_to_a_target(r#"{"Activated":{"cost":"{2}","timing":"Sorcery","targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Attach":{"what":"This","to":{"Target":0}}}]}}"#, &["Ability.Activated", "Cost.Mana", "Effect.Attach"])]
+    #[case::attaching_the_source_to_a_target(r#"{"Activated":{"cost":"{2}","timing":"Sorcery","targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}}],"effects":[{"Attach":{"what":"This","to":{"Target":0}}}]}}"#, &["Ability.Activated", "Ability.Sorcery", "Cost.Mana", "Effect.Attach"])]
+    #[case::equip_pays_a_mana_cost(r#"{"Keyword":{"Equip":"{2}"}}"#, &["Cost.Mana", "Keyword.Equip"])]
     #[case::an_aura_that_enchants_a_creature(r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}}"#, &["Keyword.Enchant"])]
     #[case::an_aura_that_enchants_a_card_in_a_graveyard(r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#, &["Keyword.Enchant", "Keyword.Enchant.Elsewhere"])]
     #[case::a_treasure_like_mana_ability(r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#, &["Ability.Activated", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]

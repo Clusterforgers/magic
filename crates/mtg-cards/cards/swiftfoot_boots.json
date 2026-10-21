@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c8b143ad-43ec-4e0d-a440-e348daa31391",
+  "name": "Swiftfoot Boots",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swiftfoot Boots",
+      "oracle_fingerprint": "cbd0d0d0a77133b015417900008e980f",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Hexproof" }, { "AddKeyword": "Haste" }]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}
