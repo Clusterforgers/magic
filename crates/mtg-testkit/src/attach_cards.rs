@@ -1,6 +1,6 @@
-//! Auras and legendary permanents (CR 303.4, 704.5j, 704.5m to 704.5p), and the decks and games built from them: the corpus
-//! Auras and legends, synthetic Auras for creatures, lands and opponents' creatures, a spell that returns an Aura, and the
-//! removal that takes their hosts away.
+//! Auras, Equipment and legendary permanents (CR 303.4, 301.5, 704.5j, 704.5m to 704.5p), and the decks and games built from
+//! them: the corpus Auras, Equipment and legends, synthetic Auras for creatures, lands and opponents' creatures, synthetic
+//! Equipment, a spell that returns an Aura, and the removal that takes their hosts away.
 
 use std::sync::Arc;
 
@@ -84,6 +84,36 @@ pub fn rune_aura() -> Result<Arc<CardDefinition>, CorpusError> {
     )
 }
 
+/// An Equipment of this cost whose equipped creature gets `power`/`toughness` and that equips for `equip` (a mana cost).
+fn equipment(
+    name: &str,
+    (generic, colored): (u32, &[Color]),
+    equip: &str,
+    (power, toughness): (i32, i32),
+) -> Result<Arc<CardDefinition>, CorpusError> {
+    let pump = format!(
+        r#"{{"Static":{{"affected":"Attached","mods":[{{"ModifyPT":{{"power":{power},"toughness":{toughness}}}}}]}}}}"#
+    );
+    Ok(Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Artifact)
+            .with_subtype("Equipment")
+            .with_mana_cost(cost(generic, colored))
+            .with_rules(rules(&pump)?)
+            .with_rules(rules(&format!(r#"{{"Keyword":{{"Equip":"{equip}"}}}}"#))?),
+    ))
+}
+
+/// `{1}` Equipment: equipped creature gets +1/+1. Equip {1}.
+pub fn iron_blade() -> Result<Arc<CardDefinition>, CorpusError> {
+    equipment("Iron Blade", (1, &[]), "{1}", (1, 1))
+}
+
+/// `{2}` Equipment: equipped creature gets +0/+3. Equip {3}.
+pub fn heavy_plate() -> Result<Arc<CardDefinition>, CorpusError> {
+    equipment("Heavy Plate", (2, &[]), "{3}", (0, 3))
+}
+
 /// `{1}{W}` instant: return target Aura card from your graveyard to the battlefield.
 pub fn call_back() -> Result<Arc<CardDefinition>, CorpusError> {
     Ok(Arc::new(
@@ -132,8 +162,8 @@ pub fn legendary_relic() -> Arc<CardDefinition> {
     )
 }
 
-/// The corpus Auras and legends the deck holds.
-pub const ATTACH_CORPUS_CARDS: [&str; 8] = [
+/// The corpus Auras, Equipment and legends the deck holds.
+pub const ATTACH_CORPUS_CARDS: [&str; 12] = [
     "Pacifism",
     "Epic Proportions",
     "Control Magic",
@@ -142,14 +172,20 @@ pub const ATTACH_CORPUS_CARDS: [&str; 8] = [
     "Arvad the Cursed",
     "Kongming, \"Sleeping Dragon\"",
     "Sram, Senior Edificer",
+    "Bonesplitter",
+    "Swiftfoot Boots",
+    "Lizard Blades",
+    "Batterskull",
 ];
 
 /// The cards of this module and the plain ones the deck is made of.
-pub const ATTACH_SYNTHETIC_CARDS: [&str; 11] = [
+pub const ATTACH_SYNTHETIC_CARDS: [&str; 13] = [
     "Mighty Aura",
     "Winged Aura",
     "Hex Aura",
     "Rune Aura",
+    "Iron Blade",
+    "Heavy Plate",
     "Call Back",
     "Legendary Bear",
     "Legendary Ogre",
@@ -159,9 +195,9 @@ pub const ATTACH_SYNTHETIC_CARDS: [&str; 11] = [
     "Lightning Bolt",
 ];
 
-/// A legal Normal deck of Auras and legendary permanents: the corpus Auras and legends, the synthetic Auras for creatures,
-/// lands and opponents' creatures, the spell that returns one, legends that repeat so the legend rule applies often, and the
-/// burn that takes a host away.
+/// A legal Normal deck of Auras, Equipment and legendary permanents: the corpus Auras, Equipment and legends, the synthetic
+/// Auras for creatures, lands and opponents' creatures, the synthetic Equipment, the spell that returns an Aura, legends
+/// that repeat so the legend rule applies often, and the burn that takes a host away.
 ///
 /// It has its own generator, so the other decks and the games seeded from them stay as they were.
 pub fn attach_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
@@ -182,21 +218,27 @@ pub fn attach_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corpus
         ("Arvad the Cursed", 2),
         ("Kongming, \"Sleeping Dragon\"", 2),
         ("Sram, Senior Edificer", 2),
+        ("Bonesplitter", 2),
+        ("Swiftfoot Boots", 1),
+        ("Lizard Blades", 1),
+        ("Batterskull", 1),
         ("Lightning Bolt", 2),
     ] {
         deck.extend(std::iter::repeat_n(corpus::card(name)?, copies));
     }
     for (card, copies) in [
-        (mighty_aura()?, 3),
+        (mighty_aura()?, 2),
         (winged_aura()?, 1),
-        (hex_aura()?, 3),
+        (hex_aura()?, 2),
         (rune_aura()?, 1),
-        (call_back()?, 2),
-        (legendary_bear(), 4),
-        (legendary_ogre(), 3),
-        (legendary_relic(), 2),
-        (burn("Spark", 2), 2),
-        (bear(), 2),
+        (iron_blade()?, 2),
+        (heavy_plate()?, 1),
+        (call_back()?, 1),
+        (legendary_bear(), 3),
+        (legendary_ogre(), 2),
+        (legendary_relic(), 1),
+        (burn("Spark", 2), 1),
+        (bear(), 1),
     ] {
         deck.extend(std::iter::repeat_n(card, copies));
     }
@@ -215,7 +257,7 @@ pub fn attach_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusE
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the Auras and spells of this module use only what the engine runs and are valid rules, an Aura deck is a legal sixty cards with every Aura, every legend and the removal in it, and the games built from one are fixed by their seed.
+    //! Goal: the Auras, Equipment and spells of this module use only what the engine runs and are valid rules, an Aura deck is a legal sixty cards with every Aura, every Equipment, every legend and the removal in it, and the games built from one are fixed by their seed.
     use mtg_cards::validate::used_primitives;
     use mtg_engine::caps;
 
@@ -229,6 +271,8 @@ mod tests {
             winged_aura().unwrap(),
             hex_aura().unwrap(),
             rune_aura().unwrap(),
+            iron_blade().unwrap(),
+            heavy_plate().unwrap(),
             call_back().unwrap(),
         ];
         for card in cards {
@@ -241,6 +285,9 @@ mod tests {
         }
         for card in [mighty_aura().unwrap(), winged_aura().unwrap()] {
             assert!(card.subtypes.iter().any(|subtype| subtype.0 == "Aura"));
+        }
+        for card in [iron_blade().unwrap(), heavy_plate().unwrap()] {
+            assert!(card.subtypes.iter().any(|subtype| subtype.0 == "Equipment"));
         }
         assert!(legendary_bear().supertypes.contains(&Supertype::Legendary));
     }

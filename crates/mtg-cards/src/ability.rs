@@ -97,6 +97,9 @@ pub enum Ability {
         /// When it may be activated.
         #[serde(default, skip_serializing_if = "Timing::is_instant")]
         timing: Timing,
+        /// "Activate only if ..." (CR 602.5b): what must hold as it is activated.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        condition: Option<Condition>,
         /// How often.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         limit: Option<Limit>,
@@ -271,6 +274,7 @@ mod tests {
         let sol_ring = Ability::Activated {
             cost: Cost(vec![crate::cost::CostItem::Tap]),
             timing: Timing::Instant,
+            condition: None,
             limit: None,
             from: ZoneKind::Battlefield,
             targets: vec![],

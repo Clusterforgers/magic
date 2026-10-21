@@ -90,6 +90,7 @@ pub fn plain_mana_ability(ability: &Ability) -> Option<ManaType> {
     let Ability::Activated {
         cost,
         timing: Timing::Instant,
+        condition: None,
         limit: None,
         from: ZoneKind::Battlefield,
         targets,
@@ -146,6 +147,7 @@ pub fn simple_mana_ability(ability: &Ability) -> Option<SimpleManaAbility> {
     let Ability::Activated {
         cost,
         timing: Timing::Instant,
+        condition: None,
         limit: None,
         from: ZoneKind::Battlefield,
         targets,

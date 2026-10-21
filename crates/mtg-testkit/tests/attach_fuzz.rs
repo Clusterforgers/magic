@@ -1,4 +1,4 @@
-//! Goal: whole bot games with decks of Auras (Pacifism, Epic Proportions, Control Magic, Squirrel Nest, Shielded by Faith and four of ours for creatures, lands and opponents' creatures), a spell that returns an Aura, legendary creatures and artifacts that repeat, and the burn that takes a host away finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state, conservation of cards, what every permanent is attached to equal to what the attach and unattach events say, no Aura attached to nothing or to what it may not enchant, no Equipment, Fortification or other permanent attached wrongly, and no player with two legendary permanents of one name at a decision unless the engine is asking which to keep) for many seeds at tables of two, three and four seats, and the games really use them: Auras are cast at a target and enter attached to it, an Aura whose target left is not put onto the battlefield, an Aura whose host left goes to its owner's graveyard, an Aura put onto the battlefield without being cast chooses its host, the legend rule puts the rest of a name into the graveyard, an engine rebuilt from the log at each decision asks what the original asks, and a seeded game is the same game every time.
+//! Goal: whole bot games with decks of Auras (Pacifism, Epic Proportions, Control Magic, Squirrel Nest, Shielded by Faith and four of ours for creatures, lands and opponents' creatures), Equipment (Bonesplitter, Swiftfoot Boots and two of ours), a spell that returns an Aura, legendary creatures and artifacts that repeat, and the burn that takes a host away finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state, conservation of cards, what every permanent is attached to equal to what the attach and unattach events say, no Aura attached to nothing or to what it may not enchant, no Equipment, Fortification or other permanent attached wrongly, and no player with two legendary permanents of one name at a decision unless the engine is asking which to keep) for many seeds at tables of two, three and four seats, and the games really use them: Auras are cast at a target and enter attached to it, an Aura whose target left is not put onto the battlefield, an Aura whose host left goes to its owner's graveyard, an Aura put onto the battlefield without being cast chooses its host, an Equipment is equipped to a creature at sorcery speed and comes off a creature that left, the legend rule puts the rest of a name into the graveyard, an engine rebuilt from the log at each decision asks what the original asks, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
@@ -29,12 +29,20 @@ fn is_legend(game: &GameState, id: ObjectId) -> bool {
         .is_some_and(|o| o.card().supertypes.contains(&Supertype::Legendary))
 }
 
-/// What a campaign saw the Auras and legends do.
+fn is_equipment(game: &GameState, id: ObjectId) -> bool {
+    game.object(id)
+        .is_some_and(|o| o.card().subtypes.iter().any(|s| s.0 == "Equipment"))
+}
+
+/// What a campaign saw the Auras, Equipment and legends do.
 #[derive(Default)]
 struct Seen {
     cast: BTreeMap<String, u64>,
     entered_attached: u64,
     entered_without_being_cast: u64,
+    equipped: BTreeMap<String, u64>,
+    equipment_came_off: u64,
+    equips_activated: u64,
     fell_off: u64,
     legend_puts: u64,
     unattached: u64,
@@ -75,7 +83,19 @@ impl Seen {
                         self.legend_puts += 1;
                     }
                 }
-                Event::Unattached { .. } => self.unattached += 1,
+                Event::Attached { object, .. } if is_equipment(game, *object) => {
+                    let name = game.object(*object).unwrap().card().name.clone();
+                    *self.equipped.entry(name).or_default() += 1;
+                }
+                Event::AbilityActivated { source, .. } if is_equipment(game, source.id) => {
+                    self.equips_activated += 1;
+                }
+                Event::Unattached { object } => {
+                    self.unattached += 1;
+                    if is_equipment(game, *object) {
+                        self.equipment_came_off += 1;
+                    }
+                }
                 _ => {}
             }
         }
@@ -114,6 +134,26 @@ fn seeded_aura_games_finish_and_keep_every_invariant(#[case] players: usize) {
         "no Aura entered attached in {campaign}"
     );
     assert!(seen.fell_off > 0, "no Aura lost its host in {campaign}");
+    for name in [
+        "Bonesplitter",
+        "Iron Blade",
+        "Heavy Plate",
+        "Lizard Blades",
+        "Batterskull",
+    ] {
+        assert!(
+            seen.equipped.get(name).copied().unwrap_or(0) > 0,
+            "{name} was never equipped in {campaign}"
+        );
+    }
+    assert!(
+        seen.equips_activated > 0,
+        "no Equip was activated in {campaign}"
+    );
+    assert!(
+        seen.equipment_came_off > 0,
+        "no Equipment came off a creature that left in {campaign}"
+    );
     assert!(
         seen.legend_puts > 0,
         "the legend rule never applied in {campaign}"

@@ -107,6 +107,7 @@ pub fn fountain(name: &str, activation: Cost) -> Arc<CardDefinition> {
             .with_rules(Ability::Activated {
                 cost: activation,
                 timing: Timing::Instant,
+                condition: None,
                 limit: None,
                 from: ZoneKind::Battlefield,
                 targets: Vec::new(),
@@ -128,6 +129,7 @@ pub fn mana_pinger(name: &str) -> Arc<CardDefinition> {
                     CostItem::Tap,
                 ]),
                 timing: Timing::Instant,
+                condition: None,
                 limit: None,
                 from: ZoneKind::Battlefield,
                 targets: vec![one_target(Targetable::AnyTarget)],

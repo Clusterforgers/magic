@@ -2,7 +2,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use mtg_cards::ability::Ability;
+use mtg_cards::ability::{Ability, Timing};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::{CardType, Supertype};
@@ -173,6 +173,14 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
             };
             if !fits || host.id() == id {
                 return Err(bad("is attached to what it may not be"));
+            }
+            // An Equipment that is a creature equips nothing (CR 301.5c), so one attached is none while attached (CR 702.151b).
+            if printed("Equipment")
+                && characteristics(state, id).is_some_and(|chars| chars.is_creature())
+            {
+                return Err(bad(
+                    "is an Equipment attached to a creature though it is one",
+                ));
             }
         } else if attached.is_some() {
             return Err(bad(
@@ -763,8 +771,9 @@ impl InvariantChecker {
         }
     }
 
-    /// A loyalty ability is activated by the active player in a main step with an empty stack (CR 606.3), and once for each
-    /// planeswalker each turn.
+    /// A loyalty ability and an ability that may be activated only as a sorcery (Equip, Reconfigure) are activated by the
+    /// active player in a main step with an empty stack (CR 606.3, 307.1), and a loyalty ability once for each planeswalker
+    /// each turn.
     fn check_loyalty_activation(
         &mut self,
         player: PlayerId,
@@ -777,19 +786,33 @@ impl InvariantChecker {
             ability,
             source: origin,
         };
-        let loyalty = ability_reader::ability(&self.shadow, address)
-            .is_some_and(|rules| matches!(*rules, Ability::Loyalty { .. }));
-        if !loyalty {
+        let rules = ability_reader::ability(&self.shadow, address);
+        let loyalty = rules
+            .as_ref()
+            .is_some_and(|rules| matches!(**rules, Ability::Loyalty { .. }));
+        let sorcery = rules.as_ref().is_some_and(|rules| {
+            matches!(
+                **rules,
+                Ability::Activated {
+                    timing: Timing::Sorcery,
+                    ..
+                }
+            )
+        });
+        if !loyalty && !sorcery {
             return Ok(());
         }
         let turn = self.shadow.turn();
         if turn.active() != player || !turn.step().is_main() || !self.shadow.stack().is_empty() {
             return Err(Violation::Bookkeeping(format!(
-                "{player:?} activated a loyalty ability of {source:?} in {:?} of {:?}'s turn with {} on the stack",
+                "{player:?} activated a sorcery-speed ability of {source:?} in {:?} of {:?}'s turn with {} on the stack",
                 turn.step(),
                 turn.active(),
                 self.shadow.stack().len()
             )));
+        }
+        if !loyalty {
+            return Ok(());
         }
         let number = turn.number();
         if self.loyalty_turns.insert(source, number) == Some(number) {

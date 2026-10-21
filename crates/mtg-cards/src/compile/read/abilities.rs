@@ -120,6 +120,7 @@ pub fn mana_ability(r: &mut Reader<'_>) -> Option<Ability> {
     Some(Ability::Activated {
         cost,
         timing: Timing::Instant,
+        condition: None,
         limit: None,
         from: ZoneKind::Battlefield,
         targets: Vec::new(),

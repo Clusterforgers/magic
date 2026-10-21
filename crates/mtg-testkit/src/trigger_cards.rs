@@ -265,6 +265,7 @@ pub fn once_each_turn(ability: Ability) -> Ability {
         Ability::Activated {
             cost,
             timing,
+            condition,
             from,
             targets,
             effects,
@@ -272,6 +273,7 @@ pub fn once_each_turn(ability: Ability) -> Ability {
         } => Ability::Activated {
             cost,
             timing,
+            condition,
             limit: Some(Limit::OncePerTurn),
             from,
             targets,
@@ -352,6 +354,7 @@ pub fn delaying(when: TriggerPattern, once: bool, effects: Vec<Effect>) -> Abili
     Ability::Activated {
         cost: Cost(vec![CostItem::Tap]),
         timing: Timing::Instant,
+        condition: None,
         limit: None,
         from: ZoneKind::Battlefield,
         targets: Vec::new(),

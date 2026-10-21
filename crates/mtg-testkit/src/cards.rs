@@ -261,6 +261,7 @@ fn tap_ability(timing: Timing, targets: Vec<TargetSpec>, effects: Vec<Effect>) -
     Ability::Activated {
         cost: Cost(vec![CostItem::Tap]),
         timing,
+        condition: None,
         limit: None,
         from: ZoneKind::Battlefield,
         targets,

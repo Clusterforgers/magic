@@ -9,6 +9,7 @@ mod add_mana;
 mod attach;
 mod choose;
 mod continuous;
+mod unattach;
 pub(crate) use continuous::lower;
 mod counter;
 mod create_token;
@@ -82,6 +83,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Tap { .. } => tap::run(cx, effect),
         Effect::Untap { .. } => untap::run(cx, effect),
         Effect::Attach { .. } => attach::run(cx, effect),
+        Effect::Unattach { .. } => unattach::run(cx, effect),
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
@@ -116,7 +118,7 @@ mod tests {
         {"LoseLife":{"amount":1}}, {"AddMana":{"mana":{"Fixed":["Green"]}}},
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"Tap":{"what":"This"}},
-        {"Untap":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Transform":{"what":"This"}}, {"WinGame":{}},
+        {"Untap":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Transform":{"what":"This"}}, {"WinGame":{}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
@@ -136,7 +138,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 34, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 35, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -193,6 +195,7 @@ mod tests {
                 "Effect.Tap",
                 "Effect.Untap",
                 "Effect.Attach",
+                "Effect.Unattach",
                 "Effect.WinGame",
                 "Effect.CreateToken",
                 "Effect.Continuous",

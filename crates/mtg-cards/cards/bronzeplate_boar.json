@@ -1,0 +1,21 @@
+{
+  "oracle_id": "0a09f825-0484-40b4-8adf-1028385db480",
+  "name": "Bronzeplate Boar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bronzeplate Boar",
+      "oracle_fingerprint": "9afb70a25b043e6fe7905787a6f7d95f",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 2 } }, { "AddKeyword": "Trample" }]
+          }
+        },
+        { "Keyword": { "Reconfigure": "{5}" } }
+      ]
+    }
+  ]
+}

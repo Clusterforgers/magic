@@ -99,10 +99,19 @@ pub(crate) fn legal_host(state: &GameState, attachment: ObjectId, host: ObjectId
     };
     match kind_of(state, attachment) {
         Some(Kind::Aura) => !chars.is_creature() && may_enchant(state, object, target),
-        Some(Kind::Equipment) => !chars.is_creature() && host_chars.is_creature(),
+        Some(Kind::Equipment) => {
+            (!chars.is_creature() || has_reconfigure(state, attachment)) && host_chars.is_creature()
+        }
         Some(Kind::Fortification) => host_chars.types.contains(CardType::Land),
         None => false,
     }
+}
+
+/// Whether `id` has reconfigure, so it may equip a creature while it is a creature itself (CR 301.5c).
+fn has_reconfigure(state: &GameState, id: ObjectId) -> bool {
+    keywords_of(state, id)
+        .iter()
+        .any(|keyword| matches!(keyword, Keyword::Reconfigure(_)))
 }
 
 /// Whether the enchant abilities of the Aura allow `host`, judged for the Aura's controller.
@@ -326,6 +335,7 @@ mod tests {
     const ON_OPPONENTS: &str =
         r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}"#;
     const ON_LANDS: &str = r#"{"Keyword":{"Enchant":[{"Type":"Land"}]}}"#;
+    const RECONFIGURE: &str = r#"{"Keyword":{"Reconfigure":"{2}"}}"#;
 
     // Places on the battlefield of seat 0.
     const BEAR: usize = 0;
@@ -362,6 +372,12 @@ mod tests {
                         &[],
                     ),
                     creature("Wolf", 2, 2),
+                    card(
+                        "Reconfigurer",
+                        &[CardType::Artifact, CardType::Creature],
+                        "Equipment",
+                        &[RECONFIGURE],
+                    ),
                 ],
                 vec![creature("Ogre", 3, 4)],
             ],
@@ -391,6 +407,9 @@ mod tests {
     #[case::an_equipment_on_a_creature("Blade", "Wolf", true)]
     #[case::an_equipment_on_a_land("Blade", "Forest", false)]
     #[case::an_equipment_that_is_a_creature_on_a_creature("Golem", "Wolf", false)]
+    #[case::an_equipment_creature_with_reconfigure_on_a_creature("Reconfigurer", "Wolf", true)]
+    #[case::an_equipment_creature_with_reconfigure_on_a_land("Reconfigurer", "Forest", false)]
+    #[case::an_equipment_creature_with_reconfigure_on_itself("Reconfigurer", "Reconfigurer", false)]
     #[case::an_equipment_on_itself("Blade", "Blade", false)]
     #[case::a_fortification_on_a_land("Wall", "Forest", true)]
     #[case::a_fortification_on_a_creature("Wall", "Bear", false)]
@@ -588,7 +607,10 @@ mod tests {
                     .collect::<Vec<_>>()
             })
         };
-        assert_eq!(hosts("Halo").unwrap(), ["Bear", "Golem", "Wolf", "Ogre"]);
+        assert_eq!(
+            hosts("Halo").unwrap(),
+            ["Bear", "Golem", "Wolf", "Reconfigurer", "Ogre"]
+        );
         assert_eq!(hosts("Curse").unwrap(), ["Ogre"]);
         assert_eq!(hosts("Rune").unwrap(), ["Forest"]);
         assert_eq!(hosts("Blade"), None);

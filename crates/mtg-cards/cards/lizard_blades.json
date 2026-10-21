@@ -1,0 +1,16 @@
+{
+  "oracle_id": "f6314e50-a610-4fff-8f60-803d23460ff0",
+  "name": "Lizard Blades",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lizard Blades",
+      "oracle_fingerprint": "e4c75bc7c9573bd835c4faaf4af6316a",
+      "abilities": [
+        { "Keyword": "DoubleStrike" },
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "DoubleStrike" }] } },
+        { "Keyword": { "Reconfigure": "{2}" } }
+      ]
+    }
+  ]
+}

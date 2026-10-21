@@ -242,6 +242,7 @@ fn an_activated_ability_limited_to_once_each_turn_is_offered_once_and_again_next
         vec![once_each_turn(Ability::Activated {
             cost: Cost(Vec::new()),
             timing: Timing::Instant,
+            condition: None,
             limit: None,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),

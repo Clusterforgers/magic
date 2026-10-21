@@ -82,6 +82,7 @@ mod tests {
                 .with_rules(Ability::Activated {
                     cost: mtg_cards::cost::Cost(Vec::new()),
                     timing: mtg_cards::ability::Timing::Instant,
+                    condition: None,
                     limit: None,
                     from: mtg_cards::refs::ZoneKind::Battlefield,
                     targets: Vec::new(),

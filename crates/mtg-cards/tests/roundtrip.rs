@@ -325,6 +325,7 @@ fn granted() -> impl Strategy<Value = Ability> {
             } else {
                 Timing::Instant
             },
+            condition: None,
             limit: None,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
@@ -547,7 +548,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     token,
                     count,
                     tapped,
-                    attacking
+                    attacking,
+                    bind: None
                 }
             ),
             (reference(), vec(modification(), 1..3), duration()).prop_map(
@@ -630,6 +632,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 } else {
                     Timing::Instant
                 },
+                condition: None,
                 limit,
                 from,
                 targets,

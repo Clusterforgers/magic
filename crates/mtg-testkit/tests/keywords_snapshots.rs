@@ -56,6 +56,7 @@ fn fanatic(keywords: &[Keyword]) -> Arc<CardDefinition> {
         vec![Ability::Activated {
             cost: Cost(vec![CostItem::SacrificeSelf]),
             timing: Timing::Instant,
+            condition: None,
             limit: None,
             from: ZoneKind::Battlefield,
             targets: vec![one_target(Targetable::AnyTarget)],

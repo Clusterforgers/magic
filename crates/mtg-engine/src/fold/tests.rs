@@ -52,6 +52,7 @@ fn totem() -> Arc<CardDefinition> {
             .with_rules(Ability::Activated {
                 cost: Cost(Vec::new()),
                 timing: Timing::Instant,
+                condition: None,
                 limit: None,
                 from: ZoneKind::Battlefield,
                 targets: Vec::new(),
