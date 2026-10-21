@@ -10,3 +10,4 @@ mod corpus;
 mod deck_report;
 mod printed;
 mod roundtrip;
+mod vocabulary;

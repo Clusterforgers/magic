@@ -128,6 +128,10 @@ struct Walker<'a> {
     scope: Scope,
     has_kicker: bool,
     x_free: bool,
+    /// The effect being walked has an effect before it in its list.
+    follows_effect: bool,
+    /// A `Performed` may stand here: the condition of an `If` that follows an effect.
+    performed_ok: bool,
     face: usize,
     spell_targets: Vec<TargetSpec>,
     x_uses: Vec<(usize, String)>,
@@ -144,6 +148,8 @@ impl<'a> Walker<'a> {
             scope: Scope::default(),
             has_kicker: false,
             x_free: false,
+            follows_effect: false,
+            performed_ok: false,
             face: 0,
             spell_targets: Vec::new(),
             x_uses: Vec::new(),
@@ -328,6 +334,24 @@ impl<'a> Walker<'a> {
                     self.problem(format!("target {index} does not exist"));
                 }
             }
+            Amount::Devotion(colors) => {
+                self.uses("Amount", "Devotion");
+                if colors.is_empty() {
+                    self.problem("devotion is to at least one color");
+                }
+            }
+            Amount::Greatest { of, .. } => {
+                self.uses("Amount", "Greatest");
+                self.at("of", |w| w.selector(of));
+            }
+            Amount::Total { of, .. } => {
+                self.uses("Amount", "Total");
+                self.at("of", |w| w.selector(of));
+            }
+            Amount::CardTypes(of) => {
+                self.uses("Amount", "CardTypes");
+                self.selector(of);
+            }
         }
     }
 
@@ -371,6 +395,20 @@ impl<'a> Walker<'a> {
                 }
             }
             Condition::YourTurn => {}
+            Condition::Performed => {
+                self.uses("Condition", "Performed");
+                if !self.performed_ok {
+                    self.problem("`Performed` is the condition of an `If` that follows the effect it asks about");
+                }
+            }
+            Condition::Monarch(who) => {
+                self.uses("Condition", "Monarch");
+                self.at("Monarch", |w| w.reference(who, Kind::Player));
+            }
+            Condition::CitysBlessing(who) => {
+                self.uses("Condition", "CitysBlessing");
+                self.at("CitysBlessing", |w| w.reference(who, Kind::Player));
+            }
         }
     }
 
@@ -700,10 +738,14 @@ impl<'a> Walker<'a> {
 
     fn effect_list(&mut self, field: &str, list: &[Effect], top: bool) {
         self.scope.names.push(BTreeMap::new());
+        let saved = (self.follows_effect, self.performed_ok);
         for (i, effect) in list.iter().enumerate() {
             let only = top && list.len() == 1;
+            self.follows_effect = i > 0;
+            self.performed_ok = false;
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
         }
+        (self.follows_effect, self.performed_ok) = saved;
         self.scope.names.pop();
     }
 
@@ -736,6 +778,8 @@ impl<'a> Walker<'a> {
             Effect::Draw { who, count }
             | Effect::Mill { who, count }
             | Effect::Scry { who, count }
+            | Effect::Surveil { who, count }
+            | Effect::Discover { who, count }
             | Effect::Discard { who, count, .. } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
@@ -751,7 +795,18 @@ impl<'a> Walker<'a> {
             | Effect::Tap { what }
             | Effect::Untap { what }
             | Effect::Transform { what }
+            | Effect::Goad { what }
+            | Effect::Explore { what }
+            | Effect::Connive { what }
             | Effect::Destroy { what, .. } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::Fight { what, with } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("with", |w| w.reference(with, Kind::Object));
+            }
+            Effect::Amass { count, .. }
+            | Effect::Monstrosity { count }
+            | Effect::Adapt { count }
+            | Effect::Bolster { count } => w.at("count", |w| w.amount(count)),
             Effect::Search {
                 who,
                 filter,
@@ -786,7 +841,12 @@ impl<'a> Walker<'a> {
             Effect::Unattach { what } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
             }
-            Effect::Shuffle { who } | Effect::WinGame { who } => {
+            Effect::Shuffle { who }
+            | Effect::WinGame { who }
+            | Effect::Proliferate { who }
+            | Effect::BecomeMonarch { who }
+            | Effect::TimeTravel { who }
+            | Effect::ExtraTurn { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
             }
             Effect::Move { what, to } => {
@@ -813,8 +873,26 @@ impl<'a> Walker<'a> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 match mana {
                     Produce::Fixed(list) if list.is_empty() => w.problem("adds no mana"),
-                    Produce::AnyColor(0) => w.problem("adds no mana"),
-                    _ => {}
+                    Produce::AnyColor(0)
+                    | Produce::ChosenColor(0)
+                    | Produce::CommanderIdentity(0)
+                    | Produce::ProducedBy { count: 0, .. } => w.problem("adds no mana"),
+                    Produce::OneOf(list) if list.len() < 2 => {
+                        w.problem("a choice of mana needs at least two types");
+                    }
+                    Produce::ProducedBy { among, .. } => w.at("mana", |w| {
+                        w.at("ProducedBy", |w| w.at("among", |w| w.selector(among)));
+                    }),
+                    Produce::Fixed(_)
+                    | Produce::AnyColor(_)
+                    | Produce::OneOf(_)
+                    | Produce::ChosenColor(_)
+                    | Produce::CommanderIdentity(_) => {}
+                }
+                // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
+                match mana {
+                    Produce::Fixed(_) | Produce::AnyColor(_) => {}
+                    other => w.uses("Effect", &format!("AddMana.{}", tag_of(other))),
                 }
                 w.at("times", |w| w.amount(times));
             }
@@ -880,7 +958,9 @@ impl<'a> Walker<'a> {
                 then,
                 otherwise,
             } => {
+                w.performed_ok = w.follows_effect;
                 w.at("condition", |w| w.condition(condition));
+                w.performed_ok = false;
                 w.effect_list("then", then, false);
                 w.effect_list("otherwise", otherwise, false);
             }

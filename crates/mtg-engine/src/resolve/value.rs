@@ -633,6 +633,12 @@ impl<'a> Scope<'a> {
             }
             Amount::TargetCount(index) => i64::try_from(self.chosen(usize::from(*index)).len())
                 .map_err(|_| ResolveError::Invalid("too many targets".into()))?,
+            Amount::Devotion(_) => return Err(ResolveError::Unsupported("devotion")),
+            Amount::Greatest { .. } => return Err(ResolveError::Unsupported("greatest values")),
+            Amount::Total { .. } => return Err(ResolveError::Unsupported("totals")),
+            Amount::CardTypes(_) => {
+                return Err(ResolveError::Unsupported("card types among cards"));
+            }
         })
     }
 
@@ -674,6 +680,11 @@ impl<'a> Scope<'a> {
                 holds
             }
             Condition::Kicked => return Err(ResolveError::Unsupported("kicker")),
+            Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
+            Condition::Monarch(_) => return Err(ResolveError::Unsupported("the monarch")),
+            Condition::CitysBlessing(_) => {
+                return Err(ResolveError::Unsupported("the city's blessing"));
+            }
             Condition::YourTurn => self.state.turn().active() == self.controller,
         })
     }
@@ -1332,6 +1343,39 @@ mod tests {
             scope.amount(&loyalty),
             Ok(3),
             "the snapshot says what it held"
+        );
+    }
+
+    #[rstest]
+    #[case::devotion(r#"{"Devotion":["Black"]}"#, "devotion")]
+    #[case::the_greatest_value(r#"{"Greatest":{"of":[],"stat":"Power"}}"#, "greatest values")]
+    #[case::a_total(r#"{"Total":{"of":[],"stat":"Power"}}"#, "totals")]
+    #[case::card_types(r#"{"CardTypes":[]}"#, "card types among cards")]
+    fn an_amount_the_evaluator_cannot_read_yet_says_what_it_lacks(
+        #[case] json: &str,
+        #[case] lacks: &'static str,
+    ) {
+        let game = game();
+        let amount: Amount = serde_json::from_str(json).unwrap();
+        assert_eq!(
+            scope(&game).amount(&amount),
+            Err(ResolveError::Unsupported(lacks))
+        );
+    }
+
+    #[rstest]
+    #[case::if_you_do(r#""Performed""#, "\"if you do\"")]
+    #[case::the_monarch(r#"{"Monarch":"You"}"#, "the monarch")]
+    #[case::the_citys_blessing(r#"{"CitysBlessing":"You"}"#, "the city's blessing")]
+    fn a_condition_the_evaluator_cannot_read_yet_says_what_it_lacks(
+        #[case] json: &str,
+        #[case] lacks: &'static str,
+    ) {
+        let game = game();
+        let condition: Condition = serde_json::from_str(json).unwrap();
+        assert_eq!(
+            scope(&game).holds(&condition),
+            Err(ResolveError::Unsupported(lacks))
         );
     }
 }

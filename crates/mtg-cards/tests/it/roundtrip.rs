@@ -159,6 +159,10 @@ fn simple_amount() -> impl Strategy<Value = Amount> {
         (leaf_ref(), counter()).prop_map(|(on, counter)| Amount::Counters { on, counter }),
         Just(Amount::Divided),
         (0u8..3).prop_map(Amount::TargetCount),
+        vec(color(), 1..3).prop_map(Amount::Devotion),
+        (leaf_selector(), stat()).prop_map(|(of, stat)| Amount::Greatest { of, stat }),
+        (leaf_selector(), stat()).prop_map(|(of, stat)| Amount::Total { of, stat }),
+        leaf_selector().prop_map(Amount::CardTypes),
     ]
 }
 
@@ -269,25 +273,27 @@ fn amount() -> impl Strategy<Value = Amount> {
 }
 
 fn condition() -> impl Strategy<Value = Condition> {
-    prop_oneof![Just(Condition::Kicked), Just(Condition::YourTurn)].prop_recursive(
-        2,
-        8,
-        2,
-        |inner| {
-            prop_oneof![
-                inner.clone().prop_map(|c| Condition::Not(Box::new(c))),
-                vec(inner.clone(), 1..3).prop_map(Condition::All),
-                vec(inner, 1..3).prop_map(Condition::Any),
-                (amount(), cmp(), amount()).prop_map(|(left, op, right)| Condition::Compare {
-                    left,
-                    op,
-                    right
-                }),
-                (reference(), selector())
-                    .prop_map(|(subject, selector)| Condition::Matches { subject, selector }),
-            ]
-        },
-    )
+    prop_oneof![
+        Just(Condition::Kicked),
+        Just(Condition::YourTurn),
+        Just(Condition::Performed),
+        leaf_ref().prop_map(Condition::Monarch),
+        leaf_ref().prop_map(Condition::CitysBlessing),
+    ]
+    .prop_recursive(2, 8, 2, |inner| {
+        prop_oneof![
+            inner.clone().prop_map(|c| Condition::Not(Box::new(c))),
+            vec(inner.clone(), 1..3).prop_map(Condition::All),
+            vec(inner, 1..3).prop_map(Condition::Any),
+            (amount(), cmp(), amount()).prop_map(|(left, op, right)| Condition::Compare {
+                left,
+                op,
+                right
+            }),
+            (reference(), selector())
+                .prop_map(|(subject, selector)| Condition::Matches { subject, selector }),
+        ]
+    })
 }
 
 fn modification() -> impl Strategy<Value = Modification> {
@@ -534,6 +540,15 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     )
                     .prop_map(Produce::Fixed),
                     (1u32..3).prop_map(Produce::AnyColor),
+                    vec(
+                        select(vec![ManaType::White, ManaType::Blue, ManaType::Colorless]),
+                        2..4
+                    )
+                    .prop_map(Produce::OneOf),
+                    (1u32..3).prop_map(Produce::ChosenColor),
+                    (1u32..3).prop_map(Produce::CommanderIdentity),
+                    (selector(), 1u32..3)
+                        .prop_map(|(among, count)| Produce::ProducedBy { among, count }),
                 ],
                 amount()
             )
@@ -545,6 +560,23 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             (reference(), reference()).prop_map(|(what, to)| Effect::Attach { what, to }),
             reference().prop_map(|what| Effect::Transform { what }),
             who().prop_map(|who| Effect::WinGame { who }),
+            (who(), amount()).prop_map(|(who, count)| Effect::Surveil { who, count }),
+            who().prop_map(|who| Effect::Proliferate { who }),
+            reference().prop_map(|what| Effect::Goad { what }),
+            (reference(), reference()).prop_map(|(what, with)| Effect::Fight { what, with }),
+            who().prop_map(|who| Effect::BecomeMonarch { who }),
+            (text(), amount()).prop_map(|(subtype, count)| Effect::Amass {
+                subtype: Subtype(subtype),
+                count
+            }),
+            amount().prop_map(|count| Effect::Monstrosity { count }),
+            amount().prop_map(|count| Effect::Adapt { count }),
+            amount().prop_map(|count| Effect::Bolster { count }),
+            reference().prop_map(|what| Effect::Explore { what }),
+            reference().prop_map(|what| Effect::Connive { what }),
+            (who(), amount()).prop_map(|(who, count)| Effect::Discover { who, count }),
+            who().prop_map(|who| Effect::TimeTravel { who }),
+            who().prop_map(|who| Effect::ExtraTurn { who }),
             (who(), token_ref(), amount(), any::<bool>(), any::<bool>()).prop_map(
                 |(who, token, count, tapped, attacking)| Effect::CreateToken {
                     who,

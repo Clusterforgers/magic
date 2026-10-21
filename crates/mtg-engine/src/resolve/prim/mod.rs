@@ -5,9 +5,14 @@
 //! player (discard, sacrifice, "may", a choice) returns the question while its journal lacks the answer and reads
 //! the answer when its step runs again; a modal effect asks nothing, its modes were chosen when it was announced.
 
+mod adapt;
 mod add_mana;
+mod amass;
 mod attach;
+mod become_monarch;
+mod bolster;
 mod choose;
+mod connive;
 mod continuous;
 mod unattach;
 pub(crate) use continuous::lower;
@@ -17,18 +22,25 @@ mod deal_damage;
 mod delayed_trigger;
 mod destroy;
 mod discard;
+mod discover;
 mod draw;
 mod exile;
+mod explore;
+mod extra_turn;
+mod fight;
 mod gain_life;
+mod goad;
 mod if_then;
 mod look_at_top;
 mod lose_life;
 mod may;
 mod mill;
 mod modal;
+mod monstrosity;
 mod move_counters;
 mod move_to;
 mod pay;
+mod proliferate;
 mod put_counters;
 mod regenerate;
 mod remove_counters;
@@ -39,7 +51,9 @@ mod scry;
 mod search;
 mod shield;
 mod shuffle;
+mod surveil;
 mod tap;
+mod time_travel;
 mod transform;
 mod untap;
 mod win_game;
@@ -87,6 +101,20 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Attach { .. } => attach::run(cx, effect),
         Effect::Unattach { .. } => unattach::run(cx, effect),
         Effect::Transform { .. } => transform::run(cx, effect),
+        Effect::Surveil { .. } => surveil::run(cx, effect),
+        Effect::Proliferate { .. } => proliferate::run(cx, effect),
+        Effect::Goad { .. } => goad::run(cx, effect),
+        Effect::Fight { .. } => fight::run(cx, effect),
+        Effect::BecomeMonarch { .. } => become_monarch::run(cx, effect),
+        Effect::Amass { .. } => amass::run(cx, effect),
+        Effect::Monstrosity { .. } => monstrosity::run(cx, effect),
+        Effect::Adapt { .. } => adapt::run(cx, effect),
+        Effect::Bolster { .. } => bolster::run(cx, effect),
+        Effect::Explore { .. } => explore::run(cx, effect),
+        Effect::Connive { .. } => connive::run(cx, effect),
+        Effect::Discover { .. } => discover::run(cx, effect),
+        Effect::TimeTravel { .. } => time_travel::run(cx, effect),
+        Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
@@ -123,6 +151,10 @@ mod tests {
         {"PutCounters":{"on":"This","counter":"+1/+1"}}, {"RemoveCounters":{"from":"This","counter":"+1/+1"}},
         {"MoveCounters":{"from":"This","to":"This","counter":"+1/+1"}}, {"Tap":{"what":"This"}},
         {"Untap":{"what":"This"}}, {"Attach":{"what":"This","to":"This"}}, {"Unattach":{"what":"This"}}, {"Transform":{"what":"This"}}, {"WinGame":{}},
+        {"Surveil":{}}, {"Proliferate":{}}, {"Goad":{"what":"This"}}, {"Fight":{"what":"This","with":"This"}},
+        {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}},
+        {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
+        {"Discover":{"count":1}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
@@ -144,7 +176,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 37, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 51, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],

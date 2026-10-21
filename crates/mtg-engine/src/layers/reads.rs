@@ -169,6 +169,11 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .iter()
             .fold(Traits::NONE, |all, part| all.or(reads_of_amount(part))),
         Amount::EvenShare(total) => reads_of_amount(total),
+        Amount::Devotion(_) => Traits::CONTROL,
+        Amount::Greatest { of, stat } | Amount::Total { of, stat } => {
+            reads_of_selector(of).or(reads_of_stat(*stat))
+        }
+        Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
     }
 }
 
@@ -184,6 +189,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
         Condition::YourTurn => Traits::CONTROL,
-        Condition::Kicked => Traits::NONE,
+        Condition::Kicked | Condition::Performed => Traits::NONE,
+        Condition::Monarch(who) | Condition::CitysBlessing(who) => reads_of_ref(who),
     }
 }

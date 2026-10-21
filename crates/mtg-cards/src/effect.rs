@@ -1,5 +1,6 @@
 //! Effects: the verbs of the DSL. One variant per engine primitive, so a new mechanic is one variant.
 
+use mtg_core::card::Subtype;
 use mtg_core::mana::ManaType;
 use serde::{Deserialize, Serialize};
 
@@ -79,6 +80,19 @@ pub enum Produce {
     Fixed(Vec<ManaType>),
     /// This many mana of any one color, chosen when added.
     AnyColor(u32),
+    /// One mana of a type chosen when added from at least two ("Add {W} or {U}").
+    OneOf(Vec<ManaType>),
+    /// This many mana of the color chosen as the source entered the battlefield.
+    ChosenColor(u32),
+    /// This many mana of any one color in the identity of the controller's commander.
+    CommanderIdentity(u32),
+    /// This many mana of any one color that an object matching the selector could produce.
+    ProducedBy {
+        /// The objects whose mana abilities are looked at.
+        among: Selector,
+        /// How many mana.
+        count: u32,
+    },
 }
 
 /// What a created token is.
@@ -357,6 +371,91 @@ pub enum Effect {
     Transform {
         /// What transforms.
         what: Ref,
+    },
+    /// The player surveils (CR 701.25): looks at the top cards of their library and puts any into the graveyard.
+    Surveil {
+        /// Who surveils.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many cards.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// The player proliferates (CR 701.34): chooses permanents and players with counters and gives each another.
+    Proliferate {
+        /// Who proliferates.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// Goads creatures (CR 701.38): they must attack, and a player other than the goader, until the goader's next turn.
+    Goad {
+        /// The creatures goaded.
+        what: Ref,
+    },
+    /// A creature fights another (CR 701.14): each deals damage equal to its power to the other.
+    Fight {
+        /// The creature that fights.
+        what: Ref,
+        /// The creature it fights.
+        with: Ref,
+    },
+    /// The player becomes the monarch (CR 724).
+    BecomeMonarch {
+        /// Who becomes it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// The player amasses (CR 701.47): counters go on an Army they control, a new 0/0 Army token if they have none.
+    Amass {
+        /// The creature type of the Army token ("Amass Orcs 2").
+        subtype: Subtype,
+        /// How many +1/+1 counters.
+        count: Amount,
+    },
+    /// The source creature becomes monstrous (CR 701.37): it gets +1/+1 counters.
+    Monstrosity {
+        /// How many +1/+1 counters.
+        count: Amount,
+    },
+    /// The source creature adapts (CR 701.46): it gets +1/+1 counters if it has none.
+    Adapt {
+        /// How many +1/+1 counters.
+        count: Amount,
+    },
+    /// The player bolsters (CR 701.39): puts counters on the creature they control with the least toughness.
+    Bolster {
+        /// How many +1/+1 counters.
+        count: Amount,
+    },
+    /// Creatures explore (CR 701.44): a land on top goes to the hand, any other card gives a counter and may go to the graveyard.
+    Explore {
+        /// The creatures that explore.
+        what: Ref,
+    },
+    /// Creatures connive (CR 701.50): their controller draws and discards, a nonland discard gives a +1/+1 counter.
+    Connive {
+        /// The creatures that connive.
+        what: Ref,
+    },
+    /// The player discovers (CR 701.57): the first nonland card of lesser mana value from the top is cast free or kept.
+    Discover {
+        /// Who discovers.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The greatest mana value of the card found.
+        count: Amount,
+    },
+    /// The player time travels (CR 701.56): each suspended card and permanent with a time counter gains or loses one.
+    TimeTravel {
+        /// Who time travels.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// The player takes an extra turn after this one.
+    ExtraTurn {
+        /// Who takes it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
     },
     /// The player wins the game.
     WinGame {

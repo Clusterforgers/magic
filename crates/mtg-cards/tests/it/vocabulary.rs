@@ -1,0 +1,155 @@
+//! Goal: each node of the vocabulary pass reads and writes as the same JSON, validates where it is right and is refused where it is wrong, and the support walker names it, so a card that uses one stays Partial until the engine runs it.
+#![allow(clippy::unwrap_used)]
+
+use std::collections::BTreeSet;
+
+use mtg_cards::ability::Ability;
+use mtg_cards::load::{Library, Source};
+use mtg_cards::validate::used_primitives;
+use rstest::rstest;
+
+/// Loads a card whose one face has this ability, or says why the library refused it.
+fn load(ability: &str) -> Result<(), String> {
+    let text = format!(
+        r#"{{"oracle_id":"4457ed35-7c10-48c8-9776-456485fdf070","name":"Test","impl_status":"Full","faces":[{{"name":"Test","oracle_fingerprint":"e3b0c44298fc1c149afbf4c8996fb924","abilities":[{ability}]}}]}}"#
+    );
+    Library::from_sources(&[Source {
+        path: "cards/test.json".into(),
+        text,
+    }])
+    .map(|_| ())
+    .map_err(|errors| errors.to_string())
+}
+
+fn names(list: &[&str]) -> BTreeSet<String> {
+    list.iter().map(|name| (*name).to_owned()).collect()
+}
+
+#[rstest]
+#[case::surveil(r#"{"Spell":{"effects":[{"Surveil":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Surveil"])]
+#[case::proliferate(r#"{"Spell":{"effects":[{"Proliferate":{}}]}}"#, &["Ability.Spell", "Effect.Proliferate"])]
+#[case::goad(
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Goad":{"what":{"Target":0}}}]}}"#,
+    &["Ability.Spell", "Effect.Goad"]
+)]
+#[case::fight(
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"ControlledBy":"You"}]}},{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Fight":{"what":{"Target":0},"with":{"Target":1}}}]}}"#,
+    &["Ability.Spell", "Effect.Fight"]
+)]
+#[case::monarch(r#"{"Spell":{"effects":[{"BecomeMonarch":{}}]}}"#, &["Ability.Spell", "Effect.BecomeMonarch"])]
+#[case::amass(r#"{"Spell":{"effects":[{"Amass":{"subtype":"Orc","count":2}}]}}"#, &["Ability.Spell", "Effect.Amass"])]
+#[case::monstrosity(r#"{"Spell":{"effects":[{"Monstrosity":{"count":3}}]}}"#, &["Ability.Spell", "Effect.Monstrosity"])]
+#[case::adapt(r#"{"Spell":{"effects":[{"Adapt":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Adapt"])]
+#[case::bolster(r#"{"Spell":{"effects":[{"Bolster":{"count":2}}]}}"#, &["Ability.Spell", "Effect.Bolster"])]
+#[case::explore(r#"{"Spell":{"effects":[{"Explore":{"what":"This"}}]}}"#, &["Ability.Spell", "Effect.Explore"])]
+#[case::connive(r#"{"Spell":{"effects":[{"Connive":{"what":"This"}}]}}"#, &["Ability.Spell", "Effect.Connive"])]
+#[case::discover(r#"{"Spell":{"effects":[{"Discover":{"count":4}}]}}"#, &["Ability.Spell", "Effect.Discover"])]
+#[case::time_travel(r#"{"Spell":{"effects":[{"TimeTravel":{}}]}}"#, &["Ability.Spell", "Effect.TimeTravel"])]
+#[case::extra_turn(r#"{"Spell":{"effects":[{"ExtraTurn":{}}]}}"#, &["Ability.Spell", "Effect.ExtraTurn"])]
+#[case::a_choice_of_mana(
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["White","Blue"]}}}]}}"#,
+    &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.OneOf"]
+)]
+#[case::mana_of_the_chosen_color(
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ChosenColor":1}}}]}}"#,
+    &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.ChosenColor"]
+)]
+#[case::mana_of_the_commanders_identity(
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"CommanderIdentity":1}}}]}}"#,
+    &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.CommanderIdentity"]
+)]
+#[case::mana_a_land_could_produce(
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"},{"ControlledBy":"Opponents"}],"count":1}}}}]}}"#,
+    &["Ability.Activated", "Ability.ManaAbility.Complex", "Cost.Tap", "Effect.AddMana", "Effect.AddMana.ProducedBy"]
+)]
+#[case::devotion(
+    r#"{"Spell":{"effects":[{"GainLife":{"amount":{"Devotion":["Black"]}}}]}}"#,
+    &["Ability.Spell", "Amount.Devotion", "Effect.GainLife"]
+)]
+#[case::the_greatest_power(
+    r#"{"Spell":{"effects":[{"Draw":{"count":{"Greatest":{"of":[{"Type":"Creature"},{"ControlledBy":"You"}],"stat":"Power"}}}}]}}"#,
+    &["Ability.Spell", "Amount.Greatest", "Effect.Draw"]
+)]
+#[case::the_total_power(
+    r#"{"Spell":{"effects":[{"GainLife":{"amount":{"Total":{"of":[{"Type":"Creature"},{"ControlledBy":"You"}],"stat":"Power"}}}}]}}"#,
+    &["Ability.Spell", "Amount.Total", "Effect.GainLife"]
+)]
+#[case::card_types_among_cards(
+    r#"{"Spell":{"effects":[{"Draw":{"count":{"CardTypes":[{"In":"Graveyard"},{"OwnedBy":"You"}]}}}]}}"#,
+    &["Ability.Spell", "Amount.CardTypes", "Effect.Draw"]
+)]
+#[case::if_you_do(
+    r#"{"Spell":{"effects":[{"May":{"effects":[{"Discard":{}}]}},{"If":{"condition":"Performed","then":[{"Draw":{}}]}}]}}"#,
+    &["Ability.Spell", "Condition.Performed", "Effect.Discard", "Effect.Draw", "Effect.If", "Effect.May"]
+)]
+#[case::if_you_dont(
+    r#"{"Spell":{"effects":[{"Discard":{}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}"#,
+    &["Ability.Spell", "Condition.Performed", "Effect.Discard", "Effect.Draw", "Effect.If"]
+)]
+#[case::the_monarch(
+    r#"{"Spell":{"effects":[{"If":{"condition":{"Monarch":"You"},"then":[{"Draw":{}}]}}]}}"#,
+    &["Ability.Spell", "Condition.Monarch", "Effect.Draw", "Effect.If"]
+)]
+#[case::the_citys_blessing(
+    r#"{"Spell":{"effects":[{"If":{"condition":{"CitysBlessing":"You"},"then":[{"Draw":{}}]}}]}}"#,
+    &["Ability.Spell", "Condition.CitysBlessing", "Effect.Draw", "Effect.If"]
+)]
+fn a_node_validates_round_trips_and_names_its_primitive(
+    #[case] json: &str,
+    #[case] expected: &[&str],
+) {
+    assert_eq!(load(json), Ok(()));
+    let ability: Ability = serde_json::from_str(json).unwrap();
+    assert_eq!(serde_json::to_string(&ability).unwrap(), json);
+    assert_eq!(used_primitives(&ability), names(expected));
+}
+
+#[rstest]
+#[case::if_you_do_with_nothing_before(
+    r#"{"Spell":{"effects":[{"If":{"condition":"Performed","then":[{"Draw":{}}]}}]}}"#,
+    "`Performed` is the condition of an `If` that follows"
+)]
+#[case::performed_outside_an_if(
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep"}},"if":"Performed","effects":[{"Draw":{}}]}}"#,
+    "`Performed` is the condition of an `If` that follows"
+)]
+#[case::performed_in_the_first_branch_of_a_nested_list(
+    r#"{"Spell":{"effects":[{"May":{"effects":[{"If":{"condition":"Performed","then":[{"Draw":{}}]}}]}}]}}"#,
+    "`Performed` is the condition of an `If` that follows"
+)]
+#[case::devotion_to_nothing(
+    r#"{"Spell":{"effects":[{"GainLife":{"amount":{"Devotion":[]}}}]}}"#,
+    "devotion is to at least one color"
+)]
+#[case::a_choice_of_one_mana(
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["White"]}}}]}}"#,
+    "a choice of mana needs at least two types"
+)]
+#[case::no_chosen_mana(
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ChosenColor":0}}}]}}"#,
+    "adds no mana"
+)]
+#[case::no_mana_a_land_could_produce(
+    r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ProducedBy":{"among":[],"count":0}}}}]}}"#,
+    "adds no mana"
+)]
+#[case::the_monarch_is_a_player(
+    r#"{"Spell":{"effects":[{"If":{"condition":{"Monarch":"This"},"then":[{"Draw":{}}]}}]}}"#,
+    "expected a player"
+)]
+#[case::a_player_does_not_fight(
+    r#"{"Spell":{"effects":[{"Fight":{"what":"You","with":"This"}}]}}"#,
+    "expected an object"
+)]
+#[case::an_object_does_not_surveil(
+    r#"{"Spell":{"effects":[{"Surveil":{"who":"This"}}]}}"#,
+    "expected a player"
+)]
+#[case::a_target_that_is_not_there(
+    r#"{"Spell":{"effects":[{"Goad":{"what":{"Target":0}}}]}}"#,
+    "target 0 does not exist"
+)]
+fn a_node_used_wrongly_is_refused_where_it_stands(#[case] json: &str, #[case] message: &str) {
+    let error = load(json).unwrap_err();
+    assert!(error.contains(message), "{message:?} is not in {error}");
+}

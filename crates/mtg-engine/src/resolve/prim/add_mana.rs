@@ -5,7 +5,7 @@ use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use mtg_core::mana::ManaType;
 
-use super::wrong_effect;
+use super::{unsupported, wrong_effect};
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::events::Event;
 use crate::resolve::{Cx, ResolveError, Run};
@@ -38,6 +38,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::AddMana { who, mana, times } = effect else {
         return Err(wrong_effect("AddMana"));
     };
+    // A choice of mana other than any one color waits for the task that plays it; `Caps` names each by `Effect.AddMana.<kind>`.
+    match mana {
+        Produce::OneOf(_) => return unsupported("Effect.AddMana.OneOf"),
+        Produce::ChosenColor(_) => return unsupported("Effect.AddMana.ChosenColor"),
+        Produce::CommanderIdentity(_) => return unsupported("Effect.AddMana.CommanderIdentity"),
+        Produce::ProducedBy { .. } => return unsupported("Effect.AddMana.ProducedBy"),
+        Produce::Fixed(_) | Produce::AnyColor(_) => {}
+    }
     let state = cx.state();
     let times = usize::try_from(cx.scope.amount(times)?.max(0)).unwrap_or(0);
     let players: Vec<PlayerId> = cx
@@ -90,6 +98,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 ));
             }
         }
+        Produce::OneOf(_)
+        | Produce::ChosenColor(_)
+        | Produce::CommanderIdentity(_)
+        | Produce::ProducedBy { .. } => return Err(wrong_effect("AddMana")),
     }
     Ok(Run::events(events))
 }
@@ -167,6 +179,33 @@ mod tests {
         assert_eq!(
             added(run_with(&game(), Vec::new(), &effect(json)).unwrap()),
             expected
+        );
+    }
+
+    #[rstest]
+    #[case::a_choice(
+        r#"{"AddMana":{"mana":{"OneOf":["White","Blue"]}}}"#,
+        "Effect.AddMana.OneOf"
+    )]
+    #[case::the_chosen_color(
+        r#"{"AddMana":{"mana":{"ChosenColor":1}}}"#,
+        "Effect.AddMana.ChosenColor"
+    )]
+    #[case::the_commanders_identity(
+        r#"{"AddMana":{"mana":{"CommanderIdentity":1}}}"#,
+        "Effect.AddMana.CommanderIdentity"
+    )]
+    #[case::what_a_land_could_produce(
+        r#"{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"}],"count":1}}}}"#,
+        "Effect.AddMana.ProducedBy"
+    )]
+    fn a_choice_of_mana_other_than_any_color_refuses_by_its_own_name(
+        #[case] json: &str,
+        #[case] name: &'static str,
+    ) {
+        assert_eq!(
+            run_with(&game(), Vec::new(), &effect(json)).unwrap_err(),
+            ResolveError::Unsupported(name)
         );
     }
 

@@ -183,7 +183,11 @@ pub fn simple_mana_ability(ability: &Ability) -> Option<SimpleManaAbility> {
             _ => return None,
         },
         Produce::AnyColor(1) => ManaProduced::AnyColor,
-        Produce::AnyColor(_) => return None,
+        Produce::AnyColor(_)
+        | Produce::OneOf(_)
+        | Produce::ChosenColor(_)
+        | Produce::CommanderIdentity(_)
+        | Produce::ProducedBy { .. } => return None,
     };
     (targets.is_empty() && times.is_one() && (tap || sacrifice)).then_some(SimpleManaAbility {
         produces,

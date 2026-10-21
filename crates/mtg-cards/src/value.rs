@@ -5,6 +5,8 @@ use std::fmt;
 use serde::de::{self, MapAccess, Visitor};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+use mtg_core::color::Color;
+
 use crate::refs::{Ref, Selector};
 
 /// A characteristic of an object that has a number.
@@ -123,6 +125,25 @@ pub enum Amount {
     EvenShare(Box<Amount>),
     /// How many targets were chosen for the target specification with this index.
     TargetCount(u8),
+    /// The controller's devotion to the colors: the mana symbols of those colors among the mana costs of the
+    /// permanents they control (CR 700.5).
+    Devotion(Vec<Color>),
+    /// The greatest value of the characteristic among the objects that match the selector; zero when none match.
+    Greatest {
+        /// The objects compared.
+        of: Selector,
+        /// The characteristic.
+        stat: StatKind,
+    },
+    /// The sum of the characteristic over the objects that match the selector.
+    Total {
+        /// The objects added up.
+        of: Selector,
+        /// The characteristic.
+        stat: StatKind,
+    },
+    /// How many card types there are among the objects that match the selector.
+    CardTypes(Selector),
 }
 
 impl Amount {
@@ -150,6 +171,10 @@ enum Tagged {
     Divided,
     EvenShare(Box<Amount>),
     TargetCount(u8),
+    Devotion(Vec<Color>),
+    Greatest { of: Selector, stat: StatKind },
+    Total { of: Selector, stat: StatKind },
+    CardTypes(Selector),
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -170,6 +195,16 @@ enum TaggedRef<'a> {
     Divided,
     EvenShare(&'a Amount),
     TargetCount(u8),
+    Devotion(&'a [Color]),
+    Greatest {
+        of: &'a Selector,
+        stat: StatKind,
+    },
+    Total {
+        of: &'a Selector,
+        stat: StatKind,
+    },
+    CardTypes(&'a Selector),
 }
 
 impl From<Tagged> for Amount {
@@ -184,6 +219,10 @@ impl From<Tagged> for Amount {
             Tagged::Divided => Amount::Divided,
             Tagged::EvenShare(total) => Amount::EvenShare(total),
             Tagged::TargetCount(index) => Amount::TargetCount(index),
+            Tagged::Devotion(colors) => Amount::Devotion(colors),
+            Tagged::Greatest { of, stat } => Amount::Greatest { of, stat },
+            Tagged::Total { of, stat } => Amount::Total { of, stat },
+            Tagged::CardTypes(of) => Amount::CardTypes(of),
         }
     }
 }
@@ -203,6 +242,14 @@ impl Serialize for Amount {
             Amount::Divided => TaggedRef::Divided.serialize(serializer),
             Amount::EvenShare(total) => TaggedRef::EvenShare(total).serialize(serializer),
             Amount::TargetCount(index) => TaggedRef::TargetCount(*index).serialize(serializer),
+            Amount::Devotion(colors) => TaggedRef::Devotion(colors).serialize(serializer),
+            Amount::Greatest { of, stat } => {
+                TaggedRef::Greatest { of, stat: *stat }.serialize(serializer)
+            }
+            Amount::Total { of, stat } => {
+                TaggedRef::Total { of, stat: *stat }.serialize(serializer)
+            }
+            Amount::CardTypes(of) => TaggedRef::CardTypes(of).serialize(serializer),
         }
     }
 }
@@ -273,6 +320,13 @@ pub enum Condition {
     Kicked,
     /// It is the controller's turn.
     YourTurn,
+    /// The effect just before this one in its list was carried out in full ("if you do"): a "may" that was
+    /// accepted, a cost that was paid, cards that were moved.
+    Performed,
+    /// The player is the monarch (CR 724).
+    Monarch(Ref),
+    /// The player has the city's blessing (CR 702.131).
+    CitysBlessing(Ref),
 }
 
 #[cfg(test)]
