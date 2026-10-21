@@ -118,7 +118,7 @@ mod tests {
     fn an_evader_has_the_static_ability_and_its_keywords() {
         let card = evader("Shade", 2, 2, r#"["CantBeBlocked"]"#, &[Keyword::Menace]).unwrap();
         assert_eq!(card.rules.len(), 2);
-        assert!(matches!(card.rules[0], Ability::Static { .. }));
+        assert!(matches!(*card.rules[0], Ability::Static { .. }));
     }
 
     #[test]

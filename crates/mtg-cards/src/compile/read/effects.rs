@@ -23,7 +23,7 @@ use crate::value::Amount;
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 20] = [
+const TEMPLATES: [Template; 21] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -34,6 +34,7 @@ const TEMPLATES: [Template; 20] = [
     damage,
     removal,
     pump,
+    evasion,
     return_card,
     return_chosen,
     create::tokens,
@@ -632,6 +633,17 @@ fn pump(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::Continuous {
         affected,
         mods,
+        duration: Duration::UntilEndOfTurn,
+    }])
+}
+
+/// "Target creature can't be blocked this turn.", "Creatures you control can't be blocked this turn."
+fn evasion(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let (affected, _) = subject(r)?;
+    r.need("can't be blocked this turn")?;
+    Some(vec![Effect::Continuous {
+        affected,
+        mods: vec![Modification::CantBeBlocked],
         duration: Duration::UntilEndOfTurn,
     }])
 }

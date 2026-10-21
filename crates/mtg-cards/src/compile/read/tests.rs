@@ -642,6 +642,8 @@ mod pump {
     #[case::both("Target creature gets +1/+1 and gains trample until end of turn.", false, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":[{"ModifyPT":{"power":1,"toughness":1}},{"AddKeyword":"Trample"}],"duration":"UntilEndOfTurn"}}]}}"#)]
     #[case::your_creatures("Creatures you control get +1/+1 until end of turn.", false, r#"{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}}]}}"#)]
     #[case::the_card("~ gets +2/+2 until end of turn.", false, r#"{"Spell":{"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":2,"toughness":2}}],"duration":"UntilEndOfTurn"}}]}}"#)]
+    #[case::unblockable_this_turn("Target creature can't be blocked this turn.", false, r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"Continuous":{"affected":{"Target":0},"mods":["CantBeBlocked"],"duration":"UntilEndOfTurn"}}]}}"#)]
+    #[case::your_creatures_unblockable("Creatures you control can't be blocked this turn.", false, r#"{"Spell":{"effects":[{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":["CantBeBlocked"],"duration":"UntilEndOfTurn"}}]}}"#)]
     fn the_wordings_read_into_the_dsl(
         #[case] text: &str,
         #[case] x_free: bool,
@@ -672,6 +674,10 @@ mod pump {
     #[case("Other creatures you control get +1/+1 until end of turn.")]
     #[case("Attacking creatures get +1/+0 until end of turn.")]
     #[case("~ gains flying until end of turn.")]
+    #[case("Target creature can't be blocked this turn.")]
+    #[case("Target creature you control can't be blocked this turn.")]
+    #[case("Creatures you control can't be blocked this turn.")]
+    #[case("~ can't be blocked this turn.")]
     fn more_oracle_wordings_read_and_write_back(#[case] text: &str) {
         golden(text, ClauseKind::Spell, false);
     }

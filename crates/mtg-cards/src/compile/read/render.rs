@@ -909,6 +909,9 @@ impl Writer<'_> {
             }
             _ => return None,
         };
+        if let [Modification::CantBeBlocked] = mods {
+            return Some(format!("{subject} can't be blocked this turn"));
+        }
         let (gets, gains) = if plural {
             ("get", "gain")
         } else {

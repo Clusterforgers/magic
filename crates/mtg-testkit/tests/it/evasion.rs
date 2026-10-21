@@ -224,7 +224,7 @@ fn losing_the_ability_before_blockers_lets_everything_block_and_gaining_it_after
         .state()
         .object(blocker)
         .and_then(|o| o.permanent())
-        .map(|p| p.damage());
+        .map(mtg_engine::object::PermanentState::damage);
     assert_eq!(marked, Some(2));
     Ok(())
 }
@@ -405,7 +405,7 @@ fn protection_does_not_stop_the_combat_damage_of_questing_beast(
         .state()
         .object(guard)
         .and_then(|o| o.permanent())
-        .map(|p| p.damage());
+        .map(mtg_engine::object::PermanentState::damage);
     assert_eq!(dealt, Some(marked));
     Ok(())
 }
