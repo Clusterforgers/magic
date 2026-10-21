@@ -103,6 +103,12 @@ impl Engine {
         &self.setup
     }
 
+    /// Whether the pending decision is a question of the replacement step: the events it is about are not applied yet, so
+    /// the state is not settled (a creature that is to die is still in play).
+    pub const fn replacing(&self) -> bool {
+        self.held.is_some()
+    }
+
     /// The pending decision; `None` once the game is over.
     pub fn decision(&self) -> Option<&Decision> {
         self.decision.as_ref()

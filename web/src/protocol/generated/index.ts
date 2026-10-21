@@ -32,6 +32,7 @@ export type { Choice } from "./Choice";
 export type { ChoiceOption } from "./ChoiceOption";
 export type { Choices } from "./Choices";
 export type { ChooseDeck } from "./ChooseDeck";
+export type { Chosen } from "./Chosen";
 export type { ClientMessage } from "./ClientMessage";
 export type { Color } from "./Color";
 export type { ColorSet } from "./ColorSet";

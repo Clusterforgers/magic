@@ -2,7 +2,7 @@
 
 use std::fmt;
 
-use mtg_engine::decision::{Answer, PriorityAction};
+use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_engine::state::Stage;
 use mtg_engine::{Engine, EngineError, Event, GameResult, GameSetup};
 use thiserror::Error;
@@ -64,6 +64,8 @@ pub struct GameOutcome {
     pub final_hash: u64,
     /// The complete event log.
     pub events: Vec<Event>,
+    /// How many times the engine asked a player to order replacement effects.
+    pub replacement_asks: usize,
 }
 
 /// What went wrong in a bot game.
@@ -176,6 +178,7 @@ pub fn play_game_with(
     let pass = Answer::Priority(PriorityAction::Pass);
     let mut answers = 0;
     let mut auto_passes = 0;
+    let mut replacement_asks = 0;
     while let Some(decision) = engine.decision().cloned() {
         if answers >= options.max_answers {
             return Err(fail(FailureKind::StepLimit(answers), engine.events()));
@@ -184,6 +187,15 @@ pub fn play_game_with(
             let message = format!("decision for unknown {:?}", decision.player);
             return Err(fail(FailureKind::BadEnding(message), engine.events()));
         };
+        if let DecisionKind::ChooseReplacement(options) = &decision.kind {
+            // The order is asked only when two or more effects apply (CR 616.1).
+            if options.candidates.len() < 2 {
+                let message =
+                    "an order of replacement effects was asked of fewer than two".to_owned();
+                return Err(fail(FailureKind::BadEnding(message), engine.events()));
+            }
+            replacement_asks += 1;
+        }
         let table_passes = windows.passes(engine.state(), &decision);
         let answer = if table_passes {
             auto_passes += 1;
@@ -203,6 +215,10 @@ pub fn play_game_with(
         observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
     }
     finish(&engine, checker.as_mut(), answers, auto_passes)
+        .map(|outcome| GameOutcome {
+            replacement_asks,
+            ..outcome
+        })
         .map_err(|kind| fail(kind, engine.events()))
 }
 
@@ -253,5 +269,6 @@ fn finish(
         turns: state.turn().number(),
         final_hash: state.state_hash(),
         events: engine.events().to_vec(),
+        replacement_asks: 0,
     })
 }

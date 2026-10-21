@@ -101,7 +101,7 @@ pub fn process(
         .iter()
         .filter_map(|slot| match &slot.item {
             Item::Tokens(run) => run.iter().map(|token| token.object.get()).max(),
-            _ => None,
+            Item::One(_) => None,
         })
         .fold(step.next_id, |all, id| all.max(id + 1));
     match step.run()? {
@@ -293,26 +293,25 @@ fn is_self(when: &ReplaceWhen) -> bool {
 
 /// Whether the engine can apply `by` to this kind of event.
 fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
-    match (by, unit) {
-        (
-            ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Prevent,
+    match by {
+        ReplaceBy::Multiply(_) | ReplaceBy::Add(_) | ReplaceBy::Prevent => matches!(
+            unit,
             Unit::Tokens { .. }
-            | Unit::Damage { .. }
-            | Unit::Counters { .. }
-            | Unit::Life { .. }
-            | Unit::Draw { .. },
-        ) => true,
-        (ReplaceBy::MoveTo(kind), Unit::Move { .. }) => {
-            matches!(kind, ZoneKind::Exile | ZoneKind::Graveyard | ZoneKind::Hand)
+                | Unit::Damage { .. }
+                | Unit::Counters { .. }
+                | Unit::Life { .. }
+                | Unit::Draw { .. }
+        ),
+        ReplaceBy::MoveTo(kind) => {
+            matches!(unit, Unit::Move { .. })
+                && matches!(kind, ZoneKind::Exile | ZoneKind::Graveyard | ZoneKind::Hand)
         }
-        (
-            ReplaceBy::Tapped
-            | ReplaceBy::WithCounters { .. }
-            | ReplaceBy::Choose(_)
-            | ReplaceBy::PayLifeOrTapped(_),
-            Unit::Enter { .. },
-        ) => true,
-        _ => false,
+        ReplaceBy::Tapped
+        | ReplaceBy::WithCounters { .. }
+        | ReplaceBy::Choose(_)
+        | ReplaceBy::PayLifeOrTapped(_) => matches!(unit, Unit::Enter { .. }),
+        // Not run yet: a card that uses it is not Verified.
+        ReplaceBy::Instead(_) => false,
     }
 }
 
@@ -328,6 +327,12 @@ struct Candidate {
 enum Run {
     Ask(Decision),
     Done,
+}
+
+/// A question that is asked, or the answer to it.
+enum Asked<T> {
+    Ask(Decision),
+    Got(T),
 }
 
 /// What applying one effect needs: a question first, or it is applied.
@@ -387,7 +392,9 @@ impl Pass<'_> {
                 }
             }
             Event::LifeGained { player, .. } => Unit::Life { player: *player },
-            Event::CardDrawn { player, .. } => Unit::Draw { player: *player },
+            Event::CardDrawn { player, .. } | Event::DrewFromEmptyLibrary { player } => {
+                Unit::Draw { player: *player }
+            }
             _ => Unit::Other,
         }
     }
@@ -782,13 +789,16 @@ impl Pass<'_> {
         let unit = self.unit(&self.slots[at].item);
         match (&candidate.by, &unit) {
             (ReplaceBy::Prevent, _) => {
-                if matches!(&self.slots[at].item, Item::One(Event::CardDrawn { .. })) {
+                if matches!(
+                    &self.slots[at].item,
+                    Item::One(Event::CardDrawn { .. } | Event::DrewFromEmptyLibrary { .. })
+                ) {
                     self.draws_changed = true;
                 }
                 self.slots.remove(at);
             }
             (ReplaceBy::Multiply(_) | ReplaceBy::Add(_), _) => {
-                self.scale(at, &candidate.by, applied);
+                self.scale(at, &candidate.by, &applied);
             }
             (ReplaceBy::MoveTo(kind), Unit::Move { object, from, to }) => {
                 let Some(owner) = self.state.object(*object).map(GameObject::owner) else {
@@ -800,9 +810,9 @@ impl Pass<'_> {
                     ZoneKind::Hand => Zone::Hand(owner),
                     _ => Zone::Graveyard(owner),
                 };
-                self.slots[at].applied = applied.clone();
+                self.slots[at].applied.clone_from(&applied);
                 if destination != *to {
-                    self.redirect(at, *object, *from, destination, applied);
+                    self.redirect(at, *object, *from, destination, &applied);
                 }
             }
             (_, Unit::Enter { object, controller }) => {
@@ -814,7 +824,7 @@ impl Pass<'_> {
     }
 
     /// Multiplies or increases the number in the event: the tokens, the damage, the counters, the life, the cards drawn.
-    fn scale(&mut self, at: usize, by: &ReplaceBy, applied: Vec<AbilityRef>) {
+    fn scale(&mut self, at: usize, by: &ReplaceBy, applied: &[AbilityRef]) {
         let more = |amount: u32| match by {
             ReplaceBy::Multiply(times) => amount.saturating_mul(*times),
             ReplaceBy::Add(extra) => amount.saturating_add(*extra),
@@ -880,18 +890,18 @@ impl Pass<'_> {
                 player,
                 amount: more(amount),
             })],
-            Item::One(event @ Event::CardDrawn { .. }) => {
+            Item::One(event @ (Event::CardDrawn { .. } | Event::DrewFromEmptyLibrary { .. })) => {
                 self.draws_changed = true;
                 let count = more(1);
                 (0..count).map(|_| Item::One(event.clone())).collect()
             }
-            other => vec![other],
+            other @ Item::One(_) => vec![other],
         };
         let slots: Vec<Slot> = rebuilt
             .into_iter()
             .map(|item| Slot {
                 item,
-                applied: applied.clone(),
+                applied: applied.to_vec(),
                 frozen: false,
             })
             .collect();
@@ -920,7 +930,7 @@ impl Pass<'_> {
         object: ObjectId,
         from: Zone,
         destination: Zone,
-        applied: Vec<AbilityRef>,
+        applied: &[AbilityRef],
     ) {
         let item = self.slots[at].item.clone();
         let Item::One(event) = item else {
@@ -959,7 +969,7 @@ impl Pass<'_> {
                     Event::ResolutionEnded { .. } | Event::PriorityGranted { .. }
                 ),
                 item: Item::One(event),
-                applied: applied.clone(),
+                applied: applied.to_vec(),
             })
             .collect();
         self.slots.splice(at..=at, slots);
@@ -1037,87 +1047,32 @@ impl Pass<'_> {
                 }
             }
             ReplaceBy::PayLifeOrTapped(life) => {
-                let can_pay = self
-                    .state
-                    .player(controller)
-                    .is_some_and(|p| u32::try_from(p.life()).is_ok_and(|have| have >= *life));
-                let pays = if can_pay {
-                    match self.answer() {
-                        None => {
-                            return Ok(Applied::Ask(Decision {
-                                player: controller,
-                                kind: DecisionKind::YesNo(YesNoOptions {
-                                    source,
-                                    text: format!("Pay {life} life?"),
+                match self.pays_life(source, controller, *life)? {
+                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                    Asked::Got(true) => {
+                        self.slots.insert(
+                            at,
+                            Slot {
+                                item: Item::One(Event::LifePaid {
+                                    player: controller,
+                                    amount: *life,
                                 }),
-                            }));
-                        }
-                        Some((who, Choice::YesNo(yes))) if *who == controller => *yes,
-                        Some(other) => {
-                            return Err(Self::invalid(format!(
-                                "{other:?} is no answer to the payment of life of {controller:?}"
-                            )));
-                        }
+                                applied: Vec::new(),
+                                frozen: true,
+                            },
+                        );
+                        // The enter event moved one place on.
+                        self.slots[at + 1].applied = applied;
+                        return Ok(Applied::Done);
                     }
-                } else {
-                    false
-                };
-                if pays {
-                    self.slots.insert(
-                        at,
-                        Slot {
-                            item: Item::One(Event::LifePaid {
-                                player: controller,
-                                amount: *life,
-                            }),
-                            applied: Vec::new(),
-                            frozen: true,
-                        },
-                    );
-                    // The enter event moved one place on.
-                    self.slots[at + 1].applied = applied;
-                    return Ok(Applied::Done);
+                    Asked::Got(false) => tapped(self, at),
                 }
-                tapped(self, at);
             }
             ReplaceBy::Choose(kind) => {
-                let options = self.options_of(*kind);
-                let picked = match options.as_slice() {
-                    [] => None,
-                    [only] => Some(only.clone()),
-                    _ => match self.answer() {
-                        None => {
-                            return Ok(Applied::Ask(Decision {
-                                player: controller,
-                                kind: DecisionKind::ChooseOption(OptionOptions {
-                                    source,
-                                    options: options.clone(),
-                                    text: match kind {
-                                        EntersChoice::Color => "Choose a color.".into(),
-                                        EntersChoice::CreatureType => {
-                                            "Choose a creature type.".into()
-                                        }
-                                    },
-                                }),
-                            }));
-                        }
-                        Some((who, Choice::Option(index)))
-                            if *who == controller && *index < options.len() =>
-                        {
-                            Some(options[*index].clone())
-                        }
-                        Some(other) => {
-                            return Err(Self::invalid(format!(
-                                "{other:?} is no answer to the choice of {controller:?}"
-                            )));
-                        }
-                    },
+                let chosen = match self.chooses(source, controller, *kind)? {
+                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                    Asked::Got(chosen) => chosen,
                 };
-                let chosen = picked.and_then(|option| match option {
-                    ChoiceOption::Color(color) => Some(Chosen::Color(color)),
-                    ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
-                    ChoiceOption::Player(_) => None,
-                });
                 let entered = self.entered_at(at, object, controller);
                 if let Item::One(Event::Entered { chosen: slot, .. }) =
                     &mut self.slots[entered].item
@@ -1134,6 +1089,80 @@ impl Pass<'_> {
             slot.applied = applied;
         }
         Ok(Applied::Done)
+    }
+
+    /// Whether `controller` pays `life` as the card enters: asked yes or no when they can, else no.
+    fn pays_life(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+        life: u32,
+    ) -> Result<Asked<bool>, EngineError> {
+        let can_pay = self
+            .state
+            .player(controller)
+            .is_some_and(|p| u32::try_from(p.life()).is_ok_and(|have| have >= life));
+        if !can_pay {
+            return Ok(Asked::Got(false));
+        }
+        match self.answer() {
+            None => Ok(Asked::Ask(Decision {
+                player: controller,
+                kind: DecisionKind::YesNo(YesNoOptions {
+                    source,
+                    text: format!("Pay {life} life?"),
+                }),
+            })),
+            Some((who, Choice::YesNo(yes))) if *who == controller => Ok(Asked::Got(*yes)),
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the payment of life of {controller:?}"
+            ))),
+        }
+    }
+
+    /// What `controller` chooses as the card enters: asked unless there is one thing to choose or none.
+    fn chooses(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+        kind: EntersChoice,
+    ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        let options = self.options_of(kind);
+        let picked = match options.as_slice() {
+            [] => None,
+            [only] => Some(only.clone()),
+            _ => match self.answer() {
+                None => {
+                    let text = match kind {
+                        EntersChoice::Color => "Choose a color.",
+                        EntersChoice::CreatureType => "Choose a creature type.",
+                    };
+                    return Ok(Asked::Ask(Decision {
+                        player: controller,
+                        kind: DecisionKind::ChooseOption(OptionOptions {
+                            source,
+                            options,
+                            text: text.into(),
+                        }),
+                    }));
+                }
+                Some((who, Choice::Option(index)))
+                    if *who == controller && *index < options.len() =>
+                {
+                    Some(options[*index].clone())
+                }
+                Some(other) => {
+                    return Err(Self::invalid(format!(
+                        "{other:?} is no answer to the choice of {controller:?}"
+                    )));
+                }
+            },
+        };
+        Ok(Asked::Got(picked.and_then(|option| match option {
+            ChoiceOption::Color(color) => Some(Chosen::Color(color)),
+            ChoiceOption::Label(name) => Some(Chosen::CreatureType(Subtype(name))),
+            ChoiceOption::Player(_) => None,
+        })))
     }
 
     /// What a player may choose as a permanent enters: the five colours, or the creature types of the cards in the game.
@@ -1169,5 +1198,182 @@ fn zone_word(zone: Zone) -> &'static str {
         Zone::Stack => "the stack",
         Zone::Exile => "exile",
         Zone::Command(_) => "the command zone",
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: the replacement step hands a batch back unchanged when no replacement effect is in the game, applies each effect once to each event in the order the answers give, applies an effect about its own object before the others, removes an event that is replaced entirely, asks only when two or more effects apply and hands the batch back with the question, and refuses an answer that does not fit the question that was asked.
+    use mtg_cards::CardDefinition;
+    use mtg_cards::ability::Ability;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::fixtures::{creature, state};
+
+    const ME: PlayerId = PlayerId(0);
+
+    fn replacement(json: &str) -> Ability {
+        serde_json::from_str(json).unwrap()
+    }
+
+    /// A permanent with these replacement effects.
+    fn with(name: &str, effects: &[&str]) -> std::sync::Arc<CardDefinition> {
+        let mut card = CardDefinition::new(name).with_type(CardType::Enchantment);
+        for effect in effects {
+            card = card.with_rules(replacement(effect));
+        }
+        std::sync::Arc::new(card)
+    }
+
+    const DOUBLE_LIFE: &str = r#"{"Replacement":{"when":{"LifeGain":{}},"by":{"Multiply":2}}}"#;
+    const PLUS_ONE_LIFE: &str = r#"{"Replacement":{"when":{"LifeGain":{}},"by":{"Add":1}}}"#;
+    const NO_LIFE: &str = r#"{"Replacement":{"when":{"LifeGain":{}},"by":"Prevent"}}"#;
+
+    fn gain(amount: u32) -> Event {
+        Event::LifeGained { player: ME, amount }
+    }
+
+    fn events(result: Result<Processed, EngineError>) -> Vec<Event> {
+        match result.unwrap() {
+            Processed::Events(events) => events,
+            other @ Processed::Ask { .. } => panic!("events were expected, got {other:?}"),
+        }
+    }
+
+    fn table_of_two_effects() -> GameState {
+        state(
+            vec![vec![], vec![]],
+            vec![
+                vec![
+                    with("Doubler", &[DOUBLE_LIFE]),
+                    with("Plus", &[PLUS_ONE_LIFE]),
+                ],
+                vec![],
+            ],
+        )
+    }
+
+    #[test]
+    fn a_game_without_replacement_effects_pays_for_nothing_and_changes_nothing() {
+        let game = state(
+            vec![vec![], vec![]],
+            vec![vec![creature("Bear", 2, 2)], vec![]],
+        );
+        assert!(!game.possible.replacements);
+        let batch = vec![gain(2), Event::PriorityPassed { player: ME }];
+        assert_eq!(events(process(&game, batch.clone(), &[])), batch);
+        assert_eq!(events(process(&game, Vec::new(), &[])), Vec::new());
+    }
+
+    #[test]
+    fn the_flag_follows_a_replacement_effect_of_any_card_in_the_game() {
+        let game = state(
+            vec![vec![with("Hand", &[DOUBLE_LIFE])], vec![]],
+            vec![vec![], vec![]],
+        );
+        assert!(game.possible.replacements);
+    }
+
+    #[rstest]
+    #[case::double(&[DOUBLE_LIFE], 3, vec![6])]
+    #[case::plus_one(&[PLUS_ONE_LIFE], 3, vec![4])]
+    #[case::prevented(&[NO_LIFE], 3, vec![])]
+    fn an_effect_changes_the_event_it_replaces_once(
+        #[case] effects: &[&str],
+        #[case] amount: u32,
+        #[case] gained: Vec<u32>,
+    ) {
+        let game = state(
+            vec![vec![], vec![]],
+            vec![vec![with("Doubler", effects)], vec![]],
+        );
+        let result = events(process(&game, vec![gain(amount)], &[]));
+        assert_eq!(result, gained.into_iter().map(gain).collect::<Vec<_>>());
+    }
+
+    #[test]
+    fn two_effects_ask_and_the_answer_decides_what_the_second_one_sees() {
+        let game = table_of_two_effects();
+        let batch = vec![gain(3)];
+        let Processed::Ask { decision, proposed } = process(&game, batch.clone(), &[]).unwrap()
+        else {
+            panic!("two effects apply, so the player is asked");
+        };
+        assert_eq!(proposed, batch);
+        assert_eq!(decision.player, ME);
+        let DecisionKind::ChooseReplacement(options) = decision.kind else {
+            panic!("a replacement order was expected");
+        };
+        assert_eq!(options.candidates.len(), 2);
+        // The candidates are in the order of their addresses: the doubler first.
+        for (choice, total) in [(0, 7), (1, 8)] {
+            let answers = [(ME, Choice::Replacement(choice))];
+            assert_eq!(
+                events(process(&game, batch.clone(), &answers)),
+                vec![gain(total)]
+            );
+        }
+    }
+
+    #[rstest]
+    #[case::wrong_player(vec![(PlayerId(1), Choice::Replacement(0))])]
+    #[case::wrong_kind(vec![(ME, Choice::YesNo(true))])]
+    #[case::out_of_range(vec![(ME, Choice::Replacement(2))])]
+    #[case::one_too_many(vec![(ME, Choice::Replacement(0)), (ME, Choice::Replacement(0))])]
+    fn an_answer_that_does_not_fit_the_question_is_refused(
+        #[case] answers: Vec<(PlayerId, Choice)>,
+    ) {
+        let game = table_of_two_effects();
+        assert!(process(&game, vec![gain(3)], &answers).is_err());
+    }
+
+    #[test]
+    fn an_effect_applies_to_each_event_of_a_batch_and_to_none_of_another_players_life() {
+        let game = state(
+            vec![vec![], vec![]],
+            vec![vec![with("Doubler", &[DOUBLE_LIFE])], vec![]],
+        );
+        let foe = Event::LifeGained {
+            player: PlayerId(1),
+            amount: 5,
+        };
+        let batch = vec![gain(1), foe.clone(), gain(2)];
+        assert_eq!(
+            events(process(&game, batch, &[])),
+            vec![gain(2), foe, gain(4)]
+        );
+    }
+
+    #[test]
+    fn a_self_replacement_effect_applies_before_the_others_and_is_not_asked() {
+        // The permanent enters with two counters (its own effect) and another doubles counters put on permanents.
+        let enters = r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"+1/+1","count":2}}}}"#;
+        let doubles = r#"{"Replacement":{"when":{"CountersPut":{}},"by":{"Multiply":2}}}"#;
+        let hydra = std::sync::Arc::new(
+            CardDefinition::new("Hydra")
+                .with_type(CardType::Land)
+                .with_rules(replacement(enters)),
+        );
+        let game = state(
+            vec![vec![hydra], vec![]],
+            vec![vec![with("Doubler", &[doubles])], vec![]],
+        );
+        let card = game.zone(Zone::Hand(ME))[0];
+        let batch = vec![Event::LandPlayed {
+            player: ME,
+            object: card,
+        }];
+        let result = events(process(&game, batch, &[]));
+        // The move, then the counters the effect added and the doubler doubled: four, with nobody asked.
+        let counters: Vec<i32> = result
+            .iter()
+            .filter_map(|event| match event {
+                Event::CountersChanged(changed) => Some(changed.delta),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(counters, vec![4]);
+        assert!(matches!(result[0], Event::LandPlayed { .. }));
     }
 }

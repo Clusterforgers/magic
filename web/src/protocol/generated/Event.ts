@@ -5,6 +5,7 @@ import type { CardsFound } from "./CardsFound";
 import type { Cause } from "./Cause";
 import type { Choice } from "./Choice";
 import type { Choices } from "./Choices";
+import type { Chosen } from "./Chosen";
 import type { ContinuousEffect } from "./ContinuousEffect";
 import type { CountersChanged } from "./CountersChanged";
 import type { DamageTarget } from "./DamageTarget";
@@ -406,7 +407,11 @@ tapped: boolean,
 /**
  * Who controls it.
  */
-controller: PlayerId, } } | { "Attached": { 
+controller: PlayerId, 
+/**
+ * What its controller chose as it entered, which the permanent remembers.
+ */
+chosen?: Chosen, } } | { "Attached": { 
 /**
  * The attachment.
  */
