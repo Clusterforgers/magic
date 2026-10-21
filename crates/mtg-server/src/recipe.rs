@@ -544,7 +544,7 @@ mod tests {
             "format": "normal",
             "seed": 3,
             "decks": [],
-            "house_rules": { "mana_burn": true },
+            "house_rules": { "banana": true },
         });
         assert!(serde_json::from_value::<GameRecipe>(stored).is_err());
     }
