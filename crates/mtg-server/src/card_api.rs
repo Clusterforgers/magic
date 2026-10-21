@@ -21,7 +21,7 @@ use mtg_protocol::rest::{
 use sqlx::types::uuid::Uuid;
 
 use crate::api::ApiError;
-use crate::cards::{CardSource, CatalogError};
+use crate::cards::{CardSource, CatalogError, Rules};
 use crate::server::AppState;
 
 /// Longest free text of a search, in characters.
@@ -261,12 +261,8 @@ pub(crate) fn card_images(images: &PrintingImages) -> CardImages {
 }
 
 /// A card as a list shows it.
-pub(crate) fn hit(
-    cards: &CardSource,
-    card: &Card,
-    images: Option<&PrintingImages>,
-) -> Result<CardHit, CatalogError> {
-    Ok(CardHit {
+pub(crate) fn hit(rules: &Rules, card: &Card, images: Option<&PrintingImages>) -> CardHit {
+    CardHit {
         oracle_id: card.oracle_id.to_string(),
         name: card.name.clone(),
         mana_cost: card.mana_cost.clone(),
@@ -275,8 +271,8 @@ pub(crate) fn hit(
         colors: card_colors(card.colors),
         color_identity: card_colors(card.color_identity),
         images: images.map(card_images).unwrap_or_default(),
-        support: cards.support_of(card)?.support,
-    })
+        support: rules.support_of(card).support,
+    }
 }
 
 /// `GET /api/cards`: the cards that match the query, a page at a time. Free text matches the name or
@@ -303,11 +299,12 @@ pub(crate) async fn search(
         .default_images(&ids)
         .await
         .map_err(|error| failed(&error))?;
+    let rules = cards.rules().await?;
     let hits = found
         .cards
         .iter()
-        .map(|card| hit(cards, card, images.get(&card.oracle_id)))
-        .collect::<Result<Vec<_>, _>>()?;
+        .map(|card| hit(&rules, card, images.get(&card.oracle_id)))
+        .collect();
     Ok(Json(CardSearchPage {
         cards: hits,
         total: found.total,
@@ -337,10 +334,11 @@ pub(crate) async fn detail(
         .default_images(std::slice::from_ref(&id))
         .await
         .map_err(|error| failed(&error))?;
-    let record = cards.support_of(&found.card)?;
+    let rules = cards.rules().await?;
+    let record = rules.support_of(&found.card);
     let card = &found.card;
     Ok(Json(CardDetail {
-        card: hit(cards, card, images.get(&id))?,
+        card: hit(&rules, card, images.get(&id)),
         oracle_text: card.oracle_text.clone(),
         keywords: card.keywords.clone(),
         faces: card

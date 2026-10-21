@@ -143,7 +143,8 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
         .await
         .map_err(|error| Refused::Failed(failed(&error)))?
         .ok_or(Refused::Unknown)?;
-    let judged = Judge::new(source).map_err(ApiError::from)?.judge(&deck);
+    let rules = source.rules().await.map_err(ApiError::from)?;
+    let judged = Judge::new(&rules).judge(&deck);
     if !judged.playable {
         return Err(Refused::Blocked(judged.issues));
     }
@@ -178,9 +179,7 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         .ok_or(Refused::Unknown)?;
     let lines = lines_of(&deck);
     let loaded = Loaded::load(source, &lines).await?;
-    let report = loaded
-        .report(source, &deck.format, &lines)
-        .map_err(ApiError::from)?;
+    let report = loaded.report(&deck.format, &lines);
 
     let mut issues = report.legality.clone();
     if lines.iter().any(|line| line.zone == DeckZone::Commander) {
