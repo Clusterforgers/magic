@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a612f30d-cd55-438b-a7de-8c80509183aa",
+  "name": "Mending Hands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mending Hands",
+      "oracle_fingerprint": "fa75102d53e79d0c068cb9ee04b5b8ad",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 4 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

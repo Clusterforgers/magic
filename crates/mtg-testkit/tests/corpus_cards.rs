@@ -1,4 +1,4 @@
-//! Goal: the 104 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 109 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is never offered, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod common;
@@ -37,7 +37,7 @@ use Support::{Manual, Partial, Verified};
 /// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
-const CARDS: [(&str, Support, usize); 104] = [
+const CARDS: [(&str, Support, usize); 109] = [
     ("Act of Treason", Verified, 1),
     ("Ajani, Caller of the Pride", Verified, 3),
     ("Anger", Verified, 2),
@@ -68,9 +68,11 @@ const CARDS: [(&str, Support, usize); 104] = [
     ("Covetous Dragon", Verified, 2),
     ("Cultivate", Verified, 1),
     ("Darksteel Juggernaut", Verified, 3),
+    ("Death Ward", Verified, 1),
     ("Delver of Secrets // Insectile Aberration", Manual, 0),
     ("Dockside Extortionist", Verified, 1),
     ("Doom Blade", Verified, 1),
+    ("Drudge Skeletons", Verified, 1),
     ("Elemental Masterpiece", Verified, 2),
     ("Eternal Witness", Verified, 1),
     ("Faithless Looting", Partial, 1),
@@ -79,6 +81,7 @@ const CARDS: [(&str, Support, usize); 104] = [
     ("Fire // Ice", Manual, 0),
     ("Fireball", Manual, 0),
     ("Flooded Strand", Manual, 0),
+    ("Fog", Verified, 1),
     ("Forest", Verified, 1),
     ("Gaea's Cradle", Manual, 0),
     ("Garruk Wildspeaker", Verified, 3),
@@ -101,6 +104,7 @@ const CARDS: [(&str, Support, usize); 104] = [
     ("Llanowar Elves", Verified, 1),
     ("Maralen of the Mornsong", Verified, 2),
     ("Maro", Verified, 1),
+    ("Mending Hands", Verified, 1),
     ("Mindlock Orb", Verified, 1),
     ("Monastery Swiftspear", Verified, 2),
     ("Mulldrifter", Partial, 2),
@@ -118,6 +122,7 @@ const CARDS: [(&str, Support, usize); 104] = [
     ("Rest in Peace", Verified, 2),
     ("Rhox Faithmender", Verified, 2),
     ("Rhystic Study", Verified, 1),
+    ("Samite Healer", Verified, 1),
     ("Serra Angel", Verified, 2),
     ("Sneak Attack", Verified, 1),
     ("Sodden Verdure", Verified, 3),
@@ -148,7 +153,7 @@ const CARDS: [(&str, Support, usize); 104] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 104);
+    assert_eq!(in_table.len(), 109);
     assert_eq!(in_table, in_corpus);
 }
 

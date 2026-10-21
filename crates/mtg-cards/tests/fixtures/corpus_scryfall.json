@@ -645,6 +645,31 @@
     "toughness": "*"
   },
   {
+    "id": "e7e9d19c-22d9-4451-b988-9ec71793c13d",
+    "oracle_id": "0544b707-ec67-43e3-a25d-fd7005ab673d",
+    "name": "Death Ward",
+    "lang": "en",
+    "layout": "normal",
+    "set": "me1",
+    "collector_number": "8",
+    "rarity": "common",
+    "released_at": "2007-09-10",
+    "digital": true,
+    "mana_cost": "{W}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Regenerate target creature.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Regenerate"
+    ]
+  },
+  {
     "id": "6904ea20-e504-47da-95a0-08739fdde260",
     "oracle_id": "edd531b9-f615-4399-8c8c-1c5e18c4acbf",
     "name": "Delver of Secrets // Insectile Aberration",
@@ -768,6 +793,34 @@
       "G"
     ],
     "keywords": []
+  },
+  {
+    "id": "bd6f73bc-3181-40fa-9156-b73e4280e747",
+    "oracle_id": "c180ed02-07f4-4538-9bea-8c249234a8e2",
+    "name": "Drudge Skeletons",
+    "lang": "en",
+    "layout": "normal",
+    "set": "gvl",
+    "collector_number": "36",
+    "rarity": "common",
+    "released_at": "2014-12-05",
+    "digital": false,
+    "mana_cost": "{1}{B}",
+    "cmc": 2.0,
+    "type_line": "Creature — Skeleton",
+    "oracle_text": "{B}: Regenerate this creature. (The next time this creature would be destroyed this turn, instead tap it, remove it from combat, and heal all damage on it.)",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": [
+      "Heal",
+      "Regenerate"
+    ]
   },
   {
     "id": "4331a7a6-e98e-4517-b0f9-ace379426a94",
@@ -1030,6 +1083,29 @@
     "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Plains or Island card, put it onto the battlefield, then shuffle.",
     "colors": [],
     "color_identity": [],
+    "keywords": []
+  },
+  {
+    "id": "bbc3152e-7b3b-4ac6-8b33-abfebde216aa",
+    "oracle_id": "27e9db49-7af7-4bef-ad4c-bf5dfb92030d",
+    "name": "Fog",
+    "lang": "en",
+    "layout": "normal",
+    "set": "ema",
+    "collector_number": "167",
+    "rarity": "common",
+    "released_at": "2016-06-10",
+    "digital": false,
+    "mana_cost": "{G}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Prevent all combat damage that would be dealt this turn.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
     "keywords": []
   },
   {
@@ -1717,6 +1793,29 @@
     "keywords": []
   },
   {
+    "id": "53709642-9d61-425f-9bcf-0c579404b521",
+    "oracle_id": "a612f30d-cd55-438b-a7de-8c80509183aa",
+    "name": "Mending Hands",
+    "lang": "en",
+    "layout": "normal",
+    "set": "9ed",
+    "collector_number": "29",
+    "rarity": "common",
+    "released_at": "2005-07-29",
+    "digital": false,
+    "mana_cost": "{W}",
+    "cmc": 1.0,
+    "type_line": "Instant",
+    "oracle_text": "Prevent the next 4 damage that would be dealt to any target this turn.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
     "id": "55c84e9f-ccbb-4fbc-98e1-4072968a1f8a",
     "oracle_id": "5794b58e-f3b6-4637-b288-283b3a72a718",
     "name": "Mindlock Orb",
@@ -2136,6 +2235,31 @@
     ],
     "color_identity": [
       "U"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "621f9a58-0bc8-40dd-aef1-43618274d6fe",
+    "oracle_id": "95a0ca48-d924-47f4-86ed-42c673ee778c",
+    "name": "Samite Healer",
+    "lang": "en",
+    "layout": "normal",
+    "set": "10e",
+    "collector_number": "38",
+    "rarity": "common",
+    "released_at": "2007-07-13",
+    "digital": false,
+    "mana_cost": "{1}{W}",
+    "cmc": 2.0,
+    "type_line": "Creature — Human Cleric",
+    "oracle_text": "{T}: Prevent the next 1 damage that would be dealt to any target this turn.",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
     ],
     "keywords": []
   },

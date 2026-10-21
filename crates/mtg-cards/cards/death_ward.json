@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0544b707-ec67-43e3-a25d-fd7005ab673d",
+  "name": "Death Ward",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death Ward",
+      "oracle_fingerprint": "0d33725a37d81c9f0d1982f2e10fc393",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Regenerate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

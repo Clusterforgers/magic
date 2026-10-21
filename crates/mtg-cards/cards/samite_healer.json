@@ -1,0 +1,28 @@
+{
+  "oracle_id": "95a0ca48-d924-47f4-86ed-42c673ee778c",
+  "name": "Samite Healer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Samite Healer",
+      "oracle_fingerprint": "7eee5bba728689e1d99300d21fae92ce",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": { "Target": 0 } } },
+                  "by": { "PreventUpTo": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -14,7 +14,7 @@ use common::{cards_dir, printed, token_sources};
 
 /// Every corpus card with the status it compiles to (`None` when its text is only reminder text) and
 /// how many of its clauses are read out of how many.
-const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 104] = [
+const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 109] = [
     ("Act of Treason", Some(Manual), 0, 1),
     ("Ajani, Caller of the Pride", Some(Manual), 0, 3),
     ("Anger", Some(Partial), 1, 2),
@@ -47,6 +47,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 104] = [
     ("Covetous Dragon", Some(Partial), 1, 2),
     ("Cultivate", Some(Manual), 0, 1),
     ("Darksteel Juggernaut", Some(Partial), 1, 3),
+    ("Death Ward", Some(Manual), 0, 1),
     (
         "Delver of Secrets // Insectile Aberration",
         Some(Partial),
@@ -55,6 +56,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 104] = [
     ),
     ("Dockside Extortionist", Some(Full), 1, 1),
     ("Doom Blade", Some(Full), 1, 1),
+    ("Drudge Skeletons", Some(Manual), 0, 1),
     ("Elemental Masterpiece", Some(Partial), 1, 2),
     ("Epic Proportions", Some(Partial), 2, 3),
     ("Eternal Witness", Some(Full), 1, 1),
@@ -64,6 +66,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 104] = [
     ("Fire // Ice", Some(Partial), 2, 3),
     ("Fireball", Some(Manual), 0, 2),
     ("Flooded Strand", Some(Manual), 0, 1),
+    ("Fog", Some(Manual), 0, 1),
     ("Forest", None, 0, 0),
     ("Gaea's Cradle", Some(Manual), 0, 1),
     ("Garruk Wildspeaker", Some(Manual), 0, 3),
@@ -87,6 +90,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 104] = [
     ("Llanowar Elves", Some(Full), 1, 1),
     ("Maralen of the Mornsong", Some(Manual), 0, 2),
     ("Maro", Some(Manual), 0, 1),
+    ("Mending Hands", Some(Manual), 0, 1),
     ("Mindlock Orb", Some(Manual), 0, 1),
     ("Monastery Swiftspear", Some(Full), 2, 2),
     ("Mulldrifter", Some(Full), 3, 3),
@@ -104,6 +108,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 104] = [
     ("Rest in Peace", Some(Manual), 0, 2),
     ("Rhox Faithmender", Some(Partial), 1, 2),
     ("Rhystic Study", Some(Full), 1, 1),
+    ("Samite Healer", Some(Manual), 0, 1),
     ("Serra Angel", Some(Full), 2, 2),
     ("Sneak Attack", Some(Manual), 0, 1),
     ("Sodden Verdure", Some(Manual), 0, 1),
@@ -155,7 +160,7 @@ fn the_table_lists_every_corpus_card_once() {
 #[test]
 fn every_corpus_card_earns_the_status_in_the_table() {
     let corpus = compiled_corpus();
-    assert_eq!(corpus.len(), 104);
+    assert_eq!(corpus.len(), 109);
     let mut differing = Vec::new();
     for (card, compiled) in &corpus {
         let row = EXPECTED.iter().find(|row| row.0 == card.name).unwrap();
@@ -181,7 +186,7 @@ fn every_compiled_card_loads_and_matches_the_imported_text() {
         .filter_map(|(_, compiled)| compiled.card.as_ref())
         .map(source_of)
         .collect();
-    assert_eq!(sources.len(), 102);
+    assert_eq!(sources.len(), 107);
     sources.extend(token_sources());
     let library = Library::from_sources(&sources).unwrap_or_else(|errors| panic!("{errors}"));
     let imported: Vec<PrintedCard> = corpus.into_iter().map(|(card, _)| card).collect();

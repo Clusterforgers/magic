@@ -1,0 +1,26 @@
+{
+  "oracle_id": "27e9db49-7af7-4bef-ad4c-bf5dfb92030d",
+  "name": "Fog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fog",
+      "oracle_fingerprint": "0dcdee85ce7dc3d36f90c6a73819712b",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "Damage": { "combat": true } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
