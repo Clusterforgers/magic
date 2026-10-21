@@ -133,6 +133,25 @@ pub async fn database_report(db: &Database, target: &str) -> String {
             return out;
         }
     }
+    match db.card_rules().counts().await {
+        Ok(rules) => {
+            let _ = writeln!(
+                out,
+                "  compiled rules: {} cards ({} full, {} partial); `mtg-cli compile` writes them",
+                rules.full + rules.partial,
+                rules.full,
+                rules.partial
+            );
+        }
+        Err(error) if missing_table(&error) => {
+            out.push_str(
+                "  compiled rules: the schema is not applied yet; `mtg-cli ingest` applies it\n",
+            );
+        }
+        Err(error) => {
+            let _ = writeln!(out, "  compiled rules: {error}");
+        }
+    }
     match db.import_runs().recent(RUNS_SHOWN).await {
         Ok(runs) if runs.is_empty() => out.push_str("  no import runs yet\n"),
         Ok(runs) => {

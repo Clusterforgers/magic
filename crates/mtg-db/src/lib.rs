@@ -1,5 +1,6 @@
-//! Postgres schema and repositories for card data: oracle cards, printings, rulings, precon decks and import runs, and the decks accounts store.
+//! Postgres schema and repositories for card data: oracle cards, printings, rulings, precon decks, import runs, the compiled rules of cards and the decks accounts store.
 
+pub mod card_rules;
 pub mod cards;
 pub mod codec;
 pub mod colors;
@@ -12,6 +13,7 @@ pub mod precons;
 mod rows;
 pub mod runs;
 
+pub use card_rules::{CardRulesRepo, NewRules, RuleCounts, RuleStamp, RulesVersion, StoredRules};
 pub use cards::{
     CardPage, CardRepo, CardSearch, ColorFilter, ColorMatch, IndexVersion, NameSuggestion, Page,
     SortKey,

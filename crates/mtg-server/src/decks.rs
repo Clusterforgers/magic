@@ -114,16 +114,16 @@ pub(crate) fn lines_of(deck: &StoredDeck) -> Vec<Line> {
 
 /// A stored deck as the owner sees it: its cards, the check stored with it, the check of now and the
 /// marker derived from the two.
-fn deck_view(cards: &CardSource, loaded: &Loaded, deck: &StoredDeck) -> Result<DeckView, ApiError> {
+fn deck_view(loaded: &Loaded, deck: &StoredDeck) -> DeckView {
     let lines = lines_of(deck);
-    let report = loaded.report(cards, &deck.format, &lines)?;
+    let report = loaded.report(&deck.format, &lines);
     let check = stored_check(deck);
     let mark = marker(check.as_ref(), &report);
     let mut views = Vec::with_capacity(lines.len());
     for line in &lines {
-        views.extend(loaded.view(cards, line)?);
+        views.extend(loaded.view(line));
     }
-    Ok(DeckView {
+    DeckView {
         id: deck.id.to_string(),
         name: deck.name.clone(),
         format: deck.format.clone(),
@@ -136,18 +136,14 @@ fn deck_view(cards: &CardSource, loaded: &Loaded, deck: &StoredDeck) -> Result<D
         changed: mark.changed,
         check,
         report,
-    })
+    }
 }
 
-fn list_item(
-    cards: &CardSource,
-    loaded: &Loaded,
-    deck: &StoredDeck,
-) -> Result<DeckListItem, ApiError> {
-    let report = loaded.report(cards, &deck.format, &lines_of(deck))?;
+fn list_item(loaded: &Loaded, deck: &StoredDeck) -> DeckListItem {
+    let report = loaded.report(&deck.format, &lines_of(deck));
     let check = stored_check(deck);
     let mark = marker(check.as_ref(), &report);
-    Ok(DeckListItem {
+    DeckListItem {
         id: deck.id.to_string(),
         name: deck.name.clone(),
         format: deck.format.clone(),
@@ -158,7 +154,7 @@ fn list_item(
         changed: mark.changed,
         checked_at: check.map(|check| check.checked_at),
         summary: report.summary,
-    })
+    }
 }
 
 /// A deck body checked, its cards read from the database and the deck checked: ready to be stored.
@@ -171,7 +167,7 @@ async fn prepare(cards: &CardSource, body: &DeckBody) -> Result<Prepared, ApiErr
     let checked = check_body(body)?;
     let loaded = Loaded::load(cards, &checked.lines).await?;
     loaded.require(&checked.lines)?;
-    let report = loaded.report(cards, &checked.format, &checked.lines)?;
+    let report = loaded.report(&checked.format, &checked.lines);
     Ok(Prepared {
         draft: DeckDraft {
             name: checked.name,
@@ -204,10 +200,7 @@ pub(crate) async fn list(
     let decks = s.repo.list(s.owner).await.map_err(|error| failed(&error))?;
     let lines: Vec<Line> = decks.iter().flat_map(lines_of).collect();
     let loaded = Loaded::load(s.cards, &lines).await?;
-    let items = decks
-        .iter()
-        .map(|deck| list_item(s.cards, &loaded, deck))
-        .collect::<Result<Vec<_>, _>>()?;
+    let items = decks.iter().map(|deck| list_item(&loaded, deck)).collect();
     Ok(Json(DeckList { decks: items }))
 }
 
@@ -228,7 +221,7 @@ pub(crate) async fn create(
         .create(s.owner, &prepared.draft, MAX_DECKS_PER_USER)
         .await
         .map_err(save_failed)?;
-    let view = deck_view(s.cards, &prepared.loaded, &stored)?;
+    let view = deck_view(&prepared.loaded, &stored);
     Ok((StatusCode::CREATED, Json(view)))
 }
 
@@ -248,7 +241,7 @@ pub(crate) async fn get_one(
         .map_err(|error| failed(&error))?
         .ok_or_else(not_found)?;
     let loaded = Loaded::load(s.cards, &lines_of(&deck)).await?;
-    Ok(Json(deck_view(s.cards, &loaded, &deck)?))
+    Ok(Json(deck_view(&loaded, &deck)))
 }
 
 /// `PUT /api/decks/{id}`: replaces the deck (name, format, notes and every line) and the check
@@ -272,7 +265,7 @@ pub(crate) async fn replace(
         .await
         .map_err(|error| failed(&error))?
         .ok_or_else(not_found)?;
-    Ok(Json(deck_view(s.cards, &prepared.loaded, &stored)?))
+    Ok(Json(deck_view(&prepared.loaded, &stored)))
 }
 
 /// `DELETE /api/decks/{id}`: deletes the deck; 204.
@@ -333,7 +326,7 @@ pub(crate) async fn check(
     };
     let loaded = Loaded::load(s.cards, &lines).await?;
     loaded.require(&lines)?;
-    Ok(Json(loaded.report(s.cards, &format, &lines)?))
+    Ok(Json(loaded.report(&format, &lines)))
 }
 
 /// `POST /api/decks/import`: reads a pasted list in any format `mtg-import` reads and answers the

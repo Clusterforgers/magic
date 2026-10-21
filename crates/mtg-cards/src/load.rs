@@ -119,6 +119,31 @@ pub fn parse_json<T: DeserializeOwned>(file: &str, text: &str) -> Result<T, Load
     })
 }
 
+/// Reads a value already parsed as JSON; errors carry the path of the value that failed.
+fn parse_value<T: DeserializeOwned>(file: &str, value: &serde_json::Value) -> Result<T, LoadError> {
+    serde_path_to_error::deserialize(value).map_err(|error| {
+        let path = error.path().to_string();
+        LoadError {
+            file: file.to_owned(),
+            path: if path == "." || path == "?" {
+                String::new()
+            } else {
+                path
+            },
+            message: error.into_inner().to_string(),
+        }
+    })
+}
+
+/// The rules the compiler generated for one card, as the database keeps them.
+#[derive(Debug, Clone, PartialEq)]
+pub struct GeneratedRules {
+    /// The oracle id the rules are stored under.
+    pub oracle_id: String,
+    /// The rules as the JSON of a `Card`.
+    pub rules: serde_json::Value,
+}
+
 /// The canonical text of a value: JSON in serde's field order, short values on one line, and a trailing newline.
 pub fn canonical<T: Serialize>(value: &T) -> String {
     pretty(&serde_json::to_string(value).unwrap_or_default())
@@ -329,6 +354,77 @@ impl Library {
             }
         }
         errors
+    }
+
+    /// The rules the compiler generated for a card, checked as a rules file is: structure, then the
+    /// imported card (`names` are the cards a rule may name). The predefined tokens are this library's.
+    pub fn check_generated(
+        &self,
+        card: &Card,
+        printed: &PrintedCard,
+        names: &BTreeSet<String>,
+    ) -> Vec<LoadError> {
+        let file = format!("cards/{}.json", slug(&card.name));
+        let mut sources: Vec<Source> = self
+            .tokens
+            .values()
+            .map(|token| Source {
+                path: format!("cards/tokens/{}.json", token.id),
+                text: canonical(token),
+            })
+            .collect();
+        sources.push(Source {
+            path: file.clone(),
+            text: canonical(card),
+        });
+        match Library::from_sources(&sources) {
+            Err(LoadErrors(errors)) => errors,
+            Ok(library) => {
+                let tokens: BTreeSet<String> = library.tokens.keys().cloned().collect();
+                errors_of(&file, check_printed(card, printed, names, &tokens)).collect()
+            }
+        }
+    }
+
+    /// This library with generated rules added. A hand-written card wins over a generated one with
+    /// the same oracle id; a row that does not parse or fails a check of the structure is left out
+    /// and reported, so rules written by another build never stop the rest from loading.
+    pub fn with_generated(&self, rows: &[GeneratedRules]) -> (Library, Vec<LoadError>) {
+        let mut library = self.clone();
+        let mut left_out = Vec::new();
+        let tokens: BTreeSet<String> = self.tokens.keys().cloned().collect();
+        for row in rows {
+            if self.cards.contains_key(&row.oracle_id) {
+                continue;
+            }
+            let file = format!("card_rules/{}", row.oracle_id);
+            let card = match parse_value::<Card>(&file, &row.rules) {
+                Ok(card) => card,
+                Err(error) => {
+                    left_out.push(error);
+                    continue;
+                }
+            };
+            let mut problems: Vec<LoadError> =
+                errors_of(&file, check_card(&card, &tokens)).collect();
+            if card.oracle_id != row.oracle_id {
+                problems.push(LoadError {
+                    file: file.clone(),
+                    path: "oracle_id".into(),
+                    message: format!(
+                        "the row is for {}, the rules for {}",
+                        row.oracle_id, card.oracle_id
+                    ),
+                });
+            }
+            if problems.is_empty() {
+                library.files.insert(card.oracle_id.clone(), file);
+                library.cards.insert(card.oracle_id.clone(), card);
+            } else {
+                left_out.extend(problems);
+            }
+        }
+        (library, left_out)
     }
 
     /// The support of an imported card: its rules file if there is one, nothing otherwise.

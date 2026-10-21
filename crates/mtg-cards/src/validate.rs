@@ -16,7 +16,7 @@ use crate::keyword::Keyword;
 use crate::modify::{GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
-use crate::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
+use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, TriggerPattern};
 use crate::value::{Amount, Condition};
 
 /// One problem found in a file: where, and what.
@@ -398,6 +398,14 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "CardTypes");
                 self.selector(of);
             }
+            Amount::Players(who) => {
+                self.uses("Amount", "Players");
+                self.at("Players", |w| w.reference(who, Kind::Player));
+            }
+            Amount::LowestLife(who) => {
+                self.uses("Amount", "LowestLife");
+                self.at("LowestLife", |w| w.reference(who, Kind::Player));
+            }
             Amount::Kicks => {
                 self.uses("Amount", "Kicks");
                 if !self.has_kicker {
@@ -558,7 +566,11 @@ impl<'a> Walker<'a> {
             | Keyword::Disguise(cost)
             | Keyword::Evoke(cost)
             | Keyword::Overload(cost)
+            | Keyword::Mutate(cost)
+            | Keyword::Encore(cost)
+            | Keyword::Squad(cost)
             | Keyword::Suspend { cost, .. } => self.at("cost", |w| w.cost(cost)),
+            Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
             Keyword::Enchant(selector) => {
                 self.selector(selector);
                 // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
@@ -592,6 +604,7 @@ impl<'a> Walker<'a> {
             }
             Modification::SetController(who) => self.reference(who, Kind::Player),
             Modification::GrantAbility(granted) => self.granted(granted),
+            Modification::CantBeBlockedBy(blockers) => self.selector(blockers),
             Modification::SwitchPT
             | Modification::AddType(_)
             | Modification::RemoveType(_)
@@ -600,7 +613,8 @@ impl<'a> Walker<'a> {
             | Modification::AddProtectionFromChosenColor
             | Modification::LoseAbilities
             | Modification::CantAttack
-            | Modification::CantBlock => {}
+            | Modification::CantBlock
+            | Modification::CantBeBlocked => {}
         }
     }
 
@@ -1383,7 +1397,17 @@ impl<'a> Walker<'a> {
             GameRule::CantGainLife(who)
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
-            | GameRule::RevealTop(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            | GameRule::RevealTop(who)
+            | GameRule::LookAtTopAnyTime(who)
+            | GameRule::NoMaxHandSize(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::AdditionalLandPlays { who, count } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                if matches!(count, Amount::Fixed(n) if *n < 1) {
+                    w.problem("an additional land play is at least one");
+                }
+            }),
+            GameRule::CanBeCommander => {}
             GameRule::TriggerAgain { cause } => {
                 let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
                 self.at(tag, |w| w.at("cause", |w| w.trigger_pattern(cause)));
@@ -1408,6 +1432,9 @@ impl<'a> Walker<'a> {
         match from {
             ZoneKind::Battlefield => {}
             ZoneKind::Stack if spell => {}
+            _ if matches!(rule, GameRule::CanBeCommander) => self.at("from", |w| {
+                w.problem("a card can be a commander in every zone: write the rule without `from`");
+            }),
             _ => self.at("from", |w| {
                 w.problem(
                     "a rule works from the battlefield, or from the stack when it says this spell can't be countered",
@@ -1445,6 +1472,12 @@ impl<'a> Walker<'a> {
     fn replace_by(&mut self, when: &ReplaceWhen, by: &ReplaceBy) {
         self.uses("ReplaceBy", &tag_of(by));
         let enters = matches!(when, ReplaceWhen::Enters { .. });
+        // Choosing a player waits for the engine that runs it, as an Aura on a card elsewhere does.
+        match by {
+            ReplaceBy::Choose(EntersChoice::Player) => self.uses("ReplaceBy", "Choose.Player"),
+            ReplaceBy::Choose(EntersChoice::Opponent) => self.uses("ReplaceBy", "Choose.Opponent"),
+            _ => {}
+        }
         match by {
             ReplaceBy::Multiply(0) => self.problem("multiplying by zero is `Prevent`"),
             ReplaceBy::Add(0) => self.problem("adding nothing changes nothing"),

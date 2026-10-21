@@ -260,6 +260,14 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::CantSearch(who) => Rule::CantSearch(scope.players(who)?),
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::TriggerAgain { cause } => Rule::TriggerAgain(Box::new(cause.clone())),
+        GameRule::LookAtTopAnyTime(_) => {
+            return Err(ResolveError::Unsupported("Rule.LookAtTopAnyTime"));
+        }
+        GameRule::NoMaxHandSize(_) => return Err(ResolveError::Unsupported("Rule.NoMaxHandSize")),
+        GameRule::AdditionalLandPlays { .. } => {
+            return Err(ResolveError::Unsupported("Rule.AdditionalLandPlays"));
+        }
+        GameRule::CanBeCommander => return Err(ResolveError::Unsupported("Rule.CanBeCommander")),
     })
 }
 
@@ -861,6 +869,28 @@ mod tests {
         assert_eq!(
             names_nothing(&lower_rule(&scope, &wanted).unwrap()),
             nothing
+        );
+    }
+
+    #[rstest]
+    #[case::looking_at_the_top(r#"{"LookAtTopAnyTime":"You"}"#, "Rule.LookAtTopAnyTime")]
+    #[case::no_maximum_hand_size(r#"{"NoMaxHandSize":"You"}"#, "Rule.NoMaxHandSize")]
+    #[case::an_additional_land(r#"{"AdditionalLandPlays":{}}"#, "Rule.AdditionalLandPlays")]
+    #[case::two_additional_lands(
+        r#"{"AdditionalLandPlays":{"count":2}}"#,
+        "Rule.AdditionalLandPlays"
+    )]
+    #[case::a_commander(r#""CanBeCommander""#, "Rule.CanBeCommander")]
+    fn a_rule_the_engine_does_not_play_refuses_by_its_name(
+        #[case] rule: &str,
+        #[case] name: &'static str,
+    ) {
+        let game = game(Vec::new());
+        let scope = Scope::announcing(&game, ME, named(&game, "Holder"));
+        let wanted: GameRule = serde_json::from_str(rule).unwrap();
+        assert_eq!(
+            lower_rule(&scope, &wanted).err(),
+            Some(ResolveError::Unsupported(name))
         );
     }
 

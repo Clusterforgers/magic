@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT count(*) FILTER (WHERE status = 'full') AS \"full!\",\n                      count(*) FILTER (WHERE status = 'partial') AS \"partial!\"\n               FROM card_rules",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "full!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "partial!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null
+    ]
+  },
+  "hash": "2dd1fc1ac3632f7aba448d9946c2973b0efc836f0827c9080b86dd7d88b79903"
+}

@@ -3,6 +3,7 @@
 mod audit;
 mod commands;
 mod common;
+mod compile;
 mod coverage;
 mod fetch_decks;
 mod fetch_printings;

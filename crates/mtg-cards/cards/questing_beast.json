@@ -11,9 +11,16 @@
         { "Keyword": "Deathtouch" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "No way yet to say a creature can't be blocked by creatures with power 2 or less.",
-            "span": { "start": 29, "end": 95 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
           }
         },
         {

@@ -1608,6 +1608,8 @@ impl Pass<'_> {
                     let text = match kind {
                         EntersChoice::Color => "Choose a color.",
                         EntersChoice::CreatureType => "Choose a creature type.",
+                        EntersChoice::Player => "Choose a player.",
+                        EntersChoice::Opponent => "Choose an opponent.",
                     };
                     return Ok(Asked::Ask(Decision {
                         player: controller,
@@ -1656,6 +1658,9 @@ impl Pass<'_> {
                 types.dedup();
                 types.into_iter().map(ChoiceOption::Label).collect()
             }
+            // The engine does not offer a player yet: no option, so nothing is chosen (`ReplaceBy.Choose.Player` and
+            // `.Opponent` keep every card that uses them out of the game).
+            EntersChoice::Player | EntersChoice::Opponent => Vec::new(),
         }
     }
 }

@@ -58,6 +58,10 @@ pub enum Modification {
     CantAttack,
     /// The object can't block (a restriction, no layer).
     CantBlock,
+    /// The object can't be blocked (a restriction, no layer).
+    CantBeBlocked,
+    /// The object can't be blocked by creatures the selector matches (a restriction, no layer).
+    CantBeBlockedBy(Selector),
 }
 
 impl Modification {
@@ -77,7 +81,10 @@ impl Modification {
             Modification::SetPT { .. } => Some("7b"),
             Modification::ModifyPT { .. } => Some("7c"),
             Modification::SwitchPT => Some("7d"),
-            Modification::CantAttack | Modification::CantBlock => None,
+            Modification::CantAttack
+            | Modification::CantBlock
+            | Modification::CantBeBlocked
+            | Modification::CantBeBlockedBy(_) => None,
         }
     }
 }
@@ -124,6 +131,21 @@ pub enum GameRule {
     CantSearch(Ref),
     /// The players play with the top card of their library revealed to every seat.
     RevealTop(Ref),
+    /// The players may look at the top card of their own library any time; no one else sees it.
+    LookAtTopAnyTime(Ref),
+    /// The players have no maximum hand size (CR 402.2).
+    NoMaxHandSize(Ref),
+    /// The players may play additional lands each of their turns (CR 305.2).
+    AdditionalLandPlays {
+        /// Who may play them.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// How many more lands each turn.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// The card can be a player's commander (CR 903.3), in every zone; the rule is written without `from`.
+    CanBeCommander,
     /// A triggered ability of a permanent the rule's controller controls triggers an additional time when the event
     /// `cause` describes makes it trigger ("if a creature dying causes a triggered ability ... to trigger").
     TriggerAgain {
@@ -168,6 +190,8 @@ mod tests {
     #[case(Modification::SwitchPT, Some("7d"))]
     #[case(Modification::CantAttack, None)]
     #[case(Modification::CantBlock, None)]
+    #[case(Modification::CantBeBlocked, None)]
+    #[case(Modification::CantBeBlockedBy(Selector(vec![crate::refs::Pred::Type(CardType::Creature)])), None)]
     fn layers_follow_the_kind(#[case] modification: Modification, #[case] layer: Option<&str>) {
         assert_eq!(modification.layer(), layer);
         let json = serde_json::to_string(&modification).unwrap();
@@ -196,6 +220,20 @@ mod tests {
     #[case(GameRule::CantDraw(Ref::Opponents), r#"{"CantDraw":"Opponents"}"#)]
     #[case(GameRule::CantSearch(Ref::You), r#"{"CantSearch":"You"}"#)]
     #[case(GameRule::RevealTop(Ref::You), r#"{"RevealTop":"You"}"#)]
+    #[case(GameRule::LookAtTopAnyTime(Ref::You), r#"{"LookAtTopAnyTime":"You"}"#)]
+    #[case(
+        GameRule::NoMaxHandSize(Ref::EachPlayer),
+        r#"{"NoMaxHandSize":"EachPlayer"}"#
+    )]
+    #[case(
+        GameRule::AdditionalLandPlays { who: Ref::You, count: Amount::Fixed(1) },
+        r#"{"AdditionalLandPlays":{}}"#
+    )]
+    #[case(
+        GameRule::AdditionalLandPlays { who: Ref::EachPlayer, count: Amount::Fixed(2) },
+        r#"{"AdditionalLandPlays":{"who":"EachPlayer","count":2}}"#
+    )]
+    #[case(GameRule::CanBeCommander, r#""CanBeCommander""#)]
     #[case(
         GameRule::TriggerAgain {
             cause: TriggerPattern::Attacks { what: Selector::this() }

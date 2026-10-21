@@ -213,7 +213,7 @@ pub(crate) async fn import(
     let loaded = Loaded::load(cards, &lines).await?;
     let mut views = Vec::with_capacity(lines.len());
     for line in &lines {
-        if let Some(view) = loaded.view(cards, line)? {
+        if let Some(view) = loaded.view(line) {
             views.push(view);
         }
     }

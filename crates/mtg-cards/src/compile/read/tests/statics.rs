@@ -49,6 +49,11 @@ fn replacing_if(by: &str, condition: &str) -> String {
     "As this land enters, you may pay 3 life. If you don't, it enters tapped.",
     r#"{"PayLifeOrTapped":3}"#
 )]
+#[case::a_player("As this creature enters, choose a player.", r#"{"Choose":"Player"}"#)]
+#[case::an_opponent(
+    "As this enchantment enters, choose an opponent.",
+    r#"{"Choose":"Opponent"}"#
+)]
 fn a_permanent_enters_as_the_hand_written_files_say(#[case] text: &str, #[case] by: &str) {
     reads_as(text, ClauseKind::Static, false, &replacing(by));
 }
@@ -106,6 +111,26 @@ fn x_counters_need_an_x_in_the_mana_cost() {
     "This land enters tapped unless your opponents control eight or more lands.",
     r#"{"Not":{"Compare":{"left":{"Count":[{"Type":"Land"},{"ControlledBy":"Opponents"}]},"op":"Ge","right":8}}}"#
 )]
+#[case::two_opponents(
+    "This land enters tapped unless you have two or more opponents.",
+    r#"{"Not":{"Compare":{"left":{"Players":"Opponents"},"op":"Ge","right":2}}}"#
+)]
+#[case::three_opponents(
+    "This land enters tapped unless you have three or more opponents.",
+    r#"{"Not":{"Compare":{"left":{"Players":"Opponents"},"op":"Ge","right":3}}}"#
+)]
+#[case::a_low_life_total(
+    "This land enters tapped unless a player has 13 or less life.",
+    r#"{"Not":{"Compare":{"left":{"LowestLife":"EachPlayer"},"op":"Le","right":13}}}"#
+)]
+#[case::opponents_or_life(
+    "This land enters tapped unless you have two or more opponents or a player has 13 or less life.",
+    r#"{"Not":{"Any":[{"Compare":{"left":{"Players":"Opponents"},"op":"Ge","right":2}},{"Compare":{"left":{"LowestLife":"EachPlayer"},"op":"Le","right":13}}]}}"#
+)]
+#[case::lands_or_opponents(
+    "This land enters tapped unless you control two or more other lands or you have two or more opponents.",
+    r#"{"Not":{"Any":[{"Compare":{"left":{"Count":[{"Type":"Land"},"Other",{"ControlledBy":"You"}]},"op":"Ge","right":2}},{"Compare":{"left":{"Players":"Opponents"},"op":"Ge","right":2}}]}}"#
+)]
 fn entering_tapped_unless_reads_a_count_of_what_is_controlled(
     #[case] text: &str,
     #[case] condition: &str,
@@ -155,6 +180,54 @@ fn sodden_verdure_reads_in_the_shape_of_its_file() {
 #[case::reveal_the_top(
     "Play with the top card of your library revealed.",
     r#"{"Rule":{"rule":{"RevealTop":"You"}}}"#
+)]
+#[case::no_maximum_hand_size(
+    "You have no maximum hand size.",
+    r#"{"Rule":{"rule":{"NoMaxHandSize":"You"}}}"#
+)]
+#[case::every_player_has_no_maximum_hand_size(
+    "Players have no maximum hand size.",
+    r#"{"Rule":{"rule":{"NoMaxHandSize":"EachPlayer"}}}"#
+)]
+#[case::look_at_the_top(
+    "You may look at the top card of your library any time.",
+    r#"{"Rule":{"rule":{"LookAtTopAnyTime":"You"}}}"#
+)]
+#[case::an_additional_land(
+    "You may play an additional land on each of your turns.",
+    r#"{"Rule":{"rule":{"AdditionalLandPlays":{}}}}"#
+)]
+#[case::an_additional_land_for_each_player(
+    "Each player may play an additional land on each of their turns.",
+    r#"{"Rule":{"rule":{"AdditionalLandPlays":{"who":"EachPlayer"}}}}"#
+)]
+#[case::a_commander(
+    "This creature can be your commander.",
+    r#"{"Rule":{"rule":"CanBeCommander"}}"#
+)]
+#[case::unblockable(
+    "This creature can't be blocked.",
+    r#"{"Static":{"affected":"This","mods":["CantBeBlocked"]}}"#
+)]
+#[case::unblockable_by_the_small(
+    "This creature can't be blocked by creatures with power 2 or less.",
+    r#"{"Static":{"affected":"This","mods":[{"CantBeBlockedBy":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Le","to":2}}]}]}}"#
+)]
+#[case::unblockable_by_fliers(
+    "This creature can't be blocked by creatures with flying.",
+    r#"{"Static":{"affected":"This","mods":[{"CantBeBlockedBy":[{"Type":"Creature"},{"HasKeyword":"Flying"}]}]}}"#
+)]
+#[case::a_blocker_that_cannot_be_blocked(
+    "This creature can't block and can't be blocked.",
+    r#"{"Static":{"affected":"This","mods":["CantBlock","CantBeBlocked"]}}"#
+)]
+#[case::an_aura_makes_unblockable(
+    "Enchanted creature can't be blocked.",
+    r#"{"Static":{"affected":"Attached","mods":["CantBeBlocked"]}}"#
+)]
+#[case::a_group_is_unblockable(
+    "Creatures you control can't be blocked.",
+    r#"{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":["CantBeBlocked"]}}"#
 )]
 #[case::cant_block(
     "This creature can't block.",
@@ -240,8 +313,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 )]
 #[case::an_x_without_an_x_in_the_cost("This creature enters with X +1/+1 counters on it.")]
 #[case::an_amount_of_digits("This creature enters with 2 +1/+1 counters on it.")]
-#[case::unless_opponents("This land enters tapped unless you have two or more opponents.")]
-#[case::unless_a_player_has_life("This land enters tapped unless a player has 13 or less life.")]
 #[case::unless_plural_subtypes(
     "This land enters tapped unless you control three or more other Swamps."
 )]
@@ -255,11 +326,27 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
     "This land enters tapped unless you revealed a Soldier card this way or you control a Soldier."
 )]
 #[case::pay_no_life("As this land enters, you may pay 0 life. If you don't, it enters tapped.")]
-#[case::choose_a_player("As this creature enters, choose a player.")]
 #[case::choose_two("As this creature enters, choose a color and a creature type.")]
+#[case::choose_a_player_in_secret("As this creature enters, secretly choose an opponent.")]
+#[case::unless_one_opponent("This land enters tapped unless you have one opponent.")]
+#[case::unless_a_player_has_more_life(
+    "This land enters tapped unless a player has 13 or more life."
+)]
+#[case::unless_nobody_has_life("This land enters tapped unless a player has life.")]
+#[case::unblockable_except_by(
+    "This creature can't be blocked except by creatures with flying or reach."
+)]
+#[case::unblockable_by_more_than_one("This creature can't be blocked by more than one creature.")]
+#[case::unblockable_this_turn("Creatures you control can't be blocked this turn.")]
+#[case::two_additional_lands("You may play two additional lands on each of your turns.")]
+#[case::an_additional_land_this_turn("You may play an additional land this turn.")]
+#[case::hand_size_for_a_turn("You have no maximum hand size this turn.")]
+#[case::look_at_the_top_of_a_library_that_is_not_yours(
+    "You may look at the top card of target player's library any time."
+)]
+#[case::commanders_of_others("Your commander can be your commander.")]
 #[case::another_permanent("Creatures your opponents control enter tapped.")]
 #[case::cant_be_countered_by_a_group("Spells you cast can't be countered.")]
-#[case::cant_be_blocked("This creature can't be blocked.")]
 #[case::cant_block_unless("This creature can't block creatures with flying.")]
 #[case::attacks_if_able("This creature attacks if able.")]
 #[case::a_bonus_for_itself("This creature gets +1/+1.")]

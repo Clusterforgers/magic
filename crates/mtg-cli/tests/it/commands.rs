@@ -105,6 +105,25 @@ async fn status_shows_the_rows_and_the_latest_runs_of_a_loaded_database(pool: Pg
     }
     assert_eq!(text.matches("succeeded").count(), 3, "{text}");
     assert!(text.contains(", input "), "{text}");
+    assert!(
+        text.contains("compiled rules: 0 cards (0 full, 0 partial); `mtg-cli compile` writes them"),
+        "{text}"
+    );
+
+    mtg_cli::compile::compile(
+        &db,
+        &mtg_cli::args::CompileArgs {
+            all: true,
+            card: None,
+        },
+    )
+    .await
+    .unwrap();
+    let text = database_report(&db, "db.example:5432/magic").await;
+    assert!(
+        text.contains("compiled rules: 7 cards (4 full, 3 partial)"),
+        "{text}"
+    );
 }
 
 #[sqlx::test(migrations = false)]

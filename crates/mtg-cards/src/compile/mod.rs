@@ -21,7 +21,7 @@ use crate::keyword::Keyword;
 use crate::support::{PrintedCard, PrintedFace, has_rules_text, oracle_fingerprint};
 
 pub use classify::ClauseKind;
-pub use read::{render_ability, render_variants, same_text};
+pub use read::{render_ability, render_mode, render_variants, same_text};
 
 /// One clause of a face's oracle text, read or not.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -344,7 +344,7 @@ mod tests {
     )]
     #[case::keyword_and_an_unread_static(
         "Artifact \u{2014} Equipment",
-        "Equipped creature can't be blocked.\nEquip {1}",
+        "Equipped creature can't be blocked except by creatures with flying.\nEquip {1}",
         Some(ImplStatus::Partial)
     )]
     #[case::nothing_read("Instant", "Goad target creature.", Some(ImplStatus::Manual))]
