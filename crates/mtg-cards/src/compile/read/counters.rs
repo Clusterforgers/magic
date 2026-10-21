@@ -165,6 +165,23 @@ fn kind_text(counter: &CounterKind) -> Option<&str> {
     }
 }
 
+/// The kind a trigger names after "a": "+1/+1 counter", "charge counter".
+pub(super) fn trigger_kind(r: &mut Reader<'_>) -> Option<CounterKind> {
+    let counter = kind(r)?;
+    r.word("counter").then_some(counter)
+}
+
+/// "a +1/+1 counter", "a charge counter", "a counter": the counter a trigger names.
+pub(super) fn trigger_kind_text(counter: Option<&CounterKind>) -> Option<String> {
+    match counter {
+        None => Some("a counter".to_owned()),
+        Some(counter) => {
+            let kind = kind_text(counter)?;
+            Some(format!("{} {kind} counter", article(kind)))
+        }
+    }
+}
+
 /// The counters a permanent enters with, as `entering` reads them.
 pub fn entering_text(counter: &CounterKind, count: &Amount) -> Option<String> {
     match count {

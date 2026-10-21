@@ -163,6 +163,22 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     r#"{"Triggered":{"when":{"CountersPut":{"what":[{"Type":"Creature"}],"counter":"+1/+1"}},"effects":[{"Draw":{}}]}}"#,
     &["Ability.Triggered", "Effect.Draw", "Trigger.CountersPut"]
 )]
+#[case::becoming_untapped(
+    r#"{"Triggered":{"when":{"Untapped":{"what":[{"Type":"Creature"}]}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Untapped"]
+)]
+#[case::counters_removed(
+    r#"{"Triggered":{"when":{"CountersRemoved":{"what":["This"],"counter":"+1/+1"}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.CountersRemoved"]
+)]
+#[case::becoming_attached(
+    r#"{"Triggered":{"when":{"Attached":{"what":[{"Subtype":"Aura"}],"to":["This"]}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Attached"]
+)]
+#[case::cycling_a_card(
+    r#"{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"from":"Graveyard","effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Ability.From", "Effect.Draw", "Trigger.Cycled"]
+)]
 #[case::one_of_several_events(
     r#"{"Triggered":{"when":{"AnyOf":[{"Drew":{"who":"You"}},{"LifeGained":{"who":"You"}}]},"effects":[{"Draw":{}}]}}"#,
     &["Ability.Triggered", "Effect.Draw", "Trigger.AnyOf", "Trigger.Drew", "Trigger.LifeGained"]
@@ -228,6 +244,10 @@ fn a_node_validates_round_trips_and_names_its_primitive(
 )]
 #[case::a_player_who_gains_life_is_a_player(
     r#"{"Triggered":{"when":{"LifeGained":{"who":"This"}},"effects":[{"Draw":{}}]}}"#,
+    "expected a player"
+)]
+#[case::a_player_who_cycles_is_a_player(
+    r#"{"Triggered":{"when":{"Cycled":{"by":"This"}},"effects":[{"Draw":{}}]}}"#,
     "expected a player"
 )]
 #[case::no_attackers_at_all(

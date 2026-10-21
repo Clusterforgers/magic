@@ -1,0 +1,19 @@
+{
+  "oracle_id": "967cf377-ae26-464d-85ac-8448b5a911f7",
+  "name": "Underworld Dreams",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Underworld Dreams",
+      "oracle_fingerprint": "ebf5ea12a51b3f2175b1d53b52cb7d3d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "Opponents" } },
+            "effects": [{ "DealDamage": { "to": "Triggering", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -64,6 +64,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::FirstPlayerChosen { .. }
         | Event::LibraryShuffled { .. }
+        | Event::LibraryRefilled { .. }
         | Event::MulliganPhaseBegan
         | Event::HandDealt { .. }
         | Event::MulliganDeclared { .. }
@@ -149,10 +150,14 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::TurnBegan { number, active } => {
+            let (before, previous) = (state.turn.number, state.turn.active);
             state.turn.number = *number;
             state.turn.active = *active;
             state.turn.step = Step::Untap;
             state.turn.lands_played = 0;
+            if before == 0 || state.opens_round(previous, *active) {
+                state.turn.round += 1;
+            }
             state.clear_turn_uses();
             state.priority = None;
             state.combat = crate::combat::CombatState::default();
@@ -181,7 +186,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             // Each combat damage step divides its damage afresh: a double striker divides twice.
             state.combat.clear_assignments();
         }
-        Event::NothingToDo { .. } => {}
+        // `ManaBurned` is information in the log: the life it cost is its own `LifeLost`.
+        Event::NothingToDo { .. } | Event::ManaBurned { .. } | Event::Cycled { .. } => {}
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {
                 holder: *player,
@@ -228,7 +234,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::LifeGained { player, amount } => change_life(state, *player, *amount, true)?,
         Event::LifeLost { player, amount } => change_life(state, *player, *amount, false)?,
         Event::DrewFromEmptyLibrary { player } => {
-            player_mut(state, *player)?.drew_from_empty = true;
+            let seat = player_mut(state, *player)?;
+            seat.failed_draws = seat.failed_draws.saturating_add(1);
         }
         Event::EffectCreated { effect } => create_effect(state, effect)?,
         Event::EffectExpired { id } => {
@@ -378,7 +385,7 @@ fn player_lost(
         return Err(invalid(format!("{id:?} already lost")));
     }
     player.status = PlayerStatus::Lost(reason.clone());
-    player.drew_from_empty = false;
+    player.failed_draws = 0;
     state
         .combat
         .remove_attackers_targeting(crate::combat::AttackTarget::Player(id));

@@ -14,7 +14,7 @@ use common::{cards_dir, printed, token_sources};
 
 /// Every corpus card with the status it compiles to (`None` when its text is only reminder text) and
 /// how many of its clauses are read out of how many.
-const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 139] = [
+const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 147] = [
     ("Act of Treason", Some(Manual), 0, 1),
     ("Nantuko Husk", Some(Full), 1, 1),
     ("Rummaging Goblin", Some(Full), 1, 1),
@@ -159,6 +159,14 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 139] = [
     ("Vedalken Orrery", Some(Manual), 0, 1),
     ("Thalia, Guardian of Thraben", Some(Full), 2, 2),
     ("Foundry Inspector", Some(Full), 1, 1),
+    ("Ajani's Pridemate", Some(Full), 1, 1),
+    ("Thieving Magpie", Some(Full), 2, 2),
+    ("Underworld Dreams", Some(Full), 1, 1),
+    ("Megrim", Some(Full), 1, 1),
+    ("Manabarbs", Some(Full), 1, 1),
+    ("Mesmeric Orb", Some(Full), 1, 1),
+    ("Wanderbrine Preacher", Some(Full), 1, 1),
+    ("Renewed Faith", Some(Partial), 2, 3),
 ];
 
 fn compiled_corpus() -> Vec<(PrintedCard, Compiled)> {
@@ -190,7 +198,7 @@ fn the_table_lists_every_corpus_card_once() {
 #[test]
 fn every_corpus_card_earns_the_status_in_the_table() {
     let corpus = compiled_corpus();
-    assert_eq!(corpus.len(), 139);
+    assert_eq!(corpus.len(), 147);
     let mut differing = Vec::new();
     for (card, compiled) in &corpus {
         let row = EXPECTED.iter().find(|row| row.0 == card.name).unwrap();
@@ -216,7 +224,7 @@ fn every_compiled_card_loads_and_matches_the_imported_text() {
         .filter_map(|(_, compiled)| compiled.card.as_ref())
         .map(source_of)
         .collect();
-    assert_eq!(sources.len(), 137);
+    assert_eq!(sources.len(), 145);
     sources.extend(token_sources());
     let library = Library::from_sources(&sources).unwrap_or_else(|errors| panic!("{errors}"));
     let imported: Vec<PrintedCard> = corpus.into_iter().map(|(card, _)| card).collect();

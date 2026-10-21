@@ -6,6 +6,7 @@
 
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::CostItem;
+use mtg_cards::keyword::Keyword;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
@@ -81,6 +82,16 @@ pub(crate) fn activation_events(
                     player,
                     object: ability.object,
                 });
+                // Cycling is the discard of its cost; it is logged beside it, for what triggers on cycling.
+                if matches!(
+                    ability_reader::keyword_adding(state, ability),
+                    Some(Keyword::Cycling(_))
+                ) {
+                    events.push(Event::Cycled {
+                        player,
+                        object: ability.object,
+                    });
+                }
             }
             if cost.0.contains(&CostItem::ExileSelf) {
                 events.push(Event::ZoneChanged {

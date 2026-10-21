@@ -155,6 +155,11 @@ pub enum TriggerPattern {
         /// The permanent.
         what: Selector,
     },
+    /// A permanent matching the selector becomes untapped.
+    Untapped {
+        /// The permanent.
+        what: Selector,
+    },
     /// A permanent matching the selector is tapped for mana.
     TappedForMana {
         /// The permanent.
@@ -184,7 +189,7 @@ pub enum TriggerPattern {
         #[serde(default = "one_attacker", skip_serializing_if = "is_one_attacker")]
         at_least: u32,
     },
-    /// Counters are put on a permanent or a player.
+    /// Counters are put on a permanent.
     CountersPut {
         /// What receives them; any permanent when empty.
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
@@ -192,6 +197,36 @@ pub enum TriggerPattern {
         /// Only counters of this kind; any kind when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
+    },
+    /// Counters are removed from a permanent.
+    CountersRemoved {
+        /// What loses them; any permanent when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// Only counters of this kind; any kind when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        counter: Option<CounterKind>,
+    },
+    /// An Aura, Equipment or Fortification becomes attached to a permanent.
+    Attached {
+        /// The attachment; any when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// The permanent it becomes attached to; any when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        to: Selector,
+    },
+    /// A card is cycled (CR 702.29).
+    Cycled {
+        /// The card; any card when empty.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// Who cycles it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        by: Ref,
     },
     /// A step begins ("at the beginning of ...").
     StepBegins {

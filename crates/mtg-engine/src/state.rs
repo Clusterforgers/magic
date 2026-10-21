@@ -343,6 +343,20 @@ impl GameState {
             .unwrap_or(active)
     }
 
+    /// Whether a turn of `next` that follows one of `previous` opens a round: turns go through the seats in turn order
+    /// from the first player, so a round opens when the order wraps round to or past the seat that just played.
+    pub(crate) fn opens_round(&self, previous: PlayerId, next: PlayerId) -> bool {
+        let (seats, first) = (self.players.len().max(1), self.first_player.index());
+        let place = |seat: PlayerId| (seat.index() + seats - first % seats) % seats;
+        place(next) <= place(previous)
+    }
+
+    /// Whether the turn now being played is the last of its round: the next turn is the first of another.
+    pub(crate) fn ends_round(&self) -> bool {
+        let active = self.turn.active;
+        self.opens_round(active, self.next_alive_after(active).unwrap_or(active))
+    }
+
     /// The next living player after `player` in turn order (possibly `player` itself).
     pub fn next_alive_after(&self, player: PlayerId) -> Option<PlayerId> {
         let n = self.players.len();
@@ -397,7 +411,7 @@ impl Hash for GameState {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the active player is none once they have left the game, and the first player in turn order of that turn is the next seat in the game, wrapping round the table and skipping the seats that left before.
+    //! Goal: the active player is none once they have left the game, the first player in turn order of that turn is the next seat in the game, wrapping round the table and skipping the seats that left before, and a round ends with the last seat in play before the first player.
     use mtg_core::ids::PlayerId;
     use rstest::rstest;
 
@@ -434,5 +448,36 @@ mod tests {
         }
         assert_eq!(game.active_player(), player.map(PlayerId::from_index));
         assert_eq!(game.active_or_next(), PlayerId::from_index(first));
+    }
+
+    #[rstest]
+    #[case::the_first_seat_of_the_table_mid_round(3, 0, &[], 0, false)]
+    #[case::the_second_seat_mid_round(3, 0, &[], 1, false)]
+    #[case::the_last_seat_ends_it(3, 0, &[], 2, true)]
+    #[case::a_first_player_in_the_middle_ends_at_the_seat_before(4, 2, &[], 1, true)]
+    #[case::and_not_before(4, 2, &[], 0, false)]
+    #[case::the_seat_before_the_end_has_left(4, 0, &[3], 2, true)]
+    #[case::the_first_seat_has_left(4, 0, &[0], 3, true)]
+    #[case::the_only_one_left(3, 0, &[1, 2], 0, true)]
+    fn a_round_ends_with_the_last_seat_in_play_before_the_first_players(
+        #[case] seats: usize,
+        #[case] first: usize,
+        #[case] left: &[usize],
+        #[case] active: usize,
+        #[case] ends: bool,
+    ) {
+        let mut game =
+            GameState::from_setup(&setup(vec![Vec::new(); seats], vec![Vec::new(); seats]))
+                .unwrap();
+        game.first_player = PlayerId::from_index(first);
+        game.turn.active = PlayerId::from_index(active);
+        for seat in left {
+            let lost = Event::PlayerLost {
+                player: PlayerId::from_index(*seat),
+                reason: LossReason::Conceded,
+            };
+            apply_event(&mut game, &lost).unwrap();
+        }
+        assert_eq!(game.ends_round(), ends);
     }
 }

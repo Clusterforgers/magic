@@ -47,11 +47,11 @@ fn every_viewer_is_told_the_rules_that_are_set(
     #[case] wire: Option<Value>,
     #[values(0, 1, 2)] seat: u64,
 ) {
-    let engine = Engine::new(fuzz_setup(3, 2).with_house_rules(house)).unwrap();
+    let engine = Engine::new(fuzz_setup(3, 2).with_house_rules(house.clone())).unwrap();
     let view = StateView::for_player(engine.state(), PlayerId(seat));
     assert_eq!(
         view.table.house_rules,
-        wire.as_ref().map(|_| house),
+        wire.as_ref().map(|_| house.clone()),
         "the view"
     );
     let value = serde_json::to_value(&view).unwrap();

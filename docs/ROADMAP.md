@@ -89,7 +89,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (g9) Divided amounts at resolution: `Amount.Divided` and `Amount.EvenShare` read `Choices.division` (`DealDamage` and `PutCounters` give each target its share) and the support walker stops naming them; Fire // Ice (n1) needs it
 
 ### Trigger families
-- [ ] (i4) Patterns for every event the engine logs (damage, life, draw, discard, mill, tap, untap, counters, attach, cast, cycle: the `Cycled` event is logged beside the discard), triggers whose subject is the creature an Equipment or Aura is attached to ("whenever equipped creature dies or deals combat damage"; Skullclamp, Swords of X and Y), batches ("one or more"), first time each turn, the nth card, event amounts ("that much"); conditions over any or every opponent ("an opponent has 10 or less life", `Amount::Life` of a set of players); Bloodghast and Questing Beast are Verified
+- [x] (i4a) Patterns for the events the engine logs (damage, life gained and lost, draw, discard, cycle with its `Cycled` event, tap, untap, tap for mana, counters put and removed, block, attach) with their templates and detection; Ajani's Pridemate, Thieving Magpie, Underworld Dreams, Megrim, Manabarbs, Mesmeric Orb, Wanderbrine Preacher and Renewed Faith are Verified
+- [ ] (i4b) Triggers whose subject is the creature an Equipment or Aura is attached to ("whenever equipped creature dies or deals combat damage"; Skullclamp, Swords of X and Y), batches ("one or more"), first time each turn, the nth card, event amounts ("that much"); conditions over any or every opponent ("an opponent has 10 or less life", `Amount::Life` of a set of players); Bloodghast and Questing Beast are Verified
 
 ### Faces and copies
 - [ ] (n1) Multi-face cards: split, adventure, modal double-faced, transform and meld; the face is chosen at announcement, `Card.Faces` is lifted, `Effect::Transform`; Delver of Secrets, Bonecrusher Giant and Fire // Ice (fuse) are Verified
@@ -104,7 +105,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 ## M4 Commander
 - [x] (hr1) House rules, foundation: a per-game `HouseRules` the table's creator sets, layered over `FormatRules` (starting life, opening hand size, free mulligans so a mulligan costs no card, a cap on mulligans, the first player's draw, maximum hand size); stored with the game recipe so a resume and a replay play the same game, validated at `POST /api/games`, hashed into the game state, shown in the lobby list and the views; table tests per rule, a replay test and fuzz games with random rules
-- [ ] (hr2) House rules, turn and life: cards drawn each turn, land drops each turn, mana burn (unspent mana costs life), an empty library shuffles the graveyard back in instead of losing, a turn limit after which the highest life wins, a life total that wins the game, the poison threshold, handicaps (starting life and hand size per seat)
+- [x] (hr2) House rules, turn and life: cards drawn each turn, land drops each turn, mana burn (unspent mana costs life), an empty library shuffles the graveyard back in instead of losing, a turn limit after which the highest life wins, a life total that wins the game, the poison threshold, handicaps (starting life and hand size per seat)
 - [ ] (hr3) House rules, table: attack range (any opponent, the neighbours, the left neighbour only), open hands, a revealed library top for every seat, opening-hand smoothing (two hands drawn, the one closer to the usual land count kept), mulligan style (London, Vancouver with a scry, Paris with one card fewer)
 - [ ] (hr4) House rules, Commander (after the format): the tax per cast (none, 1, 2), the commander damage threshold or none, deck-check relaxations (singleton, colour identity, deck size, copies)
 - [ ] `Commander` format rules: 100-card singleton, colour identity, 40 life, command zone, tax as a cost modifier, return to the command zone (CR 903.9), 21 commander damage; the views carry commander damage and tax so the pod can show them
@@ -143,7 +144,7 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
 - [x] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
 - [x] Deck import by printing in the server: fetch and ingest Scryfall Default Cards (every printing, with flavor and printed names stored on `printings`) and resolve imports with `CardRepo::card_index`, which already holds the stored printings (`docs/data-sources.md`, `docs/server.md`)
-- [ ] The stored card index equals the index built from records: meld names (a `cards.melds_into` column) resolve, and a line matched by a flavor or digital name selects that printing (`docs/data-sources.md`)
+- [x] The stored card index equals the index built from records: meld names (a `cards.melds_into` column) resolve, and a line matched by a flavor or digital name selects that printing (`docs/data-sources.md`)
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
 - [x] Account settings: change the password, delete the account (its seats are freed)
 - [x] A game that failed to resume shows in My games with its reason

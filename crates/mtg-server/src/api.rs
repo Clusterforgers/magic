@@ -345,7 +345,7 @@ pub(crate) async fn create_game(
             None => None,
         });
     }
-    let seats = names.len();
+    let (seats, visibility) = (names.len(), options.visibility);
     let created = app
         .registry()
         .create_decked(names, decks, options, host)
@@ -354,7 +354,7 @@ pub(crate) async fn create_game(
         game = %created.id,
         seats,
         held = created.seats.len(),
-        visibility = options.visibility.as_str(),
+        visibility = visibility.as_str(),
         bound = host.is_some(),
         "game created"
     );
@@ -490,11 +490,12 @@ fn validate(body: &NewGame) -> Result<(Vec<String>, GameOptions), ApiError> {
             Ok(name)
         })
         .collect::<Result<Vec<_>, ApiError>>()?;
-    body.house_rules.validate()?;
+    // The handicaps name seats of this table, so the count is checked here, before anything is made.
+    body.house_rules.validate_for(count)?;
     let options = GameOptions {
         visibility: body.visibility,
         held: Some(held),
-        house_rules: body.house_rules,
+        house_rules: body.house_rules.clone(),
     };
     Ok((seats, options))
 }

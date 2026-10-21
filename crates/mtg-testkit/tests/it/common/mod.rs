@@ -101,6 +101,7 @@ pub fn spell(
 pub mod casting;
 pub mod combat;
 pub mod forecast;
+pub mod house;
 pub mod keywords;
 pub mod removal;
 pub mod replaced;

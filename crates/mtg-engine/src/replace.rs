@@ -161,7 +161,7 @@ fn protection_of(
 }
 
 /// Whether combat damage is being dealt: the damage steps with nothing resolving.
-fn in_combat_damage(state: &GameState) -> bool {
+pub(crate) fn in_combat_damage(state: &GameState) -> bool {
     state.resolving().is_none()
         && matches!(
             state.turn().step(),

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "aa4ecefa-808e-4706-af16-4ea5af9743fc",
+  "name": "Renewed Faith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Renewed Faith",
+      "oracle_fingerprint": "42022b5d1b323acb1200c6d7413ae7ef",
+      "abilities": [
+        { "Spell": { "effects": [{ "GainLife": { "amount": 6 } }] } },
+        { "Keyword": { "Cycling": "{1}{W}" } },
+        {
+          "Triggered": {
+            "when": { "Cycled": { "what": ["This"], "by": "You" } },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "GainLife": { "amount": 2 } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

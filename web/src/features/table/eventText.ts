@@ -379,6 +379,10 @@ function describePublic(event: Event, n: EventNames): LogLine {
     return quiet(`${n.seat(event.ManaSpent.player)} spends ${symbols}`)
   }
   if ('ManaPoolEmptied' in event) return quiet(`${n.seat(event.ManaPoolEmptied.player)}'s mana pool empties`)
+  if ('ManaBurned' in event) return quiet(`${n.seat(event.ManaBurned.player)}'s unspent mana burns`)
+  if ('LibraryRefilled' in event) {
+    return quiet(`${n.seat(event.LibraryRefilled.player)} shuffles their graveyard into their library`)
+  }
   if ('LifePaid' in event) return line(`${n.seat(event.LifePaid.player)} pays ${event.LifePaid.amount} life`)
   if ('CardDrawn' in event)
     return line(`${n.seat(event.CardDrawn.player)} draws ${n.card(event.CardDrawn.object)}`)
@@ -387,6 +391,9 @@ function describePublic(event: Event, n: EventNames): LogLine {
   }
   if ('CardDiscarded' in event) {
     return line(`${n.seat(event.CardDiscarded.player)} discards ${n.card(event.CardDiscarded.object)}`)
+  }
+  if ('Cycled' in event) {
+    return quiet(`${n.seat(event.Cycled.player)} cycles ${n.card(event.Cycled.object)}`)
   }
   if ('AttackersDeclared' in event) {
     const { player, attackers } = event.AttackersDeclared
@@ -441,6 +448,9 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     return line(`${n.seat(event.HandDealt.player)} is dealt ${cards(event.HandDealt.count)}`)
   if ('LibraryShuffled' in event)
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
+  if ('LibraryRefilled' in event) {
+    return quiet(`${n.seat(event.LibraryRefilled.player)} shuffles their graveyard into their library`)
+  }
   if ('MulliganTaken' in event) return line(`${n.seat(event.MulliganTaken.player)} takes a mulligan`)
   if ('CardsBottomed' in event) {
     const { player, count } = event.CardsBottomed

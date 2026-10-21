@@ -1,0 +1,7 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc f4a634d6a337e562d8ba67dae6d4862d88d6983c6502352a7add09ae730449e5 # shrinks to house = HouseRules { starting_life: None, opening_hand_size: None, free_mulligans: Some(57), mulligan_cap: None, skip_first_draw: None, max_hand_size: Some(Cards(43)), draw_step_cards: None, land_plays_per_turn: None, mana_burn: None, empty_library: None, turn_limit: Some(2), winning_life: None, poison_threshold: Some(78), handicaps: [Handicap { seat: PlayerId(0), starting_life: Some(43), opening_hand_size: None }, Handicap { seat: PlayerId(1), starting_life: Some(32), opening_hand_size: Some(1) }] }, players = 4, seed = 1258

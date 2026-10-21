@@ -19,6 +19,7 @@ mod loyalty_view;
 mod messages;
 mod preview_fixture;
 mod projection;
+mod refill_hidden;
 mod rest;
 mod rest_cards;
 mod rest_decks;

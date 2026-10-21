@@ -40,7 +40,6 @@ fn status(state: &GameState, player: PlayerId) -> Option<MulliganStatus> {
 
 /// The next step of the opening procedure: deal, ask, shuffle back, or begin turn one.
 pub(crate) fn next(state: &GameState) -> Progress {
-    let rule = state.ruleset().mulligan_rule();
     let order = state.turn_order_from(state.first_player());
     let with_status = |wanted: fn(MulliganStatus) -> bool| -> Vec<PlayerId> {
         order
@@ -61,7 +60,7 @@ pub(crate) fn next(state: &GameState) -> Progress {
                         .zone(Zone::Library(player))
                         .iter()
                         .rev()
-                        .take(rule.hand_size)
+                        .take(state.ruleset().mulligan_rule(player).hand_size)
                         .copied()
                         .collect(),
                 })
@@ -85,11 +84,11 @@ pub(crate) fn next(state: &GameState) -> Progress {
         let taken = state.player(*player).map_or(0, Player::mulligans);
         return Progress::Decide(Decision {
             player: *player,
-            kind: DecisionKind::Mulligan(
-                state
-                    .ruleset()
-                    .mulligan_options(state.zone(Zone::Hand(*player)).to_vec(), taken),
-            ),
+            kind: DecisionKind::Mulligan(state.ruleset().mulligan_options(
+                *player,
+                state.zone(Zone::Hand(*player)).to_vec(),
+                taken,
+            )),
         });
     }
     let takers = with_status(|s| s == MulliganStatus::Mulliganing);

@@ -4,7 +4,8 @@
 use crate::common::{self, Client};
 use crate::net;
 
-use mtg_core::house::{HandLimit, HouseRules, SkipFirstDraw};
+use mtg_core::house::{HandLimit, Handicap, HouseRules, SkipFirstDraw};
+use mtg_core::ids::PlayerId;
 use mtg_protocol::ServerMessage;
 use mtg_server::registry::{GameOptions, Registry, SeatRequest};
 use mtg_server::{ServerConfig, Visibility, demo};
@@ -72,6 +73,27 @@ async fn rules_set_at_creation_are_listed_with_the_game() {
     assert_eq!(listed_rules(&server).await, [Some(rules)]);
 }
 
+#[tokio::test]
+async fn the_rules_of_the_turn_and_life_are_listed_with_the_game() {
+    let server = server().await;
+    let rules = json!({
+        "draw_step_cards": 2,
+        "land_plays_per_turn": 3,
+        "mana_burn": true,
+        "empty_library": "reshuffle_graveyard",
+        "turn_limit": 12,
+        "winning_life": 60,
+        "poison_threshold": 5,
+        "handicaps": [
+            { "seat": 0, "opening_hand_size": 5 },
+            { "seat": 1, "starting_life": 30, "opening_hand_size": 9 },
+        ],
+    });
+    let reply = create(&server, rules.clone()).await;
+    assert_eq!(reply.status, 201, "{}", reply.text());
+    assert_eq!(listed_rules(&server).await, [Some(rules)]);
+}
+
 #[rstest]
 #[case::absent(None)]
 #[case::empty(Some(json!({})))]
@@ -118,6 +140,20 @@ async fn a_value_equal_to_the_formats_is_kept_as_given(#[case] rules: Value) {
 #[case::free_high(json!({ "free_mulligans": 101 }), "free_mulligans")]
 #[case::cap_high(json!({ "mulligan_cap": 101 }), "mulligan_cap")]
 #[case::limit_high(json!({ "max_hand_size": { "cards": 51 } }), "max_hand_size")]
+#[case::draws_none(json!({ "draw_step_cards": 0 }), "draw_step_cards")]
+#[case::draws_high(json!({ "draw_step_cards": 11 }), "draw_step_cards")]
+#[case::lands_none(json!({ "land_plays_per_turn": 0 }), "land_plays_per_turn")]
+#[case::lands_high(json!({ "land_plays_per_turn": 11 }), "land_plays_per_turn")]
+#[case::limit_none(json!({ "turn_limit": 0 }), "turn_limit")]
+#[case::limit_high(json!({ "turn_limit": 1001 }), "turn_limit")]
+#[case::wins_none(json!({ "winning_life": 0 }), "winning_life")]
+#[case::poison_none(json!({ "poison_threshold": 0 }), "poison_threshold")]
+#[case::poison_high(json!({ "poison_threshold": 101 }), "poison_threshold")]
+#[case::handicap_life(json!({ "handicaps": [{ "seat": 0, "starting_life": 0 }] }), "handicaps[0].starting_life")]
+#[case::handicap_hand(json!({ "handicaps": [{ "seat": 0, "starting_life": 5 }, { "seat": 1, "opening_hand_size": 21 }] }), "handicaps[1].opening_hand_size")]
+#[case::a_seat_the_table_lacks(json!({ "handicaps": [{ "seat": 2, "starting_life": 5 }] }), "handicaps")]
+#[case::the_same_seat_twice(json!({ "handicaps": [{ "seat": 1, "starting_life": 5 }, { "seat": 1, "opening_hand_size": 5 }] }), "handicaps")]
+#[case::a_handicap_that_sets_nothing(json!({ "handicaps": [{ "seat": 1 }] }), "handicaps")]
 #[case::the_bad_one_among_good_ones(json!({ "starting_life": 30, "opening_hand_size": 99 }), "opening_hand_size")]
 #[tokio::test]
 async fn a_value_out_of_range_is_refused_naming_the_rule(
@@ -141,7 +177,12 @@ async fn a_value_out_of_range_is_refused_naming_the_rule(
 }
 
 #[rstest]
-#[case::unknown_rule(json!({ "mana_burn": true }))]
+#[case::unknown_rule(json!({ "banana": true }))]
+#[case::a_switch_that_is_not_one(json!({ "mana_burn": "yes" }))]
+#[case::unknown_library_rule(json!({ "empty_library": "explode" }))]
+#[case::a_handicap_with_an_unknown_value(json!({ "handicaps": [{ "seat": 0, "mana": 3 }] }))]
+#[case::a_handicap_for_a_negative_seat(json!({ "handicaps": [{ "seat": -1, "starting_life": 3 }] }))]
+#[case::a_handicap_without_a_seat(json!({ "handicaps": [{ "starting_life": 3 }] }))]
 #[case::text_for_a_number(json!({ "starting_life": "forty" }))]
 #[case::negative_count(json!({ "opening_hand_size": -1 }))]
 #[case::a_fraction(json!({ "starting_life": 20.5 }))]
@@ -224,4 +265,28 @@ async fn the_table_every_seat_sees_carries_the_rules_that_are_set(
     let (rules, lives) = first_table(house, seats).await;
     assert_eq!(rules, shown);
     assert_eq!(lives, vec![life; seats]);
+}
+
+#[rstest]
+#[tokio::test]
+async fn a_handicap_shows_in_the_table_as_the_life_of_its_seat_only(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let house = HouseRules {
+        starting_life: Some(30),
+        handicaps: vec![Handicap {
+            seat: PlayerId(1),
+            starting_life: Some(7),
+            opening_hand_size: Some(4),
+        }],
+        mana_burn: Some(true),
+        turn_limit: Some(5),
+        ..HouseRules::default()
+    };
+    let (rules, lives) = first_table(house.clone(), seats).await;
+    assert_eq!(rules, Some(house));
+    let want: Vec<i32> = (0..seats)
+        .map(|seat| if seat == 1 { 7 } else { 30 })
+        .collect();
+    assert_eq!(lives, want);
 }

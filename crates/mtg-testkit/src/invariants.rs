@@ -286,7 +286,7 @@ fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
         }
     }
     for player in state.players().iter().filter(|p| p.is_in_game()) {
-        if player.counters_of(&CounterKind::Poison) >= 10 {
+        if player.counters_of(&CounterKind::Poison) >= state.ruleset().poison_threshold() {
             return Err(Violation::Counters(format!(
                 "{:?} holds {} poison counters and is still in the game",
                 player.id(),

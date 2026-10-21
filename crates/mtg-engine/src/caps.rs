@@ -37,6 +37,21 @@ const RUNS: &[&str] = &[
     "Trigger.StepBegins",
     "Trigger.BecomesTarget",
     "Trigger.AnyOf",
+    "Trigger.DealsDamage",
+    "Trigger.LifeGained",
+    "Trigger.LifeLost",
+    "Trigger.Drew",
+    "Trigger.Discarded",
+    "Trigger.Tapped",
+    "Trigger.Untapped",
+    "Trigger.TappedForMana",
+    "Trigger.Blocks",
+    "Trigger.BecomesBlocked",
+    "Trigger.GroupAttacks",
+    "Trigger.CountersPut",
+    "Trigger.CountersRemoved",
+    "Trigger.Attached",
+    "Trigger.Cycled",
     "Cost.Tap",
     "Cost.Mana",
     "Cost.Mana.X",
@@ -99,6 +114,7 @@ const RUNS: &[&str] = &[
     "Rule.CantDraw",
     "Rule.CantSearch",
     "Rule.RevealTop",
+    "Rule.NoMaxHandSize",
     "Rule.TriggerAgain",
     "Rule.DamageCantBePrevented",
     VARIABLE_STATS,
@@ -306,6 +322,7 @@ mod tests {
     #[case::no_drawing("Rule.CantDraw", true)]
     #[case::no_searching("Rule.CantSearch", true)]
     #[case::a_revealed_top("Rule.RevealTop", true)]
+    #[case::no_maximum_hand_size("Rule.NoMaxHandSize", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
     #[case::regenerating("Effect.Regenerate", true)]
@@ -398,24 +415,27 @@ mod tests {
     #[case::tapping_permanents_as_a_cost("Cost.TapPermanents", true)]
     #[case::exiling_from_a_graveyard_as_a_cost("Cost.ExileFromGraveyard", true)]
     #[case::returning_to_a_hand_as_a_cost("Cost.ReturnToHand", true)]
-    #[case::dealing_damage_triggers("Trigger.DealsDamage", false)]
-    #[case::life_gain_triggers("Trigger.LifeGained", false)]
-    #[case::life_loss_triggers("Trigger.LifeLost", false)]
-    #[case::draw_triggers("Trigger.Drew", false)]
-    #[case::discard_triggers("Trigger.Discarded", false)]
-    #[case::tap_triggers("Trigger.Tapped", false)]
-    #[case::mana_triggers("Trigger.TappedForMana", false)]
-    #[case::block_triggers("Trigger.Blocks", false)]
-    #[case::blocked_triggers("Trigger.BecomesBlocked", false)]
-    #[case::group_attack_triggers("Trigger.GroupAttacks", false)]
-    #[case::counter_triggers("Trigger.CountersPut", false)]
+    #[case::dealing_damage_triggers("Trigger.DealsDamage", true)]
+    #[case::life_gain_triggers("Trigger.LifeGained", true)]
+    #[case::life_loss_triggers("Trigger.LifeLost", true)]
+    #[case::draw_triggers("Trigger.Drew", true)]
+    #[case::discard_triggers("Trigger.Discarded", true)]
+    #[case::tap_triggers("Trigger.Tapped", true)]
+    #[case::untap_triggers("Trigger.Untapped", true)]
+    #[case::mana_triggers("Trigger.TappedForMana", true)]
+    #[case::block_triggers("Trigger.Blocks", true)]
+    #[case::blocked_triggers("Trigger.BecomesBlocked", true)]
+    #[case::group_attack_triggers("Trigger.GroupAttacks", true)]
+    #[case::counter_triggers("Trigger.CountersPut", true)]
+    #[case::counter_removal_triggers("Trigger.CountersRemoved", true)]
+    #[case::attach_triggers("Trigger.Attached", true)]
+    #[case::cycle_triggers("Trigger.Cycled", true)]
     #[case::if_you_do("Condition.Performed", false)]
     #[case::the_monarch("Condition.Monarch", false)]
     #[case::the_citys_blessing("Condition.CitysBlessing", false)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", false)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", false)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", false)]
-    #[case::no_maximum_hand_size("Rule.NoMaxHandSize", false)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", false)]
     #[case::commander_eligibility("Rule.CanBeCommander", false)]
     #[case::counting_players("Amount.Players", false)]

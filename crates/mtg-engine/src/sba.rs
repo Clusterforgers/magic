@@ -2,6 +2,7 @@
 
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
+use mtg_core::house::EmptyLibrary;
 use mtg_core::ids::ObjectId;
 
 use crate::characteristics::{characteristics, controller_of_object};
@@ -9,39 +10,92 @@ use crate::choose::Target;
 use crate::counters::CountersChanged;
 use crate::events::{DeathCause, Event, ZoneCause};
 use crate::keywords;
+use crate::mulligan::shuffled;
 use crate::object::PermanentState;
 use crate::player::{LossReason, Player};
 use crate::state::GameState;
 use crate::zones::Zone;
 
-/// How many poison counters make a player lose the game (CR 704.5c).
-const POISON_LOSS: u32 = 10;
+/// Whether a player who failed to draw shuffles their graveyard into the library in place of losing: the house
+/// rule is set and there is a graveyard to shuffle.
+fn refills(state: &GameState, player: &Player) -> bool {
+    player.failed_draws > 0
+        && state.ruleset().empty_library() == EmptyLibrary::ReshuffleGraveyard
+        && !state.zone(Zone::Graveyard(player.id())).is_empty()
+}
 
 fn loss_reason(state: &GameState, player: &Player) -> Option<LossReason> {
     if player.life() <= 0 {
         Some(LossReason::ZeroLife)
-    } else if player.drew_from_empty {
+    } else if player.failed_draws > 0 && !refills(state, player) {
         Some(LossReason::EmptyLibrary)
-    } else if player.counters_of(&CounterKind::Poison) >= POISON_LOSS {
+    } else if player.counters_of(&CounterKind::Poison) >= state.ruleset().poison_threshold() {
         Some(LossReason::Poison)
     } else {
         state.format().loss_condition(state, player.id())
     }
 }
 
-/// One simultaneous pass over players and creatures; empty once the state is stable.
-pub(crate) fn check(state: &GameState) -> Vec<Event> {
-    let mut events: Vec<Event> = state
+/// The players who lose in this pass and why. A player at the life total that wins the game, a house rule, wins by
+/// the others losing to it; when several are at it, the game is left to the game-end check, which draws it.
+fn losses(state: &GameState) -> Vec<Event> {
+    let own: Vec<(&Player, Option<LossReason>)> = state
         .players()
         .iter()
         .filter(|p| p.is_in_game())
-        .filter_map(|p| {
-            loss_reason(state, p).map(|reason| Event::PlayerLost {
+        .map(|p| (p, loss_reason(state, p)))
+        .collect();
+    let goal = state.ruleset().winning_life();
+    let at_goal = |p: &Player| goal.is_some_and(|goal| p.life() >= goal);
+    let reached = own.iter().any(|(p, reason)| reason.is_none() && at_goal(p));
+    own.into_iter()
+        .filter_map(|(p, reason)| {
+            let reason = reason
+                .or_else(|| (reached && !at_goal(p)).then_some(LossReason::OpponentReachedLife))?;
+            Some(Event::PlayerLost {
                 player: p.id(),
                 reason,
             })
         })
-        .collect();
+        .collect()
+}
+
+/// The refills of this pass: the graveyard of each player who failed to draw and loses for nothing else is shuffled
+/// into their library and the cards they could not draw are drawn. A shortfall is failed again, so the player loses
+/// at the next check. The k-th refill of a pass uses the k-th substream after those already used.
+fn refills_of(state: &GameState, lost: &[Event]) -> Vec<Event> {
+    let mut events = Vec::new();
+    let mut shuffles = 0u64;
+    for player in state.players().iter().filter(|p| p.is_in_game()) {
+        let id = player.id();
+        let leaving = lost
+            .iter()
+            .any(|e| matches!(e, Event::PlayerLost { player, .. } if *player == id));
+        if leaving || !refills(state, player) {
+            continue;
+        }
+        let mut cards = state.zone(Zone::Library(id)).to_vec();
+        cards.extend_from_slice(state.zone(Zone::Graveyard(id)));
+        let order = shuffled(state, shuffles, cards);
+        shuffles += 1;
+        let wanted = usize::try_from(player.failed_draws).unwrap_or(usize::MAX);
+        let drawn = wanted.min(order.len());
+        let top: Vec<ObjectId> = order.iter().rev().take(drawn).copied().collect();
+        events.push(Event::LibraryRefilled { player: id, order });
+        events.extend(
+            top.into_iter()
+                .map(|object| Event::CardDrawn { player: id, object }),
+        );
+        events.extend((drawn..wanted).map(|_| Event::DrewFromEmptyLibrary { player: id }));
+    }
+    events
+}
+
+/// One simultaneous pass over players and creatures; empty once the state is stable.
+pub(crate) fn check(state: &GameState) -> Vec<Event> {
+    let mut events = losses(state);
+    let refilled = refills_of(state, &events);
+    events.extend(refilled);
     for &id in state.zone(Zone::Battlefield) {
         let Some(object) = state.object(id) else {
             continue;

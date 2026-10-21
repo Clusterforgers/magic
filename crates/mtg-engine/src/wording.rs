@@ -365,6 +365,43 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} becomes tapped", subject(what)),
             what.0 == [Pred::This],
         ),
+        TriggerPattern::Untapped { what } => (
+            format!("{} becomes untapped", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::Cycled { what, by } => {
+            let (name, s) = who(by);
+            let card = if what.is_empty() {
+                "a card".to_owned()
+            } else {
+                subject(what)
+            };
+            (format!("{name} cycle{s} {card}"), what.0 == [Pred::This])
+        }
+        TriggerPattern::CountersRemoved { what, .. } => {
+            let from = if what.is_empty() {
+                "a permanent".to_owned()
+            } else {
+                subject(what)
+            };
+            (format!("counters are removed from {from}"), false)
+        }
+        TriggerPattern::Attached { what, to } => {
+            let attachment = if what.is_empty() {
+                "an attachment".to_owned()
+            } else {
+                subject(what)
+            };
+            let host = if to.is_empty() {
+                "a permanent".to_owned()
+            } else {
+                subject(to)
+            };
+            (
+                format!("{attachment} becomes attached to {host}"),
+                what.0 == [Pred::This],
+            )
+        }
         TriggerPattern::TappedForMana { what, by } => {
             let (name, s) = who(by);
             (format!("{name} tap{s} {} for mana", subject(what)), false)
@@ -1002,6 +1039,30 @@ mod tests {
         r#"{"CountersPut":{"what":[{"Type":"Creature"}]}}"#,
         "Whenever counters are put on a creature"
     )]
+    #[case::untapped(
+        r#"{"Untapped":{"what":[{"Type":"Creature"}]}}"#,
+        "Whenever a creature becomes untapped"
+    )]
+    #[case::this_untaps(r#"{"Untapped":{"what":["This"]}}"#, "When it becomes untapped")]
+    #[case::counters_removed(
+        r#"{"CountersRemoved":{"what":["This"]}}"#,
+        "Whenever counters are removed from it"
+    )]
+    #[case::counters_removed_anywhere(
+        r#"{"CountersRemoved":{}}"#,
+        "Whenever counters are removed from a permanent"
+    )]
+    #[case::an_aura_attached_to_this(
+        r#"{"Attached":{"what":[{"Subtype":"Aura"}],"to":["This"]}}"#,
+        "Whenever an Aura becomes attached to it"
+    )]
+    #[case::this_attached(
+        r#"{"Attached":{"what":["This"],"to":[{"Type":"Creature"}]}}"#,
+        "When it becomes attached to a creature"
+    )]
+    #[case::you_cycle(r#"{"Cycled":{"by":"You"}}"#, "Whenever you cycle a card")]
+    #[case::a_player_cycles(r#"{"Cycled":{}}"#, "Whenever a player cycles a card")]
+    #[case::you_cycle_this(r#"{"Cycled":{"what":["This"],"by":"You"}}"#, "When you cycle it")]
     fn a_trigger_pattern_reads_as_a_card_says_it(#[case] json: &str, #[case] expected: &str) {
         assert_eq!(words(json), expected);
     }

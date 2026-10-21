@@ -10,9 +10,11 @@ export function describeLoss(reason: LossReason): string {
     case 'EmptyLibrary':
       return 'could not draw from an empty library'
     case 'Poison':
-      return 'had ten poison counters'
+      return 'had too many poison counters'
     case 'Conceded':
       return 'conceded'
+    case 'OpponentReachedLife':
+      return 'lost to a player at the winning life total'
   }
 }
 

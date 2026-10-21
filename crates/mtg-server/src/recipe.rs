@@ -268,7 +268,8 @@ impl GameRecipe {
         };
         let decks = self.resolve(catalog)?;
         self.check(&decks)?;
-        let setup = GameSetup::new(format, self.seed, decks).with_house_rules(self.house_rules);
+        let setup =
+            GameSetup::new(format, self.seed, decks).with_house_rules(self.house_rules.clone());
         setup.validate()?;
         Ok(setup)
     }
@@ -543,7 +544,7 @@ mod tests {
             "format": "normal",
             "seed": 3,
             "decks": [],
-            "house_rules": { "mana_burn": true },
+            "house_rules": { "banana": true },
         });
         assert!(serde_json::from_value::<GameRecipe>(stored).is_err());
     }

@@ -71,7 +71,7 @@ impl Registry {
                         .map(|s| s.name.clone())
                         .unwrap_or_default(),
                     format: entry.format,
-                    house_rules: entry.house_rules,
+                    house_rules: entry.house_rules.clone(),
                     filled: entry
                         .seats
                         .iter()

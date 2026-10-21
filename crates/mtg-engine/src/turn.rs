@@ -107,6 +107,7 @@ pub struct TurnState {
     pub(crate) active: PlayerId,
     pub(crate) step: Step,
     pub(crate) lands_played: u32,
+    pub(crate) round: u32,
 }
 
 impl TurnState {
@@ -129,10 +130,22 @@ impl TurnState {
     pub const fn lands_played(&self) -> u32 {
         self.lands_played
     }
+
+    /// The round of the turn, from 1: a round is one turn of each seat in play, from the first player's seat round to
+    /// the seat before it (0 before the first turn).
+    pub const fn round(&self) -> u32 {
+        self.round
+    }
 }
 
-/// Lands a player may play per turn (no effects change this yet).
+/// Lands a player may play per turn unless the house says otherwise.
 pub const LAND_DROPS_PER_TURN: u32 = 1;
+
+/// Cards a player draws in the draw step unless the house says otherwise.
+pub const DRAW_STEP_CARDS: usize = 1;
+
+/// The poison counters that make a player lose unless the format says otherwise (CR 704.5c).
+pub const POISON_LOSS: u32 = 10;
 
 /// The maximum hand size a format enforces at cleanup unless it says otherwise.
 pub const MAX_HAND_SIZE: usize = 7;

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "4b4dcdb1-0017-494f-8d83-6706b188e575",
+  "name": "Wanderbrine Preacher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wanderbrine Preacher",
+      "oracle_fingerprint": "905f3335dacc495baba0361af8f9ec5a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -14,7 +14,7 @@ use super::modal::{BULLET, DASH};
 use super::selectors::{Form, keyword_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
-use super::triggers::{article, condition_text, pattern_text};
+use super::triggers::{article, condition_text, cycled_itself, pattern_text};
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce};
@@ -53,10 +53,16 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             when,
             intervening_if,
             limit: None,
-            from: ZoneKind::Battlefield,
+            from,
             targets,
             effects,
-        } => {
+        } if *from
+            == if cycled_itself(when) {
+                ZoneKind::Graveyard
+            } else {
+                ZoneKind::Battlefield
+            } =>
+        {
             let Some(head) = trigger_head(when, intervening_if.as_ref()) else {
                 return Vec::new();
             };
@@ -779,6 +785,9 @@ impl Writer<'_> {
                 "its controller".to_owned()
             }
             Ref::Triggering => "that player".to_owned(),
+            Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
+                "that permanent's controller".to_owned()
+            }
             _ => return None,
         })
     }
@@ -851,6 +860,7 @@ impl Writer<'_> {
             Ref::Opponents => Some("each opponent".to_owned()),
             Ref::EachPlayer => Some("each player".to_owned()),
             Ref::You => Some("you".to_owned()),
+            Ref::Triggering => Some("that player".to_owned()),
             Ref::Each(selector) => Some(format!("each {}", phrase_text(selector, Form::Each)?)),
             _ => None,
         }

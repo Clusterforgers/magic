@@ -25,7 +25,6 @@ use crate::price::{Leaves, Price};
 use crate::resolve::{Scope, zone_kind};
 use crate::spend::Spend;
 use crate::state::GameState;
-use crate::turn::LAND_DROPS_PER_TURN;
 use crate::ways;
 use crate::zones::Zone;
 
@@ -233,8 +232,8 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .map(|p| p.mana().clone())
         .unwrap_or_default();
     let life = state.player(player).map_or(0, Player::life);
-    let may_play_land =
-        sorcery_timing(state, player) && state.turn().lands_played() < LAND_DROPS_PER_TURN;
+    let may_play_land = sorcery_timing(state, player)
+        && state.turn().lands_played() < state.ruleset().land_plays_per_turn();
     let playable_lands: Vec<ObjectId> = if may_play_land {
         hand.iter()
             .copied()

@@ -1,5 +1,6 @@
 //! Goal: each house rule changes its own part of the game and nothing else (starting life, the opening hand, free and capped mulligans, the first draw, the hand limit at cleanup), a set rule wins over the format and an unset one keeps its value, a refused rule stops the setup, the rules are part of the hash and the replay, and whole bot games under random rules end with an invariant-checked result.
 
+use crate::common::house::{any_turn_rules, random_turn_rules};
 use crate::common::pid;
 use crate::common::seeds::for_each_seed;
 
@@ -376,6 +377,7 @@ fn random_rules(seed: u64) -> HouseRules {
                 u32::try_from(n).ok().map(HandLimit::Cards)
             }
         }),
+        ..random_turn_rules(&mut rng)
     }
 }
 
@@ -436,6 +438,18 @@ fn any_rules() -> impl Strategy<Value = HouseRules> {
             mulligan_cap: cap,
             skip_first_draw: first,
             max_hand_size: limit,
+            ..HouseRules::default()
+        })
+        .prop_flat_map(|first| {
+            any_turn_rules().prop_map(move |turn| HouseRules {
+                starting_life: first.starting_life,
+                opening_hand_size: first.opening_hand_size,
+                free_mulligans: first.free_mulligans,
+                mulligan_cap: first.mulligan_cap,
+                skip_first_draw: first.skip_first_draw,
+                max_hand_size: first.max_hand_size,
+                ..turn
+            })
         })
 }
 
@@ -459,7 +473,7 @@ fn the_same_seed_and_rules_make_the_same_game_and_its_log_replays(
     #[values(0, 7, 31)] seed: u64,
 ) -> Result<(), GameFailure> {
     let house = random_rules(seed.wrapping_add(1));
-    let setup = || fuzz_setup(players, seed).with_house_rules(house);
+    let setup = || fuzz_setup(players, seed).with_house_rules(house.clone());
     let first = play_game(setup(), seed)?;
     let second = play_game(setup(), seed)?;
     assert_eq!(first.events, second.events);

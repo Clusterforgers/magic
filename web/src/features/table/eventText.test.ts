@@ -64,10 +64,16 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ManaAdded: [{ ManaAdded: { player: 0, mana: 'Green', source: 3 } }, 'Ana adds {G} from Forest'],
   ManaSpent: [{ ManaSpent: { player: 0, mana: ['Green', 'Red', 'Colorless'] } }, 'Ana spends {G}{R}{C}'],
   ManaPoolEmptied: [{ ManaPoolEmptied: { player: 0 } }, "Ana's mana pool empties"],
+  ManaBurned: [{ ManaBurned: { player: 0, amount: 3 } }, "Ana's unspent mana burns"],
+  LibraryRefilled: [
+    { LibraryRefilled: { player: 0, order: [] } },
+    'Ana shuffles their graveyard into their library',
+  ],
   LifePaid: [{ LifePaid: { player: 1, amount: 4 } }, 'Bo pays 4 life'],
   CardDrawn: [{ CardDrawn: { player: 0, object: 3 } }, 'Ana draws Forest'],
   DrewFromEmptyLibrary: [{ DrewFromEmptyLibrary: { player: 1 } }, 'Bo tries to draw from an empty library'],
   CardDiscarded: [{ CardDiscarded: { player: 0, object: 2 } }, 'Ana discards Hill Giant'],
+  Cycled: [{ Cycled: { player: 0, object: 2 } }, 'Ana cycles Hill Giant'],
   AttackersDeclared: [
     {
       AttackersDeclared: {
@@ -289,6 +295,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   CardDrawn: [{ CardDrawn: { player: 1 } }, 'Bo draws a card'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
+  LibraryRefilled: [
+    { LibraryRefilled: { player: 1, count: 5 } },
+    'Bo shuffles their graveyard into their library',
+  ],
   MulliganTaken: [{ MulliganTaken: { player: 1 } }, 'Bo takes a mulligan'],
   CardsBottomed: [
     { CardsBottomed: { player: 1, count: 1 } },
@@ -404,6 +414,7 @@ describe('minor lines', () => {
     { ManaAdded: { player: 0, mana: 'Red', source: null } },
     { ManaPoolEmptied: { player: 0 } },
     { PermanentUntapped: { object: 3 } },
+    { Cycled: { player: 0, object: 2 } },
     { StepBegan: { step: 'Upkeep' } },
     { ShieldUsed: { id: 2, left: 3 } },
     'DamageCleared',
@@ -486,8 +497,9 @@ describe('events with more than one shape', () => {
   it.each([
     ['ZeroLife', 'Bo ran out of life'],
     ['EmptyLibrary', 'Bo could not draw from an empty library'],
-    ['Poison', 'Bo had ten poison counters'],
+    ['Poison', 'Bo had too many poison counters'],
     ['Conceded', 'Bo conceded'],
+    ['OpponentReachedLife', 'Bo lost to a player at the winning life total'],
   ] as const)('says why a player lost: %s', (reason, text) => {
     expect(say({ PlayerLost: { player: 1, reason } })).toBe(text)
   })
