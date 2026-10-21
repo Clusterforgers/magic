@@ -7,6 +7,7 @@ pub mod bot;
 pub mod cards;
 pub mod choice_cards;
 pub mod corpus;
+pub mod counter_cards;
 pub mod decks;
 pub mod driver;
 pub mod expect;
@@ -27,6 +28,7 @@ pub mod zone_cards;
 
 pub use bot::RandomBot;
 pub use choice_cards::choice_fuzz_setup;
+pub use counter_cards::counters_fuzz_setup;
 pub use decks::{
     archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, ramp_fuzz_setup,
     removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,

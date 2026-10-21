@@ -1,6 +1,7 @@
 //! State-based actions (CR 704), applied in passes until nothing changes.
 
 use mtg_cards::value::CounterKind;
+use mtg_core::ids::ObjectId;
 
 use crate::characteristics::{Characteristics, characteristics};
 use crate::choose::Target;
@@ -60,19 +61,29 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
         };
         events.push(Event::CreatureDied { object: id, cause });
     }
-    events.extend(annihilation(state));
+    let died: Vec<ObjectId> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::CreatureDied { object, .. } => Some(*object),
+            _ => None,
+        })
+        .collect();
+    events.extend(annihilation(state, &died));
     events
 }
 
 /// A permanent with both a +1/+1 and a -1/-1 counter on it loses as many of each as it has of the kind it has fewer of
-/// (CR 704.5q).
-fn annihilation(state: &GameState) -> Vec<Event> {
+/// (CR 704.5q); one that dies in the same pass takes its counters with it.
+fn annihilation(state: &GameState, died: &[ObjectId]) -> Vec<Event> {
     let mut events = Vec::new();
     if !state.possible.counters {
         return events;
     }
     for &id in state.zone(Zone::Battlefield) {
-        let Some(object) = state.object(id).filter(|o| state.is_alive(o.owner())) else {
+        let Some(object) = state
+            .object(id)
+            .filter(|o| state.is_alive(o.owner()) && !died.contains(&id))
+        else {
             continue;
         };
         let Some(permanent) = object.permanent() else {
@@ -247,7 +258,7 @@ mod tests {
     #[case::only_minus_counters(&[(MINUS, 2)], &[])]
     #[case::one_pair(&[(PLUS, 1), (MINUS, 1)], &[(PLUS, -1), (MINUS, -1)])]
     #[case::more_plus_than_minus(&[(PLUS, 3), (MINUS, 1)], &[(PLUS, -1), (MINUS, -1)])]
-    #[case::more_minus_than_plus(&[(PLUS, 1), (MINUS, 4)], &[(PLUS, -1), (MINUS, -1)])]
+    #[case::more_minus_than_plus(&[(PLUS, 3), (MINUS, 4)], &[(PLUS, -3), (MINUS, -3)])]
     #[case::as_many_of_each(&[(PLUS, 3), (MINUS, 3)], &[(PLUS, -3), (MINUS, -3)])]
     #[case::other_kinds_stay(&[(PLUS, 1), (CounterKind::Charge, 1)], &[])]
     fn a_permanent_with_both_kinds_loses_a_pair_of_each(
@@ -264,7 +275,7 @@ mod tests {
             vec![vec![creature("Bear", 2, 2)], vec![creature("Ogre", 3, 3)]],
         );
         game.players[0].battlefield[0].counters = vec![(PLUS, 2), (MINUS, 1)];
-        game.players[1].battlefield[0].counters = vec![(PLUS, 1), (MINUS, 5)];
+        game.players[1].battlefield[0].counters = vec![(PLUS, 1), (MINUS, 2)];
         let game = GameState::from_setup(&game).unwrap();
         assert_eq!(
             counter_changes(&game),
@@ -277,6 +288,23 @@ mod tests {
             "a game without such counters looks for none"
         );
         assert_eq!(check(&plain), []);
+    }
+
+    #[test]
+    fn a_creature_that_dies_in_the_pass_takes_its_pairs_with_it() {
+        // 2/2 with one +1/+1 and three -1/-1 counters: toughness -1.
+        let events = check(&game_with(&[(PLUS, 1), (MINUS, 3)], 0));
+        assert!(counter_changes(&game_with(&[(PLUS, 1), (MINUS, 3)], 0)).is_empty());
+        assert!(
+            matches!(
+                events.as_slice(),
+                [Event::CreatureDied {
+                    cause: DeathCause::ZeroToughness,
+                    ..
+                }]
+            ),
+            "{events:?}"
+        );
     }
 
     #[rstest]
