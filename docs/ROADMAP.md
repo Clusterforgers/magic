@@ -102,6 +102,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] Gate: every corpus card is Verified except the two kept Partial and Manual by design, and fuzz games with a deck from each cluster pass every invariant
 
 ## M4 Commander
+- [ ] House rules: a per-game `HouseRules` the table's creator sets, layered over `FormatRules` (starting life, opening hand size, free mulligans so a mulligan costs no card, the first player's draw, maximum hand size); stored with the game recipe so a resume and a replay play the same game, validated at `POST /api/games`, hashed into the game state, shown in the lobby list and the views; table tests per rule, a replay test and fuzz games with random rules
 - [ ] `Commander` format rules: 100-card singleton, colour identity, 40 life, command zone, tax as a cost modifier, return to the command zone (CR 903.9), 21 commander damage; the views carry commander damage and tax so the pod can show them
 - [x] Fix: when the active player leaves mid-turn the turn continues without an active player (CR 800.4; `docs/engine.md`), with a scenario test
 - [ ] The table view says when a turn has no active player (`TurnView.active` names the seat that left; the turn indicator and the step bar show a turn without one), with a projection test
@@ -132,6 +133,7 @@ The server is settled first, then the web is built once against the final types.
 ## M7 Product
 - [ ] (B3) Deck check, remaining in the web: each precon's state in the precon browser (the server lists it, `GET /api/precons`; `docs/server.md`, Precons)
 - [ ] Precon browser with one-click play, remaining in the web: the page over `GET /api/precons` and a create with `deck: "precon:<code>"` (the server half is done; Commander precons are not `playable` before the Commander format, M4)
+- [ ] House rules in the web: the create-game form sets them with the format's values as defaults, and the lobby row and the table name the ones that differ from the format
 - [ ] Choose a deck in the lobby, remaining in the web: precons as a third kind of deck in the picker (the server takes `precon:<code>` as a seat's deck; `docs/server.md`, `docs/deck-check.md`)
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
 - [x] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
