@@ -45,6 +45,7 @@ fn begun() -> Engine {
             repeatable: false,
         }],
         x: Some(XCost::Mana { symbols: 1 }),
+        price: None,
     };
     engine
         .begin(Pending::needing(SEAT, What::Spell(card), needs))

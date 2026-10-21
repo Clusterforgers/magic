@@ -158,7 +158,10 @@ fn word_or_number(run: &str, opens: bool) -> Token {
     }
     let capital = run.chars().next().is_some_and(char::is_uppercase);
     // The verbs of a cost follow a comma: "{T}, Pay 1 life, Sacrifice ~".
-    let cost_verb = matches!(run, "Pay" | "Sacrifice" | "Discard");
+    let cost_verb = matches!(
+        run,
+        "Pay" | "Sacrifice" | "Discard" | "Tap" | "Exile" | "Return" | "Remove"
+    );
     if capital && !opens && !cost_verb && run.chars().count() > 1 {
         return Token::Name(run.replace('\u{2019}', "'"));
     }

@@ -12,6 +12,7 @@ mod legality;
 mod modes;
 mod modifiers;
 mod optional;
+mod parts;
 mod payment;
 mod targets;
 mod total;
@@ -28,6 +29,7 @@ use crate::choose::{Choices, Target};
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
 use crate::events::Event;
+use crate::price::Price;
 use crate::resolve::spell_ability;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
@@ -57,6 +59,8 @@ pub(crate) enum Phase {
     Alternative,
     /// The optional costs paid in addition (CR 601.2b, 118.8, 702.33).
     Optional,
+    /// The permanents and cards that pay the parts of an ability's cost that take some (CR 601.2b, 601.2h).
+    Parts,
     /// The value of X (CR 601.2b, 107.3).
     X,
     /// The targets of each specification (CR 601.2c, 115).
@@ -74,10 +78,11 @@ pub(crate) enum Phase {
 impl Phase {
     /// The steps in the order of the rules; the announcement asks them one after the other and a step that has
     /// nothing to ask passes to the next.
-    pub(crate) const ORDER: [Phase; 9] = [
+    pub(crate) const ORDER: [Phase; 10] = [
         Phase::Modes,
         Phase::Alternative,
         Phase::Optional,
+        Phase::Parts,
         Phase::X,
         Phase::Targets,
         Phase::Division,
@@ -90,7 +95,7 @@ impl Phase {
     #[cfg(test)]
     pub(crate) const fn rule(self) -> char {
         match self {
-            Phase::Modes | Phase::Alternative | Phase::Optional | Phase::X => 'b',
+            Phase::Modes | Phase::Alternative | Phase::Optional | Phase::Parts | Phase::X => 'b',
             Phase::Targets => 'c',
             Phase::Division => 'd',
             Phase::Legality => 'e',
@@ -105,6 +110,7 @@ impl Phase {
             Phase::Modes => modes::run(ctx, work),
             Phase::Alternative => alternative::run(ctx, work),
             Phase::Optional => optional::run(ctx, work),
+            Phase::Parts => parts::run(ctx, work),
             Phase::X => x::run(ctx, work),
             Phase::Targets => targets::run(ctx, work),
             Phase::Division => division::run(ctx, work),
@@ -128,6 +134,8 @@ pub(crate) struct Needs {
     pub(crate) optional: Vec<Optional>,
     /// An `{X}` in the cost.
     pub(crate) x: Option<XCost>,
+    /// The price of an activated ability whose cost has parts the player picks objects for.
+    pub(crate) price: Option<Box<Price>>,
 }
 
 impl Needs {
@@ -137,6 +145,7 @@ impl Needs {
             ways: alternative::read(state, player, what),
             optional: optional::read(state, what),
             x: XCost::of(state, what, rules),
+            price: parts::read(what, rules),
         }
     }
 
@@ -217,6 +226,7 @@ impl Pending {
             Answered::Modes(_) => Phase::Modes,
             Answered::Way(_) => Phase::Alternative,
             Answered::Targets(_) => Phase::Targets,
+            Answered::Cards(_) => Phase::Parts,
             // A number is asked for X, and for the times a repeatable optional cost is paid, which comes once the
             // costs that are paid once are settled.
             Answered::Number(_)
@@ -241,6 +251,7 @@ impl Pending {
                 self.done.modes = true;
             }
             Answered::Way(pick) => self.done.way_picked = Some(pick),
+            Answered::Cards(cards) => self.choices.pick_for_cost(cards),
             Answered::Targets(targets) => self.choices.targets.push(targets),
             Answered::Number(times) if wanted == Phase::Optional => {
                 let paid = self
@@ -285,6 +296,8 @@ pub(crate) enum Answered {
     Number(u32),
     /// The optional costs paid, by index.
     Costs(Vec<usize>),
+    /// The permanents and cards picked for the next part of the cost.
+    Cards(Vec<ObjectId>),
     /// The shares of the next amount to divide.
     Division(Vec<(Target, u32)>),
 }

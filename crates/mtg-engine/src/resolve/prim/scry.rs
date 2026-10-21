@@ -167,6 +167,7 @@ mod tests {
                     min: 0,
                     max: 3,
                     text: "Put any number of the cards on the bottom of your library.".into(),
+                    can_cancel: false,
                 })
             }
         );

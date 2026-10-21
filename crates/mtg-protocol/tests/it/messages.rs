@@ -364,6 +364,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             min: 1,
             max: 1,
             text: String::new(),
+            can_cancel: true,
         }),
         DecisionKind::OrderCards(OrderOptions {
             source: b,
@@ -1213,6 +1214,7 @@ fn pipeline_events() -> Vec<Event> {
         division: vec![(target, 2)],
         optional_costs: vec![0],
         way: Some(mtg_cards::value::CastWay::Evoke),
+        cost_picks: Some(Box::new(vec![vec![a], vec![b, a]])),
     };
     vec![
         Event::SpellCast {

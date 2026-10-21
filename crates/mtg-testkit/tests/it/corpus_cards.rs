@@ -1,4 +1,4 @@
-//! Goal: the 132 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 139 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -36,11 +36,18 @@ use Support::{Manual, Partial, Verified};
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
 /// Partial: Bloodbraid Elf's haste, not its cascade.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
-/// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
+/// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk).
 /// Divided damage and counters are played, so Forked Bolt and Armament Corps are Verified; cost increases and reductions are
 /// played too, so Fireball, Thalia, Guardian of Thraben and Foundry Inspector are Verified.
-const CARDS: [(&str, Support, usize); 132] = [
+const CARDS: [(&str, Support, usize); 139] = [
     ("Act of Treason", Verified, 1),
+    ("Llanowar Behemoth", Verified, 1),
+    ("Lurching Rotbeast", Verified, 1),
+    ("Nantuko Husk", Verified, 1),
+    ("Rummaging Goblin", Verified, 1),
+    ("Soul Shepherd", Verified, 1),
+    ("Souldrinker", Verified, 1),
+    ("Tumble Magnet", Verified, 2),
     ("Ajani, Caller of the Pride", Verified, 3),
     ("Ancient Ziggurat", Verified, 1),
     ("Anger", Verified, 2),
@@ -85,7 +92,7 @@ const CARDS: [(&str, Support, usize); 132] = [
     ("Felidar Sovereign", Verified, 3),
     ("Fire // Ice", Manual, 0),
     ("Fireball", Verified, 2),
-    ("Flooded Strand", Manual, 0),
+    ("Flooded Strand", Verified, 1),
     ("Foundry Inspector", Verified, 1),
     ("Fog", Verified, 1),
     ("Forest", Verified, 1),
@@ -178,7 +185,7 @@ const CARDS: [(&str, Support, usize); 132] = [
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 132);
+    assert_eq!(in_table.len(), 139);
     assert_eq!(in_table, in_corpus);
 }
 
@@ -333,6 +340,20 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     ] {
         assert_eq!(reasons(name), "", "{name}");
     }
+    // The costs of an activated ability beyond `{T}`, mana and the sacrifice of the source are announced and paid:
+    // life, a permanent sacrificed or tapped, a card discarded or exiled from a graveyard, counters removed, cycling.
+    for name in [
+        "Flooded Strand",
+        "Llanowar Behemoth",
+        "Lurching Rotbeast",
+        "Nantuko Husk",
+        "Rummaging Goblin",
+        "Soul Shepherd",
+        "Souldrinker",
+        "Tumble Magnet",
+    ] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // The rules of the game run as static abilities and as effects: the cards that change one are covered whole.
     for name in [
         "Carnage Tyrant",
@@ -350,6 +371,30 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
         "Warmonger Hellkite",
     ] {
         assert_eq!(reasons(name), "", "{name}");
+    }
+}
+
+/// A card that makes a predefined token needs what the abilities of that token need, so its support counts them: a
+/// Treasure sacrifices itself for mana, a Clue pays mana and draws.
+#[rstest]
+#[case::dockside_extortionist("Dockside Extortionist", &["Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana"])]
+#[case::tireless_tracker("Tireless Tracker", &["Cost.Mana", "Cost.SacrificeSelf", "Effect.Draw"])]
+fn a_card_that_makes_a_predefined_token_needs_what_its_abilities_need(
+    #[case] name: &str,
+    #[case] needed: &[&str],
+) {
+    let library = mtg_cards::builtin::library().unwrap();
+    let used: BTreeSet<String> = library
+        .card_by_name(name)
+        .into_iter()
+        .flat_map(mtg_cards::card::Card::abilities)
+        .flat_map(|(_, ability)| used_primitives(ability))
+        .collect();
+    for primitive in needed {
+        assert!(
+            used.contains(*primitive),
+            "{name} needs {primitive}: {used:?}"
+        );
     }
 }
 
@@ -371,7 +416,6 @@ fn lacking(name: &str) -> Vec<String> {
 /// those are Verified (Brainstorm, Cultivate, Eternal Witness, Izzet Charm, Opt, Rampant Growth, Rhystic Study); each of
 /// the others here is still held back by another primitive, which this table names.
 #[rstest]
-#[case::flooded_strand("Flooded Strand", &["Cost.PayLife"])]
 #[case::delver(
     "Delver of Secrets // Insectile Aberration",
     &["Effect.Transform"]

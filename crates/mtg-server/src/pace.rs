@@ -691,6 +691,7 @@ mod tests {
             min,
             max,
             text: String::new(),
+            can_cancel: false,
         })
     }
 

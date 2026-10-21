@@ -1,13 +1,14 @@
 //! Priority: who may act, what they may do, and when a round of passes is complete.
 
 use std::collections::BTreeSet;
+use std::sync::Arc;
 
 use mtg_cards::ability::{Ability, Limit, Timing};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::abilities::AbilityRef;
-use crate::ability_reader::{abilities_of, working_here};
+use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::answers::Outcome;
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::announceable;
@@ -73,8 +74,8 @@ fn hand_land(state: &GameState, id: ObjectId) -> bool {
 /// Whether the ability `rules`, which `address` names among the abilities of the permanent `object`, could be
 /// activated by `player` now.
 ///
-/// The engine pays `{T}`, mana and the sacrifice of the source for an ability (`Price`) and nothing else; `Caps` keeps
-/// abilities with other costs out of the game. The mana must be affordable with the floating mana and the other
+/// The engine pays `{T}`, mana, the loss of the source and the parts of `Price::parts` for an ability and nothing else;
+/// `Caps` keeps abilities with other costs out of the game. The mana must be affordable with the floating mana and the other
 /// permanents the player taps.
 fn can_activate(
     state: &GameState,
@@ -122,6 +123,10 @@ fn can_activate(
     if !leaves_from_here {
         return false;
     }
+    // Life, counters and the objects the other parts take must be there to pay (CR 118.3).
+    let Some(claimed) = price.claimed(state, player, object.id()) else {
+        return false;
+    };
     if *timing == Timing::Sorcery && !sorcery_timing(state, player) {
         return false;
     }
@@ -148,9 +153,14 @@ fn can_activate(
         let Some(seat) = state.player(player) else {
             return false;
         };
-        let sources = price.sources(state, player, object.id());
+        let mut sources = price.sources(state, player, object.id());
+        // What the other parts of the cost take is not there to tap for mana, and the life they pay is not there to spend.
+        sources.retain(|option| !claimed.contains(&option.source.object));
+        let life = seat
+            .life()
+            .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
         let spend = Spend::for_ability(state, object.id(), price.x > 0);
-        if !can_afford(mana, seat.mana(), &sources, seat.life(), &spend) {
+        if !can_afford(mana, seat.mana(), &sources, life, &spend) {
             return false;
         }
     }
@@ -191,8 +201,9 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
     }
     if state.possible.elsewhere {
         for object in own_cards_elsewhere(state, player) {
-            for (address, rules) in working_here(object) {
-                if can_activate(state, player, object, address, rules) {
+            let printed = working_here(object).map(|(address, rules)| (address, Arc::clone(rules)));
+            for (address, rules) in printed.chain(provided_here(object)) {
+                if can_activate(state, player, object, address, &rules) {
                     found.push(address);
                 }
             }
@@ -345,7 +356,8 @@ mod tests {
     #[case::x_of_nothing("[{\"Mana\":\"{X}\"}]", 0, true)]
     #[case::x_with_a_colour_that_cannot_be_paid("[{\"Mana\":\"{X}{R}\"}]", 3, false)]
     #[case::x_and_a_tap_without_a_source("[{\"Mana\":\"{X}\"},\"Tap\"]", 0, true)]
-    #[case::life_as_well("[{\"Mana\":\"{1}\"},{\"PayLife\":1}]", 3, false)]
+    #[case::life_as_well("[{\"Mana\":\"{1}\"},{\"PayLife\":1}]", 3, true)]
+    #[case::more_life_than_the_player_has("[{\"Mana\":\"{1}\"},{\"PayLife\":21}]", 3, false)]
     fn an_ability_is_offered_when_its_price_can_be_paid(
         #[case] cost: &str,
         #[case] lands: usize,

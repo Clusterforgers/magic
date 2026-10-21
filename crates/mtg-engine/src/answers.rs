@@ -33,6 +33,8 @@ pub(crate) enum Outcome {
     Number(u32),
     /// These are the optional costs, by index, of the cast or activation in progress.
     Costs(Vec<usize>),
+    /// These are the permanents and cards picked for the next part of the cost of the activation in progress.
+    Cards(Vec<ObjectId>),
     /// This is how the next amount to divide of the cast or activation in progress is shared among its targets.
     Division(Vec<(Target, u32)>),
     /// Abandon the cast or activation in progress.
@@ -106,7 +108,7 @@ pub(crate) fn handle(
             crate::legend::answer(state, options, &choice)
         }
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice)) => {
-            choose::cards_answer(player, options, choice)
+            choose::cards_answer(player, options, choice, pending.is_some())
         }
         (DecisionKind::OrderCards(options), Answer::OrderCards(choice)) => {
             choose::order_answer(player, options, choice)

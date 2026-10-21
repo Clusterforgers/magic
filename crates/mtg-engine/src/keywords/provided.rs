@@ -341,5 +341,5 @@ fn the_abilities_of_an_attachment_keyword_are_valid_rules_and_the_engine_runs_th
 fn a_ward_cost_the_engine_cannot_pay_keeps_the_card_from_being_verified() {
     let life = Keyword::Ward(serde_json::from_str(r#"[{"PayLife":2}]"#).unwrap());
     let missing = caps().missing(&used_primitives(&Ability::Keyword(life)));
-    assert_eq!(missing, ["Cost.PayLife"]);
+    assert_eq!(missing, ["Effect.Pay.PayLife"]);
 }

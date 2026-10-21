@@ -1,0 +1,12 @@
+{
+  "oracle_id": "771be8ad-5ab5-40b1-ad9b-e5e834949d32",
+  "name": "Lurching Rotbeast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lurching Rotbeast",
+      "oracle_fingerprint": "a465e0ef3df0c373204b03340f14c2fa",
+      "abilities": [{ "Keyword": { "Cycling": "{B}" } }]
+    }
+  ]
+}

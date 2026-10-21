@@ -1,0 +1,19 @@
+{
+  "oracle_id": "624d4bda-448f-43d1-92b6-53a77afe2374",
+  "name": "Souldrinker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Souldrinker",
+      "oracle_fingerprint": "32dfe5e14add34676ddfb92509f561b3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "PayLife": 3 }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

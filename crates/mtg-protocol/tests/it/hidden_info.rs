@@ -18,14 +18,15 @@ use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
 use mtg_testkit::{
     archon_fuzz_setup, attach_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup,
-    loyalty_fuzz_setup, prevent_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup, split_fuzz_setup,
-    zones_fuzz_setup,
+    loyalty_fuzz_setup, parts_fuzz_setup, prevent_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup,
+    split_fuzz_setup, zones_fuzz_setup,
 };
 use rstest::rstest;
 use serde_json::Value;
 
 /// Keys whose numbers are counters or seat numbers, never object ids.
 const SCALAR_KEYS: &[&str] = &[
+    "PayLife",
     "counts",
     "life",
     "life_after",
@@ -599,6 +600,92 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_abilities_from_other_zones(
     assert!(
         from_hidden_zones > 0 || players > 2,
         "a card in a hidden zone used an ability"
+    );
+}
+
+/// The costs that discard a card from a hand (a rummage, a cycling) or exile one from a graveyard reveal it to every
+/// seat as it reaches a public zone, the discarded card in the batch of the other seats and in every snapshot, and
+/// nothing else of a hand, a library or the cards picked among reaches a seat that may not see it.
+#[rstest]
+#[case(2, 61)]
+#[case(3, 62)]
+#[case(4, 63)]
+fn a_card_discarded_or_exiled_to_pay_a_cost_reaches_every_seat_and_no_hidden_object_does(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut discards, mut exiles, mut picks) = (0usize, 0usize, 0usize, 0usize);
+    let mut previous: Option<Decision> = None;
+    let setup = with_unique_names(parts_fuzz_setup(players, seed).unwrap());
+    let engine = run_game(setup, seed, |step: &Step| {
+        if let Some(Decision {
+            kind: DecisionKind::ChooseCards(options),
+            ..
+        }) = step.decision
+        {
+            picks += usize::from(options.can_cancel);
+        }
+        let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+        let revealed: Vec<(ObjectId, bool)> = step
+            .events
+            .iter()
+            .filter_map(|event| match event {
+                mtg_engine::Event::CardDiscarded { object, .. } => Some((*object, true)),
+                mtg_engine::Event::ZoneChanged {
+                    object,
+                    from: Zone::Graveyard(_),
+                    to: Zone::Exile,
+                    ..
+                } => Some((*object, false)),
+                _ => None,
+            })
+            .collect();
+        for (viewer, batch) in viewers.iter().zip(&batches) {
+            let mut hidden = hidden_across(step.before, step.after, *viewer);
+            for (object, _) in &revealed {
+                hidden.remove(object);
+            }
+            // The seat asked to choose among cards of its library, to search, sees them.
+            hidden.retain(|id, _| {
+                !offered_to(step.decision, *viewer).contains(id)
+                    && !offered_to(previous.as_ref(), *viewer).contains(id)
+            });
+            checked += hidden.len();
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&without_trigger_orders(value), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
+            let view = StateView::for_player(step.after, *viewer);
+            for (object, discarded) in &revealed {
+                // Whatever zone it is in by the end of the batch, a card in a public zone is in every snapshot.
+                if step
+                    .after
+                    .object(*object)
+                    .is_some_and(|o| !is_hidden(o.zone(), *viewer))
+                {
+                    assert!(
+                        view.objects.iter().any(|o| o.id == *object),
+                        "seed {seed} answer {} viewer {viewer:?}: {object:?} is missing from the snapshot",
+                        step.answers
+                    );
+                }
+                if viewer.index() == 0 {
+                    discards += usize::from(*discarded);
+                    exiles += usize::from(!*discarded);
+                }
+            }
+        }
+        previous = step.decision.cloned();
+    });
+    assert!(engine.result().is_some(), "game should finish");
+    assert!(
+        checked > 500 && discards > 0 && picks > 0,
+        "test must not be vacuous: {checked} hidden objects, {discards} discards, {exiles} exiles, {picks} picks"
     );
 }
 

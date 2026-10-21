@@ -29,6 +29,9 @@ pub struct Problem {
     pub message: String,
 }
 
+/// How deep the abilities of a token may make tokens whose abilities are counted.
+const MOST_NESTED: u32 = 4;
+
 /// The name of an enum value as serde writes it (`DealDamage`), for naming primitives.
 fn tag_of<T: Serialize>(value: &T) -> String {
     match serde_json::to_value(value) {
@@ -37,6 +40,21 @@ fn tag_of<T: Serialize>(value: &T) -> String {
             map.keys().next().cloned().unwrap_or_default()
         }
         _ => String::from("?"),
+    }
+}
+
+/// Whether the part of a cost that counts holds a fixed number: the engine pays no other (`Cost.PayLife.Counted`).
+fn is_fixed(item: &CostItem) -> bool {
+    let fixed = |amount: &Amount| matches!(amount, Amount::Fixed(number) if *number >= 0);
+    match item {
+        CostItem::PayLife(amount) => fixed(amount),
+        CostItem::RemoveCounters { count, .. }
+        | CostItem::Sacrifice { count, .. }
+        | CostItem::Discard { count, .. }
+        | CostItem::TapPermanents { count, .. }
+        | CostItem::ExileFromGraveyard { count, .. }
+        | CostItem::ReturnToHand { count, .. } => fixed(count),
+        _ => true,
     }
 }
 
@@ -478,6 +496,9 @@ impl<'a> Walker<'a> {
         for (i, item) in cost.0.iter().enumerate() {
             self.at(format!("[{i}]"), |w| {
                 w.uses("Cost", &tag_of(item));
+                if !is_fixed(item) {
+                    w.uses("Cost", &format!("{}.Counted", tag_of(item)));
+                }
                 match item {
                     CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => w.amount(amount),
                     CostItem::RemoveCounters { count, .. } => {
@@ -507,9 +528,30 @@ impl<'a> Walker<'a> {
         }
     }
 
+    /// The parts of a cost that an ability pays as it is announced (life, counters, a pick of permanents or cards) are not
+    /// paid in a payment an effect asks for or in the cost of a keyword that is not an ability: they are named
+    /// `<kind>.<prefix>.<part>` so the card waits for an engine that pays them there.
+    fn parts_that_need_an_announcement(&mut self, kind: &str, prefix: &str, cost: &Cost) {
+        for item in &cost.0 {
+            if matches!(
+                item,
+                CostItem::PayLife(_)
+                    | CostItem::RemoveCounters { .. }
+                    | CostItem::Sacrifice { .. }
+                    | CostItem::Discard { .. }
+                    | CostItem::ExileFromGraveyard { .. }
+                    | CostItem::TapPermanents { .. }
+                    | CostItem::ReturnToHand { .. }
+            ) {
+                self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
+            }
+        }
+    }
+
     /// Losing the source (sacrificing, exiling or discarding it) is paid as part of an ability's cost; no effect asks a
     /// player to pay it yet, so a payment that asks for it names what is missing.
     fn payment_of_the_source(&mut self, cost: &Cost) {
+        self.parts_that_need_an_announcement("Effect", "Pay", cost);
         for (item, name) in [
             (CostItem::SacrificeSelf, "Pay.SacrificeSelf"),
             (CostItem::ExileSelf, "Pay.ExileSelf"),
@@ -557,10 +599,11 @@ impl<'a> Walker<'a> {
                 // Ward asks the player for its cost through a payment.
                 self.payment_of_the_source(cost);
             }
-            Keyword::Equip(cost)
-            | Keyword::Reconfigure(cost)
-            | Keyword::Cycling(cost)
-            | Keyword::Kicker(cost)
+            // The cost of these is paid as the cost of an activated ability the keyword adds.
+            Keyword::Equip(cost) | Keyword::Reconfigure(cost) | Keyword::Cycling(cost) => {
+                self.at("cost", |w| w.cost(cost));
+            }
+            Keyword::Kicker(cost)
             | Keyword::Multikicker(cost)
             | Keyword::Flashback(cost)
             | Keyword::Madness(cost)
@@ -571,7 +614,11 @@ impl<'a> Walker<'a> {
             | Keyword::Mutate(cost)
             | Keyword::Encore(cost)
             | Keyword::Squad(cost)
-            | Keyword::Suspend { cost, .. } => self.at("cost", |w| w.cost(cost)),
+            | Keyword::Suspend { cost, .. } => {
+                self.at("cost", |w| w.cost(cost));
+                // Only mana is paid for these: a part that takes objects, life or counters is not.
+                self.parts_that_need_an_announcement("Keyword", "Cost", cost);
+            }
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
             Keyword::Enchant(selector) => {
                 self.selector(selector);
@@ -817,6 +864,12 @@ impl<'a> Walker<'a> {
                     self.problem(format!(
                         "unknown token `{id}` (no file cards/tokens/{id}.json)"
                     ));
+                }
+                // What the token does is part of what the card needs: a card that makes a Treasure needs its mana ability.
+                if self.nested < MOST_NESTED
+                    && let Some(spec) = crate::builtin::token_spec(id)
+                {
+                    self.at(id.clone(), |w| w.token_spec(&spec));
                 }
             }
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec)),
@@ -1954,7 +2007,7 @@ mod tests {
     #[case::a_move_shuffled_in(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Shuffled","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move"])]
     #[case::a_move_to_the_battlefield(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Battlefield":{}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield"])]
     #[case::a_move_in_a_random_order(r#"{"Spell":{"effects":[{"Move":{"what":"This","to":{"Library":{"place":"Bottom","order":"Random"}}}}]}}"#, &["Ability.Spell", "Effect.Move", "Effect.Move.Random"])]
-    #[case::a_named_token(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}"#, &["Ability.Spell", "Effect.CreateToken"])]
+    #[case::a_named_token_brings_its_own_abilities(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Named":"treasure"}}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]
     #[case::an_inline_token_with_an_ability(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Gem","types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}]}},"count":2,"tapped":true}}]}}"#, &["Ability.Activated", "Ability.Spell", "Cost.SacrificeSelf", "Cost.Tap", "Effect.AddMana", "Effect.CreateToken"])]
     #[case::a_copy_of_an_object(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"CopyOf":{"of":"This"}}}}]}}"#, &["Ability.Spell", "Effect.CreateToken", "Effect.CreateToken.Copy"])]
     #[case::a_cost_that_sacrifices_a_permanent(r#"{"Activated":{"cost":[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Sacrifice", "Effect.Draw"])]

@@ -73,6 +73,7 @@ impl<'a> Questions<'a> {
             min: count(min),
             max: count(max),
             text,
+            can_cancel: false,
         };
         match self.answers.next() {
             None => Err(Stop::Ask(Decision {
@@ -190,7 +191,8 @@ mod tests {
                     from: ids(&[1, 2, 3]),
                     min: 0,
                     max: 3,
-                    text: "Bottom.".into()
+                    text: "Bottom.".into(),
+                    can_cancel: false,
                 })
             }
         );

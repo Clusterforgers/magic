@@ -18,6 +18,7 @@ mod legend;
 mod mana_ability;
 mod mana_plan;
 mod mulligan;
+mod parts;
 mod preview;
 mod price;
 mod replace_dry;

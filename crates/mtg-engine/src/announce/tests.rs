@@ -256,6 +256,7 @@ fn a_payment_for_an_effect_is_logged_as_an_answer_and_cannot_be_cancelled() {
         mana_options(&game, PlayerId(0)),
         crate::spend::Spend::other(),
         false,
+        0,
     )
     .unwrap();
     // Nothing resolves here, so no effect asked for it.

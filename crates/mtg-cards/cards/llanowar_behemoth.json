@@ -1,0 +1,27 @@
+{
+  "oracle_id": "4364bef8-f7ec-487c-9b64-b55c4afb864e",
+  "name": "Llanowar Behemoth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Llanowar Behemoth",
+      "oracle_fingerprint": "f4fd7d3513b10fd565c8241a4f49d679",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

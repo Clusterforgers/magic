@@ -201,6 +201,7 @@ mod tests {
                 min: 1,
                 max: 1,
                 text: "Sacrifice a creature or planeswalker.".into(),
+                can_cancel: false,
             })
         );
     }

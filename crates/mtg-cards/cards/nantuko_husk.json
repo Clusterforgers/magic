@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0dcefc00-9425-43e3-bd47-1e34fff8b0e2",
+  "name": "Nantuko Husk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nantuko Husk",
+      "oracle_fingerprint": "3d37f4137798c0a8e165b75939eb7f2a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
