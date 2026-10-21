@@ -815,12 +815,46 @@ mod tests {
     #[case::each(r#"{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}"#, &["Ogre 1", "Bear 1"])]
     #[case::controller_of(r#"{"ControllerOf":{"Each":[{"Named":"Ogre"}]}}"#, &["player 1"])]
     #[case::owner_of_several_once(r#"{"OwnerOf":{"Each":[{"Type":"Creature"}]}}"#, &["player 0", "player 1"])]
-    #[case::nothing_is_attached_yet(r#""Attached""#, &[])]
+    #[case::a_source_with_no_host_names_nothing(r#""Attached""#, &[])]
     fn a_reference_names_its_players_and_objects(#[case] json: &str, #[case] expected: &[&str]) {
         let game = game();
         let reference: Ref = serde_json::from_str(json).unwrap();
         let found = scope(&game).refs(&reference).unwrap();
         assert_eq!(names(&game, &found), expected);
+    }
+
+    #[test]
+    fn attached_names_the_host_of_the_source_while_it_is_the_object_it_was_attached_to() {
+        let mut setup = crate::fixtures::setup(
+            vec![vec![], vec![]],
+            vec![vec![bear(), relic()], vec![ogre()]],
+        );
+        setup.players[0].battlefield[1].attached_to = Some((1, 0));
+        let mut game = GameState::from_setup(&setup).unwrap();
+        let relic = named(&game, "Relic", 0);
+        let host = |game: &GameState| {
+            let found = Scope::announcing(game, PlayerId(0), relic)
+                .refs(&Ref::Attached)
+                .unwrap();
+            names(game, &found)
+        };
+        assert_eq!(host(&game), ["Ogre 1"]);
+        // A host that leaves is a new object when it comes back, and the Relic is not attached to it.
+        let ogre = named(&game, "Ogre", 1).id;
+        for to in [Zone::Graveyard(PlayerId(1)), Zone::Battlefield] {
+            let from = game.object(ogre).unwrap().zone();
+            apply_event(
+                &mut game,
+                &Event::ZoneChanged {
+                    object: ogre,
+                    from,
+                    to,
+                    cause: crate::events::ZoneCause::Moved,
+                },
+            )
+            .unwrap();
+        }
+        assert_eq!(host(&game), Vec::<String>::new());
     }
 
     #[test]

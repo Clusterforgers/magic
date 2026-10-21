@@ -724,6 +724,40 @@ mod tests {
         }
     }
 
+    /// The question of the legend rule (CR 704.5j) is a choice of one among the copies, asked outside any resolution: the
+    /// clock answers it like any choice of cards, with the first copy offered, and the engine takes the answer.
+    #[test]
+    fn the_clock_keeps_the_oldest_copy_when_the_legend_rule_asks() {
+        use mtg_engine::zones::Zone;
+        use mtg_testkit::attach_cards::legendary_bear;
+        use mtg_testkit::{Driver, Scenario, ready};
+
+        let mut driver = Driver::from_scenario(Scenario::new(3).battlefield(
+            1,
+            [
+                ready(legendary_bear()),
+                ready(legendary_bear()),
+                ready(legendary_bear()),
+            ],
+        ))
+        .unwrap();
+        let asked = driver.decision().unwrap().clone();
+        assert_eq!(asked.player, PlayerId(1));
+        let DecisionKind::ChooseCards(options) = &asked.kind else {
+            panic!("the legend rule asks for cards: {asked:?}");
+        };
+        assert_eq!((options.min, options.max, options.from.len()), (1, 1, 3));
+        let answer = fallback(&asked).expect("a choice of cards has a fallback");
+        assert_eq!(answer, chosen(&[options.from[0].get()]));
+        driver.answer(answer).unwrap();
+        let kept: Vec<ObjectId> = driver.state().zone(Zone::Battlefield).to_vec();
+        assert_eq!(kept, [options.from[0]]);
+        assert!(matches!(
+            driver.decision().unwrap().kind,
+            DecisionKind::Priority(_)
+        ));
+    }
+
     #[test]
     fn the_order_fallback_puts_every_card_once_in_the_order_given() {
         for count in 0..=7 {

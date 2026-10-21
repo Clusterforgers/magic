@@ -288,3 +288,279 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
     }
     events
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: an attachment is legal exactly where its kind allows (an Aura where its enchant ability does and never on itself or when it is a creature, an Equipment on a creature when it is none, a Fortification on a land), becoming attached sets the host and gives the attachment the next timestamp while becoming unattached clears the host and refuses what is not attached, the state-based actions put an Aura attached to nothing or to what it may not enchant into its owner's graveyard and take an Equipment, a Fortification or any other permanent off what it may not be attached to, an Aura card targets through its enchant ability and no other card does, and an Aura entering without being cast may enchant the permanents its ability allows.
+    use std::sync::Arc;
+
+    use mtg_cards::ability::Ability;
+    use mtg_core::card::Subtype;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::fixtures::{creature, setup};
+    use crate::fold::apply_event;
+    use crate::setup::PresetPermanent;
+
+    const ME: PlayerId = PlayerId(0);
+
+    fn card(name: &str, types: &[CardType], subtype: &str, rules: &[&str]) -> Arc<CardDefinition> {
+        let mut card = CardDefinition::new(name);
+        for ty in types {
+            card = card.with_type(*ty);
+        }
+        if !subtype.is_empty() {
+            card.subtypes.push(Subtype(subtype.into()));
+        }
+        for json in rules {
+            card = card.with_rules(serde_json::from_str::<Ability>(json).unwrap());
+        }
+        Arc::new(card)
+    }
+
+    const ON_CREATURES: &str = r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}}"#;
+    const ON_OPPONENTS: &str =
+        r#"{"Keyword":{"Enchant":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}"#;
+    const ON_LANDS: &str = r#"{"Keyword":{"Enchant":[{"Type":"Land"}]}}"#;
+
+    // Places on the battlefield of seat 0.
+    const BEAR: usize = 0;
+    const FOREST: usize = 1;
+    const HALO: usize = 2;
+    const CURSE: usize = 3;
+    const RUNE: usize = 4;
+    const BLADE: usize = 5;
+    const WALL: usize = 6;
+    const GOLEM: usize = 7;
+    const WOLF: usize = 8;
+    /// The Ogre of seat 1.
+    const OGRE: (usize, usize) = (1, 0);
+
+    /// Seat 0, in this order: a Bear, a Forest, a Halo Aura on creatures, a Curse Aura on creatures of opponents, a Rune
+    /// Aura on lands, a Blade Equipment, a Wall Fortification, a Golem Equipment that is a creature and a Wolf. Seat 1: an
+    /// Ogre. Each pair says which permanent of seat 0 starts attached to which.
+    fn game(attached: &[(usize, (usize, usize))]) -> GameState {
+        let mut game = setup(
+            vec![vec![], vec![]],
+            vec![
+                vec![
+                    creature("Bear", 2, 2),
+                    card("Forest", &[CardType::Land], "", &[]),
+                    card("Halo", &[CardType::Enchantment], "Aura", &[ON_CREATURES]),
+                    card("Curse", &[CardType::Enchantment], "Aura", &[ON_OPPONENTS]),
+                    card("Rune", &[CardType::Enchantment], "Aura", &[ON_LANDS]),
+                    card("Blade", &[CardType::Artifact], "Equipment", &[]),
+                    card("Wall", &[CardType::Artifact], "Fortification", &[]),
+                    card(
+                        "Golem",
+                        &[CardType::Artifact, CardType::Creature],
+                        "Equipment",
+                        &[],
+                    ),
+                    creature("Wolf", 2, 2),
+                ],
+                vec![creature("Ogre", 3, 4)],
+            ],
+        );
+        for (place, host) in attached {
+            let preset = &mut game.players[0].battlefield[*place];
+            *preset = PresetPermanent {
+                attached_to: Some(*host),
+                ..preset.clone()
+            };
+        }
+        GameState::from_setup(&game).unwrap()
+    }
+
+    fn id(game: &GameState, name: &str) -> ObjectId {
+        game.objects().find(|o| o.card().name == name).unwrap().id()
+    }
+
+    #[rstest]
+    #[case::an_aura_on_a_creature("Halo", "Bear", true)]
+    #[case::an_aura_on_a_creature_of_another_seat("Halo", "Ogre", true)]
+    #[case::an_aura_on_a_land_it_may_not_enchant("Halo", "Forest", false)]
+    #[case::an_aura_for_opponents_on_their_creature("Curse", "Ogre", true)]
+    #[case::an_aura_for_opponents_on_your_creature("Curse", "Bear", false)]
+    #[case::an_aura_on_a_land("Rune", "Forest", true)]
+    #[case::an_aura_on_itself("Halo", "Halo", false)]
+    #[case::an_equipment_on_a_creature("Blade", "Wolf", true)]
+    #[case::an_equipment_on_a_land("Blade", "Forest", false)]
+    #[case::an_equipment_that_is_a_creature_on_a_creature("Golem", "Wolf", false)]
+    #[case::an_equipment_on_itself("Blade", "Blade", false)]
+    #[case::a_fortification_on_a_land("Wall", "Forest", true)]
+    #[case::a_fortification_on_a_creature("Wall", "Bear", false)]
+    #[case::a_creature_on_a_creature("Bear", "Wolf", false)]
+    fn an_attachment_is_legal_where_its_kind_allows(
+        #[case] attachment: &str,
+        #[case] host: &str,
+        #[case] legal: bool,
+    ) {
+        let game = game(&[]);
+        assert_eq!(
+            legal_host(&game, id(&game, attachment), id(&game, host)),
+            legal
+        );
+    }
+
+    #[test]
+    fn becoming_attached_sets_the_host_and_the_next_timestamp_and_becoming_unattached_clears_it() {
+        let mut game = game(&[]);
+        let (halo, bear, ogre) = (id(&game, "Halo"), id(&game, "Bear"), id(&game, "Ogre"));
+        let before = game.next_timestamp;
+        let stamp = |game: &GameState| game.object(halo).unwrap().permanent().unwrap().timestamp();
+        apply_event(
+            &mut game,
+            &Event::Attached {
+                object: halo,
+                to: bear,
+            },
+        )
+        .unwrap();
+        assert_eq!(game.host_of(halo), Some(bear));
+        assert_eq!((stamp(&game), game.next_timestamp), (before, before + 1));
+        // Moving it to another host takes another time and leaves the first host with nothing.
+        apply_event(
+            &mut game,
+            &Event::Attached {
+                object: halo,
+                to: ogre,
+            },
+        )
+        .unwrap();
+        assert_eq!((game.host_of(halo), stamp(&game)), (Some(ogre), before + 1));
+        assert_eq!(game.attachments_of(bear), []);
+        apply_event(&mut game, &Event::Unattached { object: halo }).unwrap();
+        assert_eq!(game.host_of(halo), None);
+        assert_eq!(
+            game.object(halo)
+                .unwrap()
+                .permanent()
+                .unwrap()
+                .attached_to(),
+            None
+        );
+    }
+
+    #[rstest]
+    #[case::to_itself("Halo", "Halo")]
+    #[case::to_what_is_already_its_host("Halo", "Bear")]
+    fn an_attachment_that_cannot_become_attached_is_refused(
+        #[case] object: &str,
+        #[case] to: &str,
+    ) {
+        let mut game = game(&[(HALO, (0, BEAR))]);
+        let event = Event::Attached {
+            object: id(&game, object),
+            to: id(&game, to),
+        };
+        assert!(apply_event(&mut game, &event).is_err());
+    }
+
+    #[test]
+    fn a_permanent_attached_to_nothing_cannot_become_unattached() {
+        let mut game = game(&[]);
+        let event = Event::Unattached {
+            object: id(&game, "Halo"),
+        };
+        assert!(apply_event(&mut game, &event).is_err());
+    }
+
+    /// What the state-based actions do to `game(attached)`: (name, put into the graveyard) for each, sorted; an attachment
+    /// that becomes unattached is not put into the graveyard.
+    fn actions(attached: &[(usize, (usize, usize))]) -> Vec<(String, bool)> {
+        let game = game(attached);
+        let mut done: Vec<(String, bool)> = state_based(&game, &[])
+            .iter()
+            .map(|event| match event {
+                Event::ZoneChanged {
+                    object,
+                    to: Zone::Graveyard(_),
+                    cause: ZoneCause::StateBased,
+                    ..
+                } => (game.object(*object).unwrap().card().name.clone(), true),
+                Event::Unattached { object } => {
+                    (game.object(*object).unwrap().card().name.clone(), false)
+                }
+                other => panic!("{other:?}"),
+            })
+            .collect();
+        done.sort();
+        done
+    }
+
+    /// The Auras on a creature, an opponent's creature and a land, each where it may be.
+    const AURAS: [(usize, (usize, usize)); 3] =
+        [(HALO, (0, BEAR)), (CURSE, OGRE), (RUNE, (0, FOREST))];
+
+    fn with(extra: &[(usize, (usize, usize))]) -> Vec<(usize, (usize, usize))> {
+        AURAS.iter().chain(extra).copied().collect()
+    }
+
+    #[rstest]
+    #[case::every_aura_waits_for_a_host(vec![], &[("Curse", true), ("Halo", true), ("Rune", true)])]
+    #[case::attachments_where_they_may_be_stay(
+        with(&[(BLADE, (0, WOLF)), (WALL, (0, FOREST))]),
+        &[]
+    )]
+    #[case::an_aura_on_what_it_may_not_enchant_goes(
+        vec![(HALO, (0, FOREST)), (CURSE, (0, BEAR)), (RUNE, (0, BEAR))],
+        &[("Curse", true), ("Halo", true), ("Rune", true)]
+    )]
+    #[case::an_equipment_on_a_land_comes_off(with(&[(BLADE, (0, FOREST))]), &[("Blade", false)])]
+    #[case::an_equipment_that_is_a_creature_comes_off(with(&[(GOLEM, (0, WOLF))]), &[("Golem", false)])]
+    #[case::a_fortification_on_a_creature_comes_off(with(&[(WALL, (0, BEAR))]), &[("Wall", false)])]
+    #[case::any_other_permanent_comes_off(with(&[(WOLF, (0, BEAR))]), &[("Wolf", false)])]
+    fn the_state_based_actions_of_attachments(
+        #[case] attached: Vec<(usize, (usize, usize))>,
+        #[case] expected: &[(&str, bool)],
+    ) {
+        let expected: Vec<(String, bool)> = expected
+            .iter()
+            .map(|(name, put)| ((*name).to_owned(), *put))
+            .collect();
+        assert_eq!(actions(&attached), expected);
+    }
+
+    #[test]
+    fn an_aura_that_dies_in_the_same_pass_is_not_moved_twice() {
+        let game = game(&[]);
+        let halo = id(&game, "Halo");
+        assert!(!state_based(&game, &[halo]).iter().any(|event| matches!(
+            event,
+            Event::ZoneChanged { object, .. } if *object == halo
+        )));
+    }
+
+    #[test]
+    fn an_aura_card_targets_through_its_enchant_ability_and_no_other_card_does() {
+        let game = game(&[]);
+        let spec = spell_target(&game, id(&game, "Rune")).unwrap();
+        assert_eq!(
+            spec.what,
+            Targetable::Object(Selector(vec![mtg_cards::refs::Pred::Type(CardType::Land)]))
+        );
+        assert!(spec.bounds.is_one());
+        for other in ["Bear", "Blade", "Forest"] {
+            assert!(spell_target(&game, id(&game, other)).is_none(), "{other}");
+        }
+    }
+
+    #[test]
+    fn an_aura_entering_without_being_cast_may_enchant_what_its_ability_allows() {
+        let game = game(&[]);
+        let hosts = |name: &str| {
+            let aura = game.object(id(&game, name)).unwrap();
+            hosts_when_entering(&game, aura, ME).map(|ids| {
+                ids.iter()
+                    .map(|id| game.object(*id).unwrap().card().name.clone())
+                    .collect::<Vec<_>>()
+            })
+        };
+        assert_eq!(hosts("Halo").unwrap(), ["Bear", "Golem", "Wolf", "Ogre"]);
+        assert_eq!(hosts("Curse").unwrap(), ["Ogre"]);
+        assert_eq!(hosts("Rune").unwrap(), ["Forest"]);
+        assert_eq!(hosts("Blade"), None);
+    }
+}
