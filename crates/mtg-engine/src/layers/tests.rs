@@ -13,7 +13,9 @@ use rstest::rstest;
 use super::*;
 use crate::abilities::{AbilityRef, AbilitySource};
 use crate::ability_reader::{abilities_of, ability};
-use crate::characteristics::{cant_attack, cant_block, characteristics, controller_of};
+use crate::characteristics::{
+    cant_attack, cant_be_blocked_by, cant_block, characteristics, controller_of,
+};
 use crate::effects::{ContinuousEffect, Duration, Selector};
 use crate::events::{Event, ZoneCause};
 use crate::fixtures::{creature, state};
@@ -89,6 +91,8 @@ struct View {
     abilities: Vec<Ability>,
     cant_attack: bool,
     cant_block: bool,
+    /// The permanents that can't block it.
+    kept_out: Vec<String>,
 }
 
 fn view(game: &GameState, name: &str) -> View {
@@ -103,6 +107,16 @@ fn view(game: &GameState, name: &str) -> View {
             .collect(),
         cant_attack: cant_attack(game, id),
         cant_block: cant_block(game, id),
+        // The Totems that hold the static abilities are not part of the comparison.
+        kept_out: game
+            .zone(Zone::Battlefield)
+            .iter()
+            .copied()
+            .filter(|other| cant_be_blocked_by(game, id, *other))
+            .filter_map(|other| game.object(other))
+            .map(|other| other.card().name.clone())
+            .filter(|name| !name.starts_with("Totem"))
+            .collect(),
     }
 }
 
@@ -145,8 +159,8 @@ fn leaves(game: &mut GameState, name: &str) {
     );
 }
 
-/// The modifications the engine runs; `CantBeBlocked` and `CantBeBlockedBy` refuse as effects until their task.
-const MODIFICATIONS: [&str; 14] = [
+/// The modifications the engine runs.
+const MODIFICATIONS: [&str; 16] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -161,6 +175,8 @@ const MODIFICATIONS: [&str; 14] = [
     r#"{"SetController":"Opponents"}"#,
     r#""CantAttack""#,
     r#""CantBlock""#,
+    r#""CantBeBlocked""#,
+    r#"{"CantBeBlockedBy":[{"Type":"Creature"}]}"#,
 ];
 
 #[test]
@@ -204,7 +220,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
 
 #[rstest]
 fn every_modification_gives_the_same_view_as_a_static_ability_and_as_an_effect(
-    #[values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13)] which: usize,
+    #[values(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)] which: usize,
 ) {
     let modification = MODIFICATIONS[which];
     let mut by_effect = game_with(idle_totem());

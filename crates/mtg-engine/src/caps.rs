@@ -139,6 +139,8 @@ const RUNS: &[&str] = &[
     "Mod.SetController",
     "Mod.CantAttack",
     "Mod.CantBlock",
+    "Mod.CantBeBlocked",
+    "Mod.CantBeBlockedBy",
     "Effect.DelayedTrigger",
     "Effect.If",
     "Effect.May",
@@ -448,8 +450,8 @@ mod tests {
     #[case::if_you_do("Condition.Performed", false)]
     #[case::the_monarch("Condition.Monarch", false)]
     #[case::the_citys_blessing("Condition.CitysBlessing", false)]
-    #[case::unblockable_creatures("Mod.CantBeBlocked", false)]
-    #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", false)]
+    #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
+    #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", false)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", false)]
     #[case::commander_eligibility("Rule.CanBeCommander", false)]

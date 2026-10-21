@@ -134,8 +134,12 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         }
         Wanted::CantAttack => Modification::CantAttack,
         Wanted::CantBlock => Modification::CantBlock,
-        Wanted::CantBeBlocked => return Err(ResolveError::Unsupported("Mod.CantBeBlocked")),
-        Wanted::CantBeBlockedBy(_) => return Err(ResolveError::Unsupported("Mod.CantBeBlockedBy")),
+        Wanted::CantBeBlocked => Modification::CantBeBlocked,
+        Wanted::CantBeBlockedBy(blockers) => Modification::CantBeBlockedBy {
+            by: blockers.clone(),
+            controller: scope.controller,
+            source: scope.source,
+        },
     })
 }
 
@@ -427,25 +431,39 @@ mod tests {
         );
     }
 
-    #[rstest]
-    #[case::unblockable(r#""CantBeBlocked""#, "Mod.CantBeBlocked")]
-    #[case::unblockable_by_some(
-        r#"{"CantBeBlockedBy":[{"Type":"Creature"}]}"#,
-        "Mod.CantBeBlockedBy"
-    )]
-    fn a_restriction_on_being_blocked_refuses_by_its_name(
-        #[case] modification: &str,
-        #[case] name: &'static str,
-    ) {
+    #[test]
+    fn a_restriction_on_being_blocked_keeps_who_and_what_it_was_made_by() {
         let game = game();
         let bear = named(&game, "Bear");
-        let asked = effect(&format!(
-            r#"{{"Continuous":{{"affected":{{"Target":0}},"mods":[{modification}],"duration":"UntilEndOfTurn"}}}}"#
-        ));
-        assert_eq!(
-            run_with(&game, vec![Target::Object(bear)], &asked).err(),
-            Some(ResolveError::Unsupported(name))
-        );
+        let source = named(&game, "Source");
+        let small = Pick(vec![
+            mtg_cards::refs::Pred::Type(mtg_core::card::CardType::Creature),
+            mtg_cards::refs::Pred::Compare {
+                stat: mtg_cards::value::StatKind::Power,
+                op: mtg_cards::value::Cmp::Le,
+                to: mtg_cards::value::Amount::Fixed(2),
+            },
+        ]);
+        let cases = [
+            (r#""CantBeBlocked""#, Modification::CantBeBlocked),
+            (
+                r#"{"CantBeBlockedBy":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Le","to":2}}]}"#,
+                Modification::CantBeBlockedBy {
+                    by: small,
+                    controller: ME,
+                    source,
+                },
+            ),
+        ];
+        for (modification, expected) in cases {
+            let asked = effect(&format!(
+                r#"{{"Continuous":{{"affected":{{"Target":0}},"mods":[{modification}],"duration":"UntilEndOfTurn"}}}}"#
+            ));
+            let made = begun(run_with(&game, vec![Target::Object(bear)], &asked).unwrap());
+            assert_eq!(made.len(), 1);
+            assert_eq!(made[0].modification, expected);
+            assert_eq!(made[0].layer, None, "a restriction has no layer");
+        }
     }
 
     #[test]

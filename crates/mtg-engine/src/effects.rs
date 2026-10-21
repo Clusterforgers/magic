@@ -125,6 +125,19 @@ pub enum Modification {
     CantAttack,
     /// The object can't block: a restriction with no layer that `block_options` reads.
     CantBlock,
+    /// The object can't be blocked: a restriction with no layer that `block_options` reads.
+    CantBeBlocked,
+    /// The object can't be blocked by the creatures the selector names, judged when blockers are declared as `controller`
+    /// and `source` see them ("you", "this"): a restriction with no layer that `block_options` reads.
+    CantBeBlockedBy {
+        /// The blockers it keeps out.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        by: mtg_cards::refs::Selector,
+        /// Who "you" is for the selector.
+        controller: PlayerId,
+        /// What "this" is for the selector.
+        source: ObjectRef,
+    },
 }
 
 impl Modification {
@@ -143,7 +156,10 @@ impl Modification {
             Modification::SetPowerToughness { .. } => Layer::PtSet,
             Modification::ModifyPowerToughness { .. } => Layer::PtModify,
             Modification::SwitchPowerToughness => Layer::PtSwitch,
-            Modification::CantAttack | Modification::CantBlock => return None,
+            Modification::CantAttack
+            | Modification::CantBlock
+            | Modification::CantBeBlocked
+            | Modification::CantBeBlockedBy { .. } => return None,
         })
     }
 
@@ -178,7 +194,9 @@ impl Modification {
             | Modification::RemoveKeyword(_)
             | Modification::GrantAbility(_)
             | Modification::CantAttack
-            | Modification::CantBlock => {}
+            | Modification::CantBlock
+            | Modification::CantBeBlocked
+            | Modification::CantBeBlockedBy { .. } => {}
         }
     }
 }
