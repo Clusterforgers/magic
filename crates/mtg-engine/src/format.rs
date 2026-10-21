@@ -11,7 +11,7 @@ use thiserror::Error;
 
 use crate::player::LossReason;
 use crate::state::{GameResult, GameState};
-use crate::turn::MAX_HAND_SIZE;
+use crate::turn::{MAX_HAND_SIZE, POISON_LOSS};
 
 mod ruleset;
 
@@ -86,6 +86,10 @@ pub trait FormatRules: Debug + Send + Sync {
     /// The most cards a player keeps in hand at the cleanup step.
     fn max_hand_size(&self) -> usize {
         MAX_HAND_SIZE
+    }
+    /// The poison counters that make a player lose (CR 704.5c).
+    fn poison_threshold(&self) -> u32 {
+        POISON_LOSS
     }
     /// A format-specific reason `player` has lost, checked with state-based actions.
     fn loss_condition(&self, _state: &GameState, _player: PlayerId) -> Option<LossReason> {

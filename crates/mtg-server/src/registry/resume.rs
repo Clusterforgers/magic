@@ -118,7 +118,7 @@ impl Registry {
             Ok(unpacked) => unpacked,
             Err(unloadable) => return give_up(records, id, unloadable).await,
         };
-        let house_rules = setup.house_rules;
+        let house_rules = setup.house_rules.clone();
         let names: Vec<String> = seats.iter().map(|slot| slot.name.clone()).collect();
         let joined = record.seats.iter().map(|seat| seat.joined).collect();
         let recorder = Recorder::new(records.clone(), id, joined);

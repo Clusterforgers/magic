@@ -123,7 +123,7 @@ impl SeatDecks {
                 DeckRef::Oracle { .. } => None,
             })
             .collect();
-        SeatDecks::new(recipe.format, recipe.seed, defaults).with_house_rules(recipe.house_rules)
+        SeatDecks::new(recipe.format, recipe.seed, defaults).with_house_rules(recipe.house_rules.clone())
     }
 
     /// What the table is told of `seat`'s deck.
@@ -173,7 +173,7 @@ impl SeatDecks {
         let chosen = chosen?;
         Some(GameRecipe {
             format: self.format,
-            house_rules: self.house_rules,
+            house_rules: self.house_rules.clone(),
             seed: self.seed,
             decks: chosen.iter().map(|deck| deck.deck.clone()).collect(),
             fingerprints: chosen.iter().map(|deck| deck.fingerprint).collect(),

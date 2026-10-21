@@ -23,6 +23,8 @@ pub enum LossReason {
     Conceded,
     /// A reason in words: a format's own condition, such as commander damage, or an opponent who won by an effect.
     Format(String),
+    /// Another player reached the life total that wins the game, a house rule.
+    OpponentReachedLife,
 }
 
 /// Whether a player is still in the game.
@@ -57,7 +59,7 @@ pub struct Player {
     pub(crate) life: i32,
     pub(crate) status: PlayerStatus,
     pub(crate) mana: ManaPool,
-    pub(crate) drew_from_empty: bool,
+    pub(crate) failed_draws: u32,
     pub(crate) mulligans: u32,
     pub(crate) mulligan: MulliganStatus,
     pub(crate) keywords: Vec<Keyword>,
@@ -76,7 +78,7 @@ impl Player {
             life,
             status: PlayerStatus::InGame,
             mana: ManaPool::default(),
-            drew_from_empty: false,
+            failed_draws: 0,
             mulligans: 0,
             mulligan,
             keywords,

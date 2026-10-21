@@ -97,6 +97,7 @@ const RUNS: &[&str] = &[
     "Rule.CantDraw",
     "Rule.CantSearch",
     "Rule.RevealTop",
+    "Rule.NoMaxHandSize",
     "Rule.TriggerAgain",
     "Rule.DamageCantBePrevented",
     VARIABLE_STATS,
@@ -303,6 +304,7 @@ mod tests {
     #[case::no_drawing("Rule.CantDraw", true)]
     #[case::no_searching("Rule.CantSearch", true)]
     #[case::a_revealed_top("Rule.RevealTop", true)]
+    #[case::no_maximum_hand_size("Rule.NoMaxHandSize", true)]
     #[case::triggers_again("Rule.TriggerAgain", true)]
     #[case::damage_that_cant_be_prevented("Rule.DamageCantBePrevented", true)]
     #[case::regenerating("Effect.Regenerate", true)]
@@ -410,7 +412,6 @@ mod tests {
     #[case::unblockable_creatures("Mod.CantBeBlocked", false)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", false)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", false)]
-    #[case::no_maximum_hand_size("Rule.NoMaxHandSize", false)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", false)]
     #[case::commander_eligibility("Rule.CanBeCommander", false)]
     #[case::counting_players("Amount.Players", false)]

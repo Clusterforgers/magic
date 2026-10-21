@@ -1,10 +1,12 @@
 //! The rules a game plays by: the format's values with the house rules laid over them.
 
-use mtg_core::house::{HandLimit, HouseRules, SkipFirstDraw};
-use mtg_core::ids::ObjectId;
+use mtg_core::house::{EmptyLibrary, HandLimit, HouseRules, SkipFirstDraw};
+use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{FormatRules, MulliganRule};
 use crate::decision::MulliganOptions;
+use crate::state::{GameResult, GameState};
+use crate::turn::{DRAW_STEP_CARDS, LAND_DROPS_PER_TURN};
 
 /// The format and the house rules of one game, resolved. Every engine call site that needs a rule the
 /// house can change reads it here and never from the format.
@@ -24,26 +26,34 @@ impl<'a> RuleSet<'a> {
         RuleSet { format, house }
     }
 
-    /// Life each player starts with.
-    pub fn starting_life(&self) -> i32 {
+    /// Life `seat` starts with: its handicap, else the table's rule, else the format's.
+    pub fn starting_life(&self, seat: PlayerId) -> i32 {
         self.house
-            .starting_life
+            .handicap(seat)
+            .and_then(|handicap| handicap.starting_life)
+            .or(self.house.starting_life)
             .unwrap_or_else(|| self.format.starting_life())
     }
 
-    /// The opening-hand mulligan rule: the hand size and the mulligans that cost no card.
-    pub fn mulligan_rule(&self) -> MulliganRule {
+    /// The opening-hand mulligan rule of `seat`: the hand size (its handicap, else the table's rule, else the
+    /// format's) and the mulligans that cost no card.
+    pub fn mulligan_rule(&self, seat: PlayerId) -> MulliganRule {
         let format = self.format.mulligan_rule();
         MulliganRule {
-            hand_size: self.house.opening_hand_size.map_or(format.hand_size, count),
+            hand_size: self
+                .house
+                .handicap(seat)
+                .and_then(|handicap| handicap.opening_hand_size)
+                .or(self.house.opening_hand_size)
+                .map_or(format.hand_size, count),
             free_mulligans: self.house.free_mulligans.unwrap_or(format.free_mulligans),
         }
     }
 
-    /// The most mulligans a player may take: the cap if one is set, else the opening hand size, and never more
+    /// The most mulligans `seat` may take: the cap if one is set, else its opening hand size, and never more
     /// than the cards a hand can lose after the free ones.
-    pub fn max_mulligans(&self) -> u32 {
-        let rule = self.mulligan_rule();
+    pub fn max_mulligans(&self, seat: PlayerId) -> u32 {
+        let rule = self.mulligan_rule(seat);
         let hand = u32::try_from(rule.hand_size).unwrap_or(u32::MAX);
         self.house
             .mulligan_cap
@@ -51,13 +61,18 @@ impl<'a> RuleSet<'a> {
             .min(hand.saturating_add(rule.free_mulligans))
     }
 
-    /// The keep-or-mulligan options for `hand` after `taken` mulligans, with the bottom counts worked out.
-    pub fn mulligan_options(&self, hand: Vec<ObjectId>, taken: u32) -> MulliganOptions {
-        let rule = self.mulligan_rule();
+    /// The keep-or-mulligan options of `seat` for `hand` after `taken` mulligans, with the bottom counts worked out.
+    pub fn mulligan_options(
+        &self,
+        seat: PlayerId,
+        hand: Vec<ObjectId>,
+        taken: u32,
+    ) -> MulliganOptions {
+        let rule = self.mulligan_rule(seat);
         MulliganOptions {
             hand,
             mulligans_taken: taken,
-            can_mulligan: taken < self.max_mulligans(),
+            can_mulligan: taken < self.max_mulligans(seat),
             free_mulligans: rule.free_mulligans,
             bottom_if_keep: rule.bottom_count(taken),
             bottom_if_mulligan: rule.bottom_count(taken.saturating_add(1)),
@@ -81,16 +96,69 @@ impl<'a> RuleSet<'a> {
             None => Some(self.format.max_hand_size()),
         }
     }
+
+    /// Cards each player draws in their draw step.
+    pub fn draw_step_cards(&self) -> usize {
+        self.house.draw_step_cards.map_or(DRAW_STEP_CARDS, count)
+    }
+
+    /// Lands each player may play on their turn.
+    pub fn land_plays_per_turn(&self) -> u32 {
+        self.house.land_plays_per_turn.unwrap_or(LAND_DROPS_PER_TURN)
+    }
+
+    /// Whether mana left in a pool at the end of a step or phase costs its owner 1 life each (CR 106.4 as it was).
+    pub fn mana_burn(&self) -> bool {
+        self.house.mana_burn.unwrap_or(false)
+    }
+
+    /// What a draw from an empty library does.
+    pub fn empty_library(&self) -> EmptyLibrary {
+        self.house.empty_library.unwrap_or(EmptyLibrary::Lose)
+    }
+
+    /// The rounds after which the game ends, if it is limited.
+    pub fn turn_limit(&self) -> Option<u32> {
+        self.house.turn_limit
+    }
+
+    /// The life total that wins the game, if one does.
+    pub fn winning_life(&self) -> Option<i32> {
+        self.house.winning_life
+    }
+
+    /// The poison counters that make a player lose.
+    pub fn poison_threshold(&self) -> u32 {
+        self.house
+            .poison_threshold
+            .unwrap_or_else(|| self.format.poison_threshold())
+    }
+
+    /// The game result once decided: the format's, else a draw when every player left is at the winning life total
+    /// (state-based actions have already removed the others, so one player left is the format's win).
+    pub fn game_result(&self, state: &GameState) -> Option<GameResult> {
+        self.format.game_result(state).or_else(|| {
+            let goal = self.winning_life()?;
+            state
+                .players()
+                .iter()
+                .filter(|player| player.is_in_game())
+                .all(|player| player.life() >= goal)
+                .then_some(GameResult::Draw)
+        })
+    }
 }
 
 #[cfg(test)]
 mod tests {
     //! Goal: every rule the house can set wins over the format's value, an unset rule keeps it, and the mulligan options follow the resolved rule, bottom counts and the limit on mulligans included.
-    use mtg_core::house::{HandLimit, HouseRules, SkipFirstDraw};
+    use mtg_core::house::{EmptyLibrary, HandLimit, Handicap, HouseRules, SkipFirstDraw};
     use rstest::rstest;
 
     use super::*;
     use crate::format::Normal;
+
+    const SEAT: PlayerId = PlayerId(0);
 
     fn normal(house: &HouseRules) -> RuleSet<'_> {
         RuleSet::new(&Normal, house)
@@ -100,9 +168,9 @@ mod tests {
     fn no_house_rule_is_the_format() {
         let house = HouseRules::default();
         let rules = normal(&house);
-        assert_eq!(rules.starting_life(), 20);
-        assert_eq!(rules.mulligan_rule(), Normal.mulligan_rule());
-        assert_eq!(rules.max_mulligans(), 7);
+        assert_eq!(rules.starting_life(SEAT), 20);
+        assert_eq!(rules.mulligan_rule(SEAT), Normal.mulligan_rule());
+        assert_eq!(rules.max_mulligans(SEAT), 7);
         assert_eq!(rules.max_hand_size(), Some(7));
         assert!(rules.skips_first_draw(2) && !rules.skips_first_draw(4));
     }
@@ -121,13 +189,13 @@ mod tests {
         #[case] most: u32,
     ) {
         let rules = normal(&house);
-        let mulligan = rules.mulligan_rule();
+        let mulligan = rules.mulligan_rule(SEAT);
         assert_eq!(
             (
-                rules.starting_life(),
+                rules.starting_life(SEAT),
                 mulligan.hand_size,
                 mulligan.free_mulligans,
-                rules.max_mulligans()
+                rules.max_mulligans(SEAT)
             ),
             (life, hand, free, most)
         );
@@ -180,7 +248,7 @@ mod tests {
             mulligan_cap: cap,
             ..HouseRules::default()
         };
-        normal(&house).mulligan_options(vec![ObjectId(1)], taken)
+        normal(&house).mulligan_options(SEAT, vec![ObjectId(1)], taken)
     }
 
     #[rstest]
@@ -230,5 +298,125 @@ mod tests {
             got.bottom_if_mulligan - got.bottom_if_keep,
             usize::from(taken >= free)
         );
+    }
+
+    #[test]
+    fn the_rules_of_the_turn_and_life_are_the_formats_when_unset() {
+        let house = HouseRules::default();
+        let rules = normal(&house);
+        assert_eq!(rules.draw_step_cards(), 1);
+        assert_eq!(rules.land_plays_per_turn(), 1);
+        assert!(!rules.mana_burn());
+        assert_eq!(rules.empty_library(), EmptyLibrary::Lose);
+        assert_eq!((rules.turn_limit(), rules.winning_life()), (None, None));
+        assert_eq!(rules.poison_threshold(), 10);
+    }
+
+    #[rstest]
+    #[case::draws(HouseRules { draw_step_cards: Some(3), ..HouseRules::default() }, 3, 1, 10)]
+    #[case::lands(HouseRules { land_plays_per_turn: Some(4), ..HouseRules::default() }, 1, 4, 10)]
+    #[case::poison(HouseRules { poison_threshold: Some(3), ..HouseRules::default() }, 1, 1, 3)]
+    #[case::a_value_equal_to_the_formats(HouseRules { draw_step_cards: Some(1), land_plays_per_turn: Some(1), poison_threshold: Some(10), ..HouseRules::default() }, 1, 1, 10)]
+    fn a_set_number_wins(
+        #[case] house: HouseRules,
+        #[case] draws: usize,
+        #[case] lands: u32,
+        #[case] poison: u32,
+    ) {
+        let rules = normal(&house);
+        assert_eq!(
+            (
+                rules.draw_step_cards(),
+                rules.land_plays_per_turn(),
+                rules.poison_threshold()
+            ),
+            (draws, lands, poison)
+        );
+    }
+
+    #[test]
+    fn the_switches_follow_the_house() {
+        let house = HouseRules {
+            mana_burn: Some(true),
+            empty_library: Some(EmptyLibrary::ReshuffleGraveyard),
+            turn_limit: Some(8),
+            winning_life: Some(40),
+            ..HouseRules::default()
+        };
+        let rules = normal(&house);
+        assert!(rules.mana_burn());
+        assert_eq!(rules.empty_library(), EmptyLibrary::ReshuffleGraveyard);
+        assert_eq!(
+            (rules.turn_limit(), rules.winning_life()),
+            (Some(8), Some(40))
+        );
+    }
+
+    fn handicapped(seat: u64, life: Option<i32>, hand: Option<u32>) -> Handicap {
+        Handicap {
+            seat: PlayerId(seat),
+            starting_life: life,
+            opening_hand_size: hand,
+        }
+    }
+
+    #[rstest]
+    #[case::the_handicapped_seat(1, 5, 3)]
+    #[case::a_seat_without_one_keeps_the_tables_value(0, 40, 6)]
+    #[case::another_seat_too(2, 40, 6)]
+    fn a_handicap_is_for_its_seat_only(#[case] seat: u64, #[case] life: i32, #[case] hand: usize) {
+        let house = HouseRules {
+            starting_life: Some(40),
+            opening_hand_size: Some(6),
+            handicaps: vec![handicapped(1, Some(5), Some(3))],
+            ..HouseRules::default()
+        };
+        let rules = normal(&house);
+        assert_eq!(rules.starting_life(PlayerId(seat)), life);
+        assert_eq!(rules.mulligan_rule(PlayerId(seat)).hand_size, hand);
+    }
+
+    #[rstest]
+    #[case::life_only(handicapped(0, Some(9), None), 9, 7)]
+    #[case::hand_only(handicapped(0, None, Some(2)), 20, 2)]
+    #[case::both(handicapped(0, Some(1), Some(1)), 1, 1)]
+    fn a_handicap_that_sets_one_value_leaves_the_other(
+        #[case] handicap: Handicap,
+        #[case] life: i32,
+        #[case] hand: usize,
+    ) {
+        let house = HouseRules {
+            handicaps: vec![handicap],
+            ..HouseRules::default()
+        };
+        let rules = normal(&house);
+        assert_eq!(rules.starting_life(PlayerId(0)), life);
+        assert_eq!(rules.mulligan_rule(PlayerId(0)).hand_size, hand);
+    }
+
+    #[test]
+    fn the_mulligan_options_of_a_seat_use_its_own_hand_size() {
+        let house = HouseRules {
+            handicaps: vec![handicapped(1, None, Some(3))],
+            ..HouseRules::default()
+        };
+        let rules = normal(&house);
+        let own = rules.mulligan_options(PlayerId(1), vec![ObjectId(1)], 3);
+        let other = rules.mulligan_options(PlayerId(0), vec![ObjectId(1)], 3);
+        // A hand of three can lose at most three cards, a hand of seven seven.
+        assert_eq!(
+            (own.can_mulligan, own.bottom_if_keep, own.bottom_if_mulligan),
+            (false, 3, 4)
+        );
+        assert_eq!(
+            (
+                other.can_mulligan,
+                other.bottom_if_keep,
+                other.bottom_if_mulligan
+            ),
+            (true, 3, 4)
+        );
+        assert_eq!(rules.max_mulligans(PlayerId(1)), 3);
+        assert_eq!(rules.max_mulligans(PlayerId(0)), 7);
     }
 }

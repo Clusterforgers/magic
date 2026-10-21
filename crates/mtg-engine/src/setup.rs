@@ -147,7 +147,7 @@ impl GameSetup {
 
     /// Checks seat count, decks and the starting point.
     pub fn validate(&self) -> Result<(), SetupError> {
-        self.house_rules.validate()?;
+        self.house_rules.validate_for(self.players.len())?;
         if self.players.len() < 2 {
             return Err(SetupError::TooFewPlayers(self.players.len()));
         }
@@ -265,7 +265,6 @@ impl GameState {
     pub fn from_setup(setup: &GameSetup) -> Result<GameState, SetupError> {
         setup.validate()?;
         let seats = setup.players.len();
-        let life = setup.ruleset().starting_life();
         let mut objects = BTreeMap::new();
         let mut zones = Zones::new(seats);
         let mut players = Vec::with_capacity(seats);
@@ -299,6 +298,7 @@ impl GameState {
                 Start::Mulligan => MulliganStatus::NeedsHand,
                 Start::At { .. } => MulliganStatus::Kept,
             };
+            let life = setup.ruleset().starting_life(owner);
             players.push(starting_player(owner, setup_player, life, status));
         }
         for (id, preset) in presets {
@@ -318,7 +318,7 @@ impl GameState {
         };
         let mut game = GameState {
             format: Arc::clone(&setup.format),
-            house_rules: setup.house_rules,
+            house_rules: setup.house_rules.clone(),
             seed: setup.seed,
             rng_index: 0,
             stage,
@@ -332,6 +332,11 @@ impl GameState {
                 active: turn.1,
                 step: turn.2,
                 lands_played: 0,
+                round: if turn.0 == 0 {
+                    0
+                } else {
+                    (turn.0 - 1) / u32::try_from(seats).unwrap_or(u32::MAX).max(1) + 1
+                },
             },
             priority: None,
             combat: CombatState::default(),

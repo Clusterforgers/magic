@@ -72,7 +72,7 @@ fn next_in_turns(state: &GameState) -> Progress {
 
 /// The game-end check, then the removal of eliminated players' objects and ended effects.
 fn settle(state: &GameState) -> Option<Progress> {
-    if let Some(result) = state.format().game_result(state) {
+    if let Some(result) = state.ruleset().game_result(state) {
         return Some(Progress::Events(vec![Event::GameEnded { result }]));
     }
     let housekeeping = sba::housekeeping(state);

@@ -192,6 +192,13 @@ pub enum Event {
         /// Whose pool.
         player: PlayerId,
     },
+    /// Unspent mana cost its owner life under the house rule of mana burn; the `LifeLost` of the same amount follows.
+    ManaBurned {
+        /// Whose pool.
+        player: PlayerId,
+        /// The mana that was left, which is the life lost.
+        amount: u32,
+    },
     /// Life was paid as (part of) a cost; it is lost, not damage (CR 119.4).
     LifePaid {
         /// Who paid.
@@ -210,6 +217,14 @@ pub enum Event {
     DrewFromEmptyLibrary {
         /// Who tried.
         player: PlayerId,
+    },
+    /// A player's graveyard was shuffled into their library in place of losing to an empty library; the draws they
+    /// could not make follow.
+    LibraryRefilled {
+        /// Owner of the library.
+        player: PlayerId,
+        /// The new order of the library, graveyard included (bottom to top).
+        order: Vec<ObjectId>,
     },
     /// A card was discarded from hand.
     CardDiscarded {
@@ -526,6 +541,7 @@ impl Event {
             | Event::ManaAdded { .. }
             | Event::ManaSpent { .. }
             | Event::ManaPoolEmptied { .. }
+            | Event::ManaBurned { .. }
             | Event::LifePaid { .. }
             | Event::DrewFromEmptyLibrary { .. }
             | Event::BlockersDeclared { .. }
@@ -554,7 +570,8 @@ impl Event {
                 .map(|named| named.id)
                 .into_iter()
                 .collect(),
-            Event::HandDealt { cards, .. }
+            Event::LibraryRefilled { order: cards, .. }
+            | Event::HandDealt { cards, .. }
             | Event::CardsBottomed { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),

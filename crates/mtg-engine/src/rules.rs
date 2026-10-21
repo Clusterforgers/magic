@@ -48,6 +48,8 @@ pub enum Rule {
     CantSearch(Vec<PlayerId>),
     /// The players play with the top card of their library revealed.
     RevealTop(Vec<PlayerId>),
+    /// The players have no maximum hand size (CR 402.2).
+    NoMaxHandSize(Vec<PlayerId>),
     /// The players may cast the cards the selector picks from a zone, without paying their mana costs or as though they
     /// had flash (CR 601.3).
     MayCast {
@@ -184,6 +186,7 @@ pub(crate) struct RulesInForce {
     no_draw: BTreeSet<PlayerId>,
     no_search: BTreeSet<PlayerId>,
     reveal_top: BTreeSet<PlayerId>,
+    no_hand_limit: BTreeSet<PlayerId>,
     again: Vec<Again>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
@@ -243,6 +246,7 @@ impl RulesInForce {
             Rule::CantDraw(players) => self.no_draw.extend(players),
             Rule::CantSearch(players) => self.no_search.extend(players),
             Rule::RevealTop(players) => self.reveal_top.extend(players),
+            Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::TriggerAgain(cause) => {
                 if let Some(source) = source {
                     self.again.push(Again {
@@ -339,7 +343,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::LookAtTopAnyTime(_) => {
             return Err(ResolveError::Unsupported("Rule.LookAtTopAnyTime"));
         }
-        GameRule::NoMaxHandSize(_) => return Err(ResolveError::Unsupported("Rule.NoMaxHandSize")),
+        GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::AdditionalLandPlays { .. } => {
             return Err(ResolveError::Unsupported("Rule.AdditionalLandPlays"));
         }
@@ -357,6 +361,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::CantDraw(players)
         | Rule::CantSearch(players)
         | Rule::RevealTop(players)
+        | Rule::NoMaxHandSize(players)
         | Rule::MayCast { who: players, .. } => players.is_empty(),
         Rule::TriggerAgain(_) | Rule::DamageCantBePrevented { .. } | Rule::Regenerate(_) => false,
         Rule::PreventDamage(shield) => shield.to.as_ref().is_some_and(Vec::is_empty),
@@ -450,6 +455,7 @@ static NONE: RulesInForce = RulesInForce {
     no_draw: BTreeSet::new(),
     no_search: BTreeSet::new(),
     reveal_top: BTreeSet::new(),
+    no_hand_limit: BTreeSet::new(),
     again: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
@@ -577,6 +583,11 @@ pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` can't draw cards: the one place a draw reads this rule.
 pub fn cant_draw(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_draw.contains(&player)
+}
+
+/// Whether `player` has no maximum hand size: the one place cleanup reads this rule, beside the house rule's limit.
+pub(crate) fn no_max_hand_size(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_hand_limit.contains(&player)
 }
 
 /// Whether `player` can't search libraries: the one place a search reads this rule.
@@ -957,7 +968,6 @@ mod tests {
 
     #[rstest]
     #[case::looking_at_the_top(r#"{"LookAtTopAnyTime":"You"}"#, "Rule.LookAtTopAnyTime")]
-    #[case::no_maximum_hand_size(r#"{"NoMaxHandSize":"You"}"#, "Rule.NoMaxHandSize")]
     #[case::an_additional_land(r#"{"AdditionalLandPlays":{}}"#, "Rule.AdditionalLandPlays")]
     #[case::two_additional_lands(
         r#"{"AdditionalLandPlays":{"count":2}}"#,

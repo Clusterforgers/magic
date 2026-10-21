@@ -11,9 +11,10 @@ use crate::events::{Event, NothingToDo};
 use crate::flow::Progress;
 use crate::object::{GameObject, PermanentState};
 use crate::priority::{all_passed, priority_options};
-use crate::rules::cant_draw;
+use crate::player::Player;
+use crate::rules::{cant_draw, no_max_hand_size};
 use crate::stack::resolve_top;
-use crate::state::GameState;
+use crate::state::{GameResult, GameState};
 use crate::turn::Step;
 use crate::zones::Zone;
 
@@ -60,7 +61,7 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
             let skipped = state.turn().number() == 1
                 && state.ruleset().skips_first_draw(state.players().len());
             let mut events = match active {
-                Some(active) if !skipped => draw(state, active, 1),
+                Some(active) if !skipped => draw(state, active, state.ruleset().draw_step_cards()),
                 _ => Vec::new(),
             };
             events.push(grant(state));
@@ -204,19 +205,33 @@ pub(crate) fn leave_step(state: &GameState) -> Vec<Event> {
     events
 }
 
+/// Empties every mana pool; under the house rule of mana burn, a player in the game loses 1 life for each mana that
+/// was left, restricted mana included.
 fn pool_emptying(state: &GameState) -> Vec<Event> {
+    let burn = state.ruleset().mana_burn();
     state
         .players()
         .iter()
         .filter(|p| !p.mana().is_empty())
-        .map(|p| Event::ManaPoolEmptied { player: p.id() })
+        .flat_map(|p| {
+            let (player, amount) = (p.id(), p.mana().total());
+            let mut events = vec![Event::ManaPoolEmptied { player }];
+            if burn && p.is_in_game() {
+                events.push(Event::ManaBurned { player, amount });
+                events.push(Event::LifeLost { player, amount });
+            }
+            events
+        })
         .collect()
 }
 
 fn cleanup(state: &GameState) -> Progress {
     if let Some(active) = state.active_player() {
         let hand = state.zone(Zone::Hand(active));
-        let most = state.ruleset().max_hand_size();
+        let most = state
+            .ruleset()
+            .max_hand_size()
+            .filter(|_| !no_max_hand_size(state, active));
         if let Some(most) = most.filter(|most| hand.len() > *most) {
             return Progress::Decide(Decision {
                 player: active,
@@ -260,6 +275,16 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             .map(|e| Event::RuleExpired { id: e.id }),
     );
     events.extend(pool_emptying(state));
+    if turn_limit_reached(state) {
+        // The turn is wound down first, so the result reads the life totals after the mana burn.
+        return if events.is_empty() {
+            vec![Event::GameEnded {
+                result: highest_life(state),
+            }]
+        } else {
+            events
+        };
+    }
     let active = state.turn().active();
     events.push(Event::TurnBegan {
         number: state.turn().number() + 1,
@@ -267,4 +292,24 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
     });
     events.push(Event::StepBegan { step: Step::Untap });
     events
+}
+
+/// Whether the turn that is ending is the last of the last round the house rule allows.
+fn turn_limit_reached(state: &GameState) -> bool {
+    state
+        .ruleset()
+        .turn_limit()
+        .is_some_and(|limit| state.turn().round() >= limit && state.ends_round())
+}
+
+/// The result of a game stopped by the turn limit: the player with the highest life total wins, a tie for the
+/// highest is a draw, and a player who has lost does not count.
+fn highest_life(state: &GameState) -> GameResult {
+    let alive = || state.players().iter().filter(|p| p.is_in_game());
+    let highest = alive().map(Player::life).max();
+    let mut leaders = alive().filter(|p| Some(p.life()) == highest);
+    match (leaders.next(), leaders.next()) {
+        (Some(only), None) => GameResult::Winner(only.id()),
+        _ => GameResult::Draw,
+    }
 }

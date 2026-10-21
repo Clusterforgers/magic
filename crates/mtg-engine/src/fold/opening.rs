@@ -45,6 +45,27 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             state.zones.set(zone, order.clone());
             state.rng_index += 1;
         }
+        Event::LibraryRefilled { player, order } => {
+            let graveyard = state.zones.get(Zone::Graveyard(*player)).to_vec();
+            let mut all = state.zones.get(Zone::Library(*player)).to_vec();
+            all.extend_from_slice(&graveyard);
+            if !same_cards(&all, order) {
+                return Err(invalid(
+                    "refilled library does not match library plus graveyard",
+                ));
+            }
+            for card in graveyard {
+                super::zones::move_object(
+                    state,
+                    card,
+                    Zone::Library(*player),
+                    Placement::Top,
+                )?;
+            }
+            state.zones.set(Zone::Library(*player), order.clone());
+            player_mut(state, *player)?.failed_draws = 0;
+            state.rng_index += 1;
+        }
         Event::MulliganPhaseBegan => {
             state.stage = Stage::Mulligan;
             for player in &mut state.players {
@@ -71,7 +92,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         } => take_mulligan(state, *player, library_order)?,
         Event::MulliganKept { player } => {
             expect_status(state, *player, MulliganStatus::Deciding)?;
-            let rule = state.ruleset().mulligan_rule();
+            let rule = state.ruleset().mulligan_rule(*player);
             let seat = player_mut(state, *player)?;
             seat.mulligan = match rule.bottom_count(seat.mulligans) {
                 0 => MulliganStatus::Kept,

@@ -343,6 +343,20 @@ impl GameState {
             .unwrap_or(active)
     }
 
+    /// Whether a turn of `next` that follows one of `previous` opens a round: turns go through the seats in turn order
+    /// from the first player, so a round opens when the order wraps round to or past the seat that just played.
+    pub(crate) fn opens_round(&self, previous: PlayerId, next: PlayerId) -> bool {
+        let (seats, first) = (self.players.len().max(1), self.first_player.index());
+        let place = |seat: PlayerId| (seat.index() + seats - first % seats) % seats;
+        place(next) <= place(previous)
+    }
+
+    /// Whether the turn now being played is the last of its round: the next turn is the first of another.
+    pub(crate) fn ends_round(&self) -> bool {
+        let active = self.turn.active;
+        self.opens_round(active, self.next_alive_after(active).unwrap_or(active))
+    }
+
     /// The next living player after `player` in turn order (possibly `player` itself).
     pub fn next_alive_after(&self, player: PlayerId) -> Option<PlayerId> {
         let n = self.players.len();

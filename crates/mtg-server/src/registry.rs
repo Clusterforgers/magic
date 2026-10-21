@@ -96,7 +96,7 @@ pub struct SeatRequest {
 }
 
 /// What a new game is made with besides its seats.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct GameOptions {
     /// Who may find and join the game; invite-only unless said otherwise.
     pub visibility: Visibility,
@@ -450,14 +450,14 @@ impl Registry {
         // The decks as they are now, kept so that a later boot can tell when a deploy changed one.
         let recipe = GameRecipe {
             format: FormatKind::Normal,
-            house_rules: options.house_rules,
+            house_rules: options.house_rules.clone(),
             seed,
             decks: held.iter().map(|deck| deck.reference().clone()).collect(),
             fingerprints: held.iter().map(|deck| *deck.fingerprint()).collect(),
         };
         let libraries = held.iter().map(|deck| deck.cards().to_vec()).collect();
         let setup =
-            GameSetup::new(Arc::new(Normal), seed, libraries).with_house_rules(options.house_rules);
+            GameSetup::new(Arc::new(Normal), seed, libraries).with_house_rules(options.house_rules.clone());
         // Refused like a recipe that does not build: too few seats, a deck the format does not allow.
         setup.validate().map_err(RecipeError::from)?;
         self.admit(setup, names, Some(recipe), host, options, Some(decks))
@@ -539,9 +539,9 @@ impl Registry {
             visibility: options.visibility,
             code_digest: Some(*code.digest().as_bytes()),
         };
-        let house_rules = setup.house_rules;
+        let house_rules = setup.house_rules.clone();
         let decks = decks.map(|defaults| {
-            SeatDecks::new(FormatKind::Normal, setup.seed, defaults).with_house_rules(house_rules)
+            SeatDecks::new(FormatKind::Normal, setup.seed, defaults).with_house_rules(house_rules.clone())
         });
         let handle = self
             .start(id, setup, recipe.as_ref(), &meta, &slots, decks)

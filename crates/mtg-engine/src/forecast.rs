@@ -288,7 +288,7 @@ impl Run {
             let mut events = sba::check(&self.after);
             let state_based = !events.is_empty();
             if events.is_empty() {
-                if let Some(result) = self.after.format().game_result(&self.after) {
+                if let Some(result) = self.after.ruleset().game_result(&self.after) {
                     events = vec![Event::GameEnded { result }];
                 } else {
                     events = sba::housekeeping(&self.after);

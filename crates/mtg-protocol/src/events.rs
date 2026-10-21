@@ -35,6 +35,14 @@ pub enum HiddenEvent {
         /// Owner of the library.
         player: PlayerId,
     },
+    /// A player's graveyard was shuffled into their library in place of losing to an empty library; the new order
+    /// is known to nobody.
+    LibraryRefilled {
+        /// Owner of the library.
+        player: PlayerId,
+        /// Cards the library holds now.
+        count: u32,
+    },
     /// A player shuffled their hand into their library to mulligan.
     MulliganTaken {
         /// Who mulliganed.
@@ -167,6 +175,10 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::LibraryShuffled { player, .. } => {
             Some(HiddenEvent::LibraryShuffled { player: *player })
         }
+        Event::LibraryRefilled { player, order } => Some(HiddenEvent::LibraryRefilled {
+            player: *player,
+            count: count(order.len()),
+        }),
         Event::MulliganTaken { player, .. } => Some(HiddenEvent::MulliganTaken { player: *player }),
         Event::HandDealt { player, cards } if *player != viewer => Some(HiddenEvent::HandDealt {
             player: *player,
@@ -223,6 +235,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ManaAdded { .. }
         | Event::ManaSpent { .. }
         | Event::ManaPoolEmptied { .. }
+        | Event::ManaBurned { .. }
         | Event::LifePaid { .. }
         | Event::DrewFromEmptyLibrary { .. }
         | Event::CardDiscarded { .. }
