@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d561dcff-0a19-46ac-9dee-f374c840d532",
+  "name": "Arvad the Cursed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arvad the Cursed",
+      "oracle_fingerprint": "62b32d48ba360514720538c9154866fd",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Supertype": "Legendary" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -124,6 +124,36 @@
     ]
   },
   {
+    "id": "475d3d3a-8df7-42e8-adeb-5810e48ddaa7",
+    "oracle_id": "d561dcff-0a19-46ac-9dee-f374c840d532",
+    "name": "Arvad the Cursed",
+    "lang": "en",
+    "layout": "normal",
+    "set": "moc",
+    "collector_number": "317",
+    "rarity": "uncommon",
+    "released_at": "2023-04-21",
+    "digital": false,
+    "mana_cost": "{3}{W}{B}",
+    "cmc": 5.0,
+    "type_line": "Legendary Creature — Vampire Knight",
+    "oracle_text": "Deathtouch, lifelink\nOther legendary creatures you control get +2/+2.",
+    "colors": [
+      "W",
+      "B"
+    ],
+    "color_identity": [
+      "W",
+      "B"
+    ],
+    "keywords": [
+      "Lifelink",
+      "Deathtouch"
+    ],
+    "power": "3",
+    "toughness": "3"
+  },
+  {
     "id": "e2f12f6f-9383-47e6-a44f-2834ad130e51",
     "oracle_id": "3f0c9466-5ab9-4205-a84f-b4b27b5a678e",
     "name": "Bloodbraid Elf",
@@ -362,6 +392,31 @@
       "W"
     ],
     "keywords": []
+  },
+  {
+    "id": "84992800-9bad-4598-afd4-f1e59d2e0956",
+    "oracle_id": "cd0d7141-46d2-4aa3-bc77-6b3b4513803e",
+    "name": "Control Magic",
+    "lang": "en",
+    "layout": "normal",
+    "set": "cma",
+    "collector_number": "34",
+    "rarity": "uncommon",
+    "released_at": "2017-06-09",
+    "digital": false,
+    "mana_cost": "{2}{U}{U}",
+    "cmc": 4.0,
+    "type_line": "Enchantment — Aura",
+    "oracle_text": "Enchant creature\nYou control enchanted creature.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Enchant"
+    ]
   },
   {
     "id": "4f616706-ec97-4923-bb1e-11a69fbaa1f8",
@@ -611,6 +666,32 @@
     ],
     "keywords": [
       "Treasure"
+    ]
+  },
+  {
+    "id": "7412373a-da0f-4bec-866c-5e1087f49914",
+    "oracle_id": "ad8edfdf-6915-4fc2-9226-3aae95951935",
+    "name": "Epic Proportions",
+    "lang": "en",
+    "layout": "normal",
+    "set": "c18",
+    "collector_number": "142",
+    "rarity": "rare",
+    "released_at": "2018-08-10",
+    "digital": false,
+    "mana_cost": "{4}{G}{G}",
+    "cmc": 6.0,
+    "type_line": "Enchantment — Aura",
+    "oracle_text": "Flash\nEnchant creature\nEnchanted creature gets +5/+5 and has trample.",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Enchant",
+      "Flash"
     ]
   },
   {
@@ -1190,6 +1271,31 @@
     "keywords": []
   },
   {
+    "id": "70c9e4fd-e987-4653-abb1-e32971745db2",
+    "oracle_id": "21e9e1a9-5d6d-473e-adab-6a1e8e2b0ebd",
+    "name": "Kongming, \"Sleeping Dragon\"",
+    "lang": "en",
+    "layout": "normal",
+    "set": "a25",
+    "collector_number": "20",
+    "rarity": "uncommon",
+    "released_at": "2018-03-16",
+    "digital": false,
+    "mana_cost": "{2}{W}{W}",
+    "cmc": 4.0,
+    "type_line": "Legendary Creature — Human Advisor",
+    "oracle_text": "Other creatures you control get +1/+1.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [],
+    "power": "2",
+    "toughness": "2"
+  },
+  {
     "id": "40f826b8-9e92-4e0e-aa2f-c3f5e3061432",
     "oracle_id": "d2d477a5-f055-4d47-a852-26e8239f2a01",
     "name": "Kormus Bell",
@@ -1688,6 +1794,31 @@
     ]
   },
   {
+    "id": "681149f2-0802-4ab7-9521-3b3c7281f55d",
+    "oracle_id": "79085dea-8daa-41c0-a975-61e3e6da2e26",
+    "name": "Shielded by Faith",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "172",
+    "rarity": "rare",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{1}{W}{W}",
+    "cmc": 3.0,
+    "type_line": "Enchantment — Aura",
+    "oracle_text": "Enchant creature\nEnchanted creature has indestructible.\nWhenever a creature enters, you may attach this Aura to that creature.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Enchant"
+    ]
+  },
+  {
     "id": "a45b4ca9-4355-4690-84c3-a7d44c367dbf",
     "oracle_id": "e7aee670-e6ac-4b3a-b3d1-7b7013db8f3d",
     "name": "Sneak Attack",
@@ -1810,6 +1941,56 @@
       "R"
     ],
     "keywords": []
+  },
+  {
+    "id": "6f2aa025-e041-4ed5-a046-9debc474fda0",
+    "oracle_id": "2d584333-b25e-4291-a2c9-80c6d9f8732a",
+    "name": "Squirrel Nest",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dmr",
+    "collector_number": "177",
+    "rarity": "uncommon",
+    "released_at": "2023-01-13",
+    "digital": false,
+    "mana_cost": "{1}{G}{G}",
+    "cmc": 3.0,
+    "type_line": "Enchantment — Aura",
+    "oracle_text": "Enchant land\nEnchanted land has \"{T}: Create a 1/1 green Squirrel creature token.\"",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Enchant"
+    ]
+  },
+  {
+    "id": "8fbd18ce-0ac3-4b52-9cd0-0af7e0244207",
+    "oracle_id": "7e00b0cd-d212-4604-ba07-da21f4fe00b0",
+    "name": "Sram, Senior Edificer",
+    "lang": "en",
+    "layout": "normal",
+    "set": "soc",
+    "collector_number": "176",
+    "rarity": "rare",
+    "released_at": "2026-04-24",
+    "digital": false,
+    "mana_cost": "{1}{W}",
+    "cmc": 2.0,
+    "type_line": "Legendary Creature — Dwarf Advisor",
+    "oracle_text": "Whenever you cast an Aura, Equipment, or Vehicle spell, draw a card.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [],
+    "power": "2",
+    "toughness": "2"
   },
   {
     "id": "3892f1c5-937e-4ef4-b6f9-e0c0ded070d0",

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "2d584333-b25e-4291-a2c9-80c6d9f8732a",
+  "name": "Squirrel Nest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squirrel Nest",
+      "oracle_fingerprint": "1bc7c491c254d1572c1c93f839b86af7",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Squirrel",
+                              "colors": ["Green"],
+                              "types": ["Creature"],
+                              "subtypes": ["Squirrel"],
+                              "power": 1,
+                              "toughness": 1
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "ad8edfdf-6915-4fc2-9226-3aae95951935",
+  "name": "Epic Proportions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Epic Proportions",
+      "oracle_fingerprint": "612dacdaec9467dbc54cea474a7cc4ca",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 5, "toughness": 5 } }, { "AddKeyword": "Trample" }]
+          }
+        }
+      ]
+    }
+  ]
+}
