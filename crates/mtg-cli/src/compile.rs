@@ -137,6 +137,40 @@ fn db_status(status: RulesStatus) -> Option<ImplStatus> {
     }
 }
 
+/// The status and the JSON of the rules the compiler makes of a card that pass the checks; a card it reads nothing of or
+/// whose rules fail a check is counted in the report instead.
+fn compiled(
+    printed: &PrintedCard,
+    hand_written: &Library,
+    names: &BTreeSet<String>,
+    report: &mut CompileReport,
+) -> Option<(ImplStatus, serde_json::Value)> {
+    match generate(printed, hand_written, names) {
+        Generation::Nothing => {
+            report.nothing += 1;
+            None
+        }
+        Generation::Invalid(problems) => {
+            report.invalid.push(Invalid {
+                card: printed.name.clone(),
+                problems: problems
+                    .iter()
+                    .take(PROBLEMS_SHOWN)
+                    .map(ToString::to_string)
+                    .collect(),
+            });
+            None
+        }
+        Generation::Rules(card) => {
+            let rules = db_status(card.impl_status).zip(serde_json::to_value(&*card).ok());
+            if rules.is_none() {
+                report.nothing += 1;
+            }
+            rules
+        }
+    }
+}
+
 /// What to do about the stored `cards` (every deck card, so that rows of cards that are gone are found) and the rows
 /// `stamps` hold, for the cards in `selected` (all of them when `None`).
 pub fn plan(
@@ -197,32 +231,7 @@ pub fn plan(
             }
             continue;
         }
-        let written = match generate(printed, hand_written, &names) {
-            Generation::Nothing => {
-                report.nothing += 1;
-                None
-            }
-            Generation::Invalid(problems) => {
-                report.invalid.push(Invalid {
-                    card: printed.name.clone(),
-                    problems: problems
-                        .iter()
-                        .take(PROBLEMS_SHOWN)
-                        .map(ToString::to_string)
-                        .collect(),
-                });
-                None
-            }
-            Generation::Rules(card) => {
-                let status = db_status(card.impl_status);
-                let rules = serde_json::to_value(&*card).ok();
-                if status.is_none() || rules.is_none() {
-                    report.nothing += 1;
-                }
-                status.zip(rules)
-            }
-        };
-        match written {
+        match compiled(printed, hand_written, &names, report) {
             Some((status, rules)) => {
                 if status == ImplStatus::Partial {
                     report.partial += 1;
@@ -372,7 +381,7 @@ mod tests {
         assert_eq!(plan.put[0].compiler_version, COMPILER_VERSION);
         assert_eq!(plan.put[0].fingerprint, input_fingerprint(&cards[0]));
         assert_eq!((plan.report.written, plan.report.full), (1, 1));
-        assert!(plan.remove.is_empty());
+        assert!(plan.remove.is_empty(), "{:?}", plan.remove);
     }
 
     #[test]
@@ -402,7 +411,7 @@ mod tests {
             (1, 2, 0)
         );
         assert_eq!(plan.put.len(), 2);
-        assert!(plan.remove.is_empty());
+        assert!(plan.remove.is_empty(), "{:?}", plan.remove);
     }
 
     #[test]
@@ -482,14 +491,14 @@ mod tests {
         .unwrap();
 
         let plan = plan(
-            &[bolt.clone()],
+            std::slice::from_ref(&bolt),
             None,
             &[row(&bolt, "old")],
             &hand_written,
             "tests",
         );
 
-        assert!(plan.put.is_empty());
+        assert!(plan.put.is_empty(), "{:?}", plan.put);
         assert_eq!(plan.remove, [OracleId(bolt.oracle_id)]);
         assert_eq!(
             (plan.report.hand_written, plan.report.removed_hand_written),

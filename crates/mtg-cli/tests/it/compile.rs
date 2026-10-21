@@ -1,4 +1,5 @@
 //! Goal: `compile` stores the rules the compiler reads for the stored cards as `card_rules` rows (the cards of the precons by default, every card with `--all`, one with `--card`), keeps only rules that validate, leaves hand-written cards to their files, writes again a row whose card text or compiler changed, leaves the others alone, removes the rows that no longer belong, and says what it did; a database without cards, without precons or without the card asked for says what to do.
+#![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
 

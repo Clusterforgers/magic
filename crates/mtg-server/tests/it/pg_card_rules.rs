@@ -210,7 +210,7 @@ async fn a_saved_deck_is_marked_changed_when_the_rules_of_a_card_in_it_change(po
     let after = ann.get(server.addr, &path).await.json();
     assert_eq!(after["state"], "unchecked", "other rules, another deck");
     assert_eq!(after["changed"], true);
-    assert_eq!(after["check"]["coverage_hash"].as_str().is_some(), true);
+    assert!(after["check"]["coverage_hash"].as_str().is_some());
     assert_ne!(
         after["check"]["coverage_hash"],
         after["report"]["coverage_hash"]

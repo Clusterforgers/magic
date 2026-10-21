@@ -75,7 +75,7 @@ fn a_generated_card_is_played_by_its_rules() {
 
     let (library, left_out) = hand_written.with_generated(&[row]);
 
-    assert!(left_out.is_empty());
+    assert!(left_out.is_empty(), "{left_out:?}");
     assert!(library.card(&bolt.oracle_id).is_some());
     assert_eq!(
         library.support(&bolt, &Caps::everything()).support,
@@ -98,7 +98,7 @@ fn a_hand_written_file_wins_over_a_row_for_the_same_card() {
 
     let (library, left_out) = hand_written.with_generated(&[row]);
 
-    assert!(left_out.is_empty());
+    assert!(left_out.is_empty(), "{left_out:?}");
     assert_eq!(
         library.card(&bolt.oracle_id),
         hand_written.card(&bolt.oracle_id)

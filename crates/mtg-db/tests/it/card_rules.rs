@@ -98,7 +98,11 @@ async fn rows_are_removed_by_id_and_with_their_card(pool: PgPool) {
     repo.put(&rows).await.unwrap();
 
     assert_eq!(repo.remove(std::slice::from_ref(&bolt)).await.unwrap(), 1);
-    assert_eq!(repo.remove(&[bolt.clone()]).await.unwrap(), 0, "once");
+    assert_eq!(
+        repo.remove(std::slice::from_ref(&bolt)).await.unwrap(),
+        0,
+        "once"
+    );
     assert_eq!(
         repo.remove(&[OracleId("not an id".into())]).await.unwrap(),
         0
@@ -187,7 +191,7 @@ async fn a_batch_with_one_bad_row_writes_nothing(pool: PgPool) {
 
     assert!(matches!(repo.put(&rows).await, Err(DbError::Query(_))));
 
-    assert!(repo.all().await.unwrap().is_empty());
+    assert!(repo.all().await.unwrap().is_empty(), "no rows");
 }
 
 #[sqlx::test]
@@ -220,5 +224,5 @@ async fn the_database_refuses_what_the_compiler_never_writes(pool: PgPool) {
         Err(DbError::Corrupt { .. })
     ));
 
-    assert!(repo.all().await.unwrap().is_empty());
+    assert!(repo.all().await.unwrap().is_empty(), "no rows");
 }
