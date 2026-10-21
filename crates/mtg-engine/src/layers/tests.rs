@@ -145,7 +145,7 @@ fn leaves(game: &mut GameState, name: &str) {
     );
 }
 
-const MODIFICATIONS: [&str; 14] = [
+const MODIFICATIONS: [&str; 16] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -160,6 +160,8 @@ const MODIFICATIONS: [&str; 14] = [
     r#"{"SetController":"Opponents"}"#,
     r#""CantAttack""#,
     r#""CantBlock""#,
+    r#""CantBeBlocked""#,
+    r#"{"CantBeBlockedBy":[{"Type":"Creature"}]}"#,
 ];
 
 #[test]
@@ -194,7 +196,9 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::LoseAbilities
             | mtg_cards::modify::Modification::SetController(_)
             | mtg_cards::modify::Modification::CantAttack
-            | mtg_cards::modify::Modification::CantBlock => {}
+            | mtg_cards::modify::Modification::CantBlock
+            | mtg_cards::modify::Modification::CantBeBlocked
+            | mtg_cards::modify::Modification::CantBeBlockedBy(_) => {}
         }
     }
 }

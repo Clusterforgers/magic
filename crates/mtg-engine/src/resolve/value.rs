@@ -639,6 +639,10 @@ impl<'a> Scope<'a> {
             Amount::CardTypes(_) => {
                 return Err(ResolveError::Unsupported("card types among cards"));
             }
+            Amount::Players(_) => return Err(ResolveError::Unsupported("a count of players")),
+            Amount::LowestLife(_) => {
+                return Err(ResolveError::Unsupported("the lowest life total"));
+            }
             Amount::Kicks => i64::try_from(self.paid_costs().len())
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
         })
@@ -1366,6 +1370,8 @@ mod tests {
     #[case::the_greatest_value(r#"{"Greatest":{"of":[],"stat":"Power"}}"#, "greatest values")]
     #[case::a_total(r#"{"Total":{"of":[],"stat":"Power"}}"#, "totals")]
     #[case::card_types(r#"{"CardTypes":[]}"#, "card types among cards")]
+    #[case::a_count_of_players(r#"{"Players":"Opponents"}"#, "a count of players")]
+    #[case::the_lowest_life_total(r#"{"LowestLife":"EachPlayer"}"#, "the lowest life total")]
     fn an_amount_the_evaluator_cannot_read_yet_says_what_it_lacks(
         #[case] json: &str,
         #[case] lacks: &'static str,

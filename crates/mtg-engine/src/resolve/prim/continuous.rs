@@ -134,6 +134,8 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         }
         Wanted::CantAttack => Modification::CantAttack,
         Wanted::CantBlock => Modification::CantBlock,
+        Wanted::CantBeBlocked => return Err(ResolveError::Unsupported("Mod.CantBeBlocked")),
+        Wanted::CantBeBlockedBy(_) => return Err(ResolveError::Unsupported("Mod.CantBeBlockedBy")),
     })
 }
 
@@ -422,6 +424,27 @@ mod tests {
             made[0].layer,
             expected.layer(),
             "the layer follows the modification"
+        );
+    }
+
+    #[rstest]
+    #[case::unblockable(r#""CantBeBlocked""#, "Mod.CantBeBlocked")]
+    #[case::unblockable_by_some(
+        r#"{"CantBeBlockedBy":[{"Type":"Creature"}]}"#,
+        "Mod.CantBeBlockedBy"
+    )]
+    fn a_restriction_on_being_blocked_refuses_by_its_name(
+        #[case] modification: &str,
+        #[case] name: &'static str,
+    ) {
+        let game = game();
+        let bear = named(&game, "Bear");
+        let asked = effect(&format!(
+            r#"{{"Continuous":{{"affected":{{"Target":0}},"mods":[{modification}],"duration":"UntilEndOfTurn"}}}}"#
+        ));
+        assert_eq!(
+            run_with(&game, vec![Target::Object(bear)], &asked).err(),
+            Some(ResolveError::Unsupported(name))
         );
     }
 
