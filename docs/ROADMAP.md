@@ -55,7 +55,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (i3) State triggers (CR 603.8) and abilities that work from a zone other than the battlefield (`from`); Reassembling Skeleton, Soul of Zendikar, Elemental Masterpiece, Squee, Boneyard Scourge, Anger and Covetous Dragon are Verified
 
 ### Counters, planeswalkers and attachments
-- [ ] (l1) Counters on permanents and players: the fold, put, remove and move, `Amount::Counters`, +1/+1 and -1/-1 counters in layer 7c with their state-based actions, views; Tireless Tracker, Cathars' Crusade, Inspiring Call and Caress of Phyrexia are Verified
+- [x] (l1) Counters on permanents and players: the fold, put, remove and move, `Amount::Counters`, +1/+1 and -1/-1 counters in layer 7c with their state-based actions, views; Tireless Tracker, Cathars' Crusade, Inspiring Call and Caress of Phyrexia are Verified
 - [ ] (l2) Planeswalkers: loyalty abilities (once a turn, at sorcery speed), damage removes loyalty (CR 120.3c), zero loyalty dies, an attacker keeps attacking a planeswalker that left (CR 506.4c); Jace, the Mind Sculptor is Verified
 - [ ] (m1) `Attach`, Aura spells that target through `Enchant`, and the state-based actions of attachments (CR 704.5m to 704.5p); Pacifism is Verified
 - [ ] (m2) Equipment with `Equip` and `Reconfigure`; Bonesplitter is Verified
