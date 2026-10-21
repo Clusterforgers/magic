@@ -260,7 +260,9 @@ fn the_total_cost_is_the_cost_with_the_optional_costs_and_x_added(
 fn way(alternative: Option<CastWay>, cost: Option<&str>) -> Way {
     Way {
         alternative,
-        label: cost.map_or("Cast for {1}".to_owned(), |cost| format!("Alternative {cost}")),
+        label: cost.map_or("Cast for {1}".to_owned(), |cost| {
+            format!("Alternative {cost}")
+        }),
         mana: cost.map(|cost| ManaCost::parse(cost).unwrap()),
         instant: true,
     }
@@ -283,7 +285,10 @@ fn the_way_the_spell_is_cast_decides_the_cost_it_pays(
     let mut pending = pending(
         &game,
         Needs {
-            ways: ways.iter().map(|(way_of, cost)| way(*way_of, *cost)).collect(),
+            ways: ways
+                .iter()
+                .map(|(way_of, cost)| way(*way_of, *cost))
+                .collect(),
             ..Needs::default()
         },
     );

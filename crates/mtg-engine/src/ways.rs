@@ -140,7 +140,8 @@ pub(crate) fn announceable_in(
     way: Option<CastWay>,
 ) -> bool {
     way == Some(CastWay::Overload)
-        || (spell_ability(state, id).is_none_or(|(_, rules)| announceable(state, player, id, &rules))
+        || (spell_ability(state, id)
+            .is_none_or(|(_, rules)| announceable(state, player, id, &rules))
             && attach::announceable(state, player, id))
 }
 

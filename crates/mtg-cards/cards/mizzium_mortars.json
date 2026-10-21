@@ -1,0 +1,24 @@
+{
+  "oracle_id": "48ddba1e-2ad7-463f-9307-d2379a800e51",
+  "name": "Mizzium Mortars",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mizzium Mortars",
+      "oracle_fingerprint": "bf41b2ec03150b544d2b4a0798fc426b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+          }
+        },
+        { "Keyword": { "Overload": "{3}{R}{R}{R}" } }
+      ]
+    }
+  ]
+}

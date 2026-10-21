@@ -382,7 +382,8 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     } = pending;
     let what: &What = what;
     let held = rules_of(state, what);
-    let needs: &Needs = needs.get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref()));
+    let needs: &Needs =
+        needs.get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref()));
     let ctx = Ctx {
         state,
         player: *player,

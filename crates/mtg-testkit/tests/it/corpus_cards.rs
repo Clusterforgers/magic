@@ -1,4 +1,4 @@
-//! Goal: the 118 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
+//! Goal: the 122 corpus cards reach the engine as their support records say (Verified with their abilities, Partial with the abilities the engine runs, Manual with the printed side alone), the gaps a record names are exactly the primitives the engine lacks, and the engine plays what it is given: Grizzly Bears is cast from two Forests, Llanowar Elves taps for mana, a Manual artifact resolves without its ability, a spell with X in its cost is offered when X of nothing can be paid, and whole bot games with a corpus deck keep every invariant.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -37,7 +37,7 @@ use Support::{Manual, Partial, Verified};
 /// Partial: Bloodbraid Elf's haste, not its cascade.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
-const CARDS: [(&str, Support, usize); 118] = [
+const CARDS: [(&str, Support, usize); 122] = [
     ("Act of Treason", Verified, 1),
     ("Ajani, Caller of the Pride", Verified, 3),
     ("Anger", Verified, 2),
@@ -156,13 +156,17 @@ const CARDS: [(&str, Support, usize); 118] = [
     ("Stroke of Genius", Verified, 1),
     ("Kessig Wolf Run", Verified, 2),
     ("Tezzeret the Seeker", Verified, 3),
+    ("Cyclonic Rift", Verified, 2),
+    ("Mizzium Mortars", Verified, 2),
+    ("Omniscience", Verified, 1),
+    ("Vedalken Orrery", Verified, 1),
 ];
 
 #[test]
 fn the_table_names_every_corpus_card_once() {
     let in_table: BTreeSet<&str> = CARDS.iter().map(|(name, ..)| *name).collect();
     let in_corpus: BTreeSet<&str> = corpus().unwrap().names().collect();
-    assert_eq!(in_table.len(), 118);
+    assert_eq!(in_table.len(), 122);
     assert_eq!(in_table, in_corpus);
 }
 

@@ -1015,11 +1015,15 @@ impl Pass<'_> {
                                             source: c.object.id,
                                             ability: match c.origin {
                                                 Origin::Ability(address) => address.ability,
-                                                Origin::Shield(_) | Origin::Protection | Origin::Flashback => 0,
+                                                Origin::Shield(_)
+                                                | Origin::Protection
+                                                | Origin::Flashback => 0,
                                             },
                                             shield: match c.origin {
                                                 Origin::Shield(id) => Some(id),
-                                                Origin::Ability(_) | Origin::Protection | Origin::Flashback => None,
+                                                Origin::Ability(_)
+                                                | Origin::Protection
+                                                | Origin::Flashback => None,
                                             },
                                         })
                                         .collect(),

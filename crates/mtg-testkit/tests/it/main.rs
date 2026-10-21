@@ -7,6 +7,7 @@ mod announce_division;
 mod archon_fuzz;
 mod attach_fuzz;
 mod attachments;
+mod cast_permissions;
 mod checkpoint;
 mod choice_fuzz;
 mod choose_cards;

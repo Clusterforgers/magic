@@ -122,7 +122,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 .map(|spell| spell.zone)
                 .ok_or_else(|| invalid(format!("unknown object {object:?}")))?;
             if matches!(from, Zone::Stack | Zone::Battlefield) {
-                return Err(invalid(format!("{object:?} is in {from:?}, not a card to cast")));
+                return Err(invalid(format!(
+                    "{object:?} is in {from:?}, not a card to cast"
+                )));
             }
             expect_in(state, *object, from)?;
             move_object(state, *object, Zone::Stack, Placement::Top)?;
