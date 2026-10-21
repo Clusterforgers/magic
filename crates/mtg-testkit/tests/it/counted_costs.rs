@@ -345,7 +345,10 @@ fn solstice_zealot_pays_one_energy_to_tap_a_creature_and_is_not_offered_without_
         driver.state().player(pid(0)).unwrap().counters_of(&energy),
         0
     );
-    assert!(driver.offered_abilities("Solstice Zealot")?.is_empty());
+    assert_eq!(
+        driver.offered_abilities("Solstice Zealot")?,
+        Vec::<usize>::new()
+    );
     Ok(())
 }
 
