@@ -4,11 +4,11 @@
 //! check engine invariants with [`InvariantChecker`], and fuzz whole games with [`play_game`].
 
 pub mod alternative_cards;
-pub mod cascade_cards;
 pub mod announce_cards;
 pub mod attach_cards;
 pub mod bot;
 pub mod cards;
+pub mod cascade_cards;
 pub mod choice_cards;
 pub mod corpus;
 pub mod cost_cards;
@@ -39,10 +39,10 @@ pub mod x_cards;
 pub mod zone_cards;
 
 pub use alternative_cards::alternative_fuzz_setup;
-pub use cascade_cards::cascade_fuzz_setup;
 pub use announce_cards::split_fuzz_setup;
 pub use attach_cards::attach_fuzz_setup;
 pub use bot::RandomBot;
+pub use cascade_cards::cascade_fuzz_setup;
 pub use choice_cards::choice_fuzz_setup;
 pub use cost_cards::cost_fuzz_setup;
 pub use counter_cards::counters_fuzz_setup;

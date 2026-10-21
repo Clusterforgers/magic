@@ -4,6 +4,7 @@
 use mtg_core::mana::ManaType;
 
 use super::amounts::{cards, its_stat, number_word, points};
+use super::cast;
 use super::counters;
 use super::create;
 use super::library;
@@ -22,8 +23,10 @@ use crate::value::Amount;
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 18] = [
+const TEMPLATES: [Template; 20] = [
     modal::modal,
+    cast::discover_sentence,
+    cast::exile_until,
     may,
     chain,
     put_back,
@@ -59,6 +62,9 @@ const IMPERATIVES: [Template; 9] = [
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the
 /// templates read.
 pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
+    if r.attempt(|r| cast::after_exiling(r, effects)).is_some() {
+        return true;
+    }
     if r.attempt(|r| regeneration(r, effects)).is_some() {
         return true;
     }

@@ -44,8 +44,10 @@ fn library_key() -> std::sync::Arc<mtg_cards::CardDefinition> {
         mtg_cards::CardDefinition::new("Key")
             .with_type(mtg_core::card::CardType::Artifact)
             .with_rules(
-                serde_json::from_str(r#"{"Rule":{"rule":{"MayCast":{"from":"Library","what":[]}}}}"#)
-                    .unwrap(),
+                serde_json::from_str(
+                    r#"{"Rule":{"rule":{"MayCast":{"from":"Library","what":[]}}}}"#,
+                )
+                .unwrap(),
             ),
     )
 }
@@ -58,7 +60,12 @@ fn a_cast_from_the_top_of_a_library_shows_every_seat_the_cast_and_the_spell_and_
         .battlefield(0, [ready(mountain()), ready(library_key())])
         .library_named(
             0,
-            ["Lightning Bolt", "Giant Growth", "Counterspell", "Wrath of God"],
+            [
+                "Lightning Bolt",
+                "Giant Growth",
+                "Counterspell",
+                "Wrath of God",
+            ],
         );
     for seat in 1..seats {
         scenario = scenario.library_named(seat, ["Serra Angel", "Doom Blade", "Fireball"]);
@@ -68,7 +75,9 @@ fn a_cast_from_the_top_of_a_library_shows_every_seat_the_cast_and_the_spell_and_
     driver.begin_cast("Lightning Bolt").unwrap();
     let foe = driver.target_player(1);
     driver.choose_targets(&[foe]).unwrap();
-    driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto)).unwrap();
+    driver
+        .answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))
+        .unwrap();
     let events = driver.engine().events().to_vec();
     let after = driver.state().clone();
     let bolt = events
@@ -84,7 +93,10 @@ fn a_cast_from_the_top_of_a_library_shows_every_seat_the_cast_and_the_spell_and_
         .iter()
         .flat_map(|viewer| hidden_in(&after, *viewer))
         .collect();
-    assert!(hidden.len() >= 5, "the rest of the libraries is hidden: {hidden:?}");
+    assert!(
+        hidden.len() >= 5,
+        "the rest of the libraries is hidden: {hidden:?}"
+    );
     assert!(!hidden.contains_key(&bolt));
     for (viewer, batch) in viewers.iter().zip(&batches) {
         assert_clean(batch, &hidden);
@@ -155,7 +167,10 @@ fn every_seat_sees_the_cards_exiled_the_cast_and_the_spell_and_nothing_else_of_t
         .flat_map(|viewer| hidden_in(&after, *viewer))
         .filter(|(id, _)| !exiled.contains(id))
         .collect();
-    assert!(hidden.len() >= 6, "the rest of the libraries is hidden: {hidden:?}");
+    assert!(
+        hidden.len() >= 6,
+        "the rest of the libraries is hidden: {hidden:?}"
+    );
 
     for (viewer, batch_list) in viewers.iter().zip(&batches) {
         let seat = viewer.index();
@@ -183,9 +198,10 @@ fn every_seat_sees_the_cards_exiled_the_cast_and_the_spell_and_nothing_else_of_t
             "seat {seat} sees the spell on the stack"
         );
         assert!(
-            events_seen
-                .iter()
-                .any(|event| matches!(event, EventView::Hidden(HiddenEvent::CardsBottomed { count: 1, .. }))),
+            events_seen.iter().any(|event| matches!(
+                event,
+                EventView::Hidden(HiddenEvent::CardsBottomed { count: 1, .. })
+            )),
             "seat {seat} learns that a card went to the bottom, and how many"
         );
         assert!(

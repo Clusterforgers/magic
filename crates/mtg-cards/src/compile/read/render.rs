@@ -4,6 +4,7 @@
 //! same sequence.
 
 use super::amounts::{cards_text, count_word, points_text, stat_name};
+use super::cast;
 use super::costs;
 use super::counters;
 use super::create;
@@ -164,7 +165,9 @@ fn written(targets: &[TargetSpec], effects: &[Effect], mask: u32) -> Option<Vec<
     while start < effects.len() {
         // A search and what follows it, or a look at the top cards and the choice from them, are
         // one sentence, which no joint splits.
-        if let Some((text, used)) = library::sequence(&effects[start..]) {
+        if let Some((text, used)) =
+            cast::discover_text(&effects[start..]).or_else(|| library::sequence(&effects[start..]))
+        {
             if (mask >> start) & ((1 << used) - 1) != 0 {
                 return None;
             }
@@ -646,7 +649,7 @@ impl Writer<'_> {
             | Effect::Move {
                 to: Destination::Library { .. },
                 ..
-            } => self.library(effect)?,
+            } => self.library(effect).or_else(|| cast::text(effect))?,
             Effect::Draw { who, .. }
             | Effect::Mill { who, .. }
             | Effect::Discard { who, .. }
@@ -717,7 +720,7 @@ impl Writer<'_> {
                 paid,
                 unpaid,
             } if paid.is_empty() => self.unless_pays(who, cost, unpaid)?,
-            _ => return self.keyword_action(effect),
+            _ => return cast::text(effect).or_else(|| self.keyword_action(effect)),
         })
     }
 

@@ -75,7 +75,11 @@ fn the_first_card_of_lesser_value_is_cast_for_nothing_and_the_rest_go_to_the_bot
         "every card exiled is open on the table"
     );
     let events = say(&mut driver, true)?;
-    assert!(events.iter().any(|event| matches!(event, Event::SpellCast { .. })));
+    assert!(
+        events
+            .iter()
+            .any(|event| matches!(event, Event::SpellCast { .. }))
+    );
     assert_eq!(
         names(driver.state(), Zone::Stack),
         ["Bloodbraid Elf", "Three"],
@@ -134,7 +138,8 @@ fn nothing_is_asked_when_nothing_can_be_cast_and_every_card_goes_to_the_bottom(
 }
 
 #[test]
-fn a_cast_that_is_declined_leaves_the_card_at_the_bottom_with_the_others() -> Result<(), ScriptError> {
+fn a_cast_that_is_declined_leaves_the_card_at_the_bottom_with_the_others() -> Result<(), ScriptError>
+{
     let mut driver = Driver::from_scenario(elf_game(library_of(&["land", "2", "9"])))?;
     cascade(&mut driver)?;
     driver.expect_decision(0, "yes-no")?;
@@ -171,7 +176,10 @@ fn a_spell_with_a_target_asks_it_inside_the_resolution_and_resolves_before_the_e
         .expect("the spell is cast");
     assert_eq!(cast.way, Some(CastWay::Free));
     assert_eq!(cast.targets.len(), 1);
-    assert_eq!(names(driver.state(), Zone::Stack), ["Bloodbraid Elf", "Lightning Bolt"]);
+    assert_eq!(
+        names(driver.state(), Zone::Stack),
+        ["Bloodbraid Elf", "Lightning Bolt"]
+    );
     resolve(&mut driver)?;
     assert_eq!(driver.state().player(pid(1)).unwrap().life(), 17);
     assert_eq!(names(driver.state(), Zone::Stack), ["Bloodbraid Elf"]);
@@ -201,7 +209,8 @@ fn an_x_spell_is_cast_with_x_0_and_a_modal_spell_asks_its_modes() -> Result<(), 
 }
 
 #[test]
-fn a_cost_increase_is_still_paid_and_the_payment_cannot_be_backed_out_of() -> Result<(), ScriptError> {
+fn a_cost_increase_is_still_paid_and_the_payment_cannot_be_backed_out_of() -> Result<(), ScriptError>
+{
     let lands = [mountain(), mountain(), forest(), forest(), mountain()].map(ready);
     let mut battlefield = lands.to_vec();
     battlefield.push(ready(card("Thalia, Guardian of Thraben").unwrap()));
@@ -215,10 +224,17 @@ fn a_cost_increase_is_still_paid_and_the_payment_cannot_be_backed_out_of() -> Re
     let foe = driver.target_player(1);
     driver.choose_targets(&[foe])?;
     let options = driver.pay_options()?;
-    assert_eq!(options.cost.to_string(), "{1}", "Thalia taxes the free spell");
+    assert_eq!(
+        options.cost.to_string(),
+        "{1}",
+        "Thalia taxes the free spell"
+    );
     assert!(!options.can_cancel);
     driver.answer(Answer::PayMana(PayChoice::Auto))?;
-    assert_eq!(names(driver.state(), Zone::Stack), ["Bloodbraid Elf", "Lightning Bolt"]);
+    assert_eq!(
+        names(driver.state(), Zone::Stack),
+        ["Bloodbraid Elf", "Lightning Bolt"]
+    );
     Ok(())
 }
 
@@ -254,9 +270,15 @@ fn a_cascade_card_that_is_cast_by_a_cascade_cascades_in_its_turn() -> Result<(),
     driver.expect_decision(0, "priority")?;
     resolve(&mut driver)?;
     let DecisionKind::YesNo(question) = &driver.decision()?.kind else {
-        panic!("the second cascade asks: {:?}", driver.decision()?.kind.name());
+        panic!(
+            "the second cascade asks: {:?}",
+            driver.decision()?.kind.name()
+        );
     };
-    assert_eq!(question.text, "Cast Card 1 costs 2 without paying its mana cost?");
+    assert_eq!(
+        question.text,
+        "Cast Card 1 costs 2 without paying its mana cost?"
+    );
     say(&mut driver, true)?;
     assert_eq!(
         names(driver.state(), Zone::Stack),
@@ -277,14 +299,22 @@ fn bottom_order(seed: u64, count: usize) -> Result<(Vec<String>, Driver), Script
 }
 
 #[test]
-fn the_cards_go_to_the_bottom_in_an_order_the_seed_fixes_and_a_replay_repeats() -> Result<(), ScriptError> {
+fn the_cards_go_to_the_bottom_in_an_order_the_seed_fixes_and_a_replay_repeats()
+-> Result<(), ScriptError> {
     let mut orders = std::collections::BTreeSet::new();
     for seed in 0..24 {
         let (order, driver) = bottom_order(seed, 6)?;
         let mut sorted = order.clone();
         sorted.sort();
-        assert_eq!(sorted, (0..6).map(|at| format!("Heavy {at}")).collect::<Vec<_>>());
-        assert_eq!(bottom_order(seed, 6)?.0, order, "the same seed, the same order");
+        assert_eq!(
+            sorted,
+            (0..6).map(|at| format!("Heavy {at}")).collect::<Vec<_>>()
+        );
+        assert_eq!(
+            bottom_order(seed, 6)?.0,
+            order,
+            "the same seed, the same order"
+        );
         let rebuilt = mtg_engine::Engine::resume(
             driver.engine().setup().clone(),
             driver.engine().events().to_vec(),
@@ -294,12 +324,17 @@ fn the_cards_go_to_the_bottom_in_an_order_the_seed_fixes_and_a_replay_repeats() 
         assert_eq!(rebuilt.state().rng_index(), driver.state().rng_index());
         orders.insert(order);
     }
-    assert!(orders.len() > 12, "the order varies with the seed: {} orders", orders.len());
+    assert!(
+        orders.len() > 12,
+        "the order varies with the seed: {} orders",
+        orders.len()
+    );
     Ok(())
 }
 
 #[test]
-fn a_game_rebuilt_from_its_log_in_the_middle_of_the_cast_asks_the_same_question() -> Result<(), ScriptError> {
+fn a_game_rebuilt_from_its_log_in_the_middle_of_the_cast_asks_the_same_question()
+-> Result<(), ScriptError> {
     let mut driver = Driver::from_scenario(elf_game(library_of(&["land", "Lightning Bolt", "9"])))?;
     cascade(&mut driver)?;
     say(&mut driver, true)?;
@@ -365,4 +400,3 @@ fn discover_casts_the_card_found_or_puts_it_into_the_hand(
     assert!(names(driver.state(), Zone::Exile).is_empty());
     Ok(())
 }
-
