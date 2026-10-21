@@ -3,14 +3,22 @@ import { AccountError } from '@/net/accounts'
 import type { AccountErrorCode } from '@/net/accounts'
 import { PASSWORD_RULE, USERNAME_RULE } from './rules'
 
-/** Which form this is: the same fields, and different things that can go wrong. */
+/** Which sign-in form this is: the same fields, and different things that can go wrong. */
 export type AuthMode = 'login' | 'register'
+
+/** The settings forms, which confirm with the current password: changing it and deleting the account. */
+export type SettingsMode = 'password' | 'delete'
+
+type Mode = AuthMode | SettingsMode
 
 /** An error ready to show: the field it belongs to, or the whole form, and the sentence. */
 export interface ShownError {
-  field: 'username' | 'password' | 'form'
+  /** `current` is the password that proves who is asking, on the settings forms. */
+  field: 'username' | 'password' | 'current' | 'form'
   message: string
 }
+
+const SETTINGS_MODES: ReadonlySet<Mode> = new Set(['password', 'delete'])
 
 const OUT_OF_DATE =
   'This page and the server do not agree on how to talk to each other. Reload the page; if that does not help, the app needs an update.'
@@ -30,7 +38,7 @@ const form = (message: string): ShownError => ({ field: 'form', message })
 
 // A `Record` over every code, so adding a code to the client stops compiling here until it has a message. Nothing
 // here may say which half of a wrong sign-in was wrong, or echo what the person typed.
-const MESSAGES: Record<AccountErrorCode, (error: AccountError, mode: AuthMode) => ShownError> = {
+const MESSAGES: Record<AccountErrorCode, (error: AccountError, mode: Mode) => ShownError> = {
   invalid_request: () => form(`The server could not read that form. ${OUT_OF_DATE}`),
   invalid_username: () => ({
     field: 'username',
@@ -49,12 +57,15 @@ const MESSAGES: Record<AccountErrorCode, (error: AccountError, mode: AuthMode) =
     form(
       'This server is not taking new accounts right now. Ask whoever runs it, or play as a guest with a seat link.',
     ),
-  invalid_credentials: () => form('The username or password is wrong. Check both and try again.'),
+  invalid_credentials: (_error, mode) =>
+    SETTINGS_MODES.has(mode)
+      ? { field: 'current', message: 'That is not your current password. Check it and try again.' }
+      : form('The username or password is wrong. Check both and try again.'),
   too_many_attempts: (error, mode) =>
     form(
-      mode === 'login'
-        ? `Too many failed attempts. Wait ${waitText(error.retryAfter)} before trying again.`
-        : `Too many attempts to make an account from here. Wait ${waitText(error.retryAfter)} before trying again.`,
+      mode === 'register'
+        ? `Too many attempts to make an account from here. Wait ${waitText(error.retryAfter)} before trying again.`
+        : `Too many failed attempts. Wait ${waitText(error.retryAfter)} before trying again.`,
     ),
   unauthenticated: () => form('You are not signed in. Sign in and try again.'),
   forbidden_origin: () =>
@@ -83,7 +94,7 @@ const MESSAGES: Record<AccountErrorCode, (error: AccountError, mode: AuthMode) =
 }
 
 /** What to tell a person about a failed account call; anything that is not an `AccountError` gets a general apology. */
-export function describeAccountError(error: unknown, mode: AuthMode): ShownError {
+export function describeAccountError(error: unknown, mode: Mode): ShownError {
   if (error instanceof AccountError) return MESSAGES[error.code](error, mode)
   return form('Something unexpected went wrong. Try again.')
 }

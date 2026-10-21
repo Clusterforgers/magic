@@ -1,14 +1,15 @@
 import { Link } from '@tanstack/react-router'
 import { CircleAlertIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import type { FormEvent, ReactNode } from 'react'
+import type { FormEvent } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { useAuthStore } from './context'
 import { describeAccountError } from './errors'
 import type { AuthMode } from './errors'
+import { Field } from './Field'
+import { describedBy } from './fieldIds'
 import { PASSWORD_RULE, passwordProblem, USERNAME_RULE, usernameProblem } from './rules'
 
 interface Problems {
@@ -38,49 +39,6 @@ const WORDS = {
     other: { to: '/login', question: 'Already have an account?', action: 'Sign in' },
   },
 } as const
-
-/** The ids of a field's two notes: the rule that is always there and the problem that comes and goes. */
-const hintId = (field: string): string => `${field}-hint`
-const problemId = (field: string): string => `${field}-problem`
-
-/** What a field's input points its description at: the problem first, so it is the first thing a screen reader says. */
-const describedBy = (field: string): string => `${problemId(field)} ${hintId(field)}`
-
-interface FieldProps {
-  id: string
-  label: string
-  /** The rule the field is held to, in a sentence, shown before it is typed. */
-  rule: string
-  /** What is wrong with the field now, or null. */
-  problem: string | null
-  /** The input. */
-  children: ReactNode
-}
-
-/**
- * A label, the rule, the input and, under it, the problem. The problem's place is always in the page and announces
- * itself politely when its words change, so a screen reader hears a problem even when focus stays on the field; it
- * takes no room while it is empty. A problem carries an icon, so it never rests on its colour alone.
- */
-function Field({ id, label, rule, problem, children }: FieldProps) {
-  return (
-    <div className="grid gap-2">
-      <Label htmlFor={id}>{label}</Label>
-      <p id={hintId(id)} className="text-sm text-muted-foreground">
-        {rule}
-      </p>
-      {children}
-      <div id={problemId(id)} aria-live="polite" className="empty:sr-only">
-        {problem === null ? null : (
-          <p className="flex items-start gap-2 text-sm text-destructive">
-            <CircleAlertIcon aria-hidden="true" className="size-4 shrink-0 translate-y-0.5" />
-            <span>{problem}</span>
-          </p>
-        )}
-      </div>
-    </div>
-  )
-}
 
 interface AuthFormProps {
   mode: AuthMode

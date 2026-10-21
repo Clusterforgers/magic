@@ -1,15 +1,17 @@
 /**
- * The account endpoints of `mtg-server` (docs/server.md, Accounts): register, sign in, sign out, who am I and the
- * signed-in user's games. The bodies are the generated types of `mtg_protocol::rest`; every answer is checked at
+ * The account endpoints of `mtg-server` (docs/server.md, Accounts): register, sign in, sign out, who am I, the
+ * signed-in user's games, changing the password and deleting the account. The bodies are the generated types of `mtg_protocol::rest`; every answer is checked at
  * runtime before it is returned and every failure is an `AccountError` with a stable code. Every request carries the
  * session cookie (`credentials: 'include'`), so a page on another origin that the server lists works as well.
  */
 import type {
+  AccountDeletion,
   AuthErrorCode,
   Credentials,
   MyGame,
   MyGameSeat,
   MyGameStatus,
+  PasswordChange,
   UserView,
 } from '@/protocol/generated'
 import type { Fetch } from './api'
@@ -69,7 +71,7 @@ export interface AccountsOptions {
   baseUrl?: string
 }
 
-/** The five account calls; each rejects with an `AccountError`. */
+/** The account calls; each rejects with an `AccountError`. */
 export interface AccountsApi {
   /** `POST /api/auth/register`: makes the account and signs it in. */
   register(credentials: Credentials): Promise<UserView>
@@ -81,6 +83,10 @@ export interface AccountsApi {
   me(): Promise<UserView>
   /** `GET /api/me/games`: the games the user holds a seat in, as the server sorted them. */
   myGames(): Promise<MyGame[]>
+  /** `POST /api/auth/password`: replaces the password; the account's other sessions end and this one stays. */
+  changePassword(change: PasswordChange): Promise<void>
+  /** `DELETE /api/auth/account`: deletes the account, its decks and its sessions; the cookie is cleared. */
+  deleteAccount(deletion: AccountDeletion): Promise<void>
 }
 
 const STATUSES: Record<MyGameStatus, true> = { lobby: true, running: true, finished: true }
@@ -155,13 +161,18 @@ function failure(response: Response, body: unknown): AccountError {
   )
 }
 
-const post = (body?: Credentials): RequestInit => ({
-  method: 'POST',
+const send = (
+  method: 'POST' | 'DELETE',
+  body?: Credentials | PasswordChange | AccountDeletion,
+): RequestInit => ({
+  method,
   credentials: 'include',
   ...(body === undefined
     ? {}
     : { headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }),
 })
+
+const post = (body?: Credentials | PasswordChange): RequestInit => send('POST', body)
 
 const get: RequestInit = { credentials: 'include' }
 
@@ -200,6 +211,12 @@ export function createAccountsApi(options: AccountsOptions = {}): AccountsApi {
     },
     me: () => call('/api/auth/me', readUser, get),
     myGames: () => call('/api/me/games', readGames, get),
+    changePassword: async (change) => {
+      await call('/api/auth/password', () => true, post(change))
+    },
+    deleteAccount: async (deletion) => {
+      await call('/api/auth/account', () => true, send('DELETE', deletion))
+    },
   }
 }
 

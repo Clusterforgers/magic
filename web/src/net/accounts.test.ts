@@ -48,6 +48,46 @@ describe('requests', () => {
     expect(fake.calls[0]?.init).toEqual({ method: 'POST', credentials: 'include' })
   })
 
+  it('changes the password with a POST of both passwords as JSON, and accepts the empty 204', async () => {
+    const fake = fakeFetch(() => new Response(null, { status: 204 }))
+    const change = { current_password: 'the old passphrase', new_password: 'the new passphrase' }
+    await expect(createAccountsApi({ fetch: fake.fetch }).changePassword(change)).resolves.toBeUndefined()
+    expect(fake.calls[0]?.url).toBe('/api/auth/password')
+    expect(fake.calls[0]?.init?.method).toBe('POST')
+    expect(fake.calls[0]?.init?.credentials).toBe('include')
+    expect(fake.calls[0]?.init?.headers).toEqual({ 'content-type': 'application/json' })
+    expect(JSON.parse(String(fake.calls[0]?.init?.body))).toEqual(change)
+  })
+
+  it('deletes the account with a DELETE that carries the password as JSON, and accepts the empty 204', async () => {
+    const fake = fakeFetch(() => new Response(null, { status: 204 }))
+    const deletion = { password: 'the old passphrase' }
+    await expect(createAccountsApi({ fetch: fake.fetch }).deleteAccount(deletion)).resolves.toBeUndefined()
+    expect(fake.calls[0]?.url).toBe('/api/auth/account')
+    expect(fake.calls[0]?.init?.method).toBe('DELETE')
+    expect(fake.calls[0]?.init?.credentials).toBe('include')
+    expect(fake.calls[0]?.init?.headers).toEqual({ 'content-type': 'application/json' })
+    expect(JSON.parse(String(fake.calls[0]?.init?.body))).toEqual(deletion)
+  })
+
+  it.each([
+    [
+      'changePassword',
+      (api: AccountsApi) => api.changePassword({ current_password: 'a', new_password: 'b' }),
+    ],
+    ['deleteAccount', (api: AccountsApi) => api.deleteAccount({ password: 'a' })],
+  ] as const)(
+    '%s turns a refusal into an AccountError with the server’s code and wait',
+    async (_name, run) => {
+      const fake = fakeFetch(() => authError(429, 'too_many_attempts', 'slow down', { 'retry-after': '90' }))
+      const failure: unknown = await run(createAccountsApi({ fetch: fake.fetch })).catch(
+        (error: unknown) => error,
+      )
+      expect(failure).toBeInstanceOf(AccountError)
+      expect(failure).toMatchObject({ code: 'too_many_attempts', status: 429, retryAfter: 90 })
+    },
+  )
+
   it('prefixes every path with the base url', async () => {
     const fake = fakeFetch(() => jsonResponse(200, user))
     await createAccountsApi({ fetch: fake.fetch, baseUrl: 'https://play.example' }).me()

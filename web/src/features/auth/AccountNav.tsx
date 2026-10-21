@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from '@tanstack/react-router'
-import { ChevronDownIcon, CircleAlertIcon, LogOutIcon } from 'lucide-react'
+import { ChevronDownIcon, CircleAlertIcon, LogOutIcon, SettingsIcon } from 'lucide-react'
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { PageShell } from '@/components/PageShell'
@@ -18,11 +18,12 @@ import { cn } from '@/lib/utils'
 import { useAuth, useAuthStore } from './context'
 
 // Pages that only mean something while signed in: signing out there goes home instead of to the sign-in form.
-const SIGNED_IN_ONLY: ReadonlySet<string> = new Set(['/games', '/decks'])
+const SIGNED_IN_ONLY: ReadonlySet<string> = new Set(['/games', '/decks', '/settings'])
 
 /**
  * The account part of the header. Nothing while the server is still being asked or when it has no accounts; "Sign
- * in" and "Register" for a guest; for an account a menu named after the username, with "Sign out".
+ * in" and "Register" for a guest; for an account a menu named after the username, with "Account settings" and "Sign
+ * out".
  */
 export function AccountNav() {
   const { status, user } = useAuth(useShallow((state) => ({ status: state.status, user: state.user })))
@@ -79,6 +80,10 @@ export function AccountNav() {
             <p className="px-3 pb-2 text-sm font-medium break-all">{user.username}</p>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => void navigate({ to: '/settings' })}>
+            <SettingsIcon aria-hidden="true" />
+            Account settings
+          </DropdownMenuItem>
           <DropdownMenuItem disabled={signingOut} onClick={() => void signOut()}>
             <LogOutIcon aria-hidden="true" />
             Sign out

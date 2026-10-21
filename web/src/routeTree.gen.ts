@@ -15,6 +15,7 @@ import { Route as GamesRouteImport } from './routes/games'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as DecksDeckIdRouteImport } from './routes/decks_.$deckId'
 import { Route as DevBuilderRouteImport } from './routes/dev.builder'
 import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
@@ -50,6 +51,11 @@ const NewRoute = NewRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DecksDeckIdRoute = DecksDeckIdRouteImport.update({
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
   '/register': typeof RegisterRoute
+  '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
@@ -104,6 +111,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
   '/register': typeof RegisterRoute
+  '/settings': typeof SettingsRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
@@ -119,6 +127,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/new': typeof NewRoute
   '/register': typeof RegisterRoute
+  '/settings': typeof SettingsRoute
   '/decks_/$deckId': typeof DecksDeckIdRoute
   '/dev/builder': typeof DevBuilderRoute
   '/dev/lobby': typeof DevLobbyRoute
@@ -135,6 +144,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/new'
     | '/register'
+    | '/settings'
     | '/decks/$deckId'
     | '/dev/builder'
     | '/dev/lobby'
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/new'
     | '/register'
+    | '/settings'
     | '/decks/$deckId'
     | '/dev/builder'
     | '/dev/lobby'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/new'
     | '/register'
+    | '/settings'
     | '/decks_/$deckId'
     | '/dev/builder'
     | '/dev/lobby'
@@ -178,6 +190,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   NewRoute: typeof NewRoute
   RegisterRoute: typeof RegisterRoute
+  SettingsRoute: typeof SettingsRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
   DevBuilderRoute: typeof DevBuilderRoute
   DevLobbyRoute: typeof DevLobbyRoute
@@ -228,6 +241,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/decks_/$deckId': {
@@ -282,6 +302,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   NewRoute: NewRoute,
   RegisterRoute: RegisterRoute,
+  SettingsRoute: SettingsRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
   DevBuilderRoute: DevBuilderRoute,
   DevLobbyRoute: DevLobbyRoute,

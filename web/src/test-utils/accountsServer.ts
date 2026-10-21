@@ -21,10 +21,10 @@ export interface AccountsScript {
   unavailable?: boolean
   /** After this many failed logins the server answers 429 with `Retry-After` (900 seconds). */
   throttleAfter?: number
-  /** Replaces the answer of one endpoint (`me`, `register`, `login`, `logout`, `games`). */
+  /** Replaces the answer of one endpoint (`me`, `register`, `login`, `logout`, `games`, `password`, `account`). */
   override?: Partial<
     Record<
-      'me' | 'register' | 'login' | 'logout' | 'games',
+      'me' | 'register' | 'login' | 'logout' | 'games' | 'password' | 'account',
       (call: FetchCall) => Response | Promise<Response>
     >
   >
@@ -124,6 +124,41 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
     return new Response(null, { status: 204 })
   }
 
+  // The password check of the two settings calls: counted like a login, and a right one gives its try back.
+  function confirmed(sent: unknown, field: string): Response | null {
+    if (signedIn === null) return authError(401, 'unauthenticated')
+    if (script.throttleAfter !== undefined && failures >= script.throttleAfter) {
+      return authError(429, 'too_many_attempts', 'slow down', { 'retry-after': '900' })
+    }
+    if (!isRecord(sent) || typeof sent[field] !== 'string') return authError(400, 'invalid_request')
+    if (users.get(signedIn) !== sent[field]) {
+      failures += 1
+      return authError(401, 'invalid_credentials', 'wrong password')
+    }
+    failures = 0
+    return null
+  }
+
+  function changePassword(call: FetchCall): Response {
+    const sent = body(call)
+    const refused = confirmed(sent, 'current_password')
+    if (refused !== null) return refused
+    if (!isRecord(sent) || typeof sent.new_password !== 'string' || signedIn === null) {
+      return authError(400, 'invalid_request')
+    }
+    if (passwordProblem(sent.new_password) !== null) return authError(400, 'invalid_password')
+    users.set(signedIn, sent.new_password)
+    return new Response(null, { status: 204 })
+  }
+
+  function deleteAccount(call: FetchCall): Response {
+    const refused = confirmed(body(call), 'password')
+    if (refused !== null) return refused
+    if (signedIn !== null) users.delete(signedIn)
+    signedIn = null
+    return new Response(null, { status: 204 })
+  }
+
   const fake = fakeFetch((call) => {
     const path = call.url.split('?')[0] ?? call.url
     if (script.unavailable === true) return unavailable()
@@ -134,6 +169,10 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
         return script.override?.login?.(call) ?? login(call)
       case '/api/auth/logout':
         return script.override?.logout?.(call) ?? logout()
+      case '/api/auth/password':
+        return script.override?.password?.(call) ?? changePassword(call)
+      case '/api/auth/account':
+        return script.override?.account?.(call) ?? deleteAccount(call)
       case '/api/auth/me':
         return (
           script.override?.me?.(call) ??

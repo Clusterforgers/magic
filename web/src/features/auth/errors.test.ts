@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest'
 import { AccountError, AUTH_ERROR_CODES } from '@/net/accounts'
 import type { AccountErrorCode } from '@/net/accounts'
 import { accountErrorText, describeAccountError, waitText } from './errors'
-import type { AuthMode } from './errors'
+import type { AuthMode, SettingsMode } from './errors'
 
 const ALL_CODES: readonly AccountErrorCode[] = [...AUTH_ERROR_CODES, 'unknown', 'network', 'bad_response']
-const MODES: AuthMode[] = ['login', 'register']
+const MODES: (AuthMode | SettingsMode)[] = ['login', 'register', 'password', 'delete']
 const error = (code: AccountErrorCode, extra: { status?: number; message?: string; wait?: number } = {}) =>
   new AccountError(code, extra.status ?? 400, extra.message ?? 'server words', extra.wait ?? null)
 
@@ -42,6 +42,30 @@ describe('describeAccountError', () => {
     expect(shown.message).toMatch(/username or password is wrong/i)
     expect(shown.message).not.toMatch(/the (username|password) (is|was|does)/i)
     expect(shown.message).not.toMatch(/no such|unknown user|not found|exist/i)
+  })
+
+  it.each(['password', 'delete'] as const)(
+    'puts a wrong password on the current-password field of the %s form, in words about the password only',
+    (mode) => {
+      const shown = describeAccountError(error('invalid_credentials', { status: 401 }), mode)
+      expect(shown.field).toBe('current')
+      expect(shown.message).toMatch(/not your current password/i)
+      expect(shown.message).not.toMatch(/username/i)
+    },
+  )
+
+  it('puts a rejected new password on the password field of the change form, naming the rules', () => {
+    const shown = describeAccountError(error('invalid_password'), 'password')
+    expect(shown.field).toBe('password')
+    expect(shown.message).toMatch(/10 to 128 characters/)
+  })
+
+  it('does not talk about making an account when the settings forms are turned away', () => {
+    for (const mode of ['password', 'delete'] as const) {
+      const shown = describeAccountError(error('too_many_attempts', { wait: 900 }), mode)
+      expect(shown.message).toMatch(/too many failed attempts.*about 15 minutes/i)
+      expect(shown.message).not.toMatch(/make an account/i)
+    }
   })
 
   it('tells a taken username apart from a wrong one and says case does not matter', () => {

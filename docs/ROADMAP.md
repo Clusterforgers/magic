@@ -123,7 +123,8 @@ The server is settled first, then the web is built once against the final types.
 - [ ] Verify Moxfield, Archidekt, MTGO and Arena export parsers against real exports: the 29-deck corpus passes; open: a real MTGO `.dek`, an Arena client export, companions, custom cards (`docs/data-sources.md`)
 - [ ] Importer 2b, name resolution on the corpus: by printing (set + collector number) before name, plus flavor, digital and multi-face names (`docs/data-sources.md`); a real-data test resolves all 183 exports
 - [ ] Spectators in the web and a "waiting on" message for tables of three or more
-- [ ] Account settings: change the password, delete the account (its seats are freed); a game that failed to resume shows in My games with its reason
+- [x] Account settings: change the password, delete the account (its seats are freed)
+- [ ] A game that failed to resume shows in My games with its reason
 - [ ] Layout gate for the pages that need an account (Decks, My games, the builder with a real deck), in `accounts.spec.ts`
 
 ## M8 Polish and deploy

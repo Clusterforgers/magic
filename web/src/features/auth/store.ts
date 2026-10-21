@@ -31,6 +31,9 @@ export interface GamesState {
 /** What `register` and `login` give back; a failure keeps the state as it was. */
 export type AuthResult = { ok: true; user: UserView } | { ok: false; error: unknown }
 
+/** What `changePassword` and `deleteAccount` give back; a failure keeps the state as it was. */
+export type SettingsResult = { ok: true } | { ok: false; error: unknown }
+
 /** Everything the pages read, and the actions they call. */
 export interface AuthState {
   status: AuthStatus
@@ -48,6 +51,10 @@ export interface AuthState {
   login(credentials: Credentials): Promise<AuthResult>
   /** Signs out; false, with a `notice`, when the server could not be told. Clears the user and the games. */
   logout(): Promise<boolean>
+  /** Replaces the password. The server ends the account's other sessions; this one stays signed in. */
+  changePassword(current: string, next: string): Promise<SettingsResult>
+  /** Deletes the account, confirmed with its password. On success nobody is signed in any more. */
+  deleteAccount(password: string): Promise<SettingsResult>
   /** Loads the user's games (and reloads them); does nothing unless signed in. */
   loadGames(): Promise<void>
   /** Clears the notice. */
@@ -146,6 +153,30 @@ export function createAuthStore({ api = accountsApi, initial }: AuthDeps = {}): 
         return true
       },
 
+      async changePassword(current, next) {
+        try {
+          await api.changePassword({ current_password: current, new_password: next })
+        } catch (error) {
+          // A session that ended elsewhere, or a server that has no accounts, changes who this page thinks is here.
+          if (isCode(error, 'unauthenticated')) become('signed-out', null)
+          else unavailable(error)
+          return { ok: false, error }
+        }
+        return { ok: true }
+      },
+
+      async deleteAccount(password) {
+        try {
+          await api.deleteAccount({ password })
+        } catch (error) {
+          if (isCode(error, 'unauthenticated')) become('signed-out', null)
+          else unavailable(error)
+          return { ok: false, error }
+        }
+        become('signed-out', null)
+        return { ok: true }
+      },
+
       async loadGames() {
         if (get().status !== 'signed-in') return
         round += 1
@@ -179,4 +210,6 @@ export const offlineAccounts: AccountsApi = {
   logout: () => Promise.reject(OFFLINE),
   me: () => Promise.reject(OFFLINE),
   myGames: () => Promise.reject(OFFLINE),
+  changePassword: () => Promise.reject(OFFLINE),
+  deleteAccount: () => Promise.reject(OFFLINE),
 }
