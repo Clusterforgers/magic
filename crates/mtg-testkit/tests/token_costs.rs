@@ -143,12 +143,14 @@ fn a_clue_is_paid_with_two_lands_and_sacrificed_to_draw_a_card(
         "a Clue has no {{T}}"
     );
     assert!(driver.state().has_ceased(clue));
-    let [ability] = driver.state().stack() else {
-        panic!("the ability waits on the stack");
+    // The Tracker's trigger for the sacrifice goes on the stack above the ability of the Clue, which waits below it.
+    let [ability, trigger] = driver.state().stack() else {
+        panic!("the ability and the Tracker's trigger wait on the stack");
     };
     let ability = driver.state().object(*ability).unwrap();
     assert_eq!(ability.kind(), ObjectKind::Ability);
     assert_eq!(name_of(driver.state(), ability.id()), "Clue");
+    assert_eq!(name_of(driver.state(), *trigger), "Tireless Tracker");
 
     resolve_the_stack(&mut driver)?;
     assert_eq!(hand(&driver, 0), hands[0] + 1, "the Clue drew a card");
