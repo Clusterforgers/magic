@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2b8afa9f-4236-4c02-a8d5-3c145caecfd6",
+  "name": "Rift Bolt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rift Bolt",
+      "oracle_fingerprint": "dc4c924e893b74a9bbc90f5a361a174a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        { "Keyword": { "Suspend": { "time": 1, "cost": "{R}" } } }
+      ]
+    }
+  ]
+}

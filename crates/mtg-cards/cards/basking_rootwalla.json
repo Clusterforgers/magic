@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b2ec080f-ad5d-4274-91e3-bc6ac89fc3e4",
+  "name": "Basking Rootwalla",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Basking Rootwalla",
+      "oracle_fingerprint": "0f37cae90cd1131d4e1ea39481cf12e2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{G}",
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Madness": "{0}" } }
+      ]
+    }
+  ]
+}

@@ -65,6 +65,8 @@ pub enum CastWay {
     Overload,
     /// Madness (CR 702.35): from exile after it was discarded.
     Madness,
+    /// Suspend (CR 702.62): cast without paying its mana cost as the last time counter leaves; a creature has haste.
+    Suspend,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
 }

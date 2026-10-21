@@ -1,0 +1,12 @@
+{
+  "oracle_id": "dc7f0c33-80ea-453e-a237-473f077f038e",
+  "name": "Arrogant Wurm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arrogant Wurm",
+      "oracle_fingerprint": "5e6cb37b2455bfc078de5987339410f6",
+      "abilities": [{ "Keyword": "Trample" }, { "Keyword": { "Madness": "{2}{G}" } }]
+    }
+  ]
+}

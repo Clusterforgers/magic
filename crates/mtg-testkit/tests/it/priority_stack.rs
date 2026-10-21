@@ -18,7 +18,7 @@ fn holder(driver: &Driver) -> Result<usize, ScriptError> {
 
 fn options(driver: &Driver) -> Result<PriorityOptions, ScriptError> {
     match &driver.decision()?.kind {
-        DecisionKind::Priority(o) => Ok(o.clone()),
+        DecisionKind::Priority(o) => Ok((**o).clone()),
         other => Err(ScriptError::UnexpectedDecision {
             wanted: "priority",
             got: other.name().to_owned(),

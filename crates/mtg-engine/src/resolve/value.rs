@@ -104,8 +104,8 @@ enum Counted<'a> {
     Live(&'a PermanentState),
     /// How a snapshot recorded them.
     Shot(&'a [(CounterKind, u32)]),
-    /// An object that is not a permanent holds none.
-    None,
+    /// A card in exile holds the counters of its own.
+    Card(&'a std::collections::BTreeMap<CounterKind, u32>),
 }
 
 impl Counted<'_> {
@@ -117,7 +117,7 @@ impl Counted<'_> {
                 .iter()
                 .find(|(found, _)| found == kind)
                 .map_or(0, |(_, count)| *count),
-            Counted::None => 0,
+            Counted::Card(held) => held.get(kind).copied().unwrap_or(0),
         }
     }
 }
@@ -198,7 +198,9 @@ impl<'a> Scope<'a> {
             let tapped = object
                 .permanent()
                 .map(crate::object::PermanentState::tapped);
-            let counters = object.permanent().map_or(Counted::None, Counted::Live);
+            let counters = object
+                .permanent()
+                .map_or(Counted::Card(&object.card_counters), Counted::Live);
             if let Some(view) = self.layered {
                 return Some(match view.get(object.id()) {
                     Some(held) => Seen {
@@ -279,7 +281,9 @@ impl<'a> Scope<'a> {
                 .map(crate::object::PermanentState::tapped),
             card: Some(object),
             keywords: Some(&held.keywords),
-            counters: object.permanent().map_or(Counted::None, Counted::Live),
+            counters: object
+                .permanent()
+                .map_or(Counted::Card(&object.card_counters), Counted::Live),
         };
         for pred in &selector.0 {
             if !self.pred(pred, object.reference(), &seen)? {

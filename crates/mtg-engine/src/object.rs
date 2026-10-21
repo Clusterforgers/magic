@@ -145,6 +145,8 @@ pub struct GameObject {
     pub(crate) zone: Zone,
     pub(crate) permanent: Option<PermanentState>,
     pub(crate) counter: u32,
+    /// The counters on a card in exile (the time counters of a suspended card); a zone change clears them.
+    pub(crate) card_counters: BTreeMap<CounterKind, u32>,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
@@ -162,6 +164,7 @@ impl GameObject {
             zone,
             permanent: None,
             counter: 0,
+            card_counters: BTreeMap::new(),
             kind: ObjectKind::Card,
             choices: Choices::default(),
             ability: None,
@@ -186,6 +189,7 @@ impl GameObject {
             zone: Zone::Stack,
             permanent: None,
             counter: 0,
+            card_counters: BTreeMap::new(),
             kind: ObjectKind::Ability,
             choices,
             ability: Some(Box::new(ability)),
@@ -272,6 +276,11 @@ impl GameObject {
         self.zone
     }
 
+    /// How many counters of `kind` the card holds in exile (CR 702.62b: time counters of a suspended card).
+    pub fn card_counters_of(&self, kind: &CounterKind) -> u32 {
+        self.card_counters.get(kind).copied().unwrap_or(0)
+    }
+
     /// Permanent state when on the battlefield.
     pub const fn permanent(&self) -> Option<&PermanentState> {
         self.permanent.as_ref()
@@ -286,6 +295,7 @@ impl PartialEq for GameObject {
             && self.def_fingerprint == other.def_fingerprint
             && self.zone == other.zone
             && self.permanent == other.permanent
+            && self.card_counters == other.card_counters
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -304,6 +314,7 @@ impl Hash for GameObject {
         self.def_fingerprint.hash(state);
         self.zone.hash(state);
         self.permanent.hash(state);
+        self.card_counters.hash(state);
         self.counter.hash(state);
         self.kind.hash(state);
         self.choices.hash(state);

@@ -4022,5 +4022,162 @@
     "keywords": [
       "Delve"
     ]
+  },
+  {
+    "id": "9ec075ba-db56-4dcf-b1dc-fe6270b7ab36",
+    "oracle_id": "9728dec9-d482-4c7a-8cdc-44d010dc878d",
+    "name": "Ancestral Vision",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tdc",
+    "collector_number": "144",
+    "rarity": "rare",
+    "released_at": "2025-04-11",
+    "digital": false,
+    "mana_cost": "",
+    "cmc": 0.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Suspend 4—{U} (Rather than cast this card from your hand, pay {U} and exile it with four time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)\nTarget player draws three cards.",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Suspend"
+    ]
+  },
+  {
+    "id": "2dd6977e-269a-4cd1-99ad-37846a0647a7",
+    "oracle_id": "dc7f0c33-80ea-453e-a237-473f077f038e",
+    "name": "Arrogant Wurm",
+    "lang": "en",
+    "layout": "normal",
+    "set": "vma",
+    "collector_number": "195",
+    "rarity": "common",
+    "released_at": "2014-06-16",
+    "digital": true,
+    "mana_cost": "{3}{G}{G}",
+    "cmc": 5.0,
+    "type_line": "Creature — Wurm",
+    "oracle_text": "Trample\nMadness {2}{G} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+    "power": "4",
+    "toughness": "4",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Madness",
+      "Trample"
+    ]
+  },
+  {
+    "id": "26bfde99-7761-48e1-851a-522f888d0f6c",
+    "oracle_id": "b2ec080f-ad5d-4274-91e3-bc6ac89fc3e4",
+    "name": "Basking Rootwalla",
+    "lang": "en",
+    "layout": "normal",
+    "set": "uma",
+    "collector_number": "156",
+    "rarity": "common",
+    "released_at": "2018-12-07",
+    "digital": false,
+    "mana_cost": "{G}",
+    "cmc": 1.0,
+    "type_line": "Creature — Lizard",
+    "oracle_text": "{1}{G}: This creature gets +2/+2 until end of turn. Activate only once each turn.\nMadness {0} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Madness"
+    ]
+  },
+  {
+    "id": "dce39dd1-ca51-420f-a627-1511192d34c2",
+    "oracle_id": "1732cd31-1393-426f-a2fe-9b6b3f27136b",
+    "name": "Durkwood Baloth",
+    "lang": "en",
+    "layout": "normal",
+    "set": "tsr",
+    "collector_number": "200",
+    "rarity": "common",
+    "released_at": "2021-03-19",
+    "digital": false,
+    "mana_cost": "{4}{G}{G}",
+    "cmc": 6.0,
+    "type_line": "Creature — Beast",
+    "oracle_text": "Suspend 5—{G} (Rather than cast this card from your hand, you may pay {G} and exile it with five time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost. It has haste.)",
+    "power": "5",
+    "toughness": "5",
+    "colors": [
+      "G"
+    ],
+    "color_identity": [
+      "G"
+    ],
+    "keywords": [
+      "Suspend"
+    ]
+  },
+  {
+    "id": "1d3a3a1d-c393-4a57-8a0e-5907d1722331",
+    "oracle_id": "f07bd49d-8e71-4d56-be2a-638514011318",
+    "name": "Fiery Temper",
+    "lang": "en",
+    "layout": "normal",
+    "set": "inr",
+    "collector_number": "154",
+    "rarity": "uncommon",
+    "released_at": "2025-01-24",
+    "digital": false,
+    "mana_cost": "{1}{R}{R}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Fiery Temper deals 3 damage to any target.\nMadness {R} (If you discard this card, discard it into exile. When you do, cast it for its madness cost or put it into your graveyard.)",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Madness"
+    ]
+  },
+  {
+    "id": "4ccd0ada-92b2-48f3-b5ae-96346fc138b6",
+    "oracle_id": "2b8afa9f-4236-4c02-a8d5-3c145caecfd6",
+    "name": "Rift Bolt",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2x2",
+    "collector_number": "122",
+    "rarity": "common",
+    "released_at": "2022-07-08",
+    "digital": false,
+    "mana_cost": "{2}{R}",
+    "cmc": 3.0,
+    "type_line": "Sorcery",
+    "oracle_text": "Rift Bolt deals 3 damage to any target.\nSuspend 1—{R} (Rather than cast this card from your hand, you may pay {R} and exile it with a time counter on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Suspend"
+    ]
   }
 ]

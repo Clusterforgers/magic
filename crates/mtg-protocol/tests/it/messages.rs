@@ -226,14 +226,15 @@ fn decision_kinds() -> Vec<DecisionKind> {
             hand: vec![a, b],
             count: 1,
         }),
-        DecisionKind::Priority(PriorityOptions {
+        DecisionKind::Priority(Box::new(PriorityOptions {
             playable_lands: vec![a],
             castable: vec![b],
             mana_abilities: vec![option.clone()],
             abilities: Vec::new(),
+            suspendable: Vec::new(),
             can_act: true,
             can_pass: true,
-        }),
+        })),
         DecisionKind::PayMana(PayOptions {
             spend: Box::new(Spend::other()),
             spell: b,
@@ -307,14 +308,15 @@ fn decision_kinds() -> Vec<DecisionKind> {
 fn pipeline_decision_kinds() -> Vec<DecisionKind> {
     let (a, b) = (ObjectId(3), ObjectId(4));
     vec![
-        DecisionKind::Priority(PriorityOptions {
+        DecisionKind::Priority(Box::new(PriorityOptions {
             playable_lands: Vec::new(),
             castable: Vec::new(),
             mana_abilities: Vec::new(),
             abilities: vec![AbilityRef::printed(a, 0)],
+            suspendable: Vec::new(),
             can_act: true,
             can_pass: true,
-        }),
+        })),
         DecisionKind::ChooseTargets(TargetOptions {
             source: b,
             spec: 1,
@@ -1547,6 +1549,7 @@ fn what_a_vanilla_message_never_carried_stays_out_of_it() {
         castable: Vec::new(),
         mana_abilities: Vec::new(),
         abilities: Vec::new(),
+        suspendable: Vec::new(),
         can_act: true,
         can_pass: true,
     };
