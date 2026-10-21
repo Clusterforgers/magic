@@ -6,17 +6,17 @@ use mtg_import::decklist::{
 use mtg_import::resolve::normalize_name;
 use rstest::rstest;
 
-const PLAIN: &str = include_str!("fixtures/deck_plain.txt");
-const PLAIN_BLANK: &str = include_str!("fixtures/deck_plain_blank_sideboard.txt");
-const ARENA: &str = include_str!("fixtures/deck_arena.txt");
-const MOXFIELD: &str = include_str!("fixtures/deck_moxfield.txt");
-const ARCHIDEKT: &str = include_str!("fixtures/deck_archidekt.txt");
-const MTGO: &str = include_str!("fixtures/deck_mtgo.dek");
-const ARENA_COMMANDER: &str = include_str!("fixtures/deck_arena_commander.txt");
-const ARCHIDEKT_COMMANDER: &str = include_str!("fixtures/deck_archidekt_commander.txt");
-const MESSY: &str = include_str!("fixtures/deck_messy.txt");
-const CRLF_BOM: &[u8] = include_bytes!("fixtures/deck_crlf_bom.txt");
-const GARBAGE: &[u8] = include_bytes!("fixtures/deck_garbage.bin");
+const PLAIN: &str = include_str!("../fixtures/deck_plain.txt");
+const PLAIN_BLANK: &str = include_str!("../fixtures/deck_plain_blank_sideboard.txt");
+const ARENA: &str = include_str!("../fixtures/deck_arena.txt");
+const MOXFIELD: &str = include_str!("../fixtures/deck_moxfield.txt");
+const ARCHIDEKT: &str = include_str!("../fixtures/deck_archidekt.txt");
+const MTGO: &str = include_str!("../fixtures/deck_mtgo.dek");
+const ARENA_COMMANDER: &str = include_str!("../fixtures/deck_arena_commander.txt");
+const ARCHIDEKT_COMMANDER: &str = include_str!("../fixtures/deck_archidekt_commander.txt");
+const MESSY: &str = include_str!("../fixtures/deck_messy.txt");
+const CRLF_BOM: &[u8] = include_bytes!("../fixtures/deck_crlf_bom.txt");
+const GARBAGE: &[u8] = include_bytes!("../fixtures/deck_garbage.bin");
 
 /// (count, normalized name, section), the format-independent meaning of an entry.
 fn meaning(deck: &ParsedDeck) -> Vec<(u32, String, Section)> {

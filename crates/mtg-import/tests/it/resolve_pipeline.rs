@@ -11,17 +11,17 @@ use mtg_import::resolve::{
 use mtg_import::scryfall::{CardRecord, cards};
 use rstest::rstest;
 
-const CARDS_JSON: &str = include_str!("fixtures/scryfall_oracle_cards.json");
-const PLAIN: &str = include_str!("fixtures/deck_plain.txt");
-const PLAIN_BLANK: &str = include_str!("fixtures/deck_plain_blank_sideboard.txt");
-const ARENA: &str = include_str!("fixtures/deck_arena.txt");
-const MOXFIELD: &str = include_str!("fixtures/deck_moxfield.txt");
-const ARCHIDEKT: &str = include_str!("fixtures/deck_archidekt.txt");
-const MTGO: &str = include_str!("fixtures/deck_mtgo.dek");
-const ARENA_COMMANDER: &str = include_str!("fixtures/deck_arena_commander.txt");
-const ARCHIDEKT_COMMANDER: &str = include_str!("fixtures/deck_archidekt_commander.txt");
-const UNICODE_AND_TYPOS: &str = include_str!("fixtures/deck_unicode_and_typos.txt");
-const MTGJSON_DECK: &str = include_str!("fixtures/mtgjson_deck_commander.json");
+const CARDS_JSON: &str = include_str!("../fixtures/scryfall_oracle_cards.json");
+const PLAIN: &str = include_str!("../fixtures/deck_plain.txt");
+const PLAIN_BLANK: &str = include_str!("../fixtures/deck_plain_blank_sideboard.txt");
+const ARENA: &str = include_str!("../fixtures/deck_arena.txt");
+const MOXFIELD: &str = include_str!("../fixtures/deck_moxfield.txt");
+const ARCHIDEKT: &str = include_str!("../fixtures/deck_archidekt.txt");
+const MTGO: &str = include_str!("../fixtures/deck_mtgo.dek");
+const ARENA_COMMANDER: &str = include_str!("../fixtures/deck_arena_commander.txt");
+const ARCHIDEKT_COMMANDER: &str = include_str!("../fixtures/deck_archidekt_commander.txt");
+const UNICODE_AND_TYPOS: &str = include_str!("../fixtures/deck_unicode_and_typos.txt");
+const MTGJSON_DECK: &str = include_str!("../fixtures/mtgjson_deck_commander.json");
 
 fn records() -> Vec<CardRecord> {
     cards(CARDS_JSON.as_bytes())

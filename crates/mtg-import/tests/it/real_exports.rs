@@ -22,14 +22,14 @@ use rstest::rstest;
 use DeckFormat::{Archidekt, Arena, Moxfield, MtgoText};
 use Section::{Commander, Main, Sideboard};
 
-const MOXFIELD_NAJEELA: &str = include_str!("fixtures/real/moxfield/warrior-queen.txt");
-const MOXFIELD_TYRANIDS: &str = include_str!("fixtures/real/moxfield/tyranids.txt");
-const ARCHIDEKT_NAJEELA: &str = include_str!("fixtures/real/archidekt/warrior-queen.txt");
-const ARCHIDEKT_TYRANIDS: &str = include_str!("fixtures/real/archidekt/tyranids.txt");
-const ARENA_NAJEELA: &str = include_str!("fixtures/real/arena/warrior-queen.txt");
-const ARENA_TYRANIDS: &str = include_str!("fixtures/real/arena/tyranids.txt");
-const MTGO_NAJEELA: &str = include_str!("fixtures/real/mtgo/warrior-queen.txt");
-const MTGO_TYRANIDS: &str = include_str!("fixtures/real/mtgo/tyranids.txt");
+const MOXFIELD_NAJEELA: &str = include_str!("../fixtures/real/moxfield/warrior-queen.txt");
+const MOXFIELD_TYRANIDS: &str = include_str!("../fixtures/real/moxfield/tyranids.txt");
+const ARCHIDEKT_NAJEELA: &str = include_str!("../fixtures/real/archidekt/warrior-queen.txt");
+const ARCHIDEKT_TYRANIDS: &str = include_str!("../fixtures/real/archidekt/tyranids.txt");
+const ARENA_NAJEELA: &str = include_str!("../fixtures/real/arena/warrior-queen.txt");
+const ARENA_TYRANIDS: &str = include_str!("../fixtures/real/arena/tyranids.txt");
+const MTGO_NAJEELA: &str = include_str!("../fixtures/real/mtgo/warrior-queen.txt");
+const MTGO_TYRANIDS: &str = include_str!("../fixtures/real/mtgo/tyranids.txt");
 
 const NAJEELA: &str = "Najeela, the Blade-Blossom";
 const SWARMLORD: &str = "The Swarmlord";

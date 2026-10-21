@@ -36,7 +36,7 @@ Real-data tests are ignored by default; they need downloaded files:
 ```sh
 mkdir -p /tmp/mtgdata && cd /tmp/mtgdata
 # download oracle-cards-*.jsonl.gz, rulings-*.jsonl.gz, DeckList.json and some decks/<fileName>.json
-MTG_REAL_DATA_DIR=/tmp/mtgdata cargo test -p mtg-import --test real_data -- --ignored
+MTG_REAL_DATA_DIR=/tmp/mtgdata cargo test -p mtg-import real_data:: -- --ignored
 ```
 
 ## Mana cost strings

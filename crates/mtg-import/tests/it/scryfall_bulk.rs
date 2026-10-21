@@ -11,8 +11,8 @@ use mtg_import::scryfall::{
 };
 use rstest::rstest;
 
-const CARDS_JSON: &str = include_str!("fixtures/scryfall_oracle_cards.json");
-const RULINGS_JSON: &str = include_str!("fixtures/scryfall_rulings.json");
+const CARDS_JSON: &str = include_str!("../fixtures/scryfall_oracle_cards.json");
+const RULINGS_JSON: &str = include_str!("../fixtures/scryfall_rulings.json");
 
 fn all_cards() -> BTreeMap<String, CardRecord> {
     cards(CARDS_JSON.as_bytes())

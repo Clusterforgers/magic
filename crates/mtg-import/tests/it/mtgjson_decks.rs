@@ -4,7 +4,7 @@ use mtg_import::decklist::Section;
 use mtg_import::ids::{OracleId, PrintingId};
 use mtg_import::mtgjson::{PreconDeck, parse_deck};
 
-const DECK_JSON: &str = include_str!("fixtures/mtgjson_deck_commander.json");
+const DECK_JSON: &str = include_str!("../fixtures/mtgjson_deck_commander.json");
 
 fn deck() -> PreconDeck {
     parse_deck(DECK_JSON.as_bytes()).unwrap_or_else(|e| panic!("fixture must parse: {e}"))

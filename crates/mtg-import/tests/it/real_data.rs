@@ -2,7 +2,7 @@
 //!
 //! Ignored by default (needs downloads). Set `MTG_REAL_DATA_DIR` to a directory holding
 //! `oracle-cards-*.jsonl.gz`, `rulings-*.jsonl.gz`, `DeckList.json` and one or more MTGJSON deck files named
-//! `*_<SET>.json`, then run `cargo test -p mtg-import --test real_data -- --ignored`.
+//! `*_<SET>.json`, then run `cargo test -p mtg-import real_data:: -- --ignored`.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -16,7 +16,7 @@ use mtg_import::resolve::{CardIndex, resolve_deck};
 use mtg_import::scryfall::{CardRecord, cards_jsonl, rulings_jsonl};
 use support::{Verdict, verdict};
 
-mod support;
+use crate::support;
 
 fn data_dir() -> PathBuf {
     PathBuf::from(std::env::var("MTG_REAL_DATA_DIR").expect("set MTG_REAL_DATA_DIR"))

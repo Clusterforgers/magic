@@ -5,7 +5,7 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-mod support;
+use crate::support;
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -14,7 +14,7 @@ use mtg_core::mana::{ManaCost, ManaSymbol};
 use rstest::rstest;
 use support::{OUT_OF_SCOPE, Verdict, symbols_of, verdict};
 
-const FIXTURE: &str = include_str!("fixtures/scryfall_mana_costs.tsv");
+const FIXTURE: &str = include_str!("../fixtures/scryfall_mana_costs.tsv");
 
 struct Row {
     kind: &'static str,

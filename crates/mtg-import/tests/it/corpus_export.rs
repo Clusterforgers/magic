@@ -4,7 +4,7 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
-mod corpus;
+use crate::corpus;
 
 use std::path::PathBuf;
 
