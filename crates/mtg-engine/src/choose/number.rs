@@ -1,12 +1,16 @@
-//! `ChooseNumber`: X when a spell is announced, or "any number" as an effect resolves.
+//! `ChooseNumber`: the value of X as a spell or ability is announced (CR 601.2b), or "any number" as an effect
+//! resolves.
 //!
-//! The type exists; the task that asks it (`docs/cards-dsl.md`, Tasks (d)) fills in the check.
+//! The announcement keeps the number in `Choices.x` (CR 107.3); a resolution logs it as `ChoiceMade` and reads it back
+//! from the journal like any other answer.
 
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
+use super::Choice;
 use crate::answers::Outcome;
 use crate::error::{EngineError, IllegalAnswer};
+use crate::events::Event;
 
 /// The range of numbers a player may pick.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -18,17 +22,129 @@ pub struct NumberOptions {
     pub min: u32,
     /// The largest allowed number; no limit when absent.
     pub max: Option<u32>,
+    /// What the number is for in the words of a card ("Choose a value for X."); empty when the engine gave none.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<String>", optional))]
+    pub text: String,
+    /// Whether the cast or activation may still be backed out of: nothing is logged until it is paid for.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub can_cancel: bool,
 }
 
-/// The number picked.
+/// The answer to a number decision.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
-pub struct NumberChoice(pub u32);
+pub enum NumberChoice {
+    /// This number, from `min` to `max`.
+    Number(u32),
+    /// Back out of the cast or activation (when `can_cancel`).
+    Cancel,
+}
 
+/// Checks the answer against the options it answers. A number asked while a spell or ability is announced is kept
+/// in its choices; one asked by an effect is logged for the step that asked.
 pub(crate) fn answer(
-    _player: PlayerId,
-    _options: &NumberOptions,
-    _choice: NumberChoice,
+    player: PlayerId,
+    options: &NumberOptions,
+    choice: NumberChoice,
+    announcing: bool,
 ) -> Result<Outcome, EngineError> {
-    Err(IllegalAnswer::Unsupported("choose-number").into())
+    let number = match choice {
+        NumberChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
+        NumberChoice::Cancel => return Err(IllegalAnswer::NotOffered("cancel").into()),
+        NumberChoice::Number(number) => number,
+    };
+    if number < options.min || options.max.is_some_and(|max| number > max) {
+        return Err(IllegalAnswer::NotOffered("number").into());
+    }
+    Ok(if announcing {
+        Outcome::Number(number)
+    } else {
+        Outcome::Events(vec![Event::ChoiceMade {
+            player,
+            choice: Choice::Number(number),
+        }])
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: a number is accepted exactly when it lies between the bounds, with no upper bound when there is none, and backing out follows `can_cancel`; an announced number is kept for the cast and a number asked by an effect is logged.
+    use rstest::rstest;
+
+    use super::*;
+
+    fn options(min: u32, max: Option<u32>, can_cancel: bool) -> NumberOptions {
+        NumberOptions {
+            source: ObjectId(5),
+            min,
+            max,
+            text: String::new(),
+            can_cancel,
+        }
+    }
+
+    #[rstest]
+    #[case::the_lowest(0, Some(4), 0, true)]
+    #[case::the_highest(0, Some(4), 4, true)]
+    #[case::inside(1, Some(4), 3, true)]
+    #[case::below_the_lowest(1, Some(4), 0, false)]
+    #[case::above_the_highest(0, Some(4), 5, false)]
+    #[case::no_limit_above(0, None, 4_000_000, true)]
+    #[case::no_limit_but_the_lowest(2, None, 1, false)]
+    fn a_number_is_accepted_only_inside_the_bounds(
+        #[case] min: u32,
+        #[case] max: Option<u32>,
+        #[case] picked: u32,
+        #[case] accepted: bool,
+    ) {
+        let result = answer(
+            PlayerId(0),
+            &options(min, max, true),
+            NumberChoice::Number(picked),
+            true,
+        );
+        match (accepted, result) {
+            (true, Ok(Outcome::Number(taken))) => assert_eq!(taken, picked),
+            (false, Err(EngineError::Illegal(IllegalAnswer::NotOffered("number")))) => {}
+            (_, other) => panic!("{picked} within {min}..={max:?}: {other:?}"),
+        }
+    }
+
+    #[rstest]
+    #[case::before_the_payment(true)]
+    #[case::for_a_trigger(false)]
+    fn backing_out_follows_the_flag(#[case] can_cancel: bool) {
+        let result = answer(
+            PlayerId(0),
+            &options(0, None, can_cancel),
+            NumberChoice::Cancel,
+            true,
+        );
+        match (can_cancel, result) {
+            (true, Ok(Outcome::CancelCast)) => {}
+            (false, Err(EngineError::Illegal(IllegalAnswer::NotOffered("cancel")))) => {}
+            (_, other) => panic!("{other:?}"),
+        }
+    }
+
+    #[test]
+    fn a_number_an_effect_asked_for_is_logged_for_its_step() {
+        let Ok(Outcome::Events(events)) = answer(
+            PlayerId(1),
+            &options(0, Some(3), false),
+            NumberChoice::Number(2),
+            false,
+        ) else {
+            panic!("a number is logged");
+        };
+        assert_eq!(
+            events,
+            [Event::ChoiceMade {
+                player: PlayerId(1),
+                choice: Choice::Number(2)
+            }]
+        );
+    }
 }

@@ -1,9 +1,8 @@
 //! What players choose while a spell or ability is announced and resolved.
 //!
 //! Each decision the effects need has its own file with its options, its answer and the check that turns
-//! the answer into what the engine does with it (`docs/cards-dsl.md`, "Decisions the effects need"). Targets,
-//! modes, cards and their order, yes or no and options are built; the other kinds hold their types and refuse
-//! their answers until their task.
+//! the answer into what the engine does with it (`docs/cards-dsl.md`, "Decisions the effects need"). The questions of
+//! the announcement (modes, X, optional costs, targets, division) are asked by `announce`.
 
 mod ask;
 mod cards;
@@ -40,7 +39,7 @@ pub(crate) use cards::check as check_cards;
 pub(crate) use cards::{Chooser, Picked, Selection, pick_cards, pick_selections};
 pub(crate) use mode::{announceable, announced_specs, modal_of, mode_options, targets_before};
 pub(crate) use option::{OptionChooser, Optioned, pick_options};
-pub(crate) use targets::{asks, legal_from, options_for};
+pub(crate) use targets::{asks, legal_for, legal_from, options_for};
 pub(crate) use yes_no::{Said, pick_yes_no};
 
 pub(crate) use cards::answer as cards_answer;

@@ -11,7 +11,7 @@ use mtg_core::ids::PlayerId;
 use super::{DelayedId, Triggered};
 use crate::abilities::{AbilityRef, AbilitySource, Cause, PutOnStack};
 use crate::ability_reader;
-use crate::cast::Pending;
+use crate::announce::Pending;
 use crate::choose::{TriggerEntry, TriggersOptions};
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
@@ -562,7 +562,7 @@ mod tests {
         let Some(Progress::Put(pending)) = next(&state) else {
             panic!("the first of the group goes on the stack");
         };
-        let crate::cast::What::Trigger(first) = pending.what else {
+        let crate::announce::What::Trigger(first) = pending.what else {
             panic!("a trigger");
         };
         assert_eq!(first.trigger().source.id, id(&state, "Beta"));

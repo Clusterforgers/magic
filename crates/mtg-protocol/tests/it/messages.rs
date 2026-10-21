@@ -176,16 +176,19 @@ fn answers() -> Vec<Answer> {
         Answer::ChooseTargets(TargetChoice::Cancel),
         Answer::ChooseMode(ModeChoice::Modes(vec![0, 2])),
         Answer::ChooseMode(ModeChoice::Cancel),
-        Answer::ChooseNumber(NumberChoice(4)),
-        Answer::DivideAmount(DivideChoice(vec![
+        Answer::ChooseNumber(NumberChoice::Number(4)),
+        Answer::ChooseNumber(NumberChoice::Cancel),
+        Answer::DivideAmount(DivideChoice::Division(vec![
             (Target::Player(PlayerId(0)), 2),
             (Target::Object(ObjectRef { id: a, counter: 0 }), 1),
         ])),
+        Answer::DivideAmount(DivideChoice::Cancel),
         Answer::ChooseCards(CardsChoice(vec![a])),
         Answer::OrderCards(OrderChoice(vec![b, a])),
         Answer::YesNo(YesNoChoice(true)),
         Answer::ChooseOption(OptionChoice(1)),
-        Answer::ChooseCosts(CostsChoice(vec![0])),
+        Answer::ChooseCosts(CostsChoice::Costs(vec![0])),
+        Answer::ChooseCosts(CostsChoice::Cancel),
         Answer::OrderTriggers(TriggersChoice(vec![1, 0])),
         Answer::ChooseReplacement(ReplacementChoice(0)),
     ]
@@ -332,11 +335,22 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             source: b,
             min: 0,
             max: None,
+            text: String::new(),
+            can_cancel: false,
+        }),
+        DecisionKind::ChooseNumber(NumberOptions {
+            source: b,
+            min: 0,
+            max: Some(5),
+            text: "Choose a value for X.".into(),
+            can_cancel: true,
         }),
         DecisionKind::DivideAmount(DivideOptions {
             source: b,
             total: 4,
             among: vec![Target::Player(PlayerId(1)), Target::Player(PlayerId(0))],
+            text: "Divide 4 damage among the targets.".into(),
+            can_cancel: true,
         }),
         DecisionKind::ChooseCards(CardsOptions {
             source: b,
@@ -369,6 +383,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                 index: 0,
                 label: "Kicker {R}".into(),
             }],
+            can_cancel: true,
         }),
         DecisionKind::OrderTriggers(TriggersOptions {
             triggers: vec![
@@ -1417,8 +1432,23 @@ fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
             json!({"ChooseMode": "Cancel"}),
         ),
         (
-            Answer::ChooseNumber(NumberChoice(4)),
-            json!({"ChooseNumber": 4}),
+            Answer::ChooseNumber(NumberChoice::Number(4)),
+            json!({"ChooseNumber": {"Number": 4}}),
+        ),
+        (
+            Answer::ChooseNumber(NumberChoice::Cancel),
+            json!({"ChooseNumber": "Cancel"}),
+        ),
+        (
+            Answer::DivideAmount(DivideChoice::Division(vec![(
+                Target::Player(PlayerId(1)),
+                2,
+            )])),
+            json!({"DivideAmount": {"Division": [[{"Player": 1}, 2]]}}),
+        ),
+        (
+            Answer::ChooseCosts(CostsChoice::Costs(vec![0, 2])),
+            json!({"ChooseCosts": {"Costs": [0, 2]}}),
         ),
         (Answer::YesNo(YesNoChoice(true)), json!({"YesNo": true})),
         (

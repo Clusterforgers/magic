@@ -17,4 +17,13 @@ total: number,
 /**
  * The targets, each of which gets at least one.
  */
-among: Array<Target>, };
+among: Array<Target>, 
+/**
+ * What is divided in the words of a card ("Divide 3 damage among the targets."); empty when the engine gave none.
+ */
+text?: string, 
+/**
+ * Whether the cast or activation may still be backed out of: nothing is logged until it is paid for. A triggered
+ * ability that divides as it goes on the stack cannot (CR 603.3c).
+ */
+can_cancel?: boolean, };

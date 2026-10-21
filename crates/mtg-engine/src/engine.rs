@@ -2,8 +2,8 @@
 
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
+use crate::announce::{Answered, Next, Pending, What, announce};
 use crate::answers::{Outcome, handle};
-use crate::cast::{Next, Pending, What, announce};
 use crate::characteristics::controller_of_object;
 use crate::choose::Choice;
 use crate::decision::{Answer, Decision};
@@ -336,19 +336,11 @@ impl Engine {
                 self.pending = Some(Pending::new(player, What::Ability(ability)));
                 Ok(())
             }
-            Outcome::Modes(modes) => {
-                if let Some(pending) = &mut self.pending {
-                    pending.choices.modes = modes;
-                    pending.modes_chosen = true;
-                }
-                Ok(())
-            }
-            Outcome::Targets(targets) => {
-                if let Some(pending) = &mut self.pending {
-                    pending.choices.targets.push(targets);
-                }
-                Ok(())
-            }
+            Outcome::Modes(modes) => self.announced(Answered::Modes(modes)),
+            Outcome::Targets(targets) => self.announced(Answered::Targets(targets)),
+            Outcome::Number(number) => self.announced(Answered::Number(number)),
+            Outcome::Costs(costs) => self.announced(Answered::Costs(costs)),
+            Outcome::Division(shares) => self.announced(Answered::Division(shares)),
             Outcome::CancelCast => {
                 self.pending = None;
                 Ok(())
@@ -365,6 +357,16 @@ impl Engine {
                     ))
                 }
             },
+        }
+    }
+
+    /// Hands the answer to a question of the announcement to the cast or activation that asked it.
+    fn announced(&mut self, answered: Answered) -> Result<(), EngineError> {
+        match &mut self.pending {
+            Some(pending) => pending.accept(answered),
+            None => Err(EngineError::InvalidEvent(
+                "an announcement was answered with nothing announced".into(),
+            )),
         }
     }
 

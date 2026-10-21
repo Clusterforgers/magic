@@ -13,4 +13,8 @@ source: ObjectId,
 /**
  * The costs that may be paid.
  */
-optional: Array<OptionalCost>, };
+optional: Array<OptionalCost>, 
+/**
+ * Whether the cast or activation may still be backed out of: nothing is logged until it is paid for.
+ */
+can_cancel?: boolean, };

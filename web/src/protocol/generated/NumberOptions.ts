@@ -16,4 +16,12 @@ min: number,
 /**
  * The largest allowed number; no limit when absent.
  */
-max: number | null, };
+max: number | null, 
+/**
+ * What the number is for in the words of a card ("Choose a value for X."); empty when the engine gave none.
+ */
+text?: string, 
+/**
+ * Whether the cast or activation may still be backed out of: nothing is logged until it is paid for.
+ */
+can_cancel?: boolean, };

@@ -203,6 +203,11 @@ pub(crate) fn options_for(
             u32::try_from(amount).unwrap_or(0)
         }
     };
+    // Every target of a divided amount gets at least one (CR 601.2d), so there are never more targets than the amount.
+    let max = match &spec.divide {
+        Some(Amount::Fixed(n)) => max.min(u32::try_from(*n).unwrap_or(0)),
+        _ => max,
+    };
     Some(TargetOptions {
         source,
         spec: index,

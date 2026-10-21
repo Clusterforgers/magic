@@ -2,6 +2,6 @@
 import type { Target } from "./Target";
 
 /**
- * What each target gets.
+ * The answer to a division decision.
  */
-export type DivideChoice = Array<[Target, number]>;
+export type DivideChoice = { "Division": Array<[Target, number]> } | "Cancel";

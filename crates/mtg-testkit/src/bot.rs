@@ -177,9 +177,15 @@ impl RandomBot {
                 };
                 Answer::ChooseMode(ModeChoice::Modes(chosen))
             }
-            DecisionKind::ChooseNumber(options) => Answer::ChooseNumber(NumberChoice(options.min)),
+            DecisionKind::ChooseNumber(options) => {
+                // Any number in range; with no upper bound, a few above the lowest. A bot never backs out.
+                let top = options.max.unwrap_or_else(|| options.min.saturating_add(3));
+                let spread = usize::try_from(top.saturating_sub(options.min)).unwrap_or(0) + 1;
+                let offset = u32::try_from(self.rng.index(spread)).unwrap_or(0);
+                Answer::ChooseNumber(NumberChoice::Number(options.min.saturating_add(offset)))
+            }
             DecisionKind::DivideAmount(options) => {
-                Answer::DivideAmount(DivideChoice(even_division(options)))
+                Answer::DivideAmount(DivideChoice::Division(self.share_out(options)))
             }
             DecisionKind::ChooseCards(options) => {
                 // Any cards among those offered, as many as the bounds allow.
@@ -198,7 +204,14 @@ impl RandomBot {
             DecisionKind::ChooseOption(options) => {
                 Answer::ChooseOption(OptionChoice(self.rng.index(options.options.len().max(1))))
             }
-            DecisionKind::ChooseCosts(_) => Answer::ChooseCosts(CostsChoice(Vec::new())),
+            DecisionKind::ChooseCosts(options) => {
+                // Any of the optional costs, each with the chance of a coin.
+                let indices: Vec<usize> = options.optional.iter().map(|cost| cost.index).collect();
+                let wanted = self.rng.index(indices.len() + 1);
+                let mut chosen = self.pick(&indices, wanted);
+                chosen.sort_unstable();
+                Answer::ChooseCosts(CostsChoice::Costs(chosen))
+            }
             DecisionKind::OrderTriggers(options) => {
                 Answer::OrderTriggers(TriggersChoice((0..options.triggers.len()).collect()))
             }
@@ -374,6 +387,19 @@ impl RandomBot {
         Some(payment)
     }
 
+    /// Shares an amount among the targets of a spell: one each, then the rest a point at a time at random.
+    fn share_out(&mut self, options: &DivideOptions) -> Vec<(Target, u32)> {
+        let mut shares: Vec<(Target, u32)> = options.among.iter().map(|t| (*t, 1)).collect();
+        let spare = options
+            .total
+            .saturating_sub(u32::try_from(shares.len()).unwrap_or(u32::MAX));
+        for _ in 0..if shares.is_empty() { 0 } else { spare } {
+            let pick = self.rng.index(shares.len());
+            shares[pick].1 += 1;
+        }
+        shares
+    }
+
     /// Splits combat damage randomly among blockers, one point at a time.
     ///
     /// With trample half the divisions give every blocker its lethal damage first (when the power covers it) and
@@ -397,25 +423,6 @@ impl RandomBot {
         }
         shares
     }
-}
-
-/// Divides the total as evenly as it goes among the targets, the first getting what is left over.
-fn even_division(options: &DivideOptions) -> Vec<(Target, u32)> {
-    let count = u32::try_from(options.among.len()).unwrap_or(1).max(1);
-    let share = options.total / count;
-    options
-        .among
-        .iter()
-        .enumerate()
-        .map(|(at, target)| {
-            let amount = if at == 0 {
-                options.total - share * (count - 1)
-            } else {
-                share
-            };
-            (*target, amount)
-        })
-        .collect()
 }
 
 #[cfg(test)]

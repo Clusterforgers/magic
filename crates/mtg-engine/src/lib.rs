@@ -5,6 +5,7 @@
 //! [`Answer`]; illegal answers never change state. Characteristics are always derived through
 //! [`characteristics`], never stored.
 
+mod announce;
 mod answers;
 mod attach;
 mod cast;

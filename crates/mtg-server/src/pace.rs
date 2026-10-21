@@ -10,8 +10,9 @@ use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::choose::{
-    CardsChoice, CardsOptions, ModeChoice, ModeOptions, OptionChoice, OrderChoice,
-    ReplacementChoice, TargetChoice, TriggersChoice, YesNoChoice,
+    CardsChoice, CardsOptions, CostsChoice, DivideChoice, DivideOptions, ModeChoice, ModeOptions,
+    NumberChoice, OptionChoice, OrderChoice, ReplacementChoice, Target, TargetChoice,
+    TriggersChoice, YesNoChoice,
 };
 use mtg_engine::decision::PriorityAction;
 use mtg_engine::{Answer, Decision, DecisionKind};
@@ -71,7 +72,7 @@ impl Pace {
     ///
     /// Only a seat that is not the active player is hurried, and only for a priority decision, for choosing the
     /// targets of a spell or ability, for ordering its triggers or the replacement effects that apply to an event, for
-    /// answering a question of an effect (yes or no, an option, modes, cards, an order of cards) or for declaring blockers; every other decision (mulligans, discards,
+    /// answering a question of an effect (yes or no, an option, modes, a number, optional costs, a division, cards, an order of cards) or for declaring blockers; every other decision (mulligans, discards,
     /// damage division, the active player's own turn) waits for as long as it takes. A priority window the seat has nothing to do in is
     /// hurried too (it is only delivered at a stop or in Full Control): it would hold the table for no reason. The
     /// rule reads the kind alone, never the options, the seat or the hand, so it shows nothing about them.
@@ -88,6 +89,9 @@ impl Pace {
             | DecisionKind::YesNo(_)
             | DecisionKind::ChooseOption(_)
             | DecisionKind::ChooseMode(_)
+            | DecisionKind::ChooseNumber(_)
+            | DecisionKind::DivideAmount(_)
+            | DecisionKind::ChooseCosts(_)
             | DecisionKind::ChooseCards(_)
             | DecisionKind::OrderCards(_) => self.response,
             DecisionKind::DeclareBlockers(_) => self.blocks,
@@ -120,7 +124,8 @@ pub(crate) fn is_priority(decision: &Decision) -> bool {
 /// What the table answers for a seat whose clock ran out: a pass, only the blockers a rule requires, no target (a spell is taken back and a
 /// triggered ability removed, as the rules do when a target cannot be chosen), the triggers in the order they
 /// triggered, No to a question, the first option, for modes the cast taken back when the options allow it and the
-/// first mode otherwise, the first cards of the list for a choice of cards and the order given for an order of cards.
+/// first mode otherwise, the same for a number, the optional costs and a division (the lowest number, no cost and an
+/// even division otherwise), the first cards of the list for a choice of cards and the order given for an order of cards.
 ///
 /// The answer is read from the decision alone. `None` for a decision that has no clock and no safe default.
 pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
@@ -148,6 +153,19 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
             (!options.options.is_empty()).then_some(Answer::ChooseOption(OptionChoice(0)))
         }
         DecisionKind::ChooseMode(options) => first_modes(options).map(Answer::ChooseMode),
+        // A cast is taken back when the options allow it; otherwise the lowest number, no optional cost and an even
+        // division, the answers that decide the least.
+        DecisionKind::ChooseNumber(options) => Some(Answer::ChooseNumber(if options.can_cancel {
+            NumberChoice::Cancel
+        } else {
+            NumberChoice::Number(options.min)
+        })),
+        DecisionKind::ChooseCosts(options) => Some(Answer::ChooseCosts(if options.can_cancel {
+            CostsChoice::Cancel
+        } else {
+            CostsChoice::Costs(Vec::new())
+        })),
+        DecisionKind::DivideAmount(options) => even_division(options).map(Answer::DivideAmount),
         DecisionKind::ChooseCards(options) => Some(Answer::ChooseCards(first_cards(options))),
         DecisionKind::OrderCards(options) => {
             Some(Answer::OrderCards(OrderChoice(options.cards.clone())))
@@ -161,6 +179,35 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
 fn first_cards(options: &CardsOptions) -> CardsChoice {
     let wanted = usize::try_from(options.min).unwrap_or(usize::MAX);
     CardsChoice(options.from.iter().copied().take(wanted).collect())
+}
+
+/// Backing out of the cast when the options allow it, else the amount shared as evenly as it goes: one at least to each
+/// target, the first getting what is left over. `None` when the amount is smaller than the number of targets.
+fn even_division(options: &DivideOptions) -> Option<DivideChoice> {
+    if options.can_cancel {
+        return Some(DivideChoice::Cancel);
+    }
+    let count = u32::try_from(options.among.len())
+        .ok()
+        .filter(|count| *count > 0)?;
+    let share = options.total / count;
+    if share == 0 {
+        return None;
+    }
+    let shares: Vec<(Target, u32)> = options
+        .among
+        .iter()
+        .enumerate()
+        .map(|(at, target)| {
+            let amount = if at == 0 {
+                options.total - share * (count - 1)
+            } else {
+                share
+            };
+            (*target, amount)
+        })
+        .collect();
+    Some(DivideChoice::Division(shares))
 }
 
 /// Backing out of the cast when the options allow it, else the first modes of the list: one, or as many as the
@@ -313,8 +360,9 @@ mod tests {
     use super::*;
     use mtg_core::ids::ObjectId;
     use mtg_engine::choose::{
-        CardsOptions, ChoiceOption, ModeOption, OptionOptions, OrderOptions, ReplacementCandidate,
-        ReplacementOptions, TargetOptions, TriggerEntry, TriggersOptions, YesNoOptions,
+        CardsOptions, ChoiceOption, CostsOptions, ModeOption, NumberOptions, OptionOptions,
+        OptionalCost, OrderOptions, ReplacementCandidate, ReplacementOptions, TargetOptions,
+        TriggerEntry, TriggersOptions, YesNoOptions,
     };
     use mtg_engine::decision::{
         AttackOptions, BlockOptions, BottomOptions, DamageOptions, DiscardOptions, MulliganOptions,
@@ -464,6 +512,50 @@ mod tests {
         })
     }
 
+    fn number(min: u32, max: Option<u32>, can_cancel: bool) -> DecisionKind {
+        DecisionKind::ChooseNumber(NumberOptions {
+            source: ObjectId(1),
+            min,
+            max,
+            text: "Choose a value for X.".into(),
+            can_cancel,
+        })
+    }
+
+    fn costs(count: usize, can_cancel: bool) -> DecisionKind {
+        DecisionKind::ChooseCosts(CostsOptions {
+            source: ObjectId(1),
+            optional: (0..count)
+                .map(|index| OptionalCost {
+                    index,
+                    label: format!("Kicker {index}"),
+                })
+                .collect(),
+            can_cancel,
+        })
+    }
+
+    fn division(total: u32, count: u64, can_cancel: bool) -> DecisionKind {
+        DecisionKind::DivideAmount(DivideOptions {
+            source: ObjectId(1),
+            total,
+            among: (0..count).map(|n| Target::Player(PlayerId(n))).collect(),
+            text: String::new(),
+            can_cancel,
+        })
+    }
+
+    /// The answer that gives the first seats these shares, in order.
+    fn shares(given: &[u32]) -> Option<Answer> {
+        Some(Answer::DivideAmount(DivideChoice::Division(
+            given
+                .iter()
+                .zip(0u64..)
+                .map(|(share, n)| (Target::Player(PlayerId(n)), *share))
+                .collect(),
+        )))
+    }
+
     /// `count` cards on offer whose ids run down, so the first cards offered are not the ones with the lowest ids.
     fn offered(count: usize) -> Vec<ObjectId> {
         (0..count).map(|n| ObjectId(100 - 3 * n as u64)).collect()
@@ -526,6 +618,13 @@ mod tests {
     #[case::choosing_an_option(OTHER, options(3), Some(10))]
     #[case::choosing_the_modes_of_a_spell(OTHER, modes(3, 1, 1, false, true), Some(10))]
     #[case::choosing_the_modes_of_a_trigger(OTHER, modes(3, 1, 1, false, false), Some(10))]
+    #[case::choosing_x(OTHER, number(0, Some(3), true), Some(10))]
+    #[case::choosing_a_number_for_a_trigger(OTHER, number(0, None, false), Some(10))]
+    #[case::choosing_optional_costs(OTHER, costs(2, true), Some(10))]
+    #[case::dividing_an_amount(OTHER, division(3, 2, true), Some(10))]
+    #[case::the_active_player_choosing_x(ACTIVE, number(0, Some(3), true), None)]
+    #[case::the_active_player_choosing_optional_costs(ACTIVE, costs(2, true), None)]
+    #[case::the_active_player_dividing_an_amount(ACTIVE, division(3, 2, true), None)]
     #[case::the_active_player_answering_a_question(ACTIVE, question(), None)]
     #[case::the_active_player_choosing_an_option(ACTIVE, options(3), None)]
     #[case::the_active_player_choosing_modes(ACTIVE, modes(3, 1, 1, false, true), None)]
@@ -575,6 +674,9 @@ mod tests {
             replacements(2),
             options(2),
             modes(2, 1, 1, false, true),
+            number(0, Some(1), true),
+            costs(1, true),
+            division(2, 2, true),
             cards(2, 1, 1),
             ordering(2),
         ] {
@@ -631,6 +733,27 @@ mod tests {
     #[case::a_repeating_choice_with_too_few_modes_repeats_the_first(modes(1, 3, 3, true, false), Some(Answer::ChooseMode(ModeChoice::Modes(vec![1, 1, 1]))))]
     #[case::too_few_modes_that_may_not_repeat_have_no_answer(modes(1, 2, 2, false, false), None)]
     #[case::no_modes_to_choose(modes(0, 1, 1, false, false), None)]
+    #[case::x_is_taken_back(
+        number(0, Some(3), true),
+        Some(Answer::ChooseNumber(NumberChoice::Cancel))
+    )]
+    #[case::the_lowest_number_when_it_cannot_be_taken_back(
+        number(2, None, false),
+        Some(Answer::ChooseNumber(NumberChoice::Number(2)))
+    )]
+    #[case::optional_costs_are_taken_back(
+        costs(2, true),
+        Some(Answer::ChooseCosts(CostsChoice::Cancel))
+    )]
+    #[case::no_optional_cost_when_it_cannot_be_taken_back(costs(2, false), Some(Answer::ChooseCosts(CostsChoice::Costs(vec![]))))]
+    #[case::a_division_is_taken_back(
+        division(5, 2, true),
+        Some(Answer::DivideAmount(DivideChoice::Cancel))
+    )]
+    #[case::an_even_division_the_first_gets_the_rest(division(5, 2, false), shares(&[3, 2]))]
+    #[case::an_even_division_of_three_ways(division(6, 3, false), shares(&[2, 2, 2]))]
+    #[case::a_division_with_one_each(division(2, 2, false), shares(&[1, 1]))]
+    #[case::a_division_that_cannot_give_one_each_has_no_answer(division(1, 2, false), None)]
     #[case::the_first_card_offered(cards(4, 1, 1), Some(chosen(&[100])))]
     #[case::the_first_two_cards_not_the_lowest_ids(cards(4, 2, 2), Some(chosen(&[100, 97])))]
     #[case::at_least_one_takes_one(cards(4, 1, 3), Some(chosen(&[100])))]
@@ -657,6 +780,12 @@ mod tests {
             options(11),
             modes(1, 1, 1, false, true),
             modes(5, 2, 3, true, false),
+            number(0, None, false),
+            number(3, Some(40), true),
+            costs(3, true),
+            costs(1, false),
+            division(4, 2, true),
+            division(9, 3, false),
             cards(1, 1, 1),
             cards(12, 0, 12),
             cards(5, 2, 3),

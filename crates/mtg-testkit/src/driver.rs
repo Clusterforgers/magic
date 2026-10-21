@@ -545,21 +545,35 @@ impl Driver {
                     .map(|m| m.index)
                     .collect(),
             )),
-            DecisionKind::ChooseNumber(o) => Answer::ChooseNumber(NumberChoice(o.min)),
-            DecisionKind::DivideAmount(o) => Answer::DivideAmount(DivideChoice(
-                o.among
-                    .iter()
-                    .enumerate()
-                    .map(|(at, t)| (*t, if at == 0 { o.total } else { 0 }))
-                    .collect(),
-            )),
+            // Backing out of a cast is the passive way through an announcement.
+            DecisionKind::ChooseNumber(o) if o.can_cancel => {
+                Answer::ChooseNumber(NumberChoice::Cancel)
+            }
+            DecisionKind::ChooseNumber(o) => Answer::ChooseNumber(NumberChoice::Number(o.min)),
+            DecisionKind::DivideAmount(o) if o.can_cancel => {
+                Answer::DivideAmount(DivideChoice::Cancel)
+            }
+            // One point each and the rest to the first target.
+            DecisionKind::DivideAmount(o) => {
+                let others = u32::try_from(o.among.len().saturating_sub(1)).unwrap_or(0);
+                Answer::DivideAmount(DivideChoice::Division(
+                    o.among
+                        .iter()
+                        .enumerate()
+                        .map(|(at, t)| (*t, if at == 0 { o.total - others } else { 1 }))
+                        .collect(),
+                ))
+            }
             DecisionKind::ChooseCards(o) => Answer::ChooseCards(CardsChoice(
                 o.from.iter().copied().take(o.min as usize).collect(),
             )),
             DecisionKind::OrderCards(o) => Answer::OrderCards(OrderChoice(o.cards.clone())),
             DecisionKind::YesNo(_) => Answer::YesNo(YesNoChoice(false)),
             DecisionKind::ChooseOption(_) => Answer::ChooseOption(OptionChoice(0)),
-            DecisionKind::ChooseCosts(_) => Answer::ChooseCosts(CostsChoice(Vec::new())),
+            DecisionKind::ChooseCosts(o) if o.can_cancel => {
+                Answer::ChooseCosts(CostsChoice::Cancel)
+            }
+            DecisionKind::ChooseCosts(_) => Answer::ChooseCosts(CostsChoice::Costs(Vec::new())),
             DecisionKind::OrderTriggers(o) => {
                 Answer::OrderTriggers(TriggersChoice((0..o.triggers.len()).collect()))
             }

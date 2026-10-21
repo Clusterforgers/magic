@@ -3,7 +3,7 @@
 use mtg_core::ids::ObjectId;
 
 use crate::abilities::AbilityRef;
-use crate::cast::Pending;
+use crate::announce::Pending;
 use crate::choose::{self, Target};
 use crate::combat::{attack_events, check_attackers, check_blockers};
 use crate::damage::assignment_answer;
@@ -27,6 +27,12 @@ pub(crate) enum Outcome {
     Modes(Vec<usize>),
     /// These are the targets of the next specification of the cast or activation in progress.
     Targets(Vec<Target>),
+    /// This is the value of X of the cast or activation in progress.
+    Number(u32),
+    /// These are the optional costs, by index, of the cast or activation in progress.
+    Costs(Vec<usize>),
+    /// This is how the next amount to divide of the cast or activation in progress is shared among its targets.
+    Division(Vec<(Target, u32)>),
     /// Abandon the cast or activation in progress.
     CancelCast,
     /// Remove the triggered ability being put on the stack, whose controller chose no target (CR 603.3d).
@@ -86,7 +92,7 @@ pub(crate) fn handle(
             choose::mode_answer(player, options, choice)
         }
         (DecisionKind::ChooseNumber(options), Answer::ChooseNumber(choice)) => {
-            choose::number_answer(player, options, choice)
+            choose::number_answer(player, options, choice, pending.is_some())
         }
         (DecisionKind::DivideAmount(options), Answer::DivideAmount(choice)) => {
             choose::divide_answer(player, options, choice)

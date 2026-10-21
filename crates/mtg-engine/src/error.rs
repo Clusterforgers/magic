@@ -190,7 +190,12 @@ pub enum IllegalAnswer {
     /// The mana payment is invalid.
     #[error("invalid payment: {0}")]
     Payment(#[from] PaymentError),
-    /// A decision of a kind the engine does not ask yet was answered.
-    #[error("the engine does not ask {0} decisions yet")]
-    Unsupported(&'static str),
+    /// An amount was divided so that the shares do not add up to it.
+    #[error("{expected} must be divided but the shares add up to {got}")]
+    WrongTotal {
+        /// The amount to divide.
+        expected: u32,
+        /// What the shares add up to.
+        got: u32,
+    },
 }
