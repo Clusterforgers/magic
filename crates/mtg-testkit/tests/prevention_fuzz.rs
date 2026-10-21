@@ -1,4 +1,4 @@
-//! Goal: whole bot games with decks of prevention and regeneration (Fog, Mending Hands, Samite Healer, Drudge Skeletons, Death Ward) against burn, destroy effects, Wrath of God and creatures that fight finish and keep every invariant for many seeds at tables of two, three and four seats, and the games use them: an independent ledger replays each log and finds that no combat damage is dealt while a Fog is in force unless it can't be prevented, that damage of a spell is dealt through a Fog, that a shield with damage left says how much it kept and that this is always less than before and more than nothing, that a creature regenerates only while a shield names it, and that Wrath of God resolves with no regeneration and leaves no creature.
+//! Goal: whole bot games with decks of prevention and regeneration (Fog, Mending Hands, Samite Healer, Drudge Skeletons, Death Ward) against burn, Stomp, destroy effects, Wrath of God and creatures that fight finish and keep every invariant for many seeds at tables of two, three and four seats, and the games use them: an independent ledger replays each log and finds that no combat damage is dealt while a Fog is in force unless it can't be prevented, that damage of a spell is dealt through a Fog, that a shield with damage left says how much it kept and that this is always less than before and more than nothing, that no shield keeps or uses up damage while a Stomp makes all damage unpreventable and every Stomp that resolves deals at least its 2 damage, that a creature regenerates only while a shield names it, and that Wrath of God resolves with no regeneration and leaves no creature; bots answer the question of which damage a shield takes first.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_core::ids::ObjectId;
@@ -23,13 +23,23 @@ fn games() -> u64 {
 struct Seen {
     fogs: u64,
     attacks_in_a_fog: u64,
-    combat_damage_in_a_fog: u64,
+    combat_damage_through_a_fog: u64,
     spell_damage_in_a_fog: u64,
     shields_used: u64,
     shields_ended: u64,
     regenerated: u64,
     wraths: u64,
     buried: u64,
+    /// Rules that made all damage unpreventable (Stomp).
+    unpreventable: u64,
+    /// Damage events dealt while such a rule was in force.
+    damage_while_unpreventable: u64,
+    /// Of those, the ones dealt with a prevention shield in force.
+    damage_past_a_shield: u64,
+    /// Stomps that resolved and dealt their damage whole.
+    stomps: u64,
+    /// Questions about the damage a shield takes first.
+    shield_questions: usize,
 }
 
 fn name_of(state: &GameState, id: ObjectId) -> String {
@@ -60,6 +70,23 @@ fn unpreventable_in_force(state: &GameState) -> bool {
         .any(|effect| matches!(effect.rule, Rule::DamageCantBePrevented { .. }))
 }
 
+/// Whether a rule in force makes all damage, combat or not, from any source unpreventable.
+fn all_damage_unpreventable(state: &GameState) -> bool {
+    state.rule_effects().iter().any(|effect| {
+        effect.is_active(state)
+            && matches!(&effect.rule, Rule::DamageCantBePrevented { source, combat }
+                if source.is_empty() && combat.is_none())
+    })
+}
+
+/// Whether a prevention shield is in force.
+fn shield_in_force(state: &GameState) -> bool {
+    state
+        .rule_effects()
+        .iter()
+        .any(|effect| effect.is_active(state) && matches!(effect.rule, Rule::PreventDamage(_)))
+}
+
 /// Whether a regeneration shield names this object.
 fn regenerates(state: &GameState, object: ObjectId) -> bool {
     state
@@ -84,8 +111,42 @@ fn ledger(setup: &GameSetup, events: &[Event], seen: &mut Seen) {
     let mut state = GameState::from_setup(setup).unwrap();
     let mut wrath: Option<ObjectId> = None;
     let mut wrath_ended = false;
+    // The Stomp that is resolving, with the damage it has dealt.
+    let mut stomp: Option<(ObjectId, u32)> = None;
     for (at, event) in events.iter().enumerate() {
+        if let Event::ResolutionBegan { object } = event
+            && name_of(&state, *object) == "Stomp"
+        {
+            stomp = Some((*object, 0));
+        }
+        if let (Event::DamageDealt { source, amount, .. }, Some((spell, dealt))) =
+            (event, stomp.as_mut())
+            && source == spell
+        {
+            *dealt += amount;
+        }
+        if let Event::ResolutionEnded { object, outcome } = event
+            && stomp.is_some_and(|(spell, _)| spell == *object)
+        {
+            let (_, dealt) = stomp.take().unwrap();
+            if *outcome == ResolutionOutcome::Resolved {
+                // Whatever shields and Fogs are in force, nothing of the 2 damage is prevented (Furnace of Rath may add).
+                assert!(dealt >= 2, "Stomp dealt {dealt} damage at {at}");
+                seen.stomps += 1;
+            }
+        }
+        if matches!(event, Event::DamageDealt { .. }) && all_damage_unpreventable(&state) {
+            seen.damage_while_unpreventable += 1;
+            if shield_in_force(&state) {
+                seen.damage_past_a_shield += 1;
+            }
+        }
         match event {
+            Event::RuleCreated { effect }
+                if matches!(&effect.rule, Rule::DamageCantBePrevented { .. }) =>
+            {
+                seen.unpreventable += 1;
+            }
             Event::RuleCreated { effect }
                 if matches!(&effect.rule, Rule::PreventDamage(shield)
                     if shield.combat == Some(true) && shield.to.is_none()) =>
@@ -109,12 +170,16 @@ fn ledger(setup: &GameSetup, events: &[Event], seen: &mut Seen) {
                         unpreventable_in_force(&state),
                         "combat damage at {at} with a Fog in force"
                     );
-                    seen.combat_damage_in_a_fog += 1;
+                    seen.combat_damage_through_a_fog += 1;
                 } else {
                     seen.spell_damage_in_a_fog += 1;
                 }
             }
             Event::ShieldUsed { id, left } => {
+                assert!(
+                    !all_damage_unpreventable(&state),
+                    "a shield kept damage at {at} while no damage could be prevented"
+                );
                 let shield = state
                     .rule_effects()
                     .iter()
@@ -132,12 +197,23 @@ fn ledger(setup: &GameSetup, events: &[Event], seen: &mut Seen) {
                 seen.shields_used += 1;
             }
             Event::RuleExpired { id } => {
-                if state
-                    .rule_effects()
-                    .iter()
-                    .any(|effect| effect.id == *id && matches!(effect.rule, Rule::PreventDamage(_)))
-                {
+                let shield = state.rule_effects().iter().find_map(|effect| {
+                    match (&effect.rule, effect.id == *id) {
+                        (Rule::PreventDamage(shield), true) => Some((effect, shield.left)),
+                        _ => None,
+                    }
+                });
+                if let Some((effect, left)) = shield {
                     seen.shields_ended += 1;
+                    // A shield used up while all damage can't be prevented would be damage prevented: the others end
+                    // with the turn or when what they name has gone.
+                    assert!(
+                        left.is_none()
+                            || !effect.is_active(&state)
+                            || state.turn().step() == Step::Cleanup
+                            || !all_damage_unpreventable(&state),
+                        "a shield was used up at {at} while no damage could be prevented"
+                    );
                 }
             }
             Event::Regenerated { object } => {
@@ -195,6 +271,8 @@ fn seeded_prevention_games_finish_and_keep_every_invariant(#[case] players: usiz
         let end = replay(&setup, &outcome.events).unwrap();
         assert_eq!(end.state_hash(), outcome.final_hash);
         ledger(&setup, &outcome.events, &mut seen);
+        // No other card of the deck asks for an option, so every one is a pick of the damage a shield takes first.
+        seen.shield_questions += outcome.option_asks;
     }
     let campaign = format!("{} games of {players} seats", games());
     assert!(seen.fogs > 0, "no Fog was cast in {campaign}");
@@ -211,9 +289,25 @@ fn seeded_prevention_games_finish_and_keep_every_invariant(#[case] players: usiz
         seen.spell_damage_in_a_fog > 0,
         "no spell dealt damage in a Fog in {campaign}"
     );
-    assert_eq!(
-        seen.combat_damage_in_a_fog, 0,
-        "combat damage was dealt in a Fog in {campaign}"
+    assert!(
+        seen.unpreventable > 0,
+        "no Stomp made damage unpreventable in {campaign}"
+    );
+    assert!(
+        seen.stomps > 0,
+        "no Stomp resolved and dealt its damage in {campaign}"
+    );
+    assert!(
+        seen.damage_while_unpreventable > 0,
+        "no damage was dealt while none could be prevented in {campaign}"
+    );
+    assert!(
+        seen.damage_past_a_shield > 0,
+        "no damage was dealt past a shield while none could be prevented in {campaign}"
+    );
+    assert!(
+        seen.shield_questions > 0,
+        "no player picked the damage a shield takes first in {campaign}"
     );
 }
 

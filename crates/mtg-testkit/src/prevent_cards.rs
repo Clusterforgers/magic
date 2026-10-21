@@ -1,10 +1,10 @@
 //! Damage prevention and regeneration (CR 615, 701.19) and the decks and games built from them: the corpus cards that
-//! prevent damage or regenerate, with the spells that deal damage and destroy for them to act on.
+//! prevent damage or regenerate, with the spells that deal damage (Stomp, which stops prevention) and destroy for them to act on.
 
 use std::sync::Arc;
 
-use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
+use mtg_cards::{CardDefinition, builtin};
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_engine::GameSetup;
@@ -59,6 +59,25 @@ pub fn smite(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
     ))
 }
 
+/// Stomp, the adventure of Bonecrusher Giant, as an instant of its own for `{1}{R}`: the rules are those of its face in
+/// the card file (damage can't be prevented this turn, 2 damage to any target).
+pub fn stomp() -> Result<Arc<CardDefinition>, CorpusError> {
+    let library =
+        builtin::library().map_err(|errors| CorpusError::Data(errors.to_string()))?;
+    let face = library
+        .card_by_name("Stomp")
+        .and_then(|card| card.faces.iter().find(|face| face.name == "Stomp"))
+        .ok_or_else(|| CorpusError::UnknownCard("Stomp".to_owned()))?;
+    Ok(Arc::new(
+        face.abilities.iter().cloned().fold(
+            CardDefinition::new("Stomp")
+                .with_type(CardType::Instant)
+                .with_mana_cost(cost(1, &[Color::Red])),
+            CardDefinition::with_rules,
+        ),
+    ))
+}
+
 /// A legal Normal deck of shields and the damage and destruction they answer, derived entirely from `rng`.
 pub fn prevent_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let colors = [
@@ -74,6 +93,7 @@ pub fn prevent_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, Corpu
     }
     for (card, copies) in [
         (smite("Smite")?, 2),
+        (stomp()?, 3),
         (burn("Spark", 2), 2),
         (burn("Flame", 4), 1),
         (bear(), 3),
@@ -96,7 +116,7 @@ pub fn prevent_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, Corpus
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the destroy spell of this module is a valid rule the engine runs, and a prevention deck is a legal sixty or more cards with every prevention card and every card they answer in it, fixed by its seed.
+    //! Goal: the destroy spell of this module is a valid rule the engine runs, Stomp is an instant with the rules of the face in its card file, and a prevention deck is a legal sixty or more cards with every prevention card and every card they answer in it, fixed by its seed.
     use super::*;
 
     #[test]
@@ -107,9 +127,21 @@ mod tests {
     }
 
     #[test]
+    fn stomp_is_an_instant_for_two_with_the_rules_of_its_face() {
+        let card = stomp().unwrap();
+        assert_eq!(card.name, "Stomp");
+        assert_eq!(card.mana_cost.as_ref(), Some(&cost(1, &[Color::Red])));
+        assert_eq!(card.rules.len(), 1);
+        let text = format!("{:?}", card.rules);
+        assert!(text.contains("DamageCantBePrevented"), "{text}");
+        assert!(text.contains("DealDamage"), "{text}");
+    }
+
+    #[test]
     fn a_prevention_deck_holds_every_prevention_card_and_is_fixed_by_its_seed() {
         let deck = prevent_deck(&mut GameRng::substream(7, 1)).unwrap();
         assert!(deck.len() >= 60, "{}", deck.len());
+        assert!(deck.iter().any(|card| card.name == "Stomp"));
         for (name, _) in PREVENT_CARDS.into_iter().chain(CORPUS_CARDS) {
             assert!(deck.iter().any(|card| card.name == name), "{name}");
         }

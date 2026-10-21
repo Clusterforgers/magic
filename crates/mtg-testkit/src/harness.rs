@@ -66,6 +66,8 @@ pub struct GameOutcome {
     pub events: Vec<Event>,
     /// How many times the engine asked a player to order replacement effects.
     pub replacement_asks: usize,
+    /// How many times the engine asked a player to pick one of several options (a colour, a type, the damage a shield takes first).
+    pub option_asks: usize,
 }
 
 /// What went wrong in a bot game.
@@ -179,6 +181,7 @@ pub fn play_game_with(
     let mut answers = 0;
     let mut auto_passes = 0;
     let mut replacement_asks = 0;
+    let mut option_asks = 0;
     while let Some(decision) = engine.decision().cloned() {
         if answers >= options.max_answers {
             return Err(fail(FailureKind::StepLimit(answers), engine.events()));
@@ -195,6 +198,9 @@ pub fn play_game_with(
                 return Err(fail(FailureKind::BadEnding(message), engine.events()));
             }
             replacement_asks += 1;
+        }
+        if matches!(decision.kind, DecisionKind::ChooseOption(_)) {
+            option_asks += 1;
         }
         let table_passes = windows.passes(engine.state(), &decision);
         let answer = if table_passes {
@@ -217,6 +223,7 @@ pub fn play_game_with(
     finish(&engine, checker.as_mut(), answers, auto_passes)
         .map(|outcome| GameOutcome {
             replacement_asks,
+            option_asks,
             ..outcome
         })
         .map_err(|kind| fail(kind, engine.events()))
@@ -270,5 +277,6 @@ fn finish(
         final_hash: state.state_hash(),
         events: engine.events().to_vec(),
         replacement_asks: 0,
+        option_asks: 0,
     })
 }
