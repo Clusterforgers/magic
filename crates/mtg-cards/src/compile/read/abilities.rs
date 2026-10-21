@@ -6,7 +6,7 @@ use super::tokens::Reader;
 use super::{costs, effects, modal, triggers};
 use crate::ability::{Ability, Limit, Timing};
 use crate::effect::Effect;
-use crate::refs::{Ref, ZoneKind};
+use crate::refs::{Pred, Ref, ZoneKind};
 use crate::trigger::TriggerPattern;
 
 /// The sentences of an ability, in order, every one read; `None` when one is not, or when a `Modal`
@@ -76,6 +76,11 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         when,
         TriggerPattern::Tapped { .. } | TriggerPattern::Untapped { .. }
     );
+    // A permanent entering is not the card itself, which may wait in the graveyard for it.
+    r.from_graveyard = matches!(
+        &when,
+        TriggerPattern::ZoneChange { what, to: Some(ZoneKind::Battlefield), .. } if what.0 != [Pred::This]
+    );
     r.punct(',').then_some(())?;
     let intervening_if = r.attempt(|r| {
         r.word("if").then_some(())?;
@@ -83,8 +88,9 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         r.punct(',').then_some(condition)
     });
     let effects = sentences(r, false)?;
-    // A card cycled is in its owner's graveyard when its own ability triggers.
-    let from = if triggers::cycled_itself(&when) {
+    // A card cycled is in its owner's graveyard when its own ability triggers, and a card that returns itself from the
+    // graveyard has its ability there.
+    let from = if triggers::cycled_itself(&when) || effects::returns_itself(&effects) {
         ZoneKind::Graveyard
     } else {
         ZoneKind::Battlefield

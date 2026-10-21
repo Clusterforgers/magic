@@ -154,6 +154,7 @@ mod activated;
 mod audit;
 mod cast;
 mod compound;
+mod conditions;
 mod counters;
 mod create;
 mod enters;
@@ -543,7 +544,6 @@ mod removal {
     #[case::a_second_target("Destroy target creature and target land.")]
     #[case::each("Destroy each creature.")]
     #[case::that("Destroy target creature that was dealt damage this turn.")]
-    #[case::a_plural_subtype("Destroy all Goblins.")]
     #[case::a_zone("Exile target card from a graveyard.")]
     #[case::until("Exile target creature until ~ leaves the battlefield.")]
     #[case::an_ability("Counter target activated ability.")]
@@ -690,7 +690,6 @@ mod pump {
         "Target creature gets +2/+2 until end of turn. Target creature gets -2/-2 until end of turn."
     )]
     #[case::conditional("If you control a Goblin, target creature gets +2/+2 until end of turn.")]
-    #[case::a_protection_keyword("Target creature gains protection from red until end of turn.")]
     #[case::a_keyword_list("Target creature gains flying, trample, and haste until end of turn.")]
     #[case::a_cost_keyword("Target creature gains ward {2} until end of turn.")]
     #[case::x_without_an_x_cost("Target creature gets +X/+X until end of turn.")]

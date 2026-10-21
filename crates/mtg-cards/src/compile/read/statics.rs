@@ -10,7 +10,7 @@ use super::amounts::{count_word, number_word};
 use super::counters;
 use super::effects::{granted, power_toughness};
 use super::render::{capitalize, is_a_type, signed_text};
-use super::selectors::{Form, all, keyword_text, phrase, phrase_text, subtype};
+use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
 use super::triggers::article;
 use crate::ability::{Ability, CostChange};
@@ -344,13 +344,15 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
     } else {
         return None;
     };
-    Some(statics(affected, mods))
+    Some(statics(affected, mods, None))
 }
 
 /// "Equipped creature gets +2/+0.", "Creatures you control have haste.", "Enchanted creature gets
-/// +1/+1 and has flying."; an X means nothing to a permanent, so it is not read.
+/// +1/+1 and has flying.", "Equipped creature gets +2/+2 and has protection from white and from black.", "~ has haste as
+/// long as an opponent has 10 or less life."; an X means nothing to a permanent, so it is not read. The card itself is
+/// given something only under a condition.
 fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
-    let (affected, plural) = subject(r, false)?;
+    let (affected, plural) = subject(r, true)?;
     let x_free = std::mem::replace(&mut r.x_free, false);
     let mods = r.attempt(|r| {
         let (gets, has) = if plural {
@@ -371,7 +373,30 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
         }
     });
     r.x_free = x_free;
-    Some(statics(affected, mods?))
+    let mods = mods?;
+    let condition = r.attempt(as_long_as);
+    if affected == Ref::This && condition.is_none() {
+        return None;
+    }
+    Some(statics(affected, mods, condition))
+}
+
+/// " as long as an opponent has 10 or less life", " as long as you control a Plains", " as long as it's your turn".
+fn as_long_as(r: &mut Reader<'_>) -> Option<Condition> {
+    r.need("as long as")?;
+    if r.words("it's your turn") {
+        return Some(Condition::YourTurn);
+    }
+    holds(r)
+}
+
+/// What `as_long_as` reads, written back.
+fn as_long_as_texts(condition: &Condition) -> Vec<String> {
+    if *condition == Condition::YourTurn {
+        vec!["it's your turn".to_owned()]
+    } else {
+        holds_texts(condition)
+    }
 }
 
 /// The count of a spell's own cost increase for each target beyond the first.
@@ -468,11 +493,11 @@ fn cost_modifier_texts(
     vec![format!("{head} {mana} {more} to cast{tail}")]
 }
 
-fn statics(affected: Ref, mods: Vec<Modification>) -> Ability {
+fn statics(affected: Ref, mods: Vec<Modification>, condition: Option<Condition>) -> Ability {
     Ability::Static {
         affected,
         mods,
-        condition: None,
+        condition,
         defining: false,
         from: ZoneKind::Battlefield,
     }
@@ -496,10 +521,10 @@ pub fn texts(ability: &Ability) -> Vec<String> {
         Ability::Static {
             affected,
             mods,
-            condition: None,
+            condition,
             defining: false,
             from: ZoneKind::Battlefield,
-        } => static_texts(affected, mods),
+        } => static_texts(affected, mods, condition.as_ref()),
         Ability::CostModifier {
             applies_to,
             change,
@@ -770,37 +795,67 @@ fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
     }
 }
 
-fn static_texts(affected: &Ref, mods: &[Modification]) -> Vec<String> {
+fn static_texts(
+    affected: &Ref,
+    mods: &[Modification],
+    condition: Option<&Condition>,
+) -> Vec<String> {
+    // The wordings of the condition, each as the tail of the sentence; one empty tail for no condition.
+    let tails: Vec<String> = match condition {
+        None => vec![String::new()],
+        Some(condition) => as_long_as_texts(condition)
+            .into_iter()
+            .map(|held| format!(" as long as {held}"))
+            .collect(),
+    };
     subjects(affected, true)
         .into_iter()
         .filter_map(|(subject, plural)| {
-            let predicate = predicate(mods, plural, matches!(affected, Ref::This))?;
-            Some(format!("{subject} {predicate}"))
+            let predicate = predicate(
+                mods,
+                plural,
+                matches!(affected, Ref::This),
+                condition.is_some(),
+            )?;
+            Some((subject, predicate))
+        })
+        .flat_map(|(subject, predicate)| {
+            tails
+                .iter()
+                .map(move |tail| format!("{subject} {predicate}{tail}"))
         })
         .collect()
 }
 
-/// "can't attack or block", "gets +1/+1 and has flying", "have haste".
-fn predicate(mods: &[Modification], plural: bool, itself: bool) -> Option<String> {
-    match mods {
-        [Modification::CantAttack, Modification::CantBlock] => {
-            return Some("can't attack or block".to_owned());
+/// "can't attack or block", "gets +1/+1 and has flying", "have haste". The card itself gets a bonus or a keyword only
+/// under a condition, and a restriction is not read under one.
+fn predicate(
+    mods: &[Modification],
+    plural: bool,
+    itself: bool,
+    conditional: bool,
+) -> Option<String> {
+    if !conditional {
+        match mods {
+            [Modification::CantAttack, Modification::CantBlock] => {
+                return Some("can't attack or block".to_owned());
+            }
+            [Modification::CantAttack] => return Some("can't attack".to_owned()),
+            [Modification::CantBlock] => return Some("can't block".to_owned()),
+            [Modification::CantBeBlocked] => return Some("can't be blocked".to_owned()),
+            [Modification::CantBlock, Modification::CantBeBlocked] => {
+                return Some("can't block and can't be blocked".to_owned());
+            }
+            [Modification::CantBeBlockedBy(blockers)] => {
+                return Some(format!(
+                    "can't be blocked by {}",
+                    phrase_text(blockers, Form::All)?
+                ));
+            }
+            // A card does not give itself a bonus.
+            _ if itself => return None,
+            _ => {}
         }
-        [Modification::CantAttack] => return Some("can't attack".to_owned()),
-        [Modification::CantBlock] => return Some("can't block".to_owned()),
-        [Modification::CantBeBlocked] => return Some("can't be blocked".to_owned()),
-        [Modification::CantBlock, Modification::CantBeBlocked] => {
-            return Some("can't block and can't be blocked".to_owned());
-        }
-        [Modification::CantBeBlockedBy(blockers)] => {
-            return Some(format!(
-                "can't be blocked by {}",
-                phrase_text(blockers, Form::All)?
-            ));
-        }
-        // A card does not give itself a bonus.
-        _ if itself => return None,
-        _ => {}
     }
     let (gets, has) = if plural {
         ("get", "have")
@@ -818,16 +873,9 @@ fn predicate(mods: &[Modification], plural: bool, itself: bool) -> Option<String
         ),
         _ => (None, mods),
     };
-    let keywords = rest
-        .iter()
-        .map(|modification| match modification {
-            Modification::AddKeyword(keyword) => keyword_text(keyword),
-            _ => None,
-        })
-        .collect::<Option<Vec<String>>>()?;
     let mut parts: Vec<String> = stats.into_iter().collect();
-    if !keywords.is_empty() {
-        parts.push(format!("{has} {}", keywords.join(" and ")));
+    if !rest.is_empty() {
+        parts.push(format!("{has} {}", granted_text(rest)?));
     }
     (!parts.is_empty()).then(|| parts.join(" and "))
 }

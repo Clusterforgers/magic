@@ -9,7 +9,7 @@ use super::counters;
 use super::create;
 use super::library;
 use super::modal;
-use super::selectors::{Form, all, each, keyword, phrase, target};
+use super::selectors::{Form, all, each, granted_keywords, phrase, target};
 use super::spend;
 use super::tokens::Reader;
 use crate::cost::Cost;
@@ -23,7 +23,7 @@ use crate::value::Amount;
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 20] = [
+const TEMPLATES: [Template; 21] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -44,10 +44,11 @@ const TEMPLATES: [Template; 20] = [
     library::search,
     library::look,
     library::put_on_library,
+    return_itself,
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-const IMPERATIVES: [Template; 9] = [
+const IMPERATIVES: [Template; 10] = [
     chain,
     removal,
     return_card,
@@ -57,6 +58,7 @@ const IMPERATIVES: [Template; 9] = [
     counters::remove,
     counters::moving,
     library::put_on_library,
+    return_itself,
 ];
 
 /// Reads the next sentence and its period into `effects`; false when it is not a shape the
@@ -291,19 +293,42 @@ fn life(r: &mut Reader<'_>) -> Option<Amount> {
 
 /// A player draws, discards, mills, gains, loses or sacrifices; one subject may have several verb
 /// phrases, joined by "and" or in a list: "target opponent sacrifices a creature, discards a card,
-/// and loses 3 life". The effects are those of the sentence, in order.
+/// and loses 3 life". The player the event is about may act after "and": "you create a Wolf token and that player mills
+/// ten cards". The effects are those of the sentence, in order.
 fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let who = player(r)?;
-    let mut effects = vec![predicate(r, &who)?];
+    let mut effects = phrases(r, &who)?;
+    // The sentences of two other players stay with the table.
+    while let Some(more) = r.attempt(|r| {
+        r.need("and")?;
+        let next = (r.that_player && r.words("that player")).then_some(Ref::Triggering)?;
+        phrases(r, &next)
+    }) {
+        effects.extend(more);
+    }
+    Some(effects)
+}
+
+/// The verb phrases of one player, joined by "and" or in a list.
+fn phrases(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
+    let mut effects = verb_phrase(r, who)?;
     while let Some(next) = r.attempt(|r| {
         let listed = r.punct(',');
         let joined = r.word("and");
         (listed || joined).then_some(())?;
-        predicate(r, &who)
+        verb_phrase(r, who)
     }) {
-        effects.push(next);
+        effects.extend(next);
     }
     Some(effects)
+}
+
+/// One verb phrase: what a player does, or "create a token" for you.
+fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
+    if *who == Ref::You && r.peek_word() == Some("create") {
+        return create::tokens(r);
+    }
+    predicate(r, who).map(|effect| vec![effect])
 }
 
 /// What a player does: the verb and its object, without the subject.
@@ -442,6 +467,41 @@ fn return_chosen(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             to: Destination::Hand,
         },
     ])
+}
+
+/// "Return this card from your graveyard to the battlefield.": the card puts itself onto the battlefield from the
+/// graveyard, where only an ability that works from there (`Reader::from_graveyard`) finds it.
+fn return_itself(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.from_graveyard.then_some(())?;
+    r.need("return")?;
+    r.source().then_some(())?;
+    r.need("from your graveyard to the battlefield")?;
+    Some(vec![rising()])
+}
+
+/// The card moves itself onto the battlefield.
+fn rising() -> Effect {
+    Effect::Move {
+        what: Ref::This,
+        to: Destination::Battlefield {
+            tapped: false,
+            under: None,
+        },
+    }
+}
+
+/// Whether the effects put the card itself onto the battlefield, so that its ability works from the graveyard.
+pub fn returns_itself(effects: &[Effect]) -> bool {
+    match effects {
+        [
+            Effect::May {
+                who: Ref::You,
+                effects,
+            },
+        ] => returns_itself(effects),
+        [only] => *only == rising(),
+        _ => false,
+    }
 }
 
 /// The name the permanent returned to its owner's hand is bound to.
@@ -597,14 +657,17 @@ pub(super) fn power_toughness(r: &mut Reader<'_>) -> Option<Modification> {
     Some(Modification::ModifyPT { power, toughness })
 }
 
-/// "flying", "flying and haste": keywords given.
+/// "flying", "flying and haste", "protection from white and from black": keywords given.
 pub(super) fn granted(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
-    let mut mods = vec![Modification::AddKeyword(keyword(r)?)];
+    let mut mods: Vec<Modification> = granted_keywords(r)?
+        .into_iter()
+        .map(Modification::AddKeyword)
+        .collect();
     while let Some(next) = r.attempt(|r| {
         r.need("and")?;
-        keyword(r)
+        granted_keywords(r)
     }) {
-        mods.push(Modification::AddKeyword(next));
+        mods.extend(next.into_iter().map(Modification::AddKeyword));
     }
     Some(mods)
 }

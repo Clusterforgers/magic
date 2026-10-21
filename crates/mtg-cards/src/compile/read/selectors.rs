@@ -9,10 +9,11 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word, stat_name};
-use super::subtypes::is_subtype;
+use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
 use crate::compile::keywords;
 use crate::keyword::Keyword;
+use crate::modify::Modification;
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::value::{Amount, Cmp, StatKind};
 
@@ -230,6 +231,55 @@ pub fn keyword_text(keyword: &Keyword) -> Option<String> {
     KEYWORDS.contains(&name.as_str()).then_some(name)
 }
 
+/// What one phrase of a list of keywords gives: a keyword by its words, or "protection from white and from black", one
+/// protection for each quality.
+pub fn granted_keywords(r: &mut Reader<'_>) -> Option<Vec<Keyword>> {
+    if !r.words("protection from") {
+        return keyword(r).map(|keyword| vec![keyword]);
+    }
+    let mut found = vec![protection_from(r)?];
+    while let Some(next) = r.attempt(|r| {
+        r.need("and from")?;
+        protection_from(r)
+    }) {
+        found.push(next);
+    }
+    Some(found)
+}
+
+fn protection_from(r: &mut Reader<'_>) -> Option<Keyword> {
+    let quality = keywords::quality(r.peek_word()?)?;
+    r.skip();
+    Some(Keyword::Protection(quality))
+}
+
+/// The keywords given, written as `granted_keywords` reads them: "flying and haste", "protection from white and from
+/// black". `None` when a modification is not a keyword the readers know.
+pub fn granted_text(mods: &[Modification]) -> Option<String> {
+    let mut parts: Vec<String> = Vec::new();
+    let mut protecting = false;
+    for modification in mods {
+        let Modification::AddKeyword(keyword) = modification else {
+            return None;
+        };
+        if let Keyword::Protection(quality) = keyword {
+            let word = keywords::quality_word(quality)?;
+            match parts.last_mut() {
+                Some(last) if protecting => {
+                    last.push_str(" and from ");
+                    last.push_str(word);
+                }
+                _ => parts.push(format!("protection from {word}")),
+            }
+            protecting = true;
+        } else {
+            parts.push(keyword_text(keyword)?);
+            protecting = false;
+        }
+    }
+    Some(parts.join(" and "))
+}
+
 fn stat_word(r: &mut Reader<'_>) -> Option<StatKind> {
     if r.word("power") {
         Some(StatKind::Power)
@@ -300,9 +350,21 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
     })
 }
 
-/// A subtype as it is written ("Clue", "Soldier"); any other capitalized word is not read.
+/// A subtype as it is written ("Clue", "Soldier"), of the rules' list or of the card's own type line; any other
+/// capitalized word is not read.
 pub fn subtype(r: &mut Reader<'_>) -> Option<String> {
-    r.attempt(|r| r.name().filter(|name| is_subtype(name)).map(str::to_owned))
+    r.attempt(|r| {
+        let name = r.name()?;
+        r.is_subtype(name).then(|| name.to_owned())
+    })
+}
+
+/// A group of one subtype as it is written in the plural ("Heroes", "Elves", "Spies"): the subtype in the singular.
+fn plural_subtype(r: &mut Reader<'_>) -> Option<String> {
+    r.attempt(|r| {
+        let name = r.name()?;
+        singular_subtype(name, |one| r.is_subtype(one))
+    })
 }
 
 /// What ends a phrase: a card type or "permanent", "spell", "card", or a subtype.
@@ -321,7 +383,12 @@ enum Noun {
 /// The card types before the noun and the noun; "permanent" names no type.
 fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
     let plural = form.plural();
-    if !plural && let Some(name) = subtype(r) {
+    let group = if plural {
+        plural_subtype(r)
+    } else {
+        subtype(r)
+    };
+    if let Some(name) = group {
         return Some((Vec::new(), Noun::Subtype(name)));
     }
     let mut types = Vec::new();
@@ -450,7 +517,7 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
     }
     let plural = form.plural();
     // A subtype is the noun by itself; a spell is not a card in a zone.
-    if (subtype.is_some() && (plural || spell || card || !types.is_empty())) || (spell && card) {
+    if (subtype.is_some() && (spell || card || !types.is_empty())) || (spell && card) {
         return None;
     }
     let names: Vec<String> = types
@@ -465,7 +532,13 @@ pub fn phrase_text(selector: &Selector, form: Form) -> Option<String> {
         })
         .collect();
     let mut words = adjectives;
-    words.extend(subtype.map(str::to_owned));
+    words.extend(subtype.map(|name| {
+        if plural {
+            plural_subtype_word(name)
+        } else {
+            name.to_owned()
+        }
+    }));
     if !names.is_empty() {
         words.push(names.join(&format!(" {} ", form.connector())));
     }

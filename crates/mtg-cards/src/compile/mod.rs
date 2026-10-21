@@ -90,6 +90,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
     let text = normalize::normalize(&shown.oracle_text, &own_names(shown));
     let (spell, aura) = (is_spell(shown), is_aura(shown));
     let x_free = shown.mana_cost.contains("{X}");
+    let own = own_subtypes(shown);
     let mut pending = Vec::new();
     for raw in clauses::split(&text) {
         let clause_text = text.slice(raw.range.clone());
@@ -97,7 +98,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
             continue;
         };
         let mut kind = classify::classify(&clause_text, spell);
-        if is_unread_keyword_line(&clause_text, kind, x_free) {
+        if is_unread_keyword_line(&clause_text, kind, x_free, &own) {
             kind = ClauseKind::Keyword;
         }
         let reminds_counter = kind != ClauseKind::Keyword
@@ -112,7 +113,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
             ClauseKind::Triggered | ClauseKind::Activated | ClauseKind::Static
                 if !reminds_counter =>
             {
-                read::clause(&clause_text, kind, x_free)
+                read::clause_with(&clause_text, kind, x_free, &own)
             }
             _ => None,
         };
@@ -137,7 +138,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
     let spell_ability = if spell_text.is_empty() || counter_explained {
         None
     } else {
-        read::clause(&spell_text, ClauseKind::Spell, x_free)
+        read::clause_with(&spell_text, ClauseKind::Spell, x_free, &own)
     };
     // A cost that counts targets needs the targets of the spell ability beside it: without them it is left to the table.
     let has_targets = spell_ability
@@ -169,7 +170,7 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
         if let (Some(only), None) = (modals.next(), modals.next())
             && !only.reminds_counter
         {
-            only.ability = read::clause(&only.text, ClauseKind::Modal, x_free);
+            only.ability = read::clause_with(&only.text, ClauseKind::Modal, x_free, &own);
             only.read = only.ability.is_some();
         }
     }
@@ -194,11 +195,11 @@ fn read_face(index: usize, shown: &PrintedFace, listed: &mut Vec<Clause>) -> Vec
 /// Whether a spell or static clause is a keyword line the keyword reader does not know
 /// (`Mayhem {1}{B}`): one line without a closing period that no template reads. It is kept as a
 /// keyword clause so that it does not stand in the way of the effect lines around it.
-fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool) -> bool {
+fn is_unread_keyword_line(text: &str, kind: ClauseKind, x_free: bool, own: &[String]) -> bool {
     matches!(kind, ClauseKind::Spell | ClauseKind::Static)
         && !text.contains('\n')
         && !text.trim_end().ends_with(['.', '"', '\u{201d}'])
-        && read::clause(text, kind, x_free).is_none()
+        && read::clause_with(text, kind, x_free, own).is_none()
 }
 
 /// The face name, and for a legendary face the part of the name before the comma.
@@ -212,6 +213,14 @@ fn own_names(face: &PrintedFace) -> Vec<String> {
         names.push(short.trim().to_owned());
     }
     names
+}
+
+/// The subtypes on the face's type line, which the readers take for subtypes whether or not the rules' list has them.
+fn own_subtypes(face: &PrintedFace) -> Vec<String> {
+    face.type_line
+        .split_once('\u{2014}')
+        .map(|(_, subtypes)| subtypes.split_whitespace().map(str::to_owned).collect())
+        .unwrap_or_default()
 }
 
 /// Whether the face is an Aura.

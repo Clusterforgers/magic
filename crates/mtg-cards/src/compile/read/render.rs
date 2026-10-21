@@ -8,10 +8,10 @@ use super::cast;
 use super::costs;
 use super::counters;
 use super::create;
-use super::effects::{BACK, RETURNED};
+use super::effects::{BACK, RETURNED, returns_itself};
 use super::library;
 use super::modal::{BULLET, DASH};
-use super::selectors::{Form, keyword_text, phrase_text, spec_text};
+use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
 use super::triggers::{article, condition_text, cycled_itself, pattern_text};
@@ -57,7 +57,7 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             targets,
             effects,
         } if *from
-            == if cycled_itself(when) {
+            == if cycled_itself(when) || returns_itself(effects) {
                 ZoneKind::Graveyard
             } else {
                 ZoneKind::Battlefield
@@ -746,9 +746,18 @@ impl Writer<'_> {
         })
     }
 
-    /// "surveil 2", "proliferate", "you become the monarch": a keyword action or a designation.
+    /// "surveil 2", "proliferate", "you become the monarch", "return ~ from your graveyard to the battlefield": a
+    /// keyword action, a designation or the card returning itself.
     fn keyword_action(&mut self, effect: &Effect) -> Option<String> {
         Some(match effect {
+            Effect::Move {
+                what: Ref::This,
+                to:
+                    Destination::Battlefield {
+                        tapped: false,
+                        under: None,
+                    },
+            } => "return ~ from your graveyard to the battlefield".to_owned(),
             Effect::Surveil {
                 who: Ref::You,
                 count,
@@ -925,16 +934,9 @@ impl Writer<'_> {
             ),
             _ => (None, mods),
         };
-        let keywords = rest
-            .iter()
-            .map(|modification| match modification {
-                Modification::AddKeyword(keyword) => keyword_text(keyword),
-                _ => None,
-            })
-            .collect::<Option<Vec<String>>>()?;
         let mut parts: Vec<String> = stats.into_iter().collect();
-        if !keywords.is_empty() {
-            parts.push(format!("{gains} {}", keywords.join(" and ")));
+        if !rest.is_empty() {
+            parts.push(format!("{gains} {}", granted_text(rest)?));
         }
         if parts.is_empty() {
             return None;
