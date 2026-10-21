@@ -11,14 +11,16 @@ use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification as WantedModification;
+use mtg_cards::refs::ZoneKind;
 use mtg_core::ids::ObjectId;
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
 use crate::effects::Modification;
 use crate::keywords;
 use crate::object::{GameObject, ObjectKind};
+use crate::resolve::zone_kind;
 use crate::state::GameState;
-use crate::triggers::triggers_something;
+use crate::triggers::{has_state_trigger, triggers_something};
 use crate::zones::Zone;
 
 /// The object whose card the abilities of `id` are read from: the object itself, or the token it was before it
@@ -38,6 +40,38 @@ pub(crate) fn printed(object: &GameObject) -> impl Iterator<Item = (AbilityRef, 
         .iter()
         .enumerate()
         .map(|(index, rules)| (AbilityRef::printed(object.id(), index), rules))
+}
+
+/// The zone an ability works from, for the kinds that name one (`from`): where its source must be for it to be
+/// activated, to trigger, to apply or to replace.
+pub(crate) const fn works_from(ability: &Ability) -> Option<ZoneKind> {
+    match ability {
+        Ability::Activated { from, .. }
+        | Ability::Triggered { from, .. }
+        | Ability::Static { from, .. }
+        | Ability::Rule { from, .. }
+        | Ability::Replacement { from, .. } => Some(*from),
+        _ => None,
+    }
+}
+
+/// Whether a card with this definition prints an ability that works from a zone other than the battlefield
+/// (`GameState::possible`).
+pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
+    definition
+        .rules
+        .iter()
+        .any(|rules| works_from(rules).is_some_and(|from| !from.is_battlefield()))
+}
+
+/// The abilities printed on `object`, which is not on the battlefield, that work from the zone it is in: what its owner
+/// may activate there, what watches for events there and what applies while it is there. Only a permanent has other
+/// abilities than the printed ones, so these are all there are.
+pub(crate) fn working_here(
+    object: &GameObject,
+) -> impl Iterator<Item = (AbilityRef, &Arc<Ability>)> {
+    let zone = zone_kind(object.zone());
+    printed(object).filter(move |(_, rules)| works_from(rules) == Some(zone))
 }
 
 /// The static abilities printed on the card of `object`, each with its index among the card's rules: what
@@ -65,6 +99,14 @@ pub(crate) fn definition_triggers(definition: &CardDefinition) -> bool {
         .rules
         .iter()
         .any(|rules| triggers_something(rules))
+}
+
+/// Whether a card with this definition prints a state trigger or gives one (`GameState::possible`).
+pub(crate) fn definition_has_state_trigger(definition: &CardDefinition) -> bool {
+    definition
+        .rules
+        .iter()
+        .any(|rules| has_state_trigger(rules))
 }
 
 /// What the keyword `keyword` of `object`, which comes from `source`, stands for: the abilities it adds

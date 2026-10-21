@@ -23,16 +23,16 @@ use std::sync::{Arc, OnceLock};
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification as Wanted;
-use mtg_cards::refs::Ref;
+use mtg_cards::refs::{Ref, ZoneKind};
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 
 use crate::abilities::{AbilityRef, AbilitySource, Grant};
-use crate::ability_reader::{printed, provided};
+use crate::ability_reader::{printed, provided, working_here};
 use crate::characteristics::{Characteristics, base};
 use crate::effects::{ContinuousEffect, Layer, Modification, Selector};
 use crate::events::Event;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
-use crate::resolve::{Scope, lower};
+use crate::resolve::{Scope, lower, zone_kind};
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -442,12 +442,19 @@ fn compute(state: &GameState) -> Layers {
         .iter()
         .filter(|effect| effect.is_active(state))
         .collect();
-    // With no effect and no static ability on the battlefield every permanent is as its card prints it.
+    // With no effect and no static ability that works where its card is, every permanent is as its card prints it.
     let statics_in_play = state
         .zone(Zone::Battlefield)
         .iter()
         .filter_map(|id| state.object(*id))
-        .any(|object| printed(object).any(|(_, rules)| matches!(**rules, Ability::Static { .. })));
+        .any(|object| printed(object).any(|(_, rules)| matches!(**rules, Ability::Static { .. })))
+        || (state.possible.elsewhere
+            && state.objects().any(|object| {
+                object.zone() != Zone::Battlefield
+                    && object.kind() != ObjectKind::Ability
+                    && working_here(object)
+                        .any(|(_, rules)| matches!(**rules, Ability::Static { .. }))
+            }));
     if registered.is_empty() && !statics_in_play {
         return Layers {
             held: BTreeMap::new(),
@@ -541,10 +548,34 @@ impl<'a> Pass<'a> {
                 self.static_candidates(
                     &mut found,
                     layer,
-                    object.reference(),
+                    (object.reference(), ZoneKind::Battlefield),
                     permanent.timestamp(),
                     ability,
                 );
+            }
+        }
+        // A static ability of a card that is not on the battlefield applies while the card is in the zone it names; its
+        // timestamp is 0, since only permanents are stamped.
+        if self.state.possible.elsewhere {
+            for object in self.state.objects() {
+                if object.zone() == Zone::Battlefield || object.kind() == ObjectKind::Ability {
+                    continue;
+                }
+                for (address, rules) in working_here(object) {
+                    let ability = HeldAbility {
+                        address,
+                        body: Arc::clone(rules),
+                        since: 0,
+                        keyword: None,
+                    };
+                    self.static_candidates(
+                        &mut found,
+                        layer,
+                        (object.reference(), zone_kind(object.zone())),
+                        0,
+                        &ability,
+                    );
+                }
             }
         }
         for (address, started) in &self.started {
@@ -560,18 +591,24 @@ impl<'a> Pass<'a> {
                     since: 0,
                     keyword: None,
                 };
-                self.static_candidates(&mut found, layer, started.holder, started.stamp, &kept);
+                self.static_candidates(
+                    &mut found,
+                    layer,
+                    (started.holder, ZoneKind::Battlefield),
+                    started.stamp,
+                    &kept,
+                );
             }
         }
         found
     }
 
-    /// The modifications of the static ability `ability` of `holder` that belong to `layer`.
+    /// The modifications of the static ability `ability` of `holder`, which is in the zone `zone`, that belong to `layer`.
     fn static_candidates(
         &self,
         found: &mut Vec<Cand<'a>>,
         layer: Option<Layer>,
-        holder: ObjectRef,
+        (holder, zone): (ObjectRef, ZoneKind),
         entered: u64,
         ability: &HeldAbility,
     ) {
@@ -584,8 +621,8 @@ impl<'a> Pass<'a> {
         else {
             return;
         };
-        // An ability that works from another zone is not run (`Ability.From` is not in the capabilities).
-        if !from.is_battlefield() {
+        // An ability applies only while its source is where it works from.
+        if *from != zone {
             return;
         }
         for (index, wanted) in mods.iter().enumerate() {
@@ -670,18 +707,27 @@ impl<'a> Pass<'a> {
         else {
             return None;
         };
-        let source = view.get(cand.holder.id)?;
         let started = self.started.get(&cand.address);
-        if started.is_none()
-            && !source
-                .abilities
-                .iter()
-                .any(|ability| ability.address == cand.address)
-        {
-            return None;
-        }
-        let scope =
-            Scope::announcing(self.state, source.controller, cand.holder).with_layered(view);
+        let controller = if let Some(source) = view.get(cand.holder.id) {
+            if started.is_none()
+                && !source
+                    .abilities
+                    .iter()
+                    .any(|ability| ability.address == cand.address)
+            {
+                return None;
+            }
+            source.controller
+        } else {
+            // A card elsewhere has the abilities it prints, and its owner is the player "you" names.
+            self.state
+                .object(cand.holder.id)
+                .filter(|object| {
+                    object.reference() == cand.holder && object.zone() != Zone::Battlefield
+                })?
+                .controller()
+        };
+        let scope = Scope::announcing(self.state, controller, cand.holder).with_layered(view);
         let set = if let Some(started) = started {
             started.set.clone()
         } else {

@@ -2,8 +2,9 @@
 //!
 //! `mtg_cards` computes whether a card is `Verified`, `Partial` or `Manual` from its rules and a
 //! [`Caps`]; this is the one the running engine supplies (`docs/cards-dsl.md`, Support records). The engine
-//! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, abilities that cost `{T}` and
-//! mana, and triggered abilities made of drawing, discarding, milling, sacrificing, destroying, exiling, countering,
+//! runs vanilla permanents, the plain `{T}: Add {X}` of a creature or land, spells, abilities that cost `{T}`, mana
+//! and moving their source (sacrificed, exiled or discarded), abilities that work from a hand, a graveyard, exile, the
+//! command zone or the stack, state triggers, and triggered abilities made of drawing, discarding, milling, sacrificing, destroying, exiling, countering,
 //! scrying, looking at, revealing, searching for, moving and shuffling cards, tapping and untapping, winning the
 //! game, life and damage (and delayed triggers), conditions, "may" and "pay" and choices and modal spells, continuous
 //! effects and static abilities of every modification (types, subtypes, colours, power and toughness, keywords, abilities,
@@ -24,7 +25,9 @@ const RUNS: &[&str] = &[
     "Ability.Activated",
     "Ability.Triggered",
     "Ability.Limit",
+    "Ability.From",
     "Trigger.ZoneChange",
+    "Trigger.State",
     "Trigger.Attacks",
     "Trigger.SpellCast",
     "Trigger.Sacrificed",
@@ -34,6 +37,8 @@ const RUNS: &[&str] = &[
     "Cost.Tap",
     "Cost.Mana",
     "Cost.SacrificeSelf",
+    "Cost.ExileSelf",
+    "Cost.DiscardSelf",
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Mill",
@@ -170,7 +175,11 @@ mod tests {
     #[case::x_in_a_mana_cost("Cost.Mana.X", false)]
     #[case::paying_life("Cost.PayLife", false)]
     #[case::once_a_turn("Ability.Limit", true)]
-    #[case::other_zones("Ability.From", false)]
+    #[case::other_zones("Ability.From", true)]
+    #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", false)]
+    #[case::states("Trigger.State", true)]
+    #[case::exiling_the_source("Cost.ExileSelf", true)]
+    #[case::discarding_the_source("Cost.DiscardSelf", true)]
     #[case::triggers("Ability.Triggered", true)]
     #[case::zone_changes("Trigger.ZoneChange", true)]
     #[case::attacks("Trigger.Attacks", true)]
@@ -229,6 +238,8 @@ mod tests {
     #[case::sacrificing_the_source("Cost.SacrificeSelf", true)]
     #[case::sacrificing_a_permanent("Cost.Sacrifice", false)]
     #[case::paying_by_sacrificing_the_source("Effect.Pay.SacrificeSelf", false)]
+    #[case::paying_by_exiling_the_source("Effect.Pay.ExileSelf", false)]
+    #[case::paying_by_discarding_the_source("Effect.Pay.DiscardSelf", false)]
     #[case::mana_abilities_of_other_shapes("Ability.ManaAbility.Complex", false)]
     #[case::paying_or_not("Effect.Pay", true)]
     #[case::flash("Keyword.Flash", true)]

@@ -173,3 +173,64 @@ fn a_state_with_a_creature_that_should_have_died_is_not_settled(
     }
     Ok(())
 }
+
+#[test]
+fn a_creature_that_dies_of_damage_and_comes_back_within_one_stretch_of_the_log_has_no_damage()
+-> Result<(), String> {
+    use mtg_engine::decision::{DecisionKind, PayChoice};
+    use mtg_engine::zones::Zone;
+    use mtg_engine::{Answer, choose::Target};
+    use mtg_testkit::cards::{mountain, swamp};
+    use mtg_testkit::corpus::card;
+    use mtg_testkit::{Driver, ScriptError};
+
+    let fail = |e: ScriptError| e.to_string();
+    // A Bolt kills the Skeleton, whose owner then pays to bring it back from the graveyard: damage, a death, an
+    // activation and an entry, all in the stretch of the log that is checked at once.
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .battlefield(
+                0,
+                [
+                    ready(card("Reassembling Skeleton").map_err(|e| e.to_string())?),
+                    ready(swamp()),
+                    ready(swamp()),
+                ],
+            )
+            .battlefield(1, [ready(mountain())])
+            .hand(1, [card("Lightning Bolt").map_err(|e| e.to_string())?]),
+    )
+    .map_err(fail)?;
+    driver.pass().map_err(fail)?;
+    let skeleton = driver.id_of("Reassembling Skeleton").map_err(fail)?;
+    let at = Target::Object(driver.state().object(skeleton).unwrap().reference());
+    driver.cast_at("Lightning Bolt", &[at]).map_err(fail)?;
+    for _ in 0..2 {
+        driver.pass().map_err(fail)?;
+    }
+    assert_eq!(
+        driver.state().object(skeleton).unwrap().zone(),
+        Zone::Graveyard(PlayerId(0))
+    );
+    driver
+        .begin_activation("Reassembling Skeleton")
+        .map_err(fail)?;
+    driver
+        .answer(Answer::PayMana(PayChoice::Auto))
+        .map_err(fail)?;
+    while !driver.state().stack().is_empty() {
+        assert!(matches!(
+            driver.decision().map_err(fail)?.kind,
+            DecisionKind::Priority(_)
+        ));
+        driver.pass().map_err(fail)?;
+    }
+    assert_eq!(
+        driver.state().object(skeleton).unwrap().zone(),
+        Zone::Battlefield
+    );
+    let mut checker = InvariantChecker::new(driver.engine().setup()).map_err(|e| e.to_string())?;
+    checker
+        .observe(driver.state(), driver.engine().events())
+        .map_err(|e| e.to_string())
+}

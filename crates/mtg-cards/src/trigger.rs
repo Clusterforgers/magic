@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::effect::Effect;
 use crate::refs::{Ref, Selector, ZoneKind};
+use crate::value::Condition;
 
 /// A step or main phase of a turn, as triggers name it (the same thirteen as the engine's).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -100,6 +101,13 @@ pub enum TriggerPattern {
         )]
         whose: Ref,
     },
+    /// A game state is true ("when you control no Islands", "whenever you have no cards in hand"; CR 603.8). The
+    /// ability triggers when the state is true and not again until it has left the stack and the state is true
+    /// again. It is the whole pattern of a triggered ability, never part of an `AnyOf`.
+    State {
+        /// The state.
+        condition: Condition,
+    },
     /// Any of the patterns ("enters or attacks"); one event triggers the ability once.
     AnyOf(Vec<TriggerPattern>),
 }
@@ -174,6 +182,10 @@ mod tests {
     #[case::opponent_casts(
         TriggerPattern::SpellCast { what: Selector::default(), by: Ref::Opponents },
         r#"{"SpellCast":{"by":"Opponents"}}"#
+    )]
+    #[case::a_state(
+        TriggerPattern::State { condition: Condition::Not(Box::new(Condition::YourTurn)) },
+        r#"{"State":{"condition":{"Not":"YourTurn"}}}"#
     )]
     #[case::either(
         TriggerPattern::AnyOf(vec![

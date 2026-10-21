@@ -1,0 +1,28 @@
+{
+  "oracle_id": "eaabd151-2160-4bff-82c0-3fa88659be98",
+  "name": "Anger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anger",
+      "oracle_fingerprint": "816d2bf83b2924ae905610faae7a4a55",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

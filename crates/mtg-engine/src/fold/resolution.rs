@@ -138,6 +138,7 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
             source,
             snapshot: put.snapshot.clone(),
             index: put.ability,
+            origin: put.origin,
             rules,
             cause: put.cause.clone(),
             delayed: put.delayed,

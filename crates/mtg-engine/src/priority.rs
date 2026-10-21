@@ -10,7 +10,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 
 use crate::abilities::AbilityRef;
-use crate::ability_reader::abilities_of;
+use crate::ability_reader::{abilities_of, working_here};
 use crate::answers::Outcome;
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::announceable;
@@ -21,8 +21,8 @@ use crate::keywords;
 use crate::mana::{ManaOption, ManaSource, can_afford};
 use crate::object::GameObject;
 use crate::player::Player;
-use crate::price::Price;
-use crate::resolve::spell_ability;
+use crate::price::{Leaves, Price};
+use crate::resolve::{spell_ability, zone_kind};
 use crate::state::GameState;
 use crate::turn::LAND_DROPS_PER_TURN;
 use crate::zones::Zone;
@@ -210,11 +210,16 @@ fn can_activate(
         cost,
         timing,
         limit,
+        from,
         ..
     } = rules
     else {
         return false;
     };
+    // An ability is activated from the zone it works from, and a cost that moves its source needs it in the right one.
+    if *from != zone_kind(object.zone()) {
+        return false;
+    }
     if *limit == Some(Limit::OncePerTurn)
         && state.limit_spent(object.reference(), address.source, address.ability)
     {
@@ -224,6 +229,14 @@ fn can_activate(
         return false;
     };
     if rules.is_mana_ability() {
+        return false;
+    }
+    let leaves_from_here = match price.leaves {
+        Leaves::Stays | Leaves::Exiled => true,
+        Leaves::Sacrificed => object.zone() == Zone::Battlefield,
+        Leaves::Discarded => matches!(object.zone(), Zone::Hand(_)),
+    };
+    if !leaves_from_here {
         return false;
     }
     if *timing == Timing::Sorcery && !sorcery_timing(state, player) {
@@ -252,7 +265,23 @@ fn can_activate(
     announceable(state, player, object.id(), rules)
 }
 
-/// Activated abilities of `player`'s permanents that are not mana abilities and could be used now.
+/// The cards outside the battlefield whose abilities `player` may use: the owner of a card in a hand, a graveyard or the
+/// command zone, or in exile, activates its abilities (CR 602.2).
+fn own_cards_elsewhere(state: &GameState, player: PlayerId) -> impl Iterator<Item = &GameObject> {
+    [
+        Zone::Hand(player),
+        Zone::Graveyard(player),
+        Zone::Command(player),
+        Zone::Exile,
+    ]
+    .into_iter()
+    .flat_map(|zone| state.zone(zone).iter())
+    .filter_map(|id| state.object(*id))
+    .filter(move |object| object.owner() == player)
+}
+
+/// Activated abilities of `player`'s permanents, and of the cards they own in a hand, a graveyard, exile or the command
+/// zone, that are not mana abilities and could be used now.
 pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<AbilityRef> {
     let mut found = Vec::new();
     for &id in state.zone(Zone::Battlefield) {
@@ -265,6 +294,15 @@ pub(crate) fn other_abilities(state: &GameState, player: PlayerId) -> Vec<Abilit
         for (address, rules) in abilities_of(state, id) {
             if can_activate(state, player, object, address, &rules) {
                 found.push(address);
+            }
+        }
+    }
+    if state.possible.elsewhere {
+        for object in own_cards_elsewhere(state, player) {
+            for (address, rules) in working_here(object) {
+                if can_activate(state, player, object, address, rules) {
+                    found.push(address);
+                }
             }
         }
     }

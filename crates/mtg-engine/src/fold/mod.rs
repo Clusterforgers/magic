@@ -20,7 +20,7 @@ use crate::player::{LossReason, Player, PlayerStatus};
 use crate::priority::PriorityState;
 use crate::sight;
 use crate::state::{GameResult, GameState, Stage};
-use crate::triggers::triggers_something;
+use crate::triggers::{has_state_trigger, triggers_something};
 use crate::turn::Step;
 use crate::zones::Zone;
 
@@ -215,10 +215,13 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
             state.next_effect = state.next_effect.max(effect.id.0 + 1);
             state.next_timestamp = state.next_timestamp.max(effect.timestamp + 1);
-            if let Modification::GrantAbility(granted) = &effect.modification
-                && triggers_something(granted)
-            {
-                state.triggers_possible = true;
+            if let Modification::GrantAbility(granted) = &effect.modification {
+                if triggers_something(granted) {
+                    state.triggers_possible = true;
+                }
+                if has_state_trigger(granted) {
+                    state.possible.states = true;
+                }
             }
             state.effects.push(effect.clone());
         }

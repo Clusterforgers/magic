@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0ef760f4-bbec-4735-8d60-fc24d973452a",
+  "name": "Squee, Goblin Nabob",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squee, Goblin Nabob",
+      "oracle_fingerprint": "8c2a04064658e739a0ac41bf7cbf1b51",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "from": "Graveyard",
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

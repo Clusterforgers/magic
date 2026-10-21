@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e9f5f87d-a485-4e69-9beb-49a51230bd53",
+  "name": "Elemental Masterpiece",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elemental Masterpiece",
+      "oracle_fingerprint": "bf0f6ca62ba7379c291b43b2bf1c1c75",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Blue", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U/R}{U/R}" }, "DiscardSelf"],
+            "from": "Hand",
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

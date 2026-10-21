@@ -1,5 +1,5 @@
-//! What a cost asks of a player: the `{T}`, the sacrifice of the source and the mana the engine pays, and the mana
-//! sources that may pay it.
+//! What a cost asks of a player: the `{T}`, the sacrifice, exile or discard of the source and the mana the engine
+//! pays, and the mana sources that may pay it.
 
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_core::ids::{ObjectId, PlayerId};
@@ -9,13 +9,26 @@ use crate::mana::ManaOption;
 use crate::priority::mana_options;
 use crate::state::GameState;
 
+/// What paying a cost does to its source besides tapping it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Leaves {
+    /// The source stays where it is.
+    Stays,
+    /// It is sacrificed from the battlefield.
+    Sacrificed,
+    /// It is exiled from the zone it is in.
+    Exiled,
+    /// It is discarded from the hand.
+    Discarded,
+}
+
 /// The parts of a cost the engine pays today.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct Price {
     /// The source is tapped.
     pub(crate) tap: bool,
-    /// The source is sacrificed.
-    pub(crate) sacrifice: bool,
+    /// What happens to the source.
+    pub(crate) leaves: Leaves,
     /// Every mana part together; `None` for a cost without mana.
     pub(crate) mana: Option<ManaCost>,
 }
@@ -28,23 +41,37 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Untap => "Cost.Untap",
         CostItem::PayLife(_) => "Cost.PayLife",
         CostItem::SacrificeSelf => "Cost.SacrificeSelf",
+        CostItem::ExileSelf => "Cost.ExileSelf",
+        CostItem::DiscardSelf => "Cost.DiscardSelf",
         CostItem::Sacrifice { .. } => "Cost.Sacrifice",
         CostItem::Discard { .. } => "Cost.Discard",
     }
 }
 
 impl Price {
-    /// The price of `cost`, or the name of the first part the engine does not pay: another kind of cost, or an
-    /// `{X}`, which waits for the choice of X (`Cost.Mana.X`).
+    /// The price of `cost`, or the name of the first part the engine does not pay: another kind of cost, an
+    /// `{X}`, which waits for the choice of X (`Cost.Mana.X`), or a second way to lose the source.
     pub(crate) fn of(cost: &Cost) -> Result<Price, &'static str> {
         let mut tap = false;
-        let mut sacrifice = false;
+        let mut leaves = Leaves::Stays;
         let mut symbols = Vec::new();
         let mut mana = false;
         for item in &cost.0 {
+            let moves = match item {
+                CostItem::SacrificeSelf => Some(Leaves::Sacrificed),
+                CostItem::ExileSelf => Some(Leaves::Exiled),
+                CostItem::DiscardSelf => Some(Leaves::Discarded),
+                _ => None,
+            };
+            if let Some(moves) = moves {
+                if leaves != Leaves::Stays && leaves != moves {
+                    return Err(unpaid(item));
+                }
+                leaves = moves;
+                continue;
+            }
             match item {
                 CostItem::Tap => tap = true,
-                CostItem::SacrificeSelf => sacrifice = true,
                 CostItem::Mana(part) if part.has_x() => return Err("Cost.Mana.X"),
                 CostItem::Mana(part) => {
                     mana = true;
@@ -55,14 +82,19 @@ impl Price {
         }
         Ok(Price {
             tap,
-            sacrifice,
+            leaves,
             mana: mana.then(|| ManaCost::from_symbols(symbols)),
         })
     }
 
+    /// Whether paying moves the source out of the zone it is in.
+    pub(crate) fn moves_source(&self) -> bool {
+        self.leaves != Leaves::Stays
+    }
+
     /// The mana abilities `player` may tap to pay the mana of an ability of `source`: the source itself is not one of
-    /// them when its `{T}` is part of the cost, since a permanent is tapped once, or when it is sacrificed for it,
-    /// since it is gone by the time the mana is paid.
+    /// them when its `{T}` is part of the cost, since a permanent is tapped once, or when it is sacrificed, exiled or
+    /// discarded for it, since it is gone by the time the mana is paid.
     pub(crate) fn sources(
         &self,
         state: &GameState,
@@ -70,7 +102,7 @@ impl Price {
         source: ObjectId,
     ) -> Vec<ManaOption> {
         let mut sources = mana_options(state, player);
-        if self.tap || self.sacrifice {
+        if self.tap || self.moves_source() {
             sources.retain(|option| option.source.object != source);
         }
         sources
@@ -134,9 +166,47 @@ mod tests {
             Price::of(&cost(json)),
             Ok(Price {
                 tap,
-                sacrifice,
+                leaves: if sacrifice {
+                    Leaves::Sacrificed
+                } else {
+                    Leaves::Stays
+                },
                 mana: mana(expected)
             })
+        );
+    }
+
+    #[rstest]
+    #[case::exiling_the_source(
+        r#"[{"Mana":"{3}{G}{G}"},"ExileSelf"]"#,
+        Leaves::Exiled,
+        "{3}{G}{G}"
+    )]
+    #[case::exiling_the_source_for_free(r#"["ExileSelf"]"#, Leaves::Exiled, "")]
+    #[case::discarding_the_source(
+        r#"[{"Mana":"{U/R}{U/R}"},"DiscardSelf"]"#,
+        Leaves::Discarded,
+        "{U/R}{U/R}"
+    )]
+    fn a_cost_that_exiles_or_discards_the_source_is_a_price(
+        #[case] json: &str,
+        #[case] leaves: Leaves,
+        #[case] expected: &str,
+    ) {
+        let price = Price::of(&cost(json)).unwrap();
+        assert!(price.moves_source() && !price.tap);
+        assert_eq!((price.leaves, price.mana), (leaves, mana(expected)));
+    }
+
+    #[test]
+    fn a_source_cannot_be_lost_in_two_ways() {
+        assert_eq!(
+            Price::of(&cost(r#"["SacrificeSelf","ExileSelf"]"#)),
+            Err("Cost.ExileSelf")
+        );
+        assert_eq!(
+            Price::of(&cost(r#"["ExileSelf","ExileSelf"]"#)).map(|price| price.leaves),
+            Ok(Leaves::Exiled)
         );
     }
 
@@ -176,11 +246,16 @@ mod tests {
         assert!(!sources(&tapping).contains(&rock));
     }
 
-    #[test]
-    fn the_source_of_an_ability_that_sacrifices_it_is_not_one_of_the_sources_of_its_mana_either() {
+    #[rstest]
+    #[case::sacrificed(r#"[{"Mana":"{1}"},"SacrificeSelf"]"#)]
+    #[case::exiled(r#"[{"Mana":"{1}"},"ExileSelf"]"#)]
+    #[case::discarded(r#"[{"Mana":"{1}"},"DiscardSelf"]"#)]
+    fn the_source_of_an_ability_that_moves_it_is_not_one_of_the_sources_of_its_mana_either(
+        #[case] json: &str,
+    ) {
         let game = state(vec![vec![], vec![]], vec![vec![forest(), forest()], vec![]]);
         let rock = game.zone(Zone::Battlefield)[0];
-        let price = Price::of(&cost(r#"[{"Mana":"{1}"},"SacrificeSelf"]"#)).unwrap();
+        let price = Price::of(&cost(json)).unwrap();
         let sources: Vec<ObjectId> = price
             .sources(&game, PlayerId(0), rock)
             .iter()

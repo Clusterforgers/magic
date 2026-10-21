@@ -46,6 +46,16 @@ pub enum Stage {
     Finished,
 }
 
+/// What the cards of a game can do that the engine looks for only when they can, so a game of plain cards pays nothing
+/// for it; derived from the setup and the tokens made.
+#[derive(Debug, Clone, Copy, Default)]
+pub(crate) struct Possible {
+    /// Some card has an ability that works from a zone other than the battlefield.
+    pub(crate) elsewhere: bool,
+    /// Some card has a state trigger or gives one.
+    pub(crate) states: bool,
+}
+
 /// The state of one game; a pure fold of events over the initial setup.
 #[derive(Debug, Clone)]
 pub struct GameState {
@@ -84,6 +94,8 @@ pub struct GameState {
     pub(crate) rules_possible: bool,
     /// The rules in force, gathered when first asked for and dropped at the next event that can change them.
     pub(crate) rules_cache: RulesCache,
+    /// What the cards of the game can do that the engine looks for only when they can.
+    pub(crate) possible: Possible,
     pub(crate) result: Option<GameResult>,
 }
 

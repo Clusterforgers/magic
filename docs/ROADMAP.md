@@ -52,7 +52,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (k4a) The derivation of CR 613 as one pass: dependencies (CR 613.8), characteristic-defining abilities in every zone (the `defining` flag of `Static`), static abilities that read the other objects as the earlier layers leave them, static abilities that effects give; Nightmare, Maro, Transguild Courier and Kormus Bell are Verified
 - [x] (k4) Keywords in snapshots (those after layer 6, none that an effect removed), read by last-known information: the damage of a source that has left, conditions on a keyword
 - [x] (e2) Keyword abilities built from triggers: ward, prowess and battle cry come from `adds_abilities`, listed by the reader under their own addresses; Hero of Bladehold, Monastery Swiftspear and Hulking Raptor are Verified
-- [ ] (i3) State triggers (CR 603.8) and abilities that work from a zone other than the battlefield (`from`)
+- [x] (i3) State triggers (CR 603.8) and abilities that work from a zone other than the battlefield (`from`); Reassembling Skeleton, Soul of Zendikar, Elemental Masterpiece, Squee, Boneyard Scourge, Anger and Covetous Dragon are Verified
 
 ### Counters, planeswalkers and attachments
 - [ ] (l1) Counters on permanents and players: the fold, put, remove and move, `Amount::Counters`, +1/+1 and -1/-1 counters in layer 7c with their state-based actions, views; Tireless Tracker is Verified

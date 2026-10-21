@@ -15,7 +15,7 @@ use crate::layers::LayersCache;
 use crate::object::{GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
 use crate::rules::RulesCache;
-use crate::state::{GameState, Stage};
+use crate::state::{GameState, Possible, Stage};
 use crate::turn::{Step, TurnState};
 use crate::zones::{Zone, Zones};
 
@@ -305,6 +305,7 @@ impl GameState {
             layers: LayersCache::default(),
             rules_possible: false,
             rules_cache: RulesCache::default(),
+            possible: Possible::default(),
             result: None,
         };
         game.note_what_cards_can_do();
@@ -327,6 +328,14 @@ impl GameState {
             .objects()
             .any(|object| crate::ability_reader::definition_has_rule(&object.def));
         self.rules_possible = rules;
+        let elsewhere = self
+            .objects()
+            .any(|object| crate::ability_reader::definition_works_elsewhere(&object.def));
+        self.possible.elsewhere = elsewhere;
+        let states = self
+            .objects()
+            .any(|object| crate::ability_reader::definition_has_state_trigger(&object.def));
+        self.possible.states = states;
     }
 }
 

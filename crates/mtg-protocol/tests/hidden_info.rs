@@ -18,6 +18,7 @@ use mtg_engine::{Decision, DecisionKind, Engine, GameState};
 use mtg_protocol::{EventBatch, StateView, project_events};
 use mtg_testkit::{
     archon_fuzz_setup, keyword_triggers_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup,
+    zones_fuzz_setup,
 };
 use rstest::rstest;
 use serde_json::Value;
@@ -71,6 +72,8 @@ const SCALAR_KEYS: &[&str] = &[
     "Library",
     "Graveyard",
     "Command",
+    "AnyColor",
+    "color_indicator",
 ];
 
 /// How often (in answers) a full snapshot is checked; events are checked after every answer.
@@ -282,6 +285,77 @@ fn no_hidden_object_reaches_any_viewer_in_games_of_the_keywords_that_are_trigger
     assert!(
         checked > 500 && keyword_triggers > 0,
         "test must not be vacuous"
+    );
+}
+
+/// Abilities that work from a graveyard, a hand and the stack, and state triggers, name only what every seat may see
+/// and the card an ability names as its source: a card in a hand or a library that activates an ability or triggers
+/// is shown to the table with the ability on the stack, as it is at a real table, and no other hidden card is named.
+#[rstest]
+#[case(2, 51)]
+#[case(3, 52)]
+#[case(4, 53)]
+fn no_hidden_object_reaches_any_viewer_in_games_of_abilities_from_other_zones(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut from_hidden_zones, mut state_triggers) = (0usize, 0usize, 0usize);
+    let mut shown: BTreeSet<ObjectId> = BTreeSet::new();
+    let setup = with_unique_names(zones_fuzz_setup(players, seed).unwrap());
+    let engine = run_game(setup, seed, |step: &Step| {
+        for event in step.events {
+            let source = match event {
+                mtg_engine::Event::AbilityTriggered(trigger) => {
+                    state_triggers += usize::from(trigger.cause.subjects.is_empty());
+                    Some((trigger.source.id, trigger.snapshot.zone))
+                }
+                mtg_engine::Event::AbilityPutOnStack(put) => {
+                    Some((put.source.id, put.snapshot.zone))
+                }
+                _ => None,
+            };
+            if let Some((id, zone)) = source {
+                from_hidden_zones += usize::from(matches!(zone, Zone::Hand(_) | Zone::Library(_)));
+                shown.insert(id);
+            }
+        }
+        let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+        for (viewer, batch) in viewers.iter().zip(&batches) {
+            let mut hidden = hidden_across(step.before, step.after, *viewer);
+            hidden.retain(|id, _| !shown.contains(id));
+            checked += hidden.len();
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&without_trigger_orders(value), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
+        }
+        if step.answers.is_multiple_of(SNAPSHOT_EVERY) {
+            for viewer in &viewers {
+                let mut hidden = hidden_in(step.after, *viewer);
+                hidden.retain(|id, _| !shown.contains(id));
+                let view = StateView::for_player(step.after, *viewer);
+                let found = leaks(&serde_json::to_value(&view).unwrap(), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: snapshot leaks {found:?}",
+                    step.answers
+                );
+            }
+        }
+    });
+    assert!(engine.result().is_some(), "game should finish");
+    assert!(
+        checked > 500 && state_triggers > 0,
+        "test must not be vacuous"
+    );
+    assert!(
+        from_hidden_zones > 0 || players > 2,
+        "a card in a hidden zone used an ability"
     );
 }
 

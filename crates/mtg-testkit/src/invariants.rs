@@ -478,6 +478,16 @@ impl InvariantChecker {
                 self.expected_damage.clear();
                 Ok(())
             }
+            // An object that leaves the battlefield is another object when it comes back (CR 400.7), with no damage.
+            Event::ZoneChanged {
+                object,
+                from: Zone::Battlefield,
+                ..
+            }
+            | Event::CreatureDied { object, .. } => {
+                self.expected_damage.remove(object);
+                Ok(())
+            }
             _ => Ok(()),
         }
     }
