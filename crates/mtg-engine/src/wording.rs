@@ -8,7 +8,6 @@ use mtg_cards::effect::Effect;
 use mtg_cards::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, Cmp, Condition, StatKind};
-use mtg_core::mana::ManaCost;
 
 /// "a" or "an" ahead of `word`.
 fn article(word: &str) -> &'static str {
@@ -669,9 +668,24 @@ pub(crate) fn may(effects: &[Effect]) -> String {
     format!("{text}?")
 }
 
-/// The question of a payment an effect offers, as a card says it: "Pay {2}?"
-pub(crate) fn pay(cost: &ManaCost) -> String {
-    format!("Pay {cost}?")
+/// The question of a payment an effect offers, as a card says it, from the parts of its cost: "Pay {2}?", "Pay {1}, discard
+/// a card?"
+pub(crate) fn pay(parts: &[String]) -> String {
+    let mut question = String::new();
+    for (at, part) in parts.iter().enumerate() {
+        if at > 0 {
+            question.push_str(", ");
+        }
+        let mut letters = part.chars();
+        match (at, letters.next()) {
+            (0, Some(first)) => question.push(first),
+            (_, Some(first)) => question.extend(first.to_lowercase()),
+            _ => {}
+        }
+        question.push_str(letters.as_str());
+    }
+    question.push('?');
+    question
 }
 
 /// The question of a cast an effect allows: "Cast Lightning Bolt without paying its mana cost?"
@@ -724,11 +738,19 @@ mod tests {
     }
 
     #[rstest]
-    #[case::generic("{2}", "Pay {2}?")]
-    #[case::coloured("{1}{R}", "Pay {1}{R}?")]
-    #[case::hybrid("{G/W}{G/W}", "Pay {G/W}{G/W}?")]
-    fn a_payment_is_offered_with_its_cost_as_printed(#[case] cost: &str, #[case] expected: &str) {
-        assert_eq!(pay(&ManaCost::parse(cost).unwrap()), expected);
+    #[case::generic(&["Pay {2}"], "Pay {2}?")]
+    #[case::coloured(&["Pay {1}{R}"], "Pay {1}{R}?")]
+    #[case::hybrid(&["Pay {G/W}{G/W}"], "Pay {G/W}{G/W}?")]
+    #[case::life(&["Pay 2 life"], "Pay 2 life?")]
+    #[case::a_discard(&["Discard a card"], "Discard a card?")]
+    #[case::mana_and_energy(&["Pay {1}", "Pay {E}{E}"], "Pay {1}, pay {E}{E}?")]
+    #[case::three_parts(&["Pay {1}", "Pay 2 life", "Sacrifice a creature"], "Pay {1}, pay 2 life, sacrifice a creature?")]
+    fn a_payment_is_offered_with_its_cost_as_printed(
+        #[case] parts: &[&str],
+        #[case] expected: &str,
+    ) {
+        let parts: Vec<String> = parts.iter().map(|part| (*part).to_owned()).collect();
+        assert_eq!(pay(&parts), expected);
     }
 
     fn target(json: &str) -> String {

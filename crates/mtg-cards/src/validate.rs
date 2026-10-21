@@ -557,10 +557,10 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// Losing the source (sacrificing, exiling or discarding it) is paid as part of an ability's cost; no effect asks a
-    /// player to pay it yet, so a payment that asks for it names what is missing.
+    /// A payment an effect asks takes mana, life, counters, energy and picked objects. Losing the source (sacrificing,
+    /// exiling or discarding it) is paid as part of an ability's cost; no effect asks a player to pay it yet, so a
+    /// payment that asks for it names what is missing.
     fn payment_of_the_source(&mut self, cost: &Cost) {
-        self.parts_that_need_an_announcement("Effect", "Pay", cost);
         for (item, name) in [
             (CostItem::SacrificeSelf, "Pay.SacrificeSelf"),
             (CostItem::ExileSelf, "Pay.ExileSelf"),
@@ -571,7 +571,7 @@ impl<'a> Walker<'a> {
             }
         }
         // There is no announcement to choose an X in the middle of a resolution.
-        if has_x_mana(cost) {
+        if cost.has_x() {
             self.uses("Effect", "Pay.X");
         }
     }
@@ -1405,12 +1405,11 @@ impl<'a> Walker<'a> {
             self.at("condition", |w| w.condition(condition));
         }
         self.x_free = cost.has_x();
-        // An `{X}` of the mana is asked as the ability is announced; another X in a cost (life) is not.
-        let x_mana = has_x_mana(cost);
-        if x_mana {
+        // An `{X}` of the mana and a part that counts X are asked as the ability is announced.
+        if has_x_mana(cost) {
             self.uses("Cost", "Mana.X");
         }
-        self.x_now = x_mana;
+        self.x_now = cost.has_x();
         self.body(targets, effects, false);
     }
 

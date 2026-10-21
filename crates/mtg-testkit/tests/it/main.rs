@@ -77,6 +77,7 @@ mod mill_effects;
 mod mulligan;
 mod part_fuzz;
 mod pay_fuzz;
+mod pay_parts;
 mod pay_unless;
 mod payment_fuzz;
 mod pipeline_log;

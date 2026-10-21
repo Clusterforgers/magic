@@ -211,6 +211,25 @@ impl Part {
         }
     }
 
+    /// The part in the words of a card, for the question an effect asks: "Pay 2 life", "Pay {E}{E}", "Discard a card".
+    pub(crate) fn text(&self) -> String {
+        match self {
+            Part::Life(amount) => format!("Pay {amount} life"),
+            Part::Energy(amount) => {
+                format!(
+                    "Pay {}",
+                    "{E}".repeat(usize::try_from(*amount).unwrap_or(0))
+                )
+            }
+            Part::Counters { counter, count } => {
+                let plural = if *count == 1 { "" } else { "s" };
+                format!("Remove {count} {} counter{plural}", counter.name())
+            }
+            Part::Pick(pick) => pick.text().trim_end_matches('.').to_owned(),
+            Part::X(inner) => inner.text(),
+        }
+    }
+
     /// Whether the part taps permanents.
     pub(crate) const fn taps(&self) -> bool {
         match self {
