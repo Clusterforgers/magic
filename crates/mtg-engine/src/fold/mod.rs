@@ -238,6 +238,12 @@ fn create_effect(
     }
     state.next_effect = state.next_effect.max(effect.id.0 + 1);
     state.next_timestamp = state.next_timestamp.max(effect.timestamp + 1);
+    if matches!(
+        &effect.modification,
+        Modification::AddKeyword(mtg_cards::keyword::Keyword::Protection(_))
+    ) {
+        state.possible.protection = true;
+    }
     if let Modification::GrantAbility(granted) = &effect.modification {
         if matches!(**granted, mtg_cards::ability::Ability::Replacement { .. }) {
             state.possible.replacements = true;
