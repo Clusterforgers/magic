@@ -688,7 +688,13 @@ fn cycling_for_life_pays_the_life_and_then_discards() -> Result<(), ScriptError>
     let events = driver.begin_activation("Cycler")?;
     assert_eq!(
         story(&driver, &events),
-        ["pay 2 life", "discard Cycler", "activated", "on the stack"]
+        [
+            "pay 2 life",
+            "discard Cycler",
+            "cycle Cycler",
+            "activated",
+            "on the stack"
+        ]
     );
     assert_eq!(life(&driver, 0), 18);
     Ok(())
