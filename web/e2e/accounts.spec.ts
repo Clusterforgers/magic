@@ -42,13 +42,20 @@ async function register(page: Page, username: string): Promise<void> {
   await page.getByLabel('Username').fill(username)
   await page.getByLabel('Password').fill(PASSWORD)
   await page.getByRole('button', { name: 'Create account' }).click()
-  // Registering signs in and goes home, which is the create page.
-  await expect(page.getByRole('form', { name: 'Create a game' })).toBeVisible()
+  // Registering signs in and goes home, which is Play.
+  await expect(page.getByRole('heading', { level: 1, name: 'Play' })).toBeVisible()
   await expect(account(page).getByText(username)).toBeVisible()
 }
 
-/** Creates a two-seat game on `/` as the signed-in user and returns the seat links, `/game/<id>#seat=<n>&token=<t>`. */
+/** Opens the create page, which waits until it is known who is signed in. */
+async function openCreate(page: Page): Promise<void> {
+  await page.goto('/new')
+  await expect(page.getByRole('form', { name: 'Create a game' })).toBeVisible()
+}
+
+/** Creates a two-seat game on `/new` as the signed-in user and returns the seat links, `/game/<id>#seat=<n>&token=<t>`. */
 async function createGame(page: Page): Promise<string[]> {
+  await openCreate(page)
   // A link for every seat, so the page lists the links this helper returns.
   await page.getByText('Advanced', { exact: true }).click()
   await page.getByRole('checkbox', { name: 'Give every seat its own link' }).check()
@@ -69,6 +76,7 @@ test('an account creates a game, closes the page, finds it under My games and re
   const { context, page, errors } = await visitor(browser)
   try {
     await register(page, ada)
+    await openCreate(page)
     await expect(page.locator('[data-slot="signed-in-note"]')).toContainText(
       `You will play as ${ada} in seat 1`,
     )
@@ -192,7 +200,7 @@ test('signing out leaves a guest, My games asks for a sign-in and comes back to 
       .getByRole('button', { name: /signed in as/i })
       .click()
     await page.getByRole('menuitem', { name: 'Sign out' }).click()
-    await expect(page.getByRole('form', { name: 'Create a game' })).toBeVisible() // signing out on /games goes home
+    await expect(page.getByRole('heading', { level: 1, name: 'Play' })).toBeVisible() // signing out on /games goes home
     await expect(account(page).getByRole('link', { name: 'Sign in' })).toBeVisible()
     await expect(account(page).getByText(adaName)).toHaveCount(0)
 
@@ -281,7 +289,7 @@ async function saveDeck(
 }
 
 /** A public game of `seats` seats made by the signed-in account, so seat 1 is its own and the others are open. */
-async function makeGame(context: BrowserContext, seats: number, name: string): Promise<void> {
+async function makeGame(context: BrowserContext, seats: number, name: string): Promise<string> {
   const made = await context.request.post('/api/games', {
     ...asAccount,
     data: {
@@ -295,6 +303,7 @@ async function makeGame(context: BrowserContext, seats: number, name: string): P
     },
   })
   expect(made.ok(), 'create game').toBe(true)
+  return ((await made.json()) as { game: string }).game
 }
 
 type StorageState = Awaited<ReturnType<BrowserContext['storageState']>>
@@ -303,6 +312,8 @@ type StorageState = Awaited<ReturnType<BrowserContext['storageState']>>
 interface Accounts {
   empty: StorageState
   full: StorageState
+  /** The games of the full account, which the gate closes at the end: a server holds at most 100 and stored lobbies come back on boot. */
+  games: string[]
 }
 
 /** Registers both accounts once for the whole gate, since a server counts registrations per address (ten in 15 minutes). */
@@ -318,8 +329,9 @@ async function makeAccounts(browser: Browser): Promise<Accounts> {
       await saveDeck(used, { name: `Burn ${index}`, format: 'modern', list: MODERN_LIST })
     await saveDeck(used, { name: TOODEEP, format: 'commander', list: COMMANDER_LIST })
     await saveDeck(used, { name: LONGEST_DECK_NAME, format: 'commander', list: COMMANDER_LIST })
-    for (const seats of [2, 3, 4, 6, 2, 5, 12, 2]) await makeGame(used, seats, name)
-    return { empty: await fresh.storageState(), full: await used.storageState() }
+    const games: string[] = []
+    for (const seats of [2, 3, 4, 6, 2, 5, 12, 2]) games.push(await makeGame(used, seats, name))
+    return { empty: await fresh.storageState(), full: await used.storageState(), games }
   } finally {
     await Promise.all([fresh.close(), used.close()])
   }
@@ -329,7 +341,7 @@ async function makeAccounts(browser: Browser): Promise<Accounts> {
 interface AccountStop extends Rules {
   name: string
   /** Whose session opens the page. */
-  account: keyof Accounts
+  account: 'empty' | 'full'
   /** Opens the page and waits until it is drawn. */
   open(page: Page): Promise<void>
 }
@@ -419,6 +431,14 @@ test.describe('the layout gate', () => {
   let accounts: Accounts
   test.beforeAll(async ({ browser }) => {
     accounts = await makeAccounts(browser)
+  })
+  test.afterAll(async ({ browser }) => {
+    const host = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL, storageState: accounts.full })
+    try {
+      for (const game of accounts.games) await host.request.delete(`/api/games/${game}`, asAccount)
+    } finally {
+      await host.close()
+    }
   })
 
   for (const theme of THEMES) {
