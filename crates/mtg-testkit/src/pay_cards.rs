@@ -64,6 +64,11 @@ pub fn leak(name: &str, tax: u32) -> Arc<CardDefinition> {
 /// An instant for `{U}`: "Unless an opponent pays `{1}`, you draw a card; if one does, you gain 1 life." With several
 /// opponents they are asked in turn order until one pays.
 pub fn toll(name: &str) -> Arc<CardDefinition> {
+    toll_costing(name, 1)
+}
+
+/// [`toll`] with a payment of `{tax}`.
+pub fn toll_costing(name: &str, tax: u32) -> Arc<CardDefinition> {
     instant(
         name,
         0,
@@ -72,7 +77,7 @@ pub fn toll(name: &str) -> Arc<CardDefinition> {
             targets: Vec::new(),
             effects: vec![payment(
                 Ref::Opponents,
-                price(1, &[]),
+                price(tax, &[]),
                 vec![gain_life(1)],
                 vec![draw(1)],
             )],
