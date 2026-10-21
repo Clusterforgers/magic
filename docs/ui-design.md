@@ -168,7 +168,7 @@ Each theme has `phase-<id>` (accent), `phase-<id>-soft` (tint, lightness 0.95 li
 - States: empty, loading, error and offline are designed.
 - Motion: inside `no-preference`, a CSS test per file, nothing delays an answer.
 - Evidence: screenshots at 1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and 390x844 in both themes, looked at, not committed; tests; `docs/web.md` updated.
-- Gate: `web/e2e/layout.spec.ts` holds every page that needs no account, and the dev routes that stand for the pages that do, to Fits at the six sizes in both themes in Chromium; `scripts/ui-audit.mjs` takes the same measurements on any URL of a running dev server. A changed page runs the script and a new page joins the spec. The rules and the regions allowed to scroll are in `docs/web.md`, End-to-end.
+- Gate: `web/e2e/layout.spec.ts` holds every page that needs no account, and the dev routes that stand for the pages that do, to Fits at the six sizes in both themes in Chromium, and `web/e2e/accounts.spec.ts` does the same for Decks, My games and the builder; `scripts/ui-audit.mjs` takes the same measurements on any URL of a running dev server. A changed page runs the script and a new page joins the spec. The rules and the regions allowed to scroll are in `docs/web.md`, End-to-end.
 
 ## Tasks
 
