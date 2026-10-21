@@ -112,6 +112,15 @@ pub(crate) fn definition_has_replacement(definition: &CardDefinition) -> bool {
     })
 }
 
+/// Whether a card with this definition has protection, gives it, or chooses a colour to give it
+/// (`GameState::possible`).
+pub(crate) fn definition_has_protection(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        let used = mtg_cards::validate::used_primitives(rules);
+        used.contains("Keyword.Protection") || used.contains("Mod.AddProtectionFromChosenColor")
+    })
+}
+
 /// Whether a modification gives an ability that is a replacement effect.
 fn grants_replacement_by(modification: &WantedModification) -> bool {
     match modification {

@@ -469,6 +469,7 @@ impl<'a> Walker<'a> {
                     self.uses("Keyword", "Enchant.Elsewhere");
                 }
             }
+            Keyword::Protection(quality) => self.selector(quality),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
@@ -495,6 +496,7 @@ impl<'a> Walker<'a> {
             | Modification::RemoveType(_)
             | Modification::AddSubtype(_)
             | Modification::SetColors(_)
+            | Modification::AddProtectionFromChosenColor
             | Modification::LoseAbilities
             | Modification::CantAttack
             | Modification::CantBlock => {}
@@ -1026,6 +1028,14 @@ impl<'a> Walker<'a> {
             });
         }
         self.at("mods", |w| w.mods(mods));
+        if mods
+            .iter()
+            .any(|m| matches!(m, Modification::AddProtectionFromChosenColor))
+        {
+            self.at("mods", |w| {
+                w.problem("a colour is chosen as an effect begins, so only a `Continuous` effect adds protection from it");
+            });
+        }
         if let Some(condition) = condition {
             self.at("condition", |w| w.condition(condition));
         }

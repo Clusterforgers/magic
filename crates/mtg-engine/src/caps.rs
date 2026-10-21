@@ -88,6 +88,7 @@ const RUNS: &[&str] = &[
     VARIABLE_STATS,
     "Mod.ModifyPT",
     "Mod.AddKeyword",
+    "Mod.AddProtectionFromChosenColor",
     "Mod.SetPT",
     "Mod.SwitchPT",
     "Mod.AddType",
@@ -120,6 +121,8 @@ const RUNS: &[&str] = &[
     "Keyword.Lifelink",
     "Keyword.Indestructible",
     "Keyword.Hexproof",
+    "Keyword.Shroud",
+    "Keyword.Protection",
     "Keyword.Prowess",
     "Keyword.BattleCry",
     "Keyword.Ward",
@@ -249,6 +252,9 @@ mod tests {
     #[case::continuous_effects("Effect.Continuous", true)]
     #[case::pumps("Mod.ModifyPT", true)]
     #[case::granted_keywords("Mod.AddKeyword", true)]
+    #[case::protection_from_a_chosen_colour("Mod.AddProtectionFromChosenColor", true)]
+    #[case::shroud("Keyword.Shroud", true)]
+    #[case::protection("Keyword.Protection", true)]
     #[case::setting_power_and_toughness("Mod.SetPT", true)]
     #[case::switching_power_and_toughness("Mod.SwitchPT", true)]
     #[case::types("Mod.AddType", true)]

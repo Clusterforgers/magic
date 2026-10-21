@@ -418,6 +418,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::AddType(_) | Wanted::RemoveType(_) | Wanted::AddSubtype(_) => Layer::Type,
         Wanted::SetColors(_) => Layer::Color,
         Wanted::AddKeyword(_)
+        | Wanted::AddProtectionFromChosenColor
         | Wanted::RemoveKeyword(_)
         | Wanted::GrantAbility(_)
         | Wanted::LoseAbilities => Layer::Ability,

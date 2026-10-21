@@ -40,6 +40,11 @@ pub enum Keyword {
     Indestructible,
     /// Hexproof.
     Hexproof,
+    /// Shroud: can't be the target of any spell or ability.
+    Shroud,
+    /// Protection from a quality (CR 702.16): the sources the selector matches can't damage, enchant, equip, block or
+    /// target the holder. The empty selector is protection from everything.
+    Protection(Selector),
     /// Prowess.
     Prowess,
     /// Convoke.
@@ -99,7 +104,7 @@ pub enum Keyword {
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 39] = [
+    pub const NAMES: [&'static str; 41] = [
         "Flash",
         "Flying",
         "Reach",
@@ -114,6 +119,8 @@ impl Keyword {
         "Defender",
         "Indestructible",
         "Hexproof",
+        "Shroud",
+        "Protection",
         "Prowess",
         "Convoke",
         "Delve",
@@ -158,6 +165,8 @@ impl Keyword {
             Keyword::Defender => "Defender",
             Keyword::Indestructible => "Indestructible",
             Keyword::Hexproof => "Hexproof",
+            Keyword::Shroud => "Shroud",
+            Keyword::Protection(_) => "Protection",
             Keyword::Prowess => "Prowess",
             Keyword::Convoke => "Convoke",
             Keyword::Delve => "Delve",
@@ -222,6 +231,8 @@ mod tests {
             Keyword::Defender,
             Keyword::Indestructible,
             Keyword::Hexproof,
+            Keyword::Shroud,
+            Keyword::Protection(Selector::default()),
             Keyword::Prowess,
             Keyword::Convoke,
             Keyword::Delve,

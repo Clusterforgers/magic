@@ -4,6 +4,7 @@ use std::ops::Range;
 use std::str::FromStr;
 
 use mtg_core::card::CardType;
+use mtg_core::color::Color;
 
 use crate::cost::{Cost, CostItem};
 use crate::keyword::Keyword;
@@ -68,7 +69,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("enchant", Params::Text),
     ("partner with", Params::Text),
     ("hexproof from", Params::Text),
-    ("protection from", Params::Text),
+    ("protection", Params::Text),
     ("affinity for", Params::Text),
     ("bands with other", Params::Text),
     ("intimidate", Params::None),
@@ -329,6 +330,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "suspend" => suspend(rest),
         "enchant" => enchant(rest).map(Keyword::Enchant),
         "partner with" => Some(Keyword::PartnerWith(rest.to_owned())),
+        "protection" => protection(rest).map(Keyword::Protection),
         "companion" => Some(Keyword::Companion),
         name if rest.is_empty() => plain(name),
         _ => None,
@@ -352,6 +354,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "defender" => Keyword::Defender,
         "indestructible" => Keyword::Indestructible,
         "hexproof" => Keyword::Hexproof,
+        "shroud" => Keyword::Shroud,
         "prowess" => Keyword::Prowess,
         "convoke" => Keyword::Convoke,
         "delve" => Keyword::Delve,
@@ -363,6 +366,31 @@ fn plain(name: &str) -> Option<Keyword> {
         "fuse" => Keyword::Fuse,
         _ => return None,
     })
+}
+
+/// The quality a protection names, when it is one colour, colourless, one kind of permanent or everything:
+/// "from red", "from creatures", "from everything". The empty selector matches every source.
+fn protection(rest: &str) -> Option<Selector> {
+    let word = rest
+        .strip_prefix("from ")?
+        .trim_end_matches('.')
+        .to_ascii_lowercase();
+    let pred = match word.as_str() {
+        "everything" => return Some(Selector::default()),
+        "white" => Pred::Color(Color::White),
+        "blue" => Pred::Color(Color::Blue),
+        "black" => Pred::Color(Color::Black),
+        "red" => Pred::Color(Color::Red),
+        "green" => Pred::Color(Color::Green),
+        "colorless" => Pred::Colorless,
+        "creatures" => Pred::Type(CardType::Creature),
+        "artifacts" => Pred::Type(CardType::Artifact),
+        "enchantments" => Pred::Type(CardType::Enchantment),
+        "planeswalkers" => Pred::Type(CardType::Planeswalker),
+        "lands" => Pred::Type(CardType::Land),
+        _ => return None,
+    };
+    Some(Selector(vec![pred]))
 }
 
 /// A cost: mana symbols, or a dash and `Pay N life` or `Discard a card`.
@@ -428,6 +456,15 @@ mod tests {
     #[case::lowercase_two_words("double strike", Keyword::DoubleStrike)]
     #[case::battle_cry("Battle cry", Keyword::BattleCry)]
     #[case::hexproof("Hexproof", Keyword::Hexproof)]
+    #[case::shroud("Shroud", Keyword::Shroud)]
+    #[case::protection_from_a_colour("Protection from white", Keyword::Protection(Selector(vec![Pred::Color(Color::White)])))]
+    #[case::protection_from_a_colour_in_lowercase("protection from red", Keyword::Protection(Selector(vec![Pred::Color(Color::Red)])))]
+    #[case::protection_from_colorless("Protection from colorless", Keyword::Protection(Selector(vec![Pred::Colorless])))]
+    #[case::protection_from_a_kind("Protection from creatures", Keyword::Protection(Selector(vec![Pred::Type(CardType::Creature)])))]
+    #[case::protection_from_everything(
+        "Protection from everything",
+        Keyword::Protection(Selector::default())
+    )]
     #[case::partner("Partner", Keyword::Partner)]
     #[case::fuse("Fuse", Keyword::Fuse)]
     #[case::equip("Equip {1}", Keyword::Equip(mana("{1}")))]
@@ -474,6 +511,9 @@ mod tests {
     #[case::two_kicker_costs("Kicker {1}{R} and/or {2}{G}")]
     #[case::qualified_equip("Equip legendary creature {3}")]
     #[case::hexproof_from("Hexproof from white")]
+    #[case::protection_from_a_pair("Protection from red and from blue")]
+    #[case::protection_from_a_subtype("Protection from Vampires")]
+    #[case::protection_without_a_quality("Protection from")]
     #[case::cycling_by_sacrifice("Cycling\u{2014}Sacrifice a land.")]
     #[case::ward_sacrifice("Ward\u{2014}Sacrifice a permanent.")]
     #[case::enchant_player("Enchant player")]
@@ -562,6 +602,8 @@ mod tests {
             "Defender",
             "Indestructible",
             "Hexproof",
+            "Shroud",
+            "Protection from red",
             "Prowess",
             "Convoke",
             "Delve",

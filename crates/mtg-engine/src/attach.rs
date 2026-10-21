@@ -13,7 +13,7 @@ use crate::choose::{Target, legal_targets, options_for};
 use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::fold::invalid;
-use crate::keywords::keywords_of;
+use crate::keywords::{self, Holder, keywords_of};
 use crate::object::{GameObject, ObjectKind};
 use crate::resolve::Scope;
 use crate::state::GameState;
@@ -97,14 +97,21 @@ pub(crate) fn legal_host(state: &GameState, attachment: ObjectId, host: ObjectId
     ) else {
         return false;
     };
-    match kind_of(state, attachment) {
+    let allowed = match kind_of(state, attachment) {
         Some(Kind::Aura) => !chars.is_creature() && may_enchant(state, object, target),
         Some(Kind::Equipment) => {
             (!chars.is_creature() || has_reconfigure(state, attachment)) && host_chars.is_creature()
         }
         Some(Kind::Fortification) => host_chars.types.contains(CardType::Land),
         None => false,
-    }
+    };
+    allowed && !protects_host(state, attachment, host)
+}
+
+/// Whether a keyword of `host` (protection) keeps `attachment` from being attached to it (CR 702.16c).
+fn protects_host(state: &GameState, attachment: ObjectId, host: ObjectId) -> bool {
+    keywords::Source::live(state, attachment)
+        .is_some_and(|source| keywords::protected_from(state, Holder::Object(host), source))
 }
 
 /// Whether `id` has reconfigure, so it may equip a creature while it is a creature itself (CR 301.5c).
@@ -198,7 +205,9 @@ pub(crate) fn hosts_when_entering(
             .into_iter()
             .filter(|named| {
                 state.object(named.id).is_some_and(|host| {
-                    host.zone() == Zone::Battlefield && host.kind() != ObjectKind::Ability
+                    host.zone() == Zone::Battlefield
+                        && host.kind() != ObjectKind::Ability
+                        && !protects_host(state, aura.id(), named.id)
                 })
             })
             .map(|named| named.id)

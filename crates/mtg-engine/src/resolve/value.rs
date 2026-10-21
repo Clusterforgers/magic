@@ -16,7 +16,7 @@ use thiserror::Error;
 
 use crate::abilities::Cause;
 use crate::characteristics::{Characteristics, characteristics, seen_as};
-use crate::choose::legal_for;
+use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
 use crate::keywords;
 use crate::layers::{Held, View, outside};
@@ -287,10 +287,11 @@ impl<'a> Scope<'a> {
         else {
             return Vec::new();
         };
-        let legal = legal_for(
+        let legal = legal_from(
             self.state,
             spec,
-            self.source.id,
+            self.source,
+            &self.snapshots,
             self.controller,
             self.cause,
         );
@@ -314,10 +315,11 @@ impl<'a> Scope<'a> {
             let Some(spec) = self.specs.get(index) else {
                 continue;
             };
-            let legal = legal_for(
+            let legal = legal_from(
                 self.state,
                 spec,
-                self.source.id,
+                self.source,
+                &self.snapshots,
                 self.controller,
                 self.cause,
             );

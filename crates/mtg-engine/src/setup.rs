@@ -385,6 +385,18 @@ impl GameState {
             .objects()
             .any(|object| crate::ability_reader::definition_has_replacement(&object.def));
         self.possible.replacements = replacements;
+        // Copies of a card share a name and a definition, so each name is read once.
+        let mut read = std::collections::BTreeSet::new();
+        let protection = self.objects().any(|object| {
+            read.insert(object.def.name.as_str())
+                && crate::ability_reader::definition_has_protection(&object.def)
+        }) || self.players.iter().any(|player| {
+            player
+                .keywords()
+                .iter()
+                .any(|keyword| matches!(keyword, mtg_cards::keyword::Keyword::Protection(_)))
+        });
+        self.possible.protection = protection;
     }
 }
 
