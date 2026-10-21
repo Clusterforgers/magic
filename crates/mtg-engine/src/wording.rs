@@ -264,6 +264,7 @@ fn state_words(condition: &Condition) -> String {
 }
 
 /// The clause of one pattern, such as "it enters the battlefield", and whether it speaks of the source itself.
+#[allow(clippy::too_many_lines)]
 fn clause(pattern: &TriggerPattern) -> (String, bool) {
     match pattern {
         TriggerPattern::State { condition } => (state_words(condition), true),
@@ -328,9 +329,7 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (when, false)
         }
-        TriggerPattern::DealsDamage {
-            source, combat, ..
-        } => {
+        TriggerPattern::DealsDamage { source, combat, .. } => {
             let kind = match combat {
                 Some(true) => "combat damage",
                 Some(false) => "noncombat damage",
@@ -370,10 +369,9 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} tap{s} {} for mana", subject(what)), false)
         }
-        TriggerPattern::Blocks { what } => (
-            format!("{} blocks", subject(what)),
-            what.0 == [Pred::This],
-        ),
+        TriggerPattern::Blocks { what } => {
+            (format!("{} blocks", subject(what)), what.0 == [Pred::This])
+        }
         TriggerPattern::BecomesBlocked { what } => (
             format!("{} becomes blocked", subject(what)),
             what.0 == [Pred::This],
@@ -936,10 +934,7 @@ mod tests {
         "Whenever you tap a land for mana"
     )]
     #[case::blocking(r#"{"Blocks":{"what":["This"]}}"#, "When it blocks")]
-    #[case::becoming_blocked(
-        r#"{"BecomesBlocked":{"what":["This"]}}"#,
-        "When it becomes blocked"
-    )]
+    #[case::becoming_blocked(r#"{"BecomesBlocked":{"what":["This"]}}"#, "When it becomes blocked")]
     #[case::attacking_together(
         r#"{"GroupAttacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}],"at_least":2}}"#,
         "Whenever 2 or more creatures you control attack"

@@ -55,6 +55,9 @@ fn mana(r: &mut Reader<'_>) -> Option<ManaCostX> {
 /// "Pay 2 life", "Sacrifice ~", "Sacrifice a creature", "Discard a card".
 fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     if r.word("pay") {
+        if let Some(energy) = r.attempt(energy) {
+            return Some(CostItem::PayEnergy(Amount::Fixed(energy)));
+        }
         let amount = points(r)?;
         r.word("life").then_some(())?;
         return Some(CostItem::PayLife(amount));
@@ -71,6 +74,18 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
         return Some(CostItem::SacrificeSelf);
     }
     sacrifice(r)
+}
+
+/// A run of energy symbols: "{E}{E}" is two energy.
+fn energy(r: &mut Reader<'_>) -> Option<i32> {
+    let mut count = 0;
+    while r
+        .attempt(|r| r.symbol().filter(|symbol| *symbol == "E"))
+        .is_some()
+    {
+        count += 1;
+    }
+    (count > 0).then_some(count)
 }
 
 /// What is sacrificed: "a creature", "another artifact", "two Goblins".
@@ -108,6 +123,9 @@ fn item_text(item: &CostItem) -> Option<String> {
         CostItem::Untap => "{Q}".to_owned(),
         CostItem::PayLife(amount) => format!("Pay {} life", points_text(amount)?),
         CostItem::SacrificeSelf => "Sacrifice ~".to_owned(),
+        CostItem::PayEnergy(Amount::Fixed(count)) if *count > 0 => {
+            format!("Pay {}", "{E}".repeat(usize::try_from(*count).ok()?))
+        }
         CostItem::Sacrifice { filter, count } => sacrifice_text(filter, count)?,
         CostItem::Discard {
             count,

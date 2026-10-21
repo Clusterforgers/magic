@@ -413,14 +413,17 @@ fn trigger_pattern() -> impl Strategy<Value = TriggerPattern> {
             proptest::option::of(reference()),
             proptest::option::of(any::<bool>())
         )
-            .prop_map(|(source, to, combat)| TriggerPattern::DealsDamage { source, to, combat }),
+            .prop_map(|(source, to, combat)| TriggerPattern::DealsDamage {
+                source,
+                to,
+                combat
+            }),
         reference().prop_map(|who| TriggerPattern::LifeGained { who }),
         reference().prop_map(|who| TriggerPattern::LifeLost { who }),
         reference().prop_map(|who| TriggerPattern::Drew { who }),
         (selector(), reference()).prop_map(|(what, by)| TriggerPattern::Discarded { what, by }),
         selector().prop_map(|what| TriggerPattern::Tapped { what }),
-        (selector(), reference())
-            .prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by }),
+        (selector(), reference()).prop_map(|(what, by)| TriggerPattern::TappedForMana { what, by }),
         selector().prop_map(|what| TriggerPattern::Blocks { what }),
         selector().prop_map(|what| TriggerPattern::BecomesBlocked { what }),
         (selector(), 1u32..5)

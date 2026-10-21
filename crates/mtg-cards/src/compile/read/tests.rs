@@ -166,6 +166,7 @@ mod put_back;
 mod returns;
 mod tap_and_mill;
 mod triggers;
+mod vocabulary;
 
 mod mana {
     //! Goal: a plain mana ability reads in the shapes of the cards, and a cost, a choice or a count it does not model stays with the table.
@@ -202,7 +203,7 @@ mod mana {
     }
 
     #[rstest]
-    #[case::a_choice("{T}: Add {R} or {G}.")]
+    #[case::a_choice_and_a_cost("{T}: Add {R} or {G}. {T}: Add {B}.")]
     #[case::for_each("{T}: Add {G} for each creature you control.")]
     #[case::x("{T}: Add {X}.")]
     #[case::generic("{T}: Add {2}.")]

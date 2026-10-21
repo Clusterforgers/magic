@@ -120,6 +120,17 @@ impl Scope {
     }
 }
 
+/// Where a walk stands in an effect list, which says whether "if you do" has an effect to ask about.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum After {
+    /// The first effect of a list, or no effect list.
+    Nothing,
+    /// An effect that has another before it.
+    Effect,
+    /// The condition of an `If` that has an effect before it.
+    Condition,
+}
+
 struct Walker<'a> {
     tokens: &'a BTreeSet<String>,
     problems: Vec<Problem>,
@@ -128,10 +139,8 @@ struct Walker<'a> {
     scope: Scope,
     has_kicker: bool,
     x_free: bool,
-    /// The effect being walked has an effect before it in its list.
-    follows_effect: bool,
-    /// A `Performed` may stand here: the condition of an `If` that follows an effect.
-    performed_ok: bool,
+    /// Where the walk stands in an effect list, for "if you do".
+    after: After,
     face: usize,
     spell_targets: Vec<TargetSpec>,
     x_uses: Vec<(usize, String)>,
@@ -148,8 +157,7 @@ impl<'a> Walker<'a> {
             scope: Scope::default(),
             has_kicker: false,
             x_free: false,
-            follows_effect: false,
-            performed_ok: false,
+            after: After::Nothing,
             face: 0,
             spell_targets: Vec::new(),
             x_uses: Vec::new(),
@@ -397,7 +405,7 @@ impl<'a> Walker<'a> {
             Condition::YourTurn => {}
             Condition::Performed => {
                 self.uses("Condition", "Performed");
-                if !self.performed_ok {
+                if self.after != After::Condition {
                     self.problem("`Performed` is the condition of an `If` that follows the effect it asks about");
                 }
             }
@@ -772,14 +780,13 @@ impl<'a> Walker<'a> {
 
     fn effect_list(&mut self, field: &str, list: &[Effect], top: bool) {
         self.scope.names.push(BTreeMap::new());
-        let saved = (self.follows_effect, self.performed_ok);
+        let saved = self.after;
         for (i, effect) in list.iter().enumerate() {
             let only = top && list.len() == 1;
-            self.follows_effect = i > 0;
-            self.performed_ok = false;
+            self.after = if i > 0 { After::Effect } else { After::Nothing };
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
         }
-        (self.follows_effect, self.performed_ok) = saved;
+        self.after = saved;
         self.scope.names.pop();
     }
 
@@ -992,9 +999,13 @@ impl<'a> Walker<'a> {
                 then,
                 otherwise,
             } => {
-                w.performed_ok = w.follows_effect;
+                if w.after == After::Effect {
+                    w.after = After::Condition;
+                }
                 w.at("condition", |w| w.condition(condition));
-                w.performed_ok = false;
+                if w.after == After::Condition {
+                    w.after = After::Effect;
+                }
                 w.effect_list("then", then, false);
                 w.effect_list("otherwise", otherwise, false);
             }

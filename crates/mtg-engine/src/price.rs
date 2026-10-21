@@ -225,10 +225,22 @@ mod tests {
     #[case::discarding(r#"[{"Discard":{}}]"#, "Cost.Discard")]
     #[case::untapping(r#"["Untap"]"#, "Cost.Untap")]
     #[case::energy(r#"[{"PayEnergy":1}]"#, "Cost.PayEnergy")]
-    #[case::removing_counters(r#"["Tap",{"RemoveCounters":{"counter":"charge"}}]"#, "Cost.RemoveCounters")]
-    #[case::tapping_other_permanents(r#"[{"TapPermanents":{"filter":[{"Type":"Creature"}]}}]"#, "Cost.TapPermanents")]
-    #[case::exiling_from_a_graveyard(r#"[{"ExileFromGraveyard":{"filter":[],"count":2}}]"#, "Cost.ExileFromGraveyard")]
-    #[case::returning_to_a_hand(r#"[{"ReturnToHand":{"filter":[{"Type":"Land"}]}}]"#, "Cost.ReturnToHand")]
+    #[case::removing_counters(
+        r#"["Tap",{"RemoveCounters":{"counter":"charge"}}]"#,
+        "Cost.RemoveCounters"
+    )]
+    #[case::tapping_other_permanents(
+        r#"[{"TapPermanents":{"filter":[{"Type":"Creature"}]}}]"#,
+        "Cost.TapPermanents"
+    )]
+    #[case::exiling_from_a_graveyard(
+        r#"[{"ExileFromGraveyard":{"filter":[],"count":2}}]"#,
+        "Cost.ExileFromGraveyard"
+    )]
+    #[case::returning_to_a_hand(
+        r#"[{"ReturnToHand":{"filter":[{"Type":"Land"}]}}]"#,
+        "Cost.ReturnToHand"
+    )]
     #[case::x(r#""{X}{R}""#, "Cost.Mana.X")]
     fn a_part_the_engine_does_not_pay_is_named(#[case] json: &str, #[case] name: &str) {
         assert_eq!(Price::of(&cost(json)), Err(name));

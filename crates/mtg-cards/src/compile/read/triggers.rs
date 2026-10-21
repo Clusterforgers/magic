@@ -100,6 +100,21 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
             what: subject(r)?,
             by,
         })
+    } else if verb == if third { "gains" } else { "gain" } {
+        r.need("life")?;
+        Some(TriggerPattern::LifeGained { who: by })
+    } else if verb == if third { "loses" } else { "lose" } {
+        r.need("life")?;
+        Some(TriggerPattern::LifeLost { who: by })
+    } else if verb == if third { "draws" } else { "draw" } {
+        r.need("a card")?;
+        Some(TriggerPattern::Drew { who: by })
+    } else if verb == if third { "discards" } else { "discard" } {
+        r.need("a card")?;
+        Some(TriggerPattern::Discarded {
+            what: Selector::default(),
+            by,
+        })
     } else {
         None
     }
@@ -284,6 +299,18 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
             player_verb(by, "sacrifice")?,
             subject_text(what)?
         )),
+        TriggerPattern::LifeGained { who } => {
+            Some(format!("Whenever {} life", player_verb(who, "gain")?))
+        }
+        TriggerPattern::LifeLost { who } => {
+            Some(format!("Whenever {} life", player_verb(who, "lose")?))
+        }
+        TriggerPattern::Drew { who } => {
+            Some(format!("Whenever {} a card", player_verb(who, "draw")?))
+        }
+        TriggerPattern::Discarded { what, by } if what.is_empty() => {
+            Some(format!("Whenever {} a card", player_verb(by, "discard")?))
+        }
         TriggerPattern::AnyOf(patterns) => {
             let (first, rest) = patterns.split_first()?;
             let (what, verb) = happening(first)?;

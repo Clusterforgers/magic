@@ -321,6 +321,8 @@ fn is_imperative(effect: &Effect) -> bool {
     matches!(
         effect,
         Effect::Scry { who: Ref::You, .. }
+            | Effect::Surveil { who: Ref::You, .. }
+            | Effect::Proliferate { who: Ref::You }
             | Effect::Draw { who: Ref::You, .. }
             | Effect::Mill { who: Ref::You, .. }
             | Effect::Discard { who: Ref::You, .. }
@@ -355,6 +357,18 @@ fn mana_text(mana: &Produce) -> Option<String> {
             symbols
         }
         Produce::AnyColor(1) => "one mana of any color".to_owned(),
+        Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
+        Produce::OneOf(list) if list.len() > 1 => {
+            let symbols: Vec<String> = list
+                .iter()
+                .map(|mana| format!("{{{}}}", mana.symbol()))
+                .collect();
+            match symbols.as_slice() {
+                [first, second] => format!("{first} or {second}"),
+                [init @ .., final_one] => format!("{}, or {final_one}", init.join(", ")),
+                [] => return None,
+            }
+        }
         _ => return None,
     })
 }
@@ -634,6 +648,27 @@ impl Writer<'_> {
                 paid,
                 unpaid,
             } if paid.is_empty() => self.unless_pays(who, cost, unpaid)?,
+            _ => return self.keyword_action(effect),
+        })
+    }
+
+    /// "surveil 2", "proliferate", "you become the monarch": a keyword action or a designation.
+    fn keyword_action(&mut self, effect: &Effect) -> Option<String> {
+        Some(match effect {
+            Effect::Surveil {
+                who: Ref::You,
+                count,
+            } => format!("surveil {}", points_text(count)?),
+            Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::BecomeMonarch { who } => format!(
+                "{} {} the monarch",
+                self.player(who)?,
+                if *who == Ref::You {
+                    "become"
+                } else {
+                    "becomes"
+                }
+            ),
             _ => return None,
         })
     }

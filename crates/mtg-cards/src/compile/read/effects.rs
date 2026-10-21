@@ -216,6 +216,11 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             who,
             count: points(r)?,
         },
+        "surveil" => Effect::Surveil {
+            who,
+            count: points(r)?,
+        },
+        "proliferate" => Effect::Proliferate { who },
         "draw" => Effect::Draw {
             who,
             count: cards(r)?,
@@ -314,6 +319,10 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         "win" | "wins" => {
             r.need("the game")?;
             Effect::WinGame { who }
+        }
+        "become" | "becomes" => {
+            r.need("the monarch")?;
+            Effect::BecomeMonarch { who }
         }
         "shuffle" | "shuffles" => {
             r.need(if who == Ref::You {
@@ -585,11 +594,29 @@ fn mana_type(symbol: &str) -> Option<ManaType> {
         .find(|mana| symbol.len() == 1 && symbol.starts_with(mana.symbol()))
 }
 
-/// "Add {G}{G}." or "Add one mana of any color."
+/// "{W} or {U}", "{B}, {R}, or {G}": one mana of a type chosen when it is added.
+fn choice(r: &mut Reader<'_>) -> Option<Vec<ManaType>> {
+    let mut list = vec![mana_type(r.symbol()?)?];
+    while let Some(next) = r.attempt(|r| {
+        let listed = r.punct(',');
+        let joined = r.word("or");
+        (listed || joined).then_some(())?;
+        mana_type(r.symbol()?)
+    }) {
+        list.push(next);
+    }
+    (list.len() > 1).then_some(list)
+}
+
+/// "Add {G}{G}.", "Add {W} or {U}.", "Add one mana of any color." or "Add one mana of the chosen color."
 fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("add")?;
     let mana = if r.words("one mana of any color") {
         Produce::AnyColor(1)
+    } else if r.words("one mana of the chosen color") {
+        Produce::ChosenColor(1)
+    } else if let Some(list) = r.attempt(choice) {
+        Produce::OneOf(list)
     } else {
         let mut list = Vec::new();
         while let Some(mana) = r.attempt(|r| mana_type(r.symbol()?)) {

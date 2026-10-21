@@ -40,13 +40,7 @@ fn an_intervening_if_reads_in_the_shape_of_the_hand_written_files(
 #[case("When ~ enters, you win the game.")]
 #[case("Whenever you cast a spell, you win the game.")]
 fn more_oracle_wordings_read_and_write_back(#[case] text: &str) {
-    // "Whenever you gain life" has no pattern: it stays with the table.
-    let read = trigger(text);
-    if text.contains("gain life") {
-        assert_eq!(read, None, "{text}");
-    } else {
-        golden(text, ClauseKind::Triggered, false);
-    }
+    golden(text, ClauseKind::Triggered, false);
 }
 
 #[rstest]

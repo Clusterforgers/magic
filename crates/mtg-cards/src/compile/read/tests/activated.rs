@@ -207,7 +207,9 @@ fn every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
 }
 
 #[rstest]
-#[case::a_choice_of_mana("{T}: Add {R} or {G}.")]
+#[case::mana_of_a_color_a_land_could_produce(
+    "{T}: Add one mana of any color that a land an opponent controls could produce."
+)]
 #[case::a_condition("{T}: Add {B}. Activate only if you control a Swamp.")]
 #[case::both_restrictions_apart(
     "{T}: Draw a card. Activate only as a sorcery. Activate only once each turn."
@@ -228,7 +230,7 @@ fn every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
 #[case::a_count_of_the_card("Sacrifice two ~: Draw a card.")]
 #[case::discard_the_card("Discard ~: Draw a card.")]
 #[case::discard_a_kind("Discard a creature card: Draw a card.")]
-#[case::energy("{T}, Pay {E}: Add one mana of any color.")]
+#[case::energy_beside_life("{T}, Pay {E} and 2 life: Add one mana of any color.")]
 #[case::life_of_an_unnamed_kind("{T}, Pay life: Add {B}.")]
 #[case::loyalty_is_not_a_cost("+1: Draw a card.")]
 #[case::no_cost_part("{T},: Draw a card.")]

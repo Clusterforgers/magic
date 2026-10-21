@@ -218,11 +218,11 @@ fn an_ability_word_is_flavor_and_the_rest_is_read(#[case] text: &str, #[case] re
 #[case::combat_damage_to_a_player("Whenever ~ deals combat damage to a player, draw a card.")]
 #[case::damage("Whenever a creature you control deals damage to an opponent, scry 1.")]
 #[case::is_dealt_damage("Whenever ~ is dealt damage, draw a card.")]
-#[case::gain_life("Whenever you gain life, draw a card.")]
-#[case::lose_life("Whenever an opponent loses life, you gain 1 life.")]
+#[case::gain_life_of_an_amount("Whenever you gain 3 life, draw a card.")]
+#[case::lose_life_of_a_creature("Whenever a creature loses life, you gain 1 life.")]
 #[case::counters("Whenever a +1/+1 counter is put on ~, draw a card.")]
-#[case::draw("Whenever you draw a card, scry 1.")]
-#[case::discard("Whenever you discard a card, draw a card.")]
+#[case::draw_a_second_card("Whenever you draw your second card each turn, scry 1.")]
+#[case::discard_a_land("Whenever you discard a land card, draw a card.")]
 #[case::becomes_tapped("Whenever ~ becomes tapped, draw a card.")]
 #[case::becomes_the_target(
     "Whenever ~ becomes the target of a spell or ability an opponent controls, draw a card."
