@@ -18,8 +18,8 @@ use crate::choose::{Choice, Choices};
 use crate::decision::{PayChoice, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::{Event, ZoneCause};
-use crate::loyalty;
 use crate::help::Offered;
+use crate::loyalty;
 use crate::mana::{
     ManaOption, Payment, auto_payment_with, check_payment_with, complete_payment_with,
     max_life_payment,
@@ -188,11 +188,13 @@ fn unusable(state: &GameState, player: PlayerId, options: &PayOptions) -> Vec<Ob
         .chain(options.convoke.iter().map(|o| o.creature))
         .filter(tapped)
         .collect();
-    gone.extend(options.delve.iter().copied().filter(|card| {
-        !state
-            .zone(Zone::Graveyard(player))
-            .contains(card)
-    }));
+    gone.extend(
+        options
+            .delve
+            .iter()
+            .copied()
+            .filter(|card| !state.zone(Zone::Graveyard(player)).contains(card)),
+    );
     gone
 }
 

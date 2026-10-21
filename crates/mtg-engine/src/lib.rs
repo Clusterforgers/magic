@@ -13,6 +13,8 @@ mod damage;
 #[cfg(test)]
 mod fixtures;
 mod flow;
+#[cfg(test)]
+mod help_tests;
 mod layers;
 mod legend;
 mod mana_ability;
@@ -23,8 +25,6 @@ mod preview;
 mod price;
 mod replace_dry;
 mod sba;
-#[cfg(test)]
-mod help_tests;
 #[cfg(test)]
 mod spend_tests;
 mod steps;

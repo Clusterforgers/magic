@@ -41,13 +41,7 @@ enum Part {
 type Creature = (u8, Option<usize>);
 
 /// Floating mana (by type), sources (by type), creatures, cards in the graveyard and a cost.
-type Case = (
-    Vec<usize>,
-    Vec<usize>,
-    Vec<Creature>,
-    usize,
-    &'static str,
-);
+type Case = (Vec<usize>, Vec<usize>, Vec<Creature>, usize, &'static str);
 
 fn case() -> impl Strategy<Value = Case> {
     (
@@ -198,7 +192,8 @@ fn pays(world: &World, made: &[ManaType], convoke: &[Convoked], delved: usize, l
                     .iter()
                     .filter(|c| c.pays.map(ManaType::from) == Some(mana))
                     .count();
-                made.iter().filter(|m| **m == mana).count() + helped >= r.cost.required(mana) as usize
+                made.iter().filter(|m| **m == mana).count() + helped
+                    >= r.cost.required(mana) as usize
             })
     })
 }

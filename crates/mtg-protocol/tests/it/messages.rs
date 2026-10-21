@@ -151,18 +151,21 @@ fn answers() -> Vec<Answer> {
             pool: vec![ManaType::Red],
             taps: vec![source],
             life: 0,
+            ..Payment::default()
         })),
         Answer::PayMana(PayChoice::Manual(Payment {
             restricted: Vec::new(),
             pool: vec![],
             taps: vec![],
             life: 4,
+            ..Payment::default()
         })),
         Answer::PayMana(PayChoice::Complete(Payment {
             restricted: Vec::new(),
             pool: vec![],
             taps: vec![source],
             life: 2,
+            ..Payment::default()
         })),
         Answer::DeclareAttackers(vec![
             (a, AttackTarget::Player(PlayerId(1))),
@@ -238,6 +241,8 @@ fn decision_kinds() -> Vec<DecisionKind> {
             can_cancel: true,
             life: 20,
             max_life: 0,
+            convoke: Vec::new(),
+            delve: Vec::new(),
         }),
         DecisionKind::PayMana(PayOptions {
             spend: Box::new(Spend::other()),
@@ -249,6 +254,8 @@ fn decision_kinds() -> Vec<DecisionKind> {
             can_cancel: false,
             life: 3,
             max_life: 2,
+            convoke: Vec::new(),
+            delve: Vec::new(),
         }),
         DecisionKind::DeclareAttackers(AttackOptions {
             attackers: vec![AttackerOption {
@@ -964,6 +971,7 @@ fn a_payment_names_the_life_it_pays_and_may_leave_it_out() {
         pool: vec![ManaType::Red],
         taps: vec![],
         life: 2,
+        ..Payment::default()
     };
     assert_eq!(
         serde_json::to_value(&payment).unwrap(),
@@ -988,6 +996,8 @@ fn pay_options_carry_the_life_total_and_the_most_life_that_may_be_paid() {
         can_cancel: true,
         life: 2,
         max_life: 2,
+        convoke: Vec::new(),
+        delve: Vec::new(),
     };
     let value = serde_json::to_value(DecisionKind::PayMana(options)).unwrap();
     assert_eq!(value["PayMana"]["life"], 2);

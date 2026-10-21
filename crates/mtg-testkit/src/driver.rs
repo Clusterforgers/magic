@@ -1,5 +1,6 @@
 //! A scripted-answer driver: feed answers by card name, then assert on state and events.
 
+use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{
     CardsChoice, CostsChoice, DivideChoice, ModeChoice, NumberChoice, OptionChoice, OrderChoice,
@@ -10,6 +11,7 @@ use mtg_engine::decision::{
     Answer, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction, PriorityOptions,
 };
 use mtg_engine::effects::{Duration, Modification, Selector};
+use mtg_engine::help::Convoked;
 use mtg_engine::mana::{ManaSource, Payment};
 use mtg_engine::rules::Rule;
 use mtg_engine::turn::Step;
@@ -250,6 +252,50 @@ impl Driver {
 
     /// Answers the pending payment by tapping the named lands and paying `life`.
     pub fn pay_tapping(&mut self, lands: &[&str], life: u32) -> Result<Vec<Event>, ScriptError> {
+        let payment = self.payment_tapping(lands, life)?;
+        self.answer(Answer::PayMana(PayChoice::Manual(payment)))
+    }
+
+    /// Answers the pending payment by tapping the named lands, tapping the named creatures for convoke (each pays {1},
+    /// or one mana of the colour given), exiling the named graveyard cards for delve and paying `life`.
+    pub fn pay_helped(
+        &mut self,
+        lands: &[&str],
+        convoke: &[(&str, Option<Color>)],
+        delve: &[&str],
+        life: u32,
+    ) -> Result<Vec<Event>, ScriptError> {
+        let mut payment = self.payment_tapping(lands, life)?;
+        let DecisionKind::PayMana(options) = &self.decision()?.kind else {
+            return Err(self.unexpected("pay-mana"));
+        };
+        for (name, pays) in convoke {
+            let free = options
+                .convoke
+                .iter()
+                .map(|o| o.creature)
+                .filter(|id| !payment.convoke.iter().any(|c| c.creature == *id));
+            let creature = self.find(free, name, "creatures that may convoke")?;
+            payment.convoke.push(Convoked {
+                creature,
+                pays: *pays,
+            });
+        }
+        for name in delve {
+            let free = options
+                .delve
+                .iter()
+                .copied()
+                .filter(|id| !payment.delve.contains(id));
+            payment
+                .delve
+                .push(self.find(free, name, "cards that may delve")?);
+        }
+        self.answer(Answer::PayMana(PayChoice::Manual(payment)))
+    }
+
+    /// The payment that taps the named lands and pays `life`, for the pending payment decision.
+    fn payment_tapping(&self, lands: &[&str], life: u32) -> Result<Payment, ScriptError> {
         let DecisionKind::PayMana(options) = &self.decision()?.kind else {
             return Err(self.unexpected("pay-mana"));
         };
@@ -273,12 +319,11 @@ impl Driver {
                 })?;
             taps.push(source);
         }
-        self.answer(Answer::PayMana(PayChoice::Manual(Payment {
-            pool: Vec::new(),
-            restricted: Vec::new(),
+        Ok(Payment {
             taps,
             life,
-        })))
+            ..Payment::default()
+        })
     }
 
     /// The pending payment decision's options.

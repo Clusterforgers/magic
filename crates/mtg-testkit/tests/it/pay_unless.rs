@@ -585,6 +585,7 @@ fn a_payment_may_use_several_sources_a_partial_choice_the_engine_finishes_and_fl
                     .take(2)
                     .collect(),
                 life: 0,
+                ..Payment::default()
             })))?;
         }
     }

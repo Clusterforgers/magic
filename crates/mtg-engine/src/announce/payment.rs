@@ -38,9 +38,14 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
             pay(ctx, *spell, cost, total.sources, total.help, total.life)
         }
         (What::Spell(_), None) => Next::Drop,
-        (What::Ability(ability), Some(cost)) => {
-            pay(ctx, ability.object, cost, total.sources, total.help, total.life)
-        }
+        (What::Ability(ability), Some(cost)) => pay(
+            ctx,
+            ability.object,
+            cost,
+            total.sources,
+            total.help,
+            total.life,
+        ),
         (What::Ability(ability), None) => {
             activation_events(ctx.state, ctx.player, *ability, work.choices)
                 .map_or(Next::Drop, Next::Commit)

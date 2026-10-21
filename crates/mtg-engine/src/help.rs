@@ -215,7 +215,7 @@ fn cost_of((needs, generic): Left) -> ManaCost {
 }
 
 /// The plain `cost` with what `used` pays taken out, or why `used` pays for more than the cost has.
-pub(crate) fn reduce(cost: &ManaCost, used: &Used) -> Result<ManaCost, PaymentError> {
+pub fn reduce(cost: &ManaCost, used: &Used) -> Result<ManaCost, PaymentError> {
     if used.count() == 0 {
         return Ok(cost.clone());
     }
@@ -401,7 +401,10 @@ mod tests {
         let mut got = costs(&found);
         // The order within one number of helpers is not part of the contract.
         let counts: Vec<usize> = found.iter().map(|v| v.used.count()).collect();
-        assert!(counts.windows(2).all(|pair| pair[0] <= pair[1]), "{counts:?}");
+        assert!(
+            counts.windows(2).all(|pair| pair[0] <= pair[1]),
+            "{counts:?}"
+        );
         got.sort();
         let mut want: Vec<String> = expected.iter().map(ToString::to_string).collect();
         want.sort();

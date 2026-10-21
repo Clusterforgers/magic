@@ -95,17 +95,14 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
     let life = seat
         .life()
         .saturating_sub(i32::try_from(total.life).unwrap_or(i32::MAX));
-    total
-        .mana
-        .as_ref()
-        .is_none_or(|cost| {
-            can_afford_with(
-                cost,
-                seat.mana(),
-                &total.sources,
-                total.help.help(),
-                life,
-                &spend(ctx),
-            )
-        })
+    total.mana.as_ref().is_none_or(|cost| {
+        can_afford_with(
+            cost,
+            seat.mana(),
+            &total.sources,
+            total.help.help(),
+            life,
+            &spend(ctx),
+        )
+    })
 }

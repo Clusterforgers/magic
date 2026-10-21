@@ -496,6 +496,8 @@ mod tests {
             can_cancel,
             life: 20,
             max_life: 0,
+            convoke: Vec::new(),
+            delve: Vec::new(),
         })
     }
 
