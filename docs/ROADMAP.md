@@ -73,7 +73,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ### Costs and casting
 - [x] (g1) One announcement procedure (CR 601.2): modes, X, optional, alternative and additional costs, targets and division, then the total cost; `ChooseNumber`, `ChooseCosts` and `DivideAmount` are built with it
 - [ ] (g2) `{X}` in spell and ability costs and the `-X` of a loyalty ability; the support walker names `Cost.Mana.X` and `Cost.Loyalty.X`
-- [ ] (g3) Optional and additional costs: kicker and multikicker; Burst Lightning is Verified
+- [x] (g3) Optional costs: kicker and multikicker are asked with `ChooseCosts` and `ChooseNumber`, added to the total cost, remembered by the spell, the permanent and its triggers, and read as `Condition::Kicked` and `Amount::Kicks`; Burst Lightning, Gatekeeper of Malakir and Wolfbriar Elemental are Verified
+- [ ] (g3b) Other additional costs a spell may choose (buyback, entwine, "as an additional cost, you may ..."), a kicker with a part other than mana, and the kicks of a permanent that left before its trigger went on the stack (last known information)
 - [ ] (g4) Alternative costs and cast permissions: flashback, evoke, overload, madness, suspend, casting from another zone, without paying the cost or as though it had flash, cascade; Mulldrifter, Faithless Looting and Bloodbraid Elf are Verified
 - [ ] (g5) Cost modifiers (`Ability::CostModifier`): reductions, increases, convoke, delve; Fireball is Verified
 - [ ] (g6) Costs of activated abilities beyond `{T}`, mana and sacrificing the source: a chosen permanent (chosen when the ability is announced), life, discard, counters removed, a card exiled from a graveyard, untapped creatures tapped; cycling; a card's support counts the abilities of the predefined tokens it makes; Flooded Strand is Verified

@@ -234,7 +234,11 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     let fireball = reasons("Fireball");
     assert!(fireball.contains("{X}"), "{fireball}");
     // The kicker and multikicker cards are covered whole: the costs are paid at announcement and read at resolution.
-    for name in ["Burst Lightning", "Gatekeeper of Malakir", "Wolfbriar Elemental"] {
+    for name in [
+        "Burst Lightning",
+        "Gatekeeper of Malakir",
+        "Wolfbriar Elemental",
+    ] {
         assert_eq!(reasons(name), "", "{name}");
     }
     // Rhystic Study and Izzet Charm are covered whole: the payment the opponent or the spell's controller is offered

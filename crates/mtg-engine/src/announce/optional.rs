@@ -63,10 +63,10 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         work.done.optional = true;
         return None;
     }
-    if !work.done.single {
+    if work.done.repeated.is_none() {
         let offered = offered_once(ctx, work.choices);
         if offered.is_empty() {
-            work.done.single = true;
+            work.done.repeated = Some(0);
         } else {
             return Some(ctx.ask(DecisionKind::ChooseCosts(CostsOptions {
                 source: ctx.source,
@@ -75,14 +75,16 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             })));
         }
     }
+    let mut settled = work.done.repeated.unwrap_or(0);
     loop {
-        let Some(index) = ctx.needs.repeatable().nth(work.done.repeated) else {
+        work.done.repeated = Some(settled);
+        let Some(index) = ctx.needs.repeatable().nth(settled) else {
             work.done.optional = true;
             return None;
         };
         let most = most_times(ctx, work.choices, index);
         if most == 0 {
-            work.done.repeated += 1;
+            settled += 1;
             continue;
         }
         let label = ctx.needs.optional.get(index).map_or("", |cost| &cost.label);

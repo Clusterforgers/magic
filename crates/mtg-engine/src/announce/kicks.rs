@@ -145,7 +145,10 @@ fn a_kicker_is_offered_only_when_the_player_can_pay_for_it(
 #[rstest]
 #[case::not_kicked(&[], 1)]
 #[case::kicked(&[0], 2)]
-fn the_total_cost_holds_the_kicker_only_when_it_is_paid(#[case] costs: &[usize], #[case] total: u32) {
+fn the_total_cost_holds_the_kicker_only_when_it_is_paid(
+    #[case] costs: &[usize],
+    #[case] total: u32,
+) {
     let walk = walk(&table(instant("{1}", vec![KICKER()]), 3), costs, 0);
     assert_eq!(walk.paying.unwrap().cost.mana_value(), total);
     assert_eq!(walk.pending.choices.optional_costs, costs);
@@ -166,7 +169,11 @@ fn a_multikicker_is_asked_up_to_the_times_the_player_can_pay_and_adds_its_cost_f
     #[case] total: u32,
     #[case] kicks: usize,
 ) {
-    let walk = walk(&table(instant("{1}", vec![MULTIKICKER()]), lands), &[], times);
+    let walk = walk(
+        &table(instant("{1}", vec![MULTIKICKER()]), lands),
+        &[],
+        times,
+    );
     assert_eq!(walk.number, most.map(|most| (0, Some(most))));
     assert_eq!(walk.asked.contains(&"choose-number"), most.is_some());
     assert_eq!(walk.paying.unwrap().cost.mana_value(), total);
@@ -178,7 +185,8 @@ fn a_multikicker_is_asked_up_to_the_times_the_player_can_pay_and_adds_its_cost_f
 }
 
 #[test]
-fn a_kicker_and_a_multikicker_are_asked_one_after_the_other_and_the_number_leaves_what_the_kick_left() {
+fn a_kicker_and_a_multikicker_are_asked_one_after_the_other_and_the_number_leaves_what_the_kick_left()
+ {
     let card = instant("{1}", vec![KICKER(), MULTIKICKER()]);
     let walk = walk(&table(card, 5), &[0], 2);
     assert_eq!(walk.asked, ["choose-costs", "choose-number", "pay-mana"]);
@@ -192,7 +200,10 @@ fn a_kicker_and_a_multikicker_are_asked_one_after_the_other_and_the_number_leave
 #[rstest]
 #[case::paid_with_the_rest(2, true)]
 #[case::one_land_short(1, false)]
-fn a_hybrid_symbol_stays_in_the_total_beside_the_kicker(#[case] lands: usize, #[case] kicked: bool) {
+fn a_hybrid_symbol_stays_in_the_total_beside_the_kicker(
+    #[case] lands: usize,
+    #[case] kicked: bool,
+) {
     let card = instant("{G/W}", vec![Keyword::Kicker(mana("{G}"))]);
     let walk = walk(&table(card, lands), &[0], 0);
     assert_eq!(walk.offered.is_empty(), !kicked);
@@ -236,7 +247,8 @@ fn the_keywords_of_a_spell_give_its_optional_costs_as_the_card_prints_them(
 #[test]
 fn a_spell_without_the_keywords_has_no_optional_costs() {
     let game = table(instant("{1}", Vec::new()), 2);
-    assert!(optional::read(&game, &What::Spell(game.zone(Zone::Hand(SEAT))[0])).is_empty());
+    let read = optional::read(&game, &What::Spell(game.zone(Zone::Hand(SEAT))[0]));
+    assert_eq!(read.len(), 0);
 }
 
 fn read(game: &GameState, object: crate::object::ObjectRef) -> (bool, i64) {
@@ -258,7 +270,10 @@ fn the_spell_remembers_what_it_paid_while_it_is_on_the_stack_and_the_permanent_a
 ) {
     let mut game = table(creature(vec![MULTIKICKER()]), 0);
     let card = game.zone(Zone::Hand(SEAT))[0];
-    assert_eq!(read(&game, game.object(card).unwrap().reference()), (false, 0));
+    assert_eq!(
+        read(&game, game.object(card).unwrap().reference()),
+        (false, 0)
+    );
 
     let cast = Event::SpellCast {
         player: SEAT,
@@ -289,7 +304,7 @@ fn the_spell_remembers_what_it_paid_while_it_is_on_the_stack_and_the_permanent_a
     };
     apply_event(&mut game, &left).unwrap();
     let gone = game.object(card).unwrap();
-    assert!(gone.paid_costs().is_empty());
+    assert_eq!(gone.paid_costs().len(), 0);
     assert_eq!(read(&game, gone.reference()), (false, 0));
 }
 
@@ -309,5 +324,5 @@ fn an_instant_that_resolves_forgets_what_it_paid() {
     apply_event(&mut game, &cast).unwrap();
     apply_event(&mut game, &Event::SpellResolved { object: card }).unwrap();
     assert_eq!(game.object(card).unwrap().zone(), Zone::Graveyard(SEAT));
-    assert!(game.object(card).unwrap().paid_costs().is_empty());
+    assert_eq!(game.object(card).unwrap().paid_costs().len(), 0);
 }

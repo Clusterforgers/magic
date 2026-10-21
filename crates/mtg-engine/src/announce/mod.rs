@@ -117,7 +117,7 @@ impl Phase {
 /// What the rules of the spell or ability ask its player to announce beyond modes and targets, read from the rules
 /// when the announcement begins.
 ///
-/// Nothing reads these from a card yet: (g2) fills `x`, (g3) `optional` and (g4) `alternative`.
+/// The keywords of a spell fill `optional` (kicker, multikicker); (g2) fills `x` and (g4) `alternative`.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub(crate) struct Needs {
     /// The cost the spell is cast for instead of its mana cost.
@@ -155,10 +155,9 @@ pub(crate) struct Done {
     pub(crate) modes: bool,
     /// The optional costs are settled.
     pub(crate) optional: bool,
-    /// The optional costs that may be paid once are settled.
-    pub(crate) single: bool,
-    /// How many of the costs that may be paid any number of times are settled.
-    pub(crate) repeated: usize,
+    /// Once the optional costs that may be paid once are settled: how many of those that may be paid any number of
+    /// times are settled too.
+    pub(crate) repeated: Option<usize>,
     /// X is settled.
     pub(crate) x: bool,
     /// How many target specifications have their division settled.
@@ -211,14 +210,16 @@ impl Pending {
             Answered::Targets(_) => Phase::Targets,
             // A number is asked for X, and for the times a repeatable optional cost is paid, which comes once the
             // costs that are paid once are settled.
-            Answered::Number(_) if self.done.single && self.done.asked == Some(Phase::Optional) => {
+            Answered::Number(_)
+                if self.done.repeated.is_some() && self.done.asked == Some(Phase::Optional) =>
+            {
                 Phase::Optional
             }
             Answered::Number(_) => Phase::X,
             Answered::Costs(_) => Phase::Optional,
             Answered::Division(_) => Phase::Division,
         };
-        let costs_again = matches!(answered, Answered::Costs(_)) && self.done.single;
+        let costs_again = matches!(answered, Answered::Costs(_)) && self.done.repeated.is_some();
         if self.done.asked != Some(wanted) || costs_again {
             return Err(EngineError::InvalidEvent(
                 "an answer for a step the announcement did not ask".into(),
@@ -235,14 +236,14 @@ impl Pending {
                 let paid = self
                     .needs
                     .as_ref()
-                    .and_then(|needs| needs.repeatable().nth(self.done.repeated));
+                    .and_then(|needs| needs.repeatable().nth(self.done.repeated.unwrap_or(0)));
                 if let Some(index) = paid {
                     let times = usize::try_from(times).unwrap_or(0);
                     self.choices
                         .optional_costs
                         .extend(std::iter::repeat_n(index, times));
                 }
-                self.done.repeated += 1;
+                self.done.repeated = Some(self.done.repeated.unwrap_or(0) + 1);
             }
             Answered::Number(number) => {
                 self.choices.x = Some(number);
@@ -250,7 +251,7 @@ impl Pending {
             }
             Answered::Costs(costs) => {
                 self.choices.optional_costs = costs;
-                self.done.single = true;
+                self.done.repeated = Some(0);
             }
             Answered::Division(shares) => {
                 self.choices.division.extend(shares);
