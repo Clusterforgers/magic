@@ -43,11 +43,14 @@ fn tag_of<T: Serialize>(value: &T) -> String {
     }
 }
 
-/// Whether the part of a cost that counts holds a fixed number: the engine pays no other (`Cost.PayLife.Counted`).
+/// Whether the part of a cost that counts holds a fixed number or the X announced: the engine pays no other amount
+/// (`Cost.PayLife.Counted`).
 fn is_fixed(item: &CostItem) -> bool {
-    let fixed = |amount: &Amount| matches!(amount, Amount::Fixed(number) if *number >= 0);
+    let fixed = |amount: &Amount| {
+        matches!(amount, Amount::Fixed(number) if *number >= 0) || *amount == Amount::X
+    };
     match item {
-        CostItem::PayLife(amount) => fixed(amount),
+        CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => fixed(amount),
         CostItem::RemoveCounters { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::Discard { count, .. }

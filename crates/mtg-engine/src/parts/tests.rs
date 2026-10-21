@@ -104,12 +104,16 @@ fn what_is_not_a_part_is_not_read_as_one(#[case] json: &str) {
 }
 
 #[rstest]
-#[case::life(r#"{"PayLife":"X"}"#, "Cost.PayLife.Counted")]
+#[case::life(r#"{"PayLife":{"Life":"You"}}"#, "Cost.PayLife.Counted")]
+#[case::energy(r#"{"PayEnergy":{"Life":"You"}}"#, "Cost.PayEnergy.Counted")]
 #[case::counters(
-    r#"{"RemoveCounters":{"counter":"charge","count":"X"}}"#,
+    r#"{"RemoveCounters":{"counter":"charge","count":{"Life":"You"}}}"#,
     "Cost.RemoveCounters.Counted"
 )]
-#[case::sacrifice(r#"{"Sacrifice":{"filter":[],"count":"X"}}"#, "Cost.Sacrifice.Counted")]
+#[case::sacrifice(
+    r#"{"Sacrifice":{"filter":[],"count":{"Life":"You"}}}"#,
+    "Cost.Sacrifice.Counted"
+)]
 #[case::negative(r#"{"PayLife":-1}"#, "Cost.PayLife.Counted")]
 fn an_amount_that_is_not_a_fixed_number_is_named(#[case] json: &str, #[case] name: &str) {
     assert_eq!(Part::read(&item(json)), Err(name));

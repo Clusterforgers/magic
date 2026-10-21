@@ -7,6 +7,7 @@
 mod bounce;
 mod counters;
 mod discard;
+mod energy;
 mod exile;
 mod life;
 mod sacrifice;
@@ -61,14 +62,19 @@ pub(crate) enum Part {
         /// How many.
         count: u32,
     },
+    /// Energy counters paid (CR 107.14).
+    Energy(u32),
     /// Objects picked at the announcement.
     Pick(Pick),
+    /// A part whose amount is the X announced with the ability, held here as it stands for X = 0; `Part::at` counts it.
+    X(Box<Part>),
 }
 
-/// The name `Caps` gives a part whose amount is not a fixed number, which nothing counts yet.
+/// The name `Caps` gives a part whose amount is neither a fixed number nor X, which nothing counts yet.
 const fn counted(item: &CostItem) -> &'static str {
     match item {
         CostItem::PayLife(_) => "Cost.PayLife.Counted",
+        CostItem::PayEnergy(_) => "Cost.PayEnergy.Counted",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters.Counted",
         CostItem::Sacrifice { .. } => "Cost.Sacrifice.Counted",
         CostItem::Discard { .. } => "Cost.Discard.Counted",
@@ -79,10 +85,13 @@ const fn counted(item: &CostItem) -> &'static str {
     }
 }
 
-/// A fixed amount, or the name of the part that counts something else.
-fn fixed(amount: &Amount, item: &CostItem) -> Result<u32, &'static str> {
+/// A fixed amount, or X (`true`, counted as 0 until it is announced); the name of the part otherwise.
+fn amount(amount: &Amount, item: &CostItem) -> Result<(u32, bool), &'static str> {
     match amount {
-        Amount::Fixed(number) => u32::try_from(*number).map_err(|_| counted(item)),
+        Amount::Fixed(number) => u32::try_from(*number)
+            .map(|number| (number, false))
+            .map_err(|_| counted(item)),
+        Amount::X => Ok((0, true)),
         _ => Err(counted(item)),
     }
 }
@@ -92,24 +101,43 @@ fn pick(
     filter: &Selector,
     count: &Amount,
     item: &CostItem,
-) -> Result<Part, &'static str> {
-    Ok(Part::Pick(Pick {
-        kind,
-        filter: filter.clone(),
-        count: usize::try_from(fixed(count, item)?).unwrap_or(usize::MAX),
-    }))
+) -> Result<(Part, bool), &'static str> {
+    let (count, x) = amount(count, item)?;
+    let count = usize::try_from(count).unwrap_or(usize::MAX);
+    Ok((
+        Part::Pick(Pick {
+            kind,
+            filter: filter.clone(),
+            count,
+        }),
+        x,
+    ))
 }
 
 impl Part {
     /// The part a cost item is, `None` for the items that are not one of these (`{T}`, mana, losing the source), or the
     /// name of the part whose amount the engine cannot count.
     pub(crate) fn read(item: &CostItem) -> Result<Option<Part>, &'static str> {
-        Ok(Some(match item {
-            CostItem::PayLife(amount) => Part::Life(fixed(amount, item)?),
-            CostItem::RemoveCounters { counter, count } => Part::Counters {
-                counter: counter.clone(),
-                count: fixed(count, item)?,
-            },
+        let (part, x) = match item {
+            CostItem::PayLife(count) => {
+                let (number, x) = amount(count, item)?;
+                (Part::Life(number), x)
+            }
+            CostItem::PayEnergy(count) => {
+                let (number, x) = amount(count, item)?;
+                (Part::Energy(number), x)
+            }
+            CostItem::RemoveCounters { counter, count } => {
+                let (number, x) = amount(count, item)?;
+                let counter = counter.clone();
+                (
+                    Part::Counters {
+                        counter,
+                        count: number,
+                    },
+                    x,
+                )
+            }
             CostItem::Sacrifice { filter, count } => pick(Kind::Sacrifice, filter, count, item)?,
             CostItem::Discard { count, filter } => pick(
                 Kind::Discard,
@@ -123,14 +151,56 @@ impl Part {
             CostItem::TapPermanents { filter, count } => pick(Kind::Tap, filter, count, item)?,
             CostItem::ReturnToHand { filter, count } => pick(Kind::Return, filter, count, item)?,
             _ => return Ok(None),
-        }))
+        };
+        Ok(Some(if x { Part::X(Box::new(part)) } else { part }))
+    }
+
+    /// The part for the X announced: a counted part takes X, any other stays as it is.
+    pub(crate) fn at(&self, x: u32) -> Part {
+        match self {
+            Part::X(inner) => match &**inner {
+                Part::Life(_) => Part::Life(x),
+                Part::Energy(_) => Part::Energy(x),
+                Part::Counters { counter, .. } => Part::Counters {
+                    counter: counter.clone(),
+                    count: x,
+                },
+                Part::Pick(pick) => Part::Pick(Pick {
+                    count: usize::try_from(x).unwrap_or(usize::MAX),
+                    ..pick.clone()
+                }),
+                Part::X(_) => self.clone(),
+            },
+            other => other.clone(),
+        }
+    }
+
+    /// Whether the amount of the part is the X announced with the ability.
+    pub(crate) const fn is_counted(&self) -> bool {
+        matches!(self, Part::X(_))
+    }
+
+    /// The most X the player could pay for this part now, `None` for a part that is not counted: all their life (a player
+    /// pays up to what they have, CR 119.4), the counters on the source, the energy they hold, the objects they may pick.
+    pub(crate) fn most(&self, payer: &Payer<'_>) -> Option<u32> {
+        let Part::X(inner) = self else { return None };
+        let number = match &**inner {
+            Part::Life(_) => life::most(payer),
+            Part::Energy(_) => energy::most(payer),
+            Part::Counters { counter, .. } => counters::most(payer, counter),
+            Part::Pick(pick) => u32::try_from(pick.candidates(payer).len()).unwrap_or(u32::MAX),
+            Part::X(_) => return None,
+        };
+        Some(number)
     }
 
     /// The name `Caps` and a refusal give the part.
     pub(crate) const fn name(&self) -> &'static str {
         match self {
             Part::Life(_) => "Cost.PayLife",
+            Part::Energy(_) => "Cost.PayEnergy",
             Part::Counters { .. } => "Cost.RemoveCounters",
+            Part::X(inner) => inner.name(),
             Part::Pick(pick) => match pick.kind {
                 Kind::Sacrifice => "Cost.Sacrifice",
                 Kind::Discard => "Cost.Discard",
@@ -143,14 +213,20 @@ impl Part {
 
     /// Whether the part taps permanents.
     pub(crate) const fn taps(&self) -> bool {
-        matches!(self, Part::Pick(pick) if matches!(pick.kind, Kind::Tap))
+        match self {
+            Part::Pick(pick) => matches!(pick.kind, Kind::Tap),
+            Part::X(inner) => inner.taps(),
+            _ => false,
+        }
     }
 
     /// Whether the player could pay the part now with `barred` left alone, and the objects it would take, leaving the
-    /// `spare` ones for the mana as far as it can (the player picks the real ones; this is what the check claims).
+    /// `spare` ones for the mana as far as it can (the player picks the real ones; this is what the check claims). A
+    /// counted part is payable: X can be 0.
     pub(crate) fn payable(&self, payer: &Payer<'_>, spare: &[ObjectId]) -> Option<Vec<ObjectId>> {
         match self {
             Part::Life(amount) => life::payable(payer, *amount).then(Vec::new),
+            Part::Energy(amount) => energy::payable(payer, *amount).then(Vec::new),
             Part::Counters { counter, count } => {
                 counters::payable(payer, counter, *count).then(Vec::new)
             }
@@ -159,6 +235,7 @@ impl Part {
                 found.sort_by_key(|id| spare.contains(id));
                 (found.len() >= pick.count).then(|| found.into_iter().take(pick.count).collect())
             }
+            Part::X(_) => Some(Vec::new()),
         }
     }
 
@@ -172,11 +249,13 @@ impl Part {
     ) -> Vec<Event> {
         match self {
             Part::Life(amount) => life::events(player, *amount),
+            Part::Energy(amount) => energy::events(player, *amount),
             Part::Counters { counter, count } => counters::events(state, source, counter, *count),
             Part::Pick(pick) => picked
                 .iter()
                 .filter_map(|object| pick.event(state, player, *object))
                 .collect(),
+            Part::X(inner) => inner.events(state, player, source, picked),
         }
     }
 }

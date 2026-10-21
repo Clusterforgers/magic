@@ -91,11 +91,17 @@ impl Cost {
         Cost(vec![CostItem::Mana(cost)])
     }
 
-    /// Whether any mana part holds an `{X}`.
+    /// Whether any mana part holds an `{X}`, or any part counts the X announced ("Pay X life", "Sacrifice X creatures").
     pub fn has_x(&self) -> bool {
         self.0.iter().any(|item| match item {
             CostItem::Mana(mana) => mana.has_x(),
-            CostItem::PayLife(amount) => matches!(amount, Amount::X),
+            CostItem::PayLife(amount) | CostItem::PayEnergy(amount) => *amount == Amount::X,
+            CostItem::RemoveCounters { count, .. }
+            | CostItem::Sacrifice { count, .. }
+            | CostItem::Discard { count, .. }
+            | CostItem::TapPermanents { count, .. }
+            | CostItem::ExileFromGraveyard { count, .. }
+            | CostItem::ReturnToHand { count, .. } => *count == Amount::X,
             _ => false,
         })
     }
