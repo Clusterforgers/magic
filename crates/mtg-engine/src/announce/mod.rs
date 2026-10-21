@@ -117,7 +117,7 @@ impl Phase {
 /// What the rules of the spell or ability ask its player to announce beyond modes and targets, read from the rules
 /// when the announcement begins.
 ///
-/// Nothing reads these from a card yet: (g2) fills `x`, (g3) `optional` and (g4) `alternative`.
+/// `x` is read from the card; (g3) fills `optional` and (g4) `alternative`.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub(crate) struct Needs {
     /// The cost the spell is cast for instead of its mana cost.
@@ -130,11 +130,11 @@ pub(crate) struct Needs {
 
 impl Needs {
     /// What `what` asks for; its rules are `rules`.
-    const fn of(_state: &GameState, _what: &What, _rules: Option<&Ability>) -> Self {
+    fn of(state: &GameState, what: &What, rules: Option<&Ability>) -> Self {
         Needs {
             alternative: None,
             optional: Vec::new(),
-            x: None,
+            x: XCost::of(state, what, rules),
         }
     }
 }

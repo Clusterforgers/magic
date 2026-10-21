@@ -40,7 +40,8 @@ pub(crate) fn entering(state: &GameState, id: ObjectId) -> Option<Event> {
 
 /// Whether `player` may activate a loyalty ability costing `cost` of the planeswalker `object` now: at sorcery timing
 /// (CR 606.3), when no loyalty ability of it has been activated this turn, and, for a cost that removes counters, when
-/// it holds that many (CR 606.6). A `-X` cost waits for the choice of X.
+/// it holds that many (CR 606.6). A `-X` cost is asked for X as the ability is announced, so it is always allowed here:
+/// X is at most the counters the planeswalker holds, and 0 is a number.
 pub(crate) fn can_activate(
     state: &GameState,
     player: PlayerId,
@@ -58,13 +59,23 @@ pub(crate) fn can_activate(
         LoyaltyCost::Minus(removed) => object
             .permanent()
             .is_some_and(|permanent| permanent.counters_of(&CounterKind::Loyalty) >= removed),
-        LoyaltyCost::MinusX => false,
+        LoyaltyCost::MinusX => true,
     }
 }
 
-/// The change of counters that pays `cost` on `object`; `None` when the cost changes nothing (`0`) or has no number yet.
-pub(crate) fn payment(object: &GameObject, cost: LoyaltyCost) -> Option<Event> {
-    let delta = cost.change().filter(|delta| *delta != 0)?;
+/// The change of loyalty counters paying `cost` makes, with the X announced for a `-X`; `None` for a `-X` that has
+/// none yet.
+pub(crate) fn paid_change(cost: LoyaltyCost, x: Option<u32>) -> Option<i32> {
+    match cost {
+        LoyaltyCost::MinusX => i32::try_from(x?).ok().map(i32::wrapping_neg),
+        fixed => fixed.change(),
+    }
+}
+
+/// The change of counters that pays `cost` on `object`, with the X announced for a `-X`; `None` when the cost
+/// changes nothing (`0`, `-0`) or has no number yet.
+pub(crate) fn payment(object: &GameObject, cost: LoyaltyCost, x: Option<u32>) -> Option<Event> {
+    let delta = paid_change(cost, x).filter(|delta| *delta != 0)?;
     Some(Event::CountersChanged(CountersChanged {
         on: Target::Object(object.reference()),
         counter: CounterKind::Loyalty,
@@ -185,7 +196,9 @@ mod tests {
     #[case::minus_with_exactly_enough(LoyaltyCost::Minus(3), 3, Step::Main1, false, true)]
     #[case::minus_with_too_few(LoyaltyCost::Minus(3), 2, Step::Main1, false, false)]
     #[case::minus_with_more_than_enough(LoyaltyCost::Minus(1), 5, Step::Main1, false, true)]
-    #[case::minus_x_waits_for_x(LoyaltyCost::MinusX, 5, Step::Main1, false, false)]
+    #[case::minus_x_with_any_loyalty(LoyaltyCost::MinusX, 5, Step::Main1, false, true)]
+    #[case::minus_x_not_twice_in_a_turn(LoyaltyCost::MinusX, 5, Step::Main1, true, false)]
+    #[case::minus_x_not_in_combat(LoyaltyCost::MinusX, 5, Step::DeclareAttackers, false, false)]
     #[case::not_in_a_main_step(LoyaltyCost::Plus(1), 3, Step::Upkeep, false, false)]
     #[case::not_in_combat(LoyaltyCost::Plus(1), 3, Step::DeclareAttackers, false, false)]
     #[case::not_in_the_end_step(LoyaltyCost::Zero, 3, Step::End, false, false)]
@@ -224,16 +237,20 @@ mod tests {
     }
 
     #[rstest]
-    #[case::plus(LoyaltyCost::Plus(2), Some(2))]
-    #[case::minus(LoyaltyCost::Minus(3), Some(-3))]
-    #[case::zero(LoyaltyCost::Zero, None)]
-    #[case::minus_x(LoyaltyCost::MinusX, None)]
+    #[case::plus(LoyaltyCost::Plus(2), None, Some(2))]
+    #[case::minus(LoyaltyCost::Minus(3), None, Some(-3))]
+    #[case::zero(LoyaltyCost::Zero, None, None)]
+    #[case::minus_x_without_x(LoyaltyCost::MinusX, None, None)]
+    #[case::minus_x_of_nothing(LoyaltyCost::MinusX, Some(0), None)]
+    #[case::minus_x(LoyaltyCost::MinusX, Some(3), Some(-3))]
+    #[case::a_fixed_cost_ignores_x(LoyaltyCost::Plus(1), Some(3), Some(1))]
     fn paying_a_cost_changes_the_loyalty_counters_by_its_sign(
         #[case] cost: LoyaltyCost,
+        #[case] x: Option<u32>,
         #[case] delta: Option<i32>,
     ) {
         let game = walker_in_play(4);
-        let paid = payment(walker_object(&game), cost);
+        let paid = payment(walker_object(&game), cost, x);
         assert_eq!(
             paid,
             delta.map(|delta| Event::CountersChanged(CountersChanged {
@@ -308,7 +325,7 @@ mod tests {
                     Hit::Plus(by) => {
                         let object = walker_object(&game);
                         prop_assert!(can_activate(&game, ME, object, LoyaltyCost::Plus(by)));
-                        let paid = payment(object, LoyaltyCost::Plus(by)).unwrap();
+                        let paid = payment(object, LoyaltyCost::Plus(by), None).unwrap();
                         apply_event(&mut game, &paid).unwrap();
                         expected += i64::from(by);
                     }
@@ -317,7 +334,7 @@ mod tests {
                         let allowed = can_activate(&game, ME, object, LoyaltyCost::Minus(by));
                         prop_assert_eq!(allowed, expected >= i64::from(by));
                         if allowed {
-                            let paid = payment(object, LoyaltyCost::Minus(by)).unwrap();
+                            let paid = payment(object, LoyaltyCost::Minus(by), None).unwrap();
                             apply_event(&mut game, &paid).unwrap();
                             expected -= i64::from(by);
                         }

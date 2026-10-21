@@ -29,8 +29,10 @@ pub(crate) struct Price {
     pub(crate) tap: bool,
     /// What happens to the source.
     pub(crate) leaves: Leaves,
-    /// Every mana part together; `None` for a cost without mana.
+    /// Every mana part together, without its `{X}`; `None` for a cost without mana.
     pub(crate) mana: Option<ManaCost>,
+    /// How many `{X}` the mana parts hold; each costs X generic mana once X is announced.
+    pub(crate) x: u32,
 }
 
 /// The name `Caps` gives a cost part, for the parts the engine does not pay.
@@ -54,13 +56,25 @@ const fn unpaid(item: &CostItem) -> &'static str {
 }
 
 impl Price {
-    /// The price of `cost`, or the name of the first part the engine does not pay: another kind of cost, an
-    /// `{X}`, which waits for the choice of X (`Cost.Mana.X`), or a second way to lose the source.
+    /// The price of a cost paid in the middle of a resolution, or the name of the first part the engine does not pay:
+    /// another kind of cost, an `{X}` (`Cost.Mana.X`; no announcement chooses it there) or a second way to lose the
+    /// source.
     pub(crate) fn of(cost: &Cost) -> Result<Price, &'static str> {
+        let price = Price::announced(cost)?;
+        if price.x > 0 {
+            return Err("Cost.Mana.X");
+        }
+        Ok(price)
+    }
+
+    /// The price of the cost of an ability as it is announced, with the `{X}` it holds counted for the announcement
+    /// to ask; the name of the first part the engine does not pay otherwise.
+    pub(crate) fn announced(cost: &Cost) -> Result<Price, &'static str> {
         let mut tap = false;
         let mut leaves = Leaves::Stays;
         let mut symbols = Vec::new();
         let mut mana = false;
+        let mut x = 0u32;
         for item in &cost.0 {
             let moves = match item {
                 CostItem::SacrificeSelf => Some(Leaves::Sacrificed),
@@ -77,9 +91,9 @@ impl Price {
             }
             match item {
                 CostItem::Tap => tap = true,
-                CostItem::Mana(part) if part.has_x() => return Err("Cost.Mana.X"),
                 CostItem::Mana(part) => {
                     mana = true;
+                    x = x.saturating_add(u32::from(part.x()));
                     symbols.extend_from_slice(part.rest().symbols());
                 }
                 other => return Err(unpaid(other)),
@@ -89,6 +103,7 @@ impl Price {
             tap,
             leaves,
             mana: mana.then(|| ManaCost::from_symbols(symbols)),
+            x,
         })
     }
 
@@ -176,7 +191,8 @@ mod tests {
                 } else {
                     Leaves::Stays
                 },
-                mana: mana(expected)
+                mana: mana(expected),
+                x: 0,
             })
         );
     }

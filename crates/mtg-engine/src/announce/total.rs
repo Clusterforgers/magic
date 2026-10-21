@@ -53,7 +53,7 @@ fn printed(ctx: &Ctx<'_>) -> Option<(Option<ManaCost>, Vec<ManaOption>)> {
         }
         What::Ability(ability) => match ctx.ability? {
             Ability::Activated { cost, .. } => {
-                let price = Price::of(cost).ok()?;
+                let price = Price::announced(cost).ok()?;
                 let sources = price.sources(ctx.state, ctx.player, ability.object);
                 Some((price.mana, sources))
             }
