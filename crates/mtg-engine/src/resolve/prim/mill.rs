@@ -164,8 +164,12 @@ mod tests {
     #[test]
     fn a_count_the_evaluator_cannot_read_is_refused_by_name() {
         assert_eq!(
-            run_on(&game(2, &[], &[]), r#"{"Mill":{"count":"X"}}"#).unwrap_err(),
-            ResolveError::Unsupported("X")
+            run_on(
+                &game(2, &[], &[]),
+                r#"{"Mill":{"count":{"Devotion":["Red"]}}}"#
+            )
+            .unwrap_err(),
+            ResolveError::Unsupported("devotion")
         );
     }
 

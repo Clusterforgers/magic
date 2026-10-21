@@ -1,0 +1,32 @@
+{
+  "oracle_id": "4b515bb0-f275-4400-8032-3173b799ab40",
+  "name": "Walking Ballista",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Walking Ballista",
+      "oracle_fingerprint": "184ae53be4c5cdd2b948b9be47217dc0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{4}",
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "RemoveCounters": { "counter": "+1/+1" } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

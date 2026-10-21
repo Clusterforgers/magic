@@ -45,4 +45,8 @@ counters: Array<[CounterKind, number]>,
 /**
  * The objects attached to it, in id order.
  */
-attachments: Array<ObjectId>, };
+attachments: Array<ObjectId>, 
+/**
+ * The X it was cast with, as the object remembers it (CR 107.3m): a spell on the stack and the permanent it became.
+ */
+x?: number, };
