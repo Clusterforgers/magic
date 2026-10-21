@@ -5,6 +5,7 @@
 
 use super::amounts::{cards_text, count_word, points_text, stat_name};
 use super::costs;
+use super::counters;
 use super::create;
 use super::effects::BACK;
 use super::library;
@@ -17,7 +18,7 @@ use crate::effect::{Destination, Effect, Mode, Order, Place, Produce};
 use crate::modify::{Duration, Modification};
 use crate::refs::{Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::trigger::TriggerPattern;
-use crate::value::{Amount, Condition, CounterKind};
+use crate::value::{Amount, Condition};
 
 /// The oracle wording of an ability the readers produce, in the first way its effects can be
 /// written (see [`variants`]); `None` for any other ability.
@@ -335,6 +336,8 @@ fn is_imperative(effect: &Effect) -> bool {
             | Effect::Move { .. }
             | Effect::CreateToken { who: Ref::You, .. }
             | Effect::PutCounters { .. }
+            | Effect::RemoveCounters { .. }
+            | Effect::MoveCounters { .. }
     )
 }
 
@@ -450,32 +453,58 @@ impl Writer<'_> {
             })
     }
 
-    /// "put a +1/+1 counter on ~", "put two -1/-1 counters on target creature".
-    fn counters(&mut self, on: &Ref, counter: &CounterKind, count: &Amount) -> Option<String> {
-        let kind = match counter {
-            CounterKind::PlusOnePlusOne => "+1/+1",
-            CounterKind::MinusOneMinusOne => "-1/-1",
-            _ => return None,
-        };
-        let Amount::Fixed(number) = count else {
-            return None;
-        };
-        let (many, noun) = match number {
-            ..=0 => return None,
-            1 => ("a", "counter"),
-            _ => (count_word(u32::try_from(*number).ok()?)?, "counters"),
-        };
-        let place = match on {
-            Ref::This => "~".to_owned(),
+    /// The object counters are put on, taken from or moved: "~", one target, or (with `several`) "each
+    /// creature you control".
+    fn counter_place(&mut self, place: &Ref, several: bool) -> Option<String> {
+        match place {
+            Ref::This => Some("~".to_owned()),
             Ref::Target(0)
-                if self.single(on)
+                if self.single(place)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
             {
-                self.name_target()?
+                self.name_target()
+            }
+            Ref::Each(selector) if several => {
+                Some(format!("each {}", phrase_text(selector, Form::Each)?))
+            }
+            _ => None,
+        }
+    }
+
+    /// "put a +1/+1 counter on ~", "remove two charge counters from target permanent", "move a
+    /// +1/+1 counter from target creature onto ~".
+    fn counters(&mut self, effect: &Effect) -> Option<String> {
+        Some(match effect {
+            Effect::PutCounters { on, counter, count } => {
+                let counters = counters::text(counter, count)?;
+                format!("put {counters} on {}", self.counter_place(on, true)?)
+            }
+            Effect::RemoveCounters {
+                from,
+                counter,
+                count,
+            } => {
+                let counters = counters::text(counter, count)?;
+                format!(
+                    "remove {counters} from {}",
+                    self.counter_place(from, false)?
+                )
+            }
+            Effect::MoveCounters {
+                from,
+                to,
+                counter,
+                count,
+            } => {
+                let counters = counters::text(counter, count)?;
+                let from = self.counter_place(from, false)?;
+                format!(
+                    "move {counters} from {from} onto {}",
+                    self.counter_place(to, false)?
+                )
             }
             _ => return None,
-        };
-        Some(format!("put {many} {kind} {noun} on {place}"))
+        })
     }
 
     /// An effect on a library: "shuffle your library", "look at the top card of your library",
@@ -567,7 +596,9 @@ impl Writer<'_> {
                 mana,
                 times,
             } if times.is_one() => format!("add {}", mana_text(mana)?),
-            Effect::PutCounters { on, counter, count } => self.counters(on, counter, count)?,
+            Effect::PutCounters { .. }
+            | Effect::RemoveCounters { .. }
+            | Effect::MoveCounters { .. } => self.counters(effect)?,
             Effect::CreateToken { .. } => create::text(effect)?,
             Effect::DealDamage {
                 source: None,
@@ -600,16 +631,22 @@ impl Writer<'_> {
                 cost,
                 paid,
                 unpaid,
-            } if paid.is_empty() => {
-                let [inner] = unpaid.as_slice() else {
-                    return None;
-                };
-                let happens = self.effect(inner)?;
-                let payer = self.player(who)?;
-                format!("{happens} unless {payer} pays {}", cost_text(cost)?)
-            }
+            } if paid.is_empty() => self.unless_pays(who, cost, unpaid)?,
             _ => return None,
         })
+    }
+
+    /// "counter target spell unless its controller pays {2}".
+    fn unless_pays(&mut self, who: &Ref, cost: &Cost, unpaid: &[Effect]) -> Option<String> {
+        let [inner] = unpaid else {
+            return None;
+        };
+        let happens = self.effect(inner)?;
+        let payer = self.player(who)?;
+        Some(format!(
+            "{happens} unless {payer} pays {}",
+            cost_text(cost)?
+        ))
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".

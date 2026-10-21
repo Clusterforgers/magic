@@ -4,6 +4,7 @@
 use mtg_core::mana::ManaType;
 
 use super::amounts::{cards, its_stat, number_word, points};
+use super::counters;
 use super::create;
 use super::library;
 use super::modal;
@@ -14,13 +15,13 @@ use crate::effect::{Destination, Effect, Order, Place, Produce};
 use crate::mana::ManaCostX;
 use crate::modify::{Duration, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, Targetable, ZoneKind};
-use crate::value::{Amount, CounterKind};
+use crate::value::Amount;
 
 /// A template: the effects of the sentence it reads, or `None` when the sentence is not its shape.
 type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 15] = [
+const TEMPLATES: [Template; 17] = [
     modal::modal,
     may,
     chain,
@@ -31,7 +32,9 @@ const TEMPLATES: [Template; 15] = [
     pump,
     return_card,
     create::tokens,
-    put_counters,
+    counters::put,
+    counters::remove,
+    counters::moving,
     add_mana,
     library::search,
     library::look,
@@ -39,12 +42,14 @@ const TEMPLATES: [Template; 15] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-const IMPERATIVES: [Template; 6] = [
+const IMPERATIVES: [Template; 8] = [
     chain,
     removal,
     return_card,
     create::tokens,
-    put_counters,
+    counters::put,
+    counters::remove,
+    counters::moving,
     library::put_on_library,
 ];
 
@@ -384,45 +389,6 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     Some(vec![Effect::Move {
         what,
         to: Destination::Hand,
-    }])
-}
-
-/// "+1/+1" or "-1/-1": the counters that change a creature's size.
-fn counter_kind(r: &mut Reader<'_>) -> Option<CounterKind> {
-    r.attempt(|r| {
-        let plus = r.punct('+');
-        if !plus {
-            r.punct('-').then_some(())?;
-        }
-        (r.number()? == 1).then_some(())?;
-        r.punct('/').then_some(())?;
-        r.punct(if plus { '+' } else { '-' }).then_some(())?;
-        (r.number()? == 1).then_some(())?;
-        Some(if plus {
-            CounterKind::PlusOnePlusOne
-        } else {
-            CounterKind::MinusOneMinusOne
-        })
-    })
-}
-
-/// "Put a +1/+1 counter on ~.", "Put two -1/-1 counters on target creature."
-fn put_counters(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
-    r.need("put")?;
-    let number = number_word(r.take_word()?)?;
-    let counter = counter_kind(r)?;
-    r.word(if number == 1 { "counter" } else { "counters" })
-        .then_some(())?;
-    r.need("on")?;
-    let on = if r.source() {
-        Ref::This
-    } else {
-        target_object(r)?
-    };
-    Some(vec![Effect::PutCounters {
-        on,
-        counter,
-        count: Amount::Fixed(i32::try_from(number).ok()?),
     }])
 }
 

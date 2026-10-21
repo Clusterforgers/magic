@@ -41,7 +41,7 @@ const EXPECTED: [(&str, Option<ImplStatus>, usize, usize); 112] = [
     ("Burst Lightning", Some(Partial), 1, 2),
     ("Caress of Phyrexia", Some(Manual), 0, 1),
     ("Carnage Tyrant", Some(Partial), 2, 3),
-    ("Cathars' Crusade", Some(Manual), 0, 1),
+    ("Cathars' Crusade", Some(Full), 1, 1),
     ("Control Magic", Some(Partial), 1, 2),
     ("Counterspell", Some(Full), 1, 1),
     ("Courtly Provocateur", Some(Manual), 0, 2),
