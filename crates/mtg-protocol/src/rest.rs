@@ -1,6 +1,7 @@
 //! Bodies of the account endpoints of `mtg-server` (`/api/auth/*`), of the signed-in user's game
 //! list (`/api/me/games`), of the card endpoints (`/api/cards`), of the deck endpoints
-//! (`/api/decks`) and of the game browser (`/api/lobbies`, joining), with TypeScript bindings.
+//! (`/api/decks`), of the precon endpoints (`/api/precons`) and of the game browser
+//! (`/api/lobbies`, joining), with TypeScript bindings.
 //!
 //! These are the REST types the web takes from the generated bindings. The body of
 //! `POST /api/games` is still written by hand on both sides.
@@ -8,6 +9,7 @@
 mod cards;
 mod decks;
 mod lobbies;
+mod precons;
 
 use std::fmt;
 
@@ -29,6 +31,10 @@ pub use decks::{
 pub use lobbies::{
     ChooseDeck, DeckBlockedBody, DeckChoiceErrorCode, GameInfo, GameSeat, JoinCodeRequest,
     JoinRequest, Joined, LobbyErrorCode, LobbyGame, LobbyList, Visibility, VisibilityBody,
+};
+pub use precons::{
+    PRECON_DECK_PREFIX, PreconBoard, PreconCardView, PreconErrorCode, PreconList, PreconListItem,
+    PreconView,
 };
 
 /// Fewest characters in a username.
