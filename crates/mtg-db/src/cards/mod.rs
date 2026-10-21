@@ -4,6 +4,7 @@ mod lookup;
 mod printings;
 mod search;
 
+use chrono::{DateTime, Utc};
 use mtg_import::ids::OracleId;
 use mtg_import::resolve::CardIndex;
 use sqlx::PgPool;
@@ -17,6 +18,18 @@ pub use search::{
 use crate::error::DbError;
 use crate::model::{Card, CardDetail, Printing, Ruling};
 use crate::rows::{CardRow, PrintingRow, RulingRow};
+
+/// What the stored cards and printings looked like when [`CardRepo::index_version`] read them.
+///
+/// Two equal versions mean no card or printing was added, removed or changed in between, so an
+/// index built for one is current for the other.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct IndexVersion {
+    cards: i64,
+    cards_changed: Option<DateTime<Utc>>,
+    printings: i64,
+    printings_changed: Option<DateTime<Utc>>,
+}
 
 /// Reads cards, printings and rulings.
 #[derive(Debug, Clone)]
@@ -92,6 +105,24 @@ impl CardRepo {
             printings,
             rulings,
         }))
+    }
+
+    /// A cheap fingerprint of the stored cards and printings, to tell whether a [`CardIndex`] built earlier is still current.
+    pub async fn index_version(&self) -> Result<IndexVersion, DbError> {
+        let row = sqlx::query!(
+            r#"SELECT (SELECT count(*) FROM cards) AS "cards!",
+                      (SELECT max(updated_at) FROM cards) AS cards_changed,
+                      (SELECT count(*) FROM printings) AS "printings!",
+                      (SELECT max(updated_at) FROM printings) AS printings_changed"#
+        )
+        .fetch_one(&self.pool)
+        .await?;
+        Ok(IndexVersion {
+            cards: row.cards,
+            cards_changed: row.cards_changed,
+            printings: row.printings,
+            printings_changed: row.printings_changed,
+        })
     }
 
     /// Builds the in-memory index over all deck cards and their stored printings, for resolving deck lists.

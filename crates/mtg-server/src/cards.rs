@@ -15,10 +15,12 @@ use mtg_cards::support::SupportRecord;
 use mtg_cards::{Caps, CardDefinition, PrintedCard, PrintedFace, builtin};
 use mtg_core::mana::ManaType;
 use mtg_db::codec::legality_keyword;
-use mtg_db::{Card, Database, StoredFace};
+use mtg_db::{Card, Database, DbError, IndexVersion, StoredFace};
 use mtg_import::ids::OracleId;
+use mtg_import::resolve::CardIndex;
 use sqlx::PgPool;
 use thiserror::Error;
+use tokio::sync::Mutex;
 use uuid::Uuid;
 
 use crate::recipe::{Catalog, GameRecipe};
@@ -96,6 +98,14 @@ pub struct CardSource {
     db: Database,
     rules: Option<Arc<Library>>,
     caps: Caps,
+    names: Arc<NameIndex>,
+}
+
+/// The index that ties the names and printings of a pasted list to cards, built from the stored
+/// cards the first time it is needed and again whenever they change.
+#[derive(Debug, Default)]
+struct NameIndex {
+    built: Mutex<Option<(IndexVersion, Arc<CardIndex>)>>,
 }
 
 impl CardSource {
@@ -106,6 +116,7 @@ impl CardSource {
             db: Database::from_pool(pool),
             rules: None,
             caps: mtg_engine::caps(),
+            names: Arc::default(),
         }
     }
 
@@ -139,6 +150,24 @@ impl CardSource {
     /// The card database behind this source.
     pub(crate) fn database(&self) -> &Database {
         &self.db
+    }
+
+    /// The index over the deck cards, their printings and the other names of their printings.
+    ///
+    /// Building it reads every stored printing, so it is kept until the cards or printings change
+    /// (a cheap fingerprint tells); requests that arrive while it is built wait for that build.
+    pub(crate) async fn card_index(&self) -> Result<Arc<CardIndex>, DbError> {
+        let repo = self.db.cards();
+        let version = repo.index_version().await?;
+        let mut built = self.names.built.lock().await;
+        if let Some((held, index)) = built.as_ref()
+            && *held == version
+        {
+            return Ok(index.clone());
+        }
+        let index = Arc::new(repo.card_index().await?);
+        *built = Some((version, index.clone()));
+        Ok(index)
     }
 
     /// How far the game plays a stored card: the pure lookup the deck check calls.

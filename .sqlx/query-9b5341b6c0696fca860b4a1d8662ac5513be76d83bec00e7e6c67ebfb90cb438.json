@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT (SELECT count(*) FROM cards) AS \"cards!\",\n                      (SELECT max(updated_at) FROM cards) AS cards_changed,\n                      (SELECT count(*) FROM printings) AS \"printings!\",\n                      (SELECT max(updated_at) FROM printings) AS printings_changed",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "cards!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "cards_changed",
+        "type_info": "Timestamptz",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "printings!",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "printings_changed",
+        "type_info": "Timestamptz",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "9b5341b6c0696fca860b4a1d8662ac5513be76d83bec00e7e6c67ebfb90cb438"
+}

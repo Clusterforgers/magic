@@ -148,3 +148,45 @@ async fn stored_cards_feed_fuzzy_suggestions_for_unresolved_names(pool: PgPool) 
         assert_eq!(suggestions, in_memory.suggest(typed, 3), "{typed}");
     }
 }
+
+#[sqlx::test]
+async fn the_version_changes_exactly_when_cards_or_printings_do(pool: PgPool) {
+    let database = seeded(pool.clone()).await;
+    let cards = database.cards();
+    let seeded_version = cards.index_version().await.unwrap();
+
+    database
+        .importer()
+        .import_cards(common::card_stream())
+        .await
+        .unwrap();
+    let rewritten = cards.index_version().await.unwrap();
+    assert_eq!(
+        rewritten, seeded_version,
+        "unchanged rows are not rewritten"
+    );
+
+    let printing = common::another_printing(&record("Shock"), 50, "sld", None);
+    database
+        .importer()
+        .import_cards([Ok(printing)])
+        .await
+        .unwrap();
+    let printed = cards.index_version().await.unwrap();
+    assert_ne!(printed, seeded_version, "a printing was added");
+
+    let card = another_card(&record("Shock"), 77, "Brand New Card");
+    database.importer().import_cards([Ok(card)]).await.unwrap();
+    let carded = cards.index_version().await.unwrap();
+    assert_ne!(carded, printed, "a card was added");
+
+    sqlx::query("DELETE FROM printings WHERE collector_number = '50'")
+        .execute(&pool)
+        .await
+        .unwrap();
+    assert_ne!(
+        cards.index_version().await.unwrap(),
+        carded,
+        "a printing was removed"
+    );
+}

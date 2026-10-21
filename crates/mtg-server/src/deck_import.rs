@@ -1,8 +1,6 @@
 //! Pasted lists and shared lists: reading a list in any format `mtg-import` knows and tying its names
 //! to cards of the database, and writing a stored deck as text, Arena or MTGO text.
 
-use std::collections::BTreeMap;
-
 use axum::http::StatusCode;
 use mtg_cards::deck::DeckZone;
 use mtg_db::StoredDeck;
@@ -10,9 +8,7 @@ use mtg_import::decklist::{
     DeckEntry, DeckFormat, ExportFormat, ParsedDeck, Section, detect, export_as, parse_as,
     promote_implied_commander,
 };
-use mtg_import::resolve::{
-    CardIndex, ResolveError, SUGGESTION_LIMIT, normalize_name, resolve_deck,
-};
+use mtg_import::resolve::{ResolveError, SUGGESTION_LIMIT, resolve_deck};
 use mtg_import::scryfall::Layout;
 use mtg_protocol::rest::{
     CardSuggestion, DeckErrorCode, IgnoredCards, ImportRequest, ImportResult, ImportSource,
@@ -111,38 +107,6 @@ fn read(request: &ImportRequest) -> Result<(DeckFormat, ParsedDeck, u64), ApiErr
     Ok((format, parsed, maybe))
 }
 
-/// The names the list uses, once each: the name of every entry, and for an entry with a set but no
-/// number the name with the set kept as part of it (`Hazmat Suit (Used)`).
-fn names_of(parsed: &ParsedDeck) -> BTreeMap<String, String> {
-    let mut names = BTreeMap::new();
-    for entry in &parsed.entries {
-        names
-            .entry(normalize_name(&entry.name))
-            .or_insert_with(|| entry.name.clone());
-        if let (Some(set), None) = (&entry.set, &entry.collector_number) {
-            let joined = format!("{} ({set})", entry.name);
-            names.entry(normalize_name(&joined)).or_insert(joined);
-        }
-    }
-    names
-}
-
-/// A small name index holding exactly the cards the database finds for the names of the list.
-async fn index_for(cards: &CardSource, parsed: &ParsedDeck) -> Result<CardIndex, ApiError> {
-    let repo = cards.database().cards();
-    let mut index = CardIndex::new();
-    for name in names_of(parsed).into_values() {
-        for card in repo
-            .find_by_name(&name)
-            .await
-            .map_err(|error| failed(&error))?
-        {
-            index.insert(card.oracle_id, &card.name);
-        }
-    }
-    Ok(index)
-}
-
 /// The printing a line names by set and collector number, when the database holds it and it is a
 /// printing of the card the name resolved to.
 async fn printing_of(
@@ -223,7 +187,7 @@ pub(crate) async fn import(
     request: &ImportRequest,
 ) -> Result<ImportResult, ApiError> {
     let (format, parsed, maybeboard) = read(request)?;
-    let index = index_for(cards, &parsed).await?;
+    let index = cards.card_index().await.map_err(|error| failed(&error))?;
     let resolution = resolve_deck(&index, &parsed);
 
     let mut lines = Vec::with_capacity(resolution.resolved.len());
@@ -447,24 +411,6 @@ mod tests {
             ..request("1 Shock")
         };
         assert_eq!(read(&bad_format).unwrap_err().code(), "invalid_deck");
-    }
-
-    #[test]
-    fn names_are_looked_up_once_each_with_the_set_kept_as_part_of_the_name() {
-        let parsed = parse_as(
-            DeckFormat::PlainText,
-            "4 Lightning Bolt\n2 lightning  bolt\n1 Hazmat Suit (Used)\n1 Æther Vial (MM3) 1\n",
-        );
-        let names: Vec<String> = names_of(&parsed).into_keys().collect();
-        assert_eq!(
-            names,
-            [
-                "aether vial",
-                "hazmat suit",
-                "hazmat suit (used)",
-                "lightning bolt"
-            ]
-        );
     }
 
     #[rstest]

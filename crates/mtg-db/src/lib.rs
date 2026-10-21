@@ -13,7 +13,8 @@ mod rows;
 pub mod runs;
 
 pub use cards::{
-    CardPage, CardRepo, CardSearch, ColorFilter, ColorMatch, NameSuggestion, Page, SortKey,
+    CardPage, CardRepo, CardSearch, ColorFilter, ColorMatch, IndexVersion, NameSuggestion, Page,
+    SortKey,
 };
 pub use database::{Database, RowCounts};
 pub use decks::{CreateDeckError, DeckDraft, DeckId, DeckLine, DeckRepo, DeckZone, StoredDeck};

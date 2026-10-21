@@ -4,7 +4,7 @@ Reference for the external data `mtg-import` reads and how `mtg-cli` fetches it:
 
 ## Bulk data
 
-- **Scryfall** (`GET https://api.scryfall.com/bulk-data`; send `User-Agent` and `Accept`): the files are gzipped JSONL (`jsonl_download_uri`). `oracle_cards` is the card catalogue and `rulings` the rulings. `mtg_import::scryfall::{cards_jsonl, rulings_jsonl}` parse them behind a gzip decoder; `cards` and `rulings` read the JSON-array form of older dumps.
+- **Scryfall** (`GET https://api.scryfall.com/bulk-data`; send `User-Agent` and `Accept`): the files are gzipped JSONL (`jsonl_download_uri`). `oracle_cards` is the card catalogue, `rulings` the rulings and `default_cards` every printing (about 119,000 objects, 76 MiB; English, or the printed language when a card has no English printing). `mtg_import::scryfall::{cards_jsonl, rulings_jsonl}` parse them behind a gzip decoder; `cards` and `rulings` read the JSON-array form of older dumps.
 - **MTGJSON**: `https://mtgjson.com/api/v5/DeckList.json` indexes about 3,100 decks of many types (`Commander Deck`, `Starter Deck`, `Planeswalker Deck`, ...). A deck file is `https://mtgjson.com/api/v5/decks/<fileName>.json`.
 - Quirks the importer handles: MTGJSON lists reversible cards as `A // A` where Scryfall names them `A`, and memorabilia `front_card` placeholders share names with real cards but are not deck cards.
 
@@ -15,19 +15,22 @@ Reference for the external data `mtg-import` reads and how `mtg-cli` fetches it:
 ```sh
 docker compose up -d db
 cargo run -p mtg-cli -- fetch scryfall   # Oracle Cards and rulings, about 30 MiB
+cargo run -p mtg-cli -- fetch scryfall --printings   # and Default Cards, every printing, about 76 MiB more
 cargo run -p mtg-cli -- fetch decks      # the 198 Commander precons, about 100 MiB
 cargo run -p mtg-cli -- ingest           # applies the migrations, then loads the cache
 cargo run -p mtg-cli -- status           # cache, row counts, latest import runs
 cargo run -p mtg-cli -- coverage         # compiler and engine coverage of the precons, ranked blockers (--deck, --top)
 ```
 
-- **`fetch scryfall`** reads the `bulk-data` listing and downloads `oracle_cards` and `rulings` (`jsonl_download_uri`, else `download_uri`). A file is skipped while the manifest holds it under the listing's `updated_at`; `--force` downloads anyway.
+- **`fetch scryfall`** reads the `bulk-data` listing and downloads `oracle_cards` and `rulings` (`jsonl_download_uri`, else `download_uri`), and `default_cards` with `--printings`. A file is skipped while the manifest holds it under the listing's `updated_at`; `--force` downloads anyway. Every requested entry is checked in the listing before the first download starts.
   - The file is written to `<name>.part`, resumed there with a `Range` request, checked (gzip integrity and the announced `compressed_size`), hashed with SHA-256 and renamed. The manifest (`manifest.json` in the cache) records `updated_at`, size, checksum and address of each complete file.
 - **`fetch decks`** saves `DeckList.json` and the decks it lists. The default is the `Commander Deck` type; `--type <TYPE>` (repeatable, `all` for every type), `--only <NAME>` (a part of the deck name, or its file name; repeatable) and `--limit <N>` (the newest N) narrow or widen the choice.
   - A cached deck is asked about only when the index build differs from the one that last confirmed it, and then with `If-None-Match`. A deck the server lacks is reported and skipped; any other failure stops the run and keeps what was fetched.
 - **Politeness:** every request sends `User-Agent: mtg-cli/<version>` and an `Accept` header, and starts at least 100 ms after the previous one ended. Connection failures, timeouts, 408, 425, 429 and 5xx are tried three times with waits of 2 s and 4 s, or the server's `Retry-After` (at most 60 s); other statuses end the request.
 - **`ingest`** streams the cached files through `mtg-import` and upserts them in batches (`--batch-size`, default 500) while a reader thread parses ahead. Each import run stores the SHA-256 of what it read in `import_runs.input`.
-  - The latest successful run of a source with the same input makes the next ingest skip it; `--force` loads it anyway and changes no row. Rulings and decks include the cards input in their identity, so new cards bring them back in.
+  - The latest successful run of a source with the same input makes the next ingest skip it; `--force` loads it anyway and changes no row. Printings, rulings and decks include the cards input in their identity, so new cards bring them back in; decks also include the printings input.
+  - **Default Cards** is its own import (`scryfall_printings`) after the cards. It writes printings only: the oracle-level data stays what Oracle Cards gave, and a printing whose card is not stored is counted as orphaned, so cards come first. Reversible cards (83 printings, named `A // A` and with no oracle id of their own) therefore add a printing to the card on their faces instead of becoming a card. Without the file the step reports it as not cached.
+  - `printings.flavor_name` and `printed_name` hold what the record carries for any language (faces joined with ` // `); Default Cards has 692 flavor names and 275 names printed on English digital versions.
   - A failed run keeps its finished batches and the rerun upserts the rest. A record Postgres cannot store (a bad id or date, a NUL byte in any text) is skipped, counted and warned about; a run left `running` for over an hour is marked failed when the next import starts.
   - `--dry-run` reads and checks the cached files with the importers' record rules, connects to no database and writes nothing.
 
@@ -114,6 +117,6 @@ The parser leaves names as written; `resolve::resolve_deck(index, deck)` ties ea
 - **Other names of a printing**: flavor names (`The Ball` is Fellwar Stone, SLD 1040; `Plankton, Tiny Tyrant` is Skrelv, Defector Mite, SLD 1926), the names printed on English digital versions (`Phenomena Recorder` is Peter Parker's Camera, OM1 171; `Skittering Kitten` is Masked Meower, OM1 96) and `A // B` of a meld piece (`Gisela, the Broken Blade // Brisela, Voice of Nightmares`), in full or by the front face. They are tried last and never take a card name from its card.
 - A printing and a name that belong to different cards leave the entry unresolved as `AmbiguousName`, the printing's card first. A name several cards share is ambiguous, a name no card has is unknown with up to five fuzzy suggestions, and a suggestion is never applied.
 - `ResolvedEntry::matched` tells which rule tied the entry: `Printing`, `Name` or `OtherName`.
-- `CardIndex::from_records` takes every record as a printing (`set`, `collector_number`) and, from English ones, `flavor_name`, `printed_name` and the meld name; `add_printing` and `add_alias` do the same by hand. `CardRepo::card_index` holds the deck cards and their stored printings.
-- Oracle Cards has one printing per card and five flavor names; a file with every printing (Scryfall's Default Cards) fills in the rest.
+- `CardIndex::from_records` takes every record as a printing (`set`, `collector_number`) and, from English ones, `flavor_name`, `printed_name` and the meld name; `add_printing` and `add_alias` do the same by hand. `CardRepo::card_index` holds the deck cards and their stored printings, with the flavor name and printed name of each English printing, so it resolves like an index built from the records except for meld names, which the database does not store. `CardRepo::index_version` is a fingerprint of the cards and printings that tells whether an index built earlier is current.
+- Oracle Cards has one printing per card and five flavor names; Default Cards brings every printing with its flavor and printed names.
 - Moxfield's Arena and MTGO exports write a printing's flavor or digital name with no set, so only the third rule reads them.
