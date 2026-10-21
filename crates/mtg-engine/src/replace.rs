@@ -1499,6 +1499,9 @@ fn zone_word(zone: Zone) -> &'static str {
 }
 
 #[cfg(test)]
+mod shields;
+
+#[cfg(test)]
 mod tests {
     //! Goal: the replacement step hands a batch back unchanged when no replacement effect is in the game, applies each effect once to each event in the order the answers give, applies an effect about its own object before the others, removes an event that is replaced entirely, asks only when two or more effects apply and hands the batch back with the question, and refuses an answer that does not fit the question that was asked.
     use mtg_cards::CardDefinition;

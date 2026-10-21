@@ -723,6 +723,11 @@ impl InvariantChecker {
                 self.expected_damage.clear();
                 Ok(())
             }
+            // A permanent that regenerates loses its damage.
+            Event::Regenerated { object } => {
+                self.expected_damage.remove(object);
+                Ok(())
+            }
             // An object that leaves the battlefield is another object when it comes back (CR 400.7), with no damage.
             Event::ZoneChanged {
                 object,
