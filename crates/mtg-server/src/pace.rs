@@ -74,6 +74,12 @@ impl Pace {
         }
     }
 
+    /// The clock of every decision of the opening, whatever its kind and seat: keep or mulligan, bottoming and the scry
+    /// of a seat that kept after a mulligan.
+    pub(crate) fn opening_clock(&self) -> Option<Duration> {
+        self.think
+    }
+
     /// The clock `decision` runs on, if any.
     ///
     /// Every decision kind is named here, so a new one cannot be added without choosing its clock. The opening
@@ -474,6 +480,9 @@ mod tests {
             free_mulligans: 0,
             bottom_if_keep: 0,
             bottom_if_mulligan: 1,
+            hand_if_mulligan: None,
+            scry_if_keep: None,
+            scry_if_mulligan: None,
         })
     }
 
@@ -789,6 +798,16 @@ mod tests {
     ) {
         let got = pace().clock_for(&decision(player, kind), ACTIVE);
         assert_eq!(got, seconds.map(Duration::from_secs));
+    }
+
+    #[test]
+    fn the_opening_clock_is_the_think_clock_whatever_the_decision() {
+        assert_eq!(pace().opening_clock(), Some(Duration::from_secs(60)));
+        let none = Pace {
+            think: None,
+            ..pace()
+        };
+        assert_eq!(none.opening_clock(), None);
     }
 
     #[test]

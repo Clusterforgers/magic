@@ -27,4 +27,5 @@ mod rest_lobbies;
 mod rest_precons;
 mod seat_deck;
 mod sync;
+mod table_hidden;
 mod transcript;

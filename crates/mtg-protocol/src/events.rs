@@ -12,7 +12,7 @@ use ts_rs::TS;
 
 use crate::diff::{ObjectDiff, diff};
 use crate::error::ProtocolError;
-use crate::project::{visible_objects, zone_is_visible};
+use crate::project::{visible_objects, zone_is_visible_in};
 use crate::view::{ObjectView, TableView};
 
 /// What a viewer learns about an event that moved or revealed hidden cards: who and how many, never which.
@@ -171,6 +171,8 @@ fn count(len: usize) -> u32 {
 ///
 /// Every variant is listed so a new event forces a decision about what it reveals.
 fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenEvent> {
+    // Every seat sees every hand, so what is dealt, bottomed or drawn is told whole.
+    let own = |player: &PlayerId| *player == viewer || before.ruleset().open_hands();
     match event {
         Event::LibraryShuffled { player, .. } => {
             Some(HiddenEvent::LibraryShuffled { player: *player })
@@ -180,17 +182,17 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
             count: count(order.len()),
         }),
         Event::MulliganTaken { player, .. } => Some(HiddenEvent::MulliganTaken { player: *player }),
-        Event::HandDealt { player, cards } if *player != viewer => Some(HiddenEvent::HandDealt {
+        Event::HandDealt { player, cards } if !own(player) => Some(HiddenEvent::HandDealt {
             player: *player,
             count: count(cards.len()),
         }),
-        Event::CardsBottomed { player, cards } if *player != viewer => {
+        Event::CardsBottomed { player, cards } if !own(player) => {
             Some(HiddenEvent::CardsBottomed {
                 player: *player,
                 count: count(cards.len()),
             })
         }
-        Event::CardDrawn { player, .. } if *player != viewer => {
+        Event::CardDrawn { player, .. } if !own(player) => {
             Some(HiddenEvent::CardDrawn { player: *player })
         }
         Event::ObjectLeftGame { object } => {
@@ -294,7 +296,9 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
         // A card that moves between places the viewer cannot see into is not told apart.
         Event::ZoneChanged {
             from, to, cause, ..
-        } if !zone_is_visible(*from, viewer) && !zone_is_visible(*to, viewer) => {
+        } if !zone_is_visible_in(before, *from, viewer)
+            && !zone_is_visible_in(before, *to, viewer) =>
+        {
             Some(HiddenEvent::ZoneChanged {
                 from: *from,
                 to: *to,
@@ -320,7 +324,7 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
             .all(|object| knows(before, object.id, viewer))
             || !snapshots
                 .iter()
-                .all(|shot| zone_is_visible(shot.zone, viewer)) =>
+                .all(|shot| zone_is_visible_in(before, shot.zone, viewer)) =>
         {
             Some(HiddenEvent::StepDone {
                 position: position.clone(),
@@ -339,7 +343,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
         cause
             .snapshots
             .iter()
-            .any(|shot| !zone_is_visible(shot.zone, viewer))
+            .any(|shot| !zone_is_visible_in(before, shot.zone, viewer))
             || cause
                 .subjects
                 .iter()
@@ -348,7 +352,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
     };
     match event {
         Event::AbilityTriggered(t)
-            if !zone_is_visible(t.snapshot.zone, viewer) || unseen_cause(&t.cause) =>
+            if !zone_is_visible_in(before, t.snapshot.zone, viewer) || unseen_cause(&t.cause) =>
         {
             Some(HiddenEvent::AbilityTriggered {
                 source: t.source,
@@ -358,7 +362,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
         }
         Event::AbilityPutOnStack(put)
             if put.cause.as_ref().is_some_and(|cause| {
-                !zone_is_visible(put.snapshot.zone, viewer) || unseen_cause(cause)
+                !zone_is_visible_in(before, put.snapshot.zone, viewer) || unseen_cause(cause)
             }) =>
         {
             Some(HiddenEvent::AbilityPutOnStack {
@@ -377,7 +381,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
             ability: *ability,
         }),
         Event::DelayedTriggerCreated(created)
-            if !zone_is_visible(created.snapshot.zone, viewer)
+            if !zone_is_visible_in(before, created.snapshot.zone, viewer)
                 || created
                     .bindings
                     .iter()
@@ -399,7 +403,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
 fn knows(before: &GameState, object: ObjectId, viewer: PlayerId) -> bool {
     before
         .object(object)
-        .is_some_and(|o| zone_is_visible(o.zone(), viewer))
+        .is_some_and(|o| zone_is_visible_in(before, o.zone(), viewer))
         || before.is_shown_to(viewer, object)
 }
 

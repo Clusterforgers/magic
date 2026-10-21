@@ -87,11 +87,17 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         } => take_mulligan(state, *player, library_order)?,
         Event::MulliganKept { player } => {
             expect_status(state, *player, MulliganStatus::Deciding)?;
-            let rule = state.ruleset().mulligan_rule(*player);
-            let seat = player_mut(state, *player)?;
-            seat.mulligan = match rule.bottom_count(seat.mulligans) {
-                0 => MulliganStatus::Kept,
-                n => MulliganStatus::Bottoming(n),
+            let rules = state.ruleset();
+            let taken = state.player(*player).map_or(0, |p| p.mulligans);
+            let bottom = rules.bottom_count(*player, taken);
+            // A library with no card has none to scry.
+            let scry = rules
+                .scry_after_keep(taken)
+                .min(state.zones.get(Zone::Library(*player)).len());
+            player_mut(state, *player)?.mulligan = match (bottom, scry) {
+                (0, 0) => MulliganStatus::Kept,
+                (0, _) => MulliganStatus::Scrying,
+                (n, _) => MulliganStatus::Bottoming(n),
             };
         }
         Event::CardsBottomed { player, cards } => {
@@ -109,6 +115,15 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
         }
         Event::MulliganPhaseEnded => state.stage = Stage::Turns,
         other => return Err(invalid(format!("not an opening event: {other:?}"))),
+    }
+    Ok(())
+}
+
+/// A scry in the opening ends the one a seat owed after keeping its hand; a scry of a resolution owes nothing.
+pub(super) fn scried(state: &mut GameState, player: PlayerId) -> Result<(), EngineError> {
+    if state.stage == Stage::Mulligan {
+        expect_status(state, player, MulliganStatus::Scrying)?;
+        player_mut(state, player)?.mulligan = MulliganStatus::Kept;
     }
     Ok(())
 }

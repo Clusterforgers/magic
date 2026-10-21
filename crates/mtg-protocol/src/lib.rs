@@ -24,7 +24,7 @@ pub use message::{
     ClientMessage, DecisionId, ErrorCode, FullControlMode, LobbySeat, PROTOCOL_VERSION, SeatDeck,
     ServerMessage, Stop, StopSide, YieldUntil,
 };
-pub use project::zone_is_visible;
+pub use project::{zone_is_visible, zone_is_visible_in};
 pub use rest::{
     AccountDeletion, AuthErrorCode, CardDetail, CardHit, CardSearchPage, Credentials, DeckBody,
     DeckErrorCode, DeckList, DeckView, MyGame, MyGameSeat, MyGameStatus, MyGames, PasswordChange,

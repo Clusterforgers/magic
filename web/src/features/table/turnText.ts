@@ -127,6 +127,8 @@ export function describeMulligan(status: MulliganStatus, mulligans: number): str
       return `Deciding whether to keep${taken}`
     case 'Mulliganing':
       return `Mulligan taken, waiting for the table${taken}`
+    case 'Scrying':
+      return `Looking at the top card of their library${taken}`
     case 'Kept':
       return `Kept their hand${taken}`
   }
@@ -146,6 +148,8 @@ export function describeOpening(status: MulliganStatus, mulligans: number): stri
       return `deciding${taken}`
     case 'Mulliganing':
       return `taking a mulligan${taken}`
+    case 'Scrying':
+      return `scrying${taken}`
     case 'Kept':
       return `keeping${taken}`
   }
