@@ -187,8 +187,7 @@ impl AuthErrorCode {
     }
 }
 
-/// Where a game in the user's list stands. Games the server dropped or could not load are not
-/// listed at all.
+/// Where a game in the user's list stands. Games the server dropped are not listed.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(rename_all = "snake_case")]
 pub enum MyGameStatus {
@@ -198,6 +197,9 @@ pub enum MyGameStatus {
     Running,
     /// Over; `result` says how it ended.
     Finished,
+    /// The server could not bring it back after a restart; `reason` says why and the user can
+    /// remove it from the list.
+    Failed,
 }
 
 /// One seat of a listed game, as the user may know it.
@@ -229,6 +231,8 @@ pub struct MyGame {
     pub others: Vec<MyGameSeat>,
     /// How the game ended; null until it has.
     pub result: Option<GameResult>,
+    /// Why a failed game could not be restored, in words for a player; null for every other status.
+    pub reason: Option<String>,
 }
 
 /// The answer of `GET /api/me/games`: the user's games, newest first, at most 100.

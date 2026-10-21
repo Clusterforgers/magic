@@ -83,13 +83,15 @@ export interface AccountsApi {
   me(): Promise<UserView>
   /** `GET /api/me/games`: the games the user holds a seat in, as the server sorted them. */
   myGames(): Promise<MyGame[]>
+  /** `DELETE /api/me/games/{id}`: takes a failed game off the user's list; rejects with a 404 when there is none. */
+  removeGame(game: string): Promise<void>
   /** `POST /api/auth/password`: replaces the password; the account's other sessions end and this one stays. */
   changePassword(change: PasswordChange): Promise<void>
   /** `DELETE /api/auth/account`: deletes the account, its decks and its sessions; the cookie is cleared. */
   deleteAccount(deletion: AccountDeletion): Promise<void>
 }
 
-const STATUSES: Record<MyGameStatus, true> = { lobby: true, running: true, finished: true }
+const STATUSES: Record<MyGameStatus, true> = { lobby: true, running: true, finished: true, failed: true }
 const isStatus = (value: unknown): value is MyGameStatus => isText(value) && Object.hasOwn(STATUSES, value)
 
 function readUser(body: unknown): UserView | null {
@@ -107,6 +109,7 @@ function readGame(item: unknown): MyGame | null {
   if (!isRecord(item) || !isText(item.game) || !isCount(item.seat) || !isText(item.name)) return null
   if (!isStatus(item.status) || !isText(item.created_at) || !Array.isArray(item.others)) return null
   if (item.result !== null && !isGameResult(item.result)) return null
+  if (item.reason !== null && !isText(item.reason)) return null
   const others: MyGameSeat[] = []
   for (const entry of item.others) {
     const seat = readSeat(entry)
@@ -121,6 +124,7 @@ function readGame(item: unknown): MyGame | null {
     created_at: item.created_at,
     others,
     result: item.result,
+    reason: item.reason,
   }
 }
 
@@ -211,6 +215,9 @@ export function createAccountsApi(options: AccountsOptions = {}): AccountsApi {
     },
     me: () => call('/api/auth/me', readUser, get),
     myGames: () => call('/api/me/games', readGames, get),
+    removeGame: async (game) => {
+      await call(`/api/me/games/${encodeURIComponent(game)}`, () => true, send('DELETE'))
+    },
     changePassword: async (change) => {
       await call('/api/auth/password', () => true, post(change))
     },

@@ -2,7 +2,7 @@
 import { readFileSync } from 'node:fs'
 import { expect, test } from '@playwright/test'
 import type { Browser, BrowserContext, Page } from '@playwright/test'
-import type { DeckView, ImportResult } from '../src/protocol/generated'
+import type { DeckView, ImportResult, MyGame } from '../src/protocol/generated'
 import { THEMES } from './layoutAudit'
 import { expectTheme, holdsAtEverySize, showPane, themedContext } from './layoutGate'
 import type { Rules } from './layoutGate'
@@ -394,6 +394,35 @@ const ACCOUNT_STOPS: readonly AccountStop[] = [
     async open(page) {
       await page.goto('/games')
       await expect(games(page)).toHaveCount(8)
+    },
+  },
+  {
+    // The server answers with a failed game in front of the real ones, so the page draws the longest reason it
+    // can be sent (a 32-character player name) beside the Remove button.
+    name: 'My games, with a game that failed to resume',
+    account: 'full',
+    fitsFrom: 0,
+    actions: { 'Create game': 'main a[href="/new"]', Remove: 'main [data-status="failed"] button' },
+    async open(page) {
+      await page.route('**/api/me/games', async (route) => {
+        const answer = await route.fetch()
+        const body = (await answer.json()) as { games: MyGame[] }
+        const long = 'Wilhelmina_Konstantinopolitanska'
+        const failed: MyGame = {
+          game: '00000000-0000-4000-8000-000000000001',
+          seat: 0,
+          name: 'Host',
+          status: 'failed',
+          created_at: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'),
+          others: [{ seat: 1, name: long, user: null }],
+          result: null,
+          reason: `The deck of ${long} has changed since this game was made, so it cannot continue.`,
+        }
+        await route.fulfill({ response: answer, json: { games: [failed, ...body.games] } })
+      })
+      await page.goto('/games')
+      await expect(games(page)).toHaveCount(9)
+      await expect(page.locator('main [data-status="failed"]')).toContainText('cannot continue')
     },
   },
   {

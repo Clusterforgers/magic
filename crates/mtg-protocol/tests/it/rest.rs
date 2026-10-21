@@ -226,6 +226,7 @@ fn listing() -> MyGames {
                     },
                 ],
                 result: Some(GameResult::Winner(PlayerId(2))),
+                reason: None,
             },
             MyGame {
                 game: "5f2b9c1e-0000-4000-8000-000000000002".into(),
@@ -235,6 +236,20 @@ fn listing() -> MyGames {
                 created_at: "2026-10-18T11:00:00Z".into(),
                 others: Vec::new(),
                 result: None,
+                reason: None,
+            },
+            MyGame {
+                game: "5f2b9c1e-0000-4000-8000-000000000003".into(),
+                seat: PlayerId(0),
+                name: "Ann".into(),
+                status: MyGameStatus::Failed,
+                created_at: "2026-10-18T10:00:00Z".into(),
+                others: Vec::new(),
+                result: None,
+                reason: Some(
+                    "The deck of Bo has changed since this game was made, so it cannot continue."
+                        .into(),
+                ),
             },
         ],
     }
@@ -257,6 +272,7 @@ fn the_game_list_has_the_documented_wire_shape() {
                     {"seat": 2, "name": "Cy", "user": "cyrus"},
                 ],
                 "result": {"Winner": 2},
+                "reason": null,
             },
             {
                 "game": "5f2b9c1e-0000-4000-8000-000000000002",
@@ -266,6 +282,17 @@ fn the_game_list_has_the_documented_wire_shape() {
                 "created_at": "2026-10-18T11:00:00Z",
                 "others": [],
                 "result": null,
+                "reason": null,
+            },
+            {
+                "game": "5f2b9c1e-0000-4000-8000-000000000003",
+                "seat": 0,
+                "name": "Ann",
+                "status": "failed",
+                "created_at": "2026-10-18T10:00:00Z",
+                "others": [],
+                "result": null,
+                "reason": "The deck of Bo has changed since this game was made, so it cannot continue.",
             },
         ]})
     );
@@ -276,6 +303,7 @@ fn the_game_list_has_the_documented_wire_shape() {
 #[case(MyGameStatus::Lobby, "lobby")]
 #[case(MyGameStatus::Running, "running")]
 #[case(MyGameStatus::Finished, "finished")]
+#[case(MyGameStatus::Failed, "failed")]
 fn game_statuses_are_snake_case(#[case] status: MyGameStatus, #[case] text: &str) {
     assert_eq!(serde_json::to_value(status).unwrap(), json!(text));
     assert_eq!(
@@ -287,7 +315,6 @@ fn game_statuses_are_snake_case(#[case] status: MyGameStatus, #[case] text: &str
 #[rstest]
 #[case("Lobby")]
 #[case("expired")]
-#[case("failed")]
 #[case("")]
 fn statuses_of_games_that_are_not_listed_do_not_exist(#[case] text: &str) {
     assert!(serde_json::from_value::<MyGameStatus>(json!(text)).is_err());
@@ -334,9 +361,12 @@ fn the_bindings_carry_the_game_list() {
         assert!(files.contains_key(needed), "missing {needed}");
         assert!(files["index.ts"].contains(needed.trim_end_matches(".ts")));
     }
-    assert!(files["MyGameStatus.ts"].contains("\"lobby\" | \"running\" | \"finished\""));
+    assert!(
+        files["MyGameStatus.ts"].contains("\"lobby\" | \"running\" | \"finished\" | \"failed\"")
+    );
     assert!(files["MyGame.ts"].contains("others: Array<MyGameSeat>"));
     assert!(files["MyGame.ts"].contains("result: GameResult | null"));
+    assert!(files["MyGame.ts"].contains("reason: string | null"));
     assert!(files["MyGameSeat.ts"].contains("user: string | null"));
     assert!(files["MyGames.ts"].contains("games: Array<MyGame>"));
 }

@@ -4,7 +4,7 @@ use std::time::Instant;
 
 use mtg_engine::GameSetup;
 
-use super::{Entry, Parts, Registry, SeatSlot};
+use super::{Cause, Entry, Parts, Registry, SeatSlot};
 use crate::actor::resume_named;
 use crate::game_id::GameId;
 use crate::recipe::{Catalog, FormatKind, GameRecipe, RecipeError};
@@ -48,15 +48,21 @@ struct Unpacked {
     decks: SeatDecks,
 }
 
-/// Why a stored game cannot be loaded, and the seat the reason is about when it is about one.
+/// Why a stored game cannot be loaded: the `detail` for the log and the record's `failure`, the
+/// `cause` its players read, and the seat it is about when it is about one.
 struct Unloadable {
-    reason: String,
+    detail: String,
+    cause: Cause,
     seat: Option<usize>,
 }
 
 impl Unloadable {
-    fn new(reason: String) -> Self {
-        Unloadable { reason, seat: None }
+    fn new(detail: String, cause: Cause) -> Self {
+        Unloadable {
+            detail,
+            cause,
+            seat: None,
+        }
     }
 }
 
@@ -110,7 +116,7 @@ impl Registry {
             decks,
         } = match unpacked {
             Ok(unpacked) => unpacked,
-            Err(Unloadable { reason, seat }) => return give_up(records, id, seat, &reason).await,
+            Err(unloadable) => return give_up(records, id, unloadable).await,
         };
         let names: Vec<String> = seats.iter().map(|slot| slot.name.clone()).collect();
         let joined = record.seats.iter().map(|seat| seat.joined).collect();
@@ -127,14 +133,21 @@ impl Registry {
         ));
         let handle = match resuming.await {
             Ok(Ok(handle)) => handle,
-            Ok(Err(error)) => return give_up(records, id, None, &error.to_string()).await,
+            Ok(Err(error)) => {
+                return give_up(records, id, replay_failed(error.to_string())).await;
+            }
             Err(error) => {
-                let reason = format!("resuming failed: {error}");
-                return give_up(records, id, None, &reason).await;
+                return give_up(
+                    records,
+                    id,
+                    replay_failed(format!("resuming failed: {error}")),
+                )
+                .await;
             }
         };
         let Ok(status) = handle.status().await else {
-            return give_up(records, id, None, "the game's task stopped while resuming").await;
+            let detail = "the game's task stopped while resuming".to_owned();
+            return give_up(records, id, replay_failed(detail)).await;
         };
 
         if let Some(result) = status.result {
@@ -148,7 +161,8 @@ impl Registry {
         }
         // A game cannot begin while a seat is open, because nobody there can press Ready.
         if status.started && seats.iter().any(|slot| slot.state == SeatState::Open) {
-            return give_up(records, id, None, "the game began with a seat nobody holds").await;
+            let detail = "the game began with a seat nobody holds".to_owned();
+            return give_up(records, id, Unloadable::new(detail, Cause::EmptySeat)).await;
         }
         if status.started && record.status == RecordStatus::Lobby {
             note(records.mark_running(id).await, id);
@@ -188,19 +202,28 @@ impl Registry {
         match (&self.shared.cards, ids.is_empty()) {
             (_, true) => Ok(Catalog::default()),
             (Some(cards), false) => cards.catalog_for(recipe).await.map_err(|error| {
-                Unloadable::new(format!("the cards of its decks cannot be had: {error}"))
+                let detail = format!("the cards of its decks cannot be had: {error}");
+                Unloadable::new(detail, Cause::Cards)
             }),
             (None, false) => Err(Unloadable::new(
                 "its decks name cards by oracle id and this server has no card database".to_owned(),
+                Cause::Cards,
             )),
         }
     }
 }
 
+/// The log of a game cannot be loaded or replayed.
+fn replay_failed(detail: String) -> Unloadable {
+    Unloadable::new(detail, Cause::Replay)
+}
+
 /// Decodes the stored recipe.
 fn decode(record: &GameRecord) -> Result<GameRecipe, Unloadable> {
-    serde_json::from_value(record.recipe.clone())
-        .map_err(|error| Unloadable::new(format!("the recipe does not decode: {error}")))
+    serde_json::from_value(record.recipe.clone()).map_err(|error| {
+        let detail = format!("the recipe does not decode: {error}");
+        Unloadable::new(detail, Cause::Setup)
+    })
 }
 
 /// Rebuilds the setup (which refuses a deck that changed since the game was created) and checks the
@@ -211,12 +234,18 @@ fn unpack(
     catalog: &Catalog,
 ) -> Result<Unpacked, Unloadable> {
     let setup = recipe.build_with(catalog).map_err(|error| match error {
-        // The reason leads with what happened to the game, and the log names the seat.
+        // The detail leads with what happened to the game, and the log names the seat.
         RecipeError::DeckChanged { seat, .. } => Unloadable {
-            reason: error.to_string(),
+            detail: error.to_string(),
+            cause: Cause::DeckChanged {
+                player: player_of(record, seat),
+            },
             seat: Some(seat),
         },
-        _ => Unloadable::new(format!("the recipe does not build: {error}")),
+        RecipeError::UnknownDeck { .. } | RecipeError::UnknownCards { .. } => {
+            Unloadable::new(format!("the recipe does not build: {error}"), Cause::Cards)
+        }
+        _ => Unloadable::new(format!("the recipe does not build: {error}"), Cause::Setup),
     })?;
     let seats = setup.players.len();
     let numbered = record
@@ -226,9 +255,10 @@ fn unpack(
         .all(|(index, seat)| seat.seat == index);
     if record.seats.len() != seats || !numbered {
         let found: Vec<usize> = record.seats.iter().map(|seat| seat.seat).collect();
-        return Err(Unloadable::new(format!(
-            "the recipe has {seats} seats but the records hold seats {found:?}"
-        )));
+        return Err(Unloadable::new(
+            format!("the recipe has {seats} seats but the records hold seats {found:?}"),
+            Cause::Seats,
+        ));
     }
     Ok(Unpacked {
         checked: recipe.is_fingerprinted(),
@@ -248,11 +278,25 @@ fn unpack(
     })
 }
 
+/// Who plays `seat`, as the players know them: the seat's name, else its place at the table.
+fn player_of(record: &GameRecord, seat: usize) -> String {
+    match record.seats.iter().find(|row| row.seat == seat) {
+        Some(row) if !row.name.is_empty() => row.name.clone(),
+        _ => format!("seat {}", seat + 1),
+    }
+}
+
 /// Logs why a game cannot come back, with the seat when the reason is about one, and marks it
-/// failed so the next boot skips it.
-async fn give_up(records: &GameRecords, id: GameId, seat: Option<usize>, reason: &str) -> Outcome {
-    tracing::error!(game = %id, seat, %reason, "game cannot be resumed; marked failed");
-    note(records.mark_failed(id, reason).await, id);
+/// failed so the next boot skips it. The record keeps the detail for the operator and the cause in
+/// words for the players.
+async fn give_up(records: &GameRecords, id: GameId, unloadable: Unloadable) -> Outcome {
+    let Unloadable {
+        detail,
+        cause,
+        seat,
+    } = unloadable;
+    tracing::error!(game = %id, seat, reason = %detail, "game cannot be resumed; marked failed");
+    note(records.mark_failed(id, &detail, &cause.reason()).await, id);
     Outcome::Failed
 }
 

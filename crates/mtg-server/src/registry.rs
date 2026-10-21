@@ -12,6 +12,7 @@
 //! A game is also made [`Visibility::Public`] or [`Visibility::Invite`], and each of its seats is
 //! held from the start (its token is in the create response) or open ([`SeatState`]).
 
+mod cause;
 mod claims;
 mod departure;
 mod listing;
@@ -56,6 +57,8 @@ pub use claims::{ClaimError, Entrance, HOST, SeatClaim, Seated, TableError};
 pub use departure::Departure;
 pub use listing::{ListedGame, MAX_LISTED_LOBBIES};
 pub use resume::ResumeReport;
+
+pub(crate) use cause::Cause;
 
 pub use crate::seat_deck::ChosenDeck;
 
@@ -619,7 +622,8 @@ impl Registry {
             Ok(handle) => Ok(handle),
             Err(error) => {
                 // Not reachable after `validate`, but a record must not outlive its game.
-                let _ = records.mark_failed(id, &error.to_string()).await;
+                let reason = Cause::Unknown.reason();
+                let _ = records.mark_failed(id, &error.to_string(), &reason).await;
                 Err(error.into())
             }
         }
@@ -772,6 +776,16 @@ impl Registry {
         match &self.shared.records {
             Some(records) => records.list_for_user(user, MAX_LISTED_GAMES).await,
             None => Ok(Vec::new()),
+        }
+    }
+
+    /// Takes a game that failed to resume off `user`'s list; the other players keep it. False when
+    /// the user holds no seat in such a game or removed it already, and for a registry without a
+    /// database, which holds no list.
+    pub async fn remove_failed(&self, user: UserId, game: GameId) -> Result<bool, RecordError> {
+        match &self.shared.records {
+            Some(records) => records.remove_failed(game, user).await,
+            None => Ok(false),
         }
     }
 

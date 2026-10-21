@@ -57,6 +57,11 @@ export interface AuthState {
   deleteAccount(password: string): Promise<SettingsResult>
   /** Loads the user's games (and reloads them); does nothing unless signed in. */
   loadGames(): Promise<void>
+  /**
+   * Takes a failed game off the user's list. The row goes at once on success; when the server says it holds no such
+   * game for this user, the list is loaded again and shows what is true.
+   */
+  removeGame(game: string): Promise<SettingsResult>
   /** Clears the notice. */
   dismissNotice(): void
 }
@@ -196,12 +201,31 @@ export function createAuthStore({ api = accountsApi, initial }: AuthDeps = {}): 
         }
       },
 
+      async removeGame(game) {
+        if (get().status !== 'signed-in') return { ok: false, error: NOT_SIGNED_IN }
+        try {
+          await api.removeGame(game)
+        } catch (error) {
+          if (isCode(error, 'unauthenticated')) become('signed-out', null)
+          else if (!unavailable(error) && error instanceof AccountError && error.status === 404) {
+            await get().loadGames()
+            return { ok: true }
+          }
+          return { ok: false, error }
+        }
+        set((state) => ({
+          games: { ...state.games, games: state.games.games.filter((one) => one.game !== game) },
+        }))
+        return { ok: true }
+      },
+
       dismissNotice: () => set({ notice: null }),
     }
   })
 }
 
 const OFFLINE = new AccountError('accounts_unavailable', 503, 'This page has no accounts.')
+const NOT_SIGNED_IN = new AccountError('unauthenticated', 401, 'Sign in to do that.')
 
 /** A client that has no accounts: what a page without a provider (a test) talks to. */
 export const offlineAccounts: AccountsApi = {
@@ -210,6 +234,7 @@ export const offlineAccounts: AccountsApi = {
   logout: () => Promise.reject(OFFLINE),
   me: () => Promise.reject(OFFLINE),
   myGames: () => Promise.reject(OFFLINE),
+  removeGame: () => Promise.reject(OFFLINE),
   changePassword: () => Promise.reject(OFFLINE),
   deleteAccount: () => Promise.reject(OFFLINE),
 }

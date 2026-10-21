@@ -48,6 +48,21 @@ describe('requests', () => {
     expect(fake.calls[0]?.init).toEqual({ method: 'POST', credentials: 'include' })
   })
 
+  it('removes a failed game with a DELETE that has no body, names the game in the path and accepts the 204', async () => {
+    const fake = fakeFetch(() => new Response(null, { status: 204 }))
+    await expect(createAccountsApi({ fetch: fake.fetch }).removeGame('g 1/2')).resolves.toBeUndefined()
+    expect(fake.calls[0]?.url).toBe('/api/me/games/g%201%2F2')
+    expect(fake.calls[0]?.init).toEqual({ method: 'DELETE', credentials: 'include' })
+  })
+
+  it('reports a game the server does not hold as a 404 error', async () => {
+    const fake = fakeFetch(() => jsonResponse(404, { error: 'not_found', message: 'no such resource' }))
+    await expect(createAccountsApi({ fetch: fake.fetch }).removeGame('g')).rejects.toMatchObject({
+      code: 'unknown',
+      status: 404,
+    })
+  })
+
   it('changes the password with a POST of both passwords as JSON, and accepts the empty 204', async () => {
     const fake = fakeFetch(() => new Response(null, { status: 204 }))
     const change = { current_password: 'the old passphrase', new_password: 'the new passphrase' }
@@ -109,6 +124,16 @@ describe('answers', () => {
     expect(games[0]?.result).toBeNull()
   })
 
+  it('returns a failed game with its reason, and no other game with one', async () => {
+    const reason = 'The deck of Bo has changed since this game was made, so it cannot continue.'
+    const failed = listed({ game: 'broken', status: 'failed', reason })
+    const fake = fakeFetch(() => jsonResponse(200, { games: [failed, listed()] }))
+    const games = await createAccountsApi({ fetch: fake.fetch }).myGames()
+    expect(games[0]).toEqual(failed)
+    expect(games[0]?.reason).toBe(reason)
+    expect(games[1]?.reason).toBeNull()
+  })
+
   it('accepts an empty list', async () => {
     const fake = fakeFetch(() => jsonResponse(200, { games: [] }))
     await expect(createAccountsApi({ fetch: fake.fetch }).myGames()).resolves.toEqual([])
@@ -144,6 +169,8 @@ describe('answers', () => {
     ],
     ['a result that is neither Draw nor a Winner', { games: [{ ...listed(), result: 'Won' }] }],
     ['a game without a result field', { games: [{ ...listed(), result: undefined }] }],
+    ['a game without a reason field', { games: [{ ...listed(), reason: undefined }] }],
+    ['a game whose reason is a number', { games: [{ ...listed(), reason: 3 }] }],
   ]
 
   it.each(unreadableGames)('rejects %s as bad_response', async (_what, body) => {

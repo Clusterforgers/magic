@@ -36,4 +36,8 @@ others: Array<MyGameSeat>,
 /**
  * How the game ended; null until it has.
  */
-result: GameResult | null, };
+result: GameResult | null, 
+/**
+ * Why a failed game could not be restored, in words for a player; null for every other status.
+ */
+reason: string | null, };

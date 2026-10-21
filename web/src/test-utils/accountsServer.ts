@@ -21,10 +21,13 @@ export interface AccountsScript {
   unavailable?: boolean
   /** After this many failed logins the server answers 429 with `Retry-After` (900 seconds). */
   throttleAfter?: number
-  /** Replaces the answer of one endpoint (`me`, `register`, `login`, `logout`, `games`, `password`, `account`). */
+  /**
+   * Replaces the answer of one endpoint (`me`, `register`, `login`, `logout`, `games`, `removeGame`, `password`,
+   * `account`).
+   */
   override?: Partial<
     Record<
-      'me' | 'register' | 'login' | 'logout' | 'games' | 'password' | 'account',
+      'me' | 'register' | 'login' | 'logout' | 'games' | 'removeGame' | 'password' | 'account',
       (call: FetchCall) => Response | Promise<Response>
     >
   >
@@ -67,6 +70,7 @@ export function listed(over: Partial<MyGame> = {}): MyGame {
     created_at: '2026-10-18T10:00:00Z',
     others: [{ seat: 1, name: 'Bo', user: null }],
     result: null,
+    reason: null,
     ...over,
   }
 }
@@ -159,9 +163,23 @@ export function startAccounts(script: AccountsScript = {}): AccountsServer {
     return new Response(null, { status: 204 })
   }
 
+  // `DELETE /api/me/games/{id}`: only a failed game of the list can go, as on the server.
+  function removeGame(game: string): Response {
+    if (signedIn === null) return authError(401, 'unauthenticated')
+    if (!games.some((one) => one.game === game && one.status === 'failed')) {
+      return jsonResponse(404, { error: 'not_found', message: 'no such resource' })
+    }
+    games = games.filter((one) => one.game !== game)
+    return new Response(null, { status: 204 })
+  }
+
   const fake = fakeFetch((call) => {
     const path = call.url.split('?')[0] ?? call.url
     if (script.unavailable === true) return unavailable()
+    if (path.startsWith('/api/me/games/') && call.init?.method === 'DELETE') {
+      const game = decodeURIComponent(path.slice('/api/me/games/'.length))
+      return script.override?.removeGame?.(call) ?? removeGame(game)
+    }
     switch (path) {
       case '/api/auth/register':
         return script.override?.register?.(call) ?? register(call)

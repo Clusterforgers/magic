@@ -21,11 +21,15 @@ export function othersText(game: MyGame): string {
   return joinNames(names)
 }
 
+/** What a failed game says when the answer carries no reason. */
+export const NO_REASON = 'This game could not be restored, so it cannot continue.'
+
 /**
  * How a finished game ended from the user's seat: "You won", "Bo won", "Draw"; a finished game the server holds no
- * result for says so in words; null while the game is not over.
+ * result for says so in words; a failed game says why it could not be restored; null while the game is not over.
  */
 export function resultText(game: MyGame): string | null {
+  if (game.status === 'failed') return game.reason ?? NO_REASON
   if (game.status !== 'finished') return null
   if (game.result === null) return 'Ended without a result'
   if (game.result === 'Draw') return 'Draw'
@@ -40,6 +44,7 @@ export const STATUS_LABEL: Record<MyGame['status'], string> = {
   lobby: 'Lobby',
   running: 'Running',
   finished: 'Finished',
+  failed: 'Failed',
 }
 
 /** "No games", "1 game", "3 games": the count the page announces. */
@@ -50,4 +55,10 @@ export const gamesText = (count: number): string =>
 export function continueLabel(game: MyGame): string {
   const others = othersText(game)
   return others === '' ? 'Continue your game' : `Continue your game with ${others}`
+}
+
+/** What a Remove button is called for a screen reader: the visible word, then which game. */
+export function removeLabel(game: MyGame): string {
+  const others = othersText(game)
+  return others === '' ? 'Remove your failed game' : `Remove your failed game with ${others}`
 }

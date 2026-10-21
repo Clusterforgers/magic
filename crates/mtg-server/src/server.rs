@@ -298,6 +298,7 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/auth/account", delete(auth::delete_account))
         .route("/api/auth/me", get(auth::me))
         .route("/api/me/games", get(my_games::list))
+        .route("/api/me/games/{id}", delete(my_games::remove))
         .route("/ws/{game}/{token}", get(ws::upgrade))
         .route("/ws/{game}", get(ws::upgrade_as_user))
         .fallback(api::not_found)

@@ -1,4 +1,4 @@
-// Goal: the sign-in store moves between loading, signed in, signed out and unavailable exactly as the server's answers say, a failed sign-in never lets anyone in, a sign-out clears the user and the games, answers for an old question never overwrite a newer state, and no password is ever kept.
+// Goal: the sign-in store moves between loading, signed in, signed out and unavailable exactly as the server's answers say, a failed sign-in never lets anyone in, a sign-out clears the user and the games, answers for an old question never overwrite a newer state, a failed game leaves the list when the server removes it and stays when it cannot, and no password is ever kept.
 import { describe, expect, it } from 'vitest'
 import { AccountError } from '@/net/accounts'
 import { authError, idOf, listed, startAccounts } from '@/test-utils/accountsServer'
@@ -384,5 +384,60 @@ describe('loading the games', () => {
     first.resolve(jsonResponse(200, { games: [listed({ game: 'stale' })] }))
     await one
     expect(state().games.games.map((game) => game.game)).toEqual(['fresh'])
+  })
+})
+
+describe('removing a failed game', () => {
+  const failed = listed({ game: 'broken', status: 'failed', reason: 'The deck of Bo has changed.' })
+  const running = listed({ game: 'live', status: 'running' })
+
+  async function loaded(script: AccountsScript = {}) {
+    const made = setup({ signedIn: ADA.username, games: [failed, running], ...script })
+    await made.state().start()
+    await made.state().loadGames()
+    return made
+  }
+  const gameIds = (state: () => { games: { games: readonly { game: string }[] } }): string[] =>
+    state().games.games.map((one) => one.game)
+
+  it('asks the server and drops the row at once, leaving the others', async () => {
+    const { state, server } = await loaded()
+    await expect(state().removeGame('broken')).resolves.toEqual({ ok: true })
+    expect(gameIds(state)).toEqual(['live'])
+    const last = server.calls.at(-1)
+    expect([last?.url, last?.init?.method]).toEqual(['/api/me/games/broken', 'DELETE'])
+    expect(state().games.status).toBe('ready')
+  })
+
+  it('keeps the row and says why when the server fails', async () => {
+    const { state } = await loaded({ override: { removeGame: () => authError(503, 'unavailable') } })
+    const result = await state().removeGame('broken')
+    expect(result).toMatchObject({ ok: false, error: { code: 'unavailable', status: 503 } })
+    expect(gameIds(state)).toEqual(['broken', 'live'])
+  })
+
+  it('loads the list again when the server holds no such game, which then shows what is true', async () => {
+    const { state, server } = await loaded({
+      override: { removeGame: () => jsonResponse(404, { error: 'not_found', message: 'gone' }) },
+    })
+    server.setGames([running])
+    await expect(state().removeGame('broken')).resolves.toEqual({ ok: true })
+    expect(gameIds(state)).toEqual(['live'])
+    expect(server.calls.filter((call) => call.url === '/api/me/games')).toHaveLength(2)
+  })
+
+  it('turns signed out when the session has ended', async () => {
+    const { state } = await loaded({ override: { removeGame: () => authError(401, 'unauthenticated') } })
+    const result = await state().removeGame('broken')
+    expect(result).toMatchObject({ ok: false })
+    expect(state()).toMatchObject({ status: 'signed-out', user: null, games: NO_GAMES })
+  })
+
+  it('does nothing unless signed in', async () => {
+    const { state, server } = setup()
+    await state().start()
+    const result = await state().removeGame('broken')
+    expect(result).toMatchObject({ ok: false, error: { code: 'unauthenticated' } })
+    expect(server.calls.map((call) => call.url)).toEqual(['/api/auth/me'])
   })
 })

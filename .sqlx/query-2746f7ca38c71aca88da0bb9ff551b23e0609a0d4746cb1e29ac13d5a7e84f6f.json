@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id, status, visibility, code_digest, recipe, result, failure,\n                      extract(epoch FROM now() - created_at)::float8 AS \"age_secs!\"\n               FROM games WHERE status IN ('lobby', 'running') ORDER BY created_at, id",
+  "query": "SELECT id, status, visibility, code_digest, recipe, result, failure, failure_reason,\n                      extract(epoch FROM now() - created_at)::float8 AS \"age_secs!\"\n               FROM games WHERE status IN ('lobby', 'running') ORDER BY created_at, id",
   "describe": {
     "columns": [
       {
@@ -82,6 +82,17 @@
       },
       {
         "ordinal": 7,
+        "name": "failure_reason",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "games",
+            "name": "failure_reason"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
         "name": "age_secs!",
         "type_info": "Float8",
         "origin": "Expression"
@@ -98,8 +109,9 @@
       false,
       true,
       true,
+      true,
       null
     ]
   },
-  "hash": "ebbdbede0493be0ef1a60d4b197c028087f84444c87bdd872833bee99c0efb1d"
+  "hash": "2746f7ca38c71aca88da0bb9ff551b23e0609a0d4746cb1e29ac13d5a7e84f6f"
 }

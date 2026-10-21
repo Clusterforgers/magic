@@ -11,8 +11,10 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth, useAuthStore } from '@/features/auth/context'
+import { accountErrorText } from '@/features/auth/errors'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { cn } from '@/lib/utils'
+import type { MyGame } from '@/protocol/generated'
 import { gamesText } from './format'
 import { GameRows } from './GameRows'
 
@@ -63,6 +65,9 @@ export function MyGamesPage({ clock = Date.now }: { clock?: () => number }) {
   const store = useAuthStore()
   // The ages are read as the page draws; a render once a minute keeps "2 minutes ago" from going stale.
   const [, setTick] = useState(0)
+  // The failed game being taken off the list, and why the last removal did not work.
+  const [removing, setRemoving] = useState<string | null>(null)
+  const [removeError, setRemoveError] = useState<string | null>(null)
   const now = clock()
 
   useEffect(() => {
@@ -74,6 +79,17 @@ export function MyGamesPage({ clock = Date.now }: { clock?: () => number }) {
   }, [])
 
   const reload = (): void => void store.getState().loadGames()
+  const remove = (game: MyGame): void => {
+    setRemoving(game.game)
+    setRemoveError(null)
+    void store
+      .getState()
+      .removeGame(game.game)
+      .then((result) => {
+        setRemoving(null)
+        if (!result.ok) setRemoveError(accountErrorText(result.error))
+      })
+  }
 
   if (status === 'loading') {
     return (
@@ -143,6 +159,14 @@ export function MyGamesPage({ clock = Date.now }: { clock?: () => number }) {
         </Alert>
       ) : null}
 
+      {removeError === null ? null : (
+        <Alert variant="destructive">
+          <CircleAlertIcon aria-hidden="true" />
+          <AlertTitle>Could not remove the game</AlertTitle>
+          <AlertDescription>{removeError}</AlertDescription>
+        </Alert>
+      )}
+
       {first ? (
         <Loading label="Loading your games…">
           <RowsSkeleton />
@@ -177,9 +201,10 @@ export function MyGamesPage({ clock = Date.now }: { clock?: () => number }) {
           aria-busy={busy}
           tabIndex={0}
           data-stale={stale || undefined}
-          className="surface min-h-0 overflow-y-auto overscroll-contain"
+          // `relative` so the screen-reader-only words of a row scroll with the list: left to the page they extend it.
+          className="surface relative min-h-0 overflow-y-auto overscroll-contain"
         >
-          <GameRows games={games.games} now={now} stale={stale} />
+          <GameRows games={games.games} now={now} stale={stale} removing={removing} onRemove={remove} />
         </div>
       ) : null}
     </Page>

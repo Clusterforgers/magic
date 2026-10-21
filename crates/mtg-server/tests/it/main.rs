@@ -22,6 +22,7 @@ mod pg_card_decks;
 mod pg_cards_api;
 mod pg_deck_import_printings;
 mod pg_decks;
+mod pg_failed_games;
 mod pg_game;
 mod pg_game_close;
 mod pg_join_codes;

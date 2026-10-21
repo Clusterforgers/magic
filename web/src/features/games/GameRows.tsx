@@ -1,17 +1,22 @@
 import { Link } from '@tanstack/react-router'
 import { Pill } from '@/components/Pill'
 import type { PillTone } from '@/components/Pill'
-import { buttonVariants } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { cn } from '@/lib/utils'
 import { timeSince } from '@/lib/timeSince'
 import type { MyGame } from '@/protocol/generated'
-import { continueLabel, othersText, resultText, STATUS_LABEL } from './format'
+import { continueLabel, othersText, removeLabel, resultText, STATUS_LABEL } from './format'
 
 // The Play page's breakpoint: a table from here up, stacked rows under it.
 const TABLE_FROM = '(min-width: 64rem)'
 
-const TONE: Record<MyGame['status'], PillTone> = { lobby: 'neutral', running: 'success', finished: 'neutral' }
+const TONE: Record<MyGame['status'], PillTone> = {
+  lobby: 'neutral',
+  running: 'success',
+  finished: 'neutral',
+  failed: 'warning',
+}
 
 /** What both layouts need to draw the rows. */
 export interface GameRowsProps {
@@ -21,6 +26,10 @@ export interface GameRowsProps {
   now: number
   /** The rows are an old listing, shown dimmed beside an error. */
   stale: boolean
+  /** The id of the failed game being removed right now, or null. */
+  removing: string | null
+  /** Takes a failed game off the list. */
+  onRemove: (game: MyGame) => void
 }
 
 /** The state of a game as a badge: a word as well as a tone. */
@@ -38,11 +47,29 @@ function Age({ game, now }: { game: MyGame; now: number }) {
 }
 
 /**
- * The one primary action of a row: Continue opens the game page with no seat link, which connects through the session.
- * A finished game has none, since the server forgets it soon after it ends: its row is the record.
+ * The one action of a row: Continue opens the game page with no seat link, which connects through the session.
+ * A finished game has none, since the server forgets it soon after it ends: its row is the record. A failed game cannot
+ * be played, so it has no link, only Remove, which takes it off the list.
  */
-function Continue({ game }: { game: MyGame }) {
+function Action({
+  game,
+  removing,
+  onRemove,
+}: { game: MyGame } & Pick<GameRowsProps, 'removing' | 'onRemove'>) {
   if (game.status === 'finished') return null
+  if (game.status === 'failed') {
+    return (
+      <Button
+        type="button"
+        variant="outline"
+        loading={removing === game.game}
+        aria-label={removeLabel(game)}
+        onClick={() => onRemove(game)}
+      >
+        Remove
+      </Button>
+    )
+  }
   return (
     <Link
       to="/game/$gameId"
@@ -60,7 +87,7 @@ const HEAD =
 const CELL = 'border-b px-4 py-3 align-middle text-sm'
 
 /** From the table breakpoint up: a real table, its header kept in view while the rows scroll. */
-function GamesTable({ games, now, stale }: GameRowsProps) {
+function GamesTable({ games, now, stale, removing, onRemove }: GameRowsProps) {
   return (
     <table className="w-full border-separate border-spacing-0 text-left">
       <caption className="sr-only">Your games, newest first</caption>
@@ -93,7 +120,7 @@ function GamesTable({ games, now, stale }: GameRowsProps) {
             <tr key={game.game} data-game={game.game} data-status={game.status}>
               <th
                 scope="row"
-                className={cn(CELL, 'font-medium break-words', stale && 'text-muted-foreground')}
+                className={cn(CELL, 'font-medium [overflow-wrap:anywhere]', stale && 'text-muted-foreground')}
               >
                 {othersText(game)}
               </th>
@@ -101,21 +128,24 @@ function GamesTable({ games, now, stale }: GameRowsProps) {
                 <State game={game} />
               </td>
               <td className={cn(CELL, stale && 'text-muted-foreground')}>
-                {result ?? (
+                {result === null ? (
                   <span className="text-muted-foreground">
                     <span aria-hidden="true">–</span>
                     <span className="sr-only">Not over</span>
                   </span>
+                ) : (
+                  // A reason is a sentence: it wraps in a measure of its own instead of widening the column.
+                  <span className="block max-w-md [overflow-wrap:anywhere]">{result}</span>
                 )}
               </td>
-              <td className={cn(CELL, 'break-words text-muted-foreground')}>
+              <td className={cn(CELL, '[overflow-wrap:anywhere] text-muted-foreground')}>
                 {game.name}, seat {game.seat + 1}
               </td>
               <td className={cn(CELL, 'whitespace-nowrap text-muted-foreground')}>
                 <Age game={game} now={now} />
               </td>
               <td className={cn(CELL, 'text-right')}>
-                <Continue game={game} />
+                <Action game={game} removing={removing} onRemove={onRemove} />
               </td>
             </tr>
           )
@@ -126,7 +156,7 @@ function GamesTable({ games, now, stale }: GameRowsProps) {
 }
 
 /** Under the table breakpoint: one stacked row a game, Continue at its right. */
-function GamesList({ games, now, stale }: GameRowsProps) {
+function GamesList({ games, now, stale, removing, onRemove }: GameRowsProps) {
   return (
     <ul aria-label="Your games, newest first" className="grid">
       {games.map((game) => {
@@ -141,7 +171,7 @@ function GamesList({ games, now, stale }: GameRowsProps) {
             <div className="grid min-w-0 gap-1">
               <p
                 className={cn(
-                  'text-base font-medium break-words',
+                  'text-base font-medium [overflow-wrap:anywhere]',
                   stale ? 'text-muted-foreground' : 'text-foreground',
                 )}
               >
@@ -153,11 +183,11 @@ function GamesList({ games, now, stale }: GameRowsProps) {
                 <Age game={game} now={now} />
               </p>
               {result === null ? null : <p className="text-sm font-medium">{result}</p>}
-              <p className="text-sm break-words text-muted-foreground">
+              <p className="text-sm [overflow-wrap:anywhere] text-muted-foreground">
                 You play {game.name} in seat {game.seat + 1}.
               </p>
             </div>
-            <Continue game={game} />
+            <Action game={game} removing={removing} onRemove={onRemove} />
           </li>
         )
       })}

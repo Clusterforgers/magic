@@ -1,4 +1,4 @@
-//! Goal: a restarted server resumes a game only while its decks still hash to what the game was created with: an unchanged deck resumes with its log, a changed card, list order, list size or seat fails the game with "the deck changed" and the seat (in the record and in the log) before anything is replayed, the failed game is then gone for tokens, lookups, sockets and "My games" and can be revived by hand once the deck is right, and a recipe stored before fingerprints existed resumes unchecked with a warning.
+//! Goal: a restarted server resumes a game only while its decks still hash to what the game was created with: an unchanged deck resumes with its log, a changed card, list order, list size or seat fails the game with "the deck changed" and the seat (in the record and in the log) before anything is replayed, the failed game is then gone for tokens, lookups and sockets (and shown in "My games" as failed) and can be revived by hand once the deck is right, and a recipe stored before fingerprints existed resumes unchecked with a warning.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -445,7 +445,7 @@ async fn a_recipe_stored_before_fingerprints_existed_resumes_unchecked_and_warns
 }
 
 #[sqlx::test(migrations = false)]
-async fn a_failed_game_is_gone_for_lookups_sockets_and_my_games(pool: PgPool) {
+async fn a_failed_game_is_gone_for_lookups_and_sockets_and_listed_as_failed(pool: PgPool) {
     migrate(&pool).await.unwrap();
     let config = ServerConfig {
         fixed_seed: Some(25),
@@ -492,8 +492,8 @@ async fn a_failed_game_is_gone_for_lookups_sockets_and_my_games(pool: PgPool) {
     let (status, _) = refused_at(addr, &format!("/ws/{game}"), &[("Cookie", &ann.cookie)]).await;
     assert_eq!(status, 404);
 
-    // "My games" does not list a failed game, whatever the reason; the other one is still there.
-    assert_eq!(listed_games(&ann, addr).await, [other]);
+    // "My games" lists it as failed, beside the other one.
+    assert_eq!(listed_games(&ann, addr).await, [other, game.clone()]);
 
     let record = GameRecords::new(pool).get(id).await.unwrap().unwrap();
     assert_eq!(record.status, RecordStatus::Failed);

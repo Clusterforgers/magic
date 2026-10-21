@@ -1,4 +1,4 @@
-// Goal: the My games page sends a visitor who is not signed in to the sign-in form and back, and every state of the signed-in page is designed in the Play page's wide column: a skeleton only after 300 ms, an empty state with two ways on, an error with Retry that keeps old rows dimmed, and a table (stacked rows on a narrow screen) of state badges, results and a Continue link only where a game can be continued.
+// Goal: the My games page sends a visitor who is not signed in to the sign-in form and back, and every state of the signed-in page is designed in the Play page's wide column: a skeleton only after 300 ms, an empty state with two ways on, an error with Retry that keeps old rows dimmed, and a table (stacked rows on a narrow screen) of state badges, results and a Continue link only where a game can be continued, and a failed game shows its reason beside a Remove button that takes it off the list and no link into it.
 import { screen, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AuthProvider } from '@/features/auth/AuthProvider'
@@ -137,6 +137,12 @@ describe('the page', () => {
       'href',
       '/new',
     )
+  })
+
+  it('scrolls the list in a region that holds the screen-reader words of its rows, so they never lengthen the page', async () => {
+    await openApp({ games: [listed()] })
+    await screen.findByRole('table', TABLE)
+    expect(screen.getByRole('region', { name: 'Your games' })).toHaveClass('relative', 'overflow-y-auto')
   })
 
   it('keeps the same width in its loading state, before it knows who is signed in', async () => {
@@ -437,6 +443,102 @@ describe('each game', () => {
   })
 })
 
+describe('a game that failed to resume', () => {
+  const bo = { seat: 1, name: 'Bo', user: null }
+  const REASON = 'The deck of Bo has changed since this game was made, so it cannot continue.'
+  const broken = (over: Partial<MyGame> = {}) =>
+    listed({ game: 'g-broken', status: 'failed', reason: REASON, others: [bo], ...over })
+  const remove = () => screen.getByRole('button', { name: 'Remove your failed game with Bo' })
+
+  it('shows a Failed state and its reason, with no way to play it', async () => {
+    await openRows([broken()])
+    const row = within(rows()[0] as HTMLElement)
+    expect(rows()[0]).toHaveAttribute('data-status', 'failed')
+    expect(row.getByText('Failed')).toBeInTheDocument()
+    expect(row.getByText(REASON)).toBeInTheDocument()
+    expect(row.queryByText('Not over')).toBeNull()
+    expect(row.queryByRole('link')).toBeNull()
+    expect(row.getByRole('button', { name: 'Remove your failed game with Bo' })).toHaveTextContent('Remove')
+  })
+
+  it('shows nothing of the server beyond the sentence it was given', async () => {
+    await openRows([broken()])
+    const text = rows()[0]?.textContent ?? ''
+    expect(text).toContain(REASON)
+    expect(text).not.toMatch(/recipe|fingerprint|g-broken/i)
+  })
+
+  it('leaves the other states as they were, beside a failed game', async () => {
+    await openRows([
+      broken(),
+      listed({ game: 'g-live', status: 'running', others: [{ seat: 1, name: 'Cy', user: null }] }),
+    ])
+    expect(ids()).toEqual(['g-broken', 'g-live'])
+    const live = within(rows()[1] as HTMLElement)
+    expect(live.getByRole('link', { name: 'Continue your game with Cy' })).toHaveAttribute(
+      'href',
+      '/game/g-live',
+    )
+    expect(live.queryByRole('button')).toBeNull()
+  })
+
+  it('removes the game from the list when Remove is pressed, and says how many remain', async () => {
+    const app = await openApp({ games: [broken(), listed({ game: 'g-live', created_at: ago(300) })] })
+    await screen.findByRole('table', TABLE)
+    expect(ids()).toEqual(['g-broken', 'g-live'])
+    await app.user.click(remove())
+    await waitFor(() => expect(ids()).toEqual(['g-live']))
+    const call = app.accounts.calls.find((one) => one.init?.method === 'DELETE')
+    expect(call?.url).toBe('/api/me/games/g-broken')
+    expect(call?.init?.credentials).toBe('include')
+    expect(screen.getByRole('status')).toHaveTextContent('1 game')
+    expect(screen.queryByRole('alert')).toBeNull()
+  })
+
+  it('shows the empty state once the last game is removed', async () => {
+    const app = await openApp({ games: [broken()] })
+    await screen.findByRole('table', TABLE)
+    await app.user.click(remove())
+    expect(await screen.findByRole('heading', { name: 'You have no games yet' })).toBeInTheDocument()
+    expect(screen.queryByRole('table')).toBeNull()
+  })
+
+  it('shows the button busy while the server answers, and the row stays', async () => {
+    let release!: (response: Response) => void
+    const app = await openApp({
+      games: [broken()],
+      override: { removeGame: () => new Promise<Response>((resolve) => (release = resolve)) },
+    })
+    await screen.findByRole('table', TABLE)
+    await app.user.click(remove())
+    await waitFor(() => expect(remove()).toHaveAttribute('aria-disabled', 'true'))
+    expect(ids()).toEqual(['g-broken'])
+    release(new Response(null, { status: 204 }))
+    await waitFor(() => expect(screen.queryByRole('table')).toBeNull())
+  })
+
+  it('keeps the row and says why when the removal fails, and works on the next try', async () => {
+    let broken_ = true
+    const app = await openApp({
+      games: [broken()],
+      override: {
+        removeGame: () => (broken_ ? authError(503, 'unavailable') : new Response(null, { status: 204 })),
+      },
+    })
+    await screen.findByRole('table', TABLE)
+    await app.user.click(remove())
+    const alert = await screen.findByRole('alert')
+    expect(within(alert).getByText('Could not remove the game')).toBeInTheDocument()
+    expect(alert).toHaveTextContent(/cannot check accounts right now/i)
+    expect(ids()).toEqual(['g-broken'])
+    expect(remove()).not.toHaveAttribute('aria-disabled', 'true')
+    broken_ = false
+    await app.user.click(remove())
+    await waitFor(() => expect(screen.queryByRole('alert')).toBeNull())
+    expect(screen.queryByRole('table')).toBeNull()
+  })
+})
+
 describe('on a narrow screen', () => {
   const bo = { seat: 1, name: 'Bo', user: null }
   const stacked = () => screen.getByRole('list', { name: 'Your games, newest first' })
@@ -466,6 +568,25 @@ describe('on a narrow screen', () => {
     expect(row.getByText('You won')).toBeInTheDocument()
     expect(row.getByText('Bo')).toBeInTheDocument()
     expect(row.getByText('You play Ada in seat 1.')).toBeInTheDocument()
+    expect(row.queryByRole('link')).toBeNull()
+  })
+
+  it('stacks a failed game with its state, its reason and a Remove button, and no link', async () => {
+    await openStacked([
+      listed({
+        game: 'g-broken',
+        status: 'failed',
+        reason: 'The saved moves of this game cannot be loaded, so it cannot continue.',
+        others: [bo],
+      }),
+    ])
+    const row = within(items()[0] as HTMLElement)
+    expect(items()[0]).toHaveAttribute('data-status', 'failed')
+    expect(row.getByText('Failed')).toBeInTheDocument()
+    expect(
+      row.getByText('The saved moves of this game cannot be loaded, so it cannot continue.'),
+    ).toBeInTheDocument()
+    expect(row.getByRole('button', { name: 'Remove your failed game with Bo' })).toBeInTheDocument()
     expect(row.queryByRole('link')).toBeNull()
   })
 

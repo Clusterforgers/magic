@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT g.id, s.seat, g.status, g.result,\n                      to_char(g.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"')\n                          AS \"created_at!\"\n               FROM seats s JOIN games g ON g.id = s.game_id\n               WHERE s.user_id = $1 AND g.status IN ('lobby', 'running', 'finished')\n               ORDER BY g.created_at DESC, g.id DESC\n               LIMIT $2",
+  "query": "SELECT g.id, s.seat, g.status, g.result, g.failure_reason,\n                      to_char(g.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"')\n                          AS \"created_at!\"\n               FROM seats s JOIN games g ON g.id = s.game_id\n               WHERE s.user_id = $1\n                 AND (g.status IN ('lobby', 'running', 'finished')\n                      OR (g.status = 'failed' AND NOT s.hidden))\n               ORDER BY g.created_at DESC, g.id DESC\n               LIMIT $2",
   "describe": {
     "columns": [
       {
@@ -49,6 +49,17 @@
       },
       {
         "ordinal": 4,
+        "name": "failure_reason",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "games",
+            "name": "failure_reason"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
         "name": "created_at!",
         "type_info": "Text",
         "origin": "Expression"
@@ -65,8 +76,9 @@
       false,
       false,
       true,
+      true,
       null
     ]
   },
-  "hash": "090bec8d37f520c2d2da4540fe171113932d484cddf0d2666d7d026dea1e7829"
+  "hash": "95344d74f78ee250de6446a5800ca6905d992d3a9b9fc60db414e400d3190a52"
 }

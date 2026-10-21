@@ -43,12 +43,15 @@ pub struct UserGame {
     pub id: GameId,
     /// The user's seat.
     pub seat: usize,
-    /// `Lobby`, `Running` or `Finished`; dropped and damaged games are not listed.
+    /// `Lobby`, `Running`, `Finished` or `Failed`; dropped and damaged games are not listed.
     pub status: RecordStatus,
     /// When the game was created, as `YYYY-MM-DDTHH:MM:SSZ` (UTC).
     pub created_at: String,
     /// How a finished game ended.
     pub result: Option<GameResult>,
+    /// Why a failed game could not be resumed, in words for a player; none for the other statuses
+    /// and for a game marked failed before the reason was kept.
+    pub reason: Option<String>,
     /// Every seat of the game in seat order, the user's own included.
     pub seats: Vec<UserGameSeat>,
 }
@@ -100,8 +103,29 @@ impl GameRecords {
         })
     }
 
-    /// The games `user` has a seat in that are in their lobby, running or finished, newest first,
-    /// at most `limit` of them, each with all its seats.
+    /// Takes a failed `game` off `user`'s list; false when the user holds no seat in a failed game
+    /// of that id or has removed it already. Only the user's own seat is marked: the other players
+    /// keep the game, and the record stays for whoever repairs it.
+    pub(crate) async fn remove_failed(
+        &self,
+        game: GameId,
+        user: UserId,
+    ) -> Result<bool, RecordError> {
+        let updated = sqlx::query!(
+            "UPDATE seats s SET hidden = true FROM games g
+             WHERE g.id = s.game_id AND s.game_id = $1 AND s.user_id = $2
+               AND g.status = 'failed' AND NOT s.hidden",
+            game.uuid(),
+            user.uuid(),
+        )
+        .execute(&self.pool)
+        .await?;
+        Ok(updated.rows_affected() == 1)
+    }
+
+    /// The games `user` has a seat in that are in their lobby, running, finished or failed (a failed
+    /// one only until the user removes it), newest first, at most `limit` of them, each with all its
+    /// seats.
     pub async fn list_for_user(
         &self,
         user: UserId,
@@ -109,11 +133,13 @@ impl GameRecords {
     ) -> Result<Vec<UserGame>, RecordError> {
         let limit = i64::try_from(limit).unwrap_or(i64::MAX);
         let games = sqlx::query!(
-            r#"SELECT g.id, s.seat, g.status, g.result,
+            r#"SELECT g.id, s.seat, g.status, g.result, g.failure_reason,
                       to_char(g.created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"')
                           AS "created_at!"
                FROM seats s JOIN games g ON g.id = s.game_id
-               WHERE s.user_id = $1 AND g.status IN ('lobby', 'running', 'finished')
+               WHERE s.user_id = $1
+                 AND (g.status IN ('lobby', 'running', 'finished')
+                      OR (g.status = 'failed' AND NOT s.hidden))
                ORDER BY g.created_at DESC, g.id DESC
                LIMIT $2"#,
             user.uuid(),
@@ -158,6 +184,7 @@ impl GameRecords {
                     created_at: game.created_at,
                     // A result this server cannot read only matters for display.
                     result: game.result.and_then(|v| serde_json::from_value(v).ok()),
+                    reason: game.failure_reason,
                     seats: seats.remove(&game.id).unwrap_or_default(),
                 })
             })

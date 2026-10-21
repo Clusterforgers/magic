@@ -177,8 +177,11 @@ pub struct GameRecord {
     pub recipe: serde_json::Value,
     /// How the game ended, once it did.
     pub result: Option<GameResult>,
-    /// Why the game was marked failed.
+    /// Why the game was marked failed, for the operator: errors and fingerprints, never shown to players.
     pub failure: Option<String>,
+    /// Why it failed in words for its players, free of internals; none for a game marked failed before
+    /// the reason was kept.
+    pub failure_reason: Option<String>,
     /// Time since the record was created, by the database's clock.
     pub age: Duration,
     /// The seats that could be read.
@@ -200,6 +203,7 @@ struct GameRow {
     recipe: serde_json::Value,
     result: Option<serde_json::Value>,
     failure: Option<String>,
+    failure_reason: Option<String>,
     age_secs: f64,
 }
 
@@ -220,6 +224,7 @@ impl GameRow {
             // A result this server cannot read only matters for display, never for resuming.
             result: self.result.and_then(|v| serde_json::from_value(v).ok()),
             failure: self.failure,
+            failure_reason: self.failure_reason,
             age: age(self.age_secs),
             seats,
         })
@@ -302,7 +307,7 @@ impl GameRecords {
     pub async fn get(&self, id: GameId) -> Result<Option<GameRecord>, RecordError> {
         let row = sqlx::query_as!(
             GameRow,
-            r#"SELECT id, status, visibility, code_digest, recipe, result, failure,
+            r#"SELECT id, status, visibility, code_digest, recipe, result, failure, failure_reason,
                       extract(epoch FROM now() - created_at)::float8 AS "age_secs!"
                FROM games WHERE id = $1"#,
             id.uuid(),
@@ -321,7 +326,7 @@ impl GameRecords {
     pub async fn unfinished(&self) -> Result<Vec<GameRecord>, RecordError> {
         let rows = sqlx::query_as!(
             GameRow,
-            r#"SELECT id, status, visibility, code_digest, recipe, result, failure,
+            r#"SELECT id, status, visibility, code_digest, recipe, result, failure, failure_reason,
                       extract(epoch FROM now() - created_at)::float8 AS "age_secs!"
                FROM games WHERE status IN ('lobby', 'running') ORDER BY created_at, id"#,
         )
@@ -454,13 +459,21 @@ impl GameRecords {
         Ok(())
     }
 
-    /// Notes that the game could not be loaded and why.
-    pub(crate) async fn mark_failed(&self, id: GameId, reason: &str) -> Result<(), RecordError> {
+    /// Notes that the game could not be loaded: `detail` is the operator's account of why, `reason`
+    /// the sentence its players read.
+    pub(crate) async fn mark_failed(
+        &self,
+        id: GameId,
+        detail: &str,
+        reason: &str,
+    ) -> Result<(), RecordError> {
+        let detail: String = detail.chars().take(MAX_FAILURE_CHARS).collect();
         let reason: String = reason.chars().take(MAX_FAILURE_CHARS).collect();
         sqlx::query!(
-            "UPDATE games SET status = 'failed', failure = $2
+            "UPDATE games SET status = 'failed', failure = $2, failure_reason = $3
              WHERE id = $1 AND status IN ('lobby', 'running')",
             id.uuid(),
+            detail,
             reason,
         )
         .execute(&self.pool)

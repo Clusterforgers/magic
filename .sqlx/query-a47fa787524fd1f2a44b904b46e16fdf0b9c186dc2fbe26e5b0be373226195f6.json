@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE seats s SET hidden = true FROM games g\n             WHERE g.id = s.game_id AND s.game_id = $1 AND s.user_id = $2\n               AND g.status = 'failed' AND NOT s.hidden",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a47fa787524fd1f2a44b904b46e16fdf0b9c186dc2fbe26e5b0be373226195f6"
+}

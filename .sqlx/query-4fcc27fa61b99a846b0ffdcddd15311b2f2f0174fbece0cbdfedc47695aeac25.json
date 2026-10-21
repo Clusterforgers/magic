@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE games SET status = 'failed', failure = $2, failure_reason = $3\n             WHERE id = $1 AND status IN ('lobby', 'running')",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "4fcc27fa61b99a846b0ffdcddd15311b2f2f0174fbece0cbdfedc47695aeac25"
+}

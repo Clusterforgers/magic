@@ -396,25 +396,19 @@ async fn the_list_has_lobbies_running_and_finished_games_newest_first_with_the_o
     let (g4, tokens) = bob.create_game(addr, &host_game()).await;
     let _ = through_the_link(addr, &g4, &tokens[1], Some(&ann)).await;
     pause().await;
-    // g5: Bob's game, which Ann never touched. g6 and g7 are Ann's, but dropped and damaged.
+    // g5: Bob's game, which Ann never touched. g6 is Ann's, but dropped.
     let (g5, _) = bob.create_game(addr, &host_game()).await;
     let (g6, _) = ann.create_game(addr, &host_game()).await;
-    let (g7, _) = ann.create_game(addr, &host_game()).await;
-    for (game, status) in [(&g6, "expired"), (&g7, "failed")] {
-        sqlx::query("UPDATE games SET status = $2 WHERE id = $1::uuid")
-            .bind(game)
-            .bind(status)
-            .execute(&pool)
-            .await
-            .unwrap();
-    }
+    sqlx::query("UPDATE games SET status = 'expired' WHERE id = $1::uuid")
+        .bind(&g6)
+        .execute(&pool)
+        .await
+        .unwrap();
 
     let games = ann.games(addr).await;
     let ids: Vec<&str> = games.iter().map(|g| g["game"].as_str().unwrap()).collect();
     assert_eq!(ids, [g4.as_str(), g3.as_str(), g2.as_str(), g1.as_str()]);
-    assert!(
-        !ids.contains(&g5.as_str()) && !ids.contains(&g6.as_str()) && !ids.contains(&g7.as_str())
-    );
+    assert!(!ids.contains(&g5.as_str()) && !ids.contains(&g6.as_str()));
 
     let [listed4, listed3, listed2, listed1] = &games[..] else {
         panic!("four games expected");
@@ -478,6 +472,7 @@ async fn the_list_has_lobbies_running_and_finished_games_newest_first_with_the_o
                 "game",
                 "name",
                 "others",
+                "reason",
                 "result",
                 "seat",
                 "status"

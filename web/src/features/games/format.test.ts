@@ -1,7 +1,17 @@
-// Goal: the words of the games list are right for every age, every set of other players and every way a game can end, whoever won and however many seats there were.
+// Goal: the words of the games list are right for every age, every set of other players and every way a game can end or fail, whoever won and however many seats there were.
 import { describe, expect, it } from 'vitest'
 import { listed } from '@/test-utils/accountsServer'
-import { continueLabel, gamesText, joinNames, othersText, playerLabel, resultText } from './format'
+import {
+  continueLabel,
+  gamesText,
+  joinNames,
+  NO_REASON,
+  othersText,
+  playerLabel,
+  removeLabel,
+  resultText,
+  STATUS_LABEL,
+} from './format'
 
 describe('joinNames', () => {
   it.each([
@@ -69,6 +79,31 @@ describe('resultText', () => {
 
   it.each(['lobby', 'running'] as const)('says nothing for a game in the %s state', (status) => {
     expect(resultText(listed({ status, others }))).toBeNull()
+  })
+
+  it('gives a failed game its reason, and a plain sentence when the answer has none', () => {
+    const reason = 'The deck of Cy has changed since this game was made, so it cannot continue.'
+    expect(resultText(listed({ status: 'failed', others, reason }))).toBe(reason)
+    expect(resultText(listed({ status: 'failed', others, reason: null }))).toBe(NO_REASON)
+  })
+})
+
+describe('the state labels', () => {
+  it('has a word for every state, Failed among them', () => {
+    expect(STATUS_LABEL).toEqual({
+      lobby: 'Lobby',
+      running: 'Running',
+      finished: 'Finished',
+      failed: 'Failed',
+    })
+  })
+})
+
+describe('removeLabel', () => {
+  it('names the other players, so the buttons of two games differ', () => {
+    const bo = { seat: 1, name: 'Bo', user: null }
+    expect(removeLabel(listed({ status: 'failed', others: [bo] }))).toBe('Remove your failed game with Bo')
+    expect(removeLabel(listed({ status: 'failed', others: [] }))).toBe('Remove your failed game')
   })
 })
 
