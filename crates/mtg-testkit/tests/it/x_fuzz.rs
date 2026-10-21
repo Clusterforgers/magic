@@ -6,6 +6,8 @@ use crate::common::seeds::for_each_seed;
 use std::sync::Mutex;
 
 use mtg_cards::value::CounterKind;
+use mtg_core::mana::ManaCost;
+use mtg_engine::object::GameObject;
 use mtg_engine::{Event, replay};
 use mtg_testkit::{PlayOptions, play_game_with, x_fuzz_setup};
 use rstest::rstest;
@@ -61,7 +63,7 @@ fn judge(seen: &mut Seen, setup: &mtg_engine::GameSetup, events: &[Event]) {
                 object, choices, ..
             } => {
                 // A player who has left the game takes their cards with them.
-                let Some(card) = end.object(*object).map(|object| object.card()) else {
+                let Some(card) = end.object(*object).map(GameObject::card) else {
                     continue;
                 };
                 // A spell announces X exactly when its cost has an {X}.
@@ -69,7 +71,7 @@ fn judge(seen: &mut Seen, setup: &mtg_engine::GameSetup, events: &[Event]) {
                 let Some(x) = choices.x else { continue };
                 seen.spells_with_x += 1;
                 seen.spells_with_x_above_nothing += u64::from(x > 0);
-                let rest = card.mana_cost.as_ref().map_or(0, |cost| cost.mana_value());
+                let rest = card.mana_cost.as_ref().map_or(0, ManaCost::mana_value);
                 assert_eq!(
                     spent_after(events, at),
                     usize::try_from(rest + x * u32::from(card.x_in_cost)).unwrap(),
@@ -115,11 +117,11 @@ fn judge(seen: &mut Seen, setup: &mtg_engine::GameSetup, events: &[Event]) {
                     "{name} activated for X = {x}"
                 );
             }
-            Event::SpellResolved { object } => {
-                // The spell kept its X until it resolved.
-                if end.object(*object).is_some_and(|o| o.card().x_in_cost > 0) {
-                    seen.resolved_with_x += 1;
-                }
+            // The spell kept its X until it resolved.
+            Event::SpellResolved { object }
+                if end.object(*object).is_some_and(|o| o.card().x_in_cost > 0) =>
+            {
+                seen.resolved_with_x += 1;
             }
             _ => {}
         }

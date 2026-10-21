@@ -120,7 +120,7 @@ fn a_spell_that_cannot_pay_for_x_of_nothing_is_not_offered() -> Result<(), Scrip
         let DecisionKind::Priority(options) = options else {
             panic!("priority was expected");
         };
-        assert!(options.castable.is_empty());
+        assert_eq!(options.castable.len(), 0);
         let refused = driver.begin_cast("Blaze");
         assert!(refused.is_err(), "{refused:?}");
     }
@@ -291,7 +291,7 @@ fn a_hybrid_symbol_that_no_land_can_pay_keeps_the_spell_out_of_reach() -> Result
     let DecisionKind::Priority(options) = &driver.decision()?.kind else {
         panic!("priority was expected");
     };
-    assert!(options.castable.is_empty());
+    assert_eq!(options.castable.len(), 0);
     Ok(())
 }
 
@@ -374,7 +374,7 @@ fn an_ability_that_cannot_pay_x_of_nothing_is_not_offered() -> Result<(), Script
     let DecisionKind::Priority(options) = &driver.decision()?.kind else {
         panic!("priority was expected");
     };
-    assert!(options.abilities.is_empty());
+    assert_eq!(options.abilities.len(), 0);
     Ok(())
 }
 

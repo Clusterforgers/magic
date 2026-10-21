@@ -72,7 +72,8 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 ### Costs and casting
 - [x] (g1) One announcement procedure (CR 601.2): modes, X, optional, alternative and additional costs, targets and division, then the total cost; `ChooseNumber`, `ChooseCosts` and `DivideAmount` are built with it
-- [ ] (g2) `{X}` in spell and ability costs and the `-X` of a loyalty ability; the support walker names `Cost.Mana.X` and `Cost.Loyalty.X`
+- [x] (g2) `{X}` in spell and ability costs and the `-X` of a loyalty ability; the support walker names `Cost.Mana.X` and `Cost.Loyalty.X`; Blaze, Stroke of Genius, Kessig Wolf Run and Tezzeret the Seeker are Verified
+- [ ] (g2b) X read after the spell or ability has resolved: a permanent that enters with X counters (Walking Ballista, Hangarback Walker), a trigger or delayed trigger that reads X, X in a target filter and the mana value of a spell with X on the stack; the walker names these `Amount.X.Elsewhere`
 - [ ] (g3) Optional and additional costs: kicker and multikicker; Burst Lightning is Verified
 - [ ] (g4) Alternative costs and cast permissions: flashback, evoke, overload, madness, suspend, casting from another zone, without paying the cost or as though it had flash, cascade; Mulldrifter, Faithless Looting and Bloodbraid Elf are Verified
 - [ ] (g5) Cost modifiers (`Ability::CostModifier`): reductions, increases, convoke, delve; Fireball is Verified

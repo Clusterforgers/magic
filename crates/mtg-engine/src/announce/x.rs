@@ -124,3 +124,146 @@ fn largest_payable(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
     }
     Some(low)
 }
+
+#[cfg(test)]
+mod tests {
+    //! Goal: X is read from the card as the announcement begins (the `{X}` symbols of a spell, of the mana of an activated ability and the `-X` of a loyalty ability, nothing from a cost without one), and the most X offered is the most the total cost allows, for every number of `{X}`, of lands and of other symbols, and nothing is announced when not even X = 0 can be paid.
+    use std::sync::Arc;
+
+    use mtg_cards::CardDefinition;
+    use mtg_core::card::CardType;
+    use mtg_core::color::Color;
+    use mtg_core::ids::PlayerId;
+    use rstest::rstest;
+
+    use super::*;
+    use crate::abilities::{AbilityRef, AbilitySource};
+    use crate::announce::{Needs, Pending, announce};
+    use crate::decision::Decision;
+    use crate::fixtures::state;
+    use crate::zones::Zone;
+
+    const SEAT: PlayerId = PlayerId(0);
+
+    fn forest() -> Arc<CardDefinition> {
+        Arc::new(CardDefinition::basic_land(Some(Color::Green)))
+    }
+
+    fn spell(cost: &str, x: u8) -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new("Spell")
+                .with_type(CardType::Instant)
+                .with_mana_cost(ManaCost::parse(cost).unwrap())
+                .with_x_in_cost(x),
+        )
+    }
+
+    fn rules(json: &str) -> Ability {
+        serde_json::from_str(json).unwrap()
+    }
+
+    #[rstest]
+    #[case::no_x(0, None)]
+    #[case::one(1, Some(XCost::Mana { symbols: 1 }))]
+    #[case::two(2, Some(XCost::Mana { symbols: 2 }))]
+    fn a_spell_asks_for_the_x_symbols_of_its_cost(#[case] x: u8, #[case] expected: Option<XCost>) {
+        let game = state(vec![vec![spell("{G}", x)], vec![]], vec![vec![], vec![]]);
+        let card = game.zone(Zone::Hand(SEAT))[0];
+        assert_eq!(XCost::of(&game, &What::Spell(card), None), expected);
+    }
+
+    #[rstest]
+    #[case::mana_without_x(r#"{"Activated":{"cost":"{1}{G}","effects":[{"Draw":{}}]}}"#, None)]
+    #[case::a_tap(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, None)]
+    #[case::x(
+        r#"{"Activated":{"cost":"{X}","effects":[{"Draw":{}}]}}"#,
+        Some(XCost::Mana { symbols: 1 })
+    )]
+    #[case::x_and_a_tap(
+        r#"{"Activated":{"cost":[{"Mana":"{X}{G}"},"Tap"],"effects":[{"Draw":{}}]}}"#,
+        Some(XCost::Mana { symbols: 1 })
+    )]
+    #[case::two_x(
+        r#"{"Activated":{"cost":"{X}{X}","effects":[{"Draw":{}}]}}"#,
+        Some(XCost::Mana { symbols: 2 })
+    )]
+    #[case::x_in_two_mana_parts(
+        r#"{"Activated":{"cost":[{"Mana":"{X}"},{"Mana":"{X}{1}"}],"effects":[{"Draw":{}}]}}"#,
+        Some(XCost::Mana { symbols: 2 })
+    )]
+    #[case::minus_x(
+        r#"{"Loyalty":{"cost":"MinusX","effects":[{"Draw":{}}]}}"#,
+        Some(XCost::Loyalty)
+    )]
+    #[case::minus_three(r#"{"Loyalty":{"cost":{"Minus":3},"effects":[{"Draw":{}}]}}"#, None)]
+    #[case::a_spell_ability(r#"{"Spell":{"effects":[{"Draw":{}}]}}"#, None)]
+    fn an_ability_asks_for_the_x_of_its_cost(#[case] json: &str, #[case] expected: Option<XCost>) {
+        let game = state(vec![vec![], vec![]], vec![vec![forest()], vec![]]);
+        let object = game.zone(Zone::Battlefield)[0];
+        let what = What::Ability(AbilityRef {
+            object,
+            ability: 0,
+            source: AbilitySource::Printed,
+        });
+        assert_eq!(XCost::of(&game, &what, Some(&rules(json))), expected);
+    }
+
+    /// What the cast of `cost` with `x` symbols of `{X}` and `lands` Forests asks first: the most X offered, or `None`
+    /// when no number is asked or the cast is rewound.
+    fn most(cost: &str, x: u8, lands: usize) -> Option<u32> {
+        let game = state(
+            vec![vec![spell(cost, x)], vec![]],
+            vec![vec![forest(); lands], vec![]],
+        );
+        let card = game.zone(Zone::Hand(SEAT))[0];
+        let needs = Needs {
+            alternative: None,
+            optional: Vec::new(),
+            x: XCost::of(&game, &What::Spell(card), None),
+        };
+        let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
+        match announce(&game, &mut pending) {
+            Next::Ask(Decision {
+                kind: DecisionKind::ChooseNumber(options),
+                ..
+            }) => options.max,
+            _ => None,
+        }
+    }
+
+    #[rstest]
+    #[case::one_x_and_a_colour("{G}", 1, 5, Some(4))]
+    #[case::one_x_alone("", 1, 3, Some(3))]
+    #[case::a_hybrid_beside_x("{G/W}", 1, 4, Some(3))]
+    #[case::two_x_and_a_colour("{G}", 2, 5, Some(2))]
+    #[case::two_x_and_generic("{2}{G}", 2, 7, Some(2))]
+    #[case::three_x("", 3, 8, Some(2))]
+    #[case::only_the_rest_can_be_paid("{G}", 1, 1, None)]
+    #[case::two_x_and_only_the_rest("{G}", 2, 2, None)]
+    #[case::too_little_for_the_rest("{2}{G}", 1, 2, None)]
+    fn the_most_x_is_what_is_left_after_the_rest_of_the_cost(
+        #[case] cost: &str,
+        #[case] x: u8,
+        #[case] lands: usize,
+        #[case] expected: Option<u32>,
+    ) {
+        assert_eq!(most(cost, x, lands), expected);
+    }
+
+    #[test]
+    fn a_cast_whose_rest_cannot_be_paid_is_rewound() {
+        // {X}{2}{G} with two Forests: not even X = 0 is payable, so there is nothing to announce.
+        let game = state(
+            vec![vec![spell("{2}{G}", 1)], vec![]],
+            vec![vec![forest(); 2], vec![]],
+        );
+        let card = game.zone(Zone::Hand(SEAT))[0];
+        let needs = Needs {
+            alternative: None,
+            optional: Vec::new(),
+            x: Some(XCost::Mana { symbols: 1 }),
+        };
+        let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
+        assert!(matches!(announce(&game, &mut pending), Next::Drop));
+    }
+}

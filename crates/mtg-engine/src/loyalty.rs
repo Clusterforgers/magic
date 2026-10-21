@@ -55,11 +55,10 @@ pub(crate) fn can_activate(
         return false;
     }
     match cost {
-        LoyaltyCost::Plus(_) | LoyaltyCost::Zero => true,
+        LoyaltyCost::Plus(_) | LoyaltyCost::Zero | LoyaltyCost::MinusX => true,
         LoyaltyCost::Minus(removed) => object
             .permanent()
             .is_some_and(|permanent| permanent.counters_of(&CounterKind::Loyalty) >= removed),
-        LoyaltyCost::MinusX => true,
     }
 }
 
