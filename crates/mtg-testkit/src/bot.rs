@@ -312,7 +312,8 @@ impl RandomBot {
                 .restricted
                 .iter()
                 .zip(restricted_keep)
-                .filter_map(|(unit, k)| k.then(|| unit.clone()))
+                .filter(|(_, k)| *k)
+                .map(|(unit, _)| unit.clone())
                 .collect(),
             taps: payment
                 .taps

@@ -1027,7 +1027,7 @@ impl InvariantChecker {
 
     /// Restricted mana spent for a spell is mana its restriction allows: the spell is the top of the stack once its cast
     /// events have folded, which come before the mana it is paid with is spent.
-    fn check_restrictions_honoured(&self, spent: &[Restricted]) -> Result<(), Violation> {
+    fn check_restrictions_honoured(&self, units: &[Restricted]) -> Result<(), Violation> {
         let top = self
             .shadow
             .zone(Zone::Stack)
@@ -1037,7 +1037,7 @@ impl InvariantChecker {
             return Ok(());
         };
         let spend = Spend::for_spell(&self.shadow, spell.id(), spell.card().x_in_cost > 0);
-        match spent.iter().find(|unit| !spend.allows(&unit.only)) {
+        match units.iter().find(|unit| !spend.allows(&unit.only)) {
             Some(unit) => Err(Violation::Mana(format!(
                 "{:?} mana restricted to {:?} was spent on {}",
                 unit.mana,
