@@ -68,6 +68,17 @@ fn regenerates(state: &GameState, object: ObjectId) -> bool {
         .any(|effect| matches!(&effect.rule, Rule::Regenerate(named) if named.id == object))
 }
 
+/// The names of the creatures on the battlefield.
+fn creatures(state: &GameState) -> Vec<String> {
+    state
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .filter(|o| o.card().power.is_some())
+        .map(|o| o.card().name.clone())
+        .collect()
+}
+
 /// Replays the log event by event and checks each against the state it happened in.
 fn ledger(setup: &GameSetup, events: &[Event], seen: &mut Seen) {
     let mut state = GameState::from_setup(setup).unwrap();
@@ -162,13 +173,7 @@ fn ledger(setup: &GameSetup, events: &[Event], seen: &mut Seen) {
         apply_event(&mut state, event).unwrap();
         if std::mem::take(&mut wrath_ended) {
             // Every creature is destroyed and none can regenerate: not one is left.
-            let left: Vec<String> = state
-                .zone(Zone::Battlefield)
-                .iter()
-                .filter_map(|id| state.object(*id))
-                .filter(|o| o.card().power.is_some())
-                .map(|o| o.card().name.clone())
-                .collect();
+            let left = creatures(&state);
             assert!(
                 left.is_empty(),
                 "creatures left after Wrath of God at {at}: {left:?}"

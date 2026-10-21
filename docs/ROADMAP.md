@@ -64,7 +64,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 ### Replacement and prevention
 - [x] (j1) The replacement step: `Ability::Replacement` found through the reader, one `ReplaceWhen` for each event it can replace, self-replacement first, once per event (CR 614 to 616), and `ChooseReplacement` in engine, protocol, bots and the server's pace; Anointed Procession, Parallel Lives, Doubling Season, Hardened Scales, Corpsejack Menace, Rhox Faithmender, Thought Reflection, Furnace of Rath and Rest in Peace are Verified
 - [x] (j2) Enters tapped or with counters; a choice made as it enters and remembered on the permanent; Idyllic Beachfront, Sodden Verdure, Steam Vents, Faithful Watchdog, Hall of Triumph and Rally the Ranks are Verified
-- [ ] (j3) Damage prevention shields, regeneration and `GameRule::DamageCantBePrevented`
+- [x] (j3) Damage prevention shields, regeneration and `GameRule::DamageCantBePrevented`
 - [ ] (j4) Protection from a quality (colour, card type, player, everything) with its four checks (damage prevented, no Aura or Equipment attaches, no blocking by it, no targeting) and shroud; Black Knight, Kor Firewalker and Mother of Runes are Verified
 
 ### Costs and casting
@@ -78,7 +78,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [ ] (g8) A `Pay` the player cannot afford is still asked, with No as the only answer, so the pace does not show whether they could pay (`docs/arena-flow.md`)
 
 ### Trigger families
-- [ ] (i4) Patterns for every event the engine logs (damage, life, draw, discard, mill, tap, untap, counters, attach, cast, cycle), triggers whose subject is the creature an Equipment or Aura is attached to ("whenever equipped creature dies or deals combat damage"; Skullclamp, Swords of X and Y), batches ("one or more"), first time each turn, the nth card, event amounts ("that much"); conditions over any or every opponent ("an opponent has 10 or less life", `Amount::Life` of a set of players); Bloodghast is Verified
+- [ ] (i4) Patterns for every event the engine logs (damage, life, draw, discard, mill, tap, untap, counters, attach, cast, cycle), triggers whose subject is the creature an Equipment or Aura is attached to ("whenever equipped creature dies or deals combat damage"; Skullclamp, Swords of X and Y), batches ("one or more"), first time each turn, the nth card, event amounts ("that much"); conditions over any or every opponent ("an opponent has 10 or less life", `Amount::Life` of a set of players); Bloodghast and Questing Beast are Verified
 
 ### Faces and copies
 - [ ] (n1) Multi-face cards: split, adventure, modal double-faced, transform and meld; the face is chosen at announcement, `Card.Faces` is lifted, `Effect::Transform`; Delver of Secrets, Bonecrusher Giant and Fire // Ice (fuse) are Verified

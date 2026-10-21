@@ -1578,7 +1578,7 @@ fn a_shield_that_kept_damage_and_a_regeneration_reach_every_seat_whole_and_nothi
         }
     };
     let me = driver.target_player(0);
-    driver.cast_at("Mending Hands", &[me.clone()]).unwrap();
+    driver.cast_at("Mending Hands", &[me]).unwrap();
     settle(&mut driver);
     driver.begin_activation("Drudge Skeletons").unwrap();
     driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();

@@ -10,6 +10,7 @@ use mtg_engine::choose::{ReplacementChoice, Target};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::effects::Duration;
 use mtg_engine::events::ZoneCause;
+use mtg_engine::object::PermanentState;
 use mtg_engine::rules::Rule;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
@@ -92,16 +93,27 @@ fn life(driver: &Driver, seat: usize) -> i32 {
     driver.state().player(common::pid(seat)).unwrap().life()
 }
 
-/// What the first damage shield in force has left: `None` when there is no shield, `Some(None)` when it prevents all.
-fn shield_left(driver: &Driver) -> Option<Option<u32>> {
+/// What the first damage shield in force prevents.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Held {
+    /// There is no shield.
+    None,
+    /// It prevents all the damage it covers.
+    All,
+    /// It prevents this much more.
+    Left(u32),
+}
+
+fn shield_left(driver: &Driver) -> Held {
     driver
         .state()
         .rule_effects()
         .iter()
         .find_map(|effect| match &effect.rule {
-            Rule::PreventDamage(shield) => Some(shield.left),
+            Rule::PreventDamage(shield) => Some(shield.left.map_or(Held::All, Held::Left)),
             _ => None,
         })
+        .unwrap_or(Held::None)
 }
 
 fn regeneration_shields(driver: &Driver) -> usize {
@@ -132,7 +144,7 @@ fn damage_marked(driver: &Driver, name: &str) -> u32 {
         .state()
         .object(id)
         .and_then(|object| object.permanent())
-        .map_or(0, |permanent| permanent.damage())
+        .map_or(0, PermanentState::damage)
 }
 
 fn is_tapped(driver: &Driver, name: &str) -> bool {
@@ -141,7 +153,7 @@ fn is_tapped(driver: &Driver, name: &str) -> bool {
         .state()
         .object(id)
         .and_then(|object| object.permanent())
-        .is_some_and(|permanent| permanent.tapped())
+        .is_some_and(PermanentState::tapped)
 }
 
 fn replays(driver: &Driver, setup: &mtg_engine::GameSetup) {
@@ -184,14 +196,14 @@ fn mending_hands_prevents_four_damage_in_all_and_is_used_up(
     let setup = burn_table(seats, burns).setup().unwrap();
     let mut driver = Driver::from_scenario(burn_table(seats, burns))?;
     let me = driver.target_player(0);
-    driver.cast_at("Mending Hands", &[me.clone()])?;
+    driver.cast_at("Mending Hands", &[me])?;
     settle(&mut driver)?;
-    assert_eq!(shield_left(&driver), Some(Some(4)));
+    assert_eq!(shield_left(&driver), Held::Left(4));
     for at in 0..burns.len() {
-        cast_by_foe(&mut driver, &format!("Spark{at}"), me.clone())?;
+        cast_by_foe(&mut driver, &format!("Spark{at}"), me)?;
     }
     assert_eq!(life(&driver, 0), life_left);
-    assert_eq!(shield_left(&driver), shield.map(Some));
+    assert_eq!(shield_left(&driver), shield.map_or(Held::None, Held::Left));
     // A shield that took damage and has some left says how much (`ShieldUsed`); one that took its last ends.
     let (mut left, mut remembered) = (4, 0);
     for amount in burns {
@@ -277,7 +289,7 @@ fn each_samite_healer_prevents_one_damage_and_taps_to_do_it(
     let mut driver = Driver::from_scenario(scenario())?;
     let me = driver.target_player(0);
     for _ in 0..healers {
-        activate(&mut driver, "Samite Healer", &[me.clone()])?;
+        activate(&mut driver, "Samite Healer", &[me])?;
     }
     // Each healer is tapped for its shield, and a tapped one offers no second.
     assert_eq!(
@@ -287,9 +299,12 @@ fn each_samite_healer_prevents_one_damage_and_taps_to_do_it(
         )),
         healers
     );
-    assert!(driver.offered_abilities("Samite Healer")?.is_empty());
+    assert_eq!(
+        driver.offered_abilities("Samite Healer")?,
+        Vec::<usize>::new()
+    );
     if healers > 0 {
-        assert_eq!(shield_left(&driver), Some(Some(1)));
+        assert_eq!(shield_left(&driver), Held::Left(1));
     }
     cast_by_foe(&mut driver, "Spark0", me)?;
     assert_eq!(life(&driver, 0), life_left);
@@ -414,13 +429,13 @@ fn a_shield_ends_with_the_turn_it_was_made_in(
     };
     match shield {
         Shield::Fog => driver.cast(name)?,
-        _ => driver.cast_at(name, &[target.clone()])?,
+        _ => driver.cast_at(name, &[target])?,
     };
     settle(&mut driver)?;
-    assert!(shield_left(&driver).is_some() || regeneration_shields(&driver) == 1);
+    assert!(shield_left(&driver) != Held::None || regeneration_shields(&driver) == 1);
     driver.idle_until(2, Step::Main1)?;
     // The shield expired in the cleanup step of turn 1, with the effects that last until end of turn.
-    assert_eq!(shield_left(&driver), None);
+    assert_eq!(shield_left(&driver), Held::None);
     assert_eq!(regeneration_shields(&driver), 0);
     assert!(count(&driver, |event| matches!(event, Event::RuleExpired { .. })) >= 1);
     match shield {
@@ -639,7 +654,7 @@ fn a_destruction_that_cant_be_regenerated_buries_the_creature_whatever_shields_i
     let mut driver = Driver::from_scenario(scenario())?;
     activate(&mut driver, "Drudge Skeletons", &[])?;
     let bears = driver.target_named("Grizzly Bears")?;
-    driver.cast_at("Death Ward", &[bears.clone()])?;
+    driver.cast_at("Death Ward", &[bears])?;
     settle(&mut driver)?;
     assert_eq!(regeneration_shields(&driver), 2);
     // Another Death Ward on the same creature changes nothing about a burial.
@@ -698,7 +713,7 @@ fn damage_that_cant_be_prevented_passes_a_shield_and_leaves_it_whole(
     };
     let mut driver = Driver::from_scenario(scenario())?;
     let me = driver.target_player(0);
-    driver.cast_at("Mending Hands", &[me.clone()])?;
+    driver.cast_at("Mending Hands", &[me])?;
     settle(&mut driver)?;
     let hex = driver.id_of("Hex")?;
     driver.add_rule_from(
@@ -711,7 +726,7 @@ fn damage_that_cant_be_prevented_passes_a_shield_and_leaves_it_whole(
     )?;
     cast_by_foe(&mut driver, "Spark0", me)?;
     assert_eq!(life(&driver, 0), life_left);
-    assert_eq!(shield_left(&driver), shield.map(Some));
+    assert_eq!(shield_left(&driver), shield.map_or(Held::None, Held::Left));
     let used = count(&driver, |event| matches!(event, Event::ShieldUsed { .. }));
     assert_eq!(used, usize::from(combat == Some(true)));
     Ok(())
