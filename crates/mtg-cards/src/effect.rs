@@ -342,6 +342,11 @@ pub enum Effect {
         /// The object they are attached to.
         to: Ref,
     },
+    /// Unattaches Auras, Equipment or Fortifications from what they are attached to (CR 701.3d).
+    Unattach {
+        /// The permanents unattached; one attached to nothing stays as it is.
+        what: Ref,
+    },
     /// Transforms permanents.
     Transform {
         /// What transforms.
@@ -492,6 +497,7 @@ mod tests {
         Effect::Attach { what: Ref::This, to: Ref::Target(0) },
         r#"{"Attach":{"what":"This","to":{"Target":0}}}"#
     )]
+    #[case::unattach_the_source(Effect::Unattach { what: Ref::This }, r#"{"Unattach":{"what":"This"}}"#)]
     #[case::move_two_counters(
         Effect::MoveCounters { from: Ref::Target(0), to: Ref::Target(1), counter: CounterKind::PlusOnePlusOne, count: Amount::Fixed(2) },
         r#"{"MoveCounters":{"from":{"Target":0},"to":{"Target":1},"counter":"+1/+1","count":2}}"#

@@ -74,14 +74,16 @@ pub(crate) fn working_here(
     printed(object).filter(move |(_, rules)| works_from(rules) == Some(zone))
 }
 
-/// The static abilities printed on the card of `object`, each with its index among the card's rules: what
-/// `statics` gathers the effects of.
-pub(crate) fn static_abilities(
-    object: &GameObject,
-) -> impl Iterator<Item = (usize, &Arc<Ability>)> {
-    printed(object)
-        .filter(|(_, rules)| matches!(***rules, Ability::Static { .. }))
-        .map(|(address, rules)| (address.ability, rules))
+/// Whether a card with this definition prints a static ability or a keyword that adds one (`GameState::statics_possible`).
+pub(crate) fn definition_has_static(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| match &**rules {
+        Ability::Static { .. } => true,
+        Ability::Keyword(keyword) => keywords::rules(keyword)
+            .adds_abilities(keyword)
+            .iter()
+            .any(|added| matches!(added, Ability::Static { .. })),
+        _ => false,
+    })
 }
 
 /// Whether a card with this definition prints a rule of the game as an ability (`GameState::rules`).
@@ -328,6 +330,7 @@ mod tests {
         Ability::Activated {
             cost: Cost(Vec::new()),
             timing: Timing::Instant,
+            condition: None,
             limit: None,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),

@@ -93,10 +93,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
     if crate::ability_reader::definition_triggers(&event.definition) {
         state.triggers_possible = true;
     }
-    if crate::ability_reader::static_abilities(&token)
-        .next()
-        .is_some()
-    {
+    if crate::ability_reader::definition_has_static(&event.definition) {
         state.statics_possible = true;
     }
     if crate::ability_reader::definition_has_rule(&event.definition) {

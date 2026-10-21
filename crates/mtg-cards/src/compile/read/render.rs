@@ -51,6 +51,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         Ability::Activated {
             cost,
             timing: Timing::Instant,
+            condition: None,
             limit: None,
             from: ZoneKind::Battlefield,
             targets,

@@ -668,9 +668,13 @@ impl<'a> Pass<'a> {
                     rule: ability.address.ability,
                     index,
                 },
-                AbilitySource::Granted(grant) => grant,
-                // No keyword adds a static ability, so none is applied; one that did would need a grant of its own.
-                AbilitySource::PrintedKeyword(_) | AbilitySource::GrantedKeyword(_) => continue,
+                AbilitySource::Granted(grant) | AbilitySource::GrantedKeyword(grant) => grant,
+                // A static ability a keyword adds (reconfigure) is named by the rule of the keyword on the card.
+                AbilitySource::PrintedKeyword(rule) => Grant::Static {
+                    source: holder.id,
+                    rule,
+                    index,
+                },
             };
             found.push(Cand {
                 key,

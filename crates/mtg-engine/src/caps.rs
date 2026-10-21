@@ -11,7 +11,7 @@
 //! control, attack and block restrictions, characteristic-defining abilities and the power and toughness they define), the
 //! rules of the game as effects and as static abilities (attack and block requirements, spells that can't be countered,
 //! players who can't gain life, draw or search, a revealed library top, triggers that trigger again), the keywords of
-//! combat, flash, hexproof, enchant and equip, attaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
+//! combat, flash, hexproof, enchant, equip and reconfigure, attaching and unattaching, and the keywords that are triggers (ward, prowess, battle cry), and nothing else.
 
 use mtg_cards::Caps;
 use mtg_cards::assemble::{PLAIN_MANA_ABILITY, VARIABLE_STATS};
@@ -28,6 +28,7 @@ const RUNS: &[&str] = &[
     "Ability.Limit",
     "Ability.From",
     "Ability.Sorcery",
+    "Ability.Condition",
     "Trigger.ZoneChange",
     "Trigger.State",
     "Trigger.Attacks",
@@ -65,6 +66,7 @@ const RUNS: &[&str] = &[
     "Effect.Tap",
     "Effect.Untap",
     "Effect.Attach",
+    "Effect.Unattach",
     "Effect.WinGame",
     "Effect.CreateToken",
     "Effect.Continuous",
@@ -120,6 +122,7 @@ const RUNS: &[&str] = &[
     "Keyword.Ward",
     "Keyword.Enchant",
     "Keyword.Equip",
+    "Keyword.Reconfigure",
 ];
 
 /// The capabilities of this engine.
@@ -185,7 +188,10 @@ mod tests {
     #[case::once_a_turn("Ability.Limit", true)]
     #[case::other_zones("Ability.From", true)]
     #[case::sorcery_timing("Ability.Sorcery", true)]
+    #[case::activation_conditions("Ability.Condition", true)]
     #[case::equip("Keyword.Equip", true)]
+    #[case::reconfigure("Keyword.Reconfigure", true)]
+    #[case::unattaching("Effect.Unattach", true)]
     #[case::mana_abilities_from_other_zones("Ability.ManaAbility.From", false)]
     #[case::states("Trigger.State", true)]
     #[case::exiling_the_source("Cost.ExileSelf", true)]

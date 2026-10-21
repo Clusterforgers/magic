@@ -124,6 +124,34 @@
     ]
   },
   {
+    "id": "7497f147-146d-4a76-b670-bd84e07352b3",
+    "oracle_id": "a7955f10-f502-4893-88ad-f36e7ff0af4f",
+    "name": "Armguard Familiar",
+    "lang": "en",
+    "layout": "normal",
+    "set": "neo",
+    "collector_number": "46",
+    "rarity": "common",
+    "released_at": "2022-02-18",
+    "digital": false,
+    "mana_cost": "{1}{U}",
+    "cmc": 2.0,
+    "type_line": "Artifact Creature — Equipment Beast",
+    "oracle_text": "Ward {2} (Whenever this permanent becomes the target of a spell or ability an opponent controls, counter it unless that player pays {2}.)\nEquipped creature gets +2/+1 and has ward {2}.\nReconfigure {4} ({4}: Attach to target creature you control; or unattach from a creature. Reconfigure only as a sorcery. While attached, this isn't a creature.)",
+    "power": "2",
+    "toughness": "1",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Ward",
+      "Reconfigure"
+    ]
+  },
+  {
     "id": "475d3d3a-8df7-42e8-adeb-5810e48ddaa7",
     "oracle_id": "d561dcff-0a19-46ac-9dee-f374c840d532",
     "name": "Arvad the Cursed",
@@ -293,6 +321,34 @@
       "U"
     ],
     "keywords": []
+  },
+  {
+    "id": "7c8f5da8-13a8-4b39-8ddc-7661892924af",
+    "oracle_id": "0a09f825-0484-40b4-8adf-1028385db480",
+    "name": "Bronzeplate Boar",
+    "lang": "en",
+    "layout": "normal",
+    "set": "neo",
+    "collector_number": "135",
+    "rarity": "uncommon",
+    "released_at": "2022-02-18",
+    "digital": false,
+    "mana_cost": "{2}{R}",
+    "cmc": 3.0,
+    "type_line": "Artifact Creature — Equipment Boar",
+    "oracle_text": "Trample\nEquipped creature gets +3/+2 and has trample.\nReconfigure {5} ({5}: Attach to target creature you control; or unattach from a creature. Reconfigure only as a sorcery. While attached, this isn't a creature.)",
+    "power": "3",
+    "toughness": "2",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Trample",
+      "Reconfigure"
+    ]
   },
   {
     "id": "aec5d380-d354-4750-931a-6c91853e2edc",
@@ -1359,6 +1415,34 @@
       "R"
     ],
     "keywords": []
+  },
+  {
+    "id": "a747e6cf-c687-4c4f-8e07-d51165d6cb62",
+    "oracle_id": "f6314e50-a610-4fff-8f60-803d23460ff0",
+    "name": "Lizard Blades",
+    "lang": "en",
+    "layout": "normal",
+    "set": "neo",
+    "collector_number": "153",
+    "rarity": "rare",
+    "released_at": "2022-02-18",
+    "digital": false,
+    "mana_cost": "{1}{R}",
+    "cmc": 2.0,
+    "type_line": "Artifact Creature — Equipment Lizard",
+    "oracle_text": "Double strike\nEquipped creature has double strike.\nReconfigure {2} ({2}: Attach to target creature you control; or unattach from a creature. Reconfigure only as a sorcery. While attached, this isn't a creature.)",
+    "power": "1",
+    "toughness": "1",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Double strike",
+      "Reconfigure"
+    ]
   },
   {
     "id": "6a0b230b-d391-4998-a3f7-7b158a0ec2cd",

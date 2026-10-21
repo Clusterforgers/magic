@@ -344,11 +344,9 @@ impl GameState {
         let triggers = self
             .objects()
             .any(|object| crate::triggers::can_trigger(self, object.id()));
-        let statics = self.objects().any(|object| {
-            crate::ability_reader::static_abilities(object)
-                .next()
-                .is_some()
-        });
+        let statics = self
+            .objects()
+            .any(|object| crate::ability_reader::definition_has_static(&object.def));
         self.triggers_possible = triggers;
         self.statics_possible = statics;
         let rules = self

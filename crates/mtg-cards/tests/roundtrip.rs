@@ -325,6 +325,7 @@ fn granted() -> impl Strategy<Value = Ability> {
             } else {
                 Timing::Instant
             },
+            condition: None,
             limit: None,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
@@ -630,6 +631,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                 } else {
                     Timing::Instant
                 },
+                condition: None,
                 limit,
                 from,
                 targets,

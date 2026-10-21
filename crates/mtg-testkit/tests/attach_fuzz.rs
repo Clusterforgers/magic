@@ -134,7 +134,7 @@ fn seeded_aura_games_finish_and_keep_every_invariant(#[case] players: usize) {
         "no Aura entered attached in {campaign}"
     );
     assert!(seen.fell_off > 0, "no Aura lost its host in {campaign}");
-    for name in ["Bonesplitter", "Iron Blade", "Heavy Plate"] {
+    for name in ["Bonesplitter", "Iron Blade", "Heavy Plate", "Lizard Blades"] {
         assert!(
             seen.equipped.get(name).copied().unwrap_or(0) > 0,
             "{name} was never equipped in {campaign}"

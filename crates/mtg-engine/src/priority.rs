@@ -24,7 +24,7 @@ use crate::mana::{ManaOption, ManaSource, can_afford};
 use crate::object::GameObject;
 use crate::player::Player;
 use crate::price::{Leaves, Price};
-use crate::resolve::{spell_ability, zone_kind};
+use crate::resolve::{Scope, spell_ability, zone_kind};
 use crate::state::GameState;
 use crate::turn::LAND_DROPS_PER_TURN;
 use crate::zones::Zone;
@@ -217,6 +217,7 @@ fn can_activate(
     let Ability::Activated {
         cost,
         timing,
+        condition,
         limit,
         from,
         ..
@@ -248,6 +249,14 @@ fn can_activate(
         return false;
     }
     if *timing == Timing::Sorcery && !sorcery_timing(state, player) {
+        return false;
+    }
+    // "Activate only if ..." is judged as the ability is activated (CR 602.5b).
+    if let Some(condition) = condition
+        && !Scope::announcing(state, player, object.reference())
+            .holds(condition)
+            .unwrap_or(false)
+    {
         return false;
     }
     if price.tap {

@@ -5,6 +5,7 @@ use mtg_cards::cost::Cost;
 use mtg_cards::effect::Effect;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
+use mtg_cards::value::Condition;
 use mtg_core::card::CardType;
 
 use super::KeywordRules;
@@ -18,13 +19,18 @@ impl KeywordRules for Equip {
         let Keyword::Equip(cost) = keyword else {
             return Vec::new();
         };
-        vec![attach_to_a_creature_you_control(cost, false)]
+        vec![attach_to_a_creature_you_control(cost, false, None)]
     }
 }
 
 /// "[Cost]: Attach this permanent to target creature you control. Activate only as a sorcery." With `another`, the
-/// creature is another one than the permanent itself (reconfigure, CR 702.151a).
-pub(super) fn attach_to_a_creature_you_control(cost: &Cost, another: bool) -> Ability {
+/// creature is another one than the permanent itself, and `condition` is what must hold to activate it (reconfigure,
+/// CR 702.151a).
+pub(super) fn attach_to_a_creature_you_control(
+    cost: &Cost,
+    another: bool,
+    condition: Option<Condition>,
+) -> Ability {
     let mut host = vec![Pred::Type(CardType::Creature), Pred::ControlledBy(Ref::You)];
     if another {
         host.push(Pred::Other);
@@ -32,6 +38,7 @@ pub(super) fn attach_to_a_creature_you_control(cost: &Cost, another: bool) -> Ab
     Ability::Activated {
         cost: cost.clone(),
         timing: Timing::Sorcery,
+        condition,
         limit: None,
         from: ZoneKind::Battlefield,
         targets: vec![TargetSpec {
@@ -77,7 +84,7 @@ mod tests {
     fn another_creature_is_every_creature_you_control_but_the_source() {
         let cost = Cost::mana("{2}".parse().unwrap());
         assert_eq!(
-            attach_to_a_creature_you_control(&cost, true),
+            attach_to_a_creature_you_control(&cost, true, None),
             written("{2}", &format!(r#"{YOURS},"Other""#))
         );
     }

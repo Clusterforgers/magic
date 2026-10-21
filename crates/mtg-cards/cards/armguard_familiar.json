@@ -1,0 +1,24 @@
+{
+  "oracle_id": "a7955f10-f502-4893-88ad-f36e7ff0af4f",
+  "name": "Armguard Familiar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armguard Familiar",
+      "oracle_fingerprint": "51928fca3bfc36ccd3e5769382bf0b7b",
+      "abilities": [
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 1 } },
+              { "AddKeyword": { "Ward": "{2}" } }
+            ]
+          }
+        },
+        { "Keyword": { "Reconfigure": "{4}" } }
+      ]
+    }
+  ]
+}

@@ -134,6 +134,7 @@ mod tests {
         Arc::new(Ability::Activated {
             cost: Cost(Vec::new()),
             timing: Timing::Instant,
+            condition: None,
             limit: None,
             from: ZoneKind::Battlefield,
             targets: Vec::new(),
