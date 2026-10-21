@@ -36,7 +36,7 @@ pub struct ConvokeOption {
 pub struct Convoked {
     /// The creature.
     pub creature: ObjectId,
-    /// The colour of the mana it pays for; `None` means {1} of generic mana.
+    /// The colour of the mana it pays for, which pays generic mana once the cost has no more of that colour; `None` means {1} of generic mana only.
     pub pays: Option<Color>,
 }
 
@@ -77,15 +77,25 @@ impl Used {
 }
 
 /// The helpers a payment may use, owned: the creatures that could convoke and the cards that could delve.
-#[derive(Debug, Clone, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Offered {
-    /// Creatures that may be tapped.
+    /// Creatures that may be tapped for part of the cost, each with the colours it can pay beside {1} (convoke); left out means none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ConvokeOption>>", optional))]
     pub convoke: Vec<ConvokeOption>,
-    /// Cards in the graveyard that may be exiled.
+    /// Cards in the payer's graveyard that may be exiled, each paying {1} of the generic part of the cost (delve); left out means none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub delve: Vec<ObjectId>,
 }
 
 impl Offered {
+    /// Whether nothing is offered.
+    pub fn is_empty(&self) -> bool {
+        self.convoke.is_empty() && self.delve.is_empty()
+    }
+
     /// The offer as the payment functions read it.
     pub fn help(&self) -> Help<'_> {
         Help {

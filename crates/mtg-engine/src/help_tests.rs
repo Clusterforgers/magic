@@ -129,7 +129,10 @@ impl World {
 }
 
 /// What a creature may be tapped for: nothing, {1}, or one mana of each colour it is.
-fn uses(option: &ConvokeOption) -> Vec<Option<Option<Color>>> {
+/// One way to tap a creature: for {1} or for one mana of a colour.
+type Tap = Option<Color>;
+
+fn uses(option: &ConvokeOption) -> Vec<Option<Tap>> {
     let mut uses = vec![None, Some(None)];
     uses.extend(option.colors.iter().map(|c| Some(Some(*c))));
     uses

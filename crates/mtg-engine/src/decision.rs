@@ -14,7 +14,7 @@ use crate::choose::{
     TriggersChoice, TriggersOptions, YesNoChoice, YesNoOptions,
 };
 use crate::combat::{AttackTarget, DamageTarget};
-use crate::help::{ConvokeOption, Help};
+use crate::help::{Help, Offered};
 use crate::mana::{ManaOption, ManaPool, ManaSource, Payment};
 use crate::spend::Spend;
 
@@ -160,14 +160,10 @@ pub struct PayOptions {
     pub pool: ManaPool,
     /// Mana abilities that may be tapped.
     pub sources: Vec<ManaOption>,
-    /// Creatures that may be tapped for part of the cost, each with the colours it can pay beside {1} (convoke); left out means none.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ConvokeOption>>", optional))]
-    pub convoke: Vec<ConvokeOption>,
-    /// Cards in the payer's graveyard that may be exiled, each paying {1} of the generic part of the cost (delve); left out means none.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
-    pub delve: Vec<ObjectId>,
+    /// The creatures that may be tapped (`convoke`) and the graveyard cards that may be exiled (`delve`) to pay part of the cost; boxed to keep a decision small, and flat on the wire.
+    #[serde(flatten)]
+    #[cfg_attr(feature = "ts", ts(flatten))]
+    pub help: Box<Offered>,
     /// What the payment is for, which decides what restricted mana may be spent on it; left out means neither a spell nor an ability.
     #[serde(default, skip_serializing_if = "Spend::is_other")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Spend>", optional))]
@@ -185,10 +181,7 @@ pub struct PayOptions {
 impl PayOptions {
     /// The creatures and cards that may help pay, as the payment functions read them.
     pub fn help(&self) -> Help<'_> {
-        Help {
-            convoke: &self.convoke,
-            delve: &self.delve,
-        }
+        self.help.help()
     }
 }
 

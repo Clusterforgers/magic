@@ -266,7 +266,7 @@ impl RandomBot {
     }
 
     fn pay(&mut self, options: &PayOptions) -> PayChoice {
-        let manual = if !options.convoke.is_empty() || !options.delve.is_empty() {
+        let manual = if !options.help.is_empty() {
             self.random_helped_payment(options)
         } else if options.cost.is_plain() {
             self.random_payment(&options.cost, options)
@@ -378,7 +378,7 @@ impl RandomBot {
     ) -> (Vec<Convoked>, Vec<ObjectId>) {
         let mut needs = ManaType::ALL.map(|mana| cost.required(mana));
         let mut generic = cost.generic();
-        let mut creatures = options.convoke.clone();
+        let mut creatures = options.help.convoke.clone();
         self.rng.shuffle(&mut creatures);
         let mut convoke = Vec::new();
         for creature in creatures {
@@ -409,9 +409,9 @@ impl RandomBot {
                 pays,
             });
         }
-        let most = options.delve.len().min(generic as usize);
+        let most = options.help.delve.len().min(generic as usize);
         let cards = usize::try_from(self.rng.below(most as u64 + 1)).unwrap_or(0);
-        (convoke, options.delve[..cards].to_vec())
+        (convoke, options.help.delve[..cards].to_vec())
     }
 
     /// A random part of the `paid` life, in steps of one symbol; all of it when taking the rest would be the engine's call to make alone.

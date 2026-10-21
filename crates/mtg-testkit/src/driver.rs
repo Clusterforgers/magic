@@ -271,6 +271,7 @@ impl Driver {
         };
         for (name, pays) in convoke {
             let free = options
+                .help
                 .convoke
                 .iter()
                 .map(|o| o.creature)
@@ -283,6 +284,7 @@ impl Driver {
         }
         for name in delve {
             let free = options
+                .help
                 .delve
                 .iter()
                 .copied()

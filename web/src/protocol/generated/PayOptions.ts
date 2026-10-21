@@ -27,14 +27,6 @@ pool: ManaPool,
  */
 sources: Array<ManaOption>, 
 /**
- * Creatures that may be tapped for part of the cost, each with the colours it can pay beside {1} (convoke); left out means none.
- */
-convoke?: Array<ConvokeOption>, 
-/**
- * Cards in the payer's graveyard that may be exiled, each paying {1} of the generic part of the cost (delve); left out means none.
- */
-delve?: Array<ObjectId>, 
-/**
  * What the payment is for, which decides what restricted mana may be spent on it; left out means neither a spell nor an ability.
  */
 spend?: Spend, 
@@ -53,4 +45,12 @@ life: number,
 /**
  * The most life this payment may take: 2 for each Phyrexian symbol in the cost, within the life total (CR 119.4).
  */
-max_life: number, };
+max_life: number, 
+/**
+ * Creatures that may be tapped for part of the cost, each with the colours it can pay beside {1} (convoke); left out means none.
+ */
+convoke?: Array<ConvokeOption>, 
+/**
+ * Cards in the payer's graveyard that may be exiled, each paying {1} of the generic part of the cost (delve); left out means none.
+ */
+delve?: Array<ObjectId>, };

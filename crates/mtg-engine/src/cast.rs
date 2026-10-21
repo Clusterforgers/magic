@@ -161,8 +161,7 @@ pub(crate) fn payment_decision(
         spell: object,
         auto_available: auto_payment_with(&cost, &pool, &sources, help.help(), life, &spend)
             .is_some(),
-        convoke: help.convoke,
-        delve: help.delve,
+        help: Box::new(help),
         spend: Box::new(spend),
         can_cancel,
         life,
@@ -185,11 +184,12 @@ fn unusable(state: &GameState, player: PlayerId, options: &PayOptions) -> Vec<Ob
         .sources
         .iter()
         .map(|o| o.source.object)
-        .chain(options.convoke.iter().map(|o| o.creature))
+        .chain(options.help.convoke.iter().map(|o| o.creature))
         .filter(tapped)
         .collect();
     gone.extend(
         options
+            .help
             .delve
             .iter()
             .copied()
@@ -443,8 +443,7 @@ mod tests {
                 &Spend::other(),
             )
             .is_some(),
-            convoke: Vec::new(),
-            delve: Vec::new(),
+            help: Box::default(),
             spend: Box::new(Spend::other()),
             can_cancel,
             life,

@@ -11,6 +11,6 @@ export type Convoked = {
  */
 creature: ObjectId, 
 /**
- * The colour of the mana it pays for; `None` means {1} of generic mana.
+ * The colour of the mana it pays for, which pays generic mana once the cost has no more of that colour; `None` means {1} of generic mana only.
  */
 pays: Color | null, };

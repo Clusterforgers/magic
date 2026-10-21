@@ -14,6 +14,7 @@ use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::error::{IllegalAnswer, PaymentError};
 use mtg_engine::help::Convoked;
 use mtg_engine::mana::Payment;
+use mtg_engine::object::PermanentState;
 use mtg_engine::zones::Zone;
 use mtg_engine::{EngineError, Event, PresetPermanent};
 use mtg_testkit::cards::{creature, forest, island, mountain, plains, swamp};
@@ -94,7 +95,7 @@ fn tapped_creatures(driver: &Driver) -> usize {
                 .types
                 .contains(&mtg_core::card::CardType::Creature)
         })
-        .filter(|object| object.permanent().is_some_and(|p| p.tapped()))
+        .filter(|object| object.permanent().is_some_and(PermanentState::tapped))
         .count()
 }
 
@@ -264,11 +265,17 @@ fn creatures_are_tapped_after_the_cast_and_before_the_mana(#[case] pays: &[Optio
     begin(&mut driver, "Stoke the Flames");
     let options = driver.pay_options().unwrap();
     assert_eq!(
-        options.convoke.len(),
+        options.help.convoke.len(),
         2,
         "a summoning sick creature is offered"
     );
-    assert!(options.convoke.iter().all(|o| o.colors == [Color::Red]));
+    assert!(
+        options
+            .help
+            .convoke
+            .iter()
+            .all(|o| o.colors == [Color::Red])
+    );
     let convoke: Vec<(&str, Option<Color>)> = pays.iter().map(|p| ("Red Bear", *p)).collect();
     let events = driver
         .pay_helped(&["Mountain", "Mountain"], &convoke, &[], 0)
@@ -295,7 +302,7 @@ fn creatures_are_tapped_after_the_cast_and_before_the_mana(#[case] pays: &[Optio
 fn cards_are_exiled_from_the_graveyard_before_the_mana() {
     let mut driver = driver(table("Gurmag Angler", &["Swamp"], &[], 8));
     driver.begin_cast("Gurmag Angler").unwrap();
-    assert_eq!(driver.pay_options().unwrap().delve.len(), 8);
+    assert_eq!(driver.pay_options().unwrap().help.delve.len(), 8);
     let cards: Vec<String> = (0..6).map(|n| format!("Dead {n}")).collect();
     let names: Vec<&str> = cards.iter().map(String::as_str).collect();
     let events = driver.pay_helped(&["Swamp"], &[], &names, 0).unwrap();
@@ -350,6 +357,7 @@ fn convoked(driver: &Driver, names: &[(&str, Option<Color>)]) -> Vec<Convoked> {
         let creature = driver
             .pay_options()
             .unwrap()
+            .help
             .convoke
             .iter()
             .map(|o| o.creature)
@@ -402,7 +410,7 @@ fn a_creature_cannot_pay_for_a_colour_it_is_not() {
 #[test]
 fn a_tapped_creature_is_not_offered_and_cannot_be_named() {
     let mut driver = stoke(&["tapped red", "red", "red", "red", "red"]);
-    assert_eq!(driver.pay_options().unwrap().convoke.len(), 4);
+    assert_eq!(driver.pay_options().unwrap().help.convoke.len(), 4);
     let tapped_one = driver.id_of("Red Bear").unwrap();
     let error = refused(
         &mut driver,
@@ -420,7 +428,7 @@ fn a_tapped_creature_is_not_offered_and_cannot_be_named() {
 #[test]
 fn a_creature_named_twice_pays_once() {
     let mut driver = stoke(&["red"; 4]);
-    let one = driver.pay_options().unwrap().convoke[0].creature;
+    let one = driver.pay_options().unwrap().help.convoke[0].creature;
     let error = refused(
         &mut driver,
         Payment {
@@ -512,7 +520,7 @@ fn a_creature_that_taps_for_mana_taps_for_one_or_the_other() {
 fn delve_cannot_exile_more_than_the_generic_cost() {
     let mut driver = driver(table("Gurmag Angler", &["Swamp"], &[], 8));
     driver.begin_cast("Gurmag Angler").unwrap();
-    let cards = driver.pay_options().unwrap().delve[..7].to_vec();
+    let cards = driver.pay_options().unwrap().help.delve[..7].to_vec();
     let swamp = driver.pay_options().unwrap().sources[0].source;
     let error = refused(
         &mut driver,
@@ -530,7 +538,7 @@ fn delve_needs_cards_of_the_graveyard_named_once() {
     let scenario = table("Gurmag Angler", &["Swamp"], &["gray"], 6);
     let mut driver = driver(scenario);
     driver.begin_cast("Gurmag Angler").unwrap();
-    let mut cards = driver.pay_options().unwrap().delve.clone();
+    let mut cards = driver.pay_options().unwrap().help.delve.clone();
     let swamp = driver.pay_options().unwrap().sources[0].source;
     let outsider = driver.id_of("Golem").unwrap();
     cards[0] = outsider;
@@ -626,9 +634,4 @@ fn a_copy_of_the_game_with_helpers_replays_to_the_same_state() {
     driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
     let replayed = mtg_engine::replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
-}
-
-#[allow(dead_code)]
-fn unused() -> (fn() -> Arc<CardDefinition>, fn() -> Arc<CardDefinition>) {
-    (forest, plains)
 }
