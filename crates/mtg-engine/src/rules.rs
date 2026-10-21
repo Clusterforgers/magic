@@ -26,7 +26,7 @@ use crate::error::EngineError;
 use crate::fold::invalid;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{ResolveError, Scope};
-use crate::state::GameState;
+use crate::state::{GameState, Stage};
 use crate::zones::Zone;
 
 /// A rule of the game as the engine plays it: the players or objects the data's references named, found when the rule
@@ -504,9 +504,11 @@ impl GameState {
         })
     }
 
-    /// The top card of `player`'s library while a rule has it revealed to every seat.
+    /// The top card of `player`'s library while a rule has it revealed to every seat: the house rule for every
+    /// library once the opening shuffle has made its order unknown, or a card rule for the libraries it names.
     pub fn revealed_top(&self, player: PlayerId) -> Option<ObjectId> {
-        if !self.rules().reveal_top.contains(&player) {
+        let by_house = self.ruleset().revealed_library_top() && self.stage() != Stage::PreGame;
+        if !by_house && !self.rules().reveal_top.contains(&player) {
             return None;
         }
         self.zone(Zone::Library(player)).last().copied()

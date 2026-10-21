@@ -166,17 +166,14 @@ pub(crate) fn can_attack(state: &GameState, id: ObjectId, player: PlayerId) -> b
         && is_untapped_creature(state, id)
 }
 
+/// What `player` may attack: the players the table's attack range allows and the planeswalkers they control.
 pub(crate) fn defenders_for(state: &GameState, player: PlayerId) -> Vec<AttackTarget> {
-    let mut targets: Vec<AttackTarget> = state
-        .turn_order_from(player)
-        .into_iter()
-        .filter(|p| *p != player)
-        .map(AttackTarget::Player)
-        .collect();
+    let seats = state.ruleset().defending_seats(state, player);
+    let mut targets: Vec<AttackTarget> = seats.iter().copied().map(AttackTarget::Player).collect();
     for &id in state.zone(Zone::Battlefield) {
         let is_walker =
             characteristics(state, id).is_some_and(|c| c.types.contains(CardType::Planeswalker));
-        let hostile = controller_of(state, id).is_some_and(|c| c != player && state.is_alive(c));
+        let hostile = controller_of(state, id).is_some_and(|c| seats.contains(&c));
         if is_walker && hostile {
             targets.push(AttackTarget::Planeswalker(id));
         }

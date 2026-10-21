@@ -48,6 +48,8 @@ pub enum MulliganStatus {
     Mulliganing,
     /// Kept; this many cards still go to the bottom.
     Bottoming(usize),
+    /// Kept after a mulligan in a style that scries; the top card of the library is looked at before the hand is final.
+    Scrying,
     /// Hand is final.
     Kept,
 }

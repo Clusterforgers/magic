@@ -1,6 +1,8 @@
 //! The rules a game plays by: the format's values with the house rules laid over them.
 
-use mtg_core::house::{EmptyLibrary, HandLimit, HouseRules, SkipFirstDraw};
+use mtg_core::house::{
+    AttackRange, EmptyLibrary, HandLimit, HouseRules, MulliganStyle, SkipFirstDraw,
+};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{FormatRules, MulliganRule};
@@ -61,7 +63,8 @@ impl<'a> RuleSet<'a> {
             .min(hand.saturating_add(rule.free_mulligans))
     }
 
-    /// The keep-or-mulligan options of `seat` for `hand` after `taken` mulligans, with the bottom counts worked out.
+    /// The keep-or-mulligan options of `seat` for `hand` after `taken` mulligans, with the size of the next hand, the
+    /// bottom counts and the scries worked out.
     pub fn mulligan_options(
         &self,
         seat: PlayerId,
@@ -69,14 +72,88 @@ impl<'a> RuleSet<'a> {
         taken: u32,
     ) -> MulliganOptions {
         let rule = self.mulligan_rule(seat);
+        let next = taken.saturating_add(1);
+        let scry = |taken| Some(self.scry_after_keep(taken)).filter(|cards| *cards > 0);
         MulliganOptions {
             hand,
             mulligans_taken: taken,
             can_mulligan: taken < self.max_mulligans(seat),
             free_mulligans: rule.free_mulligans,
-            bottom_if_keep: rule.bottom_count(taken),
-            bottom_if_mulligan: rule.bottom_count(taken.saturating_add(1)),
+            bottom_if_keep: self.bottom_count(seat, taken),
+            bottom_if_mulligan: self.bottom_count(seat, next),
+            hand_if_mulligan: Some(self.dealt_hand_size(seat, next)),
+            scry_if_keep: scry(taken),
+            scry_if_mulligan: scry(next),
         }
+    }
+
+    /// Which players an attacker may attack.
+    pub fn attack_range(&self) -> AttackRange {
+        self.house.attack_range.unwrap_or(AttackRange::Any)
+    }
+
+    /// The players `attacker` may attack, in turn order from the one after them. The neighbours and the left player
+    /// are worked out over the seats still in the game, so a seat that left changes who is next.
+    pub fn defending_seats(&self, state: &GameState, attacker: PlayerId) -> Vec<PlayerId> {
+        let mut others = state.turn_order_from(attacker);
+        others.retain(|seat| *seat != attacker);
+        match self.attack_range() {
+            AttackRange::Any => others,
+            AttackRange::Left => others.into_iter().take(1).collect(),
+            AttackRange::Neighbours => {
+                let (first, last) = (others.first().copied(), others.last().copied());
+                first
+                    .into_iter()
+                    .chain(last.filter(|_| others.len() > 1))
+                    .collect()
+            }
+        }
+    }
+
+    /// Whether every seat sees every hand.
+    pub fn open_hands(&self) -> bool {
+        self.house.open_hands.unwrap_or(false)
+    }
+
+    /// Whether every seat sees the top card of every library.
+    pub fn revealed_library_top(&self) -> bool {
+        self.house.revealed_library_top.unwrap_or(false)
+    }
+
+    /// Whether each opening hand is the better of two draws by its share of lands.
+    pub fn opening_hand_smoothing(&self) -> bool {
+        self.house.opening_hand_smoothing.unwrap_or(false)
+    }
+
+    /// How a mulligan gets the next hand.
+    pub fn mulligan_style(&self) -> MulliganStyle {
+        self.house.mulligan_style.unwrap_or(MulliganStyle::London)
+    }
+
+    /// Cards `seat` puts on the bottom when it keeps a hand after `taken` mulligans: the London count, none in the
+    /// styles that draw fewer cards instead.
+    pub fn bottom_count(&self, seat: PlayerId, taken: u32) -> usize {
+        match self.mulligan_style() {
+            MulliganStyle::London => self.mulligan_rule(seat).bottom_count(taken),
+            MulliganStyle::Paris | MulliganStyle::Vancouver => 0,
+        }
+    }
+
+    /// Cards in the hand `seat` is dealt after `taken` mulligans: the full hand, or one card fewer for each mulligan
+    /// that is not free in the styles that draw fewer cards.
+    pub fn dealt_hand_size(&self, seat: PlayerId, taken: u32) -> usize {
+        let rule = self.mulligan_rule(seat);
+        match self.mulligan_style() {
+            MulliganStyle::London => rule.hand_size,
+            MulliganStyle::Paris | MulliganStyle::Vancouver => {
+                rule.hand_size.saturating_sub(rule.bottom_count(taken))
+            }
+        }
+    }
+
+    /// Cards a player who keeps a hand after `taken` mulligans scries.
+    pub fn scry_after_keep(&self, taken: u32) -> usize {
+        usize::from(self.mulligan_style() == MulliganStyle::Vancouver && taken > 0)
     }
 
     /// Whether the starting player skips their first draw in a game of `player_count` players.

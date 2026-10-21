@@ -215,6 +215,9 @@ fn decision_kinds() -> Vec<DecisionKind> {
             free_mulligans: 1,
             bottom_if_keep: 0,
             bottom_if_mulligan: 1,
+            hand_if_mulligan: Some(6),
+            scry_if_keep: Some(1),
+            scry_if_mulligan: Some(1),
         }),
         DecisionKind::BottomCards(BottomOptions {
             hand: vec![a, b],
@@ -914,6 +917,9 @@ fn mulligan_options_carry_the_bottom_counts_by_name() {
         free_mulligans: 1,
         bottom_if_keep: 0,
         bottom_if_mulligan: 1,
+        hand_if_mulligan: None,
+        scry_if_keep: None,
+        scry_if_mulligan: None,
     };
     assert_eq!(
         serde_json::to_value(DecisionKind::Mulligan(options)).unwrap(),
@@ -925,6 +931,40 @@ fn mulligan_options_carry_the_bottom_counts_by_name() {
             "bottom_if_keep": 0,
             "bottom_if_mulligan": 1,
         }})
+    );
+}
+
+#[test]
+fn mulligan_options_name_the_size_of_the_next_hand_and_the_scries_when_they_are_known() {
+    let options = MulliganOptions {
+        hand: vec![ObjectId(3)],
+        mulligans_taken: 1,
+        can_mulligan: true,
+        free_mulligans: 0,
+        bottom_if_keep: 0,
+        bottom_if_mulligan: 0,
+        hand_if_mulligan: Some(5),
+        scry_if_keep: Some(1),
+        scry_if_mulligan: Some(1),
+    };
+    let wire = json!({"Mulligan": {
+        "hand": [3],
+        "mulligans_taken": 1,
+        "can_mulligan": true,
+        "free_mulligans": 0,
+        "bottom_if_keep": 0,
+        "bottom_if_mulligan": 0,
+        "hand_if_mulligan": 5,
+        "scry_if_keep": 1,
+        "scry_if_mulligan": 1,
+    }});
+    assert_eq!(
+        serde_json::to_value(DecisionKind::Mulligan(options.clone())).unwrap(),
+        wire
+    );
+    assert_eq!(
+        serde_json::from_value::<DecisionKind>(wire).unwrap(),
+        DecisionKind::Mulligan(options)
     );
 }
 

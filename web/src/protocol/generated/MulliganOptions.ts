@@ -28,4 +28,16 @@ bottom_if_keep: number,
 /**
  * Cards put on the bottom if the hand drawn by one more mulligan is kept (equals `bottom_if_keep` when it is free).
  */
-bottom_if_mulligan: number, };
+bottom_if_mulligan: number, 
+/**
+ * Cards in the hand one more mulligan draws, as the table's mulligan style sizes it.
+ */
+hand_if_mulligan?: number, 
+/**
+ * Cards scried after keeping this hand; left out when none are.
+ */
+scry_if_keep?: number, 
+/**
+ * Cards scried after keeping the hand one more mulligan draws; left out when none are.
+ */
+scry_if_mulligan?: number, };

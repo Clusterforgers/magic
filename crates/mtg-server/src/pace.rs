@@ -474,6 +474,9 @@ mod tests {
             free_mulligans: 0,
             bottom_if_keep: 0,
             bottom_if_mulligan: 1,
+            hand_if_mulligan: None,
+            scry_if_keep: None,
+            scry_if_mulligan: None,
         })
     }
 
