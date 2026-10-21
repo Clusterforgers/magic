@@ -22,7 +22,7 @@ use rstest::rstest;
 
 fn options(driver: &Driver) -> PriorityOptions {
     match &driver.decision().unwrap().kind {
-        DecisionKind::Priority(options) => options.clone(),
+        DecisionKind::Priority(options) => (**options).clone(),
         other => panic!("priority was expected, got {}", other.name()),
     }
 }

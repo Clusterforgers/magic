@@ -115,7 +115,7 @@ Effect (one variant per engine primitive)
   Tap{what} Untap{what} Attach{what,to} Unattach{what} Transform{what} WinGame{who}
   Surveil{who,count} Proliferate{who} Goad{what} Fight{what,with} BecomeMonarch{who} Amass{subtype,count}
   Monstrosity{count} Adapt{count} Bolster{count} Explore{what} Connive{what} TimeTravel{who}
-  ExtraTurn{who} ExileUntil{who,filter,as,exiled_as} CastFromZone{who,what,free,otherwise}
+  ExtraTurn{who} ExileUntil{who,filter,as,exiled_as} CastFromZone{who,what,free,way?,otherwise}
   CreateToken{who,token: Named(id) | Custom(TokenSpec) | CopyOf{of,except},count,tapped,attacking,as?}
   Continuous{affected,mods,duration} Rule{rule: GameRule,duration} Shield{when: ReplaceWhen,by: ReplaceBy,duration}
   DelayedTrigger{when,once,effects}
@@ -129,7 +129,7 @@ TriggerPattern
   DealsDamage{source,to?,combat?} LifeGained{who} LifeLost{who} Drew{who} Discarded{what,by} Cycled{what,by} Tapped{what} Untapped{what}
   TappedForMana{what,by} Blocks{what} BecomesBlocked{what} GroupAttacks{what,at_least} CountersPut{what,counter?}
   CountersRemoved{what,counter?} Attached{what,to}
-ReplaceWhen = TokenCreation{controller} | Damage{to?,source?,combat?} | ZoneChange{what,from?,to?}
+ReplaceWhen = TokenCreation{controller} | Damage{to?,source?,combat?} | ZoneChange{what,from?,to?} | Discarded{what}
             | CountersPut{on?,counter?} | LifeGain{who} | Draw{who} | Enters{what}
 ReplaceBy   = Multiply(n) | Add(n) | Prevent | PreventUpTo(n) | Instead([Effect]) | MoveTo(zone)
             | Tapped | WithCounters{counter,count} | Choose(Color|CreatureType|Player|Opponent) | PayLifeOrTapped(n)
@@ -145,7 +145,7 @@ GameRule    = DamageCantBePrevented{source?,combat?} | MustAttack(Ref) | MustBlo
             | MayCast{who = You, what?, from?, free?, flash?}
             | LookAtTopAnyTime(Ref) | NoMaxHandSize(Ref) | AdditionalLandPlays{who,count} | CanBeCommander
 Keyword     = Flying | Reach | FirstStrike | ... | Shroud | Protection(Selector) | Ward(Cost) | Equip(Cost) | Enchant(Selector) | Kicker(Cost) | ...
-            | Crew(n) | Mutate(Cost) | Encore(Cost) | Squad(Cost) | Changeling | Devoid | Myriad | Infect
+            | Crew(n) | Mutate(Cost) | Encore(Cost) | Squad(Cost) | Foretell(Cost) | Changeling | Devoid | Myriad | Infect
 ```
 
 **Values** (evaluated when an effect runs or a pattern is matched; they produce no events)
@@ -160,7 +160,7 @@ TargetSpec{ what: AnyTarget | Player | Opponent | Object(Selector) | Either([..]
 Amount    = n | X | Kicks | Count(Selector) | Stat{of,stat} | Life(Ref) | Counters{on,counter} | Sum([Amount])
           | Divided | EvenShare(Amount) | TargetCount(i) | Devotion([Color]) | Greatest{of,stat} | Total{of,stat}
           | CardTypes(Selector) | Players(Ref) | LowestLife(Ref)
-Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | Kicked | CastWith(Flashback|Evoke|Overload|Madness|Free) | YourTurn | Performed
+Condition = Not | All | Any | Compare{left,op,right} | Matches{subject,selector} | Kicked | CastWith(Flashback|Evoke|Overload|Madness|Suspend|Free) | YourTurn | Performed
           | Monarch(Ref) | CitysBlessing(Ref)
 ```
 
@@ -216,6 +216,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 
 | Topic | Rule |
 |---|---|
+| Madness and suspend | `Keyword::Madness(cost)` adds a replacement `Discarded{This} MoveTo(Exile)` that works from a hand and a trigger that works from exile: `CastFromZone{what: This, way: Madness, otherwise: [Move This to Graveyard]}`, which casts the card for the madness cost (`CastWay::Madness`). `Keyword::Suspend{time, cost}` adds the upkeep trigger that removes a time counter, the trigger of the last counter (`CastFromZone{what: This, free, way: Suspend}`) and a static ability that gives a creature cast that way haste while its owner controls it; the suspending itself is a special action of the engine (`PriorityAction::Suspend`). `Foretell(cost)` is declared with no rules (g4d). |
 | Cascade and discover | `effect::cascade()` and `effect::discover(count)` list the three effects of each: `ExileUntil` (cards leave the top of the library face up until a nonland card of lesser value than the source, or of value `count` or less, is found; it binds the card as `found` and every card exiled as `exiled`), `CastFromZone { what: found, free }` (the player may cast it as part of the resolution; `otherwise` is done when they do not or cannot, which for discover moves the card to the hand) and a `Move` of `exiled` to the bottom in a random order, which passes over the cards that were cast since they are other objects. The cascade keyword adds the trigger "when you cast this spell" that works from the stack (`keywords/cascade.rs`); the compiler reads "Discover N." and the three sentences of an exile until a card is found, its free cast and the move of the cards exiled. |
 | Primitives | `resolve/prim/<effect>.rs` holds one file per `Effect` variant. Draw, Discard, Mill, Scry, LookAtTop, Reveal, Search, Choose, Shuffle, Move, Destroy, Exile, ExileUntil, CastFromZone, Sacrifice, Counter, DealDamage, GainLife, LoseLife, AddMana, PutCounters, RemoveCounters, MoveCounters, Tap, Untap, WinGame, CreateToken, Continuous (with `Mod.ModifyPT` and `Mod.AddKeyword`), DelayedTrigger, If, May, Pay and Modal run and are in `Caps` (a `Move` onto the battlefield is the primitive `Effect.Move.Battlefield`, also in `Caps`; a `CreateToken` of a copy is the separate primitive `Effect.CreateToken.Copy`, a `Discard` with `random` is `Effect.Discard.Random` and a `Move` to the top of a library in random order `Effect.Move.Random.Top`, none of the three in `Caps`); every other file is a stub that returns `ResolveError::Unsupported("Effect.<Name>")` and is not in `Caps`, so no game offers a card that uses it. A task replaces its stub and adds its name to `RUNS` in `caps.rs`. |
 | Destroy, exile, counter | Each names its objects with a `Ref` (a target, `Each(selector)` for "all", a bound name) and acts on all of them together, in the order the reference lists them, in one step. A name of an object that has changed zones since (CR 400.7) or repeats is passed over. `Destroy` moves a permanent that is still on the battlefield and not indestructible (`keywords::is_indestructible`) to its owner's graveyard. `Exile` moves an object from whichever zone it is in to exile, whatever its keywords; abilities, the resolving spell and objects already in exile stay. `Counter` ends a spell or ability on the stack, other than the resolving one, as `Countered`: the spell goes to its owner's graveyard, an ability ceases to exist, nothing of either resolves. The moves carry `ZoneCause::Destroyed` and `Exiled`; a counter is `ResolutionEnded { Countered }`, which triggers read as a move from the stack with `ZoneCause::Countered`. Each step carries a snapshot of every object it moved. A destruction that `regenerate` allows carries `ZoneCause::Destroyed`, which a regeneration shield replaces; `regenerate: false` ("can't be regenerated") carries `ZoneCause::Buried`. |
@@ -277,7 +278,7 @@ State is the fold of events; the engine is a pure function from state to `Progre
 | `limit` | `OncePerTurn` is kept per object in state, reset at the turn, and holds for triggered and activated abilities. |
 | Delayed triggers | `Effect::DelayedTrigger` logs `DelayedTriggerCreated` and adds a `Delayed` to `GameState.delayed`: its pattern, effects, controller, the names the resolution had bound (the ability starts with them) and a duration. It triggers on the next event its pattern describes and is then gone (`once`), else it lasts until the end of the turn it was set up in. A duration that ran out, or a controller who left the game, drops it. |
 | Replacement step | Effect steps and rules code propose events; `replace::process` returns the events that happen or the question it needs answered. It sees the abilities of the permanents in play through `ability_reader` (printed, granted, added by a keyword; `from` names the zone an effect works from) and, for a card that enters, the `Enters` effects it prints itself. A replacement is a `Replacement` ability and applies at most once to an event and to the events that replace it (CR 614.5). |
-| Events replaced | `TokenCreation`: the tokens one effect makes for a player are one event (a run of `TokenCreated`). `Damage`: a `DamageDealt`, with `combat` true in the damage steps with nothing resolving; the life a lifelinker gains with it follows its damage. `ZoneChange`: `ZoneChanged`, `CreatureDied`, `CardDiscarded`, a spell that resolves as an instant or sorcery and a spell that does not resolve; a card drawn, a land played, a spell cast and a card entering are not zone changes here. `CountersPut`: a `CountersChanged` that puts counters, planeswalker loyalty as it enters included and a loyalty cost paid to activate not. `LifeGain`: `LifeGained`. `Draw`: `CardDrawn` and `DrewFromEmptyLibrary`. `Enters`: a land played, a permanent spell that resolves and a card put onto the battlefield; a token that is created does not enter here. |
+| Events replaced | `TokenCreation`: the tokens one effect makes for a player are one event (a run of `TokenCreated`). `Damage`: a `DamageDealt`, with `combat` true in the damage steps with nothing resolving; the life a lifelinker gains with it follows its damage. `ZoneChange`: `ZoneChanged`, `CreatureDied`, `CardDiscarded`, `Discarded` is the `CardDiscarded` (or its `ZoneChanged` with `ZoneCause::Discarded`) that puts a card into a graveyard, a spell that resolves as an instant or sorcery and a spell that does not resolve; a card drawn, a land played, a spell cast and a card entering are not zone changes here. `CountersPut`: a `CountersChanged` that puts counters, planeswalker loyalty as it enters included and a loyalty cost paid to activate not. `LifeGain`: `LifeGained`. `Draw`: `CardDrawn` and `DrewFromEmptyLibrary`. `Enters`: a land played, a permanent spell that resolves and a card put onto the battlefield; a token that is created does not enter here. |
 | Applying | `Multiply` and `Add` change the number in the event (a draw twice is two draws, the cards the top of the library in order); `MoveTo` sends the object elsewhere (a death, a discard or a spell becomes a `ZoneChanged` to the new zone, so nothing reads it as a death or as a card put into a graveyard); `Tapped`, `WithCounters` and `Choose` add to the `Entered` event of the card and propose the counters as an event of their own, which other effects then change (CR 616.2); `PayLifeOrTapped` asks yes or no and logs `LifePaid`. `Prevent` removes the event and `Instead` is not run yet, so neither is in `Caps`. |
 | Replacement choice | When two or more effects apply to an event the affected player, or the controller of the affected object, picks the one that applies first (`ChooseReplacement`, CR 616.1); an effect about its own object applies before the others without a question (CR 614.15). The answers to the questions of one batch are its journal: the engine holds the batch, adds each answer and runs `process` again, which asks the same questions in the same order, so `process` is a pure function of state, batch and journal. |
 | As it enters | `Choose` asks the controller with `ChooseOption` (the five colours, or the creature types of the creature cards in the game) and logs the choice in `Entered.chosen`; the permanent keeps it (`PermanentState::chosen`) and `Pred::ChosenColor` and `Pred::ChosenSubtype` read it for the source of the ability. |
@@ -418,6 +419,7 @@ This is `crates/mtg-cards/cards/archon_of_cruelty.json`; a test keeps the two eq
 | Targets, damage | Lightning Bolt, Burst Lightning (kicker), Fireball (X, even split, cost per extra target), Fire // Ice (split, divided damage, Fuse) |
 | Optional costs | Burst Lightning and Gatekeeper of Malakir (kicker, the second with an enters trigger that reads it), Wolfbriar Elemental (multikicker, a Wolf for each payment) (Verified) |
 | Alternative costs and cast permissions (Verified) | Faithless Looting (flashback), Mulldrifter (evoke, with the enters trigger), Cyclonic Rift and Mizzium Mortars (overload), Omniscience (cast from the hand without paying) and Vedalken Orrery (as though flash) |
+| Madness and suspend (Verified) | Fiery Temper, Basking Rootwalla and Arrogant Wurm (madness), Rift Bolt, Ancestral Vision and Durkwood Baloth (suspend) |
 | Costs of activated abilities (Verified) | Flooded Strand (life), Nantuko Husk (a creature sacrificed), Rummaging Goblin (a discard), Soul Shepherd (a creature card exiled from the graveyard), Llanowar Behemoth (a creature tapped), Tumble Magnet (a counter removed), Souldrinker (life for a counter) and Lurching Rotbeast (cycling) |
 | Counter, destroy, exile, mass removal | Counterspell, Doom Blade, Swords to Plowshares, Wrath of God (Verified) |
 | Pump and control with duration | Giant Growth, Act of Treason (Verified) |
@@ -459,7 +461,7 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | `RevealUntil`, `ExileTop`, `Dig` (look at N and take some is `LookAtTop` + `Choose` + `Move`) | P, X, F | (h) |
 | `Exile` with a duration (Oblivion Ring), `Duration` until host leaves, until a player's next turn, until an event | P | (h) |
 | Cast permissions (`GameRule::MayCast`: cast from a graveyard, exile or a library, without paying, as though with flash); `Condition::CastWith` | P, X | (g4) |
-| `CastFromZone` as an effect (cascade, discover) | P, X | (g4b); suspend and madness (g4c) |
+| `CastFromZone` as an effect (cascade, discover, madness, suspend) | P, X | (g4b), (g4c) |
 | `CopySpell`, `BecomeCopy` | P, X, F | (o) |
 | Costs: PayLife, Sacrifice, Discard, ExileFromGraveyard, TapPermanents, RemoveCounters, ReturnToHand with a fixed amount | P, X, F | the engine announces and pays them (`parts/`, `engine.md`) |
 | Costs: PayEnergy | P, X, F | DSL (stub); (g) |
@@ -475,7 +477,7 @@ Vocabulary of other engines against this DSL. Sources: P = phase.rs (MIT or Apac
 | Statics: must attack or block, can't be countered, can't gain life or draw, trigger doubling, can't search, reveal top | P, X, F | DSL |
 | Statics: can't be blocked (by a kind of creature), no maximum hand size, additional land plays, look at the top card, can be your commander | P, X, F | DSL (stubs); the engine runs them in (h) |
 | Choosing a player as a permanent enters; values: the number of opponents, the lowest life total | P, X, F | DSL (stubs); the engine runs them in (j) |
-| Keywords: Crew, Changeling, Devoid, Mutate, Encore, Myriad, Squad, Infect | P, X, F | DSL (stubs); the engine runs each in its keyword task |
+| Keywords: Crew, Changeling, Devoid, Mutate, Encore, Myriad, Squad, Infect, Foretell | P, X, F | DSL (stubs); the engine runs each in its keyword task |
 | Statics: characteristic-defining flag | P, X | DSL |
 | Exchange control | P, X, F | (h) |
 | Redirection, `Instead`, shields of events other than damage, replaced events: discard, mill, tap, untap | P, X, F | (j) |

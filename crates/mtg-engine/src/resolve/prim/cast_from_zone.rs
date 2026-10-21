@@ -58,13 +58,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             Ok(card.map_or_else(
                 || finished(false),
                 |card| {
+                    let madness = ways::madness_cost(state, card.id())
+                        .filter(|_| *way == Some(CastWay::Madness));
                     Run::Ask(question(
                         player,
                         card.card().name.as_str(),
                         card.id(),
                         *free,
-                        ways::madness_cost(state, card.id())
-                            .filter(|_| *way == Some(CastWay::Madness)),
+                        madness.as_ref(),
                     ))
                 },
             ))
@@ -113,13 +114,10 @@ fn question(
     name: &str,
     card: ObjectId,
     free: bool,
-    madness: Option<ManaCost>,
+    madness: Option<&ManaCost>,
 ) -> Decision {
     Decision {
         player,
-        kind: DecisionKind::YesNo(YesNoOptions::new(
-            card,
-            wording::cast(name, free, madness.as_ref()),
-        )),
+        kind: DecisionKind::YesNo(YesNoOptions::new(card, wording::cast(name, free, madness))),
     }
 }

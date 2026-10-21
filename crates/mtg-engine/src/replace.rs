@@ -675,20 +675,6 @@ impl Pass<'_> {
                     && scope.selects(what, reference)?
             }
             (
-                ReplaceWhen::Discarded { what },
-                Unit::Move {
-                    object,
-                    to: Zone::Graveyard(_),
-                    discard: true,
-                    ..
-                },
-            ) => {
-                let Some(reference) = self.reference(*object) else {
-                    return Ok(false);
-                };
-                scope.selects(what, reference)?
-            }
-            (
                 ReplaceWhen::CountersPut { on, counter },
                 Unit::Counters {
                     on: put,
@@ -705,7 +691,16 @@ impl Pass<'_> {
             | (ReplaceWhen::Draw { who }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
             }
-            (ReplaceWhen::Enters { what }, Unit::Enter { object, .. }) => {
+            (
+                ReplaceWhen::Discarded { what },
+                Unit::Move {
+                    object,
+                    to: Zone::Graveyard(_),
+                    discard: true,
+                    ..
+                },
+            )
+            | (ReplaceWhen::Enters { what }, Unit::Enter { object, .. }) => {
                 let Some(reference) = self.reference(*object) else {
                     return Ok(false);
                 };

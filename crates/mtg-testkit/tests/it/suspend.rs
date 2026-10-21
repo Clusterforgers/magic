@@ -139,13 +139,13 @@ fn suspending_exiles_the_card_with_its_counters_and_never_uses_the_stack(
         "the card is open on the table"
     );
     assert_eq!(counters(&driver, card), time_counters);
-    assert!(driver.state().zone(Zone::Stack).is_empty());
+    assert_eq!(driver.state().zone(Zone::Stack), []);
     assert_eq!(
         driver.decision()?.player,
         pid(0),
         "the player keeps priority"
     );
-    assert!(suspendable(&driver).is_empty());
+    assert_eq!(suspendable(&driver).len(), 0);
     Ok(())
 }
 
@@ -204,7 +204,7 @@ fn a_counter_is_removed_in_each_upkeep_of_the_owner_and_the_last_one_casts_the_c
     });
     assert_eq!(way, Some(Some(CastWay::Suspend)), "nothing is paid for it");
     settle(&mut driver, 0)?;
-    assert!(driver.state().zone(Zone::Exile).is_empty());
+    assert_eq!(driver.state().zone(Zone::Exile), []);
     assert_eq!(
         driver.state().zone(Zone::Hand(pid(0))).len(),
         hand + 1 + 3,
@@ -307,7 +307,7 @@ fn two_suspended_cards_are_both_cast_in_one_upkeep() -> Result<(), ScriptError> 
     );
     upkeep(&mut driver, 3)?;
     assert_eq!(driver.state().player(pid(1)).unwrap().life(), 14);
-    assert!(driver.state().zone(Zone::Exile).is_empty());
+    assert_eq!(driver.state().zone(Zone::Exile), []);
     Ok(())
 }
 

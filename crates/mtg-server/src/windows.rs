@@ -358,7 +358,7 @@ mod tests {
     fn priority(player: PlayerId, can_act: bool) -> Decision {
         Decision {
             player,
-            kind: DecisionKind::Priority(PriorityOptions {
+            kind: DecisionKind::Priority(Box::new(PriorityOptions {
                 playable_lands: Vec::new(),
                 castable: Vec::new(),
                 mana_abilities: Vec::new(),
@@ -366,7 +366,7 @@ mod tests {
                 suspendable: Vec::new(),
                 can_act,
                 can_pass: true,
-            }),
+            })),
         }
     }
 

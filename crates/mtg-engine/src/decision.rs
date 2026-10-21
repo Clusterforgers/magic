@@ -36,7 +36,7 @@ pub enum DecisionKind {
     /// Choose cards to put on the bottom of the library after keeping.
     BottomCards(BottomOptions),
     /// Act with priority or pass.
-    Priority(PriorityOptions),
+    Priority(Box<PriorityOptions>),
     /// Pay the mana cost of the spell being cast.
     PayMana(PayOptions),
     /// Declare attackers.
