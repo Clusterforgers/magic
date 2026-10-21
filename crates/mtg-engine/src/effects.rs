@@ -312,6 +312,12 @@ impl ContinuousEffect {
             self.controller,
             self.source,
         ) && !self.spent(state)
+            && !self.gives_control_to_a_player_who_left(state)
+    }
+
+    /// Whether the effect gives control to a player who has left the game, which ends it (CR 800.4).
+    fn gives_control_to_a_player_who_left(&self, state: &GameState) -> bool {
+        matches!(self.modification, Modification::SetController(who) if !state.is_alive(who))
     }
 
     /// Whether every object the effect names has become a new object or is gone, so it can never change anything again.

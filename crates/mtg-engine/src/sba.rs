@@ -4,7 +4,7 @@ use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::ids::ObjectId;
 
-use crate::characteristics::characteristics;
+use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::Target;
 use crate::counters::CountersChanged;
 use crate::events::{DeathCause, Event, ZoneCause};
@@ -182,7 +182,21 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
             .filter(|d| d.lapsed(state))
             .map(|d| Event::DelayedTriggerExpired { id: d.id() }),
     );
-    expired
+    if !expired.is_empty() {
+        return expired;
+    }
+    // CR 800.4: with their control effects over, what a player who left still controls is exiled.
+    state
+        .objects()
+        .filter(|o| matches!(o.zone(), Zone::Battlefield | Zone::Stack))
+        .filter(|o| !state.is_alive(controller_of_object(state, o)))
+        .map(|o| Event::ZoneChanged {
+            object: o.id(),
+            from: o.zone(),
+            to: Zone::Exile,
+            cause: ZoneCause::Exiled,
+        })
+        .collect()
 }
 
 #[cfg(test)]

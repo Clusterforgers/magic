@@ -267,8 +267,18 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 step: began,
                 active,
             },
-        ) => (step_matches(*step, *began) && scope.players(whose).ok()?.contains(active))
-            .then(|| cause(state, vec![Target::Player(*active)])),
+        ) => {
+            if !step_matches(*step, *began) {
+                None
+            } else if scope.players(whose).ok()?.contains(active) {
+                Some(cause(state, vec![Target::Player(*active)]))
+            } else if whose.is_each_player() && !state.is_alive(*active) {
+                // The steps of a turn without an active player still begin (CR 800.4) but name no player.
+                Some(cause(state, Vec::new()))
+            } else {
+                None
+            }
+        }
         (TriggerPattern::BecomesTarget { what, by }, Happened::Targeted { target, by: caster }) => {
             let Target::Object(targeted) = target else {
                 return None;
