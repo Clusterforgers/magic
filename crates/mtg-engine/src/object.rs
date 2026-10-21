@@ -56,6 +56,27 @@ pub enum Chosen {
     CreatureType(mtg_core::card::Subtype),
 }
 
+/// Why an object lies face down (CR 708): the rules read that it does, who may look at it and what made it so. A zone
+/// change clears it, because the object is then a new one (CR 400.7).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum FaceDown {
+    /// A card foretold (CR 702.143a) on the turn with this number: it stays in exile and only its owner may look at it.
+    Foretold {
+        /// The number of the turn it was foretold in.
+        turn: u32,
+    },
+}
+
+impl FaceDown {
+    /// Whether `viewer` may look at an object of `owner` that lies face down this way: the owner of a foretold card.
+    pub fn may_look(self, owner: PlayerId, viewer: PlayerId) -> bool {
+        match self {
+            FaceDown::Foretold { .. } => owner == viewer,
+        }
+    }
+}
+
 /// State that only exists while an object is on the battlefield.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PermanentState {
@@ -147,6 +168,8 @@ pub struct GameObject {
     pub(crate) counter: u32,
     /// The counters on a card in exile (the time counters of a suspended card); a zone change clears them.
     pub(crate) card_counters: BTreeMap<CounterKind, u32>,
+    /// Why the object lies face down, or `None` when it lies face up.
+    pub(crate) face_down: Option<FaceDown>,
     pub(crate) kind: ObjectKind,
     pub(crate) choices: Choices,
     pub(crate) ability: Option<Box<AbilityObject>>,
@@ -165,6 +188,7 @@ impl GameObject {
             permanent: None,
             counter: 0,
             card_counters: BTreeMap::new(),
+            face_down: None,
             kind: ObjectKind::Card,
             choices: Choices::default(),
             ability: None,
@@ -190,6 +214,7 @@ impl GameObject {
             permanent: None,
             counter: 0,
             card_counters: BTreeMap::new(),
+            face_down: None,
             kind: ObjectKind::Ability,
             choices,
             ability: Some(Box::new(ability)),
@@ -281,6 +306,11 @@ impl GameObject {
         self.card_counters.get(kind).copied().unwrap_or(0)
     }
 
+    /// Why the object lies face down, or `None` when it lies face up.
+    pub const fn face_down(&self) -> Option<FaceDown> {
+        self.face_down
+    }
+
     /// Permanent state when on the battlefield.
     pub const fn permanent(&self) -> Option<&PermanentState> {
         self.permanent.as_ref()
@@ -296,6 +326,7 @@ impl PartialEq for GameObject {
             && self.zone == other.zone
             && self.permanent == other.permanent
             && self.card_counters == other.card_counters
+            && self.face_down == other.face_down
             && self.counter == other.counter
             && self.kind == other.kind
             && self.choices == other.choices
@@ -315,6 +346,7 @@ impl Hash for GameObject {
         self.zone.hash(state);
         self.permanent.hash(state);
         self.card_counters.hash(state);
+        self.face_down.hash(state);
         self.counter.hash(state);
         self.kind.hash(state);
         self.choices.hash(state);

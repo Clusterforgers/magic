@@ -5,6 +5,7 @@ use mtg_engine::abilities::Cause;
 use mtg_engine::apply_event;
 use mtg_engine::events::{Event, ZoneCause};
 use mtg_engine::object::ObjectRef;
+use mtg_engine::snapshot::Snapshot;
 use mtg_engine::state::GameState;
 use mtg_engine::zones::Zone;
 use serde::{Deserialize, Serialize};
@@ -293,11 +294,16 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
             top: count(scried.top.len()),
             bottom: count(scried.bottom.len()),
         }),
-        // A card that moves between places the viewer cannot see into is not told apart.
+        // A card that moves between places the viewer cannot see into is not told apart, and neither is one that
+        // lies face down at either end and that the viewer may not look at.
         Event::ZoneChanged {
-            from, to, cause, ..
-        } if !zone_is_visible_in(before, *from, viewer)
-            && !zone_is_visible_in(before, *to, viewer) =>
+            object,
+            from,
+            to,
+            cause,
+        } if !identified_in(before, *object, *from, viewer)
+            && !(zone_is_visible_in(before, *to, viewer)
+                && arrives_known(before, *object, *cause, viewer)) =>
         {
             Some(HiddenEvent::ZoneChanged {
                 from: *from,
@@ -324,7 +330,7 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
             .all(|object| knows(before, object.id, viewer))
             || !snapshots
                 .iter()
-                .all(|shot| zone_is_visible_in(before, shot.zone, viewer)) =>
+                .all(|shot| snapshot_known(before, shot, viewer)) =>
         {
             Some(HiddenEvent::StepDone {
                 position: position.clone(),
@@ -343,7 +349,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
         cause
             .snapshots
             .iter()
-            .any(|shot| !zone_is_visible_in(before, shot.zone, viewer))
+            .any(|shot| !snapshot_known(before, shot, viewer))
             || cause
                 .subjects
                 .iter()
@@ -352,7 +358,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
     };
     match event {
         Event::AbilityTriggered(t)
-            if !zone_is_visible_in(before, t.snapshot.zone, viewer) || unseen_cause(&t.cause) =>
+            if !snapshot_known(before, &t.snapshot, viewer) || unseen_cause(&t.cause) =>
         {
             Some(HiddenEvent::AbilityTriggered {
                 source: t.source,
@@ -362,7 +368,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
         }
         Event::AbilityPutOnStack(put)
             if put.cause.as_ref().is_some_and(|cause| {
-                !zone_is_visible_in(before, put.snapshot.zone, viewer) || unseen_cause(cause)
+                !snapshot_known(before, &put.snapshot, viewer) || unseen_cause(cause)
             }) =>
         {
             Some(HiddenEvent::AbilityPutOnStack {
@@ -381,7 +387,7 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
             ability: *ability,
         }),
         Event::DelayedTriggerCreated(created)
-            if !zone_is_visible_in(before, created.snapshot.zone, viewer)
+            if !snapshot_known(before, &created.snapshot, viewer)
                 || created
                     .bindings
                     .iter()
@@ -403,8 +409,31 @@ fn redact_triggers(before: &GameState, event: &Event, viewer: PlayerId) -> Optio
 fn knows(before: &GameState, object: ObjectId, viewer: PlayerId) -> bool {
     before
         .object(object)
-        .is_some_and(|o| zone_is_visible_in(before, o.zone(), viewer))
+        .is_some_and(|o| identified_in(before, object, o.zone(), viewer))
         || before.is_shown_to(viewer, object)
+}
+
+/// Whether the zone `zone` is open to `viewer` and no face-down rule hides the object `object` there from them.
+fn identified_in(before: &GameState, object: ObjectId, zone: Zone, viewer: PlayerId) -> bool {
+    zone_is_visible_in(before, zone, viewer) && before.may_look_at(viewer, object)
+}
+
+/// Whether `viewer` can tell which card arrives from a move for `cause`: not when it lies face down after the move and
+/// they may not look at it.
+fn arrives_known(before: &GameState, object: ObjectId, cause: ZoneCause, viewer: PlayerId) -> bool {
+    cause.face_down(before.turn().number()).is_none_or(|how| {
+        before
+            .object(object)
+            .is_some_and(|o| how.may_look(o.owner(), viewer))
+    })
+}
+
+/// Whether `viewer` could identify the object a snapshot describes where it was photographed.
+fn snapshot_known(before: &GameState, shot: &Snapshot, viewer: PlayerId) -> bool {
+    zone_is_visible_in(before, shot.zone, viewer)
+        && shot
+            .face_down
+            .is_none_or(|how| how.may_look(shot.owner, viewer))
 }
 
 /// Projects `events` (which `before` has not yet seen) for each of `viewers`, one batch per viewer.

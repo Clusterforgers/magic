@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::characteristics::{Characteristics, seen_as};
 use crate::keywords::keywords_of;
-use crate::object::ObjectRef;
+use crate::object::{FaceDown, ObjectRef};
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -36,6 +36,10 @@ pub struct Snapshot {
     pub counters: Vec<(CounterKind, u32)>,
     /// The objects attached to it, in id order.
     pub attachments: Vec<ObjectId>,
+    /// Why it lay face down, when it did: the characteristics above are for the players who may look at it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub face_down: Option<FaceDown>,
 }
 
 impl Snapshot {
@@ -76,6 +80,7 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
             },
         ),
         attachments: state.attachments_of(id),
+        face_down: object.face_down(),
     })
 }
 

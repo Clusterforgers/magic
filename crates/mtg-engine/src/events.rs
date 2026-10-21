@@ -11,7 +11,7 @@ use crate::combat::{AttackTarget, DamageTarget};
 use crate::counters::CountersChanged;
 use crate::effects::ContinuousEffect;
 use crate::library::{CardsFound, LibraryLooked, Revealed, Scried};
-use crate::object::{Chosen, ObjectRef};
+use crate::object::{Chosen, FaceDown, ObjectRef};
 use crate::player::LossReason;
 use crate::rules::RuleEffect;
 use crate::snapshot::Snapshot;
@@ -517,6 +517,8 @@ pub enum ZoneCause {
     Sacrificed,
     /// It was exiled (CR 406).
     Exiled,
+    /// It was exiled face down by foretelling (CR 702.143a): it lies face down, and only its owner may look at it.
+    Foretold,
     /// It was countered (CR 701.6).
     Countered,
     /// It was milled (CR 701.17).
@@ -525,6 +527,17 @@ pub enum ZoneCause {
     StateBased,
     /// It was discarded and a replacement effect sent it somewhere other than the graveyard (CR 701.9).
     Discarded,
+}
+
+impl ZoneCause {
+    /// How the object lies after a move for this cause on turn `turn`, when it lies face down. A move that ends face
+    /// down is how the log tells a card is face down, so a new kind of face-down object is a new cause here.
+    pub const fn face_down(self, turn: u32) -> Option<FaceDown> {
+        match self {
+            ZoneCause::Foretold => Some(FaceDown::Foretold { turn }),
+            _ => None,
+        }
+    }
 }
 
 impl Event {

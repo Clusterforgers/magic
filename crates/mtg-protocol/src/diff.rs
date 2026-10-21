@@ -70,6 +70,7 @@ mod tests {
                 damage: 0,
                 summoning_sick: false,
             }),
+            face_down: false,
             kind: ObjectKind::Card,
             source: None,
             targets: Vec::new(),

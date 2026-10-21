@@ -119,6 +119,15 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<ObjectId>>", optional)]
     pub attachments: Vec<ObjectId>,
+    /// Whether the object lies face down (a foretold card in exile). The seat that may look at it sees its characteristics
+    /// besides; every other seat sees an object with no name, types, colours, abilities or counters.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[ts(as = "Option<bool>", optional)]
+    pub face_down: bool,
+}
+
+const fn is_false(flag: &bool) -> bool {
+    !*flag
 }
 
 /// One seat as a viewer sees it.

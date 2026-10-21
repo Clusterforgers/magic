@@ -219,12 +219,12 @@ pub(crate) fn can_act(
     playable_lands: &[ObjectId],
     castable: &[ObjectId],
     abilities: &[AbilityRef],
-    suspendable: &[ObjectId],
+    special_actions: &[ObjectId],
 ) -> bool {
     !playable_lands.is_empty()
         || !castable.is_empty()
         || !abilities.is_empty()
-        || !suspendable.is_empty()
+        || !special_actions.is_empty()
 }
 
 /// Everything `player` may do while holding priority.
@@ -260,15 +260,26 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .copied()
         .filter(|id| ways::can_suspend(state, player, *id, &pool, &all_mana, life))
         .collect();
+    let foretellable: Vec<ObjectId> = hand
+        .iter()
+        .copied()
+        .filter(|id| ways::can_foretell(state, player, *id, &pool, &all_mana, life))
+        .collect();
     let abilities = other_abilities(state, player);
     let mana_abilities = all_mana;
     PriorityOptions {
-        can_act: can_act(&playable_lands, &castable, &abilities, &suspendable),
+        can_act: can_act(
+            &playable_lands,
+            &castable,
+            &abilities,
+            &[suspendable.as_slice(), foretellable.as_slice()].concat(),
+        ),
         playable_lands,
         castable,
         mana_abilities,
         abilities,
         suspendable,
+        foretellable,
         can_pass: true,
     }
 }
@@ -305,6 +316,12 @@ pub(crate) fn answer(
                 return Err(IllegalAnswer::NotOffered("suspend").into());
             }
             Ok(Outcome::BeginSuspend(object))
+        }
+        PriorityAction::Foretell(object) => {
+            if !options.foretellable.contains(&object) {
+                return Err(IllegalAnswer::NotOffered("foretell").into());
+            }
+            Ok(Outcome::BeginForetell(object))
         }
         PriorityAction::ActivateMana(source) => {
             let option = options

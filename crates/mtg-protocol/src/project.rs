@@ -49,7 +49,9 @@ const fn _all_types_is_exhaustive(ty: CardType) {
 /// Whether `viewer` may see which cards are in `zone`.
 ///
 /// Libraries are hidden from everyone, hands from everyone but their owner; a viewer who is not a
-/// seat (a spectator) sees no hands. Face-down cards will need their own rule once the engine has them.
+/// seat (a spectator) sees no hands. A zone says which cards are there, never which of them lie face down: that is
+/// judged object by object (`Sight::look`, which asks `GameState::may_look_at`), so a face-down card is listed in its
+/// zone for every seat and identified only to the seat that may look at it.
 pub fn zone_is_visible(zone: Zone, viewer: PlayerId) -> bool {
     match zone {
         Zone::Library(_) => false,
@@ -87,12 +89,32 @@ impl<'a> Sight<'a> {
         }
     }
 
-    /// Whether the viewer may identify the object.
-    pub(crate) fn sees(&self, object: &GameObject) -> bool {
-        zone_is_visible_in(self.state, object.zone(), self.viewer)
-            || self.offered.contains(&object.id())
-            || self.state.is_shown_to(self.viewer, object.id())
+    /// How the viewer sees the object: whole, as a face-down card that is there with no identity, or not at all.
+    pub(crate) fn look(&self, object: &GameObject) -> Look {
+        let id = object.id();
+        let in_view = zone_is_visible_in(self.state, object.zone(), self.viewer);
+        if (in_view && self.state.may_look_at(self.viewer, id))
+            || self.offered.contains(&id)
+            || self.state.is_shown_to(self.viewer, id)
+        {
+            Look::Whole
+        } else if in_view {
+            Look::FaceDown
+        } else {
+            Look::Hidden
+        }
     }
+}
+
+/// How a viewer sees an object (`Sight::look`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Look {
+    /// They identify it.
+    Whole,
+    /// It lies face down in a zone they see into and they may not look at it: they see that it is there and nothing else.
+    FaceDown,
+    /// It is in a zone they cannot see into.
+    Hidden,
 }
 
 fn count(len: usize) -> u32 {
@@ -142,8 +164,10 @@ impl ObjectView {
         attachments: impl FnOnce() -> Vec<ObjectId>,
     ) -> Option<ObjectView> {
         let object = state.object(id)?;
-        if !sight.sees(object) {
-            return None;
+        match sight.look(object) {
+            Look::Hidden => return None,
+            Look::FaceDown => return Some(Self::face_down(state, object)),
+            Look::Whole => {}
         }
         let chars = characteristics(state, id)?;
         let card = object.card();
@@ -209,7 +233,37 @@ impl ObjectView {
             } else {
                 Vec::new()
             },
+            face_down: object.face_down().is_some(),
         })
+    }
+
+    /// A face-down object as a seat that may not look at it sees it: where it is and whose it is, with no characteristics.
+    fn face_down(state: &GameState, object: &GameObject) -> ObjectView {
+        ObjectView {
+            id: object.id(),
+            owner: object.owner(),
+            controller: controller_of(state, object.id()).unwrap_or_else(|| object.controller()),
+            zone: object.zone(),
+            name: String::new(),
+            mana_cost: None,
+            supertypes: Vec::new(),
+            types: Vec::new(),
+            subtypes: Vec::new(),
+            colors: Vec::new(),
+            power: None,
+            toughness: None,
+            abilities: Vec::new(),
+            keywords: Vec::new(),
+            permanent: None,
+            kind: ObjectKind::Card,
+            source: None,
+            targets: Vec::new(),
+            counters: Vec::new(),
+            loyalty_abilities: Vec::new(),
+            attached_to: None,
+            attachments: Vec::new(),
+            face_down: true,
+        }
     }
 }
 

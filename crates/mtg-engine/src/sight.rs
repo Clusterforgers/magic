@@ -14,6 +14,18 @@ use crate::state::{GameState, Stage};
 use crate::zones::Zone;
 
 impl GameState {
+    /// Whether `viewer` may look at what the object is: anyone may unless it lies face down (CR 708), and then only
+    /// the player its kind of face-down names (CR 702.143a: the owner of a foretold card). This is the one rule the
+    /// views, the log and the snapshots read for a face-down object.
+    pub fn may_look_at(&self, viewer: PlayerId, id: ObjectId) -> bool {
+        let Some(object) = self.object(id) else {
+            return false;
+        };
+        object
+            .face_down()
+            .is_none_or(|how| how.may_look(object.owner(), viewer))
+    }
+
     /// Whether `viewer` may identify the object beyond what its zone shows: the top card of a library that a rule
     /// reveals is shown to every seat, and the resolution in progress may have shown it to them, which holds while it is
     /// still the card it was shown: a new zone makes a new object (CR 400.7), and that one is judged by its zone alone.

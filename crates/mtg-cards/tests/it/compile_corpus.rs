@@ -18,7 +18,7 @@ use common::{cards_dir, printed};
 /// The corpus cards whose compiled abilities are the hand-written file's, face by face. A card joins
 /// the list when the templates reach it and never leaves; a card that matches but is not listed fails
 /// the test too, so the list is the ratchet.
-const REPRODUCED: [&str; 90] = [
+const REPRODUCED: [&str; 94] = [
     "Ancient Ziggurat",
     "Archon of Cruelty",
     "Llanowar Behemoth",
@@ -109,6 +109,10 @@ const REPRODUCED: [&str; 90] = [
     "Treasure Cruise",
     "Murderous Cut",
     "Siege Wurm",
+    "Behold the Multiverse",
+    "Saw It Coming",
+    "Demon Bolt",
+    "Augury Raven",
 ];
 
 fn hand_written() -> Library {

@@ -1,0 +1,15 @@
+{
+  "oracle_id": "d7d2f701-77df-4169-bf98-0d51d6886e9b",
+  "name": "Behold the Multiverse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Behold the Multiverse",
+      "oracle_fingerprint": "e7eeb8854091bbab70e37039622c7fe3",
+      "abilities": [
+        { "Spell": { "effects": [{ "Scry": { "count": 2 } }, { "Draw": { "count": 2 } }] } },
+        { "Keyword": { "Foretell": "{1}{U}" } }
+      ]
+    }
+  ]
+}

@@ -15,9 +15,9 @@ use crate::announce;
 use crate::attach;
 use crate::choose::announceable;
 use crate::help;
-use crate::keywords::{self, keywords_of};
+use crate::keywords::{self, foretell, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
-use crate::object::ObjectKind;
+use crate::object::{FaceDown, ObjectKind};
 use crate::price::Price;
 use crate::priority::{mana_options, sorcery_timing};
 use crate::resolve::{spell_ability, zone_kind};
@@ -117,6 +117,12 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
             ),
             Keyword::Evoke(cost) => (CastWay::Evoke, "Evoke", cost, in_hand),
             Keyword::Overload(cost) => (CastWay::Overload, "Overload", cost, in_hand),
+            Keyword::Foretell(cost) => (
+                CastWay::Foretold,
+                "Foretell",
+                cost,
+                foretold_before_now(state, player, id),
+            ),
             _ => continue,
         };
         if !from_here || ways.iter().any(|w| w.alternative == Some(way)) {
@@ -133,6 +139,16 @@ pub(crate) fn of(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> 
         });
     }
     ways
+}
+
+/// Whether `player` foretold the card `id` on an earlier turn and it still lies face down in exile (CR 702.143a): the cast
+/// for its foretell cost is open to them then, and never on the turn it was foretold in.
+fn foretold_before_now(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
+    state.object(id).is_some_and(|card| {
+        card.zone() == Zone::Exile
+            && card.owner() == player
+            && matches!(card.face_down(), Some(FaceDown::Foretold { turn }) if turn < state.turn().number())
+    })
 }
 
 /// The way `player` casts the card `id` when a resolution lets them (CR 608.2g): for its mana cost, or without paying it.
@@ -222,6 +238,37 @@ pub(crate) fn can_suspend(
             .iter()
             .any(|permission| permission.flash && permission.covers(state, player, card));
     (instant || sorcery_timing(state, player))
+        && can_afford(&cost, pool, sources, life, &Spend::other())
+}
+
+/// The mana the special action of foretell costs for the card `id` (CR 702.143a), when it has the keyword.
+pub(crate) fn foretell_action_cost(state: &GameState, id: ObjectId) -> Option<ManaCost> {
+    keywords_of(state, id)
+        .into_iter()
+        .any(|keyword| matches!(keyword, Keyword::Foretell(_)))
+        .then(foretell::action_cost)
+}
+
+/// Whether `player` can foretell the card `id` now: it is in their hand, it is their turn, and they can pay {2} with the
+/// mana that floats and what they control (CR 702.143a). Priority is theirs when the options are asked, and the timing is
+/// any time during their turn, so the step and the stack do not matter.
+pub(crate) fn can_foretell(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    life: i32,
+) -> bool {
+    let Some(card) = state.object(id) else {
+        return false;
+    };
+    let Some(cost) = foretell_action_cost(state, id) else {
+        return false;
+    };
+    card.kind() == ObjectKind::Card
+        && card.zone() == Zone::Hand(player)
+        && state.turn().active() == player
         && can_afford(&cost, pool, sources, life, &Spend::other())
 }
 

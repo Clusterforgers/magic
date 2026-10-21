@@ -4009,5 +4009,109 @@
     "keywords": [
       "Suspend"
     ]
+  },
+  {
+    "id": "a9947cfd-91d6-479e-a7f6-2a2050f020f3",
+    "oracle_id": "ee05fc58-1356-4b2f-b9ce-bda8cc716aee",
+    "name": "Augury Raven",
+    "lang": "en",
+    "layout": "normal",
+    "set": "khm",
+    "collector_number": "44",
+    "rarity": "common",
+    "released_at": "2021-02-05",
+    "digital": false,
+    "mana_cost": "{3}{U}",
+    "cmc": 4.0,
+    "type_line": "Creature — Bird",
+    "oracle_text": "Flying\nForetell {1}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+    "power": "3",
+    "toughness": "3",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Flying",
+      "Foretell"
+    ]
+  },
+  {
+    "id": "27855a38-a682-4f97-ad22-ac625e86faec",
+    "oracle_id": "d7d2f701-77df-4169-bf98-0d51d6886e9b",
+    "name": "Behold the Multiverse",
+    "lang": "en",
+    "layout": "normal",
+    "set": "khm",
+    "collector_number": "46",
+    "rarity": "common",
+    "released_at": "2021-02-05",
+    "digital": false,
+    "mana_cost": "{3}{U}",
+    "cmc": 4.0,
+    "type_line": "Instant",
+    "oracle_text": "Scry 2, then draw two cards.\nForetell {1}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Foretell",
+      "Scry"
+    ]
+  },
+  {
+    "id": "3c43bf24-399e-407a-a563-bb04f93a0497",
+    "oracle_id": "6e786f0b-e2cb-40ee-96bc-81945a0b35a3",
+    "name": "Demon Bolt",
+    "lang": "en",
+    "layout": "normal",
+    "set": "clb",
+    "collector_number": "787",
+    "rarity": "common",
+    "released_at": "2022-06-10",
+    "digital": false,
+    "mana_cost": "{2}{R}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Demon Bolt deals 4 damage to target creature or planeswalker.\nForetell {R} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": [
+      "Foretell"
+    ]
+  },
+  {
+    "id": "877a1bb9-5eae-453a-bec0-a9de20ea6815",
+    "oracle_id": "90edaf33-d0ab-47e0-8f6a-6fba38286e6e",
+    "name": "Saw It Coming",
+    "lang": "en",
+    "layout": "normal",
+    "set": "khm",
+    "collector_number": "76",
+    "rarity": "uncommon",
+    "released_at": "2021-02-05",
+    "digital": false,
+    "mana_cost": "{1}{U}{U}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "Counter target spell.\nForetell {1}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Foretell"
+    ]
   }
 ]

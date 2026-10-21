@@ -67,6 +67,8 @@ pub enum CastWay {
     Madness,
     /// Suspend (CR 702.62): cast without paying its mana cost as the last time counter leaves; a creature has haste.
     Suspend,
+    /// Foretell (CR 702.143): from exile, face down, on a later turn than it was foretold, for its foretell cost.
+    Foretold,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
 }
