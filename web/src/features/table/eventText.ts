@@ -190,6 +190,7 @@ const BECAUSE: Record<ZoneCause, string> = {
   Milled: 'is milled',
   StateBased: 'is put into the graveyard',
   Discarded: 'is discarded',
+  Foretold: 'is foretold',
 }
 
 /** The events of spells and abilities: abilities on the stack, the steps of a resolution, life, zones and what players learn. */
@@ -466,7 +467,14 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     const { player, top, bottom } = event.Scried
     return line(`${n.seat(player)} scries ${top + bottom}`)
   }
-  if ('ZoneChanged' in event) return quiet(`A card moves to ${zoneWord(event.ZoneChanged.to, n)}`)
+  if ('ZoneChanged' in event) {
+    const { from, to, cause } = event.ZoneChanged
+    // A foretold card lies face down: the others learn who foretold and nothing about the card.
+    if (cause === 'Foretold' && typeof from === 'object' && 'Hand' in from) {
+      return line(`${n.seat(from.Hand)} foretells a card`)
+    }
+    return quiet(`A card moves to ${zoneWord(to, n)}`)
+  }
   if ('ChoiceMade' in event) return quiet(`${n.seat(event.ChoiceMade.player)} chooses`)
   if ('AbilityTriggered' in event) {
     return line(`An ability of ${n.card(event.AbilityTriggered.source.id)} triggers`)
