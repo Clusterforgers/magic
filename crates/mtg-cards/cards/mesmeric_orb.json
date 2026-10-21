@@ -1,0 +1,19 @@
+{
+  "oracle_id": "03efb4f3-b8e2-4441-824f-886dc40712c4",
+  "name": "Mesmeric Orb",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mesmeric Orb",
+      "oracle_fingerprint": "0b3cea8a5a8664d6750fc15054e7959d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Untapped": { "what": [] } },
+            "effects": [{ "Mill": { "who": { "ControllerOf": "Triggering" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

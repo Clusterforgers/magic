@@ -3512,5 +3512,197 @@
       "W"
     ],
     "keywords": []
+  },
+  {
+    "id": "222c1a68-e34c-4103-b1be-17d4ceaef6ce",
+    "oracle_id": "95e94dea-5ac0-4d6f-adec-ca147aee861f",
+    "name": "Ajani's Pridemate",
+    "lang": "en",
+    "layout": "normal",
+    "set": "fdn",
+    "collector_number": "135",
+    "rarity": "uncommon",
+    "released_at": "2024-11-15",
+    "digital": false,
+    "mana_cost": "{1}{W}",
+    "cmc": 2.0,
+    "type_line": "Creature — Cat Soldier",
+    "oracle_text": "Whenever you gain life, put a +1/+1 counter on this creature.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "1f9a1760-d681-471d-b3a2-ca5051b8bed3",
+    "oracle_id": "2f074636-6a36-46a3-b872-add79e19aa8b",
+    "name": "Thieving Magpie",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dmr",
+    "collector_number": "68",
+    "rarity": "uncommon",
+    "released_at": "2023-01-13",
+    "digital": false,
+    "mana_cost": "{2}{U}{U}",
+    "cmc": 4.0,
+    "type_line": "Creature — Bird",
+    "oracle_text": "Flying (This creature can't be blocked except by creatures with flying or reach.)\nWhenever this creature deals damage to an opponent, draw a card.",
+    "power": "1",
+    "toughness": "3",
+    "colors": [
+      "U"
+    ],
+    "color_identity": [
+      "U"
+    ],
+    "keywords": [
+      "Flying"
+    ]
+  },
+  {
+    "id": "03919c86-1c4a-43b0-a2db-54ca6ae1ac57",
+    "oracle_id": "967cf377-ae26-464d-85ac-8448b5a911f7",
+    "name": "Underworld Dreams",
+    "lang": "en",
+    "layout": "normal",
+    "set": "thb",
+    "collector_number": "121",
+    "rarity": "uncommon",
+    "released_at": "2020-01-24",
+    "digital": false,
+    "mana_cost": "{B}{B}{B}",
+    "cmc": 3.0,
+    "type_line": "Enchantment",
+    "oracle_text": "Whenever an opponent draws a card, this enchantment deals 1 damage to that player.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "3b04fca4-b4de-4343-ba58-d8aea39edc19",
+    "oracle_id": "633ad9e2-9f55-4a1c-9248-661ad4b0e1dc",
+    "name": "Megrim",
+    "lang": "en",
+    "layout": "normal",
+    "set": "m10",
+    "collector_number": "104",
+    "rarity": "uncommon",
+    "released_at": "2009-07-17",
+    "digital": false,
+    "mana_cost": "{2}{B}",
+    "cmc": 3.0,
+    "type_line": "Enchantment",
+    "oracle_text": "Whenever an opponent discards a card, this enchantment deals 2 damage to that player.",
+    "colors": [
+      "B"
+    ],
+    "color_identity": [
+      "B"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "adf081d5-e644-4f46-8bc8-a754b089acb4",
+    "oracle_id": "0f1afedd-c60f-454f-b84a-c8117aec0128",
+    "name": "Manabarbs",
+    "lang": "en",
+    "layout": "normal",
+    "set": "m12",
+    "collector_number": "150",
+    "rarity": "rare",
+    "released_at": "2011-07-15",
+    "digital": false,
+    "mana_cost": "{3}{R}",
+    "cmc": 4.0,
+    "type_line": "Enchantment",
+    "oracle_text": "Whenever a player taps a land for mana, this enchantment deals 1 damage to that player.",
+    "colors": [
+      "R"
+    ],
+    "color_identity": [
+      "R"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "e24fbdbb-f2ae-4823-9d2a-4c505332aa5b",
+    "oracle_id": "03efb4f3-b8e2-4441-824f-886dc40712c4",
+    "name": "Mesmeric Orb",
+    "lang": "en",
+    "layout": "normal",
+    "set": "2xm",
+    "collector_number": "272",
+    "rarity": "rare",
+    "released_at": "2020-08-07",
+    "digital": false,
+    "mana_cost": "{2}",
+    "cmc": 2.0,
+    "type_line": "Artifact",
+    "oracle_text": "Whenever a permanent becomes untapped, that permanent's controller mills a card.",
+    "colors": [],
+    "color_identity": [],
+    "keywords": [
+      "Mill"
+    ]
+  },
+  {
+    "id": "3fc3f5f2-5a83-4358-8f23-42f26f345140",
+    "oracle_id": "4b4dcdb1-0017-494f-8d83-6706b188e575",
+    "name": "Wanderbrine Preacher",
+    "lang": "en",
+    "layout": "normal",
+    "set": "ecl",
+    "collector_number": "41",
+    "rarity": "common",
+    "released_at": "2026-01-23",
+    "digital": false,
+    "mana_cost": "{1}{W}",
+    "cmc": 2.0,
+    "type_line": "Creature — Merfolk Cleric",
+    "oracle_text": "Whenever this creature becomes tapped, you gain 2 life.",
+    "power": "2",
+    "toughness": "2",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": []
+  },
+  {
+    "id": "a7d66dd3-330f-4b12-81f6-52d7a31013a9",
+    "oracle_id": "aa4ecefa-808e-4706-af16-4ea5af9743fc",
+    "name": "Renewed Faith",
+    "lang": "en",
+    "layout": "normal",
+    "set": "dmr",
+    "collector_number": "23",
+    "rarity": "common",
+    "released_at": "2023-01-13",
+    "digital": false,
+    "mana_cost": "{2}{W}",
+    "cmc": 3.0,
+    "type_line": "Instant",
+    "oracle_text": "You gain 6 life.\nCycling {1}{W} ({1}{W}, Discard this card: Draw a card.)\nWhen you cycle this card, you may gain 2 life.",
+    "colors": [
+      "W"
+    ],
+    "color_identity": [
+      "W"
+    ],
+    "keywords": [
+      "Cycling"
+    ]
   }
 ]

@@ -422,9 +422,10 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
 }
 
 /// What `pattern` finds in the events about a player or a permanent: damage, life, cards drawn, discarded and cycled,
-/// taps, counters, blocks and attachments. The subjects of the cause (`Ref::Triggering`) are, in order, the source and
-/// the recipient of damage; the player and the card; the permanent and the player who tapped it for mana; the blocker
-/// and the attacker it blocks; the attachment and what it is attached to.
+/// taps, counters, blocks and attachments. The subjects of the cause (`Ref::Triggering`) are the recipient of damage and
+/// the player who tapped for mana alone, so that damage to "that player" hits no creature that dealt it or land that was
+/// tapped; the player and the card of a discard and of a cycling; the blocker and the attacker; the attachment and what
+/// it is attached to.
 fn matching_event(
     pattern: &TriggerPattern,
     happened: &Happened,
@@ -452,7 +453,7 @@ fn matching_event(
                 .as_ref()
                 .is_none_or(|to| scope.refs(to).is_ok_and(|named| named.contains(&recipient)));
             (combat.is_none_or(|wanted| wanted == *was) && named && picks(source, dealer)?)
-                .then(|| cause(state, vec![Target::Object(dealer), recipient]))
+                .then(|| cause(state, vec![recipient]))
         }
         (TriggerPattern::LifeGained { who }, Happened::LifeGained { player })
         | (TriggerPattern::LifeLost { who }, Happened::LifeLost { player })
@@ -505,7 +506,7 @@ fn matching_permanents(
         ) => {
             let tapped = object(*tapped)?;
             (by(who, player) && picks(what, tapped)?)
-                .then(|| cause(state, vec![Target::Object(tapped), Target::Player(*player)]))
+                .then(|| cause(state, vec![Target::Player(*player)]))
         }
         (
             TriggerPattern::CountersPut { what, counter }

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "95e94dea-5ac0-4d6f-adec-ca147aee861f",
+  "name": "Ajani's Pridemate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ajani's Pridemate",
+      "oracle_fingerprint": "9427fa8386fa895447709324a606bb01",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "LifeGained": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

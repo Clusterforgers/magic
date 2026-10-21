@@ -238,13 +238,14 @@ fn damage_to_a_permanent_triggers_what_names_its_recipient(
 }
 
 #[test]
-fn damage_hands_the_ability_its_source_and_its_recipient() {
+fn damage_hands_the_ability_its_recipient_alone_so_that_damage_to_it_hits_no_one_else() {
     let pre = board(r#"{"DealsDamage":{"source":[]}}"#);
     let hit = damage(&pre, "Bear", DamageTarget::Player(FOE));
-    let found = fires(&pre, &[hit]);
+    assert_eq!(fires(&pre, &[hit])[0].cause.subjects, [Target::Player(FOE)]);
+    let hit = damage(&pre, "Bear", DamageTarget::Object(id(&pre, "Ogre")));
     assert_eq!(
-        found[0].cause.subjects,
-        [target(&pre, "Bear"), Target::Player(FOE)]
+        fires(&pre, &[hit])[0].cause.subjects,
+        [target(&pre, "Ogre")]
     );
 }
 
@@ -517,7 +518,7 @@ fn tapping_a_permanent_for_mana_triggers_once_for_the_tap(
     let mana_taps = found.len();
     assert_eq!(mana_taps, expected);
     if expected == 1 {
-        assert_eq!(found[0].cause.subjects[1], Target::Player(player));
+        assert_eq!(found[0].cause.subjects, [Target::Player(player)]);
     }
 }
 
