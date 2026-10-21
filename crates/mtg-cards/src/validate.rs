@@ -8,7 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::Serialize;
 
 use crate::ability::{Ability, LoyaltyCost, Timing};
-use crate::assemble::{PLAIN_MANA_ABILITY, plain_mana_ability, simple_mana_ability};
+use crate::assemble::{PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -1241,9 +1241,14 @@ impl<'a> Walker<'a> {
         if !matches!(ability, Ability::Keyword(_)) {
             self.uses("Ability", &tag);
         }
-        // The engine activates a mana ability of one mana at priority; any other waits for its own task.
-        if ability.is_mana_ability() && simple_mana_ability(ability).is_none() {
-            self.uses("Ability", "ManaAbility.Complex");
+        // The engine activates a mana ability of the shape `mana_shape` reads at priority (the plain one is its own
+        // primitive); one of any other shape (a mana cost, a limit, mixed mana) waits for its own task.
+        if ability.is_mana_ability() && plain_mana_ability(ability).is_none() {
+            match mana_shape(ability) {
+                Some(shape) if shape.is_simple() => {}
+                Some(_) => self.uses("Ability", "ManaAbility.Complex"),
+                None => self.uses("Ability", "ManaAbility.Other"),
+            }
         }
         self.where_and_how_often(ability);
         let saved_x = self.x_free;

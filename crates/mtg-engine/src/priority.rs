@@ -2,12 +2,9 @@
 
 use std::collections::BTreeSet;
 
-use mtg_cards::AbilityDef;
 use mtg_cards::ability::{Ability, Limit, Timing};
-use mtg_cards::assemble::{ManaProduced, SimpleManaAbility, simple_mana_ability};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
-use mtg_core::mana::ManaType;
 
 use crate::abilities::AbilityRef;
 use crate::ability_reader::{abilities_of, working_here};
@@ -17,10 +14,11 @@ use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::announceable;
 use crate::decision::{PriorityAction, PriorityOptions};
 use crate::error::{EngineError, IllegalAnswer};
-use crate::events::{Event, ZoneCause};
+use crate::events::Event;
 use crate::keywords;
 use crate::loyalty;
-use crate::mana::{ManaOption, ManaSource, can_afford};
+use crate::mana::{ManaOption, can_afford};
+use crate::mana_ability;
 use crate::object::GameObject;
 use crate::player::Player;
 use crate::price::{Leaves, Price};
@@ -55,134 +53,9 @@ pub(crate) fn all_passed(state: &GameState) -> bool {
         .is_some_and(|p| state.alive_players().all(|a| p.passed.contains(&a)))
 }
 
-/// The mana abilities `player` can activate right now.
+/// The mana abilities `player` can activate right now, to pay for something or at priority (`mana_ability.rs`).
 pub(crate) fn mana_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
-    let mut options = Vec::new();
-    for &id in state.zone(Zone::Battlefield) {
-        let Some(object) = state.object(id) else {
-            continue;
-        };
-        let Some(perm) = object.permanent() else {
-            continue;
-        };
-        if controller_of_object(state, object) != player || perm.tapped() {
-            continue;
-        }
-        let Some(chars) = characteristics(state, id) else {
-            continue;
-        };
-        // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
-        if chars.is_creature() && keywords::summoning_sick(state, id) {
-            continue;
-        }
-        for (ability, def) in chars.abilities.iter().enumerate() {
-            let AbilityDef::Mana(mana) = def;
-            options.push(ManaOption {
-                source: ManaSource {
-                    object: id,
-                    ability,
-                },
-                produces: mana.produces,
-            });
-        }
-    }
-    options
-}
-
-/// The five colours "any color" offers, in the order of the wheel.
-const COLORS: [ManaType; 5] = [
-    ManaType::White,
-    ManaType::Blue,
-    ManaType::Black,
-    ManaType::Red,
-    ManaType::Green,
-];
-
-/// A mana ability from the rules of a permanent that is activated at priority, such as a Treasure's, with the option
-/// that stands for each way to use it.
-struct RuleMana {
-    /// What it costs and adds.
-    shape: SimpleManaAbility,
-    /// One option for the mana it adds, or one for each colour when it adds any.
-    options: Vec<ManaOption>,
-}
-
-/// The mana source for the `colour`th option of the ability at position `place` among those the reader lists for
-/// `object`, which has `printed` plain mana abilities: its number follows the printed ones with five for each ability the
-/// reader lists, one for each colour it can add, so every colour is a distinct source of one permanent and a client taps
-/// for the colour it wants.
-const fn rule_source(printed: usize, object: ObjectId, place: usize, colour: usize) -> ManaSource {
-    ManaSource {
-        object,
-        ability: printed + place * COLORS.len() + colour,
-    }
-}
-
-/// The mana abilities among the abilities of `id` that the engine activates at priority (`simple_mana_ability`), for
-/// an object with `printed` plain mana abilities.
-fn rule_mana(state: &GameState, id: ObjectId, printed: usize) -> Vec<RuleMana> {
-    let mut found = Vec::new();
-    for (place, (_, rules)) in abilities_of(state, id).into_iter().enumerate() {
-        let Some(shape) = simple_mana_ability(&rules) else {
-            continue;
-        };
-        let source = |colour: usize| rule_source(printed, id, place, colour);
-        let options = match shape.produces {
-            ManaProduced::Fixed(mana) => vec![ManaOption {
-                source: source(0),
-                produces: mana,
-            }],
-            ManaProduced::AnyColor => COLORS
-                .iter()
-                .enumerate()
-                .map(|(colour, &mana)| ManaOption {
-                    source: source(colour),
-                    produces: mana,
-                })
-                .collect(),
-        };
-        found.push(RuleMana { shape, options });
-    }
-    found
-}
-
-/// The mana abilities of the rules of `player`'s permanents that they can activate now: a Treasure that is untapped,
-/// or any permanent whose ability does not tap it. They are activated at priority and never offered to pay a spell:
-/// the mana floats in the pool, so a source that sacrifices itself is never used up by an automatic payment.
-pub(crate) fn rule_mana_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
-    let mut options = Vec::new();
-    for &id in state.zone(Zone::Battlefield) {
-        let Some(object) = state.object(id) else {
-            continue;
-        };
-        let Some(perm) = object.permanent() else {
-            continue;
-        };
-        if controller_of_object(state, object) != player {
-            continue;
-        }
-        let Some(chars) = characteristics(state, id) else {
-            continue;
-        };
-        // Only creatures are subject to summoning sickness for {T} abilities (CR 302.6).
-        let sick = chars.is_creature() && keywords::summoning_sick(state, id);
-        for mana in rule_mana(state, id, chars.abilities.len()) {
-            if mana.shape.tap && (perm.tapped() || sick) {
-                continue;
-            }
-            options.extend(mana.options);
-        }
-    }
-    options
-}
-
-/// The costs of the rule-based mana ability `source` stands for, if it is one.
-fn rule_mana_costs(state: &GameState, source: ManaSource) -> Option<SimpleManaAbility> {
-    let printed = characteristics(state, source.object)?.abilities.len();
-    rule_mana(state, source.object, printed)
-        .into_iter()
-        .find(|mana| mana.options.iter().any(|option| option.source == source))
-        .map(|mana| mana.shape)
+    mana_ability::options(state, player)
 }
 
 /// Whether `player` could cast a sorcery now: their own turn, a main step and an empty stack (CR 307.1).
@@ -341,7 +214,7 @@ pub(crate) fn can_act(
 /// Everything `player` may do while holding priority.
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
-    let plain_mana = mana_options(state, player);
+    let all_mana = mana_options(state, player);
     let pool = state.player(player).map(|p| *p.mana()).unwrap_or_default();
     let life = state.player(player).map_or(0, Player::life);
     let may_play_land =
@@ -377,12 +250,11 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
                 && spell_ability(state, *id)
                     .is_none_or(|(_, rules)| announceable(state, player, *id, &rules))
                 && attach::announceable(state, player, *id)
-                && can_afford(cost, &pool, &plain_mana, life)
+                && can_afford(cost, &pool, &all_mana, life)
         })
         .collect();
     let abilities = other_abilities(state, player);
-    let mut mana_abilities = plain_mana;
-    mana_abilities.extend(rule_mana_options(state, player));
+    let mana_abilities = all_mana;
     PriorityOptions {
         can_act: can_act(&playable_lands, &castable, &abilities),
         playable_lands,
@@ -426,29 +298,9 @@ pub(crate) fn answer(
                 .iter()
                 .find(|o| o.source == source)
                 .ok_or(IllegalAnswer::NotOffered("mana ability"))?;
-            let mut events = Vec::new();
-            let costs = rule_mana_costs(state, source);
-            if costs.is_none_or(|costs| costs.tap) {
-                events.push(Event::PermanentTapped {
-                    object: source.object,
-                });
-            }
-            if costs.is_some_and(|costs| costs.sacrifice)
-                && let Some(owner) = state.object(source.object).map(GameObject::owner)
-            {
-                events.push(Event::ZoneChanged {
-                    object: source.object,
-                    from: Zone::Battlefield,
-                    to: Zone::Graveyard(owner),
-                    cause: ZoneCause::Sacrificed,
-                });
-            }
-            events.push(Event::ManaAdded {
-                player,
-                mana: option.produces,
-                source: Some(source.object),
-            });
-            Ok(Outcome::Events(events))
+            Ok(Outcome::Events(mana_ability::activation(
+                state, player, option,
+            )?))
         }
     }
 }
@@ -459,6 +311,7 @@ mod tests {
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
+    use mtg_cards::AbilityDef;
     use mtg_cards::definition::ManaAbility;
     use mtg_core::card::CardType;
     use mtg_core::color::Color;
@@ -560,242 +413,5 @@ mod tests {
             other_abilities(&game, PlayerId(1)),
             Vec::<AbilityRef>::new()
         );
-    }
-}
-
-#[cfg(test)]
-mod rule_mana_tests {
-    //! Goal: a mana ability in the rules of a permanent (a Treasure) is offered at priority as one source for each colour it can add, only while its cost can be paid, is activated with its costs and its mana in one batch and without the stack, and never counts toward what a spell can be paid with; the plain tap-for-mana of a land is unchanged.
-    use std::sync::Arc;
-
-    use mtg_cards::CardDefinition;
-    use mtg_cards::ability::Ability;
-    use mtg_core::mana::ManaCost;
-    use rstest::rstest;
-
-    use super::*;
-    use crate::fixtures::state;
-    use crate::fold::apply_event;
-
-    const ME: PlayerId = PlayerId(0);
-
-    fn ability(json: &str) -> Ability {
-        serde_json::from_str(json).unwrap()
-    }
-
-    const TREASURE: &str = r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#;
-    const PETAL: &str = r#"{"Activated":{"cost":["SacrificeSelf"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}}]}}"#;
-    const BATTERY: &str = r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}}"#;
-
-    fn artifact(name: &str, json: &str) -> Arc<CardDefinition> {
-        Arc::new(
-            CardDefinition::new(name)
-                .with_type(mtg_core::card::CardType::Artifact)
-                .with_rules(ability(json)),
-        )
-    }
-
-    fn spark() -> Arc<CardDefinition> {
-        Arc::new(
-            CardDefinition::new("Spark")
-                .with_type(mtg_core::card::CardType::Instant)
-                .with_mana_cost(ManaCost::parse("{R}").unwrap()),
-        )
-    }
-
-    fn game(permanent: Arc<CardDefinition>) -> GameState {
-        state(vec![vec![spark()], vec![]], vec![vec![permanent], vec![]])
-    }
-
-    fn produced(options: &[ManaOption]) -> Vec<ManaType> {
-        options.iter().map(|o| o.produces).collect()
-    }
-
-    #[test]
-    fn a_treasure_is_one_source_for_each_color() {
-        let game = game(artifact("Treasure", TREASURE));
-        let options = rule_mana_options(&game, ME);
-        assert_eq!(produced(&options), COLORS);
-        let id = game.zone(Zone::Battlefield)[0];
-        assert!(options.iter().all(|o| o.source.object == id));
-        let mut keys: Vec<usize> = options.iter().map(|o| o.source.ability).collect();
-        keys.dedup();
-        assert_eq!(keys.len(), 5, "every colour has its own source");
-        assert!(
-            rule_mana_options(&game, PlayerId(1)).is_empty(),
-            "only its controller's"
-        );
-    }
-
-    #[rstest]
-    #[case::treasure_that_is_tapped(TREASURE, true, 0)]
-    #[case::treasure_that_is_ready(TREASURE, false, 5)]
-    #[case::a_tap_without_a_sacrifice_that_is_tapped(BATTERY, true, 0)]
-    #[case::a_sacrifice_needs_no_untapped_source(PETAL, true, 1)]
-    fn the_cost_of_the_ability_decides_whether_it_is_offered(
-        #[case] json: &str,
-        #[case] tapped: bool,
-        #[case] offered: usize,
-    ) {
-        let mut game = game(artifact("Gem", json));
-        let id = game.zone(Zone::Battlefield)[0];
-        if tapped {
-            apply_event(&mut game, &Event::PermanentTapped { object: id }).unwrap();
-        }
-        assert_eq!(rule_mana_options(&game, ME).len(), offered);
-    }
-
-    #[rstest]
-    #[case::a_tap_cost_waits_for_the_next_turn(TREASURE, 0)]
-    #[case::a_sacrifice_alone_does_not(PETAL, 1)]
-    fn a_creature_that_just_entered_is_held_back_by_summoning_sickness_only_for_a_tap_cost(
-        #[case] json: &str,
-        #[case] offered: usize,
-    ) {
-        let mut game = game(spark());
-        let gem = Arc::new(
-            CardDefinition::new("Gem Elf")
-                .with_type(mtg_core::card::CardType::Creature)
-                .with_power_toughness(1, 1)
-                .with_rules(ability(json)),
-        );
-        let entered = crate::tokens::TokenCreated {
-            object: game.next_object(),
-            controller: ME,
-            name: "Gem Elf".into(),
-            tapped: false,
-            attacking: None,
-            definition: gem,
-        };
-        apply_event(&mut game, &Event::TokenCreated(entered)).unwrap();
-        assert_eq!(rule_mana_options(&game, ME).len(), offered);
-    }
-
-    fn activate(game: &GameState, colour: usize) -> Vec<Event> {
-        let options = priority_options(game, ME);
-        let source = options.mana_abilities[colour].source;
-        let Outcome::Events(events) =
-            answer(game, ME, &options, PriorityAction::ActivateMana(source)).unwrap()
-        else {
-            panic!("a mana ability is not a cast");
-        };
-        events
-    }
-
-    #[rstest]
-    #[case::white(0, ManaType::White)]
-    #[case::red(3, ManaType::Red)]
-    #[case::green(4, ManaType::Green)]
-    fn a_treasure_taps_sacrifices_and_adds_the_color_chosen_in_one_batch(
-        #[case] colour: usize,
-        #[case] mana: ManaType,
-    ) {
-        let game = game(artifact("Treasure", TREASURE));
-        let id = game.zone(Zone::Battlefield)[0];
-        assert_eq!(
-            activate(&game, colour),
-            [
-                Event::PermanentTapped { object: id },
-                Event::ZoneChanged {
-                    object: id,
-                    from: Zone::Battlefield,
-                    to: Zone::Graveyard(ME),
-                    cause: ZoneCause::Sacrificed,
-                },
-                Event::ManaAdded {
-                    player: ME,
-                    mana,
-                    source: Some(id)
-                },
-            ]
-        );
-    }
-
-    #[test]
-    fn an_ability_without_a_tap_cost_does_not_tap() {
-        let game = game(artifact("Petal", PETAL));
-        let id = game.zone(Zone::Battlefield)[0];
-        let events = activate(&game, 0);
-        assert_eq!(events.len(), 2);
-        assert!(matches!(
-            events[0],
-            Event::ZoneChanged { object, cause: ZoneCause::Sacrificed, .. } if object == id
-        ));
-        assert!(matches!(
-            events[1],
-            Event::ManaAdded {
-                mana: ManaType::Red,
-                ..
-            }
-        ));
-    }
-
-    #[test]
-    fn a_land_still_taps_for_its_mana_and_is_not_sacrificed() {
-        let game = state(
-            vec![vec![], vec![]],
-            vec![
-                vec![Arc::new(CardDefinition::basic_land(Some(
-                    mtg_core::color::Color::Green,
-                )))],
-                vec![],
-            ],
-        );
-        let id = game.zone(Zone::Battlefield)[0];
-        assert_eq!(
-            activate(&game, 0),
-            [
-                Event::PermanentTapped { object: id },
-                Event::ManaAdded {
-                    player: ME,
-                    mana: ManaType::Green,
-                    source: Some(id)
-                },
-            ]
-        );
-    }
-
-    #[test]
-    fn a_source_that_is_not_offered_is_refused() {
-        let game = game(artifact("Treasure", TREASURE));
-        let options = priority_options(&game, ME);
-        let id = game.zone(Zone::Battlefield)[0];
-        let unknown = ManaSource {
-            object: id,
-            ability: 99,
-        };
-        let error = answer(&game, ME, &options, PriorityAction::ActivateMana(unknown));
-        assert!(error.is_err());
-    }
-
-    #[test]
-    fn the_mana_of_a_treasure_is_made_first_and_never_counts_toward_a_spell() {
-        let game = game(artifact("Treasure", TREASURE));
-        let options = priority_options(&game, ME);
-        assert_eq!(options.mana_abilities.len(), 5);
-        assert!(
-            options.castable.is_empty(),
-            "{{R}} is not paid by a source the payment cannot sacrifice"
-        );
-        assert!(!options.can_act, "a mana ability alone is not an action");
-    }
-
-    #[test]
-    fn a_land_and_a_treasure_are_listed_together_and_the_spell_is_paid_by_the_land() {
-        let game = state(
-            vec![vec![spark()], vec![]],
-            vec![
-                vec![
-                    Arc::new(CardDefinition::basic_land(Some(
-                        mtg_core::color::Color::Red,
-                    ))),
-                    artifact("Treasure", TREASURE),
-                ],
-                vec![],
-            ],
-        );
-        let options = priority_options(&game, ME);
-        assert_eq!(options.mana_abilities.len(), 6);
-        assert_eq!(options.castable.len(), 1);
     }
 }

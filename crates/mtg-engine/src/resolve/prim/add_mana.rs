@@ -8,6 +8,7 @@ use mtg_core::mana::ManaType;
 use super::{unsupported, wrong_effect};
 use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::events::Event;
+use crate::object::{Chosen, GameObject, PermanentState};
 use crate::resolve::{Cx, ResolveError, Run};
 
 /// The colours "any color" offers, in the order of the five-colour wheel.
@@ -31,20 +32,20 @@ const fn mana_of(color: Color) -> ManaType {
 }
 
 /// Each player `who` names who is still in the game adds the mana `times` times to their pool. A fixed mana is
-/// added as printed. "Any color" asks the player for a colour (`ChooseOption`) each time it is added, and every mana
-/// of that addition has it ("three mana of any one color"); a choice with one option is not asked. The mana is
-/// credited to the object that produced it while that object is in the game.
+/// added as printed. "Any color" and a choice between types ("{W} or {U}") ask the player (`ChooseOption`) each time
+/// the mana is added, and every mana of that addition has the type chosen ("three mana of any one color"); a choice
+/// with one option is not asked. The chosen color is the one the source's controller chose as it entered, and
+/// none is added while there is none. The mana is credited to the object that produced it while that object is in
+/// the game.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::AddMana { who, mana, times } = effect else {
         return Err(wrong_effect("AddMana"));
     };
-    // A choice of mana other than any one color waits for the task that plays it; `Caps` names each by `Effect.AddMana.<kind>`.
+    // The identity of a commander and what a land could produce wait for the task that plays them; `Caps` names each by `Effect.AddMana.<kind>`.
     match mana {
-        Produce::OneOf(_) => return unsupported("Effect.AddMana.OneOf"),
-        Produce::ChosenColor(_) => return unsupported("Effect.AddMana.ChosenColor"),
         Produce::CommanderIdentity(_) => return unsupported("Effect.AddMana.CommanderIdentity"),
         Produce::ProducedBy { .. } => return unsupported("Effect.AddMana.ProducedBy"),
-        Produce::Fixed(_) | Produce::AnyColor(_) => {}
+        Produce::Fixed(_) | Produce::AnyColor(_) | Produce::OneOf(_) | Produce::ChosenColor(_) => {}
     }
     let state = cx.state();
     let times = usize::try_from(cx.scope.amount(times)?.max(0)).unwrap_or(0);
@@ -56,7 +57,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .collect();
     let source = Some(cx.scope.source.id).filter(|id| state.object(*id).is_some());
     let mut events = Vec::new();
-    match mana {
+    // The types a player picks between and how many mana of the one picked.
+    let (kinds, each): (Vec<ManaType>, u32) = match mana {
         Produce::Fixed(list) => {
             for player in &players {
                 for _ in 0..times {
@@ -67,41 +69,74 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     }));
                 }
             }
+            return Ok(Run::events(events));
         }
-        Produce::AnyColor(each) => {
-            let options: Vec<ChoiceOption> =
-                COLORS.iter().copied().map(ChoiceOption::Color).collect();
-            let choosers: Vec<OptionChooser> = players
-                .iter()
-                .flat_map(|player| std::iter::repeat_n(*player, times))
-                .map(|player| OptionChooser {
-                    player,
-                    options: options.clone(),
-                    text: "Choose a color of mana.".into(),
-                })
-                .collect();
-            let taken = match pick_options(cx, &choosers)? {
-                Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
-                Optioned::Done(taken) => taken,
-            };
-            for (player, index) in taken {
-                let Some(color) = COLORS.get(index).copied() else {
-                    return Err(ResolveError::Invalid(format!("no color is option {index}")));
-                };
-                events.extend(std::iter::repeat_n(
-                    Event::ManaAdded {
-                        player,
-                        mana: mana_of(color),
-                        source,
-                    },
-                    usize::try_from(*each).unwrap_or(0),
-                ));
+        Produce::ChosenColor(each) => {
+            let chosen = source
+                .and_then(|id| state.object(id))
+                .and_then(GameObject::permanent)
+                .and_then(PermanentState::chosen);
+            if let Some(Chosen::Color(color)) = chosen {
+                for player in &players {
+                    events.extend(
+                        std::iter::repeat_n(
+                            Event::ManaAdded {
+                                player: *player,
+                                mana: mana_of(*color),
+                                source,
+                            },
+                            usize::try_from(*each).unwrap_or(0).saturating_mul(times),
+                        )
+                        .collect::<Vec<_>>(),
+                    );
+                }
             }
+            return Ok(Run::events(events));
         }
-        Produce::OneOf(_)
-        | Produce::ChosenColor(_)
-        | Produce::CommanderIdentity(_)
-        | Produce::ProducedBy { .. } => return Err(wrong_effect("AddMana")),
+        Produce::AnyColor(each) => (COLORS.iter().copied().map(mana_of).collect(), *each),
+        Produce::OneOf(types) => (types.clone(), 1),
+        Produce::CommanderIdentity(_) | Produce::ProducedBy { .. } => {
+            return Err(wrong_effect("AddMana"));
+        }
+    };
+    let options: Vec<ChoiceOption> = match mana {
+        Produce::OneOf(_) => kinds
+            .iter()
+            .map(|kind| ChoiceOption::Label(format!("{{{}}}", kind.symbol())))
+            .collect(),
+        _ => COLORS.iter().copied().map(ChoiceOption::Color).collect(),
+    };
+    let choosers: Vec<OptionChooser> = players
+        .iter()
+        .flat_map(|player| std::iter::repeat_n(*player, times))
+        .map(|player| OptionChooser {
+            player,
+            options: options.clone(),
+            text: if matches!(mana, Produce::OneOf(_)) {
+                "Choose a type of mana.".into()
+            } else {
+                "Choose a color of mana.".into()
+            },
+        })
+        .collect();
+    let taken = match pick_options(cx, &choosers)? {
+        Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
+        Optioned::Done(taken) => taken,
+    };
+    for (player, index) in taken {
+        let Some(kind) = kinds.get(index).copied() else {
+            return Err(ResolveError::Invalid(format!(
+                "no type of mana is option {index}"
+            )));
+        };
+        events.extend(std::iter::repeat_n(
+            Event::ManaAdded {
+                player,
+                mana: kind,
+                source,
+            },
+            usize::try_from(each).unwrap_or(0),
+        ));
     }
     Ok(Run::events(events))
 }
@@ -183,14 +218,6 @@ mod tests {
     }
 
     #[rstest]
-    #[case::a_choice(
-        r#"{"AddMana":{"mana":{"OneOf":["White","Blue"]}}}"#,
-        "Effect.AddMana.OneOf"
-    )]
-    #[case::the_chosen_color(
-        r#"{"AddMana":{"mana":{"ChosenColor":1}}}"#,
-        "Effect.AddMana.ChosenColor"
-    )]
     #[case::the_commanders_identity(
         r#"{"AddMana":{"mana":{"CommanderIdentity":1}}}"#,
         "Effect.AddMana.CommanderIdentity"
@@ -199,7 +226,7 @@ mod tests {
         r#"{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"}],"count":1}}}}"#,
         "Effect.AddMana.ProducedBy"
     )]
-    fn a_choice_of_mana_other_than_any_color_refuses_by_its_own_name(
+    fn mana_that_needs_a_commander_or_a_land_refuses_by_its_own_name(
         #[case] json: &str,
         #[case] name: &'static str,
     ) {
@@ -289,6 +316,49 @@ mod tests {
         )
         .unwrap();
         assert_eq!(added(run), [(ME, ManaType::White), (ME, ManaType::Green)]);
+    }
+
+    #[rstest]
+    #[case::first(0, ManaType::White)]
+    #[case::second(1, ManaType::Blue)]
+    #[case::third(2, ManaType::Colorless)]
+    fn a_choice_between_types_asks_once_and_adds_the_type_chosen(
+        #[case] index: usize,
+        #[case] expected: ManaType,
+    ) {
+        let game = game();
+        let one_of = effect(r#"{"AddMana":{"mana":{"OneOf":["White","Blue","Colorless"]}}}"#);
+        let Run::Ask(decision) = run_with(&game, Vec::new(), &one_of).unwrap() else {
+            panic!("the player chooses");
+        };
+        let DecisionKind::ChooseOption(options) = decision.kind else {
+            panic!("a choice of option");
+        };
+        assert_eq!(
+            options.options,
+            ["{W}", "{U}", "{C}"].map(|label| ChoiceOption::Label(label.into()))
+        );
+        let run = run_with(&game, vec![(ME, Choice::Option(index))], &one_of).unwrap();
+        assert_eq!(added(run), [(ME, expected)]);
+    }
+
+    #[test]
+    fn mana_of_the_chosen_color_is_added_only_when_a_color_was_chosen() {
+        let chosen = effect(r#"{"AddMana":{"mana":{"ChosenColor":2},"times":2}}"#);
+        let mut game = game();
+        let id = game.zone(Zone::Battlefield)[0];
+        assert_eq!(added(run_with(&game, Vec::new(), &chosen).unwrap()), []);
+        let entered = Event::Entered {
+            object: id,
+            tapped: false,
+            controller: ME,
+            chosen: Some(Chosen::Color(Color::Red)),
+        };
+        crate::fold::apply_event(&mut game, &entered).unwrap();
+        assert_eq!(
+            added(run_with(&game, Vec::new(), &chosen).unwrap()),
+            [(ME, ManaType::Red); 4]
+        );
     }
 
     #[test]

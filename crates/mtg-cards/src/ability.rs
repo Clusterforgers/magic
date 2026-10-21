@@ -237,15 +237,17 @@ impl Ability {
         }
     }
 
-    /// Whether this is an activated ability with no targets that only adds mana (CR 605.1a).
+    /// Whether this is an activated ability with no targets that could add mana (CR 605.1a): other effects after the
+    /// mana do not change it, so a painland's damage and an egg's draw are part of a mana ability.
     pub fn is_mana_ability(&self) -> bool {
         match self {
             Ability::Activated {
                 targets, effects, ..
             } => {
                 targets.is_empty()
-                    && !effects.is_empty()
-                    && effects.iter().all(|e| matches!(e, Effect::AddMana { .. }))
+                    && effects
+                        .iter()
+                        .any(|e| matches!(e, Effect::AddMana { .. }))
             }
             _ => false,
         }

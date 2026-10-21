@@ -17,6 +17,8 @@ mod layers;
 mod legend;
 mod mulligan;
 mod preview;
+mod mana_ability;
+mod mana_plan;
 mod price;
 mod sba;
 mod steps;

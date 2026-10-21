@@ -13,6 +13,7 @@ use mtg_core::mana::{ManaCost, ManaSymbol, ManaType, PHYREXIAN_LIFE};
 use serde::{Deserialize, Serialize};
 
 use crate::error::PaymentError;
+use crate::mana_plan::{Needs, plan, rest_after, spent_of};
 
 /// Mana currently floating for a player.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
@@ -75,6 +76,45 @@ pub struct ManaOption {
     pub source: ManaSource,
     /// Mana added when it is activated.
     pub produces: ManaType,
+    /// How many mana of that type it adds (Sol Ring adds 2); left out means one.
+    #[serde(default = "one", skip_serializing_if = "is_one")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub count: u32,
+    /// Activating it sacrifices its source (a Treasure); left out means it does not.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub sacrifice: bool,
+}
+
+const fn one() -> u32 {
+    1
+}
+
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_one(count: &u32) -> bool {
+    *count == 1
+}
+
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_false(flag: &bool) -> bool {
+    !*flag
+}
+
+impl ManaOption {
+    /// An ability that taps its source for one mana of `produces`.
+    pub const fn new(source: ManaSource, produces: ManaType) -> Self {
+        ManaOption {
+            source,
+            produces,
+            count: 1,
+            sacrifice: false,
+        }
+    }
+
+    /// Whether it adds one mana and keeps its source, so a permanent is one mana for one tap.
+    pub const fn is_simple(&self) -> bool {
+        self.count == 1 && !self.sacrifice
+    }
 }
 
 /// A complete, explicit payment: floating mana to spend, sources to tap and life to pay.
@@ -153,6 +193,9 @@ fn match_needs(needs: &[ManaType], groups: &[Vec<ManaOption>]) -> Option<Vec<Opt
 
 /// Whether the plain `cost` can be paid exactly from the pool plus the given sources, tapping each permanent once.
 fn plain_can_afford(cost: &ManaCost, pool: &ManaPool, sources: &[ManaOption]) -> bool {
+    if !sources.iter().all(ManaOption::is_simple) {
+        return planned_auto(cost, pool, sources).is_some();
+    }
     let groups = by_permanent(sources);
     let mut needs = Vec::new();
     for mana in ManaType::ALL {
@@ -163,8 +206,37 @@ fn plain_can_afford(cost: &ManaCost, pool: &ManaPool, sources: &[ManaOption]) ->
     supply >= u64::from(cost.mana_value()) && match_needs(&needs, &groups).is_some()
 }
 
+/// The payment of the plain `cost` when some source adds several mana or is sacrificed: floating mana first, then the
+/// sources [`plan`] chooses.
+fn planned_auto(cost: &ManaCost, pool: &ManaPool, sources: &[ManaOption]) -> Option<Payment> {
+    let mut pool_left = *pool;
+    let mut payment = Payment::default();
+    let mut needs: Needs = [0; 6];
+    for mana in ManaType::ALL {
+        let wanted = cost.required(mana);
+        let mut taken = 0;
+        while taken < wanted && pool_left.spend(mana) {
+            payment.pool.push(mana);
+            taken += 1;
+        }
+        needs[mana.index()] = wanted - taken;
+    }
+    let mut generic = cost.generic();
+    for mana in ManaType::ALL {
+        while generic > 0 && pool_left.spend(mana) {
+            payment.pool.push(mana);
+            generic -= 1;
+        }
+    }
+    payment.taps = plan(needs, generic, &by_permanent(sources), sources)?;
+    Some(payment)
+}
+
 /// Picks a valid payment of the plain `cost` if one exists: floating mana first, then sources, keeping scarce colors untapped.
 fn plain_auto(cost: &ManaCost, pool: &ManaPool, sources: &[ManaOption]) -> Option<Payment> {
+    if !sources.iter().all(ManaOption::is_simple) {
+        return planned_auto(cost, pool, sources);
+    }
     let mut pool_left = *pool;
     let mut payment = Payment::default();
     let mut take_from_pool = |mana: ManaType, wanted: u32, payment: &mut Payment| -> u32 {
@@ -207,23 +279,23 @@ fn plain_auto(cost: &ManaCost, pool: &ManaPool, sources: &[ManaOption]) -> Optio
     Some(payment)
 }
 
-/// The mana a payment's parts make, after checking each part on its own.
+/// What each part of a payment makes: one entry for every floating mana it spends and one for every tap.
 ///
 /// The floating mana must exist, and every tap must be an offered ability of a permanent that is not
 /// tapped, used once: a second ability of the same permanent would tap it again.
-fn spent_by_parts(
+fn parts_of(
     pool: &ManaPool,
     sources: &[ManaOption],
     tapped: &[ObjectId],
     payment: &Payment,
-) -> Result<Vec<ManaType>, PaymentError> {
-    let mut spent: Vec<ManaType> = Vec::new();
+) -> Result<Vec<Vec<ManaType>>, PaymentError> {
+    let mut parts: Vec<Vec<ManaType>> = Vec::new();
     let mut from_pool = *pool;
     for &mana in &payment.pool {
         if !from_pool.spend(mana) {
             return Err(PaymentError::PoolShortfall(mana));
         }
-        spent.push(mana);
+        parts.push(vec![mana]);
     }
     for (i, tap) in payment.taps.iter().enumerate() {
         if payment.taps[..i].contains(tap) {
@@ -239,30 +311,36 @@ fn spent_by_parts(
         if payment.taps[..i].iter().any(|t| t.object == tap.object) {
             return Err(PaymentError::ObjectTappedTwice(tap.object));
         }
-        spent.push(option.produces);
+        parts.push(vec![option.produces; option.count as usize]);
     }
-    Ok(spent)
+    Ok(parts)
 }
 
-/// Whether `spent` pays the plain `cost` exactly: the right total and every colored or colorless requirement met.
-fn plain_covers(cost: &ManaCost, spent: &[ManaType]) -> Result<(), PaymentError> {
-    let got = u32::try_from(spent.len()).unwrap_or(u32::MAX);
-    if got != cost.mana_value() {
-        return Err(PaymentError::WrongTotal {
-            needed: cost.mana_value(),
-            got,
-        });
+/// What is left to pay of the plain `cost` once the mana of `parts` is spent: the requirements not met and the mana of
+/// any kind still missing. Mana that cannot all go toward the cost is wasted.
+fn left_to_pay(
+    cost: &ManaCost,
+    sources: &[ManaOption],
+    parts: &[Vec<ManaType>],
+) -> Result<(Needs, u32), PaymentError> {
+    if !sources.iter().all(ManaOption::is_simple) {
+        return rest_after(cost, parts);
     }
+    let spent: Vec<ManaType> = parts.concat();
+    let mut generic = cost.generic();
+    let mut needs: Needs = [0; 6];
     for mana in ManaType::ALL {
-        let have = spent.iter().filter(|m| **m == mana).count();
-        if have < cost.required(mana) as usize {
-            return Err(PaymentError::MissingMana(mana));
-        }
+        let have = u32::try_from(spent.iter().filter(|m| **m == mana).count()).unwrap_or(u32::MAX);
+        let need = cost.required(mana);
+        generic = generic
+            .checked_sub(have.saturating_sub(need))
+            .ok_or(PaymentError::Wasted)?;
+        needs[mana.index()] = need.saturating_sub(have);
     }
-    Ok(())
+    Ok((needs, generic))
 }
 
-/// Finishes a partial payment of the plain `cost`: keeps every part of `partial` (its mana, `spent`) and pays the rest.
+/// Finishes a partial payment of the plain `cost`: keeps every part of `partial` (its mana, `parts`) and pays the rest.
 ///
 /// The mana chosen must fit inside the cost (mana beyond the colored requirements has to go to the generic part).
 fn plain_complete(
@@ -270,23 +348,15 @@ fn plain_complete(
     pool: &ManaPool,
     sources: &[ManaOption],
     partial: &Payment,
-    spent: &[ManaType],
+    parts: &[Vec<ManaType>],
 ) -> Result<Payment, PaymentError> {
-    let mut generic = cost.generic();
+    let (needs, generic) = left_to_pay(cost, sources, parts)?;
     let mut symbols = Vec::new();
     for mana in ManaType::ALL {
-        let have = u32::try_from(spent.iter().filter(|m| **m == mana).count()).unwrap_or(u32::MAX);
-        let need = cost.required(mana);
-        generic = generic
-            .checked_sub(have.saturating_sub(need))
-            .ok_or(PaymentError::Wasted)?;
         let symbol = mana
             .color()
             .map_or(ManaSymbol::Colorless, ManaSymbol::Colored);
-        symbols.extend(std::iter::repeat_n(
-            symbol,
-            need.saturating_sub(have) as usize,
-        ));
+        symbols.extend(std::iter::repeat_n(symbol, needs[mana.index()] as usize));
     }
     let rest_cost =
         ManaCost::from_symbols(std::iter::once(ManaSymbol::Generic(generic)).chain(symbols));
@@ -344,18 +414,24 @@ pub fn can_afford(cost: &ManaCost, pool: &ManaPool, sources: &[ManaOption], life
         .any(|r| can_pay_life(life, r.life) && plain_can_afford(&r.cost, pool, sources))
 }
 
-/// How much a payment is wanted, lower first: less life, then fewer taps, then taps of the kinds the sources make most of.
+/// How much a payment is wanted, lower first: less life, then fewer sacrifices, then fewer taps, then taps of the kinds the sources make most of.
 ///
 /// The last part keeps a scarce color untapped when a hybrid symbol can be paid with either of two.
-fn preference(payment: &Payment, sources: &[ManaOption]) -> (u32, usize, Reverse<usize>) {
+fn preference(payment: &Payment, sources: &[ManaOption]) -> (u32, usize, usize, Reverse<usize>) {
     let plenty = |mana: ManaType| sources.iter().filter(|o| o.produces == mana).count();
-    let common = payment
+    let used: Vec<&ManaOption> = payment
         .taps
         .iter()
         .filter_map(|tap| sources.iter().find(|o| o.source == *tap))
-        .map(|o| plenty(o.produces))
-        .sum();
-    (payment.life, payment.taps.len(), Reverse(common))
+        .collect();
+    let common = used.iter().map(|o| plenty(o.produces)).sum();
+    let sacrificed = used.iter().filter(|o| o.sacrifice).count();
+    (
+        payment.life,
+        sacrificed,
+        payment.taps.len(),
+        Reverse(common),
+    )
 }
 
 /// Replaces `best` with `payment` when it is wanted more, so among equals the first stays.
@@ -406,15 +482,15 @@ pub fn check_payment(
     life: i32,
     payment: &Payment,
 ) -> Result<Vec<ManaType>, PaymentError> {
-    let spent = spent_by_parts(pool, sources, tapped, payment)?;
+    let parts = parts_of(pool, sources, tapped, payment)?;
     check_life(cost, life, payment.life)?;
     let mut refusal = None;
     for resolution in cost.resolutions() {
         if resolution.life != payment.life {
             continue;
         }
-        match plain_covers(&resolution.cost, &spent) {
-            Ok(()) => return Ok(spent),
+        match spent_of(&resolution.cost, &parts) {
+            Ok(spent) => return Ok(spent),
             Err(error) => {
                 refusal.get_or_insert(error);
             }
@@ -445,7 +521,7 @@ pub fn complete_payment(
     life: i32,
     partial: &Payment,
 ) -> Result<Payment, PaymentError> {
-    let spent = spent_by_parts(pool, sources, tapped, partial)?;
+    let parts = parts_of(pool, sources, tapped, partial)?;
     check_life(cost, life, partial.life)?;
     let mut best = None;
     let mut refusal: Option<PaymentError> = None;
@@ -453,7 +529,7 @@ pub fn complete_payment(
         if !may_pay_life(resolution.life, partial.life, life) {
             continue;
         }
-        match plain_complete(&resolution.cost, pool, sources, partial, &spent) {
+        match plain_complete(&resolution.cost, pool, sources, partial, &parts) {
             Ok(mut whole) => {
                 whole.life = resolution.life;
                 keep_better(&mut best, whole, sources);
@@ -520,12 +596,14 @@ mod tests {
                 letters
                     .chars()
                     .enumerate()
-                    .map(move |(ability, c)| ManaOption {
-                        source: ManaSource {
-                            object: ObjectId(object),
-                            ability,
-                        },
-                        produces: mana_of(c),
+                    .map(move |(ability, c)| {
+                        ManaOption::new(
+                            ManaSource {
+                                object: ObjectId(object),
+                                ability,
+                            },
+                            mana_of(c),
+                        )
                     })
             })
             .collect()
@@ -1366,10 +1444,7 @@ mod tests {
                 let mut sources = Vec::new();
                 for (object, abilities) in (0u64..).zip(permanents) {
                     for (ability, produces) in abilities.into_iter().enumerate() {
-                        sources.push(ManaOption {
-                            source: tap(object, ability),
-                            produces,
-                        });
+                        sources.push(ManaOption::new(tap(object, ability), produces));
                     }
                 }
                 sources.truncate(7);
