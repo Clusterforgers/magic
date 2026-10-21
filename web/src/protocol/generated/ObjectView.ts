@@ -108,4 +108,9 @@ attached_to?: ObjectId,
 /**
  * The permanents attached to this one, in id order; left out while there are none.
  */
-attachments?: Array<ObjectId>, };
+attachments?: Array<ObjectId>, 
+/**
+ * Whether the object lies face down (a foretold card in exile). The seat that may look at it sees its characteristics
+ * besides; every other seat sees an object with no name, types, colours, abilities or counters.
+ */
+face_down?: boolean, };

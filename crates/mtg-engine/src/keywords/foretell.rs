@@ -39,6 +39,6 @@ mod tests {
     fn the_keyword_adds_no_ability() {
         let keyword = Keyword::Foretell(Cost::mana("{1}{U}".parse().unwrap()));
         let added: Vec<Ability> = Foretell.adds_abilities(&keyword);
-        assert!(added.is_empty());
+        assert_eq!(added, Vec::<Ability>::new());
     }
 }

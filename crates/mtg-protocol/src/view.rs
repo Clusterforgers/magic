@@ -126,6 +126,8 @@ pub struct ObjectView {
     pub face_down: bool,
 }
 
+/// Whether a flag is off, so serialization can leave it out (serde hands over a reference).
+#[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_false(flag: &bool) -> bool {
     !*flag
 }

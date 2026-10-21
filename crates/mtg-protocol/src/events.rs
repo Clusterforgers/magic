@@ -302,8 +302,8 @@ fn redact_effects(before: &GameState, event: &Event, viewer: PlayerId) -> Option
             to,
             cause,
         } if !identified_in(before, *object, *from, viewer)
-            && !(zone_is_visible_in(before, *to, viewer)
-                && arrives_known(before, *object, *cause, viewer)) =>
+            && (!zone_is_visible_in(before, *to, viewer)
+                || !arrives_known(before, *object, *cause, viewer)) =>
         {
             Some(HiddenEvent::ZoneChanged {
                 from: *from,

@@ -5,7 +5,7 @@ use mtg_cards::value::CastWay;
 use mtg_core::ids::ObjectId;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::events::ZoneCause;
-use mtg_engine::object::FaceDown;
+use mtg_engine::object::{FaceDown, PermanentState};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, PresetPermanent, apply_event};
@@ -88,7 +88,7 @@ fn tapped(driver: &Driver) -> usize {
         .zone(Zone::Battlefield)
         .iter()
         .filter_map(|id| driver.state().object(*id))
-        .filter(|o| o.controller() == pid(0) && o.permanent().is_some_and(|p| p.tapped()))
+        .filter(|o| o.controller() == pid(0) && o.permanent().is_some_and(PermanentState::tapped))
         .count()
 }
 
@@ -134,7 +134,7 @@ fn foretelling_exiles_the_card_face_down_for_two_and_never_uses_the_stack(
         pid(0),
         "the owner keeps priority"
     );
-    assert!(foretellable(&driver).is_empty());
+    assert_eq!(foretellable(&driver), Vec::<String>::new());
     Ok(())
 }
 
@@ -186,7 +186,7 @@ fn a_card_is_not_foretold_on_the_turn_of_another_player() -> Result<(), ScriptEr
         driver.pass()?;
     }
     assert_eq!(driver.state().turn().active(), pid(1));
-    assert!(foretellable(&driver).is_empty());
+    assert_eq!(foretellable(&driver), Vec::<String>::new());
     let id = find(&driver, Zone::Hand(pid(0)), "Behold the Multiverse");
     let refused = driver.answer(Answer::Priority(PriorityAction::Foretell(id)));
     assert!(

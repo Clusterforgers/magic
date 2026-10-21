@@ -79,7 +79,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 - [x] (g4) Alternative costs chosen with the cast (`ChooseOption`, `Choices.way`) and cast permissions (`GameRule::MayCast`: from a graveyard, exile or a library, without paying, as though with flash): flashback, evoke and overload; Mulldrifter, Faithless Looting, Cyclonic Rift, Mizzium Mortars, Omniscience and Vedalken Orrery are Verified
 - [x] (g4b) A spell cast during a resolution (`Effect::CastFromZone`), cascade and discover, and the hidden-information tests of a cast from a library or exile; Bloodbraid Elf is Verified
 - [x] (g4c) Madness (the discard is replaced by an exile and the card is cast for its madness cost as a trigger resolves) and suspend (the special action `PriorityAction::Suspend`, time counters on a card in exile, the upkeep removal, the free cast with haste); the keyword Foretell is in the DSL with its `Caps` name (r5c); Fiery Temper, Basking Rootwalla, Arrogant Wurm, Rift Bolt, Ancestral Vision and Durkwood Baloth are Verified
-- [ ] (g4d) Foretell: the special action from the hand, the face-down exile that only its owner may look at, and the cast for the foretell cost on a later turn
+- [x] (g4d) Foretell: the special action `PriorityAction::Foretell` from the hand, the face-down exile that only its owner may look at (`FaceDown`, `GameState::may_look_at`, the face-down rule of the views and the log) and the cast for the foretell cost on a later turn (`CastWay::Foretold`); Behold the Multiverse, Saw It Coming, Demon Bolt and Augury Raven are Verified
 - [x] (g5) Cost modifiers (`Ability::CostModifier`): increases and reductions of the total cost in the order of CR 601.2f, from the spell itself and the permanents of every player; Fireball, Thalia, Guardian of Thraben and Foundry Inspector are Verified
 - [x] (g5b) Convoke and delve: payment taps creatures or exiles graveyard cards for part of the cost, offered beside the mana sources in `PayMana`; Stoke the Flames, Siege Wurm, Treasure Cruise, Murderous Cut and Gurmag Angler are Verified
 - [ ] (g5c) Convoke and delve are shown to every seat by the protocol projection (a test over `mtg-protocol` hidden-information helpers) and a payment of a copy of a spell uses them (waits for the spell copies of (o))
@@ -97,7 +97,7 @@ Design and task order: `docs/cards-dsl.md` (Tasks). The clusters run in the orde
 
 ### Faces and copies
 - [ ] (n1) Multi-face cards: split, adventure, modal double-faced, transform and meld; the face is chosen at announcement, `Card.Faces` is lifted, `Effect::Transform`; Delver of Secrets, Bonecrusher Giant and Fire // Ice (fuse) are Verified
-- [ ] (n2) Face-down objects (morph, disguise, manifest, cloak) and the face-down rule in `zone_is_visible`
+- [ ] (n2) Face-down objects (morph, disguise, manifest, cloak): a `FaceDown` kind each with its characteristics, who may look at it and turning it face up, on the face-down rule of (g4d)
 - [ ] (o) Copies: a token that copies an object, spell copies, enters as a copy, populate, storm; copiable values as the first layer
 
 ### Manual cards and views

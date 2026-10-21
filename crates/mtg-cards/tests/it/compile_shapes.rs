@@ -203,6 +203,7 @@ mod generated {
         "Cycling {2}",
         "Flashback {2}{R}",
         "Suspend 4\u{2014}{U}",
+        "Foretell {1}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
         "Enchant creature",
         "Undying",
         "Level up {1}{U}",

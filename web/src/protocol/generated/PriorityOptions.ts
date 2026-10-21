@@ -28,6 +28,10 @@ abilities?: Array<AbilityRef>,
  */
 suspendable?: Array<ObjectId>, 
 /**
+ * Cards in the hand that can be foretold now (a special action during their owner's turn that does not use the stack, CR 702.143).
+ */
+foretellable?: Array<ObjectId>, 
+/**
  * Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
  * mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.
  */
