@@ -1,6 +1,6 @@
 //! Goal: the art of a card's default printing and printings looked up by id or by set and number are exact: paper before digital, then the newest; unknown and malformed ids are absent; sets match in any case.
 
-mod common;
+use crate::common;
 
 use mtg_import::ids::{OracleId, PrintingId};
 use mtg_import::scryfall::{CardRecord, ImageUris};

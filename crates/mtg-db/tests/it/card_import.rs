@@ -1,6 +1,6 @@
 //! Goal: importing the recorded Scryfall file is idempotent at any batch size, independent of batch boundaries, and round-trips every field of every card and printing.
 
-mod common;
+use crate::common;
 
 use mtg_db::{ImplStatus, RunStatus};
 use sqlx::PgPool;

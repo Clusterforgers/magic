@@ -1,6 +1,6 @@
 //! Goal: for hundreds of random cards and random filter combinations, database search returns exactly what a plain in-memory filter returns, in the same order, and paging through any result never repeats or skips a card.
 
-mod common;
+use crate::common;
 
 use std::collections::BTreeSet;
 

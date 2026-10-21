@@ -1,6 +1,6 @@
 //! Goal: single and batch card loading tolerate unknown and malformed ids, and a card's detail bundles exactly its own printings and rulings.
 
-mod common;
+use crate::common;
 
 use mtg_import::ids::OracleId;
 use mtg_import::scryfall::RulingSource;

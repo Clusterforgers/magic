@@ -1,6 +1,6 @@
 //! Goal: precon deck entries resolve by the strongest identifier available, fall back to names only when unambiguous, and stay visible, unresolved, when nothing matches.
 
-mod common;
+use crate::common;
 
 use mtg_db::DeckBoard;
 use mtg_db::import::UnresolvedReason;

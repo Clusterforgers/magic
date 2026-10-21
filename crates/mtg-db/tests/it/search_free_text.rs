@@ -1,6 +1,6 @@
 //! Goal: free text finds cards by name or by rules text, relevance puts the card named by the text first, then names that start with it, then names that contain it, then rules-text matches, and paging through a relevance order never repeats or skips a card.
 
-mod common;
+use crate::common;
 
 use mtg_db::cards::MAX_PAGE_SIZE;
 use mtg_db::{CardSearch, Page, SortKey};

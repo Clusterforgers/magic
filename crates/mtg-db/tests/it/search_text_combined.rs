@@ -1,6 +1,6 @@
 //! Goal: oracle-text full-text search, combinations of every filter, and the mana-value sort order behave over the recorded card fixture.
 
-mod common;
+use crate::common;
 
 use mtg_db::{CardSearch, ColorFilter, ColorMatch, SortKey};
 use sqlx::PgPool;

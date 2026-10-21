@@ -1,6 +1,6 @@
 //! Goal: a record holding a NUL byte, which Postgres cannot store, is skipped and counted with a reason that never carries the byte, while every other record of its batch is stored and the run succeeds.
 
-mod common;
+use crate::common;
 
 use mtg_db::RunStatus;
 use mtg_import::mtgjson::parse_deck_str;

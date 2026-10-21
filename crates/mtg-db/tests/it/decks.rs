@@ -1,6 +1,6 @@
 //! Goal: stored decks read back exactly as saved (lines in order, printings, notes, the stored check, UTC timestamps), one owner never sees, replaces or deletes another's deck, the cap on decks per owner holds under racing creations, lines cascade with their deck, a removed printing leaves the card, and the database refuses what the server would not send.
 
-mod common;
+use crate::common;
 
 use mtg_db::{CreateDeckError, DbError, DeckDraft, DeckId, DeckLine, DeckZone, StoredDeck};
 use mtg_import::ids::PrintingId;

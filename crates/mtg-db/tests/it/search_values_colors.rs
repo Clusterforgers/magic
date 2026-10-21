@@ -1,6 +1,6 @@
 //! Goal: mana value ranges, color match modes and format legality filter correctly over the recorded card fixture, including empty color sets and open or inverted ranges.
 
-mod common;
+use crate::common;
 
 use mtg_db::ColorMatch;
 use sqlx::PgPool;

@@ -1,6 +1,6 @@
 //! Goal: import-run bookkeeping moves each run through running to exactly one terminal state, rejects invalid transitions, and lists history newest first.
 
-mod common;
+use crate::common;
 
 use mtg_db::{DbError, ImportSource, RunId, RunStatus};
 use serde_json::json;

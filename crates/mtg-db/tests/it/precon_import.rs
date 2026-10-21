@@ -1,6 +1,6 @@
 //! Goal: precon decks ingest idempotently and atomically, load in deck order, list newest first, and skip unusable deck files.
 
-mod common;
+use crate::common;
 
 use mtg_db::{DeckBoard, PreconDeckId, RunStatus};
 use mtg_import::ids::PrintingId;

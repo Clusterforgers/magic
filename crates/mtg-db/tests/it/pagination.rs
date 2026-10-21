@@ -1,6 +1,6 @@
 //! Goal: paging through search results is stable: every page window is exact, ties never shuffle between pages, and a window past the end is empty but still reports the total.
 
-mod common;
+use crate::common;
 
 use std::collections::BTreeSet;
 

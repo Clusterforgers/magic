@@ -1,6 +1,6 @@
 //! Goal: migrations apply cleanly to an empty database, are safe to re-run and to run concurrently, and `Database::connect` works from a plain URL.
 
-mod common;
+use crate::common;
 
 use mtg_db::{CardSearch, Database, DbError, Page};
 use sqlx::ConnectOptions;

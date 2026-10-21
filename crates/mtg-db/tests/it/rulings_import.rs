@@ -1,6 +1,6 @@
 //! Goal: rulings ingest is idempotent, keeps stream order, attaches only to stored cards, and reports what it skipped or could not place.
 
-mod common;
+use crate::common;
 
 use mtg_db::RunStatus;
 use mtg_import::scryfall::{RulingRecord, RulingSource, rulings};

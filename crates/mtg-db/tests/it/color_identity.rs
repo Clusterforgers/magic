@@ -1,6 +1,6 @@
 //! Goal: the color-identity-subset filter matches Commander's deck-construction rule for every commander identity, including colorless commanders, partners and cards whose identity exceeds their colors.
 
-mod common;
+use crate::common;
 
 use mtg_core::color::{Color, ColorSet};
 use mtg_db::{CardSearch, ColorFilter, ColorMatch, Page};

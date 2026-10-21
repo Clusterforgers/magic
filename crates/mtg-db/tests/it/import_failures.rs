@@ -1,6 +1,6 @@
 //! Goal: a bad record is counted and skipped without stopping an import, while fatal stream or database errors abort it, mark the run failed and keep exactly the batches that were already committed.
 
-mod common;
+use crate::common;
 
 use mtg_db::{ImportError, RunStatus};
 use mtg_import::ids::OracleId;

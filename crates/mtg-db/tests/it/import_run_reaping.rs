@@ -1,6 +1,6 @@
 //! Goal: a run left `running` by a process that died is marked failed once it is older than the limit and at the next import start, live and finished runs stay untouched, and a run remembers the input it read so the latest successful one can be found.
 
-mod common;
+use crate::common;
 
 use std::time::Duration;
 

@@ -1,6 +1,6 @@
 //! Goal: the row counts report every card-data table exactly, from an empty schema through cards, rulings and precon decks.
 
-mod common;
+use crate::common;
 
 use mtg_db::RowCounts;
 use sqlx::PgPool;

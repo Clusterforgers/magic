@@ -1,6 +1,6 @@
 //! Goal: the name index built from the database resolves every recorded deck list exactly like the index built from the same Scryfall records in memory, so deck import can rely on stored cards.
 
-mod common;
+use crate::common;
 
 use mtg_import::decklist::parse;
 use mtg_import::resolve::{Lookup, resolve_deck};

@@ -1,6 +1,6 @@
 //! Goal: exact name lookup is forgiving only in ways that cannot confuse two cards, and fuzzy suggestions rank exact, prefix and typo matches sensibly, including single faces of multi-faced cards.
 
-mod common;
+use crate::common;
 
 use mtg_db::cards::MAX_SUGGESTIONS;
 use sqlx::PgPool;

@@ -1,6 +1,6 @@
 //! Goal: search by scope, name fragment and type line behaves over the recorded card fixture, including accent folding, literal wildcards and hostile input.
 
-mod common;
+use crate::common;
 
 use mtg_db::{CardSearch, Page};
 use sqlx::PgPool;

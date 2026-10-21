@@ -1,6 +1,6 @@
 //! Goal: re-importing changed records replaces the old card data and search vectors, never touches engine coverage, folds many printings of one card into one row, and reads JSONL bulk files like array files.
 
-mod common;
+use crate::common;
 
 use std::collections::BTreeMap;
 
