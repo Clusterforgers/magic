@@ -7,7 +7,7 @@ use super::{Ctx, Next, Work, targets};
 use crate::choose::legal_for;
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
-    let specs = targets::specs(ctx, &work.choices.modes);
+    let specs = targets::specs(ctx, work.choices);
     let chosen = &work.choices.targets;
     let legal = chosen.len() == specs.len()
         && specs.iter().zip(chosen).all(|(spec, picked)| {

@@ -2,6 +2,7 @@
 
 mod abilities;
 mod ability_costs;
+mod alternative_costs;
 mod announce_division;
 mod archon_fuzz;
 mod attach_fuzz;

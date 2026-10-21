@@ -13,7 +13,7 @@ use crate::object::{GameObject, ObjectRef};
 use crate::resolve::Scope;
 
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
-    let specs = targets::specs(ctx, &work.choices.modes);
+    let specs = targets::specs(ctx, work.choices);
     while work.done.divided < specs.len() {
         let at = work.done.divided;
         let Some(divide) = &specs[at].divide else {

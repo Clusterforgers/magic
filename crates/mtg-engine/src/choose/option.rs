@@ -54,12 +54,18 @@ fn check(options: &[ChoiceOption], index: usize) -> Result<(), IllegalAnswer> {
     }
 }
 
+/// Validates the answer. While a cast is being announced the option is the way the spell is cast (`announce`), else it
+/// is the answer of an effect or the replacement step and is logged.
 pub(crate) fn answer(
     player: PlayerId,
     options: &OptionOptions,
     choice: OptionChoice,
+    announcing: bool,
 ) -> Result<Outcome, EngineError> {
     check(&options.options, choice.0)?;
+    if announcing {
+        return Ok(Outcome::Way(choice.0));
+    }
     Ok(Outcome::Events(vec![Event::ChoiceMade {
         player,
         choice: Choice::Option(choice.0),
@@ -188,7 +194,7 @@ mod tests {
         #[case] list: Vec<ChoiceOption>,
         #[case] index: usize,
     ) {
-        let outcome = answer(THIRD, &options(list), OptionChoice(index)).unwrap();
+        let outcome = answer(THIRD, &options(list), OptionChoice(index), false).unwrap();
         let Outcome::Events(events) = outcome else {
             panic!("an answer to a choice is logged");
         };
@@ -210,7 +216,7 @@ mod tests {
         #[case] index: usize,
     ) {
         assert_eq!(
-            answer(ME, &options(list), OptionChoice(index)).unwrap_err(),
+            answer(ME, &options(list), OptionChoice(index), false).unwrap_err(),
             EngineError::Illegal(IllegalAnswer::NotOffered("option"))
         );
     }

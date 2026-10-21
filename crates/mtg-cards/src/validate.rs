@@ -419,6 +419,7 @@ impl<'a> Walker<'a> {
                     self.problem("`Kicked` needs a Kicker or Multikicker keyword on the card");
                 }
             }
+            Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::YourTurn => {}
             Condition::Performed => {
                 self.uses("Condition", "Performed");
@@ -1354,6 +1355,18 @@ impl<'a> Walker<'a> {
             | GameRule::CantDraw(who)
             | GameRule::CantSearch(who)
             | GameRule::RevealTop(who) => self.at(tag, |w| w.reference(who, Kind::Player)),
+            GameRule::MayCast(permission) => self.at(tag, |w| {
+                w.at("who", |w| w.reference(&permission.who, Kind::Player));
+                w.at("what", |w| w.selector(&permission.what));
+                if matches!(
+                    permission.from,
+                    Some(ZoneKind::Battlefield | ZoneKind::Stack)
+                ) {
+                    w.at("from", |w| {
+                        w.problem("a card is cast from a hand, a library, a graveyard, exile or the command zone");
+                    });
+                }
+            }),
             GameRule::TriggerAgain { cause } => {
                 let saved = std::mem::replace(&mut self.scope, Scope::new(&[], false));
                 self.at(tag, |w| w.at("cause", |w| w.trigger_pattern(cause)));

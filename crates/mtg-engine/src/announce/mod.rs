@@ -31,8 +31,8 @@ use crate::events::Event;
 use crate::resolve::spell_ability;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
+use crate::ways::Way;
 
-pub(crate) use alternative::Alternative;
 pub(crate) use optional::Optional;
 pub(crate) use x::XCost;
 
@@ -117,11 +117,12 @@ impl Phase {
 /// What the rules of the spell or ability ask its player to announce beyond modes and targets, read from the rules
 /// when the announcement begins.
 ///
-/// The keywords of a spell fill `optional` (kicker, multikicker), the cost and rules of a card fill `x`; (g4) fills `alternative`.
+/// The keywords of a spell fill `optional` (kicker, multikicker), the cost and rules of a card fill `x`, the keywords
+/// and the cast permissions fill `ways`.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub(crate) struct Needs {
-    /// The cost the spell is cast for instead of its mana cost.
-    pub(crate) alternative: Option<Alternative>,
+    /// The ways the card can be cast from where it is; empty for the mana cost alone.
+    pub(crate) ways: Vec<Way>,
     /// The costs the player may add, by index.
     pub(crate) optional: Vec<Optional>,
     /// An `{X}` in the cost.
@@ -130,9 +131,9 @@ pub(crate) struct Needs {
 
 impl Needs {
     /// What `what` asks for; its rules are `rules`.
-    fn of(state: &GameState, what: &What, rules: Option<&Ability>) -> Self {
+    fn of(state: &GameState, player: PlayerId, what: &What, rules: Option<&Ability>) -> Self {
         Needs {
-            alternative: None,
+            ways: alternative::read(state, player, what),
             optional: optional::read(state, what),
             x: XCost::of(state, what, rules),
         }
@@ -153,6 +154,10 @@ impl Needs {
 pub(crate) struct Done {
     /// The modes are settled: chosen, or there are none to choose. Choosing none is a choice too.
     pub(crate) modes: bool,
+    /// The way the spell is cast is settled.
+    pub(crate) alternative: bool,
+    /// The way the player picked among those offered, by position in the options.
+    pub(crate) way_picked: Option<usize>,
     /// The optional costs are settled.
     pub(crate) optional: bool,
     /// Once the optional costs that may be paid once are settled: how many of those that may be paid any number of
@@ -207,6 +212,7 @@ impl Pending {
     pub(crate) fn accept(&mut self, answered: Answered) -> Result<(), EngineError> {
         let wanted = match answered {
             Answered::Modes(_) => Phase::Modes,
+            Answered::Way(_) => Phase::Alternative,
             Answered::Targets(_) => Phase::Targets,
             // A number is asked for X, and for the times a repeatable optional cost is paid, which comes once the
             // costs that are paid once are settled.
@@ -231,6 +237,7 @@ impl Pending {
                 self.choices.modes = modes;
                 self.done.modes = true;
             }
+            Answered::Way(pick) => self.done.way_picked = Some(pick),
             Answered::Targets(targets) => self.choices.targets.push(targets),
             Answered::Number(times) if wanted == Phase::Optional => {
                 let paid = self
@@ -267,6 +274,8 @@ impl Pending {
 pub(crate) enum Answered {
     /// The modes, in the order they are printed.
     Modes(Vec<usize>),
+    /// The way to cast the spell, by position among those offered.
+    Way(usize),
     /// The targets of the next specification.
     Targets(Vec<Target>),
     /// The value of X.
@@ -373,7 +382,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     } = pending;
     let what: &What = what;
     let held = rules_of(state, what);
-    let needs: &Needs = needs.get_or_insert_with(|| Needs::of(state, what, held.as_deref()));
+    let needs: &Needs = needs.get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref()));
     let ctx = Ctx {
         state,
         player: *player,

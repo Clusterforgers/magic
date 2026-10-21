@@ -34,7 +34,7 @@ use Support::{Manual, Partial, Verified};
 /// (power and toughness from a count, colours) and the keywords of combat and
 /// flash, hexproof and the keywords that are triggers (battle cry, prowess, ward), so the fifty cards that need no more are Verified (the
 /// Forest's ability comes from its land type) and a card whose other abilities are still missing carries what runs as
-/// Partial: Mulldrifter's draw and flying, not its evoke; Faithless Looting's draw and discard, not its flashback.
+/// Partial: Bloodbraid Elf's haste, not its cascade.
 /// Counters on permanents and players are played, so Tireless Tracker is Verified, and so are the planeswalkers whose
 /// loyalty abilities and effects run (Jace, the Mind Sculptor, Jace Beleren, Ajani, Garruk); Flooded Strand waits for the life it costs.
 const CARDS: [(&str, Support, usize); 118] = [
@@ -76,7 +76,7 @@ const CARDS: [(&str, Support, usize); 118] = [
     ("Drudge Skeletons", Verified, 1),
     ("Elemental Masterpiece", Verified, 2),
     ("Eternal Witness", Verified, 1),
-    ("Faithless Looting", Partial, 1),
+    ("Faithless Looting", Verified, 2),
     ("Favorable Winds", Verified, 1),
     ("Felidar Sovereign", Verified, 3),
     ("Fire // Ice", Manual, 0),
@@ -111,7 +111,7 @@ const CARDS: [(&str, Support, usize); 118] = [
     ("Mindlock Orb", Verified, 1),
     ("Mother of Runes", Verified, 1),
     ("Monastery Swiftspear", Verified, 2),
-    ("Mulldrifter", Partial, 2),
+    ("Mulldrifter", Verified, 3),
     ("Naban, Dean of Iteration", Verified, 1),
     ("Nightmare", Verified, 2),
     ("Opt", Verified, 1),
@@ -254,20 +254,10 @@ fn what_stands_between_the_other_cards_and_verified_is_named() {
     for name in ["Rhystic Study", "Izzet Charm"] {
         assert_eq!(reasons(name), "", "{name}");
     }
-    // Mulldrifter's draw and flying are covered, its evoke is not.
-    let mulldrifter = reasons("Mulldrifter");
-    assert!(mulldrifter.contains("Keyword.Evoke"), "{mulldrifter}");
-    assert!(
-        !mulldrifter.contains("Keyword.Flying") && !mulldrifter.contains("Effect.Draw"),
-        "{mulldrifter}"
-    );
-    // Faithless Looting's draw and discard are covered, its flashback is not.
-    let looting = reasons("Faithless Looting");
-    assert!(looting.contains("Keyword.Flashback"), "{looting}");
-    assert!(
-        !looting.contains("Effect.Draw") && !looting.contains("Effect.Discard"),
-        "{looting}"
-    );
+    // Mulldrifter and Faithless Looting are covered whole: evoke and flashback are alternative costs chosen with the cast.
+    for name in ["Mulldrifter", "Faithless Looting"] {
+        assert_eq!(reasons(name), "", "{name}");
+    }
     // Archon of Cruelty is covered whole: its sacrifice and discard are played now.
     assert_eq!(reasons("Archon of Cruelty"), "");
     // The removal and the counterspell are covered whole: destroy, exile and counter are played now.
@@ -454,7 +444,14 @@ fn mulldrifter_draws_two_cards_when_it_enters_from_its_assembled_ability() -> Re
             .battlefield(0, lands),
     )?;
     let hand = driver.state().zone(Zone::Hand(PlayerId(0))).len();
-    driver.cast("Mulldrifter")?;
+    // Five lands pay its mana cost and its evoke cost: it is cast for the mana cost, the first way offered.
+    driver.begin_cast("Mulldrifter")?;
+    driver.answer(mtg_engine::Answer::ChooseOption(
+        mtg_engine::choose::OptionChoice(0),
+    ))?;
+    driver.answer(mtg_engine::Answer::PayMana(
+        mtg_engine::decision::PayChoice::Auto,
+    ))?;
     resolve_the_stack(&mut driver)?;
     assert!(names(driver.state(), Zone::Battlefield).contains(&"Mulldrifter".to_owned()));
     assert_eq!(

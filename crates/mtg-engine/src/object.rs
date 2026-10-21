@@ -5,7 +5,7 @@ use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
-use mtg_cards::value::CounterKind;
+use mtg_cards::value::{CastWay, CounterKind};
 use mtg_core::card::CardTypes;
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -70,6 +70,8 @@ pub struct PermanentState {
     pub(crate) chosen: Option<Chosen>,
     /// The optional costs paid as the spell was cast, by index, a repeatable cost once for each payment.
     pub(crate) paid: Vec<usize>,
+    /// The alternative cost the spell was cast for.
+    pub(crate) way: Option<CastWay>,
 }
 
 impl PermanentState {
@@ -227,6 +229,16 @@ impl GameObject {
                 &self.choices.optional_costs
             }
             None => &[],
+        }
+    }
+
+    /// The alternative cost this card was cast for: what the spell announced while it is on the stack and what the
+    /// permanent remembers after; none elsewhere.
+    pub fn cast_way(&self) -> Option<CastWay> {
+        match &self.permanent {
+            Some(permanent) => permanent.way,
+            None if self.kind == ObjectKind::Card && self.zone == Zone::Stack => self.choices.way,
+            None => None,
         }
     }
 

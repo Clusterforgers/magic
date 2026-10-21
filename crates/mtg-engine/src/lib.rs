@@ -20,6 +20,7 @@ mod preview;
 mod price;
 mod sba;
 mod steps;
+mod ways;
 mod wording;
 #[cfg(test)]
 mod zone_abilities;
