@@ -1,0 +1,21 @@
+{
+  "id": "bb089097-1eed-4e72-a715-579ddd8307a0",
+  "oracle_id": "d1946630-e224-40db-8f0d-388b09622288",
+  "name": "Thriving Heath",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "580",
+  "rarity": "common",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped. As it enters, choose a color other than white.\n{T}: Add {W} or one mana of the chosen color.",
+  "colors": [],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

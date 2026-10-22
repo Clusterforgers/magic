@@ -1,0 +1,21 @@
+{
+  "id": "12ccc686-bbaa-4c34-a7b8-a1e763fe0ad0",
+  "oracle_id": "b7a68899-c0d3-49e0-854b-19268ae9b89d",
+  "name": "Vivid Grove",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ncc",
+  "collector_number": "445",
+  "rarity": "uncommon",
+  "released_at": "2022-04-29",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped with two charge counters on it.\n{T}: Add {G}.\n{T}, Remove a charge counter from this land: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

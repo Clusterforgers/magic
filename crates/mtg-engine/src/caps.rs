@@ -112,6 +112,7 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.OneOf",
     "Effect.AddMana.OneOfLists",
     "Effect.AddMana.ChosenColor",
+    "Effect.AddMana.OrChosenColor",
     "Effect.AddMana.Restricted",
     "Effect.AddMana.CommanderIdentity",
     "Effect.AddMana.ProducedBy",
@@ -530,6 +531,7 @@ mod tests {
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
+    #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
     #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
     #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]

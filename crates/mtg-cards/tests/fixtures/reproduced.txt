@@ -26,6 +26,7 @@ Battlefield Forge
 Behold the Multiverse
 Bilious Skulldweller
 Bird Admirer // Wing Shredder
+Black Dragon Gate
 Black Knight
 Blasphemous Act
 Blaze
@@ -52,6 +53,8 @@ Cathars' Crusade
 Changeling Outcast
 Chemister's Insight
 Circle of Dreams Druid
+Citadel Gate
+Cliffgate
 Clone
 Cold-Eyed Selkie
 Collective Unconscious
@@ -144,6 +147,7 @@ Gerrard's Wisdom
 Ghalta, Primal Hunger
 Giant Cindermaw
 Giant Growth
+Gilded Goose
 Gilded Lotus
 Glimpse of Freedom
 Glorious Anthem
@@ -204,6 +208,7 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
+Manor Gate
 Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
@@ -214,6 +219,7 @@ Megrim
 Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
+Mirari
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
@@ -285,6 +291,7 @@ Satyr Wayfinder
 Saw It Coming
 Scheming Aspirant
 Scuzzback Marauders
+Sea Gate
 Seedglaive Mentor
 Seekers' Squire
 Serra Angel
@@ -326,6 +333,7 @@ Summer Bloom
 Sundering Growth
 Sunken Ruins
 Supreme Verdict
+Swarm Intelligence
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
@@ -342,7 +350,13 @@ The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
 Thopter Fabricator
+Thriving Bluff
+Thriving Grove
+Thriving Heath
+Thriving Isle
+Thriving Moor
 Throne of the High City
+Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
@@ -361,6 +375,11 @@ Vanquish the Horde
 Vengeful Vampire
 Vestige of Emrakul
 Viridian Corrupter
+Vivid Crag
+Vivid Creek
+Vivid Grove
+Vivid Marsh
+Vivid Meadow
 Walking Ballista
 Wanderbrine Preacher
 Wargate

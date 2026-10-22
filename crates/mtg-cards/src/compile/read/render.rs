@@ -654,6 +654,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::RemoveCounters { .. }
                 | Effect::MoveCounters { .. }
                 | Effect::Transform { .. }
+                | Effect::CopySpell { .. }
         )
 }
 
@@ -694,6 +695,9 @@ fn mana_text(mana: &Produce) -> Option<String> {
             format!("{} mana of any one color", count_word(*count)?)
         }
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
+        Produce::OrChosenColor(mana) => {
+            format!("{{{}}} or one mana of the chosen color", mana.symbol())
+        }
         Produce::CommanderIdentity(1) => {
             "one mana of any color in your commander's color identity".to_owned()
         }
@@ -992,6 +996,14 @@ impl Writer<'_> {
             }
             let target = self.name_target()?;
             return copy_spells::becomes_text(effect, &target);
+        }
+        // The spell a trigger is about has no target to name.
+        if let Effect::CopySpell {
+            what: Ref::Triggering,
+            ..
+        } = effect
+        {
+            return copy_spells::cast_text(effect);
         }
         if self.named {
             return None;

@@ -322,7 +322,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 
 #[rstest]
 #[case::two_sentences("This land enters tapped. As it enters, choose a color.")]
-#[case::tapped_and_counters("This land enters tapped with two charge counters on it.")]
 #[case::counters_for_each(
     "This creature enters with a +1/+1 counter on it for each creature you control."
 )]

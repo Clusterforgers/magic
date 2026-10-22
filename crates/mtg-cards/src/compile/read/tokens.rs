@@ -321,6 +321,10 @@ pub struct Reader<'a> {
     /// Whether the ability works from the graveyard (its event is not about the card itself), so "return this card
     /// from your graveyard to the battlefield" has a card to return.
     pub from_graveyard: bool,
+    /// Whether the event of the trigger is a spell being cast, so "it" and "that spell" in a copy are that spell.
+    pub cast_spell: bool,
+    /// Whether the event of the trigger is the card itself attacking, so "it" is the card.
+    pub attacker: bool,
 }
 
 impl<'a> Reader<'a> {
@@ -341,6 +345,8 @@ impl<'a> Reader<'a> {
             at_monarch: false,
             attacked: false,
             from_graveyard: false,
+            cast_spell: false,
+            attacker: false,
         }
     }
 

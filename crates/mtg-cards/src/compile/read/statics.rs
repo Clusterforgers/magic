@@ -18,7 +18,7 @@ use super::lands;
 use super::life_gain;
 use super::prevention;
 use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
-use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
+use super::selectors::{Form, all, color, color_name, granted_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
 use super::triggers::{self, article};
 use crate::ability::{Ability, CostChange};
@@ -71,14 +71,16 @@ fn replacement(by: ReplaceBy, condition: Option<Condition>) -> Ability {
 }
 
 /// "~ enters tapped.", "~ enters tapped unless you control two or more basic lands.",
-/// "~ enters with two +1/+1 counters on it.", "~ escapes with a +1/+1 counter on it."
+/// "~ enters with two +1/+1 counters on it.", "~ enters tapped with two charge counters on it.",
+/// "~ escapes with a +1/+1 counter on it."
 fn entering(r: &mut Reader<'_>) -> Option<Ability> {
     r.source().then_some(())?;
     let escaped = r.word("escapes");
     if !escaped {
         r.need("enters")?;
     }
-    if !escaped && r.word("tapped") {
+    let tapped = !escaped && r.word("tapped");
+    if tapped && !r.words("with") {
         let condition = if r.word("unless") {
             Some(Condition::Not(Box::new(holds(r)?)))
         } else {
@@ -86,11 +88,17 @@ fn entering(r: &mut Reader<'_>) -> Option<Ability> {
         };
         return Some(replacement(ReplaceBy::Tapped, condition));
     }
-    r.need("with")?;
+    if !tapped {
+        r.need("with")?;
+    }
     let (counter, count) = counters::entering(r)?;
     r.need("on it")?;
     Some(replacement(
-        ReplaceBy::WithCounters { counter, count },
+        ReplaceBy::WithCounters {
+            counter,
+            count,
+            tapped,
+        },
         escaped.then_some(Condition::CastWith(CastWay::Escape)),
     ))
 }
@@ -114,12 +122,20 @@ fn group_enters_tapped(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
-/// "As ~ enters, choose a color.", "As ~ enters, you may pay 2 life. If you don't, it enters tapped."
+/// "As ~ enters, choose a color.", "As it enters, choose a color other than red.", "As ~ enters, you may pay 2 life.
+/// If you don't, it enters tapped."
 fn as_entering(r: &mut Reader<'_>) -> Option<Ability> {
     r.need("as")?;
-    r.source().then_some(())?;
+    (r.source() || r.word("it")).then_some(())?;
     r.need("enters")?;
     r.punct(',').then_some(())?;
+    if r.words("choose a color other than") {
+        let other = color(r.take_word()?)?;
+        return Some(replacement(
+            ReplaceBy::Choose(EntersChoice::ColorOtherThan(other)),
+            None,
+        ));
+    }
     if r.words("choose a color") {
         return Some(replacement(ReplaceBy::Choose(EntersChoice::Color), None));
     }
@@ -705,14 +721,22 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             .into_iter()
             .map(|held| format!("~ enters tapped unless {held}"))
             .collect(),
-        (ReplaceBy::WithCounters { counter, count }, None) => {
-            counters::entering_text(counter, count)
-                .map(|counters| format!("~ enters with {counters} on it"))
-                .into_iter()
-                .collect()
-        }
         (
-            ReplaceBy::WithCounters { counter, count },
+            ReplaceBy::WithCounters {
+                counter,
+                count,
+                tapped,
+            },
+            None,
+        ) => counters::entering_text(counter, count)
+            .map(|counters| {
+                let tapped = if *tapped { " tapped" } else { "" };
+                format!("~ enters{tapped} with {counters} on it")
+            })
+            .into_iter()
+            .collect(),
+        (
+            ReplaceBy::WithCounters { counter, count, .. },
             Some(Condition::CastWith(CastWay::Escape)),
         ) => counters::entering_text(counter, count)
             .map(|counters| format!("~ escapes with {counters} on it"))
@@ -720,6 +744,13 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             .collect(),
         (ReplaceBy::Choose(EntersChoice::Color), None) => {
             vec!["As ~ enters, choose a color".to_owned()]
+        }
+        (ReplaceBy::Choose(EntersChoice::ColorOtherThan(other)), None) => {
+            let other = color_name(*other);
+            vec![
+                format!("As ~ enters, choose a color other than {other}"),
+                format!("As it enters, choose a color other than {other}"),
+            ]
         }
         (ReplaceBy::Choose(EntersChoice::CreatureType), None) => {
             vec!["As ~ enters, choose a creature type".to_owned()]
