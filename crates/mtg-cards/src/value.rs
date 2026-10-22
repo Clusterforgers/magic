@@ -20,6 +20,8 @@ pub enum StatKind {
     ManaValue,
     /// Loyalty.
     Loyalty,
+    /// How many colors it has (CR 105.4): none for a colorless object.
+    Colors,
 }
 
 /// A comparison between two numbers.

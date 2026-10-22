@@ -669,6 +669,7 @@ impl<'a> Scope<'a> {
         match stat {
             StatKind::Power => seen.chars.power.map(i64::from),
             StatKind::Toughness => seen.chars.toughness.map(i64::from),
+            StatKind::Colors => i64::try_from(seen.chars.colors.iter().count()).ok(),
             // A spell on the stack counts the X it was cast with for each {X} of its cost (CR 202.3e).
             StatKind::ManaValue => seen.card.map(|c| {
                 let card = c.card();

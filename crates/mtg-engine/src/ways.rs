@@ -21,6 +21,7 @@ use crate::faces;
 use crate::help;
 use crate::keywords::{self, aftermath, foretell, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
+use crate::mana_takes::for_card;
 use crate::object::{FaceDown, GameObject, ObjectKind};
 use crate::parts::Part;
 use crate::price::Price;
@@ -390,7 +391,13 @@ pub(crate) fn can_suspend(
             .iter()
             .any(|permission| permission.flash && permission.covers(state, player, card));
     (instant || sorcery_timing(state, player))
-        && can_afford(&cost, pool, sources, life, &Spend::other())
+        && can_afford(
+            &cost,
+            pool,
+            &for_card(state, sources, id),
+            life,
+            &Spend::other(),
+        )
 }
 
 /// The mana the special action of foretell costs for the card `id` (CR 702.143a), when it has the keyword.
@@ -421,7 +428,13 @@ pub(crate) fn can_foretell(
     card.kind() == ObjectKind::Card
         && card.zone() == Zone::Hand(player)
         && state.turn().active() == player
-        && can_afford(&cost, pool, sources, life, &Spend::other())
+        && can_afford(
+            &cost,
+            pool,
+            &for_card(state, sources, id),
+            life,
+            &Spend::other(),
+        )
 }
 
 /// The mana of the madness cost of the card `id` (CR 702.35), when it has one the engine pays.
@@ -468,7 +481,8 @@ pub(crate) fn grantable_as_is(
     let Some(seat) = state.player(player) else {
         return false;
     };
-    let sources = mana_options(state, player);
+    let all = mana_options(state, player);
+    let sources = for_card(state, &all, id);
     let spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
     let help = help::offered(state, player, id);
     granted(state, id, free, way).iter().any(|way| {
@@ -544,6 +558,7 @@ pub(crate) fn castable_as_is(
         return false;
     };
     let printed_spend = Spend::for_spell(state, id, card.card().x_in_cost > 0);
+    let sources = &for_card(state, sources, id);
     let help = help::offered(state, player, id);
     of(state, player, id).iter().any(|way| {
         // A bestowed spell is an Aura spell, whose mana restrictions read it so.

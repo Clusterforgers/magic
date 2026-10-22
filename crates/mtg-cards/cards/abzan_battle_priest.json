@@ -1,0 +1,22 @@
+{
+  "oracle_id": "1b44fe0a-4a99-4166-b0b3-102b36b54ffa",
+  "name": "Abzan Battle Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abzan Battle Priest",
+      "oracle_fingerprint": "0eb55878bca7498a18964541feffbb81",
+      "abilities": [
+        { "Keyword": { "Outlast": "{W}" } },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, { "HasCounter": "+1/+1" }]
+            },
+            "mods": [{ "AddKeyword": "Lifelink" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "aedc3e69-3163-4b8d-97b2-0ad92f28a6dc",
+  "name": "Greater Mossdog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greater Mossdog",
+      "oracle_fingerprint": "850cbbd0ee15f0cf3c3e079425c81cc3",
+      "abilities": [{ "Keyword": { "Dredge": 3 } }]
+    }
+  ]
+}

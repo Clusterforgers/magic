@@ -230,6 +230,8 @@ const RUNS: &[&str] = &[
     "Keyword.Convoke",
     "Keyword.Delve",
     "Keyword.Madness",
+    "Keyword.Dredge",
+    "ReplaceBy.Dredge",
     "Keyword.Suspend",
     "Keyword.Foretell",
     "Keyword.Daybound",
@@ -287,6 +289,10 @@ const RUNS: &[&str] = &[
     "Keyword.CumulativeUpkeep",
     "Keyword.Undying",
     "Keyword.Persist",
+    "Keyword.LevelUp",
+    "Keyword.Outlast",
+    "Keyword.Saddle",
+    "Keyword.Saddled",
     "Keyword.Myriad",
     "Keyword.Squad",
     "Keyword.Ravenous",
@@ -608,6 +614,8 @@ mod tests {
     #[case::aftermath("Keyword.Aftermath", true)]
     #[case::dash("Keyword.Dash", true)]
     #[case::bestow("Keyword.Bestow", true)]
+    #[case::dredge("Keyword.Dredge", true)]
+    #[case::dredging("ReplaceBy.Dredge", true)]
     #[case::blitz("Keyword.Blitz", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
@@ -615,6 +623,10 @@ mod tests {
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]
     #[case::persist("Keyword.Persist", true)]
+    #[case::level_up("Keyword.LevelUp", true)]
+    #[case::outlast("Keyword.Outlast", true)]
+    #[case::saddle("Keyword.Saddle", true)]
+    #[case::saddled("Keyword.Saddled", true)]
     #[case::ravenous("Keyword.Ravenous", true)]
     #[case::copies_for_the_other_defenders("Effect.MyriadCopies", true)]
     #[case::jump_start("Keyword.JumpStart", true)]

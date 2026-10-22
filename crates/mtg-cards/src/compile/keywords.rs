@@ -201,6 +201,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("frenzy", Params::Number),
     ("mobilize", Params::Number),
     ("saddle", Params::Number),
+    ("saddled", Params::None),
 ];
 
 /// A keyword found at the start of an item.
@@ -329,6 +330,11 @@ pub fn read(item: &str) -> Option<Keyword> {
         "entwine" => spell_cost(rest).map(Keyword::Entwine),
         "flashback" => spell_cost(rest).map(Keyword::Flashback),
         "madness" => spell_cost(rest).map(Keyword::Madness),
+        "dredge" => rest
+            .parse()
+            .ok()
+            .filter(|cards| *cards > 0)
+            .map(Keyword::Dredge),
         "morph" => cost(rest).map(Keyword::Morph),
         "disguise" => cost(rest).map(Keyword::Disguise),
         "evoke" => spell_cost(rest).map(Keyword::Evoke),
@@ -352,6 +358,13 @@ pub fn read(item: &str) -> Option<Keyword> {
             .ok()
             .filter(|power| *power > 0)
             .map(Keyword::Crew),
+        "saddle" => rest
+            .parse()
+            .ok()
+            .filter(|power| *power > 0)
+            .map(Keyword::Saddle),
+        "level up" => cost(rest).map(Keyword::LevelUp),
+        "outlast" => cost(rest).map(Keyword::Outlast),
         "suspend" => suspend(rest),
         "enchant" => super::read::enchant_filter(rest).map(Keyword::Enchant),
         "enchant player" => Some(Keyword::EnchantPlayer { opponent: false }),
@@ -471,6 +484,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "aftermath" => Keyword::Aftermath,
         "undying" => Keyword::Undying,
         "persist" => Keyword::Persist,
+        "saddled" => Keyword::Saddled,
         "ravenous" => Keyword::Ravenous,
         "jump-start" => Keyword::JumpStart,
         "retrace" => Keyword::Retrace,
@@ -706,6 +720,8 @@ mod tests {
     #[case::affinity_for_a_subtype("Affinity for Islands", Keyword::Affinity(Selector(vec![Pred::Subtype(Subtype("Island".into()))])))]
     #[case::affinity_for_tokens("Affinity for tokens", Keyword::Affinity(Selector(vec![Pred::Token])))]
     #[case::madness("Madness {R}", Keyword::Madness(mana("{R}")))]
+    #[case::dredge("Dredge 3", Keyword::Dredge(3))]
+    #[case::dredge_six("Dredge 6", Keyword::Dredge(6))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
     #[case::disguise("Disguise {1}{W}", Keyword::Disguise(mana("{1}{W}")))]
     #[case::overload("Overload {3}{U}{U}", Keyword::Overload(mana("{3}{U}{U}")))]
@@ -780,6 +796,11 @@ mod tests {
         ]))
     )]
     #[case::crew("Crew 3", Keyword::Crew(3))]
+    #[case::saddle("Saddle 2", Keyword::Saddle(2))]
+    #[case::level_up("Level up {1}{U}", Keyword::LevelUp(mana("{1}{U}")))]
+    #[case::level_up_for_one("level up {1}", Keyword::LevelUp(mana("{1}")))]
+    #[case::outlast("Outlast {W}", Keyword::Outlast(mana("{W}")))]
+    #[case::outlast_two_symbols("Outlast {1}{W}", Keyword::Outlast(mana("{1}{W}")))]
     #[case::changeling("Changeling", Keyword::Changeling)]
     #[case::devoid("Devoid", Keyword::Devoid)]
     #[case::infect("Infect", Keyword::Infect)]
@@ -880,10 +901,14 @@ mod tests {
     #[case::doctors_companion_with_a_cost("Doctor's companion {1}")]
     #[case::undeclared("Horsemanship")]
     #[case::crew_x("Crew X")]
+    #[case::dredge_x("Dredge X")]
+    #[case::dredge_nothing("Dredge 0")]
     #[case::crew_nothing("Crew 0")]
+    #[case::saddle_nothing("Saddle 0")]
+    #[case::saddle_x("Saddle X")]
+    #[case::outlast_without_a_cost("Outlast")]
     #[case::mutate_without_a_cost("Mutate")]
     #[case::a_parameter_on_changeling("Changeling {1}")]
-    #[case::level_up("Level up {1}{U}")]
     #[case::a_type_that_is_not_a_land_type("Wizardcycling {2}")]
     #[case::landwalk_of_a_type_that_is_not_a_land_type("Cowwalk")]
     #[case::parameter_on_a_plain_keyword("Flying {2}")]
@@ -999,6 +1024,7 @@ mod tests {
             "Entwine {1}",
             "Flashback {1}",
             "Madness {1}",
+            "Dredge 2",
             "Morph {1}",
             "Disguise {1}",
             "Suspend 2\u{2014}{1}",
@@ -1011,6 +1037,10 @@ mod tests {
             "Infect",
             "Myriad",
             "Crew 2",
+            "Saddle 2",
+            "Level up {1}{U}",
+            "Outlast {W}",
+            "Saddled",
             "Mutate {1}",
             "Encore {1}",
             "Squad {1}",

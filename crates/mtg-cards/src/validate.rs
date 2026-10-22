@@ -8,7 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde::Serialize;
 
 use crate::ability::{Ability, LoyaltyCost, Timing};
-use crate::assemble::{PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
+use crate::assemble::{MANA_WAYS, PLAIN_MANA_ABILITY, mana_shape, plain_mana_ability};
 use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -717,7 +717,9 @@ impl<'a> Walker<'a> {
             | Keyword::Unearth(cost)
             | Keyword::Embalm(cost)
             | Keyword::Eternalize(cost)
-            | Keyword::Ninjutsu(cost) => {
+            | Keyword::Ninjutsu(cost)
+            | Keyword::LevelUp(cost)
+            | Keyword::Outlast(cost) => {
                 self.at("cost", |w| w.cost(cost));
             }
             // The cost of these is paid as the spell is announced: the mana, and the parts the engine pays there.
@@ -748,6 +750,7 @@ impl<'a> Walker<'a> {
                 self.parts_that_need_an_announcement("Keyword", "Cost", cost);
             }
             Keyword::Crew(0) => self.problem("crew needs a power of at least 1"),
+            Keyword::Saddle(0) => self.problem("saddle needs a power of at least 1"),
             Keyword::Enchant(selector) => {
                 self.selector(selector);
                 // An Aura is attached to a permanent; one that enchants a card in another zone waits for the cards that do.
@@ -770,6 +773,7 @@ impl<'a> Walker<'a> {
                 self.at("find", |w| w.selector(find));
             }
             Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
+            Keyword::Dredge(0) => self.problem("dredge needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
@@ -1331,6 +1335,9 @@ impl<'a> Walker<'a> {
                     }
                     Produce::OneOfLists(lists) if lists.len() < 2 => {
                         w.problem("a choice of mana needs at least two lists");
+                    }
+                    Produce::OneOfLists(lists) if lists.len() > MANA_WAYS => {
+                        w.problem("a choice of mana has at most six lists");
                     }
                     Produce::OneOfLists(lists) if lists.iter().any(Vec::is_empty) => {
                         w.problem("a list of mana adds no mana");
@@ -1947,6 +1954,14 @@ impl<'a> Walker<'a> {
                 }
                 self.effect_list("Instead", effects, false);
             }
+            ReplaceBy::Dredge(cards) => {
+                if !matches!(when, ReplaceWhen::Draw { .. }) {
+                    self.problem("`Dredge` replaces a `Draw`");
+                }
+                if *cards == 0 {
+                    self.problem("dredging no cards is drawing");
+                }
+            }
             ReplaceBy::MoveTo(_)
                 if !matches!(
                     when,
@@ -2242,6 +2257,14 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
                 || (matches!(k, Keyword::Typecycling { .. })
                     && Keyword::Cycling(Cost::default()).name().eq_ignore_ascii_case(keyword))
         }
+        // A keyword the card gives itself, as a level up creature does under a level.
+        Ability::Static {
+            affected: Ref::This,
+            mods,
+            ..
+        } => mods.iter().any(|modification| {
+            matches!(modification, Modification::AddKeyword(k) if k.name().eq_ignore_ascii_case(keyword))
+        }),
         Ability::Manual { span, .. } => printed
             .faces
             .get(face)

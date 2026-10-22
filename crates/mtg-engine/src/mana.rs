@@ -242,17 +242,22 @@ pub struct ManaOption {
     pub takes: Vec<Take>,
 }
 
-/// Permanents a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice a Goblin".
+/// Permanents or cards a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice
+/// a Goblin", "Exile a card from your hand".
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Take {
-    /// The permanents are sacrificed; left out means they are tapped.
+    /// The permanents are sacrificed; left out means they are tapped or, with `exile`, exiled.
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub sacrifice: bool,
-    /// How many permanents it takes.
+    /// The objects are cards in the payer's hand that are exiled (Cadaverous Bloom); left out means permanents.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub exile: bool,
+    /// How many it takes.
     pub count: u32,
-    /// The permanents it may take, as the cost allows them when it is offered.
+    /// What it may take, as the cost allows it when it is offered.
     pub from: Vec<ObjectId>,
 }
 
@@ -2576,6 +2581,7 @@ mod tests {
                         if takes {
                             source.takes.push(Take {
                                 sacrifice,
+                                exile: false,
                                 count,
                                 from: from.into_iter().map(ObjectId).collect(),
                             });

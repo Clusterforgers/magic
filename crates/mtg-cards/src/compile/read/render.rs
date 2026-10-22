@@ -97,6 +97,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         texts.extend(pronouns);
     }
     texts.extend(attackers::named_draws(ability, &texts));
+    texts.extend(counters::pronouns_after_none(ability, &texts));
     // The counters counted by "for each" may be those "on it" for the card.
     let pronouns: Vec<String> = texts
         .iter()
@@ -624,6 +625,11 @@ fn spell(sentences: &[String]) -> String {
 
 /// The event and an intervening "if" of a triggered ability, each ending in a comma.
 fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<Vec<String>> {
+    if condition == Some(&super::triggers::saddled())
+        && matches!(when, TriggerPattern::Attacks { .. })
+    {
+        return Some(vec![format!("{} while saddled,", pattern_text(when)?)]);
+    }
     let mut parts = vec![format!("{},", pattern_text(when)?)];
     if let Some(condition) = condition {
         parts.push(format!("if {},", condition_text(condition)?));
@@ -1027,7 +1033,9 @@ impl Writer<'_> {
 
     /// "return target card from your graveyard to your hand", "return target creature to its owner's hand".
     fn returned_to_hand(&mut self, what: &Ref) -> Option<String> {
-        if self.in_your_graveyard(what) {
+        if *what == Ref::This {
+            Some("return ~ to its owner's hand".to_owned())
+        } else if self.in_your_graveyard(what) {
             Some(format!("return {} to your hand", self.object(what)?))
         } else if self.is_a_permanent(what) {
             Some(format!("return {} to its owner's hand", self.object(what)?))
@@ -1154,9 +1162,7 @@ impl Writer<'_> {
             Effect::PutCounters { .. }
             | Effect::RemoveCounters { .. }
             | Effect::MoveCounters { .. } => self.counters(effect)?,
-            Effect::CreateToken { .. } => {
-                create::text(effect, self.per).or_else(|| self.copy_token(effect, false))?
-            }
+            Effect::CreateToken { .. } => self.created(effect)?,
             Effect::DealDamage {
                 source: None,
                 to,
@@ -1313,6 +1319,18 @@ impl Writer<'_> {
         }
         let subject = self.object(first)?;
         Some((format!("{subject} explores, then it explores again"), 2))
+    }
+
+    /// Tokens created: "create a Treasure token" for you, "target opponent creates a Treasure token" for another player.
+    fn created(&mut self, effect: &Effect) -> Option<String> {
+        match effect {
+            Effect::CreateToken { who, .. } if *who != Ref::You => Some(format!(
+                "{} {}",
+                self.player(who)?,
+                create::text(effect, self.per)?
+            )),
+            _ => create::text(effect, self.per).or_else(|| self.copy_token(effect, false)),
+        }
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".

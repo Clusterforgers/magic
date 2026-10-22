@@ -9,13 +9,14 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word, stat_name};
+use super::counters;
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
 use crate::compile::keywords;
 use crate::keyword::Keyword;
 use crate::modify::Modification;
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use crate::value::{Amount, Cmp, StatKind};
+use crate::value::{Amount, Cmp, CounterKind, StatKind};
 
 const COLORS: [(&str, Color); 5] = [
     ("white", Color::White),
@@ -334,6 +335,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     }
     r.attempt(|r| {
         r.need("with")?;
+        if let Some(kind) = r.attempt(counter_on_it) {
+            return Some(Pred::HasCounter(kind));
+        }
         if let Some(keyword) = keyword(r) {
             return Some(Pred::HasKeyword(keyword));
         }
@@ -366,6 +370,11 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
+        // Only a lone creature is "each ... with a counter on it"; the plural and the other forms stay unwritten.
+        Pred::HasCounter(kind) if matches!(form, Form::Each) => {
+            let words = counters::trigger_kind_text(Some(kind))?;
+            format!("with {words} on it")
+        }
         Pred::Not(inner) => match &**inner {
             Pred::HasKeyword(keyword) => format!("without {}", keyword_text(keyword)?),
             _ => return None,
@@ -386,6 +395,13 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         }
         _ => return None,
     })
+}
+
+/// "a +1/+1 counter on it", "a level counter on it": the counter an object holds, after "with".
+fn counter_on_it(r: &mut Reader<'_>) -> Option<CounterKind> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    let kind = counters::trigger_kind(r)?;
+    r.words("on it").then_some(kind)
 }
 
 /// A subtype as it is written ("Clue", "Soldier"), of the rules' list or of the card's own type line; any other

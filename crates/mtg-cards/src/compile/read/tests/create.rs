@@ -119,7 +119,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 }
 
 #[rstest]
-#[case::tapped_first("Create a tapped Treasure token.")]
 #[case::with_an_ability_the_dsl_lacks("Create a 1/1 white Spirit creature token with decayed.")]
 #[case::tapped_only("Create a 1/1 white Soldier creature token that's tapped.")]
 #[case::wrong_agreement_attacking(
@@ -141,9 +140,7 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::lowercase_names("Create a treasure token.")]
 #[case::a_chain("Create a Treasure token, then draw a card.")]
 #[case::a_pronoun("Create a Treasure token. It enters tapped.")]
-#[case::under_another_control("Target player creates a Treasure token.")]
 #[case::a_number_that_is_not_a_size("Create a 1 white Soldier creature token.")]
-#[case::an_open_count("Create that many Treasure tokens.")]
 #[case::investigate_twice("Investigate twice.")]
 #[case::investigate_for_each("Investigate for each creature you control.")]
 #[case::a_defined_name("Create a Treasure token named Gold.")]

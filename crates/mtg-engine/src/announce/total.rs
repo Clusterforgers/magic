@@ -69,7 +69,8 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
     match ctx.what {
         What::Spell(spell) => {
             let cost = ctx.state.object(*spell)?.card().mana_cost.clone();
-            let mut sources = mana_options(ctx.state, ctx.player);
+            let all = mana_options(ctx.state, ctx.player);
+            let mut sources = crate::mana_takes::for_card(ctx.state, &all, *spell).into_owned();
             // The parts of the way it is cast and of its optional costs: the life they pay is not there for Phyrexian
             // mana, and what they sacrifice, tap or return is not there to tap for mana. Before the picks are made the
             // player is assumed to give what leaves the most mana.

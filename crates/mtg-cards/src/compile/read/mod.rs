@@ -12,7 +12,7 @@
 //! of a choice), `triggers` (the event of a triggered ability), `costs` (what is paid before the
 //! colon), `abilities` (a spell ability, a triggered ability, an activated ability), `conditional`
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
-//! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `copy_spells` (a copy of a spell or an ability, a
+//! `damage` (what deals damage to whom and the life gained with it), `copies` (a token that is a copy, populate, entering as a copy), `levels` (the blocks of a level up creature), `copy_spells` (a copy of a spell or an ability, a
 //! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `draws` (draw and discard wordings), `actions` (the keyword actions of creatures) and
 //! `render`.
 
@@ -33,6 +33,7 @@ mod defining;
 mod draws;
 mod effects;
 mod lands;
+mod levels;
 mod library;
 mod life_gain;
 mod modal;
@@ -50,6 +51,7 @@ mod tokens;
 mod transform;
 mod triggers;
 
+pub use levels::block as level_block;
 pub use render::{ability as render_ability, mode as render_mode, variants as render_variants};
 pub use tokens::same_text;
 

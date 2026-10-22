@@ -174,6 +174,7 @@ fn reads_of_stat(stat: StatKind) -> Traits {
     match stat {
         StatKind::Power => Traits::POWER,
         StatKind::Toughness => Traits::TOUGHNESS,
+        StatKind::Colors => Traits::COLORS,
         StatKind::ManaValue | StatKind::Loyalty => Traits::NONE,
     }
 }
