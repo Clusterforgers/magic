@@ -4,6 +4,7 @@
 //! same sequence.
 
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
+use super::attackers;
 use super::cast;
 use super::conditional;
 use super::copies;
@@ -22,6 +23,7 @@ use super::reveal;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
+use super::subtypes::plural_subtype;
 use super::triggers::{
     article, condition_text, cycled_itself, entered_or_attacked, itself_acts, pattern_text,
     targeted_itself,
@@ -95,6 +97,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    texts.extend(attackers::named_draws(ability, &texts));
     // The counters counted by "for each" may be those "on it" for the card.
     let pronouns: Vec<String> = texts
         .iter()
@@ -364,6 +367,27 @@ fn wording_choices(effects: &[Effect]) -> Vec<Wording> {
         .collect()
 }
 
+/// The effects of an attack at the enchanted player and the same again for the opponents who attack: one sentence
+/// more, which no joint splits.
+fn repeating(
+    targets: &[TargetSpec],
+    head: &[Effect],
+    mask: u32,
+    wording: Wording,
+) -> Option<Vec<String>> {
+    if mask >> (head.len() - 1) != 0 {
+        return None;
+    }
+    let mut sentences = written(targets, head, mask, wording)?;
+    sentences.push(attackers::sentence(head).to_owned());
+    Some(sentences)
+}
+
+/// Whether no joint of the mask falls inside the `used` effects from `start`, which are one sentence.
+fn unsplit(mask: u32, start: usize, used: usize) -> Option<()> {
+    ((mask >> start) & ((1 << used) - 1) == 0).then_some(())
+}
+
 /// The sentences of the effects with the joints of the mask closed into compound sentences.
 fn written(
     targets: &[TargetSpec],
@@ -371,6 +395,9 @@ fn written(
     mask: u32,
     wording: Wording,
 ) -> Option<Vec<String>> {
+    if let Some(head) = attackers::repeated(effects) {
+        return repeating(targets, head, mask, wording);
+    }
     let mut writer = Writer {
         targets,
         named: false,
@@ -387,18 +414,14 @@ fn written(
             .or_else(|| library::sequence(&effects[start..]))
             .or_else(|| writer.explore_twice(&effects[start..]))
         {
-            if (mask >> start) & ((1 << used) - 1) != 0 {
-                return None;
-            }
+            unsplit(mask, start, used)?;
             sentences.push(text);
             start += used;
             continue;
         }
         // A look at the top card, the reveal and what follows it are three sentences, which no joint splits.
         if let Some((condition, then, used)) = reveal::shape(&effects[start..]) {
-            if (mask >> start) & ((1 << used) - 1) != 0 {
-                return None;
-            }
+            unsplit(mask, start, used)?;
             let tail = writer.consequence(condition, then)?;
             sentences.push(reveal::text(condition, &tail)?);
             start += used;
@@ -407,9 +430,7 @@ fn written(
         // Populate is two steps and one word; a copy that is exiled or sacrificed at the end step is two sentences.
         // No joint splits either.
         if copies::is_populate(&effects[start..]) {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push("populate".to_owned());
             start += 2;
             continue;
@@ -417,9 +438,7 @@ fn written(
         if let [created @ Effect::CreateToken { .. }, delayed, ..] = &effects[start..]
             && let Some(delay) = copies::delay_text(created, delayed)
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push(writer.copy_token(created, true)?);
             sentences.push(delay);
             start += 2;
@@ -433,9 +452,7 @@ fn written(
         ] = &effects[start..]
             && let Some(texts) = writer.become_copy(choose, copy)
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.extend(texts);
             start += 2;
             continue;
@@ -449,9 +466,7 @@ fn written(
             && let Some(text) =
                 put_back_text(choose, moved).or_else(|| returned_text(choose, moved))
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push(text);
             start += 2;
             continue;
@@ -707,6 +722,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::RemoveCounters { .. }
                 | Effect::MoveCounters { .. }
                 | Effect::Transform { .. }
+                | Effect::CopySpell { .. }
         )
 }
 
@@ -747,6 +763,9 @@ fn mana_text(mana: &Produce) -> Option<String> {
             format!("{} mana of any one color", count_word(*count)?)
         }
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
+        Produce::OrChosenColor(mana) => {
+            format!("{{{}}} or one mana of the chosen color", mana.symbol())
+        }
         Produce::CommanderIdentity(1) => {
             "one mana of any color in your commander's color identity".to_owned()
         }
@@ -1048,6 +1067,14 @@ impl Writer<'_> {
             let target = self.name_target()?;
             return copy_spells::becomes_text(effect, &target);
         }
+        // The spell a trigger is about has no target to name.
+        if let Effect::CopySpell {
+            what: Ref::Triggering,
+            ..
+        } = effect
+        {
+            return copy_spells::cast_text(effect);
+        }
         if self.named {
             return None;
         }
@@ -1202,6 +1229,11 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::Amass { subtype, count } => format!(
+                "amass {} {}",
+                plural_subtype(&subtype.0),
+                points_text(count)?
+            ),
             Effect::Explore {
                 what: what @ (Ref::This | Ref::Target(0)),
             } => format!("{} explores", self.object(what)?),

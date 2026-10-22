@@ -90,6 +90,8 @@ pub enum Produce {
     OneOfLists(Vec<Vec<ManaType>>),
     /// This many mana of the color chosen as the source entered the battlefield.
     ChosenColor(u32),
+    /// One mana of this type or of the color chosen as the source entered the battlefield ("Add {R} or one mana of the chosen color").
+    OrChosenColor(ManaType),
     /// This many mana of any one color in the identity of the controller's commander.
     CommanderIdentity(u32),
     /// This many mana of any one color that an object matching the selector could produce ("any type" adds colorless).
@@ -119,6 +121,9 @@ pub enum TokenRef {
         /// Changes the copy has ("except it's a Zombie in addition").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except: Vec<Modification>,
+        /// The copy has no mana cost ("except it's a white Zombie with no mana cost", CR 702.128).
+        #[serde(default, skip_serializing_if = "is_false")]
+        no_mana_cost: bool,
     },
 }
 

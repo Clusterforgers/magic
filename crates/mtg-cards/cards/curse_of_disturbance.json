@@ -1,0 +1,57 @@
+{
+  "oracle_id": "6cbd36d9-de47-41b0-9ef4-a72ca01adccd",
+  "name": "Curse of Disturbance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curse of Disturbance",
+      "oracle_fingerprint": "1f06bdfc396c90252cb138725b5718aa",
+      "abilities": [
+        { "Keyword": { "EnchantPlayer": {} } },
+        {
+          "Triggered": {
+            "when": { "PlayerAttacked": { "who": "AttachedPlayer" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "who": {
+                    "ControllerOf": {
+                      "Each": [
+                        { "AttackingPlayer": "AttachedPlayer" },
+                        { "ControlledBy": "Opponents" }
+                      ]
+                    }
+                  },
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "469f25de-c180-47e9-9b1b-e23269139bbd",
+  "name": "Riveteers Requisitioner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riveteers Requisitioner",
+      "oracle_fingerprint": "9edc370ab49bbce2134c40c6b2703a36",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        { "Keyword": { "Blitz": "{2}{R}" } }
+      ]
+    }
+  ]
+}

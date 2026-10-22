@@ -295,14 +295,28 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "becomes" } else { "become" } {
         r.need("the monarch")?;
         Some(TriggerPattern::BecomesMonarch { who: by })
+    } else if verb == if third { "is" } else { "are" } {
+        r.need("attacked")?;
+        Some(TriggerPattern::PlayerAttacked { who: by })
+    } else if verb == if third { "attacks" } else { "attack" } {
+        if by == Ref::You && r.peek_word() == Some("with") {
+            return attack_with(r);
+        }
+        let at = if r.words("enchanted player") {
+            Ref::AttachedPlayer
+        } else {
+            r.word("you").then_some(Ref::You)?
+        };
+        r.need("with one or more creatures")?;
+        Some(TriggerPattern::PlayerAttacks { by, at })
     } else if verb == if third { "proliferates" } else { "proliferate" } {
         Some(TriggerPattern::Proliferated { who: by })
+    } else if verb == if third { "amasses" } else { "amass" } {
+        Some(TriggerPattern::Amassed { who: by })
     } else if verb == if third { "taps" } else { "tap" } {
         let what = subject(r)?;
         r.need("for mana")?;
         Some(TriggerPattern::TappedForMana { what, by })
-    } else if verb == "attack" && by == Ref::You {
-        attack_with(r)
     } else {
         None
     }
@@ -755,6 +769,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Proliferated { who } => {
             Some(format!("Whenever {}", player_verb(who, "proliferate")?))
         }
+        TriggerPattern::Amassed { who } => Some(format!("Whenever {}", player_verb(who, "amass")?)),
         TriggerPattern::LifeGained { who } => {
             Some(format!("Whenever {} life", player_verb(who, "gain")?))
         }
@@ -775,6 +790,27 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
                 _ => return None,
             };
             Some(format!("Whenever {} {card}", player_verb(by, "cycle")?))
+        }
+        TriggerPattern::PlayerAttacked { who } => {
+            let (subject, be) = match who {
+                Ref::You => ("you", "are"),
+                Ref::Opponents => ("an opponent", "is"),
+                Ref::EachPlayer => ("a player", "is"),
+                Ref::AttachedPlayer => ("enchanted player", "is"),
+                _ => return None,
+            };
+            Some(format!("Whenever {subject} {be} attacked"))
+        }
+        TriggerPattern::PlayerAttacks { by, at } => {
+            let at = match at {
+                Ref::You => "you",
+                Ref::AttachedPlayer => "enchanted player",
+                _ => return None,
+            };
+            Some(format!(
+                "Whenever {} {at} with one or more creatures",
+                player_verb(by, "attack")?
+            ))
         }
         TriggerPattern::TappedForMana { what, by } => Some(format!(
             "Whenever {} {} for mana",
