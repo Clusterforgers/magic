@@ -222,6 +222,14 @@ mod mana {
         "{T}: Add one mana of any type that a land you control could produce.",
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"ProducedBy":{"among":[{"Type":"Land"},{"ControlledBy":"You"}],"count":1,"colorless":true}}}}]}}"#
     )]
+    #[case::two_of_one_color(
+        "{T}: Add two mana of any one color.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":2}}}]}}"#
+    )]
+    #[case::three_of_one_color_for_creature_spells(
+        "{T}: Add three mana of any one color. Spend this mana only to cast creature spells.",
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":3},"only":[{"Spell":{"types":["Creature"]}}]}}]}}"#
+    )]
     #[case::a_cost_of_life(
         "{T}, Pay 1 life: Add {G} or {W}.",
         r#"{"Activated":{"cost":["Tap",{"PayLife":1}],"effects":[{"AddMana":{"mana":{"OneOf":["Green","White"]}}}]}}"#
@@ -322,7 +330,6 @@ mod mana {
     #[case::x("{T}: Add {X}.")]
     #[case::generic("{T}: Add {2}.")]
     #[case::snow("{T}: Add {S}.")]
-    #[case::any_one_colour("{T}: Add two mana of any one color.")]
     #[case::no_mana("{T}: Add")]
     #[case::not_a_cost("Draw a card: Add {G}.")]
     fn a_cost_a_choice_or_a_count_the_template_does_not_model_stays_unread(#[case] text: &str) {

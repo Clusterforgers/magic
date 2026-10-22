@@ -559,6 +559,9 @@ fn mana_text(mana: &Produce) -> Option<String> {
             symbols
         }
         Produce::AnyColor(1) => "one mana of any color".to_owned(),
+        Produce::AnyColor(count @ 2..) => {
+            format!("{} mana of any one color", count_word(*count)?)
+        }
         Produce::ChosenColor(1) => "one mana of the chosen color".to_owned(),
         Produce::CommanderIdentity(1) => {
             "one mana of any color in your commander's color identity".to_owned()

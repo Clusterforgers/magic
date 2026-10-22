@@ -760,6 +760,13 @@ fn choice(r: &mut Reader<'_>) -> Option<Vec<ManaType>> {
     (list.len() > 1).then_some(list)
 }
 
+/// "two mana of any one color", "three mana of any one color": several mana of the one color picked.
+fn several_of_one_color(r: &mut Reader<'_>) -> Option<u32> {
+    let count = number_word(r.take_word()?).filter(|count| *count >= 2)?;
+    r.need("mana of any one color")?;
+    Some(count)
+}
+
 /// The lands a mana ability looks at, as "a land an opponent controls" and "a land you control" say.
 fn lands_of(who: Ref) -> Selector {
     Selector(vec![
@@ -803,6 +810,8 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         produced
     } else if r.words("one mana of any color") {
         Produce::AnyColor(1)
+    } else if let Some(count) = r.attempt(several_of_one_color) {
+        Produce::AnyColor(count)
     } else if r.words("one mana of the chosen color") {
         Produce::ChosenColor(1)
     } else if let Some(list) = r.attempt(choice) {

@@ -91,6 +91,7 @@ mod loyalty_fuzz;
 mod madness;
 mod madness_fuzz;
 mod mana_abilities;
+mod mana_costs;
 mod mana_fuzz;
 mod mana_payment;
 mod manual_actions;
