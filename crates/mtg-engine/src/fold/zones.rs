@@ -130,6 +130,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             choices,
         } => {
             state.tally(*player, Tally::Cast);
+            for target in choices.targeted_objects() {
+                state.tally_object(target, Some(*player), Tally::Targeted);
+            }
             // A card is cast from its hand, or from the zone a permission names (CR 601.3): never from play.
             let from = state
                 .objects

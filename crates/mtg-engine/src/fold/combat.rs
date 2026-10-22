@@ -9,7 +9,8 @@ use crate::combat::{Attacker, CombatState, DamageTarget};
 use crate::counters::change;
 use crate::error::EngineError;
 use crate::events::Event;
-use crate::state::GameState;
+use crate::object::GameObject;
+use crate::state::{GameState, Tally};
 use crate::zones::Zone;
 
 fn on_battlefield(state: &GameState, id: mtg_core::ids::ObjectId) -> bool {
@@ -52,7 +53,17 @@ fn damage_object(
             change(&mut perm.counters, &CounterKind::Loyalty, delta)?;
         }
     }
+    if amount > 0 {
+        tally(state, id, Tally::Damaged);
+    }
     Ok(())
+}
+
+/// Counts one more event of the kind for the object `id` (as it is now) this turn.
+fn tally(state: &mut GameState, id: mtg_core::ids::ObjectId, kind: Tally) {
+    if let Some(reference) = state.object(id).map(GameObject::reference) {
+        state.tally_object(reference, None, kind);
+    }
 }
 
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
@@ -77,6 +88,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     target_left: false,
                 })
                 .collect();
+            for (attacker, _) in attackers {
+                tally(state, *attacker, Tally::Attacked);
+            }
             state.combat.attackers_declared = true;
         }
         Event::BlockersDeclared { player, blocks } => {

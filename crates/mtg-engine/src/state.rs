@@ -71,7 +71,8 @@ pub(crate) struct Possible {
     pub(crate) protection: bool,
 }
 
-/// A kind of event the game counts for each player in a turn, for "your second card each turn".
+/// A kind of event the game counts in a turn: for each player ("your second card each turn") or for each object
+/// ("becomes the target for the first time each turn").
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub(crate) enum Tally {
     /// A card drawn.
@@ -80,6 +81,22 @@ pub(crate) enum Tally {
     Cast,
     /// Life gained, once for each event.
     Gained,
+    /// An object declared as an attacker (counted for the object).
+    Attacked,
+    /// An object chosen as a target of a spell or ability (counted for the object, and for the controller of what targets it).
+    Targeted,
+    /// An object dealt damage, once for each event (counted for the object).
+    Damaged,
+}
+
+/// The events counted in the turn so far.
+#[derive(Debug, Clone, Default)]
+pub(crate) struct Tallies {
+    /// How many events of each kind each player has had.
+    pub(crate) players: BTreeMap<(PlayerId, Tally), u32>,
+    /// How many events of each kind each object has had, by the player who caused them where that matters (the
+    /// controller of what targets it; `None` counts them all). An object that changed zones is a new one.
+    pub(crate) objects: BTreeMap<(ObjectRef, Option<PlayerId>, Tally), u32>,
 }
 
 /// The state of one game; a pure fold of events over the initial setup.
@@ -114,8 +131,8 @@ pub struct GameState {
     pub(crate) limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
     /// The planeswalkers that had a loyalty ability activated this turn: no more than one for each (CR 606.3).
     pub(crate) loyalty_used: BTreeSet<ObjectRef>,
-    /// How many events of each kind each player has had this turn, from zero at the turn's start.
-    pub(crate) tallies: BTreeMap<(PlayerId, Tally), u32>,
+    /// What the game has counted this turn, from zero at the turn's start.
+    pub(crate) tallies: Tallies,
     /// Whether any card of the game has a triggered ability or sets up a delayed one; derived from the setup.
     pub(crate) triggers_possible: bool,
     /// Whether any card of the game has a static ability; derived from the setup and the tokens made.
@@ -301,18 +318,39 @@ impl GameState {
     pub(crate) fn clear_turn_uses(&mut self) {
         self.limits_spent.clear();
         self.loyalty_used.clear();
-        self.tallies.clear();
+        self.tallies = Tallies::default();
     }
 
     /// Counts one more event of the kind for the player this turn.
     pub(crate) fn tally(&mut self, player: PlayerId, kind: Tally) {
-        let count = self.tallies.entry((player, kind)).or_insert(0);
+        let count = self.tallies.players.entry((player, kind)).or_insert(0);
         *count = count.saturating_add(1);
     }
 
     /// How many events of the kind the player has had this turn.
     pub(crate) fn tallied(&self, player: PlayerId, kind: Tally) -> u32 {
-        self.tallies.get(&(player, kind)).copied().unwrap_or(0)
+        let counted = self.tallies.players.get(&(player, kind));
+        counted.copied().unwrap_or(0)
+    }
+
+    /// Counts one more event of the kind for the object this turn, and for `by` when a player caused it.
+    pub(crate) fn tally_object(&mut self, object: ObjectRef, by: Option<PlayerId>, kind: Tally) {
+        let keys = std::iter::once(None).chain(by.map(Some));
+        for key in keys {
+            let count = self.tallies.objects.entry((object, key, kind)).or_insert(0);
+            *count = count.saturating_add(1);
+        }
+    }
+
+    /// How many events of the kind the object has had this turn, caused by `by` (any player when `None`).
+    pub(crate) fn object_tallied(
+        &self,
+        object: ObjectRef,
+        by: Option<PlayerId>,
+        kind: Tally,
+    ) -> u32 {
+        let key = (object, by, kind);
+        self.tallies.objects.get(&key).copied().unwrap_or(0)
     }
 
     /// Whether a loyalty ability of the planeswalker `permanent` has been activated this turn (CR 606.3).
@@ -431,8 +469,11 @@ impl Hash for GameState {
             self.loyalty_used.hash(state);
         }
         // Likewise a game that counted nothing this turn.
-        if !self.tallies.is_empty() {
-            self.tallies.hash(state);
+        if !self.tallies.players.is_empty() {
+            self.tallies.players.hash(state);
+        }
+        if !self.tallies.objects.is_empty() {
+            self.tallies.objects.hash(state);
         }
         self.result.hash(state);
     }

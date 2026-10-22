@@ -82,6 +82,7 @@ mod mana_fuzz;
 mod mana_payment;
 mod mill_effects;
 mod mulligan;
+mod object_nth;
 mod part_fuzz;
 mod pay_fuzz;
 mod pay_parts;

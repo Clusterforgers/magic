@@ -4631,5 +4631,36 @@
       "R"
     ],
     "keywords": []
+  },
+  {
+    "id": "d21c3e41-0636-49a3-8c9c-384c5e5c9c3e",
+    "oracle_id": "f50bbe5e-a839-40e1-ba79-1e96f91bd218",
+    "name": "Seedglaive Mentor",
+    "lang": "en",
+    "layout": "normal",
+    "set": "blb",
+    "collector_number": "231",
+    "rarity": "uncommon",
+    "released_at": "2024-08-02",
+    "digital": false,
+    "mana_cost": "{1}{R}{W}",
+    "cmc": 3.0,
+    "type_line": "Creature — Mouse Soldier",
+    "oracle_text": "Vigilance, haste\nValiant — Whenever this creature becomes the target of a spell or ability you control for the first time each turn, put a +1/+1 counter on it.",
+    "power": "3",
+    "toughness": "2",
+    "colors": [
+      "R",
+      "W"
+    ],
+    "color_identity": [
+      "R",
+      "W"
+    ],
+    "keywords": [
+      "Vigilance",
+      "Valiant",
+      "Haste"
+    ]
   }
 ]

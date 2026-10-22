@@ -16,7 +16,7 @@ use super::prevention;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
-use super::triggers::{article, condition_text, cycled_itself, pattern_text};
+use super::triggers::{article, condition_text, cycled_itself, pattern_text, targeted_itself};
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce};
@@ -43,6 +43,15 @@ pub fn variants(ability: &Ability) -> Vec<String> {
         .collect();
     texts.extend(singulars);
     texts = texts.into_iter().flat_map(cast::impulse_wordings).collect();
+    // A card that becomes a target may call itself "it" in the counters it puts on itself (Seedglaive Mentor).
+    if matches!(ability, Ability::Triggered { when, .. } if targeted_itself(when)) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.ends_with(" counter on ~.") || text.ends_with(" counters on ~."))
+            .map(|text| text.replacen(" on ~.", " on it.", 1))
+            .collect();
+        texts.extend(pronouns);
+    }
     // An activated ability that opens with damage may say "It deals" for the source (Walking Ballista).
     if matches!(ability, Ability::Activated { .. }) {
         let pronouns: Vec<String> = texts

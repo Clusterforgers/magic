@@ -76,6 +76,9 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         when,
         TriggerPattern::Tapped { .. } | TriggerPattern::Untapped { .. }
     );
+    if triggers::targeted_itself(&when) {
+        r.it = Some(Ref::This);
+    }
     // A permanent entering is not the card itself, which may wait in the graveyard for it.
     r.from_graveyard = matches!(
         &when,

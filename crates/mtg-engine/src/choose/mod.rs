@@ -136,6 +136,17 @@ impl Choices {
     pub fn is_empty(&self) -> bool {
         *self == Choices::default()
     }
+
+    /// The objects chosen as targets, each once however many specifications name it: it becomes a target once.
+    pub(crate) fn targeted_objects(&self) -> Vec<ObjectRef> {
+        let mut found = Vec::new();
+        for object in self.targets.iter().flatten().filter_map(|t| t.object()) {
+            if !found.contains(&object) {
+                found.push(object);
+            }
+        }
+        found
+    }
 }
 
 /// One answer a player gave during a resolution, kept in the journal until the step that asked consumes it.

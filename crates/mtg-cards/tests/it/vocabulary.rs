@@ -160,6 +160,22 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     r#"{"Triggered":{"when":{"BecomesBlocked":{"what":["This"]}},"effects":[{"Draw":{}}]}}"#,
     &["Ability.Triggered", "Effect.Draw", "Trigger.BecomesBlocked"]
 )]
+#[case::the_first_attack_of_a_turn(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"Attacks":{"what":["This"]}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.Attacks", "Trigger.Nth"]
+)]
+#[case::the_first_target_of_mine_in_a_turn(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"BecomesTarget":{"what":["This"],"by":[{"ControlledBy":"You"}]}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.BecomesTarget", "Trigger.Nth"]
+)]
+#[case::the_first_target_of_anyone_in_a_turn(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"BecomesTarget":{"what":["This"]}},"nth":2}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.BecomesTarget", "Trigger.Nth"]
+)]
+#[case::the_first_damage_to_an_object_in_a_turn(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":[],"to":"This"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Triggered", "Effect.Draw", "Trigger.DealsDamage", "Trigger.Nth"]
+)]
 #[case::attacking_together(
     r#"{"Triggered":{"when":{"GroupAttacks":{"what":[{"ControlledBy":"You"}],"at_least":2}},"effects":[{"Draw":{}}]}}"#,
     &["Ability.Triggered", "Effect.Draw", "Trigger.GroupAttacks"]
@@ -254,6 +270,34 @@ fn a_node_validates_round_trips_and_names_its_primitive(
 #[case::a_player_who_cycles_is_a_player(
     r#"{"Triggered":{"when":{"Cycled":{"by":"This"}},"effects":[{"Draw":{}}]}}"#,
     "expected a player"
+)]
+#[case::the_first_time_is_one(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"Attacks":{"what":["This"]}},"nth":0}},"effects":[{"Draw":{}}]}}"#,
+    "the first time is 1"
+)]
+#[case::a_count_of_targets_by_an_opponent(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"BecomesTarget":{"what":["This"],"by":[{"ControlledBy":"Opponents"}]}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    "are counted in a turn"
+)]
+#[case::a_count_of_targets_by_a_kind_of_spell(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"BecomesTarget":{"what":["This"],"by":["Spell"]}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    "are counted in a turn"
+)]
+#[case::a_count_of_damage_to_a_player(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":[],"to":"Opponents"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    "are counted in a turn"
+)]
+#[case::a_count_of_damage_from_one_source(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":["This"],"to":"This"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    "are counted in a turn"
+)]
+#[case::a_count_of_combat_damage_only(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"DealsDamage":{"source":[],"to":"This","combat":true}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    "are counted in a turn"
+)]
+#[case::a_count_of_something_else(
+    r#"{"Triggered":{"when":{"Nth":{"event":{"Blocks":{"what":["This"]}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
+    "are counted in a turn"
 )]
 #[case::no_attackers_at_all(
     r#"{"Triggered":{"when":{"GroupAttacks":{"what":[],"at_least":0}},"effects":[{"Draw":{}}]}}"#,
