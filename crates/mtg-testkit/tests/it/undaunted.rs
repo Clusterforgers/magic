@@ -144,7 +144,7 @@ fn the_spell_resolves_as_it_reads_after_paying_the_reduced_cost(#[values(2, 3, 4
     for _ in 0..seats {
         driver.pass().unwrap();
     }
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     assert!(bears(&driver).is_empty(), "all creatures are destroyed");
 }
 

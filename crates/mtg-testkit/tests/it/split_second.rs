@@ -86,7 +86,7 @@ fn the_seats_may_cast_and_activate_only_without_split_second_on_the_stack(
         driver.pass().unwrap();
     }
     // The spell resolved: its target lost life and the stack is empty.
-    assert!(driver.state().stack().is_empty());
+    assert_eq!(driver.state().stack(), []);
     let life = |seat: usize| driver.state().player(pid(seat)).unwrap().life();
     assert!(life(1) < 20, "the spell resolved");
     // Seat 0 acts again.
@@ -133,7 +133,7 @@ fn a_mana_ability_can_still_be_used_but_nothing_is_cast_with_the_mana(
     driver.tap_for_mana("Sol Ring").unwrap();
     assert_eq!(driver.state().player(pid(1)).unwrap().mana().total(), 2);
     assert_eq!(driver.decision().unwrap().player, pid(1));
-    assert!(options(&driver).castable.is_empty());
+    assert_eq!(options(&driver).castable, []);
     assert!(!options(&driver).can_act);
 }
 
@@ -153,16 +153,20 @@ fn a_triggered_ability_still_triggers_and_resolves_above_the_spell(
     // Prowess triggered on the cast and waits above the spell.
     assert_eq!(driver.state().stack().len(), 2);
     for _ in 0..seats {
-        assert!(options(&driver).castable.is_empty());
+        assert_eq!(options(&driver).castable, []);
         driver.pass().unwrap();
     }
     assert_eq!(driver.state().stack().len(), 1, "the trigger resolved");
     assert_eq!(power(&driver), Some(2));
     // The spell is still on the stack and still holds everyone back.
-    assert!(options(&driver).castable.is_empty());
+    assert_eq!(options(&driver).castable, []);
     for _ in 0..seats {
         driver.pass().unwrap();
     }
-    assert!(driver.state().stack().is_empty());
-    assert!(!options(&driver).castable.is_empty());
+    assert_eq!(driver.state().stack(), []);
+    assert_eq!(
+        options(&driver).castable.len(),
+        1,
+        "the Lightning Bolt is castable again"
+    );
 }
