@@ -90,6 +90,7 @@ Dualcaster Mage
 Durkwood Baloth
 Echo Inspector
 Elven Ambush
+Elvish Rejuvenator
 Empyrial Plate
 Epic Proportions
 Eternal Witness
@@ -129,6 +130,7 @@ Goblin Spy
 Goblin War Buggy
 Grapeshot
 Graveshifter
+Grisly Salvage
 Growing Ranks
 Guardian Gladewalker
 Gurmag Angler
@@ -240,6 +242,7 @@ Rummaging Goblin
 Rustrazor Butcher
 Safehold Elite
 Sanguine Bond
+Satyr Wayfinder
 Saw It Coming
 Scheming Aspirant
 Scuzzback Marauders

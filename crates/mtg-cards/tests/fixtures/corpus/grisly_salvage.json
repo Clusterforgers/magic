@@ -1,0 +1,25 @@
+{
+  "id": "12a90f7a-28df-4017-b221-0e9234ff74a7",
+  "oracle_id": "a89ebf63-63c9-42cd-98b4-ec852cd9b0a8",
+  "name": "Grisly Salvage",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "layout": "normal",
+  "mana_cost": "{B}{G}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Reveal the top five cards of your library. You may put a creature or land card from among them into your hand. Put the rest into your graveyard.",
+  "colors": [
+    "B",
+    "G"
+  ],
+  "color_identity": [
+    "B",
+    "G"
+  ],
+  "keywords": [],
+  "set": "tdc",
+  "collector_number": "290",
+  "digital": false,
+  "rarity": "common"
+}
