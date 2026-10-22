@@ -5,9 +5,11 @@
 //! `of` lists them for a card and a player; the options of a player offer a card when one of its ways can be used now
 //! (`castable_now`), and the announcement of the cast asks which one when there is more than one (`announce/alternative.rs`).
 
+use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::definition::Layout;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::value::CastWay;
+use mtg_cards::refs::{Pred, Selector};
+use mtg_cards::value::{Amount, CastWay};
 use mtg_core::card::CardType;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
@@ -191,6 +193,8 @@ fn keyword_way(
     let (way, name, cost, from_here) = match keyword {
         Keyword::Flashback(cost) => (CastWay::Flashback, "Flashback", cost, in_graveyard),
         Keyword::Escape(cost) => (CastWay::Escape, "Escape", cost, in_graveyard),
+        Keyword::JumpStart if in_graveyard => return discard_way(state, id, CastWay::JumpStart, instant),
+        Keyword::Retrace if in_graveyard => return discard_way(state, id, CastWay::Retrace, instant),
         Keyword::Evoke(cost) => (CastWay::Evoke, "Evoke", cost, in_hand),
         Keyword::Overload(cost) => (CastWay::Overload, "Overload", cost, in_hand),
         Keyword::Dash(cost) => (
@@ -225,6 +229,33 @@ fn keyword_way(
         mana: Some(mana),
         instant,
         parts,
+    })
+}
+
+/// Jump-start (CR 702.133) and retrace (CR 702.81): the card is cast from a graveyard for its mana cost and the discard of a
+/// card, a land card for retrace. Nothing replaces the mana cost, so its X is announced as for a card cast from a hand.
+fn discard_way(state: &GameState, id: ObjectId, way: CastWay, instant: bool) -> Option<Way> {
+    let printed = state.object(id)?.card().mana_cost.as_ref()?;
+    let (name, filter, words) = if way == CastWay::Retrace {
+        (
+            "Retrace",
+            Some(Selector(vec![Pred::Type(CardType::Land)])),
+            "discard a land card",
+        )
+    } else {
+        ("Jump-start", None, "discard a card")
+    };
+    let price = Price::announced(&Cost(vec![CostItem::Discard {
+        count: Amount::one(),
+        filter,
+    }]))
+    .ok()?;
+    Some(Way {
+        alternative: Some(way),
+        label: format!("{name} {printed}, {words}"),
+        mana: None,
+        instant,
+        parts: price.parts,
     })
 }
 
@@ -429,7 +460,7 @@ pub(crate) fn grantable_as_is(
                         state,
                         player,
                         id,
-                        way.alternative.is_some(),
+                        way.alternative.is_some_and(CastWay::replaces_cost),
                         &cost,
                         |total| {
                             can_afford_with(
@@ -500,7 +531,7 @@ pub(crate) fn castable_as_is(
                         state,
                         player,
                         id,
-                        way.alternative.is_some(),
+                        way.alternative.is_some_and(CastWay::replaces_cost),
                         &cost,
                         |total| can_afford_with(total, pool, sources, help.help(), life, &spend),
                     )

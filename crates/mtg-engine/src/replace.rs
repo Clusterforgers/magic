@@ -338,8 +338,8 @@ fn exiles_by_rebound(state: &GameState, item: &Item) -> bool {
         })
 }
 
-/// Whether the item moves a spell cast for its flashback cost, or the half of a split card with aftermath that was cast
-/// from a graveyard, from the stack to any zone but exile.
+/// Whether the item moves a spell cast for its flashback cost or with jump-start, or the half of a split card with
+/// aftermath that was cast from a graveyard, from the stack to any zone but exile.
 fn leaves_stack_exiled(state: &GameState, item: &Item) -> bool {
     let Item::One(event) = item else {
         return false;
@@ -349,7 +349,7 @@ fn leaves_stack_exiled(state: &GameState, item: &Item) -> bool {
             && to != Zone::Exile
             && state.object(object).is_some_and(|spell| {
                 spell.kind() == ObjectKind::Card
-                    && (spell.choices().way == Some(CastWay::Flashback)
+                    && (matches!(spell.choices().way, Some(CastWay::Flashback | CastWay::JumpStart))
                         || (spell.cast_from_graveyard() && keywords::aftermath::has(state, object)))
             })
     })

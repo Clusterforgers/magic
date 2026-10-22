@@ -268,6 +268,10 @@ const RUNS: &[&str] = &[
     "Keyword.CumulativeUpkeep",
     "Keyword.Undying",
     "Keyword.Persist",
+    "Keyword.JumpStart",
+    "Keyword.Retrace",
+    "Keyword.Embalm",
+    "Keyword.Eternalize",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
 ];
@@ -574,6 +578,10 @@ mod tests {
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]
     #[case::persist("Keyword.Persist", true)]
+    #[case::jump_start("Keyword.JumpStart", true)]
+    #[case::retrace("Keyword.Retrace", true)]
+    #[case::embalm("Keyword.Embalm", true)]
+    #[case::eternalize("Keyword.Eternalize", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]

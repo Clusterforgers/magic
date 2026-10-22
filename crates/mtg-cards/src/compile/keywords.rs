@@ -337,6 +337,8 @@ pub fn read(item: &str) -> Option<Keyword> {
         "squad" => cost(rest).map(Keyword::Squad),
         "foretell" => cost(rest).map(Keyword::Foretell),
         "unearth" => spell_cost(rest).map(Keyword::Unearth),
+        "embalm" => spell_cost(rest).map(Keyword::Embalm),
+        "eternalize" => spell_cost(rest).map(Keyword::Eternalize),
         "escape" => spell_cost(rest).map(Keyword::Escape),
         "dash" => spell_cost(rest).map(Keyword::Dash),
         "ninjutsu" => cost(rest).map(Keyword::Ninjutsu),
@@ -437,6 +439,8 @@ fn plain(name: &str) -> Option<Keyword> {
         "aftermath" => Keyword::Aftermath,
         "undying" => Keyword::Undying,
         "persist" => Keyword::Persist,
+        "jump-start" => Keyword::JumpStart,
+        "retrace" => Keyword::Retrace,
         _ => return None,
     })
 }

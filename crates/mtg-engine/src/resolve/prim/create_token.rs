@@ -40,6 +40,7 @@ fn copies_of(
     cx: &Cx<'_>,
     of: &Ref,
     except: &[Modification],
+    no_mana_cost: bool,
 ) -> Result<Vec<MadeFrom>, ResolveError> {
     let mut found = Vec::new();
     for named in cx.scope.objects(of)? {
@@ -54,6 +55,9 @@ fn copies_of(
             if !values.except(modification) {
                 return Err(ResolveError::Unsupported("Effect.CreateToken.Copy.Except"));
             }
+        }
+        if no_mana_cost {
+            values.mana_cost = None;
         }
         found.push((Arc::new(values), Some(named)));
     }
@@ -104,7 +108,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let made_from: Vec<MadeFrom> = match token {
         TokenRef::Named(id) => vec![(Arc::new(token_definition(predefined(id)?, &caps())), None)],
         TokenRef::Custom(spec) => vec![(Arc::new(token_definition(spec, &caps())), None)],
-        TokenRef::CopyOf { of, except } => copies_of(cx, of, except)?,
+        TokenRef::CopyOf {
+            of,
+            except,
+            no_mana_cost,
+        } => copies_of(cx, of, except, *no_mana_cost)?,
     };
     let state = cx.state();
     let number = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);

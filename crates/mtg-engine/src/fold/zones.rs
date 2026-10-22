@@ -221,7 +221,10 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             let adventure = state.objects.get(object).is_some_and(|spell| {
                 spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1)
             });
-            if choices.way == Some(CastWay::Flashback) || bought_back || adventure {
+            if matches!(choices.way, Some(CastWay::Flashback | CastWay::JumpStart))
+                || bought_back
+                || adventure
+            {
                 state.possible.replacements = true;
             }
             reset_passes(state);

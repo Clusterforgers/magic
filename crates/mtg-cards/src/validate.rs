@@ -707,6 +707,8 @@ impl<'a> Walker<'a> {
             | Keyword::Reconfigure(cost)
             | Keyword::Cycling(cost)
             | Keyword::Unearth(cost)
+            | Keyword::Embalm(cost)
+            | Keyword::Eternalize(cost)
             | Keyword::Ninjutsu(cost) => {
                 self.at("cost", |w| w.cost(cost));
             }
@@ -1061,7 +1063,7 @@ impl<'a> Walker<'a> {
                 }
             }
             TokenRef::Custom(spec) => self.at("Custom", |w| w.token_spec(spec)),
-            TokenRef::CopyOf { of, except } => {
+            TokenRef::CopyOf { of, except, .. } => {
                 self.at("of", |w| w.reference(of, Kind::Object));
                 self.copy_exceptions(except);
             }

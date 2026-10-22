@@ -73,8 +73,19 @@ pub enum CastWay {
     Escape,
     /// Dash (CR 702.109): the creature has haste and returns to its owner's hand at the next end step.
     Dash,
+    /// Jump-start (CR 702.133): from a graveyard for its mana cost and the discard of a card; exiled when it leaves the stack.
+    JumpStart,
+    /// Retrace (CR 702.81): from a graveyard for its mana cost and the discard of a land card.
+    Retrace,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
+}
+
+impl CastWay {
+    /// Whether the way pays another cost in place of the mana cost (CR 118.9); jump-start and retrace add a cost to it.
+    pub const fn replaces_cost(self) -> bool {
+        !matches!(self, CastWay::JumpStart | CastWay::Retrace)
+    }
 }
 
 /// A kind of counter.
