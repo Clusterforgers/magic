@@ -685,6 +685,91 @@ mod tests {
         assert_eq!(produced(&options(&game, ME)), [(ManaType::Blue, 2)]);
     }
 
+    const BLOOM: &str = r#"{"Activated":{"cost":[{"ExileFromHand":{"filter":[]}}],"effects":[{"AddMana":{"mana":{"OneOfLists":[["Black","Black"],["Green","Green"]]}}}]}}"#;
+
+    fn land() -> Arc<CardDefinition> {
+        Arc::new(CardDefinition::new("Swamp").with_type(CardType::Land))
+    }
+
+    /// A game where the bloom is in play and `hand` is in seat 0's hand.
+    fn bloom_game(hand: Vec<Arc<CardDefinition>>) -> GameState {
+        state(
+            vec![hand, vec![]],
+            vec![vec![artifact("Bloom", BLOOM)], vec![]],
+        )
+    }
+
+    #[rstest]
+    #[case::no_card_to_exile(0, 0)]
+    #[case::one_card(1, 2)]
+    #[case::two_cards(2, 2)]
+    fn a_source_that_exiles_a_card_is_offered_for_each_list_only_with_a_card_in_the_hand(
+        #[case] cards: usize,
+        #[case] offered: usize,
+    ) {
+        let found = options(&bloom_game((0..cards).map(|_| spark()).collect()), ME);
+        assert_eq!(found.len(), offered);
+        for option in &found {
+            let [take] = option.takes.as_slice() else {
+                panic!("one part exiles a card: {:?}", option.takes);
+            };
+            assert!(take.exile && !take.sacrifice);
+            assert_eq!((take.count as usize, take.from.len()), (1, cards));
+            assert_eq!(option.count, 2, "one list of two mana for one activation");
+            assert!(option.extra && option.tapless);
+        }
+        assert_eq!(
+            found.iter().map(|o| o.produces).collect::<Vec<_>>(),
+            [ManaType::Black, ManaType::Green][..offered]
+        );
+    }
+
+    #[test]
+    fn the_cheapest_spell_is_offered_first_and_a_land_last() {
+        let costly = Arc::new(
+            CardDefinition::new("Costly")
+                .with_type(CardType::Sorcery)
+                .with_mana_cost(ManaCost::parse("{4}{R}").unwrap()),
+        );
+        let game = bloom_game(vec![land(), costly, spark()]);
+        let hand = game.zone(Zone::Hand(ME)).to_vec();
+        let found = options(&game, ME);
+        assert_eq!(found[0].takes[0].from, [hand[2], hand[1], hand[0]]);
+    }
+
+    #[rstest]
+    #[case::a_card_beside_the_spell(2, true)]
+    #[case::the_spell_alone(1, false)]
+    fn a_payment_for_a_spell_never_exiles_that_spell(
+        #[case] cards: usize,
+        #[case] affordable: bool,
+    ) {
+        let game = bloom_game((0..cards).map(|_| spark()).collect());
+        let spell = game.zone(Zone::Hand(ME))[0];
+        let all = options(&game, ME);
+        let sources = crate::mana_takes::for_card(&game, &all, spell);
+        assert!(sources.iter().all(|o| !o.takes[0].from.contains(&spell)));
+        let cost = ManaCost::parse("{B}{B}").unwrap();
+        let pool = crate::mana::ManaPool::default();
+        let seen = |sources: &[ManaOption]| {
+            crate::mana::can_afford(&cost, &pool, sources, 20, &crate::spend::Spend::other())
+        };
+        assert_eq!(seen(&sources), affordable);
+        // A payment that is not for a card in the hand may exile any card in it.
+        assert!(seen(&all));
+    }
+
+    #[test]
+    fn the_sources_of_a_card_that_is_not_in_a_hand_are_unchanged() {
+        let game = bloom_game(vec![spark()]);
+        let all = options(&game, ME);
+        let bloom = game.zone(Zone::Battlefield)[0];
+        assert!(matches!(
+            crate::mana_takes::for_card(&game, &all, bloom),
+            std::borrow::Cow::Borrowed(_)
+        ));
+    }
+
     #[test]
     fn a_treasure_and_a_sol_ring_pay_for_a_spell_the_lands_cannot() {
         let game = state(

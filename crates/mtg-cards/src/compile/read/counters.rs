@@ -88,11 +88,7 @@ pub(super) fn pronouns_after_none(ability: &Ability, texts: &[String]) -> Vec<St
     let Ability::Triggered {
         intervening_if:
             Some(Condition::Compare {
-                left:
-                    Amount::Counters {
-                        on: Ref::This,
-                        ..
-                    },
+                left: Amount::Counters { on: Ref::This, .. },
                 op: Cmp::Eq,
                 right: Amount::Fixed(0),
             }),

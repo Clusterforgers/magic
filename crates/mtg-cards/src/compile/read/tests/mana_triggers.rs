@@ -42,7 +42,9 @@ fn the_wordings_of_the_counting_mana_permanents_read_and_write_back(
 #[case::a_number_of_counters(
     "At the beginning of your upkeep, if ~ has two charge counters on it, return it to its owner's hand."
 )]
-#[case::it_before_the_card_is_named("At the beginning of your upkeep, return it to its owner's hand.")]
+#[case::it_before_the_card_is_named(
+    "At the beginning of your upkeep, return it to its owner's hand."
+)]
 #[case::the_colors_of_another_thing(
     "Whenever you cast a spell, put a +1/+1 counter on ~ for each of its colors."
 )]

@@ -158,6 +158,7 @@ pub(crate) fn payment_decision(
         .life()
         .saturating_sub(i32::try_from(reserved_life).unwrap_or(i32::MAX));
     let pool = seat.mana().clone();
+    let sources = crate::mana_takes::for_card(state, &sources, object).into_owned();
     Some(PayOptions {
         spell: object,
         auto_available: auto_payment_with(&cost, &pool, &sources, help.help(), life, &spend)
