@@ -18,7 +18,7 @@ use super::lands;
 use super::life_gain;
 use super::prevention;
 use super::render::{self, capitalize, counts_stats, is_a_type, stats_text};
-use super::selectors::{Form, all, granted_text, phrase, phrase_text, subtype};
+use super::selectors::{Form, all, each, granted_text, phrase, phrase_text, subtype};
 use super::tokens::Reader;
 use super::triggers::{self, article};
 use crate::ability::{Ability, CostChange};
@@ -338,6 +338,9 @@ fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
     });
     if attached.is_some() {
         return Some((Ref::Attached, false));
+    }
+    if let Some(group) = each(r) {
+        return Some((group, false));
     }
     plural(r).map(|group| (group, true))
 }
@@ -876,7 +879,14 @@ fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
             if everyones {
                 vec![(format!("all {plain}"), true), (plain, true)]
             } else {
-                vec![(plain, true)]
+                let mut found = vec![(plain, true)];
+                // "Each creature you control with a +1/+1 counter on it has trample."
+                if chosen.is_empty()
+                    && let Some(one) = phrase_text(&Selector(preds.to_vec()), Form::Each)
+                {
+                    found.push((format!("Each {one}"), false));
+                }
+                found
             }
         }
         _ => Vec::new(),

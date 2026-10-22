@@ -79,6 +79,10 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     if matches!(when, TriggerPattern::AttacksPlayer { .. }) {
         r.it = Some(Ref::Triggering);
     }
+    // The creature of the event is "it" in the effects.
+    if r.it.is_none() {
+        r.it = triggers::event_creature(&when);
+    }
     // A permanent entering is not the card itself, which may wait in the graveyard for it.
     r.from_graveyard = matches!(
         &when,

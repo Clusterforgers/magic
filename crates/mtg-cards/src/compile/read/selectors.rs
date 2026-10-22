@@ -9,8 +9,10 @@ use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
 use super::amounts::{count_word, number_word, stat_name};
+use super::counters;
 use super::subtypes::{plural_subtype as plural_subtype_word, singular_subtype};
 use super::tokens::Reader;
+use super::triggers::article;
 use crate::compile::keywords;
 use crate::keyword::Keyword;
 use crate::modify::Modification;
@@ -268,6 +270,11 @@ pub fn granted_text(mods: &[Modification]) -> Option<String> {
     let mut parts: Vec<String> = Vec::new();
     let mut protecting = false;
     for modification in mods {
+        if *modification == Modification::AddProtectionFromChosenColor {
+            parts.push("protection from the color of your choice".to_owned());
+            protecting = false;
+            continue;
+        }
         let Modification::AddKeyword(keyword) = modification else {
             return None;
         };
@@ -324,6 +331,12 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     }
     r.attempt(|r| {
         r.need("with")?;
+        // "with a +1/+1 counter on it": one object, so the singular only.
+        if r.word("a") || r.word("an") {
+            let counter = counters::kind(r)?;
+            r.words("counter on it").then_some(())?;
+            return Some(Pred::HasCounter(counter));
+        }
         if let Some(keyword) = keyword(r) {
             return Some(Pred::HasKeyword(keyword));
         }
@@ -356,6 +369,10 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
             "you don't control".to_owned()
         }
         Pred::HasKeyword(keyword) => format!("with {}", keyword_text(keyword)?),
+        Pred::HasCounter(counter) => {
+            let kind = counters::kind_text(counter)?;
+            format!("with {} {kind} counter on it", article(kind))
+        }
         Pred::Compare { stat, op, to } => {
             let number = match to {
                 Amount::Fixed(number) => number.to_string(),

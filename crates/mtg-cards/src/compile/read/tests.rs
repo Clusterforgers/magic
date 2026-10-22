@@ -182,6 +182,7 @@ mod monarch;
 mod pay;
 mod payments;
 mod prevention;
+mod pump_wordings;
 mod put_back;
 mod returns;
 mod reveal;

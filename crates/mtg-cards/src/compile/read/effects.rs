@@ -667,6 +667,10 @@ fn removal(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if matches!(what, Ref::Target(_)) && r.targets.first()?.bounds.is_one() && !spell {
         r.it = Some(what.clone());
     }
+    // "Untap ~. It gains protection from the color of your choice until end of turn."
+    if what == Ref::This && turns {
+        r.it = Some(Ref::This);
+    }
     Some(vec![match verb {
         "destroy" => Effect::Destroy {
             what,
@@ -698,6 +702,12 @@ fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
     if r.source() {
         return Some((Ref::This, false));
     }
+    // "Whenever ~ attacks, it gets +1/+1 until end of turn."
+    if let Some(it) = r.it.clone()
+        && r.word("it")
+    {
+        return Some((it, false));
+    }
     if let Some(what) = target_object(r) {
         return Some((what, false));
     }
@@ -705,6 +715,21 @@ fn subject(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
         return Some((objects, true));
     }
     phrase(r, Form::All).map(|selector| (Ref::Each(selector), true))
+}
+
+/// "protection from the color of your choice": the color is chosen as the effect begins, so only an effect that lasts
+/// a while gives it.
+fn chosen_protection(r: &mut Reader<'_>) -> Option<Modification> {
+    r.words("protection from the color of your choice")
+        .then_some(Modification::AddProtectionFromChosenColor)
+}
+
+/// What a pump gives after "gains": keywords, or protection from a color chosen as it resolves.
+fn pump_grants(r: &mut Reader<'_>) -> Option<Vec<Modification>> {
+    match chosen_protection(r) {
+        Some(protection) => Some(vec![protection]),
+        None => granted(r),
+    }
 }
 
 /// "+2/+2", "-3/-3", "+X/+X".
@@ -756,11 +781,11 @@ fn pump(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         mods.push(power_toughness(r)?);
         if r.word("and") {
             r.word(gains).then_some(())?;
-            mods.extend(granted(r)?);
+            mods.extend(pump_grants(r)?);
         }
     } else {
         r.word(gains).then_some(())?;
-        mods = granted(r)?;
+        mods = pump_grants(r)?;
     }
     r.need("until end of turn")?;
     // "Target creature gets -1/-1 until end of turn for each Swamp you control."

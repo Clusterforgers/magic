@@ -34,6 +34,28 @@ pub fn itself_acts(pattern: &TriggerPattern) -> bool {
     }
 }
 
+/// What "it" means in the effects of a trigger about one creature: the card itself when it attacks, blocks, becomes
+/// blocked or enters, and the creature that attacks, becomes blocked or enters otherwise. A creature that blocks
+/// shares the cause with the creature it blocks, so another blocker has no "it".
+pub fn event_creature(pattern: &TriggerPattern) -> Option<Ref> {
+    let (what, named_by_the_cause) = match pattern {
+        TriggerPattern::Attacks { what }
+        | TriggerPattern::BecomesBlocked { what }
+        | TriggerPattern::ZoneChange {
+            what,
+            to: Some(ZoneKind::Battlefield),
+            ..
+        } => (what, true),
+        TriggerPattern::Blocks { what } => (what, false),
+        _ => return None,
+    };
+    if what.0 == [Pred::This] {
+        Some(Ref::This)
+    } else {
+        named_by_the_cause.then_some(Ref::Triggering)
+    }
+}
+
 /// Whether the pattern is the card itself becoming a target (counted or not), so the card's effects may call it "it".
 pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     match pattern {
@@ -138,6 +160,11 @@ fn together(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         r.need("or more")?;
         number
     };
+    if at_least == 1
+        && let Some(found) = r.attempt(counters_batch)
+    {
+        return Some(found);
+    }
     if at_least == 1 && r.words("cards are put into your graveyard from your library") {
         let what = Selector(vec![Pred::OwnedBy(Ref::You)]);
         return Some(TriggerPattern::Batch(Box::new(
@@ -157,6 +184,22 @@ fn together(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     }
     let damage = damage_dealt(r, &what)?;
     Some(TriggerPattern::Batch(Box::new(damage)))
+}
+
+/// "+1/+1 counters are put on this creature", "counters are put on a creature you control", after "one or more": the
+/// counters of one batch.
+fn counters_batch(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    let counter = if r.words("counters are put on") {
+        None
+    } else {
+        let counter = counters::kind(r)?;
+        r.words("counters are put on").then_some(())?;
+        Some(counter)
+    };
+    let what = subject(r)?;
+    Some(TriggerPattern::Batch(Box::new(
+        TriggerPattern::CountersPut { what, counter },
+    )))
 }
 
 /// "a +1/+1 counter is put on ~", "a counter is removed from a creature you control".
@@ -860,6 +903,16 @@ fn batch_text(inner: &TriggerPattern) -> Option<String> {
         } if what.0 == [Pred::OwnedBy(Ref::You)] => Some(
             "Whenever one or more cards are put into your graveyard from your library".to_owned(),
         ),
+        TriggerPattern::CountersPut { what, counter } => {
+            let kind = match counter {
+                Some(counter) => format!("{} ", counters::kind_text(counter)?),
+                None => String::new(),
+            };
+            Some(format!(
+                "Whenever one or more {kind}counters are put on {}",
+                subject_text(what)?
+            ))
+        }
         _ => None,
     }
 }

@@ -17,6 +17,7 @@ use super::library;
 use super::modal::{BULLET, DASH};
 use super::payments;
 use super::prevention;
+use super::pronouns;
 use super::reveal;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
@@ -138,6 +139,8 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             texts.extend(pronouns);
         }
     }
+    pronouns::of_the_card(ability, &mut texts);
+    pronouns::of_the_group(ability, &mut texts);
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
         ability,
@@ -1342,6 +1345,7 @@ impl Writer<'_> {
     fn pump(&mut self, affected: &Ref, mods: &[Modification]) -> Option<String> {
         let (subject, plural) = match affected {
             Ref::This => ("~".to_owned(), false),
+            Ref::Triggering => ("it".to_owned(), false),
             Ref::Target(0)
                 if self.single(affected)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>
