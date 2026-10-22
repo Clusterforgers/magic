@@ -27,6 +27,16 @@ pub const TURN_LIMIT: RangeInclusive<u32> = 1..=1000;
 pub const WINNING_LIFE: RangeInclusive<i32> = 1..=10_000;
 /// The poison thresholds a table may set.
 pub const POISON_THRESHOLD: RangeInclusive<u32> = 1..=100;
+/// The generic mana a commander may cost more for each earlier cast from the command zone; 0 is no tax.
+pub const TAX_PER_CAST: RangeInclusive<u32> = 0..=10;
+/// The combat damage from one commander that may make a player lose.
+pub const COMMANDER_LETHAL: RangeInclusive<u32> = 1..=100;
+/// The exact deck sizes a table may set, commanders included.
+pub const DECK_SIZE: RangeInclusive<u32> = 40..=250;
+/// The copies of one non-basic card a relaxed singleton deck may hold.
+pub const MAX_COPIES: RangeInclusive<u32> = 1..=99;
+/// The commanders a seat may start with.
+pub const COMMANDERS_PER_SEAT: RangeInclusive<u32> = 1..=2;
 
 /// Whether the player who takes the first turn skips their first draw, in place of the format's rule.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -48,6 +58,17 @@ pub enum HandLimit {
     Cards(u32),
     /// Nobody discards at cleanup.
     Unlimited,
+}
+
+/// The combat damage from one commander that makes a player lose, in place of the format's rule.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+#[serde(rename_all = "snake_case")]
+pub enum CommanderDamageLimit {
+    /// A player who has taken this much from one commander loses.
+    Lethal(u32),
+    /// Commander damage never makes a player lose.
+    Off,
 }
 
 /// What happens to a player who draws from an empty library, in place of the format's rule.
@@ -102,6 +123,36 @@ pub struct Handicap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub opening_hand_size: Option<u32>,
+}
+
+/// The relaxations of the deck check of a format with a command zone; a value that is left out keeps the format's.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+#[serde(default, deny_unknown_fields)]
+pub struct DeckRules {
+    /// Whether a non-basic card may appear only once; `false` allows any number of copies, or `max_copies`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub singleton: Option<bool>,
+    /// Whether every card must lie within the commanders' colour identity.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub colour_identity: Option<bool>,
+    /// The exact number of cards in a deck, its commanders included.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub deck_size: Option<u32>,
+    /// The copies of one non-basic card a deck may hold; needs `singleton` to be `false`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub max_copies: Option<u32>,
+}
+
+impl DeckRules {
+    /// Whether no relaxation is set.
+    pub fn is_empty(&self) -> bool {
+        *self == DeckRules::default()
+    }
 }
 
 /// What a game's creator sets in place of the format's values. A rule that is left out keeps the
@@ -182,6 +233,22 @@ pub struct HouseRules {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub mulligan_style: Option<MulliganStyle>,
+    /// The extra generic mana a commander costs for each earlier cast from the command zone.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub commander_tax: Option<u32>,
+    /// The combat damage from one commander that makes a player lose.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub commander_damage: Option<CommanderDamageLimit>,
+    /// The relaxations of the deck check.
+    #[serde(skip_serializing_if = "DeckRules::is_empty")]
+    #[cfg_attr(feature = "ts", ts(optional, as = "Option<DeckRules>"))]
+    pub deck: DeckRules,
+    /// The most commanders a seat starts with: 1 refuses a Partner pair, 2 allows two that are not partners.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub commanders_per_seat: Option<u32>,
     /// What single seats start with, at most one entry for each seat.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(optional, as = "Option<Vec<Handicap>>"))]
@@ -209,6 +276,9 @@ pub enum HouseRuleError {
         /// The seat.
         seat: PlayerId,
     },
+    /// Copies are limited per card unless the singleton rule is off.
+    #[error("deck.max_copies: needs deck.singleton to be false")]
+    CopiesWithSingleton,
     /// A handicap sets no value.
     #[error("handicaps: the entry for seat {} sets nothing", seat.get())]
     EmptyHandicap {
@@ -230,6 +300,7 @@ impl HouseRuleError {
     pub fn field(&self) -> &str {
         match self {
             HouseRuleError::OutOfRange { field, .. } => field,
+            HouseRuleError::CopiesWithSingleton => "deck.max_copies",
             HouseRuleError::DuplicateHandicap { .. }
             | HouseRuleError::EmptyHandicap { .. }
             | HouseRuleError::NoSuchSeat { .. } => "handicaps",
@@ -279,6 +350,22 @@ impl HouseRules {
         within("turn_limit", self.turn_limit, &TURN_LIMIT)?;
         within("winning_life", self.winning_life, &WINNING_LIFE)?;
         within("poison_threshold", self.poison_threshold, &POISON_THRESHOLD)?;
+        within("commander_tax", self.commander_tax, &TAX_PER_CAST)?;
+        let lethal = match self.commander_damage {
+            Some(CommanderDamageLimit::Lethal(n)) => Some(n),
+            _ => None,
+        };
+        within("commander_damage", lethal, &COMMANDER_LETHAL)?;
+        within("deck.deck_size", self.deck.deck_size, &DECK_SIZE)?;
+        within("deck.max_copies", self.deck.max_copies, &MAX_COPIES)?;
+        if self.deck.max_copies.is_some() && self.deck.singleton != Some(false) {
+            return Err(HouseRuleError::CopiesWithSingleton);
+        }
+        within(
+            "commanders_per_seat",
+            self.commanders_per_seat,
+            &COMMANDERS_PER_SEAT,
+        )?;
         for (index, handicap) in self.handicaps.iter().enumerate() {
             if self.handicaps[..index]
                 .iter()
@@ -386,6 +473,33 @@ mod tests {
     #[case::poison_least("poison_threshold", json!(1), None)]
     #[case::poison_most("poison_threshold", json!(100), None)]
     #[case::poison_high("poison_threshold", json!(101), Some("poison_threshold"))]
+    #[case::tax_none("commander_tax", json!(0), None)]
+    #[case::tax_the_formats("commander_tax", json!(2), None)]
+    #[case::tax_most("commander_tax", json!(10), None)]
+    #[case::tax_high("commander_tax", json!(11), Some("commander_tax"))]
+    #[case::lethal_least("commander_damage", json!({"lethal": 1}), None)]
+    #[case::lethal_the_formats("commander_damage", json!({"lethal": 21}), None)]
+    #[case::lethal_most("commander_damage", json!({"lethal": 100}), None)]
+    #[case::lethal_none("commander_damage", json!({"lethal": 0}), Some("commander_damage"))]
+    #[case::lethal_high("commander_damage", json!({"lethal": 101}), Some("commander_damage"))]
+    #[case::lethal_off("commander_damage", json!("off"), None)]
+    #[case::size_low("deck", json!({"deck_size": 39}), Some("deck.deck_size"))]
+    #[case::size_least("deck", json!({"deck_size": 40}), None)]
+    #[case::size_most("deck", json!({"deck_size": 250}), None)]
+    #[case::size_high("deck", json!({"deck_size": 251}), Some("deck.deck_size"))]
+    #[case::copies_none("deck", json!({"singleton": false, "max_copies": 0}), Some("deck.max_copies"))]
+    #[case::copies_least("deck", json!({"singleton": false, "max_copies": 1}), None)]
+    #[case::copies_most("deck", json!({"singleton": false, "max_copies": 99}), None)]
+    #[case::copies_high("deck", json!({"singleton": false, "max_copies": 100}), Some("deck.max_copies"))]
+    #[case::copies_of_a_singleton("deck", json!({"singleton": true, "max_copies": 3}), Some("deck.max_copies"))]
+    #[case::copies_of_the_formats_singleton("deck", json!({"max_copies": 3}), Some("deck.max_copies"))]
+    #[case::singleton_off("deck", json!({"singleton": false}), None)]
+    #[case::identity_off("deck", json!({"colour_identity": false}), None)]
+    #[case::no_relaxation("deck", json!({}), None)]
+    #[case::one_commander("commanders_per_seat", json!(1), None)]
+    #[case::two_commanders("commanders_per_seat", json!(2), None)]
+    #[case::no_commander("commanders_per_seat", json!(0), Some("commanders_per_seat"))]
+    #[case::three_commanders("commanders_per_seat", json!(3), Some("commanders_per_seat"))]
     #[case::no_handicaps("handicaps", json!([]), None)]
     #[case::a_handicap("handicaps", json!([{"seat": 1, "starting_life": 30}]), None)]
     #[case::two_seats("handicaps", json!([{"seat": 0, "opening_hand_size": 5}, {"seat": 1, "starting_life": 30}]), None)]
@@ -537,6 +651,100 @@ mod tests {
         assert_eq!(serde_json::from_value::<HouseRules>(wire).unwrap(), set);
     }
 
+    #[test]
+    fn the_wire_form_of_the_commander_rules() {
+        let set = HouseRules {
+            commander_tax: Some(0),
+            commander_damage: Some(CommanderDamageLimit::Lethal(15)),
+            deck: DeckRules {
+                singleton: Some(false),
+                colour_identity: Some(false),
+                deck_size: Some(60),
+                max_copies: Some(4),
+            },
+            commanders_per_seat: Some(2),
+            ..HouseRules::default()
+        };
+        let wire = json!({
+            "commander_tax": 0, "commander_damage": {"lethal": 15}, "commanders_per_seat": 2,
+            "deck": {"singleton": false, "colour_identity": false, "deck_size": 60, "max_copies": 4}
+        });
+        assert_eq!(serde_json::to_value(&set).unwrap(), wire);
+        assert_eq!(serde_json::from_value::<HouseRules>(wire).unwrap(), set);
+        let off = HouseRules {
+            commander_damage: Some(CommanderDamageLimit::Off),
+            ..HouseRules::default()
+        };
+        assert_eq!(
+            serde_json::to_value(off).unwrap(),
+            json!({"commander_damage": "off"})
+        );
+    }
+
+    #[rstest]
+    #[case::nothing(json!({}), true)]
+    #[case::an_empty_deck_is_no_rule(json!({"deck": {}}), true)]
+    #[case::a_null_relaxation(json!({"deck": {"singleton": null}}), true)]
+    #[case::a_relaxation_equal_to_the_formats(json!({"deck": {"singleton": true}}), false)]
+    #[case::the_formats_tax(json!({"commander_tax": 2}), false)]
+    fn a_deck_with_no_relaxation_sets_no_rule(
+        #[case] body: serde_json::Value,
+        #[case] empty: bool,
+    ) {
+        let rules: HouseRules = serde_json::from_value(body).unwrap();
+        assert_eq!(rules.is_empty(), empty);
+        assert_eq!(rules.deck.is_empty(), rules.deck == DeckRules::default());
+        assert_eq!(
+            serde_json::to_value(&rules).unwrap().get("deck").is_none(),
+            rules.deck.is_empty()
+        );
+    }
+
+    #[rstest]
+    #[case::tax_negative("commander_tax", json!(-1))]
+    #[case::tax_text("commander_tax", json!("two"))]
+    #[case::lethal_bare_number("commander_damage", json!(21))]
+    #[case::lethal_unknown_name("commander_damage", json!("none"))]
+    #[case::lethal_negative("commander_damage", json!({"lethal": -1}))]
+    #[case::deck_unknown_relaxation("deck", json!({"banana": true}))]
+    #[case::singleton_text("deck", json!({"singleton": "off"}))]
+    #[case::identity_number("deck", json!({"colour_identity": 0}))]
+    #[case::size_negative("deck", json!({"deck_size": -60}))]
+    #[case::deck_not_an_object("deck", json!(60))]
+    #[case::commanders_text("commanders_per_seat", json!("two"))]
+    fn a_commander_rule_of_the_wrong_kind_is_not_a_rule(
+        #[case] field: &str,
+        #[case] value: serde_json::Value,
+    ) {
+        assert!(rules(field, &value).is_err());
+    }
+
+    #[test]
+    fn the_error_names_the_nested_field_and_the_conflict() {
+        let range = HouseRules {
+            deck: DeckRules {
+                deck_size: Some(300),
+                ..DeckRules::default()
+            },
+            ..HouseRules::default()
+        };
+        assert_eq!(
+            range.validate().unwrap_err().to_string(),
+            "deck.deck_size: 300 is not between 40 and 250"
+        );
+        let conflict = HouseRules {
+            deck: DeckRules {
+                max_copies: Some(3),
+                ..DeckRules::default()
+            },
+            ..HouseRules::default()
+        };
+        assert_eq!(
+            conflict.validate().unwrap_err().to_string(),
+            "deck.max_copies: needs deck.singleton to be false"
+        );
+    }
+
     #[rstest]
     #[case::the_last_seat(json!([{"seat": 3, "starting_life": 5}]), 4, None)]
     #[case::the_first_seat(json!([{"seat": 0, "starting_life": 5}]), 2, None)]
@@ -641,12 +849,34 @@ mod tests {
                 Just(MulliganStyle::Vancouver)
             ]),
         );
-        (scalars, turn, table).prop_map(
+        let commander = (
+            proptest::option::of(0..=12u32),
+            proptest::option::of(prop_oneof![
+                (0..=102u32).prop_map(CommanderDamageLimit::Lethal),
+                Just(CommanderDamageLimit::Off)
+            ]),
+            proptest::option::of(any::<bool>()),
+            proptest::option::of(any::<bool>()),
+            proptest::option::of(35..=255u32),
+            proptest::option::of(0..=101u32),
+            proptest::option::of(0..=3u32),
+        );
+        (scalars, turn, table, commander).prop_map(
             |(
                 (life, hand, free, cap, first, limit),
                 (draws, lands, burn, library, turns, wins, poison, handicaps),
                 (range, open, top, smoothing, style),
+                (tax, damage, singleton, identity, size, copies, per_seat),
             )| HouseRules {
+                commander_tax: tax,
+                commander_damage: damage,
+                deck: DeckRules {
+                    singleton,
+                    colour_identity: identity,
+                    deck_size: size,
+                    max_copies: copies,
+                },
+                commanders_per_seat: per_seat,
                 starting_life: life,
                 opening_hand_size: hand,
                 free_mulligans: free,
@@ -698,6 +928,14 @@ mod tests {
                 && rules.turn_limit.is_none_or(|n| TURN_LIMIT.contains(&n))
                 && rules.winning_life.is_none_or(|n| WINNING_LIFE.contains(&n))
                 && rules.poison_threshold.is_none_or(|n| POISON_THRESHOLD.contains(&n))
+                && rules.commander_tax.is_none_or(|n| TAX_PER_CAST.contains(&n))
+                && match rules.commander_damage {
+                    Some(CommanderDamageLimit::Lethal(n)) => COMMANDER_LETHAL.contains(&n),
+                    _ => true,
+                }
+                && rules.deck.deck_size.is_none_or(|n| DECK_SIZE.contains(&n))
+                && rules.deck.max_copies.is_none_or(|n| MAX_COPIES.contains(&n) && rules.deck.singleton == Some(false))
+                && rules.commanders_per_seat.is_none_or(|n| COMMANDERS_PER_SEAT.contains(&n))
                 && handicaps_fit(&rules);
             prop_assert_eq!(rules.validate().is_ok(), in_range);
         }

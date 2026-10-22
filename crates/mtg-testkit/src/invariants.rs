@@ -298,6 +298,16 @@ fn check_counters_settled(state: &GameState) -> Result<(), Violation> {
                 player.counters_of(&CounterKind::Poison)
             )));
         }
+        if let Some(lethal) = state.ruleset().commander_damage()
+            && let Some(commander) = state
+                .commanders()
+                .find(|id| state.commander_damage(*id, player.id()) >= lethal)
+        {
+            return Err(Violation::Damage(format!(
+                "{:?} has taken {lethal} or more from {commander:?} and is still in the game",
+                player.id()
+            )));
+        }
     }
     Ok(())
 }

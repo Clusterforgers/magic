@@ -6,9 +6,10 @@ use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_core::color::{Color, ColorSet};
+use mtg_core::house::HouseRules;
 use mtg_core::ids::PlayerId;
 
-use super::{DeckError, ExtraZone, FormatRules, MulliganRule};
+use super::{DeckError, ExtraZone, FormatRules, MulliganRule, RuleSet};
 use crate::commanders::damage_dealt_to;
 use crate::player::LossReason;
 use crate::state::GameState;
@@ -42,20 +43,30 @@ fn letters(set: ColorSet) -> String {
     if word.is_empty() { "C".into() } else { word }
 }
 
-/// The commanders are one legendary creature (or a card that can be) or two that are partners.
-fn check_commanders(commanders: &[Arc<CardDefinition>]) -> Result<(), DeckError> {
+/// The commanders are one legendary creature (or a card that can be) or two that are partners, as the game's rules
+/// allow.
+fn check_commanders(
+    commanders: &[Arc<CardDefinition>],
+    rules: &RuleSet<'_>,
+) -> Result<(), DeckError> {
+    let most = rules.most_commanders();
     match commanders {
         [] => return Err(DeckError::NoCommander),
         [_] => {}
-        [first, second] => {
-            if !first.partners_with(second) {
+        [first, second] if most >= 2 => {
+            if rules.pair_needs_partner() && !first.partners_with(second) {
                 return Err(DeckError::NotPartners {
                     first: first.name.clone(),
                     second: second.name.clone(),
                 });
             }
         }
-        more => return Err(DeckError::TooManyCommanders { got: more.len() }),
+        more => {
+            return Err(DeckError::TooManyCommanders {
+                max: most,
+                got: more.len(),
+            });
+        }
     }
     match commanders.iter().find(|card| !card.can_be_commander()) {
         Some(card) => Err(DeckError::NotACommander {
@@ -75,19 +86,21 @@ impl FormatRules for Commander {
     }
 
     fn validate_deck(&self, deck: &[Arc<CardDefinition>]) -> Result<(), DeckError> {
-        self.validate_seat(deck, &[])
+        self.validate_seat(deck, &[], &RuleSet::new(self, &HouseRules::default()))
     }
 
     fn validate_seat(
         &self,
         deck: &[Arc<CardDefinition>],
         commanders: &[Arc<CardDefinition>],
+        rules: &RuleSet<'_>,
     ) -> Result<(), DeckError> {
-        check_commanders(commanders)?;
+        check_commanders(commanders, rules)?;
         let size = deck.len() + commanders.len();
-        if size != COMMANDER_DECK {
+        let expected = rules.deck_size(COMMANDER_DECK);
+        if size != expected {
             return Err(DeckError::WrongSize {
-                expected: COMMANDER_DECK,
+                expected,
                 got: size,
             });
         }
@@ -95,7 +108,7 @@ impl FormatRules for Commander {
         for card in commanders.iter().chain(deck) {
             let entry = copies
                 .entry(card.name.as_str())
-                .or_insert((0, card.singleton_limit()));
+                .or_insert_with(|| (0, rules.copies_limit(card.singleton_limit())));
             entry.0 += 1;
         }
         let over = copies
@@ -107,6 +120,9 @@ impl FormatRules for Commander {
                 max: max as usize,
                 got,
             });
+        }
+        if !rules.checks_colour_identity() {
+            return Ok(());
         }
         let identity = commanders.iter().fold(ColorSet::EMPTY, |all, card| {
             card.color_identity().iter().fold(all, ColorSet::with)
@@ -161,13 +177,40 @@ impl FormatRules for Commander {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the Commander format checks a seat's commanders and deck (one commander or a partner pair of legendary creatures, exactly 100 cards with the commanders, one copy of each card but basic lands and cards that allow more, every card inside the commanders' color identity by cost, hybrid and Phyrexian symbols and activated abilities) with a typed error for each rule, and reports its constants: 40 life, a free first mulligan, a command zone, a tax of 2, 21 commander damage, and a skipped first draw in two-player games only.
+    //! Goal: the Commander format checks a seat's commanders and deck (one commander or a partner pair of legendary creatures, exactly 100 cards with the commanders, one copy of each card but basic lands and cards that allow more, every card inside the commanders' color identity by cost, hybrid and Phyrexian symbols and activated abilities) with a typed error for each rule, and reports its constants: 40 life, a free first mulligan, a command zone, a tax of 2, 21 commander damage, and a skipped first draw in two-player games only; the house rules for the deck relax the size, the singleton rule, the colour identity and the commanders a seat starts with, each apart from the others.
     use mtg_cards::ability::Ability;
     use mtg_core::card::{CardType, Supertype};
+    use mtg_core::house::DeckRules;
     use mtg_core::mana::ManaCost;
     use rstest::rstest;
 
     use super::*;
+
+    /// The seat checked under the format's own rules.
+    fn check(
+        deck: &[Arc<CardDefinition>],
+        commanders: &[Arc<CardDefinition>],
+    ) -> Result<(), DeckError> {
+        under(&HouseRules::default(), deck, commanders)
+    }
+
+    /// The seat checked under `house`.
+    fn under(
+        house: &HouseRules,
+        deck: &[Arc<CardDefinition>],
+        commanders: &[Arc<CardDefinition>],
+    ) -> Result<(), DeckError> {
+        Commander.validate_seat(deck, commanders, &RuleSet::new(&Commander, house))
+    }
+
+    fn deck_rules(set: impl FnOnce(&mut DeckRules)) -> HouseRules {
+        let mut deck = DeckRules::default();
+        set(&mut deck);
+        HouseRules {
+            deck,
+            ..HouseRules::default()
+        }
+    }
 
     fn card(name: &str, cost: &str) -> Arc<CardDefinition> {
         Arc::new(
@@ -211,7 +254,7 @@ mod tests {
     #[case::one_over(100, false)]
     #[case::empty(0, false)]
     fn a_deck_has_100_cards_with_its_commander(#[case] others: usize, #[case] legal: bool) {
-        let result = Commander.validate_seat(&spells(others), &red_leader());
+        let result = check(&spells(others), &red_leader());
         assert_eq!(result.is_ok(), legal, "{result:?}");
         if !legal {
             assert_eq!(
@@ -233,7 +276,7 @@ mod tests {
         let mut deck = spells(40);
         deck.extend(mountains(50));
         deck.extend(vec![rats; 9]);
-        assert_eq!(Commander.validate_seat(&deck, &red_leader()), Ok(()));
+        assert_eq!(check(&deck, &red_leader()), Ok(()));
     }
 
     #[rstest]
@@ -244,7 +287,7 @@ mod tests {
         let mut deck = spells(99 - copies);
         deck.extend(vec![twin; copies]);
         assert_eq!(
-            Commander.validate_seat(&deck, &red_leader()),
+            check(&deck, &red_leader()),
             Err(DeckError::TooManyCopies {
                 name: "Twin".into(),
                 max: 1,
@@ -258,7 +301,7 @@ mod tests {
         let mut deck = spells(98);
         deck.push(leader("Red Leader", "{1}{R}"));
         assert!(matches!(
-            Commander.validate_seat(&deck, &red_leader()),
+            check(&deck, &red_leader()),
             Err(DeckError::TooManyCopies { got: 2, .. })
         ));
     }
@@ -281,7 +324,7 @@ mod tests {
         #[case] cost: &str,
         #[case] legal: bool,
     ) {
-        let result = Commander.validate_seat(&with_one(cost), &red_leader());
+        let result = check(&with_one(cost), &red_leader());
         assert_eq!(result.is_ok(), legal, "{result:?}");
         if let Err(error) = result {
             assert!(
@@ -301,7 +344,7 @@ mod tests {
             (*card("Drawer", "{R}")).clone().with_rules(ability),
         ));
         assert!(matches!(
-            Commander.validate_seat(&deck, &red_leader()),
+            check(&deck, &red_leader()),
             Err(DeckError::OutsideColorIdentity { outside, .. }) if outside == "U"
         ));
     }
@@ -315,10 +358,10 @@ mod tests {
         let mut deck = spells(96);
         deck.push(card("Blue", "{U}"));
         deck.push(card("Both", "{R}{U}"));
-        assert_eq!(Commander.validate_seat(&deck, &pair), Ok(()));
+        assert_eq!(check(&deck, &pair), Ok(()));
         deck.push(card("Green", "{G}"));
         assert!(matches!(
-            Commander.validate_seat(&deck[1..], &pair),
+            check(&deck[1..], &pair),
             Err(DeckError::OutsideColorIdentity { identity, .. }) if identity == "UR" || identity == "RU"
         ));
     }
@@ -328,10 +371,10 @@ mod tests {
         let colorless = vec![leader("Gray Leader", "{4}")];
         let mut deck = vec![card("Rock", "{2}"); 1];
         deck.extend((0..98).map(|i| card(&format!("Gray {i}"), "{1}")));
-        assert_eq!(Commander.validate_seat(&deck, &colorless), Ok(()));
+        assert_eq!(check(&deck, &colorless), Ok(()));
         deck[0] = card("Red", "{R}");
         assert!(matches!(
-            Commander.validate_seat(&deck, &colorless),
+            check(&deck, &colorless),
             Err(DeckError::OutsideColorIdentity { identity, .. }) if identity == "C"
         ));
     }
@@ -345,20 +388,20 @@ mod tests {
     )]
     #[case::three(
         vec![partner("A", "{R}"), partner("B", "{R}"), partner("C", "{R}")],
-        DeckError::TooManyCommanders { got: 3 }
+        DeckError::TooManyCommanders { max: 2, got: 3 }
     )]
     fn the_commanders_are_one_legendary_creature_or_a_pair_of_partners(
         #[case] commanders: Vec<Arc<CardDefinition>>,
         #[case] error: DeckError,
     ) {
         let deck = spells(100 - commanders.len());
-        assert_eq!(Commander.validate_seat(&deck, &commanders), Err(error));
+        assert_eq!(check(&deck, &commanders), Err(error));
     }
 
     #[test]
     fn partners_make_a_legal_pair() {
         let pair = vec![partner("A", "{R}"), partner("B", "{R}")];
-        assert_eq!(Commander.validate_seat(&spells(98), &pair), Ok(()));
+        assert_eq!(check(&spells(98), &pair), Ok(()));
     }
 
     #[test]
@@ -368,8 +411,170 @@ mod tests {
             Err(DeckError::NoCommander)
         );
         assert_eq!(
-            crate::format::Normal.validate_seat(&spells(60), &red_leader()),
+            crate::format::Normal.validate_seat(
+                &spells(60),
+                &red_leader(),
+                &RuleSet::new(&crate::format::Normal, &HouseRules::default())
+            ),
             Err(DeckError::CommandersNotAllowed)
+        );
+    }
+
+    #[rstest]
+    #[case::sixty(60, 59, true)]
+    #[case::forty(40, 39, true)]
+    #[case::the_most(250, 249, true)]
+    #[case::a_hundred_where_sixty_is_set(60, 99, false)]
+    #[case::one_short(60, 58, false)]
+    #[case::one_over(40, 40, false)]
+    fn a_table_sets_the_exact_deck_size(
+        #[case] size: u32,
+        #[case] others: usize,
+        #[case] legal: bool,
+    ) {
+        let house = deck_rules(|d| d.deck_size = Some(size));
+        let result = under(&house, &spells(others), &red_leader());
+        assert_eq!(result.is_ok(), legal, "{result:?}");
+        if !legal {
+            assert_eq!(
+                result,
+                Err(DeckError::WrongSize {
+                    expected: size as usize,
+                    got: others + 1
+                })
+            );
+        }
+        // The same deck is refused under the format's own size unless it has 100 cards.
+        assert_eq!(check(&spells(others), &red_leader()).is_ok(), others == 99);
+    }
+
+    fn with_copies(copies: usize) -> Vec<Arc<CardDefinition>> {
+        let mut deck = spells(99 - copies);
+        deck.extend(vec![card("Twin", "{R}"); copies]);
+        deck
+    }
+
+    #[rstest]
+    #[case::the_formats_singleton(deck_rules(|_| {}), 2, Some(1))]
+    #[case::singleton_on(deck_rules(|d| d.singleton = Some(true)), 2, Some(1))]
+    #[case::singleton_off_allows_any(deck_rules(|d| d.singleton = Some(false)), 40, None)]
+    #[case::four_copies_where_four_are_allowed(deck_rules(|d| { d.singleton = Some(false); d.max_copies = Some(4); }), 4, None)]
+    #[case::five_copies_where_four_are_allowed(deck_rules(|d| { d.singleton = Some(false); d.max_copies = Some(4); }), 5, Some(4))]
+    #[case::one_copy_where_one_is_allowed(deck_rules(|d| { d.singleton = Some(false); d.max_copies = Some(1); }), 2, Some(1))]
+    #[case::ninety_nine(deck_rules(|d| { d.singleton = Some(false); d.max_copies = Some(99); }), 99, None)]
+    fn a_table_relaxes_the_singleton_rule(
+        #[case] house: HouseRules,
+        #[case] copies: usize,
+        #[case] refused_at: Option<usize>,
+    ) {
+        let result = under(&house, &with_copies(copies), &red_leader());
+        match refused_at {
+            None => assert_eq!(result, Ok(())),
+            Some(max) => assert_eq!(
+                result,
+                Err(DeckError::TooManyCopies {
+                    name: "Twin".into(),
+                    max,
+                    got: copies
+                })
+            ),
+        }
+    }
+
+    #[test]
+    fn a_relaxed_singleton_keeps_the_limit_of_a_card_that_asks_for_more_and_exempts_basic_lands() {
+        let house = deck_rules(|d| {
+            d.singleton = Some(false);
+            d.max_copies = Some(3);
+        });
+        let dwarves = Arc::new(
+            CardDefinition::new("Dwarves")
+                .with_manual("A deck can have up to seven cards named Dwarves.", ""),
+        );
+        let mut deck = spells(40);
+        deck.extend(vec![dwarves; 7]);
+        deck.extend(mountains(52));
+        assert_eq!(under(&house, &deck, &red_leader()), Ok(()));
+    }
+
+    #[rstest]
+    #[case::the_formats_identity(HouseRules::default(), false)]
+    #[case::identity_on(deck_rules(|d| d.colour_identity = Some(true)), false)]
+    #[case::identity_off(deck_rules(|d| d.colour_identity = Some(false)), true)]
+    fn a_table_lifts_the_colour_identity(#[case] house: HouseRules, #[case] legal: bool) {
+        let result = under(&house, &with_one("{1}{G}"), &red_leader());
+        assert_eq!(result.is_ok(), legal, "{result:?}");
+        assert!(matches!(
+            result,
+            Ok(()) | Err(DeckError::OutsideColorIdentity { .. })
+        ));
+    }
+
+    #[test]
+    fn the_relaxations_are_independent_of_each_other() {
+        let house = deck_rules(|d| d.colour_identity = Some(false));
+        assert!(matches!(
+            under(&house, &spells(98), &red_leader()),
+            Err(DeckError::WrongSize { .. })
+        ));
+        assert!(matches!(
+            under(&house, &with_copies(2), &red_leader()),
+            Err(DeckError::TooManyCopies { .. })
+        ));
+        // The commanders are still checked.
+        assert_eq!(
+            under(&house, &spells(100), &[]),
+            Err(DeckError::NoCommander)
+        );
+        assert_eq!(
+            under(&house, &spells(99), &[card("Bear", "{R}")]),
+            Err(DeckError::NotACommander {
+                name: "Bear".into()
+            })
+        );
+    }
+
+    fn per_seat(most: u32) -> HouseRules {
+        HouseRules {
+            commanders_per_seat: Some(most),
+            ..HouseRules::default()
+        }
+    }
+
+    #[rstest]
+    #[case::the_formats_pair_needs_partners(HouseRules::default(), 2, false, Some(DeckError::NotPartners { first: "A".into(), second: "B".into() }))]
+    #[case::two_allow_any_two(per_seat(2), 2, false, None)]
+    #[case::two_allow_partners_too(per_seat(2), 2, true, None)]
+    #[case::two_allow_one(per_seat(2), 1, false, None)]
+    #[case::two_refuse_three(per_seat(2), 3, true, Some(DeckError::TooManyCommanders { max: 2, got: 3 }))]
+    #[case::one_refuses_partners(per_seat(1), 2, true, Some(DeckError::TooManyCommanders { max: 1, got: 2 }))]
+    #[case::one_allows_one(per_seat(1), 1, true, None)]
+    fn a_table_sets_the_commanders_a_seat_starts_with(
+        #[case] house: HouseRules,
+        #[case] count: usize,
+        #[case] partners: bool,
+        #[case] error: Option<DeckError>,
+    ) {
+        let make = |name: &str| {
+            if partners {
+                partner(name, "{R}")
+            } else {
+                leader(name, "{R}")
+            }
+        };
+        let commanders: Vec<_> = ["A", "B", "C"][..count].iter().map(|n| make(n)).collect();
+        let deck = spells(100 - count);
+        assert_eq!(under(&house, &deck, &commanders), error.map_or(Ok(()), Err));
+    }
+
+    #[test]
+    fn two_commanders_that_are_no_partners_still_must_be_commanders() {
+        let commanders = vec![leader("A", "{R}"), card("Bear", "{R}")];
+        assert_eq!(
+            under(&per_seat(2), &spells(98), &commanders),
+            Err(DeckError::NotACommander {
+                name: "Bear".into()
+            })
         );
     }
 

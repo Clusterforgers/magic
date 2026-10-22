@@ -13,7 +13,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 ## State projection
 
 - `StateView` is what one seat may know: a `TableView` (turn, priority, players, zone lists, combat, forecast, result) plus `objects`, as one flat JSON object. `StateView::for_player` is the only way a whole state leaves the server; it builds the table with the same `TableView::of` as batches.
-- `TableView.house_rules` is the `HouseRules` the game's creator set ([engine.md](engine.md), House rules), the same for every seat, and is left out when none is set. It includes the `handicaps` of single seats; the life of a seat in `PlayerView` is its own.
+- `TableView.house_rules` is the `HouseRules` the game's creator set ([engine.md](engine.md), House rules), the same for every seat, and is left out when none is set. It includes the `handicaps` of single seats; the life of a seat in `PlayerView` is its own. A client reads the tax a commander carries in `CommanderView.tax` and the commander damage a player has taken in `PlayerView.commander_damage`, both already worked out under the rules; the lethal amount is the rule's `commander_damage` when set, else the format's 21.
 - `project_events(before, events, viewers, from_seq)` returns one `EventBatch` per viewer:
   - `events`: `EventView::Public | Hidden`, one per log event, for the log and animations. A client never folds them.
   - `table`: the whole `TableView` after the last event. It replaces the client's copy.

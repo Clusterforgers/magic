@@ -184,7 +184,7 @@ impl GameSetup {
                     .cloned()
                     .collect();
                 self.format
-                    .validate_seat(&deck, &player.commanders)
+                    .validate_seat(&deck, &player.commanders, &self.ruleset())
                     .map_err(|source| SetupError::InvalidDeck {
                         player: PlayerId::from_index(seat),
                         source,
