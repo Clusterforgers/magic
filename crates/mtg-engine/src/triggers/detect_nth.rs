@@ -266,14 +266,14 @@ fn a_new_turn_starts_the_count_again() {
         &[(By::Spell(0), "Watcher"), (By::Spell(0), "Watcher")],
     );
     let first = fold(&pre, &hits[..1]);
-    assert!(!first.object_tallies.is_empty());
+    assert!(!first.tallies.objects.is_empty());
     assert_eq!(fired(&first, &hits[1..]), 0, "the second time");
     let turn = Event::TurnBegan {
         number: 2,
         active: FOE,
     };
     let next = fold(&first, &[turn]);
-    assert!(next.object_tallies.is_empty(), "the count is cleared");
+    assert!(next.tallies.objects.is_empty(), "the count is cleared");
     assert_eq!(fired(&next, &hits[1..]), 1, "the first of the new turn");
 }
 

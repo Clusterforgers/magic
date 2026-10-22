@@ -53,7 +53,17 @@ fn damage_object(
             change(&mut perm.counters, &CounterKind::Loyalty, delta)?;
         }
     }
+    if amount > 0 {
+        tally(state, id, Tally::Damaged);
+    }
     Ok(())
+}
+
+/// Counts one more event of the kind for the object `id` (as it is now) this turn.
+fn tally(state: &mut GameState, id: mtg_core::ids::ObjectId, kind: Tally) {
+    if let Some(reference) = state.object(id).map(GameObject::reference) {
+        state.tally_object(reference, None, kind);
+    }
 }
 
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
@@ -79,9 +89,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 })
                 .collect();
             for (attacker, _) in attackers {
-                if let Some(reference) = state.object(*attacker).map(GameObject::reference) {
-                    state.tally_object(reference, None, Tally::Attacked);
-                }
+                tally(state, *attacker, Tally::Attacked);
             }
             state.combat.attackers_declared = true;
         }
@@ -130,14 +138,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     .life
                     .saturating_sub(i32::try_from(*amount).unwrap_or(i32::MAX));
             }
-            DamageTarget::Object(id) => {
-                damage_object(state, *id, *amount, *deathtouch)?;
-                if *amount > 0
-                    && let Some(reference) = state.object(*id).map(GameObject::reference)
-                {
-                    state.tally_object(reference, None, Tally::Damaged);
-                }
-            }
+            DamageTarget::Object(id) => damage_object(state, *id, *amount, *deathtouch)?,
         },
         Event::CombatEnded => state.combat = CombatState::default(),
         Event::Regenerated { object } => {

@@ -260,7 +260,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 found.extend(targeted(look, choices, (*object, *player)));
             }
             Event::AbilityPutOnStack(put) => {
-                found.extend(targeted(look, &put.choices, (put.object, put.controller)))
+                found.extend(targeted(look, &put.choices, (put.object, put.controller)));
             }
             Event::StepBegan { step } => found.push(Happened::Step {
                 step: *step,
@@ -586,21 +586,30 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
             Happened::Targeted {
                 target, by: caster, ..
             },
-        ) => {
-            let Target::Object(targeted) = target else {
-                return None;
-            };
-            let targeting = object(*caster)?;
-            let subjects = vec![
-                Target::Object(*targeted),
-                Target::Object(targeting),
-                Target::Player(controller_of(state, *caster)?),
-            ];
-            (scope.selects(what, *targeted).ok()? && scope.selects(by, targeting).ok()?)
-                .then(|| cause(state, subjects))
-        }
+        ) => becomes_target((what, by), (target, *caster), scope),
         _ => matching_event(pattern, happened, scope),
     }
+}
+
+/// An object (`target`) chosen as a target of the spell or ability `caster`, judged against what the pattern (`what`
+/// is targeted, `by` what) names. The subjects of the cause are the object, what targets it and its controller.
+fn becomes_target(
+    (what, by): (&Selector, &Selector),
+    (target, caster): (&Target, ObjectId),
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let state = scope.state;
+    let Target::Object(targeted) = target else {
+        return None;
+    };
+    let targeting = state.object(caster).map(GameObject::reference)?;
+    let subjects = vec![
+        Target::Object(*targeted),
+        Target::Object(targeting),
+        Target::Player(controller_of(state, caster)?),
+    ];
+    (scope.selects(what, *targeted).ok()? && scope.selects(by, targeting).ok()?)
+        .then(|| cause(state, subjects))
 }
 
 /// What `pattern` finds in the events about a player or a permanent: damage, life, cards drawn, discarded and cycled,
