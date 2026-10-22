@@ -94,6 +94,8 @@ pub enum Keyword {
     Flashback(Cost),
     /// Madness with its cost.
     Madness(Cost),
+    /// Miracle with its cost: the card may be cast for it when it is the first card its owner drew this turn (CR 702.94).
+    Miracle(Cost),
     /// Dredge N (CR 702.52): in a graveyard, a player who would draw a card may instead mill N cards and return this card to their hand.
     Dredge(u32),
     /// Morph with its cost.
@@ -272,6 +274,7 @@ impl Keyword {
         "Entwine",
         "Flashback",
         "Madness",
+        "Miracle",
         "Dredge",
         "Morph",
         "Disguise",
@@ -374,6 +377,7 @@ impl Keyword {
             Keyword::Entwine(_) => "Entwine",
             Keyword::Flashback(_) => "Flashback",
             Keyword::Madness(_) => "Madness",
+            Keyword::Miracle(_) => "Miracle",
             Keyword::Dredge(_) => "Dredge",
             Keyword::Morph(_) => "Morph",
             Keyword::Disguise(_) => "Disguise",
@@ -500,6 +504,7 @@ mod tests {
             Keyword::Entwine(cost.clone()),
             Keyword::Flashback(cost.clone()),
             Keyword::Madness(cost.clone()),
+            Keyword::Miracle(cost.clone()),
             Keyword::Dredge(3),
             Keyword::Morph(cost.clone()),
             Keyword::Disguise(cost.clone()),

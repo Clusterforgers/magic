@@ -232,6 +232,7 @@ const RUNS: &[&str] = &[
     "Keyword.Convoke",
     "Keyword.Delve",
     "Keyword.Madness",
+    "Keyword.Miracle",
     "Keyword.Dredge",
     "ReplaceBy.Dredge",
     "Keyword.Suspend",

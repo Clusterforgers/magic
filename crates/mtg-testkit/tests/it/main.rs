@@ -156,6 +156,8 @@ mod manual_cards;
 mod manual_fuzz;
 mod manual_triggers;
 mod mill_effects;
+mod miracle;
+mod miracle_fuzz;
 mod monarch;
 mod monarch_wordings;
 mod mulligan;

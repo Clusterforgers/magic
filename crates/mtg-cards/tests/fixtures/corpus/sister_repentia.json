@@ -1,0 +1,30 @@
+{
+  "id": "743c5111-9e94-4f08-9c01-92411e8a2317",
+  "oracle_id": "24e9a1cb-b58b-491f-9d08-3f039a86851e",
+  "name": "Sister Repentia",
+  "lang": "en",
+  "layout": "normal",
+  "set": "40k",
+  "collector_number": "142",
+  "rarity": "rare",
+  "released_at": "2022-10-07",
+  "digital": false,
+  "mana_cost": "{3}{W}{B}",
+  "cmc": 5.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Martyrdom — When this creature dies, you gain 2 life and draw two cards.\nMiracle {W}{B} (You may cast this card for its miracle cost when you draw it if it's the first card you drew this turn.)",
+  "power": "5",
+  "toughness": "1",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Miracle",
+    "Martyrdom"
+  ]
+}

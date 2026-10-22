@@ -3,4 +3,4 @@
 /**
  * The alternative cost a spell is cast for (CR 118.9): what a permanent and its abilities remember of how it was cast.
  */
-export type CastWay = "Flashback" | "Evoke" | "Overload" | "Madness" | "Suspend" | "Foretold" | "Escape" | "Dash" | "Bestow" | "Blitz" | "JumpStart" | "Retrace" | "Free";
+export type CastWay = "Flashback" | "Evoke" | "Overload" | "Madness" | "Miracle" | "Suspend" | "Foretold" | "Escape" | "Dash" | "Bestow" | "Blitz" | "JumpStart" | "Retrace" | "Free";

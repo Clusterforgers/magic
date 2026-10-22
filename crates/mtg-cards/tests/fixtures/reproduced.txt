@@ -448,6 +448,7 @@ Sinister Sabotage
 Sinister Starfish
 Sinuous Vermin
 Siren Lookout
+Sister Repentia
 Skeletal Changeling
 Skirk Prospector
 Skitter Eel
@@ -520,6 +521,7 @@ Thriving Heath
 Thriving Isle
 Thriving Moor
 Throne of the High City
+Thunderous Wrath
 Tiamat's Fanatics
 Tilonalli's Skinshifter
 Timeless Lotus
@@ -544,6 +546,7 @@ Urabrask the Hidden
 Valley Rannet
 Vampire Cutthroat
 Vanguard Suppressor
+Vanishment
 Vanquish the Horde
 Vengeful Vampire
 Vestige of Emrakul

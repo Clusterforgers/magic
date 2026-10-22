@@ -1,0 +1,20 @@
+{
+  "oracle_id": "78260893-c443-44c8-ab45-ce86ef347d98",
+  "name": "Thunderous Wrath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thunderous Wrath",
+      "oracle_fingerprint": "15af0e466c3277e69fa5e2b0459d974f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 5 } }]
+          }
+        },
+        { "Keyword": { "Miracle": "{R}" } }
+      ]
+    }
+  ]
+}

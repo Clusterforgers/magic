@@ -330,6 +330,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "entwine" => spell_cost(rest).map(Keyword::Entwine),
         "flashback" => spell_cost(rest).map(Keyword::Flashback),
         "madness" => spell_cost(rest).map(Keyword::Madness),
+        "miracle" => spell_cost(rest).map(Keyword::Miracle),
         "dredge" => rest
             .parse()
             .ok()
@@ -744,6 +745,7 @@ mod tests {
     #[case::affinity_for_a_subtype("Affinity for Islands", Keyword::Affinity(Selector(vec![Pred::Subtype(Subtype("Island".into()))])))]
     #[case::affinity_for_tokens("Affinity for tokens", Keyword::Affinity(Selector(vec![Pred::Token])))]
     #[case::madness("Madness {R}", Keyword::Madness(mana("{R}")))]
+    #[case::miracle("Miracle {W}", Keyword::Miracle(mana("{W}")))]
     #[case::dredge("Dredge 3", Keyword::Dredge(3))]
     #[case::dredge_six("Dredge 6", Keyword::Dredge(6))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
@@ -1112,6 +1114,7 @@ mod tests {
             "Embalm {1}",
             "Eternalize {1}",
             "Dash {1}",
+            "Miracle {1}{W}",
             "Bestow {1}",
             "Blitz {1}",
             "Ninjutsu {1}{U}",

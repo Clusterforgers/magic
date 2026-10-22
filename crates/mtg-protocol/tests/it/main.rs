@@ -28,6 +28,7 @@ mod loyalty_view;
 mod mana_cost_hidden;
 mod manual_view;
 mod messages;
+mod miracle_hidden;
 mod monarch_view;
 mod ninjutsu_hidden;
 mod player_aura_view;
