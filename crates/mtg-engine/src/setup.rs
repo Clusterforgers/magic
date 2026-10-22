@@ -393,6 +393,7 @@ impl GameState {
             possible: Possible::default(),
             result: None,
             day_night: None,
+            monarch: None,
             commanders: Commanders::of(commander_ids),
         };
         game.note_what_cards_can_do();

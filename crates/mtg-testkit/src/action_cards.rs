@@ -9,7 +9,7 @@ use mtg_engine::GameSetup;
 use mtg_engine::format::Normal;
 use mtg_engine::rng::GameRng;
 
-use crate::cards::{creature, land};
+use crate::cards::{creature, land, monarcher};
 use crate::corpus;
 
 /// The corpus cards the keyword-action deck is made of besides lands and creatures.
@@ -32,8 +32,9 @@ pub fn actions_deck(rng: &mut GameRng) -> Vec<Arc<CardDefinition>> {
     {
         deck.extend(std::iter::repeat_n(card, 3));
     }
+    deck.extend(std::iter::repeat_n(monarcher("Action Crown"), 3));
     // Creatures make the 60 cards.
-    for slot in 0..10 {
+    for slot in 0..9 {
         let generic = u32::try_from(rng.index(3)).unwrap_or(0);
         let power = i32::try_from(1 + rng.index(4)).unwrap_or(1);
         let toughness = i32::try_from(1 + rng.index(4)).unwrap_or(1);

@@ -241,6 +241,10 @@ pub struct TurnView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub day_night: Option<DayNight>,
+    /// The monarch (CR 724); left out while nobody is.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub monarch: Option<PlayerId>,
 }
 
 /// Who holds priority and who has passed in this round.

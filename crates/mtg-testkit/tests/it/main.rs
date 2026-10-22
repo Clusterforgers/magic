@@ -99,6 +99,7 @@ mod manual_cards;
 mod manual_fuzz;
 mod manual_triggers;
 mod mill_effects;
+mod monarch;
 mod mulligan;
 mod object_nth;
 mod part_fuzz;

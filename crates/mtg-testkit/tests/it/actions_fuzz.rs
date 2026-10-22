@@ -1,4 +1,4 @@
-//! Goal: whole bot games at two, three and four seats with the keyword-action cards (Consider, Curate, Notion Rain, Sinister Sabotage, Doom Whisperer) finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state) for many seeds, and across the seeds players surveil, keep cards on top and put cards into the graveyard, an engine rebuilt from the log at each decision asks the same question, and a seeded game is the same game every time.
+//! Goal: whole bot games at two, three and four seats with the keyword-action cards (Consider, Curate, Notion Rain, Sinister Sabotage, Doom Whisperer) and a spell that makes its controller the monarch finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state) for many seeds, and across the seeds players surveil, keep cards on top and put cards into the graveyard, the monarch designation changes hands, an engine rebuilt from the log at each decision asks the same question, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_engine::{Engine, EngineError, Event};
@@ -18,15 +18,26 @@ struct Seen {
     surveils: u64,
     kept_on_top: u64,
     sent_to_the_graveyard: u64,
+    monarchs: u64,
+    taken_from_another: u64,
 }
 
 impl Seen {
     fn add(&mut self, events: &[Event]) {
+        let mut monarch = None;
         for event in events {
-            if let Event::Surveilled(surveilled) = event {
-                self.surveils += 1;
-                self.kept_on_top += u64::from(!surveilled.top.is_empty());
-                self.sent_to_the_graveyard += u64::from(!surveilled.graveyard.is_empty());
+            match event {
+                Event::Surveilled(surveilled) => {
+                    self.surveils += 1;
+                    self.kept_on_top += u64::from(!surveilled.top.is_empty());
+                    self.sent_to_the_graveyard += u64::from(!surveilled.graveyard.is_empty());
+                }
+                Event::MonarchChanged { player } => {
+                    self.monarchs += 1;
+                    self.taken_from_another += u64::from(monarch.is_some_and(|was| was != *player));
+                    monarch = Some(*player);
+                }
+                _ => {}
             }
         }
     }
@@ -48,6 +59,11 @@ fn seeded_action_games_finish_and_keep_every_invariant(#[case] players: usize) {
     assert!(
         seen.kept_on_top > 0 && seen.sent_to_the_graveyard > 0,
         "surveils kept cards on top and put cards into the graveyard in {campaign}"
+    );
+    assert!(seen.monarchs > 0, "nobody became the monarch in {campaign}");
+    assert!(
+        seen.taken_from_another > 0,
+        "the monarch designation changed hands in {campaign}"
     );
 }
 

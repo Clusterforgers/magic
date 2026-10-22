@@ -362,6 +362,7 @@ impl TableView {
                 step: turn.step(),
                 lands_played: turn.lands_played(),
                 day_night: state.day_night(),
+                monarch: state.monarch(),
             },
             priority: state.priority().map(|p| PriorityView {
                 holder: p.holder(),

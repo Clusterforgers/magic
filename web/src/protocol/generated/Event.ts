@@ -495,7 +495,11 @@ face?: number, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy }
 /**
  * The permanent.
  */
-object: ObjectId, } } | { "DayNightChanged": { 
+object: ObjectId, } } | { "MonarchChanged": { 
+/**
+ * The new monarch.
+ */
+player: PlayerId, } } | { "DayNightChanged": { 
 /**
  * What it became.
  */

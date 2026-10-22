@@ -1,0 +1,22 @@
+{
+  "id": "6aac7a6d-90c7-4fe7-b6d3-f63a7170ee96",
+  "oracle_id": "9684447a-5955-4bc7-8ad0-8bb8b316873b",
+  "name": "Throne of the High City",
+  "lang": "en",
+  "layout": "normal",
+  "set": "msc",
+  "collector_number": "274",
+  "rarity": "rare",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{4}, {T}, Sacrifice this land: You become the monarch.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "C"
+  ]
+}

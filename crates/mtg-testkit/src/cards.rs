@@ -434,6 +434,19 @@ pub fn scryer(name: &str, generic: u32, count: i32) -> Arc<CardDefinition> {
     )
 }
 
+/// An instant for `{U}` with "You become the monarch."
+pub fn monarcher(name: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[Color::Blue]))
+            .with_rules(Ability::Spell {
+                targets: Vec::new(),
+                effects: vec![Effect::BecomeMonarch { who: Ref::You }],
+            }),
+    )
+}
+
 /// A sorcery for `{generic}{U}` with "Surveil `count`."
 pub fn surveiler(name: &str, generic: u32, count: i32) -> Arc<CardDefinition> {
     Arc::new(

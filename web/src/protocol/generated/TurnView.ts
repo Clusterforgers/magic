@@ -26,4 +26,8 @@ lands_played: number,
 /**
  * Whether it is day or night (CR 726); left out while it is neither.
  */
-day_night?: DayNight, };
+day_night?: DayNight, 
+/**
+ * The monarch (CR 724); left out while nobody is.
+ */
+monarch?: PlayerId, };

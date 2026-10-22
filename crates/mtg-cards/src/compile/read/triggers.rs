@@ -406,8 +406,14 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
     })
 }
 
-/// The condition of an intervening "if": "you have 40 or more life".
+/// The condition of an intervening "if": "you have 40 or more life", "you're the monarch".
 pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if r.words("you're the monarch") {
+        return Some(Condition::Monarch(Ref::You));
+    }
+    if r.words("an opponent is the monarch") {
+        return Some(Condition::Monarch(Ref::Opponents));
+    }
     r.need("you have")?;
     let number = i32::try_from(r.number()?).ok()?;
     let op = if r.words("or more") {
@@ -427,6 +433,11 @@ pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
 
 /// The condition as the card words it, after "if".
 pub fn condition_text(condition: &Condition) -> Option<String> {
+    match condition {
+        Condition::Monarch(Ref::You) => return Some("you're the monarch".to_owned()),
+        Condition::Monarch(Ref::Opponents) => return Some("an opponent is the monarch".to_owned()),
+        _ => {}
+    }
     let Condition::Compare {
         left: Amount::Life(Ref::You),
         op,

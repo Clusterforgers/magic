@@ -1,0 +1,52 @@
+{
+  "oracle_id": "466af6da-52e8-4ac5-b659-7492e3594ff8",
+  "name": "Faramir, Steward of Gondor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faramir, Steward of Gondor",
+      "oracle_fingerprint": "388c3a9bea85a8fa732643b0191f0c58",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Supertype": "Legendary" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Monarch": "You" },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human", "Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

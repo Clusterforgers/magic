@@ -516,6 +516,11 @@ pub enum Event {
         /// The permanent.
         object: ObjectId,
     },
+    /// A player became the monarch (CR 724).
+    MonarchChanged {
+        /// The new monarch.
+        player: PlayerId,
+    },
     /// The game became day or night (CR 726).
     DayNightChanged {
         /// What it became.
@@ -610,6 +615,7 @@ impl Event {
             | Event::StepBegan { .. }
             | Event::NothingToDo { .. }
             | Event::DayNightChanged { .. }
+            | Event::MonarchChanged { .. }
             | Event::PriorityGranted { .. }
             | Event::PriorityPassed { .. }
             | Event::ManaAdded { .. }

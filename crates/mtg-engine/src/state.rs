@@ -150,6 +150,8 @@ pub struct GameState {
     pub(crate) result: Option<GameResult>,
     /// Day or night (CR 726); neither until a permanent with daybound or nightbound appears.
     pub(crate) day_night: Option<crate::day_night::DayNight>,
+    /// The monarch (CR 724): at most one player, from the first card that makes one.
+    pub(crate) monarch: Option<PlayerId>,
     /// The commanders of the game and what is counted for them (CR 903); empty outside Commander.
     pub(crate) commanders: crate::commanders::Commanders,
 }
@@ -485,6 +487,10 @@ impl Hash for GameState {
         // A game that has seen neither day nor night hashes as it did before they existed.
         if let Some(day_night) = self.day_night {
             day_night.hash(state);
+        }
+        // Likewise a game without a monarch.
+        if let Some(monarch) = self.monarch {
+            monarch.hash(state);
         }
         // Likewise a game without commanders.
         self.commanders.hash(state);

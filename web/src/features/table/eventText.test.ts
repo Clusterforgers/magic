@@ -69,6 +69,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   CopyEnded: [{ CopyEnded: { object: 3 } }, 'Forest stops being a copy'],
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
+  MonarchChanged: [{ MonarchChanged: { player: 1 } }, 'Bo becomes the monarch'],
   CommanderStayed: [{ CommanderStayed: { object: 3 } }, 'Forest stays where it is'],
   MulliganPhaseEnded: ['MulliganPhaseEnded', 'The mulligan phase ends'],
   TurnBegan: [{ TurnBegan: { number: 3, active: 1 } }, "Turn 3 begins: Bo's turn"],

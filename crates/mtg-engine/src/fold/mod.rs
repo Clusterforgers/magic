@@ -162,6 +162,15 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     }
 }
 
+/// The designations of the game: day or night (CR 726) and the monarch (CR 724).
+fn designate(state: &mut GameState, event: &Event) {
+    match event {
+        Event::DayNightChanged { to } => state.day_night = Some(*to),
+        Event::MonarchChanged { player } => state.monarch = Some(*player),
+        _ => {}
+    }
+}
+
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::TurnBegan { number, active } => {
@@ -211,7 +220,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::PriorityPassed { player } => pass_priority(state, *player)?,
         Event::Transformed { object, face } => set_face(state, *object, *face)?,
-        Event::DayNightChanged { to } => state.day_night = Some(*to),
+        Event::DayNightChanged { .. } | Event::MonarchChanged { .. } => designate(state, event),
 
         Event::PermanentTapped { object } => set_tapped(state, *object, true)?,
         Event::PermanentUntapped { object } => set_tapped(state, *object, false)?,
@@ -434,6 +443,9 @@ fn player_lost(
     state
         .combat
         .remove_attackers_targeting(crate::combat::AttackTarget::Player(id));
+    if state.monarch == Some(id) {
+        state.monarch = crate::monarch::successor(state, id);
+    }
     let successor = state.next_alive_after(id);
     if let Some(priority) = &mut state.priority {
         priority.passed.remove(&id);

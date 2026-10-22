@@ -43,6 +43,7 @@ Epic Proportions
 Eternal Witness
 Faithful Watchdog
 Faithless Looting
+Faramir, Steward of Gondor
 Favorable Winds
 Fear of Failed Tests
 Felidar Sovereign
@@ -131,6 +132,7 @@ Tavern Ruffian // Tavern Smasher
 Thalia, Guardian of Thraben
 The Thing, Ben Grimm
 Thieving Magpie
+Throne of the High City
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Treasure Cruise

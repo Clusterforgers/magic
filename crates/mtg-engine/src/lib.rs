@@ -59,6 +59,7 @@ pub mod library;
 pub mod loyalty;
 pub mod mana;
 pub mod manual;
+pub mod monarch;
 pub mod object;
 pub mod player;
 pub mod priority;

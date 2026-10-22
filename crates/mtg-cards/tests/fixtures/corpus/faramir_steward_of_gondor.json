@@ -1,0 +1,27 @@
+{
+  "id": "5c3e8a30-de2a-4d8f-a929-5abeaea2e65a",
+  "oracle_id": "466af6da-52e8-4ac5-b659-7492e3594ff8",
+  "name": "Faramir, Steward of Gondor",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ltc",
+  "collector_number": "54",
+  "rarity": "rare",
+  "released_at": "2023-06-23",
+  "digital": false,
+  "mana_cost": "{1}{W}{U}",
+  "cmc": 3,
+  "type_line": "Legendary Creature — Human Noble",
+  "oracle_text": "Whenever a legendary creature you control with mana value 4 or greater enters, you become the monarch.\nAt the beginning of your end step, if you're the monarch, create two 1/1 white Human Soldier creature tokens.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "U",
+    "W"
+  ],
+  "keywords": []
+}

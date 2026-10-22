@@ -111,6 +111,8 @@ const RUNS: &[&str] = &[
     "Effect.Transform",
     "Effect.WinGame",
     "Effect.Surveil",
+    "Effect.BecomeMonarch",
+    "Condition.Monarch",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
     "Effect.CopySpell",
@@ -433,7 +435,7 @@ mod tests {
     #[case::proliferating("Effect.Proliferate", false)]
     #[case::goading("Effect.Goad", false)]
     #[case::fighting("Effect.Fight", false)]
-    #[case::becoming_the_monarch("Effect.BecomeMonarch", false)]
+    #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
     #[case::amassing("Effect.Amass", false)]
     #[case::monstrosity("Effect.Monstrosity", false)]
     #[case::adapting("Effect.Adapt", false)]
@@ -482,7 +484,7 @@ mod tests {
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]
     #[case::if_you_do("Condition.Performed", false)]
-    #[case::the_monarch("Condition.Monarch", false)]
+    #[case::the_monarch("Condition.Monarch", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", false)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]

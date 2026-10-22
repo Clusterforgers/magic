@@ -855,7 +855,13 @@ impl<'a> Scope<'a> {
             Condition::AdditionalCostPaid => self.payments(OptionalKind::Additional) > 0,
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::Performed => return Err(ResolveError::Unsupported("\"if you do\"")),
-            Condition::Monarch(_) => return Err(ResolveError::Unsupported("the monarch")),
+            Condition::Monarch(who) => {
+                let players = self.players(who)?;
+                // One player at most is the monarch, so "an opponent is the monarch" holds when any of them is.
+                players
+                    .iter()
+                    .any(|player| self.state.monarch() == Some(*player))
+            }
             Condition::CitysBlessing(_) => {
                 return Err(ResolveError::Unsupported("the city's blessing"));
             }
@@ -1550,8 +1556,28 @@ mod tests {
     }
 
     #[rstest]
+    #[case::you_when_nobody_is(r#"{"Monarch":"You"}"#, None, false)]
+    #[case::you_when_you_are(r#"{"Monarch":"You"}"#, Some(0), true)]
+    #[case::you_when_an_opponent_is(r#"{"Monarch":"You"}"#, Some(1), false)]
+    #[case::an_opponent_when_they_are(r#"{"Monarch":"Opponents"}"#, Some(1), true)]
+    #[case::an_opponent_when_you_are(r#"{"Monarch":"Opponents"}"#, Some(0), false)]
+    #[case::not_the_monarch(r#"{"Not":{"Monarch":"You"}}"#, Some(1), true)]
+    fn the_monarch_condition_reads_the_designation(
+        #[case] json: &str,
+        #[case] monarch: Option<usize>,
+        #[case] holds: bool,
+    ) {
+        let mut game = game();
+        if let Some(seat) = monarch {
+            let player = PlayerId::from_index(seat);
+            crate::fold::apply_event(&mut game, &Event::MonarchChanged { player }).unwrap();
+        }
+        let condition: Condition = serde_json::from_str(json).unwrap();
+        assert_eq!(scope(&game).holds(&condition), Ok(holds));
+    }
+
+    #[rstest]
     #[case::if_you_do(r#""Performed""#, "\"if you do\"")]
-    #[case::the_monarch(r#"{"Monarch":"You"}"#, "the monarch")]
     #[case::the_citys_blessing(r#"{"CitysBlessing":"You"}"#, "the city's blessing")]
     fn a_condition_the_evaluator_cannot_read_yet_says_what_it_lacks(
         #[case] json: &str,

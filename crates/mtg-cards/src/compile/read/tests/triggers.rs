@@ -114,6 +114,14 @@ fn reads(text: &str, json: &str) {
     "At the beginning of your upkeep, if you have 40 or more life, draw a card.",
     r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Life":"You"},"op":"Ge","right":40}},"effects":[{"Draw":{}}]}}"#
 )]
+#[case::an_intervening_if_you_are_the_monarch(
+    "At the beginning of your upkeep, if you're the monarch, draw a card.",
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Monarch":"You"},"effects":[{"Draw":{}}]}}"#
+)]
+#[case::an_intervening_if_an_opponent_is_the_monarch(
+    "At the beginning of your end step, if an opponent is the monarch, you gain 2 life.",
+    r#"{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},"if":{"Monarch":"Opponents"},"effects":[{"GainLife":{"amount":2}}]}}"#
+)]
 #[case::two_sentences(
     "When ~ enters, draw a card. You gain 2 life.",
     r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Draw":{}},{"GainLife":{"amount":2}}]}}"#

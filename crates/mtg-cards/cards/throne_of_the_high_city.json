@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9684447a-5955-4bc7-8ad0-8bb8b316873b",
+  "name": "Throne of the High City",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Throne of the High City",
+      "oracle_fingerprint": "fae7b55eea0aa9e4a1d43106fefe4314",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "BecomeMonarch": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

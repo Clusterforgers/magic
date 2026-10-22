@@ -72,12 +72,14 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
         Step::FirstStrikeDamage => combat_damage(state, DamagePass::FirstStrike),
         Step::CombatDamage => combat_damage(state, DamagePass::Regular),
         Step::Cleanup => cleanup(state),
-        Step::Upkeep
-        | Step::Main1
-        | Step::BeginCombat
-        | Step::EndCombat
-        | Step::Main2
-        | Step::End => Progress::Events(vec![grant(state)]),
+        Step::End => {
+            let mut events = crate::monarch::end_step_draw(state);
+            events.push(grant(state));
+            Progress::Events(events)
+        }
+        Step::Upkeep | Step::Main1 | Step::BeginCombat | Step::EndCombat | Step::Main2 => {
+            Progress::Events(vec![grant(state)])
+        }
     }
 }
 
@@ -167,6 +169,7 @@ fn combat_damage(state: &GameState, pass: DamagePass) -> Progress {
         });
     }
     let mut events = damage_events(state, pass);
+    events.extend(crate::monarch::taken_by_combat(state, &events));
     events.push(grant(state));
     Progress::Events(events)
 }
