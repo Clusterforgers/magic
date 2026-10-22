@@ -1,0 +1,21 @@
+{
+  "oracle_id": "d0653734-9eb7-48c6-9042-65ffdd50fd2a",
+  "name": "Woodripper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woodripper",
+      "oracle_fingerprint": "86b86367af9365d9866b46be93b11ff2",
+      "abilities": [
+        { "Keyword": { "Fading": 3 } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "RemoveCounters": { "counter": { "Other": "fade" } } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

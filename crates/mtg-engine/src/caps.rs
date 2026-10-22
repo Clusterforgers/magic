@@ -290,6 +290,9 @@ const RUNS: &[&str] = &[
     "Keyword.CumulativeUpkeep",
     "Keyword.Undying",
     "Keyword.Persist",
+    "Keyword.Vanishing",
+    "Keyword.Fading",
+    "Keyword.Backup",
     "Keyword.LevelUp",
     "Keyword.Outlast",
     "Keyword.Saddle",
@@ -624,6 +627,9 @@ mod tests {
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]
     #[case::persist("Keyword.Persist", true)]
+    #[case::vanishing("Keyword.Vanishing", true)]
+    #[case::fading("Keyword.Fading", true)]
+    #[case::backup("Keyword.Backup", true)]
     #[case::level_up("Keyword.LevelUp", true)]
     #[case::outlast("Keyword.Outlast", true)]
     #[case::saddle("Keyword.Saddle", true)]

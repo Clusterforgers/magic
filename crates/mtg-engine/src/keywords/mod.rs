@@ -6,6 +6,7 @@
 
 mod affinity;
 pub(crate) mod aftermath;
+mod backup;
 mod battle_cry;
 mod bestow;
 mod blitz;
@@ -37,6 +38,7 @@ mod equip;
 mod escape;
 mod eternalize;
 mod evoke;
+mod fading;
 mod fear;
 mod first_strike;
 mod flash;
@@ -94,6 +96,7 @@ mod typecycling;
 mod undaunted;
 mod undying;
 mod unearth;
+mod vanishing;
 mod vigilance;
 mod ward;
 mod wither;
@@ -422,6 +425,9 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::CumulativeUpkeep(_) => &cumulative_upkeep::CumulativeUpkeep,
         Keyword::Undying => &undying::Undying,
         Keyword::Persist => &persist::Persist,
+        Keyword::Vanishing(_) => &vanishing::Vanishing,
+        Keyword::Fading(_) => &fading::Fading,
+        Keyword::Backup { .. } => &backup::Backup,
         Keyword::LevelUp(_) => &level_up::LevelUp,
         Keyword::Outlast(_) => &outlast::Outlast,
         Keyword::Saddle(_) => &saddle::Saddle,
@@ -708,6 +714,12 @@ mod tests {
                 find: Selector::default(),
                 cost: cost(),
             },
+            Keyword::Vanishing(3),
+            Keyword::Fading(3),
+            Keyword::Backup {
+                count: 1,
+                abilities: vec![],
+            },
         ]
     }
 
@@ -785,6 +797,9 @@ mod tests {
         "Keyword.CumulativeUpkeep",
         "Keyword.Undying",
         "Keyword.Persist",
+        "Keyword.Vanishing",
+        "Keyword.Fading",
+        "Keyword.Backup",
         "Keyword.LevelUp",
         "Keyword.Outlast",
         "Keyword.Saddle",
@@ -923,6 +938,9 @@ mod tests {
     #[case::cumulative_upkeep(Keyword::CumulativeUpkeep(Cost::mana("{1}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::undying(Keyword::Undying, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::persist(Keyword::Persist, Hooks { abilities: 1, ..Hooks::none() })]
+    #[case::vanishing(Keyword::Vanishing(3), Hooks { abilities: 3, ..Hooks::none() })]
+    #[case::fading(Keyword::Fading(3), Hooks { abilities: 2, ..Hooks::none() })]
+    #[case::backup(Keyword::Backup { count: 1, abilities: vec![] }, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::myriad(Keyword::Myriad, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::squad(Keyword::Squad(Cost::mana("{2}".parse().unwrap())), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::ravenous(Keyword::Ravenous, Hooks { abilities: 2, ..Hooks::none() })]

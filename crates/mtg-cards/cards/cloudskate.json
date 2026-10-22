@@ -1,0 +1,12 @@
+{
+  "oracle_id": "648e4072-b991-46fd-b057-1e807091dcdf",
+  "name": "Cloudskate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudskate",
+      "oracle_fingerprint": "03e43ad243b8b19ba240f33bb09a9ad3",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": { "Fading": 3 } }]
+    }
+  ]
+}

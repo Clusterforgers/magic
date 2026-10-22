@@ -1,0 +1,32 @@
+{
+  "oracle_id": "69aa1ac7-17da-4fc9-a3dc-df8a52841f4a",
+  "name": "Bone Shredder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bone Shredder",
+      "oracle_fingerprint": "8c8fdcd3a7f6d344edd316f93df45ab6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Echo": "{2}{B}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Type": "Artifact" } },
+                    { "Not": { "Color": "Black" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "3934d535-740d-471a-bbf1-c3b26b1cd596",
+  "oracle_id": "15f89b06-5025-4c9f-bf51-e25bc5c2dd6b",
+  "name": "Saiba Cryptomancer",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mom",
+  "collector_number": "76",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Moonfolk Ninja",
+  "oracle_text": "Flash\nBackup 1 (When this creature enters, put a +1/+1 counter on target creature. If that's another creature, it gains the following ability until end of turn.)\nHexproof",
+  "power": "0",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Backup",
+    "Hexproof",
+    "Flash"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "329d53eb-d443-4376-ae5a-4be7dfb1fc91",
+  "name": "Calciderm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Calciderm",
+      "oracle_fingerprint": "1d51ba86f94bc0f5720bd32eb89e8c1d",
+      "abilities": [{ "Keyword": "Shroud" }, { "Keyword": { "Vanishing": 4 } }]
+    }
+  ]
+}

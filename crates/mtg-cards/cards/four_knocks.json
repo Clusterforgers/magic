@@ -1,0 +1,20 @@
+{
+  "oracle_id": "64fe83b1-5aae-4433-82c3-a11c8c83137e",
+  "name": "Four Knocks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Four Knocks",
+      "oracle_fingerprint": "fad126c6de32d07e91446b3b37c67bab",
+      "abilities": [
+        { "Keyword": { "Vanishing": 4 } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

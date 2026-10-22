@@ -1,0 +1,25 @@
+{
+  "id": "02fe50fc-6c6c-43e7-ad0e-8f13a254da2a",
+  "oracle_id": "64fe83b1-5aae-4433-82c3-a11c8c83137e",
+  "name": "Four Knocks",
+  "lang": "en",
+  "layout": "normal",
+  "set": "who",
+  "collector_number": "20",
+  "rarity": "rare",
+  "released_at": "2023-10-13",
+  "digital": false,
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Vanishing 4 (This enchantment enters with four time counters on it. At the beginning of your upkeep, remove a time counter from it. When the last is removed, sacrifice it.)\nAt the beginning of your first main phase, draw a card.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Vanishing"
+  ]
+}

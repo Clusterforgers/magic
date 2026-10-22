@@ -1,0 +1,12 @@
+{
+  "oracle_id": "d6ee8bd6-0207-46ee-9892-c1d1b23b934e",
+  "name": "Blastoderm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blastoderm",
+      "oracle_fingerprint": "b931194a3a43394180d175ecc7b63ee9",
+      "abilities": [{ "Keyword": "Shroud" }, { "Keyword": { "Fading": 3 } }]
+    }
+  ]
+}
