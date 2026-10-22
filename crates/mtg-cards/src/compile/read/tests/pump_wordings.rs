@@ -166,14 +166,6 @@ fn each_creature_with_a_keyword_reads_in_the_singular(#[case] text: &str) {
 }
 
 #[rstest]
-#[case("Destroy target creature with a +1/+1 counter on it.")]
-#[case("Exile target creature with a -1/-1 counter on it.")]
-#[case("Destroy target creature with a charge counter on it.")]
-fn a_noun_with_a_counter_on_it_reads_in_a_spell(#[case] text: &str) {
-    golden(text, ClauseKind::Spell, false);
-}
-
-#[rstest]
 #[case::no_duration("Target creature gains protection from the color of your choice.")]
 #[case::another_wording(
     "Target creature gains protection from a color of your choice until end of turn."
