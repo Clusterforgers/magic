@@ -203,8 +203,11 @@ impl<'a> Judge<'a> {
         } else {
             FormatKind::Normal
         };
+        // The engine's check is the second line: a deck the report already blocks needs no repeat.
         let mut issues = report.legality.clone();
-        issues.extend(format_issues(kind, &cards, &leaders));
+        if issues.is_empty() {
+            issues = format_issues(kind, &cards, &leaders);
+        }
         let playable = issues.is_empty() && report.summary.state != DeckState::Blocked;
         Judged {
             format,
