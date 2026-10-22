@@ -42,13 +42,34 @@ pub fn split(text: &Normalized) -> Vec<RawClause> {
                     });
                 }
             }
-            None => clauses.push(RawClause {
-                range: line,
-                ends_line: true,
-            }),
+            None => match entering_split(&line_text) {
+                Some(first) => {
+                    clauses.push(RawClause {
+                        range: line.start..line.start + first,
+                        ends_line: false,
+                    });
+                    clauses.push(RawClause {
+                        range: line.start + first + 1..line.end,
+                        ends_line: true,
+                    });
+                }
+                None => clauses.push(RawClause {
+                    range: line,
+                    ends_line: true,
+                }),
+            },
         }
     }
     clauses
+}
+
+/// Where the first sentence of "This land enters tapped. As it enters, choose a color." ends, in characters from the
+/// start of the line: entering tapped and the choice made as it enters are two abilities on one line.
+fn entering_split(line: &str) -> Option<usize> {
+    let (first, rest) = line.split_once(". ")?;
+    let tapped =
+        first.ends_with(" enters tapped") || first.ends_with(" enters the battlefield tapped");
+    (tapped && rest.starts_with("As ")).then(|| first.chars().count() + 1)
 }
 
 /// A mode of a modal spell or a cost of a Spree spell.
@@ -81,6 +102,10 @@ mod tests {
     #[case::one_line("Draw a card.", &["Draw a card."])]
     #[case::one_per_line("Flying\nWhen ~ enters, draw a card.\n{T}: Add {G}.", &["Flying", "When ~ enters, draw a card.", "{T}: Add {G}."])]
     #[case::blank_lines_dropped("Flying\n\n\nHaste", &["Flying", "Haste"])]
+    #[case::entering_tapped_then_a_choice("This land enters tapped. As it enters, choose a color other than red.\n{T}: Add {R}.", &["This land enters tapped.", "As it enters, choose a color other than red.", "{T}: Add {R}."])]
+    #[case::entering_tapped_alone("This land enters tapped.\nAs this land enters, choose a color.", &["This land enters tapped.", "As this land enters, choose a color."])]
+    #[case::entering_tapped_then_a_rule("This land enters tapped. Draw a card.", &["This land enters tapped. Draw a card."])]
+    #[case::a_condition_before_the_choice("This land enters tapped unless you control a Forest. As it enters, choose a color.", &["This land enters tapped unless you control a Forest. As it enters, choose a color."])]
     #[case::keyword_list("Vigilance, deathtouch, haste", &["Vigilance", "deathtouch", "haste"])]
     #[case::keyword_list_between_lines("Flying\nFirst strike, lifelink\nWhenever ~ attacks, draw.", &["Flying", "First strike", "lifelink", "Whenever ~ attacks, draw."])]
     #[case::partner_name_keeps_its_comma("Partner with Pir, Imaginative Rascal", &["Partner with Pir, Imaginative Rascal"])]

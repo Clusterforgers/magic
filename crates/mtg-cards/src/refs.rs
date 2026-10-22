@@ -151,6 +151,8 @@ pub enum Pred {
     OwnedBy(Ref),
     /// Is in the zone (without it, the battlefield).
     In(ZoneKind),
+    /// Is a spell cast from the zone, a hand or a graveyard (the spell being cast included).
+    CastFrom(ZoneKind),
     /// Has the keyword.
     HasKeyword(Keyword),
     /// Has at least one counter of the kind on it.

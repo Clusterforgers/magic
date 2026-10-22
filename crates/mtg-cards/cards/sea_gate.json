@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b574c540-9f8a-4fd4-8809-d02c9b099ddc",
+  "name": "Sea Gate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sea Gate",
+      "oracle_fingerprint": "348d2a31a115ca965225f2f8fece1f67",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "ColorOtherThan": "Blue" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OrChosenColor": "Blue" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

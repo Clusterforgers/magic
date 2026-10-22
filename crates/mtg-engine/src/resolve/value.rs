@@ -620,6 +620,7 @@ impl<'a> Scope<'a> {
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::In(kind) => zone_kind(seen.zone) == *kind,
+            Pred::CastFrom(kind) => self.cast_from(seen, *kind),
             // An object that has changed zones since it was named has the keywords its snapshot holds (CR 608.2h).
             Pred::HasKeyword(keyword) => match seen.keywords {
                 Some(held) => held.contains(keyword),
@@ -864,6 +865,25 @@ impl<'a> Scope<'a> {
                         .and_then(|snapshot| snapshot.way)
                 })
         })
+    }
+
+    /// Whether `seen` is a spell cast from a zone of this kind: a spell being announced still lies there, one on the
+    /// stack remembers a hand or a graveyard.
+    fn cast_from(&self, seen: &Seen<'_>, kind: ZoneKind) -> bool {
+        let Some(spell) = seen
+            .card
+            .filter(|_| seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability)
+        else {
+            return false;
+        };
+        if self.casting.is_some_and(|(cast, _)| cast == spell.id()) {
+            return zone_kind(spell.zone()) == kind;
+        }
+        match kind {
+            ZoneKind::Hand => spell.cast_from_hand(),
+            ZoneKind::Graveyard => spell.cast_from_graveyard(),
+            _ => false,
+        }
     }
 
     /// Whether a condition is true now.

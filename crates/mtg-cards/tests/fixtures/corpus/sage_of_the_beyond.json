@@ -1,0 +1,28 @@
+{
+  "id": "226a4c5d-bf49-40d8-a7a4-341c18029634",
+  "oracle_id": "fc74f6a6-9064-4e1b-8dc1-446192bbc448",
+  "name": "Sage of the Beyond",
+  "lang": "en",
+  "layout": "normal",
+  "set": "otc",
+  "collector_number": "111",
+  "rarity": "rare",
+  "released_at": "2024-04-19",
+  "digital": false,
+  "mana_cost": "{5}{U}{U}",
+  "cmc": 7,
+  "type_line": "Creature — Spirit Giant",
+  "oracle_text": "Flying\nSpells you cast from anywhere other than your hand cost {2} less to cast.\nForetell {4}{U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Foretell"
+  ],
+  "power": "5",
+  "toughness": "5"
+}

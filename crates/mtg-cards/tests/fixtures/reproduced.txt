@@ -3,6 +3,7 @@ Adorned Pouncer
 Aether Hub
 Ajani's Pridemate
 Ancestral Vision
+Ancient Stone Idol
 Ancient Ziggurat
 Angel of Vitality
 Arcane Signet
@@ -12,6 +13,7 @@ Artful Maneuver
 Arvad the Cursed
 Atlantean Skirmisher
 Augury Raven
+Authority of the Consuls
 Aven Eternal
 Aven Initiate
 Azorius Chancery
@@ -24,7 +26,9 @@ Battlefield Forge
 Behold the Multiverse
 Bilious Skulldweller
 Bird Admirer // Wing Shredder
+Black Dragon Gate
 Black Knight
+Blasphemous Act
 Blaze
 Blight Mamba
 Blightwidow
@@ -50,6 +54,8 @@ Cathars' Crusade
 Changeling Outcast
 Chemister's Insight
 Circle of Dreams Druid
+Citadel Gate
+Cliffgate
 Clone
 Cold-Eyed Selkie
 Collective Unconscious
@@ -139,8 +145,10 @@ Gadwick, the Wizened
 Gaea's Cradle
 Game-Trail Changeling
 Gerrard's Wisdom
+Ghalta, Primal Hunger
 Giant Cindermaw
 Giant Growth
+Gilded Goose
 Gilded Lotus
 Glimpse of Freedom
 Glorious Anthem
@@ -179,6 +187,7 @@ Karn's Bastion
 Kathari Screecher
 Keep Watch
 Kessig Wolf Run
+Kinjalli's Sunwing
 Kitchen Finks
 Knight of Dusk's Shadow
 Kolaghan Skirmisher
@@ -200,6 +209,7 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
+Manor Gate
 Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
@@ -211,6 +221,7 @@ Megrim
 Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
+Mirari
 Mirror Image
 Mishra's Workshop
 Mizzium Mortars
@@ -231,6 +242,7 @@ Nightveil Sprite
 Ninja of the Deep Hours
 Ninja of the New Moon
 Notion Rain
+Nyxborn Behemoth
 Opt
 Otherworldly Gaze
 Pacifism
@@ -242,6 +254,7 @@ Pillar of the Paruns
 Plague Myr
 Plague Stinger
 Pouncing Jaguar
+Primeval Protector
 Prismatic Lens
 Professional Face-Breaker
 Proven Combatant
@@ -271,15 +284,18 @@ Rocksteady, Mutant Marauder
 Rootborn Defenses
 Rosheen Meanderer
 Rugged Prairie
+Rumbleweed
 Rummaging Goblin
 Rustrazor Butcher
 Sacred Cat
 Safehold Elite
+Sage of the Beyond
 Sanguine Bond
 Satyr Wayfinder
 Saw It Coming
 Scheming Aspirant
 Scuzzback Marauders
+Sea Gate
 Seedglaive Mentor
 Seekers' Squire
 Serra Angel
@@ -321,6 +337,7 @@ Summer Bloom
 Sundering Growth
 Sunken Ruins
 Supreme Verdict
+Swarm Intelligence
 Swiftfoot Boots
 Sword of Body and Mind
 Swords to Plowshares
@@ -337,7 +354,13 @@ The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
 Thopter Fabricator
+Thriving Bluff
+Thriving Grove
+Thriving Heath
+Thriving Isle
+Thriving Moor
 Throne of the High City
+Tilonalli's Skinshifter
 Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
@@ -350,10 +373,17 @@ Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
+Urabrask the Hidden
 Vampire Cutthroat
+Vanquish the Horde
 Vengeful Vampire
 Vestige of Emrakul
 Viridian Corrupter
+Vivid Crag
+Vivid Creek
+Vivid Grove
+Vivid Marsh
+Vivid Meadow
 Walking Ballista
 Wanderbrine Preacher
 Wargate

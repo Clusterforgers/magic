@@ -1,0 +1,31 @@
+{
+  "oracle_id": "2da7c49f-cc1e-45d9-9cbf-067e92b0daef",
+  "name": "Vivid Creek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vivid Creek",
+      "oracle_fingerprint": "6833fd9beffc844c40349b30477dd3e8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": 2, "tapped": true } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

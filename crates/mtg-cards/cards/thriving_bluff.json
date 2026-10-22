@@ -1,0 +1,26 @@
+{
+  "oracle_id": "91fceb34-0f2d-4392-be27-00dcd765637f",
+  "name": "Thriving Bluff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thriving Bluff",
+      "oracle_fingerprint": "ce942f29f39e5969a6140e0791804eb8",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "ColorOtherThan": "Red" } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OrChosenColor": "Red" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

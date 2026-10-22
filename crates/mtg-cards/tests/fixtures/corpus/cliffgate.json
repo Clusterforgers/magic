@@ -1,0 +1,21 @@
+{
+  "id": "557470dc-c594-4b26-81b9-356bedb0c215",
+  "oracle_id": "1999b5ac-21fb-4d99-ad72-58bf507f9a59",
+  "name": "Cliffgate",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "350",
+  "rarity": "common",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Gate",
+  "oracle_text": "This land enters tapped.\nAs this land enters, choose a color other than red.\n{T}: Add {R} or one mana of the chosen color.",
+  "colors": [],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}

@@ -1,8 +1,9 @@
 //! Patterns over game events: what triggers an ability and what a replacement effect replaces.
 
+use mtg_core::color::Color;
 use serde::{Deserialize, Serialize};
 
-use crate::effect::Effect;
+use crate::effect::{Effect, is_false};
 use crate::modify::Modification;
 use crate::refs::{Ref, Selector, ZoneKind};
 use crate::value::{Amount, Condition, CounterKind};
@@ -406,6 +407,8 @@ pub enum ReplaceWhen {
 pub enum EntersChoice {
     /// A colour.
     Color,
+    /// A colour other than this one ("choose a color other than red").
+    ColorOtherThan(Color),
     /// A creature type.
     CreatureType,
     /// A player.
@@ -441,6 +444,9 @@ pub enum ReplaceBy {
         counter: CounterKind,
         /// How many.
         count: Amount,
+        /// It enters tapped as well ("enters tapped with two charge counters on it").
+        #[serde(default, skip_serializing_if = "is_false")]
+        tapped: bool,
     },
     /// As the permanent enters, its controller makes this choice, which the permanent remembers for its abilities.
     Choose(EntersChoice),

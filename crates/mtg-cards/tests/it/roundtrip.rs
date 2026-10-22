@@ -707,6 +707,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                     )
                     .prop_map(Produce::OneOfLists),
                     (1u32..3).prop_map(Produce::ChosenColor),
+                    select(vec![ManaType::Red, ManaType::Colorless])
+                        .prop_map(Produce::OrChosenColor),
                     (1u32..3).prop_map(Produce::CommanderIdentity),
                     (selector(), 1u32..3, any::<bool>()).prop_map(|(among, count, colorless)| {
                         Produce::ProducedBy {
@@ -1005,8 +1007,13 @@ fn ability() -> impl Strategy<Value = Ability> {
                 effects().prop_map(ReplaceBy::Instead),
                 zone().prop_map(ReplaceBy::MoveTo),
                 Just(ReplaceBy::Tapped),
-                (counter(), amount())
-                    .prop_map(|(counter, count)| ReplaceBy::WithCounters { counter, count }),
+                (counter(), amount(), any::<bool>()).prop_map(|(counter, count, tapped)| {
+                    ReplaceBy::WithCounters {
+                        counter,
+                        count,
+                        tapped,
+                    }
+                }),
                 select(vec![
                     EntersChoice::Color,
                     EntersChoice::CreatureType,
@@ -1014,6 +1021,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                     EntersChoice::Opponent
                 ])
                 .prop_map(ReplaceBy::Choose),
+                color().prop_map(|other| ReplaceBy::Choose(EntersChoice::ColorOtherThan(other))),
                 (1u32..5).prop_map(ReplaceBy::PayLifeOrTapped),
                 (selector(), proptest::collection::vec(modification(), 0..3))
                     .prop_map(|(of, except)| ReplaceBy::AsCopy { of, except }),

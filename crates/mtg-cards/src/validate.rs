@@ -347,6 +347,11 @@ impl<'a> Walker<'a> {
             Pred::Compare { to, .. } => {
                 self.at("to", |w| w.amount(to));
             }
+            Pred::CastFrom(zone) => {
+                if !matches!(zone, ZoneKind::Hand | ZoneKind::Graveyard) {
+                    self.problem("`CastFrom` names a hand or a graveyard");
+                }
+            }
             Pred::Not(inner) => self.pred(inner),
             Pred::AnyOf(preds) => {
                 if preds.is_empty() {
@@ -1315,6 +1320,7 @@ impl<'a> Walker<'a> {
                     | Produce::OneOf(_)
                     | Produce::OneOfLists(_)
                     | Produce::ChosenColor(_)
+                    | Produce::OrChosenColor(_)
                     | Produce::CommanderIdentity(_) => {}
                 }
                 // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
