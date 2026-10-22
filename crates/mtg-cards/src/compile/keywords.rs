@@ -3,7 +3,7 @@
 use std::ops::Range;
 use std::str::FromStr;
 
-use mtg_core::card::{CardType, Subtype};
+use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 
 use crate::cost::{Cost, CostItem};
@@ -58,6 +58,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("equip", Params::Cost),
     ("reconfigure", Params::Cost),
     ("cycling", Params::Cost),
+    ("basic landcycling", Params::Cost),
     ("kicker", Params::Cost),
     ("multikicker", Params::Cost),
     ("flashback", Params::Cost),
@@ -364,6 +365,15 @@ pub fn read(item: &str) -> Option<Keyword> {
             .filter(|poison| *poison > 0)
             .map(Keyword::Toxic),
         "landwalk" => landwalk(item),
+        "affinity for" => super::read::affinity_filter(rest).map(Keyword::Affinity),
+        "typecycling" => typecycling(item, rest),
+        "basic landcycling" => cost(rest).map(|cost| Keyword::Typecycling {
+            find: Selector(vec![
+                Pred::Type(CardType::Land),
+                Pred::Supertype(Supertype::Basic),
+            ]),
+            cost,
+        }),
         name if rest.is_empty() => plain(name),
         _ => None,
     }
@@ -394,6 +404,25 @@ fn landwalk(item: &str) -> Option<Keyword> {
     ))])))
 }
 
+/// A typecycling keyword (`Plainscycling {2}`, `Landcycling {1}`): the cards it searches for are those of the land
+/// type or the land cards it names, and `rest` is its cost.
+fn typecycling(item: &str, rest: &str) -> Option<Keyword> {
+    let word = item.split([' ', '\u{2014}']).next()?;
+    let kind = word.get(..word.len().checked_sub("cycling".len())?)?;
+    let find = if kind.eq_ignore_ascii_case("land") {
+        Pred::Type(CardType::Land)
+    } else {
+        let land = LAND_TYPES
+            .iter()
+            .find(|land| land.eq_ignore_ascii_case(kind))?;
+        Pred::Subtype(Subtype((*land).to_owned()))
+    };
+    Some(Keyword::Typecycling {
+        find: Selector(vec![find]),
+        cost: cost(rest)?,
+    })
+}
+
 /// A keyword without parameters.
 fn plain(name: &str) -> Option<Keyword> {
     Some(match name {
@@ -414,6 +443,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "shroud" => Keyword::Shroud,
         "prowess" => Keyword::Prowess,
         "convoke" => Keyword::Convoke,
+        "improvise" => Keyword::Improvise,
         "delve" => Keyword::Delve,
         "cascade" => Keyword::Cascade,
         "storm" => Keyword::Storm,
@@ -550,6 +580,13 @@ mod tests {
         Cost::mana(text.parse().unwrap())
     }
 
+    fn finds(preds: Vec<Pred>, cost: &str) -> Keyword {
+        Keyword::Typecycling {
+            find: Selector(preds),
+            cost: mana(cost),
+        }
+    }
+
     fn creature() -> Selector {
         Selector(vec![Pred::Type(CardType::Creature)])
     }
@@ -656,6 +693,17 @@ mod tests {
         Keyword::Madness(Cost(vec![CostItem::Mana("{2}{B}".parse().unwrap()), CostItem::PayLife(Amount::Fixed(8))]))
     )]
     #[case::cycling("Cycling {2}", Keyword::Cycling(mana("{2}")))]
+    #[case::plainscycling("Plainscycling {2}", finds(vec![Pred::Subtype(Subtype("Plains".into()))], "{2}"))]
+    #[case::lowercase_forestcycling("forestcycling {1}", finds(vec![Pred::Subtype(Subtype("Forest".into()))], "{1}"))]
+    #[case::landcycling("Landcycling {1}", finds(vec![Pred::Type(CardType::Land)], "{1}"))]
+    #[case::basic_landcycling(
+        "Basic landcycling {1}{G}",
+        finds(vec![Pred::Type(CardType::Land), Pred::Supertype(Supertype::Basic)], "{1}{G}")
+    )]
+    #[case::improvise("Improvise", Keyword::Improvise)]
+    #[case::affinity_for_artifacts("Affinity for artifacts", Keyword::Affinity(Selector(vec![Pred::Type(CardType::Artifact)])))]
+    #[case::affinity_for_a_subtype("Affinity for Islands", Keyword::Affinity(Selector(vec![Pred::Subtype(Subtype("Island".into()))])))]
+    #[case::affinity_for_tokens("Affinity for tokens", Keyword::Affinity(Selector(vec![Pred::Token])))]
     #[case::madness("Madness {R}", Keyword::Madness(mana("{R}")))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
     #[case::disguise("Disguise {1}{W}", Keyword::Disguise(mana("{1}{W}")))]
@@ -830,7 +878,7 @@ mod tests {
     #[case::mutate_without_a_cost("Mutate")]
     #[case::a_parameter_on_changeling("Changeling {1}")]
     #[case::level_up("Level up {1}{U}")]
-    #[case::typecycling("Plainscycling {2}")]
+    #[case::a_type_that_is_not_a_land_type("Wizardcycling {2}")]
     #[case::landwalk_of_a_type_that_is_not_a_land_type("Cowwalk")]
     #[case::parameter_on_a_plain_keyword("Flying {2}")]
     #[case::suspend_without_time("Suspend {U}")]
@@ -883,10 +931,12 @@ mod tests {
 
     /// The name a keyword is printed with when it is not the DSL's: every "Partner—text" is a `Partner` line.
     fn printed(name: &str) -> &str {
-        if name == "Partner group" {
-            "Partner"
-        } else {
-            name
+        match name {
+            "Partner group" => "Partner",
+            "Affinity" => "Affinity for",
+            // Every typecycling is read from the word before `cycling`; `Basic landcycling` is the one with a table entry.
+            "Typecycling" => "Basic landcycling",
+            other => other,
         }
     }
 
@@ -990,13 +1040,16 @@ mod tests {
             "Dash {1}",
             "Blitz {1}",
             "Ninjutsu {1}{U}",
+            "Improvise",
+            "Affinity for artifacts",
+            "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();
         for sample in samples {
             let keyword = read(sample).unwrap_or_else(|| panic!("{sample} is not read"));
             assert!(
-                keyword.name() == "Landwalk"
+                matches!(keyword.name(), "Landwalk" | "Typecycling")
                     || sample
                         .to_ascii_lowercase()
                         .starts_with(&printed(keyword.name()).to_ascii_lowercase()),

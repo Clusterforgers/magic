@@ -1,22 +1,30 @@
 Abbot of Keral Keep
 Aberrant
+Abzan Advantage
+Abzan Skycaptain
 Adorned Pouncer
+Aeromunculus
 Aether Hub
 Ajani's Pridemate
+Alpha Deathclaw
+Anafenza, Kin-Tree Spirit
 Ancestral Vision
 Ancient Stone Idol
 Ancient Ziggurat
 Angel of Vitality
+Arbor Colossus
 Arcane Signet
 Archon of Cruelty
 Arrogant Wurm
 Artful Maneuver
 Arvad the Cursed
+Ash Barrens
 Atlantean Skirmisher
 Augury Raven
 Authority of the Consuls
 Aven Eternal
 Aven Initiate
+Aven Tactician
 Azorius Chancery
 Azorius Signet
 Azure Fleet Admiral
@@ -49,6 +57,8 @@ Briarblade Adept
 Brightstone Ritual
 Bronzeplate Boar
 Broodbirth Viper
+Broodstar
+Cached Defenses
 Cackling Counterpart
 Caldaia Strongarm
 Caller of the Pack
@@ -57,6 +67,7 @@ Carnage Tyrant
 Cascade Bluffs
 Cathars' Crusade
 Changeling Outcast
+Chartooth Cougar
 Chemister's Insight
 Circle of Dreams Druid
 Citadel Gate
@@ -102,25 +113,33 @@ Direct Current
 Disembowel
 Dockside Extortionist
 Dokuchi Shadow-Walker
+Domesticated Hydra
 Doom Blade
 Doom Whisperer
 Dragonspeaker Shaman
 Dream's Grip
 Dregscape Zombie
+Dromoka Captain
+Dromoka's Gift
+Dromoka, the Eternal
 Drove of Elves
 Drudge Skeletons
 Dual Casting
 Dualcaster Mage
 Dunland Crebain
 Durkwood Baloth
+Eagles of the North
 Easterling Vanguard
 Echo Inspector
+Echoes of the Kin Tree
 Elven Ambush
+Elvish Aberration
 Elvish Rejuvenator
 Empyrial Plate
 Epic Proportions
 Eternal Witness
 Ethereal Armor
+Ethersworn Sphinx
 Exotic Orchard
 Exploration
 Explore
@@ -135,10 +154,13 @@ Fearsome Goblin Pair
 Felidar Sovereign
 Fellwar Stone
 Fetid Heath
+Fiery Fall
 Fiery Temper
 Fire-Lit Thicket
 Firestorm Hellkite
 Flame Jab
+Fleecemane Lion
+Fleetfeather Cockatrice
 Flooded Grove
 Flooded Strand
 Fog
@@ -153,6 +175,7 @@ Gadwick, the Wizened
 Gaea's Cradle
 Galadhrim Brigade
 Game-Trail Changeling
+Generous Ent
 Gerrard's Wisdom
 Ghalta, Primal Hunger
 Giant Cindermaw
@@ -161,6 +184,7 @@ Gilded Goose
 Gilded Lotus
 Glimpse of Freedom
 Glorious Anthem
+Gluttonous Cyclops
 Goblin Chieftain
 Goblin Spy
 Goblin War Buggy
@@ -178,15 +202,18 @@ Gurmag Angler
 Hall of Triumph
 Haughty Djinn
 Hengegate Pathway // Mistgate Pathway
+Herald of Anguish
 Herald of the Dreadhorde
 Herald of the Host
 Hero of Bladehold
 Holdout Settlement
 Honor Troll
+Honor's Reward
 Horizon Canopy
 Hound of Griselbrand
 Hulking Raptor
 Idyllic Beachfront
+Ill-Tempered Cyclops
 Impostor of the Sixth Pride
 Impulsive Pilferer
 Inkwell Leviathan
@@ -197,6 +224,7 @@ Jadelight Ranger
 Jagged Barrens
 Jaspera Sentinel
 Jungle Lion
+Kalemne's Captain
 Karn's Bastion
 Kathari Screecher
 Keep Watch
@@ -225,17 +253,21 @@ Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
 Manor Gate
+Map the Wastes
 Mardu Devotee
 Mardu Scout
 Mardu Shadowspear
 Mardu Strike Leader
 Maro
 Master of Etherium
+Maverick Thopterist
 Mayhem Patrol
 Megrim
+Memory Guardian
 Merfolk Branchwalker
 Mesmeric Orb
 Midnight Banshee
+Migratory Route
 Mirari
 Mirror Image
 Mishra's Workshop
@@ -250,6 +282,7 @@ Murderous Cut
 Muscle Sliver
 Mystic Gate
 Nantuko Husk
+Nessian Asp
 Night Clubber
 Nighthawk Scavenger
 Nightmare
@@ -259,13 +292,17 @@ Ninja of the New Moon
 Notion Rain
 Nyxborn Behemoth
 Opt
+Orchard Strider
+Organic Extinction
 Otherworldly Gaze
 Pacifism
 Pale Bears
+Panther Robot
 Pestilent Syphoner
 Phantasmal Image
 Phyrexian Soulgorger
 Pillar of the Paruns
+Pinion Feast
 Plague Myr
 Plague Stinger
 Pouncing Jaguar
@@ -283,6 +320,7 @@ Raffine's Informant
 Rakdos Headliner
 Rally the Ranks
 Rampant Growth
+Ravenous Leucrocota
 Reckless Impulse
 Reconstructed Thopter
 Red Room Recruit
@@ -291,6 +329,7 @@ Reiterate
 Relentless Advance
 Revel Ruiner
 Reverberate
+Reverse Engineer
 Rhox Faithmender
 Rhystic Study
 Rift Bolt
@@ -307,8 +346,12 @@ Ruthless Radrat
 Sacred Cat
 Safehold Elite
 Sage of the Beyond
+Sandcrafter Mage
+Sandsteppe Mastodon
+Sandsteppe Scavenger
 Sanguine Bond
 Satyr Wayfinder
+Sauroform Hybrid
 Saw It Coming
 Scheming Aspirant
 Scuzzback Marauders
@@ -321,9 +364,12 @@ Shadowmage Infiltrator
 Siege Wurm
 Sinister Sabotage
 Sinister Starfish
+Sinuous Vermin
 Siren Lookout
 Skeletal Changeling
 Skirk Prospector
+Skitter Eel
+Skittering Crustacean
 Skizzik Surger
 Skullclamp
 Skycloud Expanse
@@ -340,6 +386,7 @@ Souldrinker
 Space Marine Devastator
 Spectral Rider
 Sphinx of Jwar Isle
+Spire Golem
 Spring // Mind
 Springleaf Drum
 Squirrel Nest
@@ -373,6 +420,8 @@ The Spear of Bashenga
 The Thing, Ben Grimm
 Thieving Magpie
 Thopter Fabricator
+Thought Monitor
+Thoughtcast
 Thriving Bluff
 Thriving Grove
 Thriving Heath
@@ -385,6 +434,7 @@ Timeless Lotus
 Tireless Hauler // Dire-Strain Brawler
 Tireless Tracker
 Tithebearer Giant
+Traumatic Visions
 Treasure Cruise
 Trove Tracker
 Tumble Magnet
@@ -396,7 +446,9 @@ Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
+Universal Surveillance
 Urabrask the Hidden
+Valley Rannet
 Vampire Cutthroat
 Vanguard Suppressor
 Vanquish the Horde
@@ -415,6 +467,7 @@ Wargate
 Warmonger Hellkite
 Wasteland Raider
 Wear // Tear
+Whir of Invention
 Wilderness Elemental
 Wooded Bastion
 Wrath of God

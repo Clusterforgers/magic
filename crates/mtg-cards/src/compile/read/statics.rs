@@ -422,7 +422,16 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
         let condition = as_long_as(r)?;
         r.punct(',').then_some(condition)
     });
-    let (affected, plural) = subject(r, true).or_else(|| enchanted_other(r))?;
+    // After a condition about the card itself, "it" is the card: "As long as ~ is monstrous, it has menace."
+    let it = leading
+        .as_ref()
+        .is_some_and(|condition| *condition == is_monstrous())
+        && r.word("it");
+    let (affected, plural) = if it {
+        (Ref::This, false)
+    } else {
+        subject(r, true).or_else(|| enchanted_other(r))?
+    };
     let x_free = std::mem::replace(&mut r.x_free, false);
     let mods = r.attempt(|r| {
         let (gets, has) = if plural {
@@ -478,14 +487,32 @@ fn as_long_as(r: &mut Reader<'_>) -> Option<Condition> {
         return Some(Condition::YourTurn);
     }
     triggers::monarch_condition(r)
+        .or_else(|| r.attempt(monstrous))
         .or_else(|| holds(r))
         .or_else(|| r.attempt(triggers::condition))
+}
+
+/// "~ is monstrous": the card itself has become monstrous (CR 701.37).
+fn monstrous(r: &mut Reader<'_>) -> Option<Condition> {
+    r.source().then_some(())?;
+    r.need("is monstrous")?;
+    Some(is_monstrous())
+}
+
+/// The card itself is monstrous.
+fn is_monstrous() -> Condition {
+    Condition::Matches {
+        subject: Ref::This,
+        selector: Selector(vec![Pred::Monstrous]),
+    }
 }
 
 /// What `as_long_as` reads, written back.
 fn as_long_as_texts(condition: &Condition) -> Vec<String> {
     if *condition == Condition::YourTurn {
         vec!["it's your turn".to_owned()]
+    } else if *condition == is_monstrous() {
+        vec!["~ is monstrous".to_owned()]
     } else if let Some(written) = triggers::condition_text(condition) {
         vec![written]
     } else {
@@ -1059,7 +1086,12 @@ fn static_texts(
             let trailing = tails
                 .iter()
                 .map(|tail| format!("{subject} {predicate}{tail}"));
-            trailing.chain(leading).collect::<Vec<_>>()
+            // "As long as ~ is monstrous, it has menace."
+            let pronoun = helds
+                .iter()
+                .filter(|held| held.as_str() == "~ is monstrous")
+                .map(|held| format!("as long as {held}, it {predicate}"));
+            trailing.chain(leading).chain(pronoun).collect::<Vec<_>>()
         })
         .collect()
 }

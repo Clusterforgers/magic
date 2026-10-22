@@ -296,6 +296,27 @@ pub enum TriggerPattern {
         /// The creature that connives.
         what: Selector,
     },
+    /// A creature matching the selector becomes monstrous ("when this creature becomes monstrous"); `Triggering` is its
+    /// controller.
+    BecomesMonstrous {
+        /// The creature that becomes monstrous.
+        what: Selector,
+    },
+    /// A creature matching the selector adapts ("whenever a creature you control adapts"); `Triggering` is its
+    /// controller.
+    Adapted {
+        /// The creature that adapts.
+        what: Selector,
+    },
+    /// A player bolsters ("whenever you bolster"); `Triggering` is that player.
+    Bolstered {
+        /// Who bolsters.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A step begins ("at the beginning of ...").
     StepBegins {
         /// The step.

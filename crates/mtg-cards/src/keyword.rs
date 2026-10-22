@@ -189,6 +189,17 @@ pub enum Keyword {
     Embalm(Cost),
     /// Eternalize with its cost (CR 702.129): from a graveyard at sorcery speed the card is exiled for a token copy that is a 4/4 black Zombie with no mana cost.
     Eternalize(Cost),
+    /// Improvise (CR 702.126): each artifact tapped while the spell is cast pays for {1} of its cost.
+    Improvise,
+    /// Affinity (CR 702.41): this spell costs {1} less to cast for each permanent its controller controls that the selector names (Affinity for artifacts).
+    Affinity(Selector),
+    /// Typecycling (CR 702.29): "[Cost], Discard this card: Search your library for a card the selector names, reveal it, put it into your hand, then shuffle" (Plainscycling, basic landcycling); it is a kind of cycling.
+    Typecycling {
+        /// What the card searched for must be.
+        find: Selector,
+        /// The cost, paid beside the discard.
+        cost: Cost,
+    },
 }
 
 impl Keyword {
@@ -277,6 +288,9 @@ impl Keyword {
         "Retrace",
         "Embalm",
         "Eternalize",
+        "Improvise",
+        "Affinity",
+        "Typecycling",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -365,6 +379,9 @@ impl Keyword {
             Keyword::Retrace => "Retrace",
             Keyword::Embalm(_) => "Embalm",
             Keyword::Eternalize(_) => "Eternalize",
+            Keyword::Improvise => "Improvise",
+            Keyword::Affinity(_) => "Affinity",
+            Keyword::Typecycling { .. } => "Typecycling",
         }
     }
 
@@ -479,6 +496,12 @@ mod tests {
             Keyword::Retrace,
             Keyword::Embalm(Cost::default()),
             Keyword::Eternalize(Cost::default()),
+            Keyword::Improvise,
+            Keyword::Affinity(Selector::default()),
+            Keyword::Typecycling {
+                find: Selector::default(),
+                cost: Cost::default(),
+            },
         ]
     }
 

@@ -599,6 +599,7 @@ impl<'a> Scope<'a> {
             }
             Pred::Tapped => seen.tapped == Some(true),
             Pred::Untapped => seen.tapped == Some(false),
+            Pred::Monstrous => matches!(seen.counters, Counted::Live(held) if held.monstrous()),
             Pred::Attacking => state
                 .combat()
                 .attackers()

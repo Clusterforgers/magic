@@ -122,6 +122,12 @@ enum Happened {
     Connived { object: ObjectId, player: PlayerId },
     /// A player amassed.
     Amassed { player: PlayerId },
+    /// A creature became monstrous.
+    Monstrous { object: ObjectId, player: PlayerId },
+    /// A creature adapted.
+    Adapted { object: ObjectId, player: PlayerId },
+    /// A player bolstered.
+    Bolstered { player: PlayerId },
     /// Everything of one kind of state (before or after) that happened in the batch, for the patterns of events that
     /// happen together.
     Batch(Vec<Happened>),
@@ -557,6 +563,15 @@ fn about_players_and_permanents(
         Event::MonarchChanged { player } => found.push(Happened::BecameMonarch { player: *player }),
         Event::Proliferated { player } => found.push(Happened::Proliferated { player: *player }),
         Event::Amassed { player, .. } => found.push(Happened::Amassed { player: *player }),
+        Event::Bolstered { player, .. } => found.push(Happened::Bolstered { player: *player }),
+        Event::Monstrous { object, player } => found.push(Happened::Monstrous {
+            object: *object,
+            player: *player,
+        }),
+        Event::Adapted { object, player } => found.push(Happened::Adapted {
+            object: *object,
+            player: *player,
+        }),
         Event::Explored { object, player } => found.push(Happened::Explored {
             object: *object,
             player: *player,
@@ -782,7 +797,8 @@ fn matching_event(
         | (TriggerPattern::Drew { who }, Happened::Drew { player, .. })
         | (TriggerPattern::BecomesMonarch { who }, Happened::BecameMonarch { player })
         | (TriggerPattern::Proliferated { who }, Happened::Proliferated { player })
-        | (TriggerPattern::Amassed { who }, Happened::Amassed { player }) => by(who, player)
+        | (TriggerPattern::Amassed { who }, Happened::Amassed { player })
+        | (TriggerPattern::Bolstered { who }, Happened::Bolstered { player }) => by(who, player)
             .then(|| counted(state, vec![Target::Player(*player)], happened.amount())),
         (
             TriggerPattern::Discarded { what, by: who },
@@ -827,6 +843,20 @@ fn matching_permanents(
         | (
             TriggerPattern::Connived { what },
             Happened::Connived {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::BecomesMonstrous { what },
+            Happened::Monstrous {
+                object: actor,
+                player,
+            },
+        )
+        | (
+            TriggerPattern::Adapted { what },
+            Happened::Adapted {
                 object: actor,
                 player,
             },
@@ -1362,6 +1392,9 @@ mod tests {
     #[case::becoming_the_monarch(r#"{"BecomesMonarch":{}}"#)]
     #[case::proliferating(r#"{"Proliferated":{}}"#)]
     #[case::amassing(r#"{"Amassed":{}}"#)]
+    #[case::bolstering(r#"{"Bolstered":{}}"#)]
+    #[case::becoming_monstrous(r#"{"BecomesMonstrous":{"what":[]}}"#)]
+    #[case::adapting(r#"{"Adapted":{"what":[]}}"#)]
     fn the_patterns_of_events_about_players_and_permanents_trigger_on_no_other_event(
         #[case] when: &str,
     ) {

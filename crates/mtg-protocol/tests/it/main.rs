@@ -20,6 +20,7 @@ mod faces_view;
 mod foretell_view;
 mod hidden_info;
 mod house_rules_view;
+mod improvise_hidden;
 mod impulse_hidden;
 mod keyword_view;
 mod lobby_message;

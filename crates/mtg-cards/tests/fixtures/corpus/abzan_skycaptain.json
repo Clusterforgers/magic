@@ -1,0 +1,28 @@
+{
+  "id": "c4195373-e902-4fc3-aead-1f6e728dbbae",
+  "oracle_id": "866fc4b9-f661-444b-b7fd-929814dbc69d",
+  "name": "Abzan Skycaptain",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frf",
+  "collector_number": "4",
+  "rarity": "common",
+  "released_at": "2015-01-23",
+  "digital": false,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Bird Soldier",
+  "oracle_text": "Flying\nWhen this creature dies, bolster 2. (Choose a creature with the least toughness among creatures you control and put two +1/+1 counters on it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Bolster",
+    "Flying"
+  ]
+}

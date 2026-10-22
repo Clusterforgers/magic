@@ -148,6 +148,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Ability(_)
         | Pred::Tapped
         | Pred::Untapped
+        | Pred::Monstrous
         | Pred::Attacking
         | Pred::Blocking
         | Pred::Unblocked

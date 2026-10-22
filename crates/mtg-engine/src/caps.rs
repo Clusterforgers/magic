@@ -60,6 +60,9 @@ const RUNS: &[&str] = &[
     "Trigger.Explored",
     "Trigger.Connived",
     "Trigger.Amassed",
+    "Trigger.BecomesMonstrous",
+    "Trigger.Adapted",
+    "Trigger.Bolstered",
     "Trigger.Batch",
     "Trigger.Nth",
     "Amount.Triggering",
@@ -132,6 +135,9 @@ const RUNS: &[&str] = &[
     "Effect.Explore",
     "Effect.Connive",
     "Effect.Amass",
+    "Effect.Monstrosity",
+    "Effect.Adapt",
+    "Effect.Bolster",
     "Effect.BecomeMonarch",
     "Condition.Monarch",
     "Effect.CreateToken",
@@ -288,6 +294,9 @@ const RUNS: &[&str] = &[
     "Keyword.Retrace",
     "Keyword.Embalm",
     "Keyword.Eternalize",
+    "Keyword.Improvise",
+    "Keyword.Affinity",
+    "Keyword.Typecycling",
     "Keyword.Encore",
     "Condition.NewlyControlled",
     "Rule.CanBeCommander",
@@ -522,9 +531,9 @@ mod tests {
     #[case::fighting("Effect.Fight", false)]
     #[case::becoming_the_monarch("Effect.BecomeMonarch", true)]
     #[case::amassing("Effect.Amass", true)]
-    #[case::monstrosity("Effect.Monstrosity", false)]
-    #[case::adapting("Effect.Adapt", false)]
-    #[case::bolstering("Effect.Bolster", false)]
+    #[case::monstrosity("Effect.Monstrosity", true)]
+    #[case::adapting("Effect.Adapt", true)]
+    #[case::bolstering("Effect.Bolster", true)]
     #[case::exploring("Effect.Explore", true)]
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
@@ -572,6 +581,9 @@ mod tests {
     #[case::exploring_triggers("Trigger.Explored", true)]
     #[case::conniving_triggers("Trigger.Connived", true)]
     #[case::amassing_triggers("Trigger.Amassed", true)]
+    #[case::becoming_monstrous_triggers("Trigger.BecomesMonstrous", true)]
+    #[case::adapting_triggers("Trigger.Adapted", true)]
+    #[case::bolstering_triggers("Trigger.Bolstered", true)]
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]
@@ -607,6 +619,9 @@ mod tests {
     #[case::retrace("Keyword.Retrace", true)]
     #[case::embalm("Keyword.Embalm", true)]
     #[case::eternalize("Keyword.Eternalize", true)]
+    #[case::improvise("Keyword.Improvise", true)]
+    #[case::affinity("Keyword.Affinity", true)]
+    #[case::typecycling("Keyword.Typecycling", true)]
     #[case::coming_under_control_since_the_last_turn("Condition.NewlyControlled", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]

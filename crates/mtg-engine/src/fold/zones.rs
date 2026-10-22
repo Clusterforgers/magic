@@ -15,7 +15,7 @@ use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::keywords::OptionalKind;
 use crate::library::{Scried, Surveilled};
-use crate::object::{GameObject, ObjectKind, PermanentState};
+use crate::object::{Designations, GameObject, ObjectKind, PermanentState};
 use crate::state::{GameState, Tally};
 use crate::zones::{Placement, Zone};
 
@@ -86,6 +86,7 @@ pub(super) fn move_object(
     if to == Zone::Battlefield {
         object.permanent = Some(PermanentState {
             tapped: false,
+            designations: Designations::default(),
             damage: 0,
             deathtouched: false,
             summoning_sick: true,

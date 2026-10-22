@@ -1,0 +1,25 @@
+{
+  "id": "466a0be8-31b9-4ea0-9a96-b09a76f4ec69",
+  "oracle_id": "cce9bbff-82dc-4b2f-addd-d6715588de20",
+  "name": "Thoughtcast",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "242",
+  "rarity": "common",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{4}{U}",
+  "cmc": 5.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.)\nDraw two cards.",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Affinity"
+  ]
+}

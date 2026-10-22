@@ -4,6 +4,7 @@
 //! engine asks about: blocking, attacking, damage, targeting, timing and destruction. The engine reads the
 //! keywords an object has through [`keywords_of`] and the helpers below it, never from the rules of the card.
 
+mod affinity;
 pub(crate) mod aftermath;
 mod battle_cry;
 mod blitz;
@@ -43,6 +44,7 @@ pub(crate) mod foretell;
 mod fuse;
 mod haste;
 mod hexproof;
+mod improvise;
 mod indestructible;
 mod infect;
 mod intimidate;
@@ -82,6 +84,7 @@ mod storm;
 pub(crate) mod suspend;
 mod toxic;
 mod trample;
+mod typecycling;
 mod undaunted;
 mod undying;
 mod unearth;
@@ -415,6 +418,9 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Retrace => &retrace::Retrace,
         Keyword::Embalm(_) => &embalm::Embalm,
         Keyword::Eternalize(_) => &eternalize::Eternalize,
+        Keyword::Improvise => &improvise::Improvise,
+        Keyword::Affinity(_) => &affinity::Affinity,
+        Keyword::Typecycling { .. } => &typecycling::Typecycling,
     }
 }
 
@@ -675,6 +681,12 @@ mod tests {
             Keyword::Retrace,
             Keyword::Embalm(cost()),
             Keyword::Eternalize(cost()),
+            Keyword::Improvise,
+            Keyword::Affinity(Selector::default()),
+            Keyword::Typecycling {
+                find: Selector::default(),
+                cost: cost(),
+            },
         ]
     }
 
@@ -756,6 +768,9 @@ mod tests {
         "Keyword.Retrace",
         "Keyword.Embalm",
         "Keyword.Eternalize",
+        "Keyword.Improvise",
+        "Keyword.Affinity",
+        "Keyword.Typecycling",
         "Keyword.Encore",
     ];
 
