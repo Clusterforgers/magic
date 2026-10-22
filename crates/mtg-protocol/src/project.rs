@@ -235,15 +235,19 @@ impl ObjectView {
             },
             face_down: object.face_down().is_some(),
             face: object.face().filter(|_| printed),
-            copy: object.copy_effect().map(|copy| CopyView {
-                // The original is named only while the viewer can see that very object.
-                of: Some(copy.of().id).filter(|original| {
-                    state.object(*original).is_some_and(|seen| {
-                        seen.counter() == copy.of().counter
-                            && !matches!(sight.look(seen), Look::Hidden)
-                    })
+            copy: object
+                .copy_effect()
+                .map(mtg_engine::copies::CopyEffect::of)
+                .or_else(|| object.copied_from())
+                .map(|original| CopyView {
+                    // The original is named only while the viewer can see that very object.
+                    of: Some(original.id).filter(|original_id| {
+                        state.object(*original_id).is_some_and(|seen| {
+                            seen.counter() == original.counter
+                                && !matches!(sight.look(seen), Look::Hidden)
+                        })
+                    }),
                 }),
-            }),
             // The clauses the engine leaves to the table are printed on the card every seat can read.
             manual: if printed {
                 card.manual.clone()

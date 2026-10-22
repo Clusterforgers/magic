@@ -96,7 +96,7 @@ pub(crate) fn handle(
             ))
         }
         (DecisionKind::ChooseTargets(options), Answer::ChooseTargets(choice)) => {
-            choose::targets_answer(player, options, choice)
+            choose::targets_answer(player, options, choice, pending.is_some())
         }
         (DecisionKind::ChooseMode(options), Answer::ChooseMode(choice)) => {
             choose::mode_answer(player, options, choice)

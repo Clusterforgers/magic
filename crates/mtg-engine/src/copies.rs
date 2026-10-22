@@ -10,16 +10,17 @@ use std::hash::{Hash, Hasher};
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
-use mtg_cards::definition::Layout;
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
+use crate::choose::Choices;
 use crate::error::EngineError;
-use crate::fold::invalid;
+use crate::fold::{invalid, reset_passes};
 use crate::hash::stable_hash;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::snapshot::Snapshot;
-use crate::state::GameState;
+use crate::state::{GameState, Tally};
+use crate::zones::{Placement, Zone};
 
 /// A copy effect on a permanent: the object it copies and the copiable values it gives (CR 707.2).
 #[derive(Debug, Clone)]
@@ -28,6 +29,10 @@ pub struct CopyEffect {
     definition: Arc<CardDefinition>,
     fingerprint: u64,
     timestamp: u64,
+    /// Whether the effect ends in the cleanup step ("becomes a copy until end of turn").
+    temporary: bool,
+    /// The copy effect this temporary one is over, which applies again when it ends (CR 613.7).
+    under: Option<Box<CopyEffect>>,
 }
 
 impl CopyEffect {
@@ -38,7 +43,30 @@ impl CopyEffect {
             fingerprint: stable_hash(&*definition),
             definition,
             timestamp,
+            temporary: false,
+            under: None,
         }
+    }
+
+    /// The same effect lasting until the end of the turn, over the copy effect `under` it (if any).
+    fn until_end_of_turn(mut self, under: Option<CopyEffect>) -> Self {
+        self.temporary = true;
+        self.under = under.map(Box::new);
+        self
+    }
+
+    /// Whether the effect ends with the turn.
+    pub const fn is_temporary(&self) -> bool {
+        self.temporary
+    }
+
+    /// What the permanent is a copy of once the temporary effects are gone: the first lasting copy effect, if any.
+    fn lasting(self) -> Option<CopyEffect> {
+        let mut current = self;
+        while current.temporary {
+            current = *current.under.take()?;
+        }
+        Some(current)
     }
 
     /// The object copied, as it was when the copy effect began.
@@ -67,6 +95,8 @@ impl PartialEq for CopyEffect {
         self.of == other.of
             && self.fingerprint == other.fingerprint
             && self.timestamp == other.timestamp
+            && self.temporary == other.temporary
+            && self.under == other.under
     }
 }
 
@@ -78,6 +108,11 @@ impl Hash for CopyEffect {
         self.of.hash(state);
         self.fingerprint.hash(state);
         self.timestamp.hash(state);
+        // Left out for a lasting effect, which hashes as it did before copies could end.
+        if self.temporary {
+            self.temporary.hash(state);
+            self.under.hash(state);
+        }
     }
 }
 
@@ -94,6 +129,47 @@ pub struct BecameCopy {
     /// The copiable values, so a log folds to the same game with no card data at hand.
     #[cfg_attr(feature = "ts", ts(skip))]
     pub definition: Arc<CardDefinition>,
+    /// The copy ends in the cleanup step of the turn, and the permanent is what it was before ("until end of turn").
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub until_end_of_turn: bool,
+}
+
+/// A spell was copied (CR 707.10): the copy is a spell on the stack above the original, controlled by the player who
+/// copied it. It is not cast, and it ceases to exist when it leaves the stack, except onto the battlefield as a token.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct SpellCopy {
+    /// The copy's object.
+    pub object: ObjectId,
+    /// The spell it copies, as it was.
+    pub of: ObjectRef,
+    /// Who controls the copy.
+    pub controller: PlayerId,
+    /// The copiable values of the spell, the face it is in use as and the exceptions applied.
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub definition: Arc<CardDefinition>,
+    /// What the original announced (the modes, X, optional costs and targets), with the new targets the copy chose.
+    #[serde(default, skip_serializing_if = "Choices::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Choices>", optional))]
+    pub choices: Choices,
+}
+
+/// An activated or triggered ability was copied (CR 707.10): the copy is an ability on the stack above the original,
+/// controlled by the player who copied it. It is neither activated nor triggered.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct AbilityCopy {
+    /// The copy's object.
+    pub object: ObjectId,
+    /// The ability it copies, as it was.
+    pub of: ObjectRef,
+    /// Who controls the copy.
+    pub controller: PlayerId,
+    /// What the original announced, with the new targets the copy chose.
+    #[serde(default, skip_serializing_if = "Choices::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Choices>", optional))]
+    pub choices: Choices,
 }
 
 /// Folds the event: the permanent takes the copy effect, which replaces any earlier one.
@@ -110,14 +186,126 @@ pub(crate) fn fold(state: &mut GameState, event: &BecameCopy) -> Result<(), Engi
         .permanent
         .as_mut()
         .ok_or_else(|| invalid(format!("{:?} is not a permanent", event.object)))?;
-    permanent.copy = Some(CopyEffect::new(
-        event.of,
-        Arc::clone(&event.definition),
-        timestamp,
-    ));
+    let began = CopyEffect::new(event.of, Arc::clone(&event.definition), timestamp);
+    // A lasting copy replaces the temporary ones under it too; a temporary one keeps what it is over (CR 613.7).
+    permanent.copy = Some(if event.until_end_of_turn {
+        began.until_end_of_turn(permanent.copy.take())
+    } else {
+        began
+    });
     state.next_timestamp += 1;
     note_definition(state, &event.definition);
     Ok(())
+}
+
+/// Folds the event: the copy is a new spell on top of the stack, above the one it copies (CR 707.10).
+pub(crate) fn fold_spell(state: &mut GameState, copy: &SpellCopy) -> Result<(), EngineError> {
+    let id = copy.object;
+    if state.objects.contains_key(&id) || state.ceased.contains_key(&id) {
+        return Err(invalid(format!("{id:?} already exists")));
+    }
+    if !state.is_alive(copy.controller) {
+        return Err(invalid(format!(
+            "{:?} is out of the game and cannot control a spell",
+            copy.controller
+        )));
+    }
+    if !on_the_stack(state, copy.of, false) {
+        return Err(invalid(format!(
+            "{:?} is not a spell on the stack",
+            copy.of
+        )));
+    }
+    for target in copy.choices.targeted_objects() {
+        state.tally_object(target, Some(copy.controller), Tally::Targeted);
+    }
+    let mut spell = GameObject::new(
+        id,
+        copy.controller,
+        Arc::clone(&copy.definition),
+        Zone::Stack,
+    );
+    spell.kind = ObjectKind::Token;
+    spell.choices.clone_from(&copy.choices);
+    spell.stack_copy = Some(copy.of);
+    note_definition(state, &copy.definition);
+    state.objects.insert(id, spell);
+    state.zones.insert(Zone::Stack, id, Placement::Top);
+    state.next_object = state.next_object.max(id.get() + 1);
+    reset_passes(state);
+    Ok(())
+}
+
+/// Folds the event: the copy is a new ability on top of the stack, above the one it copies (CR 707.10).
+pub(crate) fn fold_ability(state: &mut GameState, copy: &AbilityCopy) -> Result<(), EngineError> {
+    let id = copy.object;
+    if state.objects.contains_key(&id) || state.ceased.contains_key(&id) {
+        return Err(invalid(format!("{id:?} already exists")));
+    }
+    if !state.is_alive(copy.controller) {
+        return Err(invalid(format!(
+            "{:?} is out of the game and cannot control an ability",
+            copy.controller
+        )));
+    }
+    let original = state
+        .objects
+        .get(&copy.of.id)
+        .filter(|_| on_the_stack(state, copy.of, true))
+        .ok_or_else(|| invalid(format!("{:?} is not an ability on the stack", copy.of)))?;
+    let ability = original
+        .ability()
+        .cloned()
+        .ok_or_else(|| invalid(format!("{:?} is not an ability on the stack", copy.of)))?;
+    let face = original.choices.face;
+    let source = state.source_object(ability.source().id).ok_or_else(|| {
+        invalid(format!(
+            "the source {:?} of an ability is gone",
+            ability.source()
+        ))
+    })?;
+    let mut object =
+        GameObject::on_stack(id, copy.controller, source, copy.choices.clone(), ability);
+    object.choices.face = face;
+    object.stack_copy = Some(copy.of);
+    for target in copy.choices.targeted_objects() {
+        state.tally_object(target, Some(copy.controller), Tally::Targeted);
+    }
+    state.objects.insert(id, object);
+    state.zones.insert(Zone::Stack, id, Placement::Top);
+    state.next_object = state.next_object.max(id.get() + 1);
+    reset_passes(state);
+    Ok(())
+}
+
+/// Whether `reference` names an ability (`ability`) or a spell on the stack, as it was named.
+fn on_the_stack(state: &GameState, reference: ObjectRef, ability: bool) -> bool {
+    state.object(reference.id).is_some_and(|object| {
+        object.counter() == reference.counter
+            && object.zone() == Zone::Stack
+            && (object.kind() == ObjectKind::Ability) == ability
+    })
+}
+
+/// Folds the event: a temporary copy effect ends, and the permanent is a copy of what it was a copy of before, if anything.
+pub(crate) fn fold_ended(state: &mut GameState, object: ObjectId) -> Result<(), EngineError> {
+    let permanent = state
+        .objects
+        .get_mut(&object)
+        .and_then(|o| o.permanent.as_mut())
+        .ok_or_else(|| invalid(format!("{object:?} is not a permanent")))?;
+    match permanent.copy.take() {
+        Some(copy) if copy.is_temporary() => {
+            permanent.copy = copy.lasting();
+            Ok(())
+        }
+        other => {
+            permanent.copy = other;
+            Err(invalid(format!(
+                "{object:?} is not under a temporary copy effect"
+            )))
+        }
+    }
 }
 
 /// Notes what a definition that enters the game in play can bring that no card of the game had: a triggered, static or
@@ -155,21 +343,16 @@ pub(crate) fn note_definition(state: &mut GameState, definition: &CardDefinition
     }
 }
 
-/// Whether the object is a transforming double-faced card with its back face up: copying one waits for the copies of
-/// transformed permanents (the roadmap's `n1d4`).
-pub(crate) fn is_transformed(object: &GameObject) -> bool {
-    object.whole_card().layout == Layout::Transform && object.face().is_some_and(|face| face > 0)
-}
-
-/// Whether the object may be copied: an object of the game that is not an ability and not a transformed permanent.
+/// Whether the object may be copied: an object of the game that is not an ability. A double-faced permanent is copied
+/// as the face it shows (CR 707.8), so a transformed one is no exception.
 pub(crate) fn may_be_copied(object: &GameObject) -> bool {
-    object.kind() != ObjectKind::Ability && !is_transformed(object)
+    object.kind() != ObjectKind::Ability
 }
 
 /// The copiable values of the object `reference` names (CR 707.2): what its card prints, or the values of the copy
 /// effect it is under, as a card of one face. An object that has left since is read from `shot`, its last known
-/// information (CR 707.2 and 608.2h); `None` when there is neither, when the object is an ability or when it is a
-/// transformed permanent.
+/// information (CR 707.2 and 608.2h); `None` when there is neither or when the object is an ability. The values of a
+/// double-faced permanent are those of the face it shows, with no back face (CR 707.8, 712.8c).
 pub(crate) fn copiable_values(
     state: &GameState,
     reference: ObjectRef,
@@ -189,11 +372,7 @@ pub(crate) fn copiable_values(
         .source_object(reference.id)
         .filter(|card| card.kind() != ObjectKind::Ability)?;
     let whole = card.whole_card();
-    let face = shot.face.unwrap_or(0);
-    if whole.layout == Layout::Transform && face > 0 {
-        return None;
-    }
-    Some(whole.face(face).copiable())
+    Some(whole.face(shot.face.unwrap_or(0)).copiable())
 }
 
 #[cfg(test)]
@@ -248,6 +427,7 @@ mod tests {
             object: start(object).id,
             of,
             definition: Arc::new(definition),
+            until_end_of_turn: false,
         });
         apply_event(game, &event).unwrap();
     }
@@ -402,6 +582,7 @@ mod tests {
             object: a,
             of: start("Wolf"),
             definition: Arc::new(creature("Wolf", 4, 4).copiable()),
+            until_end_of_turn: false,
         });
         assert!(apply_event(&mut game, &late).is_err());
     }

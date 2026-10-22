@@ -9,12 +9,16 @@ mod adapt;
 mod add_mana;
 mod amass;
 mod attach;
+mod become_copy;
 mod become_monarch;
 mod bolster;
 mod cast_from_zone;
 mod choose;
 mod connive;
 mod continuous;
+mod copy_ability;
+mod copy_spell;
+mod retarget;
 mod unattach;
 pub(crate) use continuous::lower;
 mod counter;
@@ -120,6 +124,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::TimeTravel { .. } => time_travel::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
+        Effect::CopySpell { .. } => copy_spell::run(cx, effect),
+        Effect::CopyAbility { .. } => copy_ability::run(cx, effect),
+        Effect::BecomeCopy { .. } => become_copy::run(cx, effect),
         Effect::CreateToken { .. } => create_token::run(cx, effect),
         Effect::Continuous { .. } => continuous::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
@@ -159,6 +166,8 @@ mod tests {
         {"BecomeMonarch":{}}, {"Amass":{"subtype":"Orc","count":1}}, {"Monstrosity":{"count":1}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
         {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"ExileTop":{"as":"top"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"ExtraTurn":{}},
+        {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}},
+        {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
@@ -180,7 +189,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 53, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 56, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -243,6 +252,9 @@ mod tests {
                 "Effect.ExileUntil",
                 "Effect.ExileTop",
                 "Effect.CastFromZone",
+                "Effect.CopySpell",
+                "Effect.CopyAbility",
+                "Effect.BecomeCopy",
                 "Effect.CreateToken",
                 "Effect.Continuous",
                 "Effect.Rule",

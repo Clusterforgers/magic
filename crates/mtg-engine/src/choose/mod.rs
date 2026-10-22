@@ -173,6 +173,8 @@ pub enum Choice {
     Option(usize),
     /// One of the applicable replacement effects, by index (`ChooseReplacement`).
     Replacement(usize),
+    /// The targets chosen for a copy of a spell or ability (`ChooseTargets`); targets are public.
+    Targets(Vec<Target>),
 }
 
 impl Choice {
@@ -180,9 +182,11 @@ impl Choice {
     pub fn objects(&self) -> &[ObjectId] {
         match self {
             Choice::Cards(cards) | Choice::Order(cards) => cards,
-            Choice::Number(_) | Choice::YesNo(_) | Choice::Option(_) | Choice::Replacement(_) => {
-                &[]
-            }
+            Choice::Number(_)
+            | Choice::YesNo(_)
+            | Choice::Option(_)
+            | Choice::Replacement(_)
+            | Choice::Targets(_) => &[],
         }
     }
 }

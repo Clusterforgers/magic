@@ -13,7 +13,7 @@ use crate::card::{Card, Face, ImplStatus, TokenSpec};
 use crate::cost::{Cost, CostItem};
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
 use crate::keyword::Keyword;
-use crate::modify::{GameRule, Modification};
+use crate::modify::{Duration, GameRule, Modification};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::spend::SpendOn;
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
@@ -358,6 +358,7 @@ impl<'a> Walker<'a> {
             | Pred::Colorless
             | Pred::Token
             | Pred::Spell
+            | Pred::Ability(_)
             | Pred::Tapped
             | Pred::Untapped
             | Pred::Attacking
@@ -1291,6 +1292,34 @@ impl<'a> Walker<'a> {
                 // A token that copies an object waits for the copy effects.
                 if matches!(token, TokenRef::CopyOf { .. }) {
                     w.uses("Effect", "CreateToken.Copy");
+                }
+            }
+            Effect::CopySpell {
+                what,
+                count,
+                except,
+                ..
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("count", |w| w.amount(count));
+                w.copy_exceptions(except);
+            }
+            Effect::CopyAbility { what, count, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("count", |w| w.amount(count));
+            }
+            Effect::BecomeCopy {
+                what,
+                of,
+                except,
+                duration,
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("of", |w| w.reference(of, Kind::Object));
+                w.copy_exceptions(except);
+                // The engine ends a copy with the turn or never.
+                if !matches!(duration, Duration::UntilEndOfTurn | Duration::Forever) {
+                    w.uses("Copy", &format!("Duration.{}", tag_of(duration)));
                 }
             }
             Effect::Continuous { affected, mods, .. } => {

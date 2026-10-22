@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use crate::abilities::{AbilitySource, Cause, PutOnStack};
 use crate::choose::{Choice, Choices, Target};
 use crate::combat::{AttackTarget, DamageTarget};
-use crate::copies::BecameCopy;
+use crate::copies::{AbilityCopy, BecameCopy, SpellCopy};
 use crate::counters::CountersChanged;
 use crate::day_night::DayNight;
 use crate::effects::ContinuousEffect;
@@ -505,6 +505,15 @@ pub enum Event {
     },
     /// A permanent became a copy of another object (CR 707.2), with the copiable values of the copy effect.
     BecameCopy(BecameCopy),
+    /// A spell was copied (CR 707.10): the copy is put on the stack above it, not cast.
+    SpellCopied(Box<SpellCopy>),
+    /// An activated or triggered ability was copied (CR 707.10): the copy is put on the stack above it, not activated or triggered.
+    AbilityCopied(Box<AbilityCopy>),
+    /// A permanent's copy effect that lasted until end of turn ended.
+    CopyEnded {
+        /// The permanent.
+        object: ObjectId,
+    },
     /// The game became day or night (CR 726).
     DayNightChanged {
         /// What it became.
@@ -635,6 +644,9 @@ impl Event {
             Event::Scried(scried) => scried.top.iter().chain(&scried.bottom).copied().collect(),
             Event::TokenCreated(token) => vec![token.object],
             Event::BecameCopy(copy) => vec![copy.object],
+            Event::SpellCopied(copy) => vec![copy.object],
+            Event::AbilityCopied(copy) => vec![copy.object],
+            Event::CopyEnded { object } => vec![*object],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
             | Event::SpellCast { object, .. }

@@ -279,6 +279,10 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CountersChanged(_)
         | Event::TokenCreated(_)
         | Event::BecameCopy(_)
+        // A copy of a spell or ability on the stack shows what the stack shows of the original, and no more.
+        | Event::SpellCopied(_)
+        | Event::AbilityCopied(_)
+        | Event::CopyEnded { .. }
         | Event::Entered { .. }
         | Event::Attached { .. }
         | Event::Unattached { .. }

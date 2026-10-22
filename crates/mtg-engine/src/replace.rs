@@ -261,7 +261,9 @@ fn returns_by_buyback(state: &GameState, item: &Item) -> bool {
     };
     entering(state, event).is_none()
         && state.object(*object).is_some_and(|spell| {
-            payments(spell.card(), spell.paid_costs(), OptionalKind::Buyback) > 0
+            // A copy of a spell is no card to return, and ceases to exist as it resolves.
+            spell.kind() == ObjectKind::Card
+                && payments(spell.card(), spell.paid_costs(), OptionalKind::Buyback) > 0
         })
 }
 
@@ -272,7 +274,9 @@ fn exiles_by_adventure(state: &GameState, item: &Item) -> bool {
     };
     entering(state, event).is_none()
         && state.object(*object).is_some_and(|spell| {
-            spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1)
+            spell.kind() == ObjectKind::Card
+                && spell.whole_card().layout == Layout::Adventure
+                && spell.face() == Some(1)
         })
 }
 
@@ -284,9 +288,9 @@ fn leaves_stack_by_flashback(state: &GameState, item: &Item) -> bool {
     moving(state, event).is_some_and(|(object, from, to)| {
         from == Zone::Stack
             && to != Zone::Exile
-            && state
-                .object(object)
-                .is_some_and(|spell| spell.choices().way == Some(CastWay::Flashback))
+            && state.object(object).is_some_and(|spell| {
+                spell.kind() == ObjectKind::Card && spell.choices().way == Some(CastWay::Flashback)
+            })
     })
 }
 
@@ -892,7 +896,9 @@ impl Pass<'_> {
             return None;
         };
         let spell = self.state.object(*object)?;
-        let adventure = spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1);
+        let adventure = spell.kind() == ObjectKind::Card
+            && spell.whole_card().layout == Layout::Adventure
+            && spell.face() == Some(1);
         if slot.applied.contains(&Origin::Adventure)
             || !adventure
             || entering(self.state, event).is_some()
@@ -1856,6 +1862,7 @@ impl Pass<'_> {
             object: entering,
             of,
             definition: Arc::new(values),
+            until_end_of_turn: false,
         })))
     }
 
