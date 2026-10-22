@@ -273,7 +273,7 @@ fn the_creatures_of_the_enchanted_player_must_attack_and_no_other(
         Ok(options.required.clone())
     };
     assert_eq!(driver_for(0)?.len(), 1);
-    assert!(driver_for(1)?.is_empty());
+    assert_eq!(driver_for(1)?.len(), 0);
     Ok(())
 }
 
@@ -319,7 +319,7 @@ fn an_aura_static_ability_changes_the_creatures_of_the_enchanted_player_only(
             .copied()
             .filter(|id| driver.state().object(*id).unwrap().controller() == pid(seat))
             .filter_map(|id| characteristics(driver.state(), id))
-            .find(|chars| chars.is_creature())
+            .find(mtg_engine::Characteristics::is_creature)
             .and_then(|chars| chars.power)
             .unwrap()
     };

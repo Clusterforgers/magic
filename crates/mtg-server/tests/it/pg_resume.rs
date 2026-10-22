@@ -488,7 +488,7 @@ async fn games_with_damaged_records_are_marked_failed_and_the_boot_goes_on(pool:
             ),
             (
                 "unknown format",
-                json!({ "format": "commander", "seed": 1, "decks": decks(&DECKS[..2]) }),
+                json!({ "format": "modern", "seed": 1, "decks": decks(&DECKS[..2]) }),
                 vec![0, 1],
                 "recipe does not decode",
             ),

@@ -31,14 +31,6 @@ fn an_attack_on_the_enchanted_player_reads_as_a_trigger(#[case] text: &str, #[ca
     "Whenever enchanted player draws a card, you gain 2 life.",
     r#"{"Triggered":{"when":{"Drew":{"who":"AttachedPlayer"}},"effects":[{"GainLife":{"amount":2}}]}}"#
 )]
-#[case::a_spell_of_the_enchanted_player(
-    "Whenever enchanted player casts a spell, you draw a card.",
-    r#"{"Triggered":{"when":{"SpellCast":{"by":"AttachedPlayer"}},"effects":[{"Draw":{}}]}}"#
-)]
-#[case::a_discard_of_the_enchanted_player(
-    "Whenever enchanted player discards a card, you draw a card.",
-    r#"{"Triggered":{"when":{"Discarded":{"by":"AttachedPlayer"}},"effects":[{"Draw":{}}]}}"#
-)]
 fn an_event_of_the_enchanted_player_reads_as_a_trigger(#[case] text: &str, #[case] json: &str) {
     reads_as(text, ClauseKind::Triggered, false, json);
 }

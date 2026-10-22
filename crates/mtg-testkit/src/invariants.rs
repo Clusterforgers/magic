@@ -875,6 +875,16 @@ impl InvariantChecker {
                 Ok(())
             }
             Event::CountersChanged(changed) => self.adjust_counters(changed),
+            Event::Attached { .. } | Event::AttachedToPlayer { .. } | Event::Unattached { .. } => {
+                self.account_attachment(event)
+            }
+            _ => Ok(()),
+        }
+    }
+
+    /// What an attach, an attach to a player and an unattach leave every attachment attached to.
+    fn account_attachment(&mut self, event: &Event) -> Result<(), Violation> {
+        match event {
             Event::Attached { object, to } => {
                 let host = self
                     .shadow
@@ -883,20 +893,18 @@ impl InvariantChecker {
                     .ok_or_else(|| zone_error(format!("{object:?} attached to missing {to:?}")))?;
                 self.expected_attached.insert(*object, host);
                 self.expected_enchanted.remove(object);
-                Ok(())
             }
             Event::AttachedToPlayer { object, player } => {
                 self.expected_attached.remove(object);
                 self.expected_enchanted.insert(*object, *player);
-                Ok(())
             }
             Event::Unattached { object } => {
                 self.expected_attached.remove(object);
                 self.expected_enchanted.remove(object);
-                Ok(())
             }
-            _ => Ok(()),
+            _ => {}
         }
+        Ok(())
     }
 
     /// Damage to a permanent is marked on a creature (CR 120.3e) and removes that many loyalty counters from a

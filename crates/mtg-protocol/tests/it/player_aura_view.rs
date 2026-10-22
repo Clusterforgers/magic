@@ -38,7 +38,7 @@ fn every_seat_sees_the_player_an_aura_enchants_and_the_auras_on_a_player(
         let aura = curse(&view);
         assert_eq!(aura.attached_player, Some(PlayerId::from_index(1)));
         assert_eq!(aura.attached_to, None);
-        for player in &view.players {
+        for player in &view.table.players {
             let expected = if player.seat == PlayerId::from_index(1) {
                 vec![aura.id]
             } else {

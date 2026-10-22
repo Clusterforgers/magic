@@ -547,6 +547,8 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
 }
 
 /// What `pattern` finds in `happened`, judged in the state of `scope`, as the cause of the trigger.
+// One arm for each pair of a pattern and an event; they share the state and the closures above them.
+#[allow(clippy::too_many_lines)]
 fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> Option<Cause> {
     let state = scope.state;
     let object = |id: ObjectId| state.object(id).map(GameObject::reference);
