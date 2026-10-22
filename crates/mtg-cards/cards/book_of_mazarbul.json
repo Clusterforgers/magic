@@ -1,0 +1,42 @@
+{
+  "oracle_id": "4598c221-b111-4bde-b4dc-673186c4efe6",
+  "name": "Book of Mazarbul",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Book of Mazarbul",
+      "oracle_fingerprint": "eb2184525169bf03ee25c6661200adae",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [{ "Amass": { "subtype": "Orc", "count": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "Amass": { "subtype": "Orc", "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

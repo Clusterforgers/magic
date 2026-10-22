@@ -1,0 +1,23 @@
+{
+  "id": "8e93e473-b08a-43da-aa12-f86818e24a10",
+  "oracle_id": "7398c8b2-373a-41c7-ac6c-7329f5944462",
+  "name": "Origin of the Hulk",
+  "lang": "en",
+  "layout": "saga",
+  "set": "msc",
+  "collector_number": "728",
+  "rarity": "uncommon",
+  "released_at": "2026-06-26",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Create a 1/1 green and white Citizen creature token.\nII — Put two +1/+1 counters on target creature you control.\nIII — Target creature you control gets +3/+3 and gains trample until end of turn.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": []
+}

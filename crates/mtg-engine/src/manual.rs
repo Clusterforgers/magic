@@ -26,6 +26,7 @@ use crate::counters::CountersChanged;
 use crate::events::{Event, ZoneCause};
 use crate::format::ExtraZone;
 use crate::loyalty;
+use crate::saga;
 use crate::object::{GameObject, ObjectKind, PermanentState};
 use crate::rules::{cant_draw, cant_gain_life};
 use crate::state::GameState;
@@ -611,6 +612,7 @@ fn moves(
     }
     if to == ManualZone::Battlefield {
         events.extend(loyalty::entering(state, id));
+        events.extend(saga::entering(state, id));
     }
     Ok(events)
 }

@@ -12,6 +12,7 @@ use crate::choose::{Questions, Stop, Target};
 use crate::counters::CountersChanged;
 use crate::events::{Event, ZoneCause};
 use crate::loyalty;
+use crate::saga;
 use crate::mulligan::shuffled;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
@@ -205,6 +206,7 @@ fn onto_battlefield(
         // A planeswalker comes in with its loyalty, proposed with the move so a rule that changes what enters with
         // counters can reach it (CR 306.5b).
         events.extend(loyalty::entering(state, object.id()));
+        events.extend(saga::entering(state, object.id()));
         events.extend(host.map(|to| Event::Attached {
             object: object.id(),
             to,

@@ -1,0 +1,23 @@
+{
+  "id": "d134385d-b01c-41c7-bb2d-30722b44dc5a",
+  "oracle_id": "c15bb7eb-aaaa-4468-9641-8f706d6137e8",
+  "name": "History of Benalia",
+  "lang": "en",
+  "layout": "saga",
+  "set": "dom",
+  "collector_number": "21",
+  "rarity": "mythic",
+  "released_at": "2018-04-27",
+  "digital": false,
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI, II — Create a 2/2 white Knight creature token with vigilance.\nIII — Knights you control get +2/+1 until end of turn.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

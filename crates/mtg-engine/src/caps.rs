@@ -53,6 +53,7 @@ const RUNS: &[&str] = &[
     "Trigger.GroupAttacks",
     "Trigger.CountersPut",
     "Trigger.CountersRemoved",
+    "Trigger.Chapter",
     "Trigger.Attached",
     "Trigger.Cycled",
     "Trigger.BecomesMonarch",
@@ -611,6 +612,7 @@ mod tests {
     #[case::group_attack_triggers("Trigger.GroupAttacks", true)]
     #[case::counter_triggers("Trigger.CountersPut", true)]
     #[case::counter_removal_triggers("Trigger.CountersRemoved", true)]
+    #[case::chapter_triggers("Trigger.Chapter", true)]
     #[case::attach_triggers("Trigger.Attached", true)]
     #[case::cycle_triggers("Trigger.Cycled", true)]
     #[case::becoming_the_monarch_triggers("Trigger.BecomesMonarch", true)]

@@ -56,6 +56,7 @@ Battlefield Forge
 Beast Within
 Behold the Multiverse
 Bilious Skulldweller
+Binding the Old Gods
 Bird Admirer // Wing Shredder
 Black Dragon Gate
 Black Knight
@@ -73,6 +74,7 @@ Bola Slinger
 Bone Shredder
 Bonecaller Cleric
 Bonesplitter
+Book of Mazarbul
 Boon Reflection
 Boon Satyr
 Boon-Bringer Valkyrie
@@ -237,6 +239,7 @@ Followed Footsteps
 Forced March
 Fork
 Forum of Amity
+Founding of Omashu
 Foundry Inspector
 Four Knocks
 Fruit of Tizerus
@@ -295,6 +298,7 @@ Herald of the Dreadhorde
 Herald of the Host
 Hero of Bladehold
 Highspire Artisan
+History of Benalia
 Holdout Settlement
 Honor Troll
 Honor's Reward
@@ -410,6 +414,7 @@ Nyxborn Behemoth
 Opt
 Orchard Strider
 Organic Extinction
+Origin of the Hulk
 Otherworldly Gaze
 Overgrown Arch
 Pacifism
@@ -567,6 +572,7 @@ Sudden Shock
 Sulfur Elemental
 Sultai Devotee
 Summer Bloom
+Summon: G.F. Ifrit
 Sundering Growth
 Sunhome Stalwart
 Sunken Ruins
@@ -590,6 +596,7 @@ Tendo Ice Bridge
 Tendrils of Agony
 Termagant Swarm
 Thalia, Guardian of Thraben
+The Birth of Meletis
 The Seriema
 The Spear of Bashenga
 The Thing, Ben Grimm
@@ -638,6 +645,7 @@ Vampire Cutthroat
 Vanguard Suppressor
 Vanishment
 Vanquish the Horde
+Vault 75: Middle School
 Vengeful Vampire
 Vestige of Emrakul
 Village Rites

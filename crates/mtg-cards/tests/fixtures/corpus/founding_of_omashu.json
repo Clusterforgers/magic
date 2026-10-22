@@ -1,0 +1,23 @@
+{
+  "id": "c4c603c9-f2ed-419b-8704-6fe306f158fa",
+  "oracle_id": "ea58fb10-3d70-4c25-b317-615dfb20a48d",
+  "name": "Founding of Omashu",
+  "lang": "en",
+  "layout": "saga",
+  "set": "tle",
+  "collector_number": "116",
+  "rarity": "uncommon",
+  "released_at": "2025-11-21",
+  "digital": false,
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Create two 1/1 white Ally creature tokens.\nII — You may discard a card. If you do, draw a card.\nIII — Creatures you control get +1/+0 until end of turn.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": []
+}
