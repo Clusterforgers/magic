@@ -22,7 +22,7 @@ use crate::keywords;
 use crate::mana::{ManaOption, ManaSource};
 use crate::mana_kinds::{COLORS, identity_types, mana_of, producible_types};
 use crate::object::{Chosen, PermanentState};
-use crate::parts::{Part, Payer};
+use crate::parts::{Part, Payer, energy};
 use crate::resolve::{Scope, run_inline};
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -45,6 +45,17 @@ fn parts_of(pays: &[&mtg_cards::cost::CostItem]) -> Vec<Part> {
     pays.iter()
         .filter_map(|item| Part::read(item).ok().flatten())
         .collect()
+}
+
+/// The life and the energy the parts of a cost pay.
+fn paid_by(parts: &[Part]) -> (u32, u32) {
+    parts
+        .iter()
+        .fold((0, 0), |(life, energy), part| match part {
+            Part::Life(amount) => (life + amount, energy),
+            Part::Energy(amount) => (life, energy + amount),
+            _ => (life, energy),
+        })
 }
 
 /// The mana of one addition split into the type the option names, how many of it and the rest.
@@ -90,13 +101,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         if pays.iter().any(|part| part.payable(&owner, &[]).is_none()) {
             continue;
         }
-        let life: u32 = pays
-            .iter()
-            .map(|part| match part {
-                Part::Life(amount) => *amount,
-                _ => 0,
-            })
-            .sum();
+        let (life, energy) = paid_by(&pays);
         let times = scope
             .amount(shape.times)
             .ok()
@@ -154,6 +159,12 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                     only: only.clone(),
                     also,
                     life,
+                    energy,
+                    energy_held: if energy > 0 {
+                        energy::held(state, player)
+                    } else {
+                        0
+                    },
                     cost: shape.mana.clone(),
                 })
             })

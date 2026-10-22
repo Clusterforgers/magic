@@ -199,7 +199,7 @@ fn can_pay_x(
         .clone()
         .unwrap_or(ManaCost::ZERO)
         .with(ManaSymbol::Generic(x.saturating_mul(price.x)));
-    let mut sources = price.sources(state, player, object.id());
+    let mut sources = price.at(x).sources(state, player, object.id());
     sources.retain(|option| !claimed.contains(&option.source.object));
     let life = seat
         .life()
