@@ -423,7 +423,10 @@ fn modifies(r: &mut Reader<'_>) -> Option<Ability> {
         r.punct(',').then_some(condition)
     });
     // After a condition about the card itself, "it" is the card: "As long as ~ is monstrous, it has menace."
-    let it = leading.as_ref().is_some_and(|condition| *condition == is_monstrous()) && r.word("it");
+    let it = leading
+        .as_ref()
+        .is_some_and(|condition| *condition == is_monstrous())
+        && r.word("it");
     let (affected, plural) = if it {
         (Ref::This, false)
     } else {

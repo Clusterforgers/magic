@@ -78,12 +78,19 @@ impl FaceDown {
     }
 }
 
+/// The designations of a permanent: marks the rules put on it that it keeps only while it stays on the battlefield.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash)]
+pub struct Designations {
+    /// It has become monstrous (CR 701.37).
+    pub(crate) monstrous: bool,
+}
+
 /// State that only exists while an object is on the battlefield.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PermanentState {
     pub(crate) tapped: bool,
-    /// Whether it has become monstrous (CR 701.37), a designation it keeps while it stays on the battlefield.
-    pub(crate) monstrous: bool,
+    /// The designations it has been given, which it keeps while it stays on the battlefield.
+    pub(crate) designations: Designations,
     pub(crate) damage: u32,
     pub(crate) deathtouched: bool,
     pub(crate) summoning_sick: bool,
@@ -140,7 +147,7 @@ impl PermanentState {
     /// Whether the permanent has become monstrous (CR 701.37); a permanent that leaves the battlefield is a new
     /// object and is not.
     pub const fn monstrous(&self) -> bool {
-        self.monstrous
+        self.designations.monstrous
     }
 
     /// Damage marked on the permanent this turn (tracked apart from toughness).

@@ -151,7 +151,6 @@ fn a_card_calling_itself_this_creature_reads_as_the_source() {
 }
 
 mod actions;
-mod counter_actions;
 mod activated;
 mod additional;
 mod among;
@@ -165,6 +164,7 @@ mod copies;
 mod copy_wordings;
 mod cost_counts;
 mod counted;
+mod counter_actions;
 mod counters;
 mod create;
 mod defining;

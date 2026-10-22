@@ -64,7 +64,7 @@ fn monstrous(driver: &Driver, name: &str) -> bool {
         .state()
         .object(id)
         .and_then(|object| object.permanent())
-        .is_some_and(|held| held.monstrous())
+        .is_some_and(mtg_engine::object::PermanentState::monstrous)
 }
 
 fn count(driver: &Driver, wanted: fn(&Event) -> bool) -> usize {
@@ -205,7 +205,10 @@ fn a_creature_that_is_gone_in_response_does_not_become_monstrous(
     driver.cast_at("Lightning Bolt", &[target])?;
     resolve(&mut driver, 0)?;
     assert_eq!(monstrosities(&driver), 0);
-    assert!(driver.id_of("Ill-Tempered Cyclops").is_err() || !monstrous(&driver, "Ill-Tempered Cyclops"));
+    assert!(
+        driver.id_of("Ill-Tempered Cyclops").is_err()
+            || !monstrous(&driver, "Ill-Tempered Cyclops")
+    );
     assert_replays(&setup, &driver);
     Ok(())
 }
@@ -396,11 +399,21 @@ fn a_creature_that_bolsters_as_it_enters_counts_among_the_creatures(
     driver.cast("Sandcrafter Mage")?;
     resolve(&mut driver, 0)?;
     assert_eq!(
-        (counters(&driver, "Sandcrafter Mage"), counters(&driver, "Big")),
+        (
+            counters(&driver, "Sandcrafter Mage"),
+            counters(&driver, "Big")
+        ),
         (1, 0)
     );
     assert_eq!(bolsterings(&driver), 1);
-    assert_eq!(driver.state().object(driver.id_of("Big")?).unwrap().controller(), pid(0));
+    assert_eq!(
+        driver
+            .state()
+            .object(driver.id_of("Big")?)
+            .unwrap()
+            .controller(),
+        pid(0)
+    );
     assert_replays(&setup, &driver);
     Ok(())
 }

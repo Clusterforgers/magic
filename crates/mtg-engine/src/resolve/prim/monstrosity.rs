@@ -76,10 +76,7 @@ mod tests {
     }
 
     fn run_with(game: &GameState, json: &str) -> Result<Run, ResolveError> {
-        let source = game
-            .objects()
-            .find(|o| o.card().name == "Source")
-            .unwrap();
+        let source = game.objects().find(|o| o.card().name == "Source").unwrap();
         let resolving = Resolving::begin(source.id());
         let cx = Cx {
             scope: Scope::announcing(game, ME, source.reference()),
@@ -124,13 +121,19 @@ mod tests {
         let source = game.objects().find(|o| o.card().name == "Source").unwrap();
         let (object, player) = (source.id(), ME);
         apply_event(&mut game, &Event::Monstrous { object, player }).unwrap();
-        assert!(events(run_with(&game, r#"{"Monstrosity":{"count":3}}"#)).is_empty());
+        assert_eq!(
+            events(run_with(&game, r#"{"Monstrosity":{"count":3}}"#)).len(),
+            0
+        );
     }
 
     #[test]
     fn a_source_that_has_left_the_battlefield_does_nothing() {
         let game = game(false);
-        assert!(events(run_with(&game, r#"{"Monstrosity":{"count":3}}"#)).is_empty());
+        assert_eq!(
+            events(run_with(&game, r#"{"Monstrosity":{"count":3}}"#)).len(),
+            0
+        );
     }
 
     #[test]

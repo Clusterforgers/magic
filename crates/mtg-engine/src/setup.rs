@@ -15,7 +15,7 @@ use crate::commanders::Commanders;
 use crate::error::SetupError;
 use crate::format::{ExtraZone, FormatRules, RuleSet};
 use crate::layers::LayersCache;
-use crate::object::{GameObject, ObjectRef, PermanentState};
+use crate::object::{Designations, GameObject, ObjectRef, PermanentState};
 use crate::player::{MulliganStatus, Player};
 use crate::rules::RulesCache;
 use crate::state::{GameState, Possible, Stage, Tallies};
@@ -256,7 +256,7 @@ fn preset_state(
     }
     PermanentState {
         tapped: preset.tapped,
-        monstrous: false,
+        designations: Designations::default(),
         damage: preset.damage,
         deathtouched: false,
         summoning_sick: preset.summoning_sick,

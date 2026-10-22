@@ -450,10 +450,9 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{} becomes monstrous", subject(what)),
             what.0 == [Pred::This],
         ),
-        TriggerPattern::Adapted { what } => (
-            format!("{} adapts", subject(what)),
-            what.0 == [Pred::This],
-        ),
+        TriggerPattern::Adapted { what } => {
+            (format!("{} adapts", subject(what)), what.0 == [Pred::This])
+        }
         TriggerPattern::Connived { what } => (
             format!("{} connives", subject(what)),
             what.0 == [Pred::This],

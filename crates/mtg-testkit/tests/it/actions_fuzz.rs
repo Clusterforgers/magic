@@ -72,7 +72,10 @@ fn seeded_action_games_finish_and_keep_every_invariant(#[case] players: usize) {
     assert!(seen.explores > 0, "no creature explored in {campaign}");
     assert!(seen.connives > 0, "no creature connived in {campaign}");
     assert!(seen.amasses > 0, "nobody amassed in {campaign}");
-    assert!(seen.monstrosities > 0, "no creature became monstrous in {campaign}");
+    assert!(
+        seen.monstrosities > 0,
+        "no creature became monstrous in {campaign}"
+    );
     assert!(seen.adaptations > 0, "no creature adapted in {campaign}");
     assert!(seen.bolsterings > 0, "nobody bolstered in {campaign}");
     assert!(

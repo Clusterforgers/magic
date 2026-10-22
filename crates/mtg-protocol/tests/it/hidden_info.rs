@@ -2236,9 +2236,11 @@ fn a_bolster_is_public_and_leaks_no_card_of_a_hand_or_a_library(
     }
     // The two creatures tie for the least toughness: the player is asked to choose one of them.
     let answer = |decision: &Decision| match &decision.kind {
-        DecisionKind::ChooseCards(options) => mtg_engine::decision::Answer::ChooseCards(
-            mtg_engine::choose::CardsChoice(vec![options.from[pick]]),
-        ),
+        DecisionKind::ChooseCards(options) => {
+            mtg_engine::decision::Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![
+                options.from[pick],
+            ]))
+        }
         other => panic!("unexpected {}", other.name()),
     };
     let (after, _, batches) = play_spell(scenario, seats, "Cached Defenses", answer);

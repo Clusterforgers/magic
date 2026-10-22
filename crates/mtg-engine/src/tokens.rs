@@ -11,7 +11,7 @@ use serde::{Deserialize, Serialize};
 use crate::combat::{AttackTarget, Attacker};
 use crate::error::EngineError;
 use crate::fold::{invalid, reset_passes};
-use crate::object::{GameObject, ObjectKind, ObjectRef, PermanentState};
+use crate::object::{Designations, GameObject, ObjectKind, ObjectRef, PermanentState};
 use crate::state::GameState;
 use crate::zones::{Placement, Zone};
 
@@ -74,7 +74,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
     token.kind = ObjectKind::Token;
     token.permanent = Some(PermanentState {
         tapped: event.tapped,
-        monstrous: false,
+        designations: Designations::default(),
         damage: 0,
         deathtouched: false,
         summoning_sick: true,

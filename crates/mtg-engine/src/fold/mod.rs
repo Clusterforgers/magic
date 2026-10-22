@@ -420,10 +420,10 @@ fn set_monstrous(state: &mut GameState, id: ObjectId) -> Result<(), EngineError>
         .get_mut(&id)
         .and_then(|o| o.permanent.as_mut())
         .ok_or_else(|| invalid(format!("{id:?} is not a permanent")))?;
-    if perm.monstrous {
+    if perm.designations.monstrous {
         return Err(invalid(format!("{id:?} is already monstrous")));
     }
-    perm.monstrous = true;
+    perm.designations.monstrous = true;
     Ok(())
 }
 

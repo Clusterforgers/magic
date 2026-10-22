@@ -107,7 +107,11 @@ fn a_static_while_monstrous_reads_into_the_dsl_and_writes_back(
 #[case::bolster_a_creature("Bolster target creature 2.")]
 #[case::monstrous_as_a_target("Target monstrous creature gains haste until end of turn.")]
 fn near_misses_of_the_counter_actions_stay_with_the_table(#[case] text: &str) {
-    for kind in [ClauseKind::Spell, ClauseKind::Activated, ClauseKind::Triggered] {
+    for kind in [
+        ClauseKind::Spell,
+        ClauseKind::Activated,
+        ClauseKind::Triggered,
+    ] {
         assert_eq!(clause(text, kind, false), None, "{text}");
     }
 }

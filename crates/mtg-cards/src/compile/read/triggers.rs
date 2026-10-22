@@ -927,14 +927,12 @@ fn counter_text(what: &Selector, counter: Option<&CounterKind>, moved: &str) -> 
 /// for the card itself entering, dying, leaving or becoming monstrous, "whenever" for the rest.
 fn about(what: &Selector, verbs: &[String]) -> Option<String> {
     let once = what.0 == [Pred::This]
-        && verbs
-            .iter()
-            .all(|verb| {
-                matches!(
-                    verb.as_str(),
-                    "enters" | "dies" | "leaves the battlefield" | "becomes monstrous"
-                )
-            });
+        && verbs.iter().all(|verb| {
+            matches!(
+                verb.as_str(),
+                "enters" | "dies" | "leaves the battlefield" | "becomes monstrous"
+            )
+        });
     Some(format!(
         "{} {} {}",
         if once { "When" } else { "Whenever" },

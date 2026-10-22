@@ -461,9 +461,27 @@ fn exploring_triggers_for_the_creatures_the_pattern_names_and_names_the_creature
 
 #[rstest]
 #[case::i_become_monstrous(r#"{"BecomesMonstrous":{"what":["This"]}}"#, "Watcher", true, ME, 1)]
-#[case::another_creature_is_not_the_watcher(r#"{"BecomesMonstrous":{"what":["This"]}}"#, "Bear", true, ME, 0)]
-#[case::my_creature(r#"{"BecomesMonstrous":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#, "Bear", true, ME, 1)]
-#[case::their_creature_is_not_mine(r#"{"BecomesMonstrous":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#, "Ogre", true, FOE, 0)]
+#[case::another_creature_is_not_the_watcher(
+    r#"{"BecomesMonstrous":{"what":["This"]}}"#,
+    "Bear",
+    true,
+    ME,
+    0
+)]
+#[case::my_creature(
+    r#"{"BecomesMonstrous":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,
+    "Bear",
+    true,
+    ME,
+    1
+)]
+#[case::their_creature_is_not_mine(
+    r#"{"BecomesMonstrous":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}}"#,
+    "Ogre",
+    true,
+    FOE,
+    0
+)]
 #[case::i_adapt(r#"{"Adapted":{"what":["This"]}}"#, "Watcher", false, ME, 1)]
 #[case::another_creature_adapts_not_me(r#"{"Adapted":{"what":["This"]}}"#, "Bear", false, ME, 0)]
 #[case::any_creature_adapts(r#"{"Adapted":{"what":[{"Type":"Creature"}]}}"#, "Ogre", false, FOE, 1)]
