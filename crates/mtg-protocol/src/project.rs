@@ -331,6 +331,7 @@ impl PlayerView {
                     })
                 })
                 .collect(),
+            commander_lethal: state.commander_lethal(),
             bank: 0,
         }
     }

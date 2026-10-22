@@ -139,6 +139,8 @@ pub struct SeatSummary {
 /// What anybody may learn about a game: no tokens, no cards, no seed.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PublicGame {
+    /// The format the game is played under.
+    pub format: FormatKind,
     /// Who may find and join the game.
     pub visibility: Visibility,
     /// Whether every seat is ready and the game began.
@@ -816,7 +818,7 @@ impl Registry {
 
     /// The public facts of a game; `None` if there is no such game or its actor is gone.
     pub async fn describe(&self, id: GameId) -> Option<PublicGame> {
-        let (handle, visibility, seats) = {
+        let (handle, format, visibility, seats) = {
             let games = self.games();
             let entry = games.get(&id)?;
             let seats: Vec<SeatSummary> = entry
@@ -829,10 +831,11 @@ impl Registry {
                     state: slot.state,
                 })
                 .collect();
-            (entry.handle.clone(), entry.visibility, seats)
+            (entry.handle.clone(), entry.format, entry.visibility, seats)
         };
         let status = handle.status().await.ok()?;
         Some(PublicGame {
+            format,
             visibility,
             started: status.started,
             seats,

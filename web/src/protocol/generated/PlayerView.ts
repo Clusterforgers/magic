@@ -73,6 +73,12 @@ commanders?: Array<CommanderView>,
  */
 commander_damage?: Array<CommanderDamageView>, 
 /**
+ * The combat damage from one commander that makes a player lose at this table: the table's amount or the
+ * format's 21; left out when nothing makes a player lose to it (Normal, or a table that turned the rule off). The
+ * same for every seat, so a client never derives it.
+ */
+commander_lethal?: number, 
+/**
  * Clock extensions the seat holds (public). The engine does not know them: the server fills them in, and a view
  * made from the engine state alone says 0.
  */

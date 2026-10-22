@@ -678,6 +678,7 @@ async fn a_deck_that_breaks_the_format_is_refused_with_the_reasons_of_the_check(
     let info = net::get(server.addr, &format!("/api/games/{game}"))
         .await
         .json();
+    assert_eq!(info["format"], "commander");
     assert_eq!(
         info["seats"][1]["name"], "",
         "no refused deck took the open seat"

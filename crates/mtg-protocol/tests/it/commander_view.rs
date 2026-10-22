@@ -1,9 +1,10 @@
-//! Goal: every seat sees the command zone and the commanders of every seat (the cards, the times each was cast from the command zone and the tax it carries) and the combat damage each commander has dealt to each seat, hands stay hidden, the new fields are left out of the JSON outside Commander and while nothing is counted, and the commander's choice to stay and the loss for commander damage reach every seat as events.
+//! Goal: every seat sees the command zone and the commanders of every seat (the cards, the times each was cast from the command zone and the tax it carries) and the combat damage each commander has dealt to each seat, hands stay hidden, the new fields are left out of the JSON outside Commander and while nothing is counted, and the commander's choice to stay and the loss for commander damage reach every seat as events, and the commander damage that is lethal at the table (the format's 21, the table's amount or none) reaches every seat of 2 to 6 and is left out when nothing is lethal.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
 
 use mtg_core::color::Color;
+use mtg_core::house::{CommanderDamageLimit, HouseRules};
 use mtg_core::ids::PlayerId;
 use mtg_engine::choose::YesNoChoice;
 use mtg_engine::decision::Answer;
@@ -150,4 +151,71 @@ fn the_refusal_and_the_loss_reach_every_seat() {
     for batch in project_events(&before, std::slice::from_ref(&loss), &viewers, 0).unwrap() {
         assert!(matches!(batch.events.as_slice(), [EventView::Public(event)] if *event == loss));
     }
+}
+
+/// A Commander table of `seats` seats under the commander damage `limit`.
+fn table_under(seats: usize, limit: Option<CommanderDamageLimit>) -> Driver {
+    let scenario = Scenario::new(seats)
+        .format(Arc::new(Commander))
+        .house_rules(damage_rule(limit))
+        .commanders(0, [legend("Cmd", 1, &[Color::Red], 2, 2)]);
+    Driver::from_scenario(scenario).unwrap()
+}
+
+fn damage_rule(limit: Option<CommanderDamageLimit>) -> HouseRules {
+    HouseRules {
+        commander_damage: limit,
+        ..HouseRules::default()
+    }
+}
+
+#[rstest]
+#[case::the_formats_21(None, Some(21))]
+#[case::a_table_amount(Some(CommanderDamageLimit::Lethal(15)), Some(15))]
+#[case::one_hit_is_enough(Some(CommanderDamageLimit::Lethal(1)), Some(1))]
+#[case::the_most(Some(CommanderDamageLimit::Lethal(100)), Some(100))]
+#[case::turned_off(Some(CommanderDamageLimit::Off), None)]
+fn every_seat_is_told_the_commander_damage_that_is_lethal_at_the_table(
+    #[values(2, 3, 4, 5, 6)] seats: usize,
+    #[case] rule: Option<CommanderDamageLimit>,
+    #[case] lethal: Option<u32>,
+) {
+    let driver = table_under(seats, rule);
+    for viewer in 0..seats {
+        let view = StateView::for_player(driver.state(), PlayerId::from_index(viewer));
+        assert_eq!(view.table.players.len(), seats);
+        for player in &view.table.players {
+            assert_eq!(player.commander_lethal, lethal, "viewer {viewer}");
+        }
+        let json = serde_json::to_value(&view).unwrap();
+        for player in json["players"].as_array().unwrap() {
+            assert_eq!(
+                player
+                    .get("commander_lethal")
+                    .and_then(serde_json::Value::as_u64),
+                lethal.map(u64::from),
+                "the field is left out when nothing is lethal"
+            );
+        }
+    }
+}
+
+#[rstest]
+#[case::no_rule(None)]
+#[case::a_rule_the_format_ignores(Some(CommanderDamageLimit::Lethal(15)))]
+fn a_normal_game_has_no_lethal_commander_damage(
+    #[values(2, 4)] seats: usize,
+    #[case] rule: Option<CommanderDamageLimit>,
+) {
+    let scenario = Scenario::new(seats)
+        .house_rules(damage_rule(rule))
+        .battlefield(0, [ready(bear())]);
+    let driver = Driver::from_scenario(scenario).unwrap();
+    let view = StateView::for_player(driver.state(), PlayerId(0));
+    assert!(
+        view.table
+            .players
+            .iter()
+            .all(|player| player.commander_lethal.is_none())
+    );
 }

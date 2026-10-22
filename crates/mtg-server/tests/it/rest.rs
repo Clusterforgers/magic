@@ -268,6 +268,7 @@ async fn health_decks_and_game_lookup() {
         keys(&view),
         BTreeSet::from([
             "connected",
+            "format",
             "ready",
             "result",
             "seats",
@@ -275,6 +276,7 @@ async fn health_decks_and_game_lookup() {
             "visibility"
         ])
     );
+    assert_eq!(view["format"], "normal");
     assert_eq!(view["started"], false);
     assert_eq!(
         view["visibility"], "invite",

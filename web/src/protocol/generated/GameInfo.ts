@@ -10,6 +10,10 @@ import type { Visibility } from "./Visibility";
  */
 export type GameInfo = { 
 /**
+ * The format key the game is played under: `normal` or `commander`.
+ */
+format: string, 
+/**
  * Whether every seat was ready and the game began.
  */
 started: boolean, 
