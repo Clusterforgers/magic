@@ -1,0 +1,26 @@
+{
+  "id": "cbc4281a-b70d-4f96-b309-38e986484829",
+  "oracle_id": "67f43ac6-2a58-4b53-b5d7-0330e2a252e2",
+  "name": "Reflecting Pool",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "23",
+  "rarity": "rare",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add one mana of any type that a land you control could produce.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

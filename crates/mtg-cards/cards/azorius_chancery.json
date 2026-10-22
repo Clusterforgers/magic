@@ -1,0 +1,34 @@
+{
+  "oracle_id": "189fc8f4-17ac-4f1d-82c8-8401445bdaf4",
+  "name": "Azorius Chancery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azorius Chancery",
+      "oracle_fingerprint": "7f799465402ca5b87d2e8edfeb73b217",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

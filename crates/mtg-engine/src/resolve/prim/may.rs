@@ -4,13 +4,22 @@ use mtg_cards::effect::Effect;
 use mtg_core::ids::PlayerId;
 
 use super::wrong_effect;
-use crate::choose::{Said, pick_yes_no};
+use crate::choose::{Said, Target, pick_yes_no};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::wording;
 
+/// The name under which the `May` at `position` binds whether it was accepted, which a following `If` of `Performed`
+/// reads ("you may draw a card. If you do, discard a card"): the controller when it was, nothing when it was not. A
+/// position runs once in a resolution, so the name is bound once, and the step that binds it is in the log.
+pub(super) fn performed_name(position: &[usize]) -> String {
+    let path: Vec<String> = position.iter().map(ToString::to_string).collect();
+    format!("?performed {}", path.join("."))
+}
+
 /// The players the effect names who are still in the game are asked in turn order whether they will, until one says
 /// yes: the controller by default, any seat otherwise. The effects then run; with no yes (or nobody to ask) they are
-/// skipped. The question reads as the effects do ("Draw a card?") when the words for them exist.
+/// skipped. The question reads as the effects do ("Draw a card?") when the words for them exist. Whether they were
+/// accepted is bound for an `If` that asks "if you do" (`performed_name`).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::May { who, effects } = effect else {
         return Err(wrong_effect("May"));
@@ -25,7 +34,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Said::Ask(decision) => Run::Ask(decision),
         Said::Done(yes) => Run::Done {
             events: Vec::new(),
-            bound: Vec::new(),
+            bound: vec![(
+                performed_name(cx.resolving.position()),
+                if yes {
+                    vec![Target::Player(cx.scope.controller)]
+                } else {
+                    Vec::new()
+                },
+            )],
             snapshots: Vec::new(),
             next: if yes { Next::Enter(0) } else { Next::Sibling },
         },
@@ -94,7 +110,12 @@ mod tests {
         else {
             panic!("the effect was expected to be done");
         };
-        assert!(events.is_empty() && bound.is_empty() && snapshots.is_empty());
+        assert!(events.is_empty() && snapshots.is_empty());
+        // The only thing bound is whether the effects were accepted, under the name of the position.
+        assert_eq!(bound.len(), 1);
+        let (name, accepted) = &bound[0];
+        assert_eq!(*name, performed_name(&[0]));
+        assert_eq!(!accepted.is_empty(), matches!(next, Next::Enter(_)));
         next
     }
 

@@ -192,6 +192,14 @@ pub struct ManaOption {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<SpendOn>>", optional))]
     pub only: Vec<SpendOn>,
+    /// More mana of other types the same activation adds after `count` of `produces` (a bounceland's second mana); left out means none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ManaType>>", optional))]
+    pub also: Vec<ManaType>,
+    /// Life the activation pays; left out means none.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub life: u32,
 }
 
 const fn one() -> u32 {
@@ -201,6 +209,11 @@ const fn one() -> u32 {
 #[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_one(count: &u32) -> bool {
     *count == 1
+}
+
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(count: &u32) -> bool {
+    *count == 0
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -218,12 +231,21 @@ impl ManaOption {
             extra: false,
             sacrifice: false,
             only: Vec::new(),
+            also: Vec::new(),
+            life: 0,
         }
     }
 
     /// Whether it adds one mana, keeps its source and does nothing else, so a permanent is one mana for one tap.
     pub const fn is_simple(&self) -> bool {
-        self.count == 1 && !self.sacrifice && !self.extra
+        self.count == 1 && !self.sacrifice && !self.extra && self.also.is_empty() && self.life == 0
+    }
+
+    /// All the mana one activation adds, in order: `count` of `produces`, then `also`.
+    pub fn made(&self) -> Vec<ManaType> {
+        let mut made = vec![self.produces; self.count as usize];
+        made.extend_from_slice(&self.also);
+        made
     }
 }
 
@@ -252,11 +274,19 @@ pub struct Payment {
     pub delve: Vec<ObjectId>,
 }
 
-/// The sources a payment for `spend` may tap: the ones whose mana it may spend.
-fn usable(sources: &[ManaOption], spend: &Spend) -> Vec<ManaOption> {
+/// The sources a payment for `spend` by a payer with `life` may tap: the ones whose mana it may spend, and the ones
+/// that pay life only while the payer keeps some after every such source is used, so no payment takes the payer to 0.
+fn usable(sources: &[ManaOption], spend: &Spend, life: i32) -> Vec<ManaOption> {
+    let mut costs: BTreeMap<ObjectId, u32> = BTreeMap::new();
+    for option in sources.iter().filter(|o| spend.allows(&o.only)) {
+        let slot = costs.entry(option.source.object).or_default();
+        *slot = (*slot).max(option.life);
+    }
+    let total: u32 = costs.values().sum();
+    let affordable = i64::from(total) < i64::from(life);
     sources
         .iter()
-        .filter(|o| spend.allows(&o.only))
+        .filter(|o| spend.allows(&o.only) && (o.life == 0 || affordable))
         .cloned()
         .collect()
 }
@@ -326,7 +356,7 @@ fn restricted_used(payment: &Payment, sources: &[ManaOption]) -> usize {
         .iter()
         .filter_map(|tap| sources.iter().find(|o| o.source == *tap))
         .filter(|o| !o.only.is_empty())
-        .map(|o| o.count as usize)
+        .map(|o| o.made().len())
         .sum::<usize>();
     payment.restricted.len() + taps
 }
@@ -528,7 +558,7 @@ fn parts_of(
         if payment.taps[..i].iter().any(|t| t.object == tap.object) {
             return Err(PaymentError::ObjectTappedTwice(tap.object));
         }
-        parts.push(vec![option.produces; option.count as usize]);
+        parts.push(option.made());
     }
     Ok(parts)
 }
@@ -670,7 +700,7 @@ pub fn can_afford_with(
     spend: &Spend,
 ) -> bool {
     let floating = pool.floating(spend);
-    let sources = usable(sources, spend);
+    let sources = usable(sources, spend, life);
     cost.resolutions().iter().any(|r| {
         can_pay_life(life, r.life)
             && help::variants(&r.cost, help, &Used::default(), &[], &sources)
@@ -758,7 +788,7 @@ pub fn auto_payment_with(
     spend: &Spend,
 ) -> Option<Payment> {
     let floating = pool.floating(spend);
-    let sources = usable(sources, spend);
+    let sources = usable(sources, spend, life);
     let mut best = None;
     for resolution in cost.resolutions() {
         if resolution.life > 0 && i64::from(life) <= i64::from(resolution.life) {
@@ -822,8 +852,8 @@ fn split_spent(spent: Vec<ManaType>, payment: &Payment, sources: &[ManaOption]) 
         if let Some(option) = sources.iter().find(|o| o.source == *tap)
             && !option.only.is_empty()
         {
-            units.extend((0..option.count).map(|_| Restricted {
-                mana: option.produces,
+            units.extend(option.made().into_iter().map(|mana| Restricted {
+                mana,
                 only: option.only.clone(),
             }));
         }
@@ -884,12 +914,24 @@ pub fn check_payment_with(
     payment: &Payment,
 ) -> Result<Spent, PaymentError> {
     let floating = check_pool(pool, sources, spend, payment)?;
-    let sources = usable(sources, spend);
+    let sources = usable(sources, spend, life);
     let used = Used::new(&payment.convoke, &payment.delve);
     let tapped_for_mana: Vec<ObjectId> = payment.taps.iter().map(|tap| tap.object).collect();
     help::check(&used, help, tapped, &tapped_for_mana)?;
     let parts = parts_of(&floating, &sources, tapped, &flat(payment))?;
     check_life(cost, life, payment.life)?;
+    let from_sources: u32 = payment
+        .taps
+        .iter()
+        .filter_map(|tap| sources.iter().find(|o| o.source == *tap))
+        .map(|o| o.life)
+        .sum();
+    if !can_pay_life(life, payment.life.saturating_add(from_sources)) {
+        return Err(PaymentError::NotEnoughLife {
+            paid: payment.life.saturating_add(from_sources),
+            have: life,
+        });
+    }
     let mut refusal = None;
     for resolution in cost.resolutions() {
         if resolution.life != payment.life {
@@ -964,7 +1006,7 @@ pub fn complete_payment_with(
     partial: &Payment,
 ) -> Result<Payment, PaymentError> {
     let floating = check_pool(pool, sources, spend, partial)?;
-    let usable_sources = usable(sources, spend);
+    let usable_sources = usable(sources, spend, life);
     let flat_partial = flat(partial);
     let kept = Used::new(&partial.convoke, &partial.delve);
     let occupied: Vec<ObjectId> = partial.taps.iter().map(|tap| tap.object).collect();
@@ -1825,7 +1867,7 @@ mod tests {
                 .taps
                 .iter()
                 .filter_map(|t| sources.iter().find(|o| o.source == *t))
-                .map(|o| vec![o.produces; o.count as usize]),
+                .map(ManaOption::made),
         );
         parts
     }
@@ -2032,7 +2074,13 @@ mod tests {
             prop::collection::vec(mana_strategy(), 0..2),
             prop::collection::vec(
                 prop::collection::vec(
-                    (mana_strategy(), 1u32..4, any::<bool>(), any::<bool>()),
+                    (
+                        mana_strategy(),
+                        1u32..4,
+                        any::<bool>(),
+                        any::<bool>(),
+                        prop::collection::vec(mana_strategy(), 0..2),
+                    ),
                     1..3,
                 ),
                 0..4,
@@ -2042,7 +2090,7 @@ mod tests {
             .prop_map(|(cost, floating, permanents, life)| {
                 let mut sources = Vec::new();
                 for (object, abilities) in (0u64..).zip(permanents) {
-                    for (ability, (produces, count, sacrifice, extra)) in
+                    for (ability, (produces, count, sacrifice, extra, also)) in
                         abilities.into_iter().enumerate()
                     {
                         sources.push(ManaOption {
@@ -2052,6 +2100,8 @@ mod tests {
                             sacrifice,
                             extra,
                             only: Vec::new(),
+                            also,
+                            life: 0,
                         });
                     }
                 }

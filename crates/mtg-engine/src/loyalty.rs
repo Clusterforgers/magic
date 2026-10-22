@@ -317,6 +317,8 @@ mod tests {
                             target: crate::combat::DamageTarget::Object(id),
                             amount,
                             deathtouch: false,
+                            form: crate::combat::DamageForm::Normal,
+                            toxic: 0,
                         };
                         apply_event(&mut game, &event).unwrap();
                         expected = (expected - i64::from(amount)).max(0);

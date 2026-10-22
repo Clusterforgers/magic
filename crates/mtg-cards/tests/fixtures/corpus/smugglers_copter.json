@@ -1,0 +1,24 @@
+{
+  "id": "2680ed41-da35-475a-9d80-ae2f4686feed",
+  "oracle_id": "49136bdc-bc50-49a2-999a-1ef9c16ea130",
+  "name": "Smuggler's Copter",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "160",
+  "rarity": "rare",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact — Vehicle",
+  "oracle_text": "Flying\nWhenever this Vehicle attacks or blocks, you may draw a card. If you do, discard a card.\nCrew 1 (Tap any number of creatures you control with total power 1 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Flying",
+    "Crew"
+  ]
+}

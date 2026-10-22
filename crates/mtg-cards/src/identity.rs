@@ -104,20 +104,66 @@ impl CardDefinition {
         Some(up_to.unwrap_or(1))
     }
 
-    /// Whether two cards can be commanders together by Partner: both have it, or each names the other with
-    /// "Partner with" (CR 702.124).
+    /// Whether the card is a Background: an enchantment with that subtype, which can be a commander beside a card
+    /// with Choose a Background (CR 702.124).
+    pub fn is_background(&self) -> bool {
+        self.each_face().next().is_some_and(|front| {
+            front.types.contains(&CardType::Enchantment)
+                && front.subtypes.iter().any(|s| s.0 == "Background")
+        })
+    }
+
+    /// Whether the card is a legendary Time Lord Doctor creature, the commander a Doctor's companion pairs with.
+    pub fn is_the_doctor(&self) -> bool {
+        self.each_face().next().is_some_and(|front| {
+            front.supertypes.contains(&Supertype::Legendary)
+                && front.types.contains(&CardType::Creature)
+                && ["Time Lord", "Doctor"]
+                    .iter()
+                    .all(|word| front.subtypes.iter().any(|s| s.0 == *word))
+        })
+    }
+
+    /// Whether the card can be a commander next to `other`: on its own, or as a Background beside a card with
+    /// Choose a Background (CR 903.3, 702.124).
+    pub fn can_be_commander_beside(&self, other: &CardDefinition) -> bool {
+        self.can_be_commander()
+            || (self.is_background() && other.has_keyword(&Keyword::ChooseABackground))
+    }
+
+    /// Whether two cards can be commanders together (CR 702.124): both have Partner, both have the same
+    /// "Partner—text", each names the other with "Partner with", a Doctor's companion and the Doctor, or a card
+    /// with Choose a Background and a Background.
     pub fn partners_with(&self, other: &CardDefinition) -> bool {
-        let has_partner = |card: &CardDefinition| {
-            card.rules
-                .iter()
-                .any(|rule| matches!(&**rule, Ability::Keyword(Keyword::Partner)))
-        };
         let names = |card: &CardDefinition, other: &CardDefinition| {
-            card.rules.iter().any(|rule| {
-                matches!(&**rule, Ability::Keyword(Keyword::PartnerWith(name)) if *name == other.name)
-            })
+            card.has_keyword(&Keyword::PartnerWith(other.name.clone()))
         };
-        (has_partner(self) && has_partner(other)) || (names(self, other) && names(other, self))
+        let shares_a_group = self.keywords().any(|keyword| {
+            matches!(keyword, Keyword::PartnerGroup(text) if other.keywords().any(
+                |theirs| matches!(theirs, Keyword::PartnerGroup(same) if same.eq_ignore_ascii_case(text))))
+        });
+        let beside = |card: &CardDefinition, other: &CardDefinition| {
+            (card.has_keyword(&Keyword::DoctorsCompanion) && other.is_the_doctor())
+                || (card.has_keyword(&Keyword::ChooseABackground) && other.is_background())
+        };
+        (self.has_keyword(&Keyword::Partner) && other.has_keyword(&Keyword::Partner))
+            || shares_a_group
+            || (names(self, other) && names(other, self))
+            || beside(self, other)
+            || beside(other, self)
+    }
+
+    /// The keyword abilities among the card's rules.
+    fn keywords(&self) -> impl Iterator<Item = &Keyword> {
+        self.rules.iter().filter_map(|rule| match &**rule {
+            Ability::Keyword(keyword) => Some(keyword),
+            _ => None,
+        })
+    }
+
+    /// Whether the card's rules have the keyword.
+    fn has_keyword(&self, wanted: &Keyword) -> bool {
+        self.keywords().any(|keyword| keyword == wanted)
     }
 }
 
@@ -290,6 +336,40 @@ mod tests {
         CardDefinition::new(name).with_rules(rules(ability))
     }
 
+    /// A legendary Time Lord Doctor.
+    fn doctor() -> CardDefinition {
+        legendary(&[CardType::Creature])
+            .with_subtype("Time Lord")
+            .with_subtype("Doctor")
+    }
+
+    /// A legendary enchantment, a Background.
+    fn background() -> CardDefinition {
+        legendary(&[CardType::Enchantment]).with_subtype("Background")
+    }
+
+    #[rstest]
+    #[case::a_background_beside_a_chooser(
+        background(),
+        with("A", r#"{"Keyword":"ChooseABackground"}"#),
+        true
+    )]
+    #[case::a_background_beside_a_creature(background(), legendary(&[CardType::Creature]), false)]
+    #[case::a_background_beside_a_background(background(), background(), false)]
+    #[case::a_creature_beside_anything(legendary(&[CardType::Creature]), background(), true)]
+    #[case::a_plain_enchantment_beside_a_chooser(
+        legendary(&[CardType::Enchantment]),
+        with("A", r#"{"Keyword":"ChooseABackground"}"#),
+        false
+    )]
+    fn a_background_is_a_commander_only_beside_a_chooser(
+        #[case] card: CardDefinition,
+        #[case] other: CardDefinition,
+        #[case] can: bool,
+    ) {
+        assert_eq!(card.can_be_commander_beside(&other), can);
+    }
+
     #[rstest]
     #[case::both_have_partner(
         with("A", r#"{"Keyword":"Partner"}"#),
@@ -311,6 +391,72 @@ mod tests {
     #[case::names_someone_else(
         with("A", r#"{"Keyword":{"PartnerWith":"C"}}"#),
         with("B", r#"{"Keyword":{"PartnerWith":"A"}}"#),
+        false
+    )]
+    #[case::the_same_group(
+        with("A", r#"{"Keyword":{"PartnerGroup":"Friends forever"}}"#),
+        with("B", r#"{"Keyword":{"PartnerGroup":"friends forever"}}"#),
+        true
+    )]
+    #[case::another_group(
+        with("A", r#"{"Keyword":{"PartnerGroup":"Friends forever"}}"#),
+        with("B", r#"{"Keyword":{"PartnerGroup":"Character select"}}"#),
+        false
+    )]
+    #[case::a_group_and_plain_partner(
+        with("A", r#"{"Keyword":{"PartnerGroup":"Friends forever"}}"#),
+        with("B", r#"{"Keyword":"Partner"}"#),
+        false
+    )]
+    #[case::a_companion_and_the_doctor(
+        with("A", r#"{"Keyword":"DoctorsCompanion"}"#),
+        doctor(),
+        true
+    )]
+    #[case::the_doctor_and_a_companion(
+        doctor(),
+        with("A", r#"{"Keyword":"DoctorsCompanion"}"#),
+        true
+    )]
+    #[case::a_companion_and_a_human(
+        with("A", r#"{"Keyword":"DoctorsCompanion"}"#),
+        legendary(&[CardType::Creature]).with_subtype("Human"),
+        false
+    )]
+    #[case::a_companion_and_a_time_lord_who_is_no_doctor(
+        with("A", r#"{"Keyword":"DoctorsCompanion"}"#),
+        legendary(&[CardType::Creature]).with_subtype("Time Lord"),
+        false
+    )]
+    #[case::a_companion_and_a_doctor_who_is_not_legendary(
+        with("A", r#"{"Keyword":"DoctorsCompanion"}"#),
+        CardDefinition::new("Doctor").with_type(CardType::Creature).with_subtype("Time Lord").with_subtype("Doctor"),
+        false
+    )]
+    #[case::two_companions(
+        with("A", r#"{"Keyword":"DoctorsCompanion"}"#),
+        with("B", r#"{"Keyword":"DoctorsCompanion"}"#),
+        false
+    )]
+    #[case::a_chooser_and_a_background(
+        with("A", r#"{"Keyword":"ChooseABackground"}"#),
+        background(),
+        true
+    )]
+    #[case::a_background_and_a_chooser(
+        background(),
+        with("A", r#"{"Keyword":"ChooseABackground"}"#),
+        true
+    )]
+    #[case::a_background_and_a_plain_creature(background(), legendary(&[CardType::Creature]), false)]
+    #[case::a_chooser_and_a_creature(
+        with("A", r#"{"Keyword":"ChooseABackground"}"#),
+        legendary(&[CardType::Creature]),
+        false
+    )]
+    #[case::two_choosers(
+        with("A", r#"{"Keyword":"ChooseABackground"}"#),
+        with("B", r#"{"Keyword":"ChooseABackground"}"#),
         false
     )]
     fn partners_pair(#[case] a: CardDefinition, #[case] b: CardDefinition, #[case] pair: bool) {

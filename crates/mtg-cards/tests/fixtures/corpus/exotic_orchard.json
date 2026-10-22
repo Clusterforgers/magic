@@ -1,0 +1,26 @@
+{
+  "id": "d11c5fe0-1528-4c94-a8cc-42bcab9d7487",
+  "oracle_id": "27b047e3-0d41-45e2-98e9-9391d7923a1e",
+  "name": "Exotic Orchard",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mbc",
+  "collector_number": "79",
+  "rarity": "rare",
+  "released_at": "2026-10-19",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

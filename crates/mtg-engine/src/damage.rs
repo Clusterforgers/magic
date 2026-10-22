@@ -311,23 +311,34 @@ impl Dealer {
     }
 }
 
-/// The events of `source` dealing `amount` damage to `target`, with the source read as it is now.
-pub(crate) fn dealt(
-    state: &GameState,
-    source: ObjectId,
-    target: DamageTarget,
-    amount: u32,
-) -> Vec<Event> {
-    dealt_by(state, &Dealer::live(state, source), target, amount)
-}
-
-/// The events of `dealer` dealing `amount` damage to `target`: the damage, then the life its controller gains
-/// when it has lifelink (CR 702.15), in the same batch. Damage of nothing is no event.
+/// The events of `dealer` dealing `amount` damage to `target` outside combat: the damage, then the life its controller
+/// gains when it has lifelink (CR 702.15), in the same batch. Damage of nothing is no event.
 pub(crate) fn dealt_by(
     state: &GameState,
     dealer: &Dealer,
     target: DamageTarget,
     amount: u32,
+) -> Vec<Event> {
+    deal(state, dealer, target, amount, false)
+}
+
+/// The events of `source` dealing `amount` combat damage to `target`: as [`dealt_by`], and a player it hurts also gets
+/// the poison counters of its toxic (CR 702.164).
+fn combat_dealt(
+    state: &GameState,
+    source: ObjectId,
+    target: DamageTarget,
+    amount: u32,
+) -> Vec<Event> {
+    deal(state, &Dealer::live(state, source), target, amount, true)
+}
+
+fn deal(
+    state: &GameState,
+    dealer: &Dealer,
+    target: DamageTarget,
+    amount: u32,
+    combat: bool,
 ) -> Vec<Event> {
     if amount == 0 {
         return Vec::new();
@@ -337,6 +348,12 @@ pub(crate) fn dealt_by(
         target,
         amount,
         deathtouch: dealer.keywords.deathtouch,
+        form: dealer.keywords.form(),
+        toxic: if combat && matches!(target, DamageTarget::Player(_)) {
+            dealer.keywords.toxic
+        } else {
+            0
+        },
     }];
     let controller = dealer
         .controller
@@ -364,12 +381,12 @@ pub(crate) fn damage_events(state: &GameState, pass: DamagePass) -> Vec<Event> {
                 Division::Choose(options) => default_shares(&options),
             };
             for (target, amount) in shares {
-                events.extend(dealt(state, attacker.object(), target, amount));
+                events.extend(combat_dealt(state, attacker.object(), target, amount));
             }
         }
         for &blocker in attacker.blockers() {
             if let Some(power) = strike_power(state, blocker, pass) {
-                events.extend(dealt(
+                events.extend(combat_dealt(
                     state,
                     blocker,
                     DamageTarget::Object(attacker.object()),
@@ -688,7 +705,10 @@ mod tests {
                 )
             );
             // Read as the card it has become, the source has none of them: the card prints no keyword.
-            assert_eq!(outcome(&dealt(&game, id, target, 3)), (false, vec![]));
+            assert_eq!(
+                outcome(&dealt_by(&game, &Dealer::live(&game, id), target, 3)),
+                (false, vec![])
+            );
         }
 
         #[rstest]
@@ -716,7 +736,7 @@ mod tests {
             );
             // The card in the graveyard prints them again, which is what the snapshot keeps from being read.
             assert_eq!(
-                outcome(&dealt(&game, id, target, 3)),
+                outcome(&dealt_by(&game, &Dealer::live(&game, id), target, 3)),
                 (true, vec![(PlayerId(0), 3)])
             );
         }
@@ -765,6 +785,8 @@ mod tests {
                     target: DamageTarget::Object(victim),
                     amount: 1,
                     deathtouch: event_says,
+                    form: crate::combat::DamageForm::Normal,
+                    toxic: 0,
                 },
             )
             .unwrap();

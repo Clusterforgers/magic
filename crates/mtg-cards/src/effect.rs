@@ -87,12 +87,15 @@ pub enum Produce {
     ChosenColor(u32),
     /// This many mana of any one color in the identity of the controller's commander.
     CommanderIdentity(u32),
-    /// This many mana of any one color that an object matching the selector could produce.
+    /// This many mana of any one color that an object matching the selector could produce ("any type" adds colorless).
     ProducedBy {
         /// The objects whose mana abilities are looked at.
         among: Selector,
         /// How many mana.
         count: u32,
+        /// Colorless counts as a type ("any type that a land you control could produce").
+        #[serde(default, skip_serializing_if = "is_false")]
+        colorless: bool,
     },
 }
 

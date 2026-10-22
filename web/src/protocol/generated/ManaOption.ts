@@ -30,4 +30,12 @@ sacrifice?: boolean,
 /**
  * What the mana it adds may be spent on (Mishra's Workshop: artifact spells); left out means anything.
  */
-only?: Array<SpendOn>, };
+only?: Array<SpendOn>, 
+/**
+ * More mana of other types the same activation adds after `count` of `produces` (a bounceland's second mana); left out means none.
+ */
+also?: Array<ManaType>, 
+/**
+ * Life the activation pays; left out means none.
+ */
+life?: number, };

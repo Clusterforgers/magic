@@ -1,0 +1,30 @@
+{
+  "oracle_id": "27b047e3-0d41-45e2-98e9-9391d7923a1e",
+  "name": "Exotic Orchard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exotic Orchard",
+      "oracle_fingerprint": "549742fb78860080282130357bb19756",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "ProducedBy": {
+                      "among": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }],
+                      "count": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

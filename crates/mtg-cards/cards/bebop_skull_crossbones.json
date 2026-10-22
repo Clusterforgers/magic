@@ -1,0 +1,21 @@
+{
+  "oracle_id": "59a405d7-2f28-41b8-a5bb-011f45a5fdf2",
+  "name": "Bebop, Skull & Crossbones",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Bebop, Skull & Crossbones",
+      "oracle_fingerprint": "b39890831ad162f745ce121973f04d77",
+      "abilities": [
+        { "Keyword": { "PartnerWith": "Rocksteady, Mutant Marauder" } },
+        { "Keyword": "Deathtouch" },
+        {
+          "Manual": {
+            "reason": "a triggered ability the compiler does not read yet",
+            "span": { "start": 164, "end": 305 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "7f19c2a3-6403-4a78-bf45-6e339578d673",
+  "oracle_id": "0acb070b-6e81-4e0e-925d-14da9b931355",
+  "name": "Pale Bears",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ice",
+  "collector_number": "256",
+  "rarity": "rare",
+  "released_at": "1995-06-03",
+  "digital": false,
+  "mana_cost": "{2}{G}",
+  "cmc": 3,
+  "type_line": "Creature — Bear",
+  "oracle_text": "Islandwalk (This creature can't be blocked as long as defending player controls an Island.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Landwalk",
+    "Islandwalk"
+  ]
+}

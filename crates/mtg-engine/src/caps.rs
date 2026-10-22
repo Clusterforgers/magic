@@ -77,6 +77,7 @@ const RUNS: &[&str] = &[
     "Cost.TapPermanents",
     "Cost.ReturnToHand",
     "Cost.ExileFromHand",
+    "Cost.TapPower",
     "Effect.Draw",
     "Effect.Discard",
     "Effect.Mill",
@@ -101,6 +102,8 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.OneOf",
     "Effect.AddMana.ChosenColor",
     "Effect.AddMana.Restricted",
+    "Effect.AddMana.CommanderIdentity",
+    "Effect.AddMana.ProducedBy",
     "Ability.ManaAbility.Complex",
     "Effect.PutCounters",
     "Effect.RemoveCounters",
@@ -146,6 +149,7 @@ const RUNS: &[&str] = &[
     "Mod.RemoveType",
     "Mod.AddSubtype",
     "Mod.SetCreatureTypes",
+    "Mod.AddAllCreatureTypes",
     "Mod.SetColors",
     "Mod.RemoveKeyword",
     "Mod.GrantAbility",
@@ -205,9 +209,21 @@ const RUNS: &[&str] = &[
     "Keyword.Daybound",
     "Keyword.Nightbound",
     "Keyword.Fuse",
+    "Keyword.Crew",
+    "Keyword.Changeling",
+    "Keyword.Devoid",
+    "Keyword.Infect",
+    "Keyword.Wither",
+    "Keyword.Toxic",
+    "Keyword.Fear",
+    "Keyword.Intimidate",
+    "Keyword.Landwalk",
+    "Keyword.Skulk",
+    "Keyword.Shadow",
     "Condition.CastWith",
     "Rule.MayCast",
     "Condition.Kicked",
+    "Condition.Performed",
     "Amount.Kicks",
     "Ability.Replacement",
     "Ability.CostModifier",
@@ -228,6 +244,12 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Choose",
     "ReplaceBy.PayLifeOrTapped",
     "ReplaceBy.AsCopy",
+    "Keyword.Partner",
+    "Keyword.PartnerWith",
+    "Keyword.PartnerGroup",
+    "Keyword.DoctorsCompanion",
+    "Keyword.ChooseABackground",
+    "Rule.CanBeCommander",
 ];
 
 /// The capabilities of this engine.
@@ -303,6 +325,17 @@ mod tests {
     #[case::day_and_night("Keyword.Daybound", true)]
     #[case::the_night_face("Keyword.Nightbound", true)]
     #[case::fusing("Keyword.Fuse", true)]
+    #[case::every_creature_type("Keyword.Changeling", true)]
+    #[case::no_color("Keyword.Devoid", true)]
+    #[case::poison("Keyword.Infect", true)]
+    #[case::counters("Keyword.Wither", true)]
+    #[case::toxic("Keyword.Toxic", true)]
+    #[case::evasion_by_color("Keyword.Fear", true)]
+    #[case::evasion_by_color_shared("Keyword.Intimidate", true)]
+    #[case::evasion_by_land("Keyword.Landwalk", true)]
+    #[case::evasion_by_power("Keyword.Skulk", true)]
+    #[case::evasion_by_shadow("Keyword.Shadow", true)]
+    #[case::all_creature_types("Mod.AddAllCreatureTypes", true)]
     #[case::replacement_effects("Ability.Replacement", true)]
     #[case::replacing_token_creation("ReplaceWhen.TokenCreation", true)]
     #[case::replacing_damage("ReplaceWhen.Damage", true)]
@@ -455,8 +488,8 @@ mod tests {
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_restricted_to_what_it_may_be_spent_on("Effect.AddMana.Restricted", true)]
-    #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", false)]
-    #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", false)]
+    #[case::mana_of_the_commanders_identity("Effect.AddMana.CommanderIdentity", true)]
+    #[case::mana_a_land_could_produce("Effect.AddMana.ProducedBy", true)]
     #[case::devotion("Amount.Devotion", false)]
     #[case::the_greatest_value("Amount.Greatest", false)]
     #[case::totals("Amount.Total", false)]
@@ -485,24 +518,28 @@ mod tests {
     #[case::batch_triggers("Trigger.Batch", true)]
     #[case::nth_triggers("Trigger.Nth", true)]
     #[case::event_amounts("Amount.Triggering", true)]
-    #[case::if_you_do("Condition.Performed", false)]
+    #[case::if_you_do("Condition.Performed", true)]
+    #[case::if_you_do_after_another_effect("Condition.Performed.Other", false)]
     #[case::the_monarch("Condition.Monarch", true)]
     #[case::the_citys_blessing("Condition.CitysBlessing", false)]
     #[case::unblockable_creatures("Mod.CantBeBlocked", true)]
     #[case::creatures_that_cant_be_blocked_by_some("Mod.CantBeBlockedBy", true)]
     #[case::looking_at_the_top_any_time("Rule.LookAtTopAnyTime", false)]
     #[case::additional_land_plays("Rule.AdditionalLandPlays", false)]
-    #[case::commander_eligibility("Rule.CanBeCommander", false)]
+    #[case::commander_eligibility("Rule.CanBeCommander", true)]
+    #[case::partner("Keyword.Partner", true)]
+    #[case::partner_with("Keyword.PartnerWith", true)]
+    #[case::partner_group("Keyword.PartnerGroup", true)]
+    #[case::doctors_companion("Keyword.DoctorsCompanion", true)]
+    #[case::choose_a_background("Keyword.ChooseABackground", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]
     #[case::choosing_a_player_as_it_enters("ReplaceBy.Choose.Player", false)]
     #[case::choosing_an_opponent_as_it_enters("ReplaceBy.Choose.Opponent", false)]
-    #[case::changeling("Keyword.Changeling", false)]
-    #[case::devoid("Keyword.Devoid", false)]
-    #[case::infect("Keyword.Infect", false)]
     #[case::myriad("Keyword.Myriad", false)]
-    #[case::crew("Keyword.Crew", false)]
+    #[case::crew("Keyword.Crew", true)]
+    #[case::tapping_creatures_for_their_power_as_a_cost("Cost.TapPower", true)]
     #[case::mutate("Keyword.Mutate", false)]
     #[case::encore("Keyword.Encore", false)]
     #[case::squad("Keyword.Squad", false)]

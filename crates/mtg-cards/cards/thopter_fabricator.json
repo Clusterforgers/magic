@@ -1,0 +1,36 @@
+{
+  "oracle_id": "8aab9181-c306-471a-8061-9a7a7654dab5",
+  "name": "Thopter Fabricator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thopter Fabricator",
+      "oracle_fingerprint": "fc1792ea272fc34e66e2e219740b4427",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

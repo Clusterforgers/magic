@@ -1,0 +1,12 @@
+{
+  "oracle_id": "d50b1d2e-1825-432a-ab73-068fdc356f50",
+  "name": "Universal Automaton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Universal Automaton",
+      "oracle_fingerprint": "70c30518730ca6fd1274af12f70f8334",
+      "abilities": [{ "Keyword": "Changeling" }]
+    }
+  ]
+}

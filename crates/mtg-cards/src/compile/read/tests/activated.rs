@@ -239,10 +239,13 @@ fn every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
 }
 
 #[rstest]
-#[case::mana_of_a_color_a_land_could_produce(
-    "{T}: Add one mana of any color that a land an opponent controls could produce."
+#[case::mana_of_a_color_a_creature_could_produce(
+    "{T}: Add one mana of any color that a creature an opponent controls could produce."
 )]
-#[case::a_condition("{T}: Add {B}. Activate only if you control a Swamp.")]
+#[case::a_condition_and_a_timing(
+    "{T}: Add {B}. Activate only if you control a Swamp. Activate only as a sorcery."
+)]
+#[case::a_condition_that_is_not_a_count("{T}: Add {B}. Activate only if it's your turn.")]
 #[case::both_restrictions_apart(
     "{T}: Draw a card. Activate only as a sorcery. Activate only once each turn."
 )]

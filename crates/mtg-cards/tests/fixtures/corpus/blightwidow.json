@@ -1,0 +1,28 @@
+{
+  "id": "26da4278-ba44-4555-8837-e24627b46533",
+  "oracle_id": "282003f4-862a-4f80-8f45-e470fc0fe2fe",
+  "name": "Blightwidow",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mbs",
+  "collector_number": "77",
+  "rarity": "common",
+  "released_at": "2011-02-04",
+  "digital": false,
+  "mana_cost": "{3}{G}",
+  "cmc": 4,
+  "type_line": "Creature — Phyrexian Spider",
+  "oracle_text": "Reach (This creature can block creatures with flying.)\nInfect (This creature deals damage to creatures in the form of -1/-1 counters and to players in the form of poison counters.)",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach",
+    "Infect"
+  ]
+}

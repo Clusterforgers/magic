@@ -1,0 +1,32 @@
+{
+  "id": "0fbbab5f-657a-4e6a-8bdd-69f11547fe25",
+  "oracle_id": "fec77e0a-433e-4d32-9260-e26a37f6ad23",
+  "name": "Timeless Lotus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "ecc",
+  "collector_number": "143",
+  "rarity": "mythic",
+  "released_at": "2026-01-23",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Legendary Artifact",
+  "oracle_text": "Timeless Lotus enters tapped.\n{T}: Add {W}{U}{B}{R}{G}.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

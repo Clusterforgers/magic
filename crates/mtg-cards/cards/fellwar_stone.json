@@ -1,0 +1,30 @@
+{
+  "oracle_id": "95560508-7ac9-4be9-8a3f-3c7d5b52807b",
+  "name": "Fellwar Stone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fellwar Stone",
+      "oracle_fingerprint": "549742fb78860080282130357bb19756",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "ProducedBy": {
+                      "among": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }],
+                      "count": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "d246f521-b9a0-4b4f-b38c-0e4eb4066212",
+  "oracle_id": "9e006a4b-8dde-4416-8cb4-8401562d0fd5",
+  "name": "Tendo Ice Bridge",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bok",
+  "collector_number": "165",
+  "rarity": "rare",
+  "released_at": "2005-02-04",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters with a charge counter on it.\n{T}: Add {C}.\n{T}, Remove a charge counter from this land: Add one mana of any color.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ]
+}

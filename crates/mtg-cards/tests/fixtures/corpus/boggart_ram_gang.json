@@ -1,0 +1,30 @@
+{
+  "id": "63e25b70-fa21-4663-aabd-34b7e0b75c34",
+  "oracle_id": "30d2437a-87c9-4f88-8fb8-b686d6522677",
+  "name": "Boggart Ram-Gang",
+  "lang": "en",
+  "layout": "normal",
+  "set": "shm",
+  "collector_number": "203",
+  "rarity": "uncommon",
+  "released_at": "2008-05-02",
+  "digital": false,
+  "mana_cost": "{R/G}{R/G}{R/G}",
+  "cmc": 3,
+  "type_line": "Creature — Goblin Warrior",
+  "oracle_text": "Haste\nWither (This deals damage to creatures in the form of -1/-1 counters.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Haste",
+    "Wither"
+  ]
+}

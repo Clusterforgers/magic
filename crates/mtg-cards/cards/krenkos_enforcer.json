@@ -1,0 +1,12 @@
+{
+  "oracle_id": "0d9787e3-f482-4a98-95af-0438ed09c96c",
+  "name": "Krenko's Enforcer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krenko's Enforcer",
+      "oracle_fingerprint": "005a567532085bb2a868a460f23ad57b",
+      "abilities": [{ "Keyword": "Intimidate" }]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "9a02a9a7-39d9-4763-85d3-747a0540b60b",
+  "name": "Gilded Lotus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gilded Lotus",
+      "oracle_fingerprint": "7997ee8f56f192efb165d843cc9dedde",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

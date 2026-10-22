@@ -1,0 +1,27 @@
+{
+  "oracle_id": "dd8b6067-a97f-402f-bba1-70ebc6ee1599",
+  "name": "Midnight Banshee",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Banshee",
+      "oracle_fingerprint": "f7dae59ff75cf71a90703a46b71c396b",
+      "abilities": [
+        { "Keyword": "Wither" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] },
+                  "counter": "-1/-1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

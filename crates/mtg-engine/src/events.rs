@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::abilities::{AbilitySource, Cause, PutOnStack};
 use crate::choose::{Choice, Choices, Target};
-use crate::combat::{AttackTarget, DamageTarget};
+use crate::combat::{AttackTarget, DamageForm, DamageTarget};
 use crate::copies::{AbilityCopy, BecameCopy, SpellCopy};
 use crate::counters::CountersChanged;
 use crate::day_night::DayNight;
@@ -29,6 +29,12 @@ use crate::zones::Zone;
 #[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_false(flag: &bool) -> bool {
     !*flag
+}
+
+/// Whether a count is zero, so serialization can leave it out (serde hands over a reference).
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(count: &u32) -> bool {
+    *count == 0
 }
 
 /// Why a player was not asked to decide something optional.
@@ -281,6 +287,15 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "is_false")]
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
         deathtouch: bool,
+        /// The source had wither or infect as it dealt the damage: a creature gets -1/-1 counters instead of damage, and with
+        /// infect a player gets poison counters instead of losing life.
+        #[serde(default, skip_serializing_if = "DamageForm::is_normal")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<DamageForm>", optional))]
+        form: DamageForm,
+        /// The poison counters the player dealt this combat damage also gets, from the toxic of the source (CR 702.164).
+        #[serde(default, skip_serializing_if = "is_zero")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+        toxic: u32,
     },
     /// Combat ended and its state was cleared.
     CombatEnded,
@@ -759,6 +774,8 @@ mod tests {
             target: DamageTarget::Player(PlayerId(1)),
             amount: 3,
             deathtouch: false,
+            form: crate::combat::DamageForm::Normal,
+            toxic: 0,
         };
         let json = r#"{"DamageDealt":{"source":4,"target":{"Player":1},"amount":3}}"#;
         assert_eq!(serde_json::to_string(&plain).unwrap(), json);
@@ -772,6 +789,8 @@ mod tests {
             target: DamageTarget::Object(ObjectId(9)),
             amount: 1,
             deathtouch: true,
+            form: crate::combat::DamageForm::Normal,
+            toxic: 0,
         };
         let json = serde_json::to_string(&touched).unwrap();
         assert_eq!(

@@ -21,6 +21,10 @@ subtypes?: Array<Subtype>,
  */
 creature_types_set?: boolean, 
 /**
+ * An effect made it every creature type (changeling, CR 702.73): it has each of them, unless another effect sets the types.
+ */
+all_creature_types?: boolean, 
+/**
  * Colors.
  */
 colors: ColorSet, 

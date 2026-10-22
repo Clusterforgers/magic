@@ -1,0 +1,23 @@
+{
+  "id": "53c682e2-c90f-4f4b-9010-00b099e85518",
+  "oracle_id": "d50b1d2e-1825-432a-ab73-068fdc356f50",
+  "name": "Universal Automaton",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh1",
+  "collector_number": "235",
+  "rarity": "common",
+  "released_at": "2019-06-14",
+  "digital": false,
+  "mana_cost": "{1}",
+  "cmc": 1,
+  "type_line": "Artifact Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Changeling"
+  ]
+}

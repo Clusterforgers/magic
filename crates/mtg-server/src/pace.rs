@@ -241,6 +241,11 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
             CostsChoice::Costs(Vec::new())
         })),
         DecisionKind::DivideAmount(options) => even_division(options).map(Answer::DivideAmount),
+        // A cost that takes any number of creatures for their power (crew) is taken back, as the cast of a spell is:
+        // the first creature alone may not have the power.
+        DecisionKind::ChooseCards(options) if options.can_cancel && options.max > options.min => {
+            Some(Answer::ChooseCards(CardsChoice(Vec::new())))
+        }
         DecisionKind::ChooseCards(options) => Some(Answer::ChooseCards(first_cards(options))),
         DecisionKind::OrderCards(options) => {
             Some(Answer::OrderCards(OrderChoice(options.cards.clone())))

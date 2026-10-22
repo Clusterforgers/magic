@@ -1,0 +1,12 @@
+{
+  "oracle_id": "047e761e-7bbe-403b-86d7-cb9fb0b20b21",
+  "name": "Plague Stinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Plague Stinger",
+      "oracle_fingerprint": "9ed42b5fd7ed7620fc0219419fc232c9",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Infect" }]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0895c9b7-ae7d-4bb3-af17-3b75deb50a25",
+  "name": "Command Tower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Command Tower",
+      "oracle_fingerprint": "ef99a3cd50fadce532520b9a8e329ccc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "CommanderIdentity": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

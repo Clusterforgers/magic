@@ -5,9 +5,9 @@ use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType, PHYREXIAN_LIFE, Resolution};
 use mtg_engine::Decision;
 use mtg_engine::choose::{
-    CardsChoice, CostsChoice, CostsOptions, DivideChoice, DivideOptions, ModeChoice, NumberChoice,
-    NumberOptions, OptionChoice, OrderChoice, ReplacementChoice, Target, TargetChoice,
-    TriggersChoice, YesNoChoice, YesNoOptions,
+    CardsChoice, CardsOptions, CostsChoice, CostsOptions, DivideChoice, DivideOptions, ModeChoice,
+    NumberChoice, NumberOptions, OptionChoice, OrderChoice, ReplacementChoice, Target,
+    TargetChoice, TriggersChoice, YesNoChoice, YesNoOptions,
 };
 use mtg_engine::decision::{
     Answer, DamageOptions, DecisionKind, MulliganChoice, PayChoice, PayOptions, PriorityAction,
@@ -197,13 +197,7 @@ impl RandomBot {
             DecisionKind::DivideAmount(options) => {
                 Answer::DivideAmount(DivideChoice::Division(self.share_out(options)))
             }
-            DecisionKind::ChooseCards(options) => {
-                // Any cards among those offered, as many as the bounds allow.
-                let spread =
-                    usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
-                let wanted = options.min as usize + self.rng.index(spread);
-                Answer::ChooseCards(CardsChoice(self.subset(&options.from, wanted)))
-            }
+            DecisionKind::ChooseCards(options) => self.cards(options),
             DecisionKind::OrderCards(options) => {
                 // Every card once, in a random order.
                 Answer::OrderCards(OrderChoice(
@@ -573,6 +567,18 @@ impl RandomBot {
     fn yes_no(&mut self, options: &YesNoOptions) -> Answer {
         let yes = self.rng.below(2) == 0;
         Answer::YesNo(YesNoChoice(yes && !options.only_no))
+    }
+
+    /// Any cards among those offered, as many as the bounds allow. A cost that takes any number of creatures for their
+    /// power (crew) is the one question with room between the bounds that a bot may not answer short, and it cannot
+    /// check the power here: it takes every creature offered, as the engine asked only because together they have enough.
+    fn cards(&mut self, options: &CardsOptions) -> Answer {
+        if options.can_cancel && options.max > options.min {
+            return Answer::ChooseCards(CardsChoice(options.from.clone()));
+        }
+        let spread = usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
+        let wanted = options.min as usize + self.rng.index(spread);
+        Answer::ChooseCards(CardsChoice(self.subset(&options.from, wanted)))
     }
 
     /// Any number in range that is allowed; with no upper bound, a few above the lowest. A bot never backs out of a

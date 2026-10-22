@@ -1,0 +1,26 @@
+{
+  "id": "5cc8b864-c6db-4e4d-b9bc-ec84a4c3aa79",
+  "oracle_id": "2f328e05-5edf-4b21-9c2a-50dcf1e7b3ec",
+  "name": "Plague Myr",
+  "lang": "en",
+  "layout": "normal",
+  "set": "td2",
+  "collector_number": "51",
+  "rarity": "uncommon",
+  "released_at": "2011-05-14",
+  "digital": true,
+  "mana_cost": "{2}",
+  "cmc": 2,
+  "type_line": "Artifact Creature — Phyrexian Myr",
+  "oracle_text": "Infect (This creature deals damage to creatures in the form of -1/-1 counters and to players in the form of poison counters.)\n{T}: Add {C}.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Infect"
+  ],
+  "produced_mana": [
+    "C"
+  ]
+}

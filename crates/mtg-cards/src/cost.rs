@@ -63,6 +63,14 @@ pub enum CostItem {
         #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
         count: Amount,
     },
+    /// Tap any number of untapped permanents the payer controls that match, with total power at least that much
+    /// (crew, CR 702.122a: "Tap any number of untapped creatures you control with total power 3 or more").
+    TapPower {
+        /// Which permanents may be chosen.
+        filter: Selector,
+        /// The least total power of the permanents tapped.
+        power: u32,
+    },
     /// Exile cards from the payer's graveyard that match.
     ExileFromGraveyard {
         /// Which cards may be chosen.

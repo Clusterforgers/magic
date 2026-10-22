@@ -27,6 +27,10 @@ pub struct Characteristics {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub creature_types_set: bool,
+    /// An effect made it every creature type (changeling, CR 702.73): it has each of them, unless another effect sets the types.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub all_creature_types: bool,
     /// Colors.
     pub colors: ColorSet,
     /// Power, if the object has one.
@@ -47,6 +51,7 @@ impl Characteristics {
     /// no effect replaced (CR 205.1b).
     pub fn has_subtype(&self, printed: &[Subtype], subtype: &Subtype) -> bool {
         self.subtypes.contains(subtype)
+            || (self.all_creature_types && subtype.is_creature_type())
             || (printed.contains(subtype)
                 && !(self.creature_types_set && subtype.is_creature_type()))
     }
@@ -57,6 +62,7 @@ impl Characteristics {
             types: CardTypes::default(),
             subtypes: Vec::new(),
             creature_types_set: false,
+            all_creature_types: false,
             colors: ColorSet::default(),
             power: None,
             toughness: None,
@@ -169,6 +175,7 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
         types: object.base_types(),
         subtypes: Vec::new(),
         creature_types_set: false,
+        all_creature_types: false,
         colors: card.colors(),
         power: card.power,
         toughness: card.toughness,

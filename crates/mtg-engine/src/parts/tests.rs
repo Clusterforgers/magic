@@ -140,6 +140,11 @@ fn an_amount_that_is_not_a_fixed_number_is_named(#[case] json: &str, #[case] nam
     &["Source"],
     &["Wolf"]
 )]
+#[case::untapped_creatures_for_their_power(
+    r#"{"TapPower":{"filter":[{"Type":"Creature"}],"power":2}}"#,
+    &[],
+    &["Source", "Wolf"]
+)]
 #[case::a_land_to_return(r#"{"ReturnToHand":{"filter":[{"Type":"Artifact"}]}}"#, &[], &["Relic"])]
 fn a_pick_offers_what_the_player_may_take(
     #[case] json: &str,
@@ -169,6 +174,14 @@ fn a_pick_offers_what_the_player_may_take(
 )]
 #[case::four_creatures_to_sacrifice(
     r#"{"Sacrifice":{"filter":[{"Type":"Creature"}],"count":4}}"#,
+    false
+)]
+#[case::power_the_untapped_creatures_have(
+    r#"{"TapPower":{"filter":[{"Type":"Creature"}],"power":3}}"#,
+    true
+)]
+#[case::more_power_than_the_untapped_creatures_have(
+    r#"{"TapPower":{"filter":[{"Type":"Creature"}],"power":4}}"#,
     false
 )]
 #[case::three_cards_to_discard(r#"{"Discard":{"count":3}}"#, false)]
@@ -294,6 +307,10 @@ fn the_parts_of_a_cost_are_paid_with_the_events_the_engine_logs() {
     r#"{"TapPermanents":{"filter":[{"Type":"Creature"}],"count":2}}"#,
     "Tap 2 untapped creatures you control."
 )]
+#[case::tap_for_power(
+    r#"{"TapPower":{"filter":[{"Type":"Creature"}],"power":3}}"#,
+    "Tap any number of untapped creatures you control with total power 3 or more."
+)]
 #[case::return_one(
     r#"{"ReturnToHand":{"filter":[{"Type":"Land"}]}}"#,
     "Return a land you control to its owner's hand."
@@ -308,7 +325,7 @@ fn a_pick_is_asked_in_the_words_of_a_card(#[case] json: &str, #[case] words: &st
 #[test]
 fn a_cost_of_parts_has_the_names_a_refusal_gives() {
     let cost: Cost = serde_json::from_str(
-        r#"[{"PayLife":1},{"RemoveCounters":{"counter":"charge"}},{"Sacrifice":{"filter":[]}},{"Discard":{}},{"ExileFromGraveyard":{"filter":[]}},{"TapPermanents":{"filter":[]}},{"ReturnToHand":{"filter":[]}}]"#,
+        r#"[{"PayLife":1},{"RemoveCounters":{"counter":"charge"}},{"Sacrifice":{"filter":[]}},{"Discard":{}},{"ExileFromGraveyard":{"filter":[]}},{"TapPermanents":{"filter":[]}},{"TapPower":{"filter":[],"power":3}},{"ReturnToHand":{"filter":[]}}]"#,
     )
     .unwrap();
     let named: Vec<&str> = cost
@@ -325,6 +342,7 @@ fn a_cost_of_parts_has_the_names_a_refusal_gives() {
             "Cost.Discard",
             "Cost.ExileFromGraveyard",
             "Cost.TapPermanents",
+            "Cost.TapPower",
             "Cost.ReturnToHand"
         ]
     );

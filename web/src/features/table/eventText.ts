@@ -65,6 +65,7 @@ function modificationWords(modification: Modification, group: boolean): string {
       CantAttack: "can't attack",
       CantBlock: "can't block",
       CantBeBlocked: "can't be blocked",
+      AddAllCreatureTypes: `${becomes} every creature type`,
     }[modification]
   }
   if ('CantBeBlockedBy' in modification) return "can't be blocked by some creatures"

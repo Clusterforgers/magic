@@ -1,0 +1,28 @@
+{
+  "id": "5d17210c-be39-4abc-9d4d-4f2eca9573bd",
+  "oracle_id": "508248d1-09a4-4e41-a4c9-286618e5061e",
+  "name": "Bog Wraith",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m10",
+  "collector_number": "86",
+  "rarity": "uncommon",
+  "released_at": "2009-07-17",
+  "digital": false,
+  "mana_cost": "{3}{B}",
+  "cmc": 4,
+  "type_line": "Creature — Wraith",
+  "oracle_text": "Swampwalk (This creature can't be blocked as long as defending player controls a Swamp.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Landwalk",
+    "Swampwalk"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "b3aeb7fb-8618-4595-84b4-20881b824b3e",
+  "oracle_id": "01ab37a4-21d2-49f4-9b85-cb522a4d04ad",
+  "name": "Zendikar Farguide",
+  "lang": "en",
+  "layout": "normal",
+  "set": "zen",
+  "collector_number": "194",
+  "rarity": "common",
+  "released_at": "2009-10-02",
+  "digital": false,
+  "mana_cost": "{4}{G}",
+  "cmc": 5,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Forestwalk (This creature can't be blocked as long as defending player controls a Forest.)",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Landwalk",
+    "Forestwalk"
+  ]
+}

@@ -1015,6 +1015,8 @@ fn damage(source: ObjectId, to: ObjectId, amount: u32, deathtouch: bool) -> Even
         target: crate::combat::DamageTarget::Object(to),
         amount,
         deathtouch,
+        form: crate::combat::DamageForm::Normal,
+        toxic: 0,
     }
 }
 

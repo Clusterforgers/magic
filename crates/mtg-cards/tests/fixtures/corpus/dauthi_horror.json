@@ -1,0 +1,27 @@
+{
+  "id": "7c41afe6-7eed-4cf5-9bbb-ccc9f82cb4fa",
+  "oracle_id": "07c20708-c305-46e7-a98e-c99f54aeafec",
+  "name": "Dauthi Horror",
+  "lang": "en",
+  "layout": "normal",
+  "set": "clb",
+  "collector_number": "748",
+  "rarity": "common",
+  "released_at": "2022-06-10",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2,
+  "type_line": "Creature — Dauthi Horror",
+  "oracle_text": "Shadow (This creature can block or be blocked by only creatures with shadow.)\nThis creature can't be blocked by white creatures.",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Shadow"
+  ]
+}

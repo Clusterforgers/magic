@@ -1,0 +1,32 @@
+{
+  "oracle_id": "0222414f-98b5-458a-a0fd-831a66cd8b07",
+  "name": "Tainted Isle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Isle",
+      "oracle_fingerprint": "7823cffcdd38f4dd0bf577c02feb8a20",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

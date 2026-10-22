@@ -1,0 +1,32 @@
+{
+  "id": "9ce9cf30-4baa-4f28-84e8-b9b1168a40e0",
+  "oracle_id": "df1a8846-b4da-4e9b-8cf3-ee687e4c606b",
+  "name": "Servant of the Conduit",
+  "lang": "en",
+  "layout": "normal",
+  "set": "kld",
+  "collector_number": "169",
+  "rarity": "uncommon",
+  "released_at": "2016-09-30",
+  "digital": false,
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "When this creature enters, you get {E}{E} (two energy counters).\n{T}, Pay {E}: Add one mana of any color.",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "power": "2",
+  "toughness": "2"
+}

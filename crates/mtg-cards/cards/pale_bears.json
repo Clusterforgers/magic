@@ -1,0 +1,12 @@
+{
+  "oracle_id": "0acb070b-6e81-4e0e-925d-14da9b931355",
+  "name": "Pale Bears",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pale Bears",
+      "oracle_fingerprint": "4eb795027ae8c7f496841106509d8eb1",
+      "abilities": [{ "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } }]
+    }
+  ]
+}

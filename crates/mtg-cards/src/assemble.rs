@@ -18,13 +18,13 @@ use crate::definition::{AbilityDef, CardDefinition, Layout, ManaAbility, ManualC
 use crate::effect::{Effect, Produce};
 use crate::keyword::Keyword;
 use crate::mana::ManaCostX;
-use crate::refs::{Ref, ZoneKind};
+use crate::refs::{Ref, Selector, ZoneKind};
 use crate::spend::SpendOn;
 use crate::support::{
     Caps, Clause, PrintedCard, PrintedFace, Support, SupportRecord, support, whole_text,
 };
 use crate::validate::used_primitives;
-use crate::value::Amount;
+use crate::value::{Amount, Condition};
 
 /// The one primitive a plain `{T}: Add {X}` stands for: the engine runs that exact shape, one fixed
 /// mana for a tap, not the general `Ability.Activated`, `Cost.Tap` and `Effect.AddMana`.
@@ -292,33 +292,50 @@ pub enum ManaProduced<'a> {
         /// How many.
         count: u32,
     },
+    /// Mana of several types, one of each listed (`{W}{U}`, `{C}{G}`).
+    Mixed(&'a [ManaType]),
     /// This many mana of one colour its controller picks when the ability is activated.
     AnyColor(u32),
     /// One mana of a type its controller picks from these when the ability is activated.
     OneOf(&'a [ManaType]),
     /// This many mana of the colour the source chose as it entered.
     ChosenColor(u32),
+    /// This many mana of one colour of its controller's commander's colour identity, picked when activated.
+    CommanderIdentity(u32),
+    /// This many mana of one colour (or type) that an object matching `among` could produce, picked when activated.
+    ProducedBy {
+        /// The objects whose mana abilities are looked at.
+        among: &'a Selector,
+        /// How many.
+        count: u32,
+        /// Colorless counts as a type.
+        colorless: bool,
+    },
 }
 
 impl ManaProduced<'_> {
     /// How many mana one addition makes.
-    pub const fn each(&self) -> u32 {
+    pub fn each(&self) -> u32 {
         match self {
             ManaProduced::Fixed { count, .. }
             | ManaProduced::AnyColor(count)
-            | ManaProduced::ChosenColor(count) => *count,
+            | ManaProduced::ChosenColor(count)
+            | ManaProduced::CommanderIdentity(count)
+            | ManaProduced::ProducedBy { count, .. } => *count,
             ManaProduced::OneOf(_) => 1,
+            ManaProduced::Mixed(list) => u32::try_from(list.len()).unwrap_or(u32::MAX),
         }
     }
 }
 
-/// A mana ability of the shape the engine activates at priority: no targets, no limit, instant speed from the
-/// battlefield, a cost of `{T}` and/or sacrificing the source, mana of one type added to its controller's pool
-/// (some number of times) and then effects that need no answer from anyone (CR 605.3b).
+/// A mana ability of the shape the engine activates at priority: no targets, instant speed from the battlefield, an
+/// optional condition ("Activate only if you control a Swamp"), a cost of `{T}`, sacrificing the source and fixed
+/// amounts of life, energy and counters of the source, mana added to its controller's pool (some number of times) and
+/// then effects that need no answer from anyone (CR 605.3b).
 ///
 /// The plain `{T}: Add {X}` has this shape and is carried as an [`AbilityDef`]; the others (Treasure, Sol Ring, Gaea's
-/// Cradle, the painlands) stay in the rules of the card.
-#[derive(Debug, Clone, Copy, PartialEq)]
+/// Cradle, the painlands, the bouncelands) stay in the rules of the card.
+#[derive(Debug, Clone, PartialEq)]
 pub struct ManaShape<'a> {
     /// What it adds each time.
     pub produces: ManaProduced<'a>,
@@ -328,6 +345,10 @@ pub struct ManaShape<'a> {
     pub tap: bool,
     /// The source is sacrificed.
     pub sacrifice: bool,
+    /// The other parts of its cost: life, energy, counters of the source.
+    pub pays: Vec<&'a CostItem>,
+    /// What must hold to activate it.
+    pub condition: Option<&'a Condition>,
     /// What it does besides adding mana.
     pub then: &'a [Effect],
     /// What the mana may be spent on; none listed means anything.
@@ -343,11 +364,14 @@ impl ManaShape<'_> {
             ManaProduced::Fixed { count: 1, .. } | ManaProduced::AnyColor(1)
         ) && self.times.is_one()
             && self.then.is_empty()
+            && self.pays.is_empty()
+            && self.condition.is_none()
     }
 }
 
 /// Whether `effect` is one a mana ability may run after its mana: it asks nothing of anyone and touches the
-/// controller alone ("deals 1 damage to you", "draw a card", "you lose 1 life").
+/// controller or the source alone ("deals 1 damage to you", "draw a card", "you lose 1 life", "put a charge counter on
+/// this artifact").
 fn needs_no_answer(effect: &Effect) -> bool {
     match effect {
         Effect::Draw { who, .. } | Effect::LoseLife { who, .. } | Effect::GainLife { who, .. } => {
@@ -355,6 +379,20 @@ fn needs_no_answer(effect: &Effect) -> bool {
         }
         Effect::DealDamage { source, to, .. } => {
             *to == Ref::You && source.as_ref().is_none_or(|source| *source == Ref::This)
+        }
+        Effect::PutCounters { on, .. } => *on == Ref::This,
+        _ => false,
+    }
+}
+
+/// Whether `item` is a part of a mana ability's cost the engine pays with the activation: a fixed amount of life,
+/// energy or counters of the source.
+fn pays_with_activation(item: &CostItem) -> bool {
+    match item {
+        CostItem::PayLife(amount)
+        | CostItem::PayEnergy(amount)
+        | CostItem::RemoveCounters { count: amount, .. } => {
+            matches!(amount, Amount::Fixed(number) if *number > 0)
         }
         _ => false,
     }
@@ -367,7 +405,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     let Ability::Activated {
         cost,
         timing: Timing::Instant,
-        condition: None,
+        condition,
         limit: None,
         from: ZoneKind::Battlefield,
         targets,
@@ -377,10 +415,15 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         return None;
     };
     let (mut tap, mut sacrifice) = (false, false);
+    let mut pays = Vec::new();
     for item in &cost.0 {
         let seen = match item {
             CostItem::Tap => &mut tap,
             CostItem::SacrificeSelf => &mut sacrifice,
+            other if pays_with_activation(other) => {
+                pays.push(other);
+                continue;
+            }
             _ => return None,
         };
         if std::mem::replace(seen, true) {
@@ -402,25 +445,35 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
     let produces = match mana {
         Produce::Fixed(list) => {
             let (&first, rest) = list.split_first()?;
-            if rest.iter().any(|other| *other != first) {
-                return None;
-            }
-            ManaProduced::Fixed {
-                mana: first,
-                count: u32::try_from(list.len()).ok()?,
+            if rest.iter().all(|other| *other == first) {
+                ManaProduced::Fixed {
+                    mana: first,
+                    count: u32::try_from(list.len()).ok()?,
+                }
+            } else {
+                ManaProduced::Mixed(list)
             }
         }
         Produce::AnyColor(count) => ManaProduced::AnyColor(*count),
         Produce::OneOf(types) => ManaProduced::OneOf(types),
         Produce::ChosenColor(count) => ManaProduced::ChosenColor(*count),
-        Produce::CommanderIdentity(_) | Produce::ProducedBy { .. } => return None,
+        Produce::CommanderIdentity(count) => ManaProduced::CommanderIdentity(*count),
+        Produce::ProducedBy {
+            among,
+            count,
+            colorless,
+        } => ManaProduced::ProducedBy {
+            among,
+            count: *count,
+            colorless: *colorless,
+        },
     };
     let distinct = then
         .iter()
         .enumerate()
         .all(|(i, effect)| then[..i].iter().all(|before| !same_kind(before, effect)));
     (targets.is_empty()
-        && (tap || sacrifice)
+        && (tap || sacrifice || !pays.is_empty())
         && then.iter().all(needs_no_answer)
         && distinct
         && produces.each() > 0)
@@ -429,6 +482,8 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
             times,
             tap,
             sacrifice,
+            pays,
+            condition: condition.as_ref(),
             then,
             only,
         })
@@ -1032,11 +1087,11 @@ mod tests {
     )]
     #[case::mixed_mana(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["White","Blue"]}}}]}}"#,
-        None
+        Some((ManaProduced::Mixed(&[ManaType::White, ManaType::Blue]), true, false, 0))
     )]
     #[case::the_commanders_colors(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"CommanderIdentity":1}}}]}}"#,
-        None
+        Some((ManaProduced::CommanderIdentity(1), true, false, 0))
     )]
     #[case::for_an_opponent(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"who":"Opponents","mana":{"Fixed":["Green"]}}}]}}"#,
@@ -1060,6 +1115,38 @@ mod tests {
     )]
     #[case::costs_life(
         r#"{"Activated":{"cost":["Tap",{"PayLife":1}],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        Some((GREEN, true, false, 0))
+    )]
+    #[case::costs_energy(
+        r#"{"Activated":{"cost":["Tap",{"PayEnergy":1}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some((ManaProduced::AnyColor(1), true, false, 0))
+    )]
+    #[case::removes_counters_from_the_source(
+        r#"{"Activated":{"cost":["Tap",{"RemoveCounters":{"counter":"charge"}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some((ManaProduced::AnyColor(1), true, false, 0))
+    )]
+    #[case::removes_counters_without_a_tap(
+        r#"{"Activated":{"cost":[{"RemoveCounters":{"counter":"charge"}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+        Some((ManaProduced::AnyColor(1), false, false, 0))
+    )]
+    #[case::pays_life_you_count(
+        r#"{"Activated":{"cost":["Tap",{"PayLife":"X"}],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        None
+    )]
+    #[case::pays_no_life(
+        r#"{"Activated":{"cost":["Tap",{"PayLife":0}],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        None
+    )]
+    #[case::only_if(
+        r#"{"Activated":{"cost":["Tap"],"condition":{"Compare":{"left":{"Count":[{"Subtype":"Swamp"},{"ControlledBy":"You"}]},"op":"Ge","right":1}},"effects":[{"AddMana":{"mana":{"OneOf":["White","Black"]}}}]}}"#,
+        Some((ManaProduced::OneOf(&[ManaType::White, ManaType::Black]), true, false, 0))
+    )]
+    #[case::a_counter_on_the_source(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}},{"PutCounters":{"on":"This","counter":"charge"}}]}}"#,
+        Some((ManaProduced::Fixed { mana: ManaType::Red, count: 1 }, true, false, 1))
+    )]
+    #[case::a_counter_on_the_controller(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Red"]}}},{"PutCounters":{"on":"You","counter":"charge"}}]}}"#,
         None
     )]
     #[case::at_sorcery_speed(
@@ -1112,6 +1199,22 @@ mod tests {
     )]
     #[case::mixed_mana(
         r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["White","Blue"]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::the_commanders_colors(
+        r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"CommanderIdentity":1}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::paying_life(
+        r#"{"Activated":{"cost":["Tap",{"PayLife":1}],"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::only_with_a_condition(
+        r#"{"Activated":{"cost":["Tap"],"condition":"YourTurn","effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#,
+        Some("Ability.ManaAbility.Complex")
+    )]
+    #[case::tapping_another_permanent(
+        r#"{"Activated":{"cost":["Tap",{"TapPermanents":{"filter":[{"Type":"Creature"}]}}],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
         Some("Ability.ManaAbility.Other")
     )]
     #[case::not_a_mana_ability(r#"{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}"#, None)]

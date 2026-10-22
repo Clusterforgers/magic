@@ -1,0 +1,27 @@
+{
+  "oracle_id": "df1a8846-b4da-4e9b-8cf3-ee687e4c606b",
+  "name": "Servant of the Conduit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Servant of the Conduit",
+      "oracle_fingerprint": "c9235f61c687a10d665b753135d0d783",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 1 }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

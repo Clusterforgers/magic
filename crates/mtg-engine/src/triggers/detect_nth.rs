@@ -382,6 +382,8 @@ fn hurt(pre: &GameState, source: &str, to: DamageTarget, amount: u32) -> Event {
         target: to,
         amount,
         deathtouch: false,
+        form: crate::combat::DamageForm::Normal,
+        toxic: 0,
     }
 }
 

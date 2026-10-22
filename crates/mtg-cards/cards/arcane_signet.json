@@ -1,0 +1,19 @@
+{
+  "oracle_id": "0bc7f093-bef0-4f1a-852c-4b75ebf54838",
+  "name": "Arcane Signet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arcane Signet",
+      "oracle_fingerprint": "ef99a3cd50fadce532520b9a8e329ccc",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "CommanderIdentity": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

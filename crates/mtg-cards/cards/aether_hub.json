@@ -1,0 +1,31 @@
+{
+  "oracle_id": "61c89b11-65c9-4fda-bbcd-d84de25df801",
+  "name": "Aether Hub",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aether Hub",
+      "oracle_fingerprint": "b46c0f57ff906bc8476bec6a5b824bd3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "PutCounters": { "on": "You", "counter": { "Other": "energy" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayEnergy": 1 }],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

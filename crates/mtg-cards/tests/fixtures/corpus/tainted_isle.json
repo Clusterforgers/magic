@@ -1,0 +1,27 @@
+{
+  "id": "70e8e7e2-e9ea-4358-805e-c5110c8d8443",
+  "oracle_id": "0222414f-98b5-458a-a0fd-831a66cd8b07",
+  "name": "Tainted Isle",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dsc",
+  "collector_number": "303",
+  "rarity": "uncommon",
+  "released_at": "2024-09-27",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{T}: Add {U} or {B}. Activate only if you control a Swamp.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "U"
+  ]
+}

@@ -1,16 +1,16 @@
 //! Mana abilities (CR 605): the mana a player may make now, and the events of making it.
 //!
 //! A mana ability uses no stack. A plain `{T}: Add {X}` is a printed ability of the card (`AbilityDef::Mana`); any
-//! other is in the rules of the card and read by `mana_shape`: its cost is `{T}` and/or sacrificing its source, it
-//! adds mana (some number of times, counted when it is offered) and runs effects that ask nothing. Every way to use one
-//! is a [`ManaOption`], offered at priority and to pay for a spell or an ability.
+//! other is in the rules of the card and read by `mana_shape`: its cost is `{T}`, sacrificing its source and fixed
+//! amounts of life, energy and counters of the source; it may hold an activation condition; it adds mana (some number
+//! of times, counted when it is offered) and runs effects that ask nothing. Every way to use one is a [`ManaOption`],
+//! offered at priority and to pay for a spell or an ability.
 
 use std::sync::Arc;
 
 use mtg_cards::AbilityDef;
 use mtg_cards::ability::Ability;
 use mtg_cards::assemble::{ManaProduced, mana_shape};
-use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 
@@ -20,33 +20,15 @@ use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
 use crate::keywords;
 use crate::mana::{ManaOption, ManaSource};
+use crate::mana_kinds::{COLORS, identity_types, mana_of, producible_types};
 use crate::object::{Chosen, PermanentState};
+use crate::parts::{Part, Payer};
 use crate::resolve::{Scope, run_inline};
 use crate::state::GameState;
 use crate::zones::Zone;
 
-/// The five colours "any colour" offers, in the order of the wheel.
-const COLORS: [ManaType; 5] = [
-    ManaType::White,
-    ManaType::Blue,
-    ManaType::Black,
-    ManaType::Red,
-    ManaType::Green,
-];
-
 /// The most ways one ability makes its mana: one for each type.
 const VARIANTS: usize = 6;
-
-/// The mana of a colour.
-const fn mana_of(color: Color) -> ManaType {
-    match color {
-        Color::White => ManaType::White,
-        Color::Blue => ManaType::Blue,
-        Color::Black => ManaType::Black,
-        Color::Red => ManaType::Red,
-        Color::Green => ManaType::Green,
-    }
-}
 
 /// A mana ability from the rules of a permanent, with the option that stands for each way to use it.
 struct RuleMana {
@@ -58,9 +40,27 @@ struct RuleMana {
     options: Vec<ManaOption>,
 }
 
+/// The parts of the cost of `ability` besides `{T}` and the sacrifice, as the engine pays them.
+fn parts_of(pays: &[&mtg_cards::cost::CostItem]) -> Vec<Part> {
+    pays.iter()
+        .filter_map(|item| Part::read(item).ok().flatten())
+        .collect()
+}
+
+/// The mana of one addition split into the type the option names, how many of it and the rest.
+fn split(made: &[ManaType]) -> Option<(ManaType, u32, Vec<ManaType>)> {
+    let (&first, _) = made.split_first()?;
+    let run = made.iter().take_while(|mana| **mana == first).count();
+    Some((
+        first,
+        u32::try_from(run).unwrap_or(u32::MAX),
+        made[run..].to_vec(),
+    ))
+}
+
 /// The mana abilities among the abilities of `id` that the engine activates at priority (`mana_shape`), for an object
 /// with `printed` plain mana abilities. The number of mana is counted now, so Gaea's Cradle offers as many as there are
-/// creatures.
+/// creatures; an ability whose condition does not hold or whose cost cannot be paid is not offered.
 ///
 /// The source of the `variant`th option of the ability at position `place` among those the reader lists is numbered
 /// `printed + place * 6 + variant`: the printed abilities come first and each ability has a slot for every type, so
@@ -75,42 +75,86 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
         let Some(shape) = mana_shape(&rules) else {
             continue;
         };
+        if let Some(condition) = shape.condition
+            && !scope.holds(condition).unwrap_or(false)
+        {
+            continue;
+        }
+        let pays = parts_of(&shape.pays);
+        let owner = Payer {
+            state,
+            player,
+            source: id,
+            barred: &[],
+        };
+        if pays.iter().any(|part| part.payable(&owner, &[]).is_none()) {
+            continue;
+        }
+        let life: u32 = pays
+            .iter()
+            .map(|part| match part {
+                Part::Life(amount) => *amount,
+                _ => 0,
+            })
+            .sum();
         let times = scope
             .amount(shape.times)
             .ok()
             .and_then(|times| u32::try_from(times).ok())
             .unwrap_or(0);
-        let count = shape.produces.each().saturating_mul(times);
-        let types: Vec<ManaType> = match shape.produces {
-            ManaProduced::Fixed { mana, .. } => vec![mana],
-            ManaProduced::AnyColor(_) => COLORS.to_vec(),
-            ManaProduced::OneOf(types) => types.to_vec(),
-            ManaProduced::ChosenColor(_) => {
+        // Each way to add the mana, as the types one addition makes.
+        let additions: Vec<Vec<ManaType>> = match shape.produces {
+            ManaProduced::Fixed { mana, count } => vec![vec![mana; count as usize]],
+            ManaProduced::Mixed(list) => vec![list.to_vec()],
+            ManaProduced::AnyColor(count) => {
+                COLORS.iter().map(|c| vec![*c; count as usize]).collect()
+            }
+            ManaProduced::OneOf(types) => types.iter().map(|t| vec![*t]).collect(),
+            ManaProduced::ChosenColor(count) => {
                 match object.permanent().and_then(PermanentState::chosen) {
-                    Some(Chosen::Color(color)) => vec![mana_of(*color)],
+                    Some(Chosen::Color(color)) => vec![vec![mana_of(*color); count as usize]],
                     _ => Vec::new(),
                 }
             }
+            ManaProduced::CommanderIdentity(count) => identity_types(state, player)
+                .into_iter()
+                .map(|t| vec![t; count as usize])
+                .collect(),
+            ManaProduced::ProducedBy {
+                among,
+                count,
+                colorless,
+            } => producible_types(state, player, (id, Some(place)), among, colorless)
+                .into_iter()
+                .map(|t| vec![t; count as usize])
+                .collect(),
         };
-        if count == 0 {
-            continue;
-        }
-        let (tap, sacrifice, extra) = (shape.tap, shape.sacrifice, !shape.then.is_empty());
+        let (tap, sacrifice, extra) = (
+            shape.tap,
+            shape.sacrifice,
+            !shape.then.is_empty() || !pays.is_empty(),
+        );
         let only = shape.only.to_vec();
-        let options = types
+        let options = additions
             .into_iter()
             .take(VARIANTS)
             .enumerate()
-            .map(|(variant, produces)| ManaOption {
-                source: ManaSource {
-                    object: id,
-                    ability: printed + place * VARIANTS + variant,
-                },
-                produces,
-                count,
-                sacrifice,
-                extra,
-                only: only.clone(),
+            .filter_map(|(variant, addition)| {
+                let made: Vec<ManaType> = (0..times).flat_map(|_| addition.clone()).collect();
+                let (produces, count, also) = split(&made)?;
+                Some(ManaOption {
+                    source: ManaSource {
+                        object: id,
+                        ability: printed + place * VARIANTS + variant,
+                    },
+                    produces,
+                    count,
+                    sacrifice,
+                    extra,
+                    only: only.clone(),
+                    also,
+                    life,
+                })
             })
             .collect();
         found.push(RuleMana {
@@ -162,8 +206,9 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
     found
 }
 
-/// The events of `player` using the mana ability `option` stands for: the tap and the sacrifice of its cost, the mana
-/// added to their pool, and what it does besides (a painland's damage, an egg's draw), all at once (CR 605.3b).
+/// The events of `player` using the mana ability `option` stands for: the payment of its cost (life, energy, counters,
+/// the tap and the sacrifice), the mana added to their pool, and what it does besides (a painland's damage, an egg's
+/// draw), all at once (CR 605.3b).
 pub(crate) fn activation(
     state: &GameState,
     player: PlayerId,
@@ -179,10 +224,15 @@ pub(crate) fn activation(
         .find(|mana| mana.options.iter().any(|o| o.source == option.source));
     let shape = rule.as_ref().and_then(|mana| mana_shape(&mana.body));
     let mut events = Vec::new();
-    if shape.is_none_or(|shape| shape.tap) {
+    if let Some(shape) = &shape {
+        for part in parts_of(&shape.pays) {
+            events.extend(part.events(state, player, id, &[]));
+        }
+    }
+    if shape.as_ref().is_none_or(|shape| shape.tap) {
         events.push(Event::PermanentTapped { object: id });
     }
-    if shape.is_some_and(|shape| shape.sacrifice) {
+    if shape.as_ref().is_some_and(|shape| shape.sacrifice) {
         events.push(Event::ZoneChanged {
             object: id,
             from: Zone::Battlefield,
@@ -190,9 +240,9 @@ pub(crate) fn activation(
             cause: ZoneCause::Sacrificed,
         });
     }
-    events.extend((0..option.count).map(|_| Event::ManaAdded {
+    events.extend(option.made().into_iter().map(|mana| Event::ManaAdded {
         player,
-        mana: option.produces,
+        mana,
         source: Some(id),
         only: option.only.clone(),
     }));

@@ -10,6 +10,7 @@ import type { Choices } from "./Choices";
 import type { Chosen } from "./Chosen";
 import type { ContinuousEffect } from "./ContinuousEffect";
 import type { CountersChanged } from "./CountersChanged";
+import type { DamageForm } from "./DamageForm";
 import type { DamageTarget } from "./DamageTarget";
 import type { DayNight } from "./DayNight";
 import type { DeathCause } from "./DeathCause";
@@ -277,7 +278,16 @@ amount: number,
 /**
  * The source had deathtouch as it dealt the damage (CR 702.2): a creature it hurts is marked for destruction.
  */
-deathtouch?: boolean, } } | "CombatEnded" | "DamageCleared" | { "Regenerated": { 
+deathtouch?: boolean, 
+/**
+ * The source had wither or infect as it dealt the damage: a creature gets -1/-1 counters instead of damage, and with
+ * infect a player gets poison counters instead of losing life.
+ */
+form?: DamageForm, 
+/**
+ * The poison counters the player dealt this combat damage also gets, from the toxic of the source (CR 702.164).
+ */
+toxic?: number, } } | "CombatEnded" | "DamageCleared" | { "Regenerated": { 
 /**
  * The permanent.
  */
