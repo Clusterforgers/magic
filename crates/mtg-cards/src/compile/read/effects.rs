@@ -15,6 +15,7 @@ use super::copy_spells;
 use super::costs;
 use super::counters;
 use super::create;
+use super::draws;
 use super::library;
 use super::modal;
 use super::payments;
@@ -274,7 +275,7 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
         }
         "draw" => Effect::Draw {
             who,
-            count: cards_counted(r)?,
+            count: draws::drawn(r)?,
         },
         "mill" => Effect::Mill {
             who,
@@ -285,7 +286,7 @@ fn imperative(r: &mut Reader<'_>) -> Option<Effect> {
             Effect::Shuffle { who }
         }
         "discard" => {
-            let count = cards(r)?;
+            let count = draws::discarded(r, &who)?;
             let random = r.words("at random");
             Effect::Discard { who, count, random }
         }
@@ -345,7 +346,7 @@ fn player_effect(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("and")?;
         let next = if r.that_player && r.words("that player") {
             Ref::Triggering
-        } else if who != Ref::You && r.word("you") {
+        } else if r.word("you") {
             Ref::You
         } else {
             return None;
@@ -399,14 +400,14 @@ fn predicate(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
     Some(match r.take_word()? {
         "draw" | "draws" => Effect::Draw {
             who,
-            count: cards_counted(r)?,
+            count: draws::drawn(r)?,
         },
         "mill" | "mills" => Effect::Mill {
             who,
             count: cards_counted(r)?,
         },
         "discard" | "discards" => {
-            let count = cards(r)?;
+            let count = draws::discarded(r, &who)?;
             let random = r.words("at random");
             Effect::Discard { who, count, random }
         }

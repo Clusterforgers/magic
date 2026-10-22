@@ -9,6 +9,7 @@ use super::tokens::Reader;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::{Step, TriggerPattern};
 use crate::value::{Amount, Cmp, Condition, CounterKind};
+use mtg_core::card::CardType;
 
 /// Whether the pattern is "when you cycle this card", the one trigger that works from the graveyard.
 pub fn cycled_itself(pattern: &TriggerPattern) -> bool {
@@ -201,6 +202,8 @@ fn step(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Ref::Monarch
     } else if r.words("each opponent's") {
         Ref::Opponents
+    } else if r.words("each player's") {
+        Ref::EachPlayer
     } else if r.word("each") {
         Ref::EachPlayer
     } else {
@@ -232,8 +235,9 @@ fn player(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
 fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     let (by, third) = player(r)?;
     let verb = r.take_word()?;
+    let whose = if third { "their" } else { "your" };
     if verb == if third { "casts" } else { "cast" } {
-        if let Some(nth) = each_turn(r, "spell") {
+        if let Some(nth) = each_turn(r, "spell", whose) {
             let event = TriggerPattern::SpellCast {
                 what: Selector::default(),
                 by,
@@ -265,7 +269,7 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         r.need("life")?;
         Some(TriggerPattern::LifeLost { who: by })
     } else if verb == if third { "draws" } else { "draw" } {
-        if let Some(nth) = each_turn(r, "card") {
+        if let Some(nth) = each_turn(r, "card", whose) {
             let event = TriggerPattern::Drew { who: by };
             return Some(TriggerPattern::Nth {
                 event: Box::new(event),
@@ -299,15 +303,37 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         let what = subject(r)?;
         r.need("for mana")?;
         Some(TriggerPattern::TappedForMana { what, by })
+    } else if verb == "attack" && by == Ref::You {
+        attack_with(r)
     } else {
         None
     }
 }
 
-/// "your second card each turn", "your first spell each turn": which one of the turn, for a noun.
-fn each_turn(r: &mut Reader<'_>, noun: &str) -> Option<u32> {
+/// "you attack with two or more creatures": that many of the creatures you control attack together.
+fn attack_with(r: &mut Reader<'_>) -> Option<TriggerPattern> {
+    r.need("with")?;
+    let at_least = if r.words("one or more") {
+        1
+    } else {
+        let number = number_word(r.take_word()?)?;
+        r.need("or more")?;
+        number
+    };
+    r.need("creatures")?;
+    Some(TriggerPattern::GroupAttacks {
+        what: Selector(vec![
+            Pred::Type(CardType::Creature),
+            Pred::ControlledBy(Ref::You),
+        ]),
+        at_least,
+    })
+}
+
+/// "your second card each turn", "their first spell each turn": which one of the turn, for a noun.
+fn each_turn(r: &mut Reader<'_>, noun: &str, whose: &str) -> Option<u32> {
     r.attempt(|r| {
-        r.need("your")?;
+        r.need(whose)?;
         let at = ORDINALS.iter().position(|word| r.word(word))?;
         r.need(noun)?;
         r.need("each turn")?;
@@ -828,9 +854,9 @@ fn damaged_subject(to: &Ref) -> Option<Selector> {
 /// for the first time each turn".
 fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
     let ordinal = ORDINALS.get(usize::try_from(nth.checked_sub(1)?).ok()?)?;
-    let (verb, noun) = match event {
-        TriggerPattern::Drew { who: Ref::You } => ("draw", "card"),
-        TriggerPattern::SpellCast { what, by: Ref::You } if what.is_empty() => ("cast", "spell"),
+    let (by, verb, noun) = match event {
+        TriggerPattern::Drew { who } => (who, "draw", "card"),
+        TriggerPattern::SpellCast { what, by } if what.is_empty() => (by, "cast", "spell"),
         TriggerPattern::Attacks { .. }
         | TriggerPattern::BecomesTarget { .. }
         | TriggerPattern::DealsDamage { .. } => {
@@ -839,8 +865,10 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
         }
         _ => return None,
     };
+    let whose = if *by == Ref::You { "your" } else { "their" };
     Some(format!(
-        "Whenever you {verb} your {ordinal} {noun} each turn"
+        "Whenever {} {whose} {ordinal} {noun} each turn",
+        player_verb(by, verb)?
     ))
 }
 

@@ -125,6 +125,10 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::Proliferated { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
+            | TriggerPattern::StepBegins {
+                whose: Ref::EachPlayer | Ref::Opponents,
+                ..
+            }
             | TriggerPattern::DealsDamage {
                 to: Some(Ref::EachPlayer | Ref::Opponents),
                 ..
