@@ -54,4 +54,9 @@ face_down?: FaceDown,
 /**
  * The X it was cast with, as the object remembers it (CR 107.3m): a spell on the stack and the permanent it became.
  */
-x?: number, };
+x?: number, 
+/**
+ * The optional costs it was cast with, by index (kicker, buyback and the like), as the object remembers them: its
+ * triggered abilities read them after it has left.
+ */
+paid?: Array<number>, };

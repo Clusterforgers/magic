@@ -557,3 +557,113 @@ fn bot_games_with_the_cards_that_pay_parts_keep_every_invariant_and_use_them() {
     assert!(life > 0, "some cost paid 3 life");
     assert!(bought_back > 0, "some spell returned to a hand as it resolved");
 }
+
+#[test]
+fn the_pick_from_the_hand_is_asked_of_its_player_alone_refuses_a_card_not_offered_and_logs_nothing_until_paid(
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(endurance_table(&["Giant Growth", "Rampant Growth"]))?;
+    driver.begin_cast("Endurance")?;
+    choose_way(&mut driver, "Evoke")?;
+    // The question is for the seat that casts the spell, and nothing of the hand is in the log yet.
+    driver.expect_decision(0, "choose-cards")?;
+    let logged = driver.engine().events().len();
+    let not_offered = id_in(&driver, Zone::Battlefield, "Forest");
+    let refused = driver.answer(Answer::ChooseCards(CardsChoice(vec![not_offered])));
+    assert!(refused.is_err(), "{refused:?}");
+    assert_eq!(driver.engine().events().len(), logged);
+    driver.expect_decision(0, "choose-cards")?;
+    // The card is exiled in the open once the spell is paid for, as every exile is.
+    pick(&mut driver, Zone::Hand(pid(0)), "Giant Growth")?;
+    assert_eq!(driver.engine().events().len(), logged);
+    let events = pay(&mut driver)?;
+    assert!(events.iter().any(|event| matches!(
+        event,
+        Event::ZoneChanged { to: Zone::Exile, cause: mtg_engine::events::ZoneCause::Exiled, .. }
+    )));
+    Ok(())
+}
+
+/// An instant that deals 3 damage with madness {R} and 2 life.
+fn painful_temper() -> std::sync::Arc<mtg_cards::CardDefinition> {
+    use mtg_cards::ability::Ability;
+    use mtg_cards::cost::{Cost, CostItem};
+    use mtg_cards::keyword::Keyword;
+    use mtg_cards::value::Amount;
+    use mtg_core::card::CardType;
+    let spell = r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":3}}]}}"#;
+    std::sync::Arc::new(
+        mtg_cards::CardDefinition::new("Painful Temper")
+            .with_type(CardType::Instant)
+            .with_mana_cost(mtg_core::mana::ManaCost::parse("{1}{R}").unwrap())
+            .with_rules(serde_json::from_str(spell).unwrap())
+            .with_rules(Ability::Keyword(Keyword::Madness(Cost(vec![
+                CostItem::Mana("{R}".parse().unwrap()),
+                CostItem::PayLife(Amount::Fixed(2)),
+            ])))),
+    )
+}
+
+#[rstest]
+#[case::paid(20, true)]
+#[case::not_enough_life_goes_to_the_graveyard(1, false)]
+fn a_madness_cost_with_life_is_paid_inside_the_resolution_and_asked_only_when_it_can_be(
+    #[case] life: i32,
+    #[case] cast: bool,
+) -> Result<(), ScriptError> {
+    let scenario = || {
+        Scenario::new(2)
+            .hand(
+                0,
+                [
+                    mtg_testkit::corpus::card("Faithless Looting").unwrap(),
+                    painful_temper(),
+                    forest(),
+                ],
+            )
+            .battlefield(0, lands(3, mountain))
+            .library(0, (0..6).map(|_| forest()))
+            .life(0, life)
+    };
+    let mut driver = Driver::from_scenario(scenario())?;
+    driver.cast("Faithless Looting")?;
+    resolve(&mut driver)?;
+    let temper = id_in(&driver, Zone::Hand(pid(0)), "Painful Temper");
+    let other = id_in(&driver, Zone::Hand(pid(0)), "Forest");
+    driver.answer(Answer::ChooseCards(CardsChoice(vec![temper, other])))?;
+    settle_triggers(&mut driver)?;
+    if !cast {
+        assert!(zone_has(&driver, Zone::Graveyard(pid(0)), "Painful Temper"));
+        return Ok(());
+    }
+    driver.answer(Answer::YesNo(mtg_engine::choose::YesNoChoice(true)))?;
+    let foe = driver.target_player(1);
+    driver.choose_targets(&[foe])?;
+    let events = pay(&mut driver)?;
+    let life_paid = events
+        .iter()
+        .position(|event| matches!(event, Event::LifePaid { amount: 2, .. }))
+        .expect("the life of the madness cost is paid");
+    let spell = events
+        .iter()
+        .position(|event| matches!(event, Event::SpellCast { .. }))
+        .unwrap();
+    assert!(life_paid < spell);
+    resolve(&mut driver)?;
+    assert_eq!(driver.state().player(pid(0)).unwrap().life(), 18);
+    assert_eq!(driver.state().player(pid(1)).unwrap().life(), 17);
+    replays(&driver, scenario());
+    Ok(())
+}
+
+/// Lets the madness trigger of a discard resolve until the player is asked about the cast.
+fn settle_triggers(driver: &mut Driver) -> Result<(), ScriptError> {
+    for _ in 0..6 {
+        if matches!(driver.decision()?.kind, DecisionKind::YesNo(_))
+            || driver.state().stack().is_empty()
+        {
+            return Ok(());
+        }
+        driver.pass()?;
+    }
+    Ok(())
+}
