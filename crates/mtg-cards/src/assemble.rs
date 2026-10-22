@@ -1391,4 +1391,85 @@ mod tests {
             }
         }
     }
+
+    /// The elf with a second line the rules leave to the table, and the rules file that says so.
+    fn elf_with_a_clause(status: ImplStatus) -> (PrintedCard, Card) {
+        let text = format!("{MANA_TEXT} Draw a card.");
+        let mut printed = elf();
+        printed.faces[0].oracle_text = text.clone();
+        let mut rules = elf_rules(
+            status,
+            vec![
+                ability(MANA_ABILITY),
+                Ability::Manual {
+                    reason: "draws are not modelled".into(),
+                    span: crate::card::Span { start: 14, end: 26 },
+                },
+            ],
+        );
+        rules.faces[0].oracle_fingerprint = oracle_fingerprint(&text);
+        (printed, rules)
+    }
+
+    #[rstest]
+    #[case::a_clause_the_rules_name(ImplStatus::Partial, "Draw a card.", "draws are not modelled")]
+    #[case::the_whole_text_of_a_card_with_no_rules(
+        ImplStatus::Manual,
+        "{T}: Add {G}. Draw a card.",
+        "the engine runs none of this card's rules"
+    )]
+    fn the_clauses_the_engine_does_not_run_stay_on_the_definition_as_the_card_prints_them(
+        #[case] status: ImplStatus,
+        #[case] text: &str,
+        #[case] reason: &str,
+    ) {
+        let (printed, rules) = elf_with_a_clause(status);
+        let assembled = assemble(
+            &printed,
+            Some(&rules),
+            &Caps::from_names([PLAIN_MANA_ABILITY]),
+        );
+        assert_eq!(
+            assembled.definition.manual,
+            [ManualClause {
+                text: text.into(),
+                reason: reason.into()
+            }]
+        );
+        let ran = usize::from(status == ImplStatus::Partial);
+        assert_eq!(assembled.definition.abilities.len(), ran);
+    }
+
+    #[rstest]
+    #[case::a_card_the_engine_plays_whole(false)]
+    #[case::a_card_with_nothing_but_reminder_text(true)]
+    fn a_card_with_no_clause_left_to_the_table_shows_none(#[case] reminder_only: bool) {
+        let mut printed = elf();
+        let mut rules = elf_rules(ImplStatus::Full, vec![ability(MANA_ABILITY)]);
+        if reminder_only {
+            let text = "(This is a reminder.)";
+            printed.faces[0].oracle_text = text.into();
+            rules.faces[0].oracle_fingerprint = oracle_fingerprint(text);
+        }
+        let assembled = assemble(&printed, None, &Caps::everything());
+        let filed = assemble(&printed, Some(&rules), &Caps::everything());
+        assert_eq!(filed.definition.manual, Vec::<ManualClause>::new());
+        assert_eq!(
+            assembled.definition.manual.is_empty(),
+            reminder_only,
+            "a card with no file and rules text is left to the table whole"
+        );
+    }
+
+    #[test]
+    fn a_definition_with_no_clause_serializes_as_it_always_did() {
+        let json = serde_json::to_string(&CardDefinition::new("Elf")).unwrap();
+        assert!(!json.contains("manual"), "{json}");
+        let clause = CardDefinition::new("Elf").with_manual("Draw a card.", "not modelled");
+        assert!(
+            serde_json::to_string(&clause)
+                .unwrap()
+                .contains("Draw a card.")
+        );
+    }
 }

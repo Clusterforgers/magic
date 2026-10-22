@@ -4,8 +4,8 @@
 //! library order, and an object appears only when its viewer may see which card it is.
 
 use mtg_cards::ability::LoyaltyCost;
-use mtg_cards::{AbilityDef, ManualClause};
 use mtg_cards::value::CounterKind;
+use mtg_cards::{AbilityDef, ManualClause};
 use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::color::Color;
 use mtg_core::house::HouseRules;

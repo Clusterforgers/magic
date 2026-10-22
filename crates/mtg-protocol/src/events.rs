@@ -221,18 +221,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ChoiceMade { .. }
         | Event::StepDone { .. } => redact_effects(before, event, viewer),
         // A card moved by hand is named unless it goes between places the viewer cannot see into, as `ZoneChanged` does.
-        Event::ManualAction { player, action } => match &**action {
-            ManualAction::Move { object, to } => {
-                let object_zone = before.object(*object)?;
-                let from_known = identified_in(before, *object, object_zone.zone(), viewer);
-                let goes_unseen = !zone_is_visible_in(before, to.zone(object_zone.owner()), viewer);
-                (!from_known && goes_unseen).then_some(HiddenEvent::ManualMove {
-                    player: *player,
-                    to: *to,
-                })
-            }
-            _ => None,
-        },
+        Event::ManualAction { player, action } => redact_manual(before, *player, action, viewer),
         // A triggered ability can be about a card that only some seats can see.
         Event::AbilityTriggered(_)
         | Event::AbilityPutOnStack(_)
@@ -294,6 +283,23 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Unattached { .. }
         | Event::Revealed(_) => None,
     }
+}
+
+/// The hidden form of a manual action: a card moved between places the viewer cannot see into is not named, as the
+/// `ZoneChanged` that follows is not; no other action names a card the viewer cannot see.
+fn redact_manual(
+    before: &GameState,
+    player: PlayerId,
+    action: &ManualAction,
+    viewer: PlayerId,
+) -> Option<HiddenEvent> {
+    let ManualAction::Move { object, to } = action else {
+        return None;
+    };
+    let moved = before.object(*object)?;
+    let from_known = identified_in(before, *object, moved.zone(), viewer);
+    let goes_unseen = !zone_is_visible_in(before, to.zone(moved.owner()), viewer);
+    (!from_known && goes_unseen).then_some(HiddenEvent::ManualMove { player, to: *to })
 }
 
 /// The hidden form of an event of the effect pipeline that may name cards or learn a player something private.

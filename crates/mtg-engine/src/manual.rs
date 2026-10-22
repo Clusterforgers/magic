@@ -26,7 +26,7 @@ use crate::counters::CountersChanged;
 use crate::events::{Event, ZoneCause};
 use crate::format::ExtraZone;
 use crate::loyalty;
-use crate::object::{GameObject, ObjectKind};
+use crate::object::{GameObject, ObjectKind, PermanentState};
 use crate::rules::{cant_draw, cant_gain_life};
 use crate::state::GameState;
 use crate::steps::draw;
@@ -225,7 +225,9 @@ impl CustomToken {
     fn spec(&self) -> Result<TokenSpec, ManualRefusal> {
         let bad = ManualRefusal::BadToken;
         let name = self.name.trim();
-        if name.is_empty() || name.chars().count() > MAX_NAME_CHARS || name.chars().any(char::is_control)
+        if name.is_empty()
+            || name.chars().count() > MAX_NAME_CHARS
+            || name.chars().any(char::is_control)
         {
             return Err(bad("a name of 1 to 40 characters"));
         }
@@ -469,14 +471,14 @@ pub(crate) fn events(
         ManualAction::CreateToken { token, count } => create_tokens(state, player, token, *count)?,
         ManualAction::Tap { object } => {
             let held = permanent(state, *object)?;
-            if held.permanent().is_some_and(|p| p.tapped()) {
+            if held.permanent().is_some_and(PermanentState::tapped) {
                 return Err(ManualRefusal::NoChange);
             }
             vec![Event::PermanentTapped { object: *object }]
         }
         ManualAction::Untap { object } => {
             let held = permanent(state, *object)?;
-            if !held.permanent().is_some_and(|p| p.tapped()) {
+            if !held.permanent().is_some_and(PermanentState::tapped) {
                 return Err(ManualRefusal::NoChange);
             }
             vec![Event::PermanentUntapped { object: *object }]
@@ -770,11 +772,114 @@ fn attach(
     if id == to {
         return Err(ManualRefusal::NotAttachable(id));
     }
-    if state
-        .host_of(id)
-        .is_some_and(|host| host == to)
-    {
+    if state.host_of(id).is_some_and(|host| host == to) {
         return Err(ManualRefusal::NoChange);
     }
     Ok(vec![Event::Attached { object: id, to }])
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: every token of the common list is a real description, a custom token is accepted only as a name, types, subtypes and a size that a token can have, a zone names the zone of the card's owner, and an action keeps the wire form it was given.
+    use rstest::rstest;
+
+    use super::*;
+
+    #[test]
+    fn every_common_token_is_described() {
+        for token in CommonToken::ALL {
+            let spec = token.spec().unwrap_or_else(|| panic!("{token:?}"));
+            assert!(!spec.name.is_empty() && !spec.types.is_empty(), "{token:?}");
+            let creature = spec.types.contains(&CardType::Creature);
+            assert_eq!(spec.power.is_some(), creature, "{token:?}");
+            assert_eq!(spec.toughness.is_some(), creature, "{token:?}");
+        }
+        let names: std::collections::BTreeSet<_> = CommonToken::ALL
+            .iter()
+            .filter_map(|token| token.spec())
+            .map(|spec| spec.name)
+            .collect();
+        assert_eq!(
+            names.len(),
+            CommonToken::ALL.len(),
+            "each is called differently"
+        );
+    }
+
+    fn custom(
+        name: &str,
+        types: &[CardType],
+        subtypes: &[&str],
+        size: Option<(i32, i32)>,
+    ) -> CustomToken {
+        CustomToken {
+            name: name.into(),
+            colors: vec![Color::Red, Color::Red, Color::Blue],
+            types: types.to_vec(),
+            subtypes: subtypes.iter().map(|s| (*s).to_owned()).collect(),
+            power: size.map(|(power, _)| power),
+            toughness: size.map(|(_, toughness)| toughness),
+        }
+    }
+
+    #[rstest]
+    #[case::a_creature(custom("Imp", &[CardType::Creature], &["Imp"], Some((1, 2))), true)]
+    #[case::a_name_with_spaces_trimmed(custom(" Big Imp ", &[CardType::Creature], &[], Some((0, 0))), true)]
+    #[case::an_artifact_creature(custom("Gizmo", &[CardType::Artifact, CardType::Creature], &["Construct"], Some((99, 99))), true)]
+    #[case::a_land(custom("Isle", &[CardType::Land], &["Island"], None), true)]
+    #[case::an_enchantment(custom("Aura of Calm", &[CardType::Enchantment], &[], None), true)]
+    #[case::a_name_of_forty_characters(custom(&"x".repeat(40), &[CardType::Artifact], &[], None), true)]
+    #[case::a_name_too_long(custom(&"x".repeat(41), &[CardType::Artifact], &[], None), false)]
+    #[case::no_name(custom("", &[CardType::Artifact], &[], None), false)]
+    #[case::a_control_character(custom("Im\np", &[CardType::Artifact], &[], None), false)]
+    #[case::no_type(custom("Imp", &[], &[], None), false)]
+    #[case::a_type_that_is_no_token(custom("Imp", &[CardType::Planeswalker], &[], None), false)]
+    #[case::a_creature_with_no_size(custom("Imp", &[CardType::Creature], &[], None), false)]
+    #[case::a_land_with_a_size(custom("Isle", &[CardType::Land], &[], Some((1, 1))), false)]
+    #[case::a_negative_power(custom("Imp", &[CardType::Creature], &[], Some((-1, 1))), false)]
+    #[case::a_huge_toughness(custom("Imp", &[CardType::Creature], &[], Some((1, 100))), false)]
+    #[case::a_subtype_with_a_digit(custom("Imp", &[CardType::Creature], &["Imp2"], Some((1, 1))), false)]
+    #[case::a_blank_subtype(custom("Imp", &[CardType::Creature], &[" "], Some((1, 1))), false)]
+    #[case::too_many_subtypes(custom("Imp", &[CardType::Creature], &["A", "B", "C", "D", "E", "F", "G"], Some((1, 1))), false)]
+    fn a_custom_token_is_a_token_or_is_refused(#[case] token: CustomToken, #[case] accepted: bool) {
+        assert_eq!(token.spec().is_ok(), accepted, "{token:?}");
+    }
+
+    #[test]
+    fn a_custom_token_is_described_once_whatever_it_repeats() {
+        let spec = custom(
+            " Imp ",
+            &[CardType::Creature, CardType::Creature],
+            &[" Imp "],
+            Some((1, 2)),
+        )
+        .spec()
+        .unwrap();
+        assert_eq!(spec.name, "Imp");
+        assert_eq!(spec.colors, [Color::Blue, Color::Red]);
+        assert_eq!(spec.types, [CardType::Creature]);
+        assert_eq!(spec.subtypes, [Subtype("Imp".into())]);
+    }
+
+    #[rstest]
+    #[case(ManualZone::Battlefield, Zone::Battlefield)]
+    #[case(ManualZone::Hand, Zone::Hand(PlayerId(2)))]
+    #[case(ManualZone::Graveyard, Zone::Graveyard(PlayerId(2)))]
+    #[case(ManualZone::Exile, Zone::Exile)]
+    #[case(ManualZone::LibraryTop, Zone::Library(PlayerId(2)))]
+    #[case(ManualZone::LibraryBottom, Zone::Library(PlayerId(2)))]
+    #[case(ManualZone::Command, Zone::Command(PlayerId(2)))]
+    fn a_zone_names_the_zone_of_the_cards_owner(#[case] to: ManualZone, #[case] expected: Zone) {
+        assert_eq!(to.zone(PlayerId(2)), expected);
+    }
+
+    #[rstest]
+    #[case(ManualAction::Move { object: ObjectId(3), to: ManualZone::LibraryTop }, r#"{"Move":{"object":3,"to":"LibraryTop"}}"#)]
+    #[case(ManualAction::Life { player: PlayerId(1), delta: -2 }, r#"{"Life":{"player":1,"delta":-2}}"#)]
+    #[case(ManualAction::CreateToken { token: ManualToken::Common(CommonToken::Treasure), count: 2 }, r#"{"CreateToken":{"token":{"Common":"Treasure"},"count":2}}"#)]
+    #[case(ManualAction::Counters { object: ObjectId(4), counter: CounterKind::PlusOnePlusOne, delta: 1 }, r#"{"Counters":{"object":4,"counter":"+1/+1","delta":1}}"#)]
+    fn an_action_has_the_wire_form_clients_send(#[case] action: ManualAction, #[case] json: &str) {
+        assert_eq!(serde_json::to_string(&action).unwrap(), json);
+        assert_eq!(serde_json::from_str::<ManualAction>(json).unwrap(), action);
+    }
 }

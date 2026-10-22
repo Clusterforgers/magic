@@ -3,8 +3,9 @@
 use std::fmt;
 
 use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
+use mtg_engine::manual::ManualAction;
 use mtg_engine::state::{GameState, Stage};
-use mtg_engine::{Engine, EngineError, Event, GameResult, GameSetup};
+use mtg_engine::{Decision, Engine, EngineError, Event, GameResult, GameSetup};
 use thiserror::Error;
 
 use crate::bot::RandomBot;
@@ -150,19 +151,7 @@ pub fn play_game_with(
     } else {
         None
     };
-    let mut bots: Vec<RandomBot> = (0u64..)
-        .take(setup.players.len())
-        .map(|seat| {
-            let mut bot = RandomBot::new(seed, seat);
-            if options.partial_payments {
-                bot = bot.with_partial_payments();
-            }
-            if options.symbol_choices {
-                bot = bot.with_symbol_choices();
-            }
-            bot
-        })
-        .collect();
+    let mut bots = bots_for(setup.players.len(), seed, options);
     let mut engine = Engine::new(setup).map_err(|e| fail(e.into(), &[]))?;
     observe(&mut checker, &engine).map_err(|v| fail(v.into(), engine.events()))?;
 
@@ -212,11 +201,7 @@ pub fn play_game_with(
             option_asks += 1;
         }
         let table_passes = windows.passes(engine.state(), &decision);
-        let scripted = (!table_passes
-            && matches!(decision.kind, DecisionKind::Priority(_))
-            && script.due())
-        .then(|| script.action(engine.state(), decision.player))
-        .flatten();
+        let scripted = scripted_action(&mut script, &engine, &decision, table_passes);
         let answer = if table_passes {
             auto_passes += 1;
             pass.clone()
@@ -245,6 +230,36 @@ pub fn play_game_with(
             ..outcome
         })
         .map_err(|kind| fail(kind, engine.events()))
+}
+
+/// One seeded bot for each seat, set up as the options say.
+fn bots_for(seats: usize, seed: u64, options: PlayOptions) -> Vec<RandomBot> {
+    (0u64..)
+        .take(seats)
+        .map(|seat| {
+            let mut bot = RandomBot::new(seed, seat);
+            if options.partial_payments {
+                bot = bot.with_partial_payments();
+            }
+            if options.symbol_choices {
+                bot = bot.with_symbol_choices();
+            }
+            bot
+        })
+        .collect()
+}
+
+/// The manual action the script takes at this decision, if it takes one: only a priority decision the table does not
+/// pass for gets one.
+fn scripted_action(
+    script: &mut ManualScript,
+    engine: &Engine,
+    decision: &Decision,
+    table_passes: bool,
+) -> Option<ManualAction> {
+    (!table_passes && matches!(decision.kind, DecisionKind::Priority(_)) && script.due())
+        .then(|| script.action(engine.state(), decision.player))
+        .flatten()
 }
 
 fn observe(checker: &mut Option<InvariantChecker>, engine: &Engine) -> Result<(), Violation> {

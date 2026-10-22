@@ -46,7 +46,10 @@ pub fn manual_creature(name: &str) -> Arc<CardDefinition> {
             .with_mana_cost(cost(1, &[]))
             .with_power_toughness(2, 2)
             .with_rules(Ability::Keyword(Keyword::Flying))
-            .with_manual("Whenever this creature dies, each opponent loses 1 life.", REASON),
+            .with_manual(
+                "Whenever this creature dies, each opponent loses 1 life.",
+                REASON,
+            ),
     )
 }
 
@@ -86,7 +89,13 @@ pub fn unverified_corpus_cards() -> Result<Vec<String>, CorpusError> {
 /// A legal Normal deck of lands, four of each card the engine does not play whole and of the cards of this module, and a
 /// few cards that it does, derived entirely from `rng`.
 pub fn manual_deck(rng: &mut GameRng) -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
-    let colors = [Color::White, Color::Blue, Color::Black, Color::Red, Color::Green];
+    let colors = [
+        Color::White,
+        Color::Blue,
+        Color::Black,
+        Color::Red,
+        Color::Green,
+    ];
     let mut cards: Vec<Arc<CardDefinition>> = unverified_corpus_cards()?
         .iter()
         .map(|name| corpus::card(name))

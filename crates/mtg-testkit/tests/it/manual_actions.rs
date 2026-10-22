@@ -1,6 +1,9 @@
 //! Goal: the seat that has priority applies every kind of manual action to what it owns or controls, to any permanent for counters, tapping and untapping, and to its own life and counters, each one logged first by an event that names the seat and the action and followed by the events of the change; an action that is not allowed (an opponent's card or life, a card in a library or on the stack, a zone the game lacks, a number out of range, counters that are not there) is refused by name and leaves the log, the state and the question as they were; the seat keeps priority, the round starts again, and a rebuilt engine reaches the same state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use std::sync::Arc;
+
+use mtg_cards::CardDefinition;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
@@ -142,12 +145,13 @@ const fn mv(object: ObjectId, to: ManualZone) -> ManualAction {
 /// Takes the action as seat 0 and checks what every action does: it is logged first, the seat keeps priority, and a
 /// rebuilt engine is in the same state.
 fn take(driver: &mut Driver, action: ManualAction) {
-    let events = driver.manual(action.clone()).unwrap();
+    let expected = action.clone();
+    let events = driver.manual(action).unwrap();
     assert!(
         matches!(
             events.first(),
             Some(Event::ManualAction { player, action: logged })
-                if *player == pid(0) && **logged == action
+                if *player == pid(0) && **logged == expected
         ),
         "{events:?}"
     );
@@ -466,7 +470,13 @@ fn a_spell_on_the_stack_cannot_be_moved_by_hand() {
 fn the_seat_that_has_priority_acts_with_a_spell_on_the_stack_and_on_another_seats_turn() {
     let (mut driver, _) = game();
     driver.cast("Wave").unwrap();
-    take(&mut driver, ManualAction::Life { player: pid(0), delta: 1 });
+    take(
+        &mut driver,
+        ManualAction::Life {
+            player: pid(0),
+            delta: 1,
+        },
+    );
     // The round started again, so seat 1 is asked after seat 0 passes, and it may act too.
     driver.pass().unwrap();
     assert_eq!(driver.decision().unwrap().player, pid(1));
@@ -498,4 +508,41 @@ fn an_action_starts_the_round_again_so_the_other_seats_may_answer_it() {
         .unwrap();
     driver.pass().unwrap();
     assert_eq!(driver.decision().unwrap().player, pid(0));
+}
+
+#[test]
+fn a_planeswalker_put_onto_the_battlefield_by_hand_enters_with_its_loyalty() {
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .hand(0, [mtg_testkit::cards::walker("Walker", 0)])
+            .library(0, vec![forest(); 5])
+            .library(1, vec![forest(); 5]),
+    )
+    .unwrap();
+    let walker = find(&driver, Zone::Hand(pid(0)), "Walker");
+    take(&mut driver, mv(walker, ManualZone::Battlefield));
+    assert!(counters(&driver, walker, &CounterKind::Loyalty) > 0);
+}
+
+/// An Aura attached to nothing goes to the graveyard, unless its enchant ability is a clause the table follows: its
+/// controller attaches it by hand, and the invariant checker, which judges a state at every decision, accepts it waiting.
+#[rstest]
+#[case::a_plain_aura(Arc::new(CardDefinition::new("Plain aura").with_type(CardType::Enchantment).with_subtype("Aura")), false)]
+#[case::an_aura_the_engine_does_not_run(manual_aura("Charm"), true)]
+fn an_aura_attached_to_nothing_waits_only_when_the_table_attaches_it(
+    #[case] aura: Arc<CardDefinition>,
+    #[case] waits: bool,
+) {
+    let driver = Driver::from_scenario(
+        Scenario::new(2)
+            .battlefield(0, [ready(aura)])
+            .library(0, vec![forest(); 5])
+            .library(1, vec![forest(); 5]),
+    )
+    .unwrap();
+    assert_eq!(
+        driver.state().zone(Zone::Battlefield).len(),
+        usize::from(waits)
+    );
+    mtg_testkit::check_settled(driver.state()).unwrap();
 }

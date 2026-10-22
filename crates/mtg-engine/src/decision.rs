@@ -15,8 +15,8 @@ use crate::choose::{
 };
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::help::{Help, Offered};
-use crate::manual::ManualAction;
 use crate::mana::{ManaOption, ManaPool, ManaSource, Payment};
+use crate::manual::ManualAction;
 use crate::spend::Spend;
 
 /// A question for one player together with all of their legal options.

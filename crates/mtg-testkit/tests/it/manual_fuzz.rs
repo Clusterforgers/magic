@@ -69,14 +69,7 @@ fn seeded_games_with_manual_cards_and_manual_actions_finish_and_keep_every_invar
     }
     assert!(taken > 0, "no manual action in {} games", games());
     for wanted in [
-        "move",
-        "counters",
-        "life",
-        "token",
-        "tap",
-        "untap",
-        "draw",
-        "discard",
+        "move", "counters", "life", "token", "tap", "untap", "draw", "discard",
     ] {
         assert!(
             kinds.contains(wanted),

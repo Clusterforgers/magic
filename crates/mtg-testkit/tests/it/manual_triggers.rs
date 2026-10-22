@@ -8,8 +8,8 @@ use mtg_cards::refs::{Ref, Selector};
 use mtg_cards::trigger::TriggerPattern;
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::ObjectId;
-use mtg_engine::GameResult;
 use mtg_engine::Event;
+use mtg_engine::GameResult;
 use mtg_engine::manual::{CommonToken, ManualAction, ManualToken, ManualZone};
 use mtg_engine::player::LossReason;
 use mtg_engine::zones::Zone;
@@ -169,12 +169,16 @@ fn an_equipment_attached_by_hand_to_what_it_cannot_equip_is_taken_off() {
             to: ids.land,
         })
         .unwrap();
-    assert!(events
-        .iter()
-        .any(|e| matches!(e, Event::Attached { object, .. } if *object == ids.blade)));
-    assert!(events
-        .iter()
-        .any(|e| matches!(e, Event::Unattached { object } if *object == ids.blade)));
+    assert!(
+        events
+            .iter()
+            .any(|e| matches!(e, Event::Attached { object, .. } if *object == ids.blade))
+    );
+    assert!(
+        events
+            .iter()
+            .any(|e| matches!(e, Event::Unattached { object } if *object == ids.blade))
+    );
     assert_eq!(driver.state().host_of(ids.blade), None);
 }
 

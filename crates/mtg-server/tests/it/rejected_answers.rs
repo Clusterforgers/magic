@@ -9,8 +9,10 @@ use common::{
 };
 use mtg_core::ids::ObjectId;
 use mtg_engine::Answer;
+use mtg_engine::Event;
 use mtg_engine::decision::{MulliganChoice, PriorityAction};
-use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, ServerMessage};
+use mtg_engine::manual::ManualAction;
+use mtg_protocol::{ClientMessage, DecisionId, ErrorCode, EventView, ServerMessage};
 use mtg_server::{EventStore, GameHandle, MemoryStore, spawn_game_with};
 use rstest::rstest;
 
@@ -234,4 +236,59 @@ async fn a_message_from_a_seat_that_does_not_exist_is_ignored() {
     handle.send(seat(9), ClientMessage::Concede).await.unwrap();
     assert_eq!(handle.status().await.unwrap(), before);
     assert!(clients.iter_mut().all(|c| c.drain().is_empty()));
+}
+
+#[tokio::test]
+async fn a_manual_action_of_a_seat_without_priority_or_one_the_state_forbids_is_refused_and_a_legal_one_reaches_every_seat()
+ {
+    let (handle, store) = new_game(2);
+    let (mut clients, _) = start_table(&handle, 2).await;
+    let (holder, id, _) = passive_until_priority(&handle, &mut clients).await;
+    let other = 1 - holder;
+    let before = handle.status().await.unwrap();
+    let life = |player: usize, delta: i32| {
+        Answer::Priority(PriorityAction::Manual(ManualAction::Life {
+            player: mtg_core::ids::PlayerId::from_index(player),
+            delta,
+        }))
+    };
+
+    // The seat that does not hold priority is refused, whatever it names.
+    let message = ClientMessage::Answer {
+        decision: id,
+        answer: life(other, -1),
+    };
+    let received = poke(&handle, &mut clients, other, message).await;
+    assert_eq!(only_error(&received[other]), ErrorCode::StaleDecision);
+    // The holder may not change another seat's life.
+    let message = ClientMessage::Answer {
+        decision: id,
+        answer: life(other, -1),
+    };
+    let received = poke(&handle, &mut clients, holder, message).await;
+    assert_eq!(only_error(&received[holder]), ErrorCode::IllegalAnswer);
+    silent(&received[other]);
+    assert_eq!(handle.status().await.unwrap(), before);
+    assert_eq!(
+        store.load(game_id(1)).await.unwrap().len() as u64,
+        before.events
+    );
+
+    // Its own life is changed and every seat is told, the action first.
+    let message = ClientMessage::Answer {
+        decision: id,
+        answer: life(holder, -3),
+    };
+    let received = poke(&handle, &mut clients, holder, message).await;
+    for messages in &received {
+        let Some(ServerMessage::Events(batch)) = messages.first() else {
+            panic!("a batch comes first: {messages:?}");
+        };
+        assert!(matches!(
+            batch.events.first(),
+            Some(EventView::Public(Event::ManualAction { .. }))
+        ));
+        assert_eq!(batch.table.players[holder].life, 17);
+    }
+    assert!(handle.status().await.unwrap().events > before.events);
 }

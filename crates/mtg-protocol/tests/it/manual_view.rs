@@ -86,8 +86,8 @@ fn card(table: &Table, name: &str) -> ObjectId {
         .state()
         .objects()
         .find(|o| o.card().name == name)
-        .map(|o| o.id())
         .unwrap_or_else(|| panic!("no {name}"))
+        .id()
 }
 
 /// Takes the action as seat 0.
@@ -109,8 +109,18 @@ enum Named {
 }
 
 #[rstest]
-#[case::hand_to_the_top_of_the_library("Secret hand card", ManualZone::LibraryTop, Named::Nobody, false)]
-#[case::hand_to_the_bottom_of_the_library("Secret hand card", ManualZone::LibraryBottom, Named::Nobody, false)]
+#[case::hand_to_the_top_of_the_library(
+    "Secret hand card",
+    ManualZone::LibraryTop,
+    Named::Nobody,
+    false
+)]
+#[case::hand_to_the_bottom_of_the_library(
+    "Secret hand card",
+    ManualZone::LibraryBottom,
+    Named::Nobody,
+    false
+)]
 #[case::hand_to_the_graveyard("Secret hand card", ManualZone::Graveyard, Named::All, true)]
 #[case::hand_to_exile("Secret hand card", ManualZone::Exile, Named::All, true)]
 #[case::hand_to_the_battlefield("Secret hand card", ManualZone::Battlefield, Named::All, true)]
@@ -244,9 +254,7 @@ fn tokens_counters_and_tapping_by_hand_are_public(
 ) {
     let mut table = table(seat_count);
     let action = match action {
-        ManualAction::Counters {
-            counter, delta, ..
-        } => ManualAction::Counters {
+        ManualAction::Counters { counter, delta, .. } => ManualAction::Counters {
             object: card(&table, "Open bear"),
             counter,
             delta,
@@ -287,7 +295,13 @@ fn tokens_counters_and_tapping_by_hand_are_public(
 #[rstest]
 fn life_and_a_seats_own_counters_changed_by_hand_are_public(#[values(2, 3, 4)] seat_count: usize) {
     let mut table = table(seat_count);
-    act(&mut table, ManualAction::Life { player: seat(0), delta: -3 });
+    act(
+        &mut table,
+        ManualAction::Life {
+            player: seat(0),
+            delta: -3,
+        },
+    );
     act(
         &mut table,
         ManualAction::PlayerCounters {
@@ -323,7 +337,7 @@ fn a_card_the_engine_does_not_run_shows_its_clauses_to_every_seat_that_sees_the_
         );
         assert!(!shown.keywords.is_empty(), "the engine's flying is listed");
         let bear = view.objects.iter().find(|o| o.name == "Open bear").unwrap();
-        assert!(bear.manual.is_empty());
+        assert_eq!(bear.manual, vec![]);
         let json = serde_json::to_value(bear).unwrap();
         assert!(json.get("manual").is_none(), "left out while empty");
     }

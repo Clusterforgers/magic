@@ -97,7 +97,10 @@ fn a_spell_the_engine_does_not_run_goes_to_the_graveyard_doing_nothing(
         ],
         life
     );
-    assert_eq!(driver.state().zone(Zone::Battlefield).len(), lands().len() + 1);
+    assert_eq!(
+        driver.state().zone(Zone::Battlefield).len(),
+        lands().len() + 1
+    );
 }
 
 #[test]
@@ -152,7 +155,8 @@ fn an_equipment_the_engine_does_not_run_is_attached_by_hand() {
 }
 
 #[test]
-fn every_corpus_card_that_is_not_verified_is_cast_and_resolves_with_its_clauses_left_to_the_table() {
+fn every_corpus_card_that_is_not_verified_is_cast_and_resolves_with_its_clauses_left_to_the_table()
+{
     let names = unverified_corpus_cards().unwrap();
     assert!(
         !names.is_empty(),
@@ -162,7 +166,10 @@ fn every_corpus_card_that_is_not_verified_is_cast_and_resolves_with_its_clauses_
         let card = mtg_testkit::corpus::card(&full_name).unwrap();
         // The card plays under the name of its front face.
         let name = card.name.clone();
-        assert!(!card.manual.is_empty(), "{name} shows no clause to the table");
+        assert!(
+            !card.manual.is_empty(),
+            "{name} shows no clause to the table"
+        );
         let mut driver = game(vec![card]);
         cast_and_resolve(&mut driver, &name);
         let played = driver
