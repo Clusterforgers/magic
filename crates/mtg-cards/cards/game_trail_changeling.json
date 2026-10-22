@@ -1,0 +1,12 @@
+{
+  "oracle_id": "384611fb-aca2-4e2d-9125-44ea034de08b",
+  "name": "Game-Trail Changeling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Game-Trail Changeling",
+      "oracle_fingerprint": "def1a05d42d52a3791ab45e14c390a26",
+      "abilities": [{ "Keyword": "Changeling" }, { "Keyword": "Trample" }]
+    }
+  ]
+}

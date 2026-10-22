@@ -81,6 +81,8 @@ fn hit(game: &GameState, source: &str, to: &str, amount: u32) -> Event {
         target: damage_target(game, to),
         amount,
         deathtouch: false,
+        form: crate::combat::DamageForm::Normal,
+        toxic: 0,
     }
 }
 

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "01ab37a4-21d2-49f4-9b85-cb522a4d04ad",
+  "name": "Zendikar Farguide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zendikar Farguide",
+      "oracle_fingerprint": "51079cf0d07f8f1627a7be856aa5fc57",
+      "abilities": [{ "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } }]
+    }
+  ]
+}

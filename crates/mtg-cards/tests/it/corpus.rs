@@ -206,7 +206,9 @@ fn declared_status_decides_the_support_when_the_engine_runs_everything(#[case] c
     for shown in printed() {
         let record = library.support(&shown, &caps);
         let expected = match shown.name.as_str() {
-            "Aven Mindcensor" | "Courser of Kruphix" => Support::Partial,
+            "Aven Mindcensor" | "Bebop, Skull & Crossbones" | "Courser of Kruphix" => {
+                Support::Partial
+            }
             _ => Support::Verified,
         };
         assert_eq!(
@@ -263,7 +265,14 @@ fn keywords_in_the_data_appear_in_the_oracle_text() {
         for (index, face) in card.faces.iter().enumerate() {
             let text = shown.faces[index].oracle_text.to_lowercase();
             for ability in &face.abilities {
-                if let Ability::Keyword(keyword) = ability
+                // A landwalk is printed by its land type (`Swampwalk`).
+                if let Ability::Keyword(Keyword::Landwalk(_)) = ability {
+                    assert!(
+                        text.contains("walk"),
+                        "{}: the text has no landwalk",
+                        card.name
+                    );
+                } else if let Ability::Keyword(keyword) = ability
                     && !matches!(keyword, Keyword::Fuse)
                 {
                     assert!(
@@ -438,6 +447,10 @@ fn clause_spans_cut_out_the_sentences_they_name() {
         (
             "Aven Mindcensor",
             "If an opponent would search a library, that player searches the top four cards of that library instead.",
+        ),
+        (
+            "Bebop, Skull & Crossbones",
+            "Whenever Bebop deals combat damage to a player, you may draw X cards, where X is the number of counters on Bebop. If you do, you lose X life.",
         ),
         (
             "Courser of Kruphix",

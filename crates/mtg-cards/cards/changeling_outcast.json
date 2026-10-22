@@ -1,0 +1,15 @@
+{
+  "oracle_id": "a61ef0cc-1da9-49f9-b0dc-01cf9f6205be",
+  "name": "Changeling Outcast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Changeling Outcast",
+      "oracle_fingerprint": "6bde739f2c41f8520575592dcf0148be",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        { "Static": { "affected": "This", "mods": ["CantBlock", "CantBeBlocked"] } }
+      ]
+    }
+  ]
+}

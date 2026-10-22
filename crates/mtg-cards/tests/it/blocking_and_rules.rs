@@ -116,6 +116,11 @@ const ENTERS: &str = r#""when":{"Enters":{"what":["This"]}}"#;
 #[case::encore(r#"{"Keyword":{"Encore":"{5}{R}"}}"#, &["Cost.Mana", "Keyword.Encore"])]
 #[case::squad(r#"{"Keyword":{"Squad":"{2}"}}"#, &["Cost.Mana", "Keyword.Squad"])]
 #[case::foretell(r#"{"Keyword":{"Foretell":"{1}{U}"}}"#, &["Cost.Mana", "Keyword.Foretell"])]
+#[case::partner(r#"{"Keyword":"Partner"}"#, &["Keyword.Partner"])]
+#[case::partner_with(r#"{"Keyword":{"PartnerWith":"Pir, Imaginative Rascal"}}"#, &["Keyword.PartnerWith"])]
+#[case::a_partner_group(r#"{"Keyword":{"PartnerGroup":"Friends forever"}}"#, &["Keyword.PartnerGroup"])]
+#[case::doctors_companion(r#"{"Keyword":"DoctorsCompanion"}"#, &["Keyword.DoctorsCompanion"])]
+#[case::choose_a_background(r#"{"Keyword":"ChooseABackground"}"#, &["Keyword.ChooseABackground"])]
 #[case::buyback(r#"{"Keyword":{"Buyback":"{3}"}}"#, &["Cost.Mana", "Keyword.Buyback"])]
 #[case::entwine(r#"{"Keyword":{"Entwine":"{2}"}}"#, &["Cost.Mana", "Keyword.Entwine"])]
 #[case::a_kicker_that_sacrifices(
@@ -183,6 +188,10 @@ fn a_node_validates_round_trips_and_names_its_primitive(
     r#"{"Rule":{"rule":{"AdditionalLandPlays":{"count":-1}}}}"#,
     "an additional land play is at least one"
 )]
+#[case::a_commander_by_an_effect(
+    r#"{"Spell":{"effects":[{"Rule":{"rule":"CanBeCommander","duration":"UntilEndOfTurn"}}]}}"#,
+    "a card can be a commander by a static ability"
+)]
 #[case::a_commander_in_one_zone(
     r#"{"Rule":{"rule":"CanBeCommander","from":"Hand"}}"#,
     "a card can be a commander in every zone"
@@ -241,6 +250,11 @@ fn a_node_used_wrongly_is_refused_where_it_stands(#[case] json: &str, #[case] me
 #[case::encore("Keyword.Encore")]
 #[case::squad("Keyword.Squad")]
 #[case::foretell("Keyword.Foretell")]
+#[case::partner("Keyword.Partner")]
+#[case::partner_with("Keyword.PartnerWith")]
+#[case::a_partner_group("Keyword.PartnerGroup")]
+#[case::doctors_companion("Keyword.DoctorsCompanion")]
+#[case::choose_a_background("Keyword.ChooseABackground")]
 fn a_caps_that_lacks_the_primitive_reports_it_missing(#[case] name: &str) {
     let lacking = Caps::none();
     assert!(!lacking.runs(name));

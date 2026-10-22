@@ -11,7 +11,7 @@
 
 use axum::http::{HeaderMap, StatusCode};
 use mtg_cards::CardDefinition;
-use mtg_cards::deck::{DeckReport, DeckState, DeckZone, Issue, IssueCode};
+use mtg_cards::deck::{DeckReport, DeckZone, Issue, IssueCode};
 use mtg_cards::support::Support;
 use mtg_core::house::HouseRules;
 use mtg_db::DeckId;
@@ -23,6 +23,7 @@ use std::sync::Arc;
 
 use crate::api::ApiError;
 use crate::card_api::failed;
+use crate::cards::CardSource;
 use crate::deck_cards::{Line, Loaded};
 use crate::decks::lines_of;
 use crate::demo;
@@ -150,9 +151,12 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
         .ok_or(Refused::Unknown)?;
     let rules = source.rules().await.map_err(ApiError::from)?;
     let judged = Judge::new(&rules).judge(&deck);
-    if !judged.playable {
+    // What the deck check refuses and no table can lift ends here; the rest, and the engine's own
+    // check, wait for the table the deck is chosen for.
+    if is_held_back(&judged.report) {
         return Err(Refused::Blocked(judged.issues));
     }
+    let own_issues = judged.report.legality.clone();
     let note = SeatDeck {
         name: deck.summary.name.clone(),
         format: judged.format.to_owned(),
@@ -165,6 +169,7 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
         judged.leaders,
         note,
     )
+    .map(|chosen| chosen.with_own_issues(own_issues))
     .map_err(|error| {
         tracing::error!(%error, "a precon could not be fingerprinted");
         Refused::Failed(ApiError::new(
@@ -193,7 +198,7 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
     let loaded = Loaded::load(source, &lines).await?;
     let report = loaded.report(&deck.format, &lines);
 
-    if !report.legality.is_empty() || report.summary.state == DeckState::Blocked {
+    if is_held_back(&report) {
         return Err(Refused::Blocked(report.legality.clone()));
     }
     let ids = library_ids(&lines);
@@ -206,14 +211,59 @@ async fn stored(app: &AppState, headers: &HeaderMap, id: &str) -> Result<ChosenD
         format: deck.format.clone(),
         manual_cards: manual_cards(&report),
     };
-    ChosenDeck::led(ids, cards, commander_ids, commanders, note).map_err(|error| {
-        tracing::error!(%error, "a stored deck could not be fingerprinted");
-        Refused::Failed(ApiError::new(
-            StatusCode::INTERNAL_SERVER_ERROR,
-            "internal",
-            "the deck could not be read",
-        ))
-    })
+    ChosenDeck::led(ids, cards, commander_ids, commanders, note)
+        .map(|chosen| chosen.with_own_issues(report.legality.clone()))
+        .map_err(|error| {
+            tracing::error!(%error, "a stored deck could not be fingerprinted");
+            Refused::Failed(ApiError::new(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "internal",
+                "the deck could not be read",
+            ))
+        })
+}
+
+/// The report of a deck as the table with this `format` and these `house` rules reads it: the issues
+/// the table's deck rules lift are gone, and a deck the check has nothing left against is judged by
+/// the engine under the table's rules (`lines` are the deck's cards). The issues are those a seat
+/// choosing the deck would be refused with ([`ChosenDeck::issues_in`]).
+pub(crate) async fn judge_at_table(
+    source: &CardSource,
+    lines: &[Line],
+    report: &mut DeckReport,
+    format: FormatKind,
+    house: &HouseRules,
+) -> Result<(), ApiError> {
+    let none = HouseRules::default();
+    let house = if format == FormatKind::Commander {
+        house
+    } else {
+        &none
+    };
+    let mut legality: Vec<Issue> = report
+        .legality
+        .iter()
+        .filter(|issue| !issue.code.lifted_by(house))
+        .cloned()
+        .collect();
+    if legality.is_empty() && report.summary.counts.unplayable == 0 {
+        let ids = library_ids(lines);
+        let leaders = commander_ids(lines);
+        let both: Vec<String> = ids.iter().chain(&leaders).cloned().collect();
+        let mut cards = source.deck(&both).await?;
+        let commanders = cards.split_off(ids.len());
+        legality = format_issues(format, &cards, &commanders, house);
+    }
+    report.set_legality(legality);
+    Ok(())
+}
+
+/// Whether the deck check refuses a deck at every table: a card the game cannot play, or an issue
+/// that no deck rule of a table lifts. The other issues are judged at the table the deck is for
+/// ([`ChosenDeck::issues_in`]).
+pub(crate) fn is_held_back(report: &DeckReport) -> bool {
+    report.summary.counts.unplayable > 0
+        || report.legality.iter().any(|issue| !issue.code.liftable())
 }
 
 /// The oracle id of every card of a zone, a line's copies one after the other, in line order.
@@ -362,7 +412,7 @@ pub(crate) fn engine_issue(error: DeckError, format: FormatKind) -> Issue {
 #[cfg(test)]
 mod tests {
     //! Goal: the library of a stored deck is its main deck's cards in line order with copies side by side, the table is told only the main deck's manual copies, the game's format adds its own issues to the deck check's, and a refusal reaches the wire as a 422 with its issues or a 404 that tells nothing about the deck.
-    use mtg_cards::deck::{Counts, ReportCard, Summary};
+    use mtg_cards::deck::{Counts, DeckState, ReportCard, Summary};
     use rstest::rstest;
 
     use super::*;

@@ -1,10 +1,11 @@
-//! Commander games for tests: legendary commanders, 100-card singleton decks built from the corpus within a commander's
-//! color identity, and setups of 2 to 6 seats.
+//! Commander games for tests: legendary commanders and pairs of partners, 100-card singleton decks built from the corpus
+//! within the color identity of their commanders, and setups of 2 to 6 seats.
 
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
+use mtg_cards::keyword::Keyword;
 use mtg_cards::support::Support;
 use mtg_cards::trigger::ReplaceBy;
 use mtg_core::card::{CardType, Supertype};
@@ -38,6 +39,20 @@ pub fn legend(
     )
 }
 
+/// A legendary creature with Partner, costing `generic` and one colored mana per entry of `colors`.
+pub fn partner_legend(
+    name: &str,
+    generic: u32,
+    colors: &[Color],
+    power: i32,
+    toughness: i32,
+) -> Arc<CardDefinition> {
+    let card = legend(name, generic, colors, power, toughness)
+        .as_ref()
+        .clone();
+    Arc::new(card.with_rules(Ability::Keyword(Keyword::Partner)))
+}
+
 /// A basic land of each color of `identity`, or Wastes for a colorless identity.
 fn basics(identity: ColorSet) -> Vec<Arc<CardDefinition>> {
     let lands: Vec<_> = identity.iter().map(land).collect();
@@ -62,12 +77,8 @@ fn enters_as_a_copy(card: &CardDefinition) -> bool {
     })
 }
 
-/// A legal Commander deck led by a legendary creature of the corpus: the 99 other cards (distinct corpus cards the
-/// engine plays whole, within the commander's color identity, and basic lands to fill), and the commander. Everything
-/// is derived from `rng`.
-pub fn commander_deck(
-    rng: &mut GameRng,
-) -> Result<(Vec<Arc<CardDefinition>>, Arc<CardDefinition>), CorpusError> {
+/// The corpus cards the engine plays whole.
+fn playable() -> Result<Vec<Arc<CardDefinition>>, CorpusError> {
     let corpus = corpus::corpus()?;
     let mut playable = Vec::new();
     for name in corpus.names() {
@@ -75,6 +86,47 @@ pub fn commander_deck(
             playable.push(corpus.card(name)?);
         }
     }
+    Ok(playable)
+}
+
+/// `size` cards for the deck of `commanders`: distinct playable corpus cards within their color identities together,
+/// and basic lands to fill.
+fn deck_for(
+    rng: &mut GameRng,
+    playable: Vec<Arc<CardDefinition>>,
+    commanders: &[&CardDefinition],
+    size: usize,
+) -> Vec<Arc<CardDefinition>> {
+    let identity = commanders.iter().fold(ColorSet::EMPTY, |all, card| {
+        card.color_identity().iter().fold(all, ColorSet::with)
+    });
+    let mut spells: Vec<_> = playable
+        .into_iter()
+        .filter(|card| commanders.iter().all(|leader| card.name != leader.name))
+        .filter(|card| card.color_identity().is_subset_of(identity))
+        .filter(|card| card.singleton_limit() == Some(1))
+        .filter(|card| !enters_as_a_copy(card))
+        .collect();
+    rng.shuffle(&mut spells);
+    spells.truncate(MOST_SPELLS);
+    let basics = basics(identity);
+    let mut deck = spells;
+    let mut next = 0;
+    while deck.len() < size {
+        deck.push(Arc::clone(&basics[next % basics.len()]));
+        next += 1;
+    }
+    rng.shuffle(&mut deck);
+    deck
+}
+
+/// A legal Commander deck led by a legendary creature of the corpus: the 99 other cards (distinct corpus cards the
+/// engine plays whole, within the commander's color identity, and basic lands to fill), and the commander. Everything
+/// is derived from `rng`.
+pub fn commander_deck(
+    rng: &mut GameRng,
+) -> Result<(Vec<Arc<CardDefinition>>, Arc<CardDefinition>), CorpusError> {
+    let playable = playable()?;
     let leaders: Vec<_> = playable
         .iter()
         .filter(|card| card.can_be_commander())
@@ -84,24 +136,25 @@ pub fn commander_deck(
         .get(rng.index(leaders.len().max(1)))
         .cloned()
         .ok_or_else(|| CorpusError::Data("the corpus has no commander".into()))?;
-    let identity = commander.color_identity();
-    let mut spells: Vec<_> = playable
-        .into_iter()
-        .filter(|card| card.name != commander.name && card.color_identity().is_subset_of(identity))
-        .filter(|card| card.singleton_limit() == Some(1))
-        .filter(|card| !enters_as_a_copy(card))
-        .collect();
-    rng.shuffle(&mut spells);
-    spells.truncate(MOST_SPELLS);
-    let basics = basics(identity);
-    let mut deck = spells;
-    let mut next = 0;
-    while deck.len() < DECK_CARDS {
-        deck.push(Arc::clone(&basics[next % basics.len()]));
-        next += 1;
-    }
-    rng.shuffle(&mut deck);
+    let deck = deck_for(rng, playable, &[&commander], DECK_CARDS);
     Ok((deck, commander))
+}
+
+/// A deck and its pair of partners.
+pub type PartnerDeck = (Vec<Arc<CardDefinition>>, [Arc<CardDefinition>; 2]);
+
+/// A legal Commander deck led by a pair of partners in two colors: the 98 other cards, within the two colors together,
+/// and the pair. Everything is derived from `rng`.
+pub fn partner_deck(rng: &mut GameRng) -> Result<PartnerDeck, CorpusError> {
+    let at = rng.index(Color::ALL.len());
+    let first = Color::ALL[at];
+    let second = Color::ALL[(at + 1 + rng.index(Color::ALL.len() - 1)) % Color::ALL.len()];
+    let pair = [
+        partner_legend("First Partner", 1, &[first], 2, 2),
+        partner_legend("Second Partner", 1, &[second], 2, 2),
+    ];
+    let deck = deck_for(rng, playable()?, &[&pair[0], &pair[1]], DECK_CARDS - 1);
+    Ok((deck, pair))
 }
 
 /// A Commander game of `players` seats with [`commander_deck`]s, fully determined by `seed`.
@@ -112,6 +165,18 @@ pub fn commander_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, Corp
         let (deck, commander) = commander_deck(&mut GameRng::substream(seed, 9_000 + seat))?;
         decks.push(deck);
         commanders.push(vec![commander]);
+    }
+    Ok(GameSetup::new(Arc::new(Commander), seed, decks).with_commanders(commanders))
+}
+
+/// A Commander game of `players` seats, each led by a pair of partners ([`partner_deck`]), fully determined by `seed`.
+pub fn partner_fuzz_setup(players: usize, seed: u64) -> Result<GameSetup, CorpusError> {
+    let mut decks = Vec::with_capacity(players);
+    let mut commanders = Vec::with_capacity(players);
+    for seat in 0u64..players as u64 {
+        let (deck, pair) = partner_deck(&mut GameRng::substream(seed, 9_500 + seat))?;
+        decks.push(deck);
+        commanders.push(pair.to_vec());
     }
     Ok(GameSetup::new(Arc::new(Commander), seed, decks).with_commanders(commanders))
 }

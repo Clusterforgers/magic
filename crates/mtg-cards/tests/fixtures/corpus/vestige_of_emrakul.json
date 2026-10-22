@@ -1,0 +1,26 @@
+{
+  "id": "a5d84986-64a1-4bd1-a4f6-3eb147aca357",
+  "oracle_id": "55187899-c445-48e9-80b9-235eaf42f803",
+  "name": "Vestige of Emrakul",
+  "lang": "en",
+  "layout": "normal",
+  "set": "bfz",
+  "collector_number": "136",
+  "rarity": "common",
+  "released_at": "2015-10-02",
+  "digital": false,
+  "mana_cost": "{3}{R}",
+  "cmc": 4,
+  "type_line": "Creature — Eldrazi Drone",
+  "oracle_text": "Devoid (This card has no color.)\nTrample",
+  "power": "3",
+  "toughness": "4",
+  "colors": [],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Devoid",
+    "Trample"
+  ]
+}

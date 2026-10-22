@@ -94,6 +94,8 @@ pub enum Modification {
     AddSubtype(Subtype),
     /// Replaces the creature types with these (layer 4); the other subtypes stay (CR 205.1b).
     SetCreatureTypes(Vec<Subtype>),
+    /// Makes the object every creature type (layer 4): changeling (CR 702.73).
+    AddAllCreatureTypes,
     /// Replaces the colors (layer 5).
     SetColors(ColorSet),
     /// Adds a keyword ability (layer 6); `keywords_of` reads it and `characteristics` leaves it alone.
@@ -150,7 +152,8 @@ impl Modification {
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::AddSubtype(_)
-            | Modification::SetCreatureTypes(_) => Layer::Type,
+            | Modification::SetCreatureTypes(_)
+            | Modification::AddAllCreatureTypes => Layer::Type,
             Modification::SetColors(_) => Layer::Color,
             Modification::AddKeyword(_)
             | Modification::RemoveKeyword(_)
@@ -177,6 +180,7 @@ impl Modification {
             }
             Modification::SetCreatureTypes(types) => {
                 chars.subtypes.retain(|subtype| !subtype.is_creature_type());
+                chars.all_creature_types = false;
                 chars.creature_types_set = true;
                 for subtype in types {
                     if !chars.subtypes.contains(subtype) {
@@ -184,6 +188,7 @@ impl Modification {
                     }
                 }
             }
+            Modification::AddAllCreatureTypes => chars.all_creature_types = true,
             Modification::SetColors(colors) => chars.colors = *colors,
             Modification::LoseAbilities => chars.abilities.clear(),
             Modification::SetPowerToughness { power, toughness } => {

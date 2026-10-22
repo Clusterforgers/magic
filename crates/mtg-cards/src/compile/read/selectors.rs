@@ -303,6 +303,9 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words(form.opponents()) {
         return Some(Pred::ControlledBy(Ref::Opponents));
     }
+    if r.words("enchanted player controls") {
+        return Some(Pred::ControlledBy(Ref::AttachedPlayer));
+    }
     // The player a trigger is about: "planeswalker that player controls".
     if r.that_player && r.words("that player controls") {
         return Some(Pred::ControlledBy(Ref::Triggering));
@@ -335,6 +338,7 @@ pub(super) fn suffix_text(pred: &Pred, form: Form) -> Option<String> {
         Pred::ControlledBy(Ref::You) => "you control".to_owned(),
         Pred::ControlledBy(Ref::Opponents) => form.opponents().to_owned(),
         Pred::ControlledBy(Ref::Triggering) => "that player controls".to_owned(),
+        Pred::ControlledBy(Ref::AttachedPlayer) => "enchanted player controls".to_owned(),
         Pred::Not(inner) if **inner == Pred::ControlledBy(Ref::You) => {
             "you don't control".to_owned()
         }
@@ -676,7 +680,12 @@ pub fn spec_text(spec: &TargetSpec) -> Option<String> {
                 _ => return None,
             },
             Targetable::Object(selector) => {
-                format!("target {}", phrase_text(selector, Form::Target)?)
+                let phrase = phrase_text(selector, Form::Target)?;
+                // The card puts "another" before "target": "another target attacking creature".
+                match phrase.strip_prefix("other ") {
+                    Some(rest) => format!("another target {rest}"),
+                    None => format!("target {phrase}"),
+                }
             }
         });
     }

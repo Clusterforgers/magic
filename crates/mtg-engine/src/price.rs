@@ -56,6 +56,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::PayEnergy(_) => "Cost.PayEnergy",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters",
         CostItem::TapPermanents { .. } => "Cost.TapPermanents",
+        CostItem::TapPower { .. } => "Cost.TapPower",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard",
         CostItem::ReturnToHand { .. } => "Cost.ReturnToHand",
         CostItem::ExileFromHand { .. } => "Cost.ExileFromHand",

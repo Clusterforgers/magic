@@ -111,7 +111,15 @@ fn the_printed_side_of_every_corpus_card_equals_its_record(#[case] caps: Caps) {
         );
         assert_eq!(text(shown.loyalty), front.loyalty, "{name}: loyalty");
         assert_eq!(text(shown.defense), front.defense, "{name}: defense");
-        assert_eq!(shown.colors(), printed_colors(&record), "{name}: colors");
+        // A devoid card prints the colors of its cost and is colorless through the characteristic-defining ability of the
+        // keyword (CR 702.114), which the layers apply.
+        if !front
+            .oracle_text
+            .lines()
+            .any(|line| line.starts_with("Devoid"))
+        {
+            assert_eq!(shown.colors(), printed_colors(&record), "{name}: colors");
+        }
     }
 }
 

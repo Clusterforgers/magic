@@ -1,0 +1,24 @@
+{
+  "id": "4f8075be-8932-49b3-990b-4b365fa27e94",
+  "oracle_id": "50b14338-9318-4327-a1dd-c0ef38903cc4",
+  "name": "Skysovereign, Consul Flagship",
+  "lang": "en",
+  "layout": "normal",
+  "set": "nec",
+  "collector_number": "159",
+  "rarity": "mythic",
+  "released_at": "2022-02-18",
+  "digital": false,
+  "mana_cost": "{5}",
+  "cmc": 5.0,
+  "type_line": "Legendary Artifact — Vehicle",
+  "oracle_text": "Flying\nWhenever Skysovereign enters or attacks, it deals 3 damage to target creature or planeswalker an opponent controls.\nCrew 3 (Tap any number of creatures you control with total power 3 or more: This Vehicle becomes an artifact creature until end of turn.)",
+  "power": "6",
+  "toughness": "5",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Flying",
+    "Crew"
+  ]
+}

@@ -206,6 +206,8 @@ struct Walker<'a> {
     nested: u32,
     /// Where the walk stands in an effect list, for "if you do".
     after: After,
+    /// The effect before the one being walked is a `May`, whose acceptance "if you do" asks about.
+    after_may: bool,
     face: usize,
     spell_targets: Vec<TargetSpec>,
     x_uses: Vec<(usize, String)>,
@@ -227,6 +229,7 @@ impl<'a> Walker<'a> {
             amounting: Amounting::Other,
             nested: 0,
             after: After::Nothing,
+            after_may: false,
             face: 0,
             spell_targets: Vec::new(),
             x_uses: Vec::new(),
@@ -286,7 +289,9 @@ impl<'a> Walker<'a> {
 
     fn reference(&mut self, r: &Ref, want: Kind) {
         match r {
-            Ref::You | Ref::Opponents | Ref::EachPlayer => self.expect(Kind::Player, want),
+            Ref::You | Ref::Opponents | Ref::EachPlayer | Ref::AttachedPlayer => {
+                self.expect(Kind::Player, want);
+            }
             Ref::This | Ref::Attached => self.expect(Kind::Object, want),
             Ref::Target(index) => {
                 let index = usize::from(*index);
@@ -522,6 +527,10 @@ impl<'a> Walker<'a> {
             Condition::YourTurn => {}
             Condition::Performed => {
                 self.uses("Condition", "Performed");
+                // The engine knows only whether a `May` was accepted; any other effect before it waits.
+                if !self.after_may {
+                    self.uses("Condition", "Performed.Other");
+                }
                 if self.after != After::Condition {
                     self.problem("`Performed` is the condition of an `If` that follows the effect it asks about");
                 }
@@ -562,6 +571,9 @@ impl<'a> Walker<'a> {
                         if let Some(filter) = filter {
                             w.at("filter", |w| w.selector(filter));
                         }
+                    }
+                    CostItem::TapPower { filter, .. } => {
+                        w.at("filter", |w| w.selector(filter));
                     }
                     CostItem::Mana(_)
                     | CostItem::Tap
@@ -622,6 +634,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileFromGraveyard { .. }
                     | CostItem::ExileFromHand { .. }
                     | CostItem::TapPermanents { .. }
+                    | CostItem::TapPower { .. }
                     | CostItem::ReturnToHand { .. }
             ) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
@@ -719,7 +732,8 @@ impl<'a> Walker<'a> {
                     self.uses("Keyword", "Enchant.Elsewhere");
                 }
             }
-            Keyword::Protection(quality) => self.selector(quality),
+            Keyword::Protection(quality) | Keyword::Landwalk(quality) => self.selector(quality),
+            Keyword::Toxic(0) => self.problem("toxic needs a number of at least 1"),
             Keyword::PartnerWith(name) => {
                 self.names
                     .push((self.face, self.current_path(), name.clone()));
@@ -747,6 +761,7 @@ impl<'a> Walker<'a> {
             | Modification::RemoveType(_)
             | Modification::AddSubtype(_)
             | Modification::SetCreatureTypes(_)
+            | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::AddProtectionFromChosenColor
             | Modification::LoseAbilities
@@ -845,6 +860,10 @@ impl<'a> Walker<'a> {
         match pattern {
             TriggerPattern::ZoneChange { what, .. } | TriggerPattern::Attacks { what } => {
                 self.at("what", |w| w.selector(what));
+            }
+            TriggerPattern::AttacksPlayer { what, at } => {
+                self.at("what", |w| w.selector(what));
+                self.at("at", |w| w.reference(at, Kind::Player));
             }
             TriggerPattern::BecomesTarget { what, by } => {
                 self.at("what", |w| w.selector(what));
@@ -1064,13 +1083,14 @@ impl<'a> Walker<'a> {
 
     fn effect_list(&mut self, field: &str, list: &[Effect], top: bool) {
         self.scope.names.push(BTreeMap::new());
-        let saved = self.after;
+        let saved = (self.after, self.after_may);
         for (i, effect) in list.iter().enumerate() {
             let only = top && list.len() == 1;
             self.after = if i > 0 { After::Effect } else { After::Nothing };
+            self.after_may = i > 0 && matches!(list.get(i - 1), Some(Effect::May { .. }));
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
         }
-        self.after = saved;
+        (self.after, self.after_may) = saved;
         self.scope.names.pop();
     }
 
@@ -1326,7 +1346,12 @@ impl<'a> Walker<'a> {
                 w.at("affected", |w| w.reference(affected, Kind::Object));
                 w.at("mods", |w| w.mods(mods));
             }
-            Effect::Rule { rule, .. } => w.at("rule", |w| w.rule(rule)),
+            Effect::Rule { rule, .. } => w.at("rule", |w| {
+                w.rule(rule);
+                if matches!(rule, GameRule::CanBeCommander) {
+                    w.problem("a card can be a commander by a static ability, not by an effect");
+                }
+            }),
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Shield { when, by, .. } => {
                 w.at("when", |w| w.replace_when(when));
@@ -2128,9 +2153,12 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str) -> bool {
     card.abilities().any(|(face, ability)| match ability {
         Ability::Keyword(k) => {
             k.name().eq_ignore_ascii_case(keyword)
-                // Scryfall lists `Partner` as well for a "Partner with" card (CR 702.124).
-                || (matches!(k, Keyword::PartnerWith(_))
+                // Scryfall lists `Partner` as well for a "Partner with" card and a "Partner—text" card (CR 702.124).
+                || (matches!(k, Keyword::PartnerWith(_) | Keyword::PartnerGroup(_))
                     && Keyword::Partner.name().eq_ignore_ascii_case(keyword))
+                // Scryfall lists `Enchant` for an Aura that enchants a player as it does for any other.
+                || (matches!(k, Keyword::EnchantPlayer { .. })
+                    && "Enchant".eq_ignore_ascii_case(keyword))
         }
         Ability::Manual { span, .. } => printed
             .faces
@@ -2198,7 +2226,9 @@ fn check_face_printed(
             Ability::Loyalty { .. } if !planeswalker => {
                 w.problem("a Loyalty ability belongs to a planeswalker");
             }
-            Ability::Keyword(Keyword::Enchant(_)) if !subtypes.contains(&"Aura") => {
+            Ability::Keyword(Keyword::Enchant(_) | Keyword::EnchantPlayer { .. })
+                if !subtypes.contains(&"Aura") =>
+            {
                 w.problem("Enchant belongs to an Aura");
             }
             Ability::Manual { span, .. }

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "d94144b0-8967-4904-bb6b-44b0022d1f19",
+  "name": "Goliath Truck",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goliath Truck",
+      "oracle_fingerprint": "e8ecf8ade801df59e36514fc41e2f005",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Other"] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 2 } }
+      ]
+    }
+  ]
+}

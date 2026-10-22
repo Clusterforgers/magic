@@ -1,0 +1,27 @@
+{
+  "id": "18acffb1-c1e8-4729-a350-64823b2f9d29",
+  "oracle_id": "52237e6b-19f6-405c-a668-545c4ccb1b6d",
+  "name": "Mothdust Changeling",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mma",
+  "collector_number": "53",
+  "rarity": "common",
+  "released_at": "2013-06-07",
+  "digital": false,
+  "mana_cost": "{U}",
+  "cmc": 1,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)\nTap an untapped creature you control: This creature gains flying until end of turn.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Changeling"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "oracle_id": "6ccb3ac8-0509-431b-a196-d3cbf4fa80ae",
+  "name": "Soltari Foot Soldier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soltari Foot Soldier",
+      "oracle_fingerprint": "4f5894644dbc3cc42eea91e0fc7addce",
+      "abilities": [{ "Keyword": "Shadow" }]
+    }
+  ]
+}

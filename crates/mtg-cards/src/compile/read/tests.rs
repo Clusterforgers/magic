@@ -160,6 +160,7 @@ mod copies;
 mod counted;
 mod counters;
 mod create;
+mod enchanted_player;
 mod enters;
 mod event_batches;
 mod events;
@@ -735,6 +736,7 @@ mod pump {
     #[case("Target creature you control can't be blocked this turn.")]
     #[case("Creatures you control can't be blocked this turn.")]
     #[case("~ can't be blocked this turn.")]
+    #[case("You may draw a card. If you do, discard a card.")]
     fn more_oracle_wordings_read_and_write_back(#[case] text: &str) {
         golden(text, ClauseKind::Spell, false);
     }

@@ -1,24 +1,56 @@
 //! `Effect::If`: a condition picks the effects that follow.
 
 use mtg_cards::effect::Effect;
+use mtg_cards::value::Condition;
 
+use super::may::performed_name;
 use super::wrong_effect;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 
 /// The condition is read in the state the earlier steps left. When it holds the resolution enters `then`, else
-/// `otherwise`; a list with nothing in it goes straight on to the next effect (`resolve/tree.rs`). A condition the
-/// evaluator cannot read is refused by name, and `Caps` keeps the cards that use one out of every game.
+/// `otherwise`; a list with nothing in it goes straight on to the next effect (`resolve/tree.rs`). "If you do" holds
+/// when the effect just before this one in its list is a `May` that was accepted. A condition the evaluator cannot read
+/// is refused by name, and `Caps` keeps the cards that use one out of every game.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::If { condition, .. } = effect else {
         return Err(wrong_effect("If"));
     };
-    let branch = usize::from(!cx.scope.holds(condition)?);
+    let branch = usize::from(!cx.scope.holds(&decided(cx, condition))?);
     Ok(Run::Done {
         events: Vec::new(),
         bound: Vec::new(),
         snapshots: Vec::new(),
         next: Next::Enter(branch),
     })
+}
+
+/// The condition with each "if you do" in it decided: always true or always false, however it is wrapped.
+fn decided(cx: &Cx<'_>, condition: &Condition) -> Condition {
+    match condition {
+        Condition::Performed if performed(cx) => Condition::All(Vec::new()),
+        Condition::Performed => Condition::Any(Vec::new()),
+        Condition::Not(inner) => Condition::Not(Box::new(decided(cx, inner))),
+        Condition::All(items) => Condition::All(items.iter().map(|c| decided(cx, c)).collect()),
+        Condition::Any(items) => Condition::Any(items.iter().map(|c| decided(cx, c)).collect()),
+        other => other.clone(),
+    }
+}
+
+/// Whether the effect before the running `If` in its list is a `May` that was accepted: the step of the `May` bound
+/// its answer under the name of its position (`may::performed_name`). Nothing before it, or no `May`, is no.
+fn performed(cx: &Cx<'_>) -> bool {
+    let position = cx.resolving.position();
+    let Some((last, holder)) = position.split_last() else {
+        return false;
+    };
+    let Some(before) = last.checked_sub(1) else {
+        return false;
+    };
+    let before = [holder, &[before]].concat();
+    cx.scope
+        .bindings
+        .get(&performed_name(&before))
+        .is_some_and(|accepted| !accepted.is_empty())
 }
 
 #[cfg(test)]
@@ -227,6 +259,63 @@ mod tests {
             run_as(&game(), ME, &if_(condition)).unwrap_err(),
             ResolveError::Unsupported(lacks)
         );
+    }
+
+    /// The branch the `If` at `position` enters when the `May`s at `mays` were accepted (`true`) or declined (`false`).
+    fn after_mays(condition: &str, position: &str, mays: &[(&str, bool)]) -> usize {
+        // A position is written with dots: "2.0.1" is the second effect of the first list of the third effect.
+        let path =
+            |text: &str| -> Vec<usize> { text.split('.').map(|n| n.parse().unwrap()).collect() };
+        let position = path(position);
+        let game = game();
+        let bindings: crate::resolve::Bindings = mays
+            .iter()
+            .map(|(at, accepted)| {
+                let who = if *accepted {
+                    vec![crate::choose::Target::Player(ME)]
+                } else {
+                    Vec::new()
+                };
+                (performed_name(&path(at)), who)
+            })
+            .collect();
+        let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
+        let resolving = Resolving {
+            position,
+            ..Resolving::begin(source.id())
+        };
+        let mut scope = Scope::announcing(&game, ME, source.reference());
+        scope.bindings = &bindings;
+        let cx = Cx {
+            scope,
+            resolving: &resolving,
+        };
+        entered(run(&cx, &if_(condition)).unwrap())
+    }
+
+    #[rstest]
+    #[case::accepted(r#""Performed""#, "1", &[("0", true)], 0)]
+    #[case::declined(r#""Performed""#, "1", &[("0", false)], 1)]
+    #[case::nothing_before_it(r#""Performed""#, "0", &[], 1)]
+    #[case::no_may_before_it(r#""Performed""#, "1", &[], 1)]
+    #[case::the_may_after_it_does_not_count(r#""Performed""#, "0", &[("1", true)], 1)]
+    #[case::a_may_two_before_does_not_count(r#""Performed""#, "2", &[("0", true), ("1", false)], 1)]
+    #[case::the_one_just_before_counts(r#""Performed""#, "2", &[("0", false), ("1", true)], 0)]
+    #[case::inside_a_branch_accepted(r#""Performed""#, "2.0.1", &[("2.0.0", true)], 0)]
+    #[case::inside_a_branch_declined(r#""Performed""#, "2.0.1", &[("2.0.0", false), ("0", true)], 1)]
+    #[case::a_may_of_the_outer_list_is_not_inside(r#""Performed""#, "2.0.1", &[("1", true)], 1)]
+    #[case::not_accepted(r#"{"Not":"Performed"}"#, "1", &[("0", true)], 1)]
+    #[case::not_declined(r#"{"Not":"Performed"}"#, "1", &[("0", false)], 0)]
+    #[case::all_accepted(r#"{"All":["Performed","YourTurn"]}"#, "1", &[("0", true)], 0)]
+    #[case::all_declined(r#"{"All":["Performed","YourTurn"]}"#, "1", &[("0", false)], 1)]
+    #[case::any_declined(r#"{"Any":["Performed","YourTurn"]}"#, "1", &[("0", false)], 0)]
+    fn if_you_do_holds_when_the_may_just_before_it_was_accepted(
+        #[case] condition: &str,
+        #[case] position: &str,
+        #[case] mays: &[(&str, bool)],
+        #[case] branch: usize,
+    ) {
+        assert_eq!(after_mays(condition, position, mays), branch);
     }
 
     #[test]

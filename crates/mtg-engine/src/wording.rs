@@ -288,6 +288,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::Attacks { what } => {
             (format!("{} attacks", subject(what)), what.0 == [Pred::This])
         }
+        TriggerPattern::AttacksPlayer { what, at } => {
+            let whom = match at {
+                Ref::AttachedPlayer => "enchanted player",
+                Ref::You => "you",
+                _ => "a player",
+            };
+            (format!("{} attacks {whom}", subject(what)), false)
+        }
         TriggerPattern::BecomesTarget { what, by } => {
             let whose = match by.0.as_slice() {
                 [Pred::ControlledBy(Ref::Opponents)] => " an opponent controls",
@@ -561,6 +569,14 @@ pub(crate) fn tap_untapped(filter: &Selector, count: usize) -> String {
         format!("{count} {}", join(&plural(&untapped), &tail))
     };
     format!("Tap {what} you control.")
+}
+
+/// What a cost that taps permanents for their power asks: "Tap any number of untapped creatures you control with total
+/// power 3 or more."
+pub(crate) fn tap_power(filter: &Selector, power: usize) -> String {
+    let (head, tail) = phrase(filter);
+    let untapped = join(&plural(&format!("untapped {head}")), &tail);
+    format!("Tap any number of {untapped} you control with total power {power} or more.")
 }
 
 /// What a cost that returns permanents the payer controls to hand asks: "Return a land you control to its owner's hand."

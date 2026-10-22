@@ -31,6 +31,7 @@ use Support::{Partial, Verified};
 /// card joins this list when the engine cannot yet play it whole and leaves it when it can.
 const NOT_VERIFIED: &[(&str, Support, usize)] = &[
     ("Aven Mindcensor", Partial, 2),
+    ("Bebop, Skull & Crossbones", Partial, 2),
     ("Courser of Kruphix", Partial, 2),
 ];
 

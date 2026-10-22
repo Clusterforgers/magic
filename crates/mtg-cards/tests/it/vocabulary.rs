@@ -90,7 +90,7 @@ fn names(list: &[&str]) -> BTreeSet<String> {
 )]
 #[case::if_you_dont(
     r#"{"Spell":{"effects":[{"Discard":{}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}"#,
-    &["Ability.Spell", "Condition.Performed", "Effect.Discard", "Effect.Draw", "Effect.If"]
+    &["Ability.Spell", "Condition.Performed", "Condition.Performed.Other", "Effect.Discard", "Effect.Draw", "Effect.If"]
 )]
 #[case::the_monarch(
     r#"{"Spell":{"effects":[{"If":{"condition":{"Monarch":"You"},"then":[{"Draw":{}}]}}]}}"#,
@@ -111,6 +111,10 @@ fn names(list: &[&str]) -> BTreeSet<String> {
 #[case::tapping_creatures(
     r#"{"Activated":{"cost":[{"TapPermanents":{"filter":[{"Type":"Creature"},{"ControlledBy":"You"},"Untapped"],"count":2}}],"effects":[{"Draw":{}}]}}"#,
     &["Ability.Activated", "Cost.TapPermanents", "Effect.Draw"]
+)]
+#[case::tapping_creatures_for_their_power(
+    r#"{"Activated":{"cost":[{"TapPower":{"filter":[{"Type":"Creature"}],"power":3}}],"effects":[{"Draw":{}}]}}"#,
+    &["Ability.Activated", "Cost.TapPower", "Effect.Draw"]
 )]
 #[case::exiling_from_the_graveyard(
     r#"{"Activated":{"cost":[{"ExileFromGraveyard":{"filter":[{"Type":"Creature"}]}}],"effects":[{"Draw":{}}]}}"#,

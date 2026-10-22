@@ -1,0 +1,12 @@
+{
+  "oracle_id": "6b59ffa2-5c8b-4549-aa09-2f2a5cabc5af",
+  "name": "Furtive Homunculus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furtive Homunculus",
+      "oracle_fingerprint": "4fbdf24a140e019e3657aa2c23ea67bd",
+      "abilities": [{ "Keyword": "Skulk" }]
+    }
+  ]
+}

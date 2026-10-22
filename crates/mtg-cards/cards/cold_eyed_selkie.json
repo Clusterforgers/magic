@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f33cd975-ab70-4209-a6d8-e0d727772bf2",
+  "name": "Cold-Eyed Selkie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cold-Eyed Selkie",
+      "oracle_fingerprint": "b97f7c8e1b2b0aef96e43c00cb316b34",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Island" }] } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "May": { "effects": [{ "Draw": { "count": "Triggering" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

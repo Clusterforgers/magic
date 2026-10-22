@@ -19,7 +19,9 @@ use super::reveal;
 use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
-use super::triggers::{article, condition_text, cycled_itself, pattern_text, targeted_itself};
+use super::triggers::{
+    article, condition_text, cycled_itself, entered_or_attacked, pattern_text, targeted_itself,
+};
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -55,12 +57,36 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    // A creature that attacks enchanted player is "it", and the player who controls it "its controller".
+    if matches!(
+        ability,
+        Ability::Triggered {
+            when: TriggerPattern::AttacksPlayer { .. },
+            ..
+        }
+    ) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains("that permanent's controller"))
+            .map(|text| text.replace("that permanent's controller", "its controller"))
+            .collect();
+        texts.extend(pronouns);
+    }
     // An activated ability that opens with damage may say "It deals" for the source (Walking Ballista).
     if matches!(ability, Ability::Activated { .. }) {
         let pronouns: Vec<String> = texts
             .iter()
             .filter(|text| text.contains(": ~ deals "))
             .map(|text| text.replacen(": ~ deals ", ": It deals ", 1))
+            .collect();
+        texts.extend(pronouns);
+    }
+    // A trigger about the card itself entering or attacking may say "it deals" for the card (Skysovereign).
+    if matches!(ability, Ability::Triggered { when, .. } if entered_or_attacked(when)) {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter(|text| text.contains(", ~ deals "))
+            .map(|text| text.replacen(", ~ deals ", ", it deals ", 1))
             .collect();
         texts.extend(pronouns);
     }
@@ -692,6 +718,8 @@ impl Writer<'_> {
     fn counter_place(&mut self, place: &Ref, several: bool) -> Option<String> {
         match place {
             Ref::This => Some("~".to_owned()),
+            // The creature that attacks enchanted player.
+            Ref::Triggering => Some("it".to_owned()),
             Ref::Target(0)
                 if self.single(place)
                     && self.target_is(|what| matches!(what, Targetable::Object(_))) =>

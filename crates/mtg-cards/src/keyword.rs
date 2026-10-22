@@ -73,6 +73,12 @@ pub enum Keyword {
     LivingWeapon,
     /// Enchant: what an Aura may enchant.
     Enchant(Selector),
+    /// Enchant player or enchant opponent: an Aura that enchants a player (CR 303.4).
+    EnchantPlayer {
+        /// Whether only an opponent of the Aura's controller may be enchanted.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        opponent: bool,
+    },
     /// Cycling with its cost.
     Cycling(Cost),
     /// Kicker with its cost.
@@ -126,11 +132,36 @@ pub enum Keyword {
     Daybound,
     /// Nightbound (CR 702.145): the permanent is turned to its day face when it becomes day.
     Nightbound,
+    /// Wither (CR 702.80): damage this deals to a creature is dealt in the form of -1/-1 counters.
+    Wither,
+    /// Toxic N (CR 702.164): players dealt combat damage by this creature also get N poison counters.
+    Toxic(u32),
+    /// Fear (CR 702.36): can't be blocked except by artifact creatures and/or black creatures.
+    Fear,
+    /// Intimidate (CR 702.13): can't be blocked except by artifact creatures and/or creatures that share a color with it.
+    Intimidate,
+    /// Landwalk (CR 702.14): can't be blocked as long as defending player controls a land the selector names (Islandwalk: an Island).
+    Landwalk(Selector),
+    /// Skulk (CR 702.118): can't be blocked by creatures with greater power.
+    Skulk,
+    /// Shadow (CR 702.28): can block or be blocked by only creatures with shadow.
+    Shadow,
+    /// Split second (CR 702.61): while this spell is on the stack, players can't cast spells or activate abilities that aren't mana abilities.
+    SplitSecond,
+    /// Undaunted (CR 702.125): this spell costs {1} less to cast for each opponent.
+    Undaunted,
+    /// Partner with a text (`Partner—Friends forever`, `Partner—Character select`): two commanders that both have the
+    /// same text pair (CR 702.124).
+    PartnerGroup(String),
+    /// Doctor's companion: the second commander beside a legendary Time Lord Doctor (CR 702.124).
+    DoctorsCompanion,
+    /// Choose a Background: the second commander may be a Background enchantment (CR 702.124).
+    ChooseABackground,
 }
 
 impl Keyword {
     /// Scryfall's spelling of every keyword in this enum, for matching a record's `keywords`.
-    pub const NAMES: [&'static str; 54] = [
+    pub const NAMES: [&'static str; 67] = [
         "Flash",
         "Flying",
         "Reach",
@@ -161,6 +192,7 @@ impl Keyword {
         "Reconfigure",
         "Living weapon",
         "Enchant",
+        "Enchant player",
         "Cycling",
         "Kicker",
         "Multikicker",
@@ -185,6 +217,18 @@ impl Keyword {
         "Foretell",
         "Daybound",
         "Nightbound",
+        "Wither",
+        "Toxic",
+        "Fear",
+        "Intimidate",
+        "Landwalk",
+        "Skulk",
+        "Shadow",
+        "Split second",
+        "Undaunted",
+        "Partner group",
+        "Doctor's companion",
+        "Choose a Background",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -220,6 +264,7 @@ impl Keyword {
             Keyword::Reconfigure(_) => "Reconfigure",
             Keyword::LivingWeapon => "Living weapon",
             Keyword::Enchant(_) => "Enchant",
+            Keyword::EnchantPlayer { .. } => "Enchant player",
             Keyword::Cycling(_) => "Cycling",
             Keyword::Kicker(_) => "Kicker",
             Keyword::Multikicker(_) => "Multikicker",
@@ -244,6 +289,18 @@ impl Keyword {
             Keyword::Foretell(_) => "Foretell",
             Keyword::Daybound => "Daybound",
             Keyword::Nightbound => "Nightbound",
+            Keyword::Wither => "Wither",
+            Keyword::Toxic(_) => "Toxic",
+            Keyword::Fear => "Fear",
+            Keyword::Intimidate => "Intimidate",
+            Keyword::Landwalk(_) => "Landwalk",
+            Keyword::Skulk => "Skulk",
+            Keyword::Shadow => "Shadow",
+            Keyword::SplitSecond => "Split second",
+            Keyword::Undaunted => "Undaunted",
+            Keyword::PartnerGroup(_) => "Partner group",
+            Keyword::DoctorsCompanion => "Doctor's companion",
+            Keyword::ChooseABackground => "Choose a Background",
         }
     }
 
@@ -299,6 +356,7 @@ mod tests {
             Keyword::Reconfigure(cost.clone()),
             Keyword::LivingWeapon,
             Keyword::Enchant(Selector::default()),
+            Keyword::EnchantPlayer { opponent: false },
             Keyword::Cycling(cost.clone()),
             Keyword::Kicker(cost.clone()),
             Keyword::Multikicker(cost.clone()),
@@ -326,6 +384,18 @@ mod tests {
             Keyword::Foretell(cost),
             Keyword::Daybound,
             Keyword::Nightbound,
+            Keyword::Wither,
+            Keyword::Toxic(1),
+            Keyword::Fear,
+            Keyword::Intimidate,
+            Keyword::Landwalk(Selector::default()),
+            Keyword::Skulk,
+            Keyword::Shadow,
+            Keyword::SplitSecond,
+            Keyword::Undaunted,
+            Keyword::PartnerGroup("Friends forever".into()),
+            Keyword::DoctorsCompanion,
+            Keyword::ChooseABackground,
         ]
     }
 

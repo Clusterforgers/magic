@@ -61,6 +61,7 @@ fn a_choice_in_a_trigger_reads_in_the_shape_of_the_hand_written_files(
 #[case("Scry 1. You may draw a card.")]
 #[case("Destroy target creature. You may draw a card.")]
 #[case("~ deals 2 damage to any target. You may draw a card.")]
+#[case("You may draw a card. If you do, discard a card.")]
 fn more_oracle_wordings_in_a_spell_read_and_write_back(#[case] text: &str) {
     golden(text, ClauseKind::Spell, false);
 }
@@ -76,6 +77,8 @@ fn more_oracle_wordings_in_a_spell_read_and_write_back(#[case] text: &str) {
 #[case("Whenever ~ enters or attacks, you may destroy target artifact.")]
 #[case("Landfall \u{2014} Whenever a land you control enters, you may scry 1.")]
 #[case("Whenever you sacrifice a creature, you may draw a card.")]
+#[case("When ~ enters, you may draw a card. If you do, discard a card.")]
+#[case("Whenever ~ attacks or blocks, you may draw a card. If you do, discard a card.")]
 #[case("Whenever an opponent casts a spell, you may draw a card.")]
 fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
     let rest = text.split_once(" \u{2014} ").map_or(text, |(_, rest)| rest);
@@ -89,7 +92,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[rstest]
 #[case::a_chain("You may draw a card, then discard a card.")]
 #[case::a_chain_of_other_steps("You may scry 1, then draw a card.")]
-#[case::if_you_do("You may draw a card. If you do, discard a card.")]
 #[case::unless("You may draw a card unless that player pays {1}.")]
 #[case::another_player("Target player may draw a card.")]
 #[case::each_player("Each player may draw a card.")]
@@ -111,7 +113,6 @@ fn near_misses_stay_unread(#[case] text: &str) {
 
 #[rstest]
 #[case::a_chain("When ~ enters, you may draw a card, then discard a card.")]
-#[case::if_you_do("When ~ enters, you may draw a card. If you do, discard a card.")]
 #[case::another_player("When ~ enters, target player may draw a card.")]
 #[case::each_player("At the beginning of your upkeep, each player may draw a card.")]
 fn near_misses_in_a_trigger_stay_unread(#[case] text: &str) {

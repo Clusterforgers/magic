@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c87e3b1d-2d24-4f1c-84e8-1c21a347cdc2",
+  "name": "Looter il-Kor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Looter il-Kor",
+      "oracle_fingerprint": "dc1e30b01fe09ea8314fa5e0a096cccd",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "Opponents" } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

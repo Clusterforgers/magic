@@ -120,7 +120,11 @@ pub(crate) fn handle(
             crate::legend::answer(state, options, &choice)
         }
         (DecisionKind::ChooseCards(options), Answer::ChooseCards(choice)) => {
-            choose::cards_answer(player, options, choice, pending.is_some())
+            let outcome = choose::cards_answer(player, options, choice, pending.is_some())?;
+            if let (Outcome::Cards(cards), Some(pending)) = (&outcome, pending) {
+                pending.check_picked(state, cards)?;
+            }
+            Ok(outcome)
         }
         (DecisionKind::OrderCards(options), Answer::OrderCards(choice)) => {
             choose::order_answer(player, options, choice)

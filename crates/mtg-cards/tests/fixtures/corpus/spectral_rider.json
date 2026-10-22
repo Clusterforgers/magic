@@ -1,0 +1,27 @@
+{
+  "id": "b47e4e56-8bde-480d-b59c-17a017665b19",
+  "oracle_id": "713641c4-544e-4c25-ab11-10894be2cb53",
+  "name": "Spectral Rider",
+  "lang": "en",
+  "layout": "normal",
+  "set": "isd",
+  "collector_number": "35",
+  "rarity": "uncommon",
+  "released_at": "2011-09-30",
+  "digital": false,
+  "mana_cost": "{W}{W}",
+  "cmc": 2,
+  "type_line": "Creature — Spirit Knight",
+  "oracle_text": "Intimidate (This creature can't be blocked except by artifact creatures and/or creatures that share a color with it.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Intimidate"
+  ]
+}

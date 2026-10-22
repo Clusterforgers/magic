@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a09a4556-8913-495c-8768-e05413c48f0b",
+  "name": "Deepfathom Skulker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deepfathom Skulker",
+      "oracle_fingerprint": "ec83ae4a0179ab82bd02ed3e490b4ac0",
+      "abilities": [
+        { "Keyword": "Devoid" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{C}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

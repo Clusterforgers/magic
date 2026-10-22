@@ -1,0 +1,27 @@
+{
+  "id": "f376ec9b-48ac-4ed7-bfa2-60e9dca32dd7",
+  "oracle_id": "6b59ffa2-5c8b-4549-aa09-2f2a5cabc5af",
+  "name": "Furtive Homunculus",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soi",
+  "collector_number": "64",
+  "rarity": "common",
+  "released_at": "2016-04-08",
+  "digital": false,
+  "mana_cost": "{1}{U}",
+  "cmc": 2,
+  "type_line": "Creature — Homunculus",
+  "oracle_text": "Skulk (This creature can't be blocked by creatures with greater power.)",
+  "power": "2",
+  "toughness": "1",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Skulk"
+  ]
+}

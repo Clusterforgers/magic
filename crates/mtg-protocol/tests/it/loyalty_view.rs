@@ -122,6 +122,8 @@ fn damage_to_a_planeswalker_is_loyalty_lost_and_marks_nothing() {
         target: mtg_engine::combat::DamageTarget::Object(walker),
         amount: 2,
         deathtouch: false,
+        form: mtg_engine::combat::DamageForm::Normal,
+        toxic: 0,
     };
     mtg_engine::apply_event(&mut state, &damage).unwrap();
     for viewer in 0..2 {

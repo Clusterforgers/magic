@@ -27,6 +27,24 @@ pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     }
 }
 
+/// Whether the pattern is the card itself entering the battlefield or attacking ("enters or attacks"), so the card's
+/// effects may call it "it".
+pub fn entered_or_attacked(pattern: &TriggerPattern) -> bool {
+    let TriggerPattern::AnyOf(patterns) = pattern else {
+        return false;
+    };
+    let itself = |pattern: &TriggerPattern| match pattern {
+        TriggerPattern::Attacks { what }
+        | TriggerPattern::ZoneChange {
+            what,
+            to: Some(ZoneKind::Battlefield),
+            ..
+        } => what.0 == [Pred::This],
+        _ => false,
+    };
+    patterns.len() > 1 && patterns.iter().all(itself)
+}
+
 /// The steps a trigger names and the words for each.
 const STEPS: [(Step, &str); 5] = [
     (Step::Upkeep, "upkeep"),
@@ -156,6 +174,8 @@ fn player(r: &mut Reader<'_>) -> Option<(Ref, bool)> {
         Some((Ref::Opponents, true))
     } else if r.words("a player") {
         Some((Ref::EachPlayer, true))
+    } else if r.words("enchanted player") {
+        Some((Ref::AttachedPlayer, true))
     } else {
         None
     }
@@ -301,6 +321,12 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
     } else if r.words("leaves the battlefield") {
         (Some(ZoneKind::Battlefield), None)
     } else if r.word("attacks") {
+        if r.words("enchanted player") {
+            return Some(TriggerPattern::AttacksPlayer {
+                what: what.clone(),
+                at: Ref::AttachedPlayer,
+            });
+        }
         let attacks = TriggerPattern::Attacks { what: what.clone() };
         return Some(first_time(r, attacks));
     } else if r.words("becomes the target of a spell or ability") {
@@ -479,6 +505,7 @@ fn player_verb(by: &Ref, verb: &str) -> Option<String> {
         Ref::You => format!("you {verb}"),
         Ref::Opponents => format!("an opponent {verb}s"),
         Ref::EachPlayer => format!("a player {verb}s"),
+        Ref::AttachedPlayer => format!("enchanted player {verb}s"),
         _ => return None,
     })
 }
@@ -497,6 +524,10 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
             said(what, verb)
         }
         TriggerPattern::Attacks { what } => said(what, "attacks"),
+        TriggerPattern::AttacksPlayer {
+            what,
+            at: Ref::AttachedPlayer,
+        } => said(what, "attacks enchanted player"),
         TriggerPattern::Blocks { what } => said(what, "blocks"),
         TriggerPattern::BecomesBlocked { what } => said(what, "becomes blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),

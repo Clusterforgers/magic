@@ -30,6 +30,7 @@ const roster = (seats: Parameters<typeof withSeats>[1], count = 3): LobbyRoster 
 }
 
 const info = (over: Partial<GameInfo> = {}): GameInfo => ({
+  format: 'normal',
   started: false,
   seats: [
     { seat: 0, name: 'Ann' },

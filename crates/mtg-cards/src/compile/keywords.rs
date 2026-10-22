@@ -3,7 +3,7 @@
 use std::ops::Range;
 use std::str::FromStr;
 
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Subtype};
 use mtg_core::color::Color;
 
 use crate::cost::{Cost, CostItem};
@@ -51,6 +51,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("storm", Params::None),
     ("battle cry", Params::None),
     ("fuse", Params::None),
+    ("landwalk", Params::None),
     ("partner", Params::Dash),
     ("companion", Params::Dash),
     ("ward", Params::Cost),
@@ -67,6 +68,8 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("evoke", Params::Cost),
     ("overload", Params::Cost),
     ("enchant", Params::Text),
+    ("enchant player", Params::None),
+    ("enchant opponent", Params::None),
     ("partner with", Params::Text),
     ("hexproof from", Params::Text),
     ("protection", Params::Text),
@@ -339,13 +342,47 @@ pub fn read(item: &str) -> Option<Keyword> {
             .filter(|power| *power > 0)
             .map(Keyword::Crew),
         "suspend" => suspend(rest),
-        "enchant" => enchant(rest).map(Keyword::Enchant),
+        "enchant" => super::read::enchant_filter(rest).map(Keyword::Enchant),
+        "enchant player" => Some(Keyword::EnchantPlayer { opponent: false }),
+        "enchant opponent" => Some(Keyword::EnchantPlayer { opponent: true }),
         "partner with" => Some(Keyword::PartnerWith(rest.to_owned())),
+        "partner" if rest.starts_with('\u{2014}') => partner_group(rest),
         "protection" => protection(rest).map(Keyword::Protection),
         "companion" => Some(Keyword::Companion),
+        "toxic" => rest
+            .parse()
+            .ok()
+            .filter(|poison| *poison > 0)
+            .map(Keyword::Toxic),
+        "landwalk" => landwalk(item),
         name if rest.is_empty() => plain(name),
         _ => None,
     }
+}
+
+/// The text of a `Partner—<text>` item (`Friends forever`, `Character select`), the group of commanders that pair.
+fn partner_group(rest: &str) -> Option<Keyword> {
+    let text = rest
+        .trim_start_matches('\u{2014}')
+        .trim()
+        .trim_end_matches('.')
+        .trim();
+    (!text.is_empty()).then(|| Keyword::PartnerGroup(text.to_owned()))
+}
+
+/// The land types a landwalk can name.
+const LAND_TYPES: [&str; 6] = ["Plains", "Island", "Swamp", "Mountain", "Forest", "Desert"];
+
+/// A landwalk keyword (`Islandwalk`): the land type it names, as a selector over the lands it looks for.
+fn landwalk(item: &str) -> Option<Keyword> {
+    let word = item.split([' ', '\u{2014}']).next()?;
+    let kind = word.get(..word.len().checked_sub("walk".len())?)?;
+    let land = LAND_TYPES
+        .iter()
+        .find(|land| land.eq_ignore_ascii_case(kind))?;
+    Some(Keyword::Landwalk(Selector(vec![Pred::Subtype(Subtype(
+        (*land).to_owned(),
+    ))])))
 }
 
 /// A keyword without parameters.
@@ -381,6 +418,15 @@ fn plain(name: &str) -> Option<Keyword> {
         "myriad" => Keyword::Myriad,
         "daybound" => Keyword::Daybound,
         "nightbound" => Keyword::Nightbound,
+        "doctor's companion" => Keyword::DoctorsCompanion,
+        "choose a background" => Keyword::ChooseABackground,
+        "wither" => Keyword::Wither,
+        "fear" => Keyword::Fear,
+        "intimidate" => Keyword::Intimidate,
+        "skulk" => Keyword::Skulk,
+        "shadow" => Keyword::Shadow,
+        "split second" => Keyword::SplitSecond,
+        "undaunted" => Keyword::Undaunted,
         _ => return None,
     })
 }
@@ -472,24 +518,17 @@ fn suspend(rest: &str) -> Option<Keyword> {
     })
 }
 
-/// What an Aura enchants, when it is one card type.
-fn enchant(rest: &str) -> Option<Selector> {
-    let card_type = match rest.to_ascii_lowercase().as_str() {
-        "creature" => CardType::Creature,
-        "land" => CardType::Land,
-        "artifact" => CardType::Artifact,
-        "enchantment" => CardType::Enchantment,
-        "planeswalker" => CardType::Planeswalker,
-        _ => return None,
-    };
-    Some(Selector(vec![Pred::Type(card_type)]))
-}
-
 #[cfg(test)]
 mod tests {
     //! Goal: keyword lines are recognised in every wording the cards print, the keywords the DSL declares read with their parameters, and anything else stays unread.
     use super::*;
+    use crate::refs::Ref;
+    use mtg_core::card::Subtype;
     use rstest::rstest;
+
+    fn walks(land: &str) -> Keyword {
+        Keyword::Landwalk(Selector(vec![Pred::Subtype(Subtype(land.to_owned()))]))
+    }
 
     fn mana(text: &str) -> Cost {
         Cost::mana(text.parse().unwrap())
@@ -556,6 +595,18 @@ mod tests {
     #[case::fuse("Fuse", Keyword::Fuse)]
     #[case::daybound("Daybound", Keyword::Daybound)]
     #[case::nightbound("nightbound", Keyword::Nightbound)]
+    #[case::wither("Wither", Keyword::Wither)]
+    #[case::toxic("Toxic 1", Keyword::Toxic(1))]
+    #[case::toxic_three("Toxic 3", Keyword::Toxic(3))]
+    #[case::fear("fear", Keyword::Fear)]
+    #[case::intimidate("Intimidate", Keyword::Intimidate)]
+    #[case::skulk("Skulk", Keyword::Skulk)]
+    #[case::shadow("Shadow", Keyword::Shadow)]
+    #[case::split_second("Split second", Keyword::SplitSecond)]
+    #[case::undaunted("Undaunted", Keyword::Undaunted)]
+    #[case::islandwalk("Islandwalk", walks("Island"))]
+    #[case::forestwalk("forestwalk", walks("Forest"))]
+    #[case::desertwalk("Desertwalk", walks("Desert"))]
     #[case::equip("Equip {1}", Keyword::Equip(mana("{1}")))]
     #[case::equip_two("Equip {2}{G}", Keyword::Equip(mana("{2}{G}")))]
     #[case::kicker("Kicker {4}", Keyword::Kicker(mana("{4}")))]
@@ -620,6 +671,41 @@ mod tests {
     #[case::suspend("Suspend 4\u{2014}{U}", Keyword::Suspend { time: 4, cost: mana("{U}") })]
     #[case::enchant("Enchant creature", Keyword::Enchant(creature()))]
     #[case::enchant_land("Enchant land", Keyword::Enchant(Selector(vec![Pred::Type(CardType::Land)])))]
+    #[case::enchant_a_player("Enchant player", Keyword::EnchantPlayer { opponent: false })]
+    #[case::enchant_an_opponent("Enchant opponent", Keyword::EnchantPlayer { opponent: true })]
+    #[case::enchant_your_creature(
+        "Enchant creature you control",
+        Keyword::Enchant(Selector(vec![Pred::Type(CardType::Creature), Pred::ControlledBy(Ref::You)]))
+    )]
+    #[case::enchant_their_creature(
+        "Enchant creature an opponent controls",
+        Keyword::Enchant(Selector(vec![Pred::Type(CardType::Creature), Pred::ControlledBy(Ref::Opponents)]))
+    )]
+    #[case::enchant_a_permanent("Enchant permanent", Keyword::Enchant(Selector::default()))]
+    #[case::enchant_a_nonland_permanent(
+        "Enchant nonland permanent",
+        Keyword::Enchant(Selector(vec![Pred::Not(Box::new(Pred::Type(CardType::Land)))]))
+    )]
+    #[case::enchant_two_types(
+        "Enchant artifact or land",
+        Keyword::Enchant(Selector(vec![Pred::AnyOf(vec![Pred::Type(CardType::Artifact), Pred::Type(CardType::Land)])]))
+    )]
+    #[case::enchant_three_types(
+        "Enchant creature, land, or planeswalker",
+        Keyword::Enchant(Selector(vec![Pred::AnyOf(vec![
+            Pred::Type(CardType::Creature),
+            Pred::Type(CardType::Land),
+            Pred::Type(CardType::Planeswalker),
+        ])]))
+    )]
+    #[case::enchant_your_artifact(
+        "Enchant artifact you control",
+        Keyword::Enchant(Selector(vec![Pred::Type(CardType::Artifact), Pred::ControlledBy(Ref::You)]))
+    )]
+    #[case::enchant_a_subtype(
+        "Enchant Forest",
+        Keyword::Enchant(Selector(vec![Pred::Subtype(Subtype("Forest".into()))]))
+    )]
     #[case::companion(
         "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         Keyword::Companion
@@ -628,6 +714,22 @@ mod tests {
         "Partner with Pir, Imaginative Rascal",
         Keyword::PartnerWith("Pir, Imaginative Rascal".into())
     )]
+    #[case::partner_friends(
+        "Partner\u{2014}Friends forever",
+        Keyword::PartnerGroup("Friends forever".into())
+    )]
+    #[case::partner_character_select(
+        "Partner\u{2014}Character select",
+        Keyword::PartnerGroup("Character select".into())
+    )]
+    #[case::partner_survivors("partner\u{2014}Survivors.", Keyword::PartnerGroup("Survivors".into()))]
+    #[case::partner_father_and_son(
+        "Partner\u{2014}Father & son",
+        Keyword::PartnerGroup("Father & son".into())
+    )]
+    #[case::doctors_companion("Doctor's companion", Keyword::DoctorsCompanion)]
+    #[case::lowercase_doctors_companion("doctor's companion", Keyword::DoctorsCompanion)]
+    #[case::choose_a_background("Choose a Background", Keyword::ChooseABackground)]
     fn declared_keywords_are_read(#[case] item: &str, #[case] expected: Keyword) {
         assert_eq!(read(item), Some(expected));
     }
@@ -641,10 +743,12 @@ mod tests {
     #[case::protection_without_a_quality("Protection from")]
     #[case::cycling_by_sacrifice("Cycling\u{2014}Sacrifice a land.")]
     #[case::ward_sacrifice("Ward\u{2014}Sacrifice a permanent.")]
-    #[case::enchant_player("Enchant player")]
-    #[case::enchant_with_a_condition("Enchant creature you control")]
-    #[case::enchant_two_types("Enchant creature or planeswalker")]
-    #[case::partner_friends("Partner\u{2014}Friends forever")]
+    #[case::enchant_a_card_in_a_graveyard("Enchant creature card in a graveyard")]
+    #[case::enchant_with_a_quality_the_table_keeps("Enchant noncommander creature")]
+    #[case::enchant_with_another_aura("Enchant creature with another Aura attached to it")]
+    #[case::enchant_nothing("Enchant")]
+    #[case::partner_without_a_text("Partner\u{2014}")]
+    #[case::doctors_companion_with_a_cost("Doctor's companion {1}")]
     #[case::undeclared("Undying")]
     #[case::crew_x("Crew X")]
     #[case::crew_nothing("Crew 0")]
@@ -652,7 +756,7 @@ mod tests {
     #[case::a_parameter_on_changeling("Changeling {1}")]
     #[case::level_up("Level up {1}{U}")]
     #[case::typecycling("Plainscycling {2}")]
-    #[case::landwalk("Islandwalk")]
+    #[case::landwalk_of_a_type_that_is_not_a_land_type("Cowwalk")]
     #[case::parameter_on_a_plain_keyword("Flying {2}")]
     #[case::suspend_without_time("Suspend {U}")]
     #[case::not_a_keyword("Draw a card.")]
@@ -702,9 +806,19 @@ mod tests {
         assert!(!is_keyword_line(line));
     }
 
+    /// The name a keyword is printed with when it is not the DSL's: every "Partner—text" is a `Partner` line.
+    fn printed(name: &str) -> &str {
+        if name == "Partner group" {
+            "Partner"
+        } else {
+            name
+        }
+    }
+
     #[test]
     fn every_keyword_the_dsl_declares_is_recognised_by_name() {
         for name in Keyword::NAMES {
+            let name = printed(name);
             assert!(
                 KEYWORDS
                     .iter()
@@ -758,6 +872,7 @@ mod tests {
             "Evoke {1}",
             "Overload {1}",
             "Living weapon",
+            "Enchant player",
             "Changeling",
             "Devoid",
             "Infect",
@@ -769,16 +884,29 @@ mod tests {
             "Foretell {1}",
             "Daybound",
             "Nightbound",
+            "Wither",
+            "Toxic 2",
+            "Fear",
+            "Intimidate",
+            "Swampwalk",
+            "Skulk",
+            "Shadow",
+            "Split second",
+            "Undaunted",
             "Partner with Someone",
+            "Partner\u{2014}Friends forever",
+            "Doctor's companion",
+            "Choose a Background",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];
         let mut seen = Vec::new();
         for sample in samples {
             let keyword = read(sample).unwrap_or_else(|| panic!("{sample} is not read"));
             assert!(
-                sample
-                    .to_ascii_lowercase()
-                    .starts_with(&keyword.name().to_ascii_lowercase()),
+                keyword.name() == "Landwalk"
+                    || sample
+                        .to_ascii_lowercase()
+                        .starts_with(&printed(keyword.name()).to_ascii_lowercase()),
                 "{sample} read as {}",
                 keyword.name()
             );

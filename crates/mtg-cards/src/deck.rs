@@ -233,6 +233,20 @@ impl DeckReport {
     pub fn is_clean(&self) -> bool {
         self.summary.state == DeckState::Verified
     }
+
+    /// Replaces the legality, as a table's rules judge it, and the summary with it: `issues` counts them and the state
+    /// is `blocked` while one is left or a card is `unplayable`, else `manual_play` while a card is not `verified`.
+    pub fn set_legality(&mut self, legality: Vec<Issue>) {
+        self.summary.issues = u32::try_from(legality.len()).unwrap_or(u32::MAX);
+        self.summary.state = if !legality.is_empty() || self.summary.counts.unplayable > 0 {
+            DeckState::Blocked
+        } else if self.summary.counts.verified < self.summary.counts.total {
+            DeckState::ManualPlay
+        } else {
+            DeckState::Verified
+        };
+        self.legality = legality;
+    }
 }
 
 /// Sums the copies of each `(zone, oracle id)`, in the case the ids are stored in.

@@ -35,6 +35,33 @@ pub enum DamageTarget {
     Object(ObjectId),
 }
 
+/// What a damage source's keywords make of the damage it deals.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum DamageForm {
+    /// Damage marked on a creature, life lost by a player.
+    #[default]
+    Normal,
+    /// Wither (CR 702.80): -1/-1 counters on a creature; a player loses life as usual.
+    Wither,
+    /// Infect (CR 702.90): -1/-1 counters on a creature, poison counters for a player.
+    Infect,
+}
+
+impl DamageForm {
+    /// Whether the damage is plain damage (serialization leaves it out).
+    #[must_use]
+    pub const fn is_normal(&self) -> bool {
+        matches!(self, DamageForm::Normal)
+    }
+
+    /// Whether a creature it hurts gets -1/-1 counters and no marked damage.
+    #[must_use]
+    pub const fn makes_counters(self) -> bool {
+        !self.is_normal()
+    }
+}
+
 /// An attacking creature and its blockers.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Attacker {

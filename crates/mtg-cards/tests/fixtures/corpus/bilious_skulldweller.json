@@ -1,0 +1,28 @@
+{
+  "id": "dfb81cb1-ac56-4803-a962-359854a447df",
+  "oracle_id": "83bf5610-a798-4508-88d2-c60d96f60d23",
+  "name": "Bilious Skulldweller",
+  "lang": "en",
+  "layout": "normal",
+  "set": "one",
+  "collector_number": "83",
+  "rarity": "uncommon",
+  "released_at": "2023-02-10",
+  "digital": false,
+  "mana_cost": "{B}",
+  "cmc": 1,
+  "type_line": "Creature — Phyrexian Insect",
+  "oracle_text": "Deathtouch\nToxic 1 (Players dealt combat damage by this creature also get a poison counter.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Toxic",
+    "Deathtouch"
+  ]
+}

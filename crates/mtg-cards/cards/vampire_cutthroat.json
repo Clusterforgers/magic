@@ -1,0 +1,12 @@
+{
+  "oracle_id": "2e163679-7303-4e05-9d20-86b76dfa1407",
+  "name": "Vampire Cutthroat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vampire Cutthroat",
+      "oracle_fingerprint": "6e56fd8566c09c39311ab0060b9d07b6",
+      "abilities": [{ "Keyword": "Skulk" }, { "Keyword": "Lifelink" }]
+    }
+  ]
+}

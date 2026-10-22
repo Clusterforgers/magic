@@ -80,6 +80,8 @@ pub struct GameSeat {
 /// seat token, join code or link.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct GameInfo {
+    /// The format key the game is played under: `normal` or `commander`.
+    pub format: String,
     /// Whether every seat was ready and the game began.
     pub started: bool,
     /// Every seat, in seat order.

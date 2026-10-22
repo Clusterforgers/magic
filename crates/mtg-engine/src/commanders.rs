@@ -128,6 +128,14 @@ impl GameState {
             .saturating_mul(self.ruleset().commander_tax())
     }
 
+    /// The combat damage from one commander that makes a player lose at this table: the table's amount, else the
+    /// format's; none when the format has no commander damage (Normal, whatever the table sets) or the table turned it
+    /// off.
+    pub fn commander_lethal(&self) -> Option<u32> {
+        self.format.commander_damage()?;
+        self.ruleset().commander_damage()
+    }
+
     /// The combat damage the commander `id` has dealt to `player` this game.
     pub fn commander_damage(&self, id: ObjectId, player: PlayerId) -> u32 {
         self.commanders
@@ -224,11 +232,12 @@ pub(crate) fn answer(state: &GameState, options: &YesNoOptions, choice: YesNoCho
 
 #[cfg(test)]
 mod tests {
-    //! Goal: commander damage is counted per commander and per player from combat damage only and survives the commander's zone changes, the tax counts casts from the command zone only, the owner of a commander in a graveyard or exile is asked once for each time it got there and a refusal is remembered until it moves, and a game with commanders hashes what is counted only once it is nonzero.
+    //! Goal: commander damage is counted per commander and per player from combat damage only and survives the commander's zone changes, the tax counts casts from the command zone only, the owner of a commander in a graveyard or exile is asked once for each time it got there and a refusal is remembered until it moves, a game with commanders hashes what is counted only once it is nonzero, and the lethal amount is the table's, the format's 21 or none (Normal has none, whatever the table sets).
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
     use mtg_core::card::{CardType, Supertype};
+    use mtg_core::house::CommanderDamageLimit;
     use rstest::rstest;
 
     use super::*;
@@ -269,6 +278,8 @@ mod tests {
             target: DamageTarget::Player(PlayerId::from_index(seat)),
             amount,
             deathtouch: false,
+            form: crate::combat::DamageForm::Normal,
+            toxic: 0,
         };
         apply_event(game, &event).unwrap();
     }
@@ -469,6 +480,27 @@ mod tests {
         plain.players[0].graveyard = vec![creature("Bear", 2, 2)];
         let plain = GameState::from_setup(&plain).unwrap();
         assert!(decision(&plain).is_none());
+    }
+
+    #[rstest]
+    #[case::the_formats_amount(true, None, Some(21))]
+    #[case::a_table_amount(true, Some(CommanderDamageLimit::Lethal(15)), Some(15))]
+    #[case::the_least(true, Some(CommanderDamageLimit::Lethal(1)), Some(1))]
+    #[case::turned_off(true, Some(CommanderDamageLimit::Off), None)]
+    #[case::normal_has_none(false, None, None)]
+    #[case::normal_ignores_the_table(false, Some(CommanderDamageLimit::Lethal(15)), None)]
+    fn the_lethal_amount_is_the_one_that_applies_at_the_table(
+        #[case] commander: bool,
+        #[case] rule: Option<CommanderDamageLimit>,
+        #[case] expected: Option<u32>,
+    ) {
+        let mut config = setup(vec![Vec::new(); 3], vec![Vec::new(); 3]);
+        if commander {
+            config.format = Arc::new(Commander);
+        }
+        config.house_rules.commander_damage = rule;
+        let game = GameState::from_setup(&config).unwrap();
+        assert_eq!(game.commander_lethal(), expected);
     }
 
     #[test]

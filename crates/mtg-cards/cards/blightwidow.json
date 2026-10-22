@@ -1,0 +1,12 @@
+{
+  "oracle_id": "282003f4-862a-4f80-8f45-e470fc0fe2fe",
+  "name": "Blightwidow",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blightwidow",
+      "oracle_fingerprint": "5916e6df63c836a5f6eacc5c6e4d0995",
+      "abilities": [{ "Keyword": "Reach" }, { "Keyword": "Infect" }]
+    }
+  ]
+}

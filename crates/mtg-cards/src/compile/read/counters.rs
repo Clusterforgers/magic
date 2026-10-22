@@ -103,6 +103,8 @@ pub fn entering(r: &mut Reader<'_>) -> Option<(CounterKind, Amount)> {
 fn place(r: &mut Reader<'_>) -> Option<Ref> {
     if r.source() || (r.it == Some(Ref::This) && r.word("it")) {
         Some(Ref::This)
+    } else if r.it == Some(Ref::Triggering) && r.word("it") {
+        Some(Ref::Triggering)
     } else {
         target_object(r)
     }

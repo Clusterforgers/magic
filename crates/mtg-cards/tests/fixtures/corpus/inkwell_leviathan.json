@@ -1,0 +1,30 @@
+{
+  "id": "9f7a6dfb-a8f8-4899-b2db-c48d542dfd55",
+  "oracle_id": "dbdd0963-b395-4cb8-ad9a-ed85a3e9f2e5",
+  "name": "Inkwell Leviathan",
+  "lang": "en",
+  "layout": "normal",
+  "set": "2xm",
+  "collector_number": "55",
+  "rarity": "rare",
+  "released_at": "2020-08-07",
+  "digital": false,
+  "mana_cost": "{7}{U}{U}",
+  "cmc": 9,
+  "type_line": "Artifact Creature — Leviathan",
+  "oracle_text": "Trample\nIslandwalk (This creature can't be blocked as long as defending player controls an Island.)\nShroud (This creature can't be the target of spells or abilities.)",
+  "power": "7",
+  "toughness": "11",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Landwalk",
+    "Shroud",
+    "Trample",
+    "Islandwalk"
+  ]
+}

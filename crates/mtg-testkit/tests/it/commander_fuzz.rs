@@ -9,7 +9,7 @@ use mtg_engine::events::Event;
 use mtg_engine::player::LossReason;
 use mtg_engine::zones::Zone;
 use mtg_engine::{GameSetup, GameState, apply_event};
-use mtg_testkit::{commander_fuzz_setup, play_game};
+use mtg_testkit::{commander_fuzz_setup, partner_fuzz_setup, play_game};
 use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
@@ -30,6 +30,8 @@ struct Seen {
     returned_from_hand: u64,
     stayed: u64,
     lost_to_commander_damage: u64,
+    /// The names of the commanders that were cast from a command zone.
+    cast_names: std::collections::BTreeSet<String>,
 }
 
 impl Seen {
@@ -45,6 +47,9 @@ impl Seen {
                         .is_some_and(|card| matches!(card.zone(), Zone::Command(_))) =>
                 {
                     *casts.entry(*object).or_default() += 1;
+                    if let Some(card) = state.object(*object) {
+                        self.cast_names.insert(card.card().name.clone());
+                    }
                 }
                 Event::ZoneChanged {
                     object,
@@ -94,5 +99,28 @@ fn seeded_commander_games_finish_and_keep_every_invariant(#[case] players: usize
             "no commander came back from a graveyard: {seen:?}"
         );
         assert!(seen.stayed > 0, "no owner left a commander: {seen:?}");
+    }
+}
+
+#[rstest]
+#[case(2)]
+#[case(3)]
+#[case(4)]
+#[case(6)]
+fn seeded_games_of_partner_pairs_finish_and_keep_every_invariant(#[case] players: usize) {
+    let seen = Mutex::new(Seen::default());
+    for_each_seed(0..games(), |seed| {
+        let setup = partner_fuzz_setup(players, seed).unwrap();
+        let outcome = play_game(setup.clone(), seed).unwrap_or_else(|failure| panic!("{failure}"));
+        seen.lock().unwrap().add(&setup, &outcome.events);
+    });
+    let seen = seen.into_inner().unwrap();
+    eprintln!("{players} seats, pairs: {seen:?}");
+    // Both partners of a seat are cast, each from the command zone.
+    for name in ["First Partner", "Second Partner"] {
+        assert!(
+            seen.cast_names.contains(name),
+            "{name} was never cast: {seen:?}"
+        );
     }
 }

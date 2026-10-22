@@ -1,0 +1,27 @@
+{
+  "id": "83298c8a-02c4-4ada-9a41-4b973bb58ac6",
+  "oracle_id": "a2b8185a-9ff2-4d65-9bdd-b060b7ce69bb",
+  "name": "Impostor of the Sixth Pride",
+  "lang": "en",
+  "layout": "normal",
+  "set": "mh1",
+  "collector_number": "14",
+  "rarity": "common",
+  "released_at": "2019-06-14",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2,
+  "type_line": "Creature — Shapeshifter",
+  "oracle_text": "Changeling (This card is every creature type.)",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Changeling"
+  ]
+}
