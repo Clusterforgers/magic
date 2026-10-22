@@ -652,6 +652,7 @@ mod tests {
     )]
     #[case::cycling("Cycling {2}", Keyword::Cycling(mana("{2}")))]
     #[case::madness("Madness {R}", Keyword::Madness(mana("{R}")))]
+    #[case::miracle("Miracle {W}", Keyword::Miracle(mana("{W}")))]
     #[case::morph("Morph {3}{B}", Keyword::Morph(mana("{3}{B}")))]
     #[case::disguise("Disguise {1}{W}", Keyword::Disguise(mana("{1}{W}")))]
     #[case::overload("Overload {3}{U}{U}", Keyword::Overload(mana("{3}{U}{U}")))]
@@ -962,6 +963,7 @@ mod tests {
             "Rebound",
             "Aftermath",
             "Dash {1}",
+            "Miracle {1}{W}",
             "Ninjutsu {1}{U}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
         ];

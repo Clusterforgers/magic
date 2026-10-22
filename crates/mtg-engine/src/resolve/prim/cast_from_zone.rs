@@ -117,6 +117,9 @@ fn question(
 ) -> Decision {
     Decision {
         player,
-        kind: DecisionKind::YesNo(YesNoOptions::new(card, wording::cast(name, free, alternative))),
+        kind: DecisionKind::YesNo(YesNoOptions::new(
+            card,
+            wording::cast(name, free, alternative),
+        )),
     }
 }

@@ -748,10 +748,7 @@ fn matching_event(
             by(who, player)
                 .then(|| counted(state, vec![Target::Player(*player)], happened.amount()))
         }
-        (
-            TriggerPattern::Drew { who, what },
-            Happened::Drew { player, card, .. },
-        ) => {
+        (TriggerPattern::Drew { who, what }, Happened::Drew { player, card, .. }) => {
             // The card is read where the batch left it: in the hand it was drawn into, or wherever an effect sent it since.
             let drawn = object(*card)?;
             (by(who, player) && picks(what, drawn)?)

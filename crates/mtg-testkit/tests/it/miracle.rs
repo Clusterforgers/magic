@@ -166,7 +166,9 @@ fn a_card_that_left_the_hand_in_response_is_not_cast(
     resolve(&mut driver, seats)?;
     resolve(&mut driver, seats)?;
     assert!(stack(&driver).is_empty(), "no cast was offered");
-    assert!(names(driver.state(), Zone::Graveyard(pid(0))).contains(&"Thunderous Wrath".to_owned()));
+    assert!(
+        names(driver.state(), Zone::Graveyard(pid(0))).contains(&"Thunderous Wrath".to_owned())
+    );
     assert_eq!(driver.state().player(pid(1)).unwrap().life(), 20);
     Ok(())
 }
@@ -249,7 +251,9 @@ fn a_creature_with_miracle_enters_the_battlefield_for_its_miracle_cost(
     driver.answer(Answer::PayMana(mtg_engine::decision::PayChoice::Auto))?;
     resolve(&mut driver, seats)?;
     assert_eq!(
-        names(driver.state(), Zone::Battlefield).last().map(String::as_str),
+        names(driver.state(), Zone::Battlefield)
+            .last()
+            .map(String::as_str),
         Some("Sister Repentia")
     );
     Ok(())

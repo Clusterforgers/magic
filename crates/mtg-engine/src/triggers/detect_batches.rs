@@ -234,6 +234,27 @@ fn the_second_card_of_a_turn_triggers_once_whether_drawn_together_or_apart() {
 }
 
 #[test]
+fn the_first_draw_of_a_turn_names_the_card_it_drew() {
+    let first =
+        r#"{"Nth":{"event":{"Drew":{"who":"You","what":[{"Named":"Library 0"}]}},"nth":1}}"#;
+    let pre = board(first);
+    assert_eq!(
+        fired(&pre, &[draw(&pre, ME)]),
+        1,
+        "the card named is drawn first"
+    );
+    let after = fold(&pre, &[draw(&pre, ME)]);
+    assert_eq!(fired(&after, &[draw(&after, ME)]), 0, "the second draw");
+    let lands = r#"{"Nth":{"event":{"Drew":{"who":"You","what":[{"Named":"Spell"}]}},"nth":1}}"#;
+    let pre = board(lands);
+    assert_eq!(
+        fired(&pre, &[draw(&pre, ME)]),
+        0,
+        "the first card is another"
+    );
+}
+
+#[test]
 fn a_new_turn_starts_the_count_again_and_each_player_counts_alone() {
     let pre = board(SECOND_DRAW);
     let one = fold(&pre, &[draw(&pre, FOE)]);

@@ -258,6 +258,7 @@ fn keyword() -> impl Strategy<Value = Keyword> {
         cost().prop_map(Keyword::Multikicker),
         cost().prop_map(Keyword::Flashback),
         cost().prop_map(Keyword::Madness),
+        cost().prop_map(Keyword::Miracle),
         cost().prop_map(Keyword::Morph),
         cost().prop_map(Keyword::Disguise),
         (1u32..6, cost()).prop_map(|(time, cost)| Keyword::Suspend { time, cost }),
@@ -829,7 +830,11 @@ fn effect() -> impl Strategy<Value = Effect> {
                 reference(),
                 any::<bool>(),
                 list(),
-                proptest::option::of(select(vec![CastWay::Madness, CastWay::Suspend])),
+                proptest::option::of(select(vec![
+                    CastWay::Madness,
+                    CastWay::Miracle,
+                    CastWay::Suspend
+                ])),
             )
                 .prop_map(|(who, what, free, otherwise, way)| Effect::CastFromZone {
                     who,
