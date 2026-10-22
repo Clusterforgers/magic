@@ -11,7 +11,7 @@ use super::payment::spend;
 use super::{Ctx, Next, What, Work, alternative, modifiers, optional, x};
 use crate::choose::Choices;
 use crate::help::{self, Offered};
-use crate::mana::{ManaOption, can_afford_with};
+use crate::mana::{ManaOption, can_afford_with, reserve_energy};
 use crate::price::Price;
 use crate::priority::mana_options;
 
@@ -79,11 +79,13 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
                 choices.cost_picks().iter().flatten().copied().collect()
             };
             sources.retain(|option| !taken.contains(&option.source.object));
+            reserve_energy(&mut sources, price.energy());
             Some((cost, sources, price.life()))
         }
         What::Ability(ability) => match ctx.ability? {
             Ability::Activated { cost, .. } => {
-                let price = Price::announced(cost).ok()?;
+                let x = choices.x.unwrap_or(0);
+                let price = Price::announced(cost).ok()?.at(x);
                 let mut sources = price.sources(ctx.state, ctx.player, ability.object);
                 // What the cost sacrifices, taps or returns is not there to tap for mana.
                 sources.retain(|option| {
@@ -93,7 +95,7 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<(Option<ManaCost>, Vec<Ma
                         .flatten()
                         .any(|picked| *picked == option.source.object)
                 });
-                let life = price.life_at(choices.x.unwrap_or(0));
+                let life = price.life();
                 Some((price.mana, sources, life))
             }
             _ => Some((None, Vec::new(), 0)),

@@ -166,6 +166,7 @@ fn found_destination(r: &mut Reader<'_>) -> Option<Destination> {
         return Some(Destination::Battlefield {
             tapped,
             under: None,
+            counters: Vec::new(),
         });
     }
     r.words("into your hand").then_some(Destination::Hand)
@@ -407,7 +408,8 @@ fn destination_text(to: &Destination) -> Option<String> {
         Destination::Battlefield {
             tapped,
             under: None,
-        } => Some(format!(
+            counters,
+        } if counters.is_empty() => Some(format!(
             "onto the battlefield{}",
             if *tapped { " tapped" } else { "" }
         )),

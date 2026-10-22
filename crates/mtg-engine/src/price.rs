@@ -5,7 +5,7 @@ use mtg_cards::cost::{Cost, CostItem};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
-use crate::mana::ManaOption;
+use crate::mana::{ManaOption, reserve_energy};
 use crate::parts::{Part, Payer};
 use crate::priority::mana_options;
 use crate::state::GameState;
@@ -193,9 +193,15 @@ impl Price {
         Some(taken.into_iter().flatten().collect())
     }
 
-    /// The life the parts of the price pay when X is `x`.
-    pub(crate) fn life_at(&self, x: u32) -> u32 {
-        self.at(x).life()
+    /// The energy the parts of the price pay.
+    pub(crate) fn energy(&self) -> u32 {
+        self.parts
+            .iter()
+            .map(|part| match part {
+                Part::Energy(amount) => *amount,
+                _ => 0,
+            })
+            .sum()
     }
 
     /// The life the parts of the price pay.
@@ -222,6 +228,8 @@ impl Price {
         if self.tap || self.moves_source() {
             sources.retain(|option| option.source.object != source);
         }
+        // The energy the other parts of the price pay is not there for the mana abilities.
+        reserve_energy(&mut sources, self.energy());
         sources
     }
 }

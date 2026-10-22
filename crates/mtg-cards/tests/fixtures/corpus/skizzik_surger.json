@@ -1,0 +1,28 @@
+{
+  "id": "4b232c36-bff1-4f5e-98a6-ce6a98591aa6",
+  "oracle_id": "ded349de-0599-4744-ad3e-aec95caf9f99",
+  "name": "Skizzik Surger",
+  "lang": "en",
+  "layout": "normal",
+  "set": "fut",
+  "collector_number": "120",
+  "rarity": "uncommon",
+  "released_at": "2007-05-04",
+  "digital": false,
+  "mana_cost": "{4}{R}{R}",
+  "cmc": 6,
+  "type_line": "Creature — Elemental",
+  "oracle_text": "Haste\nEcho—Sacrifice two lands. (At the beginning of your upkeep, if this came under your control since the beginning of your last upkeep, sacrifice it unless you pay its echo cost.)",
+  "power": "6",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Haste",
+    "Echo"
+  ]
+}

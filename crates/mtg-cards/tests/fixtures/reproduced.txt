@@ -90,6 +90,7 @@ Fear of Failed Tests
 Felidar Sovereign
 Fellwar Stone
 Fiery Temper
+Firestorm Hellkite
 Flooded Strand
 Fog
 Followed Footsteps
@@ -108,6 +109,7 @@ Glimpse of Freedom
 Glorious Anthem
 Goblin Chieftain
 Goblin Spy
+Goblin War Buggy
 Grapeshot
 Graveshifter
 Growing Ranks
@@ -117,6 +119,7 @@ Hall of Triumph
 Hengegate Pathway // Mistgate Pathway
 Hero of Bladehold
 Horizon Canopy
+Hound of Griselbrand
 Hulking Raptor
 Idyllic Beachfront
 Impostor of the Sixth Pride
@@ -127,6 +130,7 @@ Jungle Lion
 Kathari Screecher
 Keep Watch
 Kessig Wolf Run
+Kitchen Finks
 Kongming, "Sleeping Dragon"
 Krenko's Enforcer
 Lat-Nam Adept
@@ -148,6 +152,7 @@ Mirror Image
 Mishra's Workshop
 Mizzium Mortars
 Monastery Swiftspear
+Morinfen
 Mothdust Changeling
 Mulldrifter
 Murderous Cut
@@ -161,12 +166,16 @@ Pacifism
 Pale Bears
 Pestilent Syphoner
 Phantasmal Image
+Phyrexian Soulgorger
 Pillar of the Paruns
 Plague Myr
 Plague Stinger
+Pouncing Jaguar
 Prismatic Lens
 Professional Face-Breaker
+Putrid Goblin
 Questing Beast
+Rakdos Headliner
 Rally the Ranks
 Rampant Growth
 Reckless Impulse
@@ -182,8 +191,10 @@ Rootborn Defenses
 Rosheen Meanderer
 Rummaging Goblin
 Rustrazor Butcher
+Safehold Elite
 Sanguine Bond
 Saw It Coming
+Scuzzback Marauders
 Seedglaive Mentor
 Serra Angel
 Servant of the Conduit
@@ -192,6 +203,7 @@ Siege Wurm
 Sinister Sabotage
 Sinister Starfish
 Skeletal Changeling
+Skizzik Surger
 Skullclamp
 Skycloud Expanse
 Skysovereign, Consul Flagship
@@ -210,6 +222,7 @@ Squirrel Nest
 Staggershock
 Steam Vents
 Stoke the Flames
+Strangleroot Geist
 Strionic Resonator
 Stroke of Genius
 Summer Bloom
@@ -235,11 +248,13 @@ Tireless Tracker
 Treasure Cruise
 Tumble Magnet
 Twincast
+Uktabi Efreet
 Umbral Collar Zealot
 Underworld Dreams
 Underworld Rage-Hound
 Universal Automaton
 Vampire Cutthroat
+Vengeful Vampire
 Vestige of Emrakul
 Viridian Corrupter
 Walking Ballista
@@ -248,5 +263,6 @@ Wargate
 Warmonger Hellkite
 Wear // Tear
 Wrath of God
+Young Wolf
 Zendikar Farguide
 Zodiac Goat

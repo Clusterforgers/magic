@@ -174,6 +174,29 @@ fn designate(state: &mut GameState, event: &Event) {
     }
 }
 
+/// The permanents `active` controls as their turn begins. One it has held since its previous turn began is no longer
+/// held back (CR 302.6); one that was held back is recorded as new to them, which echo reads in the upkeep
+/// (`PermanentState::is_new_to`). Who controls a permanent is read under the effects as they are now.
+fn settle_permanents(state: &mut GameState, active: PlayerId) {
+    let controlled: Vec<ObjectId> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .filter(|id| controller_of(state, *id) == Some(active))
+        .collect();
+    for id in controlled {
+        if let Some(perm) = state
+            .objects
+            .get_mut(&id)
+            .and_then(|o| o.permanent.as_mut())
+        {
+            perm.new_to = perm.sick_for(active).then_some(active);
+            perm.summoning_sick = false;
+            perm.observed = Some(active);
+        }
+    }
+}
+
 fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::TurnBegan { number, active } => {
@@ -188,24 +211,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.clear_turn_uses();
             state.priority = None;
             state.combat = crate::combat::CombatState::default();
-            // A permanent its controller has held since this turn began is no longer held back (CR 302.6): who
-            // controls it is read under the effects as they are now.
-            let rested: Vec<ObjectId> = state
-                .zone(Zone::Battlefield)
-                .iter()
-                .copied()
-                .filter(|id| controller_of(state, *id) == Some(*active))
-                .collect();
-            for id in rested {
-                if let Some(perm) = state
-                    .objects
-                    .get_mut(&id)
-                    .and_then(|o| o.permanent.as_mut())
-                {
-                    perm.summoning_sick = false;
-                    perm.observed = Some(*active);
-                }
-            }
+            settle_permanents(state, *active);
         }
         Event::StepBegan { step } => {
             state.turn.step = *step;

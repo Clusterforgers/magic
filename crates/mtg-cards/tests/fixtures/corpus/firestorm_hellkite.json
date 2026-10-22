@@ -1,0 +1,31 @@
+{
+  "id": "def23574-4a41-4323-84d9-49f58b2ca322",
+  "oracle_id": "533e41cc-7cae-47f2-886b-8a3ffb82bf81",
+  "name": "Firestorm Hellkite",
+  "lang": "en",
+  "layout": "normal",
+  "set": "vis",
+  "collector_number": "130",
+  "rarity": "rare",
+  "released_at": "1997-02-03",
+  "digital": false,
+  "mana_cost": "{4}{U}{R}",
+  "cmc": 6,
+  "type_line": "Creature — Dragon",
+  "oracle_text": "Flying, trample\nCumulative upkeep {U}{R} (At the beginning of your upkeep, put an age counter on this permanent, then sacrifice it unless you pay its upkeep cost for each age counter on it.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "R",
+    "U"
+  ],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [
+    "Cumulative upkeep",
+    "Flying",
+    "Trample"
+  ]
+}

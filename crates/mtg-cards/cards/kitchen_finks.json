@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5470dcfa-4eff-43da-abf7-19922841f719",
+  "name": "Kitchen Finks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kitchen Finks",
+      "oracle_fingerprint": "a3e0a4dd92b6e80facbcc903071eb961",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}

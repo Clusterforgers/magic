@@ -1,0 +1,18 @@
+{
+  "oracle_id": "b6e36e77-0cea-4b7a-b968-774b1e74a992",
+  "name": "Phyrexian Soulgorger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Soulgorger",
+      "oracle_fingerprint": "2cb959a5f535189e84b856222b9b0731",
+      "abilities": [
+        {
+          "Keyword": {
+            "CumulativeUpkeep": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "0e013b28-7a90-4b4e-a91c-7d864105d28b",
+  "oracle_id": "423a1fc2-f623-4b5f-9a3e-7f63b2f3cf5d",
+  "name": "Scuzzback Marauders",
+  "lang": "en",
+  "layout": "normal",
+  "set": "uma",
+  "collector_number": "221",
+  "rarity": "common",
+  "released_at": "2018-12-07",
+  "digital": false,
+  "mana_cost": "{4}{R/G}",
+  "cmc": 5,
+  "type_line": "Creature — Goblin Warrior",
+  "oracle_text": "Trample\nPersist (When this creature dies, if it had no -1/-1 counters on it, return it to the battlefield under its owner's control with a -1/-1 counter on it.)",
+  "power": "5",
+  "toughness": "2",
+  "colors": [
+    "G",
+    "R"
+  ],
+  "color_identity": [
+    "G",
+    "R"
+  ],
+  "keywords": [
+    "Persist",
+    "Trample"
+  ]
+}

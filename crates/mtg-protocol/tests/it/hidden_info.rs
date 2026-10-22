@@ -19,7 +19,7 @@ use mtg_protocol::{EventBatch, StateView, project_events};
 use mtg_testkit::{
     archon_fuzz_setup, attach_fuzz_setup, counters_fuzz_setup, keyword_triggers_fuzz_setup,
     loyalty_fuzz_setup, parts_fuzz_setup, prevent_fuzz_setup, rules_fuzz_setup, spell_fuzz_setup,
-    split_fuzz_setup, zones_fuzz_setup,
+    split_fuzz_setup, upkeep_fuzz_setup, zones_fuzz_setup,
 };
 use rstest::rstest;
 use serde_json::Value;
@@ -1904,4 +1904,47 @@ fn the_seat_hurt_picks_the_damage_a_shield_takes_first_and_the_question_shows_no
     for (viewer, batch) in viewers.iter().zip(&batches) {
         assert_clean(batch, &hidden_in(&after, *viewer));
     }
+}
+
+/// Echo, cumulative upkeep, undying and persist ask their controller to pay (a card discarded from the hand, creatures
+/// sacrificed, life), put counters on permanents and return cards from graveyards; none of it names a card a viewer
+/// may not see.
+#[rstest]
+#[case(2, 61)]
+#[case(3, 62)]
+#[case(4, 63)]
+fn no_hidden_object_reaches_any_viewer_in_games_of_the_upkeep_keywords(
+    #[case] players: usize,
+    #[case] seed: u64,
+) {
+    let viewers: Vec<PlayerId> = (0..players).map(PlayerId::from_index).collect();
+    let (mut checked, mut counters) = (0usize, 0usize);
+    let setup = with_unique_names(upkeep_fuzz_setup(players, seed).unwrap());
+    let engine = run_game(setup, seed, |step: &Step| {
+        counters += step
+            .events
+            .iter()
+            .filter(|event| {
+                matches!(event, mtg_engine::Event::CountersChanged(change) if change.delta > 0)
+            })
+            .count();
+        let batches = project_events(step.before, step.events, &viewers, step.from_seq).unwrap();
+        for (viewer, batch) in viewers.iter().zip(&batches) {
+            let hidden = hidden_across(step.before, step.after, *viewer);
+            checked += hidden.len();
+            for (part, value) in batch_parts(batch) {
+                let found = leaks(&without_trigger_orders(value), &hidden);
+                assert!(
+                    found.is_empty(),
+                    "seed {seed} answer {} viewer {viewer:?}: batch {part} leaks {found:?}",
+                    step.answers
+                );
+            }
+        }
+    });
+    assert!(engine.result().is_some(), "game should finish");
+    assert!(
+        checked > 500 && counters > 0,
+        "test must not be vacuous: {checked} hidden, {counters} counters put"
+    );
 }
