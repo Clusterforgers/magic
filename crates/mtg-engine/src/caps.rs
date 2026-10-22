@@ -256,6 +256,7 @@ const RUNS: &[&str] = &[
     "Keyword.Escape",
     "Keyword.Rebound",
     "Keyword.Aftermath",
+    "Keyword.Dash",
     "Rule.CanBeCommander",
 ];
 
@@ -553,6 +554,7 @@ mod tests {
     #[case::escape("Keyword.Escape", true)]
     #[case::rebound("Keyword.Rebound", true)]
     #[case::aftermath("Keyword.Aftermath", true)]
+    #[case::dash("Keyword.Dash", true)]
     #[case::counting_players("Amount.Players", true)]
     #[case::the_lowest_life_total("Amount.LowestLife", true)]
     #[case::the_highest_life_total("Amount.HighestLife", true)]

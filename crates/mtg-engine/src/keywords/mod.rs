@@ -14,6 +14,7 @@ mod companion;
 mod convoke;
 mod crew;
 mod cycling;
+mod dash;
 mod daybound;
 mod deathtouch;
 mod defender;
@@ -391,6 +392,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Escape(_) => &escape::Escape,
         Keyword::Rebound => &rebound::Rebound,
         Keyword::Aftermath => &aftermath::Aftermath,
+        Keyword::Dash(_) => &dash::Dash,
     }
 }
 
@@ -639,6 +641,7 @@ mod tests {
             Keyword::Escape(cost()),
             Keyword::Rebound,
             Keyword::Aftermath,
+            Keyword::Dash(cost()),
         ]
     }
 
@@ -706,6 +709,7 @@ mod tests {
         "Keyword.Escape",
         "Keyword.Rebound",
         "Keyword.Aftermath",
+        "Keyword.Dash",
     ];
 
     /// What a keyword answers to each hook that does not need a game.
@@ -814,6 +818,7 @@ mod tests {
     #[case::escape(Keyword::Escape(Cost::mana("{B}".parse().unwrap())), Hooks::none())]
     #[case::rebound(Keyword::Rebound, Hooks::none())]
     #[case::aftermath(Keyword::Aftermath, Hooks::none())]
+    #[case::dash(Keyword::Dash(Cost::mana("{1}{R}".parse().unwrap())), Hooks { abilities: 2, ..Hooks::none() })]
     #[case::suspend(Keyword::Suspend { time: 2, cost: Cost::mana("{R}".parse().unwrap()) }, Hooks { abilities: 3, ..Hooks::none() })]
     fn a_keyword_answers_the_hooks_of_its_row(#[case] keyword: Keyword, #[case] row: Hooks) {
         assert_eq!(Hooks::of(&keyword), row);

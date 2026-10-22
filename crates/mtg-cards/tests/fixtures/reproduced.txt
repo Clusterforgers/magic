@@ -122,6 +122,7 @@ Izzet Charm
 Jungle Lion
 Kathari Screecher
 Kessig Wolf Run
+Kolaghan Skirmisher
 Kongming, "Sleeping Dragon"
 Krenko's Enforcer
 Lat-Nam Adept
@@ -136,6 +137,9 @@ Lotus Petal
 Ludevic's Test Subject // Ludevic's Abomination
 Lurching Rotbeast
 Manabarbs
+Mardu Scout
+Mardu Shadowspear
+Mardu Strike Leader
 Megrim
 Mesmeric Orb
 Midnight Banshee

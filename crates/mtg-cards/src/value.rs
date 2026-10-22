@@ -71,6 +71,8 @@ pub enum CastWay {
     Foretold,
     /// Escape (CR 702.138): from a graveyard for its escape cost, which exiles other cards of the graveyard; the permanent remembers that it escaped.
     Escape,
+    /// Dash (CR 702.109): the creature has haste and returns to its owner's hand at the next end step.
+    Dash,
     /// Without paying its mana cost, by a permission or an effect (CR 118.9).
     Free,
 }

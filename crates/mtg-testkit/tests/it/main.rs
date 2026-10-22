@@ -47,6 +47,7 @@ mod counted_costs;
 mod counter_effects;
 mod counters_fuzz;
 mod damage_forms;
+mod dash;
 mod day_night;
 mod determinism_replay;
 mod divided_resolution;

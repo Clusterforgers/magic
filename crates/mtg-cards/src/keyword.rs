@@ -165,6 +165,8 @@ pub enum Keyword {
     Rebound,
     /// Aftermath: the second half of a split card is cast only from a graveyard and is exiled when it leaves the stack (CR 702.127).
     Aftermath,
+    /// Dash with its cost: an alternative cost for a creature spell, which gains haste and returns to its owner's hand at the next end step (CR 702.109).
+    Dash(Cost),
 }
 
 impl Keyword {
@@ -241,6 +243,7 @@ impl Keyword {
         "Escape",
         "Rebound",
         "Aftermath",
+        "Dash",
     ];
 
     /// The keyword as Scryfall spells it (`First strike`).
@@ -317,6 +320,7 @@ impl Keyword {
             Keyword::Escape(_) => "Escape",
             Keyword::Rebound => "Rebound",
             Keyword::Aftermath => "Aftermath",
+            Keyword::Dash(_) => "Dash",
         }
     }
 
@@ -413,9 +417,10 @@ mod tests {
             Keyword::DoctorsCompanion,
             Keyword::ChooseABackground,
             Keyword::Unearth(cost.clone()),
-            Keyword::Escape(cost),
+            Keyword::Escape(cost.clone()),
             Keyword::Rebound,
             Keyword::Aftermath,
+            Keyword::Dash(cost),
         ]
     }
 

@@ -1,0 +1,27 @@
+{
+  "id": "ced0adca-d11c-41b6-aec4-4799946425d3",
+  "oracle_id": "ade4ffa5-6609-44eb-8f1a-45e7203d90e3",
+  "name": "Kolaghan Skirmisher",
+  "lang": "en",
+  "layout": "normal",
+  "set": "dtk",
+  "collector_number": "107",
+  "rarity": "common",
+  "released_at": "2015-03-27",
+  "digital": false,
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Dash {2}{B} (You may cast this spell for its dash cost. If you do, it gains haste, and it's returned from the battlefield to its owner's hand at the beginning of the next end step.)",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Dash"
+  ]
+}

@@ -707,7 +707,8 @@ impl<'a> Walker<'a> {
             | Keyword::Buyback(cost)
             | Keyword::Entwine(cost)
             | Keyword::Evoke(cost)
-            | Keyword::Escape(cost) => {
+            | Keyword::Escape(cost)
+            | Keyword::Dash(cost) => {
                 self.at("cost", |w| w.cost(cost));
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Cost", cost);
             }

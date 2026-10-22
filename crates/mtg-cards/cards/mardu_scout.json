@@ -1,0 +1,12 @@
+{
+  "oracle_id": "c18ab011-c5e0-4174-b623-d89e4d745ce6",
+  "name": "Mardu Scout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mardu Scout",
+      "oracle_fingerprint": "6d0e188fc4eef3f13aa8427cadfe025a",
+      "abilities": [{ "Keyword": { "Dash": "{1}{R}" } }]
+    }
+  ]
+}
