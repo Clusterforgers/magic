@@ -127,6 +127,11 @@ pub enum CounterKind {
 }
 
 impl CounterKind {
+    /// The lore counter of a Saga (CR 714).
+    pub fn lore() -> Self {
+        CounterKind::Other("lore".to_owned())
+    }
+
     /// The kind as a card names it: `+1/+1`, `poison`, `charge`.
     pub fn name(&self) -> &str {
         match self {

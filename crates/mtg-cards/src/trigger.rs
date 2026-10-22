@@ -245,6 +245,11 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         counter: Option<CounterKind>,
     },
+    /// A chapter ability of a Saga (CR 714.2): the lore counters on `This` reach or pass the number.
+    Chapter {
+        /// The chapter number.
+        number: u32,
+    },
     /// An Aura, Equipment or Fortification becomes attached to a permanent.
     Attached {
         /// The attachment; any when empty.

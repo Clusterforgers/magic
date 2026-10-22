@@ -30,6 +30,7 @@ use super::triggers::{
     targeted_itself,
 };
 use super::where_x;
+use crate::compile::classify;
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::Cost;
 use crate::effect::{Destination, Effect, Mode, Order, Place, Produce, TokenRef};
@@ -177,6 +178,22 @@ fn ability_texts(ability: &Ability) -> Vec<String> {
             .iter()
             .map(|sentences| spell(sentences))
             .collect(),
+        Ability::Triggered {
+            when: TriggerPattern::Chapter { number },
+            intervening_if: None,
+            limit: None,
+            from: ZoneKind::Battlefield,
+            targets,
+            effects,
+        } => {
+            let Some(numeral) = classify::numeral(*number) else {
+                return Vec::new();
+            };
+            alternatives(targets, effects)
+                .iter()
+                .map(|sentences| format!("{numeral} \u{2014} {}", spell(sentences)))
+                .collect()
+        }
         Ability::Triggered {
             when,
             intervening_if,

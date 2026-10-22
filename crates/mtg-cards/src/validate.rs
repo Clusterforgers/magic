@@ -1023,6 +1023,11 @@ impl<'a> Walker<'a> {
                     });
                 }
             }
+            TriggerPattern::Chapter { number } => {
+                if *number == 0 {
+                    self.at("number", |w| w.problem("the first chapter is 1"));
+                }
+            }
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
         }
@@ -1048,6 +1053,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
                 | TriggerPattern::GroupAttacks { .. }
+                | TriggerPattern::Chapter { .. }
         ) {
             self.problem("a batch is of one event that can happen to several things at once");
         }
