@@ -217,7 +217,6 @@ fn an_ability_word_is_flavor_and_the_rest_is_read(#[case] text: &str, #[case] re
 #[case::a_card_name("Whenever you sacrifice a Sol Ring, draw a card.")]
 #[case::delayed("At the beginning of the next end step, draw a card.")]
 #[case::delayed_upkeep("At the beginning of the next upkeep, draw a card.")]
-#[case::each_players_upkeep("At the beginning of each player's upkeep, draw a card.")]
 #[case::a_step_alone("At the beginning of draw a card.")]
 #[case::an_unmodelled_step("At the beginning of your declare blockers step, draw a card.")]
 #[case::combat_without_a_turn("At the beginning of combat, scry 1.")]
