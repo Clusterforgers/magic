@@ -213,6 +213,9 @@ The server is settled first, then the web is built once against the final types.
 - [ ] (c9c) Verified corpus cards for Doctor's companion, Partner—text, Choose a Background (with a Background) and a planeswalker that can be a commander, each once its other text is a card the engine runs
 - [ ] (c10) Unread spell, trigger and activated wordings ranked by the cards each holds back (`mtg-cli coverage`, the unread lists): one piece per wording family (draw and discard, damage and life, tokens, search and tutors, counters, exile and return, pump and protection, sacrifice and destroy, mill and graveyard, choose and vote), each with its templates, goldens and Verified cards
 - [x] (c10a) Tokens with keywords: "create a 1/1 white Spirit creature token with flying" (one keyword or a list, "that's attacking") reads and writes back; 64 precon cards became Verified (1160 to 1224 cards, 46.3% to 47.2% of copies)
+- [ ] (c10b) The trigger events "this creature or another X you control enters", "dies" and "deals combat damage" as `AnyOf` events (about 51 cards, a template only)
+- [ ] (c10c) Counted amounts "for each ...": `Amount` forms for a count of a selector or a quantity ("draw a card for each creature you control", "add {R} for each Goblin", "gain 1 life for each ..."; about 63 cards)
+- [ ] (c10d) The wordings of "the top card(s) of your library" (about 43 cards)
 - [ ] (c11) Sagas, classes, rooms, battles and the other layouts, extra turns and extra combats, the initiative and dungeons, and the remaining long-tail mechanics found by the report, one task each
 
 ## M7 Product
