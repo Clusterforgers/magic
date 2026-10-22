@@ -5,8 +5,7 @@ use mtg_core::mana::ManaType;
 
 use super::among;
 use super::amounts::{
-    cards, cards_counted, counted, counted_parts, counted_stats, for_each, its_stat, number_word,
-    points,
+    cards_counted, counted, counted_parts, counted_stats, for_each, its_stat, number_word, points,
 };
 use super::cast;
 use super::conditional;

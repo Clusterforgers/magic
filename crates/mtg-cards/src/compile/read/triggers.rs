@@ -202,9 +202,7 @@ fn step(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         Ref::Monarch
     } else if r.words("each opponent's") {
         Ref::Opponents
-    } else if r.words("each player's") {
-        Ref::EachPlayer
-    } else if r.word("each") {
+    } else if r.words("each player's") || r.word("each") {
         Ref::EachPlayer
     } else {
         return None;

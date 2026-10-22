@@ -627,6 +627,34 @@ fn player_of(effect: &Effect) -> Option<&Ref> {
     }
 }
 
+/// A scry, draw, mill or discard of "you" as a verb with "you" understood: "draw a card", "discard your hand".
+fn your_cards(effect: &Effect) -> Option<String> {
+    Some(match effect {
+        Effect::Scry {
+            who: Ref::You,
+            count,
+        } => format!("scry {}", points_text(count)?),
+        Effect::Draw {
+            who: Ref::You,
+            count,
+        } => format!("draw {}", cards_text(count)?),
+        Effect::Mill {
+            who: Ref::You,
+            count,
+        } => format!("mill {}", cards_text(count)?),
+        Effect::Discard {
+            who: Ref::You,
+            count,
+            random,
+        } => format!(
+            "discard {}{}",
+            draws::discarded_text(&Ref::You, count)?,
+            at_random(*random)
+        ),
+        _ => return None,
+    })
+}
+
 /// "a", "a and b", "a, b, and c".
 fn join_list(items: &[String]) -> String {
     match items {
@@ -1050,27 +1078,10 @@ impl Writer<'_> {
             Effect::CopySpell { .. } | Effect::CopyAbility { .. } | Effect::BecomeCopy { .. } => {
                 self.copy_effect(effect)?
             }
-            Effect::Scry {
-                who: Ref::You,
-                count,
-            } => format!("scry {}", points_text(count)?),
-            Effect::Draw {
-                who: Ref::You,
-                count,
-            } => format!("draw {}", cards_text(count)?),
-            Effect::Mill {
-                who: Ref::You,
-                count,
-            } => format!("mill {}", cards_text(count)?),
-            Effect::Discard {
-                who: Ref::You,
-                count,
-                random,
-            } => format!(
-                "discard {}{}",
-                draws::discarded_text(&Ref::You, count)?,
-                at_random(*random)
-            ),
+            Effect::Scry { who: Ref::You, .. }
+            | Effect::Draw { who: Ref::You, .. }
+            | Effect::Mill { who: Ref::You, .. }
+            | Effect::Discard { who: Ref::You, .. } => your_cards(effect)?,
             Effect::Shuffle { who: Ref::You }
             | Effect::LookAtTop { .. }
             | Effect::Move {
