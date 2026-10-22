@@ -1,0 +1,23 @@
+{
+  "id": "d6828916-c19e-4857-a6ba-047b81314d1f",
+  "oracle_id": "30d9e200-b944-43ff-89b8-a550a788ae03",
+  "name": "Breath of Life",
+  "lang": "en",
+  "layout": "normal",
+  "set": "vma",
+  "collector_number": "18",
+  "rarity": "uncommon",
+  "released_at": "2014-06-16",
+  "digital": true,
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return target creature card from your graveyard to the battlefield.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

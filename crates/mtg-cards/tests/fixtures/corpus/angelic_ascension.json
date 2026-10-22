@@ -1,0 +1,23 @@
+{
+  "id": "e8cca776-b0e4-4cd2-815f-36c1f86cf497",
+  "oracle_id": "5a898412-5b1e-4217-ac78-5b4099ed8e16",
+  "name": "Angelic Ascension",
+  "lang": "en",
+  "layout": "normal",
+  "set": "m21",
+  "collector_number": "3",
+  "rarity": "uncommon",
+  "released_at": "2020-07-03",
+  "digital": false,
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Exile target creature or planeswalker. Its controller creates a 4/4 white Angel creature token with flying.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": []
+}

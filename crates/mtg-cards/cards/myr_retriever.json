@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d07d3be3-f69d-4484-8467-cffd43871788",
+  "name": "Myr Retriever",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Myr Retriever",
+      "oracle_fingerprint": "f3cba3b942515c839aa0d1826f9fab8f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    "Other",
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

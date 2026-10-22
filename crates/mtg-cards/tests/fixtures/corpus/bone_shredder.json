@@ -1,0 +1,28 @@
+{
+  "id": "7165a9ac-3f44-4d14-93bb-d4d4970ab41b",
+  "oracle_id": "69aa1ac7-17da-4fc9-a3dc-df8a52841f4a",
+  "name": "Bone Shredder",
+  "lang": "en",
+  "layout": "normal",
+  "set": "moc",
+  "collector_number": "247",
+  "rarity": "uncommon",
+  "released_at": "2023-04-21",
+  "digital": false,
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Phyrexian Minion",
+  "oracle_text": "Flying\nEcho {2}{B} (At the beginning of your upkeep, if this came under your control since the beginning of your last upkeep, sacrifice it unless you pay its echo cost.)\nWhen this creature enters, destroy target nonartifact, nonblack creature.",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Echo",
+    "Flying"
+  ]
+}
