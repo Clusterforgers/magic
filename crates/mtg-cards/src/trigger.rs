@@ -79,6 +79,25 @@ pub enum TriggerPattern {
         /// The player attacked.
         at: Ref,
     },
+    /// A player is attacked ("whenever enchanted player is attacked"): creatures are declared as attackers of that
+    /// player (an attack on only their planeswalkers is not one). It triggers once for the declaration, however many
+    /// creatures attack; `Triggering` is the attacked player.
+    PlayerAttacked {
+        /// The player attacked.
+        who: Ref,
+    },
+    /// A player attacks a player with one or more creatures ("whenever a player attacks enchanted player with one or
+    /// more creatures"). It triggers once for each attacking player; `Triggering` is the attacking player.
+    PlayerAttacks {
+        /// The attacking player.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        by: Ref,
+        /// The player attacked.
+        at: Ref,
+    },
     /// An object matching the selector becomes the target of a spell or ability.
     BecomesTarget {
         /// The object targeted.
@@ -255,6 +274,18 @@ pub enum TriggerPattern {
             skip_serializing_if = "Ref::is_each_player"
         )]
         who: Ref,
+    },
+    /// A creature matching the selector explores ("whenever a creature you control explores"); `Triggering` is its
+    /// controller.
+    Explored {
+        /// The creature that explores.
+        what: Selector,
+    },
+    /// A creature matching the selector connives ("whenever a creature you control connives"); `Triggering` is its
+    /// controller.
+    Connived {
+        /// The creature that connives.
+        what: Selector,
     },
     /// A step begins ("at the beginning of ...").
     StepBegins {

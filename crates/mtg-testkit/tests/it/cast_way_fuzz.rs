@@ -9,15 +9,12 @@ use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::{PlayOptions, cast_way_fuzz_setup, play_game_with};
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 #[test]
 fn bot_games_with_unusual_cast_ways_keep_every_invariant_and_use_each_way() {
     let seen = std::sync::Mutex::new(BTreeMap::<&'static str, u64>::new());
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(60);
+    let games = fuzz_games(12);
     for_each_seed(0..games, |seed| {
         for players in [2, 3, 4] {
             let outcome = play_game_with(

@@ -11,14 +11,11 @@ use mtg_testkit::defining_cards::DEFINING_CARDS;
 use mtg_testkit::{defining_fuzz_setup, play_game};
 use rstest::rstest;
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`. A creature that counts cards in graveyards makes a game slow, so a campaign is short.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(6)
+    fuzz_games(6)
 }
 
 #[derive(Default)]

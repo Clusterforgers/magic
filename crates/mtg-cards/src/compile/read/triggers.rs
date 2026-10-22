@@ -18,6 +18,22 @@ pub fn cycled_itself(pattern: &TriggerPattern) -> bool {
     )
 }
 
+/// Whether the pattern is the card itself entering, attacking or dealing damage, so the card's keyword actions may call it
+/// "it".
+pub fn itself_acts(pattern: &TriggerPattern) -> bool {
+    match pattern {
+        TriggerPattern::Attacks { what }
+        | TriggerPattern::ZoneChange {
+            what,
+            to: Some(ZoneKind::Battlefield),
+            ..
+        } => what.0 == [Pred::This],
+        TriggerPattern::DealsDamage { source, .. } => source.0 == [Pred::This],
+        TriggerPattern::AnyOf(patterns) => patterns.iter().all(itself_acts),
+        _ => false,
+    }
+}
+
 /// Whether the pattern is the card itself becoming a target (counted or not), so the card's effects may call it "it".
 pub fn targeted_itself(pattern: &TriggerPattern) -> bool {
     match pattern {
@@ -277,6 +293,17 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "becomes" } else { "become" } {
         r.need("the monarch")?;
         Some(TriggerPattern::BecomesMonarch { who: by })
+    } else if verb == if third { "is" } else { "are" } {
+        r.need("attacked")?;
+        Some(TriggerPattern::PlayerAttacked { who: by })
+    } else if verb == if third { "attacks" } else { "attack" } {
+        let at = if r.words("enchanted player") {
+            Ref::AttachedPlayer
+        } else {
+            r.word("you").then_some(Ref::You)?
+        };
+        r.need("with one or more creatures")?;
+        Some(TriggerPattern::PlayerAttacks { by, at })
     } else if verb == if third { "proliferates" } else { "proliferate" } {
         Some(TriggerPattern::Proliferated { who: by })
     } else if verb == if third { "taps" } else { "tap" } {
@@ -399,6 +426,10 @@ fn verb(r: &mut Reader<'_>, what: &Selector) -> Option<TriggerPattern> {
         return Some(TriggerPattern::Tapped { what: what.clone() });
     } else if r.words("becomes untapped") {
         return Some(TriggerPattern::Untapped { what: what.clone() });
+    } else if r.word("explores") {
+        return Some(TriggerPattern::Explored { what: what.clone() });
+    } else if r.word("connives") {
+        return Some(TriggerPattern::Connived { what: what.clone() });
     } else if r.words("becomes attached to") {
         return Some(TriggerPattern::Attached {
             what: what.clone(),
@@ -618,6 +649,8 @@ fn happening(pattern: &TriggerPattern) -> Option<(Selector, String)> {
         TriggerPattern::BecomesBlocked { what } => said(what, "becomes blocked"),
         TriggerPattern::Tapped { what } => said(what, "becomes tapped"),
         TriggerPattern::Untapped { what } => said(what, "becomes untapped"),
+        TriggerPattern::Explored { what } => said(what, "explores"),
+        TriggerPattern::Connived { what } => said(what, "connives"),
         TriggerPattern::Attached { what, to } if !what.is_empty() && !to.is_empty() => {
             said(what, &format!("becomes attached to {}", subject_text(to)?))
         }
@@ -729,6 +762,27 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
                 _ => return None,
             };
             Some(format!("Whenever {} {card}", player_verb(by, "cycle")?))
+        }
+        TriggerPattern::PlayerAttacked { who } => {
+            let (subject, be) = match who {
+                Ref::You => ("you", "are"),
+                Ref::Opponents => ("an opponent", "is"),
+                Ref::EachPlayer => ("a player", "is"),
+                Ref::AttachedPlayer => ("enchanted player", "is"),
+                _ => return None,
+            };
+            Some(format!("Whenever {subject} {be} attacked"))
+        }
+        TriggerPattern::PlayerAttacks { by, at } => {
+            let at = match at {
+                Ref::You => "you",
+                Ref::AttachedPlayer => "enchanted player",
+                _ => return None,
+            };
+            Some(format!(
+                "Whenever {} {at} with one or more creatures",
+                player_verb(by, "attack")?
+            ))
         }
         TriggerPattern::TappedForMana { what, by } => Some(format!(
             "Whenever {} {} for mana",

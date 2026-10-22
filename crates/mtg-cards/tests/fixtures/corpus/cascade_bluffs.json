@@ -1,0 +1,27 @@
+{
+  "id": "22acccd2-4e9d-46de-a060-863b08152e50",
+  "oracle_id": "f1603384-4361-49c9-98aa-7785fc3504c4",
+  "name": "Cascade Bluffs",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "364",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{U/R}, {T}: Add {U}{U}, {U}{R}, or {R}{R}.",
+  "colors": [],
+  "color_identity": [
+    "R",
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C",
+    "R",
+    "U"
+  ]
+}

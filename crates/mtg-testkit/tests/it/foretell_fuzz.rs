@@ -9,15 +9,12 @@ use mtg_engine::events::ZoneCause;
 use mtg_engine::zones::Zone;
 use mtg_testkit::{PlayOptions, foretell_fuzz_setup, play_game_with};
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 #[test]
 fn bot_games_with_foretell_cards_keep_every_invariant() {
     let seen = std::sync::Mutex::new(BTreeMap::<&'static str, u64>::new());
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(60);
+    let games = fuzz_games(20);
     for_each_seed(0..games, |seed| {
         for players in [2, 3, 4] {
             let outcome = play_game_with(

@@ -1,0 +1,27 @@
+{
+  "id": "6bd21c9e-de16-4ee9-ae16-6e82b490109d",
+  "oracle_id": "8e7641e1-e814-4d5a-9cb3-71ad2f4ceee8",
+  "name": "Rugged Prairie",
+  "lang": "en",
+  "layout": "normal",
+  "set": "soc",
+  "collector_number": "401",
+  "rarity": "rare",
+  "released_at": "2026-04-24",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{R/W}, {T}: Add {R}{R}, {R}{W}, or {W}{W}.",
+  "colors": [],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "C",
+    "R",
+    "W"
+  ]
+}

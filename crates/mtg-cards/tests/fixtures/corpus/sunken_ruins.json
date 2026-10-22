@@ -1,0 +1,27 @@
+{
+  "id": "b8652a52-d9f6-42ad-9746-6827845b540e",
+  "oracle_id": "e6415ffb-8b7a-41c3-bedf-0d4112b7b795",
+  "name": "Sunken Ruins",
+  "lang": "en",
+  "layout": "normal",
+  "set": "frc",
+  "collector_number": "86",
+  "rarity": "rare",
+  "released_at": "2026-10-02",
+  "digital": false,
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{U/B}, {T}: Add {U}{U}, {U}{B}, or {B}{B}.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "C",
+    "U"
+  ]
+}

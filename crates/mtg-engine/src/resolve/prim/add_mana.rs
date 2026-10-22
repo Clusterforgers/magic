@@ -1,8 +1,9 @@
 //! `Effect::AddMana`: mana goes into a player's pool (CR 106.4).
 
 use mtg_cards::effect::{Effect, Produce};
+use mtg_cards::spend::SpendOn;
 use mtg_core::color::Color;
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 
 use super::{unsupported, wrong_effect};
@@ -35,7 +36,8 @@ const fn mana_of(color: Color) -> ManaType {
 /// Each player `who` names who is still in the game adds the mana `times` times to their pool. A fixed mana is
 /// added as printed. "Any color" and a choice between types ("{W} or {U}") ask the player (`ChooseOption`) each time
 /// the mana is added, and every mana of that addition has the type chosen ("three mana of any one color"); a choice
-/// with one option is not asked. The chosen color is the one the source's controller chose as it entered, and
+/// with one option is not asked. A choice between lists of mana ("{W}{W}, {W}{U}, or {U}{U}") asks the same way and adds
+/// every mana of the list chosen. The chosen color is the one the source's controller chose as it entered, and
 /// none is added while there is none. The mana is credited to the object that produced it while that object is in
 /// the game.
 #[allow(clippy::too_many_lines)]
@@ -112,6 +114,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             (types, 1)
         }
         Produce::OneOf(types) => (types.clone(), 1),
+        Produce::OneOfLists(lists) => {
+            let added = Added {
+                players: &players,
+                times,
+                source,
+                only,
+            };
+            return choose_list(cx, &added, lists);
+        }
         // What depends on the game is read for the one player who adds it; none is added when the list is empty.
         Produce::CommanderIdentity(each) => match players.as_slice() {
             [player] => (identity_types(state, *player), *each),
@@ -192,9 +203,67 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(Run::events(events))
 }
 
+/// Who adds mana, how many times, and from what.
+struct Added<'a> {
+    players: &'a [PlayerId],
+    times: usize,
+    source: Option<ObjectId>,
+    only: &'a [SpendOn],
+}
+
+/// Each addition asks its player to pick one of `lists` ("Add {W}{W}, {W}{U}, or {U}{U}") and adds all the mana of the
+/// list picked; one list is not asked.
+fn choose_list(
+    cx: &Cx<'_>,
+    added: &Added<'_>,
+    lists: &[Vec<ManaType>],
+) -> Result<Run, ResolveError> {
+    let options: Vec<ChoiceOption> = lists
+        .iter()
+        .map(|list| {
+            let mut label = String::new();
+            for kind in list {
+                label.push('{');
+                label.push(kind.symbol());
+                label.push('}');
+            }
+            ChoiceOption::Label(label)
+        })
+        .collect();
+    let choosers: Vec<OptionChooser> = added
+        .players
+        .iter()
+        .flat_map(|player| std::iter::repeat_n(*player, added.times))
+        .map(|player| OptionChooser {
+            player,
+            options: options.clone(),
+            text: "Choose the mana to add.".into(),
+        })
+        .collect();
+    let taken = match pick_options(cx, &choosers)? {
+        Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
+        Optioned::Done(taken) => taken,
+    };
+    let mut events = Vec::new();
+    for (player, index) in taken {
+        let Some(list) = lists.get(index) else {
+            return Err(ResolveError::Invalid(format!(
+                "no list of mana is option {index}"
+            )));
+        };
+        events.extend(list.iter().map(|&mana| Event::ManaAdded {
+            player,
+            mana,
+            source: added.source,
+            only: added.only.to_vec(),
+        }));
+    }
+    Ok(Run::events(events))
+}
+
 #[cfg(test)]
 mod tests {
-    //! Goal: adding mana puts the printed mana in the pool of each player named, once for every time it is added; "any color" asks for a colour each time and adds every mana of that addition in it, a fixed mana asks nothing, and a count of nothing adds nothing.
+    //! Goal: adding mana puts the printed mana in the pool of each player named, once for every time it is added; "any color" asks for a colour each time and adds every mana of that addition in it, a fixed mana asks nothing, a choice between lists of mana asks each time and adds every mana of the list chosen, and a count of nothing adds nothing.
     use rstest::rstest;
 
     use super::*;
@@ -388,6 +457,101 @@ mod tests {
         );
         let run = run_with(&game, vec![(ME, Choice::Option(index))], &one_of).unwrap();
         assert_eq!(added(run), [(ME, expected)]);
+    }
+
+    const LISTS: &str = r#"{"OneOfLists":[["White","White"],["White","Blue"],["Blue","Blue"]]}"#;
+
+    /// The effect of `LISTS` with more fields after the mana (`,"times":2`).
+    fn filter(more: &str) -> Effect {
+        effect(&format!(r#"{{"AddMana":{{"mana":{LISTS}{more}}}}}"#))
+    }
+
+    #[rstest]
+    #[case::two_of_the_first(0, &[ManaType::White, ManaType::White])]
+    #[case::one_of_each(1, &[ManaType::White, ManaType::Blue])]
+    #[case::two_of_the_last(2, &[ManaType::Blue, ManaType::Blue])]
+    fn a_choice_between_lists_asks_once_and_adds_every_mana_of_the_list_chosen(
+        #[case] index: usize,
+        #[case] expected: &[ManaType],
+    ) {
+        let game = game();
+        let lists = filter("");
+        let Run::Ask(decision) = run_with(&game, Vec::new(), &lists).unwrap() else {
+            panic!("the player chooses");
+        };
+        assert_eq!(decision.player, ME);
+        let DecisionKind::ChooseOption(options) = decision.kind else {
+            panic!("a choice of option");
+        };
+        assert_eq!(
+            options.options,
+            ["{W}{W}", "{W}{U}", "{U}{U}"].map(|label| ChoiceOption::Label(label.into()))
+        );
+        let run = run_with(&game, vec![(ME, Choice::Option(index))], &lists).unwrap();
+        assert_eq!(
+            added(run),
+            expected.iter().map(|mana| (ME, *mana)).collect::<Vec<_>>()
+        );
+    }
+
+    #[rstest]
+    #[case::once(1, &[0], &[ManaType::White, ManaType::White])]
+    #[case::twice_with_the_same_list(2, &[2, 2], &[ManaType::Blue; 4])]
+    #[case::twice_with_two_lists(2, &[0, 1], &[ManaType::White, ManaType::White, ManaType::White, ManaType::Blue])]
+    fn each_time_it_is_added_a_list_is_chosen(
+        #[case] times: i32,
+        #[case] picks: &[usize],
+        #[case] expected: &[ManaType],
+    ) {
+        let game = game();
+        let lists = filter(&format!(r#","times":{times}"#));
+        let mut journal = Vec::new();
+        for pick in picks {
+            assert!(matches!(
+                run_with(&game, journal.clone(), &lists).unwrap(),
+                Run::Ask(_)
+            ));
+            journal.push((ME, Choice::Option(*pick)));
+        }
+        let run = run_with(&game, journal, &lists).unwrap();
+        assert_eq!(
+            added(run),
+            expected.iter().map(|mana| (ME, *mana)).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn a_choice_with_one_list_is_not_asked_and_a_list_that_is_not_offered_is_refused() {
+        let game = game();
+        let one = effect(r#"{"AddMana":{"mana":{"OneOfLists":[["Red","Green"]]}}}"#);
+        assert_eq!(
+            added(run_with(&game, Vec::new(), &one).unwrap()),
+            [(ME, ManaType::Red), (ME, ManaType::Green)]
+        );
+        let error = run_with(&game, vec![(ME, Choice::Option(3))], &filter("")).unwrap_err();
+        assert!(matches!(error, ResolveError::Invalid(_)));
+    }
+
+    #[test]
+    fn the_mana_of_a_list_keeps_its_source_and_its_restriction() {
+        let game = game();
+        let restricted = filter(r#","only":[{"Spell":{"types":["Creature"]}}]"#);
+        let Run::Done { events, .. } =
+            run_with(&game, vec![(ME, Choice::Option(1))], &restricted).unwrap()
+        else {
+            panic!("done");
+        };
+        let source = game.zone(Zone::Battlefield)[0];
+        assert_eq!(events.len(), 2);
+        for event in events {
+            let Event::ManaAdded {
+                source: from, only, ..
+            } = event
+            else {
+                panic!("mana was added");
+            };
+            assert_eq!((from, only.len()), (Some(source), 1));
+        }
     }
 
     #[test]

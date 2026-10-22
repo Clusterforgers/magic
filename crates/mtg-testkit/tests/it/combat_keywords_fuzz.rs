@@ -1,6 +1,7 @@
 //! Goal: whole bot games at two, three and four seats with decks of the characteristic and combat keyword cards (changeling, devoid, infect, wither, toxic, fear, intimidate, skulk, shadow, landwalk) finish, keep every invariant (life, damage, counters and poison accounted for through the independent model of the checker), deal infect and wither damage and toxic poison in some game, are the same game every time and replay to the same state, and every card of the deck is in the corpus.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use std::collections::BTreeSet;
 
 use mtg_engine::combat::DamageForm;
@@ -11,10 +12,7 @@ use mtg_testkit::{combat_keywords_fuzz_setup, play_game};
 use rstest::rstest;
 
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(30)
+    fuzz_games(30)
 }
 
 #[rstest]

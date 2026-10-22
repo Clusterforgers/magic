@@ -19,8 +19,10 @@ pub mod corpus;
 pub mod cost_cards;
 pub mod count_cards;
 pub mod counter_cards;
+pub mod curse_cards;
 pub mod decks;
 pub mod defining_cards;
+pub mod discard_cast_cards;
 pub mod driver;
 pub mod evasion_cards;
 pub mod event_cards;
@@ -75,11 +77,13 @@ pub use copy_cards::{copy_fuzz_setup, spell_copy_fuzz_setup};
 pub use cost_cards::cost_fuzz_setup;
 pub use count_cards::count_fuzz_setup;
 pub use counter_cards::counters_fuzz_setup;
+pub use curse_cards::curse_fuzz_setup;
 pub use decks::{
     archon_fuzz_setup, fuzz_setup, keyword_fuzz_setup, library_fuzz_setup, ramp_fuzz_setup,
     removal_fuzz_setup, spell_fuzz_setup, symbol_fuzz_setup, trigger_fuzz_setup,
 };
 pub use defining_cards::defining_fuzz_setup;
+pub use discard_cast_cards::discard_cast_fuzz_setup;
 pub use driver::Driver;
 pub use evasion_cards::evasion_fuzz_setup;
 pub use event_cards::events_fuzz_setup;

@@ -1,0 +1,28 @@
+{
+  "id": "0000cd57-91fe-411f-b798-646e965eec37",
+  "oracle_id": "9f0d82ae-38bf-45d8-8cda-982b6ead1d72",
+  "name": "Siren Lookout",
+  "lang": "en",
+  "layout": "normal",
+  "set": "xln",
+  "collector_number": "78",
+  "rarity": "common",
+  "released_at": "2017-09-29",
+  "digital": false,
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Siren Pirate",
+  "oracle_text": "Flying\nWhen this creature enters, it explores. (Reveal the top card of your library. Put that card into your hand if it's a land. Otherwise, put a +1/+1 counter on this creature, then put the card back or put it into your graveyard.)",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Explore"
+  ]
+}

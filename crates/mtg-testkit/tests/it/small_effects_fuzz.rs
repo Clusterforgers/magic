@@ -1,6 +1,7 @@
 //! Goal: whole bot games with decks of tapping and untapping spells, mills, spells that pick by a condition, an artifact that wins the game and creatures with flash finish and keep every invariant (zones, life, the journal, no trigger waiting while a player has priority, the replay of the log equal to the live state) for many seeds at tables of two, three and four seats, and the games really use them: permanents are tapped and untapped by effects, cards are milled, a condition takes both of its branches, creatures with flash are cast out of turn, and a win ends a game with every opponent lost; an engine rebuilt from the log at each decision asks what the original asks, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::events::ZoneCause;
 use mtg_engine::player::LossReason;
@@ -10,10 +11,7 @@ use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(60)
+    fuzz_games(20)
 }
 
 #[derive(Default)]

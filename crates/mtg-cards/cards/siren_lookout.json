@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9f0d82ae-38bf-45d8-8cda-982b6ead1d72",
+  "name": "Siren Lookout",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siren Lookout",
+      "oracle_fingerprint": "61cf2944a5f129997fce6065563884b3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Explore": { "what": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

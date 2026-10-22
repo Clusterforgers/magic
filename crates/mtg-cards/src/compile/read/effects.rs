@@ -8,6 +8,7 @@ use super::amounts::{
     cards, cards_counted, counted, counted_parts, counted_stats, for_each, its_stat, number_word,
     points,
 };
+use super::attackers;
 use super::cast;
 use super::conditional;
 use super::copies;
@@ -33,7 +34,7 @@ use crate::value::{Amount, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 32] = [
+const TEMPLATES: [Template; 34] = [
     modal::modal,
     cast::discover_sentence,
     cast::exile_until,
@@ -42,6 +43,8 @@ const TEMPLATES: [Template; 32] = [
     may,
     chain,
     put_back,
+    super::actions::explore,
+    super::actions::connive,
     player_effect,
     damage,
     removal,
@@ -102,6 +105,11 @@ pub fn sentence(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> bool {
         return true;
     }
     if r.attempt(|r| payments::after_may(r, effects)).is_some() {
+        return true;
+    }
+    if r.attempt(|r| attackers::does_the_same(r, effects))
+        .is_some()
+    {
         return true;
     }
     for template in templates().chain([unless_pays as Template]) {
@@ -804,6 +812,28 @@ fn choice(r: &mut Reader<'_>) -> Option<Vec<ManaType>> {
     (list.len() > 1).then_some(list)
 }
 
+/// "{W}{W}, {W}{U}, or {U}{U}": the lists of mana one of which is added, at least two of them and one of them with
+/// more than one mana (a list of single mana is the choice "{W} or {U}").
+fn choice_of_lists(r: &mut Reader<'_>) -> Option<Vec<Vec<ManaType>>> {
+    let run = |r: &mut Reader<'_>| {
+        let mut list = vec![mana_type(r.symbol()?)?];
+        while let Some(next) = r.attempt(|r| mana_type(r.symbol()?)) {
+            list.push(next);
+        }
+        Some(list)
+    };
+    let mut lists = vec![run(r)?];
+    while let Some(next) = r.attempt(|r| {
+        let listed = r.punct(',');
+        let joined = r.word("or");
+        (listed || joined).then_some(())?;
+        run(r)
+    }) {
+        lists.push(next);
+    }
+    (lists.len() > 1 && lists.iter().any(|list| list.len() > 1)).then_some(lists)
+}
+
 /// "two mana of any one color", "three mana of any one color": several mana of the one color picked.
 fn several_of_one_color(r: &mut Reader<'_>) -> Option<u32> {
     let count = number_word(r.take_word()?).filter(|count| *count >= 2)?;
@@ -864,6 +894,8 @@ fn add_mana(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         Some(mana)
     }) {
         Produce::OrChosenColor(mana)
+    } else if let Some(lists) = r.attempt(choice_of_lists) {
+        Produce::OneOfLists(lists)
     } else if let Some(list) = r.attempt(choice) {
         Produce::OneOf(list)
     } else {

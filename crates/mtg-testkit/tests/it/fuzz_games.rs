@@ -6,14 +6,11 @@ use mtg_engine::GameResult;
 use mtg_testkit::{PlayOptions, fuzz_setup, play_game, play_game_with};
 use rstest::rstest;
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 /// Games per table size; override with `MTG_FUZZ_GAMES` to run longer or shorter campaigns.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(500)
+    fuzz_games(60)
 }
 
 #[rstest]

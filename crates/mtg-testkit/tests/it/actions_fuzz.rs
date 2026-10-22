@@ -1,16 +1,14 @@
 //! Goal: whole bot games at two, three and four seats with the keyword-action cards (Consider, Curate, Notion Rain, Sinister Sabotage, Doom Whisperer) and a spell that makes its controller the monarch finish and keep every invariant (zones, life, the journal, the replay of the log equal to the live state) for many seeds, and across the seeds players surveil, keep cards on top and put cards into the graveyard, the monarch designation changes hands, an engine rebuilt from the log at each decision asks the same question, and a seeded game is the same game every time.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use crate::common::seeds::fuzz_games;
 use mtg_engine::{Engine, EngineError, Event};
 use mtg_testkit::{RandomBot, actions_fuzz_setup, play_game};
 use rstest::rstest;
 
 /// Games per table size; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(30)
+    fuzz_games(30)
 }
 
 #[derive(Default)]
@@ -21,6 +19,8 @@ struct Seen {
     monarchs: u64,
     taken_from_another: u64,
     proliferates: u64,
+    explores: u64,
+    connives: u64,
 }
 
 impl Seen {
@@ -34,6 +34,8 @@ impl Seen {
                     self.sent_to_the_graveyard += u64::from(!surveilled.graveyard.is_empty());
                 }
                 Event::Proliferated { .. } => self.proliferates += 1,
+                Event::Explored { .. } => self.explores += 1,
+                Event::Connived { .. } => self.connives += 1,
                 Event::MonarchChanged { player } => {
                     self.monarchs += 1;
                     self.taken_from_another += u64::from(monarch.is_some_and(|was| was != *player));
@@ -59,6 +61,8 @@ fn seeded_action_games_finish_and_keep_every_invariant(#[case] players: usize) {
     let campaign = format!("{} games of {players} seats", games());
     assert!(seen.surveils > 0, "nobody surveilled in {campaign}");
     assert!(seen.proliferates > 0, "nobody proliferated in {campaign}");
+    assert!(seen.explores > 0, "no creature explored in {campaign}");
+    assert!(seen.connives > 0, "no creature connived in {campaign}");
     assert!(
         seen.kept_on_top > 0 && seen.sent_to_the_graveyard > 0,
         "surveils kept cards on top and put cards into the graveyard in {campaign}"

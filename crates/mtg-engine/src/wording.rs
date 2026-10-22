@@ -78,6 +78,10 @@ fn phrase(selector: &Selector) -> (String, String) {
             Pred::Tapped => adjectives.push("tapped".to_owned()),
             Pred::Untapped => adjectives.push("untapped".to_owned()),
             Pred::Attacking => adjectives.push("attacking".to_owned()),
+            Pred::AttackingPlayer(Ref::AttachedPlayer) => {
+                tail.push("attacking enchanted player".to_owned());
+            }
+            Pred::AttackingPlayer(Ref::You) => tail.push("attacking you".to_owned()),
             Pred::Blocking => adjectives.push("blocking".to_owned()),
             Pred::Unblocked => adjectives.push("unblocked".to_owned()),
             Pred::ControlledBy(Ref::You) => tail.push("you control".to_owned()),
@@ -299,6 +303,29 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (format!("{} attacks {whom}", subject(what)), false)
         }
+        TriggerPattern::PlayerAttacked { who: attacked } => {
+            let text = match attacked {
+                Ref::You => "you are attacked".to_owned(),
+                Ref::AttachedPlayer => "enchanted player is attacked".to_owned(),
+                other => format!("{} is attacked", who(other).0),
+            };
+            (text, false)
+        }
+        TriggerPattern::PlayerAttacks { by, at } => {
+            let (name, s) = match by {
+                Ref::AttachedPlayer => ("enchanted player", "s"),
+                other => who(other),
+            };
+            let whom = match at {
+                Ref::AttachedPlayer => "enchanted player",
+                Ref::You => "you",
+                _ => "a player",
+            };
+            (
+                format!("{name} attack{s} {whom} with one or more creatures"),
+                false,
+            )
+        }
         TriggerPattern::BecomesTarget { what, by } => {
             let whose = match by.0.as_slice() {
                 [Pred::ControlledBy(Ref::Opponents)] => " an opponent controls",
@@ -398,6 +425,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         ),
         TriggerPattern::Untapped { what } => (
             format!("{} becomes untapped", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::Explored { what } => (
+            format!("{} explores", subject(what)),
+            what.0 == [Pred::This],
+        ),
+        TriggerPattern::Connived { what } => (
+            format!("{} connives", subject(what)),
             what.0 == [Pred::This],
         ),
         TriggerPattern::Cycled { what, by } => {
@@ -669,6 +704,9 @@ pub(crate) fn proliferate_player(proliferating: PlayerId, holder: PlayerId) -> S
         )
     }
 }
+
+/// What an explore asks about the revealed card that is not a land.
+pub(crate) const EXPLORE: &str = "You may put the revealed card into your graveyard.";
 
 /// What the order of cards put into a library asks: "Put the cards on top of your library in any order."
 pub(crate) fn library_order(bottom: bool) -> String {

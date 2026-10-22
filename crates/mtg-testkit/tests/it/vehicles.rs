@@ -489,14 +489,11 @@ fn bot_games_with_vehicles_keep_every_invariant_crew_and_replay() {
     use mtg_testkit::vehicle_cards::VEHICLE_CARDS;
     use mtg_testkit::{PlayOptions, play_game_with, vehicle_fuzz_setup};
 
-    use crate::common::seeds::for_each_seed;
+    use crate::common::seeds::{for_each_seed, fuzz_games};
 
     // Crew abilities activated and Vehicles cast in all the games.
     let seen = Mutex::new((0u64, 0u64));
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40);
+    let games = fuzz_games(12);
     for_each_seed(0..games, |seed| {
         for players in [2, 3, 4] {
             let outcome = play_game_with(

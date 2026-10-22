@@ -224,6 +224,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::NothingToDo { .. }
         | Event::ManaBurned { .. }
         | Event::Cycled { .. }
+        | Event::Explored { .. }
+        | Event::Connived { .. }
         | Event::Proliferated { .. } => {}
         Event::PriorityGranted { player } => {
             state.priority = Some(PriorityState {

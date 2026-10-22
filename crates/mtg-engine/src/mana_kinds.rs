@@ -121,6 +121,7 @@ fn types_of(
         match shape.produces {
             ManaProduced::Fixed { mana, .. } => found.push(mana),
             ManaProduced::Mixed(list) | ManaProduced::OneOf(list) => found.extend_from_slice(list),
+            ManaProduced::OneOfLists(lists) => found.extend(lists.iter().flatten().copied()),
             ManaProduced::AnyColor(_) => found.extend(COLORS),
             ManaProduced::ChosenColor(_) => {
                 if let Some(Chosen::Color(color)) =

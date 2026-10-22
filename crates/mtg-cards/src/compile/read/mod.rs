@@ -13,12 +13,14 @@
 //! colon), `abilities` (a spell ability, a triggered ability, an activated ability), `conditional`
 //! (an effect that depends on a condition), `reveal` (looking at the top card and revealing it),
 //! `copies` (a token that is a copy, populate, entering as a copy), `copy_spells` (a copy of a spell or an ability, a
-//! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform` and
+//! permanent that becomes a copy), `defining` (the power and toughness a card defines for itself), `life_gain` (replacements and rules about gaining life), `transform`, `actions` (the keyword actions of creatures) and
 //! `render`.
 
 mod abilities;
+mod actions;
 mod among;
 mod amounts;
+mod attackers;
 mod cast;
 mod conditional;
 mod copies;

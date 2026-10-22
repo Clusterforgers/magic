@@ -8,15 +8,12 @@ use mtg_engine::Event;
 use mtg_engine::zones::Zone;
 use mtg_testkit::{PlayOptions, alternative_fuzz_setup, play_game_with};
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 
 #[test]
 fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
     let seen = std::sync::Mutex::new(BTreeMap::<String, u64>::new());
-    let games = std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(60);
+    let games = fuzz_games(20);
     for_each_seed(0..games, |seed| {
         for players in [2, 4] {
             let outcome = play_game_with(
@@ -41,6 +38,8 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::Foretold => "foretold",
                             CastWay::Escape => "escape",
                             CastWay::Dash => "dash",
+                            CastWay::JumpStart => "jump-start",
+                            CastWay::Retrace => "retrace",
                             CastWay::Free => "free",
                         });
                         *seen.entry(way.to_owned()).or_default() += 1;

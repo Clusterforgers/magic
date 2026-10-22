@@ -180,6 +180,7 @@ fn rule_mana(state: &GameState, player: PlayerId, id: ObjectId, printed: usize) 
                 COLORS.iter().map(|c| vec![*c; count as usize]).collect()
             }
             ManaProduced::OneOf(types) => types.iter().map(|t| vec![*t]).collect(),
+            ManaProduced::OneOfLists(lists) => lists.to_vec(),
             ManaProduced::ChosenColor(count) => {
                 match object.permanent().and_then(PermanentState::chosen) {
                     Some(Chosen::Color(color)) => vec![vec![mana_of(*color); count as usize]],

@@ -434,6 +434,8 @@ function describePublic(event: Event, n: EventNames): LogLine {
     return line(`It becomes ${event.DayNightChanged.to === 'Day' ? 'day' : 'night'}`)
   if ('MonarchChanged' in event) return line(`${n.seat(event.MonarchChanged.player)} becomes the monarch`)
   if ('Proliferated' in event) return line(`${n.seat(event.Proliferated.player)} proliferates`)
+  if ('Explored' in event) return line(`${n.card(event.Explored.object)} explores`)
+  if ('Connived' in event) return line(`${n.card(event.Connived.object)} connives`)
   if ('AttachedToPlayer' in event) {
     return line(`${n.card(event.AttachedToPlayer.object)} enchants ${n.seat(event.AttachedToPlayer.player)}`)
   }

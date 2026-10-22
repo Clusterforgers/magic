@@ -4,6 +4,7 @@
 //! same sequence.
 
 use super::amounts::{cards_text, count_word, counted_parts, points_text, stat_name};
+use super::attackers;
 use super::cast;
 use super::conditional;
 use super::copies;
@@ -22,7 +23,8 @@ use super::selectors::{Form, granted_text, phrase_text, spec_text};
 use super::spend;
 use super::statics;
 use super::triggers::{
-    article, condition_text, cycled_itself, entered_or_attacked, pattern_text, targeted_itself,
+    article, condition_text, cycled_itself, entered_or_attacked, itself_acts, pattern_text,
+    targeted_itself,
 };
 use crate::ability::{Ability, Limit, Timing};
 use crate::cost::Cost;
@@ -42,6 +44,7 @@ pub fn ability(ability: &Ability) -> Option<String> {
 /// Every wording of an ability the readers produce. The effects of one player in a row are one
 /// sentence ("you draw a card and gain 3 life") or several ("draw a card. You gain 3 life"), and
 /// the data does not say which a card used, so each way is written. Empty for any other ability.
+#[allow(clippy::too_many_lines)]
 pub fn variants(ability: &Ability) -> Vec<String> {
     let mut texts = ability_texts(ability);
     let singulars: Vec<String> = texts
@@ -92,6 +95,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    texts.extend(attackers::named_draws(ability, &texts));
     // The counters counted by "for each" may be those "on it" for the card.
     let pronouns: Vec<String> = texts
         .iter()
@@ -123,6 +127,18 @@ pub fn variants(ability: &Ability) -> Vec<String> {
             .map(|text| text.replacen(", ~ deals ", ", it deals ", 1))
             .collect();
         texts.extend(pronouns);
+    }
+    // A trigger about the card itself may say "it explores" or "it connives" for the card (Seekers' Squire).
+    if matches!(ability, Ability::Triggered { when, .. } if itself_acts(when)) {
+        for verb in ["explores", "connives"] {
+            let (named, pronoun) = (format!(", ~ {verb}"), format!(", it {verb}"));
+            let pronouns: Vec<String> = texts
+                .iter()
+                .filter(|text| text.contains(&named))
+                .map(|text| text.replacen(&named, &pronoun, 1))
+                .collect();
+            texts.extend(pronouns);
+        }
     }
     // A trigger about damage the source deals may say "it deals" for the source (Questing Beast).
     if matches!(
@@ -317,12 +333,31 @@ fn alternatives(targets: &[TargetSpec], effects: &[Effect]) -> Vec<Vec<String>> 
 }
 
 /// The sentences of the effects with the joints of the mask closed into compound sentences.
+/// The effects of an attack at the enchanted player and the same again for the opponents who attack: one sentence
+/// more, which no joint splits.
+fn repeating(targets: &[TargetSpec], head: &[Effect], mask: u32, per: bool) -> Option<Vec<String>> {
+    if mask >> (head.len() - 1) != 0 {
+        return None;
+    }
+    let mut sentences = written(targets, head, mask, per)?;
+    sentences.push(attackers::sentence(head).to_owned());
+    Some(sentences)
+}
+
+/// Whether no joint of the mask falls inside the `used` effects from `start`, which are one sentence.
+fn unsplit(mask: u32, start: usize, used: usize) -> Option<()> {
+    ((mask >> start) & ((1 << used) - 1) == 0).then_some(())
+}
+
 fn written(
     targets: &[TargetSpec],
     effects: &[Effect],
     mask: u32,
     per: bool,
 ) -> Option<Vec<String>> {
+    if let Some(head) = attackers::repeated(effects) {
+        return repeating(targets, head, mask, per);
+    }
     let mut writer = Writer {
         targets,
         named: false,
@@ -336,19 +371,16 @@ fn written(
         if let Some((text, used)) = cast::discover_text(&effects[start..])
             .or_else(|| cast::impulse_text(&effects[start..]))
             .or_else(|| library::sequence(&effects[start..]))
+            .or_else(|| writer.explore_twice(&effects[start..]))
         {
-            if (mask >> start) & ((1 << used) - 1) != 0 {
-                return None;
-            }
+            unsplit(mask, start, used)?;
             sentences.push(text);
             start += used;
             continue;
         }
         // A look at the top card, the reveal and what follows it are three sentences, which no joint splits.
         if let Some((condition, then, used)) = reveal::shape(&effects[start..]) {
-            if (mask >> start) & ((1 << used) - 1) != 0 {
-                return None;
-            }
+            unsplit(mask, start, used)?;
             let tail = writer.consequence(condition, then)?;
             sentences.push(reveal::text(condition, &tail)?);
             start += used;
@@ -357,9 +389,7 @@ fn written(
         // Populate is two steps and one word; a copy that is exiled or sacrificed at the end step is two sentences.
         // No joint splits either.
         if copies::is_populate(&effects[start..]) {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push("populate".to_owned());
             start += 2;
             continue;
@@ -367,9 +397,7 @@ fn written(
         if let [created @ Effect::CreateToken { .. }, delayed, ..] = &effects[start..]
             && let Some(delay) = copies::delay_text(created, delayed)
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push(writer.copy_token(created, true)?);
             sentences.push(delay);
             start += 2;
@@ -383,9 +411,7 @@ fn written(
         ] = &effects[start..]
             && let Some(texts) = writer.become_copy(choose, copy)
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.extend(texts);
             start += 2;
             continue;
@@ -399,9 +425,7 @@ fn written(
             && let Some(text) =
                 put_back_text(choose, moved).or_else(|| returned_text(choose, moved))
         {
-            if (mask >> start) & 0b11 != 0 {
-                return None;
-            }
+            unsplit(mask, start, 2)?;
             sentences.push(text);
             start += 2;
             continue;
@@ -650,17 +674,20 @@ fn add_text(mana: &Produce, times: &Amount, only: &[SpendOn]) -> Option<String> 
     }
 }
 
+/// "{W}{U}": the symbols of mana added together.
+fn symbols_text(list: &[mtg_core::mana::ManaType]) -> String {
+    let mut symbols = String::new();
+    for mana in list {
+        symbols.push('{');
+        symbols.push(mana.symbol());
+        symbols.push('}');
+    }
+    symbols
+}
+
 fn mana_text(mana: &Produce) -> Option<String> {
     Some(match mana {
-        Produce::Fixed(list) if !list.is_empty() => {
-            let mut symbols = String::new();
-            for mana in list {
-                symbols.push('{');
-                symbols.push(mana.symbol());
-                symbols.push('}');
-            }
-            symbols
-        }
+        Produce::Fixed(list) if !list.is_empty() => symbols_text(list),
         Produce::AnyColor(1) => "one mana of any color".to_owned(),
         Produce::AnyColor(count @ 2..) => {
             format!("{} mana of any one color", count_word(*count)?)
@@ -697,6 +724,14 @@ fn mana_text(mana: &Produce) -> Option<String> {
                 .map(|mana| format!("{{{}}}", mana.symbol()))
                 .collect();
             match symbols.as_slice() {
+                [first, second] => format!("{first} or {second}"),
+                [init @ .., final_one] => format!("{}, or {final_one}", init.join(", ")),
+                [] => return None,
+            }
+        }
+        Produce::OneOfLists(lists) if lists.len() > 1 => {
+            let texts: Vec<String> = lists.iter().map(|list| symbols_text(list)).collect();
+            match texts.as_slice() {
                 [first, second] => format!("{first} or {second}"),
                 [init @ .., final_one] => format!("{}, or {final_one}", init.join(", ")),
                 [] => return None,
@@ -1127,6 +1162,12 @@ impl Writer<'_> {
                 count,
             } => format!("surveil {}", points_text(count)?),
             Effect::Proliferate { who: Ref::You } => "proliferate".to_owned(),
+            Effect::Explore {
+                what: what @ (Ref::This | Ref::Target(0)),
+            } => format!("{} explores", self.object(what)?),
+            Effect::Connive {
+                what: what @ (Ref::This | Ref::Target(0)),
+            } => format!("{} connives", self.object(what)?),
             Effect::Transform { what } => format!("transform {}", self.object(what)?),
             Effect::If {
                 condition,
@@ -1176,6 +1217,23 @@ impl Writer<'_> {
             }
             _ => None,
         }
+    }
+
+    /// "~ explores, then it explores again": one creature that explores twice is one sentence, which no joint splits.
+    fn explore_twice(&mut self, effects: &[Effect]) -> Option<(String, usize)> {
+        let [
+            Effect::Explore { what: first },
+            Effect::Explore { what: second },
+            ..,
+        ] = effects
+        else {
+            return None;
+        };
+        if first != second || !matches!(first, Ref::This | Ref::Target(0)) {
+            return None;
+        }
+        let subject = self.object(first)?;
+        Some((format!("{subject} explores, then it explores again"), 2))
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".

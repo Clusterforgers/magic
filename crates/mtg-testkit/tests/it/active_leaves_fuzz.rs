@@ -4,7 +4,7 @@
 use std::collections::BTreeSet;
 use std::sync::Mutex;
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{for_each_seed, fuzz_games};
 use mtg_core::ids::PlayerId;
 use mtg_engine::player::LossReason;
 use mtg_engine::rng::GameRng;
@@ -19,10 +19,7 @@ use rstest::rstest;
 
 /// Games per table size and deck family; override with `MTG_FUZZ_GAMES`.
 fn games() -> u64 {
-    std::env::var("MTG_FUZZ_GAMES")
-        .ok()
-        .and_then(|v| v.parse().ok())
-        .unwrap_or(40)
+    fuzz_games(40)
 }
 
 /// Upper bound on answers in one game.
